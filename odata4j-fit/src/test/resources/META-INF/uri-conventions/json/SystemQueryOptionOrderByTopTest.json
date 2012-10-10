@@ -1,0 +1,85 @@
+{
+"d" : [
+{
+"__metadata": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(47)", "type": "NorthwindModel.Product"
+}, "ProductID": 47, "ProductName": "Zaanse koeken", "SupplierID": 22, "CategoryID": 3, "QuantityPerUnit": "10 - 4 oz boxes", "UnitPrice": "9.5000", "UnitsInStock": 36, "UnitsOnOrder": 0, "ReorderLevel": 0, "Discontinued": false, "Category": {
+"__deferred": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(47)/Category"
+}
+}, "Order_Details": {
+"__deferred": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(47)/Order_Details"
+}
+}, "Supplier": {
+"__deferred": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(47)/Supplier"
+}
+}
+}, {
+"__metadata": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(64)", "type": "NorthwindModel.Product"
+}, "ProductID": 64, "ProductName": "Wimmers gute Semmelknödel", "SupplierID": 12, "CategoryID": 5, "QuantityPerUnit": "20 bags x 4 pieces", "UnitPrice": "33.2500", "UnitsInStock": 22, "UnitsOnOrder": 80, "ReorderLevel": 30, "Discontinued": false, "Category": {
+"__deferred": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(64)/Category"
+}
+}, "Order_Details": {
+"__deferred": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(64)/Order_Details"
+}
+}, "Supplier": {
+"__deferred": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(64)/Supplier"
+}
+}
+}, {
+"__metadata": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(63)", "type": "NorthwindModel.Product"
+}, "ProductID": 63, "ProductName": "Vegie-spread", "SupplierID": 7, "CategoryID": 2, "QuantityPerUnit": "15 - 625 g jars", "UnitPrice": "43.9000", "UnitsInStock": 24, "UnitsOnOrder": 0, "ReorderLevel": 5, "Discontinued": false, "Category": {
+"__deferred": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(63)/Category"
+}
+}, "Order_Details": {
+"__deferred": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(63)/Order_Details"
+}
+}, "Supplier": {
+"__deferred": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(63)/Supplier"
+}
+}
+}, {
+"__metadata": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(50)", "type": "NorthwindModel.Product"
+}, "ProductID": 50, "ProductName": "Valkoinen suklaa", "SupplierID": 23, "CategoryID": 3, "QuantityPerUnit": "12 - 100 g bars", "UnitPrice": "16.2500", "UnitsInStock": 65, "UnitsOnOrder": 0, "ReorderLevel": 30, "Discontinued": false, "Category": {
+"__deferred": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(50)/Category"
+}
+}, "Order_Details": {
+"__deferred": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(50)/Order_Details"
+}
+}, "Supplier": {
+"__deferred": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(50)/Supplier"
+}
+}
+}, {
+"__metadata": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(7)", "type": "NorthwindModel.Product"
+}, "ProductID": 7, "ProductName": "Uncle Bob's Organic Dried Pears", "SupplierID": 3, "CategoryID": 7, "QuantityPerUnit": "12 - 1 lb pkgs.", "UnitPrice": "30.0000", "UnitsInStock": 15, "UnitsOnOrder": 0, "ReorderLevel": 10, "Discontinued": false, "Category": {
+"__deferred": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(7)/Category"
+}
+}, "Order_Details": {
+"__deferred": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(7)/Order_Details"
+}
+}, "Supplier": {
+"__deferred": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(7)/Supplier"
+}
+}
+}
+]
+}

@@ -1,0 +1,277 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<feed xml:base="http://services.odata.org/northwind/Northwind.svc/" xmlns:d="http://schemas.microsoft.com/ado/2007/08/dataservices" xmlns:m="http://schemas.microsoft.com/ado/2007/08/dataservices/metadata" xmlns="http://www.w3.org/2005/Atom">
+  <title type="text">Products</title>
+  <id>http://services.odata.org/northwind/Northwind.svc/Categories(1)/Products</id>
+  <updated>2010-12-08T16:42:44Z</updated>
+  <link rel="self" title="Products" href="Products" />
+  <entry>
+    <id>http://services.odata.org/northwind/Northwind.svc/Products(24)</id>
+    <title type="text"></title>
+    <updated>2010-12-08T16:42:44Z</updated>
+    <author>
+      <name />
+    </author>
+    <link rel="edit" title="Product" href="Products(24)" />
+    <link rel="http://schemas.microsoft.com/ado/2007/08/dataservices/related/Category" type="application/atom+xml;type=entry" title="Category" href="Products(24)/Category" />
+    <link rel="http://schemas.microsoft.com/ado/2007/08/dataservices/related/Order_Details" type="application/atom+xml;type=feed" title="Order_Details" href="Products(24)/Order_Details" />
+    <link rel="http://schemas.microsoft.com/ado/2007/08/dataservices/related/Supplier" type="application/atom+xml;type=entry" title="Supplier" href="Products(24)/Supplier" />
+    <category term="NorthwindModel.Product" scheme="http://schemas.microsoft.com/ado/2007/08/dataservices/scheme" />
+    <content type="application/xml">
+      <m:properties>
+        <d:ProductID m:type="Edm.Int32">24</d:ProductID>
+        <d:ProductName>Guaraná Fantástica</d:ProductName>
+        <d:SupplierID m:type="Edm.Int32">10</d:SupplierID>
+        <d:CategoryID m:type="Edm.Int32">1</d:CategoryID>
+        <d:QuantityPerUnit>12 - 355 ml cans</d:QuantityPerUnit>
+        <d:UnitPrice m:type="Edm.Decimal">4.5000</d:UnitPrice>
+        <d:UnitsInStock m:type="Edm.Int16">20</d:UnitsInStock>
+        <d:UnitsOnOrder m:type="Edm.Int16">0</d:UnitsOnOrder>
+        <d:ReorderLevel m:type="Edm.Int16">0</d:ReorderLevel>
+        <d:Discontinued m:type="Edm.Boolean">true</d:Discontinued>
+      </m:properties>
+    </content>
+  </entry>
+  <entry>
+    <id>http://services.odata.org/northwind/Northwind.svc/Products(34)</id>
+    <title type="text"></title>
+    <updated>2010-12-08T16:42:44Z</updated>
+    <author>
+      <name />
+    </author>
+    <link rel="edit" title="Product" href="Products(34)" />
+    <link rel="http://schemas.microsoft.com/ado/2007/08/dataservices/related/Category" type="application/atom+xml;type=entry" title="Category" href="Products(34)/Category" />
+    <link rel="http://schemas.microsoft.com/ado/2007/08/dataservices/related/Order_Details" type="application/atom+xml;type=feed" title="Order_Details" href="Products(34)/Order_Details" />
+    <link rel="http://schemas.microsoft.com/ado/2007/08/dataservices/related/Supplier" type="application/atom+xml;type=entry" title="Supplier" href="Products(34)/Supplier" />
+    <category term="NorthwindModel.Product" scheme="http://schemas.microsoft.com/ado/2007/08/dataservices/scheme" />
+    <content type="application/xml">
+      <m:properties>
+        <d:ProductID m:type="Edm.Int32">34</d:ProductID>
+        <d:ProductName>Sasquatch Ale</d:ProductName>
+        <d:SupplierID m:type="Edm.Int32">16</d:SupplierID>
+        <d:CategoryID m:type="Edm.Int32">1</d:CategoryID>
+        <d:QuantityPerUnit>24 - 12 oz bottles</d:QuantityPerUnit>
+        <d:UnitPrice m:type="Edm.Decimal">14.0000</d:UnitPrice>
+        <d:UnitsInStock m:type="Edm.Int16">111</d:UnitsInStock>
+        <d:UnitsOnOrder m:type="Edm.Int16">0</d:UnitsOnOrder>
+        <d:ReorderLevel m:type="Edm.Int16">15</d:ReorderLevel>
+        <d:Discontinued m:type="Edm.Boolean">false</d:Discontinued>
+      </m:properties>
+    </content>
+  </entry>
+  <entry>
+    <id>http://services.odata.org/northwind/Northwind.svc/Products(35)</id>
+    <title type="text"></title>
+    <updated>2010-12-08T16:42:44Z</updated>
+    <author>
+      <name />
+    </author>
+    <link rel="edit" title="Product" href="Products(35)" />
+    <link rel="http://schemas.microsoft.com/ado/2007/08/dataservices/related/Category" type="application/atom+xml;type=entry" title="Category" href="Products(35)/Category" />
+    <link rel="http://schemas.microsoft.com/ado/2007/08/dataservices/related/Order_Details" type="application/atom+xml;type=feed" title="Order_Details" href="Products(35)/Order_Details" />
+    <link rel="http://schemas.microsoft.com/ado/2007/08/dataservices/related/Supplier" type="application/atom+xml;type=entry" title="Supplier" href="Products(35)/Supplier" />
+    <category term="NorthwindModel.Product" scheme="http://schemas.microsoft.com/ado/2007/08/dataservices/scheme" />
+    <content type="application/xml">
+      <m:properties>
+        <d:ProductID m:type="Edm.Int32">35</d:ProductID>
+        <d:ProductName>Steeleye Stout</d:ProductName>
+        <d:SupplierID m:type="Edm.Int32">16</d:SupplierID>
+        <d:CategoryID m:type="Edm.Int32">1</d:CategoryID>
+        <d:QuantityPerUnit>24 - 12 oz bottles</d:QuantityPerUnit>
+        <d:UnitPrice m:type="Edm.Decimal">18.0000</d:UnitPrice>
+        <d:UnitsInStock m:type="Edm.Int16">20</d:UnitsInStock>
+        <d:UnitsOnOrder m:type="Edm.Int16">0</d:UnitsOnOrder>
+        <d:ReorderLevel m:type="Edm.Int16">15</d:ReorderLevel>
+        <d:Discontinued m:type="Edm.Boolean">false</d:Discontinued>
+      </m:properties>
+    </content>
+  </entry>
+  <entry>
+    <id>http://services.odata.org/northwind/Northwind.svc/Products(38)</id>
+    <title type="text"></title>
+    <updated>2010-12-08T16:42:44Z</updated>
+    <author>
+      <name />
+    </author>
+    <link rel="edit" title="Product" href="Products(38)" />
+    <link rel="http://schemas.microsoft.com/ado/2007/08/dataservices/related/Category" type="application/atom+xml;type=entry" title="Category" href="Products(38)/Category" />
+    <link rel="http://schemas.microsoft.com/ado/2007/08/dataservices/related/Order_Details" type="application/atom+xml;type=feed" title="Order_Details" href="Products(38)/Order_Details" />
+    <link rel="http://schemas.microsoft.com/ado/2007/08/dataservices/related/Supplier" type="application/atom+xml;type=entry" title="Supplier" href="Products(38)/Supplier" />
+    <category term="NorthwindModel.Product" scheme="http://schemas.microsoft.com/ado/2007/08/dataservices/scheme" />
+    <content type="application/xml">
+      <m:properties>
+        <d:ProductID m:type="Edm.Int32">38</d:ProductID>
+        <d:ProductName>Côte de Blaye</d:ProductName>
+        <d:SupplierID m:type="Edm.Int32">18</d:SupplierID>
+        <d:CategoryID m:type="Edm.Int32">1</d:CategoryID>
+        <d:QuantityPerUnit>12 - 75 cl bottles</d:QuantityPerUnit>
+        <d:UnitPrice m:type="Edm.Decimal">263.5000</d:UnitPrice>
+        <d:UnitsInStock m:type="Edm.Int16">17</d:UnitsInStock>
+        <d:UnitsOnOrder m:type="Edm.Int16">0</d:UnitsOnOrder>
+        <d:ReorderLevel m:type="Edm.Int16">15</d:ReorderLevel>
+        <d:Discontinued m:type="Edm.Boolean">false</d:Discontinued>
+      </m:properties>
+    </content>
+  </entry>
+  <entry>
+    <id>http://services.odata.org/northwind/Northwind.svc/Products(39)</id>
+    <title type="text"></title>
+    <updated>2010-12-08T16:42:44Z</updated>
+    <author>
+      <name />
+    </author>
+    <link rel="edit" title="Product" href="Products(39)" />
+    <link rel="http://schemas.microsoft.com/ado/2007/08/dataservices/related/Category" type="application/atom+xml;type=entry" title="Category" href="Products(39)/Category" />
+    <link rel="http://schemas.microsoft.com/ado/2007/08/dataservices/related/Order_Details" type="application/atom+xml;type=feed" title="Order_Details" href="Products(39)/Order_Details" />
+    <link rel="http://schemas.microsoft.com/ado/2007/08/dataservices/related/Supplier" type="application/atom+xml;type=entry" title="Supplier" href="Products(39)/Supplier" />
+    <category term="NorthwindModel.Product" scheme="http://schemas.microsoft.com/ado/2007/08/dataservices/scheme" />
+    <content type="application/xml">
+      <m:properties>
+        <d:ProductID m:type="Edm.Int32">39</d:ProductID>
+        <d:ProductName>Chartreuse verte</d:ProductName>
+        <d:SupplierID m:type="Edm.Int32">18</d:SupplierID>
+        <d:CategoryID m:type="Edm.Int32">1</d:CategoryID>
+        <d:QuantityPerUnit>750 cc per bottle</d:QuantityPerUnit>
+        <d:UnitPrice m:type="Edm.Decimal">18.0000</d:UnitPrice>
+        <d:UnitsInStock m:type="Edm.Int16">69</d:UnitsInStock>
+        <d:UnitsOnOrder m:type="Edm.Int16">0</d:UnitsOnOrder>
+        <d:ReorderLevel m:type="Edm.Int16">5</d:ReorderLevel>
+        <d:Discontinued m:type="Edm.Boolean">false</d:Discontinued>
+      </m:properties>
+    </content>
+  </entry>
+  <entry>
+    <id>http://services.odata.org/northwind/Northwind.svc/Products(43)</id>
+    <title type="text"></title>
+    <updated>2010-12-08T16:42:44Z</updated>
+    <author>
+      <name />
+    </author>
+    <link rel="edit" title="Product" href="Products(43)" />
+    <link rel="http://schemas.microsoft.com/ado/2007/08/dataservices/related/Category" type="application/atom+xml;type=entry" title="Category" href="Products(43)/Category" />
+    <link rel="http://schemas.microsoft.com/ado/2007/08/dataservices/related/Order_Details" type="application/atom+xml;type=feed" title="Order_Details" href="Products(43)/Order_Details" />
+    <link rel="http://schemas.microsoft.com/ado/2007/08/dataservices/related/Supplier" type="application/atom+xml;type=entry" title="Supplier" href="Products(43)/Supplier" />
+    <category term="NorthwindModel.Product" scheme="http://schemas.microsoft.com/ado/2007/08/dataservices/scheme" />
+    <content type="application/xml">
+      <m:properties>
+        <d:ProductID m:type="Edm.Int32">43</d:ProductID>
+        <d:ProductName>Ipoh Coffee</d:ProductName>
+        <d:SupplierID m:type="Edm.Int32">20</d:SupplierID>
+        <d:CategoryID m:type="Edm.Int32">1</d:CategoryID>
+        <d:QuantityPerUnit>16 - 500 g tins</d:QuantityPerUnit>
+        <d:UnitPrice m:type="Edm.Decimal">46.0000</d:UnitPrice>
+        <d:UnitsInStock m:type="Edm.Int16">17</d:UnitsInStock>
+        <d:UnitsOnOrder m:type="Edm.Int16">10</d:UnitsOnOrder>
+        <d:ReorderLevel m:type="Edm.Int16">25</d:ReorderLevel>
+        <d:Discontinued m:type="Edm.Boolean">false</d:Discontinued>
+      </m:properties>
+    </content>
+  </entry>
+  <entry>
+    <id>http://services.odata.org/northwind/Northwind.svc/Products(67)</id>
+    <title type="text"></title>
+    <updated>2010-12-08T16:42:44Z</updated>
+    <author>
+      <name />
+    </author>
+    <link rel="edit" title="Product" href="Products(67)" />
+    <link rel="http://schemas.microsoft.com/ado/2007/08/dataservices/related/Category" type="application/atom+xml;type=entry" title="Category" href="Products(67)/Category" />
+    <link rel="http://schemas.microsoft.com/ado/2007/08/dataservices/related/Order_Details" type="application/atom+xml;type=feed" title="Order_Details" href="Products(67)/Order_Details" />
+    <link rel="http://schemas.microsoft.com/ado/2007/08/dataservices/related/Supplier" type="application/atom+xml;type=entry" title="Supplier" href="Products(67)/Supplier" />
+    <category term="NorthwindModel.Product" scheme="http://schemas.microsoft.com/ado/2007/08/dataservices/scheme" />
+    <content type="application/xml">
+      <m:properties>
+        <d:ProductID m:type="Edm.Int32">67</d:ProductID>
+        <d:ProductName>Laughing Lumberjack Lager</d:ProductName>
+        <d:SupplierID m:type="Edm.Int32">16</d:SupplierID>
+        <d:CategoryID m:type="Edm.Int32">1</d:CategoryID>
+        <d:QuantityPerUnit>24 - 12 oz bottles</d:QuantityPerUnit>
+        <d:UnitPrice m:type="Edm.Decimal">14.0000</d:UnitPrice>
+        <d:UnitsInStock m:type="Edm.Int16">52</d:UnitsInStock>
+        <d:UnitsOnOrder m:type="Edm.Int16">0</d:UnitsOnOrder>
+        <d:ReorderLevel m:type="Edm.Int16">10</d:ReorderLevel>
+        <d:Discontinued m:type="Edm.Boolean">false</d:Discontinued>
+      </m:properties>
+    </content>
+  </entry>
+  <entry>
+    <id>http://services.odata.org/northwind/Northwind.svc/Products(70)</id>
+    <title type="text"></title>
+    <updated>2010-12-08T16:42:44Z</updated>
+    <author>
+      <name />
+    </author>
+    <link rel="edit" title="Product" href="Products(70)" />
+    <link rel="http://schemas.microsoft.com/ado/2007/08/dataservices/related/Category" type="application/atom+xml;type=entry" title="Category" href="Products(70)/Category" />
+    <link rel="http://schemas.microsoft.com/ado/2007/08/dataservices/related/Order_Details" type="application/atom+xml;type=feed" title="Order_Details" href="Products(70)/Order_Details" />
+    <link rel="http://schemas.microsoft.com/ado/2007/08/dataservices/related/Supplier" type="application/atom+xml;type=entry" title="Supplier" href="Products(70)/Supplier" />
+    <category term="NorthwindModel.Product" scheme="http://schemas.microsoft.com/ado/2007/08/dataservices/scheme" />
+    <content type="application/xml">
+      <m:properties>
+        <d:ProductID m:type="Edm.Int32">70</d:ProductID>
+        <d:ProductName>Outback Lager</d:ProductName>
+        <d:SupplierID m:type="Edm.Int32">7</d:SupplierID>
+        <d:CategoryID m:type="Edm.Int32">1</d:CategoryID>
+        <d:QuantityPerUnit>24 - 355 ml bottles</d:QuantityPerUnit>
+        <d:UnitPrice m:type="Edm.Decimal">15.0000</d:UnitPrice>
+        <d:UnitsInStock m:type="Edm.Int16">15</d:UnitsInStock>
+        <d:UnitsOnOrder m:type="Edm.Int16">10</d:UnitsOnOrder>
+        <d:ReorderLevel m:type="Edm.Int16">30</d:ReorderLevel>
+        <d:Discontinued m:type="Edm.Boolean">false</d:Discontinued>
+      </m:properties>
+    </content>
+  </entry>
+  <entry>
+    <id>http://services.odata.org/northwind/Northwind.svc/Products(75)</id>
+    <title type="text"></title>
+    <updated>2010-12-08T16:42:44Z</updated>
+    <author>
+      <name />
+    </author>
+    <link rel="edit" title="Product" href="Products(75)" />
+    <link rel="http://schemas.microsoft.com/ado/2007/08/dataservices/related/Category" type="application/atom+xml;type=entry" title="Category" href="Products(75)/Category" />
+    <link rel="http://schemas.microsoft.com/ado/2007/08/dataservices/related/Order_Details" type="application/atom+xml;type=feed" title="Order_Details" href="Products(75)/Order_Details" />
+    <link rel="http://schemas.microsoft.com/ado/2007/08/dataservices/related/Supplier" type="application/atom+xml;type=entry" title="Supplier" href="Products(75)/Supplier" />
+    <category term="NorthwindModel.Product" scheme="http://schemas.microsoft.com/ado/2007/08/dataservices/scheme" />
+    <content type="application/xml">
+      <m:properties>
+        <d:ProductID m:type="Edm.Int32">75</d:ProductID>
+        <d:ProductName>Rhönbräu Klosterbier</d:ProductName>
+        <d:SupplierID m:type="Edm.Int32">12</d:SupplierID>
+        <d:CategoryID m:type="Edm.Int32">1</d:CategoryID>
+        <d:QuantityPerUnit>24 - 0.5 l bottles</d:QuantityPerUnit>
+        <d:UnitPrice m:type="Edm.Decimal">7.7500</d:UnitPrice>
+        <d:UnitsInStock m:type="Edm.Int16">125</d:UnitsInStock>
+        <d:UnitsOnOrder m:type="Edm.Int16">0</d:UnitsOnOrder>
+        <d:ReorderLevel m:type="Edm.Int16">25</d:ReorderLevel>
+        <d:Discontinued m:type="Edm.Boolean">false</d:Discontinued>
+      </m:properties>
+    </content>
+  </entry>
+  <entry>
+    <id>http://services.odata.org/northwind/Northwind.svc/Products(76)</id>
+    <title type="text"></title>
+    <updated>2010-12-08T16:42:44Z</updated>
+    <author>
+      <name />
+    </author>
+    <link rel="edit" title="Product" href="Products(76)" />
+    <link rel="http://schemas.microsoft.com/ado/2007/08/dataservices/related/Category" type="application/atom+xml;type=entry" title="Category" href="Products(76)/Category" />
+    <link rel="http://schemas.microsoft.com/ado/2007/08/dataservices/related/Order_Details" type="application/atom+xml;type=feed" title="Order_Details" href="Products(76)/Order_Details" />
+    <link rel="http://schemas.microsoft.com/ado/2007/08/dataservices/related/Supplier" type="application/atom+xml;type=entry" title="Supplier" href="Products(76)/Supplier" />
+    <category term="NorthwindModel.Product" scheme="http://schemas.microsoft.com/ado/2007/08/dataservices/scheme" />
+    <content type="application/xml">
+      <m:properties>
+        <d:ProductID m:type="Edm.Int32">76</d:ProductID>
+        <d:ProductName>Lakkalikööri</d:ProductName>
+        <d:SupplierID m:type="Edm.Int32">23</d:SupplierID>
+        <d:CategoryID m:type="Edm.Int32">1</d:CategoryID>
+        <d:QuantityPerUnit>500 ml</d:QuantityPerUnit>
+        <d:UnitPrice m:type="Edm.Decimal">18.0000</d:UnitPrice>
+        <d:UnitsInStock m:type="Edm.Int16">57</d:UnitsInStock>
+        <d:UnitsOnOrder m:type="Edm.Int16">0</d:UnitsOnOrder>
+        <d:ReorderLevel m:type="Edm.Int16">20</d:ReorderLevel>
+        <d:Discontinued m:type="Edm.Boolean">false</d:Discontinued>
+      </m:properties>
+    </content>
+  </entry>
+</feed>

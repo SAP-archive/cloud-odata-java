@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<error xmlns="http://schemas.microsoft.com/ado/2007/08/dataservices/metadata">
+  <code></code>
+  <message xml:lang="en-US">An error occurred while processing this request.</message>
+  <innererror>
+    <message>The 'VoteTypeId' property on 'Vote' could not be set to a 'Byte' value. You must set this property to a non-null value of type 'Int32'. </message>
+    <type>System.InvalidOperationException</type>
+    <stacktrace>   at System.Data.Common.Internal.Materialization.Shaper.ErrorHandlingValueReader`1.GetValue(DbDataReader reader, Int32 ordinal)&#xD;
+   at System.Data.Common.Internal.Materialization.Shaper.GetPropertyValueWithErrorHandling[TProperty](Int32 ordinal, String propertyName, String typeName)&#xD;
+   at lambda_method(Closure , Shaper )&#xD;
+   at System.Data.Common.Internal.Materialization.Coordinator`1.ReadNextElement(Shaper shaper)&#xD;
+   at System.Data.Common.Internal.Materialization.Shaper`1.SimpleEnumerator.MoveNext()&#xD;
+   at System.Data.Services.DataService`1.SerializeResponseBody(RequestDescription description, IDataService dataService)&#xD;
+   at System.Data.Services.DataService`1.HandleRequest()</stacktrace>
+  </innererror>
+</error>

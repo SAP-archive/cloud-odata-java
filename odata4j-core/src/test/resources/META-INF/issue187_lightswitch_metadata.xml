@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<edmx:Edmx Version="1.0" xmlns:edmx="http://schemas.microsoft.com/ado/2007/06/edmx">
+  <edmx:DataServices xmlns:m="http://schemas.microsoft.com/ado/2007/08/dataservices/metadata" m:DataServiceVersion="1.0" m:MaxDataServiceVersion="3.0">
+    <Schema xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" Namespace="LightSwitchApplication" Alias="Self" xmlns="http://schemas.microsoft.com/ado/2008/09/edm">
+      <EntityType Name="Hack">
+        <Key>
+          <PropertyRef Name="Id" />
+        </Key>
+        <Property Name="Id" Type="Edm.Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+        <Property Name="RowVersion" Type="Edm.Binary" Nullable="false" ConcurrencyMode="Fixed" annotation:StoreGeneratedPattern="Computed" />
+        <Property Name="Name" Type="Edm.String" Nullable="false" MaxLength="255" />
+        <Property Name="Description" Type="Edm.String" Nullable="false" MaxLength="255" />
+        <Property Name="Content" Type="Edm.String" Nullable="false" MaxLength="Max" />
+        <NavigationProperty Name="HacksTags" Relationship="LightSwitchApplication.HacksTag_Hack" ToRole="HacksTag" FromRole="Hack" />
+      </EntityType>
+      <EntityType Name="Tag">
+        <Key>
+          <PropertyRef Name="Id" />
+        </Key>
+        <Property Name="Id" Type="Edm.Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+        <Property Name="RowVersion" Type="Edm.Binary" Nullable="false" ConcurrencyMode="Fixed" annotation:StoreGeneratedPattern="Computed" />
+        <Property Name="Name" Type="Edm.String" Nullable="false" MaxLength="255" />
+        <NavigationProperty Name="HacksTags" Relationship="LightSwitchApplication.Tag_HacksTag" ToRole="HacksTag" FromRole="Tag" />
+      </EntityType>
+      <EntityType Name="HacksTag">
+        <Key>
+          <PropertyRef Name="Id" />
+        </Key>
+        <Property Name="Id" Type="Edm.Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+        <Property Name="RowVersion" Type="Edm.Binary" Nullable="false" ConcurrencyMode="Fixed" annotation:StoreGeneratedPattern="Computed" />
+        <Property Name="Tag_HacksTag" Type="Edm.Int32" Nullable="false" />
+        <Property Name="HacksTag_Hack" Type="Edm.Int32" Nullable="false" />
+        <NavigationProperty Name="Tag" Relationship="LightSwitchApplication.Tag_HacksTag" ToRole="Tag" FromRole="HacksTag" />
+        <NavigationProperty Name="Hack" Relationship="LightSwitchApplication.HacksTag_Hack" ToRole="Hack" FromRole="HacksTag" />
+      </EntityType>
+      <Association Name="Tag_HacksTag">
+        <End Role="Tag" Type="LightSwitchApplication.Tag" Multiplicity="1">
+          <OnDelete Action="Cascade" />
+        </End>
+        <End Role="HacksTag" Type="LightSwitchApplication.HacksTag" Multiplicity="*" />
+        <ReferentialConstraint>
+          <Principal Role="Tag">
+            <PropertyRef Name="Id" />
+          </Principal>
+          <Dependent Role="HacksTag">
+            <PropertyRef Name="Tag_HacksTag" />
+          </Dependent>
+        </ReferentialConstraint>
+      </Association>
+      <Association Name="HacksTag_Hack">
+        <End Role="Hack" Type="LightSwitchApplication.Hack" Multiplicity="1">
+          <OnDelete Action="Cascade" />
+        </End>
+        <End Role="HacksTag" Type="LightSwitchApplication.HacksTag" Multiplicity="*" />
+        <ReferentialConstraint>
+          <Principal Role="Hack">
+            <PropertyRef Name="Id" />
+          </Principal>
+          <Dependent Role="HacksTag">
+            <PropertyRef Name="HacksTag_Hack" />
+          </Dependent>
+        </ReferentialConstraint>
+      </Association>
+      <EntityContainer Name="ApplicationData" m:IsDefaultEntityContainer="true">
+        <EntitySet Name="Hacks" EntityType="LightSwitchApplication.Hack" />
+        <EntitySet Name="Tags" EntityType="LightSwitchApplication.Tag" />
+        <EntitySet Name="HacksTags" EntityType="LightSwitchApplication.HacksTag" />
+        <AssociationSet Name="Tag_HacksTag" Association="LightSwitchApplication.Tag_HacksTag">
+          <End Role="Tag" EntitySet="Tags" />
+          <End Role="HacksTag" EntitySet="HacksTags" />
+        </AssociationSet>
+        <AssociationSet Name="HacksTag_Hack" Association="LightSwitchApplication.HacksTag_Hack">
+          <End Role="Hack" EntitySet="Hacks" />
+          <End Role="HacksTag" EntitySet="HacksTags" />
+        </AssociationSet>
+        <FunctionImport Name="Microsoft_LightSwitch_GetCanInformation" ReturnType="Edm.String" m:HttpMethod="GET">
+          <Parameter Name="dataServiceMembers" Type="Edm.String" Mode="In" />
+        </FunctionImport>
+      </EntityContainer>
+    </Schema>
+  </edmx:DataServices>
+</edmx:Edmx>

@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <artifactId>odata4j-jersey</artifactId>
+  <packaging>bundle</packaging>
+
+  <parent>
+    <groupId>org.odata4j</groupId>
+    <artifactId>odata4j-parent</artifactId>
+    <version>0.8.0-SNAPSHOT</version>
+    <relativePath>..</relativePath>
+  </parent>
+
+  <build>
+    <plugins>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-eclipse-plugin</artifactId>
+        <configuration>
+          <additionalConfig>
+            <file>
+              <name>.settings/org.eclipse.jdt.core.prefs</name>
+              <content>
+                <!-- because of reference to com.sun.net.httpserver -->
+                  <![CDATA[
+                  org.eclipse.jdt.core.compiler.problem.forbiddenReference=ignore
+                  ]]>
+              </content>
+            </file>
+          </additionalConfig>
+        </configuration>
+      </plugin>
+
+      <!-- OSGi bundle support -->
+      <plugin>
+        <groupId>org.apache.felix</groupId>
+        <artifactId>maven-bundle-plugin</artifactId>
+        <extensions>true</extensions>
+        <configuration>
+          <instructions>
+            <Import-Package>
+              !com.sun.net.httpserver.*,
+              com.sun.jersey.*;version="[1.1.0,2.0.0)",
+              javax.ws.rs.*;version="[1.1.0,2.0.0)",
+              *
+            </Import-Package>
+            <Export-Package>
+              org.odata4j.jersey.*;version=${project.version},
+            </Export-Package>
+            <Bundle-DocURL>${project.url}</Bundle-DocURL>
+            <Bundle-ActivationPolicy>lazy</Bundle-ActivationPolicy>
+          </instructions>
+        </configuration>
+      </plugin>
+
+    </plugins>
+  </build>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.odata4j</groupId>
+      <artifactId>odata4j-core</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+
+    <!-- JAX-RS implementation -->
+    <dependency>
+      <groupId>com.sun.jersey</groupId>
+      <artifactId>jersey-core</artifactId>
+      <version>${jersey.version}</version>
+    </dependency>
+
+    <!-- server implementation -->
+    <dependency>
+      <groupId>com.sun.jersey</groupId>
+      <artifactId>jersey-server</artifactId>
+      <version>${jersey.version}</version>
+    </dependency>
+
+    <!-- client implementation -->
+    <dependency>
+      <groupId>com.sun.jersey</groupId>
+      <artifactId>jersey-client</artifactId>
+      <version>${jersey.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>${junit.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.hamcrest</groupId>
+      <artifactId>hamcrest-all</artifactId>
+      <version>${hamcrest.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.mockito</groupId>
+      <artifactId>mockito-all</artifactId>
+      <version>${mockito.version}</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+
+</project>

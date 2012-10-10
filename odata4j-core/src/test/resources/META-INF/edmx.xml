@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="1.0" 
+           xmlns:edmx="http://schemas.microsoft.com/ado/2007/06/edmx" 
+           xmlns:d="http://schemas.microsoft.com/ado/2007/08/dataservices" 
+           xmlns:m="http://schemas.microsoft.com/ado/2007/08/dataservices/metadata"
+           xmlns:myns="http://tempuri.org/hello">
+    <edmx:DataServices m:DataServiceVersion="1.0">
+        <Schema xmlns="http://schemas.microsoft.com/ado/2006/04/edm" Namespace="AirlineModel">
+            <EntityType Name="Flight">
+                <Key>
+                    <PropertyRef Name="flightID"></PropertyRef>
+                </Key>
+                <Property Name="flightID" Type="Edm.Int64" Nullable="false"></Property>
+                <Property Name="takeoffTime" Type="Edm.DateTime" Nullable="true"></Property>
+                <NavigationProperty Name="flightSchedule" Relationship="AirlineModel.FK_Flight_FlightSchedule" FromRole="Flight" ToRole="FlightSchedule"></NavigationProperty>
+            </EntityType>
+            <EntityType Name="Airport" myns:AnnotationAttribute="test annotation attribute">
+                <Key>
+                    <PropertyRef Name="code"></PropertyRef>
+                </Key>
+                <Property Name="name" Type="Edm.String" Nullable="true"></Property>
+                <Property Name="code" Type="Edm.String" Nullable="false"></Property>
+                <Property Name="country" Type="Edm.String" Nullable="true"></Property>
+                <NavigationProperty Name="flights" Relationship="AirlineModel.FK_Airport_Flight" 
+                    FromRole="Airport" ToRole="Flight"></NavigationProperty>
+                <NavigationProperty Name="city" Relationship="AirlineModel.FK_Airport_City"
+                    FromRole="Airport" ToRole="City"/>
+                <myns:AnnotationElement>
+                  <myns:testing>hello</myns:testing>
+                  <myns:another foo="bar">
+                    <myns:yetanother>yetanother</myns:yetanother>
+                  </myns:another>
+                </myns:AnnotationElement>  
+            </EntityType>
+            <EntityType Name="City">
+                <Key>
+                    <PropertyRef Name="name"></PropertyRef>
+                </Key>
+                <Property Name="name" Type="Edm.String" Nullable="false"/>
+            </EntityType>
+            <EntityType Name="BadAirport" BaseType="AirlineModel.Airport">
+                <Property Name="rating" Type="Edm.Int32" Nullable="false"/>
+                <Property Name="prop2" Type="Edm.String" Nullable="false"/>
+            </EntityType>
+            <EntityType Name="FlightSchedule">
+                <Key>
+                    <PropertyRef Name="flightScheduleID"></PropertyRef>
+                </Key>
+                <Property Name="arrivalAirportCode" Type="Edm.String" Nullable="true" MaxLength="255"></Property>
+                <Property Name="flightScheduleID" Type="Edm.Int64" Nullable="false"></Property>
+                <Property Name="arrivalTime" Type="Edm.Time" Nullable="true"></Property>
+                <Property Name="flightNo" Type="Edm.String" Nullable="true" MaxLength="255"></Property>
+                <Property Name="firstDeparture" Type="Edm.DateTime" Nullable="true"></Property>
+                <Property Name="departureTime" Type="Edm.Time" Nullable="true"></Property>
+                <Property Name="departureAirportCode" Type="Edm.String" Nullable="true" MaxLength="255"></Property>
+                <Property Name="lastDeparture" Type="Edm.DateTime" Nullable="true"></Property>
+                <NavigationProperty Name="departureAirport" Relationship="AirlineModel.FK_FlightSchedule_Airport" FromRole="FlightSchedule" ToRole="Airport"></NavigationProperty>
+                <NavigationProperty Name="arrivalAirport" Relationship="AirlineModel.FK_FlightSchedule_Airport_1" FromRole="FlightSchedule" ToRole="Airport"></NavigationProperty>
+            </EntityType>
+            <EntityType Name="SubFlightSchedule" BaseType="AirlineModel.FlightSchedule">
+                <Property Name="prop3" Type="Edm.String" Nullable="false"/>
+                <Property Name="prop4" Type="Edm.String" Nullable="false"/>
+                <Property Name="prop5" Type="Edm.String" Nullable="false"/>
+            </EntityType>
+             <EntityType Name="SubSubFlightSchedule" BaseType="AirlineModel.SubFlightSchedule">
+                <Property Name="prop6" Type="Edm.String" Nullable="false"/>
+                <Property Name="prop7" Type="Edm.String" Nullable="false"/>
+                <Property Name="prop8" Type="Edm.String" Nullable="false"/>
+                <Property Name="prop9" Type="Edm.String" Nullable="false"/>
+                <NavigationProperty Name="backupSchedule" Relationship="AirlineModel.BackupSchedule"
+                    FromRole="PrimaryFlightSchedule" ToRole="BackupFlightSchedule"></NavigationProperty>
+            </EntityType>
+            <Association Name="FK_Flight_FlightSchedule">
+                <End Role="Flight" Type="AirlineModel.Flight" Multiplicity="*"></End>
+                <End Role="FlightSchedule" Type="AirlineModel.FlightSchedule" Multiplicity="0..1"></End>
+            </Association>
+            <Association Name="FK_FlightSchedule_Airport">
+                <End Role="FlightSchedule" Type="AirlineModel.FlightSchedule" Multiplicity="*"></End>
+                <End Role="Airport" Type="AirlineModel.Airport" Multiplicity="0..1"></End>
+            </Association>
+            <Association Name="FK_FlightSchedule_Airport_1">
+                <End Role="FlightSchedule" Type="AirlineModel.FlightSchedule" Multiplicity="*"></End>
+                <End Role="Airport" Type="AirlineModel.Airport" Multiplicity="0..1"></End>
+            </Association>
+            <Association Name="BackupSchedule">
+                <End Role="PrimaryFlightSchedule" Type="AirlineModel.FlightSchedule" Multiplicity="1"></End>
+                <End Role="BackupFlightSchedule" Type="AirlineModel.FlightSchedule" Multiplicity="1"></End>
+            </Association>
+            <Association Name="FK_Airport_Flight">
+                <End Role="Airport" Type="AirlineModel.Airport" Multiplicity="1"></End>
+                <End Role="Flight" Type="AirlineModel.Flight" Multiplicity="*"></End>
+            </Association>
+            <Association Name="FK_Airport_City">
+                <End Role="Airport" Type="AirlineModel.Airport" Multiplicity="1"></End>
+                <End Role="City" Type="AirlineModel.City" Multiplicity="0..1"></End>
+            </Association>
+        </Schema>
+        <Schema xmlns="http://schemas.microsoft.com/ado/2006/04/edm" Namespace="AirlineContainer">
+            <EntityContainer Name="AirlineEntities" m:IsDefaultEntityContainer="true">
+                <EntitySet Name="Flight" EntityType="AirlineModel.Flight"></EntitySet>
+                <EntitySet Name="Airport" EntityType="AirlineModel.Airport"></EntitySet>
+                <EntitySet Name="City" EntityType="AirlineModel.City"></EntitySet>
+                <EntitySet Name="BadAirport" EntityType="AirlineModel.BadAirport"></EntitySet>
+                <EntitySet Name="FlightSchedule" EntityType="AirlineModel.FlightSchedule"></EntitySet>
+                <EntitySet Name="SubFlightSchedule" EntityType="AirlineModel.SubFlightSchedule"></EntitySet>
+                <EntitySet Name="SubSubFlightSchedule" EntityType="AirlineModel.SubSubFlightSchedule"></EntitySet>
+
+                <AssociationSet Name="FK_Flight_FlightSchedule" Association="AirlineModel.FK_Flight_FlightSchedule">
+                    <End Role="Flight" EntitySet="Flight"></End>
+                    <End Role="FlightSchedule" EntitySet="FlightSchedule"></End>
+                </AssociationSet>
+                <AssociationSet Name="FK_FlightSchedule_Airport" Association="AirlineModel.FK_FlightSchedule_Airport">
+                    <End Role="FlightSchedule" EntitySet="FlightSchedule"></End>
+                    <End Role="Airport" EntitySet="Airport"></End>
+                </AssociationSet>
+                <AssociationSet Name="FK_FlightSchedule_Airport_1" Association="AirlineModel.FK_FlightSchedule_Airport_1">
+                    <End Role="FlightSchedule" EntitySet="FlightSchedule"></End>
+                    <End Role="Airport" EntitySet="Airport"></End>
+                </AssociationSet>
+                <AssociationSet Name="BackupSchedule" Association="AirlineModel.BackupSchedule">
+                    <End Role="PrimaryFlightSchedule" EntitySet="FlightSchedule"></End>
+                    <End Role="BackupFlightSchedule" EntitySet="FlightSchedule"></End>
+                </AssociationSet>
+                <AssociationSet Name="FK_Airport_Flight" Association="AirlineModel.FK_Airport_Flight">
+                    <End Role="Airport" EntitySet="Airport"></End>
+                    <End Role="Flight" EntitySet="Flight"></End>
+                </AssociationSet>
+                 <AssociationSet Name="FK_Airport_City" Association="AirlineModel.FK_Airport_City">
+                    <End Role="Airport" EntitySet="Airport"></End>
+                    <End Role="City" EntitySet="City"></End>
+                </AssociationSet>
+            </EntityContainer>
+        </Schema>
+    </edmx:DataServices>
+</edmx:Edmx>

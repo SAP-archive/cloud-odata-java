@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="iso-8859-1" standalone="yes"?>
+<entry xml:base="http://services.odata.org/northwind/Northwind.svc/" xmlns:d="http://schemas.microsoft.com/ado/2007/08/dataservices" xmlns:m="http://schemas.microsoft.com/ado/2007/08/dataservices/metadata" xmlns="http://www.w3.org/2005/Atom">
+  <id>http://services.odata.org/northwind/Northwind.svc/Products(1)</id>
+  <title type="text"></title>
+  <updated>2011-04-28T21:13:22Z</updated>
+  <author>
+    <name />
+  </author>
+  <link rel="edit" title="Product" href="Products(1)" />
+  <category term="NorthwindModel.Product" scheme="http://schemas.microsoft.com/ado/2007/08/dataservices/scheme" />
+  <content type="application/xml">
+    <m:properties>
+      <d:ProductName>Chai</d:ProductName>
+      <d:UnitPrice m:type="Edm.Decimal">18.0000</d:UnitPrice>
+    </m:properties>
+  </content>
+</entry>

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="iso-8859-1" standalone="yes"?>
+<entry xml:base="http://services.odata.org/northwind/Northwind.svc/" xmlns:d="http://schemas.microsoft.com/ado/2007/08/dataservices" xmlns:m="http://schemas.microsoft.com/ado/2007/08/dataservices/metadata" xmlns="http://www.w3.org/2005/Atom">
+  <id>http://services.odata.org/northwind/Northwind.svc/Products(11)</id>
+  <title type="text"></title>
+  <updated>2011-04-17T16:51:40Z</updated>
+  <author>
+    <name />
+  </author>
+  <link rel="edit" title="Product" href="Products(11)" />
+  <link rel="http://schemas.microsoft.com/ado/2007/08/dataservices/related/Category" type="application/atom+xml;type=entry" title="Category" href="Products(11)/Category" />
+  <link rel="http://schemas.microsoft.com/ado/2007/08/dataservices/related/Order_Details" type="application/atom+xml;type=feed" title="Order_Details" href="Products(11)/Order_Details" />
+  <link rel="http://schemas.microsoft.com/ado/2007/08/dataservices/related/Supplier" type="application/atom+xml;type=entry" title="Supplier" href="Products(11)/Supplier" />
+  <category term="NorthwindModel.Product" scheme="http://schemas.microsoft.com/ado/2007/08/dataservices/scheme" />
+  <content type="application/xml">
+    <m:properties>
+      <d:ProductID m:type="Edm.Int32">11</d:ProductID>
+      <d:ProductName>Queso Cabrales</d:ProductName>
+      <d:SupplierID m:type="Edm.Int32">5</d:SupplierID>
+      <d:CategoryID m:type="Edm.Int32">4</d:CategoryID>
+      <d:QuantityPerUnit>1 kg pkg.</d:QuantityPerUnit>
+      <d:UnitPrice m:type="Edm.Decimal">21.0000</d:UnitPrice>
+      <d:UnitsInStock m:type="Edm.Int16">22</d:UnitsInStock>
+      <d:UnitsOnOrder m:type="Edm.Int16">30</d:UnitsOnOrder>
+      <d:ReorderLevel m:type="Edm.Int16">30</d:ReorderLevel>
+      <d:Discontinued m:type="Edm.Boolean">false</d:Discontinued>
+    </m:properties>
+  </content>
+</entry>

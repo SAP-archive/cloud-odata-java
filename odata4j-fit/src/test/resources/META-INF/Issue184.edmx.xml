@@ -1,0 +1,51 @@
+<?xml version='1.0' encoding='utf-8'?>
+<edmx:Edmx Version="1.0"
+  xmlns:edmx="http://schemas.microsoft.com/ado/2007/06/edmx" xmlns:d="http://schemas.microsoft.com/ado/2007/08/dataservices"
+  xmlns:m="http://schemas.microsoft.com/ado/2007/08/dataservices/metadata">
+  <edmx:DataServices m:DataServiceVersion="1.0">
+    <Schema xmlns="http://schemas.microsoft.com/ado/2006/04/edm"
+      Namespace="SampleAppContainer">
+      <EntityContainer Name="SampleAppEntities"
+        m:IsDefaultEntityContainer="true">
+        <EntitySet Name="Suppliers" EntityType="SampleAppModel.Suppliers" />
+        <EntitySet Name="Products" EntityType="SampleAppModel.Products" />
+        <AssociationSet Name="FK_Products_Suppliers"
+          Association="SampleAppModel.FK_Products_Suppliers">
+          <End Role="Products" EntitySet="Products" />
+          <End Role="Suppliers" EntitySet="Suppliers" />
+        </AssociationSet>
+      </EntityContainer>
+    </Schema>
+    <Schema xmlns="http://schemas.microsoft.com/ado/2006/04/edm"
+      Namespace="SampleAppModel">
+      <EntityType Name="Suppliers">
+        <Key>
+          <PropertyRef Name="id" />
+        </Key>
+        <Property Name="id" Type="Edm.Int32" Nullable="true" />
+        <Property Name="name" Type="Edm.String" Nullable="true" />
+        <Property Name="concurrency" Type="Edm.Int32" Nullable="true" />
+      </EntityType>
+      <EntityType Name="Products">
+        <Key>
+          <PropertyRef Name="id" />
+        </Key>
+        <Property Name="id" Type="Edm.Int32" Nullable="true" />
+        <Property Name="price" Type="Edm.Double" Nullable="true" />
+        <Property Name="releaseDate" Type="Edm.DateTime"
+          Nullable="true" />
+        <Property Name="name" Type="Edm.String" Nullable="true" />
+        <Property Name="rating" Type="Edm.Int32" Nullable="true" />
+        <NavigationProperty Name="Suppliers"
+          Relationship="SampleAppModel.FK_Products_Suppliers" FromRole="Products"
+          ToRole="Suppliers" />
+      </EntityType>
+      <Association Name="FK_Products_Suppliers">
+        <End Role="Products" Type="SampleAppModel.Products"
+          Multiplicity="*" />
+        <End Role="Suppliers" Type="SampleAppModel.Suppliers"
+          Multiplicity="0..1" />
+      </Association>
+    </Schema>
+  </edmx:DataServices>
+</edmx:Edmx>
