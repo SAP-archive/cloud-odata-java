@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="1.0"
+	xmlns:edmx="http://schemas.microsoft.com/ado/2007/06/edmx" xmlns:myns="bla">
+	<edmx:DataServices m:DataServiceVersion="2.0"
+		xmlns:m="http://schemas.microsoft.com/ado/2007/08/dataservices/metadata">
+		<Schema Namespace="Example"
+			xmlns="http://schemas.microsoft.com/ado/2008/09/edm">
+			<EntityType Name="Product">
+				<Key>
+					<PropertyRef Name="ProductId"></PropertyRef>
+				</Key>
+				<Property Name="Name" Type="Edm.String" Nullable="false"
+					FixedLength="true" Collation="DIN 5007-1" Unicode="true">
+					<myns:MyElement myns:myattr="456">xxx</myns:MyElement></Property>
+			</EntityType>
+			<EntityContainer Name="Container"
+				m:IsDefaultEntityContainer="false">
+				<EntitySet Name="Products" EntityType="Example.Product"></EntitySet>
+			</EntityContainer>
+		</Schema>
+	</edmx:DataServices>
+</edmx:Edmx>
+
+

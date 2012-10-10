@@ -1,0 +1,67 @@
+{
+"d" : {
+"results": [
+{
+"__metadata": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Order_Details(OrderID=10248,ProductID=42)", "type": "NorthwindModel.Order_Detail"
+}, "OrderID": 10248, "ProductID": 42, "UnitPrice": "9.8000", "Quantity": 10, "Discount": 0, "Order": {
+"__deferred": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Order_Details(OrderID=10248,ProductID=42)/Order"
+}
+}, "Product": {
+"__deferred": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Order_Details(OrderID=10248,ProductID=42)/Product"
+}
+}
+}, {
+"__metadata": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Order_Details(OrderID=10248,ProductID=72)", "type": "NorthwindModel.Order_Detail"
+}, "OrderID": 10248, "ProductID": 72, "UnitPrice": "34.8000", "Quantity": 5, "Discount": 0, "Order": {
+"__deferred": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Order_Details(OrderID=10248,ProductID=72)/Order"
+}
+}, "Product": {
+"__deferred": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Order_Details(OrderID=10248,ProductID=72)/Product"
+}
+}
+}, {
+"__metadata": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Order_Details(OrderID=10249,ProductID=14)", "type": "NorthwindModel.Order_Detail"
+}, "OrderID": 10249, "ProductID": 14, "UnitPrice": "18.6000", "Quantity": 9, "Discount": 0, "Order": {
+"__deferred": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Order_Details(OrderID=10249,ProductID=14)/Order"
+}
+}, "Product": {
+"__deferred": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Order_Details(OrderID=10249,ProductID=14)/Product"
+}
+}
+}, {
+"__metadata": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Order_Details(OrderID=10249,ProductID=51)", "type": "NorthwindModel.Order_Detail"
+}, "OrderID": 10249, "ProductID": 51, "UnitPrice": "42.4000", "Quantity": 40, "Discount": 0, "Order": {
+"__deferred": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Order_Details(OrderID=10249,ProductID=51)/Order"
+}
+}, "Product": {
+"__deferred": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Order_Details(OrderID=10249,ProductID=51)/Product"
+}
+}
+}, {
+"__metadata": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Order_Details(OrderID=10250,ProductID=41)", "type": "NorthwindModel.Order_Detail"
+}, "OrderID": 10250, "ProductID": 41, "UnitPrice": "7.7000", "Quantity": 10, "Discount": 0, "Order": {
+"__deferred": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Order_Details(OrderID=10250,ProductID=41)/Order"
+}
+}, "Product": {
+"__deferred": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Order_Details(OrderID=10250,ProductID=41)/Product"
+}
+}
+}
+]
+}
+}

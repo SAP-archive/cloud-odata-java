@@ -1,0 +1,466 @@
+{
+   "d":{
+      "results":[
+         {
+            "__metadata":{
+               "uri":"http://services.odata.org/northwind/Northwind.svc/Suppliers(1)",
+               "type":"NorthwindModel.Supplier"
+            },
+            "Phone":"(171) 555-2222",
+            "ContactName":"Charlotte Cooper",
+            "Fax":null,
+            "CompanyName":"Exotic Liquids",
+            "Country":"UK",
+            "ContactTitle":"Purchasing Manager",
+            "City":"London",
+            "Region":null,
+            "PostalCode":"EC1 4SD",
+            "Address":"49 Gilbert St.",
+            "HomePage":null,
+            "SupplierID":1,
+            "Products":{
+               "__deferred":{
+                  "uri":"http://services.odata.org/northwind/Northwind.svc/Suppliers(1)/Products"
+               }
+            }
+         },
+         {
+            "__metadata":{
+               "uri":"http://services.odata.org/northwind/Northwind.svc/Suppliers(4)",
+               "type":"NorthwindModel.Supplier"
+            },
+            "Phone":"(03) 3555-5011",
+            "ContactName":"Yoshi Nagase",
+            "Fax":null,
+            "CompanyName":"Tokyo Traders",
+            "Country":"Japan",
+            "ContactTitle":"Marketing Manager",
+            "City":"Tokyo",
+            "Region":null,
+            "PostalCode":"100",
+            "Address":"9-8 Sekimai Musashino-shi",
+            "HomePage":null,
+            "SupplierID":4,
+            "Products":{
+               "__deferred":{
+                  "uri":"http://services.odata.org/northwind/Northwind.svc/Suppliers(4)/Products"
+               }
+            }
+         },
+         {
+            "__metadata":{
+               "uri":"http://services.odata.org/northwind/Northwind.svc/Suppliers(6)",
+               "type":"NorthwindModel.Supplier"
+            },
+            "Phone":"(06) 431-7877",
+            "ContactName":"Mayumi Ohno",
+            "Fax":null,
+            "CompanyName":"Mayumi's",
+            "Country":"Japan",
+            "ContactTitle":"Marketing Representative",
+            "City":"Osaka",
+            "Region":null,
+            "PostalCode":"545",
+            "Address":"92 Setsuko Chuo-ku",
+            "HomePage":"Mayumi's (on the World Wide Web)#http://www.microsoft.com/accessdev/sampleapps/mayumi.htm#",
+            "SupplierID":6,
+            "Products":{
+               "__deferred":{
+                  "uri":"http://services.odata.org/northwind/Northwind.svc/Suppliers(6)/Products"
+               }
+            }
+         },
+         {
+            "__metadata":{
+               "uri":"http://services.odata.org/northwind/Northwind.svc/Suppliers(8)",
+               "type":"NorthwindModel.Supplier"
+            },
+            "Phone":"(161) 555-4448",
+            "ContactName":"Peter Wilson",
+            "Fax":null,
+            "CompanyName":"Specialty Biscuits, Ltd.",
+            "Country":"UK",
+            "ContactTitle":"Sales Representative",
+            "City":"Manchester",
+            "Region":null,
+            "PostalCode":"M14 GSD",
+            "Address":"29 King's Way",
+            "HomePage":null,
+            "SupplierID":8,
+            "Products":{
+               "__deferred":{
+                  "uri":"http://services.odata.org/northwind/Northwind.svc/Suppliers(8)/Products"
+               }
+            }
+         },
+         {
+            "__metadata":{
+               "uri":"http://services.odata.org/northwind/Northwind.svc/Suppliers(9)",
+               "type":"NorthwindModel.Supplier"
+            },
+            "Phone":"031-987 65 43",
+            "ContactName":"Lars Peterson",
+            "Fax":"031-987 65 91",
+            "CompanyName":"PB Knäckebröd AB",
+            "Country":"Sweden",
+            "ContactTitle":"Sales Agent",
+            "City":"Göteborg",
+            "Region":null,
+            "PostalCode":"S-345 67",
+            "Address":"Kaloadagatan 13",
+            "HomePage":null,
+            "SupplierID":9,
+            "Products":{
+               "__deferred":{
+                  "uri":"http://services.odata.org/northwind/Northwind.svc/Suppliers(9)/Products"
+               }
+            }
+         },
+         {
+            "__metadata":{
+               "uri":"http://services.odata.org/northwind/Northwind.svc/Suppliers(10)",
+               "type":"NorthwindModel.Supplier"
+            },
+            "Phone":"(11) 555 4640",
+            "ContactName":"Carlos Diaz",
+            "Fax":null,
+            "CompanyName":"Refrescos Americanas LTDA",
+            "Country":"Brazil",
+            "ContactTitle":"Marketing Manager",
+            "City":"Sao Paulo",
+            "Region":null,
+            "PostalCode":"5442",
+            "Address":"Av. das Americanas 12.890",
+            "HomePage":null,
+            "SupplierID":10,
+            "Products":{
+               "__deferred":{
+                  "uri":"http://services.odata.org/northwind/Northwind.svc/Suppliers(10)/Products"
+               }
+            }
+         },
+         {
+            "__metadata":{
+               "uri":"http://services.odata.org/northwind/Northwind.svc/Suppliers(11)",
+               "type":"NorthwindModel.Supplier"
+            },
+            "Phone":"(010) 9984510",
+            "ContactName":"Petra Winkler",
+            "Fax":null,
+            "CompanyName":"Heli Süßwaren GmbH & Co. KG",
+            "Country":"Germany",
+            "ContactTitle":"Sales Manager",
+            "City":"Berlin",
+            "Region":null,
+            "PostalCode":"10785",
+            "Address":"Tiergartenstraße 5",
+            "HomePage":null,
+            "SupplierID":11,
+            "Products":{
+               "__deferred":{
+                  "uri":"http://services.odata.org/northwind/Northwind.svc/Suppliers(11)/Products"
+               }
+            }
+         },
+         {
+            "__metadata":{
+               "uri":"http://services.odata.org/northwind/Northwind.svc/Suppliers(12)",
+               "type":"NorthwindModel.Supplier"
+            },
+            "Phone":"(069) 992755",
+            "ContactName":"Martin Bein",
+            "Fax":null,
+            "CompanyName":"Plutzer Lebensmittelgroßmärkte AG",
+            "Country":"Germany",
+            "ContactTitle":"International Marketing Mgr.",
+            "City":"Frankfurt",
+            "Region":null,
+            "PostalCode":"60439",
+            "Address":"Bogenallee 51",
+            "HomePage":"Plutzer (on the World Wide Web)#http://www.microsoft.com/accessdev/sampleapps/plutzer.htm#",
+            "SupplierID":12,
+            "Products":{
+               "__deferred":{
+                  "uri":"http://services.odata.org/northwind/Northwind.svc/Suppliers(12)/Products"
+               }
+            }
+         },
+         {
+            "__metadata":{
+               "uri":"http://services.odata.org/northwind/Northwind.svc/Suppliers(13)",
+               "type":"NorthwindModel.Supplier"
+            },
+            "Phone":"(04721) 8713",
+            "ContactName":"Sven Petersen",
+            "Fax":"(04721) 8714",
+            "CompanyName":"Nord-Ost-Fisch Handelsgesellschaft mbH",
+            "Country":"Germany",
+            "ContactTitle":"Coordinator Foreign Markets",
+            "City":"Cuxhaven",
+            "Region":null,
+            "PostalCode":"27478",
+            "Address":"Frahmredder 112a",
+            "HomePage":null,
+            "SupplierID":13,
+            "Products":{
+               "__deferred":{
+                  "uri":"http://services.odata.org/northwind/Northwind.svc/Suppliers(13)/Products"
+               }
+            }
+         },
+         {
+            "__metadata":{
+               "uri":"http://services.odata.org/northwind/Northwind.svc/Suppliers(14)",
+               "type":"NorthwindModel.Supplier"
+            },
+            "Phone":"(0544) 60323",
+            "ContactName":"Elio Rossi",
+            "Fax":"(0544) 60603",
+            "CompanyName":"Formaggi Fortini s.r.l.",
+            "Country":"Italy",
+            "ContactTitle":"Sales Representative",
+            "City":"Ravenna",
+            "Region":null,
+            "PostalCode":"48100",
+            "Address":"Viale Dante, 75",
+            "HomePage":"#FORMAGGI.HTM#",
+            "SupplierID":14,
+            "Products":{
+               "__deferred":{
+                  "uri":"http://services.odata.org/northwind/Northwind.svc/Suppliers(14)/Products"
+               }
+            }
+         },
+         {
+            "__metadata":{
+               "uri":"http://services.odata.org/northwind/Northwind.svc/Suppliers(15)",
+               "type":"NorthwindModel.Supplier"
+            },
+            "Phone":"(0)2-953010",
+            "ContactName":"Beate Vileid",
+            "Fax":null,
+            "CompanyName":"Norske Meierier",
+            "Country":"Norway",
+            "ContactTitle":"Marketing Manager",
+            "City":"Sandvika",
+            "Region":null,
+            "PostalCode":"1320",
+            "Address":"Hatlevegen 5",
+            "HomePage":null,
+            "SupplierID":15,
+            "Products":{
+               "__deferred":{
+                  "uri":"http://services.odata.org/northwind/Northwind.svc/Suppliers(15)/Products"
+               }
+            }
+         },
+         {
+            "__metadata":{
+               "uri":"http://services.odata.org/northwind/Northwind.svc/Suppliers(17)",
+               "type":"NorthwindModel.Supplier"
+            },
+            "Phone":"08-123 45 67",
+            "ContactName":"Michael Björn",
+            "Fax":null,
+            "CompanyName":"Svensk Sjöföda AB",
+            "Country":"Sweden",
+            "ContactTitle":"Sales Representative",
+            "City":"Stockholm",
+            "Region":null,
+            "PostalCode":"S-123 45",
+            "Address":"Brovallavägen 231",
+            "HomePage":null,
+            "SupplierID":17,
+            "Products":{
+               "__deferred":{
+                  "uri":"http://services.odata.org/northwind/Northwind.svc/Suppliers(17)/Products"
+               }
+            }
+         },
+         {
+            "__metadata":{
+               "uri":"http://services.odata.org/northwind/Northwind.svc/Suppliers(18)",
+               "type":"NorthwindModel.Supplier"
+            },
+            "Phone":"(1) 03.83.00.68",
+            "ContactName":"Guylène Nodier",
+            "Fax":"(1) 03.83.00.62",
+            "CompanyName":"Aux joyeux ecclésiastiques",
+            "Country":"France",
+            "ContactTitle":"Sales Manager",
+            "City":"Paris",
+            "Region":null,
+            "PostalCode":"75004",
+            "Address":"203, Rue des Francs-Bourgeois",
+            "HomePage":null,
+            "SupplierID":18,
+            "Products":{
+               "__deferred":{
+                  "uri":"http://services.odata.org/northwind/Northwind.svc/Suppliers(18)/Products"
+               }
+            }
+         },
+         {
+            "__metadata":{
+               "uri":"http://services.odata.org/northwind/Northwind.svc/Suppliers(20)",
+               "type":"NorthwindModel.Supplier"
+            },
+            "Phone":"555-8787",
+            "ContactName":"Chandra Leka",
+            "Fax":null,
+            "CompanyName":"Leka Trading",
+            "Country":"Singapore",
+            "ContactTitle":"Owner",
+            "City":"Singapore",
+            "Region":null,
+            "PostalCode":"0512",
+            "Address":"471 Serangoon Loop, Suite #402",
+            "HomePage":null,
+            "SupplierID":20,
+            "Products":{
+               "__deferred":{
+                  "uri":"http://services.odata.org/northwind/Northwind.svc/Suppliers(20)/Products"
+               }
+            }
+         },
+         {
+            "__metadata":{
+               "uri":"http://services.odata.org/northwind/Northwind.svc/Suppliers(21)",
+               "type":"NorthwindModel.Supplier"
+            },
+            "Phone":"43844108",
+            "ContactName":"Niels Petersen",
+            "Fax":"43844115",
+            "CompanyName":"Lyngbysild",
+            "Country":"Denmark",
+            "ContactTitle":"Sales Manager",
+            "City":"Lyngby",
+            "Region":null,
+            "PostalCode":"2800",
+            "Address":"Lyngbysild Fiskebakken 10",
+            "HomePage":null,
+            "SupplierID":21,
+            "Products":{
+               "__deferred":{
+                  "uri":"http://services.odata.org/northwind/Northwind.svc/Suppliers(21)/Products"
+               }
+            }
+         },
+         {
+            "__metadata":{
+               "uri":"http://services.odata.org/northwind/Northwind.svc/Suppliers(22)",
+               "type":"NorthwindModel.Supplier"
+            },
+            "Phone":"(12345) 1212",
+            "ContactName":"Dirk Luchte",
+            "Fax":"(12345) 1210",
+            "CompanyName":"Zaanse Snoepfabriek",
+            "Country":"Netherlands",
+            "ContactTitle":"Accounting Manager",
+            "City":"Zaandam",
+            "Region":null,
+            "PostalCode":"9999 ZZ",
+            "Address":"Verkoop Rijnweg 22",
+            "HomePage":null,
+            "SupplierID":22,
+            "Products":{
+               "__deferred":{
+                  "uri":"http://services.odata.org/northwind/Northwind.svc/Suppliers(22)/Products"
+               }
+            }
+         },
+         {
+            "__metadata":{
+               "uri":"http://services.odata.org/northwind/Northwind.svc/Suppliers(23)",
+               "type":"NorthwindModel.Supplier"
+            },
+            "Phone":"(953) 10956",
+            "ContactName":"Anne Heikkonen",
+            "Fax":null,
+            "CompanyName":"Karkki Oy",
+            "Country":"Finland",
+            "ContactTitle":"Product Manager",
+            "City":"Lappeenranta",
+            "Region":null,
+            "PostalCode":"53120",
+            "Address":"Valtakatu 12",
+            "HomePage":null,
+            "SupplierID":23,
+            "Products":{
+               "__deferred":{
+                  "uri":"http://services.odata.org/northwind/Northwind.svc/Suppliers(23)/Products"
+               }
+            }
+         },
+         {
+            "__metadata":{
+               "uri":"http://services.odata.org/northwind/Northwind.svc/Suppliers(26)",
+               "type":"NorthwindModel.Supplier"
+            },
+            "Phone":"(089) 6547665",
+            "ContactName":"Giovanni Giudici",
+            "Fax":"(089) 6547667",
+            "CompanyName":"Pasta Buttini s.r.l.",
+            "Country":"Italy",
+            "ContactTitle":"Order Administrator",
+            "City":"Salerno",
+            "Region":null,
+            "PostalCode":"84100",
+            "Address":"Via dei Gelsomini, 153",
+            "HomePage":null,
+            "SupplierID":26,
+            "Products":{
+               "__deferred":{
+                  "uri":"http://services.odata.org/northwind/Northwind.svc/Suppliers(26)/Products"
+               }
+            }
+         },
+         {
+            "__metadata":{
+               "uri":"http://services.odata.org/northwind/Northwind.svc/Suppliers(27)",
+               "type":"NorthwindModel.Supplier"
+            },
+            "Phone":"85.57.00.07",
+            "ContactName":"Marie Delamare",
+            "Fax":null,
+            "CompanyName":"Escargots Nouveaux",
+            "Country":"France",
+            "ContactTitle":"Sales Manager",
+            "City":"Montceau",
+            "Region":null,
+            "PostalCode":"71300",
+            "Address":"22, rue H. Voiron",
+            "HomePage":null,
+            "SupplierID":27,
+            "Products":{
+               "__deferred":{
+                  "uri":"http://services.odata.org/northwind/Northwind.svc/Suppliers(27)/Products"
+               }
+            }
+         },
+         {
+            "__metadata":{
+               "uri":"http://services.odata.org/northwind/Northwind.svc/Suppliers(28)",
+               "type":"NorthwindModel.Supplier"
+            },
+            "Phone":"38.76.98.06",
+            "ContactName":"Eliane Noz",
+            "Fax":"38.76.98.58",
+            "CompanyName":"Gai pâturage",
+            "Country":"France",
+            "ContactTitle":"Sales Representative",
+            "City":"Annecy",
+            "Region":null,
+            "PostalCode":"74000",
+            "Address":"Bat. B 3, rue des Alpes",
+            "HomePage":null,
+            "SupplierID":28,
+            "Products":{
+               "__deferred":{
+                  "uri":"http://services.odata.org/northwind/Northwind.svc/Suppliers(28)/Products"
+               }
+            }
+         }
+      ]
+   }
+}

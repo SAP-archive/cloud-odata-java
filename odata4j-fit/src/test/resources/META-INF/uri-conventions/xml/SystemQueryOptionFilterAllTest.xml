@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<feed xml:base="http://localhost:12345/Northwind.svc/" xmlns="http://www.w3.org/2005/Atom" xmlns:d="http://schemas.microsoft.com/ado/2007/08/dataservices" xmlns:m="http://schemas.microsoft.com/ado/2007/08/dataservices/metadata" xmlns:georss="http://www.georss.org/georss" xmlns:gml="http://www.opengis.net/gml">
+  <entry>
+    <id>http://localhost:12345/Northwind.svc/Orders(10402)</id>
+    <category term="NorthwindModel.Orders" scheme="http://schemas.microsoft.com/ado/2007/08/dataservices/scheme" />
+    <link rel="edit" title="Orders" href="Orders(10402)" />
+    <title />
+    <updated>2011-10-18T21:02:10Z</updated>
+    <author>
+      <name />
+    </author>
+    <content type="application/xml">
+      <m:properties>
+        <d:OrderID m:type="Edm.Int32">10402</d:OrderID>
+      </m:properties>
+    </content>
+  </entry>
+  <entry>
+    <id>http://localhost:12345/Northwind.svc/Orders(10765)</id>
+    <category term="NorthwindModel.Orders" scheme="http://schemas.microsoft.com/ado/2007/08/dataservices/scheme" />
+    <link rel="edit" title="Orders" href="Orders(10765)" />
+    <title />
+    <updated>2011-10-18T21:02:10Z</updated>
+    <author>
+      <name />
+    </author>
+    <content type="application/xml">
+      <m:properties>
+        <d:OrderID m:type="Edm.Int32">10765</d:OrderID>
+      </m:properties>
+    </content>
+  </entry>
+  <entry>
+    <id>http://localhost:12345/Northwind.svc/Orders(10854)</id>
+    <category term="NorthwindModel.Orders" scheme="http://schemas.microsoft.com/ado/2007/08/dataservices/scheme" />
+    <link rel="edit" title="Orders" href="Orders(10854)" />
+    <title />
+    <updated>2011-10-18T21:02:10Z</updated>
+    <author>
+      <name />
+    </author>
+    <content type="application/xml">
+      <m:properties>
+        <d:OrderID m:type="Edm.Int32">10854</d:OrderID>
+      </m:properties>
+    </content>
+  </entry>
+  <entry>
+    <id>http://localhost:12345/Northwind.svc/Orders(10865)</id>
+    <category term="NorthwindModel.Orders" scheme="http://schemas.microsoft.com/ado/2007/08/dataservices/scheme" />
+    <link rel="edit" title="Orders" href="Orders(10865)" />
+    <title />
+    <updated>2011-10-18T21:02:10Z</updated>
+    <author>
+      <name />
+    </author>
+    <content type="application/xml">
+      <m:properties>
+        <d:OrderID m:type="Edm.Int32">10865</d:OrderID>
+      </m:properties>
+    </content>
+  </entry>
+  <entry>
+    <id>http://localhost:12345/Northwind.svc/Orders(10981)</id>
+    <category term="NorthwindModel.Orders" scheme="http://schemas.microsoft.com/ado/2007/08/dataservices/scheme" />
+    <link rel="edit" title="Orders" href="Orders(10981)" />
+    <title />
+    <updated>2011-10-18T21:02:10Z</updated>
+    <author>
+      <name />
+    </author>
+    <content type="application/xml">
+      <m:properties>
+        <d:OrderID m:type="Edm.Int32">10981</d:OrderID>
+      </m:properties>
+    </content>
+  </entry>
+  <entry>
+    <id>http://localhost:12345/Northwind.svc/Orders(10990)</id>
+    <category term="NorthwindModel.Orders" scheme="http://schemas.microsoft.com/ado/2007/08/dataservices/scheme" />
+    <link rel="edit" title="Orders" href="Orders(10990)" />
+    <title />
+    <updated>2011-10-18T21:02:10Z</updated>
+    <author>
+      <name />
+    </author>
+    <content type="application/xml">
+      <m:properties>
+        <d:OrderID m:type="Edm.Int32">10990</d:OrderID>
+      </m:properties>
+    </content>
+  </entry>
+  <entry>
+    <id>http://localhost:12345/Northwind.svc/Orders(11030)</id>
+    <category term="NorthwindModel.Orders" scheme="http://schemas.microsoft.com/ado/2007/08/dataservices/scheme" />
+    <link rel="edit" title="Orders" href="Orders(11030)" />
+    <title />
+    <updated>2011-10-18T21:02:10Z</updated>
+    <author>
+      <name />
+    </author>
+    <content type="application/xml">
+      <m:properties>
+        <d:OrderID m:type="Edm.Int32">11030</d:OrderID>
+      </m:properties>
+    </content>
+  </entry>
+  <id>http://localhost:12345/Northwind.svc/Orders</id>
+  <title type="text">Orders</title>
+  <updated>2011-10-18T21:02:10Z</updated>
+  <link rel="self" title="Orders" href="Orders" />
+</feed>

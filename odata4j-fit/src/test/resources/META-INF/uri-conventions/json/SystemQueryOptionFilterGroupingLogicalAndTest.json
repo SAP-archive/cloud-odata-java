@@ -1,0 +1,165 @@
+{
+"d" : [
+{
+"__metadata": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(1)", "type": "NorthwindModel.Product"
+}, "ProductID": 1, "ProductName": "Chai", "SupplierID": 1, "CategoryID": 1, "QuantityPerUnit": "10 boxes x 20 bags", "UnitPrice": "18.0000", "UnitsInStock": 39, "UnitsOnOrder": 0, "ReorderLevel": 10, "Discontinued": false, "Category": {
+"__deferred": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(1)/Category"
+}
+}, "Order_Details": {
+"__deferred": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(1)/Order_Details"
+}
+}, "Supplier": {
+"__deferred": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(1)/Supplier"
+}
+}
+}, {
+"__metadata": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(2)", "type": "NorthwindModel.Product"
+}, "ProductID": 2, "ProductName": "Chang", "SupplierID": 1, "CategoryID": 1, "QuantityPerUnit": "24 - 12 oz bottles", "UnitPrice": "19.0000", "UnitsInStock": 17, "UnitsOnOrder": 40, "ReorderLevel": 25, "Discontinued": false, "Category": {
+"__deferred": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(2)/Category"
+}
+}, "Order_Details": {
+"__deferred": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(2)/Order_Details"
+}
+}, "Supplier": {
+"__deferred": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(2)/Supplier"
+}
+}
+}, {
+"__metadata": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(3)", "type": "NorthwindModel.Product"
+}, "ProductID": 3, "ProductName": "Aniseed Syrup", "SupplierID": 1, "CategoryID": 2, "QuantityPerUnit": "12 - 550 ml bottles", "UnitPrice": "10.0000", "UnitsInStock": 13, "UnitsOnOrder": 70, "ReorderLevel": 25, "Discontinued": false, "Category": {
+"__deferred": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(3)/Category"
+}
+}, "Order_Details": {
+"__deferred": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(3)/Order_Details"
+}
+}, "Supplier": {
+"__deferred": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(3)/Supplier"
+}
+}
+}, {
+"__metadata": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(13)", "type": "NorthwindModel.Product"
+}, "ProductID": 13, "ProductName": "Konbu", "SupplierID": 6, "CategoryID": 8, "QuantityPerUnit": "2 kg box", "UnitPrice": "6.0000", "UnitsInStock": 24, "UnitsOnOrder": 0, "ReorderLevel": 5, "Discontinued": false, "Category": {
+"__deferred": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(13)/Category"
+}
+}, "Order_Details": {
+"__deferred": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(13)/Order_Details"
+}
+}, "Supplier": {
+"__deferred": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(13)/Supplier"
+}
+}
+}, {
+"__metadata": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(15)", "type": "NorthwindModel.Product"
+}, "ProductID": 15, "ProductName": "Genen Shouyu", "SupplierID": 6, "CategoryID": 2, "QuantityPerUnit": "24 - 250 ml bottles", "UnitPrice": "15.5000", "UnitsInStock": 39, "UnitsOnOrder": 0, "ReorderLevel": 5, "Discontinued": false, "Category": {
+"__deferred": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(15)/Category"
+}
+}, "Order_Details": {
+"__deferred": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(15)/Order_Details"
+}
+}, "Supplier": {
+"__deferred": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(15)/Supplier"
+}
+}
+}, {
+"__metadata": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(16)", "type": "NorthwindModel.Product"
+}, "ProductID": 16, "ProductName": "Pavlova", "SupplierID": 7, "CategoryID": 3, "QuantityPerUnit": "32 - 500 g boxes", "UnitPrice": "17.4500", "UnitsInStock": 29, "UnitsOnOrder": 0, "ReorderLevel": 10, "Discontinued": false, "Category": {
+"__deferred": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(16)/Category"
+}
+}, "Order_Details": {
+"__deferred": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(16)/Order_Details"
+}
+}, "Supplier": {
+"__deferred": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(16)/Supplier"
+}
+}
+}, {
+"__metadata": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(19)", "type": "NorthwindModel.Product"
+}, "ProductID": 19, "ProductName": "Teatime Chocolate Biscuits", "SupplierID": 8, "CategoryID": 3, "QuantityPerUnit": "10 boxes x 12 pieces", "UnitPrice": "9.2000", "UnitsInStock": 25, "UnitsOnOrder": 0, "ReorderLevel": 5, "Discontinued": false, "Category": {
+"__deferred": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(19)/Category"
+}
+}, "Order_Details": {
+"__deferred": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(19)/Order_Details"
+}
+}, "Supplier": {
+"__deferred": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(19)/Supplier"
+}
+}
+}, {
+"__metadata": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(21)", "type": "NorthwindModel.Product"
+}, "ProductID": 21, "ProductName": "Sir Rodney's Scones", "SupplierID": 8, "CategoryID": 3, "QuantityPerUnit": "24 pkgs. x 4 pieces", "UnitPrice": "10.0000", "UnitsInStock": 3, "UnitsOnOrder": 40, "ReorderLevel": 5, "Discontinued": false, "Category": {
+"__deferred": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(21)/Category"
+}
+}, "Order_Details": {
+"__deferred": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(21)/Order_Details"
+}
+}, "Supplier": {
+"__deferred": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(21)/Supplier"
+}
+}
+}, {
+"__metadata": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(23)", "type": "NorthwindModel.Product"
+}, "ProductID": 23, "ProductName": "Tunnbröd", "SupplierID": 9, "CategoryID": 5, "QuantityPerUnit": "12 - 250 g pkgs.", "UnitPrice": "9.0000", "UnitsInStock": 61, "UnitsOnOrder": 0, "ReorderLevel": 25, "Discontinued": false, "Category": {
+"__deferred": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(23)/Category"
+}
+}, "Order_Details": {
+"__deferred": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(23)/Order_Details"
+}
+}, "Supplier": {
+"__deferred": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(23)/Supplier"
+}
+}
+}, {
+"__metadata": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(25)", "type": "NorthwindModel.Product"
+}, "ProductID": 25, "ProductName": "NuNuCa Nuß-Nougat-Creme", "SupplierID": 11, "CategoryID": 3, "QuantityPerUnit": "20 - 450 g glasses", "UnitPrice": "14.0000", "UnitsInStock": 76, "UnitsOnOrder": 0, "ReorderLevel": 30, "Discontinued": false, "Category": {
+"__deferred": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(25)/Category"
+}
+}, "Order_Details": {
+"__deferred": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(25)/Order_Details"
+}
+}, "Supplier": {
+"__deferred": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(25)/Supplier"
+}
+}
+}
+]
+}

@@ -1,0 +1,39 @@
+{
+"d" : {
+"results": [
+{
+"__metadata": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(33)", "type": "NorthwindModel.Product"
+}, "ProductID": 33, "ProductName": "Geitost", "SupplierID": 15, "CategoryID": 4, "QuantityPerUnit": "500 g", "UnitPrice": "2.5000", "UnitsInStock": 112, "UnitsOnOrder": 0, "ReorderLevel": 20, "Discontinued": false, "Category": {
+"__deferred": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(33)/Category"
+}
+}, "Order_Details": {
+"__deferred": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(33)/Order_Details"
+}
+}, "Supplier": {
+"__deferred": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(33)/Supplier"
+}
+}
+}, {
+"__metadata": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(38)", "type": "NorthwindModel.Product"
+}, "ProductID": 38, "ProductName": "Côte de Blaye", "SupplierID": 18, "CategoryID": 1, "QuantityPerUnit": "12 - 75 cl bottles", "UnitPrice": "263.5000", "UnitsInStock": 17, "UnitsOnOrder": 0, "ReorderLevel": 15, "Discontinued": false, "Category": {
+"__deferred": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(38)/Category"
+}
+}, "Order_Details": {
+"__deferred": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(38)/Order_Details"
+}
+}, "Supplier": {
+"__deferred": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(38)/Supplier"
+}
+}
+}
+]
+}
+}

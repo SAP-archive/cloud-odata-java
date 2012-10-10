@@ -1,0 +1,167 @@
+{
+"d" : {
+"results": [
+{
+"__metadata": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(2)", "type": "NorthwindModel.Product"
+}, "ProductID": 2, "ProductName": "Chang", "SupplierID": 1, "CategoryID": 1, "QuantityPerUnit": "24 - 12 oz bottles", "UnitPrice": "19.0000", "UnitsInStock": 17, "UnitsOnOrder": 40, "ReorderLevel": 25, "Discontinued": false, "Category": {
+"__deferred": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(2)/Category"
+}
+}, "Order_Details": {
+"__deferred": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(2)/Order_Details"
+}
+}, "Supplier": {
+"__deferred": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(2)/Supplier"
+}
+}
+}, {
+"__metadata": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(10)", "type": "NorthwindModel.Product"
+}, "ProductID": 10, "ProductName": "Ikura", "SupplierID": 4, "CategoryID": 8, "QuantityPerUnit": "12 - 200 ml jars", "UnitPrice": "31.0000", "UnitsInStock": 31, "UnitsOnOrder": 0, "ReorderLevel": 0, "Discontinued": false, "Category": {
+"__deferred": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(10)/Category"
+}
+}, "Order_Details": {
+"__deferred": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(10)/Order_Details"
+}
+}, "Supplier": {
+"__deferred": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(10)/Supplier"
+}
+}
+}, {
+"__metadata": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(18)", "type": "NorthwindModel.Product"
+}, "ProductID": 18, "ProductName": "Carnarvon Tigers", "SupplierID": 7, "CategoryID": 8, "QuantityPerUnit": "16 kg pkg.", "UnitPrice": "62.5000", "UnitsInStock": 42, "UnitsOnOrder": 0, "ReorderLevel": 0, "Discontinued": false, "Category": {
+"__deferred": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(18)/Category"
+}
+}, "Order_Details": {
+"__deferred": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(18)/Order_Details"
+}
+}, "Supplier": {
+"__deferred": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(18)/Supplier"
+}
+}
+}, {
+"__metadata": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(26)", "type": "NorthwindModel.Product"
+}, "ProductID": 26, "ProductName": "Gumbär Gummibärchen", "SupplierID": 11, "CategoryID": 3, "QuantityPerUnit": "100 - 250 g bags", "UnitPrice": "31.2300", "UnitsInStock": 15, "UnitsOnOrder": 0, "ReorderLevel": 0, "Discontinued": false, "Category": {
+"__deferred": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(26)/Category"
+}
+}, "Order_Details": {
+"__deferred": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(26)/Order_Details"
+}
+}, "Supplier": {
+"__deferred": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(26)/Supplier"
+}
+}
+}, {
+"__metadata": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(34)", "type": "NorthwindModel.Product"
+}, "ProductID": 34, "ProductName": "Sasquatch Ale", "SupplierID": 16, "CategoryID": 1, "QuantityPerUnit": "24 - 12 oz bottles", "UnitPrice": "14.0000", "UnitsInStock": 111, "UnitsOnOrder": 0, "ReorderLevel": 15, "Discontinued": false, "Category": {
+"__deferred": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(34)/Category"
+}
+}, "Order_Details": {
+"__deferred": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(34)/Order_Details"
+}
+}, "Supplier": {
+"__deferred": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(34)/Supplier"
+}
+}
+}, {
+"__metadata": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(42)", "type": "NorthwindModel.Product"
+}, "ProductID": 42, "ProductName": "Singaporean Hokkien Fried Mee", "SupplierID": 20, "CategoryID": 5, "QuantityPerUnit": "32 - 1 kg pkgs.", "UnitPrice": "14.0000", "UnitsInStock": 26, "UnitsOnOrder": 0, "ReorderLevel": 0, "Discontinued": true, "Category": {
+"__deferred": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(42)/Category"
+}
+}, "Order_Details": {
+"__deferred": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(42)/Order_Details"
+}
+}, "Supplier": {
+"__deferred": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(42)/Supplier"
+}
+}
+}, {
+"__metadata": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(50)", "type": "NorthwindModel.Product"
+}, "ProductID": 50, "ProductName": "Valkoinen suklaa", "SupplierID": 23, "CategoryID": 3, "QuantityPerUnit": "12 - 100 g bars", "UnitPrice": "16.2500", "UnitsInStock": 65, "UnitsOnOrder": 0, "ReorderLevel": 30, "Discontinued": false, "Category": {
+"__deferred": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(50)/Category"
+}
+}, "Order_Details": {
+"__deferred": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(50)/Order_Details"
+}
+}, "Supplier": {
+"__deferred": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(50)/Supplier"
+}
+}
+}, {
+"__metadata": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(58)", "type": "NorthwindModel.Product"
+}, "ProductID": 58, "ProductName": "Escargots de Bourgogne", "SupplierID": 27, "CategoryID": 8, "QuantityPerUnit": "24 pieces", "UnitPrice": "13.2500", "UnitsInStock": 62, "UnitsOnOrder": 0, "ReorderLevel": 20, "Discontinued": false, "Category": {
+"__deferred": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(58)/Category"
+}
+}, "Order_Details": {
+"__deferred": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(58)/Order_Details"
+}
+}, "Supplier": {
+"__deferred": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(58)/Supplier"
+}
+}
+}, {
+"__metadata": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(66)", "type": "NorthwindModel.Product"
+}, "ProductID": 66, "ProductName": "Louisiana Hot Spiced Okra", "SupplierID": 2, "CategoryID": 2, "QuantityPerUnit": "24 - 8 oz jars", "UnitPrice": "17.0000", "UnitsInStock": 4, "UnitsOnOrder": 100, "ReorderLevel": 20, "Discontinued": false, "Category": {
+"__deferred": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(66)/Category"
+}
+}, "Order_Details": {
+"__deferred": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(66)/Order_Details"
+}
+}, "Supplier": {
+"__deferred": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(66)/Supplier"
+}
+}
+}, {
+"__metadata": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(74)", "type": "NorthwindModel.Product"
+}, "ProductID": 74, "ProductName": "Longlife Tofu", "SupplierID": 4, "CategoryID": 7, "QuantityPerUnit": "5 kg pkg.", "UnitPrice": "10.0000", "UnitsInStock": 4, "UnitsOnOrder": 20, "ReorderLevel": 5, "Discontinued": false, "Category": {
+"__deferred": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(74)/Category"
+}
+}, "Order_Details": {
+"__deferred": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(74)/Order_Details"
+}
+}, "Supplier": {
+"__deferred": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(74)/Supplier"
+}
+}
+}
+]
+}
+}

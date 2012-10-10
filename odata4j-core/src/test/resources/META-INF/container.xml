@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="1.0"
+	xmlns:edmx="http://schemas.microsoft.com/ado/2007/06/edmx" xmlns:myns="bla">
+	<edmx:DataServices m:DataServiceVersion="2.0"
+		xmlns:m="http://schemas.microsoft.com/ado/2007/08/dataservices/metadata">
+		<Schema Namespace="Example"
+			xmlns="http://schemas.microsoft.com/ado/2008/09/edm" myns:myattr="456">
+			<EntityContainer Name="Container"
+				m:IsDefaultEntityContainer="false"></EntityContainer>
+			<EntityContainer Name="Container2"
+				m:IsDefaultEntityContainer="false" annotation:LazyLoadingEnabled="true"
+				xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation"
+				Extends="Container" myns:myattr="123">
+			    <myns:yetanother2>yetanother2</myns:yetanother2>
+			    </EntityContainer>
+
+			<myns:MyElement myns:myattr="456">xxx</myns:MyElement>
+            <myns:AnnotationElement>
+				<myns:testing>hello</myns:testing>
+				<myns:another foo="bar">
+					<myns:yetanother>yetanother</myns:yetanother>
+				</myns:another>
+			</myns:AnnotationElement>
+		</Schema>
+	</edmx:DataServices>
+</edmx:Edmx>
+

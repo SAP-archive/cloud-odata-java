@@ -1,0 +1,327 @@
+{
+"d" : {
+"results": [
+{
+"__metadata": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(43)", "type": "NorthwindModel.Product"
+}, "ProductID": 43, "ProductName": "Ipoh Coffee", "SupplierID": 20, "CategoryID": 1, "QuantityPerUnit": "16 - 500 g tins", "UnitPrice": "46.0000", "UnitsInStock": 17, "UnitsOnOrder": 10, "ReorderLevel": 25, "Discontinued": false, "Category": {
+"__deferred": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(43)/Category"
+}
+}, "Order_Details": {
+"__deferred": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(43)/Order_Details"
+}
+}, "Supplier": {
+"__deferred": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(43)/Supplier"
+}
+}
+}, {
+"__metadata": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(42)", "type": "NorthwindModel.Product"
+}, "ProductID": 42, "ProductName": "Singaporean Hokkien Fried Mee", "SupplierID": 20, "CategoryID": 5, "QuantityPerUnit": "32 - 1 kg pkgs.", "UnitPrice": "14.0000", "UnitsInStock": 26, "UnitsOnOrder": 0, "ReorderLevel": 0, "Discontinued": true, "Category": {
+"__deferred": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(42)/Category"
+}
+}, "Order_Details": {
+"__deferred": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(42)/Order_Details"
+}
+}, "Supplier": {
+"__deferred": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(42)/Supplier"
+}
+}
+}, {
+"__metadata": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(40)", "type": "NorthwindModel.Product"
+}, "ProductID": 40, "ProductName": "Boston Crab Meat", "SupplierID": 19, "CategoryID": 8, "QuantityPerUnit": "24 - 4 oz tins", "UnitPrice": "18.4000", "UnitsInStock": 123, "UnitsOnOrder": 0, "ReorderLevel": 30, "Discontinued": false, "Category": {
+"__deferred": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(40)/Category"
+}
+}, "Order_Details": {
+"__deferred": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(40)/Order_Details"
+}
+}, "Supplier": {
+"__deferred": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(40)/Supplier"
+}
+}
+}, {
+"__metadata": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(41)", "type": "NorthwindModel.Product"
+}, "ProductID": 41, "ProductName": "Jack's New England Clam Chowder", "SupplierID": 19, "CategoryID": 8, "QuantityPerUnit": "12 - 12 oz cans", "UnitPrice": "9.6500", "UnitsInStock": 85, "UnitsOnOrder": 0, "ReorderLevel": 10, "Discontinued": false, "Category": {
+"__deferred": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(41)/Category"
+}
+}, "Order_Details": {
+"__deferred": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(41)/Order_Details"
+}
+}, "Supplier": {
+"__deferred": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(41)/Supplier"
+}
+}
+}, {
+"__metadata": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(39)", "type": "NorthwindModel.Product"
+}, "ProductID": 39, "ProductName": "Chartreuse verte", "SupplierID": 18, "CategoryID": 1, "QuantityPerUnit": "750 cc per bottle", "UnitPrice": "18.0000", "UnitsInStock": 69, "UnitsOnOrder": 0, "ReorderLevel": 5, "Discontinued": false, "Category": {
+"__deferred": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(39)/Category"
+}
+}, "Order_Details": {
+"__deferred": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(39)/Order_Details"
+}
+}, "Supplier": {
+"__deferred": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(39)/Supplier"
+}
+}
+}, {
+"__metadata": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(38)", "type": "NorthwindModel.Product"
+}, "ProductID": 38, "ProductName": "Côte de Blaye", "SupplierID": 18, "CategoryID": 1, "QuantityPerUnit": "12 - 75 cl bottles", "UnitPrice": "263.5000", "UnitsInStock": 17, "UnitsOnOrder": 0, "ReorderLevel": 15, "Discontinued": false, "Category": {
+"__deferred": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(38)/Category"
+}
+}, "Order_Details": {
+"__deferred": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(38)/Order_Details"
+}
+}, "Supplier": {
+"__deferred": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(38)/Supplier"
+}
+}
+}, {
+"__metadata": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(37)", "type": "NorthwindModel.Product"
+}, "ProductID": 37, "ProductName": "Gravad lax", "SupplierID": 17, "CategoryID": 8, "QuantityPerUnit": "12 - 500 g pkgs.", "UnitPrice": "26.0000", "UnitsInStock": 11, "UnitsOnOrder": 50, "ReorderLevel": 25, "Discontinued": false, "Category": {
+"__deferred": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(37)/Category"
+}
+}, "Order_Details": {
+"__deferred": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(37)/Order_Details"
+}
+}, "Supplier": {
+"__deferred": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(37)/Supplier"
+}
+}
+}, {
+"__metadata": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(36)", "type": "NorthwindModel.Product"
+}, "ProductID": 36, "ProductName": "Inlagd Sill", "SupplierID": 17, "CategoryID": 8, "QuantityPerUnit": "24 - 250 g  jars", "UnitPrice": "19.0000", "UnitsInStock": 112, "UnitsOnOrder": 0, "ReorderLevel": 20, "Discontinued": false, "Category": {
+"__deferred": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(36)/Category"
+}
+}, "Order_Details": {
+"__deferred": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(36)/Order_Details"
+}
+}, "Supplier": {
+"__deferred": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(36)/Supplier"
+}
+}
+}, {
+"__metadata": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(73)", "type": "NorthwindModel.Product"
+}, "ProductID": 73, "ProductName": "Röd Kaviar", "SupplierID": 17, "CategoryID": 8, "QuantityPerUnit": "24 - 150 g jars", "UnitPrice": "15.0000", "UnitsInStock": 101, "UnitsOnOrder": 0, "ReorderLevel": 5, "Discontinued": false, "Category": {
+"__deferred": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(73)/Category"
+}
+}, "Order_Details": {
+"__deferred": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(73)/Order_Details"
+}
+}, "Supplier": {
+"__deferred": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(73)/Supplier"
+}
+}
+}, {
+"__metadata": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(67)", "type": "NorthwindModel.Product"
+}, "ProductID": 67, "ProductName": "Laughing Lumberjack Lager", "SupplierID": 16, "CategoryID": 1, "QuantityPerUnit": "24 - 12 oz bottles", "UnitPrice": "14.0000", "UnitsInStock": 52, "UnitsOnOrder": 0, "ReorderLevel": 10, "Discontinued": false, "Category": {
+"__deferred": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(67)/Category"
+}
+}, "Order_Details": {
+"__deferred": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(67)/Order_Details"
+}
+}, "Supplier": {
+"__deferred": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(67)/Supplier"
+}
+}
+}, {
+"__metadata": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(34)", "type": "NorthwindModel.Product"
+}, "ProductID": 34, "ProductName": "Sasquatch Ale", "SupplierID": 16, "CategoryID": 1, "QuantityPerUnit": "24 - 12 oz bottles", "UnitPrice": "14.0000", "UnitsInStock": 111, "UnitsOnOrder": 0, "ReorderLevel": 15, "Discontinued": false, "Category": {
+"__deferred": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(34)/Category"
+}
+}, "Order_Details": {
+"__deferred": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(34)/Order_Details"
+}
+}, "Supplier": {
+"__deferred": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(34)/Supplier"
+}
+}
+}, {
+"__metadata": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(35)", "type": "NorthwindModel.Product"
+}, "ProductID": 35, "ProductName": "Steeleye Stout", "SupplierID": 16, "CategoryID": 1, "QuantityPerUnit": "24 - 12 oz bottles", "UnitPrice": "18.0000", "UnitsInStock": 20, "UnitsOnOrder": 0, "ReorderLevel": 15, "Discontinued": false, "Category": {
+"__deferred": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(35)/Category"
+}
+}, "Order_Details": {
+"__deferred": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(35)/Order_Details"
+}
+}, "Supplier": {
+"__deferred": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(35)/Supplier"
+}
+}
+}, {
+"__metadata": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(71)", "type": "NorthwindModel.Product"
+}, "ProductID": 71, "ProductName": "Flotemysost", "SupplierID": 15, "CategoryID": 4, "QuantityPerUnit": "10 - 500 g pkgs.", "UnitPrice": "21.5000", "UnitsInStock": 26, "UnitsOnOrder": 0, "ReorderLevel": 0, "Discontinued": false, "Category": {
+"__deferred": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(71)/Category"
+}
+}, "Order_Details": {
+"__deferred": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(71)/Order_Details"
+}
+}, "Supplier": {
+"__deferred": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(71)/Supplier"
+}
+}
+}, {
+"__metadata": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(33)", "type": "NorthwindModel.Product"
+}, "ProductID": 33, "ProductName": "Geitost", "SupplierID": 15, "CategoryID": 4, "QuantityPerUnit": "500 g", "UnitPrice": "2.5000", "UnitsInStock": 112, "UnitsOnOrder": 0, "ReorderLevel": 20, "Discontinued": false, "Category": {
+"__deferred": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(33)/Category"
+}
+}, "Order_Details": {
+"__deferred": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(33)/Order_Details"
+}
+}, "Supplier": {
+"__deferred": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(33)/Supplier"
+}
+}
+}, {
+"__metadata": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(69)", "type": "NorthwindModel.Product"
+}, "ProductID": 69, "ProductName": "Gudbrandsdalsost", "SupplierID": 15, "CategoryID": 4, "QuantityPerUnit": "10 kg pkg.", "UnitPrice": "36.0000", "UnitsInStock": 26, "UnitsOnOrder": 0, "ReorderLevel": 15, "Discontinued": false, "Category": {
+"__deferred": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(69)/Category"
+}
+}, "Order_Details": {
+"__deferred": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(69)/Order_Details"
+}
+}, "Supplier": {
+"__deferred": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(69)/Supplier"
+}
+}
+}, {
+"__metadata": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(31)", "type": "NorthwindModel.Product"
+}, "ProductID": 31, "ProductName": "Gorgonzola Telino", "SupplierID": 14, "CategoryID": 4, "QuantityPerUnit": "12 - 100 g pkgs", "UnitPrice": "12.5000", "UnitsInStock": 0, "UnitsOnOrder": 70, "ReorderLevel": 20, "Discontinued": false, "Category": {
+"__deferred": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(31)/Category"
+}
+}, "Order_Details": {
+"__deferred": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(31)/Order_Details"
+}
+}, "Supplier": {
+"__deferred": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(31)/Supplier"
+}
+}
+}, {
+"__metadata": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(32)", "type": "NorthwindModel.Product"
+}, "ProductID": 32, "ProductName": "Mascarpone Fabioli", "SupplierID": 14, "CategoryID": 4, "QuantityPerUnit": "24 - 200 g pkgs.", "UnitPrice": "32.0000", "UnitsInStock": 9, "UnitsOnOrder": 40, "ReorderLevel": 25, "Discontinued": false, "Category": {
+"__deferred": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(32)/Category"
+}
+}, "Order_Details": {
+"__deferred": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(32)/Order_Details"
+}
+}, "Supplier": {
+"__deferred": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(32)/Supplier"
+}
+}
+}, {
+"__metadata": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(72)", "type": "NorthwindModel.Product"
+}, "ProductID": 72, "ProductName": "Mozzarella di Giovanni", "SupplierID": 14, "CategoryID": 4, "QuantityPerUnit": "24 - 200 g pkgs.", "UnitPrice": "34.8000", "UnitsInStock": 14, "UnitsOnOrder": 0, "ReorderLevel": 0, "Discontinued": false, "Category": {
+"__deferred": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(72)/Category"
+}
+}, "Order_Details": {
+"__deferred": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(72)/Order_Details"
+}
+}, "Supplier": {
+"__deferred": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(72)/Supplier"
+}
+}
+}, {
+"__metadata": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(30)", "type": "NorthwindModel.Product"
+}, "ProductID": 30, "ProductName": "Nord-Ost Matjeshering", "SupplierID": 13, "CategoryID": 8, "QuantityPerUnit": "10 - 200 g glasses", "UnitPrice": "25.8900", "UnitsInStock": 10, "UnitsOnOrder": 0, "ReorderLevel": 15, "Discontinued": false, "Category": {
+"__deferred": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(30)/Category"
+}
+}, "Order_Details": {
+"__deferred": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(30)/Order_Details"
+}
+}, "Supplier": {
+"__deferred": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(30)/Supplier"
+}
+}
+}, {
+"__metadata": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(77)", "type": "NorthwindModel.Product"
+}, "ProductID": 77, "ProductName": "Original Frankfurter grüne Soße", "SupplierID": 12, "CategoryID": 2, "QuantityPerUnit": "12 boxes", "UnitPrice": "13.0000", "UnitsInStock": 32, "UnitsOnOrder": 0, "ReorderLevel": 15, "Discontinued": false, "Category": {
+"__deferred": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(77)/Category"
+}
+}, "Order_Details": {
+"__deferred": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(77)/Order_Details"
+}
+}, "Supplier": {
+"__deferred": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(77)/Supplier"
+}
+}
+}
+], "__next": "http://services.odata.org/Northwind/Northwind.svc/Products?$orderby=SupplierID%20desc,%20ProductName&$skiptoken=12,'Original%20Frankfurter%20gr%C3%BCne%20So%C3%9Fe',77"
+}
+}

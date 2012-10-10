@@ -1,0 +1,167 @@
+{
+"d" : {
+"results": [
+{
+"__metadata": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(1)", "type": "NorthwindModel.Product"
+}, "ProductName": "Chai", "Category": {
+"__deferred": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(1)/Category"
+}
+}
+}, {
+"__metadata": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(2)", "type": "NorthwindModel.Product"
+}, "ProductName": "Chang", "Category": {
+"__deferred": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(2)/Category"
+}
+}
+}, {
+"__metadata": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(3)", "type": "NorthwindModel.Product"
+}, "ProductName": "Aniseed Syrup", "Category": {
+"__deferred": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(3)/Category"
+}
+}
+}, {
+"__metadata": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(4)", "type": "NorthwindModel.Product"
+}, "ProductName": "Chef Anton's Cajun Seasoning", "Category": {
+"__deferred": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(4)/Category"
+}
+}
+}, {
+"__metadata": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(5)", "type": "NorthwindModel.Product"
+}, "ProductName": "Chef Anton's Gumbo Mix", "Category": {
+"__deferred": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(5)/Category"
+}
+}
+}, {
+"__metadata": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(6)", "type": "NorthwindModel.Product"
+}, "ProductName": "Grandma's Boysenberry Spread", "Category": {
+"__deferred": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(6)/Category"
+}
+}
+}, {
+"__metadata": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(7)", "type": "NorthwindModel.Product"
+}, "ProductName": "Uncle Bob's Organic Dried Pears", "Category": {
+"__deferred": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(7)/Category"
+}
+}
+}, {
+"__metadata": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(8)", "type": "NorthwindModel.Product"
+}, "ProductName": "Northwoods Cranberry Sauce", "Category": {
+"__deferred": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(8)/Category"
+}
+}
+}, {
+"__metadata": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(9)", "type": "NorthwindModel.Product"
+}, "ProductName": "Mishi Kobe Niku", "Category": {
+"__deferred": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(9)/Category"
+}
+}
+}, {
+"__metadata": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(10)", "type": "NorthwindModel.Product"
+}, "ProductName": "Ikura", "Category": {
+"__deferred": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(10)/Category"
+}
+}
+}, {
+"__metadata": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(11)", "type": "NorthwindModel.Product"
+}, "ProductName": "Queso Cabrales", "Category": {
+"__deferred": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(11)/Category"
+}
+}
+}, {
+"__metadata": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(12)", "type": "NorthwindModel.Product"
+}, "ProductName": "Queso Manchego La Pastora", "Category": {
+"__deferred": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(12)/Category"
+}
+}
+}, {
+"__metadata": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(13)", "type": "NorthwindModel.Product"
+}, "ProductName": "Konbu", "Category": {
+"__deferred": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(13)/Category"
+}
+}
+}, {
+"__metadata": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(14)", "type": "NorthwindModel.Product"
+}, "ProductName": "Tofu", "Category": {
+"__deferred": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(14)/Category"
+}
+}
+}, {
+"__metadata": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(15)", "type": "NorthwindModel.Product"
+}, "ProductName": "Genen Shouyu", "Category": {
+"__deferred": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(15)/Category"
+}
+}
+}, {
+"__metadata": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(16)", "type": "NorthwindModel.Product"
+}, "ProductName": "Pavlova", "Category": {
+"__deferred": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(16)/Category"
+}
+}
+}, {
+"__metadata": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(17)", "type": "NorthwindModel.Product"
+}, "ProductName": "Alice Mutton", "Category": {
+"__deferred": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(17)/Category"
+}
+}
+}, {
+"__metadata": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(18)", "type": "NorthwindModel.Product"
+}, "ProductName": "Carnarvon Tigers", "Category": {
+"__deferred": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(18)/Category"
+}
+}
+}, {
+"__metadata": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(19)", "type": "NorthwindModel.Product"
+}, "ProductName": "Teatime Chocolate Biscuits", "Category": {
+"__deferred": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(19)/Category"
+}
+}
+}, {
+"__metadata": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(20)", "type": "NorthwindModel.Product"
+}, "ProductName": "Sir Rodney's Marmalade", "Category": {
+"__deferred": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(20)/Category"
+}
+}
+}
+], "__next": "http://services.odata.org/Northwind/Northwind.svc/Products?$select=ProductName,Category&$skiptoken=20"
+}
+}

@@ -1,0 +1,327 @@
+{
+"d" : {
+"results": [
+{
+"__metadata": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(77)", "type": "NorthwindModel.Product"
+}, "ProductID": 77, "ProductName": "Original Frankfurter grüne Soße", "SupplierID": 12, "CategoryID": 2, "QuantityPerUnit": "12 boxes", "UnitPrice": "13.0000", "UnitsInStock": 32, "UnitsOnOrder": 0, "ReorderLevel": 15, "Discontinued": false, "Category": {
+"__deferred": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(77)/Category"
+}
+}, "Order_Details": {
+"__deferred": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(77)/Order_Details"
+}
+}, "Supplier": {
+"__deferred": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(77)/Supplier"
+}
+}
+}, {
+"__metadata": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(76)", "type": "NorthwindModel.Product"
+}, "ProductID": 76, "ProductName": "Lakkalikööri", "SupplierID": 23, "CategoryID": 1, "QuantityPerUnit": "500 ml", "UnitPrice": "18.0000", "UnitsInStock": 57, "UnitsOnOrder": 0, "ReorderLevel": 20, "Discontinued": false, "Category": {
+"__deferred": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(76)/Category"
+}
+}, "Order_Details": {
+"__deferred": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(76)/Order_Details"
+}
+}, "Supplier": {
+"__deferred": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(76)/Supplier"
+}
+}
+}, {
+"__metadata": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(75)", "type": "NorthwindModel.Product"
+}, "ProductID": 75, "ProductName": "Rhönbräu Klosterbier", "SupplierID": 12, "CategoryID": 1, "QuantityPerUnit": "24 - 0.5 l bottles", "UnitPrice": "7.7500", "UnitsInStock": 125, "UnitsOnOrder": 0, "ReorderLevel": 25, "Discontinued": false, "Category": {
+"__deferred": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(75)/Category"
+}
+}, "Order_Details": {
+"__deferred": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(75)/Order_Details"
+}
+}, "Supplier": {
+"__deferred": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(75)/Supplier"
+}
+}
+}, {
+"__metadata": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(74)", "type": "NorthwindModel.Product"
+}, "ProductID": 74, "ProductName": "Longlife Tofu", "SupplierID": 4, "CategoryID": 7, "QuantityPerUnit": "5 kg pkg.", "UnitPrice": "10.0000", "UnitsInStock": 4, "UnitsOnOrder": 20, "ReorderLevel": 5, "Discontinued": false, "Category": {
+"__deferred": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(74)/Category"
+}
+}, "Order_Details": {
+"__deferred": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(74)/Order_Details"
+}
+}, "Supplier": {
+"__deferred": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(74)/Supplier"
+}
+}
+}, {
+"__metadata": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(73)", "type": "NorthwindModel.Product"
+}, "ProductID": 73, "ProductName": "Röd Kaviar", "SupplierID": 17, "CategoryID": 8, "QuantityPerUnit": "24 - 150 g jars", "UnitPrice": "15.0000", "UnitsInStock": 101, "UnitsOnOrder": 0, "ReorderLevel": 5, "Discontinued": false, "Category": {
+"__deferred": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(73)/Category"
+}
+}, "Order_Details": {
+"__deferred": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(73)/Order_Details"
+}
+}, "Supplier": {
+"__deferred": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(73)/Supplier"
+}
+}
+}, {
+"__metadata": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(72)", "type": "NorthwindModel.Product"
+}, "ProductID": 72, "ProductName": "Mozzarella di Giovanni", "SupplierID": 14, "CategoryID": 4, "QuantityPerUnit": "24 - 200 g pkgs.", "UnitPrice": "34.8000", "UnitsInStock": 14, "UnitsOnOrder": 0, "ReorderLevel": 0, "Discontinued": false, "Category": {
+"__deferred": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(72)/Category"
+}
+}, "Order_Details": {
+"__deferred": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(72)/Order_Details"
+}
+}, "Supplier": {
+"__deferred": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(72)/Supplier"
+}
+}
+}, {
+"__metadata": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(71)", "type": "NorthwindModel.Product"
+}, "ProductID": 71, "ProductName": "Flotemysost", "SupplierID": 15, "CategoryID": 4, "QuantityPerUnit": "10 - 500 g pkgs.", "UnitPrice": "21.5000", "UnitsInStock": 26, "UnitsOnOrder": 0, "ReorderLevel": 0, "Discontinued": false, "Category": {
+"__deferred": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(71)/Category"
+}
+}, "Order_Details": {
+"__deferred": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(71)/Order_Details"
+}
+}, "Supplier": {
+"__deferred": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(71)/Supplier"
+}
+}
+}, {
+"__metadata": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(70)", "type": "NorthwindModel.Product"
+}, "ProductID": 70, "ProductName": "Outback Lager", "SupplierID": 7, "CategoryID": 1, "QuantityPerUnit": "24 - 355 ml bottles", "UnitPrice": "15.0000", "UnitsInStock": 15, "UnitsOnOrder": 10, "ReorderLevel": 30, "Discontinued": false, "Category": {
+"__deferred": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(70)/Category"
+}
+}, "Order_Details": {
+"__deferred": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(70)/Order_Details"
+}
+}, "Supplier": {
+"__deferred": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(70)/Supplier"
+}
+}
+}, {
+"__metadata": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(69)", "type": "NorthwindModel.Product"
+}, "ProductID": 69, "ProductName": "Gudbrandsdalsost", "SupplierID": 15, "CategoryID": 4, "QuantityPerUnit": "10 kg pkg.", "UnitPrice": "36.0000", "UnitsInStock": 26, "UnitsOnOrder": 0, "ReorderLevel": 15, "Discontinued": false, "Category": {
+"__deferred": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(69)/Category"
+}
+}, "Order_Details": {
+"__deferred": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(69)/Order_Details"
+}
+}, "Supplier": {
+"__deferred": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(69)/Supplier"
+}
+}
+}, {
+"__metadata": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(68)", "type": "NorthwindModel.Product"
+}, "ProductID": 68, "ProductName": "Scottish Longbreads", "SupplierID": 8, "CategoryID": 3, "QuantityPerUnit": "10 boxes x 8 pieces", "UnitPrice": "12.5000", "UnitsInStock": 6, "UnitsOnOrder": 10, "ReorderLevel": 15, "Discontinued": false, "Category": {
+"__deferred": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(68)/Category"
+}
+}, "Order_Details": {
+"__deferred": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(68)/Order_Details"
+}
+}, "Supplier": {
+"__deferred": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(68)/Supplier"
+}
+}
+}, {
+"__metadata": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(67)", "type": "NorthwindModel.Product"
+}, "ProductID": 67, "ProductName": "Laughing Lumberjack Lager", "SupplierID": 16, "CategoryID": 1, "QuantityPerUnit": "24 - 12 oz bottles", "UnitPrice": "14.0000", "UnitsInStock": 52, "UnitsOnOrder": 0, "ReorderLevel": 10, "Discontinued": false, "Category": {
+"__deferred": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(67)/Category"
+}
+}, "Order_Details": {
+"__deferred": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(67)/Order_Details"
+}
+}, "Supplier": {
+"__deferred": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(67)/Supplier"
+}
+}
+}, {
+"__metadata": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(66)", "type": "NorthwindModel.Product"
+}, "ProductID": 66, "ProductName": "Louisiana Hot Spiced Okra", "SupplierID": 2, "CategoryID": 2, "QuantityPerUnit": "24 - 8 oz jars", "UnitPrice": "17.0000", "UnitsInStock": 4, "UnitsOnOrder": 100, "ReorderLevel": 20, "Discontinued": false, "Category": {
+"__deferred": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(66)/Category"
+}
+}, "Order_Details": {
+"__deferred": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(66)/Order_Details"
+}
+}, "Supplier": {
+"__deferred": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(66)/Supplier"
+}
+}
+}, {
+"__metadata": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(65)", "type": "NorthwindModel.Product"
+}, "ProductID": 65, "ProductName": "Louisiana Fiery Hot Pepper Sauce", "SupplierID": 2, "CategoryID": 2, "QuantityPerUnit": "32 - 8 oz bottles", "UnitPrice": "21.0500", "UnitsInStock": 76, "UnitsOnOrder": 0, "ReorderLevel": 0, "Discontinued": false, "Category": {
+"__deferred": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(65)/Category"
+}
+}, "Order_Details": {
+"__deferred": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(65)/Order_Details"
+}
+}, "Supplier": {
+"__deferred": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(65)/Supplier"
+}
+}
+}, {
+"__metadata": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(64)", "type": "NorthwindModel.Product"
+}, "ProductID": 64, "ProductName": "Wimmers gute Semmelknödel", "SupplierID": 12, "CategoryID": 5, "QuantityPerUnit": "20 bags x 4 pieces", "UnitPrice": "33.2500", "UnitsInStock": 22, "UnitsOnOrder": 80, "ReorderLevel": 30, "Discontinued": false, "Category": {
+"__deferred": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(64)/Category"
+}
+}, "Order_Details": {
+"__deferred": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(64)/Order_Details"
+}
+}, "Supplier": {
+"__deferred": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(64)/Supplier"
+}
+}
+}, {
+"__metadata": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(63)", "type": "NorthwindModel.Product"
+}, "ProductID": 63, "ProductName": "Vegie-spread", "SupplierID": 7, "CategoryID": 2, "QuantityPerUnit": "15 - 625 g jars", "UnitPrice": "43.9000", "UnitsInStock": 24, "UnitsOnOrder": 0, "ReorderLevel": 5, "Discontinued": false, "Category": {
+"__deferred": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(63)/Category"
+}
+}, "Order_Details": {
+"__deferred": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(63)/Order_Details"
+}
+}, "Supplier": {
+"__deferred": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(63)/Supplier"
+}
+}
+}, {
+"__metadata": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(62)", "type": "NorthwindModel.Product"
+}, "ProductID": 62, "ProductName": "Tarte au sucre", "SupplierID": 29, "CategoryID": 3, "QuantityPerUnit": "48 pies", "UnitPrice": "49.3000", "UnitsInStock": 17, "UnitsOnOrder": 0, "ReorderLevel": 0, "Discontinued": false, "Category": {
+"__deferred": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(62)/Category"
+}
+}, "Order_Details": {
+"__deferred": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(62)/Order_Details"
+}
+}, "Supplier": {
+"__deferred": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(62)/Supplier"
+}
+}
+}, {
+"__metadata": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(61)", "type": "NorthwindModel.Product"
+}, "ProductID": 61, "ProductName": "Sirop d'érable", "SupplierID": 29, "CategoryID": 2, "QuantityPerUnit": "24 - 500 ml bottles", "UnitPrice": "28.5000", "UnitsInStock": 113, "UnitsOnOrder": 0, "ReorderLevel": 25, "Discontinued": false, "Category": {
+"__deferred": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(61)/Category"
+}
+}, "Order_Details": {
+"__deferred": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(61)/Order_Details"
+}
+}, "Supplier": {
+"__deferred": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(61)/Supplier"
+}
+}
+}, {
+"__metadata": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(60)", "type": "NorthwindModel.Product"
+}, "ProductID": 60, "ProductName": "Camembert Pierrot", "SupplierID": 28, "CategoryID": 4, "QuantityPerUnit": "15 - 300 g rounds", "UnitPrice": "34.0000", "UnitsInStock": 19, "UnitsOnOrder": 0, "ReorderLevel": 0, "Discontinued": false, "Category": {
+"__deferred": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(60)/Category"
+}
+}, "Order_Details": {
+"__deferred": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(60)/Order_Details"
+}
+}, "Supplier": {
+"__deferred": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(60)/Supplier"
+}
+}
+}, {
+"__metadata": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(59)", "type": "NorthwindModel.Product"
+}, "ProductID": 59, "ProductName": "Raclette Courdavault", "SupplierID": 28, "CategoryID": 4, "QuantityPerUnit": "5 kg pkg.", "UnitPrice": "55.0000", "UnitsInStock": 79, "UnitsOnOrder": 0, "ReorderLevel": 0, "Discontinued": false, "Category": {
+"__deferred": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(59)/Category"
+}
+}, "Order_Details": {
+"__deferred": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(59)/Order_Details"
+}
+}, "Supplier": {
+"__deferred": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(59)/Supplier"
+}
+}
+}, {
+"__metadata": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(58)", "type": "NorthwindModel.Product"
+}, "ProductID": 58, "ProductName": "Escargots de Bourgogne", "SupplierID": 27, "CategoryID": 8, "QuantityPerUnit": "24 pieces", "UnitPrice": "13.2500", "UnitsInStock": 62, "UnitsOnOrder": 0, "ReorderLevel": 20, "Discontinued": false, "Category": {
+"__deferred": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(58)/Category"
+}
+}, "Order_Details": {
+"__deferred": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(58)/Order_Details"
+}
+}, "Supplier": {
+"__deferred": {
+"uri": "http://services.odata.org/northwind/Northwind.svc/Products(58)/Supplier"
+}
+}
+}
+], "__next": "http://services.odata.org/Northwind/Northwind.svc/Products?$orderby=ProductID%20desc&$skiptoken=58,58"
+}
+}

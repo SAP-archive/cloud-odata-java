@@ -1,0 +1,303 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>org.odata4j</groupId>
+  <artifactId>odata4j-parent</artifactId>
+  <version>0.8.0-SNAPSHOT</version>
+  <packaging>pom</packaging>
+
+  <description>odata4j</description>
+  <url>http://odata4j.org</url>
+  <inceptionYear>2010</inceptionYear>
+
+  <parent>
+    <groupId>org.sonatype.oss</groupId>
+    <artifactId>oss-parent</artifactId>
+    <version>7</version>
+  </parent>
+
+  <licenses>
+    <license>
+      <name>The Apache Software License, Version 2.0</name>
+      <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+
+  <issueManagement>
+    <system>code.google.com</system>
+    <url>http://code.google.com/p/odata4j/issues/list</url>
+  </issueManagement>
+
+  <scm>
+    <connection>scm:hg:https://odata4j.googlecode.com/hg/</connection>
+    <developerConnection>scm:hg:https://odata4j.googlecode.com/hg/</developerConnection>
+    <url>http://code.google.com/p/odata4j/source/browse/</url>
+  </scm>
+
+  <developers>
+    <developer>
+      <id>carljmosca</id>
+      <name>Carl J. Mosca</name>
+      <email>carljmosca@gmail.com</email>
+    </developer>
+    <developer>
+      <id>john.spurlock</id>
+      <name>John Spurlock</name>
+      <email>john.spurlock@gmail.com</email>
+    </developer>
+    <developer>
+      <id>karthik.tnt</id>
+      <name>Karthik S Kalahasthi</name>
+      <email>karthik.tnt@gmail.com</email>
+    </developer>
+    <developer>
+      <id>phanirajuyn</id>
+      <name>Phani Raju</name>
+      <email>phanirajuyn@gmail.com</email>
+    </developer>
+    <developer>
+      <id>philipp.thun</id>
+      <name>Philipp Thun</name>
+      <email>philipp.thun@sap.com</email>
+    </developer>
+    <developer>
+      <id>sergei.inbox</id>
+      <name>Sergej.T</name>
+      <email>sergei.inbox@gmail.com</email>
+    </developer>
+    <developer>
+      <id>stephan.klevenz</id>
+      <name>Stephan Klevenz</name>
+      <email>stephan.klevenz@sap.com</email>
+    </developer>
+    <developer>
+      <id>rolf.aden</id>
+      <name>Rolf Aden</name>
+      <email>Mail.Rolf.Aden@googlemail.com</email>
+    </developer>
+  </developers>
+
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <built.by>${project.name}</built.by>
+    <odata4j.sign.artifacts.phase>verify</odata4j.sign.artifacts.phase>
+
+    <core4j.version>0.5</core4j.version>
+    <jsr311.version>1.1.1</jsr311.version>
+    <jpa.version>2.0.0</jpa.version>
+    <eclipselink.version>2.1.2</eclipselink.version>
+    <joda.version>2.1</joda.version>
+    <xmlpull.version>1.1.3.4a</xmlpull.version>
+    <junit.version>4.8.2</junit.version>
+    <hamcrest.version>1.1</hamcrest.version>
+    <mockito.version>1.9.0</mockito.version>
+    <hsqldb.version>1.8.0.10</hsqldb.version>
+    <jersey.version>1.1.5</jersey.version>
+    <cxf.version>2.6.0</cxf.version>
+    <jetty.version>7.5.3.v20111011</jetty.version>
+    <httpclient.version>4.1.2</httpclient.version>
+    <slf4j.version>1.6.4</slf4j.version>
+    <xmlunit.version>1.3</xmlunit.version>
+
+  </properties>
+
+  <repositories>
+    <repository>
+      <id>javanet</id>
+      <name>download.java.net</name>
+      <url>http://download.java.net/maven/2/</url>
+    </repository>
+    <repository>
+      <id>eclipselink</id>
+      <name>eclipselink</name>
+      <url>http://download.eclipse.org/rt/eclipselink/maven.repo</url>
+      <snapshots>
+        <enabled>true</enabled> <!-- for javax.persistence -->
+      </snapshots>
+    </repository>
+    <repository>
+      <id>jboss</id>
+      <name>jboss</name>
+      <url>http://repository.jboss.org/nexus/content/groups/public/</url>
+    </repository>
+  </repositories>
+
+  <modules>
+    <module>odata4j-core</module>
+    <module>odata4j-jersey</module>
+    <module>odata4j-cxf</module>
+    <module>odata4j-examples</module>
+    <module>odata4j-fit</module>
+    <module>odata4j-dist</module>
+  </modules>
+
+  <build>
+    <resources>
+      <resource>
+        <directory>src/main/resources</directory>
+        <excludes>
+          <exclude>.hgempty</exclude>
+        </excludes>
+      </resource>
+    </resources>
+
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-compiler-plugin</artifactId>
+          <version>2.3.2</version>
+          <configuration>
+            <compilerArgument>-Xlint:all</compilerArgument>
+            <showWarnings>true</showWarnings>
+            <showDeprecation>true</showDeprecation>
+          </configuration>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-jar-plugin</artifactId>
+          <version>2.3.2</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-source-plugin</artifactId>
+          <version>2.1.2</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-javadoc-plugin</artifactId>
+          <version>2.8.1</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-gpg-plugin</artifactId>
+          <version>1.2</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-assembly-plugin</artifactId>
+          <version>2.2.1</version>
+        </plugin>
+        <plugin>
+          <groupId>org.codehaus.mojo</groupId>
+          <artifactId>build-helper-maven-plugin</artifactId>
+          <version>1.7</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.felix</groupId>
+          <artifactId>maven-bundle-plugin</artifactId>
+          <version>2.0.1</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-eclipse-plugin</artifactId>
+          <version>2.8</version>
+        </plugin>
+      </plugins>
+    </pluginManagement>
+
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <configuration>
+          <source>1.6</source>
+          <target>1.6</target>
+        </configuration>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jar-plugin</artifactId>
+        <configuration>
+          <archive>
+            <manifestEntries>
+              <Built-By>${built.by}</Built-By>
+            </manifestEntries>
+          </archive>
+        </configuration>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-source-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>bundle-sources</id>
+            <phase>package</phase>
+            <goals>
+              <goal>jar-no-fork</goal>
+            </goals>
+            <configuration>
+              <archive>
+                <manifestEntries>
+                  <Built-By>${built.by}</Built-By>
+                </manifestEntries>
+              </archive>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
+    </plugins>
+  </build>
+
+  <profiles>
+    <profile>
+      <id>release.build</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-gpg-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>sign-artifacts</id>
+                <phase>${odata4j.sign.artifacts.phase}</phase>
+                <goals>
+                  <goal>sign</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-javadoc-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>aggregate-javadocs</id>
+                <phase>package</phase>
+                <goals>
+                  <goal>aggregate-jar</goal>
+                </goals>
+                <configuration>
+                  <finalName>odata4j-${project.version}</finalName>
+                  <excludePackageNames>org.odata4j.examples</excludePackageNames> <!-- from module odata4j-examples -->
+                  <nodeprecated>true</nodeprecated>
+                  <bottom><![CDATA[<i><a href="http://odata4j.org">http://odata4j.org</a></i>]]></bottom>
+                  <links>
+                    <link>http://jersey.java.net/nonav/apidocs/1.1.5/jersey</link>
+                    <link>http://joda-time.sourceforge.net/api-release</link>
+                    <link>http://download.oracle.com/javase/6/docs/api</link>
+                    <link>http://download.oracle.com/javaee/6/api</link>
+                    <link>http://core4j.googlecode.com/hg/core4j/doc/apidocs</link>
+                    <link>http://www.xmlpull.org/v1/doc/api</link>
+                    <link>http://cxf.apache.org/javadoc/latest-2.5.x/</link>
+                  </links>
+                  <archive>
+                    <manifestEntries>
+                      <Built-By>${built.by}</Built-By>
+                    </manifestEntries>
+                  </archive>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
+
+</project>
