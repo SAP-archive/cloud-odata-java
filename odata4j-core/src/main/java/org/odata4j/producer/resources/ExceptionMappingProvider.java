@@ -47,7 +47,8 @@ public class ExceptionMappingProvider implements ExceptionMapper<RuntimeExceptio
     else
       exception = new ServerErrorException(e);
 
-    ErrorResponseExtension errorResponseExtension = producerResolver.getContext(ODataProducer.class).findExtension(ErrorResponseExtension.class);
+    ODataProducer producer = producerResolver.getContext(ODataProducer.class);
+    ErrorResponseExtension errorResponseExtension = (producer == null ? null : producer.findExtension(ErrorResponseExtension.class));
     boolean includeInnerError = errorResponseExtension != null && errorResponseExtension.returnInnerError(httpHeaders, uriInfo, exception);
 
     FormatWriter<ErrorResponse> fw = FormatWriterFactory.getFormatWriter(ErrorResponse.class, httpHeaders.getAcceptableMediaTypes(),
