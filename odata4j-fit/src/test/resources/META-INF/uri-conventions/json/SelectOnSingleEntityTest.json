@@ -1,7 +1,0 @@
-{
-"d" : {
-"__metadata": {
-"uri": "http://services.odata.org/northwind/Northwind.svc/Products(1)", "type": "NorthwindModel.Product"
-}, "ProductName": "Chai"
-}
-}

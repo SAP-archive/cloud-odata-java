@@ -1,7 +1,0 @@
-<fragment xml:base="http://localhost:6794/WcfDataService2.svc/" xmlns:d="http://schemas.microsoft.com/ado/2007/08/dataservices" xmlns:m="http://schemas.microsoft.com/ado/2007/08/dataservices/metadata" xmlns="http://www.w3.org/2005/Atom">
-    <m:properties>
-      <d:id m:type="Edm.Int32">8</d:id>
-      <d:name>name1290360111631</d:name>
-      <d:update_date m:type="Edm.DateTime">2010-11-21T12:21:51.7103879-05:00</d:update_date>
-    </m:properties>
-</fragment>
