@@ -1,0 +1,236 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="1.0" xmlns:edmx="http://schemas.microsoft.com/ado/2007/06/edmx">
+	<edmx:DataServices m:DataServiceVersion="2.0" xmlns:m="http://schemas.microsoft.com/ado/2007/08/dataservices/metadata">
+		<Schema Namespace="RefScenario" xmlns="http://schemas.microsoft.com/ado/2008/09/edm">
+			<EntityType Name="String" m:HasStream="true">
+				<Key>
+					<PropertyRef Name="Id"/>
+				</Key>
+				<Property Name="Id" Type="Edm.String" Nullable="false"/>
+			</EntityType>
+			<EntityType Name="Boolean" m:HasStream="true">
+				<Key>
+					<PropertyRef Name="Id"/>
+				</Key>
+				<Property Name="Id" Type="Edm.Boolean" Nullable="false"/>
+			</EntityType>
+			<EntityType Name="SByte" m:HasStream="true">
+				<Key>
+					<PropertyRef Name="Id"/>
+				</Key>
+				<Property Name="Id" Type="Edm.SByte" Nullable="false"/>
+			</EntityType>
+			<EntityType Name="Byte" m:HasStream="true">
+				<Key>
+					<PropertyRef Name="Id"/>
+				</Key>
+				<Property Name="Id" Type="Edm.Byte" Nullable="false"/>
+			</EntityType>
+			<EntityType Name="Single" m:HasStream="true">
+				<Key>
+					<PropertyRef Name="Id"/>
+				</Key>
+				<Property Name="Id" Type="Edm.Single" Nullable="false"/>
+			</EntityType>
+			<EntityType Name="Double" m:HasStream="true">
+				<Key>
+					<PropertyRef Name="Id"/>
+				</Key>
+				<Property Name="Id" Type="Edm.Double" Nullable="false"/>
+			</EntityType>
+			<EntityType Name="DateTime" m:HasStream="true">
+				<Key>
+					<PropertyRef Name="Id"/>
+				</Key>
+				<Property Name="Id" Type="Edm.DateTime" Nullable="false"/>
+			</EntityType>
+			<EntityType Name="DateTimeOffset" m:HasStream="true">
+				<Key>
+					<PropertyRef Name="Id"/>
+				</Key>
+				<Property Name="Id" Type="Edm.DateTimeOffset" Nullable="false"/>
+			</EntityType>
+			<EntityType Name="Time" m:HasStream="true">
+				<Key>
+					<PropertyRef Name="Id"/>
+				</Key>
+				<Property Name="Id" Type="Edm.Time" Nullable="false"/>
+			</EntityType>
+			<EntityType Name="Guid" m:HasStream="true">
+				<Key>
+					<PropertyRef Name="Id"/>
+				</Key>
+				<Property Name="Id" Type="Edm.Guid" Nullable="false"/>
+			</EntityType>
+			<EntityType Name="Int64" m:HasStream="true">
+				<Key>
+					<PropertyRef Name="Id"/>
+				</Key>
+				<Property Name="Id" Type="Edm.Int64" Nullable="false"/>
+			</EntityType>
+			<EntityType Name="Int32" m:HasStream="true">
+				<Key>
+					<PropertyRef Name="Id"/>
+				</Key>
+				<Property Name="Id" Type="Edm.Int32" Nullable="false"/>
+			</EntityType>
+			<EntityType Name="Int16" m:HasStream="true">
+				<Key>
+					<PropertyRef Name="Id"/>
+				</Key>
+				<Property Name="Id" Type="Edm.Int16" Nullable="false"/>
+			</EntityType>
+			<EntityType Name="Decimal" m:HasStream="true">
+				<Key>
+					<PropertyRef Name="Id"/>
+				</Key>
+				<Property Name="Id" Type="Edm.Decimal" Nullable="false"/>
+			</EntityType>
+			<EntityType Name="Binary" m:HasStream="true">
+				<Key>
+					<PropertyRef Name="Id"/>
+				</Key>
+				<Property Name="Id" Type="Edm.Binary" Nullable="false"/>
+			</EntityType>
+
+			<EntityType Name="Employee" m:HasStream="true">
+				<Key>
+					<PropertyRef Name="EmployeeId"/>
+				</Key>
+				<Property Name="EmployeeId" Type="Edm.String" Nullable="false"/>
+				<Property Name="EmployeeName" Type="Edm.String" m:FC_TargetPath="SyndicationTitle"/>
+				<Property Name="ManagerId" Type="Edm.String"/>
+				<Property Name="RoomId" Type="Edm.String"/>
+				<Property Name="TeamId" Type="Edm.String" MaxLength="2"/>
+				<Property Name="Location" Type="RefScenario.c_Location"/>
+				<Property Name="Age" Type="Edm.Int16"/>
+				<Property Name="EntryDate" Type="Edm.DateTime" Nullable="true" m:FC_TargetPath="SyndicationUpdated"/>
+				<Property Name="ImageUrl" Type="Edm.String"/>
+				<NavigationProperty Name="ne_Manager" Relationship="RefScenario.ManagerEmployees" FromRole="r_Employees" ToRole="r_Manager"/>
+				<NavigationProperty Name="ne_Team" Relationship="RefScenario.TeamEmployees" FromRole="r_Employees" ToRole="r_Team"/>
+				<NavigationProperty Name="ne_Room" Relationship="RefScenario.RoomEmployees" FromRole="r_Employees" ToRole="r_Room"/>
+			</EntityType>
+			<EntityType Name="Team" BaseType="RefScenario.Base">
+				<Property Name="isScrumTeam" Type="Edm.Boolean" Nullable="true"/>
+				<NavigationProperty Name="nt_Employees" Relationship="RefScenario.TeamEmployees" FromRole="r_Team" ToRole="r_Employees"/>
+			</EntityType>
+			<EntityType Name="Room" BaseType="RefScenario.Base">
+				<Property Name="Seats" Type="Edm.Int16"/>
+				<Property Name="Version" Type="Edm.Int16" ConcurrencyMode="Fixed"/>
+				<NavigationProperty Name="nr_Employees" Relationship="RefScenario.RoomEmployees" FromRole="r_Room" ToRole="r_Employees"/>
+				<NavigationProperty Name="nr_Building" Relationship="RefScenario.BuildingRooms" FromRole="r_Room" ToRole="r_Building"/>
+			</EntityType>
+			<EntityType Name="Manager" BaseType="RefScenario.Employee" m:HasStream="true">
+				<NavigationProperty Name="nm_Employees" Relationship="RefScenario.ManagerEmployees" FromRole="r_Manager" ToRole="r_Employees"/>
+			</EntityType>
+			<EntityType Name="Building">
+				<Key>
+					<PropertyRef Name="Id"/>
+				</Key>
+				<Property Name="Id" Type="Edm.String" Nullable="false"/>
+				<Property Name="Name" Type="Edm.String" m:FC_TargetPath="SyndicationAuthorName"/>
+				<Property Name="Image" Type="Edm.Binary"/>
+				<NavigationProperty Name="nb_Rooms" Relationship="RefScenario.BuildingRooms" FromRole="r_Building" ToRole="r_Room"/>
+			</EntityType>
+			<EntityType Name="Base">
+				<Key>
+					<PropertyRef Name="Id"/>
+				</Key>
+				<Property Name="Id" Type="Edm.String" Nullable="false" DefaultValue="1"/>
+				<Property Name="Name" Type="Edm.String" m:FC_TargetPath="SyndicationTitle"/>
+			</EntityType>
+			<ComplexType Name="c_Location">
+				<Property Name="City" Type="RefScenario.c_City"/>
+				<Property Name="Country" Type="Edm.String"/>
+			</ComplexType>
+			<ComplexType Name="c_City">
+				<Property Name="PostalCode" Type="Edm.String"/>
+				<Property Name="CityName" Type="Edm.String"/>
+			</ComplexType>
+			<Association Name="ManagerEmployees">
+				<End Type="RefScenario.Employee" Multiplicity="*" Role="r_Employees"/>
+				<End Type="RefScenario.Manager" Multiplicity="1" Role="r_Manager"/>
+			</Association>
+			<Association Name="TeamEmployees">
+				<End Type="RefScenario.Employee" Multiplicity="*" Role="r_Employees"/>
+				<End Type="RefScenario.Team" Multiplicity="1" Role="r_Team"/>
+			</Association>
+			<Association Name="RoomEmployees">
+				<End Type="RefScenario.Employee" Multiplicity="*" Role="r_Employees"/>
+				<End Type="RefScenario.Room" Multiplicity="1" Role="r_Room"/>
+			</Association>
+			<Association Name="BuildingRooms">
+				<End Type="RefScenario.Building" Multiplicity="1" Role="r_Building"/>
+				<End Type="RefScenario.Room" Multiplicity="*" Role="r_Room"/>
+			</Association>
+			<EntityContainer Name="Container1" m:IsDefaultEntityContainer="true">
+				<EntitySet Name="Int16s" EntityType="RefScenario.Int16"/>
+				<EntitySet Name="Int32s" EntityType="RefScenario.Int32"/>
+				<EntitySet Name="Int64s" EntityType="RefScenario.Int64"/>
+				<EntitySet Name="Strings" EntityType="RefScenario.String"/>
+				<EntitySet Name="Booleans" EntityType="RefScenario.Boolean"/>
+				<EntitySet Name="Doubles" EntityType="RefScenario.Double"/>
+				<EntitySet Name="Singles" EntityType="RefScenario.Single"/>
+				<EntitySet Name="Guids" EntityType="RefScenario.Guid"/>
+				<EntitySet Name="Decimals" EntityType="RefScenario.Decimal"/>
+				<EntitySet Name="Binaries" EntityType="RefScenario.Binary"/>
+				<EntitySet Name="DateTimes" EntityType="RefScenario.DateTime"/>
+				<EntitySet Name="DateTimeOffsets" EntityType="RefScenario.DateTimeOffset"/>
+				<EntitySet Name="Times" EntityType="RefScenario.Time"/>
+				<EntitySet Name="SBytes" EntityType="RefScenario.SByte"/>
+				<EntitySet Name="Bytes" EntityType="RefScenario.Byte"/>
+
+				<EntitySet Name="Employees" EntityType="RefScenario.Employee"/>
+				<EntitySet Name="Teams" EntityType="RefScenario.Team"/>
+				<EntitySet Name="Rooms" EntityType="RefScenario.Room"/>
+				<EntitySet Name="Managers" EntityType="RefScenario.Manager"/>
+				<EntitySet Name="Buildings" EntityType="RefScenario.Building"/>
+				<AssociationSet Name="ManagerEmployees" Association="RefScenario.ManagerEmployees">
+					<End EntitySet="Managers" Role="r_Manager"/>
+					<End EntitySet="Employees" Role="r_Employees"/>
+				</AssociationSet>
+				<AssociationSet Name="TeamEmployees" Association="RefScenario.TeamEmployees">
+					<End EntitySet="Teams" Role="r_Team"/>
+					<End EntitySet="Employees" Role="r_Employees"/>
+				</AssociationSet>
+				<AssociationSet Name="RoomEmployees" Association="RefScenario.RoomEmployees">
+					<End EntitySet="Rooms" Role="r_Room"/>
+					<End EntitySet="Employees" Role="r_Employees"/>
+				</AssociationSet>
+				<AssociationSet Name="BuildingRooms" Association="RefScenario.BuildingRooms">
+					<End EntitySet="Buildings" Role="r_Building"/>
+					<End EntitySet="Rooms" Role="r_Room"/>
+				</AssociationSet>
+				<FunctionImport Name="EmployeeSearch" ReturnType="Collection(RefScenario.Employee)" EntitySet="Employees" m:HttpMethod="GET">
+					<Parameter Name="q" Type="Edm.String" Nullable="true"/>
+				</FunctionImport>
+				<FunctionImport Name="AllLocations" ReturnType="Collection(RefScenario.c_Location)" m:HttpMethod="GET"/>
+				<FunctionImport Name="AllUsedRoomIds" ReturnType="Collection(Edm.String)" m:HttpMethod="GET"/>
+				<FunctionImport Name="MaximalAge" ReturnType="Edm.Int16" m:HttpMethod="GET"/>
+				<FunctionImport Name="MostCommonLocation" ReturnType="RefScenario.c_Location" m:HttpMethod="GET"/>
+				<FunctionImport Name="ManagerPhoto" ReturnType="Edm.Binary" m:HttpMethod="GET">
+					<Parameter Name="Id" Type="Edm.String" Nullable="false"/>
+				</FunctionImport>
+				<FunctionImport Name="OldestEmployee" ReturnType="RefScenario.Employee" EntitySet="Employees" m:HttpMethod="GET"/>
+			</EntityContainer>
+		</Schema>
+		<Schema Namespace="RefScenario2" xmlns="http://schemas.microsoft.com/ado/2008/09/edm">
+			<EntityType Name="Photo" m:HasStream="true">
+				<Key>
+					<PropertyRef Name="Id"/>
+					<PropertyRef Name="Type"/>
+				</Key>
+				<Property Name="Id" Type="Edm.Int32" Nullable="false" ConcurrencyMode="Fixed"/>
+				<Property Name="Name" Type="Edm.String" m:FC_TargetPath="SyndicationTitle"/>
+				<Property Name="Type" Type="Edm.String" Nullable="false"/>
+				<Property Name="ImageUrl" Type="Edm.String" m:FC_TargetPath="SyndicationAuthorUri"/>
+				<Property Name="Image" Type="Edm.Binary"/>
+				<Property Name="BinaryData" Type="Edm.Binary" Nullable="true" m:MimeType="image/jpeg"/>
+				<Property Name="Содержание" Type="Edm.String" Nullable="true" m:FC_TargetPath="Содержание" m:FC_KeepInContent="false" m:FC_NsPrefix="??" m:FC_NsUri="http://localhost"/>
+			</EntityType>
+			<EntityContainer Name="Container2">
+				<EntitySet Name="Photos" EntityType="RefScenario2.Photo"/>
+			</EntityContainer>
+		</Schema>
+	</edmx:DataServices>
+</edmx:Edmx>

@@ -112,6 +112,13 @@
     <module>odata-web</module>
   </modules>
 
+  <distributionManagement>
+    <snapshotRepository>
+      <id>snapshot.repository</id>
+      <url>http://nexus:8081/nexus/content/repositories/deploy.snapshots/</url>
+    </snapshotRepository>
+  </distributionManagement>
+
   <build>
     <pluginManagement>
       <plugins>
