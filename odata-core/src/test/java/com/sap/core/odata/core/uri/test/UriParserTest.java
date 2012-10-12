@@ -843,7 +843,7 @@ public class UriParserTest {
   }
 
   @Test
-  public void parseQueryParameters() throws Exception {
+  public void parseSystemQueryOptions() throws Exception {
     UriParserResult result = parse("Employees?$format=json&$inlinecount=allpages&$skiptoken=abc&$skip=2&$top=1");
     assertEquals("Employees", result.getEntitySet().getName());
     assertEquals(UriType.URI1, result.getUriType());
@@ -851,11 +851,20 @@ public class UriParserTest {
     assertEquals(InlineCount.ALLPAGES, result.getInlineCount());
     assertEquals("abc", result.getSkipToken());
     assertEquals(2, result.getSkip());
-    assertEquals(1, result.getTop());
-  }
+    assertEquals(1, result.getTop().intValue());
+
+    result = parse("Employees?$format=atom&$inlinecount=none&$top=0");
+    assertEquals(Format.ATOM, result.getFormat());
+    assertEquals(InlineCount.NONE, result.getInlineCount());
+    assertEquals(0, result.getTop().intValue());
+
+    result = parse("Employees?$format=xml");
+    assertEquals(Format.XML, result.getFormat());
+    assertNull(result.getTop());
+}
 
   @Test
-  public void parseWrongQueryParameters() throws Exception {
+  public void parseWrongSystemQueryOptions() throws Exception {
     parseWrongUri("Employees?$format=");
     parseWrongUri("Employees?$inlinecount=no");
     parseWrongUri("Employees?&$skiptoken==");

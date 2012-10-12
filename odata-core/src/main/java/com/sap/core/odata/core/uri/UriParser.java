@@ -226,23 +226,23 @@ public class UriParser {
         throw new UriParserException("Cannot find property: " + property);
 
       switch (property.getType().getKind()) {
-        case SIMPLE:
-        case COMPLEX:
-          if (keyPredicateName != null || emptyParentheses != null)
+      case SIMPLE:
+      case COMPLEX:
+        if (keyPredicateName != null || emptyParentheses != null)
+          throw new UriParserException("Invalid segment: " + pathSegment + ", " + this.pathSegments);
+        handlePropertyPath((EdmProperty) property);
+        break;
+
+      case NAVIGATION:
+        final EdmNavigationProperty navigationProperty = (EdmNavigationProperty) property;
+        if (keyPredicateName != null || emptyParentheses != null)
+          if (navigationProperty.getMultiplicity() != EdmMultiplicity.MANY)
             throw new UriParserException("Invalid segment: " + pathSegment + ", " + this.pathSegments);
-          handlePropertyPath((EdmProperty) property);
-          break;
+        handleNavigationProperties(navigationProperty, fromEntitySet, keyPredicateName);
+        break;
 
-        case NAVIGATION:
-          final EdmNavigationProperty navigationProperty = (EdmNavigationProperty) property;
-          if (keyPredicateName != null || emptyParentheses != null)
-            if (navigationProperty.getMultiplicity() != EdmMultiplicity.MANY)
-              throw new UriParserException("Invalid segment: " + pathSegment + ", " + this.pathSegments);
-          handleNavigationProperties(navigationProperty, fromEntitySet, keyPredicateName);
-          break;
-
-        default:
-          throw new UriParserException("Invalid property: " + pathSegment + ", " + this.pathSegments);
+      default:
+        throw new UriParserException("Invalid property: " + pathSegment + ", " + this.pathSegments);
       }
     }
 
@@ -512,25 +512,25 @@ public class UriParser {
       return true;
 
     switch (propertyType) {
-      case BOOLEAN:
-        return literalType == EdmSimpleType.SBYTE && (uriLiteral.getLiteral().equals("0") || uriLiteral.getLiteral().equals("1"));
-      case BYTE:
-        return literalType == EdmSimpleType.SBYTE && !uriLiteral.getLiteral().startsWith("-");
-      case DECIMAL:
-        return literalType == EdmSimpleType.BYTE || literalType == EdmSimpleType.SBYTE || literalType == EdmSimpleType.INT16 || literalType == EdmSimpleType.INT32 || literalType == EdmSimpleType.INT64 || literalType == EdmSimpleType.SINGLE
-            || literalType == EdmSimpleType.DOUBLE;
-      case DOUBLE:
-        return literalType == EdmSimpleType.BYTE || literalType == EdmSimpleType.SBYTE || literalType == EdmSimpleType.INT16 || literalType == EdmSimpleType.INT32 || literalType == EdmSimpleType.INT64 || literalType == EdmSimpleType.SINGLE;
-      case INT16:
-        return literalType == EdmSimpleType.BYTE || literalType == EdmSimpleType.SBYTE;
-      case INT32:
-        return literalType == EdmSimpleType.BYTE || literalType == EdmSimpleType.SBYTE || literalType == EdmSimpleType.INT16;
-      case INT64:
-        return literalType == EdmSimpleType.BYTE || literalType == EdmSimpleType.SBYTE || literalType == EdmSimpleType.INT16 || literalType == EdmSimpleType.INT32;
-      case SINGLE:
-        return literalType == EdmSimpleType.BYTE || literalType == EdmSimpleType.SBYTE || literalType == EdmSimpleType.INT16 || literalType == EdmSimpleType.INT32 || literalType == EdmSimpleType.INT64;
-      default:
-        return false;
+    case BOOLEAN:
+      return literalType == EdmSimpleType.SBYTE && (uriLiteral.getLiteral().equals("0") || uriLiteral.getLiteral().equals("1"));
+    case BYTE:
+      return literalType == EdmSimpleType.SBYTE && !uriLiteral.getLiteral().startsWith("-");
+    case DECIMAL:
+      return literalType == EdmSimpleType.BYTE || literalType == EdmSimpleType.SBYTE || literalType == EdmSimpleType.INT16 || literalType == EdmSimpleType.INT32 || literalType == EdmSimpleType.INT64 || literalType == EdmSimpleType.SINGLE
+          || literalType == EdmSimpleType.DOUBLE;
+    case DOUBLE:
+      return literalType == EdmSimpleType.BYTE || literalType == EdmSimpleType.SBYTE || literalType == EdmSimpleType.INT16 || literalType == EdmSimpleType.INT32 || literalType == EdmSimpleType.INT64 || literalType == EdmSimpleType.SINGLE;
+    case INT16:
+      return literalType == EdmSimpleType.BYTE || literalType == EdmSimpleType.SBYTE;
+    case INT32:
+      return literalType == EdmSimpleType.BYTE || literalType == EdmSimpleType.SBYTE || literalType == EdmSimpleType.INT16;
+    case INT64:
+      return literalType == EdmSimpleType.BYTE || literalType == EdmSimpleType.SBYTE || literalType == EdmSimpleType.INT16 || literalType == EdmSimpleType.INT32;
+    case SINGLE:
+      return literalType == EdmSimpleType.BYTE || literalType == EdmSimpleType.SBYTE || literalType == EdmSimpleType.INT16 || literalType == EdmSimpleType.INT32 || literalType == EdmSimpleType.INT64;
+    default:
+      return false;
     }
   }
 
@@ -547,17 +547,17 @@ public class UriParser {
 
     this.uriResult.setTargetType(type);
     switch (type.getKind()) {
-      case SIMPLE:
-        this.uriResult.setUriType(isCollection ? UriType.URI13 : UriType.URI14);
-        break;
-      case COMPLEX:
-        this.uriResult.setUriType(isCollection ? UriType.URI11 : UriType.URI12);
-        break;
-      case ENTITY:
-        this.uriResult.setUriType(UriType.URI10);
-        break;
-      default:
-        throw new UriParserException("Invalid kind of function-import return type");
+    case SIMPLE:
+      this.uriResult.setUriType(isCollection ? UriType.URI13 : UriType.URI14);
+      break;
+    case COMPLEX:
+      this.uriResult.setUriType(isCollection ? UriType.URI11 : UriType.URI12);
+      break;
+    case ENTITY:
+      this.uriResult.setUriType(UriType.URI10);
+      break;
+    default:
+      throw new UriParserException("Invalid kind of function-import return type");
     }
 
     String segment = null;
@@ -594,60 +594,65 @@ public class UriParser {
           String[] keyAndValue = option.split("=");
           queryParameters.put(keyAndValue[0], keyAndValue[1]);
         } else {
-          throw new UriParserException("Malformed query parameter syntax: " + query);          
+          throw new UriParserException("Malformed query parameter syntax: " + query);
         }
+      UriParser.LOG.debug("query parameters: " + queryParameters);
     }
-
-    UriParser.LOG.debug("query parameters: " + queryParameters);
-
     return queryParameters;
   }
 
   private void handleQueryParameters(final Properties queryParameters) throws UriParserException {
-    final String format = queryParameters.getProperty("$format");
+    handleSystemQueryOptionFormat(queryParameters.getProperty("$format"));
+    queryParameters.getProperty("$filter");
+    handleSystemQueryOptionInlineCount(queryParameters.getProperty("$inlinecount"));
+    queryParameters.getProperty("$orderby");
+    uriResult.setSkipToken(queryParameters.getProperty("$skiptoken"));
+    handleSystemQueryOptionSkip(queryParameters.getProperty("$skip"));
+    handleSystemQueryOptionTop(queryParameters.getProperty("$top"));
+    queryParameters.getProperty("$expand");
+    queryParameters.getProperty("$select");
+  }
+
+  private void handleSystemQueryOptionFormat(final String format) throws UriParserException {
     if ("atom".equals(format))
       uriResult.setFormat(Format.ATOM);
     else if ("json".equals(format))
       uriResult.setFormat(Format.JSON);
     else if ("xml".equals(format))
       uriResult.setFormat(Format.XML);
+  }
 
-    queryParameters.getProperty("$filter");
-
-    final String inlineCount = queryParameters.getProperty("$inlinecount");
+  private void handleSystemQueryOptionInlineCount(final String inlineCount) throws UriParserException {
     if ("allpages".equals(inlineCount))
       uriResult.setInlineCount(InlineCount.ALLPAGES);
     else if ("none".equals(inlineCount))
       uriResult.setInlineCount(InlineCount.NONE);
     else if (inlineCount != null)
       throw new UriParserException("Invalid value " + inlineCount + " for $inlinecount");
+  }
 
-    queryParameters.getProperty("$orderby");
-
-    uriResult.setSkipToken(queryParameters.getProperty("$skiptoken"));
-
-    final String skip = queryParameters.getProperty("$skip");
-    if (skip != null)
+  private void handleSystemQueryOptionSkip(final String skip) throws UriParserException {
+    if (skip != null) {
       try {
         uriResult.setSkip(Integer.valueOf(skip));
       } catch (NumberFormatException e) {
         throw new UriParserException("Invalid value " + skip + " for $skip", e);
       }
-    if (uriResult.getSkip() < 0)
-      throw new UriParserException("$skip must not be negative");
+      if (uriResult.getSkip() < 0)
+        throw new UriParserException("$skip must not be negative");
+    }
+  }
 
-    final String top = queryParameters.getProperty("$top");
-    if (top != null)
+  private void handleSystemQueryOptionTop(final String top) throws UriParserException {
+    if (top != null) {
       try {
         uriResult.setTop(Integer.valueOf(top));
       } catch (NumberFormatException e) {
         throw new UriParserException("Invalid value " + top + " for $top", e);
       }
-    if (uriResult.getTop() < 0)
-      throw new UriParserException("$top must not be negative");
-
-    queryParameters.getProperty("$expand");
-    queryParameters.getProperty("$select");
+      if (uriResult.getTop() < 0)
+        throw new UriParserException("$top must not be negative");
+    }
   }
 
   private String unescape(final String s) throws UriParserException {
