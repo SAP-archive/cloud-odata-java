@@ -1,4 +1,4 @@
-package com.sap.core.odata.ref.rest;
+package com.sap.core.odata.ref.test;
 
 import javax.ws.rs.ext.ContextResolver;
 
@@ -7,16 +7,20 @@ import com.sap.core.odata.core.rest.ODataApplication;
 import com.sap.core.odata.core.rest.ODataRootLocator;
 
 
-public class ScenarioApplication extends ODataApplication {
+public class TestApplication extends ODataApplication {
 
   @Override
   protected Class<? extends ContextResolver<ODataProducer>> getContextResolver() {
-    return ScenarioResolver.class;
+    return TestResolver.class;
   }
 
   @Override
   protected Class<? extends ODataRootLocator> getRootResourceLocator() {
-    return ScenarioRootLocator.class;
+    return TestRootLocator.class;
+  }
+
+  public static void setProducerInstance(ODataProducer producer) {
+    TestResolver.setProducerInstance(producer);
   }
 
 }

@@ -1,4 +1,4 @@
-package com.sap.core.odata.ref.rest.test;
+package com.sap.core.odata.ref.test;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -20,6 +20,7 @@ import org.odata4j.core.ODataConstants.Charsets;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.sap.core.odata.ref.producer.ScenarioProducer;
 import com.sap.core.odata.ref.rest.ScenarioApplication;
 
 public abstract class AbstractScenarioTest {
@@ -46,19 +47,30 @@ public abstract class AbstractScenarioTest {
     return httpClient;
   }
 
+  public ScenarioProducer getScenarioProducer() {
+    return this.scenarioProducer;
+  }
+
   private Server server;
   private URI endpoint = URI.create("http://localhost:19080/ext/");
-  private Class<?> applicationClass = ScenarioApplication.class;
+  private Class<?> applicationClass = TestApplication.class;
   private HttpClient httpClient = new DefaultHttpClient();
-  
+  private ScenarioProducer scenarioProducer = new ScenarioProducer();
+
   @Before
   public void before() throws Exception {
+    TestApplication.setProducerInstance(this.scenarioProducer);
     this.startServer();
   }
 
   @After
   public void after() throws Exception {
-    this.stopServer();
+    try {
+      this.stopServer();
+    } finally {
+      /* ensure next test will run clean */
+      TestApplication.setProducerInstance(null);
+    }
   }
 
   private void stopServer() throws Exception {
@@ -71,8 +83,7 @@ public abstract class AbstractScenarioTest {
     this.log.debug("## uri:         " + this.endpoint);
     this.log.debug("## application: " + this.applicationClass.getCanonicalName());
     this.log.debug("##################################");
-    
-    
+
     CXFNonSpringJaxrsServlet odataServlet = new CXFNonSpringJaxrsServlet();
     ServletHolder odataServletHolder = new ServletHolder(odataServlet);
     odataServletHolder.setInitParameter("javax.ws.rs.Application", this.applicationClass.getCanonicalName());
@@ -84,17 +95,17 @@ public abstract class AbstractScenarioTest {
     this.server.setHandler(contextHandler);
     server.start();
   }
-  
+
   protected String entityToString(HttpEntity entity) throws UnsupportedEncodingException, IllegalStateException, IOException {
-      BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(entity.getContent(), Charsets.Upper.UTF_8));
-      StringBuilder stringBuilder = new StringBuilder();
-      String line = null;
+    BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(entity.getContent(), Charsets.Upper.UTF_8));
+    StringBuilder stringBuilder = new StringBuilder();
+    String line = null;
 
-      while ((line = bufferedReader.readLine()) != null)
-        stringBuilder.append(line);
+    while ((line = bufferedReader.readLine()) != null)
+      stringBuilder.append(line);
 
-      bufferedReader.close();
-      return stringBuilder.toString();
+    bufferedReader.close();
+    return stringBuilder.toString();
   }
 
 }
