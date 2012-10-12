@@ -43,7 +43,4 @@ public interface ODataSubLocator {
   @Produces(MediaType.TEXT_PLAIN)
   public abstract Response handleDelete();
 
-  public abstract void setContext(ODataContext context);
-
-  public abstract void setProducer(ODataProducer producer);
 }

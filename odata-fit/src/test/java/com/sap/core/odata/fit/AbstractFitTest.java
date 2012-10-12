@@ -52,7 +52,7 @@ public abstract class AbstractFitTest {
   private URI endpoint = URI.create("http://localhost:19080/ext/");
   private Class<?> applicationClass = FitApplication.class;
   private HttpClient httpClient = new DefaultHttpClient();
-  
+
   @Before
   public void before() throws Exception {
     ODataProducer producer = this.createProducer();
@@ -64,10 +64,15 @@ public abstract class AbstractFitTest {
 
   @After
   public void after() throws Exception {
-    this.stopServer();
+    try {
+      this.stopServer();
+    } finally {
+      /* ensure next test will run clean */
+      FitApplication.setProducerInstance(null);
+    }
   }
 
-  protected abstract ODataProducer createProducer(); 
+  protected abstract ODataProducer createProducer();
 
   private void stopServer() throws Exception {
     this.server.stop();
@@ -79,8 +84,7 @@ public abstract class AbstractFitTest {
     this.log.debug("## uri:         " + this.endpoint);
     this.log.debug("## application: " + this.applicationClass.getCanonicalName());
     this.log.debug("##################################");
-    
-    
+
     CXFNonSpringJaxrsServlet odataServlet = new CXFNonSpringJaxrsServlet();
     ServletHolder odataServletHolder = new ServletHolder(odataServlet);
     odataServletHolder.setInitParameter("javax.ws.rs.Application", this.applicationClass.getCanonicalName());
@@ -92,17 +96,17 @@ public abstract class AbstractFitTest {
     this.server.setHandler(contextHandler);
     server.start();
   }
-  
+
   protected String entityToString(HttpEntity entity) throws UnsupportedEncodingException, IllegalStateException, IOException {
-      BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(entity.getContent(), Charsets.Upper.UTF_8));
-      StringBuilder stringBuilder = new StringBuilder();
-      String line = null;
+    BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(entity.getContent(), Charsets.Upper.UTF_8));
+    StringBuilder stringBuilder = new StringBuilder();
+    String line = null;
 
-      while ((line = bufferedReader.readLine()) != null)
-        stringBuilder.append(line);
+    while ((line = bufferedReader.readLine()) != null)
+      stringBuilder.append(line);
 
-      bufferedReader.close();
-      return stringBuilder.toString();
+    bufferedReader.close();
+    return stringBuilder.toString();
   }
 
 }

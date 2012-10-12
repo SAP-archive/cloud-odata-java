@@ -15,6 +15,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.sap.core.odata.core.producer.ODataProducer;
+import com.sap.core.odata.core.rest.impl.ODataContextImpl;
 import com.sap.core.odata.core.rest.impl.ODataSubLocatorImpl;
 
 public class ODataRootLocator {
@@ -35,18 +36,19 @@ public class ODataRootLocator {
     ODataRootLocator.log.debug("+++ ODataSubResourceLocator.getODataResource()");
 
     ODataProducer producer = this.resolver.getContext(ODataProducer.class);
-    ODataSubLocator resource = new ODataSubLocatorImpl();
-    ODataContext context = new ODataContext();
+
+    ODataSubLocatorImpl subLocator = new ODataSubLocatorImpl();
+    ODataContextImpl context = new ODataContextImpl();
 
     context.setHttpHeaders(httpHeaders);
     context.setRequest(request);
     context.setUriInfo(uriInfo);
     context.setPathSegments(odataPathSegments);
 
-    resource.setProducer(producer);
-    resource.setContext(context);
+    subLocator.setProducer(producer);
+    subLocator.setContext(context);
     
-    return resource;
+    return subLocator;
   }
   
 }
