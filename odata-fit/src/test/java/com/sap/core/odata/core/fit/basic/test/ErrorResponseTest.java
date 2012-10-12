@@ -14,10 +14,10 @@ import org.apache.http.client.methods.HttpGet;
 import org.junit.Test;
 import org.odata4j.exceptions.NotFoundException;
 
+import com.sap.core.odata.core.producer.Entity;
+import com.sap.core.odata.core.producer.ODataProducer;
 import com.sap.core.odata.fit.AbstractFitTest;
 import com.sap.core.odata.fit.StringStreamHelper;
-import com.sap.core.odata.producer.Entity;
-import com.sap.core.odata.producer.ODataProducer;
 
 public class ErrorResponseTest extends AbstractFitTest {
 

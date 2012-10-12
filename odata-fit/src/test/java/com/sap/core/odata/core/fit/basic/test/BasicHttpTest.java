@@ -22,10 +22,10 @@ import org.apache.http.client.methods.HttpPut;
 import org.apache.http.client.methods.HttpRequestBase;
 import org.junit.Test;
 
+import com.sap.core.odata.core.producer.ODataProducer;
 import com.sap.core.odata.fit.AbstractFitTest;
 import com.sap.core.odata.fit.HttpMerge;
 import com.sap.core.odata.fit.StringStreamHelper;
-import com.sap.core.odata.producer.ODataProducer;
 
 public class BasicHttpTest extends AbstractFitTest {
 
