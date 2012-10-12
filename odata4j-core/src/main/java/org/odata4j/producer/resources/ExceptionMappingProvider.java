@@ -22,6 +22,8 @@ import org.odata4j.producer.ErrorResponse;
 import org.odata4j.producer.ErrorResponseExtension;
 import org.odata4j.producer.ODataProducer;
 import org.odata4j.producer.Responses;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Provider for correctly formatted server errors.  Every {@link RuntimeException} that
@@ -32,6 +34,8 @@ import org.odata4j.producer.Responses;
  */
 @Provider
 public class ExceptionMappingProvider implements ExceptionMapper<RuntimeException> {
+
+  private static final Logger log = LoggerFactory.getLogger(ExceptionMappingProvider.class);
 
   @Context
   protected ContextResolver<ODataProducer> producerResolver;
@@ -55,6 +59,10 @@ public class ExceptionMappingProvider implements ExceptionMapper<RuntimeExceptio
         getFormatParameter(), getCallbackParameter());
     StringWriter sw = new StringWriter();
     fw.write(uriInfo, sw, getErrorResponse(exception, includeInnerError));
+
+    if (exception.getHttpStatus().getStatusCode() >= 500) {
+      ExceptionMappingProvider.log.error("internal server error", exception);
+    }
 
     return Response.status(exception.getHttpStatus())
         .type(fw.getContentType())
