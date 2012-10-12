@@ -2,6 +2,7 @@ package com.sap.core.odata.core.uri;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 
 import com.sap.core.odata.core.edm.EdmEntityContainer;
@@ -34,6 +35,7 @@ public class UriParserResult {
   private String skipToken;
   private int skip;
   private Integer top;
+  private HashMap<String, UriLiteral> functionImportParameters;
 
   public void setUriType(UriType uriType) {
     this.uriType = uriType;
@@ -177,6 +179,17 @@ public class UriParserResult {
     return top;
   }
 
+  public void addFunctionImportParameter(final String name, final UriLiteral value) {
+    if (functionImportParameters == null)
+      functionImportParameters = new HashMap<String, UriLiteral>();
+
+    functionImportParameters.put(name, value);
+  }
+
+  public HashMap<String, UriLiteral> getFunctionImportParameters() {
+    return functionImportParameters;
+  }
+
   @Override
   public String toString() {
     String entityContainerName = this.entityContainer == null ? "null" : this.entityContainer.getName();
@@ -185,8 +198,23 @@ public class UriParserResult {
     String targetTypeName = this.targetType == null ? "null" : this.targetType.getName();
     String functionImportName = this.functionImport == null ? "null" : this.functionImport.getName();
 
-    return "UriResult: uriType=" + uriType + ", format=" + format + ", inlineCount=" + inlineCount + ", entityContainer=" + entityContainerName + ", entitySet=" + entitySetName + ", targetEntitySet=" + targetEntitySetName + ", targetType="
-        + targetTypeName + ", functionImport=" + functionImportName + ", isCount=" + count + ", isValue=" + value + ", isLinks=" + links + ", keyPredicates=" + keyPredicates + ", NavigationSegments=" + navigationSegments + ", propertyPath=" + propertyPath;
+    return "UriParserResult: uriType=" + uriType + ", "
+        + "entityContainer=" + entityContainerName + ", "
+        + "entitySet=" + entitySetName + ", "
+        + "targetEntitySet=" + targetEntitySetName + ", "
+        + "functionImport=" + functionImportName + ", "
+        + "targetType=" + targetTypeName + ", "
+        + "keyPredicates=" + keyPredicates + ", "
+        + "navigationSegments=" + navigationSegments + ", "
+        + "propertyPath=" + propertyPath + ", "
+        + "isCount=" + count + ", "
+        + "isValue=" + value + ", "
+        + "isLinks=" + links + ", "
+        + "format=" + format + ", "
+        + "inlineCount=" + inlineCount + ", "
+        + "skipToken=" + skipToken + ", "
+        + "skip=" + skip + ", "
+        + "top=" + top + ", "
+        + "FunctionImportParameters=" + functionImportParameters;
   }
-
 }

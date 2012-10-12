@@ -23,6 +23,7 @@ import com.sap.core.odata.core.edm.EdmEntityType;
 import com.sap.core.odata.core.edm.EdmFunctionImport;
 import com.sap.core.odata.core.edm.EdmMultiplicity;
 import com.sap.core.odata.core.edm.EdmNavigationProperty;
+import com.sap.core.odata.core.edm.EdmParameter;
 import com.sap.core.odata.core.edm.EdmProperty;
 import com.sap.core.odata.core.edm.EdmSimpleType;
 import com.sap.core.odata.core.edm.EdmType;
@@ -54,18 +55,20 @@ public class UriParser {
 
   public UriParserResult parse(final String uri) throws UriParserException {
     UriParser.LOG.debug("uri: " + uri);
-    this.uriResult = new UriParserResult();
+    uriResult = new UriParserResult();
 
-    this.pathSegments = new ArrayList<String>(Arrays.asList(uri.split("/")));
-    if (!this.pathSegments.isEmpty() && this.pathSegments.get(0).isEmpty())
-      this.pathSegments.remove(0);
+    pathSegments = new ArrayList<String>(Arrays.asList(uri.split("/")));
+    if (!pathSegments.isEmpty() && pathSegments.get(0).isEmpty())
+      pathSegments.remove(0);
 
     handleResourcePath();
 
     final Properties queryParameters = getQueryParameters(uri);
     handleQueryParameters(queryParameters);
 
-    return this.uriResult;
+    UriParser.LOG.debug("parsing result: " + uriResult);
+
+    return uriResult;
   }
 
   private UriParserResult handleResourcePath() throws UriParserException {
@@ -130,8 +133,6 @@ public class UriParser {
       this.uriResult.setFunctionImport(functionImport);
       this.uriResult = this.handleFunctionImport(functionImport, emptyParentheses, keyPredicate);
     }
-
-    UriParser.LOG.debug("parsing result: " + this.uriResult);
 
     return this.uriResult;
   }
@@ -416,7 +417,7 @@ public class UriParser {
       final UriLiteral uriLiteral = parseUriLiteral(value);
 
       if (!isCompatible(uriLiteral, (EdmSimpleType) keyProperty.getType()))
-        throw new UriParserException("Literal " + value + " not compatible to type of property " + keyProperty.getName());
+        throw new UriParserException("Literal " + value + " is not compatible to type of property " + keyProperty.getName());
 
       keyPredicates.add(new KeyPredicate(uriLiteral.getLiteral(), keyProperty));
     }
@@ -611,6 +612,8 @@ public class UriParser {
     handleSystemQueryOptionTop(queryParameters.getProperty("$top"));
     queryParameters.getProperty("$expand");
     queryParameters.getProperty("$select");
+    
+    handleFunctionImportParameters(queryParameters);
   }
 
   private void handleSystemQueryOptionFormat(final String format) throws UriParserException {
@@ -652,6 +655,26 @@ public class UriParser {
       }
       if (uriResult.getTop() < 0)
         throw new UriParserException("$top must not be negative");
+    }
+  }
+
+  private void handleFunctionImportParameters(final Properties queryParameters) throws UriParserException {
+    final EdmFunctionImport functionImport = uriResult.getFunctionImport();
+    if (functionImport == null)
+      return;
+
+    for (String parameterName : functionImport.getParameterNames()) {
+      final EdmParameter parameter = functionImport.getParameter(parameterName);
+      final String value = queryParameters.getProperty(parameterName);
+      if (value == null)
+        if (parameter.getFacets() == null || parameter.getFacets().isNullable())
+          continue;
+        else
+          throw new UriParserException("Mandatory function-import parameter missing: " + parameterName);
+      final UriLiteral uriLiteral = parseUriLiteral(value);
+      if (!isCompatible(uriLiteral, (EdmSimpleType) parameter.getType()))
+        throw new UriParserException("Literal " + value + " is not compatible to type of function-import parameter " + parameterName);
+      uriResult.addFunctionImportParameter(parameterName, uriLiteral);
     }
   }
 
