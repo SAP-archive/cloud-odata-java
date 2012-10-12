@@ -33,7 +33,7 @@ public class UriParserResult {
   private InlineCount inlineCount;
   private String skipToken;
   private int skip;
-  private int top;
+  private Integer top;
 
   public void setUriType(UriType uriType) {
     this.uriType = uriType;
@@ -169,11 +169,11 @@ public class UriParserResult {
     return skip;
   }
 
-  public void setTop(int top) {
+  public void setTop(Integer top) {
     this.top = top;
   }
 
-  public int getTop() {
+  public Integer getTop() {
     return top;
   }
 
