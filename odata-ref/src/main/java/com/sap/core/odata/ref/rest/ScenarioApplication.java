@@ -1,4 +1,4 @@
-package com.sap.core.odata.fit;
+package com.sap.core.odata.ref.rest;
 
 import javax.ws.rs.ext.ContextResolver;
 
@@ -6,15 +6,12 @@ import com.sap.core.odata.core.producer.ODataProducer;
 import com.sap.core.odata.core.rest.ODataApplication;
 
 
+public class ScenarioApplication extends ODataApplication {
 
-
-public class FitApplication extends ODataApplication {
   @Override
   protected Class<? extends ContextResolver<ODataProducer>> getContextResolver() {
-    return FitContextResolver.class;
+    // TODO Auto-generated method stub
+    return null;
   }
 
-  public static void setProducerInstance(ODataProducer producer) {
-    FitContextResolver.setProducerInstance(producer);
-  }
 }

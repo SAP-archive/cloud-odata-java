@@ -6,7 +6,7 @@ import javax.ws.rs.ext.Provider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.sap.core.odata.producer.ODataProducer;
+import com.sap.core.odata.core.producer.ODataProducer;
 
 @Provider
 public class FitContextResolver implements ContextResolver<ODataProducer> {

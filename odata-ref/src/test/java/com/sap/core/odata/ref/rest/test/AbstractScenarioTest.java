@@ -1,6 +1,4 @@
-package com.sap.core.odata.fit;
-
-import static org.junit.Assert.assertNotNull;
+package com.sap.core.odata.ref.rest.test;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -22,9 +20,9 @@ import org.odata4j.core.ODataConstants.Charsets;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.sap.core.odata.core.producer.ODataProducer;
+import com.sap.core.odata.ref.rest.ScenarioApplication;
 
-public abstract class AbstractFitTest {
+public abstract class AbstractScenarioTest {
 
   static {
     DOMConfigurator.configureAndWatch("log4j.xml");
@@ -50,15 +48,11 @@ public abstract class AbstractFitTest {
 
   private Server server;
   private URI endpoint = URI.create("http://localhost:19080/ext/");
-  private Class<?> applicationClass = FitApplication.class;
+  private Class<?> applicationClass = ScenarioApplication.class;
   private HttpClient httpClient = new DefaultHttpClient();
   
   @Before
   public void before() throws Exception {
-    ODataProducer producer = this.createProducer();
-    assertNotNull(producer);
-    FitApplication.setProducerInstance(producer);
-
     this.startServer();
   }
 
@@ -66,8 +60,6 @@ public abstract class AbstractFitTest {
   public void after() throws Exception {
     this.stopServer();
   }
-
-  protected abstract ODataProducer createProducer(); 
 
   private void stopServer() throws Exception {
     this.server.stop();
