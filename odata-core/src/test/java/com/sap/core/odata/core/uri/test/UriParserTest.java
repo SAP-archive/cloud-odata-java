@@ -527,10 +527,26 @@ public class UriParserTest {
     parseWrongUri("/Employees('1')/Manager('1')");
     parseWrongUri("/Employees('1')/$links/Manager('1')");
     parseWrongUri("/Employees('1')/$links/Manager()");
+    parseWrongUri("/Employees('1')/$links/Manager/somethingwrong");
     parseWrongUri("/Employees('1')/Manager/$count/somethingwrong");
+    parseWrongUri("/Employees('1')/$links/Manager/$count/somethingwrong");
     parseWrongUri("/Employees('1')/Manager/$value");
     parseWrongUri("/Managers('1')/Employees('1')/$value/somethingwrong");
     parseWrongUri("/Managers('1')/Employees/$links");
+    parseWrongUri("/Employees('1')/$links/somethingwrong");
+    parseWrongUri("/Employees('1')/$links/EmployeeName");
+  }
+  
+  @Test
+  public void navigationPathWrongMatch() throws Exception {
+    parseWrongUri("/Employees('1')/(somethingwrong(");
+    
+  }
+  
+  @Test
+  public void navigationSegmentWrongMatch() throws Exception {
+    parseWrongUri("/Employees('1')/$links/(somethingwrong(");
+    
   }
 
   @Test
@@ -858,10 +874,23 @@ public class UriParserTest {
     assertEquals(InlineCount.NONE, result.getInlineCount());
     assertEquals(0, result.getTop().intValue());
 
+    
+    result = parse("Employees?$format=json&$inlinecount=none");
+    assertEquals("Employees", result.getEntitySet().getName());
+    assertEquals(UriType.URI1, result.getUriType());
+    assertEquals(Format.JSON, result.getFormat());
+    assertEquals(InlineCount.NONE, result.getInlineCount());
+        
+    result = parse("Employees?$format=atom");
+    assertEquals("Employees", result.getEntitySet().getName());
+    assertEquals(UriType.URI1, result.getUriType());
+    assertEquals(Format.ATOM, result.getFormat());
+    
     result = parse("Employees?$format=xml");
+    assertEquals("Employees", result.getEntitySet().getName());
+    assertEquals(UriType.URI1, result.getUriType());
     assertEquals(Format.XML, result.getFormat());
-    assertNull(result.getTop());
-}
+  }
 
   @Test
   public void parseWrongSystemQueryOptions() throws Exception {
@@ -872,5 +901,6 @@ public class UriParserTest {
     parseWrongUri("Employees?$skip='a'");
     parseWrongUri("Employees?$top=-1");
     parseWrongUri("Employees?$top=12345678901234567890");
+    
   }
 }
