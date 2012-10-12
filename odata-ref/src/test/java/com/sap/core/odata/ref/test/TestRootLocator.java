@@ -1,4 +1,4 @@
-package com.sap.core.odata.ref.rest;
+package com.sap.core.odata.ref.test;
 
 import java.util.List;
 
@@ -15,9 +15,9 @@ import com.sap.core.odata.core.rest.ODataSubLocator;
 import com.sap.core.odata.ref.producer.ScenarioProducer;
 
 @Path("/{segment1}/{segment2}")
-public class ScenarioRootLocator extends ODataRootLocator {
+public class TestRootLocator extends ODataRootLocator {
 
-  private static final Logger log = LoggerFactory.getLogger(ScenarioRootLocator.class);
+  private static final Logger log = LoggerFactory.getLogger(TestRootLocator.class);
 
   @Path("/{odataPathSegments: .*}")
   public ODataSubLocator getSubLocator(
@@ -26,10 +26,10 @@ public class ScenarioRootLocator extends ODataRootLocator {
       @PathParam("odataPathSegments") List<PathSegment> odataPathSegments
       ) {
 
-    ScenarioRootLocator.log.debug("+++ ScenarioRootLocator:getSubLocator()");
-    ScenarioRootLocator.log.debug("Path Segment 1: " + segment1);
-    ScenarioRootLocator.log.debug("Path Segment 2: " + segment2);
-    ScenarioRootLocator.log.debug("OData Segments: " + odataPathSegments);
+    TestRootLocator.log.debug("+++ ScenarioRootLocator:getSubLocator()");
+    TestRootLocator.log.debug("Path Segment 1: " + segment1);
+    TestRootLocator.log.debug("Path Segment 2: " + segment2);
+    TestRootLocator.log.debug("OData Segments: " + odataPathSegments);
 
     ODataSubLocator subLocator = super.getSubLocator(odataPathSegments);
 

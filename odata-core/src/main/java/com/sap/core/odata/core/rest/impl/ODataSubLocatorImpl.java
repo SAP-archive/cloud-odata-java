@@ -18,7 +18,7 @@ public final class ODataSubLocatorImpl implements ODataSubLocator {
 
   private static final Logger log = LoggerFactory.getLogger(ODataSubLocatorImpl.class);
 
-  private ODataContext context;
+  private ODataContextImpl context;
 
   private ODataProducer producer;
 
@@ -36,7 +36,7 @@ public final class ODataSubLocatorImpl implements ODataSubLocator {
   @Override
   public Response handleGet() {
     ODataSubLocatorImpl.log.debug("+++ ODataSubResource:handleGet()");
-    this.log();
+    this.context.log();
 
     if (this.producer instanceof Entity) {
       Entity entityProducer = (Entity) this.producer;
@@ -61,7 +61,7 @@ public final class ODataSubLocatorImpl implements ODataSubLocator {
 
     /* tunneling support */
     if (xmethod == null) {
-      this.log();
+      this.context.log();
       response = Response.ok().entity("POST: status 200 ok").build();
     } else if ("MERGE".equals(xmethod)) {
       response = this.handleMerge();
@@ -80,7 +80,7 @@ public final class ODataSubLocatorImpl implements ODataSubLocator {
   @Override
   public Response handlePut() {
     ODataSubLocatorImpl.log.debug("+++ ODataSubResource:handlePut()");
-    this.log();
+    this.context.log();
 
     return Response.ok().entity("PUT: status 200 ok").build();
   }
@@ -91,7 +91,7 @@ public final class ODataSubLocatorImpl implements ODataSubLocator {
   @Override
   public Response handlePatch() {
     ODataSubLocatorImpl.log.debug("+++ ODataSubResource:handlePatch()");
-    this.log();
+    this.context.log();
 
     return Response.ok().entity("PATCH: status 200 ok").build();
   }
@@ -102,7 +102,7 @@ public final class ODataSubLocatorImpl implements ODataSubLocator {
   @Override
   public Response handleMerge() {
     ODataSubLocatorImpl.log.debug("+++ ODataSubResource:handleMerge()");
-    this.log();
+    this.context.log();
 
     return Response.ok().entity("MERGE: status 200 ok").build();
   }
@@ -113,33 +113,16 @@ public final class ODataSubLocatorImpl implements ODataSubLocator {
   @Override
   public Response handleDelete() {
     ODataSubLocatorImpl.log.debug("+++ ODataSubResource:handleDelete()");
-    this.log();
+    this.context.log();
 
     return Response.ok().entity("DELETE: status 200 ok").build();
   }
 
-  @Override
-  public void setContext(ODataContext context) {
+  public void setContext(ODataContextImpl context) {
     this.context = context;
   }
 
-  @Override
   public void setProducer(ODataProducer producer) {
     this.producer = producer;
   }
-
-  private void log() {
-    ODataSubLocatorImpl.log.debug("--odata http context----------------");
-    ODataSubLocatorImpl.log.debug("odataPath:      " + this.context.getPathSegments());
-    ODataSubLocatorImpl.log.debug("httpHeaders:    " + this.context.getHttpHeaders().getRequestHeaders());
-    ODataSubLocatorImpl.log.debug("request method: " + this.context.getRequest().getMethod());
-    ODataSubLocatorImpl.log.debug("----------------------------------");
-    ODataSubLocatorImpl.log.debug("uriInfo:        " + this.context.getUriInfo().getPath());
-    ODataSubLocatorImpl.log.debug("baseUri:        " + this.context.getUriInfo().getBaseUri());
-    ODataSubLocatorImpl.log.debug("queryParam:     " + this.context.getUriInfo().getQueryParameters());
-    ODataSubLocatorImpl.log.debug("pathParam:      " + this.context.getUriInfo().getPathParameters());
-    ODataSubLocatorImpl.log.debug("pathSegments:   " + this.context.getUriInfo().getPathSegments());
-    ODataSubLocatorImpl.log.debug("----------------------------------");
-  }
-
 }

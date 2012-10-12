@@ -7,43 +7,14 @@ import javax.ws.rs.core.PathSegment;
 import javax.ws.rs.core.Request;
 import javax.ws.rs.core.UriInfo;
 
-public class ODataContext {
+public interface ODataContext {
 
-  private UriInfo uriInfo;
-  private Request request;
-  private HttpHeaders httpHeaders;
-  List<PathSegment> pathSegments;
+  List<PathSegment> getPathSegments();
 
-  public List<PathSegment> getPathSegments() {
-    return pathSegments;
-  }
+  HttpHeaders getHttpHeaders();
 
-  public void setPathSegments(List<PathSegment> pathSegments) {
-    this.pathSegments = pathSegments;
-  }
+  UriInfo getUriInfo();
 
-  public HttpHeaders getHttpHeaders() {
-    return httpHeaders;
-  }
-
-  public void setHttpHeaders(HttpHeaders httpHeaders) {
-    this.httpHeaders = httpHeaders;
-  }
-
-  public UriInfo getUriInfo() {
-    return uriInfo;
-  }
-
-  public void setUriInfo(UriInfo uriInfo) {
-    this.uriInfo = uriInfo;
-  }
-
-  public Request getRequest() {
-    return request;
-  }
-
-  public void setRequest(Request request) {
-    this.request = request;
-  }
+  Request getRequest();
 
 }
