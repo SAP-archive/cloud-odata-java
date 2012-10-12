@@ -11,6 +11,7 @@ import static org.mockito.Mockito.when;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.log4j.xml.DOMConfigurator;
 import org.junit.Test;
 
 import com.sap.core.odata.core.edm.Edm;
@@ -18,9 +19,11 @@ import com.sap.core.odata.core.edm.EdmComplexType;
 import com.sap.core.odata.core.edm.EdmEntityContainer;
 import com.sap.core.odata.core.edm.EdmEntitySet;
 import com.sap.core.odata.core.edm.EdmEntityType;
+import com.sap.core.odata.core.edm.EdmFacets;
 import com.sap.core.odata.core.edm.EdmFunctionImport;
 import com.sap.core.odata.core.edm.EdmMultiplicity;
 import com.sap.core.odata.core.edm.EdmNavigationProperty;
+import com.sap.core.odata.core.edm.EdmParameter;
 import com.sap.core.odata.core.edm.EdmProperty;
 import com.sap.core.odata.core.edm.EdmServiceMetadata;
 import com.sap.core.odata.core.edm.EdmSimpleType;
@@ -34,7 +37,6 @@ import com.sap.core.odata.core.uri.UriParserResult;
 import com.sap.core.odata.core.uri.enums.Format;
 import com.sap.core.odata.core.uri.enums.InlineCount;
 import com.sap.core.odata.core.uri.enums.UriType;
-import org.apache.log4j.xml.DOMConfigurator;
 
 public class UriParserTest {
 
@@ -131,6 +133,12 @@ public class UriParserTest {
     when(defaultContainer.getEntitySet("Times")).thenReturn(timeEntitySet);
 
     EdmFunctionImport employeeSearchFunctionImport = createFunctionImportMock("EmployeeSearch", employeeType, EdmMultiplicity.MANY, employeeEntitySet);
+    List<String> employeeSearchParameterNames = new ArrayList<String>();
+    employeeSearchParameterNames.add("q");
+    EdmParameter employeeSearchParameter = mock(EdmParameter.class);
+    when(employeeSearchParameter.getType()).thenReturn(EdmSimpleType.STRING);
+    when(employeeSearchFunctionImport.getParameterNames()).thenReturn(employeeSearchParameterNames);
+    when(employeeSearchFunctionImport.getParameter("q")).thenReturn(employeeSearchParameter);
     when(defaultContainer.getFunctionImport("EmployeeSearch")).thenReturn(employeeSearchFunctionImport);
     EdmFunctionImport allLocationsFunctionImport = createFunctionImportMock("AllLocations", locationComplexType, EdmMultiplicity.MANY, null);
     when(defaultContainer.getFunctionImport("AllLocations")).thenReturn(allLocationsFunctionImport);
@@ -141,6 +149,15 @@ public class UriParserTest {
     EdmFunctionImport mostCommonLocationFunctionImport = createFunctionImportMock("MostCommonLocation", locationComplexType, EdmMultiplicity.ONE, null);
     when(defaultContainer.getFunctionImport("MostCommonLocation")).thenReturn(mostCommonLocationFunctionImport);
     EdmFunctionImport managerPhotoFunctionImport = createFunctionImportMock("ManagerPhoto", EdmSimpleType.BINARY, EdmMultiplicity.ONE, null);
+    List<String> managerPhotoParameterNames = new ArrayList<String>();
+    managerPhotoParameterNames.add("Id");
+    EdmParameter managerPhotoParameter = mock(EdmParameter.class);
+    when(managerPhotoParameter.getType()).thenReturn(EdmSimpleType.STRING);
+    EdmFacets managerPhotoParameterFacets = mock(EdmFacets.class);
+    when(managerPhotoParameterFacets.isNullable()).thenReturn(false);
+    when(managerPhotoParameter.getFacets()).thenReturn(managerPhotoParameterFacets);
+    when(managerPhotoFunctionImport.getParameterNames()).thenReturn(managerPhotoParameterNames);
+    when(managerPhotoFunctionImport.getParameter("Id")).thenReturn(managerPhotoParameter);
     when(defaultContainer.getFunctionImport("ManagerPhoto")).thenReturn(managerPhotoFunctionImport);
     EdmFunctionImport oldestEmployeeFunctionImport = createFunctionImportMock("OldestEmployee", employeeType, EdmMultiplicity.ONE, null);
     when(defaultContainer.getFunctionImport("OldestEmployee")).thenReturn(oldestEmployeeFunctionImport);
@@ -535,6 +552,7 @@ public class UriParserTest {
     parseWrongUri("/Managers('1')/Employees/$links");
     parseWrongUri("/Employees('1')/$links/somethingwrong");
     parseWrongUri("/Employees('1')/$links/EmployeeName");
+    parseWrongUri("Managers('1')/Employee/");
   }
   
   @Test
@@ -762,34 +780,14 @@ public class UriParserTest {
     parseOneKey("/Binaries(binary'FA12AAA1')", EdmSimpleType.BINARY, "+hKqoQ==\r\n");
   }
 
-  @Test(expected = UriParserException.class)
-  public void parseBinaryKeyWrongContent() throws UriParserException {
-    parse("/Binaries(binary'abcde')");
-  }
-
-  @Test(expected = UriParserException.class)
-  public void parseStringKeyWrongContent() throws UriParserException {
-    parse("Strings(')");
-  }
-
-  @Test(expected = UriParserException.class)
-  public void parseStringKeyMissingQuote() throws UriParserException {
-    parse("Strings('a)");
-  }
-
-  @Test(expected = UriParserException.class)
-  public void parseTimeKeyWithWrongPrefix() throws UriParserException {
-    parse("Times(wrongprefix'PT1H2M3S')");
-  }
-
-  @Test(expected = UriParserException.class)
-  public void parseInt32KeyWithWrongSuffix() throws UriParserException {
-    parse("/Int32s(32i)");
-  }
-
-  @Test(expected = UriParserException.class)
-  public void parseTooLargeNumber() throws UriParserException {
-    parse("Int32s(12345678901234567890)");
+  @Test
+  public void parseKeyWithWrongContent() throws Exception {
+    parseWrongUri("/Binaries(binary'abcde')");
+    parseWrongUri("Strings(')");
+    parseWrongUri("Strings('a)");
+    parseWrongUri("Times(wrongprefix'PT1H2M3S')");
+    parseWrongUri("/Int32s(32i)");
+    parseWrongUri("Int32s(12345678901234567890)");
   }
 
   @Test
@@ -842,7 +840,7 @@ public class UriParserTest {
     assertEquals("MostCommonLocation", result.getFunctionImport().getName());
     assertEquals(UriType.URI12, result.getUriType());
 
-    result = parse("ManagerPhoto");
+    result = parse("ManagerPhoto?Id='1'");
     assertEquals("ManagerPhoto", result.getFunctionImport().getName());
     assertEquals(UriType.URI14, result.getUriType());
 
@@ -852,10 +850,22 @@ public class UriParserTest {
   }
 
   @Test
+  public void parseFunctionImportParameters() throws Exception {
+    UriParserResult result = parse("EmployeeSearch?q='Hugo'&notaparameter=2");
+    assertEquals("EmployeeSearch", result.getFunctionImport().getName());
+    assertEquals(1, result.getFunctionImportParameters().size());
+    assertEquals(EdmSimpleType.STRING, result.getFunctionImportParameters().get("q").getType());
+    assertEquals("Hugo", result.getFunctionImportParameters().get("q").getLiteral());
+  }
+
+  @Test
   public void parseWrongFunctionImports() throws Exception {
+    parseWrongUri("EmployeeSearch?q=42");
     parseWrongUri("AllLocations/$value");
-    parseWrongUri("ManagerPhoto()");
+    parseWrongUri("MaximalAge()");
     parseWrongUri("MaximalAge/somethingwrong");
+    parseWrongUri("ManagerPhoto");
+    parseWrongUri("ManagerPhoto?Id='");
   }
 
   @Test
@@ -874,22 +884,14 @@ public class UriParserTest {
     assertEquals(InlineCount.NONE, result.getInlineCount());
     assertEquals(0, result.getTop().intValue());
 
-    
-    result = parse("Employees?$format=json&$inlinecount=none");
-    assertEquals("Employees", result.getEntitySet().getName());
-    assertEquals(UriType.URI1, result.getUriType());
-    assertEquals(Format.JSON, result.getFormat());
-    assertEquals(InlineCount.NONE, result.getInlineCount());
-        
-    result = parse("Employees?$format=atom");
-    assertEquals("Employees", result.getEntitySet().getName());
-    assertEquals(UriType.URI1, result.getUriType());
-    assertEquals(Format.ATOM, result.getFormat());
-    
     result = parse("Employees?$format=xml");
     assertEquals("Employees", result.getEntitySet().getName());
     assertEquals(UriType.URI1, result.getUriType());
     assertEquals(Format.XML, result.getFormat());
+    assertNull(result.getTop());
+
+    result = parse("Employees?$format=xml&$format=json");
+    assertEquals(Format.JSON, result.getFormat());
   }
 
   @Test
@@ -900,7 +902,6 @@ public class UriParserTest {
     parseWrongUri("Employees?$skip=-1");
     parseWrongUri("Employees?$skip='a'");
     parseWrongUri("Employees?$top=-1");
-    parseWrongUri("Employees?$top=12345678901234567890");
-    
+    parseWrongUri("Employees?$top=12345678901234567890");   
   }
 }
