@@ -26,6 +26,7 @@ public class UriParserResult {
   private List<KeyPredicate> keyPredicates = Collections.emptyList();
   private List<NavigationSegment> navigationSegments = Collections.emptyList();
   private List<EdmProperty> propertyPath = Collections.emptyList();
+  private List<SelectItem> select = Collections.emptyList();
   private boolean count;
   private boolean value;
   private boolean links;
@@ -216,5 +217,13 @@ public class UriParserResult {
         + "skip=" + skip + ", "
         + "top=" + top + ", "
         + "FunctionImportParameters=" + functionImportParameters;
+  }
+
+  public List<SelectItem> getSelect() {
+    return select;
+  }
+
+  public void setSelect(List<SelectItem> select) {
+    this.select = select;
   }
 }

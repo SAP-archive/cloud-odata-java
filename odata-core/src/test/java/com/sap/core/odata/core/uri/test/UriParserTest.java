@@ -1038,8 +1038,62 @@ public class UriParserTest {
   @Test
   public void parsePossibleQueryOptions() throws Exception {
     UriParserResult result = parse("Employees?sap-client=100&sap-ds-debug=true");
-    assertEquals("Employees", result.getEntitySet().getName());
+    assertEquals("Employees", result.getTargetEntitySet().getName());
     assertEquals(UriType.URI1, result.getUriType());
+  }
+  
+  @Test
+  public void parseSystemQueryOptionSelectSingle() throws Exception {
+    UriParserResult result = parse("Employees?$select=EmployeeName");
+    assertEquals("Employees", result.getTargetEntitySet().getName());
+    assertEquals(UriType.URI1, result.getUriType());
+    assertEquals(1, result.getSelect().size());
+    assertEquals("EmployeeName", result.getSelect().get(0).getProperty().getName());
+    
+    result = parse("Employees?$select=*");
+    assertEquals("Employees", result.getTargetEntitySet().getName());
+    assertEquals(UriType.URI1, result.getUriType());
+    assertEquals(1, result.getSelect().size());
+    assertTrue(result.getSelect().get(0).isStar());
+    
+    result = parse("Employees?$select=Location");
+    assertEquals("Employees", result.getTargetEntitySet().getName());
+    assertEquals(UriType.URI1, result.getUriType());
+    assertEquals(1, result.getSelect().size());
+    assertEquals("Location", result.getSelect().get(0).getProperty().getName());
+    
+    result = parse("Employees?$select=Manager");
+    assertEquals("Employees", result.getTargetEntitySet().getName());
+    assertEquals(UriType.URI1, result.getUriType());
+    assertEquals(1, result.getSelect().size());
+    assertEquals(1, result.getSelect().get(0).getNavigationPropertySegments().size());
+    assertEquals("Managers",result.getSelect().get(0).getNavigationPropertySegments().get(0).getTargetEntitySet().getName());  
+  }
+  
+  @Test
+  public void parseSystemQueryOptionSelectMultiple() throws Exception {
+    UriParserResult result = parse("Employees?$select=EmployeeName,Location");
+    assertEquals("Employees", result.getTargetEntitySet().getName());
+    assertEquals(UriType.URI1, result.getUriType());
+    assertEquals(2, result.getSelect().size());
+    assertEquals("EmployeeName", result.getSelect().get(0).getProperty().getName());
+    assertEquals("Location", result.getSelect().get(1).getProperty().getName());
+    
+    result = parse("Employees?$select=Manager,EmployeeName,Location");
+    assertEquals("Employees", result.getTargetEntitySet().getName());
+    assertEquals(UriType.URI1, result.getUriType());
+    assertEquals(3, result.getSelect().size());
+    assertEquals("EmployeeName", result.getSelect().get(1).getProperty().getName());
+    assertEquals("Location", result.getSelect().get(2).getProperty().getName());
+    assertEquals(1, result.getSelect().get(0).getNavigationPropertySegments().size());
+    assertEquals("Managers",result.getSelect().get(0).getNavigationPropertySegments().get(0).getTargetEntitySet().getName());  
+  
+  }
+  
+  @Test
+  public void parseSystemQueryOptionSelectNegative() throws Exception {
+    parseWrongUri("Employees?$select=somethingwrong");
+    parseWrongUri("Employees?$select=*/Somethingwrong");
   }
 
 }

@@ -44,7 +44,10 @@ public class UriParser {
   private static final Pattern WHOLE_NUMBER_PATTERN = Pattern.compile("(-?\\p{Digit}+)([lL])?");
   private static final Pattern DECIMAL_NUMBER_PATTERN = Pattern.compile("(-?\\p{Digit}+(?:\\.\\p{Digit}*(?:[eE][-+]?\\p{Digit}+)?)?)([mMdDfF])");
   private static final Pattern STRING_VALUE_PATTERN = Pattern.compile("(X|binary|datetime|datetimeoffset|guid|time)?'(.*)'");
-
+  private static final Pattern INITIAL_SELECT_PATTERN = Pattern.compile("^\\s*([^,]+)\\s*(?:,\\s*([^,].*))?$");
+  private static final Pattern SELECT_PATTERN = Pattern.compile("^\\s*([^/]+)\\s*(?:/\\s*([^/].*))?$");
+  
+  
   private Edm edm;
   private List<PathSegment> pathSegments;
   private UriParserResult uriResult;
@@ -599,15 +602,15 @@ public class UriParser {
 
   private void checkQueryParameterCompatibility() throws UriParserException {
     UriType uriType = uriResult.getUriType();
-    
+
     for (SystemQueryOption queryOption : odataQueryParameters.keySet()) {
 
-      if(uriType == UriType.URI4 && queryOption == SystemQueryOption.$format && uriResult.isValue() == true)
+      if (uriType == UriType.URI4 && queryOption == SystemQueryOption.$format && uriResult.isValue() == true)
         throw new UriParserException("Query parameter : " + queryOption + " in combination with $value is not compatible with uri type :" + uriType);
-      
-      if(uriType == UriType.URI5 && queryOption == SystemQueryOption.$format && uriResult.isValue() == true)
+
+      if (uriType == UriType.URI5 && queryOption == SystemQueryOption.$format && uriResult.isValue() == true)
         throw new UriParserException("Query parameter : " + queryOption + " in combination with $value is not compatible with uri type :" + uriType);
-      
+
       if (!uriType.isCompatible(queryOption))
         throw new UriParserException("Query parameter : " + queryOption + " not compatible with uri type :" + uriType);
     }
@@ -670,11 +673,70 @@ public class UriParser {
 
   }
 
-  private void handleSystemQueryOptionSelect(String select) throws UriParserException {
-    if ("".equals(select))
-      throw new UriParserException("Invalid value Null for $select");
-    // TODO:  Implement SystemQueryOption Select
+  private void handleSystemQueryOptionSelect(final String selectStatement) throws UriParserException {
+    ArrayList<SelectItem> select = new ArrayList<SelectItem>();
+    String selectStatementHelper = selectStatement;
 
+    while (selectStatementHelper != null) {
+      Matcher matcher = INITIAL_SELECT_PATTERN.matcher(selectStatementHelper);
+      if (!matcher.matches())
+        throw new UriParserException("Problems matching select statement " + selectStatement);
+
+      String selectItemName = matcher.group(1);
+      selectStatementHelper = matcher.group(2);
+
+      SelectItem selectItem = new SelectItem();
+      EdmTyped property = null;
+      boolean exit = false;
+      EdmEntitySet fromEntitySet = uriResult.getTargetEntitySet();
+
+      while (selectItemName != null) {
+        matcher = SELECT_PATTERN.matcher(selectItemName);
+        if (!matcher.matches())
+          throw new UriParserException("Problems matching select statement " + selectItemName);
+
+        if (exit)
+          throw new UriParserException("No segment after a simple or complex property allowed" + selectItemName);
+
+        String segment = matcher.group(1);
+        selectItemName = matcher.group(2);
+
+        if ("*".equals(segment)) {
+          selectItem.setStar(true);
+          exit = true;
+          continue;
+        }
+
+        property = fromEntitySet.getEntityType().getProperty(segment);
+        if (property == null)
+          throw new UriParserException("Can´t find property with name: " + segment);
+
+        switch (property.getType().getKind()) {
+        case SIMPLE:
+        case COMPLEX:
+          selectItem.setProperty(property);
+          exit = true;
+          break;
+        case NAVIGATION:
+          EdmNavigationProperty navigationProperty = (EdmNavigationProperty) property;
+          EdmEntitySet targetEntitySet = fromEntitySet.getRelatedEntitySet(navigationProperty);
+
+          NavigationPropertySegment navigationPropertySegment = new NavigationPropertySegment();
+          navigationPropertySegment.setNavigationProperty(navigationProperty);
+          navigationPropertySegment.setTargetEntitySet(targetEntitySet);
+          selectItem.addNavigationPropertySegment(navigationPropertySegment);
+
+          fromEntitySet = targetEntitySet;
+          break;
+        default:
+          break;
+        }
+      }
+
+      select.add(selectItem);
+    }
+
+    uriResult.setSelect(select);
   }
 
   private void handleSystemQueryOptionExpand(String expand) throws UriParserException {
@@ -697,7 +759,7 @@ public class UriParser {
       uriResult.setFormat(Format.JSON);
     else if ("xml".equals(format))
       uriResult.setFormat(Format.XML);
-    else 
+    else
       throw new UriParserException("Invalid value " + format + " for $format");
   }
 
@@ -710,25 +772,25 @@ public class UriParser {
       throw new UriParserException("Invalid value " + inlineCount + " for $inlinecount");
   }
 
-  private void handleSystemQueryOptionSkip(final String skip) throws UriParserException { 
-      try {
-        uriResult.setSkip(Integer.valueOf(skip));
-      } catch (NumberFormatException e) {
-        throw new UriParserException("Invalid value " + skip + " for $skip", e);
-      }
-      if (uriResult.getSkip() < 0)
-        throw new UriParserException("$skip must not be negative");
-    
+  private void handleSystemQueryOptionSkip(final String skip) throws UriParserException {
+    try {
+      uriResult.setSkip(Integer.valueOf(skip));
+    } catch (NumberFormatException e) {
+      throw new UriParserException("Invalid value " + skip + " for $skip", e);
+    }
+    if (uriResult.getSkip() < 0)
+      throw new UriParserException("$skip must not be negative");
+
   }
 
   private void handleSystemQueryOptionTop(final String top) throws UriParserException {
-      try {
-        uriResult.setTop(Integer.valueOf(top));
-      } catch (NumberFormatException e) {
-        throw new UriParserException("Invalid value " + top + " for $top", e);
-      }
-      if (uriResult.getTop() < 0)
-        throw new UriParserException("$top must not be negative");
+    try {
+      uriResult.setTop(Integer.valueOf(top));
+    } catch (NumberFormatException e) {
+      throw new UriParserException("Invalid value " + top + " for $top", e);
+    }
+    if (uriResult.getTop() < 0)
+      throw new UriParserException("$top must not be negative");
   }
 
   private void handleFunctionImportParameters() throws UriParserException {
