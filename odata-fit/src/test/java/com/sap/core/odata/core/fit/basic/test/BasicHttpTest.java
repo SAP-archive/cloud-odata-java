@@ -3,6 +3,8 @@ package com.sap.core.odata.core.fit.basic.test;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.withSettings;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -22,6 +24,9 @@ import org.apache.http.client.methods.HttpPut;
 import org.apache.http.client.methods.HttpRequestBase;
 import org.junit.Test;
 
+import com.sap.core.odata.core.edm.Edm;
+import com.sap.core.odata.core.edm.EdmServiceMetadata;
+import com.sap.core.odata.core.producer.Metadata;
 import com.sap.core.odata.core.producer.ODataProducer;
 import com.sap.core.odata.fit.AbstractFitTest;
 import com.sap.core.odata.fit.HttpMerge;
@@ -31,9 +36,19 @@ public class BasicHttpTest extends AbstractFitTest {
 
   @Override
   protected ODataProducer createProducer() {
-    return mock(ODataProducer.class);
+    ODataProducer producer = mock(ODataProducer.class, withSettings().extraInterfaces(Metadata.class));
+
+    Metadata m = (Metadata) producer;
+    
+    EdmServiceMetadata edmsm = mock(EdmServiceMetadata.class);
+    when(edmsm.getDataServiceVersion()).thenReturn("2.0");
+    Edm edm = mock(Edm.class);
+    when(edm.getServiceMetadata()).thenReturn(edmsm);
+    when(m.read()).thenReturn(edm);
+    
+    return producer;
   }
-  
+
   @Test
   public void testGet() throws MalformedURLException, IOException {
     HttpGet get = new HttpGet(URI.create(this.getEndpoint().toString() + "aaa/bbb/ccc"));
@@ -77,7 +92,6 @@ public class BasicHttpTest extends AbstractFitTest {
     this.tunneledResponseCheck(post, "MERGE");
   }
 
-
   @Test
   public void testPatchTunneledByPost() throws MalformedURLException, IOException {
     HttpPost post = new HttpPost(URI.create(this.getEndpoint().toString() + "aaa/bbb/ccc"));
@@ -90,19 +104,18 @@ public class BasicHttpTest extends AbstractFitTest {
     Header accept = response.getFirstHeader(HttpHeaders.CONTENT_TYPE);
 
     String payload = StringStreamHelper.inputStreamToString(response.getEntity().getContent());
-    
+
     assertTrue(payload.contains(xmethod));
     assertEquals(200, response.getStatusLine().getStatusCode());
     assertEquals(MediaType.TEXT_PLAIN, accept.getValue());
   }
 
-  
-private void responseCheck(HttpRequestBase method) throws ClientProtocolException, IOException {
+  private void responseCheck(HttpRequestBase method) throws ClientProtocolException, IOException {
     HttpResponse response = this.getHttpClient().execute(method);
     Header accept = response.getFirstHeader(HttpHeaders.CONTENT_TYPE);
 
     String payload = StringStreamHelper.inputStreamToString(response.getEntity().getContent());
-    
+
     assertTrue(payload.contains(method.getMethod()));
     assertEquals(200, response.getStatusLine().getStatusCode());
     assertEquals(MediaType.TEXT_PLAIN, accept.getValue());

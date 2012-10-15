@@ -13,13 +13,13 @@ import org.odata4j.producer.resources.ExceptionMappingProvider;
 import com.sap.core.odata.core.producer.ODataProducer;
 
 /**
- * Abstract OData JAX-RS application defines the OData REST framework as entry point for generic REST servlet e.g. CXFNoSpringJaxrsServlet or others.
+ * JAX-RS entry point for any generic REST servlet e.g. CXFNoSpringJaxrsServlet or others.
  * @see Application
  */
 public abstract class ODataApplication extends Application {
 
   /**
-   * OData default root resources and providers. 
+   * OData default root locator and providers. 
    * @see Applicaion
    */
   @Override
@@ -47,13 +47,20 @@ public abstract class ODataApplication extends Application {
   }
   
   /**
-   * 
-   * @return
+   * Returns a default OData root locator or an optional custom locator.
+   * <li>default locator: to handle /{odata path}
+   * <li>custom locator:  to handle /{custom path}/{odata path}
+   *  
+   * @return default OData root locator
    */
   protected Class<? extends ODataRootLocator> getRootResourceLocator() {
     return ODataRootLocator.class;
   }
 
+  /**
+   * 
+   * @return context resolver that creates a custom ODataProducer
+   */
   protected abstract Class<? extends ContextResolver<ODataProducer>> getContextResolver();
 
 }

@@ -15,6 +15,7 @@ import org.junit.Test;
 import org.odata4j.exceptions.NotFoundException;
 
 import com.sap.core.odata.core.producer.Entity;
+import com.sap.core.odata.core.producer.Metadata;
 import com.sap.core.odata.core.producer.ODataProducer;
 import com.sap.core.odata.fit.AbstractFitTest;
 import com.sap.core.odata.fit.StringStreamHelper;
@@ -25,7 +26,9 @@ public class ErrorResponseTest extends AbstractFitTest {
 
   @Override
   protected ODataProducer createProducer() {
-    this.producer = mock(ODataProducer.class, withSettings().extraInterfaces(Entity.class));
+    this.producer = mock(ODataProducer.class, withSettings().extraInterfaces(
+        Entity.class, 
+        Metadata.class));
     return this.producer;
   }
 
