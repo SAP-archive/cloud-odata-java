@@ -1,9 +1,9 @@
 package com.sap.core.odata.core.producer;
 
-import org.odata4j.edm.EdmDataServices;
+import com.sap.core.odata.core.edm.Edm;
 
 public interface Metadata {
 
-  EdmDataServices read();
+  Edm read();
   
 }
