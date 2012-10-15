@@ -930,7 +930,7 @@ public class UriParserTest {
   @Test
   public void parseSystemQueryOptions() throws Exception {
     UriParserResult result = parse("Employees?$format=json&$inlinecount=allpages&$skiptoken=abc&$skip=2&$top=1");
-    assertEquals("Employees", result.getEntitySet().getName());
+    assertEquals("Employees", result.getTargetEntitySet().getName());
     assertEquals(UriType.URI1, result.getUriType());
     assertEquals(Format.JSON, result.getFormat());
     assertEquals(InlineCount.ALLPAGES, result.getInlineCount());
@@ -939,28 +939,40 @@ public class UriParserTest {
     assertEquals(1, result.getTop().intValue());
 
     result = parse("Employees?$format=atom&$inlinecount=none&$top=0");
+    assertEquals("Employees", result.getTargetEntitySet().getName());
+    assertEquals(UriType.URI1, result.getUriType());
     assertEquals(Format.ATOM, result.getFormat());
     assertEquals(InlineCount.NONE, result.getInlineCount());
     assertEquals(0, result.getTop().intValue());
 
     result = parse("Employees?$format=json&$inlinecount=none");
-    assertEquals("Employees", result.getEntitySet().getName());
+    assertEquals("Employees", result.getTargetEntitySet().getName());
     assertEquals(UriType.URI1, result.getUriType());
     assertEquals(Format.JSON, result.getFormat());
     assertEquals(InlineCount.NONE, result.getInlineCount());
 
     result = parse("Employees?$format=atom");
-    assertEquals("Employees", result.getEntitySet().getName());
+    assertEquals("Employees", result.getTargetEntitySet().getName());
     assertEquals(UriType.URI1, result.getUriType());
     assertEquals(Format.ATOM, result.getFormat());
 
     result = parse("Employees?$format=xml");
-    assertEquals("Employees", result.getEntitySet().getName());
+    assertEquals("Employees", result.getTargetEntitySet().getName());
     assertEquals(UriType.URI1, result.getUriType());
     assertEquals(Format.XML, result.getFormat());
     assertNull(result.getTop());
 
     result = parse("Employees?$format=xml&$format=json");
+    assertEquals(Format.JSON, result.getFormat());
+    
+    result = parse("/Employees('1')/Location/Country?$format=json");
+    assertEquals("Employees", result.getTargetEntitySet().getName());
+    assertEquals(UriType.URI4, result.getUriType());
+    assertEquals(Format.JSON, result.getFormat());
+    
+    result = parse("/Employees('1')/EmployeeName?$format=json");
+    assertEquals("Employees", result.getTargetEntitySet().getName());
+    assertEquals(UriType.URI5, result.getUriType());
     assertEquals(Format.JSON, result.getFormat());
   }
 
@@ -1017,6 +1029,17 @@ public class UriParserTest {
   public void parseInCompatibleSystemQueryOptions() throws Exception {
     parseWrongUri("$metadata?$top=1");
     parseWrongUri("Employees('1')?$format=json&$inlinecount=allpages&$skiptoken=abc&$skip=2&$top=1");
+    parseWrongUri("/Employees('1')/Location/Country/$value?$format=json");
+    parseWrongUri("/Employees('1')/Location/Country/$value?$skip=2");    
+    parseWrongUri("/Employees('1')/EmployeeName/$value?$format=json");
+    parseWrongUri("/Employees('1')/EmployeeName/$value?$skip=2");
+  }
+  
+  @Test
+  public void parsePossibleQueryOptions() throws Exception {
+    UriParserResult result = parse("Employees?sap-client=100&sap-ds-debug=true");
+    assertEquals("Employees", result.getEntitySet().getName());
+    assertEquals(UriType.URI1, result.getUriType());
   }
 
 }

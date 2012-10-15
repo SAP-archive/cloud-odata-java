@@ -67,6 +67,7 @@ public class UriParser {
     this.odataQueryParameters = new HashMap<SystemQueryOption, String>();
     this.otherQueryParameters = new HashMap<String, String>();
 
+    UriParser.LOG.debug("query parameters: " + queryParameters);
     for (String queryOptionString : queryParameters.keySet()) {
       try {
         if (queryOptionString.startsWith("$")) {
@@ -597,11 +598,16 @@ public class UriParser {
   }
 
   private void checkQueryParameterCompatibility() throws UriParserException {
-    UriParser.LOG.debug("query parameters: " + odataQueryParameters);
     UriType uriType = uriResult.getUriType();
-
+    
     for (SystemQueryOption queryOption : odataQueryParameters.keySet()) {
 
+      if(uriType == UriType.URI4 && queryOption == SystemQueryOption.$format && uriResult.isValue() == true)
+        throw new UriParserException("Query parameter : " + queryOption + " in combination with $value is not compatible with uri type :" + uriType);
+      
+      if(uriType == UriType.URI5 && queryOption == SystemQueryOption.$format && uriResult.isValue() == true)
+        throw new UriParserException("Query parameter : " + queryOption + " in combination with $value is not compatible with uri type :" + uriType);
+      
       if (!uriType.isCompatible(queryOption))
         throw new UriParserException("Query parameter : " + queryOption + " not compatible with uri type :" + uriType);
     }
@@ -691,8 +697,8 @@ public class UriParser {
       uriResult.setFormat(Format.JSON);
     else if ("xml".equals(format))
       uriResult.setFormat(Format.XML);
-    else if ("".equals(format))
-      throw new UriParserException("Invalid value Null for $format");
+    else 
+      throw new UriParserException("Invalid value " + format + " for $format");
   }
 
   private void handleSystemQueryOptionInlineCount(final String inlineCount) throws UriParserException {
@@ -700,12 +706,11 @@ public class UriParser {
       uriResult.setInlineCount(InlineCount.ALLPAGES);
     else if ("none".equals(inlineCount))
       uriResult.setInlineCount(InlineCount.NONE);
-    else if (inlineCount != null)
+    else
       throw new UriParserException("Invalid value " + inlineCount + " for $inlinecount");
   }
 
-  private void handleSystemQueryOptionSkip(final String skip) throws UriParserException {
-    if (skip != null) {
+  private void handleSystemQueryOptionSkip(final String skip) throws UriParserException { 
       try {
         uriResult.setSkip(Integer.valueOf(skip));
       } catch (NumberFormatException e) {
@@ -713,11 +718,10 @@ public class UriParser {
       }
       if (uriResult.getSkip() < 0)
         throw new UriParserException("$skip must not be negative");
-    }
+    
   }
 
   private void handleSystemQueryOptionTop(final String top) throws UriParserException {
-    if (top != null) {
       try {
         uriResult.setTop(Integer.valueOf(top));
       } catch (NumberFormatException e) {
@@ -725,7 +729,6 @@ public class UriParser {
       }
       if (uriResult.getTop() < 0)
         throw new UriParserException("$top must not be negative");
-    }
   }
 
   private void handleFunctionImportParameters() throws UriParserException {
