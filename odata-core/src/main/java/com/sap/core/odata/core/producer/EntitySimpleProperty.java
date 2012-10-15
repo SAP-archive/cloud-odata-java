@@ -1,7 +1,9 @@
 package com.sap.core.odata.core.producer;
 
-public interface EntitySimpleProperty {
-  void read();
+import javax.ws.rs.core.Response;
 
-  void update();
+public interface EntitySimpleProperty {
+  Response read();
+
+  Response update();
 }

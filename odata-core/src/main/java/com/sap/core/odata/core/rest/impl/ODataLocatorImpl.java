@@ -28,33 +28,23 @@ public final class ODataLocatorImpl implements ODataLocator {
   
   private UriParser uriParser;
 
-  /* (non-Javadoc)
-   * @see com.sap.core.odata.rest.impl.ODataSubResource#getProducer()
-   */
   @Override
   public ODataProducer getProducer() {
     return this.producer;
   }
 
-  /* (non-Javadoc)
-   * @see com.sap.core.odata.rest.impl.ODataSubResource#handleGet()
-   */
   @Override
   public Response handleGet() {
     ODataLocatorImpl.log.debug("+++ ODataSubResource:handleGet()");
     this.context.log();
 
-    if (this.producer instanceof Entity) {
-      Entity entityProducer = (Entity) this.producer;
-      entityProducer.read();
+    if (this.producer.isEntity()) {
+      this.producer.getEntity().read();
     }
-
+    
     return Response.ok().entity("GET: status 200 ok").build();
   }
 
-  /* (non-Javadoc)
-   * @see com.sap.core.odata.rest.impl.ODataSubResource#handlePost(java.lang.String)
-   */
   @Override
   @POST
   @Produces(MediaType.TEXT_PLAIN)
@@ -65,7 +55,7 @@ public final class ODataLocatorImpl implements ODataLocator {
     ODataLocatorImpl.log.debug("+++ ODataSubResource:handlePost()");
     Response response;
 
-    /* tunneling support */
+    /* tunneling */
     if (xmethod == null) {
       this.context.log();
       response = Response.ok().entity("POST: status 200 ok").build();
@@ -80,9 +70,6 @@ public final class ODataLocatorImpl implements ODataLocator {
     return response;
   }
 
-  /* (non-Javadoc)
-   * @see com.sap.core.odata.rest.impl.ODataSubResource#handlePut()
-   */
   @Override
   public Response handlePut() {
     ODataLocatorImpl.log.debug("+++ ODataSubResource:handlePut()");
@@ -91,9 +78,6 @@ public final class ODataLocatorImpl implements ODataLocator {
     return Response.ok().entity("PUT: status 200 ok").build();
   }
 
-  /* (non-Javadoc)
-   * @see com.sap.core.odata.rest.impl.ODataSubResource#handlePatch()
-   */
   @Override
   public Response handlePatch() {
     ODataLocatorImpl.log.debug("+++ ODataSubResource:handlePatch()");
@@ -102,9 +86,6 @@ public final class ODataLocatorImpl implements ODataLocator {
     return Response.ok().entity("PATCH: status 200 ok").build();
   }
 
-  /* (non-Javadoc)
-   * @see com.sap.core.odata.rest.impl.ODataSubResource#handleMerge()
-   */
   @Override
   public Response handleMerge() {
     ODataLocatorImpl.log.debug("+++ ODataSubResource:handleMerge()");
@@ -113,9 +94,6 @@ public final class ODataLocatorImpl implements ODataLocator {
     return Response.ok().entity("MERGE: status 200 ok").build();
   }
 
-  /* (non-Javadoc)
-   * @see com.sap.core.odata.rest.impl.ODataSubResource#handleDelete()
-   */
   @Override
   public Response handleDelete() {
     ODataLocatorImpl.log.debug("+++ ODataSubResource:handleDelete()");
@@ -133,15 +111,11 @@ public final class ODataLocatorImpl implements ODataLocator {
   }
 
   @Override
-  public void initialize() {
+  public void beforRequest() {
     
-    if (!(this.producer instanceof Metadata)) {
-      throw new RuntimeException("Producer doesn't implement Metadata interface:" + this.producer.getClass());
-    }
+    Metadata metadata = this.producer.getMetadata();
     
-    Metadata metadata = (Metadata) this.producer;
-    this.uriParser = new UriParser(metadata.read());
-    
+    this.uriParser = new UriParser(metadata.getEdm());
     this.processor = new Processor();
   }
 

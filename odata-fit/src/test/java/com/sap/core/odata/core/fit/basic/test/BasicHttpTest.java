@@ -26,6 +26,7 @@ import org.junit.Test;
 
 import com.sap.core.odata.core.edm.Edm;
 import com.sap.core.odata.core.edm.EdmServiceMetadata;
+import com.sap.core.odata.core.producer.Entity;
 import com.sap.core.odata.core.producer.Metadata;
 import com.sap.core.odata.core.producer.ODataProducer;
 import com.sap.core.odata.fit.AbstractFitTest;
@@ -36,15 +37,21 @@ public class BasicHttpTest extends AbstractFitTest {
 
   @Override
   protected ODataProducer createProducer() {
-    ODataProducer producer = mock(ODataProducer.class, withSettings().extraInterfaces(Metadata.class));
+    ODataProducer producer = mock(ODataProducer.class);
 
-    Metadata m = (Metadata) producer;
-    
     EdmServiceMetadata edmsm = mock(EdmServiceMetadata.class);
     when(edmsm.getDataServiceVersion()).thenReturn("2.0");
+    
     Edm edm = mock(Edm.class);
     when(edm.getServiceMetadata()).thenReturn(edmsm);
-    when(m.read()).thenReturn(edm);
+    
+    Metadata metadata = mock(Metadata.class);
+    when(metadata.getEdm()).thenReturn(edm);
+    
+    Entity entity = mock(Entity.class);
+    
+    when(producer.getMetadata()).thenReturn(metadata);
+    when(producer.getEntity()).thenReturn(entity);
     
     return producer;
   }

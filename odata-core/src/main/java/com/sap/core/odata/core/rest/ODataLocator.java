@@ -26,7 +26,7 @@ public interface ODataLocator {
   /**
    * initialze OData locator before request handling
    */
-  public abstract void initialize();
+  public abstract void beforRequest();
   
   /**
    * handle OData request

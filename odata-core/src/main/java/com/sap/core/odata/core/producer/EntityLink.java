@@ -1,8 +1,10 @@
 package com.sap.core.odata.core.producer;
 
+import javax.ws.rs.core.Response;
+
 public interface EntityLink {
-  void read();
-  void exists();
-  void update();
-  void delete();
+  Response read();
+  Response exists();
+  Response update();
+  Response delete();
 }
