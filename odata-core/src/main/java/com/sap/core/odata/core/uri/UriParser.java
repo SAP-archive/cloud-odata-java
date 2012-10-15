@@ -1,13 +1,13 @@
 package com.sap.core.odata.core.uri;
 
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
-import java.util.Properties;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import javax.ws.rs.core.PathSegment;
 
 import org.odata4j.repack.org.apache.commons.codec.DecoderException;
 import org.odata4j.repack.org.apache.commons.codec.binary.Base64;
@@ -31,6 +31,7 @@ import com.sap.core.odata.core.edm.EdmTypeEnum;
 import com.sap.core.odata.core.edm.EdmTyped;
 import com.sap.core.odata.core.uri.enums.Format;
 import com.sap.core.odata.core.uri.enums.InlineCount;
+import com.sap.core.odata.core.uri.enums.SystemQueryOption;
 import com.sap.core.odata.core.uri.enums.UriType;
 
 public class UriParser {
@@ -45,30 +46,45 @@ public class UriParser {
   private static final Pattern STRING_VALUE_PATTERN = Pattern.compile("(X|binary|datetime|datetimeoffset|guid|time)?'(.*)'");
 
   private Edm edm;
-  private ArrayList<String> pathSegments;
+  private List<PathSegment> pathSegments;
   private UriParserResult uriResult;
+  private Map<SystemQueryOption, String> odataQueryParameters;
+  private Map<String, String> otherQueryParameters;
 
   public UriParser(final Edm edm) {
     this.edm = edm;
     UriParser.LOG.debug("edm version: " + this.edm.getServiceMetadata().getDataServiceVersion());
   }
 
-  public UriParserResult parse(final String uri) throws UriParserException {
-    UriParser.LOG.debug("uri: " + uri);
-    uriResult = new UriParserResult();
+  public UriParserResult parse(final List<PathSegment> pathSegments, Map<String, String> queryParameters) throws UriParserException {
+    UriParser.LOG.debug(pathSegments.toString());
+    this.uriResult = new UriParserResult();
 
-    pathSegments = new ArrayList<String>(Arrays.asList(uri.split("/")));
-    if (!pathSegments.isEmpty() && pathSegments.get(0).isEmpty())
-      pathSegments.remove(0);
+    this.pathSegments = pathSegments;
 
     handleResourcePath();
 
-    final Properties queryParameters = getQueryParameters(uri);
-    handleQueryParameters(queryParameters);
+    this.odataQueryParameters = new HashMap<SystemQueryOption, String>();
+    this.otherQueryParameters = new HashMap<String, String>();
 
-    UriParser.LOG.debug("parsing result: " + uriResult);
+    for (String queryOptionString : queryParameters.keySet()) {
+      try {
+        if (queryOptionString.startsWith("$")) {
+          SystemQueryOption queryOption = SystemQueryOption.valueOf(queryOptionString);
+          this.odataQueryParameters.put(queryOption, queryParameters.get(queryOptionString));
+        } else {
+          otherQueryParameters.put(queryOptionString, queryParameters.get(queryOptionString));
+        }
+      } catch (IllegalArgumentException e) {
+        throw new UriParserException("Illegal system query option: " + queryOptionString);
+      }
+    }
+
+    checkQueryParameterCompatibility();
+    handleQueryParameters();
 
     return uriResult;
+
   }
 
   private UriParserResult handleResourcePath() throws UriParserException {
@@ -80,7 +96,7 @@ public class UriParser {
       return this.uriResult;
     }
 
-    String pathSegment = this.pathSegments.remove(0);
+    String pathSegment = this.pathSegments.remove(0).getPath();
 
     if ("$metadata".equals(pathSegment)) {
       if (this.pathSegments.isEmpty()) {
@@ -112,7 +128,7 @@ public class UriParser {
 
     EdmEntityContainer entityContainer;
     if (entityContainerName != null) {
-      entityContainer = this.edm.getEntityContainer(unescape(entityContainerName));
+      entityContainer = this.edm.getEntityContainer(entityContainerName);
       if (entityContainer == null) {
         throw new UriParserException("Cannot find container with name: " + entityContainerName);
       }
@@ -122,12 +138,12 @@ public class UriParser {
 
     this.uriResult.setEntityContainer(entityContainer);
 
-    final EdmEntitySet entitySet = entityContainer.getEntitySet(unescape(segmentName));
+    final EdmEntitySet entitySet = entityContainer.getEntitySet(segmentName);
     if (entitySet != null) {
       this.uriResult.setEntitySet(entitySet);
       this.uriResult = this.handleEntitySet(entitySet, keyPredicate);
     } else {
-      final EdmFunctionImport functionImport = entityContainer.getFunctionImport(unescape(segmentName));
+      final EdmFunctionImport functionImport = entityContainer.getFunctionImport(segmentName);
       if (functionImport == null)
         throw new UriParserException("cannot parse URI path segments: " + pathSegment + "/" + this.pathSegments);
       this.uriResult.setFunctionImport(functionImport);
@@ -147,7 +163,7 @@ public class UriParser {
       if (this.pathSegments.isEmpty()) {
         this.uriResult.setUriType(UriType.URI1);
       } else {
-        final String pathSegment = this.pathSegments.remove(0);
+        final String pathSegment = this.pathSegments.remove(0).getPath();
         if ("$count".equals(pathSegment)) {
           if (this.pathSegments.isEmpty()) {
             this.uriResult.setUriType(UriType.URI15);
@@ -171,7 +187,7 @@ public class UriParser {
   }
 
   private UriParserResult handleNavigationPathOptions(final EdmEntitySet fromEntitySet) throws UriParserException {
-    final String pathSegment = this.pathSegments.remove(0);
+    final String pathSegment = this.pathSegments.remove(0).getPath();
 
     if ("$count".equals(pathSegment)) {
       this.uriResult.setTargetType(fromEntitySet.getEntityType());
@@ -222,7 +238,7 @@ public class UriParser {
       final String keyPredicateName = matcher.group(2);
       final String emptyParentheses = matcher.group(3);
 
-      final EdmTyped property = fromEntitySet.getEntityType().getProperty(unescape(navigationPropertyName));
+      final EdmTyped property = fromEntitySet.getEntityType().getProperty(navigationPropertyName);
       if (property == null)
         throw new UriParserException("Cannot find property: " + property);
 
@@ -256,7 +272,7 @@ public class UriParser {
       if (this.pathSegments.isEmpty())
         throw new UriParserException("$links must not be the last segment");
 
-      String pathSegment = this.pathSegments.remove(0);
+      String pathSegment = this.pathSegments.remove(0).getPath();
 
       final Matcher matcher = NAVIGATION_SEGMENT_PATTERN.matcher(pathSegment);
       if (!matcher.matches())
@@ -267,7 +283,7 @@ public class UriParser {
       final String emptyParentheses = matcher.group(3);
       UriParser.LOG.debug("RegEx (" + pathSegment + "): NavigationProperty=" + navigationPropertyName + ", keyPredicate=" + targetKeyPredicateName + ", emptyParentheses=" + emptyParentheses);
 
-      final EdmTyped property = fromEntitySet.getEntityType().getProperty(unescape(navigationPropertyName));
+      final EdmTyped property = fromEntitySet.getEntityType().getProperty(navigationPropertyName);
       if (property == null)
         throw new UriParserException("Cannot find property with name: " + navigationPropertyName);
 
@@ -275,7 +291,7 @@ public class UriParser {
         throw new UriParserException("Invalid EDM type. Type is not a navigation type");
 
       if (!this.pathSegments.isEmpty()) {
-        pathSegment = this.pathSegments.remove(0);
+        pathSegment = this.pathSegments.remove(0).getPath();
         if ("$count".equals(pathSegment))
           if (this.pathSegments.isEmpty())
             this.uriResult.setCount(true);
@@ -331,7 +347,7 @@ public class UriParser {
         else
           this.uriResult.setUriType(UriType.URI6A);
       } else {
-        if (keyPredicateName == null && navigationProperty.getMultiplicity() == EdmMultiplicity.MANY && !"$count".equals(this.pathSegments.get(0)) && !"$links".equals(this.pathSegments.get(0)))
+        if (keyPredicateName == null && navigationProperty.getMultiplicity() == EdmMultiplicity.MANY && !"$count".equals(this.pathSegments.get(0).getPath()) && !"$links".equals(this.pathSegments.get(0).getPath()))
           throw new UriParserException("Not last path segment: " + navigationProperty.getName() + ", " + this.pathSegments);
         handleNavigationPathOptions(targetEntitySet);
       }
@@ -354,7 +370,7 @@ public class UriParser {
         this.uriResult.setUriType(UriType.URI3);
       this.uriResult.setTargetType(type);
     } else {
-      final String segment = unescape(this.pathSegments.remove(0));
+      final String segment = this.pathSegments.remove(0).getPath();
       if (type.getKind() == EdmTypeEnum.SIMPLE) {
         if ("$value".equals(segment))
           if (this.pathSegments.isEmpty()) {
@@ -405,7 +421,7 @@ public class UriParser {
 
       EdmProperty keyProperty = null;
       for (EdmProperty testKeyProperty : keyProperties)
-        if (testKeyProperty.getName().equals(unescape(name))) {
+        if (testKeyProperty.getName().equals(name)) {
           keyProperty = testKeyProperty;
           break;
         }
@@ -429,7 +445,7 @@ public class UriParser {
   }
 
   private UriLiteral parseUriLiteral(final String uriLiteral) throws UriParserException {
-    final String literal = unescape(uriLiteral);
+    final String literal = uriLiteral;
 
     if ("true".equals(literal) || "false".equals(literal))
       return new UriLiteral(EdmSimpleType.BOOLEAN, literal);
@@ -565,7 +581,7 @@ public class UriParser {
 
     if (!this.pathSegments.isEmpty())
       if (this.uriResult.getUriType() == UriType.URI14) {
-        segment = pathSegments.remove(0);
+        segment = pathSegments.remove(0).getPath();
         if ("$value".equals(segment))
           this.uriResult.setValue(true);
         else
@@ -580,40 +596,92 @@ public class UriParser {
     return this.uriResult;
   }
 
-  private Properties getQueryParameters(final String uri) throws UriParserException {
-    Properties queryParameters = new Properties();
+  private void checkQueryParameterCompatibility() throws UriParserException {
+    UriParser.LOG.debug("query parameters: " + odataQueryParameters);
+    UriType uriType = uriResult.getUriType();
 
-    String query;
-    try {
-      query = new URI(uri).getQuery();
-    } catch (URISyntaxException e) {
-      throw new UriParserException("Error while retrieving query", e);
+    for (SystemQueryOption queryOption : odataQueryParameters.keySet()) {
+
+      if (!uriType.isCompatible(queryOption))
+        throw new UriParserException("Query parameter : " + queryOption + " not compatible with uri type :" + uriType);
     }
-    if (query != null) {
-      for (String option : query.split("&"))
-        if (option.indexOf("=") > 0 && option.indexOf("=") < option.length() - 1) {
-          String[] keyAndValue = option.split("=");
-          queryParameters.put(keyAndValue[0], keyAndValue[1]);
-        } else {
-          throw new UriParserException("Malformed query parameter syntax: " + query);
-        }
-      UriParser.LOG.debug("query parameters: " + queryParameters);
-    }
-    return queryParameters;
+
   }
 
-  private void handleQueryParameters(final Properties queryParameters) throws UriParserException {
-    handleSystemQueryOptionFormat(queryParameters.getProperty("$format"));
-    queryParameters.getProperty("$filter");
-    handleSystemQueryOptionInlineCount(queryParameters.getProperty("$inlinecount"));
-    queryParameters.getProperty("$orderby");
-    uriResult.setSkipToken(queryParameters.getProperty("$skiptoken"));
-    handleSystemQueryOptionSkip(queryParameters.getProperty("$skip"));
-    handleSystemQueryOptionTop(queryParameters.getProperty("$top"));
-    queryParameters.getProperty("$expand");
-    queryParameters.getProperty("$select");
-    
-    handleFunctionImportParameters(queryParameters);
+  private void handleQueryParameters() throws UriParserException {
+
+    for (SystemQueryOption queryOption : odataQueryParameters.keySet()) {
+
+      switch (queryOption) {
+      case $format:
+        handleSystemQueryOptionFormat(odataQueryParameters.get(SystemQueryOption.$format));
+        break;
+      case $filter:
+        handleSystemQueryOptionFilter(odataQueryParameters.get(SystemQueryOption.$filter));
+        break;
+      case $inlinecount:
+        handleSystemQueryOptionInlineCount(odataQueryParameters.get(SystemQueryOption.$inlinecount));
+        break;
+      case $orderby:
+        handleSystemQueryOptionOrderBy(odataQueryParameters.get(SystemQueryOption.$orderby));
+        break;
+      case $skiptoken:
+        handleSystemQueryOptionSkipToken(odataQueryParameters.get(SystemQueryOption.$skiptoken));
+        break;
+      case $skip:
+        handleSystemQueryOptionSkip(odataQueryParameters.get(SystemQueryOption.$skip));
+        break;
+      case $top:
+        handleSystemQueryOptionTop(odataQueryParameters.get(SystemQueryOption.$top));
+        break;
+      case $expand:
+        handleSystemQueryOptionExpand(odataQueryParameters.get(SystemQueryOption.$expand));
+        break;
+      case $select:
+        handleSystemQueryOptionSelect(odataQueryParameters.get(SystemQueryOption.$select));
+        break;
+      default:
+        //This should never happen
+        throw new UriParserException("Invalid queryparameter" + queryOption);
+      }
+    }
+
+    handleFunctionImportParameters();
+
+  }
+
+  private void handleSystemQueryOptionSkipToken(String skiptoken) throws UriParserException {
+    if ("".equals(skiptoken))
+      throw new UriParserException("Invalid value Null for $skiptoken");
+
+    uriResult.setSkipToken(skiptoken);
+  }
+
+  private void handleSystemQueryOptionOrderBy(String orderby) throws UriParserException {
+    if ("".equals(orderby))
+      throw new UriParserException("Invalid value Null for $orderby");
+    // TODO Implement SystemQueryOption Orderby
+
+  }
+
+  private void handleSystemQueryOptionSelect(String select) throws UriParserException {
+    if ("".equals(select))
+      throw new UriParserException("Invalid value Null for $select");
+    // TODO:  Implement SystemQueryOption Select
+
+  }
+
+  private void handleSystemQueryOptionExpand(String expand) throws UriParserException {
+    if ("".equals(expand))
+      throw new UriParserException("Invalid value Null for $expand");
+    // TODO:  Implement SystemQueryOption Expand
+
+  }
+
+  private void handleSystemQueryOptionFilter(final String filter) throws UriParserException {
+    if ("".equals(filter))
+      throw new UriParserException("Invalid value Null for $filter");
+    //TODO: Implement SystemQueryOption Filter
   }
 
   private void handleSystemQueryOptionFormat(final String format) throws UriParserException {
@@ -623,6 +691,8 @@ public class UriParser {
       uriResult.setFormat(Format.JSON);
     else if ("xml".equals(format))
       uriResult.setFormat(Format.XML);
+    else if ("".equals(format))
+      throw new UriParserException("Invalid value Null for $format");
   }
 
   private void handleSystemQueryOptionInlineCount(final String inlineCount) throws UriParserException {
@@ -658,14 +728,14 @@ public class UriParser {
     }
   }
 
-  private void handleFunctionImportParameters(final Properties queryParameters) throws UriParserException {
+  private void handleFunctionImportParameters() throws UriParserException {
     final EdmFunctionImport functionImport = uriResult.getFunctionImport();
     if (functionImport == null)
       return;
 
     for (String parameterName : functionImport.getParameterNames()) {
       final EdmParameter parameter = functionImport.getParameter(parameterName);
-      final String value = queryParameters.getProperty(parameterName);
+      final String value = otherQueryParameters.get(parameterName);
       if (value == null)
         if (parameter.getFacets() == null || parameter.getFacets().isNullable())
           continue;
@@ -675,14 +745,6 @@ public class UriParser {
       if (!isCompatible(uriLiteral, (EdmSimpleType) parameter.getType()))
         throw new UriParserException("Literal " + value + " is not compatible to type of function-import parameter " + parameterName);
       uriResult.addFunctionImportParameter(parameterName, uriLiteral);
-    }
-  }
-
-  private String unescape(final String s) throws UriParserException {
-    try {
-      return new URI(s).getPath();
-    } catch (URISyntaxException e) {
-      throw new UriParserException("Error while unescaping", e);
     }
   }
 }

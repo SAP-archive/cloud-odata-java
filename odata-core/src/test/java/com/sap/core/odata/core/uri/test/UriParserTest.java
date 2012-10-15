@@ -8,8 +8,14 @@ import static org.junit.Assert.fail;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
+import javax.ws.rs.core.PathSegment;
 
 import org.apache.log4j.xml.DOMConfigurator;
 import org.junit.Test;
@@ -230,7 +236,60 @@ public class UriParserTest {
   }
 
   private UriParserResult parse(final String uri) throws UriParserException {
-    return new UriParser(getEdm()).parse(uri);
+
+    String[] path = uri.split("\\?");
+
+    if (path.length > 2)
+      throw new UriParserException("Wrong URI Syntax");
+
+    List<PathSegment> pathSegments = getPathSegments(path[0]);
+    Map<String, String> queryParameters;
+    if (path.length == 2) {
+      queryParameters = getQueryParameters(path[1]);
+    } else {
+      queryParameters = new HashMap<String, String>();
+    }
+
+    return new UriParser(getEdm()).parse(pathSegments, queryParameters);
+  }
+
+  private Map<String, String> getQueryParameters(String uri) throws UriParserException {
+
+    Map<String, String> queryParameters = new HashMap<String, String>();
+
+    for (String option : uri.split("&")) {
+      String[] keyAndValue = option.split("=");
+      if (keyAndValue.length == 2) {
+        queryParameters.put(keyAndValue[0], keyAndValue[1]);
+      } else {
+        queryParameters.put(keyAndValue[0], "");
+      }
+    }
+
+    return queryParameters;
+  }
+
+  private List<PathSegment> getPathSegments(final String uri) throws UriParserException {
+    List<PathSegment> pathSegments = new ArrayList<PathSegment>();
+    String segment;
+    String[] segments = uri.split("/");
+    for (int i = 0; i < segments.length; i++) {
+      if (!"".equals(segments[i])) {
+        PathSegment pathSegmentMock = mock(PathSegment.class);
+        segment = unescape(segments[i]);
+        when(pathSegmentMock.getPath()).thenReturn(segment);
+        pathSegments.add(pathSegmentMock);
+      }
+    }
+    return pathSegments;
+  }
+
+  private String unescape(final String s) throws UriParserException {
+    try {
+      return new URI(s).getPath();
+    } catch (URISyntaxException e) {
+      throw new UriParserException("Error while unescaping", e);
+    }
   }
 
   public void parseWrongUri(final String uri) throws Exception {
@@ -554,17 +613,17 @@ public class UriParserTest {
     parseWrongUri("/Employees('1')/$links/EmployeeName");
     parseWrongUri("Managers('1')/Employee/");
   }
-  
+
   @Test
   public void navigationPathWrongMatch() throws Exception {
     parseWrongUri("/Employees('1')/(somethingwrong(");
-    
+
   }
-  
+
   @Test
   public void navigationSegmentWrongMatch() throws Exception {
     parseWrongUri("/Employees('1')/$links/(somethingwrong(");
-    
+
   }
 
   @Test
@@ -867,7 +926,7 @@ public class UriParserTest {
     parseWrongUri("ManagerPhoto");
     parseWrongUri("ManagerPhoto?Id='");
   }
-
+  
   @Test
   public void parseSystemQueryOptions() throws Exception {
     UriParserResult result = parse("Employees?$format=json&$inlinecount=allpages&$skiptoken=abc&$skip=2&$top=1");
@@ -884,6 +943,17 @@ public class UriParserTest {
     assertEquals(InlineCount.NONE, result.getInlineCount());
     assertEquals(0, result.getTop().intValue());
 
+    result = parse("Employees?$format=json&$inlinecount=none");
+    assertEquals("Employees", result.getEntitySet().getName());
+    assertEquals(UriType.URI1, result.getUriType());
+    assertEquals(Format.JSON, result.getFormat());
+    assertEquals(InlineCount.NONE, result.getInlineCount());
+
+    result = parse("Employees?$format=atom");
+    assertEquals("Employees", result.getEntitySet().getName());
+    assertEquals(UriType.URI1, result.getUriType());
+    assertEquals(Format.ATOM, result.getFormat());
+
     result = parse("Employees?$format=xml");
     assertEquals("Employees", result.getEntitySet().getName());
     assertEquals(UriType.URI1, result.getUriType());
@@ -896,12 +966,57 @@ public class UriParserTest {
 
   @Test
   public void parseWrongSystemQueryOptions() throws Exception {
-    parseWrongUri("Employees?$format=");
     parseWrongUri("Employees?$inlinecount=no");
     parseWrongUri("Employees?&$skiptoken==");
     parseWrongUri("Employees?$skip=-1");
     parseWrongUri("Employees?$skip='a'");
     parseWrongUri("Employees?$top=-1");
-    parseWrongUri("Employees?$top=12345678901234567890");   
+    parseWrongUri("Employees?$top=12345678901234567890");
+    parseWrongUri("Employees?$somethingwrong");
+    parseWrongUri("Employees?$somethingwrong=");
+    parseWrongUri("Employees?$somethingwrong=adjaodjai");
+
   }
+
+  @Test
+  public void parseWrongSystemQueryOptionInitialValues() throws Exception {
+    parseWrongUri("Employees?$expand=");
+    parseWrongUri("Employees?$filter=");
+    parseWrongUri("Employees?$orderby=");
+    parseWrongUri("Employees?$format=");
+    parseWrongUri("Employees?$skip=");
+    parseWrongUri("Employees?$top=");
+    parseWrongUri("Employees?$skiptoken=");
+    parseWrongUri("Employees?$inlinecount=");
+    parseWrongUri("Employees?$select=");
+
+    parseWrongUri("Employees?$expand");
+    parseWrongUri("Employees?$filter");
+    parseWrongUri("Employees?$orderby");
+    parseWrongUri("Employees?$format");
+    parseWrongUri("Employees?$skip");
+    parseWrongUri("Employees?$top");
+    parseWrongUri("Employees?$skiptoken");
+    parseWrongUri("Employees?$inlinecount");
+    parseWrongUri("Employees?$select");
+  }
+
+  @Test
+  public void parseCompatibleSystemQueryOptions() throws Exception {
+    UriParserResult result = parse("Employees?$format=json&$inlinecount=allpages&$skiptoken=abc&$skip=2&$top=1");
+    assertEquals("Employees", result.getEntitySet().getName());
+    assertEquals(UriType.URI1, result.getUriType());
+    assertEquals(Format.JSON, result.getFormat());
+    assertEquals(InlineCount.ALLPAGES, result.getInlineCount());
+    assertEquals("abc", result.getSkipToken());
+    assertEquals(2, result.getSkip());
+    assertEquals(1, result.getTop().intValue());
+  }
+
+  @Test
+  public void parseInCompatibleSystemQueryOptions() throws Exception {
+    parseWrongUri("$metadata?$top=1");
+    parseWrongUri("Employees('1')?$format=json&$inlinecount=allpages&$skiptoken=abc&$skip=2&$top=1");
+  }
+
 }
