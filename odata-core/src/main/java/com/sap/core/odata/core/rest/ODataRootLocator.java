@@ -63,7 +63,7 @@ public class ODataRootLocator {
     odataLocator.setProducer(producer);
     odataLocator.setContext(context);
     
-    odataLocator.initialize();
+    odataLocator.beforRequest();
     
     return odataLocator;
   }

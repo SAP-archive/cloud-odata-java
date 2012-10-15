@@ -1,9 +1,9 @@
 package com.sap.core.odata.core.producer;
 
-import org.odata4j.producer.BaseResponse;
+import javax.ws.rs.core.Response;
 
 public interface FunctionImport {
   
-  BaseResponse execute();
+  Response execute();
   
 }

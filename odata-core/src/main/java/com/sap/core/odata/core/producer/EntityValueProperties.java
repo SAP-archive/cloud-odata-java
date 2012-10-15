@@ -1,8 +1,10 @@
 package com.sap.core.odata.core.producer;
 
-public interface EntityValueProperties {
-  void read();
+import javax.ws.rs.core.Response;
 
-  void update();
-  void delete();
+public interface EntityValueProperties {
+  Response read();
+
+  Response update();
+  Response delete();
 }

@@ -1,9 +1,11 @@
 package com.sap.core.odata.core.producer;
 
+import javax.ws.rs.core.Response;
+
 public interface EntityMedia {
-  void read();
+  Response read();
 
-  void update();
+  Response update();
 
-  void delete();
+  Response delete();
 }
