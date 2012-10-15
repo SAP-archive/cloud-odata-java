@@ -21,7 +21,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.sap.core.odata.ref.producer.ScenarioProducer;
-import com.sap.core.odata.ref.rest.ScenarioApplication;
 
 public abstract class AbstractScenarioTest {
 

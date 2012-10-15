@@ -9,18 +9,24 @@ import javax.ws.rs.core.Response;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.sap.core.odata.core.processor.Processor;
 import com.sap.core.odata.core.producer.Entity;
+import com.sap.core.odata.core.producer.Metadata;
 import com.sap.core.odata.core.producer.ODataProducer;
-import com.sap.core.odata.core.rest.ODataContext;
-import com.sap.core.odata.core.rest.ODataSubLocator;
+import com.sap.core.odata.core.rest.ODataLocator;
+import com.sap.core.odata.core.uri.UriParser;
 
-public final class ODataSubLocatorImpl implements ODataSubLocator {
+public final class ODataLocatorImpl implements ODataLocator {
 
-  private static final Logger log = LoggerFactory.getLogger(ODataSubLocatorImpl.class);
+  private static final Logger log = LoggerFactory.getLogger(ODataLocatorImpl.class);
 
   private ODataContextImpl context;
 
   private ODataProducer producer;
+  
+  private Processor processor;
+  
+  private UriParser uriParser;
 
   /* (non-Javadoc)
    * @see com.sap.core.odata.rest.impl.ODataSubResource#getProducer()
@@ -35,7 +41,7 @@ public final class ODataSubLocatorImpl implements ODataSubLocator {
    */
   @Override
   public Response handleGet() {
-    ODataSubLocatorImpl.log.debug("+++ ODataSubResource:handleGet()");
+    ODataLocatorImpl.log.debug("+++ ODataSubResource:handleGet()");
     this.context.log();
 
     if (this.producer instanceof Entity) {
@@ -56,7 +62,7 @@ public final class ODataSubLocatorImpl implements ODataSubLocator {
       @HeaderParam("X-HTTP-Method") String xmethod
       ) {
 
-    ODataSubLocatorImpl.log.debug("+++ ODataSubResource:handlePost()");
+    ODataLocatorImpl.log.debug("+++ ODataSubResource:handlePost()");
     Response response;
 
     /* tunneling support */
@@ -79,7 +85,7 @@ public final class ODataSubLocatorImpl implements ODataSubLocator {
    */
   @Override
   public Response handlePut() {
-    ODataSubLocatorImpl.log.debug("+++ ODataSubResource:handlePut()");
+    ODataLocatorImpl.log.debug("+++ ODataSubResource:handlePut()");
     this.context.log();
 
     return Response.ok().entity("PUT: status 200 ok").build();
@@ -90,7 +96,7 @@ public final class ODataSubLocatorImpl implements ODataSubLocator {
    */
   @Override
   public Response handlePatch() {
-    ODataSubLocatorImpl.log.debug("+++ ODataSubResource:handlePatch()");
+    ODataLocatorImpl.log.debug("+++ ODataSubResource:handlePatch()");
     this.context.log();
 
     return Response.ok().entity("PATCH: status 200 ok").build();
@@ -101,7 +107,7 @@ public final class ODataSubLocatorImpl implements ODataSubLocator {
    */
   @Override
   public Response handleMerge() {
-    ODataSubLocatorImpl.log.debug("+++ ODataSubResource:handleMerge()");
+    ODataLocatorImpl.log.debug("+++ ODataSubResource:handleMerge()");
     this.context.log();
 
     return Response.ok().entity("MERGE: status 200 ok").build();
@@ -112,7 +118,7 @@ public final class ODataSubLocatorImpl implements ODataSubLocator {
    */
   @Override
   public Response handleDelete() {
-    ODataSubLocatorImpl.log.debug("+++ ODataSubResource:handleDelete()");
+    ODataLocatorImpl.log.debug("+++ ODataSubResource:handleDelete()");
     this.context.log();
 
     return Response.ok().entity("DELETE: status 200 ok").build();
@@ -125,4 +131,18 @@ public final class ODataSubLocatorImpl implements ODataSubLocator {
   public void setProducer(ODataProducer producer) {
     this.producer = producer;
   }
+
+  @Override
+  public void initialize() {
+    
+    if (!(this.producer instanceof Metadata)) {
+      throw new RuntimeException("Producer doesn't implement Metadata interface:" + this.producer.getClass());
+    }
+    
+    Metadata metadata = (Metadata) this.producer;
+    this.uriParser = new UriParser(metadata.read());
+    
+    this.processor = new Processor();
+  }
+
 }
