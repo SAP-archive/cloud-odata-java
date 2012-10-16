@@ -55,8 +55,7 @@ public enum EdmSimpleType implements EdmType {
 
   @Override
   public String getNamespace() {
-    // @TODO: be clarified
-    return "Blah";
+    return "Edm";
   }
 
   @Override
