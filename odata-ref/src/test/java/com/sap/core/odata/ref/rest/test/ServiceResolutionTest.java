@@ -20,7 +20,7 @@ public class ServiceResolutionTest extends AbstractScenarioTest {
 
   @Test
   public void testServiceResolution() throws ClientProtocolException, IOException {
-    HttpGet get = new HttpGet(URI.create(this.getEndpoint().toString() + "aaa/bbb/ccc"));
+    HttpGet get = new HttpGet(URI.create(this.getEndpoint().toString() + "aaa/bbb/$metadata"));
     HttpResponse response = this.getHttpClient().execute(get);
     Header accept = response.getFirstHeader(HttpHeaders.CONTENT_TYPE);
     
@@ -29,6 +29,7 @@ public class ServiceResolutionTest extends AbstractScenarioTest {
     
     assertEquals("aaa", this.getScenarioProducer().getSegment1());
     assertEquals("bbb", this.getScenarioProducer().getSegment2());
+
   }
   
   

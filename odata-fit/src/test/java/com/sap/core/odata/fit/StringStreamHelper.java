@@ -12,10 +12,13 @@ public class StringStreamHelper {
     String line = null;
 
     while ((line = bufferedReader.readLine()) != null) {
-      stringBuilder.append(line + "\n");
+      stringBuilder.append(line);
     }
     bufferedReader.close();
-    return stringBuilder.toString();
+
+    String result = stringBuilder.toString();
+    
+    return result;
   }
 
 }
