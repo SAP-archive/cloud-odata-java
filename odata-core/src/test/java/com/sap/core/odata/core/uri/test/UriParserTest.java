@@ -926,7 +926,7 @@ public class UriParserTest {
     parseWrongUri("ManagerPhoto");
     parseWrongUri("ManagerPhoto?Id='");
   }
-  
+
   @Test
   public void parseSystemQueryOptions() throws Exception {
     UriParserResult result = parse("Employees?$format=json&$inlinecount=allpages&$skiptoken=abc&$skip=2&$top=1");
@@ -964,12 +964,12 @@ public class UriParserTest {
 
     result = parse("Employees?$format=xml&$format=json");
     assertEquals(Format.JSON, result.getFormat());
-    
+
     result = parse("/Employees('1')/Location/Country?$format=json");
     assertEquals("Employees", result.getTargetEntitySet().getName());
     assertEquals(UriType.URI4, result.getUriType());
     assertEquals(Format.JSON, result.getFormat());
-    
+
     result = parse("/Employees('1')/EmployeeName?$format=json");
     assertEquals("Employees", result.getTargetEntitySet().getName());
     assertEquals(UriType.URI5, result.getUriType());
@@ -1030,18 +1030,19 @@ public class UriParserTest {
     parseWrongUri("$metadata?$top=1");
     parseWrongUri("Employees('1')?$format=json&$inlinecount=allpages&$skiptoken=abc&$skip=2&$top=1");
     parseWrongUri("/Employees('1')/Location/Country/$value?$format=json");
-    parseWrongUri("/Employees('1')/Location/Country/$value?$skip=2");    
+    parseWrongUri("/Employees('1')/Location/Country/$value?$skip=2");
     parseWrongUri("/Employees('1')/EmployeeName/$value?$format=json");
     parseWrongUri("/Employees('1')/EmployeeName/$value?$skip=2");
   }
-  
+
   @Test
   public void parsePossibleQueryOptions() throws Exception {
-    UriParserResult result = parse("Employees?sap-client=100&sap-ds-debug=true");
-    assertEquals("Employees", result.getTargetEntitySet().getName());
-    assertEquals(UriType.URI1, result.getUriType());
+    UriParserResult result = parse("EmployeeSearch?q='a'&sap-client=100&sap-ds-debug=true");
+    assertEquals(2, result.getCustomQueryOptions().size());
+    assertEquals("100", result.getCustomQueryOptions().get("sap-client"));
+    assertEquals("true", result.getCustomQueryOptions().get("sap-ds-debug"));
   }
-  
+
   @Test
   public void parseSystemQueryOptionSelectSingle() throws Exception {
     UriParserResult result = parse("Employees?$select=EmployeeName");
@@ -1049,27 +1050,27 @@ public class UriParserTest {
     assertEquals(UriType.URI1, result.getUriType());
     assertEquals(1, result.getSelect().size());
     assertEquals("EmployeeName", result.getSelect().get(0).getProperty().getName());
-    
+
     result = parse("Employees?$select=*");
     assertEquals("Employees", result.getTargetEntitySet().getName());
     assertEquals(UriType.URI1, result.getUriType());
     assertEquals(1, result.getSelect().size());
     assertTrue(result.getSelect().get(0).isStar());
-    
+
     result = parse("Employees?$select=Location");
     assertEquals("Employees", result.getTargetEntitySet().getName());
     assertEquals(UriType.URI1, result.getUriType());
     assertEquals(1, result.getSelect().size());
     assertEquals("Location", result.getSelect().get(0).getProperty().getName());
-    
+
     result = parse("Employees?$select=Manager");
     assertEquals("Employees", result.getTargetEntitySet().getName());
     assertEquals(UriType.URI1, result.getUriType());
     assertEquals(1, result.getSelect().size());
     assertEquals(1, result.getSelect().get(0).getNavigationPropertySegments().size());
-    assertEquals("Managers",result.getSelect().get(0).getNavigationPropertySegments().get(0).getTargetEntitySet().getName());  
+    assertEquals("Managers", result.getSelect().get(0).getNavigationPropertySegments().get(0).getTargetEntitySet().getName());
   }
-  
+
   @Test
   public void parseSystemQueryOptionSelectMultiple() throws Exception {
     UriParserResult result = parse("Employees?$select=EmployeeName,Location");
@@ -1078,7 +1079,7 @@ public class UriParserTest {
     assertEquals(2, result.getSelect().size());
     assertEquals("EmployeeName", result.getSelect().get(0).getProperty().getName());
     assertEquals("Location", result.getSelect().get(1).getProperty().getName());
-    
+
     result = parse("Employees?$select=Manager,EmployeeName,Location");
     assertEquals("Employees", result.getTargetEntitySet().getName());
     assertEquals(UriType.URI1, result.getUriType());
@@ -1086,8 +1087,8 @@ public class UriParserTest {
     assertEquals("EmployeeName", result.getSelect().get(1).getProperty().getName());
     assertEquals("Location", result.getSelect().get(2).getProperty().getName());
     assertEquals(1, result.getSelect().get(0).getNavigationPropertySegments().size());
-    assertEquals("Managers",result.getSelect().get(0).getNavigationPropertySegments().get(0).getTargetEntitySet().getName());  
-  
+    assertEquals("Managers", result.getSelect().get(0).getNavigationPropertySegments().get(0).getTargetEntitySet().getName());
+
     result = parse("Managers('1')?$select=Employees/EmployeeName,Employees/Location");
     assertEquals("Managers", result.getTargetEntitySet().getName());
     assertEquals(UriType.URI2, result.getUriType());
@@ -1095,17 +1096,17 @@ public class UriParserTest {
     assertEquals("EmployeeName", result.getSelect().get(0).getProperty().getName());
     assertEquals("Location", result.getSelect().get(1).getProperty().getName());
     assertEquals(1, result.getSelect().get(0).getNavigationPropertySegments().size());
-    assertEquals("Employees",result.getSelect().get(0).getNavigationPropertySegments().get(0).getTargetEntitySet().getName());
-    
+    assertEquals("Employees", result.getSelect().get(0).getNavigationPropertySegments().get(0).getTargetEntitySet().getName());
+
   }
-  
+
   @Test
   public void parseSystemQueryOptionSelectNegative() throws Exception {
     parseWrongUri("Employees?$select=somethingwrong");
     parseWrongUri("Employees?$select=*/Somethingwrong");
     parseWrongUri("Employees?$select=EmployeeName/*");
   }
-  
+
   @Test
   public void parseSystemQueryOptionExpand() throws Exception {
     UriParserResult result = parse("Managers('1')?$expand=Employees");
@@ -1115,9 +1116,9 @@ public class UriParserTest {
     assertEquals(1, result.getExpand().get(0).size());
     assertEquals("Employees", result.getExpand().get(0).get(0).getTargetEntitySet().getName());
     assertEquals(result.getTargetEntitySet().getEntityType().getProperty("Employees"), result.getExpand().get(0).get(0).getNavigationProperty());
-    
+
   }
-  
+
   @Test
   public void parseSystemQueryOptionExpandWrong() throws Exception {
     parseWrongUri("Managers('1')?$expand=Employees/EmployeeName");
@@ -1127,6 +1128,5 @@ public class UriParserTest {
     parseWrongUri("Managers('1')?$expand=Employees/*,some()");
     parseWrongUri("Managers('1')?$expand=Employees/(...)");
   }
-  
 
 }

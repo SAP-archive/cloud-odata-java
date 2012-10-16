@@ -10,11 +10,11 @@ public enum UriType {
   /**
    * Entity set
    */
-  URI1(SystemQueryOption.$expand, SystemQueryOption.$filter, SystemQueryOption.$orderby, SystemQueryOption.$format, SystemQueryOption.$skip, SystemQueryOption.$top, SystemQueryOption.$skiptoken, SystemQueryOption.$inlinecount, SystemQueryOption.$select),
+  URI1(SystemQueryOption.$format, SystemQueryOption.$filter, SystemQueryOption.$inlinecount, SystemQueryOption.$orderby, SystemQueryOption.$skiptoken, SystemQueryOption.$skip, SystemQueryOption.$top, SystemQueryOption.$expand, SystemQueryOption.$select),
   /**
    * Entity set with key predicate
    */
-  URI2(SystemQueryOption.$expand, SystemQueryOption.$filter, SystemQueryOption.$format, SystemQueryOption.$select),
+  URI2(SystemQueryOption.$format, SystemQueryOption.$filter, SystemQueryOption.$expand, SystemQueryOption.$select),
   /**
    * Complex property of an entity
    */
@@ -30,19 +30,19 @@ public enum UriType {
   /**
    * Navigation property of an entity with target multiplicity '1' or '0..1'
    */
-  URI6A(SystemQueryOption.$expand, SystemQueryOption.$filter, SystemQueryOption.$format, SystemQueryOption.$select),
+  URI6A(SystemQueryOption.$format, SystemQueryOption.$filter, SystemQueryOption.$expand, SystemQueryOption.$select),
   /**
    * Navigation property of an entity with target multiplicity '*'
    */
-  URI6B(SystemQueryOption.$expand, SystemQueryOption.$filter, SystemQueryOption.$orderby, SystemQueryOption.$format, SystemQueryOption.$skip, SystemQueryOption.$top, SystemQueryOption.$skiptoken, SystemQueryOption.$inlinecount, SystemQueryOption.$select),
+  URI6B(SystemQueryOption.$format, SystemQueryOption.$filter, SystemQueryOption.$inlinecount, SystemQueryOption.$orderby, SystemQueryOption.$skiptoken, SystemQueryOption.$skip, SystemQueryOption.$top, SystemQueryOption.$expand, SystemQueryOption.$select),
   /**
    * Link to a single entity
    */
-  URI7A(SystemQueryOption.$filter, SystemQueryOption.$format, SystemQueryOption.$select),
+  URI7A(SystemQueryOption.$format, SystemQueryOption.$filter, SystemQueryOption.$select),
   /**
    * Link to multiple entities
    */
-  URI7B(SystemQueryOption.$expand, SystemQueryOption.$filter, SystemQueryOption.$format, SystemQueryOption.$skip, SystemQueryOption.$top, SystemQueryOption.$skiptoken, SystemQueryOption.$inlinecount),
+  URI7B(SystemQueryOption.$format, SystemQueryOption.$filter, SystemQueryOption.$inlinecount, SystemQueryOption.$skiptoken, SystemQueryOption.$skip, SystemQueryOption.$top, SystemQueryOption.$expand),
   /**
    * Metadata document
    */
@@ -74,15 +74,15 @@ public enum UriType {
   /**
    * Count of an entity set
    */
-  URI15(SystemQueryOption.$expand, SystemQueryOption.$filter, SystemQueryOption.$orderby, SystemQueryOption.$skip, SystemQueryOption.$top),
+  URI15(SystemQueryOption.$filter, SystemQueryOption.$orderby, SystemQueryOption.$skip, SystemQueryOption.$top, SystemQueryOption.$expand),
   /**
    * Count of a single entity
    */
-  URI16(SystemQueryOption.$expand, SystemQueryOption.$filter),
+  URI16(SystemQueryOption.$filter, SystemQueryOption.$expand),
   /**
    * Media resource of an entity
    */
-  URI17(SystemQueryOption.$filter, SystemQueryOption.$format),
+  URI17(SystemQueryOption.$format, SystemQueryOption.$filter),
   /**
    * Count of link to a single entity
    */
@@ -90,22 +90,17 @@ public enum UriType {
   /**
    * Count of links to multiple entities
    */
-  URI50B(SystemQueryOption.$format, SystemQueryOption.$skip, SystemQueryOption.$top, SystemQueryOption.$skiptoken, SystemQueryOption.$inlinecount);
+  URI50B(SystemQueryOption.$format, SystemQueryOption.$inlinecount, SystemQueryOption.$skiptoken, SystemQueryOption.$skip, SystemQueryOption.$top);
 
   private ArrayList<SystemQueryOption> whiteList = new ArrayList<SystemQueryOption>();
 
   private UriType(SystemQueryOption... compatibleQueryOptions) {
-
-    for (SystemQueryOption queryOption : compatibleQueryOptions) {
+    for (SystemQueryOption queryOption : compatibleQueryOptions)
       whiteList.add(queryOption);
-    }
-
   }
 
   public boolean isCompatible(SystemQueryOption queryOption) {
-
     return whiteList.contains(queryOption);
-
   }
 
 }
