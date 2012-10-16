@@ -46,8 +46,9 @@ public class UriParser {
   private static final Pattern STRING_VALUE_PATTERN = Pattern.compile("(X|binary|datetime|datetimeoffset|guid|time)?'(.*)'");
   private static final Pattern INITIAL_SELECT_PATTERN = Pattern.compile("^\\s*([^,]+)\\s*(?:,\\s*([^,].*))?$");
   private static final Pattern SELECT_PATTERN = Pattern.compile("^\\s*([^/]+)\\s*(?:/\\s*([^/].*))?$");
-  
-  
+  private static final Pattern INITIAL_EXPAND_PATTERN = Pattern.compile("^\\s*([^,]+)\\s*(?:,\\s*([^,].*))?$");
+  private static final Pattern EXPAND_PATTERN = Pattern.compile("^\\s*([^/]+)\\s*(?:/\\s*([^/].*))?$");
+
   private Edm edm;
   private List<PathSegment> pathSegments;
   private UriParserResult uriResult;
@@ -669,7 +670,6 @@ public class UriParser {
   private void handleSystemQueryOptionOrderBy(String orderby) throws UriParserException {
     if ("".equals(orderby))
       throw new UriParserException("Invalid value Null for $orderby");
-    // TODO Implement SystemQueryOption Orderby
 
   }
 
@@ -739,11 +739,49 @@ public class UriParser {
     uriResult.setSelect(select);
   }
 
-  private void handleSystemQueryOptionExpand(String expand) throws UriParserException {
-    if ("".equals(expand))
-      throw new UriParserException("Invalid value Null for $expand");
-    // TODO:  Implement SystemQueryOption Expand
+  private void handleSystemQueryOptionExpand(String expandStatement) throws UriParserException {
+    ArrayList<ArrayList<NavigationPropertySegment>> expand = new ArrayList<ArrayList<NavigationPropertySegment>>();
+    String expandHelper = expandStatement;
 
+    while (expandHelper != null) {
+      Matcher matcher = INITIAL_EXPAND_PATTERN.matcher(expandHelper);
+      if (!matcher.matches())
+        throw new UriParserException("Problems matching expand statement " + expandStatement);
+
+      String expandClause = matcher.group(1);
+      expandHelper = matcher.group(2);
+
+      EdmEntitySet fromEntitySet = uriResult.getTargetEntitySet();
+      ArrayList<NavigationPropertySegment> expandNavigationProperties = new ArrayList<NavigationPropertySegment>();
+      while (expandClause != null) {
+        matcher = EXPAND_PATTERN.matcher(expandClause);
+        if (!matcher.matches())
+          throw new UriParserException("Problems matching expand statement " + expandStatement);
+
+        String navigationPropertyName = matcher.group(1);
+        expandClause = matcher.group(2);
+
+        EdmTyped property = fromEntitySet.getEntityType().getProperty(navigationPropertyName);
+        if (property == null)
+          throw new UriParserException("Can´t find property with name: " + navigationPropertyName);
+
+        try {
+          EdmNavigationProperty navigationProperty = (EdmNavigationProperty) property;
+          EdmEntitySet targetEntitySet = fromEntitySet.getRelatedEntitySet(navigationProperty);
+          NavigationPropertySegment propertySegment = new NavigationPropertySegment();
+          propertySegment.setNavigationProperty(navigationProperty);
+          propertySegment.setTargetEntitySet(targetEntitySet);
+          expandNavigationProperties.add(propertySegment);
+          fromEntitySet = targetEntitySet;
+        } catch (ClassCastException et) {
+          throw new UriParserException("Property: " + navigationPropertyName + " has to be a navigation property", et);
+        }
+      }
+
+      expand.add(expandNavigationProperties);
+    }
+    
+    uriResult.setExpand(expand);
   }
 
   private void handleSystemQueryOptionFilter(final String filter) throws UriParserException {
