@@ -27,6 +27,7 @@ public class UriParserResult {
   private List<NavigationSegment> navigationSegments = Collections.emptyList();
   private List<EdmProperty> propertyPath = Collections.emptyList();
   private List<SelectItem> select = Collections.emptyList();
+  private List<ArrayList<NavigationPropertySegment>> expand = Collections.emptyList();
   private boolean count;
   private boolean value;
   private boolean links;
@@ -225,5 +226,13 @@ public class UriParserResult {
 
   public void setSelect(List<SelectItem> select) {
     this.select = select;
+  }
+
+  public List<ArrayList<NavigationPropertySegment>> getExpand() {
+    return expand;
+  }
+
+  public void setExpand(List<ArrayList<NavigationPropertySegment>> expand) {
+    this.expand = expand;
   }
 }
