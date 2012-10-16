@@ -14,6 +14,18 @@ public abstract class ODataProducer {
     return metadata;
   }
 
+  public ServiceDocument getServiceDocument() {
+    ServiceDocument serviceDocument;
+
+    if (this instanceof ServiceDocument) {
+      serviceDocument = (ServiceDocument) this;
+    } else {
+      throw new RuntimeException("ServiceDocument must be supported!");
+    }
+
+    return serviceDocument;
+  }
+
   public final boolean isBatch() {
     return null != this.getBatch();
   }

@@ -11,10 +11,11 @@ import com.sap.core.odata.core.edm.EdmComplexType;
 import com.sap.core.odata.core.edm.EdmEntityContainer;
 import com.sap.core.odata.core.edm.EdmEntityType;
 import com.sap.core.odata.core.edm.EdmServiceMetadata;
+import com.sap.core.odata.core.producer.EntitySet;
 import com.sap.core.odata.core.producer.Metadata;
 import com.sap.core.odata.core.producer.ODataProducer;
 
-public class ScenarioProducer extends ODataProducer implements Metadata {
+public class ScenarioProducer extends ODataProducer implements EntitySet,Metadata  {
 
   private static final Logger log = LoggerFactory.getLogger(ScenarioProducer.class);
 
@@ -38,13 +39,23 @@ public class ScenarioProducer extends ODataProducer implements Metadata {
   }
 
   @Override
+  public Response count() {
+    return null;
+  }
+
+  @Override
+  public Response cretateEntity() {
+    return null;
+  }
+
+  @Override
   public Edm getEdm() {
     return new EdmImpl();
   }
 
   @Override
   public Response read() {
-    return null;
+    return Response.ok().entity("$metadata").build();
   }
 
   private class EdmImpl implements Edm {
@@ -94,5 +105,6 @@ public class ScenarioProducer extends ODataProducer implements Metadata {
     }
     
   }
+
 
 }

@@ -4,7 +4,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
-import static org.mockito.Mockito.withSettings;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -12,6 +11,7 @@ import java.net.URI;
 
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
 import org.apache.http.Header;
 import org.apache.http.HttpResponse;
@@ -25,41 +25,35 @@ import org.apache.http.client.methods.HttpRequestBase;
 import org.junit.Test;
 
 import com.sap.core.odata.core.edm.Edm;
-import com.sap.core.odata.core.edm.EdmServiceMetadata;
-import com.sap.core.odata.core.producer.Entity;
-import com.sap.core.odata.core.producer.Metadata;
-import com.sap.core.odata.core.producer.ODataProducer;
-import com.sap.core.odata.fit.AbstractFitTest;
+import com.sap.core.odata.core.edm.EdmEntityContainer;
+import com.sap.core.odata.core.edm.EdmEntitySet;
+import com.sap.core.odata.core.producer.EntitySet;
 import com.sap.core.odata.fit.HttpMerge;
 import com.sap.core.odata.fit.StringStreamHelper;
 
-public class BasicHttpTest extends AbstractFitTest {
-
-  @Override
-  protected ODataProducer createProducer() {
-    ODataProducer producer = mock(ODataProducer.class);
-
-    EdmServiceMetadata edmsm = mock(EdmServiceMetadata.class);
-    when(edmsm.getDataServiceVersion()).thenReturn("2.0");
-    
-    Edm edm = mock(Edm.class);
-    when(edm.getServiceMetadata()).thenReturn(edmsm);
-    
-    Metadata metadata = mock(Metadata.class);
-    when(metadata.getEdm()).thenReturn(edm);
-    
-    Entity entity = mock(Entity.class);
-    
-    when(producer.getMetadata()).thenReturn(metadata);
-    when(producer.getEntity()).thenReturn(entity);
-    
-    return producer;
-  }
+public class BasicHttpTest extends AbstractBasicTest {
 
   @Test
   public void testGet() throws MalformedURLException, IOException {
-    HttpGet get = new HttpGet(URI.create(this.getEndpoint().toString() + "aaa/bbb/ccc"));
-    this.responseCheck(get);
+    EdmEntitySet edmEntitySet = mock(EdmEntitySet.class);
+    EdmEntityContainer edmEntityContainer = mock(EdmEntityContainer.class);
+    when(edmEntityContainer.getEntitySet("entityset")).thenReturn(edmEntitySet);
+    Edm edm = this.getProducer().getMetadata().getEdm();
+    when(edm.getDefaultEntityContainer()).thenReturn(edmEntityContainer);
+
+    EntitySet entitySet = this.getProducer().getEntitySet();
+    when(entitySet.read()).thenReturn(Response.ok().entity("entityset").build());
+
+    HttpGet get = new HttpGet(URI.create(this.getEndpoint().toString() + "entityset"));
+
+    HttpResponse response = this.getHttpClient().execute(get);
+    Header accept = response.getFirstHeader(HttpHeaders.CONTENT_TYPE);
+
+    String payload = StringStreamHelper.inputStreamToString(response.getEntity().getContent());
+
+    assertEquals("entityset", payload);
+    assertEquals(200, response.getStatusLine().getStatusCode());
+    assertEquals(MediaType.TEXT_PLAIN, accept.getValue());
   }
 
   @Test

@@ -48,6 +48,11 @@ public abstract class AbstractFitTest {
     return httpClient;
   }
 
+  public ODataProducer getProducer() {
+    return this.producer;
+  }
+
+  private ODataProducer producer;
   private Server server;
   private URI endpoint = URI.create("http://localhost:19080/ext/");
   private Class<?> applicationClass = FitApplication.class;
@@ -55,9 +60,9 @@ public abstract class AbstractFitTest {
 
   @Before
   public void before() throws Exception {
-    ODataProducer producer = this.createProducer();
-    assertNotNull(producer);
-    FitApplication.setProducerInstance(producer);
+    this.producer = this.createProducer();
+    assertNotNull(this.producer);
+    FitApplication.setProducerInstance(this.producer);
 
     this.startServer();
   }
