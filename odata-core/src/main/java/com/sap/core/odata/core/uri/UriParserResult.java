@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.sap.core.odata.core.edm.EdmEntityContainer;
 import com.sap.core.odata.core.edm.EdmEntitySet;
@@ -26,8 +27,6 @@ public class UriParserResult {
   private List<KeyPredicate> keyPredicates = Collections.emptyList();
   private List<NavigationSegment> navigationSegments = Collections.emptyList();
   private List<EdmProperty> propertyPath = Collections.emptyList();
-  private List<SelectItem> select = Collections.emptyList();
-  private List<ArrayList<NavigationPropertySegment>> expand = Collections.emptyList();
   private boolean count;
   private boolean value;
   private boolean links;
@@ -37,7 +36,10 @@ public class UriParserResult {
   private String skipToken;
   private int skip;
   private Integer top;
-  private HashMap<String, UriLiteral> functionImportParameters;
+  private List<ArrayList<NavigationPropertySegment>> expand = Collections.emptyList();
+  private List<SelectItem> select = Collections.emptyList();
+  private Map<String, UriLiteral> functionImportParameters;
+  private Map<String, String> customQueryOptions;
 
   public void setUriType(UriType uriType) {
     this.uriType = uriType;
@@ -181,6 +183,22 @@ public class UriParserResult {
     return top;
   }
 
+  public void setExpand(final List<ArrayList<NavigationPropertySegment>> expand) {
+    this.expand = expand;
+  }
+
+  public List<ArrayList<NavigationPropertySegment>> getExpand() {
+    return expand;
+  }
+
+  public void setSelect(final List<SelectItem> select) {
+    this.select = select;
+  }
+
+  public List<SelectItem> getSelect() {
+    return select;
+  }
+
   public void addFunctionImportParameter(final String name, final UriLiteral value) {
     if (functionImportParameters == null)
       functionImportParameters = new HashMap<String, UriLiteral>();
@@ -188,8 +206,17 @@ public class UriParserResult {
     functionImportParameters.put(name, value);
   }
 
-  public HashMap<String, UriLiteral> getFunctionImportParameters() {
+  public Map<String, UriLiteral> getFunctionImportParameters() {
     return functionImportParameters;
+  }
+
+
+  public Map<String, String> getCustomQueryOptions() {
+    return customQueryOptions;
+  }
+
+  public void setCustomQueryOptions(final Map<String, String> customQueryOptions) {
+    this.customQueryOptions = customQueryOptions;
   }
 
   @Override
@@ -217,22 +244,9 @@ public class UriParserResult {
         + "skipToken=" + skipToken + ", "
         + "skip=" + skip + ", "
         + "top=" + top + ", "
-        + "FunctionImportParameters=" + functionImportParameters;
-  }
-
-  public List<SelectItem> getSelect() {
-    return select;
-  }
-
-  public void setSelect(List<SelectItem> select) {
-    this.select = select;
-  }
-
-  public List<ArrayList<NavigationPropertySegment>> getExpand() {
-    return expand;
-  }
-
-  public void setExpand(List<ArrayList<NavigationPropertySegment>> expand) {
-    this.expand = expand;
+        + "expand=" + expand + ", "
+        + "select=" + select + ", "
+        + "functionImportParameters=" + functionImportParameters
+        + "customQueryOptions=" + customQueryOptions;
   }
 }
