@@ -32,7 +32,10 @@ public class UriParserResult {
   private boolean links;
 
   private Format format;
+  private String customFormat;
+  private String filter;
   private InlineCount inlineCount;
+  private String orderBy;
   private String skipToken;
   private int skip;
   private Integer top;
@@ -147,8 +150,24 @@ public class UriParserResult {
     this.format = format;
   }
 
+  public void setFormat(String customFormat) {
+    this.customFormat = customFormat;
+  }
+
   public Format getFormat() {
     return format;
+  }
+
+  public String getCustomFormat() {
+    return customFormat;
+  }
+
+  public void setFilter(String filter) {
+    this.filter = filter;
+  }
+
+  public String getFilter() {
+    return filter;
   }
 
   public void setInlineCount(InlineCount inlineCount) {
@@ -157,6 +176,14 @@ public class UriParserResult {
 
   public InlineCount getInlineCount() {
     return inlineCount;
+  }
+
+  public void setOrderBy(String orderBy) {
+    this.orderBy = orderBy;
+  }
+
+  public String getOrderBy() {
+    return orderBy;
   }
 
   public void setSkipToken(String skipToken) {
@@ -239,8 +266,10 @@ public class UriParserResult {
         + "isCount=" + count + ", "
         + "isValue=" + value + ", "
         + "isLinks=" + links + ", "
-        + "format=" + format + ", "
+        + "format=" + format + ", customFormat=" + customFormat + ", "
+        + "filter=" + filter + ", "
         + "inlineCount=" + inlineCount + ", "
+        + "orderBy=" + orderBy + ", "
         + "skipToken=" + skipToken + ", "
         + "skip=" + skip + ", "
         + "top=" + top + ", "

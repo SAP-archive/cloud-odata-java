@@ -44,8 +44,6 @@ public class UriParser {
   private static final Pattern WHOLE_NUMBER_PATTERN = Pattern.compile("(-?\\p{Digit}+)([lL])?");
   private static final Pattern DECIMAL_NUMBER_PATTERN = Pattern.compile("(-?\\p{Digit}+(?:\\.\\p{Digit}*(?:[eE][-+]?\\p{Digit}+)?)?)([mMdDfF])");
   private static final Pattern STRING_VALUE_PATTERN = Pattern.compile("(X|binary|datetime|datetimeoffset|guid|time)?'(.*)'");
-  private static final Pattern INITIAL_SELECT_PATTERN = Pattern.compile("^\\s*([^,]+)\\s*(?:,\\s*([^,].*))?$");
-  private static final Pattern SELECT_PATTERN = Pattern.compile("^\\s*([^/]+)\\s*(?:/\\s*([^/].*))?$");
   private static final Pattern INITIAL_EXPAND_PATTERN = Pattern.compile("^\\s*([^,]+)\\s*(?:,\\s*([^,].*))?$");
   private static final Pattern EXPAND_PATTERN = Pattern.compile("^\\s*([^/]+)\\s*(?:/\\s*([^/].*))?$");
 
@@ -60,7 +58,15 @@ public class UriParser {
     UriParser.LOG.debug("edm version: " + this.edm.getServiceMetadata().getDataServiceVersion());
   }
 
-  public UriParserResult parse(final List<PathSegment> pathSegments, Map<String, String> queryParameters) throws UriParserException {
+  /**
+   * Parse the URI part after an OData service root,
+   * already splitted into path segments and query parameters.
+   * @param pathSegments  the segments of the resource path
+   * @param queryParameters  the query parameters
+   * @return a {@link UriParserResult} instance containing the parsed information
+   * @throws UriParserException
+   */
+  public UriParserResult parse(final List<PathSegment> pathSegments, final Map<String, String> queryParameters) throws UriParserException {
     UriParser.LOG.debug(pathSegments.toString());
     this.uriResult = new UriParserResult();
 
@@ -595,7 +601,7 @@ public class UriParser {
   }
 
   private void checkSystemQueryOptionsCompatibility() throws UriParserException {
-    UriType uriType = uriResult.getUriType();
+    final UriType uriType = uriResult.getUriType();
 
     for (SystemQueryOption queryOption : systemQueryOptions.keySet()) {
 
@@ -638,9 +644,6 @@ public class UriParser {
       case $select:
         handleSystemQueryOptionSelect(systemQueryOptions.get(SystemQueryOption.$select));
         break;
-      default:
-        // This should never happen.
-        throw new UriParserException("Invalid query parameter " + queryOption);
       }
   }
 
@@ -651,12 +654,13 @@ public class UriParser {
       uriResult.setFormat(Format.JSON);
     else if ("xml".equals(format))
       uriResult.setFormat(Format.XML);
-    // else
-    // TODO: custom formats
+    else
+      uriResult.setFormat(format);
   }
 
   private void handleSystemQueryOptionFilter(final String filter) throws UriParserException {
     //TODO: Implement SystemQueryOption Filter
+    uriResult.setFilter(filter);
   }
 
   private void handleSystemQueryOptionInlineCount(final String inlineCount) throws UriParserException {
@@ -668,11 +672,12 @@ public class UriParser {
       throw new UriParserException("Invalid value " + inlineCount + " for $inlinecount");
   }
 
-  private void handleSystemQueryOptionOrderBy(String orderby) throws UriParserException {
+  private void handleSystemQueryOptionOrderBy(final String orderBy) throws UriParserException {
     // TODO: $orderby
+    uriResult.setOrderBy(orderBy);
   }
 
-  private void handleSystemQueryOptionSkipToken(String skiptoken) throws UriParserException {
+  private void handleSystemQueryOptionSkipToken(final String skiptoken) throws UriParserException {
     uriResult.setSkipToken(skiptoken);
   }
 
@@ -744,41 +749,37 @@ public class UriParser {
 
   private void handleSystemQueryOptionSelect(final String selectStatement) throws UriParserException {
     ArrayList<SelectItem> select = new ArrayList<SelectItem>();
-    String selectStatementHelper = selectStatement;
 
-    while (selectStatementHelper != null) {
-      Matcher matcher = INITIAL_SELECT_PATTERN.matcher(selectStatementHelper);
-      if (!matcher.matches())
-        throw new UriParserException("Problems matching select statement " + selectStatement);
+    if (selectStatement.startsWith(",") || selectStatement.endsWith(","))
+      throw new UriParserException("Empty item in select statement " + selectStatement);
 
-      String selectItemName = matcher.group(1);
-      selectStatementHelper = matcher.group(2);
+    for (String selectItemString : selectStatement.split(",")) {
+      selectItemString = selectItemString.trim();
+      if ("".equals(selectItemString))
+        throw new UriParserException("Empty item in select statement " + selectStatement);
+      if (selectItemString.startsWith("/") || selectItemString.endsWith("/"))
+        throw new UriParserException("Empty property in select item " + selectItemString);
 
       SelectItem selectItem = new SelectItem();
-      EdmTyped property = null;
       boolean exit = false;
       EdmEntitySet fromEntitySet = uriResult.getTargetEntitySet();
 
-      while (selectItemName != null) {
-        matcher = SELECT_PATTERN.matcher(selectItemName);
-        if (!matcher.matches())
-          throw new UriParserException("Problems matching select statement " + selectItemName);
+      for (String selectedPropertyName : selectItemString.split("/")) {
+        if ("".equals(selectedPropertyName))
+          throw new UriParserException("Empty property name in select item " + selectItemString);
 
         if (exit)
-          throw new UriParserException("No segment after a simple or complex property allowed" + selectItemName);
+          throw new UriParserException("After a simple or complex property, no further property is allowed: " + selectedPropertyName);
 
-        String segment = matcher.group(1);
-        selectItemName = matcher.group(2);
-
-        if ("*".equals(segment)) {
+        if ("*".equals(selectedPropertyName)) {
           selectItem.setStar(true);
           exit = true;
           continue;
         }
 
-        property = fromEntitySet.getEntityType().getProperty(segment);
+        final EdmTyped property = fromEntitySet.getEntityType().getProperty(selectedPropertyName);
         if (property == null)
-          throw new UriParserException("Can´t find property with name: " + segment);
+          throw new UriParserException("Can't find property with name: " + selectedPropertyName);
 
         switch (property.getType().getKind()) {
         case SIMPLE:
@@ -787,8 +788,8 @@ public class UriParser {
           exit = true;
           break;
         case NAVIGATION:
-          EdmNavigationProperty navigationProperty = (EdmNavigationProperty) property;
-          EdmEntitySet targetEntitySet = fromEntitySet.getRelatedEntitySet(navigationProperty);
+          final EdmNavigationProperty navigationProperty = (EdmNavigationProperty) property;
+          final EdmEntitySet targetEntitySet = fromEntitySet.getRelatedEntitySet(navigationProperty);
 
           NavigationPropertySegment navigationPropertySegment = new NavigationPropertySegment();
           navigationPropertySegment.setNavigationProperty(navigationProperty);
