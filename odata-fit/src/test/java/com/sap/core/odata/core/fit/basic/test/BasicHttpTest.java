@@ -22,6 +22,7 @@ import org.apache.http.client.methods.HttpPatch;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpPut;
 import org.apache.http.client.methods.HttpRequestBase;
+import org.junit.Before;
 import org.junit.Test;
 
 import com.sap.core.odata.core.edm.Edm;
@@ -33,17 +34,21 @@ import com.sap.core.odata.fit.StringStreamHelper;
 
 public class BasicHttpTest extends AbstractBasicTest {
 
-  @Test
-  public void testGet() throws MalformedURLException, IOException {
+  @Before
+  public void before() throws Exception {
+    super.before();
+
     EdmEntitySet edmEntitySet = mock(EdmEntitySet.class);
     EdmEntityContainer edmEntityContainer = mock(EdmEntityContainer.class);
     when(edmEntityContainer.getEntitySet("entityset")).thenReturn(edmEntitySet);
     Edm edm = this.getProducer().getMetadata().getEdm();
     when(edm.getDefaultEntityContainer()).thenReturn(edmEntityContainer);
-
     EntitySet entitySet = this.getProducer().getEntitySet();
     when(entitySet.read()).thenReturn(Response.ok().entity("entityset").build());
+  }
 
+  @Test
+  public void testGet() throws MalformedURLException, IOException {
     HttpGet get = new HttpGet(URI.create(this.getEndpoint().toString() + "entityset"));
 
     HttpResponse response = this.getHttpClient().execute(get);

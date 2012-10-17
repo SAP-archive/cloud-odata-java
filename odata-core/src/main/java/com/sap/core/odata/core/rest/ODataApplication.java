@@ -11,6 +11,7 @@ import javax.ws.rs.ext.Provider;
 import org.odata4j.producer.resources.ExceptionMappingProvider;
 
 import com.sap.core.odata.core.producer.ODataProducer;
+import com.sap.core.odata.core.rest.impl.ODataExceptionMapper;
 
 /**
  * JAX-RS entry point for any generic REST servlet e.g. CXFNoSpringJaxrsServlet or others.
@@ -34,7 +35,7 @@ public abstract class ODataApplication extends Application {
     Set<Class<?>> classes = new HashSet<Class<?>>();
     classes.add(locator);
     classes.add(resolver);
-    classes.add(ExceptionMappingProvider.class);
+    classes.add(ODataExceptionMapper.class);
     return classes;
   }
 

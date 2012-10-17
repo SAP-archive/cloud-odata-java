@@ -15,6 +15,7 @@ import org.odata4j.producer.resources.ExceptionMappingProvider;
 import com.sap.core.odata.core.producer.ODataProducer;
 import com.sap.core.odata.core.rest.ODataApplication;
 import com.sap.core.odata.core.rest.ODataRootLocator;
+import com.sap.core.odata.core.rest.impl.ODataExceptionMapper;
 
 public class ODataApplicationTest {
 
@@ -57,7 +58,7 @@ public class ODataApplicationTest {
   
     assertTrue(classes.contains(TestContextResolver.class));
     assertTrue(classes.contains(ODataRootLocator.class));
-    assertTrue(classes.contains(ExceptionMappingProvider.class));
+    assertTrue(classes.contains(ODataExceptionMapper.class));
   }
   
   @Test(expected=RuntimeException.class)
