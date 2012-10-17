@@ -44,8 +44,6 @@ public class UriParser {
   private static final Pattern WHOLE_NUMBER_PATTERN = Pattern.compile("(-?\\p{Digit}+)([lL])?");
   private static final Pattern DECIMAL_NUMBER_PATTERN = Pattern.compile("(-?\\p{Digit}+(?:\\.\\p{Digit}*(?:[eE][-+]?\\p{Digit}+)?)?)([mMdDfF])");
   private static final Pattern STRING_VALUE_PATTERN = Pattern.compile("(X|binary|datetime|datetimeoffset|guid|time)?'(.*)'");
-  private static final Pattern INITIAL_EXPAND_PATTERN = Pattern.compile("^\\s*([^,]+)\\s*(?:,\\s*([^,].*))?$");
-  private static final Pattern EXPAND_PATTERN = Pattern.compile("^\\s*([^/]+)\\s*(?:/\\s*([^/].*))?$");
 
   private Edm edm;
   private List<PathSegment> pathSegments;
@@ -221,15 +219,18 @@ public class UriParser {
     if (property == null)
       throw new UriParserException("Cannot find property with name: " + navigationPropertyName);
 
-    if (property.getType().getKind() == EdmTypeEnum.SIMPLE || property.getType().getKind() == EdmTypeEnum.COMPLEX) {
+    switch (property.getType().getKind()) {
+    case SIMPLE:
+    case COMPLEX:
       if (keyPredicateName != null || emptyParentheses != null)
         throw new UriParserException("Invalid segment: " + currentPathSegment + ", " + this.pathSegments);
       if (uriResult.isLinks())
         throw new UriParserException("$links must be followed by a navigation property, but " + currentPathSegment + " is of another property type");
       else
         handlePropertyPath((EdmProperty) property);
+      break;
 
-    } else { // NAVIGATION
+    case NAVIGATION:
       final EdmNavigationProperty navigationProperty = (EdmNavigationProperty) property;
       if (keyPredicateName != null || emptyParentheses != null)
         if (navigationProperty.getMultiplicity() != EdmMultiplicity.MANY)
@@ -266,6 +267,10 @@ public class UriParser {
       } else {
         handleNavigationPathOptions();
       }
+      break;
+
+    default:
+      throw new UriParserException("Invalid type of property: " + currentPathSegment + ", " + pathSegments);
     }
   }
 
@@ -292,12 +297,16 @@ public class UriParser {
           this.uriResult.setUriType(UriType.URI5);
         else
           this.uriResult.setUriType(UriType.URI4);
-      if (type.getKind() == EdmTypeEnum.COMPLEX)
+      else if (type.getKind() == EdmTypeEnum.COMPLEX)
         this.uriResult.setUriType(UriType.URI3);
+      else
+        throw new UriParserException("Invalid type of property: " + currentPathSegment + ", " + pathSegments);
       this.uriResult.setTargetType(type);
     } else {
+
       currentPathSegment = pathSegments.remove(0).getPath();
-      if (type.getKind() == EdmTypeEnum.SIMPLE) {
+      switch (type.getKind()) {
+      case SIMPLE:
         if ("$value".equals(currentPathSegment))
           if (this.pathSegments.isEmpty()) {
             this.uriResult.setValue(true);
@@ -311,12 +320,17 @@ public class UriParser {
         else
           throw new UriParserException("Invalid path segment: " + currentPathSegment + ", " + this.pathSegments);
         this.uriResult.setTargetType(type);
-      }
-      if (type.getKind() == EdmTypeEnum.COMPLEX) {
+        break;
+
+      case COMPLEX:
         final EdmProperty nextProperty = (EdmProperty) ((EdmComplexType) type).getProperty(currentPathSegment);
         if (nextProperty == null)
           throw new UriParserException("Invalid segment: " + currentPathSegment);
         handlePropertyPath(nextProperty);
+        break;
+
+      default:
+        throw new UriParserException("Invalid type of property: " + currentPathSegment + ", " + pathSegments);
       }
     }
   }
@@ -420,8 +434,7 @@ public class UriParser {
         return new UriLiteral(EdmSimpleType.DECIMAL, value);
       else if ("D".equalsIgnoreCase(suffix))
         return new UriLiteral(EdmSimpleType.DOUBLE, value);
-      else
-        // if ("F".equalsIgnoreCase(suffix))
+      else if ("F".equalsIgnoreCase(suffix))
         return new UriLiteral(EdmSimpleType.SINGLE, value);
     }
 
@@ -446,8 +459,7 @@ public class UriParser {
         return new UriLiteral(EdmSimpleType.DATETIMEOFFSET, value);
       else if ("guid".equals(prefix))
         return new UriLiteral(EdmSimpleType.GUID, value);
-      else
-        // if ("time".equals(prefix))
+      else if ("time".equals(prefix))
         return new UriLiteral(EdmSimpleType.TIME, value);
     }
 
@@ -497,12 +509,19 @@ public class UriParser {
       throw new UriParserException("Invalid segment");
 
     this.uriResult.setTargetType(type);
-    if (type.getKind() == EdmTypeEnum.SIMPLE)
+    switch (type.getKind()) {
+    case SIMPLE:
       uriResult.setUriType(isCollection ? UriType.URI13 : UriType.URI14);
-    else if (type.getKind() == EdmTypeEnum.COMPLEX)
+      break;
+    case COMPLEX:
       uriResult.setUriType(isCollection ? UriType.URI11 : UriType.URI12);
-    else // ENTITY
+      break;
+    case ENTITY:
       uriResult.setUriType(UriType.URI10);
+      break;
+    default:
+      throw new UriParserException("Invalid return type of function import: " + currentPathSegment + ", " + pathSegments);
+    }
 
     if (!this.pathSegments.isEmpty())
       if (this.uriResult.getUriType() == UriType.URI14) {
@@ -641,40 +660,36 @@ public class UriParser {
 
   private void handleSystemQueryOptionExpand(String expandStatement) throws UriParserException {
     ArrayList<ArrayList<NavigationPropertySegment>> expand = new ArrayList<ArrayList<NavigationPropertySegment>>();
-    String expandHelper = expandStatement;
 
-    while (expandHelper != null) {
-      Matcher matcher = INITIAL_EXPAND_PATTERN.matcher(expandHelper);
-      if (!matcher.matches())
-        throw new UriParserException("Problems matching expand statement " + expandStatement);
+    if (expandStatement.startsWith(",") || expandStatement.endsWith(","))
+      throw new UriParserException("Empty item in expand statement " + expandStatement);
 
-      String expandClause = matcher.group(1);
-      expandHelper = matcher.group(2);
+    for (String expandItemString : expandStatement.split(",")) {
+      expandItemString = expandItemString.trim();
+      if ("".equals(expandItemString))
+        throw new UriParserException("Empty item in expand statement " + expandStatement);
+      if (expandItemString.startsWith("/") || expandItemString.endsWith("/"))
+        throw new UriParserException("Empty property in expand item " + expandItemString);
 
-      EdmEntitySet fromEntitySet = uriResult.getTargetEntitySet();
       ArrayList<NavigationPropertySegment> expandNavigationProperties = new ArrayList<NavigationPropertySegment>();
-      while (expandClause != null) {
-        matcher = EXPAND_PATTERN.matcher(expandClause);
-        if (!matcher.matches())
-          throw new UriParserException("Problems matching expand statement " + expandStatement);
+      EdmEntitySet fromEntitySet = uriResult.getTargetEntitySet();
 
-        String navigationPropertyName = matcher.group(1);
-        expandClause = matcher.group(2);
+      for (String expandPropertyName : expandItemString.split("/")) {
+        if ("".equals(expandPropertyName))
+          throw new UriParserException("Empty property name in expand item " + expandItemString);
 
-        EdmTyped property = fromEntitySet.getEntityType().getProperty(navigationPropertyName);
+        final EdmTyped property = fromEntitySet.getEntityType().getProperty(expandPropertyName);
         if (property == null)
-          throw new UriParserException("Can´t find property with name: " + navigationPropertyName);
-
-        try {
-          EdmNavigationProperty navigationProperty = (EdmNavigationProperty) property;
-          EdmEntitySet targetEntitySet = fromEntitySet.getRelatedEntitySet(navigationProperty);
+          throw new UriParserException("Can't find property with name: " + expandPropertyName);
+        if (property.getType().getKind() == EdmTypeEnum.NAVIGATION) {
+          final EdmNavigationProperty navigationProperty = (EdmNavigationProperty) property;
+          fromEntitySet = fromEntitySet.getRelatedEntitySet(navigationProperty);
           NavigationPropertySegment propertySegment = new NavigationPropertySegment();
           propertySegment.setNavigationProperty(navigationProperty);
-          propertySegment.setTargetEntitySet(targetEntitySet);
+          propertySegment.setTargetEntitySet(fromEntitySet);
           expandNavigationProperties.add(propertySegment);
-          fromEntitySet = targetEntitySet;
-        } catch (ClassCastException et) {
-          throw new UriParserException("Property: " + navigationPropertyName + " has to be a navigation property", et);
+        } else {
+          throw new UriParserException("Property: " + expandPropertyName + " has to be a navigation property");
         }
       }
       expand.add(expandNavigationProperties);
@@ -716,10 +731,13 @@ public class UriParser {
         if (property == null)
           throw new UriParserException("Can't find property with name: " + selectedPropertyName);
 
-        if (property.getType().getKind() == EdmTypeEnum.SIMPLE || property.getType().getKind() == EdmTypeEnum.COMPLEX) {
+        switch (property.getType().getKind()) {
+        case SIMPLE:
+        case COMPLEX:
           selectItem.setProperty(property);
           exit = true;
-        } else { // NAVIGATION
+          break;
+        case NAVIGATION:
           final EdmNavigationProperty navigationProperty = (EdmNavigationProperty) property;
           final EdmEntitySet targetEntitySet = fromEntitySet.getRelatedEntitySet(navigationProperty);
 
@@ -729,6 +747,9 @@ public class UriParser {
           selectItem.addNavigationPropertySegment(navigationPropertySegment);
 
           fromEntitySet = targetEntitySet;
+          break;
+        default:
+          throw new UriParserException("Invalid type of property: " + selectedPropertyName);
         }
       }
       select.add(selectItem);

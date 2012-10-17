@@ -1154,7 +1154,12 @@ public class UriParserTest {
   public void parseSystemQueryOptionExpandWrong() throws Exception {
     parseWrongUri("Managers('1')?$expand=,Employees");
     parseWrongUri("Managers('1')?$expand=Employees,");
+    parseWrongUri("Managers('1')?$expand=Employees,,");
+    parseWrongUri("Managers('1')?$expand=Employees,,Employees");
+    parseWrongUri("Managers('1')?$expand=Employees, somethingwrong");
+    parseWrongUri("Managers('1')?$expand=/Employees");
     parseWrongUri("Managers('1')?$expand=Employees/");
+    parseWrongUri("Managers('1')?$expand=Employees//");
     parseWrongUri("Managers('1')?$expand=somethingwrong");
     parseWrongUri("Managers('1')?$expand=Employees/EmployeeName");
     parseWrongUri("Managers('1')?$expand=Employees/somethingwrong");
@@ -1162,6 +1167,7 @@ public class UriParserTest {
     parseWrongUri("Managers('1')?$expand=Employees/*,somethingwrong");
     parseWrongUri("Managers('1')?$expand=Employees/*,some()");
     parseWrongUri("Managers('1')?$expand=Employees/(...)");
+    parseWrongUri("Teams('1')?$expand=nt_Employees//Manager");
   }
 
 }
