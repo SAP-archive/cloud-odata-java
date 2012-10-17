@@ -19,6 +19,7 @@ import com.sap.core.odata.core.exception.ODataCustomerException;
 import com.sap.core.odata.core.processor.Processor;
 import com.sap.core.odata.core.producer.Metadata;
 import com.sap.core.odata.core.producer.ODataProducer;
+import com.sap.core.odata.core.producer.ODataResponse;
 import com.sap.core.odata.core.rest.ODataLocator;
 import com.sap.core.odata.core.uri.UriParser;
 import com.sap.core.odata.core.uri.UriParserException;
@@ -137,7 +138,7 @@ public final class ODataLocatorImpl implements ODataLocator {
     this.processor.setContext(this.context);
     this.processor.setProducer(this.producer);
   }
-
+  
   private Map<String, String> convertToSinglevaluedMap(MultivaluedMap<String, String> multi) {
     Map<String, String> single = new HashMap<String, String>();
 

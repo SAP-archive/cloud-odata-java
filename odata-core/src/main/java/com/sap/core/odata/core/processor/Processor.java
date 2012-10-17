@@ -3,6 +3,7 @@ package com.sap.core.odata.core.processor;
 import static com.sap.core.odata.core.exception.ODataCustomerException.COMMON;
 
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.ResponseBuilder;
 
 import org.odata4j.exceptions.MethodNotAllowedException;
 
@@ -11,6 +12,7 @@ import com.sap.core.odata.core.exception.ODataMethodNotAllowedException;
 import com.sap.core.odata.core.exception.ODataNotFoundException;
 import com.sap.core.odata.core.exception.ODataTechnicalException;
 import com.sap.core.odata.core.producer.ODataProducer;
+import com.sap.core.odata.core.producer.ODataResponse;
 import com.sap.core.odata.core.rest.ODataContext;
 import com.sap.core.odata.core.rest.impl.ODataContextImpl;
 import com.sap.core.odata.core.rest.impl.ODataHttpMethod;
@@ -41,13 +43,12 @@ public class Processor {
   }
 
   public Response dispatch(ODataHttpMethod method, UriParserResult uriParserResult) throws ODataMethodNotAllowedException {
-    Response response;
-
+    ODataResponse odataResponse;
     switch (uriParserResult.getUriType()) {
     case URI0: // service document
       switch (method) {
       case GET:
-        response = this.producer.getServiceDocument().read();
+        odataResponse = this.producer.getServiceDocument().read();
         break;
       default:
         throw new ODataMethodNotAllowedException(ODataMethodNotAllowedException.DISPATCH);
@@ -56,7 +57,7 @@ public class Processor {
     case URI1: // entity set
       switch (method) {
       case GET:
-        response = this.producer.getEntitySet().read();
+        odataResponse = this.producer.getEntitySet().read();
         break;
       default:
         throw new MethodNotAllowedException("");
@@ -73,7 +74,7 @@ public class Processor {
     case URI8: // $metadata
       switch (method) {
       case GET:
-        response = this.producer.getMetadata().read();
+        odataResponse = this.producer.getMetadata().read();
         break;
       default:
         throw new ODataMethodNotAllowedException(ODataMethodNotAllowedException.DISPATCH);
@@ -94,6 +95,21 @@ public class Processor {
       throw new ODataTechnicalException("Unknown or non implemented URI type: " + uriParserResult.getUriType());
     }
 
+    Response response = this.convertResponse(odataResponse);
     return response;
   }
+
+  private Response convertResponse(ODataResponse odataResponse) {
+    ResponseBuilder responseBuilder = Response.noContent();
+    
+    responseBuilder = responseBuilder.status(odataResponse.getStatus());
+    responseBuilder = responseBuilder.entity(odataResponse.getEntity());
+    
+    for (String name : odataResponse.getHeaderNames()){
+      responseBuilder = responseBuilder.header(name, odataResponse.getHeader(name));
+    }
+    
+    return responseBuilder.build();
+  }
+
 }

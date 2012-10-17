@@ -31,5 +31,5 @@ public interface ODataContext {
    * @return http request object
    */
   Request getRequest();
-
+  
 }
