@@ -2,11 +2,10 @@ package com.sap.core.odata.core.experimental.edm.adapter;
 
 import org.odata4j.edm.EdmAssociationEnd;
 
-import com.sap.core.odata.core.edm.EdmEnd;
 import com.sap.core.odata.core.edm.EdmEntityType;
 import com.sap.core.odata.core.edm.EdmMultiplicity;
 
-public class EdmAssociationEndAdapter implements EdmEnd {
+public class EdmAssociationEndAdapter implements com.sap.core.odata.core.edm.EdmAssociationEnd {
 
   private EdmAssociationEnd edmAssociationEnd;
 
@@ -20,7 +19,7 @@ public class EdmAssociationEndAdapter implements EdmEnd {
   }
 
   @Override
-  public EdmEntityType getType() {
+  public EdmEntityType getEntityType() {
     return new EdmEntityTypeAdapter(this.edmAssociationEnd.getType());
   }
 

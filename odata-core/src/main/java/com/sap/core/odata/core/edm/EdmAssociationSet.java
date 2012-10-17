@@ -4,7 +4,7 @@ public interface EdmAssociationSet extends EdmNamed {
 
   EdmAssociation getAssociation() throws EdmException;
 
-  EdmEnd getEnd(String role) throws EdmException;
+  EdmAssociationSetEnd getEnd(String role) throws EdmException;
 
   EdmEntityContainer getEntityContainer() throws EdmException;
 }

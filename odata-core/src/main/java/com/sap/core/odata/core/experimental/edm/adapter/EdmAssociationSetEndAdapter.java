@@ -3,11 +3,9 @@ package com.sap.core.odata.core.experimental.edm.adapter;
 import org.odata4j.edm.EdmAssociationSetEnd;
 import org.odata4j.edm.EdmEntityContainer;
 
-import com.sap.core.odata.core.edm.EdmEnd;
-import com.sap.core.odata.core.edm.EdmMultiplicity;
-import com.sap.core.odata.core.edm.EdmType;
+import com.sap.core.odata.core.edm.EdmEntitySet;
 
-public class EdmAssociationSetEndAdapter implements EdmEnd {
+public class EdmAssociationSetEndAdapter implements com.sap.core.odata.core.edm.EdmAssociationSetEnd {
 
   private EdmAssociationSetEnd edmAssociationSetEnd;
   private EdmEntityContainer edmEntityContainer;
@@ -23,23 +21,11 @@ public class EdmAssociationSetEndAdapter implements EdmEnd {
   }
 
   @Override
-  public EdmType getType() {
-    // TODO Auto-generated method stub
+  public EdmEntitySet getEntitySet() {
+    org.odata4j.edm.EdmEntitySet edmEntitySet = this.edmAssociationSetEnd.getEntitySet();
+    if (edmEntitySet != null) {
+      return new EdmEntitySetAdapter(edmEntitySet, this.edmEntityContainer);
+    }
     return null;
   }
-
-  @Override
-  public EdmMultiplicity getMultiplicity() {
-    // TODO Auto-generated method stub
-    return null;
-  }
-
-//  @Override
-//  public EdmEntitySet getEntitySet() {
-//    org.odata4j.edm.EdmEntitySet edmEntitySet = this.edmAssociationSetEnd.getEntitySet();
-//    if (edmEntitySet != null) {
-//      return new EdmEntitySetAdapter(edmEntitySet, this.edmEntityContainer);
-//    }
-//    return null;
-//  }
 }

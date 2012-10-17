@@ -4,7 +4,7 @@ import org.odata4j.edm.EdmNavigationProperty;
 
 import com.sap.core.odata.core.edm.EdmMultiplicity;
 import com.sap.core.odata.core.edm.EdmType;
-import com.sap.core.odata.core.edm.EdmTypeEnum;
+import com.sap.core.odata.core.edm.EdmTypeKind;
 import com.sap.core.odata.core.edm.EdmTyped;
 
 public class EdmNavigationTypeAdapter implements EdmType, EdmTyped {
@@ -26,8 +26,8 @@ public class EdmNavigationTypeAdapter implements EdmType, EdmTyped {
   }
 
   @Override
-  public EdmTypeEnum getKind() {
-    return EdmTypeEnum.NAVIGATION;
+  public EdmTypeKind getKind() {
+    return EdmTypeKind.NAVIGATION;
   }
 
   @Override

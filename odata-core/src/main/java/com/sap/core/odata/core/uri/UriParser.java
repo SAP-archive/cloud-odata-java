@@ -27,7 +27,7 @@ import com.sap.core.odata.core.edm.EdmParameter;
 import com.sap.core.odata.core.edm.EdmProperty;
 import com.sap.core.odata.core.edm.EdmSimpleType;
 import com.sap.core.odata.core.edm.EdmType;
-import com.sap.core.odata.core.edm.EdmTypeEnum;
+import com.sap.core.odata.core.edm.EdmTypeKind;
 import com.sap.core.odata.core.edm.EdmTyped;
 import com.sap.core.odata.core.exception.ODataError;
 import com.sap.core.odata.core.uri.enums.Format;
@@ -293,12 +293,12 @@ public class UriParser {
     final EdmType type = property.getType();
 
     if (pathSegments.isEmpty()) {
-      if (type.getKind() == EdmTypeEnum.SIMPLE)
+      if (type.getKind() == EdmTypeKind.SIMPLE)
         if (this.uriResult.getPropertyPath().size() == 1)
           this.uriResult.setUriType(UriType.URI5);
         else
           this.uriResult.setUriType(UriType.URI4);
-      else if (type.getKind() == EdmTypeEnum.COMPLEX)
+      else if (type.getKind() == EdmTypeKind.COMPLEX)
         this.uriResult.setUriType(UriType.URI3);
       else
         throw new UriParserException("Invalid type of property: " + currentPathSegment + ", " + pathSegments);
@@ -501,7 +501,7 @@ public class UriParser {
     final EdmType type = returnType.getType();
     final boolean isCollection = returnType.getMultiplicity() == EdmMultiplicity.MANY;
 
-    if (type.getKind() == EdmTypeEnum.ENTITY && isCollection) {
+    if (type.getKind() == EdmTypeKind.ENTITY && isCollection) {
       handleEntitySet(functionImport.getEntitySet(), keyPredicate);
       return;
     }
@@ -682,7 +682,7 @@ public class UriParser {
         final EdmTyped property = fromEntitySet.getEntityType().getProperty(expandPropertyName);
         if (property == null)
           throw new UriParserException("Can't find property with name: " + expandPropertyName);
-        if (property.getType().getKind() == EdmTypeEnum.NAVIGATION) {
+        if (property.getType().getKind() == EdmTypeKind.NAVIGATION) {
           final EdmNavigationProperty navigationProperty = (EdmNavigationProperty) property;
           fromEntitySet = fromEntitySet.getRelatedEntitySet(navigationProperty);
           NavigationPropertySegment propertySegment = new NavigationPropertySegment();

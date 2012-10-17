@@ -5,7 +5,7 @@ import java.util.List;
 
 import com.sap.core.odata.core.edm.EdmComplexType;
 import com.sap.core.odata.core.edm.EdmProperty;
-import com.sap.core.odata.core.edm.EdmTypeEnum;
+import com.sap.core.odata.core.edm.EdmTypeKind;
 
 public class EdmComplexTypeAdapter extends EdmNamedAdapter implements EdmComplexType {
 
@@ -47,8 +47,8 @@ public class EdmComplexTypeAdapter extends EdmNamedAdapter implements EdmComplex
   }
 
   @Override
-  public EdmTypeEnum getKind() {
-    return EdmTypeEnum.COMPLEX;
+  public EdmTypeKind getKind() {
+    return EdmTypeKind.COMPLEX;
   }
 
 }

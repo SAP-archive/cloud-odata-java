@@ -34,7 +34,7 @@ import com.sap.core.odata.core.edm.EdmProperty;
 import com.sap.core.odata.core.edm.EdmServiceMetadata;
 import com.sap.core.odata.core.edm.EdmSimpleType;
 import com.sap.core.odata.core.edm.EdmType;
-import com.sap.core.odata.core.edm.EdmTypeEnum;
+import com.sap.core.odata.core.edm.EdmTypeKind;
 import com.sap.core.odata.core.edm.EdmTyped;
 import com.sap.core.odata.core.exception.ODataError;
 import com.sap.core.odata.core.uri.KeyPredicate;
@@ -64,7 +64,7 @@ public class UriParserTest {
     EdmEntitySet managerEntitySet = createEntitySetMock("Managers", EdmSimpleType.STRING, "ManagerId");
 
     EdmType navigationType = mock(EdmType.class);
-    when(navigationType.getKind()).thenReturn(EdmTypeEnum.NAVIGATION);
+    when(navigationType.getKind()).thenReturn(EdmTypeKind.NAVIGATION);
 
     EdmNavigationProperty employeeProperty = mock(EdmNavigationProperty.class);
     when(employeeProperty.getType()).thenReturn(navigationType);
@@ -80,7 +80,7 @@ public class UriParserTest {
     when(employeeEntitySet.getRelatedEntitySet(managerProperty)).thenReturn(managerEntitySet);
 
     EdmEntityType employeeType = employeeEntitySet.getEntityType();
-    when(employeeType.getKind()).thenReturn(EdmTypeEnum.ENTITY);
+    when(employeeType.getKind()).thenReturn(EdmTypeKind.ENTITY);
     when(employeeType.hasStream()).thenReturn(true);
     when(employeeType.getProperty("Manager")).thenReturn(managerProperty);
 
@@ -90,7 +90,7 @@ public class UriParserTest {
     when(employeeType.getProperty("EmployeeName")).thenReturn(employeeSimpleProperty);
 
     EdmComplexType locationComplexType = mock(EdmComplexType.class);
-    when(locationComplexType.getKind()).thenReturn(EdmTypeEnum.COMPLEX);
+    when(locationComplexType.getKind()).thenReturn(EdmTypeKind.COMPLEX);
 
     EdmProperty locationComplexProperty = mock(EdmProperty.class);
     when(locationComplexProperty.getType()).thenReturn(locationComplexType);
@@ -882,7 +882,7 @@ public class UriParserTest {
   public void parseFunctionImports() throws Exception {
     UriParserResult result = parse("EmployeeSearch");
     assertEquals("EmployeeSearch", result.getFunctionImport().getName());
-    assertEquals(EdmTypeEnum.ENTITY, result.getTargetType().getKind());
+    assertEquals(EdmTypeKind.ENTITY, result.getTargetType().getKind());
     assertEquals(UriType.URI1, result.getUriType());
 
     result = parse("AllLocations");

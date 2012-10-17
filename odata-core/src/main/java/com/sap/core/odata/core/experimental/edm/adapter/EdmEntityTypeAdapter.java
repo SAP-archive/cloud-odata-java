@@ -6,7 +6,7 @@ import java.util.List;
 import com.sap.core.odata.core.edm.EdmCustomizableFeedMappings;
 import com.sap.core.odata.core.edm.EdmEntityType;
 import com.sap.core.odata.core.edm.EdmProperty;
-import com.sap.core.odata.core.edm.EdmTypeEnum;
+import com.sap.core.odata.core.edm.EdmTypeKind;
 import com.sap.core.odata.core.edm.EdmTyped;
 
 public class EdmEntityTypeAdapter extends EdmNamedAdapter implements EdmEntityType {
@@ -96,8 +96,8 @@ public class EdmEntityTypeAdapter extends EdmNamedAdapter implements EdmEntityTy
   }
 
   @Override
-  public EdmTypeEnum getKind() {
-    return EdmTypeEnum.ENTITY;
+  public EdmTypeKind getKind() {
+    return EdmTypeKind.ENTITY;
   }
 
 }

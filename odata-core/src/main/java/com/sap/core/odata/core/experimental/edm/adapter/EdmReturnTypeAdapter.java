@@ -7,7 +7,7 @@ import org.odata4j.edm.EdmProperty.CollectionKind;
 
 import com.sap.core.odata.core.edm.EdmMultiplicity;
 import com.sap.core.odata.core.edm.EdmType;
-import com.sap.core.odata.core.edm.EdmTypeEnum;
+import com.sap.core.odata.core.edm.EdmTypeKind;
 import com.sap.core.odata.core.edm.EdmTyped;
 
 public class EdmReturnTypeAdapter implements EdmTyped {
@@ -15,7 +15,7 @@ public class EdmReturnTypeAdapter implements EdmTyped {
   private org.odata4j.edm.EdmType edmType;
   private String name;
   private String fullQualifiedName;
-  private EdmTypeEnum edmTypeKind = EdmTypeEnum.UNDEFINED;
+  private EdmTypeKind edmTypeKind = EdmTypeKind.UNDEFINED;
   private EdmMultiplicity edmMultiplicity = EdmMultiplicity.ONE;
 
   public EdmReturnTypeAdapter(org.odata4j.edm.EdmType edmType) {
@@ -27,12 +27,12 @@ public class EdmReturnTypeAdapter implements EdmTyped {
 
   private void resolveType(org.odata4j.edm.EdmType edmType) {
     if (edmType.isSimple()) {
-      this.edmTypeKind = EdmTypeEnum.SIMPLE;
+      this.edmTypeKind = EdmTypeKind.SIMPLE;
     } else {
       if (edmType instanceof EdmComplexType) {
-        this.edmTypeKind = EdmTypeEnum.COMPLEX;
+        this.edmTypeKind = EdmTypeKind.COMPLEX;
       } else if (edmType instanceof EdmEntityType) {
-        this.edmTypeKind = EdmTypeEnum.ENTITY;
+        this.edmTypeKind = EdmTypeKind.ENTITY;
       } else if (edmType instanceof EdmCollectionType) {
         if (((EdmCollectionType) edmType).getCollectionKind().equals(CollectionKind.Collection)) {
           this.edmMultiplicity = EdmMultiplicity.MANY;
@@ -75,11 +75,11 @@ public class EdmReturnTypeAdapter implements EdmTyped {
       edmItemType = edmType;
     }
     
-    if (EdmTypeEnum.SIMPLE.equals(edmTypeKind)) {
+    if (EdmTypeKind.SIMPLE.equals(edmTypeKind)) {
       return new EdmSimpleTypeAdapter(edmItemType.getSimple(edmItemType.getFullyQualifiedTypeName())).getType();
-    } else if (EdmTypeEnum.COMPLEX.equals(edmTypeKind)) {
+    } else if (EdmTypeKind.COMPLEX.equals(edmTypeKind)) {
       return new EdmComplexTypeAdapter((EdmComplexType)edmItemType);
-    } else if (EdmTypeEnum.ENTITY.equals(edmTypeKind)) {
+    } else if (EdmTypeKind.ENTITY.equals(edmTypeKind)) {
       return new EdmEntityTypeAdapter((EdmEntityType)edmItemType);
     }
     

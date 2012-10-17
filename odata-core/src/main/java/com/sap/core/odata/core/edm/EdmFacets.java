@@ -2,21 +2,21 @@ package com.sap.core.odata.core.edm;
 
 public interface EdmFacets {
 
-  public Boolean isNullable();
+  Boolean isNullable();
 
-  public String getDefaultValue();
+  String getDefaultValue();
 
-  public Integer getMaxLength();
+  Integer getMaxLength();
 
-  public Boolean isFixedLength();
+  Boolean isFixedLength();
 
-  public Integer getPrecision();
+  Integer getPrecision();
 
-  public Integer getScale();
+  Integer getScale();
 
-  public Boolean isUnicode();
+  Boolean isUnicode();
 
-  public String getCollation();
+  String getCollation();
 
-  public EdmConcurrencyMode getConcurrencyMode();
+  EdmConcurrencyMode getConcurrencyMode();
 }

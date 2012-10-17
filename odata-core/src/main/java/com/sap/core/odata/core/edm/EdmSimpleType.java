@@ -20,6 +20,8 @@ import org.odata4j.core.UnsignedByte;
 
 public enum EdmSimpleType implements EdmType {
 
+  //TODO: SimpleTypeInterface
+  
   BINARY("Edm.Binary", byte[].class, Byte[].class), BOOLEAN("Edm.Boolean", Boolean.class, boolean.class), BYTE("Edm.Byte", UnsignedByte.class), DATETIME("Edm.DateTime", LocalDateTime.class, Instant.class, Date.class, Calendar.class, Timestamp.class,
       java.sql.Date.class), DATETIMEOFFSET("Edm.DateTimeOffset", DateTime.class), DECIMAL("Edm.Decimal", BigDecimal.class), DOUBLE("Edm.Double", Double.class, double.class), GUID("Edm.Guid", Guid.class, UUID.class), INT16("Edm.Int16", Short.class,
       short.class), INT32("Edm.Int32", Integer.class, int.class), INT64("Edm.Int64", Long.class, long.class), SBYTE("Edm.SByte", Byte.class, byte.class), SINGLE("Edm.Single", Float.class, float.class), STRING("Edm.String", String.class, char.class,
@@ -59,9 +61,9 @@ public enum EdmSimpleType implements EdmType {
   }
 
   @Override
-  public EdmTypeEnum getKind() {
+  public EdmTypeKind getKind() {
 
-    return EdmTypeEnum.SIMPLE;
+    return EdmTypeKind.SIMPLE;
   }
 
 }
