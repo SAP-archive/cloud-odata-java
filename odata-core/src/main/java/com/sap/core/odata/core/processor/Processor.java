@@ -1,9 +1,15 @@
 package com.sap.core.odata.core.processor;
 
+import static com.sap.core.odata.core.exception.ODataCustomerException.COMMON;
+
 import javax.ws.rs.core.Response;
 
 import org.odata4j.exceptions.MethodNotAllowedException;
 
+import com.sap.core.odata.core.exception.ODataCustomerException;
+import com.sap.core.odata.core.exception.ODataMethodNotAllowedException;
+import com.sap.core.odata.core.exception.ODataNotFoundException;
+import com.sap.core.odata.core.exception.ODataTechnicalException;
 import com.sap.core.odata.core.producer.ODataProducer;
 import com.sap.core.odata.core.rest.ODataContext;
 import com.sap.core.odata.core.rest.impl.ODataContextImpl;
@@ -11,6 +17,17 @@ import com.sap.core.odata.core.rest.impl.ODataHttpMethod;
 import com.sap.core.odata.core.uri.UriParserResult;
 
 public class Processor {
+  public void someMethod() throws ODataCustomerException {
+    throw new ODataCustomerException(COMMON);
+  }
+
+  public void someUserMethod() throws ODataCustomerException {
+    throw new ODataNotFoundException(ODataNotFoundException.USER);
+  }
+
+  public void anotherMethod() {
+    throw new ODataTechnicalException();
+  }
 
   private ODataProducer producer;
   private ODataContext context;
@@ -23,7 +40,7 @@ public class Processor {
     this.producer = producer;
   }
 
-  public Response dispatch(ODataHttpMethod method, UriParserResult uriParserResult) {
+  public Response dispatch(ODataHttpMethod method, UriParserResult uriParserResult) throws ODataMethodNotAllowedException {
     Response response;
 
     switch (uriParserResult.getUriType()) {
@@ -33,7 +50,7 @@ public class Processor {
         response = this.producer.getServiceDocument().read();
         break;
       default:
-        throw new MethodNotAllowedException("");
+        throw new ODataMethodNotAllowedException(ODataMethodNotAllowedException.DISPATCH);
       }
       break;
     case URI1: // entity set
@@ -59,7 +76,7 @@ public class Processor {
         response = this.producer.getMetadata().read();
         break;
       default:
-        throw new MethodNotAllowedException("");
+        throw new ODataMethodNotAllowedException(ODataMethodNotAllowedException.DISPATCH);
       }
       break;
     case URI9: // $batch
@@ -74,10 +91,9 @@ public class Processor {
     case URI50A: // entity link exists
     case URI50B: // entity links count
     default:
-      throw new RuntimeException("Unknown or non implemented URI type: " + uriParserResult.getUriType());
+      throw new ODataTechnicalException("Unknown or non implemented URI type: " + uriParserResult.getUriType());
     }
 
     return response;
   }
-
 }
