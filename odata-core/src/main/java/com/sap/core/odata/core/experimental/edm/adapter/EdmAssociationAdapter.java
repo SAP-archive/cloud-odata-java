@@ -1,9 +1,9 @@
 package com.sap.core.odata.core.experimental.edm.adapter;
 
 import com.sap.core.odata.core.edm.EdmAssociation;
-import com.sap.core.odata.core.edm.EdmEnd;
+import com.sap.core.odata.core.edm.EdmAssociationEnd;
 import com.sap.core.odata.core.edm.EdmException;
-import com.sap.core.odata.core.edm.EdmTypeEnum;
+import com.sap.core.odata.core.edm.EdmTypeKind;
 
 public class EdmAssociationAdapter extends EdmNamedAdapter implements EdmAssociation {
 
@@ -20,7 +20,7 @@ public class EdmAssociationAdapter extends EdmNamedAdapter implements EdmAssocia
   }
 
   @Override
-  public EdmEnd getEnd(String role) throws EdmException {
+  public EdmAssociationEnd getEnd(String role) throws EdmException {
     if (role.equals(this.edmAssociation.getEnd1().getRole())) {
       return new EdmAssociationEndAdapter(this.edmAssociation.getEnd1());
     } else if (role.equals(this.edmAssociation.getEnd2().getRole())) {
@@ -30,7 +30,7 @@ public class EdmAssociationAdapter extends EdmNamedAdapter implements EdmAssocia
   }
 
   @Override
-  public EdmTypeEnum getKind() {
-    return EdmTypeEnum.ASSOCIATION;
+  public EdmTypeKind getKind() {
+    return EdmTypeKind.ASSOCIATION;
   }
 }

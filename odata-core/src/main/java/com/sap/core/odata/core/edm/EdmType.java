@@ -4,5 +4,5 @@ public interface EdmType extends EdmNamed {
 
   String getNamespace() throws EdmException;;
 
-  EdmTypeEnum getKind();
+  EdmTypeKind getKind();
 }

@@ -2,7 +2,7 @@ package com.sap.core.odata.core.experimental.edm.adapter;
 
 import com.sap.core.odata.core.edm.EdmAssociation;
 import com.sap.core.odata.core.edm.EdmAssociationSet;
-import com.sap.core.odata.core.edm.EdmEnd;
+import com.sap.core.odata.core.edm.EdmAssociationSetEnd;
 import com.sap.core.odata.core.edm.EdmEntityContainer;
 import com.sap.core.odata.core.edm.EdmException;
 
@@ -23,7 +23,7 @@ public class EdmAssociationSetAdapter extends EdmNamedAdapter implements EdmAsso
   }
 
   @Override
-  public EdmEnd getEnd(String role) throws EdmException {
+  public EdmAssociationSetEnd getEnd(String role) throws EdmException {
     if (role.equals(this.edmAssociationSet.getEnd1().getRole())) {
       new EdmAssociationSetEndAdapter(this.edmAssociationSet.getEnd1(), this.edmEntityContainer);
     } else if (role.equals(this.edmAssociationSet.getEnd2().getRole())) {
