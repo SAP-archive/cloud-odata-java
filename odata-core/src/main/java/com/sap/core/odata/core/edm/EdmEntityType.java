@@ -5,16 +5,16 @@ import java.util.List;
 
 public interface EdmEntityType extends EdmNamed, EdmStructuralType, EdmType {
 
-  Collection<String> getKeyPropertyNames();
+  Collection<String> getKeyPropertyNames() throws EdmException;
 
-  List<EdmProperty> getKeyProperties();
+  List<EdmProperty> getKeyProperties() throws EdmException;
 
-  boolean hasStream();
+  boolean hasStream() throws EdmException;
 
-  EdmEntityType getBaseType();
+  EdmEntityType getBaseType() throws EdmException;
 
-  EdmCustomizableFeedMappings getCustomizableFeedMappings();
+  EdmCustomizableFeedMappings getCustomizableFeedMappings() throws EdmException;
 
-  Collection<String> getNavigationPropertyNames();
+  Collection<String> getNavigationPropertyNames() throws EdmException;
 
 }

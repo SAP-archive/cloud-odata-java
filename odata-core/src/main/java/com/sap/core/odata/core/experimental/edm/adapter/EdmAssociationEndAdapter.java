@@ -21,11 +21,7 @@ public class EdmAssociationEndAdapter implements EdmEnd {
 
   @Override
   public EdmEntityType getType() {
-    org.odata4j.edm.EdmEntityType edmEntityType = this.edmAssociationEnd.getType();
-    if (edmEntityType != null) {
-      return new EdmEntityTypeAdapter(edmEntityType);
-    }
-    return null;
+    return new EdmEntityTypeAdapter(this.edmAssociationEnd.getType());
   }
 
   @Override
