@@ -2,9 +2,9 @@ package com.sap.core.odata.core.edm;
 
 public interface EdmAssociationSet extends EdmNamed {
 
-  EdmAssociation getAssociation();
+  EdmAssociation getAssociation() throws EdmException;
 
-  EdmEnd getEnd(String role);
+  EdmEnd getEnd(String role) throws EdmException;
 
-  EdmEntityContainer getEntityContainer();
+  EdmEntityContainer getEntityContainer() throws EdmException;
 }

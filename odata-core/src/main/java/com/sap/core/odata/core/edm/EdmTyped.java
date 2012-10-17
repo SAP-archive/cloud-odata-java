@@ -2,7 +2,7 @@ package com.sap.core.odata.core.edm;
 
 public interface EdmTyped extends EdmNamed {
 
-  EdmType getType();
+  EdmType getType() throws EdmException;;
 
-  EdmMultiplicity getMultiplicity();
+  EdmMultiplicity getMultiplicity() throws EdmException;;
 }

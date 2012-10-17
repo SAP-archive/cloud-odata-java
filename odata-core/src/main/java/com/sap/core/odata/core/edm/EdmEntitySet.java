@@ -2,9 +2,9 @@ package com.sap.core.odata.core.edm;
 
 public interface EdmEntitySet extends EdmNamed {
 
-  EdmEntityType getEntityType();
+  EdmEntityType getEntityType() throws EdmException;
 
-  EdmEntitySet getRelatedEntitySet(EdmNavigationProperty navigationProperty);
+  EdmEntitySet getRelatedEntitySet(EdmNavigationProperty navigationProperty) throws EdmException;
 
-  EdmEntityContainer getEntityContainer();
+  EdmEntityContainer getEntityContainer() throws EdmException;
 }

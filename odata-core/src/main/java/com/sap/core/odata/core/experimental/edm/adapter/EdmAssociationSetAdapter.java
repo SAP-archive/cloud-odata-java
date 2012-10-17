@@ -4,6 +4,7 @@ import com.sap.core.odata.core.edm.EdmAssociation;
 import com.sap.core.odata.core.edm.EdmAssociationSet;
 import com.sap.core.odata.core.edm.EdmEnd;
 import com.sap.core.odata.core.edm.EdmEntityContainer;
+import com.sap.core.odata.core.edm.EdmException;
 
 public class EdmAssociationSetAdapter extends EdmNamedAdapter implements EdmAssociationSet {
 
@@ -17,12 +18,12 @@ public class EdmAssociationSetAdapter extends EdmNamedAdapter implements EdmAsso
   }
 
   @Override
-  public EdmAssociation getAssociation() {
+  public EdmAssociation getAssociation() throws EdmException {
     return new EdmAssociationAdapter(this.edmAssociationSet.getAssociation());
   }
 
   @Override
-  public EdmEnd getEnd(String role) {
+  public EdmEnd getEnd(String role) throws EdmException {
     if (role.equals(this.edmAssociationSet.getEnd1().getRole())) {
       new EdmAssociationSetEndAdapter(this.edmAssociationSet.getEnd1(), this.edmEntityContainer);
     } else if (role.equals(this.edmAssociationSet.getEnd2().getRole())) {
@@ -32,7 +33,7 @@ public class EdmAssociationSetAdapter extends EdmNamedAdapter implements EdmAsso
   }
 
   @Override
-  public EdmEntityContainer getEntityContainer() {
+  public EdmEntityContainer getEntityContainer() throws EdmException {
     return new EdmEntityContainerAdapter(this.edmEntityContainer);
   }
 }

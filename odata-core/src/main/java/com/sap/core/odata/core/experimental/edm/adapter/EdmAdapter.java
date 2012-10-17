@@ -8,6 +8,7 @@ import com.sap.core.odata.core.edm.EdmAssociation;
 import com.sap.core.odata.core.edm.EdmComplexType;
 import com.sap.core.odata.core.edm.EdmEntityContainer;
 import com.sap.core.odata.core.edm.EdmEntityType;
+import com.sap.core.odata.core.edm.EdmException;
 import com.sap.core.odata.core.edm.EdmServiceMetadata;
 
 public class EdmAdapter implements Edm {
@@ -18,23 +19,12 @@ public class EdmAdapter implements Edm {
     this.edmDataServices = edmDataServices;
   }
 
-  public EdmEntityContainer getDefaultEntityContainer() {
-    for (EdmSchema schema : this.edmDataServices.getSchemas()) {
-      for (org.odata4j.edm.EdmEntityContainer eec : schema.getEntityContainers()) {
-        if (eec.isDefault()) {
-          return new EdmEntityContainerAdapter(eec);
-        }
-      }
-    }
-    return null;
-  }
-
   @Override
-  public EdmEntityContainer getEntityContainer(String name) {
+  public EdmEntityContainer getEntityContainer(String name) throws EdmException {
     if (name == null) {
       return getDefaultEntityContainer();
     }
-    
+
     for (EdmSchema schema : this.edmDataServices.getSchemas()) {
       for (org.odata4j.edm.EdmEntityContainer eec : schema.getEntityContainers()) {
         if (name.equals(eec.getName())) {
@@ -42,34 +32,34 @@ public class EdmAdapter implements Edm {
         }
       }
     }
-    return null;
+    throw new EdmException("Entity Container " + name + " not found");
   }
 
   @Override
-  public EdmEntityType getEntityType(String namespace, String name) {
+  public EdmEntityType getEntityType(String namespace, String name) throws EdmException {
     org.odata4j.edm.EdmEntityType edmEntityType = (org.odata4j.edm.EdmEntityType) this.edmDataServices.findEdmEntityType(namespace + "." + name);
     if (edmEntityType != null) {
       return new EdmEntityTypeAdapter(edmEntityType);
     }
-    return null;
+    throw new EdmException("Entity Type for full qualified name " + namespace + "." + name + " not found");
   }
 
   @Override
-  public EdmComplexType getComplexType(String namespace, String name) {
+  public EdmComplexType getComplexType(String namespace, String name) throws EdmException {
     org.odata4j.edm.EdmComplexType edmComplexType = (org.odata4j.edm.EdmComplexType) this.edmDataServices.findEdmComplexType(namespace + "." + name);
     if (edmComplexType != null) {
       return new EdmComplexTypeAdapter(edmComplexType);
     }
-    return null;
+    throw new EdmException("Complex Type for full qualified name " + namespace + "." + name + " not found");
   }
 
   @Override
-  public EdmAssociation getAssociation(String namespace, String name) {
+  public EdmAssociation getAssociation(String namespace, String name) throws EdmException {
     org.odata4j.edm.EdmAssociation edmAssociation = (org.odata4j.edm.EdmAssociation) this.edmDataServices.findEdmAssociation(namespace + "." + name);
     if (edmAssociation != null) {
       return new EdmAssociationAdapter(edmAssociation);
     }
-    return null;
+    throw new EdmException("Association for full qualified name " + namespace + "." + name + " not found");
   }
 
   @Override
@@ -77,4 +67,14 @@ public class EdmAdapter implements Edm {
     return new EdmServiceMetadataAdapter(this.edmDataServices);
   }
 
+  public EdmEntityContainer getDefaultEntityContainer() throws EdmException {
+    for (EdmSchema schema : this.edmDataServices.getSchemas()) {
+      for (org.odata4j.edm.EdmEntityContainer eec : schema.getEntityContainers()) {
+        if (eec.isDefault()) {
+          return new EdmEntityContainerAdapter(eec);
+        }
+      }
+    }
+    throw new EdmException("No default entity container found");
+  }
 }

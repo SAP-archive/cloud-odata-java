@@ -4,15 +4,15 @@ import java.util.Collection;
 
 public interface EdmFunctionImport extends EdmNamed {
 
-  EdmParameter getParameter(String name);
+  EdmParameter getParameter(String name) throws EdmException;
 
-  Collection<String> getParameterNames();
+  Collection<String> getParameterNames() throws EdmException;
 
-  EdmEntitySet getEntitySet();
+  EdmEntitySet getEntitySet() throws EdmException;
 
-  String getHttpMethod();
+  String getHttpMethod() throws EdmException;
 
-  EdmTyped getReturnType();
+  EdmTyped getReturnType() throws EdmException;
 
-  EdmEntityContainer getEntityContainer();
+  EdmEntityContainer getEntityContainer() throws EdmException;
 }

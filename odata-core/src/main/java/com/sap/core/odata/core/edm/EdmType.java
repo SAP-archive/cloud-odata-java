@@ -2,7 +2,7 @@ package com.sap.core.odata.core.edm;
 
 public interface EdmType extends EdmNamed {
 
-  String getNamespace();
+  String getNamespace() throws EdmException;;
 
   EdmTypeEnum getKind();
 }
