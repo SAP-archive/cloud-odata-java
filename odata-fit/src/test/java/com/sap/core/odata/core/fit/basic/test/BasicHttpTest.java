@@ -11,7 +11,6 @@ import java.net.URI;
 
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
 
 import org.apache.http.Header;
 import org.apache.http.HttpResponse;
@@ -29,6 +28,7 @@ import com.sap.core.odata.core.edm.Edm;
 import com.sap.core.odata.core.edm.EdmEntityContainer;
 import com.sap.core.odata.core.edm.EdmEntitySet;
 import com.sap.core.odata.core.producer.EntitySet;
+import com.sap.core.odata.core.producer.ODataResponse;
 import com.sap.core.odata.fit.HttpMerge;
 import com.sap.core.odata.fit.StringStreamHelper;
 
@@ -44,7 +44,7 @@ public class BasicHttpTest extends AbstractBasicTest {
     Edm edm = this.getProducer().getMetadata().getEdm();
     when(edm.getDefaultEntityContainer()).thenReturn(edmEntityContainer);
     EntitySet entitySet = this.getProducer().getEntitySet();
-    when(entitySet.read()).thenReturn(Response.ok().entity("entityset").build());
+    when(entitySet.read()).thenReturn(ODataResponse.status(200).entity("entityset").build());
   }
 
   @Test

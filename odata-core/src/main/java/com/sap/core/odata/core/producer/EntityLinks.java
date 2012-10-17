@@ -1,11 +1,9 @@
 package com.sap.core.odata.core.producer;
 
-import javax.ws.rs.core.Response;
-
 public interface EntityLinks {
-  Response read();
+  ODataResponse read();
 
-  Response count();
+  ODataResponse count();
 
-  Response createLink();
+  ODataResponse createLink();
 }

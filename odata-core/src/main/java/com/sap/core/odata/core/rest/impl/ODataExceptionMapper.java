@@ -1,6 +1,9 @@
 package com.sap.core.odata.core.rest.impl;
 
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.UriInfo;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.ext.ExceptionMapper;
 import javax.ws.rs.ext.Provider;
@@ -12,6 +15,11 @@ import org.slf4j.LoggerFactory;
 public class ODataExceptionMapper implements ExceptionMapper<RuntimeException> {
 
   private final static Logger log = LoggerFactory.getLogger(ODataExceptionMapper.class);
+
+  @Context
+  protected UriInfo uriInfo;
+  @Context
+  protected HttpHeaders httpHeaders;
 
   @Override
   public Response toResponse(RuntimeException exception) {
