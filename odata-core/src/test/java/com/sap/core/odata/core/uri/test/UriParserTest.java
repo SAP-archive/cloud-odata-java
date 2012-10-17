@@ -601,18 +601,22 @@ public class UriParserTest {
 
   @Test
   public void navigationPropertyWrong() throws Exception {
-    parseWrongUri("/Employees('1')/Manager()");
-    parseWrongUri("/Employees('1')/Manager('1')");
-    parseWrongUri("/Employees('1')/$links/Manager('1')");
-    parseWrongUri("/Employees('1')/$links/Manager()");
-    parseWrongUri("/Employees('1')/$links/Manager/somethingwrong");
-    parseWrongUri("/Employees('1')/Manager/$count/somethingwrong");
-    parseWrongUri("/Employees('1')/$links/Manager/$count/somethingwrong");
-    parseWrongUri("/Employees('1')/Manager/$value");
-    parseWrongUri("/Managers('1')/Employees('1')/$value/somethingwrong");
-    parseWrongUri("/Managers('1')/Employees/$links");
-    parseWrongUri("/Employees('1')/$links/somethingwrong");
-    parseWrongUri("/Employees('1')/$links/EmployeeName");
+    parseWrongUri("Employees('1')/Manager()");
+    parseWrongUri("Employees('1')/Manager('1')");
+    parseWrongUri("Employees('1')/$links");
+    parseWrongUri("Employees('1')/$links/Manager('1')");
+    parseWrongUri("Employees('1')/$links/Manager()");
+    parseWrongUri("Employees('1')/$links/Manager/somethingwrong");
+    parseWrongUri("Employees('1')/Manager/$count/somethingwrong");
+    parseWrongUri("Employees('1')/$links/Manager/$count/somethingwrong");
+    parseWrongUri("Employees('1')/Manager/$value");
+    parseWrongUri("Managers('1')/Employees('1')/$value/somethingwrong");
+    parseWrongUri("Managers('1')/Employees/$links");
+    parseWrongUri("Managers('1')/Employees/$links/Manager");
+    parseWrongUri("Managers('1')/Employees/somethingwrong");
+    parseWrongUri("Employees('1')/$links/somethingwrong");
+    parseWrongUri("Employees('1')/$links/EmployeeName");
+    parseWrongUri("Employees('1')/$links/$links/Manager");
     parseWrongUri("Managers('1')/Employee/");
   }
 
@@ -980,6 +984,12 @@ public class UriParserTest {
     assertEquals("Employees", result.getTargetEntitySet().getName());
     assertEquals(UriType.URI5, result.getUriType());
     assertEquals(Format.JSON, result.getFormat());
+
+    result = parse("Employees?$filter=Age gt 20&$orderby=EmployeeName desc");
+    assertEquals("Employees", result.getTargetEntitySet().getName());
+    assertEquals(UriType.URI1, result.getUriType());
+    assertNotNull(result.getFilter());
+    assertNotNull(result.getOrderBy());
   }
 
   @Test
@@ -1142,6 +1152,10 @@ public class UriParserTest {
 
   @Test
   public void parseSystemQueryOptionExpandWrong() throws Exception {
+    parseWrongUri("Managers('1')?$expand=,Employees");
+    parseWrongUri("Managers('1')?$expand=Employees,");
+    parseWrongUri("Managers('1')?$expand=Employees/");
+    parseWrongUri("Managers('1')?$expand=somethingwrong");
     parseWrongUri("Managers('1')?$expand=Employees/EmployeeName");
     parseWrongUri("Managers('1')?$expand=Employees/somethingwrong");
     parseWrongUri("Managers('1')?$expand=Employees/*");

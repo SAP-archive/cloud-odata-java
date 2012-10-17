@@ -49,6 +49,7 @@ public class UriParser {
 
   private Edm edm;
   private List<PathSegment> pathSegments;
+  private String currentPathSegment;
   private UriParserResult uriResult;
   private Map<SystemQueryOption, String> systemQueryOptions;
   private Map<String, String> otherQueryParameters;
@@ -95,58 +96,57 @@ public class UriParser {
       return;
     }
 
-    String pathSegment = this.pathSegments.remove(0).getPath();
+    currentPathSegment = pathSegments.remove(0).getPath();
 
-    if ("$metadata".equals(pathSegment)) {
+    if ("$metadata".equals(currentPathSegment))
       if (this.pathSegments.isEmpty()) {
         this.uriResult.setUriType(UriType.URI8);
         return;
       } else {
         throw new UriParserException("$metadata not last path segment: " + this.pathSegments);
       }
-    }
 
-    if ("$batch".equals(pathSegment)) {
+    if ("$batch".equals(currentPathSegment))
       if (this.pathSegments.isEmpty()) {
         this.uriResult.setUriType(UriType.URI9);
         return;
       } else {
         throw new UriParserException("$batch not last path segment: " + this.pathSegments);
       }
-    }
 
-    final Matcher matcher = INITIAL_SEGMENT_PATTERN.matcher(pathSegment);
+    final Matcher matcher = INITIAL_SEGMENT_PATTERN.matcher(currentPathSegment);
     if (!matcher.matches())
-      throw new UriParserException("Problems matching segment " + pathSegment);
+      throw new UriParserException("Problems matching segment " + currentPathSegment);
 
     final String entityContainerName = matcher.group(1);
     final String segmentName = matcher.group(2);
     final String keyPredicate = matcher.group(3);
     final String emptyParentheses = matcher.group(4);
-    UriParser.LOG.debug("RegEx (" + pathSegment + ") : entityContainerName=" + entityContainerName + ", segmentName=" + segmentName + ", keyPredicate=" + keyPredicate + ", emptyParentheses=" + emptyParentheses);
+    UriParser.LOG.debug("RegEx (" + currentPathSegment + ") : entityContainerName=" + entityContainerName + ", segmentName=" + segmentName + ", keyPredicate=" + keyPredicate + ", emptyParentheses=" + emptyParentheses);
 
-    EdmEntityContainer entityContainer;
-    if (entityContainerName != null) {
-      entityContainer = this.edm.getEntityContainer(entityContainerName);
-      if (entityContainer == null) {
-        throw new UriParserException("Cannot find container with name: " + entityContainerName);
-      }
-    } else {
-      entityContainer = this.edm.getDefaultEntityContainer();
-    }
-
-    this.uriResult.setEntityContainer(entityContainer);
-
-    final EdmEntitySet entitySet = entityContainer.getEntitySet(segmentName);
+    determineEntityContainer(entityContainerName);
+    final EdmEntitySet entitySet = uriResult.getEntityContainer().getEntitySet(segmentName);
     if (entitySet != null) {
       this.uriResult.setEntitySet(entitySet);
       handleEntitySet(entitySet, keyPredicate);
     } else {
-      final EdmFunctionImport functionImport = entityContainer.getFunctionImport(segmentName);
+      final EdmFunctionImport functionImport = uriResult.getEntityContainer().getFunctionImport(segmentName);
       if (functionImport == null)
-        throw new UriParserException("cannot parse URI path segments: " + pathSegment + "/" + this.pathSegments);
+        throw new UriParserException("cannot parse URI path segments: " + currentPathSegment + "/" + this.pathSegments);
       this.uriResult.setFunctionImport(functionImport);
       handleFunctionImport(functionImport, emptyParentheses, keyPredicate);
+    }
+  }
+
+  private void determineEntityContainer(final String entityContainerName) throws UriParserException {
+    if (entityContainerName != null) {
+      EdmEntityContainer entityContainer = edm.getEntityContainer(entityContainerName);
+      if (entityContainer == null)
+        throw new UriParserException("Cannot find container with name: " + entityContainerName);
+      else
+        uriResult.setEntityContainer(entityContainer);
+    } else {
+      uriResult.setEntityContainer(edm.getDefaultEntityContainer());
     }
   }
 
@@ -160,178 +160,126 @@ public class UriParser {
       if (this.pathSegments.isEmpty()) {
         this.uriResult.setUriType(UriType.URI1);
       } else {
-        final String pathSegment = this.pathSegments.remove(0).getPath();
-        checkCount(pathSegment);
+        currentPathSegment = pathSegments.remove(0).getPath();
+        checkCount();
         if (uriResult.isCount())
           uriResult.setUriType(UriType.URI15);
         else
-          throw new UriParserException("Entity set instead of entity: " + pathSegment + ", " + this.pathSegments);
+          throw new UriParserException("Entity set instead of entity: " + currentPathSegment + ", " + this.pathSegments);
       }
     } else {
       this.uriResult.setKeyPredicates(this.parseKey(keyPredicate, entityType));
       if (this.pathSegments.isEmpty())
         this.uriResult.setUriType(UriType.URI2);
       else
-        handleNavigationPathOptions(entitySet);
+        handleNavigationPathOptions();
     }
   }
 
-  private void handleNavigationPathOptions(final EdmEntitySet fromEntitySet) throws UriParserException {
-    final String pathSegment = this.pathSegments.remove(0).getPath();
+  private void handleNavigationPathOptions() throws UriParserException {
+    currentPathSegment = pathSegments.remove(0).getPath();
 
-    checkCount(pathSegment);
+    checkCount();
     if (uriResult.isCount()) {
-      this.uriResult.setTargetType(fromEntitySet.getEntityType());
-      this.uriResult.setTargetEntitySet(fromEntitySet);
+      uriResult.setUriType(UriType.URI16); // Count of multiple entities is handled elsewhere
 
-      if (this.uriResult.getNavigationSegments().isEmpty()) {
-        this.uriResult.setUriType(UriType.URI16); // Entity set with key is handled elsewhere
-      } else {
-        NavigationSegment navigationSegmentEnd = this.uriResult.getNavigationSegments().get(this.uriResult.getNavigationSegments().size() - 1);
-        if (navigationSegmentEnd.getNavigationProperty().getMultiplicity() == EdmMultiplicity.MANY)
-          if (navigationSegmentEnd.getKeyPredicates().isEmpty())
-            this.uriResult.setUriType(UriType.URI15);
-          else
-            this.uriResult.setUriType(UriType.URI16);
-        else
-          this.uriResult.setUriType(UriType.URI16);
-      }
-
-    } else if ("$value".equals(pathSegment)) {
-      if (fromEntitySet.getEntityType().hasStream()) {
+    } else if ("$value".equals(currentPathSegment)) {
+      if (uriResult.getTargetEntitySet().getEntityType().hasStream())
         if (this.pathSegments.isEmpty()) {
           this.uriResult.setUriType(UriType.URI17);
-          this.uriResult.setTargetType(fromEntitySet.getEntityType());
-          this.uriResult.setTargetEntitySet(fromEntitySet);
           this.uriResult.setValue(true);
         } else {
-          throw new UriParserException("not last path segment: " + pathSegment + ", " + this.pathSegments);
+          throw new UriParserException("not last path segment: " + currentPathSegment + ", " + this.pathSegments);
         }
-      } else {
+      else
         throw new UriParserException("Resource is no media resource");
-      }
 
-    } else if ("$links".equals(pathSegment)) {
+    } else if ("$links".equals(currentPathSegment)) {
       this.uriResult.setLinks(true);
-      handleNavigationProperties(null, fromEntitySet, null);
+      if (pathSegments.isEmpty())
+        throw new UriParserException("$links must not be the last segment");
+      currentPathSegment = pathSegments.remove(0).getPath();
+      handleNavigationProperties();
 
     } else {
-      final Matcher matcher = NAVIGATION_SEGMENT_PATTERN.matcher(pathSegment);
-      if (!matcher.matches())
-        throw new UriParserException("Problems matching segment " + pathSegment);
+      handleNavigationProperties();
+    }
+  }
 
-      final String navigationPropertyName = matcher.group(1);
-      final String keyPredicateName = matcher.group(2);
-      final String emptyParentheses = matcher.group(3);
+  private void handleNavigationProperties() throws UriParserException {
 
-      final EdmTyped property = fromEntitySet.getEntityType().getProperty(navigationPropertyName);
-      if (property == null)
-        throw new UriParserException("Cannot find property: " + property);
+    final Matcher matcher = NAVIGATION_SEGMENT_PATTERN.matcher(currentPathSegment);
+    if (!matcher.matches())
+      throw new UriParserException("Problems matching segment " + currentPathSegment);
 
-      switch (property.getType().getKind()) {
-      case SIMPLE:
-      case COMPLEX:
-        if (keyPredicateName != null || emptyParentheses != null)
-          throw new UriParserException("Invalid segment: " + pathSegment + ", " + this.pathSegments);
+    final String navigationPropertyName = matcher.group(1);
+    final String keyPredicateName = matcher.group(2);
+    final String emptyParentheses = matcher.group(3);
+    UriParser.LOG.debug("RegEx (" + currentPathSegment + "): NavigationProperty=" + navigationPropertyName + ", keyPredicate=" + keyPredicateName + ", emptyParentheses=" + emptyParentheses);
+
+    final EdmTyped property = uriResult.getTargetEntitySet().getEntityType().getProperty(navigationPropertyName);
+    if (property == null)
+      throw new UriParserException("Cannot find property with name: " + navigationPropertyName);
+
+    if (property.getType().getKind() == EdmTypeEnum.SIMPLE || property.getType().getKind() == EdmTypeEnum.COMPLEX) {
+      if (keyPredicateName != null || emptyParentheses != null)
+        throw new UriParserException("Invalid segment: " + currentPathSegment + ", " + this.pathSegments);
+      if (uriResult.isLinks())
+        throw new UriParserException("$links must be followed by a navigation property, but " + currentPathSegment + " is of another property type");
+      else
         handlePropertyPath((EdmProperty) property);
-        break;
 
-      case NAVIGATION:
-        final EdmNavigationProperty navigationProperty = (EdmNavigationProperty) property;
-        if (keyPredicateName != null || emptyParentheses != null)
-          if (navigationProperty.getMultiplicity() != EdmMultiplicity.MANY)
-            throw new UriParserException("Invalid segment: " + pathSegment + ", " + this.pathSegments);
-        handleNavigationProperties(navigationProperty, fromEntitySet, keyPredicateName);
-        break;
+    } else { // NAVIGATION
+      final EdmNavigationProperty navigationProperty = (EdmNavigationProperty) property;
+      if (keyPredicateName != null || emptyParentheses != null)
+        if (navigationProperty.getMultiplicity() != EdmMultiplicity.MANY)
+          throw new UriParserException("Invalid segment: " + currentPathSegment + ", " + this.pathSegments);
 
-      default:
-        throw new UriParserException("Invalid property: " + pathSegment + ", " + this.pathSegments);
+      addNavigationSegment(keyPredicateName, navigationProperty);
+
+      boolean many = false;
+      if (navigationProperty.getMultiplicity() == EdmMultiplicity.MANY)
+        many = keyPredicateName == null;
+
+      if (pathSegments.isEmpty())
+        if (many)
+          if (uriResult.isLinks())
+            uriResult.setUriType(UriType.URI7B);
+          else
+            uriResult.setUriType(UriType.URI6B);
+        else if (uriResult.isLinks())
+          uriResult.setUriType(UriType.URI7A);
+        else
+          uriResult.setUriType(UriType.URI6A);
+      else if (many || uriResult.isLinks()) {
+        currentPathSegment = pathSegments.remove(0).getPath();
+        checkCount();
+        if (!uriResult.isCount())
+          throw new UriParserException("Invalid path segment: " + currentPathSegment + ", " + this.pathSegments);
+        if (many)
+          if (uriResult.isLinks())
+            uriResult.setUriType(UriType.URI50B);
+          else
+            uriResult.setUriType(UriType.URI15);
+        else
+          uriResult.setUriType(UriType.URI50A);
+      } else {
+        handleNavigationPathOptions();
       }
     }
   }
 
-  private void handleNavigationProperties(final EdmNavigationProperty navigationProperty, final EdmEntitySet fromEntitySet, final String keyPredicateName) throws UriParserException {
+  private void addNavigationSegment(final String keyPredicateName, final EdmNavigationProperty navigationProperty) throws UriParserException {
+    final EdmEntitySet targetEntitySet = uriResult.getTargetEntitySet().getRelatedEntitySet(navigationProperty);
+    uriResult.setTargetEntitySet(targetEntitySet);
+    uriResult.setTargetType(targetEntitySet.getEntityType());
 
-    if (this.uriResult.isLinks()) {
-      if (this.pathSegments.isEmpty())
-        throw new UriParserException("$links must not be the last segment");
-
-      String pathSegment = this.pathSegments.remove(0).getPath();
-
-      final Matcher matcher = NAVIGATION_SEGMENT_PATTERN.matcher(pathSegment);
-      if (!matcher.matches())
-        throw new UriParserException("Problems matching segment " + pathSegment);
-
-      final String navigationPropertyName = matcher.group(1);
-      final String targetKeyPredicateName = matcher.group(2);
-      final String emptyParentheses = matcher.group(3);
-      UriParser.LOG.debug("RegEx (" + pathSegment + "): NavigationProperty=" + navigationPropertyName + ", keyPredicate=" + targetKeyPredicateName + ", emptyParentheses=" + emptyParentheses);
-
-      final EdmTyped property = fromEntitySet.getEntityType().getProperty(navigationPropertyName);
-      if (property == null)
-        throw new UriParserException("Cannot find property with name: " + navigationPropertyName);
-
-      if (property.getType().getKind() != EdmTypeEnum.NAVIGATION)
-        throw new UriParserException("Invalid EDM type. Type is not a navigation type");
-
-      if (!this.pathSegments.isEmpty()) {
-        pathSegment = this.pathSegments.remove(0).getPath();
-        checkCount(pathSegment);
-        if (!uriResult.isCount())
-          throw new UriParserException("Invalid path segment: " + pathSegment + ", " + this.pathSegments);
-      }
-
-      final EdmNavigationProperty navProperty = (EdmNavigationProperty) property;
-
-      boolean many = false;
-      if (navProperty.getMultiplicity() == EdmMultiplicity.MANY)
-        many = targetKeyPredicateName == null;
-      else if (targetKeyPredicateName != null || emptyParentheses != null)
-        throw new UriParserException("Navigation property " + navProperty.getName() + " must have no key predicate, " + this.pathSegments);
-      if (many)
-        if (this.uriResult.isCount())
-          this.uriResult.setUriType(UriType.URI50B);
-        else
-          this.uriResult.setUriType(UriType.URI7B);
-      else if (this.uriResult.isCount())
-        this.uriResult.setUriType(UriType.URI50A);
-      else
-        this.uriResult.setUriType(UriType.URI7A);
-
-      final EdmEntitySet targetEntitySet = fromEntitySet.getRelatedEntitySet(navProperty);
-      this.uriResult.setTargetEntitySet(targetEntitySet);
-      this.uriResult.setTargetType(targetEntitySet.getEntityType());
-
-      NavigationSegment navigationSegment = new NavigationSegment();
-      navigationSegment.setEntitySet(targetEntitySet);
-      navigationSegment.setNavigationProperty(navProperty);
-      if (targetKeyPredicateName != null)
-        navigationSegment.setKeyPredicates(parseKey(targetKeyPredicateName, targetEntitySet.getEntityType()));
-      this.uriResult.addNavigationSegment(navigationSegment);
-
-    } else {
-      EdmEntitySet targetEntitySet = fromEntitySet.getRelatedEntitySet(navigationProperty);
-      this.uriResult.setTargetEntitySet(targetEntitySet);
-      this.uriResult.setTargetType(targetEntitySet.getEntityType());
-
-      NavigationSegment navigationSegment = new NavigationSegment();
-      navigationSegment.setEntitySet(targetEntitySet);
-      navigationSegment.setNavigationProperty(navigationProperty);
-      if (keyPredicateName != null)
-        navigationSegment.setKeyPredicates(parseKey(keyPredicateName, targetEntitySet.getEntityType()));
-      this.uriResult.addNavigationSegment(navigationSegment);
-
-      if (this.pathSegments.isEmpty()) {
-        if (keyPredicateName == null && navigationProperty.getMultiplicity() == EdmMultiplicity.MANY)
-          this.uriResult.setUriType(UriType.URI6B);
-        else
-          this.uriResult.setUriType(UriType.URI6A);
-      } else {
-        if (keyPredicateName == null && navigationProperty.getMultiplicity() == EdmMultiplicity.MANY && !"$count".equals(this.pathSegments.get(0).getPath()) && !"$links".equals(this.pathSegments.get(0).getPath()))
-          throw new UriParserException("Not last path segment: " + navigationProperty.getName() + ", " + this.pathSegments);
-        handleNavigationPathOptions(targetEntitySet);
-      }
-    }
+    NavigationSegment navigationSegment = new NavigationSegment();
+    navigationSegment.setEntitySet(targetEntitySet);
+    navigationSegment.setNavigationProperty(navigationProperty);
+    if (keyPredicateName != null)
+      navigationSegment.setKeyPredicates(parseKey(keyPredicateName, targetEntitySet.getEntityType()));
+    uriResult.addNavigationSegment(navigationSegment);
   }
 
   private void handlePropertyPath(final EdmProperty property) throws UriParserException {
@@ -348,9 +296,9 @@ public class UriParser {
         this.uriResult.setUriType(UriType.URI3);
       this.uriResult.setTargetType(type);
     } else {
-      final String segment = this.pathSegments.remove(0).getPath();
+      currentPathSegment = pathSegments.remove(0).getPath();
       if (type.getKind() == EdmTypeEnum.SIMPLE) {
-        if ("$value".equals(segment))
+        if ("$value".equals(currentPathSegment))
           if (this.pathSegments.isEmpty()) {
             this.uriResult.setValue(true);
             if (this.uriResult.getPropertyPath().size() == 1)
@@ -361,20 +309,20 @@ public class UriParser {
             throw new UriParserException("$value is not the last segment");
           }
         else
-          throw new UriParserException("Invalid path segment: " + segment + ", " + this.pathSegments);
+          throw new UriParserException("Invalid path segment: " + currentPathSegment + ", " + this.pathSegments);
         this.uriResult.setTargetType(type);
       }
       if (type.getKind() == EdmTypeEnum.COMPLEX) {
-        final EdmProperty nextProperty = (EdmProperty) ((EdmComplexType) type).getProperty(segment);
+        final EdmProperty nextProperty = (EdmProperty) ((EdmComplexType) type).getProperty(currentPathSegment);
         if (nextProperty == null)
-          throw new UriParserException("Invalid segment: " + segment);
+          throw new UriParserException("Invalid segment: " + currentPathSegment);
         handlePropertyPath(nextProperty);
       }
     }
   }
 
-  private void checkCount(final String pathSegment) throws UriParserException {
-    if ("$count".equals(pathSegment))
+  private void checkCount() throws UriParserException {
+    if ("$count".equals(currentPathSegment))
       if (pathSegments.isEmpty())
         uriResult.setCount(true);
       else
@@ -549,35 +497,24 @@ public class UriParser {
       throw new UriParserException("Invalid segment");
 
     this.uriResult.setTargetType(type);
-    switch (type.getKind()) {
-    case SIMPLE:
-      this.uriResult.setUriType(isCollection ? UriType.URI13 : UriType.URI14);
-      break;
-    case COMPLEX:
-      this.uriResult.setUriType(isCollection ? UriType.URI11 : UriType.URI12);
-      break;
-    case ENTITY:
-      this.uriResult.setUriType(UriType.URI10);
-      break;
-    default:
-      throw new UriParserException("Invalid kind of function-import return type");
-    }
-
-    String segment = null;
+    if (type.getKind() == EdmTypeEnum.SIMPLE)
+      uriResult.setUriType(isCollection ? UriType.URI13 : UriType.URI14);
+    else if (type.getKind() == EdmTypeEnum.COMPLEX)
+      uriResult.setUriType(isCollection ? UriType.URI11 : UriType.URI12);
+    else // ENTITY
+      uriResult.setUriType(UriType.URI10);
 
     if (!this.pathSegments.isEmpty())
       if (this.uriResult.getUriType() == UriType.URI14) {
-        segment = pathSegments.remove(0).getPath();
-        if ("$value".equals(segment))
-          this.uriResult.setValue(true);
+        currentPathSegment = pathSegments.remove(0).getPath();
+        if ("$value".equals(currentPathSegment))
+          uriResult.setValue(true);
         else
-          throw new UriParserException("Invalid segment: " + segment);
-      } else {
-        segment = functionImport.getName();
+          throw new UriParserException("Invalid segment: " + currentPathSegment);
       }
 
     if (!pathSegments.isEmpty())
-      throw new UriParserException("Segment is not last segment: " + segment + ", " + this.pathSegments);
+      throw new UriParserException("Segment is not last segment: " + currentPathSegment + ", " + this.pathSegments);
   }
 
   private void distributeQueryParameters(final Map<String, String> queryParameters) throws UriParserException {
@@ -740,10 +677,8 @@ public class UriParser {
           throw new UriParserException("Property: " + navigationPropertyName + " has to be a navigation property", et);
         }
       }
-
       expand.add(expandNavigationProperties);
     }
-
     uriResult.setExpand(expand);
   }
 
@@ -781,13 +716,10 @@ public class UriParser {
         if (property == null)
           throw new UriParserException("Can't find property with name: " + selectedPropertyName);
 
-        switch (property.getType().getKind()) {
-        case SIMPLE:
-        case COMPLEX:
+        if (property.getType().getKind() == EdmTypeEnum.SIMPLE || property.getType().getKind() == EdmTypeEnum.COMPLEX) {
           selectItem.setProperty(property);
           exit = true;
-          break;
-        case NAVIGATION:
+        } else { // NAVIGATION
           final EdmNavigationProperty navigationProperty = (EdmNavigationProperty) property;
           final EdmEntitySet targetEntitySet = fromEntitySet.getRelatedEntitySet(navigationProperty);
 
@@ -797,15 +729,10 @@ public class UriParser {
           selectItem.addNavigationPropertySegment(navigationPropertySegment);
 
           fromEntitySet = targetEntitySet;
-          break;
-        default:
-          break;
         }
       }
-
       select.add(selectItem);
     }
-
     uriResult.setSelect(select);
   }
 
