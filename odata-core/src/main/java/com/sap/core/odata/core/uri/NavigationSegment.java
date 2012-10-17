@@ -38,11 +38,7 @@ public class NavigationSegment {
 
   @Override
   public String toString() {
-
-    String navPropertyString = navigationProperty == null ? "null" : navigationProperty.getName();
-    String targetEntitySetString = targetEntitySet == null ? "null" : targetEntitySet.getName();
-
-    return "NavigationProperty:" + navPropertyString + " Target Entity Set: " + targetEntitySetString;
+    return "NavigationProperty:" + navigationProperty + " Target Entity Set: " + targetEntitySet;
   }
 
 }

@@ -5,7 +5,9 @@ import org.odata4j.edm.EdmComplexType;
 import com.sap.core.odata.core.edm.EdmConcurrencyMode;
 import com.sap.core.odata.core.edm.EdmContentKind;
 import com.sap.core.odata.core.edm.EdmCustomizableFeedMappings;
+import com.sap.core.odata.core.edm.EdmException;
 import com.sap.core.odata.core.edm.EdmFacets;
+import com.sap.core.odata.core.edm.EdmMapping;
 import com.sap.core.odata.core.edm.EdmMultiplicity;
 import com.sap.core.odata.core.edm.EdmProperty;
 import com.sap.core.odata.core.edm.EdmTargetPath;
@@ -64,5 +66,11 @@ public class EdmPropertyAdapter extends EdmNamedAdapter implements EdmProperty {
   @Override
   public String getMimeType() {
     return this.edmProperty.getMimeType();
+  }
+
+  @Override
+  public EdmMapping getMapping() throws EdmException {
+    // TODO Auto-generated method stub
+    return null;
   }
 }
