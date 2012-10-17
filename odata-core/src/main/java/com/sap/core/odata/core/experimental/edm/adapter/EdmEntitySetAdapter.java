@@ -4,6 +4,7 @@ import org.odata4j.edm.EdmEntityContainer;
 
 import com.sap.core.odata.core.edm.EdmEntitySet;
 import com.sap.core.odata.core.edm.EdmEntityType;
+import com.sap.core.odata.core.edm.EdmException;
 import com.sap.core.odata.core.edm.EdmNavigationProperty;
 
 public class EdmEntitySetAdapter extends EdmNamedAdapter implements EdmEntitySet {
@@ -23,7 +24,7 @@ public class EdmEntitySetAdapter extends EdmNamedAdapter implements EdmEntitySet
   }
 
   @Override
-  public EdmEntitySet getRelatedEntitySet(EdmNavigationProperty navigationProperty) {
+  public EdmEntitySet getRelatedEntitySet(EdmNavigationProperty navigationProperty) throws EdmException {
     String relationship = navigationProperty.getRelationship().getName();
     String toRole = navigationProperty.getToRole();
 
@@ -40,7 +41,7 @@ public class EdmEntitySetAdapter extends EdmNamedAdapter implements EdmEntitySet
   }
 
   @Override
-  public com.sap.core.odata.core.edm.EdmEntityContainer getEntityContainer() {
+  public com.sap.core.odata.core.edm.EdmEntityContainer getEntityContainer() throws EdmException {
     return new EdmEntityContainerAdapter(this.edmEntityContainer);
   }
 

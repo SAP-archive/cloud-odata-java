@@ -248,18 +248,12 @@ public class UriParserResult {
 
   @Override
   public String toString() {
-    String entityContainerName = this.entityContainer == null ? "null" : this.entityContainer.getName();
-    String entitySetName = this.entitySet == null ? "null" : this.entitySet.getName();
-    String targetEntitySetName = this.targetEntitySet == null ? "null" : this.targetEntitySet.getName();
-    String targetTypeName = this.targetType == null ? "null" : this.targetType.getName();
-    String functionImportName = this.functionImport == null ? "null" : this.functionImport.getName();
-
     return "UriParserResult: uriType=" + uriType + ", "
-        + "entityContainer=" + entityContainerName + ", "
-        + "entitySet=" + entitySetName + ", "
-        + "targetEntitySet=" + targetEntitySetName + ", "
-        + "functionImport=" + functionImportName + ", "
-        + "targetType=" + targetTypeName + ", "
+        + "entityContainer=" + this.entityContainer + ", "
+        + "entitySet=" + this.entitySet + ", "
+        + "targetEntitySet=" + this.targetEntitySet + ", "
+        + "functionImport=" + this.functionImport + ", "
+        + "targetType=" + this.targetType + ", "
         + "keyPredicates=" + keyPredicates + ", "
         + "navigationSegments=" + navigationSegments + ", "
         + "propertyPath=" + propertyPath + ", "

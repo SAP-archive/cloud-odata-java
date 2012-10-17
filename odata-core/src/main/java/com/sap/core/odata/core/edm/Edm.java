@@ -11,4 +11,6 @@ public interface Edm {
   EdmAssociation getAssociation(String namespace, String name) throws EdmException;
 
   EdmServiceMetadata getServiceMetadata();
+
+  EdmEntityContainer getDefaultEntityContainer() throws EdmException;
 }

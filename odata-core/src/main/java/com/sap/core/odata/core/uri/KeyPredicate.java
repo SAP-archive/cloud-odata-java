@@ -31,10 +31,7 @@ public class KeyPredicate {
 
   @Override
   public String toString() {
-    String propertyName = this.property == null ? "null" : this.property.getName();
-    String propertyType = this.property == null ? "null" : this.property.getType().getNamespace() + this.property.getType().getName();
-
-    return "KeyPredicate: literal=" + this.literal + ", propertyName=" + propertyName + ", propertyType=" + propertyType;
+    return "KeyPredicate: literal=" + this.literal + ", propertyName=" + this.property;
   }
 
 }
