@@ -1,5 +1,7 @@
 package com.sap.core.odata.core.producer;
 
+import com.sap.core.odata.core.exception.ODataTechnicalException;
+
 public abstract class ODataProducer {
 
   public Metadata getMetadata() {
@@ -8,7 +10,7 @@ public abstract class ODataProducer {
     if (this instanceof Metadata) {
       metadata = (Metadata) this;
     } else {
-      throw new RuntimeException("Metadata must be supported!");
+      throw new ODataTechnicalException("Metadata must be supported!");
     }
 
     return metadata;
