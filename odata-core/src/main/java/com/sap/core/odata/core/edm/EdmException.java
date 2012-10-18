@@ -1,8 +1,8 @@
 package com.sap.core.odata.core.edm;
 
-import com.sap.core.odata.core.exception.ODataError;
+import com.sap.core.odata.core.exception.ODataException;
 
-public class EdmException extends ODataError {
+public class EdmException extends ODataException {
 
   public EdmException() {
     super();

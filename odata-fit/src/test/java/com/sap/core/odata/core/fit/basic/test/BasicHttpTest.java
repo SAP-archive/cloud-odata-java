@@ -27,7 +27,7 @@ import org.junit.Test;
 import com.sap.core.odata.core.edm.Edm;
 import com.sap.core.odata.core.edm.EdmEntityContainer;
 import com.sap.core.odata.core.edm.EdmEntitySet;
-import com.sap.core.odata.core.exception.ODataError;
+import com.sap.core.odata.core.exception.ODataException;
 import com.sap.core.odata.core.producer.EntitySet;
 import com.sap.core.odata.core.producer.ODataResponse;
 import com.sap.core.odata.fit.HttpMerge;
@@ -48,7 +48,7 @@ public class BasicHttpTest extends AbstractBasicTest {
   }
 
   @Test
-  public void testGet() throws ODataError, MalformedURLException, IOException {
+  public void testGet() throws ODataException, MalformedURLException, IOException {
     HttpGet get = new HttpGet(URI.create(this.getEndpoint().toString() + "entityset"));
 
     HttpResponse response = this.getHttpClient().execute(get);

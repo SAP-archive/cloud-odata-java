@@ -1,6 +1,6 @@
 package com.sap.core.odata.core.exception;
 
-public class ODataTechnicalException extends RuntimeException implements ODataException {
+public class ODataTechnicalException extends RuntimeException {
 
   /**
    * 
@@ -10,9 +10,13 @@ public class ODataTechnicalException extends RuntimeException implements ODataEx
   public ODataTechnicalException() {
     super();
   }
-  
+
   public ODataTechnicalException(String message) {
     super(message);
+  }
+
+  public ODataTechnicalException(String message, Throwable throwable) {
+    super(message, throwable);
   }
 
 }

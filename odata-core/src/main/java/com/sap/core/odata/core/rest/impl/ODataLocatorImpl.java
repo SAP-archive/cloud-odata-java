@@ -15,8 +15,8 @@ import javax.ws.rs.core.Response;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.sap.core.odata.core.exception.ODataCustomerException;
-import com.sap.core.odata.core.exception.ODataError;
+import com.sap.core.odata.core.exception.ODataContextedException;
+import com.sap.core.odata.core.exception.ODataException;
 import com.sap.core.odata.core.processor.Processor;
 import com.sap.core.odata.core.producer.Metadata;
 import com.sap.core.odata.core.producer.ODataProducer;
@@ -55,10 +55,7 @@ public final class ODataLocatorImpl implements ODataLocator {
 
       Response response = this.processor.dispatch(ODataHttpMethod.GET, uriParserResult);
       return response;
-    } catch (ODataError e) {
-      throw new RuntimeException(e);
-    } catch (ODataCustomerException e) {
-      // TODO: check and replace exception
+    } catch (ODataException e) {
       throw new RuntimeException(e);
     }
   }

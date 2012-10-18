@@ -1,6 +1,6 @@
 package com.sap.core.odata.core.exception;
 
-public class ODataNotFoundException extends ODataCustomerException {
+public class ODataNotFoundException extends ODataContextedException {
 
   /**
    * 
