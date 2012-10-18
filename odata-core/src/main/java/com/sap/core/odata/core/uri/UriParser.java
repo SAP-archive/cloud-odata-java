@@ -61,16 +61,17 @@ public class UriParser {
   /**
    * Parse the URI part after an OData service root,
    * already splitted into path segments and query parameters.
-   * @param pathSegments  the segments of the resource path
-   * @param queryParameters  the query parameters
+   * @param pathSegments  the segments of the resource path, already unescaped
+   * @param queryParameters  the query parameters, already unescaped
    * @return a {@link UriParserResult} instance containing the parsed information
    * @throws UriParserException
    */
   public UriParserResult parse(final List<PathSegment> pathSegments, final Map<String, String> queryParameters) throws ODataError {
     UriParser.LOG.debug(pathSegments.toString());
-    this.uriResult = new UriParserResult();
+    uriResult = new UriParserResult();
 
     this.pathSegments = pathSegments;
+    preparePathSegments();
     handleResourcePath();
 
     this.systemQueryOptions = new HashMap<SystemQueryOption, String>();
@@ -86,12 +87,25 @@ public class UriParser {
     return uriResult;
   }
 
+  private void preparePathSegments() throws UriParserException {
+    if (!pathSegments.isEmpty()) {
+      if (pathSegments.get(0).getPath().equals("")) // initial '/' is allowed but ignored
+        pathSegments.remove(0);
+      if (pathSegments.size() == 1)
+        if (pathSegments.get(0).getPath().equals("")) // only '/': service document
+          pathSegments.remove(0);
+      for (PathSegment pathSegment : pathSegments)
+        if (pathSegment.getPath().equals(""))
+          throw new UriParserException("Empty path segment in URI, " + pathSegments);
+    }
+  }
+
   private void handleResourcePath() throws ODataError {
 
-    UriParser.LOG.debug("parsing: " + this.pathSegments);
+    UriParser.LOG.debug("parsing: " + pathSegments);
 
-    if (this.pathSegments.isEmpty()) {
-      this.uriResult.setUriType(UriType.URI0);
+    if (pathSegments.isEmpty()) {
+      uriResult.setUriType(UriType.URI0);
       return;
     }
 
@@ -99,7 +113,7 @@ public class UriParser {
 
     if ("$metadata".equals(currentPathSegment))
       if (this.pathSegments.isEmpty()) {
-        this.uriResult.setUriType(UriType.URI8);
+        uriResult.setUriType(UriType.URI8);
         return;
       } else {
         throw new UriParserException("$metadata not last path segment: " + this.pathSegments);
@@ -107,7 +121,7 @@ public class UriParser {
 
     if ("$batch".equals(currentPathSegment))
       if (this.pathSegments.isEmpty()) {
-        this.uriResult.setUriType(UriType.URI9);
+        uriResult.setUriType(UriType.URI9);
         return;
       } else {
         throw new UriParserException("$batch not last path segment: " + this.pathSegments);
@@ -126,13 +140,13 @@ public class UriParser {
     determineEntityContainer(entityContainerName);
     final EdmEntitySet entitySet = uriResult.getEntityContainer().getEntitySet(segmentName);
     if (entitySet != null) {
-      this.uriResult.setEntitySet(entitySet);
+      uriResult.setEntitySet(entitySet);
       handleEntitySet(entitySet, keyPredicate);
     } else {
       final EdmFunctionImport functionImport = uriResult.getEntityContainer().getFunctionImport(segmentName);
       if (functionImport == null)
         throw new UriParserException("cannot parse URI path segments: " + currentPathSegment + "/" + this.pathSegments);
-      this.uriResult.setFunctionImport(functionImport);
+      uriResult.setFunctionImport(functionImport);
       handleFunctionImport(functionImport, emptyParentheses, keyPredicate);
     }
   }
