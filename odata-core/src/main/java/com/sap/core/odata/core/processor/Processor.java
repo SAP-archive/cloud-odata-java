@@ -1,13 +1,13 @@
 package com.sap.core.odata.core.processor;
 
-import static com.sap.core.odata.core.exception.ODataCustomerException.COMMON;
+import static com.sap.core.odata.core.exception.ODataContextedException.COMMON;
 
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 
 import org.odata4j.exceptions.MethodNotAllowedException;
 
-import com.sap.core.odata.core.exception.ODataCustomerException;
+import com.sap.core.odata.core.exception.ODataContextedException;
 import com.sap.core.odata.core.exception.ODataMethodNotAllowedException;
 import com.sap.core.odata.core.exception.ODataNotFoundException;
 import com.sap.core.odata.core.exception.ODataTechnicalException;
@@ -19,11 +19,11 @@ import com.sap.core.odata.core.rest.impl.ODataHttpMethod;
 import com.sap.core.odata.core.uri.UriParserResult;
 
 public class Processor {
-  public void someMethod() throws ODataCustomerException {
-    throw new ODataCustomerException(COMMON);
+  public void someMethod() throws ODataContextedException {
+    throw new ODataMethodNotAllowedException(COMMON);
   }
 
-  public void someUserMethod() throws ODataCustomerException {
+  public void someUserMethod() throws ODataContextedException {
     throw new ODataNotFoundException(ODataNotFoundException.USER);
   }
 

@@ -29,7 +29,7 @@ import com.sap.core.odata.core.edm.EdmSimpleType;
 import com.sap.core.odata.core.edm.EdmType;
 import com.sap.core.odata.core.edm.EdmTypeKind;
 import com.sap.core.odata.core.edm.EdmTyped;
-import com.sap.core.odata.core.exception.ODataError;
+import com.sap.core.odata.core.exception.ODataException;
 import com.sap.core.odata.core.uri.enums.Format;
 import com.sap.core.odata.core.uri.enums.InlineCount;
 import com.sap.core.odata.core.uri.enums.SystemQueryOption;
@@ -66,7 +66,7 @@ public class UriParser {
    * @return a {@link UriParserResult} instance containing the parsed information
    * @throws UriParserException
    */
-  public UriParserResult parse(final List<PathSegment> pathSegments, final Map<String, String> queryParameters) throws ODataError {
+  public UriParserResult parse(final List<PathSegment> pathSegments, final Map<String, String> queryParameters) throws ODataException {
     UriParser.LOG.debug(pathSegments.toString());
     uriResult = new UriParserResult();
 
@@ -100,7 +100,7 @@ public class UriParser {
     }
   }
 
-  private void handleResourcePath() throws ODataError {
+  private void handleResourcePath() throws ODataException {
 
     UriParser.LOG.debug("parsing: " + pathSegments);
 
@@ -151,7 +151,7 @@ public class UriParser {
     }
   }
 
-  private void determineEntityContainer(final String entityContainerName) throws ODataError {
+  private void determineEntityContainer(final String entityContainerName) throws ODataException {
     if (entityContainerName != null) {
       EdmEntityContainer entityContainer = edm.getEntityContainer(entityContainerName);
       if (entityContainer == null)
@@ -163,7 +163,7 @@ public class UriParser {
     }
   }
 
-  private void handleEntitySet(final EdmEntitySet entitySet, final String keyPredicate) throws ODataError {
+  private void handleEntitySet(final EdmEntitySet entitySet, final String keyPredicate) throws ODataException {
     final EdmEntityType entityType = entitySet.getEntityType();
 
     this.uriResult.setTargetType(entityType);
@@ -189,7 +189,7 @@ public class UriParser {
     }
   }
 
-  private void handleNavigationPathOptions() throws ODataError {
+  private void handleNavigationPathOptions() throws ODataException {
     currentPathSegment = pathSegments.remove(0).getPath();
 
     checkCount();
@@ -219,7 +219,7 @@ public class UriParser {
     }
   }
 
-  private void handleNavigationProperties() throws ODataError {
+  private void handleNavigationProperties() throws ODataException {
 
     final Matcher matcher = NAVIGATION_SEGMENT_PATTERN.matcher(currentPathSegment);
     if (!matcher.matches())
@@ -289,7 +289,7 @@ public class UriParser {
     }
   }
 
-  private void addNavigationSegment(final String keyPredicateName, final EdmNavigationProperty navigationProperty) throws ODataError {
+  private void addNavigationSegment(final String keyPredicateName, final EdmNavigationProperty navigationProperty) throws ODataException {
     final EdmEntitySet targetEntitySet = uriResult.getTargetEntitySet().getRelatedEntitySet(navigationProperty);
     uriResult.setTargetEntitySet(targetEntitySet);
     uriResult.setTargetType(targetEntitySet.getEntityType());
@@ -302,7 +302,7 @@ public class UriParser {
     uriResult.addNavigationSegment(navigationSegment);
   }
 
-  private void handlePropertyPath(final EdmProperty property) throws ODataError {
+  private void handlePropertyPath(final EdmProperty property) throws ODataException {
     this.uriResult.addProperty(property);
     final EdmType type = property.getType();
 
@@ -358,7 +358,7 @@ public class UriParser {
         throw new UriParserException("$count is not the last path segment, " + pathSegments);
   }
 
-  private ArrayList<KeyPredicate> parseKey(final String keyPredicate, final EdmEntityType entityType) throws ODataError {
+  private ArrayList<KeyPredicate> parseKey(final String keyPredicate, final EdmEntityType entityType) throws ODataException {
     ArrayList<KeyPredicate> keyPredicates = new ArrayList<KeyPredicate>();
     List<EdmProperty> keyProperties = entityType.getKeyProperties();
     final boolean singleKey = keyProperties.size() == 1;
@@ -510,7 +510,7 @@ public class UriParser {
     }
   }
 
-  private void handleFunctionImport(final EdmFunctionImport functionImport, final String emptyParentheses, final String keyPredicate) throws ODataError {
+  private void handleFunctionImport(final EdmFunctionImport functionImport, final String emptyParentheses, final String keyPredicate) throws ODataException {
     final EdmTyped returnType = functionImport.getReturnType();
     final EdmType type = returnType.getType();
     final boolean isCollection = returnType.getMultiplicity() == EdmMultiplicity.MANY;
@@ -584,7 +584,7 @@ public class UriParser {
     }
   }
 
-  private void handleSystemQueryOptions() throws ODataError {
+  private void handleSystemQueryOptions() throws ODataException {
 
     for (SystemQueryOption queryOption : systemQueryOptions.keySet())
       switch (queryOption) {
@@ -673,7 +673,7 @@ public class UriParser {
       throw new UriParserException("$top must not be negative");
   }
 
-  private void handleSystemQueryOptionExpand(String expandStatement) throws ODataError {
+  private void handleSystemQueryOptionExpand(String expandStatement) throws ODataException {
     ArrayList<ArrayList<NavigationPropertySegment>> expand = new ArrayList<ArrayList<NavigationPropertySegment>>();
 
     if (expandStatement.startsWith(",") || expandStatement.endsWith(","))
@@ -712,7 +712,7 @@ public class UriParser {
     uriResult.setExpand(expand);
   }
 
-  private void handleSystemQueryOptionSelect(final String selectStatement) throws ODataError {
+  private void handleSystemQueryOptionSelect(final String selectStatement) throws ODataException {
     ArrayList<SelectItem> select = new ArrayList<SelectItem>();
 
     if (selectStatement.startsWith(",") || selectStatement.endsWith(","))
@@ -772,7 +772,7 @@ public class UriParser {
     uriResult.setSelect(select);
   }
 
-  private void handleFunctionImportParameters() throws ODataError {
+  private void handleFunctionImportParameters() throws ODataException {
     final EdmFunctionImport functionImport = uriResult.getFunctionImport();
     if (functionImport == null)
       return;

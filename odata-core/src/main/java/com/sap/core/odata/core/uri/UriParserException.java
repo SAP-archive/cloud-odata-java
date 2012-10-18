@@ -1,8 +1,8 @@
 package com.sap.core.odata.core.uri;
 
-import com.sap.core.odata.core.exception.ODataError;
+import com.sap.core.odata.core.exception.ODataException;
 
-public class UriParserException extends ODataError {
+public class UriParserException extends ODataException {
 
   public UriParserException() {
     super();
