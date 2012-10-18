@@ -112,6 +112,8 @@
 		<module>odata-fit</module>
 		<module>odata-ref</module>
 		<module>odata-web</module>
+		<module>odata-api</module>
+		<module>odata-testutils</module>
 	</modules>
 
 	<distributionManagement>
