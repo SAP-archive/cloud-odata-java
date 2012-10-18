@@ -61,7 +61,7 @@ public class UriParserTest {
 
     EdmEntityContainer defaultContainer = mock(EdmEntityContainer.class);
     EdmEntitySet employeeEntitySet = createEntitySetMock("Employees", EdmSimpleType.STRING, "EmployeeId");
-    EdmEntitySet managerEntitySet = createEntitySetMock("Managers", EdmSimpleType.STRING, "ManagerId");
+    EdmEntitySet managerEntitySet = createEntitySetMock("Managers", EdmSimpleType.STRING, "EmployeeId");
 
     EdmType navigationType = mock(EdmType.class);
     when(navigationType.getKind()).thenReturn(EdmTypeKind.NAVIGATION);
@@ -72,7 +72,7 @@ public class UriParserTest {
     when(managerEntitySet.getRelatedEntitySet(employeeProperty)).thenReturn(employeeEntitySet);
 
     EdmEntityType managerType = managerEntitySet.getEntityType();
-    when(managerType.getProperty("Employees")).thenReturn(employeeProperty);
+    when(managerType.getProperty("nm_Employees")).thenReturn(employeeProperty);
 
     EdmNavigationProperty managerProperty = mock(EdmNavigationProperty.class);
     when(managerProperty.getType()).thenReturn(navigationType);
@@ -82,7 +82,7 @@ public class UriParserTest {
     EdmEntityType employeeType = employeeEntitySet.getEntityType();
     when(employeeType.getKind()).thenReturn(EdmTypeKind.ENTITY);
     when(employeeType.hasStream()).thenReturn(true);
-    when(employeeType.getProperty("Manager")).thenReturn(managerProperty);
+    when(employeeType.getProperty("ne_Manager")).thenReturn(managerProperty);
 
     EdmProperty employeeSimpleProperty = mock(EdmProperty.class);
     when(employeeSimpleProperty.getType()).thenReturn(EdmSimpleType.STRING);
@@ -173,7 +173,7 @@ public class UriParserTest {
 
     EdmEntityContainer specificContainer = mock(EdmEntityContainer.class);
     when(specificContainer.getEntitySet("Employees")).thenReturn(employeeEntitySet);
-    when(specificContainer.getName()).thenReturn("Container");
+    when(specificContainer.getName()).thenReturn("Container1");
 
     EdmProperty photoIdProperty = mock(EdmProperty.class);
     when(photoIdProperty.getType()).thenReturn(EdmSimpleType.INT32);
@@ -198,7 +198,7 @@ public class UriParserTest {
     Edm edm = mock(Edm.class);
     when(edm.getServiceMetadata()).thenReturn(serviceMetadata);
     when(edm.getDefaultEntityContainer()).thenReturn(defaultContainer);
-    when(edm.getEntityContainer("Container")).thenReturn(specificContainer);
+    when(edm.getEntityContainer("Container1")).thenReturn(specificContainer);
     when(edm.getEntityContainer("Container2")).thenReturn(photoContainer);
     return edm;
   }
@@ -240,51 +240,47 @@ public class UriParserTest {
 
   private UriParserResult parse(final String uri) throws ODataError {
 
-    String[] path = uri.split("\\?");
-
+    final String[] path = uri.split("\\?");
     if (path.length > 2)
       throw new UriParserException("Wrong URI Syntax");
 
-    List<PathSegment> pathSegments = getPathSegments(path[0]);
+    final List<PathSegment> pathSegments = getPathSegments(path[0]);
     Map<String, String> queryParameters;
-    if (path.length == 2) {
-      queryParameters = getQueryParameters(path[1]);
-    } else {
+    if (path.length == 2)
+      queryParameters = getQueryParameters(unescape(path[1]));
+    else
       queryParameters = new HashMap<String, String>();
-    }
 
     return new UriParser(getEdm()).parse(pathSegments, queryParameters);
   }
 
-  private Map<String, String> getQueryParameters(String uri) throws UriParserException {
-
-    Map<String, String> queryParameters = new HashMap<String, String>();
-
-    for (String option : uri.split("&")) {
-      String[] keyAndValue = option.split("=");
-      if (keyAndValue.length == 2) {
-        queryParameters.put(keyAndValue[0], keyAndValue[1]);
-      } else {
-        queryParameters.put(keyAndValue[0], "");
-      }
-    }
-
-    return queryParameters;
-  }
-
   private List<PathSegment> getPathSegments(final String uri) throws UriParserException {
     List<PathSegment> pathSegments = new ArrayList<PathSegment>();
-    String segment;
-    String[] segments = uri.split("/");
-    for (int i = 0; i < segments.length; i++) {
-      if (!"".equals(segments[i])) {
+    if (uri.length() > 1 && uri.endsWith("/"))
+      throw new UriParserException("Trailing '/' in uri " + uri);
+    for (final String segment : uri.split("/"))
+      if ("".equals(segment)) {
+        if (!pathSegments.isEmpty())
+          throw new UriParserException("Empty path segment in uri " + uri);
+      } else {
         PathSegment pathSegmentMock = mock(PathSegment.class);
-        segment = unescape(segments[i]);
-        when(pathSegmentMock.getPath()).thenReturn(segment);
+        final String escapedSegment = unescape(segment);
+        when(pathSegmentMock.getPath()).thenReturn(escapedSegment);
         pathSegments.add(pathSegmentMock);
       }
-    }
     return pathSegments;
+  }
+
+  private Map<String, String> getQueryParameters(final String uri) throws UriParserException {
+    Map<String, String> queryParameters = new HashMap<String, String>();
+    for (final String option : uri.split("&")) {
+      final String[] keyAndValue = option.split("=");
+      if (keyAndValue.length == 2)
+        queryParameters.put(keyAndValue[0], keyAndValue[1]);
+      else
+        queryParameters.put(keyAndValue[0], "");
+    }
+    return queryParameters;
   }
 
   private String unescape(final String s) throws UriParserException {
@@ -339,7 +335,7 @@ public class UriParserTest {
 
   @Test
   public void parseContainerWithoutEntitySet() throws Exception {
-    parseWrongUri("Container");
+    parseWrongUri("Container1");
   }
 
   @Test
@@ -374,9 +370,11 @@ public class UriParserTest {
 
   @Test
   public void parseWrongEntities() throws Exception {
+    parseWrongUri("//");
     parseWrongUri("/Employ ees('1')");
     parseWrongUri("/Employees()/somethingwrong");
     parseWrongUri("/Employees/somethingwrong");
+    parseWrongUri("Employees/");
   }
 
   @Test
@@ -510,35 +508,35 @@ public class UriParserTest {
 
   @Test
   public void parseNavigationPropertyWithEntityResult() throws ODataError {
-    UriParserResult result = parse("/Employees('1')/Manager");
+    UriParserResult result = parse("/Employees('1')/ne_Manager");
     assertEquals("Managers", result.getTargetEntitySet().getName());
     assertEquals(UriType.URI6A, result.getUriType());
   }
 
   @Test
   public void parseNavigationPropertyWithEntitySetResult() throws ODataError {
-    UriParserResult result = parse("/Managers('1')/Employees");
+    UriParserResult result = parse("/Managers('1')/nm_Employees");
     assertEquals("Employees", result.getTargetEntitySet().getName());
     assertEquals(UriType.URI6B, result.getUriType());
   }
 
   @Test
   public void parseNavigationPropertyWithEntitySetResultParenthesis() throws ODataError {
-    UriParserResult result = parse("/Managers('1')/Employees()");
+    UriParserResult result = parse("/Managers('1')/nm_Employees()");
     assertEquals("Employees", result.getTargetEntitySet().getName());
     assertEquals(UriType.URI6B, result.getUriType());
   }
 
   @Test
   public void parseNavigationPropertyWithEntityResultWithKey() throws ODataError {
-    UriParserResult result = parse("/Managers('1')/Employees('1')");
+    UriParserResult result = parse("/Managers('1')/nm_Employees('1')");
     assertEquals("Employees", result.getTargetEntitySet().getName());
     assertEquals(UriType.URI6A, result.getUriType());
   }
 
   @Test
   public void parseNavigationPropertyWithLinksOne() throws ODataError {
-    UriParserResult result = parse("/Employees('1')/$links/Manager");
+    UriParserResult result = parse("/Employees('1')/$links/ne_Manager");
     assertEquals("Managers", result.getTargetEntitySet().getName());
     assertTrue(result.isLinks());
     assertEquals(UriType.URI7A, result.getUriType());
@@ -546,7 +544,7 @@ public class UriParserTest {
 
   @Test
   public void parseNavigationPropertyWithLinksMany() throws ODataError {
-    UriParserResult result = parse("/Managers('1')/$links/Employees");
+    UriParserResult result = parse("/Managers('1')/$links/nm_Employees");
     assertEquals("Employees", result.getTargetEntitySet().getName());
     assertTrue(result.isLinks());
     assertEquals(UriType.URI7B, result.getUriType());
@@ -554,7 +552,7 @@ public class UriParserTest {
 
   @Test
   public void parseNavigationPropertyWithManagersCount() throws ODataError {
-    UriParserResult result = parse("/Employees('1')/Manager/$count");
+    UriParserResult result = parse("/Employees('1')/ne_Manager/$count");
     assertEquals("Managers", result.getTargetEntitySet().getName());
     assertTrue(result.isCount());
     assertEquals(UriType.URI16, result.getUriType());
@@ -562,7 +560,7 @@ public class UriParserTest {
 
   @Test
   public void parseNavigationPropertyWithEmployeesCount() throws ODataError {
-    UriParserResult result = parse("/Managers('1')/Employees/$count");
+    UriParserResult result = parse("/Managers('1')/nm_Employees/$count");
     assertEquals("Employees", result.getTargetEntitySet().getName());
     assertTrue(result.isCount());
     assertEquals(UriType.URI15, result.getUriType());
@@ -570,7 +568,7 @@ public class UriParserTest {
 
   @Test
   public void parseNavigationPropertyWithEmployeeCount() throws ODataError {
-    UriParserResult result = parse("Managers('1')/Employees('1')/$count");
+    UriParserResult result = parse("Managers('1')/nm_Employees('1')/$count");
     assertEquals("Employees", result.getTargetEntitySet().getName());
     assertTrue(result.isCount());
     assertEquals(UriType.URI16, result.getUriType());
@@ -578,7 +576,7 @@ public class UriParserTest {
 
   @Test
   public void parseNavigationPropertyWithLinksCountMany() throws ODataError {
-    UriParserResult result = parse("/Managers('1')/$links/Employees/$count");
+    UriParserResult result = parse("/Managers('1')/$links/nm_Employees/$count");
     assertEquals("Employees", result.getTargetEntitySet().getName());
     assertTrue(result.isLinks());
     assertTrue(result.isCount());
@@ -587,13 +585,13 @@ public class UriParserTest {
 
   @Test
   public void parseNavigationPropertyWithLinksCountOne() throws ODataError {
-    UriParserResult result = parse("/Employees('1')/$links/Manager/$count");
+    UriParserResult result = parse("/Employees('1')/$links/ne_Manager/$count");
     assertEquals("Managers", result.getTargetEntitySet().getName());
     assertTrue(result.isLinks());
     assertTrue(result.isCount());
     assertEquals(UriType.URI50A, result.getUriType());
 
-    result = parse("/Managers('1')/$links/Employees('1')/$count");
+    result = parse("/Managers('1')/$links/nm_Employees('1')/$count");
     assertEquals("Employees", result.getTargetEntitySet().getName());
     assertTrue(result.isLinks());
     assertTrue(result.isCount());
@@ -602,23 +600,24 @@ public class UriParserTest {
 
   @Test
   public void navigationPropertyWrong() throws Exception {
-    parseWrongUri("Employees('1')/Manager()");
-    parseWrongUri("Employees('1')/Manager('1')");
+    parseWrongUri("Employees('1')//ne_Manager");
+    parseWrongUri("Employees('1')/ne_Manager()");
+    parseWrongUri("Employees('1')/ne_Manager('1')");
     parseWrongUri("Employees('1')/$links");
-    parseWrongUri("Employees('1')/$links/Manager('1')");
-    parseWrongUri("Employees('1')/$links/Manager()");
-    parseWrongUri("Employees('1')/$links/Manager/somethingwrong");
-    parseWrongUri("Employees('1')/Manager/$count/somethingwrong");
-    parseWrongUri("Employees('1')/$links/Manager/$count/somethingwrong");
-    parseWrongUri("Employees('1')/Manager/$value");
-    parseWrongUri("Managers('1')/Employees('1')/$value/somethingwrong");
-    parseWrongUri("Managers('1')/Employees/$links");
-    parseWrongUri("Managers('1')/Employees/$links/Manager");
-    parseWrongUri("Managers('1')/Employees/somethingwrong");
+    parseWrongUri("Employees('1')/$links/ne_Manager('1')");
+    parseWrongUri("Employees('1')/$links/ne_Manager()");
+    parseWrongUri("Employees('1')/$links/ne_Manager/somethingwrong");
+    parseWrongUri("Employees('1')/ne_Manager/$count/somethingwrong");
+    parseWrongUri("Employees('1')/$links/ne_Manager/$count/somethingwrong");
+    parseWrongUri("Employees('1')/ne_Manager/$value");
+    parseWrongUri("Managers('1')/nm_Employees('1')/$value/somethingwrong");
+    parseWrongUri("Managers('1')/nm_Employees/$links");
+    parseWrongUri("Managers('1')/nm_Employees/$links/Manager");
+    parseWrongUri("Managers('1')/nm_Employees/somethingwrong");
     parseWrongUri("Employees('1')/$links/somethingwrong");
     parseWrongUri("Employees('1')/$links/EmployeeName");
-    parseWrongUri("Employees('1')/$links/$links/Manager");
-    parseWrongUri("Managers('1')/Employee/");
+    parseWrongUri("Employees('1')/$links/$links/ne_Manager");
+    parseWrongUri("Managers('1')/nm_Employee/");
   }
 
   @Test
@@ -668,24 +667,24 @@ public class UriParserTest {
 
   @Test
   public void parseContainerEmployeesEntitySet() throws ODataError {
-    UriParserResult result = parse("/Container.Employees");
-    assertEquals("Container", result.getEntityContainer().getName());
+    UriParserResult result = parse("/Container1.Employees");
+    assertEquals("Container1", result.getEntityContainer().getName());
     assertEquals("Employees", result.getTargetEntitySet().getName());
     assertEquals(UriType.URI1, result.getUriType());
   }
 
   @Test
   public void parseContainerEmployeesEntitySetParenthese() throws ODataError {
-    UriParserResult result = parse("/Container.Employees()");
-    assertEquals("Container", result.getEntityContainer().getName());
+    UriParserResult result = parse("/Container1.Employees()");
+    assertEquals("Container1", result.getEntityContainer().getName());
     assertEquals("Employees", result.getTargetEntitySet().getName());
     assertEquals(UriType.URI1, result.getUriType());
   }
 
   @Test
   public void parseContainerEmployeesEntityWithKey() throws ODataError {
-    UriParserResult result = parse("/Container.Employees('1')");
-    assertEquals("Container", result.getEntityContainer().getName());
+    UriParserResult result = parse("/Container1.Employees('1')");
+    assertEquals("Container1", result.getEntityContainer().getName());
     assertEquals("Employees", result.getTargetEntitySet().getName());
     assertEquals(UriType.URI2, result.getUriType());
 
@@ -986,7 +985,7 @@ public class UriParserTest {
     assertEquals(UriType.URI5, result.getUriType());
     assertEquals(Format.JSON, result.getFormat());
 
-    result = parse("Employees?$filter=Age gt 20&$orderby=EmployeeName desc");
+    result = parse("Employees?$filter=Age%20gt%2020&$orderby=EmployeeName%20desc");
     assertEquals("Employees", result.getTargetEntitySet().getName());
     assertEquals(UriType.URI1, result.getUriType());
     assertNotNull(result.getFilter());
@@ -1081,14 +1080,14 @@ public class UriParserTest {
     assertEquals(1, result.getSelect().size());
     assertEquals("Location", result.getSelect().get(0).getProperty().getName());
 
-    result = parse("Employees?$select=Manager");
+    result = parse("Employees?$select=ne_Manager");
     assertEquals("Employees", result.getTargetEntitySet().getName());
     assertEquals(UriType.URI1, result.getUriType());
     assertEquals(1, result.getSelect().size());
     assertEquals(1, result.getSelect().get(0).getNavigationPropertySegments().size());
     assertEquals("Managers", result.getSelect().get(0).getNavigationPropertySegments().get(0).getTargetEntitySet().getName());
 
-    result = parse("Teams?$select=nt_Employees/Manager/*");
+    result = parse("Teams?$select=nt_Employees/ne_Manager/*");
     assertEquals(1, result.getSelect().size());
     assertEquals(2, result.getSelect().get(0).getNavigationPropertySegments().size());
     assertTrue(result.getSelect().get(0).isStar());
@@ -1103,7 +1102,7 @@ public class UriParserTest {
     assertEquals("EmployeeName", result.getSelect().get(0).getProperty().getName());
     assertEquals("Location", result.getSelect().get(1).getProperty().getName());
 
-    result = parse("Employees?$select= Manager, EmployeeName, Location");
+    result = parse("Employees?$select=%20ne_Manager,%20EmployeeName,%20Location");
     assertEquals("Employees", result.getTargetEntitySet().getName());
     assertEquals(UriType.URI1, result.getUriType());
     assertEquals(3, result.getSelect().size());
@@ -1112,7 +1111,7 @@ public class UriParserTest {
     assertEquals(1, result.getSelect().get(0).getNavigationPropertySegments().size());
     assertEquals("Managers", result.getSelect().get(0).getNavigationPropertySegments().get(0).getTargetEntitySet().getName());
 
-    result = parse("Managers('1')?$select=Employees/EmployeeName,Employees/Location");
+    result = parse("Managers('1')?$select=nm_Employees/EmployeeName,nm_Employees/Location");
     assertEquals("Managers", result.getTargetEntitySet().getName());
     assertEquals(UriType.URI2, result.getUriType());
     assertEquals(2, result.getSelect().size());
@@ -1141,34 +1140,33 @@ public class UriParserTest {
 
   @Test
   public void parseSystemQueryOptionExpand() throws Exception {
-    UriParserResult result = parse("Managers('1')?$expand=Employees");
+    UriParserResult result = parse("Managers('1')?$expand=nm_Employees");
     assertEquals("Managers", result.getTargetEntitySet().getName());
     assertEquals(UriType.URI2, result.getUriType());
     assertEquals(1, result.getExpand().size());
     assertEquals(1, result.getExpand().get(0).size());
     assertEquals("Employees", result.getExpand().get(0).get(0).getTargetEntitySet().getName());
-    assertEquals(result.getTargetEntitySet().getEntityType().getProperty("Employees"), result.getExpand().get(0).get(0).getNavigationProperty());
-
+    assertEquals(result.getTargetEntitySet().getEntityType().getProperty("nm_Employees"), result.getExpand().get(0).get(0).getNavigationProperty());
   }
 
   @Test
   public void parseSystemQueryOptionExpandWrong() throws Exception {
-    parseWrongUri("Managers('1')?$expand=,Employees");
-    parseWrongUri("Managers('1')?$expand=Employees,");
-    parseWrongUri("Managers('1')?$expand=Employees,,");
-    parseWrongUri("Managers('1')?$expand=Employees,,Employees");
-    parseWrongUri("Managers('1')?$expand=Employees, somethingwrong");
-    parseWrongUri("Managers('1')?$expand=/Employees");
-    parseWrongUri("Managers('1')?$expand=Employees/");
-    parseWrongUri("Managers('1')?$expand=Employees//");
+    parseWrongUri("Managers('1')?$expand=,nm_Employees");
+    parseWrongUri("Managers('1')?$expand=nm_Employees,");
+    parseWrongUri("Managers('1')?$expand=nm_Employees,,");
+    parseWrongUri("Managers('1')?$expand=nm_Employees,,nm_Employees");
+    parseWrongUri("Managers('1')?$expand=nm_Employees, somethingwrong");
+    parseWrongUri("Managers('1')?$expand=/nm_Employees");
+    parseWrongUri("Managers('1')?$expand=nm_Employees/");
+    parseWrongUri("Managers('1')?$expand=nm_Employees//");
     parseWrongUri("Managers('1')?$expand=somethingwrong");
-    parseWrongUri("Managers('1')?$expand=Employees/EmployeeName");
-    parseWrongUri("Managers('1')?$expand=Employees/somethingwrong");
-    parseWrongUri("Managers('1')?$expand=Employees/*");
-    parseWrongUri("Managers('1')?$expand=Employees/*,somethingwrong");
-    parseWrongUri("Managers('1')?$expand=Employees/*,some()");
-    parseWrongUri("Managers('1')?$expand=Employees/(...)");
-    parseWrongUri("Teams('1')?$expand=nt_Employees//Manager");
+    parseWrongUri("Managers('1')?$expand=nm_Employees/EmployeeName");
+    parseWrongUri("Managers('1')?$expand=nm_Employees/somethingwrong");
+    parseWrongUri("Managers('1')?$expand=nm_Employees/*");
+    parseWrongUri("Managers('1')?$expand=nm_Employees/*,somethingwrong");
+    parseWrongUri("Managers('1')?$expand=nm_Employees/*,some()");
+    parseWrongUri("Managers('1')?$expand=nm_Employees/(...)");
+    parseWrongUri("Teams('1')?$expand=nt_Employees//ne_Manager");
   }
 
 }
