@@ -240,7 +240,7 @@ public class UriParserTest {
 
   private UriParserResult parse(final String uri) throws ODataError {
 
-    final String[] path = uri.split("\\?");
+    final String[] path = uri.split("\\?", -1);
     if (path.length > 2)
       throw new UriParserException("Wrong URI Syntax");
 
@@ -256,18 +256,12 @@ public class UriParserTest {
 
   private List<PathSegment> getPathSegments(final String uri) throws UriParserException {
     List<PathSegment> pathSegments = new ArrayList<PathSegment>();
-    if (uri.length() > 1 && uri.endsWith("/"))
-      throw new UriParserException("Trailing '/' in uri " + uri);
-    for (final String segment : uri.split("/"))
-      if ("".equals(segment)) {
-        if (!pathSegments.isEmpty())
-          throw new UriParserException("Empty path segment in uri " + uri);
-      } else {
-        PathSegment pathSegmentMock = mock(PathSegment.class);
-        final String escapedSegment = unescape(segment);
-        when(pathSegmentMock.getPath()).thenReturn(escapedSegment);
-        pathSegments.add(pathSegmentMock);
-      }
+    for (final String segment : uri.split("/", -1)) {
+      PathSegment pathSegmentMock = mock(PathSegment.class);
+      final String unescapedSegment = unescape(segment);
+      when(pathSegmentMock.getPath()).thenReturn(unescapedSegment);
+      pathSegments.add(pathSegmentMock);
+    }
     return pathSegments;
   }
 
@@ -303,6 +297,9 @@ public class UriParserTest {
   @Test
   public void parseServiceDocument() throws ODataError {
     UriParserResult result = parse("/");
+    assertEquals(UriType.URI0, result.getUriType());
+
+    result = parse("");
     assertEquals(UriType.URI0, result.getUriType());
   }
 
@@ -375,6 +372,8 @@ public class UriParserTest {
     parseWrongUri("/Employees()/somethingwrong");
     parseWrongUri("/Employees/somethingwrong");
     parseWrongUri("Employees/");
+    parseWrongUri("//Employees");
+    parseWrongUri("Employees//");
   }
 
   @Test
@@ -994,6 +993,7 @@ public class UriParserTest {
 
   @Test
   public void parseWrongSystemQueryOptions() throws Exception {
+    parseWrongUri("Employees??");
     parseWrongUri("Employees?$inlinecount=no");
     parseWrongUri("Employees?&$skiptoken==");
     parseWrongUri("Employees?$skip=-1");
@@ -1136,7 +1136,7 @@ public class UriParserTest {
     parseWrongUri("Employees?$select=EmployeeName/");
     parseWrongUri("Teams('1')?$select=nt_Employees/Id");
     parseWrongUri("Teams('1')?$select=nt_Employees//*");
- }
+  }
 
   @Test
   public void parseSystemQueryOptionExpand() throws Exception {
