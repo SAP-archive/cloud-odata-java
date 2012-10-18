@@ -5,5 +5,5 @@ public interface EntitySet {
 
   ODataResponse count();
 
-  ODataResponse cretateEntity();
+  ODataResponse createEntity();
 }
