@@ -1,8 +1,10 @@
 package com.sap.core.odata.api.edm;
 
-import com.sap.core.odata.api.exception.ODataError;
+import com.sap.core.odata.api.exception.ODataException;
 
-public class EdmException extends ODataError {
+public class EdmException extends ODataException {
+
+  private static final long serialVersionUID = 1L;
 
   public EdmException() {
     super();
@@ -19,7 +21,4 @@ public class EdmException extends ODataError {
   public EdmException(Throwable e) {
     super(e);
   }
-
-  private static final long serialVersionUID = 1L;
-
 }
