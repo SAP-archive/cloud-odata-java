@@ -22,7 +22,7 @@ import com.sap.core.odata.api.edm.EdmSimpleType;
 import com.sap.core.odata.api.edm.EdmType;
 import com.sap.core.odata.api.edm.EdmTypeKind;
 import com.sap.core.odata.api.edm.EdmTyped;
-import com.sap.core.odata.api.exception.ODataError;
+import com.sap.core.odata.api.exception.ODataException;
 
 class EdmMock {
   
@@ -32,7 +32,7 @@ class EdmMock {
   public EdmMock(){
     try {
       edmMock = createMockEdm();  
-    } catch (ODataError e) {
+    } catch (ODataException e) {
       // TODO: handle exception
     }
     
@@ -48,7 +48,7 @@ class EdmMock {
 
 
 
-  private Edm createMockEdm() throws ODataError {
+  private Edm createMockEdm() throws ODataException {
     EdmServiceMetadata serviceMetadata = mock(EdmServiceMetadata.class);
     when(serviceMetadata.getDataServiceVersion()).thenReturn("MockEdm");
 
@@ -196,7 +196,7 @@ class EdmMock {
     return edm;
   }
 
-  private EdmEntitySet createEntitySetMock(final String name, final EdmType type, final String keyPropertyId) throws ODataError {
+  private EdmEntitySet createEntitySetMock(final String name, final EdmType type, final String keyPropertyId) throws ODataException {
     EdmEntityType entityType = createEntityTypeMock(type, keyPropertyId);
 
     EdmEntitySet entitySet = mock(EdmEntitySet.class);
@@ -206,7 +206,7 @@ class EdmMock {
     return entitySet;
   }
 
-  private EdmEntityType createEntityTypeMock(final EdmType type, final String keyPropertyId) throws ODataError {
+  private EdmEntityType createEntityTypeMock(final EdmType type, final String keyPropertyId) throws ODataException {
     EdmProperty edmProperty = mock(EdmProperty.class);
     when(edmProperty.getName()).thenReturn(keyPropertyId);
     when(edmProperty.getType()).thenReturn(type);
@@ -220,7 +220,7 @@ class EdmMock {
     return entityType;
   }
 
-  private EdmFunctionImport createFunctionImportMock(final String name, final EdmType type, final EdmMultiplicity multiplicity, final EdmEntitySet entitySet) throws ODataError {
+  private EdmFunctionImport createFunctionImportMock(final String name, final EdmType type, final EdmMultiplicity multiplicity, final EdmEntitySet entitySet) throws ODataException {
     EdmTyped returnType = mock(EdmTyped.class);
     when(returnType.getType()).thenReturn(type);
     when(returnType.getMultiplicity()).thenReturn(multiplicity);
