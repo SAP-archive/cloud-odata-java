@@ -6,6 +6,6 @@ public interface Metadata {
 
   Edm getEdm();
 
-  ODataResponse read();
+  ODataResponseImpl read();
 
 }

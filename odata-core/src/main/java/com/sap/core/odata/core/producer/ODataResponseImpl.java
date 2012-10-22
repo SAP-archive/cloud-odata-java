@@ -3,11 +3,11 @@ package com.sap.core.odata.core.producer;
 import java.util.HashMap;
 import java.util.Set;
 
-public final class ODataResponse {
+public final class ODataResponseImpl {
 
-  protected ODataResponse() {}
+  protected ODataResponseImpl() {}
 
-  protected ODataResponse(int status, Object entity) {
+  protected ODataResponseImpl(int status, Object entity) {
     this.status = status;
     this.entity = entity;
   }
@@ -68,8 +68,8 @@ public final class ODataResponse {
     }
 
 
-    public ODataResponse build() {
-      ODataResponse response = new ODataResponse(this.status, this.entity);
+    public ODataResponseImpl build() {
+      ODataResponseImpl response = new ODataResponseImpl(this.status, this.entity);
       response.addHeaders(this.headers);
       return response;
     }
