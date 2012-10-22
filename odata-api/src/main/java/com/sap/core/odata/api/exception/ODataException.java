@@ -1,6 +1,6 @@
 package com.sap.core.odata.api.exception;
 
-public class ODataException extends Exception {
+public class ODataException extends ODataError {
 
   private static final long serialVersionUID = 1L;
 

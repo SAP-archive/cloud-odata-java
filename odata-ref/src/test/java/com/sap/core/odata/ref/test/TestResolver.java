@@ -5,22 +5,22 @@ import static org.junit.Assert.assertNotNull;
 import javax.ws.rs.ext.ContextResolver;
 import javax.ws.rs.ext.Provider;
 
-import com.sap.core.odata.core.producer.ODataProducer;
+import com.sap.core.odata.api.processor.ODataSingleProcessor;
 
 @Provider
-public class TestResolver implements ContextResolver<ODataProducer> {
+public class TestResolver implements ContextResolver<ODataSingleProcessor> {
 
-  private static ODataProducer producer;
+  private static ODataSingleProcessor producer;
 
   @Override
-  public ODataProducer getContext(Class<?> type) {
+  public ODataSingleProcessor getContext(Class<?> type) {
 
     assertNotNull(TestResolver.producer);
     
     return TestResolver.producer;
   }
 
-  public static void setProducerInstance(ODataProducer producer) {
+  public static void setProducerInstance(ODataSingleProcessor producer) {
     TestResolver.producer = producer;
   }
 }

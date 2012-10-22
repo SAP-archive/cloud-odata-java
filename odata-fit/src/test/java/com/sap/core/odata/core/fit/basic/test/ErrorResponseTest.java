@@ -14,11 +14,12 @@ import org.apache.http.client.methods.HttpGet;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.sap.core.odata.core.edm.Edm;
-import com.sap.core.odata.core.edm.EdmEntityContainer;
-import com.sap.core.odata.core.edm.EdmEntitySet;
-import com.sap.core.odata.core.producer.EntitySet;
-import com.sap.core.odata.core.producer.ODataResponseImpl;
+import com.sap.core.odata.api.processor.facet.EntitySet;
+import com.sap.core.odata.api.rest.ODataResponse;
+import com.sap.core.odata.api.edm.Edm;
+import com.sap.core.odata.api.edm.EdmEntityContainer;
+import com.sap.core.odata.api.edm.EdmEntitySet;
+import com.sap.core.odata.api.exception.ODataError;
 import com.sap.core.odata.fit.StringStreamHelper;
 
 public class ErrorResponseTest extends AbstractBasicTest {
@@ -30,19 +31,19 @@ public class ErrorResponseTest extends AbstractBasicTest {
     EdmEntitySet edmEntitySet = mock(EdmEntitySet.class);
     EdmEntityContainer edmEntityContainer = mock(EdmEntityContainer.class);
     when(edmEntityContainer.getEntitySet("entityset")).thenReturn(edmEntitySet);
-    Edm edm = this.getProducer().getMetadata().getEdm();
+    Edm edm = this.getProducer().getMetadataProcessor().getEdm();
     when(edm.getDefaultEntityContainer()).thenReturn(edmEntityContainer);
-    EntitySet entitySet = this.getProducer().getEntitySet();
-    when(entitySet.read()).thenReturn(ODataResponseImpl.status(200).entity("entityset").build());
+    EntitySet entitySet = this.getProducer().getEntitySetProcessor();
+    when(entitySet.readEntitySet()).thenReturn(ODataResponse.status(200).entity("entityset").build());
   }
 
   
   @Test
-  public void test500RuntimeError() throws ClientProtocolException, IOException {
+  public void test500RuntimeError() throws ClientProtocolException, IOException, ODataError {
 
-    EntitySet entitySetProducer = this.getProducer().getEntitySet();
+    EntitySet entitySetProducer = this.getProducer().getEntitySetProcessor();
 
-    doThrow(new RuntimeException("Bumms")).when(entitySetProducer).read();
+    doThrow(new RuntimeException("Bumms")).when(entitySetProducer).readEntitySet();
 
     HttpGet get = new HttpGet(URI.create(this.getEndpoint().toString() + "entityset"));
     HttpResponse response = this.getHttpClient().execute(get);

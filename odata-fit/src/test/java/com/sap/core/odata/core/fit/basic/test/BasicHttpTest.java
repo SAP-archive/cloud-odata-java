@@ -22,14 +22,15 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpPut;
 import org.apache.http.client.methods.HttpRequestBase;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
-import com.sap.core.odata.core.edm.Edm;
-import com.sap.core.odata.core.edm.EdmEntityContainer;
-import com.sap.core.odata.core.edm.EdmEntitySet;
-import com.sap.core.odata.core.exception.ODataException;
-import com.sap.core.odata.core.producer.EntitySet;
-import com.sap.core.odata.core.producer.ODataResponseImpl;
+import com.sap.core.odata.api.exception.ODataException;
+import com.sap.core.odata.api.processor.facet.EntitySet;
+import com.sap.core.odata.api.rest.ODataResponse;
+import com.sap.core.odata.api.edm.Edm;
+import com.sap.core.odata.api.edm.EdmEntityContainer;
+import com.sap.core.odata.api.edm.EdmEntitySet;
 import com.sap.core.odata.fit.HttpMerge;
 import com.sap.core.odata.fit.StringStreamHelper;
 
@@ -41,13 +42,14 @@ public class BasicHttpTest extends AbstractBasicTest {
     EdmEntitySet edmEntitySet = mock(EdmEntitySet.class);
     EdmEntityContainer edmEntityContainer = mock(EdmEntityContainer.class);
     when(edmEntityContainer.getEntitySet("entityset")).thenReturn(edmEntitySet);
-    Edm edm = this.getProducer().getMetadata().getEdm();
+    Edm edm = this.getProducer().getMetadataProcessor().getEdm();
     when(edm.getDefaultEntityContainer()).thenReturn(edmEntityContainer);
-    EntitySet entitySet = this.getProducer().getEntitySet();
-    when(entitySet.read()).thenReturn(ODataResponseImpl.status(200).entity("entityset").build());
+    EntitySet entitySet = this.getProducer().getEntitySetProcessor();
+    when(entitySet.readEntitySet()).thenReturn(ODataResponse.status(200).entity("entityset").build());
   }
 
   @Test
+  @Ignore("requires core adaption to new EDM api")
   public void testGet() throws ODataException, MalformedURLException, IOException {
     HttpGet get = new HttpGet(URI.create(this.getEndpoint().toString() + "entityset"));
 

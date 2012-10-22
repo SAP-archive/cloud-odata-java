@@ -1,54 +1,40 @@
 package com.sap.core.odata.core.processor;
 
-import static com.sap.core.odata.core.exception.ODataContextedException.COMMON;
-
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 
 import org.odata4j.exceptions.MethodNotAllowedException;
 
-import com.sap.core.odata.core.exception.ODataContextedException;
-import com.sap.core.odata.core.exception.ODataMethodNotAllowedException;
-import com.sap.core.odata.core.exception.ODataNotFoundException;
-import com.sap.core.odata.core.exception.ODataTechnicalException;
-import com.sap.core.odata.core.producer.ODataProducer;
-import com.sap.core.odata.core.producer.ODataResponseImpl;
+import com.sap.core.odata.api.exception.ODataError;
+import com.sap.core.odata.api.exception.ODataMethodNotAllowedException;
+import com.sap.core.odata.api.exception.ODataTechnicalException;
+import com.sap.core.odata.api.processor.ODataProcessor;
+import com.sap.core.odata.api.rest.ODataResponse;
 import com.sap.core.odata.core.rest.ODataContext;
 import com.sap.core.odata.core.rest.impl.ODataContextImpl;
 import com.sap.core.odata.core.rest.impl.ODataHttpMethod;
 import com.sap.core.odata.core.uri.UriParserResult;
 
 public class Processor {
-  public void someMethod() throws ODataContextedException {
-    throw new ODataMethodNotAllowedException(COMMON);
-  }
 
-  public void someUserMethod() throws ODataContextedException {
-    throw new ODataNotFoundException(ODataNotFoundException.USER);
-  }
-
-  public void anotherMethod() {
-    throw new ODataTechnicalException();
-  }
-
-  private ODataProducer producer;
+  private ODataProcessor producer;
   private ODataContext context;
 
   public void setContext(ODataContextImpl context) {
     this.context = context;
   }
 
-  public void setProducer(ODataProducer producer) {
+  public void setProducer(ODataProcessor producer) {
     this.producer = producer;
   }
 
-  public Response dispatch(ODataHttpMethod method, UriParserResult uriParserResult) throws ODataMethodNotAllowedException {
-    ODataResponseImpl odataResponse;
+  public Response dispatch(ODataHttpMethod method, UriParserResult uriParserResult) throws ODataError {
+    ODataResponse odataResponse;
     switch (uriParserResult.getUriType()) {
     case URI0: // service document
       switch (method) {
       case GET:
-        odataResponse = this.producer.getServiceDocument().read();
+        odataResponse = this.producer.getServiceDocumentProcessor().readServiceDocument();
         break;
       default:
         throw new ODataMethodNotAllowedException(ODataMethodNotAllowedException.DISPATCH);
@@ -57,7 +43,7 @@ public class Processor {
     case URI1: // entity set
       switch (method) {
       case GET:
-        odataResponse = this.producer.getEntitySet().read();
+        odataResponse = this.producer.getEntitySetProcessor().readEntitySet();
         break;
       default:
         throw new MethodNotAllowedException("");
@@ -74,7 +60,7 @@ public class Processor {
     case URI8: // $metadata
       switch (method) {
       case GET:
-        odataResponse = this.producer.getMetadata().read();
+        odataResponse = this.producer.getMetadataProcessor().readMetadata();
         break;
       default:
         throw new ODataMethodNotAllowedException(ODataMethodNotAllowedException.DISPATCH);
@@ -99,7 +85,7 @@ public class Processor {
     return response;
   }
 
-  private Response convertResponse(ODataResponseImpl odataResponse) {
+  private Response convertResponse(ODataResponse odataResponse) {
     ResponseBuilder responseBuilder = Response.noContent();
     
     responseBuilder = responseBuilder.status(odataResponse.getStatus());

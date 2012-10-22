@@ -10,7 +10,7 @@ import javax.ws.rs.ext.Provider;
 
 import org.odata4j.producer.resources.ExceptionMappingProvider;
 
-import com.sap.core.odata.core.producer.ODataProducer;
+import com.sap.core.odata.api.processor.ODataSingleProcessor;
 import com.sap.core.odata.core.rest.impl.ODataExceptionMapper;
 
 /**
@@ -25,7 +25,7 @@ public abstract class ODataApplication extends Application {
    */
   @Override
   public Set<Class<?>> getClasses() {
-    Class<? extends ContextResolver<ODataProducer>> resolver = this.getContextResolver();
+    Class<? extends ContextResolver<ODataSingleProcessor>> resolver = this.getContextResolver();
     Class<?> locator = this.getRootResourceLocator();
     Class<?> mapper = this.getExceptionMapper();
     
@@ -74,6 +74,6 @@ public abstract class ODataApplication extends Application {
    * 
    * @return context resolver that creates a custom ODataProducer
    */
-  protected abstract Class<? extends ContextResolver<ODataProducer>> getContextResolver();
+  protected abstract Class<? extends ContextResolver<ODataSingleProcessor>> getContextResolver();
 
 }

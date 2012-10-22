@@ -9,7 +9,8 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import com.sap.core.odata.core.producer.ODataProducer;
+import com.sap.core.odata.api.exception.ODataError;
+import com.sap.core.odata.api.processor.ODataProcessor;
 import com.sap.core.odata.core.rest.impl.MERGE;
 import com.sap.core.odata.core.rest.impl.PATCH;
 
@@ -21,20 +22,20 @@ public interface ODataLocator {
   /**
    * @return a concrete OData producer
    */
-  public abstract ODataProducer getProducer();
+  public abstract ODataProcessor getProcessor() throws ODataError;
 
   /**
    * initialze OData locator before request handling
    */
-  public abstract void beforRequest();
-  
+  public abstract void beforRequest() throws ODataError;
+
   /**
    * handle OData request
    * @return OData response
    */
   @GET
   @Produces(MediaType.TEXT_PLAIN)
-  public abstract Response handleGet();
+  public abstract Response handleGet() throws ODataError;
 
   /**
    * handle OData request
@@ -45,7 +46,7 @@ public interface ODataLocator {
   @Produces(MediaType.TEXT_PLAIN)
   public abstract Response handlePost(
       @HeaderParam("X-HTTP-Method") String xmethod
-      );
+      ) throws ODataError;
 
   /**
    * handle OData request
@@ -53,7 +54,7 @@ public interface ODataLocator {
    */
   @PUT
   @Produces(MediaType.TEXT_PLAIN)
-  public abstract Response handlePut();
+  public abstract Response handlePut() throws ODataError;
 
   /**
    * handle OData request
@@ -61,7 +62,7 @@ public interface ODataLocator {
    */
   @PATCH
   @Produces(MediaType.TEXT_PLAIN)
-  public abstract Response handlePatch();
+  public abstract Response handlePatch() throws ODataError;
 
   /**
    * handle OData request
@@ -69,7 +70,7 @@ public interface ODataLocator {
    */
   @MERGE
   @Produces(MediaType.TEXT_PLAIN)
-  public abstract Response handleMerge();
+  public abstract Response handleMerge() throws ODataError;
 
   /**
    * handle OData request
@@ -77,6 +78,6 @@ public interface ODataLocator {
    */
   @DELETE
   @Produces(MediaType.TEXT_PLAIN)
-  public abstract Response handleDelete();
+  public abstract Response handleDelete() throws ODataError;
 
 }

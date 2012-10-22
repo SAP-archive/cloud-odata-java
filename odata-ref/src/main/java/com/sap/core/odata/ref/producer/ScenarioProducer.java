@@ -5,18 +5,18 @@ import javax.ws.rs.core.Response.Status;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.sap.core.odata.core.edm.Edm;
-import com.sap.core.odata.core.edm.EdmAssociation;
-import com.sap.core.odata.core.edm.EdmComplexType;
-import com.sap.core.odata.core.edm.EdmEntityContainer;
-import com.sap.core.odata.core.edm.EdmEntityType;
-import com.sap.core.odata.core.edm.EdmServiceMetadata;
-import com.sap.core.odata.core.producer.EntitySet;
-import com.sap.core.odata.core.producer.Metadata;
-import com.sap.core.odata.core.producer.ODataProducer;
-import com.sap.core.odata.core.producer.ODataResponseImpl;
+import com.sap.core.odata.api.processor.ODataSingleProcessor;
+import com.sap.core.odata.api.processor.facet.EntitySet;
+import com.sap.core.odata.api.processor.facet.Metadata;
+import com.sap.core.odata.api.rest.ODataResponse;
+import com.sap.core.odata.api.edm.Edm;
+import com.sap.core.odata.api.edm.EdmAssociation;
+import com.sap.core.odata.api.edm.EdmComplexType;
+import com.sap.core.odata.api.edm.EdmEntityContainer;
+import com.sap.core.odata.api.edm.EdmEntityType;
+import com.sap.core.odata.api.edm.EdmServiceMetadata;
 
-public class ScenarioProducer extends ODataProducer implements EntitySet, Metadata {
+public class ScenarioProducer extends ODataSingleProcessor implements EntitySet, Metadata {
 
   private static final Logger log = LoggerFactory.getLogger(ScenarioProducer.class);
 
@@ -38,15 +38,6 @@ public class ScenarioProducer extends ODataProducer implements EntitySet, Metada
     ScenarioProducer.log.debug("service resolution segment2: " + this.segment2);
   }
 
-  @Override
-  public ODataResponseImpl count() {
-    return null;
-  }
-
-  @Override
-  public ODataResponseImpl createEntity() {
-    return null;
-  }
 
   @Override
   public Edm getEdm() {
@@ -54,8 +45,8 @@ public class ScenarioProducer extends ODataProducer implements EntitySet, Metada
   }
 
   @Override
-  public ODataResponseImpl read() {
-    return ODataResponseImpl.status(Status.OK.getStatusCode()).entity("$metadata").build();
+  public ODataResponse readMetadata() {
+    return ODataResponse.status(Status.OK.getStatusCode()).entity("$metadata").build();
   }
 
   private class EdmImpl implements Edm {
@@ -104,6 +95,21 @@ public class ScenarioProducer extends ODataProducer implements EntitySet, Metada
       return "2.0";
     }
 
+  }
+
+  @Override
+  public ODataResponse readEntitySet() {
+    return null;
+  }
+
+  @Override
+  public ODataResponse countEntitySet() {
+    return null;
+  }
+
+  @Override
+  public ODataResponse createEntitySet() {
+    return null;
   }
 
 }

@@ -1,6 +1,7 @@
 package com.sap.core.odata.core.rest;
 
 import java.util.HashMap;
+import java.util.Set;
 
 import com.sap.core.odata.api.rest.ODataResponse;
 
@@ -35,6 +36,11 @@ public class ODataResponseImpl extends ODataResponse {
   @Override
   public String getHeader(String name) {
     return this.header.get(name);
+  }
+
+  @Override
+  public Set<String> getHeaderNames() {
+    return this.header.keySet();
   }
 
 }
