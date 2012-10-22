@@ -15,15 +15,13 @@ import javax.ws.rs.core.Response;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.sap.core.odata.core.exception.ODataContextedException;
-import com.sap.core.odata.core.exception.ODataException;
+import com.sap.core.odata.api.exception.ODataError;
+import com.sap.core.odata.api.exception.ODataException;
+import com.sap.core.odata.api.processor.ODataProcessor;
+import com.sap.core.odata.api.processor.ODataSingleProcessor;
 import com.sap.core.odata.core.processor.Processor;
-import com.sap.core.odata.core.producer.Metadata;
-import com.sap.core.odata.core.producer.ODataProducer;
-import com.sap.core.odata.core.producer.ODataResponseImpl;
 import com.sap.core.odata.core.rest.ODataLocator;
 import com.sap.core.odata.core.uri.UriParser;
-import com.sap.core.odata.core.uri.UriParserException;
 import com.sap.core.odata.core.uri.UriParserResult;
 
 public final class ODataLocatorImpl implements ODataLocator {
@@ -32,19 +30,19 @@ public final class ODataLocatorImpl implements ODataLocator {
 
   private ODataContextImpl context;
 
-  private ODataProducer producer;
+  private ODataProcessor producer;
 
   private Processor processor;
 
   private UriParser uriParser;
 
   @Override
-  public ODataProducer getProducer() {
+  public ODataProcessor getProcessor() {
     return this.producer;
   }
 
   @Override
-  public Response handleGet() {
+  public Response handleGet()  throws ODataError{
     try {
       ODataLocatorImpl.log.debug("+++ ODataSubResource:handleGet()");
       this.context.log();
@@ -65,7 +63,7 @@ public final class ODataLocatorImpl implements ODataLocator {
   @Produces(MediaType.TEXT_PLAIN)
   public Response handlePost(
       @HeaderParam("X-HTTP-Method") String xmethod
-      ) {
+      )  throws ODataError{
 
     ODataLocatorImpl.log.debug("+++ ODataSubResource:handlePost()");
     Response response;
@@ -86,7 +84,7 @@ public final class ODataLocatorImpl implements ODataLocator {
   }
 
   @Override
-  public Response handlePut() {
+  public Response handlePut() throws ODataError {
     ODataLocatorImpl.log.debug("+++ ODataSubResource:handlePut()");
     this.context.log();
 
@@ -94,7 +92,7 @@ public final class ODataLocatorImpl implements ODataLocator {
   }
 
   @Override
-  public Response handlePatch() {
+  public Response handlePatch() throws ODataError {
     ODataLocatorImpl.log.debug("+++ ODataSubResource:handlePatch()");
     this.context.log();
 
@@ -102,7 +100,7 @@ public final class ODataLocatorImpl implements ODataLocator {
   }
 
   @Override
-  public Response handleMerge() {
+  public Response handleMerge() throws ODataError {
     ODataLocatorImpl.log.debug("+++ ODataSubResource:handleMerge()");
     this.context.log();
 
@@ -110,7 +108,7 @@ public final class ODataLocatorImpl implements ODataLocator {
   }
 
   @Override
-  public Response handleDelete() {
+  public Response handleDelete() throws ODataError {
     ODataLocatorImpl.log.debug("+++ ODataSubResource:handleDelete()");
     this.context.log();
 
@@ -121,16 +119,14 @@ public final class ODataLocatorImpl implements ODataLocator {
     this.context = context;
   }
 
-  public void setProducer(ODataProducer producer) {
+  public void setProducer(ODataSingleProcessor producer) {
     this.producer = producer;
   }
 
   @Override
-  public void beforRequest() {
+  public void beforRequest() throws ODataError {
 
-    Metadata metadata = this.producer.getMetadata();
-
-    this.uriParser = new UriParser(metadata.getEdm());
+//    this.uriParser = new UriParser(this.producer.getEdm());
     this.processor = new Processor();
     
     this.processor.setContext(this.context);

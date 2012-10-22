@@ -6,17 +6,17 @@ import javax.ws.rs.ext.Provider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.sap.core.odata.core.producer.ODataProducer;
+import com.sap.core.odata.api.processor.ODataSingleProcessor;
 
 @Provider
-public class FitContextResolver implements ContextResolver<ODataProducer> {
+public class FitContextResolver implements ContextResolver<ODataSingleProcessor> {
 
   protected static final Logger log = LoggerFactory.getLogger(FitContextResolver.class);
 
-  private static ODataProducer fitProducer;
+  private static ODataSingleProcessor fitProducer;
 
   @Override
-  public ODataProducer getContext(Class<?> type) {
+  public ODataSingleProcessor getContext(Class<?> type) {
 
     if (FitContextResolver.fitProducer == null) {
       /* faile earlier */
@@ -28,7 +28,7 @@ public class FitContextResolver implements ContextResolver<ODataProducer> {
     return FitContextResolver.fitProducer;
   }
 
-  public static void setProducerInstance(ODataProducer producer) {
+  public static void setProducerInstance(ODataSingleProcessor producer) {
     FitContextResolver.fitProducer = producer;
   }
 }

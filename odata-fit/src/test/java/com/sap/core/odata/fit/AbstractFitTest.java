@@ -22,7 +22,8 @@ import org.odata4j.core.ODataConstants.Charsets;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.sap.core.odata.core.producer.ODataProducer;
+import com.sap.core.odata.api.exception.ODataError;
+import com.sap.core.odata.api.processor.ODataSingleProcessor;
 
 public abstract class AbstractFitTest {
 
@@ -48,11 +49,11 @@ public abstract class AbstractFitTest {
     return httpClient;
   }
 
-  public ODataProducer getProducer() {
+  public ODataSingleProcessor getProducer() {
     return this.producer;
   }
 
-  private ODataProducer producer;
+  private ODataSingleProcessor producer;
   private Server server;
   private URI endpoint = URI.create("http://localhost:19080/ext/");
   private Class<?> applicationClass = FitApplication.class;
@@ -77,7 +78,7 @@ public abstract class AbstractFitTest {
     }
   }
 
-  protected abstract ODataProducer createProducer();
+  protected abstract ODataSingleProcessor createProducer() throws ODataError;
 
   private void stopServer() throws Exception {
     this.server.stop();

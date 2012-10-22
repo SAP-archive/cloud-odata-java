@@ -5,6 +5,9 @@ import junit.framework.Assert;
 import org.junit.Test;
 import org.odata4j.exceptions.MethodNotAllowedException;
 
+import com.sap.core.odata.api.exception.ODataException;
+import com.sap.core.odata.api.exception.ODataNotFoundException;
+
 public class ODataExceptionTest {
 
   @Test

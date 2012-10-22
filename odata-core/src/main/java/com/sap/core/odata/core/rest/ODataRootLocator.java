@@ -14,7 +14,8 @@ import javax.ws.rs.ext.ContextResolver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.sap.core.odata.core.producer.ODataProducer;
+import com.sap.core.odata.api.exception.ODataError;
+import com.sap.core.odata.api.processor.ODataSingleProcessor;
 import com.sap.core.odata.core.rest.impl.ODataContextImpl;
 import com.sap.core.odata.core.rest.impl.ODataLocatorImpl;
 
@@ -33,7 +34,7 @@ public class ODataRootLocator {
   private static final Logger log = LoggerFactory.getLogger(ODataRootLocator.class);
 
   @Context
-  private ContextResolver<ODataProducer> resolver;
+  private ContextResolver<ODataSingleProcessor> resolver;
   @Context
   private HttpHeaders httpHeaders;
   @Context
@@ -45,12 +46,13 @@ public class ODataRootLocator {
    * Default root behavior which will delegate all paths to a ODataLocator.
    * @param odataPathSegments all segments have to be OData
    * @return a locator handling OData protocol
+   * @throws ODataError 
    */
   @Path("/{odataPathSegments: .*}")
-  public ODataLocator getSubLocator(@PathParam("odataPathSegments") List<PathSegment> odataPathSegments) {
+  public ODataLocator getSubLocator(@PathParam("odataPathSegments") List<PathSegment> odataPathSegments) throws ODataError {
     ODataRootLocator.log.debug("+++ ODataSubResourceLocator.getODataResource()");
 
-    ODataProducer producer = this.resolver.getContext(ODataProducer.class);
+    ODataSingleProcessor producer = this.resolver.getContext(ODataSingleProcessor.class);
 
     ODataLocatorImpl odataLocator = new ODataLocatorImpl();
     ODataContextImpl context = new ODataContextImpl();

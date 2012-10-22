@@ -3,18 +3,19 @@ package com.sap.core.odata.core.fit.basic.test;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import com.sap.core.odata.core.edm.Edm;
-import com.sap.core.odata.core.edm.EdmServiceMetadata;
-import com.sap.core.odata.core.producer.EntitySet;
-import com.sap.core.odata.core.producer.Metadata;
-import com.sap.core.odata.core.producer.ODataProducer;
+import com.sap.core.odata.api.processor.ODataSingleProcessor;
+import com.sap.core.odata.api.processor.facet.EntitySet;
+import com.sap.core.odata.api.processor.facet.Metadata;
+import com.sap.core.odata.api.edm.Edm;
+import com.sap.core.odata.api.edm.EdmServiceMetadata;
+import com.sap.core.odata.api.exception.ODataError;
 import com.sap.core.odata.fit.AbstractFitTest;
 
 public class AbstractBasicTest extends AbstractFitTest {
   
   @Override
-  protected ODataProducer createProducer() {
-    ODataProducer producer = mock(ODataProducer.class);
+  protected ODataSingleProcessor createProducer() throws ODataError {
+    ODataSingleProcessor producer = mock(ODataSingleProcessor.class);
 
     EdmServiceMetadata edmsm = mock(EdmServiceMetadata.class);
     when(edmsm.getDataServiceVersion()).thenReturn("2.0");
@@ -27,8 +28,8 @@ public class AbstractBasicTest extends AbstractFitTest {
     
     EntitySet entitySet = mock(EntitySet.class);
     
-    when(producer.getMetadata()).thenReturn(metadata);
-    when(producer.getEntitySet()).thenReturn(entitySet);
+    when(producer.getMetadataProcessor()).thenReturn(metadata);
+    when(producer.getEntitySetProcessor()).thenReturn(entitySet);
     
     return producer;
   }
