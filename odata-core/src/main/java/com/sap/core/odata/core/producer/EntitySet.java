@@ -1,9 +1,9 @@
 package com.sap.core.odata.core.producer;
 
 public interface EntitySet {
-  ODataResponse read();
+  ODataResponseImpl read();
 
-  ODataResponse count();
+  ODataResponseImpl count();
 
-  ODataResponse createEntity();
+  ODataResponseImpl createEntity();
 }

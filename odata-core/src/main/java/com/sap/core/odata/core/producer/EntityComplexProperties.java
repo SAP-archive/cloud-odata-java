@@ -1,7 +1,7 @@
 package com.sap.core.odata.core.producer;
 
 public interface EntityComplexProperties {
-  ODataResponse read();
+  ODataResponseImpl read();
 
-  ODataResponse update();
+  ODataResponseImpl update();
 }

@@ -14,7 +14,7 @@ import com.sap.core.odata.core.edm.EdmServiceMetadata;
 import com.sap.core.odata.core.producer.EntitySet;
 import com.sap.core.odata.core.producer.Metadata;
 import com.sap.core.odata.core.producer.ODataProducer;
-import com.sap.core.odata.core.producer.ODataResponse;
+import com.sap.core.odata.core.producer.ODataResponseImpl;
 
 public class ScenarioProducer extends ODataProducer implements EntitySet, Metadata {
 
@@ -39,12 +39,12 @@ public class ScenarioProducer extends ODataProducer implements EntitySet, Metada
   }
 
   @Override
-  public ODataResponse count() {
+  public ODataResponseImpl count() {
     return null;
   }
 
   @Override
-  public ODataResponse createEntity() {
+  public ODataResponseImpl createEntity() {
     return null;
   }
 
@@ -54,8 +54,8 @@ public class ScenarioProducer extends ODataProducer implements EntitySet, Metada
   }
 
   @Override
-  public ODataResponse read() {
-    return ODataResponse.status(Status.OK.getStatusCode()).entity("$metadata").build();
+  public ODataResponseImpl read() {
+    return ODataResponseImpl.status(Status.OK.getStatusCode()).entity("$metadata").build();
   }
 
   private class EdmImpl implements Edm {

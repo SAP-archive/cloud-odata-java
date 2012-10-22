@@ -12,7 +12,7 @@ import com.sap.core.odata.core.exception.ODataMethodNotAllowedException;
 import com.sap.core.odata.core.exception.ODataNotFoundException;
 import com.sap.core.odata.core.exception.ODataTechnicalException;
 import com.sap.core.odata.core.producer.ODataProducer;
-import com.sap.core.odata.core.producer.ODataResponse;
+import com.sap.core.odata.core.producer.ODataResponseImpl;
 import com.sap.core.odata.core.rest.ODataContext;
 import com.sap.core.odata.core.rest.impl.ODataContextImpl;
 import com.sap.core.odata.core.rest.impl.ODataHttpMethod;
@@ -43,7 +43,7 @@ public class Processor {
   }
 
   public Response dispatch(ODataHttpMethod method, UriParserResult uriParserResult) throws ODataMethodNotAllowedException {
-    ODataResponse odataResponse;
+    ODataResponseImpl odataResponse;
     switch (uriParserResult.getUriType()) {
     case URI0: // service document
       switch (method) {
@@ -99,7 +99,7 @@ public class Processor {
     return response;
   }
 
-  private Response convertResponse(ODataResponse odataResponse) {
+  private Response convertResponse(ODataResponseImpl odataResponse) {
     ResponseBuilder responseBuilder = Response.noContent();
     
     responseBuilder = responseBuilder.status(odataResponse.getStatus());

@@ -20,7 +20,7 @@ import com.sap.core.odata.core.exception.ODataException;
 import com.sap.core.odata.core.processor.Processor;
 import com.sap.core.odata.core.producer.Metadata;
 import com.sap.core.odata.core.producer.ODataProducer;
-import com.sap.core.odata.core.producer.ODataResponse;
+import com.sap.core.odata.core.producer.ODataResponseImpl;
 import com.sap.core.odata.core.rest.ODataLocator;
 import com.sap.core.odata.core.uri.UriParser;
 import com.sap.core.odata.core.uri.UriParserException;

@@ -1,11 +1,11 @@
 package com.sap.core.odata.core.producer;
 
 public interface Entity {
-  ODataResponse read();
+  ODataResponseImpl read();
 
-  ODataResponse exists();
+  ODataResponseImpl exists();
 
-  ODataResponse update();
+  ODataResponseImpl update();
 
-  ODataResponse delete();
+  ODataResponseImpl delete();
 }

@@ -18,7 +18,7 @@ import com.sap.core.odata.core.edm.Edm;
 import com.sap.core.odata.core.edm.EdmEntityContainer;
 import com.sap.core.odata.core.edm.EdmEntitySet;
 import com.sap.core.odata.core.producer.EntitySet;
-import com.sap.core.odata.core.producer.ODataResponse;
+import com.sap.core.odata.core.producer.ODataResponseImpl;
 import com.sap.core.odata.fit.StringStreamHelper;
 
 public class ErrorResponseTest extends AbstractBasicTest {
@@ -33,7 +33,7 @@ public class ErrorResponseTest extends AbstractBasicTest {
     Edm edm = this.getProducer().getMetadata().getEdm();
     when(edm.getDefaultEntityContainer()).thenReturn(edmEntityContainer);
     EntitySet entitySet = this.getProducer().getEntitySet();
-    when(entitySet.read()).thenReturn(ODataResponse.status(200).entity("entityset").build());
+    when(entitySet.read()).thenReturn(ODataResponseImpl.status(200).entity("entityset").build());
   }
 
   

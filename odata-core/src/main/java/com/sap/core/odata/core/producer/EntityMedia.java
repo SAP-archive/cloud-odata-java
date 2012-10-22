@@ -1,9 +1,9 @@
 package com.sap.core.odata.core.producer;
 
 public interface EntityMedia {
-  ODataResponse read();
+  ODataResponseImpl read();
 
-  ODataResponse update();
+  ODataResponseImpl update();
 
-  ODataResponse delete();
+  ODataResponseImpl delete();
 }
