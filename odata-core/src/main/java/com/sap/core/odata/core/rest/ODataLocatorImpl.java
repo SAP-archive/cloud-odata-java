@@ -125,10 +125,6 @@ public final class ODataLocatorImpl implements ODataLocator {
     this.context = context;
   }
 
-  public void setProducer(ODataProcessor producer) {
-    this.processor = producer;
-  }
-
   @Override
   public void beforRequest() throws ODataError {
 
@@ -141,7 +137,7 @@ public final class ODataLocatorImpl implements ODataLocator {
 
     this.dispatcher = new Dispatcher();
     this.dispatcher.setContext(this.context);
-    this.dispatcher.setProducer(this.processor);
+    this.dispatcher.setProcessor(this.processor);
   }
 
   private Map<String, String> convertToSinglevaluedMap(MultivaluedMap<String, String> multi) {

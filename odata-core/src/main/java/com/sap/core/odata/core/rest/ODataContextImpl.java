@@ -59,7 +59,7 @@ public class ODataContextImpl implements ODataContext {
     ODataContextImpl.log.debug("--odata http context----------------");
     ODataContextImpl.log.debug("odataPath:      " + this.pathSegments);
     ODataContextImpl.log.debug("httpHeaders:    " + this.httpHeaders.getRequestHeaders());
-    ODataContextImpl.log.debug("request method: " + this.request.getMethod());
+//    ODataContextImpl.log.debug("request method: " + this.request.getMethod());
     ODataContextImpl.log.debug("----------------------------------");
     ODataContextImpl.log.debug("uriInfo:        " + this.uriInfo.getPath());
     ODataContextImpl.log.debug("baseUri:        " + this.uriInfo.getBaseUri());

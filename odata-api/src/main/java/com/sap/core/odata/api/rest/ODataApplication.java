@@ -70,7 +70,7 @@ public abstract class ODataApplication extends Application {
   
   /**
    * 
-   * @return context resolver that creates a custom ODataProducer
+   * @return context resolver that creates a custom ODataProcessor
    */
   protected abstract Class<? extends ContextResolver<ODataProcessor>> getContextResolver();
 

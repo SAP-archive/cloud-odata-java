@@ -20,7 +20,7 @@ import com.sap.core.odata.api.edm.Edm;
 import com.sap.core.odata.api.edm.EdmEntityContainer;
 import com.sap.core.odata.api.edm.EdmEntitySet;
 import com.sap.core.odata.api.exception.ODataError;
-import com.sap.core.odata.fit.StringStreamHelper;
+import com.sap.core.testutils.StringHelper;
 
 public class ErrorResponseTest extends AbstractBasicTest {
 
@@ -31,9 +31,9 @@ public class ErrorResponseTest extends AbstractBasicTest {
     EdmEntitySet edmEntitySet = mock(EdmEntitySet.class);
     EdmEntityContainer edmEntityContainer = mock(EdmEntityContainer.class);
     when(edmEntityContainer.getEntitySet("entityset")).thenReturn(edmEntitySet);
-    Edm edm = this.getProducer().getMetadataProcessor().getEdm();
+    Edm edm = this.getProcessor().getMetadataProcessor().getEdm();
     when(edm.getDefaultEntityContainer()).thenReturn(edmEntityContainer);
-    EntitySet entitySet = this.getProducer().getEntitySetProcessor();
+    EntitySet entitySet = this.getProcessor().getEntitySetProcessor();
     when(entitySet.readEntitySet()).thenReturn(ODataResponse.status(200).entity("entityset").build());
   }
 
@@ -41,15 +41,15 @@ public class ErrorResponseTest extends AbstractBasicTest {
   @Test
   public void test500RuntimeError() throws ClientProtocolException, IOException, ODataError {
 
-    EntitySet entitySetProducer = this.getProducer().getEntitySetProcessor();
+    EntitySet entitySetProcessor = this.getProcessor().getEntitySetProcessor();
 
-    doThrow(new RuntimeException("Bumms")).when(entitySetProducer).readEntitySet();
+    doThrow(new RuntimeException("Bumms")).when(entitySetProcessor).readEntitySet();
 
     HttpGet get = new HttpGet(URI.create(this.getEndpoint().toString() + "entityset"));
     HttpResponse response = this.getHttpClient().execute(get);
     assertEquals(500, response.getStatusLine().getStatusCode());
 
-    this.log.debug(StringStreamHelper.inputStreamToString(response.getEntity().getContent()));
+    this.log.debug(StringHelper.inputStreamToString(response.getEntity().getContent()));
   }
 
 }

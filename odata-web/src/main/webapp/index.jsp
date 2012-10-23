@@ -9,9 +9,12 @@
 <body>
 	<h1>odata lib</h1>
 	<hr>
-	<h2>default</h2>
+	<h2>Reference Scenario</h2>
 	<ul>
-		<li><a href="/" target="_blank">index page</a> </li>
+		<li><a href="" target="_blank">index page</a> </li>
+		<li><a href="ref.svc?_wadl" target="_blank">wadl</a> </li>
+		<li><a href="ref.svc/" target="_blank">service document</a> </li>
+		<li><a href="ref.svc/$metadata" target="_blank">metadata</a> </li>
 	</ul>
 </body>
 </html>

@@ -4,7 +4,6 @@ import javax.ws.rs.ext.ContextResolver;
 
 import com.sap.core.odata.api.processor.ODataProcessor;
 import com.sap.core.odata.api.rest.ODataApplication;
-import com.sap.core.odata.api.rest.ODataRootLocator;
 
 
 public class ScenarioApplication extends ODataApplication {
@@ -13,10 +12,4 @@ public class ScenarioApplication extends ODataApplication {
   protected Class<? extends ContextResolver<ODataProcessor>> getContextResolver() {
     return ScenarioResolver.class;
   }
-
-  @Override
-  protected Class<? extends ODataRootLocator> getRootResourceLocator() {
-    return ScenarioRootLocator.class;
-  }
-
 }
