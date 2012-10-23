@@ -2,12 +2,12 @@ package com.sap.core.odata.core.experimental.edm.adapter;
 
 import org.odata4j.edm.EdmFunctionParameter;
 
-import com.sap.core.odata.core.edm.EdmException;
-import com.sap.core.odata.core.edm.EdmFacets;
-import com.sap.core.odata.core.edm.EdmMapping;
-import com.sap.core.odata.core.edm.EdmMultiplicity;
-import com.sap.core.odata.core.edm.EdmParameter;
-import com.sap.core.odata.core.edm.EdmType;
+import com.sap.core.odata.api.edm.EdmException;
+import com.sap.core.odata.api.edm.EdmFacets;
+import com.sap.core.odata.api.edm.EdmMapping;
+import com.sap.core.odata.api.edm.EdmMultiplicity;
+import com.sap.core.odata.api.edm.EdmParameter;
+import com.sap.core.odata.api.edm.EdmType;
 
 public class EdmParameterAdapter extends EdmNamedAdapter implements EdmParameter {
 

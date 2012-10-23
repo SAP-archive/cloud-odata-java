@@ -1,6 +1,6 @@
 package com.sap.core.odata.core.experimental.edm.adapter;
 
-import com.sap.core.odata.core.edm.EdmNamed;
+import com.sap.core.odata.api.edm.EdmNamed;
 
 public class EdmNamedAdapter implements EdmNamed {
 

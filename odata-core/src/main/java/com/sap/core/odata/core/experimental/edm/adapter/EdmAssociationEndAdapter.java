@@ -2,10 +2,10 @@ package com.sap.core.odata.core.experimental.edm.adapter;
 
 import org.odata4j.edm.EdmAssociationEnd;
 
-import com.sap.core.odata.core.edm.EdmEntityType;
-import com.sap.core.odata.core.edm.EdmMultiplicity;
+import com.sap.core.odata.api.edm.EdmEntityType;
+import com.sap.core.odata.api.edm.EdmMultiplicity;
 
-public class EdmAssociationEndAdapter implements com.sap.core.odata.core.edm.EdmAssociationEnd {
+public class EdmAssociationEndAdapter implements com.sap.core.odata.api.edm.EdmAssociationEnd {
 
   private EdmAssociationEnd edmAssociationEnd;
 

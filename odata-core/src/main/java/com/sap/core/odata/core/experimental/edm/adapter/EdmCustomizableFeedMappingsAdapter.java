@@ -1,8 +1,8 @@
 package com.sap.core.odata.core.experimental.edm.adapter;
 
-import com.sap.core.odata.core.edm.EdmContentKind;
-import com.sap.core.odata.core.edm.EdmCustomizableFeedMappings;
-import com.sap.core.odata.core.edm.EdmTargetPath;
+import com.sap.core.odata.api.edm.EdmContentKind;
+import com.sap.core.odata.api.edm.EdmCustomizableFeedMappings;
+import com.sap.core.odata.api.edm.EdmTargetPath;
 
 public class EdmCustomizableFeedMappingsAdapter implements EdmCustomizableFeedMappings {
 

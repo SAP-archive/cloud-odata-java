@@ -1,11 +1,11 @@
 package com.sap.core.odata.core.experimental.edm.adapter;
 
-import com.sap.core.odata.core.edm.EdmAssociationSet;
-import com.sap.core.odata.core.edm.EdmEntityContainer;
-import com.sap.core.odata.core.edm.EdmEntitySet;
-import com.sap.core.odata.core.edm.EdmException;
-import com.sap.core.odata.core.edm.EdmFunctionImport;
-import com.sap.core.odata.core.edm.EdmNavigationProperty;
+import com.sap.core.odata.api.edm.EdmAssociationSet;
+import com.sap.core.odata.api.edm.EdmEntityContainer;
+import com.sap.core.odata.api.edm.EdmEntitySet;
+import com.sap.core.odata.api.edm.EdmException;
+import com.sap.core.odata.api.edm.EdmFunctionImport;
+import com.sap.core.odata.api.edm.EdmNavigationProperty;
 
 public class EdmEntityContainerAdapter extends EdmNamedAdapter implements EdmEntityContainer {
 

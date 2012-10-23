@@ -1,9 +1,9 @@
 package com.sap.core.odata.core.experimental.edm.adapter;
 
-import com.sap.core.odata.core.edm.EdmAssociation;
-import com.sap.core.odata.core.edm.EdmAssociationEnd;
-import com.sap.core.odata.core.edm.EdmException;
-import com.sap.core.odata.core.edm.EdmTypeKind;
+import com.sap.core.odata.api.edm.EdmAssociation;
+import com.sap.core.odata.api.edm.EdmAssociationEnd;
+import com.sap.core.odata.api.edm.EdmException;
+import com.sap.core.odata.api.edm.EdmTypeKind;
 
 public class EdmAssociationAdapter extends EdmNamedAdapter implements EdmAssociation {
 

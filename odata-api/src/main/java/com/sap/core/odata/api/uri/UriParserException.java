@@ -1,4 +1,4 @@
-package com.sap.core.odata.core.uri;
+package com.sap.core.odata.api.uri;
 
 import com.sap.core.odata.api.exception.ODataError;
 

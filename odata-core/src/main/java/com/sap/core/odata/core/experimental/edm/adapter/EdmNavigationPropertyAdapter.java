@@ -1,9 +1,9 @@
 package com.sap.core.odata.core.experimental.edm.adapter;
 
-import com.sap.core.odata.core.edm.EdmAssociation;
-import com.sap.core.odata.core.edm.EdmMultiplicity;
-import com.sap.core.odata.core.edm.EdmNavigationProperty;
-import com.sap.core.odata.core.edm.EdmType;
+import com.sap.core.odata.api.edm.EdmAssociation;
+import com.sap.core.odata.api.edm.EdmMultiplicity;
+import com.sap.core.odata.api.edm.EdmNavigationProperty;
+import com.sap.core.odata.api.edm.EdmType;
 
 public class EdmNavigationPropertyAdapter extends EdmNamedAdapter implements EdmNavigationProperty {
 

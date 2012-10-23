@@ -3,11 +3,11 @@ package com.sap.core.odata.core.experimental.edm.adapter;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.sap.core.odata.core.edm.EdmCustomizableFeedMappings;
-import com.sap.core.odata.core.edm.EdmEntityType;
-import com.sap.core.odata.core.edm.EdmProperty;
-import com.sap.core.odata.core.edm.EdmTypeKind;
-import com.sap.core.odata.core.edm.EdmTyped;
+import com.sap.core.odata.api.edm.EdmCustomizableFeedMappings;
+import com.sap.core.odata.api.edm.EdmEntityType;
+import com.sap.core.odata.api.edm.EdmProperty;
+import com.sap.core.odata.api.edm.EdmTypeKind;
+import com.sap.core.odata.api.edm.EdmTyped;
 
 public class EdmEntityTypeAdapter extends EdmNamedAdapter implements EdmEntityType {
 
