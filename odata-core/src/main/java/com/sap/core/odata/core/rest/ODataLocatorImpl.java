@@ -39,7 +39,6 @@ public final class ODataLocatorImpl implements ODataLocator {
 
   private UriParser uriParser;
 
-
   private ODataContextImpl context;
 
   private List<PathSegment> odataPathSegments;
@@ -132,9 +131,7 @@ public final class ODataLocatorImpl implements ODataLocator {
     this.context.setHttpHeaders(this.httpHeaders);
     this.context.setPathSegments(this.odataPathSegments);
     this.context.setUriInfo(this.uriInfo);
-    
- //   this.uriParser = new UriParser(this.processor.getMetadataProcessor().getEdm());
-
+    this.uriParser = new UriParser(this.processor.getMetadataProcessor().getEdm());
     this.dispatcher = new Dispatcher();
     this.dispatcher.setContext(this.context);
     this.dispatcher.setProcessor(this.processor);
