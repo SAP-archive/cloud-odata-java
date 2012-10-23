@@ -122,15 +122,13 @@ public class EdmSimpleTypeFacade {
       else
         try {
           final int i = Integer.parseInt(value);
-          if (i >= Byte.MIN_VALUE && i <= Byte.MAX_VALUE) {
-            if (i == 0 || i == 1) {
-              return new UriLiteral(getInstance(EdmSimpleTypes.BIT), value);
-            } else if (i >= 0 && i <= 127) {
-              return new UriLiteral(getInstance(EdmSimpleTypes.UINT7), value);
-            } else {
-              return new UriLiteral(sByteInstance(), value);
-            }
-          } else if (i > Byte.MAX_VALUE && i <= 255)
+          if (i == 0 || i == 1)
+            return new UriLiteral(getInstance(EdmSimpleTypes.BIT), value);
+          else if (i > 1 && i <= 127)
+            return new UriLiteral(getInstance(EdmSimpleTypes.UINT7), value);
+          else if (i >= Byte.MIN_VALUE && i < 0)
+            return new UriLiteral(sByteInstance(), value);
+          else if (i > Byte.MAX_VALUE && i <= 255)
             return new UriLiteral(byteInstance(), value);
           else if (i >= Short.MIN_VALUE && i <= Short.MAX_VALUE)
             return new UriLiteral(int16Instance(), value);
