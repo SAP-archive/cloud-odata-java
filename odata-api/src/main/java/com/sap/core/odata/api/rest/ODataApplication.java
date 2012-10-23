@@ -1,4 +1,4 @@
-package com.sap.core.odata.core.rest;
+package com.sap.core.odata.api.rest;
 
 import java.util.Collections;
 import java.util.HashSet;
@@ -8,24 +8,20 @@ import javax.ws.rs.core.Application;
 import javax.ws.rs.ext.ContextResolver;
 import javax.ws.rs.ext.Provider;
 
-import org.odata4j.producer.resources.ExceptionMappingProvider;
-
-import com.sap.core.odata.api.processor.ODataSingleProcessor;
-import com.sap.core.odata.core.rest.impl.ODataExceptionMapper;
+import com.sap.core.odata.api.processor.ODataProcessor;
 
 /**
  * JAX-RS entry point for any generic REST servlet e.g. CXFNoSpringJaxrsServlet or others.
  * @see Application
  */
 public abstract class ODataApplication extends Application {
-
   /**
    * OData default root locator and providers. 
    * @see Applicaion
    */
   @Override
   public Set<Class<?>> getClasses() {
-    Class<? extends ContextResolver<ODataSingleProcessor>> resolver = this.getContextResolver();
+    Class<? extends ContextResolver<ODataProcessor>> resolver = this.getContextResolver();
     Class<?> locator = this.getRootResourceLocator();
     Class<?> mapper = this.getExceptionMapper();
     
@@ -50,15 +46,16 @@ public abstract class ODataApplication extends Application {
   public Set<Object> getSingletons() {
     return Collections.emptySet();
   }
-  
+
   /**
    * Returns a default OData exception mapping provider.
    * @return default OData exception mapper class
    */
   protected Class<?> getExceptionMapper() {
-    return ODataExceptionMapper.class;
+    return RuntimeDelegate.getInstance().getExceptionMapper();
   }
 
+  
   /**
    * Returns a default OData root locator or an optional custom locator.
    * <li>default locator: to handle /{odata path}
@@ -70,10 +67,11 @@ public abstract class ODataApplication extends Application {
     return ODataRootLocator.class;
   }
 
+  
   /**
    * 
    * @return context resolver that creates a custom ODataProducer
    */
-  protected abstract Class<? extends ContextResolver<ODataSingleProcessor>> getContextResolver();
+  protected abstract Class<? extends ContextResolver<ODataProcessor>> getContextResolver();
 
 }

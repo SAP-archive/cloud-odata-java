@@ -1,4 +1,4 @@
-package com.sap.core.odata.core.rest.impl;
+package com.sap.core.odata.core.rest;
 
 import java.util.List;
 
@@ -10,36 +10,19 @@ import javax.ws.rs.core.UriInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.sap.core.odata.core.rest.ODataContext;
+import com.sap.core.odata.api.rest.ODataContext;
+
 
 public class ODataContextImpl implements ODataContext {
 
   private static final Logger log = LoggerFactory.getLogger(ODataContextImpl.class);
+
 
   private UriInfo uriInfo;
   private Request request;
   private HttpHeaders httpHeaders;
   List<PathSegment> pathSegments;
 
-  @Override
-  public List<PathSegment> getPathSegments() {
-    return pathSegments;
-  }
-
-  public void setPathSegments(List<PathSegment> pathSegments) {
-    this.pathSegments = pathSegments;
-  }
-
-  @Override
-  public HttpHeaders getHttpHeaders() {
-    return httpHeaders;
-  }
-
-  public void setHttpHeaders(HttpHeaders httpHeaders) {
-    this.httpHeaders = httpHeaders;
-  }
-
-  @Override
   public UriInfo getUriInfo() {
     return uriInfo;
   }
@@ -48,7 +31,6 @@ public class ODataContextImpl implements ODataContext {
     this.uriInfo = uriInfo;
   }
 
-  @Override
   public Request getRequest() {
     return request;
   }
@@ -56,7 +38,23 @@ public class ODataContextImpl implements ODataContext {
   public void setRequest(Request request) {
     this.request = request;
   }
-  
+
+  public HttpHeaders getHttpHeaders() {
+    return httpHeaders;
+  }
+
+  public void setHttpHeaders(HttpHeaders httpHeaders) {
+    this.httpHeaders = httpHeaders;
+  }
+
+  public List<PathSegment> getPathSegments() {
+    return pathSegments;
+  }
+
+  public void setPathSegments(List<PathSegment> pathSegments) {
+    this.pathSegments = pathSegments;
+  }
+
   public void log() {
     ODataContextImpl.log.debug("--odata http context----------------");
     ODataContextImpl.log.debug("odataPath:      " + this.pathSegments);

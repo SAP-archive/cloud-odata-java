@@ -1,4 +1,4 @@
-package com.sap.core.odata.core.rest.impl;
+package com.sap.core.odata.core.rest;
 
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
@@ -12,9 +12,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @Provider
-public class ODataExceptionMapper implements ExceptionMapper<RuntimeException> {
+public class ODataExceptionMapperImpl implements ExceptionMapper<RuntimeException> {
 
-  private final static Logger log = LoggerFactory.getLogger(ODataExceptionMapper.class);
+  private final static Logger log = LoggerFactory.getLogger(ODataExceptionMapperImpl.class);
 
   @Context
   protected UriInfo uriInfo;
@@ -30,7 +30,7 @@ public class ODataExceptionMapper implements ExceptionMapper<RuntimeException> {
     try {
       throw exception;
     } catch (RuntimeException e) {
-      ODataExceptionMapper.log.error(e.getMessage(), e);
+      ODataExceptionMapperImpl.log.error(e.getMessage(), e);
       entity = exception.getClass().getCanonicalName() + " - " + exception.getMessage();
       status = Status.INTERNAL_SERVER_ERROR;
     }

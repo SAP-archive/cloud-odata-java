@@ -1,4 +1,4 @@
-package com.sap.core.odata.core.rest.impl;
+package com.sap.core.odata.core.rest;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

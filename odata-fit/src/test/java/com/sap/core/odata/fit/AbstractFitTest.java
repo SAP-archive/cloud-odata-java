@@ -63,7 +63,7 @@ public abstract class AbstractFitTest {
   public void before() throws Exception {
     this.producer = this.createProducer();
     assertNotNull(this.producer);
-    FitApplication.setProducerInstance(this.producer);
+    FitApplication.setProcessorInstance(this.producer);
 
     this.startServer();
   }
@@ -74,7 +74,7 @@ public abstract class AbstractFitTest {
       this.stopServer();
     } finally {
       /* ensure next test will run clean */
-      FitApplication.setProducerInstance(null);
+      FitApplication.setProcessorInstance(null);
     }
   }
 

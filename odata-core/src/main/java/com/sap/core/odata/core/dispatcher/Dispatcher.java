@@ -1,4 +1,4 @@
-package com.sap.core.odata.core.processor;
+package com.sap.core.odata.core.dispatcher;
 
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
@@ -9,13 +9,13 @@ import com.sap.core.odata.api.exception.ODataError;
 import com.sap.core.odata.api.exception.ODataMethodNotAllowedException;
 import com.sap.core.odata.api.exception.ODataTechnicalException;
 import com.sap.core.odata.api.processor.ODataProcessor;
+import com.sap.core.odata.api.rest.ODataContext;
 import com.sap.core.odata.api.rest.ODataResponse;
-import com.sap.core.odata.core.rest.ODataContext;
-import com.sap.core.odata.core.rest.impl.ODataContextImpl;
-import com.sap.core.odata.core.rest.impl.ODataHttpMethod;
+import com.sap.core.odata.core.enums.ODataHttpMethod;
+import com.sap.core.odata.core.rest.ODataContextImpl;
 import com.sap.core.odata.core.uri.UriParserResult;
 
-public class Processor {
+public class Dispatcher {
 
   private ODataProcessor producer;
   private ODataContext context;

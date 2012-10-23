@@ -1,4 +1,4 @@
-package com.sap.core.odata.ref.producer;
+package com.sap.core.odata.ref.processor;
 
 import javax.ws.rs.core.Response.Status;
 
@@ -16,9 +16,9 @@ import com.sap.core.odata.api.edm.EdmEntityContainer;
 import com.sap.core.odata.api.edm.EdmEntityType;
 import com.sap.core.odata.api.edm.EdmServiceMetadata;
 
-public class ScenarioProducer extends ODataSingleProcessor implements EntitySet, Metadata {
+public class ScenarioProcessor extends ODataSingleProcessor implements EntitySet, Metadata {
 
-  private static final Logger log = LoggerFactory.getLogger(ScenarioProducer.class);
+  private static final Logger log = LoggerFactory.getLogger(ScenarioProcessor.class);
 
   private String segment1;
   private String segment2;
@@ -34,8 +34,8 @@ public class ScenarioProducer extends ODataSingleProcessor implements EntitySet,
   public void injectServiceResolutionPath(String segment1, String segment2) {
     this.segment1 = segment1;
     this.segment2 = segment2;
-    ScenarioProducer.log.debug("service resolution segment1: " + this.segment1);
-    ScenarioProducer.log.debug("service resolution segment2: " + this.segment2);
+    ScenarioProcessor.log.debug("service resolution segment1: " + this.segment1);
+    ScenarioProcessor.log.debug("service resolution segment2: " + this.segment2);
   }
 
 

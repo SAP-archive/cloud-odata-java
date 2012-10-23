@@ -1,4 +1,4 @@
-package com.sap.core.odata.core.rest;
+package com.sap.core.odata.api.rest;
 
 import java.util.List;
 
@@ -11,13 +11,8 @@ import javax.ws.rs.core.Request;
 import javax.ws.rs.core.UriInfo;
 import javax.ws.rs.ext.ContextResolver;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.sap.core.odata.api.exception.ODataError;
-import com.sap.core.odata.api.processor.ODataSingleProcessor;
-import com.sap.core.odata.core.rest.impl.ODataContextImpl;
-import com.sap.core.odata.core.rest.impl.ODataLocatorImpl;
+import com.sap.core.odata.api.processor.ODataProcessor;
 
 /**
  * Default OData root locator responsible to handle the whole path and delegate all calls to a sub locator:<p>
@@ -31,17 +26,15 @@ import com.sap.core.odata.core.rest.impl.ODataLocatorImpl;
  */
 public class ODataRootLocator {
 
-  private static final Logger log = LoggerFactory.getLogger(ODataRootLocator.class);
-
   @Context
-  private ContextResolver<ODataSingleProcessor> resolver;
+  private ContextResolver<ODataProcessor> resolver;
   @Context
   private HttpHeaders httpHeaders;
   @Context
   private UriInfo uriInfo;
   @Context
   private Request request;
-  
+
   /**
    * Default root behavior which will delegate all paths to a ODataLocator.
    * @param odataPathSegments all segments have to be OData
@@ -50,24 +43,16 @@ public class ODataRootLocator {
    */
   @Path("/{odataPathSegments: .*}")
   public ODataLocator getSubLocator(@PathParam("odataPathSegments") List<PathSegment> odataPathSegments) throws ODataError {
-    ODataRootLocator.log.debug("+++ ODataSubResourceLocator.getODataResource()");
-
-    ODataSingleProcessor producer = this.resolver.getContext(ODataSingleProcessor.class);
-
-    ODataLocatorImpl odataLocator = new ODataLocatorImpl();
-    ODataContextImpl context = new ODataContextImpl();
-
-    context.setHttpHeaders(httpHeaders);
-    context.setRequest(request);
-    context.setUriInfo(uriInfo);
-    context.setPathSegments(odataPathSegments);
-
-    odataLocator.setProducer(producer);
-    odataLocator.setContext(context);
+    ODataLocator odataLocator = RuntimeDelegate.getInstance().createODataLocator();
+    
+    odataLocator.setProcessor(this.resolver.getContext(ODataProcessor.class));
+    odataLocator.setPathSegments(odataPathSegments);
+    odataLocator.setHttpHeaders(this.httpHeaders);
+    odataLocator.setUriInfo(this.uriInfo);
     
     odataLocator.beforRequest();
     
     return odataLocator;
+
   }
-  
 }
