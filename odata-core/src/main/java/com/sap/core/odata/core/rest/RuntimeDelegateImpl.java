@@ -1,28 +1,27 @@
 package com.sap.core.odata.core.rest;
 
 import com.sap.core.odata.api.edm.EdmSimpleType;
-import com.sap.core.odata.api.edm.EdmSimpleTypeFacade.EdmSimpleTypes;
+import com.sap.core.odata.api.edm.EdmSimpleTypeFacade.EdmSimpleTypeKind;
 import com.sap.core.odata.api.rest.ODataLocator;
 import com.sap.core.odata.api.rest.ODataResponse.ODataResponseBuilder;
 import com.sap.core.odata.api.rest.RuntimeDelegate;
-import com.sap.core.odata.core.edm.simpletype.EdmSimpleTypeBinary;
-import com.sap.core.odata.core.edm.simpletype.EdmSimpleTypeBit;
-import com.sap.core.odata.core.edm.simpletype.EdmSimpleTypeBoolean;
-import com.sap.core.odata.core.edm.simpletype.EdmSimpleTypeByte;
-import com.sap.core.odata.core.edm.simpletype.EdmSimpleTypeDateTime;
-import com.sap.core.odata.core.edm.simpletype.EdmSimpleTypeDateTimeOffset;
-import com.sap.core.odata.core.edm.simpletype.EdmSimpleTypeDecimal;
-import com.sap.core.odata.core.edm.simpletype.EdmSimpleTypeDouble;
-import com.sap.core.odata.core.edm.simpletype.EdmSimpleTypeGuid;
-import com.sap.core.odata.core.edm.simpletype.EdmSimpleTypeInt16;
-import com.sap.core.odata.core.edm.simpletype.EdmSimpleTypeInt32;
-import com.sap.core.odata.core.edm.simpletype.EdmSimpleTypeInt64;
-import com.sap.core.odata.core.edm.simpletype.EdmSimpleTypeNull;
-import com.sap.core.odata.core.edm.simpletype.EdmSimpleTypeSByte;
-import com.sap.core.odata.core.edm.simpletype.EdmSimpleTypeSingle;
-import com.sap.core.odata.core.edm.simpletype.EdmSimpleTypeString;
-import com.sap.core.odata.core.edm.simpletype.EdmSimpleTypeTime;
-import com.sap.core.odata.core.edm.simpletype.EdmSimpleTypeUint7;
+import com.sap.core.odata.core.edm.simpletype.EdmBinary;
+import com.sap.core.odata.core.edm.simpletype.EdmBit;
+import com.sap.core.odata.core.edm.simpletype.EdmBoolean;
+import com.sap.core.odata.core.edm.simpletype.EdmByte;
+import com.sap.core.odata.core.edm.simpletype.EdmDateTime;
+import com.sap.core.odata.core.edm.simpletype.EdmDecimal;
+import com.sap.core.odata.core.edm.simpletype.EdmDouble;
+import com.sap.core.odata.core.edm.simpletype.EdmGuid;
+import com.sap.core.odata.core.edm.simpletype.EdmInt16;
+import com.sap.core.odata.core.edm.simpletype.EdmInt32;
+import com.sap.core.odata.core.edm.simpletype.EdmInt64;
+import com.sap.core.odata.core.edm.simpletype.EdmSByte;
+import com.sap.core.odata.core.edm.simpletype.EdmSingle;
+import com.sap.core.odata.core.edm.simpletype.EdmString;
+import com.sap.core.odata.core.edm.simpletype.EdmTime;
+import com.sap.core.odata.core.edm.simpletype.EdmTimeOffset;
+import com.sap.core.odata.core.edm.simpletype.EdmUint7;
 
 public class RuntimeDelegateImpl extends RuntimeDelegate {
 
@@ -40,65 +39,61 @@ public class RuntimeDelegateImpl extends RuntimeDelegate {
   public ODataLocator createODataLocator() {
     return new ODataLocatorImpl();
   }
-    
-    
-  public EdmSimpleType getEdmSimpleType(EdmSimpleTypes edmSimpleType) {
+
+  public EdmSimpleType getEdmSimpleType(EdmSimpleTypeKind edmSimpleType) {
     EdmSimpleType edmType = null;
 
     switch (edmSimpleType) {
     case BINARY:
-      edmType = new EdmSimpleTypeBinary();
+      edmType = new EdmBinary();
       break;
     case BOOLEAN:
-      edmType = new EdmSimpleTypeBoolean();
+      edmType = new EdmBoolean();
       break;
     case BYTE:
-      edmType = new EdmSimpleTypeByte();
+      edmType = new EdmByte();
       break;
     case DATETIME:
-      edmType = new EdmSimpleTypeDateTime();
+      edmType = new EdmDateTime();
       break;
     case DATETIMEOFFSET:
-      edmType = new EdmSimpleTypeDateTimeOffset();
+      edmType = new EdmTimeOffset();
       break;
     case DECIMAL:
-      edmType = new EdmSimpleTypeDecimal();
+      edmType = new EdmDecimal();
       break;
     case DOUBLE:
-      edmType = new EdmSimpleTypeDouble();
+      edmType = new EdmDouble();
       break;
     case GUID:
-      edmType = new EdmSimpleTypeGuid();
+      edmType = new EdmGuid();
       break;
     case INT16:
-      edmType = new EdmSimpleTypeInt16();
+      edmType = new EdmInt16();
       break;
     case INT32:
-      edmType = new EdmSimpleTypeInt32();
+      edmType = new EdmInt32();
       break;
     case INT64:
-      edmType = new EdmSimpleTypeInt64();
-      break;
-    case NULL:
-      edmType = new EdmSimpleTypeNull();
+      edmType = new EdmInt64();
       break;
     case SBYTE:
-      edmType = new EdmSimpleTypeSByte();
+      edmType = new EdmSByte();
       break;
     case SINGLE:
-      edmType = new EdmSimpleTypeSingle();
+      edmType = new EdmSingle();
       break;
     case STRING:
-      edmType = new EdmSimpleTypeString();
+      edmType = new EdmString();
       break;
     case TIME:
-      edmType = new EdmSimpleTypeTime();
+      edmType = new EdmTime();
       break;
     case BIT:
-      edmType = new EdmSimpleTypeBit();
+      edmType = new EdmBit();
       break;
     case UINT7:
-      edmType = new EdmSimpleTypeUint7();
+      edmType = new EdmUint7();
       break;
     default:
       throw new RuntimeException("Invalid Type " + edmSimpleType);

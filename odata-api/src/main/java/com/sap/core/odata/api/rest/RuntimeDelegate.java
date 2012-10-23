@@ -1,7 +1,7 @@
 package com.sap.core.odata.api.rest;
 
 import com.sap.core.odata.api.edm.EdmSimpleType;
-import com.sap.core.odata.api.edm.EdmSimpleTypeFacade.EdmSimpleTypes;
+import com.sap.core.odata.api.edm.EdmSimpleTypeFacade.EdmSimpleTypeKind;
 import com.sap.core.odata.api.rest.ODataResponse.ODataResponseBuilder;
 
 public abstract class RuntimeDelegate {
@@ -25,7 +25,7 @@ public abstract class RuntimeDelegate {
 
   public abstract ODataResponseBuilder createODataResponseBuilder();
 
-  public abstract EdmSimpleType getEdmSimpleType(EdmSimpleTypes edmSimpleType);
+  public abstract EdmSimpleType getEdmSimpleType(EdmSimpleTypeKind edmSimpleType);
 
   public abstract Class<?> getExceptionMapper();
 

@@ -5,19 +5,19 @@ import com.sap.core.odata.api.edm.EdmFacets;
 import com.sap.core.odata.api.edm.EdmLiteralKind;
 import com.sap.core.odata.api.edm.EdmSimpleType;
 import com.sap.core.odata.api.edm.EdmSimpleTypeFacade;
-import com.sap.core.odata.api.edm.EdmSimpleTypeFacade.EdmSimpleTypes;
+import com.sap.core.odata.api.edm.EdmSimpleTypeFacade.EdmSimpleTypeKind;
 import com.sap.core.odata.api.edm.EdmTypeKind;
 
-public class EdmSimpleTypeSingle implements EdmSimpleType {
+public class EdmDouble implements EdmSimpleType {
 
-  private EdmSimpleTypes edmSimpleType = EdmSimpleTypes.SINGLE;
+  private EdmSimpleTypeKind edmSimpleType = EdmSimpleTypeKind.DOUBLE;
 
   @Override
   public boolean equals(Object obj) {
     boolean equals = false;
     if (this == obj) {
       equals = true;
-    } else if (obj instanceof EdmSimpleTypeSingle) {
+    } else if (obj instanceof EdmDouble) {
       equals = true;
     }
 
@@ -25,7 +25,7 @@ public class EdmSimpleTypeSingle implements EdmSimpleType {
   }
 
   @Override
-  public EdmSimpleTypes getTypeRepresentation() {
+  public EdmSimpleTypeKind getTypeRepresentation() {
     return edmSimpleType;
   }
 
@@ -57,6 +57,7 @@ public class EdmSimpleTypeSingle implements EdmSimpleType {
     case INT32:
     case INT64:
     case SINGLE:
+    case DOUBLE:
       compatible = true;
       break;
     default:

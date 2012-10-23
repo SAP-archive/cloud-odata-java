@@ -5,19 +5,20 @@ import com.sap.core.odata.api.edm.EdmFacets;
 import com.sap.core.odata.api.edm.EdmLiteralKind;
 import com.sap.core.odata.api.edm.EdmSimpleType;
 import com.sap.core.odata.api.edm.EdmSimpleTypeFacade;
-import com.sap.core.odata.api.edm.EdmSimpleTypeFacade.EdmSimpleTypes;
+import com.sap.core.odata.api.edm.EdmSimpleTypeFacade.EdmSimpleTypeKind;
 import com.sap.core.odata.api.edm.EdmTypeKind;
 
-public class EdmSimpleTypeByte implements EdmSimpleType {
-  
-  private EdmSimpleTypes edmSimpleType = EdmSimpleTypes.BYTE;
+
+public class EdmTimeOffset implements EdmSimpleType  {
+
+  private EdmSimpleTypeKind edmSimpleType = EdmSimpleTypeKind.DATETIMEOFFSET;
   
   @Override
   public boolean equals(Object obj) {
     boolean equals = false;
     if (this == obj) {
       equals = true;
-    } else if (obj instanceof EdmSimpleTypeByte) {
+    } else if (obj instanceof EdmTimeOffset) {
       equals = true;
     }
 
@@ -25,7 +26,7 @@ public class EdmSimpleTypeByte implements EdmSimpleType {
   }
 
   @Override
-  public EdmSimpleTypes getTypeRepresentation() {
+  public EdmSimpleTypeKind getTypeRepresentation() {
     return edmSimpleType;
   }
   
@@ -47,11 +48,9 @@ public class EdmSimpleTypeByte implements EdmSimpleType {
   @Override
   public boolean isCompatible(EdmSimpleType simpleType) {
     boolean compatible;
-    
+
     switch (simpleType.getTypeRepresentation()) {
-    case BIT:
-    case UINT7:
-    case BYTE:
+    case DATETIMEOFFSET:
       compatible = true;
       break;
 

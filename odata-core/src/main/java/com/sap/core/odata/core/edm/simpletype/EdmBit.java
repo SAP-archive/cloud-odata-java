@@ -5,19 +5,19 @@ import com.sap.core.odata.api.edm.EdmFacets;
 import com.sap.core.odata.api.edm.EdmLiteralKind;
 import com.sap.core.odata.api.edm.EdmSimpleType;
 import com.sap.core.odata.api.edm.EdmSimpleTypeFacade;
-import com.sap.core.odata.api.edm.EdmSimpleTypeFacade.EdmSimpleTypes;
+import com.sap.core.odata.api.edm.EdmSimpleTypeFacade.EdmSimpleTypeKind;
 import com.sap.core.odata.api.edm.EdmTypeKind;
 
-public class EdmSimpleTypeInt32 implements EdmSimpleType {
+public class EdmBit implements EdmSimpleType {
 
-  private EdmSimpleTypes edmSimpleType = EdmSimpleTypes.INT32;
+  private EdmSimpleTypeKind edmSimpleType = EdmSimpleTypeKind.BIT;
 
   @Override
   public boolean equals(Object obj) {
     boolean equals = false;
     if (this == obj) {
       equals = true;
-    } else if (obj instanceof EdmSimpleTypeInt32) {
+    } else if (obj instanceof EdmBit) {
       equals = true;
     }
 
@@ -25,13 +25,8 @@ public class EdmSimpleTypeInt32 implements EdmSimpleType {
   }
 
   @Override
-  public EdmSimpleTypes getTypeRepresentation() {
-    return edmSimpleType;
-  }
-
-  @Override
   public String getNamespace() throws EdmException {
-    return EdmSimpleTypeFacade.edmNamespace;
+    return EdmSimpleTypeFacade.systemNamespace;
   }
 
   @Override
@@ -50,13 +45,9 @@ public class EdmSimpleTypeInt32 implements EdmSimpleType {
 
     switch (simpleType.getTypeRepresentation()) {
     case BIT:
-    case UINT7:
-    case BYTE:
-    case SBYTE:
-    case INT16:
-    case INT32:
       compatible = true;
       break;
+
     default:
       compatible = false;
       break;
@@ -87,6 +78,11 @@ public class EdmSimpleTypeInt32 implements EdmSimpleType {
   public String toUriLiteral(String literal) {
     // TODO Auto-generated method stub
     return null;
+  }
+
+  @Override
+  public EdmSimpleTypeKind getTypeRepresentation() {
+    return edmSimpleType;
   }
 
 }

@@ -1,6 +1,6 @@
 package com.sap.core.odata.api.edm;
 
-import com.sap.core.odata.api.edm.EdmSimpleTypeFacade.EdmSimpleTypes;
+import com.sap.core.odata.api.edm.EdmSimpleTypeFacade.EdmSimpleTypeKind;
 
 public interface EdmSimpleType extends EdmType {
 
@@ -16,6 +16,6 @@ public interface EdmSimpleType extends EdmType {
 
   public String toUriLiteral(String literal);
 
-  public EdmSimpleTypes getTypeRepresentation();
+  public EdmSimpleTypeKind getTypeRepresentation();
 
 }
