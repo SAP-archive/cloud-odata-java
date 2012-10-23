@@ -27,6 +27,10 @@ import com.sap.core.odata.api.edm.EdmSimpleTypeFacade;
 import com.sap.core.odata.api.edm.EdmType;
 import com.sap.core.odata.api.edm.EdmTypeKind;
 import com.sap.core.odata.api.edm.EdmTyped;
+import com.sap.core.odata.api.enums.Format;
+import com.sap.core.odata.api.enums.InlineCount;
+import com.sap.core.odata.api.enums.SystemQueryOption;
+import com.sap.core.odata.api.enums.UriType;
 import com.sap.core.odata.api.uri.KeyPredicate;
 import com.sap.core.odata.api.uri.NavigationPropertySegment;
 import com.sap.core.odata.api.uri.NavigationSegment;
@@ -35,10 +39,6 @@ import com.sap.core.odata.api.uri.UriLiteral;
 import com.sap.core.odata.api.uri.UriParser;
 import com.sap.core.odata.api.uri.UriParserException;
 import com.sap.core.odata.api.uri.UriParserResult;
-import com.sap.core.odata.api.uri.enums.Format;
-import com.sap.core.odata.api.uri.enums.InlineCount;
-import com.sap.core.odata.api.uri.enums.SystemQueryOption;
-import com.sap.core.odata.api.uri.enums.UriType;
 
 public class UriParserImpl implements UriParser  {
 
@@ -286,12 +286,12 @@ public class UriParserImpl implements UriParser  {
     uriResult.setTargetEntitySet(targetEntitySet);
     uriResult.setTargetType(targetEntitySet.getEntityType());
 
-    NavigationSegment navigationSegment = new NavigationSegment();
+    NavigationSegmentImpl navigationSegment = new NavigationSegmentImpl();
     navigationSegment.setEntitySet(targetEntitySet);
     navigationSegment.setNavigationProperty(navigationProperty);
     if (keyPredicateName != null)
       navigationSegment.setKeyPredicates(parseKey(keyPredicateName, targetEntitySet.getEntityType()));
-    uriResult.addNavigationSegment(navigationSegment);
+    uriResult.addNavigationSegment((NavigationSegment)navigationSegment);
   }
 
   private void handlePropertyPath(final EdmProperty property) throws UriParserException, EdmException {
@@ -389,7 +389,7 @@ public class UriParserImpl implements UriParser  {
       if (!((EdmSimpleType) keyProperty.getType()).isCompatible(uriLiteral.getType()))
         throw new UriParserException("Literal " + value + " is not compatible to type of property " + keyProperty.getName());
 
-      keyPredicates.add(new KeyPredicate(uriLiteral.getLiteral(), keyProperty));
+      keyPredicates.add(new KeyPredicateImpl(uriLiteral.getLiteral(), keyProperty));
     }
 
     if (parsedKeyProperties.size() != keyProperties.size())
@@ -585,7 +585,7 @@ public class UriParserImpl implements UriParser  {
         if (property.getType().getKind() == EdmTypeKind.NAVIGATION) {
           final EdmNavigationProperty navigationProperty = (EdmNavigationProperty) property;
           fromEntitySet = fromEntitySet.getRelatedEntitySet(navigationProperty);
-          NavigationPropertySegment propertySegment = new NavigationPropertySegment();
+          NavigationPropertySegmentImpl propertySegment = new NavigationPropertySegmentImpl();
           propertySegment.setNavigationProperty(navigationProperty);
           propertySegment.setTargetEntitySet(fromEntitySet);
           expandNavigationProperties.add(propertySegment);
@@ -611,7 +611,7 @@ public class UriParserImpl implements UriParser  {
       if (selectItemString.startsWith("/") || selectItemString.endsWith("/"))
         throw new UriParserException("Empty property in select item " + selectItemString);
 
-      SelectItem selectItem = new SelectItem();
+      SelectItemImpl selectItem = new SelectItemImpl();
       boolean exit = false;
       EdmEntitySet fromEntitySet = uriResult.getTargetEntitySet();
 
@@ -642,7 +642,7 @@ public class UriParserImpl implements UriParser  {
           final EdmNavigationProperty navigationProperty = (EdmNavigationProperty) property;
           final EdmEntitySet targetEntitySet = fromEntitySet.getRelatedEntitySet(navigationProperty);
 
-          NavigationPropertySegment navigationPropertySegment = new NavigationPropertySegment();
+          NavigationPropertySegmentImpl navigationPropertySegment = new NavigationPropertySegmentImpl();
           navigationPropertySegment.setNavigationProperty(navigationProperty);
           navigationPropertySegment.setTargetEntitySet(targetEntitySet);
           selectItem.addNavigationPropertySegment(navigationPropertySegment);
