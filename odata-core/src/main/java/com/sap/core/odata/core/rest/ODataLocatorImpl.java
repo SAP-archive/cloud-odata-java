@@ -136,6 +136,7 @@ public final class ODataLocatorImpl implements ODataLocator {
     this.dispatcher = new Dispatcher();
     this.dispatcher.setContext(this.context);
     this.dispatcher.setProcessor(this.processor);
+    this.processor.setContext(this.context);
   }
 
   private Map<String, String> convertToSinglevaluedMap(MultivaluedMap<String, String> multi) {
