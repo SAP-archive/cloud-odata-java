@@ -4,6 +4,7 @@ import com.sap.core.odata.api.edm.EdmException;
 import com.sap.core.odata.api.edm.EdmFacets;
 import com.sap.core.odata.api.edm.EdmLiteralKind;
 import com.sap.core.odata.api.edm.EdmSimpleType;
+import com.sap.core.odata.api.edm.EdmSimpleTypeFacade;
 import com.sap.core.odata.api.edm.EdmSimpleTypeFacade.EdmSimpleTypes;
 import com.sap.core.odata.api.edm.EdmTypeKind;
 
@@ -23,8 +24,7 @@ public class EdmSimpleTypeUint7 implements EdmSimpleType {
   
   @Override
   public String getNamespace() throws EdmException {
-    // TODO Auto-generated method stub
-    return null;
+    return EdmSimpleTypeFacade.systemNamespace;
   }
 
   @Override
@@ -34,8 +34,7 @@ public class EdmSimpleTypeUint7 implements EdmSimpleType {
 
   @Override
   public String getName() throws EdmException {
-    // TODO Auto-generated method stub
-    return null;
+    return this.getTypeRepresentation().getName();
   }
 
   @Override

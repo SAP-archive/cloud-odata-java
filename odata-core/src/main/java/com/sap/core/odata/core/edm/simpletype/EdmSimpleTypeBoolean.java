@@ -12,6 +12,18 @@ public class EdmSimpleTypeBoolean implements EdmSimpleType {
   private EdmSimpleTypes edmSimpleType = EdmSimpleTypes.BOOLEAN;
   
   @Override
+  public boolean equals(Object obj) {
+    boolean equals = false;
+    if (this == obj) {
+      equals = true;
+    } else if (obj instanceof EdmSimpleTypeBoolean) {
+      equals = true;
+    }
+
+    return equals;
+  }
+  
+  @Override
   public String getNamespace() throws EdmException {
     // TODO Auto-generated method stub
     return null;
@@ -24,8 +36,7 @@ public class EdmSimpleTypeBoolean implements EdmSimpleType {
 
   @Override
   public String getName() throws EdmException {
-    // TODO Auto-generated method stub
-    return null;
+    return this.getTypeRepresentation().getName();
   }
 
   @Override
@@ -68,18 +79,6 @@ public class EdmSimpleTypeBoolean implements EdmSimpleType {
   public String toUriLiteral(String literal) {
     // TODO Auto-generated method stub
     return null;
-  }
-
-  @Override
-  public boolean equals(Object obj) {
-    boolean equals = false;
-    if (this == obj) {
-      equals = true;
-    } else if (obj instanceof EdmSimpleTypeBoolean) {
-      equals = true;
-    }
-
-    return equals;
   }
 
   @Override

@@ -13,13 +13,24 @@ import com.sap.core.odata.api.uri.UriParserException;
 
 public class EdmSimpleTypeFacade {
 
+  public static final String edmNamespace = "Edm";
+  public static final String systemNamespace = "System";
   private static final Pattern WHOLE_NUMBER_PATTERN = Pattern.compile("(-?\\p{Digit}+)([lL])?");
   private static final Pattern DECIMAL_NUMBER_PATTERN = Pattern.compile("(-?\\p{Digit}+(?:\\.\\p{Digit}*(?:[eE][-+]?\\p{Digit}+)?)?)([mMdDfF])");
   private static final Pattern STRING_VALUE_PATTERN = Pattern.compile("(X|binary|datetime|datetimeoffset|guid|time)?'(.*)'");
 
   public enum EdmSimpleTypes
   {
-    BINARY, BOOLEAN, BYTE, DATETIME, DATETIMEOFFSET, DECIMAL, DOUBLE, GUID, INT16, INT32, INT64, NULL, SBYTE, SINGLE, STRING, TIME, BIT, UINT7
+    BINARY("Binary"), BOOLEAN("Boolean"), BYTE("Byte"), DATETIME("DateTime"), DATETIMEOFFSET("DateTimeOffset"), DECIMAL("Decimal"), DOUBLE("Double"), GUID("Guid"), INT16("Int16"), INT32("Int32"), INT64("Int64"), NULL("Null"), SBYTE("SByte"), SINGLE("Single"), STRING("String"), TIME("Time"), BIT("Bit"), UINT7("UInt7");
+    
+    
+    private String name;
+    private EdmSimpleTypes(String name){
+      this.name = name;
+    }
+    public String getName(){
+      return this.name;
+    }
   }
 
   public EdmSimpleType getInstance(EdmSimpleTypes edmSimpleType) {
