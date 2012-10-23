@@ -1,8 +1,10 @@
 package com.sap.core.odata.api.rest;
 
+import com.sap.core.odata.api.edm.Edm;
 import com.sap.core.odata.api.edm.EdmSimpleType;
 import com.sap.core.odata.api.edm.EdmSimpleTypeFacade.EdmSimpleTypeKind;
 import com.sap.core.odata.api.rest.ODataResponse.ODataResponseBuilder;
+import com.sap.core.odata.api.uri.UriParser;
 
 public abstract class RuntimeDelegate {
 
@@ -30,5 +32,7 @@ public abstract class RuntimeDelegate {
   public abstract Class<?> getExceptionMapper();
 
   public abstract ODataLocator createODataLocator();
+  
+  public abstract UriParser getUriParser(Edm edm);
 
 }

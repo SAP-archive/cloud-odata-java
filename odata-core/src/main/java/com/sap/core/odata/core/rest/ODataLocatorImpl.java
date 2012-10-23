@@ -24,10 +24,10 @@ import com.sap.core.odata.api.exception.ODataError;
 import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.api.processor.ODataProcessor;
 import com.sap.core.odata.api.rest.ODataLocator;
+import com.sap.core.odata.api.uri.UriParserResult;
 import com.sap.core.odata.core.dispatcher.Dispatcher;
 import com.sap.core.odata.core.enums.ODataHttpMethod;
-import com.sap.core.odata.core.uri.UriParser;
-import com.sap.core.odata.core.uri.UriParserResult;
+import com.sap.core.odata.core.uri.UriParserImpl;
 
 public final class ODataLocatorImpl implements ODataLocator {
 
@@ -37,7 +37,7 @@ public final class ODataLocatorImpl implements ODataLocator {
 
   private Dispatcher dispatcher;
 
-  private UriParser uriParser;
+  private UriParserImpl uriParser;
 
   private ODataContextImpl context;
 
@@ -53,8 +53,9 @@ public final class ODataLocatorImpl implements ODataLocator {
       ODataLocatorImpl.log.debug("+++ ODataSubResource:handleGet()");
       this.context.log();
 
-      List<PathSegment> pathSegments = this.context.getPathSegments();
+      List<String> pathSegments = this.context.getPathSegmentsAsStrings();
       Map<String, String> queryParameters = this.convertToSinglevaluedMap(this.context.getUriInfo().getQueryParameters());
+      
       UriParserResult uriParserResult = this.uriParser.parse(pathSegments, queryParameters);
 
       Response response = this.dispatcher.dispatch(ODataHttpMethod.GET, uriParserResult);
@@ -131,7 +132,7 @@ public final class ODataLocatorImpl implements ODataLocator {
     this.context.setHttpHeaders(this.httpHeaders);
     this.context.setPathSegments(this.odataPathSegments);
     this.context.setUriInfo(this.uriInfo);
-    this.uriParser = new UriParser(this.processor.getMetadataProcessor().getEdm());
+    this.uriParser = new UriParserImpl(this.processor.getMetadataProcessor().getEdm());
     this.dispatcher = new Dispatcher();
     this.dispatcher.setContext(this.context);
     this.dispatcher.setProcessor(this.processor);

@@ -27,16 +27,22 @@ import com.sap.core.odata.api.edm.EdmSimpleTypeFacade;
 import com.sap.core.odata.api.edm.EdmType;
 import com.sap.core.odata.api.edm.EdmTypeKind;
 import com.sap.core.odata.api.edm.EdmTyped;
+import com.sap.core.odata.api.uri.KeyPredicate;
+import com.sap.core.odata.api.uri.NavigationPropertySegment;
+import com.sap.core.odata.api.uri.NavigationSegment;
+import com.sap.core.odata.api.uri.SelectItem;
 import com.sap.core.odata.api.uri.UriLiteral;
+import com.sap.core.odata.api.uri.UriParser;
 import com.sap.core.odata.api.uri.UriParserException;
-import com.sap.core.odata.core.uri.enums.Format;
-import com.sap.core.odata.core.uri.enums.InlineCount;
-import com.sap.core.odata.core.uri.enums.SystemQueryOption;
-import com.sap.core.odata.core.uri.enums.UriType;
+import com.sap.core.odata.api.uri.UriParserResult;
+import com.sap.core.odata.api.uri.enums.Format;
+import com.sap.core.odata.api.uri.enums.InlineCount;
+import com.sap.core.odata.api.uri.enums.SystemQueryOption;
+import com.sap.core.odata.api.uri.enums.UriType;
 
-public class UriParser {
+public class UriParserImpl implements UriParser  {
 
-  private static final Logger LOG = LoggerFactory.getLogger(UriParser.class);
+  private static final Logger LOG = LoggerFactory.getLogger(UriParserImpl.class);
 
   private static final Pattern INITIAL_SEGMENT_PATTERN = Pattern.compile("(?:([^.()]+)\\.)?([^.()]+)(?:\\((.+)\\)|(\\(\\)))?");
   private static final Pattern NAVIGATION_SEGMENT_PATTERN = Pattern.compile("([^()]+)(?:\\((.+)\\)|(\\(\\)))?");
@@ -44,15 +50,15 @@ public class UriParser {
 
   private final Edm edm;
   private final EdmSimpleTypeFacade simpleTypeFacade;
-  private List<PathSegment> pathSegments;
+  private List<String> pathSegments;
   private String currentPathSegment;
-  private UriParserResult uriResult;
+  private UriParserResultImpl uriResult;
   private Map<SystemQueryOption, String> systemQueryOptions;
   private Map<String, String> otherQueryParameters;
 
-  public UriParser(final Edm edm) {
+  public UriParserImpl(final Edm edm){
     this.edm = edm;
-    UriParser.LOG.debug("edm version: " + this.edm.getServiceMetadata().getDataServiceVersion());
+    UriParserImpl.LOG.debug("edm version: " + this.edm.getServiceMetadata().getDataServiceVersion());
     simpleTypeFacade = new EdmSimpleTypeFacade();
   }
 
@@ -61,14 +67,15 @@ public class UriParser {
    * already splitted into path segments and query parameters.
    * @param pathSegments  the {@link PathSegment}s of the resource path, already unescaped
    * @param queryParameters  the query parameters, already unescaped
-   * @return a {@link UriParserResult} instance containing the parsed information
+   * @return a {@link UriParserResultImpl} instance containing the parsed information
    * @throws UriParserException
    */
-  public UriParserResult parse(final List<PathSegment> pathSegments, final Map<String, String> queryParameters) throws UriParserException {
+  @Override
+  public UriParserResult parse(final List<String> pathSegments, final Map<String, String> queryParameters) throws UriParserException {
     this.pathSegments = pathSegments;
     systemQueryOptions = new HashMap<SystemQueryOption, String>();
     otherQueryParameters = new HashMap<String, String>();
-    uriResult = new UriParserResult();
+    uriResult = new UriParserResultImpl();
 
     preparePathSegments();
 
@@ -83,31 +90,31 @@ public class UriParser {
       throw new UriParserException("Error in EDM access during URI parsing", e);
     }
 
-    UriParser.LOG.debug(uriResult.toString());
+    UriParserImpl.LOG.debug(uriResult.toString());
     return uriResult;
   }
 
   private void preparePathSegments() throws UriParserException {
     if (!pathSegments.isEmpty()) {
-      if (pathSegments.get(0).getPath().equals("")) // initial '/' is allowed but ignored
+      if (pathSegments.get(0).equals("")) // initial '/' is allowed but ignored
         pathSegments.remove(0);
       if (pathSegments.size() == 1)
-        if (pathSegments.get(0).getPath().equals("")) // only '/': service document
+        if (pathSegments.get(0).equals("")) // only '/': service document
           pathSegments.remove(0);
-      for (PathSegment pathSegment : pathSegments)
-        if (pathSegment.getPath().equals(""))
+      for (String pathSegment : pathSegments)
+        if (pathSegment.equals(""))
           throw new UriParserException("Empty path segment in URI, " + pathSegments);
     }
   }
 
   private void handleResourcePath() throws UriParserException, EdmException {
-    UriParser.LOG.debug("parsing: " + pathSegments);
+    UriParserImpl.LOG.debug("parsing: " + pathSegments);
 
     if (pathSegments.isEmpty()) {
       uriResult.setUriType(UriType.URI0);
     } else {
 
-      currentPathSegment = pathSegments.remove(0).getPath();
+      currentPathSegment = pathSegments.remove(0);
 
       if ("$metadata".equals(currentPathSegment)) {
         ensureLastSegment();
@@ -132,7 +139,7 @@ public class UriParser {
     final String segmentName = matcher.group(2);
     final String keyPredicate = matcher.group(3);
     final String emptyParentheses = matcher.group(4);
-    UriParser.LOG.debug("RegEx (" + currentPathSegment + ") : entityContainerName=" + entityContainerName + ", segmentName=" + segmentName + ", keyPredicate=" + keyPredicate + ", emptyParentheses=" + emptyParentheses);
+    UriParserImpl.LOG.debug("RegEx (" + currentPathSegment + ") : entityContainerName=" + entityContainerName + ", segmentName=" + segmentName + ", keyPredicate=" + keyPredicate + ", emptyParentheses=" + emptyParentheses);
 
     uriResult.setEntityContainer(entityContainerName == null ? edm.getDefaultEntityContainer() : edm.getEntityContainer(entityContainerName));
 
@@ -162,7 +169,7 @@ public class UriParser {
       if (pathSegments.isEmpty()) {
         uriResult.setUriType(UriType.URI1);
       } else {
-        currentPathSegment = pathSegments.remove(0).getPath();
+        currentPathSegment = pathSegments.remove(0);
         checkCount();
         if (uriResult.isCount())
           uriResult.setUriType(UriType.URI15);
@@ -179,7 +186,7 @@ public class UriParser {
   }
 
   private void handleNavigationPathOptions() throws UriParserException, EdmException {
-    currentPathSegment = pathSegments.remove(0).getPath();
+    currentPathSegment = pathSegments.remove(0);
 
     checkCount();
     if (uriResult.isCount()) {
@@ -198,7 +205,7 @@ public class UriParser {
       this.uriResult.setLinks(true);
       if (pathSegments.isEmpty())
         throw new UriParserException("$links must not be the last segment");
-      currentPathSegment = pathSegments.remove(0).getPath();
+      currentPathSegment = pathSegments.remove(0);
       handleNavigationProperties();
 
     } else {
@@ -215,7 +222,7 @@ public class UriParser {
     final String navigationPropertyName = matcher.group(1);
     final String keyPredicateName = matcher.group(2);
     final String emptyParentheses = matcher.group(3);
-    UriParser.LOG.debug("RegEx (" + currentPathSegment + "): NavigationProperty=" + navigationPropertyName + ", keyPredicate=" + keyPredicateName + ", emptyParentheses=" + emptyParentheses);
+    UriParserImpl.LOG.debug("RegEx (" + currentPathSegment + "): NavigationProperty=" + navigationPropertyName + ", keyPredicate=" + keyPredicateName + ", emptyParentheses=" + emptyParentheses);
 
     final EdmTyped property = uriResult.getTargetEntitySet().getEntityType().getProperty(navigationPropertyName);
 
@@ -253,7 +260,7 @@ public class UriParser {
         else
           uriResult.setUriType(UriType.URI6A);
       else if (many || uriResult.isLinks()) {
-        currentPathSegment = pathSegments.remove(0).getPath();
+        currentPathSegment = pathSegments.remove(0);
         checkCount();
         if (!uriResult.isCount())
           throw new UriParserException("Invalid path segment: " + currentPathSegment + ", " + this.pathSegments);
@@ -304,7 +311,7 @@ public class UriParser {
       this.uriResult.setTargetType(type);
     } else {
 
-      currentPathSegment = pathSegments.remove(0).getPath();
+      currentPathSegment = pathSegments.remove(0);
       switch (type.getKind()) {
       case SIMPLE:
         if ("$value".equals(currentPathSegment)) {
@@ -357,7 +364,7 @@ public class UriParser {
 
       String name = matcher.group(1);
       final String value = matcher.group(2);
-      UriParser.LOG.debug("RegEx (" + keyPredicate + "): name=" + name + ", value=" + value);
+      UriParserImpl.LOG.debug("RegEx (" + keyPredicate + "): name=" + name + ", value=" + value);
 
       if (name == null)
         if (keyProperties.size() == 1)
@@ -421,7 +428,7 @@ public class UriParser {
 
     if (!pathSegments.isEmpty())
       if (uriResult.getUriType() == UriType.URI14) {
-        currentPathSegment = pathSegments.remove(0).getPath();
+        currentPathSegment = pathSegments.remove(0);
         if ("$value".equals(currentPathSegment))
           uriResult.setValue(true);
         else
@@ -431,7 +438,7 @@ public class UriParser {
   }
 
   private void distributeQueryParameters(final Map<String, String> queryParameters) throws UriParserException {
-    UriParser.LOG.debug("query parameters: " + queryParameters);
+    UriParserImpl.LOG.debug("query parameters: " + queryParameters);
     for (String queryOptionString : queryParameters.keySet())
       if (queryOptionString.startsWith("$")) {
         SystemQueryOption queryOption;

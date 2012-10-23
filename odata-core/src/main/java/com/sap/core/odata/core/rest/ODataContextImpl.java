@@ -1,5 +1,6 @@
 package com.sap.core.odata.core.rest;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.ws.rs.core.HttpHeaders;
@@ -51,6 +52,15 @@ public class ODataContextImpl implements ODataContext {
     return pathSegments;
   }
 
+  public List<String> getPathSegmentsAsStrings() {
+    ArrayList<String> pathSegmentsAsString = new ArrayList<String>();
+    
+    for(PathSegment pathSegment : pathSegments){
+      pathSegmentsAsString.add(pathSegment.getPath());
+    }
+    return pathSegmentsAsString;
+  }
+  
   public void setPathSegments(List<PathSegment> pathSegments) {
     this.pathSegments = pathSegments;
   }

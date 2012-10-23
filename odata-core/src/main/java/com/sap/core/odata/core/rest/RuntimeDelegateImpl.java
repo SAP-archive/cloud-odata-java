@@ -1,15 +1,18 @@
 package com.sap.core.odata.core.rest;
 
+import com.sap.core.odata.api.edm.Edm;
 import com.sap.core.odata.api.edm.EdmSimpleType;
 import com.sap.core.odata.api.edm.EdmSimpleTypeFacade.EdmSimpleTypeKind;
 import com.sap.core.odata.api.rest.ODataLocator;
 import com.sap.core.odata.api.rest.ODataResponse.ODataResponseBuilder;
 import com.sap.core.odata.api.rest.RuntimeDelegate;
+import com.sap.core.odata.api.uri.UriParser;
 import com.sap.core.odata.core.edm.simpletype.EdmBinary;
 import com.sap.core.odata.core.edm.simpletype.EdmBit;
 import com.sap.core.odata.core.edm.simpletype.EdmBoolean;
 import com.sap.core.odata.core.edm.simpletype.EdmByte;
 import com.sap.core.odata.core.edm.simpletype.EdmDateTime;
+import com.sap.core.odata.core.edm.simpletype.EdmDateTimeOffset;
 import com.sap.core.odata.core.edm.simpletype.EdmDecimal;
 import com.sap.core.odata.core.edm.simpletype.EdmDouble;
 import com.sap.core.odata.core.edm.simpletype.EdmGuid;
@@ -20,8 +23,8 @@ import com.sap.core.odata.core.edm.simpletype.EdmSByte;
 import com.sap.core.odata.core.edm.simpletype.EdmSingle;
 import com.sap.core.odata.core.edm.simpletype.EdmString;
 import com.sap.core.odata.core.edm.simpletype.EdmTime;
-import com.sap.core.odata.core.edm.simpletype.EdmDateTimeOffset;
 import com.sap.core.odata.core.edm.simpletype.EdmUint7;
+import com.sap.core.odata.core.uri.UriParserImpl;
 
 public class RuntimeDelegateImpl extends RuntimeDelegate {
 
@@ -100,6 +103,11 @@ public class RuntimeDelegateImpl extends RuntimeDelegate {
     }
 
     return edmType;
+  }
+
+  @Override
+  public UriParser getUriParser(Edm edm) {
+    return new UriParserImpl(edm);
   }
 
 }
