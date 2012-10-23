@@ -2,8 +2,6 @@ package com.sap.core.odata.core.rest.test;
 
 import static org.junit.Assert.assertEquals;
 
-import javax.ws.rs.core.Response;
-
 import org.junit.Test;
 
 import com.sap.core.odata.api.rest.ODataResponse;
