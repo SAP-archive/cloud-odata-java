@@ -11,7 +11,7 @@
 	</welcome-file-list>
 
 	<servlet>
-		<servlet-name>referencescenario</servlet-name>
+		<servlet-name>ReferenceScenarioServlet</servlet-name>
 		<servlet-class>org.apache.cxf.jaxrs.servlet.CXFNonSpringJaxrsServlet</servlet-class>
 		<init-param>
 			<param-name>javax.ws.rs.Application</param-name>
@@ -21,8 +21,8 @@
 	</servlet>
 
 	<servlet-mapping>
-		<servlet-name>referencescenario</servlet-name>
-		<url-pattern>/ref.svc/*</url-pattern>
+		<servlet-name>ReferenceScenarioServlet</servlet-name>
+		<url-pattern>/ReferenceScenario.svc/*</url-pattern>
 	</servlet-mapping>
 
 </web-app>
