@@ -5,19 +5,20 @@ import com.sap.core.odata.api.edm.EdmFacets;
 import com.sap.core.odata.api.edm.EdmLiteralKind;
 import com.sap.core.odata.api.edm.EdmSimpleType;
 import com.sap.core.odata.api.edm.EdmSimpleTypeFacade;
-import com.sap.core.odata.api.edm.EdmSimpleTypeFacade.EdmSimpleTypes;
+import com.sap.core.odata.api.edm.EdmSimpleTypeFacade.EdmSimpleTypeKind;
 import com.sap.core.odata.api.edm.EdmTypeKind;
 
-public class EdmSimpleTypeTime implements EdmSimpleType {
 
-  private EdmSimpleTypes edmSimpleType = EdmSimpleTypes.TIME;
-
+public class EdmByte implements EdmSimpleType {
+  
+  private EdmSimpleTypeKind edmSimpleType = EdmSimpleTypeKind.BYTE;
+  
   @Override
   public boolean equals(Object obj) {
     boolean equals = false;
     if (this == obj) {
       equals = true;
-    } else if (obj instanceof EdmSimpleTypeTime) {
+    } else if (obj instanceof EdmByte) {
       equals = true;
     }
 
@@ -25,10 +26,10 @@ public class EdmSimpleTypeTime implements EdmSimpleType {
   }
 
   @Override
-  public EdmSimpleTypes getTypeRepresentation() {
+  public EdmSimpleTypeKind getTypeRepresentation() {
     return edmSimpleType;
   }
-
+  
   @Override
   public String getNamespace() throws EdmException {
     return EdmSimpleTypeFacade.edmNamespace;
@@ -47,9 +48,11 @@ public class EdmSimpleTypeTime implements EdmSimpleType {
   @Override
   public boolean isCompatible(EdmSimpleType simpleType) {
     boolean compatible;
-
+    
     switch (simpleType.getTypeRepresentation()) {
-    case TIME:
+    case BIT:
+    case UINT7:
+    case BYTE:
       compatible = true;
       break;
 
@@ -57,7 +60,7 @@ public class EdmSimpleTypeTime implements EdmSimpleType {
       compatible = false;
       break;
     }
-
+      
     return compatible;
   }
 

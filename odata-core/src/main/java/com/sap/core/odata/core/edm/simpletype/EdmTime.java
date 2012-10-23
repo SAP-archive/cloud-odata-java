@@ -5,23 +5,29 @@ import com.sap.core.odata.api.edm.EdmFacets;
 import com.sap.core.odata.api.edm.EdmLiteralKind;
 import com.sap.core.odata.api.edm.EdmSimpleType;
 import com.sap.core.odata.api.edm.EdmSimpleTypeFacade;
-import com.sap.core.odata.api.edm.EdmSimpleTypeFacade.EdmSimpleTypes;
+import com.sap.core.odata.api.edm.EdmSimpleTypeFacade.EdmSimpleTypeKind;
 import com.sap.core.odata.api.edm.EdmTypeKind;
 
-public class EdmSimpleTypeBinary implements EdmSimpleType {
 
-  private EdmSimpleTypes edmSimpleType = EdmSimpleTypes.BINARY;
+public class EdmTime implements EdmSimpleType {
+
+  private EdmSimpleTypeKind edmSimpleType = EdmSimpleTypeKind.TIME;
 
   @Override
   public boolean equals(Object obj) {
     boolean equals = false;
     if (this == obj) {
       equals = true;
-    } else if (obj instanceof EdmSimpleTypeBinary) {
+    } else if (obj instanceof EdmTime) {
       equals = true;
     }
 
     return equals;
+  }
+
+  @Override
+  public EdmSimpleTypeKind getTypeRepresentation() {
+    return edmSimpleType;
   }
 
   @Override
@@ -44,7 +50,7 @@ public class EdmSimpleTypeBinary implements EdmSimpleType {
     boolean compatible;
 
     switch (simpleType.getTypeRepresentation()) {
-    case BINARY:
+    case TIME:
       compatible = true;
       break;
 
@@ -78,11 +84,6 @@ public class EdmSimpleTypeBinary implements EdmSimpleType {
   public String toUriLiteral(String literal) {
     // TODO Auto-generated method stub
     return null;
-  }
-
-  @Override
-  public EdmSimpleTypes getTypeRepresentation() {
-    return edmSimpleType;
   }
 
 }

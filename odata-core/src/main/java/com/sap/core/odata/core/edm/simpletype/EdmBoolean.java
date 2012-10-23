@@ -4,34 +4,29 @@ import com.sap.core.odata.api.edm.EdmException;
 import com.sap.core.odata.api.edm.EdmFacets;
 import com.sap.core.odata.api.edm.EdmLiteralKind;
 import com.sap.core.odata.api.edm.EdmSimpleType;
-import com.sap.core.odata.api.edm.EdmSimpleTypeFacade;
-import com.sap.core.odata.api.edm.EdmSimpleTypeFacade.EdmSimpleTypes;
+import com.sap.core.odata.api.edm.EdmSimpleTypeFacade.EdmSimpleTypeKind;
 import com.sap.core.odata.api.edm.EdmTypeKind;
 
-public class EdmSimpleTypeDateTime implements EdmSimpleType {
+public class EdmBoolean implements EdmSimpleType {
 
-  private EdmSimpleTypes edmSimpleType = EdmSimpleTypes.DATETIME;
-
+  private EdmSimpleTypeKind edmSimpleType = EdmSimpleTypeKind.BOOLEAN;
+  
   @Override
   public boolean equals(Object obj) {
     boolean equals = false;
     if (this == obj) {
       equals = true;
-    } else if (obj instanceof EdmSimpleTypeDateTime) {
+    } else if (obj instanceof EdmBoolean) {
       equals = true;
     }
 
     return equals;
   }
-
-  @Override
-  public EdmSimpleTypes getTypeRepresentation() {
-    return edmSimpleType;
-  }
-
+  
   @Override
   public String getNamespace() throws EdmException {
-    return EdmSimpleTypeFacade.edmNamespace;
+    // TODO Auto-generated method stub
+    return null;
   }
 
   @Override
@@ -47,9 +42,10 @@ public class EdmSimpleTypeDateTime implements EdmSimpleType {
   @Override
   public boolean isCompatible(EdmSimpleType simpleType) {
     boolean compatible;
-
+    
     switch (simpleType.getTypeRepresentation()) {
-    case DATETIME:
+    case BIT:
+    case BOOLEAN:
       compatible = true;
       break;
 
@@ -57,7 +53,7 @@ public class EdmSimpleTypeDateTime implements EdmSimpleType {
       compatible = false;
       break;
     }
-
+      
     return compatible;
   }
 
@@ -83,6 +79,11 @@ public class EdmSimpleTypeDateTime implements EdmSimpleType {
   public String toUriLiteral(String literal) {
     // TODO Auto-generated method stub
     return null;
+  }
+
+  @Override
+  public EdmSimpleTypeKind getTypeRepresentation() {
+    return edmSimpleType;
   }
 
 }

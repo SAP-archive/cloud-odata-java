@@ -5,30 +5,25 @@ import com.sap.core.odata.api.edm.EdmFacets;
 import com.sap.core.odata.api.edm.EdmLiteralKind;
 import com.sap.core.odata.api.edm.EdmSimpleType;
 import com.sap.core.odata.api.edm.EdmSimpleTypeFacade;
-import com.sap.core.odata.api.edm.EdmSimpleTypeFacade.EdmSimpleTypes;
+import com.sap.core.odata.api.edm.EdmSimpleTypeFacade.EdmSimpleTypeKind;
 import com.sap.core.odata.api.edm.EdmTypeKind;
 
-public class EdmSimpleTypeString implements EdmSimpleType {
+public class EdmBinary implements EdmSimpleType {
 
-  private EdmSimpleTypes edmSimpleType = EdmSimpleTypes.STRING;
-  
+  private EdmSimpleTypeKind edmSimpleType = EdmSimpleTypeKind.BINARY;
+
   @Override
   public boolean equals(Object obj) {
     boolean equals = false;
     if (this == obj) {
       equals = true;
-    } else if (obj instanceof EdmSimpleTypeString) {
+    } else if (obj instanceof EdmBinary) {
       equals = true;
     }
 
     return equals;
   }
 
-  @Override
-  public EdmSimpleTypes getTypeRepresentation() {
-    return edmSimpleType;
-  }
-  
   @Override
   public String getNamespace() throws EdmException {
     return EdmSimpleTypeFacade.edmNamespace;
@@ -49,7 +44,7 @@ public class EdmSimpleTypeString implements EdmSimpleType {
     boolean compatible;
 
     switch (simpleType.getTypeRepresentation()) {
-    case STRING:
+    case BINARY:
       compatible = true;
       break;
 
@@ -57,7 +52,7 @@ public class EdmSimpleTypeString implements EdmSimpleType {
       compatible = false;
       break;
     }
-      
+
     return compatible;
   }
 
@@ -83,6 +78,11 @@ public class EdmSimpleTypeString implements EdmSimpleType {
   public String toUriLiteral(String literal) {
     // TODO Auto-generated method stub
     return null;
+  }
+
+  @Override
+  public EdmSimpleTypeKind getTypeRepresentation() {
+    return edmSimpleType;
   }
 
 }

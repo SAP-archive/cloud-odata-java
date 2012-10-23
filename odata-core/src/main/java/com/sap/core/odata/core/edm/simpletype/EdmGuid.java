@@ -5,19 +5,20 @@ import com.sap.core.odata.api.edm.EdmFacets;
 import com.sap.core.odata.api.edm.EdmLiteralKind;
 import com.sap.core.odata.api.edm.EdmSimpleType;
 import com.sap.core.odata.api.edm.EdmSimpleTypeFacade;
-import com.sap.core.odata.api.edm.EdmSimpleTypeFacade.EdmSimpleTypes;
+import com.sap.core.odata.api.edm.EdmSimpleTypeFacade.EdmSimpleTypeKind;
 import com.sap.core.odata.api.edm.EdmTypeKind;
 
-public class EdmSimpleTypeDateTimeOffset implements EdmSimpleType  {
 
-  private EdmSimpleTypes edmSimpleType = EdmSimpleTypes.DATETIMEOFFSET;
+public class EdmGuid implements EdmSimpleType {
+
+  private EdmSimpleTypeKind edmSimpleType = EdmSimpleTypeKind.GUID;
   
   @Override
   public boolean equals(Object obj) {
     boolean equals = false;
     if (this == obj) {
       equals = true;
-    } else if (obj instanceof EdmSimpleTypeDateTimeOffset) {
+    } else if (obj instanceof EdmGuid) {
       equals = true;
     }
 
@@ -25,7 +26,7 @@ public class EdmSimpleTypeDateTimeOffset implements EdmSimpleType  {
   }
 
   @Override
-  public EdmSimpleTypes getTypeRepresentation() {
+  public EdmSimpleTypeKind getTypeRepresentation() {
     return edmSimpleType;
   }
   
@@ -49,7 +50,7 @@ public class EdmSimpleTypeDateTimeOffset implements EdmSimpleType  {
     boolean compatible;
 
     switch (simpleType.getTypeRepresentation()) {
-    case DATETIMEOFFSET:
+    case GUID:
       compatible = true;
       break;
 

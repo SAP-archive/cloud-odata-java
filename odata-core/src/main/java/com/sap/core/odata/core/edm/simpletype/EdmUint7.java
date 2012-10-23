@@ -4,19 +4,18 @@ import com.sap.core.odata.api.edm.EdmException;
 import com.sap.core.odata.api.edm.EdmFacets;
 import com.sap.core.odata.api.edm.EdmLiteralKind;
 import com.sap.core.odata.api.edm.EdmSimpleType;
-import com.sap.core.odata.api.edm.EdmSimpleTypeFacade.EdmSimpleTypes;
+import com.sap.core.odata.api.edm.EdmSimpleTypeFacade;
+import com.sap.core.odata.api.edm.EdmSimpleTypeFacade.EdmSimpleTypeKind;
 import com.sap.core.odata.api.edm.EdmTypeKind;
 
-public class EdmSimpleTypeBoolean implements EdmSimpleType {
+public class EdmUint7 implements EdmSimpleType {
 
-  private EdmSimpleTypes edmSimpleType = EdmSimpleTypes.BOOLEAN;
-  
   @Override
   public boolean equals(Object obj) {
     boolean equals = false;
     if (this == obj) {
       equals = true;
-    } else if (obj instanceof EdmSimpleTypeBoolean) {
+    } else if (obj instanceof EdmBit) {
       equals = true;
     }
 
@@ -25,8 +24,7 @@ public class EdmSimpleTypeBoolean implements EdmSimpleType {
   
   @Override
   public String getNamespace() throws EdmException {
-    // TODO Auto-generated method stub
-    return null;
+    return EdmSimpleTypeFacade.systemNamespace;
   }
 
   @Override
@@ -42,10 +40,10 @@ public class EdmSimpleTypeBoolean implements EdmSimpleType {
   @Override
   public boolean isCompatible(EdmSimpleType simpleType) {
     boolean compatible;
-    
+
     switch (simpleType.getTypeRepresentation()) {
     case BIT:
-    case BOOLEAN:
+    case UINT7:
       compatible = true;
       break;
 
@@ -53,8 +51,9 @@ public class EdmSimpleTypeBoolean implements EdmSimpleType {
       compatible = false;
       break;
     }
-      
+
     return compatible;
+  
   }
 
   @Override
@@ -82,8 +81,8 @@ public class EdmSimpleTypeBoolean implements EdmSimpleType {
   }
 
   @Override
-  public EdmSimpleTypes getTypeRepresentation() {
-    return edmSimpleType;
+  public EdmSimpleTypeKind getTypeRepresentation() {
+    return EdmSimpleTypeKind.UINT7;
   }
 
 }

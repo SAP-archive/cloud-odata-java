@@ -5,19 +5,20 @@ import com.sap.core.odata.api.edm.EdmFacets;
 import com.sap.core.odata.api.edm.EdmLiteralKind;
 import com.sap.core.odata.api.edm.EdmSimpleType;
 import com.sap.core.odata.api.edm.EdmSimpleTypeFacade;
-import com.sap.core.odata.api.edm.EdmSimpleTypeFacade.EdmSimpleTypes;
+import com.sap.core.odata.api.edm.EdmSimpleTypeFacade.EdmSimpleTypeKind;
 import com.sap.core.odata.api.edm.EdmTypeKind;
 
-public class EdmSimpleTypeDecimal implements EdmSimpleType {
 
-  private EdmSimpleTypes edmSimpleType = EdmSimpleTypes.DECIMAL;
+public class EdmInt16 implements EdmSimpleType {
+
+  private EdmSimpleTypeKind edmSimpleType = EdmSimpleTypeKind.INT16;
 
   @Override
   public boolean equals(Object obj) {
     boolean equals = false;
     if (this == obj) {
       equals = true;
-    } else if (obj instanceof EdmSimpleTypeDecimal) {
+    } else if (obj instanceof EdmInt16) {
       equals = true;
     }
 
@@ -25,7 +26,7 @@ public class EdmSimpleTypeDecimal implements EdmSimpleType {
   }
 
   @Override
-  public EdmSimpleTypes getTypeRepresentation() {
+  public EdmSimpleTypeKind getTypeRepresentation() {
     return edmSimpleType;
   }
 
@@ -50,15 +51,10 @@ public class EdmSimpleTypeDecimal implements EdmSimpleType {
 
     switch (simpleType.getTypeRepresentation()) {
     case BIT:
-    case UINT7:  
+    case UINT7:
     case BYTE:
     case SBYTE:
     case INT16:
-    case INT32:
-    case INT64:
-    case SINGLE:
-    case DOUBLE:
-    case DECIMAL:
       compatible = true;
       break;
     default:
