@@ -1,6 +1,5 @@
 package com.sap.core.odata.api.edm;
 
-
 public enum EdmTypeKind {
 
   UNDEFINED(" "), SIMPLE("S"), COMPLEX("C"), ENTITY("E"), NAVIGATION("N"), ASSOCIATION("A"), SYSTEM("Y");

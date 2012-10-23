@@ -9,7 +9,7 @@ package com.sap.core.odata.api.exception;
 public class ODataMethodNotAllowedException extends ODataContextedException {
 
   public static final Context DISPATCH = createContext(ODataMethodNotAllowedException.class, "DISPATCH");
-  
+
   /**
    * 
    */

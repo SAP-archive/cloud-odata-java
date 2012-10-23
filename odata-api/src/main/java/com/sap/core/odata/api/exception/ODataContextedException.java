@@ -1,6 +1,5 @@
 package com.sap.core.odata.api.exception;
 
-
 public abstract class ODataContextedException extends ODataException {
 
   protected final Context context;

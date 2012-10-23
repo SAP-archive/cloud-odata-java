@@ -27,5 +27,4 @@ public interface ODataLocator {
 
   void setProcessor(ODataProcessor processor);
 
-
 }

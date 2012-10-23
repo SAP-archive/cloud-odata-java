@@ -22,13 +22,14 @@ public class EdmSimpleTypeFacade {
   public enum EdmSimpleTypes
   {
     BINARY("Binary"), BOOLEAN("Boolean"), BYTE("Byte"), DATETIME("DateTime"), DATETIMEOFFSET("DateTimeOffset"), DECIMAL("Decimal"), DOUBLE("Double"), GUID("Guid"), INT16("Int16"), INT32("Int32"), INT64("Int64"), NULL("Null"), SBYTE("SByte"), SINGLE("Single"), STRING("String"), TIME("Time"), BIT("Bit"), UINT7("UInt7");
-    
-    
+
     private String name;
-    private EdmSimpleTypes(String name){
+
+    private EdmSimpleTypes(String name) {
       this.name = name;
     }
-    public String getName(){
+
+    public String getName() {
       return this.name;
     }
   }

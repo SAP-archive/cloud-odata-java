@@ -1,6 +1,5 @@
 package com.sap.core.odata.api.edm;
 
-
 public interface EdmFacets {
 
   Boolean isNullable();

@@ -2,7 +2,6 @@ package com.sap.core.odata.api.rest;
 
 import java.util.Set;
 
-
 public abstract class ODataResponse {
 
   protected ODataResponse() {}
@@ -14,7 +13,7 @@ public abstract class ODataResponse {
   public abstract String getHeader(String name);
 
   public abstract Set<String> getHeaderNames();
-  
+
   public static ODataResponseBuilder status(int status) {
     ODataResponseBuilder b = ODataResponseBuilder.newInstance();
     b.status(status);
@@ -51,8 +50,7 @@ public abstract class ODataResponse {
     public abstract ODataResponseBuilder entity(String entity);
 
     public abstract ODataResponseBuilder header(String name, String value);
-    
-  }
 
+  }
 
 }

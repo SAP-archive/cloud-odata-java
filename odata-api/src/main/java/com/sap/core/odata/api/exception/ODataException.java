@@ -31,13 +31,13 @@ public class ODataException extends ODataError {
    * @return
    */
   public ODataContextedException getContextedCause() {
-      Throwable cause = getCause();
-      while (cause != null) {
-        if (cause instanceof ODataContextedException) {
-          return (ODataContextedException) cause;
-        }
-        cause = cause.getCause();
+    Throwable cause = getCause();
+    while (cause != null) {
+      if (cause instanceof ODataContextedException) {
+        return (ODataContextedException) cause;
       }
-      return (ODataContextedException) cause;
+      cause = cause.getCause();
+    }
+    return (ODataContextedException) cause;
   }
 }

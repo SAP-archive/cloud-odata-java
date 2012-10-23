@@ -1,6 +1,5 @@
 package com.sap.core.odata.api.edm;
 
-
 public interface EdmNavigationProperty extends EdmNamed, EdmTyped {
 
   EdmAssociation getRelationship() throws EdmException;;

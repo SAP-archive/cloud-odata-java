@@ -24,7 +24,7 @@ public abstract class RuntimeDelegate {
   }
 
   public abstract ODataResponseBuilder createODataResponseBuilder();
-  
+
   public abstract EdmSimpleType getEdmSimpleType(EdmSimpleTypes edmSimpleType);
 
   public abstract Class<?> getExceptionMapper();

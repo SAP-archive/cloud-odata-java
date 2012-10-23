@@ -1,6 +1,5 @@
 package com.sap.core.odata.api.edm;
 
-
 public enum EdmTargetPath {
 
   AUTHOR_NAME("SyndicationAuthorName"), AUTHOR_EMAIL("SyndicationAuthorEmail"), AUTHOR_URI("SyndicationAuthorUri"), PUBLISHED("SyndicationPublished"), RIGHTS("SyndicationRights"), TITLE("SyndicationTitle"), UPDATED("SyndicationUpdated"), CONTRIBTR_NAME(
