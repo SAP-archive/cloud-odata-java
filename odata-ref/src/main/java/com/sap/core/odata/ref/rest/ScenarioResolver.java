@@ -3,14 +3,14 @@ package com.sap.core.odata.ref.rest;
 import javax.ws.rs.ext.ContextResolver;
 import javax.ws.rs.ext.Provider;
 
-import com.sap.core.odata.api.processor.ODataSingleProcessor;
-import com.sap.core.odata.ref.producer.ScenarioProducer;
+import com.sap.core.odata.api.processor.ODataProcessor;
+import com.sap.core.odata.ref.processor.ScenarioProcessor;
 
 @Provider
-public class ScenarioResolver implements ContextResolver<ODataSingleProcessor> {
+public class ScenarioResolver implements ContextResolver<ODataProcessor> {
 
   @Override
-  public ODataSingleProcessor getContext(Class<?> type) {
-    return new ScenarioProducer();
+  public ODataProcessor getContext(Class<?> type) {
+    return new ScenarioProcessor();
   }
 }

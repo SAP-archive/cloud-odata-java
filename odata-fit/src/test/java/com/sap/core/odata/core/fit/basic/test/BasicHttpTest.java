@@ -34,6 +34,7 @@ import com.sap.core.odata.api.edm.EdmEntitySet;
 import com.sap.core.odata.fit.HttpMerge;
 import com.sap.core.odata.fit.StringStreamHelper;
 
+@Ignore
 public class BasicHttpTest extends AbstractBasicTest {
 
   @Before

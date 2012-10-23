@@ -4,22 +4,27 @@ import java.util.List;
 
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.PathSegment;
+import javax.ws.rs.ext.ContextResolver;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.sap.core.odata.api.exception.ODataError;
 import com.sap.core.odata.api.processor.ODataProcessor;
-import com.sap.core.odata.core.rest.ODataLocator;
-import com.sap.core.odata.core.rest.ODataRootLocator;
-import com.sap.core.odata.ref.producer.ScenarioProducer;
+import com.sap.core.odata.api.rest.ODataLocator;
+import com.sap.core.odata.api.rest.ODataRootLocator;
+import com.sap.core.odata.ref.processor.ScenarioProcessor;
 
 @Path("/{segment1}/{segment2}")
 public class TestRootLocator extends ODataRootLocator {
 
   private static final Logger log = LoggerFactory.getLogger(TestRootLocator.class);
 
+  @Context
+  private ContextResolver<ODataProcessor> resolver;
+  
   @Path("/{odataPathSegments: .*}")
   public ODataLocator getSubLocator(
       @PathParam("segment1") String segment1,
@@ -34,13 +39,8 @@ public class TestRootLocator extends ODataRootLocator {
 
     ODataLocator subLocator = super.getSubLocator(odataPathSegments);
 
-    if (subLocator.getProcessor() instanceof ScenarioProducer) {
-      ScenarioProducer producer = (ScenarioProducer) subLocator.getProcessor();
-      producer.injectServiceResolutionPath(segment1, segment2);
-    } else {
-      ODataProcessor producer = subLocator.getProcessor();
-      throw new RuntimeException("unsupported producer: " + producer != null ? producer.getClass().getCanonicalName() : null);
-    }
+    ScenarioProcessor processor = (ScenarioProcessor) this.resolver.getContext(ScenarioProcessor.class);
+    processor.injectServiceResolutionPath(segment1, segment2);
 
     return subLocator;
   }

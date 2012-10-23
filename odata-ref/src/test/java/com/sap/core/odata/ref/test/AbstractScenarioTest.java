@@ -20,7 +20,7 @@ import org.odata4j.core.ODataConstants.Charsets;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.sap.core.odata.ref.producer.ScenarioProducer;
+import com.sap.core.odata.ref.processor.ScenarioProcessor;
 
 public abstract class AbstractScenarioTest {
 
@@ -46,7 +46,7 @@ public abstract class AbstractScenarioTest {
     return httpClient;
   }
 
-  public ScenarioProducer getScenarioProducer() {
+  public ScenarioProcessor getScenarioProducer() {
     return this.scenarioProducer;
   }
 
@@ -54,7 +54,7 @@ public abstract class AbstractScenarioTest {
   private URI endpoint = URI.create("http://localhost:19080/ext/");
   private Class<?> applicationClass = TestApplication.class;
   private HttpClient httpClient = new DefaultHttpClient();
-  private ScenarioProducer scenarioProducer = new ScenarioProducer();
+  private ScenarioProcessor scenarioProducer = new ScenarioProcessor();
 
   @Before
   public void before() throws Exception {
