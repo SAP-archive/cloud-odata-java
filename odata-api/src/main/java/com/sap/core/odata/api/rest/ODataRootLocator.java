@@ -44,14 +44,14 @@ public class ODataRootLocator {
   @Path("/{odataPathSegments: .*}")
   public ODataLocator getSubLocator(@PathParam("odataPathSegments") List<PathSegment> odataPathSegments) throws ODataError {
     ODataLocator odataLocator = RuntimeDelegate.getInstance().createODataLocator();
-    
+
     odataLocator.setProcessor(this.resolver.getContext(ODataProcessor.class));
     odataLocator.setPathSegments(odataPathSegments);
     odataLocator.setHttpHeaders(this.httpHeaders);
     odataLocator.setUriInfo(this.uriInfo);
-    
+
     odataLocator.beforRequest();
-    
+
     return odataLocator;
 
   }

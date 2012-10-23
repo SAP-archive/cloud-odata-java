@@ -24,14 +24,14 @@ public abstract class ODataApplication extends Application {
     Class<? extends ContextResolver<ODataProcessor>> resolver = this.getContextResolver();
     Class<?> locator = this.getRootResourceLocator();
     Class<?> mapper = this.getExceptionMapper();
-    
+
     if (resolver.getAnnotation(Provider.class) == null) {
-      throw new RuntimeException("missing @Provider annotation: "+ resolver.getCanonicalName());
+      throw new RuntimeException("missing @Provider annotation: " + resolver.getCanonicalName());
     }
     if (mapper.getAnnotation(Provider.class) == null) {
-      throw new RuntimeException("missing @Provider annotation: "+ mapper.getCanonicalName());
+      throw new RuntimeException("missing @Provider annotation: " + mapper.getCanonicalName());
     }
-    
+
     Set<Class<?>> classes = new HashSet<Class<?>>();
     classes.add(locator);
     classes.add(resolver);
@@ -55,7 +55,6 @@ public abstract class ODataApplication extends Application {
     return RuntimeDelegate.getInstance().getExceptionMapper();
   }
 
-  
   /**
    * Returns a default OData root locator or an optional custom locator.
    * <li>default locator: to handle /{odata path}
@@ -67,7 +66,6 @@ public abstract class ODataApplication extends Application {
     return ODataRootLocator.class;
   }
 
-  
   /**
    * 
    * @return context resolver that creates a custom ODataProcessor

@@ -24,14 +24,14 @@ public abstract class Context {
   public String getKey() {
     return key;
   }
-  
-  public Context addValues(Object ... values) {
+
+  public Context addValues(Object... values) {
     for (Object val : values) {
       this.values.add(val);
     }
     return this;
   }
-  
+
   public List<Object> getValues() {
     return Collections.unmodifiableList(values);
   }
