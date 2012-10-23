@@ -87,14 +87,16 @@ public class Dispatcher {
 
   private Response convertResponse(ODataResponse odataResponse) {
     ResponseBuilder responseBuilder = Response.noContent();
-    
-    responseBuilder = responseBuilder.status(odataResponse.getStatus());
-    responseBuilder = responseBuilder.entity(odataResponse.getEntity());
-    
-    for (String name : odataResponse.getHeaderNames()){
-      responseBuilder = responseBuilder.header(name, odataResponse.getHeader(name));
+
+    if (odataResponse != null) {
+      responseBuilder = responseBuilder.status(odataResponse.getStatus());
+      responseBuilder = responseBuilder.entity(odataResponse.getEntity());
+
+      for (String name : odataResponse.getHeaderNames()) {
+        responseBuilder = responseBuilder.header(name, odataResponse.getHeader(name));
+      }
     }
-    
+
     return responseBuilder.build();
   }
 

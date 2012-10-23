@@ -15,6 +15,7 @@ import com.sap.core.odata.api.processor.facet.EntityValueProperties;
 import com.sap.core.odata.api.processor.facet.FunctionImport;
 import com.sap.core.odata.api.processor.facet.Metadata;
 import com.sap.core.odata.api.processor.facet.ServiceDocument;
+import com.sap.core.odata.api.rest.ODataContext;
 import com.sap.core.odata.api.rest.ODataResponse;
 
 public abstract class ODataSingleProcessor
@@ -32,6 +33,18 @@ public abstract class ODataSingleProcessor
     FunctionImport,
     Batch
 {
+
+  private ODataContext context;
+  
+  @Override
+  public void setContext(ODataContext context) {
+    this.context = context;
+  }
+
+  @Override
+  public ODataContext getContext() {
+    return this.context;
+  }
 
   @Override
   public ODataResponse executeBatch() throws ODataError {
