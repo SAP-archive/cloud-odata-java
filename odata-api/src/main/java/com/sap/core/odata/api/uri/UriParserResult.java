@@ -9,9 +9,9 @@ import com.sap.core.odata.api.edm.EdmEntitySet;
 import com.sap.core.odata.api.edm.EdmFunctionImport;
 import com.sap.core.odata.api.edm.EdmProperty;
 import com.sap.core.odata.api.edm.EdmType;
-import com.sap.core.odata.api.uri.enums.Format;
-import com.sap.core.odata.api.uri.enums.InlineCount;
-import com.sap.core.odata.api.uri.enums.UriType;
+import com.sap.core.odata.api.enums.Format;
+import com.sap.core.odata.api.enums.InlineCount;
+import com.sap.core.odata.api.enums.UriType;
 
 public interface UriParserResult {
 

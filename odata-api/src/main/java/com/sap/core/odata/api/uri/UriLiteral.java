@@ -2,11 +2,9 @@ package com.sap.core.odata.api.uri;
 
 import com.sap.core.odata.api.edm.EdmSimpleType;
 
-public class UriLiteral {
+public final class UriLiteral {
   private EdmSimpleType type;
   private String literal;
-
-  public UriLiteral() {}
 
   public UriLiteral(final EdmSimpleType type, final String literal) {
     this.type = type;
