@@ -4,10 +4,13 @@ import com.sap.core.odata.api.edm.EdmException;
 import com.sap.core.odata.api.edm.EdmFacets;
 import com.sap.core.odata.api.edm.EdmLiteralKind;
 import com.sap.core.odata.api.edm.EdmSimpleType;
+import com.sap.core.odata.api.edm.EdmSimpleTypeFacade;
 import com.sap.core.odata.api.edm.EdmSimpleTypeFacade.EdmSimpleTypes;
 import com.sap.core.odata.api.edm.EdmTypeKind;
 
 public class EdmSimpleTypeBit implements EdmSimpleType {
+
+  private EdmSimpleTypes edmSimpleType = EdmSimpleTypes.BIT;
 
   @Override
   public boolean equals(Object obj) {
@@ -23,8 +26,7 @@ public class EdmSimpleTypeBit implements EdmSimpleType {
 
   @Override
   public String getNamespace() throws EdmException {
-    // TODO Auto-generated method stub
-    return null;
+    return EdmSimpleTypeFacade.systemNamespace;
   }
 
   @Override
@@ -34,8 +36,7 @@ public class EdmSimpleTypeBit implements EdmSimpleType {
 
   @Override
   public String getName() throws EdmException {
-    // TODO Auto-generated method stub
-    return null;
+    return this.getTypeRepresentation().getName();
   }
 
   @Override
@@ -81,7 +82,7 @@ public class EdmSimpleTypeBit implements EdmSimpleType {
 
   @Override
   public EdmSimpleTypes getTypeRepresentation() {
-    return EdmSimpleTypes.BIT;
+    return edmSimpleType;
   }
 
 }
