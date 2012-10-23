@@ -13,6 +13,7 @@ import com.sap.core.odata.api.processor.facet.EntityValueProperties;
 import com.sap.core.odata.api.processor.facet.FunctionImport;
 import com.sap.core.odata.api.processor.facet.Metadata;
 import com.sap.core.odata.api.processor.facet.ServiceDocument;
+import com.sap.core.odata.api.rest.ODataContext;
 
 public abstract interface ODataProcessor {
 
@@ -39,5 +40,9 @@ public abstract interface ODataProcessor {
   public FunctionImport getFunctionImportProcessor() throws ODataError;
 
   public Batch getBatchProcessor() throws ODataError;
+
+  public void setContext(ODataContext context);
+
+  public ODataContext getContext();
 
 }

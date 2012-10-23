@@ -1,5 +1,6 @@
 package com.sap.core.odata.core.fit.basic.test;
 
+import static org.mockito.Mockito.CALLS_REAL_METHODS;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -16,7 +17,7 @@ public class AbstractBasicTest extends AbstractFitTest {
   
   @Override
   protected ODataProcessor createProcessor() throws ODataError {
-    ODataProcessor processor = mock(ODataSingleProcessor.class);
+    ODataProcessor processor = mock(ODataSingleProcessor.class, CALLS_REAL_METHODS);
 
     EdmServiceMetadata edmsm = mock(EdmServiceMetadata.class);
     when(edmsm.getDataServiceVersion()).thenReturn("2.0");
