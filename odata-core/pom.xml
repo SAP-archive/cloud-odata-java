@@ -48,6 +48,11 @@
     	<artifactId>com.sap.core.odata4j.core</artifactId>
     	<version>${project.version}</version>
     </dependency>
+    <dependency>
+    	<groupId>com.sap.core.odata</groupId>
+    	<artifactId>com.sap.core.odata.testutils</artifactId>
+    	<version>${project.version}</version>
+    </dependency>
   </dependencies>
 
 </project>
