@@ -14,18 +14,7 @@
 	</parent>
 
 	<build>
-		<finalName>org.odata4j.ext.web</finalName>
-		<plugins>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-eclipse-plugin</artifactId>
-				<configuration>
-					<wtpversion>2.0</wtpversion>
-					<downloadSources>true</downloadSources>
-					<downloadJavadocs>true</downloadJavadocs>
-				</configuration>
-			</plugin>
-		</plugins>
+		<finalName>com.sap.core.odata.web</finalName>
 	</build>
 
 	<dependencies>
@@ -45,6 +34,7 @@
 			<groupId>com.sap.core.odata</groupId>
 			<artifactId>com.sap.core.odata.ref</artifactId>
 			<version>${project.version}</version>
+			<scope>runtime</scope>
 		</dependency>
 	</dependencies>
 
