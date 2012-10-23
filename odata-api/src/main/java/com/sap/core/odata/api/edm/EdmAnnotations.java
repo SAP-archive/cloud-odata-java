@@ -1,15 +1,19 @@
 package com.sap.core.odata.api.edm;
 
+import java.util.Collection;
+
 public interface EdmAnnotations {
 
-  //TODO
-  void getAnnotationElements();
+  Collection<EdmAnnotationElement> getAnnotationElements();
 
-  //TODO
-  void getAnnotationElement(String name, String namespaceorprefix);
+  //TODO return type to be discussed, see EdmAnnotationElement
+  String getAnnotationElement(String name, String namespace);
 
-  //TODO
-  void getAnnotationAttributes();
+  Collection<EdmAnnotationAttribute> getAnnotationAttributes();
 
-  String getAnnotationAttribute(String name, String namespace, String prefix);
+  String getAnnotationAttribute(String name, String namespace);
+  
+  //TODO do we need a generic data container like
+  //
+  //  Object getData(String name);
 }
