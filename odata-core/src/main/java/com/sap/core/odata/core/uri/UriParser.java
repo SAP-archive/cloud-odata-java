@@ -60,7 +60,7 @@ public class UriParser {
   /**
    * Parse the URI part after an OData service root,
    * already splitted into path segments and query parameters.
-   * @param pathSegments  the segments of the resource path, already unescaped
+   * @param pathSegments  the {@link PathSegment}s of the resource path, already unescaped
    * @param queryParameters  the query parameters, already unescaped
    * @return a {@link UriParserResult} instance containing the parsed information
    * @throws UriParserException
@@ -104,30 +104,26 @@ public class UriParser {
   }
 
   private void handleResourcePath() throws UriParserException, EdmException {
-
     UriParser.LOG.debug("parsing: " + pathSegments);
 
     if (pathSegments.isEmpty()) {
       uriResult.setUriType(UriType.URI0);
-      return;
-    }
+    } else {
 
-    currentPathSegment = pathSegments.remove(0).getPath();
+      currentPathSegment = pathSegments.remove(0).getPath();
 
-    if ("$metadata".equals(currentPathSegment))
-      if (this.pathSegments.isEmpty())
+      if ("$metadata".equals(currentPathSegment)) {
+        ensureLastSegment();
         uriResult.setUriType(UriType.URI8);
-      else
-        throw new UriParserException("$metadata not last path segment: " + this.pathSegments);
 
-    else if ("$batch".equals(currentPathSegment))
-      if (this.pathSegments.isEmpty())
+      } else if ("$batch".equals(currentPathSegment)) {
+        ensureLastSegment();
         uriResult.setUriType(UriType.URI9);
-      else
-        throw new UriParserException("$batch not last path segment: " + this.pathSegments);
 
-    else
-      handleNormalInitialSegment();
+      } else {
+        handleNormalInitialSegment();
+      }
+    }
   }
 
   private void handleNormalInitialSegment() throws UriParserException, EdmException {
@@ -162,12 +158,12 @@ public class UriParser {
   private void handleEntitySet(final EdmEntitySet entitySet, final String keyPredicate) throws UriParserException, EdmException {
     final EdmEntityType entityType = entitySet.getEntityType();
 
-    this.uriResult.setTargetType(entityType);
-    this.uriResult.setTargetEntitySet(entitySet);
+    uriResult.setTargetType(entityType);
+    uriResult.setTargetEntitySet(entitySet);
 
     if (keyPredicate == null) {
-      if (this.pathSegments.isEmpty()) {
-        this.uriResult.setUriType(UriType.URI1);
+      if (pathSegments.isEmpty()) {
+        uriResult.setUriType(UriType.URI1);
       } else {
         currentPathSegment = pathSegments.remove(0).getPath();
         checkCount();
@@ -177,9 +173,9 @@ public class UriParser {
           throw new UriParserException("Entity set instead of entity: " + currentPathSegment + ", " + this.pathSegments);
       }
     } else {
-      this.uriResult.setKeyPredicates(this.parseKey(keyPredicate, entityType));
-      if (this.pathSegments.isEmpty())
-        this.uriResult.setUriType(UriType.URI2);
+      uriResult.setKeyPredicates(parseKey(keyPredicate, entityType));
+      if (pathSegments.isEmpty())
+        uriResult.setUriType(UriType.URI2);
       else
         handleNavigationPathOptions();
     }
@@ -193,12 +189,10 @@ public class UriParser {
       uriResult.setUriType(UriType.URI16); // Count of multiple entities is handled elsewhere
 
     } else if ("$value".equals(currentPathSegment)) {
-      if (uriResult.getTargetEntitySet().getEntityType().hasStream())
-        if (this.pathSegments.isEmpty()) {
-          this.uriResult.setUriType(UriType.URI17);
-          this.uriResult.setValue(true);
-        } else {
-          throw new UriParserException("not last path segment: " + currentPathSegment + ", " + this.pathSegments);
+      if (uriResult.getTargetEntitySet().getEntityType().hasStream()) {
+        ensureLastSegment();
+        uriResult.setUriType(UriType.URI17);
+        uriResult.setValue(true);
         }
       else
         throw new UriParserException("Resource is no media resource");
@@ -316,19 +310,17 @@ public class UriParser {
       currentPathSegment = pathSegments.remove(0).getPath();
       switch (type.getKind()) {
       case SIMPLE:
-        if ("$value".equals(currentPathSegment))
-          if (this.pathSegments.isEmpty()) {
-            this.uriResult.setValue(true);
-            if (this.uriResult.getPropertyPath().size() == 1)
-              this.uriResult.setUriType(UriType.URI5);
+        if ("$value".equals(currentPathSegment)) {
+          ensureLastSegment();
+          uriResult.setValue(true);
+          if (uriResult.getPropertyPath().size() == 1)
+              uriResult.setUriType(UriType.URI5);
             else
-              this.uriResult.setUriType(UriType.URI4);
-          } else {
-            throw new UriParserException("$value is not the last segment");
-          }
-        else
+              uriResult.setUriType(UriType.URI4);
+        } else {
           throw new UriParserException("Invalid path segment: " + currentPathSegment + ", " + this.pathSegments);
-        this.uriResult.setTargetType(type);
+        }
+        uriResult.setTargetType(type);
         break;
 
       case COMPLEX:
@@ -342,6 +334,11 @@ public class UriParser {
     }
   }
 
+  private void ensureLastSegment() throws UriParserException {
+    if (!pathSegments.isEmpty())
+      throw new UriParserException(currentPathSegment + " is not the last path segment, " + pathSegments);
+  }
+
   private void checkCount() throws UriParserException {
     if ("$count".equals(currentPathSegment))
       if (pathSegments.isEmpty())
@@ -351,11 +348,11 @@ public class UriParser {
   }
 
   private ArrayList<KeyPredicate> parseKey(final String keyPredicate, final EdmEntityType entityType) throws UriParserException, EdmException {
+    final List<EdmProperty> keyProperties = entityType.getKeyProperties();
+    ArrayList<EdmProperty> parsedKeyProperties = new ArrayList<EdmProperty>();
     ArrayList<KeyPredicate> keyPredicates = new ArrayList<KeyPredicate>();
-    List<EdmProperty> keyProperties = entityType.getKeyProperties();
-    final boolean singleKey = keyProperties.size() == 1;
 
-    for (final String key : keyPredicate.split(",")) {
+    for (final String key : keyPredicate.split(",", -1)) {
 
       final Matcher matcher = NAMED_VALUE_PATTERN.matcher(key);
       if (!matcher.matches())
@@ -363,35 +360,34 @@ public class UriParser {
 
       String name = matcher.group(1);
       final String value = matcher.group(2);
-
       UriParser.LOG.debug("RegEx (" + keyPredicate + "): name=" + name + ", value=" + value);
 
       if (name == null)
-        if (singleKey)
+        if (keyProperties.size() == 1)
           name = keyProperties.get(0).getName();
         else
           throw new UriParserException("Missing name in key predicate: " + keyPredicate);
 
       EdmProperty keyProperty = null;
-      for (EdmProperty testKeyProperty : keyProperties)
+      for (final EdmProperty testKeyProperty : keyProperties)
         if (testKeyProperty.getName().equals(name)) {
           keyProperty = testKeyProperty;
           break;
         }
       if (keyProperty == null)
-        throw new UriParserException("Invalid key predicate: " + keyPredicate);
-
-      keyProperties.remove(keyProperty);
+        throw new UriParserException(name + " is not a key property");
+      if (parsedKeyProperties.contains(keyProperty))
+        throw new UriParserException("Key names must occur only once in key predicate: " + keyPredicate);
+      parsedKeyProperties.add(keyProperty);
 
       final UriLiteral uriLiteral = parseUriLiteral(value);
-
       if (!isCompatible(uriLiteral, (EdmSimpleType) keyProperty.getType()))
         throw new UriParserException("Literal " + value + " is not compatible to type of property " + keyProperty.getName());
 
       keyPredicates.add(new KeyPredicate(uriLiteral.getLiteral(), keyProperty));
     }
 
-    if (!keyProperties.isEmpty())
+    if (parsedKeyProperties.size() != keyProperties.size())
       throw new UriParserException("Invalid key predicate: " + keyPredicate);
 
     return keyPredicates;
@@ -515,7 +511,7 @@ public class UriParser {
     if (emptyParentheses != null)
       throw new UriParserException("Invalid segment");
 
-    this.uriResult.setTargetType(type);
+    uriResult.setTargetType(type);
     switch (type.getKind()) {
     case SIMPLE:
       uriResult.setUriType(isCollection ? UriType.URI13 : UriType.URI14);
@@ -530,17 +526,15 @@ public class UriParser {
       throw new UriParserException("Invalid return type of function import: " + currentPathSegment + ", " + pathSegments);
     }
 
-    if (!this.pathSegments.isEmpty())
-      if (this.uriResult.getUriType() == UriType.URI14) {
+    if (!pathSegments.isEmpty())
+      if (uriResult.getUriType() == UriType.URI14) {
         currentPathSegment = pathSegments.remove(0).getPath();
         if ("$value".equals(currentPathSegment))
           uriResult.setValue(true);
         else
           throw new UriParserException("Invalid segment: " + currentPathSegment);
       }
-
-    if (!pathSegments.isEmpty())
-      throw new UriParserException("Segment is not last segment: " + currentPathSegment + ", " + this.pathSegments);
+    ensureLastSegment();
   }
 
   private void distributeQueryParameters(final Map<String, String> queryParameters) throws UriParserException {
