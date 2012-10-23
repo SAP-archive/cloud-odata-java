@@ -11,12 +11,17 @@ import com.sap.core.odata.api.edm.EdmEntitySet;
 import com.sap.core.odata.api.edm.EdmFunctionImport;
 import com.sap.core.odata.api.edm.EdmProperty;
 import com.sap.core.odata.api.edm.EdmType;
+import com.sap.core.odata.api.uri.KeyPredicate;
+import com.sap.core.odata.api.uri.NavigationPropertySegment;
+import com.sap.core.odata.api.uri.NavigationSegment;
+import com.sap.core.odata.api.uri.SelectItem;
 import com.sap.core.odata.api.uri.UriLiteral;
-import com.sap.core.odata.core.uri.enums.Format;
-import com.sap.core.odata.core.uri.enums.InlineCount;
-import com.sap.core.odata.core.uri.enums.UriType;
+import com.sap.core.odata.api.uri.UriParserResult;
+import com.sap.core.odata.api.uri.enums.Format;
+import com.sap.core.odata.api.uri.enums.InlineCount;
+import com.sap.core.odata.api.uri.enums.UriType;
 
-public class UriParserResult {
+public class UriParserResultImpl implements UriParserResult {
 
   private UriType uriType;
 
@@ -49,6 +54,7 @@ public class UriParserResult {
     this.uriType = uriType;
   }
 
+  @Override
   public UriType getUriType() {
     return uriType;
   }
@@ -57,6 +63,7 @@ public class UriParserResult {
     this.entityContainer = entityContainer;
   }
 
+  @Override
   public EdmEntityContainer getEntityContainer() {
     return entityContainer;
   }
@@ -65,6 +72,7 @@ public class UriParserResult {
     this.entitySet = edmEntitySet;
   }
 
+  @Override
   public EdmEntitySet getEntitySet() {
     return entitySet;
   }
@@ -73,6 +81,7 @@ public class UriParserResult {
     this.targetEntitySet = targetEntitySet;
   }
 
+  @Override
   public EdmEntitySet getTargetEntitySet() {
     return targetEntitySet;
   }
@@ -81,6 +90,7 @@ public class UriParserResult {
     this.functionImport = functionImport;
   }
 
+  @Override
   public EdmFunctionImport getFunctionImport() {
     return functionImport;
   }
@@ -89,6 +99,7 @@ public class UriParserResult {
     this.targetType = targetType;
   }
 
+  @Override
   public EdmType getTargetType() {
     return targetType;
   }
@@ -97,6 +108,7 @@ public class UriParserResult {
     this.keyPredicates = keyPredicates;
   }
 
+  @Override
   public List<KeyPredicate> getKeyPredicates() {
     return keyPredicates;
   }
@@ -108,6 +120,7 @@ public class UriParserResult {
     navigationSegments.add(navigationSegment);
   }
 
+  @Override
   public List<NavigationSegment> getNavigationSegments() {
     return navigationSegments;
   }
@@ -119,6 +132,7 @@ public class UriParserResult {
     propertyPath.add(property);
   }
 
+  @Override
   public List<EdmProperty> getPropertyPath() {
     return propertyPath;
   }
@@ -127,6 +141,7 @@ public class UriParserResult {
     this.count = count;
   }
 
+  @Override
   public boolean isCount() {
     return count;
   }
@@ -135,6 +150,7 @@ public class UriParserResult {
     this.value = value;
   }
 
+  @Override
   public boolean isValue() {
     return value;
   }
@@ -143,6 +159,7 @@ public class UriParserResult {
     this.links = links;
   }
 
+  @Override
   public boolean isLinks() {
     return links;
   }
@@ -155,10 +172,12 @@ public class UriParserResult {
     this.customFormat = customFormat;
   }
 
+  @Override
   public Format getFormat() {
     return format;
   }
 
+  @Override
   public String getCustomFormat() {
     return customFormat;
   }
@@ -167,6 +186,7 @@ public class UriParserResult {
     this.filter = filter;
   }
 
+  @Override
   public String getFilter() {
     return filter;
   }
@@ -175,6 +195,7 @@ public class UriParserResult {
     this.inlineCount = inlineCount;
   }
 
+  @Override
   public InlineCount getInlineCount() {
     return inlineCount;
   }
@@ -183,6 +204,7 @@ public class UriParserResult {
     this.orderBy = orderBy;
   }
 
+  @Override
   public String getOrderBy() {
     return orderBy;
   }
@@ -191,6 +213,7 @@ public class UriParserResult {
     this.skipToken = skipToken;
   }
 
+  @Override
   public String getSkipToken() {
     return skipToken;
   }
@@ -199,6 +222,7 @@ public class UriParserResult {
     this.skip = skip;
   }
 
+  @Override
   public int getSkip() {
     return skip;
   }
@@ -207,6 +231,7 @@ public class UriParserResult {
     this.top = top;
   }
 
+  @Override
   public Integer getTop() {
     return top;
   }
@@ -215,6 +240,7 @@ public class UriParserResult {
     this.expand = expand;
   }
 
+  @Override
   public List<ArrayList<NavigationPropertySegment>> getExpand() {
     return expand;
   }
@@ -223,6 +249,7 @@ public class UriParserResult {
     this.select = select;
   }
 
+  @Override
   public List<SelectItem> getSelect() {
     return select;
   }
@@ -234,11 +261,12 @@ public class UriParserResult {
     functionImportParameters.put(name, value);
   }
 
+  @Override
   public Map<String, UriLiteral> getFunctionImportParameters() {
     return functionImportParameters;
   }
 
-
+  @Override
   public Map<String, String> getCustomQueryOptions() {
     return customQueryOptions;
   }

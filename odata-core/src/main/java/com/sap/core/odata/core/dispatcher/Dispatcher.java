@@ -11,9 +11,9 @@ import com.sap.core.odata.api.exception.ODataTechnicalException;
 import com.sap.core.odata.api.processor.ODataProcessor;
 import com.sap.core.odata.api.rest.ODataContext;
 import com.sap.core.odata.api.rest.ODataResponse;
+import com.sap.core.odata.api.uri.UriParserResult;
 import com.sap.core.odata.core.enums.ODataHttpMethod;
 import com.sap.core.odata.core.rest.ODataContextImpl;
-import com.sap.core.odata.core.uri.UriParserResult;
 
 public class Dispatcher {
 
