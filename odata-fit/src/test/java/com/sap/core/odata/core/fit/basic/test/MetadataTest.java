@@ -19,7 +19,7 @@ import org.junit.Test;
 import com.sap.core.odata.api.exception.ODataError;
 import com.sap.core.odata.api.processor.facet.Metadata;
 import com.sap.core.odata.api.rest.ODataResponse;
-import com.sap.core.odata.fit.StringStreamHelper;
+import com.sap.core.testutils.StringHelper;
 
 public class MetadataTest extends AbstractBasicTest {
   
@@ -27,7 +27,7 @@ public class MetadataTest extends AbstractBasicTest {
   @Ignore("requires core adaption to new EDM api")
   public void readMetadata() throws ClientProtocolException, IOException, ODataError {
     
-    Metadata metadata = this.getProducer().getMetadataProcessor();
+    Metadata metadata = this.getProcessor().getMetadataProcessor();
     when(metadata.readMetadata()).thenReturn(ODataResponse.status(200).entity("metadata").build());
     
     HttpGet get = new HttpGet(URI.create(this.getEndpoint().toString() + "$metadata"));
@@ -35,7 +35,7 @@ public class MetadataTest extends AbstractBasicTest {
     
     Header accept = response.getFirstHeader(HttpHeaders.CONTENT_TYPE);
 
-    String payload = StringStreamHelper.inputStreamToString(response.getEntity().getContent());
+    String payload = StringHelper.inputStreamToString(response.getEntity().getContent());
 
     assertEquals("metadata", payload);
     assertEquals(200, response.getStatusLine().getStatusCode());

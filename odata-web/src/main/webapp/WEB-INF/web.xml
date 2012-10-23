@@ -10,19 +10,19 @@
 		<welcome-file>index.jsp</welcome-file>
 	</welcome-file-list>
 
-<!-- 	<servlet> -->
-<!-- 		<servlet-name>odata</servlet-name> -->
-<!-- 		<servlet-class>org.apache.cxf.jaxrs.servlet.CXFNonSpringJaxrsServlet</servlet-class> -->
-<!-- 		<init-param> -->
-<!-- 			<param-name>javax.ws.rs.Application</param-name> -->
-<!-- 			<param-value>tbd</param-value> -->
-<!-- 		</init-param> -->
-<!-- 		<load-on-startup>1</load-on-startup> -->
-<!-- 	</servlet> -->
+	<servlet>
+		<servlet-name>referencescenario</servlet-name>
+		<servlet-class>org.apache.cxf.jaxrs.servlet.CXFNonSpringJaxrsServlet</servlet-class>
+		<init-param>
+			<param-name>javax.ws.rs.Application</param-name>
+			<param-value>com.sap.core.odata.ref.rest.ScenarioApplication</param-value>
+		</init-param>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
 
-<!-- 	<servlet-mapping> -->
-<!-- 		<servlet-name>odata</servlet-name> -->
-<!-- 		<url-pattern>/odata.svc/*</url-pattern> -->
-<!-- 	</servlet-mapping> -->
+	<servlet-mapping>
+		<servlet-name>referencescenario</servlet-name>
+		<url-pattern>/ref.svc/*</url-pattern>
+	</servlet-mapping>
 
 </web-app>

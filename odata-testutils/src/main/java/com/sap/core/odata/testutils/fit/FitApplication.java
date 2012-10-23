@@ -1,9 +1,8 @@
-package com.sap.core.odata.fit;
+package com.sap.core.odata.testutils.fit;
 
 import javax.ws.rs.ext.ContextResolver;
 
 import com.sap.core.odata.api.processor.ODataProcessor;
-import com.sap.core.odata.api.processor.ODataSingleProcessor;
 import com.sap.core.odata.api.rest.ODataApplication;
 
 

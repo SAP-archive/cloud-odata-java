@@ -31,8 +31,8 @@ import com.sap.core.odata.api.rest.ODataResponse;
 import com.sap.core.odata.api.edm.Edm;
 import com.sap.core.odata.api.edm.EdmEntityContainer;
 import com.sap.core.odata.api.edm.EdmEntitySet;
-import com.sap.core.odata.fit.HttpMerge;
-import com.sap.core.odata.fit.StringStreamHelper;
+import com.sap.core.testutils.HttpMerge;
+import com.sap.core.testutils.StringHelper;
 
 @Ignore
 public class BasicHttpTest extends AbstractBasicTest {
@@ -43,9 +43,9 @@ public class BasicHttpTest extends AbstractBasicTest {
     EdmEntitySet edmEntitySet = mock(EdmEntitySet.class);
     EdmEntityContainer edmEntityContainer = mock(EdmEntityContainer.class);
     when(edmEntityContainer.getEntitySet("entityset")).thenReturn(edmEntitySet);
-    Edm edm = this.getProducer().getMetadataProcessor().getEdm();
+    Edm edm = this.getProcessor().getMetadataProcessor().getEdm();
     when(edm.getDefaultEntityContainer()).thenReturn(edmEntityContainer);
-    EntitySet entitySet = this.getProducer().getEntitySetProcessor();
+    EntitySet entitySet = this.getProcessor().getEntitySetProcessor();
     when(entitySet.readEntitySet()).thenReturn(ODataResponse.status(200).entity("entityset").build());
   }
 
@@ -57,7 +57,7 @@ public class BasicHttpTest extends AbstractBasicTest {
     HttpResponse response = this.getHttpClient().execute(get);
     Header accept = response.getFirstHeader(HttpHeaders.CONTENT_TYPE);
 
-    String payload = StringStreamHelper.inputStreamToString(response.getEntity().getContent());
+    String payload = StringHelper.inputStreamToString(response.getEntity().getContent());
 
     assertEquals("entityset", payload);
     assertEquals(200, response.getStatusLine().getStatusCode());
@@ -112,7 +112,7 @@ public class BasicHttpTest extends AbstractBasicTest {
     HttpResponse response = this.getHttpClient().execute(method);
     Header accept = response.getFirstHeader(HttpHeaders.CONTENT_TYPE);
 
-    String payload = StringStreamHelper.inputStreamToString(response.getEntity().getContent());
+    String payload = StringHelper.inputStreamToString(response.getEntity().getContent());
 
     assertTrue(payload.contains(xmethod));
     assertEquals(200, response.getStatusLine().getStatusCode());
@@ -123,7 +123,7 @@ public class BasicHttpTest extends AbstractBasicTest {
     HttpResponse response = this.getHttpClient().execute(method);
     Header accept = response.getFirstHeader(HttpHeaders.CONTENT_TYPE);
 
-    String payload = StringStreamHelper.inputStreamToString(response.getEntity().getContent());
+    String payload = StringHelper.inputStreamToString(response.getEntity().getContent());
 
     assertTrue(payload.contains(method.getMethod()));
     assertEquals(200, response.getStatusLine().getStatusCode());

@@ -1,4 +1,4 @@
-package com.sap.core.odata.fit;
+package com.sap.core.testutils;
 
 import java.net.URI;
 

@@ -17,15 +17,15 @@ import com.sap.core.odata.core.uri.UriParserResult;
 
 public class Dispatcher {
 
-  private ODataProcessor producer;
+  private ODataProcessor processor;
   private ODataContext context;
 
   public void setContext(ODataContextImpl context) {
     this.context = context;
   }
 
-  public void setProducer(ODataProcessor producer) {
-    this.producer = producer;
+  public void setProcessor(ODataProcessor producer) {
+    this.processor = producer;
   }
 
   public Response dispatch(ODataHttpMethod method, UriParserResult uriParserResult) throws ODataError {
@@ -34,7 +34,7 @@ public class Dispatcher {
     case URI0: // service document
       switch (method) {
       case GET:
-        odataResponse = this.producer.getServiceDocumentProcessor().readServiceDocument();
+        odataResponse = this.processor.getServiceDocumentProcessor().readServiceDocument();
         break;
       default:
         throw new ODataMethodNotAllowedException(ODataMethodNotAllowedException.DISPATCH);
@@ -43,7 +43,7 @@ public class Dispatcher {
     case URI1: // entity set
       switch (method) {
       case GET:
-        odataResponse = this.producer.getEntitySetProcessor().readEntitySet();
+        odataResponse = this.processor.getEntitySetProcessor().readEntitySet();
         break;
       default:
         throw new MethodNotAllowedException("");
@@ -60,7 +60,7 @@ public class Dispatcher {
     case URI8: // $metadata
       switch (method) {
       case GET:
-        odataResponse = this.producer.getMetadataProcessor().readMetadata();
+        odataResponse = this.processor.getMetadataProcessor().readMetadata();
         break;
       default:
         throw new ODataMethodNotAllowedException(ODataMethodNotAllowedException.DISPATCH);

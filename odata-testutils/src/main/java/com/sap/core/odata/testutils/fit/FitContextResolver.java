@@ -1,4 +1,4 @@
-package com.sap.core.odata.fit;
+package com.sap.core.odata.testutils.fit;
 
 import javax.ws.rs.ext.ContextResolver;
 import javax.ws.rs.ext.Provider;
@@ -17,18 +17,15 @@ public class FitContextResolver implements ContextResolver<ODataProcessor> {
 
   @Override
   public ODataProcessor getContext(Class<?> type) {
-
     if (FitContextResolver.fitProcessor == null) {
-      /* faile earlier */
       throw new NullPointerException();
     }
 
-    FitContextResolver.log.debug("mockProducer class: " + FitContextResolver.fitProcessor.getClass().getCanonicalName());
-
+    FitContextResolver.log.debug("mockProcessor class: " + FitContextResolver.fitProcessor.getClass().getCanonicalName());
     return FitContextResolver.fitProcessor;
   }
 
-  public static void setProcessorInstance(ODataProcessor producer) {
-    FitContextResolver.fitProcessor = producer;
+  public static void setProcessorInstance(ODataProcessor processor) {
+    FitContextResolver.fitProcessor = processor;
   }
 }

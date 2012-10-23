@@ -48,11 +48,6 @@
     	<artifactId>com.sap.core.odata4j.core</artifactId>
     	<version>${project.version}</version>
     </dependency>
-    <dependency>
-      <groupId>javax.ws.rs</groupId>
-      <artifactId>jsr311-api</artifactId>
-      <version>${jsr311.version}</version>
-    </dependency>
   </dependencies>
 
 </project>
