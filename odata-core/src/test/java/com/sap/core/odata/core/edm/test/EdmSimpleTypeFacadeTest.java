@@ -15,7 +15,7 @@ import com.sap.core.odata.core.edm.simpletype.EdmBit;
 import com.sap.core.odata.core.edm.simpletype.EdmBoolean;
 import com.sap.core.odata.core.edm.simpletype.EdmByte;
 import com.sap.core.odata.core.edm.simpletype.EdmDateTime;
-import com.sap.core.odata.core.edm.simpletype.EdmTimeOffset;
+import com.sap.core.odata.core.edm.simpletype.EdmDateTimeOffset;
 import com.sap.core.odata.core.edm.simpletype.EdmDecimal;
 import com.sap.core.odata.core.edm.simpletype.EdmDouble;
 import com.sap.core.odata.core.edm.simpletype.EdmGuid;
@@ -111,11 +111,11 @@ public class EdmSimpleTypeFacadeTest {
   public void parseUriLiteralDateTimeOffset() throws UriParserException {
     EdmSimpleType dto = parse("datetimeoffset'2009-12-26T21%3A23%3A38Z'");
     assertNotNull(dto);
-    assertTrue(dto instanceof EdmTimeOffset);
+    assertTrue(dto instanceof EdmDateTimeOffset);
 
     dto = parse("datetimeoffset'2002-10-10T12%3A00%3A00-05%3A00'");
     assertNotNull(dto);
-    assertTrue(dto instanceof EdmTimeOffset);
+    assertTrue(dto instanceof EdmDateTimeOffset);
   }
 
   @Test
