@@ -2,7 +2,7 @@ package com.sap.core.odata.core.experimental.edm.adapter;
 
 import org.odata4j.edm.EdmDataServices;
 
-import com.sap.core.odata.core.edm.EdmServiceMetadata;
+import com.sap.core.odata.api.edm.EdmServiceMetadata;
 
 public class EdmServiceMetadataAdapter implements EdmServiceMetadata {
 

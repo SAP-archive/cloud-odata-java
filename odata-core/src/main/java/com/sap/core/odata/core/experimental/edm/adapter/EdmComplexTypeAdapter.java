@@ -3,9 +3,9 @@ package com.sap.core.odata.core.experimental.edm.adapter;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.sap.core.odata.core.edm.EdmComplexType;
-import com.sap.core.odata.core.edm.EdmProperty;
-import com.sap.core.odata.core.edm.EdmTypeKind;
+import com.sap.core.odata.api.edm.EdmComplexType;
+import com.sap.core.odata.api.edm.EdmProperty;
+import com.sap.core.odata.api.edm.EdmTypeKind;
 
 public class EdmComplexTypeAdapter extends EdmNamedAdapter implements EdmComplexType {
 

@@ -3,9 +3,9 @@ package com.sap.core.odata.core.experimental.edm.adapter;
 import org.odata4j.edm.EdmAssociationSetEnd;
 import org.odata4j.edm.EdmEntityContainer;
 
-import com.sap.core.odata.core.edm.EdmEntitySet;
+import com.sap.core.odata.api.edm.EdmEntitySet;
 
-public class EdmAssociationSetEndAdapter implements com.sap.core.odata.core.edm.EdmAssociationSetEnd {
+public class EdmAssociationSetEndAdapter implements com.sap.core.odata.api.edm.EdmAssociationSetEnd {
 
   private EdmAssociationSetEnd edmAssociationSetEnd;
   private EdmEntityContainer edmEntityContainer;

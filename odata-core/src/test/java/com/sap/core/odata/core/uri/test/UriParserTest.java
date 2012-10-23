@@ -22,26 +22,27 @@ import org.apache.log4j.xml.DOMConfigurator;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import com.sap.core.odata.core.edm.Edm;
-import com.sap.core.odata.core.edm.EdmComplexType;
-import com.sap.core.odata.core.edm.EdmEntityContainer;
-import com.sap.core.odata.core.edm.EdmEntitySet;
-import com.sap.core.odata.core.edm.EdmEntityType;
-import com.sap.core.odata.core.edm.EdmException;
-import com.sap.core.odata.core.edm.EdmFacets;
-import com.sap.core.odata.core.edm.EdmFunctionImport;
-import com.sap.core.odata.core.edm.EdmMultiplicity;
-import com.sap.core.odata.core.edm.EdmNavigationProperty;
-import com.sap.core.odata.core.edm.EdmParameter;
-import com.sap.core.odata.core.edm.EdmProperty;
-import com.sap.core.odata.core.edm.EdmServiceMetadata;
-import com.sap.core.odata.core.edm.EdmSimpleType;
-import com.sap.core.odata.core.edm.EdmType;
-import com.sap.core.odata.core.edm.EdmTypeKind;
-import com.sap.core.odata.core.edm.EdmTyped;
+import com.sap.core.odata.api.edm.Edm;
+import com.sap.core.odata.api.edm.EdmComplexType;
+import com.sap.core.odata.api.edm.EdmEntityContainer;
+import com.sap.core.odata.api.edm.EdmEntitySet;
+import com.sap.core.odata.api.edm.EdmEntityType;
+import com.sap.core.odata.api.edm.EdmException;
+import com.sap.core.odata.api.edm.EdmFacets;
+import com.sap.core.odata.api.edm.EdmFunctionImport;
+import com.sap.core.odata.api.edm.EdmMultiplicity;
+import com.sap.core.odata.api.edm.EdmNavigationProperty;
+import com.sap.core.odata.api.edm.EdmParameter;
+import com.sap.core.odata.api.edm.EdmProperty;
+import com.sap.core.odata.api.edm.EdmServiceMetadata;
+import com.sap.core.odata.api.edm.EdmSimpleTypeFacade;
+import com.sap.core.odata.api.edm.EdmType;
+import com.sap.core.odata.api.edm.EdmTypeKind;
+import com.sap.core.odata.api.edm.EdmTyped;
+import com.sap.core.odata.api.exception.ODataError;
+import com.sap.core.odata.api.uri.UriParserException;
 import com.sap.core.odata.core.uri.KeyPredicate;
 import com.sap.core.odata.core.uri.UriParser;
-import com.sap.core.odata.core.uri.UriParserException;
 import com.sap.core.odata.core.uri.UriParserResult;
 import com.sap.core.odata.core.uri.enums.Format;
 import com.sap.core.odata.core.uri.enums.InlineCount;
@@ -59,14 +60,16 @@ public class UriParserTest {
   public static void getEdm() throws EdmException {
     edm = createMockEdm();
   }
+  
+  private static EdmSimpleTypeFacade facade = new EdmSimpleTypeFacade();
 
   private static Edm createMockEdm() throws EdmException {
     EdmServiceMetadata serviceMetadata = mock(EdmServiceMetadata.class);
     when(serviceMetadata.getDataServiceVersion()).thenReturn("MockEdm");
 
     EdmEntityContainer defaultContainer = mock(EdmEntityContainer.class);
-    EdmEntitySet employeeEntitySet = createEntitySetMock(defaultContainer, "Employees", EdmSimpleType.STRING, "EmployeeId");
-    EdmEntitySet managerEntitySet = createEntitySetMock(defaultContainer, "Managers", EdmSimpleType.STRING, "EmployeeId");
+    EdmEntitySet employeeEntitySet = createEntitySetMock(defaultContainer, "Employees", facade.stringInstance(), "EmployeeId");
+    EdmEntitySet managerEntitySet = createEntitySetMock(defaultContainer, "Managers", facade.stringInstance(), "EmployeeId");
 
     EdmType navigationType = mock(EdmType.class);
     when(navigationType.getKind()).thenReturn(EdmTypeKind.NAVIGATION);
@@ -91,7 +94,7 @@ public class UriParserTest {
     when(employeeType.getProperty(matches(".+wrong|\\$links"))).thenThrow(new EdmException("Property not found"));
 
     EdmProperty employeeSimpleProperty = mock(EdmProperty.class);
-    when(employeeSimpleProperty.getType()).thenReturn(EdmSimpleType.STRING);
+    when(employeeSimpleProperty.getType()).thenReturn(facade.stringInstance());
     when(employeeSimpleProperty.getName()).thenReturn("EmployeeName");
     when(employeeType.getProperty("EmployeeName")).thenReturn(employeeSimpleProperty);
 
@@ -104,30 +107,30 @@ public class UriParserTest {
     when(employeeType.getProperty("Location")).thenReturn(locationComplexProperty);
 
     EdmProperty countryProperty = mock(EdmProperty.class);
-    when(countryProperty.getType()).thenReturn(EdmSimpleType.STRING);
+    when(countryProperty.getType()).thenReturn(facade.stringInstance());
     when(countryProperty.getName()).thenReturn("Country");
     when(locationComplexType.getProperty("Country")).thenReturn(countryProperty);
     when(locationComplexType.getProperty("somethingwrong")).thenThrow(new EdmException("Property not found"));
 
-    EdmEntitySet teamsEntitySet = createEntitySetMock(defaultContainer, "Teams", EdmSimpleType.STRING, "Id");
+    EdmEntitySet teamsEntitySet = createEntitySetMock(defaultContainer, "Teams", facade.stringInstance(), "Id");
     when(teamsEntitySet.getEntityType().getProperty("nt_Employees")).thenReturn(employeeProperty);
     when(teamsEntitySet.getRelatedEntitySet(employeeProperty)).thenReturn(employeeEntitySet);
 
-    createEntitySetMock(defaultContainer, "Decimals", EdmSimpleType.DECIMAL, "Id");
-    createEntitySetMock(defaultContainer, "Int16s", EdmSimpleType.INT16, "Id");
-    createEntitySetMock(defaultContainer, "Int32s", EdmSimpleType.INT32, "Id");
-    createEntitySetMock(defaultContainer, "Int64s", EdmSimpleType.INT64, "Id");
-    createEntitySetMock(defaultContainer, "Strings", EdmSimpleType.STRING, "Id");
-    createEntitySetMock(defaultContainer, "Singles", EdmSimpleType.SINGLE, "Id");
-    createEntitySetMock(defaultContainer, "Doubles", EdmSimpleType.DOUBLE, "Id");
-    createEntitySetMock(defaultContainer, "DateTimes", EdmSimpleType.DATETIME, "Id");
-    createEntitySetMock(defaultContainer, "DateTimeOffsets", EdmSimpleType.DATETIMEOFFSET, "Id");
-    createEntitySetMock(defaultContainer, "Booleans", EdmSimpleType.BOOLEAN, "Id");
-    createEntitySetMock(defaultContainer, "SBytes", EdmSimpleType.SBYTE, "Id");
-    createEntitySetMock(defaultContainer, "Binaries", EdmSimpleType.BINARY, "Id");
-    createEntitySetMock(defaultContainer, "Bytes", EdmSimpleType.BYTE, "Id");
-    createEntitySetMock(defaultContainer, "Guids", EdmSimpleType.GUID, "Id");
-    createEntitySetMock(defaultContainer, "Times", EdmSimpleType.TIME, "Id");
+    createEntitySetMock(defaultContainer, "Decimals", facade.decimalInstance(), "Id");
+    createEntitySetMock(defaultContainer, "Int16s", facade.int16Instance(), "Id");
+    createEntitySetMock(defaultContainer, "Int32s", facade.int32Instance(), "Id");
+    createEntitySetMock(defaultContainer, "Int64s", facade.int64Instance(), "Id");
+    createEntitySetMock(defaultContainer, "Strings", facade.stringInstance(), "Id");
+    createEntitySetMock(defaultContainer, "Singles", facade.singleInstance(), "Id");
+    createEntitySetMock(defaultContainer, "Doubles", facade.doubleInstance(), "Id");
+    createEntitySetMock(defaultContainer, "DateTimes", facade.dateTimeInstance(), "Id");
+    createEntitySetMock(defaultContainer, "DateTimeOffsets", facade.dateTimeOffsetInstance(), "Id");
+    createEntitySetMock(defaultContainer, "Booleans", facade.booleanInstance(), "Id");
+    createEntitySetMock(defaultContainer, "SBytes", facade.sByteInstance(), "Id");
+    createEntitySetMock(defaultContainer, "Binaries", facade.binaryInstance(), "Id");
+    createEntitySetMock(defaultContainer, "Bytes", facade.byteInstance(), "Id");
+    createEntitySetMock(defaultContainer, "Guids", facade.guidInstance(), "Id");
+    createEntitySetMock(defaultContainer, "Times", facade.timeInstance(), "Id");
 
     when(defaultContainer.getEntitySet(matches("some.+|.+Search|All.+|Max.+|Most.+|ManagerPhoto|Old.+"))).thenThrow(new EdmException("Entity set not found"));
 
@@ -136,18 +139,18 @@ public class UriParserTest {
     List<String> employeeSearchParameterNames = new ArrayList<String>();
     employeeSearchParameterNames.add("q");
     EdmParameter employeeSearchParameter = mock(EdmParameter.class);
-    when(employeeSearchParameter.getType()).thenReturn(EdmSimpleType.STRING);
+    when(employeeSearchParameter.getType()).thenReturn(facade.stringInstance());
     when(employeeSearchFunctionImport.getParameterNames()).thenReturn(employeeSearchParameterNames);
     when(employeeSearchFunctionImport.getParameter("q")).thenReturn(employeeSearchParameter);
     createFunctionImportMock(defaultContainer, "AllLocations", locationComplexType, EdmMultiplicity.MANY);
-    createFunctionImportMock(defaultContainer, "AllUsedRoomIds", EdmSimpleType.STRING, EdmMultiplicity.MANY);
-    createFunctionImportMock(defaultContainer, "MaximalAge", EdmSimpleType.INT16, EdmMultiplicity.ONE);
+    createFunctionImportMock(defaultContainer, "AllUsedRoomIds", facade.stringInstance(), EdmMultiplicity.MANY);
+    createFunctionImportMock(defaultContainer, "MaximalAge", facade.int16Instance(), EdmMultiplicity.ONE);
     createFunctionImportMock(defaultContainer, "MostCommonLocation", locationComplexType, EdmMultiplicity.ONE);
-    EdmFunctionImport managerPhotoFunctionImport = createFunctionImportMock(defaultContainer, "ManagerPhoto", EdmSimpleType.BINARY, EdmMultiplicity.ONE);
+    EdmFunctionImport managerPhotoFunctionImport = createFunctionImportMock(defaultContainer, "ManagerPhoto", facade.binaryInstance(), EdmMultiplicity.ONE);
     List<String> managerPhotoParameterNames = new ArrayList<String>();
     managerPhotoParameterNames.add("Id");
     EdmParameter managerPhotoParameter = mock(EdmParameter.class);
-    when(managerPhotoParameter.getType()).thenReturn(EdmSimpleType.STRING);
+    when(managerPhotoParameter.getType()).thenReturn(facade.stringInstance());
     EdmFacets managerPhotoParameterFacets = mock(EdmFacets.class);
     when(managerPhotoParameterFacets.isNullable()).thenReturn(false);
     when(managerPhotoParameter.getFacets()).thenReturn(managerPhotoParameterFacets);
@@ -161,10 +164,10 @@ public class UriParserTest {
     when(specificContainer.getName()).thenReturn("Container1");
 
     EdmProperty photoIdProperty = mock(EdmProperty.class);
-    when(photoIdProperty.getType()).thenReturn(EdmSimpleType.INT32);
+    when(photoIdProperty.getType()).thenReturn(facade.int32Instance());
     when(photoIdProperty.getName()).thenReturn("Id");
     EdmProperty photoTypeProperty = mock(EdmProperty.class);
-    when(photoTypeProperty.getType()).thenReturn(EdmSimpleType.STRING);
+    when(photoTypeProperty.getType()).thenReturn(facade.stringInstance());
     when(photoTypeProperty.getName()).thenReturn("Type");
     List<EdmProperty> photoKeyProperties = new ArrayList<EdmProperty>();
     photoKeyProperties.add(photoIdProperty);
@@ -226,6 +229,7 @@ public class UriParserTest {
     return functionImport;
   }
 
+
   /**
    * Parse the URI part after an OData service root, given as string.
    * Query parameters can be included.
@@ -234,8 +238,8 @@ public class UriParserTest {
    * @throws UriParserException
    * @throws EdmException
    */
-  private UriParserResult parse(final String uri) throws UriParserException, EdmException {
-
+  private UriParserResult parse(final String uri) throws ODataError {
+    facade = new EdmSimpleTypeFacade();
     final String[] path = uri.split("\\?", -1);
     if (path.length > 2)
       throw new UriParserException("Wrong URI Syntax");
@@ -281,7 +285,7 @@ public class UriParserTest {
     }
   }
 
-  private void parseWrongUri(final String uri) throws Exception {
+  private void parseWrongUri(final String uri) throws ODataError {
     try {
       parse(uri);
       fail("Expected UriParserException not thrown");
@@ -293,7 +297,7 @@ public class UriParserTest {
   }
 
   @Test
-  public void parseServiceDocument() throws Exception {
+  public void parseServiceDocument() throws ODataError {
     UriParserResult result = parse("/");
     assertEquals(UriType.URI0, result.getUriType());
 
@@ -302,39 +306,39 @@ public class UriParserTest {
   }
 
   @Test
-  public void parseMetadata() throws Exception {
+  public void parseMetadata() throws ODataError {
     UriParserResult result = parse("/$metadata");
     assertEquals(UriType.URI8, result.getUriType());
   }
 
   @Test
-  public void parseMetadataError() throws Exception {
+  public void parseMetadataError() throws ODataError {
     parseWrongUri("/$metadata/somethingwrong");
   }
 
   @Test
-  public void parseBatch() throws Exception {
+  public void parseBatch() throws ODataError {
     UriParserResult result = parse("/$batch");
     assertEquals(UriType.URI9, result.getUriType());
   }
 
   @Test
-  public void parseBatchError() throws Exception {
+  public void parseBatchError() throws ODataError {
     parseWrongUri("/$batch/somethingwrong");
   }
 
   @Test
-  public void parseSomethingEntitySet() throws Exception {
+  public void parseSomethingEntitySet() throws ODataError {
     parseWrongUri("/somethingwrong");
   }
 
   @Test
-  public void parseContainerWithoutEntitySet() throws Exception {
+  public void parseContainerWithoutEntitySet() throws ODataError {
     parseWrongUri("Container1.");
   }
 
   @Test
-  public void parseEmployeesEntitySet() throws Exception {
+  public void parseEmployeesEntitySet() throws ODataError {
     UriParserResult result = parse("/Employees");
     assertNull(result.getEntityContainer().getName());
     assertEquals("Employees", result.getTargetEntitySet().getName());
@@ -342,7 +346,7 @@ public class UriParserTest {
   }
 
   @Test
-  public void parseEmployeesEntitySetParenthesesCount() throws Exception {
+  public void parseEmployeesEntitySetParenthesesCount() throws ODataError {
     UriParserResult result = parse("/Employees()/$count");
     assertNull(result.getEntityContainer().getName());
     assertEquals("Employees", result.getTargetEntitySet().getName());
@@ -351,12 +355,12 @@ public class UriParserTest {
   }
 
   @Test
-  public void parseEmployeesEntitySetParenthesesCountNotLast() throws Exception {
+  public void parseEmployeesEntitySetParenthesesCountNotLast() throws ODataError {
     parseWrongUri("/Employees()/$count/somethingwrong");
   }
 
   @Test
-  public void parseEmployeesEntitySetParentheses() throws Exception {
+  public void parseEmployeesEntitySetParentheses() throws ODataError {
     UriParserResult result = parse("/Employees()");
     assertNull(result.getEntityContainer().getName());
     assertEquals("Employees", result.getTargetEntitySet().getName());
@@ -364,7 +368,7 @@ public class UriParserTest {
   }
 
   @Test
-  public void parseWrongEntities() throws Exception {
+  public void parseWrongEntities() throws ODataError {
     parseWrongUri("//");
     parseWrongUri("/Employ ees('1')");
     parseWrongUri("/Employees()/somethingwrong");
@@ -375,7 +379,7 @@ public class UriParserTest {
   }
 
   @Test
-  public void parseEmployeesEntityWithKey() throws Exception {
+  public void parseEmployeesEntityWithKey() throws ODataError {
     UriParserResult result = parse("/Employees('1')");
     assertNull(result.getEntityContainer().getName());
     assertEquals("Employees", result.getTargetEntitySet().getName());
@@ -387,7 +391,7 @@ public class UriParserTest {
   }
 
   @Test
-  public void parseEmployeesEntity() throws Exception {
+  public void parseEmployeesEntity() throws ODataError {
     UriParserResult result = parse("/Employees('1')");
     assertNull(result.getEntityContainer().getName());
     assertEquals("Employees", result.getTargetEntitySet().getName());
@@ -399,7 +403,7 @@ public class UriParserTest {
   }
 
   @Test
-  public void parseEmployeesEntityWithExplicitKey() throws Exception {
+  public void parseEmployeesEntityWithExplicitKey() throws ODataError {
     UriParserResult result = parse("/Employees(EmployeeId='1')");
     assertNull(result.getEntityContainer().getName());
     assertEquals("Employees", result.getTargetEntitySet().getName());
@@ -411,7 +415,7 @@ public class UriParserTest {
   }
 
   @Test
-  public void parseEmployeesEntityWithKeyValue() throws Exception {
+  public void parseEmployeesEntityWithKeyValue() throws ODataError {
     UriParserResult result = parse("/Employees('1')/$value");
     assertEquals("Employees", result.getTargetEntitySet().getName());
     assertTrue(result.getEntitySet().getEntityType().hasStream());
@@ -424,7 +428,7 @@ public class UriParserTest {
   }
 
   @Test
-  public void parseEmployeesEntityWithKeyCount() throws Exception {
+  public void parseEmployeesEntityWithKeyCount() throws ODataError {
     UriParserResult result = parse("/Employees('1')/$count");
     assertEquals("Employees", result.getTargetEntitySet().getName());
     assertEquals(UriType.URI16, result.getUriType());
@@ -436,7 +440,7 @@ public class UriParserTest {
   }
 
   @Test
-  public void parseEmployeesSimpleProperty() throws Exception {
+  public void parseEmployeesSimpleProperty() throws ODataError {
     UriParserResult result = parse("/Employees('1')/EmployeeName");
     assertNull(result.getEntityContainer().getName());
     assertEquals("Employees", result.getTargetEntitySet().getName());
@@ -445,7 +449,7 @@ public class UriParserTest {
   }
 
   @Test
-  public void parseEmployeesSimplePropertyValue() throws Exception {
+  public void parseEmployeesSimplePropertyValue() throws ODataError {
     UriParserResult result = parse("/Employees('1')/EmployeeName/$value");
     assertNull(result.getEntityContainer().getName());
     assertEquals("Employees", result.getTargetEntitySet().getName());
@@ -455,7 +459,7 @@ public class UriParserTest {
   }
 
   @Test
-  public void parseEmployeesComplexProperty() throws Exception {
+  public void parseEmployeesComplexProperty() throws ODataError {
     UriParserResult result = parse("/Employees('1')/Location");
     assertNull(result.getEntityContainer().getName());
     assertEquals("Employees", result.getTargetEntitySet().getName());
@@ -464,7 +468,7 @@ public class UriParserTest {
   }
 
   @Test
-  public void parseEmployeesComplexPropertyWithEntity() throws Exception {
+  public void parseEmployeesComplexPropertyWithEntity() throws ODataError {
     UriParserResult result = parse("/Employees('1')/Location/Country");
     assertNull(result.getEntityContainer().getName());
     assertEquals("Employees", result.getTargetEntitySet().getName());
@@ -474,7 +478,7 @@ public class UriParserTest {
   }
 
   @Test
-  public void parseEmployeesComplexPropertyWithEntityValue() throws Exception {
+  public void parseEmployeesComplexPropertyWithEntityValue() throws ODataError {
     UriParserResult result = parse("/Employees('1')/Location/Country/$value");
     assertNull(result.getEntityContainer().getName());
     assertEquals("Employees", result.getTargetEntitySet().getName());
@@ -485,7 +489,7 @@ public class UriParserTest {
   }
 
   @Test
-  public void simplePropertyWrong() throws Exception {
+  public void simplePropertyWrong() throws ODataError {
     parseWrongUri("/Employees('1')/EmployeeName(1)");
     parseWrongUri("/Employees('1')/EmployeeName()");
     parseWrongUri("/Employees('1')/EmployeeName/something");
@@ -493,46 +497,46 @@ public class UriParserTest {
   }
 
   @Test
-  public void complexPropertyWrong() throws Exception {
+  public void complexPropertyWrong() throws ODataError {
     parseWrongUri("/Employees('1')/Location(1)");
     parseWrongUri("/Employees('1')/Location/somethingwrong");
   }
 
   @Test
-  public void EmployeesNoProperty() throws Exception {
+  public void EmployeesNoProperty() throws ODataError {
     parseWrongUri("/Employees('1')/somethingwrong");
   }
 
   @Test
-  public void parseNavigationPropertyWithEntityResult() throws Exception {
+  public void parseNavigationPropertyWithEntityResult() throws ODataError {
     UriParserResult result = parse("/Employees('1')/ne_Manager");
     assertEquals("Managers", result.getTargetEntitySet().getName());
     assertEquals(UriType.URI6A, result.getUriType());
   }
 
   @Test
-  public void parseNavigationPropertyWithEntitySetResult() throws Exception {
+  public void parseNavigationPropertyWithEntitySetResult() throws ODataError {
     UriParserResult result = parse("/Managers('1')/nm_Employees");
     assertEquals("Employees", result.getTargetEntitySet().getName());
     assertEquals(UriType.URI6B, result.getUriType());
   }
 
   @Test
-  public void parseNavigationPropertyWithEntitySetResultParenthesis() throws Exception {
+  public void parseNavigationPropertyWithEntitySetResultParenthesis() throws ODataError {
     UriParserResult result = parse("/Managers('1')/nm_Employees()");
     assertEquals("Employees", result.getTargetEntitySet().getName());
     assertEquals(UriType.URI6B, result.getUriType());
   }
 
   @Test
-  public void parseNavigationPropertyWithEntityResultWithKey() throws Exception {
+  public void parseNavigationPropertyWithEntityResultWithKey() throws ODataError {
     UriParserResult result = parse("/Managers('1')/nm_Employees('1')");
     assertEquals("Employees", result.getTargetEntitySet().getName());
     assertEquals(UriType.URI6A, result.getUriType());
   }
 
   @Test
-  public void parseNavigationPropertyWithLinksOne() throws Exception {
+  public void parseNavigationPropertyWithLinksOne() throws ODataError {
     UriParserResult result = parse("/Employees('1')/$links/ne_Manager");
     assertEquals("Managers", result.getTargetEntitySet().getName());
     assertTrue(result.isLinks());
@@ -540,7 +544,7 @@ public class UriParserTest {
   }
 
   @Test
-  public void parseNavigationPropertyWithLinksMany() throws Exception {
+  public void parseNavigationPropertyWithLinksMany() throws ODataError {
     UriParserResult result = parse("/Managers('1')/$links/nm_Employees");
     assertEquals("Employees", result.getTargetEntitySet().getName());
     assertTrue(result.isLinks());
@@ -548,7 +552,7 @@ public class UriParserTest {
   }
 
   @Test
-  public void parseNavigationPropertyWithManagersCount() throws Exception {
+  public void parseNavigationPropertyWithManagersCount() throws ODataError {
     UriParserResult result = parse("/Employees('1')/ne_Manager/$count");
     assertEquals("Managers", result.getTargetEntitySet().getName());
     assertTrue(result.isCount());
@@ -556,7 +560,7 @@ public class UriParserTest {
   }
 
   @Test
-  public void parseNavigationPropertyWithEmployeesCount() throws Exception {
+  public void parseNavigationPropertyWithEmployeesCount() throws ODataError {
     UriParserResult result = parse("/Managers('1')/nm_Employees/$count");
     assertEquals("Employees", result.getTargetEntitySet().getName());
     assertTrue(result.isCount());
@@ -564,7 +568,7 @@ public class UriParserTest {
   }
 
   @Test
-  public void parseNavigationPropertyWithEmployeeCount() throws Exception {
+  public void parseNavigationPropertyWithEmployeeCount() throws ODataError {
     UriParserResult result = parse("Managers('1')/nm_Employees('1')/$count");
     assertEquals("Employees", result.getTargetEntitySet().getName());
     assertTrue(result.isCount());
@@ -572,7 +576,7 @@ public class UriParserTest {
   }
 
   @Test
-  public void parseNavigationPropertyWithLinksCountMany() throws Exception {
+  public void parseNavigationPropertyWithLinksCountMany() throws ODataError {
     UriParserResult result = parse("/Managers('1')/$links/nm_Employees/$count");
     assertEquals("Employees", result.getTargetEntitySet().getName());
     assertTrue(result.isLinks());
@@ -581,7 +585,7 @@ public class UriParserTest {
   }
 
   @Test
-  public void parseNavigationPropertyWithLinksCountOne() throws Exception {
+  public void parseNavigationPropertyWithLinksCountOne() throws ODataError {
     UriParserResult result = parse("/Employees('1')/$links/ne_Manager/$count");
     assertEquals("Managers", result.getTargetEntitySet().getName());
     assertTrue(result.isLinks());
@@ -596,7 +600,7 @@ public class UriParserTest {
   }
 
   @Test
-  public void navigationPropertyWrong() throws Exception {
+  public void navigationPropertyWrong() throws ODataError {
     parseWrongUri("Employees('1')//ne_Manager");
     parseWrongUri("Employees('1')/ne_Manager()");
     parseWrongUri("Employees('1')/ne_Manager('1')");
@@ -618,24 +622,24 @@ public class UriParserTest {
   }
 
   @Test
-  public void navigationPathWrongMatch() throws Exception {
+  public void navigationPathWrongMatch() throws ODataError {
     parseWrongUri("/Employees('1')/(somethingwrong(");
 
   }
 
   @Test
-  public void navigationSegmentWrongMatch() throws Exception {
+  public void navigationSegmentWrongMatch() throws ODataError {
     parseWrongUri("/Employees('1')/$links/(somethingwrong(");
 
   }
 
   @Test
-  public void parseTeamsEntityWithIntKeyValue() throws Exception {
+  public void parseTeamsEntityWithIntKeyValue() throws ODataError {
     parseWrongUri("/Teams(1)/$value");
   }
 
   @Test
-  public void parseWrongKey() throws Exception {
+  public void parseWrongKey() throws ODataError {
     parseWrongUri("Employees(,'1')");
     parseWrongUri("Employees('1',)");
     parseWrongUri("Employees(EmployeeName='1')");
@@ -649,7 +653,7 @@ public class UriParserTest {
   }
 
   @Test
-  public void parsePhotoEntityWithExplicitKeySet() throws Exception {
+  public void parsePhotoEntityWithExplicitKeySet() throws ODataError {
     UriParserResult result = parse("/Container2.Photos(Id=1,Type='abc')");
     assertEquals("Container2", result.getEntityContainer().getName());
     assertEquals("Photos", result.getTargetEntitySet().getName());
@@ -668,7 +672,7 @@ public class UriParserTest {
   }
 
   @Test
-  public void parseContainerEmployeesEntitySet() throws Exception {
+  public void parseContainerEmployeesEntitySet() throws ODataError {
     UriParserResult result = parse("/Container1.Employees");
     assertEquals("Container1", result.getEntityContainer().getName());
     assertEquals("Employees", result.getTargetEntitySet().getName());
@@ -676,7 +680,7 @@ public class UriParserTest {
   }
 
   @Test
-  public void parseContainerEmployeesEntitySetParenthese() throws Exception {
+  public void parseContainerEmployeesEntitySetParenthese() throws ODataError {
     UriParserResult result = parse("/Container1.Employees()");
     assertEquals("Container1", result.getEntityContainer().getName());
     assertEquals("Employees", result.getTargetEntitySet().getName());
@@ -684,7 +688,7 @@ public class UriParserTest {
   }
 
   @Test
-  public void parseContainerEmployeesEntityWithKey() throws Exception {
+  public void parseContainerEmployeesEntityWithKey() throws ODataError {
     UriParserResult result = parse("/Container1.Employees('1')");
     assertEquals("Container1", result.getEntityContainer().getName());
     assertEquals("Employees", result.getTargetEntitySet().getName());
@@ -696,12 +700,12 @@ public class UriParserTest {
   }
 
   @Test
-  public void parseNonexistentContainer() throws Exception {
+  public void parseNonexistentContainer() throws ODataError {
     parseWrongUri("/somethingwrong.Employees()");
   }
 
   @Test
-  public void parseInvalidSegment() throws Exception {
+  public void parseInvalidSegment() throws ODataError {
     parseWrongUri("/.somethingwrong");
   }
 
@@ -712,12 +716,12 @@ public class UriParserTest {
    * @param uri
    *          the URI to be parsed as string; it must refer to an entity with one key property
    * @param type
-   *          the expected {@link EdmSimpleType} of the key property
+   *          the expected {@link } of the key property
    * @param expectedLiteral
    *          the expected literal value of the key
    * @throws UriParserException
    */
-  private void parseOneKey(final String uri, final EdmType type, final String expectedLiteral) throws Exception {
+  private void parseOneKey(final String uri, final EdmType type, final String expectedLiteral) throws ODataError {
     final UriParserResult result = parse(uri);
     final KeyPredicate keyPredicate = result.getKeyPredicates().get(0);
 
@@ -725,130 +729,130 @@ public class UriParserTest {
     assertEquals(expectedLiteral, keyPredicate.getLiteral());
   }
 
-  @Test
-  public void parseDecimalKey() throws Exception {
-    parseOneKey("/Decimals(4.5m)", EdmSimpleType.DECIMAL, "4.5");
-    parseOneKey("/Decimals(4.5M)", EdmSimpleType.DECIMAL, "4.5");
-    parseOneKey("/Decimals(1)", EdmSimpleType.DECIMAL, "1");
-    parseOneKey("/Decimals(255)", EdmSimpleType.DECIMAL, "255");
-    parseOneKey("/Decimals(-32768)", EdmSimpleType.DECIMAL, "-32768");
-    parseOneKey("/Decimals(32768)", EdmSimpleType.DECIMAL, "32768");
-    parseOneKey("/Decimals(3000000)", EdmSimpleType.DECIMAL, "3000000");
-    parseOneKey("/Decimals(4.5d)", EdmSimpleType.DECIMAL, "4.5");
-    parseOneKey("/Decimals(4.2E9F)", EdmSimpleType.DECIMAL, "4.2E9");
-    parseOneKey("/Decimals(1234567890L)", EdmSimpleType.DECIMAL, "1234567890");
+  public void parseDecimalKey() throws ODataError {
+    parseOneKey("/Decimals(4.5m)", facade.decimalInstance(), "4.5");
+    parseOneKey("/Decimals(4.5M)", facade.decimalInstance(), "4.5");
+    parseOneKey("/Decimals(1)", facade.decimalInstance(), "1");
+    parseOneKey("/Decimals(255)", facade.decimalInstance(), "255");
+    parseOneKey("/Decimals(-32768)", facade.decimalInstance(), "-32768");
+    parseOneKey("/Decimals(32768)", facade.decimalInstance(), "32768");
+    parseOneKey("/Decimals(3000000)", facade.decimalInstance(), "3000000");
+    parseOneKey("/Decimals(4.5d)", facade.decimalInstance(), "4.5");
+    parseOneKey("/Decimals(4.2E9F)", facade.decimalInstance(), "4.2E9");
+    parseOneKey("/Decimals(1234567890L)", facade.decimalInstance(), "1234567890");
   }
 
   @Test
-  public void parseInt16Key() throws Exception {
-    parseOneKey("/Int16s(16)", EdmSimpleType.INT16, "16");
-    parseOneKey("/Int16s(-16)", EdmSimpleType.INT16, "-16");
-    parseOneKey("/Int16s(255)", EdmSimpleType.INT16, "255");
-    parseOneKey("/Int16s(-32768)", EdmSimpleType.INT16, "-32768");
+  public void parseInt16Key() throws ODataError {
+    parseOneKey("/Int16s(16)", facade.int16Instance(), "16");
+    parseOneKey("/Int16s(-16)", facade.int16Instance(), "-16");
+    parseOneKey("/Int16s(255)", facade.int16Instance(), "255");
+    parseOneKey("/Int16s(-32768)", facade.int16Instance(), "-32768");
+
   }
 
   @Test
-  public void parseInt32Key() throws Exception {
-    parseOneKey("/Int32s(32)", EdmSimpleType.INT32, "32");
-    parseOneKey("/Int32s(-127)", EdmSimpleType.INT32, "-127");
-    parseOneKey("/Int32s(255)", EdmSimpleType.INT32, "255");
-    parseOneKey("/Int32s(32767)", EdmSimpleType.INT32, "32767");
-    parseOneKey("/Int32s(-32769)", EdmSimpleType.INT32, "-32769");
+  public void parseInt32Key() throws ODataError {
+    parseOneKey("/Int32s(32)", facade.int32Instance(), "32");
+    parseOneKey("/Int32s(-127)", facade.int32Instance(), "-127");
+    parseOneKey("/Int32s(255)", facade.int32Instance(), "255");
+    parseOneKey("/Int32s(32767)", facade.int32Instance(), "32767");
+    parseOneKey("/Int32s(-32769)", facade.int32Instance(), "-32769");
   }
 
   @Test
-  public void parseInt64Key() throws Exception {
-    parseOneKey("/Int64s(64)", EdmSimpleType.INT64, "64");
-    parseOneKey("/Int64s(255)", EdmSimpleType.INT64, "255");
-    parseOneKey("/Int64s(1000)", EdmSimpleType.INT64, "1000");
-    parseOneKey("/Int64s(100000)", EdmSimpleType.INT64, "100000");
-    parseOneKey("/Int64s(-64L)", EdmSimpleType.INT64, "-64");
-    parseOneKey("/Int64s(" + Long.MAX_VALUE + "L)", EdmSimpleType.INT64, "" + Long.MAX_VALUE);
-    parseOneKey("/Int64s(" + Long.MIN_VALUE + "l)", EdmSimpleType.INT64, "" + Long.MIN_VALUE);
+  public void parseInt64Key() throws ODataError {
+    parseOneKey("/Int64s(64)", facade.int64Instance(), "64");
+    parseOneKey("/Int64s(255)", facade.int64Instance(), "255");
+    parseOneKey("/Int64s(1000)", facade.int64Instance(), "1000");
+    parseOneKey("/Int64s(100000)", facade.int64Instance(), "100000");
+    parseOneKey("/Int64s(-64L)", facade.int64Instance(), "-64");
+    parseOneKey("/Int64s(" + Long.MAX_VALUE + "L)", facade.int64Instance(), "" + Long.MAX_VALUE);
+    parseOneKey("/Int64s(" + Long.MIN_VALUE + "l)", facade.int64Instance(), "" + Long.MIN_VALUE);
   }
 
   @Test
-  public void parseStringKey() throws Exception {
-    parseOneKey("/Strings('abc')", EdmSimpleType.STRING, "abc");
-    parseOneKey("/Strings('abc%20xyz')", EdmSimpleType.STRING, "abc xyz");
-    parseOneKey("/Strings('true')", EdmSimpleType.STRING, "true");
-    parseOneKey("/Strings('')", EdmSimpleType.STRING, "");
+  public void parseStringKey() throws ODataError {
+    parseOneKey("/Strings('abc')", facade.stringInstance(), "abc");
+    parseOneKey("/Strings('abc%20xyz')", facade.stringInstance(), "abc xyz");
+    parseOneKey("/Strings('true')", facade.stringInstance(), "true");
+    parseOneKey("/Strings('')", facade.stringInstance(), "");
   }
 
   @Test
-  public void parseSingleKey() throws Exception {
-    parseOneKey("/Singles(45)", EdmSimpleType.SINGLE, "45");
-    parseOneKey("/Singles(255)", EdmSimpleType.SINGLE, "255");
-    parseOneKey("/Singles(-32768)", EdmSimpleType.SINGLE, "-32768");
-    parseOneKey("/Singles(32768)", EdmSimpleType.SINGLE, "32768");
-    parseOneKey("/Singles(1L)", EdmSimpleType.SINGLE, "1");
-    parseOneKey("/Singles(4.5f)", EdmSimpleType.SINGLE, "4.5");
-    parseOneKey("/Singles(4.5F)", EdmSimpleType.SINGLE, "4.5");
-    parseOneKey("/Singles(4.5e9f)", EdmSimpleType.SINGLE, "4.5e9");
+  public void parseSingleKey() throws ODataError {
+    parseOneKey("/Singles(45)", facade.singleInstance(), "45");
+    parseOneKey("/Singles(255)", facade.singleInstance(), "255");
+    parseOneKey("/Singles(-32768)", facade.singleInstance(), "-32768");
+    parseOneKey("/Singles(32768)", facade.singleInstance(), "32768");
+    parseOneKey("/Singles(1L)", facade.singleInstance(), "1");
+    parseOneKey("/Singles(4.5f)", facade.singleInstance(), "4.5");
+    parseOneKey("/Singles(4.5F)", facade.singleInstance(), "4.5");
+    parseOneKey("/Singles(4.5e9f)", facade.singleInstance(), "4.5e9");
   }
 
   @Test
-  public void parseDoubleKey() throws Exception {
-    parseOneKey("/Doubles(45)", EdmSimpleType.DOUBLE, "45");
-    parseOneKey("/Doubles(255)", EdmSimpleType.DOUBLE, "255");
-    parseOneKey("/Doubles(-32768)", EdmSimpleType.DOUBLE, "-32768");
-    parseOneKey("/Doubles(32768)", EdmSimpleType.DOUBLE, "32768");
-    parseOneKey("/Doubles(1l)", EdmSimpleType.DOUBLE, "1");
-    parseOneKey("/Doubles(4.5d)", EdmSimpleType.DOUBLE, "4.5");
-    parseOneKey("/Doubles(4.5D)", EdmSimpleType.DOUBLE, "4.5");
-    parseOneKey("/Doubles(4.5e21f)", EdmSimpleType.DOUBLE, "4.5e21");
+  public void parseDoubleKey() throws ODataError {
+    parseOneKey("/Doubles(45)", facade.doubleInstance(), "45");
+    parseOneKey("/Doubles(255)", facade.doubleInstance(), "255");
+    parseOneKey("/Doubles(-32768)", facade.doubleInstance(), "-32768");
+    parseOneKey("/Doubles(32768)", facade.doubleInstance(), "32768");
+    parseOneKey("/Doubles(1l)", facade.doubleInstance(), "1");
+    parseOneKey("/Doubles(4.5d)", facade.doubleInstance(), "4.5");
+    parseOneKey("/Doubles(4.5D)", facade.doubleInstance(), "4.5");
+    parseOneKey("/Doubles(4.5e21f)", facade.doubleInstance(), "4.5e21");
   }
 
   @Test
-  public void parseByteKey() throws Exception {
-    parseOneKey("/Bytes(255)", EdmSimpleType.BYTE, "255");
-    parseOneKey("Bytes(123)", EdmSimpleType.BYTE, "123");
+  public void parseByteKey() throws ODataError {
+    parseOneKey("/Bytes(255)", facade.byteInstance(), "255");
+    parseOneKey("Bytes(123)", facade.byteInstance(), "123");
   }
 
   @Test
-  public void parseGuidKey() throws Exception {
-    parseOneKey("/Guids(guid'1225c695-cfb8-4ebb-aaaa-80da344efa6a')", EdmSimpleType.GUID, "1225c695-cfb8-4ebb-aaaa-80da344efa6a");
+  public void parseGuidKey() throws ODataError {
+    parseOneKey("/Guids(guid'1225c695-cfb8-4ebb-aaaa-80da344efa6a')", facade.guidInstance(), "1225c695-cfb8-4ebb-aaaa-80da344efa6a");
   }
 
   @Test
-  public void parseTimeKey() throws Exception {
-    parseOneKey("/Times(time'P120D')", EdmSimpleType.TIME, "P120D");
+  public void parseTimeKey() throws ODataError {
+    parseOneKey("/Times(time'P120D')", facade.timeInstance(), "P120D");
   }
 
   @Test
-  public void parseDatetimeKey() throws Exception {
-    parseOneKey("/DateTimes(datetime'2009-12-26T21%3A23%3A38')", EdmSimpleType.DATETIME, "2009-12-26T21:23:38");
-    parseOneKey("/DateTimes(datetime'2009-12-26T21%3A23%3A38Z')", EdmSimpleType.DATETIME, "2009-12-26T21:23:38Z");
+  public void parseDatetimeKey() throws ODataError {
+    parseOneKey("/DateTimes(datetime'2009-12-26T21%3A23%3A38')", facade.dateTimeInstance(), "2009-12-26T21:23:38");
+    parseOneKey("/DateTimes(datetime'2009-12-26T21%3A23%3A38Z')", facade.dateTimeInstance(), "2009-12-26T21:23:38Z");
   }
 
   @Test
-  public void parseDatetimeOffsetKey() throws Exception {
-    parseOneKey("/DateTimeOffsets(datetimeoffset'2009-12-26T21%3A23%3A38Z')", EdmSimpleType.DATETIMEOFFSET, "2009-12-26T21:23:38Z");
-    parseOneKey("/DateTimeOffsets(datetimeoffset'2002-10-10T12%3A00%3A00-05%3A00')", EdmSimpleType.DATETIMEOFFSET, "2002-10-10T12:00:00-05:00");
+  public void parseDatetimeOffsetKey() throws ODataError {
+    parseOneKey("/DateTimeOffsets(datetimeoffset'2009-12-26T21%3A23%3A38Z')", facade.dateTimeOffsetInstance(), "2009-12-26T21:23:38Z");
+    parseOneKey("/DateTimeOffsets(datetimeoffset'2002-10-10T12%3A00%3A00-05%3A00')", facade.dateTimeOffsetInstance(), "2002-10-10T12:00:00-05:00");
   }
 
   @Test
-  public void parseBooleanKey() throws Exception {
-    parseOneKey("/Booleans(true)", EdmSimpleType.BOOLEAN, "true");
-    parseOneKey("/Booleans(false)", EdmSimpleType.BOOLEAN, "false");
-    parseOneKey("/Booleans(1)", EdmSimpleType.BOOLEAN, "1");
-    parseOneKey("/Booleans(0)", EdmSimpleType.BOOLEAN, "0");
+  public void parseBooleanKey() throws ODataError {
+    parseOneKey("/Booleans(true)", facade.booleanInstance(), "true");
+    parseOneKey("/Booleans(false)", facade.booleanInstance(), "false");
+    parseOneKey("/Booleans(1)", facade.booleanInstance(), "1");
+    parseOneKey("/Booleans(0)", facade.booleanInstance(), "0");
   }
 
   @Test
-  public void parseSByteKey() throws Exception {
-    parseOneKey("/SBytes(-123)", EdmSimpleType.SBYTE, "-123");
-    parseOneKey("/SBytes(12)", EdmSimpleType.SBYTE, "12");
+  public void parseSByteKey() throws ODataError {
+    parseOneKey("/SBytes(-123)", facade.sByteInstance(), "-123");
+    parseOneKey("/SBytes(12)", facade.sByteInstance(), "12");
   }
 
   @Test
-  public void parseBinaryKey() throws Exception {
-    parseOneKey("/Binaries(X'Fa12aAA1')", EdmSimpleType.BINARY, "+hKqoQ==\r\n");
-    parseOneKey("/Binaries(binary'FA12AAA1')", EdmSimpleType.BINARY, "+hKqoQ==\r\n");
+  public void parseBinaryKey() throws ODataError {
+    parseOneKey("/Binaries(X'Fa12aAA1')", facade.binaryInstance(), "+hKqoQ==");
+    parseOneKey("/Binaries(binary'FA12AAA1')", facade.binaryInstance(), "+hKqoQ==");
   }
 
   @Test
-  public void parseKeyWithWrongContent() throws Exception {
+  public void parseKeyWithWrongContent() throws ODataError {
     parseWrongUri("/Binaries(binary'abcde')");
     parseWrongUri("Strings(')");
     parseWrongUri("Strings('a)");
@@ -858,7 +862,7 @@ public class UriParserTest {
   }
 
   @Test
-  public void parseIncompatibleKeys() throws Exception {
+  public void parseIncompatibleKeys() throws ODataError {
     parseWrongUri("Binaries(1D)");
     parseWrongUri("Booleans('0')");
     parseWrongUri("Booleans('1')");
@@ -880,7 +884,7 @@ public class UriParserTest {
   }
 
   @Test
-  public void parseFunctionImports() throws Exception {
+  public void parseFunctionImports() throws ODataError {
     UriParserResult result = parse("EmployeeSearch");
     assertEquals("EmployeeSearch", result.getFunctionImport().getName());
     assertEquals(EdmTypeKind.ENTITY, result.getTargetType().getKind());
@@ -917,16 +921,16 @@ public class UriParserTest {
   }
 
   @Test
-  public void parseFunctionImportParameters() throws Exception {
+  public void parseFunctionImportParameters() throws ODataError {
     UriParserResult result = parse("EmployeeSearch?q='Hugo'&notaparameter=2");
     assertEquals("EmployeeSearch", result.getFunctionImport().getName());
     assertEquals(1, result.getFunctionImportParameters().size());
-    assertEquals(EdmSimpleType.STRING, result.getFunctionImportParameters().get("q").getType());
+    assertEquals(facade.stringInstance(), result.getFunctionImportParameters().get("q").getType());
     assertEquals("Hugo", result.getFunctionImportParameters().get("q").getLiteral());
   }
 
   @Test
-  public void parseWrongFunctionImports() throws Exception {
+  public void parseWrongFunctionImports() throws ODataError {
     parseWrongUri("EmployeeSearch?q=42");
     parseWrongUri("AllLocations/$value");
     parseWrongUri("MaximalAge()");
@@ -936,7 +940,7 @@ public class UriParserTest {
   }
 
   @Test
-  public void parseSystemQueryOptions() throws Exception {
+  public void parseSystemQueryOptions() throws ODataError {
     UriParserResult result = parse("Employees?$format=json&$inlinecount=allpages&$skiptoken=abc&$skip=2&$top=1");
     assertEquals("Employees", result.getTargetEntitySet().getName());
     assertEquals(UriType.URI1, result.getUriType());
@@ -995,7 +999,7 @@ public class UriParserTest {
   }
 
   @Test
-  public void parseWrongSystemQueryOptions() throws Exception {
+  public void parseWrongSystemQueryOptions() throws ODataError {
     parseWrongUri("Employees??");
     parseWrongUri("Employees?$inlinecount=no");
     parseWrongUri("Employees?&$skiptoken==");
@@ -1011,7 +1015,7 @@ public class UriParserTest {
   }
 
   @Test
-  public void parseWrongSystemQueryOptionInitialValues() throws Exception {
+  public void parseWrongSystemQueryOptionInitialValues() throws ODataError {
     parseWrongUri("Employees?$expand=");
     parseWrongUri("Employees?$filter=");
     parseWrongUri("Employees?$orderby=");
@@ -1034,7 +1038,7 @@ public class UriParserTest {
   }
 
   @Test
-  public void parseCompatibleSystemQueryOptions() throws Exception {
+  public void parseCompatibleSystemQueryOptions() throws ODataError {
     UriParserResult result = parse("Employees?$format=json&$inlinecount=allpages&$skiptoken=abc&$skip=2&$top=1");
     assertEquals("Employees", result.getEntitySet().getName());
     assertEquals(UriType.URI1, result.getUriType());
@@ -1046,7 +1050,7 @@ public class UriParserTest {
   }
 
   @Test
-  public void parseInCompatibleSystemQueryOptions() throws Exception {
+  public void parseInCompatibleSystemQueryOptions() throws ODataError {
     parseWrongUri("$metadata?$top=1");
     parseWrongUri("Employees('1')?$format=json&$inlinecount=allpages&$skiptoken=abc&$skip=2&$top=1");
     parseWrongUri("/Employees('1')/Location/Country/$value?$format=json");
@@ -1056,7 +1060,7 @@ public class UriParserTest {
   }
 
   @Test
-  public void parsePossibleQueryOptions() throws Exception {
+  public void parsePossibleQueryOptions() throws ODataError {
     UriParserResult result = parse("EmployeeSearch?q='a'&sap-client=100&sap-ds-debug=true");
     assertEquals(2, result.getCustomQueryOptions().size());
     assertEquals("100", result.getCustomQueryOptions().get("sap-client"));
@@ -1064,7 +1068,7 @@ public class UriParserTest {
   }
 
   @Test
-  public void parseSystemQueryOptionSelectSingle() throws Exception {
+  public void parseSystemQueryOptionSelectSingle() throws ODataError {
     UriParserResult result = parse("Employees?$select=EmployeeName");
     assertEquals("Employees", result.getTargetEntitySet().getName());
     assertEquals(UriType.URI1, result.getUriType());
@@ -1097,7 +1101,7 @@ public class UriParserTest {
   }
 
   @Test
-  public void parseSystemQueryOptionSelectMultiple() throws Exception {
+  public void parseSystemQueryOptionSelectMultiple() throws ODataError {
     UriParserResult result = parse("Employees?$select=EmployeeName,Location");
     assertEquals("Employees", result.getTargetEntitySet().getName());
     assertEquals(UriType.URI1, result.getUriType());
@@ -1126,7 +1130,7 @@ public class UriParserTest {
   }
 
   @Test
-  public void parseSystemQueryOptionSelectNegative() throws Exception {
+  public void parseSystemQueryOptionSelectNegative() throws ODataError {
     parseWrongUri("Employees?$select=somethingwrong");
     parseWrongUri("Employees?$select=*/Somethingwrong");
     parseWrongUri("Employees?$select=EmployeeName/*");
@@ -1142,7 +1146,7 @@ public class UriParserTest {
   }
 
   @Test
-  public void parseSystemQueryOptionExpand() throws Exception {
+  public void parseSystemQueryOptionExpand() throws ODataError {
     UriParserResult result = parse("Managers('1')?$expand=nm_Employees");
     assertEquals("Managers", result.getTargetEntitySet().getName());
     assertEquals(UriType.URI2, result.getUriType());
@@ -1153,7 +1157,7 @@ public class UriParserTest {
   }
 
   @Test
-  public void parseSystemQueryOptionExpandWrong() throws Exception {
+  public void parseSystemQueryOptionExpandWrong() throws ODataError {
     parseWrongUri("Managers('1')?$expand=,nm_Employees");
     parseWrongUri("Managers('1')?$expand=nm_Employees,");
     parseWrongUri("Managers('1')?$expand=nm_Employees,,");

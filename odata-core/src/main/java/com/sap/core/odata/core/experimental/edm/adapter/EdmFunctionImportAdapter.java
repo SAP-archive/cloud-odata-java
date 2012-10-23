@@ -3,11 +3,11 @@ package com.sap.core.odata.core.experimental.edm.adapter;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.sap.core.odata.core.edm.EdmEntityContainer;
-import com.sap.core.odata.core.edm.EdmEntitySet;
-import com.sap.core.odata.core.edm.EdmFunctionImport;
-import com.sap.core.odata.core.edm.EdmParameter;
-import com.sap.core.odata.core.edm.EdmTyped;
+import com.sap.core.odata.api.edm.EdmEntityContainer;
+import com.sap.core.odata.api.edm.EdmEntitySet;
+import com.sap.core.odata.api.edm.EdmFunctionImport;
+import com.sap.core.odata.api.edm.EdmParameter;
+import com.sap.core.odata.api.edm.EdmTyped;
 
 public class EdmFunctionImportAdapter extends EdmNamedAdapter implements EdmFunctionImport {
 

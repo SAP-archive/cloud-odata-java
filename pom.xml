@@ -89,6 +89,7 @@
 		<!-- <jetty.version>9.0.0.M0</jetty.version> doesn't work, needs evaluation -->
 		<httpclient.version>4.2.1</httpclient.version>
 		<slf4j.version>1.7.1</slf4j.version>
+		<commonscodec.version>1.5</commonscodec.version>
 
 		<mockito.version>1.9.0</mockito.version>
 		<junit.version>4.10</junit.version>

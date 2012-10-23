@@ -2,16 +2,16 @@ package com.sap.core.odata.core.experimental.edm.adapter;
 
 import org.odata4j.edm.EdmComplexType;
 
-import com.sap.core.odata.core.edm.EdmConcurrencyMode;
-import com.sap.core.odata.core.edm.EdmContentKind;
-import com.sap.core.odata.core.edm.EdmCustomizableFeedMappings;
-import com.sap.core.odata.core.edm.EdmException;
-import com.sap.core.odata.core.edm.EdmFacets;
-import com.sap.core.odata.core.edm.EdmMapping;
-import com.sap.core.odata.core.edm.EdmMultiplicity;
-import com.sap.core.odata.core.edm.EdmProperty;
-import com.sap.core.odata.core.edm.EdmTargetPath;
-import com.sap.core.odata.core.edm.EdmType;
+import com.sap.core.odata.api.edm.EdmConcurrencyMode;
+import com.sap.core.odata.api.edm.EdmContentKind;
+import com.sap.core.odata.api.edm.EdmCustomizableFeedMappings;
+import com.sap.core.odata.api.edm.EdmException;
+import com.sap.core.odata.api.edm.EdmFacets;
+import com.sap.core.odata.api.edm.EdmMapping;
+import com.sap.core.odata.api.edm.EdmMultiplicity;
+import com.sap.core.odata.api.edm.EdmProperty;
+import com.sap.core.odata.api.edm.EdmTargetPath;
+import com.sap.core.odata.api.edm.EdmType;
 
 public class EdmPropertyAdapter extends EdmNamedAdapter implements EdmProperty {
 

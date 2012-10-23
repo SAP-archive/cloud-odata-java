@@ -9,26 +9,26 @@ import java.util.regex.Pattern;
 
 import javax.ws.rs.core.PathSegment;
 
-import org.odata4j.repack.org.apache.commons.codec.DecoderException;
-import org.odata4j.repack.org.apache.commons.codec.binary.Base64;
-import org.odata4j.repack.org.apache.commons.codec.binary.Hex;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.sap.core.odata.core.edm.Edm;
-import com.sap.core.odata.core.edm.EdmComplexType;
-import com.sap.core.odata.core.edm.EdmEntitySet;
-import com.sap.core.odata.core.edm.EdmEntityType;
-import com.sap.core.odata.core.edm.EdmException;
-import com.sap.core.odata.core.edm.EdmFunctionImport;
-import com.sap.core.odata.core.edm.EdmMultiplicity;
-import com.sap.core.odata.core.edm.EdmNavigationProperty;
-import com.sap.core.odata.core.edm.EdmParameter;
-import com.sap.core.odata.core.edm.EdmProperty;
-import com.sap.core.odata.core.edm.EdmSimpleType;
-import com.sap.core.odata.core.edm.EdmType;
-import com.sap.core.odata.core.edm.EdmTypeKind;
-import com.sap.core.odata.core.edm.EdmTyped;
+import com.sap.core.odata.api.edm.Edm;
+import com.sap.core.odata.api.edm.EdmComplexType;
+import com.sap.core.odata.api.edm.EdmEntitySet;
+import com.sap.core.odata.api.edm.EdmEntityType;
+import com.sap.core.odata.api.edm.EdmException;
+import com.sap.core.odata.api.edm.EdmFunctionImport;
+import com.sap.core.odata.api.edm.EdmMultiplicity;
+import com.sap.core.odata.api.edm.EdmNavigationProperty;
+import com.sap.core.odata.api.edm.EdmParameter;
+import com.sap.core.odata.api.edm.EdmProperty;
+import com.sap.core.odata.api.edm.EdmSimpleType;
+import com.sap.core.odata.api.edm.EdmSimpleTypeFacade;
+import com.sap.core.odata.api.edm.EdmType;
+import com.sap.core.odata.api.edm.EdmTypeKind;
+import com.sap.core.odata.api.edm.EdmTyped;
+import com.sap.core.odata.api.uri.UriLiteral;
+import com.sap.core.odata.api.uri.UriParserException;
 import com.sap.core.odata.core.uri.enums.Format;
 import com.sap.core.odata.core.uri.enums.InlineCount;
 import com.sap.core.odata.core.uri.enums.SystemQueryOption;
@@ -41,11 +41,10 @@ public class UriParser {
   private static final Pattern INITIAL_SEGMENT_PATTERN = Pattern.compile("(?:([^.()]+)\\.)?([^.()]+)(?:\\((.+)\\)|(\\(\\)))?");
   private static final Pattern NAVIGATION_SEGMENT_PATTERN = Pattern.compile("([^()]+)(?:\\((.+)\\)|(\\(\\)))?");
   private static final Pattern NAMED_VALUE_PATTERN = Pattern.compile("(?:([^=]+)=)?([^=]+)");
-  private static final Pattern WHOLE_NUMBER_PATTERN = Pattern.compile("(-?\\p{Digit}+)([lL])?");
-  private static final Pattern DECIMAL_NUMBER_PATTERN = Pattern.compile("(-?\\p{Digit}+(?:\\.\\p{Digit}*(?:[eE][-+]?\\p{Digit}+)?)?)([mMdDfF])");
-  private static final Pattern STRING_VALUE_PATTERN = Pattern.compile("(X|binary|datetime|datetimeoffset|guid|time)?'(.*)'");
+
 
   private final Edm edm;
+  private EdmSimpleTypeFacade simpleTypeFacade;
   private List<PathSegment> pathSegments;
   private String currentPathSegment;
   private UriParserResult uriResult;
@@ -70,6 +69,7 @@ public class UriParser {
     systemQueryOptions = new HashMap<SystemQueryOption, String>();
     otherQueryParameters = new HashMap<String, String>();
     uriResult = new UriParserResult();
+    simpleTypeFacade = new EdmSimpleTypeFacade();
 
     preparePathSegments();
 
@@ -380,8 +380,9 @@ public class UriParser {
         throw new UriParserException("Key names must occur only once in key predicate: " + keyPredicate);
       parsedKeyProperties.add(keyProperty);
 
-      final UriLiteral uriLiteral = parseUriLiteral(value);
-      if (!isCompatible(uriLiteral, (EdmSimpleType) keyProperty.getType()))
+      final UriLiteral uriLiteral = simpleTypeFacade.parseUriLiteral(value);
+
+      if (!((EdmSimpleType) keyProperty.getType()).isCompatible(uriLiteral.getType()))
         throw new UriParserException("Literal " + value + " is not compatible to type of property " + keyProperty.getName());
 
       keyPredicates.add(new KeyPredicate(uriLiteral.getLiteral(), keyProperty));
@@ -393,110 +394,35 @@ public class UriParser {
     return keyPredicates;
   }
 
-  private UriLiteral parseUriLiteral(final String uriLiteral) throws UriParserException {
-    final String literal = uriLiteral;
 
-    if ("true".equals(literal) || "false".equals(literal))
-      return new UriLiteral(EdmSimpleType.BOOLEAN, literal);
-
-    if (literal.length() >= 2)
-      if (literal.startsWith("'") && literal.endsWith("'"))
-        return new UriLiteral(EdmSimpleType.STRING, literal.substring(1, literal.length() - 1).replace("''", "'"));
-
-    final Matcher wholeNumberMatcher = WHOLE_NUMBER_PATTERN.matcher(literal);
-    if (wholeNumberMatcher.matches()) {
-      final String value = wholeNumberMatcher.group(1);
-      final String suffix = wholeNumberMatcher.group(2);
-      UriParser.LOG.debug("RegEx (" + literal + "): value=" + value + ", suffix=" + suffix);
-
-      if ("L".equalsIgnoreCase(suffix))
-        return new UriLiteral(EdmSimpleType.INT64, value);
-      else
-        try {
-          final int i = Integer.parseInt(value);
-          if (i >= Byte.MIN_VALUE && i <= Byte.MAX_VALUE)
-            return new UriLiteral(EdmSimpleType.SBYTE, value);
-          else if (i > Byte.MAX_VALUE && i <= 255)
-            return new UriLiteral(EdmSimpleType.BYTE, value);
-          else if (i >= Short.MIN_VALUE && i <= Short.MAX_VALUE)
-            return new UriLiteral(EdmSimpleType.INT16, value);
-          else
-            return new UriLiteral(EdmSimpleType.INT32, value);
-        } catch (NumberFormatException e) {
-          throw new UriParserException("Wrong format for literal value: " + uriLiteral, e);
-        }
-    }
-
-    final Matcher decimalNumberMatcher = DECIMAL_NUMBER_PATTERN.matcher(literal);
-    if (decimalNumberMatcher.matches()) {
-      final String value = decimalNumberMatcher.group(1);
-      final String suffix = decimalNumberMatcher.group(2);
-      UriParser.LOG.debug("RegEx (" + literal + "): value=" + value + ", suffix=" + suffix);
-
-      if ("M".equalsIgnoreCase(suffix))
-        return new UriLiteral(EdmSimpleType.DECIMAL, value);
-      else if ("D".equalsIgnoreCase(suffix))
-        return new UriLiteral(EdmSimpleType.DOUBLE, value);
-      else if ("F".equalsIgnoreCase(suffix))
-        return new UriLiteral(EdmSimpleType.SINGLE, value);
-    }
-
-    final Matcher stringValueMatcher = STRING_VALUE_PATTERN.matcher(literal);
-    if (stringValueMatcher.matches()) {
-      final String prefix = stringValueMatcher.group(1);
-      final String value = stringValueMatcher.group(2);
-      UriParser.LOG.debug("RegEx (" + literal + "): prefix=" + prefix + ", value=" + value);
-
-      if ("X".equals(prefix) || "binary".equals(prefix)) {
-        byte[] b;
-        try {
-          b = Hex.decodeHex(value.toCharArray());
-        } catch (DecoderException e) {
-          throw new UriParserException(e);
-        }
-        return new UriLiteral(EdmSimpleType.BINARY, Base64.encodeBase64String(b));
-      }
-      if ("datetime".equals(prefix))
-        return new UriLiteral(EdmSimpleType.DATETIME, value);
-      else if ("datetimeoffset".equals(prefix))
-        return new UriLiteral(EdmSimpleType.DATETIMEOFFSET, value);
-      else if ("guid".equals(prefix))
-        return new UriLiteral(EdmSimpleType.GUID, value);
-      else if ("time".equals(prefix))
-        return new UriLiteral(EdmSimpleType.TIME, value);
-    }
-
-    throw new UriParserException("Wrong format for literal value: " + uriLiteral);
-  }
-
-  private boolean isCompatible(final UriLiteral uriLiteral, final EdmSimpleType propertyType) throws UriParserException {
-    final EdmSimpleType literalType = uriLiteral.getType();
-
-    if (literalType.equals(propertyType))
-      return true;
-
-    switch (propertyType) {
-    case BOOLEAN:
-      return literalType == EdmSimpleType.SBYTE && (uriLiteral.getLiteral().equals("0") || uriLiteral.getLiteral().equals("1"));
-    case BYTE:
-      return literalType == EdmSimpleType.SBYTE && !uriLiteral.getLiteral().startsWith("-");
-    case DECIMAL:
-      return literalType == EdmSimpleType.BYTE || literalType == EdmSimpleType.SBYTE || literalType == EdmSimpleType.INT16 || literalType == EdmSimpleType.INT32 || literalType == EdmSimpleType.INT64 || literalType == EdmSimpleType.SINGLE
-          || literalType == EdmSimpleType.DOUBLE;
-    case DOUBLE:
-      return literalType == EdmSimpleType.BYTE || literalType == EdmSimpleType.SBYTE || literalType == EdmSimpleType.INT16 || literalType == EdmSimpleType.INT32 || literalType == EdmSimpleType.INT64 || literalType == EdmSimpleType.SINGLE;
-    case INT16:
-      return literalType == EdmSimpleType.BYTE || literalType == EdmSimpleType.SBYTE;
-    case INT32:
-      return literalType == EdmSimpleType.BYTE || literalType == EdmSimpleType.SBYTE || literalType == EdmSimpleType.INT16;
-    case INT64:
-      return literalType == EdmSimpleType.BYTE || literalType == EdmSimpleType.SBYTE || literalType == EdmSimpleType.INT16 || literalType == EdmSimpleType.INT32;
-    case SINGLE:
-      return literalType == EdmSimpleType.BYTE || literalType == EdmSimpleType.SBYTE || literalType == EdmSimpleType.INT16 || literalType == EdmSimpleType.INT32 || literalType == EdmSimpleType.INT64;
-    default:
-      return false;
-    }
-  }
+//  private boolean isCompatible(final UriLiteral uriLiteral, final EdmSimpleType propertyType) throws UriParserException {
+//    final EdmSimpleType literalType = uriLiteral.getType();
+//
+//    if (literalType.equals(propertyType))
+//      return true;
+//
+//    switch (propertyType) {
+//    case BOOLEAN:
+//      return literalType == EdmSimpleType.SBYTE && (uriLiteral.getLiteral().equals("0") || uriLiteral.getLiteral().equals("1"));
+//    case BYTE:
+//      return literalType == EdmSimpleType.SBYTE && !uriLiteral.getLiteral().startsWith("-");
+//    case DECIMAL:
+//      return literalType == EdmSimpleType.BYTE || literalType == EdmSimpleType.SBYTE || literalType == EdmSimpleType.INT16 || literalType == EdmSimpleType.INT32 || literalType == EdmSimpleType.INT64 || literalType == EdmSimpleType.SINGLE
+//          || literalType == EdmSimpleType.DOUBLE;
+//    case DOUBLE:
+//      return literalType == EdmSimpleType.BYTE || literalType == EdmSimpleType.SBYTE || literalType == EdmSimpleType.INT16 || literalType == EdmSimpleType.INT32 || literalType == EdmSimpleType.INT64 || literalType == EdmSimpleType.SINGLE;
+//    case INT16:
+//      return literalType == EdmSimpleType.BYTE || literalType == EdmSimpleType.SBYTE;
+//    case INT32:
+//      return literalType == EdmSimpleType.BYTE || literalType == EdmSimpleType.SBYTE || literalType == EdmSimpleType.INT16;
+//    case INT64:
+//      return literalType == EdmSimpleType.BYTE || literalType == EdmSimpleType.SBYTE || literalType == EdmSimpleType.INT16 || literalType == EdmSimpleType.INT32;
+//    case SINGLE:
+//      return literalType == EdmSimpleType.BYTE || literalType == EdmSimpleType.SBYTE || literalType == EdmSimpleType.INT16 || literalType == EdmSimpleType.INT32 || literalType == EdmSimpleType.INT64;
+//    default:
+//      return false;
+//    }
+//  }
 
   private void handleFunctionImport(final EdmFunctionImport functionImport, final String emptyParentheses, final String keyPredicate) throws UriParserException, EdmException {
     final EdmTyped returnType = functionImport.getReturnType();
@@ -771,8 +697,8 @@ public class UriParser {
           continue;
         else
           throw new UriParserException("Mandatory function-import parameter missing: " + parameterName);
-      final UriLiteral uriLiteral = parseUriLiteral(value);
-      if (!isCompatible(uriLiteral, (EdmSimpleType) parameter.getType()))
+      final UriLiteral uriLiteral = simpleTypeFacade.parseUriLiteral(value);
+      if (!((EdmSimpleType) parameter.getType()).isCompatible(uriLiteral.getType()))
         throw new UriParserException("Literal " + value + " is not compatible to type of function-import parameter " + parameterName);
       uriResult.addFunctionImportParameter(parameterName, uriLiteral);
     }

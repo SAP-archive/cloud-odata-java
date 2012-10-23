@@ -3,13 +3,13 @@ package com.sap.core.odata.core.experimental.edm.adapter;
 import org.odata4j.edm.EdmDataServices;
 import org.odata4j.edm.EdmSchema;
 
-import com.sap.core.odata.core.edm.Edm;
-import com.sap.core.odata.core.edm.EdmAssociation;
-import com.sap.core.odata.core.edm.EdmComplexType;
-import com.sap.core.odata.core.edm.EdmEntityContainer;
-import com.sap.core.odata.core.edm.EdmEntityType;
-import com.sap.core.odata.core.edm.EdmException;
-import com.sap.core.odata.core.edm.EdmServiceMetadata;
+import com.sap.core.odata.api.edm.Edm;
+import com.sap.core.odata.api.edm.EdmAssociation;
+import com.sap.core.odata.api.edm.EdmComplexType;
+import com.sap.core.odata.api.edm.EdmEntityContainer;
+import com.sap.core.odata.api.edm.EdmEntityType;
+import com.sap.core.odata.api.edm.EdmException;
+import com.sap.core.odata.api.edm.EdmServiceMetadata;
 
 public class EdmAdapter implements Edm {
 

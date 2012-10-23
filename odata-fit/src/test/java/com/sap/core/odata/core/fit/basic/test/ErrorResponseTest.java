@@ -14,12 +14,12 @@ import org.apache.http.client.methods.HttpGet;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.sap.core.odata.api.processor.facet.EntitySet;
-import com.sap.core.odata.api.rest.ODataResponse;
 import com.sap.core.odata.api.edm.Edm;
 import com.sap.core.odata.api.edm.EdmEntityContainer;
 import com.sap.core.odata.api.edm.EdmEntitySet;
 import com.sap.core.odata.api.exception.ODataError;
+import com.sap.core.odata.api.processor.facet.EntitySet;
+import com.sap.core.odata.api.rest.ODataResponse;
 import com.sap.core.testutils.StringHelper;
 
 public class ErrorResponseTest extends AbstractBasicTest {

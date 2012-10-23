@@ -1,6 +1,7 @@
 package com.sap.core.odata.core.uri;
 
-import com.sap.core.odata.core.edm.EdmProperty;
+import com.sap.core.odata.api.edm.EdmProperty;
+
 
 public class KeyPredicate {
 

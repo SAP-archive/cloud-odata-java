@@ -1,6 +1,7 @@
-package com.sap.core.odata.core.uri;
+package com.sap.core.odata.api.uri;
 
-import com.sap.core.odata.core.edm.EdmSimpleType;
+import com.sap.core.odata.api.edm.EdmSimpleType;
+
 
 public class UriLiteral {
   private EdmSimpleType type;

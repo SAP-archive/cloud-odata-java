@@ -2,10 +2,10 @@ package com.sap.core.odata.core.experimental.edm.adapter;
 
 import org.odata4j.edm.EdmEntityContainer;
 
-import com.sap.core.odata.core.edm.EdmEntitySet;
-import com.sap.core.odata.core.edm.EdmEntityType;
-import com.sap.core.odata.core.edm.EdmException;
-import com.sap.core.odata.core.edm.EdmNavigationProperty;
+import com.sap.core.odata.api.edm.EdmEntitySet;
+import com.sap.core.odata.api.edm.EdmEntityType;
+import com.sap.core.odata.api.edm.EdmException;
+import com.sap.core.odata.api.edm.EdmNavigationProperty;
 
 public class EdmEntitySetAdapter extends EdmNamedAdapter implements EdmEntitySet {
 
@@ -41,7 +41,7 @@ public class EdmEntitySetAdapter extends EdmNamedAdapter implements EdmEntitySet
   }
 
   @Override
-  public com.sap.core.odata.core.edm.EdmEntityContainer getEntityContainer() throws EdmException {
+  public com.sap.core.odata.api.edm.EdmEntityContainer getEntityContainer() throws EdmException {
     return new EdmEntityContainerAdapter(this.edmEntityContainer);
   }
 

@@ -2,10 +2,10 @@ package com.sap.core.odata.core.experimental.edm.adapter;
 
 import org.odata4j.edm.EdmNavigationProperty;
 
-import com.sap.core.odata.core.edm.EdmMultiplicity;
-import com.sap.core.odata.core.edm.EdmType;
-import com.sap.core.odata.core.edm.EdmTypeKind;
-import com.sap.core.odata.core.edm.EdmTyped;
+import com.sap.core.odata.api.edm.EdmMultiplicity;
+import com.sap.core.odata.api.edm.EdmType;
+import com.sap.core.odata.api.edm.EdmTypeKind;
+import com.sap.core.odata.api.edm.EdmTyped;
 
 public class EdmNavigationTypeAdapter implements EdmType, EdmTyped {
 

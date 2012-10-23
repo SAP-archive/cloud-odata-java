@@ -1,7 +1,8 @@
 package com.sap.core.odata.core.uri;
 
-import com.sap.core.odata.core.edm.EdmEntitySet;
-import com.sap.core.odata.core.edm.EdmNavigationProperty;
+import com.sap.core.odata.api.edm.EdmEntitySet;
+import com.sap.core.odata.api.edm.EdmNavigationProperty;
+
 
 public class NavigationPropertySegment {
 

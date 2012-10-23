@@ -1,7 +1,7 @@
 package com.sap.core.odata.core.experimental.edm.adapter;
 
-import com.sap.core.odata.core.edm.EdmConcurrencyMode;
-import com.sap.core.odata.core.edm.EdmFacets;
+import com.sap.core.odata.api.edm.EdmConcurrencyMode;
+import com.sap.core.odata.api.edm.EdmFacets;
 
 public class EdmFacetsAdapter implements EdmFacets {
 

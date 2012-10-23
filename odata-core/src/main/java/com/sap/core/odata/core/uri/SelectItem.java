@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import com.sap.core.odata.core.edm.EdmTyped;
+import com.sap.core.odata.api.edm.EdmTyped;
 
 public class SelectItem {
 

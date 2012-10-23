@@ -2,45 +2,49 @@ package com.sap.core.odata.core.experimental.edm.adapter;
 
 import org.odata4j.edm.EdmSimpleType;
 
+import com.sap.core.odata.api.edm.EdmSimpleTypeFacade;
+
 public class EdmSimpleTypeAdapter {
 
   private EdmSimpleType<?> edmSimpleType;
+  private EdmSimpleTypeFacade facade;
 
   public EdmSimpleTypeAdapter(org.odata4j.edm.EdmSimpleType<?> edmSimpleType) {
     this.edmSimpleType = edmSimpleType;
+    this.facade = new EdmSimpleTypeFacade();
   }
 
-  public com.sap.core.odata.core.edm.EdmSimpleType getType() {
+  public com.sap.core.odata.api.edm.EdmSimpleType getType() {
     if (EdmSimpleType.BINARY.equals(edmSimpleType))
-      return com.sap.core.odata.core.edm.EdmSimpleType.BINARY;
+      return facade.binaryInstance();
     else if (EdmSimpleType.BOOLEAN.equals(edmSimpleType))
-      return com.sap.core.odata.core.edm.EdmSimpleType.BOOLEAN;
+      return facade.booleanInstance();
     else if (EdmSimpleType.BYTE.equals(edmSimpleType))
-      return com.sap.core.odata.core.edm.EdmSimpleType.BYTE;
+      return facade.byteInstance();
     else if (EdmSimpleType.DATETIME.equals(edmSimpleType))
-      return com.sap.core.odata.core.edm.EdmSimpleType.DATETIME;
+      return facade.dateTimeInstance();
     else if (EdmSimpleType.DATETIMEOFFSET.equals(edmSimpleType))
-      return com.sap.core.odata.core.edm.EdmSimpleType.DATETIMEOFFSET;
+      return facade.dateTimeOffsetInstance();
     else if (EdmSimpleType.DECIMAL.equals(edmSimpleType))
-      return com.sap.core.odata.core.edm.EdmSimpleType.DECIMAL;
+      return facade.decimalInstance();
     else if (EdmSimpleType.DOUBLE.equals(edmSimpleType))
-      return com.sap.core.odata.core.edm.EdmSimpleType.DOUBLE;
+      return facade.doubleInstance();
     else if (EdmSimpleType.GUID.equals(edmSimpleType))
-      return com.sap.core.odata.core.edm.EdmSimpleType.GUID;
+      return facade.guidInstance();
     else if (EdmSimpleType.INT16.equals(edmSimpleType))
-      return com.sap.core.odata.core.edm.EdmSimpleType.INT16;
+      return facade.int16Instance();
     else if (EdmSimpleType.INT32.equals(edmSimpleType))
-      return com.sap.core.odata.core.edm.EdmSimpleType.INT32;
+      return facade.int32Instance();
     else if (EdmSimpleType.INT64.equals(edmSimpleType))
-      return com.sap.core.odata.core.edm.EdmSimpleType.INT64;
+      return facade.int64Instance();
     else if (EdmSimpleType.SBYTE.equals(edmSimpleType))
-      return com.sap.core.odata.core.edm.EdmSimpleType.SBYTE;
+      return facade.sByteInstance();
     else if (EdmSimpleType.SINGLE.equals(edmSimpleType))
-      return com.sap.core.odata.core.edm.EdmSimpleType.SINGLE;
+      return facade.singleInstance();
     else if (EdmSimpleType.STRING.equals(edmSimpleType))
-      return com.sap.core.odata.core.edm.EdmSimpleType.STRING;
+      return facade.stringInstance();
     else if (EdmSimpleType.TIME.equals(edmSimpleType))
-      return com.sap.core.odata.core.edm.EdmSimpleType.TIME;
+      return facade.timeInstance();
     else
       return null;
   }
