@@ -42,9 +42,8 @@ public class UriParser {
   private static final Pattern NAVIGATION_SEGMENT_PATTERN = Pattern.compile("([^()]+)(?:\\((.+)\\)|(\\(\\)))?");
   private static final Pattern NAMED_VALUE_PATTERN = Pattern.compile("(?:([^=]+)=)?([^=]+)");
 
-
   private final Edm edm;
-  private EdmSimpleTypeFacade simpleTypeFacade;
+  private final EdmSimpleTypeFacade simpleTypeFacade;
   private List<PathSegment> pathSegments;
   private String currentPathSegment;
   private UriParserResult uriResult;
@@ -54,6 +53,7 @@ public class UriParser {
   public UriParser(final Edm edm) {
     this.edm = edm;
     UriParser.LOG.debug("edm version: " + this.edm.getServiceMetadata().getDataServiceVersion());
+    simpleTypeFacade = new EdmSimpleTypeFacade();
   }
 
   /**
@@ -69,7 +69,6 @@ public class UriParser {
     systemQueryOptions = new HashMap<SystemQueryOption, String>();
     otherQueryParameters = new HashMap<String, String>();
     uriResult = new UriParserResult();
-    simpleTypeFacade = new EdmSimpleTypeFacade();
 
     preparePathSegments();
 
@@ -79,12 +78,10 @@ public class UriParser {
       distributeQueryParameters(queryParameters);
       checkSystemQueryOptionsCompatibility();
       handleSystemQueryOptions();
-      handleFunctionImportParameters();
+      handleOtherQueryParameters();
     } catch (EdmException e) {
       throw new UriParserException("Error in EDM access during URI parsing", e);
     }
-
-    uriResult.setCustomQueryOptions(otherQueryParameters);
 
     UriParser.LOG.debug(uriResult.toString());
     return uriResult;
@@ -193,7 +190,7 @@ public class UriParser {
         ensureLastSegment();
         uriResult.setUriType(UriType.URI17);
         uriResult.setValue(true);
-        }
+      }
       else
         throw new UriParserException("Resource is no media resource");
 
@@ -314,9 +311,9 @@ public class UriParser {
           ensureLastSegment();
           uriResult.setValue(true);
           if (uriResult.getPropertyPath().size() == 1)
-              uriResult.setUriType(UriType.URI5);
-            else
-              uriResult.setUriType(UriType.URI4);
+            uriResult.setUriType(UriType.URI5);
+          else
+            uriResult.setUriType(UriType.URI4);
         } else {
           throw new UriParserException("Invalid path segment: " + currentPathSegment + ", " + this.pathSegments);
         }
@@ -393,36 +390,6 @@ public class UriParser {
 
     return keyPredicates;
   }
-
-
-//  private boolean isCompatible(final UriLiteral uriLiteral, final EdmSimpleType propertyType) throws UriParserException {
-//    final EdmSimpleType literalType = uriLiteral.getType();
-//
-//    if (literalType.equals(propertyType))
-//      return true;
-//
-//    switch (propertyType) {
-//    case BOOLEAN:
-//      return literalType == EdmSimpleType.SBYTE && (uriLiteral.getLiteral().equals("0") || uriLiteral.getLiteral().equals("1"));
-//    case BYTE:
-//      return literalType == EdmSimpleType.SBYTE && !uriLiteral.getLiteral().startsWith("-");
-//    case DECIMAL:
-//      return literalType == EdmSimpleType.BYTE || literalType == EdmSimpleType.SBYTE || literalType == EdmSimpleType.INT16 || literalType == EdmSimpleType.INT32 || literalType == EdmSimpleType.INT64 || literalType == EdmSimpleType.SINGLE
-//          || literalType == EdmSimpleType.DOUBLE;
-//    case DOUBLE:
-//      return literalType == EdmSimpleType.BYTE || literalType == EdmSimpleType.SBYTE || literalType == EdmSimpleType.INT16 || literalType == EdmSimpleType.INT32 || literalType == EdmSimpleType.INT64 || literalType == EdmSimpleType.SINGLE;
-//    case INT16:
-//      return literalType == EdmSimpleType.BYTE || literalType == EdmSimpleType.SBYTE;
-//    case INT32:
-//      return literalType == EdmSimpleType.BYTE || literalType == EdmSimpleType.SBYTE || literalType == EdmSimpleType.INT16;
-//    case INT64:
-//      return literalType == EdmSimpleType.BYTE || literalType == EdmSimpleType.SBYTE || literalType == EdmSimpleType.INT16 || literalType == EdmSimpleType.INT32;
-//    case SINGLE:
-//      return literalType == EdmSimpleType.BYTE || literalType == EdmSimpleType.SBYTE || literalType == EdmSimpleType.INT16 || literalType == EdmSimpleType.INT32 || literalType == EdmSimpleType.INT64;
-//    default:
-//      return false;
-//    }
-//  }
 
   private void handleFunctionImport(final EdmFunctionImport functionImport, final String emptyParentheses, final String keyPredicate) throws UriParserException, EdmException {
     final EdmTyped returnType = functionImport.getReturnType();
@@ -684,23 +651,24 @@ public class UriParser {
     uriResult.setSelect(select);
   }
 
-  private void handleFunctionImportParameters() throws UriParserException, EdmException {
+  private void handleOtherQueryParameters() throws UriParserException, EdmException {
     final EdmFunctionImport functionImport = uriResult.getFunctionImport();
-    if (functionImport == null)
-      return;
 
-    for (String parameterName : functionImport.getParameterNames()) {
-      final EdmParameter parameter = functionImport.getParameter(parameterName);
-      final String value = otherQueryParameters.remove(parameterName);
-      if (value == null)
-        if (parameter.getFacets() == null || parameter.getFacets().isNullable())
-          continue;
-        else
-          throw new UriParserException("Mandatory function-import parameter missing: " + parameterName);
-      final UriLiteral uriLiteral = simpleTypeFacade.parseUriLiteral(value);
-      if (!((EdmSimpleType) parameter.getType()).isCompatible(uriLiteral.getType()))
-        throw new UriParserException("Literal " + value + " is not compatible to type of function-import parameter " + parameterName);
-      uriResult.addFunctionImportParameter(parameterName, uriLiteral);
-    }
+    if (functionImport != null)
+      for (String parameterName : functionImport.getParameterNames()) {
+        final EdmParameter parameter = functionImport.getParameter(parameterName);
+        final String value = otherQueryParameters.remove(parameterName);
+        if (value == null)
+          if (parameter.getFacets() == null || parameter.getFacets().isNullable())
+            continue;
+          else
+            throw new UriParserException("Mandatory function-import parameter missing: " + parameterName);
+        final UriLiteral uriLiteral = simpleTypeFacade.parseUriLiteral(value);
+        if (!((EdmSimpleType) parameter.getType()).isCompatible(uriLiteral.getType()))
+          throw new UriParserException("Literal " + value + " is not compatible to type of function-import parameter " + parameterName);
+        uriResult.addFunctionImportParameter(parameterName, uriLiteral);
+      }
+
+    uriResult.setCustomQueryOptions(otherQueryParameters);
   }
 }
