@@ -9,7 +9,7 @@ import com.sap.core.odata.api.edm.EdmSimpleTypeFacade.EdmSimpleTypeKind;
 import com.sap.core.odata.api.edm.EdmTypeKind;
 
 
-public class EdmTimeOffset implements EdmSimpleType  {
+public class EdmDateTimeOffset implements EdmSimpleType  {
 
   private EdmSimpleTypeKind edmSimpleType = EdmSimpleTypeKind.DATETIMEOFFSET;
   
@@ -18,7 +18,7 @@ public class EdmTimeOffset implements EdmSimpleType  {
     boolean equals = false;
     if (this == obj) {
       equals = true;
-    } else if (obj instanceof EdmTimeOffset) {
+    } else if (obj instanceof EdmDateTimeOffset) {
       equals = true;
     }
 

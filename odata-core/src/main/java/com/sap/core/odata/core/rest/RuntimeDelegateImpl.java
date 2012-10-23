@@ -20,7 +20,7 @@ import com.sap.core.odata.core.edm.simpletype.EdmSByte;
 import com.sap.core.odata.core.edm.simpletype.EdmSingle;
 import com.sap.core.odata.core.edm.simpletype.EdmString;
 import com.sap.core.odata.core.edm.simpletype.EdmTime;
-import com.sap.core.odata.core.edm.simpletype.EdmTimeOffset;
+import com.sap.core.odata.core.edm.simpletype.EdmDateTimeOffset;
 import com.sap.core.odata.core.edm.simpletype.EdmUint7;
 
 public class RuntimeDelegateImpl extends RuntimeDelegate {
@@ -57,7 +57,7 @@ public class RuntimeDelegateImpl extends RuntimeDelegate {
       edmType = new EdmDateTime();
       break;
     case DATETIMEOFFSET:
-      edmType = new EdmTimeOffset();
+      edmType = new EdmDateTimeOffset();
       break;
     case DECIMAL:
       edmType = new EdmDecimal();
