@@ -1,8 +1,5 @@
 package com.sap.core.odata.core.dispatcher;
 
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.ResponseBuilder;
-
 import org.odata4j.exceptions.MethodNotAllowedException;
 
 import com.sap.core.odata.api.exception.ODataError;
@@ -24,80 +21,85 @@ public class Dispatcher {
     this.context = context;
   }
 
-  public void setProcessor(ODataProcessor producer) {
-    this.processor = producer;
+  public void setProcessor(ODataProcessor processor) {
+    this.processor = processor;
   }
 
-  public Response dispatch(ODataHttpMethod method, UriParserResult uriParserResult) throws ODataError {
-    ODataResponse odataResponse;
+  public ODataResponse dispatch(final ODataHttpMethod method, final UriParserResult uriParserResult) throws ODataError {
     switch (uriParserResult.getUriType()) {
-    case URI0: // service document
-      switch (method) {
-      case GET:
-        odataResponse = this.processor.getServiceDocumentProcessor().readServiceDocument();
-        break;
-      default:
+    case URI0:
+      if (method == ODataHttpMethod.GET)
+        return processor.getServiceDocumentProcessor().readServiceDocument();
+      else
         throw new ODataMethodNotAllowedException(ODataMethodNotAllowedException.DISPATCH);
-      }
-      break;
-    case URI1: // entity set
+
+    case URI1:
+    case URI6B:
       switch (method) {
       case GET:
-        odataResponse = this.processor.getEntitySetProcessor().readEntitySet();
-        break;
+        return processor.getEntitySetProcessor().readEntitySet();
       default:
         throw new MethodNotAllowedException("");
       }
-      break;
-    case URI2: // entity
-    case URI3: // entity complex property
-    case URI4: // entity simple property or entity simple property value
-    case URI5: //
-    case URI6A: // navigation property entity target multiplicity 0..1
-    case URI6B: // navigation property entity target multiplicity *
-    case URI7A: // entity link
-    case URI7B: // entity links
-    case URI8: // $metadata
-      switch (method) {
-      case GET:
-        odataResponse = this.processor.getMetadataProcessor().readMetadata();
-        break;
-      default:
+
+    case URI2:
+    case URI6A:
+      return null;
+
+    case URI3:
+      return null;
+
+    case URI4:
+    case URI5:
+      return null;
+
+    case URI7A:
+      return null;
+
+    case URI7B:
+      return null;
+
+    case URI8:
+      if (method == ODataHttpMethod.GET)
+        return this.processor.getMetadataProcessor().readMetadata();
+      else
         throw new ODataMethodNotAllowedException(ODataMethodNotAllowedException.DISPATCH);
-      }
-      break;
-    case URI9: // $batch
-    case URI10: // function import
-    case URI11: //
-    case URI12: //
-    case URI13: // 
-    case URI14: // function import primitve
-    case URI15: // entity set count
-    case URI16: // entity exists
-    case URI17: // media resource
-    case URI50A: // entity link exists
-    case URI50B: // entity links count
+
+    case URI9:
+      return null;
+
+    case URI10:
+    case URI11:
+    case URI12:
+    case URI13:
+      return null;
+
+    case URI14:
+      return null;
+
+    case URI15:
+      return null;
+
+    case URI16:
+      return null;
+
+    case URI17:
+      return null;
+
+    case URI50A:
+      if (method == ODataHttpMethod.GET)
+        return processor.getEntityLinkProcessor().existsEntityLink();
+      else
+        throw new ODataMethodNotAllowedException(ODataMethodNotAllowedException.DISPATCH);
+
+    case URI50B:
+      if (method == ODataHttpMethod.GET)
+        return processor.getEntityLinksProcessor().countEntityLinks();
+      else
+        throw new ODataMethodNotAllowedException(ODataMethodNotAllowedException.DISPATCH);
+
     default:
       throw new ODataTechnicalException("Unknown or non implemented URI type: " + uriParserResult.getUriType());
     }
-
-    Response response = this.convertResponse(odataResponse);
-    return response;
   }
-
-  private Response convertResponse(ODataResponse odataResponse) {
-    ResponseBuilder responseBuilder = Response.noContent();
-
-    if (odataResponse != null) {
-      responseBuilder = responseBuilder.status(odataResponse.getStatus());
-      responseBuilder = responseBuilder.entity(odataResponse.getEntity());
-
-      for (String name : odataResponse.getHeaderNames()) {
-        responseBuilder = responseBuilder.header(name, odataResponse.getHeader(name));
-      }
-    }
-
-    return responseBuilder.build();
-  }
-
 }

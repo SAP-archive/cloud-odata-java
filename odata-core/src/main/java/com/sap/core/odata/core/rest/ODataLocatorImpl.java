@@ -15,6 +15,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.PathSegment;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.UriInfo;
 
 import org.slf4j.Logger;
@@ -24,6 +25,7 @@ import com.sap.core.odata.api.exception.ODataError;
 import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.api.processor.ODataProcessor;
 import com.sap.core.odata.api.rest.ODataLocator;
+import com.sap.core.odata.api.rest.ODataResponse;
 import com.sap.core.odata.api.uri.UriParserResult;
 import com.sap.core.odata.core.dispatcher.Dispatcher;
 import com.sap.core.odata.core.enums.ODataHttpMethod;
@@ -58,8 +60,7 @@ public final class ODataLocatorImpl implements ODataLocator {
       
       UriParserResult uriParserResult = this.uriParser.parse(pathSegments, queryParameters);
 
-      Response response = this.dispatcher.dispatch(ODataHttpMethod.GET, uriParserResult);
-      return response;
+      return convertResponse(dispatcher.dispatch(ODataHttpMethod.GET, uriParserResult));
     } catch (ODataException e) {
       throw new RuntimeException(e);
     }
@@ -170,4 +171,15 @@ public final class ODataLocatorImpl implements ODataLocator {
     this.processor = processor;
   }
 
+  private Response convertResponse(final ODataResponse odataResponse) {
+    ResponseBuilder responseBuilder = Response.noContent();
+
+    responseBuilder = responseBuilder.status(odataResponse.getStatus());
+    responseBuilder = responseBuilder.entity(odataResponse.getEntity());
+
+    for (String name : odataResponse.getHeaderNames())
+      responseBuilder = responseBuilder.header(name, odataResponse.getHeader(name));
+
+    return responseBuilder.build();
+  }
 }
