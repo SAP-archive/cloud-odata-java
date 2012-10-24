@@ -7,7 +7,7 @@ import org.junit.Test;
 
 import com.sap.core.odata.api.edm.EdmSimpleType;
 import com.sap.core.odata.api.edm.EdmSimpleTypeFacade;
-import com.sap.core.odata.api.edm.EdmSimpleTypeFacade.EdmSimpleTypeKind;
+import com.sap.core.odata.api.edm.EdmSimpleTypeKind;
 import com.sap.core.odata.api.uri.UriLiteral;
 import com.sap.core.odata.api.uri.UriParserException;
 import com.sap.core.odata.core.edm.simpletype.EdmBinary;

@@ -2,7 +2,7 @@ package com.sap.core.odata.core.rest;
 
 import com.sap.core.odata.api.edm.Edm;
 import com.sap.core.odata.api.edm.EdmSimpleType;
-import com.sap.core.odata.api.edm.EdmSimpleTypeFacade.EdmSimpleTypeKind;
+import com.sap.core.odata.api.edm.EdmSimpleTypeKind;
 import com.sap.core.odata.api.rest.ODataLocator;
 import com.sap.core.odata.api.rest.ODataResponse.ODataResponseBuilder;
 import com.sap.core.odata.api.rest.RuntimeDelegate;
