@@ -1,25 +1,13 @@
 package com.sap.core.odata.api.edm;
 
+/**
+ * EdmContentType is used for Feed Customization.
+ * It specifies the content type of the value of the property being mapped via a customizable feed mapping.
+ * This value can be "text", "html" or "xhtml".
+ * 
+ * @author SAP AG
+ */
 public enum EdmContentKind {
-
-  TEXT("text"), HTML("html"), XHTML("xhtml");
-
-  private final String symbolString;
-
-  private EdmContentKind(String symbolString) {
-    this.symbolString = symbolString;
-  }
-
-  public String getSymbolString() {
-    return symbolString;
-  }
-
-  public static EdmContentKind fromSymbolString(String symbolString) {
-    for (EdmContentKind m : EdmContentKind.values()) {
-      if (m.getSymbolString().equals(symbolString))
-        return m;
-    }
-    throw new IllegalArgumentException("Invalid symbolString " + symbolString);
-  }
-
+  
+  text, html, xhtml;
 }

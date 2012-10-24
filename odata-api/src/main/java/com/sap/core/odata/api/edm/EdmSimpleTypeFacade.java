@@ -25,63 +25,63 @@ public class EdmSimpleTypeFacade {
   }
 
   public EdmSimpleType binaryInstance() {
-    return getInstance(EdmSimpleTypeKind.BINARY);
+    return getInstance(EdmSimpleTypeKind.Binary);
   }
 
   public EdmSimpleType booleanInstance() {
-    return getInstance(EdmSimpleTypeKind.BOOLEAN);
+    return getInstance(EdmSimpleTypeKind.Boolean);
   }
 
   public EdmSimpleType byteInstance() {
-    return getInstance(EdmSimpleTypeKind.BYTE);
+    return getInstance(EdmSimpleTypeKind.Byte);
   }
 
   public EdmSimpleType dateTimeInstance() {
-    return getInstance(EdmSimpleTypeKind.DATETIME);
+    return getInstance(EdmSimpleTypeKind.DateTime);
   }
 
   public EdmSimpleType dateTimeOffsetInstance() {
-    return getInstance(EdmSimpleTypeKind.DATETIMEOFFSET);
+    return getInstance(EdmSimpleTypeKind.DateTimeOffset);
   }
 
   public EdmSimpleType decimalInstance() {
-    return getInstance(EdmSimpleTypeKind.DECIMAL);
+    return getInstance(EdmSimpleTypeKind.Decimal);
   }
 
   public EdmSimpleType doubleInstance() {
-    return getInstance(EdmSimpleTypeKind.DOUBLE);
+    return getInstance(EdmSimpleTypeKind.Double);
   }
 
   public EdmSimpleType guidInstance() {
-    return getInstance(EdmSimpleTypeKind.GUID);
+    return getInstance(EdmSimpleTypeKind.Guid);
   }
 
   public EdmSimpleType int16Instance() {
-    return getInstance(EdmSimpleTypeKind.INT16);
+    return getInstance(EdmSimpleTypeKind.Int16);
   }
 
   public EdmSimpleType int32Instance() {
-    return getInstance(EdmSimpleTypeKind.INT32);
+    return getInstance(EdmSimpleTypeKind.Int32);
   }
 
   public EdmSimpleType int64Instance() {
-    return getInstance(EdmSimpleTypeKind.INT64);
+    return getInstance(EdmSimpleTypeKind.Int64);
   }
 
   public EdmSimpleType sByteInstance() {
-    return getInstance(EdmSimpleTypeKind.SBYTE);
+    return getInstance(EdmSimpleTypeKind.SByte);
   }
 
   public EdmSimpleType singleInstance() {
-    return getInstance(EdmSimpleTypeKind.SINGLE);
+    return getInstance(EdmSimpleTypeKind.Single);
   }
 
   public EdmSimpleType stringInstance() {
-    return getInstance(EdmSimpleTypeKind.STRING);
+    return getInstance(EdmSimpleTypeKind.String);
   }
 
   public EdmSimpleType timeInstance() {
-    return getInstance(EdmSimpleTypeKind.TIME);
+    return getInstance(EdmSimpleTypeKind.Time);
   }
 
   public UriLiteral parseUriLiteral(String uriLiteral) throws UriParserException {
@@ -106,9 +106,9 @@ public class EdmSimpleTypeFacade {
           final int i = Integer.parseInt(value);
           if (i >= Byte.MIN_VALUE && i <= Byte.MAX_VALUE) {
             if (i == 0 || i == 1) {
-              return new UriLiteral(getInstance(EdmSimpleTypeKind.BIT), value);
+              return new UriLiteral(getInstance(EdmSimpleTypeKind.Bit), value);
             } else if (i >= 0 && i <= 127) {
-              return new UriLiteral(getInstance(EdmSimpleTypeKind.UINT7), value);
+              return new UriLiteral(getInstance(EdmSimpleTypeKind.UInt7), value);
             } else {
               return new UriLiteral(sByteInstance(), value);
             }

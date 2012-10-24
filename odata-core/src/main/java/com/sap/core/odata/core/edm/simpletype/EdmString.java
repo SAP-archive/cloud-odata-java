@@ -11,7 +11,7 @@ import com.sap.core.odata.api.edm.EdmTypeKind;
 
 public class EdmString implements EdmSimpleType {
 
-  private EdmSimpleTypeKind edmSimpleType = EdmSimpleTypeKind.STRING;
+  private EdmSimpleTypeKind edmSimpleType = EdmSimpleTypeKind.String;
   
   @Override
   public boolean equals(Object obj) {
@@ -42,7 +42,7 @@ public class EdmString implements EdmSimpleType {
 
   @Override
   public String getName() throws EdmException {
-    return this.getTypeRepresentation().getName();
+    return this.getTypeRepresentation().toString();
   }
 
   @Override
@@ -50,7 +50,7 @@ public class EdmString implements EdmSimpleType {
     boolean compatible;
 
     switch (simpleType.getTypeRepresentation()) {
-    case STRING:
+    case String:
       compatible = true;
       break;
 

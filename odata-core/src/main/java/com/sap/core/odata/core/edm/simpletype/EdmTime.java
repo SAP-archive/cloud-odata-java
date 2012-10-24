@@ -11,7 +11,7 @@ import com.sap.core.odata.api.edm.EdmTypeKind;
 
 public class EdmTime implements EdmSimpleType {
 
-  private EdmSimpleTypeKind edmSimpleType = EdmSimpleTypeKind.TIME;
+  private EdmSimpleTypeKind edmSimpleType = EdmSimpleTypeKind.Time;
 
   @Override
   public boolean equals(Object obj) {
@@ -42,7 +42,7 @@ public class EdmTime implements EdmSimpleType {
 
   @Override
   public String getName() throws EdmException {
-    return this.getTypeRepresentation().getName();
+    return this.getTypeRepresentation().toString();
   }
 
   @Override
@@ -50,7 +50,7 @@ public class EdmTime implements EdmSimpleType {
     boolean compatible;
 
     switch (simpleType.getTypeRepresentation()) {
-    case TIME:
+    case Time:
       compatible = true;
       break;
 

@@ -10,7 +10,7 @@ import com.sap.core.odata.api.edm.EdmTypeKind;
 
 public class EdmBit implements EdmSimpleType {
 
-  private EdmSimpleTypeKind edmSimpleType = EdmSimpleTypeKind.BIT;
+  private EdmSimpleTypeKind edmSimpleType = EdmSimpleTypeKind.Bit;
 
   @Override
   public boolean equals(Object obj) {
@@ -36,7 +36,7 @@ public class EdmBit implements EdmSimpleType {
 
   @Override
   public String getName() throws EdmException {
-    return this.getTypeRepresentation().getName();
+    return this.getTypeRepresentation().toString();
   }
 
   @Override
@@ -44,7 +44,7 @@ public class EdmBit implements EdmSimpleType {
     boolean compatible;
 
     switch (simpleType.getTypeRepresentation()) {
-    case BIT:
+    case Bit:
       compatible = true;
       break;
 

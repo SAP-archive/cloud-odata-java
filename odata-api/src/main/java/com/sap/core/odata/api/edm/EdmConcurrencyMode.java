@@ -1,25 +1,14 @@
 package com.sap.core.odata.api.edm;
 
+/**
+ * EdmConcurrencyMode can be applied to any primitive Entity Data Model (EDM) type.
+ * Possible values are "None", which is the default, and "Fixed".
+ * 
+ * Fixed implies that the property should be used for optimistic concurrency checks.
+ * 
+ * @author SAP AG
+ */
 public enum EdmConcurrencyMode {
-
-  NONE("None"), FIXED("Fixed");
-
-  private final String symbolString;
-
-  private EdmConcurrencyMode(String symbolString) {
-    this.symbolString = symbolString;
-  }
-
-  public String getSymbolString() {
-    return symbolString;
-  }
-
-  public static EdmConcurrencyMode fromSymbolString(String symbolString) {
-    for (EdmConcurrencyMode m : EdmConcurrencyMode.values()) {
-      if (m.getSymbolString().equals(symbolString))
-        return m;
-    }
-    throw new IllegalArgumentException("Invalid symbolString " + symbolString);
-  }
-
+  
+  None, Fixed;
 }

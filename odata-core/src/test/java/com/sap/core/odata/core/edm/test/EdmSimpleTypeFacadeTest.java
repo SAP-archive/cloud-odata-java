@@ -215,20 +215,20 @@ public class EdmSimpleTypeFacadeTest {
 
   @Test
   public void compareTypes() {
-    compare(EdmSimpleTypeKind.BINARY);
-    compare(EdmSimpleTypeKind.BOOLEAN);
-    compare(EdmSimpleTypeKind.BYTE);
-    compare(EdmSimpleTypeKind.SBYTE);
-    compare(EdmSimpleTypeKind.DATETIME);
-    compare(EdmSimpleTypeKind.DATETIMEOFFSET);
-    compare(EdmSimpleTypeKind.DECIMAL);
-    compare(EdmSimpleTypeKind.DOUBLE);
-    compare(EdmSimpleTypeKind.GUID);
-    compare(EdmSimpleTypeKind.INT16);
-    compare(EdmSimpleTypeKind.INT32);
-    compare(EdmSimpleTypeKind.INT64);
-    compare(EdmSimpleTypeKind.SINGLE);
-    compare(EdmSimpleTypeKind.TIME);
+    compare(EdmSimpleTypeKind.Binary);
+    compare(EdmSimpleTypeKind.Boolean);
+    compare(EdmSimpleTypeKind.Byte);
+    compare(EdmSimpleTypeKind.SByte);
+    compare(EdmSimpleTypeKind.DateTime);
+    compare(EdmSimpleTypeKind.DateTimeOffset);
+    compare(EdmSimpleTypeKind.Decimal);
+    compare(EdmSimpleTypeKind.Double);
+    compare(EdmSimpleTypeKind.Guid);
+    compare(EdmSimpleTypeKind.Int16);
+    compare(EdmSimpleTypeKind.Int32);
+    compare(EdmSimpleTypeKind.Int64);
+    compare(EdmSimpleTypeKind.Single);
+    compare(EdmSimpleTypeKind.Time);
   }
 
 }

@@ -10,7 +10,7 @@ import com.sap.core.odata.api.edm.EdmTypeKind;
 
 public class EdmBinary implements EdmSimpleType {
 
-  private EdmSimpleTypeKind edmSimpleType = EdmSimpleTypeKind.BINARY;
+  private EdmSimpleTypeKind edmSimpleType = EdmSimpleTypeKind.Binary;
 
   @Override
   public boolean equals(Object obj) {
@@ -36,7 +36,7 @@ public class EdmBinary implements EdmSimpleType {
 
   @Override
   public String getName() throws EdmException {
-    return this.getTypeRepresentation().getName();
+    return this.getTypeRepresentation().toString();
   }
 
   @Override
@@ -44,7 +44,7 @@ public class EdmBinary implements EdmSimpleType {
     boolean compatible;
 
     switch (simpleType.getTypeRepresentation()) {
-    case BINARY:
+    case Binary:
       compatible = true;
       break;
 
