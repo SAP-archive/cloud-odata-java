@@ -62,7 +62,7 @@ public class EdmSimpleTypeTest {
       ArrayList<EdmSimpleType> typeList = new ArrayList<EdmSimpleType>();
       
       typeList.add(facade.booleanInstance());
-      typeList.add(facade.getInstance(EdmSimpleTypeKind.BIT));      
+      typeList.add(facade.getInstance(EdmSimpleTypeKind.Bit));      
       
       testCompability(facade.booleanInstance(), typeList);
     }
@@ -73,8 +73,8 @@ public class EdmSimpleTypeTest {
       ArrayList<EdmSimpleType> typeList = new ArrayList<EdmSimpleType>();
       
       typeList.add(facade.byteInstance());
-      typeList.add(facade.getInstance(EdmSimpleTypeKind.BIT));
-      typeList.add(facade.getInstance(EdmSimpleTypeKind.UINT7));
+      typeList.add(facade.getInstance(EdmSimpleTypeKind.Bit));
+      typeList.add(facade.getInstance(EdmSimpleTypeKind.UInt7));
       
       testCompability(facade.byteInstance(), typeList);
     }
@@ -105,8 +105,8 @@ public class EdmSimpleTypeTest {
       EdmSimpleTypeFacade facade = new EdmSimpleTypeFacade();
       ArrayList<EdmSimpleType> typeList = new ArrayList<EdmSimpleType>();
       
-      typeList.add(facade.getInstance(EdmSimpleTypeKind.BIT));      
-      typeList.add(facade.getInstance(EdmSimpleTypeKind.UINT7));
+      typeList.add(facade.getInstance(EdmSimpleTypeKind.Bit));      
+      typeList.add(facade.getInstance(EdmSimpleTypeKind.UInt7));
       typeList.add(facade.byteInstance());
       typeList.add(facade.sByteInstance());
       typeList.add(facade.int16Instance());
@@ -124,8 +124,8 @@ public class EdmSimpleTypeTest {
       EdmSimpleTypeFacade facade = new EdmSimpleTypeFacade();
       ArrayList<EdmSimpleType> typeList = new ArrayList<EdmSimpleType>();
       
-      typeList.add(facade.getInstance(EdmSimpleTypeKind.BIT));      
-      typeList.add(facade.getInstance(EdmSimpleTypeKind.UINT7));
+      typeList.add(facade.getInstance(EdmSimpleTypeKind.Bit));      
+      typeList.add(facade.getInstance(EdmSimpleTypeKind.UInt7));
       typeList.add(facade.byteInstance());
       typeList.add(facade.sByteInstance());
       typeList.add(facade.int16Instance());
@@ -152,8 +152,8 @@ public class EdmSimpleTypeTest {
       EdmSimpleTypeFacade facade = new EdmSimpleTypeFacade();
       ArrayList<EdmSimpleType> typeList = new ArrayList<EdmSimpleType>();
       
-      typeList.add(facade.getInstance(EdmSimpleTypeKind.BIT));      
-      typeList.add(facade.getInstance(EdmSimpleTypeKind.UINT7));
+      typeList.add(facade.getInstance(EdmSimpleTypeKind.Bit));      
+      typeList.add(facade.getInstance(EdmSimpleTypeKind.UInt7));
       typeList.add(facade.byteInstance());
       typeList.add(facade.sByteInstance());
       typeList.add(facade.int16Instance());
@@ -166,8 +166,8 @@ public class EdmSimpleTypeTest {
       EdmSimpleTypeFacade facade = new EdmSimpleTypeFacade();
       ArrayList<EdmSimpleType> typeList = new ArrayList<EdmSimpleType>();
       
-      typeList.add(facade.getInstance(EdmSimpleTypeKind.BIT));      
-      typeList.add(facade.getInstance(EdmSimpleTypeKind.UINT7));
+      typeList.add(facade.getInstance(EdmSimpleTypeKind.Bit));      
+      typeList.add(facade.getInstance(EdmSimpleTypeKind.UInt7));
       typeList.add(facade.byteInstance());
       typeList.add(facade.sByteInstance());
       typeList.add(facade.int16Instance());
@@ -182,8 +182,8 @@ public class EdmSimpleTypeTest {
       EdmSimpleTypeFacade facade = new EdmSimpleTypeFacade();
       ArrayList<EdmSimpleType> typeList = new ArrayList<EdmSimpleType>();
       
-      typeList.add(facade.getInstance(EdmSimpleTypeKind.BIT));      
-      typeList.add(facade.getInstance(EdmSimpleTypeKind.UINT7));
+      typeList.add(facade.getInstance(EdmSimpleTypeKind.Bit));      
+      typeList.add(facade.getInstance(EdmSimpleTypeKind.UInt7));
       typeList.add(facade.byteInstance());
       typeList.add(facade.sByteInstance());
       typeList.add(facade.int16Instance());
@@ -199,8 +199,8 @@ public class EdmSimpleTypeTest {
       EdmSimpleTypeFacade facade = new EdmSimpleTypeFacade();
       ArrayList<EdmSimpleType> typeList = new ArrayList<EdmSimpleType>();
       
-      typeList.add(facade.getInstance(EdmSimpleTypeKind.BIT));      
-      typeList.add(facade.getInstance(EdmSimpleTypeKind.UINT7));
+      typeList.add(facade.getInstance(EdmSimpleTypeKind.Bit));      
+      typeList.add(facade.getInstance(EdmSimpleTypeKind.UInt7));
       typeList.add(facade.sByteInstance());
       
       testCompability(facade.sByteInstance(), typeList);
@@ -212,8 +212,8 @@ public class EdmSimpleTypeTest {
       EdmSimpleTypeFacade facade = new EdmSimpleTypeFacade();
       ArrayList<EdmSimpleType> typeList = new ArrayList<EdmSimpleType>();
       
-      typeList.add(facade.getInstance(EdmSimpleTypeKind.BIT));      
-      typeList.add(facade.getInstance(EdmSimpleTypeKind.UINT7));
+      typeList.add(facade.getInstance(EdmSimpleTypeKind.Bit));      
+      typeList.add(facade.getInstance(EdmSimpleTypeKind.UInt7));
       typeList.add(facade.byteInstance());
       typeList.add(facade.sByteInstance());
       typeList.add(facade.int16Instance());

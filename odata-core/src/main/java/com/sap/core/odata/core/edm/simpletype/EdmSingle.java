@@ -11,7 +11,7 @@ import com.sap.core.odata.api.edm.EdmTypeKind;
 
 public class EdmSingle implements EdmSimpleType {
 
-  private EdmSimpleTypeKind edmSimpleType = EdmSimpleTypeKind.SINGLE;
+  private EdmSimpleTypeKind edmSimpleType = EdmSimpleTypeKind.Single;
 
   @Override
   public boolean equals(Object obj) {
@@ -42,7 +42,7 @@ public class EdmSingle implements EdmSimpleType {
 
   @Override
   public String getName() throws EdmException {
-    return this.getTypeRepresentation().getName();
+    return this.getTypeRepresentation().toString();
   }
 
   @Override
@@ -50,14 +50,14 @@ public class EdmSingle implements EdmSimpleType {
     boolean compatible;
 
     switch (simpleType.getTypeRepresentation()) {
-    case BIT:
-    case UINT7:
-    case BYTE:
-    case SBYTE:
-    case INT16:
-    case INT32:
-    case INT64:
-    case SINGLE:
+    case Bit:
+    case UInt7:
+    case Byte:
+    case SByte:
+    case Int16:
+    case Int32:
+    case Int64:
+    case Single:
       compatible = true;
       break;
     default:

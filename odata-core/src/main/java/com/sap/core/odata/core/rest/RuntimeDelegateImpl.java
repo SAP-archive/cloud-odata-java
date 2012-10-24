@@ -47,55 +47,55 @@ public class RuntimeDelegateImpl extends RuntimeDelegate {
     EdmSimpleType edmType = null;
 
     switch (edmSimpleType) {
-    case BINARY:
+    case Binary:
       edmType = new EdmBinary();
       break;
-    case BOOLEAN:
+    case Boolean:
       edmType = new EdmBoolean();
       break;
-    case BYTE:
+    case Byte:
       edmType = new EdmByte();
       break;
-    case DATETIME:
+    case DateTime:
       edmType = new EdmDateTime();
       break;
-    case DATETIMEOFFSET:
+    case DateTimeOffset:
       edmType = new EdmDateTimeOffset();
       break;
-    case DECIMAL:
+    case Decimal:
       edmType = new EdmDecimal();
       break;
-    case DOUBLE:
+    case Double:
       edmType = new EdmDouble();
       break;
-    case GUID:
+    case Guid:
       edmType = new EdmGuid();
       break;
-    case INT16:
+    case Int16:
       edmType = new EdmInt16();
       break;
-    case INT32:
+    case Int32:
       edmType = new EdmInt32();
       break;
-    case INT64:
+    case Int64:
       edmType = new EdmInt64();
       break;
-    case SBYTE:
+    case SByte:
       edmType = new EdmSByte();
       break;
-    case SINGLE:
+    case Single:
       edmType = new EdmSingle();
       break;
-    case STRING:
+    case String:
       edmType = new EdmString();
       break;
-    case TIME:
+    case Time:
       edmType = new EdmTime();
       break;
-    case BIT:
+    case Bit:
       edmType = new EdmBit();
       break;
-    case UINT7:
+    case UInt7:
       edmType = new EdmUint7();
       break;
     default:

@@ -34,7 +34,7 @@ public class EdmUint7 implements EdmSimpleType {
 
   @Override
   public String getName() throws EdmException {
-    return this.getTypeRepresentation().getName();
+    return this.getTypeRepresentation().toString();
   }
 
   @Override
@@ -42,8 +42,8 @@ public class EdmUint7 implements EdmSimpleType {
     boolean compatible;
 
     switch (simpleType.getTypeRepresentation()) {
-    case BIT:
-    case UINT7:
+    case Bit:
+    case UInt7:
       compatible = true;
       break;
 
@@ -82,7 +82,7 @@ public class EdmUint7 implements EdmSimpleType {
 
   @Override
   public EdmSimpleTypeKind getTypeRepresentation() {
-    return EdmSimpleTypeKind.UINT7;
+    return EdmSimpleTypeKind.UInt7;
   }
 
 }
