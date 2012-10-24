@@ -12,6 +12,7 @@ import org.junit.Test;
 import com.sap.core.odata.api.enums.UriType;
 import com.sap.core.odata.api.exception.ODataError;
 import com.sap.core.odata.api.processor.ODataProcessor;
+import com.sap.core.odata.api.processor.aspect.Metadata;
 import com.sap.core.odata.api.processor.aspect.ServiceDocument;
 import com.sap.core.odata.api.rest.ODataResponse;
 import com.sap.core.odata.api.uri.UriParserResult;
@@ -27,8 +28,14 @@ public class DispatcherTest {
     ODataResponse readServiceDocumentResponse = mockResponse("readServiceDocument");
     ServiceDocument serviceDocument = mock(ServiceDocument.class);
     when(serviceDocument.readServiceDocument()).thenReturn(readServiceDocumentResponse);
+
+    ODataResponse readMetadataResponse = mockResponse("readMetadata");
+    Metadata metadata = mock(Metadata.class);
+    when(metadata.readMetadata()).thenReturn(readMetadataResponse);
+
     processor = mock(ODataProcessor.class);
     when(processor.getServiceDocumentProcessor()).thenReturn(serviceDocument);
+    when(processor.getMetadataProcessor()).thenReturn(metadata);
   }
 
   private static ODataResponse mockResponse(final String value) {
@@ -59,6 +66,7 @@ public class DispatcherTest {
   @Test
   public void dispatch() throws Exception {
     checkDispatch(ODataHttpMethod.GET, UriType.URI0, "readServiceDocument");
+    checkDispatch(ODataHttpMethod.GET, UriType.URI8, "readMetadata");
   }
 
   @Test

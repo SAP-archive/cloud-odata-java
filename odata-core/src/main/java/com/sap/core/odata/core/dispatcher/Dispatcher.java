@@ -1,7 +1,5 @@
 package com.sap.core.odata.core.dispatcher;
 
-import org.odata4j.exceptions.MethodNotAllowedException;
-
 import com.sap.core.odata.api.exception.ODataError;
 import com.sap.core.odata.api.exception.ODataMethodNotAllowedException;
 import com.sap.core.odata.api.exception.ODataTechnicalException;
@@ -39,7 +37,7 @@ public class Dispatcher {
       case GET:
         return processor.getEntitySetProcessor().readEntitySet();
       default:
-        throw new MethodNotAllowedException("");
+        throw new ODataMethodNotAllowedException(ODataMethodNotAllowedException.DISPATCH);
       }
 
     case URI2:
@@ -99,7 +97,7 @@ public class Dispatcher {
         throw new ODataMethodNotAllowedException(ODataMethodNotAllowedException.DISPATCH);
 
     default:
-      throw new ODataTechnicalException("Unknown or non implemented URI type: " + uriParserResult.getUriType());
+      throw new ODataTechnicalException("Unknown or not implemented URI type: " + uriParserResult.getUriType());
     }
   }
 }
