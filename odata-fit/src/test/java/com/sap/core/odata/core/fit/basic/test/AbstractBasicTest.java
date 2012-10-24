@@ -4,10 +4,9 @@ import static org.mockito.Mockito.CALLS_REAL_METHODS;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import javax.ws.rs.core.Response.Status;
-
 import com.sap.core.odata.api.edm.Edm;
 import com.sap.core.odata.api.edm.EdmServiceMetadata;
+import com.sap.core.odata.api.enums.HttpStatus;
 import com.sap.core.odata.api.exception.ODataError;
 import com.sap.core.odata.api.processor.ODataProcessor;
 import com.sap.core.odata.api.processor.ODataSingleProcessor;
@@ -30,7 +29,7 @@ public class AbstractBasicTest extends AbstractFitTest {
 
     Metadata metadata = mock(Metadata.class);
     when(metadata.getEdm()).thenReturn(edm);
-    when(metadata.readMetadata()).thenReturn(ODataResponse.status(Status.OK.getStatusCode()).entity("metadata").build());
+    when(metadata.readMetadata()).thenReturn(ODataResponse.status(HttpStatus.OK).entity("metadata").build());
 
     EntitySet entitySet = mock(EntitySet.class);
 

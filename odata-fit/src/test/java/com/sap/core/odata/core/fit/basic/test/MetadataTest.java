@@ -11,6 +11,7 @@ import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.methods.HttpGet;
 import org.junit.Test;
 
+import com.sap.core.odata.api.enums.HttpStatus;
 import com.sap.core.odata.api.exception.ODataError;
 import com.sap.core.odata.api.processor.aspect.Metadata;
 import com.sap.core.odata.api.rest.ODataResponse;
@@ -22,7 +23,7 @@ public class MetadataTest extends AbstractBasicTest {
   public void readMetadata() throws ClientProtocolException, IOException, ODataError {
     
     Metadata metadata = this.getProcessor().getMetadataProcessor();
-    when(metadata.readMetadata()).thenReturn(ODataResponse.status(200).entity("metadata").build());
+    when(metadata.readMetadata()).thenReturn(ODataResponse.status(HttpStatus.OK).entity("metadata").build());
     
     HttpGet get = new HttpGet(URI.create(this.getEndpoint().toString() + "$metadata"));
     HttpResponse response = this.getHttpClient().execute(get);
