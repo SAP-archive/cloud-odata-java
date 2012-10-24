@@ -19,20 +19,6 @@ public class EdmSimpleTypeFacade {
   private static final Pattern DECIMAL_NUMBER_PATTERN = Pattern.compile("(-?\\p{Digit}+(?:\\.\\p{Digit}*(?:[eE][-+]?\\p{Digit}+)?)?)([mMdDfF])");
   private static final Pattern STRING_VALUE_PATTERN = Pattern.compile("(X|binary|datetime|datetimeoffset|guid|time)?'(.*)'");
 
-  public enum EdmSimpleTypeKind
-  {
-    BINARY("Binary"), BOOLEAN("Boolean"), BYTE("Byte"), DATETIME("DateTime"), DATETIMEOFFSET("DateTimeOffset"), DECIMAL("Decimal"), DOUBLE("Double"), GUID("Guid"), INT16("Int16"), INT32("Int32"), INT64("Int64"), SBYTE("SByte"), SINGLE("Single"), STRING("String"), TIME("Time"), BIT("Bit"), UINT7("UInt7");
-
-    private String name;
-
-    private EdmSimpleTypeKind(String name) {
-      this.name = name;
-    }
-
-    public String getName() {
-      return this.name;
-    }
-  }
 
   public EdmSimpleType getInstance(EdmSimpleTypeKind edmSimpleType) {
     return RuntimeDelegate.getInstance().getEdmSimpleType(edmSimpleType);
