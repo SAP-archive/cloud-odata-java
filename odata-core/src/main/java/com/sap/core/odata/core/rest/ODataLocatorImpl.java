@@ -174,7 +174,7 @@ public final class ODataLocatorImpl implements ODataLocator {
   private Response convertResponse(final ODataResponse odataResponse) {
     ResponseBuilder responseBuilder = Response.noContent();
 
-    responseBuilder = responseBuilder.status(odataResponse.getStatus());
+    responseBuilder = responseBuilder.status(odataResponse.getStatus().getStatusCode());
     responseBuilder = responseBuilder.entity(odataResponse.getEntity());
 
     for (String name : odataResponse.getHeaderNames())
