@@ -7,6 +7,8 @@ import static org.junit.Assert.assertNull;
 import java.io.IOException;
 import java.net.URI;
 
+import javax.ws.rs.core.Response.Status;
+
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.methods.HttpGet;
@@ -20,7 +22,7 @@ public class ContextTest extends AbstractBasicTest {
     HttpGet get = new HttpGet(URI.create(this.getEndpoint().toString() + "$metadata"));
     HttpResponse response = this.getHttpClient().execute(get);
     assertNotNull(this.getProcessor().getContext());
-    assertEquals(204, response.getStatusLine().getStatusCode());
+    assertEquals(Status.OK.getStatusCode(), response.getStatusLine().getStatusCode());
   }
   
 }
