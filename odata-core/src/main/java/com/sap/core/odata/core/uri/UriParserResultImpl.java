@@ -298,7 +298,7 @@ public class UriParserResultImpl implements UriParserResult {
         + "top=" + top + ", "
         + "expand=" + expand + ", "
         + "select=" + select + ", "
-        + "functionImportParameters=" + functionImportParameters
+        + "functionImportParameters=" + functionImportParameters + ", "
         + "customQueryOptions=" + customQueryOptions;
   }
 }

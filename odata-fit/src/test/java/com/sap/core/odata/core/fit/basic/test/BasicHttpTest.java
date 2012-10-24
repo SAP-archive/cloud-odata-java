@@ -27,7 +27,7 @@ import com.sap.core.odata.api.edm.Edm;
 import com.sap.core.odata.api.edm.EdmEntityContainer;
 import com.sap.core.odata.api.edm.EdmEntitySet;
 import com.sap.core.odata.api.exception.ODataException;
-import com.sap.core.odata.api.processor.facet.EntitySet;
+import com.sap.core.odata.api.processor.aspect.EntitySet;
 import com.sap.core.odata.api.rest.ODataResponse;
 import com.sap.core.testutils.HttpMerge;
 import com.sap.core.testutils.StringHelper;

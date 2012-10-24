@@ -12,7 +12,7 @@ import org.junit.Test;
 import com.sap.core.odata.api.enums.UriType;
 import com.sap.core.odata.api.exception.ODataError;
 import com.sap.core.odata.api.processor.ODataProcessor;
-import com.sap.core.odata.api.processor.facet.ServiceDocument;
+import com.sap.core.odata.api.processor.aspect.ServiceDocument;
 import com.sap.core.odata.api.rest.ODataResponse;
 import com.sap.core.odata.api.uri.UriParserResult;
 import com.sap.core.odata.core.dispatcher.Dispatcher;

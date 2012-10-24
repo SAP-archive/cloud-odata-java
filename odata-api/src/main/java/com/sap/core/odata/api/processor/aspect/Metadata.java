@@ -1,4 +1,4 @@
-package com.sap.core.odata.api.processor.facet;
+package com.sap.core.odata.api.processor.aspect;
 
 import com.sap.core.odata.api.edm.Edm;
 import com.sap.core.odata.api.exception.ODataError;
