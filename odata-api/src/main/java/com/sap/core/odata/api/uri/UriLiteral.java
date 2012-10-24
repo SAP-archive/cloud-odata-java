@@ -2,29 +2,35 @@ package com.sap.core.odata.api.uri;
 
 import com.sap.core.odata.api.edm.EdmSimpleType;
 
+/**
+ * @author SAP AG
+ * UriLiteral representation
+ */
 public final class UriLiteral {
   private EdmSimpleType type;
   private String literal;
 
+  /**
+   * @param {@link EdmSimpleType} type
+   * @param {@link String} literal
+   */
   public UriLiteral(final EdmSimpleType type, final String literal) {
     this.type = type;
     this.literal = literal;
   }
 
+  /**
+   * @return {@link EdmSimpleType} object
+   */
   public EdmSimpleType getType() {
     return type;
   }
 
-  public void setType(EdmSimpleType type) {
-    this.type = type;
-  }
-
+  /**
+   * @return String literal
+   */
   public String getLiteral() {
     return literal;
-  }
-
-  public void setLiteral(String literal) {
-    this.literal = literal;
   }
 
   @Override
