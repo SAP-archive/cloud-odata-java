@@ -13,6 +13,7 @@ import com.sap.core.odata.api.processor.aspect.EntitySet;
 import com.sap.core.odata.api.processor.aspect.EntitySimpleProperty;
 import com.sap.core.odata.api.processor.aspect.EntitySimplePropertyValue;
 import com.sap.core.odata.api.processor.aspect.FunctionImport;
+import com.sap.core.odata.api.processor.aspect.FunctionImportValue;
 import com.sap.core.odata.api.processor.aspect.Metadata;
 import com.sap.core.odata.api.processor.aspect.ServiceDocument;
 import com.sap.core.odata.api.rest.ODataContext;
@@ -31,6 +32,7 @@ public abstract class ODataSingleProcessor
     EntitySimpleProperty,
     EntitySimplePropertyValue,
     FunctionImport,
+    FunctionImportValue,
     Batch
 {
 
@@ -53,6 +55,10 @@ public abstract class ODataSingleProcessor
 
   @Override
   public ODataResponse executeFunctionImport() throws ODataError {
+    throw new ODataNotImplementedException();
+  }
+
+  public ODataResponse executeFunctionImportValue() throws ODataError {
     throw new ODataNotImplementedException();
   }
 
@@ -243,6 +249,10 @@ public abstract class ODataSingleProcessor
 
   @Override
   public FunctionImport getFunctionImportProcessor() throws ODataError {
+    return this;
+  }
+
+  public FunctionImportValue getFunctionImportValueProcessor() throws ODataError {
     return this;
   }
 

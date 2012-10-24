@@ -36,53 +36,134 @@ public class Dispatcher {
       switch (method) {
       case GET:
         return processor.getEntitySetProcessor().readEntitySet();
+      case POST:
+        return processor.getEntitySetProcessor().createEntity();
       default:
         throw new ODataMethodNotAllowedException(ODataMethodNotAllowedException.DISPATCH);
       }
 
     case URI2:
     case URI6A:
-      return null;
+      switch (method) {
+      case GET:
+        return processor.getEntityProcessor().readEntity();
+      case PUT:
+      case PATCH:
+      case MERGE:
+        return processor.getEntityProcessor().updateEntity();
+      case DELETE:
+        return processor.getEntityProcessor().deleteEntity();
+      default:
+        throw new ODataMethodNotAllowedException(ODataMethodNotAllowedException.DISPATCH);
+      }
 
     case URI3:
-      return null;
+      switch (method) {
+      case GET:
+        return processor.getEntityComplexPropertyProcessor().readEntityComplexProperty();
+      case PUT:
+      case PATCH:
+      case MERGE:
+        return processor.getEntityComplexPropertyProcessor().updateEntityComplexProperty();
+      default:
+        throw new ODataMethodNotAllowedException(ODataMethodNotAllowedException.DISPATCH);
+      }
 
     case URI4:
     case URI5:
-      return null;
+      switch (method) {
+      case GET:
+        if (uriParserResult.isValue())
+          return processor.getEntitySimplePropertyValueProcessor().readEntitySimplePropertyValue();
+        else
+          return processor.getEntitySimplePropertyProcessor().readEntitySimpleProperty();
+      case PUT:
+      case PATCH:
+      case MERGE:
+        if (uriParserResult.isValue())
+          return processor.getEntitySimplePropertyValueProcessor().updateEntitySimplePropertyValue();
+        else
+          return processor.getEntitySimplePropertyProcessor().updateEntitySimpleProperty();
+      case DELETE:
+        if (uriParserResult.isValue())
+          return processor.getEntitySimplePropertyValueProcessor().deleteEntitySimplePropertyValue();
+        else
+          throw new ODataMethodNotAllowedException(ODataMethodNotAllowedException.DISPATCH);
+      default:
+        throw new ODataMethodNotAllowedException(ODataMethodNotAllowedException.DISPATCH);
+      }
 
     case URI7A:
-      return null;
+      switch (method) {
+      case GET:
+        return processor.getEntityLinkProcessor().readEntityLink();
+      case PUT:
+      case PATCH:
+      case MERGE:
+        return processor.getEntityLinkProcessor().updateEntityLink();
+      case DELETE:
+        return processor.getEntityLinkProcessor().deleteEntityLink();
+      default:
+        throw new ODataMethodNotAllowedException(ODataMethodNotAllowedException.DISPATCH);
+      }
 
     case URI7B:
-      return null;
+      switch (method) {
+      case GET:
+        return processor.getEntityLinksProcessor().readEntityLinks();
+      case POST:
+        return processor.getEntityLinksProcessor().createEntityLink();
+      default:
+        throw new ODataMethodNotAllowedException(ODataMethodNotAllowedException.DISPATCH);
+      }
 
     case URI8:
       if (method == ODataHttpMethod.GET)
-        return this.processor.getMetadataProcessor().readMetadata();
+        return processor.getMetadataProcessor().readMetadata();
       else
         throw new ODataMethodNotAllowedException(ODataMethodNotAllowedException.DISPATCH);
 
     case URI9:
-      return null;
+      if (method == ODataHttpMethod.POST)
+        return processor.getBatchProcessor().executeBatch();
+      else
+        throw new ODataMethodNotAllowedException(ODataMethodNotAllowedException.DISPATCH);
 
     case URI10:
     case URI11:
     case URI12:
     case URI13:
-      return null;
+      return processor.getFunctionImportProcessor().executeFunctionImport();
 
     case URI14:
-      return null;
+      if (uriParserResult.isValue())
+        return processor.getFunctionImportValueProcessor().executeFunctionImportValue();
+      else
+        return processor.getFunctionImportProcessor().executeFunctionImport();
 
     case URI15:
-      return null;
+      if (method == ODataHttpMethod.GET)
+        return processor.getEntitySetProcessor().countEntitySet();
+      else
+        throw new ODataMethodNotAllowedException(ODataMethodNotAllowedException.DISPATCH);
 
     case URI16:
-      return null;
+      if (method == ODataHttpMethod.GET)
+        return processor.getEntityProcessor().existsEntity();
+      else
+        throw new ODataMethodNotAllowedException(ODataMethodNotAllowedException.DISPATCH);
 
     case URI17:
-      return null;
+      switch (method) {
+      case GET:
+        return processor.getEntityMediaProcessor().readEntityMedia();
+      case PUT:
+        return processor.getEntityMediaProcessor().updateEntityMedia();
+      case DELETE:
+        return processor.getEntityMediaProcessor().deleteEntityMedia();
+      default:
+        throw new ODataMethodNotAllowedException(ODataMethodNotAllowedException.DISPATCH);
+      }
 
     case URI50A:
       if (method == ODataHttpMethod.GET)

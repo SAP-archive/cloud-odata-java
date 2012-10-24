@@ -11,6 +11,7 @@ import com.sap.core.odata.api.processor.aspect.EntitySet;
 import com.sap.core.odata.api.processor.aspect.EntitySimpleProperty;
 import com.sap.core.odata.api.processor.aspect.EntitySimplePropertyValue;
 import com.sap.core.odata.api.processor.aspect.FunctionImport;
+import com.sap.core.odata.api.processor.aspect.FunctionImportValue;
 import com.sap.core.odata.api.processor.aspect.Metadata;
 import com.sap.core.odata.api.processor.aspect.ServiceDocument;
 import com.sap.core.odata.api.rest.ODataContext;
@@ -38,6 +39,8 @@ public abstract interface ODataProcessor {
   public EntitySimplePropertyValue getEntitySimplePropertyValueProcessor() throws ODataError;
 
   public FunctionImport getFunctionImportProcessor() throws ODataError;
+
+  public FunctionImportValue getFunctionImportValueProcessor() throws ODataError;
 
   public Batch getBatchProcessor() throws ODataError;
 
