@@ -3,18 +3,18 @@ package com.sap.core.odata.api.processor;
 import com.sap.core.odata.api.edm.Edm;
 import com.sap.core.odata.api.exception.ODataError;
 import com.sap.core.odata.api.exception.ODataNotImplementedException;
-import com.sap.core.odata.api.processor.facet.Batch;
-import com.sap.core.odata.api.processor.facet.Entity;
-import com.sap.core.odata.api.processor.facet.EntityComplexProperties;
-import com.sap.core.odata.api.processor.facet.EntityLink;
-import com.sap.core.odata.api.processor.facet.EntityLinks;
-import com.sap.core.odata.api.processor.facet.EntityMedia;
-import com.sap.core.odata.api.processor.facet.EntitySet;
-import com.sap.core.odata.api.processor.facet.EntitySimpleProperty;
-import com.sap.core.odata.api.processor.facet.EntityValueProperties;
-import com.sap.core.odata.api.processor.facet.FunctionImport;
-import com.sap.core.odata.api.processor.facet.Metadata;
-import com.sap.core.odata.api.processor.facet.ServiceDocument;
+import com.sap.core.odata.api.processor.aspect.Batch;
+import com.sap.core.odata.api.processor.aspect.Entity;
+import com.sap.core.odata.api.processor.aspect.EntityComplexProperty;
+import com.sap.core.odata.api.processor.aspect.EntityLink;
+import com.sap.core.odata.api.processor.aspect.EntityLinks;
+import com.sap.core.odata.api.processor.aspect.EntityMedia;
+import com.sap.core.odata.api.processor.aspect.EntitySet;
+import com.sap.core.odata.api.processor.aspect.EntitySimpleProperty;
+import com.sap.core.odata.api.processor.aspect.EntitySimplePropertyValue;
+import com.sap.core.odata.api.processor.aspect.FunctionImport;
+import com.sap.core.odata.api.processor.aspect.Metadata;
+import com.sap.core.odata.api.processor.aspect.ServiceDocument;
 import com.sap.core.odata.api.rest.ODataContext;
 import com.sap.core.odata.api.rest.ODataResponse;
 
@@ -24,12 +24,12 @@ public abstract class ODataSingleProcessor
     ServiceDocument,
     Entity,
     EntitySet,
-    EntityComplexProperties,
+    EntityComplexProperty,
     EntityLink,
     EntityLinks,
     EntityMedia,
     EntitySimpleProperty,
-    EntityValueProperties,
+    EntitySimplePropertyValue,
     FunctionImport,
     Batch
 {
@@ -57,17 +57,17 @@ public abstract class ODataSingleProcessor
   }
 
   @Override
-  public ODataResponse readEntityValueProperties() throws ODataError {
+  public ODataResponse readEntitySimplePropertyValue() throws ODataError {
     throw new ODataNotImplementedException();
   }
 
   @Override
-  public ODataResponse updateEntityValueProperties() throws ODataError {
+  public ODataResponse updateEntitySimplePropertyValue() throws ODataError {
     throw new ODataNotImplementedException();
   }
 
   @Override
-  public ODataResponse deleteEntityValueProperties() throws ODataError {
+  public ODataResponse deleteEntitySimplePropertyValue() throws ODataError {
     throw new ODataNotImplementedException();
   }
 
@@ -107,7 +107,7 @@ public abstract class ODataSingleProcessor
   }
 
   @Override
-  public ODataResponse createEntityLinks() throws ODataError {
+  public ODataResponse createEntityLink() throws ODataError {
     throw new ODataNotImplementedException();
   }
 
@@ -132,12 +132,12 @@ public abstract class ODataSingleProcessor
   }
 
   @Override
-  public ODataResponse readEntityComplexProperties() throws ODataError {
+  public ODataResponse readEntityComplexProperty() throws ODataError {
     throw new ODataNotImplementedException();
   }
 
   @Override
-  public ODataResponse updateEntityComplexProperties() throws ODataError {
+  public ODataResponse updateEntityComplexProperty() throws ODataError {
     throw new ODataNotImplementedException();
   }
 
@@ -152,7 +152,7 @@ public abstract class ODataSingleProcessor
   }
 
   @Override
-  public ODataResponse createEntitySet() throws ODataError {
+  public ODataResponse createEntity() throws ODataError {
     throw new ODataNotImplementedException();
   }
 
@@ -212,7 +212,7 @@ public abstract class ODataSingleProcessor
   }
 
   @Override
-  public EntityComplexProperties getEntityComplexPropertiesProcessor() throws ODataError {
+  public EntityComplexProperty getEntityComplexPropertyProcessor() throws ODataError {
     return this;
   }
 
@@ -237,7 +237,7 @@ public abstract class ODataSingleProcessor
   }
 
   @Override
-  public EntityValueProperties getEntityValuePropertiesProcessor() throws ODataError {
+  public EntitySimplePropertyValue getEntitySimplePropertyValueProcessor() throws ODataError {
     return this;
   }
 

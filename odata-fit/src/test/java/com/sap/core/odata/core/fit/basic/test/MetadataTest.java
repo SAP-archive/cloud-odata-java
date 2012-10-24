@@ -12,7 +12,7 @@ import org.apache.http.client.methods.HttpGet;
 import org.junit.Test;
 
 import com.sap.core.odata.api.exception.ODataError;
-import com.sap.core.odata.api.processor.facet.Metadata;
+import com.sap.core.odata.api.processor.aspect.Metadata;
 import com.sap.core.odata.api.rest.ODataResponse;
 import com.sap.core.testutils.StringHelper;
 

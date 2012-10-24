@@ -1,4 +1,4 @@
-package com.sap.core.odata.api.processor.facet;
+package com.sap.core.odata.api.processor.aspect;
 
 import com.sap.core.odata.api.exception.ODataError;
 import com.sap.core.odata.api.rest.ODataResponse;
@@ -8,5 +8,5 @@ public interface EntityLinks {
 
   ODataResponse countEntityLinks() throws ODataError;
 
-  ODataResponse createEntityLinks() throws ODataError;
+  ODataResponse createEntityLink() throws ODataError;
 }

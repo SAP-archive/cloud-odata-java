@@ -9,8 +9,8 @@ import com.sap.core.odata.api.edm.EdmServiceMetadata;
 import com.sap.core.odata.api.exception.ODataError;
 import com.sap.core.odata.api.processor.ODataProcessor;
 import com.sap.core.odata.api.processor.ODataSingleProcessor;
-import com.sap.core.odata.api.processor.facet.EntitySet;
-import com.sap.core.odata.api.processor.facet.Metadata;
+import com.sap.core.odata.api.processor.aspect.EntitySet;
+import com.sap.core.odata.api.processor.aspect.Metadata;
 import com.sap.core.odata.testutils.fit.AbstractFitTest;
 
 public class AbstractBasicTest extends AbstractFitTest {
