@@ -5,7 +5,6 @@ import com.sap.core.odata.api.edm.EdmFacets;
 import com.sap.core.odata.api.edm.EdmLiteralKind;
 import com.sap.core.odata.api.edm.EdmSimpleType;
 import com.sap.core.odata.api.edm.EdmSimpleTypeFacade;
-import com.sap.core.odata.api.edm.EdmSimpleTypeKind;
 import com.sap.core.odata.api.edm.EdmTypeKind;
 
 public class EdmUint7 implements EdmSimpleType {
@@ -21,7 +20,7 @@ public class EdmUint7 implements EdmSimpleType {
 
     return equals;
   }
-  
+
   @Override
   public String getNamespace() throws EdmException {
     return EdmSimpleTypeFacade.systemNamespace;
@@ -34,26 +33,21 @@ public class EdmUint7 implements EdmSimpleType {
 
   @Override
   public String getName() throws EdmException {
-    return this.getTypeRepresentation().toString();
+    return "UInt7";
   }
 
   @Override
   public boolean isCompatible(EdmSimpleType simpleType) {
     boolean compatible;
 
-    switch (simpleType.getTypeRepresentation()) {
-    case Bit:
-    case UInt7:
+    if (simpleType instanceof EdmBit || simpleType instanceof EdmUint7) {
       compatible = true;
-      break;
-
-    default:
+    } else {
       compatible = false;
-      break;
     }
 
     return compatible;
-  
+
   }
 
   @Override
@@ -79,10 +73,4 @@ public class EdmUint7 implements EdmSimpleType {
     // TODO Auto-generated method stub
     return null;
   }
-
-  @Override
-  public EdmSimpleTypeKind getTypeRepresentation() {
-    return EdmSimpleTypeKind.UInt7;
-  }
-
 }

@@ -65,4 +65,6 @@ public abstract class RuntimeDelegate {
    */
   public abstract UriParser getUriParser(Edm edm);
 
+  public abstract EdmSimpleType getInternalEdmSimpleTypeByString(String edmSimpleType);
+
 }

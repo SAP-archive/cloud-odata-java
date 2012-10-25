@@ -8,11 +8,10 @@ import com.sap.core.odata.api.edm.EdmSimpleTypeFacade;
 import com.sap.core.odata.api.edm.EdmSimpleTypeKind;
 import com.sap.core.odata.api.edm.EdmTypeKind;
 
-
 public class EdmByte implements EdmSimpleType {
-  
+
   private EdmSimpleTypeKind edmSimpleType = EdmSimpleTypeKind.Byte;
-  
+
   @Override
   public boolean equals(Object obj) {
     boolean equals = false;
@@ -26,11 +25,6 @@ public class EdmByte implements EdmSimpleType {
   }
 
   @Override
-  public EdmSimpleTypeKind getTypeRepresentation() {
-    return edmSimpleType;
-  }
-  
-  @Override
   public String getNamespace() throws EdmException {
     return EdmSimpleTypeFacade.edmNamespace;
   }
@@ -42,25 +36,19 @@ public class EdmByte implements EdmSimpleType {
 
   @Override
   public String getName() throws EdmException {
-    return this.getTypeRepresentation().toString();
+    return this.edmSimpleType.toString();
   }
 
   @Override
   public boolean isCompatible(EdmSimpleType simpleType) {
     boolean compatible;
-    
-    switch (simpleType.getTypeRepresentation()) {
-    case Bit:
-    case UInt7:
-    case Byte:
-      compatible = true;
-      break;
 
-    default:
+    if (simpleType instanceof EdmBit || simpleType instanceof EdmUint7 || simpleType instanceof EdmByte) {
+      compatible = true;
+    } else {
       compatible = false;
-      break;
     }
-      
+
     return compatible;
   }
 

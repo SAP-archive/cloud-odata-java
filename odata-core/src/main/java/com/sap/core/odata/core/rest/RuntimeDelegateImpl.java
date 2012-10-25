@@ -92,12 +92,6 @@ public class RuntimeDelegateImpl extends RuntimeDelegate {
     case Time:
       edmType = new EdmTime();
       break;
-    case Bit:
-      edmType = new EdmBit();
-      break;
-    case UInt7:
-      edmType = new EdmUint7();
-      break;
     default:
       throw new RuntimeException("Invalid Type " + edmSimpleType);
     }
@@ -108,6 +102,20 @@ public class RuntimeDelegateImpl extends RuntimeDelegate {
   @Override
   public UriParser getUriParser(Edm edm) {
     return new UriParserImpl(edm);
+  }
+
+  @Override
+  public EdmSimpleType getInternalEdmSimpleTypeByString(String edmSimpleType) {
+    EdmSimpleType edmType;
+
+    if ("Bit".equals(edmSimpleType)) {
+      edmType = new EdmBit();
+    } else if ("Uint7".equals(edmSimpleType)) {
+      edmType = new EdmUint7();
+    } else {
+      throw new RuntimeException("Invalid internal Type " + edmSimpleType);
+    }
+    return edmType;
   }
 
 }

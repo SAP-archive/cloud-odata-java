@@ -23,6 +23,10 @@ public class EdmSimpleTypeFacade {
   public EdmSimpleType getInstance(EdmSimpleTypeKind edmSimpleType) {
     return RuntimeDelegate.getInstance().getEdmSimpleType(edmSimpleType);
   }
+  
+  private EdmSimpleType getInternalTypeKindInstance(String edmSimpleType){
+    return RuntimeDelegate.getInstance().getInternalEdmSimpleTypeByString(edmSimpleType);
+  }
 
   public EdmSimpleType binaryInstance() {
     return getInstance(EdmSimpleTypeKind.Binary);
@@ -106,9 +110,9 @@ public class EdmSimpleTypeFacade {
           final int i = Integer.parseInt(value);
           if (i >= Byte.MIN_VALUE && i <= Byte.MAX_VALUE) {
             if (i == 0 || i == 1) {
-              return new UriLiteral(getInstance(EdmSimpleTypeKind.Bit), value);
+              return new UriLiteral(getInternalTypeKindInstance("Bit"), value);
             } else if (i >= 0 && i <= 127) {
-              return new UriLiteral(getInstance(EdmSimpleTypeKind.UInt7), value);
+              return new UriLiteral(getInternalTypeKindInstance("Uint7"), value);
             } else {
               return new UriLiteral(sByteInstance(), value);
             }

@@ -26,11 +26,6 @@ public class EdmTime implements EdmSimpleType {
   }
 
   @Override
-  public EdmSimpleTypeKind getTypeRepresentation() {
-    return edmSimpleType;
-  }
-
-  @Override
   public String getNamespace() throws EdmException {
     return EdmSimpleTypeFacade.edmNamespace;
   }
@@ -42,21 +37,17 @@ public class EdmTime implements EdmSimpleType {
 
   @Override
   public String getName() throws EdmException {
-    return this.getTypeRepresentation().toString();
+    return this.edmSimpleType.toString();
   }
 
   @Override
   public boolean isCompatible(EdmSimpleType simpleType) {
     boolean compatible;
 
-    switch (simpleType.getTypeRepresentation()) {
-    case Time:
+    if (simpleType instanceof EdmTime) {
       compatible = true;
-      break;
-
-    default:
+    } else {
       compatible = false;
-      break;
     }
 
     return compatible;

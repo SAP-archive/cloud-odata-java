@@ -15,6 +15,4 @@ public interface EdmSimpleType extends EdmType {
 
   public String toUriLiteral(String literal);
 
-  public EdmSimpleTypeKind getTypeRepresentation();
-
 }

@@ -25,11 +25,6 @@ public class EdmDouble implements EdmSimpleType {
   }
 
   @Override
-  public EdmSimpleTypeKind getTypeRepresentation() {
-    return edmSimpleType;
-  }
-
-  @Override
   public String getNamespace() throws EdmException {
     return EdmSimpleTypeFacade.edmNamespace;
   }
@@ -41,28 +36,37 @@ public class EdmDouble implements EdmSimpleType {
 
   @Override
   public String getName() throws EdmException {
-    return this.getTypeRepresentation().toString();
+    return this.edmSimpleType.toString();
   }
 
   @Override
   public boolean isCompatible(EdmSimpleType simpleType) {
     boolean compatible;
 
-    switch (simpleType.getTypeRepresentation()) {
-    case Bit:
-    case UInt7:
-    case Byte:
-    case SByte:
-    case Int16:
-    case Int32:
-    case Int64:
-    case Single:
-    case Double:
+    if (simpleType instanceof EdmBit || simpleType instanceof EdmUint7) {
       compatible = true;
-      break;
-    default:
-      compatible = false;
-      break;
+    } else {
+      EdmSimpleTypeKind simpleTypeKind;
+      try {
+        simpleTypeKind = EdmSimpleTypeKind.valueOf(simpleType.getName());
+        switch (simpleTypeKind) {
+        case Byte:
+        case SByte:
+        case Int16:
+        case Int32:
+        case Int64:
+        case Single:
+        case Double:
+          compatible = true;
+          break;
+        default:
+          compatible = false;
+          break;
+        }
+      } catch (EdmException e) {
+        compatible = false;
+      }
+
     }
 
     return compatible;
