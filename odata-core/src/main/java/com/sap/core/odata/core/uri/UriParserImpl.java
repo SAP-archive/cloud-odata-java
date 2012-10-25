@@ -151,7 +151,7 @@ public class UriParserImpl implements UriParser  {
       functionImport = uriResult.getEntityContainer().getFunctionImport(segmentName);
     }
     if (entitySet != null) {
-      uriResult.setEntitySet(entitySet);
+      uriResult.setStartEntitySet(entitySet);
       handleEntitySet(entitySet, keyPredicate);
     } else {
       uriResult.setFunctionImport(functionImport);

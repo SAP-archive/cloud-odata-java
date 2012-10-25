@@ -1,4 +1,4 @@
-package com.sap.core.odata.api.uri;
+package com.sap.core.odata.api.uri.resultviews;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -7,31 +7,16 @@ import java.util.Map;
 import com.sap.core.odata.api.edm.EdmEntityContainer;
 import com.sap.core.odata.api.edm.EdmEntitySet;
 import com.sap.core.odata.api.edm.EdmFunctionImport;
-import com.sap.core.odata.api.edm.EdmProperty;
 import com.sap.core.odata.api.edm.EdmType;
 import com.sap.core.odata.api.enums.Format;
-import com.sap.core.odata.api.enums.InlineCount;
 import com.sap.core.odata.api.enums.UriType;
-import com.sap.core.odata.api.uri.resultviews.Uri0ResultView;
-import com.sap.core.odata.api.uri.resultviews.Uri10to14ResultView;
-import com.sap.core.odata.api.uri.resultviews.Uri15ResultView;
-import com.sap.core.odata.api.uri.resultviews.Uri16BResultView;
-import com.sap.core.odata.api.uri.resultviews.Uri16ResultView;
-import com.sap.core.odata.api.uri.resultviews.Uri17ResultView;
-import com.sap.core.odata.api.uri.resultviews.Uri26AResultView;
-import com.sap.core.odata.api.uri.resultviews.Uri3ResultView;
-import com.sap.core.odata.api.uri.resultviews.Uri45ResultView;
-import com.sap.core.odata.api.uri.resultviews.Uri50AResultView;
-import com.sap.core.odata.api.uri.resultviews.Uri50BResultView;
-import com.sap.core.odata.api.uri.resultviews.Uri7AResultView;
-import com.sap.core.odata.api.uri.resultviews.Uri7BResultView;
-import com.sap.core.odata.api.uri.resultviews.Uri8ResultView;
+import com.sap.core.odata.api.uri.KeyPredicate;
+import com.sap.core.odata.api.uri.NavigationPropertySegment;
+import com.sap.core.odata.api.uri.NavigationSegment;
+import com.sap.core.odata.api.uri.SelectItem;
+import com.sap.core.odata.api.uri.UriLiteral;
 
-/**
- * @author SAP AG
- * Parser results interface
- */
-public interface UriParserResult extends Uri0ResultView, Uri16BResultView, Uri26AResultView, Uri3ResultView, Uri45ResultView, Uri7AResultView, Uri7BResultView, Uri8ResultView, Uri10to14ResultView, Uri15ResultView, Uri16ResultView, Uri17ResultView, Uri50AResultView, Uri50BResultView {
+public interface Uri26AResultView {
 
   /**
    * @return {@link UriType} the uri type
@@ -42,7 +27,7 @@ public interface UriParserResult extends Uri0ResultView, Uri16BResultView, Uri26
    * @return {@link EdmEntityContainer} the target entity container
    */
   public EdmEntityContainer getEntityContainer();
-
+  
   /**
    * @return {@link EdmEntitySet}
    */
@@ -62,7 +47,7 @@ public interface UriParserResult extends Uri0ResultView, Uri16BResultView, Uri26
    * @return {@link EdmType} the target type of the entity set
    */
   public EdmType getTargetType();
-
+  
   /**
    * @return list of {@link KeyPredicate}
    */
@@ -72,26 +57,6 @@ public interface UriParserResult extends Uri0ResultView, Uri16BResultView, Uri26
    * @return list of {@link NavigationSegment}
    */
   public List<NavigationSegment> getNavigationSegments();
-
-  /**
-   * @return list of {@link EdmProperty}
-   */
-  public List<EdmProperty> getPropertyPath();
-
-  /**
-   * @return boolean
-   */
-  public boolean isCount();
-
-  /**
-   * @return boolean
-   */
-  public boolean isValue();
-
-  /**
-   * @return boolean
-   */
-  public boolean isLinks();
 
   /**
    * @return {@link Format} the format
@@ -107,31 +72,6 @@ public interface UriParserResult extends Uri0ResultView, Uri16BResultView, Uri26
    * @return String the filter
    */
   public String getFilter();
-
-  /**
-   * @return {@link InlineCount} the inline count
-   */
-  public InlineCount getInlineCount();
-
-  /**
-   * @return String order by
-   */
-  public String getOrderBy();
-
-  /**
-   * @return String skip token
-   */
-  public String getSkipToken();
-
-  /**
-   * @return String skip
-   */
-  public int getSkip();
-
-  /**
-   * @return int top
-   */
-  public Integer getTop();
 
   /**
    * @return List of a list of {@link NavigationPropertySegment} to be expanded
