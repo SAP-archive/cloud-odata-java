@@ -52,11 +52,11 @@ public enum UriType {
    */
   URI9(),
   /**
-   * Function import returning a single entity
+   * Function import returning a single instance of an entity type
    */
   URI10(SystemQueryOption.$format),
   /**
-   * Function import returning a collection of complex type values
+   * Function import returning a collection of complex-type instances
    */
   URI11(SystemQueryOption.$format),
   /**
@@ -64,11 +64,11 @@ public enum UriType {
    */
   URI12(SystemQueryOption.$format),
   /**
-   * Function import returning a collection of primitive type values
+   * Function import returning a collection of primitive-type instances
    */
   URI13(SystemQueryOption.$format),
   /**
-   * Function import returning a single primitive type value
+   * Function import returning a single instance of a primitive type
    */
   URI14(SystemQueryOption.$format),
   /**
