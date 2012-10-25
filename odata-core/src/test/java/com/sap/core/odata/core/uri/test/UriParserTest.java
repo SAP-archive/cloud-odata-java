@@ -237,7 +237,7 @@ public class UriParserTest {
   public void parseEmployeesEntityWithKeyValue() throws Exception {
     UriParserResultImpl result = parse("/Employees('1')/$value");
     assertEquals("Employees", result.getTargetEntitySet().getName());
-    assertTrue(result.getEntitySet().getEntityType().hasStream());
+    assertTrue(result.getStartEntitySet().getEntityType().hasStream());
     assertEquals(UriType.URI17, result.getUriType());
     assertTrue(result.isValue());
 
@@ -861,7 +861,7 @@ public class UriParserTest {
   @Test
   public void parseCompatibleSystemQueryOptions() throws Exception {
     UriParserResultImpl result = parse("Employees?$format=json&$inlinecount=allpages&$skiptoken=abc&$skip=2&$top=1");
-    assertEquals("Employees", result.getEntitySet().getName());
+    assertEquals("Employees", result.getStartEntitySet().getName());
     assertEquals(UriType.URI1, result.getUriType());
     assertEquals(Format.JSON, result.getFormat());
     assertEquals(InlineCount.ALLPAGES, result.getInlineCount());

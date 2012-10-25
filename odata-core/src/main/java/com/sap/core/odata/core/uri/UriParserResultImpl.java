@@ -26,7 +26,7 @@ public class UriParserResultImpl implements UriParserResult {
   private UriType uriType;
 
   private EdmEntityContainer entityContainer;
-  private EdmEntitySet entitySet;
+  private EdmEntitySet startEntitySet;
   private EdmEntitySet targetEntitySet;
   private EdmFunctionImport functionImport;
   private EdmType targetType;
@@ -68,13 +68,13 @@ public class UriParserResultImpl implements UriParserResult {
     return entityContainer;
   }
 
-  public void setEntitySet(EdmEntitySet edmEntitySet) {
-    this.entitySet = edmEntitySet;
+  public void setStartEntitySet(EdmEntitySet edmEntitySet) {
+    this.startEntitySet = edmEntitySet;
   }
 
   @Override
-  public EdmEntitySet getEntitySet() {
-    return entitySet;
+  public EdmEntitySet getStartEntitySet() {
+    return startEntitySet;
   }
 
   public void setTargetEntitySet(EdmEntitySet targetEntitySet) {
@@ -279,7 +279,7 @@ public class UriParserResultImpl implements UriParserResult {
   public String toString() {
     return "UriParserResult: uriType=" + uriType + ", "
         + "entityContainer=" + this.entityContainer + ", "
-        + "entitySet=" + this.entitySet + ", "
+        + "entitySet=" + this.startEntitySet + ", "
         + "targetEntitySet=" + this.targetEntitySet + ", "
         + "functionImport=" + this.functionImport + ", "
         + "targetType=" + this.targetType + ", "

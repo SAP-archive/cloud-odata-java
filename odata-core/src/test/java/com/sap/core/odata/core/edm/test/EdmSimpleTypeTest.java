@@ -22,11 +22,6 @@ public class EdmSimpleTypeTest {
   }
 
   @Test
-  public void testBoolean() {
-
-  }
-
-  @Test
   public void testNames() throws EdmException {
 
     EdmSimpleTypeFacade facade = new EdmSimpleTypeFacade();

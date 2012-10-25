@@ -11,4 +11,5 @@ public interface Entity {
   ODataResponse updateEntity() throws ODataError;
 
   ODataResponse deleteEntity() throws ODataError;
+  
 }
