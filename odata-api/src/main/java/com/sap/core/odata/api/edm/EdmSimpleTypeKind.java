@@ -1,7 +1,12 @@
 package com.sap.core.odata.api.edm;
 
-public enum EdmSimpleTypeKind
-{
+/**
+ * EdmSimpleTypeKind holds all EdmSimpleTypes defined as primitive type in the Entity Data Model (EDM).
+ * 
+ * @author SAP AG
+ */
+public enum EdmSimpleTypeKind {
 
-  Binary, Boolean, Byte, DateTime, DateTimeOffset, Decimal, Double, Guid, Int16, Int32, Int64, SByte, Single, String, Time;
+  Binary, Boolean, Byte, DateTime, DateTimeOffset, Decimal,
+  Double, Guid, Int16, Int32, Int64, SByte, Single, String, Time;
 }

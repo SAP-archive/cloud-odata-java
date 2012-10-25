@@ -25,9 +25,8 @@ public interface EdmAnnotations {
    * @param namespace
    * @return String
    */
-  String getAnnotationElement(String name, String namespace);
-
   //TODO return type to be discussed, see EdmAnnotationElement
+  String getAnnotationElement(String name, String namespace);
 
   /**
    * Get all annotation attributes for the CSDL element

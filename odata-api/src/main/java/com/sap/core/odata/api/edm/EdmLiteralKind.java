@@ -1,7 +1,7 @@
 package com.sap.core.odata.api.edm;
 
 /**
- * EdmLiteralKind indicates the format of the edm literal.
+ * EdmLiteralKind indicates the format of an edm literal.
  * 
  * @author SAP AG
  */

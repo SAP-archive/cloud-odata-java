@@ -11,24 +11,24 @@ public enum EdmMultiplicity {
 
   ZERO_TO_ONE("0..1"), MANY("*"), ONE("1");
 
-  private final String name;
+  private final String literal;
 
-  private EdmMultiplicity(String name) {
-    this.name = name;
+  private EdmMultiplicity(String literal) {
+    this.literal = literal;
   }
 
   /**
    * Get the multiplicity for a given name
    * 
-   * @param name
+   * @param literal
    * @return {@link EdmMultiplicity}
    */
-  public static EdmMultiplicity fromSymbolString(String name) {
+  public static EdmMultiplicity fromLiteral(String literal) {
     for (EdmMultiplicity edmMultiplicity : EdmMultiplicity.values()) {
-      if (edmMultiplicity.toString().equals(name))
+      if (edmMultiplicity.toString().equals(literal))
         return edmMultiplicity;
     }
-    throw new IllegalArgumentException("Invalid name " + name);
+    throw new IllegalArgumentException("Invalid literal " + literal);
   }
 
   /* (non-Javadoc)
@@ -36,6 +36,6 @@ public enum EdmMultiplicity {
    */
   @Override
   public String toString() {
-    return name;
+    return literal;
   }
 }
