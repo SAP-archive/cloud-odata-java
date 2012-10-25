@@ -34,7 +34,7 @@ public interface EdmSimpleType extends EdmType {
    * @param facets
    * @return system data type as Object
    */
-  //TODO: Check Returntype
+  //TODO: Check Returntype + Exception Handling
   public Object valueOfString(String value, EdmLiteralKind literalKind, EdmFacets facets);
 
   /**
@@ -45,7 +45,7 @@ public interface EdmSimpleType extends EdmType {
    * @param facets
    * @return literal representation as String
    */
-  //TODO: Check Signature
+  //TODO: Check Signature + Exception Handling
   public String valueToString(Object value, EdmLiteralKind literalKind, EdmFacets facets);
 
   /**
