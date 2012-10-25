@@ -160,8 +160,8 @@ public enum HttpStatus {
   /**
    * Convert a numerical status code into the corresponding Status.
    *
-   * @param statusCode the numerical status code.
-   * @return the matching Status or null is no matching Status is defined.
+   * @param statusCode the numerical status code
+   * @return the matching Status or null if no matching Status is defined
    */
   public static HttpStatus fromStatusCode(final int statusCode) {
     for (HttpStatus s : HttpStatus.values()) {
@@ -175,7 +175,7 @@ public enum HttpStatus {
   /**
    * Get the class of status code.
    *
-   * @return the class of status code.
+   * @return the class of status code
    */
   public Family getFamily() {
     return family;
@@ -193,7 +193,7 @@ public enum HttpStatus {
   /**
    * Get the reason phrase.
    *
-   * @return the reason phrase.
+   * @return the reason phrase
    */
   public String getReasonPhrase() {
     return toString();
@@ -202,7 +202,7 @@ public enum HttpStatus {
   /**
    * Get the reason phrase.
    *
-   * @return the reason phrase.
+   * @return the reason phrase
    */
   @Override
   public String toString() {
@@ -243,8 +243,8 @@ public enum HttpStatus {
     /**
      * Get the response status family for the status code.
      *
-     * @param statusCode response status code to get the family for.
-     * @return family of the response status code.
+     * @param statusCode response status code to get the family for
+     * @return family of the response status code
      */
     public static Family familyOf(final int statusCode) {
       switch (statusCode / 100) {
