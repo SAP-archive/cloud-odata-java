@@ -24,11 +24,6 @@ public class EdmString implements EdmSimpleType {
 
     return equals;
   }
-
-  @Override
-  public EdmSimpleTypeKind getTypeRepresentation() {
-    return edmSimpleType;
-  }
   
   @Override
   public String getNamespace() throws EdmException {
@@ -42,21 +37,17 @@ public class EdmString implements EdmSimpleType {
 
   @Override
   public String getName() throws EdmException {
-    return this.getTypeRepresentation().toString();
+    return this.edmSimpleType.toString();
   }
 
   @Override
   public boolean isCompatible(EdmSimpleType simpleType) {
     boolean compatible;
 
-    switch (simpleType.getTypeRepresentation()) {
-    case String:
+    if (simpleType instanceof EdmString) {
       compatible = true;
-      break;
-
-    default:
+    } else {
       compatible = false;
-      break;
     }
       
     return compatible;

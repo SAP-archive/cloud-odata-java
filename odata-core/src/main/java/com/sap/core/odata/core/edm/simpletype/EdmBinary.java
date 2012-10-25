@@ -36,23 +36,19 @@ public class EdmBinary implements EdmSimpleType {
 
   @Override
   public String getName() throws EdmException {
-    return this.getTypeRepresentation().toString();
+    return this.edmSimpleType.toString();
   }
 
   @Override
   public boolean isCompatible(EdmSimpleType simpleType) {
     boolean compatible;
 
-    switch (simpleType.getTypeRepresentation()) {
-    case Binary:
+    if(simpleType instanceof EdmBinary){
       compatible = true;
-      break;
-
-    default:
+    }else{
       compatible = false;
-      break;
     }
-
+      
     return compatible;
   }
 
@@ -79,10 +75,4 @@ public class EdmBinary implements EdmSimpleType {
     // TODO Auto-generated method stub
     return null;
   }
-
-  @Override
-  public EdmSimpleTypeKind getTypeRepresentation() {
-    return edmSimpleType;
-  }
-
 }

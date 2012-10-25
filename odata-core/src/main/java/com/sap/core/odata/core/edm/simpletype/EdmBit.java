@@ -5,12 +5,9 @@ import com.sap.core.odata.api.edm.EdmFacets;
 import com.sap.core.odata.api.edm.EdmLiteralKind;
 import com.sap.core.odata.api.edm.EdmSimpleType;
 import com.sap.core.odata.api.edm.EdmSimpleTypeFacade;
-import com.sap.core.odata.api.edm.EdmSimpleTypeKind;
 import com.sap.core.odata.api.edm.EdmTypeKind;
 
 public class EdmBit implements EdmSimpleType {
-
-  private EdmSimpleTypeKind edmSimpleType = EdmSimpleTypeKind.Bit;
 
   @Override
   public boolean equals(Object obj) {
@@ -36,21 +33,17 @@ public class EdmBit implements EdmSimpleType {
 
   @Override
   public String getName() throws EdmException {
-    return this.getTypeRepresentation().toString();
+    return "Bit";
   }
 
   @Override
   public boolean isCompatible(EdmSimpleType simpleType) {
     boolean compatible;
 
-    switch (simpleType.getTypeRepresentation()) {
-    case Bit:
+    if (simpleType instanceof EdmBit) {
       compatible = true;
-      break;
-
-    default:
+    } else {
       compatible = false;
-      break;
     }
 
     return compatible;
@@ -79,10 +72,4 @@ public class EdmBit implements EdmSimpleType {
     // TODO Auto-generated method stub
     return null;
   }
-
-  @Override
-  public EdmSimpleTypeKind getTypeRepresentation() {
-    return edmSimpleType;
-  }
-
 }
