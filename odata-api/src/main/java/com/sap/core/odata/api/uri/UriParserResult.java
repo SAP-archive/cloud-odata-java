@@ -12,6 +12,9 @@ import com.sap.core.odata.api.edm.EdmType;
 import com.sap.core.odata.api.enums.Format;
 import com.sap.core.odata.api.enums.InlineCount;
 import com.sap.core.odata.api.enums.UriType;
+import com.sap.core.odata.api.uri.resultviews.DeleteResultView;
+import com.sap.core.odata.api.uri.resultviews.PostResultView;
+import com.sap.core.odata.api.uri.resultviews.PutMergePatchResultView;
 import com.sap.core.odata.api.uri.resultviews.Uri0ResultView;
 import com.sap.core.odata.api.uri.resultviews.Uri10to14ResultView;
 import com.sap.core.odata.api.uri.resultviews.Uri15ResultView;
@@ -31,7 +34,9 @@ import com.sap.core.odata.api.uri.resultviews.Uri8ResultView;
  * @author SAP AG
  * Parser results interface
  */
-public interface UriParserResult extends Uri0ResultView, Uri16BResultView, Uri26AResultView, Uri3ResultView, Uri45ResultView, Uri7AResultView, Uri7BResultView, Uri8ResultView, Uri10to14ResultView, Uri15ResultView, Uri16ResultView, Uri17ResultView, Uri50AResultView, Uri50BResultView {
+public interface UriParserResult extends Uri0ResultView, Uri16BResultView, Uri26AResultView, Uri3ResultView, Uri45ResultView,
+    Uri7AResultView, Uri7BResultView, Uri8ResultView, Uri10to14ResultView, Uri15ResultView, Uri16ResultView, Uri17ResultView, 
+    Uri50AResultView, Uri50BResultView, PutMergePatchResultView, PostResultView, DeleteResultView {
 
   /**
    * @return {@link UriType} the uri type
