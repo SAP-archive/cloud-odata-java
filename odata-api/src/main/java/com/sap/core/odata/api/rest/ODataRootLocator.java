@@ -50,7 +50,7 @@ public class ODataRootLocator {
     odataLocator.setHttpHeaders(this.httpHeaders);
     odataLocator.setUriInfo(this.uriInfo);
 
-    odataLocator.beforRequest();
+    odataLocator.beforeRequest();
 
     return odataLocator;
 

@@ -17,7 +17,7 @@ public interface ODataLocator {
   /**
    * initialze OData locator before request handling
    */
-  void beforRequest() throws ODataError;
+  void beforeRequest() throws ODataError;
 
   void setPathSegments(List<PathSegment> odataPathSegments);
 

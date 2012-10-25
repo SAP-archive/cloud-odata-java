@@ -127,17 +127,17 @@ public final class ODataLocatorImpl implements ODataLocator {
   }
 
   @Override
-  public void beforRequest() throws ODataError {
+  public void beforeRequest() throws ODataError {
 
     this.context = new ODataContextImpl();
     this.context.setHttpHeaders(this.httpHeaders);
     this.context.setPathSegments(this.odataPathSegments);
     this.context.setUriInfo(this.uriInfo);
+    this.processor.setContext(this.context);
     this.uriParser = new UriParserImpl(this.processor.getMetadataProcessor().getEdm());
     this.dispatcher = new Dispatcher();
     this.dispatcher.setContext(this.context);
     this.dispatcher.setProcessor(this.processor);
-    this.processor.setContext(this.context);
   }
 
   private Map<String, String> convertToSinglevaluedMap(MultivaluedMap<String, String> multi) {
