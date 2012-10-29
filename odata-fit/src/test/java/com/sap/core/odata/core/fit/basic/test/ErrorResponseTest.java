@@ -21,6 +21,7 @@ import com.sap.core.odata.api.enums.HttpStatus;
 import com.sap.core.odata.api.exception.ODataError;
 import com.sap.core.odata.api.processor.aspect.EntitySet;
 import com.sap.core.odata.api.rest.ODataResponse;
+import com.sap.core.odata.core.uri.UriParserResultImpl;
 import com.sap.core.testutils.StringHelper;
 
 public class ErrorResponseTest extends AbstractBasicTest {
@@ -35,7 +36,8 @@ public class ErrorResponseTest extends AbstractBasicTest {
     Edm edm = this.getProcessor().getMetadataProcessor().getEdm();
     when(edm.getDefaultEntityContainer()).thenReturn(edmEntityContainer);
     EntitySet entitySet = this.getProcessor().getEntitySetProcessor();
-    when(entitySet.readEntitySet()).thenReturn(ODataResponse.status(HttpStatus.OK).entity("entityset").build());
+    UriParserResultImpl uriParserResult = mock(UriParserResultImpl.class);
+    when(entitySet.readEntitySet(uriParserResult)).thenReturn(ODataResponse.status(HttpStatus.OK).entity("entityset").build());
   }
 
   
@@ -43,8 +45,8 @@ public class ErrorResponseTest extends AbstractBasicTest {
   public void test500RuntimeError() throws ClientProtocolException, IOException, ODataError {
 
     EntitySet entitySetProcessor = this.getProcessor().getEntitySetProcessor();
-
-    doThrow(new RuntimeException("Bumms")).when(entitySetProcessor).readEntitySet();
+    UriParserResultImpl uriParserResult = mock(UriParserResultImpl.class);
+    doThrow(new RuntimeException("Bumms")).when(entitySetProcessor).readEntitySet(uriParserResult);
 
     HttpGet get = new HttpGet(URI.create(this.getEndpoint().toString() + "entityset"));
     HttpResponse response = this.getHttpClient().execute(get);

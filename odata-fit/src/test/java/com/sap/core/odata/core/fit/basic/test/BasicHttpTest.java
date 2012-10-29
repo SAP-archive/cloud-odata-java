@@ -30,6 +30,7 @@ import com.sap.core.odata.api.enums.HttpStatus;
 import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.api.processor.aspect.EntitySet;
 import com.sap.core.odata.api.rest.ODataResponse;
+import com.sap.core.odata.core.uri.UriParserResultImpl;
 import com.sap.core.testutils.HttpMerge;
 import com.sap.core.testutils.StringHelper;
 
@@ -44,7 +45,8 @@ public class BasicHttpTest extends AbstractBasicTest {
     Edm edm = this.getProcessor().getMetadataProcessor().getEdm();
     when(edm.getDefaultEntityContainer()).thenReturn(edmEntityContainer);
     EntitySet entitySet = this.getProcessor().getEntitySetProcessor();
-    when(entitySet.readEntitySet()).thenReturn(ODataResponse.status(HttpStatus.OK).entity("entityset").build());
+    UriParserResultImpl uriParserResult = mock(UriParserResultImpl.class);
+    when(entitySet.readEntitySet(uriParserResult)).thenReturn(ODataResponse.status(HttpStatus.OK).entity("entityset").build());
   }
 
   @Ignore("requires core adaption to new EDM api")
