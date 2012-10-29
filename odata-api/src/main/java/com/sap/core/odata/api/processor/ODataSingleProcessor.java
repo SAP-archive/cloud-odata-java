@@ -18,6 +18,20 @@ import com.sap.core.odata.api.processor.aspect.Metadata;
 import com.sap.core.odata.api.processor.aspect.ServiceDocument;
 import com.sap.core.odata.api.rest.ODataContext;
 import com.sap.core.odata.api.rest.ODataResponse;
+import com.sap.core.odata.api.uri.resultviews.GetComplexPropertyView;
+import com.sap.core.odata.api.uri.resultviews.GetEntityCountView;
+import com.sap.core.odata.api.uri.resultviews.GetEntityLinkCountView;
+import com.sap.core.odata.api.uri.resultviews.GetEntityLinkView;
+import com.sap.core.odata.api.uri.resultviews.GetEntitySetCountView;
+import com.sap.core.odata.api.uri.resultviews.GetEntitySetLinksCountView;
+import com.sap.core.odata.api.uri.resultviews.GetEntitySetLinksView;
+import com.sap.core.odata.api.uri.resultviews.GetEntitySetView;
+import com.sap.core.odata.api.uri.resultviews.GetEntityView;
+import com.sap.core.odata.api.uri.resultviews.GetFunctionImportView;
+import com.sap.core.odata.api.uri.resultviews.GetMediaResourceView;
+import com.sap.core.odata.api.uri.resultviews.GetMetadataView;
+import com.sap.core.odata.api.uri.resultviews.GetServiceDocumentView;
+import com.sap.core.odata.api.uri.resultviews.GetSimplePropertyView;
 
 public abstract class ODataSingleProcessor
     implements ODataProcessor,
@@ -54,16 +68,17 @@ public abstract class ODataSingleProcessor
   }
 
   @Override
-  public ODataResponse executeFunctionImport() throws ODataError {
-    throw new ODataNotImplementedException();
-  }
-
-  public ODataResponse executeFunctionImportValue() throws ODataError {
+  public ODataResponse executeFunctionImport(GetFunctionImportView uriParserResultView) throws ODataError {
     throw new ODataNotImplementedException();
   }
 
   @Override
-  public ODataResponse readEntitySimplePropertyValue() throws ODataError {
+  public ODataResponse executeFunctionImportValue(GetFunctionImportView uriParserResultView) throws ODataError {
+    throw new ODataNotImplementedException();
+  }
+
+  @Override
+  public ODataResponse readEntitySimplePropertyValue(GetSimplePropertyView uriParserResultView) throws ODataError {
     throw new ODataNotImplementedException();
   }
 
@@ -78,7 +93,7 @@ public abstract class ODataSingleProcessor
   }
 
   @Override
-  public ODataResponse readEntitySimpleProperty() throws ODataError {
+  public ODataResponse readEntitySimpleProperty(GetSimplePropertyView uriParserResultView) throws ODataError {
     throw new ODataNotImplementedException();
   }
 
@@ -88,7 +103,7 @@ public abstract class ODataSingleProcessor
   }
 
   @Override
-  public ODataResponse readEntityMedia() throws ODataError {
+  public ODataResponse readEntityMedia(GetMediaResourceView uriParserResultView) throws ODataError {
     throw new ODataNotImplementedException();
   }
 
@@ -103,12 +118,12 @@ public abstract class ODataSingleProcessor
   }
 
   @Override
-  public ODataResponse readEntityLinks() throws ODataError {
+  public ODataResponse readEntityLinks(GetEntitySetLinksView uriParserResultView) throws ODataError {
     throw new ODataNotImplementedException();
   }
 
   @Override
-  public ODataResponse countEntityLinks() throws ODataError {
+  public ODataResponse countEntityLinks(GetEntitySetLinksCountView uriParserResultView) throws ODataError {
     throw new ODataNotImplementedException();
   }
 
@@ -118,12 +133,12 @@ public abstract class ODataSingleProcessor
   }
 
   @Override
-  public ODataResponse readEntityLink() throws ODataError {
+  public ODataResponse readEntityLink(GetEntityLinkView uriParserResultView) throws ODataError {
     throw new ODataNotImplementedException();
   }
 
   @Override
-  public ODataResponse existsEntityLink() throws ODataError {
+  public ODataResponse existsEntityLink(GetEntityLinkCountView uriParserResultView) throws ODataError {
     throw new ODataNotImplementedException();
   }
 
@@ -138,7 +153,7 @@ public abstract class ODataSingleProcessor
   }
 
   @Override
-  public ODataResponse readEntityComplexProperty() throws ODataError {
+  public ODataResponse readEntityComplexProperty(GetComplexPropertyView uriParserResultView) throws ODataError {
     throw new ODataNotImplementedException();
   }
 
@@ -148,12 +163,12 @@ public abstract class ODataSingleProcessor
   }
 
   @Override
-  public ODataResponse readEntitySet() throws ODataError {
+  public ODataResponse readEntitySet(GetEntitySetView uriParserResultView) throws ODataError {
     throw new ODataNotImplementedException();
   }
 
   @Override
-  public ODataResponse countEntitySet() throws ODataError {
+  public ODataResponse countEntitySet(GetEntitySetCountView uriParserResultView) throws ODataError {
     throw new ODataNotImplementedException();
   }
 
@@ -163,12 +178,12 @@ public abstract class ODataSingleProcessor
   }
 
   @Override
-  public ODataResponse readEntity() throws ODataError {
+  public ODataResponse readEntity(GetEntityView uriParserResultView) throws ODataError {
     throw new ODataNotImplementedException();
   }
 
   @Override
-  public ODataResponse existsEntity() throws ODataError {
+  public ODataResponse existsEntity(GetEntityCountView uriParserResultView) throws ODataError {
     throw new ODataNotImplementedException();
   }
 
@@ -183,7 +198,7 @@ public abstract class ODataSingleProcessor
   }
 
   @Override
-  public ODataResponse readServiceDocument() throws ODataError {
+  public ODataResponse readServiceDocument(GetServiceDocumentView uriParserResultView) throws ODataError {
     throw new ODataNotImplementedException();
   }
 
@@ -193,7 +208,7 @@ public abstract class ODataSingleProcessor
   }
 
   @Override
-  public ODataResponse readMetadata() throws ODataError {
+  public ODataResponse readMetadata(GetMetadataView uriParserResultView) throws ODataError {
     throw new ODataNotImplementedException();
   }
 
