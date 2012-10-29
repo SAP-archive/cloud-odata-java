@@ -25,10 +25,10 @@ import com.sap.core.odata.api.edm.EdmType;
 import com.sap.core.odata.api.edm.EdmTypeKind;
 import com.sap.core.odata.api.enums.Format;
 import com.sap.core.odata.api.enums.InlineCount;
-import com.sap.core.odata.api.enums.UriType;
 import com.sap.core.odata.api.uri.KeyPredicate;
 import com.sap.core.odata.api.uri.UriParserException;
 import com.sap.core.odata.api.uri.UriParserResult;
+import com.sap.core.odata.core.enums.UriType;
 import com.sap.core.odata.core.uri.UriParserImpl;
 import com.sap.core.odata.core.uri.UriParserResultImpl;
 import com.sap.core.testutils.mocks.MockFacade;
@@ -114,13 +114,13 @@ public class UriParserTest {
 
   @Test
   public void parseServiceDocument() throws Exception {
-    UriParserResult result = parse("/");
+    UriParserResultImpl result = parse("/");
     assertEquals(UriType.URI0, result.getUriType());
 
     result = parse("");
     assertEquals(UriType.URI0, result.getUriType());
 
-    result = new UriParserImpl(edm).parse(Collections.<String> emptyList(), Collections.<String, String> emptyMap());
+    result = (UriParserResultImpl) new UriParserImpl(edm).parse(Collections.<String> emptyList(), Collections.<String, String> emptyMap());
     assertEquals(UriType.URI0, result.getUriType());
   }
 

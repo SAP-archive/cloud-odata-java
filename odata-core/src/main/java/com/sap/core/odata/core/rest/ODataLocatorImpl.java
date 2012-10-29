@@ -26,10 +26,10 @@ import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.api.processor.ODataProcessor;
 import com.sap.core.odata.api.rest.ODataLocator;
 import com.sap.core.odata.api.rest.ODataResponse;
-import com.sap.core.odata.api.uri.UriParserResult;
 import com.sap.core.odata.core.dispatcher.Dispatcher;
 import com.sap.core.odata.core.enums.ODataHttpMethod;
 import com.sap.core.odata.core.uri.UriParserImpl;
+import com.sap.core.odata.core.uri.UriParserResultImpl;
 
 public final class ODataLocatorImpl implements ODataLocator {
 
@@ -58,7 +58,7 @@ public final class ODataLocatorImpl implements ODataLocator {
       List<String> pathSegments = this.context.getPathSegmentsAsStrings();
       Map<String, String> queryParameters = this.convertToSinglevaluedMap(this.context.getUriInfo().getQueryParameters());
       
-      UriParserResult uriParserResult = this.uriParser.parse(pathSegments, queryParameters);
+      UriParserResultImpl uriParserResult = (UriParserResultImpl) this.uriParser.parse(pathSegments, queryParameters);
 
       return convertResponse(dispatcher.dispatch(ODataHttpMethod.GET, uriParserResult));
     } catch (ODataException e) {

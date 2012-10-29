@@ -9,7 +9,6 @@ import com.sap.core.odata.api.edm.EdmEntitySet;
 import com.sap.core.odata.api.edm.EdmFunctionImport;
 import com.sap.core.odata.api.edm.EdmType;
 import com.sap.core.odata.api.enums.Format;
-import com.sap.core.odata.api.enums.UriType;
 import com.sap.core.odata.api.uri.KeyPredicate;
 import com.sap.core.odata.api.uri.NavigationPropertySegment;
 import com.sap.core.odata.api.uri.NavigationSegment;
@@ -17,12 +16,6 @@ import com.sap.core.odata.api.uri.SelectItem;
 import com.sap.core.odata.api.uri.UriLiteral;
 
 public interface Uri26AResultView {
-
-  /**
-   * @return {@link UriType} the uri type
-   */
-  public UriType getUriType();
-
   /**
    * @return {@link EdmEntityContainer} the target entity container
    */

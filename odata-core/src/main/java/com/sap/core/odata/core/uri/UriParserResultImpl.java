@@ -13,13 +13,13 @@ import com.sap.core.odata.api.edm.EdmProperty;
 import com.sap.core.odata.api.edm.EdmType;
 import com.sap.core.odata.api.enums.Format;
 import com.sap.core.odata.api.enums.InlineCount;
-import com.sap.core.odata.api.enums.UriType;
 import com.sap.core.odata.api.uri.KeyPredicate;
 import com.sap.core.odata.api.uri.NavigationPropertySegment;
 import com.sap.core.odata.api.uri.NavigationSegment;
 import com.sap.core.odata.api.uri.SelectItem;
 import com.sap.core.odata.api.uri.UriLiteral;
 import com.sap.core.odata.api.uri.UriParserResult;
+import com.sap.core.odata.core.enums.UriType;
 
 public class UriParserResultImpl implements UriParserResult {
 
@@ -49,14 +49,13 @@ public class UriParserResultImpl implements UriParserResult {
   private List<SelectItem> select = Collections.emptyList();
   private Map<String, UriLiteral> functionImportParameters;
   private Map<String, String> customQueryOptions;
+  
+  public UriType getUriType(){
+    return this.uriType;
+  }
 
   public void setUriType(UriType uriType) {
     this.uriType = uriType;
-  }
-
-  @Override
-  public UriType getUriType() {
-    return uriType;
   }
 
   public void setEntityContainer(EdmEntityContainer entityContainer) {
