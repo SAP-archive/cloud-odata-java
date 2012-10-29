@@ -6,12 +6,10 @@ import java.util.Map;
 import com.sap.core.odata.api.edm.EdmEntityContainer;
 import com.sap.core.odata.api.edm.EdmEntitySet;
 import com.sap.core.odata.api.edm.EdmType;
-import com.sap.core.odata.api.enums.Format;
-import com.sap.core.odata.api.enums.InlineCount;
 import com.sap.core.odata.api.uri.KeyPredicate;
 import com.sap.core.odata.api.uri.NavigationSegment;
 
-public interface Uri7BResultView {
+public interface GetEntitySetCountView {
   /**
    * @return {@link EdmEntityContainer} the target entity container
    */
@@ -45,12 +43,7 @@ public interface Uri7BResultView {
   /**
    * @return boolean
    */
-  public boolean isLinks();
-
-  /**
-   * @return {@link Format} the format
-   */
-  public Format getFormat();
+  public boolean isCount();
 
   /**
    * @return String the customer format
@@ -62,15 +55,6 @@ public interface Uri7BResultView {
    */
   public String getFilter();
 
-  /**
-   * @return {@link InlineCount} the inline count
-   */
-  public InlineCount getInlineCount();
-
-  /**
-   * @return String skip token
-   */
-  public String getSkipToken();
 
   /**
    * @return String skip

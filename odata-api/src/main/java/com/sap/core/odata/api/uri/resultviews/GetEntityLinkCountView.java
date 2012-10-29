@@ -5,18 +5,16 @@ import java.util.Map;
 
 import com.sap.core.odata.api.edm.EdmEntityContainer;
 import com.sap.core.odata.api.edm.EdmEntitySet;
-import com.sap.core.odata.api.edm.EdmProperty;
 import com.sap.core.odata.api.edm.EdmType;
-import com.sap.core.odata.api.enums.Format;
 import com.sap.core.odata.api.uri.KeyPredicate;
 import com.sap.core.odata.api.uri.NavigationSegment;
 
-public interface Uri3ResultView {
+public interface GetEntityLinkCountView {
   /**
    * @return {@link EdmEntityContainer} the target entity container
    */
   public EdmEntityContainer getEntityContainer();
-  
+
   /**
    * @return {@link EdmEntitySet}
    */
@@ -36,21 +34,21 @@ public interface Uri3ResultView {
    * @return list of {@link KeyPredicate}
    */
   public List<KeyPredicate> getKeyPredicates();
-  
+
   /**
    * @return list of {@link NavigationSegment}
    */
   public List<NavigationSegment> getNavigationSegments();
+  
+  /**
+   * @return boolean
+   */
+  public boolean isCount();
 
   /**
-   * @return list of {@link EdmProperty}
+   * @return boolean
    */
-  public List<EdmProperty> getPropertyPath();
-
-  /**
-   * @return {@link Format} the format
-   */
-  public Format getFormat();
+  public boolean isLinks();
 
   /**
    * @return String the customer format

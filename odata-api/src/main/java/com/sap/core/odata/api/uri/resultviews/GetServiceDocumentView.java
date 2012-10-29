@@ -2,7 +2,7 @@ package com.sap.core.odata.api.uri.resultviews;
 
 import com.sap.core.odata.api.enums.Format;
 
-public interface Uri0ResultView {
+public interface GetServiceDocumentView {
   /**
    * @return {@link Format} the format
    */

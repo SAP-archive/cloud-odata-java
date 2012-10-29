@@ -5,11 +5,13 @@ import java.util.Map;
 
 import com.sap.core.odata.api.edm.EdmEntityContainer;
 import com.sap.core.odata.api.edm.EdmEntitySet;
+import com.sap.core.odata.api.edm.EdmProperty;
 import com.sap.core.odata.api.edm.EdmType;
+import com.sap.core.odata.api.enums.Format;
 import com.sap.core.odata.api.uri.KeyPredicate;
 import com.sap.core.odata.api.uri.NavigationSegment;
 
-public interface Uri16ResultView {
+public interface GetSimplePropertyView {
   /**
    * @return {@link EdmEntityContainer} the target entity container
    */
@@ -41,19 +43,24 @@ public interface Uri16ResultView {
   public List<NavigationSegment> getNavigationSegments();
 
   /**
+   * @return list of {@link EdmProperty}
+   */
+  public List<EdmProperty> getPropertyPath();
+
+  /**
    * @return boolean
    */
-  public boolean isCount();
+  public boolean isValue();
+
+  /**
+   * @return {@link Format} the format
+   */
+  public Format getFormat();
 
   /**
    * @return String the customer format
    */
   public String getCustomFormat();
-
-  /**
-   * @return String the filter
-   */
-  public String getFilter();
 
   /**
    * @return Map of {@literal<String, String>} custom query options

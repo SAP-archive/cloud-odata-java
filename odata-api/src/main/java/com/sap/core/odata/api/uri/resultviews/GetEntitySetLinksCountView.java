@@ -6,11 +6,10 @@ import java.util.Map;
 import com.sap.core.odata.api.edm.EdmEntityContainer;
 import com.sap.core.odata.api.edm.EdmEntitySet;
 import com.sap.core.odata.api.edm.EdmType;
-import com.sap.core.odata.api.enums.Format;
 import com.sap.core.odata.api.uri.KeyPredicate;
 import com.sap.core.odata.api.uri.NavigationSegment;
 
-public interface Uri17ResultView {
+public interface GetEntitySetLinksCountView {
   /**
    * @return {@link EdmEntityContainer} the target entity container
    */
@@ -42,9 +41,14 @@ public interface Uri17ResultView {
   public List<NavigationSegment> getNavigationSegments();
 
   /**
-   * @return {@link Format} the format
+   * @return boolean
    */
-  public Format getFormat();
+  public boolean isCount();
+
+  /**
+   * @return boolean
+   */
+  public boolean isLinks();
 
   /**
    * @return String the customer format
@@ -55,6 +59,16 @@ public interface Uri17ResultView {
    * @return String the filter
    */
   public String getFilter();
+
+  /**
+   * @return String skip
+   */
+  public int getSkip();
+
+  /**
+   * @return int top
+   */
+  public Integer getTop();
 
   /**
    * @return Map of {@literal<String, String>} custom query options

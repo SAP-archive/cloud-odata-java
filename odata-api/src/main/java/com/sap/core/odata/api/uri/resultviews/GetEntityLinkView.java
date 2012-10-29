@@ -1,26 +1,25 @@
 package com.sap.core.odata.api.uri.resultviews;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 import com.sap.core.odata.api.edm.EdmEntityContainer;
 import com.sap.core.odata.api.edm.EdmEntitySet;
-import com.sap.core.odata.api.edm.EdmFunctionImport;
 import com.sap.core.odata.api.edm.EdmType;
 import com.sap.core.odata.api.enums.Format;
 import com.sap.core.odata.api.uri.KeyPredicate;
-import com.sap.core.odata.api.uri.NavigationPropertySegment;
 import com.sap.core.odata.api.uri.NavigationSegment;
-import com.sap.core.odata.api.uri.SelectItem;
-import com.sap.core.odata.api.uri.UriLiteral;
 
-public interface Uri26AResultView {
+/**
+ * @author SAP AG
+ *
+ */
+public interface GetEntityLinkView {
   /**
    * @return {@link EdmEntityContainer} the target entity container
    */
   public EdmEntityContainer getEntityContainer();
-  
+
   /**
    * @return {@link EdmEntitySet}
    */
@@ -32,15 +31,10 @@ public interface Uri26AResultView {
   public EdmEntitySet getTargetEntitySet();
 
   /**
-   * @return {@link EdmFunctionImport} the funktion import
-   */
-  public EdmFunctionImport getFunctionImport();
-
-  /**
    * @return {@link EdmType} the target type of the entity set
    */
   public EdmType getTargetType();
-  
+
   /**
    * @return list of {@link KeyPredicate}
    */
@@ -52,6 +46,11 @@ public interface Uri26AResultView {
   public List<NavigationSegment> getNavigationSegments();
 
   /**
+   * @return boolean
+   */
+  public boolean isLinks();
+
+  /**
    * @return {@link Format} the format
    */
   public Format getFormat();
@@ -60,26 +59,6 @@ public interface Uri26AResultView {
    * @return String the customer format
    */
   public String getCustomFormat();
-
-  /**
-   * @return String the filter
-   */
-  public String getFilter();
-
-  /**
-   * @return List of a list of {@link NavigationPropertySegment} to be expanded
-   */
-  public List<ArrayList<NavigationPropertySegment>> getExpand();
-
-  /**
-   * @return List of {@link SelectItem} to be selected
-   */
-  public List<SelectItem> getSelect();
-
-  /**
-   * @return Map of {@literal <String,} {@link UriLiteral}{@literal >} function import parameters
-   */
-  public Map<String, UriLiteral> getFunctionImportParameters();
 
   /**
    * @return Map of {@literal<String, String>} custom query options
