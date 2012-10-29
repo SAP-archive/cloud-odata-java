@@ -1,20 +1,26 @@
 package com.sap.core.odata.api.uri.resultviews;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 import com.sap.core.odata.api.edm.EdmEntityContainer;
 import com.sap.core.odata.api.edm.EdmEntitySet;
+import com.sap.core.odata.api.edm.EdmFunctionImport;
 import com.sap.core.odata.api.edm.EdmType;
+import com.sap.core.odata.api.enums.Format;
 import com.sap.core.odata.api.uri.KeyPredicate;
+import com.sap.core.odata.api.uri.NavigationPropertySegment;
 import com.sap.core.odata.api.uri.NavigationSegment;
+import com.sap.core.odata.api.uri.SelectItem;
+import com.sap.core.odata.api.uri.UriLiteral;
 
-public interface Uri50BResultView {
+public interface GetEntityView {
   /**
    * @return {@link EdmEntityContainer} the target entity container
    */
   public EdmEntityContainer getEntityContainer();
-
+  
   /**
    * @return {@link EdmEntitySet}
    */
@@ -26,10 +32,15 @@ public interface Uri50BResultView {
   public EdmEntitySet getTargetEntitySet();
 
   /**
+   * @return {@link EdmFunctionImport} the funktion import
+   */
+  public EdmFunctionImport getFunctionImport();
+
+  /**
    * @return {@link EdmType} the target type of the entity set
    */
   public EdmType getTargetType();
-
+  
   /**
    * @return list of {@link KeyPredicate}
    */
@@ -41,14 +52,9 @@ public interface Uri50BResultView {
   public List<NavigationSegment> getNavigationSegments();
 
   /**
-   * @return boolean
+   * @return {@link Format} the format
    */
-  public boolean isCount();
-
-  /**
-   * @return boolean
-   */
-  public boolean isLinks();
+  public Format getFormat();
 
   /**
    * @return String the customer format
@@ -61,14 +67,19 @@ public interface Uri50BResultView {
   public String getFilter();
 
   /**
-   * @return String skip
+   * @return List of a list of {@link NavigationPropertySegment} to be expanded
    */
-  public int getSkip();
+  public List<ArrayList<NavigationPropertySegment>> getExpand();
 
   /**
-   * @return int top
+   * @return List of {@link SelectItem} to be selected
    */
-  public Integer getTop();
+  public List<SelectItem> getSelect();
+
+  /**
+   * @return Map of {@literal <String,} {@link UriLiteral}{@literal >} function import parameters
+   */
+  public Map<String, UriLiteral> getFunctionImportParameters();
 
   /**
    * @return Map of {@literal<String, String>} custom query options

@@ -16,7 +16,7 @@ import com.sap.core.odata.api.uri.NavigationSegment;
 import com.sap.core.odata.api.uri.SelectItem;
 import com.sap.core.odata.api.uri.UriLiteral;
 
-public interface Uri16BResultView {
+public interface GetEntitySetView {
   /**
    * @return {@link EdmEntityContainer} the target entity container
    */

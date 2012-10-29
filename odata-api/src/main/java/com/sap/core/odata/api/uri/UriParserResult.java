@@ -14,28 +14,28 @@ import com.sap.core.odata.api.enums.InlineCount;
 import com.sap.core.odata.api.uri.resultviews.DeleteResultView;
 import com.sap.core.odata.api.uri.resultviews.PostResultView;
 import com.sap.core.odata.api.uri.resultviews.PutMergePatchResultView;
-import com.sap.core.odata.api.uri.resultviews.Uri0ResultView;
-import com.sap.core.odata.api.uri.resultviews.Uri10to14ResultView;
-import com.sap.core.odata.api.uri.resultviews.Uri15ResultView;
-import com.sap.core.odata.api.uri.resultviews.Uri16BResultView;
-import com.sap.core.odata.api.uri.resultviews.Uri16ResultView;
-import com.sap.core.odata.api.uri.resultviews.Uri17ResultView;
-import com.sap.core.odata.api.uri.resultviews.Uri26AResultView;
-import com.sap.core.odata.api.uri.resultviews.Uri3ResultView;
-import com.sap.core.odata.api.uri.resultviews.Uri45ResultView;
-import com.sap.core.odata.api.uri.resultviews.Uri50AResultView;
-import com.sap.core.odata.api.uri.resultviews.Uri50BResultView;
-import com.sap.core.odata.api.uri.resultviews.Uri7AResultView;
-import com.sap.core.odata.api.uri.resultviews.Uri7BResultView;
-import com.sap.core.odata.api.uri.resultviews.Uri8ResultView;
+import com.sap.core.odata.api.uri.resultviews.GetServiceDocumentView;
+import com.sap.core.odata.api.uri.resultviews.GetFunctionImportView;
+import com.sap.core.odata.api.uri.resultviews.GetEntitySetCountView;
+import com.sap.core.odata.api.uri.resultviews.GetEntitySetView;
+import com.sap.core.odata.api.uri.resultviews.GetEntityCountView;
+import com.sap.core.odata.api.uri.resultviews.GetMediaResourceView;
+import com.sap.core.odata.api.uri.resultviews.GetEntityView;
+import com.sap.core.odata.api.uri.resultviews.GetComplexPropertyView;
+import com.sap.core.odata.api.uri.resultviews.GetSimplePropertyView;
+import com.sap.core.odata.api.uri.resultviews.GetEntityLinkCountView;
+import com.sap.core.odata.api.uri.resultviews.GetEntitySetLinksCountView;
+import com.sap.core.odata.api.uri.resultviews.GetEntityLinkView;
+import com.sap.core.odata.api.uri.resultviews.GetEntitySetLinksView;
+import com.sap.core.odata.api.uri.resultviews.GetMetadataView;
 
 /**
  * @author SAP AG
  * Parser results interface
  */
-public interface UriParserResult extends Uri0ResultView, Uri16BResultView, Uri26AResultView, Uri3ResultView, Uri45ResultView,
-    Uri7AResultView, Uri7BResultView, Uri8ResultView, Uri10to14ResultView, Uri15ResultView, Uri16ResultView, Uri17ResultView, 
-    Uri50AResultView, Uri50BResultView, PutMergePatchResultView, PostResultView, DeleteResultView {
+public interface UriParserResult extends GetServiceDocumentView, GetEntitySetView, GetEntityView, GetComplexPropertyView, GetSimplePropertyView,
+    GetEntityLinkView, GetEntitySetLinksView, GetMetadataView, GetFunctionImportView, GetEntitySetCountView, GetEntityCountView, GetMediaResourceView, 
+    GetEntityLinkCountView, GetEntitySetLinksCountView, PutMergePatchResultView, PostResultView, DeleteResultView {
 
   /**
    * @return {@link EdmEntityContainer} the target entity container

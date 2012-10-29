@@ -6,7 +6,7 @@ import com.sap.core.odata.api.edm.EdmFunctionImport;
 import com.sap.core.odata.api.enums.Format;
 import com.sap.core.odata.api.uri.UriLiteral;
 
-public interface Uri10to14ResultView {
+public interface GetFunctionImportView {
   /**
    * @return {@link EdmFunctionImport} the funktion import
    */
