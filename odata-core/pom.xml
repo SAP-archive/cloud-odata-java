@@ -1,60 +1,60 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
 
-  <artifactId>com.sap.core.odata.core</artifactId>
-  <packaging>jar</packaging>
+	<artifactId>com.sap.core.odata.core</artifactId>
+	<packaging>jar</packaging>
 
-  <parent>
-    <groupId>com.sap.core.odata</groupId>
-    <artifactId>com.sap.core.odata.parent</artifactId>
-    <version>0.0.0-SNAPSHOT</version>
-    <relativePath>..</relativePath>
-  </parent>
+	<parent>
+		<groupId>com.sap.core.odata</groupId>
+		<artifactId>com.sap.core.odata.parent</artifactId>
+		<version>0.0.0-SNAPSHOT</version>
+		<relativePath>..</relativePath>
+	</parent>
 
-  <build>
-    <plugins>
+	<build>
+		<plugins>
 
-      <!-- OSGi bundle support 
-      <plugin>
-        <groupId>org.apache.felix</groupId>
-        <artifactId>maven-bundle-plugin</artifactId>
-        <extensions>true</extensions>
-        <configuration>
-          <instructions>
-	    <Import-Package>
-              *
-            </Import-Package>
-            <Export-Package>
-              com.sap.core.odata.*;version=${project.version},
-            </Export-Package>
-            <Bundle-DocURL>${project.url}</Bundle-DocURL>
-            <Bundle-ActivationPolicy>lazy</Bundle-ActivationPolicy>
-          </instructions>
-        </configuration>
-      </plugin>
-    -->
-    </plugins>
-  </build>
+			<!-- OSGi bundle support <plugin> <groupId>org.apache.felix</groupId> 
+				<artifactId>maven-bundle-plugin</artifactId> <extensions>true</extensions> 
+				<configuration> <instructions> <Import-Package> * </Import-Package> <Export-Package> 
+				com.sap.core.odata.*;version=${project.version}, </Export-Package> <Bundle-DocURL>${project.url}</Bundle-DocURL> 
+				<Bundle-ActivationPolicy>lazy</Bundle-ActivationPolicy> </instructions> </configuration> 
+				</plugin> -->
+		</plugins>
+	</build>
 
-  <dependencies>
-    <dependency>
-    	<groupId>com.sap.core.odata</groupId>
-    	<artifactId>com.sap.core.odata.api</artifactId>
-    	<version>${project.version}</version>
-    </dependency>
-    <dependency>
-    	<groupId>com.sap.core.odata</groupId>
-    	<artifactId>com.sap.core.odata4j.core</artifactId>
-    	<version>${project.version}</version>
-    </dependency>
-    
-    <dependency>
-    	<groupId>com.sap.core.odata</groupId>
-    	<artifactId>com.sap.core.odata.testutils</artifactId>
-    	<version>${project.version}</version>
-    	<scope>test</scope>
-    </dependency>
-  </dependencies>
+	<dependencies>
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>servlet-api</artifactId>
+			<version>2.5</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>javax.ws.rs</groupId>
+			<artifactId>jsr311-api</artifactId>
+			<version>${jsr311.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.sap.core.odata</groupId>
+			<artifactId>com.sap.core.odata.api</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.sap.core.odata</groupId>
+			<artifactId>com.sap.core.odata4j.core</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.sap.core.odata</groupId>
+			<artifactId>com.sap.core.odata.testutils</artifactId>
+			<version>${project.version}</version>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
 
 </project>

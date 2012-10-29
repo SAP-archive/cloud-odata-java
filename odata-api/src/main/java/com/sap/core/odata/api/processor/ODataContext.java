@@ -1,4 +1,4 @@
-package com.sap.core.odata.api.rest;
+package com.sap.core.odata.api.processor;
 
 /**
  * Compilation of generic http objects. 

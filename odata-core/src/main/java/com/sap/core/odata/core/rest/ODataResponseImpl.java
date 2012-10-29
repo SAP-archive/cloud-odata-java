@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Set;
 
 import com.sap.core.odata.api.enums.HttpStatus;
-import com.sap.core.odata.api.rest.ODataResponse;
+import com.sap.core.odata.api.processor.ODataResponse;
 
 public class ODataResponseImpl extends ODataResponse {
 

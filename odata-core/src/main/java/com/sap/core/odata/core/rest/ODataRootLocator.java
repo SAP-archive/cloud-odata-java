@@ -1,7 +1,8 @@
-package com.sap.core.odata.api.rest;
+package com.sap.core.odata.core.rest;
 
 import java.util.List;
 
+import javax.servlet.ServletConfig;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.core.Context;
@@ -11,8 +12,11 @@ import javax.ws.rs.core.Request;
 import javax.ws.rs.core.UriInfo;
 import javax.ws.rs.ext.ContextResolver;
 
+import org.odata4j.producer.ODataProducerFactory;
+
 import com.sap.core.odata.api.exception.ODataError;
 import com.sap.core.odata.api.processor.ODataProcessor;
+import com.sap.core.odata.api.processor.ODataProcessorFactory;
 
 /**
  * Default OData root locator responsible to handle the whole path and delegate all calls to a sub locator:<p>
@@ -27,29 +31,41 @@ import com.sap.core.odata.api.processor.ODataProcessor;
 public class ODataRootLocator {
 
   @Context
-  private ContextResolver<ODataProcessor> resolver;
-  @Context
   private HttpHeaders httpHeaders;
   @Context
   private UriInfo uriInfo;
   @Context
   private Request request;
+  
+  @Context
+  private ServletConfig servletConfig;
 
   /**
    * Default root behavior which will delegate all paths to a ODataLocator.
    * @param odataPathSegments all segments have to be OData
    * @return a locator handling OData protocol
    * @throws ODataError 
+   * @throws ClassNotFoundException 
+   * @throws IllegalAccessException 
+   * @throws InstantiationException 
    */
   @Path("/{odataPathSegments: .*}")
-  public ODataLocator getSubLocator(@PathParam("odataPathSegments") List<PathSegment> odataPathSegments) throws ODataError {
-    ODataLocator odataLocator = RuntimeDelegate.getInstance().createODataLocator();
+  public ODataLocatorImpl getSubLocator(@PathParam("odataPathSegments") List<PathSegment> odataPathSegments) throws ODataError, ClassNotFoundException, InstantiationException, IllegalAccessException {
+    ODataLocatorImpl odataLocator = new ODataLocatorImpl();
 
-    odataLocator.setProcessor(this.resolver.getContext(ODataProcessor.class));
     odataLocator.setPathSegments(odataPathSegments);
     odataLocator.setHttpHeaders(this.httpHeaders);
     odataLocator.setUriInfo(this.uriInfo);
 
+    String factoryClassName = this.servletConfig.getInitParameter("com.sap.core.odata.processor.factory");
+    if (factoryClassName == null) {
+      throw new RuntimeException("servlet config missing: com.sap.core.odata.processor.factory");
+    }
+    Class<?> factoryClass = Class.forName(factoryClassName);
+    ODataProcessorFactory processorFactory = (ODataProcessorFactory) factoryClass.newInstance();
+    ODataProcessor processor = processorFactory.create();
+    odataLocator.setProcessor(processor);
+    
     odataLocator.beforeRequest();
 
     return odataLocator;

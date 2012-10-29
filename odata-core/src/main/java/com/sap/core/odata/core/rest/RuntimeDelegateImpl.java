@@ -1,11 +1,10 @@
 package com.sap.core.odata.core.rest;
 
+import com.sap.core.odata.api.RuntimeDelegate;
 import com.sap.core.odata.api.edm.Edm;
 import com.sap.core.odata.api.edm.EdmSimpleType;
 import com.sap.core.odata.api.edm.EdmSimpleTypeKind;
-import com.sap.core.odata.api.rest.ODataLocator;
-import com.sap.core.odata.api.rest.ODataResponse.ODataResponseBuilder;
-import com.sap.core.odata.api.rest.RuntimeDelegate;
+import com.sap.core.odata.api.processor.ODataResponse.ODataResponseBuilder;
 import com.sap.core.odata.api.uri.UriParser;
 import com.sap.core.odata.core.edm.simpletype.EdmBinary;
 import com.sap.core.odata.core.edm.simpletype.EdmBit;
@@ -31,16 +30,6 @@ public class RuntimeDelegateImpl extends RuntimeDelegate {
   @Override
   public ODataResponseBuilder createODataResponseBuilder() {
     return new ODataResponseBuilderImpl();
-  }
-
-  @Override
-  public Class<?> getExceptionMapper() {
-    return ODataExceptionMapperImpl.class;
-  }
-
-  @Override
-  public ODataLocator createODataLocator() {
-    return new ODataLocatorImpl();
   }
 
   public EdmSimpleType getEdmSimpleType(EdmSimpleTypeKind edmSimpleType) {

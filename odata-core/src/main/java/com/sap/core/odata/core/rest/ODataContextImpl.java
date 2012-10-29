@@ -11,7 +11,7 @@ import javax.ws.rs.core.UriInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.sap.core.odata.api.rest.ODataContext;
+import com.sap.core.odata.api.processor.ODataContext;
 
 
 public class ODataContextImpl implements ODataContext {

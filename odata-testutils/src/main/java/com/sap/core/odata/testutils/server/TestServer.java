@@ -2,14 +2,14 @@ package com.sap.core.odata.testutils.server;
 
 import java.net.URI;
 
-import javax.ws.rs.core.Application;
-
 import org.apache.cxf.jaxrs.servlet.CXFNonSpringJaxrsServlet;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.sap.core.odata.api.processor.ODataProcessorFactory;
 
 public class TestServer {
 
@@ -29,17 +29,18 @@ public class TestServer {
 
   private Server server;
 
-  public void startServer(Class<? extends Application> applicationClass) {
+  public void startServer(Class<? extends ODataProcessorFactory> factoryClass) {
     try {
       TestServer.log.debug("##################################");
       TestServer.log.debug("## Starting server at endpoint");
       TestServer.log.debug("## uri:         " + this.endpoint);
-      TestServer.log.debug("## application: " + applicationClass.getCanonicalName());
+      TestServer.log.debug("## factory:     " + factoryClass.getCanonicalName());
       TestServer.log.debug("##################################");
 
       CXFNonSpringJaxrsServlet odataServlet = new CXFNonSpringJaxrsServlet();
       ServletHolder odataServletHolder = new ServletHolder(odataServlet);
-      odataServletHolder.setInitParameter("javax.ws.rs.Application", applicationClass.getCanonicalName());
+      odataServletHolder.setInitParameter("javax.ws.rs.Application", "com.sap.core.odata.core.rest.ODataApplication");
+      odataServletHolder.setInitParameter("com.sap.core.odata.processor.factory", factoryClass.getCanonicalName());
 
       ServletContextHandler contextHandler = new ServletContextHandler(ServletContextHandler.SESSIONS);
       contextHandler.addServlet(odataServletHolder, this.endpoint.getPath() + "*");

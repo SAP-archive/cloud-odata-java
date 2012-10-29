@@ -7,7 +7,7 @@ import org.apache.commons.codec.DecoderException;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.codec.binary.Hex;
 
-import com.sap.core.odata.api.rest.RuntimeDelegate;
+import com.sap.core.odata.api.RuntimeDelegate;
 import com.sap.core.odata.api.uri.UriLiteral;
 import com.sap.core.odata.api.uri.UriParserException;
 
