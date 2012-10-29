@@ -11,8 +11,9 @@ public class ODataResponseBuilderImpl extends ODataResponseBuilder {
   private HttpStatus status = HttpStatus.OK;
   private String entity;
   private HashMap<String, String> header = new HashMap<String, String>();
-  
-  
+  private String idLiteral;
+  private String eTag;
+
   @Override
   public ODataResponse build() {
     ODataResponseImpl response = new ODataResponseImpl();
@@ -20,7 +21,9 @@ public class ODataResponseBuilderImpl extends ODataResponseBuilder {
     response.setStatus(this.status);
     response.setEntity(this.entity);
     response.setHeader(this.header);
-    
+    response.setETag(this.eTag);
+    response.setIdLiteral(this.idLiteral);
+
     return response;
   }
 
@@ -32,7 +35,7 @@ public class ODataResponseBuilderImpl extends ODataResponseBuilder {
 
   @Override
   public ODataResponseBuilder entity(String entity) {
-    this.entity= entity;
+    this.entity = entity;
     return this;
   }
 
@@ -43,7 +46,19 @@ public class ODataResponseBuilderImpl extends ODataResponseBuilder {
     } else {
       this.header.put(name, value);
     }
-    
+
+    return this;
+  }
+
+  @Override
+  public ODataResponseBuilder idLiteral(String idLiteral) {
+    this.idLiteral = idLiteral;
+    return this;
+  }
+
+  @Override
+  public ODataResponseBuilder eTag(String eTag) {
+    this.eTag = eTag;
     return this;
   }
 

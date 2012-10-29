@@ -14,6 +14,10 @@ public abstract class ODataResponse {
 
   public abstract String getHeader(String name);
 
+  public abstract String getIdLiteral();
+  
+  public abstract String getETag();
+
   public abstract Set<String> getHeaderNames();
 
   public static ODataResponseBuilder status(HttpStatus status) {
@@ -53,6 +57,9 @@ public abstract class ODataResponse {
 
     public abstract ODataResponseBuilder header(String name, String value);
 
-  }
+    public abstract ODataResponseBuilder idLiteral(String idLiteral);
+
+    public abstract ODataResponseBuilder eTag(String eTag);
+}
 
 }
