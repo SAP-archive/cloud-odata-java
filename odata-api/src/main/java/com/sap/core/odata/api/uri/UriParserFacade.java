@@ -22,7 +22,7 @@ public class UriParserFacade {
    * @return {@link UriParserResult} parsed uri result
    * @throws UriParserException
    */
-  public UriParserResult parse(Edm edm, List<String> pathSegments, Map<String, String> queryParameter) throws UriParserException{
+  public static UriParserResult parse(Edm edm, List<String> pathSegments, Map<String, String> queryParameter) throws UriParserException{
     return RuntimeDelegate.getInstance().getUriParser(edm).parse(pathSegments, queryParameter);
   }
 }
