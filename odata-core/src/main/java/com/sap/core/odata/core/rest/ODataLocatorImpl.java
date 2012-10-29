@@ -83,6 +83,8 @@ public final class ODataLocatorImpl implements ODataLocator {
       response = this.handleMerge();
     } else if ("PATCH".equals(xmethod)) {
       response = this.handlePatch();
+    } else if ("DELETE".equals(xmethod)) {
+      response = this.handleDelete();
     } else {
       response = Response.status(405).build(); // method not allowed!
     }
@@ -180,6 +182,11 @@ public final class ODataLocatorImpl implements ODataLocator {
     for (String name : odataResponse.getHeaderNames())
       responseBuilder = responseBuilder.header(name, odataResponse.getHeader(name));
 
+    String eTag = odataResponse.getETag();
+    if (eTag != null) {
+      responseBuilder.header(HttpHeaders.ETAG, eTag);
+    }
+    
     return responseBuilder.build();
   }
 }
