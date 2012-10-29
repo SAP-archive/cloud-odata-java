@@ -4,15 +4,9 @@ import java.util.Map;
 
 import com.sap.core.odata.api.edm.EdmFunctionImport;
 import com.sap.core.odata.api.enums.Format;
-import com.sap.core.odata.api.enums.UriType;
 import com.sap.core.odata.api.uri.UriLiteral;
 
 public interface Uri10to14ResultView {
-  /**
-   * @return {@link UriType} the uri type
-   */
-  public UriType getUriType();
-
   /**
    * @return {@link EdmFunctionImport} the funktion import
    */

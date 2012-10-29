@@ -6,16 +6,10 @@ import java.util.Map;
 import com.sap.core.odata.api.edm.EdmEntityContainer;
 import com.sap.core.odata.api.edm.EdmEntitySet;
 import com.sap.core.odata.api.edm.EdmType;
-import com.sap.core.odata.api.enums.UriType;
 import com.sap.core.odata.api.uri.KeyPredicate;
 import com.sap.core.odata.api.uri.NavigationSegment;
 
 public interface Uri50AResultView {
-  /**
-   * @return {@link UriType} the uri type
-   */
-  public UriType getUriType();
-
   /**
    * @return {@link EdmEntityContainer} the target entity container
    */

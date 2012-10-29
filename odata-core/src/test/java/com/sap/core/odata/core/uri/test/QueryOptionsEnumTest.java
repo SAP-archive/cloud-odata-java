@@ -5,8 +5,8 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
-import com.sap.core.odata.api.enums.SystemQueryOption;
-import com.sap.core.odata.api.enums.UriType;
+import com.sap.core.odata.core.enums.SystemQueryOption;
+import com.sap.core.odata.core.enums.UriType;
 
 public class QueryOptionsEnumTest {
 

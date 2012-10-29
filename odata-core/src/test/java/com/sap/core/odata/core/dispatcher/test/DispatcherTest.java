@@ -11,7 +11,6 @@ import org.junit.Test;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
-import com.sap.core.odata.api.enums.UriType;
 import com.sap.core.odata.api.exception.ODataError;
 import com.sap.core.odata.api.processor.ODataProcessor;
 import com.sap.core.odata.api.processor.aspect.Batch;
@@ -28,9 +27,10 @@ import com.sap.core.odata.api.processor.aspect.FunctionImportValue;
 import com.sap.core.odata.api.processor.aspect.Metadata;
 import com.sap.core.odata.api.processor.aspect.ServiceDocument;
 import com.sap.core.odata.api.rest.ODataResponse;
-import com.sap.core.odata.api.uri.UriParserResult;
 import com.sap.core.odata.core.dispatcher.Dispatcher;
 import com.sap.core.odata.core.enums.ODataHttpMethod;
+import com.sap.core.odata.core.enums.UriType;
+import com.sap.core.odata.core.uri.UriParserResultImpl;
 
 public class DispatcherTest {
 
@@ -127,7 +127,7 @@ public class DispatcherTest {
     Dispatcher dispatcher = new Dispatcher();
     dispatcher.setProcessor(processor);
 
-    UriParserResult uriParserResult = mock(UriParserResult.class);
+    UriParserResultImpl uriParserResult = mock(UriParserResultImpl.class);
     when(uriParserResult.getUriType()).thenReturn(uriType);
     when(uriParserResult.isValue()).thenReturn(isValue);
     final ODataResponse response = dispatcher.dispatch(method, uriParserResult);

@@ -6,9 +6,9 @@ import com.sap.core.odata.api.exception.ODataTechnicalException;
 import com.sap.core.odata.api.processor.ODataProcessor;
 import com.sap.core.odata.api.rest.ODataContext;
 import com.sap.core.odata.api.rest.ODataResponse;
-import com.sap.core.odata.api.uri.UriParserResult;
 import com.sap.core.odata.core.enums.ODataHttpMethod;
 import com.sap.core.odata.core.rest.ODataContextImpl;
+import com.sap.core.odata.core.uri.UriParserResultImpl;
 
 public class Dispatcher {
 
@@ -23,7 +23,7 @@ public class Dispatcher {
     this.processor = processor;
   }
 
-  public ODataResponse dispatch(final ODataHttpMethod method, final UriParserResult uriParserResult) throws ODataError {
+  public ODataResponse dispatch(final ODataHttpMethod method, final UriParserResultImpl uriParserResult) throws ODataError {
     switch (uriParserResult.getUriType()) {
     case URI0:
       if (method == ODataHttpMethod.GET)
