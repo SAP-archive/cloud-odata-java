@@ -16,8 +16,6 @@ import com.sap.core.odata.api.processor.aspect.FunctionImport;
 import com.sap.core.odata.api.processor.aspect.FunctionImportValue;
 import com.sap.core.odata.api.processor.aspect.Metadata;
 import com.sap.core.odata.api.processor.aspect.ServiceDocument;
-import com.sap.core.odata.api.rest.ODataContext;
-import com.sap.core.odata.api.rest.ODataResponse;
 import com.sap.core.odata.api.uri.resultviews.GetComplexPropertyView;
 import com.sap.core.odata.api.uri.resultviews.GetEntityCountView;
 import com.sap.core.odata.api.uri.resultviews.GetEntityLinkCountView;
@@ -32,6 +30,7 @@ import com.sap.core.odata.api.uri.resultviews.GetMediaResourceView;
 import com.sap.core.odata.api.uri.resultviews.GetMetadataView;
 import com.sap.core.odata.api.uri.resultviews.GetServiceDocumentView;
 import com.sap.core.odata.api.uri.resultviews.GetSimplePropertyView;
+
 
 public abstract class ODataSingleProcessor
     implements ODataProcessor,

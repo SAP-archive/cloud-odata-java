@@ -13,7 +13,7 @@ import org.odata4j.producer.ErrorResponse;
 import org.odata4j.producer.Responses;
 
 import com.sap.core.odata.api.enums.HttpStatus;
-import com.sap.core.odata.api.rest.ODataResponse;
+import com.sap.core.odata.api.processor.ODataResponse;
 
 public class ErrorSerializer {
 

@@ -5,7 +5,7 @@ import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 
 import com.sap.core.odata.api.enums.HttpStatus;
-import com.sap.core.odata.api.rest.ODataResponse;
+import com.sap.core.odata.api.processor.ODataResponse;
 
 
 

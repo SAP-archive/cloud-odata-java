@@ -4,7 +4,7 @@ import static org.junit.Assert.assertNotNull;
 
 import org.junit.Test;
 
-import com.sap.core.odata.api.rest.RuntimeDelegate;
+import com.sap.core.odata.api.RuntimeDelegate;
 
 public class RuntimeDelegateTest {
 

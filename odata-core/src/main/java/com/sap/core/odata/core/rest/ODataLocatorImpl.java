@@ -10,6 +10,7 @@ import javax.ws.rs.HeaderParam;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
@@ -24,14 +25,13 @@ import org.slf4j.LoggerFactory;
 import com.sap.core.odata.api.exception.ODataError;
 import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.api.processor.ODataProcessor;
-import com.sap.core.odata.api.rest.ODataLocator;
-import com.sap.core.odata.api.rest.ODataResponse;
+import com.sap.core.odata.api.processor.ODataResponse;
 import com.sap.core.odata.core.dispatcher.Dispatcher;
 import com.sap.core.odata.core.enums.ODataHttpMethod;
 import com.sap.core.odata.core.uri.UriParserImpl;
 import com.sap.core.odata.core.uri.UriParserResultImpl;
 
-public final class ODataLocatorImpl implements ODataLocator {
+public final class ODataLocatorImpl {
 
   private static final Logger log = LoggerFactory.getLogger(ODataLocatorImpl.class);
 
@@ -47,6 +47,9 @@ public final class ODataLocatorImpl implements ODataLocator {
 
   private HttpHeaders httpHeaders;
 
+  @Context
+  private HttpHeaders httpHeaders2;
+  
   private UriInfo uriInfo;
 
   @GET
@@ -128,7 +131,6 @@ public final class ODataLocatorImpl implements ODataLocator {
     this.context = context;
   }
 
-  @Override
   public void beforeRequest() throws ODataError {
 
     this.context = new ODataContextImpl();
@@ -153,22 +155,18 @@ public final class ODataLocatorImpl implements ODataLocator {
     return single;
   }
 
-  @Override
   public void setPathSegments(List<PathSegment> odataPathSegments) {
     this.odataPathSegments = odataPathSegments;
   }
 
-  @Override
   public void setHttpHeaders(HttpHeaders httpHeaders) {
     this.httpHeaders = httpHeaders;
   }
 
-  @Override
   public void setUriInfo(UriInfo uriInfo) {
     this.uriInfo = uriInfo;
   }
 
-  @Override
   public void setProcessor(ODataProcessor processor) {
     this.processor = processor;
   }

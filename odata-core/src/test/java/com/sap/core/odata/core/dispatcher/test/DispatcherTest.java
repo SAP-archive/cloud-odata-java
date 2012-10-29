@@ -14,6 +14,7 @@ import org.mockito.stubbing.Answer;
 
 import com.sap.core.odata.api.exception.ODataError;
 import com.sap.core.odata.api.processor.ODataProcessor;
+import com.sap.core.odata.api.processor.ODataResponse;
 import com.sap.core.odata.api.processor.aspect.Batch;
 import com.sap.core.odata.api.processor.aspect.Entity;
 import com.sap.core.odata.api.processor.aspect.EntityComplexProperty;
@@ -27,7 +28,6 @@ import com.sap.core.odata.api.processor.aspect.FunctionImport;
 import com.sap.core.odata.api.processor.aspect.FunctionImportValue;
 import com.sap.core.odata.api.processor.aspect.Metadata;
 import com.sap.core.odata.api.processor.aspect.ServiceDocument;
-import com.sap.core.odata.api.rest.ODataResponse;
 import com.sap.core.odata.core.dispatcher.Dispatcher;
 import com.sap.core.odata.core.enums.ODataHttpMethod;
 import com.sap.core.odata.core.enums.UriType;

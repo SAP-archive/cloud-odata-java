@@ -3,8 +3,8 @@ package com.sap.core.odata.core.rest;
 import java.util.HashMap;
 
 import com.sap.core.odata.api.enums.HttpStatus;
-import com.sap.core.odata.api.rest.ODataResponse;
-import com.sap.core.odata.api.rest.ODataResponse.ODataResponseBuilder;
+import com.sap.core.odata.api.processor.ODataResponse;
+import com.sap.core.odata.api.processor.ODataResponse.ODataResponseBuilder;
 
 public class ODataResponseBuilderImpl extends ODataResponseBuilder {
 
