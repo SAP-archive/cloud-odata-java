@@ -46,6 +46,7 @@ public class DataContainerTest {
     assertNotSame(initSetSize, datenSet.size());
 
     dc.reset();
+    datenSet = dc.getTeamSet();
     assertSame(initSetSize, datenSet.size());
   }
 

@@ -19,9 +19,9 @@ public class DataContainer {
   private Set<Team> teamSet = new HashSet<Team>();
   private Set<Room> roomSet = new HashSet<Room>();
   private Set<Employee> employeeSet = new HashSet<Employee>();
-
-  public void init() {
-
+  private Set<Manager> managerSet = new HashSet<Manager>();
+  
+  public void init() {    
     photoSet = generatePhotos();
 
     // ------------- Buildings ---------------
@@ -65,6 +65,7 @@ public class DataContainer {
     emp1.setImageUri("/SAP/PUBLIC/BC/NWDEMO_MODEL/IMAGES/male_1_WinterW.jpg");
     emp1.setImage("/male_1_WinterW.jpg");
     employeeSet.add(emp1);
+    managerSet.add((Manager)emp1);
 
     Employee emp2 = new Employee("Frederic Fall", 32, room2, team1);
     emp2.setEntryDate(generateDate("2003-07-01"));
@@ -80,7 +81,8 @@ public class DataContainer {
     emp3.setImageUri("/SAP/PUBLIC/BC/NWDEMO_MODEL/IMAGES/male_3_SmithJo.jpg");
     emp3.setImage("/male_3_SmithJo.jpg");
     employeeSet.add(emp3);
-
+    managerSet.add((Manager)emp3);
+    
     Employee emp4 = new Employee("Peter Burke", 39, room2, team2);
     emp4.setManager(emp3);
     emp4.setEntryDate(generateDate("2004-09-12"));
@@ -151,16 +153,37 @@ public class DataContainer {
   }
 
   public void reset() {
-    photoSet.clear();
-    employeeSet.clear();
-    buildingSet.clear();
-    roomSet.clear();
-    teamSet.clear();
+    if(photoSet != null){
+      photoSet.clear();  
+    }
+    if(employeeSet != null){
+      employeeSet.clear();
+    }
+    
+    if(buildingSet != null){
+      buildingSet.clear();
+    }
+    
+    if(roomSet != null){
+      roomSet.clear();
+    }
+    
+    if(teamSet != null){
+      teamSet.clear();  
+    }
+    
+    if(managerSet != null){
+      managerSet.clear();
+    }
     Team.reset();
     Building.reset();
     Employee.reset();
     Room.reset();
     Photo.reset();
     init();
+  }
+
+  public Set<Manager> getManagerSet() {
+  return managerSet;
   }
 }
