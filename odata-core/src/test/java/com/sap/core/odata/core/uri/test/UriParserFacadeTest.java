@@ -12,9 +12,8 @@ public class UriParserFacadeTest {
 
   @Test
   public void parseWithFacade() throws Exception {
-    UriParserFacade facade = new UriParserFacade();
     Map<String, String> queryParameter = new HashMap<String, String>();
-    facade.parse(MockFacade.getMockEdm(), MockFacade.getPathSegmentsAsStringMock(), queryParameter);
+    UriParserFacade.parse(MockFacade.getMockEdm(), MockFacade.getPathSegmentsAsStringMock(), queryParameter);
   }
 
 }
