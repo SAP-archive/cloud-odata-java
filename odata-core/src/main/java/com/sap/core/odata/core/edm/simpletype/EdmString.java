@@ -15,14 +15,7 @@ public class EdmString implements EdmSimpleType {
   
   @Override
   public boolean equals(Object obj) {
-    boolean equals = false;
-    if (this == obj) {
-      equals = true;
-    } else if (obj instanceof EdmString) {
-      equals = true;
-    }
-
-    return equals;
+    return this == obj || obj instanceof EdmString;
   }
   
   @Override
@@ -42,15 +35,7 @@ public class EdmString implements EdmSimpleType {
 
   @Override
   public boolean isCompatible(EdmSimpleType simpleType) {
-    boolean compatible;
-
-    if (simpleType instanceof EdmString) {
-      compatible = true;
-    } else {
-      compatible = false;
-    }
-      
-    return compatible;
+    return simpleType instanceof EdmString;
   }
 
   @Override

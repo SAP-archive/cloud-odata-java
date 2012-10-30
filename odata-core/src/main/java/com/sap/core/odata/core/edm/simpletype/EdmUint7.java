@@ -11,14 +11,7 @@ public class EdmUint7 implements EdmSimpleType {
 
   @Override
   public boolean equals(Object obj) {
-    boolean equals = false;
-    if (this == obj) {
-      equals = true;
-    } else if (obj instanceof EdmBit) {
-      equals = true;
-    }
-
-    return equals;
+    return this == obj || obj instanceof EdmUint7;
   }
 
   @Override
@@ -38,16 +31,7 @@ public class EdmUint7 implements EdmSimpleType {
 
   @Override
   public boolean isCompatible(EdmSimpleType simpleType) {
-    boolean compatible;
-
-    if (simpleType instanceof EdmBit || simpleType instanceof EdmUint7) {
-      compatible = true;
-    } else {
-      compatible = false;
-    }
-
-    return compatible;
-
+    return simpleType instanceof EdmBit || simpleType instanceof EdmUint7;
   }
 
   @Override

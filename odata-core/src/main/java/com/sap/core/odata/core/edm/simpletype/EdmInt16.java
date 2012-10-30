@@ -14,14 +14,7 @@ public class EdmInt16 implements EdmSimpleType {
 
   @Override
   public boolean equals(Object obj) {
-    boolean equals = false;
-    if (this == obj) {
-      equals = true;
-    } else if (obj instanceof EdmInt16) {
-      equals = true;
-    }
-
-    return equals;
+    return this == obj || obj instanceof EdmInt16;
   }
 
   @Override
@@ -41,31 +34,11 @@ public class EdmInt16 implements EdmSimpleType {
 
   @Override
   public boolean isCompatible(EdmSimpleType simpleType) {
-    boolean compatible;
-    
-    if (simpleType instanceof EdmBit || simpleType instanceof EdmUint7) {
-      compatible = true;
-    } else {
-      EdmSimpleTypeKind simpleTypeKind;
-      try {
-        simpleTypeKind = EdmSimpleTypeKind.valueOf(simpleType.getName());
-        switch (simpleTypeKind) {
-        case Byte:
-        case SByte:
-        case Int16:
-          compatible = true;
-          break;
-        default:
-          compatible = false;
-          break;
-        }
-      } catch (EdmException e) {
-        compatible = false;
-      }
-
-    }
-
-    return compatible;
+    return simpleType instanceof EdmBit
+        || simpleType instanceof EdmUint7
+        || simpleType instanceof EdmByte
+        || simpleType instanceof EdmSByte
+        || simpleType instanceof EdmInt16;
   }
 
   @Override

@@ -11,8 +11,8 @@ public interface EdmSimpleType extends EdmType {
   /**
    * Check type compatibility
    * 
-   * @param simpleType
-   * @return <code>true</code> if the type is compatible to the provided type
+   * @param simpleType  the {@link EdmSimpleType} to be tested for compatibility
+   * @return <code>true</code> if the provided type is compatible to this type
    */
   public boolean isCompatible(EdmSimpleType simpleType);
 

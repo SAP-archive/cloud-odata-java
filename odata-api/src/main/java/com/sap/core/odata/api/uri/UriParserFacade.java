@@ -8,14 +8,13 @@ import com.sap.core.odata.api.edm.Edm;
 
 
 /**
- * @author SAP AG
  * Class to wrap UriParser functionality 
- *
+ * @author SAP AG
  */
 public class UriParserFacade {
   
   /**
-   * Parse path segments and query parameters for the given edm
+   * Parse path segments and query parameters for the given EDM
    * @param edm
    * @param pathSegments
    * @param queryParameter

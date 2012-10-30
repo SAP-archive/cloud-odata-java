@@ -21,11 +21,9 @@ import org.junit.Test;
 import com.sap.core.odata.api.edm.Edm;
 import com.sap.core.odata.api.edm.EdmException;
 import com.sap.core.odata.api.edm.EdmSimpleTypeFacade;
-import com.sap.core.odata.api.edm.EdmType;
 import com.sap.core.odata.api.edm.EdmTypeKind;
 import com.sap.core.odata.api.enums.Format;
 import com.sap.core.odata.api.enums.InlineCount;
-import com.sap.core.odata.api.uri.KeyPredicate;
 import com.sap.core.odata.api.uri.UriParserException;
 import com.sap.core.odata.api.uri.UriParserResult;
 import com.sap.core.odata.core.enums.UriType;
@@ -40,22 +38,20 @@ public class UriParserTest {
   }
 
   private static Edm edm;
-  private static EdmSimpleTypeFacade facade = new EdmSimpleTypeFacade();
-  
+
   @BeforeClass
   public static void getEdm() throws EdmException {
     edm = MockFacade.getMockEdm();
   }
 
-  
- /**
-   * Parse the URI part after an OData service root, given as string.
-   * Query parameters can be included.
-   * @param uri  the URI part
-   * @return a {@link UriParserResultImpl} instance containing the parsed information
-   * @throws UriParserException
-   * @throws EdmException
-   */
+  /**
+    * Parse the URI part after an OData service root, given as string.
+    * Query parameters can be included.
+    * @param uri  the URI part
+    * @return a {@link UriParserResultImpl} instance containing the parsed information
+    * @throws UriParserException
+    * @throws EdmException
+    */
   private UriParserResultImpl parse(final String uri) throws UriParserException {
     final String[] path = uri.split("\\?", -1);
     if (path.length > 2)
@@ -63,14 +59,14 @@ public class UriParserTest {
 
     final List<String> pathSegments = getPathSegments(path[0]);
     Map<String, String> queryParameters;
-    if (path.length == 2){
+    if (path.length == 2) {
       queryParameters = getQueryParameters(unescape(path[1]));
-    }else{
+    } else {
       queryParameters = new HashMap<String, String>();
     }
-      
+
     UriParserResult result = new UriParserImpl(edm).parse(pathSegments, queryParameters);
-    
+
     return (UriParserResultImpl) result;
   }
 
@@ -528,182 +524,6 @@ public class UriParserTest {
     parseWrongUri("/.somethingwrong");
   }
 
-  /**
-   * Parse a URI string with an entity set and a single-value key
-   * and assert that it has the correct parsed type and value.
-   * 
-   * @param uri
-   *          the URI to be parsed as string; it must refer to an entity with one key property
-   * @param type
-   *          the expected {@link } of the key property
-   * @param expectedLiteral
-   *          the expected literal value of the key
-   * @throws UriParserException
-   * @throws EdmException 
-   */
-  private void parseOneKey(final String uri, final EdmType type, final String expectedLiteral) throws UriParserException, EdmException {
-    final UriParserResultImpl result = parse(uri);
-    final KeyPredicate keyPredicate = result.getKeyPredicates().get(0);
-
-    assertEquals(type, keyPredicate.getProperty().getType());
-    assertEquals(expectedLiteral, keyPredicate.getLiteral());
-  }
-
-  @Test
-  public void parseDecimalKey() throws Exception {
-    parseOneKey("/Decimals(4.5m)", facade.decimalInstance(), "4.5");
-    parseOneKey("/Decimals(4.5M)", facade.decimalInstance(), "4.5");
-    parseOneKey("/Decimals(1)", facade.decimalInstance(), "1");
-    parseOneKey("/Decimals(255)", facade.decimalInstance(), "255");
-    parseOneKey("/Decimals(-32768)", facade.decimalInstance(), "-32768");
-    parseOneKey("/Decimals(32768)", facade.decimalInstance(), "32768");
-    parseOneKey("/Decimals(3000000)", facade.decimalInstance(), "3000000");
-    parseOneKey("/Decimals(4.5d)", facade.decimalInstance(), "4.5");
-    parseOneKey("/Decimals(4.2E9F)", facade.decimalInstance(), "4.2E9");
-    parseOneKey("/Decimals(1234567890L)", facade.decimalInstance(), "1234567890");
-  }
-
-  @Test
-  public void parseInt16Key() throws Exception {
-    parseOneKey("/Int16s(16)", facade.int16Instance(), "16");
-    parseOneKey("/Int16s(-16)", facade.int16Instance(), "-16");
-    parseOneKey("/Int16s(255)", facade.int16Instance(), "255");
-    parseOneKey("/Int16s(-32768)", facade.int16Instance(), "-32768");
-
-  }
-
-  @Test
-  public void parseInt32Key() throws Exception {
-    parseOneKey("/Int32s(32)", facade.int32Instance(), "32");
-    parseOneKey("/Int32s(-127)", facade.int32Instance(), "-127");
-    parseOneKey("/Int32s(255)", facade.int32Instance(), "255");
-    parseOneKey("/Int32s(32767)", facade.int32Instance(), "32767");
-    parseOneKey("/Int32s(-32769)", facade.int32Instance(), "-32769");
-  }
-
-  @Test
-  public void parseInt64Key() throws Exception {
-    parseOneKey("/Int64s(64)", facade.int64Instance(), "64");
-    parseOneKey("/Int64s(255)", facade.int64Instance(), "255");
-    parseOneKey("/Int64s(1000)", facade.int64Instance(), "1000");
-    parseOneKey("/Int64s(100000)", facade.int64Instance(), "100000");
-    parseOneKey("/Int64s(-64L)", facade.int64Instance(), "-64");
-    parseOneKey("/Int64s(" + Long.MAX_VALUE + "L)", facade.int64Instance(), "" + Long.MAX_VALUE);
-    parseOneKey("/Int64s(" + Long.MIN_VALUE + "l)", facade.int64Instance(), "" + Long.MIN_VALUE);
-  }
-
-  @Test
-  public void parseStringKey() throws Exception {
-    parseOneKey("/Strings('abc')", facade.stringInstance(), "abc");
-    parseOneKey("/Strings('abc%20xyz')", facade.stringInstance(), "abc xyz");
-    parseOneKey("/Strings('true')", facade.stringInstance(), "true");
-    parseOneKey("/Strings('')", facade.stringInstance(), "");
-  }
-
-  @Test
-  public void parseSingleKey() throws Exception {
-    parseOneKey("/Singles(45)", facade.singleInstance(), "45");
-    parseOneKey("/Singles(255)", facade.singleInstance(), "255");
-    parseOneKey("/Singles(-32768)", facade.singleInstance(), "-32768");
-    parseOneKey("/Singles(32768)", facade.singleInstance(), "32768");
-    parseOneKey("/Singles(1L)", facade.singleInstance(), "1");
-    parseOneKey("/Singles(4.5f)", facade.singleInstance(), "4.5");
-    parseOneKey("/Singles(4.5F)", facade.singleInstance(), "4.5");
-    parseOneKey("/Singles(4.5e9f)", facade.singleInstance(), "4.5e9");
-  }
-
-  @Test
-  public void parseDoubleKey() throws Exception {
-    parseOneKey("/Doubles(45)", facade.doubleInstance(), "45");
-    parseOneKey("/Doubles(255)", facade.doubleInstance(), "255");
-    parseOneKey("/Doubles(-32768)", facade.doubleInstance(), "-32768");
-    parseOneKey("/Doubles(32768)", facade.doubleInstance(), "32768");
-    parseOneKey("/Doubles(1l)", facade.doubleInstance(), "1");
-    parseOneKey("/Doubles(4.5d)", facade.doubleInstance(), "4.5");
-    parseOneKey("/Doubles(4.5D)", facade.doubleInstance(), "4.5");
-    parseOneKey("/Doubles(4.5e21f)", facade.doubleInstance(), "4.5e21");
-  }
-
-  @Test
-  public void parseByteKey() throws Exception {
-    parseOneKey("/Bytes(255)", facade.byteInstance(), "255");
-    parseOneKey("Bytes(123)", facade.byteInstance(), "123");
-  }
-
-  @Test
-  public void parseGuidKey() throws Exception {
-    parseOneKey("/Guids(guid'1225c695-cfb8-4ebb-aaaa-80da344efa6a')", facade.guidInstance(), "1225c695-cfb8-4ebb-aaaa-80da344efa6a");
-  }
-
-  @Test
-  public void parseTimeKey() throws Exception {
-    parseOneKey("/Times(time'P120D')", facade.timeInstance(), "P120D");
-  }
-
-  @Test
-  public void parseDatetimeKey() throws Exception {
-    parseOneKey("/DateTimes(datetime'2009-12-26T21%3A23%3A38')", facade.dateTimeInstance(), "2009-12-26T21:23:38");
-    parseOneKey("/DateTimes(datetime'2009-12-26T21%3A23%3A38Z')", facade.dateTimeInstance(), "2009-12-26T21:23:38Z");
-  }
-
-  @Test
-  public void parseDatetimeOffsetKey() throws Exception {
-    parseOneKey("/DateTimeOffsets(datetimeoffset'2009-12-26T21%3A23%3A38Z')", facade.dateTimeOffsetInstance(), "2009-12-26T21:23:38Z");
-    parseOneKey("/DateTimeOffsets(datetimeoffset'2002-10-10T12%3A00%3A00-05%3A00')", facade.dateTimeOffsetInstance(), "2002-10-10T12:00:00-05:00");
-  }
-
-  @Test
-  public void parseBooleanKey() throws Exception {
-    parseOneKey("/Booleans(true)", facade.booleanInstance(), "true");
-    parseOneKey("/Booleans(false)", facade.booleanInstance(), "false");
-    parseOneKey("/Booleans(1)", facade.booleanInstance(), "1");
-    parseOneKey("/Booleans(0)", facade.booleanInstance(), "0");
-  }
-
-  @Test
-  public void parseSByteKey() throws Exception {
-    parseOneKey("/SBytes(-123)", facade.sByteInstance(), "-123");
-    parseOneKey("/SBytes(12)", facade.sByteInstance(), "12");
-  }
-
-  @Test
-  public void parseBinaryKey() throws Exception {
-    parseOneKey("/Binaries(X'Fa12aAA1')", facade.binaryInstance(), "+hKqoQ==");
-    parseOneKey("/Binaries(binary'FA12AAA1')", facade.binaryInstance(), "+hKqoQ==");
-  }
-
-  @Test
-  public void parseKeyWithWrongContent() throws Exception {
-    parseWrongUri("/Binaries(binary'abcde')");
-    parseWrongUri("Strings(')");
-    parseWrongUri("Strings('a)");
-    parseWrongUri("Times(wrongprefix'PT1H2M3S')");
-    parseWrongUri("/Int32s(32i)");
-    parseWrongUri("Int32s(12345678901234567890)");
-  }
-
-  @Test
-  public void parseIncompatibleKeys() throws Exception {
-    parseWrongUri("Binaries(1D)");
-    parseWrongUri("Booleans('0')");
-    parseWrongUri("Booleans('1')");
-    parseWrongUri("Booleans(2)");
-    parseWrongUri("Bytes(-1)");
-    parseWrongUri("Bytes(-129)");
-    parseWrongUri("DateTimes(time'PT11H12M13S')");
-    parseWrongUri("DateTimeOffsets(time'PT11H12M13S')");
-    parseWrongUri("Decimals('1')");
-    parseWrongUri("Doubles(1M)");
-    parseWrongUri("Guids(1)");
-    parseWrongUri("Int16s(32768)");
-    parseWrongUri("Int32s(1L)");
-    parseWrongUri("Int64s(1M)");
-    parseWrongUri("SBytes(128)");
-    parseWrongUri("Singles(1D)");
-    parseWrongUri("Strings(1)");
-    parseWrongUri("Times(datetime'2012-10-10T11:12:13')");
-  }
-
   @Test
   public void parseFunctionImports() throws Exception {
     UriParserResultImpl result = parse("EmployeeSearch");
@@ -746,7 +566,7 @@ public class UriParserTest {
     UriParserResultImpl result = parse("EmployeeSearch?q='Hugo'&notaparameter=2");
     assertEquals("EmployeeSearch", result.getFunctionImport().getName());
     assertEquals(1, result.getFunctionImportParameters().size());
-    assertEquals(facade.stringInstance(), result.getFunctionImportParameters().get("q").getType());
+    assertEquals(new EdmSimpleTypeFacade().stringInstance(), result.getFunctionImportParameters().get("q").getType());
     assertEquals("Hugo", result.getFunctionImportParameters().get("q").getLiteral());
   }
 
