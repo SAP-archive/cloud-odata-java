@@ -12,7 +12,6 @@ public class QueryOptionsEnumTest {
 
   @Test
   public void uriType0() {
-
     assertTrue(UriType.URI0.isCompatible(SystemQueryOption.$format));
 
     assertFalse(UriType.URI0.isCompatible(SystemQueryOption.$expand));
