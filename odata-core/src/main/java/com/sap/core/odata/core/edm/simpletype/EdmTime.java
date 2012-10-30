@@ -15,14 +15,7 @@ public class EdmTime implements EdmSimpleType {
 
   @Override
   public boolean equals(Object obj) {
-    boolean equals = false;
-    if (this == obj) {
-      equals = true;
-    } else if (obj instanceof EdmTime) {
-      equals = true;
-    }
-
-    return equals;
+    return this == obj || obj instanceof EdmTime;
   }
 
   @Override
@@ -42,15 +35,7 @@ public class EdmTime implements EdmSimpleType {
 
   @Override
   public boolean isCompatible(EdmSimpleType simpleType) {
-    boolean compatible;
-
-    if (simpleType instanceof EdmTime) {
-      compatible = true;
-    } else {
-      compatible = false;
-    }
-
-    return compatible;
+    return simpleType instanceof EdmTime;
   }
 
   @Override

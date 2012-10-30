@@ -3,11 +3,8 @@ package com.sap.core.odata.core.edm.test;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-import java.util.ArrayList;
-
 import org.junit.Test;
 
-import com.sap.core.odata.api.edm.EdmException;
 import com.sap.core.odata.api.edm.EdmSimpleType;
 import com.sap.core.odata.api.edm.EdmSimpleTypeFacade;
 import com.sap.core.odata.core.edm.simpletype.EdmBit;
@@ -15,16 +12,15 @@ import com.sap.core.odata.core.edm.simpletype.EdmUint7;
 
 public class EdmSimpleTypeTest {
 
-  private void testCompability(EdmSimpleType type, ArrayList<EdmSimpleType> typeList) {
-    for (EdmSimpleType compatible : typeList) {
+  private static final EdmSimpleTypeFacade facade = new EdmSimpleTypeFacade();
+
+  private void testCompatibility(final EdmSimpleType type, final EdmSimpleType... edmSimpleTypes) {
+    for (EdmSimpleType compatible : edmSimpleTypes)
       assertTrue(type.isCompatible(compatible));
-    }
   }
 
   @Test
-  public void testNames() throws EdmException {
-
-    EdmSimpleTypeFacade facade = new EdmSimpleTypeFacade();
+  public void testNames() throws Exception {
     assertEquals("Binary", facade.binaryInstance().getName());
     assertEquals("Boolean", facade.booleanInstance().getName());
     assertEquals("Byte", facade.byteInstance().getName());
@@ -44,195 +40,135 @@ public class EdmSimpleTypeTest {
 
   @Test
   public void testBinaryCompatibility() {
-    EdmSimpleTypeFacade facade = new EdmSimpleTypeFacade();
-    ArrayList<EdmSimpleType> typeList = new ArrayList<EdmSimpleType>();
-
-    typeList.add(facade.binaryInstance());
-
-    testCompability(facade.binaryInstance(), typeList);
+    testCompatibility(facade.binaryInstance(),
+        facade.binaryInstance());
   }
 
   @Test
   public void testBooleanCompatibility() {
-    EdmSimpleTypeFacade facade = new EdmSimpleTypeFacade();
-    ArrayList<EdmSimpleType> typeList = new ArrayList<EdmSimpleType>();
-
-    typeList.add(facade.booleanInstance());
-    typeList.add(new EdmBit());
-
-    testCompability(facade.booleanInstance(), typeList);
+    testCompatibility(facade.booleanInstance(),
+        facade.booleanInstance(),
+        new EdmBit());
   }
 
   @Test
   public void testByteCompatibility() {
-    EdmSimpleTypeFacade facade = new EdmSimpleTypeFacade();
-    ArrayList<EdmSimpleType> typeList = new ArrayList<EdmSimpleType>();
-
-    typeList.add(facade.byteInstance());
-    typeList.add(new EdmBit());
-    typeList.add(new EdmUint7());
-
-    testCompability(facade.byteInstance(), typeList);
+    testCompatibility(facade.byteInstance(),
+        facade.byteInstance(),
+        new EdmBit(),
+        new EdmUint7());
   }
 
   @Test
   public void testDateTimeCompatibility() {
-    EdmSimpleTypeFacade facade = new EdmSimpleTypeFacade();
-    ArrayList<EdmSimpleType> typeList = new ArrayList<EdmSimpleType>();
-
-    typeList.add(facade.dateTimeInstance());
-
-    testCompability(facade.dateTimeInstance(), typeList);
+    testCompatibility(facade.dateTimeInstance(),
+        facade.dateTimeInstance());
   }
 
   @Test
   public void testDateTimeOffsetCompatibility() {
-    EdmSimpleTypeFacade facade = new EdmSimpleTypeFacade();
-    ArrayList<EdmSimpleType> typeList = new ArrayList<EdmSimpleType>();
-
-    typeList.add(facade.dateTimeOffsetInstance());
-
-    testCompability(facade.dateTimeOffsetInstance(), typeList);
+    testCompatibility(facade.dateTimeOffsetInstance(),
+        facade.dateTimeOffsetInstance());
   }
 
   @Test
   public void testDecimalCompatibility() {
-    EdmSimpleTypeFacade facade = new EdmSimpleTypeFacade();
-    ArrayList<EdmSimpleType> typeList = new ArrayList<EdmSimpleType>();
-
-    typeList.add(new EdmBit());
-    typeList.add(new EdmUint7());
-    typeList.add(facade.byteInstance());
-    typeList.add(facade.sByteInstance());
-    typeList.add(facade.int16Instance());
-    typeList.add(facade.int32Instance());
-    typeList.add(facade.int64Instance());
-    typeList.add(facade.singleInstance());
-    typeList.add(facade.doubleInstance());
-    typeList.add(facade.decimalInstance());
-
-    testCompability(facade.decimalInstance(), typeList);
+    testCompatibility(facade.decimalInstance(),
+        new EdmBit(),
+        new EdmUint7(),
+        facade.byteInstance(),
+        facade.sByteInstance(),
+        facade.int16Instance(),
+        facade.int32Instance(),
+        facade.int64Instance(),
+        facade.singleInstance(),
+        facade.doubleInstance(),
+        facade.decimalInstance());
   }
 
   @Test
   public void testDoubleCompatibility() {
-    EdmSimpleTypeFacade facade = new EdmSimpleTypeFacade();
-    ArrayList<EdmSimpleType> typeList = new ArrayList<EdmSimpleType>();
-
-    typeList.add(new EdmBit());
-    typeList.add(new EdmUint7());
-    typeList.add(facade.byteInstance());
-    typeList.add(facade.sByteInstance());
-    typeList.add(facade.int16Instance());
-    typeList.add(facade.int32Instance());
-    typeList.add(facade.int64Instance());
-    typeList.add(facade.singleInstance());
-    typeList.add(facade.doubleInstance());
-
-    testCompability(facade.doubleInstance(), typeList);
+    testCompatibility(facade.doubleInstance(),
+        new EdmBit(),
+        new EdmUint7(),
+        facade.byteInstance(),
+        facade.sByteInstance(),
+        facade.int16Instance(),
+        facade.int32Instance(),
+        facade.int64Instance(),
+        facade.singleInstance(),
+        facade.doubleInstance());
   }
 
   @Test
   public void testGuidCompatibility() {
-    EdmSimpleTypeFacade facade = new EdmSimpleTypeFacade();
-    ArrayList<EdmSimpleType> typeList = new ArrayList<EdmSimpleType>();
-
-    typeList.add(facade.guidInstance());
-
-    testCompability(facade.guidInstance(), typeList);
+    testCompatibility(facade.guidInstance(),
+        facade.guidInstance());
   }
 
   @Test
   public void testint16Compatibility() {
-    EdmSimpleTypeFacade facade = new EdmSimpleTypeFacade();
-    ArrayList<EdmSimpleType> typeList = new ArrayList<EdmSimpleType>();
-
-    typeList.add(new EdmBit());
-    typeList.add(new EdmUint7());
-    typeList.add(facade.byteInstance());
-    typeList.add(facade.sByteInstance());
-    typeList.add(facade.int16Instance());
-
-    testCompability(facade.int16Instance(), typeList);
+    testCompatibility(facade.int16Instance(),
+        new EdmBit(),
+        new EdmUint7(),
+        facade.byteInstance(),
+        facade.sByteInstance(),
+        facade.int16Instance());
   }
 
   @Test
   public void testInt32Compatibility() {
-    EdmSimpleTypeFacade facade = new EdmSimpleTypeFacade();
-    ArrayList<EdmSimpleType> typeList = new ArrayList<EdmSimpleType>();
-
-    typeList.add(new EdmBit());
-    typeList.add(new EdmUint7());
-    typeList.add(facade.byteInstance());
-    typeList.add(facade.sByteInstance());
-    typeList.add(facade.int16Instance());
-    typeList.add(facade.int32Instance());
-
-    testCompability(facade.int32Instance(), typeList);
+    testCompatibility(facade.int32Instance(),
+        new EdmBit(),
+        new EdmUint7(),
+        facade.byteInstance(),
+        facade.sByteInstance(),
+        facade.int16Instance(),
+        facade.int32Instance());
   }
 
   @Test
   public void testInt64Compatibility() {
-    EdmSimpleTypeFacade facade = new EdmSimpleTypeFacade();
-    ArrayList<EdmSimpleType> typeList = new ArrayList<EdmSimpleType>();
-
-    typeList.add(new EdmBit());
-    typeList.add(new EdmUint7());
-    typeList.add(facade.byteInstance());
-    typeList.add(facade.sByteInstance());
-    typeList.add(facade.int16Instance());
-    typeList.add(facade.int32Instance());
-    typeList.add(facade.int64Instance());
-
-    testCompability(facade.int64Instance(), typeList);
+    testCompatibility(facade.int64Instance(),
+        new EdmBit(),
+        new EdmUint7(),
+        facade.byteInstance(),
+        facade.sByteInstance(),
+        facade.int16Instance(),
+        facade.int32Instance(),
+        facade.int64Instance());
   }
 
   @Test
   public void testSByteCompatibility() {
-    EdmSimpleTypeFacade facade = new EdmSimpleTypeFacade();
-    ArrayList<EdmSimpleType> typeList = new ArrayList<EdmSimpleType>();
-
-    typeList.add(new EdmBit());
-    typeList.add(new EdmUint7());
-    typeList.add(facade.sByteInstance());
-
-    testCompability(facade.sByteInstance(), typeList);
+    testCompatibility(facade.sByteInstance(),
+        new EdmBit(),
+        new EdmUint7(),
+        facade.sByteInstance());
   }
 
   @Test
   public void testSingleCompatibility() {
-    EdmSimpleTypeFacade facade = new EdmSimpleTypeFacade();
-    ArrayList<EdmSimpleType> typeList = new ArrayList<EdmSimpleType>();
-
-    typeList.add(new EdmBit());
-    typeList.add(new EdmUint7());
-    typeList.add(facade.byteInstance());
-    typeList.add(facade.sByteInstance());
-    typeList.add(facade.int16Instance());
-    typeList.add(facade.int32Instance());
-    typeList.add(facade.int64Instance());
-    typeList.add(facade.singleInstance());
-
-    testCompability(facade.singleInstance(), typeList);
+    testCompatibility(facade.singleInstance(),
+        new EdmBit(),
+        new EdmUint7(),
+        facade.byteInstance(),
+        facade.sByteInstance(),
+        facade.int16Instance(),
+        facade.int32Instance(),
+        facade.int64Instance(),
+        facade.singleInstance());
   }
 
   @Test
   public void testStringCompatibility() {
-    EdmSimpleTypeFacade facade = new EdmSimpleTypeFacade();
-    ArrayList<EdmSimpleType> typeList = new ArrayList<EdmSimpleType>();
-
-    typeList.add(facade.stringInstance());
-
-    testCompability(facade.stringInstance(), typeList);
+    testCompatibility(facade.stringInstance(),
+        facade.stringInstance());
   }
 
   @Test
   public void testTimeCompatibility() {
-    EdmSimpleTypeFacade facade = new EdmSimpleTypeFacade();
-    ArrayList<EdmSimpleType> typeList = new ArrayList<EdmSimpleType>();
-
-    typeList.add(facade.timeInstance());
-
-    testCompability(facade.timeInstance(), typeList);
+    testCompatibility(facade.timeInstance(),
+        facade.timeInstance());
   }
 }

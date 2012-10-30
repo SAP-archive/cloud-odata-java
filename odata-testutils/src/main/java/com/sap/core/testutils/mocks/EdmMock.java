@@ -27,9 +27,9 @@ import com.sap.core.odata.api.edm.EdmTyped;
 
 class EdmMock {
   
-  private static EdmSimpleTypeFacade facade = new EdmSimpleTypeFacade();
-  
   public static Edm createMockEdm() throws EdmException {
+    final EdmSimpleTypeFacade facade = new EdmSimpleTypeFacade();
+    
     EdmServiceMetadata serviceMetadata = mock(EdmServiceMetadata.class);
     when(serviceMetadata.getDataServiceVersion()).thenReturn("MockEdm");
 
@@ -81,22 +81,6 @@ class EdmMock {
     EdmEntitySet teamsEntitySet = createEntitySetMock(defaultContainer, "Teams", facade.stringInstance(), "Id");
     when(teamsEntitySet.getEntityType().getProperty("nt_Employees")).thenReturn(employeeProperty);
     when(teamsEntitySet.getRelatedEntitySet(employeeProperty)).thenReturn(employeeEntitySet);
-
-    createEntitySetMock(defaultContainer, "Decimals", facade.decimalInstance(), "Id");
-    createEntitySetMock(defaultContainer, "Int16s", facade.int16Instance(), "Id");
-    createEntitySetMock(defaultContainer, "Int32s", facade.int32Instance(), "Id");
-    createEntitySetMock(defaultContainer, "Int64s", facade.int64Instance(), "Id");
-    createEntitySetMock(defaultContainer, "Strings", facade.stringInstance(), "Id");
-    createEntitySetMock(defaultContainer, "Singles", facade.singleInstance(), "Id");
-    createEntitySetMock(defaultContainer, "Doubles", facade.doubleInstance(), "Id");
-    createEntitySetMock(defaultContainer, "DateTimes", facade.dateTimeInstance(), "Id");
-    createEntitySetMock(defaultContainer, "DateTimeOffsets", facade.dateTimeOffsetInstance(), "Id");
-    createEntitySetMock(defaultContainer, "Booleans", facade.booleanInstance(), "Id");
-    createEntitySetMock(defaultContainer, "SBytes", facade.sByteInstance(), "Id");
-    createEntitySetMock(defaultContainer, "Binaries", facade.binaryInstance(), "Id");
-    createEntitySetMock(defaultContainer, "Bytes", facade.byteInstance(), "Id");
-    createEntitySetMock(defaultContainer, "Guids", facade.guidInstance(), "Id");
-    createEntitySetMock(defaultContainer, "Times", facade.timeInstance(), "Id");
 
     when(defaultContainer.getEntitySet(matches("some.+|.+Search|All.+|Max.+|Most.+|ManagerPhoto|Old.+"))).thenThrow(new EdmException("Entity set not found"));
 

@@ -3,8 +3,8 @@ package com.sap.core.odata.api.uri;
 import com.sap.core.odata.api.edm.EdmSimpleType;
 
 /**
- * @author SAP AG
  * UriLiteral representation
+ * @author SAP AG
  */
 public final class UriLiteral {
   private EdmSimpleType type;

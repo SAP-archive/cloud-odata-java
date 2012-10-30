@@ -14,14 +14,7 @@ public class EdmByte implements EdmSimpleType {
 
   @Override
   public boolean equals(Object obj) {
-    boolean equals = false;
-    if (this == obj) {
-      equals = true;
-    } else if (obj instanceof EdmByte) {
-      equals = true;
-    }
-
-    return equals;
+    return this == obj || obj instanceof EdmByte;
   }
 
   @Override
@@ -41,15 +34,7 @@ public class EdmByte implements EdmSimpleType {
 
   @Override
   public boolean isCompatible(EdmSimpleType simpleType) {
-    boolean compatible;
-
-    if (simpleType instanceof EdmBit || simpleType instanceof EdmUint7 || simpleType instanceof EdmByte) {
-      compatible = true;
-    } else {
-      compatible = false;
-    }
-
-    return compatible;
+    return simpleType instanceof EdmBit || simpleType instanceof EdmUint7 || simpleType instanceof EdmByte;
   }
 
   @Override
