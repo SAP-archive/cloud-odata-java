@@ -18,7 +18,7 @@ import com.sap.core.odata.api.processor.ODataResponse;
 import com.sap.core.odata.api.uri.KeyPredicate;
 import com.sap.core.odata.api.uri.UriParserResult;
 import com.sap.core.odata.ref.model.DataContainer;
-import com.sap.core.odata.ref.processor.CollectionsProcessor;
+import com.sap.core.odata.ref.processor.ListsProcessor;
 import com.sap.core.odata.ref.processor.ScenarioDataSource;
 
 /**
@@ -28,14 +28,14 @@ public class EntityTest {
 
   private static DataContainer dataContainer;
   private static ScenarioDataSource dataSource;
-  private static CollectionsProcessor processor;
+  private static ListsProcessor processor;
 
   @BeforeClass
   public static void init() {
     dataContainer = new DataContainer();
     dataContainer.reset();
     dataSource = new ScenarioDataSource(dataContainer);
-    processor = new CollectionsProcessor(dataSource);
+    processor = new ListsProcessor(dataSource);
   }
 
   private UriParserResult mockUriResult(final String entitySetName, final String keyName, final String keyValue) throws EdmException {

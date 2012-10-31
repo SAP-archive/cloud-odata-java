@@ -13,7 +13,7 @@ import com.sap.core.odata.api.edm.EdmException;
 import com.sap.core.odata.api.processor.ODataResponse;
 import com.sap.core.odata.api.uri.UriParserResult;
 import com.sap.core.odata.ref.model.DataContainer;
-import com.sap.core.odata.ref.processor.CollectionsProcessor;
+import com.sap.core.odata.ref.processor.ListsProcessor;
 import com.sap.core.odata.ref.processor.ScenarioDataSource;
 
 /**
@@ -23,14 +23,14 @@ public class EntitySetTest {
 
   private static DataContainer dataContainer;
   private static ScenarioDataSource dataSource;
-  private static CollectionsProcessor processor;
+  private static ListsProcessor processor;
 
   @BeforeClass
   public static void init() {
     dataContainer = new DataContainer();
     dataContainer.reset();
     dataSource = new ScenarioDataSource(dataContainer);
-    processor = new CollectionsProcessor(dataSource);
+    processor = new ListsProcessor(dataSource);
   }
 
   private UriParserResult mockUriResult(final String entitySetName) throws EdmException {
@@ -39,6 +39,7 @@ public class EntitySetTest {
 
     UriParserResult uriResult = mock(UriParserResult.class);
     when(uriResult.getStartEntitySet()).thenReturn(entitySet);
+    when(uriResult.getTop()).thenReturn(null);
     return uriResult;
   }
 
