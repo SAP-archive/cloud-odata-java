@@ -70,4 +70,8 @@ public class Building {
     return true;
   }
 
+  @Override
+  public String toString() {
+    return "{\"Id\":\"" + id + "\",\"Name\":\"" + name + "\",\"Image\":\"" + image + "\"}";
+  }
 }

@@ -169,4 +169,18 @@ public class Employee {
     return true;
   }
 
+  @Override
+  public String toString() {
+    return "{\"EmployeeId\":\"" + employeeId + "\","
+        + "\"EmployeeName\":\"" + employeeName + "\","
+        + "\"ManagerId\":\"" + manager.getId() + "\","
+        + "\"RoomId\":\"" + room.getId() + "\","
+        + "\"TeamId\":\"" + team.getId() + "\","
+        + "\"Location\":{\"City\":{\"PostalCode\":\"" + location.getCity().getPostalCode() + "\","
+        + "\"CityName\":\"" + location.getCity().getCityName() + "\"},"
+        + "\"Country\":\"" + location.getCountry() + "\"},"
+        + "\"Age\":" + age + ","
+        + "\"EntryDate\":\"" + entryDate + "\","
+        + "\"ImageUrl\":\"" + imageUrl + "}";
+  }
 }

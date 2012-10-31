@@ -10,7 +10,7 @@ import java.util.Set;
 public class DataContainer {
 
   private static final int NUMBER_OF_PHOTOS = 4;
-  private static final String[] arrayForImageType = { "PMG", "BMP", "JPEG", "GIF" };
+  private static final String[] arrayForImageType = { "PNG", "BMP", "JPEG", "GIF" };
   private static final boolean SCRUMTEAM_TRUE = true;
   private static final boolean SCRUMTEAM_FALSE = false;
 
