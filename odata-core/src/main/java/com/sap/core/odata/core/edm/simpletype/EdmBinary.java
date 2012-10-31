@@ -1,5 +1,8 @@
 package com.sap.core.odata.core.edm.simpletype;
 
+import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.codec.binary.Hex;
+
 import com.sap.core.odata.api.edm.EdmException;
 import com.sap.core.odata.api.edm.EdmFacets;
 import com.sap.core.odata.api.edm.EdmLiteralKind;
@@ -57,7 +60,8 @@ public class EdmBinary implements EdmSimpleType {
 
   @Override
   public String toUriLiteral(String literal) {
-    // TODO Auto-generated method stub
-    return null;
+    byte[] b = Base64.decodeBase64(literal);
+
+    return "binary'" + Hex.encodeHexString(b).toUpperCase() + "'";
   }
 }

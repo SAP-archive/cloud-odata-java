@@ -61,8 +61,8 @@ public class EdmString implements EdmSimpleType {
 
   @Override
   public String toUriLiteral(String literal) {
-    // TODO Auto-generated method stub
-    return null;
+    literal = literal.replace("%27", "''");
+    return "'" + literal + "'";
   }
 
 }

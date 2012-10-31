@@ -58,8 +58,7 @@ public class EdmTime implements EdmSimpleType {
 
   @Override
   public String toUriLiteral(String literal) {
-    // TODO Auto-generated method stub
-    return null;
+    return "time'" + literal + "'";
   }
 
 }

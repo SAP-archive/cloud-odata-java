@@ -7,8 +7,8 @@ import org.junit.Test;
 
 import com.sap.core.odata.api.edm.EdmSimpleType;
 import com.sap.core.odata.api.edm.EdmSimpleTypeFacade;
-import com.sap.core.odata.core.edm.simpletype.EdmBit;
-import com.sap.core.odata.core.edm.simpletype.EdmUint7;
+import com.sap.core.odata.core.edm.simpletype.Bit;
+import com.sap.core.odata.core.edm.simpletype.Uint7;
 
 public class EdmSimpleTypeTest {
 
@@ -18,7 +18,73 @@ public class EdmSimpleTypeTest {
     for (EdmSimpleType compatible : edmSimpleTypes)
       assertTrue(type.isCompatible(compatible));
   }
+  
+  
+  @Test
+  public void toUriLiteralBinary(){
+    assertEquals("binary'FA12AAA1'", facade.binaryInstance().toUriLiteral("+hKqoQ=="));
+  }
+  
+  @Test
+  public void toUriLiteralBoolean(){
+    assertEquals("true", facade.booleanInstance().toUriLiteral("true"));
+    assertEquals("false", facade.booleanInstance().toUriLiteral("false"));
+    assertEquals("0", facade.booleanInstance().toUriLiteral("0"));
+    assertEquals("1", facade.booleanInstance().toUriLiteral("1"));
+  }
 
+  @Test
+  public void toUriLiteralByte(){
+    assertEquals("127", facade.byteInstance().toUriLiteral("127"));
+  }
+  
+  @Test
+  public void toUriLiteralDateTime(){
+    assertEquals("datetime'2009-12-26T21%3A23%3A38'", facade.dateTimeInstance().toUriLiteral("2009-12-26T21:23:38"));
+    assertEquals("datetime'2009-12-26T21%3A23%3A38Z'", facade.dateTimeInstance().toUriLiteral("2009-12-26T21:23:38Z"));
+  }
+  
+  @Test
+  public void toUriLiteralDateTimeOffset(){
+    assertEquals("datetimeoffset'2009-12-26T21%3A23%3A38Z'", facade.dateTimeOffsetInstance().toUriLiteral("2009-12-26T21:23:38Z"));
+    assertEquals("datetimeoffset'2002-10-10T12%3A00%3A00-05%3A00'", facade.dateTimeOffsetInstance().toUriLiteral("2002-10-10T12:00:00-05:00"));
+  }
+  
+  @Test
+  public void toUriLiteralInt16(){
+    assertEquals("127", facade.int16Instance().toUriLiteral("127"));
+  }
+  
+  @Test
+  public void toUriLiteralInt32(){
+    assertEquals("127", facade.int32Instance().toUriLiteral("127"));
+  }
+  
+  @Test
+  public void toUriLiteralInt64(){
+    assertEquals("127l", facade.int64Instance().toUriLiteral("127"));
+  }
+  
+  @Test
+  public void toUriLiteralSByte(){
+    assertEquals("127", facade.sByteInstance().toUriLiteral("127"));
+  }
+  
+  @Test
+  public void toUriLiteralSingle(){
+    assertEquals("127f", facade.singleInstance().toUriLiteral("127"));
+  }
+  
+  @Test
+  public void toUriLiteralString(){
+    assertEquals("'StringValue'", facade.stringInstance().toUriLiteral("StringValue"));
+  }
+  
+  @Test
+  public void toUriLiteralTime(){
+    assertEquals("time'P120D'", facade.timeInstance().toUriLiteral("P120D"));
+  }
+  
   @Test
   public void testNames() throws Exception {
     assertEquals("Binary", facade.binaryInstance().getName());
@@ -48,15 +114,15 @@ public class EdmSimpleTypeTest {
   public void testBooleanCompatibility() {
     testCompatibility(facade.booleanInstance(),
         facade.booleanInstance(),
-        new EdmBit());
+        new Bit());
   }
 
   @Test
   public void testByteCompatibility() {
     testCompatibility(facade.byteInstance(),
         facade.byteInstance(),
-        new EdmBit(),
-        new EdmUint7());
+        new Bit(),
+        new Uint7());
   }
 
   @Test
@@ -74,8 +140,8 @@ public class EdmSimpleTypeTest {
   @Test
   public void testDecimalCompatibility() {
     testCompatibility(facade.decimalInstance(),
-        new EdmBit(),
-        new EdmUint7(),
+        new Bit(),
+        new Uint7(),
         facade.byteInstance(),
         facade.sByteInstance(),
         facade.int16Instance(),
@@ -89,8 +155,8 @@ public class EdmSimpleTypeTest {
   @Test
   public void testDoubleCompatibility() {
     testCompatibility(facade.doubleInstance(),
-        new EdmBit(),
-        new EdmUint7(),
+        new Bit(),
+        new Uint7(),
         facade.byteInstance(),
         facade.sByteInstance(),
         facade.int16Instance(),
@@ -109,8 +175,8 @@ public class EdmSimpleTypeTest {
   @Test
   public void testint16Compatibility() {
     testCompatibility(facade.int16Instance(),
-        new EdmBit(),
-        new EdmUint7(),
+        new Bit(),
+        new Uint7(),
         facade.byteInstance(),
         facade.sByteInstance(),
         facade.int16Instance());
@@ -119,8 +185,8 @@ public class EdmSimpleTypeTest {
   @Test
   public void testInt32Compatibility() {
     testCompatibility(facade.int32Instance(),
-        new EdmBit(),
-        new EdmUint7(),
+        new Bit(),
+        new Uint7(),
         facade.byteInstance(),
         facade.sByteInstance(),
         facade.int16Instance(),
@@ -130,8 +196,8 @@ public class EdmSimpleTypeTest {
   @Test
   public void testInt64Compatibility() {
     testCompatibility(facade.int64Instance(),
-        new EdmBit(),
-        new EdmUint7(),
+        new Bit(),
+        new Uint7(),
         facade.byteInstance(),
         facade.sByteInstance(),
         facade.int16Instance(),
@@ -142,16 +208,16 @@ public class EdmSimpleTypeTest {
   @Test
   public void testSByteCompatibility() {
     testCompatibility(facade.sByteInstance(),
-        new EdmBit(),
-        new EdmUint7(),
+        new Bit(),
+        new Uint7(),
         facade.sByteInstance());
   }
 
   @Test
   public void testSingleCompatibility() {
     testCompatibility(facade.singleInstance(),
-        new EdmBit(),
-        new EdmUint7(),
+        new Bit(),
+        new Uint7(),
         facade.byteInstance(),
         facade.sByteInstance(),
         facade.int16Instance(),
