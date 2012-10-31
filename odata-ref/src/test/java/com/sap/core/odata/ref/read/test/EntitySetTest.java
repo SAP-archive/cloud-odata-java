@@ -9,12 +9,16 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.sap.core.odata.api.edm.EdmEntitySet;
+import com.sap.core.odata.api.edm.EdmException;
 import com.sap.core.odata.api.processor.ODataResponse;
 import com.sap.core.odata.api.uri.UriParserResult;
 import com.sap.core.odata.ref.model.DataContainer;
 import com.sap.core.odata.ref.processor.CollectionsProcessor;
 import com.sap.core.odata.ref.processor.ScenarioDataSource;
 
+/**
+ * @author SAP AG
+ */
 public class EntitySetTest {
 
   private static DataContainer dataContainer;
@@ -29,13 +33,18 @@ public class EntitySetTest {
     processor = new CollectionsProcessor(dataSource);
   }
 
-  @Test
-  public void readEmployees() throws Exception {
+  private UriParserResult mockUriResult(final String entitySetName) throws EdmException {
     EdmEntitySet entitySet = mock(EdmEntitySet.class);
-    when(entitySet.getName()).thenReturn("Employees");
+    when(entitySet.getName()).thenReturn(entitySetName);
 
     UriParserResult uriResult = mock(UriParserResult.class);
     when(uriResult.getStartEntitySet()).thenReturn(entitySet);
+    return uriResult;
+  }
+
+  @Test
+  public void readEmployees() throws Exception {
+    final UriParserResult uriResult = mockUriResult("Employees");
 
     ODataResponse response = processor.readEntitySet(uriResult);
     assertNotNull(response);
@@ -44,11 +53,7 @@ public class EntitySetTest {
 
   @Test
   public void readTeams() throws Exception {
-    EdmEntitySet entitySet = mock(EdmEntitySet.class);
-    when(entitySet.getName()).thenReturn("Teams");
-
-    UriParserResult uriResult = mock(UriParserResult.class);
-    when(uriResult.getStartEntitySet()).thenReturn(entitySet);
+    final UriParserResult uriResult = mockUriResult("Teams");
 
     ODataResponse response = processor.readEntitySet(uriResult);
     assertNotNull(response);
@@ -57,11 +62,7 @@ public class EntitySetTest {
 
   @Test
   public void readRooms() throws Exception {
-    EdmEntitySet entitySet = mock(EdmEntitySet.class);
-    when(entitySet.getName()).thenReturn("Rooms");
-
-    UriParserResult uriResult = mock(UriParserResult.class);
-    when(uriResult.getStartEntitySet()).thenReturn(entitySet);
+    final UriParserResult uriResult = mockUriResult("Rooms");
 
     ODataResponse response = processor.readEntitySet(uriResult);
     assertNotNull(response);
@@ -70,11 +71,7 @@ public class EntitySetTest {
 
   @Test
   public void readManagers() throws Exception {
-    EdmEntitySet entitySet = mock(EdmEntitySet.class);
-    when(entitySet.getName()).thenReturn("Managers");
-
-    UriParserResult uriResult = mock(UriParserResult.class);
-    when(uriResult.getStartEntitySet()).thenReturn(entitySet);
+    final UriParserResult uriResult = mockUriResult("Managers");
 
     ODataResponse response = processor.readEntitySet(uriResult);
     assertNotNull(response);
@@ -83,11 +80,7 @@ public class EntitySetTest {
 
   @Test
   public void readBuildings() throws Exception {
-    EdmEntitySet entitySet = mock(EdmEntitySet.class);
-    when(entitySet.getName()).thenReturn("Buildings");
-
-    UriParserResult uriResult = mock(UriParserResult.class);
-    when(uriResult.getStartEntitySet()).thenReturn(entitySet);
+    final UriParserResult uriResult = mockUriResult("Buildings");
 
     ODataResponse response = processor.readEntitySet(uriResult);
     assertNotNull(response);
