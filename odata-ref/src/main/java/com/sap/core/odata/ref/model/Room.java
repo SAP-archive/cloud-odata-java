@@ -94,4 +94,8 @@ public class Room {
     return true;
   }
 
+  @Override
+  public String toString() {
+    return "{\"Id\":\"" + id + "\",\"Name\":\"" + name + "\",\"Seats\":" + seats + ",\"Version\":" + version + "}";
+  }
 }

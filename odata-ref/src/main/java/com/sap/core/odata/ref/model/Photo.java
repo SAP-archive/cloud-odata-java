@@ -77,11 +77,6 @@ public class Photo {
     this.image = image;
   }
 
-  @Override
-  public String toString() {
-    return super.toString() + ": " + this.type + ", " + this.imageUrl;
-  }
-
   public void setBinaryData(byte[] binaryData) {
     this.binaryData = binaryData;
 
@@ -114,4 +109,13 @@ public class Photo {
     return true;
   }
 
+  @Override
+  public String toString() {
+    return "{\"Id\":" + id + ","
+        + "\"Name\":\"" + name + "\","
+        + "\"Type\":\"" + type + "\","
+        + "\"ImageUrl\":\"" + imageUrl + "\","
+        + "\"Image\":\"" + image + "\","
+        + "\"BinaryData\":\"" + binaryData + "\"}";
+  }
 }

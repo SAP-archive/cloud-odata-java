@@ -77,4 +77,8 @@ public class Team {
     return true;
   }
 
+  @Override
+  public String toString() {
+    return "{\"Id\":\"" + id + "\",\"Name\":\"" + name + "\",\"isScrumTeam\":" + isScrumTeam + "}";
+  }
 }
