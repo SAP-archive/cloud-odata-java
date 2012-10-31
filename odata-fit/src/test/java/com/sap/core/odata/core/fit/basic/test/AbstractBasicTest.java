@@ -8,7 +8,7 @@ import static org.mockito.Mockito.when;
 import com.sap.core.odata.api.edm.Edm;
 import com.sap.core.odata.api.edm.EdmServiceMetadata;
 import com.sap.core.odata.api.enums.HttpStatus;
-import com.sap.core.odata.api.exception.ODataError;
+import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.api.processor.ODataProcessor;
 import com.sap.core.odata.api.processor.ODataResponse;
 import com.sap.core.odata.api.processor.ODataSingleProcessor;
@@ -21,7 +21,7 @@ import com.sap.core.odata.testutils.fit.AbstractFitTest;
 public class AbstractBasicTest extends AbstractFitTest {
 
   @Override
-  protected ODataProcessor createProcessor() throws ODataError {
+  protected ODataProcessor createProcessor() throws ODataException {
     ODataProcessor processor = mock(ODataSingleProcessor.class, CALLS_REAL_METHODS);
 
     EdmServiceMetadata edmsm = mock(EdmServiceMetadata.class);

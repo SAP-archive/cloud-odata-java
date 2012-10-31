@@ -11,7 +11,7 @@ import javax.ws.rs.core.PathSegment;
 import javax.ws.rs.core.Request;
 import javax.ws.rs.core.UriInfo;
 
-import com.sap.core.odata.api.exception.ODataError;
+import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.api.processor.ODataProcessor;
 import com.sap.core.odata.api.processor.ODataProcessorFactory;
 
@@ -41,13 +41,13 @@ public class ODataRootLocator {
    * Default root behavior which will delegate all paths to a ODataLocator.
    * @param odataPathSegments all segments have to be OData
    * @return a locator handling OData protocol
-   * @throws ODataError 
+   * @throws ODataException 
    * @throws ClassNotFoundException 
    * @throws IllegalAccessException 
    * @throws InstantiationException 
    */
   @Path("/{odataPathSegments: .*}")
-  public ODataLocatorImpl getSubLocator(@PathParam("odataPathSegments") List<PathSegment> odataPathSegments) throws ODataError, ClassNotFoundException, InstantiationException, IllegalAccessException {
+  public ODataLocatorImpl getSubLocator(@PathParam("odataPathSegments") List<PathSegment> odataPathSegments) throws ODataException, ClassNotFoundException, InstantiationException, IllegalAccessException {
     ODataLocatorImpl odataLocator = new ODataLocatorImpl();
 
     odataLocator.setPathSegments(odataPathSegments);

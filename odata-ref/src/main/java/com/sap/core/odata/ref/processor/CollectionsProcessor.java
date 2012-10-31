@@ -19,7 +19,7 @@ import com.sap.core.odata.api.edm.EdmProperty;
 import com.sap.core.odata.api.edm.EdmServiceMetadata;
 import com.sap.core.odata.api.edm.EdmSimpleType;
 import com.sap.core.odata.api.enums.HttpStatus;
-import com.sap.core.odata.api.exception.ODataError;
+import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.api.processor.ODataResponse;
 import com.sap.core.odata.api.processor.ODataResponse.ODataResponseBuilder;
 import com.sap.core.odata.api.processor.ODataSingleProcessor;
@@ -42,7 +42,7 @@ public class CollectionsProcessor extends ODataSingleProcessor {
   }
 
   @Override
-  public Edm getEdm() throws ODataError {
+  public Edm getEdm() throws ODataException {
     return new Edm() {
 
       @Override
@@ -132,14 +132,14 @@ public class CollectionsProcessor extends ODataSingleProcessor {
   }
 
   @Override
-  public ODataResponse readEntitySet(GetEntitySetView uriParserResultView) throws ODataError {
+  public ODataResponse readEntitySet(GetEntitySetView uriParserResultView) throws ODataException {
     final EdmEntitySet startEntitySet = uriParserResultView.getStartEntitySet();
     Collection<?> data = dataSource.readData(startEntitySet);
     return ODataResponseBuilder.newInstance().status(HttpStatus.OK).entity(data.toString()).build();
   }
 
   @Override
-  public ODataResponse readEntity(GetEntityView uriParserResultView) throws ODataError {
+  public ODataResponse readEntity(GetEntityView uriParserResultView) throws ODataException {
     final EdmEntitySet startEntitySet = uriParserResultView.getStartEntitySet();
     final HashMap<String, Object> keys = mapKey(uriParserResultView.getKeyPredicates());
 

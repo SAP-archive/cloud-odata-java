@@ -1,6 +1,6 @@
 package com.sap.core.odata.api.exception;
 
-public class ODataException extends ODataError {
+public class ODataException extends Exception {
 
   private static final long serialVersionUID = 1L;
 
@@ -25,19 +25,19 @@ public class ODataException extends ODataError {
   }
 
   /**
-   * Search for and return first (from top) {@link ODataContextedException} in cause hierarchy.
-   * If no {@link ODataContextedException}  in cause hierarchy <code>NULL</code> is returned. 
+   * Search for and return first (from top) {@link ODataMessageException} in cause hierarchy.
+   * If no {@link ODataMessageException}  in cause hierarchy <code>NULL</code> is returned. 
    * 
    * @return
    */
-  public ODataContextedException getContextedCause() {
+  public ODataMessageException getContextedCause() {
     Throwable cause = getCause();
     while (cause != null) {
-      if (cause instanceof ODataContextedException) {
-        return (ODataContextedException) cause;
+      if (cause instanceof ODataMessageException) {
+        return (ODataMessageException) cause;
       }
       cause = cause.getCause();
     }
-    return (ODataContextedException) cause;
+    return (ODataMessageException) cause;
   }
 }
