@@ -15,7 +15,7 @@ import com.sap.core.odata.api.edm.EdmSimpleTypeKind;
 import com.sap.core.odata.api.uri.UriLiteral;
 import com.sap.core.odata.api.uri.UriParserException;
 import com.sap.core.odata.core.edm.simpletype.EdmBinary;
-import com.sap.core.odata.core.edm.simpletype.EdmBit;
+import com.sap.core.odata.core.edm.simpletype.Bit;
 import com.sap.core.odata.core.edm.simpletype.EdmBoolean;
 import com.sap.core.odata.core.edm.simpletype.EdmByte;
 import com.sap.core.odata.core.edm.simpletype.EdmDateTime;
@@ -30,7 +30,7 @@ import com.sap.core.odata.core.edm.simpletype.EdmSByte;
 import com.sap.core.odata.core.edm.simpletype.EdmSingle;
 import com.sap.core.odata.core.edm.simpletype.EdmString;
 import com.sap.core.odata.core.edm.simpletype.EdmTime;
-import com.sap.core.odata.core.edm.simpletype.EdmUint7;
+import com.sap.core.odata.core.edm.simpletype.Uint7;
 
 public class EdmSimpleTypeFacadeTest {
 
@@ -80,11 +80,11 @@ public class EdmSimpleTypeFacadeTest {
   public void parseUriLiteralBit() throws UriParserException {
     EdmSimpleType bit = parse("1");
     assertNotNull(bit);
-    assertTrue(bit instanceof EdmBit);
+    assertTrue(bit instanceof Bit);
 
     bit = parse("0");
     assertNotNull(bit);
-    assertTrue(bit instanceof EdmBit);
+    assertTrue(bit instanceof Bit);
   }
 
   @Test
@@ -98,7 +98,7 @@ public class EdmSimpleTypeFacadeTest {
   public void parseUriLiteralUint7() throws UriParserException {
     EdmSimpleType uInt7 = parse("123");
     assertNotNull(uInt7);
-    assertTrue(uInt7 instanceof EdmUint7);
+    assertTrue(uInt7 instanceof Uint7);
   }
 
   @Test

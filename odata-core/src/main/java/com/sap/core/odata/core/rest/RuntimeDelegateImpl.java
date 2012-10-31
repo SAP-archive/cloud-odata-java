@@ -7,7 +7,7 @@ import com.sap.core.odata.api.edm.EdmSimpleTypeKind;
 import com.sap.core.odata.api.processor.ODataResponse.ODataResponseBuilder;
 import com.sap.core.odata.api.uri.UriParser;
 import com.sap.core.odata.core.edm.simpletype.EdmBinary;
-import com.sap.core.odata.core.edm.simpletype.EdmBit;
+import com.sap.core.odata.core.edm.simpletype.Bit;
 import com.sap.core.odata.core.edm.simpletype.EdmBoolean;
 import com.sap.core.odata.core.edm.simpletype.EdmByte;
 import com.sap.core.odata.core.edm.simpletype.EdmDateTime;
@@ -22,7 +22,7 @@ import com.sap.core.odata.core.edm.simpletype.EdmSByte;
 import com.sap.core.odata.core.edm.simpletype.EdmSingle;
 import com.sap.core.odata.core.edm.simpletype.EdmString;
 import com.sap.core.odata.core.edm.simpletype.EdmTime;
-import com.sap.core.odata.core.edm.simpletype.EdmUint7;
+import com.sap.core.odata.core.edm.simpletype.Uint7;
 import com.sap.core.odata.core.uri.UriParserImpl;
 
 public class RuntimeDelegateImpl extends RuntimeDelegate {
@@ -98,9 +98,9 @@ public class RuntimeDelegateImpl extends RuntimeDelegate {
     EdmSimpleType edmType;
 
     if ("Bit".equals(edmSimpleType)) {
-      edmType = new EdmBit();
+      edmType = new Bit();
     } else if ("Uint7".equals(edmSimpleType)) {
-      edmType = new EdmUint7();
+      edmType = new Uint7();
     } else {
       throw new RuntimeException("Invalid internal Type " + edmSimpleType);
     }

@@ -57,8 +57,8 @@ public class EdmDateTime implements EdmSimpleType {
 
   @Override
   public String toUriLiteral(String literal) {
-    // TODO Auto-generated method stub
-    return null;
+    literal = literal.replace(":", "%3A");
+    return "datetime'" + literal + "'";
   }
 
 }

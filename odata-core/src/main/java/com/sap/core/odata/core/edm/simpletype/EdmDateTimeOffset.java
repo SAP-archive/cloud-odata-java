@@ -58,8 +58,8 @@ public class EdmDateTimeOffset implements EdmSimpleType  {
 
   @Override
   public String toUriLiteral(String literal) {
-    // TODO Auto-generated method stub
-    return null;
+    literal = literal.replace(":", "%3A");
+    return "datetimeoffset'" + literal + "'";
   }
 
 }

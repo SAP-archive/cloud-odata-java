@@ -7,11 +7,11 @@ import com.sap.core.odata.api.edm.EdmSimpleType;
 import com.sap.core.odata.api.edm.EdmSimpleTypeFacade;
 import com.sap.core.odata.api.edm.EdmTypeKind;
 
-public class EdmUint7 implements EdmSimpleType {
+public class Uint7 implements EdmSimpleType {
 
   @Override
   public boolean equals(Object obj) {
-    return this == obj || obj instanceof EdmUint7;
+    return this == obj || obj instanceof Uint7;
   }
 
   @Override
@@ -31,7 +31,7 @@ public class EdmUint7 implements EdmSimpleType {
 
   @Override
   public boolean isCompatible(EdmSimpleType simpleType) {
-    return simpleType instanceof EdmBit || simpleType instanceof EdmUint7;
+    return simpleType instanceof Bit || simpleType instanceof Uint7;
   }
 
   @Override
@@ -54,7 +54,6 @@ public class EdmUint7 implements EdmSimpleType {
 
   @Override
   public String toUriLiteral(String literal) {
-    // TODO Auto-generated method stub
-    return null;
+    return literal;
   }
 }

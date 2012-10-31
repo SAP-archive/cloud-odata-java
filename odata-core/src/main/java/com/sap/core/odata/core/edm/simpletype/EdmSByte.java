@@ -34,7 +34,7 @@ public class EdmSByte implements EdmSimpleType {
 
   @Override
   public boolean isCompatible(EdmSimpleType simpleType) {
-    return simpleType instanceof EdmBit || simpleType instanceof EdmUint7 || simpleType instanceof EdmSByte;
+    return simpleType instanceof Bit || simpleType instanceof Uint7 || simpleType instanceof EdmSByte;
   }
 
   @Override
@@ -57,8 +57,7 @@ public class EdmSByte implements EdmSimpleType {
 
   @Override
   public String toUriLiteral(String literal) {
-    // TODO Auto-generated method stub
-    return null;
+    return literal;
   }
 
 }

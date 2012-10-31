@@ -34,7 +34,7 @@ public class EdmBoolean implements EdmSimpleType {
 
   @Override
   public boolean isCompatible(EdmSimpleType simpleType) {
-    return simpleType instanceof EdmBit || simpleType instanceof EdmBoolean;
+    return simpleType instanceof Bit || simpleType instanceof EdmBoolean;
   }
 
   @Override
@@ -57,7 +57,6 @@ public class EdmBoolean implements EdmSimpleType {
 
   @Override
   public String toUriLiteral(String literal) {
-    // TODO Auto-generated method stub
-    return null;
+    return literal;
   }
 }
