@@ -1,7 +1,8 @@
 package com.sap.core.odata.ref.processor;
 
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -10,7 +11,6 @@ import com.sap.core.odata.api.edm.EdmEntitySet;
 import com.sap.core.odata.api.exception.ODataError;
 import com.sap.core.odata.api.exception.ODataNotFoundException;
 import com.sap.core.odata.api.exception.ODataNotImplementedException;
-import com.sap.core.odata.api.uri.KeyPredicate;
 import com.sap.core.odata.ref.model.Building;
 import com.sap.core.odata.ref.model.DataContainer;
 import com.sap.core.odata.ref.model.Employee;
@@ -19,6 +19,10 @@ import com.sap.core.odata.ref.model.Photo;
 import com.sap.core.odata.ref.model.Room;
 import com.sap.core.odata.ref.model.Team;
 
+/**
+ * Data for the reference scenario
+ * @author SAP AG
+ */
 public class ScenarioDataSource implements CollectionsDataSource {
 
   private static final Logger log = LoggerFactory.getLogger(ScenarioDataSource.class);
@@ -30,53 +34,55 @@ public class ScenarioDataSource implements CollectionsDataSource {
   }
 
   @Override
-  public Collection<?> readDataSet(EdmEntitySet entitySet) throws ODataError {
+  public Collection<?> readData(final EdmEntitySet entitySet) throws ODataError {
+    ArrayList<Object> data = new ArrayList<Object>();
     if ("Employees".equals(entitySet.getName()))
-      return dataContainer.getEmployeeSet();
+      data.addAll(dataContainer.getEmployeeSet());
     else if ("Teams".equals(entitySet.getName()))
-      return dataContainer.getTeamSet();
+      data.addAll(dataContainer.getTeamSet());
     else if ("Rooms".equals(entitySet.getName()))
-      return dataContainer.getRoomSet();
+      data.addAll(dataContainer.getRoomSet());
     else if ("Managers".equals(entitySet.getName()))
-      return dataContainer.getManagerSet();
+      data.addAll(dataContainer.getManagerSet());
     else if ("Buildings".equals(entitySet.getName()))
-      return dataContainer.getBuildingSet();
+      data.addAll(dataContainer.getBuildingSet());
     else if ("Photos".equals(entitySet.getName()))
-      return dataContainer.getPhotoSet();
+      data.addAll(dataContainer.getPhotoSet());
     else
       throw new ODataNotImplementedException();
+    return data;
   }
 
   @Override
-  public Object readDataObject(EdmEntitySet entitySet, List<KeyPredicate> keys) throws ODataError {
+  public Object readData(final EdmEntitySet entitySet, final Map<String, Object> keys) throws ODataError {
     if ("Employees".equals(entitySet.getName())) {
       for (Employee employee : dataContainer.getEmployeeSet())
-        if (employee.getId().equals(keys.get(0).getLiteral()))
+        if (employee.getId().equals(keys.get("EmployeeId")))
           return employee;
       throw new ODataNotFoundException(ODataNotFoundException.USER);
     } else if ("Teams".equals(entitySet.getName())) {
       for (Team team : dataContainer.getTeamSet())
-        if (team.getId().equals(keys.get(0).getLiteral()))
+        if (team.getId().equals(keys.get("Id")))
           return team;
       throw new ODataNotFoundException(ODataNotFoundException.USER);
     } else if ("Rooms".equals(entitySet.getName())) {
       for (Room room : dataContainer.getRoomSet())
-        if (room.getId().equals(keys.get(0).getLiteral()))
+        if (room.getId().equals(keys.get("Id")))
           return room;
       throw new ODataNotFoundException(ODataNotFoundException.USER);
     } else if ("Managers".equals(entitySet.getName())) {
       for (Manager manager : dataContainer.getManagerSet())
-        if (manager.getId().equals(keys.get(0).getLiteral()))
+        if (manager.getId().equals(keys.get("EmployeeId")))
           return manager;
       throw new ODataNotFoundException(ODataNotFoundException.USER);
     } else if ("Buildings".equals(entitySet.getName())) {
       for (Building building : dataContainer.getBuildingSet())
-        if (building.getId().equals(keys.get(0).getLiteral()))
+        if (building.getId().equals(keys.get("Id")))
           return building;
       throw new ODataNotFoundException(ODataNotFoundException.USER);
     } else if ("Photos".equals(entitySet.getName())) {
       for (Photo photo : dataContainer.getPhotoSet())
-        if (photo.getId() == Integer.parseInt(keys.get(0).getLiteral()) && photo.getType().equals(keys.get(1).getLiteral()))
+        if (photo.getId() == (Integer) keys.get("Id") && photo.getType().equals(keys.get("Type")))
           return photo;
       throw new ODataNotFoundException(ODataNotFoundException.USER);
     }
@@ -85,7 +91,7 @@ public class ScenarioDataSource implements CollectionsDataSource {
   }
 
   @Override
-  public Object newDataObject(EdmEntitySet entitySet) throws ODataError {
+  public Object newDataObject(final EdmEntitySet entitySet) throws ODataError {
     if ("Employees".equals(entitySet.getName()))
       return new Employee();
     else if ("Teams".equals(entitySet.getName()))

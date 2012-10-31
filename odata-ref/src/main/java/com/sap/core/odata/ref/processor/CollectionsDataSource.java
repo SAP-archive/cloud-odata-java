@@ -1,11 +1,10 @@
 package com.sap.core.odata.ref.processor;
 
 import java.util.Collection;
-import java.util.List;
+import java.util.Map;
 
 import com.sap.core.odata.api.edm.EdmEntitySet;
 import com.sap.core.odata.api.exception.ODataError;
-import com.sap.core.odata.api.uri.KeyPredicate;
 
 /**
  * <p>This interface is intended to make it easier to implement an OData
@@ -24,21 +23,24 @@ import com.sap.core.odata.api.uri.KeyPredicate;
 public interface CollectionsDataSource {
 
   /**
-   * Retrieves the whole data collection for the specified entity set.
+   * <p>Retrieves the whole data collection for the specified entity set.</p>
+   * <p>Implementations should return a copy of the original data since this
+   * collection will be handled destructively, e.g., to process filtering
+   * or paging.</p>
    * @param entitySet  the requested {@link EdmEntitySet}
    * @return the requested data collection
    * @throws ODataError
    */
-  Collection<?> readDataSet(EdmEntitySet entitySet) throws ODataError;
+  Collection<?> readData(EdmEntitySet entitySet) throws ODataError;
 
   /**
    * <p>Retrieves a single data object for the specified entity set and key.</p>
    * @param entitySet  the requested {@link EdmEntitySet}
-   * @param keys  the list of key predicates
+   * @param keys  the entity key as map of key names to key values
    * @return the requested data object
    * @throws ODataError
    */
-  Object readDataObject(EdmEntitySet entitySet, List<KeyPredicate> keys) throws ODataError;
+  Object readData(EdmEntitySet entitySet, Map<String, Object> keys) throws ODataError;
 
   /**
    * <p>Creates and returns a new instance of the requested data-object type.</p>

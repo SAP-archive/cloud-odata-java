@@ -5,6 +5,9 @@ import com.sap.core.odata.api.processor.ODataProcessor;
 import com.sap.core.odata.api.processor.ODataProcessorFactory;
 import com.sap.core.odata.ref.model.DataContainer;
 
+/**
+ * @author SAP AG
+ */
 public class ScenarioProcessorFactory implements ODataProcessorFactory {
 
   private static DataContainer dataContainer;
