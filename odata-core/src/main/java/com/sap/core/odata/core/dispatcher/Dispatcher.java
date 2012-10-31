@@ -1,8 +1,8 @@
 package com.sap.core.odata.core.dispatcher;
 
-import com.sap.core.odata.api.exception.ODataError;
+import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.api.exception.ODataMethodNotAllowedException;
-import com.sap.core.odata.api.exception.ODataTechnicalException;
+import com.sap.core.odata.api.exception.ODataRuntimeException;
 import com.sap.core.odata.api.processor.ODataContext;
 import com.sap.core.odata.api.processor.ODataProcessor;
 import com.sap.core.odata.api.processor.ODataResponse;
@@ -23,7 +23,7 @@ public class Dispatcher {
     this.processor = processor;
   }
 
-  public ODataResponse dispatch(final ODataHttpMethod method, final UriParserResultImpl uriParserResult) throws ODataError {
+  public ODataResponse dispatch(final ODataHttpMethod method, final UriParserResultImpl uriParserResult) throws ODataException {
     switch (uriParserResult.getUriType()) {
     case URI0:
       if (method == ODataHttpMethod.GET)
@@ -178,7 +178,7 @@ public class Dispatcher {
         throw new ODataMethodNotAllowedException(ODataMethodNotAllowedException.DISPATCH);
 
     default:
-      throw new ODataTechnicalException("Unknown or not implemented URI type: " + uriParserResult.getUriType());
+      throw new ODataRuntimeException("Unknown or not implemented URI type: " + uriParserResult.getUriType());
     }
   }
 }

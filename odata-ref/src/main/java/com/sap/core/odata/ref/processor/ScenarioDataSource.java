@@ -8,7 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.sap.core.odata.api.edm.EdmEntitySet;
-import com.sap.core.odata.api.exception.ODataError;
+import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.api.exception.ODataNotFoundException;
 import com.sap.core.odata.api.exception.ODataNotImplementedException;
 import com.sap.core.odata.ref.model.Building;
@@ -34,7 +34,7 @@ public class ScenarioDataSource implements CollectionsDataSource {
   }
 
   @Override
-  public Collection<?> readData(final EdmEntitySet entitySet) throws ODataError {
+  public Collection<?> readData(final EdmEntitySet entitySet) throws ODataException {
     ArrayList<Object> data = new ArrayList<Object>();
     if ("Employees".equals(entitySet.getName()))
       data.addAll(dataContainer.getEmployeeSet());
@@ -54,7 +54,7 @@ public class ScenarioDataSource implements CollectionsDataSource {
   }
 
   @Override
-  public Object readData(final EdmEntitySet entitySet, final Map<String, Object> keys) throws ODataError {
+  public Object readData(final EdmEntitySet entitySet, final Map<String, Object> keys) throws ODataException {
     if ("Employees".equals(entitySet.getName())) {
       for (Employee employee : dataContainer.getEmployeeSet())
         if (employee.getId().equals(keys.get("EmployeeId")))
@@ -91,7 +91,7 @@ public class ScenarioDataSource implements CollectionsDataSource {
   }
 
   @Override
-  public Object newDataObject(final EdmEntitySet entitySet) throws ODataError {
+  public Object newDataObject(final EdmEntitySet entitySet) throws ODataException {
     if ("Employees".equals(entitySet.getName()))
       return new Employee();
     else if ("Teams".equals(entitySet.getName()))

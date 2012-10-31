@@ -4,7 +4,7 @@ import java.util.Collection;
 import java.util.Map;
 
 import com.sap.core.odata.api.edm.EdmEntitySet;
-import com.sap.core.odata.api.exception.ODataError;
+import com.sap.core.odata.api.exception.ODataException;
 
 /**
  * <p>This interface is intended to make it easier to implement an OData
@@ -29,18 +29,18 @@ public interface CollectionsDataSource {
    * or paging.</p>
    * @param entitySet  the requested {@link EdmEntitySet}
    * @return the requested data collection
-   * @throws ODataError
+   * @throws ODataException
    */
-  Collection<?> readData(EdmEntitySet entitySet) throws ODataError;
+  Collection<?> readData(EdmEntitySet entitySet) throws ODataException;
 
   /**
    * <p>Retrieves a single data object for the specified entity set and key.</p>
    * @param entitySet  the requested {@link EdmEntitySet}
    * @param keys  the entity key as map of key names to key values
    * @return the requested data object
-   * @throws ODataError
+   * @throws ODataException
    */
-  Object readData(EdmEntitySet entitySet, Map<String, Object> keys) throws ODataError;
+  Object readData(EdmEntitySet entitySet, Map<String, Object> keys) throws ODataException;
 
   /**
    * <p>Creates and returns a new instance of the requested data-object type.</p>
@@ -48,7 +48,7 @@ public interface CollectionsDataSource {
    * have empty content.</p>
    * @param entitySet  the {@link EdmEntitySet} the object must correspond to
    * @return the new data object
-   * @throws ODataError
+   * @throws ODataException
    */
-  Object newDataObject(EdmEntitySet entitySet) throws ODataError;
+  Object newDataObject(EdmEntitySet entitySet) throws ODataException;
 }

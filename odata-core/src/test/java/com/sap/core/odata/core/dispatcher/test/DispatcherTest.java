@@ -12,7 +12,7 @@ import org.junit.Test;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
-import com.sap.core.odata.api.exception.ODataError;
+import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.api.processor.ODataProcessor;
 import com.sap.core.odata.api.processor.ODataResponse;
 import com.sap.core.odata.api.processor.aspect.Batch;
@@ -38,7 +38,7 @@ public class DispatcherTest {
   private static ODataProcessor processor;
 
   @BeforeClass
-  public static void createMockProcessor() throws ODataError {  
+  public static void createMockProcessor() throws ODataException {  
     ServiceDocument serviceDocument = mock(ServiceDocument.class);
     when(serviceDocument.readServiceDocument(any(UriParserResultImpl.class))).thenAnswer(getAnswer());
 
@@ -124,7 +124,7 @@ public class DispatcherTest {
     return response;
   }
 
-  private void checkDispatch(final ODataHttpMethod method, final UriType uriType, final boolean isValue, final String expectedMethodName) throws ODataError {
+  private void checkDispatch(final ODataHttpMethod method, final UriType uriType, final boolean isValue, final String expectedMethodName) throws ODataException {
     Dispatcher dispatcher = new Dispatcher();
     dispatcher.setProcessor(processor);
     
@@ -135,15 +135,15 @@ public class DispatcherTest {
     assertEquals(expectedMethodName, response.getEntity());
   }
 
-  private void checkDispatch(final ODataHttpMethod method, final UriType uriType, final String expectedMethodName) throws ODataError {
+  private void checkDispatch(final ODataHttpMethod method, final UriType uriType, final String expectedMethodName) throws ODataException {
     checkDispatch(method, uriType, false, expectedMethodName);
   }
 
   private void wrongDispatch(final ODataHttpMethod method, final UriType uriType) {
     try {
       checkDispatch(method, uriType, null);
-      fail("Expected ODataError not thrown");
-    } catch (ODataError e) {
+      fail("Expected ODataException not thrown");
+    } catch (ODataException e) {
       assertNotNull(e);
     }
   }

@@ -18,7 +18,7 @@ import com.sap.core.odata.api.edm.Edm;
 import com.sap.core.odata.api.edm.EdmEntityContainer;
 import com.sap.core.odata.api.edm.EdmEntitySet;
 import com.sap.core.odata.api.enums.HttpStatus;
-import com.sap.core.odata.api.exception.ODataError;
+import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.api.processor.ODataResponse;
 import com.sap.core.odata.api.processor.aspect.EntitySet;
 import com.sap.core.odata.core.uri.UriParserResultImpl;
@@ -43,7 +43,7 @@ public class ErrorResponseTest extends AbstractBasicTest {
 
   
   @Test
-  public void test500RuntimeError() throws ClientProtocolException, IOException, ODataError {
+  public void test500RuntimeError() throws ClientProtocolException, IOException, ODataException {
 
     EntitySet entitySetProcessor = this.getProcessor().getEntitySetProcessor();
     UriParserResultImpl uriParserResult = mock(UriParserResultImpl.class);

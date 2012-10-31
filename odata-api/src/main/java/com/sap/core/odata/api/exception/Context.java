@@ -17,7 +17,7 @@ public abstract class Context {
     this.values = new ArrayList<Object>();
   }
 
-  public static Context create(Class<? extends ODataContextedException> clazz, String key) {
+  public static Context create(Class<? extends ODataMessageException> clazz, String key) {
     return new SimpleContext(clazz.getName() + "." + key);
   }
 

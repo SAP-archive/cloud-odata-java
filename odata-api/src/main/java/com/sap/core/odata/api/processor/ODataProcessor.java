@@ -1,6 +1,6 @@
 package com.sap.core.odata.api.processor;
 
-import com.sap.core.odata.api.exception.ODataError;
+import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.api.processor.aspect.Batch;
 import com.sap.core.odata.api.processor.aspect.Entity;
 import com.sap.core.odata.api.processor.aspect.EntityComplexProperty;
@@ -17,31 +17,31 @@ import com.sap.core.odata.api.processor.aspect.ServiceDocument;
 
 public abstract interface ODataProcessor {
 
-  public Metadata getMetadataProcessor() throws ODataError;
+  public Metadata getMetadataProcessor() throws ODataException;
 
-  public ServiceDocument getServiceDocumentProcessor() throws ODataError;
+  public ServiceDocument getServiceDocumentProcessor() throws ODataException;
 
-  public Entity getEntityProcessor() throws ODataError;
+  public Entity getEntityProcessor() throws ODataException;
 
-  public EntitySet getEntitySetProcessor() throws ODataError;
+  public EntitySet getEntitySetProcessor() throws ODataException;
 
-  public EntityComplexProperty getEntityComplexPropertyProcessor() throws ODataError;
+  public EntityComplexProperty getEntityComplexPropertyProcessor() throws ODataException;
 
-  public EntityLink getEntityLinkProcessor() throws ODataError;
+  public EntityLink getEntityLinkProcessor() throws ODataException;
 
-  public EntityLinks getEntityLinksProcessor() throws ODataError;
+  public EntityLinks getEntityLinksProcessor() throws ODataException;
 
-  public EntityMedia getEntityMediaProcessor() throws ODataError;
+  public EntityMedia getEntityMediaProcessor() throws ODataException;
 
-  public EntitySimpleProperty getEntitySimplePropertyProcessor() throws ODataError;
+  public EntitySimpleProperty getEntitySimplePropertyProcessor() throws ODataException;
 
-  public EntitySimplePropertyValue getEntitySimplePropertyValueProcessor() throws ODataError;
+  public EntitySimplePropertyValue getEntitySimplePropertyValueProcessor() throws ODataException;
 
-  public FunctionImport getFunctionImportProcessor() throws ODataError;
+  public FunctionImport getFunctionImportProcessor() throws ODataException;
 
-  public FunctionImportValue getFunctionImportValueProcessor() throws ODataError;
+  public FunctionImportValue getFunctionImportValueProcessor() throws ODataException;
 
-  public Batch getBatchProcessor() throws ODataError;
+  public Batch getBatchProcessor() throws ODataException;
 
   public void setContext(ODataContext context);
 

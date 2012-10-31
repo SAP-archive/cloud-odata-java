@@ -22,7 +22,7 @@ import javax.ws.rs.core.UriInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.sap.core.odata.api.exception.ODataError;
+import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.api.processor.ODataProcessor;
 import com.sap.core.odata.api.processor.ODataResponse;
@@ -53,7 +53,7 @@ public final class ODataLocatorImpl {
   private UriInfo uriInfo;
 
   @GET
-  public Response handleGet() throws ODataError {
+  public Response handleGet() throws ODataException {
     try {
       ODataLocatorImpl.log.debug("+++ ODataSubResource:handleGet()");
       this.context.log();
@@ -73,7 +73,7 @@ public final class ODataLocatorImpl {
   @Produces(MediaType.TEXT_PLAIN)
   public Response handlePost(
       @HeaderParam("X-HTTP-Method") String xmethod
-      ) throws ODataError {
+      ) throws ODataException {
 
     ODataLocatorImpl.log.debug("+++ ODataSubResource:handlePost()");
     Response response;
@@ -96,7 +96,7 @@ public final class ODataLocatorImpl {
   }
 
   @PUT
-  public Response handlePut() throws ODataError {
+  public Response handlePut() throws ODataException {
     ODataLocatorImpl.log.debug("+++ ODataSubResource:handlePut()");
     this.context.log();
 
@@ -104,7 +104,7 @@ public final class ODataLocatorImpl {
   }
 
   @PATCH
-  public Response handlePatch() throws ODataError {
+  public Response handlePatch() throws ODataException {
     ODataLocatorImpl.log.debug("+++ ODataSubResource:handlePatch()");
     this.context.log();
 
@@ -112,7 +112,7 @@ public final class ODataLocatorImpl {
   }
 
   @MERGE
-  public Response handleMerge() throws ODataError {
+  public Response handleMerge() throws ODataException {
     ODataLocatorImpl.log.debug("+++ ODataSubResource:handleMerge()");
     this.context.log();
 
@@ -120,7 +120,7 @@ public final class ODataLocatorImpl {
   }
 
   @DELETE
-  public Response handleDelete() throws ODataError {
+  public Response handleDelete() throws ODataException {
     ODataLocatorImpl.log.debug("+++ ODataSubResource:handleDelete()");
     this.context.log();
 
@@ -131,7 +131,7 @@ public final class ODataLocatorImpl {
     this.context = context;
   }
 
-  public void beforeRequest() throws ODataError {
+  public void beforeRequest() throws ODataException {
 
     this.context = new ODataContextImpl();
     this.context.setHttpHeaders(this.httpHeaders);

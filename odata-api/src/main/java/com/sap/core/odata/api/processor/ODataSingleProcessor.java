@@ -1,7 +1,7 @@
 package com.sap.core.odata.api.processor;
 
 import com.sap.core.odata.api.edm.Edm;
-import com.sap.core.odata.api.exception.ODataError;
+import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.api.exception.ODataNotImplementedException;
 import com.sap.core.odata.api.processor.aspect.Batch;
 import com.sap.core.odata.api.processor.aspect.Entity;
@@ -62,216 +62,216 @@ public abstract class ODataSingleProcessor
   }
 
   @Override
-  public ODataResponse executeBatch() throws ODataError {
+  public ODataResponse executeBatch() throws ODataException {
     throw new ODataNotImplementedException();
   }
 
   @Override
-  public ODataResponse executeFunctionImport(GetFunctionImportView uriParserResultView) throws ODataError {
+  public ODataResponse executeFunctionImport(GetFunctionImportView uriParserResultView) throws ODataException {
     throw new ODataNotImplementedException();
   }
 
   @Override
-  public ODataResponse executeFunctionImportValue(GetFunctionImportView uriParserResultView) throws ODataError {
+  public ODataResponse executeFunctionImportValue(GetFunctionImportView uriParserResultView) throws ODataException {
     throw new ODataNotImplementedException();
   }
 
   @Override
-  public ODataResponse readEntitySimplePropertyValue(GetSimplePropertyView uriParserResultView) throws ODataError {
+  public ODataResponse readEntitySimplePropertyValue(GetSimplePropertyView uriParserResultView) throws ODataException {
     throw new ODataNotImplementedException();
   }
 
   @Override
-  public ODataResponse updateEntitySimplePropertyValue() throws ODataError {
+  public ODataResponse updateEntitySimplePropertyValue() throws ODataException {
     throw new ODataNotImplementedException();
   }
 
   @Override
-  public ODataResponse deleteEntitySimplePropertyValue() throws ODataError {
+  public ODataResponse deleteEntitySimplePropertyValue() throws ODataException {
     throw new ODataNotImplementedException();
   }
 
   @Override
-  public ODataResponse readEntitySimpleProperty(GetSimplePropertyView uriParserResultView) throws ODataError {
+  public ODataResponse readEntitySimpleProperty(GetSimplePropertyView uriParserResultView) throws ODataException {
     throw new ODataNotImplementedException();
   }
 
   @Override
-  public ODataResponse updateEntitySimpleProperty() throws ODataError {
+  public ODataResponse updateEntitySimpleProperty() throws ODataException {
     throw new ODataNotImplementedException();
   }
 
   @Override
-  public ODataResponse readEntityMedia(GetMediaResourceView uriParserResultView) throws ODataError {
+  public ODataResponse readEntityMedia(GetMediaResourceView uriParserResultView) throws ODataException {
     throw new ODataNotImplementedException();
   }
 
   @Override
-  public ODataResponse updateEntityMedia() throws ODataError {
+  public ODataResponse updateEntityMedia() throws ODataException {
     throw new ODataNotImplementedException();
   }
 
   @Override
-  public ODataResponse deleteEntityMedia() throws ODataError {
+  public ODataResponse deleteEntityMedia() throws ODataException {
     throw new ODataNotImplementedException();
   }
 
   @Override
-  public ODataResponse readEntityLinks(GetEntitySetLinksView uriParserResultView) throws ODataError {
+  public ODataResponse readEntityLinks(GetEntitySetLinksView uriParserResultView) throws ODataException {
     throw new ODataNotImplementedException();
   }
 
   @Override
-  public ODataResponse countEntityLinks(GetEntitySetLinksCountView uriParserResultView) throws ODataError {
+  public ODataResponse countEntityLinks(GetEntitySetLinksCountView uriParserResultView) throws ODataException {
     throw new ODataNotImplementedException();
   }
 
   @Override
-  public ODataResponse createEntityLink() throws ODataError {
+  public ODataResponse createEntityLink() throws ODataException {
     throw new ODataNotImplementedException();
   }
 
   @Override
-  public ODataResponse readEntityLink(GetEntityLinkView uriParserResultView) throws ODataError {
+  public ODataResponse readEntityLink(GetEntityLinkView uriParserResultView) throws ODataException {
     throw new ODataNotImplementedException();
   }
 
   @Override
-  public ODataResponse existsEntityLink(GetEntityLinkCountView uriParserResultView) throws ODataError {
+  public ODataResponse existsEntityLink(GetEntityLinkCountView uriParserResultView) throws ODataException {
     throw new ODataNotImplementedException();
   }
 
   @Override
-  public ODataResponse updateEntityLink() throws ODataError {
+  public ODataResponse updateEntityLink() throws ODataException {
     throw new ODataNotImplementedException();
   }
 
   @Override
-  public ODataResponse deleteEntityLink() throws ODataError {
+  public ODataResponse deleteEntityLink() throws ODataException {
     throw new ODataNotImplementedException();
   }
 
   @Override
-  public ODataResponse readEntityComplexProperty(GetComplexPropertyView uriParserResultView) throws ODataError {
+  public ODataResponse readEntityComplexProperty(GetComplexPropertyView uriParserResultView) throws ODataException {
     throw new ODataNotImplementedException();
   }
 
   @Override
-  public ODataResponse updateEntityComplexProperty() throws ODataError {
+  public ODataResponse updateEntityComplexProperty() throws ODataException {
     throw new ODataNotImplementedException();
   }
 
   @Override
-  public ODataResponse readEntitySet(GetEntitySetView uriParserResultView) throws ODataError {
+  public ODataResponse readEntitySet(GetEntitySetView uriParserResultView) throws ODataException {
     throw new ODataNotImplementedException();
   }
 
   @Override
-  public ODataResponse countEntitySet(GetEntitySetCountView uriParserResultView) throws ODataError {
+  public ODataResponse countEntitySet(GetEntitySetCountView uriParserResultView) throws ODataException {
     throw new ODataNotImplementedException();
   }
 
   @Override
-  public ODataResponse createEntity() throws ODataError {
+  public ODataResponse createEntity() throws ODataException {
     throw new ODataNotImplementedException();
   }
 
   @Override
-  public ODataResponse readEntity(GetEntityView uriParserResultView) throws ODataError {
+  public ODataResponse readEntity(GetEntityView uriParserResultView) throws ODataException {
     throw new ODataNotImplementedException();
   }
 
   @Override
-  public ODataResponse existsEntity(GetEntityCountView uriParserResultView) throws ODataError {
+  public ODataResponse existsEntity(GetEntityCountView uriParserResultView) throws ODataException {
     throw new ODataNotImplementedException();
   }
 
   @Override
-  public ODataResponse updateEntity() throws ODataError {
+  public ODataResponse updateEntity() throws ODataException {
     throw new ODataNotImplementedException();
   }
 
   @Override
-  public ODataResponse deleteEntity() throws ODataError {
+  public ODataResponse deleteEntity() throws ODataException {
     throw new ODataNotImplementedException();
   }
 
   @Override
-  public ODataResponse readServiceDocument(GetServiceDocumentView uriParserResultView) throws ODataError {
+  public ODataResponse readServiceDocument(GetServiceDocumentView uriParserResultView) throws ODataException {
     throw new ODataNotImplementedException();
   }
 
   @Override
-  public Edm getEdm() throws ODataError {
+  public Edm getEdm() throws ODataException {
     throw new ODataNotImplementedException();
   }
 
   @Override
-  public ODataResponse readMetadata(GetMetadataView uriParserResultView) throws ODataError {
+  public ODataResponse readMetadata(GetMetadataView uriParserResultView) throws ODataException {
     throw new ODataNotImplementedException();
   }
 
   @Override
-  public Metadata getMetadataProcessor() throws ODataError {
+  public Metadata getMetadataProcessor() throws ODataException {
     return this;
   }
 
   @Override
-  public ServiceDocument getServiceDocumentProcessor() throws ODataError {
+  public ServiceDocument getServiceDocumentProcessor() throws ODataException {
     return this;
   }
 
   @Override
-  public Entity getEntityProcessor() throws ODataError {
+  public Entity getEntityProcessor() throws ODataException {
     return this;
   }
 
   @Override
-  public EntitySet getEntitySetProcessor() throws ODataError {
+  public EntitySet getEntitySetProcessor() throws ODataException {
     return this;
   }
 
   @Override
-  public EntityComplexProperty getEntityComplexPropertyProcessor() throws ODataError {
+  public EntityComplexProperty getEntityComplexPropertyProcessor() throws ODataException {
     return this;
   }
 
   @Override
-  public EntityLink getEntityLinkProcessor() throws ODataError {
+  public EntityLink getEntityLinkProcessor() throws ODataException {
     return this;
   }
 
   @Override
-  public EntityLinks getEntityLinksProcessor() throws ODataError {
+  public EntityLinks getEntityLinksProcessor() throws ODataException {
     return this;
   }
 
   @Override
-  public EntityMedia getEntityMediaProcessor() throws ODataError {
+  public EntityMedia getEntityMediaProcessor() throws ODataException {
     return this;
   }
 
   @Override
-  public EntitySimpleProperty getEntitySimplePropertyProcessor() throws ODataError {
+  public EntitySimpleProperty getEntitySimplePropertyProcessor() throws ODataException {
     return this;
   }
 
   @Override
-  public EntitySimplePropertyValue getEntitySimplePropertyValueProcessor() throws ODataError {
+  public EntitySimplePropertyValue getEntitySimplePropertyValueProcessor() throws ODataException {
     return this;
   }
 
   @Override
-  public FunctionImport getFunctionImportProcessor() throws ODataError {
+  public FunctionImport getFunctionImportProcessor() throws ODataException {
     return this;
   }
 
-  public FunctionImportValue getFunctionImportValueProcessor() throws ODataError {
+  public FunctionImportValue getFunctionImportValueProcessor() throws ODataException {
     return this;
   }
 
   @Override
-  public Batch getBatchProcessor() throws ODataError {
+  public Batch getBatchProcessor() throws ODataException {
     return this;
   }
 

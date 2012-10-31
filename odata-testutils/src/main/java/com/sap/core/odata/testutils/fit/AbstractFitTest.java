@@ -11,7 +11,7 @@ import static org.junit.Assert.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.sap.core.odata.api.exception.ODataError;
+import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.api.processor.ODataProcessor;
 import com.sap.core.odata.testutils.server.TestServer;
 
@@ -47,7 +47,7 @@ public abstract class AbstractFitTest {
     this.server.startServer(ProcessorFactory.class);
   }
 
-  protected abstract ODataProcessor createProcessor() throws ODataError;
+  protected abstract ODataProcessor createProcessor() throws ODataException;
 
   @After
   public void after() throws Exception {
