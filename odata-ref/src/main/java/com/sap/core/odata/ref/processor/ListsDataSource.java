@@ -1,6 +1,6 @@
 package com.sap.core.odata.ref.processor;
 
-import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 
 import com.sap.core.odata.api.edm.EdmEntitySet;
@@ -9,7 +9,7 @@ import com.sap.core.odata.api.exception.ODataException;
 /**
  * <p>This interface is intended to make it easier to implement an OData
  * service in cases where all data for each entity set can be provided as a
- * {@link Collection} of objects from which all properties described in the
+ * {@link List} of objects from which all properties described in the
  * Entity Data Model can be retrieved and set.</p>
  * <p>By obeying these restrictions, data-source implementations get the
  * following advantages: 
@@ -20,18 +20,18 @@ import com.sap.core.odata.api.exception.ODataException;
  * </p>
  * @author SAP AG
  */
-public interface CollectionsDataSource {
+public interface ListsDataSource {
 
   /**
-   * <p>Retrieves the whole data collection for the specified entity set.</p>
+   * <p>Retrieves the whole data list for the specified entity set.</p>
    * <p>Implementations should return a copy of the original data since this
    * collection will be handled destructively, e.g., to process filtering
    * or paging.</p>
    * @param entitySet  the requested {@link EdmEntitySet}
-   * @return the requested data collection
+   * @return the requested data list
    * @throws ODataException
    */
-  Collection<?> readData(EdmEntitySet entitySet) throws ODataException;
+  List<?> readData(EdmEntitySet entitySet) throws ODataException;
 
   /**
    * <p>Retrieves a single data object for the specified entity set and key.</p>
@@ -43,8 +43,22 @@ public interface CollectionsDataSource {
   Object readData(EdmEntitySet entitySet, Map<String, Object> keys) throws ODataException;
 
   /**
+   * <p>Retrieves related data for the specified source data, entity set, and key.</p>
+   * <p>If the underlying association of the EDM is specified to have target
+   * multiplicity '*' and no target key is given, this method returns a list of
+   * related data, otherwise it returns a single data object.</p>
+   * @param sourceEntitySet  the {@link EdmEntitySet} of the source entity
+   * @param sourceData  the data object of the source entity
+   * @param targetEntitySet  the requested target {@link EdmEntitySet}
+   * @param targetKeys  the key of the target entity as map of key names to key values (optional)
+   * @return the requested releated data object, either a list or a single object
+   * @throws ODataError
+   */
+  Object readRelatedData(EdmEntitySet sourceEntitySet, Object sourceData, EdmEntitySet targetEntitySet, Map<String, Object> targetKeys) throws ODataException;
+
+  /**
    * <p>Creates and returns a new instance of the requested data-object type.</p>
-   * <p>This instance must not be part of the corresponding collection and should
+   * <p>This instance must not be part of the corresponding list and should
    * have empty content.</p>
    * @param entitySet  the {@link EdmEntitySet} the object must correspond to
    * @return the new data object

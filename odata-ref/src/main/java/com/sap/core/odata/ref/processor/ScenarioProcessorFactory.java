@@ -18,7 +18,7 @@ public class ScenarioProcessorFactory implements ODataProcessorFactory {
       dataContainer = new DataContainer();
       dataContainer.init();
     }
-    return new CollectionsProcessor(new ScenarioDataSource(dataContainer));
+    return new ListsProcessor(new ScenarioDataSource(dataContainer));
   }
 
 }

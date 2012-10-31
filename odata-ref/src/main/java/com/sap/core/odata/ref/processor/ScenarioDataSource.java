@@ -1,7 +1,7 @@
 package com.sap.core.odata.ref.processor;
 
 import java.util.ArrayList;
-import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 
 import org.slf4j.Logger;
@@ -23,7 +23,7 @@ import com.sap.core.odata.ref.model.Team;
  * Data for the reference scenario
  * @author SAP AG
  */
-public class ScenarioDataSource implements CollectionsDataSource {
+public class ScenarioDataSource implements ListsDataSource {
 
   private static final Logger log = LoggerFactory.getLogger(ScenarioDataSource.class);
 
@@ -34,7 +34,7 @@ public class ScenarioDataSource implements CollectionsDataSource {
   }
 
   @Override
-  public Collection<?> readData(final EdmEntitySet entitySet) throws ODataException {
+  public List<?> readData(final EdmEntitySet entitySet) throws ODataException {
     ArrayList<Object> data = new ArrayList<Object>();
     if ("Employees".equals(entitySet.getName()))
       data.addAll(dataContainer.getEmployeeSet());
@@ -108,4 +108,8 @@ public class ScenarioDataSource implements CollectionsDataSource {
       throw new ODataNotImplementedException();
   }
 
+  @Override
+  public Object readRelatedData(final EdmEntitySet sourceEntitySet, final Object sourceData, final EdmEntitySet targetEntitySet, final Map<String, Object> targetKeys) throws ODataException {
+    return null;
+  }
 }
