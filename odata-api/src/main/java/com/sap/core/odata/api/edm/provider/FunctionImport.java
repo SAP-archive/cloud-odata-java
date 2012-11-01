@@ -1,0 +1,52 @@
+package com.sap.core.odata.api.edm.provider;
+
+import java.util.List;
+
+public class FunctionImport {
+
+  private String name;
+  private ReturnType returnType;
+  private String entitySet;
+  private String httpMethod;
+  private List<FunctionImportParameter> parameters;
+  private Documentation documentation;
+  private Annotations annotations;
+
+  public FunctionImport(String name, ReturnType returnType, String entitySet, String httpMethod, List<FunctionImportParameter> parameters, Documentation documentation, Annotations annotations) {
+    this.name = name;
+    this.returnType = returnType;
+    this.entitySet = entitySet;
+    this.httpMethod = httpMethod;
+    this.parameters = parameters;
+    this.documentation = documentation;
+    this.annotations = annotations;
+  }
+
+  public String getName() {
+    return name;
+  }
+
+  public ReturnType getReturnType() {
+    return returnType;
+  }
+
+  public String getEntitySet() {
+    return entitySet;
+  }
+
+  public String getHttpMethod() {
+    return httpMethod;
+  }
+
+  public List<FunctionImportParameter> getParameters() {
+    return parameters;
+  }
+
+  public Documentation getDocumentation() {
+    return documentation;
+  }
+
+  public Annotations getAnnotations() {
+    return annotations;
+  }
+}
