@@ -13,7 +13,6 @@ import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
 import com.sap.core.odata.api.exception.ODataException;
-import com.sap.core.odata.api.processor.ODataProcessor;
 import com.sap.core.odata.api.processor.ODataResponse;
 import com.sap.core.odata.api.processor.aspect.Batch;
 import com.sap.core.odata.api.processor.aspect.Entity;
@@ -28,6 +27,7 @@ import com.sap.core.odata.api.processor.aspect.FunctionImport;
 import com.sap.core.odata.api.processor.aspect.FunctionImportValue;
 import com.sap.core.odata.api.processor.aspect.Metadata;
 import com.sap.core.odata.api.processor.aspect.ServiceDocument;
+import com.sap.core.odata.api.service.ODataService;
 import com.sap.core.odata.core.dispatcher.Dispatcher;
 import com.sap.core.odata.core.enums.ODataHttpMethod;
 import com.sap.core.odata.core.enums.UriType;
@@ -35,7 +35,7 @@ import com.sap.core.odata.core.uri.UriParserResultImpl;
 
 public class DispatcherTest {
 
-  private static ODataProcessor processor;
+  private static ODataService service;
 
   @BeforeClass
   public static void createMockProcessor() throws ODataException {  
@@ -94,20 +94,20 @@ public class DispatcherTest {
     when(entityMedia.deleteEntityMedia()).thenAnswer(getAnswer());
     when(entityMedia.updateEntityMedia()).thenAnswer(getAnswer());
 
-    processor = mock(ODataProcessor.class);
-    when(processor.getServiceDocumentProcessor()).thenReturn(serviceDocument);
-    when(processor.getEntitySetProcessor()).thenReturn(entitySet);
-    when(processor.getEntityProcessor()).thenReturn(entity);
-    when(processor.getEntityComplexPropertyProcessor()).thenReturn(entityComplexProperty);
-    when(processor.getEntitySimplePropertyProcessor()).thenReturn(entitySimpleProperty);
-    when(processor.getEntitySimplePropertyValueProcessor()).thenReturn(entitySimplePropertyValue);
-    when(processor.getEntityLinkProcessor()).thenReturn(entityLink);
-    when(processor.getEntityLinksProcessor()).thenReturn(entityLinks);
-    when(processor.getMetadataProcessor()).thenReturn(metadata);
-    when(processor.getBatchProcessor()).thenReturn(batch);
-    when(processor.getFunctionImportProcessor()).thenReturn(functionImport);
-    when(processor.getFunctionImportValueProcessor()).thenReturn(functionImportValue);
-    when(processor.getEntityMediaProcessor()).thenReturn(entityMedia);
+    service = mock(ODataService.class);
+    when(service.getServiceDocumentProcessor()).thenReturn(serviceDocument);
+    when(service.getEntitySetProcessor()).thenReturn(entitySet);
+    when(service.getEntityProcessor()).thenReturn(entity);
+    when(service.getEntityComplexPropertyProcessor()).thenReturn(entityComplexProperty);
+    when(service.getEntitySimplePropertyProcessor()).thenReturn(entitySimpleProperty);
+    when(service.getEntitySimplePropertyValueProcessor()).thenReturn(entitySimplePropertyValue);
+    when(service.getEntityLinkProcessor()).thenReturn(entityLink);
+    when(service.getEntityLinksProcessor()).thenReturn(entityLinks);
+    when(service.getMetadataProcessor()).thenReturn(metadata);
+    when(service.getBatchProcessor()).thenReturn(batch);
+    when(service.getFunctionImportProcessor()).thenReturn(functionImport);
+    when(service.getFunctionImportValueProcessor()).thenReturn(functionImportValue);
+    when(service.getEntityMediaProcessor()).thenReturn(entityMedia);
   }
 
   private static Answer<ODataResponse> getAnswer() {
@@ -125,8 +125,7 @@ public class DispatcherTest {
   }
 
   private void checkDispatch(final ODataHttpMethod method, final UriType uriType, final boolean isValue, final String expectedMethodName) throws ODataException {
-    Dispatcher dispatcher = new Dispatcher();
-    dispatcher.setProcessor(processor);
+    Dispatcher dispatcher = new Dispatcher(service);
     
     UriParserResultImpl uriParserResult = mock(UriParserResultImpl.class);
     when(uriParserResult.getUriType()).thenReturn(uriType);
