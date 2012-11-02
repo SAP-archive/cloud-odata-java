@@ -9,8 +9,8 @@ public class EntityType extends ComplexType {
   private Key key;
   private List<NavigationProperty> navigationProperties;
   
-  public EntityType(String name, FullQualifiedName baseType, boolean isAbstract, List<Property> properties, Documentation documentation, Annotations annotations, boolean hasStream, CustomizableFeedMappings customizableFeedMappings, Key key, List<NavigationProperty> navigationProperties) {
-    super(name, baseType, isAbstract, properties, documentation, annotations);
+  public EntityType(String name, FullQualifiedName baseType, boolean isAbstract, List<Property> properties, Mapping mapping, Documentation documentation, Annotations annotations, boolean hasStream, CustomizableFeedMappings customizableFeedMappings, Key key, List<NavigationProperty> navigationProperties) {
+    super(name, baseType, isAbstract, properties, mapping, documentation, annotations);
     this.hasStream = hasStream;
     this.customizableFeedMappings = customizableFeedMappings;
     this.key = key;

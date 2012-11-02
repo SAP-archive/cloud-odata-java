@@ -8,15 +8,16 @@ public class FunctionImportParameter {
   private String mode;
   private FullQualifiedName qualifiedName;
   private EdmFacets facets;
-  // TODO Mapping
+  private Mapping mapping;
   private Documentation documentation;
   private Annotations annotations;
 
-  public FunctionImportParameter(String name, String mode, FullQualifiedName qualifiedName, EdmFacets facets, Documentation documentation, Annotations annotations) {
+  public FunctionImportParameter(String name, String mode, FullQualifiedName qualifiedName, EdmFacets facets, Mapping mapping, Documentation documentation, Annotations annotations) {
     this.name = name;
     this.mode = mode;
     this.qualifiedName = qualifiedName;
     this.facets = facets;
+    this.mapping = mapping;
     this.documentation = documentation;
     this.annotations = annotations;
   }
@@ -35,6 +36,10 @@ public class FunctionImportParameter {
 
   public EdmFacets getFacets() {
     return facets;
+  }
+
+  public Mapping getMapping() {
+    return mapping;
   }
 
   public Documentation getDocumentation() {

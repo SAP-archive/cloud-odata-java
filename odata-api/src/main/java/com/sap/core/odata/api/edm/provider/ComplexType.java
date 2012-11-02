@@ -8,11 +8,11 @@ public class ComplexType {
   private FullQualifiedName baseType;
   private boolean isAbstract;
   private List<Property> properties;
-  //TODO Mapping
+  private Mapping mapping;
   private Documentation documentation;
   private Annotations annotations;
 
-  public ComplexType(String name, FullQualifiedName baseType, boolean isAbstract, List<Property> properties, Documentation documentation, Annotations annotations) {
+  public ComplexType(String name, FullQualifiedName baseType, boolean isAbstract, List<Property> properties, Mapping mapping, Documentation documentation, Annotations annotations) {
     this.name = name;
     this.baseType = baseType;
     this.isAbstract = isAbstract;
@@ -35,6 +35,10 @@ public class ComplexType {
 
   public List<Property> getProperties() {
     return properties;
+  }
+
+  public Mapping getMapping() {
+    return mapping;
   }
 
   public Documentation getDocumentation() {

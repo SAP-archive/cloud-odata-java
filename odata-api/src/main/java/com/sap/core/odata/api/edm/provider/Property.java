@@ -8,15 +8,16 @@ public class Property {
   private FullQualifiedName type;
   private EdmFacets facets;
   private CustomizableFeedMappings customizableFeedMappings;
-  //TODO Mapping
+  private Mapping mapping;
   private Documentation documentation;
   private Annotations annotations;
 
-  public Property(String name, FullQualifiedName type, EdmFacets facets, CustomizableFeedMappings customizableFeedMappings, Documentation documentation, Annotations annotations) {
+  public Property(String name, FullQualifiedName type, EdmFacets facets, CustomizableFeedMappings customizableFeedMappings, Mapping mapping, Documentation documentation, Annotations annotations) {
     this.name = name;
     this.type = type;
     this.facets = facets;
     this.customizableFeedMappings = customizableFeedMappings;
+    this.mapping = mapping;
     this.documentation = documentation;
     this.annotations = annotations;
   }
@@ -35,6 +36,10 @@ public class Property {
 
   public CustomizableFeedMappings getCustomizableFeedMappings() {
     return customizableFeedMappings;
+  }
+
+  public Mapping getMapping() {
+    return mapping;
   }
 
   public Documentation getDocumentation() {
