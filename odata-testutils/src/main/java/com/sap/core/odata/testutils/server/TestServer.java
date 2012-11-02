@@ -9,7 +9,7 @@ import org.eclipse.jetty.servlet.ServletHolder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.sap.core.odata.api.processor.ODataProcessorFactory;
+import com.sap.core.odata.api.service.ODataServiceFactory;
 
 public class TestServer {
 
@@ -29,7 +29,7 @@ public class TestServer {
 
   private Server server;
 
-  public void startServer(Class<? extends ODataProcessorFactory> factoryClass) {
+  public void startServer(Class<? extends ODataServiceFactory> factoryClass) {
     try {
       TestServer.log.debug("##################################");
       TestServer.log.debug("## Starting server at endpoint");
@@ -40,7 +40,7 @@ public class TestServer {
       CXFNonSpringJaxrsServlet odataServlet = new CXFNonSpringJaxrsServlet();
       ServletHolder odataServletHolder = new ServletHolder(odataServlet);
       odataServletHolder.setInitParameter("javax.ws.rs.Application", "com.sap.core.odata.core.rest.ODataApplication");
-      odataServletHolder.setInitParameter("com.sap.core.odata.processor.factory", factoryClass.getCanonicalName());
+      odataServletHolder.setInitParameter(ODataServiceFactory.FACTORY, factoryClass.getCanonicalName());
 
       ServletContextHandler contextHandler = new ServletContextHandler(ServletContextHandler.SESSIONS);
       contextHandler.addServlet(odataServletHolder, this.endpoint.getPath() + "*");

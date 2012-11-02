@@ -10,11 +10,11 @@ import javax.ws.rs.HeaderParam;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Produces;
-import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.PathSegment;
+import javax.ws.rs.core.Request;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.UriInfo;
@@ -23,11 +23,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.sap.core.odata.api.exception.ODataException;
-import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.api.processor.ODataProcessor;
 import com.sap.core.odata.api.processor.ODataResponse;
+import com.sap.core.odata.api.service.ODataService;
+import com.sap.core.odata.api.service.ODataServiceFactory;
 import com.sap.core.odata.core.dispatcher.Dispatcher;
 import com.sap.core.odata.core.enums.ODataHttpMethod;
+import com.sap.core.odata.core.service.ODataSingleProcessorService;
 import com.sap.core.odata.core.uri.UriParserImpl;
 import com.sap.core.odata.core.uri.UriParserResultImpl;
 
@@ -35,22 +37,13 @@ public final class ODataLocatorImpl {
 
   private static final Logger log = LoggerFactory.getLogger(ODataLocatorImpl.class);
 
-  private ODataProcessor processor;
+  private ODataService service;
 
   private Dispatcher dispatcher;
 
   private UriParserImpl uriParser;
 
   private ODataContextImpl context;
-
-  private List<PathSegment> odataPathSegments;
-
-  private HttpHeaders httpHeaders;
-
-  @Context
-  private HttpHeaders httpHeaders2;
-  
-  private UriInfo uriInfo;
 
   @GET
   public Response handleGet() throws ODataException {
@@ -63,7 +56,10 @@ public final class ODataLocatorImpl {
       
       UriParserResultImpl uriParserResult = (UriParserResultImpl) this.uriParser.parse(pathSegments, queryParameters);
 
-      return convertResponse(dispatcher.dispatch(ODataHttpMethod.GET, uriParserResult));
+      ODataResponse odataResponse = dispatcher.dispatch(ODataHttpMethod.GET, uriParserResult);
+      Response response = this.convertResponse(odataResponse);
+      
+      return response;
     } catch (ODataException e) {
       throw new RuntimeException(e);
     }
@@ -131,17 +127,19 @@ public final class ODataLocatorImpl {
     this.context = context;
   }
 
-  public void beforeRequest() throws ODataException {
-
+  public void initializeService(ODataServiceFactory serviceFactory, List<PathSegment> odataPathSegments, HttpHeaders httpHeaders, UriInfo uriInfo, Request request) throws ODataException {
     this.context = new ODataContextImpl();
-    this.context.setHttpHeaders(this.httpHeaders);
-    this.context.setPathSegments(this.odataPathSegments);
-    this.context.setUriInfo(this.uriInfo);
-    this.processor.setContext(this.context);
-    this.uriParser = new UriParserImpl(this.processor.getMetadataProcessor().getEdm());
-    this.dispatcher = new Dispatcher();
-    this.dispatcher.setContext(this.context);
-    this.dispatcher.setProcessor(this.processor);
+    this.context.setHttpHeaders(httpHeaders);
+    this.context.setPathSegments(odataPathSegments);
+    this.context.setUriInfo(uriInfo);
+    this.context.setRequest(request);
+
+    ODataProcessor processor = serviceFactory.createProcessor();
+    processor.setContext(this.context);
+
+    this.service = new ODataSingleProcessorService(processor);
+    this.uriParser = new UriParserImpl(processor.getEntityDataModel());
+    this.dispatcher = new Dispatcher(this.service);
   }
 
   private Map<String, String> convertToSinglevaluedMap(MultivaluedMap<String, String> multi) {
@@ -153,22 +151,6 @@ public final class ODataLocatorImpl {
     }
 
     return single;
-  }
-
-  public void setPathSegments(List<PathSegment> odataPathSegments) {
-    this.odataPathSegments = odataPathSegments;
-  }
-
-  public void setHttpHeaders(HttpHeaders httpHeaders) {
-    this.httpHeaders = httpHeaders;
-  }
-
-  public void setUriInfo(UriInfo uriInfo) {
-    this.uriInfo = uriInfo;
-  }
-
-  public void setProcessor(ODataProcessor processor) {
-    this.processor = processor;
   }
 
   private Response convertResponse(final ODataResponse odataResponse) {
@@ -187,4 +169,5 @@ public final class ODataLocatorImpl {
     
     return responseBuilder.build();
   }
+
 }

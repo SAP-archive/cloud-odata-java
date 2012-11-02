@@ -46,7 +46,7 @@ public class ListsProcessor extends ODataSingleProcessor {
   }
 
   @Override
-  public Edm getEdm() throws ODataException {
+  public Edm getEntityDataModel() throws ODataException {
     return new Edm() {
 
       @Override
