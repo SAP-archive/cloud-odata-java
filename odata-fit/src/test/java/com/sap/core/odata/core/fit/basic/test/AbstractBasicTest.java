@@ -1,44 +1,56 @@
 package com.sap.core.odata.core.fit.basic.test;
 
 import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.CALLS_REAL_METHODS;
+import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import com.sap.core.odata.api.edm.Edm;
-import com.sap.core.odata.api.edm.EdmServiceMetadata;
-import com.sap.core.odata.api.enums.HttpStatus;
-import com.sap.core.odata.api.exception.ODataException;
-import com.sap.core.odata.api.processor.ODataProcessor;
-import com.sap.core.odata.api.processor.ODataResponse;
-import com.sap.core.odata.api.processor.ODataSingleProcessor;
-import com.sap.core.odata.api.processor.aspect.EntitySet;
-import com.sap.core.odata.api.processor.aspect.Metadata;
-import com.sap.core.odata.core.uri.UriParserResultImpl;
-import com.sap.core.odata.testutils.fit.AbstractFitTest;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
 
+import com.sap.core.odata.api.edm.Edm;
+import com.sap.core.odata.api.edm.provider.EdmProvider;
+import com.sap.core.odata.api.exception.ODataException;
+import com.sap.core.odata.api.processor.ODataContext;
+import com.sap.core.odata.api.processor.ODataProcessor;
+import com.sap.core.odata.api.processor.ODataSingleProcessor;
+import com.sap.core.odata.testutils.fit.AbstractFitTest;
+import com.sap.core.testutils.mocks.MockFacade;
 
 public class AbstractBasicTest extends AbstractFitTest {
 
+  private ODataContext context;
+  
   @Override
-  protected ODataProcessor createProcessor() throws ODataException {
-    ODataProcessor processor = mock(ODataSingleProcessor.class, CALLS_REAL_METHODS);
+  protected ODataProcessor createProcessorMock() throws ODataException {
+    ODataProcessor processor = mock(ODataSingleProcessor.class);
 
-    EdmServiceMetadata edmsm = mock(EdmServiceMetadata.class);
-    when(edmsm.getDataServiceVersion()).thenReturn("2.0");
+    Edm edm = MockFacade.getMockEdm();
+    when(processor.getEntityDataModel()).thenReturn(edm);
 
-    Edm edm = mock(Edm.class);
-    when(edm.getServiceMetadata()).thenReturn(edmsm);
+    // sience fiction (return context after setContext)
+    // see http://www.planetgeek.ch/2010/07/20/mockito-answer-vs-return/
+    
+    doAnswer(new Answer<Object>() {
+      @Override
+      public Object answer(InvocationOnMock invocation) throws Throwable {
+        AbstractBasicTest.this.context = (ODataContext) invocation.getArguments()[0];
+        return null;
+      }
+    }).when(processor).setContext(any(ODataContext.class));
 
-    Metadata metadata = mock(Metadata.class);
-    when(metadata.getEdm()).thenReturn(edm);
-    when(metadata.readMetadata(any(UriParserResultImpl.class))).thenReturn(ODataResponse.status(HttpStatus.OK).entity("metadata").build());
-
-    EntitySet entitySet = mock(EntitySet.class);
-
-    when(processor.getMetadataProcessor()).thenReturn(metadata);
-    when(processor.getEntitySetProcessor()).thenReturn(entitySet);
+    when(processor.getContext()).thenAnswer(new Answer<ODataContext>() {
+      @Override
+      public ODataContext answer(InvocationOnMock invocation) throws Throwable {
+        return AbstractBasicTest.this.context;
+      }
+    });
 
     return processor;
+  }
+
+  @Override
+  protected EdmProvider createEdmProviderMock() {
+    return null;
   }
 }

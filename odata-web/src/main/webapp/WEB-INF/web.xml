@@ -15,7 +15,7 @@
 			<param-value>com.sap.core.odata.core.rest.ODataApplication</param-value>
 		</init-param>
 		<init-param>
-			<param-name>com.sap.core.odata.processor.factory</param-name>
+			<param-name>com.sap.core.odata.service.factory</param-name>
 			<param-value>com.sap.core.odata.ref.processor.ScenarioProcessorFactory</param-value>
 		</init-param>
 		<load-on-startup>1</load-on-startup>

@@ -7,12 +7,13 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.log4j.xml.DOMConfigurator;
 import org.junit.After;
 import org.junit.Before;
-import static org.junit.Assert.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.sap.core.odata.api.edm.provider.EdmProvider;
 import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.api.processor.ODataProcessor;
+import com.sap.core.odata.api.service.ODataService;
 import com.sap.core.odata.testutils.server.TestServer;
 
 public abstract class AbstractFitTest {
@@ -24,7 +25,10 @@ public abstract class AbstractFitTest {
   protected final Logger log = LoggerFactory.getLogger(this.getClass());
 
   private TestServer server = new TestServer();
+ 
   private ODataProcessor processor;
+  private EdmProvider edmProvider;
+  
   private HttpClient httpClient = new DefaultHttpClient();
 
   protected URI getEndpoint() {
@@ -39,22 +43,39 @@ public abstract class AbstractFitTest {
     return this.processor;
   }
 
-  @Before
-  public void before() throws Exception {
-    this.processor = this.createProcessor();
-    assertNotNull(this.processor);
-    ProcessorFactory.setProcessor(this.processor);
-    this.server.startServer(ProcessorFactory.class);
+  protected EdmProvider getEdmProvider() {
+    return this.edmProvider;
   }
 
-  protected abstract ODataProcessor createProcessor() throws ODataException;
+  @Before
+  public void before() throws Exception {
+    this.processor = this.createProcessorMock();
+    this.edmProvider = this.createEdmProviderMock();
+    
+    ServiceFactory.setProcessor(this.processor);
+    ServiceFactory.setProvider(this.edmProvider);
+    
+    this.server.startServer(ServiceFactory.class);
+  }
+
+  /**
+   * @return mock provider
+   */
+  protected abstract EdmProvider createEdmProviderMock();
+
+  /**
+   * @return mock processor
+   */
+  protected abstract ODataProcessor createProcessorMock() throws ODataException;
+
 
   @After
   public void after() throws Exception {
     try {
       this.server.stopServer();
     } finally {
-      ProcessorFactory.setProcessor(null);
+      ServiceFactory.setProcessor(null);
+      ServiceFactory.setProvider(null);
     }
   }
 }

@@ -62,6 +62,11 @@ public abstract class ODataSingleProcessor
   }
 
   @Override
+  public Edm getEntityDataModel() throws ODataException{
+    throw new ODataNotImplementedException();
+  }
+  
+  @Override
   public ODataResponse executeBatch() throws ODataException {
     throw new ODataNotImplementedException();
   }
@@ -202,77 +207,8 @@ public abstract class ODataSingleProcessor
   }
 
   @Override
-  public Edm getEdm() throws ODataException {
-    throw new ODataNotImplementedException();
-  }
-
-  @Override
   public ODataResponse readMetadata(GetMetadataView uriParserResultView) throws ODataException {
     throw new ODataNotImplementedException();
-  }
-
-  @Override
-  public Metadata getMetadataProcessor() throws ODataException {
-    return this;
-  }
-
-  @Override
-  public ServiceDocument getServiceDocumentProcessor() throws ODataException {
-    return this;
-  }
-
-  @Override
-  public Entity getEntityProcessor() throws ODataException {
-    return this;
-  }
-
-  @Override
-  public EntitySet getEntitySetProcessor() throws ODataException {
-    return this;
-  }
-
-  @Override
-  public EntityComplexProperty getEntityComplexPropertyProcessor() throws ODataException {
-    return this;
-  }
-
-  @Override
-  public EntityLink getEntityLinkProcessor() throws ODataException {
-    return this;
-  }
-
-  @Override
-  public EntityLinks getEntityLinksProcessor() throws ODataException {
-    return this;
-  }
-
-  @Override
-  public EntityMedia getEntityMediaProcessor() throws ODataException {
-    return this;
-  }
-
-  @Override
-  public EntitySimpleProperty getEntitySimplePropertyProcessor() throws ODataException {
-    return this;
-  }
-
-  @Override
-  public EntitySimplePropertyValue getEntitySimplePropertyValueProcessor() throws ODataException {
-    return this;
-  }
-
-  @Override
-  public FunctionImport getFunctionImportProcessor() throws ODataException {
-    return this;
-  }
-
-  public FunctionImportValue getFunctionImportValueProcessor() throws ODataException {
-    return this;
-  }
-
-  @Override
-  public Batch getBatchProcessor() throws ODataException {
-    return this;
   }
 
 }

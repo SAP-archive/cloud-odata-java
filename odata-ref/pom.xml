@@ -23,13 +23,12 @@
 			<groupId>com.sap.core.odata</groupId>
 			<artifactId>com.sap.core.odata.core</artifactId>
 			<version>${project.version}</version>
-			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>com.sap.core.odata</groupId>
 			<artifactId>com.sap.core.odata.testutils</artifactId>
 			<version>${project.version}</version>
-			<scope>test</scope>
+<!-- 			<scope>test</scope> remove after ref scenario is implemented -->
 		</dependency>
 	</dependencies>
 
