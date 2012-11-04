@@ -2,6 +2,8 @@ package com.sap.core.odata.api.edm.provider;
 
 import java.util.List;
 
+import com.sap.core.odata.api.edm.FullQualifiedName;
+
 public class EntityType extends ComplexType {
 
   private boolean hasStream;

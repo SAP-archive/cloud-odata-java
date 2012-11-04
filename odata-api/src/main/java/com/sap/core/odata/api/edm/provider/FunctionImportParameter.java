@@ -1,6 +1,7 @@
 package com.sap.core.odata.api.edm.provider;
 
 import com.sap.core.odata.api.edm.EdmFacets;
+import com.sap.core.odata.api.edm.FullQualifiedName;
 
 public class FunctionImportParameter {
 

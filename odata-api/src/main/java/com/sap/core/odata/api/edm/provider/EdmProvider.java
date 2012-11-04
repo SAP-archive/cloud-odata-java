@@ -1,9 +1,12 @@
 package com.sap.core.odata.api.edm.provider;
 
+import com.sap.core.odata.api.edm.FullQualifiedName;
 import com.sap.core.odata.api.exception.ODataMessageException;
 import com.sap.core.odata.api.exception.ODataRuntimeException;
 
 public interface EdmProvider {
+
+  EntityContainer getEntityContainer(String name) throws ODataRuntimeException, ODataMessageException;
 
   EntityType getEntityType(FullQualifiedName edmFQName) throws ODataRuntimeException, ODataMessageException;
 
