@@ -1,5 +1,7 @@
 package com.sap.core.odata.api.edm.provider;
 
+import com.sap.core.odata.api.edm.FullQualifiedName;
+
 public class EntitySet {
 
   private String name;
