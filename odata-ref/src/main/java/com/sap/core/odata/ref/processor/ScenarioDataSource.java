@@ -59,32 +59,32 @@ public class ScenarioDataSource implements ListsDataSource {
       for (Employee employee : dataContainer.getEmployeeSet())
         if (employee.getId().equals(keys.get("EmployeeId")))
           return employee;
-      throw new ODataNotFoundException(ODataNotFoundException.USER);
+      throw new ODataNotFoundException(ODataNotFoundException.ENTITY);
     } else if ("Teams".equals(entitySet.getName())) {
       for (Team team : dataContainer.getTeamSet())
         if (team.getId().equals(keys.get("Id")))
           return team;
-      throw new ODataNotFoundException(ODataNotFoundException.USER);
+      throw new ODataNotFoundException(ODataNotFoundException.ENTITY);
     } else if ("Rooms".equals(entitySet.getName())) {
       for (Room room : dataContainer.getRoomSet())
         if (room.getId().equals(keys.get("Id")))
           return room;
-      throw new ODataNotFoundException(ODataNotFoundException.USER);
+      throw new ODataNotFoundException(ODataNotFoundException.ENTITY);
     } else if ("Managers".equals(entitySet.getName())) {
       for (Manager manager : dataContainer.getManagerSet())
         if (manager.getId().equals(keys.get("EmployeeId")))
           return manager;
-      throw new ODataNotFoundException(ODataNotFoundException.USER);
+      throw new ODataNotFoundException(ODataNotFoundException.ENTITY);
     } else if ("Buildings".equals(entitySet.getName())) {
       for (Building building : dataContainer.getBuildingSet())
         if (building.getId().equals(keys.get("Id")))
           return building;
-      throw new ODataNotFoundException(ODataNotFoundException.USER);
+      throw new ODataNotFoundException(ODataNotFoundException.ENTITY);
     } else if ("Photos".equals(entitySet.getName())) {
       for (Photo photo : dataContainer.getPhotoSet())
         if (photo.getId() == (Integer) keys.get("Id") && photo.getType().equals(keys.get("Type")))
           return photo;
-      throw new ODataNotFoundException(ODataNotFoundException.USER);
+      throw new ODataNotFoundException(ODataNotFoundException.ENTITY);
     }
 
     throw new ODataNotImplementedException();

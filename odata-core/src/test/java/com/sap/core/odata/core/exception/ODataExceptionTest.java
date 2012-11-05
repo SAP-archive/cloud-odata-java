@@ -26,7 +26,7 @@ public class ODataExceptionTest {
 
   @Test
   public void testODataContextedCause() {
-    ODataException exception = new ODataException("Some message.", new ODataNotFoundException(ODataNotFoundException.USER));
+    ODataException exception = new ODataException("Some message.", new ODataNotFoundException(ODataNotFoundException.ENTITY));
 
     Assert.assertEquals(true, exception.causedByContextedException());
   }
@@ -36,7 +36,7 @@ public class ODataExceptionTest {
     ODataException exception = new ODataException("Some message.", 
         new IllegalArgumentException(
             new MethodNotAllowedException(
-                new ODataNotFoundException(ODataNotFoundException.USER))));
+                new ODataNotFoundException(ODataNotFoundException.ENTITY))));
 
     Assert.assertEquals(true, exception.causedByContextedException());
   }
