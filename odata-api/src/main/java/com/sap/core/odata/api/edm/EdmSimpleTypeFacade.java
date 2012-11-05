@@ -121,7 +121,8 @@ public class EdmSimpleTypeFacade {
           else
             return new UriLiteral(int32Instance(), value);
         } catch (NumberFormatException e) {
-          throw new UriParserException("Wrong format for literal value: " + uriLiteral, e);
+          throw new UriParserException(UriParserException.LITERALFORMAT);
+//        throw new UriParserException("Wrong format for literal value: " + uriLiteral, e);
         }
     }
 
@@ -148,7 +149,10 @@ public class EdmSimpleTypeFacade {
         try {
           b = Hex.decodeHex(value.toCharArray());
         } catch (DecoderException e) {
-          throw new UriParserException(e);
+          UriParserException ex = new UriParserException(UriParserException.NOTEXT);
+          //TODO: Append previous exception instead of setting stack trace
+          ex.setStackTrace(e.getStackTrace());
+          throw ex;
         }
         return new UriLiteral(binaryInstance(), Base64.encodeBase64String(b));
       }
@@ -161,7 +165,8 @@ public class EdmSimpleTypeFacade {
       else if ("time".equals(prefix))
         return new UriLiteral(timeInstance(), value);
     }
-    throw new UriParserException("Unknown uriLiteral: " + uriLiteral);
+    throw new UriParserException(UriParserException.UNKNOWNLITERAL);
+//    throw new UriParserException("Unknown uriLiteral: " + uriLiteral);
   }
 
 }

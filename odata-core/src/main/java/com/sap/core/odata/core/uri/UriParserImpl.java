@@ -87,7 +87,8 @@ public class UriParserImpl implements UriParser {
       handleSystemQueryOptions();
       handleOtherQueryParameters();
     } catch (EdmException e) {
-      throw new UriParserException("Error in EDM access during URI parsing", e);
+      //TODO: Append previous exception
+      throw new UriParserException(UriParserException.EDM);
     }
 
     UriParserImpl.LOG.debug(uriResult.toString());
@@ -103,7 +104,7 @@ public class UriParserImpl implements UriParser {
           pathSegments.remove(0);
       for (String pathSegment : pathSegments)
         if (pathSegment.equals(""))
-          throw new UriParserException("Empty path segment in URI, " + pathSegments);
+          throw new UriParserException(UriParserException.EMPTYSEGMENT);
     }
   }
 
@@ -133,7 +134,7 @@ public class UriParserImpl implements UriParser {
   private void handleNormalInitialSegment() throws UriParserException, EdmException {
     final Matcher matcher = INITIAL_SEGMENT_PATTERN.matcher(currentPathSegment);
     if (!matcher.matches())
-      throw new UriParserException("Problems matching segment " + currentPathSegment);
+      throw new UriParserException(UriParserException.MATCHPROBLEM);
 
     final String entityContainerName = matcher.group(1);
     final String segmentName = matcher.group(2);
@@ -157,7 +158,7 @@ public class UriParserImpl implements UriParser {
       uriResult.setFunctionImport(functionImport);
       handleFunctionImport(functionImport, emptyParentheses, keyPredicate);
     } else {
-      throw new UriParserException("Invalid Segment" + segmentName);
+      throw new UriParserException(UriParserException.INVALIDSEGMENT);
     }
   }
 
@@ -176,7 +177,7 @@ public class UriParserImpl implements UriParser {
         if (uriResult.isCount())
           uriResult.setUriType(UriType.URI15);
         else
-          throw new UriParserException("Entity set instead of entity: " + currentPathSegment + ", " + this.pathSegments);
+          throw new UriParserException(UriParserException.ENTITYSETINSTEADOFENTITY);
       }
     } else {
       uriResult.setKeyPredicates(parseKey(keyPredicate, entityType));
@@ -201,12 +202,12 @@ public class UriParserImpl implements UriParser {
         uriResult.setValue(true);
       }
       else
-        throw new UriParserException("Resource is no media resource");
+        throw new UriParserException(UriParserException.NOMEDIARESOURCE);
 
     } else if ("$links".equals(currentPathSegment)) {
       this.uriResult.setLinks(true);
       if (pathSegments.isEmpty())
-        throw new UriParserException("$links must not be the last segment");
+        throw new UriParserException(UriParserException.NOTLASTSEGMENT);
       currentPathSegment = pathSegments.remove(0);
       handleNavigationProperties();
 
@@ -219,7 +220,7 @@ public class UriParserImpl implements UriParser {
 
     final Matcher matcher = NAVIGATION_SEGMENT_PATTERN.matcher(currentPathSegment);
     if (!matcher.matches())
-      throw new UriParserException("Problems matching segment " + currentPathSegment);
+      throw new UriParserException(UriParserException.MATCHPROBLEM);
 
     final String navigationPropertyName = matcher.group(1);
     final String keyPredicateName = matcher.group(2);
@@ -232,9 +233,9 @@ public class UriParserImpl implements UriParser {
     case SIMPLE:
     case COMPLEX:
       if (keyPredicateName != null || emptyParentheses != null)
-        throw new UriParserException("Invalid segment: " + currentPathSegment + ", " + this.pathSegments);
+        throw new UriParserException(UriParserException.INVALIDSEGMENT);
       if (uriResult.isLinks())
-        throw new UriParserException("$links must be followed by a navigation property, but " + currentPathSegment + " is of another property type");
+        throw new UriParserException(UriParserException.NONAVIGATIONPROPERTY);
       else
         handlePropertyPath((EdmProperty) property);
       break;
@@ -243,7 +244,7 @@ public class UriParserImpl implements UriParser {
       final EdmNavigationProperty navigationProperty = (EdmNavigationProperty) property;
       if (keyPredicateName != null || emptyParentheses != null)
         if (navigationProperty.getMultiplicity() != EdmMultiplicity.MANY)
-          throw new UriParserException("Invalid segment: " + currentPathSegment + ", " + this.pathSegments);
+          throw new UriParserException(UriParserException.INVALIDSEGMENT);
 
       addNavigationSegment(keyPredicateName, navigationProperty);
 
@@ -265,7 +266,7 @@ public class UriParserImpl implements UriParser {
         currentPathSegment = pathSegments.remove(0);
         checkCount();
         if (!uriResult.isCount())
-          throw new UriParserException("Invalid path segment: " + currentPathSegment + ", " + this.pathSegments);
+          throw new UriParserException(UriParserException.INVALIDSEGMENT);
         if (many)
           if (uriResult.isLinks())
             uriResult.setUriType(UriType.URI50B);
@@ -279,7 +280,7 @@ public class UriParserImpl implements UriParser {
       break;
 
     default:
-      throw new UriParserException("Invalid type of property: " + currentPathSegment + ", " + pathSegments);
+      throw new UriParserException(UriParserException.INVALIDPROPERTYTYPE);
     }
   }
 
@@ -309,7 +310,7 @@ public class UriParserImpl implements UriParser {
       else if (type.getKind() == EdmTypeKind.COMPLEX)
         this.uriResult.setUriType(UriType.URI3);
       else
-        throw new UriParserException("Invalid type of property: " + currentPathSegment + ", " + pathSegments);
+        throw new UriParserException(UriParserException.INVALIDPROPERTYTYPE);
       this.uriResult.setTargetType(type);
     } else {
 
@@ -324,7 +325,7 @@ public class UriParserImpl implements UriParser {
           else
             uriResult.setUriType(UriType.URI4);
         } else {
-          throw new UriParserException("Invalid path segment: " + currentPathSegment + ", " + this.pathSegments);
+          throw new UriParserException(UriParserException.INVALIDSEGMENT);
         }
         uriResult.setTargetType(type);
         break;
@@ -335,14 +336,14 @@ public class UriParserImpl implements UriParser {
         break;
 
       default:
-        throw new UriParserException("Invalid type of property: " + currentPathSegment + ", " + pathSegments);
+        throw new UriParserException(UriParserException.INVALIDPROPERTYTYPE);
       }
     }
   }
 
   private void ensureLastSegment() throws UriParserException {
     if (!pathSegments.isEmpty())
-      throw new UriParserException(currentPathSegment + " is not the last path segment, " + pathSegments);
+      throw new UriParserException(UriParserException.NOTLASTSEGMENT);
   }
 
   private void checkCount() throws UriParserException {
@@ -350,7 +351,7 @@ public class UriParserImpl implements UriParser {
       if (pathSegments.isEmpty())
         uriResult.setCount(true);
       else
-        throw new UriParserException("$count is not the last path segment, " + pathSegments);
+        throw new UriParserException(UriParserException.NOTLASTSEGMENT);
   }
 
   private ArrayList<KeyPredicate> parseKey(final String keyPredicate, final EdmEntityType entityType) throws UriParserException, EdmException {
@@ -362,7 +363,7 @@ public class UriParserImpl implements UriParser {
 
       final Matcher matcher = NAMED_VALUE_PATTERN.matcher(key);
       if (!matcher.matches())
-        throw new UriParserException("Invalid key predicate: " + key);
+        throw new UriParserException(UriParserException.INVALIDKEYPREDICATE);
 
       String name = matcher.group(1);
       final String value = matcher.group(2);
@@ -372,7 +373,7 @@ public class UriParserImpl implements UriParser {
         if (keyProperties.size() == 1)
           name = keyProperties.get(0).getName();
         else
-          throw new UriParserException("Missing name in key predicate: " + keyPredicate);
+          throw new UriParserException(UriParserException.MISSINGKEYPREDICATENAME);
 
       EdmProperty keyProperty = null;
       for (final EdmProperty testKeyProperty : keyProperties)
@@ -381,21 +382,21 @@ public class UriParserImpl implements UriParser {
           break;
         }
       if (keyProperty == null)
-        throw new UriParserException(name + " is not a key property");
+        throw new UriParserException(UriParserException.INVALIDKEYPREDICATE);
       if (parsedKeyProperties.contains(keyProperty))
-        throw new UriParserException("Key names must occur only once in key predicate: " + keyPredicate);
+        throw new UriParserException(UriParserException.DUPLICATEKEYNAMES);
       parsedKeyProperties.add(keyProperty);
 
       final UriLiteral uriLiteral = simpleTypeFacade.parseUriLiteral(value);
 
       if (!((EdmSimpleType) keyProperty.getType()).isCompatible(uriLiteral.getType()))
-        throw new UriParserException("Literal " + value + " is not compatible to type of property " + keyProperty.getName());
+        throw new UriParserException(UriParserException.INCOMPATIBLELITERAL);
 
       keyPredicates.add(new KeyPredicateImpl(uriLiteral.getLiteral(), keyProperty));
     }
 
     if (parsedKeyProperties.size() != keyProperties.size())
-      throw new UriParserException("Invalid key predicate: " + keyPredicate);
+      throw new UriParserException(UriParserException.INVALIDKEYPREDICATE);
 
     return keyPredicates;
   }
@@ -411,7 +412,7 @@ public class UriParserImpl implements UriParser {
     }
 
     if (emptyParentheses != null)
-      throw new UriParserException("Invalid segment");
+      throw new UriParserException(UriParserException.INVALIDSEGMENT);
 
     uriResult.setTargetType(type);
     switch (type.getKind()) {
@@ -425,7 +426,7 @@ public class UriParserImpl implements UriParser {
       uriResult.setUriType(UriType.URI10);
       break;
     default:
-      throw new UriParserException("Invalid return type of function import: " + currentPathSegment + ", " + pathSegments);
+      throw new UriParserException(UriParserException.INVALIDRETURNTYPE);
     }
 
     if (!pathSegments.isEmpty())
@@ -434,7 +435,7 @@ public class UriParserImpl implements UriParser {
         if ("$value".equals(currentPathSegment))
           uriResult.setValue(true);
         else
-          throw new UriParserException("Invalid segment: " + currentPathSegment);
+          throw new UriParserException(UriParserException.INVALIDSEGMENT);
       }
     ensureLastSegment();
   }
@@ -447,11 +448,11 @@ public class UriParserImpl implements UriParser {
         try {
           queryOption = SystemQueryOption.valueOf(queryOptionString);
         } catch (IllegalArgumentException e) {
-          throw new UriParserException("Illegal system query option: " + queryOptionString);
+          throw new UriParserException(UriParserException.INVALIDSYSTEMQUERYOPTION);
         }
         final String value = queryParameters.get(queryOptionString);
         if ("".equals(value))
-          throw new UriParserException("Invalid null value for " + queryOptionString);
+          throw new UriParserException(UriParserException.INVALIDNULLVALUE);
         else
           systemQueryOptions.put(queryOption, value);
       } else {
@@ -465,10 +466,10 @@ public class UriParserImpl implements UriParser {
     for (SystemQueryOption queryOption : systemQueryOptions.keySet()) {
 
       if (queryOption == SystemQueryOption.$format && (uriType == UriType.URI4 || uriType == UriType.URI5) && uriResult.isValue())
-        throw new UriParserException("$format is not compatible with uri type " + uriType + " in combination with $value");
+        throw new UriParserException(UriParserException.INCOMPATIBLESYSTEMQUERYOPTION);
 
       if (!uriType.isCompatible(queryOption))
-        throw new UriParserException("Query parameter " + queryOption + " is not compatible with uri type " + uriType);
+        throw new UriParserException(UriParserException.INCOMPATIBLESYSTEMQUERYOPTION);
     }
   }
 
@@ -528,7 +529,7 @@ public class UriParserImpl implements UriParser {
     else if ("none".equals(inlineCount))
       uriResult.setInlineCount(InlineCount.NONE);
     else
-      throw new UriParserException("Invalid value " + inlineCount + " for $inlinecount");
+      throw new UriParserException(UriParserException.INVALIDVALUE);
   }
 
   private void handleSystemQueryOptionOrderBy(final String orderBy) throws UriParserException, EdmException {
@@ -544,10 +545,10 @@ public class UriParserImpl implements UriParser {
     try {
       uriResult.setSkip(Integer.valueOf(skip));
     } catch (NumberFormatException e) {
-      throw new UriParserException("Invalid value " + skip + " for $skip", e);
+      throw new UriParserException(UriParserException.INVALIDVALUE);
     }
     if (uriResult.getSkip() < 0)
-      throw new UriParserException("$skip must not be negative");
+      throw new UriParserException(UriParserException.INVALIDNEGATIVEVALUE);
 
   }
 
@@ -555,35 +556,35 @@ public class UriParserImpl implements UriParser {
     try {
       uriResult.setTop(Integer.valueOf(top));
     } catch (NumberFormatException e) {
-      throw new UriParserException("Invalid value " + top + " for $top", e);
+      throw new UriParserException(UriParserException.INVALIDVALUE);
     }
     if (uriResult.getTop() < 0)
-      throw new UriParserException("$top must not be negative");
+      throw new UriParserException(UriParserException.INVALIDNEGATIVEVALUE);
   }
 
   private void handleSystemQueryOptionExpand(String expandStatement) throws UriParserException, EdmException {
     ArrayList<ArrayList<NavigationPropertySegment>> expand = new ArrayList<ArrayList<NavigationPropertySegment>>();
 
     if (expandStatement.startsWith(",") || expandStatement.endsWith(","))
-      throw new UriParserException("Empty item in expand statement " + expandStatement);
+      throw new UriParserException(UriParserException.EMPTYSEGMENT);
 
     for (String expandItemString : expandStatement.split(",")) {
       expandItemString = expandItemString.trim();
       if ("".equals(expandItemString))
-        throw new UriParserException("Empty item in expand statement " + expandStatement);
+        throw new UriParserException(UriParserException.EMPTYSEGMENT);
       if (expandItemString.startsWith("/") || expandItemString.endsWith("/"))
-        throw new UriParserException("Empty property in expand item " + expandItemString);
+        throw new UriParserException(UriParserException.EMPTYSEGMENT);
 
       ArrayList<NavigationPropertySegment> expandNavigationProperties = new ArrayList<NavigationPropertySegment>();
       EdmEntitySet fromEntitySet = uriResult.getTargetEntitySet();
 
       for (String expandPropertyName : expandItemString.split("/")) {
         if ("".equals(expandPropertyName))
-          throw new UriParserException("Empty property name in expand item " + expandItemString);
+          throw new UriParserException(UriParserException.EMPTYSEGMENT);
 
         final EdmTyped property = fromEntitySet.getEntityType().getProperty(expandPropertyName);
         if (property == null)
-          throw new UriParserException("Can't find property with name: " + expandPropertyName);
+          throw new UriParserException(UriParserException.INVALIDSEGMENT);
         if (property.getType().getKind() == EdmTypeKind.NAVIGATION) {
           final EdmNavigationProperty navigationProperty = (EdmNavigationProperty) property;
           fromEntitySet = fromEntitySet.getRelatedEntitySet(navigationProperty);
@@ -592,7 +593,7 @@ public class UriParserImpl implements UriParser {
           propertySegment.setTargetEntitySet(fromEntitySet);
           expandNavigationProperties.add(propertySegment);
         } else {
-          throw new UriParserException("Property: " + expandPropertyName + " has to be a navigation property");
+          throw new UriParserException(UriParserException.NONAVIGATIONPROPERTY);
         }
       }
       expand.add(expandNavigationProperties);
@@ -604,14 +605,14 @@ public class UriParserImpl implements UriParser {
     ArrayList<SelectItem> select = new ArrayList<SelectItem>();
 
     if (selectStatement.startsWith(",") || selectStatement.endsWith(","))
-      throw new UriParserException("Empty item in select statement " + selectStatement);
+      throw new UriParserException(UriParserException.EMPTYSEGMENT);
 
     for (String selectItemString : selectStatement.split(",")) {
       selectItemString = selectItemString.trim();
       if ("".equals(selectItemString))
-        throw new UriParserException("Empty item in select statement " + selectStatement);
+        throw new UriParserException(UriParserException.EMPTYSEGMENT);
       if (selectItemString.startsWith("/") || selectItemString.endsWith("/"))
-        throw new UriParserException("Empty property in select item " + selectItemString);
+        throw new UriParserException(UriParserException.EMPTYSEGMENT);
 
       SelectItemImpl selectItem = new SelectItemImpl();
       boolean exit = false;
@@ -619,10 +620,10 @@ public class UriParserImpl implements UriParser {
 
       for (String selectedPropertyName : selectItemString.split("/")) {
         if ("".equals(selectedPropertyName))
-          throw new UriParserException("Empty property name in select item " + selectItemString);
+          throw new UriParserException(UriParserException.EMPTYSEGMENT);
 
         if (exit)
-          throw new UriParserException("After a simple or complex property, no further property is allowed: " + selectedPropertyName);
+          throw new UriParserException(UriParserException.INVALIDSEGMENT);
 
         if ("*".equals(selectedPropertyName)) {
           selectItem.setStar(true);
@@ -632,7 +633,7 @@ public class UriParserImpl implements UriParser {
 
         final EdmTyped property = fromEntitySet.getEntityType().getProperty(selectedPropertyName);
         if (property == null)
-          throw new UriParserException("Can't find property with name: " + selectedPropertyName);
+          throw new UriParserException(UriParserException.INVALIDSEGMENT);
 
         switch (property.getType().getKind()) {
         case SIMPLE:
@@ -652,7 +653,7 @@ public class UriParserImpl implements UriParser {
           fromEntitySet = targetEntitySet;
           break;
         default:
-          throw new UriParserException("Invalid type of property: " + selectedPropertyName);
+          throw new UriParserException(UriParserException.INVALIDPROPERTYTYPE);
         }
       }
       select.add(selectItem);
@@ -671,10 +672,10 @@ public class UriParserImpl implements UriParser {
           if (parameter.getFacets() == null || parameter.getFacets().isNullable())
             continue;
           else
-            throw new UriParserException("Mandatory function-import parameter missing: " + parameterName);
+            throw new UriParserException(UriParserException.MISSINGPARAMETER);
         final UriLiteral uriLiteral = simpleTypeFacade.parseUriLiteral(value);
         if (!((EdmSimpleType) parameter.getType()).isCompatible(uriLiteral.getType()))
-          throw new UriParserException("Literal " + value + " is not compatible to type of function-import parameter " + parameterName);
+          throw new UriParserException(UriParserException.INCOMPATIBLELITERAL);
         uriResult.addFunctionImportParameter(parameterName, uriLiteral);
       }
 
