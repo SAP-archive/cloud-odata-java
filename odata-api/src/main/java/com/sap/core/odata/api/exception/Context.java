@@ -7,7 +7,9 @@ import java.util.List;
 import com.sap.core.odata.api.enums.HttpStatus;
 
 /**
- * 
+ * A {@link Context} defines the context in which a {@link ODataMessageException} occurred and is used for support 
+ * of internationalization and translated messages for all {@link ODataMessageException} and sub classes.
+ * Theses classes all contains  an {@link Context} object which can be mapped to a related key and message in the resource bundles.
  */
 public abstract class Context {
 
@@ -53,6 +55,7 @@ public abstract class Context {
     return httpStatus;
   }
 
+  
   private static class SimpleContext extends Context {
     public SimpleContext(String implKey) {
       super(implKey);
