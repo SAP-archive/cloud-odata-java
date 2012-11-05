@@ -6,26 +6,20 @@ import com.sap.core.odata.api.edm.EdmException;
 import com.sap.core.odata.api.edm.EdmTypeKind;
 import com.sap.core.odata.api.edm.provider.Association;
 
-public class EdmAssociationImplProv implements EdmAssociation {
+public class EdmAssociationImplProv extends EdmNamedImplProv implements EdmAssociation {
 
   private Association association;
-  private EdmImplProv edm;
+  private String namespace;
 
-  public EdmAssociationImplProv(Association association, EdmImplProv edm) {
+  public EdmAssociationImplProv(EdmImplProv edm, Association association, String namespace) throws EdmException {
+    super(edm, association.getName());
     this.association = association;
-    this.edm = edm;
-  }
-
-  @Override
-  public String getName() throws EdmException {
-    // TODO Auto-generated method stub
-    return null;
+    this.namespace = namespace;
   }
 
   @Override
   public String getNamespace() throws EdmException {
-    // TODO Auto-generated method stub
-    return null;
+    return namespace;
   }
 
   @Override

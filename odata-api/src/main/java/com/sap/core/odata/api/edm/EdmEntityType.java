@@ -43,7 +43,7 @@ public interface EdmEntityType extends EdmNamed, EdmStructuralType, EdmType {
   /* (non-Javadoc)
    * @see com.sap.core.odata.api.edm.EdmStructuralType#getBaseType()
    */
-  EdmStructuralType getBaseType() throws EdmException;
+  EdmEntityType getBaseType() throws EdmException;
 
   /**
    * Get the Customizable Feed Mappings of the entity type

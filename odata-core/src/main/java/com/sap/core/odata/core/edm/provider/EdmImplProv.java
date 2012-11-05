@@ -22,21 +22,21 @@ public class EdmImplProv extends EdmImpl {
 
   @Override
   protected EdmEntityContainer createEntityContainer(String name) throws ODataRuntimeException, ODataMessageException, EdmException {
-    return new EdmEntityContainerImplProv(edmProvider.getEntityContainer(name), this);
+    return new EdmEntityContainerImplProv(this, edmProvider.getEntityContainer(name));
   }
 
   @Override
   protected EdmEntityType createEntityType(FullQualifiedName fqName) throws ODataRuntimeException, ODataMessageException, EdmException {
-    return new EdmEntityTypeImplProv(edmProvider.getEntityType(fqName), this);
+    return new EdmEntityTypeImplProv(this, edmProvider.getEntityType(fqName), fqName.getNamespace());
   }
 
   @Override
   protected EdmComplexType createComplexType(FullQualifiedName fqName) throws ODataRuntimeException, ODataMessageException, EdmException {
-    return new EdmComplexTypeImplProv(edmProvider.getComplexType(fqName), this);
+    return new EdmComplexTypeImplProv(this, edmProvider.getComplexType(fqName), fqName.getNamespace());
   }
 
   @Override
   protected EdmAssociation createAssociation(FullQualifiedName fqName) throws ODataRuntimeException, ODataMessageException, EdmException {
-    return new EdmAssociationImplProv(edmProvider.getAssociation(fqName), this);
+    return new EdmAssociationImplProv(this, edmProvider.getAssociation(fqName), fqName.getNamespace());
   }
 }

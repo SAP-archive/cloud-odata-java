@@ -16,29 +16,29 @@ import com.sap.core.odata.api.exception.ODataRuntimeException;
 
 public abstract class EdmImpl implements Edm {
 
-  private Map<String, EdmEntityContainer> entityContainers;
-  private Map<FullQualifiedName, EdmEntityType> entityTypes;
-  private Map<FullQualifiedName, EdmComplexType> complexTypes;
-  private Map<FullQualifiedName, EdmAssociation> associations;
+  private Map<String, EdmEntityContainer> edmEntityContainers;
+  private Map<FullQualifiedName, EdmEntityType> edmEntityTypes;
+  private Map<FullQualifiedName, EdmComplexType> edmComplexTypes;
+  private Map<FullQualifiedName, EdmAssociation> edmAssociations;
 
   public EdmImpl() {
-    entityContainers = new HashMap<String, EdmEntityContainer>();
-    entityTypes = new HashMap<FullQualifiedName, EdmEntityType>();
-    complexTypes = new HashMap<FullQualifiedName, EdmComplexType>();
-    associations = new HashMap<FullQualifiedName, EdmAssociation>();
+    edmEntityContainers = new HashMap<String, EdmEntityContainer>();
+    edmEntityTypes = new HashMap<FullQualifiedName, EdmEntityType>();
+    edmComplexTypes = new HashMap<FullQualifiedName, EdmComplexType>();
+    edmAssociations = new HashMap<FullQualifiedName, EdmAssociation>();
   }
 
   @Override
   public EdmEntityContainer getEntityContainer(String name) throws EdmException {
-    if (entityContainers.containsValue(name)) {
-      return entityContainers.get(name);
+    if (edmEntityContainers.containsValue(name)) {
+      return edmEntityContainers.get(name);
     }
 
     EdmEntityContainer edmEntityContainer = null;
 
     try {
       edmEntityContainer = createEntityContainer(name);
-      entityContainers.put(name, edmEntityContainer);
+      edmEntityContainers.put(name, edmEntityContainer);
     } catch (ODataMessageException e) {
       throw new EdmException(e);
     }
@@ -49,15 +49,15 @@ public abstract class EdmImpl implements Edm {
   @Override
   public EdmEntityType getEntityType(String namespace, String name) throws EdmException {
     FullQualifiedName fqName = new FullQualifiedName(name, namespace);
-    if (entityTypes.containsValue(fqName)) {
-      return entityTypes.get(fqName);
+    if (edmEntityTypes.containsValue(fqName)) {
+      return edmEntityTypes.get(fqName);
     }
 
     EdmEntityType edmEntityType = null;
 
     try {
       edmEntityType = createEntityType(fqName);
-      entityTypes.put(fqName, edmEntityType);
+      edmEntityTypes.put(fqName, edmEntityType);
     } catch (ODataMessageException e) {
       throw new EdmException(e);
     }
@@ -68,15 +68,15 @@ public abstract class EdmImpl implements Edm {
   @Override
   public EdmComplexType getComplexType(String namespace, String name) throws EdmException {
     FullQualifiedName fqName = new FullQualifiedName(name, namespace);
-    if (complexTypes.containsValue(fqName)) {
-      return complexTypes.get(fqName);
+    if (edmComplexTypes.containsValue(fqName)) {
+      return edmComplexTypes.get(fqName);
     }
 
     EdmComplexType edmComplexType = null;
 
     try {
       edmComplexType = createComplexType(fqName);
-      complexTypes.put(fqName, edmComplexType);
+      edmComplexTypes.put(fqName, edmComplexType);
     } catch (ODataMessageException e) {
       throw new EdmException(e);
     }
@@ -87,15 +87,15 @@ public abstract class EdmImpl implements Edm {
   @Override
   public EdmAssociation getAssociation(String namespace, String name) throws EdmException {
     FullQualifiedName fqName = new FullQualifiedName(name, namespace);
-    if (associations.containsValue(fqName)) {
-      return associations.get(fqName);
+    if (edmAssociations.containsValue(fqName)) {
+      return edmAssociations.get(fqName);
     }
 
     EdmAssociation edmAssociation = null;
 
     try {
       edmAssociation = createAssociation(fqName);
-      associations.put(fqName, edmAssociation);
+      edmAssociations.put(fqName, edmAssociation);
     } catch (ODataMessageException e) {
       throw new EdmException(e);
     }

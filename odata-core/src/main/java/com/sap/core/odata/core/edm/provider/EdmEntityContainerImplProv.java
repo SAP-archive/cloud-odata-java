@@ -1,5 +1,6 @@
 package com.sap.core.odata.core.edm.provider;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import com.sap.core.odata.api.edm.EdmAssociation;
@@ -18,20 +19,23 @@ import com.sap.core.odata.api.exception.ODataException;
 
 public class EdmEntityContainerImplProv implements EdmEntityContainer {
 
-  private EntityContainer entityContainer;
   private EdmImplProv edm;
-  private Map<String, EdmEntitySet> entitySets;
-  private Map<String, EdmAssociationSet> associationSets;
-  private Map<String, EdmFunctionImport> functionImports;
-  private EdmEntityContainer extendedEntityContainer;
+  private EntityContainer entityContainer;
+  private Map<String, EdmEntitySet> edmEntitySets;
+  private Map<String, EdmAssociationSet> edmAssociationSets;
+  private Map<String, EdmFunctionImport> edmFunctionImports;
+  private EdmEntityContainer edmExtendedEntityContainer;
 
-  public EdmEntityContainerImplProv(EntityContainer entityContainer, EdmImplProv edm) throws EdmException {
-    this.entityContainer = entityContainer;
+  public EdmEntityContainerImplProv(EdmImplProv edm, EntityContainer entityContainer) throws EdmException {
     this.edm = edm;
+    this.entityContainer = entityContainer;
+    edmEntitySets = new HashMap<String, EdmEntitySet>();
+    edmAssociationSets = new HashMap<String, EdmAssociationSet>();
+    edmFunctionImports = new HashMap<String, EdmFunctionImport>();
 
     if (entityContainer.getExtendz() != null) {
-      extendedEntityContainer = edm.getEntityContainer(entityContainer.getExtendz());
-      if (extendedEntityContainer == null) {
+      edmExtendedEntityContainer = edm.getEntityContainer(entityContainer.getExtendz());
+      if (edmExtendedEntityContainer == null) {
         throw new EdmException();
       }
     }
@@ -44,8 +48,8 @@ public class EdmEntityContainerImplProv implements EdmEntityContainer {
 
   @Override
   public EdmEntitySet getEntitySet(String name) throws EdmException {
-    if (entitySets.containsValue(name)) {
-      return entitySets.get(name);
+    if (edmEntitySets.containsValue(name)) {
+      return edmEntitySets.get(name);
     }
 
     EdmEntitySet edmEntitySet = null;
@@ -59,10 +63,10 @@ public class EdmEntityContainerImplProv implements EdmEntityContainer {
 
     if (entitySet != null) {
       edmEntitySet = createEntitySet(entitySet);
-      entitySets.put(name, edmEntitySet);
-    } else if (extendedEntityContainer != null) {
-      edmEntitySet = extendedEntityContainer.getEntitySet(name);
-      entitySets.put(name, edmEntitySet);
+      edmEntitySets.put(name, edmEntitySet);
+    } else if (edmExtendedEntityContainer != null) {
+      edmEntitySet = edmExtendedEntityContainer.getEntitySet(name);
+      edmEntitySets.put(name, edmEntitySet);
     }
 
     return edmEntitySet;
@@ -70,8 +74,8 @@ public class EdmEntityContainerImplProv implements EdmEntityContainer {
 
   @Override
   public EdmFunctionImport getFunctionImport(String name) throws EdmException {
-    if (functionImports.containsValue(name)) {
-      return functionImports.get(name);
+    if (edmFunctionImports.containsValue(name)) {
+      return edmFunctionImports.get(name);
     }
 
     EdmFunctionImport edmFunctionImport = null;
@@ -85,10 +89,10 @@ public class EdmEntityContainerImplProv implements EdmEntityContainer {
 
     if (functionImport != null) {
       edmFunctionImport = createFunctionImport(functionImport);
-      functionImports.put(name, edmFunctionImport);
-    } else if (extendedEntityContainer != null) {
-      edmFunctionImport = extendedEntityContainer.getFunctionImport(name);
-      functionImports.put(name, edmFunctionImport);
+      edmFunctionImports.put(name, edmFunctionImport);
+    } else if (edmExtendedEntityContainer != null) {
+      edmFunctionImport = edmExtendedEntityContainer.getFunctionImport(name);
+      edmFunctionImports.put(name, edmFunctionImport);
     }
 
     return edmFunctionImport;
@@ -103,8 +107,8 @@ public class EdmEntityContainerImplProv implements EdmEntityContainer {
 
     String key = entitySetName + ">>" + association + ">>" + entitySetFromRole;
 
-    if (associationSets.containsKey(key)) {
-      return associationSets.get(key);
+    if (edmAssociationSets.containsKey(key)) {
+      return edmAssociationSets.get(key);
     }
 
     EdmAssociationSet edmAssociationSet = null;
@@ -119,24 +123,24 @@ public class EdmEntityContainerImplProv implements EdmEntityContainer {
 
     if (associationSet != null) {
       edmAssociationSet = createAssociationSet(associationSet);
-      associationSets.put(key, edmAssociationSet);
-    } else if (extendedEntityContainer != null) {
-      edmAssociationSet = extendedEntityContainer.getAssociationSet(sourceEntitySet, navigationProperty);
-      associationSets.put(key, edmAssociationSet);
+      edmAssociationSets.put(key, edmAssociationSet);
+    } else if (edmExtendedEntityContainer != null) {
+      edmAssociationSet = edmExtendedEntityContainer.getAssociationSet(sourceEntitySet, navigationProperty);
+      edmAssociationSets.put(key, edmAssociationSet);
     }
 
     return edmAssociationSet;
   }
 
-  private EdmEntitySet createEntitySet(EntitySet entitySet) {
+  private EdmEntitySet createEntitySet(EntitySet entitySet) throws EdmException {
     return new EdmEntitySetImplProv(edm, entitySet, this);
   }
 
-  private EdmFunctionImport createFunctionImport(FunctionImport functionImport) {
+  private EdmFunctionImport createFunctionImport(FunctionImport functionImport) throws EdmException {
     return new EdmFunctionImportImplProv(edm, functionImport, this);
   }
 
-  private EdmAssociationSet createAssociationSet(AssociationSet associationSet) {
+  private EdmAssociationSet createAssociationSet(AssociationSet associationSet) throws EdmException {
     return new EdmAssociationSetImplProv(edm, associationSet, this);
   }
 }
