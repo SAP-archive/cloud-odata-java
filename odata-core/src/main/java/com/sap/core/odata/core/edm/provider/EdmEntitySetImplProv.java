@@ -5,24 +5,31 @@ import com.sap.core.odata.api.edm.EdmEntitySet;
 import com.sap.core.odata.api.edm.EdmEntityType;
 import com.sap.core.odata.api.edm.EdmException;
 import com.sap.core.odata.api.edm.EdmNavigationProperty;
+import com.sap.core.odata.api.edm.FullQualifiedName;
 import com.sap.core.odata.api.edm.provider.EntitySet;
 
-public class EdmEntitySetImplProv implements EdmEntitySet {
+public class EdmEntitySetImplProv extends EdmNamedImplProv implements EdmEntitySet {
 
-  public EdmEntitySetImplProv(EdmImplProv edm, EntitySet entitySet, EdmEntityContainer edmEntityContainer) {
-    // TODO Auto-generated constructor stub
-  }
+  private EntitySet entitySet;
+  private EdmEntityContainer edmEntityContainer;
+  private EdmEntityType edmEntityType;
 
-  @Override
-  public String getName() throws EdmException {
-    // TODO Auto-generated method stub
-    return null;
+  public EdmEntitySetImplProv(EdmImplProv edm, EntitySet entitySet, EdmEntityContainer edmEntityContainer) throws EdmException {
+    super(edm, entitySet.getName());
+    this.entitySet = entitySet;
+    this.edmEntityContainer = edmEntityContainer;
   }
 
   @Override
   public EdmEntityType getEntityType() throws EdmException {
-    // TODO Auto-generated method stub
-    return null;
+    if (edmEntityType == null) {
+      FullQualifiedName fqName = entitySet.getEntityType();
+      edmEntityType = edm.getEntityType(fqName.getNamespace(), fqName.getName());
+      if (edmEntityType == null) {
+        throw new EdmException();
+      }
+    }
+    return edmEntityType;
   }
 
   @Override
@@ -33,8 +40,6 @@ public class EdmEntitySetImplProv implements EdmEntitySet {
 
   @Override
   public EdmEntityContainer getEntityContainer() throws EdmException {
-    // TODO Auto-generated method stub
-    return null;
+    return edmEntityContainer;
   }
-
 }

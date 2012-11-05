@@ -10,16 +10,16 @@ import com.sap.core.odata.api.edm.EdmParameter;
 import com.sap.core.odata.api.edm.EdmTyped;
 import com.sap.core.odata.api.edm.provider.FunctionImport;
 
-public class EdmFunctionImportImplProv implements EdmFunctionImport {
+public class EdmFunctionImportImplProv extends EdmNamedImplProv implements EdmFunctionImport {
 
-  public EdmFunctionImportImplProv(EdmImplProv edm, FunctionImport functionImport, EdmEntityContainer edmEntityContainer) {
+  private FunctionImport functionImport;
+  private EdmEntityContainer edmEntityContainer;
+  
+  public EdmFunctionImportImplProv(EdmImplProv edm, FunctionImport functionImport, EdmEntityContainer edmEntityContainer) throws EdmException {
+    super(edm, functionImport.getName());
+    this.functionImport = functionImport;
+    this.edmEntityContainer = edmEntityContainer;
     // TODO Auto-generated constructor stub
-  }
-
-  @Override
-  public String getName() throws EdmException {
-    // TODO Auto-generated method stub
-    return null;
   }
 
   @Override

@@ -7,16 +7,16 @@ import com.sap.core.odata.api.edm.EdmEntityContainer;
 import com.sap.core.odata.api.edm.EdmException;
 import com.sap.core.odata.api.edm.provider.AssociationSet;
 
-public class EdmAssociationSetImplProv implements EdmAssociationSet {
+public class EdmAssociationSetImplProv extends EdmNamedImplProv implements EdmAssociationSet {
 
-  public EdmAssociationSetImplProv(EdmImplProv edm, AssociationSet associationSet, EdmEntityContainer edmEntityContainer) {
+  private AssociationSet associationSet;
+  private EdmEntityContainer edmEntityContainer;
+  
+  public EdmAssociationSetImplProv(EdmImplProv edm, AssociationSet associationSet, EdmEntityContainer edmEntityContainer) throws EdmException {
+    super(edm, associationSet.getName());
+    this.associationSet = associationSet;
+    this.edmEntityContainer = edmEntityContainer;
     // TODO Auto-generated constructor stub
-  }
-
-  @Override
-  public String getName() throws EdmException {
-    // TODO Auto-generated method stub
-    return null;
   }
 
   @Override
