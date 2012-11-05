@@ -109,6 +109,11 @@ public class UriParserTest {
   }
 
   @Test
+  public void parseNonsens() throws Exception {
+    parseWrongUri("/bla");
+  }
+
+  @Test
   public void parseServiceDocument() throws Exception {
     UriParserResultImpl result = parse("/");
     assertEquals(UriType.URI0, result.getUriType());
