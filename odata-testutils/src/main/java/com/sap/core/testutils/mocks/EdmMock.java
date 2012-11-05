@@ -47,6 +47,7 @@ class EdmMock {
 
     EdmEntityType managerType = managerEntitySet.getEntityType();
     when(managerType.getProperty("nm_Employees")).thenReturn(employeeProperty);
+    when(managerType.getProperty("somethingwrong")).thenThrow(new EdmException("Property not found"));
 
     EdmNavigationProperty managerProperty = mock(EdmNavigationProperty.class);
     when(managerProperty.getType()).thenReturn(navigationType);
