@@ -40,7 +40,7 @@ import com.sap.core.odata.api.uri.UriParserResult;
 import com.sap.core.odata.core.enums.SystemQueryOption;
 import com.sap.core.odata.core.enums.UriType;
 
-public class UriParserImpl implements UriParser  {
+public class UriParserImpl implements UriParser {
 
   private static final Logger LOG = LoggerFactory.getLogger(UriParserImpl.class);
 
@@ -56,7 +56,7 @@ public class UriParserImpl implements UriParser  {
   private Map<SystemQueryOption, String> systemQueryOptions;
   private Map<String, String> otherQueryParameters;
 
-  public UriParserImpl(final Edm edm){
+  public UriParserImpl(final Edm edm) {
     this.edm = edm;
     UriParserImpl.LOG.debug("edm version: " + this.edm.getServiceMetadata().getDataServiceVersion());
     simpleTypeFacade = new EdmSimpleTypeFacade();
@@ -153,9 +153,11 @@ public class UriParserImpl implements UriParser  {
     if (entitySet != null) {
       uriResult.setStartEntitySet(entitySet);
       handleEntitySet(entitySet, keyPredicate);
-    } else {
+    } else if (functionImport != null) {
       uriResult.setFunctionImport(functionImport);
       handleFunctionImport(functionImport, emptyParentheses, keyPredicate);
+    } else {
+      throw new UriParserException("Invalid Segment" + segmentName);
     }
   }
 
@@ -291,7 +293,7 @@ public class UriParserImpl implements UriParser  {
     navigationSegment.setNavigationProperty(navigationProperty);
     if (keyPredicateName != null)
       navigationSegment.setKeyPredicates(parseKey(keyPredicateName, targetEntitySet.getEntityType()));
-    uriResult.addNavigationSegment((NavigationSegment)navigationSegment);
+    uriResult.addNavigationSegment((NavigationSegment) navigationSegment);
   }
 
   private void handlePropertyPath(final EdmProperty property) throws UriParserException, EdmException {
