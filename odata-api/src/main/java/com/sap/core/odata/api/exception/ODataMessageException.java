@@ -1,5 +1,7 @@
 package com.sap.core.odata.api.exception;
 
+import com.sap.core.odata.api.enums.HttpStatus;
+
 public abstract class ODataMessageException extends ODataException {
 
   protected final Context context;
@@ -17,5 +19,13 @@ public abstract class ODataMessageException extends ODataException {
 
   public static final Context createContext(Class<? extends ODataMessageException> clazz, String contextId) {
     return Context.create(clazz, contextId);
+  }
+  
+  public static final Context createContext(Class<? extends ODataMessageException> clazz, String contextId, HttpStatus status) {
+    return Context.create(clazz, contextId, status);
+  }
+
+  public Context getContext() {
+    return context;
   }
 }

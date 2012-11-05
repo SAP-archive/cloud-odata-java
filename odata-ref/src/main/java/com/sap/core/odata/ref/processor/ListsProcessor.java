@@ -185,7 +185,7 @@ public class ListsProcessor extends ODataSingleProcessor {
     if (appliesFilter(data, uriParserResultView.getFilter()))
       return ODataResponseBuilder.newInstance().status(HttpStatus.OK).entity(data.toString()).build();
     else
-      throw new ODataNotFoundException(ODataNotFoundException.USER);
+      throw new ODataNotFoundException(ODataNotFoundException.ENTITY);
   }
 
   @Override
