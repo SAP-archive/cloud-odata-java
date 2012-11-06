@@ -18,9 +18,11 @@ import org.junit.Test;
 
 import com.sap.core.odata.api.enums.HttpStatus;
 import com.sap.core.odata.api.exception.ODataException;
+import com.sap.core.odata.api.processor.ODataContext;
 import com.sap.core.odata.api.processor.ODataProcessor;
 import com.sap.core.odata.api.processor.ODataResponse;
 import com.sap.core.odata.api.processor.aspect.Metadata;
+import com.sap.core.odata.api.service.ODataService;
 import com.sap.core.odata.api.uri.resultviews.GetMetadataView;
 
 public class ContextTest extends AbstractBasicTest {
@@ -37,7 +39,14 @@ public class ContextTest extends AbstractBasicTest {
     assertNull(this.getProcessor().getContext());
     HttpGet get = new HttpGet(URI.create(this.getEndpoint().toString() + "$metadata"));
     HttpResponse response = this.getHttpClient().execute(get);
-    assertNotNull(this.getProcessor().getContext());
+    
+    ODataContext ctx = this.getProcessor().getContext();
+    assertNotNull(ctx);
+    
+    ODataService service = ctx.getContextObject(ODataService.class);
+    assertNotNull(service);
+    
+    
     assertEquals(Status.OK.getStatusCode(), response.getStatusLine().getStatusCode());
   }
   

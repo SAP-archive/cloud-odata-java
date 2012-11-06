@@ -1,6 +1,7 @@
 package com.sap.core.odata.core.service;
 
 import com.sap.core.odata.api.edm.Edm;
+import com.sap.core.odata.api.enums.ODataVersion;
 import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.api.processor.ODataProcessor;
 import com.sap.core.odata.api.processor.ODataSingleProcessor;
@@ -22,22 +23,24 @@ import com.sap.core.odata.api.service.ODataService;
 public class ODataSingleProcessorService implements ODataService {
 
   private ODataProcessor processor;
-
-  public ODataSingleProcessorService(ODataProcessor processor) {
+  private Edm edm;
+  
+  public ODataSingleProcessorService(ODataProcessor processor, Edm edm) {
     if (!(processor instanceof ODataSingleProcessor)) {
       throw new ClassCastException("processor must derive from ODataSingleProcessor");
     }
     this.processor = processor;
+    this.edm = edm;
   }
 
   @Override
-  public String getODataVersion() throws ODataException {
-    return "2.0";
+  public ODataVersion getODataVersion() throws ODataException {
+    return ODataVersion.V20;
   }
 
   @Override
   public Edm getEntityDataModel() throws ODataException {
-    return this.processor.getEntityDataModel();
+    return this.edm;
   }
 
   @Override

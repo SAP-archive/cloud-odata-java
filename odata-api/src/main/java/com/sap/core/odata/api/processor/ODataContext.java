@@ -1,10 +1,12 @@
 package com.sap.core.odata.api.processor;
 
+import com.sap.core.odata.api.exception.ODataException;
+
 /**
- * Compilation of generic http objects. 
+ * Compilation of generic context objects. 
  */
 public interface ODataContext {
-
-  // tbd
+  
+  <T> T getContextObject(Class<T> clazz) throws ODataException;
 
 }
