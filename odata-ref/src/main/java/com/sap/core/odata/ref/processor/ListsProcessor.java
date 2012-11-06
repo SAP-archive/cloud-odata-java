@@ -30,6 +30,8 @@ import com.sap.core.odata.api.uri.resultviews.GetEntityCountView;
 import com.sap.core.odata.api.uri.resultviews.GetEntitySetCountView;
 import com.sap.core.odata.api.uri.resultviews.GetEntitySetView;
 import com.sap.core.odata.api.uri.resultviews.GetEntityView;
+import com.sap.core.odata.api.uri.resultviews.GetMetadataView;
+import com.sap.core.odata.api.uri.resultviews.GetServiceDocumentView;
 
 /**
  * Implementation of the centralized parts of OData processing,
@@ -133,6 +135,16 @@ public class ListsProcessor extends ODataSingleProcessor {
       }
 
     };
+  }
+
+  @Override
+  public ODataResponse readServiceDocument(GetServiceDocumentView uriParserResultView) throws ODataException {
+    return ODataResponse.status(HttpStatus.OK).entity("this should be the service document").build();
+  }
+
+  @Override
+  public ODataResponse readMetadata(GetMetadataView uriParserResultView) throws ODataException {
+    return ODataResponse.status(HttpStatus.OK).entity("this should be the metadata document").build();
   }
 
   @Override
