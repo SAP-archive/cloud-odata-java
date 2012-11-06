@@ -20,9 +20,6 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.UriInfo;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.sap.core.odata.api.edm.Edm;
 import com.sap.core.odata.api.edm.provider.EdmProvider;
 import com.sap.core.odata.api.exception.ODataException;
@@ -39,8 +36,6 @@ import com.sap.core.odata.core.uri.UriParserResultImpl;
 
 public final class ODataLocatorImpl {
 
-  private static final Logger log = LoggerFactory.getLogger(ODataLocatorImpl.class);
-
   private ODataService service;
 
   private Dispatcher dispatcher;
@@ -50,15 +45,12 @@ public final class ODataLocatorImpl {
   private ODataContextImpl context;
 
   private List<String> pathSegments;
-  
+
   private Map<String, String> queryParameters;
-  
+
   @GET
   public Response handleGet() throws ODataException {
     try {
-      ODataLocatorImpl.log.debug("+++ ODataSubResource:handleGet()");
-      this.context.log();
-
       UriParserResultImpl uriParserResult = (UriParserResultImpl) this.uriParser.parse(this.pathSegments, this.queryParameters);
 
       ODataResponse odataResponse = dispatcher.dispatch(ODataHttpMethod.GET, uriParserResult);
@@ -76,12 +68,10 @@ public final class ODataLocatorImpl {
       @HeaderParam("X-HTTP-Method") String xmethod
       ) throws ODataException {
 
-    ODataLocatorImpl.log.debug("+++ ODataSubResource:handlePost()");
     Response response;
 
     /* tunneling */
     if (xmethod == null) {
-      this.context.log();
       response = Response.ok().entity("POST: status 200 ok").build();
     } else if ("MERGE".equals(xmethod)) {
       response = this.handleMerge();
@@ -98,33 +88,21 @@ public final class ODataLocatorImpl {
 
   @PUT
   public Response handlePut() throws ODataException {
-    ODataLocatorImpl.log.debug("+++ ODataSubResource:handlePut()");
-    this.context.log();
-
     return Response.ok().entity("PUT: status 200 ok").build();
   }
 
   @PATCH
   public Response handlePatch() throws ODataException {
-    ODataLocatorImpl.log.debug("+++ ODataSubResource:handlePatch()");
-    this.context.log();
-
     return Response.ok().entity("PATCH: status 200 ok").build();
   }
 
   @MERGE
   public Response handleMerge() throws ODataException {
-    ODataLocatorImpl.log.debug("+++ ODataSubResource:handleMerge()");
-    this.context.log();
-
     return Response.ok().entity("MERGE: status 200 ok").build();
   }
 
   @DELETE
   public Response handleDelete() throws ODataException {
-    ODataLocatorImpl.log.debug("+++ ODataSubResource:handleDelete()");
-    this.context.log();
-
     return Response.ok().entity("DELETE: status 200 ok").build();
   }
 
@@ -135,14 +113,15 @@ public final class ODataLocatorImpl {
   public void initializeService(ODataServiceFactory serviceFactory, List<PathSegment> odataPathSegments, HttpHeaders httpHeaders, UriInfo uriInfo, Request request) throws ODataException {
     this.context = new ODataContextImpl();
 
-    this.context.putContextObject(httpHeaders.getClass(), httpHeaders);
-    this.context.putContextObject(odataPathSegments.getClass(), odataPathSegments);
-    this.context.putContextObject(uriInfo.getClass(), uriInfo);
-    this.context.putContextObject(request.getClass(), request);
+    //    do we need this?    
+    //    this.context.putContextObject("headers", httpHeaders);
+    //    this.context.putContextObject("pathSegments", odataPathSegments);
+    //    this.context.putContextObject("uriInfo", uriInfo);
+    //    this.context.putContextObject("request", request);
 
     this.pathSegments = this.getPathSegmentsAsStrings(odataPathSegments);
     this.queryParameters = this.convertToSinglevaluedMap(uriInfo.getQueryParameters());
-    
+
     ODataProcessor processor = serviceFactory.createProcessor();
     processor.setContext(this.context);
 
@@ -150,7 +129,7 @@ public final class ODataLocatorImpl {
     Edm edm = new EdmImplProv(provider);
 
     this.service = new ODataSingleProcessorService(processor, edm);
-    this.context.putContextObject(ODataService.class, this.service);
+    this.context.setService(this.service);
 
     this.uriParser = new UriParserImpl(service.getEntityDataModel());
     this.dispatcher = new Dispatcher(this.service);
