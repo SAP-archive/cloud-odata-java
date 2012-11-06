@@ -12,14 +12,10 @@ import com.sap.core.odata.ref.model.DataContainer;
  */
 public class ScenarioProcessorFactory implements ODataServiceFactory {
 
-  private static DataContainer dataContainer;
-
   @Override
   public ODataProcessor createProcessor() throws ODataException {
-    if (dataContainer == null) {
-      dataContainer = new DataContainer();
-      dataContainer.init();
-    }
+    DataContainer dataContainer = new DataContainer();
+    dataContainer.init();
     return new ListsProcessor(new ScenarioDataSource(dataContainer));
   }
 
