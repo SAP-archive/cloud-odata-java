@@ -24,4 +24,6 @@ public class UriParserFacade {
   public static UriParserResult parse(Edm edm, List<String> pathSegments, Map<String, String> queryParameter) throws UriParserException{
     return RuntimeDelegate.getInstance().getUriParser(edm).parse(pathSegments, queryParameter);
   }
+  
+  
 }

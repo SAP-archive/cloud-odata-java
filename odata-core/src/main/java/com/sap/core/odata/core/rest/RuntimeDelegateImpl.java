@@ -18,6 +18,7 @@ import com.sap.core.odata.core.edm.simpletype.EdmGuid;
 import com.sap.core.odata.core.edm.simpletype.EdmInt16;
 import com.sap.core.odata.core.edm.simpletype.EdmInt32;
 import com.sap.core.odata.core.edm.simpletype.EdmInt64;
+import com.sap.core.odata.core.edm.simpletype.EdmNull;
 import com.sap.core.odata.core.edm.simpletype.EdmSByte;
 import com.sap.core.odata.core.edm.simpletype.EdmSingle;
 import com.sap.core.odata.core.edm.simpletype.EdmString;
@@ -80,6 +81,9 @@ public class RuntimeDelegateImpl extends RuntimeDelegate {
       break;
     case Time:
       edmType = new EdmTime();
+      break;
+    case Null:
+      edmType = new EdmNull();
       break;
     default:
       throw new RuntimeException("Invalid Type " + edmSimpleType);
