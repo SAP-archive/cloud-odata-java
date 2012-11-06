@@ -43,7 +43,7 @@ public class ContextTest extends AbstractBasicTest {
     ODataContext ctx = this.getProcessor().getContext();
     assertNotNull(ctx);
     
-    ODataService service = ctx.getContextObject(ODataService.class);
+    ODataService service = ctx.getService();
     assertNotNull(service);
     
     

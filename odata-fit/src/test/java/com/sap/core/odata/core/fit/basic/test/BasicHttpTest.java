@@ -22,7 +22,9 @@ import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.api.processor.ODataProcessor;
 import com.sap.core.odata.api.processor.ODataResponse;
 import com.sap.core.odata.api.processor.aspect.Metadata;
+import com.sap.core.odata.api.processor.aspect.ServiceDocument;
 import com.sap.core.odata.api.uri.resultviews.GetMetadataView;
+import com.sap.core.odata.api.uri.resultviews.GetServiceDocumentView;
 import com.sap.core.testutils.HttpMerge;
 import com.sap.core.testutils.StringHelper;
 
@@ -32,13 +34,26 @@ public class BasicHttpTest extends AbstractBasicTest {
   protected ODataProcessor createProcessorMock() throws ODataException {
     ODataProcessor processor = super.createProcessorMock();
     when(((Metadata) processor).readMetadata(any(GetMetadataView.class))).thenReturn(ODataResponse.entity("metadata").status(HttpStatus.OK).build());
+    when(((ServiceDocument) processor).readServiceDocument(any(GetServiceDocumentView.class))).thenReturn(ODataResponse.entity("service document").status(HttpStatus.OK).build());
     return processor;
   }
+
+  @Test
+  public void testGetServiceDocument() throws ODataException, MalformedURLException, IOException {
+    HttpGet get = new HttpGet(URI.create(this.getEndpoint().toString()));
+    HttpResponse response = this.getHttpClient().execute(get);
+
+    String payload = StringHelper.inputStreamToString(response.getEntity().getContent());
+    assertEquals("service document", payload);
+    assertEquals(200, response.getStatusLine().getStatusCode());
+  }
+
+  
   @Test
   public void testGet() throws ODataException, MalformedURLException, IOException {
     HttpGet get = new HttpGet(URI.create(this.getEndpoint().toString() + "$metadata"));
     HttpResponse response = this.getHttpClient().execute(get);
- 
+
     String payload = StringHelper.inputStreamToString(response.getEntity().getContent());
     assertEquals("metadata", payload);
     assertEquals(200, response.getStatusLine().getStatusCode());

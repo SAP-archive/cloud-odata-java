@@ -2,34 +2,32 @@ package com.sap.core.odata.core.rest;
 
 import java.util.HashMap;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.api.processor.ODataContext;
-
+import com.sap.core.odata.api.service.ODataService;
 
 public class ODataContextImpl implements ODataContext {
 
-  private static final Logger log = LoggerFactory.getLogger(ODataContextImpl.class);
+  protected final static String SERVICE_KEY = ODataService.class.getCanonicalName();
+  
+  private HashMap<String, Object> contextObjects = new HashMap<String, Object>();
 
-  HashMap<Class<?>, Object> contextObjects = new HashMap<Class<?>, Object>(); 
+  public void putContextObject(String key, Object obj) throws ODataException {
+    this.contextObjects.put(key, obj);
+  }
+  
+  public void setService(ODataService service) {
+    this.contextObjects.put(ODataContextImpl.SERVICE_KEY, service);
+  }
 
   @SuppressWarnings("unchecked")
   @Override
-  public <T> T getContextObject(Class<T> clazz) throws ODataException {
-    return (T) this.contextObjects.get(clazz);
+  public <T> T getObject(String key) throws ODataException {
+    return (T) this.contextObjects.get(key);
   }
-  
-  public void putContextObject(Class<?> clazz, Object obj) throws ODataException {
-    this.contextObjects.put(clazz, obj);
-  }
-  
-  public void log() {
-    ODataContextImpl.log.debug("-- odata context -----------------");
-    for (Class<?> key : this.contextObjects.keySet()) {
-      ODataContextImpl.log.debug(key.getCanonicalName() + "=" + this.contextObjects.get(key).toString());
-    }
-    ODataContextImpl.log.debug("----------------------------------");
+
+  @Override
+  public ODataService getService() throws ODataException {
+    return  (ODataService) this.contextObjects.get(ODataContextImpl.SERVICE_KEY);
   }
 }
