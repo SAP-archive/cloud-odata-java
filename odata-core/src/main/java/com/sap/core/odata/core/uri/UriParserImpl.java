@@ -58,7 +58,6 @@ public class UriParserImpl implements UriParser {
 
   public UriParserImpl(final Edm edm) {
     this.edm = edm;
-    UriParserImpl.LOG.debug("edm version: " + this.edm.getServiceMetadata().getDataServiceVersion());
     simpleTypeFacade = new EdmSimpleTypeFacade();
   }
 

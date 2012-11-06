@@ -1,5 +1,6 @@
 package com.sap.core.odata.core.rest;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -22,12 +23,15 @@ import javax.ws.rs.core.UriInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.sap.core.odata.api.edm.Edm;
+import com.sap.core.odata.api.edm.provider.EdmProvider;
 import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.api.processor.ODataProcessor;
 import com.sap.core.odata.api.processor.ODataResponse;
 import com.sap.core.odata.api.service.ODataService;
 import com.sap.core.odata.api.service.ODataServiceFactory;
 import com.sap.core.odata.core.dispatcher.Dispatcher;
+import com.sap.core.odata.core.edm.provider.EdmImplProv;
 import com.sap.core.odata.core.enums.ODataHttpMethod;
 import com.sap.core.odata.core.service.ODataSingleProcessorService;
 import com.sap.core.odata.core.uri.UriParserImpl;
@@ -45,20 +49,21 @@ public final class ODataLocatorImpl {
 
   private ODataContextImpl context;
 
+  private List<String> pathSegments;
+  
+  private Map<String, String> queryParameters;
+  
   @GET
   public Response handleGet() throws ODataException {
     try {
       ODataLocatorImpl.log.debug("+++ ODataSubResource:handleGet()");
       this.context.log();
 
-      List<String> pathSegments = this.context.getPathSegmentsAsStrings();
-      Map<String, String> queryParameters = this.convertToSinglevaluedMap(this.context.getUriInfo().getQueryParameters());
-      
-      UriParserResultImpl uriParserResult = (UriParserResultImpl) this.uriParser.parse(pathSegments, queryParameters);
+      UriParserResultImpl uriParserResult = (UriParserResultImpl) this.uriParser.parse(this.pathSegments, this.queryParameters);
 
       ODataResponse odataResponse = dispatcher.dispatch(ODataHttpMethod.GET, uriParserResult);
       Response response = this.convertResponse(odataResponse);
-      
+
       return response;
     } catch (ODataException e) {
       throw new RuntimeException(e);
@@ -129,17 +134,35 @@ public final class ODataLocatorImpl {
 
   public void initializeService(ODataServiceFactory serviceFactory, List<PathSegment> odataPathSegments, HttpHeaders httpHeaders, UriInfo uriInfo, Request request) throws ODataException {
     this.context = new ODataContextImpl();
-    this.context.setHttpHeaders(httpHeaders);
-    this.context.setPathSegments(odataPathSegments);
-    this.context.setUriInfo(uriInfo);
-    this.context.setRequest(request);
 
+    this.context.putContextObject(httpHeaders.getClass(), httpHeaders);
+    this.context.putContextObject(odataPathSegments.getClass(), odataPathSegments);
+    this.context.putContextObject(uriInfo.getClass(), uriInfo);
+    this.context.putContextObject(request.getClass(), request);
+
+    this.pathSegments = this.getPathSegmentsAsStrings(odataPathSegments);
+    this.queryParameters = this.convertToSinglevaluedMap(uriInfo.getQueryParameters());
+    
     ODataProcessor processor = serviceFactory.createProcessor();
     processor.setContext(this.context);
 
-    this.service = new ODataSingleProcessorService(processor);
-    this.uriParser = new UriParserImpl(processor.getEntityDataModel());
+    EdmProvider provider = serviceFactory.createProvider();
+    Edm edm = new EdmImplProv(provider);
+
+    this.service = new ODataSingleProcessorService(processor, edm);
+    this.context.putContextObject(ODataService.class, this.service);
+
+    this.uriParser = new UriParserImpl(service.getEntityDataModel());
     this.dispatcher = new Dispatcher(this.service);
+  }
+
+  public List<String> getPathSegmentsAsStrings(List<PathSegment> pathSegments) {
+    ArrayList<String> pathSegmentsAsString = new ArrayList<String>();
+
+    for (PathSegment pathSegment : pathSegments) {
+      pathSegmentsAsString.add(pathSegment.getPath());
+    }
+    return pathSegmentsAsString;
   }
 
   private Map<String, String> convertToSinglevaluedMap(MultivaluedMap<String, String> multi) {
@@ -166,7 +189,7 @@ public final class ODataLocatorImpl {
     if (eTag != null) {
       responseBuilder.header(HttpHeaders.ETAG, eTag);
     }
-    
+
     return responseBuilder.build();
   }
 

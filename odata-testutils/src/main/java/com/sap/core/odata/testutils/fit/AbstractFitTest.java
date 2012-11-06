@@ -13,7 +13,6 @@ import org.slf4j.LoggerFactory;
 import com.sap.core.odata.api.edm.provider.EdmProvider;
 import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.api.processor.ODataProcessor;
-import com.sap.core.odata.api.service.ODataService;
 import com.sap.core.odata.testutils.server.TestServer;
 
 public abstract class AbstractFitTest {

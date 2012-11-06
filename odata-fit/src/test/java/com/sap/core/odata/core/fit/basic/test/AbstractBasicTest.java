@@ -51,6 +51,7 @@ public class AbstractBasicTest extends AbstractFitTest {
 
   @Override
   protected EdmProvider createEdmProviderMock() {
-    return null;
+    EdmProvider edmProvider = mock(EdmProvider.class);
+    return edmProvider;
   }
 }
