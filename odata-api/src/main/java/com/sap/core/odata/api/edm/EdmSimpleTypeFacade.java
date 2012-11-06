@@ -88,11 +88,20 @@ public class EdmSimpleTypeFacade {
     return getInstance(EdmSimpleTypeKind.Time);
   }
 
+  public EdmSimpleType nullInstance() {
+    return getInstance(EdmSimpleTypeKind.Null);
+  }
+
+  
+  
   public UriLiteral parseUriLiteral(final String uriLiteral) throws UriParserException {
     final String literal = uriLiteral;
 
     if ("true".equals(literal) || "false".equals(literal))
       return new UriLiteral(booleanInstance(), literal);
+    
+    if ("null".equals(literal))
+      return new UriLiteral(nullInstance(), literal);
 
     if (literal.length() >= 2)
       if (literal.startsWith("'") && literal.endsWith("'"))
