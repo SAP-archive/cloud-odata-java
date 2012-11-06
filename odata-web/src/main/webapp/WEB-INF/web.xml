@@ -16,7 +16,7 @@
 		</init-param>
 		<init-param>
 			<param-name>com.sap.core.odata.service.factory</param-name>
-			<param-value>com.sap.core.odata.ref.processor.ScenarioProcessorFactory</param-value>
+			<param-value>com.sap.core.odata.ref.processor.ScenarioServiceFactory</param-value>
 		</init-param>
 		<load-on-startup>1</load-on-startup>
 	</servlet>

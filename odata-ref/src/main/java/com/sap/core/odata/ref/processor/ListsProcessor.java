@@ -2,20 +2,12 @@ package com.sap.core.odata.ref.processor;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
-import com.sap.core.odata.api.edm.Edm;
-import com.sap.core.odata.api.edm.EdmAssociation;
-import com.sap.core.odata.api.edm.EdmAssociationSet;
-import com.sap.core.odata.api.edm.EdmComplexType;
-import com.sap.core.odata.api.edm.EdmEntityContainer;
 import com.sap.core.odata.api.edm.EdmEntitySet;
-import com.sap.core.odata.api.edm.EdmEntityType;
 import com.sap.core.odata.api.edm.EdmException;
-import com.sap.core.odata.api.edm.EdmFunctionImport;
 import com.sap.core.odata.api.edm.EdmLiteralKind;
-import com.sap.core.odata.api.edm.EdmNavigationProperty;
 import com.sap.core.odata.api.edm.EdmProperty;
-import com.sap.core.odata.api.edm.EdmServiceMetadata;
 import com.sap.core.odata.api.edm.EdmSimpleType;
 import com.sap.core.odata.api.enums.HttpStatus;
 import com.sap.core.odata.api.enums.InlineCount;
@@ -26,10 +18,12 @@ import com.sap.core.odata.api.processor.ODataResponse.ODataResponseBuilder;
 import com.sap.core.odata.api.processor.ODataSingleProcessor;
 import com.sap.core.odata.api.uri.KeyPredicate;
 import com.sap.core.odata.api.uri.NavigationSegment;
+import com.sap.core.odata.api.uri.UriLiteral;
 import com.sap.core.odata.api.uri.resultviews.GetEntityCountView;
 import com.sap.core.odata.api.uri.resultviews.GetEntitySetCountView;
 import com.sap.core.odata.api.uri.resultviews.GetEntitySetView;
 import com.sap.core.odata.api.uri.resultviews.GetEntityView;
+import com.sap.core.odata.api.uri.resultviews.GetFunctionImportView;
 import com.sap.core.odata.api.uri.resultviews.GetMetadataView;
 import com.sap.core.odata.api.uri.resultviews.GetServiceDocumentView;
 
@@ -48,102 +42,12 @@ public class ListsProcessor extends ODataSingleProcessor {
   }
 
   @Override
-  public Edm getEntityDataModel() throws ODataException {
-    return new Edm() {
-
-      @Override
-      public EdmEntityContainer getEntityContainer(String name) throws EdmException {
-        return getDefaultEntityContainer();
-      }
-
-      @Override
-      public EdmEntityType getEntityType(String namespace, String name) throws EdmException {
-        return null;
-      }
-
-      @Override
-      public EdmComplexType getComplexType(String namespace, String name) throws EdmException {
-        return null;
-      }
-
-      @Override
-      public EdmAssociation getAssociation(String namespace, String name) throws EdmException {
-        return null;
-      }
-
-      @Override
-      public EdmServiceMetadata getServiceMetadata() {
-        return new EdmServiceMetadata() {
-
-          @Override
-          public byte[] getMetadata() {
-            return null;
-          }
-
-          @Override
-          public String getDataServiceVersion() {
-            return "2.0";
-          }
-        };
-      }
-
-      @Override
-      public EdmEntityContainer getDefaultEntityContainer() throws EdmException {
-        return new EdmEntityContainer() {
-
-          @Override
-          public String getName() throws EdmException {
-            return null;
-          }
-
-          @Override
-          public EdmFunctionImport getFunctionImport(String name) throws EdmException {
-            return null;
-          }
-
-          @Override
-          public EdmEntitySet getEntitySet(final String name) throws EdmException {
-            return new EdmEntitySet() {
-
-              @Override
-              public String getName() throws EdmException {
-                return name;
-              }
-
-              @Override
-              public EdmEntitySet getRelatedEntitySet(EdmNavigationProperty navigationProperty) throws EdmException {
-                return null;
-              }
-
-              @Override
-              public EdmEntityType getEntityType() throws EdmException {
-                return null;
-              }
-
-              @Override
-              public EdmEntityContainer getEntityContainer() throws EdmException {
-                return null;
-              }
-            };
-          }
-
-          @Override
-          public EdmAssociationSet getAssociationSet(EdmEntitySet sourceEntitySet, EdmNavigationProperty navigationProperty) throws EdmException {
-            return null;
-          }
-        };
-      }
-
-    };
-  }
-
-  @Override
-  public ODataResponse readServiceDocument(GetServiceDocumentView uriParserResultView) throws ODataException {
+  public ODataResponse readServiceDocument(final GetServiceDocumentView uriParserResultView) throws ODataException {
     return ODataResponse.status(HttpStatus.OK).entity("this should be the service document").build();
   }
 
   @Override
-  public ODataResponse readMetadata(GetMetadataView uriParserResultView) throws ODataException {
+  public ODataResponse readMetadata(final GetMetadataView uriParserResultView) throws ODataException {
     return ODataResponse.status(HttpStatus.OK).entity("this should be the metadata document").build();
   }
 
@@ -212,14 +116,34 @@ public class ListsProcessor extends ODataSingleProcessor {
         .build();
   }
 
+  @Override
+  public ODataResponse executeFunctionImport(GetFunctionImportView uriParserResultView) throws ODataException {
+    final Object data = dataSource.readDataFromFunction(
+        uriParserResultView.getFunctionImport(),
+        mapFunctionParameters(uriParserResultView.getFunctionImportParameters()),
+        null);
+
+    return ODataResponseBuilder.newInstance().status(HttpStatus.OK).entity(data.toString()).build();
+  }
+
   private HashMap<String, Object> mapKey(final List<KeyPredicate> keys) throws EdmException {
     HashMap<String, Object> keyMap = new HashMap<String, Object>();
-    for (KeyPredicate key : keys) {
+    for (final KeyPredicate key : keys) {
       final EdmProperty property = key.getProperty();
       final EdmSimpleType type = (EdmSimpleType) property.getType();
       keyMap.put(property.getName(), type.valueOfString(key.getLiteral(), EdmLiteralKind.DEFAULT, property.getFacets()));
     }
     return keyMap;
+  }
+
+  private Map<String, Object> mapFunctionParameters(final Map<String, UriLiteral> functionImportParameters) {
+    HashMap<String, Object> parameterMap = new HashMap<String, Object>();
+    for (final String parameterName : functionImportParameters.keySet()) {
+      final UriLiteral literal = functionImportParameters.get(parameterName);
+      final EdmSimpleType type = (EdmSimpleType) literal.getType();
+      parameterMap.put(parameterName, type.valueOfString(literal.getLiteral(), EdmLiteralKind.DEFAULT, null));
+    }
+    return parameterMap;
   }
 
   private Object retrieveData(final EdmEntitySet startEntitySet, final List<KeyPredicate> keyPredicates, final List<NavigationSegment> navigationSegments) throws ODataException {

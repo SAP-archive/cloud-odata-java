@@ -19,43 +19,36 @@ public class EdmFunctionImportImplProv extends EdmNamedImplProv implements EdmFu
     super(edm, functionImport.getName());
     this.functionImport = functionImport;
     this.edmEntityContainer = edmEntityContainer;
-    // TODO Auto-generated constructor stub
   }
 
   @Override
   public EdmParameter getParameter(String name) throws EdmException {
-    // TODO Auto-generated method stub
     return null;
   }
 
   @Override
   public Collection<String> getParameterNames() throws EdmException {
-    // TODO Auto-generated method stub
-    return null;
+    return functionImport.getParameters().keySet();
   }
 
   @Override
   public EdmEntitySet getEntitySet() throws EdmException {
-    // TODO Auto-generated method stub
     return null;
   }
 
   @Override
   public String getHttpMethod() throws EdmException {
-    // TODO Auto-generated method stub
-    return null;
+    return functionImport.getHttpMethod();
   }
 
   @Override
   public EdmTyped getReturnType() throws EdmException {
-    // TODO Auto-generated method stub
     return null;
   }
 
   @Override
   public EdmEntityContainer getEntityContainer() throws EdmException {
-    // TODO Auto-generated method stub
-    return null;
+    return edmEntityContainer;
   }
 
 }

@@ -8,14 +8,12 @@ import static org.mockito.Mockito.when;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
-import com.sap.core.odata.api.edm.Edm;
 import com.sap.core.odata.api.edm.provider.EdmProvider;
 import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.api.processor.ODataContext;
 import com.sap.core.odata.api.processor.ODataProcessor;
 import com.sap.core.odata.api.processor.ODataSingleProcessor;
 import com.sap.core.odata.testutils.fit.AbstractFitTest;
-import com.sap.core.testutils.mocks.MockFacade;
 
 public class AbstractBasicTest extends AbstractFitTest {
 
@@ -25,10 +23,7 @@ public class AbstractBasicTest extends AbstractFitTest {
   protected ODataProcessor createProcessorMock() throws ODataException {
     ODataProcessor processor = mock(ODataSingleProcessor.class);
 
-    Edm edm = MockFacade.getMockEdm();
-    when(processor.getEntityDataModel()).thenReturn(edm);
-
-    // sience fiction (return context after setContext)
+    // science fiction (return context after setContext)
     // see http://www.planetgeek.ch/2010/07/20/mockito-answer-vs-return/
     
     doAnswer(new Answer<Object>() {

@@ -1,6 +1,5 @@
 package com.sap.core.odata.api.processor;
 
-import com.sap.core.odata.api.edm.Edm;
 import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.api.exception.ODataNotImplementedException;
 import com.sap.core.odata.api.processor.aspect.Batch;
@@ -61,11 +60,6 @@ public abstract class ODataSingleProcessor
     return this.context;
   }
 
-  @Override
-  public Edm getEntityDataModel() throws ODataException{
-    throw new ODataNotImplementedException();
-  }
-  
   @Override
   public ODataResponse executeBatch() throws ODataException {
     throw new ODataNotImplementedException();
