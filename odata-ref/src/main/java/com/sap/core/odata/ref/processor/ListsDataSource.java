@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.sap.core.odata.api.edm.EdmEntitySet;
+import com.sap.core.odata.api.edm.EdmFunctionImport;
 import com.sap.core.odata.api.exception.ODataException;
 
 /**
@@ -50,11 +51,25 @@ public interface ListsDataSource {
    * @param sourceEntitySet  the {@link EdmEntitySet} of the source entity
    * @param sourceData  the data object of the source entity
    * @param targetEntitySet  the requested target {@link EdmEntitySet}
-   * @param targetKeys  the key of the target entity as map of key names to key values (optional)
+   * @param targetKeys  the key of the target entity as map of key names to key values
+   *                    (optional)
    * @return the requested releated data object, either a list or a single object
    * @throws ODataError
    */
   Object readRelatedData(EdmEntitySet sourceEntitySet, Object sourceData, EdmEntitySet targetEntitySet, Map<String, Object> targetKeys) throws ODataException;
+
+  /**
+   * <p>Retrieves data for the specified function import and key.</p>
+   * @param function  the requested {@link EdmFunctionImport}
+   * @param parameters  the parameters of the function import
+   *                    as map of parameter names to parameter values
+   * @param keys  the key of the returned entity set, as map of key names to key values,
+   *              if the return type of the function import is a collection of entities
+   *              (optional)
+   * @return the requested data object, either a list or a single object
+   * @throws ODataException
+   */
+  Object readDataFromFunction(EdmFunctionImport function, Map<String, Object> parameters, Map<String, Object> keys) throws ODataException;
 
   /**
    * <p>Creates and returns a new instance of the requested data-object type.</p>
