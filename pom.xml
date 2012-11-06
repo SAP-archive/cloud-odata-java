@@ -18,44 +18,9 @@
 
 	<developers>
 		<developer>
-			<id>carljmosca</id>
-			<name>Carl J. Mosca</name>
-			<email>carljmosca@gmail.com</email>
-		</developer>
-		<developer>
-			<id>john.spurlock</id>
-			<name>John Spurlock</name>
-			<email>john.spurlock@gmail.com</email>
-		</developer>
-		<developer>
-			<id>karthik.tnt</id>
-			<name>Karthik S Kalahasthi</name>
-			<email>karthik.tnt@gmail.com</email>
-		</developer>
-		<developer>
-			<id>phanirajuyn</id>
-			<name>Phani Raju</name>
-			<email>phanirajuyn@gmail.com</email>
-		</developer>
-		<developer>
-			<id>philipp.thun</id>
-			<name>Philipp Thun</name>
-			<email>philipp.thun@sap.com</email>
-		</developer>
-		<developer>
-			<id>sergei.inbox</id>
-			<name>Sergej.T</name>
-			<email>sergei.inbox@gmail.com</email>
-		</developer>
-		<developer>
 			<id>stephan.klevenz</id>
 			<name>Stephan Klevenz</name>
 			<email>stephan.klevenz@sap.com</email>
-		</developer>
-		<developer>
-			<id>rolf.aden</id>
-			<name>Rolf Aden</name>
-			<email>Mail.Rolf.Aden@googlemail.com</email>
 		</developer>
 		<developer>
 			<id>christian.amend</id>
@@ -107,8 +72,8 @@
 	</properties>
 
 	<modules>
-		<module>odata4j-core</module>
-		<module>odata4j-cxf</module>
+<!-- 		<module>odata4j-core</module> -->
+<!-- 		<module>odata4j-cxf</module> -->
 
 		<module>odata-core</module>
 		<module>odata-fit</module>
