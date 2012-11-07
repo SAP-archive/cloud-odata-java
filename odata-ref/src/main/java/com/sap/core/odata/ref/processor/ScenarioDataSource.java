@@ -117,6 +117,15 @@ public class ScenarioDataSource implements ListsDataSource {
       else
         return data;
 
+    } else if ("Teams".equals(targetEntitySet.getName())) {
+      if (((Employee) sourceData).getTeam() == null)
+        throw new ODataNotFoundException(ODataNotFoundException.ENTITY);
+      else
+        return ((Employee) sourceData).getTeam();
+
+    } else if ("Rooms".equals(targetEntitySet.getName())) {
+      return null;
+
     } else {
       throw new ODataNotFoundException(ODataNotFoundException.ENTITY);
     }

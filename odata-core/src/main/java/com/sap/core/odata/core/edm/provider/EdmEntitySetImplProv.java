@@ -1,5 +1,7 @@
 package com.sap.core.odata.core.edm.provider;
 
+import com.sap.core.odata.api.edm.EdmAssociationSet;
+import com.sap.core.odata.api.edm.EdmAssociationSetEnd;
 import com.sap.core.odata.api.edm.EdmEntityContainer;
 import com.sap.core.odata.api.edm.EdmEntitySet;
 import com.sap.core.odata.api.edm.EdmEntityType;
@@ -34,8 +36,16 @@ public class EdmEntitySetImplProv extends EdmNamedImplProv implements EdmEntityS
 
   @Override
   public EdmEntitySet getRelatedEntitySet(EdmNavigationProperty navigationProperty) throws EdmException {
-    // TODO Auto-generated method stub
-    return null;
+    EdmAssociationSet associationSet = edmEntityContainer.getAssociationSet(edmEntityContainer.getEntitySet(entitySet.getName()), navigationProperty);
+    if (associationSet == null)
+      throw new EdmException();
+    EdmAssociationSetEnd toEnd = associationSet.getEnd(navigationProperty.getToRole());
+    if (toEnd == null)
+      throw new EdmException();
+    EdmEntitySet targetEntitySet = toEnd.getEntitySet();
+    if (targetEntitySet == null)
+      throw new EdmException();
+    return targetEntitySet;
   }
 
   @Override

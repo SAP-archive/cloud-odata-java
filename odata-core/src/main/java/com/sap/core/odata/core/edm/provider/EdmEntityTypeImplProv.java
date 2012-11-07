@@ -1,7 +1,8 @@
 package com.sap.core.odata.core.edm.provider;
 
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Iterator;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -28,18 +29,19 @@ public class EdmEntityTypeImplProv extends EdmStructuralTypeImplProv implements 
 
   @Override
   public Collection<String> getKeyPropertyNames() throws EdmException {
-    return entityType.getKey().getKeys().keySet();
+    if (entityType.getKey() == null)
+      return Collections.<String> emptyList();
+    else
+      return entityType.getKey().getKeys().keySet();
   }
 
   @Override
   public List<EdmProperty> getKeyProperties() throws EdmException {
     if (edmKeyProperties == null) {
-      String keyPropertyName;
       EdmProperty edmProperty;
 
-      Collection<String> keyPropertyNames = getKeyPropertyNames();
-      for (Iterator<String> iterator = keyPropertyNames.iterator(); iterator.hasNext();) {
-        keyPropertyName = iterator.next();
+      edmKeyProperties = new ArrayList<EdmProperty>();
+      for (String keyPropertyName : getKeyPropertyNames()) {
         try {
           edmProperty = (EdmProperty) getProperty(keyPropertyName);
         } catch (ClassCastException e) {
@@ -51,6 +53,8 @@ public class EdmEntityTypeImplProv extends EdmStructuralTypeImplProv implements 
           throw new EdmException();
         }
       }
+      if (edmBaseType != null)
+        edmKeyProperties.addAll(((EdmEntityType) edmBaseType).getKeyProperties());
     }
 
     return edmKeyProperties;

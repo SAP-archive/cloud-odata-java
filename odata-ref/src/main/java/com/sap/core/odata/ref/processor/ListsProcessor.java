@@ -1,6 +1,7 @@
 package com.sap.core.odata.ref.processor;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -168,7 +169,7 @@ public class ListsProcessor extends ODataSingleProcessor {
     return data;
   }
 
-  private Integer applySystemQueryOptions(final EdmEntitySet targetEntitySet, List<?> data, final InlineCount inlineCount, final String filter, final String orderBy, final String skipToken, final int skip, final Integer top) {
+  private Integer applySystemQueryOptions(final EdmEntitySet targetEntitySet, List<?> data, final InlineCount inlineCount, final String filter, final String orderBy, final String skipToken, final int skip, final Integer top) throws ODataException {
     if (filter != null)
       for (Object element : data)
         if (!appliesFilter(element, filter))
@@ -179,7 +180,10 @@ public class ListsProcessor extends ODataSingleProcessor {
     if (orderBy != null)
       ;
     else if (skipToken != null || skip != 0 || top != null)
-    ;
+      if (data instanceof Comparable<?>)
+        Collections.sort((List<? extends Comparable<Object>>) data);
+      else
+        throw new ODataException();
 
     if (skipToken != null)
     ;

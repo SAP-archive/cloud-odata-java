@@ -2,7 +2,6 @@ package com.sap.core.odata.ref.processor;
 
 import com.sap.core.odata.api.edm.provider.EdmProvider;
 import com.sap.core.odata.api.exception.ODataException;
-import com.sap.core.odata.api.exception.ODataNotImplementedException;
 import com.sap.core.odata.api.processor.ODataProcessor;
 import com.sap.core.odata.api.service.ODataServiceFactory;
 import com.sap.core.odata.ref.edm.ScenarioEdmProvider;
