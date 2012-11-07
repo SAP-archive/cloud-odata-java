@@ -1,5 +1,6 @@
 package com.sap.core.odata.ref.processor;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -53,10 +54,11 @@ public class ListsProcessor extends ODataSingleProcessor {
 
   @Override
   public ODataResponse readEntitySet(final GetEntitySetView uriParserResultView) throws ODataException {
-    List<?> data = (List<?>) retrieveData(
+    ArrayList<Object> data = new ArrayList<Object>();
+    data.addAll((List<?>) retrieveData(
         uriParserResultView.getStartEntitySet(),
         uriParserResultView.getKeyPredicates(),
-        uriParserResultView.getNavigationSegments());
+        uriParserResultView.getNavigationSegments()));
 
     applySystemQueryOptions(
         uriParserResultView.getTargetEntitySet(),
@@ -73,10 +75,11 @@ public class ListsProcessor extends ODataSingleProcessor {
 
   @Override
   public ODataResponse countEntitySet(final GetEntitySetCountView uriParserResultView) throws ODataException {
-    List<?> data = (List<?>) retrieveData(
+    ArrayList<Object> data = new ArrayList<Object>();
+    data.addAll((List<?>) retrieveData(
         uriParserResultView.getStartEntitySet(),
         uriParserResultView.getKeyPredicates(),
-        uriParserResultView.getNavigationSegments());
+        uriParserResultView.getNavigationSegments()));
 
     applySystemQueryOptions(
         uriParserResultView.getTargetEntitySet(),

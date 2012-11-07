@@ -6,9 +6,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.sap.core.odata.api.edm.EdmEntitySet;
 import com.sap.core.odata.api.edm.EdmFunctionImport;
 import com.sap.core.odata.api.exception.ODataException;
@@ -29,8 +26,6 @@ import com.sap.core.odata.ref.model.Team;
  */
 public class ScenarioDataSource implements ListsDataSource {
 
-  private static final Logger log = LoggerFactory.getLogger(ScenarioDataSource.class);
-
   private final DataContainer dataContainer;
 
   public ScenarioDataSource(final DataContainer dataContainer) {
@@ -39,7 +34,7 @@ public class ScenarioDataSource implements ListsDataSource {
 
   @Override
   public List<?> readData(final EdmEntitySet entitySet) throws ODataException {
-    ArrayList<Object> data = new ArrayList<Object>();
+    List<Object> data = new ArrayList<Object>();
     if ("Employees".equals(entitySet.getName()))
       data.addAll(dataContainer.getEmployeeSet());
     else if ("Teams".equals(entitySet.getName()))
@@ -60,33 +55,39 @@ public class ScenarioDataSource implements ListsDataSource {
   @Override
   public Object readData(final EdmEntitySet entitySet, final Map<String, Object> keys) throws ODataException {
     if ("Employees".equals(entitySet.getName())) {
-      for (Employee employee : dataContainer.getEmployeeSet())
+      for (final Employee employee : dataContainer.getEmployeeSet())
         if (employee.getId().equals(keys.get("EmployeeId")))
           return employee;
       throw new ODataNotFoundException(ODataNotFoundException.ENTITY);
+
     } else if ("Teams".equals(entitySet.getName())) {
-      for (Team team : dataContainer.getTeamSet())
+      for (final Team team : dataContainer.getTeamSet())
         if (team.getId().equals(keys.get("Id")))
           return team;
       throw new ODataNotFoundException(ODataNotFoundException.ENTITY);
+
     } else if ("Rooms".equals(entitySet.getName())) {
-      for (Room room : dataContainer.getRoomSet())
+      for (final Room room : dataContainer.getRoomSet())
         if (room.getId().equals(keys.get("Id")))
           return room;
       throw new ODataNotFoundException(ODataNotFoundException.ENTITY);
+
     } else if ("Managers".equals(entitySet.getName())) {
-      for (Manager manager : dataContainer.getManagerSet())
+      for (final Manager manager : dataContainer.getManagerSet())
         if (manager.getId().equals(keys.get("EmployeeId")))
           return manager;
       throw new ODataNotFoundException(ODataNotFoundException.ENTITY);
+
     } else if ("Buildings".equals(entitySet.getName())) {
-      for (Building building : dataContainer.getBuildingSet())
+      for (final Building building : dataContainer.getBuildingSet())
         if (building.getId().equals(keys.get("Id")))
           return building;
       throw new ODataNotFoundException(ODataNotFoundException.ENTITY);
+
     } else if ("Photos".equals(entitySet.getName())) {
-      for (Photo photo : dataContainer.getPhotoSet())
-        if (photo.getId() == (Integer) keys.get("Id") && photo.getType().equals(keys.get("Type")))
+      for (final Photo photo : dataContainer.getPhotoSet())
+        if (photo.getId() == (Integer) keys.get("Id")
+            && photo.getType().equals(keys.get("Type")))
           return photo;
       throw new ODataNotFoundException(ODataNotFoundException.ENTITY);
     }
@@ -113,8 +114,12 @@ public class ScenarioDataSource implements ListsDataSource {
       }
       if (data.isEmpty())
         throw new ODataNotFoundException(ODataNotFoundException.ENTITY);
+      else
+        return data;
+
+    } else {
+      throw new ODataNotFoundException(ODataNotFoundException.ENTITY);
     }
-    return null;
   }
 
   @Override
@@ -124,30 +129,38 @@ public class ScenarioDataSource implements ListsDataSource {
         throw new ODataNotFoundException(ODataNotFoundException.ENTITY);
       else
         return searchEmployees((String) parameters.get("q"));
+
     } else if (function.getName().equals("AllLocations")) {
       return getLocations();
+
     } else if (function.getName().equals("AllUsedRoomIds")) {
       ArrayList<Room> data = new ArrayList<Room>();
       for (Room room : dataContainer.getRoomSet())
         if (!room.getEmployees().isEmpty())
           data.add(room);
       return data;
+
     } else if (function.getName().equals("MaximalAge")) {
       return getOldestEmployee().getAge();
+
     } else if (function.getName().equals("MostCommonLocation")) {
       return getMostCommonLocation();
+
     } else if (function.getName().equals("ManagerPhoto")) {
       if (parameters.get("Id") == null)
         throw new ODataNotFoundException(ODataNotFoundException.ENTITY);
-      final String id = (String) parameters.get("Id");
       for (Employee potentialManager : dataContainer.getEmployeeSet())
-        if (potentialManager.getId().equals(id) && isManager(potentialManager))
+        if (potentialManager.getId().equals((String) parameters.get("Id"))
+            && isManager(potentialManager))
           return potentialManager.getImage();
       throw new ODataNotFoundException(ODataNotFoundException.ENTITY);
+
     } else if (function.getName().equals("OldestEmployee")) {
       return getOldestEmployee();
-    } else
+
+    } else {
       throw new ODataNotImplementedException();
+    }
   }
 
   private List<Employee> searchEmployees(final String search) {
@@ -164,7 +177,7 @@ public class ScenarioDataSource implements ListsDataSource {
     for (Employee employee : dataContainer.getEmployeeSet())
       if (employee.getLocation() != null && employee.getLocation().getCity() != null) {
         boolean found = false;
-        for (Location location : locations.keySet())
+        for (final Location location : locations.keySet())
           if (employee.getLocation().getCity().getPostalCode() == location.getCity().getPostalCode() && employee.getLocation().getCity().getCityName() == location.getCity().getCityName() && employee.getLocation().getCountry() == location.getCountry()) {
             found = true;
             locations.put(location, locations.get(location) + 1);
@@ -188,14 +201,14 @@ public class ScenarioDataSource implements ListsDataSource {
 
   private Employee getOldestEmployee() {
     Employee oldestEmployee = null;
-    for (Employee employee : dataContainer.getEmployeeSet())
+    for (final Employee employee : dataContainer.getEmployeeSet())
       if (oldestEmployee == null || employee.getAge() > oldestEmployee.getAge())
         oldestEmployee = employee;
     return oldestEmployee;
   }
 
   private boolean isManager(final Employee potentialManager) {
-    for (Employee employee : dataContainer.getEmployeeSet())
+    for (final Employee employee : dataContainer.getEmployeeSet())
       if (potentialManager.getId().equals(employee.getManager().getId()))
         return true;
     return false;
