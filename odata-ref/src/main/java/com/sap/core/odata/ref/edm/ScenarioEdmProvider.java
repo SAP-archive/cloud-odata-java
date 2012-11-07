@@ -18,6 +18,7 @@ import com.sap.core.odata.api.edm.provider.EdmProvider;
 import com.sap.core.odata.api.edm.provider.EntityContainer;
 import com.sap.core.odata.api.edm.provider.EntitySet;
 import com.sap.core.odata.api.edm.provider.EntityType;
+import com.sap.core.odata.api.edm.provider.Facets;
 import com.sap.core.odata.api.edm.provider.FunctionImport;
 import com.sap.core.odata.api.edm.provider.FunctionImportParameter;
 import com.sap.core.odata.api.edm.provider.Key;
@@ -307,55 +308,15 @@ public class ScenarioEdmProvider implements EdmProvider {
   }
 
   private EdmFacets getFacets(final Boolean nullable, final Integer maxLength, final String defaultValue, final Boolean forEtag) {
-    return new EdmFacets() {
-
-      @Override
-      public Boolean isUnicode() {
-        return null;
+    EdmConcurrencyMode edmConcurrencyMode = null;
+    if (forEtag != null) {
+      if (forEtag) {
+        edmConcurrencyMode = EdmConcurrencyMode.Fixed;
+      } else {
+        edmConcurrencyMode = EdmConcurrencyMode.None;
       }
-
-      @Override
-      public Boolean isNullable() {
-        return nullable;
-      }
-
-      @Override
-      public Boolean isFixedLength() {
-        return null;
-      }
-
-      @Override
-      public Integer getScale() {
-        return null;
-      }
-
-      @Override
-      public Integer getPrecision() {
-        return null;
-      }
-
-      @Override
-      public Integer getMaxLength() {
-        return maxLength;
-      }
-
-      @Override
-      public String getDefaultValue() {
-        return defaultValue;
-      }
-
-      @Override
-      public EdmConcurrencyMode getConcurrencyMode() {
-        if (forEtag == null)
-          return null;
-        else
-          return forEtag ? EdmConcurrencyMode.Fixed : EdmConcurrencyMode.None;
-      }
-
-      @Override
-      public String getCollation() {
-        return null;
-      }
-    };
+    }
+    
+    return new Facets(nullable, defaultValue, maxLength, null, null, null, null, null, edmConcurrencyMode);
   }
 }
