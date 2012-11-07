@@ -89,7 +89,7 @@ public class ScenarioEdmProvider implements EdmProvider {
   @Override
   public EntityType getEntityType(final FullQualifiedName edmFQName) throws ODataRuntimeException, ODataMessageException {
     if (NAMESPACE_1.equals(edmFQName.getNamespace()))
-      if (ENTITY_TYPE_1_1.equals(edmFQName.getName())) {
+      if (ENTITY_TYPE_1_1.getName().equals(edmFQName.getName())) {
         Map<String, Property> properties = new HashMap<String, Property>();
         properties.put("EmployeeId", new Property("EmployeeId", EDM_STRING, getFacets(false, null, null, null), null, null, null, null));
         properties.put("EmployeeName", new Property("EmployeeName", EDM_STRING, null, new CustomizableFeedMappings(null, null, null, null, null, EdmTargetPath.SyndicationTitle), null, null, null));
@@ -108,7 +108,7 @@ public class ScenarioEdmProvider implements EdmProvider {
         navigationProperties.put("ne_Room", new NavigationProperty("ne_Room", ASSOCIATION_1_3, ROLE_1_1, ROLE_1_3, null, null));
         return new EntityType(ENTITY_TYPE_1_1.getName(), null, false, properties, null, null, null, true, null, new Key(keyProperty, null), navigationProperties);
 
-      } else if (ENTITY_TYPE_1_BASE.equals(edmFQName.getName())) {
+      } else if (ENTITY_TYPE_1_BASE.getName().equals(edmFQName.getName())) {
         Map<String, Property> properties = new HashMap<String, Property>();
         properties.put("Id", new Property("Id", EDM_STRING, getFacets(false, null, "1", null), null, null, null, null));
         properties.put("Name", new Property("Name", EDM_STRING, null, new CustomizableFeedMappings(null, null, null, null, null, EdmTargetPath.SyndicationTitle), null, null, null));
@@ -116,14 +116,14 @@ public class ScenarioEdmProvider implements EdmProvider {
         keyProperty.put("Id", new PropertyRef("Id", null));
         return new EntityType(ENTITY_TYPE_1_BASE.getName(), null, true, properties, null, null, null, false, null, new Key(keyProperty, null), null);
 
-      } else if (ENTITY_TYPE_1_2.equals(edmFQName.getName())) {
+      } else if (ENTITY_TYPE_1_2.getName().equals(edmFQName.getName())) {
         Map<String, Property> properties = new HashMap<String, Property>();
         properties.put("isScrumTeam", new Property("isScrumTeam", EDM_BOOLEAN, getFacets(true, null, null, null), null, null, null, null));
         Map<String, NavigationProperty> navigationProperties = new HashMap<String, NavigationProperty>();
         navigationProperties.put("nt_Employees", new NavigationProperty("nt_Employees", ASSOCIATION_1_2, ROLE_1_2, ROLE_1_1, null, null));
         return new EntityType(ENTITY_TYPE_1_2.getName(), ENTITY_TYPE_1_BASE, false, properties, null, null, null, false, null, null, navigationProperties);
 
-      } else if (ENTITY_TYPE_1_3.equals(edmFQName.getName())) {
+      } else if (ENTITY_TYPE_1_3.getName().equals(edmFQName.getName())) {
         Map<String, Property> properties = new HashMap<String, Property>();
         properties.put("Seats", new Property("Seats", EDM_INT16, null, null, null, null, null));
         properties.put("Version", new Property("Version", EDM_INT16, getFacets(null, null, null, true), null, null, null, null));
@@ -132,12 +132,12 @@ public class ScenarioEdmProvider implements EdmProvider {
         navigationProperties.put("nr_Building", new NavigationProperty("nr_Building", ASSOCIATION_1_4, ROLE_1_3, ROLE_1_5, null, null));
         return new EntityType(ENTITY_TYPE_1_3.getName(), ENTITY_TYPE_1_BASE, false, properties, null, null, null, false, null, null, navigationProperties);
 
-      } else if (ENTITY_TYPE_1_4.equals(edmFQName.getName())) {
+      } else if (ENTITY_TYPE_1_4.getName().equals(edmFQName.getName())) {
         Map<String, NavigationProperty> navigationProperties = new HashMap<String, NavigationProperty>();
         navigationProperties.put("nm_Employees", new NavigationProperty("nm_Employees", ASSOCIATION_1_1, ROLE_1_4, ROLE_1_1, null, null));
         return new EntityType(ENTITY_TYPE_1_4.getName(), ENTITY_TYPE_1_1, false, null, null, null, null, true, null, null, navigationProperties);
 
-      } else if (ENTITY_TYPE_1_5.equals(edmFQName.getName())) {
+      } else if (ENTITY_TYPE_1_5.getName().equals(edmFQName.getName())) {
         Map<String, Property> properties = new HashMap<String, Property>();
         properties.put("Id", new Property("Id", EDM_STRING, getFacets(false, null, null, null), null, null, null, null));
         properties.put("Name", new Property("Name", EDM_STRING, null, null, null, null, null));
@@ -153,7 +153,7 @@ public class ScenarioEdmProvider implements EdmProvider {
       }
 
     else if (NAMESPACE_2.equals(edmFQName.getNamespace()))
-      if (ENTITY_TYPE_2_1.equals(edmFQName.getName())) {
+      if (ENTITY_TYPE_2_1.getName().equals(edmFQName.getName())) {
         Map<String, Property> properties = new HashMap<String, Property>();
         properties.put("Id", new Property("Id", EDM_INT32, getFacets(false, null, null, true), null, null, null, null));
         properties.put("Name", new Property("Name", EDM_STRING, null, new CustomizableFeedMappings(null, null, null, null, null, EdmTargetPath.SyndicationTitle), null, null, null));
