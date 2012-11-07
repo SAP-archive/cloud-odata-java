@@ -25,9 +25,6 @@ public interface ListsDataSource {
 
   /**
    * <p>Retrieves the whole data list for the specified entity set.</p>
-   * <p>Implementations should return a copy of the original data since this
-   * collection will be handled destructively, e.g., to process filtering
-   * or paging.</p>
    * @param entitySet  the requested {@link EdmEntitySet}
    * @return the requested data list
    * @throws ODataException
