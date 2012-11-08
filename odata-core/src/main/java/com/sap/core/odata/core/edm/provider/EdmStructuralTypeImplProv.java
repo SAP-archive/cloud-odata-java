@@ -15,11 +15,10 @@ import com.sap.core.odata.api.edm.provider.Property;
 
 public abstract class EdmStructuralTypeImplProv extends EdmNamedImplProv implements EdmStructuralType {
 
-  protected EdmImplProv edm;
   protected EdmStructuralType edmBaseType;
   private ComplexType structuralType;
   private EdmTypeKind edmTypeKind;
-  private String namespace;
+  protected String namespace;
   protected Map<String, EdmTyped> edmProperties;
   private Collection<String> edmPropertyNames;
 

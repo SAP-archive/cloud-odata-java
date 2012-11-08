@@ -15,7 +15,7 @@ public class ScenarioServiceFactory implements ODataServiceFactory {
   @Override
   public ODataProcessor createProcessor() throws ODataException {
     DataContainer dataContainer = new DataContainer();
-    dataContainer.init();
+    dataContainer.reset();
     return new ListsProcessor(new ScenarioDataSource(dataContainer));
   }
 

@@ -9,7 +9,7 @@ package com.sap.core.odata.api.edm;
  * 
  * @author SAP AG
  */
-public interface EdmComplexType extends EdmNamed, EdmStructuralType, EdmType {
+public interface EdmComplexType extends EdmStructuralType {
 
   /* (non-Javadoc)
    * @see com.sap.core.odata.api.edm.EdmStructuralType#getBaseType()

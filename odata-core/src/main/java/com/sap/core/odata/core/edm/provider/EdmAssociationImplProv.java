@@ -5,6 +5,7 @@ import com.sap.core.odata.api.edm.EdmAssociationEnd;
 import com.sap.core.odata.api.edm.EdmException;
 import com.sap.core.odata.api.edm.EdmTypeKind;
 import com.sap.core.odata.api.edm.provider.Association;
+import com.sap.core.odata.api.edm.provider.AssociationEnd;
 
 public class EdmAssociationImplProv extends EdmNamedImplProv implements EdmAssociation {
 
@@ -24,13 +25,17 @@ public class EdmAssociationImplProv extends EdmNamedImplProv implements EdmAssoc
 
   @Override
   public EdmTypeKind getKind() {
-    // TODO Auto-generated method stub
-    return null;
+    return EdmTypeKind.ASSOCIATION;
   }
 
   @Override
   public EdmAssociationEnd getEnd(String role) throws EdmException {
-    // TODO Auto-generated method stub
+    AssociationEnd end = association.getEnd1();
+    if (end.getRole().equals(role))
+      return new EdmAssociationEndImplProv(edm, end);
+    end = association.getEnd2();
+    if (end.getRole().equals(role))
+      return new EdmAssociationEndImplProv(edm, end);
     return null;
   }
 

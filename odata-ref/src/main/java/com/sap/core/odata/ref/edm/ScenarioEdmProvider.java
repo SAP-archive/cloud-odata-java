@@ -6,6 +6,7 @@ import java.util.Map;
 import com.sap.core.odata.api.edm.EdmConcurrencyMode;
 import com.sap.core.odata.api.edm.EdmFacets;
 import com.sap.core.odata.api.edm.EdmMultiplicity;
+import com.sap.core.odata.api.edm.EdmSimpleTypeFacade;
 import com.sap.core.odata.api.edm.EdmTargetPath;
 import com.sap.core.odata.api.edm.FullQualifiedName;
 import com.sap.core.odata.api.edm.provider.Association;
@@ -36,7 +37,7 @@ import com.sap.core.odata.api.exception.ODataRuntimeException;
  */
 public class ScenarioEdmProvider implements EdmProvider {
 
-  private static final String NAMESPACE_EDM = "Edm";
+  private static final String NAMESPACE_EDM = EdmSimpleTypeFacade.edmNamespace;
   private static final String NAMESPACE_1 = "RefScenario";
   private static final String NAMESPACE_2 = "RefScenario2";
 
@@ -86,48 +87,44 @@ public class ScenarioEdmProvider implements EdmProvider {
   private static final String FUNCTION_IMPORT_5 = "MostCommonLocation";
   private static final String FUNCTION_IMPORT_6 = "ManagerPhoto";
   private static final String FUNCTION_IMPORT_7 = "OldestEmployee";
-  
+
   @Override
   public EntityType getEntityType(final FullQualifiedName edmFQName) throws ODataRuntimeException, ODataMessageException {
     if (NAMESPACE_1.equals(edmFQName.getNamespace()))
       if (ENTITY_TYPE_1_1.getName().equals(edmFQName.getName())) {
         Map<String, Property> properties = new HashMap<String, Property>();
-        properties.put("EmployeeId", new Property("EmployeeId", EDM_STRING, getFacets(false, null, null, null), null, null, null, null));
-        properties.put("EmployeeName", new Property("EmployeeName", EDM_STRING, null, new CustomizableFeedMappings(null, null, null, null, null, EdmTargetPath.SyndicationTitle), null, null, null));
-        properties.put("ManagerId", new Property("ManagerId", EDM_STRING, null, null, null, null, null));
-        properties.put("TeamId", new Property("TeamId", EDM_STRING, getFacets(null, 2, null, null), null, null, null, null));
-        properties.put("RoomId", new Property("RoomId", EDM_STRING, null, null, null, null, null));
-        properties.put("Location", new Property("Location", COMPLEX_TYPE_1, null, null, null, null, null));
-        properties.put("Age", new Property("Age", EDM_INT16, null, null, null, null, null));
-        properties.put("EntryDate", new Property("EntryDate", EDM_DATETIME, getFacets(true, null, null, null), new CustomizableFeedMappings(null, null, null, null, null, EdmTargetPath.SyndicationUpdated), null, null, null));
-        properties.put("ImageUrl", new Property("ImageUrl", EDM_STRING, null, null, null, null, null));
-        Map<String, PropertyRef> keyProperty = new HashMap<String, PropertyRef>();
-        keyProperty.put("EmployeeId", new PropertyRef("EmployeeId", null));
+        properties.put("EmployeeId", new Property("EmployeeId", EDM_STRING, getFacets(false, null, null, null), null, null, null, null, null));
+        properties.put("EmployeeName", new Property("EmployeeName", EDM_STRING, null, new CustomizableFeedMappings(null, null, null, null, null, EdmTargetPath.SyndicationTitle), null, null, null, null));
+        properties.put("ManagerId", new Property("ManagerId", EDM_STRING, null, null, null, null, null, null));
+        properties.put("TeamId", new Property("TeamId", EDM_STRING, getFacets(null, 2, null, null), null, null, null, null, null));
+        properties.put("RoomId", new Property("RoomId", EDM_STRING, null, null, null, null, null, null));
+        properties.put("Location", new Property("Location", COMPLEX_TYPE_1, null, null, null, null, null, null));
+        properties.put("Age", new Property("Age", EDM_INT16, null, null, null, null, null, null));
+        properties.put("EntryDate", new Property("EntryDate", EDM_DATETIME, getFacets(true, null, null, null), new CustomizableFeedMappings(null, null, null, null, null, EdmTargetPath.SyndicationUpdated), null, null, null, null));
+        properties.put("ImageUrl", new Property("ImageUrl", EDM_STRING, null, null, null, null, null, null));
         Map<String, NavigationProperty> navigationProperties = new HashMap<String, NavigationProperty>();
         navigationProperties.put("ne_Manager", new NavigationProperty("ne_Manager", ASSOCIATION_1_1, ROLE_1_1, ROLE_1_4, null, null));
         navigationProperties.put("ne_Team", new NavigationProperty("ne_Team", ASSOCIATION_1_2, ROLE_1_1, ROLE_1_2, null, null));
         navigationProperties.put("ne_Room", new NavigationProperty("ne_Room", ASSOCIATION_1_3, ROLE_1_1, ROLE_1_3, null, null));
-        return new EntityType(ENTITY_TYPE_1_1.getName(), null, false, properties, null, null, null, true, null, new Key(keyProperty, null), navigationProperties);
+        return new EntityType(ENTITY_TYPE_1_1.getName(), null, false, properties, null, null, null, true, null, getKey("EmployeeId"), navigationProperties);
 
       } else if (ENTITY_TYPE_1_BASE.getName().equals(edmFQName.getName())) {
         Map<String, Property> properties = new HashMap<String, Property>();
-        properties.put("Id", new Property("Id", EDM_STRING, getFacets(false, null, "1", null), null, null, null, null));
-        properties.put("Name", new Property("Name", EDM_STRING, null, new CustomizableFeedMappings(null, null, null, null, null, EdmTargetPath.SyndicationTitle), null, null, null));
-        Map<String, PropertyRef> keyProperty = new HashMap<String, PropertyRef>();
-        keyProperty.put("Id", new PropertyRef("Id", null));
-        return new EntityType(ENTITY_TYPE_1_BASE.getName(), null, true, properties, null, null, null, false, null, new Key(keyProperty, null), null);
+        properties.put("Id", new Property("Id", EDM_STRING, getFacets(false, null, "1", null), null, null, null, null, null));
+        properties.put("Name", new Property("Name", EDM_STRING, null, new CustomizableFeedMappings(null, null, null, null, null, EdmTargetPath.SyndicationTitle), null, null, null, null));
+        return new EntityType(ENTITY_TYPE_1_BASE.getName(), null, true, properties, null, null, null, false, null, getKey("Id"), null);
 
       } else if (ENTITY_TYPE_1_2.getName().equals(edmFQName.getName())) {
         Map<String, Property> properties = new HashMap<String, Property>();
-        properties.put("isScrumTeam", new Property("isScrumTeam", EDM_BOOLEAN, getFacets(true, null, null, null), null, null, null, null));
+        properties.put("isScrumTeam", new Property("isScrumTeam", EDM_BOOLEAN, getFacets(true, null, null, null), null, null, null, null, null));
         Map<String, NavigationProperty> navigationProperties = new HashMap<String, NavigationProperty>();
         navigationProperties.put("nt_Employees", new NavigationProperty("nt_Employees", ASSOCIATION_1_2, ROLE_1_2, ROLE_1_1, null, null));
         return new EntityType(ENTITY_TYPE_1_2.getName(), ENTITY_TYPE_1_BASE, false, properties, null, null, null, false, null, null, navigationProperties);
 
       } else if (ENTITY_TYPE_1_3.getName().equals(edmFQName.getName())) {
         Map<String, Property> properties = new HashMap<String, Property>();
-        properties.put("Seats", new Property("Seats", EDM_INT16, null, null, null, null, null));
-        properties.put("Version", new Property("Version", EDM_INT16, getFacets(null, null, null, true), null, null, null, null));
+        properties.put("Seats", new Property("Seats", EDM_INT16, null, null, null, null, null, null));
+        properties.put("Version", new Property("Version", EDM_INT16, getFacets(null, null, null, true), null, null, null, null, null));
         Map<String, NavigationProperty> navigationProperties = new HashMap<String, NavigationProperty>();
         navigationProperties.put("nr_Employees", new NavigationProperty("nr_Employees", ASSOCIATION_1_3, ROLE_1_3, ROLE_1_1, null, null));
         navigationProperties.put("nr_Building", new NavigationProperty("nr_Building", ASSOCIATION_1_4, ROLE_1_3, ROLE_1_5, null, null));
@@ -140,14 +137,12 @@ public class ScenarioEdmProvider implements EdmProvider {
 
       } else if (ENTITY_TYPE_1_5.getName().equals(edmFQName.getName())) {
         Map<String, Property> properties = new HashMap<String, Property>();
-        properties.put("Id", new Property("Id", EDM_STRING, getFacets(false, null, null, null), null, null, null, null));
-        properties.put("Name", new Property("Name", EDM_STRING, null, null, null, null, null));
-        properties.put("Image", new Property("Image", EDM_BINARY, null, null, null, null, null));
-        Map<String, PropertyRef> keyProperty = new HashMap<String, PropertyRef>();
-        keyProperty.put("Id", new PropertyRef("Id", null));
+        properties.put("Id", new Property("Id", EDM_STRING, getFacets(false, null, null, null), null, null, null, null, null));
+        properties.put("Name", new Property("Name", EDM_STRING, null, null, null, null, null, null));
+        properties.put("Image", new Property("Image", EDM_BINARY, null, null, null, null, null, null));
         Map<String, NavigationProperty> navigationProperties = new HashMap<String, NavigationProperty>();
         navigationProperties.put("nb_Rooms", new NavigationProperty("nb_Rooms", ASSOCIATION_1_4, ROLE_1_5, ROLE_1_3, null, null));
-        return new EntityType(ENTITY_TYPE_1_5.getName(), null, false, properties, null, null, null, false, null, new Key(keyProperty, null), navigationProperties);
+        return new EntityType(ENTITY_TYPE_1_5.getName(), null, false, properties, null, null, null, false, null, getKey("Id"), navigationProperties);
 
       } else {
         throw new ODataNotFoundException(ODataNotFoundException.ENTITY);
@@ -156,17 +151,14 @@ public class ScenarioEdmProvider implements EdmProvider {
     else if (NAMESPACE_2.equals(edmFQName.getNamespace()))
       if (ENTITY_TYPE_2_1.getName().equals(edmFQName.getName())) {
         Map<String, Property> properties = new HashMap<String, Property>();
-        properties.put("Id", new Property("Id", EDM_INT32, getFacets(false, null, null, true), null, null, null, null));
-        properties.put("Name", new Property("Name", EDM_STRING, null, new CustomizableFeedMappings(null, null, null, null, null, EdmTargetPath.SyndicationTitle), null, null, null));
-        properties.put("Type", new Property("Type", EDM_STRING, getFacets(false, null, null, null), null, null, null, null));
-        properties.put("ImageUrl", new Property("ImageUrl", EDM_STRING, null, new CustomizableFeedMappings(null, null, null, null, null, EdmTargetPath.SyndicationAuthorUri), null, null, null));
-        properties.put("Image", new Property("Image", EDM_BINARY, null, null, null, null, null));
-        properties.put("BinaryData", new Property("BinaryData", EDM_BINARY, getFacets(true, null, null, null), null, null, null, null));
-        properties.put("Содержание", new Property("Содержание", EDM_STRING, getFacets(true, null, null, null), new CustomizableFeedMappings(false, null, "ру", "http://localhost", null, null), null, null, null));
-        Map<String, PropertyRef> keyProperties = new HashMap<String, PropertyRef>();
-        keyProperties.put("Id", new PropertyRef("Id", null));
-        keyProperties.put("Type", new PropertyRef("Type", null));
-        return new EntityType(ENTITY_TYPE_2_1.getName(), null, false, properties, null, null, null, true, null, new Key(keyProperties, null), null);
+        properties.put("Id", new Property("Id", EDM_INT32, getFacets(false, null, null, true), null, null, null, null, null));
+        properties.put("Name", new Property("Name", EDM_STRING, null, new CustomizableFeedMappings(null, null, null, null, null, EdmTargetPath.SyndicationTitle), null, null, null, null));
+        properties.put("Type", new Property("Type", EDM_STRING, getFacets(false, null, null, null), null, null, null, null, null));
+        properties.put("ImageUrl", new Property("ImageUrl", EDM_STRING, null, new CustomizableFeedMappings(null, null, null, null, null, EdmTargetPath.SyndicationAuthorUri), null, null, null, null));
+        properties.put("Image", new Property("Image", EDM_BINARY, null, null, null, null, null, null));
+        properties.put("BinaryData", new Property("BinaryData", EDM_BINARY, getFacets(true, null, null, null), null, "image/jpeg", null, null, null));
+        properties.put("Содержание", new Property("Содержание", EDM_STRING, getFacets(true, null, null, null), new CustomizableFeedMappings(false, null, "ру", "http://localhost", null, null), null, null, null, null));
+        return new EntityType(ENTITY_TYPE_2_1.getName(), null, false, properties, null, null, null, true, null, getKey("Id", "Type"), null);
 
       } else {
         throw new ODataNotFoundException(ODataNotFoundException.ENTITY);
@@ -181,14 +173,14 @@ public class ScenarioEdmProvider implements EdmProvider {
     if (NAMESPACE_1.equals(edmFQName.getNamespace()))
       if (COMPLEX_TYPE_1.getName().equals(edmFQName.getName())) {
         Map<String, Property> properties = new HashMap<String, Property>();
-        properties.put("City", new Property("City", COMPLEX_TYPE_2, null, null, null, null, null));
-        properties.put("Country", new Property("Country", EDM_STRING, null, null, null, null, null));
+        properties.put("City", new Property("City", COMPLEX_TYPE_2, null, null, null, null, null, null));
+        properties.put("Country", new Property("Country", EDM_STRING, null, null, null, null, null, null));
         return new ComplexType(COMPLEX_TYPE_1.getName(), null, false, properties, null, null, null);
 
       } else if (COMPLEX_TYPE_2.getName().equals(edmFQName.getName())) {
         Map<String, Property> properties = new HashMap<String, Property>();
-        properties.put("PostalCode", new Property("PostalCode", EDM_STRING, null, null, null, null, null));
-        properties.put("CityName", new Property("CityName", EDM_STRING, null, null, null, null, null));
+        properties.put("PostalCode", new Property("PostalCode", EDM_STRING, null, null, null, null, null, null));
+        properties.put("CityName", new Property("CityName", EDM_STRING, null, null, null, null, null, null));
         return new ComplexType(COMPLEX_TYPE_2.getName(), null, false, properties, null, null, null);
 
       } else {
@@ -274,9 +266,9 @@ public class ScenarioEdmProvider implements EdmProvider {
         return new FunctionImport(name, new ReturnType(COMPLEX_TYPE_1, EdmMultiplicity.ONE), null, "GET", null, null, null);
 
       } else if (FUNCTION_IMPORT_6.equals(name)) {
-          Map<String, FunctionImportParameter> parameters = new HashMap<String, FunctionImportParameter>();
-          parameters.put("Id", new FunctionImportParameter("Id", null, EDM_STRING, getFacets(false, null, null, null), null, null, null));
-          return new FunctionImport(name, new ReturnType(EDM_BINARY, EdmMultiplicity.ONE), null, "GET", parameters, null, null);
+        Map<String, FunctionImportParameter> parameters = new HashMap<String, FunctionImportParameter>();
+        parameters.put("Id", new FunctionImportParameter("Id", null, EDM_STRING, getFacets(false, null, null, null), null, null, null));
+        return new FunctionImport(name, new ReturnType(EDM_BINARY, EdmMultiplicity.ONE), null, "GET", parameters, null, null);
 
       } else if (FUNCTION_IMPORT_7.equals(name)) {
         return new FunctionImport(name, new ReturnType(new FullQualifiedName("Employee", NAMESPACE_1), EdmMultiplicity.ZERO_TO_ONE), ENTITY_SET_1_1, "GET", null, null, null);
@@ -307,16 +299,17 @@ public class ScenarioEdmProvider implements EdmProvider {
       throw new ODataNotFoundException(ODataNotFoundException.ENTITY);
   }
 
+  private Key getKey(final String... keyNames) {
+    Map<String, PropertyRef> keyProperties = new HashMap<String, PropertyRef>();
+    for (final String keyName : keyNames)
+      keyProperties.put(keyName, new PropertyRef(keyName, null));
+    return new Key(keyProperties, null);
+  }
+
   private EdmFacets getFacets(final Boolean nullable, final Integer maxLength, final String defaultValue, final Boolean forEtag) {
-    EdmConcurrencyMode edmConcurrencyMode = null;
-    if (forEtag != null) {
-      if (forEtag) {
-        edmConcurrencyMode = EdmConcurrencyMode.Fixed;
-      } else {
-        edmConcurrencyMode = EdmConcurrencyMode.None;
-      }
-    }
-    
+    final EdmConcurrencyMode edmConcurrencyMode =
+        forEtag == null ? null : forEtag ? EdmConcurrencyMode.Fixed : EdmConcurrencyMode.None;
+
     return new Facets(nullable, defaultValue, maxLength, null, null, null, null, null, edmConcurrencyMode);
   }
 }

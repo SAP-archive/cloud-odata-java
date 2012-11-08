@@ -48,9 +48,8 @@ public class EdmEntityContainerImplProv implements EdmEntityContainer {
 
   @Override
   public EdmEntitySet getEntitySet(String name) throws EdmException {
-    if (edmEntitySets.containsValue(name)) {
+    if (edmEntitySets.containsKey(name))
       return edmEntitySets.get(name);
-    }
 
     EdmEntitySet edmEntitySet = null;
 
@@ -74,9 +73,8 @@ public class EdmEntityContainerImplProv implements EdmEntityContainer {
 
   @Override
   public EdmFunctionImport getFunctionImport(String name) throws EdmException {
-    if (edmFunctionImports.containsValue(name)) {
+    if (edmFunctionImports.containsKey(name))
       return edmFunctionImports.get(name);
-    }
 
     EdmFunctionImport edmFunctionImport = null;
 

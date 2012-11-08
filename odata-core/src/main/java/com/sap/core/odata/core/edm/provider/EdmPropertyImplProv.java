@@ -10,7 +10,7 @@ public class EdmPropertyImplProv extends EdmElementImplProv implements EdmProper
   private Property property;
   
   public EdmPropertyImplProv(EdmImplProv edm, Property property) throws EdmException {
-    super(edm, property.getType(), property.getFacets(), property.getMapping());
+    super(edm, property.getName(), property.getType(), property.getFacets(), property.getMapping());
     this.property = property;
   }
 
@@ -21,7 +21,6 @@ public class EdmPropertyImplProv extends EdmElementImplProv implements EdmProper
 
   @Override
   public String getMimeType() throws EdmException {
-    // TODO Auto-generated method stub
-    return null;
+    return property.getMimeType();
   }
 }

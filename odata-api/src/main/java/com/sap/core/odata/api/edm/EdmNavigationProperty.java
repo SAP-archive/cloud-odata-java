@@ -9,7 +9,7 @@ package com.sap.core.odata.api.edm;
  * 
  * @author SAP AG
  */
-public interface EdmNavigationProperty extends EdmNamed, EdmTyped {
+public interface EdmNavigationProperty extends EdmTyped {
 
   /**
    * Get the relationship of the navigation property
@@ -17,7 +17,7 @@ public interface EdmNavigationProperty extends EdmNamed, EdmTyped {
    * @return {@link EdmAssociation}
    * @throws EdmException
    */
-  EdmAssociation getRelationship() throws EdmException;;
+  EdmAssociation getRelationship() throws EdmException;
 
   /**
    * Get the from role of the navigation property
@@ -25,7 +25,7 @@ public interface EdmNavigationProperty extends EdmNamed, EdmTyped {
    * @return from role as String
    * @throws EdmException
    */
-  String getFromRole() throws EdmException;;
+  String getFromRole() throws EdmException;
 
   /**
    * Get the to role of the navigation property
@@ -33,5 +33,5 @@ public interface EdmNavigationProperty extends EdmNamed, EdmTyped {
    * @return to role as String
    * @throws EdmException
    */
-  String getToRole() throws EdmException;;
+  String getToRole() throws EdmException;
 }

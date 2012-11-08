@@ -1,7 +1,7 @@
 package com.sap.core.odata.api.edm;
 
 /**
- * EdmType holds the namespace of a given type an its type as {@link EdmTypeKind}.
+ * EdmType holds the namespace of a given type and its type as {@link EdmTypeKind}.
  * 
  * Do not implement this interface. This interface is intended for usage only.
  * 
@@ -15,7 +15,7 @@ public interface EdmType extends EdmNamed {
    * @return namespace as String
    * @throws EdmException
    */
-  String getNamespace() throws EdmException;;
+  String getNamespace() throws EdmException;
 
   /**
    * Get the type kind

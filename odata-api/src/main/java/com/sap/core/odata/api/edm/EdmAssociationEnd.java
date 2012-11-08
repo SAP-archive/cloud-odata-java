@@ -22,8 +22,9 @@ public interface EdmAssociationEnd {
    * Get the entity type
    * 
    * @return {@link EdmEntityType}
+   * @throws EdmException
    */
-  EdmEntityType getEntityType();
+  EdmEntityType getEntityType() throws EdmException;
 
   /**
    * Get the multiplicity

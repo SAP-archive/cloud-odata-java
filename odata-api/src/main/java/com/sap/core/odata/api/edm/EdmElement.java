@@ -8,7 +8,7 @@ package com.sap.core.odata.api.edm;
  * 
  * @author SAP AG
  */
-public interface EdmElement extends EdmMappable, EdmNamed, EdmTyped {
+public interface EdmElement extends EdmMappable, EdmTyped {
 
   /**
    * Get the facet information for an element

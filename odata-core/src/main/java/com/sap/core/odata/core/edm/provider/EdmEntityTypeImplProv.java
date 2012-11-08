@@ -87,10 +87,10 @@ public class EdmEntityTypeImplProv extends EdmStructuralTypeImplProv implements 
     Map<String, Property> properties = entityType.getProperties();
     Map<String, NavigationProperty> navigationProperties = entityType.getNavigationProperties();
 
-    if (properties.containsKey(name)) {
+    if (properties != null && properties.containsKey(name)) {
       edmProperty = createProperty(properties.get(name), name);
       edmProperties.put(name, edmProperty);
-    } else if (navigationProperties.containsKey(name)) {
+    } else if (navigationProperties != null && navigationProperties.containsKey(name)) {
       edmProperty = createNavigationProperty(navigationProperties.get(name));
       edmProperties.put(name, edmProperty);
     } else if (edmBaseType != null) {
@@ -103,7 +103,7 @@ public class EdmEntityTypeImplProv extends EdmStructuralTypeImplProv implements 
     return edmProperty;
   }
 
-  protected EdmTyped createNavigationProperty(NavigationProperty property) {
+  protected EdmTyped createNavigationProperty(NavigationProperty property) throws EdmException {
     return new EdmNavigationPropertyImplProv(edm, property);
   }
 }
