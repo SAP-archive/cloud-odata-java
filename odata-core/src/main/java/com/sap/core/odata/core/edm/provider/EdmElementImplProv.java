@@ -13,22 +13,22 @@ import com.sap.core.odata.api.edm.FullQualifiedName;
 public abstract class EdmElementImplProv extends EdmNamedImplProv implements EdmElement {
 
   private EdmType edmType;
-  private String namespace;
+  private FullQualifiedName typeName;
   private EdmFacets edmFacets;
   private EdmMapping edmMapping;
 
-  public EdmElementImplProv(EdmImplProv edm, FullQualifiedName fqName, EdmFacets edmFacets, EdmMapping edmMapping) throws EdmException {
-    super(edm, fqName.getName());
-    this.namespace = fqName.getNamespace();
+  public EdmElementImplProv(EdmImplProv edm, String name, FullQualifiedName typeName, EdmFacets edmFacets, EdmMapping edmMapping) throws EdmException {
+    super(edm, name);
+    this.typeName = typeName;
   }
 
   @Override
   public EdmType getType() throws EdmException {
     if (edmType == null) {
-      if (EdmSimpleTypeFacade.edmNamespace.equals(namespace)) {
-        edmType = new EdmSimpleTypeFacade().getInstance(EdmSimpleTypeKind.valueOf(getName()));
+      if (EdmSimpleTypeFacade.edmNamespace.equals(typeName.getNamespace())) {
+        edmType = new EdmSimpleTypeFacade().getInstance(EdmSimpleTypeKind.valueOf(typeName.getName()));
       } else {
-        edmType = edm.getComplexType(namespace, getName());
+        edmType = edm.getComplexType(typeName.getNamespace(), typeName.getName());
       }
     }
 

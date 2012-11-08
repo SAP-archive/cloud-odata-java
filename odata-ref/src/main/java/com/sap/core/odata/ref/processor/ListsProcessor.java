@@ -1,7 +1,6 @@
 package com.sap.core.odata.ref.processor;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -15,6 +14,7 @@ import com.sap.core.odata.api.enums.HttpStatus;
 import com.sap.core.odata.api.enums.InlineCount;
 import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.api.exception.ODataNotFoundException;
+import com.sap.core.odata.api.exception.ODataNotImplementedException;
 import com.sap.core.odata.api.processor.ODataResponse;
 import com.sap.core.odata.api.processor.ODataResponse.ODataResponseBuilder;
 import com.sap.core.odata.api.processor.ODataSingleProcessor;
@@ -159,12 +159,15 @@ public class ListsProcessor extends ODataSingleProcessor {
     else
       data = dataSource.readData(startEntitySet, keys);
 
-    for (NavigationSegment navigationSegment : navigationSegments)
+    EdmEntitySet currentEntitySet = startEntitySet;
+    for (NavigationSegment navigationSegment : navigationSegments) {
       data = dataSource.readRelatedData(
-          navigationSegment.getEntitySet(),
+          currentEntitySet,
           data,
-          navigationSegment.getEntitySet().getRelatedEntitySet(navigationSegment.getNavigationProperty()),
+          navigationSegment.getEntitySet(),
           mapKey(navigationSegment.getKeyPredicates()));
+      currentEntitySet = navigationSegment.getEntitySet();
+    }
 
     return data;
   }
@@ -180,10 +183,14 @@ public class ListsProcessor extends ODataSingleProcessor {
     if (orderBy != null)
       ;
     else if (skipToken != null || skip != 0 || top != null)
-      if (data instanceof Comparable<?>)
-        Collections.sort((List<? extends Comparable<Object>>) data);
-      else
-        throw new ODataException();
+      try {
+        // Collections.sort(data);
+        throw new ODataNotImplementedException();
+      } catch (ClassCastException e) {
+        throw new ODataException(e);
+      } catch (UnsupportedOperationException e) {
+        throw new ODataException(e);
+      }
 
     if (skipToken != null)
     ;

@@ -14,7 +14,7 @@ import java.util.List;
  * 
  * @author SAP AG
  */
-public interface EdmEntityType extends EdmNamed, EdmStructuralType, EdmType {
+public interface EdmEntityType extends EdmStructuralType {
 
   /**
    * Get all key property names

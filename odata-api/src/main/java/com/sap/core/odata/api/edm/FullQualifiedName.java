@@ -17,4 +17,24 @@ public class FullQualifiedName {
   public String getNamespace() {
     return namespace;
   }
+
+  @Override
+  public int hashCode() {
+    return toString().hashCode();
+  }
+
+  @Override
+  public boolean equals(Object obj) {
+    if (this == obj)
+      return true;
+    if (obj == null || !(obj instanceof FullQualifiedName))
+      return false;
+    final FullQualifiedName other = (FullQualifiedName) obj;
+    return namespace.equals(other.getNamespace()) && name.equals(other.getName());
+  }
+
+  @Override
+  public String toString() {
+    return namespace + "." + name;
+  }
 }

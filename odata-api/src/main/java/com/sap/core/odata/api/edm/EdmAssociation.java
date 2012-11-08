@@ -9,7 +9,7 @@ package com.sap.core.odata.api.edm;
  * 
  * @author SAP AG
  */
-public interface EdmAssociation extends EdmNamed, EdmType {
+public interface EdmAssociation extends EdmType {
 
   /**
    * Get the association end by role

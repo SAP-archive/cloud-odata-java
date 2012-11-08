@@ -30,9 +30,8 @@ public abstract class EdmImpl implements Edm {
 
   @Override
   public EdmEntityContainer getEntityContainer(String name) throws EdmException {
-    if (edmEntityContainers.containsValue(name)) {
+    if (edmEntityContainers.containsKey(name))
       return edmEntityContainers.get(name);
-    }
 
     EdmEntityContainer edmEntityContainer = null;
 
@@ -49,9 +48,8 @@ public abstract class EdmImpl implements Edm {
   @Override
   public EdmEntityType getEntityType(String namespace, String name) throws EdmException {
     FullQualifiedName fqName = new FullQualifiedName(name, namespace);
-    if (edmEntityTypes.containsValue(fqName)) {
+    if (edmEntityTypes.containsKey(fqName))
       return edmEntityTypes.get(fqName);
-    }
 
     EdmEntityType edmEntityType = null;
 
@@ -68,9 +66,8 @@ public abstract class EdmImpl implements Edm {
   @Override
   public EdmComplexType getComplexType(String namespace, String name) throws EdmException {
     FullQualifiedName fqName = new FullQualifiedName(name, namespace);
-    if (edmComplexTypes.containsValue(fqName)) {
+    if (edmComplexTypes.containsKey(fqName))
       return edmComplexTypes.get(fqName);
-    }
 
     EdmComplexType edmComplexType = null;
 
@@ -87,9 +84,8 @@ public abstract class EdmImpl implements Edm {
   @Override
   public EdmAssociation getAssociation(String namespace, String name) throws EdmException {
     FullQualifiedName fqName = new FullQualifiedName(name, namespace);
-    if (edmAssociations.containsValue(fqName)) {
+    if (edmAssociations.containsKey(fqName))
       return edmAssociations.get(fqName);
-    }
 
     EdmAssociation edmAssociation = null;
 

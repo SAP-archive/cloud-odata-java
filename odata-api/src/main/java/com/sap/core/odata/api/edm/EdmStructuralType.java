@@ -9,16 +9,16 @@ import java.util.Collection;
  * 
  * @author SAP AG
  */
-public interface EdmStructuralType extends EdmNamed, EdmType {
+public interface EdmStructuralType extends EdmType {
 
   /**
    * Get property by name
    * 
    * @param name
-   * @return simple or complex proerty as {@link EdmTyped}
+   * @return simple or complex property as {@link EdmTyped}
    * @throws EdmException
    */
-  EdmTyped getProperty(String name) throws EdmException;;
+  EdmTyped getProperty(String name) throws EdmException;
 
   /**
    * Get all property names
@@ -26,7 +26,7 @@ public interface EdmStructuralType extends EdmNamed, EdmType {
    * @return property names as type Collection<String>
    * @throws EdmException
    */
-  Collection<String> getPropertyNames() throws EdmException;;
+  Collection<String> getPropertyNames() throws EdmException;
 
   /**
    * Get the base type
@@ -34,5 +34,5 @@ public interface EdmStructuralType extends EdmNamed, EdmType {
    * @return {@link EdmStructuralType}
    * @throws EdmException
    */
-  EdmStructuralType getBaseType() throws EdmException;;
+  EdmStructuralType getBaseType() throws EdmException;
 }

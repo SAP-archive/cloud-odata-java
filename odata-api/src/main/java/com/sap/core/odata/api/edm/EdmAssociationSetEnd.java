@@ -22,6 +22,7 @@ public interface EdmAssociationSetEnd {
    * Get the entity set
    * 
    * @return {@link EdmEntitySet}
+   * @throws EdmException
    */
-  EdmEntitySet getEntitySet();
+  EdmEntitySet getEntitySet() throws EdmException;
 }

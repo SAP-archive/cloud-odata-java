@@ -9,6 +9,6 @@ package com.sap.core.odata.api.edm;
  * 
  * @author SAP AG
  */
-public interface EdmParameter extends EdmElement, EdmMappable, EdmNamed, EdmTyped {
+public interface EdmParameter extends EdmElement {
 
 }

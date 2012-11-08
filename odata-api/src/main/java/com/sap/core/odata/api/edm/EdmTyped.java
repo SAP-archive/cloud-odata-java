@@ -15,7 +15,7 @@ public interface EdmTyped extends EdmNamed {
    * @return {@link EdmType}
    * @throws EdmException
    */
-  EdmType getType() throws EdmException;;
+  EdmType getType() throws EdmException;
 
   /**
    * Get the multiplicity
@@ -23,5 +23,5 @@ public interface EdmTyped extends EdmNamed {
    * @return {@link EdmMultiplicity}
    * @throws EdmException
    */
-  EdmMultiplicity getMultiplicity() throws EdmException;;
+  EdmMultiplicity getMultiplicity() throws EdmException;
 }

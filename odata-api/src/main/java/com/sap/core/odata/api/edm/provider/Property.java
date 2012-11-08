@@ -9,15 +9,17 @@ public class Property {
   private FullQualifiedName type;
   private EdmFacets facets;
   private CustomizableFeedMappings customizableFeedMappings;
+  private String mimeType;
   private Mapping mapping;
   private Documentation documentation;
   private Annotations annotations;
 
-  public Property(String name, FullQualifiedName type, EdmFacets facets, CustomizableFeedMappings customizableFeedMappings, Mapping mapping, Documentation documentation, Annotations annotations) {
+  public Property(String name, FullQualifiedName type, EdmFacets facets, CustomizableFeedMappings customizableFeedMappings, String mimeType, Mapping mapping, Documentation documentation, Annotations annotations) {
     this.name = name;
     this.type = type;
     this.facets = facets;
     this.customizableFeedMappings = customizableFeedMappings;
+    this.mimeType = mimeType;
     this.mapping = mapping;
     this.documentation = documentation;
     this.annotations = annotations;
@@ -37,6 +39,10 @@ public class Property {
 
   public CustomizableFeedMappings getCustomizableFeedMappings() {
     return customizableFeedMappings;
+  }
+
+  public String getMimeType() {
+    return mimeType;
   }
 
   public Mapping getMapping() {

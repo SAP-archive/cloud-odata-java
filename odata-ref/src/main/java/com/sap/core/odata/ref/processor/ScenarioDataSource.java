@@ -114,8 +114,14 @@ public class ScenarioDataSource implements ListsDataSource {
       }
       if (data.isEmpty())
         throw new ODataNotFoundException(ODataNotFoundException.ENTITY);
-      else
+      if (targetKeys.isEmpty()) {
         return data;
+      } else {
+        for (final Object employee : data)
+          if (((Employee) employee).getId().equals(targetKeys.get("EmployeeId")))
+            return employee;
+        throw new ODataNotFoundException(ODataNotFoundException.ENTITY);
+      }
 
     } else if ("Teams".equals(targetEntitySet.getName())) {
       if (((Employee) sourceData).getTeam() == null)
@@ -124,7 +130,37 @@ public class ScenarioDataSource implements ListsDataSource {
         return ((Employee) sourceData).getTeam();
 
     } else if ("Rooms".equals(targetEntitySet.getName())) {
-      return null;
+      if ("Employees".equals(sourceEntitySet.getName())) {
+        if (((Employee) sourceData).getRoom() == null)
+          throw new ODataNotFoundException(ODataNotFoundException.ENTITY);
+        else
+          return ((Employee) sourceData).getRoom();
+      } else if ("Buildings".equals(sourceEntitySet.getName())) {
+          List<Room> data = ((Building) sourceData).getRooms();
+          if (data.isEmpty())
+            throw new ODataNotFoundException(ODataNotFoundException.ENTITY);
+          if (targetKeys.isEmpty()) {
+            return data;
+          } else {
+            for (final Object room : data)
+              if (((Room) room).getId().equals(targetKeys.get("Id")))
+                return room;
+            throw new ODataNotFoundException(ODataNotFoundException.ENTITY);
+          }
+      }
+      throw new ODataNotImplementedException();
+
+    } else if ("Managers".equals(targetEntitySet.getName())) {
+      if (((Employee) sourceData).getManager() == null)
+        throw new ODataNotFoundException(ODataNotFoundException.ENTITY);
+      else
+        return ((Employee) sourceData).getManager();
+
+    } else if ("Buildings".equals(targetEntitySet.getName())) {
+      if (((Room) sourceData).getBuilding() == null)
+        throw new ODataNotFoundException(ODataNotFoundException.ENTITY);
+      else
+        return ((Room) sourceData).getBuilding();
 
     } else {
       throw new ODataNotFoundException(ODataNotFoundException.ENTITY);
