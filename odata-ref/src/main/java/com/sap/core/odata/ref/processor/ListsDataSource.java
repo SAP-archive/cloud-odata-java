@@ -41,6 +41,19 @@ public interface ListsDataSource {
   Object readData(EdmEntitySet entitySet, Map<String, Object> keys) throws ODataException;
 
   /**
+   * <p>Retrieves data for the specified function import and key.</p>
+   * @param function  the requested {@link EdmFunctionImport}
+   * @param parameters  the parameters of the function import
+   *                    as map of parameter names to parameter values
+   * @param keys  the key of the returned entity set, as map of key names to key values,
+   *              if the return type of the function import is a collection of entities
+   *              (optional)
+   * @return the requested data object, either a list or a single object
+   * @throws ODataException
+   */
+  Object readData(EdmFunctionImport function, Map<String, Object> parameters, Map<String, Object> keys) throws ODataException;
+
+  /**
    * <p>Retrieves related data for the specified source data, entity set, and key.</p>
    * <p>If the underlying association of the EDM is specified to have target
    * multiplicity '*' and no target key is given, this method returns a list of
@@ -54,19 +67,6 @@ public interface ListsDataSource {
    * @throws ODataError
    */
   Object readRelatedData(EdmEntitySet sourceEntitySet, Object sourceData, EdmEntitySet targetEntitySet, Map<String, Object> targetKeys) throws ODataException;
-
-  /**
-   * <p>Retrieves data for the specified function import and key.</p>
-   * @param function  the requested {@link EdmFunctionImport}
-   * @param parameters  the parameters of the function import
-   *                    as map of parameter names to parameter values
-   * @param keys  the key of the returned entity set, as map of key names to key values,
-   *              if the return type of the function import is a collection of entities
-   *              (optional)
-   * @return the requested data object, either a list or a single object
-   * @throws ODataException
-   */
-  Object readDataFromFunction(EdmFunctionImport function, Map<String, Object> parameters, Map<String, Object> keys) throws ODataException;
 
   /**
    * <p>Creates and returns a new instance of the requested data-object type.</p>

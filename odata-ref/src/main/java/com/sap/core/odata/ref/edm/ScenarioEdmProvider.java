@@ -94,13 +94,13 @@ public class ScenarioEdmProvider implements EdmProvider {
       if (ENTITY_TYPE_1_1.getName().equals(edmFQName.getName())) {
         Map<String, Property> properties = new HashMap<String, Property>();
         properties.put("EmployeeId", new Property("EmployeeId", EDM_STRING, getFacets(false, null, null, null), null, null, null, null, null));
-        properties.put("EmployeeName", new Property("EmployeeName", EDM_STRING, null, new CustomizableFeedMappings(null, null, null, null, null, EdmTargetPath.SyndicationTitle), null, null, null, null));
+        properties.put("EmployeeName", new Property("EmployeeName", EDM_STRING, null, new CustomizableFeedMappings(null, null, null, null, null, EdmTargetPath.SyndicationTitle, null), null, null, null, null));
         properties.put("ManagerId", new Property("ManagerId", EDM_STRING, null, null, null, null, null, null));
         properties.put("TeamId", new Property("TeamId", EDM_STRING, getFacets(null, 2, null, null), null, null, null, null, null));
         properties.put("RoomId", new Property("RoomId", EDM_STRING, null, null, null, null, null, null));
         properties.put("Location", new Property("Location", COMPLEX_TYPE_1, null, null, null, null, null, null));
         properties.put("Age", new Property("Age", EDM_INT16, null, null, null, null, null, null));
-        properties.put("EntryDate", new Property("EntryDate", EDM_DATETIME, getFacets(true, null, null, null), new CustomizableFeedMappings(null, null, null, null, null, EdmTargetPath.SyndicationUpdated), null, null, null, null));
+        properties.put("EntryDate", new Property("EntryDate", EDM_DATETIME, getFacets(true, null, null, null), new CustomizableFeedMappings(null, null, null, null, null, EdmTargetPath.SyndicationUpdated, null), null, null, null, null));
         properties.put("ImageUrl", new Property("ImageUrl", EDM_STRING, null, null, null, null, null, null));
         Map<String, NavigationProperty> navigationProperties = new HashMap<String, NavigationProperty>();
         navigationProperties.put("ne_Manager", new NavigationProperty("ne_Manager", ASSOCIATION_1_1, ROLE_1_1, ROLE_1_4, null, null));
@@ -111,7 +111,7 @@ public class ScenarioEdmProvider implements EdmProvider {
       } else if (ENTITY_TYPE_1_BASE.getName().equals(edmFQName.getName())) {
         Map<String, Property> properties = new HashMap<String, Property>();
         properties.put("Id", new Property("Id", EDM_STRING, getFacets(false, null, "1", null), null, null, null, null, null));
-        properties.put("Name", new Property("Name", EDM_STRING, null, new CustomizableFeedMappings(null, null, null, null, null, EdmTargetPath.SyndicationTitle), null, null, null, null));
+        properties.put("Name", new Property("Name", EDM_STRING, null, new CustomizableFeedMappings(null, null, null, null, null, EdmTargetPath.SyndicationTitle, null), null, null, null, null));
         return new EntityType(ENTITY_TYPE_1_BASE.getName(), null, true, properties, null, null, null, false, null, getKey("Id"), null);
 
       } else if (ENTITY_TYPE_1_2.getName().equals(edmFQName.getName())) {
@@ -152,12 +152,12 @@ public class ScenarioEdmProvider implements EdmProvider {
       if (ENTITY_TYPE_2_1.getName().equals(edmFQName.getName())) {
         Map<String, Property> properties = new HashMap<String, Property>();
         properties.put("Id", new Property("Id", EDM_INT32, getFacets(false, null, null, true), null, null, null, null, null));
-        properties.put("Name", new Property("Name", EDM_STRING, null, new CustomizableFeedMappings(null, null, null, null, null, EdmTargetPath.SyndicationTitle), null, null, null, null));
+        properties.put("Name", new Property("Name", EDM_STRING, null, new CustomizableFeedMappings(null, null, null, null, null, EdmTargetPath.SyndicationTitle, null), null, null, null, null));
         properties.put("Type", new Property("Type", EDM_STRING, getFacets(false, null, null, null), null, null, null, null, null));
-        properties.put("ImageUrl", new Property("ImageUrl", EDM_STRING, null, new CustomizableFeedMappings(null, null, null, null, null, EdmTargetPath.SyndicationAuthorUri), null, null, null, null));
+        properties.put("ImageUrl", new Property("ImageUrl", EDM_STRING, null, new CustomizableFeedMappings(null, null, null, null, null, EdmTargetPath.SyndicationAuthorUri, null), null, null, null, null));
         properties.put("Image", new Property("Image", EDM_BINARY, null, null, null, null, null, null));
         properties.put("BinaryData", new Property("BinaryData", EDM_BINARY, getFacets(true, null, null, null), null, "image/jpeg", null, null, null));
-        properties.put("Содержание", new Property("Содержание", EDM_STRING, getFacets(true, null, null, null), new CustomizableFeedMappings(false, null, "ру", "http://localhost", null, null), null, null, null, null));
+        properties.put("Содержание", new Property("Содержание", EDM_STRING, getFacets(true, null, null, null), new CustomizableFeedMappings(false, null, "ру", "http://localhost", null, null, "Содержание"), null, null, null, null));
         return new EntityType(ENTITY_TYPE_2_1.getName(), null, false, properties, null, null, null, true, null, getKey("Id", "Type"), null);
 
       } else {

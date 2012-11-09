@@ -12,14 +12,16 @@ public class CustomizableFeedMappings implements EdmCustomizableFeedMappings {
   private String fcNsUri;
   private String fcSourcePath;
   private EdmTargetPath fcTargetPath;
+  private String customTargetPath;
 
-  public CustomizableFeedMappings(Boolean fcKeepInContent, EdmContentKind fcContentKind, String fcNsPrefix, String fcNsUri, String fcSourcePath, EdmTargetPath fcTargetPath) {
+  public CustomizableFeedMappings(Boolean fcKeepInContent, EdmContentKind fcContentKind, String fcNsPrefix, String fcNsUri, String fcSourcePath, EdmTargetPath fcTargetPath, String customTargetPath) {
     this.fcKeepInContent = fcKeepInContent;
     this.fcContentKind = fcContentKind;
     this.fcNsPrefix = fcNsPrefix;
     this.fcNsUri = fcNsUri;
     this.fcSourcePath = fcSourcePath;
     this.fcTargetPath = fcTargetPath;
+    this.customTargetPath = customTargetPath;
   }
 
   public Boolean isFcKeepInContent() {
@@ -44,5 +46,9 @@ public class CustomizableFeedMappings implements EdmCustomizableFeedMappings {
 
   public EdmTargetPath getFcTargetPath() {
     return fcTargetPath;
+  }
+
+  public String getCustomTargetPath() {
+    return customTargetPath;
   }
 }

@@ -27,9 +27,11 @@ import com.sap.core.odata.ref.processor.ScenarioServiceFactory;
  */
 public class BasicTest {
 
+  private static final ScenarioServiceFactory SERVICE_FACTORY = new ScenarioServiceFactory();
+
   private Response call(final List<PathSegment> pathSegments, final HttpHeaders httpHeaders, final UriInfo uriInfo, final Request request) throws ODataException {
     final ODataLocatorImpl oDataLocator = new ODataLocatorImpl();
-    oDataLocator.initializeService(new ScenarioServiceFactory(),
+    oDataLocator.initializeService(SERVICE_FACTORY,
         pathSegments,
         httpHeaders,
         uriInfo,
@@ -158,24 +160,24 @@ public class BasicTest {
   public void checkUrls() throws Exception {
     checkUrl("/");
 
-//    checkUrl("Managers('1')/$links/nm_Employees");
-//    checkUrl("Managers('1')/$links/nm_Employees()");
-//    checkUrl("Managers('1')/$links/nm_Employees('2')");
+    checkUrl("Managers('1')/$links/nm_Employees");
+    checkUrl("Managers('1')/$links/nm_Employees()");
+    checkUrl("Managers('1')/$links/nm_Employees('2')");
     checkUrl("Employees('1')/ne_Room/nr_Employees");
     checkUrl("Employees('1')/ne_Room/nr_Employees()");
     checkUrl("Employees('2')/ne_Team/nt_Employees('1')");
 
-//    checkUrl("Employees('2')/ne_Team/nt_Employees('1')/Location");
-//    checkUrl("Employees('2')/ne_Team/nt_Employees('1')/Location/City/CityName");
-//    checkUrl("Employees('2')/ne_Team/nt_Employees('1')/Location/City/CityName/$value");
-//    checkUrl("Employees('2')/ne_Team/nt_Employees('1')/$links/ne_Room");
-//    checkUrl("Employees('2')/ne_Team/nt_Employees('1')/ne_Room/$links/nr_Employees");
+    //    checkUrl("Employees('2')/ne_Team/nt_Employees('1')/Location");
+    //    checkUrl("Employees('2')/ne_Team/nt_Employees('1')/Location/City/CityName");
+    //    checkUrl("Employees('2')/ne_Team/nt_Employees('1')/Location/City/CityName/$value");
+    checkUrl("Employees('2')/ne_Team/nt_Employees('1')/$links/ne_Room");
+    checkUrl("Employees('2')/ne_Team/nt_Employees('1')/ne_Room/$links/nr_Employees");
 
     checkUrl("Employees('2')/ne_Team/nt_Employees('3')/ne_Room");
     checkUrl("Employees('2')/ne_Team/nt_Employees('3')/ne_Room/nr_Employees");
     checkUrl("Employees('2')/ne_Manager");
-//    checkUrl("Employees('2')/ne_Manager/$links/nm_Employees()");
+    checkUrl("Employees('2')/ne_Manager/$links/nm_Employees()");
     checkUrl("Employees('2')/ne_Manager/nm_Employees('3')");
-//    checkUrl("Employees('2')/ne_Manager/nm_Employees('3')/Age");
+    //    checkUrl("Employees('2')/ne_Manager/nm_Employees('3')/Age");
   }
 }

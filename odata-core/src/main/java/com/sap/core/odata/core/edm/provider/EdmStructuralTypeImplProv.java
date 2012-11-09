@@ -13,6 +13,9 @@ import com.sap.core.odata.api.edm.FullQualifiedName;
 import com.sap.core.odata.api.edm.provider.ComplexType;
 import com.sap.core.odata.api.edm.provider.Property;
 
+/**
+ * @author SAP AG
+ */
 public abstract class EdmStructuralTypeImplProv extends EdmNamedImplProv implements EdmStructuralType {
 
   protected EdmStructuralType edmBaseType;
@@ -48,11 +51,10 @@ public abstract class EdmStructuralTypeImplProv extends EdmNamedImplProv impleme
 
   @Override
   public EdmTyped getProperty(String name) throws EdmException {
-    if (edmProperties.containsKey(name)) {
-      return edmProperties.get(name);
-    }
-
-    return getPropertyInternal(name);
+    EdmTyped property = edmProperties.get(name);
+    if (property == null)
+      property = getPropertyInternal(name);
+    return property;
   }
 
   @Override

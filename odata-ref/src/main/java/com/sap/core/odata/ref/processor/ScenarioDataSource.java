@@ -168,7 +168,7 @@ public class ScenarioDataSource implements ListsDataSource {
   }
 
   @Override
-  public Object readDataFromFunction(EdmFunctionImport function, Map<String, Object> parameters, Map<String, Object> keys) throws ODataException {
+  public Object readData(EdmFunctionImport function, Map<String, Object> parameters, Map<String, Object> keys) throws ODataException {
     if (function.getName().equals("EmployeeSearch")) {
       if (parameters.get("q") == null)
         throw new ODataNotFoundException(ODataNotFoundException.ENTITY);

@@ -10,6 +10,9 @@ import com.sap.core.odata.api.edm.EdmSimpleTypeKind;
 import com.sap.core.odata.api.edm.EdmType;
 import com.sap.core.odata.api.edm.FullQualifiedName;
 
+/**
+ * @author SAP AG
+ */
 public abstract class EdmElementImplProv extends EdmNamedImplProv implements EdmElement {
 
   private EdmType edmType;
@@ -25,10 +28,11 @@ public abstract class EdmElementImplProv extends EdmNamedImplProv implements Edm
   @Override
   public EdmType getType() throws EdmException {
     if (edmType == null) {
-      if (EdmSimpleTypeFacade.edmNamespace.equals(typeName.getNamespace())) {
+      final String namespace = typeName.getNamespace();
+      if (EdmSimpleTypeFacade.edmNamespace.equals(namespace)) {
         edmType = new EdmSimpleTypeFacade().getInstance(EdmSimpleTypeKind.valueOf(typeName.getName()));
       } else {
-        edmType = edm.getComplexType(typeName.getNamespace(), typeName.getName());
+        edmType = edm.getComplexType(namespace, typeName.getName());
       }
     }
 
@@ -37,11 +41,7 @@ public abstract class EdmElementImplProv extends EdmNamedImplProv implements Edm
 
   @Override
   public EdmMultiplicity getMultiplicity() throws EdmException {
-    if (!edmFacets.isNullable()) {
-      return EdmMultiplicity.ONE;
-    } else {
-      return EdmMultiplicity.ZERO_TO_ONE;
-    }
+    return edmFacets.isNullable() ? EdmMultiplicity.ZERO_TO_ONE : EdmMultiplicity.ONE;
   }
 
   @Override
