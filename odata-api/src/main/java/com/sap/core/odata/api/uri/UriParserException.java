@@ -8,6 +8,7 @@ public class UriParserException extends ODataMessageException {
    * 
    */
   private static final long serialVersionUID = 1L;
+
   public static final MessageReference EDM = createContext(UriParserException.class, "EDM");
   public static final MessageReference URISYNTAX = createContext(UriParserException.class, "URISYNTAX");
   public static final MessageReference MATCHPROBLEM = createContext(UriParserException.class, "MATCHPROBLEM");
@@ -23,6 +24,7 @@ public class UriParserException extends ODataMessageException {
 
   public static final MessageReference EMPTYSEGMENT = createContext(UriParserException.class, "EMPTYSEGMENT");
   public static final MessageReference NOTLASTSEGMENT = createContext(UriParserException.class, "NOTLASTSEGMENT");
+  public static final MessageReference MUSTBELASTSEGMENT = createContext(UriParserException.class, "MUSTBELASTSEGMENT");
   public static final MessageReference INVALIDSEGMENT = createContext(UriParserException.class, "INVALIDSEGMENT");
 
   public static final MessageReference INVALIDVALUE = createContext(UriParserException.class, "INVALIDVALUE");
@@ -39,7 +41,13 @@ public class UriParserException extends ODataMessageException {
   public static final MessageReference INCOMPATIBLELITERAL = createContext(UriParserException.class, "INCOMPATIBLELITERAL");
   public static final MessageReference INCOMPATIBLESYSTEMQUERYOPTION = createContext(UriParserException.class, "INCOMPATIBLESYSTEMQUERYOPTION");
 
-  public UriParserException(MessageReference context) {
-    super(context);
+  public static final MessageReference NOTFOUND = createContext(UriParserException.class, "NOTFOUND");
+  public static final MessageReference PROPERTYNOTFOUND = createContext(UriParserException.class, "PROPERTYNOTFOUND");
+  public static final MessageReference ENTITYNOTFOUND = createContext(UriParserException.class, "ENTITYNOTFOUND");
+  public static final MessageReference CONTAINERNOTFOUND = createContext(UriParserException.class, "CONTAINERNOTFOUND");
+
+  
+  public UriParserException(MessageReference MessageReference) {
+    super(MessageReference);
   }
 }

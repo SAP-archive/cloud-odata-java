@@ -1,6 +1,5 @@
 package com.sap.core.testutils.mocks;
 
-import static org.mockito.Matchers.matches;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -26,10 +25,10 @@ import com.sap.core.odata.api.edm.EdmTypeKind;
 import com.sap.core.odata.api.edm.EdmTyped;
 
 class EdmMock {
-  
+
   public static Edm createMockEdm() throws EdmException {
     final EdmSimpleTypeFacade facade = new EdmSimpleTypeFacade();
-    
+
     EdmServiceMetadata serviceMetadata = mock(EdmServiceMetadata.class);
     when(serviceMetadata.getDataServiceVersion()).thenReturn("MockEdm");
 
@@ -47,7 +46,7 @@ class EdmMock {
 
     EdmEntityType managerType = managerEntitySet.getEntityType();
     when(managerType.getProperty("nm_Employees")).thenReturn(employeeProperty);
-    when(managerType.getProperty("somethingwrong")).thenThrow(new EdmException("Property not found"));
+    //when(managerType.getProperty("somethingwrong")).thenThrow(new EdmException("Property not found"));
 
     EdmNavigationProperty managerProperty = mock(EdmNavigationProperty.class);
     when(managerProperty.getType()).thenReturn(navigationType);
@@ -58,7 +57,7 @@ class EdmMock {
     when(employeeType.getKind()).thenReturn(EdmTypeKind.ENTITY);
     when(employeeType.hasStream()).thenReturn(true);
     when(employeeType.getProperty("ne_Manager")).thenReturn(managerProperty);
-    when(employeeType.getProperty(matches(".+wrong|\\$links"))).thenThrow(new EdmException("Property not found"));
+    //when(employeeType.getProperty(matches(".+wrong|\\$links"))).thenThrow(new EdmException("Property not found"));
 
     EdmProperty employeeSimpleProperty = mock(EdmProperty.class);
     when(employeeSimpleProperty.getType()).thenReturn(facade.stringInstance());
@@ -77,13 +76,13 @@ class EdmMock {
     when(countryProperty.getType()).thenReturn(facade.stringInstance());
     when(countryProperty.getName()).thenReturn("Country");
     when(locationComplexType.getProperty("Country")).thenReturn(countryProperty);
-    when(locationComplexType.getProperty("somethingwrong")).thenThrow(new EdmException("Property not found"));
+    //when(locationComplexType.getProperty("somethingwrong")).thenThrow(new EdmException("Property not found"));
 
     EdmEntitySet teamsEntitySet = createEntitySetMock(defaultContainer, "Teams", facade.stringInstance(), "Id");
     when(teamsEntitySet.getEntityType().getProperty("nt_Employees")).thenReturn(employeeProperty);
     when(teamsEntitySet.getRelatedEntitySet(employeeProperty)).thenReturn(employeeEntitySet);
 
-    when(defaultContainer.getEntitySet(matches("some.+|.+Search|All.+|Max.+|Most.+|ManagerPhoto|Old.+"))).thenThrow(new EdmException("Entity set not found"));
+    //when(defaultContainer.getEntitySet(matches("some.+|.+Search|All.+|Max.+|Most.+|ManagerPhoto|Old.+"))).thenThrow(new EdmException("Entity set not found"));
 
     EdmFunctionImport employeeSearchFunctionImport = createFunctionImportMock(defaultContainer, "EmployeeSearch", employeeType, EdmMultiplicity.MANY);
     when(employeeSearchFunctionImport.getEntitySet()).thenReturn(employeeEntitySet);
@@ -108,7 +107,7 @@ class EdmMock {
     when(managerPhotoFunctionImport.getParameterNames()).thenReturn(managerPhotoParameterNames);
     when(managerPhotoFunctionImport.getParameter("Id")).thenReturn(managerPhotoParameter);
     createFunctionImportMock(defaultContainer, "OldestEmployee", employeeType, EdmMultiplicity.ONE);
-    when(defaultContainer.getFunctionImport("somethingwrong")).thenThrow(new EdmException("Function import not found"));
+    //when(defaultContainer.getFunctionImport("somethingwrong")).thenThrow(new EdmException("Function import not found"));
 
     EdmEntityContainer specificContainer = mock(EdmEntityContainer.class);
     when(specificContainer.getEntitySet("Employees")).thenReturn(employeeEntitySet);
@@ -139,7 +138,7 @@ class EdmMock {
     when(edm.getDefaultEntityContainer()).thenReturn(defaultContainer);
     when(edm.getEntityContainer("Container1")).thenReturn(specificContainer);
     when(edm.getEntityContainer("Container2")).thenReturn(photoContainer);
-    when(edm.getEntityContainer("somethingwrong")).thenThrow(new EdmException("Container not found"));
+    //when(edm.getEntityContainer("somethingwrong")).thenThrow(new EdmException("Container not found"));
     return edm;
   }
 
@@ -179,5 +178,5 @@ class EdmMock {
     when(container.getFunctionImport(name)).thenReturn(functionImport);
     return functionImport;
   }
-  
+
 }

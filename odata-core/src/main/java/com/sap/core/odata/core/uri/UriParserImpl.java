@@ -140,22 +140,25 @@ public class UriParserImpl implements UriParser {
     UriParserImpl.LOG.debug("RegEx (" + currentPathSegment + ") : entityContainerName=" + entityContainerName + ", segmentName=" + segmentName + ", keyPredicate=" + keyPredicate + ", emptyParentheses=" + emptyParentheses);
 
     uriResult.setEntityContainer(entityContainerName == null ? edm.getDefaultEntityContainer() : edm.getEntityContainer(entityContainerName));
+    if (uriResult.getEntityContainer() == null) {
+      throw new UriParserException(UriParserException.CONTAINERNOTFOUND);
+    }
 
     EdmEntitySet entitySet = null;
     EdmFunctionImport functionImport = null;
-    try {
-      entitySet = uriResult.getEntityContainer().getEntitySet(segmentName);
-    } catch (EdmException e) {
-      functionImport = uriResult.getEntityContainer().getFunctionImport(segmentName);
-    }
+
+    entitySet = uriResult.getEntityContainer().getEntitySet(segmentName);
     if (entitySet != null) {
       uriResult.setStartEntitySet(entitySet);
       handleEntitySet(entitySet, keyPredicate);
-    } else if (functionImport != null) {
-      uriResult.setFunctionImport(functionImport);
-      handleFunctionImport(functionImport, emptyParentheses, keyPredicate);
     } else {
-      throw new UriParserException(UriParserException.INVALIDSEGMENT);
+      functionImport = uriResult.getEntityContainer().getFunctionImport(segmentName);
+      if (functionImport != null) {
+        uriResult.setFunctionImport(functionImport);
+        handleFunctionImport(functionImport, emptyParentheses, keyPredicate);
+      } else {
+        throw new UriParserException(UriParserException.NOTFOUND);
+      }
     }
   }
 
@@ -225,6 +228,9 @@ public class UriParserImpl implements UriParser {
     UriParserImpl.LOG.debug("RegEx (" + currentPathSegment + "): NavigationProperty=" + navigationPropertyName + ", keyPredicate=" + keyPredicateName + ", emptyParentheses=" + emptyParentheses);
 
     final EdmTyped property = uriResult.getTargetEntitySet().getEntityType().getProperty(navigationPropertyName);
+    if (property == null) {
+      throw new UriParserException(UriParserException.PROPERTYNOTFOUND);
+    }
 
     switch (property.getType().getKind()) {
     case SIMPLE:
@@ -329,6 +335,9 @@ public class UriParserImpl implements UriParser {
 
       case COMPLEX:
         final EdmProperty nextProperty = (EdmProperty) ((EdmComplexType) type).getProperty(currentPathSegment);
+        if (nextProperty == null) {
+          throw new UriParserException(UriParserException.PROPERTYNOTFOUND);
+        }
         handlePropertyPath(nextProperty);
         break;
 
@@ -340,7 +349,7 @@ public class UriParserImpl implements UriParser {
 
   private void ensureLastSegment() throws UriParserException {
     if (!pathSegments.isEmpty())
-      throw new UriParserException(UriParserException.NOTLASTSEGMENT);
+      throw new UriParserException(UriParserException.MUSTBELASTSEGMENT);
   }
 
   private void checkCount() throws UriParserException {
@@ -581,7 +590,7 @@ public class UriParserImpl implements UriParser {
 
         final EdmTyped property = fromEntitySet.getEntityType().getProperty(expandPropertyName);
         if (property == null)
-          throw new UriParserException(UriParserException.INVALIDSEGMENT);
+          throw new UriParserException(UriParserException.PROPERTYNOTFOUND);
         if (property.getType().getKind() == EdmTypeKind.NAVIGATION) {
           final EdmNavigationProperty navigationProperty = (EdmNavigationProperty) property;
           fromEntitySet = fromEntitySet.getRelatedEntitySet(navigationProperty);
@@ -630,7 +639,7 @@ public class UriParserImpl implements UriParser {
 
         final EdmTyped property = fromEntitySet.getEntityType().getProperty(selectedPropertyName);
         if (property == null)
-          throw new UriParserException(UriParserException.INVALIDSEGMENT);
+          throw new UriParserException(UriParserException.PROPERTYNOTFOUND);
 
         switch (property.getType().getKind()) {
         case SIMPLE:

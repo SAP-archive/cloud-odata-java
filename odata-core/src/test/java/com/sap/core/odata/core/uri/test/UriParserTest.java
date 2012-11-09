@@ -113,7 +113,7 @@ public class UriParserTest {
 
   @Test
   public void parseNonsens() throws Exception {
-    parseWrongUri("/bla", UriParserException.INVALIDSEGMENT);
+    parseWrongUri("/bla", UriParserException.NOTFOUND);
   }
 
   @Test
@@ -136,7 +136,7 @@ public class UriParserTest {
 
   @Test
   public void parseMetadataError() throws Exception {
-    parseWrongUri("/$metadata/somethingwrong", UriParserException.NOTLASTSEGMENT);
+    parseWrongUri("/$metadata/somethingwrong", UriParserException.MUSTBELASTSEGMENT);
   }
 
   @Test
@@ -147,13 +147,12 @@ public class UriParserTest {
 
   @Test
   public void parseBatchError() throws Exception {
-    parseWrongUri("/$batch/somethingwrong", UriParserException.NOTLASTSEGMENT);
+    parseWrongUri("/$batch/somethingwrong", UriParserException.MUSTBELASTSEGMENT);
   }
 
   @Test
   public void parseSomethingEntitySet() throws Exception {
-    //TODO: EDM or INVALIDSEGMENT???
-    parseWrongUri("/somethingwrong", UriParserException.EDM);
+    parseWrongUri("/somethingwrong", UriParserException.NOTFOUND);
   }
 
   @Test
@@ -318,20 +317,18 @@ public class UriParserTest {
     parseWrongUri("/Employees('1')/EmployeeName()", UriParserException.INVALIDSEGMENT);
     //TODO: EDM or INVALIDSEGMENT???
     parseWrongUri("/Employees('1')/EmployeeName/something", UriParserException.INVALIDSEGMENT);
-    parseWrongUri("/Employees('1')/EmployeeName/$value/something", UriParserException.NOTLASTSEGMENT);
+    parseWrongUri("/Employees('1')/EmployeeName/$value/something", UriParserException.MUSTBELASTSEGMENT);
   }
 
   @Test
   public void complexPropertyWrong() throws Exception {
     parseWrongUri("/Employees('1')/Location(1)", UriParserException.INVALIDSEGMENT);
-  //TODO: invalid segment here
-    parseWrongUri("/Employees('1')/Location/somethingwrong", UriParserException.EDM);
+    parseWrongUri("/Employees('1')/Location/somethingwrong", UriParserException.PROPERTYNOTFOUND);
   }
 
   @Test
   public void EmployeesNoProperty() throws Exception {
-    //TODO: EDM or INVALIDSEGMENT???
-    parseWrongUri("/Employees('1')/somethingwrong", UriParserException.EDM);
+    parseWrongUri("/Employees('1')/somethingwrong", UriParserException.PROPERTYNOTFOUND);
   }
 
   @Test
@@ -438,15 +435,13 @@ public class UriParserTest {
     parseWrongUri("Employees('1')/ne_Manager/$count/somethingwrong", UriParserException.NOTLASTSEGMENT);
     parseWrongUri("Employees('1')/$links/ne_Manager/$count/somethingwrong", UriParserException.NOTLASTSEGMENT);
     parseWrongUri("Employees('1')/ne_Manager/$value", UriParserException.NOMEDIARESOURCE);
-    parseWrongUri("Managers('1')/nm_Employees('1')/$value/somethingwrong", UriParserException.NOTLASTSEGMENT);
+    parseWrongUri("Managers('1')/nm_Employees('1')/$value/somethingwrong", UriParserException.MUSTBELASTSEGMENT);
     parseWrongUri("Managers('1')/nm_Employees/$links", UriParserException.INVALIDSEGMENT);
     parseWrongUri("Managers('1')/nm_Employees/$links/Manager", UriParserException.INVALIDSEGMENT);
     parseWrongUri("Managers('1')/nm_Employees/somethingwrong", UriParserException.INVALIDSEGMENT);
-    //TODO: invalid segment here
-    parseWrongUri("Employees('1')/$links/somethingwrong", UriParserException.EDM);
+    parseWrongUri("Employees('1')/$links/somethingwrong", UriParserException.PROPERTYNOTFOUND);
     parseWrongUri("Employees('1')/$links/EmployeeName", UriParserException.NONAVIGATIONPROPERTY);
-    //TODO: invalid segment here
-    parseWrongUri("Employees('1')/$links/$links/ne_Manager", UriParserException.EDM);
+    parseWrongUri("Employees('1')/$links/$links/ne_Manager", UriParserException.PROPERTYNOTFOUND);
     parseWrongUri("Managers('1')/nm_Employee/", UriParserException.EMPTYSEGMENT);
   }
 
@@ -530,8 +525,7 @@ public class UriParserTest {
 
   @Test
   public void parseNonexistentContainer() throws Exception {
-    //TODO: EDM or INVALIDSEGMENT???
-    parseWrongUri("/somethingwrong.Employees()", UriParserException.EDM);
+    parseWrongUri("/somethingwrong.Employees()", UriParserException.CONTAINERNOTFOUND);
   }
 
   @Test
@@ -588,8 +582,7 @@ public class UriParserTest {
   @Test
   public void parseWrongFunctionImports() throws Exception {
     parseWrongUri("EmployeeSearch?q=42", UriParserException.INCOMPATIBLELITERAL);
-    //TODO: Check Not last segment? this is wrong here
-    parseWrongUri("AllLocations/$value", UriParserException.NOTLASTSEGMENT);
+    parseWrongUri("AllLocations/$value", UriParserException.MUSTBELASTSEGMENT);
     parseWrongUri("MaximalAge()", UriParserException.INVALIDSEGMENT);
     parseWrongUri("MaximalAge/somethingwrong", UriParserException.INVALIDSEGMENT);
     parseWrongUri("ManagerPhoto", UriParserException.MISSINGPARAMETER);
@@ -788,19 +781,17 @@ public class UriParserTest {
 
   @Test
   public void parseSystemQueryOptionSelectNegative() throws Exception {
-    //TODO: Check if edm is the right context here
-    parseWrongUri("Employees?$select=somethingwrong", UriParserException.EDM);
-    
+    parseWrongUri("Employees?$select=somethingwrong", UriParserException.PROPERTYNOTFOUND);
     parseWrongUri("Employees?$select=*/Somethingwrong", UriParserException.INVALIDSEGMENT);
     parseWrongUri("Employees?$select=EmployeeName/*", UriParserException.INVALIDSEGMENT);
     parseWrongUri("Employees?$select=,EmployeeName", UriParserException.EMPTYSEGMENT);
     parseWrongUri("Employees?$select=EmployeeName,", UriParserException.EMPTYSEGMENT);
     parseWrongUri("Employees?$select=EmployeeName,,Location", UriParserException.EMPTYSEGMENT);
-    parseWrongUri("Employees?$select=*EmployeeName", UriParserException.INVALIDSEGMENT);
-    parseWrongUri("Employees?$select=EmployeeName*", UriParserException.INVALIDSEGMENT);
+    parseWrongUri("Employees?$select=*EmployeeName", UriParserException.PROPERTYNOTFOUND);
+    parseWrongUri("Employees?$select=EmployeeName*", UriParserException.PROPERTYNOTFOUND);
     parseWrongUri("Employees?$select=/EmployeeName", UriParserException.EMPTYSEGMENT);
     parseWrongUri("Employees?$select=EmployeeName/", UriParserException.EMPTYSEGMENT);
-    parseWrongUri("Teams('1')?$select=nt_Employees/Id", UriParserException.INVALIDSEGMENT);
+    parseWrongUri("Teams('1')?$select=nt_Employees/Id", UriParserException.PROPERTYNOTFOUND);
     parseWrongUri("Teams('1')?$select=nt_Employees//*", UriParserException.EMPTYSEGMENT);
   }
 
@@ -825,13 +816,13 @@ public class UriParserTest {
     parseWrongUri("Managers('1')?$expand=/nm_Employees", UriParserException.EMPTYSEGMENT);
     parseWrongUri("Managers('1')?$expand=nm_Employees/", UriParserException.EMPTYSEGMENT);
     parseWrongUri("Managers('1')?$expand=nm_Employees//", UriParserException.EMPTYSEGMENT);
-    parseWrongUri("Managers('1')?$expand=somethingwrong", UriParserException.EDM);
+    parseWrongUri("Managers('1')?$expand=somethingwrong", UriParserException.PROPERTYNOTFOUND);
     parseWrongUri("Managers('1')?$expand=nm_Employees/EmployeeName", UriParserException.NONAVIGATIONPROPERTY);
-    parseWrongUri("Managers('1')?$expand=nm_Employees/somethingwrong", UriParserException.EDM);
-    parseWrongUri("Managers('1')?$expand=nm_Employees/*", UriParserException.INVALIDSEGMENT);
-    parseWrongUri("Managers('1')?$expand=nm_Employees/*,somethingwrong", UriParserException.INVALIDSEGMENT);
-    parseWrongUri("Managers('1')?$expand=nm_Employees/*,some()", UriParserException.INVALIDSEGMENT);
-    parseWrongUri("Managers('1')?$expand=nm_Employees/(...)", UriParserException.INVALIDSEGMENT);
+    parseWrongUri("Managers('1')?$expand=nm_Employees/somethingwrong", UriParserException.PROPERTYNOTFOUND);
+    parseWrongUri("Managers('1')?$expand=nm_Employees/*", UriParserException.PROPERTYNOTFOUND);
+    parseWrongUri("Managers('1')?$expand=nm_Employees/*,somethingwrong", UriParserException.PROPERTYNOTFOUND);
+    parseWrongUri("Managers('1')?$expand=nm_Employees/*,some()", UriParserException.PROPERTYNOTFOUND);
+    parseWrongUri("Managers('1')?$expand=nm_Employees/(...)", UriParserException.PROPERTYNOTFOUND);
     parseWrongUri("Teams('1')?$expand=nt_Employees//ne_Manager", UriParserException.EMPTYSEGMENT);
   }
 
