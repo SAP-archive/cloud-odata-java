@@ -148,14 +148,21 @@ public class UriParserImpl implements UriParser {
     }
 
     EdmEntitySet entitySet = null;
+    try {
+      entitySet = uriResult.getEntityContainer().getEntitySet(segmentName);
+    } catch (EdmException e) {};
     EdmFunctionImport functionImport = null;
+    if (entitySet == null)
+      try {
+        functionImport = uriResult.getEntityContainer().getFunctionImport(segmentName);
+      } catch (EdmException e) {
+        throw new UriParserException(UriParserException.NOTFOUND);
+      }
 
-    entitySet = uriResult.getEntityContainer().getEntitySet(segmentName);
     if (entitySet != null) {
       uriResult.setStartEntitySet(entitySet);
       handleEntitySet(entitySet, keyPredicate);
     } else {
-      functionImport = uriResult.getEntityContainer().getFunctionImport(segmentName);
       if (functionImport != null) {
         uriResult.setFunctionImport(functionImport);
         handleFunctionImport(functionImport, emptyParentheses, keyPredicate);
