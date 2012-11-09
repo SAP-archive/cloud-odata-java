@@ -1,181 +1,86 @@
 package com.sap.core.odata.api.edm;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import org.apache.commons.codec.DecoderException;
-import org.apache.commons.codec.binary.Base64;
-import org.apache.commons.codec.binary.Hex;
-
 import com.sap.core.odata.api.RuntimeDelegate;
 import com.sap.core.odata.api.uri.UriLiteral;
 import com.sap.core.odata.api.uri.UriParserException;
 
-public class EdmSimpleTypeFacade {
+public abstract class EdmSimpleTypeFacade {
 
   public static final String edmNamespace = "Edm";
   public static final String systemNamespace = "System";
-  private static final Pattern WHOLE_NUMBER_PATTERN = Pattern.compile("(-?\\p{Digit}+)([lL])?");
-  private static final Pattern DECIMAL_NUMBER_PATTERN = Pattern.compile("(-?\\p{Digit}+(?:\\.\\p{Digit}*(?:[eE][-+]?\\p{Digit}+)?)?)([mMdDfF])");
-  private static final Pattern STRING_VALUE_PATTERN = Pattern.compile("(X|binary|datetime|datetimeoffset|guid|time)?'(.*)'");
-
-
-  public EdmSimpleType getInstance(EdmSimpleTypeKind edmSimpleType) {
+  
+  public static EdmSimpleType getInstance(EdmSimpleTypeKind edmSimpleType) {
     return RuntimeDelegate.getInstance().getEdmSimpleType(edmSimpleType);
   }
-  
-  private EdmSimpleType getInternalTypeKindInstance(String edmSimpleType){
-    return RuntimeDelegate.getInstance().getInternalEdmSimpleTypeByString(edmSimpleType);
-  }
 
-  public EdmSimpleType binaryInstance() {
+  public static EdmSimpleType binaryInstance() {
     return getInstance(EdmSimpleTypeKind.Binary);
   }
 
-  public EdmSimpleType booleanInstance() {
+  public static EdmSimpleType booleanInstance() {
     return getInstance(EdmSimpleTypeKind.Boolean);
   }
 
-  public EdmSimpleType byteInstance() {
+  public static EdmSimpleType byteInstance() {
     return getInstance(EdmSimpleTypeKind.Byte);
   }
 
-  public EdmSimpleType dateTimeInstance() {
+  public static EdmSimpleType dateTimeInstance() {
     return getInstance(EdmSimpleTypeKind.DateTime);
   }
 
-  public EdmSimpleType dateTimeOffsetInstance() {
+  public static EdmSimpleType dateTimeOffsetInstance() {
     return getInstance(EdmSimpleTypeKind.DateTimeOffset);
   }
 
-  public EdmSimpleType decimalInstance() {
+  public static EdmSimpleType decimalInstance() {
     return getInstance(EdmSimpleTypeKind.Decimal);
   }
 
-  public EdmSimpleType doubleInstance() {
+  public static EdmSimpleType doubleInstance() {
     return getInstance(EdmSimpleTypeKind.Double);
   }
 
-  public EdmSimpleType guidInstance() {
+  public static EdmSimpleType guidInstance() {
     return getInstance(EdmSimpleTypeKind.Guid);
   }
 
-  public EdmSimpleType int16Instance() {
+  public static EdmSimpleType int16Instance() {
     return getInstance(EdmSimpleTypeKind.Int16);
   }
 
-  public EdmSimpleType int32Instance() {
+  public static EdmSimpleType int32Instance() {
     return getInstance(EdmSimpleTypeKind.Int32);
   }
 
-  public EdmSimpleType int64Instance() {
+  public static EdmSimpleType int64Instance() {
     return getInstance(EdmSimpleTypeKind.Int64);
   }
 
-  public EdmSimpleType sByteInstance() {
+  public static EdmSimpleType sByteInstance() {
     return getInstance(EdmSimpleTypeKind.SByte);
   }
 
-  public EdmSimpleType singleInstance() {
+  public static EdmSimpleType singleInstance() {
     return getInstance(EdmSimpleTypeKind.Single);
   }
 
-  public EdmSimpleType stringInstance() {
+  public static EdmSimpleType stringInstance() {
     return getInstance(EdmSimpleTypeKind.String);
   }
 
-  public EdmSimpleType timeInstance() {
+  public static EdmSimpleType timeInstance() {
     return getInstance(EdmSimpleTypeKind.Time);
   }
 
-  public EdmSimpleType nullInstance() {
+  public static EdmSimpleType nullInstance() {
     return getInstance(EdmSimpleTypeKind.Null);
   }
 
-  
-  
-  public UriLiteral parseUriLiteral(final String uriLiteral) throws UriParserException {
-    final String literal = uriLiteral;
-
-    if ("true".equals(literal) || "false".equals(literal))
-      return new UriLiteral(booleanInstance(), literal);
-    
-    if ("null".equals(literal))
-      return new UriLiteral(nullInstance(), literal);
-
-    if (literal.length() >= 2)
-      if (literal.startsWith("'") && literal.endsWith("'"))
-        return new UriLiteral(stringInstance(), literal.substring(1, literal.length() - 1).replace("''", "'"));
-
-    final Matcher wholeNumberMatcher = WHOLE_NUMBER_PATTERN.matcher(literal);
-    if (wholeNumberMatcher.matches()) {
-      final String value = wholeNumberMatcher.group(1);
-      final String suffix = wholeNumberMatcher.group(2);
-
-      if ("L".equalsIgnoreCase(suffix))
-        return new UriLiteral(int64Instance(), value);
-      else
-        try {
-          final int i = Integer.parseInt(value);
-          if (i == 0 || i == 1)
-            return new UriLiteral(getInternalTypeKindInstance("Bit"), value);
-          else if (i > 1 && i <= Byte.MAX_VALUE)
-            return new UriLiteral(getInternalTypeKindInstance("Uint7"), value);
-          else if (i >= Byte.MIN_VALUE && i < 0)
-            return new UriLiteral(sByteInstance(), value);
-          else if (i > Byte.MAX_VALUE && i <= 255)
-            return new UriLiteral(byteInstance(), value);
-          else if (i >= Short.MIN_VALUE && i <= Short.MAX_VALUE)
-            return new UriLiteral(int16Instance(), value);
-          else
-            return new UriLiteral(int32Instance(), value);
-        } catch (NumberFormatException e) {
-          throw new UriParserException(UriParserException.LITERALFORMAT);
-//        throw new UriParserException("Wrong format for literal value: " + uriLiteral, e);
-        }
-    }
-
-    final Matcher decimalNumberMatcher = DECIMAL_NUMBER_PATTERN.matcher(literal);
-    if (decimalNumberMatcher.matches()) {
-      final String value = decimalNumberMatcher.group(1);
-      final String suffix = decimalNumberMatcher.group(2);
-
-      if ("M".equalsIgnoreCase(suffix))
-        return new UriLiteral(decimalInstance(), value);
-      else if ("D".equalsIgnoreCase(suffix))
-        return new UriLiteral(doubleInstance(), value);
-      else if ("F".equalsIgnoreCase(suffix))
-        return new UriLiteral(singleInstance(), value);
-    }
-
-    final Matcher stringValueMatcher = STRING_VALUE_PATTERN.matcher(literal);
-    if (stringValueMatcher.matches()) {
-      final String prefix = stringValueMatcher.group(1);
-      final String value = stringValueMatcher.group(2);
-
-      if ("X".equals(prefix) || "binary".equals(prefix)) {
-        byte[] b;
-        try {
-          b = Hex.decodeHex(value.toCharArray());
-        } catch (DecoderException e) {
-          UriParserException ex = new UriParserException(UriParserException.NOTEXT);
-          //TODO: Append previous exception instead of setting stack trace
-          ex.setStackTrace(e.getStackTrace());
-          throw ex;
-        }
-        return new UriLiteral(binaryInstance(), Base64.encodeBase64String(b));
-      }
-      if ("datetime".equals(prefix))
-        return new UriLiteral(dateTimeInstance(), value);
-      else if ("datetimeoffset".equals(prefix))
-        return new UriLiteral(dateTimeOffsetInstance(), value);
-      else if ("guid".equals(prefix))
-        return new UriLiteral(guidInstance(), value);
-      else if ("time".equals(prefix))
-        return new UriLiteral(timeInstance(), value);
-    }
-    throw new UriParserException(UriParserException.UNKNOWNLITERAL);
-//    throw new UriParserException("Unknown uriLiteral: " + uriLiteral);
+  public static UriLiteral parseUriLiteral(final String uriLiteral) throws UriParserException {
+    return RuntimeDelegate.getInstance().getSimpleTypeFacade().parse(uriLiteral);
   }
+  
+  public abstract UriLiteral parse(final String uriLiteral) throws UriParserException;
 
 }

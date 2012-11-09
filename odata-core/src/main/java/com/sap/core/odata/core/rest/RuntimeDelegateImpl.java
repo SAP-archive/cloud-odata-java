@@ -3,6 +3,7 @@ package com.sap.core.odata.core.rest;
 import com.sap.core.odata.api.RuntimeDelegate;
 import com.sap.core.odata.api.edm.Edm;
 import com.sap.core.odata.api.edm.EdmSimpleType;
+import com.sap.core.odata.api.edm.EdmSimpleTypeFacade;
 import com.sap.core.odata.api.edm.EdmSimpleTypeKind;
 import com.sap.core.odata.api.processor.ODataResponse.ODataResponseBuilder;
 import com.sap.core.odata.api.uri.UriParser;
@@ -20,6 +21,7 @@ import com.sap.core.odata.core.edm.simpletype.EdmInt32;
 import com.sap.core.odata.core.edm.simpletype.EdmInt64;
 import com.sap.core.odata.core.edm.simpletype.EdmNull;
 import com.sap.core.odata.core.edm.simpletype.EdmSByte;
+import com.sap.core.odata.core.edm.simpletype.EdmSimpleTypeFacadeImpl;
 import com.sap.core.odata.core.edm.simpletype.EdmSingle;
 import com.sap.core.odata.core.edm.simpletype.EdmString;
 import com.sap.core.odata.core.edm.simpletype.EdmTime;
@@ -109,6 +111,11 @@ public class RuntimeDelegateImpl extends RuntimeDelegate {
       throw new RuntimeException("Invalid internal Type " + edmSimpleType);
     }
     return edmType;
+  }
+
+  @Override
+  public EdmSimpleTypeFacade getSimpleTypeFacade() {
+    return new EdmSimpleTypeFacadeImpl();
   }
 
 }

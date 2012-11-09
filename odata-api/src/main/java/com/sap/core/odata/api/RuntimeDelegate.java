@@ -2,6 +2,7 @@ package com.sap.core.odata.api;
 
 import com.sap.core.odata.api.edm.Edm;
 import com.sap.core.odata.api.edm.EdmSimpleType;
+import com.sap.core.odata.api.edm.EdmSimpleTypeFacade;
 import com.sap.core.odata.api.edm.EdmSimpleTypeKind;
 import com.sap.core.odata.api.processor.ODataResponse.ODataResponseBuilder;
 import com.sap.core.odata.api.uri.UriParser;
@@ -54,5 +55,7 @@ public abstract class RuntimeDelegate {
   public abstract UriParser getUriParser(Edm edm);
 
   public abstract EdmSimpleType getInternalEdmSimpleTypeByString(String edmSimpleType);
+  
+  public abstract EdmSimpleTypeFacade getSimpleTypeFacade();
 
 }
