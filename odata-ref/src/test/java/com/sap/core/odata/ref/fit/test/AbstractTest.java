@@ -1,5 +1,7 @@
 package com.sap.core.odata.ref.fit.test;
 
+import static org.junit.Assert.assertEquals;
+
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
@@ -13,6 +15,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.UriInfo;
 
+import com.sap.core.odata.api.enums.HttpStatus;
 import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.api.uri.UriParserException;
 import com.sap.core.odata.core.rest.ODataLocatorImpl;
@@ -33,6 +36,16 @@ public abstract class AbstractTest {
         getUriInfo(),
         request);
     return oDataLocator.handleGet();
+  }
+
+  protected void badRequest(final String urlString, final HttpHeaders httpHeaders, final Request request) throws ODataException {
+    final Response response = call(urlString, httpHeaders, request);
+    assertEquals(HttpStatus.BAD_REQUEST.getStatusCode(), response.getStatus());
+  }
+
+  protected void notFound(final String urlString, final HttpHeaders httpHeaders, final Request request) throws ODataException {
+    final Response response = call(urlString, httpHeaders, request);
+    assertEquals(HttpStatus.NOT_FOUND.getStatusCode(), response.getStatus());
   }
 
   private UriInfo getUriInfo() {
