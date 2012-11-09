@@ -107,7 +107,7 @@ public class UriParserTest {
       fail("Expected UriParserException not thrown");
     } catch (UriParserException e) {
       assertNotNull(e);
-      assertEquals(exceptionContext.getKey(), e.getContext().getKey());
+      assertEquals(exceptionContext.getKey(), e.getMessageReference().getKey());
     }
   }
 

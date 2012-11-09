@@ -6,48 +6,48 @@ import com.sap.core.odata.api.enums.HttpStatus;
  * Base exception class for all exceptions in <code>OData</code> library which contains a message which will be displayed to 
  * a possible client and therefore needs support for internationalization.
  * For support of internationalization and translated message all {@link ODataMessageException} and sub classes contains 
- * an {@link MessageReference} object which can be mapped to a related key and message in the resource bundles.
+ * a {@link MessageReference} object which can be mapped to a related key and message in the resource bundles.
  */
 public abstract class ODataMessageException extends ODataException {
 
-  /** Context of exception which is used for internationalization */
-  protected final MessageReference context;
+  /** Message reference for exception which is used for internationalization */
+  protected final MessageReference messageReference;
 
   /**   */
   private static final long serialVersionUID = 42L;
 
-  public static final MessageReference COMMON = createContext(ODataMessageException.class, "COMMON");
+  public static final MessageReference COMMON = createMessageReference(ODataMessageException.class, "COMMON");
 
-  public ODataMessageException(MessageReference context) {
-    this.context = context;
+  public ODataMessageException(MessageReference messageReference) {
+    this.messageReference = messageReference;
   }
 
   /**
    * Convenience method for creation of {@link MessageReference} objects.
    * 
    * @param clazz
-   *        Exception class of context
-   * @param contextId
-   *        Unique (in exception class) key for context.
+   *        Exception class for message reference
+   * @param messageReferenceKey
+   *        Unique (in exception class) key for message reference.
    * @return created context instance
    */
-  public static final MessageReference createContext(Class<? extends ODataMessageException> clazz, String contextId) {
-    return MessageReference.create(clazz, contextId);
+  public static final MessageReference createMessageReference(Class<? extends ODataMessageException> clazz, String messageReferenceKey) {
+    return MessageReference.create(clazz, messageReferenceKey);
   }
   
   /**
    * Convenience method for creation of {@link MessageReference} objects.
    * 
    * @param clazz
-   *        Exception class of context
-   * @param contextId
-   *        Unique (in exception class) key for context.
+   *        Exception class for message reference
+   * @param messageReferenceKey
+   *        Unique (in exception class) key for message reference.
    * @param status
    *        {@link HttpStatus} of this {@link MessageReference}
    * @return created context instance
    */
-  public static final MessageReference createContext(Class<? extends ODataMessageException> clazz, String contextId, HttpStatus status) {
-    return MessageReference.create(clazz, contextId, status);
+  public static final MessageReference createContext(Class<? extends ODataMessageException> clazz, String messageReferenceKey, HttpStatus status) {
+    return MessageReference.create(clazz, messageReferenceKey, status);
   }
 
   /**
@@ -55,7 +55,7 @@ public abstract class ODataMessageException extends ODataException {
    * 
    * @return the context
    */
-  public MessageReference getContext() {
-    return context;
+  public MessageReference getMessageReference() {
+    return messageReference;
   }
 }

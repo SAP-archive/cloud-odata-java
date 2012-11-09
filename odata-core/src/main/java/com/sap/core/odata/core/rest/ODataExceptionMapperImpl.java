@@ -9,6 +9,7 @@ import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 import javax.ws.rs.ext.ExceptionMapper;
@@ -17,6 +18,7 @@ import javax.ws.rs.ext.Provider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.api.exception.ODataMessageException;
 import com.sap.core.odata.core.exception.MessageService;
 import com.sap.core.odata.core.exception.MessageService.Message;
@@ -35,33 +37,49 @@ public class ODataExceptionMapperImpl implements ExceptionMapper<Exception> {
   @Override
   public Response toResponse(Exception exception) {
 
-    final String entity;
-    final Status status;
-
-    if(exception instanceof ODataMessageException) {
-      ODataMessageException msgException = (ODataMessageException) exception;
-      Message localizedMessage = extractEntity(msgException.getContext());
-      entity = "Language = '" + localizedMessage.getLang() + "', message = '" + localizedMessage.getText() + "'.";
-      status = extractStatus(msgException.getContext());
+    final ResponseBuilder responseBuilder;
+    
+    if (exception instanceof ODataMessageException) {
+      responseBuilder = buildResponseForMessageException((ODataMessageException) exception);
+    } else if (exception instanceof ODataException) {
+      ODataException odataException = (ODataException) exception;
+      if(odataException.isCausedByMessageException()) {
+        responseBuilder = buildResponseForMessageException(odataException.getMessageExceptionCause());
+      } else {
+        responseBuilder = buildResponseForException(exception);
+      }
+      ODataExceptionMapperImpl.log.error(exception.getMessage(), exception);
     } else {
       ODataExceptionMapperImpl.log.error(exception.getMessage(), exception);
-      entity = exception.getClass().getCanonicalName() + " - " + exception.getMessage();
-      status = Status.INTERNAL_SERVER_ERROR;
+      responseBuilder = buildResponseForException(exception);
     }
 
-    return Response.status(status).entity(entity).build();
+    return responseBuilder.build();
+  }
+
+  private ResponseBuilder buildResponseForException(Exception exception) {
+    ResponseBuilder responseBuilder = Response.noContent();
+    return responseBuilder.entity(exception.getClass().getCanonicalName() + " - " + exception.getMessage())
+                    .status(Status.INTERNAL_SERVER_ERROR);
+  }
+
+  private ResponseBuilder buildResponseForMessageException(ODataMessageException msgException) {
+    Message localizedMessage = extractEntity(msgException.getMessageReference());
+    ResponseBuilder responseBuilder = Response.noContent();
+    return responseBuilder.entity("Language = '" + localizedMessage.getLang() + "', message = '" + localizedMessage.getText() + "'.")
+                    .status(extractStatus(msgException.getMessageReference()));
   }
 
   private Status extractStatus(com.sap.core.odata.api.exception.MessageReference context) {
     Status extractedStatus = Status.INTERNAL_SERVER_ERROR;
-    if(context.getHttpStatus() != null) {
+    if (context.getHttpStatus() != null) {
       try {
         extractedStatus = Status.valueOf(context.getHttpStatus().name());
       } catch (IllegalArgumentException e) {
         // no mapping found -> INTERNAL_SERVER_ERROR
       }
     }
-    
+
     return extractedStatus;
   }
 
@@ -77,15 +95,15 @@ public class ODataExceptionMapperImpl implements ExceptionMapper<Exception> {
    */
   private List<Locale> getLanguages() {
     try {
-      if(httpHeaders.getAcceptableLanguages().isEmpty()) {
+      if (httpHeaders.getAcceptableLanguages().isEmpty()) {
         return Arrays.asList(DEFAULT_RESPONSE_LOCALE);
       }
       return httpHeaders.getAcceptableLanguages();
     } catch (WebApplicationException e) {
-      if(e.getCause() != null && e.getCause().getClass() == ParseException.class) {
+      if (e.getCause() != null && e.getCause().getClass() == ParseException.class) {
         // invalid accept-language string in http header
         // compensate exception with using default locale
-        return Arrays.asList(DEFAULT_RESPONSE_LOCALE);        
+        return Arrays.asList(DEFAULT_RESPONSE_LOCALE);
       }
       // not able to compensate exception -> re-throw
       throw e;
