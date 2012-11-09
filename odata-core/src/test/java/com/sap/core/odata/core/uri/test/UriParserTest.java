@@ -96,7 +96,6 @@ public class UriParserTest {
     try {
       return new URI(s).getPath();
     } catch (URISyntaxException e) {
-      //TODO: Should the uriparser contain an escaping text? In my opinion not!
       throw new UriParserException(UriParserException.NOTEXT);
     }
   }
@@ -315,7 +314,6 @@ public class UriParserTest {
   public void simplePropertyWrong() throws Exception {
     parseWrongUri("/Employees('1')/EmployeeName(1)", UriParserException.INVALIDSEGMENT);
     parseWrongUri("/Employees('1')/EmployeeName()", UriParserException.INVALIDSEGMENT);
-    //TODO: EDM or INVALIDSEGMENT???
     parseWrongUri("/Employees('1')/EmployeeName/something", UriParserException.INVALIDSEGMENT);
     parseWrongUri("/Employees('1')/EmployeeName/$value/something", UriParserException.MUSTBELASTSEGMENT);
   }

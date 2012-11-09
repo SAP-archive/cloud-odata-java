@@ -61,7 +61,6 @@ public class EdmSimpleTypeFacadeImpl extends EdmSimpleTypeFacade {
             return new UriLiteral(int32Instance(), value);
         } catch (NumberFormatException e) {
           throw new UriParserException(UriParserException.LITERALFORMAT);
-//        throw new UriParserException("Wrong format for literal value: " + uriLiteral, e);
         }
     }
 
@@ -105,6 +104,5 @@ public class EdmSimpleTypeFacadeImpl extends EdmSimpleTypeFacade {
         return new UriLiteral(timeInstance(), value);
     }
     throw new UriParserException(UriParserException.UNKNOWNLITERAL);
-//    throw new UriParserException("Unknown uriLiteral: " + uriLiteral);
   }
 }
