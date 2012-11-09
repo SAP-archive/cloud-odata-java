@@ -53,7 +53,8 @@ public class MiscReadonlyTest extends AbstractTest {
     assertEquals("4", call("Rooms('2')/$links/nr_Employees/$count", null, null).getEntity());
     assertEquals("1", call("Employees('1')/$links/ne_Room/$count", null, null).getEntity());
     assertEquals("1", call("Managers('3')/$links/nm_Employees('5')/$count", null, null).getEntity());
-    // badRequest "Rooms('1')/Seats/$count"
-    // notFound "Managers('3')/nm_Employees('1')/$count"
+
+    // badRequest("Rooms('1')/Seats/$count", null, null);
+    // notFound("Managers('3')/nm_Employees('1')/$count", null, null);
   }
 }
