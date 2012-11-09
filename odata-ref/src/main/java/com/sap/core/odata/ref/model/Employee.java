@@ -181,6 +181,6 @@ public class Employee {
         + "\"Country\":\"" + location.getCountry() + "\"},"
         + "\"Age\":" + age + ","
         + "\"EntryDate\":\"" + entryDate + "\","
-        + "\"ImageUrl\":\"" + imageUrl + "}";
+        + "\"ImageUrl\":\"" + imageUrl + "\"}";
   }
 }

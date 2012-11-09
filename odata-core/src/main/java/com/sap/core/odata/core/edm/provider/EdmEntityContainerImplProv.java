@@ -17,6 +17,9 @@ import com.sap.core.odata.api.edm.provider.EntitySet;
 import com.sap.core.odata.api.edm.provider.FunctionImport;
 import com.sap.core.odata.api.exception.ODataException;
 
+/**
+ * @author SAP AG
+ */
 public class EdmEntityContainerImplProv implements EdmEntityContainer {
 
   private EdmImplProv edm;
@@ -48,10 +51,9 @@ public class EdmEntityContainerImplProv implements EdmEntityContainer {
 
   @Override
   public EdmEntitySet getEntitySet(String name) throws EdmException {
-    if (edmEntitySets.containsKey(name))
-      return edmEntitySets.get(name);
-
-    EdmEntitySet edmEntitySet = null;
+    EdmEntitySet edmEntitySet = edmEntitySets.get(name);
+    if (edmEntitySet != null)
+      return edmEntitySet;
 
     EntitySet entitySet;
     try {
@@ -73,10 +75,9 @@ public class EdmEntityContainerImplProv implements EdmEntityContainer {
 
   @Override
   public EdmFunctionImport getFunctionImport(String name) throws EdmException {
-    if (edmFunctionImports.containsKey(name))
-      return edmFunctionImports.get(name);
-
-    EdmFunctionImport edmFunctionImport = null;
+    EdmFunctionImport edmFunctionImport = edmFunctionImports.get(name);
+    if (edmFunctionImport != null)
+      return edmFunctionImport;
 
     FunctionImport functionImport;
     try {
@@ -105,11 +106,9 @@ public class EdmEntityContainerImplProv implements EdmEntityContainer {
 
     String key = entitySetName + ">>" + association + ">>" + entitySetFromRole;
 
-    if (edmAssociationSets.containsKey(key)) {
-      return edmAssociationSets.get(key);
-    }
-
-    EdmAssociationSet edmAssociationSet = null;
+    EdmAssociationSet edmAssociationSet = edmAssociationSets.get(key);
+    if (edmAssociationSet != null)
+      return edmAssociationSet;
 
     AssociationSet associationSet;
     FullQualifiedName associationFQName = new FullQualifiedName(edmAssociation.getName(), edmAssociation.getNamespace());

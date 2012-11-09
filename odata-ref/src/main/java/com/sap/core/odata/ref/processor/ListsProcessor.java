@@ -22,7 +22,11 @@ import com.sap.core.odata.api.uri.KeyPredicate;
 import com.sap.core.odata.api.uri.NavigationSegment;
 import com.sap.core.odata.api.uri.UriLiteral;
 import com.sap.core.odata.api.uri.resultviews.GetEntityCountView;
+import com.sap.core.odata.api.uri.resultviews.GetEntityLinkCountView;
+import com.sap.core.odata.api.uri.resultviews.GetEntityLinkView;
 import com.sap.core.odata.api.uri.resultviews.GetEntitySetCountView;
+import com.sap.core.odata.api.uri.resultviews.GetEntitySetLinksCountView;
+import com.sap.core.odata.api.uri.resultviews.GetEntitySetLinksView;
 import com.sap.core.odata.api.uri.resultviews.GetEntitySetView;
 import com.sap.core.odata.api.uri.resultviews.GetEntityView;
 import com.sap.core.odata.api.uri.resultviews.GetFunctionImportView;
@@ -96,6 +100,33 @@ public class ListsProcessor extends ODataSingleProcessor {
   }
 
   @Override
+  public ODataResponse readEntityLinks(GetEntitySetLinksView uriParserResultView) throws ODataException {
+    ArrayList<Object> data = new ArrayList<Object>();
+    data.addAll((List<?>) retrieveData(
+        uriParserResultView.getStartEntitySet(),
+        uriParserResultView.getKeyPredicates(),
+        uriParserResultView.getNavigationSegments()));
+
+    applySystemQueryOptions(
+        uriParserResultView.getTargetEntitySet(),
+        data,
+        uriParserResultView.getInlineCount(),
+        uriParserResultView.getFilter(),
+//        uriParserResultView.getOrderBy(),
+        null,
+        uriParserResultView.getSkipToken(),
+        uriParserResultView.getSkip(),
+        uriParserResultView.getTop());
+
+    return ODataResponseBuilder.newInstance().status(HttpStatus.OK).entity("Links to " + data.toString()).build();
+  }
+
+  @Override
+  public ODataResponse countEntityLinks(GetEntitySetLinksCountView uriParserResultView) throws ODataException {
+    return countEntitySet((GetEntitySetCountView) uriParserResultView);
+  }
+
+  @Override
   public ODataResponse readEntity(final GetEntityView uriParserResultView) throws ODataException {
     final Object data = retrieveData(
         uriParserResultView.getStartEntitySet(),
@@ -121,8 +152,27 @@ public class ListsProcessor extends ODataSingleProcessor {
   }
 
   @Override
+  public ODataResponse readEntityLink(GetEntityLinkView uriParserResultView) throws ODataException {
+    final Object data = retrieveData(
+        uriParserResultView.getStartEntitySet(),
+        uriParserResultView.getKeyPredicates(),
+        uriParserResultView.getNavigationSegments());
+
+//    if (appliesFilter(data, uriParserResultView.getFilter()))
+    if (data != null)
+      return ODataResponseBuilder.newInstance().status(HttpStatus.OK).entity("Link to " + data.toString()).build();
+    else
+      throw new ODataNotFoundException(ODataNotFoundException.ENTITY);
+  }
+
+  @Override
+  public ODataResponse existsEntityLink(GetEntityLinkCountView uriParserResultView) throws ODataException {
+    return existsEntity((GetEntityCountView) uriParserResultView);
+  }
+
+  @Override
   public ODataResponse executeFunctionImport(GetFunctionImportView uriParserResultView) throws ODataException {
-    final Object data = dataSource.readDataFromFunction(
+    final Object data = dataSource.readData(
         uriParserResultView.getFunctionImport(),
         mapFunctionParameters(uriParserResultView.getFunctionImportParameters()),
         null);
@@ -206,6 +256,11 @@ public class ListsProcessor extends ODataSingleProcessor {
   }
 
   private boolean appliesFilter(final Object data, final String filter) {
+    if (data == null)
+      return false;
+    if (filter == null)
+      return true;
+    // TODO: implement filter evaluation
     return true;
   }
 }
