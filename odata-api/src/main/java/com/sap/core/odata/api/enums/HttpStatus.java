@@ -123,6 +123,10 @@ public enum HttpStatus {
    */
   EXPECTATION_FAILED(417, "Expectation Failed"),
   /**
+   * 428 Precondition Required, see <a href="http://tools.ietf.org/html/rfc6585#section-3">Additional HTTP Status Codes</a>.
+   */
+  PRECONDITION_REQUIRED(428, "Precondition Required"),
+  /**
    * 500 Internal Server Error, see <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.5.1">HTTP/1.1 documentation</a>.
    */
   INTERNAL_SERVER_ERROR(500, "Internal Server Error"),
