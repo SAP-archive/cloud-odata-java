@@ -9,7 +9,12 @@ import com.sap.core.odata.api.edm.EdmFunctionImport;
 import com.sap.core.odata.api.edm.EdmParameter;
 import com.sap.core.odata.api.edm.EdmTyped;
 import com.sap.core.odata.api.edm.provider.FunctionImport;
+import com.sap.core.odata.api.edm.provider.FunctionImportParameter;
+import com.sap.core.odata.api.edm.provider.ReturnType;
 
+/**
+ * @author SAP AG
+ */
 public class EdmFunctionImportImplProv extends EdmNamedImplProv implements EdmFunctionImport {
 
   private FunctionImport functionImport;
@@ -23,6 +28,7 @@ public class EdmFunctionImportImplProv extends EdmNamedImplProv implements EdmFu
 
   @Override
   public EdmParameter getParameter(String name) throws EdmException {
+    final FunctionImportParameter parameter = functionImport.getParameters().get(name);
     return null;
   }
 
@@ -33,7 +39,7 @@ public class EdmFunctionImportImplProv extends EdmNamedImplProv implements EdmFu
 
   @Override
   public EdmEntitySet getEntitySet() throws EdmException {
-    return null;
+    return edmEntityContainer.getEntitySet(functionImport.getEntitySet());
   }
 
   @Override
@@ -43,6 +49,7 @@ public class EdmFunctionImportImplProv extends EdmNamedImplProv implements EdmFu
 
   @Override
   public EdmTyped getReturnType() throws EdmException {
+    final ReturnType returnType = functionImport.getReturnType();
     return null;
   }
 
