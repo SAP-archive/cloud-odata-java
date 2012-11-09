@@ -24,7 +24,7 @@ import com.sap.core.odata.api.edm.EdmSimpleTypeFacade;
 import com.sap.core.odata.api.edm.EdmTypeKind;
 import com.sap.core.odata.api.enums.Format;
 import com.sap.core.odata.api.enums.InlineCount;
-import com.sap.core.odata.api.exception.Context;
+import com.sap.core.odata.api.exception.MessageReference;
 import com.sap.core.odata.api.uri.UriParserException;
 import com.sap.core.odata.api.uri.UriParserResult;
 import com.sap.core.odata.core.enums.UriType;
@@ -101,7 +101,7 @@ public class UriParserTest {
     }
   }
 
-  private void parseWrongUri(final String uri, Context exceptionContext) {
+  private void parseWrongUri(final String uri, MessageReference exceptionContext) {
     try {
       parse(uri);
       fail("Expected UriParserException not thrown");
