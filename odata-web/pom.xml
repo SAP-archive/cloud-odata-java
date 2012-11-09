@@ -34,8 +34,14 @@
 			<groupId>com.sap.core.odata</groupId>
 			<artifactId>com.sap.core.odata.ref</artifactId>
 			<version>${project.version}</version>
+			<exclusions>
+				<exclusion>
+					<groupId>com.sap.core.odata</groupId>
+					<artifactId>com.sap.core.odata.testutils</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
-		
+
 	</dependencies>
 
 </project>
