@@ -46,7 +46,7 @@ public class ODataRootLocator {
    * @throws InstantiationException 
    */
   @Path("/{odataPathSegments: .*}")
-  public ODataLocatorImpl getSubLocator(@PathParam("odataPathSegments") List<PathSegment> odataPathSegments) throws ODataException, ClassNotFoundException, InstantiationException, IllegalAccessException {
+  public ODataLocatorImpl handleRequest(@PathParam("odataPathSegments") List<PathSegment> odataPathSegments) throws ODataException, ClassNotFoundException, InstantiationException, IllegalAccessException {
     ODataLocatorImpl odataLocator = new ODataLocatorImpl();
 
     String factoryClassName = this.servletConfig.getInitParameter(ODataServiceFactory.FACTORY);
