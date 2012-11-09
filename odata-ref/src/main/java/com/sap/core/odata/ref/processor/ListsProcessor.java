@@ -1,6 +1,7 @@
 package com.sap.core.odata.ref.processor;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -112,7 +113,7 @@ public class ListsProcessor extends ODataSingleProcessor {
         data,
         uriParserResultView.getInlineCount(),
         uriParserResultView.getFilter(),
-//        uriParserResultView.getOrderBy(),
+        //        uriParserResultView.getOrderBy(),
         null,
         uriParserResultView.getSkipToken(),
         uriParserResultView.getSkip(),
@@ -158,7 +159,7 @@ public class ListsProcessor extends ODataSingleProcessor {
         uriParserResultView.getKeyPredicates(),
         uriParserResultView.getNavigationSegments());
 
-//    if (appliesFilter(data, uriParserResultView.getFilter()))
+    //    if (appliesFilter(data, uriParserResultView.getFilter()))
     if (data != null)
       return ODataResponseBuilder.newInstance().status(HttpStatus.OK).entity("Link to " + data.toString()).build();
     else
@@ -191,13 +192,17 @@ public class ListsProcessor extends ODataSingleProcessor {
   }
 
   private Map<String, Object> mapFunctionParameters(final Map<String, UriLiteral> functionImportParameters) {
-    HashMap<String, Object> parameterMap = new HashMap<String, Object>();
-    for (final String parameterName : functionImportParameters.keySet()) {
-      final UriLiteral literal = functionImportParameters.get(parameterName);
-      final EdmSimpleType type = (EdmSimpleType) literal.getType();
-      parameterMap.put(parameterName, type.valueOfString(literal.getLiteral(), EdmLiteralKind.DEFAULT, null));
+    if (functionImportParameters == null) {
+      return Collections.emptyMap();
+    } else {
+      HashMap<String, Object> parameterMap = new HashMap<String, Object>();
+      for (final String parameterName : functionImportParameters.keySet()) {
+        final UriLiteral literal = functionImportParameters.get(parameterName);
+        final EdmSimpleType type = (EdmSimpleType) literal.getType();
+        parameterMap.put(parameterName, type.valueOfString(literal.getLiteral(), EdmLiteralKind.DEFAULT, null));
+      }
+      return parameterMap;
     }
-    return parameterMap;
   }
 
   private Object retrieveData(final EdmEntitySet startEntitySet, final List<KeyPredicate> keyPredicates, final List<NavigationSegment> navigationSegments) throws ODataException {
@@ -235,11 +240,11 @@ public class ListsProcessor extends ODataSingleProcessor {
     else if (skipToken != null || skip != 0 || top != null)
       try {
         // TODO: Collections.sort(data);
-      } catch (ClassCastException e) {
-        throw new ODataException(e);
-      } catch (UnsupportedOperationException e) {
-        throw new ODataException(e);
-      }
+    } catch (ClassCastException e) {
+      throw new ODataException(e);
+    } catch (UnsupportedOperationException e) {
+      throw new ODataException(e);
+    }
 
     if (skipToken != null)
       throw new ODataNotImplementedException();
