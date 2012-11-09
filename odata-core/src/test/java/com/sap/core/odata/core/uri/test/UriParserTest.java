@@ -575,7 +575,7 @@ public class UriParserTest {
     UriParserResultImpl result = parse("EmployeeSearch?q='Hugo'&notaparameter=2");
     assertEquals("EmployeeSearch", result.getFunctionImport().getName());
     assertEquals(1, result.getFunctionImportParameters().size());
-    assertEquals(new EdmSimpleTypeFacade().stringInstance(), result.getFunctionImportParameters().get("q").getType());
+    assertEquals(EdmSimpleTypeFacade.stringInstance(), result.getFunctionImportParameters().get("q").getType());
     assertEquals("Hugo", result.getFunctionImportParameters().get("q").getLiteral());
   }
 

@@ -34,20 +34,16 @@ import com.sap.core.odata.core.edm.simpletype.Uint7;
 
 public class EdmSimpleTypeFacadeTest {
 
-  private static final EdmSimpleTypeFacade facade = new EdmSimpleTypeFacade();
-
   public EdmSimpleType parse(String literal) throws UriParserException {
-    UriLiteral uriLiteral = facade.parseUriLiteral(literal);
+    UriLiteral uriLiteral = EdmSimpleTypeFacade.parseUriLiteral(literal);
     return uriLiteral.getType();
   }
 
   public void compare(EdmSimpleTypeKind simpleType) {
-    EdmSimpleTypeFacade facade1 = new EdmSimpleTypeFacade();
-    EdmSimpleType bin1 = facade1.getInstance(simpleType);
+    EdmSimpleType bin1 = EdmSimpleTypeFacade.getInstance(simpleType);
     assertNotNull(bin1);
 
-    EdmSimpleTypeFacade facade2 = new EdmSimpleTypeFacade();
-    EdmSimpleType bin2 = facade2.getInstance(simpleType);
+    EdmSimpleType bin2 = EdmSimpleTypeFacade.getInstance(simpleType);
     assertNotNull(bin2);
 
     assertTrue(bin1.equals(bin2));
@@ -250,7 +246,7 @@ public class EdmSimpleTypeFacadeTest {
    * @throws EdmException
    */
   private void parseLiteral(final String literal, final EdmSimpleType type, final String expectedLiteral) throws UriParserException, EdmException {
-    final UriLiteral uriLiteral = facade.parseUriLiteral(literal);
+    final UriLiteral uriLiteral = EdmSimpleTypeFacade.parseUriLiteral(literal);
 
     assertTrue(type.isCompatible(uriLiteral.getType()));
     assertEquals(expectedLiteral, uriLiteral.getLiteral());
@@ -258,129 +254,129 @@ public class EdmSimpleTypeFacadeTest {
 
   @Test
   public void parseDecimal() throws Exception {
-    parseLiteral("4.5m", facade.decimalInstance(), "4.5");
-    parseLiteral("4.5M", facade.decimalInstance(), "4.5");
-    parseLiteral("1", facade.decimalInstance(), "1");
-    parseLiteral("255", facade.decimalInstance(), "255");
-    parseLiteral("-32768", facade.decimalInstance(), "-32768");
-    parseLiteral("32768", facade.decimalInstance(), "32768");
-    parseLiteral("3000000", facade.decimalInstance(), "3000000");
-    parseLiteral("4.5d", facade.decimalInstance(), "4.5");
-    parseLiteral("4.2E9F", facade.decimalInstance(), "4.2E9");
-    parseLiteral("1234567890", facade.decimalInstance(), "1234567890");
+    parseLiteral("4.5m", EdmSimpleTypeFacade.decimalInstance(), "4.5");
+    parseLiteral("4.5M", EdmSimpleTypeFacade.decimalInstance(), "4.5");
+    parseLiteral("1", EdmSimpleTypeFacade.decimalInstance(), "1");
+    parseLiteral("255", EdmSimpleTypeFacade.decimalInstance(), "255");
+    parseLiteral("-32768", EdmSimpleTypeFacade.decimalInstance(), "-32768");
+    parseLiteral("32768", EdmSimpleTypeFacade.decimalInstance(), "32768");
+    parseLiteral("3000000", EdmSimpleTypeFacade.decimalInstance(), "3000000");
+    parseLiteral("4.5d", EdmSimpleTypeFacade.decimalInstance(), "4.5");
+    parseLiteral("4.2E9F", EdmSimpleTypeFacade.decimalInstance(), "4.2E9");
+    parseLiteral("1234567890", EdmSimpleTypeFacade.decimalInstance(), "1234567890");
   }
 
   @Test
   public void parseInt16() throws Exception {
-    parseLiteral("16", facade.int16Instance(), "16");
-    parseLiteral("-16", facade.int16Instance(), "-16");
-    parseLiteral("255", facade.int16Instance(), "255");
-    parseLiteral("-32768", facade.int16Instance(), "-32768");
+    parseLiteral("16", EdmSimpleTypeFacade.int16Instance(), "16");
+    parseLiteral("-16", EdmSimpleTypeFacade.int16Instance(), "-16");
+    parseLiteral("255", EdmSimpleTypeFacade.int16Instance(), "255");
+    parseLiteral("-32768", EdmSimpleTypeFacade.int16Instance(), "-32768");
 
   }
 
   @Test
   public void parseInt32() throws Exception {
-    parseLiteral("32", facade.int32Instance(), "32");
-    parseLiteral("-127", facade.int32Instance(), "-127");
-    parseLiteral("255", facade.int32Instance(), "255");
-    parseLiteral("32767", facade.int32Instance(), "32767");
-    parseLiteral("-32769", facade.int32Instance(), "-32769");
+    parseLiteral("32", EdmSimpleTypeFacade.int32Instance(), "32");
+    parseLiteral("-127", EdmSimpleTypeFacade.int32Instance(), "-127");
+    parseLiteral("255", EdmSimpleTypeFacade.int32Instance(), "255");
+    parseLiteral("32767", EdmSimpleTypeFacade.int32Instance(), "32767");
+    parseLiteral("-32769", EdmSimpleTypeFacade.int32Instance(), "-32769");
   }
 
   @Test
   public void parseInt64() throws Exception {
-    parseLiteral("64", facade.int64Instance(), "64");
-    parseLiteral("255", facade.int64Instance(), "255");
-    parseLiteral("1000", facade.int64Instance(), "1000");
-    parseLiteral("100000", facade.int64Instance(), "100000");
-    parseLiteral("-64L", facade.int64Instance(), "-64");
-    parseLiteral("" + Long.MAX_VALUE + "L", facade.int64Instance(), "" + Long.MAX_VALUE);
-    parseLiteral("" + Long.MIN_VALUE + "l", facade.int64Instance(), "" + Long.MIN_VALUE);
+    parseLiteral("64", EdmSimpleTypeFacade.int64Instance(), "64");
+    parseLiteral("255", EdmSimpleTypeFacade.int64Instance(), "255");
+    parseLiteral("1000", EdmSimpleTypeFacade.int64Instance(), "1000");
+    parseLiteral("100000", EdmSimpleTypeFacade.int64Instance(), "100000");
+    parseLiteral("-64L", EdmSimpleTypeFacade.int64Instance(), "-64");
+    parseLiteral("" + Long.MAX_VALUE + "L", EdmSimpleTypeFacade.int64Instance(), "" + Long.MAX_VALUE);
+    parseLiteral("" + Long.MIN_VALUE + "l", EdmSimpleTypeFacade.int64Instance(), "" + Long.MIN_VALUE);
   }
 
   @Test
   public void parseString() throws Exception {
-    parseLiteral("'abc'", facade.stringInstance(), "abc");
-    parseLiteral("'true'", facade.stringInstance(), "true");
-    parseLiteral("''", facade.stringInstance(), "");
+    parseLiteral("'abc'", EdmSimpleTypeFacade.stringInstance(), "abc");
+    parseLiteral("'true'", EdmSimpleTypeFacade.stringInstance(), "true");
+    parseLiteral("''", EdmSimpleTypeFacade.stringInstance(), "");
   }
 
   @Test
   public void parseSingle() throws Exception {
-    parseLiteral("45", facade.singleInstance(), "45");
-    parseLiteral("255", facade.singleInstance(), "255");
-    parseLiteral("-32768", facade.singleInstance(), "-32768");
-    parseLiteral("32768", facade.singleInstance(), "32768");
-    parseLiteral("1L", facade.singleInstance(), "1");
-    parseLiteral("4.5f", facade.singleInstance(), "4.5");
-    parseLiteral("4.5F", facade.singleInstance(), "4.5");
-    parseLiteral("4.5e9f", facade.singleInstance(), "4.5e9");
+    parseLiteral("45", EdmSimpleTypeFacade.singleInstance(), "45");
+    parseLiteral("255", EdmSimpleTypeFacade.singleInstance(), "255");
+    parseLiteral("-32768", EdmSimpleTypeFacade.singleInstance(), "-32768");
+    parseLiteral("32768", EdmSimpleTypeFacade.singleInstance(), "32768");
+    parseLiteral("1L", EdmSimpleTypeFacade.singleInstance(), "1");
+    parseLiteral("4.5f", EdmSimpleTypeFacade.singleInstance(), "4.5");
+    parseLiteral("4.5F", EdmSimpleTypeFacade.singleInstance(), "4.5");
+    parseLiteral("4.5e9f", EdmSimpleTypeFacade.singleInstance(), "4.5e9");
   }
 
   @Test
   public void parseDouble() throws Exception {
-    parseLiteral("45", facade.doubleInstance(), "45");
-    parseLiteral("255", facade.doubleInstance(), "255");
-    parseLiteral("-32768", facade.doubleInstance(), "-32768");
-    parseLiteral("32768", facade.doubleInstance(), "32768");
-    parseLiteral("1l", facade.doubleInstance(), "1");
-    parseLiteral("4.5d", facade.doubleInstance(), "4.5");
-    parseLiteral("4.5D", facade.doubleInstance(), "4.5");
-    parseLiteral("4.5e21f", facade.doubleInstance(), "4.5e21");
+    parseLiteral("45", EdmSimpleTypeFacade.doubleInstance(), "45");
+    parseLiteral("255", EdmSimpleTypeFacade.doubleInstance(), "255");
+    parseLiteral("-32768", EdmSimpleTypeFacade.doubleInstance(), "-32768");
+    parseLiteral("32768", EdmSimpleTypeFacade.doubleInstance(), "32768");
+    parseLiteral("1l", EdmSimpleTypeFacade.doubleInstance(), "1");
+    parseLiteral("4.5d", EdmSimpleTypeFacade.doubleInstance(), "4.5");
+    parseLiteral("4.5D", EdmSimpleTypeFacade.doubleInstance(), "4.5");
+    parseLiteral("4.5e21f", EdmSimpleTypeFacade.doubleInstance(), "4.5e21");
   }
 
   @Test
   public void parseByte() throws Exception {
-    parseLiteral("255", facade.byteInstance(), "255");
-    parseLiteral("123", facade.byteInstance(), "123");
+    parseLiteral("255", EdmSimpleTypeFacade.byteInstance(), "255");
+    parseLiteral("123", EdmSimpleTypeFacade.byteInstance(), "123");
   }
 
   @Test
   public void parseGuid() throws Exception {
-    parseLiteral("guid'1225c695-cfb8-4ebb-aaaa-80da344efa6a'", facade.guidInstance(), "1225c695-cfb8-4ebb-aaaa-80da344efa6a");
+    parseLiteral("guid'1225c695-cfb8-4ebb-aaaa-80da344efa6a'", EdmSimpleTypeFacade.guidInstance(), "1225c695-cfb8-4ebb-aaaa-80da344efa6a");
   }
 
   @Test
   public void parseTime() throws Exception {
-    parseLiteral("time'P120D'", facade.timeInstance(), "P120D");
+    parseLiteral("time'P120D'", EdmSimpleTypeFacade.timeInstance(), "P120D");
   }
 
   @Test
   public void parseDatetime() throws Exception {
-    parseLiteral("datetime'2009-12-26T21:23:38'", facade.dateTimeInstance(), "2009-12-26T21:23:38");
-    parseLiteral("datetime'2009-12-26T21:23:38Z'", facade.dateTimeInstance(), "2009-12-26T21:23:38Z");
+    parseLiteral("datetime'2009-12-26T21:23:38'", EdmSimpleTypeFacade.dateTimeInstance(), "2009-12-26T21:23:38");
+    parseLiteral("datetime'2009-12-26T21:23:38Z'", EdmSimpleTypeFacade.dateTimeInstance(), "2009-12-26T21:23:38Z");
   }
 
   @Test
   public void parseDatetimeOffset() throws Exception {
-    parseLiteral("datetimeoffset'2009-12-26T21:23:38Z'", facade.dateTimeOffsetInstance(), "2009-12-26T21:23:38Z");
-    parseLiteral("datetimeoffset'2002-10-10T12:00:00-05:00'", facade.dateTimeOffsetInstance(), "2002-10-10T12:00:00-05:00");
+    parseLiteral("datetimeoffset'2009-12-26T21:23:38Z'", EdmSimpleTypeFacade.dateTimeOffsetInstance(), "2009-12-26T21:23:38Z");
+    parseLiteral("datetimeoffset'2002-10-10T12:00:00-05:00'", EdmSimpleTypeFacade.dateTimeOffsetInstance(), "2002-10-10T12:00:00-05:00");
   }
 
   @Test
   public void parseBoolean() throws Exception {
-    parseLiteral("true", facade.booleanInstance(), "true");
-    parseLiteral("false", facade.booleanInstance(), "false");
-    parseLiteral("1", facade.booleanInstance(), "1");
-    parseLiteral("0", facade.booleanInstance(), "0");
+    parseLiteral("true", EdmSimpleTypeFacade.booleanInstance(), "true");
+    parseLiteral("false", EdmSimpleTypeFacade.booleanInstance(), "false");
+    parseLiteral("1", EdmSimpleTypeFacade.booleanInstance(), "1");
+    parseLiteral("0", EdmSimpleTypeFacade.booleanInstance(), "0");
   }
 
   @Test
   public void parseSByte() throws Exception {
-    parseLiteral("-123", facade.sByteInstance(), "-123");
-    parseLiteral("12", facade.sByteInstance(), "12");
+    parseLiteral("-123", EdmSimpleTypeFacade.sByteInstance(), "-123");
+    parseLiteral("12", EdmSimpleTypeFacade.sByteInstance(), "12");
   }
 
   @Test
   public void parseBinary() throws Exception {
-    parseLiteral("X'Fa12aAA1'", facade.binaryInstance(), "+hKqoQ==");
-    parseLiteral("binary'FA12AAA1'", facade.binaryInstance(), "+hKqoQ==");
+    parseLiteral("X'Fa12aAA1'", EdmSimpleTypeFacade.binaryInstance(), "+hKqoQ==");
+    parseLiteral("binary'FA12AAA1'", EdmSimpleTypeFacade.binaryInstance(), "+hKqoQ==");
   }
 
   private void parseWrongLiteralContent(final String literal) {
     try {
-      facade.parseUriLiteral(literal);
+      EdmSimpleTypeFacade.parseUriLiteral(literal);
       fail("Expected UriParserException not thrown");
     } catch (UriParserException e) {
       assertNotNull(e);
@@ -398,29 +394,29 @@ public class EdmSimpleTypeFacadeTest {
   }
 
   private void parseIncompatibleLiteralContent(final String literal, final EdmSimpleType type) throws UriParserException {
-    final UriLiteral uriLiteral = facade.parseUriLiteral(literal);
+    final UriLiteral uriLiteral = EdmSimpleTypeFacade.parseUriLiteral(literal);
     assertFalse(type.isCompatible(uriLiteral.getType()));
   }
 
   @Test
   public void parseIncompatibleLiteral() throws Exception {
-    parseIncompatibleLiteralContent("1D", facade.binaryInstance());
-    parseIncompatibleLiteralContent("'0'", facade.booleanInstance());
-    parseIncompatibleLiteralContent("'1'", facade.booleanInstance());
-    parseIncompatibleLiteralContent("2", facade.booleanInstance());
-    parseIncompatibleLiteralContent("-1", facade.byteInstance());
-    parseIncompatibleLiteralContent("-129", facade.byteInstance());
-    parseIncompatibleLiteralContent("time'PT11H12M13S'", facade.dateTimeInstance());
-    parseIncompatibleLiteralContent("time'PT11H12M13S'", facade.dateTimeOffsetInstance());
-    parseIncompatibleLiteralContent("'1'", facade.decimalInstance());
-    parseIncompatibleLiteralContent("1M", facade.doubleInstance());
-    parseIncompatibleLiteralContent("1", facade.guidInstance());
-    parseIncompatibleLiteralContent("32768", facade.int16Instance());
-    parseIncompatibleLiteralContent("1L", facade.int32Instance());
-    parseIncompatibleLiteralContent("1M", facade.int64Instance());
-    parseIncompatibleLiteralContent("128", facade.sByteInstance());
-    parseIncompatibleLiteralContent("1D", facade.singleInstance());
-    parseIncompatibleLiteralContent("1", facade.stringInstance());
-    parseIncompatibleLiteralContent("datetime'2012-10-10T11:12:13'", facade.timeInstance());
+    parseIncompatibleLiteralContent("1D", EdmSimpleTypeFacade.binaryInstance());
+    parseIncompatibleLiteralContent("'0'", EdmSimpleTypeFacade.booleanInstance());
+    parseIncompatibleLiteralContent("'1'", EdmSimpleTypeFacade.booleanInstance());
+    parseIncompatibleLiteralContent("2", EdmSimpleTypeFacade.booleanInstance());
+    parseIncompatibleLiteralContent("-1", EdmSimpleTypeFacade.byteInstance());
+    parseIncompatibleLiteralContent("-129", EdmSimpleTypeFacade.byteInstance());
+    parseIncompatibleLiteralContent("time'PT11H12M13S'", EdmSimpleTypeFacade.dateTimeInstance());
+    parseIncompatibleLiteralContent("time'PT11H12M13S'", EdmSimpleTypeFacade.dateTimeOffsetInstance());
+    parseIncompatibleLiteralContent("'1'", EdmSimpleTypeFacade.decimalInstance());
+    parseIncompatibleLiteralContent("1M", EdmSimpleTypeFacade.doubleInstance());
+    parseIncompatibleLiteralContent("1", EdmSimpleTypeFacade.guidInstance());
+    parseIncompatibleLiteralContent("32768", EdmSimpleTypeFacade.int16Instance());
+    parseIncompatibleLiteralContent("1L", EdmSimpleTypeFacade.int32Instance());
+    parseIncompatibleLiteralContent("1M", EdmSimpleTypeFacade.int64Instance());
+    parseIncompatibleLiteralContent("128", EdmSimpleTypeFacade.sByteInstance());
+    parseIncompatibleLiteralContent("1D", EdmSimpleTypeFacade.singleInstance());
+    parseIncompatibleLiteralContent("1", EdmSimpleTypeFacade.stringInstance());
+    parseIncompatibleLiteralContent("datetime'2012-10-10T11:12:13'", EdmSimpleTypeFacade.timeInstance());
   }
 }

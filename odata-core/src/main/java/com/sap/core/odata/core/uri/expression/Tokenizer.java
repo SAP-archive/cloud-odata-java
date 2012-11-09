@@ -5,9 +5,9 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import com.sap.core.odata.api.edm.EdmSimpleTypeFacade;
-import com.sap.core.odata.api.edm.EdmType;
 import com.sap.core.odata.api.uri.UriLiteral;
 import com.sap.core.odata.api.uri.UriParserException;
+import com.sap.core.odata.core.edm.simpletype.EdmSimpleTypeFacadeImpl;
 
 public class Tokenizer
 {
@@ -17,7 +17,7 @@ public class Tokenizer
 
   public Tokenizer()
   {
-    typeDectector = new EdmSimpleTypeFacade();
+    typeDectector = new EdmSimpleTypeFacadeImpl();
   }
 
   /**
@@ -163,7 +163,7 @@ public class Tokenizer
 
         try
         {
-          uriLiteral = typeDectector.parseUriLiteral(token);
+          uriLiteral = typeDectector.parse(token);
         } catch (UriParserException ex)
         {
           // TODO:  create method for InvalidStringToken ID
@@ -245,7 +245,7 @@ public class Tokenizer
 
           try
           {
-            uriLiteral = typeDectector.parseUriLiteral(token);
+            uriLiteral = typeDectector.parse(token);
 
           } catch (UriParserException ex)
           {
@@ -289,7 +289,7 @@ public class Tokenizer
           token = matcher.group(1);
           try
           {
-            uriLiteral = typeDectector.parseUriLiteral(token);
+            uriLiteral = typeDectector.parse(token);
             curPosition = curPosition + token.length();
             appendEdmTypedToken(tokens, oldPosition, TokenKind.TYPED_LITERAL, uriLiteral);
             break;

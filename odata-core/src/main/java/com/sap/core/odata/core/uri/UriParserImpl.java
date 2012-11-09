@@ -7,6 +7,8 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javax.ws.rs.core.PathSegment;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -35,6 +37,7 @@ import com.sap.core.odata.api.uri.UriLiteral;
 import com.sap.core.odata.api.uri.UriParser;
 import com.sap.core.odata.api.uri.UriParserException;
 import com.sap.core.odata.api.uri.UriParserResult;
+import com.sap.core.odata.core.edm.simpletype.EdmSimpleTypeFacadeImpl;
 import com.sap.core.odata.core.enums.SystemQueryOption;
 import com.sap.core.odata.core.enums.UriType;
 
@@ -56,7 +59,7 @@ public class UriParserImpl implements UriParser {
 
   public UriParserImpl(final Edm edm) {
     this.edm = edm;
-    simpleTypeFacade = new EdmSimpleTypeFacade();
+    simpleTypeFacade = new EdmSimpleTypeFacadeImpl();
   }
 
   /**
@@ -393,7 +396,7 @@ public class UriParserImpl implements UriParser {
         throw new UriParserException(UriParserException.DUPLICATEKEYNAMES);
       parsedKeyProperties.add(keyProperty);
 
-      final UriLiteral uriLiteral = simpleTypeFacade.parseUriLiteral(value);
+      final UriLiteral uriLiteral = simpleTypeFacade.parse(value);
 
       if (!((EdmSimpleType) keyProperty.getType()).isCompatible(uriLiteral.getType()))
         throw new UriParserException(UriParserException.INCOMPATIBLELITERAL);
@@ -679,7 +682,7 @@ public class UriParserImpl implements UriParser {
             continue;
           else
             throw new UriParserException(UriParserException.MISSINGPARAMETER);
-        final UriLiteral uriLiteral = simpleTypeFacade.parseUriLiteral(value);
+        final UriLiteral uriLiteral = simpleTypeFacade.parse(value);
         if (!((EdmSimpleType) parameter.getType()).isCompatible(uriLiteral.getType()))
           throw new UriParserException(UriParserException.INCOMPATIBLELITERAL);
         uriResult.addFunctionImportParameter(parameterName, uriLiteral);

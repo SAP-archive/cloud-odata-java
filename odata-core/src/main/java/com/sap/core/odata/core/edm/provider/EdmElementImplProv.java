@@ -29,8 +29,9 @@ public abstract class EdmElementImplProv extends EdmNamedImplProv implements Edm
   public EdmType getType() throws EdmException {
     if (edmType == null) {
       final String namespace = typeName.getNamespace();
-      if (EdmSimpleTypeFacade.edmNamespace.equals(namespace)) {
-        edmType = new EdmSimpleTypeFacade().getInstance(EdmSimpleTypeKind.valueOf(typeName.getName()));
+      if (EdmSimpleTypeFacade.edmNamespace.equals(typeName.getNamespace())) {
+        edmType = EdmSimpleTypeFacade.getInstance(EdmSimpleTypeKind.valueOf(typeName.getName()));
+
       } else {
         edmType = edm.getComplexType(namespace, typeName.getName());
       }

@@ -12,8 +12,6 @@ import com.sap.core.odata.core.edm.simpletype.Uint7;
 
 public class EdmSimpleTypeTest {
 
-  private static final EdmSimpleTypeFacade facade = new EdmSimpleTypeFacade();
-
   private void testCompatibility(final EdmSimpleType type, final EdmSimpleType... edmSimpleTypes) {
     for (EdmSimpleType compatible : edmSimpleTypes)
       assertTrue(type.isCompatible(compatible));
@@ -22,219 +20,219 @@ public class EdmSimpleTypeTest {
   
   @Test
   public void toUriLiteralBinary(){
-    assertEquals("binary'FA12AAA1'", facade.binaryInstance().toUriLiteral("+hKqoQ=="));
+    assertEquals("binary'FA12AAA1'", EdmSimpleTypeFacade.binaryInstance().toUriLiteral("+hKqoQ=="));
   }
   
   @Test
   public void toUriLiteralBoolean(){
-    assertEquals("true", facade.booleanInstance().toUriLiteral("true"));
-    assertEquals("false", facade.booleanInstance().toUriLiteral("false"));
-    assertEquals("0", facade.booleanInstance().toUriLiteral("0"));
-    assertEquals("1", facade.booleanInstance().toUriLiteral("1"));
+    assertEquals("true", EdmSimpleTypeFacade.booleanInstance().toUriLiteral("true"));
+    assertEquals("false", EdmSimpleTypeFacade.booleanInstance().toUriLiteral("false"));
+    assertEquals("0", EdmSimpleTypeFacade.booleanInstance().toUriLiteral("0"));
+    assertEquals("1", EdmSimpleTypeFacade.booleanInstance().toUriLiteral("1"));
   }
 
   @Test
   public void toUriLiteralByte(){
-    assertEquals("127", facade.byteInstance().toUriLiteral("127"));
+    assertEquals("127", EdmSimpleTypeFacade.byteInstance().toUriLiteral("127"));
   }
   
   @Test
   public void toUriLiteralDateTime(){
-    assertEquals("datetime'2009-12-26T21%3A23%3A38'", facade.dateTimeInstance().toUriLiteral("2009-12-26T21:23:38"));
-    assertEquals("datetime'2009-12-26T21%3A23%3A38Z'", facade.dateTimeInstance().toUriLiteral("2009-12-26T21:23:38Z"));
+    assertEquals("datetime'2009-12-26T21%3A23%3A38'", EdmSimpleTypeFacade.dateTimeInstance().toUriLiteral("2009-12-26T21:23:38"));
+    assertEquals("datetime'2009-12-26T21%3A23%3A38Z'", EdmSimpleTypeFacade.dateTimeInstance().toUriLiteral("2009-12-26T21:23:38Z"));
   }
   
   @Test
   public void toUriLiteralDateTimeOffset(){
-    assertEquals("datetimeoffset'2009-12-26T21%3A23%3A38Z'", facade.dateTimeOffsetInstance().toUriLiteral("2009-12-26T21:23:38Z"));
-    assertEquals("datetimeoffset'2002-10-10T12%3A00%3A00-05%3A00'", facade.dateTimeOffsetInstance().toUriLiteral("2002-10-10T12:00:00-05:00"));
+    assertEquals("datetimeoffset'2009-12-26T21%3A23%3A38Z'", EdmSimpleTypeFacade.dateTimeOffsetInstance().toUriLiteral("2009-12-26T21:23:38Z"));
+    assertEquals("datetimeoffset'2002-10-10T12%3A00%3A00-05%3A00'", EdmSimpleTypeFacade.dateTimeOffsetInstance().toUriLiteral("2002-10-10T12:00:00-05:00"));
   }
   
   @Test
   public void toUriLiteralInt16(){
-    assertEquals("127", facade.int16Instance().toUriLiteral("127"));
+    assertEquals("127", EdmSimpleTypeFacade.int16Instance().toUriLiteral("127"));
   }
   
   @Test
   public void toUriLiteralInt32(){
-    assertEquals("127", facade.int32Instance().toUriLiteral("127"));
+    assertEquals("127", EdmSimpleTypeFacade.int32Instance().toUriLiteral("127"));
   }
   
   @Test
   public void toUriLiteralInt64(){
-    assertEquals("127l", facade.int64Instance().toUriLiteral("127"));
+    assertEquals("127l", EdmSimpleTypeFacade.int64Instance().toUriLiteral("127"));
   }
   
   @Test
   public void toUriLiteralSByte(){
-    assertEquals("127", facade.sByteInstance().toUriLiteral("127"));
+    assertEquals("127", EdmSimpleTypeFacade.sByteInstance().toUriLiteral("127"));
   }
   
   @Test
   public void toUriLiteralSingle(){
-    assertEquals("127f", facade.singleInstance().toUriLiteral("127"));
+    assertEquals("127f", EdmSimpleTypeFacade.singleInstance().toUriLiteral("127"));
   }
   
   @Test
   public void toUriLiteralString(){
-    assertEquals("'StringValue'", facade.stringInstance().toUriLiteral("StringValue"));
+    assertEquals("'StringValue'", EdmSimpleTypeFacade.stringInstance().toUriLiteral("StringValue"));
   }
   
   @Test
   public void toUriLiteralTime(){
-    assertEquals("time'P120D'", facade.timeInstance().toUriLiteral("P120D"));
+    assertEquals("time'P120D'", EdmSimpleTypeFacade.timeInstance().toUriLiteral("P120D"));
   }
   
   @Test
   public void testNames() throws Exception {
-    assertEquals("Binary", facade.binaryInstance().getName());
-    assertEquals("Boolean", facade.booleanInstance().getName());
-    assertEquals("Byte", facade.byteInstance().getName());
-    assertEquals("DateTime", facade.dateTimeInstance().getName());
-    assertEquals("DateTimeOffset", facade.dateTimeOffsetInstance().getName());
-    assertEquals("Decimal", facade.decimalInstance().getName());
-    assertEquals("Double", facade.doubleInstance().getName());
-    assertEquals("Guid", facade.guidInstance().getName());
-    assertEquals("Int16", facade.int16Instance().getName());
-    assertEquals("Int32", facade.int32Instance().getName());
-    assertEquals("Int64", facade.int64Instance().getName());
-    assertEquals("SByte", facade.sByteInstance().getName());
-    assertEquals("Single", facade.singleInstance().getName());
-    assertEquals("String", facade.stringInstance().getName());
-    assertEquals("Time", facade.timeInstance().getName());
+    assertEquals("Binary", EdmSimpleTypeFacade.binaryInstance().getName());
+    assertEquals("Boolean", EdmSimpleTypeFacade.booleanInstance().getName());
+    assertEquals("Byte", EdmSimpleTypeFacade.byteInstance().getName());
+    assertEquals("DateTime", EdmSimpleTypeFacade.dateTimeInstance().getName());
+    assertEquals("DateTimeOffset", EdmSimpleTypeFacade.dateTimeOffsetInstance().getName());
+    assertEquals("Decimal", EdmSimpleTypeFacade.decimalInstance().getName());
+    assertEquals("Double", EdmSimpleTypeFacade.doubleInstance().getName());
+    assertEquals("Guid", EdmSimpleTypeFacade.guidInstance().getName());
+    assertEquals("Int16", EdmSimpleTypeFacade.int16Instance().getName());
+    assertEquals("Int32", EdmSimpleTypeFacade.int32Instance().getName());
+    assertEquals("Int64", EdmSimpleTypeFacade.int64Instance().getName());
+    assertEquals("SByte", EdmSimpleTypeFacade.sByteInstance().getName());
+    assertEquals("Single", EdmSimpleTypeFacade.singleInstance().getName());
+    assertEquals("String", EdmSimpleTypeFacade.stringInstance().getName());
+    assertEquals("Time", EdmSimpleTypeFacade.timeInstance().getName());
   }
 
   @Test
   public void testBinaryCompatibility() {
-    testCompatibility(facade.binaryInstance(),
-        facade.binaryInstance());
+    testCompatibility(EdmSimpleTypeFacade.binaryInstance(),
+        EdmSimpleTypeFacade.binaryInstance());
   }
 
   @Test
   public void testBooleanCompatibility() {
-    testCompatibility(facade.booleanInstance(),
-        facade.booleanInstance(),
+    testCompatibility(EdmSimpleTypeFacade.booleanInstance(),
+        EdmSimpleTypeFacade.booleanInstance(),
         new Bit());
   }
 
   @Test
   public void testByteCompatibility() {
-    testCompatibility(facade.byteInstance(),
-        facade.byteInstance(),
+    testCompatibility(EdmSimpleTypeFacade.byteInstance(),
+        EdmSimpleTypeFacade.byteInstance(),
         new Bit(),
         new Uint7());
   }
 
   @Test
   public void testDateTimeCompatibility() {
-    testCompatibility(facade.dateTimeInstance(),
-        facade.dateTimeInstance());
+    testCompatibility(EdmSimpleTypeFacade.dateTimeInstance(),
+        EdmSimpleTypeFacade.dateTimeInstance());
   }
 
   @Test
   public void testDateTimeOffsetCompatibility() {
-    testCompatibility(facade.dateTimeOffsetInstance(),
-        facade.dateTimeOffsetInstance());
+    testCompatibility(EdmSimpleTypeFacade.dateTimeOffsetInstance(),
+        EdmSimpleTypeFacade.dateTimeOffsetInstance());
   }
 
   @Test
   public void testDecimalCompatibility() {
-    testCompatibility(facade.decimalInstance(),
+    testCompatibility(EdmSimpleTypeFacade.decimalInstance(),
         new Bit(),
         new Uint7(),
-        facade.byteInstance(),
-        facade.sByteInstance(),
-        facade.int16Instance(),
-        facade.int32Instance(),
-        facade.int64Instance(),
-        facade.singleInstance(),
-        facade.doubleInstance(),
-        facade.decimalInstance());
+        EdmSimpleTypeFacade.byteInstance(),
+        EdmSimpleTypeFacade.sByteInstance(),
+        EdmSimpleTypeFacade.int16Instance(),
+        EdmSimpleTypeFacade.int32Instance(),
+        EdmSimpleTypeFacade.int64Instance(),
+        EdmSimpleTypeFacade.singleInstance(),
+        EdmSimpleTypeFacade.doubleInstance(),
+        EdmSimpleTypeFacade.decimalInstance());
   }
 
   @Test
   public void testDoubleCompatibility() {
-    testCompatibility(facade.doubleInstance(),
+    testCompatibility(EdmSimpleTypeFacade.doubleInstance(),
         new Bit(),
         new Uint7(),
-        facade.byteInstance(),
-        facade.sByteInstance(),
-        facade.int16Instance(),
-        facade.int32Instance(),
-        facade.int64Instance(),
-        facade.singleInstance(),
-        facade.doubleInstance());
+        EdmSimpleTypeFacade.byteInstance(),
+        EdmSimpleTypeFacade.sByteInstance(),
+        EdmSimpleTypeFacade.int16Instance(),
+        EdmSimpleTypeFacade.int32Instance(),
+        EdmSimpleTypeFacade.int64Instance(),
+        EdmSimpleTypeFacade.singleInstance(),
+        EdmSimpleTypeFacade.doubleInstance());
   }
 
   @Test
   public void testGuidCompatibility() {
-    testCompatibility(facade.guidInstance(),
-        facade.guidInstance());
+    testCompatibility(EdmSimpleTypeFacade.guidInstance(),
+        EdmSimpleTypeFacade.guidInstance());
   }
 
   @Test
   public void testint16Compatibility() {
-    testCompatibility(facade.int16Instance(),
+    testCompatibility(EdmSimpleTypeFacade.int16Instance(),
         new Bit(),
         new Uint7(),
-        facade.byteInstance(),
-        facade.sByteInstance(),
-        facade.int16Instance());
+        EdmSimpleTypeFacade.byteInstance(),
+        EdmSimpleTypeFacade.sByteInstance(),
+        EdmSimpleTypeFacade.int16Instance());
   }
 
   @Test
   public void testInt32Compatibility() {
-    testCompatibility(facade.int32Instance(),
+    testCompatibility(EdmSimpleTypeFacade.int32Instance(),
         new Bit(),
         new Uint7(),
-        facade.byteInstance(),
-        facade.sByteInstance(),
-        facade.int16Instance(),
-        facade.int32Instance());
+        EdmSimpleTypeFacade.byteInstance(),
+        EdmSimpleTypeFacade.sByteInstance(),
+        EdmSimpleTypeFacade.int16Instance(),
+        EdmSimpleTypeFacade.int32Instance());
   }
 
   @Test
   public void testInt64Compatibility() {
-    testCompatibility(facade.int64Instance(),
+    testCompatibility(EdmSimpleTypeFacade.int64Instance(),
         new Bit(),
         new Uint7(),
-        facade.byteInstance(),
-        facade.sByteInstance(),
-        facade.int16Instance(),
-        facade.int32Instance(),
-        facade.int64Instance());
+        EdmSimpleTypeFacade.byteInstance(),
+        EdmSimpleTypeFacade.sByteInstance(),
+        EdmSimpleTypeFacade.int16Instance(),
+        EdmSimpleTypeFacade.int32Instance(),
+        EdmSimpleTypeFacade.int64Instance());
   }
 
   @Test
   public void testSByteCompatibility() {
-    testCompatibility(facade.sByteInstance(),
+    testCompatibility(EdmSimpleTypeFacade.sByteInstance(),
         new Bit(),
         new Uint7(),
-        facade.sByteInstance());
+        EdmSimpleTypeFacade.sByteInstance());
   }
 
   @Test
   public void testSingleCompatibility() {
-    testCompatibility(facade.singleInstance(),
+    testCompatibility(EdmSimpleTypeFacade.singleInstance(),
         new Bit(),
         new Uint7(),
-        facade.byteInstance(),
-        facade.sByteInstance(),
-        facade.int16Instance(),
-        facade.int32Instance(),
-        facade.int64Instance(),
-        facade.singleInstance());
+        EdmSimpleTypeFacade.byteInstance(),
+        EdmSimpleTypeFacade.sByteInstance(),
+        EdmSimpleTypeFacade.int16Instance(),
+        EdmSimpleTypeFacade.int32Instance(),
+        EdmSimpleTypeFacade.int64Instance(),
+        EdmSimpleTypeFacade.singleInstance());
   }
 
   @Test
   public void testStringCompatibility() {
-    testCompatibility(facade.stringInstance(),
-        facade.stringInstance());
+    testCompatibility(EdmSimpleTypeFacade.stringInstance(),
+        EdmSimpleTypeFacade.stringInstance());
   }
 
   @Test
   public void testTimeCompatibility() {
-    testCompatibility(facade.timeInstance(),
-        facade.timeInstance());
+    testCompatibility(EdmSimpleTypeFacade.timeInstance(),
+        EdmSimpleTypeFacade.timeInstance());
   }
 }

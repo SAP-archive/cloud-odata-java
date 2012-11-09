@@ -12,12 +12,4 @@
 		<version>0.0.0-SNAPSHOT</version>
 		<relativePath>..</relativePath>
 	</parent>
-	
-	<dependencies>
-		<dependency>
-			<groupId>commons-codec</groupId>
-			<artifactId>commons-codec</artifactId>
-			<version>${commonscodec.version}</version>
-		</dependency>
-	</dependencies>
 </project>
