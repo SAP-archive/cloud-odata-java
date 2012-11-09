@@ -100,7 +100,7 @@ public class ListsProcessor extends ODataSingleProcessor {
   }
 
   @Override
-  public ODataResponse readEntityLinks(GetEntitySetLinksView uriParserResultView) throws ODataException {
+  public ODataResponse readEntityLinks(final GetEntitySetLinksView uriParserResultView) throws ODataException {
     ArrayList<Object> data = new ArrayList<Object>();
     data.addAll((List<?>) retrieveData(
         uriParserResultView.getStartEntitySet(),
@@ -122,7 +122,7 @@ public class ListsProcessor extends ODataSingleProcessor {
   }
 
   @Override
-  public ODataResponse countEntityLinks(GetEntitySetLinksCountView uriParserResultView) throws ODataException {
+  public ODataResponse countEntityLinks(final GetEntitySetLinksCountView uriParserResultView) throws ODataException {
     return countEntitySet((GetEntitySetCountView) uriParserResultView);
   }
 
@@ -152,7 +152,7 @@ public class ListsProcessor extends ODataSingleProcessor {
   }
 
   @Override
-  public ODataResponse readEntityLink(GetEntityLinkView uriParserResultView) throws ODataException {
+  public ODataResponse readEntityLink(final GetEntityLinkView uriParserResultView) throws ODataException {
     final Object data = retrieveData(
         uriParserResultView.getStartEntitySet(),
         uriParserResultView.getKeyPredicates(),
@@ -166,12 +166,12 @@ public class ListsProcessor extends ODataSingleProcessor {
   }
 
   @Override
-  public ODataResponse existsEntityLink(GetEntityLinkCountView uriParserResultView) throws ODataException {
+  public ODataResponse existsEntityLink(final GetEntityLinkCountView uriParserResultView) throws ODataException {
     return existsEntity((GetEntityCountView) uriParserResultView);
   }
 
   @Override
-  public ODataResponse executeFunctionImport(GetFunctionImportView uriParserResultView) throws ODataException {
+  public ODataResponse executeFunctionImport(final GetFunctionImportView uriParserResultView) throws ODataException {
     final Object data = dataSource.readData(
         uriParserResultView.getFunctionImport(),
         mapFunctionParameters(uriParserResultView.getFunctionImportParameters()),
@@ -231,11 +231,10 @@ public class ListsProcessor extends ODataSingleProcessor {
     final Integer count = inlineCount == InlineCount.ALLPAGES ? data.size() : null;
 
     if (orderBy != null)
-      ;
+      throw new ODataNotImplementedException();
     else if (skipToken != null || skip != 0 || top != null)
       try {
-        // Collections.sort(data);
-        throw new ODataNotImplementedException();
+        // TODO: Collections.sort(data);
       } catch (ClassCastException e) {
         throw new ODataException(e);
       } catch (UnsupportedOperationException e) {
@@ -243,7 +242,7 @@ public class ListsProcessor extends ODataSingleProcessor {
       }
 
     if (skipToken != null)
-    ;
+      throw new ODataNotImplementedException();
 
     for (int i = 0; i < skip; i++)
       data.remove(0);
@@ -255,12 +254,12 @@ public class ListsProcessor extends ODataSingleProcessor {
     return count;
   }
 
-  private boolean appliesFilter(final Object data, final String filter) {
+  private boolean appliesFilter(final Object data, final String filter) throws ODataException {
     if (data == null)
       return false;
     if (filter == null)
       return true;
     // TODO: implement filter evaluation
-    return true;
+    throw new ODataNotImplementedException();
   }
 }

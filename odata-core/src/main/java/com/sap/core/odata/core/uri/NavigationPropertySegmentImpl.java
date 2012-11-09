@@ -4,6 +4,9 @@ import com.sap.core.odata.api.edm.EdmEntitySet;
 import com.sap.core.odata.api.edm.EdmNavigationProperty;
 import com.sap.core.odata.api.uri.NavigationPropertySegment;
 
+/**
+ * @author SAP AG
+ */
 public class NavigationPropertySegmentImpl implements NavigationPropertySegment {
 
   private EdmNavigationProperty navigationProperty;
@@ -27,4 +30,8 @@ public class NavigationPropertySegmentImpl implements NavigationPropertySegment 
     this.targetEntitySet = targetEntitySet;
   }
 
+  @Override
+  public String toString() {
+    return "Navigation Property: " + navigationProperty + ", Target Entity Set: " + targetEntitySet;
+  }
 }
