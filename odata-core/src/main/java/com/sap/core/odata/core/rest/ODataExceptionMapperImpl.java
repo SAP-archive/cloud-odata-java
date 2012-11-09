@@ -52,7 +52,7 @@ public class ODataExceptionMapperImpl implements ExceptionMapper<Exception> {
     return Response.status(status).entity(entity).build();
   }
 
-  private Status extractStatus(com.sap.core.odata.api.exception.Context context) {
+  private Status extractStatus(com.sap.core.odata.api.exception.MessageReference context) {
     Status extractedStatus = Status.INTERNAL_SERVER_ERROR;
     if(context.getHttpStatus() != null) {
       try {
@@ -65,7 +65,7 @@ public class ODataExceptionMapperImpl implements ExceptionMapper<Exception> {
     return extractedStatus;
   }
 
-  private Message extractEntity(com.sap.core.odata.api.exception.Context context) {
+  private Message extractEntity(com.sap.core.odata.api.exception.MessageReference context) {
     List<Locale> locales = getLanguages();
     Locale locale = MessageService.getSupportedLocale(locales);
     return MessageService.getMessage(locale, context);

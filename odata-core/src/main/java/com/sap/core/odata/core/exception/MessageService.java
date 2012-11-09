@@ -11,7 +11,7 @@ import java.util.MissingFormatArgumentException;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
-import com.sap.core.odata.api.exception.Context;
+import com.sap.core.odata.api.exception.MessageReference;
 
 public class MessageService {
   private static final String BUNDLE_NAME = "i18n"; //$NON-NLS-1$
@@ -101,8 +101,8 @@ public class MessageService {
     return service;
   }
 
-  public static Message getMessage(Locale language, Context context) {
-    return getMessage(language, context.getKey(), context.getValues());
+  public static Message getMessage(Locale language, MessageReference context) {
+    return getMessage(language, context.getKey(), context.getContent());
   }
 
   public static Message getMessage(Locale locale, String key, Object... replacements) {

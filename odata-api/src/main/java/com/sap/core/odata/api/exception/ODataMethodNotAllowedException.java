@@ -8,7 +8,7 @@ package com.sap.core.odata.api.exception;
  */
 public class ODataMethodNotAllowedException extends ODataMessageException {
 
-  public static final Context DISPATCH = createContext(ODataMethodNotAllowedException.class, "DISPATCH");
+  public static final MessageReference DISPATCH = createContext(ODataMethodNotAllowedException.class, "DISPATCH");
 
   /**
    * 
@@ -18,7 +18,7 @@ public class ODataMethodNotAllowedException extends ODataMessageException {
   /**
    * @param context
    */
-  public ODataMethodNotAllowedException(Context context) {
+  public ODataMethodNotAllowedException(MessageReference context) {
     super(context);
   }
 
