@@ -11,7 +11,16 @@ import com.sap.core.odata.api.edm.EdmTypeKind;
 public class EdmDecimal implements EdmSimpleType {
 
   private EdmSimpleTypeKind edmSimpleType = EdmSimpleTypeKind.Decimal;
+  private static final EdmDecimal instance = new EdmDecimal();
 
+  private EdmDecimal() {
+
+  }
+
+  public static EdmDecimal getInstance() {
+    return instance;
+  }
+  
   @Override
   public boolean equals(Object obj) {
     return this == obj || obj instanceof EdmDecimal;

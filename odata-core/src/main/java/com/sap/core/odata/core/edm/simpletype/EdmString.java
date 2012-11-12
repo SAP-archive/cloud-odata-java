@@ -8,16 +8,24 @@ import com.sap.core.odata.api.edm.EdmSimpleTypeFacade;
 import com.sap.core.odata.api.edm.EdmSimpleTypeKind;
 import com.sap.core.odata.api.edm.EdmTypeKind;
 
-
 public class EdmString implements EdmSimpleType {
 
   private EdmSimpleTypeKind edmSimpleType = EdmSimpleTypeKind.String;
-  
+  private static final EdmString instance = new EdmString();
+
+  private EdmString() {
+
+  }
+
+  public static EdmString getInstance() {
+    return instance;
+  }
+
   @Override
   public boolean equals(Object obj) {
     return this == obj || obj instanceof EdmString;
   }
-  
+
   @Override
   public String getNamespace() throws EdmException {
     return EdmSimpleTypeFacade.edmNamespace;

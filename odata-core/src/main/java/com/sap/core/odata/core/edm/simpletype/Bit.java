@@ -9,6 +9,16 @@ import com.sap.core.odata.api.edm.EdmTypeKind;
 
 public class Bit implements EdmSimpleType {
 
+  private static final Bit instance = new Bit();
+  
+  private Bit(){
+    
+  }
+  
+  public static Bit getInstance(){
+    return instance;
+  }
+  
   @Override
   public boolean equals(Object obj) {
     return this == obj || obj instanceof Bit;

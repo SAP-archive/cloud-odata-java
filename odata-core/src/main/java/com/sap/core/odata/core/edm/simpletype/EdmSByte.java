@@ -11,6 +11,15 @@ import com.sap.core.odata.api.edm.EdmTypeKind;
 public class EdmSByte implements EdmSimpleType {
 
   private EdmSimpleTypeKind edmSimpleType = EdmSimpleTypeKind.SByte;
+  private static final EdmSByte instance = new EdmSByte();
+
+  private EdmSByte() {
+
+  }
+
+  public static EdmSByte getInstance() {
+    return instance;
+  }
 
   @Override
   public boolean equals(Object obj) {

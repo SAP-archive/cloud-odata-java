@@ -11,6 +11,15 @@ import com.sap.core.odata.api.edm.EdmTypeKind;
 public class EdmByte implements EdmSimpleType {
 
   private EdmSimpleTypeKind edmSimpleType = EdmSimpleTypeKind.Byte;
+  private static final EdmByte instance = new EdmByte();
+
+  private EdmByte() {
+
+  }
+
+  public static EdmByte getInstance() {
+    return instance;
+  }
 
   @Override
   public boolean equals(Object obj) {
@@ -60,7 +69,7 @@ public class EdmByte implements EdmSimpleType {
 
   @Override
   public String toUriLiteral(String literal) {
-   return literal;
+    return literal;
   }
 
 }

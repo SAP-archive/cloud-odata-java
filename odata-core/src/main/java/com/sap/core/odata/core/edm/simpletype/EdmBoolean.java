@@ -4,12 +4,22 @@ import com.sap.core.odata.api.edm.EdmException;
 import com.sap.core.odata.api.edm.EdmFacets;
 import com.sap.core.odata.api.edm.EdmLiteralKind;
 import com.sap.core.odata.api.edm.EdmSimpleType;
+import com.sap.core.odata.api.edm.EdmSimpleTypeFacade;
 import com.sap.core.odata.api.edm.EdmSimpleTypeKind;
 import com.sap.core.odata.api.edm.EdmTypeKind;
 
 public class EdmBoolean implements EdmSimpleType {
 
   private EdmSimpleTypeKind edmSimpleType = EdmSimpleTypeKind.Boolean;
+  private static final EdmBoolean instance = new EdmBoolean();
+
+  private EdmBoolean() {
+
+  }
+
+  public static EdmBoolean getInstance() {
+    return instance;
+  }
 
   @Override
   public boolean equals(Object obj) {
@@ -18,8 +28,7 @@ public class EdmBoolean implements EdmSimpleType {
 
   @Override
   public String getNamespace() throws EdmException {
-    // TODO Auto-generated method stub
-    return null;
+    return EdmSimpleTypeFacade.edmNamespace;
   }
 
   @Override

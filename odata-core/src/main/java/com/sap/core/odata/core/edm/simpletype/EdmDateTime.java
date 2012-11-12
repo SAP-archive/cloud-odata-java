@@ -11,6 +11,15 @@ import com.sap.core.odata.api.edm.EdmTypeKind;
 public class EdmDateTime implements EdmSimpleType {
 
   private EdmSimpleTypeKind edmSimpleType = EdmSimpleTypeKind.DateTime;
+  private static final EdmDateTime instance = new EdmDateTime();
+
+  private EdmDateTime() {
+
+  }
+
+  public static EdmDateTime getInstance() {
+    return instance;
+  }
 
   @Override
   public boolean equals(Object obj) {

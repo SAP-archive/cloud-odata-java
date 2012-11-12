@@ -40,52 +40,52 @@ public class RuntimeDelegateImpl extends RuntimeDelegate {
 
     switch (edmSimpleType) {
     case Binary:
-      edmType = new EdmBinary();
+      edmType = EdmBinary.getInstance();
       break;
     case Boolean:
-      edmType = new EdmBoolean();
+      edmType = EdmBoolean.getInstance();
       break;
     case Byte:
-      edmType = new EdmByte();
+      edmType = EdmByte.getInstance();
       break;
     case DateTime:
-      edmType = new EdmDateTime();
+      edmType = EdmDateTime.getInstance();
       break;
     case DateTimeOffset:
-      edmType = new EdmDateTimeOffset();
+      edmType = EdmDateTimeOffset.getInstance();
       break;
     case Decimal:
-      edmType = new EdmDecimal();
+      edmType = EdmDecimal.getInstance();
       break;
     case Double:
-      edmType = new EdmDouble();
+      edmType = EdmDouble.getInstance();
       break;
     case Guid:
-      edmType = new EdmGuid();
+      edmType = EdmGuid.getInstance();
       break;
     case Int16:
-      edmType = new EdmInt16();
+      edmType = EdmInt16.getInstance();
       break;
     case Int32:
-      edmType = new EdmInt32();
+      edmType = EdmInt32.getInstance();
       break;
     case Int64:
-      edmType = new EdmInt64();
+      edmType = EdmInt64.getInstance();
       break;
     case SByte:
-      edmType = new EdmSByte();
+      edmType = EdmSByte.getInstance();
       break;
     case Single:
-      edmType = new EdmSingle();
+      edmType = EdmSingle.getInstance();
       break;
     case String:
-      edmType = new EdmString();
+      edmType = EdmString.getInstance();
       break;
     case Time:
-      edmType = new EdmTime();
+      edmType = EdmTime.getInstance();
       break;
     case Null:
-      edmType = new EdmNull();
+      edmType = EdmNull.getInstance();
       break;
     default:
       throw new RuntimeException("Invalid Type " + edmSimpleType);
@@ -104,9 +104,9 @@ public class RuntimeDelegateImpl extends RuntimeDelegate {
     EdmSimpleType edmType;
 
     if ("Bit".equals(edmSimpleType)) {
-      edmType = new Bit();
+      edmType = Bit.getInstance();
     } else if ("Uint7".equals(edmSimpleType)) {
-      edmType = new Uint7();
+      edmType = Uint7.getInstance();
     } else {
       throw new RuntimeException("Invalid internal Type " + edmSimpleType);
     }

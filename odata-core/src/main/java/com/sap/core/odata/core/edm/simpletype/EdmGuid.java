@@ -12,7 +12,15 @@ import com.sap.core.odata.api.edm.EdmTypeKind;
 public class EdmGuid implements EdmSimpleType {
 
   private EdmSimpleTypeKind edmSimpleType = EdmSimpleTypeKind.Guid;
-  
+  private static final EdmGuid instance = new EdmGuid();
+
+  private EdmGuid() {
+
+  }
+
+  public static EdmGuid getInstance() {
+    return instance;
+  }
   @Override
   public boolean equals(Object obj) {
     return this == obj || obj instanceof EdmGuid;

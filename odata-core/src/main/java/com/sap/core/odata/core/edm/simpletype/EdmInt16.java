@@ -11,7 +11,15 @@ import com.sap.core.odata.api.edm.EdmTypeKind;
 public class EdmInt16 implements EdmSimpleType {
 
   private EdmSimpleTypeKind edmSimpleType = EdmSimpleTypeKind.Int16;
+  private static final EdmInt16 instance = new EdmInt16();
 
+  private EdmInt16() {
+
+  }
+
+  public static EdmInt16 getInstance() {
+    return instance;
+  }
   @Override
   public boolean equals(Object obj) {
     return this == obj || obj instanceof EdmInt16;

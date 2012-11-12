@@ -14,7 +14,15 @@ import com.sap.core.odata.api.edm.EdmTypeKind;
 public class EdmBinary implements EdmSimpleType {
 
   private EdmSimpleTypeKind edmSimpleType = EdmSimpleTypeKind.Binary;
-
+  private static final EdmBinary instance = new EdmBinary();
+  
+  private EdmBinary() {
+   
+  }
+  
+  public static EdmBinary getInstance(){
+    return instance;
+  }
   @Override
   public boolean equals(Object obj) {
     return this == obj || obj instanceof EdmBinary;
