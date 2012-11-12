@@ -1,6 +1,6 @@
 package com.sap.core.odata.api.exception;
 
-public class ODataRuntimeException extends RuntimeException {
+public final class ODataRuntimeException extends RuntimeException {
 
   /**
    * 

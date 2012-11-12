@@ -16,9 +16,30 @@ public abstract class ODataMessageException extends ODataException {
   /**   */
   private static final long serialVersionUID = 42L;
 
+  /** Reference to common message for a {@link ODataMessageException} */
   public static final MessageReference COMMON = createMessageReference(ODataMessageException.class, "COMMON");
 
+  /**
+   * Create {@link ODataMessageException} with given {@link MessageReference}.
+   * 
+   * @param messageReference
+   *        references the message text (and additional values) of this {@link ODataMessageException}
+   */
   public ODataMessageException(MessageReference messageReference) {
+    this(messageReference, null);
+  }
+
+  /**
+   * Create {@link ODataMessageException} with given {@link MessageReference} and cause {@link Throwable} which caused
+   * this {@link ODataMessageException}.
+   * 
+   * @param messageReference
+   *        references the message text (and additional values) of this {@link ODataMessageException}
+   * @param cause
+   *        exception which caused this {@link ODataMessageException}
+   */
+  public ODataMessageException(MessageReference messageReference, Throwable cause) {
+    super(cause);
     this.messageReference = messageReference;
   }
 
