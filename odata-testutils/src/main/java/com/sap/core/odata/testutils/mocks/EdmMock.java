@@ -1,4 +1,4 @@
-package com.sap.core.testutils.mocks;
+package com.sap.core.odata.testutils.mocks;
 
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;

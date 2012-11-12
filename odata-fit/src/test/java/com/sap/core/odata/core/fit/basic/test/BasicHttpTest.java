@@ -25,8 +25,8 @@ import com.sap.core.odata.api.processor.aspect.Metadata;
 import com.sap.core.odata.api.processor.aspect.ServiceDocument;
 import com.sap.core.odata.api.uri.resultviews.GetMetadataView;
 import com.sap.core.odata.api.uri.resultviews.GetServiceDocumentView;
-import com.sap.core.testutils.HttpMerge;
-import com.sap.core.testutils.StringHelper;
+import com.sap.core.odata.testutils.helper.HttpMerge;
+import com.sap.core.odata.testutils.helper.StringHelper;
 
 public class BasicHttpTest extends AbstractBasicTest {
 

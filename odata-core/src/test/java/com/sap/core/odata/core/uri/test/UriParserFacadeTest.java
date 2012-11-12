@@ -6,7 +6,7 @@ import java.util.Map;
 import org.junit.Test;
 
 import com.sap.core.odata.api.uri.UriParserFacade;
-import com.sap.core.testutils.mocks.MockFacade;
+import com.sap.core.odata.testutils.mocks.MockFacade;
 
 public class UriParserFacadeTest {
 

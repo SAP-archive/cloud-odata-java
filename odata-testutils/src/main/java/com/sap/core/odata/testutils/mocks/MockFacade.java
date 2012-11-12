@@ -1,4 +1,4 @@
-package com.sap.core.testutils.mocks;
+package com.sap.core.odata.testutils.mocks;
 
 import java.util.ArrayList;
 import java.util.List;
