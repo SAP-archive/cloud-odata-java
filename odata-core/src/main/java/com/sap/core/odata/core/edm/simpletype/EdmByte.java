@@ -39,8 +39,11 @@ public class EdmByte implements EdmSimpleType {
 
   @Override
   public boolean validate(String value, EdmLiteralKind literalKind, EdmFacets facets) {
-    // TODO Auto-generated method stub
-    return false;
+    boolean valid = false;
+    if (null != this.valueOfString(value, literalKind, facets)) {
+      valid = true;
+    }
+    return valid;
   }
 
   @Override
