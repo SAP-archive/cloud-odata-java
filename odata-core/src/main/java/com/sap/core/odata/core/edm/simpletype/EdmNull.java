@@ -26,7 +26,7 @@ public class EdmNull implements EdmSimpleType {
 
   @Override
   public String getNamespace() throws EdmException {
-    return EdmSimpleTypeFacade.systemNamespace;
+    return EdmSimpleTypeFacade.edmNamespace;
   }
 
   @Override
@@ -42,7 +42,6 @@ public class EdmNull implements EdmSimpleType {
   @Override
   public boolean isCompatible(EdmSimpleType simpleType) {
     return simpleType instanceof EdmNull;
-    // TODO Extend
   }
 
   @Override
@@ -68,7 +67,6 @@ public class EdmNull implements EdmSimpleType {
 
   @Override
   public String toUriLiteral(String literal) {
-    // TODO Auto-generated method stub
-    return null;
+   return "null";
   }
 }

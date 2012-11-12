@@ -255,8 +255,8 @@ public class EdmSimpleTypeTest {
   public void testNameSpace() throws Exception {
     assertEquals(EdmSimpleTypeFacade.systemNamespace, Bit.getInstance().getNamespace());
     assertEquals(EdmSimpleTypeFacade.systemNamespace, Uint7.getInstance().getNamespace());
-    assertEquals(EdmSimpleTypeFacade.systemNamespace, EdmNull.getInstance().getNamespace());
     
+    assertEquals(EdmSimpleTypeFacade.edmNamespace, EdmNull.getInstance().getNamespace());   
     assertEquals(EdmSimpleTypeFacade.edmNamespace, EdmBinary.getInstance().getNamespace());
     assertEquals(EdmSimpleTypeFacade.edmNamespace, EdmBoolean.getInstance().getNamespace());
     assertEquals(EdmSimpleTypeFacade.edmNamespace, EdmDateTime.getInstance().getNamespace());
