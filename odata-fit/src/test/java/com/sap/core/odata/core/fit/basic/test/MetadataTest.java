@@ -18,7 +18,7 @@ import com.sap.core.odata.api.processor.ODataProcessor;
 import com.sap.core.odata.api.processor.ODataResponse;
 import com.sap.core.odata.api.processor.aspect.Metadata;
 import com.sap.core.odata.api.uri.resultviews.GetMetadataView;
-import com.sap.core.testutils.StringHelper;
+import com.sap.core.odata.testutils.helper.StringHelper;
 
 public class MetadataTest extends AbstractBasicTest {
 

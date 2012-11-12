@@ -17,7 +17,7 @@ import com.sap.core.odata.api.exception.ODataRuntimeException;
 import com.sap.core.odata.api.processor.ODataProcessor;
 import com.sap.core.odata.api.processor.aspect.ServiceDocument;
 import com.sap.core.odata.api.uri.resultviews.GetServiceDocumentView;
-import com.sap.core.testutils.StringHelper;
+import com.sap.core.odata.testutils.helper.StringHelper;
 
 
 public class ErrorResponseTest extends AbstractBasicTest {

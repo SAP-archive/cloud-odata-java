@@ -1,4 +1,4 @@
-package com.sap.core.testutils;
+package com.sap.core.odata.testutils.helper;
 
 import java.io.BufferedReader;
 import java.io.IOException;
