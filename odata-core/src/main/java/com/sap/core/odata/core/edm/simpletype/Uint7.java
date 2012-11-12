@@ -8,7 +8,16 @@ import com.sap.core.odata.api.edm.EdmSimpleTypeFacade;
 import com.sap.core.odata.api.edm.EdmTypeKind;
 
 public class Uint7 implements EdmSimpleType {
-
+  
+  private static final Uint7 instance = new Uint7();
+  
+  private Uint7(){
+    
+  }
+  
+  public static Uint7 getInstance(){
+    return instance;
+  }
   @Override
   public boolean equals(Object obj) {
     return this == obj || obj instanceof Uint7;

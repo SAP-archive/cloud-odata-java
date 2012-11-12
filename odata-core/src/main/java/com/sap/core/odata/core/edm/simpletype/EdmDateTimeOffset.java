@@ -12,7 +12,15 @@ import com.sap.core.odata.api.edm.EdmTypeKind;
 public class EdmDateTimeOffset implements EdmSimpleType  {
 
   private EdmSimpleTypeKind edmSimpleType = EdmSimpleTypeKind.DateTimeOffset;
-  
+  private static final EdmDateTimeOffset instance = new EdmDateTimeOffset();
+
+  private EdmDateTimeOffset() {
+
+  }
+
+  public static EdmDateTimeOffset getInstance() {
+    return instance;
+  }
   @Override
   public boolean equals(Object obj) {
     return this == obj || obj instanceof EdmDateTimeOffset;

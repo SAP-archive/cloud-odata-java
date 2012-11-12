@@ -8,6 +8,21 @@ import org.junit.Test;
 import com.sap.core.odata.api.edm.EdmSimpleType;
 import com.sap.core.odata.api.edm.EdmSimpleTypeFacade;
 import com.sap.core.odata.core.edm.simpletype.Bit;
+import com.sap.core.odata.core.edm.simpletype.EdmBinary;
+import com.sap.core.odata.core.edm.simpletype.EdmBoolean;
+import com.sap.core.odata.core.edm.simpletype.EdmDateTime;
+import com.sap.core.odata.core.edm.simpletype.EdmDateTimeOffset;
+import com.sap.core.odata.core.edm.simpletype.EdmDecimal;
+import com.sap.core.odata.core.edm.simpletype.EdmDouble;
+import com.sap.core.odata.core.edm.simpletype.EdmGuid;
+import com.sap.core.odata.core.edm.simpletype.EdmInt16;
+import com.sap.core.odata.core.edm.simpletype.EdmInt32;
+import com.sap.core.odata.core.edm.simpletype.EdmInt64;
+import com.sap.core.odata.core.edm.simpletype.EdmNull;
+import com.sap.core.odata.core.edm.simpletype.EdmSByte;
+import com.sap.core.odata.core.edm.simpletype.EdmSingle;
+import com.sap.core.odata.core.edm.simpletype.EdmString;
+import com.sap.core.odata.core.edm.simpletype.EdmTime;
 import com.sap.core.odata.core.edm.simpletype.Uint7;
 
 public class EdmSimpleTypeTest {
@@ -112,15 +127,15 @@ public class EdmSimpleTypeTest {
   public void testBooleanCompatibility() {
     testCompatibility(EdmSimpleTypeFacade.booleanInstance(),
         EdmSimpleTypeFacade.booleanInstance(),
-        new Bit());
+        Bit.getInstance());
   }
 
   @Test
   public void testByteCompatibility() {
     testCompatibility(EdmSimpleTypeFacade.byteInstance(),
         EdmSimpleTypeFacade.byteInstance(),
-        new Bit(),
-        new Uint7());
+        Bit.getInstance(),
+        Uint7.getInstance());
   }
 
   @Test
@@ -138,8 +153,8 @@ public class EdmSimpleTypeTest {
   @Test
   public void testDecimalCompatibility() {
     testCompatibility(EdmSimpleTypeFacade.decimalInstance(),
-        new Bit(),
-        new Uint7(),
+        Bit.getInstance(),
+        Uint7.getInstance(),
         EdmSimpleTypeFacade.byteInstance(),
         EdmSimpleTypeFacade.sByteInstance(),
         EdmSimpleTypeFacade.int16Instance(),
@@ -153,8 +168,8 @@ public class EdmSimpleTypeTest {
   @Test
   public void testDoubleCompatibility() {
     testCompatibility(EdmSimpleTypeFacade.doubleInstance(),
-        new Bit(),
-        new Uint7(),
+        Bit.getInstance(),
+        Uint7.getInstance(),
         EdmSimpleTypeFacade.byteInstance(),
         EdmSimpleTypeFacade.sByteInstance(),
         EdmSimpleTypeFacade.int16Instance(),
@@ -173,8 +188,8 @@ public class EdmSimpleTypeTest {
   @Test
   public void testint16Compatibility() {
     testCompatibility(EdmSimpleTypeFacade.int16Instance(),
-        new Bit(),
-        new Uint7(),
+        Bit.getInstance(),
+        Uint7.getInstance(),
         EdmSimpleTypeFacade.byteInstance(),
         EdmSimpleTypeFacade.sByteInstance(),
         EdmSimpleTypeFacade.int16Instance());
@@ -183,8 +198,8 @@ public class EdmSimpleTypeTest {
   @Test
   public void testInt32Compatibility() {
     testCompatibility(EdmSimpleTypeFacade.int32Instance(),
-        new Bit(),
-        new Uint7(),
+        Bit.getInstance(),
+        Uint7.getInstance(),
         EdmSimpleTypeFacade.byteInstance(),
         EdmSimpleTypeFacade.sByteInstance(),
         EdmSimpleTypeFacade.int16Instance(),
@@ -194,8 +209,8 @@ public class EdmSimpleTypeTest {
   @Test
   public void testInt64Compatibility() {
     testCompatibility(EdmSimpleTypeFacade.int64Instance(),
-        new Bit(),
-        new Uint7(),
+        Bit.getInstance(),
+        Uint7.getInstance(),
         EdmSimpleTypeFacade.byteInstance(),
         EdmSimpleTypeFacade.sByteInstance(),
         EdmSimpleTypeFacade.int16Instance(),
@@ -206,16 +221,16 @@ public class EdmSimpleTypeTest {
   @Test
   public void testSByteCompatibility() {
     testCompatibility(EdmSimpleTypeFacade.sByteInstance(),
-        new Bit(),
-        new Uint7(),
+        Bit.getInstance(),
+        Uint7.getInstance(),
         EdmSimpleTypeFacade.sByteInstance());
   }
 
   @Test
   public void testSingleCompatibility() {
     testCompatibility(EdmSimpleTypeFacade.singleInstance(),
-        new Bit(),
-        new Uint7(),
+        Bit.getInstance(),
+        Uint7.getInstance(),
         EdmSimpleTypeFacade.byteInstance(),
         EdmSimpleTypeFacade.sByteInstance(),
         EdmSimpleTypeFacade.int16Instance(),
@@ -235,4 +250,28 @@ public class EdmSimpleTypeTest {
     testCompatibility(EdmSimpleTypeFacade.timeInstance(),
         EdmSimpleTypeFacade.timeInstance());
   }
+  
+  @Test
+  public void testNameSpace() throws Exception {
+    assertEquals(EdmSimpleTypeFacade.systemNamespace, Bit.getInstance().getNamespace());
+    assertEquals(EdmSimpleTypeFacade.systemNamespace, Uint7.getInstance().getNamespace());
+    assertEquals(EdmSimpleTypeFacade.systemNamespace, EdmNull.getInstance().getNamespace());
+    
+    assertEquals(EdmSimpleTypeFacade.edmNamespace, EdmBinary.getInstance().getNamespace());
+    assertEquals(EdmSimpleTypeFacade.edmNamespace, EdmBoolean.getInstance().getNamespace());
+    assertEquals(EdmSimpleTypeFacade.edmNamespace, EdmDateTime.getInstance().getNamespace());
+    assertEquals(EdmSimpleTypeFacade.edmNamespace, EdmDateTimeOffset.getInstance().getNamespace());
+    assertEquals(EdmSimpleTypeFacade.edmNamespace, EdmDecimal.getInstance().getNamespace());
+    assertEquals(EdmSimpleTypeFacade.edmNamespace, EdmDouble.getInstance().getNamespace());
+    assertEquals(EdmSimpleTypeFacade.edmNamespace, EdmGuid.getInstance().getNamespace());
+    assertEquals(EdmSimpleTypeFacade.edmNamespace, EdmInt16.getInstance().getNamespace());
+    assertEquals(EdmSimpleTypeFacade.edmNamespace, EdmInt32.getInstance().getNamespace());
+    assertEquals(EdmSimpleTypeFacade.edmNamespace, EdmInt64.getInstance().getNamespace());
+    assertEquals(EdmSimpleTypeFacade.edmNamespace, EdmSByte.getInstance().getNamespace());
+    assertEquals(EdmSimpleTypeFacade.edmNamespace, EdmSingle.getInstance().getNamespace());
+    assertEquals(EdmSimpleTypeFacade.edmNamespace, EdmString.getInstance().getNamespace());
+    assertEquals(EdmSimpleTypeFacade.edmNamespace, EdmTime.getInstance().getNamespace());
+
+  }
+  
 }

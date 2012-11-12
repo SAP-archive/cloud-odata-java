@@ -8,10 +8,18 @@ import com.sap.core.odata.api.edm.EdmSimpleTypeFacade;
 import com.sap.core.odata.api.edm.EdmSimpleTypeKind;
 import com.sap.core.odata.api.edm.EdmTypeKind;
 
-
 public class EdmInt32 implements EdmSimpleType {
 
   private EdmSimpleTypeKind edmSimpleType = EdmSimpleTypeKind.Int32;
+  private static final EdmInt32 instance = new EdmInt32();
+
+  private EdmInt32() {
+
+  }
+
+  public static EdmInt32 getInstance() {
+    return instance;
+  }
 
   @Override
   public boolean equals(Object obj) {
