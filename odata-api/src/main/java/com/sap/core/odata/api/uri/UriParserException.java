@@ -47,7 +47,17 @@ public class UriParserException extends ODataMessageException {
   public static final MessageReference CONTAINERNOTFOUND = createMessageReference(UriParserException.class, "CONTAINERNOTFOUND");
 
   
+  /**
+   * {@inheritDoc}
+   */
   public UriParserException(MessageReference MessageReference) {
     super(MessageReference);
+  }
+  
+  /**
+   * {@inheritDoc}
+   */
+  public UriParserException(MessageReference messageReference, Throwable cause) {
+    super(messageReference, cause);
   }
 }
