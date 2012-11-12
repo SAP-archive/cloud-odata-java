@@ -1,5 +1,6 @@
 package com.sap.core.odata.ref.edm;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -27,6 +28,7 @@ import com.sap.core.odata.api.edm.provider.NavigationProperty;
 import com.sap.core.odata.api.edm.provider.Property;
 import com.sap.core.odata.api.edm.provider.PropertyRef;
 import com.sap.core.odata.api.edm.provider.ReturnType;
+import com.sap.core.odata.api.edm.provider.Schema;
 import com.sap.core.odata.api.exception.ODataMessageException;
 import com.sap.core.odata.api.exception.ODataNotFoundException;
 import com.sap.core.odata.api.exception.ODataRuntimeException;
@@ -87,6 +89,12 @@ public class ScenarioEdmProvider implements EdmProvider {
   private static final String FUNCTION_IMPORT_5 = "MostCommonLocation";
   private static final String FUNCTION_IMPORT_6 = "ManagerPhoto";
   private static final String FUNCTION_IMPORT_7 = "OldestEmployee";
+
+  @Override
+  public Collection<Schema> getSchemas() throws ODataRuntimeException, ODataMessageException {
+    // TODO Auto-generated method stub
+    return null;
+  }
 
   @Override
   public EntityType getEntityType(final FullQualifiedName edmFQName) throws ODataRuntimeException, ODataMessageException {

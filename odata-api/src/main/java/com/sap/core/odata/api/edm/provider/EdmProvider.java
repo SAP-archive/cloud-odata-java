@@ -1,5 +1,7 @@
 package com.sap.core.odata.api.edm.provider;
 
+import java.util.Collection;
+
 import com.sap.core.odata.api.edm.FullQualifiedName;
 import com.sap.core.odata.api.exception.ODataMessageException;
 import com.sap.core.odata.api.exception.ODataRuntimeException;
@@ -20,9 +22,8 @@ public interface EdmProvider {
 
   FunctionImport getFunctionImport(String entityContainer, String name) throws ODataRuntimeException, ODataMessageException;
 
-//TODO required for $metadata
-//  List<EdmNamespaceInfo> getNamespaceInfos() throws ODataRuntimeException, ODataMessageException;
+  Collection<Schema> getSchemas() throws ODataRuntimeException, ODataMessageException;
 
-//TODO required for $metadata
-//  List<Schema> getSchemas() throws ODataRuntimeException, ODataMessageException;
+  //TODO required for validation if namspace is defined????
+  //List<EdmNamespaceInfo> getNamespaceInfos() throws ODataRuntimeException, ODataMessageException;
 }

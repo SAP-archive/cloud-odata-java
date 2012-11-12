@@ -21,13 +21,15 @@ public abstract class EdmImpl implements Edm {
   private Map<FullQualifiedName, EdmComplexType> edmComplexTypes;
   private Map<FullQualifiedName, EdmAssociation> edmAssociations;
 
+  protected EdmServiceMetadata edmServiceMetadata;
+  
   public EdmImpl() {
     edmEntityContainers = new HashMap<String, EdmEntityContainer>();
     edmEntityTypes = new HashMap<FullQualifiedName, EdmEntityType>();
     edmComplexTypes = new HashMap<FullQualifiedName, EdmComplexType>();
     edmAssociations = new HashMap<FullQualifiedName, EdmAssociation>();
   }
-
+  
   @Override
   public EdmEntityContainer getEntityContainer(String name) throws EdmException {
     if (edmEntityContainers.containsKey(name))
@@ -101,8 +103,7 @@ public abstract class EdmImpl implements Edm {
 
   @Override
   public EdmServiceMetadata getServiceMetadata() {
-    // TODO Auto-generated method stub
-    return null;
+    return edmServiceMetadata;
   }
 
   @Override
