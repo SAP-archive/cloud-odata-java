@@ -2,7 +2,7 @@ package com.sap.core.odata.core.fit.basic.test;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
+import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.when;
 
@@ -33,21 +33,22 @@ public class ContextTest extends AbstractBasicTest {
     when(((Metadata) processor).readMetadata(any(GetMetadataView.class))).thenReturn(ODataResponse.entity("metadata").status(HttpStatus.OK).build());
     return processor;
   }
-  
+
   @Test
   public void checkContextExists() throws ClientProtocolException, IOException, ODataException {
     assertNull(this.getProcessor().getContext());
     HttpGet get = new HttpGet(URI.create(this.getEndpoint().toString() + "$metadata"));
     HttpResponse response = this.getHttpClient().execute(get);
-    
+
     ODataContext ctx = this.getProcessor().getContext();
     assertNotNull(ctx);
-    
+
     ODataService service = ctx.getService();
     assertNotNull(service);
-    
-    
+
     assertEquals(Status.OK.getStatusCode(), response.getStatusLine().getStatusCode());
+
+    assertEquals("$metadata", ctx.getODataPathSegment().get(0));
   }
-  
+
 }
