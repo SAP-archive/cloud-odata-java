@@ -9,13 +9,6 @@ public class AnnotationElement implements EdmAnnotationElement {
   private String name;
   private String xmlData;
 
-  public AnnotationElement(String namespace, String prefix, String name, String xmlData) {
-    this.namespace = namespace;
-    this.prefix = prefix;
-    this.name = name;
-    this.xmlData = xmlData;
-  }
-
   @Override
   public String getNamespace() {
     return namespace;
@@ -35,4 +28,25 @@ public class AnnotationElement implements EdmAnnotationElement {
   public String getXmlData() {
     return xmlData;
   }
+
+  public AnnotationElement setNamespace(String namespace) {
+    this.namespace = namespace;
+    return this;
+  }
+
+  public AnnotationElement setPrefix(String prefix) {
+    this.prefix = prefix;
+    return this;
+  }
+
+  public AnnotationElement setName(String name) {
+    this.name = name;
+    return this;
+  }
+
+  public AnnotationElement setXmlData(String xmlData) {
+    this.xmlData = xmlData;
+    return this;
+  }
+
 }

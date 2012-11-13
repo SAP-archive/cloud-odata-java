@@ -15,19 +15,6 @@ public class Facets implements EdmFacets {
   String collation;
   EdmConcurrencyMode concurrencyMode;
 
-  public Facets(Boolean nullable, String defaultValue, Integer maxLength, Boolean fixedLength, Integer precision, Integer scale, Boolean unicode, String collation, EdmConcurrencyMode concurrencyMode) {
-    super();
-    this.nullable = nullable;
-    this.defaultValue = defaultValue;
-    this.maxLength = maxLength;
-    this.fixedLength = fixedLength;
-    this.precision = precision;
-    this.scale = scale;
-    this.unicode = unicode;
-    this.collation = collation;
-    this.concurrencyMode = concurrencyMode;
-  }
-
   public Boolean isNullable() {
     return nullable;
   }
@@ -63,4 +50,55 @@ public class Facets implements EdmFacets {
   public EdmConcurrencyMode getConcurrencyMode() {
     return concurrencyMode;
   }
+
+  public Boolean getNullable() {
+    return nullable;
+  }
+
+  public Facets setNullable(Boolean nullable) {
+    this.nullable = nullable;
+    return this;
+  }
+
+  public Facets setFixedLength(Boolean fixedLength) {
+    this.fixedLength = fixedLength;
+    return this;
+  }
+
+  public Facets setUnicode(Boolean unicode) {
+    this.unicode = unicode;
+    return this;
+  }
+
+  public Facets setDefaultValue(String defaultValue) {
+    this.defaultValue = defaultValue;
+    return this;
+  }
+
+  public Facets setMaxLength(Integer maxLength) {
+    this.maxLength = maxLength;
+    return this;
+  }
+
+  public Facets setPrecision(Integer precision) {
+    this.precision = precision;
+    return this;
+  }
+
+  public Facets setScale(Integer scale) {
+    this.scale = scale;
+    return this;
+  }
+
+  public Facets setCollation(String collation) {
+    this.collation = collation;
+    return this;
+  }
+
+  public Facets setConcurrencyMode(EdmConcurrencyMode concurrencyMode) {
+    this.concurrencyMode = concurrencyMode;
+    return this;
+  }
+  
+  
 }

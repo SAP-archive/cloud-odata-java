@@ -7,13 +7,6 @@ public class ReferentialConstraint {
   private Documentation documentation;
   private Annotations annotations;
 
-  public ReferentialConstraint(ReferentialConstraintRole principal, ReferentialConstraintRole dependent, Documentation documentation, Annotations annotations) {
-    this.principal = principal;
-    this.dependent = dependent;
-    this.documentation = documentation;
-    this.annotations = annotations;
-  }
-
   public ReferentialConstraintRole getPrincipal() {
     return principal;
   }
@@ -28,5 +21,25 @@ public class ReferentialConstraint {
 
   public Annotations getAnnotations() {
     return annotations;
+  }
+
+  public ReferentialConstraint setPrincipal(ReferentialConstraintRole principal) {
+    this.principal = principal;
+    return this;
+  }
+
+  public ReferentialConstraint setDependent(ReferentialConstraintRole dependent) {
+    this.dependent = dependent;
+    return this;
+  }
+
+  public ReferentialConstraint setDocumentation(Documentation documentation) {
+    this.documentation = documentation;
+    return this;
+  }
+
+  public ReferentialConstraint setAnnotations(Annotations annotations) {
+    this.annotations = annotations;
+    return this;
   }
 }

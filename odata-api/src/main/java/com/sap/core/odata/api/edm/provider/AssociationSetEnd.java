@@ -6,13 +6,6 @@ public class AssociationSetEnd {
   private String entitySet;
   private Documentation documentation;
   private Annotations annotations;
-  
-  public AssociationSetEnd(String role, String entitySet, Documentation documentation, Annotations annotations) {
-    this.role = role;
-    this.entitySet = entitySet;
-    this.documentation = documentation;
-    this.annotations = annotations;
-  }
 
   public String getRole() {
     return role;
@@ -29,4 +22,25 @@ public class AssociationSetEnd {
   public Annotations getAnnotations() {
     return annotations;
   }
+
+  public AssociationSetEnd setRole(String role) {
+    this.role = role;
+    return this;
+  }
+
+  public AssociationSetEnd setEntitySet(String entitySet) {
+    this.entitySet = entitySet;
+    return this;
+  }
+
+  public AssociationSetEnd setDocumentation(Documentation documentation) {
+    this.documentation = documentation;
+    return this;
+  }
+
+  public AssociationSetEnd setAnnotations(Annotations annotations) {
+    this.annotations = annotations;
+    return this;
+  }
+
 }

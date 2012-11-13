@@ -6,11 +6,6 @@ public class Key {
 
   private Map<String, PropertyRef> keys;
   private Annotations annotations;
-  
-  public Key(Map<String, PropertyRef> keys, Annotations annotations) {
-    this.keys = keys;
-    this.annotations = annotations;
-  }
 
   public Map<String, PropertyRef> getKeys() {
     return keys;
@@ -19,4 +14,16 @@ public class Key {
   public Annotations getAnnotations() {
     return annotations;
   }
+
+  public Key setKeys(Map<String, PropertyRef> keys) {
+    this.keys = keys;
+    return this;
+  }
+
+  public Key setAnnotations(Annotations annotations) {
+    this.annotations = annotations;
+    return this;
+  }
+  
+  
 }

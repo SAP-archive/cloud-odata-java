@@ -8,12 +8,6 @@ public class OnDelete {
   private Documentation documentation;
   private Annotations annotation;
 
-  public OnDelete(EdmAction action, Documentation documentation, Annotations annotation) {
-    this.action = action;
-    this.documentation = documentation;
-    this.annotation = annotation;
-  }
-
   public EdmAction getAction() {
     return action;
   }
@@ -24,5 +18,20 @@ public class OnDelete {
 
   public Annotations getAnnotation() {
     return annotation;
+  }
+
+  public OnDelete setAction(EdmAction action) {
+    this.action = action;
+    return this;
+  }
+
+  public OnDelete setDocumentation(Documentation documentation) {
+    this.documentation = documentation;
+    return this;
+  }
+
+  public OnDelete setAnnotation(Annotations annotation) {
+    this.annotation = annotation;
+    return this;
   }
 }

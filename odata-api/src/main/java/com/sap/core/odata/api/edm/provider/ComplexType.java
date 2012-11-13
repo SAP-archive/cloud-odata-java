@@ -14,15 +14,6 @@ public class ComplexType {
   private Documentation documentation;
   private Annotations annotations;
 
-  public ComplexType(String name, FullQualifiedName baseType, boolean isAbstract, Map<String, Property> properties, Mapping mapping, Documentation documentation, Annotations annotations) {
-    this.name = name;
-    this.baseType = baseType;
-    this.isAbstract = isAbstract;
-    this.properties = properties;
-    this.documentation = documentation;
-    this.annotations = annotations;
-  }
-
   public String getName() {
     return name;
   }
@@ -50,4 +41,41 @@ public class ComplexType {
   public Annotations getAnnotations() {
     return annotations;
   }
+
+  public ComplexType setName(String name) {
+    this.name = name;
+    return this;
+  }
+
+  public ComplexType setBaseType(FullQualifiedName baseType) {
+    this.baseType = baseType;
+    return this;
+  }
+
+  public ComplexType setAbstract(boolean isAbstract) {
+    this.isAbstract = isAbstract;
+    return this;
+  }
+
+  public ComplexType setProperties(Map<String, Property> properties) {
+    this.properties = properties;
+    return this;
+  }
+
+  public ComplexType setMapping(Mapping mapping) {
+    this.mapping = mapping;
+    return this;
+  }
+
+  public ComplexType setDocumentation(Documentation documentation) {
+    this.documentation = documentation;
+    return this;
+  }
+
+  public ComplexType setAnnotations(Annotations annotations) {
+    this.annotations = annotations;
+    return this;
+  }
+  
+  
 }

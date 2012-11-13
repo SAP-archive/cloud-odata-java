@@ -11,15 +11,6 @@ public class AssociationSet {
   private Documentation documentation;
   private Annotations annotations;
 
-  public AssociationSet(String name, FullQualifiedName association, AssociationSetEnd end1, AssociationSetEnd end2, Documentation documentation, Annotations annotations) {
-    this.name = name;
-    this.association = association;
-    this.end1 = end1;
-    this.end2 = end2;
-    this.documentation = documentation;
-    this.annotations = annotations;
-  }
-
   public String getName() {
     return name;
   }
@@ -43,4 +34,36 @@ public class AssociationSet {
   public Annotations getAnnotations() {
     return annotations;
   }
+
+  public AssociationSet setName(String name) {
+    this.name = name;
+    return this;
+  }
+
+  public AssociationSet setAssociation(FullQualifiedName association) {
+    this.association = association;
+    return this;
+  }
+
+  public AssociationSet setEnd1(AssociationSetEnd end1) {
+    this.end1 = end1;
+    return this;
+  }
+
+  public AssociationSet setEnd2(AssociationSetEnd end2) {
+    this.end2 = end2;
+    return this;
+  }
+
+  public AssociationSet setDocumentation(Documentation documentation) {
+    this.documentation = documentation;
+    return this;
+  }
+
+  public AssociationSet setAnnotations(Annotations annotations) {
+    this.annotations = annotations;
+    return this;
+  }
+  
+  
 }

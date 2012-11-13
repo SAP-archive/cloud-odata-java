@@ -27,6 +27,7 @@ public abstract class EdmStructuralTypeImplProv extends EdmNamedImplProv impleme
 
   public EdmStructuralTypeImplProv(EdmImplProv edm, ComplexType structuralType, EdmTypeKind edmTypeKind, String namespace) throws EdmException {
     super(edm, structuralType.getName());
+    this.structuralType = structuralType;
     edmProperties = new HashMap<String, EdmTyped>();
     this.namespace = namespace;
     this.edmTypeKind = edmTypeKind;

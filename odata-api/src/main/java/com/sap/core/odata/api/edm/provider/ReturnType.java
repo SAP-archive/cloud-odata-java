@@ -8,16 +8,21 @@ public class ReturnType {
   private FullQualifiedName qualifiedName;
   private EdmMultiplicity multiplicity;
 
-  public ReturnType(FullQualifiedName qualifiedName, EdmMultiplicity multiplicity) {
-    this.qualifiedName = qualifiedName;
-    this.multiplicity = multiplicity;
-  }
-
   public FullQualifiedName getQualifiedName() {
     return qualifiedName;
   }
 
   public EdmMultiplicity getMultiplicity() {
     return multiplicity;
+  }
+
+  public ReturnType setQualifiedName(FullQualifiedName qualifiedName) {
+    this.qualifiedName = qualifiedName;
+    return this;
+  }
+
+  public ReturnType setMultiplicity(EdmMultiplicity multiplicity) {
+    this.multiplicity = multiplicity;
+    return this;
   }
 }

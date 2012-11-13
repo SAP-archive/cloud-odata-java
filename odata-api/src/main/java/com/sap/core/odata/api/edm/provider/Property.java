@@ -14,17 +14,6 @@ public class Property {
   private Documentation documentation;
   private Annotations annotations;
 
-  public Property(String name, FullQualifiedName type, EdmFacets facets, CustomizableFeedMappings customizableFeedMappings, String mimeType, Mapping mapping, Documentation documentation, Annotations annotations) {
-    this.name = name;
-    this.type = type;
-    this.facets = facets;
-    this.customizableFeedMappings = customizableFeedMappings;
-    this.mimeType = mimeType;
-    this.mapping = mapping;
-    this.documentation = documentation;
-    this.annotations = annotations;
-  }
-
   public String getName() {
     return name;
   }
@@ -55,5 +44,45 @@ public class Property {
 
   public Annotations getAnnotations() {
     return annotations;
+  }
+
+  public Property setName(String name) {
+    this.name = name;
+    return this;
+  }
+
+  public Property setType(FullQualifiedName type) {
+    this.type = type;
+    return this;
+  }
+
+  public Property setFacets(EdmFacets facets) {
+    this.facets = facets;
+    return this;
+  }
+
+  public Property setCustomizableFeedMappings(CustomizableFeedMappings customizableFeedMappings) {
+    this.customizableFeedMappings = customizableFeedMappings;
+    return this;
+  }
+
+  public Property setMimeType(String mimeType) {
+    this.mimeType = mimeType;
+    return this;
+  }
+
+  public Property setMapping(Mapping mapping) {
+    this.mapping = mapping;
+    return this;
+  }
+
+  public Property setDocumentation(Documentation documentation) {
+    this.documentation = documentation;
+    return this;
+  }
+
+  public Property setAnnotations(Annotations annotations) {
+    this.annotations = annotations;
+    return this;
   }
 }

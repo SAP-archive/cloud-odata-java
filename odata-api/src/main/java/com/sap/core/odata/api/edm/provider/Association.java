@@ -8,15 +8,6 @@ public class Association {
   private ReferentialConstraint referentialConstraint;
   private Documentation documentation;
   private Annotations annotations;
-  
-  public Association(String name, AssociationEnd end1, AssociationEnd end2, ReferentialConstraint referentialConstraint, Documentation documentation, Annotations annotations) {
-    this.name = name;
-    this.end1 = end1;
-    this.end2 = end2;
-    this.referentialConstraint = referentialConstraint;
-    this.documentation = documentation;
-    this.annotations = annotations;
-  }
 
   public String getName() {
     return name;
@@ -41,4 +32,35 @@ public class Association {
   public Annotations getAnnotations() {
     return annotations;
   }
+
+  public Association setName(String name) {
+    this.name = name;
+    return this;
+  }
+
+  public Association setEnd1(AssociationEnd end1) {
+    this.end1 = end1;
+    return this;
+  }
+
+  public Association setEnd2(AssociationEnd end2) {
+    this.end2 = end2;
+    return this;
+  }
+
+  public Association setReferentialConstraint(ReferentialConstraint referentialConstraint) {
+    this.referentialConstraint = referentialConstraint;
+    return this;
+  }
+
+  public Association setDocumentation(Documentation documentation) {
+    this.documentation = documentation;
+    return this;
+  }
+
+  public Association setAnnotations(Annotations annotations) {
+    this.annotations = annotations;
+    return this;
+  }
+
 }

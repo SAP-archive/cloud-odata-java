@@ -6,12 +6,6 @@ public class EntityContainer {
   private String extendz;
   private boolean isDefaultEntityContainer;
 
-  public EntityContainer(String name, String extendz, boolean isDefaultEntityContainer) {
-    this.name = name;
-    this.extendz = extendz;
-    this.isDefaultEntityContainer = isDefaultEntityContainer;
-  }
-
   public String getName() {
     return name;
   }
@@ -23,4 +17,20 @@ public class EntityContainer {
   public boolean isDefaultEntityContainer() {
     return isDefaultEntityContainer;
   }
+
+  public EntityContainer setName(String name) {
+    this.name = name;
+    return this;
+  }
+
+  public EntityContainer setExtendz(String extendz) {
+    this.extendz = extendz;
+    return this;
+  }
+
+  public EntityContainer setDefaultEntityContainer(boolean isDefaultEntityContainer) {
+    this.isDefaultEntityContainer = isDefaultEntityContainer;
+    return this;
+  }
+
 }

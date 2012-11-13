@@ -11,15 +11,6 @@ public class NavigationProperty {
   private Documentation documentation;
   private Annotations annotations;
 
-  public NavigationProperty(String name, FullQualifiedName relationship, String fromRole, String toRole, Documentation documentation, Annotations annotations) {
-    this.name = name;
-    this.relationship = relationship;
-    this.fromRole = fromRole;
-    this.toRole = toRole;
-    this.documentation = documentation;
-    this.annotations = annotations;
-  }
-
   public String getName() {
     return name;
   }
@@ -42,5 +33,35 @@ public class NavigationProperty {
 
   public Annotations getAnnotations() {
     return annotations;
+  }
+
+  public NavigationProperty setName(String name) {
+    this.name = name;
+    return this;
+  }
+
+  public NavigationProperty setRelationship(FullQualifiedName relationship) {
+    this.relationship = relationship;
+    return this;
+  }
+
+  public NavigationProperty setFromRole(String fromRole) {
+    this.fromRole = fromRole;
+    return this;
+  }
+
+  public NavigationProperty setToRole(String toRole) {
+    this.toRole = toRole;
+    return this;
+  }
+
+  public NavigationProperty setDocumentation(Documentation documentation) {
+    this.documentation = documentation;
+    return this;
+  }
+
+  public NavigationProperty setAnnotations(Annotations annotations) {
+    this.annotations = annotations;
+    return this;
   }
 }
