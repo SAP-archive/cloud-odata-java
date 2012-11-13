@@ -40,13 +40,37 @@ public class ODataException extends Exception {
    *          Or <code>NULL</code> if no {@link ODataMessageException} is found in cause hierarchy.
    */
   public ODataMessageException getMessageExceptionCause() {
+    return getSpecificCause(ODataMessageException.class);
+  }
+
+  /**
+   * Check whether this exception was caused by a {@link ODataApplicationException} exception.
+   * 
+   * @return <code>true</code> if it was caused by an {@link ODataApplicationException}, otherwise <code>false</code>.
+   */
+  public boolean isCausedByApplicationException() {
+    return getApplicationExceptionCause() != null;
+  }
+
+  /**
+   * Search for and return first (from top) {@link ODataApplicationException} in cause hierarchy.
+   * If no {@link ODataApplicationException} in cause hierarchy <code>NULL</code> is returned. 
+   * 
+   * @return the first found {@link ODataApplicationException} in the cause exception hierarchy. 
+   *          Or <code>NULL</code> if no {@link ODataApplicationException} is found in cause hierarchy.
+   */
+  public ODataApplicationException getApplicationExceptionCause() {
+    return getSpecificCause(ODataApplicationException.class);
+  }
+  
+  private <T> T getSpecificCause(Class<T> causeClass) {
     Throwable cause = getCause();
     while (cause != null) {
-      if (cause instanceof ODataMessageException) {
-        return (ODataMessageException) cause;
+      if (causeClass.isInstance(cause)) {
+        return causeClass.cast(cause);
       }
       cause = cause.getCause();
     }
-    return (ODataMessageException) cause;
+    return null;
   }
 }
