@@ -19,6 +19,7 @@ import com.sap.core.odata.api.enums.HttpStatus;
 import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.api.uri.UriParserException;
 import com.sap.core.odata.core.rest.ODataLocatorImpl;
+import com.sap.core.odata.core.rest.ODataLocatorImpl.InitParameter;
 import com.sap.core.odata.ref.processor.ScenarioServiceFactory;
 
 /**
@@ -30,11 +31,15 @@ public abstract class AbstractTest {
 
   protected Response call(final String urlString, final HttpHeaders httpHeaders, final Request request, final HttpStatus expectedStatus) throws ODataException {
     final ODataLocatorImpl oDataLocator = new ODataLocatorImpl();
-    oDataLocator.initializeService(SERVICE_FACTORY,
-        getPathSegments(urlString),
-        httpHeaders,
-        getUriInfo(),
-        request);
+    InitParameter param = oDataLocator.new InitParameter();
+    
+    param.setHttpHeaders(httpHeaders);
+    param.setPathSegments(getPathSegments(urlString));
+    param.setRequest(request);
+    param.setUriInfo(getUriInfo());
+    param.setServiceFactory(SERVICE_FACTORY);
+    
+    oDataLocator.initializeService(param);
     final Response response = oDataLocator.handleGet();
     assertEquals(expectedStatus.getStatusCode(), response.getStatus());
     return response;
