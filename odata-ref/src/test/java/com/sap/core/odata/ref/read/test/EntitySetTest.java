@@ -87,5 +87,15 @@ public class EntitySetTest {
     assertNotNull(response);
     assertTrue(response.getEntity().contains("Building"));
   }
+  
+  @Test
+  public void readPhotos() throws Exception {
+    final UriParserResult uriResult = mockUriResult("Photos");
+
+    ODataResponse response = processor.readEntitySet(uriResult);
+    assertNotNull(response);
+    assertTrue(response.getEntity().contains("Photo"));
+  }
+
 
 }
