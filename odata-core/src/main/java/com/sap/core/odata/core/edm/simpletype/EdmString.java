@@ -58,8 +58,7 @@ public class EdmString implements EdmSimpleType {
   @Override
   public Object valueOfString(String value, EdmLiteralKind literalKind, EdmFacets facets) {
     if (literalKind == EdmLiteralKind.URI)
-      // TODO: format URI literal
-      return null;
+      return toUriLiteral(value);
     else
       return value;
   }

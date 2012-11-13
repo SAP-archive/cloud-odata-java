@@ -87,10 +87,7 @@ public class EdmSimpleTypeFacadeImpl extends EdmSimpleTypeFacade {
         try {
           b = Hex.decodeHex(value.toCharArray());
         } catch (DecoderException e) {
-          UriParserException ex = new UriParserException(UriParserException.NOTEXT);
-          //TODO: Append previous exception instead of setting stack trace
-          ex.setStackTrace(e.getStackTrace());
-          throw ex;
+          throw new UriParserException(UriParserException.NOTEXT, e);
         }
         return new UriLiteral(binaryInstance(), Base64.encodeBase64String(b));
       }
