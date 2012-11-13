@@ -115,20 +115,20 @@ public class ScenarioEdmProvider implements EdmProvider {
         navigationProperties.put("ne_Team", new NavigationProperty().setName("ne_Team").setRelationship(ASSOCIATION_1_2).setFromRole(ROLE_1_1).setToRole(ROLE_1_2));
         navigationProperties.put("ne_Room", new NavigationProperty().setName("ne_Room").setRelationship(ASSOCIATION_1_3).setFromRole(ROLE_1_1).setToRole(ROLE_1_3));
         return new EntityType().setName(ENTITY_TYPE_1_1.getName()).setAbstract(false).setProperties(properties).setHasStream(true).setKey(getKey("EmployeeId")).setNavigationProperties(navigationProperties);
-   
+
       } else if (ENTITY_TYPE_1_BASE.getName().equals(edmFQName.getName())) {
         Map<String, Property> properties = new HashMap<String, Property>();
         properties.put("Id", new Property().setName("Id").setType(EDM_STRING).setFacets(getFacets(false, null, "1", null)));
         properties.put("Name", new Property().setName("Name").setType(EDM_STRING).setCustomizableFeedMappings(new CustomizableFeedMappings().setFcTargetPath(EdmTargetPath.SyndicationTitle)));
         return new EntityType().setName(ENTITY_TYPE_1_BASE.getName()).setAbstract(true).setProperties(properties).setHasStream(false).setKey(getKey("Id"));
- 
+
       } else if (ENTITY_TYPE_1_2.getName().equals(edmFQName.getName())) {
         Map<String, Property> properties = new HashMap<String, Property>();
         properties.put("isScrumTeam", new Property().setName("isScrumTeam").setType(EDM_BOOLEAN).setFacets(getFacets(true, null, null, null)));
         Map<String, NavigationProperty> navigationProperties = new HashMap<String, NavigationProperty>();
         navigationProperties.put("nt_Employees", new NavigationProperty().setName("nt_Employees").setRelationship(ASSOCIATION_1_2).setFromRole(ROLE_1_2).setToRole(ROLE_1_1));
         return new EntityType().setName(ENTITY_TYPE_1_2.getName()).setBaseType(ENTITY_TYPE_1_BASE).setAbstract(false).setProperties(properties).setHasStream(false).setNavigationProperties(navigationProperties);
-  
+
       } else if (ENTITY_TYPE_1_3.getName().equals(edmFQName.getName())) {
         Map<String, Property> properties = new HashMap<String, Property>();
         properties.put("Seats", new Property().setName("Seats").setType(EDM_INT16));
@@ -142,7 +142,7 @@ public class ScenarioEdmProvider implements EdmProvider {
         Map<String, NavigationProperty> navigationProperties = new HashMap<String, NavigationProperty>();
         navigationProperties.put("nm_Employees", new NavigationProperty().setName("nm_Employees").setRelationship(ASSOCIATION_1_1).setFromRole(ROLE_1_4).setToRole(ROLE_1_1));
         return new EntityType().setName(ENTITY_TYPE_1_4.getName()).setBaseType(ENTITY_TYPE_1_1).setAbstract(false).setHasStream(true).setNavigationProperties(navigationProperties);
-  
+
       } else if (ENTITY_TYPE_1_5.getName().equals(edmFQName.getName())) {
         Map<String, Property> properties = new HashMap<String, Property>();
         properties.put("Id", new Property().setName("Id").setType(EDM_STRING).setFacets(getFacets(false, null, null, null)));
@@ -151,7 +151,7 @@ public class ScenarioEdmProvider implements EdmProvider {
         Map<String, NavigationProperty> navigationProperties = new HashMap<String, NavigationProperty>();
         navigationProperties.put("nb_Rooms", new NavigationProperty().setName("nb_Rooms").setRelationship(ASSOCIATION_1_4).setFromRole(ROLE_1_5).setToRole(ROLE_1_3));
         return new EntityType().setName(ENTITY_TYPE_1_5.getName()).setAbstract(false).setProperties(properties).setHasStream(false).setKey(getKey("Id")).setNavigationProperties(navigationProperties);
-  
+
       } else {
         throw new ODataNotFoundException(ODataNotFoundException.ENTITY);
       }
@@ -167,7 +167,7 @@ public class ScenarioEdmProvider implements EdmProvider {
         properties.put("BinaryData", new Property().setName("BinaryData").setType(EDM_BINARY).setFacets(getFacets(true, null, null, null)).setMimeType("image/jpeg"));
         properties.put("Содержание", new Property().setName("Содержание").setType(EDM_STRING).setFacets(getFacets(true, null, null, null)).setCustomizableFeedMappings(new CustomizableFeedMappings().setFcKeepInContent(false).setFcNsPrefix("py").setFcNsUri("http://localhost").setCustomTargetPath("Содержание")));
         return new EntityType().setName(ENTITY_TYPE_2_1.getName()).setAbstract(false).setProperties(properties).setHasStream(true).setKey(getKey("Id", "Type"));
-       
+
       } else {
         throw new ODataNotFoundException(ODataNotFoundException.ENTITY);
       }
@@ -206,7 +206,7 @@ public class ScenarioEdmProvider implements EdmProvider {
         return new Association().setName(ASSOCIATION_1_1.getName()).setEnd1(new AssociationEnd().setType(ENTITY_TYPE_1_1).setRole(ROLE_1_1).setMultiplicity(EdmMultiplicity.MANY)).setEnd2(new AssociationEnd().setType(ENTITY_TYPE_1_4).setRole(ROLE_1_4).setMultiplicity(EdmMultiplicity.ONE));
       else if (ASSOCIATION_1_2.getName().equals(edmFQName.getName()))
         return new Association().setName(ASSOCIATION_1_2.getName()).setEnd1(new AssociationEnd().setType(ENTITY_TYPE_1_1).setRole(ROLE_1_1).setMultiplicity(EdmMultiplicity.MANY)).setEnd2(new AssociationEnd().setType(ENTITY_TYPE_1_2).setRole(ROLE_1_2).setMultiplicity(EdmMultiplicity.ONE));
-     else if (ASSOCIATION_1_3.getName().equals(edmFQName.getName()))
+      else if (ASSOCIATION_1_3.getName().equals(edmFQName.getName()))
         return new Association().setName(ASSOCIATION_1_3.getName()).setEnd1(new AssociationEnd().setType(ENTITY_TYPE_1_1).setRole(ROLE_1_1).setMultiplicity(EdmMultiplicity.MANY)).setEnd2(new AssociationEnd().setType(ENTITY_TYPE_1_3).setRole(ROLE_1_3).setMultiplicity(EdmMultiplicity.ONE));
       else if (ASSOCIATION_1_4.getName().equals(edmFQName.getName()))
         return new Association().setName(ASSOCIATION_1_4.getName()).setEnd1(new AssociationEnd().setType(ENTITY_TYPE_1_5).setRole(ROLE_1_5).setMultiplicity(EdmMultiplicity.ONE)).setEnd2(new AssociationEnd().setType(ENTITY_TYPE_1_3).setRole(ROLE_1_3).setMultiplicity(EdmMultiplicity.MANY));
@@ -260,27 +260,27 @@ public class ScenarioEdmProvider implements EdmProvider {
         Map<String, FunctionImportParameter> parameters = new HashMap<String, FunctionImportParameter>();
         parameters.put("q", new FunctionImportParameter().setName("q").setQualifiedName(EDM_STRING).setFacets(getFacets(true, null, null, null)));
         return new FunctionImport().setName(name).setReturnType(new ReturnType().setQualifiedName(new FullQualifiedName("Employee", NAMESPACE_1)).setMultiplicity(EdmMultiplicity.MANY)).setEntitySet(ENTITY_SET_1_1).setHttpMethod("GET").setParameters(parameters);
-       
+
       } else if (FUNCTION_IMPORT_2.equals(name)) {
-        return new FunctionImport().setName(name).setReturnType( new ReturnType().setQualifiedName(COMPLEX_TYPE_1).setMultiplicity(EdmMultiplicity.MANY)).setHttpMethod("GET");
-        
+        return new FunctionImport().setName(name).setReturnType(new ReturnType().setQualifiedName(COMPLEX_TYPE_1).setMultiplicity(EdmMultiplicity.MANY)).setHttpMethod("GET");
+
       } else if (FUNCTION_IMPORT_3.equals(name)) {
         return new FunctionImport().setName(name).setReturnType(new ReturnType().setQualifiedName(EDM_STRING).setMultiplicity(EdmMultiplicity.MANY)).setHttpMethod("GET");
-        
+
       } else if (FUNCTION_IMPORT_4.equals(name)) {
         return new FunctionImport().setName(name).setReturnType(new ReturnType().setQualifiedName(EDM_INT16).setMultiplicity(EdmMultiplicity.ONE)).setHttpMethod("GET");
-        
+
       } else if (FUNCTION_IMPORT_5.equals(name)) {
         return new FunctionImport().setName(name).setReturnType(new ReturnType().setQualifiedName(COMPLEX_TYPE_1).setMultiplicity(EdmMultiplicity.ONE)).setHttpMethod("GET");
-        
+
       } else if (FUNCTION_IMPORT_6.equals(name)) {
         Map<String, FunctionImportParameter> parameters = new HashMap<String, FunctionImportParameter>();
         parameters.put("Id", new FunctionImportParameter().setName("Id").setQualifiedName(EDM_STRING).setFacets(getFacets(false, null, null, null)));
         return new FunctionImport().setName(name).setReturnType(new ReturnType().setQualifiedName(EDM_BINARY).setMultiplicity(EdmMultiplicity.ONE)).setHttpMethod("GET").setParameters(parameters);
-        
+
       } else if (FUNCTION_IMPORT_7.equals(name)) {
         return new FunctionImport().setName(name).setReturnType(new ReturnType().setQualifiedName(new FullQualifiedName("Employee", NAMESPACE_1)).setMultiplicity(EdmMultiplicity.ZERO_TO_ONE)).setEntitySet(ENTITY_SET_1_1).setHttpMethod("GET");
-       
+
       } else {
         throw new ODataNotFoundException(ODataNotFoundException.ENTITY);
       }
@@ -294,16 +294,12 @@ public class ScenarioEdmProvider implements EdmProvider {
     if (ENTITY_CONTAINER_1.equals(entityContainer))
       if (ASSOCIATION_1_1.equals(association))
         return new AssociationSet().setName(ASSOCIATION_1_1.getName()).setAssociation(ASSOCIATION_1_1).setEnd1(new AssociationSetEnd().setRole(ROLE_1_4).setEntitySet(ENTITY_SET_1_4)).setEnd2(new AssociationSetEnd().setRole(ROLE_1_1).setEntitySet(ENTITY_SET_1_1));
-      //return new AssociationSet(ASSOCIATION_1_1.getName(), ASSOCIATION_1_1, new AssociationSetEnd(ROLE_1_4, ENTITY_SET_1_4, null, null), new AssociationSetEnd(ROLE_1_1, ENTITY_SET_1_1, null, null), null, null);
       else if (ASSOCIATION_1_2.equals(association))
         return new AssociationSet().setName(ASSOCIATION_1_2.getName()).setAssociation(ASSOCIATION_1_2).setEnd1(new AssociationSetEnd().setRole(ROLE_1_2).setEntitySet(ENTITY_SET_1_2)).setEnd2(new AssociationSetEnd().setRole(ROLE_1_1).setEntitySet(ENTITY_SET_1_1));
-      //return new AssociationSet(ASSOCIATION_1_2.getName(), ASSOCIATION_1_2, new AssociationSetEnd(ROLE_1_2, ENTITY_SET_1_2, null, null), new AssociationSetEnd(ROLE_1_1, ENTITY_SET_1_1, null, null), null, null);
       else if (ASSOCIATION_1_3.equals(association))
         return new AssociationSet().setName(ASSOCIATION_1_3.getName()).setAssociation(ASSOCIATION_1_3).setEnd1(new AssociationSetEnd().setRole(ROLE_1_3).setEntitySet(ENTITY_SET_1_3)).setEnd2(new AssociationSetEnd().setRole(ROLE_1_1).setEntitySet(ENTITY_SET_1_1));
-      //return new AssociationSet(ASSOCIATION_1_3.getName(), ASSOCIATION_1_3, new AssociationSetEnd(ROLE_1_3, ENTITY_SET_1_3, null, null), new AssociationSetEnd(ROLE_1_1, ENTITY_SET_1_1, null, null), null, null);
       else if (ASSOCIATION_1_4.equals(association))
         return new AssociationSet().setName(ASSOCIATION_1_4.getName()).setAssociation(ASSOCIATION_1_4).setEnd1(new AssociationSetEnd().setRole(ROLE_1_5).setEntitySet(ENTITY_SET_1_5)).setEnd2(new AssociationSetEnd().setRole(ROLE_1_3).setEntitySet(ENTITY_SET_1_3));
-      //return new AssociationSet(ASSOCIATION_1_4.getName(), ASSOCIATION_1_4, new AssociationSetEnd(ROLE_1_5, ENTITY_SET_1_5, null, null), new AssociationSetEnd(ROLE_1_3, ENTITY_SET_1_3, null, null), null, null);
       else
         throw new ODataNotFoundException(ODataNotFoundException.ENTITY);
 
