@@ -297,7 +297,7 @@ public class ScenarioEdmProvider implements EdmProvider {
       if (FUNCTION_IMPORT_1.equals(name)) {
         Map<String, FunctionImportParameter> parameters = new HashMap<String, FunctionImportParameter>();
         parameters.put("q", new FunctionImportParameter().setName("q").setQualifiedName(EDM_STRING).setFacets(new Facets().setNullable(true)));
-        return new FunctionImport().setName(name).setReturnType(new ReturnType().setQualifiedName(new FullQualifiedName("Employee", NAMESPACE_1)).setMultiplicity(EdmMultiplicity.MANY)).setEntitySet(ENTITY_SET_1_1).setHttpMethod("GET").setParameters(parameters);
+        return new FunctionImport().setName(name).setReturnType(new ReturnType().setQualifiedName(ENTITY_TYPE_1_1).setMultiplicity(EdmMultiplicity.MANY)).setEntitySet(ENTITY_SET_1_1).setHttpMethod("GET").setParameters(parameters);
 
       } else if (FUNCTION_IMPORT_2.equals(name)) {
         return new FunctionImport().setName(name).setReturnType(new ReturnType().setQualifiedName(COMPLEX_TYPE_1).setMultiplicity(EdmMultiplicity.MANY)).setHttpMethod("GET");

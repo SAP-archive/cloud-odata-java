@@ -252,7 +252,7 @@ public class UriParserImpl implements UriParser {
         handlePropertyPath((EdmProperty) property);
       break;
 
-    case NAVIGATION:
+    case ENTITY:  // navigation properties point to entities
       final EdmNavigationProperty navigationProperty = (EdmNavigationProperty) property;
       if (keyPredicateName != null || emptyParentheses != null)
         if (navigationProperty.getMultiplicity() != EdmMultiplicity.MANY)
@@ -600,7 +600,7 @@ public class UriParserImpl implements UriParser {
         final EdmTyped property = fromEntitySet.getEntityType().getProperty(expandPropertyName);
         if (property == null)
           throw new UriParserException(UriParserException.PROPERTYNOTFOUND);
-        if (property.getType().getKind() == EdmTypeKind.NAVIGATION) {
+        if (property.getType().getKind() == EdmTypeKind.ENTITY) {
           final EdmNavigationProperty navigationProperty = (EdmNavigationProperty) property;
           fromEntitySet = fromEntitySet.getRelatedEntitySet(navigationProperty);
           NavigationPropertySegmentImpl propertySegment = new NavigationPropertySegmentImpl();
@@ -656,7 +656,7 @@ public class UriParserImpl implements UriParser {
           selectItem.setProperty(property);
           exit = true;
           break;
-        case NAVIGATION:
+        case ENTITY:  // navigation properties point to entities
           final EdmNavigationProperty navigationProperty = (EdmNavigationProperty) property;
           final EdmEntitySet targetEntitySet = fromEntitySet.getRelatedEntitySet(navigationProperty);
 

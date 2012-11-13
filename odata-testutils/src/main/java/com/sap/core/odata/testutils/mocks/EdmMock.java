@@ -35,7 +35,7 @@ class EdmMock {
     EdmEntitySet managerEntitySet = createEntitySetMock(defaultContainer, "Managers", EdmSimpleTypeFacade.stringInstance(), "EmployeeId");
 
     EdmType navigationType = mock(EdmType.class);
-    when(navigationType.getKind()).thenReturn(EdmTypeKind.NAVIGATION);
+    when(navigationType.getKind()).thenReturn(EdmTypeKind.ENTITY);
 
     EdmNavigationProperty employeeProperty = mock(EdmNavigationProperty.class);
     when(employeeProperty.getType()).thenReturn(navigationType);

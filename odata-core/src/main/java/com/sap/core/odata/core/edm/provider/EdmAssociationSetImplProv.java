@@ -4,7 +4,6 @@ import com.sap.core.odata.api.edm.EdmAssociation;
 import com.sap.core.odata.api.edm.EdmAssociationSet;
 import com.sap.core.odata.api.edm.EdmAssociationSetEnd;
 import com.sap.core.odata.api.edm.EdmEntityContainer;
-import com.sap.core.odata.api.edm.EdmEntitySet;
 import com.sap.core.odata.api.edm.EdmException;
 import com.sap.core.odata.api.edm.provider.AssociationSet;
 import com.sap.core.odata.api.edm.provider.AssociationSetEnd;
@@ -30,18 +29,7 @@ public class EdmAssociationSetImplProv extends EdmNamedImplProv implements EdmAs
     final AssociationSetEnd end =
         associationSet.getEnd1().getRole().equals(role) ?
             associationSet.getEnd1() : associationSet.getEnd2();
-    return new EdmAssociationSetEnd() {
-
-      @Override
-      public String getRole() {
-        return end.getRole();
-      }
-
-      @Override
-      public EdmEntitySet getEntitySet() throws EdmException {
-        return edmEntityContainer.getEntitySet(end.getEntitySet());
-      }
-    };
+    return new EdmAssociationSetEndImplProv(edm, edmEntityContainer.getEntitySet(end.getEntitySet()), end.getRole());
   }
 
   @Override
