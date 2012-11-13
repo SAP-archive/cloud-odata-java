@@ -4,8 +4,11 @@ import java.util.List;
 import java.util.Map;
 
 import com.sap.core.odata.api.edm.EdmEntitySet;
+import com.sap.core.odata.api.edm.EdmException;
 import com.sap.core.odata.api.edm.EdmFunctionImport;
-import com.sap.core.odata.api.exception.ODataException;
+import com.sap.core.odata.api.exception.ODataApplicationException;
+import com.sap.core.odata.api.exception.ODataNotFoundException;
+import com.sap.core.odata.api.exception.ODataNotImplementedException;
 
 /**
  * <p>This interface is intended to make it easier to implement an OData
@@ -27,18 +30,16 @@ public interface ListsDataSource {
    * <p>Retrieves the whole data list for the specified entity set.</p>
    * @param entitySet  the requested {@link EdmEntitySet}
    * @return the requested data list
-   * @throws ODataException
    */
-  List<?> readData(EdmEntitySet entitySet) throws ODataException;
+  List<?> readData(EdmEntitySet entitySet) throws ODataNotImplementedException, ODataNotFoundException, EdmException, ODataApplicationException;
 
   /**
    * <p>Retrieves a single data object for the specified entity set and key.</p>
    * @param entitySet  the requested {@link EdmEntitySet}
    * @param keys  the entity key as map of key names to key values
    * @return the requested data object
-   * @throws ODataException
    */
-  Object readData(EdmEntitySet entitySet, Map<String, Object> keys) throws ODataException;
+  Object readData(EdmEntitySet entitySet, Map<String, Object> keys) throws ODataNotImplementedException, ODataNotFoundException, EdmException, ODataApplicationException;
 
   /**
    * <p>Retrieves data for the specified function import and key.</p>
@@ -51,9 +52,8 @@ public interface ListsDataSource {
    *              if the return type of the function import is a collection of entities
    *              (optional)
    * @return the requested data object, either a list or a single object
-   * @throws ODataException
    */
-  Object readData(EdmFunctionImport function, Map<String, Object> parameters, Map<String, Object> keys) throws ODataException;
+  Object readData(EdmFunctionImport function, Map<String, Object> parameters, Map<String, Object> keys) throws ODataNotImplementedException, ODataNotFoundException, EdmException, ODataApplicationException;
 
   /**
    * <p>Retrieves related data for the specified source data, entity set, and key.</p>
@@ -66,9 +66,8 @@ public interface ListsDataSource {
    * @param targetKeys  the key of the target entity as map of key names to key values
    *                    (optional)
    * @return the requested releated data object, either a list or a single object
-   * @throws ODataException
    */
-  Object readRelatedData(EdmEntitySet sourceEntitySet, Object sourceData, EdmEntitySet targetEntitySet, Map<String, Object> targetKeys) throws ODataException;
+  Object readRelatedData(EdmEntitySet sourceEntitySet, Object sourceData, EdmEntitySet targetEntitySet, Map<String, Object> targetKeys) throws ODataNotImplementedException, ODataNotFoundException, EdmException, ODataApplicationException;
 
   /**
    * <p>Creates and returns a new instance of the requested data-object type.</p>
@@ -76,7 +75,6 @@ public interface ListsDataSource {
    * have empty content.</p>
    * @param entitySet  the {@link EdmEntitySet} the object must correspond to
    * @return the new data object
-   * @throws ODataException
    */
-  Object newDataObject(EdmEntitySet entitySet) throws ODataException;
+  Object newDataObject(EdmEntitySet entitySet) throws ODataNotImplementedException, EdmException, ODataApplicationException;
 }
