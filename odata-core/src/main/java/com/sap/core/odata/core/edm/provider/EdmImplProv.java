@@ -11,8 +11,8 @@ import com.sap.core.odata.api.edm.EdmServiceMetadata;
 import com.sap.core.odata.api.edm.FullQualifiedName;
 import com.sap.core.odata.api.edm.provider.EdmProvider;
 import com.sap.core.odata.api.exception.ODataMessageException;
-import com.sap.core.odata.api.exception.ODataRuntimeException;
 import com.sap.core.odata.core.edm.EdmImpl;
+import com.sap.core.odata.core.exception.ODataRuntimeException;
 
 public class EdmImplProv extends EdmImpl implements EdmServiceMetadata {
 

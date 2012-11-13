@@ -2,10 +2,10 @@ package com.sap.core.odata.core.dispatcher;
 
 import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.api.exception.ODataMethodNotAllowedException;
-import com.sap.core.odata.api.exception.ODataRuntimeException;
 import com.sap.core.odata.api.processor.ODataResponse;
 import com.sap.core.odata.api.service.ODataService;
 import com.sap.core.odata.core.enums.ODataHttpMethod;
+import com.sap.core.odata.core.exception.ODataRuntimeException;
 import com.sap.core.odata.core.uri.UriParserResultImpl;
 
 public class Dispatcher {

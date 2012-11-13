@@ -31,7 +31,7 @@ import com.sap.core.odata.api.edm.provider.ReturnType;
 import com.sap.core.odata.api.edm.provider.Schema;
 import com.sap.core.odata.api.exception.ODataMessageException;
 import com.sap.core.odata.api.exception.ODataNotFoundException;
-import com.sap.core.odata.api.exception.ODataRuntimeException;
+import com.sap.core.odata.core.exception.ODataRuntimeException;
 
 /**
  * Provider for the entity data model used in the reference scenario
