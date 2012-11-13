@@ -42,6 +42,8 @@ public interface ListsDataSource {
 
   /**
    * <p>Retrieves data for the specified function import and key.</p>
+   * <p>This method is called also for function imports that have defined in
+   * their metadata an other HTTP method than <code>GET</code>.</p>  
    * @param function  the requested {@link EdmFunctionImport}
    * @param parameters  the parameters of the function import
    *                    as map of parameter names to parameter values
@@ -64,7 +66,7 @@ public interface ListsDataSource {
    * @param targetKeys  the key of the target entity as map of key names to key values
    *                    (optional)
    * @return the requested releated data object, either a list or a single object
-   * @throws ODataError
+   * @throws ODataException
    */
   Object readRelatedData(EdmEntitySet sourceEntitySet, Object sourceData, EdmEntitySet targetEntitySet, Map<String, Object> targetKeys) throws ODataException;
 
