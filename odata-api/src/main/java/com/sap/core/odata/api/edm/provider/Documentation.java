@@ -6,12 +6,6 @@ public class Documentation {
   private String longDescription;
   private Annotations annotations;
 
-  public Documentation(String summary, String longDescription, Annotations annotations) {
-    this.summary = summary;
-    this.longDescription = longDescription;
-    this.annotations = annotations;
-  }
-
   public String getSummary() {
     return summary;
   }
@@ -23,4 +17,20 @@ public class Documentation {
   public Annotations getAnnotations() {
     return annotations;
   }
+
+  public Documentation setSummary(String summary) {
+    this.summary = summary;
+    return this;
+  }
+
+  public Documentation setLongDescription(String longDescription) {
+    this.longDescription = longDescription;
+    return this;
+  }
+
+  public Documentation setAnnotations(Annotations annotations) {
+    this.annotations = annotations;
+    return this;
+  }
+
 }

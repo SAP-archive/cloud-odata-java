@@ -9,14 +9,6 @@ public class AnnotationAttribute implements EdmAnnotationAttribute {
   private String name;
   private String text;
 
-  public AnnotationAttribute(String namespace, String prefix, String name, String text) {
-    super();
-    this.namespace = namespace;
-    this.prefix = prefix;
-    this.name = name;
-    this.text = text;
-  }
-
   @Override
   public String getNamespace() {
     return namespace;
@@ -36,4 +28,25 @@ public class AnnotationAttribute implements EdmAnnotationAttribute {
   public String getText() {
     return text;
   }
+
+  public AnnotationAttribute setNamespace(String namespace) {
+    this.namespace = namespace;
+    return this;
+  }
+
+  public AnnotationAttribute setPrefix(String prefix) {
+    this.prefix = prefix;
+    return this;
+  }
+
+  public AnnotationAttribute setName(String name) {
+    this.name = name;
+    return this;
+  }
+
+  public AnnotationAttribute setText(String text) {
+    this.text = text;
+    return this;
+  }
+
 }

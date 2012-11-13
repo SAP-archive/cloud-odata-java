@@ -12,16 +12,6 @@ public class FunctionImport {
   private Documentation documentation;
   private Annotations annotations;
 
-  public FunctionImport(String name, ReturnType returnType, String entitySet, String httpMethod, Map<String, FunctionImportParameter> parameters, Documentation documentation, Annotations annotations) {
-    this.name = name;
-    this.returnType = returnType;
-    this.entitySet = entitySet;
-    this.httpMethod = httpMethod;
-    this.parameters = parameters;
-    this.documentation = documentation;
-    this.annotations = annotations;
-  }
-
   public String getName() {
     return name;
   }
@@ -49,4 +39,40 @@ public class FunctionImport {
   public Annotations getAnnotations() {
     return annotations;
   }
+
+  public FunctionImport setName(String name) {
+    this.name = name;
+    return this;
+  }
+
+  public FunctionImport setReturnType(ReturnType returnType) {
+    this.returnType = returnType;
+    return this;
+  }
+
+  public FunctionImport setEntitySet(String entitySet) {
+    this.entitySet = entitySet;
+    return this;
+  }
+
+  public FunctionImport setHttpMethod(String httpMethod) {
+    this.httpMethod = httpMethod;
+    return this;
+  }
+
+  public FunctionImport setParameters(Map<String, FunctionImportParameter> parameters) {
+    this.parameters = parameters;
+    return this;
+  }
+
+  public FunctionImport setDocumentation(Documentation documentation) {
+    this.documentation = documentation;
+    return this;
+  }
+
+  public FunctionImport setAnnotations(Annotations annotations) {
+    this.annotations = annotations;
+    return this;
+  }
+
 }

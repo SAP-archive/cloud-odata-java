@@ -6,12 +6,6 @@ public class ReferentialConstraintRole {
   private PropertyRef propertyRef;
   private Annotations annotations;
 
-  public ReferentialConstraintRole(String role, PropertyRef propertyRef, Annotations annotations) {
-    this.role = role;
-    this.propertyRef = propertyRef;
-    this.annotations = annotations;
-  }
-
   public String getRole() {
     return role;
   }
@@ -22,5 +16,20 @@ public class ReferentialConstraintRole {
 
   public Annotations getAnnotations() {
     return annotations;
+  }
+
+  public ReferentialConstraintRole setRole(String role) {
+    this.role = role;
+    return this;
+  }
+
+  public ReferentialConstraintRole setPropertyRef(PropertyRef propertyRef) {
+    this.propertyRef = propertyRef;
+    return this;
+  }
+
+  public ReferentialConstraintRole setAnnotations(Annotations annotations) {
+    this.annotations = annotations;
+    return this;
   }
 }

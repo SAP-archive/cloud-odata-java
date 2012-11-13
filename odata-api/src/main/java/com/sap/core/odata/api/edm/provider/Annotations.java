@@ -10,11 +10,6 @@ public class Annotations {
   Collection<EdmAnnotationElement> annotationElements;
   Collection<EdmAnnotationAttribute> annotationAttributes;
 
-  public Annotations(Collection<EdmAnnotationElement> annotationElements, Collection<EdmAnnotationAttribute> annotationAttributes) {
-    this.annotationElements = annotationElements;
-    this.annotationAttributes = annotationAttributes;
-  }
-
   public Collection<EdmAnnotationElement> getAnnotationElements() {
     return annotationElements;
   }
@@ -22,4 +17,15 @@ public class Annotations {
   public Collection<EdmAnnotationAttribute> getAnnotationAttributes() {
     return annotationAttributes;
   }
+
+  public Annotations setAnnotationElements(Collection<EdmAnnotationElement> annotationElements) {
+    this.annotationElements = annotationElements;
+    return this;
+  }
+
+  public Annotations setAnnotationAttributes(Collection<EdmAnnotationAttribute> annotationAttributes) {
+    this.annotationAttributes = annotationAttributes;
+    return this;
+  }
+
 }

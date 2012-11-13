@@ -11,15 +11,6 @@ public class AssociationEnd {
   private OnDelete onDelete;
   private Documentation documentation;
   private Annotations annotations;
-  
-  public AssociationEnd(FullQualifiedName type, String role, EdmMultiplicity multiplicity, OnDelete onDelete, Documentation documentation, Annotations annotations) {
-    this.type = type;
-    this.role = role;
-    this.multiplicity = multiplicity;
-    this.onDelete = onDelete;
-    this.documentation = documentation;
-    this.annotations = annotations;
-  }
 
   public FullQualifiedName getType() {
     return type;
@@ -44,4 +35,35 @@ public class AssociationEnd {
   public Annotations getAnnotations() {
     return annotations;
   }
+
+  public AssociationEnd setType(FullQualifiedName type) {
+    this.type = type;
+    return this;
+  }
+
+  public AssociationEnd setRole(String role) {
+    this.role = role;
+    return this;
+  }
+
+  public AssociationEnd setMultiplicity(EdmMultiplicity multiplicity) {
+    this.multiplicity = multiplicity;
+    return this;
+  }
+
+  public AssociationEnd setOnDelete(OnDelete onDelete) {
+    this.onDelete = onDelete;
+    return this;
+  }
+
+  public AssociationEnd setDocumentation(Documentation documentation) {
+    this.documentation = documentation;
+    return this;
+  }
+
+  public AssociationEnd setAnnotations(Annotations annotations) {
+    this.annotations = annotations;
+    return this;
+  }
+
 }

@@ -11,14 +11,6 @@ public class EntityType extends ComplexType {
   private Key key;
   private Map<String, NavigationProperty> navigationProperties;
 
-  public EntityType(String name, FullQualifiedName baseType, boolean isAbstract, Map<String, Property> properties, Mapping mapping, Documentation documentation, Annotations annotations, boolean hasStream, CustomizableFeedMappings customizableFeedMappings, Key key, Map<String, NavigationProperty> navigationProperties) {
-    super(name, baseType, isAbstract, properties, mapping, documentation, annotations);
-    this.hasStream = hasStream;
-    this.customizableFeedMappings = customizableFeedMappings;
-    this.key = key;
-    this.navigationProperties = navigationProperties;
-  }
-
   public boolean isHasStream() {
     return hasStream;
   }
@@ -34,4 +26,60 @@ public class EntityType extends ComplexType {
   public Map<String, NavigationProperty> getNavigationProperties() {
     return navigationProperties;
   }
+
+  public EntityType setHasStream(boolean hasStream) {
+    this.hasStream = hasStream;
+    return this;
+  }
+
+  public EntityType setCustomizableFeedMappings(CustomizableFeedMappings customizableFeedMappings) {
+    this.customizableFeedMappings = customizableFeedMappings;
+    return this;
+  }
+
+  public EntityType setKey(Key key) {
+    this.key = key;
+    return this;
+  }
+
+  public EntityType setNavigationProperties(Map<String, NavigationProperty> navigationProperties) {
+    this.navigationProperties = navigationProperties;
+    return this;
+  }
+
+  public EntityType setName(String name) {
+    super.setName(name);
+    return this;
+  }
+
+  public EntityType setBaseType(FullQualifiedName baseType) {
+    super.setBaseType(baseType);
+    return this;
+  }
+
+  public EntityType setAbstract(boolean isAbstract) {
+    super.setAbstract(isAbstract);
+    return this;
+  }
+
+  public EntityType setProperties(Map<String, Property> properties) {
+    super.setProperties(properties);
+    return this;
+  }
+
+  public EntityType setMapping(Mapping mapping) {
+    super.setMapping(mapping);
+    return this;
+  }
+
+  public EntityType setDocumentation(Documentation documentation) {
+    super.setDocumentation(documentation);
+    return this;
+  }
+
+  public EntityType setAnnotations(Annotations annotations) {
+    super.setAnnotations(annotations);
+    return this;
+  }
+
 }

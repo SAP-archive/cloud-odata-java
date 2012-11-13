@@ -9,13 +9,6 @@ public class EntitySet {
   private Documentation documentation;
   private Annotations annotations;
 
-  public EntitySet(String name, FullQualifiedName entityType, Documentation documentation, Annotations annotations) {
-    this.name = name;
-    this.entityType = entityType;
-    this.documentation = documentation;
-    this.annotations = annotations;
-  }
-
   public String getName() {
     return name;
   }
@@ -31,4 +24,26 @@ public class EntitySet {
   public Annotations getAnnotations() {
     return annotations;
   }
+
+  public EntitySet setName(String name) {
+    this.name = name;
+    return this;
+  }
+
+  public EntitySet setEntityType(FullQualifiedName entityType) {
+    this.entityType = entityType;
+    return this;
+  }
+
+  public EntitySet setDocumentation(Documentation documentation) {
+    this.documentation = documentation;
+    return this;
+  }
+
+  public EntitySet setAnnotations(Annotations annotations) {
+    this.annotations = annotations;
+    return this;
+  }
+  
+  
 }

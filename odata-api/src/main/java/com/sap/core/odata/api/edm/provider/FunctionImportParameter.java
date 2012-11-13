@@ -13,16 +13,6 @@ public class FunctionImportParameter {
   private Documentation documentation;
   private Annotations annotations;
 
-  public FunctionImportParameter(String name, String mode, FullQualifiedName qualifiedName, EdmFacets facets, Mapping mapping, Documentation documentation, Annotations annotations) {
-    this.name = name;
-    this.mode = mode;
-    this.qualifiedName = qualifiedName;
-    this.facets = facets;
-    this.mapping = mapping;
-    this.documentation = documentation;
-    this.annotations = annotations;
-  }
-
   public String getName() {
     return name;
   }
@@ -50,4 +40,40 @@ public class FunctionImportParameter {
   public Annotations getAnnotations() {
     return annotations;
   }
+
+  public FunctionImportParameter setName(String name) {
+    this.name = name;
+    return this;
+  }
+
+  public FunctionImportParameter setMode(String mode) {
+    this.mode = mode;
+    return this;
+  }
+
+  public FunctionImportParameter setQualifiedName(FullQualifiedName qualifiedName) {
+    this.qualifiedName = qualifiedName;
+    return this;
+  }
+
+  public FunctionImportParameter setFacets(EdmFacets facets) {
+    this.facets = facets;
+    return this;
+  }
+
+  public FunctionImportParameter setMapping(Mapping mapping) {
+    this.mapping = mapping;
+    return this;
+  }
+
+  public FunctionImportParameter setDocumentation(Documentation documentation) {
+    this.documentation = documentation;
+    return this;
+  }
+
+  public FunctionImportParameter setAnnotations(Annotations annotations) {
+    this.annotations = annotations;
+    return this;
+  }
+
 }
