@@ -23,6 +23,16 @@ public class TestServer {
 
   private URI endpoint = URI.create("http://localhost:19080/test/");
 
+  private int pathSplit = 0;
+
+  public int getPathSplit() {
+    return pathSplit;
+  }
+
+  public void setPathSplit(int pathSplit) {
+    this.pathSplit = pathSplit;
+  }
+
   public URI getEndpoint() {
     return this.endpoint;
   }
@@ -40,7 +50,11 @@ public class TestServer {
       CXFNonSpringJaxrsServlet odataServlet = new CXFNonSpringJaxrsServlet();
       ServletHolder odataServletHolder = new ServletHolder(odataServlet);
       odataServletHolder.setInitParameter("javax.ws.rs.Application", "com.sap.core.odata.core.rest.ODataApplication");
-      odataServletHolder.setInitParameter(ODataServiceFactory.FACTORY, factoryClass.getCanonicalName());
+      odataServletHolder.setInitParameter(ODataServiceFactory.FACTORY_LABEL, factoryClass.getCanonicalName());
+
+      if (this.pathSplit > 0) {
+        odataServletHolder.setInitParameter(ODataServiceFactory.PATH_SPLIT_LABEL, Integer.toString(this.pathSplit));
+      }
 
       ServletContextHandler contextHandler = new ServletContextHandler(ServletContextHandler.SESSIONS);
       contextHandler.addServlet(odataServletHolder, this.endpoint.getPath() + "*");
@@ -55,7 +69,9 @@ public class TestServer {
 
   public void stopServer() {
     try {
-      this.server.stop();
+      if (this.server != null) {
+        this.server.stop();
+      }
     } catch (Exception e) {
       throw new RuntimeException(e);
     }

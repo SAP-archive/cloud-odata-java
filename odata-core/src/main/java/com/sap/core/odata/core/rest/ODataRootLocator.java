@@ -13,6 +13,7 @@ import javax.ws.rs.core.UriInfo;
 
 import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.api.service.ODataServiceFactory;
+import com.sap.core.odata.core.rest.ODataLocatorImpl.InitParameter;
 
 /**
  * Default OData root locator responsible to handle the whole path and delegate all calls to a sub locator:<p>
@@ -45,18 +46,32 @@ public class ODataRootLocator {
    * @throws IllegalAccessException 
    * @throws InstantiationException 
    */
-  @Path("/{odataPathSegments: .*}")
-  public ODataLocatorImpl handleRequest(@PathParam("odataPathSegments") List<PathSegment> odataPathSegments) throws ODataException, ClassNotFoundException, InstantiationException, IllegalAccessException {
+  @Path("/{pathSegments: .*}")
+  public ODataLocatorImpl handleRequest(@PathParam("pathSegments") List<PathSegment> pathSegments) throws ODataException, ClassNotFoundException, InstantiationException, IllegalAccessException {
     ODataLocatorImpl odataLocator = new ODataLocatorImpl();
 
-    String factoryClassName = this.servletConfig.getInitParameter(ODataServiceFactory.FACTORY);
+    String factoryClassName = this.servletConfig.getInitParameter(ODataServiceFactory.FACTORY_LABEL);
     if (factoryClassName == null) {
       throw new RuntimeException("servlet config missing: com.sap.core.odata.processor.factory");
     }
     Class<?> factoryClass = Class.forName(factoryClassName);
     ODataServiceFactory serviceFactory = (ODataServiceFactory) factoryClass.newInstance();
-   
-    odataLocator.initializeService(serviceFactory, odataPathSegments, this.httpHeaders, this.uriInfo, this.request);
+
+    int pathSplit = 0;
+    String pathSplitAsString = this.servletConfig.getInitParameter(ODataServiceFactory.PATH_SPLIT_LABEL);
+    if (pathSplitAsString != null) {
+      pathSplit = Integer.parseInt(pathSplitAsString);
+    }
+    
+    InitParameter param = odataLocator.new InitParameter();
+    param.setServiceFactory(serviceFactory);
+    param.setPathSegments(pathSegments);
+    param.setHttpHeaders(httpHeaders);
+    param.setUriInfo(uriInfo);
+    param.setRequest(request);
+    param.setPathSplit(pathSplit);
+    
+    odataLocator.initializeService(param);
 
     return odataLocator;
   }

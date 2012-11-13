@@ -1,5 +1,7 @@
 package com.sap.core.odata.api.processor;
 
+import java.util.List;
+
 import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.api.service.ODataService;
 
@@ -21,5 +23,17 @@ public interface ODataContext {
    * @throws ODataException
    */
   ODataService getService() throws ODataException;
+
+  /**
+   * Returns preceding path segments  
+   * @return list of path segments
+   */
+  List<String> getPrecedingPathSegment();
+
+  /**
+   * Returns OData path segments  
+   * @return list of path segments
+   */
+  List<String> getODataPathSegment();
   
 }

@@ -1,6 +1,8 @@
 package com.sap.core.odata.core.rest;
 
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 
 import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.api.processor.ODataContext;
@@ -8,17 +10,30 @@ import com.sap.core.odata.api.service.ODataService;
 
 public class ODataContextImpl implements ODataContext {
 
-  protected final static String SERVICE_KEY = ODataService.class.getCanonicalName();
-  
   private HashMap<String, Object> contextObjects = new HashMap<String, Object>();
 
+  private ODataService service;
+
+  private List<String> precedingPathSegment = Collections.emptyList();
+  private List<String> odataPathSegment = Collections.emptyList();
+  
+  
   public void putContextObject(String key, Object obj) throws ODataException {
     this.contextObjects.put(key, obj);
   }
   
   public void setService(ODataService service) {
-    this.contextObjects.put(ODataContextImpl.SERVICE_KEY, service);
+    this.service = service;
   }
+  
+  public void setODataPathSegment(List<String> odataPathSegement) {
+    this.odataPathSegment = odataPathSegement;
+  }
+
+  public void setPrecedingPathSegment(List<String> precedingPathSegement) {
+    this.precedingPathSegment = precedingPathSegement;
+  }
+
 
   @SuppressWarnings("unchecked")
   @Override
@@ -28,6 +43,16 @@ public class ODataContextImpl implements ODataContext {
 
   @Override
   public ODataService getService() throws ODataException {
-    return  (ODataService) this.contextObjects.get(ODataContextImpl.SERVICE_KEY);
+    return  this.service;
+  }
+
+  @Override
+  public List<String> getPrecedingPathSegment() {
+    return Collections.unmodifiableList(this.precedingPathSegment);
+  }
+  
+  @Override
+  public List<String> getODataPathSegment() {
+    return Collections.unmodifiableList(this.odataPathSegment);
   }
 }

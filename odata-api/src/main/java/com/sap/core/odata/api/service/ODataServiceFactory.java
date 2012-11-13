@@ -21,6 +21,10 @@ import com.sap.core.odata.api.processor.ODataProcessor;
  *    <param-name>com.sap.core.odata.processor.factory</param-name>
  *    <param-value>com.sap.sample.processor.SampleProcessorFactory</param-value>
  *  </init-param>
+ *  <init-param>
+ *    <param-name>com.sap.core.odata.path.split</param-name>
+ *    <param-value>2</param-value>
+ *  </init-param>
  *  <load-on-startup>1</load-on-startup>
  * </servlet>
  *  } 
@@ -31,16 +35,26 @@ import com.sap.core.odata.api.processor.ODataProcessor;
 public interface ODataServiceFactory {
 
   /**
-   * Factory label used in web.xml to assign servlet init parameter to factory class instance.
+   * Label used in web.xml to assign servlet init parameter to factory class instance.
    */
-  public static final String FACTORY = "com.sap.core.odata.service.factory";
-
+  public static final String FACTORY_LABEL = "com.sap.core.odata.service.factory";
+  
   /**
-   * Create instance of custom ODataProcessor.
-   * @return A new ODataProcessor instance.
-   * @throws ODataError is thrown in any case of error.
+   * Label used in web.xml to assign servlet init parameter for a path split (service resolution).
+   */
+  public static final String PATH_SPLIT_LABEL = "com.sap.core.odata.path.split";
+  
+  /**
+   * Create instance of custom processor.
+   * @return A new processor instance.
+   * @throws ODataException is thrown in any case of error.
    */
   ODataProcessor createProcessor() throws ODataException;
   
+  /**
+   * Create instance of custom provider.
+   * @return A new provider instance.
+   * @throws ODataException is thrown in any case of error.
+   */
   EdmProvider createProvider() throws ODataException;
 }
