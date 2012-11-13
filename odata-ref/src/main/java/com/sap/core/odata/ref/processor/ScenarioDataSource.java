@@ -7,8 +7,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import com.sap.core.odata.api.edm.EdmEntitySet;
+import com.sap.core.odata.api.edm.EdmException;
 import com.sap.core.odata.api.edm.EdmFunctionImport;
-import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.api.exception.ODataNotFoundException;
 import com.sap.core.odata.api.exception.ODataNotImplementedException;
 import com.sap.core.odata.ref.model.Building;
@@ -33,7 +33,7 @@ public class ScenarioDataSource implements ListsDataSource {
   }
 
   @Override
-  public List<?> readData(final EdmEntitySet entitySet) throws ODataException {
+  public List<?> readData(final EdmEntitySet entitySet) throws ODataNotImplementedException, ODataNotFoundException, EdmException {
     List<Object> data = new ArrayList<Object>();
     if ("Employees".equals(entitySet.getName()))
       data.addAll(dataContainer.getEmployeeSet());
@@ -53,7 +53,7 @@ public class ScenarioDataSource implements ListsDataSource {
   }
 
   @Override
-  public Object readData(final EdmEntitySet entitySet, final Map<String, Object> keys) throws ODataException {
+  public Object readData(final EdmEntitySet entitySet, final Map<String, Object> keys) throws ODataNotImplementedException, ODataNotFoundException, EdmException {
     if ("Employees".equals(entitySet.getName())) {
       for (final Employee employee : dataContainer.getEmployeeSet())
         if (employee.getId().equals(keys.get("EmployeeId")))
@@ -96,7 +96,7 @@ public class ScenarioDataSource implements ListsDataSource {
   }
 
   @Override
-  public Object readRelatedData(final EdmEntitySet sourceEntitySet, final Object sourceData, final EdmEntitySet targetEntitySet, final Map<String, Object> targetKeys) throws ODataException {
+  public Object readRelatedData(final EdmEntitySet sourceEntitySet, final Object sourceData, final EdmEntitySet targetEntitySet, final Map<String, Object> targetKeys) throws ODataNotImplementedException, ODataNotFoundException, EdmException {
     if ("Employees".equals(targetEntitySet.getName())) {
       ArrayList<Object> data = new ArrayList<Object>();
       if ("Teams".equals(sourceEntitySet.getName())) {
@@ -113,15 +113,14 @@ public class ScenarioDataSource implements ListsDataSource {
             data.add(employee);
       }
       if (data.isEmpty())
-        throw new ODataNotFoundException(ODataNotFoundException.ENTITY);
-      if (targetKeys.isEmpty()) {
+        throw new ODataNotFoundException(null);
+      if (targetKeys.isEmpty())
         return data;
-      } else {
+      else
         for (final Object employee : data)
           if (((Employee) employee).getId().equals(targetKeys.get("EmployeeId")))
             return employee;
-        throw new ODataNotFoundException(ODataNotFoundException.ENTITY);
-      }
+      throw new ODataNotFoundException(ODataNotFoundException.ENTITY);
 
     } else if ("Teams".equals(targetEntitySet.getName())) {
       if (((Employee) sourceData).getTeam() == null)
@@ -139,14 +138,13 @@ public class ScenarioDataSource implements ListsDataSource {
           List<Room> data = ((Building) sourceData).getRooms();
           if (data.isEmpty())
             throw new ODataNotFoundException(ODataNotFoundException.ENTITY);
-          if (targetKeys.isEmpty()) {
+          if (targetKeys.isEmpty())
             return data;
-          } else {
+          else
             for (final Object room : data)
               if (((Room) room).getId().equals(targetKeys.get("Id")))
                 return room;
-            throw new ODataNotFoundException(ODataNotFoundException.ENTITY);
-          }
+          throw new ODataNotFoundException(ODataNotFoundException.ENTITY);
       }
       throw new ODataNotImplementedException();
 
@@ -163,15 +161,15 @@ public class ScenarioDataSource implements ListsDataSource {
         return ((Room) sourceData).getBuilding();
 
     } else {
-      throw new ODataNotFoundException(ODataNotFoundException.ENTITY);
+      throw new ODataNotImplementedException();
     }
   }
 
   @Override
-  public Object readData(EdmFunctionImport function, Map<String, Object> parameters, Map<String, Object> keys) throws ODataException {
+  public Object readData(EdmFunctionImport function, Map<String, Object> parameters, Map<String, Object> keys) throws ODataNotImplementedException, ODataNotFoundException, EdmException {
     if (function.getName().equals("EmployeeSearch")) {
       if (parameters.get("q") == null)
-        throw new ODataNotFoundException(ODataNotFoundException.ENTITY);
+        throw new ODataNotFoundException(null);
       else
         return searchEmployees((String) parameters.get("q"));
 
@@ -183,7 +181,10 @@ public class ScenarioDataSource implements ListsDataSource {
       for (Room room : dataContainer.getRoomSet())
         if (!room.getEmployees().isEmpty())
           data.add(room);
-      return data;
+      if (data.isEmpty())
+        throw new ODataNotFoundException(null);
+      else
+        return data;
 
     } else if (function.getName().equals("MaximalAge")) {
       return getOldestEmployee().getAge();
@@ -217,7 +218,7 @@ public class ScenarioDataSource implements ListsDataSource {
     return employees;
   }
 
-  private HashMap<Location, Integer> getLocations() {
+  private HashMap<Location, Integer> getLocations() throws ODataNotFoundException {
     HashMap<Location, Integer> locations = new HashMap<Location, Integer>();
     for (Employee employee : dataContainer.getEmployeeSet())
       if (employee.getLocation() != null && employee.getLocation().getCity() != null) {
@@ -230,10 +231,13 @@ public class ScenarioDataSource implements ListsDataSource {
         if (!found)
           locations.put(employee.getLocation(), 1);
       }
-    return locations;
+    if (locations.isEmpty())
+      throw new ODataNotFoundException(null);
+    else
+      return locations;
   }
 
-  private Location getMostCommonLocation() {
+  private Location getMostCommonLocation() throws ODataNotFoundException {
     Integer count = 0;
     Location location = null;
     for (Entry<Location, Integer> entry : getLocations().entrySet())
@@ -260,7 +264,7 @@ public class ScenarioDataSource implements ListsDataSource {
   }
 
   @Override
-  public Object newDataObject(final EdmEntitySet entitySet) throws ODataException {
+  public Object newDataObject(final EdmEntitySet entitySet) throws ODataNotImplementedException, EdmException {
     if ("Employees".equals(entitySet.getName()))
       return new Employee();
     else if ("Teams".equals(entitySet.getName()))

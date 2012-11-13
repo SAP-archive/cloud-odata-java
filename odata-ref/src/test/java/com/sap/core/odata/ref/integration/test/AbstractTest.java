@@ -32,14 +32,14 @@ public abstract class AbstractTest {
   protected Response call(final String urlString, final HttpHeaders httpHeaders, final Request request, final HttpStatus expectedStatus) throws ODataException {
     final ODataLocatorImpl oDataLocator = new ODataLocatorImpl();
     InitParameter param = oDataLocator.new InitParameter();
-    
+
     param.setHttpHeaders(httpHeaders);
     param.setPathSegments(getPathSegments(urlString));
     param.setRequest(request);
     param.setUriInfo(getUriInfo());
     param.setServiceFactory(SERVICE_FACTORY);
-    
     oDataLocator.initializeService(param);
+
     final Response response = oDataLocator.handleGet();
     assertEquals(expectedStatus.getStatusCode(), response.getStatus());
     return response;
