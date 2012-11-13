@@ -13,21 +13,21 @@ public class ODataExceptionTest {
   public void testNoCause() {
     ODataException exception = new ODataException("Some message.");
 
-    Assert.assertEquals(false, exception.isCausedByMessageException());
+    Assert.assertEquals(false, exception.isCausedByHttpException());
   }
 
   @Test
   public void testNPECause() {
     ODataException exception = new ODataException("Some message.", new NullPointerException());
 
-    Assert.assertEquals(false, exception.isCausedByMessageException());
+    Assert.assertEquals(false, exception.isCausedByHttpException());
   }
 
   @Test
   public void testODataContextedCause() {
     ODataException exception = new ODataException("Some message.", new ODataNotFoundException(ODataNotFoundException.ENTITY));
 
-    Assert.assertEquals(true, exception.isCausedByMessageException());
+    Assert.assertEquals(true, exception.isCausedByHttpException());
   }
 
   @Test
@@ -36,6 +36,6 @@ public class ODataExceptionTest {
         new IllegalArgumentException(
                 new ODataNotFoundException(ODataNotFoundException.ENTITY)));
 
-    Assert.assertEquals(true, exception.isCausedByMessageException());
+    Assert.assertEquals(true, exception.isCausedByHttpException());
   }
 }
