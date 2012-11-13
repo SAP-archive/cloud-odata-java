@@ -1,11 +1,13 @@
 package com.sap.core.odata.core.rest;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 
 import junit.framework.Assert;
@@ -17,8 +19,10 @@ import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
 import com.sap.core.odata.api.enums.HttpStatus;
+import com.sap.core.odata.api.exception.ODataApplicationException;
 import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.api.exception.ODataNotFoundException;
+import com.sap.core.odata.api.uri.UriParserException;
 import com.sap.core.odata.core.exception.ODataRuntimeException;
 
 public class ODataExceptionMapperImplTest {
@@ -88,6 +92,127 @@ public class ODataExceptionMapperImplTest {
     // TOOD: adapt test if implementation is finished
     Assert.assertTrue(response.getEntity() instanceof String);
     Assert.assertEquals("Language = 'en', message = 'Requested entity could not be found.'.", response.getEntity().toString());
+  }
+
+  
+  @Test
+  public void testODataApplicationException() {
+    // prepare
+    String message = "expected exception message";
+    Exception exception = new ODataApplicationException(message);
+    
+    // execute
+    Response response = exceptionMapper.toResponse(exception);
+    
+    // verify
+    Assert.assertNotNull(response);
+    Assert.assertEquals(Status.INTERNAL_SERVER_ERROR.getStatusCode(), response.getStatus());
+    // TOOD: adapt test if implementation is finished
+    Assert.assertTrue(response.getEntity() instanceof String);
+    Assert.assertEquals(message, response.getEntity().toString());
+  }
+  
+  @Test
+  public void testODataApplicationExceptionWrapped() {
+    // prepare
+    String message = "expected exception message";
+    Exception exception = new ODataException(new ODataApplicationException(message));
+    
+    // execute
+    Response response = exceptionMapper.toResponse(exception);
+    
+    // verify
+    Assert.assertNotNull(response);
+    Assert.assertEquals(Status.INTERNAL_SERVER_ERROR.getStatusCode(), response.getStatus());
+    // TOOD: adapt test if implementation is finished
+    Assert.assertTrue(response.getEntity() instanceof String);
+    Assert.assertEquals(message, response.getEntity().toString());
+  }
+
+  @Test
+  public void testODataApplicationExceptionWithStatus() {
+    // prepare
+    String message = "expected exception message";
+    HttpStatus status = HttpStatus.OK;
+    Exception exception = new ODataApplicationException(message, status);
+    
+    // execute
+    Response response = exceptionMapper.toResponse(exception);
+    
+    // verify
+    Assert.assertNotNull(response);
+    Assert.assertEquals(Status.OK.getStatusCode(), response.getStatus());
+    // TOOD: adapt test if implementation is finished
+    Assert.assertTrue(response.getEntity() instanceof String);
+    Assert.assertEquals(message, response.getEntity().toString());
+  }
+
+  @Test
+  public void testODataApplicationExceptionWithStatusWrapped() {
+    // prepare
+    String message = "expected exception message";
+    HttpStatus status = HttpStatus.OK;
+    Exception exception = new ODataException(new ODataApplicationException(message, status));
+    
+    // execute
+    Response response = exceptionMapper.toResponse(exception);
+    
+    // verify
+    Assert.assertNotNull(response);
+    Assert.assertEquals(Status.OK.getStatusCode(), response.getStatus());
+    // TOOD: adapt test if implementation is finished
+    Assert.assertTrue(response.getEntity() instanceof String);
+    Assert.assertEquals(message, response.getEntity().toString());
+  }
+
+  @Test
+  public void testUriParserException() {
+    // prepare
+    Exception exception = new UriParserException(UriParserException.EMPTYSEGMENT);
+    
+    // execute
+    Response response = exceptionMapper.toResponse(exception);
+    
+    // verify
+    Assert.assertNotNull(response);
+    Assert.assertEquals(Status.BAD_REQUEST.getStatusCode(), response.getStatus());
+    // TOOD: adapt test if implementation is finished
+//    Assert.assertTrue(response.getEntity() instanceof String);
+//    Assert.assertEquals("", response.getEntity().toString());
+  }
+
+  @Test
+  public void testUriParserExceptionWrapped() {
+    // prepare
+    Exception exception = new ODataException("outer exception", new UriParserException(UriParserException.EMPTYSEGMENT));
+    
+    // execute
+    Response response = exceptionMapper.toResponse(exception);
+    
+    // verify
+    Assert.assertNotNull(response);
+    Assert.assertEquals(Status.BAD_REQUEST.getStatusCode(), response.getStatus());
+    // TOOD: adapt test if implementation is finished
+//    Assert.assertTrue(response.getEntity() instanceof String);
+//    Assert.assertEquals("", response.getEntity().toString());
+  }
+
+  
+  @Test
+  public void testIoException() {
+    // prepare
+    String message = "expected exception message";
+    Exception exception = new IOException(message);
+    
+    // execute
+    Response response = exceptionMapper.toResponse(exception);
+    
+    // verify
+    Assert.assertNotNull(response);
+    Assert.assertEquals(Status.INTERNAL_SERVER_ERROR.getStatusCode(), response.getStatus());
+    // TOOD: adapt test if implementation is finished
+    Assert.assertTrue(response.getEntity() instanceof String);
+    Assert.assertEquals(exception.getClass().getName() + " - " + message, response.getEntity().toString());
   }
 
   

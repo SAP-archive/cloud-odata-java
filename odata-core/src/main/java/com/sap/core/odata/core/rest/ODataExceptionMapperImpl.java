@@ -19,16 +19,18 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.sap.core.odata.api.enums.HttpStatus;
+import com.sap.core.odata.api.exception.ODataApplicationException;
 import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.api.exception.ODataHttpException;
 import com.sap.core.odata.api.exception.ODataMessageException;
+import com.sap.core.odata.api.uri.UriParserException;
 import com.sap.core.odata.core.exception.MessageService;
 import com.sap.core.odata.core.exception.MessageService.Message;
 
 @Provider
 public class ODataExceptionMapperImpl implements ExceptionMapper<Exception> {
 
-  private final static Logger log = LoggerFactory.getLogger(ODataExceptionMapperImpl.class);
+  private final static Logger LOG = LoggerFactory.getLogger(ODataExceptionMapperImpl.class);
   private static final Locale DEFAULT_RESPONSE_LOCALE = Locale.ENGLISH;
 
   @Context UriInfo uriInfo;
@@ -37,51 +39,90 @@ public class ODataExceptionMapperImpl implements ExceptionMapper<Exception> {
   @Override
   public Response toResponse(Exception exception) {
 
-    final ResponseBuilder responseBuilder;
+    final Response response;
+
+    // internal server error 500 -> stack trace into log
     
-    if (exception instanceof ODataHttpException) {
-      responseBuilder = buildResponseForMessageException((ODataHttpException) exception);
-    } else if (exception instanceof ODataException) {
-      ODataException odataException = (ODataException) exception;
-      if(odataException.isCausedByMessageException()) {
-        responseBuilder = buildResponseForMessageException(odataException.getMessageExceptionCause());
-      } else {
-        responseBuilder = buildResponseForException(exception);
-      }
-      ODataExceptionMapperImpl.log.error(exception.getMessage(), exception);
+    Exception toHandleException = extractException(exception);
+    
+    if (toHandleException instanceof ODataApplicationException) {
+      response = buildResponseForApplicationException((ODataApplicationException) toHandleException);            
+    } else if (toHandleException instanceof ODataHttpException) {
+      response = buildResponseForHttpException((ODataHttpException) toHandleException);
+    } else if (toHandleException instanceof UriParserException) {
+      response = buildResponseForUriParserException((UriParserException) toHandleException);      
     } else {
-      ODataExceptionMapperImpl.log.error(exception.getMessage(), exception);
-      responseBuilder = buildResponseForException(exception);
+      response = buildResponseForException(exception);
+    }
+    
+    if(isInternalServerError(response)) {
+      ODataExceptionMapperImpl.LOG.error(exception.getMessage(), exception);
     }
 
-    return responseBuilder.build();
+    return response;
   }
 
-  private ResponseBuilder buildResponseForException(Exception exception) {
+  private boolean isInternalServerError(final Response response) {
+    return response.getStatus() >= Status.INTERNAL_SERVER_ERROR.getStatusCode();
+  }
+
+  private Exception extractException(Exception exception) {
+    if(exception instanceof ODataException) {
+      //
+      ODataException odataException = (ODataException) exception;
+      if(odataException.isCausedByApplicationException()) {
+        return odataException.getApplicationExceptionCause();
+      } else if(odataException.isCausedByHttpException()) {
+        return odataException.getHttpExceptionCause();
+      } else if(odataException.isCausedByMessageException()) {
+        return odataException.getMessageExceptionCause();
+      }
+    }
+    return exception;
+  }
+
+  private Response buildResponseForException(Exception exception) {
     ResponseBuilder responseBuilder = Response.noContent();
-    return responseBuilder.entity(exception.getClass().getCanonicalName() + " - " + exception.getMessage())
-                    .status(Status.INTERNAL_SERVER_ERROR);
+    return responseBuilder.entity(exception.getClass().getName() + " - " + exception.getMessage())
+                    .status(Status.INTERNAL_SERVER_ERROR).build();
   }
 
-  private ResponseBuilder buildResponseForMessageException(ODataMessageException msgException) {
+  private Response buildResponseForUriParserException(UriParserException exception) {
+    ResponseBuilder responseBuilder = Response.noContent();
+    return responseBuilder.entity(exception.getMessage()).status(Status.BAD_REQUEST).build();
+  }
+
+  private Response buildResponseForApplicationException(ODataApplicationException exception) {
+    ResponseBuilder responseBuilder = Response.noContent();
+    Status status = extractStatus(exception);
+    return responseBuilder.entity(exception.getMessage()).status(status).build();
+  }
+
+  private Response buildResponseForHttpException(ODataHttpException msgException) {
     Message localizedMessage = extractEntity(msgException.getMessageReference());
     ResponseBuilder responseBuilder = Response.noContent();
     return responseBuilder.entity("Language = '" + localizedMessage.getLang() + "', message = '" + localizedMessage.getText() + "'.")
-                    .status(extractStatus(msgException));
+                    .status(extractStatus(msgException)).build();
   }
 
-  private Status extractStatus(ODataMessageException exception) {
+  
+  private Status extractStatus(ODataException exception) {
     Status extractedStatus = Status.INTERNAL_SERVER_ERROR;
+    
+    HttpStatus httpStatus = null;
     if(exception instanceof ODataHttpException) {
-      HttpStatus httpStatus = ((ODataHttpException) exception).getHttpStatus();
-      if (httpStatus != null) {
-        try {
-          extractedStatus = Status.valueOf(httpStatus.name());
-        } catch (IllegalArgumentException e) {
-          // no mapping found -> INTERNAL_SERVER_ERROR
-        }
+      httpStatus = ((ODataHttpException) exception).getHttpStatus();
+    } else if(exception instanceof ODataApplicationException) {
+      httpStatus = ((ODataApplicationException) exception).getHttpStatus();
+    }
+
+    if (httpStatus != null) {
+      try {
+        extractedStatus = Status.valueOf(httpStatus.name());
+      } catch (IllegalArgumentException e) {
+        // no mapping found -> INTERNAL_SERVER_ERROR
+        LOG.error("no mapping found -> INTERNAL_SERVER_ERROR", e);
       }
-    } else {
     }
 
     return extractedStatus;

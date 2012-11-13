@@ -28,8 +28,8 @@ public class ODataException extends Exception {
    * 
    * @return <code>true</code> if it was caused by an {@link ODataHttpException}, otherwise <code>false</code>.
    */
-  public boolean isCausedByMessageException() {
-    return getMessageExceptionCause() != null;
+  public boolean isCausedByHttpException() {
+    return getHttpExceptionCause() != null;
   }
 
   /**
@@ -39,7 +39,7 @@ public class ODataException extends Exception {
    * @return the first found {@link ODataHttpException} in the cause exception hierarchy. 
    *          Or <code>NULL</code> if no {@link ODataHttpException} is found in cause hierarchy.
    */
-  public ODataHttpException getMessageExceptionCause() {
+  public ODataHttpException getHttpExceptionCause() {
     return getSpecificCause(ODataHttpException.class);
   }
 
@@ -73,4 +73,14 @@ public class ODataException extends Exception {
     }
     return null;
   }
+
+  public boolean isCausedByMessageException() {
+    return getMessageExceptionCause() != null;
+  }
+
+  public Exception getMessageExceptionCause() {
+    return getSpecificCause(ODataMessageException.class);
+  }
+  
+  
 }

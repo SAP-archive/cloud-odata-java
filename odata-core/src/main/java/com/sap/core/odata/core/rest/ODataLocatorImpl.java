@@ -50,17 +50,14 @@ public final class ODataLocatorImpl {
 
   @GET
   public Response handleGet() throws ODataException {
-    try {
-      List<String> pathSegments = new ArrayList<String>(this.context.getODataPathSegment());
-      UriParserResultImpl uriParserResult = (UriParserResultImpl) this.uriParser.parse(pathSegments, this.queryParameters);
+    List<String> pathSegments = new ArrayList<String>(this.context.getODataPathSegment());
 
-      ODataResponse odataResponse = dispatcher.dispatch(ODataHttpMethod.GET, uriParserResult);
-      Response response = this.convertResponse(odataResponse);
+    UriParserResultImpl uriParserResult = (UriParserResultImpl) this.uriParser.parse(pathSegments, this.queryParameters);
 
-      return response;
-    } catch (ODataException e) {
-      throw new RuntimeException(e);
-    }
+    ODataResponse odataResponse = dispatcher.dispatch(ODataHttpMethod.GET, uriParserResult);
+    Response response = this.convertResponse(odataResponse);
+
+    return response;
   }
 
   @POST
