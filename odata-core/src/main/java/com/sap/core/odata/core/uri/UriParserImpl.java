@@ -87,8 +87,7 @@ public class UriParserImpl implements UriParser {
       handleSystemQueryOptions();
       handleOtherQueryParameters();
     } catch (EdmException e) {
-      //TODO: Append previous exception
-      throw new UriParserException(UriParserException.EDM);
+      throw new UriParserException(UriParserException.EDM, e);
     }
 
     UriParserImpl.LOG.debug(uriResult.toString());
