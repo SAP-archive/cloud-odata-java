@@ -19,7 +19,7 @@ import org.mockito.MockitoAnnotations;
 import com.sap.core.odata.api.enums.HttpStatus;
 import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.api.exception.ODataNotFoundException;
-import com.sap.core.odata.api.exception.ODataRuntimeException;
+import com.sap.core.odata.core.exception.ODataRuntimeException;
 
 public class ODataExceptionMapperImplTest {
 
