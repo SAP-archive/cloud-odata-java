@@ -29,10 +29,8 @@ public class ODataExceptionMapperImpl implements ExceptionMapper<Exception> {
   private final static Logger log = LoggerFactory.getLogger(ODataExceptionMapperImpl.class);
   private static final Locale DEFAULT_RESPONSE_LOCALE = Locale.ENGLISH;
 
-  @Context
-  protected UriInfo uriInfo;
-  @Context
-  protected HttpHeaders httpHeaders;
+  @Context UriInfo uriInfo;
+  @Context HttpHeaders httpHeaders;
 
   @Override
   public Response toResponse(Exception exception) {
