@@ -1,4 +1,4 @@
-package com.sap.core.odata.ref.fit.test;
+package com.sap.core.odata.ref.integration.test;
 
 import static org.junit.Assert.assertEquals;
 
@@ -28,24 +28,28 @@ public abstract class AbstractTest {
 
   private static final ScenarioServiceFactory SERVICE_FACTORY = new ScenarioServiceFactory();
 
-  protected Response call(final String urlString, final HttpHeaders httpHeaders, final Request request) throws ODataException {
+  protected Response call(final String urlString, final HttpHeaders httpHeaders, final Request request, final HttpStatus expectedStatus) throws ODataException {
     final ODataLocatorImpl oDataLocator = new ODataLocatorImpl();
     oDataLocator.initializeService(SERVICE_FACTORY,
         getPathSegments(urlString),
         httpHeaders,
         getUriInfo(),
         request);
-    return oDataLocator.handleGet();
+    final Response response = oDataLocator.handleGet();
+    assertEquals(expectedStatus.getStatusCode(), response.getStatus());
+    return response;
   }
 
-  protected void badRequest(final String urlString, final HttpHeaders httpHeaders, final Request request) throws ODataException {
-    final Response response = call(urlString, httpHeaders, request);
-    assertEquals(HttpStatus.BAD_REQUEST.getStatusCode(), response.getStatus());
+  protected Response ok(final String urlString) throws ODataException {
+    return call(urlString, null, null, HttpStatus.OK);
   }
 
-  protected void notFound(final String urlString, final HttpHeaders httpHeaders, final Request request) throws ODataException {
-    final Response response = call(urlString, httpHeaders, request);
-    assertEquals(HttpStatus.NOT_FOUND.getStatusCode(), response.getStatus());
+  protected Response badRequest(final String urlString) throws ODataException {
+    return call(urlString, null, null, HttpStatus.BAD_REQUEST);
+  }
+
+  protected Response notFound(final String urlString) throws ODataException {
+    return call(urlString, null, null, HttpStatus.NOT_FOUND);
   }
 
   private UriInfo getUriInfo() {
