@@ -2,16 +2,16 @@ package com.sap.core.odata.api.exception;
 
 import com.sap.core.odata.api.enums.HttpStatus;
 
-public class ODataForbiddenException extends ODataMessageException {
+public class ODataForbiddenException extends ODataHttpException {
 
   /**
    * 
    */
   private static final long serialVersionUID = 1L;
 
-  public static final MessageReference COMMON = createContext(ODataForbiddenException.class, "COMMON", HttpStatus.FORBIDDEN);
+  public static final MessageReference COMMON = createMessageReference(ODataForbiddenException.class, "COMMON");
 
   public ODataForbiddenException(MessageReference context) {
-    super(context);
+    super(context, HttpStatus.FORBIDDEN);
   }
 }

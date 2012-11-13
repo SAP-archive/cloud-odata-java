@@ -8,9 +8,9 @@ import com.sap.core.odata.api.enums.HttpStatus;
 /**
  *
  */
-public class ODataMethodNotAllowedException extends ODataMessageException {
+public class ODataMethodNotAllowedException extends ODataHttpException {
 
-  public static final MessageReference DISPATCH = createContext(ODataMethodNotAllowedException.class, "DISPATCH", HttpStatus.METHOD_NOT_ALLOWED);
+  public static final MessageReference DISPATCH = createMessageReference(ODataMethodNotAllowedException.class, "DISPATCH");
 
   /**
    * 
@@ -21,7 +21,7 @@ public class ODataMethodNotAllowedException extends ODataMessageException {
    * @param context
    */
   public ODataMethodNotAllowedException(MessageReference context) {
-    super(context);
+    super(context, HttpStatus.METHOD_NOT_ALLOWED);
   }
 
 }
