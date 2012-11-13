@@ -5,13 +5,13 @@ import com.sap.core.odata.api.enums.HttpStatus;
 /**
  * @author SAP AG
  */
-public class ODataNotFoundException extends ODataMessageException {
+public class ODataNotFoundException extends ODataHttpException {
 
   private static final long serialVersionUID = 1L;
 
-  public static final MessageReference ENTITY = createContext(ODataNotFoundException.class, "ENTITY", HttpStatus.NOT_FOUND);
+  public static final MessageReference ENTITY = createMessageReference(ODataNotFoundException.class, "ENTITY");
 
   public ODataNotFoundException(MessageReference context) {
-    super(context);
+    super(context, HttpStatus.NOT_FOUND);
   }
 }

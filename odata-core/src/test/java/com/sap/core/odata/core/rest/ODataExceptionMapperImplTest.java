@@ -47,7 +47,7 @@ public class ODataExceptionMapperImplTest {
     
     // verify
     Assert.assertNotNull(response);
-    Assert.assertEquals(ODataNotFoundException.ENTITY.getHttpStatus().getStatusCode(), response.getStatus());
+    Assert.assertEquals(HttpStatus.NOT_FOUND.getStatusCode(), response.getStatus());
     // TOOD: adapt test if implementation is finished
     Assert.assertTrue(response.getEntity() instanceof String);
     Assert.assertEquals("Language = 'en', message = 'Requested entity could not be found.'.", response.getEntity().toString());
@@ -66,7 +66,7 @@ public class ODataExceptionMapperImplTest {
     
     // verify
     Assert.assertNotNull(response);
-    Assert.assertEquals(ODataNotFoundException.ENTITY.getHttpStatus().getStatusCode(), response.getStatus());
+    Assert.assertEquals(HttpStatus.NOT_FOUND.getStatusCode(), response.getStatus());
     // TOOD: adapt test if implementation is finished
     Assert.assertTrue(response.getEntity() instanceof String);
     Assert.assertEquals("Language = 'de', message = 'Die angefragte Entit\u00e4t wurde nicht gefunden.'.", response.getEntity().toString());
@@ -84,7 +84,7 @@ public class ODataExceptionMapperImplTest {
     
     // verify
     Assert.assertNotNull(response);
-    Assert.assertEquals(ODataNotFoundException.ENTITY.getHttpStatus().getStatusCode(), response.getStatus());
+    Assert.assertEquals(HttpStatus.NOT_FOUND.getStatusCode(), response.getStatus());
     // TOOD: adapt test if implementation is finished
     Assert.assertTrue(response.getEntity() instanceof String);
     Assert.assertEquals("Language = 'en', message = 'Requested entity could not be found.'.", response.getEntity().toString());

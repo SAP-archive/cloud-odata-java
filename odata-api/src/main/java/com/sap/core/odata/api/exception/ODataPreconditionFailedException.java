@@ -2,16 +2,16 @@ package com.sap.core.odata.api.exception;
 
 import com.sap.core.odata.api.enums.HttpStatus;
 
-public class ODataPreconditionFailedException extends ODataMessageException {
+public class ODataPreconditionFailedException extends ODataHttpException {
 
   /**
    * 
    */
   private static final long serialVersionUID = 1L;
 
-  public static final MessageReference COMMON = createContext(ODataPreconditionFailedException.class, "COMMON", HttpStatus.PRECONDITION_FAILED);
+  public static final MessageReference COMMON = createMessageReference(ODataPreconditionFailedException.class, "COMMON");
 
   public ODataPreconditionFailedException(MessageReference context) {
-    super(context);
+    super(context, HttpStatus.PRECONDITION_FAILED);
   }
 }

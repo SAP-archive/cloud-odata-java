@@ -18,7 +18,9 @@ import javax.ws.rs.ext.Provider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.sap.core.odata.api.enums.HttpStatus;
 import com.sap.core.odata.api.exception.ODataException;
+import com.sap.core.odata.api.exception.ODataHttpException;
 import com.sap.core.odata.api.exception.ODataMessageException;
 import com.sap.core.odata.core.exception.MessageService;
 import com.sap.core.odata.core.exception.MessageService.Message;
@@ -37,8 +39,8 @@ public class ODataExceptionMapperImpl implements ExceptionMapper<Exception> {
 
     final ResponseBuilder responseBuilder;
     
-    if (exception instanceof ODataMessageException) {
-      responseBuilder = buildResponseForMessageException((ODataMessageException) exception);
+    if (exception instanceof ODataHttpException) {
+      responseBuilder = buildResponseForMessageException((ODataHttpException) exception);
     } else if (exception instanceof ODataException) {
       ODataException odataException = (ODataException) exception;
       if(odataException.isCausedByMessageException()) {
@@ -65,17 +67,21 @@ public class ODataExceptionMapperImpl implements ExceptionMapper<Exception> {
     Message localizedMessage = extractEntity(msgException.getMessageReference());
     ResponseBuilder responseBuilder = Response.noContent();
     return responseBuilder.entity("Language = '" + localizedMessage.getLang() + "', message = '" + localizedMessage.getText() + "'.")
-                    .status(extractStatus(msgException.getMessageReference()));
+                    .status(extractStatus(msgException));
   }
 
-  private Status extractStatus(com.sap.core.odata.api.exception.MessageReference context) {
+  private Status extractStatus(ODataMessageException exception) {
     Status extractedStatus = Status.INTERNAL_SERVER_ERROR;
-    if (context.getHttpStatus() != null) {
-      try {
-        extractedStatus = Status.valueOf(context.getHttpStatus().name());
-      } catch (IllegalArgumentException e) {
-        // no mapping found -> INTERNAL_SERVER_ERROR
+    if(exception instanceof ODataHttpException) {
+      HttpStatus httpStatus = ((ODataHttpException) exception).getHttpStatus();
+      if (httpStatus != null) {
+        try {
+          extractedStatus = Status.valueOf(httpStatus.name());
+        } catch (IllegalArgumentException e) {
+          // no mapping found -> INTERNAL_SERVER_ERROR
+        }
       }
+    } else {
     }
 
     return extractedStatus;

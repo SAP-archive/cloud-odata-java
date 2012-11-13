@@ -24,23 +24,23 @@ public class ODataException extends Exception {
   }
 
   /**
-   * Check whether this exception was caused by a {@link ODataMessageException} exception.
+   * Check whether this exception was caused by a {@link ODataHttpException} exception.
    * 
-   * @return <code>true</code> if it was caused by an {@link ODataMessageException}, otherwise <code>false</code>.
+   * @return <code>true</code> if it was caused by an {@link ODataHttpException}, otherwise <code>false</code>.
    */
   public boolean isCausedByMessageException() {
     return getMessageExceptionCause() != null;
   }
 
   /**
-   * Search for and return first (from top) {@link ODataMessageException} in cause hierarchy.
-   * If no {@link ODataMessageException} in cause hierarchy <code>NULL</code> is returned. 
+   * Search for and return first (from top) {@link ODataHttpException} in cause hierarchy.
+   * If no {@link ODataHttpException} in cause hierarchy <code>NULL</code> is returned. 
    * 
-   * @return the first found {@link ODataMessageException} in the cause exception hierarchy. 
-   *          Or <code>NULL</code> if no {@link ODataMessageException} is found in cause hierarchy.
+   * @return the first found {@link ODataHttpException} in the cause exception hierarchy. 
+   *          Or <code>NULL</code> if no {@link ODataHttpException} is found in cause hierarchy.
    */
-  public ODataMessageException getMessageExceptionCause() {
-    return getSpecificCause(ODataMessageException.class);
+  public ODataHttpException getMessageExceptionCause() {
+    return getSpecificCause(ODataHttpException.class);
   }
 
   /**
