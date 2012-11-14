@@ -82,7 +82,7 @@ public class BasicHttpTest extends AbstractBasicTest {
   }
 
   @Test
-  public void testDetele() throws MalformedURLException, IOException {
+  public void testDelete() throws MalformedURLException, IOException {
     HttpDelete delete = new HttpDelete(URI.create(this.getEndpoint().toString() + "aaa/bbb/ccc"));
     HttpResponse response = this.getHttpClient().execute(delete);
 
