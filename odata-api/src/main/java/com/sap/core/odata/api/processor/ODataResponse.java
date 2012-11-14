@@ -3,13 +3,13 @@ package com.sap.core.odata.api.processor;
 import java.util.Set;
 
 import com.sap.core.odata.api.RuntimeDelegate;
-import com.sap.core.odata.api.enums.HttpStatus;
+import com.sap.core.odata.api.enums.HttpStatusCodes;
 
 public abstract class ODataResponse {
 
   protected ODataResponse() {}
 
-  public abstract HttpStatus getStatus();
+  public abstract HttpStatusCodes getStatus();
 
   public abstract String getEntity();
 
@@ -21,7 +21,7 @@ public abstract class ODataResponse {
 
   public abstract Set<String> getHeaderNames();
 
-  public static ODataResponseBuilder status(HttpStatus status) {
+  public static ODataResponseBuilder status(HttpStatusCodes status) {
     ODataResponseBuilder b = ODataResponseBuilder.newInstance();
     b.status(status);
     return b;
@@ -52,7 +52,7 @@ public abstract class ODataResponse {
 
     public abstract ODataResponse build();
 
-    public abstract ODataResponseBuilder status(HttpStatus status);
+    public abstract ODataResponseBuilder status(HttpStatusCodes status);
 
     public abstract ODataResponseBuilder entity(String entity);
 
