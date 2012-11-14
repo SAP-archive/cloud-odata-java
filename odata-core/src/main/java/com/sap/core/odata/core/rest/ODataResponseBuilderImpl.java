@@ -9,7 +9,7 @@ import com.sap.core.odata.api.processor.ODataResponse.ODataResponseBuilder;
 public class ODataResponseBuilderImpl extends ODataResponseBuilder {
 
   private HttpStatusCodes status = HttpStatusCodes.OK;
-  private String entity;
+  private Object entity;
   private HashMap<String, String> header = new HashMap<String, String>();
   private String idLiteral;
   private String eTag;
@@ -34,7 +34,7 @@ public class ODataResponseBuilderImpl extends ODataResponseBuilder {
   }
 
   @Override
-  public ODataResponseBuilder entity(String entity) {
+  public ODataResponseBuilder entity(Object entity) {
     this.entity = entity;
     return this;
   }

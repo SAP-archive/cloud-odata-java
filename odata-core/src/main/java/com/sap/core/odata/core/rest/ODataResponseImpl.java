@@ -9,7 +9,7 @@ import com.sap.core.odata.api.processor.ODataResponse;
 public class ODataResponseImpl extends ODataResponse {
 
   private HttpStatusCodes status;
-  private String entity;
+  private Object entity;
   private HashMap<String, String> header;
   private String idLiteral;
   private String eTag;
@@ -23,7 +23,7 @@ public class ODataResponseImpl extends ODataResponse {
     this.status = status;
   }
 
-  public void setEntity(String entity) {
+  public void setEntity(Object entity) {
     this.entity = entity;
   }
 
