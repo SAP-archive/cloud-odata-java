@@ -12,7 +12,6 @@ import com.sap.core.odata.api.edm.EdmException;
 import com.sap.core.odata.api.edm.EdmServiceMetadata;
 import com.sap.core.odata.api.edm.FullQualifiedName;
 import com.sap.core.odata.api.exception.ODataMessageException;
-import com.sap.core.odata.core.exception.ODataRuntimeException;
 
 public abstract class EdmImpl implements Edm {
 
@@ -111,11 +110,11 @@ public abstract class EdmImpl implements Edm {
     return getEntityContainer(null);
   }
 
-  protected abstract EdmEntityContainer createEntityContainer(String name) throws ODataRuntimeException, ODataMessageException, EdmException;
+  protected abstract EdmEntityContainer createEntityContainer(String name) throws ODataMessageException;
 
-  protected abstract EdmEntityType createEntityType(FullQualifiedName fqName) throws ODataRuntimeException, ODataMessageException, EdmException;
+  protected abstract EdmEntityType createEntityType(FullQualifiedName fqName) throws ODataMessageException;
 
-  protected abstract EdmComplexType createComplexType(FullQualifiedName fqName) throws ODataRuntimeException, ODataMessageException, EdmException;
+  protected abstract EdmComplexType createComplexType(FullQualifiedName fqName) throws ODataMessageException;
 
-  protected abstract EdmAssociation createAssociation(FullQualifiedName fqName) throws ODataRuntimeException, ODataMessageException, EdmException;
+  protected abstract EdmAssociation createAssociation(FullQualifiedName fqName) throws ODataMessageException;
 }
