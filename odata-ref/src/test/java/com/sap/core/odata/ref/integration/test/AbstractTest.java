@@ -5,6 +5,7 @@ import static org.junit.Assert.assertEquals;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -110,6 +111,21 @@ public abstract class AbstractTest {
       @Override
       public List<Locale> getAcceptableLanguages() {
         return Collections.emptyList();
+      }
+
+      @Override
+      public String getHeaderString(String name) {
+        return null;
+      }
+
+      @Override
+      public Date getDate() {
+        return null;
+      }
+
+      @Override
+      public int getLength() {
+        return 0;
       }
     };
   }
