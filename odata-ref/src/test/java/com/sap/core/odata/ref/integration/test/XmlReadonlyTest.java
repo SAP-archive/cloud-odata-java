@@ -1,5 +1,6 @@
 package com.sap.core.odata.ref.integration.test;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
@@ -24,8 +25,8 @@ public class XmlReadonlyTest extends AbstractTest {
   @Test
   public void functionImport() throws Exception {
     // TODO: check content type
-    // assertEquals("1", call("EmployeeSearch('1')/ne_Room/Id/$value?q='alter'").getEntity()); + etag
-    // assertThat(call("EmployeeSearch?q='-'").getEntity());  // contains no entity
+    // assertEquals("1", ok("EmployeeSearch('1')/ne_Room/Id/$value?q='alter'").getEntity().toString()); // etag
+    // assertThat(ok("EmployeeSearch?q='-'").getEntity());  // contains no entity
     assertTrue(ok("AllLocations").getEntity().toString().contains(CITY_2_NAME));
     assertTrue(ok("AllUsedRoomIds").getEntity().toString().contains("3"));
     assertTrue(ok("MaximalAge").getEntity().toString().contains(EMPLOYEE_3_AGE));
@@ -42,5 +43,20 @@ public class XmlReadonlyTest extends AbstractTest {
     notFound("ManagerPhoto");
     // badRequest("OldestEmployee()");
     // notFound("ManagerPhoto?Id='2'");
+  }
+
+  @Test
+  public void simpleProperty() throws Exception {
+    // TODO: check content type
+    assertEquals(EMPLOYEE_2_AGE, ok("Employees('2')/Age/$value").getEntity().toString());
+    assertTrue(ok("Employees('2')/Age").getEntity().toString().contains(EMPLOYEE_2_AGE));
+    ok("Container2.Photos(Id=3,Type='image%2Fjpeg')/Image/$value");
+//    assertTrue(ok("Container2.Photos(Id=3,Type='image%2Fjpeg')/Image").getEntity().toString().contains("<d:Image m:type=\"Edm.Binary\" m:MimeType=\"image/jpeg\""));
+    assertEquals("5", ok("Rooms('2')/Seats/$value").getEntity().toString()); // + etag
+//    assertTrue(ok("Rooms('2')/Seats").getEntity().toString().contains("5</")); // + etag
+//    ok("Container2.Photos(Id=3,Type='image%2Fjpeg')/BinaryData/$value");
+//    ok("Container2.Photos(Id=3,Type='image%2Fjpeg')/BinaryData");
+//    notFound("Employees('2')/Foo");
+//    notFound("Employees('2')/Age()");
   }
 }

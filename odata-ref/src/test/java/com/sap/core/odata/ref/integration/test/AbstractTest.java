@@ -3,6 +3,7 @@ package com.sap.core.odata.ref.integration.test;
 import static org.junit.Assert.assertEquals;
 
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -223,7 +224,7 @@ public abstract class AbstractTest {
   private List<PathSegment> getPathSegments(final String resourcePath) throws UriParserException {
     List<PathSegment> pathSegments = new ArrayList<PathSegment>();
     for (final String segment : resourcePath.split("/", -1))
-      pathSegments.add(getPathSegment(segment));
+      pathSegments.add(getPathSegment(unescape(segment)));
     return pathSegments;
   }
 
@@ -240,5 +241,13 @@ public abstract class AbstractTest {
         return null;
       }
     };
+  }
+
+  private String unescape(final String s) throws UriParserException {
+    try {
+      return new URI(s).getPath();
+    } catch (URISyntaxException e) {
+      throw new UriParserException(UriParserException.NOTEXT);
+    }
   }
 }
