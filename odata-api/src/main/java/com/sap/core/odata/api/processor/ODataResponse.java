@@ -27,7 +27,7 @@ public abstract class ODataResponse {
     return b;
   }
 
-  public static ODataResponseBuilder entity(String entity) {
+  public static ODataResponseBuilder entity(Object entity) {
     ODataResponseBuilder b = ODataResponseBuilder.newInstance();
     b.entity(entity);
     return b;
@@ -41,9 +41,7 @@ public abstract class ODataResponse {
 
   public static abstract class ODataResponseBuilder {
 
-    protected ODataResponseBuilder() {
-
-    }
+    protected ODataResponseBuilder() { }
 
     public static ODataResponseBuilder newInstance() {
       ODataResponseBuilder b = RuntimeDelegate.getInstance().createODataResponseBuilder();
@@ -54,7 +52,7 @@ public abstract class ODataResponse {
 
     public abstract ODataResponseBuilder status(HttpStatusCodes status);
 
-    public abstract ODataResponseBuilder entity(String entity);
+    public abstract ODataResponseBuilder entity(Object entity);
 
     public abstract ODataResponseBuilder header(String name, String value);
 
