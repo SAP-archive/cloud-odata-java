@@ -31,7 +31,7 @@ public class EdmFunctionImportImplProv extends EdmNamedImplProv implements EdmFu
   @Override
   public EdmParameter getParameter(String name) throws EdmException {
     final FunctionImportParameter parameter = functionImport.getParameters().get(name);
-    return (EdmParameter) new EdmElementImplProv(edm, parameter.getName(), parameter.getQualifiedName(), parameter.getFacets(), parameter.getMapping());
+    return new EdmParameterImplProv(edm, parameter.getName(), parameter.getQualifiedName(), parameter.getFacets(), parameter.getMapping());
   }
 
   @Override

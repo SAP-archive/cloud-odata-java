@@ -30,8 +30,8 @@ public class XmlReadonlyTest extends AbstractTest {
     assertTrue(ok("AllUsedRoomIds").getEntity().toString().contains("3"));
     assertTrue(ok("MaximalAge").getEntity().toString().contains(EMPLOYEE_3_AGE));
     assertTrue(ok("MostCommonLocation").getEntity().toString().contains(CITY_2_NAME));
-    // assertThat(ok("ManagerPhoto?Id='1'", null, null).getEntity());  // is not empty
-    // assertThat(ok("ManagerPhoto/$value?Id='1'", null, null).getEntity());  // is not empty + etag + contentType
+    // assertThat(ok("ManagerPhoto?Id='1'").getEntity());  // is not empty
+    // assertThat(ok("ManagerPhoto/$value?Id='1'").getEntity());  // is not empty + etag + contentType
     assertTrue(ok("OldestEmployee").getEntity().toString().contains(EMPLOYEE_3_NAME));
     // assertTrue(ok("OldestEmployee?$format=xml").getEntity().toString().contains(EMPLOYEE_3_NAME));
 
@@ -39,7 +39,7 @@ public class XmlReadonlyTest extends AbstractTest {
     // badRequest("AllUsedRoomIds/$value");
     // badRequest("MaximalAge()");
     // badRequest("MostCommonLocation/City/CityName");
-    // notFound("ManagerPhoto");
+    notFound("ManagerPhoto");
     // badRequest("OldestEmployee()");
     // notFound("ManagerPhoto?Id='2'");
   }

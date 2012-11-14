@@ -16,7 +16,7 @@ public class EdmElementImplProv extends EdmTypedImplProv implements EdmElement {
   private EdmMapping edmMapping;
 
   public EdmElementImplProv(EdmImplProv edm, String name, FullQualifiedName typeName, EdmFacets edmFacets, EdmMapping edmMapping) throws EdmException {
-    super(edm, name, typeName, edmFacets.isNullable() ? EdmMultiplicity.ZERO_TO_ONE : EdmMultiplicity.ONE);
+    super(edm, name, typeName, edmFacets == null || edmFacets.isNullable() ? EdmMultiplicity.ZERO_TO_ONE : EdmMultiplicity.ONE);
   }
 
   @Override

@@ -32,7 +32,6 @@ import com.sap.core.odata.api.edm.provider.ReturnType;
 import com.sap.core.odata.api.edm.provider.Schema;
 import com.sap.core.odata.api.exception.ODataMessageException;
 import com.sap.core.odata.api.exception.ODataNotFoundException;
-import com.sap.core.odata.core.exception.ODataRuntimeException;
 
 /**
  * Provider for the entity data model used in the reference scenario
@@ -92,7 +91,7 @@ public class ScenarioEdmProvider implements EdmProvider {
   private static final String FUNCTION_IMPORT_7 = "OldestEmployee";
 
   @Override
-  public Collection<Schema> getSchemas() throws ODataRuntimeException, ODataMessageException {
+  public Collection<Schema> getSchemas() throws ODataMessageException {
     Collection<Schema> schemas = new ArrayList<Schema>();
 
     Schema schema = new Schema();
@@ -135,7 +134,7 @@ public class ScenarioEdmProvider implements EdmProvider {
   }
 
   @Override
-  public EntityType getEntityType(final FullQualifiedName edmFQName) throws ODataRuntimeException, ODataMessageException {
+  public EntityType getEntityType(final FullQualifiedName edmFQName) throws ODataMessageException {
     if (NAMESPACE_1.equals(edmFQName.getNamespace()))
       if (ENTITY_TYPE_1_1.getName().equals(edmFQName.getName())) {
         Map<String, Property> properties = new HashMap<String, Property>();
@@ -215,7 +214,7 @@ public class ScenarioEdmProvider implements EdmProvider {
   }
 
   @Override
-  public ComplexType getComplexType(final FullQualifiedName edmFQName) throws ODataRuntimeException, ODataMessageException {
+  public ComplexType getComplexType(final FullQualifiedName edmFQName) throws ODataMessageException {
     if (NAMESPACE_1.equals(edmFQName.getNamespace()))
       if (COMPLEX_TYPE_1.getName().equals(edmFQName.getName())) {
         Map<String, Property> properties = new HashMap<String, Property>();
@@ -238,7 +237,7 @@ public class ScenarioEdmProvider implements EdmProvider {
   }
 
   @Override
-  public Association getAssociation(final FullQualifiedName edmFQName) throws ODataRuntimeException, ODataMessageException {
+  public Association getAssociation(final FullQualifiedName edmFQName) throws ODataMessageException {
     if (NAMESPACE_1.equals(edmFQName.getNamespace()))
       if (ASSOCIATION_1_1.getName().equals(edmFQName.getName()))
         return new Association().setName(ASSOCIATION_1_1.getName()).setEnd1(new AssociationEnd().setType(ENTITY_TYPE_1_1).setRole(ROLE_1_1).setMultiplicity(EdmMultiplicity.MANY)).setEnd2(new AssociationEnd().setType(ENTITY_TYPE_1_4).setRole(ROLE_1_4).setMultiplicity(EdmMultiplicity.ONE));
@@ -256,7 +255,7 @@ public class ScenarioEdmProvider implements EdmProvider {
   }
 
   @Override
-  public EntityContainer getEntityContainer(final String name) throws ODataRuntimeException, ODataMessageException {
+  public EntityContainer getEntityContainer(final String name) throws ODataMessageException {
     if (name == null || ENTITY_CONTAINER_1.equals(name))
       return new EntityContainer().setName(ENTITY_CONTAINER_1).setDefaultEntityContainer(true);
     else if (ENTITY_CONTAINER_2.equals(name))
@@ -266,7 +265,7 @@ public class ScenarioEdmProvider implements EdmProvider {
   }
 
   @Override
-  public EntitySet getEntitySet(final String entityContainer, final String name) throws ODataRuntimeException, ODataMessageException {
+  public EntitySet getEntitySet(final String entityContainer, final String name) throws ODataMessageException {
     if (ENTITY_CONTAINER_1.equals(entityContainer))
       if (ENTITY_SET_1_1.equals(name))
         return new EntitySet().setName(name).setEntityType(ENTITY_TYPE_1_1);
@@ -292,7 +291,7 @@ public class ScenarioEdmProvider implements EdmProvider {
   }
 
   @Override
-  public FunctionImport getFunctionImport(final String entityContainer, final String name) throws ODataRuntimeException, ODataMessageException {
+  public FunctionImport getFunctionImport(final String entityContainer, final String name) throws ODataMessageException {
     if (ENTITY_CONTAINER_1.equals(entityContainer))
       if (FUNCTION_IMPORT_1.equals(name)) {
         Map<String, FunctionImportParameter> parameters = new HashMap<String, FunctionImportParameter>();
@@ -328,7 +327,7 @@ public class ScenarioEdmProvider implements EdmProvider {
   }
 
   @Override
-  public AssociationSet getAssociationSet(final String entityContainer, final FullQualifiedName association, final String sourceEntitySetName, final String sourceEntitySetRole) throws ODataRuntimeException, ODataMessageException {
+  public AssociationSet getAssociationSet(final String entityContainer, final FullQualifiedName association, final String sourceEntitySetName, final String sourceEntitySetRole) throws ODataMessageException {
     if (ENTITY_CONTAINER_1.equals(entityContainer))
       if (ASSOCIATION_1_1.equals(association))
         return new AssociationSet().setName(ASSOCIATION_1_1.getName()).setAssociation(ASSOCIATION_1_1).setEnd1(new AssociationSetEnd().setRole(ROLE_1_4).setEntitySet(ENTITY_SET_1_4)).setEnd2(new AssociationSetEnd().setRole(ROLE_1_1).setEntitySet(ENTITY_SET_1_1));
