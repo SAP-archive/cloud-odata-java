@@ -26,6 +26,7 @@ import com.sap.core.odata.core.edm.simpletype.EdmSingle;
 import com.sap.core.odata.core.edm.simpletype.EdmString;
 import com.sap.core.odata.core.edm.simpletype.EdmTime;
 import com.sap.core.odata.core.edm.simpletype.Uint7;
+import com.sap.core.odata.core.exception.ODataRuntimeException;
 import com.sap.core.odata.core.uri.UriParserImpl;
 
 public class RuntimeDelegateImpl extends RuntimeDelegate {
@@ -88,7 +89,7 @@ public class RuntimeDelegateImpl extends RuntimeDelegate {
       edmType = EdmNull.getInstance();
       break;
     default:
-      throw new RuntimeException("Invalid Type " + edmSimpleType);
+      throw new ODataRuntimeException("Invalid Type " + edmSimpleType);
     }
 
     return edmType;
@@ -108,7 +109,7 @@ public class RuntimeDelegateImpl extends RuntimeDelegate {
     } else if ("Uint7".equals(edmSimpleType)) {
       edmType = Uint7.getInstance();
     } else {
-      throw new RuntimeException("Invalid internal Type " + edmSimpleType);
+      throw new ODataRuntimeException("Invalid internal Type " + edmSimpleType);
     }
     return edmType;
   }
