@@ -1,11 +1,12 @@
 package com.sap.core.odata.api.edm;
 
-import java.io.Writer;
+import com.sap.core.odata.api.exception.ODataMessageException;
 
 public interface EdmServiceMetadata {
 
-  //TODO Exception Handling
-  Writer getMetadata();
+  //TODO: CHeck Exception Handling
+  //TODO: Check return value
+  String getMetadata() throws ODataMessageException;
   
   //TODO Exception Handling
   String getDataServiceVersion();

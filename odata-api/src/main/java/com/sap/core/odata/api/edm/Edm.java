@@ -9,6 +9,9 @@ package com.sap.core.odata.api.edm;
  */
 public interface Edm {
 
+  public final double DATA_SERVICE_VERSION10 = 1.0;
+  public final double DATA_SERVICE_VERSION20 = 2.0;
+  
   /**
    * Get entity container by name
    * 
