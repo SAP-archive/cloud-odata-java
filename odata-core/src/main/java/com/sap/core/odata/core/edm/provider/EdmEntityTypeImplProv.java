@@ -45,12 +45,12 @@ public class EdmEntityTypeImplProv extends EdmStructuralTypeImplProv implements 
         try {
           edmProperty = (EdmProperty) getProperty(keyPropertyName);
         } catch (ClassCastException e) {
-          throw new EdmException(e);
+          throw new EdmException(EdmException.COMMON, e);
         }
         if (edmProperty != null) {
           edmKeyProperties.add(edmProperty);
         } else {
-          throw new EdmException();
+          throw new EdmException(EdmException.COMMON);
         }
       }
       if (edmBaseType != null)

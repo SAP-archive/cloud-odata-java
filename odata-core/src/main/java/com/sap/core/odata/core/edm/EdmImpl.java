@@ -41,7 +41,7 @@ public abstract class EdmImpl implements Edm {
       edmEntityContainer = createEntityContainer(name);
       edmEntityContainers.put(name, edmEntityContainer);
     } catch (ODataMessageException e) {
-      throw new EdmException(e);
+      throw new EdmException(EdmException.COMMON, e);
     }
 
     return edmEntityContainer;
@@ -59,7 +59,7 @@ public abstract class EdmImpl implements Edm {
       edmEntityType = createEntityType(fqName);
       edmEntityTypes.put(fqName, edmEntityType);
     } catch (ODataMessageException e) {
-      throw new EdmException(e);
+      throw new EdmException(EdmException.COMMON, e);
     }
 
     return edmEntityType;
@@ -77,7 +77,7 @@ public abstract class EdmImpl implements Edm {
       edmComplexType = createComplexType(fqName);
       edmComplexTypes.put(fqName, edmComplexType);
     } catch (ODataMessageException e) {
-      throw new EdmException(e);
+      throw new EdmException(EdmException.COMMON, e);
     }
 
     return edmComplexType;
@@ -95,7 +95,7 @@ public abstract class EdmImpl implements Edm {
       edmAssociation = createAssociation(fqName);
       edmAssociations.put(fqName, edmAssociation);
     } catch (ODataMessageException e) {
-      throw new EdmException(e);
+      throw new EdmException(EdmException.COMMON, e);
     }
 
     return edmAssociation;
