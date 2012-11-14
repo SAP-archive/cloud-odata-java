@@ -22,7 +22,6 @@ import com.sap.core.odata.api.enums.HttpStatusCodes;
 import com.sap.core.odata.api.exception.ODataApplicationException;
 import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.api.exception.ODataHttpException;
-import com.sap.core.odata.api.exception.ODataMessageException;
 import com.sap.core.odata.api.uri.UriParserException;
 import com.sap.core.odata.core.exception.MessageService;
 import com.sap.core.odata.core.exception.MessageService.Message;
@@ -41,8 +40,6 @@ public class ODataExceptionMapperImpl implements ExceptionMapper<Exception> {
 
     final Response response;
 
-    // internal server error 500 -> stack trace into log
-    
     Exception toHandleException = extractException(exception);
     
     if (toHandleException instanceof ODataApplicationException) {
