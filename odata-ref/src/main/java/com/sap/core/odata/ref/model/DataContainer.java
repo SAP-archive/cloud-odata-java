@@ -125,7 +125,7 @@ public class DataContainer {
     Set<Photo> photos = new HashSet<Photo>();
     for (int z = 0; z < NUMBER_OF_PHOTOS; z++) {
       Photo photo = new Photo("Photo " + (z + 1));
-      photo.setType(arrayForImageType[z % (arrayForImageType.length)]);
+      photo.setType("image/" + arrayForImageType[z % (arrayForImageType.length)].toLowerCase());
       photos.add(photo);
 
     }

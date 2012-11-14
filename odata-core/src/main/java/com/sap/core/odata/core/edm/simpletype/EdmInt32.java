@@ -62,8 +62,7 @@ public class EdmInt32 implements EdmSimpleType {
 
   @Override
   public Object valueOfString(String value, EdmLiteralKind literalKind, EdmFacets facets) {
-    // TODO Auto-generated method stub
-    return null;
+    return Integer.valueOf(value);
   }
 
   @Override

@@ -1,7 +1,9 @@
 package com.sap.core.odata.ref.processor;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -22,6 +24,7 @@ import com.sap.core.odata.api.processor.ODataSingleProcessor;
 import com.sap.core.odata.api.uri.KeyPredicate;
 import com.sap.core.odata.api.uri.NavigationSegment;
 import com.sap.core.odata.api.uri.UriLiteral;
+import com.sap.core.odata.api.uri.resultviews.GetComplexPropertyView;
 import com.sap.core.odata.api.uri.resultviews.GetEntityCountView;
 import com.sap.core.odata.api.uri.resultviews.GetEntityLinkCountView;
 import com.sap.core.odata.api.uri.resultviews.GetEntityLinkView;
@@ -31,8 +34,10 @@ import com.sap.core.odata.api.uri.resultviews.GetEntitySetLinksView;
 import com.sap.core.odata.api.uri.resultviews.GetEntitySetView;
 import com.sap.core.odata.api.uri.resultviews.GetEntityView;
 import com.sap.core.odata.api.uri.resultviews.GetFunctionImportView;
+import com.sap.core.odata.api.uri.resultviews.GetMediaResourceView;
 import com.sap.core.odata.api.uri.resultviews.GetMetadataView;
 import com.sap.core.odata.api.uri.resultviews.GetServiceDocumentView;
+import com.sap.core.odata.api.uri.resultviews.GetSimplePropertyView;
 
 /**
  * Implementation of the centralized parts of OData processing,
@@ -172,6 +177,46 @@ public class ListsProcessor extends ODataSingleProcessor {
   }
 
   @Override
+  public ODataResponse readEntityComplexProperty(GetComplexPropertyView uriParserResultView) throws ODataException {
+    Object data = retrieveData(
+        uriParserResultView.getStartEntitySet(),
+        uriParserResultView.getKeyPredicates(),
+        uriParserResultView.getNavigationSegments());
+
+    //    if (!appliesFilter(data, uriParserResultView.getFilter()))
+    //      throw new ODataNotFoundException(ODataNotFoundException.ENTITY);
+
+    for (EdmProperty property : uriParserResultView.getPropertyPath())
+      data = getPropertyValue(data, property);
+    return ODataResponseBuilder.newInstance().status(HttpStatus.OK).entity(data.toString()).build();
+  }
+
+  @Override
+  public ODataResponse readEntitySimpleProperty(GetSimplePropertyView uriParserResultView) throws ODataException {
+    return readEntityComplexProperty((GetComplexPropertyView) uriParserResultView);
+  }
+
+  @Override
+  public ODataResponse readEntitySimplePropertyValue(GetSimplePropertyView uriParserResultView) throws ODataException {
+    Object data = retrieveData(
+        uriParserResultView.getStartEntitySet(),
+        uriParserResultView.getKeyPredicates(),
+        uriParserResultView.getNavigationSegments());
+
+    //    if (!appliesFilter(data, uriParserResultView.getFilter()))
+    //      throw new ODataNotFoundException(ODataNotFoundException.ENTITY);
+
+    for (EdmProperty property : uriParserResultView.getPropertyPath())
+      data = getPropertyValue(data, property);
+    return ODataResponseBuilder.newInstance().status(HttpStatus.OK).entity(data.toString()).build();
+  }
+
+  @Override
+  public ODataResponse readEntityMedia(GetMediaResourceView uriParserResultView) throws ODataException {
+    throw new ODataNotImplementedException();
+  }
+
+  @Override
   public ODataResponse executeFunctionImport(final GetFunctionImportView uriParserResultView) throws ODataException {
     final Object data = dataSource.readData(
         uriParserResultView.getFunctionImport(),
@@ -179,6 +224,11 @@ public class ListsProcessor extends ODataSingleProcessor {
         null);
 
     return ODataResponseBuilder.newInstance().status(HttpStatus.OK).entity(data.toString()).build();
+  }
+
+  @Override
+  public ODataResponse executeFunctionImportValue(GetFunctionImportView uriParserResultView) throws ODataException {
+    throw new ODataNotImplementedException();
   }
 
   private HashMap<String, Object> mapKey(final List<KeyPredicate> keys) throws EdmException {
@@ -238,13 +288,13 @@ public class ListsProcessor extends ODataSingleProcessor {
     if (orderBy != null)
       throw new ODataNotImplementedException();
     else if (skipToken != null || skip != 0 || top != null)
-      try {
-        // TODO: Collections.sort(data);
-    } catch (ClassCastException e) {
-      throw new ODataException(e);
-    } catch (UnsupportedOperationException e) {
-      throw new ODataException(e);
-    }
+      Collections.sort(data, new Comparator<Object>() {
+        @Override
+        public int compare(Object o1, Object o2) {
+          // TODO: better comparison function - maybe use skiptoken?
+          return o1.toString().compareTo(o2.toString());
+        }
+      });
 
     if (skipToken != null)
       throw new ODataNotImplementedException();
@@ -266,5 +316,23 @@ public class ListsProcessor extends ODataSingleProcessor {
       return true;
     // TODO: implement filter evaluation
     throw new ODataNotImplementedException();
+  }
+
+  private Object getPropertyValue(final Object data, final EdmProperty property) throws ODataException {
+    final String methodName = "get" + (property.getMapping() == null ?
+        property.getName() : property.getMapping().getValue());
+    try {
+      return data.getClass().getMethod(methodName).invoke(data);
+    } catch (SecurityException e) {
+      throw new ODataNotFoundException(null);
+    } catch (NoSuchMethodException e) {
+      throw new ODataNotFoundException(null);
+    } catch (IllegalArgumentException e) {
+      throw new ODataNotFoundException(null);
+    } catch (IllegalAccessException e) {
+      throw new ODataNotFoundException(null);
+    } catch (InvocationTargetException e) {
+      throw new ODataNotFoundException(null);
+    }
   }
 }
