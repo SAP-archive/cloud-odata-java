@@ -40,6 +40,7 @@ import com.sap.core.odata.api.uri.UriParserResult;
 import com.sap.core.odata.core.edm.simpletype.EdmSimpleTypeFacadeImpl;
 import com.sap.core.odata.core.enums.SystemQueryOption;
 import com.sap.core.odata.core.enums.UriType;
+import com.sap.core.odata.core.exception.ODataRuntimeException;
 
 public class UriParserImpl implements UriParser {
 
@@ -149,7 +150,8 @@ public class UriParserImpl implements UriParser {
     EdmEntitySet entitySet = null;
     try {
       entitySet = uriResult.getEntityContainer().getEntitySet(segmentName);
-    } catch (EdmException e) {};
+    } catch (EdmException e) {}
+    ;
     EdmFunctionImport functionImport = null;
     if (entitySet == null)
       try {
@@ -252,7 +254,7 @@ public class UriParserImpl implements UriParser {
         handlePropertyPath((EdmProperty) property);
       break;
 
-    case ENTITY:  // navigation properties point to entities
+    case ENTITY: // navigation properties point to entities
       final EdmNavigationProperty navigationProperty = (EdmNavigationProperty) property;
       if (keyPredicateName != null || emptyParentheses != null)
         if (navigationProperty.getMultiplicity() != EdmMultiplicity.MANY)
@@ -519,6 +521,8 @@ public class UriParserImpl implements UriParser {
       case $select:
         handleSystemQueryOptionSelect(systemQueryOptions.get(SystemQueryOption.$select));
         break;
+      default:
+        throw new ODataRuntimeException("Invalid System Query Option " + queryOption);
       }
   }
 
@@ -656,7 +660,7 @@ public class UriParserImpl implements UriParser {
           selectItem.setProperty(property);
           exit = true;
           break;
-        case ENTITY:  // navigation properties point to entities
+        case ENTITY: // navigation properties point to entities
           final EdmNavigationProperty navigationProperty = (EdmNavigationProperty) property;
           final EdmEntitySet targetEntitySet = fromEntitySet.getRelatedEntitySet(navigationProperty);
 
