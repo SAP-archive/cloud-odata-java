@@ -1,24 +1,20 @@
 package com.sap.core.odata.api.edm;
 
-import com.sap.core.odata.api.exception.ODataException;
+import com.sap.core.odata.api.exception.MessageReference;
+import com.sap.core.odata.api.exception.ODataMessageException;
 
-public class EdmException extends ODataException {
+public class EdmException extends ODataMessageException {
 
   private static final long serialVersionUID = 1L;
 
-  public EdmException() {
-    super();
+  public static final MessageReference COMMON = createMessageReference(EdmException.class, "COMMON");
+
+  public EdmException(MessageReference messageReference) {
+    super(messageReference);
+  }
+  
+  public EdmException(MessageReference messageReference, Throwable cause) {
+    super(messageReference, cause);
   }
 
-  public EdmException(String msg) {
-    super(msg);
-  }
-
-  public EdmException(String msg, Throwable e) {
-    super(msg, e);
-  }
-
-  public EdmException(Throwable e) {
-    super(e);
-  }
 }

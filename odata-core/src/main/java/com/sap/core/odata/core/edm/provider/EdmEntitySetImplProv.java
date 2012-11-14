@@ -28,7 +28,7 @@ public class EdmEntitySetImplProv extends EdmNamedImplProv implements EdmEntityS
       FullQualifiedName fqName = entitySet.getEntityType();
       edmEntityType = edm.getEntityType(fqName.getNamespace(), fqName.getName());
       if (edmEntityType == null) {
-        throw new EdmException();
+        throw new EdmException(EdmException.COMMON);
       }
     }
     return edmEntityType;
@@ -38,13 +38,13 @@ public class EdmEntitySetImplProv extends EdmNamedImplProv implements EdmEntityS
   public EdmEntitySet getRelatedEntitySet(EdmNavigationProperty navigationProperty) throws EdmException {
     EdmAssociationSet associationSet = edmEntityContainer.getAssociationSet(edmEntityContainer.getEntitySet(entitySet.getName()), navigationProperty);
     if (associationSet == null)
-      throw new EdmException();
+      throw new EdmException(EdmException.COMMON);
     EdmAssociationSetEnd toEnd = associationSet.getEnd(navigationProperty.getToRole());
     if (toEnd == null)
-      throw new EdmException();
+      throw new EdmException(EdmException.COMMON);
     EdmEntitySet targetEntitySet = toEnd.getEntitySet();
     if (targetEntitySet == null)
-      throw new EdmException();
+      throw new EdmException(EdmException.COMMON);
     return targetEntitySet;
   }
 

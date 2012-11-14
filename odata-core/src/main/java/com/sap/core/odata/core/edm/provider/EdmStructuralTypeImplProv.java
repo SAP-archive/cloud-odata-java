@@ -40,7 +40,7 @@ public abstract class EdmStructuralTypeImplProv extends EdmNamedImplProv impleme
         edmBaseType = edm.getEntityType(fqName.getNamespace(), fqName.getName());
       }
       if (edmBaseType == null) {
-        throw new EdmException();
+        throw new EdmException(EdmException.COMMON);
       }
     }
   }
@@ -106,7 +106,7 @@ public abstract class EdmStructuralTypeImplProv extends EdmNamedImplProv impleme
 
   protected EdmTyped createProperty(Property property, String name) throws EdmException {
     if (!name.equals(property.getName())) {
-      throw new EdmException();
+      throw new EdmException(EdmException.COMMON);
     }
     return new EdmPropertyImplProv(edm, property);
   }
