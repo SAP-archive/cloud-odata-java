@@ -28,7 +28,7 @@ public class ODataResponseImpl extends ODataResponse {
   }
 
   @Override
-  public String getEntity() {
+  public Object getEntity() {
     return this.entity;
   }
 

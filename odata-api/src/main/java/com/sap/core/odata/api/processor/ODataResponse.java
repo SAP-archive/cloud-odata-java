@@ -11,7 +11,7 @@ public abstract class ODataResponse {
 
   public abstract HttpStatusCodes getStatus();
 
-  public abstract String getEntity();
+  public abstract Object getEntity();
 
   public abstract String getHeader(String name);
 
