@@ -291,13 +291,17 @@ public class ListsProcessor extends ODataSingleProcessor {
       Collections.sort(data, new Comparator<Object>() {
         @Override
         public int compare(Object o1, Object o2) {
-          // TODO: better comparison function - maybe use skiptoken?
-          return o1.toString().compareTo(o2.toString());
+          try {
+            return getSkipToken(o1, targetEntitySet).compareTo(getSkipToken(o2, targetEntitySet));
+          } catch (ODataException e) {
+            return 0;
+          }
         }
       });
 
     if (skipToken != null)
-      throw new ODataNotImplementedException();
+      while (!getSkipToken(data.get(0), targetEntitySet).equals(skipToken))
+        data.remove(0);
 
     for (int i = 0; i < skip; i++)
       data.remove(0);
@@ -316,6 +320,15 @@ public class ListsProcessor extends ODataSingleProcessor {
       return true;
     // TODO: implement filter evaluation
     throw new ODataNotImplementedException();
+  }
+
+  private String getSkipToken(final Object data, final EdmEntitySet entitySet) throws ODataException {
+    String skipToken = "";
+    for (EdmProperty property : entitySet.getEntityType().getKeyProperties()) {
+      final EdmSimpleType type = (EdmSimpleType) property.getType();
+      skipToken = skipToken.concat(type.valueToString(getPropertyValue(data, property), EdmLiteralKind.DEFAULT, property.getFacets()));
+    }
+    return skipToken;
   }
 
   private Object getPropertyValue(final Object data, final EdmProperty property) throws ODataException {

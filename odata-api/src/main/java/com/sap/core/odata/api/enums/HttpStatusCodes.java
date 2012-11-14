@@ -1,8 +1,9 @@
 package com.sap.core.odata.api.enums;
 
 /**
+ * HTTP status codes as defined in RFC2616-sec10
+ * and additional status codes as defined in RFC6585
  * @author SAP AG
- * HTTP status codes as defined in RFC2616-sec10 and additional status codes as defined in rfc6585
  */
 public enum HttpStatusCodes {
 
