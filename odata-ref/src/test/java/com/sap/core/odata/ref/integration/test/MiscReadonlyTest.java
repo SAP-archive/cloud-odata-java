@@ -55,6 +55,6 @@ public class MiscReadonlyTest extends AbstractTest {
     assertEquals("1", ok("Managers('3')/$links/nm_Employees('5')/$count").getEntity());
 
     // badRequest("Rooms('1')/Seats/$count");
-    // notFound("Managers('3')/nm_Employees('1')/$count");
+    notFound("Managers('3')/nm_Employees('1')/$count");
   }
 }
