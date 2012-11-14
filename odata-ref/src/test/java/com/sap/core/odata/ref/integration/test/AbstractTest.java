@@ -22,7 +22,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.UriInfo;
 
-import com.sap.core.odata.api.enums.HttpStatus;
+import com.sap.core.odata.api.enums.HttpStatusCodes;
 import com.sap.core.odata.api.exception.ODataApplicationException;
 import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.api.exception.ODataHttpException;
@@ -38,7 +38,7 @@ public abstract class AbstractTest {
 
   private static final ScenarioServiceFactory SERVICE_FACTORY = new ScenarioServiceFactory();
 
-  protected Response call(final String urlString, final Map<String, String> httpHeaders, final Request request, final HttpStatus expectedStatus) throws ODataException {
+  protected Response call(final String urlString, final Map<String, String> httpHeaders, final Request request, final HttpStatusCodes expectedStatus) throws ODataException {
     final ODataLocatorImpl oDataLocator = new ODataLocatorImpl();
     InitParameter param = oDataLocator.new InitParameter();
 
@@ -59,21 +59,21 @@ public abstract class AbstractTest {
       else if (e instanceof ODataApplicationException)
         assertEquals(expectedStatus, ((ODataApplicationException) e).getHttpStatus());
       else
-        assertEquals(expectedStatus, HttpStatus.INTERNAL_SERVER_ERROR);
+        assertEquals(expectedStatus, HttpStatusCodes.INTERNAL_SERVER_ERROR);
       return null;
     }
   }
 
   protected Response ok(final String urlString) throws ODataException {
-    return call(urlString, null, null, HttpStatus.OK);
+    return call(urlString, null, null, HttpStatusCodes.OK);
   }
 
   protected Response badRequest(final String urlString) throws ODataException {
-    return call(urlString, null, null, HttpStatus.BAD_REQUEST);
+    return call(urlString, null, null, HttpStatusCodes.BAD_REQUEST);
   }
 
   protected Response notFound(final String urlString) throws ODataException {
-    return call(urlString, null, null, HttpStatus.NOT_FOUND);
+    return call(urlString, null, null, HttpStatusCodes.NOT_FOUND);
   }
 
   private HttpHeaders getHttpHeaders(final Map<String, String> httpHeaders) {

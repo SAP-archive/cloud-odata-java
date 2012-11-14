@@ -1,6 +1,6 @@
 package com.sap.core.odata.api.exception;
 
-import com.sap.core.odata.api.enums.HttpStatus;
+import com.sap.core.odata.api.enums.HttpStatusCodes;
 
 public class ODataUnsupportedMediaTypeException extends ODataHttpException {
 
@@ -12,6 +12,6 @@ public class ODataUnsupportedMediaTypeException extends ODataHttpException {
   public static final MessageReference COMMON = createMessageReference(ODataUnsupportedMediaTypeException.class, "COMMON");
 
   public ODataUnsupportedMediaTypeException(MessageReference context) {
-    super(context, HttpStatus.UNSUPPORTED_MEDIA_TYPE);
+    super(context, HttpStatusCodes.UNSUPPORTED_MEDIA_TYPE);
   }
 }

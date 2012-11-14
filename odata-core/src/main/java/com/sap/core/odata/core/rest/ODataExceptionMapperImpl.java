@@ -18,7 +18,7 @@ import javax.ws.rs.ext.Provider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.sap.core.odata.api.enums.HttpStatus;
+import com.sap.core.odata.api.enums.HttpStatusCodes;
 import com.sap.core.odata.api.exception.ODataApplicationException;
 import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.api.exception.ODataHttpException;
@@ -109,7 +109,7 @@ public class ODataExceptionMapperImpl implements ExceptionMapper<Exception> {
   private Status extractStatus(ODataException exception) {
     Status extractedStatus = Status.INTERNAL_SERVER_ERROR;
     
-    HttpStatus httpStatus = null;
+    HttpStatusCodes httpStatus = null;
     if(exception instanceof ODataHttpException) {
       httpStatus = ((ODataHttpException) exception).getHttpStatus();
     } else if(exception instanceof ODataApplicationException) {

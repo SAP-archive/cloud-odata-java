@@ -1,6 +1,6 @@
 package com.sap.core.odata.api.exception;
 
-import com.sap.core.odata.api.enums.HttpStatus;
+import com.sap.core.odata.api.enums.HttpStatusCodes;
 
 public class ODataServiceUnavailableException extends ODataHttpException {
 
@@ -12,6 +12,6 @@ public class ODataServiceUnavailableException extends ODataHttpException {
   public static final MessageReference COMMON = createMessageReference(ODataServiceUnavailableException.class, "COMMON");
 
   public ODataServiceUnavailableException(MessageReference context) {
-    super(context, HttpStatus.SERVICE_UNAVAILABLE);
+    super(context, HttpStatusCodes.SERVICE_UNAVAILABLE);
   }
 }

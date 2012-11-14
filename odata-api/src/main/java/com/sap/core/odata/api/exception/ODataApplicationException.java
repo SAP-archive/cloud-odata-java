@@ -1,20 +1,20 @@
 package com.sap.core.odata.api.exception;
 
-import com.sap.core.odata.api.enums.HttpStatus;
+import com.sap.core.odata.api.enums.HttpStatusCodes;
 
 public class ODataApplicationException extends ODataException {
 
-  private final HttpStatus httpStatus;
+  private final HttpStatusCodes httpStatus;
   /**
    * 
    */
   private static final long serialVersionUID = 1L;
 
   public ODataApplicationException(String message) {
-    this(message, HttpStatus.INTERNAL_SERVER_ERROR);
+    this(message, HttpStatusCodes.INTERNAL_SERVER_ERROR);
   }
 
-  public ODataApplicationException(String message, HttpStatus status) {
+  public ODataApplicationException(String message, HttpStatusCodes status) {
     super(message);
     this.httpStatus = status;
   }
@@ -25,14 +25,14 @@ public class ODataApplicationException extends ODataException {
 
   public ODataApplicationException(String message, Throwable e) {
     super(message, e);
-    this.httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
+    this.httpStatus = HttpStatusCodes.INTERNAL_SERVER_ERROR;
   }
 
-  public ODataApplicationException(HttpStatus status) {
+  public ODataApplicationException(HttpStatusCodes status) {
     this(null, status);
   }
 
-  public HttpStatus getHttpStatus() {
+  public HttpStatusCodes getHttpStatus() {
     return this.httpStatus;
   }
 }

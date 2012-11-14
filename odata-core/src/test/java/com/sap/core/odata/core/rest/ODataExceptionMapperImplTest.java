@@ -18,7 +18,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
-import com.sap.core.odata.api.enums.HttpStatus;
+import com.sap.core.odata.api.enums.HttpStatusCodes;
 import com.sap.core.odata.api.exception.ODataApplicationException;
 import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.api.exception.ODataNotFoundException;
@@ -51,7 +51,7 @@ public class ODataExceptionMapperImplTest {
     
     // verify
     Assert.assertNotNull(response);
-    Assert.assertEquals(HttpStatus.NOT_FOUND.getStatusCode(), response.getStatus());
+    Assert.assertEquals(HttpStatusCodes.NOT_FOUND.getStatusCode(), response.getStatus());
     // TOOD: adapt test if implementation is finished
     Assert.assertTrue(response.getEntity() instanceof String);
     Assert.assertEquals("Language = 'en', message = 'Requested entity could not be found.'.", response.getEntity().toString());
@@ -70,7 +70,7 @@ public class ODataExceptionMapperImplTest {
     
     // verify
     Assert.assertNotNull(response);
-    Assert.assertEquals(HttpStatus.NOT_FOUND.getStatusCode(), response.getStatus());
+    Assert.assertEquals(HttpStatusCodes.NOT_FOUND.getStatusCode(), response.getStatus());
     // TOOD: adapt test if implementation is finished
     Assert.assertTrue(response.getEntity() instanceof String);
     Assert.assertEquals("Language = 'de', message = 'Die angefragte Entit\u00e4t wurde nicht gefunden.'.", response.getEntity().toString());
@@ -88,7 +88,7 @@ public class ODataExceptionMapperImplTest {
     
     // verify
     Assert.assertNotNull(response);
-    Assert.assertEquals(HttpStatus.NOT_FOUND.getStatusCode(), response.getStatus());
+    Assert.assertEquals(HttpStatusCodes.NOT_FOUND.getStatusCode(), response.getStatus());
     // TOOD: adapt test if implementation is finished
     Assert.assertTrue(response.getEntity() instanceof String);
     Assert.assertEquals("Language = 'en', message = 'Requested entity could not be found.'.", response.getEntity().toString());
@@ -133,7 +133,7 @@ public class ODataExceptionMapperImplTest {
   public void testODataApplicationExceptionWithStatus() {
     // prepare
     String message = "expected exception message";
-    HttpStatus status = HttpStatus.OK;
+    HttpStatusCodes status = HttpStatusCodes.OK;
     Exception exception = new ODataApplicationException(message, status);
     
     // execute
@@ -151,7 +151,7 @@ public class ODataExceptionMapperImplTest {
   public void testODataApplicationExceptionWithStatusWrapped() {
     // prepare
     String message = "expected exception message";
-    HttpStatus status = HttpStatus.OK;
+    HttpStatusCodes status = HttpStatusCodes.OK;
     Exception exception = new ODataException(new ODataApplicationException(message, status));
     
     // execute
@@ -227,7 +227,7 @@ public class ODataExceptionMapperImplTest {
     
     // verify
     Assert.assertNotNull(response);
-    Assert.assertEquals(HttpStatus.INTERNAL_SERVER_ERROR.getStatusCode(), response.getStatus());
+    Assert.assertEquals(HttpStatusCodes.INTERNAL_SERVER_ERROR.getStatusCode(), response.getStatus());
     // TOOD: adapt test if implementation is finished
     Assert.assertTrue(response.getEntity() instanceof String);
     Assert.assertEquals(ODataException.class.getName() + " - " + exceptionMessage, response.getEntity().toString());
@@ -244,7 +244,7 @@ public class ODataExceptionMapperImplTest {
     
     // verify
     Assert.assertNotNull(response);
-    Assert.assertEquals(HttpStatus.INTERNAL_SERVER_ERROR.getStatusCode(), response.getStatus());
+    Assert.assertEquals(HttpStatusCodes.INTERNAL_SERVER_ERROR.getStatusCode(), response.getStatus());
     // TOOD: adapt test if implementation is finished
     Assert.assertTrue(response.getEntity() instanceof String);
     Assert.assertEquals(exception.getClass().getName() + " - " + exceptionMessage, response.getEntity().toString());

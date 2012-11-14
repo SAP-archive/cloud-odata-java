@@ -1,6 +1,6 @@
 package com.sap.core.odata.api.exception;
 
-import com.sap.core.odata.api.enums.HttpStatus;
+import com.sap.core.odata.api.enums.HttpStatusCodes;
 
 public class ODataNotAcceptableException extends ODataHttpException {
 
@@ -12,6 +12,6 @@ public class ODataNotAcceptableException extends ODataHttpException {
   public static final MessageReference COMMON = createMessageReference(ODataNotAcceptableException.class, "COMMON");
 
   public ODataNotAcceptableException(MessageReference context) {
-    super(context, HttpStatus.NOT_ACCEPTABLE);
+    super(context, HttpStatusCodes.NOT_ACCEPTABLE);
   }
 }

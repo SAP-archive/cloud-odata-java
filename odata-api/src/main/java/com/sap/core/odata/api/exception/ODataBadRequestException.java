@@ -1,6 +1,6 @@
 package com.sap.core.odata.api.exception;
 
-import com.sap.core.odata.api.enums.HttpStatus;
+import com.sap.core.odata.api.enums.HttpStatusCodes;
 
 public class ODataBadRequestException extends ODataHttpException {
 
@@ -13,6 +13,6 @@ public class ODataBadRequestException extends ODataHttpException {
   public static final MessageReference URLTOSHORT = createMessageReference(ODataBadRequestException.class, "URLTOSHORT");
 
   public ODataBadRequestException(MessageReference context) {
-    super(context, HttpStatus.BAD_REQUEST);
+    super(context, HttpStatusCodes.BAD_REQUEST);
   }
 }

@@ -3,7 +3,7 @@
  */
 package com.sap.core.odata.api.exception;
 
-import com.sap.core.odata.api.enums.HttpStatus;
+import com.sap.core.odata.api.enums.HttpStatusCodes;
 
 /**
  *
@@ -21,7 +21,7 @@ public class ODataMethodNotAllowedException extends ODataHttpException {
    * @param context
    */
   public ODataMethodNotAllowedException(MessageReference context) {
-    super(context, HttpStatus.METHOD_NOT_ALLOWED);
+    super(context, HttpStatusCodes.METHOD_NOT_ALLOWED);
   }
 
 }

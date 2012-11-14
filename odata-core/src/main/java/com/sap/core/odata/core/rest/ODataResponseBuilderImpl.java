@@ -2,13 +2,13 @@ package com.sap.core.odata.core.rest;
 
 import java.util.HashMap;
 
-import com.sap.core.odata.api.enums.HttpStatus;
+import com.sap.core.odata.api.enums.HttpStatusCodes;
 import com.sap.core.odata.api.processor.ODataResponse;
 import com.sap.core.odata.api.processor.ODataResponse.ODataResponseBuilder;
 
 public class ODataResponseBuilderImpl extends ODataResponseBuilder {
 
-  private HttpStatus status = HttpStatus.OK;
+  private HttpStatusCodes status = HttpStatusCodes.OK;
   private String entity;
   private HashMap<String, String> header = new HashMap<String, String>();
   private String idLiteral;
@@ -28,7 +28,7 @@ public class ODataResponseBuilderImpl extends ODataResponseBuilder {
   }
 
   @Override
-  public ODataResponseBuilder status(HttpStatus status) {
+  public ODataResponseBuilder status(HttpStatusCodes status) {
     this.status = status;
     return this;
   }

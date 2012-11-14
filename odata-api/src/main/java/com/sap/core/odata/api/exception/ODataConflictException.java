@@ -1,6 +1,6 @@
 package com.sap.core.odata.api.exception;
 
-import com.sap.core.odata.api.enums.HttpStatus;
+import com.sap.core.odata.api.enums.HttpStatusCodes;
 
 public class ODataConflictException extends ODataHttpException {
 
@@ -12,6 +12,6 @@ public class ODataConflictException extends ODataHttpException {
   public static final MessageReference COMMON = createMessageReference(ODataConflictException.class, "COMMON");
 
   public ODataConflictException(MessageReference context) {
-    super(context, HttpStatus.CONFLICT);
+    super(context, HttpStatusCodes.CONFLICT);
   }
 }

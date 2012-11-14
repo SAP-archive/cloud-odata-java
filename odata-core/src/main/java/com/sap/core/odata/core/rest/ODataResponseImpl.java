@@ -3,23 +3,23 @@ package com.sap.core.odata.core.rest;
 import java.util.HashMap;
 import java.util.Set;
 
-import com.sap.core.odata.api.enums.HttpStatus;
+import com.sap.core.odata.api.enums.HttpStatusCodes;
 import com.sap.core.odata.api.processor.ODataResponse;
 
 public class ODataResponseImpl extends ODataResponse {
 
-  private HttpStatus status;
+  private HttpStatusCodes status;
   private String entity;
   private HashMap<String, String> header;
   private String idLiteral;
   private String eTag;
   
   @Override
-  public HttpStatus getStatus() {
+  public HttpStatusCodes getStatus() {
     return this.status;
   }
 
-  public void setStatus(HttpStatus status) {
+  public void setStatus(HttpStatusCodes status) {
     this.status = status;
   }
 
