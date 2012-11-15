@@ -1,6 +1,9 @@
 package com.sap.core.odata.ref.integration.test;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -12,6 +15,7 @@ import java.util.Locale;
 import java.util.Map;
 
 import javax.ws.rs.core.Cookie;
+import javax.ws.rs.core.EntityTag;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedHashMap;
@@ -52,6 +56,15 @@ public abstract class AbstractTest {
     try {
       final Response response = oDataLocator.handleGet();
       assertEquals(expectedStatus.getStatusCode(), response.getStatus());
+      if (expectedStatus.equals(HttpStatusCodes.OK)) {
+        assertTrue(response.hasEntity());
+        assertNotNull(response.getEntity());
+        assertFalse(response.getEntity().toString().isEmpty());
+      } else if (expectedStatus.equals(HttpStatusCodes.NO_CONTENT)) {
+        assertTrue(response.hasEntity() == false
+            || response.getEntity() == null
+            || response.getEntity().toString().isEmpty());
+      }
       return response;
     } catch (ODataException e) {
       if (e instanceof ODataHttpException)
@@ -64,7 +77,7 @@ public abstract class AbstractTest {
     }
   }
 
-  protected Response ok(final String urlString) throws ODataException {
+  protected Response callUrl(final String urlString) throws ODataException {
     return call(urlString, null, null, HttpStatusCodes.OK);
   }
 
@@ -74,6 +87,17 @@ public abstract class AbstractTest {
 
   protected Response notFound(final String urlString) throws ODataException {
     return call(urlString, null, null, HttpStatusCodes.NOT_FOUND);
+  }
+
+  protected void checkMediaType(final Response response, final MediaType expectedMediaType) {
+    assertTrue(expectedMediaType.isCompatible(response.getMediaType()));
+  }
+
+  protected void checkEtag(final Response response, final boolean expectedWeak, final String expectedEtag) {
+    final EntityTag entityTag = response.getEntityTag();
+    assertNotNull(entityTag);
+    assertTrue(entityTag.isWeak() == expectedWeak);
+    assertTrue(entityTag.getValue().equals(expectedEtag));
   }
 
   private HttpHeaders getHttpHeaders(final Map<String, String> httpHeaders) {
