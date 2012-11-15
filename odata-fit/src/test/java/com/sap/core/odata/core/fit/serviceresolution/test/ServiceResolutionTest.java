@@ -166,7 +166,6 @@ public class ServiceResolutionTest {
     HttpGet get = new HttpGet(URI.create(this.server.getEndpoint().toString() + "/aaa/$metadata"));
     HttpResponse response = this.httpClient.execute(get);
 
-    // Bad Request expected
     assertEquals(400, response.getStatusLine().getStatusCode());
   }
 

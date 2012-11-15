@@ -32,6 +32,7 @@ import com.sap.core.odata.api.service.ODataServiceFactory;
 import com.sap.core.odata.core.dispatcher.Dispatcher;
 import com.sap.core.odata.core.edm.provider.EdmImplProv;
 import com.sap.core.odata.core.enums.ODataHttpMethod;
+import com.sap.core.odata.core.processor.ODataContextImpl;
 import com.sap.core.odata.core.service.ODataSingleProcessorService;
 import com.sap.core.odata.core.uri.UriParserImpl;
 import com.sap.core.odata.core.uri.UriParserResultImpl;
