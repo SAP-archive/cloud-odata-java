@@ -5,11 +5,13 @@ import java.util.Map;
 
 import com.sap.core.odata.api.edm.EdmEntityContainer;
 import com.sap.core.odata.api.edm.EdmEntitySet;
+import com.sap.core.odata.api.edm.EdmFunctionImport;
 import com.sap.core.odata.api.edm.EdmType;
 import com.sap.core.odata.api.enums.Format;
 import com.sap.core.odata.api.enums.InlineCount;
 import com.sap.core.odata.api.uri.KeyPredicate;
 import com.sap.core.odata.api.uri.NavigationSegment;
+import com.sap.core.odata.api.uri.UriLiteral;
 
 public interface GetEntitySetLinksView {
   /**
@@ -27,6 +29,11 @@ public interface GetEntitySetLinksView {
    */
   public EdmEntitySet getTargetEntitySet();
 
+  /**
+   * @return {@link EdmFunctionImport} the funktion import
+   */
+  public EdmFunctionImport getFunctionImport();
+  
   /**
    * @return {@link EdmType} the target type of the entity set
    */
@@ -81,7 +88,12 @@ public interface GetEntitySetLinksView {
    * @return int top
    */
   public Integer getTop();
-
+  
+  /**
+   * @return Map of {@literal <String,} {@link UriLiteral}{@literal >} function import parameters
+   */
+  public Map<String, UriLiteral> getFunctionImportParameters();
+  
   /**
    * @return Map of {@literal<String, String>} custom query options
    */
