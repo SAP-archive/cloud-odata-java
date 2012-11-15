@@ -48,12 +48,16 @@ public class DataContainer {
     room1.setBuilding(building1);
     room2.setBuilding(building2);
     room3.setBuilding(building2);
+    room1.setVersion(1);
+    room2.setVersion(2);
+    room3.setVersion(3);
     roomSet.add(room1);
     roomSet.add(room2);
     roomSet.add(room3);
-    for (int i = 4; i <= 100; i++) {
-      Room roomN = new Room(("Room " + i), (4 + i) / 5);
+    for (int i = 4; i <= 103; i++) {
+      Room roomN = new Room("Room " + i, (4 + i) / 5);
       roomN.setBuilding(building3);
+      roomN.setVersion(1);
       roomSet.add(roomN);
     }
 

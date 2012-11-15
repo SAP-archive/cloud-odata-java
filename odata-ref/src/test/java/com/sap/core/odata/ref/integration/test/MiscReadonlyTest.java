@@ -46,7 +46,7 @@ public class MiscReadonlyTest extends AbstractTest {
 
   @Test
   public void count() throws Exception {
-    // assertEquals("103", ok("Rooms()/$count").getEntity());
+    assertEquals("103", callUrl("Rooms()/$count").getEntity());
     assertEquals("4", callUrl("Rooms('2')/nr_Employees/$count").getEntity());
     assertEquals("1", callUrl("Employees('1')/ne_Room/$count").getEntity());
     assertEquals("1", callUrl("Managers('3')/nm_Employees('5')/$count").getEntity());
