@@ -7,10 +7,10 @@ import com.sap.core.odata.api.edm.EdmAssociation;
 import com.sap.core.odata.api.edm.EdmComplexType;
 import com.sap.core.odata.api.edm.EdmEntityContainer;
 import com.sap.core.odata.api.edm.EdmEntityType;
+import com.sap.core.odata.api.edm.EdmException;
 import com.sap.core.odata.api.edm.EdmServiceMetadata;
 import com.sap.core.odata.api.edm.FullQualifiedName;
 import com.sap.core.odata.api.edm.provider.EdmProvider;
-import com.sap.core.odata.api.edm.provider.EntityContainer;
 import com.sap.core.odata.api.edm.provider.EntityType;
 import com.sap.core.odata.api.edm.provider.Property;
 import com.sap.core.odata.api.edm.provider.Schema;
@@ -20,6 +20,7 @@ import com.sap.core.odata.core.edm.EdmImpl;
 public class EdmImplProv extends EdmImpl implements EdmServiceMetadata {
 
   protected EdmProvider edmProvider;
+  double dataServiceVersion = 0;
 
   public EdmImplProv(EdmProvider edmProvider) {
     super();
@@ -49,39 +50,38 @@ public class EdmImplProv extends EdmImpl implements EdmServiceMetadata {
 
   @Override
   public String getMetadata() throws ODataMessageException {
-
-    double dataServiceVersion = Edm.DATA_SERVICE_VERSION10;
-
     //Catch exception here to transform it into an edm exception?
     Collection<Schema> schemas = edmProvider.getSchemas();
 
-    for (Schema schema : schemas) {
-      for (EntityType entityType : schema.getEntityTypes()) {
+    if (this.dataServiceVersion == 0) {
 
-        if (entityType.getCustomizableFeedMappings().getFcKeepInContent()) {
-          dataServiceVersion = Edm.DATA_SERVICE_VERSION20;
-          break;
-        }
+      this.dataServiceVersion = Edm.DATA_SERVICE_VERSION10;
 
-        for (Property property : entityType.getProperties().values()) {
-          if (property.getCustomizableFeedMappings().getFcKeepInContent()) {
+      for (Schema schema : schemas) {
+        for (EntityType entityType : schema.getEntityTypes()) {
+
+          if (entityType.getCustomizableFeedMappings().getFcKeepInContent()) {
             dataServiceVersion = Edm.DATA_SERVICE_VERSION20;
             break;
           }
+
+          for (Property property : entityType.getProperties().values()) {
+            if (property.getCustomizableFeedMappings().getFcKeepInContent()) {
+              dataServiceVersion = Edm.DATA_SERVICE_VERSION20;
+              break;
+            }
+          }
+
+          if (dataServiceVersion == Edm.DATA_SERVICE_VERSION20)
+            break;
         }
 
         if (dataServiceVersion == Edm.DATA_SERVICE_VERSION20)
           break;
       }
-      
-      if (dataServiceVersion == Edm.DATA_SERVICE_VERSION20)
-        break;
     }
-    
     //TODO: Convert Metadata into the right format
-    return ""+dataServiceVersion + schemas.toString();
-    
-    
+    return "" + dataServiceVersion + schemas;
 
     //    DATA:
     //      ls_metadata TYPE /IWCOR/if_DS_edm_provider=>data_services_s,
@@ -127,10 +127,47 @@ public class EdmImplProv extends EdmImpl implements EdmServiceMetadata {
   }
 
   @Override
-  public String getDataServiceVersion() {
-    // TODO Auto-generated method stub
+  public String getDataServiceVersion() throws EdmException{
     // cache it, when get metadate is called first, otherwise calculateDataServiceVersion in separate method,
     // the method is required in proc single to set header "DataServiceVersion" 
-    return null;
+    if (this.dataServiceVersion == 0) {
+      this.dataServiceVersion = calculateDataServiceVersion();
+    }
+    return "" + this.dataServiceVersion;
+  }
+
+  private double calculateDataServiceVersion() throws EdmException {
+    double dataServiceVersion = Edm.DATA_SERVICE_VERSION10;
+    
+    Collection<Schema> schemas;
+    try {
+      schemas = edmProvider.getSchemas();
+    } catch (ODataMessageException e) {
+     throw new EdmException(EdmException.COMMON,e);
+    }
+    
+    for (Schema schema : schemas) {
+      for (EntityType entityType : schema.getEntityTypes()) {
+
+        if (entityType.getCustomizableFeedMappings().getFcKeepInContent()) {
+          dataServiceVersion = Edm.DATA_SERVICE_VERSION20;
+          break;
+        }
+
+        for (Property property : entityType.getProperties().values()) {
+          if (property.getCustomizableFeedMappings().getFcKeepInContent()) {
+            dataServiceVersion = Edm.DATA_SERVICE_VERSION20;
+            break;
+          }
+        }
+
+        if (dataServiceVersion == Edm.DATA_SERVICE_VERSION20)
+          break;
+      }
+
+      if (dataServiceVersion == Edm.DATA_SERVICE_VERSION20)
+        break;
+    }
+    return dataServiceVersion;
   }
 }

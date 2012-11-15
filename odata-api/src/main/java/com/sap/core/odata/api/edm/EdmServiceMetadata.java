@@ -9,7 +9,7 @@ public interface EdmServiceMetadata {
   String getMetadata() throws ODataMessageException;
   
   //TODO Exception Handling
-  String getDataServiceVersion();
+  String getDataServiceVersion() throws EdmException;
 
   //TODO required for Atom Service Document
   //TODO Exception Handling
