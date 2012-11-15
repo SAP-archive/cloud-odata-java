@@ -31,9 +31,9 @@ public interface ODataContext {
   List<String> getPrecedingPathSegment();
 
   /**
-   * Returns OData path segments  
+   * Returns OData path segments as immutuable list  
    * @return list of path segments
    */
   List<String> getODataPathSegment();
-  
+
 }
