@@ -10,6 +10,7 @@ import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -47,9 +48,9 @@ public abstract class AbstractTest {
     InitParameter param = oDataLocator.new InitParameter();
 
     param.setHttpHeaders(getHttpHeaders(httpHeaders));
-    param.setPathSegments(getPathSegments(urlString));
+    param.setPathSegments(getPathSegments(urlString.split("\\?", -1)[0]));
     param.setRequest(request);
-    param.setUriInfo(getUriInfo());
+    param.setUriInfo(getUriInfo(param.getPathSegments(), getQueryParameters(urlString)));
     param.setServiceFactory(SERVICE_FACTORY);
     oDataLocator.initializeService(param);
 
@@ -155,7 +156,7 @@ public abstract class AbstractTest {
     };
   }
 
-  private UriInfo getUriInfo() {
+  private UriInfo getUriInfo(final List<PathSegment> pathSegments, final Map<String, String> queryParameters) {
     return new UriInfo() {
 
       @Override
@@ -170,22 +171,28 @@ public abstract class AbstractTest {
 
       @Override
       public MultivaluedMap<String, String> getQueryParameters(final boolean decode) {
-        return null;
+        if (decode == true)
+          return getQueryParameters();
+        else
+          return null;
       }
 
       @Override
       public MultivaluedMap<String, String> getQueryParameters() {
-        return new MultivaluedHashMap<String, String>();
+        return new MultivaluedHashMap<String, String>(queryParameters);
       }
 
       @Override
       public List<PathSegment> getPathSegments(final boolean decode) {
-        return null;
+        if (decode == true)
+          return pathSegments;
+        else
+          return null;
       }
 
       @Override
       public List<PathSegment> getPathSegments() {
-        return null;
+        return pathSegments;
       }
 
       @Override
@@ -265,6 +272,18 @@ public abstract class AbstractTest {
         return null;
       }
     };
+  }
+
+  private Map<String, String> getQueryParameters(final String urlString) throws UriParserException {
+    Map<String, String> queryParameters = new HashMap<String, String>();
+    if (urlString.contains("?")) {
+      final String querystring = unescape(urlString.split("\\?", -1)[1]);
+      for (final String option : querystring.split("&")) {
+        final String[] keyAndValue = option.split("=");
+        queryParameters.put(keyAndValue[0], keyAndValue[1]);
+      }
+    }
+    return queryParameters;
   }
 
   private String unescape(final String s) throws UriParserException {

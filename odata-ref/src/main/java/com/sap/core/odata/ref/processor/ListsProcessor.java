@@ -10,6 +10,7 @@ import java.util.Map;
 
 import com.sap.core.odata.api.edm.EdmEntitySet;
 import com.sap.core.odata.api.edm.EdmException;
+import com.sap.core.odata.api.edm.EdmFunctionImport;
 import com.sap.core.odata.api.edm.EdmLiteralKind;
 import com.sap.core.odata.api.edm.EdmProperty;
 import com.sap.core.odata.api.edm.EdmSimpleType;
@@ -69,6 +70,8 @@ public class ListsProcessor extends ODataSingleProcessor {
     data.addAll((List<?>) retrieveData(
         uriParserResultView.getStartEntitySet(),
         uriParserResultView.getKeyPredicates(),
+        uriParserResultView.getFunctionImport(),
+        mapFunctionParameters(uriParserResultView.getFunctionImportParameters()),
         uriParserResultView.getNavigationSegments()));
 
     applySystemQueryOptions(
@@ -90,6 +93,9 @@ public class ListsProcessor extends ODataSingleProcessor {
     data.addAll((List<?>) retrieveData(
         uriParserResultView.getStartEntitySet(),
         uriParserResultView.getKeyPredicates(),
+        // uriParserResultView.getFunctionImport(),
+        // mapFunctionParameters(uriParserResultView.getFunctionImportParameters()),
+        null, null,
         uriParserResultView.getNavigationSegments()));
 
     applySystemQueryOptions(
@@ -111,6 +117,9 @@ public class ListsProcessor extends ODataSingleProcessor {
     data.addAll((List<?>) retrieveData(
         uriParserResultView.getStartEntitySet(),
         uriParserResultView.getKeyPredicates(),
+        // uriParserResultView.getFunctionImport(),
+        // mapFunctionParameters(uriParserResultView.getFunctionImportParameters()),
+        null, null,
         uriParserResultView.getNavigationSegments()));
 
     applySystemQueryOptions(
@@ -137,6 +146,8 @@ public class ListsProcessor extends ODataSingleProcessor {
     final Object data = retrieveData(
         uriParserResultView.getStartEntitySet(),
         uriParserResultView.getKeyPredicates(),
+        uriParserResultView.getFunctionImport(),
+        mapFunctionParameters(uriParserResultView.getFunctionImportParameters()),
         uriParserResultView.getNavigationSegments());
 
     if (appliesFilter(data, uriParserResultView.getFilter()))
@@ -150,6 +161,9 @@ public class ListsProcessor extends ODataSingleProcessor {
     final Object data = retrieveData(
         uriParserResultView.getStartEntitySet(),
         uriParserResultView.getKeyPredicates(),
+        // uriParserResultView.getFunctionImport(),
+        // mapFunctionParameters(uriParserResultView.getFunctionImportParameters()),
+        null, null,
         uriParserResultView.getNavigationSegments());
 
     return ODataResponseBuilder.newInstance().status(HttpStatusCodes.OK).entity(
@@ -162,9 +176,12 @@ public class ListsProcessor extends ODataSingleProcessor {
     final Object data = retrieveData(
         uriParserResultView.getStartEntitySet(),
         uriParserResultView.getKeyPredicates(),
+        // uriParserResultView.getFunctionImport(),
+        // mapFunctionParameters(uriParserResultView.getFunctionImportParameters()),
+        null, null,
         uriParserResultView.getNavigationSegments());
 
-    //    if (appliesFilter(data, uriParserResultView.getFilter()))
+    // if (appliesFilter(data, uriParserResultView.getFilter()))
     if (data != null)
       return ODataResponseBuilder.newInstance().status(HttpStatusCodes.OK).entity("Link to " + data.toString()).build();
     else
@@ -181,6 +198,9 @@ public class ListsProcessor extends ODataSingleProcessor {
     Object data = retrieveData(
         uriParserResultView.getStartEntitySet(),
         uriParserResultView.getKeyPredicates(),
+        // uriParserResultView.getFunctionImport(),
+        // mapFunctionParameters(uriParserResultView.getFunctionImportParameters()),
+        null, null,
         uriParserResultView.getNavigationSegments());
 
     //    if (!appliesFilter(data, uriParserResultView.getFilter()))
@@ -201,6 +221,9 @@ public class ListsProcessor extends ODataSingleProcessor {
     Object data = retrieveData(
         uriParserResultView.getStartEntitySet(),
         uriParserResultView.getKeyPredicates(),
+        // uriParserResultView.getFunctionImport(),
+        // mapFunctionParameters(uriParserResultView.getFunctionImportParameters()),
+        null, null,
         uriParserResultView.getNavigationSegments());
 
     //    if (!appliesFilter(data, uriParserResultView.getFilter()))
@@ -260,14 +283,17 @@ public class ListsProcessor extends ODataSingleProcessor {
     }
   }
 
-  private Object retrieveData(final EdmEntitySet startEntitySet, final List<KeyPredicate> keyPredicates, final List<NavigationSegment> navigationSegments) throws ODataException {
+  private Object retrieveData(final EdmEntitySet startEntitySet, final List<KeyPredicate> keyPredicates, final EdmFunctionImport functionImport, final Map<String, Object> functionImportParameters, final List<NavigationSegment> navigationSegments) throws ODataException {
     Object data;
     final HashMap<String, Object> keys = mapKey(keyPredicates);
 
-    if (keys.isEmpty())
-      data = dataSource.readData(startEntitySet);
+    if (functionImport == null)
+      if (keys.isEmpty())
+        data = dataSource.readData(startEntitySet);
+      else
+        data = dataSource.readData(startEntitySet, keys);
     else
-      data = dataSource.readData(startEntitySet, keys);
+      data = dataSource.readData(functionImport, functionImportParameters, keys);
 
     EdmEntitySet currentEntitySet = startEntitySet;
     for (NavigationSegment navigationSegment : navigationSegments) {

@@ -30,9 +30,9 @@ public class MiscReadonlyTest extends AbstractTest {
     checkUrl("Employees('1')/ne_Room/nr_Employees()");
     checkUrl("Employees('2')/ne_Team/nt_Employees('1')");
 
-    //    checkUrl("Employees('2')/ne_Team/nt_Employees('1')/Location");
-    //    checkUrl("Employees('2')/ne_Team/nt_Employees('1')/Location/City/CityName");
-    //    checkUrl("Employees('2')/ne_Team/nt_Employees('1')/Location/City/CityName/$value");
+    checkUrl("Employees('2')/ne_Team/nt_Employees('1')/Location");
+    checkUrl("Employees('2')/ne_Team/nt_Employees('1')/Location/City/CityName");
+    checkUrl("Employees('2')/ne_Team/nt_Employees('1')/Location/City/CityName/$value");
     checkUrl("Employees('2')/ne_Team/nt_Employees('1')/$links/ne_Room");
     checkUrl("Employees('2')/ne_Team/nt_Employees('1')/ne_Room/$links/nr_Employees");
 
@@ -41,7 +41,7 @@ public class MiscReadonlyTest extends AbstractTest {
     checkUrl("Employees('2')/ne_Manager");
     checkUrl("Employees('2')/ne_Manager/$links/nm_Employees()");
     checkUrl("Employees('2')/ne_Manager/nm_Employees('3')");
-    //    checkUrl("Employees('2')/ne_Manager/nm_Employees('3')/Age");
+    checkUrl("Employees('2')/ne_Manager/nm_Employees('3')/Age");
   }
 
   @Test

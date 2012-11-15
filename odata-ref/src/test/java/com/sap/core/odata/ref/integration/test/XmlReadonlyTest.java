@@ -1,6 +1,8 @@
 package com.sap.core.odata.ref.integration.test;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import javax.ws.rs.core.MediaType;
@@ -32,12 +34,12 @@ public class XmlReadonlyTest extends AbstractTest {
   @Test
   public void functionImport() throws Exception {
     Response response;
-    // = ok("EmployeeSearch('1')/ne_Room/Id/$value?q='alter'");
+    // = callUrl("EmployeeSearch('1')/ne_Room/Id/$value?q='alter'");
     // checkMediaType(response, MediaType.TEXT_PLAIN_TYPE);
     // checkEtag(response, true, "W/\"1\"");
-    // assertEquals("1", response.getEntity().toString());
+    // assertEquals("1", response.getEntity());
 
-    // assertThat(ok("EmployeeSearch?q='-'").getEntity());  // contains no entity
+    // assertThat(callUrl("EmployeeSearch?q='-'").getEntity());  // contains no entity
 
     response = callUrl("AllLocations");
     // checkMediaType(response, MediaType.APPLICATION_XML_TYPE);
@@ -55,13 +57,13 @@ public class XmlReadonlyTest extends AbstractTest {
     // checkMediaType(response, MediaType.APPLICATION_XML_TYPE);
     assertTrue(response.getEntity().toString().contains(CITY_2_NAME));
 
-    // response = ok("ManagerPhoto?Id='1'");
-    // assertThat(response.getEntity());  // is not empty
+    response = callUrl("ManagerPhoto?Id='1'");
+    assertFalse(response.getEntity().toString().isEmpty());
 
-    // response = ok("ManagerPhoto/$value?Id='1'");
+    response = callUrl("ManagerPhoto/$value?Id='1'");
     // checkMediaType(response, IMAGE_JPEG);
-    // assertNull(response.getEntityTag());
-    // assertThat(response.getEntity());  // is not empty
+    assertNull(response.getEntityTag());
+    assertFalse(response.getEntity().toString().isEmpty());
 
     response = callUrl("OldestEmployee");
     // checkMediaType(response, MediaType.APPLICATION_ATOM_XML_TYPE);
@@ -69,7 +71,7 @@ public class XmlReadonlyTest extends AbstractTest {
 
     response = callUrl("OldestEmployee?$format=xml");
     // checkMediaType(response, MediaType.APPLICATION_XML_TYPE);
-    // assertTrue(response.getEntity().toString().contains(EMPLOYEE_3_NAME));
+    assertTrue(response.getEntity().toString().contains(EMPLOYEE_3_NAME));
 
     // badRequest("AllLocations/$count");
     // badRequest("AllUsedRoomIds/$value");
@@ -77,14 +79,14 @@ public class XmlReadonlyTest extends AbstractTest {
     // badRequest("MostCommonLocation/City/CityName");
     notFound("ManagerPhoto");
     // badRequest("OldestEmployee()");
-    // notFound("ManagerPhoto?Id='2'");
+    notFound("ManagerPhoto?Id='2'");
   }
 
   @Test
   public void simpleProperty() throws Exception {
     Response response = callUrl("Employees('2')/Age/$value");
     // checkMediaType(response, MediaType.TEXT_PLAIN_TYPE);
-    assertEquals(EMPLOYEE_2_AGE, response.getEntity().toString());
+    assertEquals(EMPLOYEE_2_AGE, response.getEntity());
 
     response = callUrl("Employees('2')/Age");
     // checkMediaType(response, MediaType.APPLICATION_XML_TYPE);
@@ -100,17 +102,17 @@ public class XmlReadonlyTest extends AbstractTest {
     response = callUrl("Rooms('2')/Seats/$value");
     // checkMediaType(response, MediaType.TEXT_PLAIN_TYPE);
     // checkEtag(response, true, "W/\"2\"");
-    assertEquals("5", response.getEntity().toString());
+    assertEquals("5", response.getEntity());
 
     response = callUrl("Rooms('2')/Seats");
     // checkMediaType(response, MediaType.APPLICATION_XML_TYPE);
     // checkEtag(response, true, "W/\"2\"");
     // assertTrue(response.getEntity().toString().contains("5</"));
 
-    // response = ok("Container2.Photos(Id=3,Type='image%2Fjpeg')/BinaryData/$value");
+    // response = callUrl("Container2.Photos(Id=3,Type='image%2Fjpeg')/BinaryData/$value");
     // checkMediaType(response, IMAGE_JPEG);
 
-    // response = ok("Container2.Photos(Id=3,Type='image%2Fjpeg')/BinaryData");
+    // response = callUrl("Container2.Photos(Id=3,Type='image%2Fjpeg')/BinaryData");
     // checkMediaType(response, MediaType.APPLICATION_XML_TYPE);
 
     // notFound("Employees('2')/Foo");
@@ -121,7 +123,7 @@ public class XmlReadonlyTest extends AbstractTest {
   public void complexProperty() throws Exception {
     Response response = callUrl("Employees('2')/Location/City/CityName/$value");
     // checkMediaType(response, MediaType.TEXT_PLAIN_TYPE);
-    assertEquals(CITY_2_NAME, response.getEntity().toString());
+    assertEquals(CITY_2_NAME, response.getEntity());
 
     response = callUrl("Employees('2')/Location");
     // checkMediaType(response, MediaType.APPLICATION_XML_TYPE);
