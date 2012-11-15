@@ -15,7 +15,7 @@ import com.sap.core.odata.api.exception.ODataException;
 public class MiscReadonlyTest extends AbstractTest {
 
   private void checkUrl(final String urlString) throws ODataException {
-    final Response response = ok(urlString);
+    final Response response = callUrl(urlString);
     assertNotNull(response);
   }
 
@@ -47,12 +47,12 @@ public class MiscReadonlyTest extends AbstractTest {
   @Test
   public void count() throws Exception {
     // assertEquals("103", ok("Rooms()/$count").getEntity());
-    assertEquals("4", ok("Rooms('2')/nr_Employees/$count").getEntity());
-    assertEquals("1", ok("Employees('1')/ne_Room/$count").getEntity());
-    assertEquals("1", ok("Managers('3')/nm_Employees('5')/$count").getEntity());
-    assertEquals("4", ok("Rooms('2')/$links/nr_Employees/$count").getEntity());
-    assertEquals("1", ok("Employees('1')/$links/ne_Room/$count").getEntity());
-    assertEquals("1", ok("Managers('3')/$links/nm_Employees('5')/$count").getEntity());
+    assertEquals("4", callUrl("Rooms('2')/nr_Employees/$count").getEntity());
+    assertEquals("1", callUrl("Employees('1')/ne_Room/$count").getEntity());
+    assertEquals("1", callUrl("Managers('3')/nm_Employees('5')/$count").getEntity());
+    assertEquals("4", callUrl("Rooms('2')/$links/nr_Employees/$count").getEntity());
+    assertEquals("1", callUrl("Employees('1')/$links/ne_Room/$count").getEntity());
+    assertEquals("1", callUrl("Managers('3')/$links/nm_Employees('5')/$count").getEntity());
 
     // badRequest("Rooms('1')/Seats/$count");
     notFound("Managers('3')/nm_Employees('1')/$count");

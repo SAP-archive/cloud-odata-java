@@ -228,7 +228,12 @@ public class ListsProcessor extends ODataSingleProcessor {
 
   @Override
   public ODataResponse executeFunctionImportValue(GetFunctionImportView uriParserResultView) throws ODataException {
-    throw new ODataNotImplementedException();
+    final Object data = dataSource.readData(
+        uriParserResultView.getFunctionImport(),
+        mapFunctionParameters(uriParserResultView.getFunctionImportParameters()),
+        null);
+
+    return ODataResponseBuilder.newInstance().status(HttpStatusCodes.OK).entity(data.toString()).build();
   }
 
   private HashMap<String, Object> mapKey(final List<KeyPredicate> keys) throws EdmException {
