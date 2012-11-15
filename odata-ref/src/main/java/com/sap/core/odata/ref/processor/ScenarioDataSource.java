@@ -166,12 +166,20 @@ public class ScenarioDataSource implements ListsDataSource {
   }
 
   @Override
-  public Object readData(EdmFunctionImport function, Map<String, Object> parameters, Map<String, Object> keys) throws ODataNotImplementedException, ODataNotFoundException, EdmException {
+  public Object readData(final EdmFunctionImport function, final Map<String, Object> parameters, final Map<String, Object> keys) throws ODataNotImplementedException, ODataNotFoundException, EdmException {
     if (function.getName().equals("EmployeeSearch")) {
-      if (parameters.get("q") == null)
+      if (parameters.get("q") == null) {
         throw new ODataNotFoundException(null);
-      else
-        return searchEmployees((String) parameters.get("q"));
+      } else {
+        final List<Employee> found = searchEmployees((String) parameters.get("q"));
+        if (keys.isEmpty())
+          return found;
+        else
+          for (Employee employee : found)
+            if (employee.getId().equals(keys.get("EmployeeId")))
+              return employee;
+        throw new ODataNotFoundException(ODataNotFoundException.ENTITY);
+      }
 
     } else if (function.getName().equals("AllLocations")) {
       return getLocations();

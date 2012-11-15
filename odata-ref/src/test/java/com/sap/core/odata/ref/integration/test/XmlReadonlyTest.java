@@ -33,11 +33,10 @@ public class XmlReadonlyTest extends AbstractTest {
 
   @Test
   public void functionImport() throws Exception {
-    Response response;
-    // = callUrl("EmployeeSearch('1')/ne_Room/Id/$value?q='alter'");
-    // checkMediaType(response, MediaType.TEXT_PLAIN_TYPE);
+    Response response = callUrl("EmployeeSearch('1')/ne_Room/Id/$value?q='alter'");
+    checkMediaType(response, MediaType.TEXT_PLAIN_TYPE);
     // checkEtag(response, true, "W/\"1\"");
-    // assertEquals("1", response.getEntity());
+    assertEquals("1", response.getEntity());
 
     // assertThat(callUrl("EmployeeSearch?q='-'").getEntity());  // contains no entity
 
@@ -85,7 +84,7 @@ public class XmlReadonlyTest extends AbstractTest {
   @Test
   public void simpleProperty() throws Exception {
     Response response = callUrl("Employees('2')/Age/$value");
-    // checkMediaType(response, MediaType.TEXT_PLAIN_TYPE);
+    checkMediaType(response, MediaType.TEXT_PLAIN_TYPE);
     assertEquals(EMPLOYEE_2_AGE, response.getEntity());
 
     response = callUrl("Employees('2')/Age");
@@ -100,7 +99,7 @@ public class XmlReadonlyTest extends AbstractTest {
     // assertTrue(response.getEntity().toString().contains("<d:Image m:type=\"Edm.Binary\" m:MimeType=\"image/jpeg\""));
 
     response = callUrl("Rooms('2')/Seats/$value");
-    // checkMediaType(response, MediaType.TEXT_PLAIN_TYPE);
+    checkMediaType(response, MediaType.TEXT_PLAIN_TYPE);
     // checkEtag(response, true, "W/\"2\"");
     assertEquals("5", response.getEntity());
 
@@ -122,7 +121,7 @@ public class XmlReadonlyTest extends AbstractTest {
   @Test
   public void complexProperty() throws Exception {
     Response response = callUrl("Employees('2')/Location/City/CityName/$value");
-    // checkMediaType(response, MediaType.TEXT_PLAIN_TYPE);
+    checkMediaType(response, MediaType.TEXT_PLAIN_TYPE);
     assertEquals(CITY_2_NAME, response.getEntity());
 
     response = callUrl("Employees('2')/Location");
