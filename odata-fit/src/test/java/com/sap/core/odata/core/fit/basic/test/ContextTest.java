@@ -37,7 +37,7 @@ public class ContextTest extends AbstractBasicTest {
   @Test
   public void checkContextExists() throws ClientProtocolException, IOException, ODataException {
     assertNull(this.getProcessor().getContext());
-    HttpGet get = new HttpGet(URI.create(this.getEndpoint().toString() + "$metadata"));
+    HttpGet get = new HttpGet(URI.create(this.getEndpoint().toString() + "/$metadata"));
     HttpResponse response = this.getHttpClient().execute(get);
 
     ODataContext ctx = this.getProcessor().getContext();

@@ -111,7 +111,7 @@ public class ServiceResolutionTest {
     this.server.setPathSplit(0);
     this.server.startServer(ServiceFactory.class);
 
-    HttpGet get = new HttpGet(URI.create(this.server.getEndpoint().toString() + "$metadata"));
+    HttpGet get = new HttpGet(URI.create(this.server.getEndpoint().toString() + "/$metadata"));
     HttpResponse response = this.httpClient.execute(get);
 
     assertEquals(200, response.getStatusLine().getStatusCode());
@@ -128,7 +128,7 @@ public class ServiceResolutionTest {
     this.server.setPathSplit(1);
     this.server.startServer(ServiceFactory.class);
 
-    HttpGet get = new HttpGet(URI.create(this.server.getEndpoint().toString() + "aaa/$metadata"));
+    HttpGet get = new HttpGet(URI.create(this.server.getEndpoint().toString() + "/aaa/$metadata"));
     HttpResponse response = this.httpClient.execute(get);
 
     assertEquals(200, response.getStatusLine().getStatusCode());
@@ -145,7 +145,7 @@ public class ServiceResolutionTest {
     this.server.setPathSplit(2);
     this.server.startServer(ServiceFactory.class);
 
-    HttpGet get = new HttpGet(URI.create(this.server.getEndpoint().toString() + "aaa/bbb/$metadata"));
+    HttpGet get = new HttpGet(URI.create(this.server.getEndpoint().toString() + "/aaa/bbb/$metadata"));
     HttpResponse response = this.httpClient.execute(get);
 
     assertEquals(200, response.getStatusLine().getStatusCode());

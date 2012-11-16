@@ -31,7 +31,7 @@ public class MetadataTest extends AbstractBasicTest {
 
   @Test
   public void readMetadata() throws ClientProtocolException, IOException, ODataException {
-    HttpGet get = new HttpGet(URI.create(this.getEndpoint().toString() + "$metadata"));
+    HttpGet get = new HttpGet(URI.create(this.getEndpoint().toString() + "/$metadata"));
     HttpResponse response = this.getHttpClient().execute(get);
 
     String payload = StringHelper.inputStreamToString(response.getEntity().getContent());
