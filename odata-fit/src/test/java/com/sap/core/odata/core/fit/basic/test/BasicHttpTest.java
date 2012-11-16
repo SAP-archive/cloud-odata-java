@@ -40,6 +40,16 @@ public class BasicHttpTest extends AbstractBasicTest {
 
   @Test
   public void testGetServiceDocument() throws ODataException, MalformedURLException, IOException {
+    HttpGet get = new HttpGet(URI.create(this.getEndpoint().toString() + "/"));
+    HttpResponse response = this.getHttpClient().execute(get);
+
+    String payload = StringHelper.inputStreamToString(response.getEntity().getContent());
+    assertEquals("service document", payload);
+    assertEquals(200, response.getStatusLine().getStatusCode());
+  }
+
+  @Test
+  public void testGetServiceDocumentWithRedirect() throws ODataException, MalformedURLException, IOException {
     HttpGet get = new HttpGet(URI.create(this.getEndpoint().toString()));
     HttpResponse response = this.getHttpClient().execute(get);
 
@@ -51,7 +61,7 @@ public class BasicHttpTest extends AbstractBasicTest {
   
   @Test
   public void testGet() throws ODataException, MalformedURLException, IOException {
-    HttpGet get = new HttpGet(URI.create(this.getEndpoint().toString() + "$metadata"));
+    HttpGet get = new HttpGet(URI.create(this.getEndpoint().toString() + "/$metadata"));
     HttpResponse response = this.getHttpClient().execute(get);
 
     String payload = StringHelper.inputStreamToString(response.getEntity().getContent());
@@ -61,7 +71,7 @@ public class BasicHttpTest extends AbstractBasicTest {
 
   @Test
   public void testPut() throws MalformedURLException, IOException {
-    HttpPut put = new HttpPut(URI.create(this.getEndpoint().toString() + "aaa/bbb/ccc"));
+    HttpPut put = new HttpPut(URI.create(this.getEndpoint().toString() + "/aaa/bbb/ccc"));
     HttpResponse response = this.getHttpClient().execute(put);
 
     String payload = StringHelper.inputStreamToString(response.getEntity().getContent());
@@ -72,7 +82,7 @@ public class BasicHttpTest extends AbstractBasicTest {
 
   @Test
   public void testPost() throws MalformedURLException, IOException {
-    HttpPost post = new HttpPost(URI.create(this.getEndpoint().toString() + "aaa/bbb/ccc"));
+    HttpPost post = new HttpPost(URI.create(this.getEndpoint().toString() + "/aaa/bbb/ccc"));
     HttpResponse response = this.getHttpClient().execute(post);
 
     String payload = StringHelper.inputStreamToString(response.getEntity().getContent());
@@ -83,7 +93,7 @@ public class BasicHttpTest extends AbstractBasicTest {
 
   @Test
   public void testDelete() throws MalformedURLException, IOException {
-    HttpDelete delete = new HttpDelete(URI.create(this.getEndpoint().toString() + "aaa/bbb/ccc"));
+    HttpDelete delete = new HttpDelete(URI.create(this.getEndpoint().toString() + "/aaa/bbb/ccc"));
     HttpResponse response = this.getHttpClient().execute(delete);
 
     String payload = StringHelper.inputStreamToString(response.getEntity().getContent());
@@ -94,7 +104,7 @@ public class BasicHttpTest extends AbstractBasicTest {
 
   @Test
   public void testMerge() throws MalformedURLException, IOException {
-    HttpMerge merge = new HttpMerge(URI.create(this.getEndpoint().toString() + "aaa/bbb/ccc"));
+    HttpMerge merge = new HttpMerge(URI.create(this.getEndpoint().toString() + "/aaa/bbb/ccc"));
     HttpResponse response = this.getHttpClient().execute(merge);
 
     String payload = StringHelper.inputStreamToString(response.getEntity().getContent());
@@ -105,7 +115,7 @@ public class BasicHttpTest extends AbstractBasicTest {
 
   @Test
   public void testPatch() throws MalformedURLException, IOException {
-    HttpPatch get = new HttpPatch(URI.create(this.getEndpoint().toString() + "aaa/bbb/ccc"));
+    HttpPatch get = new HttpPatch(URI.create(this.getEndpoint().toString() + "/aaa/bbb/ccc"));
     HttpResponse response = this.getHttpClient().execute(get);
 
     String payload = StringHelper.inputStreamToString(response.getEntity().getContent());
@@ -116,7 +126,7 @@ public class BasicHttpTest extends AbstractBasicTest {
 
   @Test
   public void testMergeTunneledByPost() throws MalformedURLException, IOException {
-    HttpPost post = new HttpPost(URI.create(this.getEndpoint().toString() + "aaa/bbb/ccc"));
+    HttpPost post = new HttpPost(URI.create(this.getEndpoint().toString() + "/aaa/bbb/ccc"));
     post.setHeader("X-HTTP-Method", "MERGE");
     HttpResponse response = this.getHttpClient().execute(post);
 
@@ -128,7 +138,7 @@ public class BasicHttpTest extends AbstractBasicTest {
 
   @Test
   public void testPatchTunneledByPost() throws MalformedURLException, IOException {
-    HttpPost post = new HttpPost(URI.create(this.getEndpoint().toString() + "aaa/bbb/ccc"));
+    HttpPost post = new HttpPost(URI.create(this.getEndpoint().toString() + "/aaa/bbb/ccc"));
     post.setHeader("X-HTTP-Method", "PATCH");
     HttpResponse response = this.getHttpClient().execute(post);
 

@@ -21,7 +21,7 @@ public class TestServer {
 
   private static final Logger log = LoggerFactory.getLogger(TestServer.class);
 
-  private URI endpoint = URI.create("http://localhost:19080/test/");
+  private URI endpoint = URI.create("http://localhost:19080/test");
 
   private int pathSplit = 0;
 
@@ -57,7 +57,7 @@ public class TestServer {
       }
 
       ServletContextHandler contextHandler = new ServletContextHandler(ServletContextHandler.SESSIONS);
-      contextHandler.addServlet(odataServletHolder, this.endpoint.getPath() + "*");
+      contextHandler.addServlet(odataServletHolder, this.endpoint.getPath() + "/*");
 
       this.server = new Server(this.endpoint.getPort());
       this.server.setHandler(contextHandler);
