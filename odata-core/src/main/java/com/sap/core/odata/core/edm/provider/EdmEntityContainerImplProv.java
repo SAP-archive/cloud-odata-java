@@ -111,7 +111,7 @@ public class EdmEntityContainerImplProv implements EdmEntityContainer {
       return edmAssociationSet;
 
     AssociationSet associationSet;
-    FullQualifiedName associationFQName = new FullQualifiedName(edmAssociation.getName(), edmAssociation.getNamespace());
+    FullQualifiedName associationFQName = new FullQualifiedName(edmAssociation.getNamespace(), edmAssociation.getName());
     try {
       associationSet = edm.edmProvider.getAssociationSet(entityContainer.getName(), associationFQName, entitySetName, entitySetFromRole);
     } catch (ODataException e) {

@@ -48,7 +48,7 @@ public abstract class EdmImpl implements Edm {
 
   @Override
   public EdmEntityType getEntityType(String namespace, String name) throws EdmException {
-    FullQualifiedName fqName = new FullQualifiedName(name, namespace);
+    FullQualifiedName fqName = new FullQualifiedName(namespace, name);
     if (edmEntityTypes.containsKey(fqName))
       return edmEntityTypes.get(fqName);
 
@@ -66,7 +66,7 @@ public abstract class EdmImpl implements Edm {
 
   @Override
   public EdmComplexType getComplexType(String namespace, String name) throws EdmException {
-    FullQualifiedName fqName = new FullQualifiedName(name, namespace);
+    FullQualifiedName fqName = new FullQualifiedName(namespace, name);
     if (edmComplexTypes.containsKey(fqName))
       return edmComplexTypes.get(fqName);
 
@@ -84,7 +84,7 @@ public abstract class EdmImpl implements Edm {
 
   @Override
   public EdmAssociation getAssociation(String namespace, String name) throws EdmException {
-    FullQualifiedName fqName = new FullQualifiedName(name, namespace);
+    FullQualifiedName fqName = new FullQualifiedName(namespace, name);
     if (edmAssociations.containsKey(fqName))
       return edmAssociations.get(fqName);
 
