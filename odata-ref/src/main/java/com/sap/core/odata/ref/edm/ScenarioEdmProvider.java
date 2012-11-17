@@ -43,28 +43,28 @@ public class ScenarioEdmProvider implements EdmProvider {
   private static final String NAMESPACE_1 = "RefScenario";
   private static final String NAMESPACE_2 = "RefScenario2";
 
-  private static final FullQualifiedName ENTITY_TYPE_1_1 = new FullQualifiedName("Employee", NAMESPACE_1);
-  private static final FullQualifiedName ENTITY_TYPE_1_BASE = new FullQualifiedName("Base", NAMESPACE_1);
-  private static final FullQualifiedName ENTITY_TYPE_1_2 = new FullQualifiedName("Team", NAMESPACE_1);
-  private static final FullQualifiedName ENTITY_TYPE_1_3 = new FullQualifiedName("Room", NAMESPACE_1);
-  private static final FullQualifiedName ENTITY_TYPE_1_4 = new FullQualifiedName("Manager", NAMESPACE_1);
-  private static final FullQualifiedName ENTITY_TYPE_1_5 = new FullQualifiedName("Building", NAMESPACE_1);
-  private static final FullQualifiedName ENTITY_TYPE_2_1 = new FullQualifiedName("Photo", NAMESPACE_2);
+  private static final FullQualifiedName ENTITY_TYPE_1_1 = new FullQualifiedName(NAMESPACE_1, "Employee");
+  private static final FullQualifiedName ENTITY_TYPE_1_BASE = new FullQualifiedName(NAMESPACE_1, "Base");
+  private static final FullQualifiedName ENTITY_TYPE_1_2 = new FullQualifiedName(NAMESPACE_1, "Team");
+  private static final FullQualifiedName ENTITY_TYPE_1_3 = new FullQualifiedName(NAMESPACE_1, "Room");
+  private static final FullQualifiedName ENTITY_TYPE_1_4 = new FullQualifiedName(NAMESPACE_1, "Manager");
+  private static final FullQualifiedName ENTITY_TYPE_1_5 = new FullQualifiedName(NAMESPACE_1, "Building");
+  private static final FullQualifiedName ENTITY_TYPE_2_1 = new FullQualifiedName(NAMESPACE_2, "Photo");
 
-  private static final FullQualifiedName EDM_BINARY = new FullQualifiedName("Binary", NAMESPACE_EDM);
-  private static final FullQualifiedName EDM_BOOLEAN = new FullQualifiedName("Boolean", NAMESPACE_EDM);
-  private static final FullQualifiedName EDM_DATETIME = new FullQualifiedName("DateTime", NAMESPACE_EDM);
-  private static final FullQualifiedName EDM_INT16 = new FullQualifiedName("Int16", NAMESPACE_EDM);
-  private static final FullQualifiedName EDM_INT32 = new FullQualifiedName("Int32", NAMESPACE_EDM);
-  private static final FullQualifiedName EDM_STRING = new FullQualifiedName("String", NAMESPACE_EDM);
+  private static final FullQualifiedName EDM_BINARY = new FullQualifiedName(NAMESPACE_EDM, "Binary");
+  private static final FullQualifiedName EDM_BOOLEAN = new FullQualifiedName(NAMESPACE_EDM, "Boolean");
+  private static final FullQualifiedName EDM_DATETIME = new FullQualifiedName(NAMESPACE_EDM, "DateTime");
+  private static final FullQualifiedName EDM_INT16 = new FullQualifiedName(NAMESPACE_EDM, "Int16");
+  private static final FullQualifiedName EDM_INT32 = new FullQualifiedName(NAMESPACE_EDM, "Int32");
+  private static final FullQualifiedName EDM_STRING = new FullQualifiedName(NAMESPACE_EDM, "String");
 
-  private static final FullQualifiedName COMPLEX_TYPE_1 = new FullQualifiedName("c_Location", NAMESPACE_1);
-  private static final FullQualifiedName COMPLEX_TYPE_2 = new FullQualifiedName("c_City", NAMESPACE_1);
+  private static final FullQualifiedName COMPLEX_TYPE_1 = new FullQualifiedName(NAMESPACE_1, "c_Location");
+  private static final FullQualifiedName COMPLEX_TYPE_2 = new FullQualifiedName(NAMESPACE_1, "c_City");
 
-  private static final FullQualifiedName ASSOCIATION_1_1 = new FullQualifiedName("ManagerEmployees", NAMESPACE_1);
-  private static final FullQualifiedName ASSOCIATION_1_2 = new FullQualifiedName("TeamEmployees", NAMESPACE_1);
-  private static final FullQualifiedName ASSOCIATION_1_3 = new FullQualifiedName("RoomEmployees", NAMESPACE_1);
-  private static final FullQualifiedName ASSOCIATION_1_4 = new FullQualifiedName("BuildingRooms", NAMESPACE_1);
+  private static final FullQualifiedName ASSOCIATION_1_1 = new FullQualifiedName(NAMESPACE_1, "ManagerEmployees");
+  private static final FullQualifiedName ASSOCIATION_1_2 = new FullQualifiedName(NAMESPACE_1, "TeamEmployees");
+  private static final FullQualifiedName ASSOCIATION_1_3 = new FullQualifiedName(NAMESPACE_1, "RoomEmployees");
+  private static final FullQualifiedName ASSOCIATION_1_4 = new FullQualifiedName(NAMESPACE_1, "BuildingRooms");
 
   private static final String ROLE_1_1 = "r_Employees";
   private static final String ROLE_1_2 = "r_Team";
@@ -316,7 +316,7 @@ public class ScenarioEdmProvider implements EdmProvider {
         return new FunctionImport().setName(name).setReturnType(new ReturnType().setQualifiedName(EDM_BINARY).setMultiplicity(EdmMultiplicity.ONE)).setHttpMethod("GET").setParameters(parameters);
 
       } else if (FUNCTION_IMPORT_7.equals(name)) {
-        return new FunctionImport().setName(name).setReturnType(new ReturnType().setQualifiedName(new FullQualifiedName("Employee", NAMESPACE_1)).setMultiplicity(EdmMultiplicity.ZERO_TO_ONE)).setEntitySet(ENTITY_SET_1_1).setHttpMethod("GET");
+        return new FunctionImport().setName(name).setReturnType(new ReturnType().setQualifiedName(new FullQualifiedName(NAMESPACE_1, "Employee")).setMultiplicity(EdmMultiplicity.ZERO_TO_ONE)).setEntitySet(ENTITY_SET_1_1).setHttpMethod("GET");
 
       } else {
         throw new ODataNotFoundException(ODataNotFoundException.ENTITY);
