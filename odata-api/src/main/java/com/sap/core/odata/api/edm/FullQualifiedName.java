@@ -2,20 +2,20 @@ package com.sap.core.odata.api.edm;
 
 public class FullQualifiedName {
 
-  private String name;
   private String namespace;
+  private String name;
 
-  public FullQualifiedName(String name, String namespace) {
-    this.name = name;
+  public FullQualifiedName(String namespace, String name) {
     this.namespace = namespace;
-  }
-
-  public String getName() {
-    return name;
+    this.name = name;
   }
 
   public String getNamespace() {
     return namespace;
+  }
+
+  public String getName() {
+    return name;
   }
 
   @Override
