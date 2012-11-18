@@ -1,13 +1,13 @@
 package com.sap.core.odata.api.edm.provider;
 
-import java.util.Map;
+import java.util.Collection;
 
 public class Key {
 
-  private Map<String, PropertyRef> keys;
+  private Collection<PropertyRef> keys;
   private Annotations annotations;
 
-  public Map<String, PropertyRef> getKeys() {
+  public Collection<PropertyRef> getKeys() {
     return keys;
   }
 
@@ -15,7 +15,7 @@ public class Key {
     return annotations;
   }
 
-  public Key setKeys(Map<String, PropertyRef> keys) {
+  public Key setKeys(Collection<PropertyRef> keys) {
     this.keys = keys;
     return this;
   }
@@ -24,6 +24,5 @@ public class Key {
     this.annotations = annotations;
     return this;
   }
-  
-  
+
 }

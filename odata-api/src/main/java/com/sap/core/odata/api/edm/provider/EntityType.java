@@ -1,6 +1,6 @@
 package com.sap.core.odata.api.edm.provider;
 
-import java.util.Map;
+import java.util.Collection;
 
 import com.sap.core.odata.api.edm.FullQualifiedName;
 
@@ -9,7 +9,7 @@ public class EntityType extends ComplexType {
   private boolean hasStream;
   private CustomizableFeedMappings customizableFeedMappings;
   private Key key;
-  private Map<String, NavigationProperty> navigationProperties;
+  private Collection<NavigationProperty> navigationProperties;
 
   public boolean isHasStream() {
     return hasStream;
@@ -23,7 +23,7 @@ public class EntityType extends ComplexType {
     return key;
   }
 
-  public Map<String, NavigationProperty> getNavigationProperties() {
+  public Collection<NavigationProperty> getNavigationProperties() {
     return navigationProperties;
   }
 
@@ -42,7 +42,7 @@ public class EntityType extends ComplexType {
     return this;
   }
 
-  public EntityType setNavigationProperties(Map<String, NavigationProperty> navigationProperties) {
+  public EntityType setNavigationProperties(Collection<NavigationProperty> navigationProperties) {
     this.navigationProperties = navigationProperties;
     return this;
   }
@@ -62,7 +62,7 @@ public class EntityType extends ComplexType {
     return this;
   }
 
-  public EntityType setProperties(Map<String, Property> properties) {
+  public EntityType setProperties(Collection<Property> properties) {
     super.setProperties(properties);
     return this;
   }

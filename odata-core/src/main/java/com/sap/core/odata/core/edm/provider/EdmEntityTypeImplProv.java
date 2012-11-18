@@ -2,7 +2,8 @@ package com.sap.core.odata.core.edm.provider;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -15,32 +16,71 @@ import com.sap.core.odata.api.edm.EdmTyped;
 import com.sap.core.odata.api.edm.provider.ComplexType;
 import com.sap.core.odata.api.edm.provider.EntityType;
 import com.sap.core.odata.api.edm.provider.NavigationProperty;
-import com.sap.core.odata.api.edm.provider.Property;
+import com.sap.core.odata.api.edm.provider.PropertyRef;
 
 public class EdmEntityTypeImplProv extends EdmStructuralTypeImplProv implements EdmEntityType {
 
   private EntityType entityType;
+  
+  //TODO rebuild to HashMap
   private List<EdmProperty> edmKeyProperties;
+  private List<String> edmKeyPropertyNames;
+  
+  private Map<String, NavigationProperty> navigationProperties;
+  private Collection<String> edmNavigationPropertyNames;
 
   public EdmEntityTypeImplProv(EdmImplProv edm, EntityType entityType, String namespace) throws EdmException {
     super(edm, (ComplexType) entityType, EdmTypeKind.ENTITY, namespace);
     this.entityType = entityType;
+    
+    buildNavigationPropertiesInternal();
+  }
+
+  private void buildNavigationPropertiesInternal() throws EdmException {
+    this.navigationProperties = new HashMap<String, NavigationProperty>();
+
+    Collection<NavigationProperty> navigationProperties = entityType.getNavigationProperties();
+    if (navigationProperties != null) {
+      NavigationProperty navigationProperty;
+      for (Iterator<NavigationProperty> iterator = navigationProperties.iterator(); iterator.hasNext();) {
+        navigationProperty = iterator.next();
+        this.navigationProperties.put(navigationProperty.getName(), navigationProperty);
+      }
+    }
   }
 
   @Override
   public Collection<String> getKeyPropertyNames() throws EdmException {
-    if (entityType.getKey() == null)
-      return Collections.<String> emptyList();
-    else
-      return entityType.getKey().getKeys().keySet();
+    if (edmKeyPropertyNames == null) {
+      if (edmBaseType != null) {
+        return ((EdmEntityType)edmBaseType).getKeyPropertyNames();
+      }
+      
+      edmKeyPropertyNames = new ArrayList<String>();
+
+      if (entityType.getKey() != null) {
+        for (Iterator<PropertyRef> iterator = entityType.getKey().getKeys().iterator(); iterator.hasNext();) {
+          edmKeyPropertyNames.add(iterator.next().getName());
+        }
+      } else {
+        //Entity Type does not define a key
+        throw new EdmException(EdmException.COMMON);
+      }
+    }    
+
+    return edmKeyPropertyNames;
   }
 
   @Override
   public List<EdmProperty> getKeyProperties() throws EdmException {
     if (edmKeyProperties == null) {
-      EdmProperty edmProperty;
-
+      if (edmBaseType != null) {
+        return ((EdmEntityType) edmBaseType).getKeyProperties();
+      }
+      
       edmKeyProperties = new ArrayList<EdmProperty>();
+
+      EdmProperty edmProperty;
       for (String keyPropertyName : getKeyPropertyNames()) {
         try {
           edmProperty = (EdmProperty) getProperty(keyPropertyName);
@@ -53,8 +93,6 @@ public class EdmEntityTypeImplProv extends EdmStructuralTypeImplProv implements 
           throw new EdmException(EdmException.COMMON);
         }
       }
-      if (edmBaseType != null)
-        edmKeyProperties.addAll(((EdmEntityType) edmBaseType).getKeyProperties());
     }
 
     return edmKeyProperties;
@@ -72,7 +110,14 @@ public class EdmEntityTypeImplProv extends EdmStructuralTypeImplProv implements 
 
   @Override
   public Collection<String> getNavigationPropertyNames() throws EdmException {
-    return entityType.getNavigationProperties().keySet();
+    if (edmNavigationPropertyNames == null) {
+      edmNavigationPropertyNames = new ArrayList<String>();
+      edmNavigationPropertyNames.addAll(navigationProperties.keySet());
+      if (edmBaseType != null) {
+        edmNavigationPropertyNames.addAll(((EdmEntityType)edmBaseType).getNavigationPropertyNames());
+      }
+    }
+    return edmNavigationPropertyNames;
   }
 
   @Override
@@ -82,15 +127,13 @@ public class EdmEntityTypeImplProv extends EdmStructuralTypeImplProv implements 
 
   @Override
   protected EdmTyped getPropertyInternal(String name) throws EdmException {
-    EdmTyped edmProperty = null;
+    EdmTyped edmProperty = super.getPropertyInternal(name);
+    
+    if (edmProperty != null) {
+      return edmProperty;
+    }
 
-    Map<String, Property> properties = entityType.getProperties();
-    Map<String, NavigationProperty> navigationProperties = entityType.getNavigationProperties();
-
-    if (properties != null && properties.containsKey(name)) {
-      edmProperty = createProperty(properties.get(name), name);
-      edmProperties.put(name, edmProperty);
-    } else if (navigationProperties != null && navigationProperties.containsKey(name)) {
+    if (navigationProperties.containsKey(name)) {
       edmProperty = createNavigationProperty(navigationProperties.get(name));
       edmProperties.put(name, edmProperty);
     } else if (edmBaseType != null) {

@@ -6,12 +6,10 @@ import com.sap.core.odata.api.edm.EdmException;
 
 public class EdmAssociationSetEndImplProv implements EdmAssociationSetEnd {
 
-  private EdmImplProv edm;
   private EdmEntitySet entitySet;
   private String role;
 
-  public EdmAssociationSetEndImplProv(EdmImplProv edm, EdmEntitySet entitySet, String role) throws EdmException {
-    this.edm = edm;
+  public EdmAssociationSetEndImplProv(EdmEntitySet entitySet, String role) throws EdmException {
     this.entitySet = entitySet;
     this.role = role;
   }

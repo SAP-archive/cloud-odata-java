@@ -1,6 +1,6 @@
 package com.sap.core.odata.api.edm.provider;
 
-import java.util.Map;
+import java.util.Collection;
 
 import com.sap.core.odata.api.edm.FullQualifiedName;
 
@@ -9,7 +9,7 @@ public class ComplexType {
   private String name;
   private FullQualifiedName baseType;
   private boolean isAbstract;
-  private Map<String, Property> properties;
+  private Collection<Property> properties;
   private Mapping mapping;
   private Documentation documentation;
   private Annotations annotations;
@@ -26,7 +26,7 @@ public class ComplexType {
     return isAbstract;
   }
 
-  public Map<String, Property> getProperties() {
+  public Collection<Property> getProperties() {
     return properties;
   }
 
@@ -57,7 +57,7 @@ public class ComplexType {
     return this;
   }
 
-  public ComplexType setProperties(Map<String, Property> properties) {
+  public ComplexType setProperties(Collection<Property> properties) {
     this.properties = properties;
     return this;
   }
@@ -76,6 +76,4 @@ public class ComplexType {
     this.annotations = annotations;
     return this;
   }
-  
-  
 }

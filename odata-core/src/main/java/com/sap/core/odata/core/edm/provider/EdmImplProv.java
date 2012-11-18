@@ -65,7 +65,7 @@ public class EdmImplProv extends EdmImpl implements EdmServiceMetadata {
             break;
           }
 
-          for (Property property : entityType.getProperties().values()) {
+          for (Property property : entityType.getProperties()) {
             if (property.getCustomizableFeedMappings().getFcKeepInContent()) {
               dataServiceVersion = Edm.DATA_SERVICE_VERSION20;
               break;
@@ -154,7 +154,7 @@ public class EdmImplProv extends EdmImpl implements EdmServiceMetadata {
           break;
         }
 
-        for (Property property : entityType.getProperties().values()) {
+        for (Property property : entityType.getProperties()) {
           if (property.getCustomizableFeedMappings().getFcKeepInContent()) {
             dataServiceVersion = Edm.DATA_SERVICE_VERSION20;
             break;

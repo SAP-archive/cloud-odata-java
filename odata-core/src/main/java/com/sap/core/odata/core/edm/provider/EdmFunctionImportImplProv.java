@@ -1,7 +1,8 @@
 package com.sap.core.odata.core.edm.provider;
 
 import java.util.Collection;
-import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
 import com.sap.core.odata.api.edm.EdmEntityContainer;
@@ -21,26 +22,57 @@ public class EdmFunctionImportImplProv extends EdmNamedImplProv implements EdmFu
 
   private FunctionImport functionImport;
   private EdmEntityContainer edmEntityContainer;
+  private Map<String, EdmParameter> edmParameters;
+  private Map<String, FunctionImportParameter> parameters;
 
   public EdmFunctionImportImplProv(EdmImplProv edm, FunctionImport functionImport, EdmEntityContainer edmEntityContainer) throws EdmException {
     super(edm, functionImport.getName());
     this.functionImport = functionImport;
     this.edmEntityContainer = edmEntityContainer;
+
+    buildFunctionImportParametersInternal();
+
+    edmParameters = new HashMap<String, EdmParameter>();
+  }
+
+  private void buildFunctionImportParametersInternal() {
+    this.parameters = new HashMap<String, FunctionImportParameter>();
+
+    Collection<FunctionImportParameter> parameters = functionImport.getParameters();
+    if (parameters != null) {
+      FunctionImportParameter functionImportParameter;
+      for (Iterator<FunctionImportParameter> iterator = parameters.iterator(); iterator.hasNext();) {
+        functionImportParameter = iterator.next();
+        this.parameters.put(functionImportParameter.getName(), functionImportParameter);
+      }
+    }
   }
 
   @Override
   public EdmParameter getParameter(String name) throws EdmException {
-    final FunctionImportParameter parameter = functionImport.getParameters().get(name);
-    return new EdmParameterImplProv(edm, parameter.getName(), parameter.getQualifiedName(), parameter.getFacets(), parameter.getMapping());
+    EdmParameter parameter = null;
+    if (edmParameters.containsKey(name)) {
+      parameter = edmParameters.get(name);
+    } else {
+      parameter = createParameter(name);
+    }
+    
+    return parameter;
+  }
+
+  private EdmParameter createParameter(String name) throws EdmException {
+    EdmParameter edmParameter = null;
+    if (parameters.containsKey(name)) {
+      FunctionImportParameter parameter = parameters.get(name);      
+      edmParameter = new EdmParameterImplProv(edm, parameter.getName(), parameter.getQualifiedName(), parameter.getFacets(), parameter.getMapping());
+      edmParameters.put(name, edmParameter);
+    }
+    return edmParameter;
   }
 
   @Override
   public Collection<String> getParameterNames() throws EdmException {
-    final Map<String, FunctionImportParameter> parameters = functionImport.getParameters();
-    if (parameters == null)
-      return Collections.emptySet();
-    else
-      return parameters.keySet();
+    return parameters.keySet();
   }
 
   @Override
@@ -63,5 +95,4 @@ public class EdmFunctionImportImplProv extends EdmNamedImplProv implements EdmFu
   public EdmEntityContainer getEntityContainer() throws EdmException {
     return edmEntityContainer;
   }
-
 }
