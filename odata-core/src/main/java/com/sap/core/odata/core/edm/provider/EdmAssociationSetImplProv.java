@@ -21,6 +21,7 @@ public class EdmAssociationSetImplProv extends EdmNamedImplProv implements EdmAs
 
   @Override
   public EdmAssociation getAssociation() throws EdmException {
+    //TODO
     return null;
   }
 
@@ -29,7 +30,7 @@ public class EdmAssociationSetImplProv extends EdmNamedImplProv implements EdmAs
     final AssociationSetEnd end =
         associationSet.getEnd1().getRole().equals(role) ?
             associationSet.getEnd1() : associationSet.getEnd2();
-    return new EdmAssociationSetEndImplProv(edm, edmEntityContainer.getEntitySet(end.getEntitySet()), end.getRole());
+    return new EdmAssociationSetEndImplProv(edmEntityContainer.getEntitySet(end.getEntitySet()), end.getRole());
   }
 
   @Override

@@ -1,6 +1,6 @@
 package com.sap.core.odata.api.edm.provider;
 
-import java.util.Map;
+import java.util.Collection;
 
 public class FunctionImport {
 
@@ -8,7 +8,7 @@ public class FunctionImport {
   private ReturnType returnType;
   private String entitySet;
   private String httpMethod;
-  private Map<String, FunctionImportParameter> parameters;
+  private Collection<FunctionImportParameter> parameters;
   private Documentation documentation;
   private Annotations annotations;
 
@@ -28,7 +28,7 @@ public class FunctionImport {
     return httpMethod;
   }
 
-  public Map<String, FunctionImportParameter> getParameters() {
+  public Collection<FunctionImportParameter> getParameters() {
     return parameters;
   }
 
@@ -60,7 +60,7 @@ public class FunctionImport {
     return this;
   }
 
-  public FunctionImport setParameters(Map<String, FunctionImportParameter> parameters) {
+  public FunctionImport setParameters(Collection<FunctionImportParameter> parameters) {
     this.parameters = parameters;
     return this;
   }
