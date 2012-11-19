@@ -7,7 +7,7 @@ import java.util.regex.Pattern;
 import com.sap.core.odata.api.edm.EdmSimpleTypeFacade;
 import com.sap.core.odata.api.uri.UriLiteral;
 import com.sap.core.odata.api.uri.UriParserException;
-import com.sap.core.odata.core.edm.simpletype.EdmSimpleTypeFacadeImpl;
+import com.sap.core.odata.core.edm.EdmSimpleTypeFacadeImpl;
 
 public class Tokenizer
 {

@@ -1,4 +1,4 @@
-package com.sap.core.odata.core.edm.simpletype;
+package com.sap.core.odata.core.edm;
 
 import com.sap.core.odata.api.edm.EdmException;
 import com.sap.core.odata.api.edm.EdmFacets;
@@ -8,22 +8,21 @@ import com.sap.core.odata.api.edm.EdmSimpleTypeFacade;
 import com.sap.core.odata.api.edm.EdmSimpleTypeKind;
 import com.sap.core.odata.api.edm.EdmTypeKind;
 
-public class EdmInt64 implements EdmSimpleType {
+public class EdmDouble implements EdmSimpleType {
 
-  private EdmSimpleTypeKind edmSimpleType = EdmSimpleTypeKind.Int64;
-  private static final EdmInt64 instance = new EdmInt64();
+  private EdmSimpleTypeKind edmSimpleType = EdmSimpleTypeKind.Double;
+  private static final EdmDouble instance = new EdmDouble();
 
-  private EdmInt64() {
+  private EdmDouble() {
 
   }
 
-  public static EdmInt64 getInstance() {
+  public static EdmDouble getInstance() {
     return instance;
   }
-
   @Override
   public boolean equals(Object obj) {
-    return this == obj || obj instanceof EdmInt64;
+    return this == obj || obj instanceof EdmDouble;
   }
 
   @Override
@@ -49,7 +48,9 @@ public class EdmInt64 implements EdmSimpleType {
         || simpleType instanceof EdmSByte
         || simpleType instanceof EdmInt16
         || simpleType instanceof EdmInt32
-        || simpleType instanceof EdmInt64;
+        || simpleType instanceof EdmInt64
+        || simpleType instanceof EdmSingle
+        || simpleType instanceof EdmDouble;
   }
 
   @Override
@@ -75,7 +76,7 @@ public class EdmInt64 implements EdmSimpleType {
 
   @Override
   public String toUriLiteral(String literal) {
-    return literal + "l";
+    return literal + "d";
   }
 
 }

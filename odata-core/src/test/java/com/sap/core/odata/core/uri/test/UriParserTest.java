@@ -27,9 +27,9 @@ import com.sap.core.odata.api.enums.InlineCount;
 import com.sap.core.odata.api.exception.MessageReference;
 import com.sap.core.odata.api.uri.UriParserException;
 import com.sap.core.odata.api.uri.UriParserResult;
-import com.sap.core.odata.core.enums.UriType;
 import com.sap.core.odata.core.uri.UriParserImpl;
 import com.sap.core.odata.core.uri.UriParserResultImpl;
+import com.sap.core.odata.core.uri.UriType;
 import com.sap.core.odata.testutils.mocks.MockFacade;
 
 public class UriParserTest {

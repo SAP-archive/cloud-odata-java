@@ -1,4 +1,4 @@
-package com.sap.core.odata.core.edm.simpletype;
+package com.sap.core.odata.core.edm;
 
 import com.sap.core.odata.api.edm.EdmException;
 import com.sap.core.odata.api.edm.EdmFacets;
@@ -8,24 +8,24 @@ import com.sap.core.odata.api.edm.EdmSimpleTypeFacade;
 import com.sap.core.odata.api.edm.EdmSimpleTypeKind;
 import com.sap.core.odata.api.edm.EdmTypeKind;
 
+public class EdmDecimal implements EdmSimpleType {
 
-public class EdmGuid implements EdmSimpleType {
+  private EdmSimpleTypeKind edmSimpleType = EdmSimpleTypeKind.Decimal;
+  private static final EdmDecimal instance = new EdmDecimal();
 
-  private EdmSimpleTypeKind edmSimpleType = EdmSimpleTypeKind.Guid;
-  private static final EdmGuid instance = new EdmGuid();
-
-  private EdmGuid() {
+  private EdmDecimal() {
 
   }
 
-  public static EdmGuid getInstance() {
+  public static EdmDecimal getInstance() {
     return instance;
   }
+  
   @Override
   public boolean equals(Object obj) {
-    return this == obj || obj instanceof EdmGuid;
+    return this == obj || obj instanceof EdmDecimal;
   }
-  
+
   @Override
   public String getNamespace() throws EdmException {
     return EdmSimpleTypeFacade.edmNamespace;
@@ -43,7 +43,16 @@ public class EdmGuid implements EdmSimpleType {
 
   @Override
   public boolean isCompatible(EdmSimpleType simpleType) {
-    return simpleType instanceof EdmGuid;
+    return simpleType instanceof Bit
+        || simpleType instanceof Uint7
+        || simpleType instanceof EdmByte
+        || simpleType instanceof EdmSByte
+        || simpleType instanceof EdmInt16
+        || simpleType instanceof EdmInt32
+        || simpleType instanceof EdmInt64
+        || simpleType instanceof EdmSingle
+        || simpleType instanceof EdmDouble
+        || simpleType instanceof EdmDecimal;
   }
 
   @Override
@@ -69,7 +78,7 @@ public class EdmGuid implements EdmSimpleType {
 
   @Override
   public String toUriLiteral(String literal) {
-    return "guid'" + literal + "'";
+    return literal + "m";
   }
 
 }

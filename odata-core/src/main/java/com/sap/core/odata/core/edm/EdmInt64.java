@@ -1,4 +1,4 @@
-package com.sap.core.odata.core.edm.simpletype;
+package com.sap.core.odata.core.edm;
 
 import com.sap.core.odata.api.edm.EdmException;
 import com.sap.core.odata.api.edm.EdmFacets;
@@ -8,22 +8,22 @@ import com.sap.core.odata.api.edm.EdmSimpleTypeFacade;
 import com.sap.core.odata.api.edm.EdmSimpleTypeKind;
 import com.sap.core.odata.api.edm.EdmTypeKind;
 
-public class EdmInt32 implements EdmSimpleType {
+public class EdmInt64 implements EdmSimpleType {
 
-  private EdmSimpleTypeKind edmSimpleType = EdmSimpleTypeKind.Int32;
-  private static final EdmInt32 instance = new EdmInt32();
+  private EdmSimpleTypeKind edmSimpleType = EdmSimpleTypeKind.Int64;
+  private static final EdmInt64 instance = new EdmInt64();
 
-  private EdmInt32() {
+  private EdmInt64() {
 
   }
 
-  public static EdmInt32 getInstance() {
+  public static EdmInt64 getInstance() {
     return instance;
   }
 
   @Override
   public boolean equals(Object obj) {
-    return this == obj || obj instanceof EdmInt32;
+    return this == obj || obj instanceof EdmInt64;
   }
 
   @Override
@@ -48,7 +48,8 @@ public class EdmInt32 implements EdmSimpleType {
         || simpleType instanceof EdmByte
         || simpleType instanceof EdmSByte
         || simpleType instanceof EdmInt16
-        || simpleType instanceof EdmInt32;
+        || simpleType instanceof EdmInt32
+        || simpleType instanceof EdmInt64;
   }
 
   @Override
@@ -62,7 +63,8 @@ public class EdmInt32 implements EdmSimpleType {
 
   @Override
   public Object valueOfString(String value, EdmLiteralKind literalKind, EdmFacets facets) {
-    return Integer.valueOf(value);
+    // TODO Auto-generated method stub
+    return null;
   }
 
   @Override
@@ -73,7 +75,7 @@ public class EdmInt32 implements EdmSimpleType {
 
   @Override
   public String toUriLiteral(String literal) {
-    return literal;
+    return literal + "l";
   }
 
 }

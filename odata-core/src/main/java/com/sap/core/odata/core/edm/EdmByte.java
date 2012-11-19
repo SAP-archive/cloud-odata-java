@@ -1,4 +1,4 @@
-package com.sap.core.odata.core.edm.simpletype;
+package com.sap.core.odata.core.edm;
 
 import com.sap.core.odata.api.edm.EdmException;
 import com.sap.core.odata.api.edm.EdmFacets;
@@ -8,24 +8,24 @@ import com.sap.core.odata.api.edm.EdmSimpleTypeFacade;
 import com.sap.core.odata.api.edm.EdmSimpleTypeKind;
 import com.sap.core.odata.api.edm.EdmTypeKind;
 
+public class EdmByte implements EdmSimpleType {
 
-public class EdmDateTimeOffset implements EdmSimpleType  {
+  private EdmSimpleTypeKind edmSimpleType = EdmSimpleTypeKind.Byte;
+  private static final EdmByte instance = new EdmByte();
 
-  private EdmSimpleTypeKind edmSimpleType = EdmSimpleTypeKind.DateTimeOffset;
-  private static final EdmDateTimeOffset instance = new EdmDateTimeOffset();
-
-  private EdmDateTimeOffset() {
+  private EdmByte() {
 
   }
 
-  public static EdmDateTimeOffset getInstance() {
+  public static EdmByte getInstance() {
     return instance;
   }
+
   @Override
   public boolean equals(Object obj) {
-    return this == obj || obj instanceof EdmDateTimeOffset;
+    return this == obj || obj instanceof EdmByte;
   }
-  
+
   @Override
   public String getNamespace() throws EdmException {
     return EdmSimpleTypeFacade.edmNamespace;
@@ -43,7 +43,7 @@ public class EdmDateTimeOffset implements EdmSimpleType  {
 
   @Override
   public boolean isCompatible(EdmSimpleType simpleType) {
-    return simpleType instanceof EdmDateTimeOffset;
+    return simpleType instanceof Bit || simpleType instanceof Uint7 || simpleType instanceof EdmByte;
   }
 
   @Override
@@ -69,8 +69,7 @@ public class EdmDateTimeOffset implements EdmSimpleType  {
 
   @Override
   public String toUriLiteral(String literal) {
-    literal = literal.replace(":", "%3A");
-    return "datetimeoffset'" + literal + "'";
+    return literal;
   }
 
 }

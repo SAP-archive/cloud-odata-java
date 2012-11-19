@@ -7,23 +7,23 @@ import org.junit.Test;
 
 import com.sap.core.odata.api.edm.EdmSimpleType;
 import com.sap.core.odata.api.edm.EdmSimpleTypeFacade;
-import com.sap.core.odata.core.edm.simpletype.Bit;
-import com.sap.core.odata.core.edm.simpletype.EdmBinary;
-import com.sap.core.odata.core.edm.simpletype.EdmBoolean;
-import com.sap.core.odata.core.edm.simpletype.EdmDateTime;
-import com.sap.core.odata.core.edm.simpletype.EdmDateTimeOffset;
-import com.sap.core.odata.core.edm.simpletype.EdmDecimal;
-import com.sap.core.odata.core.edm.simpletype.EdmDouble;
-import com.sap.core.odata.core.edm.simpletype.EdmGuid;
-import com.sap.core.odata.core.edm.simpletype.EdmInt16;
-import com.sap.core.odata.core.edm.simpletype.EdmInt32;
-import com.sap.core.odata.core.edm.simpletype.EdmInt64;
-import com.sap.core.odata.core.edm.simpletype.EdmNull;
-import com.sap.core.odata.core.edm.simpletype.EdmSByte;
-import com.sap.core.odata.core.edm.simpletype.EdmSingle;
-import com.sap.core.odata.core.edm.simpletype.EdmString;
-import com.sap.core.odata.core.edm.simpletype.EdmTime;
-import com.sap.core.odata.core.edm.simpletype.Uint7;
+import com.sap.core.odata.core.edm.Bit;
+import com.sap.core.odata.core.edm.EdmBinary;
+import com.sap.core.odata.core.edm.EdmBoolean;
+import com.sap.core.odata.core.edm.EdmDateTime;
+import com.sap.core.odata.core.edm.EdmDateTimeOffset;
+import com.sap.core.odata.core.edm.EdmDecimal;
+import com.sap.core.odata.core.edm.EdmDouble;
+import com.sap.core.odata.core.edm.EdmGuid;
+import com.sap.core.odata.core.edm.EdmInt16;
+import com.sap.core.odata.core.edm.EdmInt32;
+import com.sap.core.odata.core.edm.EdmInt64;
+import com.sap.core.odata.core.edm.EdmNull;
+import com.sap.core.odata.core.edm.EdmSByte;
+import com.sap.core.odata.core.edm.EdmSingle;
+import com.sap.core.odata.core.edm.EdmString;
+import com.sap.core.odata.core.edm.EdmTime;
+import com.sap.core.odata.core.edm.Uint7;
 
 public class EdmSimpleTypeTest {
 

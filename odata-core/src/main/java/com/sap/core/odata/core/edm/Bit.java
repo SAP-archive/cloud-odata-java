@@ -1,4 +1,4 @@
-package com.sap.core.odata.core.edm.simpletype;
+package com.sap.core.odata.core.edm;
 
 import com.sap.core.odata.api.edm.EdmException;
 import com.sap.core.odata.api.edm.EdmFacets;
@@ -7,26 +7,26 @@ import com.sap.core.odata.api.edm.EdmSimpleType;
 import com.sap.core.odata.api.edm.EdmSimpleTypeFacade;
 import com.sap.core.odata.api.edm.EdmTypeKind;
 
-public class EdmNull implements EdmSimpleType {
+public class Bit implements EdmSimpleType {
 
-  private static final EdmNull instance = new EdmNull();
+  private static final Bit instance = new Bit();
   
-  private EdmNull(){
+  private Bit(){
     
   }
   
-  public static EdmNull getInstance(){
+  public static Bit getInstance(){
     return instance;
   }
   
   @Override
   public boolean equals(Object obj) {
-    return this == obj || obj == null;
+    return this == obj || obj instanceof Bit;
   }
 
   @Override
   public String getNamespace() throws EdmException {
-    return EdmSimpleTypeFacade.edmNamespace;
+    return EdmSimpleTypeFacade.systemNamespace;
   }
 
   @Override
@@ -36,12 +36,12 @@ public class EdmNull implements EdmSimpleType {
 
   @Override
   public String getName() throws EdmException {
-    return "null";
+    return "Bit";
   }
 
   @Override
   public boolean isCompatible(EdmSimpleType simpleType) {
-    return simpleType instanceof EdmNull;
+    return simpleType instanceof Bit;
   }
 
   @Override
@@ -67,6 +67,6 @@ public class EdmNull implements EdmSimpleType {
 
   @Override
   public String toUriLiteral(String literal) {
-   return "null";
+    return literal;
   }
 }

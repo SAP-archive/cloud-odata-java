@@ -1,28 +1,27 @@
-package com.sap.core.odata.core.edm.simpletype;
+package com.sap.core.odata.core.edm;
 
 import com.sap.core.odata.api.edm.EdmException;
 import com.sap.core.odata.api.edm.EdmFacets;
 import com.sap.core.odata.api.edm.EdmLiteralKind;
 import com.sap.core.odata.api.edm.EdmSimpleType;
 import com.sap.core.odata.api.edm.EdmSimpleTypeFacade;
-import com.sap.core.odata.api.edm.EdmSimpleTypeKind;
 import com.sap.core.odata.api.edm.EdmTypeKind;
 
-public class EdmDouble implements EdmSimpleType {
+public class EdmNull implements EdmSimpleType {
 
-  private EdmSimpleTypeKind edmSimpleType = EdmSimpleTypeKind.Double;
-  private static final EdmDouble instance = new EdmDouble();
-
-  private EdmDouble() {
-
+  private static final EdmNull instance = new EdmNull();
+  
+  private EdmNull(){
+    
   }
-
-  public static EdmDouble getInstance() {
+  
+  public static EdmNull getInstance(){
     return instance;
   }
+  
   @Override
   public boolean equals(Object obj) {
-    return this == obj || obj instanceof EdmDouble;
+    return this == obj || obj == null;
   }
 
   @Override
@@ -37,20 +36,12 @@ public class EdmDouble implements EdmSimpleType {
 
   @Override
   public String getName() throws EdmException {
-    return this.edmSimpleType.toString();
+    return "null";
   }
 
   @Override
   public boolean isCompatible(EdmSimpleType simpleType) {
-    return simpleType instanceof Bit
-        || simpleType instanceof Uint7
-        || simpleType instanceof EdmByte
-        || simpleType instanceof EdmSByte
-        || simpleType instanceof EdmInt16
-        || simpleType instanceof EdmInt32
-        || simpleType instanceof EdmInt64
-        || simpleType instanceof EdmSingle
-        || simpleType instanceof EdmDouble;
+    return simpleType instanceof EdmNull;
   }
 
   @Override
@@ -76,7 +67,6 @@ public class EdmDouble implements EdmSimpleType {
 
   @Override
   public String toUriLiteral(String literal) {
-    return literal + "d";
+   return "null";
   }
-
 }

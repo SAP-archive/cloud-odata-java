@@ -19,7 +19,6 @@ import com.sap.core.odata.api.uri.NavigationSegment;
 import com.sap.core.odata.api.uri.SelectItem;
 import com.sap.core.odata.api.uri.UriLiteral;
 import com.sap.core.odata.api.uri.UriParserResult;
-import com.sap.core.odata.core.enums.UriType;
 
 public class UriParserResultImpl implements UriParserResult {
 
