@@ -11,7 +11,7 @@ import com.sap.core.odata.api.edm.EdmEntityType;
 import com.sap.core.odata.api.edm.EdmException;
 import com.sap.core.odata.api.edm.EdmServiceMetadata;
 import com.sap.core.odata.api.edm.FullQualifiedName;
-import com.sap.core.odata.api.exception.ODataMessageException;
+import com.sap.core.odata.api.exception.ODataException;
 
 public abstract class EdmImpl implements Edm {
 
@@ -39,7 +39,7 @@ public abstract class EdmImpl implements Edm {
     try {
       edmEntityContainer = createEntityContainer(name);
       edmEntityContainers.put(name, edmEntityContainer);
-    } catch (ODataMessageException e) {
+    } catch (ODataException e) {
       throw new EdmException(EdmException.COMMON, e);
     }
 
@@ -57,7 +57,7 @@ public abstract class EdmImpl implements Edm {
     try {
       edmEntityType = createEntityType(fqName);
       edmEntityTypes.put(fqName, edmEntityType);
-    } catch (ODataMessageException e) {
+    } catch (ODataException e) {
       throw new EdmException(EdmException.COMMON, e);
     }
 
@@ -75,7 +75,7 @@ public abstract class EdmImpl implements Edm {
     try {
       edmComplexType = createComplexType(fqName);
       edmComplexTypes.put(fqName, edmComplexType);
-    } catch (ODataMessageException e) {
+    } catch (ODataException e) {
       throw new EdmException(EdmException.COMMON, e);
     }
 
@@ -93,7 +93,7 @@ public abstract class EdmImpl implements Edm {
     try {
       edmAssociation = createAssociation(fqName);
       edmAssociations.put(fqName, edmAssociation);
-    } catch (ODataMessageException e) {
+    } catch (ODataException e) {
       throw new EdmException(EdmException.COMMON, e);
     }
 
@@ -110,11 +110,11 @@ public abstract class EdmImpl implements Edm {
     return getEntityContainer(null);
   }
 
-  protected abstract EdmEntityContainer createEntityContainer(String name) throws ODataMessageException;
+  protected abstract EdmEntityContainer createEntityContainer(String name) throws ODataException;
 
-  protected abstract EdmEntityType createEntityType(FullQualifiedName fqName) throws ODataMessageException;
+  protected abstract EdmEntityType createEntityType(FullQualifiedName fqName) throws ODataException;
 
-  protected abstract EdmComplexType createComplexType(FullQualifiedName fqName) throws ODataMessageException;
+  protected abstract EdmComplexType createComplexType(FullQualifiedName fqName) throws ODataException;
 
-  protected abstract EdmAssociation createAssociation(FullQualifiedName fqName) throws ODataMessageException;
+  protected abstract EdmAssociation createAssociation(FullQualifiedName fqName) throws ODataException;
 }
