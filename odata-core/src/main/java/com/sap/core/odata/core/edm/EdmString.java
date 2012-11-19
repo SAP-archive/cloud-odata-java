@@ -1,4 +1,4 @@
-package com.sap.core.odata.core.edm.simpletype;
+package com.sap.core.odata.core.edm;
 
 import com.sap.core.odata.api.edm.EdmException;
 import com.sap.core.odata.api.edm.EdmFacets;
@@ -8,22 +8,22 @@ import com.sap.core.odata.api.edm.EdmSimpleTypeFacade;
 import com.sap.core.odata.api.edm.EdmSimpleTypeKind;
 import com.sap.core.odata.api.edm.EdmTypeKind;
 
-public class EdmSingle implements EdmSimpleType {
+public class EdmString implements EdmSimpleType {
 
-  private EdmSimpleTypeKind edmSimpleType = EdmSimpleTypeKind.Single;
-  private static final EdmSingle instance = new EdmSingle();
+  private EdmSimpleTypeKind edmSimpleType = EdmSimpleTypeKind.String;
+  private static final EdmString instance = new EdmString();
 
-  private EdmSingle() {
+  private EdmString() {
 
   }
 
-  public static EdmSingle getInstance() {
+  public static EdmString getInstance() {
     return instance;
   }
 
   @Override
   public boolean equals(Object obj) {
-    return this == obj || obj instanceof EdmSingle;
+    return this == obj || obj instanceof EdmString;
   }
 
   @Override
@@ -43,14 +43,7 @@ public class EdmSingle implements EdmSimpleType {
 
   @Override
   public boolean isCompatible(EdmSimpleType simpleType) {
-    return simpleType instanceof Bit
-        || simpleType instanceof Uint7
-        || simpleType instanceof EdmByte
-        || simpleType instanceof EdmSByte
-        || simpleType instanceof EdmInt16
-        || simpleType instanceof EdmInt32
-        || simpleType instanceof EdmInt64
-        || simpleType instanceof EdmSingle;
+    return simpleType instanceof EdmString;
   }
 
   @Override
@@ -64,8 +57,10 @@ public class EdmSingle implements EdmSimpleType {
 
   @Override
   public Object valueOfString(String value, EdmLiteralKind literalKind, EdmFacets facets) {
-    // TODO Auto-generated method stub
-    return null;
+    if (literalKind == EdmLiteralKind.URI)
+      return toUriLiteral(value);
+    else
+      return value;
   }
 
   @Override
@@ -76,7 +71,9 @@ public class EdmSingle implements EdmSimpleType {
 
   @Override
   public String toUriLiteral(String literal) {
-    return literal + "f";
+    //TODO: Do we have to escape here?
+    literal = literal.replace("%27", "''");
+    return "'" + literal + "'";
   }
 
 }

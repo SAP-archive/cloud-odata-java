@@ -1,7 +1,4 @@
-package com.sap.core.odata.core.edm.simpletype;
-
-import org.apache.commons.codec.binary.Base64;
-import org.apache.commons.codec.binary.Hex;
+package com.sap.core.odata.core.edm;
 
 import com.sap.core.odata.api.edm.EdmException;
 import com.sap.core.odata.api.edm.EdmFacets;
@@ -11,21 +8,22 @@ import com.sap.core.odata.api.edm.EdmSimpleTypeFacade;
 import com.sap.core.odata.api.edm.EdmSimpleTypeKind;
 import com.sap.core.odata.api.edm.EdmTypeKind;
 
-public class EdmBinary implements EdmSimpleType {
+public class EdmBoolean implements EdmSimpleType {
 
-  private EdmSimpleTypeKind edmSimpleType = EdmSimpleTypeKind.Binary;
-  private static final EdmBinary instance = new EdmBinary();
-  
-  private EdmBinary() {
-   
+  private EdmSimpleTypeKind edmSimpleType = EdmSimpleTypeKind.Boolean;
+  private static final EdmBoolean instance = new EdmBoolean();
+
+  private EdmBoolean() {
+
   }
-  
-  public static EdmBinary getInstance(){
+
+  public static EdmBoolean getInstance() {
     return instance;
   }
+
   @Override
   public boolean equals(Object obj) {
-    return this == obj || obj instanceof EdmBinary;
+    return this == obj || obj instanceof EdmBoolean;
   }
 
   @Override
@@ -45,7 +43,7 @@ public class EdmBinary implements EdmSimpleType {
 
   @Override
   public boolean isCompatible(EdmSimpleType simpleType) {
-    return simpleType instanceof EdmBinary;
+    return simpleType instanceof Bit || simpleType instanceof EdmBoolean;
   }
 
   @Override
@@ -71,8 +69,6 @@ public class EdmBinary implements EdmSimpleType {
 
   @Override
   public String toUriLiteral(String literal) {
-    byte[] b = Base64.decodeBase64(literal);
-
-    return "binary'" + Hex.encodeHexString(b).toUpperCase() + "'";
+    return literal;
   }
 }

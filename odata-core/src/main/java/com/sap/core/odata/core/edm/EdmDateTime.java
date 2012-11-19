@@ -1,4 +1,4 @@
-package com.sap.core.odata.core.edm.simpletype;
+package com.sap.core.odata.core.edm;
 
 import com.sap.core.odata.api.edm.EdmException;
 import com.sap.core.odata.api.edm.EdmFacets;
@@ -8,21 +8,22 @@ import com.sap.core.odata.api.edm.EdmSimpleTypeFacade;
 import com.sap.core.odata.api.edm.EdmSimpleTypeKind;
 import com.sap.core.odata.api.edm.EdmTypeKind;
 
-public class EdmInt16 implements EdmSimpleType {
+public class EdmDateTime implements EdmSimpleType {
 
-  private EdmSimpleTypeKind edmSimpleType = EdmSimpleTypeKind.Int16;
-  private static final EdmInt16 instance = new EdmInt16();
+  private EdmSimpleTypeKind edmSimpleType = EdmSimpleTypeKind.DateTime;
+  private static final EdmDateTime instance = new EdmDateTime();
 
-  private EdmInt16() {
+  private EdmDateTime() {
 
   }
 
-  public static EdmInt16 getInstance() {
+  public static EdmDateTime getInstance() {
     return instance;
   }
+
   @Override
   public boolean equals(Object obj) {
-    return this == obj || obj instanceof EdmInt16;
+    return this == obj || obj instanceof EdmDateTime;
   }
 
   @Override
@@ -42,11 +43,7 @@ public class EdmInt16 implements EdmSimpleType {
 
   @Override
   public boolean isCompatible(EdmSimpleType simpleType) {
-    return simpleType instanceof Bit
-        || simpleType instanceof Uint7
-        || simpleType instanceof EdmByte
-        || simpleType instanceof EdmSByte
-        || simpleType instanceof EdmInt16;
+    return simpleType instanceof EdmDateTime;
   }
 
   @Override
@@ -72,7 +69,8 @@ public class EdmInt16 implements EdmSimpleType {
 
   @Override
   public String toUriLiteral(String literal) {
-   return literal;
+    literal = literal.replace(":", "%3A");
+    return "datetime'" + literal + "'";
   }
 
 }

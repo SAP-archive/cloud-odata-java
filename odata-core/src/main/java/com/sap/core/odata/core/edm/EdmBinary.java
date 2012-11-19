@@ -1,4 +1,7 @@
-package com.sap.core.odata.core.edm.simpletype;
+package com.sap.core.odata.core.edm;
+
+import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.codec.binary.Hex;
 
 import com.sap.core.odata.api.edm.EdmException;
 import com.sap.core.odata.api.edm.EdmFacets;
@@ -8,22 +11,21 @@ import com.sap.core.odata.api.edm.EdmSimpleTypeFacade;
 import com.sap.core.odata.api.edm.EdmSimpleTypeKind;
 import com.sap.core.odata.api.edm.EdmTypeKind;
 
-public class EdmString implements EdmSimpleType {
+public class EdmBinary implements EdmSimpleType {
 
-  private EdmSimpleTypeKind edmSimpleType = EdmSimpleTypeKind.String;
-  private static final EdmString instance = new EdmString();
-
-  private EdmString() {
-
+  private EdmSimpleTypeKind edmSimpleType = EdmSimpleTypeKind.Binary;
+  private static final EdmBinary instance = new EdmBinary();
+  
+  private EdmBinary() {
+   
   }
-
-  public static EdmString getInstance() {
+  
+  public static EdmBinary getInstance(){
     return instance;
   }
-
   @Override
   public boolean equals(Object obj) {
-    return this == obj || obj instanceof EdmString;
+    return this == obj || obj instanceof EdmBinary;
   }
 
   @Override
@@ -43,7 +45,7 @@ public class EdmString implements EdmSimpleType {
 
   @Override
   public boolean isCompatible(EdmSimpleType simpleType) {
-    return simpleType instanceof EdmString;
+    return simpleType instanceof EdmBinary;
   }
 
   @Override
@@ -57,10 +59,8 @@ public class EdmString implements EdmSimpleType {
 
   @Override
   public Object valueOfString(String value, EdmLiteralKind literalKind, EdmFacets facets) {
-    if (literalKind == EdmLiteralKind.URI)
-      return toUriLiteral(value);
-    else
-      return value;
+    // TODO Auto-generated method stub
+    return null;
   }
 
   @Override
@@ -71,9 +71,8 @@ public class EdmString implements EdmSimpleType {
 
   @Override
   public String toUriLiteral(String literal) {
-    //TODO: Do we have to escape here?
-    literal = literal.replace("%27", "''");
-    return "'" + literal + "'";
-  }
+    byte[] b = Base64.decodeBase64(literal);
 
+    return "binary'" + Hex.encodeHexString(b).toUpperCase() + "'";
+  }
 }

@@ -1,32 +1,34 @@
-package com.sap.core.odata.core.edm.simpletype;
+package com.sap.core.odata.core.edm;
 
 import com.sap.core.odata.api.edm.EdmException;
 import com.sap.core.odata.api.edm.EdmFacets;
 import com.sap.core.odata.api.edm.EdmLiteralKind;
 import com.sap.core.odata.api.edm.EdmSimpleType;
 import com.sap.core.odata.api.edm.EdmSimpleTypeFacade;
+import com.sap.core.odata.api.edm.EdmSimpleTypeKind;
 import com.sap.core.odata.api.edm.EdmTypeKind;
 
-public class Bit implements EdmSimpleType {
 
-  private static final Bit instance = new Bit();
-  
-  private Bit(){
-    
+public class EdmDateTimeOffset implements EdmSimpleType  {
+
+  private EdmSimpleTypeKind edmSimpleType = EdmSimpleTypeKind.DateTimeOffset;
+  private static final EdmDateTimeOffset instance = new EdmDateTimeOffset();
+
+  private EdmDateTimeOffset() {
+
   }
-  
-  public static Bit getInstance(){
+
+  public static EdmDateTimeOffset getInstance() {
     return instance;
   }
-  
   @Override
   public boolean equals(Object obj) {
-    return this == obj || obj instanceof Bit;
+    return this == obj || obj instanceof EdmDateTimeOffset;
   }
-
+  
   @Override
   public String getNamespace() throws EdmException {
-    return EdmSimpleTypeFacade.systemNamespace;
+    return EdmSimpleTypeFacade.edmNamespace;
   }
 
   @Override
@@ -36,12 +38,12 @@ public class Bit implements EdmSimpleType {
 
   @Override
   public String getName() throws EdmException {
-    return "Bit";
+    return this.edmSimpleType.toString();
   }
 
   @Override
   public boolean isCompatible(EdmSimpleType simpleType) {
-    return simpleType instanceof Bit;
+    return simpleType instanceof EdmDateTimeOffset;
   }
 
   @Override
@@ -67,6 +69,8 @@ public class Bit implements EdmSimpleType {
 
   @Override
   public String toUriLiteral(String literal) {
-    return literal;
+    literal = literal.replace(":", "%3A");
+    return "datetimeoffset'" + literal + "'";
   }
+
 }

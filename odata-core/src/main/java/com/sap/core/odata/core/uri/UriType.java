@@ -1,4 +1,4 @@
-package com.sap.core.odata.core.enums;
+package com.sap.core.odata.core.uri;
 
 import java.util.ArrayList;
 

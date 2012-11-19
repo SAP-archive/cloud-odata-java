@@ -1,4 +1,4 @@
-package com.sap.core.odata.core.edm.simpletype;
+package com.sap.core.odata.core.edm;
 
 import com.sap.core.odata.api.edm.EdmException;
 import com.sap.core.odata.api.edm.EdmFacets;
@@ -8,22 +8,23 @@ import com.sap.core.odata.api.edm.EdmSimpleTypeFacade;
 import com.sap.core.odata.api.edm.EdmSimpleTypeKind;
 import com.sap.core.odata.api.edm.EdmTypeKind;
 
-public class EdmByte implements EdmSimpleType {
 
-  private EdmSimpleTypeKind edmSimpleType = EdmSimpleTypeKind.Byte;
-  private static final EdmByte instance = new EdmByte();
+public class EdmTime implements EdmSimpleType {
 
-  private EdmByte() {
-
+  private EdmSimpleTypeKind edmSimpleType = EdmSimpleTypeKind.Time;
+  
+  private static final EdmTime instance = new EdmTime();
+  
+  private EdmTime(){
+    
   }
-
-  public static EdmByte getInstance() {
+  
+  public static EdmTime getInstance(){
     return instance;
   }
-
   @Override
   public boolean equals(Object obj) {
-    return this == obj || obj instanceof EdmByte;
+    return this == obj || obj instanceof EdmTime;
   }
 
   @Override
@@ -43,7 +44,7 @@ public class EdmByte implements EdmSimpleType {
 
   @Override
   public boolean isCompatible(EdmSimpleType simpleType) {
-    return simpleType instanceof Bit || simpleType instanceof Uint7 || simpleType instanceof EdmByte;
+    return simpleType instanceof EdmTime;
   }
 
   @Override
@@ -69,7 +70,7 @@ public class EdmByte implements EdmSimpleType {
 
   @Override
   public String toUriLiteral(String literal) {
-    return literal;
+    return "time'" + literal + "'";
   }
 
 }

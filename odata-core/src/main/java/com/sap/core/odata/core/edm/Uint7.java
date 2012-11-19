@@ -1,34 +1,31 @@
-package com.sap.core.odata.core.edm.simpletype;
+package com.sap.core.odata.core.edm;
 
 import com.sap.core.odata.api.edm.EdmException;
 import com.sap.core.odata.api.edm.EdmFacets;
 import com.sap.core.odata.api.edm.EdmLiteralKind;
 import com.sap.core.odata.api.edm.EdmSimpleType;
 import com.sap.core.odata.api.edm.EdmSimpleTypeFacade;
-import com.sap.core.odata.api.edm.EdmSimpleTypeKind;
 import com.sap.core.odata.api.edm.EdmTypeKind;
 
-public class EdmDecimal implements EdmSimpleType {
-
-  private EdmSimpleTypeKind edmSimpleType = EdmSimpleTypeKind.Decimal;
-  private static final EdmDecimal instance = new EdmDecimal();
-
-  private EdmDecimal() {
-
-  }
-
-  public static EdmDecimal getInstance() {
-    return instance;
+public class Uint7 implements EdmSimpleType {
+  
+  private static final Uint7 instance = new Uint7();
+  
+  private Uint7(){
+    
   }
   
+  public static Uint7 getInstance(){
+    return instance;
+  }
   @Override
   public boolean equals(Object obj) {
-    return this == obj || obj instanceof EdmDecimal;
+    return this == obj || obj instanceof Uint7;
   }
 
   @Override
   public String getNamespace() throws EdmException {
-    return EdmSimpleTypeFacade.edmNamespace;
+    return EdmSimpleTypeFacade.systemNamespace;
   }
 
   @Override
@@ -38,21 +35,12 @@ public class EdmDecimal implements EdmSimpleType {
 
   @Override
   public String getName() throws EdmException {
-    return this.edmSimpleType.toString();
+    return "UInt7";
   }
 
   @Override
   public boolean isCompatible(EdmSimpleType simpleType) {
-    return simpleType instanceof Bit
-        || simpleType instanceof Uint7
-        || simpleType instanceof EdmByte
-        || simpleType instanceof EdmSByte
-        || simpleType instanceof EdmInt16
-        || simpleType instanceof EdmInt32
-        || simpleType instanceof EdmInt64
-        || simpleType instanceof EdmSingle
-        || simpleType instanceof EdmDouble
-        || simpleType instanceof EdmDecimal;
+    return simpleType instanceof Bit || simpleType instanceof Uint7;
   }
 
   @Override
@@ -78,7 +66,6 @@ public class EdmDecimal implements EdmSimpleType {
 
   @Override
   public String toUriLiteral(String literal) {
-    return literal + "m";
+    return literal;
   }
-
 }

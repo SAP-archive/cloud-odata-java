@@ -37,9 +37,7 @@ import com.sap.core.odata.api.uri.UriLiteral;
 import com.sap.core.odata.api.uri.UriParser;
 import com.sap.core.odata.api.uri.UriParserException;
 import com.sap.core.odata.api.uri.UriParserResult;
-import com.sap.core.odata.core.edm.simpletype.EdmSimpleTypeFacadeImpl;
-import com.sap.core.odata.core.enums.SystemQueryOption;
-import com.sap.core.odata.core.enums.UriType;
+import com.sap.core.odata.core.edm.EdmSimpleTypeFacadeImpl;
 import com.sap.core.odata.core.exception.ODataRuntimeException;
 
 public class UriParserImpl implements UriParser {

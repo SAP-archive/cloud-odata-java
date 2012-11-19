@@ -1,4 +1,4 @@
-package com.sap.core.odata.core.edm.simpletype;
+package com.sap.core.odata.core.edm;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;

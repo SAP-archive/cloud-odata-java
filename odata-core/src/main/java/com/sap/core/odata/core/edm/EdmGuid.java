@@ -1,4 +1,4 @@
-package com.sap.core.odata.core.edm.simpletype;
+package com.sap.core.odata.core.edm;
 
 import com.sap.core.odata.api.edm.EdmException;
 import com.sap.core.odata.api.edm.EdmFacets;
@@ -8,24 +8,24 @@ import com.sap.core.odata.api.edm.EdmSimpleTypeFacade;
 import com.sap.core.odata.api.edm.EdmSimpleTypeKind;
 import com.sap.core.odata.api.edm.EdmTypeKind;
 
-public class EdmDateTime implements EdmSimpleType {
 
-  private EdmSimpleTypeKind edmSimpleType = EdmSimpleTypeKind.DateTime;
-  private static final EdmDateTime instance = new EdmDateTime();
+public class EdmGuid implements EdmSimpleType {
 
-  private EdmDateTime() {
+  private EdmSimpleTypeKind edmSimpleType = EdmSimpleTypeKind.Guid;
+  private static final EdmGuid instance = new EdmGuid();
+
+  private EdmGuid() {
 
   }
 
-  public static EdmDateTime getInstance() {
+  public static EdmGuid getInstance() {
     return instance;
   }
-
   @Override
   public boolean equals(Object obj) {
-    return this == obj || obj instanceof EdmDateTime;
+    return this == obj || obj instanceof EdmGuid;
   }
-
+  
   @Override
   public String getNamespace() throws EdmException {
     return EdmSimpleTypeFacade.edmNamespace;
@@ -43,7 +43,7 @@ public class EdmDateTime implements EdmSimpleType {
 
   @Override
   public boolean isCompatible(EdmSimpleType simpleType) {
-    return simpleType instanceof EdmDateTime;
+    return simpleType instanceof EdmGuid;
   }
 
   @Override
@@ -69,8 +69,7 @@ public class EdmDateTime implements EdmSimpleType {
 
   @Override
   public String toUriLiteral(String literal) {
-    literal = literal.replace(":", "%3A");
-    return "datetime'" + literal + "'";
+    return "guid'" + literal + "'";
   }
 
 }
