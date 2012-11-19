@@ -14,7 +14,7 @@ import com.sap.core.odata.api.edm.provider.EdmProvider;
 import com.sap.core.odata.api.edm.provider.EntityType;
 import com.sap.core.odata.api.edm.provider.Property;
 import com.sap.core.odata.api.edm.provider.Schema;
-import com.sap.core.odata.api.exception.ODataMessageException;
+import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.core.edm.EdmImpl;
 
 public class EdmImplProv extends EdmImpl implements EdmServiceMetadata {
@@ -29,29 +29,35 @@ public class EdmImplProv extends EdmImpl implements EdmServiceMetadata {
   }
 
   @Override
-  protected EdmEntityContainer createEntityContainer(String name) throws ODataMessageException {
+  protected EdmEntityContainer createEntityContainer(String name) throws ODataException {
     return new EdmEntityContainerImplProv(this, edmProvider.getEntityContainer(name));
   }
 
   @Override
-  protected EdmEntityType createEntityType(FullQualifiedName fqName) throws ODataMessageException {
+  protected EdmEntityType createEntityType(FullQualifiedName fqName) throws ODataException {
     return new EdmEntityTypeImplProv(this, edmProvider.getEntityType(fqName), fqName.getNamespace());
   }
 
   @Override
-  protected EdmComplexType createComplexType(FullQualifiedName fqName) throws ODataMessageException {
+  protected EdmComplexType createComplexType(FullQualifiedName fqName) throws ODataException {
     return new EdmComplexTypeImplProv(this, edmProvider.getComplexType(fqName), fqName.getNamespace());
   }
 
   @Override
-  protected EdmAssociation createAssociation(FullQualifiedName fqName) throws ODataMessageException {
+  protected EdmAssociation createAssociation(FullQualifiedName fqName) throws ODataException {
     return new EdmAssociationImplProv(this, edmProvider.getAssociation(fqName), fqName.getNamespace());
   }
 
   @Override
-  public String getMetadata() throws ODataMessageException {
+  public String getMetadata() throws EdmException {
     //Catch exception here to transform it into an edm exception?
-    Collection<Schema> schemas = edmProvider.getSchemas();
+    
+    Collection<Schema> schemas;
+    try {
+      schemas = edmProvider.getSchemas();
+    } catch (ODataException e) {
+      throw new EdmException(EdmException.COMMON, e);
+    }
 
     if (this.dataServiceVersion == 0) {
 
@@ -142,7 +148,7 @@ public class EdmImplProv extends EdmImpl implements EdmServiceMetadata {
     Collection<Schema> schemas;
     try {
       schemas = edmProvider.getSchemas();
-    } catch (ODataMessageException e) {
+    } catch (ODataException e) {
      throw new EdmException(EdmException.COMMON,e);
     }
     
