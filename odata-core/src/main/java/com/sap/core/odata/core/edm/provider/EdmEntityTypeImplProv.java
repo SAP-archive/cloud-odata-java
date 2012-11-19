@@ -21,18 +21,19 @@ import com.sap.core.odata.api.edm.provider.PropertyRef;
 public class EdmEntityTypeImplProv extends EdmStructuralTypeImplProv implements EdmEntityType {
 
   private EntityType entityType;
-  
+
   //TODO rebuild to HashMap
+  private Map<String, EdmProperty> keyProperties;
   private List<EdmProperty> edmKeyProperties;
   private List<String> edmKeyPropertyNames;
-  
+
   private Map<String, NavigationProperty> navigationProperties;
   private Collection<String> edmNavigationPropertyNames;
 
   public EdmEntityTypeImplProv(EdmImplProv edm, EntityType entityType, String namespace) throws EdmException {
     super(edm, (ComplexType) entityType, EdmTypeKind.ENTITY, namespace);
     this.entityType = entityType;
-    
+
     buildNavigationPropertiesInternal();
   }
 
@@ -53,9 +54,9 @@ public class EdmEntityTypeImplProv extends EdmStructuralTypeImplProv implements 
   public Collection<String> getKeyPropertyNames() throws EdmException {
     if (edmKeyPropertyNames == null) {
       if (edmBaseType != null) {
-        return ((EdmEntityType)edmBaseType).getKeyPropertyNames();
+        return ((EdmEntityType) edmBaseType).getKeyPropertyNames();
       }
-      
+
       edmKeyPropertyNames = new ArrayList<String>();
 
       if (entityType.getKey() != null) {
@@ -66,7 +67,7 @@ public class EdmEntityTypeImplProv extends EdmStructuralTypeImplProv implements 
         //Entity Type does not define a key
         throw new EdmException(EdmException.COMMON);
       }
-    }    
+    }
 
     return edmKeyPropertyNames;
   }
@@ -77,21 +78,26 @@ public class EdmEntityTypeImplProv extends EdmStructuralTypeImplProv implements 
       if (edmBaseType != null) {
         return ((EdmEntityType) edmBaseType).getKeyProperties();
       }
-      
-      edmKeyProperties = new ArrayList<EdmProperty>();
 
-      EdmProperty edmProperty;
-      for (String keyPropertyName : getKeyPropertyNames()) {
-        try {
-          edmProperty = (EdmProperty) getProperty(keyPropertyName);
-        } catch (ClassCastException e) {
-          throw new EdmException(EdmException.COMMON, e);
+      if (keyProperties == null) {
+        keyProperties = new HashMap<String, EdmProperty>();
+        EdmProperty edmProperty;
+        for (String keyPropertyName : getKeyPropertyNames()) {
+          try {
+            edmProperty = (EdmProperty) getProperty(keyPropertyName);
+          } catch (ClassCastException e) {
+            throw new EdmException(EdmException.COMMON, e);
+          }
+          if (edmProperty != null) {
+            keyProperties.put(keyPropertyName, edmProperty);
+          } else {
+            throw new EdmException(EdmException.COMMON);
+          }
+
         }
-        if (edmProperty != null) {
-          edmKeyProperties.add(edmProperty);
-        } else {
-          throw new EdmException(EdmException.COMMON);
-        }
+        edmKeyProperties = new ArrayList<EdmProperty>();
+        edmKeyProperties.addAll(keyProperties.values());
+
       }
     }
 
@@ -114,7 +120,7 @@ public class EdmEntityTypeImplProv extends EdmStructuralTypeImplProv implements 
       edmNavigationPropertyNames = new ArrayList<String>();
       edmNavigationPropertyNames.addAll(navigationProperties.keySet());
       if (edmBaseType != null) {
-        edmNavigationPropertyNames.addAll(((EdmEntityType)edmBaseType).getNavigationPropertyNames());
+        edmNavigationPropertyNames.addAll(((EdmEntityType) edmBaseType).getNavigationPropertyNames());
       }
     }
     return edmNavigationPropertyNames;
@@ -128,7 +134,7 @@ public class EdmEntityTypeImplProv extends EdmStructuralTypeImplProv implements 
   @Override
   protected EdmTyped getPropertyInternal(String name) throws EdmException {
     EdmTyped edmProperty = super.getPropertyInternal(name);
-    
+
     if (edmProperty != null) {
       return edmProperty;
     }

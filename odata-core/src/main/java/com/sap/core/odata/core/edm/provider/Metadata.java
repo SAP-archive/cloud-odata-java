@@ -29,5 +29,4 @@ public class Metadata {
   public String toString() {
     return "" + dataServiceVersion + schemas;
   }
-
 }
