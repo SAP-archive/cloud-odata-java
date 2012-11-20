@@ -22,7 +22,6 @@ public class EdmEntityTypeImplProv extends EdmStructuralTypeImplProv implements 
 
   private EntityType entityType;
 
-  //TODO rebuild to HashMap
   private Map<String, EdmProperty> keyProperties;
   private List<EdmProperty> edmKeyProperties;
   private List<String> edmKeyPropertyNames;

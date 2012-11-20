@@ -1,14 +1,11 @@
 package com.sap.core.odata.api.edm;
 
-import com.sap.core.odata.api.exception.ODataMessageException;
 
 public interface EdmServiceMetadata {
 
-  //TODO: CHeck Exception Handling
   //TODO: Check return value
-  String getMetadata() throws ODataMessageException;
+  String getMetadata() throws EdmException;
   
-  //TODO Exception Handling
   String getDataServiceVersion() throws EdmException;
 
   //TODO required for Atom Service Document

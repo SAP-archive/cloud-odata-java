@@ -17,7 +17,7 @@ public class EdmImplProv extends EdmImpl implements EdmServiceMetadata {
   double dataServiceVersion = 0;
 
   public EdmImplProv(EdmProvider edmProvider) {
-    super();
+    super(null);
     this.edmProvider = edmProvider;
     this.edmServiceMetadata = (EdmServiceMetadata) this;
   }
