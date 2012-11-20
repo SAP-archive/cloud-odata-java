@@ -112,7 +112,7 @@ public final class ODataLocatorImpl {
   public void initializeService(InitParameter param) throws ODataException {
     this.context = new ODataContextImpl();
 
-    this.splittPath(param);
+    this.splitPath(param);
 
     this.queryParameters = this.convertToSinglevaluedMap(param.getUriInfo().getQueryParameters());
 
@@ -129,7 +129,7 @@ public final class ODataLocatorImpl {
     this.dispatcher = new Dispatcher(this.service);
   }
 
-  private void splittPath(InitParameter param) throws ODataException {
+  private void splitPath(InitParameter param) throws ODataException {
     List<PathSegment> precedingPathSegements;
     List<PathSegment> odataPathSegements;
 
