@@ -2,8 +2,8 @@ package com.sap.core.odata.api.processor;
 
 import java.util.Set;
 
-import com.sap.core.odata.api.RuntimeDelegate;
 import com.sap.core.odata.api.enums.HttpStatusCodes;
+import com.sap.core.odata.api.rt.RuntimeDelegate;
 
 public abstract class ODataResponse {
 

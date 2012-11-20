@@ -1,11 +1,11 @@
-package com.sap.core.odata.core.rest;
+package com.sap.core.odata.core.rt;
 
-import com.sap.core.odata.api.RuntimeDelegate;
 import com.sap.core.odata.api.edm.Edm;
 import com.sap.core.odata.api.edm.EdmSimpleType;
 import com.sap.core.odata.api.edm.EdmSimpleTypeFacade;
 import com.sap.core.odata.api.edm.EdmSimpleTypeKind;
 import com.sap.core.odata.api.processor.ODataResponse.ODataResponseBuilder;
+import com.sap.core.odata.api.rt.RuntimeDelegate;
 import com.sap.core.odata.api.uri.UriParser;
 import com.sap.core.odata.core.edm.Bit;
 import com.sap.core.odata.core.edm.EdmBinary;

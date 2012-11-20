@@ -1,4 +1,4 @@
-package com.sap.core.odata.api;
+package com.sap.core.odata.api.rt;
 
 import com.sap.core.odata.api.edm.Edm;
 import com.sap.core.odata.api.edm.EdmSimpleType;
