@@ -70,6 +70,15 @@ public interface ListsDataSource {
   Object readRelatedData(EdmEntitySet sourceEntitySet, Object sourceData, EdmEntitySet targetEntitySet, Map<String, Object> targetKeys) throws ODataNotImplementedException, ODataNotFoundException, EdmException, ODataApplicationException;
 
   /**
+   * <p>Retrieves the binary data for the media resource associated to
+   * the specified media-link entry.</p>
+   * @param entitySet  the {@link EdmEntitySet} of the media-link entry
+   * @param mediaLinkEntryData  the data object of the media-link entry
+   * @return the binary data of the media resource
+   */
+  byte[] readBinaryData(EdmEntitySet entitySet, Object mediaLinkEntryData) throws ODataNotImplementedException, ODataNotFoundException, EdmException, ODataApplicationException;
+
+  /**
    * <p>Creates and returns a new instance of the requested data-object type.</p>
    * <p>This instance must not be part of the corresponding list and should
    * have empty content.</p>

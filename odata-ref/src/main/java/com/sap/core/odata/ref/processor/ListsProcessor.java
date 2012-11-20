@@ -18,6 +18,7 @@ import com.sap.core.odata.api.edm.EdmLiteralKind;
 import com.sap.core.odata.api.edm.EdmProperty;
 import com.sap.core.odata.api.edm.EdmSimpleType;
 import com.sap.core.odata.api.edm.EdmSimpleTypeFacade;
+import com.sap.core.odata.api.edm.EdmTypeKind;
 import com.sap.core.odata.api.enums.HttpStatusCodes;
 import com.sap.core.odata.api.enums.InlineCount;
 import com.sap.core.odata.api.exception.ODataException;
@@ -96,7 +97,7 @@ public class ListsProcessor extends ODataSingleProcessor {
 
     return ODataResponse
         .status(HttpStatusCodes.OK)
-        .entity(data.toString())
+        .entity(data)
         .build();
   }
 
@@ -150,7 +151,7 @@ public class ListsProcessor extends ODataSingleProcessor {
 
     return ODataResponse
         .status(HttpStatusCodes.OK)
-        .entity("Links to " + data.toString())
+        .entity("Links to " + data)
         .build();
   }
 
@@ -171,7 +172,7 @@ public class ListsProcessor extends ODataSingleProcessor {
     if (appliesFilter(data, uriParserResultView.getFilter()))
       return ODataResponse
           .status(HttpStatusCodes.OK)
-          .entity(data.toString())
+          .entity(data)
           .build();
     else
       throw new ODataNotFoundException(ODataNotFoundException.ENTITY);
@@ -206,7 +207,7 @@ public class ListsProcessor extends ODataSingleProcessor {
     if (data != null)
       return ODataResponse
           .status(HttpStatusCodes.OK)
-          .entity("Link to " + data.toString())
+          .entity("Link to " + data)
           .build();
     else
       throw new ODataNotFoundException(ODataNotFoundException.ENTITY);
@@ -218,7 +219,7 @@ public class ListsProcessor extends ODataSingleProcessor {
   }
 
   @Override
-  public ODataResponse readEntityComplexProperty(GetComplexPropertyView uriParserResultView) throws ODataException {
+  public ODataResponse readEntityComplexProperty(final GetComplexPropertyView uriParserResultView) throws ODataException {
     Object data = retrieveData(
         uriParserResultView.getStartEntitySet(),
         uriParserResultView.getKeyPredicates(),
@@ -226,24 +227,24 @@ public class ListsProcessor extends ODataSingleProcessor {
         mapFunctionParameters(uriParserResultView.getFunctionImportParameters()),
         uriParserResultView.getNavigationSegments());
 
-    //    if (!appliesFilter(data, uriParserResultView.getFilter()))
-    //      throw new ODataNotFoundException(ODataNotFoundException.ENTITY);
+    // if (!appliesFilter(data, uriParserResultView.getFilter()))
+    //   throw new ODataNotFoundException(ODataNotFoundException.ENTITY);
 
     for (EdmProperty property : uriParserResultView.getPropertyPath())
       data = getPropertyValue(data, property);
     return ODataResponse
         .status(HttpStatusCodes.OK)
-        .entity(data.toString())
+        .entity(data)
         .build();
   }
 
   @Override
-  public ODataResponse readEntitySimpleProperty(GetSimplePropertyView uriParserResultView) throws ODataException {
+  public ODataResponse readEntitySimpleProperty(final GetSimplePropertyView uriParserResultView) throws ODataException {
     return readEntityComplexProperty((GetComplexPropertyView) uriParserResultView);
   }
 
   @Override
-  public ODataResponse readEntitySimplePropertyValue(GetSimplePropertyView uriParserResultView) throws ODataException {
+  public ODataResponse readEntitySimplePropertyValue(final GetSimplePropertyView uriParserResultView) throws ODataException {
     Object data = retrieveData(
         uriParserResultView.getStartEntitySet(),
         uriParserResultView.getKeyPredicates(),
@@ -251,24 +252,43 @@ public class ListsProcessor extends ODataSingleProcessor {
         mapFunctionParameters(uriParserResultView.getFunctionImportParameters()),
         uriParserResultView.getNavigationSegments());
 
-    //    if (!appliesFilter(data, uriParserResultView.getFilter()))
-    //      throw new ODataNotFoundException(ODataNotFoundException.ENTITY);
+    // if (!appliesFilter(data, uriParserResultView.getFilter()))
+    //   throw new ODataNotFoundException(ODataNotFoundException.ENTITY);
 
     EdmProperty property = null;
     for (EdmProperty intermediateProperty : uriParserResultView.getPropertyPath())
       data = getPropertyValue(data, property = intermediateProperty);
+
     return ODataResponse
         .status(HttpStatusCodes.OK)
         .header(HttpHeaders.CONTENT_TYPE,
             (EdmSimpleType) property.getType() == EdmSimpleTypeFacade.binaryInstance() ?
                 property.getMimeType() : MediaType.TEXT_PLAIN)
-        .entity(data.toString())
+        .entity(data)
         .build();
   }
 
   @Override
-  public ODataResponse readEntityMedia(GetMediaResourceView uriParserResultView) throws ODataException {
-    throw new ODataNotImplementedException();
+  public ODataResponse readEntityMedia(final GetMediaResourceView uriParserResultView) throws ODataException {
+    final Object data = retrieveData(
+        uriParserResultView.getStartEntitySet(),
+        uriParserResultView.getKeyPredicates(),
+        uriParserResultView.getFunctionImport(),
+        mapFunctionParameters(uriParserResultView.getFunctionImportParameters()),
+        uriParserResultView.getNavigationSegments());
+
+    if (!appliesFilter(data, uriParserResultView.getFilter()))
+      throw new ODataNotFoundException(ODataNotFoundException.ENTITY);
+
+    String mimeType = null;
+    final byte[] binaryData = dataSource.readBinaryData(uriParserResultView.getTargetEntitySet(), data);
+
+    return ODataResponse
+        .status(HttpStatusCodes.OK)
+        .header(HttpHeaders.CONTENT_TYPE,
+            mimeType == null ? MediaType.APPLICATION_OCTET_STREAM : mimeType)
+        .entity(binaryData)
+        .build();
   }
 
   @Override
@@ -280,12 +300,12 @@ public class ListsProcessor extends ODataSingleProcessor {
 
     return ODataResponse
         .status(HttpStatusCodes.OK)
-        .entity(data.toString())
+        .entity(data)
         .build();
   }
 
   @Override
-  public ODataResponse executeFunctionImportValue(GetFunctionImportView uriParserResultView) throws ODataException {
+  public ODataResponse executeFunctionImportValue(final GetFunctionImportView uriParserResultView) throws ODataException {
     final EdmFunctionImport functionImport = uriParserResultView.getFunctionImport();
     final Object data = dataSource.readData(
         functionImport,
@@ -296,8 +316,8 @@ public class ListsProcessor extends ODataSingleProcessor {
         .status(HttpStatusCodes.OK)
         .header(HttpHeaders.CONTENT_TYPE,
             (EdmSimpleType) functionImport.getReturnType().getType() == EdmSimpleTypeFacade.binaryInstance() ?
-                null : MediaType.TEXT_PLAIN)
-        .entity(data.toString())
+                MediaType.APPLICATION_OCTET_STREAM : MediaType.TEXT_PLAIN)
+        .entity(data)
         .build();
   }
 
@@ -351,9 +371,9 @@ public class ListsProcessor extends ODataSingleProcessor {
     return data;
   }
 
-  private Integer applySystemQueryOptions(final EdmEntitySet targetEntitySet, List<?> data, final InlineCount inlineCount, final String filter, final String orderBy, final String skipToken, final int skip, final Integer top) throws ODataException {
+  private <T> Integer applySystemQueryOptions(final EdmEntitySet targetEntitySet, List<T> data, final InlineCount inlineCount, final String filter, final String orderBy, final String skipToken, final int skip, final Integer top) throws ODataException {
     if (filter != null)
-      for (Object element : data)
+      for (T element : data)
         if (!appliesFilter(element, filter))
           data.remove(element);
 
@@ -362,11 +382,11 @@ public class ListsProcessor extends ODataSingleProcessor {
     if (orderBy != null)
       throw new ODataNotImplementedException();
     else if (skipToken != null || skip != 0 || top != null)
-      Collections.sort(data, new Comparator<Object>() {
+      Collections.sort(data, new Comparator<T>() {
         @Override
-        public int compare(Object o1, Object o2) {
+        public int compare(T entity1, T entity2) {
           try {
-            return getSkipToken(o1, targetEntitySet).compareTo(getSkipToken(o2, targetEntitySet));
+            return getSkipToken(entity1, targetEntitySet).compareTo(getSkipToken(entity2, targetEntitySet));
           } catch (ODataException e) {
             return 0;
           }
@@ -387,7 +407,7 @@ public class ListsProcessor extends ODataSingleProcessor {
     return count;
   }
 
-  private boolean appliesFilter(final Object data, final String filter) throws ODataException {
+  private <T> boolean appliesFilter(final T data, final String filter) throws ODataException {
     if (data == null)
       return false;
     if (filter == null)
@@ -396,7 +416,7 @@ public class ListsProcessor extends ODataSingleProcessor {
     throw new ODataNotImplementedException();
   }
 
-  private String getSkipToken(final Object data, final EdmEntitySet entitySet) throws ODataException {
+  private <T> String getSkipToken(final T data, final EdmEntitySet entitySet) throws ODataException {
     String skipToken = "";
     for (EdmProperty property : entitySet.getEntityType().getKeyProperties()) {
       final EdmSimpleType type = (EdmSimpleType) property.getType();
@@ -405,9 +425,10 @@ public class ListsProcessor extends ODataSingleProcessor {
     return skipToken;
   }
 
-  private Object getPropertyValue(final Object data, final EdmProperty property) throws ODataException {
-    final String methodName = "get" + (property.getMapping() == null ?
-        property.getName() : property.getMapping().getValue());
+  private <T> Object getPropertyValue(final T data, final EdmProperty property) throws ODataException {
+    final String prefix = property.getType().getKind() == EdmTypeKind.SIMPLE && property.getType() == EdmSimpleTypeFacade.booleanInstance() ? "is" : "get";
+    final String methodName = property.getMapping() == null ?
+        prefix + property.getName() : property.getMapping().getValue();
     try {
       return data.getClass().getMethod(methodName).invoke(data);
     } catch (SecurityException e) {

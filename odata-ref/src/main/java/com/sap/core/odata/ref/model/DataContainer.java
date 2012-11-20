@@ -13,6 +13,7 @@ public class DataContainer {
   private static final String[] arrayForImageType = { "PNG", "BMP", "JPEG", "GIF" };
   private static final boolean SCRUMTEAM_TRUE = true;
   private static final boolean SCRUMTEAM_FALSE = false;
+  private static final String IMAGE_JPEG = "image/jpeg";
 
   private Set<Photo> photoSet;
   private Set<Building> buildingSet = new HashSet<Building>();
@@ -68,6 +69,7 @@ public class DataContainer {
     emp1.setLocation(new Location("Germany", "69124", "Heidelberg"));
     emp1.setImageUri("/SAP/PUBLIC/BC/NWDEMO_MODEL/IMAGES/male_1_WinterW.jpg");
     emp1.setImage("/male_1_WinterW.jpg");
+    emp1.setImageType(IMAGE_JPEG);
     employeeSet.add(emp1);
     managerSet.add((Manager)emp1);
 
@@ -77,6 +79,7 @@ public class DataContainer {
     emp2.setLocation(new Location("Germany", "69190", "Walldorf"));
     emp2.setImageUri("/SAP/PUBLIC/BC/NWDEMO_MODEL/IMAGES/male_2_FallF.jpg");
     emp2.setImage("/male_2_FallF.jpg");
+    emp2.setImageType(IMAGE_JPEG);
     employeeSet.add(emp2);
 
     Manager emp3 = new Manager("Jonathan Smith", 56, room2, team1);
@@ -84,6 +87,7 @@ public class DataContainer {
     emp3.setLocation(new Location("Germany", "69190", "Walldorf"));
     emp3.setImageUri("/SAP/PUBLIC/BC/NWDEMO_MODEL/IMAGES/male_3_SmithJo.jpg");
     emp3.setImage("/male_3_SmithJo.jpg");
+    emp3.setImageType(IMAGE_JPEG);
     employeeSet.add(emp3);
     managerSet.add((Manager)emp3);
     
@@ -93,6 +97,7 @@ public class DataContainer {
     emp4.setLocation(new Location("Germany", "69190", "Walldorf"));
     emp4.setImageUri("/SAP/PUBLIC/BC/NWDEMO_MODEL/IMAGES/male_4_BurkeP.jpg");
     emp4.setImage("/male_4_BurkeP.jpg");
+    emp4.setImageType(IMAGE_JPEG);
     employeeSet.add(emp4);
 
     Employee emp5 = new Employee("John Field", 42, room3, team2);
@@ -101,14 +106,16 @@ public class DataContainer {
     emp5.setLocation(new Location("Germany", "69190", "Walldorf"));
     emp5.setImageUri("/SAP/PUBLIC/BC/NWDEMO_MODEL/IMAGES/male_5_FieldJ.jpg");
     emp5.setImage("/male_5_FieldJ.jpg");
+    emp5.setImageType(IMAGE_JPEG);
     employeeSet.add(emp5);
 
     Employee emp6 = new Employee("Susan Bay", 29, room2, team3);
     emp6.setManager((Manager) emp1);
-    emp6.setImageUri("/SAP/PUBLIC/BC/NWDEMO_MODEL/IMAGES/female_6_BaySu.jpg");
-    emp6.setImage("/female_6_BaySu.jpg");
     emp6.setEntryDate(generateDate("2010-12-01"));
     emp6.setLocation(new Location("Germany", "69190", "Walldorf"));
+    emp6.setImageUri("/SAP/PUBLIC/BC/NWDEMO_MODEL/IMAGES/female_6_BaySu.jpg");
+    emp6.setImage("/female_6_BaySu.jpg");
+    emp6.setImageType(IMAGE_JPEG);
     employeeSet.add(emp6);
 
   }

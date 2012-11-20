@@ -1,7 +1,6 @@
 package com.sap.core.odata.ref.integration.test;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
@@ -29,8 +28,6 @@ public class XmlReadonlyTest extends AbstractTest {
 
   private static final String CITY_2_NAME = "Walldorf";
 
-  private static final MediaType IMAGE_JPEG = new MediaType("image", "jpeg");
-
   @Test
   public void functionImport() throws Exception {
     Response response = callUrl("EmployeeSearch('1')/ne_Room/Id/$value?q='alter'");
@@ -57,13 +54,11 @@ public class XmlReadonlyTest extends AbstractTest {
     assertTrue(response.getEntity().toString().contains(CITY_2_NAME));
 
     response = callUrl("ManagerPhoto?Id='1'");
-    assertFalse(response.getEntity().toString().isEmpty());
-
+ 
     response = callUrl("ManagerPhoto/$value?Id='1'");
     // checkMediaType(response, IMAGE_JPEG);
     assertNull(response.getEntityTag());
-    assertFalse(response.getEntity().toString().isEmpty());
-
+ 
     response = callUrl("OldestEmployee");
     // checkMediaType(response, MediaType.APPLICATION_ATOM_XML_TYPE);
     assertTrue(response.getEntity().toString().contains(EMPLOYEE_3_NAME));
@@ -85,7 +80,7 @@ public class XmlReadonlyTest extends AbstractTest {
   public void simpleProperty() throws Exception {
     Response response = callUrl("Employees('2')/Age/$value");
     checkMediaType(response, MediaType.TEXT_PLAIN_TYPE);
-    assertEquals(EMPLOYEE_2_AGE, response.getEntity());
+    assertEquals(EMPLOYEE_2_AGE, response.getEntity().toString());
 
     response = callUrl("Employees('2')/Age");
     // checkMediaType(response, MediaType.APPLICATION_XML_TYPE);
@@ -101,7 +96,7 @@ public class XmlReadonlyTest extends AbstractTest {
     response = callUrl("Rooms('2')/Seats/$value");
     checkMediaType(response, MediaType.TEXT_PLAIN_TYPE);
     // checkEtag(response, true, "W/\"2\"");
-    assertEquals("5", response.getEntity());
+    assertEquals("5", response.getEntity().toString());
 
     response = callUrl("Rooms('2')/Seats");
     // checkMediaType(response, MediaType.APPLICATION_XML_TYPE);

@@ -41,6 +41,8 @@ import com.sap.core.odata.ref.processor.ScenarioServiceFactory;
  */
 public abstract class AbstractTest {
 
+  protected static final MediaType IMAGE_JPEG = new MediaType("image", "jpeg");
+
   private static final ScenarioServiceFactory SERVICE_FACTORY = new ScenarioServiceFactory();
 
   protected Response call(final String urlString, final Map<String, String> httpHeaders, final Request request, final HttpStatusCodes expectedStatus) throws ODataException {
@@ -57,11 +59,11 @@ public abstract class AbstractTest {
     try {
       final Response response = oDataLocator.handleGet();
       assertEquals(expectedStatus.getStatusCode(), response.getStatus());
-      if (expectedStatus.equals(HttpStatusCodes.OK)) {
+      if (expectedStatus == HttpStatusCodes.OK) {
         assertTrue(response.hasEntity());
         assertNotNull(response.getEntity());
         assertFalse(response.getEntity().toString().isEmpty());
-      } else if (expectedStatus.equals(HttpStatusCodes.NO_CONTENT)) {
+      } else if (expectedStatus == HttpStatusCodes.NO_CONTENT) {
         assertTrue(response.hasEntity() == false
             || response.getEntity() == null
             || response.getEntity().toString().isEmpty());

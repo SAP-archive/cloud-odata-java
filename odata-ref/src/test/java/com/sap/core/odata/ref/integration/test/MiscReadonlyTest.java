@@ -2,6 +2,7 @@ package com.sap.core.odata.ref.integration.test;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 
 import javax.ws.rs.core.Response;
 
@@ -56,5 +57,25 @@ public class MiscReadonlyTest extends AbstractTest {
 
     // badRequest("Rooms('1')/Seats/$count");
     notFound("Managers('3')/nm_Employees('1')/$count");
+  }
+
+  @Test
+  public void mediaResource() throws Exception {
+    Response response = callUrl("Employees('3')/$value");
+    // checkMediaType(response, IMAGE_JPEG);
+    assertNull(response.getEntityTag());
+
+    response = callUrl("Managers('1')/$value");
+    // checkMediaType(response, IMAGE_JPEG);
+    assertNull(response.getEntityTag());
+    final byte[] expected = (byte[]) response.getEntity();
+
+    response = callUrl("Employees('2')/ne_Manager/$value");
+    // checkMediaType(response, IMAGE_JPEG);
+    assertNull(response.getEntityTag());
+    assertEquals(expected.length, ((byte[]) response.getEntity()).length);
+
+    notFound("Employees('99')/$value");
+    // badRequest("Teams('3')/$value");
   }
 }
