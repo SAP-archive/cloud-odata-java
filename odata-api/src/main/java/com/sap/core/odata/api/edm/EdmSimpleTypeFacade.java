@@ -1,6 +1,6 @@
 package com.sap.core.odata.api.edm;
 
-import com.sap.core.odata.api.RuntimeDelegate;
+import com.sap.core.odata.api.rt.RuntimeDelegate;
 import com.sap.core.odata.api.uri.UriLiteral;
 import com.sap.core.odata.api.uri.UriParserException;
 
