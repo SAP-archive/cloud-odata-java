@@ -1,4 +1,4 @@
-package com.sap.core.odata.core.edm.provider.test;
+package com.sap.core.odata.core.edm.test;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -29,6 +29,10 @@ import com.sap.core.odata.api.edm.provider.NavigationProperty;
 import com.sap.core.odata.core.edm.provider.EdmEntityContainerImplProv;
 import com.sap.core.odata.core.edm.provider.EdmImplProv;
 
+/**
+ * @author SAP AG
+ *
+ */
 public class EdmEntitySetProvTest {
 
   private static EdmEntityContainerImplProv edmEntityContainer;
@@ -126,6 +130,8 @@ public class EdmEntitySetProvTest {
     
     assertEquals(entitySetEnd.getName(), relatedEntitySet.getName());
   }
+  
+  
   
   @Test
   public void testEntitySetContainer() throws Exception {
