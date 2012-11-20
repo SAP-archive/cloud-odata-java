@@ -3,7 +3,6 @@ package com.sap.core.odata.core.uri.expression;
 
 import java.util.Vector;
 
-
 import com.sap.core.odata.api.edm.EdmType;
 
 public class Token {

@@ -22,8 +22,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.sap.core.odata.api.edm.provider.EdmProvider;
 import com.sap.core.odata.api.enums.HttpStatusCodes;
@@ -34,6 +32,8 @@ import com.sap.core.odata.api.processor.ODataResponse;
 import com.sap.core.odata.api.processor.ODataSingleProcessor;
 import com.sap.core.odata.api.processor.aspect.Metadata;
 import com.sap.core.odata.api.processor.aspect.ServiceDocument;
+import com.sap.core.odata.api.service.ODataService;
+import com.sap.core.odata.api.service.ODataSingleProcessorService;
 import com.sap.core.odata.api.uri.resultviews.GetMetadataView;
 import com.sap.core.odata.api.uri.resultviews.GetServiceDocumentView;
 import com.sap.core.odata.testutils.fit.ServiceFactory;
@@ -45,21 +45,22 @@ public class ServiceResolutionTest {
     DOMConfigurator.configureAndWatch("log4j.xml");
   }
 
-  private final static Logger log = LoggerFactory.getLogger(ServiceResolutionTest.class);
-
   private HttpClient httpClient = new DefaultHttpClient();
   private TestServer server = new TestServer();
   private ODataProcessor processor;
   private EdmProvider edmProvider;
   private ODataContext context;
+  private ODataService service;
 
   @Before
   public void before() throws Exception {
     this.processor = this.createProcessorMock();
     this.edmProvider = this.createEdmProviderMock();
 
-    ServiceFactory.setProcessor(this.processor);
-    ServiceFactory.setProvider(this.edmProvider);
+    this.service = new ODataSingleProcessorService(this.edmProvider, (ODataSingleProcessor) this.processor) {};
+    ServiceFactory.setService(this.service);
+    
+    ServiceFactory.setService(this.service);
   }
 
   @After
@@ -69,8 +70,7 @@ public class ServiceResolutionTest {
         this.server.stopServer();
       }
     } finally {
-      ServiceFactory.setProcessor(null);
-      ServiceFactory.setProvider(null);
+      ServiceFactory.setService(null);
     }
   }
 

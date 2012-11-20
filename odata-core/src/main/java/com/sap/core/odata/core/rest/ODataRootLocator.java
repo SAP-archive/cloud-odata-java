@@ -71,7 +71,7 @@ public class ODataRootLocator {
     param.setRequest(request);
     param.setPathSplit(pathSplit);
     
-    odataLocator.initializeService(param);
+    odataLocator.initialize(param);
 
     return odataLocator;
   }

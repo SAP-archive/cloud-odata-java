@@ -3,6 +3,7 @@ package com.sap.core.odata.api.service;
 import com.sap.core.odata.api.edm.Edm;
 import com.sap.core.odata.api.enums.ODataVersion;
 import com.sap.core.odata.api.exception.ODataException;
+import com.sap.core.odata.api.processor.ODataProcessor;
 import com.sap.core.odata.api.processor.aspect.Batch;
 import com.sap.core.odata.api.processor.aspect.Entity;
 import com.sap.core.odata.api.processor.aspect.EntityComplexProperty;
@@ -49,4 +50,6 @@ public interface ODataService {
 
   Batch getBatchProcessor() throws ODataException;
 
+  ODataProcessor getProcessor() throws ODataException;
+  
 }

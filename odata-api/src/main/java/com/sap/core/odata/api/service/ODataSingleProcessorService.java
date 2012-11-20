@@ -1,6 +1,7 @@
-package com.sap.core.odata.core.service;
+package com.sap.core.odata.api.service;
 
 import com.sap.core.odata.api.edm.Edm;
+import com.sap.core.odata.api.edm.provider.EdmProvider;
 import com.sap.core.odata.api.enums.ODataVersion;
 import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.api.processor.ODataProcessor;
@@ -18,19 +19,16 @@ import com.sap.core.odata.api.processor.aspect.FunctionImport;
 import com.sap.core.odata.api.processor.aspect.FunctionImportValue;
 import com.sap.core.odata.api.processor.aspect.Metadata;
 import com.sap.core.odata.api.processor.aspect.ServiceDocument;
-import com.sap.core.odata.api.service.ODataService;
+import com.sap.core.odata.api.rt.RuntimeDelegate;
 
-public class ODataSingleProcessorService implements ODataService {
+public abstract class ODataSingleProcessorService implements ODataService {
 
-  private ODataProcessor processor;
+  private ODataSingleProcessor processor;
   private Edm edm;
   
-  public ODataSingleProcessorService(ODataProcessor processor, Edm edm) {
-    if (!(processor instanceof ODataSingleProcessor)) {
-      throw new ClassCastException("processor must derive from ODataSingleProcessor");
-    }
+  public ODataSingleProcessorService(EdmProvider provider, ODataSingleProcessor processor) {
     this.processor = processor;
-    this.edm = edm;
+    this.edm = RuntimeDelegate.getInstance().createEdm(provider);
   }
 
   @Override
@@ -106,5 +104,10 @@ public class ODataSingleProcessorService implements ODataService {
   @Override
   public Batch getBatchProcessor() throws ODataException {
     return (Batch) this.processor;
+  }
+
+  @Override
+  public ODataProcessor getProcessor() throws ODataException {
+    return (ODataProcessor) this.processor;
   }
 }

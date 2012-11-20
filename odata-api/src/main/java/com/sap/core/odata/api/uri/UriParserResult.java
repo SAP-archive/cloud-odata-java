@@ -12,22 +12,22 @@ import com.sap.core.odata.api.edm.EdmType;
 import com.sap.core.odata.api.enums.Format;
 import com.sap.core.odata.api.enums.InlineCount;
 import com.sap.core.odata.api.uri.resultviews.DeleteResultView;
+import com.sap.core.odata.api.uri.resultviews.GetComplexPropertyView;
+import com.sap.core.odata.api.uri.resultviews.GetEntityCountView;
+import com.sap.core.odata.api.uri.resultviews.GetEntityLinkCountView;
+import com.sap.core.odata.api.uri.resultviews.GetEntityLinkView;
+import com.sap.core.odata.api.uri.resultviews.GetEntitySetCountView;
+import com.sap.core.odata.api.uri.resultviews.GetEntitySetLinksCountView;
+import com.sap.core.odata.api.uri.resultviews.GetEntitySetLinksView;
+import com.sap.core.odata.api.uri.resultviews.GetEntitySetView;
+import com.sap.core.odata.api.uri.resultviews.GetEntityView;
+import com.sap.core.odata.api.uri.resultviews.GetFunctionImportView;
+import com.sap.core.odata.api.uri.resultviews.GetMediaResourceView;
+import com.sap.core.odata.api.uri.resultviews.GetMetadataView;
+import com.sap.core.odata.api.uri.resultviews.GetServiceDocumentView;
+import com.sap.core.odata.api.uri.resultviews.GetSimplePropertyView;
 import com.sap.core.odata.api.uri.resultviews.PostResultView;
 import com.sap.core.odata.api.uri.resultviews.PutMergePatchResultView;
-import com.sap.core.odata.api.uri.resultviews.GetServiceDocumentView;
-import com.sap.core.odata.api.uri.resultviews.GetFunctionImportView;
-import com.sap.core.odata.api.uri.resultviews.GetEntitySetCountView;
-import com.sap.core.odata.api.uri.resultviews.GetEntitySetView;
-import com.sap.core.odata.api.uri.resultviews.GetEntityCountView;
-import com.sap.core.odata.api.uri.resultviews.GetMediaResourceView;
-import com.sap.core.odata.api.uri.resultviews.GetEntityView;
-import com.sap.core.odata.api.uri.resultviews.GetComplexPropertyView;
-import com.sap.core.odata.api.uri.resultviews.GetSimplePropertyView;
-import com.sap.core.odata.api.uri.resultviews.GetEntityLinkCountView;
-import com.sap.core.odata.api.uri.resultviews.GetEntitySetLinksCountView;
-import com.sap.core.odata.api.uri.resultviews.GetEntityLinkView;
-import com.sap.core.odata.api.uri.resultviews.GetEntitySetLinksView;
-import com.sap.core.odata.api.uri.resultviews.GetMetadataView;
 
 /**
  * @author SAP AG

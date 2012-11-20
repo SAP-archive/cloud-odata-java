@@ -21,19 +21,14 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.UriInfo;
 
-import com.sap.core.odata.api.edm.Edm;
-import com.sap.core.odata.api.edm.provider.EdmProvider;
 import com.sap.core.odata.api.exception.ODataBadRequestException;
 import com.sap.core.odata.api.exception.ODataException;
-import com.sap.core.odata.api.processor.ODataProcessor;
 import com.sap.core.odata.api.processor.ODataResponse;
 import com.sap.core.odata.api.service.ODataService;
 import com.sap.core.odata.api.service.ODataServiceFactory;
 import com.sap.core.odata.core.dispatcher.Dispatcher;
-import com.sap.core.odata.core.edm.provider.EdmImplProv;
 import com.sap.core.odata.core.enums.ODataHttpMethod;
 import com.sap.core.odata.core.processor.ODataContextImpl;
-import com.sap.core.odata.core.service.ODataSingleProcessorService;
 import com.sap.core.odata.core.uri.UriParserImpl;
 import com.sap.core.odata.core.uri.UriParserResultImpl;
 
@@ -45,7 +40,7 @@ public final class ODataLocatorImpl {
 
   private UriParserImpl uriParser;
 
-  private ODataContextImpl context;
+  private ODataContextImpl context = new ODataContextImpl();
 
   private Map<String, String> queryParameters;
 
@@ -109,22 +104,15 @@ public final class ODataLocatorImpl {
     this.context = context;
   }
 
-  public void initializeService(InitParameter param) throws ODataException {
-    this.context = new ODataContextImpl();
-
+  public void initialize(InitParameter param) throws ODataException {
     this.splitPath(param);
 
     this.queryParameters = this.convertToSinglevaluedMap(param.getUriInfo().getQueryParameters());
 
-    EdmProvider provider = param.getServiceFactory().createProvider();
-    Edm edm = new EdmImplProv(provider);
-
-    ODataProcessor processor = param.getServiceFactory().createProcessor();
-    this.service = new ODataSingleProcessorService(processor, edm);
+    this.service = param.getServiceFactory().createService();
     this.context.setService(this.service);
+    this.service.getProcessor().setContext(this.context);
 
-    processor.setContext(this.context);
-    
     this.uriParser = new UriParserImpl(service.getEntityDataModel());
     this.dispatcher = new Dispatcher(this.service);
   }
@@ -140,7 +128,7 @@ public final class ODataLocatorImpl {
       if (param.getPathSegments().size() < param.getPathSplit()) {
         throw new ODataBadRequestException(ODataBadRequestException.URLTOSHORT);
       }
-      
+
       precedingPathSegements = param.getPathSegments().subList(0, param.getPathSplit());
       int pathSegmentCount = param.getPathSegments().size();
       odataPathSegements = param.getPathSegments().subList(param.getPathSplit(), pathSegmentCount);

@@ -4,6 +4,7 @@ import com.sap.core.odata.api.edm.Edm;
 import com.sap.core.odata.api.edm.EdmSimpleType;
 import com.sap.core.odata.api.edm.EdmSimpleTypeFacade;
 import com.sap.core.odata.api.edm.EdmSimpleTypeKind;
+import com.sap.core.odata.api.edm.provider.EdmProvider;
 import com.sap.core.odata.api.processor.ODataResponse.ODataResponseBuilder;
 import com.sap.core.odata.api.rt.RuntimeDelegate;
 import com.sap.core.odata.api.uri.UriParser;
@@ -26,6 +27,7 @@ import com.sap.core.odata.core.edm.EdmSingle;
 import com.sap.core.odata.core.edm.EdmString;
 import com.sap.core.odata.core.edm.EdmTime;
 import com.sap.core.odata.core.edm.Uint7;
+import com.sap.core.odata.core.edm.provider.EdmImplProv;
 import com.sap.core.odata.core.exception.ODataRuntimeException;
 import com.sap.core.odata.core.processor.ODataResponseBuilderImpl;
 import com.sap.core.odata.core.uri.UriParserImpl;
@@ -118,6 +120,11 @@ public class RuntimeDelegateImpl extends RuntimeDelegate {
   @Override
   public EdmSimpleTypeFacade getSimpleTypeFacade() {
     return new EdmSimpleTypeFacadeImpl();
+  }
+
+  @Override
+  public Edm createEdm(EdmProvider provider) {
+    return new EdmImplProv(provider);
   }
 
 }
