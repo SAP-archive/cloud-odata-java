@@ -9,8 +9,8 @@ import com.sap.core.odata.api.processor.ODataResponse.ODataResponseBuilder;
 import com.sap.core.odata.api.uri.UriParser;
 
 /**
- * @author SAP AG
  * Abstract class to get odata core implementations of api interfaces
+ * @author SAP AG
  */
 public abstract class RuntimeDelegate {
 
@@ -41,9 +41,8 @@ public abstract class RuntimeDelegate {
    */
   public abstract ODataResponseBuilder createODataResponseBuilder();
 
-
   /**
-   * Get an EdmSimpleType implementation for a given {@link EdmSimpleTypeKind}
+   * Gets an {@link EdmSimpleType} implementation for a given {@link EdmSimpleTypeKind}
    * @param edmSimpleTypeKind
    * @return {@link EdmSimpleType}
    */
@@ -56,19 +55,18 @@ public abstract class RuntimeDelegate {
   public abstract UriParser getUriParser(Edm edm);
 
   /**
-   * 
-   * @param edmSimpleType
-   * @return
+   * Gets an {@link EdmSimpleType} implementation for a given simple-type name.
+   * @param edmSimpleType  name of the simple type
+   * @return {@link EdmSimpleType}
    */
   public abstract EdmSimpleType getInternalEdmSimpleTypeByString(String edmSimpleType);
-  
+
   /**
-   * 
-   * @return
+   * Gets an implementation of the EDM simple-type facade.
+   * @return {@link EdmSimpleTypeFacade}
    */
   public abstract EdmSimpleTypeFacade getSimpleTypeFacade();
-  
-  
+
   /**
    * Creates an entity data model.
    * @param provider A {@link EdmProvider} instance

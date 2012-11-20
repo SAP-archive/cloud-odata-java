@@ -4,7 +4,7 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.ListIterator;
 
-public interface PathSegements {
+public interface PathSegments {
 
   public boolean contains(Object o);
 
@@ -15,6 +15,7 @@ public interface PathSegements {
   public int indexOf(Object o);
 
   public boolean isEmpty();
+
   public Iterator<PathSegment> iterator();
 
   public int lastIndexOf(Object o);
@@ -25,9 +26,9 @@ public interface PathSegements {
 
   public int size();
 
-  public PathSegements subList(int fromIndex, int toIndex);
+  public PathSegments subList(int fromIndex, int toIndex);
 
   public Object[] toArray();
-  
+
   public <T> T[] toArray(T[] a);
 }
