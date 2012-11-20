@@ -26,7 +26,7 @@ public class EdmServiceMetadataImplProv implements EdmServiceMetadata {
 
     //TODO Exception Handling
     try {
-      DataServices metadata = new DataServices().setSchemas(edmProvider.getSchemas()).setDataServiceVersion("2.0");
+      DataServices metadata = new DataServices().setSchemas(edmProvider.getSchemas()).setDataServiceVersion(String.valueOf(dataServiceVersion));
       EdmMetadata.writeMetadata(metadata, writer);
     } catch (ODataSerializationException e) {
       throw new EdmException(EdmException.COMMON, e);
