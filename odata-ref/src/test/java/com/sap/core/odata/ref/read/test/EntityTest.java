@@ -65,7 +65,7 @@ public class EntityTest {
 
     ODataResponse response = processor.readEntity(uriResult);
     assertNotNull(response);
-    assertTrue(((String) response.getEntity()).contains("Employee"));
+    assertTrue(response.getEntity().toString().contains("Employee"));
   }
 
   @Test
@@ -74,7 +74,7 @@ public class EntityTest {
 
     ODataResponse response = processor.readEntity(uriResult);
     assertNotNull(response);
-    assertTrue(((String) response.getEntity()).contains("Team"));
+    assertTrue(response.getEntity().toString().contains("Team"));
   }
 
   @Test
@@ -83,7 +83,7 @@ public class EntityTest {
 
     ODataResponse response = processor.readEntity(uriResult);
     assertNotNull(response);
-    assertTrue(((String) response.getEntity()).contains("Room"));
+    assertTrue(response.getEntity().toString().contains("Room"));
   }
 
   @Test
@@ -92,7 +92,7 @@ public class EntityTest {
 
     ODataResponse response = processor.readEntity(uriResult);
     assertNotNull(response);
-    assertTrue(((String) response.getEntity()).contains("Manager"));
+    assertTrue(response.getEntity().toString().contains("Manager"));
   }
 
   @Test
@@ -101,7 +101,7 @@ public class EntityTest {
 
     ODataResponse response = processor.readEntity(uriResult);
     assertNotNull(response);
-    assertTrue(((String) response.getEntity()).contains("Building"));
+    assertTrue(response.getEntity().toString().contains("Building"));
   }
 
 }

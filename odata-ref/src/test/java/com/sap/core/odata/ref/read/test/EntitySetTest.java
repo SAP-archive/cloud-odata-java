@@ -49,7 +49,7 @@ public class EntitySetTest {
 
     ODataResponse response = processor.readEntitySet(uriResult);
     assertNotNull(response);
-    assertTrue(((String) ((String) response.getEntity())).contains("Employee"));
+    assertTrue(response.getEntity().toString().contains("Employee"));
   }
 
   @Test
@@ -58,7 +58,7 @@ public class EntitySetTest {
 
     ODataResponse response = processor.readEntitySet(uriResult);
     assertNotNull(response);
-    assertTrue(((String) response.getEntity()).contains("Team"));
+    assertTrue(response.getEntity().toString().contains("Team"));
   }
 
   @Test
@@ -67,7 +67,7 @@ public class EntitySetTest {
 
     ODataResponse response = processor.readEntitySet(uriResult);
     assertNotNull(response);
-    assertTrue(((String) response.getEntity()).contains("Room"));
+    assertTrue(response.getEntity().toString().contains("Room"));
   }
 
   @Test
@@ -76,7 +76,7 @@ public class EntitySetTest {
 
     ODataResponse response = processor.readEntitySet(uriResult);
     assertNotNull(response);
-    assertTrue(((String) response.getEntity()).contains("Manager"));
+    assertTrue(response.getEntity().toString().contains("Manager"));
   }
 
   @Test
@@ -85,7 +85,7 @@ public class EntitySetTest {
 
     ODataResponse response = processor.readEntitySet(uriResult);
     assertNotNull(response);
-    assertTrue(((String) response.getEntity()).contains("Building"));
+    assertTrue(response.getEntity().toString().contains("Building"));
   }
   
   @Test
@@ -94,7 +94,7 @@ public class EntitySetTest {
 
     ODataResponse response = processor.readEntitySet(uriResult);
     assertNotNull(response);
-    assertTrue(((String) response.getEntity()).contains("Photo"));
+    assertTrue(response.getEntity().toString().contains("Photo"));
   }
 
 

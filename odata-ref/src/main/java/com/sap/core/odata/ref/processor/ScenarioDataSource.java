@@ -9,6 +9,7 @@ import java.util.Map.Entry;
 import com.sap.core.odata.api.edm.EdmEntitySet;
 import com.sap.core.odata.api.edm.EdmException;
 import com.sap.core.odata.api.edm.EdmFunctionImport;
+import com.sap.core.odata.api.exception.ODataApplicationException;
 import com.sap.core.odata.api.exception.ODataNotFoundException;
 import com.sap.core.odata.api.exception.ODataNotImplementedException;
 import com.sap.core.odata.ref.model.Building;
@@ -135,16 +136,16 @@ public class ScenarioDataSource implements ListsDataSource {
         else
           return ((Employee) sourceData).getRoom();
       } else if ("Buildings".equals(sourceEntitySet.getName())) {
-          List<Room> data = ((Building) sourceData).getRooms();
-          if (data.isEmpty())
-            throw new ODataNotFoundException(ODataNotFoundException.ENTITY);
-          if (targetKeys.isEmpty())
-            return data;
-          else
-            for (final Object room : data)
-              if (((Room) room).getId().equals(targetKeys.get("Id")))
-                return room;
+        List<Room> data = ((Building) sourceData).getRooms();
+        if (data.isEmpty())
           throw new ODataNotFoundException(ODataNotFoundException.ENTITY);
+        if (targetKeys.isEmpty())
+          return data;
+        else
+          for (final Object room : data)
+            if (((Room) room).getId().equals(targetKeys.get("Id")))
+              return room;
+        throw new ODataNotFoundException(ODataNotFoundException.ENTITY);
       }
       throw new ODataNotImplementedException();
 
@@ -269,6 +270,24 @@ public class ScenarioDataSource implements ListsDataSource {
       if (potentialManager.getId().equals(employee.getManager().getId()))
         return true;
     return false;
+  }
+
+  @Override
+  public byte[] readBinaryData(final EdmEntitySet entitySet, final Object mediaLinkEntryData) throws ODataNotImplementedException, ODataNotFoundException, EdmException, ODataApplicationException {
+    if (mediaLinkEntryData == null)
+      throw new ODataNotFoundException(null);
+
+    if ("Employees".equals(entitySet.getName()) || "Managers".equals(entitySet.getName())) {
+      final Employee employee = (Employee) mediaLinkEntryData;
+      final String mimeType = employee.getImageType();
+      return employee.getImage();
+    } else if ("Photos".equals(entitySet.getName())) {
+      final Photo photo = (Photo) mediaLinkEntryData;
+      final String mimeType = photo.getType();
+      return photo.getImage();
+    } else {
+      throw new ODataNotImplementedException();
+    }
   }
 
   @Override
