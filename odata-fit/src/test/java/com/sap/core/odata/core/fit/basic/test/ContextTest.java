@@ -19,8 +19,8 @@ import org.junit.Test;
 import com.sap.core.odata.api.enums.HttpStatusCodes;
 import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.api.processor.ODataContext;
-import com.sap.core.odata.api.processor.ODataProcessor;
 import com.sap.core.odata.api.processor.ODataResponse;
+import com.sap.core.odata.api.processor.ODataSingleProcessor;
 import com.sap.core.odata.api.processor.aspect.Metadata;
 import com.sap.core.odata.api.service.ODataService;
 import com.sap.core.odata.api.uri.resultviews.GetMetadataView;
@@ -28,8 +28,8 @@ import com.sap.core.odata.api.uri.resultviews.GetMetadataView;
 public class ContextTest extends AbstractBasicTest {
 
   @Override
-  protected ODataProcessor createProcessorMock() throws ODataException {
-    ODataProcessor processor = super.createProcessorMock();
+  protected ODataSingleProcessor createProcessorMock() throws ODataException {
+    ODataSingleProcessor processor = super.createProcessorMock();
     when(((Metadata) processor).readMetadata(any(GetMetadataView.class))).thenReturn(ODataResponse.entity("metadata").status(HttpStatusCodes.OK).build());
     return processor;
   }
