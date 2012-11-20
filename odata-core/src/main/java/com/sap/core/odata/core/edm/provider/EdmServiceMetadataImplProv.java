@@ -1,14 +1,19 @@
 package com.sap.core.odata.core.edm.provider;
 
+import java.io.StringWriter;
+import java.io.Writer;
+
 import com.sap.core.odata.api.edm.EdmException;
 import com.sap.core.odata.api.edm.EdmServiceMetadata;
+import com.sap.core.odata.api.edm.provider.DataServices;
 import com.sap.core.odata.api.edm.provider.EdmProvider;
 import com.sap.core.odata.api.exception.ODataException;
+import com.sap.core.odata.api.exception.ODataSerializationException;
 
 public class EdmServiceMetadataImplProv implements EdmServiceMetadata {
 
   protected EdmProvider edmProvider;
-  private double dataServiceVersion;
+  private double dataServiceVersion = 2.0;
   
   public EdmServiceMetadataImplProv(EdmProvider edmProvider) {
     this.edmProvider = edmProvider;
@@ -16,21 +21,24 @@ public class EdmServiceMetadataImplProv implements EdmServiceMetadata {
 
   @Override
   public String getMetadata() throws EdmException {
-    Metadata metadata = new Metadata();
+
+    Writer writer = new StringWriter();
+
+    //TODO Exception Handling
     try {
-      metadata.setSchemas(edmProvider.getSchemas());
+      DataServices metadata = new DataServices().setSchemas(edmProvider.getSchemas()).setDataServiceVersion("2.0");
+      EdmMetadata.writeMetadata(metadata, writer);
+    } catch (ODataSerializationException e) {
+      throw new EdmException(EdmException.COMMON, e);
     } catch (ODataException e) {
       throw new EdmException(EdmException.COMMON, e);
     }
-    metadata.setDataServiceVersion(this.dataServiceVersion);
-    return metadata.serialize();
-
+    
+    return writer.toString();
   }
 
   @Override
   public String getDataServiceVersion() throws EdmException {
-
     return "" + this.dataServiceVersion;
   }
-
 }
