@@ -119,8 +119,8 @@ public class ServiceResolutionTest {
     ODataContext ctx = this.processor.getContext();
     assertNotNull(ctx);
 
-    assertTrue(ctx.getPrecedingPathSegment().isEmpty());
-    assertEquals("$metadata", ctx.getODataPathSegment().get(0));
+    assertTrue(ctx.getPrecedingPathSegmentList().isEmpty());
+    assertEquals("$metadata", ctx.getODataPathSegmentList().get(0).getPath());
   }
 
   @Test
@@ -136,8 +136,8 @@ public class ServiceResolutionTest {
     ODataContext ctx = this.processor.getContext();
     assertNotNull(ctx);
 
-    assertEquals("aaa", ctx.getPrecedingPathSegment().get(0));
-    assertEquals("$metadata", ctx.getODataPathSegment().get(0));
+    assertEquals("aaa", ctx.getPrecedingPathSegmentList().get(0).getPath());
+    assertEquals("$metadata", ctx.getODataPathSegmentList().get(0).getPath());
   }
 
   @Test
@@ -153,9 +153,9 @@ public class ServiceResolutionTest {
     ODataContext ctx = this.processor.getContext();
     assertNotNull(ctx);
 
-    assertEquals("aaa", ctx.getPrecedingPathSegment().get(0));
-    assertEquals("bbb", ctx.getPrecedingPathSegment().get(1));
-    assertEquals("$metadata", ctx.getODataPathSegment().get(0));
+    assertEquals("aaa", ctx.getPrecedingPathSegmentList().get(0).getPath());
+    assertEquals("bbb", ctx.getPrecedingPathSegmentList().get(1).getPath());
+    assertEquals("$metadata", ctx.getODataPathSegmentList().get(0).getPath());
   }
 
   @Test
@@ -182,8 +182,8 @@ public class ServiceResolutionTest {
     ODataContext ctx = this.processor.getContext();
     assertNotNull(ctx);
     
-    assertEquals("", ctx.getODataPathSegment().get(0));
-    assertEquals("aaa", ctx.getPrecedingPathSegment().get(0));
+    assertEquals("", ctx.getODataPathSegmentList().get(0).getPath());
+    assertEquals("aaa", ctx.getPrecedingPathSegmentList().get(0).getPath());
   }
 
 }

@@ -43,7 +43,7 @@ public abstract class ODataResponse {
 
     protected ODataResponseBuilder() { }
 
-    public static ODataResponseBuilder newInstance() {
+    private static ODataResponseBuilder newInstance() {
       ODataResponseBuilder b = RuntimeDelegate.getInstance().createODataResponseBuilder();
       return b;
     }
