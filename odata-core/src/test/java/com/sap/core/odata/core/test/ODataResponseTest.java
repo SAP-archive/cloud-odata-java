@@ -1,4 +1,4 @@
-package com.sap.core.odata.core.rest.test;
+package com.sap.core.odata.core.test;
 
 import static org.junit.Assert.assertEquals;
 

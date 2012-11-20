@@ -1,4 +1,4 @@
-package com.sap.core.odata.core.dispatcher;
+package com.sap.core.odata.core;
 
 import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.api.exception.ODataMethodNotAllowedException;

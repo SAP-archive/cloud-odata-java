@@ -1,4 +1,4 @@
-package com.sap.core.odata.core.processor.test;
+package com.sap.core.odata.core.test;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -12,7 +12,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.sap.core.odata.api.processor.ODataPathSegment;
-import com.sap.core.odata.core.processor.ODataPathSegmentImpl;
+import com.sap.core.odata.core.ODataPathSegmentImpl;
 
 public class PathSegmentTest {
 

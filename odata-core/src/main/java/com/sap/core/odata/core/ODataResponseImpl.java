@@ -1,4 +1,4 @@
-package com.sap.core.odata.core.processor;
+package com.sap.core.odata.core;
 
 import java.util.HashMap;
 import java.util.Set;
