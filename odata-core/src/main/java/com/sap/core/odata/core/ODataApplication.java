@@ -1,4 +1,4 @@
-package com.sap.core.odata.core.rest;
+package com.sap.core.odata.core;
 
 import java.util.Collections;
 import java.util.HashSet;

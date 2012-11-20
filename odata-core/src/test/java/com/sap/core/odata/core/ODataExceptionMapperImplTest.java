@@ -1,4 +1,4 @@
-package com.sap.core.odata.core.rest;
+package com.sap.core.odata.core;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -23,6 +23,7 @@ import com.sap.core.odata.api.exception.ODataApplicationException;
 import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.api.exception.ODataNotFoundException;
 import com.sap.core.odata.api.uri.UriParserException;
+import com.sap.core.odata.core.ODataExceptionMapperImpl;
 import com.sap.core.odata.core.exception.ODataRuntimeException;
 
 public class ODataExceptionMapperImplTest {

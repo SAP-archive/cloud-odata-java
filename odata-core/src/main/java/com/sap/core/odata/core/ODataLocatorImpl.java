@@ -1,4 +1,4 @@
-package com.sap.core.odata.core.rest;
+package com.sap.core.odata.core;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -27,10 +27,7 @@ import com.sap.core.odata.api.processor.ODataPathSegment;
 import com.sap.core.odata.api.processor.ODataResponse;
 import com.sap.core.odata.api.service.ODataService;
 import com.sap.core.odata.api.service.ODataServiceFactory;
-import com.sap.core.odata.core.dispatcher.Dispatcher;
 import com.sap.core.odata.core.enums.ODataHttpMethod;
-import com.sap.core.odata.core.processor.ODataContextImpl;
-import com.sap.core.odata.core.processor.ODataPathSegmentImpl;
 import com.sap.core.odata.core.uri.UriParserImpl;
 import com.sap.core.odata.core.uri.UriParserResultImpl;
 

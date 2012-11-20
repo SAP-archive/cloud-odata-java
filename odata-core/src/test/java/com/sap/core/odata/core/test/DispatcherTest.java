@@ -1,4 +1,4 @@
-package com.sap.core.odata.core.dispatcher.test;
+package com.sap.core.odata.core.test;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -28,7 +28,7 @@ import com.sap.core.odata.api.processor.aspect.FunctionImportValue;
 import com.sap.core.odata.api.processor.aspect.Metadata;
 import com.sap.core.odata.api.processor.aspect.ServiceDocument;
 import com.sap.core.odata.api.service.ODataService;
-import com.sap.core.odata.core.dispatcher.Dispatcher;
+import com.sap.core.odata.core.Dispatcher;
 import com.sap.core.odata.core.enums.ODataHttpMethod;
 import com.sap.core.odata.core.uri.UriParserResultImpl;
 import com.sap.core.odata.core.uri.UriType;

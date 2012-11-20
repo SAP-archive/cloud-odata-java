@@ -1,4 +1,4 @@
-package com.sap.core.odata.core.rest;
+package com.sap.core.odata.core;
 
 import java.util.List;
 
@@ -13,7 +13,7 @@ import javax.ws.rs.core.UriInfo;
 
 import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.api.service.ODataServiceFactory;
-import com.sap.core.odata.core.rest.ODataLocatorImpl.InitParameter;
+import com.sap.core.odata.core.ODataLocatorImpl.InitParameter;
 
 /**
  * Default OData root locator responsible to handle the whole path and delegate all calls to a sub locator:<p>

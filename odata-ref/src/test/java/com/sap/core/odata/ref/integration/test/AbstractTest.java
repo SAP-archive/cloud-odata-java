@@ -32,8 +32,8 @@ import com.sap.core.odata.api.exception.ODataApplicationException;
 import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.api.exception.ODataHttpException;
 import com.sap.core.odata.api.uri.UriParserException;
-import com.sap.core.odata.core.rest.ODataLocatorImpl;
-import com.sap.core.odata.core.rest.ODataLocatorImpl.InitParameter;
+import com.sap.core.odata.core.ODataLocatorImpl;
+import com.sap.core.odata.core.ODataLocatorImpl.InitParameter;
 import com.sap.core.odata.ref.processor.ScenarioServiceFactory;
 
 /**
