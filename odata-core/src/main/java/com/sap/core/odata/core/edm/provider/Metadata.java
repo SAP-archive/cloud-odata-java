@@ -29,4 +29,9 @@ public class Metadata {
   public String toString() {
     return "" + dataServiceVersion + schemas;
   }
+  
+  public String serialize(){
+    //TODO: Write serializer
+    return "" + dataServiceVersion + schemas;
+  }
 }

@@ -21,6 +21,10 @@ public class EdmImplTest extends EdmImpl {
 
   private static EdmImplTest edm;
 
+  public EdmImplTest(){
+    super(null);
+  }
+  
   @BeforeClass
   public static void getEdmImpl() throws EdmException {
     edm = new EdmImplTest();
