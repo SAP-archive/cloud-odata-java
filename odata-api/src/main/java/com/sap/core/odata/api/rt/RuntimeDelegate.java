@@ -4,6 +4,7 @@ import com.sap.core.odata.api.edm.Edm;
 import com.sap.core.odata.api.edm.EdmSimpleType;
 import com.sap.core.odata.api.edm.EdmSimpleTypeFacade;
 import com.sap.core.odata.api.edm.EdmSimpleTypeKind;
+import com.sap.core.odata.api.edm.provider.EdmProvider;
 import com.sap.core.odata.api.processor.ODataResponse.ODataResponseBuilder;
 import com.sap.core.odata.api.uri.UriParser;
 
@@ -13,7 +14,7 @@ import com.sap.core.odata.api.uri.UriParser;
  */
 public abstract class RuntimeDelegate {
 
-  private static final String IMPLEMENTATION = "com.sap.core.odata.core.rest.RuntimeDelegateImpl";
+  private static final String IMPLEMENTATION = "com.sap.core.odata.core.rt.RuntimeDelegateImpl";
 
   /**
    * Get a RuntimeDelegate Instance through reflection
@@ -54,8 +55,25 @@ public abstract class RuntimeDelegate {
    */
   public abstract UriParser getUriParser(Edm edm);
 
+  /**
+   * 
+   * @param edmSimpleType
+   * @return
+   */
   public abstract EdmSimpleType getInternalEdmSimpleTypeByString(String edmSimpleType);
   
+  /**
+   * 
+   * @return
+   */
   public abstract EdmSimpleTypeFacade getSimpleTypeFacade();
+  
+  
+  /**
+   * Creates an entity data model.
+   * @param provider A {@link EdmProvider} instance
+   * @return {@link Edm} implementation object
+   */
+  public abstract Edm createEdm(EdmProvider provider);
 
 }

@@ -1,9 +1,9 @@
 package com.sap.core.odata.ref.processor;
 
-import com.sap.core.odata.api.edm.provider.EdmProvider;
 import com.sap.core.odata.api.exception.ODataException;
-import com.sap.core.odata.api.processor.ODataProcessor;
+import com.sap.core.odata.api.service.ODataService;
 import com.sap.core.odata.api.service.ODataServiceFactory;
+import com.sap.core.odata.api.service.ODataSingleProcessorService;
 import com.sap.core.odata.ref.edm.ScenarioEdmProvider;
 import com.sap.core.odata.ref.model.DataContainer;
 
@@ -13,15 +13,11 @@ import com.sap.core.odata.ref.model.DataContainer;
 public class ScenarioServiceFactory implements ODataServiceFactory {
 
   @Override
-  public ODataProcessor createProcessor() throws ODataException {
+  public ODataService createService() throws ODataException {
     DataContainer dataContainer = new DataContainer();
     dataContainer.reset();
-    return new ListsProcessor(new ScenarioDataSource(dataContainer));
-  }
-
-  @Override
-  public EdmProvider createProvider() throws ODataException {
-    return new ScenarioEdmProvider();
+    ODataService service = new ODataSingleProcessorService(new ScenarioEdmProvider(), new ListsProcessor(new ScenarioDataSource(dataContainer ))) {};
+    return service;
   }
 
 }

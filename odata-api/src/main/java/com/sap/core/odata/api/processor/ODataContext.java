@@ -14,7 +14,7 @@ public interface ODataContext {
    * Access to untyped context objects. 
    * @param key access object by key
    * @return an object or null if not found
-   * @throws ODataException
+   * @throws {@link ODataException}
    */
   <T> T getObject(String key) throws ODataException;
 
@@ -31,7 +31,7 @@ public interface ODataContext {
   List<String> getPrecedingPathSegment();
 
   /**
-   * Returns OData path segments as immutuable list  
+   * Returns OData path segments as immutable list  
    * @return list of path segments
    */
   List<String> getODataPathSegment();

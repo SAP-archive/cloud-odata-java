@@ -13,6 +13,9 @@ import org.slf4j.LoggerFactory;
 import com.sap.core.odata.api.edm.provider.EdmProvider;
 import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.api.processor.ODataProcessor;
+import com.sap.core.odata.api.processor.ODataSingleProcessor;
+import com.sap.core.odata.api.service.ODataService;
+import com.sap.core.odata.api.service.ODataSingleProcessorService;
 import com.sap.core.odata.testutils.server.TestServer;
 
 public abstract class AbstractFitTest {
@@ -27,6 +30,7 @@ public abstract class AbstractFitTest {
  
   private ODataProcessor processor;
   private EdmProvider edmProvider;
+  private ODataService service;
   
   private HttpClient httpClient = new DefaultHttpClient();
 
@@ -51,8 +55,8 @@ public abstract class AbstractFitTest {
     this.processor = this.createProcessorMock();
     this.edmProvider = this.createEdmProviderMock();
     
-    ServiceFactory.setProcessor(this.processor);
-    ServiceFactory.setProvider(this.edmProvider);
+    this.service = new ODataSingleProcessorService(this.edmProvider, (ODataSingleProcessor) this.processor) {};
+    ServiceFactory.setService(this.service);
     
     this.server.startServer(ServiceFactory.class);
   }
@@ -73,8 +77,7 @@ public abstract class AbstractFitTest {
     try {
       this.server.stopServer();
     } finally {
-      ServiceFactory.setProcessor(null);
-      ServiceFactory.setProvider(null);
+      ServiceFactory.setService(null);
     }
   }
 }

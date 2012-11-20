@@ -52,7 +52,7 @@ public abstract class AbstractTest {
     param.setRequest(request);
     param.setUriInfo(getUriInfo(param.getPathSegments(), getQueryParameters(urlString)));
     param.setServiceFactory(SERVICE_FACTORY);
-    oDataLocator.initializeService(param);
+    oDataLocator.initialize(param);
 
     try {
       final Response response = oDataLocator.handleGet();

@@ -1,12 +1,11 @@
 package com.sap.core.odata.api.service;
 
-import com.sap.core.odata.api.edm.provider.EdmProvider;
 import com.sap.core.odata.api.exception.ODataException;
-import com.sap.core.odata.api.processor.ODataProcessor;
 
 /**
- * Implement this interface to create own instance of ODataProcessor. Usually the factory implementation is passed as servlet
- * init parameter to a JAX-RS runtime which will instantiate a ODataProcessor implementation using this factory:<p>
+ * Implement this interface to create own instance of {@link ODataService}. Usually the factory implementation is passed as servlet
+ * init parameter to a JAX-RS runtime which will instantiate a {@link ODataService} implementation using this factory. For convenience 
+ * it is recommended to sub class {@link ODataSingleProcessorService}.<p>
  *  
  * <pre>
  * {@code
@@ -38,23 +37,16 @@ public interface ODataServiceFactory {
    * Label used in web.xml to assign servlet init parameter to factory class instance.
    */
   public static final String FACTORY_LABEL = "com.sap.core.odata.service.factory";
-  
+
   /**
    * Label used in web.xml to assign servlet init parameter for a path split (service resolution).
    */
   public static final String PATH_SPLIT_LABEL = "com.sap.core.odata.path.split";
-  
+
   /**
-   * Create instance of custom processor.
-   * @return A new processor instance.
-   * @throws ODataException is thrown in any case of error.
+   * Create instance of custom {@link ODataService}.
+   * @return A new service instance.
+   * @throws {@link ODataException} is thrown in case of error.
    */
-  ODataProcessor createProcessor() throws ODataException;
-  
-  /**
-   * Create instance of custom provider.
-   * @return A new provider instance.
-   * @throws ODataException is thrown in any case of error.
-   */
-  EdmProvider createProvider() throws ODataException;
+  ODataService createService() throws ODataException;
 }
