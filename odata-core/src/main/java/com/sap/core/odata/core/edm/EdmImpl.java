@@ -22,11 +22,12 @@ public abstract class EdmImpl implements Edm {
 
   protected EdmServiceMetadata edmServiceMetadata;
   
-  public EdmImpl() {
+  public EdmImpl(EdmServiceMetadata edmServiceMetadata) {
     edmEntityContainers = new HashMap<String, EdmEntityContainer>();
     edmEntityTypes = new HashMap<FullQualifiedName, EdmEntityType>();
     edmComplexTypes = new HashMap<FullQualifiedName, EdmComplexType>();
     edmAssociations = new HashMap<FullQualifiedName, EdmAssociation>();
+    this.edmServiceMetadata = edmServiceMetadata;
   }
   
   @Override
