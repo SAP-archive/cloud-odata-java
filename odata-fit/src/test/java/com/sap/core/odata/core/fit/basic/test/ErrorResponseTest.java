@@ -14,6 +14,7 @@ import org.junit.Test;
 
 import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.api.processor.ODataProcessor;
+import com.sap.core.odata.api.processor.ODataSingleProcessor;
 import com.sap.core.odata.api.processor.aspect.ServiceDocument;
 import com.sap.core.odata.api.uri.resultviews.GetServiceDocumentView;
 import com.sap.core.odata.core.exception.ODataRuntimeException;
@@ -23,8 +24,8 @@ import com.sap.core.odata.testutils.helper.StringHelper;
 public class ErrorResponseTest extends AbstractBasicTest {
 
   @Override
-  protected ODataProcessor createProcessorMock() throws ODataException {
-    ODataProcessor processor = super.createProcessorMock();
+  protected ODataSingleProcessor createProcessorMock() throws ODataException {
+    ODataSingleProcessor processor = super.createProcessorMock();
 
     when(((ServiceDocument) processor).readServiceDocument(any(GetServiceDocumentView.class))).thenThrow(new ODataRuntimeException("unit testing"));
     

@@ -28,11 +28,11 @@ public abstract class AbstractFitTest {
 
   private TestServer server = new TestServer();
  
-  private ODataProcessor processor;
-  private EdmProvider edmProvider;
   private ODataService service;
   
   private HttpClient httpClient = new DefaultHttpClient();
+
+  private EdmProvider edmProvider;
 
   protected URI getEndpoint() {
     return this.server.getEndpoint();
@@ -42,8 +42,8 @@ public abstract class AbstractFitTest {
     return httpClient;
   }
 
-  protected ODataProcessor getProcessor() {
-    return this.processor;
+  protected ODataProcessor getProcessor() throws ODataException {
+    return this.service.getProcessor();
   }
 
   protected EdmProvider getEdmProvider() {
@@ -52,10 +52,10 @@ public abstract class AbstractFitTest {
 
   @Before
   public void before() throws Exception {
-    this.processor = this.createProcessorMock();
+    ODataSingleProcessor processor = this.createProcessorMock();
     this.edmProvider = this.createEdmProviderMock();
     
-    this.service = new ODataSingleProcessorService(this.edmProvider, (ODataSingleProcessor) this.processor) {};
+    this.service = new ODataSingleProcessorService(this.edmProvider, (ODataSingleProcessor) processor) {};
     ServiceFactory.setService(this.service);
     
     this.server.startServer(ServiceFactory.class);
@@ -69,7 +69,7 @@ public abstract class AbstractFitTest {
   /**
    * @return mock processor
    */
-  protected abstract ODataProcessor createProcessorMock() throws ODataException;
+  protected abstract ODataSingleProcessor createProcessorMock() throws ODataException;
 
 
   @After
