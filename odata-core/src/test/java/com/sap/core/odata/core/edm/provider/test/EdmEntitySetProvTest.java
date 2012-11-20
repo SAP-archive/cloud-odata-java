@@ -1,4 +1,4 @@
-package com.sap.core.odata.core.edm.test;
+package com.sap.core.odata.core.edm.provider.test;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
