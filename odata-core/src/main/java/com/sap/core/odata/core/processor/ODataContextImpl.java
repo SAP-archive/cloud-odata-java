@@ -6,6 +6,7 @@ import java.util.List;
 
 import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.api.processor.ODataContext;
+import com.sap.core.odata.api.processor.ODataPathSegment;
 import com.sap.core.odata.api.service.ODataService;
 
 public class ODataContextImpl implements ODataContext {
@@ -14,8 +15,8 @@ public class ODataContextImpl implements ODataContext {
 
   private ODataService service;
 
-  private List<String> precedingPathSegment = Collections.emptyList();
-  private List<String> odataPathSegment = Collections.emptyList();
+  private List<ODataPathSegment> precedingPathSegment = Collections.emptyList();
+  private List<ODataPathSegment> odataPathSegment = Collections.emptyList();
   
   
   public void putContextObject(String key, Object obj) throws ODataException {
@@ -26,12 +27,12 @@ public class ODataContextImpl implements ODataContext {
     this.service = service;
   }
   
-  public void setODataPathSegment(List<String> odataPathSegement) {
-    this.odataPathSegment = odataPathSegement;
+  public void setODataPathSegment(List<ODataPathSegment> odataPathSegement) {
+    this.odataPathSegment = Collections.unmodifiableList(odataPathSegement);
   }
 
-  public void setPrecedingPathSegment(List<String> precedingPathSegement) {
-    this.precedingPathSegment = precedingPathSegement;
+  public void setPrecedingPathSegment(List<ODataPathSegment> precedingPathSegement) {
+    this.precedingPathSegment = Collections.unmodifiableList(precedingPathSegement);
   }
 
 
@@ -47,12 +48,12 @@ public class ODataContextImpl implements ODataContext {
   }
 
   @Override
-  public List<String> getPrecedingPathSegment() {
+  public List<ODataPathSegment> getPrecedingPathSegmentList() {
     return Collections.unmodifiableList(this.precedingPathSegment);
   }
   
   @Override
-  public List<String> getODataPathSegment() {
+  public List<ODataPathSegment> getODataPathSegmentList() {
     return Collections.unmodifiableList(this.odataPathSegment);
   }
 }

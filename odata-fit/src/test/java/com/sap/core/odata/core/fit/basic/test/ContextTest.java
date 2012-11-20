@@ -48,7 +48,7 @@ public class ContextTest extends AbstractBasicTest {
 
     assertEquals(Status.OK.getStatusCode(), response.getStatusLine().getStatusCode());
 
-    assertEquals("$metadata", ctx.getODataPathSegment().get(0));
+    assertEquals("$metadata", ctx.getODataPathSegmentList().get(0).getPath());
   }
 
 }

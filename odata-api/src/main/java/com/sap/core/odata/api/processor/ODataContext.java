@@ -28,12 +28,12 @@ public interface ODataContext {
    * Returns preceding path segments  
    * @return list of path segments
    */
-  List<String> getPrecedingPathSegment();
+  List<ODataPathSegment> getPrecedingPathSegmentList();
 
   /**
    * Returns OData path segments as immutable list  
    * @return list of path segments
    */
-  List<String> getODataPathSegment();
+  List<ODataPathSegment> getODataPathSegmentList();
 
 }
