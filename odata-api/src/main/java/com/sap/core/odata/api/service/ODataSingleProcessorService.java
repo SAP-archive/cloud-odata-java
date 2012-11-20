@@ -21,91 +21,150 @@ import com.sap.core.odata.api.processor.aspect.Metadata;
 import com.sap.core.odata.api.processor.aspect.ServiceDocument;
 import com.sap.core.odata.api.rt.RuntimeDelegate;
 
+/**
+ * A default implementation that uses {@link ODataSingleProcessor}. Usually custom services derive from this class and create an instance by {@link ODataSerivceFactory}
+ * and populate it by custom {@link EdmProvider} and custom {@link ODataSingleProcessor} implementation.
+ * 
+ * @author SAP AG
+ */
 public abstract class ODataSingleProcessorService implements ODataService {
 
   private ODataSingleProcessor processor;
   private Edm edm;
   
+  /**
+   * Construct service
+   * @param provider A custom {@link EdmProvider}
+   * @param processor A custom {@link ODataSingleProcessor}
+   */
   public ODataSingleProcessorService(EdmProvider provider, ODataSingleProcessor processor) {
     this.processor = processor;
     this.edm = RuntimeDelegate.getInstance().createEdm(provider);
   }
 
+  /**
+   * @see ODataService
+   */
   @Override
   public ODataVersion getODataVersion() throws ODataException {
     return ODataVersion.V20;
   }
 
+  /**
+   * @see ODataService
+   */
   @Override
   public Edm getEntityDataModel() throws ODataException {
     return this.edm;
   }
 
+  /**
+   * @see ODataService
+   */
   @Override
   public Metadata getMetadataProcessor() throws ODataException {
     return (Metadata) this.processor;
   }
 
+  /**
+   * @see ODataService
+   */
   @Override
   public ServiceDocument getServiceDocumentProcessor() throws ODataException {
     return (ServiceDocument) this.processor;
   }
 
+  /**
+   * @see ODataService
+   */
   @Override
   public Entity getEntityProcessor() throws ODataException {
     return (Entity) this.processor;
   }
 
+  /**
+   * @see ODataService
+   */
   @Override
   public EntitySet getEntitySetProcessor() throws ODataException {
     return (EntitySet) this.processor;
   }
 
+  /**
+   * @see ODataService
+   */
   @Override
   public EntityComplexProperty getEntityComplexPropertyProcessor() throws ODataException {
     return (EntityComplexProperty) this.processor;
   }
 
+  /**
+   * @see ODataService
+   */
   @Override
   public EntityLink getEntityLinkProcessor() throws ODataException {
     return (EntityLink) this.processor;
   }
 
+  /**
+   * @see ODataService
+   */
   @Override
   public EntityLinks getEntityLinksProcessor() throws ODataException {
     return (EntityLinks) this.processor;
   }
 
+  /**
+   * @see ODataService
+   */
   @Override
   public EntityMedia getEntityMediaProcessor() throws ODataException {
     return (EntityMedia) this.processor;
   }
 
+  /**
+   * @see ODataService
+   */
   @Override
   public EntitySimpleProperty getEntitySimplePropertyProcessor() throws ODataException {
     return (EntitySimpleProperty) this.processor;
   }
 
+  /**
+   * @see ODataService
+   */
   @Override
   public EntitySimplePropertyValue getEntitySimplePropertyValueProcessor() throws ODataException {
     return (EntitySimplePropertyValue) this.processor;
   }
 
+  /**
+   * @see ODataService
+   */
   @Override
   public FunctionImport getFunctionImportProcessor() throws ODataException {
     return (FunctionImport) this.processor;
   }
 
+  /**
+   * @see ODataService
+   */
   @Override
   public FunctionImportValue getFunctionImportValueProcessor() throws ODataException {
     return (FunctionImportValue) this.processor;
   }
 
+  /**
+   * @see ODataService
+   */
   @Override
   public Batch getBatchProcessor() throws ODataException {
     return (Batch) this.processor;
   }
 
+  /**
+   * @see ODataService
+   */
   @Override
   public ODataProcessor getProcessor() throws ODataException {
     return (ODataProcessor) this.processor;
