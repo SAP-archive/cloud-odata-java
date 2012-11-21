@@ -63,6 +63,7 @@
 
 	<modules>
 		<module>odata-core</module>
+		<module>odata-extensions</module>
 		<module>odata-fit</module>
 		<module>odata-ref</module>
 		<module>odata-web</module>

@@ -37,8 +37,8 @@ import com.sap.core.odata.api.exception.ODataNotFoundException;
  */
 public class ScenarioEdmProvider implements EdmProvider {
 
-  private static final String NAMESPACE_1 = "RefScenario";
-  private static final String NAMESPACE_2 = "RefScenario2";
+  public static final String NAMESPACE_1 = "RefScenario";
+  public static final String NAMESPACE_2 = "RefScenario2";
 
   private static final FullQualifiedName ENTITY_TYPE_1_1 = new FullQualifiedName(NAMESPACE_1, "Employee");
   private static final FullQualifiedName ENTITY_TYPE_1_BASE = new FullQualifiedName(NAMESPACE_1, "Base");
