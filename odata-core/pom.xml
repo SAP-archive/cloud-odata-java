@@ -13,8 +13,67 @@
 		<relativePath>..</relativePath>
 	</parent>
 
-	<build>
-	</build>
+	<profiles>
+		<profile>
+			<id>coverage</id>
+			<build>
+				<plugins>
+					<plugin>
+						<!-- copy api during test to target/api_dependency -->
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-dependency-plugin</artifactId>
+						<executions>
+							<execution>
+								<id>copy api classes</id>
+								<phase>generate-test-resources</phase>
+								<goals>
+									<goal>unpack</goal>
+								</goals>
+								<configuration>
+									<artifactItems>
+										<artifactItem>
+											<groupId>com.sap.core.odata</groupId>
+											<artifactId>com.sap.core.odata.api</artifactId>
+											<version>${project.version}</version>
+											<outputDirectory>${project.build.directory}/api_dependency</outputDirectory>
+											<overWrite>true</overWrite>
+										</artifactItem>
+									</artifactItems>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+					<plugin>
+						<!-- instrument the copied api classes -->
+						<groupId>org.sonatype.maven.plugin</groupId>
+						<artifactId>emma-maven-plugin</artifactId>
+						<executions>
+							<execution>
+								<id>instrument api classes</id>
+								<phase>process-test-resources</phase>
+								<goals>
+									<goal>instrument</goal>
+								</goals>
+								<configuration>
+									<instrumentationPaths>
+										<param>${project.build.directory}/api_dependency</param>
+									</instrumentationPaths>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-surefire-plugin</artifactId>
+						<configuration>
+							<!-- use the instrumented classes for test execution -->
+							<classesDirectory>${project.build.directory}/generated-classes/emma/classes</classesDirectory>
+						</configuration>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
 
 	<dependencies>
 		<dependency>
