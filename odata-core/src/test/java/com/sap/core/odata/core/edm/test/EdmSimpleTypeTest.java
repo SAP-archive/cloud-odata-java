@@ -2,6 +2,7 @@ package com.sap.core.odata.core.edm.test;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.mockito.Mockito.mock;
@@ -287,6 +288,12 @@ public class EdmSimpleTypeTest {
     return facets;
   }
 
+  private EdmFacets getNullableFacets(final boolean nullable) {
+    EdmFacets facets = mock(EdmFacets.class);
+    when(facets.isNullable()).thenReturn(nullable);
+    return facets;
+  }
+
   private void expectErrorInValueToString(final EdmSimpleType instance, final Object value, final EdmLiteralKind literalKind, final EdmFacets facets) {
     try {
       instance.valueToString(value, literalKind, facets);
@@ -308,6 +315,8 @@ public class EdmSimpleTypeTest {
     assertEquals("qrvM3e7/", EdmSimpleTypeFacade.binaryInstance().valueToString(binary, EdmLiteralKind.JSON, getMaxLengthFacets(6)));
     assertEquals("binary'AABBCCDDEEFF'", EdmSimpleTypeFacade.binaryInstance().valueToString(binary, EdmLiteralKind.URI, getMaxLengthFacets(6)));
 
+    assertEquals("qg==", EdmSimpleTypeFacade.binaryInstance().valueToString(new Byte[] {new Byte((byte) 170)}, EdmLiteralKind.DEFAULT, null));
+
     expectErrorInValueToString(EdmSimpleTypeFacade.binaryInstance(), binary, EdmLiteralKind.DEFAULT, getMaxLengthFacets(3));
     expectErrorInValueToString(EdmSimpleTypeFacade.binaryInstance(), binary, EdmLiteralKind.JSON, getMaxLengthFacets(3));
     expectErrorInValueToString(EdmSimpleTypeFacade.binaryInstance(), binary, EdmLiteralKind.URI, getMaxLengthFacets(3));
@@ -315,4 +324,17 @@ public class EdmSimpleTypeTest {
     expectErrorInValueToString(EdmSimpleTypeFacade.binaryInstance(), 0, EdmLiteralKind.DEFAULT, null);
   }
 
+  @Test
+  public void valueToStringBoolean() {
+    assertEquals("true", EdmSimpleTypeFacade.booleanInstance().valueToString(true, EdmLiteralKind.DEFAULT, null));
+    assertEquals("true", EdmSimpleTypeFacade.booleanInstance().valueToString(true, EdmLiteralKind.JSON, null));
+    assertEquals("true", EdmSimpleTypeFacade.booleanInstance().valueToString(true, EdmLiteralKind.URI, null));
+    assertEquals("false", EdmSimpleTypeFacade.booleanInstance().valueToString(Boolean.FALSE, EdmLiteralKind.DEFAULT, null));
+
+    assertNull(EdmSimpleTypeFacade.booleanInstance().valueToString(null, EdmLiteralKind.DEFAULT, null));
+    assertNull(EdmSimpleTypeFacade.booleanInstance().valueToString(null, EdmLiteralKind.DEFAULT, getNullableFacets(true)));
+
+    expectErrorInValueToString(EdmSimpleTypeFacade.booleanInstance(), null, EdmLiteralKind.DEFAULT, getNullableFacets(false));
+    expectErrorInValueToString(EdmSimpleTypeFacade.booleanInstance(), 0, EdmLiteralKind.DEFAULT, null);
+  }
 }
