@@ -13,8 +13,14 @@
 		<relativePath>..</relativePath>
 	</parent>
 
-	<build>
-	</build>
+	<profiles>
+		<profile>
+			<id>coverage</id>
+			<properties>
+				<coverage.report.excludeFromCoverageDataCreation>true</coverage.report.excludeFromCoverageDataCreation>
+			</properties>
+		</profile>
+	</profiles>
 
 	<dependencies>
 		<dependency>
