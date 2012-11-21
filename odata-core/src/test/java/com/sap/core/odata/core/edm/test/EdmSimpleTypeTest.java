@@ -337,4 +337,20 @@ public class EdmSimpleTypeTest {
     expectErrorInValueToString(EdmSimpleTypeFacade.booleanInstance(), null, EdmLiteralKind.DEFAULT, getNullableFacets(false));
     expectErrorInValueToString(EdmSimpleTypeFacade.booleanInstance(), 0, EdmLiteralKind.DEFAULT, null);
   }
+
+  @Test
+  public void valueToStringByte() {
+    assertEquals("0", EdmSimpleTypeFacade.byteInstance().valueToString(0, EdmLiteralKind.DEFAULT, null));
+    assertEquals("0", EdmSimpleTypeFacade.byteInstance().valueToString(0, EdmLiteralKind.JSON, null));
+    assertEquals("0", EdmSimpleTypeFacade.byteInstance().valueToString(0, EdmLiteralKind.URI, null));
+    assertEquals("0", EdmSimpleTypeFacade.byteInstance().valueToString(null, EdmLiteralKind.DEFAULT, null));
+    assertEquals("8", EdmSimpleTypeFacade.byteInstance().valueToString((byte) 8, EdmLiteralKind.DEFAULT, null));
+    assertEquals("16", EdmSimpleTypeFacade.byteInstance().valueToString((short) 16, EdmLiteralKind.DEFAULT, null));
+    assertEquals("32", EdmSimpleTypeFacade.byteInstance().valueToString((Integer) 32, EdmLiteralKind.DEFAULT, null));
+    assertEquals("255", EdmSimpleTypeFacade.byteInstance().valueToString(255L, EdmLiteralKind.DEFAULT, null));
+
+    expectErrorInValueToString(EdmSimpleTypeFacade.byteInstance(), -1, EdmLiteralKind.DEFAULT, null);
+    expectErrorInValueToString(EdmSimpleTypeFacade.byteInstance(), 256, EdmLiteralKind.DEFAULT, null);
+    expectErrorInValueToString(EdmSimpleTypeFacade.byteInstance(), 'A', EdmLiteralKind.DEFAULT, null);
+  }
 }
