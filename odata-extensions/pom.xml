@@ -3,7 +3,7 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-	<artifactId>com.sap.core.odata.ref</artifactId>
+	<artifactId>com.sap.core.odata.extensions</artifactId>
 	<packaging>jar</packaging>
 
 	<parent>
@@ -13,23 +13,27 @@
 		<relativePath>..</relativePath>
 	</parent>
 
+	<build>
+	</build>
+
 	<dependencies>
 		<dependency>
-			<groupId>com.sap.core.odata</groupId>
-			<artifactId>com.sap.core.odata.api</artifactId>
-			<version>${project.version}</version>
+			<groupId>javax.servlet</groupId>
+			<artifactId>servlet-api</artifactId>
+			<version>2.5</version>
+			<scope>provided</scope>
 		</dependency>
+		<dependency>
+			<groupId>javax.ws.rs</groupId>
+			<artifactId>javax.ws.rs-api</artifactId>
+			<version>${jax.ws.rs.version}</version>
+		</dependency>
+
 		<dependency>
 			<groupId>com.sap.core.odata</groupId>
 			<artifactId>com.sap.core.odata.core</artifactId>
 			<version>${project.version}</version>
 		</dependency>
-		<dependency>
-			<groupId>com.sap.core.odata</groupId>
-			<artifactId>com.sap.core.odata.extensions</artifactId>
-			<version>${project.version}</version>
-		</dependency>
-		
 		<dependency>
 			<groupId>com.sap.core.odata</groupId>
 			<artifactId>com.sap.core.odata.testutils</artifactId>

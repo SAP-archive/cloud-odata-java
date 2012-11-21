@@ -3,10 +3,15 @@ package com.sap.core.odata.ref.model;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.sap.core.odata.api.annotations.EdmEntity;
+import com.sap.core.odata.api.annotations.EdmProperty;
+
+@EdmEntity(name="Team")
 public class Team {
   private static int counter = 1;
   private int id;
   private String name;
+  @EdmProperty(name="isScrumTeam", facet="")
   private boolean isScrumTeam;
   private List<Employee> employees;
 

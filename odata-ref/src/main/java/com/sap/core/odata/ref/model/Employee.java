@@ -5,11 +5,26 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Date;
 
+import com.sap.core.odata.api.annotations.EdmEntity;
+import com.sap.core.odata.api.annotations.EdmNavigationProperty;
+import com.sap.core.odata.api.annotations.EdmProperty;
+import com.sap.core.odata.api.annotations.EdmType;
+import com.sap.core.odata.api.annotations.EdmTypeKind;
+import com.sap.core.odata.api.annotations.EdmTypeId;
+import com.sap.core.odata.ref.edm.ScenarioEdmProvider;
+
+@EdmEntity(name="Employee", 
+            type = @EdmType(value=EdmTypeKind.COMPLEX, namespace=ScenarioEdmProvider.NAMESPACE_1))
 public class Employee {
   private static int counter = 1;
+  @EdmProperty(name="EmployeeIdBensheim", type = @EdmType(EdmTypeKind.INT16))
+  @EdmTypeId
   private int employeeId;
+  @EdmProperty(name="EmployeeName")
   private String employeeName;
+  @EdmProperty(name="Age", type = @EdmType(EdmTypeKind.INT16))
   private int age;
+  @EdmNavigationProperty(name="Manager", navigationName="Managers")
   private Manager manager;
   private Team team;
   private Room room;

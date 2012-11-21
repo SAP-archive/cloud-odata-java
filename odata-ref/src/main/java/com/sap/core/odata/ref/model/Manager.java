@@ -3,6 +3,12 @@ package com.sap.core.odata.ref.model;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.sap.core.odata.api.annotations.EdmEntity;
+import com.sap.core.odata.api.annotations.EdmType;
+import com.sap.core.odata.api.annotations.EdmTypeKind;
+import com.sap.core.odata.ref.edm.ScenarioEdmProvider;
+
+@EdmEntity(name="Manager", type=@EdmType(value=EdmTypeKind.COMPLEX, namespace=ScenarioEdmProvider.NAMESPACE_1))
 public class Manager extends Employee {
 
   private List<Employee> employees = new ArrayList<Employee>();
