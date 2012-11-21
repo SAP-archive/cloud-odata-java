@@ -273,17 +273,17 @@ public class ScenarioDataSource implements ListsDataSource {
   }
 
   @Override
-  public byte[] readBinaryData(final EdmEntitySet entitySet, final Object mediaLinkEntryData) throws ODataNotImplementedException, ODataNotFoundException, EdmException, ODataApplicationException {
+  public byte[] readBinaryData(final EdmEntitySet entitySet, final Object mediaLinkEntryData, StringBuilder mimeType) throws ODataNotImplementedException, ODataNotFoundException, EdmException, ODataApplicationException {
     if (mediaLinkEntryData == null)
       throw new ODataNotFoundException(null);
 
     if ("Employees".equals(entitySet.getName()) || "Managers".equals(entitySet.getName())) {
       final Employee employee = (Employee) mediaLinkEntryData;
-      final String mimeType = employee.getImageType();
+      mimeType.append(employee.getImageType());
       return employee.getImage();
     } else if ("Photos".equals(entitySet.getName())) {
       final Photo photo = (Photo) mediaLinkEntryData;
-      final String mimeType = photo.getType();
+      mimeType.append(photo.getType());
       return photo.getImage();
     } else {
       throw new ODataNotImplementedException();

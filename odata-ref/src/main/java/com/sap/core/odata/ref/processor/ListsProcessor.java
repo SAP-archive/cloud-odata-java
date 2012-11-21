@@ -61,7 +61,6 @@ public class ListsProcessor extends ODataSingleProcessor {
 
   @Override
   public ODataResponse readServiceDocument(final GetServiceDocumentView uriParserResultView) throws ODataException {
-    
     return ODataResponse
         .status(HttpStatusCodes.OK)
         .entity("this should be the service document")
@@ -70,7 +69,7 @@ public class ListsProcessor extends ODataSingleProcessor {
 
   @Override
   public ODataResponse readMetadata(final GetMetadataView uriParserResultView) throws ODataException {
-    EdmServiceMetadata edmServiceMetadata = getContext().getService().getEntityDataModel().getServiceMetadata();
+    final EdmServiceMetadata edmServiceMetadata = getContext().getService().getEntityDataModel().getServiceMetadata();
     return ODataResponse
         .status(HttpStatusCodes.OK)
         .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_XML)
@@ -235,6 +234,7 @@ public class ListsProcessor extends ODataSingleProcessor {
 
     for (EdmProperty property : uriParserResultView.getPropertyPath())
       data = getPropertyValue(data, property);
+
     return ODataResponse
         .status(HttpStatusCodes.OK)
         .entity(data)
@@ -283,13 +283,13 @@ public class ListsProcessor extends ODataSingleProcessor {
     if (!appliesFilter(data, uriParserResultView.getFilter()))
       throw new ODataNotFoundException(ODataNotFoundException.ENTITY);
 
-    String mimeType = null;
-    final byte[] binaryData = dataSource.readBinaryData(uriParserResultView.getTargetEntitySet(), data);
+    StringBuilder mimeType = new StringBuilder();
+    final byte[] binaryData = dataSource.readBinaryData(uriParserResultView.getTargetEntitySet(), data, mimeType);
 
     return ODataResponse
         .status(HttpStatusCodes.OK)
         .header(HttpHeaders.CONTENT_TYPE,
-            mimeType == null ? MediaType.APPLICATION_OCTET_STREAM : mimeType)
+            mimeType.toString().isEmpty() ? MediaType.APPLICATION_OCTET_STREAM : mimeType.toString())
         .entity(binaryData)
         .build();
   }
