@@ -13,6 +13,15 @@
 		<relativePath>..</relativePath>
 	</parent>
 
+	<profiles>
+		<profile>
+			<id>coverage</id>
+			<properties>
+				<coverage.report.excludeFromCoverageDataCreation>true</coverage.report.excludeFromCoverageDataCreation>
+			</properties>
+		</profile>
+	</profiles>
+
 	<dependencies>
 		<dependency>
 			<groupId>com.sap.core.odata</groupId>
