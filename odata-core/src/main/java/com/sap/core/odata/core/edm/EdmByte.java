@@ -10,7 +10,6 @@ import com.sap.core.odata.api.edm.EdmTypeKind;
 
 public class EdmByte implements EdmSimpleType {
 
-  private EdmSimpleTypeKind edmSimpleType = EdmSimpleTypeKind.Byte;
   private static final EdmByte instance = new EdmByte();
 
   private EdmByte() {
@@ -38,37 +37,55 @@ public class EdmByte implements EdmSimpleType {
 
   @Override
   public String getName() throws EdmException {
-    return this.edmSimpleType.toString();
+    return EdmSimpleTypeKind.Byte.toString();
   }
 
   @Override
-  public boolean isCompatible(EdmSimpleType simpleType) {
-    return simpleType instanceof Bit || simpleType instanceof Uint7 || simpleType instanceof EdmByte;
+  public boolean isCompatible(final EdmSimpleType simpleType) {
+    return simpleType instanceof Bit
+        || simpleType instanceof Uint7
+        || simpleType instanceof EdmByte;
   }
 
   @Override
-  public boolean validate(String value, EdmLiteralKind literalKind, EdmFacets facets) {
-    boolean valid = false;
-    if (null != this.valueOfString(value, literalKind, facets)) {
-      valid = true;
+  public boolean validate(final String value, final EdmLiteralKind literalKind, final EdmFacets facets) {
+    try {
+      valueOfString(value, literalKind, facets);
+      return true;
+    } catch (RuntimeException e) {
+      return false;
     }
-    return valid;
   }
 
   @Override
-  public Object valueOfString(String value, EdmLiteralKind literalKind, EdmFacets facets) {
-    // TODO Auto-generated method stub
-    return null;
+  public Object valueOfString(final String value, final EdmLiteralKind literalKind, final EdmFacets facets) {
+    Short valueShort;
+    try {
+      valueShort = Short.parseShort(value);
+    } catch (NumberFormatException e) {
+      throw new IllegalArgumentException(e);
+    }
+    if (valueShort >= 0 && valueShort <= 255)
+      return valueShort;
+    else
+      throw new IllegalArgumentException();
   }
 
   @Override
-  public String valueToString(Object value, EdmLiteralKind literalKind, EdmFacets facets) {
-    // TODO Auto-generated method stub
-    return null;
+  public String valueToString(final Object value, final EdmLiteralKind literalKind, final EdmFacets facets) {
+    if (value == null)
+      return "0";
+    else if (value instanceof Byte || value instanceof Short || value instanceof Integer || value instanceof Long)
+      if (((Number) value).longValue() >= 0 && ((Number) value).longValue() <= 255)
+        return value.toString();
+      else
+        throw new IllegalArgumentException();
+    else
+      throw new IllegalArgumentException();
   }
 
   @Override
-  public String toUriLiteral(String literal) {
+  public String toUriLiteral(final String literal) {
     return literal;
   }
 
