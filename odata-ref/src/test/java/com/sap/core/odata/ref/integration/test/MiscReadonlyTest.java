@@ -11,6 +11,7 @@ import org.junit.Test;
 import com.sap.core.odata.api.exception.ODataException;
 
 /**
+ * Read-only tests employing the reference scenario that use neither XML nor JSON
  * @author SAP AG
  */
 public class MiscReadonlyTest extends AbstractTest {
@@ -62,16 +63,16 @@ public class MiscReadonlyTest extends AbstractTest {
   @Test
   public void mediaResource() throws Exception {
     Response response = callUrl("Employees('3')/$value");
-    // checkMediaType(response, IMAGE_JPEG);
+    checkMediaType(response, IMAGE_JPEG);
     assertNull(response.getEntityTag());
 
     response = callUrl("Managers('1')/$value");
-    // checkMediaType(response, IMAGE_JPEG);
+    checkMediaType(response, IMAGE_JPEG);
     assertNull(response.getEntityTag());
     final byte[] expected = (byte[]) response.getEntity();
 
     response = callUrl("Employees('2')/ne_Manager/$value");
-    // checkMediaType(response, IMAGE_JPEG);
+    checkMediaType(response, IMAGE_JPEG);
     assertNull(response.getEntityTag());
     assertEquals(expected.length, ((byte[]) response.getEntity()).length);
 

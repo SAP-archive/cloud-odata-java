@@ -10,6 +10,7 @@ import javax.ws.rs.core.Response;
 import org.junit.Test;
 
 /**
+ * Read-only tests employing the reference scenario that use the Atom/XML format
  * @author SAP AG
  */
 public class XmlReadonlyTest extends AbstractTest {
@@ -27,6 +28,46 @@ public class XmlReadonlyTest extends AbstractTest {
   private static final String EMPLOYEE_6_AGE = "29";
 
   private static final String CITY_2_NAME = "Walldorf";
+
+  @Test
+  public void serviceDocument() throws Exception {
+    Response response = callUrl("/");
+    // checkMediaType(response, new MediaType("application", "atomsvc+xml"));
+
+    // notFound("invalid.svc/");
+  }
+
+  @Test
+  public void metadataDocument() throws Exception {
+    Response response = callUrl("$metadata");
+    checkMediaType(response, MediaType.APPLICATION_XML_TYPE);
+    // assertTrue(response.getEntity().toString().contains("c_Location"));
+    // assertTrue(response.getEntity().toString().contains("c_City"));
+    // assertTrue(response.getEntity().toString().contains("Container1"));
+
+    // notFound("$invalid");
+    // badRequest("$metadata?$format=json");
+  }
+
+  @Test
+  public void feed() throws Exception {
+    Response response = callUrl("Employees()");
+    // checkMediaType(response, MediaType.APPLICATION_ATOM_XML_TYPE);
+    // TODO: check content
+
+    response = callUrl("Rooms()");
+    // checkMediaType(response, MediaType.APPLICATION_ATOM_XML_TYPE);
+
+    // notFound("$top");
+  }
+
+  @Test
+  public void entry() throws Exception {
+  }
+
+  @Test
+  public void mediaResourceLink() throws Exception {
+  }
 
   @Test
   public void functionImport() throws Exception {

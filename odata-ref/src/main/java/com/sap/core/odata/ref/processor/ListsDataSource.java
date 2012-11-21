@@ -74,9 +74,11 @@ public interface ListsDataSource {
    * the specified media-link entry.</p>
    * @param entitySet  the {@link EdmEntitySet} of the media-link entry
    * @param mediaLinkEntryData  the data object of the media-link entry
+   * @param mimeType  an empty {@link StringBuilder} to which the MIME type
+   *                  of the binary data should be appended
    * @return the binary data of the media resource
    */
-  byte[] readBinaryData(EdmEntitySet entitySet, Object mediaLinkEntryData) throws ODataNotImplementedException, ODataNotFoundException, EdmException, ODataApplicationException;
+  byte[] readBinaryData(EdmEntitySet entitySet, Object mediaLinkEntryData, StringBuilder mimeType) throws ODataNotImplementedException, ODataNotFoundException, EdmException, ODataApplicationException;
 
   /**
    * <p>Creates and returns a new instance of the requested data-object type.</p>
