@@ -10,7 +10,6 @@ import com.sap.core.odata.api.edm.EdmTypeKind;
 
 public class EdmBoolean implements EdmSimpleType {
 
-  private EdmSimpleTypeKind edmSimpleType = EdmSimpleTypeKind.Boolean;
   private static final EdmBoolean instance = new EdmBoolean();
 
   private EdmBoolean() {
@@ -38,37 +37,49 @@ public class EdmBoolean implements EdmSimpleType {
 
   @Override
   public String getName() throws EdmException {
-    return this.edmSimpleType.toString();
+    return EdmSimpleTypeKind.Boolean.toString();
   }
 
   @Override
-  public boolean isCompatible(EdmSimpleType simpleType) {
+  public boolean isCompatible(final EdmSimpleType simpleType) {
     return simpleType instanceof Bit || simpleType instanceof EdmBoolean;
   }
 
   @Override
-  public boolean validate(String value, EdmLiteralKind literalKind, EdmFacets facets) {
-    boolean valid = false;
-    if (null != this.valueOfString(value, literalKind, facets)) {
-      valid = true;
-    }
-    return valid;
+  public boolean validate(final String value, final EdmLiteralKind literalKind, final EdmFacets facets) {
+    if (value == null)
+      return facets == null || facets.isNullable() == null || facets.isNullable();
+    else
+      return "true".equals(value) || "1".equals(value)
+          || "false".equals(value) || "0".equals(value);
   }
 
   @Override
-  public Object valueOfString(String value, EdmLiteralKind literalKind, EdmFacets facets) {
-    // TODO Auto-generated method stub
-    return null;
+  public Object valueOfString(final String value, final EdmLiteralKind literalKind, final EdmFacets facets) {
+    if (validate(value, literalKind, facets))
+      if (value == null)
+        return null;
+      else
+        return "true".equals(value) || "1".equals(value);
+    else
+      throw new IllegalArgumentException();
   }
 
   @Override
-  public String valueToString(Object value, EdmLiteralKind literalKind, EdmFacets facets) {
-    // TODO Auto-generated method stub
-    return null;
+  public String valueToString(final Object value, final EdmLiteralKind literalKind, final EdmFacets facets) {
+    if (value == null)
+      if (facets == null || facets.isNullable() == null || facets.isNullable())
+        return null;
+      else
+        throw new IllegalArgumentException();
+    else if (value instanceof Boolean)
+      return (Boolean) value ? "true" : "false";
+    else
+      throw new IllegalArgumentException();
   }
 
   @Override
-  public String toUriLiteral(String literal) {
+  public String toUriLiteral(final String literal) {
     return literal;
   }
 }

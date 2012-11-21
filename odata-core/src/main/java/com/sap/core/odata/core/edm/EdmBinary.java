@@ -98,10 +98,17 @@ public class EdmBinary implements EdmSimpleType {
 
   @Override
   public String valueToString(final Object value, final EdmLiteralKind literalKind, final EdmFacets facets) {
-    if (!(value instanceof byte[]))
+    byte[] byteArrayValue;
+    if (value instanceof byte[]) {
+      byteArrayValue = (byte[]) value;
+    } else if (value instanceof Byte[]) {
+      final int length = ((Byte[]) value).length;
+      byteArrayValue = new byte[length];
+      for (int i = 0; i < length; i++)
+        byteArrayValue[i] = ((Byte[]) value)[i].byteValue();
+    } else {
       throw new IllegalArgumentException();
-
-    final byte[] byteArrayValue = (byte[]) value;
+    }
 
     if (facets != null && facets.getMaxLength() != null && byteArrayValue.length > facets.getMaxLength())
       throw new IllegalArgumentException();
