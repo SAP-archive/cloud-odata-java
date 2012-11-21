@@ -1,19 +1,33 @@
 package com.sap.core.odata.api.edm;
 
+/**
+ * @author SAP AG
+ *
+ */
 public class FullQualifiedName {
 
   private String namespace;
   private String name;
 
+  /**
+   * @param namespace
+   * @param name
+   */
   public FullQualifiedName(String namespace, String name) {
     this.namespace = namespace;
     this.name = name;
   }
 
+  /**
+   * @return
+   */
   public String getNamespace() {
     return namespace;
   }
 
+  /**
+   * @return
+   */
   public String getName() {
     return name;
   }
