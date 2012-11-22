@@ -19,112 +19,141 @@ public class Schema {
   private Annotations annotations;
 
   /**
+   * MANDATORY
+   * <p>Sets the namespace for this {@link Schema}
    * @param namespace
+   * @return {@link Schema} for method chaining
    */
-  public void setNamespace(String namespace) {
+  public Schema setNamespace(String namespace) {
     this.namespace = namespace;
+    return this;
   }
 
   /**
+   * Sets the alias for this {@link Schema}
    * @param alias
+   * @return {@link Schema} for method chaining
    */
-  public void setAlias(String alias) {
+  public Schema setAlias(String alias) {
     this.alias = alias;
+    return this;
   }
 
   /**
+   * Sets the {@link Using} for this {@link Schema}
    * @param usings
+   * @return {@link Schema} for method chaining
    */
-  public void setUsings(List<Using> usings) {
+  public Schema setUsings(List<Using> usings) {
     this.usings = usings;
+    return this;
   }
 
   /**
+   * MANDATORY
+   * <p>Sets the {@link EntityType}s for this {@link Schema}
    * @param entityTypes
+   * @return {@link Schema} for method chaining
    */
-  public void setEntityTypes(List<EntityType> entityTypes) {
+  public Schema setEntityTypes(List<EntityType> entityTypes) {
     this.entityTypes = entityTypes;
+    return this;
   }
 
   /**
+   * MANDATORY
+   * <p>Sets the {@link ComplexType}s for this {@link Schema}
    * @param complexTypes
+   * @return {@link Schema} for method chaining
    */
-  public void setComplexTypes(List<ComplexType> complexTypes) {
+  public Schema setComplexTypes(List<ComplexType> complexTypes) {
     this.complexTypes = complexTypes;
+    return this;
   }
 
   /**
+   * MANDATORY
+   * <p>Sets the {@link Association}s for this {@link Schema}
    * @param associations
+   * @return {@link Schema} for method chaining
    */
-  public void setAssociations(List<Association> associations) {
+  public Schema setAssociations(List<Association> associations) {
     this.associations = associations;
+    return this;
   }
 
   /**
+   * MANDATORY
+   * <p>Sets the {@link EntityContainer}s for this {@link Schema}
    * @param entityContainers
+   * @return {@link Schema} for method chaining
    */
-  public void setEntityContainers(List<EntityContainer> entityContainers) {
+  public Schema setEntityContainers(List<EntityContainer> entityContainers) {
     this.entityContainers = entityContainers;
+    return this;
   }
 
   /**
+   * Sets the {@link Annotations} for this {@link Schema}
    * @param annotations
+   * @return {@link Schema} for method chaining
    */
-  public void setAnnotations(Annotations annotations) {
+  public Schema setAnnotations(Annotations annotations) {
     this.annotations = annotations;
+    return this;
   }
 
   /**
-   * @return
+   * @return <b>String</b> namespace of this {@link Schema}
    */
   public String getNamespace() {
     return namespace;
   }
 
   /**
-   * @return
+   * @return <b>String</b> alias of this {@link Schema}
    */
   public String getAlias() {
     return alias;
   }
 
   /**
-   * @return
+   * @return List<{@link Using}> of this {@link Schema}
    */
   public List<Using> getUsings() {
     return usings;
   }
 
   /**
-   * @return
+   * @return List<{@link EntityType}> of this {@link Schema}
    */
   public List<EntityType> getEntityTypes() {
     return entityTypes;
   }
 
   /**
-   * @return
+   * @return List<{@link ComplexType}> of this {@link Schema}
    */
   public List<ComplexType> getComplexTypes() {
     return complexTypes;
   }
 
   /**
-   * @return
+   * @return List<{@link Association}> of this {@link Schema}
    */
   public List<Association> getAssociations() {
     return associations;
   }
 
   /**
-   * @return
+   * @return List<{@link EntityContainer}> of this {@link Schema}
    */
   public List<EntityContainer> getEntityContainers() {
     return entityContainers;
   }
 
   /**
-   * @return
+   * @return {@link Annotations} annotations
    */
   public Annotations getAnnotations() {
     return annotations;

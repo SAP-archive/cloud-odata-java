@@ -7,7 +7,8 @@ import com.sap.core.odata.api.edm.FullQualifiedName;
 
 /**
  * @author SAP AG
- *
+ *<p>
+ * Objects of this class represent a property of an entity type in the EDM
  */
 public class Property {
 

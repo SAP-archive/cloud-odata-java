@@ -2,7 +2,7 @@ package com.sap.core.odata.api.edm.provider;
 
 /**
  * @author SAP AG
- *
+ * <p>Objects of this Class represent a referential constraint role
  */
 public class ReferentialConstraintRole {
 
@@ -11,29 +11,31 @@ public class ReferentialConstraintRole {
   private Annotations annotations;
 
   /**
-   * @return
+   * @return <b>String</b> role of this {@link ReferentialConstraintRole}
    */
   public String getRole() {
     return role;
   }
 
   /**
-   * @return
+   * @return {@link PropertyRef} which this {@link ReferentialConstraintRole} points to
    */
   public PropertyRef getPropertyRef() {
     return propertyRef;
   }
 
   /**
-   * @return
+   * @return {@link Annotations} annotations
    */
   public Annotations getAnnotations() {
     return annotations;
   }
 
   /**
+   * MANDATORY
+   * <p> Sets the role of this {@link ReferentialConstraintRole}
    * @param role
-   * @return
+   * @return {@link ReferentialConstraintRole} for method chaining
    */
   public ReferentialConstraintRole setRole(String role) {
     this.role = role;
@@ -41,8 +43,10 @@ public class ReferentialConstraintRole {
   }
 
   /**
+   * MANDATORY
+   * <p> Sets the {@link Property} of this {@link ReferentialConstraintRole} through a {@link PropertyRef}
    * @param propertyRef
-   * @return
+   * @return {@link ReferentialConstraintRole} for method chaining
    */
   public ReferentialConstraintRole setPropertyRef(PropertyRef propertyRef) {
     this.propertyRef = propertyRef;
@@ -50,8 +54,9 @@ public class ReferentialConstraintRole {
   }
 
   /**
+   * Sets the {@link Annotations} for this {@link ReferentialConstraintRole}
    * @param annotations
-   * @return
+   * @return {@link ReferentialConstraintRole} for method chaining
    */
   public ReferentialConstraintRole setAnnotations(Annotations annotations) {
     this.annotations = annotations;
