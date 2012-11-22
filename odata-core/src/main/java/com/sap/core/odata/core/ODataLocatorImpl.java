@@ -23,6 +23,7 @@ import javax.ws.rs.core.UriInfo;
 
 import com.sap.core.odata.api.exception.ODataBadRequestException;
 import com.sap.core.odata.api.exception.ODataException;
+import com.sap.core.odata.api.exception.ODataNotFoundException;
 import com.sap.core.odata.api.processor.ODataPathSegment;
 import com.sap.core.odata.api.processor.ODataResponse;
 import com.sap.core.odata.api.service.ODataService;
@@ -132,6 +133,13 @@ public final class ODataLocatorImpl {
       odataPathSegements = param.getPathSegments().subList(param.getPathSplit(), pathSegmentCount);
     }
 
+    // post condition: we do not allow matrix parameter in OData path segments
+    for(PathSegment ps : odataPathSegements) {
+      if (!ps.getMatrixParameters().isEmpty()) {
+        throw new ODataNotFoundException(ODataNotFoundException.MATRIX);
+      }
+    }
+    
     this.context.setODataPathSegment(this.convertPathSegmentList(odataPathSegements));
     this.context.setPrecedingPathSegment(this.convertPathSegmentList(precedingPathSegements));
   }

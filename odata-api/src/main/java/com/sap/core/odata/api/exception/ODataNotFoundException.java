@@ -11,6 +11,8 @@ public class ODataNotFoundException extends ODataHttpException {
 
   public static final MessageReference ENTITY = createMessageReference(ODataNotFoundException.class, "ENTITY");
 
+  public static final MessageReference MATRIX = createMessageReference(ODataNotFoundException.class, "MATRIX");
+
   public ODataNotFoundException(MessageReference context) {
     super(context, HttpStatusCodes.NOT_FOUND);
   }
