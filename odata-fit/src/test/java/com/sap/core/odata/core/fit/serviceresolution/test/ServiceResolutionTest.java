@@ -186,4 +186,16 @@ public class ServiceResolutionTest {
     assertEquals("aaa", ctx.getPrecedingPathSegmentList().get(0).getPath());
   }
 
+  @Test
+  public void testNoMatrixParameterInODataPath() throws ClientProtocolException, IOException, ODataException {
+    this.server.setPathSplit(0);
+    this.server.startServer(ServiceFactory.class);
+
+    HttpGet get = new HttpGet(URI.create(this.server.getEndpoint().toString() + "/$metadata;matrix"));
+    HttpResponse response = this.httpClient.execute(get);
+
+    assertEquals(404, response.getStatusLine().getStatusCode());
+  }
+
+
 }
