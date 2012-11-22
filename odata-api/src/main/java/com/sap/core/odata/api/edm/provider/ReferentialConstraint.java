@@ -2,7 +2,7 @@ package com.sap.core.odata.api.edm.provider;
 
 /**
  * @author SAP AG
- *
+ * <p>Objects of this Class represent a referential constraint
  */
 public class ReferentialConstraint {
 
@@ -12,36 +12,38 @@ public class ReferentialConstraint {
   private Annotations annotations;
 
   /**
-   * @return
+   * @return {@link ReferentialConstraintRole} the principal of this {@link ReferentialConstraint}
    */
   public ReferentialConstraintRole getPrincipal() {
     return principal;
   }
 
   /**
-   * @return
+   * @return {@link ReferentialConstraintRole} the dependent of this {@link ReferentialConstraint}
    */
   public ReferentialConstraintRole getDependent() {
     return dependent;
   }
 
   /**
-   * @return
+   * @return {@link Documentation} documentation
    */
   public Documentation getDocumentation() {
     return documentation;
   }
 
   /**
-   * @return
+   * @return {@link Annotations} annotations
    */
   public Annotations getAnnotations() {
     return annotations;
   }
 
   /**
+   * MANDATORY
+   * <p>Sets the principal {@link ReferentialConstraintRole} for this {@link ReferentialConstraint}
    * @param principal
-   * @return
+   * @return {@link ReferentialConstraint} for method chaining
    */
   public ReferentialConstraint setPrincipal(ReferentialConstraintRole principal) {
     this.principal = principal;
@@ -49,8 +51,10 @@ public class ReferentialConstraint {
   }
 
   /**
+   * MANDATORY
+   * <p>Sets the dependent {@link ReferentialConstraintRole} for this {@link ReferentialConstraint}
    * @param dependent
-   * @return
+   * @return {@link ReferentialConstraint} for method chaining
    */
   public ReferentialConstraint setDependent(ReferentialConstraintRole dependent) {
     this.dependent = dependent;
@@ -58,8 +62,9 @@ public class ReferentialConstraint {
   }
 
   /**
+   * Sets the {@link Documentation} of this {@link ReferentialConstraint}
    * @param documentation
-   * @return
+   * @return {@link ReferentialConstraint} for method chaining
    */
   public ReferentialConstraint setDocumentation(Documentation documentation) {
     this.documentation = documentation;
@@ -67,8 +72,9 @@ public class ReferentialConstraint {
   }
 
   /**
+   * Sets the {@link Annotations} of this {@link ReferentialConstraint}
    * @param annotations
-   * @return
+   * @return {@link ReferentialConstraint} for method chaining
    */
   public ReferentialConstraint setAnnotations(Annotations annotations) {
     this.annotations = annotations;

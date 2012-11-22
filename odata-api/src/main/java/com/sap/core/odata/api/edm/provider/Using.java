@@ -12,56 +12,70 @@ public class Using {
   private Annotations annotations;
 
   /**
+   * MANDATORY
+   * <p>Sets the namespace for this {@link Using}
    * @param namespace
+   * @return {@link Using} for method chaining
    */
-  public void setNamespace(String namespace) {
+  public Using setNamespace(String namespace) {
     this.namespace = namespace;
+    return this;
   }
 
   /**
+   * MANDATORY
+   * <p>Sets the alias for this {@link Using}
    * @param alias
+   * @return {@link Using} for method chaining
    */
-  public void setAlias(String alias) {
+  public Using setAlias(String alias) {
     this.alias = alias;
+    return this;
   }
 
   /**
+   * Sets the {@link Documentation} for this {@link Using}
    * @param documentation
+   * @return {@link Using} for method chaining
    */
-  public void setDocumentation(Documentation documentation) {
+  public Using setDocumentation(Documentation documentation) {
     this.documentation = documentation;
+    return this;
   }
 
   /**
+   * Sets the {@link Annotations} for this {@link Using}
    * @param annotations
+   * @return {@link Using} for method chaining
    */
-  public void setAnnotations(Annotations annotations) {
+  public Using setAnnotations(Annotations annotations) {
     this.annotations = annotations;
+    return this;
   }
 
   /**
-   * @return
+   * @return <b>String</b> namespace
    */
   public String getNamespace() {
     return namespace;
   }
 
   /**
-   * @return
+   * @return <b>String</b> alias
    */
   public String getAlias() {
     return alias;
   }
 
   /**
-   * @return
+   * @return {@link Documentation} documentation
    */
   public Documentation getDocumentation() {
     return documentation;
   }
 
   /**
-   * @return
+   * @return {@link Annotations} annotations
    */
   public Annotations getAnnotations() {
     return annotations;

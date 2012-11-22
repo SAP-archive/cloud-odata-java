@@ -10,22 +10,24 @@ public class PropertyRef {
   private Annotations annotations;
 
   /**
-   * @return
+   * @return <b>String</b> name of the {@link Property} this {@link PropertyRef} is referencing to
    */
   public String getName() {
     return name;
   }
 
   /**
-   * @return
+   * @return {@link Annotations} annotations
    */
   public Annotations getAnnotations() {
     return annotations;
   }
 
   /**
+   * MANDATORY
+   * <p>Sets the name of this {@link PropertyRef}. The name is also the name of the {@link Property} this reference is pointing to.
    * @param name
-   * @return
+   * @return {@link PropertyRef} for method chaining
    */
   public PropertyRef setName(String name) {
     this.name = name;
@@ -33,8 +35,9 @@ public class PropertyRef {
   }
 
   /**
+   * Sets the {@link Annotations} for this {@link PropertyRef}
    * @param annotations
-   * @return
+   * @return {@link PropertyRef} for method chaining
    */
   public PropertyRef setAnnotations(Annotations annotations) {
     this.annotations = annotations;

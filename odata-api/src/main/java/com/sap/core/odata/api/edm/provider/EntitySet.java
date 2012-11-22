@@ -83,6 +83,5 @@ public class EntitySet {
     this.annotations = annotations;
     return this;
   }
-  
-  
+
 }

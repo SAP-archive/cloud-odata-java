@@ -5,7 +5,7 @@ import com.sap.core.odata.api.edm.FullQualifiedName;
 
 /**
  * @author SAP AG
- *
+ * <p>Objects of this Class represent a return type
  */
 public class ReturnType {
 
@@ -13,22 +13,24 @@ public class ReturnType {
   private EdmMultiplicity multiplicity;
 
   /**
-   * @return
+   * @return {@link FullQualifiedName} of this {@link ReturnType}
    */
   public FullQualifiedName getQualifiedName() {
     return qualifiedName;
   }
 
   /**
-   * @return
+   * @return {@link EdmMultiplicity} of this {@link ReturnType}
    */
   public EdmMultiplicity getMultiplicity() {
     return multiplicity;
   }
 
   /**
+   * MANDATORY
+   * <p>Sets the {@link FullQualifiedName} of this {@link ReturnType}
    * @param qualifiedName
-   * @return
+   * @return {@link ReturnType} for method chaining
    */
   public ReturnType setQualifiedName(FullQualifiedName qualifiedName) {
     this.qualifiedName = qualifiedName;
@@ -36,8 +38,10 @@ public class ReturnType {
   }
 
   /**
+   * MANDATORY
+   * <p>Sets the {@link EdmMultiplicity} of this {@link ReturnType}
    * @param multiplicity
-   * @return
+   * @return {@link ReturnType} for method chaining
    */
   public ReturnType setMultiplicity(EdmMultiplicity multiplicity) {
     this.multiplicity = multiplicity;

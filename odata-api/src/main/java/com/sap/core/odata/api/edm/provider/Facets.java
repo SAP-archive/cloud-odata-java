@@ -179,6 +179,5 @@ public class Facets implements EdmFacets {
     this.concurrencyMode = concurrencyMode;
     return this;
   }
-  
-  
+
 }

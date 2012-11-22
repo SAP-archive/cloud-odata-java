@@ -121,6 +121,5 @@ public class AssociationSet {
     this.annotations = annotations;
     return this;
   }
-  
-  
+
 }
