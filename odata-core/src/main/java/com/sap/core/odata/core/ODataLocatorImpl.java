@@ -106,7 +106,7 @@ public final class ODataLocatorImpl {
   public void initialize(InitParameter param) throws ODataException {
     this.splitPath(param);
 
-    this.queryParameters = this.convertToSinglevaluedMap(param.getUriInfo().getQueryParameters());
+    this.queryParameters = this.convertToSinglevaluedMap(param.getUriInfo().getQueryParameters()); 
 
     this.service = param.getServiceFactory().createService();
     this.context.setService(this.service);
@@ -135,7 +135,7 @@ public final class ODataLocatorImpl {
 
     // post condition: we do not allow matrix parameter in OData path segments
     for(PathSegment ps : odataPathSegements) {
-      if (!ps.getMatrixParameters().isEmpty()) {
+      if (ps.getMatrixParameters() != null && !ps.getMatrixParameters().isEmpty()) {
         throw new ODataNotFoundException(ODataNotFoundException.MATRIX);
       }
     }
