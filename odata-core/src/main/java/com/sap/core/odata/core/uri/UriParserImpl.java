@@ -29,6 +29,7 @@ import com.sap.core.odata.api.edm.EdmTypeKind;
 import com.sap.core.odata.api.edm.EdmTyped;
 import com.sap.core.odata.api.enums.Format;
 import com.sap.core.odata.api.enums.InlineCount;
+import com.sap.core.odata.api.processor.ODataPathSegment;
 import com.sap.core.odata.api.uri.KeyPredicate;
 import com.sap.core.odata.api.uri.NavigationPropertySegment;
 import com.sap.core.odata.api.uri.NavigationSegment;
@@ -70,8 +71,8 @@ public class UriParserImpl implements UriParser {
    * @throws UriParserException
    */
   @Override
-  public UriParserResult parse(final List<String> pathSegments, final Map<String, String> queryParameters) throws UriParserException {
-    this.pathSegments = pathSegments;
+  public UriParserResult parse(final List<ODataPathSegment> pathSegments, final Map<String, String> queryParameters) throws UriParserException {
+    this.pathSegments = this.copyPathSegmentList(pathSegments);
     systemQueryOptions = new HashMap<SystemQueryOption, String>();
     otherQueryParameters = new HashMap<String, String>();
     uriResult = new UriParserResultImpl();
@@ -697,5 +698,15 @@ public class UriParserImpl implements UriParser {
       }
 
     uriResult.setCustomQueryOptions(otherQueryParameters);
+  }
+  
+  private List<String> copyPathSegmentList(List<ODataPathSegment> source) {
+    List<String> copy = new ArrayList<String>();
+    
+    for(ODataPathSegment segement : source) {
+      copy.add(segement.getPath());
+    }
+    
+    return copy;
   }
 }

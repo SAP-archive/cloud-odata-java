@@ -9,7 +9,6 @@ import com.sap.core.odata.api.edm.EdmFacets;
  */
 public class Facets implements EdmFacets {
 
-  ///TODO: Revisit javadoc for mandatory methods
   Boolean nullable;
   String defaultValue;
   Integer maxLength;

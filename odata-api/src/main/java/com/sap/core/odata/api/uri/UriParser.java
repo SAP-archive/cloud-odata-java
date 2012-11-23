@@ -3,6 +3,8 @@ package com.sap.core.odata.api.uri;
 import java.util.List;
 import java.util.Map;
 
+import com.sap.core.odata.api.processor.ODataPathSegment;
+
 /**
  * @author SAP AG
  * Uri parser interface
@@ -16,6 +18,6 @@ public interface UriParser {
    * @return {@link UriParserResult} the parsing result
    * @throws UriParserException
    */
-  public UriParserResult parse(List<String> pathSegments, Map<String, String> queryParameters) throws UriParserException;
+  public UriParserResult parse(List<ODataPathSegment> pathSegments, Map<String, String> queryParameters) throws UriParserException;
 
 }

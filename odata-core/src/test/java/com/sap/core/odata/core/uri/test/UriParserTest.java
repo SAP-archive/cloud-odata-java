@@ -25,8 +25,10 @@ import com.sap.core.odata.api.edm.EdmTypeKind;
 import com.sap.core.odata.api.enums.Format;
 import com.sap.core.odata.api.enums.InlineCount;
 import com.sap.core.odata.api.exception.MessageReference;
+import com.sap.core.odata.api.processor.ODataPathSegment;
 import com.sap.core.odata.api.uri.UriParserException;
 import com.sap.core.odata.api.uri.UriParserResult;
+import com.sap.core.odata.core.ODataPathSegmentImpl;
 import com.sap.core.odata.core.uri.UriParserImpl;
 import com.sap.core.odata.core.uri.UriParserResultImpl;
 import com.sap.core.odata.core.uri.UriType;
@@ -58,7 +60,7 @@ public class UriParserTest {
     if (path.length > 2)
       throw new UriParserException(UriParserException.URISYNTAX);
 
-    final List<String> pathSegments = getPathSegments(path[0]);
+    final List<ODataPathSegment> pathSegments = getPathSegments(path[0]);
     Map<String, String> queryParameters;
     if (path.length == 2) {
       queryParameters = getQueryParameters(unescape(path[1]));
@@ -71,11 +73,12 @@ public class UriParserTest {
     return (UriParserResultImpl) result;
   }
 
-  private List<String> getPathSegments(final String uri) throws UriParserException {
-    List<String> pathSegments = new ArrayList<String>();
+  private List<ODataPathSegment> getPathSegments(final String uri) throws UriParserException {
+    List<ODataPathSegment> pathSegments = new ArrayList<ODataPathSegment>();
     for (final String segment : uri.split("/", -1)) {
       final String unescapedSegment = unescape(segment);
-      pathSegments.add(unescapedSegment);
+      ODataPathSegment oDataSegment = new ODataPathSegmentImpl(unescapedSegment, null);
+      pathSegments.add(oDataSegment);
     }
     return pathSegments;
   }
@@ -91,7 +94,7 @@ public class UriParserTest {
     }
     return queryParameters;
   }
-
+  
   private String unescape(final String s) throws UriParserException {
     try {
       return new URI(s).getPath();
@@ -111,6 +114,17 @@ public class UriParserTest {
   }
 
   @Test
+  public void copyPathSegmentsTest() throws Exception {
+   List<ODataPathSegment> pathSegments = new ArrayList<ODataPathSegment>();
+   pathSegments.add(new ODataPathSegmentImpl("$metadata", null));
+   UriParserResult result = new UriParserImpl(edm).parse(pathSegments, Collections.<String, String> emptyMap());
+   assertNotNull(result);
+   assertEquals(1, pathSegments.size());
+   assertEquals("$metadata", pathSegments.get(0).getPath());
+   
+  }
+  
+  @Test
   public void parseNonsens() throws Exception {
     parseWrongUri("/bla", UriParserException.NOTFOUND);
   }
@@ -123,7 +137,7 @@ public class UriParserTest {
     result = parse("");
     assertEquals(UriType.URI0, result.getUriType());
 
-    result = (UriParserResultImpl) new UriParserImpl(edm).parse(Collections.<String> emptyList(), Collections.<String, String> emptyMap());
+    result = (UriParserResultImpl) new UriParserImpl(edm).parse(Collections.<ODataPathSegment> emptyList(), Collections.<String, String> emptyMap());
     assertEquals(UriType.URI0, result.getUriType());
   }
 

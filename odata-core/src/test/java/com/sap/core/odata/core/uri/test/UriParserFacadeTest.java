@@ -13,7 +13,7 @@ public class UriParserFacadeTest {
   @Test
   public void parseWithFacade() throws Exception {
     Map<String, String> queryParameter = new HashMap<String, String>();
-    UriParserFacade.parse(MockFacade.getMockEdm(), MockFacade.getPathSegmentsAsStringMock(), queryParameter);
+    UriParserFacade.parse(MockFacade.getMockEdm(), MockFacade.getPathSegmentsAsODataPathSegmentMock(), queryParameter);
   }
 
 }

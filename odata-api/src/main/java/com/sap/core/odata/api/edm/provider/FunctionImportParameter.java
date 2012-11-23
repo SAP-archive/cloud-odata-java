@@ -38,7 +38,6 @@ public class FunctionImportParameter {
     return qualifiedName;
   }
 
-  //TODO: shouldnt these be Facets?
   /**
    * @return {@link EdmFacets} of this parameter
    */
