@@ -1,6 +1,6 @@
 package com.sap.core.odata.api.exception;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -14,9 +14,15 @@ public abstract class MessageReference {
   private final String key;
   private final List<Object> content;
 
+  // because of use of 'Collections.EMPTY_LIST' we need a @SuppressWarnings("unchecked") annotation
+  @SuppressWarnings("unchecked")
   private MessageReference(String key) {
+    this(key, Collections.EMPTY_LIST);
+  }
+
+  private MessageReference(String key, List<Object> content) {
     this.key = key;
-    this.content = new ArrayList<Object>();
+    this.content = content;
   }
 
   /**
@@ -33,17 +39,31 @@ public abstract class MessageReference {
     return new SimpleMessageReference(clazz.getName() + "." + key);
   }
 
+  /**
+   * Returns message key.
+   * 
+   * @return
+   */
   public String getKey() {
     return key;
   }
 
+  /**
+   * Add given content to message reference.
+   * 
+   * @param content
+   * @return
+   */
   public MessageReference addContent(Object... content) {
-    for (Object c : content) {
-      this.content.add(c);
-    }
-    return this;
+    return new SimpleMessageReference(this.key, content);
   }
 
+  /**
+   * Receive content for this {@link MessageReference}.
+   * Beware that returned list is immutable.
+   * 
+   * @return
+   */
   public List<Object> getContent() {
     return Collections.unmodifiableList(content);
   }
@@ -55,6 +75,12 @@ public abstract class MessageReference {
   private static class SimpleMessageReference extends MessageReference {
     public SimpleMessageReference(String implKey) {
       super(implKey);
+    }
+    public SimpleMessageReference(String implKey, List<Object> content) {
+      super(implKey, content);
+    }
+    public SimpleMessageReference(String implKey, Object ... content) {
+      super(implKey, Arrays.asList(content));
     }
   }
 }
