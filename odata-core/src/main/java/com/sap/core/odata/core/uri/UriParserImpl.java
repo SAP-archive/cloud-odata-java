@@ -403,7 +403,7 @@ public class UriParserImpl implements UriParser {
         throw new UriParserException(UriParserException.DUPLICATEKEYNAMES);
       parsedKeyProperties.add(keyProperty);
 
-      final UriLiteral uriLiteral = simpleTypeFacade.parse(value);
+      final UriLiteral uriLiteral = simpleTypeFacade.parseUriLiteral(value);
 
       if (!((EdmSimpleType) keyProperty.getType()).isCompatible(uriLiteral.getType()))
         throw new UriParserException(UriParserException.INCOMPATIBLELITERAL);
@@ -691,7 +691,7 @@ public class UriParserImpl implements UriParser {
             continue;
           else
             throw new UriParserException(UriParserException.MISSINGPARAMETER);
-        final UriLiteral uriLiteral = simpleTypeFacade.parse(value);
+        final UriLiteral uriLiteral = simpleTypeFacade.parseUriLiteral(value);
         if (!((EdmSimpleType) parameter.getType()).isCompatible(uriLiteral.getType()))
           throw new UriParserException(UriParserException.INCOMPATIBLELITERAL);
         uriResult.addFunctionImportParameter(parameterName, uriLiteral);

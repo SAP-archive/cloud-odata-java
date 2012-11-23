@@ -4,7 +4,6 @@ import com.sap.core.odata.api.edm.EdmException;
 import com.sap.core.odata.api.edm.EdmFacets;
 import com.sap.core.odata.api.edm.EdmLiteralKind;
 import com.sap.core.odata.api.edm.EdmSimpleType;
-import com.sap.core.odata.api.edm.EdmSimpleTypeFacade;
 import com.sap.core.odata.api.edm.EdmSimpleTypeKind;
 import com.sap.core.odata.api.edm.EdmTypeKind;
 
@@ -31,7 +30,7 @@ public class EdmBoolean implements EdmSimpleType {
 
   @Override
   public String getNamespace() throws EdmException {
-    return EdmSimpleTypeFacade.edmNamespace;
+    return EdmSimpleTypeKind.edmNamespace;
   }
 
   @Override

@@ -163,7 +163,7 @@ public class Tokenizer
 
         try
         {
-          uriLiteral = typeDectector.parse(token);
+          uriLiteral = typeDectector.parseUriLiteral(token);
         } catch (UriParserException ex)
         {
           // TODO:  create method for InvalidStringToken ID
@@ -245,7 +245,7 @@ public class Tokenizer
 
           try
           {
-            uriLiteral = typeDectector.parse(token);
+            uriLiteral = typeDectector.parseUriLiteral(token);
 
           } catch (UriParserException ex)
           {
@@ -289,7 +289,7 @@ public class Tokenizer
           token = matcher.group(1);
           try
           {
-            uriLiteral = typeDectector.parse(token);
+            uriLiteral = typeDectector.parseUriLiteral(token);
             curPosition = curPosition + token.length();
             appendEdmTypedToken(tokens, oldPosition, TokenKind.TYPED_LITERAL, uriLiteral);
             break;

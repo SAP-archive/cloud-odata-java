@@ -18,7 +18,7 @@ import com.sap.core.odata.api.edm.EdmLiteralKind;
 import com.sap.core.odata.api.edm.EdmProperty;
 import com.sap.core.odata.api.edm.EdmServiceMetadata;
 import com.sap.core.odata.api.edm.EdmSimpleType;
-import com.sap.core.odata.api.edm.EdmSimpleTypeFacade;
+import com.sap.core.odata.api.edm.EdmSimpleTypeKind;
 import com.sap.core.odata.api.edm.EdmTypeKind;
 import com.sap.core.odata.api.enums.HttpStatusCodes;
 import com.sap.core.odata.api.enums.InlineCount;
@@ -265,7 +265,7 @@ public class ListsProcessor extends ODataSingleProcessor {
     return ODataResponse
         .status(HttpStatusCodes.OK)
         .header(HttpHeaders.CONTENT_TYPE,
-            (EdmSimpleType) property.getType() == EdmSimpleTypeFacade.binaryInstance() ?
+            (EdmSimpleType) property.getType() == EdmSimpleTypeKind.binaryInstance() ?
                 property.getMimeType() : MediaType.TEXT_PLAIN)
         .entity(data)
         .build();
@@ -318,7 +318,7 @@ public class ListsProcessor extends ODataSingleProcessor {
     return ODataResponse
         .status(HttpStatusCodes.OK)
         .header(HttpHeaders.CONTENT_TYPE,
-            (EdmSimpleType) functionImport.getReturnType().getType() == EdmSimpleTypeFacade.binaryInstance() ?
+            (EdmSimpleType) functionImport.getReturnType().getType() == EdmSimpleTypeKind.binaryInstance() ?
                 MediaType.APPLICATION_OCTET_STREAM : MediaType.TEXT_PLAIN)
         .entity(data)
         .build();
@@ -429,7 +429,7 @@ public class ListsProcessor extends ODataSingleProcessor {
   }
 
   private <T> Object getPropertyValue(final T data, final EdmProperty property) throws ODataException {
-    final String prefix = property.getType().getKind() == EdmTypeKind.SIMPLE && property.getType() == EdmSimpleTypeFacade.booleanInstance() ? "is" : "get";
+    final String prefix = property.getType().getKind() == EdmTypeKind.SIMPLE && property.getType() == EdmSimpleTypeKind.booleanInstance() ? "is" : "get";
     final String methodName = property.getMapping() == null ?
         prefix + property.getName() : property.getMapping().getValue();
     try {
