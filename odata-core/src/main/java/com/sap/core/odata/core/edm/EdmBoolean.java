@@ -8,6 +8,10 @@ import com.sap.core.odata.api.edm.EdmSimpleTypeFacade;
 import com.sap.core.odata.api.edm.EdmSimpleTypeKind;
 import com.sap.core.odata.api.edm.EdmTypeKind;
 
+/**
+ * Implementation of the EDM simple type Boolean
+ * @author SAP AG
+ */
 public class EdmBoolean implements EdmSimpleType {
 
   private static final EdmBoolean instance = new EdmBoolean();
@@ -68,11 +72,17 @@ public class EdmBoolean implements EdmSimpleType {
   @Override
   public String valueToString(final Object value, final EdmLiteralKind literalKind, final EdmFacets facets) {
     if (value == null)
-      if (facets == null || facets.isNullable() == null || facets.isNullable())
+      if (facets == null)
         return null;
+      else if (facets.getDefaultValue() == null)
+        if (facets.isNullable() == null || facets.isNullable())
+          return null;
+        else
+          throw new IllegalArgumentException();
       else
-        throw new IllegalArgumentException();
-    else if (value instanceof Boolean)
+        return facets.getDefaultValue();
+
+    if (value instanceof Boolean)
       return (Boolean) value ? "true" : "false";
     else
       throw new IllegalArgumentException();

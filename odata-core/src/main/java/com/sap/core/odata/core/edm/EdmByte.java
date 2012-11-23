@@ -8,6 +8,10 @@ import com.sap.core.odata.api.edm.EdmSimpleTypeFacade;
 import com.sap.core.odata.api.edm.EdmSimpleTypeKind;
 import com.sap.core.odata.api.edm.EdmTypeKind;
 
+/**
+ * Implementation of the EDM simple type Byte
+ * @author SAP AG
+ */
 public class EdmByte implements EdmSimpleType {
 
   private static final EdmByte instance = new EdmByte();
@@ -59,6 +63,12 @@ public class EdmByte implements EdmSimpleType {
 
   @Override
   public Object valueOfString(final String value, final EdmLiteralKind literalKind, final EdmFacets facets) {
+    if (value == null)
+      if (facets == null || facets.isNullable() == null || facets.isNullable())
+        return null;
+      else
+        throw new IllegalArgumentException();
+
     Short valueShort;
     try {
       valueShort = Short.parseShort(value);
@@ -74,8 +84,17 @@ public class EdmByte implements EdmSimpleType {
   @Override
   public String valueToString(final Object value, final EdmLiteralKind literalKind, final EdmFacets facets) {
     if (value == null)
-      return "0";
-    else if (value instanceof Byte || value instanceof Short || value instanceof Integer || value instanceof Long)
+      if (facets == null)
+        return null;
+      else if (facets.getDefaultValue() == null)
+        if (facets.isNullable() == null || facets.isNullable())
+          return null;
+        else
+          throw new IllegalArgumentException();
+      else
+        return facets.getDefaultValue();
+
+    if (value instanceof Byte || value instanceof Short || value instanceof Integer || value instanceof Long)
       if (((Number) value).longValue() >= 0 && ((Number) value).longValue() <= 255)
         return value.toString();
       else

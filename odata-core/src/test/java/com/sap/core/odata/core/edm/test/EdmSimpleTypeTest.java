@@ -8,6 +8,10 @@ import static org.junit.Assert.fail;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import java.util.Calendar;
+import java.util.Date;
+import java.util.TimeZone;
+
 import org.junit.Test;
 
 import com.sap.core.odata.api.edm.EdmFacets;
@@ -237,14 +241,14 @@ public class EdmSimpleTypeTest {
 
   @Test
   public void toUriLiteralDateTime() {
-    assertEquals("datetime'2009-12-26T21%3A23%3A38'", EdmSimpleTypeFacade.dateTimeInstance().toUriLiteral("2009-12-26T21:23:38"));
-    assertEquals("datetime'2009-12-26T21%3A23%3A38Z'", EdmSimpleTypeFacade.dateTimeInstance().toUriLiteral("2009-12-26T21:23:38Z"));
+    assertEquals("datetime'2009-12-26T21:23:38'", EdmSimpleTypeFacade.dateTimeInstance().toUriLiteral("2009-12-26T21:23:38"));
+    assertEquals("datetime'2009-12-26T21:23:38Z'", EdmSimpleTypeFacade.dateTimeInstance().toUriLiteral("2009-12-26T21:23:38Z"));
   }
 
   @Test
   public void toUriLiteralDateTimeOffset() {
-    assertEquals("datetimeoffset'2009-12-26T21%3A23%3A38Z'", EdmSimpleTypeFacade.dateTimeOffsetInstance().toUriLiteral("2009-12-26T21:23:38Z"));
-    assertEquals("datetimeoffset'2002-10-10T12%3A00%3A00-05%3A00'", EdmSimpleTypeFacade.dateTimeOffsetInstance().toUriLiteral("2002-10-10T12:00:00-05:00"));
+    assertEquals("datetimeoffset'2009-12-26T21:23:38Z'", EdmSimpleTypeFacade.dateTimeOffsetInstance().toUriLiteral("2009-12-26T21:23:38Z"));
+    assertEquals("datetimeoffset'2002-10-10T12:00:00-05:00'", EdmSimpleTypeFacade.dateTimeOffsetInstance().toUriLiteral("2002-10-10T12:00:00-05:00"));
   }
 
   @Test
@@ -282,15 +286,27 @@ public class EdmSimpleTypeTest {
     assertEquals("time'P120D'", EdmSimpleTypeFacade.timeInstance().toUriLiteral("P120D"));
   }
 
-  private EdmFacets getMaxLengthFacets(final int maxLength) {
+  private EdmFacets getMaxLengthFacets(final Integer maxLength) {
     EdmFacets facets = mock(EdmFacets.class);
     when(facets.getMaxLength()).thenReturn(maxLength);
     return facets;
   }
 
-  private EdmFacets getNullableFacets(final boolean nullable) {
+  private EdmFacets getNullableFacets(final Boolean nullable) {
     EdmFacets facets = mock(EdmFacets.class);
     when(facets.isNullable()).thenReturn(nullable);
+    return facets;
+  }
+
+  private EdmFacets getDefaultFacets(final String defaultValue) {
+    EdmFacets facets = mock(EdmFacets.class);
+    when(facets.getDefaultValue()).thenReturn(defaultValue);
+    return facets;
+  }
+
+  private EdmFacets getPrecisionFacets(final Integer precision) {
+    EdmFacets facets = mock(EdmFacets.class);
+    when(facets.getPrecision()).thenReturn(precision);
     return facets;
   }
 
@@ -303,54 +319,111 @@ public class EdmSimpleTypeTest {
     }
   }
 
+  private void checkNull(final EdmSimpleType instance) {
+    assertNull(instance.valueToString(null, EdmLiteralKind.DEFAULT, null));
+    assertNull(instance.valueToString(null, EdmLiteralKind.DEFAULT, getNullableFacets(true)));
+    assertNull(instance.valueToString(null, EdmLiteralKind.DEFAULT, getNullableFacets(null)));
+
+    expectErrorInValueToString(instance, null, EdmLiteralKind.DEFAULT, getNullableFacets(false));
+
+    assertEquals("default", instance.valueToString(null, EdmLiteralKind.DEFAULT, getDefaultFacets("default")));
+  }
+
   @Test
   public void valueToStringBinary() {
     final byte[] binary = new byte[] { (byte) 0xAA, (byte) 0xBB, (byte) 0xCC, (byte) 0xDD, (byte) 0xEE, (byte) 0xFF };
+    final EdmSimpleType instance = EdmSimpleTypeFacade.binaryInstance();
 
-    assertEquals("qrvM3e7/", EdmSimpleTypeFacade.binaryInstance().valueToString(binary, EdmLiteralKind.DEFAULT, null));
-    assertEquals("qrvM3e7/", EdmSimpleTypeFacade.binaryInstance().valueToString(binary, EdmLiteralKind.JSON, null));
-    assertEquals("binary'AABBCCDDEEFF'", EdmSimpleTypeFacade.binaryInstance().valueToString(binary, EdmLiteralKind.URI, null));
+    assertEquals("qrvM3e7/", instance.valueToString(binary, EdmLiteralKind.DEFAULT, null));
+    assertEquals("qrvM3e7/", instance.valueToString(binary, EdmLiteralKind.JSON, null));
+    assertEquals("binary'AABBCCDDEEFF'", instance.valueToString(binary, EdmLiteralKind.URI, null));
 
-    assertEquals("qrvM3e7/", EdmSimpleTypeFacade.binaryInstance().valueToString(binary, EdmLiteralKind.DEFAULT, getMaxLengthFacets(6)));
-    assertEquals("qrvM3e7/", EdmSimpleTypeFacade.binaryInstance().valueToString(binary, EdmLiteralKind.JSON, getMaxLengthFacets(6)));
-    assertEquals("binary'AABBCCDDEEFF'", EdmSimpleTypeFacade.binaryInstance().valueToString(binary, EdmLiteralKind.URI, getMaxLengthFacets(6)));
+    assertEquals("qrvM3e7/", instance.valueToString(binary, EdmLiteralKind.DEFAULT, getMaxLengthFacets(6)));
+    assertEquals("qrvM3e7/", instance.valueToString(binary, EdmLiteralKind.JSON, getMaxLengthFacets(6)));
+    assertEquals("binary'AABBCCDDEEFF'", instance.valueToString(binary, EdmLiteralKind.URI, getMaxLengthFacets(6)));
+    assertEquals("qrvM3e7/", instance.valueToString(binary, EdmLiteralKind.DEFAULT, getMaxLengthFacets(null)));
 
-    assertEquals("qg==", EdmSimpleTypeFacade.binaryInstance().valueToString(new Byte[] {new Byte((byte) 170)}, EdmLiteralKind.DEFAULT, null));
+    assertEquals("qg==", instance.valueToString(new Byte[] {new Byte((byte) 170)}, EdmLiteralKind.DEFAULT, null));
 
-    expectErrorInValueToString(EdmSimpleTypeFacade.binaryInstance(), binary, EdmLiteralKind.DEFAULT, getMaxLengthFacets(3));
-    expectErrorInValueToString(EdmSimpleTypeFacade.binaryInstance(), binary, EdmLiteralKind.JSON, getMaxLengthFacets(3));
-    expectErrorInValueToString(EdmSimpleTypeFacade.binaryInstance(), binary, EdmLiteralKind.URI, getMaxLengthFacets(3));
+    checkNull(instance);
 
-    expectErrorInValueToString(EdmSimpleTypeFacade.binaryInstance(), 0, EdmLiteralKind.DEFAULT, null);
+    expectErrorInValueToString(instance, binary, EdmLiteralKind.DEFAULT, getMaxLengthFacets(3));
+    expectErrorInValueToString(instance, binary, EdmLiteralKind.JSON, getMaxLengthFacets(3));
+    expectErrorInValueToString(instance, binary, EdmLiteralKind.URI, getMaxLengthFacets(3));
+
+    expectErrorInValueToString(instance, 0, EdmLiteralKind.DEFAULT, null);
+
+    expectErrorInValueToString(instance, binary, null, null);
   }
 
   @Test
   public void valueToStringBoolean() {
-    assertEquals("true", EdmSimpleTypeFacade.booleanInstance().valueToString(true, EdmLiteralKind.DEFAULT, null));
-    assertEquals("true", EdmSimpleTypeFacade.booleanInstance().valueToString(true, EdmLiteralKind.JSON, null));
-    assertEquals("true", EdmSimpleTypeFacade.booleanInstance().valueToString(true, EdmLiteralKind.URI, null));
-    assertEquals("false", EdmSimpleTypeFacade.booleanInstance().valueToString(Boolean.FALSE, EdmLiteralKind.DEFAULT, null));
+    final EdmSimpleType instance = EdmSimpleTypeFacade.booleanInstance();
 
-    assertNull(EdmSimpleTypeFacade.booleanInstance().valueToString(null, EdmLiteralKind.DEFAULT, null));
-    assertNull(EdmSimpleTypeFacade.booleanInstance().valueToString(null, EdmLiteralKind.DEFAULT, getNullableFacets(true)));
+    assertEquals("true", instance.valueToString(true, EdmLiteralKind.DEFAULT, null));
+    assertEquals("true", instance.valueToString(true, EdmLiteralKind.JSON, null));
+    assertEquals("true", instance.valueToString(true, EdmLiteralKind.URI, null));
+    assertEquals("false", instance.valueToString(Boolean.FALSE, EdmLiteralKind.DEFAULT, null));
 
-    expectErrorInValueToString(EdmSimpleTypeFacade.booleanInstance(), null, EdmLiteralKind.DEFAULT, getNullableFacets(false));
-    expectErrorInValueToString(EdmSimpleTypeFacade.booleanInstance(), 0, EdmLiteralKind.DEFAULT, null);
+    checkNull(instance);
+
+    expectErrorInValueToString(instance, 0, EdmLiteralKind.DEFAULT, null);
   }
 
   @Test
   public void valueToStringByte() {
-    assertEquals("0", EdmSimpleTypeFacade.byteInstance().valueToString(0, EdmLiteralKind.DEFAULT, null));
-    assertEquals("0", EdmSimpleTypeFacade.byteInstance().valueToString(0, EdmLiteralKind.JSON, null));
-    assertEquals("0", EdmSimpleTypeFacade.byteInstance().valueToString(0, EdmLiteralKind.URI, null));
-    assertEquals("0", EdmSimpleTypeFacade.byteInstance().valueToString(null, EdmLiteralKind.DEFAULT, null));
-    assertEquals("8", EdmSimpleTypeFacade.byteInstance().valueToString((byte) 8, EdmLiteralKind.DEFAULT, null));
-    assertEquals("16", EdmSimpleTypeFacade.byteInstance().valueToString((short) 16, EdmLiteralKind.DEFAULT, null));
-    assertEquals("32", EdmSimpleTypeFacade.byteInstance().valueToString((Integer) 32, EdmLiteralKind.DEFAULT, null));
-    assertEquals("255", EdmSimpleTypeFacade.byteInstance().valueToString(255L, EdmLiteralKind.DEFAULT, null));
+    final EdmSimpleType instance = EdmSimpleTypeFacade.byteInstance();
 
-    expectErrorInValueToString(EdmSimpleTypeFacade.byteInstance(), -1, EdmLiteralKind.DEFAULT, null);
-    expectErrorInValueToString(EdmSimpleTypeFacade.byteInstance(), 256, EdmLiteralKind.DEFAULT, null);
-    expectErrorInValueToString(EdmSimpleTypeFacade.byteInstance(), 'A', EdmLiteralKind.DEFAULT, null);
+    assertEquals("0", instance.valueToString(0, EdmLiteralKind.DEFAULT, null));
+    assertEquals("0", instance.valueToString(0, EdmLiteralKind.JSON, null));
+    assertEquals("0", instance.valueToString(0, EdmLiteralKind.URI, null));
+    assertEquals("8", instance.valueToString((byte) 8, EdmLiteralKind.DEFAULT, null));
+    assertEquals("16", instance.valueToString((short) 16, EdmLiteralKind.DEFAULT, null));
+    assertEquals("32", instance.valueToString((Integer) 32, EdmLiteralKind.DEFAULT, null));
+    assertEquals("255", instance.valueToString(255L, EdmLiteralKind.DEFAULT, null));
+
+    checkNull(instance);
+
+    expectErrorInValueToString(instance, -1, EdmLiteralKind.DEFAULT, null);
+    expectErrorInValueToString(instance, 256, EdmLiteralKind.DEFAULT, null);
+    expectErrorInValueToString(instance, 'A', EdmLiteralKind.DEFAULT, null);
+  }
+
+  @Test
+  public void valueToStringDateTime() {
+    final EdmSimpleType instance = EdmSimpleTypeFacade.dateTimeInstance();
+    Calendar dateTime = Calendar.getInstance();
+
+    dateTime.clear();
+    dateTime.setTimeZone(TimeZone.getTimeZone("GMT+11:30"));
+    dateTime.set(2012, 2, 1, 11, 2, 3);
+    assertEquals("2012-02-29T23:32:03", instance.valueToString(dateTime, EdmLiteralKind.DEFAULT, null));
+    assertEquals("\\/Date(1330558323000)\\/", instance.valueToString(dateTime, EdmLiteralKind.JSON, null));
+    assertEquals("datetime'2012-02-29T23:32:03'", instance.valueToString(dateTime, EdmLiteralKind.URI, null));
+
+    dateTime.add(Calendar.MILLISECOND, 1);
+    assertEquals("2012-02-29T23:32:03.001", instance.valueToString(dateTime, EdmLiteralKind.DEFAULT, null));
+    assertEquals("\\/Date(1330558323001)\\/", instance.valueToString(dateTime, EdmLiteralKind.JSON, null));
+    assertEquals("datetime'2012-02-29T23:32:03.001'", instance.valueToString(dateTime, EdmLiteralKind.URI, null));
+
+    final Long millis = 1330558323007L;
+    assertEquals("2012-02-29T23:32:03.007", instance.valueToString(millis, EdmLiteralKind.DEFAULT, null));
+    assertEquals("\\/Date(" + millis + ")\\/", instance.valueToString(millis, EdmLiteralKind.JSON, null));
+    assertEquals("datetime'2012-02-29T23:32:03.007'", instance.valueToString(millis, EdmLiteralKind.URI, null));
+
+    assertEquals("2012-02-29T23:32:03.007", instance.valueToString(new Date(millis), EdmLiteralKind.DEFAULT, null));
+
+    assertEquals("2012-02-29T23:32:03.00", instance.valueToString(dateTime, EdmLiteralKind.DEFAULT, getPrecisionFacets(2)));
+    assertEquals("2012-02-29T23:32:03", instance.valueToString(dateTime, EdmLiteralKind.DEFAULT, getPrecisionFacets(0)));
+    dateTime.add(Calendar.MILLISECOND, -14);
+    assertEquals("2012-02-29T23:32:02.987", instance.valueToString(dateTime, EdmLiteralKind.DEFAULT, getPrecisionFacets(null)));
+    assertEquals("2012-02-29T23:32:02.987", instance.valueToString(dateTime, EdmLiteralKind.DEFAULT, getPrecisionFacets(5)));
+    assertEquals("2012-02-29T23:32:02.99", instance.valueToString(dateTime, EdmLiteralKind.DEFAULT, getPrecisionFacets(2)));
+    assertEquals("2012-02-29T23:32:03", instance.valueToString(dateTime, EdmLiteralKind.DEFAULT, getPrecisionFacets(1)));
+    assertEquals("2012-02-29T23:32:03", instance.valueToString(dateTime, EdmLiteralKind.DEFAULT, getPrecisionFacets(0)));
+
+    checkNull(instance);
+
+    expectErrorInValueToString(instance, 0, EdmLiteralKind.DEFAULT, null);
   }
 }

@@ -1,5 +1,10 @@
 package com.sap.core.odata.core.edm;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.TimeZone;
+
 import com.sap.core.odata.api.edm.EdmException;
 import com.sap.core.odata.api.edm.EdmFacets;
 import com.sap.core.odata.api.edm.EdmLiteralKind;
@@ -8,9 +13,12 @@ import com.sap.core.odata.api.edm.EdmSimpleTypeFacade;
 import com.sap.core.odata.api.edm.EdmSimpleTypeKind;
 import com.sap.core.odata.api.edm.EdmTypeKind;
 
+/**
+ * Implementation of the EDM simple type DateTime
+ * @author SAP AG
+ */
 public class EdmDateTime implements EdmSimpleType {
 
-  private EdmSimpleTypeKind edmSimpleType = EdmSimpleTypeKind.DateTime;
   private static final EdmDateTime instance = new EdmDateTime();
 
   private EdmDateTime() {
@@ -38,38 +46,122 @@ public class EdmDateTime implements EdmSimpleType {
 
   @Override
   public String getName() throws EdmException {
-    return this.edmSimpleType.toString();
+    return EdmSimpleTypeKind.DateTime.toString();
   }
 
   @Override
-  public boolean isCompatible(EdmSimpleType simpleType) {
+  public boolean isCompatible(final EdmSimpleType simpleType) {
     return simpleType instanceof EdmDateTime;
   }
 
   @Override
-  public boolean validate(String value, EdmLiteralKind literalKind, EdmFacets facets) {
-    boolean valid = false;
-    if (null != this.valueOfString(value, literalKind, facets)) {
-      valid = true;
+  public boolean validate(final String value, final EdmLiteralKind literalKind, final EdmFacets facets) {
+    try {
+      valueOfString(value, literalKind, facets);
+      return true;
+    } catch (RuntimeException e) {
+      return false;
     }
-    return valid;
   }
 
   @Override
-  public Object valueOfString(String value, EdmLiteralKind literalKind, EdmFacets facets) {
-    // TODO Auto-generated method stub
-    return null;
+  public Object valueOfString(final String value, final EdmLiteralKind literalKind, final EdmFacets facets) {
+    if (value == null)
+      if (facets == null || facets.isNullable() == null || facets.isNullable())
+        return null;
+      else
+        throw new IllegalArgumentException();
+
+    if (literalKind == null)
+      throw new IllegalArgumentException();
+
+    switch (literalKind) {
+    case DEFAULT:
+    case JSON:
+      throw new IllegalArgumentException();
+
+    case URI:
+      throw new IllegalArgumentException();
+
+    default:
+      throw new IllegalArgumentException();
+    }
   }
 
   @Override
-  public String valueToString(Object value, EdmLiteralKind literalKind, EdmFacets facets) {
-    // TODO Auto-generated method stub
-    return null;
+  public String valueToString(final Object value, final EdmLiteralKind literalKind, final EdmFacets facets) {
+    if (value == null)
+      if (facets == null)
+        return null;
+      else if (facets.getDefaultValue() == null)
+        if (facets.isNullable() == null || facets.isNullable())
+          return null;
+        else
+          throw new IllegalArgumentException();
+      else
+        return facets.getDefaultValue();
+
+    if (literalKind == null)
+      throw new IllegalArgumentException();
+
+    Calendar dateTimeValue = Calendar.getInstance();
+    dateTimeValue.clear();
+    if (value instanceof Date) {
+      dateTimeValue.setTime((Date) value);
+    } else if (value instanceof Calendar) {
+      dateTimeValue.setTime(((Calendar) value).getTime());
+    } else if (value instanceof Long) {
+      dateTimeValue.setTimeInMillis((Long) value);
+    } else {
+      throw new IllegalArgumentException();
+    }
+
+    switch (literalKind) {
+    case DEFAULT:
+      int digits = 3;
+      if (facets != null && facets.getPrecision() != null && facets.getPrecision() < 3) {
+        digits = facets.getPrecision();
+        int roundToValue = 1;
+        for (int i = 0; i < 3 - digits; i++)
+          roundToValue *= 10;
+        final int millis = dateTimeValue.get(Calendar.MILLISECOND);
+
+        if (millis % roundToValue >= 5)
+          dateTimeValue.add(Calendar.MILLISECOND, roundToValue - millis % roundToValue);
+      }
+
+      final String pattern = "yyyy-MM-dd'T'HH:mm:ss";
+      SimpleDateFormat dateFormat = (SimpleDateFormat) SimpleDateFormat.getDateTimeInstance();
+      dateFormat.setTimeZone(TimeZone.getTimeZone("GMT"));
+      if (dateTimeValue.get(Calendar.MILLISECOND) == 0)
+        dateFormat.applyPattern(pattern);
+      else
+        dateFormat.applyPattern(pattern + ".SSS");
+
+      final String result = dateFormat.format(dateTimeValue.getTime());
+      if (result.contains("."))
+        if (digits == 0)
+          return result.substring(0, pattern.length() - 2);  // beware of the "'"s
+        else if (digits == 3)
+          return result;
+        else
+          return result.substring(0, pattern.length() - 2 + 1 + digits);  // beware of the "'"s
+      else
+        return result;
+
+    case JSON:
+      return "\\/Date(" + dateTimeValue.getTimeInMillis() + ")\\/";
+
+    case URI:
+      return toUriLiteral(valueToString(value, EdmLiteralKind.DEFAULT, facets));
+
+    default:
+      throw new IllegalArgumentException();
+    }
   }
 
   @Override
-  public String toUriLiteral(String literal) {
-    literal = literal.replace(":", "%3A");
+  public String toUriLiteral(final String literal) {
     return "datetime'" + literal + "'";
   }
 

@@ -12,6 +12,10 @@ import com.sap.core.odata.api.edm.EdmSimpleTypeFacade;
 import com.sap.core.odata.api.edm.EdmSimpleTypeKind;
 import com.sap.core.odata.api.edm.EdmTypeKind;
 
+/**
+ * Implementation of the EDM simple type Binary
+ * @author SAP AG
+ */
 public class EdmBinary implements EdmSimpleType {
 
   private static final EdmBinary instance = new EdmBinary();
@@ -51,6 +55,12 @@ public class EdmBinary implements EdmSimpleType {
 
   @Override
   public boolean validate(final String value, final EdmLiteralKind literalKind, final EdmFacets facets) {
+    if (value == null)
+      return facets == null || facets.isNullable() == null || facets.isNullable();
+
+    if (literalKind == null)
+      return false;
+
     switch (literalKind) {
     case DEFAULT:
     case JSON:
@@ -61,17 +71,26 @@ public class EdmBinary implements EdmSimpleType {
       }
 
     case URI:
-      return value.matches("(?:X|binary)'(?:\\p{XDigit}{2}+)+'")
+      return value.matches("(?:X|binary)'(?:\\p{XDigit}{2})*'")
           && (facets == null || facets.getMaxLength() == null
               || facets.getMaxLength() * 2 >= value.length() - (value.startsWith("X") ? 3 : 8));
 
     default:
-      throw new IllegalArgumentException();
+      return false;
     }
   }
 
   @Override
   public Object valueOfString(final String value, final EdmLiteralKind literalKind, final EdmFacets facets) {
+    if (value == null)
+      if (facets == null || facets.isNullable() == null || facets.isNullable())
+        return null;
+      else
+        throw new IllegalArgumentException();
+
+    if (literalKind == null)
+      throw new IllegalArgumentException();
+
     switch (literalKind) {
     case DEFAULT:
     case JSON:
@@ -84,7 +103,7 @@ public class EdmBinary implements EdmSimpleType {
     case URI:
       if (validate(value, literalKind, facets))
         try {
-          return Hex.decodeHex(value.toCharArray());
+          return Hex.decodeHex(value.substring(value.startsWith("X") ? 2 : 7, value.length() - 1).toCharArray());
         } catch (DecoderException e) {
           throw new IllegalArgumentException(e);
         }
@@ -98,6 +117,17 @@ public class EdmBinary implements EdmSimpleType {
 
   @Override
   public String valueToString(final Object value, final EdmLiteralKind literalKind, final EdmFacets facets) {
+    if (value == null)
+      if (facets == null)
+        return null;
+      else if (facets.getDefaultValue() == null)
+        if (facets.isNullable() == null || facets.isNullable())
+          return null;
+        else
+          throw new IllegalArgumentException();
+      else
+        return facets.getDefaultValue();
+
     byte[] byteArrayValue;
     if (value instanceof byte[]) {
       byteArrayValue = (byte[]) value;
@@ -111,6 +141,9 @@ public class EdmBinary implements EdmSimpleType {
     }
 
     if (facets != null && facets.getMaxLength() != null && byteArrayValue.length > facets.getMaxLength())
+      throw new IllegalArgumentException();
+
+    if (literalKind == null)
       throw new IllegalArgumentException();
 
     switch (literalKind) {
