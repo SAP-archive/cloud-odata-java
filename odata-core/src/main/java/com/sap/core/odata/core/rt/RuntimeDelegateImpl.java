@@ -5,8 +5,11 @@ import com.sap.core.odata.api.edm.EdmSimpleType;
 import com.sap.core.odata.api.edm.EdmSimpleTypeFacade;
 import com.sap.core.odata.api.edm.EdmSimpleTypeKind;
 import com.sap.core.odata.api.edm.provider.EdmProvider;
+import com.sap.core.odata.api.enums.Format;
 import com.sap.core.odata.api.processor.ODataResponse.ODataResponseBuilder;
 import com.sap.core.odata.api.rt.RuntimeDelegate;
+import com.sap.core.odata.api.serialization.ODataSerializationException;
+import com.sap.core.odata.api.serialization.ODataSerializer;
 import com.sap.core.odata.api.uri.UriParser;
 import com.sap.core.odata.core.ODataResponseBuilderImpl;
 import com.sap.core.odata.core.edm.Bit;
@@ -30,16 +33,17 @@ import com.sap.core.odata.core.edm.EdmTime;
 import com.sap.core.odata.core.edm.Uint7;
 import com.sap.core.odata.core.edm.provider.EdmImplProv;
 import com.sap.core.odata.core.exception.ODataRuntimeException;
+import com.sap.core.odata.core.serializer.ODataSerialierFactory;
 import com.sap.core.odata.core.uri.UriParserImpl;
 
 public class RuntimeDelegateImpl extends RuntimeDelegate {
 
   @Override
-  public ODataResponseBuilder createODataResponseBuilder() {
+  protected ODataResponseBuilder createODataResponseBuilder__() {
     return new ODataResponseBuilderImpl();
   }
 
-  public EdmSimpleType getEdmSimpleType(EdmSimpleTypeKind edmSimpleType) {
+  protected EdmSimpleType getEdmSimpleType__(EdmSimpleTypeKind edmSimpleType) {
     EdmSimpleType edmType = null;
 
     switch (edmSimpleType) {
@@ -99,12 +103,12 @@ public class RuntimeDelegateImpl extends RuntimeDelegate {
   }
 
   @Override
-  public UriParser getUriParser(Edm edm) {
+  protected UriParser getUriParser__(Edm edm) {
     return new UriParserImpl(edm);
   }
 
   @Override
-  public EdmSimpleType getInternalEdmSimpleTypeByString(String edmSimpleType) {
+  protected EdmSimpleType getInternalEdmSimpleTypeByString__(String edmSimpleType) {
     EdmSimpleType edmType;
 
     if ("Bit".equals(edmSimpleType)) {
@@ -118,13 +122,18 @@ public class RuntimeDelegateImpl extends RuntimeDelegate {
   }
 
   @Override
-  public EdmSimpleTypeFacade getSimpleTypeFacade() {
+  protected EdmSimpleTypeFacade getSimpleTypeFacade__() {
     return new EdmSimpleTypeFacadeImpl();
   }
 
   @Override
-  public Edm createEdm(EdmProvider provider) {
+  protected Edm createEdm__(EdmProvider provider) {
     return new EdmImplProv(provider);
+  }
+
+  @Override
+  protected ODataSerializer createSerializer__(Format format) throws ODataSerializationException {
+    return ODataSerialierFactory.create(format);
   }
 
 }

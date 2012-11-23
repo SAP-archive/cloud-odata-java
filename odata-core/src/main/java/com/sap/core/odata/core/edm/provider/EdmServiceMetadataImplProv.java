@@ -8,7 +8,7 @@ import com.sap.core.odata.api.edm.EdmServiceMetadata;
 import com.sap.core.odata.api.edm.provider.DataServices;
 import com.sap.core.odata.api.edm.provider.EdmProvider;
 import com.sap.core.odata.api.exception.ODataException;
-import com.sap.core.odata.api.exception.ODataSerializationException;
+import com.sap.core.odata.api.serialization.ODataSerializationException;
 
 public class EdmServiceMetadataImplProv implements EdmServiceMetadata {
 

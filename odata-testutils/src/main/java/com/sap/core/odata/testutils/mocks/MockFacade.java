@@ -10,11 +10,15 @@ import com.sap.core.odata.api.processor.ODataPathSegment;
 
 public class MockFacade {
 
-  public static Edm getMockEdm() throws EdmException{
-    return EdmMock.createMockEdm();
+  public static Edm getMockEdm() {
+    try {
+      return EdmMock.createMockEdm();
+    } catch (EdmException e) {
+      throw new RuntimeException(e);
+    }
   }
-  
-  public static List<String> getPathSegmentsAsStringMock(){
+
+  public static List<String> getPathSegmentsAsStringMock() {
     ArrayList<String> pathSegmentsMock = new ArrayList<String>();
     pathSegmentsMock.add("$metadata");
     return pathSegmentsMock;

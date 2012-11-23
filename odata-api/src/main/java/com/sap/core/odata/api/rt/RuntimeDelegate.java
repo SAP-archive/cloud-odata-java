@@ -5,7 +5,11 @@ import com.sap.core.odata.api.edm.EdmSimpleType;
 import com.sap.core.odata.api.edm.EdmSimpleTypeFacade;
 import com.sap.core.odata.api.edm.EdmSimpleTypeKind;
 import com.sap.core.odata.api.edm.provider.EdmProvider;
+import com.sap.core.odata.api.enums.Format;
+import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.api.processor.ODataResponse.ODataResponseBuilder;
+import com.sap.core.odata.api.serialization.ODataSerializationException;
+import com.sap.core.odata.api.serialization.ODataSerializer;
 import com.sap.core.odata.api.uri.UriParser;
 
 /**
@@ -20,7 +24,7 @@ public abstract class RuntimeDelegate {
    * Get a RuntimeDelegate Instance through reflection
    * @return {@link RuntimeDelegate} object
    */
-  public static RuntimeDelegate getInstance() {
+  private static RuntimeDelegate getInstance() {
     RuntimeDelegate delegate;
 
     try {
@@ -39,39 +43,74 @@ public abstract class RuntimeDelegate {
    * Get a OData response builder
    * @return {@link ODataResponseBuilder} object
    */
-  public abstract ODataResponseBuilder createODataResponseBuilder();
+  protected abstract ODataResponseBuilder createODataResponseBuilder__();
 
   /**
    * Gets an {@link EdmSimpleType} implementation for a given {@link EdmSimpleTypeKind}
    * @param edmSimpleTypeKind
    * @return {@link EdmSimpleType}
    */
-  public abstract EdmSimpleType getEdmSimpleType(EdmSimpleTypeKind edmSimpleTypeKind);
+  protected abstract EdmSimpleType getEdmSimpleType__(EdmSimpleTypeKind edmSimpleTypeKind);
 
   /**
    * Get a UriParser object
    * @return {@link UriParser} object
    */
-  public abstract UriParser getUriParser(Edm edm);
+  protected abstract UriParser getUriParser__(Edm edm);
 
   /**
    * Gets an {@link EdmSimpleType} implementation for a given simple-type name.
    * @param edmSimpleType  name of the simple type
    * @return {@link EdmSimpleType}
    */
-  public abstract EdmSimpleType getInternalEdmSimpleTypeByString(String edmSimpleType);
+  protected abstract EdmSimpleType getInternalEdmSimpleTypeByString__(String edmSimpleType);
 
   /**
    * Gets an implementation of the EDM simple-type facade.
    * @return {@link EdmSimpleTypeFacade}
    */
-  public abstract EdmSimpleTypeFacade getSimpleTypeFacade();
+  protected abstract EdmSimpleTypeFacade getSimpleTypeFacade__();
 
   /**
    * Creates an entity data model.
    * @param provider A {@link EdmProvider} instance
    * @return {@link Edm} implementation object
    */
-  public abstract Edm createEdm(EdmProvider provider);
+  protected abstract Edm createEdm__(EdmProvider provider);
+
+  /**
+   * @param format serializer format
+   * @return a OData serializer
+   * @throws ODataException 
+   */
+  protected abstract ODataSerializer createSerializer__(Format format) throws ODataSerializationException;
+
+  public static ODataSerializer createSerializer(Format atom) throws ODataSerializationException {
+    return RuntimeDelegate.getInstance().createSerializer__(atom);
+  }
+
+  public static EdmSimpleType getEdmSimpleType(EdmSimpleTypeKind edmSimpleType) {
+    return RuntimeDelegate.getInstance().getEdmSimpleType__(edmSimpleType);
+  }
+
+  public static EdmSimpleTypeFacade getSimpleTypeFacade() {
+    return RuntimeDelegate.getInstance().getSimpleTypeFacade__();
+  }
+
+  public static ODataResponseBuilder createODataResponseBuilder() {
+    return RuntimeDelegate.getInstance().createODataResponseBuilder__();
+  }
+
+  public static Edm createEdm(EdmProvider provider) {
+    return RuntimeDelegate.getInstance().createEdm__(provider);
+  }
+
+  public static UriParser getUriParser(Edm edm) {
+    return RuntimeDelegate.getInstance().getUriParser__(edm);
+  }
+
+  public static EdmSimpleType getInternalEdmSimpleTypeByString(String edmSimpleType) {
+    return RuntimeDelegate.getInstance().getInternalEdmSimpleTypeByString__(edmSimpleType);
+  }
 
 }

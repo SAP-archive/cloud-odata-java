@@ -10,7 +10,7 @@ public abstract class EdmSimpleTypeFacade {
   public static final String systemNamespace = "System";
   
   public static EdmSimpleType getInstance(EdmSimpleTypeKind edmSimpleType) {
-    return RuntimeDelegate.getInstance().getEdmSimpleType(edmSimpleType);
+    return RuntimeDelegate.getEdmSimpleType(edmSimpleType);
   }
 
   public static EdmSimpleType binaryInstance() {
@@ -78,7 +78,7 @@ public abstract class EdmSimpleTypeFacade {
   }
 
   public static UriLiteral parseUriLiteral(final String uriLiteral) throws UriParserException {
-    return RuntimeDelegate.getInstance().getSimpleTypeFacade().parse(uriLiteral);
+    return RuntimeDelegate.getSimpleTypeFacade().parse(uriLiteral);
   }
   
   public abstract UriLiteral parse(final String uriLiteral) throws UriParserException;

@@ -1,4 +1,7 @@
-package com.sap.core.odata.api.exception;
+package com.sap.core.odata.api.serialization;
+
+import com.sap.core.odata.api.exception.MessageReference;
+import com.sap.core.odata.api.exception.ODataMessageException;
 
 
 public class ODataSerializationException extends ODataMessageException {

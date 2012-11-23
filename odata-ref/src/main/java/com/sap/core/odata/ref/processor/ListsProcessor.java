@@ -122,7 +122,7 @@ public class ListsProcessor extends ODataSingleProcessor {
         null,
         uriParserResultView.getSkip(),
         uriParserResultView.getTop());
-
+    
     return ODataResponse
         .status(HttpStatusCodes.OK)
         .header(HttpHeaders.CONTENT_TYPE, MediaType.TEXT_PLAIN)
@@ -172,6 +172,7 @@ public class ListsProcessor extends ODataSingleProcessor {
         uriParserResultView.getNavigationSegments());
 
     if (appliesFilter(data, uriParserResultView.getFilter()))
+
       return ODataResponse
           .status(HttpStatusCodes.OK)
           .entity(data)
