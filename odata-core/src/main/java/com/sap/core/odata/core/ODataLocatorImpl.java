@@ -136,7 +136,7 @@ public final class ODataLocatorImpl {
     // post condition: we do not allow matrix parameter in OData path segments
     for(PathSegment ps : odataPathSegements) {
       if (ps.getMatrixParameters() != null && !ps.getMatrixParameters().isEmpty()) {
-        throw new ODataNotFoundException(ODataNotFoundException.MATRIX);
+        throw new ODataNotFoundException(ODataNotFoundException.MATRIX.addContent(ps.getPath(), ps.getMatrixParameters().keySet()));
       }
     }
     
