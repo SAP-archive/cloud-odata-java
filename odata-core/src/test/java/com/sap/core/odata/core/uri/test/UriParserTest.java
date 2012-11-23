@@ -20,7 +20,7 @@ import org.junit.Test;
 
 import com.sap.core.odata.api.edm.Edm;
 import com.sap.core.odata.api.edm.EdmException;
-import com.sap.core.odata.api.edm.EdmSimpleTypeFacade;
+import com.sap.core.odata.api.edm.EdmSimpleTypeKind;
 import com.sap.core.odata.api.edm.EdmTypeKind;
 import com.sap.core.odata.api.enums.Format;
 import com.sap.core.odata.api.enums.InlineCount;
@@ -587,7 +587,7 @@ public class UriParserTest {
     UriParserResultImpl result = parse("EmployeeSearch?q='Hugo'&notaparameter=2");
     assertEquals("EmployeeSearch", result.getFunctionImport().getName());
     assertEquals(1, result.getFunctionImportParameters().size());
-    assertEquals(EdmSimpleTypeFacade.stringInstance(), result.getFunctionImportParameters().get("q").getType());
+    assertEquals(EdmSimpleTypeKind.stringInstance(), result.getFunctionImportParameters().get("q").getType());
     assertEquals("Hugo", result.getFunctionImportParameters().get("q").getLiteral());
   }
 

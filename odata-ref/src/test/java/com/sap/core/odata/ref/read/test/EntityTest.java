@@ -13,7 +13,7 @@ import org.junit.Test;
 import com.sap.core.odata.api.edm.EdmEntitySet;
 import com.sap.core.odata.api.edm.EdmException;
 import com.sap.core.odata.api.edm.EdmProperty;
-import com.sap.core.odata.api.edm.EdmSimpleTypeFacade;
+import com.sap.core.odata.api.edm.EdmSimpleTypeKind;
 import com.sap.core.odata.api.processor.ODataResponse;
 import com.sap.core.odata.api.uri.KeyPredicate;
 import com.sap.core.odata.api.uri.UriParserResult;
@@ -41,7 +41,7 @@ public class EntityTest {
   private UriParserResult mockUriResult(final String entitySetName, final String keyName, final String keyValue) throws EdmException {
     EdmProperty keyProperty = mock(EdmProperty.class);
     when(keyProperty.getName()).thenReturn(keyName);
-    when(keyProperty.getType()).thenReturn(EdmSimpleTypeFacade.stringInstance()); 
+    when(keyProperty.getType()).thenReturn(EdmSimpleTypeKind.stringInstance()); 
 
     KeyPredicate key = mock(KeyPredicate.class);
     when(key.getProperty()).thenReturn(keyProperty);
