@@ -8,9 +8,12 @@ import com.sap.core.odata.api.edm.EdmSimpleTypeFacade;
 import com.sap.core.odata.api.edm.EdmSimpleTypeKind;
 import com.sap.core.odata.api.edm.EdmTypeKind;
 
+/**
+ * Implementation of the EDM simple type String
+ * @author SAP AG
+ */
 public class EdmString implements EdmSimpleType {
 
-  private EdmSimpleTypeKind edmSimpleType = EdmSimpleTypeKind.String;
   private static final EdmString instance = new EdmString();
 
   private EdmString() {
@@ -22,7 +25,7 @@ public class EdmString implements EdmSimpleType {
   }
 
   @Override
-  public boolean equals(Object obj) {
+  public boolean equals(final Object obj) {
     return this == obj || obj instanceof EdmString;
   }
 
@@ -38,7 +41,7 @@ public class EdmString implements EdmSimpleType {
 
   @Override
   public String getName() throws EdmException {
-    return this.edmSimpleType.toString();
+    return EdmSimpleTypeKind.String.toString();
   }
 
   @Override
@@ -47,32 +50,33 @@ public class EdmString implements EdmSimpleType {
   }
 
   @Override
-  public boolean validate(String value, EdmLiteralKind literalKind, EdmFacets facets) {
-    boolean valid = false;
-    if (null != this.valueOfString(value, literalKind, facets)) {
-      valid = true;
+  public boolean validate(final String value, final EdmLiteralKind literalKind, final EdmFacets facets) {
+    try {
+      valueOfString(value, literalKind, facets);
+      return true;
+    } catch (RuntimeException e) {
+      return false;
     }
-    return valid;
   }
 
   @Override
-  public Object valueOfString(String value, EdmLiteralKind literalKind, EdmFacets facets) {
+  public Object valueOfString(final String value, final EdmLiteralKind literalKind, final EdmFacets facets) {
     if (literalKind == EdmLiteralKind.URI)
-      return toUriLiteral(value);
+      return null;
     else
       return value;
   }
 
   @Override
-  public String valueToString(Object value, EdmLiteralKind literalKind, EdmFacets facets) {
-    // TODO Auto-generated method stub
-    return null;
+  public String valueToString(final Object value, final EdmLiteralKind literalKind, final EdmFacets facets) {
+    if (literalKind == EdmLiteralKind.URI)
+      return toUriLiteral((String) value);
+    else
+      return (String) value;
   }
 
   @Override
-  public String toUriLiteral(String literal) {
-    //TODO: Do we have to escape here?
-    literal = literal.replace("%27", "''");
+  public String toUriLiteral(final String literal) {
     return "'" + literal + "'";
   }
 
