@@ -28,6 +28,7 @@ public class EdmEntityContainerImplProv implements EdmEntityContainer {
   private Map<String, EdmAssociationSet> edmAssociationSets;
   private Map<String, EdmFunctionImport> edmFunctionImports;
   private EdmEntityContainer edmExtendedEntityContainer;
+  private boolean isDefaultContainer;
 
   public EdmEntityContainerImplProv(EdmImplProv edm, EntityContainerInfo entityContainer) throws EdmException {
     this.edm = edm;
@@ -35,6 +36,7 @@ public class EdmEntityContainerImplProv implements EdmEntityContainer {
     edmEntitySets = new HashMap<String, EdmEntitySet>();
     edmAssociationSets = new HashMap<String, EdmAssociationSet>();
     edmFunctionImports = new HashMap<String, EdmFunctionImport>();
+    this.isDefaultContainer = entityContainer.isDefaultEntityContainer();
 
     if (entityContainer.getExtendz() != null) {
       edmExtendedEntityContainer = edm.getEntityContainer(entityContainer.getExtendz());
@@ -139,5 +141,10 @@ public class EdmEntityContainerImplProv implements EdmEntityContainer {
 
   private EdmAssociationSet createAssociationSet(AssociationSet associationSet) throws EdmException {
     return new EdmAssociationSetImplProv(edm, associationSet, this);
+  }
+
+  @Override
+  public boolean isDefaultEntityContainer() {
+    return this.isDefaultContainer;
   }
 }
