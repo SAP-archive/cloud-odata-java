@@ -1,5 +1,6 @@
 package com.sap.core.odata.core;
 
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -19,6 +20,7 @@ import javax.ws.rs.core.PathSegment;
 import javax.ws.rs.core.Request;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
+import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.UriInfo;
 
 import com.sap.core.odata.api.exception.ODataBadRequestException;
@@ -99,14 +101,10 @@ public final class ODataLocatorImpl {
     return Response.ok().entity("DELETE: status 200 ok").build();
   }
 
-  public void setContext(ODataContextImpl context) {
-    this.context = context;
-  }
-
   public void initialize(InitParameter param) throws ODataException {
     this.splitPath(param);
 
-    this.queryParameters = this.convertToSinglevaluedMap(param.getUriInfo().getQueryParameters()); 
+    this.queryParameters = this.convertToSinglevaluedMap(param.getUriInfo().getQueryParameters());
 
     this.service = param.getServiceFactory().createService();
     this.context.setService(this.service);
@@ -134,14 +132,34 @@ public final class ODataLocatorImpl {
     }
 
     // post condition: we do not allow matrix parameter in OData path segments
-    for(PathSegment ps : odataPathSegements) {
+    for (PathSegment ps : odataPathSegements) {
       if (ps.getMatrixParameters() != null && !ps.getMatrixParameters().isEmpty()) {
-        throw new ODataNotFoundException(ODataNotFoundException.MATRIX.addContent(ps.getPath(), ps.getMatrixParameters().keySet()));
+        throw new ODataNotFoundException(ODataNotFoundException.MATRIX.addContent(ps.getMatrixParameters().keySet(), ps.getPath()));
       }
     }
-    
+
     this.context.setODataPathSegment(this.convertPathSegmentList(odataPathSegements));
     this.context.setPrecedingPathSegment(this.convertPathSegmentList(precedingPathSegements));
+
+    String uri = buildBaseUri(param.getUriInfo(), precedingPathSegements);
+    this.context.setBaseUri(uri);
+  }
+
+  private String buildBaseUri(UriInfo uriInfo, List<PathSegment> precedingPathSegements) {
+    UriBuilder uriBuilder = uriInfo.getBaseUriBuilder();
+    for (PathSegment ps : precedingPathSegements) {
+      uriBuilder = uriBuilder.path(ps.getPath());
+      for (String key : ps.getMatrixParameters().keySet()) {
+        Object[] v = ps.getMatrixParameters().get(key).toArray();
+        uriBuilder = uriBuilder.matrixParam(key, v);
+      }
+    }
+    String uri = uriBuilder.build().toString();
+    if (!uri.endsWith("/")) {
+      uri = uri + "/";
+    }
+
+    return uri;
   }
 
   public List<ODataPathSegment> convertPathSegmentList(List<PathSegment> pathSegments) {
@@ -164,7 +182,7 @@ public final class ODataLocatorImpl {
 
     return single;
   }
-  
+
   private Response convertResponse(final ODataResponse odataResponse) {
     ResponseBuilder responseBuilder = Response.noContent();
 

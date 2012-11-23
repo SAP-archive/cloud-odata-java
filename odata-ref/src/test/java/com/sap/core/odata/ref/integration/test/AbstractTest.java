@@ -25,6 +25,8 @@ import javax.ws.rs.core.Request;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
+import org.apache.cxf.jaxrs.impl.UriBuilderImpl;
+
 import com.sap.core.odata.api.enums.HttpStatusCodes;
 import com.sap.core.odata.api.exception.ODataApplicationException;
 import com.sap.core.odata.api.exception.ODataException;
@@ -113,6 +115,8 @@ public abstract class AbstractTest {
     UriInfo uriInfo = mock(UriInfo.class);
     when(uriInfo.getQueryParameters()).thenReturn(new MultivaluedHashMap<String, String>(queryParameters));
     when(uriInfo.getPathSegments()).thenReturn(pathSegments);
+    UriBuilderImpl ub = new UriBuilderImpl();
+    when(uriInfo.getBaseUriBuilder()).thenReturn(ub);
     return uriInfo;
   }
 
