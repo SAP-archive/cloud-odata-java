@@ -14,12 +14,12 @@ import com.sap.core.odata.api.exception.ODataException;
 public interface EdmProvider {
 
   /**
-   * This method should return an {@link EntityContainer}
+   * This method should return an {@link EntityContainerInfo}
    * @param name 
-   * @return {@link EntityContainer} for the given name
+   * @return {@link EntityContainerInfo} for the given name
    * @throws ODataException
    */
-  EntityContainer getEntityContainer(String name) throws ODataException;
+  EntityContainerInfo getEntityContainer(String name) throws ODataException;
 
   /**
    * This method should return an {@link EntityType}
