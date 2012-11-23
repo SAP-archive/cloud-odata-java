@@ -4,27 +4,25 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-import javax.ws.rs.core.Cookie;
 import javax.ws.rs.core.EntityTag;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedHashMap;
-import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.PathSegment;
 import javax.ws.rs.core.Request;
 import javax.ws.rs.core.Response;
-import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.UriInfo;
 
 import com.sap.core.odata.api.enums.HttpStatusCodes;
@@ -49,7 +47,8 @@ public abstract class AbstractTest {
     final ODataLocatorImpl oDataLocator = new ODataLocatorImpl();
     InitParameter param = oDataLocator.new InitParameter();
 
-    param.setHttpHeaders(getHttpHeaders(httpHeaders));
+    if (httpHeaders != null)
+      param.setHttpHeaders(getHttpHeaders(httpHeaders));
     param.setPathSegments(getPathSegments(urlString.split("\\?", -1)[0]));
     param.setRequest(request);
     param.setUriInfo(getUriInfo(param.getPathSegments(), getQueryParameters(urlString)));
@@ -104,154 +103,17 @@ public abstract class AbstractTest {
   }
 
   private HttpHeaders getHttpHeaders(final Map<String, String> httpHeaders) {
-    return new HttpHeaders() {
-      
-      @Override
-      public MultivaluedMap<String, String> getRequestHeaders() {
-        return new MultivaluedHashMap<String, String>(httpHeaders);
-      }
-      
-      @Override
-      public List<String> getRequestHeader(String name) {
-        return getRequestHeaders().get(name);
-      }
-      
-      @Override
-      public MediaType getMediaType() {
-        return null;
-      }
-      
-      @Override
-      public Locale getLanguage() {
-        return null;
-      }
-      
-      @Override
-      public Map<String, Cookie> getCookies() {
-        return null;
-      }
-      
-      @Override
-      public List<MediaType> getAcceptableMediaTypes() {
-        return null;
-      }
-      
-      @Override
-      public List<Locale> getAcceptableLanguages() {
-        return Collections.emptyList();
-      }
-
-      @Override
-      public String getHeaderString(String name) {
-        return null;
-      }
-
-      @Override
-      public Date getDate() {
-        return null;
-      }
-
-      @Override
-      public int getLength() {
-        return 0;
-      }
-    };
+    HttpHeaders headers = mock(HttpHeaders.class);
+    when(headers.getRequestHeaders()).thenReturn(new MultivaluedHashMap<String, String>(httpHeaders));
+    when(headers.getAcceptableLanguages()).thenReturn(Collections.<Locale> emptyList());
+    return headers;
   }
 
   private UriInfo getUriInfo(final List<PathSegment> pathSegments, final Map<String, String> queryParameters) {
-    return new UriInfo() {
-
-      @Override
-      public UriBuilder getRequestUriBuilder() {
-        return null;
-      }
-
-      @Override
-      public URI getRequestUri() {
-        return null;
-      }
-
-      @Override
-      public MultivaluedMap<String, String> getQueryParameters(final boolean decode) {
-        if (decode == true)
-          return getQueryParameters();
-        else
-          return null;
-      }
-
-      @Override
-      public MultivaluedMap<String, String> getQueryParameters() {
-        return new MultivaluedHashMap<String, String>(queryParameters);
-      }
-
-      @Override
-      public List<PathSegment> getPathSegments(final boolean decode) {
-        if (decode == true)
-          return pathSegments;
-        else
-          return null;
-      }
-
-      @Override
-      public List<PathSegment> getPathSegments() {
-        return pathSegments;
-      }
-
-      @Override
-      public MultivaluedMap<String, String> getPathParameters(final boolean decode) {
-        return null;
-      }
-
-      @Override
-      public MultivaluedMap<String, String> getPathParameters() {
-        return null;
-      }
-
-      @Override
-      public String getPath(boolean decode) {
-        return null;
-      }
-
-      @Override
-      public String getPath() {
-        return null;
-      }
-
-      @Override
-      public List<String> getMatchedURIs(final boolean decode) {
-        return null;
-      }
-
-      @Override
-      public List<String> getMatchedURIs() {
-        return null;
-      }
-
-      @Override
-      public List<Object> getMatchedResources() {
-        return null;
-      }
-
-      @Override
-      public UriBuilder getBaseUriBuilder() {
-        return null;
-      }
-
-      @Override
-      public URI getBaseUri() {
-        return null;
-      }
-
-      @Override
-      public UriBuilder getAbsolutePathBuilder() {
-        return null;
-      }
-
-      @Override
-      public URI getAbsolutePath() {
-        return null;
-      }
-    };
+    UriInfo uriInfo = mock(UriInfo.class);
+    when(uriInfo.getQueryParameters()).thenReturn(new MultivaluedHashMap<String, String>(queryParameters));
+    when(uriInfo.getPathSegments()).thenReturn(pathSegments);
+    return uriInfo;
   }
 
   private List<PathSegment> getPathSegments(final String resourcePath) throws UriParserException {
@@ -262,18 +124,9 @@ public abstract class AbstractTest {
   }
 
   private PathSegment getPathSegment(final String segment) {
-    return new PathSegment() {
-
-      @Override
-      public String getPath() {
-        return segment;
-      }
-
-      @Override
-      public MultivaluedMap<String, String> getMatrixParameters() {
-        return null;
-      }
-    };
+    PathSegment pathsegment = mock(PathSegment.class);
+    when(pathsegment.getPath()).thenReturn(segment);
+    return pathsegment;
   }
 
   private Map<String, String> getQueryParameters(final String urlString) throws UriParserException {
