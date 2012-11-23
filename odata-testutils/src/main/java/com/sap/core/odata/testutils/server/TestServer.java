@@ -21,7 +21,7 @@ public class TestServer {
 
   private static final Logger log = LoggerFactory.getLogger(TestServer.class);
 
-  private URI endpoint = URI.create("http://localhost:19080/test");
+  private URI endpoint = URI.create("http://localhost:19080/test");  // no slash at the end !!!
 
   private int pathSplit = 0;
 
@@ -34,7 +34,7 @@ public class TestServer {
   }
 
   public URI getEndpoint() {
-    return this.endpoint;
+    return URI.create(this.endpoint + "/");
   }
 
   private Server server;

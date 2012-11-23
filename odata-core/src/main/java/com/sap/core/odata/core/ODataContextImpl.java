@@ -17,6 +17,8 @@ public class ODataContextImpl implements ODataContext {
 
   private List<ODataPathSegment> precedingPathSegment = Collections.emptyList();
   private List<ODataPathSegment> odataPathSegment = Collections.emptyList();
+
+  private String baseUri;
   
   
   public void putContextObject(String key, Object obj) throws ODataException {
@@ -35,7 +37,10 @@ public class ODataContextImpl implements ODataContext {
     this.precedingPathSegment = Collections.unmodifiableList(precedingPathSegement);
   }
 
-
+  public void setBaseUri(String uri) {
+    this.baseUri = uri;
+  }
+  
   @SuppressWarnings("unchecked")
   @Override
   public <T> T getObject(String key) throws ODataException {
@@ -55,5 +60,10 @@ public class ODataContextImpl implements ODataContext {
   @Override
   public List<ODataPathSegment> getODataPathSegmentList() {
     return Collections.unmodifiableList(this.odataPathSegment);
+  }
+
+  @Override
+  public String getBaseUri() {
+    return this.baseUri;
   }
 }

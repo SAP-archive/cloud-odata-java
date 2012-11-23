@@ -20,7 +20,6 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.log4j.xml.DOMConfigurator;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
@@ -215,7 +214,6 @@ public class ServiceResolutionTest {
   }
 
   @Test
-  @Ignore("message parameter in exception don't yet work")
   public void testNoMatrixParameterInODataPath() throws ClientProtocolException, IOException, ODataException {
     this.server.setPathSplit(0);
     this.server.startServer(ServiceFactory.class);
@@ -226,9 +224,23 @@ public class ServiceResolutionTest {
     InputStream stream = response.getEntity().getContent();
     String body = StringHelper.inputStreamToString(stream);
 
-    assertTrue(body.contains("metadata")); // TODO fix required
-    assertTrue(body.contains("matrix")); // TODO fix required 
+    assertTrue(body.contains("metadata"));
+    assertTrue(body.contains("matrix"));
     assertEquals(404, response.getStatusLine().getStatusCode());
   }
 
+  @Test
+  public void testBaseUriWithMatrixParameter() throws ClientProtocolException, IOException, ODataException {
+    this.server.setPathSplit(3);
+    this.server.startServer(ServiceFactory.class);
+
+    HttpGet get = new HttpGet(URI.create(this.server.getEndpoint().toString() + "/aaa/bbb;n=2,3;m=1/ccc/"));
+    HttpResponse response = this.httpClient.execute(get);
+
+    assertEquals(200, response.getStatusLine().getStatusCode());
+
+    ODataContext ctx = this.processor.getContext();
+    assertNotNull(ctx);
+    assertEquals("http://localhost:19080/test/aaa/bbb;n=2,3;m=1/ccc/", ctx.getBaseUri());
+  }
 }

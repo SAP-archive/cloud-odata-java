@@ -36,4 +36,9 @@ public interface ODataContext {
    */
   List<ODataPathSegment> getODataPathSegmentList();
 
+  /**
+   * @return absolute base uri of the request
+   */
+  String getBaseUri();
+
 }
