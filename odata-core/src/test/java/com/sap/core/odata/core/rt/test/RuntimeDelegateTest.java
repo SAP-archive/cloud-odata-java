@@ -10,8 +10,7 @@ public class RuntimeDelegateTest {
 
   @Test
   public void testInstance() {
-    assertNotNull(RuntimeDelegate.getInstance());
+    assertNotNull(RuntimeDelegate.createODataResponseBuilder());
   }
-  
   
 }

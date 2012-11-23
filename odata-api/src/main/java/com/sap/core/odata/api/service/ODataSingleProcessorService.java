@@ -39,7 +39,7 @@ public abstract class ODataSingleProcessorService implements ODataService {
    */
   public ODataSingleProcessorService(EdmProvider provider, ODataSingleProcessor processor) {
     this.processor = processor;
-    this.edm = RuntimeDelegate.getInstance().createEdm(provider);
+    this.edm = RuntimeDelegate.createEdm(provider);
   }
 
   /**

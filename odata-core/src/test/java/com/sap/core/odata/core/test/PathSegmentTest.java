@@ -17,6 +17,7 @@ import com.sap.core.odata.core.ODataPathSegmentImpl;
 public class PathSegmentTest {
 
   ODataPathSegment segment;
+  ODataPathSegment segmentNoMatrix;
 
   @Before
   public void before() {
@@ -40,6 +41,7 @@ public class PathSegmentTest {
     mp.put("m", m);
 
     this.segment = new ODataPathSegmentImpl("segment", mp);
+    this.segmentNoMatrix = new ODataPathSegmentImpl("segment", null);
   }
 
   @Test
@@ -58,5 +60,12 @@ public class PathSegmentTest {
   @Test(expected = UnsupportedOperationException.class)
   public void readonlyMatrixParameter() {
     this.segment.getMatrixParameters().get("m").clear();
+  }
+  
+  @Test
+  public void noMatrixParameter() {
+    assertEquals("segment", this.segmentNoMatrix.getPath());
+    assertTrue(this.segmentNoMatrix.getMatrixParameters().isEmpty());
+
   }
 }

@@ -20,7 +20,7 @@ public class EdmSimpleTypeFacadeImpl extends EdmSimpleTypeFacade {
   private static final Pattern STRING_VALUE_PATTERN = Pattern.compile("(X|binary|datetime|datetimeoffset|guid|time)?'(.*)'");
   
   private EdmSimpleType getInternalTypeKindInstance(String edmSimpleType){
-    return RuntimeDelegate.getInstance().getInternalEdmSimpleTypeByString(edmSimpleType);
+    return RuntimeDelegate.getInternalEdmSimpleTypeByString(edmSimpleType);
   }
   
   @Override

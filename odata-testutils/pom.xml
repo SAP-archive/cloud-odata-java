@@ -59,6 +59,11 @@
 			<artifactId>httpclient</artifactId>
 			<version>${httpclient.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>xmlunit</groupId>
+			<artifactId>xmlunit</artifactId>
+			<version>${xmlunit.version}</version>
+		</dependency>
 
 	</dependencies>
 
