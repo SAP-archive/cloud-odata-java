@@ -9,19 +9,16 @@ import org.apache.commons.codec.binary.Hex;
 
 import com.sap.core.odata.api.edm.EdmSimpleType;
 import com.sap.core.odata.api.edm.EdmSimpleTypeFacade;
-import com.sap.core.odata.api.rt.RuntimeDelegate;
+import com.sap.core.odata.api.edm.EdmSimpleTypeKind;
 import com.sap.core.odata.api.uri.UriLiteral;
 import com.sap.core.odata.api.uri.UriParserException;
+import com.sap.core.odata.core.exception.ODataRuntimeException;
 
 public class EdmSimpleTypeFacadeImpl extends EdmSimpleTypeFacade {
 
   private static final Pattern WHOLE_NUMBER_PATTERN = Pattern.compile("(-?\\p{Digit}+)([lL])?");
   private static final Pattern DECIMAL_NUMBER_PATTERN = Pattern.compile("(-?\\p{Digit}+(?:\\.\\p{Digit}*(?:[eE][-+]?\\p{Digit}+)?)?)([mMdDfF])");
   private static final Pattern STRING_VALUE_PATTERN = Pattern.compile("(X|binary|datetime|datetimeoffset|guid|time)?'(.*)'");
-  
-  private EdmSimpleType getInternalTypeKindInstance(String edmSimpleType){
-    return RuntimeDelegate.getInternalEdmSimpleTypeByString(edmSimpleType);
-  }
   
   @Override
   public UriLiteral parse(final String uriLiteral) throws UriParserException {
@@ -48,9 +45,9 @@ public class EdmSimpleTypeFacadeImpl extends EdmSimpleTypeFacade {
         try {
           final int i = Integer.parseInt(value);
           if (i == 0 || i == 1)
-            return new UriLiteral(getInternalTypeKindInstance("Bit"), value);
+            return new UriLiteral(getInternalEdmSimpleTypeByString("Bit"), value);
           else if (i > 1 && i <= Byte.MAX_VALUE)
-            return new UriLiteral(getInternalTypeKindInstance("Uint7"), value);
+            return new UriLiteral(getInternalEdmSimpleTypeByString("Uint7"), value);
           else if (i >= Byte.MIN_VALUE && i < 0)
             return new UriLiteral(sByteInstance(), value);
           else if (i > Byte.MAX_VALUE && i <= 255)
@@ -101,5 +98,77 @@ public class EdmSimpleTypeFacadeImpl extends EdmSimpleTypeFacade {
         return new UriLiteral(timeInstance(), value);
     }
     throw new UriParserException(UriParserException.UNKNOWNLITERAL);
+  }
+  
+  public static EdmSimpleType getEdmSimpleType(EdmSimpleTypeKind edmSimpleType){
+    EdmSimpleType edmType = null;
+
+    switch (edmSimpleType) {
+    case Binary:
+      edmType = EdmBinary.getInstance();
+      break;
+    case Boolean:
+      edmType = EdmBoolean.getInstance();
+      break;
+    case Byte:
+      edmType = EdmByte.getInstance();
+      break;
+    case DateTime:
+      edmType = EdmDateTime.getInstance();
+      break;
+    case DateTimeOffset:
+      edmType = EdmDateTimeOffset.getInstance();
+      break;
+    case Decimal:
+      edmType = EdmDecimal.getInstance();
+      break;
+    case Double:
+      edmType = EdmDouble.getInstance();
+      break;
+    case Guid:
+      edmType = EdmGuid.getInstance();
+      break;
+    case Int16:
+      edmType = EdmInt16.getInstance();
+      break;
+    case Int32:
+      edmType = EdmInt32.getInstance();
+      break;
+    case Int64:
+      edmType = EdmInt64.getInstance();
+      break;
+    case SByte:
+      edmType = EdmSByte.getInstance();
+      break;
+    case Single:
+      edmType = EdmSingle.getInstance();
+      break;
+    case String:
+      edmType = EdmString.getInstance();
+      break;
+    case Time:
+      edmType = EdmTime.getInstance();
+      break;
+    case Null:
+      edmType = EdmNull.getInstance();
+      break;
+    default:
+      throw new ODataRuntimeException("Invalid Type " + edmSimpleType);
+    }
+
+    return edmType;
+  }
+  
+  public static EdmSimpleType getInternalEdmSimpleTypeByString(String edmSimpleType) {
+    EdmSimpleType edmType;
+
+    if ("Bit".equals(edmSimpleType)) {
+      edmType = Bit.getInstance();
+    } else if ("Uint7".equals(edmSimpleType)) {
+      edmType = Uint7.getInstance();
+    } else {
+      throw new ODataRuntimeException("Invalid internal Type " + edmSimpleType);
+    }
+    return edmType;
   }
 }
