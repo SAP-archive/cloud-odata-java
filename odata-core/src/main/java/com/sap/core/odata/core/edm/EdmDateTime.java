@@ -117,16 +117,10 @@ public class EdmDateTime implements EdmSimpleType {
 
     switch (literalKind) {
     case DEFAULT:
-      int digits = 3;
+      int digits = 3;  // precision at most to milliseconds
       if (facets != null && facets.getPrecision() != null && facets.getPrecision() < 3) {
         digits = facets.getPrecision();
-        int roundToValue = 1;
-        for (int i = 0; i < 3 - digits; i++)
-          roundToValue *= 10;
-        final int millis = dateTimeValue.get(Calendar.MILLISECOND);
-
-        if (millis % roundToValue >= 5)
-          dateTimeValue.add(Calendar.MILLISECOND, roundToValue - millis % roundToValue);
+        adjustMilliseconds(dateTimeValue, digits);
       }
 
       final String pattern = "yyyy-MM-dd'T'HH:mm:ss";
@@ -157,6 +151,16 @@ public class EdmDateTime implements EdmSimpleType {
     default:
       throw new IllegalArgumentException();
     }
+  }
+
+  private static void adjustMilliseconds(Calendar dateTimeValue, final int digits) {
+    int roundToValue = 1;
+    for (int i = 0; i < 3 - digits; i++)
+      roundToValue *= 10;
+    final int millis = dateTimeValue.get(Calendar.MILLISECOND);
+
+    if (millis % roundToValue >= 5)
+      dateTimeValue.add(Calendar.MILLISECOND, roundToValue - millis % roundToValue);
   }
 
   @Override

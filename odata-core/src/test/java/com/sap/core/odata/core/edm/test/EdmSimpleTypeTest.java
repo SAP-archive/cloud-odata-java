@@ -426,4 +426,40 @@ public class EdmSimpleTypeTest {
 
     expectErrorInValueToString(instance, 0, EdmLiteralKind.DEFAULT, null);
   }
+
+  @Test
+  public void valueToStringDateTimeOffset() {
+    final EdmSimpleType instance = EdmSimpleTypeKind.dateTimeOffsetInstance();
+    Calendar dateTime = Calendar.getInstance();
+
+    dateTime.clear();
+    dateTime.setTimeZone(TimeZone.getTimeZone("GMT"));
+    dateTime.set(2012, 1, 29, 1, 2, 3);
+    assertEquals("2012-02-29T01:02:03Z", instance.valueToString(dateTime, EdmLiteralKind.DEFAULT, null));
+    assertEquals("\\/Date(1330477323000)\\/", instance.valueToString(dateTime, EdmLiteralKind.JSON, null));
+    assertEquals("datetimeoffset'2012-02-29T01:02:03Z'", instance.valueToString(dateTime, EdmLiteralKind.URI, null));
+
+    dateTime.setTimeZone(TimeZone.getTimeZone("GMT-1:30"));
+    assertEquals("2012-02-29T01:02:03-01:30", instance.valueToString(dateTime, EdmLiteralKind.DEFAULT, null));
+    assertEquals("\\/Date(1330477323000-0130)\\/", instance.valueToString(dateTime, EdmLiteralKind.JSON, null));
+    assertEquals("datetimeoffset'2012-02-29T01:02:03-01:30'", instance.valueToString(dateTime, EdmLiteralKind.URI, null));
+
+    dateTime.setTimeZone(TimeZone.getTimeZone("GMT+11:00"));
+    assertEquals("2012-02-29T01:02:03+11:00", instance.valueToString(dateTime, EdmLiteralKind.DEFAULT, null));
+    assertEquals("\\/Date(1330477323000+1100)\\/", instance.valueToString(dateTime, EdmLiteralKind.JSON, null));
+    assertEquals("datetimeoffset'2012-02-29T01:02:03+11:00'", instance.valueToString(dateTime, EdmLiteralKind.URI, null));
+
+    final Long millis = 1330558323007L;
+    assertEquals("2012-02-29T23:32:03.007Z", instance.valueToString(millis, EdmLiteralKind.DEFAULT, null));
+    assertEquals("\\/Date(" + millis + ")\\/", instance.valueToString(millis, EdmLiteralKind.JSON, null));
+    assertEquals("datetimeoffset'2012-02-29T23:32:03.007Z'", instance.valueToString(millis, EdmLiteralKind.URI, null));
+
+    final Date date = new Date(millis);
+    final String time = date.toString().substring(11, 19);
+    assertTrue(instance.valueToString(date, EdmLiteralKind.DEFAULT, null).contains(time));
+
+    checkNull(instance);
+
+    expectErrorInValueToString(instance, 0, EdmLiteralKind.DEFAULT, null);
+  }
 }
