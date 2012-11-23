@@ -8,10 +8,12 @@ import com.sap.core.odata.api.edm.EdmSimpleTypeFacade;
 import com.sap.core.odata.api.edm.EdmSimpleTypeKind;
 import com.sap.core.odata.api.edm.EdmTypeKind;
 
+/**
+ * Implementation of the EDM simple type DateTimeOffset
+ * @author SAP AG
+ */
+public class EdmDateTimeOffset implements EdmSimpleType {
 
-public class EdmDateTimeOffset implements EdmSimpleType  {
-
-  private EdmSimpleTypeKind edmSimpleType = EdmSimpleTypeKind.DateTimeOffset;
   private static final EdmDateTimeOffset instance = new EdmDateTimeOffset();
 
   private EdmDateTimeOffset() {
@@ -21,11 +23,12 @@ public class EdmDateTimeOffset implements EdmSimpleType  {
   public static EdmDateTimeOffset getInstance() {
     return instance;
   }
+
   @Override
   public boolean equals(Object obj) {
     return this == obj || obj instanceof EdmDateTimeOffset;
   }
-  
+
   @Override
   public String getNamespace() throws EdmException {
     return EdmSimpleTypeFacade.edmNamespace;
@@ -38,38 +41,36 @@ public class EdmDateTimeOffset implements EdmSimpleType  {
 
   @Override
   public String getName() throws EdmException {
-    return this.edmSimpleType.toString();
+    return EdmSimpleTypeKind.DateTimeOffset.toString();
   }
 
   @Override
-  public boolean isCompatible(EdmSimpleType simpleType) {
+  public boolean isCompatible(final EdmSimpleType simpleType) {
     return simpleType instanceof EdmDateTimeOffset;
   }
 
   @Override
-  public boolean validate(String value, EdmLiteralKind literalKind, EdmFacets facets) {
-    boolean valid = false;
-    if (null != this.valueOfString(value, literalKind, facets)) {
-      valid = true;
+  public boolean validate(final String value, final EdmLiteralKind literalKind, final EdmFacets facets) {
+    try {
+      valueOfString(value, literalKind, facets);
+      return true;
+    } catch (RuntimeException e) {
+      return false;
     }
-    return valid;
   }
 
   @Override
-  public Object valueOfString(String value, EdmLiteralKind literalKind, EdmFacets facets) {
-    // TODO Auto-generated method stub
+  public Object valueOfString(final String value, final EdmLiteralKind literalKind, final EdmFacets facets) {
     return null;
   }
 
   @Override
-  public String valueToString(Object value, EdmLiteralKind literalKind, EdmFacets facets) {
-    // TODO Auto-generated method stub
+  public String valueToString(final Object value, final EdmLiteralKind literalKind, final EdmFacets facets) {
     return null;
   }
 
   @Override
-  public String toUriLiteral(String literal) {
-    literal = literal.replace(":", "%3A");
+  public String toUriLiteral(final String literal) {
     return "datetimeoffset'" + literal + "'";
   }
 
