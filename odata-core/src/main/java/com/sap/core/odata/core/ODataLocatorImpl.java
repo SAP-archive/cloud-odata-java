@@ -46,7 +46,7 @@ public final class ODataLocatorImpl {
 
   @GET
   public Response handleGet() throws ODataException {
-    List<String> pathSegments = this.copyPathSegmentList(this.context.getODataPathSegmentList());
+    List<ODataPathSegment> pathSegments = this.context.getODataPathSegmentList(); //
     UriParserResultImpl uriParserResult = (UriParserResultImpl) this.uriParser.parse(pathSegments, this.queryParameters);
 
     ODataResponse odataResponse = dispatcher.dispatch(ODataHttpMethod.GET, uriParserResult);
@@ -163,16 +163,6 @@ public final class ODataLocatorImpl {
     }
 
     return single;
-  }
-
-  private List<String> copyPathSegmentList(List<ODataPathSegment> src) {
-    List<String> dst = new ArrayList<String>();
-    
-    for(ODataPathSegment segement : src) {
-      dst.add(segement.getPath());
-    }
-    
-    return dst;
   }
   
   private Response convertResponse(final ODataResponse odataResponse) {

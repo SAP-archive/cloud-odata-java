@@ -12,7 +12,6 @@ import com.sap.core.odata.api.edm.EdmAnnotationElement;
  */
 public class Annotations {
 
-  //TODO: Is EdmAnnotation right here? It should be AnnotationAttribute
   Collection<EdmAnnotationElement> annotationElements;
   Collection<EdmAnnotationAttribute> annotationAttributes;
 

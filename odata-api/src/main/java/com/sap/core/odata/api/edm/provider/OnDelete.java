@@ -8,7 +8,6 @@ import com.sap.core.odata.api.edm.EdmAction;
  */
 public class OnDelete {
 
-  //TODO: revisit javadoc for mandatory methods
   private EdmAction action;
   private Documentation documentation;
   private Annotations annotation;

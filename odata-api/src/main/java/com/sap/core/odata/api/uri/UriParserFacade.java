@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.sap.core.odata.api.edm.Edm;
+import com.sap.core.odata.api.processor.ODataPathSegment;
 import com.sap.core.odata.api.rt.RuntimeDelegate;
 
 
@@ -21,7 +22,7 @@ public class UriParserFacade {
    * @return {@link UriParserResult} parsed uri result
    * @throws UriParserException
    */
-  public static UriParserResult parse(Edm edm, List<String> pathSegments, Map<String, String> queryParameter) throws UriParserException{
+  public static UriParserResult parse(Edm edm, List<ODataPathSegment> pathSegments, Map<String, String> queryParameter) throws UriParserException{
     return RuntimeDelegate.getInstance().getUriParser(edm).parse(pathSegments, queryParameter);
   }
   
