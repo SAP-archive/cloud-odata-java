@@ -1,35 +1,68 @@
 package com.sap.core.odata.api.edm.provider;
 
+import java.util.Collection;
+
 /**
  * @author SAP AG
  * <p>
- * Objects of this class represent an entity container in the EDM
+ * Objects of this class represent an entity container including child elemenst in the EDM
  */
-public class EntityContainer {
+public class EntityContainer extends EntityContainerInfo {
 
-  private String name;
-  private String extendz;
-  private boolean isDefaultEntityContainer;
+  private Collection<EntitySet> entitySets;
+  private Collection<AssociationSet> associationSets;
+  private Collection<FunctionImport> functionImports;
+
 
   /**
-   * @return <b>String</b> name
+   * @return <b>Collection</b> of all entity sets of the entity container
    */
-  public String getName() {
-    return name;
+  public Collection<EntitySet> getEntitySets() {
+    return entitySets;
   }
 
   /**
-   * @return <b>String</b> name of the container which this container extends
+   * Sets the entity sets of this {@link EntityContainer}
+   * @param name
+   * @return {@link EntityContainerInfo} for method chaining
    */
-  public String getExtendz() {
-    return extendz;
+  public EntityContainer setEntitySets(Collection<EntitySet> entitySets) {
+    this.entitySets = entitySets;
+    return this;
   }
 
   /**
-   * @return<b>boolean</b> if this container is the default container
+   * @return <b>Collection</b> of all association sets of the entity container
    */
-  public boolean isDefaultEntityContainer() {
-    return isDefaultEntityContainer;
+  public Collection<AssociationSet> getAssociationSets() {
+    return associationSets;
+  }
+
+  /**
+   * Sets the association sets of this {@link EntityContainer}
+   * @param name
+   * @return {@link EntityContainerInfo} for method chaining
+   */
+  public EntityContainer setAssociationSets(Collection<AssociationSet> associationStets) {
+    this.associationSets = associationStets;
+    return this;
+  }
+
+  /**
+   * @return <b>Collection</b> of all function imports of the entity container
+   */
+  public Collection<FunctionImport> getFunctionImports() {
+    return functionImports;
+  }
+
+  /**
+   * Sets the function imports of this {@link EntityContainer}
+   * @param name
+   * @return {@link EntityContainerInfo} for method chaining
+   */
+  public EntityContainer setFunctionImports(Collection<FunctionImport> functionImports) {
+    this.functionImports = functionImports;
+    return this;
   }
 
   /**
@@ -37,8 +70,9 @@ public class EntityContainer {
    * @param name
    * @return {@link EntityContainer} for method chaining
    */
+  @Override
   public EntityContainer setName(String name) {
-    this.name = name;
+    super.setName(name);
     return this;
   }
 
@@ -47,8 +81,9 @@ public class EntityContainer {
    * @param extendz
    * @return {@link EntityContainer} for method chaining
    */
+  @Override
   public EntityContainer setExtendz(String extendz) {
-    this.extendz = extendz;
+    super.setExtendz(extendz);
     return this;
   }
 
@@ -57,9 +92,9 @@ public class EntityContainer {
    * @param isDefaultEntityContainer
    * @return {@link EntityContainer} for method chaining
    */
+  @Override
   public EntityContainer setDefaultEntityContainer(boolean isDefaultEntityContainer) {
-    this.isDefaultEntityContainer = isDefaultEntityContainer;
+    super.setDefaultEntityContainer(isDefaultEntityContainer);
     return this;
   }
-
 }

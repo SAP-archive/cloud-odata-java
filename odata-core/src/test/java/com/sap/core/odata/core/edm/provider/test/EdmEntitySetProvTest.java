@@ -22,7 +22,7 @@ import com.sap.core.odata.api.edm.provider.AssociationEnd;
 import com.sap.core.odata.api.edm.provider.AssociationSet;
 import com.sap.core.odata.api.edm.provider.AssociationSetEnd;
 import com.sap.core.odata.api.edm.provider.EdmProvider;
-import com.sap.core.odata.api.edm.provider.EntityContainer;
+import com.sap.core.odata.api.edm.provider.EntityContainerInfo;
 import com.sap.core.odata.api.edm.provider.EntitySet;
 import com.sap.core.odata.api.edm.provider.EntityType;
 import com.sap.core.odata.api.edm.provider.NavigationProperty;
@@ -44,13 +44,13 @@ public class EdmEntitySetProvTest {
     edmProvider = mock(EdmProvider.class);
     EdmImplProv edmImplProv = new EdmImplProv(edmProvider);
 
-    EntityContainer entityContainerParent = new EntityContainer().setName("ContainerParent");
+    EntityContainerInfo entityContainerParent = new EntityContainerInfo().setName("ContainerParent");
     when(edmProvider.getEntityContainer("ContainerParent")).thenReturn(entityContainerParent);
 
     EntitySet entitySetFooParent = new EntitySet().setName("fooParent");
     when(edmProvider.getEntitySet("ContainerParent", "fooParent")).thenReturn(entitySetFooParent);
 
-    EntityContainer entityContainer = new EntityContainer().setName("Container").setExtendz("ContainerParent");
+    EntityContainerInfo entityContainer = new EntityContainerInfo().setName("Container").setExtendz("ContainerParent");
     when(edmProvider.getEntityContainer("Container")).thenReturn(entityContainer);
 
     EntitySet entitySetFoo = new EntitySet().setName("foo");

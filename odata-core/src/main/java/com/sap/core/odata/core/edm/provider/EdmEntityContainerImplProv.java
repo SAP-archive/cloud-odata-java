@@ -12,7 +12,7 @@ import com.sap.core.odata.api.edm.EdmFunctionImport;
 import com.sap.core.odata.api.edm.EdmNavigationProperty;
 import com.sap.core.odata.api.edm.FullQualifiedName;
 import com.sap.core.odata.api.edm.provider.AssociationSet;
-import com.sap.core.odata.api.edm.provider.EntityContainer;
+import com.sap.core.odata.api.edm.provider.EntityContainerInfo;
 import com.sap.core.odata.api.edm.provider.EntitySet;
 import com.sap.core.odata.api.edm.provider.FunctionImport;
 import com.sap.core.odata.api.exception.ODataException;
@@ -23,13 +23,13 @@ import com.sap.core.odata.api.exception.ODataException;
 public class EdmEntityContainerImplProv implements EdmEntityContainer {
 
   private EdmImplProv edm;
-  private EntityContainer entityContainer;
+  private EntityContainerInfo entityContainer;
   private Map<String, EdmEntitySet> edmEntitySets;
   private Map<String, EdmAssociationSet> edmAssociationSets;
   private Map<String, EdmFunctionImport> edmFunctionImports;
   private EdmEntityContainer edmExtendedEntityContainer;
 
-  public EdmEntityContainerImplProv(EdmImplProv edm, EntityContainer entityContainer) throws EdmException {
+  public EdmEntityContainerImplProv(EdmImplProv edm, EntityContainerInfo entityContainer) throws EdmException {
     this.edm = edm;
     this.entityContainer = entityContainer;
     edmEntitySets = new HashMap<String, EdmEntitySet>();

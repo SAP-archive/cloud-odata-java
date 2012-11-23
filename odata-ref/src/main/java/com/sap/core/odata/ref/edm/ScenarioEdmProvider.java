@@ -17,6 +17,7 @@ import com.sap.core.odata.api.edm.provider.ComplexType;
 import com.sap.core.odata.api.edm.provider.CustomizableFeedMappings;
 import com.sap.core.odata.api.edm.provider.EdmProvider;
 import com.sap.core.odata.api.edm.provider.EntityContainer;
+import com.sap.core.odata.api.edm.provider.EntityContainerInfo;
 import com.sap.core.odata.api.edm.provider.EntitySet;
 import com.sap.core.odata.api.edm.provider.EntityType;
 import com.sap.core.odata.api.edm.provider.Facets;
@@ -98,7 +99,35 @@ public class ScenarioEdmProvider implements EdmProvider {
     schema.setEntityTypes(entityTypes);
 
     List<EntityContainer> entityContainers = new ArrayList<EntityContainer>();
-    entityContainers.add(getEntityContainer(ENTITY_CONTAINER_1));
+    EntityContainer entityContainer = new EntityContainer();
+    entityContainer.setName(ENTITY_CONTAINER_1).setDefaultEntityContainer(true);
+    
+    List<EntitySet> entitySets = new ArrayList<EntitySet>();
+    entitySets.add(getEntitySet(ENTITY_CONTAINER_1, ENTITY_SET_1_1));
+    entitySets.add(getEntitySet(ENTITY_CONTAINER_1, ENTITY_SET_1_2));
+    entitySets.add(getEntitySet(ENTITY_CONTAINER_1, ENTITY_SET_1_3));
+    entitySets.add(getEntitySet(ENTITY_CONTAINER_1, ENTITY_SET_1_4));
+    entitySets.add(getEntitySet(ENTITY_CONTAINER_1, ENTITY_SET_1_5));
+    entityContainer.setEntitySets(entitySets);
+    
+    List<AssociationSet> associationSets = new ArrayList<AssociationSet>();
+    associationSets.add(getAssociationSet(ENTITY_CONTAINER_1, ASSOCIATION_1_1, ENTITY_SET_1_4, ROLE_1_4));
+    associationSets.add(getAssociationSet(ENTITY_CONTAINER_1, ASSOCIATION_1_2, ENTITY_SET_1_2, ROLE_1_2));
+    associationSets.add(getAssociationSet(ENTITY_CONTAINER_1, ASSOCIATION_1_3, ENTITY_SET_1_3, ROLE_1_3));
+    associationSets.add(getAssociationSet(ENTITY_CONTAINER_1, ASSOCIATION_1_4, ENTITY_SET_1_5, ROLE_1_5));
+    entityContainer.setAssociationSets(associationSets);
+
+    List<FunctionImport> functionImports = new ArrayList<FunctionImport>();
+    functionImports.add(getFunctionImport(ENTITY_CONTAINER_1, FUNCTION_IMPORT_1));
+    functionImports.add(getFunctionImport(ENTITY_CONTAINER_1, FUNCTION_IMPORT_2));
+    functionImports.add(getFunctionImport(ENTITY_CONTAINER_1, FUNCTION_IMPORT_3));
+    functionImports.add(getFunctionImport(ENTITY_CONTAINER_1, FUNCTION_IMPORT_4));
+    functionImports.add(getFunctionImport(ENTITY_CONTAINER_1, FUNCTION_IMPORT_5));
+    functionImports.add(getFunctionImport(ENTITY_CONTAINER_1, FUNCTION_IMPORT_6));
+    functionImports.add(getFunctionImport(ENTITY_CONTAINER_1, FUNCTION_IMPORT_7));
+    entityContainer.setFunctionImports(functionImports);
+
+    entityContainers.add(entityContainer);
     schema.setEntityContainers(entityContainers);
 
     List<ComplexType> complexTypes = new ArrayList<ComplexType>();
@@ -116,7 +145,17 @@ public class ScenarioEdmProvider implements EdmProvider {
     schema.setEntityTypes(entityTypes);
 
     entityContainers = new ArrayList<EntityContainer>();
-    entityContainers.add(getEntityContainer(ENTITY_CONTAINER_2));
+    entityContainer = new EntityContainer();
+    entityContainer.setName(ENTITY_CONTAINER_2);
+
+    entitySets = new ArrayList<EntitySet>();
+    entitySets.add(getEntitySet(ENTITY_CONTAINER_2, ENTITY_SET_2_1));
+    entityContainer.setEntitySets(entitySets);
+
+    entitySets = new ArrayList<EntitySet>();
+    entitySets.add(getEntitySet(ENTITY_CONTAINER_2, ENTITY_SET_2_1));
+    
+    entityContainers.add(entityContainer);
     schema.setEntityContainers(entityContainers);
 
     schemas.add(schema);
@@ -246,11 +285,11 @@ public class ScenarioEdmProvider implements EdmProvider {
   }
 
   @Override
-  public EntityContainer getEntityContainer(final String name) throws ODataMessageException {
+  public EntityContainerInfo getEntityContainer(final String name) throws ODataMessageException {
     if (name == null || ENTITY_CONTAINER_1.equals(name))
-      return new EntityContainer().setName(ENTITY_CONTAINER_1).setDefaultEntityContainer(true);
+      return new EntityContainerInfo().setName(ENTITY_CONTAINER_1).setDefaultEntityContainer(true);
     else if (ENTITY_CONTAINER_2.equals(name))
-      return new EntityContainer().setName(name).setDefaultEntityContainer(false);
+      return new EntityContainerInfo().setName(name).setDefaultEntityContainer(false);
     else
       throw new ODataNotFoundException(ODataNotFoundException.ENTITY);
   }

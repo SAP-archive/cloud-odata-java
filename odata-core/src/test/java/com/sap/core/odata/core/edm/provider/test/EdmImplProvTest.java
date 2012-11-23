@@ -12,7 +12,7 @@ import com.sap.core.odata.api.edm.FullQualifiedName;
 import com.sap.core.odata.api.edm.provider.Association;
 import com.sap.core.odata.api.edm.provider.ComplexType;
 import com.sap.core.odata.api.edm.provider.EdmProvider;
-import com.sap.core.odata.api.edm.provider.EntityContainer;
+import com.sap.core.odata.api.edm.provider.EntityContainerInfo;
 import com.sap.core.odata.api.edm.provider.EntityType;
 import com.sap.core.odata.core.edm.provider.EdmImplProv;
 
@@ -33,7 +33,7 @@ public class EdmImplProvTest {
     Association association = new Association().setName("Association1");
     when(edmProvider.getAssociation(new FullQualifiedName("Association1Ns", "Association1"))).thenReturn(association);
 
-    EntityContainer defaultEntityContainer = new EntityContainer().setName("Container1");
+    EntityContainerInfo defaultEntityContainer = new EntityContainerInfo().setName("Container1");
     when(edmProvider.getEntityContainer(null)).thenReturn(defaultEntityContainer);
     when(edmProvider.getEntityContainer("Container1")).thenReturn(defaultEntityContainer);
     

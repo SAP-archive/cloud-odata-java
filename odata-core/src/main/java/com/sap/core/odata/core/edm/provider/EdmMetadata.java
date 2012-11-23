@@ -10,10 +10,13 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 
 import com.sap.core.odata.api.edm.provider.Association;
+import com.sap.core.odata.api.edm.provider.AssociationSet;
 import com.sap.core.odata.api.edm.provider.ComplexType;
 import com.sap.core.odata.api.edm.provider.DataServices;
 import com.sap.core.odata.api.edm.provider.EntityContainer;
+import com.sap.core.odata.api.edm.provider.EntitySet;
 import com.sap.core.odata.api.edm.provider.EntityType;
+import com.sap.core.odata.api.edm.provider.FunctionImport;
 import com.sap.core.odata.api.edm.provider.Schema;
 import com.sap.core.odata.api.exception.ODataSerializationException;
 
@@ -38,8 +41,8 @@ public class EdmMetadata {
       xmlStreamWriter.writeAttribute("Version", "1.0");
       xmlStreamWriter.writeNamespace("edmx", EDMX_NAMESPACE);
 
-      xmlStreamWriter.writeStartElement(METADATA_NAMESPACE, "DataServices");
-      xmlStreamWriter.writeAttribute("DataServiceVersion", metadata.getDataServiceVersion());
+      xmlStreamWriter.writeStartElement(EDMX_NAMESPACE, "DataServices");
+      xmlStreamWriter.writeAttribute("m", METADATA_NAMESPACE, "DataServiceVersion", metadata.getDataServiceVersion());
       xmlStreamWriter.writeNamespace("m", METADATA_NAMESPACE);
 
       Collection<Schema> schemas = metadata.getSchemas();
@@ -81,6 +84,34 @@ public class EdmMetadata {
             for (EntityContainer entityContainer : entityContainers) {
               xmlStreamWriter.writeStartElement("EntityContainer");
               xmlStreamWriter.writeAttribute("Name", entityContainer.getName());
+
+              Collection<EntitySet> entitySets = entityContainer.getEntitySets();
+              if (entitySets != null) {
+                for (EntitySet entitySet : entitySets) {
+                  xmlStreamWriter.writeStartElement("EntitySet");
+                  xmlStreamWriter.writeAttribute("Name", entitySet.getName());
+                  xmlStreamWriter.writeEndElement();
+                }
+              }
+
+              Collection<AssociationSet> associationSets = entityContainer.getAssociationSets();
+              if (associationSets != null) {
+                for (AssociationSet associationSet : associationSets) {
+                  xmlStreamWriter.writeStartElement("AssociationSet");
+                  xmlStreamWriter.writeAttribute("Name", associationSet.getName());
+                  xmlStreamWriter.writeEndElement();
+                }
+              }
+
+              Collection<FunctionImport> functionImports = entityContainer.getFunctionImports();
+              if (functionImports != null) {
+                for (FunctionImport functionImport : functionImports) {
+                  xmlStreamWriter.writeStartElement("FunctionImport");
+                  xmlStreamWriter.writeAttribute("Name", functionImport.getName());
+                  xmlStreamWriter.writeEndElement();
+                }
+              }
+
               xmlStreamWriter.writeEndElement();
             }
           }
