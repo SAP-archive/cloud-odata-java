@@ -47,4 +47,15 @@ public class ReturnType {
     this.multiplicity = multiplicity;
     return this;
   }
+
+  @Override
+  public String toString() {
+    if (EdmMultiplicity.MANY == multiplicity) {
+      return "Collection(" + qualifiedName + ")";
+    } else {
+      return qualifiedName.toString();
+    }
+  }
+  
+  
 }

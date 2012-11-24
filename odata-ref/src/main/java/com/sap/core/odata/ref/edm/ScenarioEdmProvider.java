@@ -98,6 +98,18 @@ public class ScenarioEdmProvider implements EdmProvider {
     entityTypes.add(getEntityType(ENTITY_TYPE_1_5));
     schema.setEntityTypes(entityTypes);
 
+    List<ComplexType> complexTypes = new ArrayList<ComplexType>();
+    complexTypes.add(getComplexType(COMPLEX_TYPE_1));
+    complexTypes.add(getComplexType(COMPLEX_TYPE_2));
+    schema.setComplexTypes(complexTypes);
+    
+    List<Association> associations = new ArrayList<Association>();
+    associations.add(getAssociation(ASSOCIATION_1_1));
+    associations.add(getAssociation(ASSOCIATION_1_2));
+    associations.add(getAssociation(ASSOCIATION_1_3));
+    associations.add(getAssociation(ASSOCIATION_1_4));
+    schema.setAssociations(associations);
+    
     List<EntityContainer> entityContainers = new ArrayList<EntityContainer>();
     EntityContainer entityContainer = new EntityContainer();
     entityContainer.setName(ENTITY_CONTAINER_1).setDefaultEntityContainer(true);
@@ -129,11 +141,6 @@ public class ScenarioEdmProvider implements EdmProvider {
 
     entityContainers.add(entityContainer);
     schema.setEntityContainers(entityContainers);
-
-    List<ComplexType> complexTypes = new ArrayList<ComplexType>();
-    complexTypes.add(getComplexType(COMPLEX_TYPE_1));
-    complexTypes.add(getComplexType(COMPLEX_TYPE_2));
-    schema.setComplexTypes(complexTypes);
 
     schemas.add(schema);
 
