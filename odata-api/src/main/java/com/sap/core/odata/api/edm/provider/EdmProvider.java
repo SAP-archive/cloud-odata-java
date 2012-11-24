@@ -8,7 +8,9 @@ import com.sap.core.odata.api.exception.ODataException;
 /**
  * @author SAP AG
  * <p>
- * Provider for the EDM. Is implemented by the application and is used inside the library to get the EDM
+ * Provider for the EDM. Implemented by {@link EdmProviderDefault} which shall be extended by an application.
+ * 
+ * Do not implement this interface. This interface is intended for usage only.
  *
  */
 public interface EdmProvider {

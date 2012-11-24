@@ -17,7 +17,8 @@ public class ComplexType {
   private Collection<Property> properties;
   private Mapping mapping;
   private Documentation documentation;
-  private Annotations annotations;
+  private Collection<AnnotationAttribute> annotationAttributes;
+  private Collection<AnnotationElement> annotationElements;
 
   /**
    * @return <b>String</b> name
@@ -62,10 +63,17 @@ public class ComplexType {
   }
 
   /**
-   * @return {@link Annotations} annotations
+   * @return collection of {@link AnnotationAttribute} annotation attributes
    */
-  public Annotations getAnnotations() {
-    return annotations;
+  public Collection<AnnotationAttribute> getAnnotationAttributes() {
+    return annotationAttributes;
+  }
+
+  /**
+   * @return collection of {@link AnnotationElement} annotation elements
+   */
+  public Collection<AnnotationElement> getAnnotationElements() {
+    return annotationElements;
   }
 
   /**
@@ -131,12 +139,22 @@ public class ComplexType {
   }
 
   /**
-   * Sets the {@link Annotations}
-   * @param annotations
+   * Sets the collection of {@link AnnotationAttribute} for this {@link ComplexType}
+   * @param annotationAttributes
    * @return {@link ComplexType} for method chaining
    */
-  public ComplexType setAnnotations(Annotations annotations) {
-    this.annotations = annotations;
+  public ComplexType setAnnotationAttributes(Collection<AnnotationAttribute> annotationAttributes) {
+    this.annotationAttributes = annotationAttributes;
+    return this;
+  }
+
+  /**
+   * Sets the collection of {@link AnnotationElement} for this {@link ComplexType}
+   * @param annotationElements
+   * @return {@link ComplexType} for method chaining
+   */
+  public ComplexType setAnnotationElements(Collection<AnnotationElement> annotationElements) {
+    this.annotationElements = annotationElements;
     return this;
   }
 }

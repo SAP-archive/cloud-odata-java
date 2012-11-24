@@ -1,5 +1,7 @@
 package com.sap.core.odata.api.edm.provider;
 
+import java.util.Collection;
+
 import com.sap.core.odata.api.edm.EdmMultiplicity;
 import com.sap.core.odata.api.edm.FullQualifiedName;
 
@@ -15,7 +17,8 @@ public class AssociationEnd {
   private EdmMultiplicity multiplicity;
   private OnDelete onDelete;
   private Documentation documentation;
-  private Annotations annotations;
+  private Collection<AnnotationAttribute> annotationAttributes;
+  private Collection<AnnotationElement> annotationElements;
 
   /**
    * @return {@link FullQualifiedName} full qualified name  (namespace and name)
@@ -53,10 +56,17 @@ public class AssociationEnd {
   }
 
   /**
-   * @return {@link Annotations} annotations
+   * @return collection of {@link AnnotationAttribute} annotation attributes
    */
-  public Annotations getAnnotations() {
-    return annotations;
+  public Collection<AnnotationAttribute> getAnnotationAttributes() {
+    return annotationAttributes;
+  }
+
+  /**
+   * @return collection of {@link AnnotationElement} annotation elements
+   */
+  public Collection<AnnotationElement> getAnnotationElements() {
+    return annotationElements;
   }
 
   /**
@@ -113,13 +123,22 @@ public class AssociationEnd {
   }
 
   /**
-   * Sets the {@link Annotations} for this {@link AssociationEnd}
-   * @param annotations
+   * Sets the collection of {@link AnnotationAttribute} for this {@link AssociationEnd}
+   * @param annotationAttributes
    * @return {@link AssociationEnd} for method chaining
    */
-  public AssociationEnd setAnnotations(Annotations annotations) {
-    this.annotations = annotations;
+  public AssociationEnd setAnnotationAttributes(Collection<AnnotationAttribute> annotationAttributes) {
+    this.annotationAttributes = annotationAttributes;
     return this;
   }
 
+  /**
+   * Sets the collection of {@link AnnotationElement} for this {@link AssociationEnd}
+   * @param annotationElements
+   * @return {@link AssociationEnd} for method chaining
+   */
+  public AssociationEnd setAnnotationElements(Collection<AnnotationElement> annotationElements) {
+    this.annotationElements = annotationElements;
+    return this;
+  }
 }

@@ -1,5 +1,7 @@
 package com.sap.core.odata.api.edm.provider;
 
+import java.util.Collection;
+
 import com.sap.core.odata.api.edm.EdmFacets;
 import com.sap.core.odata.api.edm.EdmType;
 import com.sap.core.odata.api.edm.EdmTypeKind;
@@ -19,7 +21,8 @@ public class Property {
   private String mimeType;
   private Mapping mapping;
   private Documentation documentation;
-  private Annotations annotations;
+  private Collection<AnnotationAttribute> annotationAttributes;
+  private Collection<AnnotationElement> annotationElements;
 
   /**
    * @return <b>String</b> name of this property
@@ -71,10 +74,17 @@ public class Property {
   }
 
   /**
-   * @return {@link Annotations} of this property
+   * @return collection of {@link AnnotationAttribute} annotation attributes
    */
-  public Annotations getAnnotations() {
-    return annotations;
+  public Collection<AnnotationAttribute> getAnnotationAttributes() {
+    return annotationAttributes;
+  }
+
+  /**
+   * @return collection of {@link AnnotationElement} annotation elements
+   */
+  public Collection<AnnotationElement> getAnnotationElements() {
+    return annotationElements;
   }
 
   /**
@@ -150,12 +160,22 @@ public class Property {
   }
 
   /**
-   * Sets the {@link Annotations} for this {@link Property}
-   * @param annotations
+   * Sets the collection of {@link AnnotationAttribute} for this {@link Property}
+   * @param annotationAttributes
    * @return {@link Property} for method chaining
    */
-  public Property setAnnotations(Annotations annotations) {
-    this.annotations = annotations;
+  public Property setAnnotationAttributes(Collection<AnnotationAttribute> annotationAttributes) {
+    this.annotationAttributes = annotationAttributes;
+    return this;
+  }
+
+  /**
+   * Sets the collection of {@link AnnotationElement} for this {@link Property}
+   * @param annotationElements
+   * @return {@link Property} for method chaining
+   */
+  public Property setAnnotationElements(Collection<AnnotationElement> annotationElements) {
+    this.annotationElements = annotationElements;
     return this;
   }
 }

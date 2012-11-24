@@ -1,5 +1,7 @@
 package com.sap.core.odata.api.edm.provider;
 
+import java.util.Collection;
+
 import com.sap.core.odata.api.edm.EdmAction;
 
 /**
@@ -10,7 +12,8 @@ public class OnDelete {
 
   private EdmAction action;
   private Documentation documentation;
-  private Annotations annotation;
+  private Collection<AnnotationAttribute> annotationAttributes;
+  private Collection<AnnotationElement> annotationElements;
 
   /**
    * @return {@link EdmAction} action
@@ -27,10 +30,17 @@ public class OnDelete {
   }
 
   /**
-   * @return {@link Annotations} annotations
+   * @return collection of {@link AnnotationAttribute} annotation attributes
    */
-  public Annotations getAnnotation() {
-    return annotation;
+  public Collection<AnnotationAttribute> getAnnotationAttributes() {
+    return annotationAttributes;
+  }
+
+  /**
+   * @return collection of {@link AnnotationElement} annotation elements
+   */
+  public Collection<AnnotationElement> getAnnotationElements() {
+    return annotationElements;
   }
 
   /**
@@ -54,12 +64,22 @@ public class OnDelete {
   }
 
   /**
-   * Sets the {@link Annotations} for this {@link OnDelete}
-   * @param annotation
+   * Sets the collection of {@link AnnotationAttribute} for this {@link OnDelete}
+   * @param annotationAttributes
    * @return {@link OnDelete} for method chaining
    */
-  public OnDelete setAnnotation(Annotations annotation) {
-    this.annotation = annotation;
+  public OnDelete setAnnotationAttributes(Collection<AnnotationAttribute> annotationAttributes) {
+    this.annotationAttributes = annotationAttributes;
+    return this;
+  }
+
+  /**
+   * Sets the collection of {@link AnnotationElement} for this {@link OnDelete}
+   * @param annotationElements
+   * @return {@link OnDelete} for method chaining
+   */
+  public OnDelete setAnnotationElements(Collection<AnnotationElement> annotationElements) {
+    this.annotationElements = annotationElements;
     return this;
   }
 }

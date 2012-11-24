@@ -14,7 +14,8 @@ public class FunctionImport {
   private String httpMethod;
   private Collection<FunctionImportParameter> parameters;
   private Documentation documentation;
-  private Annotations annotations;
+  private Collection<AnnotationAttribute> annotationAttributes;
+  private Collection<AnnotationElement> annotationElements;
 
   /**
    * @return <b>String</b> name of this function import
@@ -59,10 +60,17 @@ public class FunctionImport {
   }
 
   /**
-   * @return {@link Annotations} annotations
+   * @return collection of {@link AnnotationAttribute} annotation attributes
    */
-  public Annotations getAnnotations() {
-    return annotations;
+  public Collection<AnnotationAttribute> getAnnotationAttributes() {
+    return annotationAttributes;
+  }
+
+  /**
+   * @return collection of {@link AnnotationElement} annotation elements
+   */
+  public Collection<AnnotationElement> getAnnotationElements() {
+    return annotationElements;
   }
 
   /**
@@ -121,7 +129,7 @@ public class FunctionImport {
   }
 
   /**
-   * Sets the {@link Documentation} of this {@link FunctionImport}
+   * Sets the {@link Documentation}
    * @param documentation
    * @return {@link FunctionImport} for method chaining
    */
@@ -131,13 +139,22 @@ public class FunctionImport {
   }
 
   /**
-   * Sets the {@link Annotations} of this {@link FunctionImport}
-   * @param annotations
+   * Sets the collection of {@link AnnotationAttribute} for this {@link FunctionImport}
+   * @param annotationAttributes
    * @return {@link FunctionImport} for method chaining
    */
-  public FunctionImport setAnnotations(Annotations annotations) {
-    this.annotations = annotations;
+  public FunctionImport setAnnotationAttributes(Collection<AnnotationAttribute> annotationAttributes) {
+    this.annotationAttributes = annotationAttributes;
     return this;
   }
 
+  /**
+   * Sets the collection of {@link AnnotationElement} for this {@link FunctionImport}
+   * @param annotationElements
+   * @return {@link FunctionImport} for method chaining
+   */
+  public FunctionImport setAnnotationElements(Collection<AnnotationElement> annotationElements) {
+    this.annotationElements = annotationElements;
+    return this;
+  }
 }

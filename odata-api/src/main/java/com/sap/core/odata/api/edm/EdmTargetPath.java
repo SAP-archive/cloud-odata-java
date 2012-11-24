@@ -1,13 +1,22 @@
 package com.sap.core.odata.api.edm;
 
 /**
- * EdmTargetPath specifies the possible targets for an edm property which is mapped to an atom element.
+ * EdmTargetPath specifies the possible default targets for an edm property which is mapped to an atom element.
  * 
  * @author SAP AG
  */
-public enum EdmTargetPath {
+public class EdmTargetPath {
 
-  SyndicationAuthorName, SyndicationAuthorEmail, SyndicationAuthorUri, SyndicationPublished,
-  SyndicationRights, SyndicationTitle, SyndicationUpdated, SyndicationContributorName,
-  SyndicationContributorEmail, SyndicationContributorUri, SyndicationSource, SyndicationSummary;
+  public static String SYNDICATION_AUTHORNAME = "SyndicationAuthorName";
+  public static String SYNDICATION_AUTHOREMAIL = "SyndicationAuthorEmail";
+  public static String SYNDICATION_AUTHORURI = "SyndicationAuthorUri";
+  public static String SYNDICATION_PUBLISHED = "SyndicationPublished";
+  public static String SYNDICATION_RIGHTS = "SyndicationRights";
+  public static String SYNDICATION_TITLE = "SyndicationTitle";
+  public static String SYNDICATION_UPDATED = "SyndicationUpdated";
+  public static String SYNDICATION_CONTRIBUTORNAME = "SyndicationContributorName";
+  public static String SYNDICATION_CONTRIBUTOREMAIL = "SyndicationContributorEmail";
+  public static String SYNDICATION_CONTRIBUTORURI = "SyndicationContributorUri";
+  public static String SYNDICATION_SOURCE = "SyndicationSource";
+  public static String SYNDICATION_SUMMARY = "SyndicationSummary";
 }

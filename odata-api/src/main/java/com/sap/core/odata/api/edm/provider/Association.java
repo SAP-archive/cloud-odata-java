@@ -1,5 +1,7 @@
 package com.sap.core.odata.api.edm.provider;
 
+import java.util.Collection;
+
 /**
  * @author SAP AG
  * <p>
@@ -12,7 +14,8 @@ public class Association {
   private AssociationEnd end2;
   private ReferentialConstraint referentialConstraint;
   private Documentation documentation;
-  private Annotations annotations;
+  private Collection<AnnotationAttribute> annotationAttributes;
+  private Collection<AnnotationElement> annotationElements;
 
   /**
    * @return <b>String</b> name
@@ -50,10 +53,17 @@ public class Association {
   }
 
   /**
-   * @return {@link Annotations} annotations
+   * @return collection of {@link AnnotationAttribute} annotation attributes
    */
-  public Annotations getAnnotations() {
-    return annotations;
+  public Collection<AnnotationAttribute> getAnnotationAttributes() {
+    return annotationAttributes;
+  }
+
+  /**
+   * @return collection of {@link AnnotationElement} annotation elements
+   */
+  public Collection<AnnotationElement> getAnnotationElements() {
+    return annotationElements;
   }
 
   /**
@@ -67,7 +77,6 @@ public class Association {
     return this;
   }
 
-  //TODO: shouldnt this be start and end?
   /**
    * MANDATORY
    * <p>Sets the first {@link AssociationEnd} for this {@link Association}
@@ -111,13 +120,22 @@ public class Association {
   }
 
   /**
-   * Sets the {@link Annotations} for this {@link Association}
-   * @param annotations
+   * Sets the collection of {@link AnnotationAttribute} for this {@link Association}
+   * @param annotationAttributes
    * @return {@link Association} for method chaining
    */
-  public Association setAnnotations(Annotations annotations) {
-    this.annotations = annotations;
+  public Association setAnnotationAttributes(Collection<AnnotationAttribute> annotationAttributes) {
+    this.annotationAttributes = annotationAttributes;
     return this;
   }
 
+  /**
+   * Sets the collection of {@link AnnotationElement} for this {@link Association}
+   * @param annotationElements
+   * @return {@link Association} for method chaining
+   */
+  public Association setAnnotationElements(Collection<AnnotationElement> annotationElements) {
+    this.annotationElements = annotationElements;
+    return this;
+  }
 }

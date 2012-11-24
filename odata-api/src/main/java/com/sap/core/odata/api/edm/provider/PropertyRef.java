@@ -1,5 +1,7 @@
 package com.sap.core.odata.api.edm.provider;
 
+import java.util.Collection;
+
 /**
  * @author SAP AG
  *
@@ -7,7 +9,8 @@ package com.sap.core.odata.api.edm.provider;
 public class PropertyRef {
 
   private String name;
-  private Annotations annotations;
+  private Collection<AnnotationAttribute> annotationAttributes;
+  private Collection<AnnotationElement> annotationElements;
 
   /**
    * @return <b>String</b> name of the {@link Property} this {@link PropertyRef} is referencing to
@@ -17,10 +20,17 @@ public class PropertyRef {
   }
 
   /**
-   * @return {@link Annotations} annotations
+   * @return collection of {@link AnnotationAttribute} annotation attributes
    */
-  public Annotations getAnnotations() {
-    return annotations;
+  public Collection<AnnotationAttribute> getAnnotationAttributes() {
+    return annotationAttributes;
+  }
+
+  /**
+   * @return collection of {@link AnnotationElement} annotation elements
+   */
+  public Collection<AnnotationElement> getAnnotationElements() {
+    return annotationElements;
   }
 
   /**
@@ -35,12 +45,22 @@ public class PropertyRef {
   }
 
   /**
-   * Sets the {@link Annotations} for this {@link PropertyRef}
-   * @param annotations
+   * Sets the collection of {@link AnnotationAttribute} for this {@link PropertyRef}
+   * @param annotationAttributes
    * @return {@link PropertyRef} for method chaining
    */
-  public PropertyRef setAnnotations(Annotations annotations) {
-    this.annotations = annotations;
+  public PropertyRef setAnnotationAttributes(Collection<AnnotationAttribute> annotationAttributes) {
+    this.annotationAttributes = annotationAttributes;
+    return this;
+  }
+
+  /**
+   * Sets the collection of {@link AnnotationElement} for this {@link PropertyRef}
+   * @param annotationElements
+   * @return {@link PropertyRef} for method chaining
+   */
+  public PropertyRef setAnnotationElements(Collection<AnnotationElement> annotationElements) {
+    this.annotationElements = annotationElements;
     return this;
   }
 }

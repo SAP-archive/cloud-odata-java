@@ -1,5 +1,7 @@
 package com.sap.core.odata.api.edm.provider;
 
+import java.util.Collection;
+
 import com.sap.core.odata.api.edm.FullQualifiedName;
 
 /**
@@ -12,7 +14,8 @@ public class EntitySet {
   private String name;
   private FullQualifiedName entityType;
   private Documentation documentation;
-  private Annotations annotations;
+  private Collection<AnnotationAttribute> annotationAttributes;
+  private Collection<AnnotationElement> annotationElements;
 
   /**
    * @return <b>String> name of this entity set
@@ -36,10 +39,17 @@ public class EntitySet {
   }
 
   /**
-   * @return {@link Annotations} annotations
+   * @return collection of {@link AnnotationAttribute} annotation attributes
    */
-  public Annotations getAnnotations() {
-    return annotations;
+  public Collection<AnnotationAttribute> getAnnotationAttributes() {
+    return annotationAttributes;
+  }
+
+  /**
+   * @return collection of {@link AnnotationElement} annotation elements
+   */
+  public Collection<AnnotationElement> getAnnotationElements() {
+    return annotationElements;
   }
 
   /**
@@ -65,7 +75,7 @@ public class EntitySet {
   }
 
   /**
-   * Sets the {@link Documentation} of this {@link EntitySet}
+   * Sets the {@link Documentation}
    * @param documentation
    * @return {@link EntitySet} for method chaining
    */
@@ -75,13 +85,22 @@ public class EntitySet {
   }
 
   /**
-   * Sets the {@link Annotations} of this {@link EntitySet}
-   * @param annotations
+   * Sets the collection of {@link AnnotationAttribute} for this {@link EntitySet}
+   * @param annotationAttributes
    * @return {@link EntitySet} for method chaining
    */
-  public EntitySet setAnnotations(Annotations annotations) {
-    this.annotations = annotations;
+  public EntitySet setAnnotationAttributes(Collection<AnnotationAttribute> annotationAttributes) {
+    this.annotationAttributes = annotationAttributes;
     return this;
   }
 
+  /**
+   * Sets the collection of {@link AnnotationElement} for this {@link EntitySet}
+   * @param annotationElements
+   * @return {@link EntitySet} for method chaining
+   */
+  public EntitySet setAnnotationElements(Collection<AnnotationElement> annotationElements) {
+    this.annotationElements = annotationElements;
+    return this;
+  }
 }
