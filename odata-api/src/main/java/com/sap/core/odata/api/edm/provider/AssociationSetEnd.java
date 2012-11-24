@@ -1,5 +1,7 @@
 package com.sap.core.odata.api.edm.provider;
 
+import java.util.Collection;
+
 /**
  * @author SAP AG
  * <p>
@@ -10,7 +12,8 @@ public class AssociationSetEnd {
   private String role;
   private String entitySet;
   private Documentation documentation;
-  private Annotations annotations;
+  private Collection<AnnotationAttribute> annotationAttributes;
+  private Collection<AnnotationElement> annotationElements;
 
   /**
    * @return <b>String</b> role
@@ -34,10 +37,17 @@ public class AssociationSetEnd {
   }
 
   /**
-   * @return {@link Annotations} annotations
+   * @return collection of {@link AnnotationAttribute} annotation attributes
    */
-  public Annotations getAnnotations() {
-    return annotations;
+  public Collection<AnnotationAttribute> getAnnotationAttributes() {
+    return annotationAttributes;
+  }
+
+  /**
+   * @return collection of {@link AnnotationElement} annotation elements
+   */
+  public Collection<AnnotationElement> getAnnotationElements() {
+    return annotationElements;
   }
 
   /**
@@ -73,13 +83,22 @@ public class AssociationSetEnd {
   }
 
   /**
-   * Sets the {@link Annotations} of this {@link AssociationSetEnd}
-   * @param annotations
+   * Sets the collection of {@link AnnotationAttribute} for this {@link AssociationSetEnd}
+   * @param annotationAttributes
    * @return {@link AssociationSetEnd} for method chaining
    */
-  public AssociationSetEnd setAnnotations(Annotations annotations) {
-    this.annotations = annotations;
+  public AssociationSetEnd setAnnotationAttributes(Collection<AnnotationAttribute> annotationAttributes) {
+    this.annotationAttributes = annotationAttributes;
     return this;
   }
 
+  /**
+   * Sets the collection of {@link AnnotationElement} for this {@link AssociationSetEnd}
+   * @param annotationElements
+   * @return {@link AssociationSetEnd} for method chaining
+   */
+  public AssociationSetEnd setAnnotationElements(Collection<AnnotationElement> annotationElements) {
+    this.annotationElements = annotationElements;
+    return this;
+  }
 }

@@ -1,5 +1,7 @@
 package com.sap.core.odata.api.edm.provider;
 
+import java.util.Collection;
+
 /**
  * @author SAP AG
  * 
@@ -9,7 +11,8 @@ public class Using {
   private String namespace;
   private String alias;
   private Documentation documentation;
-  private Annotations annotations;
+  private Collection<AnnotationAttribute> annotationAttributes;
+  private Collection<AnnotationElement> annotationElements;
 
   /**
    * MANDATORY
@@ -44,12 +47,22 @@ public class Using {
   }
 
   /**
-   * Sets the {@link Annotations} for this {@link Using}
-   * @param annotations
+   * Sets the collection of {@link AnnotationAttribute} for this {@link Using}
+   * @param annotationAttributes
    * @return {@link Using} for method chaining
    */
-  public Using setAnnotations(Annotations annotations) {
-    this.annotations = annotations;
+  public Using setAnnotationAttributes(Collection<AnnotationAttribute> annotationAttributes) {
+    this.annotationAttributes = annotationAttributes;
+    return this;
+  }
+
+  /**
+   * Sets the collection of {@link AnnotationElement} for this {@link Using}
+   * @param annotationElements
+   * @return {@link Using} for method chaining
+   */
+  public Using setAnnotationElements(Collection<AnnotationElement> annotationElements) {
+    this.annotationElements = annotationElements;
     return this;
   }
 
@@ -75,9 +88,16 @@ public class Using {
   }
 
   /**
-   * @return {@link Annotations} annotations
+   * @return collection of {@link AnnotationAttribute} annotation attributes
    */
-  public Annotations getAnnotations() {
-    return annotations;
+  public Collection<AnnotationAttribute> getAnnotationAttributes() {
+    return annotationAttributes;
+  }
+
+  /**
+   * @return collection of {@link AnnotationElement} annotation elements
+   */
+  public Collection<AnnotationElement> getAnnotationElements() {
+    return annotationElements;
   }
 }

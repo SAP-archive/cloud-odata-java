@@ -17,8 +17,7 @@ public class CustomizableFeedMappings implements EdmCustomizableFeedMappings {
   private String fcNsPrefix;
   private String fcNsUri;
   private String fcSourcePath;
-  private EdmTargetPath fcTargetPath;
-  private String customTargetPath;
+  private String fcTargetPath;
 
   /* (non-Javadoc)
    * @see com.sap.core.odata.api.edm.EdmCustomizableFeedMappings#isFcKeepInContent()
@@ -58,15 +57,8 @@ public class CustomizableFeedMappings implements EdmCustomizableFeedMappings {
   /* (non-Javadoc)
    * @see com.sap.core.odata.api.edm.EdmCustomizableFeedMappings#getFcTargetPath()
    */
-  public EdmTargetPath getFcTargetPath() {
+  public String getFcTargetPath() {
     return fcTargetPath;
-  }
-
-  /**
-   * @return <b>String</b> the custom target path
-   */
-  public String getCustomTargetPath() {
-    return customTargetPath;
   }
 
   /**
@@ -127,23 +119,12 @@ public class CustomizableFeedMappings implements EdmCustomizableFeedMappings {
   }
 
   /**
-   * Sets the target path
+   * Sets the target path. Constants available {@link EdmTargetPath}
    * @param fcTargetPath
    * @return {@link CustomizableFeedMappings} for method chaining
    */
-  public CustomizableFeedMappings setFcTargetPath(EdmTargetPath fcTargetPath) {
+  public CustomizableFeedMappings setFcTargetPath(String fcTargetPath) {
     this.fcTargetPath = fcTargetPath;
     return this;
   }
-
-  /**
-   * Sets the custom target path
-   * @param customTargetPath
-   * @return {@link CustomizableFeedMappings} for method chaining
-   */
-  public CustomizableFeedMappings setCustomTargetPath(String customTargetPath) {
-    this.customTargetPath = customTargetPath;
-    return this;
-  }
-
 }

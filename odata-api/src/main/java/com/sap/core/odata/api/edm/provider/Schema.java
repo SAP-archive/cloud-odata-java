@@ -1,5 +1,6 @@
 package com.sap.core.odata.api.edm.provider;
 
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -16,7 +17,8 @@ public class Schema {
   private List<ComplexType> complexTypes;
   private List<Association> associations;
   private List<EntityContainer> entityContainers;
-  private Annotations annotations;
+  private Collection<AnnotationAttribute> annotationAttributes;
+  private Collection<AnnotationElement> annotationElements;
 
   /**
    * MANDATORY
@@ -94,12 +96,22 @@ public class Schema {
   }
 
   /**
-   * Sets the {@link Annotations} for this {@link Schema}
-   * @param annotations
+   * Sets the collection of {@link AnnotationAttribute} for this {@link Schema}
+   * @param annotationAttributes
    * @return {@link Schema} for method chaining
    */
-  public Schema setAnnotations(Annotations annotations) {
-    this.annotations = annotations;
+  public Schema setAnnotationAttributes(Collection<AnnotationAttribute> annotationAttributes) {
+    this.annotationAttributes = annotationAttributes;
+    return this;
+  }
+
+  /**
+   * Sets the collection of {@link AnnotationElement} for this {@link Schema}
+   * @param annotationElements
+   * @return {@link Schema} for method chaining
+   */
+  public Schema setAnnotationElements(Collection<AnnotationElement> annotationElements) {
+    this.annotationElements = annotationElements;
     return this;
   }
 
@@ -153,9 +165,16 @@ public class Schema {
   }
 
   /**
-   * @return {@link Annotations} annotations
+   * @return collection of {@link AnnotationAttribute} annotation attributes
    */
-  public Annotations getAnnotations() {
-    return annotations;
+  public Collection<AnnotationAttribute> getAnnotationAttributes() {
+    return annotationAttributes;
+  }
+
+  /**
+   * @return collection of {@link AnnotationElement} annotation elements
+   */
+  public Collection<AnnotationElement> getAnnotationElements() {
+    return annotationElements;
   }
 }

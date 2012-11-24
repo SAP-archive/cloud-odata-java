@@ -1,5 +1,7 @@
 package com.sap.core.odata.api.edm.provider;
 
+import java.util.Collection;
+
 import com.sap.core.odata.api.edm.FullQualifiedName;
 
 /**
@@ -14,7 +16,8 @@ public class AssociationSet {
   private AssociationSetEnd end1;
   private AssociationSetEnd end2;
   private Documentation documentation;
-  private Annotations annotations;
+  private Collection<AnnotationAttribute> annotationAttributes;
+  private Collection<AnnotationElement> annotationElements;
 
   /**
    * @return <b>String</b> name
@@ -52,10 +55,17 @@ public class AssociationSet {
   }
 
   /**
-   * @return {@link Annotations} annotations
+   * @return collection of {@link AnnotationAttribute} annotation attributes
    */
-  public Annotations getAnnotations() {
-    return annotations;
+  public Collection<AnnotationAttribute> getAnnotationAttributes() {
+    return annotationAttributes;
+  }
+
+  /**
+   * @return collection of {@link AnnotationElement} annotation elements
+   */
+  public Collection<AnnotationElement> getAnnotationElements() {
+    return annotationElements;
   }
 
   /**
@@ -113,13 +123,22 @@ public class AssociationSet {
   }
 
   /**
-   * Sets the {@link Annotations} for this {@link AssociationSet}
-   * @param annotations
+   * Sets the collection of {@link AnnotationAttribute} for this {@link AssociationSet}
+   * @param annotationAttributes
    * @return {@link AssociationSet} for method chaining
    */
-  public AssociationSet setAnnotations(Annotations annotations) {
-    this.annotations = annotations;
+  public AssociationSet setAnnotationAttributes(Collection<AnnotationAttribute> annotationAttributes) {
+    this.annotationAttributes = annotationAttributes;
     return this;
   }
 
+  /**
+   * Sets the collection of {@link AnnotationElement} for this {@link AssociationSet}
+   * @param annotationElements
+   * @return {@link AssociationSet} for method chaining
+   */
+  public AssociationSet setAnnotationElements(Collection<AnnotationElement> annotationElements) {
+    this.annotationElements = annotationElements;
+    return this;
+  }
 }

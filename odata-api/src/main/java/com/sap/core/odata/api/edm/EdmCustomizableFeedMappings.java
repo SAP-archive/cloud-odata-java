@@ -47,7 +47,7 @@ public interface EdmCustomizableFeedMappings {
   /**
    * Get the target path
    * 
-   * @return {@link EdmTargetPath}
+   * @return String
    */
-  public EdmTargetPath getFcTargetPath();
+  public String getFcTargetPath();
 }

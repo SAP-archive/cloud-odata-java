@@ -9,7 +9,8 @@ import java.util.Collection;
 public class Key {
 
   private Collection<PropertyRef> keys;
-  private Annotations annotations;
+  private Collection<AnnotationAttribute> annotationAttributes;
+  private Collection<AnnotationElement> annotationElements;
 
   /**
    * @return Collection<{@link PropertyRef}> references to the key properties
@@ -19,10 +20,17 @@ public class Key {
   }
 
   /**
-   * @return {@link Annotations} annotations
+   * @return collection of {@link AnnotationAttribute} annotation attributes
    */
-  public Annotations getAnnotations() {
-    return annotations;
+  public Collection<AnnotationAttribute> getAnnotationAttributes() {
+    return annotationAttributes;
+  }
+
+  /**
+   * @return collection of {@link AnnotationElement} annotation elements
+   */
+  public Collection<AnnotationElement> getAnnotationElements() {
+    return annotationElements;
   }
 
   /**
@@ -37,13 +45,22 @@ public class Key {
   }
 
   /**
-   * Sets the {@link Annotations} for this {@link Key}
-   * @param annotations
+   * Sets the collection of {@link AnnotationAttribute} for this {@link Key}
+   * @param annotationAttributes
    * @return {@link Key} for method chaining
    */
-  public Key setAnnotations(Annotations annotations) {
-    this.annotations = annotations;
+  public Key setAnnotationAttributes(Collection<AnnotationAttribute> annotationAttributes) {
+    this.annotationAttributes = annotationAttributes;
     return this;
   }
 
+  /**
+   * Sets the collection of {@link AnnotationElement} for this {@link Key}
+   * @param annotationElements
+   * @return {@link Key} for method chaining
+   */
+  public Key setAnnotationElements(Collection<AnnotationElement> annotationElements) {
+    this.annotationElements = annotationElements;
+    return this;
+  }
 }

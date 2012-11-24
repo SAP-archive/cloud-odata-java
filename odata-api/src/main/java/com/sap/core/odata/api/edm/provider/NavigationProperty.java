@@ -1,5 +1,7 @@
 package com.sap.core.odata.api.edm.provider;
 
+import java.util.Collection;
+
 import com.sap.core.odata.api.edm.FullQualifiedName;
 
 /**
@@ -13,7 +15,8 @@ public class NavigationProperty {
   private String fromRole;
   private String toRole;
   private Documentation documentation;
-  private Annotations annotations;
+  private Collection<AnnotationAttribute> annotationAttributes;
+  private Collection<AnnotationElement> annotationElements;
 
   /**
    * @return <b>String</b> name of this navigation property
@@ -51,10 +54,17 @@ public class NavigationProperty {
   }
 
   /**
-   * @return {@link Annotations} annotations
+   * @return collection of {@link AnnotationAttribute} annotation attributes
    */
-  public Annotations getAnnotations() {
-    return annotations;
+  public Collection<AnnotationAttribute> getAnnotationAttributes() {
+    return annotationAttributes;
+  }
+
+  /**
+   * @return collection of {@link AnnotationElement} annotation elements
+   */
+  public Collection<AnnotationElement> getAnnotationElements() {
+    return annotationElements;
   }
 
   /**
@@ -112,12 +122,22 @@ public class NavigationProperty {
   }
 
   /**
-   * Sets the {@link Annotations} for this {@link NavigationProperty}
-   * @param annotations
+   * Sets the collection of {@link AnnotationAttribute} for this {@link NavigationProperty}
+   * @param annotationAttributes
    * @return {@link NavigationProperty} for method chaining
    */
-  public NavigationProperty setAnnotations(Annotations annotations) {
-    this.annotations = annotations;
+  public NavigationProperty setAnnotationAttributes(Collection<AnnotationAttribute> annotationAttributes) {
+    this.annotationAttributes = annotationAttributes;
+    return this;
+  }
+
+  /**
+   * Sets the collection of {@link AnnotationElement} for this {@link NavigationProperty}
+   * @param annotationElements
+   * @return {@link NavigationProperty} for method chaining
+   */
+  public NavigationProperty setAnnotationElements(Collection<AnnotationElement> annotationElements) {
+    this.annotationElements = annotationElements;
     return this;
   }
 }

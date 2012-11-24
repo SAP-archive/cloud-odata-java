@@ -138,12 +138,22 @@ public class EntityType extends ComplexType {
   }
 
   /**
-   * @param
+   * Sets the collection of {@link AnnotationAttribute} for this {@link EntityType}
+   * @param annotationAttributes
    * @return {@link EntityType} for method chaining
    */
-  public EntityType setAnnotations(Annotations annotations) {
-    super.setAnnotations(annotations);
+  public EntityType setAnnotationAttributes(Collection<AnnotationAttribute> annotationAttributes) {
+    super.setAnnotationAttributes(annotationAttributes);
     return this;
   }
 
+  /**
+   * Sets the collection of {@link AnnotationElement} for this {@link EntityType}
+   * @param annotationElements
+   * @return {@link EntityType} for method chaining
+   */
+  public EntityType setAnnotationElements(Collection<AnnotationElement> annotationElements) {
+    super.setAnnotationElements(annotationElements);
+    return this;
+  }
 }
