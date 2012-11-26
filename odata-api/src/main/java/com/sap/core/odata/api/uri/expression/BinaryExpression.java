@@ -1,10 +1,15 @@
 package com.sap.core.odata.api.uri.expression;
-
+/*1*/
 public interface BinaryExpression extends CommonExpression
 {
-  public String GetOperator();
 
-  public String GetLeftOperand();
+  /**
+    * @return Operator object that represent the operator
+    * @see BinaryExpression.Operator
+    */
+  public BinaryOperator getOperator();
 
-  public String GetRightOperand();
+  public CommonExpression getLeftOperand();
+
+  public CommonExpression getRightOperand();
 }
