@@ -1,5 +1,7 @@
 package com.sap.core.odata.api.processor;
 
+import com.sap.core.odata.api.edm.EdmServiceMetadata;
+import com.sap.core.odata.api.enums.HttpStatusCodes;
 import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.api.exception.ODataNotImplementedException;
 import com.sap.core.odata.api.processor.aspect.Batch;
@@ -15,6 +17,8 @@ import com.sap.core.odata.api.processor.aspect.FunctionImport;
 import com.sap.core.odata.api.processor.aspect.FunctionImportValue;
 import com.sap.core.odata.api.processor.aspect.Metadata;
 import com.sap.core.odata.api.processor.aspect.ServiceDocument;
+import com.sap.core.odata.api.service.ODataService;
+import com.sap.core.odata.api.service.ODataServiceFactory;
 import com.sap.core.odata.api.uri.resultviews.GetComplexPropertyView;
 import com.sap.core.odata.api.uri.resultviews.GetEntityCountView;
 import com.sap.core.odata.api.uri.resultviews.GetEntityLinkCountView;
@@ -29,7 +33,6 @@ import com.sap.core.odata.api.uri.resultviews.GetMediaResourceView;
 import com.sap.core.odata.api.uri.resultviews.GetMetadataView;
 import com.sap.core.odata.api.uri.resultviews.GetServiceDocumentView;
 import com.sap.core.odata.api.uri.resultviews.GetSimplePropertyView;
-
 
 /**
  * A default {@link ODataProcessor} that implements all processor aspects in a single class. It is recommended to derive from this class and it is required by the
@@ -59,7 +62,7 @@ public abstract class ODataSingleProcessor
    * A request context object usually injected by the OData library.
    */
   private ODataContext context;
-  
+
   /**
    * {@see ODataProcessor}
    */
@@ -305,7 +308,13 @@ public abstract class ODataSingleProcessor
    */
   @Override
   public ODataResponse readMetadata(GetMetadataView uriParserResultView) throws ODataException {
-    throw new ODataNotImplementedException();
+    EdmServiceMetadata edmServiceMetadata = getContext().getService().getEntityDataModel().getServiceMetadata();
+    return ODataResponse
+        .status(HttpStatusCodes.OK)
+        .header("Content-Type", "application/xml")
+        .header("DataServiceVersion", edmServiceMetadata.getDataServiceVersion())
+        .entity(edmServiceMetadata.getMetadata())
+        .build();
   }
 
 }
