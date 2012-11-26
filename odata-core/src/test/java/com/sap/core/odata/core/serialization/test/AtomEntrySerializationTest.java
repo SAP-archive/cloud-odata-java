@@ -48,7 +48,7 @@ public class AtomEntrySerializationTest {
   private static final URI BASE_URI;
   static {
     try {
-      BASE_URI = new URI("http://host:port/särvice/");
+      BASE_URI = new URI("http://host:port/s��rvice/");
     } catch (URISyntaxException e) {
       throw new RuntimeException(e);
     }
@@ -72,7 +72,7 @@ public class AtomEntrySerializationTest {
       this.data.put("age", new Integer(52));
       this.data.put("roomId", "1");
       this.data.put("entryData", date);
-      this.data.put("teamId", "1");
+      this.data.put("teamId", "42");
       this.data.put("employeeName", "Walter Winter");
     } catch (ParseException e) {
       throw new RuntimeException(e);
@@ -174,13 +174,28 @@ public class AtomEntrySerializationTest {
       kpl.add(idp2);
     }
 
+    //
+    EdmProperty edmRoomId = mock(EdmProperty.class);
+    when(edmRoomId.getName()).thenReturn("roomId");
+    when(edmRoomId.getType()).thenReturn(EdmSimpleTypeKind.String.getEdmSimpleTypeInstance());
+
+    EdmProperty edmTeamId = mock(EdmProperty.class);
+    when(edmTeamId.getName()).thenReturn("teamId");
+    when(edmTeamId.getType()).thenReturn(EdmSimpleTypeKind.String.getEdmSimpleTypeInstance());
+    //
+    
     EdmEntityType et = mock(EdmEntityType.class);
     when(et.getKeyProperties()).thenReturn(kpl);
+    //
+    when(et.getProperty(edmRoomId.getName())).thenReturn(edmRoomId);
+    when(et.getProperty(edmTeamId.getName())).thenReturn(edmTeamId);
+    //
 
     EdmEntitySet es = mock(EdmEntitySet.class);
     when(es.getName()).thenReturn("Employees");
     when(es.getEntityContainer()).thenReturn(ec);
     when(es.getEntityType()).thenReturn(et);
+    
     return es;
   }
 
@@ -205,4 +220,30 @@ public class AtomEntrySerializationTest {
     assertXpathEvaluatesTo(BASE_URI.toASCIIString() + "Container.Employees(employeeId='1',age=null)", "/a:entry/a:id/text()", xmlString);
   }
 
+
+  @Test
+  public void serializeProperties() throws IOException, XpathException, SAXException, XMLStreamException, FactoryConfigurationError, ODataException {
+    ODataSerializer ser = ODataSerializer.create(Format.ATOM);
+    assertNotNull(ser);
+
+    ODataContext ctx = createContextMock();
+    EdmEntitySet es = createEdmEntitySetMock(true);
+
+    ser.setContext(ctx);
+    ser.setData(this.data);
+    ser.setEdmEntitySet(es);
+
+    InputStream xmlStream = ser.serialize();
+    String xmlString = StringHelper.inputStreamToString(xmlStream);
+
+    LOG.debug(xmlString);
+    
+    assertXpathExists("/a:entry/m:properties", xmlString);
+    assertXpathEvaluatesTo("'" + data.get("roomId") + "'", "/a:entry/m:properties/a:roomId/text()", xmlString);
+    assertXpathEvaluatesTo("'" + data.get("teamId") + "'", "/a:entry/m:properties/a:teamId/text()", xmlString);
+    
+//    assertXpathEvaluatesTo(BASE_URI.toASCIIString(), "/a:entry/@xml:base", xmlString);
+//    assertXpathExists("/a:entry/a:id", xmlString);
+//    assertXpathEvaluatesTo(BASE_URI.toASCIIString() + "Container.Employees(employeeId='1',age=null)", "/a:entry/a:id/text()", xmlString);
+  }
 }
