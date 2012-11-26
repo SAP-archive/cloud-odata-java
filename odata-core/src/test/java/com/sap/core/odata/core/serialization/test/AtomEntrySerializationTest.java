@@ -1,6 +1,6 @@
 package com.sap.core.odata.core.serialization.test;
 
-import static org.custommonkey.xmlunit.XMLAssert.*;
+import static org.custommonkey.xmlunit.XMLAssert.assertXpathEvaluatesTo;
 import static org.custommonkey.xmlunit.XMLAssert.assertXpathExists;
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.Mockito.mock;
@@ -38,7 +38,6 @@ import com.sap.core.odata.api.enums.Format;
 import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.api.processor.ODataContext;
 import com.sap.core.odata.api.processor.ODataUriInfo;
-import com.sap.core.odata.api.serialization.ODataSerializationException;
 import com.sap.core.odata.api.serialization.ODataSerializer;
 import com.sap.core.odata.core.serializer.AtomEntrySerializer;
 import com.sap.core.odata.testutils.helper.StringHelper;
@@ -165,13 +164,13 @@ public class AtomEntrySerializationTest {
     List<EdmProperty> kpl = new ArrayList<EdmProperty>();
     EdmProperty idp = mock(EdmProperty.class);
     when(idp.getName()).thenReturn("employeeId");
-    when(idp.getType()).thenReturn(EdmSimpleTypeKind.stringInstance());
+    when(idp.getType()).thenReturn(EdmSimpleTypeKind.String.getEdmSimpleTypeInstance());
     kpl.add(idp);
 
     if (multipleIds) {
       EdmProperty idp2 = mock(EdmProperty.class);
       when(idp2.getName()).thenReturn("age");
-      when(idp2.getType()).thenReturn(EdmSimpleTypeKind.int32Instance());
+      when(idp2.getType()).thenReturn(EdmSimpleTypeKind.Int32.getEdmSimpleTypeInstance());
       kpl.add(idp2);
     }
 

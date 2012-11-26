@@ -253,7 +253,7 @@ public class ListsProcessor extends ODataSingleProcessor {
     return ODataResponse
         .status(HttpStatusCodes.OK)
         .header(HttpHeaders.CONTENT_TYPE,
-            (EdmSimpleType) property.getType() == EdmSimpleTypeKind.binaryInstance() ?
+            (EdmSimpleType) property.getType() == EdmSimpleTypeKind.Binary.getEdmSimpleTypeInstance() ?
                 property.getMimeType() : MediaType.TEXT_PLAIN)
         .entity(data)
         .build();
@@ -306,7 +306,7 @@ public class ListsProcessor extends ODataSingleProcessor {
     return ODataResponse
         .status(HttpStatusCodes.OK)
         .header(HttpHeaders.CONTENT_TYPE,
-            (EdmSimpleType) functionImport.getReturnType().getType() == EdmSimpleTypeKind.binaryInstance() ?
+            (EdmSimpleType) functionImport.getReturnType().getType() == EdmSimpleTypeKind.Binary.getEdmSimpleTypeInstance() ?
                 MediaType.APPLICATION_OCTET_STREAM : MediaType.TEXT_PLAIN)
         .entity(data)
         .build();
@@ -417,7 +417,7 @@ public class ListsProcessor extends ODataSingleProcessor {
   }
 
   private <T> Object getPropertyValue(final T data, final EdmProperty property) throws ODataException {
-    final String prefix = property.getType().getKind() == EdmTypeKind.SIMPLE && property.getType() == EdmSimpleTypeKind.booleanInstance() ? "is" : "get";
+    final String prefix = property.getType().getKind() == EdmTypeKind.SIMPLE && property.getType() == EdmSimpleTypeKind.Boolean.getEdmSimpleTypeInstance() ? "is" : "get";
     final String methodName = property.getMapping() == null ?
         prefix + property.getName() : property.getMapping().getValue();
     try {

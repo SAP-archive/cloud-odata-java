@@ -26,6 +26,7 @@ import com.sap.core.odata.core.edm.EdmInt16;
 import com.sap.core.odata.core.edm.EdmInt32;
 import com.sap.core.odata.core.edm.EdmInt64;
 import com.sap.core.odata.core.edm.EdmSByte;
+import com.sap.core.odata.core.edm.EdmSimpleTypeFacadeImpl;
 import com.sap.core.odata.core.edm.EdmSingle;
 import com.sap.core.odata.core.edm.EdmString;
 import com.sap.core.odata.core.edm.EdmTime;
@@ -39,10 +40,10 @@ public class EdmSimpleTypeFacadeTest {
   }
 
   public void compare(EdmSimpleTypeKind simpleType) {
-    EdmSimpleType bin1 = EdmSimpleTypeKind.getSimpleTypeInstance(simpleType);
+    EdmSimpleType bin1 = EdmSimpleTypeFacadeImpl.getEdmSimpleType(simpleType);
     assertNotNull(bin1);
 
-    EdmSimpleType bin2 = EdmSimpleTypeKind.getSimpleTypeInstance(simpleType);
+    EdmSimpleType bin2 = EdmSimpleTypeFacadeImpl.getEdmSimpleType(simpleType);
     assertNotNull(bin2);
 
     assertTrue(bin1.equals(bin2));
@@ -253,124 +254,124 @@ public class EdmSimpleTypeFacadeTest {
 
   @Test
   public void parseDecimal() throws Exception {
-    parseLiteral("4.5m", EdmSimpleTypeKind.decimalInstance(), "4.5");
-    parseLiteral("4.5M", EdmSimpleTypeKind.decimalInstance(), "4.5");
-    parseLiteral("1", EdmSimpleTypeKind.decimalInstance(), "1");
-    parseLiteral("255", EdmSimpleTypeKind.decimalInstance(), "255");
-    parseLiteral("-32768", EdmSimpleTypeKind.decimalInstance(), "-32768");
-    parseLiteral("32768", EdmSimpleTypeKind.decimalInstance(), "32768");
-    parseLiteral("3000000", EdmSimpleTypeKind.decimalInstance(), "3000000");
-    parseLiteral("4.5d", EdmSimpleTypeKind.decimalInstance(), "4.5");
-    parseLiteral("4.2E9F", EdmSimpleTypeKind.decimalInstance(), "4.2E9");
-    parseLiteral("1234567890", EdmSimpleTypeKind.decimalInstance(), "1234567890");
+    parseLiteral("4.5m", EdmSimpleTypeKind.Decimal.getEdmSimpleTypeInstance(), "4.5");
+    parseLiteral("4.5M", EdmSimpleTypeKind.Decimal.getEdmSimpleTypeInstance(), "4.5");
+    parseLiteral("1", EdmSimpleTypeKind.Decimal.getEdmSimpleTypeInstance(), "1");
+    parseLiteral("255", EdmSimpleTypeKind.Decimal.getEdmSimpleTypeInstance(), "255");
+    parseLiteral("-32768", EdmSimpleTypeKind.Decimal.getEdmSimpleTypeInstance(), "-32768");
+    parseLiteral("32768", EdmSimpleTypeKind.Decimal.getEdmSimpleTypeInstance(), "32768");
+    parseLiteral("3000000", EdmSimpleTypeKind.Decimal.getEdmSimpleTypeInstance(), "3000000");
+    parseLiteral("4.5d", EdmSimpleTypeKind.Decimal.getEdmSimpleTypeInstance(), "4.5");
+    parseLiteral("4.2E9F", EdmSimpleTypeKind.Decimal.getEdmSimpleTypeInstance(), "4.2E9");
+    parseLiteral("1234567890", EdmSimpleTypeKind.Decimal.getEdmSimpleTypeInstance(), "1234567890");
   }
 
   @Test
   public void parseInt16() throws Exception {
-    parseLiteral("16", EdmSimpleTypeKind.int16Instance(), "16");
-    parseLiteral("-16", EdmSimpleTypeKind.int16Instance(), "-16");
-    parseLiteral("255", EdmSimpleTypeKind.int16Instance(), "255");
-    parseLiteral("-32768", EdmSimpleTypeKind.int16Instance(), "-32768");
+    parseLiteral("16", EdmSimpleTypeKind.Int16.getEdmSimpleTypeInstance(), "16");
+    parseLiteral("-16", EdmSimpleTypeKind.Int16.getEdmSimpleTypeInstance(), "-16");
+    parseLiteral("255", EdmSimpleTypeKind.Int16.getEdmSimpleTypeInstance(), "255");
+    parseLiteral("-32768", EdmSimpleTypeKind.Int16.getEdmSimpleTypeInstance(), "-32768");
 
   }
 
   @Test
   public void parseInt32() throws Exception {
-    parseLiteral("32", EdmSimpleTypeKind.int32Instance(), "32");
-    parseLiteral("-127", EdmSimpleTypeKind.int32Instance(), "-127");
-    parseLiteral("255", EdmSimpleTypeKind.int32Instance(), "255");
-    parseLiteral("32767", EdmSimpleTypeKind.int32Instance(), "32767");
-    parseLiteral("-32769", EdmSimpleTypeKind.int32Instance(), "-32769");
+    parseLiteral("32", EdmSimpleTypeKind.Int32.getEdmSimpleTypeInstance(), "32");
+    parseLiteral("-127", EdmSimpleTypeKind.Int32.getEdmSimpleTypeInstance(), "-127");
+    parseLiteral("255", EdmSimpleTypeKind.Int32.getEdmSimpleTypeInstance(), "255");
+    parseLiteral("32767", EdmSimpleTypeKind.Int32.getEdmSimpleTypeInstance(), "32767");
+    parseLiteral("-32769", EdmSimpleTypeKind.Int32.getEdmSimpleTypeInstance(), "-32769");
   }
 
   @Test
   public void parseInt64() throws Exception {
-    parseLiteral("64", EdmSimpleTypeKind.int64Instance(), "64");
-    parseLiteral("255", EdmSimpleTypeKind.int64Instance(), "255");
-    parseLiteral("1000", EdmSimpleTypeKind.int64Instance(), "1000");
-    parseLiteral("100000", EdmSimpleTypeKind.int64Instance(), "100000");
-    parseLiteral("-64L", EdmSimpleTypeKind.int64Instance(), "-64");
-    parseLiteral("" + Long.MAX_VALUE + "L", EdmSimpleTypeKind.int64Instance(), "" + Long.MAX_VALUE);
-    parseLiteral("" + Long.MIN_VALUE + "l", EdmSimpleTypeKind.int64Instance(), "" + Long.MIN_VALUE);
+    parseLiteral("64", EdmSimpleTypeKind.Int64.getEdmSimpleTypeInstance(), "64");
+    parseLiteral("255", EdmSimpleTypeKind.Int64.getEdmSimpleTypeInstance(), "255");
+    parseLiteral("1000", EdmSimpleTypeKind.Int64.getEdmSimpleTypeInstance(), "1000");
+    parseLiteral("100000", EdmSimpleTypeKind.Int64.getEdmSimpleTypeInstance(), "100000");
+    parseLiteral("-64L", EdmSimpleTypeKind.Int64.getEdmSimpleTypeInstance(), "-64");
+    parseLiteral("" + Long.MAX_VALUE + "L", EdmSimpleTypeKind.Int64.getEdmSimpleTypeInstance(), "" + Long.MAX_VALUE);
+    parseLiteral("" + Long.MIN_VALUE + "l", EdmSimpleTypeKind.Int64.getEdmSimpleTypeInstance(), "" + Long.MIN_VALUE);
   }
 
   @Test
   public void parseString() throws Exception {
-    parseLiteral("'abc'", EdmSimpleTypeKind.stringInstance(), "abc");
-    parseLiteral("'true'", EdmSimpleTypeKind.stringInstance(), "true");
-    parseLiteral("''", EdmSimpleTypeKind.stringInstance(), "");
+    parseLiteral("'abc'", EdmSimpleTypeKind.String.getEdmSimpleTypeInstance(), "abc");
+    parseLiteral("'true'", EdmSimpleTypeKind.String.getEdmSimpleTypeInstance(), "true");
+    parseLiteral("''", EdmSimpleTypeKind.String.getEdmSimpleTypeInstance(), "");
   }
 
   @Test
   public void parseSingle() throws Exception {
-    parseLiteral("45", EdmSimpleTypeKind.singleInstance(), "45");
-    parseLiteral("255", EdmSimpleTypeKind.singleInstance(), "255");
-    parseLiteral("-32768", EdmSimpleTypeKind.singleInstance(), "-32768");
-    parseLiteral("32768", EdmSimpleTypeKind.singleInstance(), "32768");
-    parseLiteral("1L", EdmSimpleTypeKind.singleInstance(), "1");
-    parseLiteral("4.5f", EdmSimpleTypeKind.singleInstance(), "4.5");
-    parseLiteral("4.5F", EdmSimpleTypeKind.singleInstance(), "4.5");
-    parseLiteral("4.5e9f", EdmSimpleTypeKind.singleInstance(), "4.5e9");
+    parseLiteral("45", EdmSimpleTypeKind.Single.getEdmSimpleTypeInstance(), "45");
+    parseLiteral("255", EdmSimpleTypeKind.Single.getEdmSimpleTypeInstance(), "255");
+    parseLiteral("-32768", EdmSimpleTypeKind.Single.getEdmSimpleTypeInstance(), "-32768");
+    parseLiteral("32768", EdmSimpleTypeKind.Single.getEdmSimpleTypeInstance(), "32768");
+    parseLiteral("1L", EdmSimpleTypeKind.Single.getEdmSimpleTypeInstance(), "1");
+    parseLiteral("4.5f", EdmSimpleTypeKind.Single.getEdmSimpleTypeInstance(), "4.5");
+    parseLiteral("4.5F", EdmSimpleTypeKind.Single.getEdmSimpleTypeInstance(), "4.5");
+    parseLiteral("4.5e9f", EdmSimpleTypeKind.Single.getEdmSimpleTypeInstance(), "4.5e9");
   }
 
   @Test
   public void parseDouble() throws Exception {
-    parseLiteral("45", EdmSimpleTypeKind.doubleInstance(), "45");
-    parseLiteral("255", EdmSimpleTypeKind.doubleInstance(), "255");
-    parseLiteral("-32768", EdmSimpleTypeKind.doubleInstance(), "-32768");
-    parseLiteral("32768", EdmSimpleTypeKind.doubleInstance(), "32768");
-    parseLiteral("1l", EdmSimpleTypeKind.doubleInstance(), "1");
-    parseLiteral("4.5d", EdmSimpleTypeKind.doubleInstance(), "4.5");
-    parseLiteral("4.5D", EdmSimpleTypeKind.doubleInstance(), "4.5");
-    parseLiteral("4.5e21f", EdmSimpleTypeKind.doubleInstance(), "4.5e21");
+    parseLiteral("45", EdmSimpleTypeKind.Double.getEdmSimpleTypeInstance(), "45");
+    parseLiteral("255", EdmSimpleTypeKind.Double.getEdmSimpleTypeInstance(), "255");
+    parseLiteral("-32768", EdmSimpleTypeKind.Double.getEdmSimpleTypeInstance(), "-32768");
+    parseLiteral("32768", EdmSimpleTypeKind.Double.getEdmSimpleTypeInstance(), "32768");
+    parseLiteral("1l", EdmSimpleTypeKind.Double.getEdmSimpleTypeInstance(), "1");
+    parseLiteral("4.5d", EdmSimpleTypeKind.Double.getEdmSimpleTypeInstance(), "4.5");
+    parseLiteral("4.5D", EdmSimpleTypeKind.Double.getEdmSimpleTypeInstance(), "4.5");
+    parseLiteral("4.5e21f", EdmSimpleTypeKind.Double.getEdmSimpleTypeInstance(), "4.5e21");
   }
 
   @Test
   public void parseByte() throws Exception {
-    parseLiteral("255", EdmSimpleTypeKind.byteInstance(), "255");
-    parseLiteral("123", EdmSimpleTypeKind.byteInstance(), "123");
+    parseLiteral("255", EdmSimpleTypeKind.Byte.getEdmSimpleTypeInstance(), "255");
+    parseLiteral("123", EdmSimpleTypeKind.Byte.getEdmSimpleTypeInstance(), "123");
   }
 
   @Test
   public void parseGuid() throws Exception {
-    parseLiteral("guid'1225c695-cfb8-4ebb-aaaa-80da344efa6a'", EdmSimpleTypeKind.guidInstance(), "1225c695-cfb8-4ebb-aaaa-80da344efa6a");
+    parseLiteral("guid'1225c695-cfb8-4ebb-aaaa-80da344efa6a'", EdmSimpleTypeKind.Guid.getEdmSimpleTypeInstance(), "1225c695-cfb8-4ebb-aaaa-80da344efa6a");
   }
 
   @Test
   public void parseTime() throws Exception {
-    parseLiteral("time'P120D'", EdmSimpleTypeKind.timeInstance(), "P120D");
+    parseLiteral("time'P120D'", EdmSimpleTypeKind.Time.getEdmSimpleTypeInstance(), "P120D");
   }
 
   @Test
   public void parseDatetime() throws Exception {
-    parseLiteral("datetime'2009-12-26T21:23:38'", EdmSimpleTypeKind.dateTimeInstance(), "2009-12-26T21:23:38");
-    parseLiteral("datetime'2009-12-26T21:23:38Z'", EdmSimpleTypeKind.dateTimeInstance(), "2009-12-26T21:23:38Z");
+    parseLiteral("datetime'2009-12-26T21:23:38'", EdmSimpleTypeKind.DateTime.getEdmSimpleTypeInstance(), "2009-12-26T21:23:38");
+    parseLiteral("datetime'2009-12-26T21:23:38Z'", EdmSimpleTypeKind.DateTime.getEdmSimpleTypeInstance(), "2009-12-26T21:23:38Z");
   }
 
   @Test
   public void parseDatetimeOffset() throws Exception {
-    parseLiteral("datetimeoffset'2009-12-26T21:23:38Z'", EdmSimpleTypeKind.dateTimeOffsetInstance(), "2009-12-26T21:23:38Z");
-    parseLiteral("datetimeoffset'2002-10-10T12:00:00-05:00'", EdmSimpleTypeKind.dateTimeOffsetInstance(), "2002-10-10T12:00:00-05:00");
+    parseLiteral("datetimeoffset'2009-12-26T21:23:38Z'", EdmSimpleTypeKind.DateTimeOffset.getEdmSimpleTypeInstance(), "2009-12-26T21:23:38Z");
+    parseLiteral("datetimeoffset'2002-10-10T12:00:00-05:00'", EdmSimpleTypeKind.DateTimeOffset.getEdmSimpleTypeInstance(), "2002-10-10T12:00:00-05:00");
   }
 
   @Test
   public void parseBoolean() throws Exception {
-    parseLiteral("true", EdmSimpleTypeKind.booleanInstance(), "true");
-    parseLiteral("false", EdmSimpleTypeKind.booleanInstance(), "false");
-    parseLiteral("1", EdmSimpleTypeKind.booleanInstance(), "1");
-    parseLiteral("0", EdmSimpleTypeKind.booleanInstance(), "0");
+    parseLiteral("true", EdmSimpleTypeKind.Boolean.getEdmSimpleTypeInstance(), "true");
+    parseLiteral("false", EdmSimpleTypeKind.Boolean.getEdmSimpleTypeInstance(), "false");
+    parseLiteral("1", EdmSimpleTypeKind.Boolean.getEdmSimpleTypeInstance(), "1");
+    parseLiteral("0", EdmSimpleTypeKind.Boolean.getEdmSimpleTypeInstance(), "0");
   }
 
   @Test
   public void parseSByte() throws Exception {
-    parseLiteral("-123", EdmSimpleTypeKind.sByteInstance(), "-123");
-    parseLiteral("12", EdmSimpleTypeKind.sByteInstance(), "12");
+    parseLiteral("-123", EdmSimpleTypeKind.SByte.getEdmSimpleTypeInstance(), "-123");
+    parseLiteral("12", EdmSimpleTypeKind.SByte.getEdmSimpleTypeInstance(), "12");
   }
 
   @Test
   public void parseBinary() throws Exception {
-    parseLiteral("X'Fa12aAA1'", EdmSimpleTypeKind.binaryInstance(), "+hKqoQ==");
-    parseLiteral("binary'FA12AAA1'", EdmSimpleTypeKind.binaryInstance(), "+hKqoQ==");
+    parseLiteral("X'Fa12aAA1'", EdmSimpleTypeKind.Binary.getEdmSimpleTypeInstance(), "+hKqoQ==");
+    parseLiteral("binary'FA12AAA1'", EdmSimpleTypeKind.Binary.getEdmSimpleTypeInstance(), "+hKqoQ==");
   }
 
   private void parseWrongLiteralContent(final String literal) {
@@ -399,23 +400,23 @@ public class EdmSimpleTypeFacadeTest {
 
   @Test
   public void parseIncompatibleLiteral() throws Exception {
-    parseIncompatibleLiteralContent("1D", EdmSimpleTypeKind.binaryInstance());
-    parseIncompatibleLiteralContent("'0'", EdmSimpleTypeKind.booleanInstance());
-    parseIncompatibleLiteralContent("'1'", EdmSimpleTypeKind.booleanInstance());
-    parseIncompatibleLiteralContent("2", EdmSimpleTypeKind.booleanInstance());
-    parseIncompatibleLiteralContent("-1", EdmSimpleTypeKind.byteInstance());
-    parseIncompatibleLiteralContent("-129", EdmSimpleTypeKind.byteInstance());
-    parseIncompatibleLiteralContent("time'PT11H12M13S'", EdmSimpleTypeKind.dateTimeInstance());
-    parseIncompatibleLiteralContent("time'PT11H12M13S'", EdmSimpleTypeKind.dateTimeOffsetInstance());
-    parseIncompatibleLiteralContent("'1'", EdmSimpleTypeKind.decimalInstance());
-    parseIncompatibleLiteralContent("1M", EdmSimpleTypeKind.doubleInstance());
-    parseIncompatibleLiteralContent("1", EdmSimpleTypeKind.guidInstance());
-    parseIncompatibleLiteralContent("32768", EdmSimpleTypeKind.int16Instance());
-    parseIncompatibleLiteralContent("1L", EdmSimpleTypeKind.int32Instance());
-    parseIncompatibleLiteralContent("1M", EdmSimpleTypeKind.int64Instance());
-    parseIncompatibleLiteralContent("128", EdmSimpleTypeKind.sByteInstance());
-    parseIncompatibleLiteralContent("1D", EdmSimpleTypeKind.singleInstance());
-    parseIncompatibleLiteralContent("1", EdmSimpleTypeKind.stringInstance());
-    parseIncompatibleLiteralContent("datetime'2012-10-10T11:12:13'", EdmSimpleTypeKind.timeInstance());
+    parseIncompatibleLiteralContent("1D", EdmSimpleTypeKind.Binary.getEdmSimpleTypeInstance());
+    parseIncompatibleLiteralContent("'0'", EdmSimpleTypeKind.Boolean.getEdmSimpleTypeInstance());
+    parseIncompatibleLiteralContent("'1'", EdmSimpleTypeKind.Boolean.getEdmSimpleTypeInstance());
+    parseIncompatibleLiteralContent("2", EdmSimpleTypeKind.Boolean.getEdmSimpleTypeInstance());
+    parseIncompatibleLiteralContent("-1", EdmSimpleTypeKind.Byte.getEdmSimpleTypeInstance());
+    parseIncompatibleLiteralContent("-129", EdmSimpleTypeKind.Byte.getEdmSimpleTypeInstance());
+    parseIncompatibleLiteralContent("time'PT11H12M13S'", EdmSimpleTypeKind.DateTime.getEdmSimpleTypeInstance());
+    parseIncompatibleLiteralContent("time'PT11H12M13S'", EdmSimpleTypeKind.DateTimeOffset.getEdmSimpleTypeInstance());
+    parseIncompatibleLiteralContent("'1'", EdmSimpleTypeKind.Decimal.getEdmSimpleTypeInstance());
+    parseIncompatibleLiteralContent("1M", EdmSimpleTypeKind.Double.getEdmSimpleTypeInstance());
+    parseIncompatibleLiteralContent("1", EdmSimpleTypeKind.Guid.getEdmSimpleTypeInstance());
+    parseIncompatibleLiteralContent("32768", EdmSimpleTypeKind.Int16.getEdmSimpleTypeInstance());
+    parseIncompatibleLiteralContent("1L", EdmSimpleTypeKind.Int32.getEdmSimpleTypeInstance());
+    parseIncompatibleLiteralContent("1M", EdmSimpleTypeKind.Int64.getEdmSimpleTypeInstance());
+    parseIncompatibleLiteralContent("128", EdmSimpleTypeKind.SByte.getEdmSimpleTypeInstance());
+    parseIncompatibleLiteralContent("1D", EdmSimpleTypeKind.Single.getEdmSimpleTypeInstance());
+    parseIncompatibleLiteralContent("1", EdmSimpleTypeKind.String.getEdmSimpleTypeInstance());
+    parseIncompatibleLiteralContent("datetime'2012-10-10T11:12:13'", EdmSimpleTypeKind.Time.getEdmSimpleTypeInstance());
   }
 }

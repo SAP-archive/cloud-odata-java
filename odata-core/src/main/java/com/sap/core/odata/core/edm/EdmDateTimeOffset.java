@@ -127,7 +127,7 @@ public class EdmDateTimeOffset implements EdmSimpleType {
     String localTimeString = null;
     String offsetString = null;
     if (literalKind != EdmLiteralKind.JSON) {
-      localTimeString = EdmSimpleTypeKind.getSimpleTypeInstance(EdmSimpleTypeKind.DateTime)
+      localTimeString = EdmDateTime.getInstance()
           .valueToString(dateTimeValue, EdmLiteralKind.DEFAULT, facets);
       if (offset == 0)
         offsetString = "Z";

@@ -31,8 +31,8 @@ class EdmMock {
     when(serviceMetadata.getDataServiceVersion()).thenReturn("MockEdm");
 
     EdmEntityContainer defaultContainer = mock(EdmEntityContainer.class);
-    EdmEntitySet employeeEntitySet = createEntitySetMock(defaultContainer, "Employees", EdmSimpleTypeKind.stringInstance(), "EmployeeId");
-    EdmEntitySet managerEntitySet = createEntitySetMock(defaultContainer, "Managers", EdmSimpleTypeKind.stringInstance(), "EmployeeId");
+    EdmEntitySet employeeEntitySet = createEntitySetMock(defaultContainer, "Employees", EdmSimpleTypeKind.String.getEdmSimpleTypeInstance(), "EmployeeId");
+    EdmEntitySet managerEntitySet = createEntitySetMock(defaultContainer, "Managers", EdmSimpleTypeKind.String.getEdmSimpleTypeInstance(), "EmployeeId");
 
     EdmType navigationType = mock(EdmType.class);
     when(navigationType.getKind()).thenReturn(EdmTypeKind.ENTITY);
@@ -58,7 +58,7 @@ class EdmMock {
     //when(employeeType.getProperty(matches(".+wrong|\\$links"))).thenThrow(new EdmException("Property not found"));
 
     EdmProperty employeeSimpleProperty = mock(EdmProperty.class);
-    when(employeeSimpleProperty.getType()).thenReturn(EdmSimpleTypeKind.stringInstance());
+    when(employeeSimpleProperty.getType()).thenReturn(EdmSimpleTypeKind.String.getEdmSimpleTypeInstance());
     when(employeeSimpleProperty.getName()).thenReturn("EmployeeName");
     when(employeeType.getProperty("EmployeeName")).thenReturn(employeeSimpleProperty);
 
@@ -71,51 +71,47 @@ class EdmMock {
     when(employeeType.getProperty("Location")).thenReturn(locationComplexProperty);
 
     EdmProperty countryProperty = mock(EdmProperty.class);
-    when(countryProperty.getType()).thenReturn(EdmSimpleTypeKind.stringInstance());
+    when(countryProperty.getType()).thenReturn(EdmSimpleTypeKind.String.getEdmSimpleTypeInstance());
     when(countryProperty.getName()).thenReturn("Country");
     when(locationComplexType.getProperty("Country")).thenReturn(countryProperty);
-    //when(locationComplexType.getProperty("somethingwrong")).thenThrow(new EdmException("Property not found"));
-
-    EdmEntitySet teamsEntitySet = createEntitySetMock(defaultContainer, "Teams", EdmSimpleTypeKind.stringInstance(), "Id");
+   
+    EdmEntitySet teamsEntitySet = createEntitySetMock(defaultContainer, "Teams", EdmSimpleTypeKind.String.getEdmSimpleTypeInstance(), "Id");
     when(teamsEntitySet.getEntityType().getProperty("nt_Employees")).thenReturn(employeeProperty);
     when(teamsEntitySet.getRelatedEntitySet(employeeProperty)).thenReturn(employeeEntitySet);
-
-    //when(defaultContainer.getEntitySet(matches("some.+|.+Search|All.+|Max.+|Most.+|ManagerPhoto|Old.+"))).thenThrow(new EdmException("Entity set not found"));
 
     EdmFunctionImport employeeSearchFunctionImport = createFunctionImportMock(defaultContainer, "EmployeeSearch", employeeType, EdmMultiplicity.MANY);
     when(employeeSearchFunctionImport.getEntitySet()).thenReturn(employeeEntitySet);
     List<String> employeeSearchParameterNames = new ArrayList<String>();
     employeeSearchParameterNames.add("q");
     EdmParameter employeeSearchParameter = mock(EdmParameter.class);
-    when(employeeSearchParameter.getType()).thenReturn(EdmSimpleTypeKind.stringInstance());
+    when(employeeSearchParameter.getType()).thenReturn(EdmSimpleTypeKind.String.getEdmSimpleTypeInstance());
     when(employeeSearchFunctionImport.getParameterNames()).thenReturn(employeeSearchParameterNames);
     when(employeeSearchFunctionImport.getParameter("q")).thenReturn(employeeSearchParameter);
     createFunctionImportMock(defaultContainer, "AllLocations", locationComplexType, EdmMultiplicity.MANY);
-    createFunctionImportMock(defaultContainer, "AllUsedRoomIds", EdmSimpleTypeKind.stringInstance(), EdmMultiplicity.MANY);
-    createFunctionImportMock(defaultContainer, "MaximalAge", EdmSimpleTypeKind.int16Instance(), EdmMultiplicity.ONE);
+    createFunctionImportMock(defaultContainer, "AllUsedRoomIds", EdmSimpleTypeKind.String.getEdmSimpleTypeInstance(), EdmMultiplicity.MANY);
+    createFunctionImportMock(defaultContainer, "MaximalAge", EdmSimpleTypeKind.Int16.getEdmSimpleTypeInstance(), EdmMultiplicity.ONE);
     createFunctionImportMock(defaultContainer, "MostCommonLocation", locationComplexType, EdmMultiplicity.ONE);
-    EdmFunctionImport managerPhotoFunctionImport = createFunctionImportMock(defaultContainer, "ManagerPhoto", EdmSimpleTypeKind.binaryInstance(), EdmMultiplicity.ONE);
+    EdmFunctionImport managerPhotoFunctionImport = createFunctionImportMock(defaultContainer, "ManagerPhoto", EdmSimpleTypeKind.Binary.getEdmSimpleTypeInstance(), EdmMultiplicity.ONE);
     List<String> managerPhotoParameterNames = new ArrayList<String>();
     managerPhotoParameterNames.add("Id");
     EdmParameter managerPhotoParameter = mock(EdmParameter.class);
-    when(managerPhotoParameter.getType()).thenReturn(EdmSimpleTypeKind.stringInstance());
+    when(managerPhotoParameter.getType()).thenReturn(EdmSimpleTypeKind.String.getEdmSimpleTypeInstance());
     EdmFacets managerPhotoParameterFacets = mock(EdmFacets.class);
     when(managerPhotoParameterFacets.isNullable()).thenReturn(false);
     when(managerPhotoParameter.getFacets()).thenReturn(managerPhotoParameterFacets);
     when(managerPhotoFunctionImport.getParameterNames()).thenReturn(managerPhotoParameterNames);
     when(managerPhotoFunctionImport.getParameter("Id")).thenReturn(managerPhotoParameter);
     createFunctionImportMock(defaultContainer, "OldestEmployee", employeeType, EdmMultiplicity.ONE);
-    //when(defaultContainer.getFunctionImport("somethingwrong")).thenThrow(new EdmException("Function import not found"));
-
+ 
     EdmEntityContainer specificContainer = mock(EdmEntityContainer.class);
     when(specificContainer.getEntitySet("Employees")).thenReturn(employeeEntitySet);
     when(specificContainer.getName()).thenReturn("Container1");
 
     EdmProperty photoIdProperty = mock(EdmProperty.class);
-    when(photoIdProperty.getType()).thenReturn(EdmSimpleTypeKind.int32Instance());
+    when(photoIdProperty.getType()).thenReturn(EdmSimpleTypeKind.Int32.getEdmSimpleTypeInstance());
     when(photoIdProperty.getName()).thenReturn("Id");
     EdmProperty photoTypeProperty = mock(EdmProperty.class);
-    when(photoTypeProperty.getType()).thenReturn(EdmSimpleTypeKind.stringInstance());
+    when(photoTypeProperty.getType()).thenReturn(EdmSimpleTypeKind.String.getEdmSimpleTypeInstance());
     when(photoTypeProperty.getName()).thenReturn("Type");
     List<EdmProperty> photoKeyProperties = new ArrayList<EdmProperty>();
     photoKeyProperties.add(photoIdProperty);
@@ -136,7 +132,6 @@ class EdmMock {
     when(edm.getDefaultEntityContainer()).thenReturn(defaultContainer);
     when(edm.getEntityContainer("Container1")).thenReturn(specificContainer);
     when(edm.getEntityContainer("Container2")).thenReturn(photoContainer);
-    //when(edm.getEntityContainer("somethingwrong")).thenThrow(new EdmException("Container not found"));
     return edm;
   }
 
