@@ -7,12 +7,14 @@ import static org.junit.Assert.assertTrue;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
  * Read-only tests employing the reference scenario that use the Atom/XML format
  * @author SAP AG
  */
+@Ignore
 public class XmlReadonlyTest extends AbstractTest {
 
   private static final String EMPLOYEE_1_NAME = "Walter Winter";
@@ -69,7 +71,7 @@ public class XmlReadonlyTest extends AbstractTest {
   public void mediaResourceLink() throws Exception {
   }
 
-  @Test
+  @Test 
   public void functionImport() throws Exception {
     Response response = callUrl("EmployeeSearch('1')/ne_Room/Id/$value?q='alter'");
     checkMediaType(response, MediaType.TEXT_PLAIN_TYPE);

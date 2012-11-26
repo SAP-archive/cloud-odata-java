@@ -1,4 +1,4 @@
-package com.sap.core.odata.core.fit.basic.test;
+package com.sap.core.odata.fit.basic.test;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.doAnswer;

@@ -1,4 +1,4 @@
-package com.sap.core.odata.core.fit.basic.test;
+package com.sap.core.odata.fit.basic.test;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
