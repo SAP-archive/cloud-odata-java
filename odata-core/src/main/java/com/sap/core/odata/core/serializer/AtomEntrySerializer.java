@@ -10,11 +10,14 @@ import java.util.Map;
 import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamWriter;
 
+import com.sap.core.odata.api.edm.EdmCustomizableFeedMappings;
 import com.sap.core.odata.api.edm.EdmEntityContainer;
 import com.sap.core.odata.api.edm.EdmEntitySet;
+import com.sap.core.odata.api.edm.EdmException;
 import com.sap.core.odata.api.edm.EdmLiteralKind;
 import com.sap.core.odata.api.edm.EdmProperty;
 import com.sap.core.odata.api.edm.EdmSimpleType;
+import com.sap.core.odata.api.edm.EdmTyped;
 import com.sap.core.odata.api.processor.ODataContext;
 import com.sap.core.odata.api.serialization.ODataSerializationException;
 import com.sap.core.odata.api.serialization.ODataSerializer;
@@ -36,15 +39,16 @@ public class AtomEntrySerializer extends ODataSerializer {
       writer.writeDefaultNamespace(NS_ATOM);
       writer.writeNamespace("m", NS_DATASERVICES_METADATA);
       writer.writeNamespace("d", NS_DATASERVICES);
-      writer.writeAttribute(NS_XML, "base", this.getContext().getUriInfo().getBaseUri());
+      writer.writeAttribute(NS_XML, "base", this.getContext().getUriInfo().getBaseUri().toASCIIString());
 
       writer.writeStartElement("id");
       writer.writeCharacters(this.createIdUri());
       writer.writeEndElement();
-      //      
-      //      writer.writeStartElement("title");
-      //      writer.writeAttribute("type", "text");
-      //      writer.writeEndElement();
+
+      writer.writeStartElement("title");
+      writer.writeAttribute("type", this.createTitleType());
+      writer.writeCharacters("Walter Winter");
+      writer.writeEndElement();
 
       writer.writeEndElement();
 
@@ -56,6 +60,12 @@ public class AtomEntrySerializer extends ODataSerializer {
     }
   }
 
+  private String createTitleType() throws EdmException {
+    String title = "text";
+    
+    return title;
+  }
+
   private String createIdUri() throws ODataSerializationException {
     try {
       ODataContext ctx = this.getContext();
@@ -64,8 +74,8 @@ public class AtomEntrySerializer extends ODataSerializer {
       EdmEntitySet es = this.getEdmEntitySet();
       EdmEntityContainer ec = es.getEntityContainer();
       List<EdmProperty> kp = es.getEntityType().getKeyProperties();
-      
-      String id = ctx.getUriInfo().getBaseUri();
+
+      String id = ctx.getUriInfo().getBaseUri().toASCIIString();
       if (!ec.isDefaultEntityContainer()) {
         id = id + ec.getName() + ".";
       }
@@ -73,14 +83,8 @@ public class AtomEntrySerializer extends ODataSerializer {
       if (kp.size() == 1) {
         EdmSimpleType st = (EdmSimpleType) kp.get(0).getType();
         Object value = data.get(kp.get(0).getName());
-        String strValue =  st.valueToString(value, EdmLiteralKind.URI, kp.get(0).getFacets());
+        String strValue = st.valueToString(value, EdmLiteralKind.URI, kp.get(0).getFacets());
         keys = keys + strValue;
-        
-        // TODO Introduce a URI encoder
-        URI uri = new URI("x", "bbb", "/x xx", null);
-        System.out.println(uri.getPath());
-        System.out.println(uri.toASCIIString());
-        
       }
       else {
         int size = kp.size();
@@ -90,7 +94,7 @@ public class AtomEntrySerializer extends ODataSerializer {
 
           EdmSimpleType st = (EdmSimpleType) kp.get(i).getType();
           keys = keys + keyp.getName() + "=";
-          String strValue =  st.valueToString(value, EdmLiteralKind.URI, kp.get(i).getFacets());
+          String strValue = st.valueToString(value, EdmLiteralKind.URI, kp.get(i).getFacets());
           keys = keys + strValue;
           if (i < size - 1) {
             keys = keys + ",";

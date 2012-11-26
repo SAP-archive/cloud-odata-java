@@ -1,5 +1,6 @@
 package com.sap.core.odata.core;
 
+import java.net.URI;
 import java.util.Collections;
 import java.util.List;
 
@@ -10,7 +11,7 @@ public class ODataUriInfoImpl implements ODataUriInfo {
 
   private List<ODataPathSegment> precedingPathSegment = Collections.emptyList();
   private List<ODataPathSegment> odataPathSegment = Collections.emptyList();
-  private String baseUri;
+  private URI baseUri;
   
   public void setODataPathSegment(List<ODataPathSegment> odataPathSegement) {
     this.odataPathSegment = odataPathSegement;
@@ -20,7 +21,7 @@ public class ODataUriInfoImpl implements ODataUriInfo {
     this.precedingPathSegment = precedingPathSegement;
   }
 
-  public void setBaseUri(String uri) {
+  public void setBaseUri(URI uri) {
     this.baseUri = uri;
   }
   
@@ -35,7 +36,7 @@ public class ODataUriInfoImpl implements ODataUriInfo {
   }
 
   @Override
-  public String getBaseUri() {
+  public URI getBaseUri() {
     return this.baseUri;
   }
 }

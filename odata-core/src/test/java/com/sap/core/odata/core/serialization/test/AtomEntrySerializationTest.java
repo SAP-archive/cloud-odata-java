@@ -1,6 +1,6 @@
 package com.sap.core.odata.core.serialization.test;
 
-import static org.custommonkey.xmlunit.XMLAssert.assertXpathEvaluatesTo;
+import static org.custommonkey.xmlunit.XMLAssert.*;
 import static org.custommonkey.xmlunit.XMLAssert.assertXpathExists;
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.Mockito.mock;
@@ -8,6 +8,8 @@ import static org.mockito.Mockito.when;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -36,18 +38,25 @@ import com.sap.core.odata.api.enums.Format;
 import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.api.processor.ODataContext;
 import com.sap.core.odata.api.processor.ODataUriInfo;
+import com.sap.core.odata.api.serialization.ODataSerializationException;
 import com.sap.core.odata.api.serialization.ODataSerializer;
 import com.sap.core.odata.core.serializer.AtomEntrySerializer;
 import com.sap.core.odata.testutils.helper.StringHelper;
 import com.sap.core.odata.testutils.helper.XMLUnitHelper;
 
-
 public class AtomEntrySerializationTest {
 
-  private static final String BASE_URI = "http://host:port/service/";
+  private static final URI BASE_URI;
+  static {
+    try {
+      BASE_URI = new URI("http://host:port/särvice/");
+    } catch (URISyntaxException e) {
+      throw new RuntimeException(e);
+    }
+  }
 
   private static final Logger LOG = LoggerFactory.getLogger(AtomEntrySerializationTest.class);
-  
+
   private Map<String, Object> data;
 
   {
@@ -76,7 +85,7 @@ public class AtomEntrySerializationTest {
     Map<String, String> ns = new HashMap<String, String>();
     ns.put("d", AtomEntrySerializer.NS_DATASERVICES);
     ns.put("m", AtomEntrySerializer.NS_DATASERVICES_METADATA);
-    ns.put("a", AtomEntrySerializer.NS_ATOM); 
+    ns.put("a", AtomEntrySerializer.NS_ATOM);
     XMLUnitHelper.registerXmlNs(ns);
   }
 
@@ -85,70 +94,116 @@ public class AtomEntrySerializationTest {
     ODataSerializer ser = ODataSerializer.create(Format.ATOM);
     assertNotNull(ser);
 
+    ODataContext ctx = createContextMock();
+    EdmEntitySet es = createEdmEntitySetMock(false);
 
+    ser.setContext(ctx);
+    ser.setData(this.data);
+    ser.setEdmEntitySet(es);
+
+    InputStream xmlStream = ser.serialize();
+    String xmlString = StringHelper.inputStreamToString(xmlStream);
+
+    assertXpathExists("/a:entry", xmlString);
+    assertXpathEvaluatesTo(BASE_URI.toASCIIString(), "/a:entry/@xml:base", xmlString);
+  }
+
+  @Test
+  public void serializeEntryId() throws IOException, XpathException, SAXException, XMLStreamException, FactoryConfigurationError, ODataException {
+    ODataSerializer ser = ODataSerializer.create(Format.ATOM);
+    assertNotNull(ser);
+
+    ODataContext ctx = createContextMock();
+    EdmEntitySet es = createEdmEntitySetMock(false);
+
+    ser.setContext(ctx);
+    ser.setData(this.data);
+    ser.setEdmEntitySet(es);
+
+    InputStream xmlStream = ser.serialize();
+    String xmlString = StringHelper.inputStreamToString(xmlStream);
+
+    assertXpathExists("/a:entry", xmlString);
+    assertXpathEvaluatesTo(BASE_URI.toASCIIString(), "/a:entry/@xml:base", xmlString);
+    assertXpathExists("/a:entry/a:id", xmlString);
+    assertXpathEvaluatesTo(BASE_URI.toASCIIString() + "Container.Employees('1')", "/a:entry/a:id/text()", xmlString);
+  }
+
+  @Test
+  public void serializeEntryTitle() throws Exception {
+    ODataSerializer ser = ODataSerializer.create(Format.ATOM);
+    assertNotNull(ser);
+
+    ODataContext ctx = createContextMock();
+    EdmEntitySet es = createEdmEntitySetMock(false);
+
+    ser.setContext(ctx);
+    ser.setData(this.data);
+    ser.setEdmEntitySet(es);
+
+    InputStream xmlStream = ser.serialize();
+    String xmlString = StringHelper.inputStreamToString(xmlStream);
+
+    assertXpathExists("/a:entry/a:title", xmlString);
+    assertXpathEvaluatesTo("text", "/a:entry/a:title/@type", xmlString);
+    assertXpathEvaluatesTo("Walter Winter", "/a:entry/a:title/text()", xmlString);
+  }
+
+  private ODataContext createContextMock() throws ODataException {
     ODataUriInfo uriInfo = mock(ODataUriInfo.class);
     when(uriInfo.getBaseUri()).thenReturn(BASE_URI);
     ODataContext ctx = mock(ODataContext.class);
     when(ctx.getUriInfo()).thenReturn(uriInfo);
-    
+    return ctx;
+  }
+
+  private EdmEntitySet createEdmEntitySetMock(boolean multipleIds) throws EdmException {
     EdmEntityContainer ec = mock(EdmEntityContainer.class);
     when(ec.getName()).thenReturn("Container");
     when(ec.isDefaultEntityContainer()).thenReturn(false);
-    
+
     List<EdmProperty> kpl = new ArrayList<EdmProperty>();
     EdmProperty idp = mock(EdmProperty.class);
     when(idp.getName()).thenReturn("employeeId");
     when(idp.getType()).thenReturn(EdmSimpleTypeKind.stringInstance());
     kpl.add(idp);
-//    EdmProperty idp2 = mock(EdmProperty.class);
-//    when(idp2.getName()).thenReturn("age");
-//    when(idp2.getType()).thenReturn(EdmSimpleTypeFacade.int32Instance());
-//    kpl.add(idp2);
-    
+
+    if (multipleIds) {
+      EdmProperty idp2 = mock(EdmProperty.class);
+      when(idp2.getName()).thenReturn("age");
+      when(idp2.getType()).thenReturn(EdmSimpleTypeKind.int32Instance());
+      kpl.add(idp2);
+    }
+
     EdmEntityType et = mock(EdmEntityType.class);
     when(et.getKeyProperties()).thenReturn(kpl);
-    
+
     EdmEntitySet es = mock(EdmEntitySet.class);
     when(es.getName()).thenReturn("Employees");
     when(es.getEntityContainer()).thenReturn(ec);
     when(es.getEntityType()).thenReturn(et);
-    
+    return es;
+  }
+
+  @Test
+  public void serializeIds() throws IOException, XpathException, SAXException, XMLStreamException, FactoryConfigurationError, ODataException {
+    ODataSerializer ser = ODataSerializer.create(Format.ATOM);
+    assertNotNull(ser);
+
+    ODataContext ctx = createContextMock();
+    EdmEntitySet es = createEdmEntitySetMock(true);
+
     ser.setContext(ctx);
     ser.setData(this.data);
     ser.setEdmEntitySet(es);
-    
-    
-    InputStream xmlStream = ser.serialize();
 
+    InputStream xmlStream = ser.serialize();
     String xmlString = StringHelper.inputStreamToString(xmlStream);
 
-    LOG.debug(xmlString);
-
     assertXpathExists("/a:entry", xmlString);
-    assertXpathEvaluatesTo(BASE_URI, "/a:entry/@xml:base", xmlString);
-
+    assertXpathEvaluatesTo(BASE_URI.toASCIIString(), "/a:entry/@xml:base", xmlString);
     assertXpathExists("/a:entry/a:id", xmlString);
-    assertXpathEvaluatesTo(BASE_URI + "Container.Employees('1')", "/a:entry/a:id/text()", xmlString);
-//
-//    assertXpathExists("/a:entry/a:title", xmlString);
-//    assertXpathEvaluatesTo("text", "/a:entry/a:title/@type", xmlString);
-//
-//    assertXpathExists("/entry/updated", xmlString);
-//    assertXpathEvaluatesTo("2012-11-21T12:53:30Z", "/entry/updated", xmlString);
-//
-//    assertXpathExists("/entry/author", xmlString);
-//    assertXpathExists("/entry/author/name", xmlString);
-//    assertXpathExists("/entry/category", xmlString);
-//    assertXpathExists("/entry/content", xmlString);
-//    assertXpathExists("/entry/content/m:properties", xmlString);
-//    assertXpathExists("/entry/content/m:properties/d:employeeId", xmlString);
-//    assertXpathExists("/entry/content/m:properties/d:imageUrl", xmlString);
-//    assertXpathExists("/entry/content/m:properties/d:managerId", xmlString);
-//    assertXpathExists("/entry/content/m:properties/d:age", xmlString);
-//    assertXpathExists("/entry/content/m:properties/d:roomId", xmlString);
-//    assertXpathExists("/entry/content/m:properties/d:entryDate", xmlString);
-//    assertXpathExists("/entry/content/m:properties/d:teamId", xmlString);
-//    assertXpathExists("/entry/content/m:properties/d:employeeName", xmlString);
-
+    assertXpathEvaluatesTo(BASE_URI.toASCIIString() + "Container.Employees(employeeId='1',age=null)", "/a:entry/a:id/text()", xmlString);
   }
+
 }

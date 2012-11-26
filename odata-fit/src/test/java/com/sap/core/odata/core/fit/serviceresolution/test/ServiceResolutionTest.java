@@ -11,6 +11,7 @@ import static org.mockito.Mockito.when;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
+import java.net.URISyntaxException;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
@@ -230,7 +231,7 @@ public class ServiceResolutionTest {
   }
 
   @Test
-  public void testBaseUriWithMatrixParameter() throws ClientProtocolException, IOException, ODataException {
+  public void testBaseUriWithMatrixParameter() throws ClientProtocolException, IOException, ODataException, URISyntaxException {
     this.server.setPathSplit(3);
     this.server.startServer(ServiceFactory.class);
 
@@ -241,6 +242,26 @@ public class ServiceResolutionTest {
 
     ODataContext ctx = this.processor.getContext();
     assertNotNull(ctx);
-    assertEquals("http://localhost:19080/test/aaa/bbb;n=2,3;m=1/ccc/", ctx.getUriInfo().getBaseUri());
+    assertEquals("http://localhost:19080/test/aaa/bbb;n=2,3;m=1/ccc/", ctx.getUriInfo().getBaseUri().toASCIIString());
   }
+
+  
+  @Test
+  public void testBaseUriWithEncoding() throws ClientProtocolException, IOException, ODataException, URISyntaxException {
+    this.server.setPathSplit(3);
+    this.server.startServer(ServiceFactory.class);
+
+    URI uri = new URI(this.server.getEndpoint().getScheme(), null, this.server.getEndpoint().getHost(), this.server.getEndpoint().getPort(), this.server.getEndpoint().getPath() + "/aaa/ä𠢼b;n=2,3;m=1/c c/", null, null);
+    
+    HttpGet get = new HttpGet(uri);
+    HttpResponse response = this.httpClient.execute(get);
+
+    assertEquals(200, response.getStatusLine().getStatusCode());
+
+    ODataContext ctx = this.processor.getContext();
+    assertNotNull(ctx);
+    assertEquals("http://localhost:19080/test/aaa/%C3%A4%F0%A0%A2%BCb;n=2,3;m=1/c%20c/", ctx.getUriInfo().getBaseUri().toASCIIString());
+  }
+
+
 }
