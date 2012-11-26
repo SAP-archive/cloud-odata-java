@@ -3,20 +3,15 @@ package com.sap.core.odata.core.serializer;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
 import java.net.URI;
-import java.net.URLDecoder;
-import java.net.URLEncoder;
 import java.util.List;
 import java.util.Map;
 
-import javax.ws.rs.core.UriBuilder;
 import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamWriter;
 
 import com.sap.core.odata.api.edm.EdmEntityContainer;
 import com.sap.core.odata.api.edm.EdmEntitySet;
-import com.sap.core.odata.api.edm.EdmException;
 import com.sap.core.odata.api.edm.EdmLiteralKind;
 import com.sap.core.odata.api.edm.EdmProperty;
 import com.sap.core.odata.api.edm.EdmSimpleType;
@@ -41,7 +36,7 @@ public class AtomEntrySerializer extends ODataSerializer {
       writer.writeDefaultNamespace(NS_ATOM);
       writer.writeNamespace("m", NS_DATASERVICES_METADATA);
       writer.writeNamespace("d", NS_DATASERVICES);
-      writer.writeAttribute(NS_XML, "base", this.getContext().getBaseUri());
+      writer.writeAttribute(NS_XML, "base", this.getContext().getUriInfo().getBaseUri());
 
       writer.writeStartElement("id");
       writer.writeCharacters(this.createIdUri());
@@ -70,7 +65,7 @@ public class AtomEntrySerializer extends ODataSerializer {
       EdmEntityContainer ec = es.getEntityContainer();
       List<EdmProperty> kp = es.getEntityType().getKeyProperties();
       
-      String id = ctx.getBaseUri();
+      String id = ctx.getUriInfo().getBaseUri();
       if (!ec.isDefaultEntityContainer()) {
         id = id + ec.getName() + ".";
       }

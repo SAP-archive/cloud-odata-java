@@ -14,7 +14,7 @@ import com.sap.core.odata.api.uri.UriParser;
 import com.sap.core.odata.core.ODataResponseBuilderImpl;
 import com.sap.core.odata.core.edm.EdmSimpleTypeFacadeImpl;
 import com.sap.core.odata.core.edm.provider.EdmImplProv;
-import com.sap.core.odata.core.serializer.ODataSerialierFactory;
+import com.sap.core.odata.core.serializer.ODataSerializerFactory;
 import com.sap.core.odata.core.uri.UriParserImpl;
 
 public class RuntimeDelegateImpl extends RuntimeDelegate {
@@ -50,7 +50,7 @@ public class RuntimeDelegateImpl extends RuntimeDelegate {
 
   @Override
   protected ODataSerializer createSerializer__(Format format) throws ODataSerializationException {
-    return ODataSerialierFactory.create(format);
+    return ODataSerializerFactory.create(format);
   }
 
 }
