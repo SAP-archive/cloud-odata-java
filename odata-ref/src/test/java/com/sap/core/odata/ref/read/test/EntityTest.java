@@ -41,7 +41,7 @@ public class EntityTest {
   private UriParserResult mockUriResult(final String entitySetName, final String keyName, final String keyValue) throws EdmException {
     EdmProperty keyProperty = mock(EdmProperty.class);
     when(keyProperty.getName()).thenReturn(keyName);
-    when(keyProperty.getType()).thenReturn(EdmSimpleTypeKind.stringInstance()); 
+    when(keyProperty.getType()).thenReturn(EdmSimpleTypeKind.String.getEdmSimpleTypeInstance()); 
 
     KeyPredicate key = mock(KeyPredicate.class);
     when(key.getProperty()).thenReturn(keyProperty);

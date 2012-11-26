@@ -65,21 +65,21 @@ public class EdmSimpleTypeTest {
 
   @Test
   public void testNames() throws Exception {
-    assertEquals("Binary", EdmSimpleTypeKind.binaryInstance().getName());
-    assertEquals("Boolean", EdmSimpleTypeKind.booleanInstance().getName());
-    assertEquals("Byte", EdmSimpleTypeKind.byteInstance().getName());
-    assertEquals("DateTime", EdmSimpleTypeKind.dateTimeInstance().getName());
-    assertEquals("DateTimeOffset", EdmSimpleTypeKind.dateTimeOffsetInstance().getName());
-    assertEquals("Decimal", EdmSimpleTypeKind.decimalInstance().getName());
-    assertEquals("Double", EdmSimpleTypeKind.doubleInstance().getName());
-    assertEquals("Guid", EdmSimpleTypeKind.guidInstance().getName());
-    assertEquals("Int16", EdmSimpleTypeKind.int16Instance().getName());
-    assertEquals("Int32", EdmSimpleTypeKind.int32Instance().getName());
-    assertEquals("Int64", EdmSimpleTypeKind.int64Instance().getName());
-    assertEquals("SByte", EdmSimpleTypeKind.sByteInstance().getName());
-    assertEquals("Single", EdmSimpleTypeKind.singleInstance().getName());
-    assertEquals("String", EdmSimpleTypeKind.stringInstance().getName());
-    assertEquals("Time", EdmSimpleTypeKind.timeInstance().getName());
+    assertEquals("Binary", EdmSimpleTypeKind.Binary.getEdmSimpleTypeInstance().getName());
+    assertEquals("Boolean", EdmSimpleTypeKind.Boolean.getEdmSimpleTypeInstance().getName());
+    assertEquals("Byte", EdmSimpleTypeKind.Byte.getEdmSimpleTypeInstance().getName());
+    assertEquals("DateTime", EdmSimpleTypeKind.DateTime.getEdmSimpleTypeInstance().getName());
+    assertEquals("DateTimeOffset", EdmSimpleTypeKind.DateTimeOffset.getEdmSimpleTypeInstance().getName());
+    assertEquals("Decimal", EdmSimpleTypeKind.Decimal.getEdmSimpleTypeInstance().getName());
+    assertEquals("Double", EdmSimpleTypeKind.Double.getEdmSimpleTypeInstance().getName());
+    assertEquals("Guid", EdmSimpleTypeKind.Guid.getEdmSimpleTypeInstance().getName());
+    assertEquals("Int16", EdmSimpleTypeKind.Int16.getEdmSimpleTypeInstance().getName());
+    assertEquals("Int32", EdmSimpleTypeKind.Int32.getEdmSimpleTypeInstance().getName());
+    assertEquals("Int64", EdmSimpleTypeKind.Int64.getEdmSimpleTypeInstance().getName());
+    assertEquals("SByte", EdmSimpleTypeKind.SByte.getEdmSimpleTypeInstance().getName());
+    assertEquals("Single", EdmSimpleTypeKind.Single.getEdmSimpleTypeInstance().getName());
+    assertEquals("String", EdmSimpleTypeKind.String.getEdmSimpleTypeInstance().getName());
+    assertEquals("Time", EdmSimpleTypeKind.Time.getEdmSimpleTypeInstance().getName());
   }
 
   private void testCompatibility(final EdmSimpleType type, final EdmSimpleType... edmSimpleTypes) {
@@ -89,201 +89,201 @@ public class EdmSimpleTypeTest {
 
   @Test
   public void testBinaryCompatibility() {
-    testCompatibility(EdmSimpleTypeKind.binaryInstance(),
-        EdmSimpleTypeKind.binaryInstance());
+    testCompatibility(EdmSimpleTypeKind.Binary.getEdmSimpleTypeInstance(),
+        EdmSimpleTypeKind.Binary.getEdmSimpleTypeInstance());
   }
 
   @Test
   public void testBooleanCompatibility() {
-    testCompatibility(EdmSimpleTypeKind.booleanInstance(),
-        EdmSimpleTypeKind.booleanInstance(),
+    testCompatibility(EdmSimpleTypeKind.Boolean.getEdmSimpleTypeInstance(),
+        EdmSimpleTypeKind.Boolean.getEdmSimpleTypeInstance(),
         Bit.getInstance());
   }
 
   @Test
   public void testByteCompatibility() {
-    testCompatibility(EdmSimpleTypeKind.byteInstance(),
-        EdmSimpleTypeKind.byteInstance(),
+    testCompatibility(EdmSimpleTypeKind.Byte.getEdmSimpleTypeInstance(),
+        EdmSimpleTypeKind.Byte.getEdmSimpleTypeInstance(),
         Bit.getInstance(),
         Uint7.getInstance());
   }
 
   @Test
   public void testDateTimeCompatibility() {
-    testCompatibility(EdmSimpleTypeKind.dateTimeInstance(),
-        EdmSimpleTypeKind.dateTimeInstance());
+    testCompatibility(EdmSimpleTypeKind.DateTime.getEdmSimpleTypeInstance(),
+        EdmSimpleTypeKind.DateTime.getEdmSimpleTypeInstance());
   }
 
   @Test
   public void testDateTimeOffsetCompatibility() {
-    testCompatibility(EdmSimpleTypeKind.dateTimeOffsetInstance(),
-        EdmSimpleTypeKind.dateTimeOffsetInstance());
+    testCompatibility(EdmSimpleTypeKind.DateTimeOffset.getEdmSimpleTypeInstance(),
+        EdmSimpleTypeKind.DateTimeOffset.getEdmSimpleTypeInstance());
   }
 
   @Test
   public void testDecimalCompatibility() {
-    testCompatibility(EdmSimpleTypeKind.decimalInstance(),
+    testCompatibility(EdmSimpleTypeKind.Decimal.getEdmSimpleTypeInstance(),
         Bit.getInstance(),
         Uint7.getInstance(),
-        EdmSimpleTypeKind.byteInstance(),
-        EdmSimpleTypeKind.sByteInstance(),
-        EdmSimpleTypeKind.int16Instance(),
-        EdmSimpleTypeKind.int32Instance(),
-        EdmSimpleTypeKind.int64Instance(),
-        EdmSimpleTypeKind.singleInstance(),
-        EdmSimpleTypeKind.doubleInstance(),
-        EdmSimpleTypeKind.decimalInstance());
+        EdmSimpleTypeKind.Byte.getEdmSimpleTypeInstance(),
+        EdmSimpleTypeKind.SByte.getEdmSimpleTypeInstance(),
+        EdmSimpleTypeKind.Int16.getEdmSimpleTypeInstance(),
+        EdmSimpleTypeKind.Int32.getEdmSimpleTypeInstance(),
+        EdmSimpleTypeKind.Int64.getEdmSimpleTypeInstance(),
+        EdmSimpleTypeKind.Single.getEdmSimpleTypeInstance(),
+        EdmSimpleTypeKind.Double.getEdmSimpleTypeInstance(),
+        EdmSimpleTypeKind.Decimal.getEdmSimpleTypeInstance());
   }
 
   @Test
   public void testDoubleCompatibility() {
-    testCompatibility(EdmSimpleTypeKind.doubleInstance(),
+    testCompatibility(EdmSimpleTypeKind.Double.getEdmSimpleTypeInstance(),
         Bit.getInstance(),
         Uint7.getInstance(),
-        EdmSimpleTypeKind.byteInstance(),
-        EdmSimpleTypeKind.sByteInstance(),
-        EdmSimpleTypeKind.int16Instance(),
-        EdmSimpleTypeKind.int32Instance(),
-        EdmSimpleTypeKind.int64Instance(),
-        EdmSimpleTypeKind.singleInstance(),
-        EdmSimpleTypeKind.doubleInstance());
+        EdmSimpleTypeKind.Byte.getEdmSimpleTypeInstance(),
+        EdmSimpleTypeKind.SByte.getEdmSimpleTypeInstance(),
+        EdmSimpleTypeKind.Int16.getEdmSimpleTypeInstance(),
+        EdmSimpleTypeKind.Int32.getEdmSimpleTypeInstance(),
+        EdmSimpleTypeKind.Int64.getEdmSimpleTypeInstance(),
+        EdmSimpleTypeKind.Single.getEdmSimpleTypeInstance(),
+        EdmSimpleTypeKind.Double.getEdmSimpleTypeInstance());
   }
 
   @Test
   public void testGuidCompatibility() {
-    testCompatibility(EdmSimpleTypeKind.guidInstance(),
-        EdmSimpleTypeKind.guidInstance());
+    testCompatibility(EdmSimpleTypeKind.Guid.getEdmSimpleTypeInstance(),
+        EdmSimpleTypeKind.Guid.getEdmSimpleTypeInstance());
   }
 
   @Test
   public void testint16Compatibility() {
-    testCompatibility(EdmSimpleTypeKind.int16Instance(),
+    testCompatibility(EdmSimpleTypeKind.Int16.getEdmSimpleTypeInstance(),
         Bit.getInstance(),
         Uint7.getInstance(),
-        EdmSimpleTypeKind.byteInstance(),
-        EdmSimpleTypeKind.sByteInstance(),
-        EdmSimpleTypeKind.int16Instance());
+        EdmSimpleTypeKind.Byte.getEdmSimpleTypeInstance(),
+        EdmSimpleTypeKind.SByte.getEdmSimpleTypeInstance(),
+        EdmSimpleTypeKind.Int16.getEdmSimpleTypeInstance());
   }
 
   @Test
   public void testInt32Compatibility() {
-    testCompatibility(EdmSimpleTypeKind.int32Instance(),
+    testCompatibility(EdmSimpleTypeKind.Int32.getEdmSimpleTypeInstance(),
         Bit.getInstance(),
         Uint7.getInstance(),
-        EdmSimpleTypeKind.byteInstance(),
-        EdmSimpleTypeKind.sByteInstance(),
-        EdmSimpleTypeKind.int16Instance(),
-        EdmSimpleTypeKind.int32Instance());
+        EdmSimpleTypeKind.Byte.getEdmSimpleTypeInstance(),
+        EdmSimpleTypeKind.SByte.getEdmSimpleTypeInstance(),
+        EdmSimpleTypeKind.Int16.getEdmSimpleTypeInstance(),
+        EdmSimpleTypeKind.Int32.getEdmSimpleTypeInstance());
   }
 
   @Test
   public void testInt64Compatibility() {
-    testCompatibility(EdmSimpleTypeKind.int64Instance(),
+    testCompatibility(EdmSimpleTypeKind.Int64.getEdmSimpleTypeInstance(),
         Bit.getInstance(),
         Uint7.getInstance(),
-        EdmSimpleTypeKind.byteInstance(),
-        EdmSimpleTypeKind.sByteInstance(),
-        EdmSimpleTypeKind.int16Instance(),
-        EdmSimpleTypeKind.int32Instance(),
-        EdmSimpleTypeKind.int64Instance());
+        EdmSimpleTypeKind.Byte.getEdmSimpleTypeInstance(),
+        EdmSimpleTypeKind.SByte.getEdmSimpleTypeInstance(),
+        EdmSimpleTypeKind.Int16.getEdmSimpleTypeInstance(),
+        EdmSimpleTypeKind.Int32.getEdmSimpleTypeInstance(),
+        EdmSimpleTypeKind.Int64.getEdmSimpleTypeInstance());
   }
 
   @Test
   public void testSByteCompatibility() {
-    testCompatibility(EdmSimpleTypeKind.sByteInstance(),
+    testCompatibility(EdmSimpleTypeKind.SByte.getEdmSimpleTypeInstance(),
         Bit.getInstance(),
         Uint7.getInstance(),
-        EdmSimpleTypeKind.sByteInstance());
+        EdmSimpleTypeKind.SByte.getEdmSimpleTypeInstance());
   }
 
   @Test
   public void testSingleCompatibility() {
-    testCompatibility(EdmSimpleTypeKind.singleInstance(),
+    testCompatibility(EdmSimpleTypeKind.Single.getEdmSimpleTypeInstance(),
         Bit.getInstance(),
         Uint7.getInstance(),
-        EdmSimpleTypeKind.byteInstance(),
-        EdmSimpleTypeKind.sByteInstance(),
-        EdmSimpleTypeKind.int16Instance(),
-        EdmSimpleTypeKind.int32Instance(),
-        EdmSimpleTypeKind.int64Instance(),
-        EdmSimpleTypeKind.singleInstance());
+        EdmSimpleTypeKind.Byte.getEdmSimpleTypeInstance(),
+        EdmSimpleTypeKind.SByte.getEdmSimpleTypeInstance(),
+        EdmSimpleTypeKind.Int16.getEdmSimpleTypeInstance(),
+        EdmSimpleTypeKind.Int32.getEdmSimpleTypeInstance(),
+        EdmSimpleTypeKind.Int64.getEdmSimpleTypeInstance(),
+        EdmSimpleTypeKind.Single.getEdmSimpleTypeInstance());
   }
 
   @Test
   public void testStringCompatibility() {
-    testCompatibility(EdmSimpleTypeKind.stringInstance(),
-        EdmSimpleTypeKind.stringInstance());
+    testCompatibility(EdmSimpleTypeKind.String.getEdmSimpleTypeInstance(),
+        EdmSimpleTypeKind.String.getEdmSimpleTypeInstance());
   }
 
   @Test
   public void testTimeCompatibility() {
-    testCompatibility(EdmSimpleTypeKind.timeInstance(),
-        EdmSimpleTypeKind.timeInstance());
+    testCompatibility(EdmSimpleTypeKind.Time.getEdmSimpleTypeInstance(),
+        EdmSimpleTypeKind.Time.getEdmSimpleTypeInstance());
   }
 
   @Test
   public void toUriLiteralBinary() {
-    assertEquals("binary'FA12AAA1'", EdmSimpleTypeKind.binaryInstance().toUriLiteral("+hKqoQ=="));
+    assertEquals("binary'FA12AAA1'", EdmSimpleTypeKind.Binary.getEdmSimpleTypeInstance().toUriLiteral("+hKqoQ=="));
   }
 
   @Test
   public void toUriLiteralBoolean() {
-    assertEquals("true", EdmSimpleTypeKind.booleanInstance().toUriLiteral("true"));
-    assertEquals("false", EdmSimpleTypeKind.booleanInstance().toUriLiteral("false"));
-    assertEquals("0", EdmSimpleTypeKind.booleanInstance().toUriLiteral("0"));
-    assertEquals("1", EdmSimpleTypeKind.booleanInstance().toUriLiteral("1"));
+    assertEquals("true", EdmSimpleTypeKind.Boolean.getEdmSimpleTypeInstance().toUriLiteral("true"));
+    assertEquals("false", EdmSimpleTypeKind.Boolean.getEdmSimpleTypeInstance().toUriLiteral("false"));
+    assertEquals("0", EdmSimpleTypeKind.Boolean.getEdmSimpleTypeInstance().toUriLiteral("0"));
+    assertEquals("1", EdmSimpleTypeKind.Boolean.getEdmSimpleTypeInstance().toUriLiteral("1"));
   }
 
   @Test
   public void toUriLiteralByte() {
-    assertEquals("127", EdmSimpleTypeKind.byteInstance().toUriLiteral("127"));
+    assertEquals("127", EdmSimpleTypeKind.Byte.getEdmSimpleTypeInstance().toUriLiteral("127"));
   }
 
   @Test
   public void toUriLiteralDateTime() {
-    assertEquals("datetime'2009-12-26T21:23:38'", EdmSimpleTypeKind.dateTimeInstance().toUriLiteral("2009-12-26T21:23:38"));
-    assertEquals("datetime'2009-12-26T21:23:38Z'", EdmSimpleTypeKind.dateTimeInstance().toUriLiteral("2009-12-26T21:23:38Z"));
+    assertEquals("datetime'2009-12-26T21:23:38'", EdmSimpleTypeKind.DateTime.getEdmSimpleTypeInstance().toUriLiteral("2009-12-26T21:23:38"));
+    assertEquals("datetime'2009-12-26T21:23:38Z'", EdmSimpleTypeKind.DateTime.getEdmSimpleTypeInstance().toUriLiteral("2009-12-26T21:23:38Z"));
   }
 
   @Test
   public void toUriLiteralDateTimeOffset() {
-    assertEquals("datetimeoffset'2009-12-26T21:23:38Z'", EdmSimpleTypeKind.dateTimeOffsetInstance().toUriLiteral("2009-12-26T21:23:38Z"));
-    assertEquals("datetimeoffset'2002-10-10T12:00:00-05:00'", EdmSimpleTypeKind.dateTimeOffsetInstance().toUriLiteral("2002-10-10T12:00:00-05:00"));
+    assertEquals("datetimeoffset'2009-12-26T21:23:38Z'", EdmSimpleTypeKind.DateTimeOffset.getEdmSimpleTypeInstance().toUriLiteral("2009-12-26T21:23:38Z"));
+    assertEquals("datetimeoffset'2002-10-10T12:00:00-05:00'", EdmSimpleTypeKind.DateTimeOffset.getEdmSimpleTypeInstance().toUriLiteral("2002-10-10T12:00:00-05:00"));
   }
 
   @Test
   public void toUriLiteralInt16() {
-    assertEquals("127", EdmSimpleTypeKind.int16Instance().toUriLiteral("127"));
+    assertEquals("127", EdmSimpleTypeKind.Int16.getEdmSimpleTypeInstance().toUriLiteral("127"));
   }
 
   @Test
   public void toUriLiteralInt32() {
-    assertEquals("127", EdmSimpleTypeKind.int32Instance().toUriLiteral("127"));
+    assertEquals("127", EdmSimpleTypeKind.Int32.getEdmSimpleTypeInstance().toUriLiteral("127"));
   }
 
   @Test
   public void toUriLiteralInt64() {
-    assertEquals("127l", EdmSimpleTypeKind.int64Instance().toUriLiteral("127"));
+    assertEquals("127l", EdmSimpleTypeKind.Int64.getEdmSimpleTypeInstance().toUriLiteral("127"));
   }
 
   @Test
   public void toUriLiteralSByte() {
-    assertEquals("127", EdmSimpleTypeKind.sByteInstance().toUriLiteral("127"));
+    assertEquals("127", EdmSimpleTypeKind.SByte.getEdmSimpleTypeInstance().toUriLiteral("127"));
   }
 
   @Test
   public void toUriLiteralSingle() {
-    assertEquals("127f", EdmSimpleTypeKind.singleInstance().toUriLiteral("127"));
+    assertEquals("127f", EdmSimpleTypeKind.Single.getEdmSimpleTypeInstance().toUriLiteral("127"));
   }
 
   @Test
   public void toUriLiteralString() {
-    assertEquals("'StringValue'", EdmSimpleTypeKind.stringInstance().toUriLiteral("StringValue"));
+    assertEquals("'StringValue'", EdmSimpleTypeKind.String.getEdmSimpleTypeInstance().toUriLiteral("StringValue"));
   }
 
   @Test
   public void toUriLiteralTime() {
-    assertEquals("time'P120D'", EdmSimpleTypeKind.timeInstance().toUriLiteral("P120D"));
+    assertEquals("time'P120D'", EdmSimpleTypeKind.Time.getEdmSimpleTypeInstance().toUriLiteral("P120D"));
   }
 
   private EdmFacets getMaxLengthFacets(final Integer maxLength) {
@@ -332,7 +332,7 @@ public class EdmSimpleTypeTest {
   @Test
   public void valueToStringBinary() {
     final byte[] binary = new byte[] { (byte) 0xAA, (byte) 0xBB, (byte) 0xCC, (byte) 0xDD, (byte) 0xEE, (byte) 0xFF };
-    final EdmSimpleType instance = EdmSimpleTypeKind.binaryInstance();
+    final EdmSimpleType instance = EdmSimpleTypeKind.Binary.getEdmSimpleTypeInstance();
 
     assertEquals("qrvM3e7/", instance.valueToString(binary, EdmLiteralKind.DEFAULT, null));
     assertEquals("qrvM3e7/", instance.valueToString(binary, EdmLiteralKind.JSON, null));
@@ -358,7 +358,7 @@ public class EdmSimpleTypeTest {
 
   @Test
   public void valueToStringBoolean() {
-    final EdmSimpleType instance = EdmSimpleTypeKind.booleanInstance();
+    final EdmSimpleType instance = EdmSimpleTypeKind.Boolean.getEdmSimpleTypeInstance();
 
     assertEquals("true", instance.valueToString(true, EdmLiteralKind.DEFAULT, null));
     assertEquals("true", instance.valueToString(true, EdmLiteralKind.JSON, null));
@@ -372,7 +372,7 @@ public class EdmSimpleTypeTest {
 
   @Test
   public void valueToStringByte() {
-    final EdmSimpleType instance = EdmSimpleTypeKind.byteInstance();
+    final EdmSimpleType instance = EdmSimpleTypeKind.Byte.getEdmSimpleTypeInstance();
 
     assertEquals("0", instance.valueToString(0, EdmLiteralKind.DEFAULT, null));
     assertEquals("0", instance.valueToString(0, EdmLiteralKind.JSON, null));
@@ -391,7 +391,7 @@ public class EdmSimpleTypeTest {
 
   @Test
   public void valueToStringDateTime() {
-    final EdmSimpleType instance = EdmSimpleTypeKind.dateTimeInstance();
+    final EdmSimpleType instance = EdmSimpleTypeKind.DateTime.getEdmSimpleTypeInstance();
     Calendar dateTime = Calendar.getInstance();
 
     dateTime.clear();
@@ -429,7 +429,7 @@ public class EdmSimpleTypeTest {
 
   @Test
   public void valueToStringDateTimeOffset() {
-    final EdmSimpleType instance = EdmSimpleTypeKind.dateTimeOffsetInstance();
+    final EdmSimpleType instance = EdmSimpleTypeKind.DateTimeOffset.getEdmSimpleTypeInstance();
     Calendar dateTime = Calendar.getInstance();
 
     dateTime.clear();
