@@ -7,6 +7,7 @@ import java.util.List;
 import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.api.processor.ODataContext;
 import com.sap.core.odata.api.processor.ODataPathSegment;
+import com.sap.core.odata.api.processor.ODataUriInfo;
 import com.sap.core.odata.api.service.ODataService;
 
 public class ODataContextImpl implements ODataContext {
@@ -15,10 +16,8 @@ public class ODataContextImpl implements ODataContext {
 
   private ODataService service;
 
-  private List<ODataPathSegment> precedingPathSegment = Collections.emptyList();
-  private List<ODataPathSegment> odataPathSegment = Collections.emptyList();
+  private ODataUriInfo uriInfo;
 
-  private String baseUri;
   
   
   public void putContextObject(String key, Object obj) throws ODataException {
@@ -27,18 +26,6 @@ public class ODataContextImpl implements ODataContext {
   
   public void setService(ODataService service) {
     this.service = service;
-  }
-  
-  public void setODataPathSegment(List<ODataPathSegment> odataPathSegement) {
-    this.odataPathSegment = Collections.unmodifiableList(odataPathSegement);
-  }
-
-  public void setPrecedingPathSegment(List<ODataPathSegment> precedingPathSegement) {
-    this.precedingPathSegment = Collections.unmodifiableList(precedingPathSegement);
-  }
-
-  public void setBaseUri(String uri) {
-    this.baseUri = uri;
   }
   
   @SuppressWarnings("unchecked")
@@ -52,18 +39,14 @@ public class ODataContextImpl implements ODataContext {
     return  this.service;
   }
 
-  @Override
-  public List<ODataPathSegment> getPrecedingPathSegmentList() {
-    return Collections.unmodifiableList(this.precedingPathSegment);
+  public void setUriInfo(ODataUriInfo uriInfo) {
+    this.uriInfo = uriInfo;
   }
   
   @Override
-  public List<ODataPathSegment> getODataPathSegmentList() {
-    return Collections.unmodifiableList(this.odataPathSegment);
+  public ODataUriInfo getUriInfo() throws ODataException {
+    return this.uriInfo;
   }
 
-  @Override
-  public String getBaseUri() {
-    return this.baseUri;
-  }
+
 }

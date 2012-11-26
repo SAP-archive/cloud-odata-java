@@ -121,8 +121,8 @@ public class ServiceResolutionTest {
     ODataContext ctx = this.processor.getContext();
     assertNotNull(ctx);
 
-    assertTrue(ctx.getPrecedingPathSegmentList().isEmpty());
-    assertEquals("$metadata", ctx.getODataPathSegmentList().get(0).getPath());
+    assertTrue(ctx.getUriInfo().getPrecedingPathSegmentList().isEmpty());
+    assertEquals("$metadata", ctx.getUriInfo().getODataPathSegmentList().get(0).getPath());
   }
 
   @Test
@@ -138,8 +138,8 @@ public class ServiceResolutionTest {
     ODataContext ctx = this.processor.getContext();
     assertNotNull(ctx);
 
-    assertEquals("aaa", ctx.getPrecedingPathSegmentList().get(0).getPath());
-    assertEquals("$metadata", ctx.getODataPathSegmentList().get(0).getPath());
+    assertEquals("aaa", ctx.getUriInfo().getPrecedingPathSegmentList().get(0).getPath());
+    assertEquals("$metadata", ctx.getUriInfo().getODataPathSegmentList().get(0).getPath());
   }
 
   @Test
@@ -155,9 +155,9 @@ public class ServiceResolutionTest {
     ODataContext ctx = this.processor.getContext();
     assertNotNull(ctx);
 
-    assertEquals("aaa", ctx.getPrecedingPathSegmentList().get(0).getPath());
-    assertEquals("bbb", ctx.getPrecedingPathSegmentList().get(1).getPath());
-    assertEquals("$metadata", ctx.getODataPathSegmentList().get(0).getPath());
+    assertEquals("aaa", ctx.getUriInfo().getPrecedingPathSegmentList().get(0).getPath());
+    assertEquals("bbb", ctx.getUriInfo().getPrecedingPathSegmentList().get(1).getPath());
+    assertEquals("$metadata", ctx.getUriInfo().getODataPathSegmentList().get(0).getPath());
   }
 
   @Test
@@ -184,8 +184,8 @@ public class ServiceResolutionTest {
     ODataContext ctx = this.processor.getContext();
     assertNotNull(ctx);
 
-    assertEquals("", ctx.getODataPathSegmentList().get(0).getPath());
-    assertEquals("aaa", ctx.getPrecedingPathSegmentList().get(0).getPath());
+    assertEquals("", ctx.getUriInfo().getODataPathSegmentList().get(0).getPath());
+    assertEquals("aaa", ctx.getUriInfo().getPrecedingPathSegmentList().get(0).getPath());
   }
 
   @Test
@@ -201,15 +201,15 @@ public class ServiceResolutionTest {
     ODataContext ctx = this.processor.getContext();
     assertNotNull(ctx);
 
-    assertEquals("", ctx.getODataPathSegmentList().get(0).getPath());
-    assertEquals("aaa", ctx.getPrecedingPathSegmentList().get(0).getPath());
+    assertEquals("", ctx.getUriInfo().getODataPathSegmentList().get(0).getPath());
+    assertEquals("aaa", ctx.getUriInfo().getPrecedingPathSegmentList().get(0).getPath());
 
-    assertNotNull(ctx.getPrecedingPathSegmentList().get(0).getMatrixParameters());
+    assertNotNull(ctx.getUriInfo().getPrecedingPathSegmentList().get(0).getMatrixParameters());
 
     String key, value;
-    key = ctx.getPrecedingPathSegmentList().get(0).getMatrixParameters().keySet().iterator().next();
+    key = ctx.getUriInfo().getPrecedingPathSegmentList().get(0).getMatrixParameters().keySet().iterator().next();
     assertEquals("n", key);
-    value = ctx.getPrecedingPathSegmentList().get(0).getMatrixParameters().get(key).get(0);
+    value = ctx.getUriInfo().getPrecedingPathSegmentList().get(0).getMatrixParameters().get(key).get(0);
     assertEquals("2", value);
   }
 
@@ -241,6 +241,6 @@ public class ServiceResolutionTest {
 
     ODataContext ctx = this.processor.getContext();
     assertNotNull(ctx);
-    assertEquals("http://localhost:19080/test/aaa/bbb;n=2,3;m=1/ccc/", ctx.getBaseUri());
+    assertEquals("http://localhost:19080/test/aaa/bbb;n=2,3;m=1/ccc/", ctx.getUriInfo().getBaseUri());
   }
 }

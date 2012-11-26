@@ -5,7 +5,7 @@ import com.sap.core.odata.api.exception.ODataNotImplementedException;
 import com.sap.core.odata.api.serialization.ODataSerializationException;
 import com.sap.core.odata.api.serialization.ODataSerializer;
 
-public class ODataSerialierFactory {
+public class ODataSerializerFactory {
 
   public static ODataSerializer create(Format format) throws ODataSerializationException {
     try {

@@ -35,6 +35,7 @@ import com.sap.core.odata.api.edm.EdmSimpleTypeKind;
 import com.sap.core.odata.api.enums.Format;
 import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.api.processor.ODataContext;
+import com.sap.core.odata.api.processor.ODataUriInfo;
 import com.sap.core.odata.api.serialization.ODataSerializer;
 import com.sap.core.odata.core.serializer.AtomEntrySerializer;
 import com.sap.core.odata.testutils.helper.StringHelper;
@@ -84,8 +85,11 @@ public class AtomEntrySerializationTest {
     ODataSerializer ser = ODataSerializer.create(Format.ATOM);
     assertNotNull(ser);
 
+
+    ODataUriInfo uriInfo = mock(ODataUriInfo.class);
+    when(uriInfo.getBaseUri()).thenReturn(BASE_URI);
     ODataContext ctx = mock(ODataContext.class);
-    when(ctx.getBaseUri()).thenReturn(BASE_URI);
+    when(ctx.getUriInfo()).thenReturn(uriInfo);
     
     EdmEntityContainer ec = mock(EdmEntityContainer.class);
     when(ec.getName()).thenReturn("Container");

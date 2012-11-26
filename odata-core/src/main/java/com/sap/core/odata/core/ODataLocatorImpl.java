@@ -48,7 +48,7 @@ public final class ODataLocatorImpl {
 
   @GET
   public Response handleGet() throws ODataException {
-    List<ODataPathSegment> pathSegments = this.context.getODataPathSegmentList(); //
+    List<ODataPathSegment> pathSegments = this.context.getUriInfo().getODataPathSegmentList(); //
     UriParserResultImpl uriParserResult = (UriParserResultImpl) this.uriParser.parse(pathSegments, this.queryParameters);
 
     ODataResponse odataResponse = dispatcher.dispatch(ODataHttpMethod.GET, uriParserResult);
@@ -138,11 +138,14 @@ public final class ODataLocatorImpl {
       }
     }
 
-    this.context.setODataPathSegment(this.convertPathSegmentList(odataPathSegements));
-    this.context.setPrecedingPathSegment(this.convertPathSegmentList(precedingPathSegements));
+    ODataUriInfoImpl uriInfo=new ODataUriInfoImpl();
+    uriInfo.setODataPathSegment(this.convertPathSegmentList(odataPathSegements));
+    uriInfo.setPrecedingPathSegment(this.convertPathSegmentList(precedingPathSegements));
 
     String uri = buildBaseUri(param.getUriInfo(), precedingPathSegements);
-    this.context.setBaseUri(uri);
+    uriInfo.setBaseUri(uri);
+    
+    this.context.setUriInfo(uriInfo);
   }
 
   private String buildBaseUri(UriInfo uriInfo, List<PathSegment> precedingPathSegements) {
