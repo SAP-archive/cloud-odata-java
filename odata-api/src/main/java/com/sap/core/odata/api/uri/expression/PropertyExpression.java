@@ -6,6 +6,6 @@ import com.sap.core.odata.api.edm.EdmProperty;
 
 public interface PropertyExpression extends CommonExpression
 {
-  public String GetPropertyName();
-  public EdmProperty GetEdmProperty();
+  public String getPropertyName();
+  public EdmProperty getEdmProperty();
 }

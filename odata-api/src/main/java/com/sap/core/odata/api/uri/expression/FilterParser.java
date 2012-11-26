@@ -1,9 +1,6 @@
 package com.sap.core.odata.api.uri.expression;
 
-public class FilterParser 
-{
-  public void ParseExpression()
-  {
-    //TODO Call the parser which does not yet exist
-  }
+public interface FilterParser {
+
+  abstract FilterExpression ParseExpression(String iv_expression) throws ExpressionException;
 }

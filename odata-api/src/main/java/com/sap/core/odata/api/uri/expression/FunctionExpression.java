@@ -10,5 +10,5 @@ public interface FunctionExpression extends CommonExpression
 
   public CommonExpression GetParameterCount();
 
-  public CommonExpression AppendParameter();
+  public CommonExpression AppendParameter(CommonExpression ls_tmp_node);
 }

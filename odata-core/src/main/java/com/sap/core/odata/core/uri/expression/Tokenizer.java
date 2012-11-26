@@ -5,6 +5,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import com.sap.core.odata.api.edm.EdmSimpleTypeFacade;
+import com.sap.core.odata.api.edm.EdmSimpleTypeKind;
 import com.sap.core.odata.api.uri.UriLiteral;
 import com.sap.core.odata.api.uri.UriParserException;
 import com.sap.core.odata.core.edm.EdmSimpleTypeFacadeImpl;
@@ -14,6 +15,7 @@ public class Tokenizer
 
   private boolean flagIncludeWhitespace = false;
   private EdmSimpleTypeFacade typeDectector = null;
+  private TokenList tokens;
 
   public Tokenizer()
   {
@@ -41,8 +43,8 @@ public class Tokenizer
    */
   private void appendToken(Vector<Token> tokens, int position, TokenKind kind, String stringValue)
   {
-    Token token = new Token(kind, position, null, stringValue);
-    tokens.add(token);
+    //Token token = new Token(kind, position, null, stringValue);
+    //tokens.add(token);
     return;
   }
 
@@ -55,8 +57,8 @@ public class Tokenizer
    */
   private void appendToken(Vector<Token> tokens, int position, TokenKind kind,  char charValue)
   {
-    Token token = new Token(kind, position, null, Character.toString(charValue));
-    tokens.add(token);
+    //Token token = new Token(kind, position, null, Character.toString(charValue));
+    //tokens.add(token);
     return;
   }
 
@@ -69,8 +71,8 @@ public class Tokenizer
    */
   private void appendEdmTypedToken(Vector<Token> tokens, int iv_position, TokenKind iv_kind, UriLiteral uriLiteral)
   {
-    Token token = new Token(iv_kind, iv_position, uriLiteral.getType(), uriLiteral.getLiteral());
-    tokens.add(token);
+    //Token token = new Token(iv_kind, iv_position, uriLiteral.getType(), uriLiteral.getLiteral());
+    //tokens.add(token);
     return;
   }
 
@@ -78,12 +80,11 @@ public class Tokenizer
    * Tokenizes an expression as defined per OData specification 
    * @param Expression 
    * @return Token list 
-   * @throws TokenizerException
+   * @throws TokenizerMessage
+   *          
    */
-  public Vector<Token> tokenize(String iv_expression) throws TokenizerException
+  public TokenList tokenize(String iv_expression) throws TokenizerMessage
   {
-    Vector<Token> tokens = Token.CreateTokenList();
-
     UriLiteral uriLiteral;
     int curPosition = 0;
     int curPositionPlus1;
@@ -119,16 +120,18 @@ public class Tokenizer
         if (flagIncludeWhitespace == true)
         {
           expression_sub = iv_expression.substring(oldPosition, oldPosition + lv_token_len);
-          appendToken(tokens, oldPosition, TokenKind.WHITESPACE,  expression_sub);
+          tokens.appendEdmTypedToken(oldPosition, TokenKind.WHITESPACE, expression_sub, null);
+          
         }
         break;
       case '(':
         curPosition = curPosition + 1;
-        appendToken(tokens, oldPosition, TokenKind.OPENPAREN,  curCharacter);
+        tokens.appendToken(oldPosition, TokenKind.OPENPAREN, curCharacter);
         break;
       case ')':
         curPosition = curPosition + 1;
-        appendToken(tokens, oldPosition, TokenKind.CLOSEPAREN,  curCharacter);
+        tokens.appendToken(oldPosition, TokenKind.CLOSEPAREN, curCharacter);
+        
         break;
       case '\'':
         //read up to single ' and move pointer to the following char
@@ -167,7 +170,7 @@ public class Tokenizer
         } catch (UriParserException ex)
         {
           // TODO:  create method for InvalidStringToken ID
-          TokenizerException tEx = new TokenizerException(TokenizerException.ParseStringToken);
+          TokenizerMessage tEx = new TokenizerMessage(/*TokenizerMessage.ParseStringToken*/);//TODO
           tEx.setPosition(curPosition);
           tEx.setToken(token);
           tEx.setPrevious(ex);
@@ -175,10 +178,14 @@ public class Tokenizer
         }
         assert uriLiteral.getType() != null;
 
-        appendEdmTypedToken(tokens, oldPosition, TokenKind.TYPED_LITERAL, uriLiteral);
+
+        tokens.appendEdmTypedToken(oldPosition, TokenKind.SIMPLE_TYPE,  token, uriLiteral);
+
 
         break;
       case ',':
+        curPosition = curPosition + 1;
+        tokens.appendToken(oldPosition, TokenKind.COMMA, curCharacter);
       case '=':
       case '/':
       case '?':
@@ -186,7 +193,7 @@ public class Tokenizer
       case '*':
 
         curPosition = curPosition + 1;
-        appendToken(tokens, oldPosition, TokenKind.SYMBOL,  curCharacter);
+        tokens.appendToken(oldPosition, TokenKind.SYMBOL, curCharacter);
 
         break;
       default:
@@ -199,7 +206,9 @@ public class Tokenizer
         {
           token = matcher.group(1);
           curPosition = curPosition + token.length();
-          appendToken(tokens, oldPosition, TokenKind.LITERAL,  token);
+          tokens.appendToken(oldPosition, TokenKind.LITERAL, token);
+          break;
+
         }
 
         //"check for special types" +
@@ -249,14 +258,13 @@ public class Tokenizer
 
           } catch (UriParserException ex)
           {
-            TokenizerException tEx = new TokenizerException(TokenizerException.ParseStringToken);
+            TokenizerMessage tEx = new TokenizerMessage(/*TokenizerMessage.ParseStringToken*/);//TODO
             tEx.setPosition(curPosition);
             tEx.setToken(token);
             tEx.setPrevious(ex);
             throw tEx;
           }
-
-          appendEdmTypedToken(tokens, oldPosition, TokenKind.TYPED_LITERAL, uriLiteral);
+          tokens.appendEdmTypedToken(oldPosition, TokenKind.SIMPLE_TYPE,token, uriLiteral);
           break;
         }// matcher matches
 
@@ -267,7 +275,7 @@ public class Tokenizer
         {
           token = matcher.group(1);
           curPosition = curPosition + token.length();
-          appendToken(tokens, oldPosition, TokenKind.LITERAL,  token);
+          tokens.appendToken(oldPosition, TokenKind.LITERAL, token);
           break;
         }
 
@@ -278,10 +286,22 @@ public class Tokenizer
         {
           token = matcher.group(1);
           curPosition = curPosition + token.length();
-          appendToken(tokens, oldPosition, TokenKind.LITERAL,  token);
+          tokens.appendToken(oldPosition, TokenKind.LITERAL, token);
+          
           break;
         }
 
+        
+        //TODO maybe add check for constance like true false null
+        if (rem_expr.equals("true") || rem_expr.equals("false"))
+        {
+          curPosition = curPosition + rem_expr.length();
+          tokens.appendEdmTypedToken(oldPosition, TokenKind.SIMPLE_TYPE,rem_expr, new UriLiteral(
+               EdmSimpleTypeFacadeImpl.getEdmSimpleType(EdmSimpleTypeKind.Boolean),rem_expr));
+          break;
+        }
+
+        
         Pattern OTHER_LIT = Pattern.compile("^([[A-Za-z0-9]._~%!$&*+;:@-]+)");
         matcher = OTHER_LIT.matcher(rem_expr);
         if (matcher.find())
@@ -291,25 +311,33 @@ public class Tokenizer
           {
             uriLiteral = typeDectector.parseUriLiteral(token);
             curPosition = curPosition + token.length();
-            appendEdmTypedToken(tokens, oldPosition, TokenKind.TYPED_LITERAL, uriLiteral);
+
+            //its really a simple type
+            tokens.appendEdmTypedToken(oldPosition, TokenKind.SIMPLE_TYPE,token, uriLiteral);
+
             break;
           } catch (UriParserException ex)
-          {}
+          {
+            //we thread is as normal literal
+          }
 
           if (curCharacter == '-')
           {
             curPosition = curPosition + 1;
-            appendToken(tokens, oldPosition, TokenKind.SYMBOL,  curCharacter);
+            
+            
+            tokens.appendToken(oldPosition, TokenKind.SYMBOL, curCharacter);
 
             break;
           }
 
           curPosition = curPosition + token.length();
-          appendToken(tokens, oldPosition, TokenKind.LITERAL,  token);
+          
+          tokens.appendToken(oldPosition, TokenKind.LITERAL, curCharacter);
 
           break;
         }
-        TokenizerException tEx = new TokenizerException(TokenizerException.ParseStringToken);
+        TokenizerMessage tEx = new TokenizerMessage(/*TokenizerMessage.ParseStringToken*/);
         tEx.setPosition(curPosition);
         tEx.setToken(token);
         throw tEx;

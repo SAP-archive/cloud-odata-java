@@ -4,6 +4,7 @@ import com.sap.core.odata.api.edm.Edm;
 import com.sap.core.odata.api.edm.EdmSimpleType;
 import com.sap.core.odata.api.edm.EdmSimpleTypeFacade;
 import com.sap.core.odata.api.edm.EdmSimpleTypeKind;
+import com.sap.core.odata.api.edm.EdmType;
 import com.sap.core.odata.api.edm.provider.EdmProvider;
 import com.sap.core.odata.api.enums.Format;
 import com.sap.core.odata.api.exception.ODataException;
@@ -11,6 +12,7 @@ import com.sap.core.odata.api.processor.ODataResponse.ODataResponseBuilder;
 import com.sap.core.odata.api.serialization.ODataSerializationException;
 import com.sap.core.odata.api.serialization.ODataSerializer;
 import com.sap.core.odata.api.uri.UriParser;
+import com.sap.core.odata.api.uri.expression.FilterParser;
 
 /**
  * Abstract class to get odata core implementations of api interfaces
@@ -77,6 +79,9 @@ public abstract class RuntimeDelegate {
    * @return {@link Edm} implementation object
    */
   protected abstract Edm createEdm__(EdmProvider provider);
+  
+  protected abstract FilterParser getFilterParser__(Edm edm, EdmType edmType);
+  
 
   /**
    * @param format serializer format
@@ -112,5 +117,9 @@ public abstract class RuntimeDelegate {
   public static EdmSimpleType getInternalEdmSimpleTypeByString(String edmSimpleType) {
     return RuntimeDelegate.getInstance().getInternalEdmSimpleTypeByString__(edmSimpleType);
   }
-
+  
+  public static FilterParser getFilterParser(Edm edm, EdmType edmType)
+  {
+    return RuntimeDelegate.getInstance().getFilterParser__(edm, edmType);
+  }
 }

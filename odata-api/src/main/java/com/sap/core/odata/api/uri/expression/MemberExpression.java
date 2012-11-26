@@ -4,5 +4,5 @@ public interface MemberExpression extends CommonExpression
 {
   public String GetSource();
 
-  public String GetPath();
+  public CommonExpression GetPath();
 }
