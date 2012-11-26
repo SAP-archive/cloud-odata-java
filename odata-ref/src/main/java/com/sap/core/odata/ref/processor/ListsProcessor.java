@@ -16,7 +16,6 @@ import com.sap.core.odata.api.edm.EdmException;
 import com.sap.core.odata.api.edm.EdmFunctionImport;
 import com.sap.core.odata.api.edm.EdmLiteralKind;
 import com.sap.core.odata.api.edm.EdmProperty;
-import com.sap.core.odata.api.edm.EdmServiceMetadata;
 import com.sap.core.odata.api.edm.EdmSimpleType;
 import com.sap.core.odata.api.edm.EdmSimpleTypeKind;
 import com.sap.core.odata.api.edm.EdmTypeKind;
@@ -41,7 +40,6 @@ import com.sap.core.odata.api.uri.resultviews.GetEntitySetView;
 import com.sap.core.odata.api.uri.resultviews.GetEntityView;
 import com.sap.core.odata.api.uri.resultviews.GetFunctionImportView;
 import com.sap.core.odata.api.uri.resultviews.GetMediaResourceView;
-import com.sap.core.odata.api.uri.resultviews.GetMetadataView;
 import com.sap.core.odata.api.uri.resultviews.GetServiceDocumentView;
 import com.sap.core.odata.api.uri.resultviews.GetSimplePropertyView;
 
@@ -64,16 +62,6 @@ public class ListsProcessor extends ODataSingleProcessor {
     return ODataResponse
         .status(HttpStatusCodes.OK)
         .entity("this should be the service document")
-        .build();
-  }
-
-  @Override
-  public ODataResponse readMetadata(final GetMetadataView uriParserResultView) throws ODataException {
-    final EdmServiceMetadata edmServiceMetadata = getContext().getService().getEntityDataModel().getServiceMetadata();
-    return ODataResponse
-        .status(HttpStatusCodes.OK)
-        .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_XML)
-        .entity(edmServiceMetadata.getMetadata())
         .build();
   }
 
