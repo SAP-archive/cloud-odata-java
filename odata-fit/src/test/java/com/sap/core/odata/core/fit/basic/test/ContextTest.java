@@ -61,7 +61,7 @@ public class ContextTest extends AbstractBasicTest {
 
     ODataContext ctx = this.getProcessor().getContext();
     assertNotNull(ctx);
-    assertEquals(this.getEndpoint().toString(), ctx.getUriInfo().getBaseUri());
+    assertEquals(this.getEndpoint().toString(), ctx.getUriInfo().getBaseUri().toASCIIString());
   }
 
   @Test
@@ -71,7 +71,7 @@ public class ContextTest extends AbstractBasicTest {
 
     ODataContext ctx = this.getProcessor().getContext();
     assertNotNull(ctx);
-    assertEquals(this.getEndpoint().toString(), ctx.getUriInfo().getBaseUri());
+    assertEquals(this.getEndpoint().toString(), ctx.getUriInfo().getBaseUri().toASCIIString());
   }
 
 }
