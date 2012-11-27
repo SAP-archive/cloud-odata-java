@@ -33,7 +33,7 @@ public class SimplePropertyTest extends AbstractRefTest {
     payload = StringHelper.inputStreamToString(response.getEntity().getContent());
 
     response = callUri("Rooms('2')/Seats/$value", HttpStatusCodes.OK);
-//    checkMediaType(response, MediaType.TEXT_PLAIN_TYPE);
+    //checkMediaType(response, MediaType.TEXT_PLAIN_TYPE);
     // checkEtag(response, true, "W/\"2\"");
     payload = StringHelper.inputStreamToString(response.getEntity().getContent());
     assertEquals("5", payload);
@@ -42,16 +42,18 @@ public class SimplePropertyTest extends AbstractRefTest {
     payload = StringHelper.inputStreamToString(response.getEntity().getContent());
     // checkMediaType(response, MediaType.APPLICATION_XML_TYPE);
     // checkEtag(response, true, "W/\"2\"");
-    // assertTrue(response.getEntity().toString().contains("5</"));
+    assertTrue(payload.contains("5"));
 
-    // response = callUri("Container2.Photos(Id=3,Type='image%2Fjpeg')/BinaryData/$value");
+    //response = callUri("Container2.Photos(Id=3,Type='image%2Fjpeg')/BinaryData/$value", HttpStatusCodes.OK);
+    //payload = StringHelper.inputStreamToString(response.getEntity().getContent());
     // checkMediaType(response, IMAGE_JPEG);
 
-    // response = callUri("Container2.Photos(Id=3,Type='image%2Fjpeg')/BinaryData");
+    //response = callUri("Container2.Photos(Id=3,Type='image%2Fjpeg')/BinaryData", HttpStatusCodes.OK);
+    //payload = StringHelper.inputStreamToString(response.getEntity().getContent());
     // checkMediaType(response, MediaType.APPLICATION_XML_TYPE);
 
     // notFound("Employees('2')/Foo");
     // notFound("Employees('2')/Age()");
   }
-  
+
 }
