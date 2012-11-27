@@ -239,11 +239,7 @@ public class AtomEntrySerializationTest {
     LOG.debug(xmlString);
     
     assertXpathExists("/a:entry/m:properties", xmlString);
-    assertXpathEvaluatesTo("'" + data.get("roomId") + "'", "/a:entry/m:properties/a:roomId/text()", xmlString);
-    assertXpathEvaluatesTo("'" + data.get("teamId") + "'", "/a:entry/m:properties/a:teamId/text()", xmlString);
-    
-//    assertXpathEvaluatesTo(BASE_URI.toASCIIString(), "/a:entry/@xml:base", xmlString);
-//    assertXpathExists("/a:entry/a:id", xmlString);
-//    assertXpathEvaluatesTo(BASE_URI.toASCIIString() + "Container.Employees(employeeId='1',age=null)", "/a:entry/a:id/text()", xmlString);
+    assertXpathEvaluatesTo((String)data.get("roomId"), "/a:entry/m:properties/d:roomId/text()", xmlString);
+    assertXpathEvaluatesTo((String)data.get("teamId"), "/a:entry/m:properties/d:teamId/text()", xmlString);
   }
 }
