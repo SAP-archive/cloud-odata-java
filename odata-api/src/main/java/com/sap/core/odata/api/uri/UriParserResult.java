@@ -143,9 +143,9 @@ public interface UriParserResult extends GetServiceDocumentView, GetEntitySetVie
   public List<SelectItem> getSelect();
 
   /**
-   * @return Map of {@literal <String,} {@link UriLiteral}{@literal >} function import parameters
+   * @return Map of {@literal <String,} {@link EdmLiteral}{@literal >} function import parameters
    */
-  public Map<String, UriLiteral> getFunctionImportParameters();
+  public Map<String, EdmLiteral> getFunctionImportParameters();
 
   /**
    * @return Map of {@literal<String, String>} custom query options

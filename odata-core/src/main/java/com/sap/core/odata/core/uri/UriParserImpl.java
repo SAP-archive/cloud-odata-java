@@ -34,7 +34,7 @@ import com.sap.core.odata.api.uri.KeyPredicate;
 import com.sap.core.odata.api.uri.NavigationPropertySegment;
 import com.sap.core.odata.api.uri.NavigationSegment;
 import com.sap.core.odata.api.uri.SelectItem;
-import com.sap.core.odata.api.uri.UriLiteral;
+import com.sap.core.odata.api.uri.EdmLiteral;
 import com.sap.core.odata.api.uri.UriParser;
 import com.sap.core.odata.api.uri.UriParserException;
 import com.sap.core.odata.api.uri.UriParserResult;
@@ -403,7 +403,7 @@ public class UriParserImpl implements UriParser {
         throw new UriParserException(UriParserException.DUPLICATEKEYNAMES);
       parsedKeyProperties.add(keyProperty);
 
-      final UriLiteral uriLiteral = simpleTypeFacade.parseUriLiteral(value);
+      final EdmLiteral uriLiteral = simpleTypeFacade.parseUriLiteral(value);
 
       if (!((EdmSimpleType) keyProperty.getType()).isCompatible(uriLiteral.getType()))
         throw new UriParserException(UriParserException.INCOMPATIBLELITERAL);
@@ -691,7 +691,7 @@ public class UriParserImpl implements UriParser {
             continue;
           else
             throw new UriParserException(UriParserException.MISSINGPARAMETER);
-        final UriLiteral uriLiteral = simpleTypeFacade.parseUriLiteral(value);
+        final EdmLiteral uriLiteral = simpleTypeFacade.parseUriLiteral(value);
         if (!((EdmSimpleType) parameter.getType()).isCompatible(uriLiteral.getType()))
           throw new UriParserException(UriParserException.INCOMPATIBLELITERAL);
         uriResult.addFunctionImportParameter(parameterName, uriLiteral);

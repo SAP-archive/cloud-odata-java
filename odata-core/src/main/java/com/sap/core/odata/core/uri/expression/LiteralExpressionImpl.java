@@ -1,16 +1,16 @@
 package com.sap.core.odata.core.uri.expression;
 
 import com.sap.core.odata.api.edm.EdmType;
-import com.sap.core.odata.api.uri.UriLiteral;
+import com.sap.core.odata.api.uri.EdmLiteral;
 import com.sap.core.odata.api.uri.expression.ExpressionKind;
 import com.sap.core.odata.api.uri.expression.LiteralExpression;
 
 public class LiteralExpressionImpl implements LiteralExpression {
 
   EdmType edmType;         
-  UriLiteral javaLiteral;
+  EdmLiteral javaLiteral;
   String uriLiteral;
-  public LiteralExpressionImpl(String uriLiteral, UriLiteral javaLiteral) {
+  public LiteralExpressionImpl(String uriLiteral, EdmLiteral javaLiteral) {
     this.uriLiteral = uriLiteral;
     this.javaLiteral = javaLiteral;
     this.edmType = this.javaLiteral.getType();

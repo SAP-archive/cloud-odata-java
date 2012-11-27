@@ -3,7 +3,7 @@ package com.sap.core.odata.core.uri.expression;
 import java.util.Iterator;
 import java.util.Vector;
 
-import com.sap.core.odata.api.uri.UriLiteral;
+import com.sap.core.odata.api.uri.EdmLiteral;
 
 public class TokenList implements Iterator<Token>
 {
@@ -48,9 +48,9 @@ public class TokenList implements Iterator<Token>
    * @param Token list to be extended
    * @param Position of parsed token 
    * @param Kind of parsed token
-   * @param UriLiteral of parsed token containing type and value of UriLiteral 
+   * @param EdmLiteral of parsed token containing type and value of UriLiteral 
    */
-  public void appendEdmTypedToken(int position, TokenKind kind, String uriLiteral, UriLiteral javaLiteral)
+  public void appendEdmTypedToken(int position, TokenKind kind, String uriLiteral, EdmLiteral javaLiteral)
   {
     Token token = new Token(kind, position,  uriLiteral, javaLiteral);
     this.tokens.add(token);
