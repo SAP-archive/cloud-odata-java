@@ -262,7 +262,7 @@ public class AtomEntrySerializationTest {
     assertXpathExists("/a:entry", xmlString);
     assertXpathEvaluatesTo(BASE_URI.toASCIIString(), "/a:entry/@xml:base", xmlString);
     assertXpathExists("/a:entry/a:id", xmlString);
-    assertXpathEvaluatesTo(BASE_URI.toASCIIString() + "Container.Employees(employeeId='1',age=null)", "/a:entry/a:id/text()", xmlString);
+    assertXpathEvaluatesTo(BASE_URI.toASCIIString() + "Container.Employees(employeeId='1',age=52)", "/a:entry/a:id/text()", xmlString);
   }
 
   @Test

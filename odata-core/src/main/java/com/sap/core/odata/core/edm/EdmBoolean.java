@@ -59,7 +59,7 @@ public class EdmBoolean implements EdmSimpleType {
   }
 
   @Override
-  public Object valueOfString(final String value, final EdmLiteralKind literalKind, final EdmFacets facets) throws EdmSimpleTypeException {
+  public Boolean valueOfString(final String value, final EdmLiteralKind literalKind, final EdmFacets facets) throws EdmSimpleTypeException {
     if (validate(value, literalKind, facets))
       if (value == null)
         return null;

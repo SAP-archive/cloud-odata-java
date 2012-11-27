@@ -60,11 +60,8 @@ public class EdmInt16 implements EdmSimpleType {
   }
 
   @Override
-  public Object valueOfString(final String value, final EdmLiteralKind literalKind, final EdmFacets facets) throws EdmSimpleTypeException {
-    if (literalKind == EdmLiteralKind.URI)
-      return null;
-    else
-      return Short.parseShort(value);
+  public Short valueOfString(final String value, final EdmLiteralKind literalKind, final EdmFacets facets) throws EdmSimpleTypeException {
+    return Short.parseShort(value);
   }
 
   @Override

@@ -5,7 +5,6 @@ import java.util.Collection;
 import java.util.List;
 
 import com.sap.core.odata.api.edm.EdmConcurrencyMode;
-import com.sap.core.odata.api.edm.EdmContentKind;
 import com.sap.core.odata.api.edm.EdmMultiplicity;
 import com.sap.core.odata.api.edm.EdmSimpleTypeKind;
 import com.sap.core.odata.api.edm.EdmTargetPath;
