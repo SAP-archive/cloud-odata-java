@@ -41,7 +41,9 @@ public interface EdmSimpleType extends EdmType {
   public Object valueOfString(String value, EdmLiteralKind literalKind, EdmFacets facets) throws EdmSimpleTypeException;
 
   /**
-   * Converts system data type to literal representation of value.
+   * <p>Converts system data type to literal representation of value.</p>
+   * <p>Returns <code>null</code> if value is <code>null</code>
+   * and the facets allow the <code>null</code> value.</p>
    *
    * @param value  the Java value as Object
    * @param literalKind  the requested kind of literal representation
