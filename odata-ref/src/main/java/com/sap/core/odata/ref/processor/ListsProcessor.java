@@ -8,9 +8,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.ws.rs.core.HttpHeaders;
-import javax.ws.rs.core.MediaType;
-
 import com.sap.core.odata.api.edm.EdmEntitySet;
 import com.sap.core.odata.api.edm.EdmException;
 import com.sap.core.odata.api.edm.EdmFunctionImport;
@@ -114,7 +111,7 @@ public class ListsProcessor extends ODataSingleProcessor {
 
     return ODataResponse
         .status(HttpStatusCodes.OK)
-        .header(HttpHeaders.CONTENT_TYPE, MediaType.TEXT_PLAIN)
+        //.header(HttpHeaders.CONTENT_TYPE, MediaType.TEXT_PLAIN)
         .entity(String.valueOf(data.size()))
         .build();
   }
@@ -180,7 +177,7 @@ public class ListsProcessor extends ODataSingleProcessor {
 
     return ODataResponse
         .status(HttpStatusCodes.OK)
-        .header(HttpHeaders.CONTENT_TYPE, MediaType.TEXT_PLAIN)
+        //.header(HttpHeaders.CONTENT_TYPE, MediaType.TEXT_PLAIN)
         .entity(appliesFilter(data, uriParserResultView.getFilter()) ? "1" : "0")
         .build();
   }
@@ -253,9 +250,9 @@ public class ListsProcessor extends ODataSingleProcessor {
 
     return ODataResponse
         .status(HttpStatusCodes.OK)
-        .header(HttpHeaders.CONTENT_TYPE,
-            (EdmSimpleType) property.getType() == EdmSimpleTypeKind.Binary.getEdmSimpleTypeInstance() ?
-                property.getMimeType() : MediaType.TEXT_PLAIN)
+        //.header(HttpHeaders.CONTENT_TYPE,
+        //            (EdmSimpleType) property.getType() == EdmSimpleTypeKind.Binary.getEdmSimpleTypeInstance() ?
+        //                property.getMimeType() : MediaType.TEXT_PLAIN)
         .entity(data)
         .build();
   }
@@ -277,8 +274,8 @@ public class ListsProcessor extends ODataSingleProcessor {
 
     return ODataResponse
         .status(HttpStatusCodes.OK)
-        .header(HttpHeaders.CONTENT_TYPE,
-            mimeType.toString().isEmpty() ? MediaType.APPLICATION_OCTET_STREAM : mimeType.toString())
+//        .header(HttpHeaders.CONTENT_TYPE,
+//            mimeType.toString().isEmpty() ? MediaType.APPLICATION_OCTET_STREAM : mimeType.toString())
         .entity(binaryData)
         .build();
   }
@@ -306,9 +303,9 @@ public class ListsProcessor extends ODataSingleProcessor {
 
     return ODataResponse
         .status(HttpStatusCodes.OK)
-        .header(HttpHeaders.CONTENT_TYPE,
-            (EdmSimpleType) functionImport.getReturnType().getType() == EdmSimpleTypeKind.Binary.getEdmSimpleTypeInstance() ?
-                MediaType.APPLICATION_OCTET_STREAM : MediaType.TEXT_PLAIN)
+        //        .header(HttpHeaders.CONTENT_TYPE,
+        //            (EdmSimpleType) functionImport.getReturnType().getType() == EdmSimpleTypeKind.Binary.getEdmSimpleTypeInstance() ?
+        //                MediaType.APPLICATION_OCTET_STREAM : MediaType.TEXT_PLAIN)
         .entity(data)
         .build();
   }
