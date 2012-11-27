@@ -3,7 +3,8 @@ package com.sap.core.odata.core.serializer;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
-import java.net.URI;
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -22,6 +23,7 @@ import com.sap.core.odata.api.edm.EdmFacets;
 import com.sap.core.odata.api.edm.EdmLiteralKind;
 import com.sap.core.odata.api.edm.EdmProperty;
 import com.sap.core.odata.api.edm.EdmSimpleType;
+import com.sap.core.odata.api.edm.EdmTargetPath;
 import com.sap.core.odata.api.edm.EdmType;
 import com.sap.core.odata.api.edm.EdmTyped;
 import com.sap.core.odata.api.processor.ODataContext;
@@ -92,20 +94,74 @@ public class AtomEntrySerializer extends ODataSerializer {
   }
 
   private void handleAtomParts(XMLStreamWriter writer) throws XMLStreamException, ODataSerializationException, EdmException {
+    AtomHelper atomHelper = AtomHelper.init(getEdmEntitySet());
     writer.writeStartElement("id");
     writer.writeCharacters(this.createIdUri());
     writer.writeEndElement();
 
     writer.writeStartElement("title");
-    writer.writeAttribute("type", this.createTitleType());
-    writer.writeCharacters("Walter Winter");
+    writer.writeAttribute("type", this.createTitleType(atomHelper));
+    writer.writeCharacters(createTitleText(atomHelper));
     writer.writeEndElement();
   }
 
-  private String createTitleType() throws EdmException {
-    String title = "text";
+  private String createTitleText(AtomHelper atomHelper) throws EdmException {
+    EdmProperty titleProperty = atomHelper.getSyndicationProperty(EdmTargetPath.SYNDICATION_TITLE);
     
-    return title;
+    if(titleProperty != null) {
+      return (String) getData().get(titleProperty.getName());
+    }
+    
+    throw new EdmException(EdmException.COMMON);
+  }
+
+  private String createTitleType(AtomHelper atomHelper) throws EdmException {
+    EdmProperty titleProperty = atomHelper.getSyndicationProperty(EdmTargetPath.SYNDICATION_TITLE);
+    
+    if(titleProperty != null) {
+      switch (titleProperty.getType().getKind()) {
+        case SIMPLE :
+          return titleProperty.getCustomizableFeedMappings().getFcContentKind().name();
+        case COMPLEX :
+        case NAVIGATION :
+        default:
+      }
+    }
+    
+    throw new EdmException(EdmException.COMMON);
+  }
+  
+  private static class AtomHelper {
+    Map<String, EdmProperty> target2Property = new HashMap<String, EdmProperty>();
+    
+    private AtomHelper(EdmEntitySet edmEntitySet) throws EdmException {
+      EdmEntityType entityType = edmEntitySet.getEntityType();
+      Collection<String> propertyNames = entityType.getPropertyNames();
+      for (String propertyName: propertyNames) {
+        // XXX: 121127_mibo: check this cast(s)
+        EdmProperty property = (EdmProperty) entityType.getProperty(propertyName);
+        EdmCustomizableFeedMappings customizableFeedMappings = property.getCustomizableFeedMappings();
+        if(customizableFeedMappings != null) {
+          String path = map2TargetPath(customizableFeedMappings.getFcTargetPath());
+          
+          target2Property.put(path, property);
+        }
+      }
+    }
+
+    public static AtomHelper init(EdmEntitySet edmEntitySet) throws EdmException {
+      AtomHelper helper = new AtomHelper(edmEntitySet);
+      
+      return helper;
+    }
+
+    public EdmProperty getSyndicationProperty(String syndicationName) {
+      return target2Property.get(syndicationName);
+    }
+    
+    private static String map2TargetPath(String fcTargetPath) {
+      return fcTargetPath;
+    }
   }
 
   private String createIdUri() throws ODataSerializationException {

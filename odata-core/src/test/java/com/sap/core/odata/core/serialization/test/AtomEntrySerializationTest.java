@@ -13,10 +13,13 @@ import java.net.URISyntaxException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.xml.stream.FactoryConfigurationError;
 import javax.xml.stream.XMLStreamException;
@@ -28,12 +31,15 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xml.sax.SAXException;
 
+import com.sap.core.odata.api.edm.EdmContentKind;
+import com.sap.core.odata.api.edm.EdmCustomizableFeedMappings;
 import com.sap.core.odata.api.edm.EdmEntityContainer;
 import com.sap.core.odata.api.edm.EdmEntitySet;
 import com.sap.core.odata.api.edm.EdmEntityType;
 import com.sap.core.odata.api.edm.EdmException;
 import com.sap.core.odata.api.edm.EdmProperty;
 import com.sap.core.odata.api.edm.EdmSimpleTypeKind;
+import com.sap.core.odata.api.edm.EdmTargetPath;
 import com.sap.core.odata.api.enums.Format;
 import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.api.processor.ODataContext;
@@ -175,20 +181,39 @@ public class AtomEntrySerializationTest {
     }
 
     //
+    Set<EdmProperty> mockedProperties = new HashSet<EdmProperty>();
     EdmProperty edmRoomId = mock(EdmProperty.class);
     when(edmRoomId.getName()).thenReturn("roomId");
     when(edmRoomId.getType()).thenReturn(EdmSimpleTypeKind.String.getEdmSimpleTypeInstance());
+    mockedProperties.add(edmRoomId);
 
     EdmProperty edmTeamId = mock(EdmProperty.class);
     when(edmTeamId.getName()).thenReturn("teamId");
     when(edmTeamId.getType()).thenReturn(EdmSimpleTypeKind.String.getEdmSimpleTypeInstance());
+    mockedProperties.add(edmTeamId);
+    
+    EdmProperty edmEmployeeName = mock(EdmProperty.class);
+    when(edmEmployeeName.getName()).thenReturn("employeeName");
+    when(edmEmployeeName.getType()).thenReturn(EdmSimpleTypeKind.String.getEdmSimpleTypeInstance());
+    EdmCustomizableFeedMappings feedMapping = mock(EdmCustomizableFeedMappings.class);
+    when(feedMapping.getFcTargetPath()).thenReturn(EdmTargetPath.SYNDICATION_TITLE);
+    when(feedMapping.getFcContentKind()).thenReturn(EdmContentKind.text);
+    when(edmEmployeeName.getCustomizableFeedMappings()).thenReturn(feedMapping);
+    mockedProperties.add(edmEmployeeName);
     //
     
     EdmEntityType et = mock(EdmEntityType.class);
     when(et.getKeyProperties()).thenReturn(kpl);
     //
-    when(et.getProperty(edmRoomId.getName())).thenReturn(edmRoomId);
-    when(et.getProperty(edmTeamId.getName())).thenReturn(edmTeamId);
+    Collection<String> propertyNames = new HashSet<String>();
+    for (EdmProperty edmProperty : mockedProperties) {
+      when(et.getProperty(edmProperty.getName())).thenReturn(edmProperty);
+      propertyNames.add(edmProperty.getName());
+    }
+    when(et.getPropertyNames()).thenReturn(propertyNames);
+//    when(et.getProperty(edmRoomId.getName())).thenReturn(edmRoomId);
+//    when(et.getProperty(edmTeamId.getName())).thenReturn(edmTeamId);
+//    when(et.getProperty(edmEmployeeName.getName())).thenReturn(edmEmployeeName);
     //
 
     EdmEntitySet es = mock(EdmEntitySet.class);
