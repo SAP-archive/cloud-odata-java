@@ -1,10 +1,11 @@
 package com.sap.core.odata.core.uri.expression;
 
 import com.sap.core.odata.api.exception.MessageReference;
+import com.sap.core.odata.api.exception.ODataMessageException;
 
 import com.sap.core.odata.api.uri.expression.ExpressionException;
 
-public class TokenizerMessage extends ExpressionException 
+public class TokenizerMessage extends ODataMessageException
 {
   private static final long serialVersionUID = 1L;
   
@@ -14,14 +15,17 @@ public class TokenizerMessage extends ExpressionException
   //Invalid token detected at position &POSITION&
   private static final MessageReference INVALID_TOKEN_AT = createMessageReference(TokenizerMessage.class, "INVALID_TOKEN_AT");
 
+   
+  public static final MessageReference PARSESTRINGTOKEN =  createMessageReference(TokenizerMessage.class, "TODO"); //TODO
   
   
-  public static final int ParseStringToken = 1;
-  
-  private int textID;
   private String token;
   private Exception previous;
   private int position;
+  
+  public TokenizerMessage(MessageReference messageReference) {
+    super(messageReference);
+  }
   
   public String getToken() {
     return token;

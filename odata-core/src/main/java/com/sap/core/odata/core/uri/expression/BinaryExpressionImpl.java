@@ -11,11 +11,14 @@ public class BinaryExpressionImpl implements BinaryExpression
   private InfoBinaryOperator operatorInfo;
   CommonExpression leftSide;
   CommonExpression rightSide;
+  EdmType edmType;
 
   public BinaryExpressionImpl( InfoBinaryOperator operatorInfo, CommonExpression leftSide, CommonExpression rightSide) {
     this.operatorInfo = operatorInfo;
     this.leftSide = leftSide;
     this.rightSide = rightSide;
+    edmType = null;
+    
   }
 
   @Override
@@ -24,29 +27,32 @@ public class BinaryExpressionImpl implements BinaryExpression
   }
 
   @Override
-  public CommonExpression getLeftOperand() {
+  public CommonExpression getLeftOperand()
+  {
     return leftSide;
   }
 
   @Override
-  public CommonExpression getRightOperand() {
+  public CommonExpression getRightOperand()
+  {
     return rightSide;
   }
   
   @Override
-  public EdmType getEdmType() {
-    // TODO Auto-generated method stub
-    return null;
+  public EdmType getEdmType()
+  {
+    return edmType;
   }
 
   @Override
-  public void setEdmType(EdmType edmType) {
-    // TODO Auto-generated method stub
+  public void setEdmType(EdmType edmType) 
+  {
+    this.edmType = edmType;
   }
 
   @Override
-  public ExpressionKind getKind() {
-    
+  public ExpressionKind getKind() 
+  {
     return ExpressionKind.BINARY;
   }
 

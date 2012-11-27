@@ -7,12 +7,14 @@ import org.junit.Test;
 
 import com.sap.core.odata.api.edm.EdmSimpleType;
 import com.sap.core.odata.api.edm.EdmSimpleTypeFacade;
+import com.sap.core.odata.api.edm.EdmSimpleTypeKind;
 import com.sap.core.odata.api.uri.expression.CommonExpression;
 import com.sap.core.odata.api.uri.expression.ExpressionKind;
 import com.sap.core.odata.api.uri.expression.ExpressionException;
 import com.sap.core.odata.api.uri.expression.FilterExpression;
 import com.sap.core.odata.core.edm.Bit;
 import com.sap.core.odata.core.edm.EdmSByte;
+import com.sap.core.odata.core.edm.EdmSimpleTypeFacadeImpl;
 import com.sap.core.odata.core.edm.Uint7;
 import com.sap.core.odata.core.uri.expression.FilterParserImpl;
 
@@ -38,9 +40,9 @@ public class ParserTest {
     }
 
     private String GetInfoKind(ExpressionKind kind) {
-      String actexp = "Actual: " + curNode.getKind().toString() + " Expected: " + kind.toString();
+      String actexp = expression + "Expected: " + curNode.getKind().toString() + " Actual: " + kind.toString();
       System.out.println("  GetInfoKind - Testing: " + expression );
-      return "  GetInfoKind - Error: " + actexp;
+      return "  GetInfoKind - Error in: " + actexp + ">>";
     }
 
     public ParserTool aUriLiteral(String uriLiteral) {
@@ -50,9 +52,9 @@ public class ParserTest {
 
     private String GetInfoUriLiteral(String uriLiteral)
     {
-      String actexp = expression + " Actual: " + curNode.toUriLiteral() + " Expected: " + uriLiteral;
+      String actexp = expression + " Expected: " + curNode.toUriLiteral() + " Actual: " + uriLiteral;
       System.out.println("  GetInfoUriLiteral - Testing: " + expression );
-      return "  GetInfoUriLiteral - Error: " + actexp;
+      return "  GetInfoUriLiteral - Error: " + actexp + ">>";
     }
 
     public ParserTool aEdmType(EdmSimpleType boolInst) {
@@ -62,9 +64,9 @@ public class ParserTest {
 
     private String GetInfoType(EdmSimpleType boolInst)
     {
-      String actexp = expression + " Actual:  " + curNode.getEdmType().toString() + " Expected: " + boolInst.toString();
+      String actexp = expression + " Expected:  " + curNode.getEdmType().toString() + " Actual: " + boolInst.toString();
       System.out.println("  GetInfoType - Testing: " + expression );
-      return "  GetInfoType - Error: " + actexp;
+      return "  GetInfoType - Error: " + actexp + ">>";
     }
   }
 
@@ -83,27 +85,27 @@ public class ParserTest {
   @Test
   public void TestSinglePlainLiterals()
   {
-    /*
+    //assertEquals("Hier", 44, 33);
     //---
     //Checks from EdmSimpleType test
     //---
-    EdmSimpleType boolInst = EdmSimpleTypeFacade.booleanInstance();
-    EdmSimpleType binaryInst = EdmSimpleTypeFacade.binaryInstance();
+    EdmSimpleType boolInst = EdmSimpleTypeFacadeImpl.getEdmSimpleType(EdmSimpleTypeKind.Boolean);
+    EdmSimpleType binaryInst = EdmSimpleTypeFacadeImpl.getEdmSimpleType(EdmSimpleTypeKind.Binary);
     EdmSimpleType bitInst = Bit.getInstance();
-    EdmSimpleType byteInst = EdmSimpleTypeFacade.byteInstance();
+    EdmSimpleType byteInst = EdmSimpleTypeFacadeImpl.getEdmSimpleType(EdmSimpleTypeKind.Byte);
     EdmSimpleType Uint7Inst = Uint7.getInstance();
-    EdmSimpleType datetimeInst = EdmSimpleTypeFacade.dateTimeInstance();
-    EdmSimpleType datetimeOffsetInst = EdmSimpleTypeFacade.dateTimeOffsetInstance();
-    EdmSimpleType descimalInst = EdmSimpleTypeFacade.decimalInstance();
-    EdmSimpleType doubleInst = EdmSimpleTypeFacade.doubleInstance();
-    EdmSimpleType guidInst = EdmSimpleTypeFacade.guidInstance();
-    EdmSimpleType int16Inst = EdmSimpleTypeFacade.int16Instance();
-    EdmSimpleType int32Inst = EdmSimpleTypeFacade.int32Instance();
-    EdmSimpleType int64Inst = EdmSimpleTypeFacade.int64Instance();
+    EdmSimpleType datetimeInst = EdmSimpleTypeFacadeImpl.getEdmSimpleType(EdmSimpleTypeKind.DateTime);
+    EdmSimpleType datetimeOffsetInst = EdmSimpleTypeFacadeImpl.getEdmSimpleType(EdmSimpleTypeKind.DateTimeOffset);
+    EdmSimpleType decimalInst = EdmSimpleTypeFacadeImpl.getEdmSimpleType(EdmSimpleTypeKind.Decimal);
+    EdmSimpleType doubleInst = EdmSimpleTypeFacadeImpl.getEdmSimpleType(EdmSimpleTypeKind.Double);
+    EdmSimpleType guidInst = EdmSimpleTypeFacadeImpl.getEdmSimpleType(EdmSimpleTypeKind.Guid);
+    EdmSimpleType int16Inst = EdmSimpleTypeFacadeImpl.getEdmSimpleType(EdmSimpleTypeKind.Int16);
+    EdmSimpleType int32Inst = EdmSimpleTypeFacadeImpl.getEdmSimpleType(EdmSimpleTypeKind.Int32);
+    EdmSimpleType int64Inst = EdmSimpleTypeFacadeImpl.getEdmSimpleType(EdmSimpleTypeKind.Int64);
     EdmSimpleType intSByte = EdmSByte.getInstance();
-    EdmSimpleType singleInst = EdmSimpleTypeFacade.singleInstance();
-    EdmSimpleType stringInst = EdmSimpleTypeFacade.stringInstance();
-    EdmSimpleType timeInst = EdmSimpleTypeFacade.timeInstance();
+    EdmSimpleType singleInst = EdmSimpleTypeFacadeImpl.getEdmSimpleType(EdmSimpleTypeKind.Single);
+    EdmSimpleType stringInst = EdmSimpleTypeFacadeImpl.getEdmSimpleType(EdmSimpleTypeKind.String);
+    EdmSimpleType timeInst = EdmSimpleTypeFacadeImpl.getEdmSimpleType(EdmSimpleTypeKind.Time);
 
     GetPTF("X'Fa12aAA1'").aUriLiteral("X'Fa12aAA1'").aKind(ExpressionKind.LITERAL).aEdmType(binaryInst);
     GetPTF("binary'FA12AAA1'").aUriLiteral("binary'FA12AAA1'").aKind(ExpressionKind.LITERAL).aEdmType(binaryInst);
@@ -124,8 +126,8 @@ public class ParserTest {
     GetPTF("datetimeoffset'2009-12-26T21%3A23%3A38Z'").aUriLiteral("datetimeoffset'2009-12-26T21%3A23%3A38Z'").aKind(ExpressionKind.LITERAL).aEdmType(datetimeOffsetInst);
     GetPTF("datetimeoffset'2002-10-10T12%3A00%3A00-05%3A00'").aUriLiteral("datetimeoffset'2002-10-10T12%3A00%3A00-05%3A00'").aKind(ExpressionKind.LITERAL).aEdmType(datetimeOffsetInst);
 
-    GetPTF("4.5m").aUriLiteral("4.5m").aKind(ExpressionKind.LITERAL).aEdmType(descimalInst);
-    GetPTF("4.5M").aUriLiteral("4.5M").aKind(ExpressionKind.LITERAL).aEdmType(descimalInst);
+    GetPTF("4.5m").aUriLiteral("4.5m").aKind(ExpressionKind.LITERAL).aEdmType(decimalInst);
+    GetPTF("4.5M").aUriLiteral("4.5M").aKind(ExpressionKind.LITERAL).aEdmType(decimalInst);
 
     GetPTF("4.5d").aUriLiteral("4.5d").aKind(ExpressionKind.LITERAL).aEdmType(doubleInst);
     GetPTF("4.5D").aUriLiteral("4.5D").aKind(ExpressionKind.LITERAL).aEdmType(doubleInst);
@@ -153,14 +155,15 @@ public class ParserTest {
 
     //The EdmSimpleTypeSamples contains a well formatted list of all possible 
     //UriLiterals for SimpleTypes, instances for their Type classes and their Values in java notation
+    /*
     for ( EdmSimpleTypeSamples.UriTypeValueSet [] utvSetSet : EdmSimpleTypeSamples.someAll )
     {
       for( EdmSimpleTypeSamples.UriTypeValueSet utvSet : utvSetSet)
       {
         GetPTF(utvSet.uri).aKind(ExpressionKind.LITERAL).aEdmType(utvSet.type).aUriLiteral(utvSet.uri);
       }
-    }--
-*/
+    }*/
+
   }
 
   public void TestSinglePlainLiteralsABAP()

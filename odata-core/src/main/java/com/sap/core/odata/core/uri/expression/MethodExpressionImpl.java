@@ -1,12 +1,12 @@
 package com.sap.core.odata.core.uri.expression;
 
-import java.util.List;
+import java.util.Vector;
 
 import com.sap.core.odata.api.edm.EdmType;
 import com.sap.core.odata.api.uri.expression.CommonExpression;
 import com.sap.core.odata.api.uri.expression.ExpressionKind;
-import com.sap.core.odata.api.uri.expression.MethodOperator;
 import com.sap.core.odata.api.uri.expression.MethodExpression;
+import com.sap.core.odata.api.uri.expression.MethodOperator;
 
 public class MethodExpressionImpl implements MethodExpression {
 
@@ -33,7 +33,7 @@ public class MethodExpressionImpl implements MethodExpression {
   }
 
   @Override
-  public List<CommonExpression> getParameters() {
+  public Vector<CommonExpression> getParameters() {
     // TODO Auto-generated method stub
     return null;
   }

@@ -1,8 +1,8 @@
 package com.sap.core.odata.core.uri.expression;
+
 /*TODO remove all @SuppressWarnings("unused")*/
 //TODO check all Exceptions
 //TODO check variableNames
-
 
 import java.util.HashMap;
 import java.util.Map;
@@ -36,10 +36,18 @@ import com.sap.core.odata.api.uri.expression.PropertyExpression;
 import com.sap.core.odata.api.uri.expression.UnaryExpression;
 import com.sap.core.odata.core.edm.EdmSimpleTypeFacadeImpl;
 
-public class FilterParserImpl implements FilterParser 
+public class FilterParserImpl implements FilterParser
 {
+  static Map<String, InfoBinaryOperator> availableBinaryOperators;
+  static Map<String, InfoMethod> availableFunctions;
+  static Map<String, InfoUnaryOperator> availableUnaryOperators;
+
+  protected boolean useParameterPromotiom;
+  protected Edm edm;
+  protected EdmType resourceEntityType;
+
+  CommonExpression MO_EXPR_NODE;
   TokenList tokenList = null;
-  
 
   /**
    * Creates a new FilterParser implementation
@@ -55,7 +63,6 @@ public class FilterParserImpl implements FilterParser
   @Override
   public FilterExpression ParseExpression(String filterExpression) throws ExpressionException
   {
-
     try
     {
       Tokenizer tokenizer = new Tokenizer();
@@ -67,7 +74,6 @@ public class FilterParserImpl implements FilterParser
 
       CommonExpression nodeLeft = readElement();
       CommonExpression node = readElements(nodeLeft, 0);
-    
 
       //post check
       //TODO verify if is an internal error or an user error
@@ -77,97 +83,14 @@ public class FilterParserImpl implements FilterParser
 
       //create and return filterExpression node
       return new FilterExpressionImpl(filterExpression, node);
+    } catch (ExpressionException expressionException)
+    {
+      throw new ExpressionException(ExpressionException.INVALID_TRAILING_TOKEN, null);
+    } catch (TokenizerMessage e) {
+      //TODO
     }
-    catch( Exception ex)
-    {}
-
     return null;
-
   }
-
-
-  /********************************/
-  private static class param_types_s //param_types_s
-  {
-    public param_types_s(EdmSimpleType sbyte, EdmSimpleType sbyte2, EdmSimpleType sbyte3) {
-      // TODO Auto-generated constructor stub
-    }
-
-    public param_types_s(EdmSimpleType string, EdmSimpleType string2) {
-      // TODO Auto-generated constructor stub
-    }
-
-    public param_types_s(EdmSimpleType string, EdmSimpleType string2, EdmSimpleType int32, EdmSimpleType int322) {
-      // TODO Auto-generated constructor stub
-    }
-
-    public String return_type;
-    public Vector<String> params;
-    public String param1_type;
-    public String param2_type;
-    public String param3_type;
-  }
-
-  private static class available_function_s //available_function_s
-  {
-    public available_function_s(String gC_FUNCTION_ENDSWITH, int i, int j) {
-      // TODO Auto-generated constructor stub
-    }
-
-    String name;
-    int minParameter;
-    int maxParameter;
-
-  }
-
-  private static class available_binary_operator_s //available_binary_operator_s
-  {
-    public available_binary_operator_s(String string, String gC_OPERATOR_PROP, int i) {
-      // TODO Auto-generated constructor stub
-    }
-
-    String name;
-    int prio;
-    String category;
-    //String common_Expression;
-  }
-
-  private static class available_unary_operator_s//available_unary_operator_s
-  {
-    public available_unary_operator_s(String gcFunctionTest) {
-      // TODO Auto-generated constructor stub
-    }
-
-    String name;
-    String category;
-  }
-
-  private static class operator_s
-  {
-    Token token;
-    int prio;
-  }
-
-  private static class fuop_types_s
-
-  {
-    String name;
-    Vector<param_types_s> combination;
-  }
-
-
-  static Map<String, InfoBinaryOperator> availableBinaryOperators;
-  static Map<String, InfoMethod> availableFunctions;
-  static Map<String, InfoUnaryOperator> availableUnaryOperators;
-  //
-
-
-  protected boolean useParameterPromotiom;
-  protected Edm edm;
-  protected EdmType resourceEntityType;
-
-  CommonExpression MO_EXPR_NODE;
-  boolean MV_PARAMETER_PROMOTION;
 
   public void setUseParameterPromotiom(boolean useParameterPromotiom) {
     this.useParameterPromotiom = useParameterPromotiom;
@@ -184,49 +107,63 @@ public class FilterParserImpl implements FilterParser
     return rs_token;
   }
 
-  
-
   InfoBinaryOperator LookBinaerOperator()
   {
     Token token = tokenList.lookToken();
 
-    if (token != null)
+    if (token == null)
       return null;
-    
+
     return availableBinaryOperators.get(token.getUriLiteral());
   }
 
-  
-  CommonExpression readElements(CommonExpression io_left_node, int iv_prio) throws Exception
+  CommonExpression readElements(CommonExpression leftExpression, int priority) throws ExpressionException, TokenizerMessage
   {
-    InfoBinaryOperator lv_op1;
-
-    operator_s lv_op2;
-    CommonExpression ro_node;
-    CommonExpression lo_terminal;
     CommonExpression lo_tmp_node;
-    CommonExpression lo_right_node;
-    CommonExpression lo_left_node;
-    MemberExpression lo_member_node;
-    PropertyExpression lo_property_node;
-    PropertyExpression lo_parent_property;
+    CommonExpression leftNode;
+    CommonExpression rightNode;
     BinaryExpression lo_binary;
 
     //lo_expression_error TYPE REF TO /iwcor/cx_ds_expr_error;
 
-    lo_left_node = io_left_node;
-    lv_op1 = LookBinaerOperator();
-
-    while ((lv_op1 != null) && (lv_op1.priority >= iv_prio))
+    leftNode = leftExpression;
+    InfoBinaryOperator lv_op1 = LookBinaerOperator();
+    
+    while ((lv_op1 != null) && (lv_op1.priority >= priority))
     {
-      // TODO add code 
+      tokenList.next();
+      rightNode = readElement();
+      
+      InfoBinaryOperator lv_op2 = LookBinaerOperator();
+          
+      if  ((lv_op2 != null) && (lv_op2.priority > lv_op1.priority ))
+      {
+        rightNode = readElements(rightNode, lv_op2.priority);//op2 is read in read_elements.
+        lv_op2 = LookBinaerOperator();
+      }
+      
+      lo_binary = new BinaryExpressionImpl(lv_op1, leftNode, rightNode);
+
+      try
+      {
+        VALIDATE_BINARY_TYPES(lo_binary);
+      } catch (Exception ex)
+      {
+        //TODO
+      }
+
+      lo_tmp_node = lo_binary;
+
+      leftNode = lo_tmp_node;
+
+      lv_op1 = LookBinaerOperator();
     }
 
     /*
     ro_node = lo_left_node.
     */
-    CommonExpression RO_NODE = null;
-    return null;
+
+    return leftNode;
   }
 
   private void VALIDATE_BINARY_TYPES(BinaryExpression lo_binary) {
@@ -234,25 +171,25 @@ public class FilterParserImpl implements FilterParser
 
   }
 
-
   /**
    * Reads a Parenthesis expression. Its is expected that the current token is of kind {@link TokenKind#OPENPAREN} 
    * @return
    * @throws ExpressionException
+   * @throws TokenizerMessage 
    */
-  CommonExpression readParenthesis() throws ExpressionException
+  CommonExpression readParenthesis() throws ExpressionException, TokenizerMessage
   {
     tokenList.expectToken(TokenKind.OPENPAREN);
-    
+
     CommonExpression expression = readElement();
     //CommonExpression node = readElements(expression, 0);
-    
+
     tokenList.expectToken(TokenKind.CLOSEPAREN);
-    
+
     return null;//TODO
   }
 
-  MethodExpression readParameters(InfoMethod IS_FUNC, MethodExpression methodExpression) throws ExpressionException
+  MethodExpression readParameters(InfoMethod IS_FUNC, MethodExpression methodExpression) throws ExpressionException, TokenizerMessage
 
   {
     CommonExpression ls_tmp_node;
@@ -273,7 +210,6 @@ public class FilterParserImpl implements FilterParser
         ro_node.AppendParameter(lo_node);
       }
       lv_token = tokenList.lookToken();
-
 
       if (lv_token.getKind() == TokenKind.COMMA)
 
@@ -307,20 +243,19 @@ public class FilterParserImpl implements FilterParser
     return null; //TODO fix
   }
 
-
   /**
    * Reads: Unary operators, Methods, Properties, ...
    * but not binary operators which are handelt in {@link #readElements(CommonExpression, int)}
    * @return
    * @throws ExpressionException
+   * @throws TokenizerMessage 
    */
-  CommonExpression readElement() throws ExpressionException
+  CommonExpression readElement() throws ExpressionException, TokenizerMessage
   {
     CommonExpression node = null;
     Token token;
     Token lookToken;
     lookToken = tokenList.lookToken();
-
 
     if (lookToken.getKind() == TokenKind.OPENPAREN) //."if token a '(' then process read a new note for the '(' and return it.
     {
@@ -337,7 +272,7 @@ public class FilterParserImpl implements FilterParser
     {
       return node;
     }
-    
+
     //-->Check if the token is a unary operator
     Object operator = isUnaryOperator(lookToken);
     if (operator != null)
@@ -349,65 +284,58 @@ public class FilterParserImpl implements FilterParser
       validateUnaryTypes(unaryExpression, token); //throws ExpressionInvalidOperatorTypeException
       return unaryExpression;
     }
-    
-    
-
 
     //-->Check if the token is a method 
     //To avoid name clashes between method names and property names we accept here only method names if a "(" follows.
     //Hence the parser accepts a property named "concat" 
     token = tokenList.expectToken(lookToken.getUriLiteral());
     lookToken = tokenList.lookToken();
-    
+
     operator = isMethod(token, lookToken);
     if (operator != null)
     {
-    //check for function if the next token is a '('
-     MethodExpression method = new MethodExpressionImpl((InfoMethod)operator);
-     readParameters((InfoMethod)operator, method);
-     validateMethodTypes(method, token); //throws ExpressionInvalidOperatorTypeException
-     return method;
+      //check for function if the next token is a '('
+      MethodExpression method = new MethodExpressionImpl((InfoMethod) operator);
+      readParameters((InfoMethod) operator, method);
+      validateMethodTypes(method, token); //throws ExpressionInvalidOperatorTypeException
+      return method;
     }
     if ((lookToken != null) && (lookToken.getKind() == TokenKind.OPENPAREN))
     {
       //TODO error '(' without function name ahead
     }
 
-    
     //-->Check if token is a terminal 
     //is a terminal e.g. a Value like an EDM.String 'hugo' or  125L or 1.25D" 
-    if (token.getKind() == TokenKind.SIMPLE_TYPE) 
+    if (token.getKind() == TokenKind.SIMPLE_TYPE)
     {
-      LiteralExpression literal = new LiteralExpressionImpl(token.getUriLiteral(), token.getEdmType());
+      LiteralExpression literal = new LiteralExpressionImpl(token.getUriLiteral(), token.getJavaLiteral());
       return literal;
     }
-    
 
     //-->Check if token is a property
     if (token.getKind() == TokenKind.LITERAL)
     {
       node = new PropertyExpressinImpl(token.getUriLiteral());
     }
-      
+
     //" e.g. "name" or "adress"
     if ((this.edm != null) && (this.resourceEntityType != null))
     {
       PropertyExpression property = new PropertyExpressinImpl(token.getUriLiteral());
       validatePropertyTypes(property);
     }
-    
+
     // "resource type could be an /IWCOR/IF_DS_EDM_STRUCT_TYPE
     //ERROR
 
     return node;
 
-
   }
-
 
   private void validatePropertyTypes(PropertyExpression property) {
     // TODO Auto-generated method stub
-    
+
   }
 
   private InfoMethod isMethod(Token token, Token lookToken)
@@ -420,7 +348,7 @@ public class FilterParserImpl implements FilterParser
   }
 
   @SuppressWarnings("unused")
-  private void validateUnaryTypes(UnaryExpression unaryExpression, Token token) throws ExpressionInvalidOperatorTypeException  {
+  private void validateUnaryTypes(UnaryExpression unaryExpression, Token token) throws ExpressionInvalidOperatorTypeException {
     //TODO check types 
   }
 
@@ -428,8 +356,6 @@ public class FilterParserImpl implements FilterParser
     // TODO Auto-generated method stub
 
   }
-
- 
 
   CommonExpression readElementForMember(PropertyExpression io_parent_property) throws Exception
   {
@@ -450,7 +376,6 @@ public class FilterParserImpl implements FilterParser
     {
 
       tokenList.expectToken((String) lv_token.getUriLiteral());//TODO check this 
-
 
       lv_look_token = tokenList.lookToken();
 
@@ -497,7 +422,7 @@ public class FilterParserImpl implements FilterParser
         throw ex;
       }
       //create property node with reference to edm property
-      ro_node = new PropertyExpressinImpl(lv_token.getUriLiteral(), (EdmTyped) lo_edm_prop,lv_token.getUriLiteral());
+      ro_node = new PropertyExpressinImpl(lv_token.getUriLiteral(), (EdmTyped) lo_edm_prop, lv_token.getUriLiteral());
 
       try
       {
@@ -523,8 +448,6 @@ public class FilterParserImpl implements FilterParser
     CommonExpression RO_NODE = null;
     return RO_NODE;
   }
-
-
 
   InfoUnaryOperator isUnaryOperator(Token IS_TOKEN)
   {
@@ -583,8 +506,8 @@ public class FilterParserImpl implements FilterParser
     EdmSimpleType int64 = EdmSimpleTypeFacadeImpl.getEdmSimpleType(EdmSimpleTypeKind.Int64);
     EdmSimpleType single = EdmSimpleTypeFacadeImpl.getEdmSimpleType(EdmSimpleTypeKind.Single);
     EdmSimpleType double_ = EdmSimpleTypeFacadeImpl.getEdmSimpleType(EdmSimpleTypeKind.Double);
-    EdmSimpleType decimal_ =EdmSimpleTypeFacadeImpl.getEdmSimpleType(EdmSimpleTypeKind.Decimal);
-    EdmSimpleType string =EdmSimpleTypeFacadeImpl.getEdmSimpleType(EdmSimpleTypeKind.String);
+    EdmSimpleType decimal_ = EdmSimpleTypeFacadeImpl.getEdmSimpleType(EdmSimpleTypeKind.Decimal);
+    EdmSimpleType string = EdmSimpleTypeFacadeImpl.getEdmSimpleType(EdmSimpleTypeKind.String);
     EdmSimpleType time = EdmSimpleTypeFacadeImpl.getEdmSimpleType(EdmSimpleTypeKind.Time);
     EdmSimpleType datetime = EdmSimpleTypeFacadeImpl.getEdmSimpleType(EdmSimpleTypeKind.DateTime);
     EdmSimpleType datetimeoffset = EdmSimpleTypeFacadeImpl.getEdmSimpleType(EdmSimpleTypeKind.DateTimeOffset);
@@ -593,7 +516,6 @@ public class FilterParserImpl implements FilterParser
 
     //---Memeber member access---
     availableBinaryOperators.put("/", new InfoBinaryOperator(BinaryOperator.PROPERTY_ACCESS, "Primary", "/", 100));
-
 
     //---Multiplicative---
     combination = new Vector<ParameterSet>();
@@ -632,7 +554,6 @@ public class FilterParserImpl implements FilterParser
     //XXX_MT_FUOPS.put(CharConst.GC_OPERATOR_SUB, combination);
     availableBinaryOperators.put(CharConst.GC_OPERATOR_SUB, new InfoBinaryOperator(BinaryOperator.SUB, "Multiplicative", CharConst.GC_OPERATOR_SUB, 50));
 
-
     //---Relational---
     combination = new Vector<ParameterSet>();
     combination.add(new ParameterSet(boolean_, string, string));
@@ -664,7 +585,6 @@ public class FilterParserImpl implements FilterParser
     //XXX_MT_FUOPS.put(CharConst.GC_OPERATOR_LE, combination);
     availableBinaryOperators.put(CharConst.GC_OPERATOR_LE, new InfoBinaryOperator(BinaryOperator.LE, "Multiplicative", CharConst.GC_OPERATOR_LE, 40));
 
-
     //---Equality---
     combination = new Vector<ParameterSet>();
     combination.add(new ParameterSet(boolean_, boolean_, boolean_));
@@ -691,20 +611,16 @@ public class FilterParserImpl implements FilterParser
     //XXX_MT_FUOPS.put(CharConst.GC_OPERATOR_NE, combination);
     availableBinaryOperators.put(CharConst.GC_OPERATOR_NE, new InfoBinaryOperator(BinaryOperator.NE, "Multiplicative", CharConst.GC_OPERATOR_NE, 30));
 
-
     //"---Conditinal AND---
     combination = new Vector<ParameterSet>();
     combination.add(new ParameterSet(boolean_, boolean_, boolean_));
 
-
     //XXX_MT_FUOPS.put(CharConst.GC_OPERATOR_AND, combination);
     availableBinaryOperators.put(CharConst.GC_OPERATOR_AND, new InfoBinaryOperator(BinaryOperator.AND, "Multiplicative", CharConst.GC_OPERATOR_AND, 20));
-
 
     //---Conditinal OR---
     combination = new Vector<ParameterSet>();
     combination.add(new ParameterSet(boolean_, boolean_, boolean_));
-
 
     //XXX_MT_FUOPS.put(CharConst.GC_OPERATOR_OR, combination);
     availableBinaryOperators.put(CharConst.GC_OPERATOR_OR, new InfoBinaryOperator(BinaryOperator.OR, "Multiplicative", CharConst.GC_OPERATOR_OR, 10));
@@ -788,24 +704,20 @@ public class FilterParserImpl implements FilterParser
     //XXX_MT_FUOPS.put(CharConst.GC_FUNCTION_DAY, combination);
     availableFunctions.put(CharConst.GC_FUNCTION_DAY, new InfoMethod(MethodOperator.DAY, CharConst.GC_FUNCTION_DAY, 1, 1));
 
-
     //hour
     combination = new Vector<ParameterSet>();
     combination.add(new ParameterSet(int32, datetime));
     combination.add(new ParameterSet(int32, time));
     combination.add(new ParameterSet(int32, datetimeoffset));
 
-
     //XXX_MT_FUOPS.put(CharConst.GC_FUNCTION_HOUR, combination);
     availableFunctions.put(CharConst.GC_FUNCTION_HOUR, new InfoMethod(MethodOperator.HOUR, CharConst.GC_FUNCTION_HOUR, 1, 1));
-
 
     //minute
     combination = new Vector<ParameterSet>();
     combination.add(new ParameterSet(int32, datetime));
     combination.add(new ParameterSet(int32, time));
     combination.add(new ParameterSet(int32, datetimeoffset));
-
 
     //XXX_MT_FUOPS.put(CharConst.GC_FUNCTION_MINUTE, combination);
     availableFunctions.put(CharConst.GC_FUNCTION_MINUTE, new InfoMethod(MethodOperator.MINUTE, CharConst.GC_FUNCTION_MINUTE, 1, 1));
@@ -818,38 +730,29 @@ public class FilterParserImpl implements FilterParser
     //XXX_MT_FUOPS.put(CharConst.GC_FUNCTION_SECOND, combination);
     availableFunctions.put(CharConst.GC_FUNCTION_SECOND, new InfoMethod(MethodOperator.SECOND, CharConst.GC_FUNCTION_SECOND, 1, 1));
 
-
     //round
     combination = new Vector<ParameterSet>();
     combination.add(new ParameterSet(decimal_, decimal_));
     combination.add(new ParameterSet(double_, double_));
 
-
     //XXX_MT_FUOPS.put(CharConst.GC_FUNCTION_ROUND, combination);
     availableFunctions.put(CharConst.GC_FUNCTION_ROUND, new InfoMethod(MethodOperator.ROUND, CharConst.GC_FUNCTION_ROUND, 1, 1));
-
 
     //ceiling
     combination = new Vector<ParameterSet>();
     combination.add(new ParameterSet(decimal_, decimal_));
     combination.add(new ParameterSet(double_, double_));
 
-
     //XXX_MT_FUOPS.put(CharConst.GC_FUNCTION_CEILING, combination);
     availableFunctions.put(CharConst.GC_FUNCTION_CEILING, new InfoMethod(MethodOperator.CEILING, CharConst.GC_FUNCTION_CEILING, 1, 1));
-
 
     //floor
     combination = new Vector<ParameterSet>();
     combination.add(new ParameterSet(decimal_, decimal_));
     combination.add(new ParameterSet(double_, double_));
 
-
     //XXX_MT_FUOPS.put(CharConst.GC_FUNCTION_FLOOR, combination);
     availableFunctions.put(CharConst.GC_FUNCTION_FLOOR, new InfoMethod(MethodOperator.FLOOR, CharConst.GC_FUNCTION_FLOOR, 1, 1));
-
-
-    
 
     //---unary---
 
@@ -872,7 +775,6 @@ public class FilterParserImpl implements FilterParser
     //not
     //XXX_MT_FUOPS.put(CharConst.GC_OPERATOR_NOT, combination);
     availableUnaryOperators.put(CharConst.GC_OPERATOR_NOT, new InfoUnaryOperator(UnaryOperator.NOT, "not", CharConst.GC_OPERATOR_NOT));
-
 
   }
 
@@ -948,13 +850,13 @@ public class FilterParserImpl implements FilterParser
       {
         throw new Exception();/*TODO*//*
 
-                                                      RAISE EXCEPTION TYPE /iwcor/cx_ds_expr_parser_error "OK
-                                                      EXPORTING
-                                                      textid   = /iwcor/cx_ds_expr_parser_error=>property_not_in_type
-                                                      type     = lv_type_name
-                                                      property = is_property_token-value
-                                                      position = is_property_token-position.
-                                                      ENDIF.*/
+                                                        RAISE EXCEPTION TYPE /iwcor/cx_ds_expr_parser_error "OK
+                                                        EXPORTING
+                                                        textid   = /iwcor/cx_ds_expr_parser_error=>property_not_in_type
+                                                        type     = lv_type_name
+                                                        property = is_property_token-value
+                                                        position = is_property_token-position.
+                                                        ENDIF.*/
 
       }
     } catch (Exception ex)
@@ -968,7 +870,6 @@ public class FilterParserImpl implements FilterParser
 
     return RO_PROPERTY;
   }
-
 
   void validateMethodTypes(MethodExpression method, Token token)
   /*void VALIDATE_FUNCTION_TYPES(MethodExpression IO_EXPR_FUNCTION,
@@ -1020,8 +921,8 @@ public class FilterParserImpl implements FilterParser
   }
 
   void VALIDATE_BINARY_TYPES(BinaryExpression IO_EXPR_BINARY,
-      Vector<EdmType> ET_ACTUAL_PARAMETERS,
-      fuop_types_s ES_FORMAL_PARAM_COMBI)
+      Vector<EdmType> ET_ACTUAL_PARAMETERS
+      )
   {
     /*#
      * DATA:
@@ -1062,8 +963,7 @@ public class FilterParserImpl implements FilterParser
   }
 
   void VALIDATE_UNARY_TYPES(BinaryExpression IO_EXPR_UNARY,
-      Vector<EdmType> ET_ACTUAL_PARAMETERS,
-      fuop_types_s ES_FORMAL_PARAM_COMBI)
+      Vector<EdmType> ET_ACTUAL_PARAMETERS)
   {/*
    DATA:
           lv_string TYPE string,
@@ -1101,12 +1001,12 @@ public class FilterParserImpl implements FilterParser
 
   void VALIDATE_PARAMETER_TYPES(Vector<EdmType> IT_ACTUAL_PARAMETERS,
       Vector<EdmType> ET_ACTUAL_PARAMETERS,
-      fuop_types_s IS_FORMAL_PARAM_COMBI,
 
       boolean ev_dynamic,
-      param_types_s es_used_combi,
+      //param_types_s es_used_combi,
       boolean ev_promoted)
   {
+    /*
     String lv_act;
     String lv_form;
     //String lo_string;
@@ -1182,40 +1082,40 @@ public class FilterParserImpl implements FilterParser
 
           } catch (Exception ex)
           {
-            throw ex;
-            /*TODO
-             * 
-             * RAISE EXCEPTION TYPE /iwcor/cx_ds_expr_syntax_error
-              EXPORTING
-                textid   = /iwcor/cx_ds_expr_syntax_error=>function_invalid_param_type
-                function = is_formal_param_combi-name.*/
-
-          }
-        }
-
-        if (lv_promotion_match == true)
-        {
-          es_used_combi = ld_parameter_combi;
-          ev_promoted = true;
-          return;
-        }
-
-      }
-    } catch (Exception ex)
-    {/* TODO
-          CATCH /iwcor/cx_ds_edm_error INTO lo_ds_edm_error.
-            RAISE EXCEPTION TYPE /iwcor/cx_ds_internal_error
-              EXPORTING
-                textid   = /iwcor/cx_ds_internal_error=>/iwcor/cx_ds_internal_error
-                previous = lo_ds_edm_error.*/
-
-    }
+            throw ex;*/
     /*TODO
-    RAISE EXCEPTION TYPE /iwcor/cx_ds_expr_syntax_error
+     * 
+     * RAISE EXCEPTION TYPE /iwcor/cx_ds_expr_syntax_error
       EXPORTING
         textid   = /iwcor/cx_ds_expr_syntax_error=>function_invalid_param_type
-        function = is_formal_param_combi-name.
-    */
+        function = is_formal_param_combi-name.*//*
+
+                                                }
+                                                }
+
+                                                if (lv_promotion_match == true)
+                                                {
+                                                es_used_combi = ld_parameter_combi;
+                                                ev_promoted = true;
+                                                return;
+                                                }
+
+                                                }
+                                                } catch (Exception ex)
+                                                { *//* TODO
+                                                      CATCH /iwcor/cx_ds_edm_error INTO lo_ds_edm_error.
+                                                        RAISE EXCEPTION TYPE /iwcor/cx_ds_internal_error
+                                                          EXPORTING
+                                                            textid   = /iwcor/cx_ds_internal_error=>/iwcor/cx_ds_internal_error
+                                                            previous = lo_ds_edm_error.*//*
+
+                                                                                         }
+                                                                                         /*TODO
+                                                                                         RAISE EXCEPTION TYPE /iwcor/cx_ds_expr_syntax_error
+                                                                                         EXPORTING
+                                                                                         textid   = /iwcor/cx_ds_expr_syntax_error=>function_invalid_param_type
+                                                                                         function = is_formal_param_combi-name.
+                                                                                         */
   }
 
   /*

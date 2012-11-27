@@ -4,7 +4,6 @@ import com.sap.core.odata.api.edm.EdmType;
 
 public interface CommonExpression 
 {
-
   EdmType getEdmType();
   
   void setEdmType(EdmType edmType);

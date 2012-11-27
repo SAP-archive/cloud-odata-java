@@ -17,14 +17,13 @@ public class TokenList implements Iterator<Token>
   
   /**
    * Append StringValue Token to tokens parameter
-   * @param Token list to be extended
    * @param Position of parsed token 
    * @param Kind of parsed token
    * @param Stringvalue of parsed token
    */
   public void appendToken(int position, TokenKind kind, String uriLiteral)
   {
-    Token token = new Token(kind, position, null, uriLiteral, uriLiteral);
+    Token token = new Token(kind, position, uriLiteral );
     this.tokens.add(token);
     return;
   }  
@@ -39,7 +38,7 @@ public class TokenList implements Iterator<Token>
    */
   public void appendToken(int position, TokenKind kind, char charValue)
   {
-    Token token = new Token(kind, position, null, Character.toString(charValue),Character.toString(charValue));
+    Token token = new Token(kind, position, Character.toString(charValue));
     this.tokens.add(token);
     return;
   } 
@@ -51,9 +50,9 @@ public class TokenList implements Iterator<Token>
    * @param Kind of parsed token
    * @param UriLiteral of parsed token containing type and value of UriLiteral 
    */
-  public void appendEdmTypedToken(int iv_position, TokenKind iv_kind, String uriLiteral, UriLiteral literal)
+  public void appendEdmTypedToken(int position, TokenKind kind, String uriLiteral, UriLiteral javaLiteral)
   {
-    Token token = new Token(iv_kind, iv_position, literal.getType(), uriLiteral, literal.getLiteral());
+    Token token = new Token(kind, position,  uriLiteral, javaLiteral);
     this.tokens.add(token);
     return;
   }

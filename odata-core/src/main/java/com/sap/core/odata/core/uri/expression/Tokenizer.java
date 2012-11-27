@@ -15,7 +15,7 @@ public class Tokenizer
 
   private boolean flagIncludeWhitespace = false;
   private EdmSimpleTypeFacade typeDectector = null;
-  private TokenList tokens;
+  
 
   public Tokenizer()
   {
@@ -32,48 +32,6 @@ public class Tokenizer
     this.flagIncludeWhitespace = flagIncludeWhitespace;
 
     return this;
-  }
-
-  /**
-   * Append StringValue Token to tokens parameter
-   * @param Token list to be extended
-   * @param Position of parsed token 
-   * @param Kind of parsed token
-   * @param Stringvalue of parsed token
-   */
-  private void appendToken(Vector<Token> tokens, int position, TokenKind kind, String stringValue)
-  {
-    //Token token = new Token(kind, position, null, stringValue);
-    //tokens.add(token);
-    return;
-  }
-
-  /**
-   * Append CharValue Token to tokens parameter
-   * @param Token list to be extended
-   * @param Position of parsed token 
-   * @param Kind of parsed token
-   * @param Charvalue of parsed token
-   */
-  private void appendToken(Vector<Token> tokens, int position, TokenKind kind,  char charValue)
-  {
-    //Token token = new Token(kind, position, null, Character.toString(charValue));
-    //tokens.add(token);
-    return;
-  }
-
-  /**
-   * Append UriLiteral Token to tokens parameter
-   * @param Token list to be extended
-   * @param Position of parsed token 
-   * @param Kind of parsed token
-   * @param UriLiteral of parsed token containing type and value of UriLiteral 
-   */
-  private void appendEdmTypedToken(Vector<Token> tokens, int iv_position, TokenKind iv_kind, UriLiteral uriLiteral)
-  {
-    //Token token = new Token(iv_kind, iv_position, uriLiteral.getType(), uriLiteral.getLiteral());
-    //tokens.add(token);
-    return;
   }
 
   /**
@@ -98,6 +56,8 @@ public class Tokenizer
     String rem_expr;
     String expression_sub;
     Matcher matcher;
+    
+    TokenList tokens = new TokenList(); 
 
     expressionLength = iv_expression.length();
     while (curPosition < expressionLength)
@@ -170,7 +130,7 @@ public class Tokenizer
         } catch (UriParserException ex)
         {
           // TODO:  create method for InvalidStringToken ID
-          TokenizerMessage tEx = new TokenizerMessage(/*TokenizerMessage.ParseStringToken*/);//TODO
+          TokenizerMessage tEx = new TokenizerMessage(TokenizerMessage.PARSESTRINGTOKEN);
           tEx.setPosition(curPosition);
           tEx.setToken(token);
           tEx.setPrevious(ex);
@@ -258,7 +218,7 @@ public class Tokenizer
 
           } catch (UriParserException ex)
           {
-            TokenizerMessage tEx = new TokenizerMessage(/*TokenizerMessage.ParseStringToken*/);//TODO
+            TokenizerMessage tEx = new TokenizerMessage(TokenizerMessage.PARSESTRINGTOKEN);//TODO
             tEx.setPosition(curPosition);
             tEx.setToken(token);
             tEx.setPrevious(ex);
@@ -337,7 +297,7 @@ public class Tokenizer
 
           break;
         }
-        TokenizerMessage tEx = new TokenizerMessage(/*TokenizerMessage.ParseStringToken*/);
+        TokenizerMessage tEx = new TokenizerMessage(TokenizerMessage.PARSESTRINGTOKEN);
         tEx.setPosition(curPosition);
         tEx.setToken(token);
         throw tEx;

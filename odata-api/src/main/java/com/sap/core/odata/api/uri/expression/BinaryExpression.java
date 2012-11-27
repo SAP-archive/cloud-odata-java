@@ -5,7 +5,7 @@ public interface BinaryExpression extends CommonExpression
 
   /**
     * @return Operator object that represent the operator
-    * @see BinaryExpression.Operator
+    * @see BinaryOperator
     */
   public BinaryOperator getOperator();
 

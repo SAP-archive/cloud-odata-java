@@ -5,7 +5,7 @@ public interface UnaryExpression extends CommonExpression
 
   /**
    * @return Operator object that represent the operator
-   * @see BinaryExpression.Operator
+   * @see UnaryOperator
    */
   public UnaryOperator getOperator();
 
