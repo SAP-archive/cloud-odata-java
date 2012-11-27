@@ -13,13 +13,16 @@ import java.net.URISyntaxException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
+import java.util.TimeZone;
 
 import javax.xml.stream.FactoryConfigurationError;
 import javax.xml.stream.XMLStreamException;
@@ -45,6 +48,7 @@ import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.api.processor.ODataContext;
 import com.sap.core.odata.api.processor.ODataUriInfo;
 import com.sap.core.odata.api.serialization.ODataSerializer;
+import com.sap.core.odata.core.edm.EdmDateTime;
 import com.sap.core.odata.core.serializer.AtomEntrySerializer;
 import com.sap.core.odata.testutils.helper.StringHelper;
 import com.sap.core.odata.testutils.helper.XMLUnitHelper;
@@ -61,23 +65,23 @@ public class AtomEntrySerializationTest {
   }
 
   private static final Logger LOG = LoggerFactory.getLogger(AtomEntrySerializationTest.class);
-
+  private static final SimpleDateFormat DATE_FORMATTER = new SimpleDateFormat(EdmDateTime.DATE_TIME_PATTERN);
+  
   private Map<String, Object> data;
 
   {
     try {
       this.data = new HashMap<String, Object>();
 
-      SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'T'hh:mm");
-      Date date;
-      date = formatter.parse("1999-01-01T00:00");
+      DATE_FORMATTER.setTimeZone(TimeZone.getTimeZone("GMT"));
+      Date date = DATE_FORMATTER.parse("1999-01-01T00:00:00");
 
       this.data.put("employeeId", "1");
       this.data.put("immageUrl", null);
       this.data.put("managerId", "1");
       this.data.put("age", new Integer(52));
       this.data.put("roomId", "1");
-      this.data.put("entryData", date);
+      this.data.put("entryDate", date);
       this.data.put("teamId", "42");
       this.data.put("employeeName", "Walter Winter");
     } catch (ParseException e) {
@@ -151,7 +155,27 @@ public class AtomEntrySerializationTest {
 
     assertXpathExists("/a:entry/a:title", xmlString);
     assertXpathEvaluatesTo("text", "/a:entry/a:title/@type", xmlString);
-    assertXpathEvaluatesTo("Walter Winter", "/a:entry/a:title/text()", xmlString);
+    assertXpathEvaluatesTo((String)data.get("employeeName"), "/a:entry/a:title/text()", xmlString);
+  }
+
+  @Test
+  public void serializeEntryUpdated() throws Exception {
+    ODataSerializer ser = ODataSerializer.create(Format.ATOM);
+    assertNotNull(ser);
+
+    ODataContext ctx = createContextMock();
+    EdmEntitySet es = createEdmEntitySetMock(false);
+
+    ser.setContext(ctx);
+    ser.setData(this.data);
+    ser.setEdmEntitySet(es);
+
+    InputStream xmlStream = ser.serialize();
+    String xmlString = StringHelper.inputStreamToString(xmlStream);
+
+    assertXpathExists("/a:entry/a:updated", xmlString);
+//    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
+    assertXpathEvaluatesTo(DATE_FORMATTER.format(data.get("entryDate")), "/a:entry/a:updated/text()", xmlString);
   }
 
   private ODataContext createContextMock() throws ODataException {
@@ -200,6 +224,15 @@ public class AtomEntrySerializationTest {
     when(feedMapping.getFcContentKind()).thenReturn(EdmContentKind.text);
     when(edmEmployeeName.getCustomizableFeedMappings()).thenReturn(feedMapping);
     mockedProperties.add(edmEmployeeName);
+
+    EdmProperty edmEntryDate = mock(EdmProperty.class);
+    when(edmEntryDate.getName()).thenReturn("entryDate");
+    when(edmEntryDate.getType()).thenReturn(EdmSimpleTypeKind.DateTime.getEdmSimpleTypeInstance());
+    EdmCustomizableFeedMappings feMa2 = mock(EdmCustomizableFeedMappings.class);
+    when(feMa2.getFcTargetPath()).thenReturn(EdmTargetPath.SYNDICATION_UPDATED);
+    when(feMa2.getFcContentKind()).thenReturn(EdmContentKind.text);
+    when(edmEntryDate.getCustomizableFeedMappings()).thenReturn(feMa2);
+    mockedProperties.add(edmEntryDate);
     //
     
     EdmEntityType et = mock(EdmEntityType.class);
@@ -211,9 +244,6 @@ public class AtomEntrySerializationTest {
       propertyNames.add(edmProperty.getName());
     }
     when(et.getPropertyNames()).thenReturn(propertyNames);
-//    when(et.getProperty(edmRoomId.getName())).thenReturn(edmRoomId);
-//    when(et.getProperty(edmTeamId.getName())).thenReturn(edmTeamId);
-//    when(et.getProperty(edmEmployeeName.getName())).thenReturn(edmEmployeeName);
     //
 
     EdmEntitySet es = mock(EdmEntitySet.class);

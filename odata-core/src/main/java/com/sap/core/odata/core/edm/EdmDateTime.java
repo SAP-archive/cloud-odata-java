@@ -19,6 +19,7 @@ import com.sap.core.odata.api.edm.EdmTypeKind;
 public class EdmDateTime implements EdmSimpleType {
 
   private static final EdmDateTime instance = new EdmDateTime();
+  public static final String DATE_TIME_PATTERN = "yyyy-MM-dd'T'HH:mm:ss";
 
   private EdmDateTime() {
 
@@ -123,22 +124,21 @@ public class EdmDateTime implements EdmSimpleType {
         adjustMilliseconds(dateTimeValue, digits);
       }
 
-      final String pattern = "yyyy-MM-dd'T'HH:mm:ss";
       SimpleDateFormat dateFormat = (SimpleDateFormat) SimpleDateFormat.getDateTimeInstance();
       dateFormat.setTimeZone(TimeZone.getTimeZone("GMT"));
       if (dateTimeValue.get(Calendar.MILLISECOND) == 0)
-        dateFormat.applyPattern(pattern);
+        dateFormat.applyPattern(DATE_TIME_PATTERN);
       else
-        dateFormat.applyPattern(pattern + ".SSS");
+        dateFormat.applyPattern(DATE_TIME_PATTERN + ".SSS");
 
       final String result = dateFormat.format(dateTimeValue.getTime());
       if (result.contains("."))
         if (digits == 0)
-          return result.substring(0, pattern.length() - 2);  // beware of the "'"s
+          return result.substring(0, DATE_TIME_PATTERN.length() - 2);  // beware of the "'"s
         else if (digits == 3)
           return result;
         else
-          return result.substring(0, pattern.length() - 2 + 1 + digits);  // beware of the "'"s
+          return result.substring(0, DATE_TIME_PATTERN.length() - 2 + 1 + digits);  // beware of the "'"s
       else
         return result;
 
