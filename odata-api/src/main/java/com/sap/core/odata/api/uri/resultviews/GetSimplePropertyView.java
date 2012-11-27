@@ -11,7 +11,7 @@ import com.sap.core.odata.api.edm.EdmType;
 import com.sap.core.odata.api.enums.Format;
 import com.sap.core.odata.api.uri.KeyPredicate;
 import com.sap.core.odata.api.uri.NavigationSegment;
-import com.sap.core.odata.api.uri.UriLiteral;
+import com.sap.core.odata.api.uri.EdmLiteral;
 
 public interface GetSimplePropertyView {
   /**
@@ -70,9 +70,9 @@ public interface GetSimplePropertyView {
   public String getCustomFormat();
 
   /**
-   * @return Map of {@literal <String,} {@link UriLiteral}{@literal >} function import parameters
+   * @return Map of {@literal <String,} {@link EdmLiteral}{@literal >} function import parameters
    */
-  public Map<String, UriLiteral> getFunctionImportParameters();
+  public Map<String, EdmLiteral> getFunctionImportParameters();
   
   /**
    * @return Map of {@literal<String, String>} custom query options

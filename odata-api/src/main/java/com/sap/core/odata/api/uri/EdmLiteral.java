@@ -6,7 +6,7 @@ import com.sap.core.odata.api.edm.EdmSimpleType;
  * UriLiteral representation
  * @author SAP AG
  */
-public final class UriLiteral {
+public final class EdmLiteral {
   private EdmSimpleType type;
   private String literal;
 
@@ -14,7 +14,7 @@ public final class UriLiteral {
    * @param {@link EdmSimpleType} type
    * @param {@link String} literal
    */
-  public UriLiteral(final EdmSimpleType type, final String literal) {
+  public EdmLiteral(final EdmSimpleType type, final String literal) {
     this.type = type;
     this.literal = literal;
   }

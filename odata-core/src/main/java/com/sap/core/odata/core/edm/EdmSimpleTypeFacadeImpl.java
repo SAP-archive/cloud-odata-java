@@ -10,7 +10,7 @@ import org.apache.commons.codec.binary.Hex;
 import com.sap.core.odata.api.edm.EdmSimpleType;
 import com.sap.core.odata.api.edm.EdmSimpleTypeFacade;
 import com.sap.core.odata.api.edm.EdmSimpleTypeKind;
-import com.sap.core.odata.api.uri.UriLiteral;
+import com.sap.core.odata.api.uri.EdmLiteral;
 import com.sap.core.odata.api.uri.UriParserException;
 import com.sap.core.odata.core.exception.ODataRuntimeException;
 
@@ -21,18 +21,18 @@ public class EdmSimpleTypeFacadeImpl implements EdmSimpleTypeFacade {
   private static final Pattern STRING_VALUE_PATTERN = Pattern.compile("(X|binary|datetime|datetimeoffset|guid|time)?'(.*)'");
   
   @Override
-  public UriLiteral parseUriLiteral(final String uriLiteral) throws UriParserException {
+  public EdmLiteral parseUriLiteral(final String uriLiteral) throws UriParserException {
     final String literal = uriLiteral;
 
     if ("true".equals(literal) || "false".equals(literal))
-      return new UriLiteral(getEdmSimpleType(EdmSimpleTypeKind.Boolean), literal);
+      return new EdmLiteral(getEdmSimpleType(EdmSimpleTypeKind.Boolean), literal);
     
     if ("null".equals(literal))
-      return new UriLiteral(getEdmSimpleType(EdmSimpleTypeKind.Null), literal);
+      return new EdmLiteral(getEdmSimpleType(EdmSimpleTypeKind.Null), literal);
 
     if (literal.length() >= 2)
       if (literal.startsWith("'") && literal.endsWith("'"))
-        return new UriLiteral(getEdmSimpleType(EdmSimpleTypeKind.String), literal.substring(1, literal.length() - 1).replace("''", "'"));
+        return new EdmLiteral(getEdmSimpleType(EdmSimpleTypeKind.String), literal.substring(1, literal.length() - 1).replace("''", "'"));
 
     final Matcher wholeNumberMatcher = WHOLE_NUMBER_PATTERN.matcher(literal);
     if (wholeNumberMatcher.matches()) {
@@ -40,22 +40,22 @@ public class EdmSimpleTypeFacadeImpl implements EdmSimpleTypeFacade {
       final String suffix = wholeNumberMatcher.group(2);
 
       if ("L".equalsIgnoreCase(suffix))
-        return new UriLiteral(getEdmSimpleType(EdmSimpleTypeKind.Int64), value);
+        return new EdmLiteral(getEdmSimpleType(EdmSimpleTypeKind.Int64), value);
       else
         try {
           final int i = Integer.parseInt(value);
           if (i == 0 || i == 1)
-            return new UriLiteral(getInternalEdmSimpleTypeByString("Bit"), value);
+            return new EdmLiteral(getInternalEdmSimpleTypeByString("Bit"), value);
           else if (i > 1 && i <= Byte.MAX_VALUE)
-            return new UriLiteral(getInternalEdmSimpleTypeByString("Uint7"), value);
+            return new EdmLiteral(getInternalEdmSimpleTypeByString("Uint7"), value);
           else if (i >= Byte.MIN_VALUE && i < 0)
-            return new UriLiteral(getEdmSimpleType(EdmSimpleTypeKind.SByte), value);
+            return new EdmLiteral(getEdmSimpleType(EdmSimpleTypeKind.SByte), value);
           else if (i > Byte.MAX_VALUE && i <= 255)
-            return new UriLiteral(getEdmSimpleType(EdmSimpleTypeKind.Byte), value);
+            return new EdmLiteral(getEdmSimpleType(EdmSimpleTypeKind.Byte), value);
           else if (i >= Short.MIN_VALUE && i <= Short.MAX_VALUE)
-            return new UriLiteral(getEdmSimpleType(EdmSimpleTypeKind.Int16), value);
+            return new EdmLiteral(getEdmSimpleType(EdmSimpleTypeKind.Int16), value);
           else
-            return new UriLiteral(getEdmSimpleType(EdmSimpleTypeKind.Int32), value);
+            return new EdmLiteral(getEdmSimpleType(EdmSimpleTypeKind.Int32), value);
         } catch (NumberFormatException e) {
           throw new UriParserException(UriParserException.LITERALFORMAT);
         }
@@ -67,11 +67,11 @@ public class EdmSimpleTypeFacadeImpl implements EdmSimpleTypeFacade {
       final String suffix = decimalNumberMatcher.group(2);
 
       if ("M".equalsIgnoreCase(suffix))
-        return new UriLiteral(getEdmSimpleType(EdmSimpleTypeKind.Decimal), value);
+        return new EdmLiteral(getEdmSimpleType(EdmSimpleTypeKind.Decimal), value);
       else if ("D".equalsIgnoreCase(suffix))
-        return new UriLiteral(getEdmSimpleType(EdmSimpleTypeKind.Double), value);
+        return new EdmLiteral(getEdmSimpleType(EdmSimpleTypeKind.Double), value);
       else if ("F".equalsIgnoreCase(suffix))
-        return new UriLiteral(getEdmSimpleType(EdmSimpleTypeKind.Single), value);
+        return new EdmLiteral(getEdmSimpleType(EdmSimpleTypeKind.Single), value);
     }
 
     final Matcher stringValueMatcher = STRING_VALUE_PATTERN.matcher(literal);
@@ -86,16 +86,16 @@ public class EdmSimpleTypeFacadeImpl implements EdmSimpleTypeFacade {
         } catch (DecoderException e) {
           throw new UriParserException(UriParserException.NOTEXT, e);
         }
-        return new UriLiteral(getEdmSimpleType(EdmSimpleTypeKind.Binary), Base64.encodeBase64String(b));
+        return new EdmLiteral(getEdmSimpleType(EdmSimpleTypeKind.Binary), Base64.encodeBase64String(b));
       }
       if ("datetime".equals(prefix))
-        return new UriLiteral(getEdmSimpleType(EdmSimpleTypeKind.DateTime), value);
+        return new EdmLiteral(getEdmSimpleType(EdmSimpleTypeKind.DateTime), value);
       else if ("datetimeoffset".equals(prefix))
-        return new UriLiteral(getEdmSimpleType(EdmSimpleTypeKind.DateTimeOffset), value);
+        return new EdmLiteral(getEdmSimpleType(EdmSimpleTypeKind.DateTimeOffset), value);
       else if ("guid".equals(prefix))
-        return new UriLiteral(getEdmSimpleType(EdmSimpleTypeKind.Guid), value);
+        return new EdmLiteral(getEdmSimpleType(EdmSimpleTypeKind.Guid), value);
       else if ("time".equals(prefix))
-        return new UriLiteral(getEdmSimpleType(EdmSimpleTypeKind.Time), value);
+        return new EdmLiteral(getEdmSimpleType(EdmSimpleTypeKind.Time), value);
     }
     throw new UriParserException(UriParserException.UNKNOWNLITERAL);
   }

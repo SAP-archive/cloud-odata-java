@@ -17,7 +17,7 @@ import com.sap.core.odata.api.uri.KeyPredicate;
 import com.sap.core.odata.api.uri.NavigationPropertySegment;
 import com.sap.core.odata.api.uri.NavigationSegment;
 import com.sap.core.odata.api.uri.SelectItem;
-import com.sap.core.odata.api.uri.UriLiteral;
+import com.sap.core.odata.api.uri.EdmLiteral;
 import com.sap.core.odata.api.uri.UriParserResult;
 
 public class UriParserResultImpl implements UriParserResult {
@@ -46,7 +46,7 @@ public class UriParserResultImpl implements UriParserResult {
   private Integer top;
   private List<ArrayList<NavigationPropertySegment>> expand = Collections.emptyList();
   private List<SelectItem> select = Collections.emptyList();
-  private Map<String, UriLiteral> functionImportParameters;
+  private Map<String, EdmLiteral> functionImportParameters;
   private Map<String, String> customQueryOptions;
   
   public UriType getUriType(){
@@ -252,15 +252,15 @@ public class UriParserResultImpl implements UriParserResult {
     return select;
   }
 
-  public void addFunctionImportParameter(final String name, final UriLiteral value) {
+  public void addFunctionImportParameter(final String name, final EdmLiteral value) {
     if (functionImportParameters == null)
-      functionImportParameters = new HashMap<String, UriLiteral>();
+      functionImportParameters = new HashMap<String, EdmLiteral>();
 
     functionImportParameters.put(name, value);
   }
 
   @Override
-  public Map<String, UriLiteral> getFunctionImportParameters() {
+  public Map<String, EdmLiteral> getFunctionImportParameters() {
     return functionImportParameters;
   }
 

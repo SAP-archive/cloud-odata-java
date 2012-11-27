@@ -1,7 +1,7 @@
 package com.sap.core.odata.api.edm;
 
 import com.sap.core.odata.api.rt.RuntimeDelegate;
-import com.sap.core.odata.api.uri.UriLiteral;
+import com.sap.core.odata.api.uri.EdmLiteral;
 import com.sap.core.odata.api.uri.UriParserException;
 
 /**
@@ -25,7 +25,7 @@ public enum EdmSimpleTypeKind {
     return RuntimeDelegate.getEdmSimpleType(this);
   }
 
-  public static UriLiteral parseUriLiteral(final String uriLiteral) throws UriParserException {
+  public static EdmLiteral parseUriLiteral(final String uriLiteral) throws UriParserException {
     return RuntimeDelegate.getSimpleTypeFacade().parseUriLiteral(uriLiteral);
   }
 

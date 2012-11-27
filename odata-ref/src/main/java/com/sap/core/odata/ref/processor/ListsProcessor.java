@@ -28,7 +28,7 @@ import com.sap.core.odata.api.processor.ODataResponse;
 import com.sap.core.odata.api.processor.ODataSingleProcessor;
 import com.sap.core.odata.api.uri.KeyPredicate;
 import com.sap.core.odata.api.uri.NavigationSegment;
-import com.sap.core.odata.api.uri.UriLiteral;
+import com.sap.core.odata.api.uri.EdmLiteral;
 import com.sap.core.odata.api.uri.resultviews.GetComplexPropertyView;
 import com.sap.core.odata.api.uri.resultviews.GetEntityCountView;
 import com.sap.core.odata.api.uri.resultviews.GetEntityLinkCountView;
@@ -322,13 +322,13 @@ public class ListsProcessor extends ODataSingleProcessor {
     return keyMap;
   }
 
-  private Map<String, Object> mapFunctionParameters(final Map<String, UriLiteral> functionImportParameters) {
+  private Map<String, Object> mapFunctionParameters(final Map<String, EdmLiteral> functionImportParameters) {
     if (functionImportParameters == null) {
       return Collections.emptyMap();
     } else {
       HashMap<String, Object> parameterMap = new HashMap<String, Object>();
       for (final String parameterName : functionImportParameters.keySet()) {
-        final UriLiteral literal = functionImportParameters.get(parameterName);
+        final EdmLiteral literal = functionImportParameters.get(parameterName);
         final EdmSimpleType type = (EdmSimpleType) literal.getType();
         parameterMap.put(parameterName, type.valueOfString(literal.getLiteral(), EdmLiteralKind.DEFAULT, null));
       }

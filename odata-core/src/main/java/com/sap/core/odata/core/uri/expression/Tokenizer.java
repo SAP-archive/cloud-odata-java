@@ -6,7 +6,7 @@ import java.util.regex.Pattern;
 
 import com.sap.core.odata.api.edm.EdmSimpleTypeFacade;
 import com.sap.core.odata.api.edm.EdmSimpleTypeKind;
-import com.sap.core.odata.api.uri.UriLiteral;
+import com.sap.core.odata.api.uri.EdmLiteral;
 import com.sap.core.odata.api.uri.UriParserException;
 import com.sap.core.odata.core.edm.EdmSimpleTypeFacadeImpl;
 
@@ -43,7 +43,7 @@ public class Tokenizer
    */
   public TokenList tokenize(String iv_expression) throws TokenizerMessage
   {
-    UriLiteral uriLiteral;
+    EdmLiteral uriLiteral;
     int curPosition = 0;
     int curPositionPlus1;
     final int expressionLength;
@@ -256,7 +256,7 @@ public class Tokenizer
         if (rem_expr.equals("true") || rem_expr.equals("false"))
         {
           curPosition = curPosition + rem_expr.length();
-          tokens.appendEdmTypedToken(oldPosition, TokenKind.SIMPLE_TYPE,rem_expr, new UriLiteral(
+          tokens.appendEdmTypedToken(oldPosition, TokenKind.SIMPLE_TYPE,rem_expr, new EdmLiteral(
                EdmSimpleTypeFacadeImpl.getEdmSimpleType(EdmSimpleTypeKind.Boolean),rem_expr));
           break;
         }

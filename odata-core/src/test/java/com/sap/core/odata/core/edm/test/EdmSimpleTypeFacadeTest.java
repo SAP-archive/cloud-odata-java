@@ -11,7 +11,7 @@ import org.junit.Test;
 import com.sap.core.odata.api.edm.EdmException;
 import com.sap.core.odata.api.edm.EdmSimpleType;
 import com.sap.core.odata.api.edm.EdmSimpleTypeKind;
-import com.sap.core.odata.api.uri.UriLiteral;
+import com.sap.core.odata.api.uri.EdmLiteral;
 import com.sap.core.odata.api.uri.UriParserException;
 import com.sap.core.odata.core.edm.Bit;
 import com.sap.core.odata.core.edm.EdmBinary;
@@ -35,7 +35,7 @@ import com.sap.core.odata.core.edm.Uint7;
 public class EdmSimpleTypeFacadeTest {
 
   public EdmSimpleType parse(String literal) throws UriParserException {
-    UriLiteral uriLiteral = EdmSimpleTypeKind.parseUriLiteral(literal);
+    EdmLiteral uriLiteral = EdmSimpleTypeKind.parseUriLiteral(literal);
     return uriLiteral.getType();
   }
 
@@ -246,7 +246,7 @@ public class EdmSimpleTypeFacadeTest {
    * @throws EdmException
    */
   private void parseLiteral(final String literal, final EdmSimpleType type, final String expectedLiteral) throws UriParserException, EdmException {
-    final UriLiteral uriLiteral = EdmSimpleTypeKind.parseUriLiteral(literal);
+    final EdmLiteral uriLiteral = EdmSimpleTypeKind.parseUriLiteral(literal);
 
     assertTrue(type.isCompatible(uriLiteral.getType()));
     assertEquals(expectedLiteral, uriLiteral.getLiteral());
@@ -394,7 +394,7 @@ public class EdmSimpleTypeFacadeTest {
   }
 
   private void parseIncompatibleLiteralContent(final String literal, final EdmSimpleType type) throws UriParserException {
-    final UriLiteral uriLiteral = EdmSimpleTypeKind.parseUriLiteral(literal);
+    final EdmLiteral uriLiteral = EdmSimpleTypeKind.parseUriLiteral(literal);
     assertFalse(type.isCompatible(uriLiteral.getType()));
   }
 
