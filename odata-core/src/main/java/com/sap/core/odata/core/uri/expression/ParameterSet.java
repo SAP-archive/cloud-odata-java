@@ -8,11 +8,11 @@ import com.sap.core.odata.api.edm.EdmSimpleType;
 /**
  * Parameter set is a vector of 1 or more EDM types, it is used to store the possible 
  * input and return types of a <i>OData filter operator</i> or <i>OData filter method</i>
- * @see InfoMethod TODO
- * @see InfoBinaryOperator TODO
- * @see InfoUnaryOperator TODO
+ * @see InfoMethod 
+ * @see InfoBinaryOperator 
+ * @see InfoUnaryOperator 
  */
-class ParameterSet //param_types_s
+class ParameterSet
 {
   private EdmSimpleType returnType;
   public Vector<EdmSimpleType> params = new Vector<EdmSimpleType>();

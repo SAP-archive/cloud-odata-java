@@ -10,30 +10,24 @@ import java.util.Vector;
 
 import com.sap.core.odata.api.edm.Edm;
 import com.sap.core.odata.api.edm.EdmException;
-import com.sap.core.odata.api.edm.EdmProperty;
 import com.sap.core.odata.api.edm.EdmSimpleType;
-import com.sap.core.odata.api.edm.EdmSimpleTypeFacade;
 import com.sap.core.odata.api.edm.EdmSimpleTypeKind;
 import com.sap.core.odata.api.edm.EdmStructuralType;
 import com.sap.core.odata.api.edm.EdmType;
 import com.sap.core.odata.api.edm.EdmTypeKind;
 import com.sap.core.odata.api.edm.EdmTyped;
 import com.sap.core.odata.api.uri.expression.BinaryExpression;
-import com.sap.core.odata.api.uri.expression.CommonExpression;
-
 import com.sap.core.odata.api.uri.expression.BinaryOperator;
-import com.sap.core.odata.api.uri.expression.FunctionExpression;
-import com.sap.core.odata.api.uri.expression.LiteralExpression;
-import com.sap.core.odata.api.uri.expression.MemberExpression;
-import com.sap.core.odata.api.uri.expression.MethodOperator;
-import com.sap.core.odata.api.uri.expression.UnaryOperator;
+import com.sap.core.odata.api.uri.expression.CommonExpression;
+import com.sap.core.odata.api.uri.expression.ExpressionException;
 import com.sap.core.odata.api.uri.expression.FilterExpression;
 import com.sap.core.odata.api.uri.expression.FilterParser;
+import com.sap.core.odata.api.uri.expression.LiteralExpression;
 import com.sap.core.odata.api.uri.expression.MethodExpression;
-
-import com.sap.core.odata.api.uri.expression.ExpressionException;
+import com.sap.core.odata.api.uri.expression.MethodOperator;
 import com.sap.core.odata.api.uri.expression.PropertyExpression;
 import com.sap.core.odata.api.uri.expression.UnaryExpression;
+import com.sap.core.odata.api.uri.expression.UnaryOperator;
 import com.sap.core.odata.core.edm.EdmSimpleTypeFacadeImpl;
 
 public class FilterParserImpl implements FilterParser
@@ -189,7 +183,7 @@ public class FilterParserImpl implements FilterParser
     return null;//TODO
   }
 
-  MethodExpression readParameters(InfoMethod IS_FUNC, MethodExpression methodExpression) throws ExpressionException, TokenizerMessage
+  MethodExpression readParameters(InfoMethod IS_FUNC, MethodExpressionImpl methodExpression) throws ExpressionException, TokenizerMessage
 
   {
     CommonExpression ls_tmp_node;
@@ -197,7 +191,7 @@ public class FilterParserImpl implements FilterParser
     Token lv_token;
     int lv_pcount;
     CommonExpression lo_node;
-    FunctionExpression ro_node = null;
+    
 
     expectToken(Character.toString(CharConst.GC_STR_OPENPAREN));
 
@@ -207,7 +201,7 @@ public class FilterParserImpl implements FilterParser
       //ls_tmp_node = readElements(lo_node, 0);
       if (lo_node != null) //parameter list may be emty
       {
-        ro_node.AppendParameter(lo_node);
+        methodExpression.appendParameter(lo_node);
       }
       lv_token = tokenList.lookToken();
 
@@ -227,7 +221,7 @@ public class FilterParserImpl implements FilterParser
       }
     } //end while
 
-    lv_pcount = ro_node.GetParameters().size();
+    lv_pcount = methodExpression.getParameters().size();
     if (lv_pcount < IS_FUNC.getMinParameter())
     {
       //TODO raise exception /iwcor/cx_ds_expr_syntax_error=>function_to_few_parameter
@@ -240,7 +234,7 @@ public class FilterParserImpl implements FilterParser
 
     expectToken(Character.toString(CharConst.GC_STR_CLOSEPAREN));
 
-    return null; //TODO fix
+    return methodExpression; 
   }
 
   /**
@@ -295,7 +289,7 @@ public class FilterParserImpl implements FilterParser
     if (operator != null)
     {
       //check for function if the next token is a '('
-      MethodExpression method = new MethodExpressionImpl((InfoMethod) operator);
+      MethodExpressionImpl method = new MethodExpressionImpl((InfoMethod) operator);
       readParameters((InfoMethod) operator, method);
       validateMethodTypes(method, token); //throws ExpressionInvalidOperatorTypeException
       return method;
@@ -316,13 +310,13 @@ public class FilterParserImpl implements FilterParser
     //-->Check if token is a property
     if (token.getKind() == TokenKind.LITERAL)
     {
-      node = new PropertyExpressinImpl(token.getUriLiteral());
+      node = new PropertyExpressionImpl(token.getUriLiteral());
     }
 
     //" e.g. "name" or "adress"
     if ((this.edm != null) && (this.resourceEntityType != null))
     {
-      PropertyExpression property = new PropertyExpressinImpl(token.getUriLiteral());
+      PropertyExpression property = new PropertyExpressionImpl(token.getUriLiteral());
       validatePropertyTypes(property);
     }
 
@@ -352,7 +346,7 @@ public class FilterParserImpl implements FilterParser
     //TODO check types 
   }
 
-  private void VALIDATE_FUNCTION_TYPES(FunctionExpression lo_function) {
+  private void VALIDATE_FUNCTION_TYPES(MethodExpression lo_function) {
     // TODO Auto-generated method stub
 
   }
@@ -389,7 +383,7 @@ public class FilterParserImpl implements FilterParser
       if (edm == null)
       {
         //create expression property node without reference to edm property
-        return new PropertyExpressinImpl(lv_token.getUriLiteral());
+        return new PropertyExpressionImpl(lv_token.getUriLiteral());
       }
 
       //EDM data is available so we do the check
@@ -422,7 +416,7 @@ public class FilterParserImpl implements FilterParser
         throw ex;
       }
       //create property node with reference to edm property
-      ro_node = new PropertyExpressinImpl(lv_token.getUriLiteral(), (EdmTyped) lo_edm_prop, lv_token.getUriLiteral());
+      ro_node = new PropertyExpressionImpl(lv_token.getUriLiteral(), (EdmTyped) lo_edm_prop, lv_token.getUriLiteral());
 
       try
       {

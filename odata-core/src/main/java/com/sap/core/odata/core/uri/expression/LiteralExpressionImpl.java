@@ -10,6 +10,7 @@ public class LiteralExpressionImpl implements LiteralExpression {
   EdmType edmType;         
   EdmLiteral javaLiteral;
   String uriLiteral;
+  
   public LiteralExpressionImpl(String uriLiteral, EdmLiteral javaLiteral) {
     this.uriLiteral = uriLiteral;
     this.javaLiteral = javaLiteral;

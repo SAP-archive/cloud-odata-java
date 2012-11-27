@@ -39,7 +39,6 @@ class InfoBinaryOperator
     this.allowedParameterTypes.add(parameterSet);
   }
 
-
   public BinaryOperator getOperator() {
     return operator;
   }

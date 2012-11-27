@@ -8,14 +8,14 @@ import com.sap.core.odata.api.edm.EdmTyped;
 import com.sap.core.odata.api.uri.expression.ExpressionKind;
 import com.sap.core.odata.api.uri.expression.PropertyExpression;
 
-public class PropertyExpressinImpl implements PropertyExpression, EdmTyped {
+public class PropertyExpressionImpl implements PropertyExpression, EdmTyped {
   String uriLiteral;
 
-  public PropertyExpressinImpl(Object stringValue) {
+  public PropertyExpressionImpl(Object stringValue) {
     // TODO Auto-generated constructor stub
   }
 
-  public PropertyExpressinImpl(Object stringValue, EdmTyped lo_edm_property, String uriLiteral) {
+  public PropertyExpressionImpl(Object stringValue, EdmTyped lo_edm_property, String uriLiteral) {
     // TODO Auto-generated constructor stub
     this.uriLiteral = uriLiteral;
   }

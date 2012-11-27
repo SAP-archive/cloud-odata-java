@@ -4,10 +4,8 @@ import java.util.List;
 
 public interface OrderByExpression 
 {
-  public List<CommonExpression> GetOrders();
+  public List<CommonExpression> getOrders();
 
-  public CommonExpression GetOrdersCount();
-
-  public CommonExpression AppendOrder();
+  public CommonExpression getOrdersCount();
 
 }
