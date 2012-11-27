@@ -46,7 +46,7 @@ public class EdmEntityTypeImplProvTest {
     when(edmProvider.getEntityType(fooEntityTypeFullName)).thenReturn(fooEntityType);
 
     Collection<Property> keyPropertysFoo = new ArrayList<Property>();
-    Property keyPropFoo = new Property().setName("Id").setType(EdmSimpleTypeKind.String.getFullqualifiedName());
+    Property keyPropFoo = new Property().setName("Id").setType(EdmSimpleTypeKind.String.getFullQualifiedName());
     keyPropertysFoo.add(keyPropFoo);
     fooEntityType.setProperties(keyPropertysFoo);
 
@@ -69,7 +69,7 @@ public class EdmEntityTypeImplProvTest {
     barBase.setNavigationProperties(navigationPropertiesBarBase);
     
     Collection<Property> keyPropertysBarBase = new ArrayList<Property>();
-    Property keyPropBarBase = new Property().setName("Id").setType(EdmSimpleTypeKind.String.getFullqualifiedName());
+    Property keyPropBarBase = new Property().setName("Id").setType(EdmSimpleTypeKind.String.getFullQualifiedName());
     keyPropertysBarBase.add(keyPropBarBase);
     barBase.setProperties(keyPropertysBarBase);
 

@@ -17,7 +17,7 @@ public enum EdmSimpleTypeKind {
   public static final String edmNamespace = "Edm";
   public static final String systemNamespace = "System";
 
-  public FullQualifiedName getFullqualifiedName() {
+  public FullQualifiedName getFullQualifiedName() {
     return new FullQualifiedName(edmNamespace, this.toString());
   }
   

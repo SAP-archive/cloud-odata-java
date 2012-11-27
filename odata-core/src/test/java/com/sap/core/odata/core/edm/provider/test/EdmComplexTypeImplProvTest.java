@@ -36,8 +36,8 @@ public class EdmComplexTypeImplProvTest {
     ComplexType fooComplexType = new ComplexType().setName("fooComplexType");
 
     Collection<Property> keyPropertysFoo = new ArrayList<Property>();
-    keyPropertysFoo.add(new Property().setName("Name").setType(EdmSimpleTypeKind.String.getFullqualifiedName()));
-    keyPropertysFoo.add(new Property().setName("Address").setType(EdmSimpleTypeKind.String.getFullqualifiedName()));
+    keyPropertysFoo.add(new Property().setName("Name").setType(EdmSimpleTypeKind.String.getFullQualifiedName()));
+    keyPropertysFoo.add(new Property().setName("Address").setType(EdmSimpleTypeKind.String.getFullQualifiedName()));
     fooComplexType.setProperties(keyPropertysFoo);
     
     edmComplexType = new EdmComplexTypeImplProv(edmImplProv, fooComplexType, "namespace");
@@ -48,8 +48,8 @@ public class EdmComplexTypeImplProvTest {
     when(edmProvider.getComplexType(barBaseTypeName)).thenReturn(barBase);
     
     Collection<Property> propertysBarBase = new ArrayList<Property>();
-    propertysBarBase.add(new Property().setName("Name").setType(EdmSimpleTypeKind.String.getFullqualifiedName()));
-    propertysBarBase.add(new Property().setName("Address").setType(EdmSimpleTypeKind.String.getFullqualifiedName()));
+    propertysBarBase.add(new Property().setName("Name").setType(EdmSimpleTypeKind.String.getFullQualifiedName()));
+    propertysBarBase.add(new Property().setName("Address").setType(EdmSimpleTypeKind.String.getFullQualifiedName()));
     barBase.setProperties(propertysBarBase);
     
     ComplexType barComplexType = new ComplexType().setName("barComplexType").setBaseType(barBaseTypeName);
