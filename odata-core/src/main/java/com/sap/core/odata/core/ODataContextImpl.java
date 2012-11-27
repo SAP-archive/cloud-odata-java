@@ -1,12 +1,9 @@
 package com.sap.core.odata.core;
 
-import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
 
 import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.api.processor.ODataContext;
-import com.sap.core.odata.api.processor.ODataPathSegment;
 import com.sap.core.odata.api.processor.ODataUriInfo;
 import com.sap.core.odata.api.service.ODataService;
 

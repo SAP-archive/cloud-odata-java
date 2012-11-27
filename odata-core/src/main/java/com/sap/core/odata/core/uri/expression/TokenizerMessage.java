@@ -3,8 +3,6 @@ package com.sap.core.odata.core.uri.expression;
 import com.sap.core.odata.api.exception.MessageReference;
 import com.sap.core.odata.api.exception.ODataMessageException;
 
-import com.sap.core.odata.api.uri.expression.ExpressionException;
-
 public class TokenizerMessage extends ODataMessageException
 {
   private static final long serialVersionUID = 1L;

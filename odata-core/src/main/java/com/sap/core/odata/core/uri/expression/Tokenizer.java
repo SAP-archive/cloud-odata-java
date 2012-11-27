@@ -1,6 +1,5 @@
 package com.sap.core.odata.core.uri.expression;
 
-import java.util.Vector;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 

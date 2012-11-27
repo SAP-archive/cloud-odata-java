@@ -343,7 +343,7 @@ public class FilterParserImpl implements FilterParser
     return null;
   }
 
-  @SuppressWarnings("unused")
+
   private void validateUnaryTypes(UnaryExpression unaryExpression, Token token) throws ExpressionInvalidOperatorTypeException {
     //TODO check types 
   }
