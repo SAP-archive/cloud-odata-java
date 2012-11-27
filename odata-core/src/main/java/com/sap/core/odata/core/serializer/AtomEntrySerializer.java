@@ -103,6 +103,24 @@ public class AtomEntrySerializer extends ODataSerializer {
     writer.writeAttribute("type", this.createTitleType(atomHelper));
     writer.writeCharacters(createTitleText(atomHelper));
     writer.writeEndElement();
+    
+    writer.writeStartElement("updated");
+    writer.writeCharacters(createUpdatedText(atomHelper));
+    writer.writeEndElement();
+  }
+
+  private String createUpdatedText(AtomHelper atomHelper) throws EdmException {
+    EdmProperty updatedProperty = atomHelper.getSyndicationProperty(EdmTargetPath.SYNDICATION_UPDATED);
+    
+    if(updatedProperty != null) {
+      // XXX: 121127_mibo: check this cast(s)
+      EdmSimpleType st = (EdmSimpleType) updatedProperty.getType();
+      Object data = getData().get(updatedProperty.getName());
+
+      return st.valueToString(data, EdmLiteralKind.DEFAULT, updatedProperty.getFacets());
+    }
+    
+    throw new EdmException(EdmException.COMMON);
   }
 
   private String createTitleText(AtomHelper atomHelper) throws EdmException {
