@@ -4,5 +4,4 @@ public interface OrderExpression
 {
   void GetSortOrder();
   void GetExpression();
-
 }

@@ -2,6 +2,7 @@ package com.sap.core.odata.core.uri.expression;
 /*1*/
 
 import com.sap.core.odata.api.edm.EdmType;
+import com.sap.core.odata.api.uri.UriLiteral;
 
 public class Token {
   
@@ -10,16 +11,22 @@ public class Token {
   private int position;
   private EdmType edmType;
   private String uriLiteral;
-  private String javaLiteral;
+  private UriLiteral javaLiteral;
   
-
-  public Token(TokenKind kind, int position, EdmType edmType, String uriLiteral, String javaLiteral)
+  public Token(TokenKind kind, int position,  String uriLiteral, UriLiteral javaLiteral)
   {
     this.kind = kind;
     this.position = position;
-    this.edmType = edmType;
     this.uriLiteral = uriLiteral;
     this.javaLiteral = javaLiteral;
+  }
+  
+  public Token(TokenKind kind, int position,  String uriLiteral )
+  {
+    this.kind = kind;
+    this.position = position;
+    this.uriLiteral = uriLiteral;
+    this.javaLiteral = null;
   }
   
   public TokenKind getKind()
@@ -42,7 +49,7 @@ public class Token {
     return uriLiteral;
   }
 
-  public String getJavaLiteral() 
+  public UriLiteral getJavaLiteral() 
   {
     return javaLiteral;
   }

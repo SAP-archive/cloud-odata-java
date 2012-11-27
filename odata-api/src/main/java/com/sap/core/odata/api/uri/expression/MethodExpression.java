@@ -1,18 +1,17 @@
 package com.sap.core.odata.api.uri.expression;
 
-import java.util.List;
+import java.util.Vector;
 
 public interface MethodExpression extends CommonExpression
 {
 
-  
   /**
    * @return Operator object that represent the operator
-   * @see BinaryExpression.Operator
+   * @see MethodOperator
    */
   public MethodOperator getMethod();
 
-  public List<CommonExpression> getParameters();
+  public Vector<CommonExpression> getParameters();
 
   public CommonExpression getParameterCount();
 

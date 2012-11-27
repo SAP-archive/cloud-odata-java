@@ -1,45 +1,42 @@
 package com.sap.core.odata.core.uri.expression;
 
 import com.sap.core.odata.api.edm.EdmType;
+import com.sap.core.odata.api.uri.UriLiteral;
 import com.sap.core.odata.api.uri.expression.ExpressionKind;
 import com.sap.core.odata.api.uri.expression.LiteralExpression;
 
 public class LiteralExpressionImpl implements LiteralExpression {
 
-  public LiteralExpressionImpl(Object stringValue, Object edmType) {
-    // TODO Auto-generated constructor stub
+  EdmType edmType;         
+  UriLiteral javaLiteral;
+  String uriLiteral;
+  public LiteralExpressionImpl(String uriLiteral, UriLiteral javaLiteral) {
+    this.uriLiteral = uriLiteral;
+    this.javaLiteral = javaLiteral;
+    this.edmType = this.javaLiteral.getType();
   }
 
   @Override
-  public EdmType getEdmType() {
-    // TODO Auto-generated method stub
-    return null;
-  }
-
-  
-
-  @Override
-  public String getLiteral() {
-    // TODO Auto-generated method stub
-    return null;
+  public EdmType getEdmType() 
+  {
+    return edmType;
   }
 
   @Override
   public void setEdmType(EdmType edmType) {
-    // TODO Auto-generated method stub
-    
+    this.edmType = edmType;
   }
 
   @Override
   public ExpressionKind getKind() {
-    // TODO Auto-generated method stub
-    return null;
+    return ExpressionKind.LITERAL;
   }
 
   @Override
   public String toUriLiteral() {
-    // TODO Auto-generated method stub
-    return null;
+    return uriLiteral;
   }
+
+  
 
 }
