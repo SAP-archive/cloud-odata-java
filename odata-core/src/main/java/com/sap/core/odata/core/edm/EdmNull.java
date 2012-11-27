@@ -4,23 +4,24 @@ import com.sap.core.odata.api.edm.EdmException;
 import com.sap.core.odata.api.edm.EdmFacets;
 import com.sap.core.odata.api.edm.EdmLiteralKind;
 import com.sap.core.odata.api.edm.EdmSimpleType;
+import com.sap.core.odata.api.edm.EdmSimpleTypeException;
 import com.sap.core.odata.api.edm.EdmSimpleTypeKind;
 import com.sap.core.odata.api.edm.EdmTypeKind;
 
 public class EdmNull implements EdmSimpleType {
 
   private static final EdmNull instance = new EdmNull();
-  
-  private EdmNull(){
-    
+
+  private EdmNull() {
+
   }
-  
-  public static EdmNull getInstance(){
+
+  public static EdmNull getInstance() {
     return instance;
   }
-  
+
   @Override
-  public boolean equals(Object obj) {
+  public boolean equals(final Object obj) {
     return this == obj || obj == null;
   }
 
@@ -46,27 +47,26 @@ public class EdmNull implements EdmSimpleType {
 
   @Override
   public boolean validate(String value, EdmLiteralKind literalKind, EdmFacets facets) {
-    boolean valid = false;
-    if (null != this.valueOfString(value, literalKind, facets)) {
-      valid = true;
+    try {
+      valueOfString(value, literalKind, facets);
+      return true;
+    } catch (EdmSimpleTypeException e) {
+      return false;
     }
-    return valid;
   }
 
   @Override
-  public Object valueOfString(String value, EdmLiteralKind literalKind, EdmFacets facets) {
-    // TODO Auto-generated method stub
+  public Object valueOfString(final String value, final EdmLiteralKind literalKind, final EdmFacets facets) throws EdmSimpleTypeException {
     return null;
   }
 
   @Override
-  public String valueToString(Object value, EdmLiteralKind literalKind, EdmFacets facets) {
-    // TODO Auto-generated method stub
+  public String valueToString(final Object value, final EdmLiteralKind literalKind, final EdmFacets facets) throws EdmSimpleTypeException {
     return null;
   }
 
   @Override
-  public String toUriLiteral(String literal) {
-   return "null";
+  public String toUriLiteral(final String literal) {
+    return "null";
   }
 }

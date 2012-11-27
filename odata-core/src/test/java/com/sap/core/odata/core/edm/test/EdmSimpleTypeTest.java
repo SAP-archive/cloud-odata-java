@@ -266,7 +266,7 @@ public class EdmSimpleTypeTest {
 
   @Test
   public void toUriLiteralInt64() throws Exception {
-    assertEquals("127l", EdmSimpleTypeKind.Int64.getEdmSimpleTypeInstance().toUriLiteral("127"));
+    assertEquals("127L", EdmSimpleTypeKind.Int64.getEdmSimpleTypeInstance().toUriLiteral("127"));
   }
 
   @Test
@@ -276,7 +276,7 @@ public class EdmSimpleTypeTest {
 
   @Test
   public void toUriLiteralSingle() throws Exception {
-    assertEquals("127f", EdmSimpleTypeKind.Single.getEdmSimpleTypeInstance().toUriLiteral("127"));
+    assertEquals("127F", EdmSimpleTypeKind.Single.getEdmSimpleTypeInstance().toUriLiteral("127"));
   }
 
   @Test

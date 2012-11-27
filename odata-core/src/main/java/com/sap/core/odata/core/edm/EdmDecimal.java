@@ -68,7 +68,7 @@ public class EdmDecimal implements EdmSimpleType {
   }
 
   @Override
-  public Object valueOfString(final String value, final EdmLiteralKind literalKind, final EdmFacets facets) throws EdmSimpleTypeException {
+  public BigDecimal valueOfString(final String value, final EdmLiteralKind literalKind, final EdmFacets facets) throws EdmSimpleTypeException {
     if (value == null)
       if (facets == null || facets.isNullable() == null || facets.isNullable())
         return null;

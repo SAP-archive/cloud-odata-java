@@ -45,7 +45,7 @@ public class EdmString implements EdmSimpleType {
   }
 
   @Override
-  public boolean isCompatible(EdmSimpleType simpleType) {
+  public boolean isCompatible(final EdmSimpleType simpleType) {
     return simpleType instanceof EdmString;
   }
 
@@ -60,7 +60,7 @@ public class EdmString implements EdmSimpleType {
   }
 
   @Override
-  public Object valueOfString(final String value, final EdmLiteralKind literalKind, final EdmFacets facets) throws EdmSimpleTypeException {
+  public String valueOfString(final String value, final EdmLiteralKind literalKind, final EdmFacets facets) throws EdmSimpleTypeException {
     if (literalKind == EdmLiteralKind.URI)
       return null;
     else
