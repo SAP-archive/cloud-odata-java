@@ -4,6 +4,7 @@ import com.sap.core.odata.api.edm.EdmException;
 import com.sap.core.odata.api.edm.EdmFacets;
 import com.sap.core.odata.api.edm.EdmLiteralKind;
 import com.sap.core.odata.api.edm.EdmSimpleType;
+import com.sap.core.odata.api.edm.EdmSimpleTypeException;
 import com.sap.core.odata.api.edm.EdmSimpleTypeKind;
 import com.sap.core.odata.api.edm.EdmTypeKind;
 
@@ -55,33 +56,33 @@ public class EdmByte implements EdmSimpleType {
     try {
       valueOfString(value, literalKind, facets);
       return true;
-    } catch (RuntimeException e) {
+    } catch (EdmSimpleTypeException e) {
       return false;
     }
   }
 
   @Override
-  public Object valueOfString(final String value, final EdmLiteralKind literalKind, final EdmFacets facets) {
+  public Object valueOfString(final String value, final EdmLiteralKind literalKind, final EdmFacets facets) throws EdmSimpleTypeException {
     if (value == null)
       if (facets == null || facets.isNullable() == null || facets.isNullable())
         return null;
       else
-        throw new IllegalArgumentException();
+        throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_NULL_NOT_ALLOWED);
 
     Short valueShort;
     try {
       valueShort = Short.parseShort(value);
     } catch (NumberFormatException e) {
-      throw new IllegalArgumentException(e);
+      throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_ILLEGAL_CONTENT.addContent(value), e);
     }
     if (valueShort >= 0 && valueShort <= 255)
       return valueShort;
     else
-      throw new IllegalArgumentException();
+      throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_ILLEGAL_CONTENT.addContent(value));
   }
 
   @Override
-  public String valueToString(final Object value, final EdmLiteralKind literalKind, final EdmFacets facets) {
+  public String valueToString(final Object value, final EdmLiteralKind literalKind, final EdmFacets facets) throws EdmSimpleTypeException {
     if (value == null)
       if (facets == null)
         return null;
@@ -89,7 +90,7 @@ public class EdmByte implements EdmSimpleType {
         if (facets.isNullable() == null || facets.isNullable())
           return null;
         else
-          throw new IllegalArgumentException();
+          throw new EdmSimpleTypeException(EdmSimpleTypeException.VALUE_NULL_NOT_ALLOWED);
       else
         return facets.getDefaultValue();
 
@@ -97,13 +98,13 @@ public class EdmByte implements EdmSimpleType {
       if (((Number) value).longValue() >= 0 && ((Number) value).longValue() <= 255)
         return value.toString();
       else
-        throw new IllegalArgumentException();
+        throw new EdmSimpleTypeException(EdmSimpleTypeException.VALUE_ILLEGAL_CONTENT.addContent(value));
     else
-      throw new IllegalArgumentException();
+      throw new EdmSimpleTypeException(EdmSimpleTypeException.VALUE_TYPE_NOT_SUPPORTED.addContent(value.getClass()));
   }
 
   @Override
-  public String toUriLiteral(final String literal) {
+  public String toUriLiteral(final String literal) throws EdmSimpleTypeException {
     return literal;
   }
 

@@ -8,6 +8,7 @@ import com.sap.core.odata.api.edm.EdmException;
 import com.sap.core.odata.api.edm.EdmFacets;
 import com.sap.core.odata.api.edm.EdmLiteralKind;
 import com.sap.core.odata.api.edm.EdmSimpleType;
+import com.sap.core.odata.api.edm.EdmSimpleTypeException;
 import com.sap.core.odata.api.edm.EdmSimpleTypeKind;
 import com.sap.core.odata.api.edm.EdmTypeKind;
 
@@ -65,7 +66,7 @@ public class EdmBinary implements EdmSimpleType {
     case JSON:
       try {
         return valueOfString(value, literalKind, facets) != null;
-      } catch (RuntimeException e) {
+      } catch (EdmSimpleTypeException e) {
         return false;
       }
 
@@ -80,15 +81,15 @@ public class EdmBinary implements EdmSimpleType {
   }
 
   @Override
-  public Object valueOfString(final String value, final EdmLiteralKind literalKind, final EdmFacets facets) {
+  public Object valueOfString(final String value, final EdmLiteralKind literalKind, final EdmFacets facets) throws EdmSimpleTypeException {
     if (value == null)
       if (facets == null || facets.isNullable() == null || facets.isNullable())
         return null;
       else
-        throw new IllegalArgumentException();
+        throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_NULL_NOT_ALLOWED);
 
     if (literalKind == null)
-      throw new IllegalArgumentException();
+      throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_KIND_MISSING);
 
     switch (literalKind) {
     case DEFAULT:
@@ -97,25 +98,25 @@ public class EdmBinary implements EdmSimpleType {
       if (facets == null || facets.getMaxLength() == null || facets.getMaxLength() >= byteValue.length)
         return byteValue;
       else
-        throw new IllegalArgumentException();
+        throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_FACETS_NOT_MATCHED.addContent(value, facets));
 
     case URI:
       if (validate(value, literalKind, facets))
         try {
           return Hex.decodeHex(value.substring(value.startsWith("X") ? 2 : 7, value.length() - 1).toCharArray());
         } catch (DecoderException e) {
-          throw new IllegalArgumentException(e);
+          throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_ILLEGAL_CONTENT.addContent(value));
         }
       else
-        throw new IllegalArgumentException();
+        throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_ILLEGAL_CONTENT.addContent(value));
 
     default:
-      throw new IllegalArgumentException();
+      throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_KIND_NOT_SUPPORTED.addContent(literalKind));
     }
   }
 
   @Override
-  public String valueToString(final Object value, final EdmLiteralKind literalKind, final EdmFacets facets) {
+  public String valueToString(final Object value, final EdmLiteralKind literalKind, final EdmFacets facets) throws EdmSimpleTypeException {
     if (value == null)
       if (facets == null)
         return null;
@@ -123,7 +124,7 @@ public class EdmBinary implements EdmSimpleType {
         if (facets.isNullable() == null || facets.isNullable())
           return null;
         else
-          throw new IllegalArgumentException();
+          throw new EdmSimpleTypeException(EdmSimpleTypeException.VALUE_NULL_NOT_ALLOWED);
       else
         return facets.getDefaultValue();
 
@@ -136,14 +137,14 @@ public class EdmBinary implements EdmSimpleType {
       for (int i = 0; i < length; i++)
         byteArrayValue[i] = ((Byte[]) value)[i].byteValue();
     } else {
-      throw new IllegalArgumentException();
+      throw new EdmSimpleTypeException(EdmSimpleTypeException.VALUE_TYPE_NOT_SUPPORTED.addContent(value.getClass()));
     }
 
     if (facets != null && facets.getMaxLength() != null && byteArrayValue.length > facets.getMaxLength())
-      throw new IllegalArgumentException();
+      throw new EdmSimpleTypeException(EdmSimpleTypeException.VALUE_FACETS_NOT_MATCHED.addContent(value, facets));
 
     if (literalKind == null)
-      throw new IllegalArgumentException();
+      throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_KIND_MISSING);
 
     switch (literalKind) {
     case DEFAULT:
@@ -152,12 +153,12 @@ public class EdmBinary implements EdmSimpleType {
     case URI:
       return "binary'" + Hex.encodeHexString(byteArrayValue).toUpperCase() + "'";
     default:
-      throw new IllegalArgumentException();
+      throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_KIND_NOT_SUPPORTED.addContent(literalKind));
     }
   }
 
   @Override
-  public String toUriLiteral(final String literal) {
+  public String toUriLiteral(final String literal) throws EdmSimpleTypeException {
     return valueToString(valueOfString(literal, EdmLiteralKind.DEFAULT, null), EdmLiteralKind.URI, null);
   }
 }

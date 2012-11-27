@@ -9,6 +9,7 @@ import com.sap.core.odata.api.edm.EdmException;
 import com.sap.core.odata.api.edm.EdmFacets;
 import com.sap.core.odata.api.edm.EdmLiteralKind;
 import com.sap.core.odata.api.edm.EdmSimpleType;
+import com.sap.core.odata.api.edm.EdmSimpleTypeException;
 import com.sap.core.odata.api.edm.EdmSimpleTypeKind;
 import com.sap.core.odata.api.edm.EdmTypeKind;
 
@@ -19,7 +20,6 @@ import com.sap.core.odata.api.edm.EdmTypeKind;
 public class EdmDateTime implements EdmSimpleType {
 
   private static final EdmDateTime instance = new EdmDateTime();
-  public static final String DATE_TIME_PATTERN = "yyyy-MM-dd'T'HH:mm:ss";
 
   private EdmDateTime() {
 
@@ -59,37 +59,37 @@ public class EdmDateTime implements EdmSimpleType {
     try {
       valueOfString(value, literalKind, facets);
       return true;
-    } catch (RuntimeException e) {
+    } catch (EdmSimpleTypeException e) {
       return false;
     }
   }
 
   @Override
-  public Object valueOfString(final String value, final EdmLiteralKind literalKind, final EdmFacets facets) {
+  public Object valueOfString(final String value, final EdmLiteralKind literalKind, final EdmFacets facets) throws EdmSimpleTypeException {
     if (value == null)
       if (facets == null || facets.isNullable() == null || facets.isNullable())
         return null;
       else
-        throw new IllegalArgumentException();
+        throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_NULL_NOT_ALLOWED);
 
     if (literalKind == null)
-      throw new IllegalArgumentException();
+      throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_KIND_MISSING);
 
     switch (literalKind) {
     case DEFAULT:
     case JSON:
-      throw new IllegalArgumentException();
+      throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_KIND_NOT_SUPPORTED.addContent(literalKind));
 
     case URI:
-      throw new IllegalArgumentException();
+      throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_KIND_NOT_SUPPORTED.addContent(literalKind));
 
     default:
-      throw new IllegalArgumentException();
+      throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_KIND_NOT_SUPPORTED.addContent(literalKind));
     }
   }
 
   @Override
-  public String valueToString(final Object value, final EdmLiteralKind literalKind, final EdmFacets facets) {
+  public String valueToString(final Object value, final EdmLiteralKind literalKind, final EdmFacets facets) throws EdmSimpleTypeException {
     if (value == null)
       if (facets == null)
         return null;
@@ -97,24 +97,23 @@ public class EdmDateTime implements EdmSimpleType {
         if (facets.isNullable() == null || facets.isNullable())
           return null;
         else
-          throw new IllegalArgumentException();
+          throw new EdmSimpleTypeException(EdmSimpleTypeException.VALUE_NULL_NOT_ALLOWED);
       else
         return facets.getDefaultValue();
 
     if (literalKind == null)
-      throw new IllegalArgumentException();
+      throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_KIND_MISSING);
 
     Calendar dateTimeValue = Calendar.getInstance();
     dateTimeValue.clear();
-    if (value instanceof Date) {
+    if (value instanceof Date)
       dateTimeValue.setTime((Date) value);
-    } else if (value instanceof Calendar) {
+    else if (value instanceof Calendar)
       dateTimeValue.setTime(((Calendar) value).getTime());
-    } else if (value instanceof Long) {
+    else if (value instanceof Long)
       dateTimeValue.setTimeInMillis((Long) value);
-    } else {
-      throw new IllegalArgumentException();
-    }
+    else
+      throw new EdmSimpleTypeException(EdmSimpleTypeException.VALUE_TYPE_NOT_SUPPORTED.addContent(value.getClass()));
 
     switch (literalKind) {
     case DEFAULT:
@@ -124,21 +123,22 @@ public class EdmDateTime implements EdmSimpleType {
         adjustMilliseconds(dateTimeValue, digits);
       }
 
+      final String pattern = "yyyy-MM-dd'T'HH:mm:ss";
       SimpleDateFormat dateFormat = (SimpleDateFormat) SimpleDateFormat.getDateTimeInstance();
       dateFormat.setTimeZone(TimeZone.getTimeZone("GMT"));
       if (dateTimeValue.get(Calendar.MILLISECOND) == 0)
-        dateFormat.applyPattern(DATE_TIME_PATTERN);
+        dateFormat.applyPattern(pattern);
       else
-        dateFormat.applyPattern(DATE_TIME_PATTERN + ".SSS");
+        dateFormat.applyPattern(pattern + ".SSS");
 
       final String result = dateFormat.format(dateTimeValue.getTime());
       if (result.contains("."))
         if (digits == 0)
-          return result.substring(0, DATE_TIME_PATTERN.length() - 2);  // beware of the "'"s
+          return result.substring(0, pattern.length() - 2);  // beware of the "'"s
         else if (digits == 3)
           return result;
         else
-          return result.substring(0, DATE_TIME_PATTERN.length() - 2 + 1 + digits);  // beware of the "'"s
+          return result.substring(0, pattern.length() - 2 + 1 + digits);  // beware of the "'"s
       else
         return result;
 
@@ -149,7 +149,7 @@ public class EdmDateTime implements EdmSimpleType {
       return toUriLiteral(valueToString(value, EdmLiteralKind.DEFAULT, facets));
 
     default:
-      throw new IllegalArgumentException();
+      throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_KIND_NOT_SUPPORTED.addContent(literalKind));
     }
   }
 
@@ -164,7 +164,7 @@ public class EdmDateTime implements EdmSimpleType {
   }
 
   @Override
-  public String toUriLiteral(final String literal) {
+  public String toUriLiteral(final String literal) throws EdmSimpleTypeException {
     return "datetime'" + literal + "'";
   }
 

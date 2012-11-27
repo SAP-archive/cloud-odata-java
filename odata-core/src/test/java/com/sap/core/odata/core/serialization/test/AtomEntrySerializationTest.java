@@ -10,16 +10,12 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.TimeZone;
@@ -48,7 +44,6 @@ import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.api.processor.ODataContext;
 import com.sap.core.odata.api.processor.ODataUriInfo;
 import com.sap.core.odata.api.serialization.ODataSerializer;
-import com.sap.core.odata.core.edm.EdmDateTime;
 import com.sap.core.odata.core.serializer.AtomEntrySerializer;
 import com.sap.core.odata.testutils.helper.StringHelper;
 import com.sap.core.odata.testutils.helper.XMLUnitHelper;
@@ -58,35 +53,31 @@ public class AtomEntrySerializationTest {
   private static final URI BASE_URI;
   static {
     try {
-      BASE_URI = new URI("http://host:port/s��rvice/");
+      BASE_URI = new URI("http://host:port/särvice/");
     } catch (URISyntaxException e) {
       throw new RuntimeException(e);
     }
   }
 
   private static final Logger LOG = LoggerFactory.getLogger(AtomEntrySerializationTest.class);
-  private static final SimpleDateFormat DATE_FORMATTER = new SimpleDateFormat(EdmDateTime.DATE_TIME_PATTERN);
-  
+
   private Map<String, Object> data;
 
   {
-    try {
-      this.data = new HashMap<String, Object>();
+    this.data = new HashMap<String, Object>();
 
-      DATE_FORMATTER.setTimeZone(TimeZone.getTimeZone("GMT"));
-      Date date = DATE_FORMATTER.parse("1999-01-01T00:00:00");
+    Calendar date = Calendar.getInstance(TimeZone.getTimeZone("GMT"));
+    date.clear();
+    date.set(1999, 0, 1);
 
-      this.data.put("employeeId", "1");
-      this.data.put("immageUrl", null);
-      this.data.put("managerId", "1");
-      this.data.put("age", new Integer(52));
-      this.data.put("roomId", "1");
-      this.data.put("entryDate", date);
-      this.data.put("teamId", "42");
-      this.data.put("employeeName", "Walter Winter");
-    } catch (ParseException e) {
-      throw new RuntimeException(e);
-    }
+    this.data.put("employeeId", "1");
+    this.data.put("immageUrl", null);
+    this.data.put("managerId", "1");
+    this.data.put("age", new Integer(52));
+    this.data.put("roomId", "1");
+    this.data.put("entryDate", date);
+    this.data.put("teamId", "42");
+    this.data.put("employeeName", "Walter Winter");
   }
 
   @Before
@@ -155,7 +146,7 @@ public class AtomEntrySerializationTest {
 
     assertXpathExists("/a:entry/a:title", xmlString);
     assertXpathEvaluatesTo("text", "/a:entry/a:title/@type", xmlString);
-    assertXpathEvaluatesTo((String)data.get("employeeName"), "/a:entry/a:title/text()", xmlString);
+    assertXpathEvaluatesTo((String) data.get("employeeName"), "/a:entry/a:title/text()", xmlString);
   }
 
   @Test
@@ -174,8 +165,7 @@ public class AtomEntrySerializationTest {
     String xmlString = StringHelper.inputStreamToString(xmlStream);
 
     assertXpathExists("/a:entry/a:updated", xmlString);
-//    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
-    assertXpathEvaluatesTo(DATE_FORMATTER.format(data.get("entryDate")), "/a:entry/a:updated/text()", xmlString);
+    assertXpathEvaluatesTo("1999-01-01T00:00:00", "/a:entry/a:updated/text()", xmlString);
   }
 
   private ODataContext createContextMock() throws ODataException {
@@ -215,7 +205,7 @@ public class AtomEntrySerializationTest {
     when(edmTeamId.getName()).thenReturn("teamId");
     when(edmTeamId.getType()).thenReturn(EdmSimpleTypeKind.String.getEdmSimpleTypeInstance());
     mockedProperties.add(edmTeamId);
-    
+
     EdmProperty edmEmployeeName = mock(EdmProperty.class);
     when(edmEmployeeName.getName()).thenReturn("employeeName");
     when(edmEmployeeName.getType()).thenReturn(EdmSimpleTypeKind.String.getEdmSimpleTypeInstance());
@@ -234,7 +224,7 @@ public class AtomEntrySerializationTest {
     when(edmEntryDate.getCustomizableFeedMappings()).thenReturn(feMa2);
     mockedProperties.add(edmEntryDate);
     //
-    
+
     EdmEntityType et = mock(EdmEntityType.class);
     when(et.getKeyProperties()).thenReturn(kpl);
     //
@@ -250,7 +240,7 @@ public class AtomEntrySerializationTest {
     when(es.getName()).thenReturn("Employees");
     when(es.getEntityContainer()).thenReturn(ec);
     when(es.getEntityType()).thenReturn(et);
-    
+
     return es;
   }
 
@@ -275,7 +265,6 @@ public class AtomEntrySerializationTest {
     assertXpathEvaluatesTo(BASE_URI.toASCIIString() + "Container.Employees(employeeId='1',age=null)", "/a:entry/a:id/text()", xmlString);
   }
 
-
   @Test
   public void serializeProperties() throws IOException, XpathException, SAXException, XMLStreamException, FactoryConfigurationError, ODataException {
     ODataSerializer ser = ODataSerializer.create(Format.ATOM);
@@ -292,9 +281,9 @@ public class AtomEntrySerializationTest {
     String xmlString = StringHelper.inputStreamToString(xmlStream);
 
     LOG.debug(xmlString);
-    
+
     assertXpathExists("/a:entry/m:properties", xmlString);
-    assertXpathEvaluatesTo((String)data.get("roomId"), "/a:entry/m:properties/d:roomId/text()", xmlString);
-    assertXpathEvaluatesTo((String)data.get("teamId"), "/a:entry/m:properties/d:teamId/text()", xmlString);
+    assertXpathEvaluatesTo((String) data.get("roomId"), "/a:entry/m:properties/d:roomId/text()", xmlString);
+    assertXpathEvaluatesTo((String) data.get("teamId"), "/a:entry/m:properties/d:teamId/text()", xmlString);
   }
 }

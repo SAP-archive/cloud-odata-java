@@ -17,6 +17,7 @@ import com.sap.core.odata.api.edm.EdmFunctionImport;
 import com.sap.core.odata.api.edm.EdmLiteralKind;
 import com.sap.core.odata.api.edm.EdmProperty;
 import com.sap.core.odata.api.edm.EdmSimpleType;
+import com.sap.core.odata.api.edm.EdmSimpleTypeException;
 import com.sap.core.odata.api.edm.EdmSimpleTypeKind;
 import com.sap.core.odata.api.edm.EdmTypeKind;
 import com.sap.core.odata.api.enums.HttpStatusCodes;
@@ -322,7 +323,7 @@ public class ListsProcessor extends ODataSingleProcessor {
     return keyMap;
   }
 
-  private Map<String, Object> mapFunctionParameters(final Map<String, EdmLiteral> functionImportParameters) {
+  private Map<String, Object> mapFunctionParameters(final Map<String, EdmLiteral> functionImportParameters) throws EdmSimpleTypeException {
     if (functionImportParameters == null) {
       return Collections.emptyMap();
     } else {

@@ -38,8 +38,8 @@ public interface EdmSimpleType extends EdmType {
    * @see EdmLiteralKind
    * @see EdmFacets
    */
-  //TODO: Check Returntype + Exception Handling
-  public Object valueOfString(String value, EdmLiteralKind literalKind, EdmFacets facets);
+  //TODO: Check Returntype
+  public Object valueOfString(String value, EdmLiteralKind literalKind, EdmFacets facets) throws EdmSimpleTypeException;
 
   /**
    * Converts system data type to literal representation of value.
@@ -51,14 +51,14 @@ public interface EdmSimpleType extends EdmType {
    * @see EdmLiteralKind
    * @see EdmFacets
    */
-  //TODO: Check Signature + Exception Handling
-  public String valueToString(Object value, EdmLiteralKind literalKind, EdmFacets facets);
+  //TODO: Check Signature
+  public String valueToString(Object value, EdmLiteralKind literalKind, EdmFacets facets) throws EdmSimpleTypeException;
 
   /**
    * Converts literal representation to URI literal representation.
    *
-   * @param literal
+   * @param literal  the literal in default representation
    * @return URI literal representation as String
    */
-  public String toUriLiteral(String literal);
+  public String toUriLiteral(String literal) throws EdmSimpleTypeException;
 }
