@@ -34,14 +34,12 @@
 			<groupId>com.sap.core.odata</groupId>
 			<artifactId>com.sap.core.odata.ref</artifactId>
 			<version>${project.version}</version>
-			<exclusions>
-				<exclusion>
-					<groupId>com.sap.core.odata</groupId>
-					<artifactId>com.sap.core.odata.testutils</artifactId>
-				</exclusion>
-			</exclusions>
 		</dependency>
-
+		<dependency>
+			<groupId>com.sap.core.odata</groupId>
+			<artifactId>com.sap.core.odata.core</artifactId>
+			<version>${project.version}</version>
+		</dependency>
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-log4j12</artifactId>

@@ -20,7 +20,7 @@ public class AbstractRefTest extends AbstractFitTest {
 
   //  protected static final String EMPLOYEE_1_NAME = "Walter Winter";
   //protected static final String EMPLOYEE_2_NAME = "Frederic Fall";
-  //  protected static final String EMPLOYEE_3_NAME = "Jonathan Smith";
+    protected static final String EMPLOYEE_3_NAME = "Jonathan Smith";
   //  protected static final String EMPLOYEE_4_NAME = "Peter Burke";
   //  protected static final String EMPLOYEE_5_NAME = "John Field";
   //  protected static final String EMPLOYEE_6_NAME = "Susan Bay";

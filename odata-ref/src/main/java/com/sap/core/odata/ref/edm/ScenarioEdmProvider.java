@@ -15,7 +15,6 @@ import com.sap.core.odata.api.edm.provider.AssociationSet;
 import com.sap.core.odata.api.edm.provider.AssociationSetEnd;
 import com.sap.core.odata.api.edm.provider.ComplexType;
 import com.sap.core.odata.api.edm.provider.CustomizableFeedMappings;
-import com.sap.core.odata.api.edm.provider.EdmProvider;
 import com.sap.core.odata.api.edm.provider.EdmProviderDefault;
 import com.sap.core.odata.api.edm.provider.EntityContainer;
 import com.sap.core.odata.api.edm.provider.EntityContainerInfo;

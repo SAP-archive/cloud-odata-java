@@ -1,6 +1,7 @@
 package com.sap.core.odata.fit.ref.test;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import org.apache.http.HttpResponse;
 import org.junit.Test;
@@ -16,10 +17,10 @@ public class ComplexPropertyTest extends AbstractRefTest {
     String payload = StringHelper.inputStreamToString(response.getEntity().getContent());
     assertEquals(CITY_2_NAME, payload);
 
-    //response = callUri("Employees('2')/Location", HttpStatusCodes.OK);
-    //payload = StringHelper.inputStreamToString(response.getEntity().getContent());
+    response = callUri("Employees('2')/Location", HttpStatusCodes.OK);
+    payload = StringHelper.inputStreamToString(response.getEntity().getContent());
     // checkMediaType(response, MediaType.APPLICATION_XML_TYPE);
-    // assertTrue(response.getEntity().toString().contains("PostalCode"));
+    assertTrue(payload.contains("Walldorf"));
 
     // notFound("Employees('2')/Location()");
     // notFound("Employees('2')/Location/City/$value");

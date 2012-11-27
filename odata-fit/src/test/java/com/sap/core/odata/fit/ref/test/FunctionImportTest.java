@@ -37,34 +37,38 @@ public class FunctionImportTest extends AbstractRefTest {
     response = callUri("ManagerPhoto?Id='2'", HttpStatusCodes.NOT_FOUND);
     payload = StringHelper.inputStreamToString(response.getEntity().getContent());
 
-    // ---------------------------------------NotWorking---------------------------------------------   
     // assertThat(callUrl("EmployeeSearch?q='-'").getEntity());  // contains no entity
 
-    //  HttpResponse response = callUri("AllLocations", HttpStatusCodes.OK);
+    response = callUri("AllLocations", HttpStatusCodes.OK);
     // checkMediaType(response, MediaType.APPLICATION_XML_TYPE);
-    //    assertTrue(response.getEntity().toString().contains(CITY_2_NAME));
+    payload = StringHelper.inputStreamToString(response.getEntity().getContent());
+    assertTrue(payload.contains(CITY_2_NAME));
 
-    // HttpResponse response = callUri("AllUsedRoomIds", HttpStatusCodes.OK);
+    response = callUri("AllUsedRoomIds", HttpStatusCodes.OK);
     // checkMediaType(response, MediaType.APPLICATION_XML_TYPE);
-    //    assertTrue(response.getEntity().toString().contains("3"));
+    payload = StringHelper.inputStreamToString(response.getEntity().getContent());
+    assertTrue(payload.contains("3"));
 
-    //callUri("MostCommonLocation", HttpStatusCodes.OK);
+    response = callUri("MostCommonLocation", HttpStatusCodes.OK);
     // checkMediaType(response, MediaType.APPLICATION_XML_TYPE);
-    //    assertTrue(response.getEntity().toString().contains(CITY_2_NAME));
+    payload = StringHelper.inputStreamToString(response.getEntity().getContent());
+    assertTrue(payload.contains(CITY_2_NAME));
 
-    //callUri("OldestEmployee", HttpStatusCodes.OK);
+    response = callUri("OldestEmployee", HttpStatusCodes.OK);
     // checkMediaType(response, MediaType.APPLICATION_ATOM_XML_TYPE);
-    //    assertTrue(response.getEntity().toString().contains(EMPLOYEE_3_NAME));
+    payload = StringHelper.inputStreamToString(response.getEntity().getContent());
+    assertTrue(payload.contains(EMPLOYEE_3_NAME));
 
-    // callUri("OldestEmployee?$format=xml", HttpStatusCodes.OK);
+    response = callUri("OldestEmployee?$format=xml", HttpStatusCodes.OK);
     // checkMediaType(response, MediaType.APPLICATION_XML_TYPE);
-    //    assertTrue(response.getEntity().toString().contains(EMPLOYEE_3_NAME));
+    payload = StringHelper.inputStreamToString(response.getEntity().getContent());
+    assertTrue(payload.contains(EMPLOYEE_3_NAME));
 
     // badRequest("AllLocations/$count");
     // badRequest("AllUsedRoomIds/$value");
     // badRequest("MaximalAge()");
     // badRequest("MostCommonLocation/City/CityName");
-    //callUri("ManagerPhoto", HttpStatusCodes.NOT_FOUND);
+    //response = callUri("ManagerPhoto", HttpStatusCodes.NOT_FOUND);
     // badRequest("OldestEmployee()");
 
   }

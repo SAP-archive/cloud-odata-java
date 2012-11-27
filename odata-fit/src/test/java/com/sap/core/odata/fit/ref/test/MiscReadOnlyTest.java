@@ -24,21 +24,21 @@ public class MiscReadOnlyTest extends AbstractRefTest {
     checkUri("Managers('1')/$links/nm_Employees");
     checkUri("Managers('1')/$links/nm_Employees()");
     checkUri("Managers('1')/$links/nm_Employees('2')");
-    //checkUri("Employees('1')/ne_Room/nr_Employees");
-    //checkUri("Employees('1')/ne_Room/nr_Employees()");
-    //checkUri("Employees('2')/ne_Team/nt_Employees('1')");
+    checkUri("Employees('1')/ne_Room/nr_Employees");
+    checkUri("Employees('1')/ne_Room/nr_Employees()");
+    checkUri("Employees('2')/ne_Team/nt_Employees('1')");
 
-   // checkUri("Employees('2')/ne_Team/nt_Employees('1')/Location");
+    checkUri("Employees('2')/ne_Team/nt_Employees('1')/Location");
     checkUri("Employees('2')/ne_Team/nt_Employees('1')/Location/City/CityName");
     checkUri("Employees('2')/ne_Team/nt_Employees('1')/Location/City/CityName/$value");
     checkUri("Employees('2')/ne_Team/nt_Employees('1')/$links/ne_Room");
     checkUri("Employees('2')/ne_Team/nt_Employees('1')/ne_Room/$links/nr_Employees");
 
-    //checkUri("Employees('2')/ne_Team/nt_Employees('3')/ne_Room");
-    //checkUri("Employees('2')/ne_Team/nt_Employees('3')/ne_Room/nr_Employees");
-    //checkUri("Employees('2')/ne_Manager");
+    checkUri("Employees('2')/ne_Team/nt_Employees('3')/ne_Room");
+    checkUri("Employees('2')/ne_Team/nt_Employees('3')/ne_Room/nr_Employees");
+    checkUri("Employees('2')/ne_Manager");
     checkUri("Employees('2')/ne_Manager/$links/nm_Employees()");
-    //checkUri("Employees('2')/ne_Manager/nm_Employees('3')");
+    checkUri("Employees('2')/ne_Manager/nm_Employees('3')");
     checkUri("Employees('2')/ne_Manager/nm_Employees('3')/Age");
   }
 

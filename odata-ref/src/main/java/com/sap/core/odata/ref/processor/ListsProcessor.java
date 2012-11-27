@@ -85,7 +85,7 @@ public class ListsProcessor extends ODataSingleProcessor {
 
     return ODataResponse
         .status(HttpStatusCodes.OK)
-        .entity(data)
+        .entity(data.toString())
         .build();
   }
 
@@ -160,7 +160,7 @@ public class ListsProcessor extends ODataSingleProcessor {
     if (appliesFilter(data, uriParserResultView.getFilter()))
       return ODataResponse
           .status(HttpStatusCodes.OK)
-          .entity(data)
+          .entity(data.toString())
           .build();
     else
       throw new ODataNotFoundException(ODataNotFoundException.ENTITY);
@@ -223,7 +223,7 @@ public class ListsProcessor extends ODataSingleProcessor {
 
     return ODataResponse
         .status(HttpStatusCodes.OK)
-        .entity(data)
+        .entity(data.toString())
         .build();
   }
 
@@ -245,15 +245,16 @@ public class ListsProcessor extends ODataSingleProcessor {
     //   throw new ODataNotFoundException(ODataNotFoundException.ENTITY);
 
     EdmProperty property = null;
-    for (EdmProperty intermediateProperty : uriParserResultView.getPropertyPath())
+    for (EdmProperty intermediateProperty : uriParserResultView.getPropertyPath()){
       data = getPropertyValue(data, property = intermediateProperty);
-
+    }
+    
     return ODataResponse
         .status(HttpStatusCodes.OK)
         //.header(HttpHeaders.CONTENT_TYPE,
         //            (EdmSimpleType) property.getType() == EdmSimpleTypeKind.Binary.getEdmSimpleTypeInstance() ?
         //                property.getMimeType() : MediaType.TEXT_PLAIN)
-        .entity(data)
+        .entity(data.toString())
         .build();
   }
 
@@ -289,7 +290,7 @@ public class ListsProcessor extends ODataSingleProcessor {
 
     return ODataResponse
         .status(HttpStatusCodes.OK)
-        .entity(data)
+        .entity(data.toString())
         .build();
   }
 
@@ -306,7 +307,7 @@ public class ListsProcessor extends ODataSingleProcessor {
         //        .header(HttpHeaders.CONTENT_TYPE,
         //            (EdmSimpleType) functionImport.getReturnType().getType() == EdmSimpleTypeKind.Binary.getEdmSimpleTypeInstance() ?
         //                MediaType.APPLICATION_OCTET_STREAM : MediaType.TEXT_PLAIN)
-        .entity(data)
+        .entity(data.toString())
         .build();
   }
 
