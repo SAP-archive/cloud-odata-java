@@ -1,15 +1,18 @@
 package com.sap.core.odata.core.edm;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
+
 import com.sap.core.odata.api.edm.EdmException;
 import com.sap.core.odata.api.edm.EdmFacets;
 import com.sap.core.odata.api.edm.EdmLiteralKind;
 import com.sap.core.odata.api.edm.EdmSimpleType;
+import com.sap.core.odata.api.edm.EdmSimpleTypeException;
 import com.sap.core.odata.api.edm.EdmSimpleTypeKind;
 import com.sap.core.odata.api.edm.EdmTypeKind;
 
 public class EdmDecimal implements EdmSimpleType {
 
-  private EdmSimpleTypeKind edmSimpleType = EdmSimpleTypeKind.Decimal;
   private static final EdmDecimal instance = new EdmDecimal();
 
   private EdmDecimal() {
@@ -19,9 +22,9 @@ public class EdmDecimal implements EdmSimpleType {
   public static EdmDecimal getInstance() {
     return instance;
   }
-  
+
   @Override
-  public boolean equals(Object obj) {
+  public boolean equals(final Object obj) {
     return this == obj || obj instanceof EdmDecimal;
   }
 
@@ -37,11 +40,11 @@ public class EdmDecimal implements EdmSimpleType {
 
   @Override
   public String getName() throws EdmException {
-    return this.edmSimpleType.toString();
+    return EdmSimpleTypeKind.Decimal.toString();
   }
 
   @Override
-  public boolean isCompatible(EdmSimpleType simpleType) {
+  public boolean isCompatible(final EdmSimpleType simpleType) {
     return simpleType instanceof Bit
         || simpleType instanceof Uint7
         || simpleType instanceof EdmByte
@@ -55,29 +58,100 @@ public class EdmDecimal implements EdmSimpleType {
   }
 
   @Override
-  public boolean validate(String value, EdmLiteralKind literalKind, EdmFacets facets) {
-    boolean valid = false;
-    if (null != this.valueOfString(value, literalKind, facets)) {
-      valid = true;
+  public boolean validate(final String value, final EdmLiteralKind literalKind, final EdmFacets facets) {
+    try {
+      valueOfString(value, literalKind, facets);
+      return true;
+    } catch (EdmSimpleTypeException e) {
+      return false;
     }
-    return valid;
   }
 
   @Override
-  public Object valueOfString(String value, EdmLiteralKind literalKind, EdmFacets facets) {
-    // TODO Auto-generated method stub
-    return null;
+  public Object valueOfString(final String value, final EdmLiteralKind literalKind, final EdmFacets facets) throws EdmSimpleTypeException {
+    if (value == null)
+      if (facets == null || facets.isNullable() == null || facets.isNullable())
+        return null;
+      else
+        throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_NULL_NOT_ALLOWED);
+
+    if (literalKind == null)
+      throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_KIND_MISSING);
+
+    BigDecimal valueBigDecimal;
+    try {
+      valueBigDecimal = new BigDecimal(value);
+    } catch (NumberFormatException e) {
+      throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_ILLEGAL_CONTENT.addContent(value), e);
+    }
+
+    if (facets == null
+        || (facets.getPrecision() == null || facets.getPrecision() >= valueBigDecimal.precision())
+        && (facets.getScale() == null || facets.getScale() >= valueBigDecimal.scale()))
+      return valueBigDecimal;
+    else
+      throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_FACETS_NOT_MATCHED.addContent(value, facets));
   }
 
   @Override
-  public String valueToString(Object value, EdmLiteralKind literalKind, EdmFacets facets) {
-    // TODO Auto-generated method stub
-    return null;
+  public String valueToString(final Object value, final EdmLiteralKind literalKind, final EdmFacets facets) throws EdmSimpleTypeException {
+    if (value == null)
+      if (facets == null)
+        return null;
+      else if (facets.getDefaultValue() == null)
+        if (facets.isNullable() == null || facets.isNullable())
+          return null;
+        else
+          throw new EdmSimpleTypeException(EdmSimpleTypeException.VALUE_NULL_NOT_ALLOWED);
+      else
+        return facets.getDefaultValue();
+
+    if (literalKind == null)
+      throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_KIND_MISSING);
+
+    String result;
+    if (value instanceof Long || value instanceof Integer || value instanceof Short || value instanceof Byte || value instanceof BigInteger) {
+      result = value.toString();
+      if (facets != null && facets.getPrecision() != null
+          && (facets.getPrecision() < result.length() - 1
+              || !result.startsWith("-") && facets.getPrecision() < result.length()))
+        throw new EdmSimpleTypeException(EdmSimpleTypeException.VALUE_FACETS_NOT_MATCHED.addContent(value, facets));
+
+    } else if (value instanceof Double || value instanceof Float || value instanceof BigDecimal) {
+      BigDecimal bigDecimalValue;
+      if (value instanceof Double)
+        bigDecimalValue = BigDecimal.valueOf((Double) value);
+      else if (value instanceof Float)
+        bigDecimalValue = BigDecimal.valueOf((Float) value);
+      else
+        bigDecimalValue = (BigDecimal) value;
+      if (facets == null
+          || (facets.getPrecision() == null || facets.getPrecision() >= bigDecimalValue.precision())
+              && (facets.getScale() == null || facets.getScale() >= bigDecimalValue.scale()))
+        result = bigDecimalValue.toPlainString();
+      else
+        throw new EdmSimpleTypeException(EdmSimpleTypeException.VALUE_FACETS_NOT_MATCHED.addContent(value, facets));
+
+    } else {
+      throw new EdmSimpleTypeException(EdmSimpleTypeException.VALUE_TYPE_NOT_SUPPORTED.addContent(value.getClass()));
+    }
+
+    switch (literalKind) {
+    case DEFAULT:
+    case JSON:
+      return result;
+
+    case URI:
+      return toUriLiteral(result);
+
+    default:
+      throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_KIND_NOT_SUPPORTED.addContent(literalKind));
+    }
   }
 
   @Override
-  public String toUriLiteral(String literal) {
-    return literal + "m";
+  public String toUriLiteral(final String literal) throws EdmSimpleTypeException {
+    return literal + "M";
   }
 
 }

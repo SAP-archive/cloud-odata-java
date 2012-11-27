@@ -82,6 +82,9 @@ public class EdmBoolean implements EdmSimpleType {
       else
         return facets.getDefaultValue();
 
+    if (literalKind == null)
+      throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_KIND_MISSING);
+
     if (value instanceof Boolean)
       return (Boolean) value ? "true" : "false";
     else

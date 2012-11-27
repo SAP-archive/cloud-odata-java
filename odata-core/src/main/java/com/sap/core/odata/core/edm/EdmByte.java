@@ -94,6 +94,9 @@ public class EdmByte implements EdmSimpleType {
       else
         return facets.getDefaultValue();
 
+    if (literalKind == null)
+      throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_KIND_MISSING);
+
     if (value instanceof Byte || value instanceof Short || value instanceof Integer || value instanceof Long)
       if (((Number) value).longValue() >= 0 && ((Number) value).longValue() <= 255)
         return value.toString();

@@ -8,6 +8,8 @@ import static org.junit.Assert.fail;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.TimeZone;
@@ -305,9 +307,10 @@ public class EdmSimpleTypeTest {
     return facets;
   }
 
-  private EdmFacets getPrecisionFacets(final Integer precision) {
+  private EdmFacets getPrecisionScaleFacets(final Integer precision, final Integer scale) {
     EdmFacets facets = mock(EdmFacets.class);
     when(facets.getPrecision()).thenReturn(precision);
+    when(facets.getScale()).thenReturn(scale);
     return facets;
   }
 
@@ -353,7 +356,6 @@ public class EdmSimpleTypeTest {
     expectErrorInValueToString(instance, binary, EdmLiteralKind.URI, getMaxLengthFacets(3));
 
     expectErrorInValueToString(instance, 0, EdmLiteralKind.DEFAULT, null);
-
     expectErrorInValueToString(instance, binary, null, null);
   }
 
@@ -369,6 +371,7 @@ public class EdmSimpleTypeTest {
     checkNull(instance);
 
     expectErrorInValueToString(instance, 0, EdmLiteralKind.DEFAULT, null);
+    expectErrorInValueToString(instance, false, null, null);
   }
 
   @Test
@@ -388,6 +391,7 @@ public class EdmSimpleTypeTest {
     expectErrorInValueToString(instance, -1, EdmLiteralKind.DEFAULT, null);
     expectErrorInValueToString(instance, 256, EdmLiteralKind.DEFAULT, null);
     expectErrorInValueToString(instance, 'A', EdmLiteralKind.DEFAULT, null);
+    expectErrorInValueToString(instance, 1, null, null);
   }
 
   @Test
@@ -414,18 +418,19 @@ public class EdmSimpleTypeTest {
 
     assertEquals("2012-02-29T23:32:03.007", instance.valueToString(new Date(millis), EdmLiteralKind.DEFAULT, null));
 
-    assertEquals("2012-02-29T23:32:03.00", instance.valueToString(dateTime, EdmLiteralKind.DEFAULT, getPrecisionFacets(2)));
-    assertEquals("2012-02-29T23:32:03", instance.valueToString(dateTime, EdmLiteralKind.DEFAULT, getPrecisionFacets(0)));
+    assertEquals("2012-02-29T23:32:03.00", instance.valueToString(dateTime, EdmLiteralKind.DEFAULT, getPrecisionScaleFacets(2, null)));
+    assertEquals("2012-02-29T23:32:03", instance.valueToString(dateTime, EdmLiteralKind.DEFAULT, getPrecisionScaleFacets(0, null)));
     dateTime.add(Calendar.MILLISECOND, -14);
-    assertEquals("2012-02-29T23:32:02.987", instance.valueToString(dateTime, EdmLiteralKind.DEFAULT, getPrecisionFacets(null)));
-    assertEquals("2012-02-29T23:32:02.987", instance.valueToString(dateTime, EdmLiteralKind.DEFAULT, getPrecisionFacets(5)));
-    assertEquals("2012-02-29T23:32:02.99", instance.valueToString(dateTime, EdmLiteralKind.DEFAULT, getPrecisionFacets(2)));
-    assertEquals("2012-02-29T23:32:03", instance.valueToString(dateTime, EdmLiteralKind.DEFAULT, getPrecisionFacets(1)));
-    assertEquals("2012-02-29T23:32:03", instance.valueToString(dateTime, EdmLiteralKind.DEFAULT, getPrecisionFacets(0)));
+    assertEquals("2012-02-29T23:32:02.987", instance.valueToString(dateTime, EdmLiteralKind.DEFAULT, getPrecisionScaleFacets(null, null)));
+    assertEquals("2012-02-29T23:32:02.987", instance.valueToString(dateTime, EdmLiteralKind.DEFAULT, getPrecisionScaleFacets(5, null)));
+    assertEquals("2012-02-29T23:32:02.99", instance.valueToString(dateTime, EdmLiteralKind.DEFAULT, getPrecisionScaleFacets(2, null)));
+    assertEquals("2012-02-29T23:32:03", instance.valueToString(dateTime, EdmLiteralKind.DEFAULT, getPrecisionScaleFacets(1, null)));
+    assertEquals("2012-02-29T23:32:03", instance.valueToString(dateTime, EdmLiteralKind.DEFAULT, getPrecisionScaleFacets(0, null)));
 
     checkNull(instance);
 
     expectErrorInValueToString(instance, 0, EdmLiteralKind.DEFAULT, null);
+    expectErrorInValueToString(instance, dateTime, null, null);
   }
 
   @Test
@@ -462,5 +467,41 @@ public class EdmSimpleTypeTest {
     checkNull(instance);
 
     expectErrorInValueToString(instance, 0, EdmLiteralKind.DEFAULT, null);
+    expectErrorInValueToString(instance, dateTime, null, null);
+  }
+
+  @Test
+  public void valueToStringDecimal() throws Exception {
+    final EdmSimpleType instance = EdmSimpleTypeKind.Decimal.getEdmSimpleTypeInstance();
+
+    assertEquals("0", instance.valueToString(0, EdmLiteralKind.DEFAULT, null));
+    assertEquals("0", instance.valueToString(0, EdmLiteralKind.JSON, null));
+    assertEquals("0M", instance.valueToString(0, EdmLiteralKind.URI, null));
+    assertEquals("8", instance.valueToString((byte) 8, EdmLiteralKind.DEFAULT, null));
+    assertEquals("16", instance.valueToString((short) 16, EdmLiteralKind.DEFAULT, null));
+    assertEquals("32", instance.valueToString((Integer) 32, EdmLiteralKind.DEFAULT, null));
+    assertEquals("255", instance.valueToString(255L, EdmLiteralKind.DEFAULT, null));
+    assertEquals("123456789012345678901234567890", instance.valueToString(new BigInteger("123456789012345678901234567890"), EdmLiteralKind.DEFAULT, null));
+    assertEquals("0.00390625", instance.valueToString(1.0 / 256, EdmLiteralKind.DEFAULT, null));
+    assertEquals("-0.125", instance.valueToString(-0.125f, EdmLiteralKind.DEFAULT, null));
+    assertEquals("-1234567890.1234567890", instance.valueToString(new BigDecimal("-1234567890.1234567890"), EdmLiteralKind.DEFAULT, null));
+
+    assertEquals("-32768", instance.valueToString(-32768, EdmLiteralKind.DEFAULT, getPrecisionScaleFacets(null, null)));
+    assertEquals("0.5", instance.valueToString(0.5, EdmLiteralKind.DEFAULT, getPrecisionScaleFacets(null, null)));
+
+    assertEquals("-32768", instance.valueToString(-32768, EdmLiteralKind.DEFAULT, getPrecisionScaleFacets(42, null)));
+    assertEquals("-32768", instance.valueToString(-32768, EdmLiteralKind.DEFAULT, getPrecisionScaleFacets(5, null)));
+    assertEquals("32768", instance.valueToString(32768, EdmLiteralKind.DEFAULT, getPrecisionScaleFacets(5, null)));
+    assertEquals("0.5", instance.valueToString(0.5, EdmLiteralKind.DEFAULT, getPrecisionScaleFacets(1, null)));
+    assertEquals("0.5", instance.valueToString(0.5, EdmLiteralKind.DEFAULT, getPrecisionScaleFacets(null, 1)));
+    expectErrorInValueToString(instance, -1234, EdmLiteralKind.DEFAULT, getPrecisionScaleFacets(2, null));
+    expectErrorInValueToString(instance, 1234, EdmLiteralKind.DEFAULT, getPrecisionScaleFacets(3, null));
+    expectErrorInValueToString(instance, 0.00390625, EdmLiteralKind.DEFAULT, getPrecisionScaleFacets(5, null));
+    expectErrorInValueToString(instance, 0.00390625, EdmLiteralKind.DEFAULT, getPrecisionScaleFacets(null, 7));
+
+    checkNull(instance);
+
+    expectErrorInValueToString(instance, 'A', EdmLiteralKind.DEFAULT, null);
+    expectErrorInValueToString(instance, 1, null, null);
   }
 }
