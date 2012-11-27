@@ -74,8 +74,10 @@ public class TokenList implements Iterator<Token>
   }
   
   public int tokenCount()
-  {
-    return tokens.size(); 
+  { 
+    int i =tokens.size();  
+    
+    return  i;
   }
   
   public void expectToken(TokenKind comma) throws TokenizerMessage
@@ -89,7 +91,6 @@ public class TokenList implements Iterator<Token>
     Token actual = next();
     if (literal.equals(actual.getUriLiteral()))
     {
-      currentToken++;
       return actual;
     }
     throw TokenizerMessage.unexpectedToken(currentToken, literal, actual);

@@ -159,7 +159,7 @@ public class Tokenizer
       default:
         rem_expr = iv_expression.substring(curPosition); //remaining expression
 
-        Pattern AND_SUB = Pattern.compile("^(and|or|eq|ne|lt|gt|le|ge)'");
+        Pattern AND_SUB = Pattern.compile("^(and|or|eq|ne|lt|gt|le|ge)");
         matcher = AND_SUB.matcher(rem_expr);
 
         if (matcher.find())
@@ -228,7 +228,7 @@ public class Tokenizer
           break;
         }// matcher matches
 
-        Pattern AND_SUB1 = Pattern.compile("^(add|sub|mul|div|mod|not)'");
+        Pattern AND_SUB1 = Pattern.compile("^(add|sub|mul|div|mod|not)");
         matcher = AND_SUB1.matcher(rem_expr);
 
         if (matcher.find())

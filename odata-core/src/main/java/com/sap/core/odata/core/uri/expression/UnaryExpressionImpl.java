@@ -4,6 +4,7 @@ package com.sap.core.odata.core.uri.expression;
 import com.sap.core.odata.api.edm.EdmType;
 import com.sap.core.odata.api.uri.expression.CommonExpression;
 import com.sap.core.odata.api.uri.expression.ExpressionKind;
+import com.sap.core.odata.api.uri.expression.ExpressionVisitor;
 import com.sap.core.odata.api.uri.expression.UnaryOperator;
 import com.sap.core.odata.api.uri.expression.UnaryExpression;
 
@@ -16,7 +17,7 @@ public class UnaryExpressionImpl implements UnaryExpression
   public UnaryExpressionImpl(InfoUnaryOperator operatorInfo, CommonExpression operand) {
     this.operatorInfo = operatorInfo;
     this.operand = operand;
-    this.edmType = null;
+    this.edmType = operatorInfo.getReturnType();
   }
   
   @Override
@@ -54,6 +55,15 @@ public class UnaryExpressionImpl implements UnaryExpression
   public String toUriLiteral() {
     return operatorInfo.getSyntax();
 
+  }
+
+  @Override
+  public Object accept(ExpressionVisitor visitor) 
+  {
+    Object retOperand = operand.accept(visitor);
+    
+    Object ret = visitor.visitUnary(this, operatorInfo.getOperator(), retOperand);
+    return ret;
   }
 
 }

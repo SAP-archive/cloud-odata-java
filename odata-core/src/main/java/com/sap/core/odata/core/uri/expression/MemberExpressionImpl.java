@@ -5,6 +5,7 @@ import com.sap.core.odata.api.uri.expression.CommonExpression;
 
 import com.sap.core.odata.api.uri.expression.BinaryOperator;
 import com.sap.core.odata.api.uri.expression.ExpressionKind;
+import com.sap.core.odata.api.uri.expression.ExpressionVisitor;
 
 import com.sap.core.odata.api.uri.expression.MemberExpression;
 
@@ -56,6 +57,16 @@ public class MemberExpressionImpl implements MemberExpression
   public String toUriLiteral() {
     
     return CharConst.MEMBER_OPERATOR; 
+  }
+
+  @Override
+  public Object accept(ExpressionVisitor visitor) 
+  {
+    Object retSource = source.accept(visitor);
+    Object retPath = path.accept(visitor);
+    
+    Object ret = visitor.visitMember(this,  retSource, retPath); 
+    return ret;
   }
  
 }

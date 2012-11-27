@@ -34,12 +34,14 @@ class InfoBinaryOperator
     return this.syntax;
   }
   
+  public BinaryOperator getOperator() {
+    return operator;
+  }
+  
   public void addParameterSet(ParameterSet parameterSet)
   {
     this.allowedParameterTypes.add(parameterSet);
   }
 
-  public BinaryOperator getOperator() {
-    return operator;
-  }
+  
 }

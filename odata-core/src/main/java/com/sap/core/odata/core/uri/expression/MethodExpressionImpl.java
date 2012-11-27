@@ -5,6 +5,7 @@ import java.util.Vector;
 import com.sap.core.odata.api.edm.EdmType;
 import com.sap.core.odata.api.uri.expression.CommonExpression;
 import com.sap.core.odata.api.uri.expression.ExpressionKind;
+import com.sap.core.odata.api.uri.expression.ExpressionVisitor;
 import com.sap.core.odata.api.uri.expression.MethodExpression;
 import com.sap.core.odata.api.uri.expression.MethodOperator;
 
@@ -61,6 +62,20 @@ public class MethodExpressionImpl implements MethodExpression {
   @Override
   public String toUriLiteral() {
     return infoMethod.getSyntax();
+  }
+
+  @Override
+  public Object accept(ExpressionVisitor visitor) 
+  {
+    Vector<Object> retParameters = new Vector<Object>();
+    for (CommonExpression parameter : actualParameters )
+    {
+      Object retParameter = parameter.accept(visitor);
+      retParameters.add(retParameter);
+    }
+    
+    Object ret = visitor.visitMethod(this, this.getMethod(), retParameters);
+    return ret;
   }
  
 
