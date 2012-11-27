@@ -181,7 +181,7 @@ public class FilterParserImpl implements FilterParser
 
     tokenList.expectToken(TokenKind.CLOSEPAREN);
 
-    return null;//TODO
+    return expression;
   }
 
   MethodExpression readParameters(InfoMethod IS_FUNC, MethodExpressionImpl methodExpression) throws ExpressionException, TokenizerMessage

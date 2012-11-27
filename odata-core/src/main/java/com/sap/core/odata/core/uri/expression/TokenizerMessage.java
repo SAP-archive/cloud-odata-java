@@ -53,7 +53,7 @@ public class TokenizerMessage extends ODataMessageException
     this.position = position;
   }
 
-  public static TokenizerMessage unexpectedToken(int currentToken, String literal, Token actual) {
+  public static TokenizerMessage unexpectedToken(int currentToken, String expected, Token actual) {
     // TODO Auto-generated method stub
     return null;
   }

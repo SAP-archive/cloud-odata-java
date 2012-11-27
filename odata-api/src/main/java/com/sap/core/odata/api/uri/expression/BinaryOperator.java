@@ -7,21 +7,39 @@ package com.sap.core.odata.api.uri.expression;
 */
 public enum BinaryOperator
 {
-  AND,
-  OR,
-  EQ,
-  NE,
-  LT,
-  LE,
-  GT,
-  GE,
-  ADD,
-  SUB,
-  MUL,
-  PROPERTY_ACCESS,
-  DIV,
-  MODULO,
+  AND("and"),
+  OR("or"),
+  EQ("eq"),
+  NE("ne"),
+  LT("lt"),
+  LE("le"),
+  GT("gt"),
+  GE("ge"),
+  ADD("add"),
+  SUB("sub"),
+  MUL("mul"),
+  PROPERTY_ACCESS("/"),
+  DIV("div"),
+  MODULO("mod");
   /*TODO the operators above are already supported
    * are there unsupported operators which should be mentioned here
    */
+  
+  private String stringRespresentation;
+  
+  /**
+   * Constructor  
+   * @param stringRespresentation
+   *   Just used to have a nice {@link #toString()} return value
+   */
+  BinaryOperator(String stringRespresentation)
+  {
+    this.stringRespresentation = stringRespresentation;
+  }
+  
+  @Override
+  public String toString()
+  {
+    return stringRespresentation;
+  }
 }
