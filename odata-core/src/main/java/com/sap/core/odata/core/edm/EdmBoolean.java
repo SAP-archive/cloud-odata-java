@@ -4,6 +4,7 @@ import com.sap.core.odata.api.edm.EdmException;
 import com.sap.core.odata.api.edm.EdmFacets;
 import com.sap.core.odata.api.edm.EdmLiteralKind;
 import com.sap.core.odata.api.edm.EdmSimpleType;
+import com.sap.core.odata.api.edm.EdmSimpleTypeException;
 import com.sap.core.odata.api.edm.EdmSimpleTypeKind;
 import com.sap.core.odata.api.edm.EdmTypeKind;
 
@@ -58,18 +59,18 @@ public class EdmBoolean implements EdmSimpleType {
   }
 
   @Override
-  public Object valueOfString(final String value, final EdmLiteralKind literalKind, final EdmFacets facets) {
+  public Object valueOfString(final String value, final EdmLiteralKind literalKind, final EdmFacets facets) throws EdmSimpleTypeException {
     if (validate(value, literalKind, facets))
       if (value == null)
         return null;
       else
         return "true".equals(value) || "1".equals(value);
     else
-      throw new IllegalArgumentException();
+      throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_ILLEGAL_CONTENT.addContent(value));
   }
 
   @Override
-  public String valueToString(final Object value, final EdmLiteralKind literalKind, final EdmFacets facets) {
+  public String valueToString(final Object value, final EdmLiteralKind literalKind, final EdmFacets facets) throws EdmSimpleTypeException {
     if (value == null)
       if (facets == null)
         return null;
@@ -77,18 +78,18 @@ public class EdmBoolean implements EdmSimpleType {
         if (facets.isNullable() == null || facets.isNullable())
           return null;
         else
-          throw new IllegalArgumentException();
+          throw new EdmSimpleTypeException(EdmSimpleTypeException.VALUE_NULL_NOT_ALLOWED);
       else
         return facets.getDefaultValue();
 
     if (value instanceof Boolean)
       return (Boolean) value ? "true" : "false";
     else
-      throw new IllegalArgumentException();
+      throw new EdmSimpleTypeException(EdmSimpleTypeException.VALUE_TYPE_NOT_SUPPORTED.addContent(value.getClass()));
   }
 
   @Override
-  public String toUriLiteral(final String literal) {
+  public String toUriLiteral(final String literal) throws EdmSimpleTypeException {
     return literal;
   }
 }

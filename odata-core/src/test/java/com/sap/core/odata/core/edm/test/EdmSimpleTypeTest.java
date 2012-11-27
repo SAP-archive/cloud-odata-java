@@ -17,6 +17,7 @@ import org.junit.Test;
 import com.sap.core.odata.api.edm.EdmFacets;
 import com.sap.core.odata.api.edm.EdmLiteralKind;
 import com.sap.core.odata.api.edm.EdmSimpleType;
+import com.sap.core.odata.api.edm.EdmSimpleTypeException;
 import com.sap.core.odata.api.edm.EdmSimpleTypeKind;
 import com.sap.core.odata.core.edm.Bit;
 import com.sap.core.odata.core.edm.EdmBinary;
@@ -222,12 +223,12 @@ public class EdmSimpleTypeTest {
   }
 
   @Test
-  public void toUriLiteralBinary() {
+  public void toUriLiteralBinary() throws Exception {
     assertEquals("binary'FA12AAA1'", EdmSimpleTypeKind.Binary.getEdmSimpleTypeInstance().toUriLiteral("+hKqoQ=="));
   }
 
   @Test
-  public void toUriLiteralBoolean() {
+  public void toUriLiteralBoolean() throws Exception {
     assertEquals("true", EdmSimpleTypeKind.Boolean.getEdmSimpleTypeInstance().toUriLiteral("true"));
     assertEquals("false", EdmSimpleTypeKind.Boolean.getEdmSimpleTypeInstance().toUriLiteral("false"));
     assertEquals("0", EdmSimpleTypeKind.Boolean.getEdmSimpleTypeInstance().toUriLiteral("0"));
@@ -235,54 +236,54 @@ public class EdmSimpleTypeTest {
   }
 
   @Test
-  public void toUriLiteralByte() {
+  public void toUriLiteralByte() throws Exception {
     assertEquals("127", EdmSimpleTypeKind.Byte.getEdmSimpleTypeInstance().toUriLiteral("127"));
   }
 
   @Test
-  public void toUriLiteralDateTime() {
+  public void toUriLiteralDateTime() throws Exception {
     assertEquals("datetime'2009-12-26T21:23:38'", EdmSimpleTypeKind.DateTime.getEdmSimpleTypeInstance().toUriLiteral("2009-12-26T21:23:38"));
     assertEquals("datetime'2009-12-26T21:23:38Z'", EdmSimpleTypeKind.DateTime.getEdmSimpleTypeInstance().toUriLiteral("2009-12-26T21:23:38Z"));
   }
 
   @Test
-  public void toUriLiteralDateTimeOffset() {
+  public void toUriLiteralDateTimeOffset() throws Exception {
     assertEquals("datetimeoffset'2009-12-26T21:23:38Z'", EdmSimpleTypeKind.DateTimeOffset.getEdmSimpleTypeInstance().toUriLiteral("2009-12-26T21:23:38Z"));
     assertEquals("datetimeoffset'2002-10-10T12:00:00-05:00'", EdmSimpleTypeKind.DateTimeOffset.getEdmSimpleTypeInstance().toUriLiteral("2002-10-10T12:00:00-05:00"));
   }
 
   @Test
-  public void toUriLiteralInt16() {
+  public void toUriLiteralInt16() throws Exception {
     assertEquals("127", EdmSimpleTypeKind.Int16.getEdmSimpleTypeInstance().toUriLiteral("127"));
   }
 
   @Test
-  public void toUriLiteralInt32() {
+  public void toUriLiteralInt32() throws Exception {
     assertEquals("127", EdmSimpleTypeKind.Int32.getEdmSimpleTypeInstance().toUriLiteral("127"));
   }
 
   @Test
-  public void toUriLiteralInt64() {
+  public void toUriLiteralInt64() throws Exception {
     assertEquals("127l", EdmSimpleTypeKind.Int64.getEdmSimpleTypeInstance().toUriLiteral("127"));
   }
 
   @Test
-  public void toUriLiteralSByte() {
+  public void toUriLiteralSByte() throws Exception {
     assertEquals("127", EdmSimpleTypeKind.SByte.getEdmSimpleTypeInstance().toUriLiteral("127"));
   }
 
   @Test
-  public void toUriLiteralSingle() {
+  public void toUriLiteralSingle() throws Exception {
     assertEquals("127f", EdmSimpleTypeKind.Single.getEdmSimpleTypeInstance().toUriLiteral("127"));
   }
 
   @Test
-  public void toUriLiteralString() {
+  public void toUriLiteralString() throws Exception {
     assertEquals("'StringValue'", EdmSimpleTypeKind.String.getEdmSimpleTypeInstance().toUriLiteral("StringValue"));
   }
 
   @Test
-  public void toUriLiteralTime() {
+  public void toUriLiteralTime() throws Exception {
     assertEquals("time'P120D'", EdmSimpleTypeKind.Time.getEdmSimpleTypeInstance().toUriLiteral("P120D"));
   }
 
@@ -314,12 +315,12 @@ public class EdmSimpleTypeTest {
     try {
       instance.valueToString(value, literalKind, facets);
       fail("Expected exception not thrown");
-    } catch (RuntimeException e) {
+    } catch (EdmSimpleTypeException e) {
       assertNotNull(e);
     }
   }
 
-  private void checkNull(final EdmSimpleType instance) {
+  private void checkNull(final EdmSimpleType instance) throws EdmSimpleTypeException {
     assertNull(instance.valueToString(null, EdmLiteralKind.DEFAULT, null));
     assertNull(instance.valueToString(null, EdmLiteralKind.DEFAULT, getNullableFacets(true)));
     assertNull(instance.valueToString(null, EdmLiteralKind.DEFAULT, getNullableFacets(null)));
@@ -330,7 +331,7 @@ public class EdmSimpleTypeTest {
   }
 
   @Test
-  public void valueToStringBinary() {
+  public void valueToStringBinary() throws Exception {
     final byte[] binary = new byte[] { (byte) 0xAA, (byte) 0xBB, (byte) 0xCC, (byte) 0xDD, (byte) 0xEE, (byte) 0xFF };
     final EdmSimpleType instance = EdmSimpleTypeKind.Binary.getEdmSimpleTypeInstance();
 
@@ -357,7 +358,7 @@ public class EdmSimpleTypeTest {
   }
 
   @Test
-  public void valueToStringBoolean() {
+  public void valueToStringBoolean() throws Exception {
     final EdmSimpleType instance = EdmSimpleTypeKind.Boolean.getEdmSimpleTypeInstance();
 
     assertEquals("true", instance.valueToString(true, EdmLiteralKind.DEFAULT, null));
@@ -371,7 +372,7 @@ public class EdmSimpleTypeTest {
   }
 
   @Test
-  public void valueToStringByte() {
+  public void valueToStringByte() throws Exception {
     final EdmSimpleType instance = EdmSimpleTypeKind.Byte.getEdmSimpleTypeInstance();
 
     assertEquals("0", instance.valueToString(0, EdmLiteralKind.DEFAULT, null));
@@ -390,7 +391,7 @@ public class EdmSimpleTypeTest {
   }
 
   @Test
-  public void valueToStringDateTime() {
+  public void valueToStringDateTime() throws Exception {
     final EdmSimpleType instance = EdmSimpleTypeKind.DateTime.getEdmSimpleTypeInstance();
     Calendar dateTime = Calendar.getInstance();
 
@@ -428,7 +429,7 @@ public class EdmSimpleTypeTest {
   }
 
   @Test
-  public void valueToStringDateTimeOffset() {
+  public void valueToStringDateTimeOffset() throws Exception {
     final EdmSimpleType instance = EdmSimpleTypeKind.DateTimeOffset.getEdmSimpleTypeInstance();
     Calendar dateTime = Calendar.getInstance();
 

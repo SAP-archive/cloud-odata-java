@@ -4,6 +4,7 @@ import com.sap.core.odata.api.edm.EdmException;
 import com.sap.core.odata.api.edm.EdmFacets;
 import com.sap.core.odata.api.edm.EdmLiteralKind;
 import com.sap.core.odata.api.edm.EdmSimpleType;
+import com.sap.core.odata.api.edm.EdmSimpleTypeException;
 import com.sap.core.odata.api.edm.EdmSimpleTypeKind;
 import com.sap.core.odata.api.edm.EdmTypeKind;
 
@@ -53,13 +54,13 @@ public class EdmString implements EdmSimpleType {
     try {
       valueOfString(value, literalKind, facets);
       return true;
-    } catch (RuntimeException e) {
+    } catch (EdmSimpleTypeException e) {
       return false;
     }
   }
 
   @Override
-  public Object valueOfString(final String value, final EdmLiteralKind literalKind, final EdmFacets facets) {
+  public Object valueOfString(final String value, final EdmLiteralKind literalKind, final EdmFacets facets) throws EdmSimpleTypeException {
     if (literalKind == EdmLiteralKind.URI)
       return null;
     else
@@ -67,7 +68,7 @@ public class EdmString implements EdmSimpleType {
   }
 
   @Override
-  public String valueToString(final Object value, final EdmLiteralKind literalKind, final EdmFacets facets) {
+  public String valueToString(final Object value, final EdmLiteralKind literalKind, final EdmFacets facets) throws EdmSimpleTypeException {
     if (literalKind == EdmLiteralKind.URI)
       return toUriLiteral((String) value);
     else
@@ -75,7 +76,7 @@ public class EdmString implements EdmSimpleType {
   }
 
   @Override
-  public String toUriLiteral(final String literal) {
+  public String toUriLiteral(final String literal) throws EdmSimpleTypeException {
     return "'" + literal + "'";
   }
 
