@@ -114,49 +114,39 @@ public class FilterParserImpl implements FilterParser
 
   CommonExpression readElements(CommonExpression leftExpression, int priority) throws ExpressionException, TokenizerMessage
   {
-    CommonExpression lo_tmp_node;
     CommonExpression leftNode;
     CommonExpression rightNode;
-    BinaryExpression lo_binary;
-
-    //lo_expression_error TYPE REF TO /iwcor/cx_ds_expr_error;
+    BinaryExpression binaryNode;
 
     leftNode = leftExpression;
-    InfoBinaryOperator lv_op1 = LookBinaerOperator();
-    
-    while ((lv_op1 != null) && (lv_op1.priority >= priority))
+    InfoBinaryOperator operator = LookBinaerOperator();
+
+    while ((operator != null) && (operator.priority >= priority))
     {
       tokenList.next();
       rightNode = readElement();
-      
-      InfoBinaryOperator lv_op2 = LookBinaerOperator();
-          
-      if  ((lv_op2 != null) && (lv_op2.priority > lv_op1.priority ))
+
+      InfoBinaryOperator nextOperator = LookBinaerOperator();
+
+      if ((nextOperator != null) && (nextOperator.priority > operator.priority))
       {
-        rightNode = readElements(rightNode, lv_op2.priority);//op2 is read in read_elements.
-        lv_op2 = LookBinaerOperator();
+        rightNode = readElements(rightNode, nextOperator.priority);//op2 is read in read_elements.
+        nextOperator = LookBinaerOperator();
       }
-      
-      lo_binary = new BinaryExpressionImpl(lv_op1, leftNode, rightNode);
+
+      binaryNode = new BinaryExpressionImpl(operator, leftNode, rightNode);
 
       try
       {
-        VALIDATE_BINARY_TYPES(lo_binary);
+        VALIDATE_BINARY_TYPES(binaryNode);
       } catch (Exception ex)
       {
         //TODO
       }
 
-      lo_tmp_node = lo_binary;
-
-      leftNode = lo_tmp_node;
-
-      lv_op1 = LookBinaerOperator();
+      leftNode = binaryNode;
+      operator = LookBinaerOperator();
     }
-
-    /*
-    ro_node = lo_left_node.
-    */
 
     return leftNode;
   }
@@ -176,23 +166,21 @@ public class FilterParserImpl implements FilterParser
   {
     tokenList.expectToken(TokenKind.OPENPAREN);
 
-    CommonExpression expression = readElement();
-    //CommonExpression node = readElements(expression, 0);
+    CommonExpression firstExpression = readElement();
+    CommonExpression parenthesisExpression = readElements(firstExpression, 0);
 
     tokenList.expectToken(TokenKind.CLOSEPAREN);
 
-    return expression;
+    return parenthesisExpression;
   }
 
   MethodExpression readParameters(InfoMethod IS_FUNC, MethodExpressionImpl methodExpression) throws ExpressionException, TokenizerMessage
 
   {
-    CommonExpression ls_tmp_node;
     boolean lv_done = false;
     Token lv_token;
     int lv_pcount;
     CommonExpression lo_node;
-    
 
     expectToken(Character.toString(CharConst.GC_STR_OPENPAREN));
 
@@ -235,7 +223,7 @@ public class FilterParserImpl implements FilterParser
 
     expectToken(Character.toString(CharConst.GC_STR_CLOSEPAREN));
 
-    return methodExpression; 
+    return methodExpression;
   }
 
   /**
@@ -275,7 +263,7 @@ public class FilterParserImpl implements FilterParser
 
       token = tokenList.expectToken(lookToken.getUriLiteral());
       CommonExpression operand = readElement();
-      UnaryExpression unaryExpression = new UnaryExpressionImpl( unaryOperator, operand);
+      UnaryExpression unaryExpression = new UnaryExpressionImpl(unaryOperator, operand);
       validateUnaryTypes(unaryExpression, token); //throws ExpressionInvalidOperatorTypeException
       return unaryExpression;
     }
@@ -311,14 +299,14 @@ public class FilterParserImpl implements FilterParser
     //-->Check if token is a property
     if (token.getKind() == TokenKind.LITERAL)
     {
-      node = new PropertyExpressionImpl(token.getUriLiteral(),null, token.getJavaLiteral());
+      node = new PropertyExpressionImpl(token.getUriLiteral(), null, token.getJavaLiteral());
     }
 
     //" e.g. "name" or "adress"
     if ((this.edm != null) && (this.resourceEntityType != null))
     {
       /*TODO check this*/
-      PropertyExpression property = new PropertyExpressionImpl(token.getUriLiteral(),null, token.getJavaLiteral());
+      PropertyExpression property = new PropertyExpressionImpl(token.getUriLiteral(), null, token.getJavaLiteral());
       validatePropertyTypes(property);
     }
 
@@ -342,7 +330,6 @@ public class FilterParserImpl implements FilterParser
     }
     return null;
   }
-
 
   private void validateUnaryTypes(UnaryExpression unaryExpression, Token token) throws ExpressionInvalidOperatorTypeException {
     //TODO check types 
@@ -385,7 +372,7 @@ public class FilterParserImpl implements FilterParser
       if (edm == null)
       {
         //create expression property node without reference to edm property
-        return new PropertyExpressionImpl(lv_look_token.getUriLiteral(),null, lv_look_token.getJavaLiteral());
+        return new PropertyExpressionImpl(lv_look_token.getUriLiteral(), null, lv_look_token.getJavaLiteral());
       }
 
       //EDM data is available so we do the check
@@ -853,13 +840,13 @@ public class FilterParserImpl implements FilterParser
       {
         throw new Exception();/*TODO*//*
 
-                                                        RAISE EXCEPTION TYPE /iwcor/cx_ds_expr_parser_error "OK
-                                                        EXPORTING
-                                                        textid   = /iwcor/cx_ds_expr_parser_error=>property_not_in_type
-                                                        type     = lv_type_name
-                                                        property = is_property_token-value
-                                                        position = is_property_token-position.
-                                                        ENDIF.*/
+                                                         RAISE EXCEPTION TYPE /iwcor/cx_ds_expr_parser_error "OK
+                                                         EXPORTING
+                                                         textid   = /iwcor/cx_ds_expr_parser_error=>property_not_in_type
+                                                         type     = lv_type_name
+                                                         property = is_property_token-value
+                                                         position = is_property_token-position.
+                                                         ENDIF.*/
 
       }
     } catch (Exception ex)
