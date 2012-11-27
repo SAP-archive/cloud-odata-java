@@ -40,17 +40,17 @@ public class EdmPropertyImplProvTest {
 
     Mapping propertySimpleMapping = new Mapping().setMimeType("mimeType2").setValue("value");
     CustomizableFeedMappings propertySimpleFeedMappings = new CustomizableFeedMappings().setFcKeepInContent(true);
-    Property propertySimple = new Property().setName("PropertyName").setType(EdmSimpleTypeKind.String.getFullqualifiedName())
+    Property propertySimple = new Property().setName("PropertyName").setType(EdmSimpleTypeKind.String.getFullQualifiedName())
         .setMimeType("mimeType").setMapping(propertySimpleMapping).setCustomizableFeedMappings(propertySimpleFeedMappings);
     propertySimpleProvider = new EdmPropertyImplProv(edmImplProv, propertySimple);
     
     
     Facets facets = new Facets().setNullable(false);
-    Property propertySimpleWithFacets = new Property().setName("PropertyName").setType(EdmSimpleTypeKind.String.getFullqualifiedName()).setFacets(facets);  
+    Property propertySimpleWithFacets = new Property().setName("PropertyName").setType(EdmSimpleTypeKind.String.getFullQualifiedName()).setFacets(facets);  
     propertySimpleWithFacetsProvider = new EdmPropertyImplProv(edmImplProv, propertySimpleWithFacets);
     
     Facets facets2 = new Facets().setNullable(true);
-    Property propertySimpleWithFacets2 = new Property().setName("PropertyName").setType(EdmSimpleTypeKind.String.getFullqualifiedName()).setFacets(facets2);  
+    Property propertySimpleWithFacets2 = new Property().setName("PropertyName").setType(EdmSimpleTypeKind.String.getFullQualifiedName()).setFacets(facets2);  
     propertySimpleWithFacetsProvider2 = new EdmPropertyImplProv(edmImplProv, propertySimpleWithFacets2);
     
     ComplexType complexType = new ComplexType().setName("complexType");
