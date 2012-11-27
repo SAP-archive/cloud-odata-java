@@ -16,6 +16,11 @@
 	<profiles>
 		<profile>
 			<id>coverage</id>
+			<activation>
+				<property>
+					<name>ldi.parent.emma-coverage</name>
+				</property>
+			</activation>
 			<properties>
 				<coverage.report.excludeFromCoverageDataCreation>true</coverage.report.excludeFromCoverageDataCreation>
 			</properties>

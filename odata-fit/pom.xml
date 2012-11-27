@@ -16,6 +16,11 @@
 	<profiles>
 		<profile>
 			<id>coverage</id>
+			<activation>
+				<property>
+					<name>ldi.parent.emma-coverage</name>
+				</property>
+			</activation>
 			<build>
 				<plugins>
 					<plugin>
@@ -59,6 +64,24 @@
 									</artifactItems>
 								</configuration>
 							</execution>
+							<execution>
+								<id>copy ref classes</id>
+								<phase>generate-test-resources</phase>
+								<goals>
+									<goal>unpack</goal>
+								</goals>
+								<configuration>
+									<artifactItems>
+										<artifactItem>
+											<groupId>com.sap.core.odata</groupId>
+											<artifactId>com.sap.core.odata.ref</artifactId>
+											<version>${project.version}</version>
+											<outputDirectory>${project.build.directory}/ref_dependency</outputDirectory>
+											<overWrite>true</overWrite>
+										</artifactItem>
+									</artifactItems>
+								</configuration>
+							</execution>
 						</executions>
 					</plugin>
 					<plugin>
@@ -87,6 +110,18 @@
 								<configuration>
 									<instrumentationPaths>
 										<param>${project.build.directory}/core_dependency</param>
+									</instrumentationPaths>
+								</configuration>
+							</execution>
+							<execution>
+								<id>instrument ref classes</id>
+								<phase>process-test-resources</phase>
+								<goals>
+									<goal>instrument</goal>
+								</goals>
+								<configuration>
+									<instrumentationPaths>
+										<param>${project.build.directory}/ref_dependency</param>
 									</instrumentationPaths>
 								</configuration>
 							</execution>
