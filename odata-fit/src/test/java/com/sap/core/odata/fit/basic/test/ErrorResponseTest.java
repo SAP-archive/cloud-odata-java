@@ -13,7 +13,6 @@ import org.apache.http.client.methods.HttpGet;
 import org.junit.Test;
 
 import com.sap.core.odata.api.exception.ODataException;
-import com.sap.core.odata.api.processor.ODataProcessor;
 import com.sap.core.odata.api.processor.ODataSingleProcessor;
 import com.sap.core.odata.api.processor.aspect.ServiceDocument;
 import com.sap.core.odata.api.uri.resultviews.GetServiceDocumentView;
