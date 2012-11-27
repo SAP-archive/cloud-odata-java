@@ -96,6 +96,43 @@ public class ParserTest {
   }
 
   
+  
+  
+  @Test
+  public void TestSimpleSameBinary()
+  {
+    GetPTF("1d add 2d").aSerialized("{1d add 2d}");
+    GetPTF("1d div 2d").aSerialized("{1d div 2d}");
+  }
+  
+  @Test
+  public void TestSimpleSameBinaryBinaryPriority()
+  {
+    GetPTF("1d add 2d div 3d").aSerialized("{1d add {2d div 3d}}");
+    GetPTF("1d div 2d add 3d").aSerialized("{{1d div 2d} add 3d}");
+  }
+  
+  @Test
+  public void TestSimpleSameBinaryBinaryBinaryPriority()
+  {
+    GetPTF("1d add 2d add 3d add 4d").aSerialized("{{{1d add 2d} add 3d} add 4d}");
+    GetPTF("1d add 2d add 3d div 4d").aSerialized("{{1d add 2d} add {3d div 4d}}");
+    GetPTF("1d add 2d div 3d add 4d").aSerialized("{{1d add {2d div 3d}} add 4d}");
+    GetPTF("1d add 2d div 3d div 4d").aSerialized("{1d add {{2d div 3d} div 4d}}");
+    GetPTF("1d div 2d add 3d add 4d").aSerialized("{{{1d div 2d} add 3d} add 4d}");
+    GetPTF("1d div 2d add 3d div 4d").aSerialized("{{1d div 2d} add {3d div 4d}}");
+    GetPTF("1d div 2d div 3d add 4d").aSerialized("{{{1d div 2d} div 3d} add 4d}");
+    GetPTF("1d div 2d div 3d div 4d").aSerialized("{{{1d div 2d} div 3d} div 4d}");
+    //XXX maybe add generator for more deepness
+  }
+  
+  @Test
+  public void TestSimpleSameBinaryBinary()
+  {
+    GetPTF("1d add 2d add 3d").aSerialized("{{1d add 2d} add 3d}");
+    GetPTF("1d div 2d div 3d").aSerialized("{{1d div 2d} div 3d}");
+  }
+  
   @Test
   public void TestDeepParenthesis()
   {
@@ -103,6 +140,25 @@ public class ParserTest {
     GetPTF("(2d)").aSerialized("2d");
     GetPTF("((2d))").aSerialized("2d");
     GetPTF("(((2d)))").aSerialized("2d");
+  }
+  
+  @Test
+  public void TestParenthesisWithBinaryBinary()
+  {
+    GetPTF("1d add 2d add 3d").aSerialized("{{1d add 2d} add 3d}");
+    GetPTF("1d add (2d add 3d)").aSerialized("{1d add {2d add 3d}}");
+    GetPTF("(1d add 2d) add 3d").aSerialized("{{1d add 2d} add 3d}");
+    GetPTF("(1d add 2d add 3d)").aSerialized("{{1d add 2d} add 3d}");
+    
+    GetPTF("1d add 2d div 3d").aSerialized("{1d add {2d div 3d}}");
+    GetPTF("1d add (2d div 3d)").aSerialized("{1d add {2d div 3d}}");
+    GetPTF("(1d add 2d) div 3d").aSerialized("{{1d add 2d} div 3d}");
+    GetPTF("(1d add 2d div 3d)").aSerialized("{1d add {2d div 3d}}");
+    
+    GetPTF("1d div 2d div 3d").aSerialized("{{1d div 2d} div 3d}");
+    GetPTF("1d div (2d div 3d)").aSerialized("{1d div {2d div 3d}}");
+    GetPTF("(1d div 2d) div 3d").aSerialized("{{1d div 2d} div 3d}");
+    GetPTF("(1d div 2d div 3d)").aSerialized("{{1d div 2d} div 3d}");
   }
     
   @Test
@@ -121,7 +177,7 @@ public class ParserTest {
     GetPTF("- - 2d").aSerialized("{- {- 2d}}");
     GetPTF("--- 2d").aSerialized("{- {- {- 2d}}}");
     GetPTF("- - - 2d").aSerialized("{- {- {- 2d}}}");
-    //TODO 
+    // 
     //GetPTF("-(-(- 2d)))").aSerialized("{-{-{- 2d}}}");
   }
   
