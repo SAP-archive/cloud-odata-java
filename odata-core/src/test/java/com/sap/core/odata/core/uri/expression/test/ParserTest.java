@@ -11,10 +11,25 @@ import com.sap.core.odata.api.edm.EdmSimpleTypeKind;
 import com.sap.core.odata.api.uri.expression.CommonExpression;
 import com.sap.core.odata.api.uri.expression.ExpressionKind;
 import com.sap.core.odata.api.uri.expression.ExpressionException;
+import com.sap.core.odata.api.uri.expression.ExpressionVisitor;
 import com.sap.core.odata.api.uri.expression.FilterExpression;
 import com.sap.core.odata.core.edm.Bit;
+import com.sap.core.odata.core.edm.EdmBinary;
+import com.sap.core.odata.core.edm.EdmBoolean;
+import com.sap.core.odata.core.edm.EdmByte;
+import com.sap.core.odata.core.edm.EdmDateTime;
+import com.sap.core.odata.core.edm.EdmDateTimeOffset;
+import com.sap.core.odata.core.edm.EdmDecimal;
+import com.sap.core.odata.core.edm.EdmDouble;
+import com.sap.core.odata.core.edm.EdmGuid;
+import com.sap.core.odata.core.edm.EdmInt16;
+import com.sap.core.odata.core.edm.EdmInt32;
+import com.sap.core.odata.core.edm.EdmInt64;
 import com.sap.core.odata.core.edm.EdmSByte;
 import com.sap.core.odata.core.edm.EdmSimpleTypeFacadeImpl;
+import com.sap.core.odata.core.edm.EdmSingle;
+import com.sap.core.odata.core.edm.EdmString;
+import com.sap.core.odata.core.edm.EdmTime;
 import com.sap.core.odata.core.edm.Uint7;
 import com.sap.core.odata.core.uri.expression.FilterParserImpl;
 
@@ -27,7 +42,7 @@ public class ParserTest {
     private CommonExpression curNode;
 
     public ParserTool(String expression, FilterExpression root) {
-      System.out.println("ParserTool - Testing: " + expression );
+      System.out.println("ParserTool - Testing: " + expression);
       this.expression = expression;
       this.tree = root.getExpression();
       this.curNode = this.tree;
@@ -35,39 +50,40 @@ public class ParserTest {
 
     ParserTool aKind(ExpressionKind kind)
     {
-      assertEquals(GetInfoKind(kind), curNode.getKind(), kind);
-      return this;
-    }
+      String info = "GetInfoKind(" + expression + ")-->";
+      System.out.println("  " + info + "Expected: " + kind.toString() + " Actual: " + curNode.getKind().toString());
 
-    private String GetInfoKind(ExpressionKind kind) {
-      String actexp = expression + "Expected: " + curNode.getKind().toString() + " Actual: " + kind.toString();
-      System.out.println("  GetInfoKind - Testing: " + expression );
-      return "  GetInfoKind - Error in: " + actexp + ">>";
+      assertEquals(info, curNode.getKind(), kind);
+      return this;
     }
 
     public ParserTool aUriLiteral(String uriLiteral) {
-      assertEquals(GetInfoUriLiteral(uriLiteral), curNode.toUriLiteral(), uriLiteral);
-      return this;
-    }
+      String info = "GetUriLiteral(" + expression + ")-->";
+      System.out.println("  " + info + "Expected: " + uriLiteral + " Actual: " + curNode.toUriLiteral());
 
-    private String GetInfoUriLiteral(String uriLiteral)
-    {
-      String actexp = expression + " Expected: " + curNode.toUriLiteral() + " Actual: " + uriLiteral;
-      System.out.println("  GetInfoUriLiteral - Testing: " + expression );
-      return "  GetInfoUriLiteral - Error: " + actexp + ">>";
+      assertEquals(info, curNode.toUriLiteral(), uriLiteral);
+      return this;
     }
 
     public ParserTool aEdmType(EdmSimpleType boolInst) {
-      assertEquals(GetInfoType(boolInst), curNode.getEdmType().equals(boolInst), true);
+      String info = "GetEdmType(" + expression + ")-->";
+      System.out.println("  " + info + "Expected: " + boolInst.toString() + " Actual: " + curNode.getEdmType().toString());
+
+      assertEquals(info, curNode.getEdmType().equals(boolInst), true);
       return this;
     }
 
-    private String GetInfoType(EdmSimpleType boolInst)
-    {
-      String actexp = expression + " Expected:  " + curNode.getEdmType().toString() + " Actual: " + boolInst.toString();
-      System.out.println("  GetInfoType - Testing: " + expression );
-      return "  GetInfoType - Error: " + actexp + ">>";
+    public void aSerialized(String expected) {
+      String actual;
+      ExpressionVisitor visitor = new TestVisitor();
+      actual = tree.accept(visitor).toString();
+
+      String info = "GetSerialized(" + expression + ")-->";
+      System.out.println("  " + info + "Expected: " + expected + " Actual: " + actual);
+
+      assertEquals(info, expected, actual);
     }
+
   }
 
   static public ParserTool GetPTF(String expression)
@@ -83,29 +99,36 @@ public class ParserTest {
   }
 
   @Test
+  public void TestSimpleUnaryOperator()
+  {
+    GetPTF("not true").aSerialized("{NOT {true}}");
+    GetPTF("- 2d").aSerialized("{MINUS {2d}}");
+  }
+
+  @Test
   public void TestSinglePlainLiterals()
   {
     //assertEquals("Hier", 44, 33);
     //---
     //Checks from EdmSimpleType test
     //---
-    EdmSimpleType boolInst = EdmSimpleTypeFacadeImpl.getEdmSimpleType(EdmSimpleTypeKind.Boolean);
-    EdmSimpleType binaryInst = EdmSimpleTypeFacadeImpl.getEdmSimpleType(EdmSimpleTypeKind.Binary);
-    EdmSimpleType bitInst = Bit.getInstance();
-    EdmSimpleType byteInst = EdmSimpleTypeFacadeImpl.getEdmSimpleType(EdmSimpleTypeKind.Byte);
-    EdmSimpleType Uint7Inst = Uint7.getInstance();
-    EdmSimpleType datetimeInst = EdmSimpleTypeFacadeImpl.getEdmSimpleType(EdmSimpleTypeKind.DateTime);
-    EdmSimpleType datetimeOffsetInst = EdmSimpleTypeFacadeImpl.getEdmSimpleType(EdmSimpleTypeKind.DateTimeOffset);
-    EdmSimpleType decimalInst = EdmSimpleTypeFacadeImpl.getEdmSimpleType(EdmSimpleTypeKind.Decimal);
-    EdmSimpleType doubleInst = EdmSimpleTypeFacadeImpl.getEdmSimpleType(EdmSimpleTypeKind.Double);
-    EdmSimpleType guidInst = EdmSimpleTypeFacadeImpl.getEdmSimpleType(EdmSimpleTypeKind.Guid);
-    EdmSimpleType int16Inst = EdmSimpleTypeFacadeImpl.getEdmSimpleType(EdmSimpleTypeKind.Int16);
-    EdmSimpleType int32Inst = EdmSimpleTypeFacadeImpl.getEdmSimpleType(EdmSimpleTypeKind.Int32);
-    EdmSimpleType int64Inst = EdmSimpleTypeFacadeImpl.getEdmSimpleType(EdmSimpleTypeKind.Int64);
-    EdmSimpleType intSByte = EdmSByte.getInstance();
-    EdmSimpleType singleInst = EdmSimpleTypeFacadeImpl.getEdmSimpleType(EdmSimpleTypeKind.Single);
-    EdmSimpleType stringInst = EdmSimpleTypeFacadeImpl.getEdmSimpleType(EdmSimpleTypeKind.String);
-    EdmSimpleType timeInst = EdmSimpleTypeFacadeImpl.getEdmSimpleType(EdmSimpleTypeKind.Time);
+    EdmBoolean boolInst = EdmBoolean.getInstance();
+    EdmBinary binaryInst = EdmBinary.getInstance();
+    Bit bitInst = Bit.getInstance();
+    EdmByte byteInst = EdmByte.getInstance();
+    Uint7 Uint7Inst = Uint7.getInstance();
+    EdmDateTime datetimeInst = EdmDateTime.getInstance();
+    EdmDateTimeOffset datetimeOffsetInst = EdmDateTimeOffset.getInstance();
+    EdmDecimal decimalInst = EdmDecimal.getInstance();
+    EdmDouble doubleInst = EdmDouble.getInstance();
+    EdmGuid guidInst = EdmGuid.getInstance();
+    EdmInt16 int16Inst = EdmInt16.getInstance();
+    EdmInt32 int32Inst = EdmInt32.getInstance();
+    EdmInt64 int64Inst = EdmInt64.getInstance();
+    EdmSByte intSByte = EdmSByte.getInstance();
+    EdmSingle singleInst = EdmSingle.getInstance();
+    EdmString stringInst = EdmString.getInstance();
+    EdmTime timeInst = EdmTime.getInstance();
 
     GetPTF("X'Fa12aAA1'").aUriLiteral("X'Fa12aAA1'").aKind(ExpressionKind.LITERAL).aEdmType(binaryInst);
     GetPTF("binary'FA12AAA1'").aUriLiteral("binary'FA12AAA1'").aKind(ExpressionKind.LITERAL).aEdmType(binaryInst);

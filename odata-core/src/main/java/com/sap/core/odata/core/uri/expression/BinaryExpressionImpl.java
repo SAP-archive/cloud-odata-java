@@ -2,9 +2,10 @@ package com.sap.core.odata.core.uri.expression;
 
 import com.sap.core.odata.api.edm.EdmType;
 import com.sap.core.odata.api.uri.expression.BinaryExpression;
-import com.sap.core.odata.api.uri.expression.CommonExpression;
 import com.sap.core.odata.api.uri.expression.BinaryOperator;
+import com.sap.core.odata.api.uri.expression.CommonExpression;
 import com.sap.core.odata.api.uri.expression.ExpressionKind;
+import com.sap.core.odata.api.uri.expression.ExpressionVisitor;
 
 public class BinaryExpressionImpl implements BinaryExpression 
 {
@@ -59,6 +60,16 @@ public class BinaryExpressionImpl implements BinaryExpression
   @Override
   public String toUriLiteral() {
     return operatorInfo.syntax;
+  }
+
+  @Override
+  public Object accept(ExpressionVisitor visitor) 
+  {
+    Object retLeftSide = leftSide.accept(visitor); 
+    Object retRightSide = rightSide.accept(visitor);
+    
+    Object ret = visitor.visitBinary(this, operatorInfo.operator, retLeftSide, retRightSide);
+    return ret;
   }
  
 }

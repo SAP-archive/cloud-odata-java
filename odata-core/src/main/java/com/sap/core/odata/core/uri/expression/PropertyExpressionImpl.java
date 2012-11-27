@@ -1,66 +1,39 @@
 package com.sap.core.odata.core.uri.expression;
 
 import com.sap.core.odata.api.edm.EdmException;
-import com.sap.core.odata.api.edm.EdmMultiplicity;
 import com.sap.core.odata.api.edm.EdmProperty;
 import com.sap.core.odata.api.edm.EdmType;
-import com.sap.core.odata.api.edm.EdmTyped;
+import com.sap.core.odata.api.uri.EdmLiteral;
 import com.sap.core.odata.api.uri.expression.ExpressionKind;
+import com.sap.core.odata.api.uri.expression.ExpressionVisitor;
 import com.sap.core.odata.api.uri.expression.PropertyExpression;
 
-public class PropertyExpressionImpl implements PropertyExpression, EdmTyped {
+public class PropertyExpressionImpl implements PropertyExpression {
   String uriLiteral;
-
-  public PropertyExpressionImpl(Object stringValue) {
-    // TODO Auto-generated constructor stub
-  }
-
-  public PropertyExpressionImpl(Object stringValue, EdmTyped lo_edm_property, String uriLiteral) {
-    // TODO Auto-generated constructor stub
+  EdmType edmType;
+  EdmProperty edmProperty;
+  EdmLiteral edmLiteral;
+  
+  public PropertyExpressionImpl(String uriLiteral, EdmProperty edmProperty, EdmLiteral edmLiteral) {
     this.uriLiteral = uriLiteral;
+    this.edmProperty = edmProperty;
+    this.edmLiteral = edmLiteral;
+    this.edmType= edmLiteral.getType(); 
   }
 
   @Override
   public void setEdmType(EdmType edmType) {
-    // TODO Auto-generated method stub
-
+    this.edmType = edmType;
   }
 
   @Override
-  public String getPropertyName() {
-    // TODO Auto-generated method stub
-    return null;
+  public String getPropertyName() throws EdmException {
+    return edmProperty.getName();
   }
 
   @Override
-  public EdmProperty getEdmProperty() {
-    // TODO Auto-generated method stub
-    return null;
-  }
-
-  @Override
-  public String getName() throws EdmException {
-    // TODO Auto-generated method stub
-    return null;
-  }
-
-  @Override
-  public EdmType getType() throws EdmException {
-    // TODO Auto-generated method stub
-    return null;
-  }
-
-  @Override
-  public EdmMultiplicity getMultiplicity() throws EdmException {
-    // TODO Auto-generated method stub
-    return null;
-  }
-
-
-  @Override
-  public EdmType getEdmType() {
-    // TODO Auto-generated method stub
-    return null;
+  public  EdmProperty getEdmProperty() {
+    return edmProperty;
   }
 
   @Override
@@ -72,7 +45,19 @@ public class PropertyExpressionImpl implements PropertyExpression, EdmTyped {
   public String toUriLiteral() {
      return uriLiteral;
   }
- 
+
+  @Override
+  public EdmType getEdmType() 
+  {
+    return edmType;
+  }
+
+  @Override
+  public Object accept(ExpressionVisitor visitor) {
+    Object ret = visitor.visitProperty(this,edmProperty );
+    return ret;
+  }
+
 
 
 }

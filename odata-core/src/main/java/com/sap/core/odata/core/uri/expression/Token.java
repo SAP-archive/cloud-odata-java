@@ -9,7 +9,6 @@ public class Token {
   
   private TokenKind kind;
   private int position;
-  private EdmType edmType;
   private String uriLiteral;
   private EdmLiteral javaLiteral;
   
@@ -41,7 +40,9 @@ public class Token {
 
   public EdmType getEdmType() 
   {
-    return edmType;
+    if (javaLiteral == null)
+      return null;
+    return javaLiteral.getType();
   }
 
   public String getUriLiteral() 

@@ -10,6 +10,7 @@ import java.util.Vector;
 
 import com.sap.core.odata.api.edm.Edm;
 import com.sap.core.odata.api.edm.EdmException;
+import com.sap.core.odata.api.edm.EdmProperty;
 import com.sap.core.odata.api.edm.EdmSimpleType;
 import com.sap.core.odata.api.edm.EdmSimpleTypeKind;
 import com.sap.core.odata.api.edm.EdmStructuralType;
@@ -72,7 +73,7 @@ public class FilterParserImpl implements FilterParser
       //post check
       //TODO verify if is an internal error or an user error
       //E.g. Test "a eq b b" or " a b"
-      if (tokenList.tokenCount() >= tokenList.currentToken)
+      if (tokenList.tokenCount() > tokenList.currentToken) //this indicates that not all tokens have been read
         throw new ExpressionException(ExpressionException.INVALID_TRAILING_TOKEN, null);
 
       //create and return filterExpression node
@@ -268,13 +269,13 @@ public class FilterParserImpl implements FilterParser
     }
 
     //-->Check if the token is a unary operator
-    Object operator = isUnaryOperator(lookToken);
-    if (operator != null)
+    InfoUnaryOperator unaryOperator = isUnaryOperator(lookToken);
+    if (unaryOperator != null)
     {
 
       token = tokenList.expectToken(lookToken.getUriLiteral());
       CommonExpression operand = readElement();
-      UnaryExpression unaryExpression = new UnaryExpressionImpl((InfoUnaryOperator) operator, operand);
+      UnaryExpression unaryExpression = new UnaryExpressionImpl( unaryOperator, operand);
       validateUnaryTypes(unaryExpression, token); //throws ExpressionInvalidOperatorTypeException
       return unaryExpression;
     }
@@ -285,12 +286,12 @@ public class FilterParserImpl implements FilterParser
     token = tokenList.expectToken(lookToken.getUriLiteral());
     lookToken = tokenList.lookToken();
 
-    operator = isMethod(token, lookToken);
-    if (operator != null)
+    InfoMethod methodOperator = isMethod(token, lookToken);
+    if (methodOperator != null)
     {
       //check for function if the next token is a '('
-      MethodExpressionImpl method = new MethodExpressionImpl((InfoMethod) operator);
-      readParameters((InfoMethod) operator, method);
+      MethodExpressionImpl method = new MethodExpressionImpl((InfoMethod) methodOperator);
+      readParameters((InfoMethod) methodOperator, method);
       validateMethodTypes(method, token); //throws ExpressionInvalidOperatorTypeException
       return method;
     }
@@ -310,13 +311,14 @@ public class FilterParserImpl implements FilterParser
     //-->Check if token is a property
     if (token.getKind() == TokenKind.LITERAL)
     {
-      node = new PropertyExpressionImpl(token.getUriLiteral());
+      node = new PropertyExpressionImpl(token.getUriLiteral(),null, token.getJavaLiteral());
     }
 
     //" e.g. "name" or "adress"
     if ((this.edm != null) && (this.resourceEntityType != null))
     {
-      PropertyExpression property = new PropertyExpressionImpl(token.getUriLiteral());
+      /*TODO check this*/
+      PropertyExpression property = new PropertyExpressionImpl(token.getUriLiteral(),null, token.getJavaLiteral());
       validatePropertyTypes(property);
     }
 
@@ -383,7 +385,7 @@ public class FilterParserImpl implements FilterParser
       if (edm == null)
       {
         //create expression property node without reference to edm property
-        return new PropertyExpressionImpl(lv_token.getUriLiteral());
+        return new PropertyExpressionImpl(lv_look_token.getUriLiteral(),null, lv_look_token.getJavaLiteral());
       }
 
       //EDM data is available so we do the check
@@ -416,7 +418,7 @@ public class FilterParserImpl implements FilterParser
         throw ex;
       }
       //create property node with reference to edm property
-      ro_node = new PropertyExpressionImpl(lv_token.getUriLiteral(), (EdmTyped) lo_edm_prop, lv_token.getUriLiteral());
+      ro_node = new PropertyExpressionImpl(lv_token.getUriLiteral(), (EdmProperty) lo_edm_prop, lv_token.getJavaLiteral());
 
       try
       {
@@ -443,14 +445,21 @@ public class FilterParserImpl implements FilterParser
     return RO_NODE;
   }
 
-  InfoUnaryOperator isUnaryOperator(Token IS_TOKEN)
+  /**
+   * Check if a token is a UnaryOperator ( e.g. "not" or "-" ) 
+   * 
+   * @param token Token to be checked
+   *   
+   * @return
+   *   <li>An instance of {@link InfoUnaryOperator} containing information about the specific unary operator</li> 
+   *   <li><code>null</code> if the token is not an unary operator</li>
+   */
+  InfoUnaryOperator isUnaryOperator(Token token)
   {
-    if (IS_TOKEN.getKind() == TokenKind.LITERAL)
+    if ((token.getKind() == TokenKind.LITERAL) || (token.getKind() == TokenKind.SYMBOL))
     {
-
-      InfoUnaryOperator operator = availableUnaryOperators.get(IS_TOKEN.getUriLiteral());
+      InfoUnaryOperator operator = availableUnaryOperators.get(token.getUriLiteral());
       return operator;
-
     }
     return null;
   }
