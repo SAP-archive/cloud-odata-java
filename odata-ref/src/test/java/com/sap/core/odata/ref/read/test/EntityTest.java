@@ -5,16 +5,26 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
 
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import com.sap.core.odata.api.edm.EdmEntityContainer;
 import com.sap.core.odata.api.edm.EdmEntitySet;
+import com.sap.core.odata.api.edm.EdmEntityType;
 import com.sap.core.odata.api.edm.EdmException;
 import com.sap.core.odata.api.edm.EdmProperty;
 import com.sap.core.odata.api.edm.EdmSimpleTypeKind;
+import com.sap.core.odata.api.processor.ODataContext;
 import com.sap.core.odata.api.processor.ODataResponse;
+import com.sap.core.odata.api.processor.ODataUriInfo;
 import com.sap.core.odata.api.uri.KeyPredicate;
 import com.sap.core.odata.api.uri.UriParserResult;
 import com.sap.core.odata.ref.model.DataContainer;
@@ -30,6 +40,8 @@ public class EntityTest {
   private static ScenarioDataSource dataSource;
   private static ListsProcessor processor;
 
+  private ODataContext mockedContext;
+  
   @BeforeClass
   public static void init() {
     dataContainer = new DataContainer();
@@ -38,6 +50,17 @@ public class EntityTest {
     processor = new ListsProcessor(dataSource);
   }
 
+
+  @Before
+  public void setUp() throws Exception {
+    mockedContext = mock(ODataContext.class);
+    ODataUriInfo uriInfo = mock(ODataUriInfo.class);
+    when(uriInfo.getBaseUri()).thenReturn(new URI("http://localhost"));
+    when(mockedContext.getUriInfo()).thenReturn(uriInfo);
+    
+    processor.setContext(mockedContext);
+  }
+  
   private UriParserResult mockUriResult(final String entitySetName, final String keyName, final String keyValue) throws EdmException {
     EdmProperty keyProperty = mock(EdmProperty.class);
     when(keyProperty.getName()).thenReturn(keyName);
@@ -52,9 +75,19 @@ public class EntityTest {
 
     EdmEntitySet entitySet = mock(EdmEntitySet.class);
     when(entitySet.getName()).thenReturn(entitySetName);
+    EdmEntityType entityType = mock(EdmEntityType.class);
+    when(entityType.getProperty(keyProperty.getName())).thenReturn(keyProperty);
+    Collection<String> propNames = Arrays.asList(keyProperty.getName());
+    when(entityType.getPropertyNames()).thenReturn(propNames);
+    when(entitySet.getEntityType()).thenReturn(entityType);
+    
+    EdmEntityContainer eec = mock(EdmEntityContainer.class);
+    when(eec.isDefaultEntityContainer()).thenReturn(Boolean.TRUE);
+    when(entitySet.getEntityContainer()).thenReturn(eec);
 
     UriParserResult uriResult = mock(UriParserResult.class);
     when(uriResult.getStartEntitySet()).thenReturn(entitySet);
+    when(uriResult.getTargetEntitySet()).thenReturn(entitySet);
     when(uriResult.getKeyPredicates()).thenReturn(keys);
     return uriResult;
   }
@@ -62,7 +95,7 @@ public class EntityTest {
   @Test
   public void readEmployees() throws Exception {
     final UriParserResult uriResult = mockUriResult("Employees", "EmployeeId", "5");
-
+    
     ODataResponse response = processor.readEntity(uriResult);
     assertNotNull(response);
     assertTrue(response.getEntity().toString().contains("Employee"));

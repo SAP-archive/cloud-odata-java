@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.List;
 
 import com.sap.core.odata.api.edm.EdmConcurrencyMode;
+import com.sap.core.odata.api.edm.EdmContentKind;
 import com.sap.core.odata.api.edm.EdmMultiplicity;
 import com.sap.core.odata.api.edm.EdmSimpleTypeKind;
 import com.sap.core.odata.api.edm.EdmTargetPath;
@@ -175,7 +176,7 @@ public class ScenarioEdmProvider extends EdmProviderDefault {
       if (ENTITY_TYPE_1_1.getName().equals(edmFQName.getName())) {
         Collection<Property> properties = new ArrayList<Property>();
         properties.add(new Property().setName("EmployeeId").setType(EdmSimpleTypeKind.String.getFullqualifiedName()).setFacets(new Facets().setNullable(false)));
-        properties.add(new Property().setName("EmployeeName").setType(EdmSimpleTypeKind.String.getFullqualifiedName()).setCustomizableFeedMappings(new CustomizableFeedMappings().setFcTargetPath(EdmTargetPath.SYNDICATION_TITLE)));
+        properties.add(new Property().setName("EmployeeName").setType(EdmSimpleTypeKind.String.getFullqualifiedName()).setCustomizableFeedMappings(new CustomizableFeedMappings().setFcTargetPath(EdmTargetPath.SYNDICATION_TITLE).setFcContentKind(EdmContentKind.text)));
         properties.add(new Property().setName("ManagerId").setType(EdmSimpleTypeKind.String.getFullqualifiedName()));
         properties.add(new Property().setName("TeamId").setType(EdmSimpleTypeKind.String.getFullqualifiedName()).setFacets(new Facets().setMaxLength(2)));
         properties.add(new Property().setName("RoomId").setType(EdmSimpleTypeKind.String.getFullqualifiedName()));

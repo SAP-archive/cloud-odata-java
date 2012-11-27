@@ -14,6 +14,7 @@ import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 
+import com.sap.core.odata.api.edm.EdmContentKind;
 import com.sap.core.odata.api.edm.EdmCustomizableFeedMappings;
 import com.sap.core.odata.api.edm.EdmEntityContainer;
 import com.sap.core.odata.api.edm.EdmEntitySet;
@@ -84,7 +85,12 @@ public class AtomEntrySerializer extends ODataSerializer {
           String valueAsString = st.valueToString(value, literalKind, facets);
           
           writer.writeStartElement(NS_DATASERVICES, name);
-          writer.writeCharacters(valueAsString);
+//          if(valueAsString == null && prop.getFacets().isNullable()) {
+          if(valueAsString == null) {
+            writer.writeAttribute(NS_DATASERVICES_METADATA, "null", "true");
+          } else {
+            writer.writeCharacters(valueAsString);
+          }
           writer.writeEndElement();
         }
       }
@@ -133,20 +139,25 @@ public class AtomEntrySerializer extends ODataSerializer {
     throw new EdmException(EdmException.COMMON);
   }
 
-  private String createTitleType(AtomHelper atomHelper) throws EdmException {
+  private String createTitleType(AtomHelper atomHelper) throws EdmException, ODataSerializationException {
     EdmProperty titleProperty = atomHelper.getSyndicationProperty(EdmTargetPath.SYNDICATION_TITLE);
     
     if(titleProperty != null) {
       switch (titleProperty.getType().getKind()) {
         case SIMPLE :
-          return titleProperty.getCustomizableFeedMappings().getFcContentKind().name();
+          EdmContentKind contentKind = titleProperty.getCustomizableFeedMappings().getFcContentKind();
+          if(contentKind != null) {
+            return contentKind.name();
+          } else {
+            throw new ODataSerializationException(ODataSerializationException.ATOM_TITLE);            
+          }
         case COMPLEX :
         case NAVIGATION :
         default:
       }
     }
     
-    throw new EdmException(EdmException.COMMON);
+    throw new ODataSerializationException(ODataSerializationException.ATOM_TITLE);            
   }
   
   private static class AtomHelper {
