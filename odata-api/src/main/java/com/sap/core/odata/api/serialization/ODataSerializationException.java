@@ -10,6 +10,8 @@ public class ODataSerializationException extends ODataMessageException {
   
   public static final MessageReference COMMON = createMessageReference(ODataSerializationException.class, "COMMON");
 
+  public static final MessageReference ATOM_TITLE = createMessageReference(ODataSerializationException.class, "ATOM_TITLE");
+
   public ODataSerializationException(MessageReference messageReference) {
     super(messageReference);
   }

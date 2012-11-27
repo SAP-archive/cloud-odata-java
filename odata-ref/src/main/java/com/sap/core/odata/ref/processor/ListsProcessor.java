@@ -17,6 +17,7 @@ import com.sap.core.odata.api.edm.EdmSimpleType;
 import com.sap.core.odata.api.edm.EdmSimpleTypeException;
 import com.sap.core.odata.api.edm.EdmSimpleTypeKind;
 import com.sap.core.odata.api.edm.EdmTypeKind;
+import com.sap.core.odata.api.enums.Format;
 import com.sap.core.odata.api.enums.HttpStatusCodes;
 import com.sap.core.odata.api.enums.InlineCount;
 import com.sap.core.odata.api.exception.ODataException;
@@ -24,9 +25,11 @@ import com.sap.core.odata.api.exception.ODataNotFoundException;
 import com.sap.core.odata.api.exception.ODataNotImplementedException;
 import com.sap.core.odata.api.processor.ODataResponse;
 import com.sap.core.odata.api.processor.ODataSingleProcessor;
+import com.sap.core.odata.api.serialization.ODataSerializationException;
+import com.sap.core.odata.api.serialization.ODataSerializer;
+import com.sap.core.odata.api.uri.EdmLiteral;
 import com.sap.core.odata.api.uri.KeyPredicate;
 import com.sap.core.odata.api.uri.NavigationSegment;
-import com.sap.core.odata.api.uri.EdmLiteral;
 import com.sap.core.odata.api.uri.resultviews.GetComplexPropertyView;
 import com.sap.core.odata.api.uri.resultviews.GetEntityCountView;
 import com.sap.core.odata.api.uri.resultviews.GetEntityLinkCountView;
@@ -40,6 +43,7 @@ import com.sap.core.odata.api.uri.resultviews.GetFunctionImportView;
 import com.sap.core.odata.api.uri.resultviews.GetMediaResourceView;
 import com.sap.core.odata.api.uri.resultviews.GetServiceDocumentView;
 import com.sap.core.odata.api.uri.resultviews.GetSimplePropertyView;
+import com.sap.core.odata.ref.util.ObjectHelper;
 
 /**
  * Implementation of the centralized parts of OData processing,
@@ -157,11 +161,17 @@ public class ListsProcessor extends ODataSingleProcessor {
         mapFunctionParameters(uriParserResultView.getFunctionImportParameters()),
         uriParserResultView.getNavigationSegments());
 
-    if (appliesFilter(data, uriParserResultView.getFilter()))
+    if (appliesFilter(data, uriParserResultView.getFilter())) {
       return ODataResponse
           .status(HttpStatusCodes.OK)
-          .entity(data.toString())
+          .entity(serialize(data, uriParserResultView))
           .build();
+      
+//      return ODataResponse
+//          .status(HttpStatusCodes.OK)
+//          .entity(data)
+//          .build();
+    }
     else
       throw new ODataNotFoundException(ODataNotFoundException.ENTITY);
   }
@@ -431,6 +441,30 @@ public class ListsProcessor extends ODataSingleProcessor {
       throw new ODataNotFoundException(null);
     } catch (InvocationTargetException e) {
       throw new ODataNotFoundException(null);
+    }
+  }
+  
+  private Object serialize(Object object, GetEntityView uriParserResultView) throws ODataException {
+    Format format = uriParserResultView.getFormat();
+    if(format == null) {
+      return object == null? "NULL": object.toString();
+    } else {
+      ODataSerializer ser = ODataSerializer.create(format);
+      ser.setContext(getContext());
+      ser.setEdmEntitySet(uriParserResultView.getTargetEntitySet());
+      Map<String, Object> rawData = objectToMap(object);
+      ser.setData(rawData);
+
+      return ser.serialize();
+    }
+  }
+  
+  private Map<String, Object> objectToMap(Object object) throws ODataException {
+    ObjectHelper objHelper = ObjectHelper.init(object);
+    try {
+      return objHelper.getFlatFieldValues();
+    } catch (IllegalAccessException e) {
+      throw new ODataException("Failure on object mapping.", e);
     }
   }
 }
