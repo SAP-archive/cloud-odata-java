@@ -33,7 +33,7 @@ public class TestVisitor implements ExpressionVisitor {
   @Override
   public Object visitLiteral(LiteralExpression literal, EdmLiteral edmLiteral)
   {
-    return "{" + literal.toUriLiteral() + "}";
+    return "" + literal.toUriLiteral() + "";
   }
 
   @Override

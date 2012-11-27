@@ -13,8 +13,8 @@ public class TokenList implements Iterator<Token>
   public TokenList()
   {
     this.tokens = new Vector<Token>();
-  } 
-  
+  }
+
   /**
    * Append StringValue Token to tokens parameter
    * @param Position of parsed token 
@@ -23,12 +23,11 @@ public class TokenList implements Iterator<Token>
    */
   public void appendToken(int position, TokenKind kind, String uriLiteral)
   {
-    Token token = new Token(kind, position, uriLiteral );
+    Token token = new Token(kind, position, uriLiteral);
     this.tokens.add(token);
     return;
-  }  
-  
-  
+  }
+
   /**
    * Append CharValue Token to tokens parameter
    * @param Token list to be extended
@@ -41,8 +40,8 @@ public class TokenList implements Iterator<Token>
     Token token = new Token(kind, position, Character.toString(charValue));
     this.tokens.add(token);
     return;
-  } 
-  
+  }
+
   /**
    * Append UriLiteral Token to tokens parameter
    * @param Token list to be extended
@@ -52,50 +51,49 @@ public class TokenList implements Iterator<Token>
    */
   public void appendEdmTypedToken(int position, TokenKind kind, String uriLiteral, EdmLiteral javaLiteral)
   {
-    Token token = new Token(kind, position,  uriLiteral, javaLiteral);
+    Token token = new Token(kind, position, uriLiteral, javaLiteral);
     this.tokens.add(token);
     return;
   }
-
 
   public Token lookToken()
   {
     if (currentToken >= tokens.size())
       return null;
 
-    return tokens.get(currentToken );
+    return tokens.get(currentToken);
   }
 
-  
-  
   public boolean hasTokens()
   {
     return (tokens.size() > 0);
   }
-  
+
   public int tokenCount()
-  { 
-    int i =tokens.size();  
-    
-    return  i;
-  }
-  
-  public void expectToken(TokenKind comma) throws TokenizerMessage
   {
-    // TODO Auto-generated method stub
+    int i = tokens.size();
+
+    return i;
   }
-  
-  
+
+  public Token expectToken(TokenKind comma) throws TokenizerMessage
+  {
+    Token actual = next();
+    if (comma != actual.getKind())
+      throw TokenizerMessage.unexpectedToken(currentToken, comma.toString(), actual);
+    
+    return actual;
+  }
+
   public Token expectToken(String literal) throws TokenizerMessage
   {
     Token actual = next();
-    if (literal.equals(actual.getUriLiteral()))
-    {
-      return actual;
-    }
-    throw TokenizerMessage.unexpectedToken(currentToken, literal, actual);
+    if (!literal.equals(actual.getUriLiteral()))
+      throw TokenizerMessage.unexpectedToken(currentToken, literal, actual);
+    return actual;
+
   }
-  
+
   public void skip()
   {
     currentToken++;
@@ -111,7 +109,7 @@ public class TokenList implements Iterator<Token>
     if (currentToken >= tokens.size())
       return null;
 
-    Token ret = tokens.get(currentToken );
+    Token ret = tokens.get(currentToken);
     currentToken++;
     return ret;
   }
@@ -122,7 +120,7 @@ public class TokenList implements Iterator<Token>
   }
 
   public Token elementAt(int index) {
-    
+
     return tokens.elementAt(index);
   }
 
@@ -131,5 +129,4 @@ public class TokenList implements Iterator<Token>
     return null;
   }
 
-  
 }

@@ -95,13 +95,44 @@ public class ParserTest {
     return null;
   }
 
+  
+  @Test
+  public void TestDeepParenthesis()
+  {
+    GetPTF("2d").aSerialized("2d");
+    GetPTF("(2d)").aSerialized("2d");
+    GetPTF("((2d))").aSerialized("2d");
+    GetPTF("(((2d)))").aSerialized("2d");
+  }
+    
   @Test
   public void TestSimpleUnaryOperator()
   {
-    GetPTF("not true").aSerialized("{NOT {true}}");
-    GetPTF("- 2d").aSerialized("{MINUS {2d}}");
+    GetPTF("not true").aSerialized("{not true}");
+    GetPTF("- 2d").aSerialized("{- 2d}");
   }
-
+  
+  @Test
+  public void TestDeepUnaryOperator()
+  {
+    GetPTF("not not true").aSerialized("{not {not true}}");
+    GetPTF("not not not true").aSerialized("{not {not {not true}}}");
+    GetPTF("-- 2d").aSerialized("{- {- 2d}}");
+    GetPTF("- - 2d").aSerialized("{- {- 2d}}");
+    GetPTF("--- 2d").aSerialized("{- {- {- 2d}}}");
+    GetPTF("- - - 2d").aSerialized("{- {- {- 2d}}}");
+    //TODO 
+    //GetPTF("-(-(- 2d)))").aSerialized("{-{-{- 2d}}}");
+  }
+  
+  @Test
+  public void TestMixedUnaryOperators()
+  {
+    GetPTF("not - true").aSerialized("{not {- true}}");
+    GetPTF("- not true").aSerialized("{- {not true}}");
+    
+  }
+  
   @Test
   public void TestSinglePlainLiterals()
   {
