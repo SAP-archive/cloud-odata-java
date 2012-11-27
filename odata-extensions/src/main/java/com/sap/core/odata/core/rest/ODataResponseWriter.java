@@ -3,14 +3,8 @@ package com.sap.core.odata.core.rest;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.io.StringWriter;
-import java.io.Writer;
 import java.lang.annotation.Annotation;
-import java.lang.reflect.Field;
 import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Context;
@@ -24,15 +18,9 @@ import javax.ws.rs.ext.Provider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.sap.core.odata.api.annotations.EdmAnnotationType;
-import com.sap.core.odata.api.annotations.EdmNavigationProperty;
-import com.sap.core.odata.api.annotations.EdmProperty;
-import com.sap.core.odata.api.annotations.EdmEntity;
-import com.sap.core.odata.api.annotations.EdmTypeId;
 import com.sap.core.odata.api.annotations.ODataSerializer;
 import com.sap.core.odata.api.processor.ODataResponse;
 import com.sap.core.odata.core.serialization.EdmAnnotationSerializer;
-import com.sap.core.odata.core.serialization.JsonWriter;
 
 @Provider
 public class ODataResponseWriter implements MessageBodyWriter<ODataResponse> {

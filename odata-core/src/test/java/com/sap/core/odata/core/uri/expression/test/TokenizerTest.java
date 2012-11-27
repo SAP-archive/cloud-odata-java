@@ -3,8 +3,6 @@ package com.sap.core.odata.core.uri.expression.test;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
-import java.util.Vector;
-
 import org.apache.commons.codec.DecoderException;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.codec.binary.Hex;
@@ -14,8 +12,6 @@ import com.sap.core.odata.core.uri.expression.Token;
 import com.sap.core.odata.core.uri.expression.TokenKind;
 import com.sap.core.odata.core.uri.expression.TokenList;
 import com.sap.core.odata.core.uri.expression.Tokenizer;
-import com.sap.core.odata.core.uri.expression.TokenizerRTException;
-
 import com.sap.core.odata.core.uri.expression.TokenizerMessage;
 
 

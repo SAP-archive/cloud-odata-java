@@ -38,7 +38,6 @@ public interface EdmSimpleType extends EdmType {
    * @see EdmLiteralKind
    * @see EdmFacets
    */
-  //TODO: Check Returntype
   public Object valueOfString(String value, EdmLiteralKind literalKind, EdmFacets facets) throws EdmSimpleTypeException;
 
   /**
@@ -51,7 +50,6 @@ public interface EdmSimpleType extends EdmType {
    * @see EdmLiteralKind
    * @see EdmFacets
    */
-  //TODO: Check Signature
   public String valueToString(Object value, EdmLiteralKind literalKind, EdmFacets facets) throws EdmSimpleTypeException;
 
   /**
