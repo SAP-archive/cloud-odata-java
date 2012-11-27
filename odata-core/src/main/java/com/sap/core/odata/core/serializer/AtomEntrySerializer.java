@@ -50,7 +50,7 @@ public class AtomEntrySerializer extends ODataSerializer {
 
       handleAtomParts(writer);
 
-      handleEntityData(writer, this.getData(), this.getEdmEntitySet());
+      handleEntity(writer, this.getData(), this.getEdmEntitySet());
       
       writer.writeEndElement();
 
@@ -62,7 +62,7 @@ public class AtomEntrySerializer extends ODataSerializer {
     }
   }
 
-  private void handleEntityData(XMLStreamWriter writer, Map<String, Object> data, EdmEntitySet edm) throws EdmException, XMLStreamException {
+  private void handleEntity(XMLStreamWriter writer, Map<String, Object> data, EdmEntitySet edm) throws EdmException, XMLStreamException {
     writer.writeStartElement(NS_DATASERVICES_METADATA, TAG_PROPERTIES);
     Set<Entry<String, Object>> entries = data.entrySet();
 
@@ -77,11 +77,11 @@ public class AtomEntrySerializer extends ODataSerializer {
         if(type instanceof EdmSimpleType) {
           EdmSimpleType st = (EdmSimpleType) type;
           Object value = entry.getValue();
-          EdmLiteralKind literalKind = EdmLiteralKind.URI;
+          EdmLiteralKind literalKind = EdmLiteralKind.DEFAULT;
           EdmFacets facets = prop.getFacets();
           String valueAsString = st.valueToString(value, literalKind, facets);
           
-          writer.writeStartElement(name);
+          writer.writeStartElement(NS_DATASERVICES, name);
           writer.writeCharacters(valueAsString);
           writer.writeEndElement();
         }
