@@ -2,7 +2,8 @@ package com.sap.core.odata.api.uri.expression;
 /*1*/
  
 /**
- * Contains enumerations for all supported binary operators of the ODATA expression parser
+ * Contains enumerations for supported binary operators of the ODATA expression parser 
+ * for ODATA version 2.0 (with some restrictions)
 */
 public enum BinaryOperator
 {

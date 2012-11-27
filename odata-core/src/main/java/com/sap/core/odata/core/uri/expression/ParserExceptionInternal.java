@@ -45,7 +45,6 @@ public class ParserExceptionInternal extends ExpressionException {
     this.position = position;
   }
 
-
    
   
   public ParserExceptionInternal(int textID)

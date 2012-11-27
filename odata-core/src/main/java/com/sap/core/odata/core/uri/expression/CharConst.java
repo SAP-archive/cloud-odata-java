@@ -1,12 +1,12 @@
 package com.sap.core.odata.core.uri.expression;
 
 public class CharConst {
-  public static final String GC_FUNCTION_TEST = "test";
   static public char GC_STR_CLOSEPAREN = ')';
   static public char GC_STR_OPENPAREN = '(';
   static public char GC_STR_COMMA = ',';
   static public char GC_STR_SINGLE_QUOTE = '\'';
-  static public char GC_STR_SLASH = '/';
+  static public String SLASH = "/";
+  static public String MEMBER_OPERATOR = "/";
 
   static public String GC_OPERATOR_AND = "and";
   static public String GC_OPERATOR_OR = "or";

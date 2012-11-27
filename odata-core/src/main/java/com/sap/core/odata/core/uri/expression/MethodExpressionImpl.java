@@ -10,55 +10,57 @@ import com.sap.core.odata.api.uri.expression.MethodOperator;
 
 public class MethodExpressionImpl implements MethodExpression {
 
-  public MethodExpressionImpl(Object stringValue) {
-    // TODO Auto-generated constructor stub
+  InfoMethod infoMethod;
+  EdmType returnType;
+  Vector<CommonExpression> actualParameters;
+  
+  
+  public MethodExpressionImpl(InfoMethod infoMethod) {
+    this.infoMethod = infoMethod;
+    this.returnType = infoMethod.getReturnType();
+    this.actualParameters = new Vector<CommonExpression>();
   }
 
   @Override
   public EdmType getEdmType() {
-    // TODO Auto-generated method stub
-    return null;
+    return returnType;
   }
 
   @Override
   public void setEdmType(EdmType edmType) {
-    // TODO Auto-generated method stub
-
+    this.returnType =  edmType;
   }
 
   @Override
-  public MethodOperator getMethod() {
-    // TODO Auto-generated method stub
-    return null;
+  public MethodOperator getMethod() 
+  {
+    return infoMethod.getMethod();
   }
 
   @Override
   public Vector<CommonExpression> getParameters() {
-    // TODO Auto-generated method stub
-    return null;
+    return actualParameters;
   }
 
   @Override
-  public CommonExpression getParameterCount() {
-    // TODO Auto-generated method stub
-    return null;
+  public int getParameterCount() {
+    return actualParameters.size();
   }
 
-  @Override
-  public CommonExpression appendParameter(CommonExpression ls_tmp_node) {
-    // TODO Auto-generated method stub
+
+  public CommonExpression appendParameter(CommonExpression expression) {
+    actualParameters.add(expression);
     return null;
   }
 
   @Override
   public ExpressionKind getKind() {
-    
     return ExpressionKind.METHOD;
   }
 
   @Override
   public String toUriLiteral() {
-    return "Error"; // to do change this
+    return infoMethod.getSyntax();
   }
  
 

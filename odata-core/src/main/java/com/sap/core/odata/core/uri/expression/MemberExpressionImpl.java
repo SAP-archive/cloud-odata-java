@@ -10,54 +10,52 @@ import com.sap.core.odata.api.uri.expression.MemberExpression;
 
 public class MemberExpressionImpl implements MemberExpression 
 {
-
-  public MemberExpressionImpl(CommonExpression lo_left_node, CommonExpression lo_right_node) {
-
-
+  CommonExpression source;
+  CommonExpression path;
+  EdmType edmType;
+  
+  public MemberExpressionImpl(CommonExpression source, CommonExpression path) 
+  {
+    this.source = source;
+    this.path = path;
+    this.edmType = null;
   }
 
   @Override
-  public String GetSource() {
-    // TODO Auto-generated method stub
-    return null;
+  public CommonExpression getSource() {
+    return source;
   }
 
   @Override
-  public CommonExpression GetPath() {
-    // TODO Auto-generated method stub
-    return null;
+  public CommonExpression getPath() {
+    return path;
   }
 
   @Override
-  public EdmType getEdmType() {
-    // TODO Auto-generated method stub
-    return null;
+  public EdmType getEdmType() 
+  {
+    return edmType;
   }
 
   @Override
   public void setEdmType(EdmType edmType) {
-    // TODO Auto-generated method stub
-    
+    this.edmType = edmType;
   }
-
   
   public BinaryOperator getOperator()
   {
     return BinaryOperator.PROPERTY_ACCESS;
   }
-
-
   
   @Override
   public ExpressionKind getKind() {
-    
     return ExpressionKind.MEMBER;
   }
 
   @Override
   public String toUriLiteral() {
     
-    return "/"; //TODO change this
+    return CharConst.MEMBER_OPERATOR; 
   }
  
 }
