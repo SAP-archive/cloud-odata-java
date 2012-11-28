@@ -143,13 +143,17 @@ public class AtomEntrySerializer extends ODataSerializer {
   private String createUpdatedText(AtomHelper atomHelper) throws EdmException {
     EdmProperty updatedProperty = atomHelper.getSyndicationProperty(EdmTargetPath.SYNDICATION_UPDATED);
     
-    if(updatedProperty == null) {
-      // for the case that no 'syndication updated' is given it is specified to take current time
-      return EdmDateTimeOffset.getInstance().valueToString(new Date(), EdmLiteralKind.DEFAULT, null);
-    } else {
+    if(!isSyndicationUpdatedAvailable(updatedProperty)) {
       Object data = getData().get(updatedProperty.getName());
       return EdmDateTimeOffset.getInstance().valueToString(data, EdmLiteralKind.DEFAULT, updatedProperty.getFacets());
+    } else {
+      // for the case that no 'syndication updated' is given it is specified to take current time
+      return EdmDateTimeOffset.getInstance().valueToString(new Date(), EdmLiteralKind.DEFAULT, null);
     }
+  }
+
+  private boolean isSyndicationUpdatedAvailable(EdmProperty updatedProperty) throws EdmException {
+    return updatedProperty == null || getData().get(updatedProperty.getName()) == null;
   }
 
   private String createTitleText(AtomHelper atomHelper) throws EdmException {
