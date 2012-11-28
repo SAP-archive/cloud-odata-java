@@ -51,7 +51,7 @@ public abstract class ODataMessageException extends ODataException {
    *        Unique (in exception class) key for message reference.
    * @return created context instance
    */
-  public static final MessageReference createMessageReference(Class<? extends ODataMessageException> clazz, String messageReferenceKey) {
+  protected static final MessageReference createMessageReference(Class<? extends ODataMessageException> clazz, String messageReferenceKey) {
     return MessageReference.create(clazz, messageReferenceKey);
   }
   
