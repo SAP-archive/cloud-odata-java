@@ -183,7 +183,9 @@ public class ScenarioEdmProvider extends EdmProviderDefault {
         properties.add(new Property().setName("RoomId").setType(EdmSimpleTypeKind.String.getFullQualifiedName()));
         properties.add(new Property().setName("Location").setType(COMPLEX_TYPE_1));
         properties.add(new Property().setName("Age").setType(EdmSimpleTypeKind.Int16.getFullQualifiedName()));
-        properties.add(new Property().setName("EntryDate").setType(EdmSimpleTypeKind.DateTime.getFullQualifiedName()).setFacets(new Facets().setNullable(true)).setCustomizableFeedMappings(new CustomizableFeedMappings().setFcTargetPath(EdmTargetPath.SYNDICATION_UPDATED)));
+        properties.add(new Property().setName("EntryDate").setType(EdmSimpleTypeKind.DateTime.getFullQualifiedName())
+            .setFacets(new Facets().setNullable(true))
+            .setCustomizableFeedMappings(new CustomizableFeedMappings().setFcTargetPath(EdmTargetPath.SYNDICATION_UPDATED)));
         properties.add(new Property().setName("ImageUrl").setType(EdmSimpleTypeKind.String.getFullQualifiedName()));
         Collection<NavigationProperty> navigationProperties = new ArrayList<NavigationProperty>();
         navigationProperties.add(new NavigationProperty().setName("ne_Manager").setRelationship(ASSOCIATION_1_1).setFromRole(ROLE_1_1).setToRole(ROLE_1_4));

@@ -4,6 +4,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -30,6 +31,7 @@ import com.sap.core.odata.api.edm.EdmTyped;
 import com.sap.core.odata.api.processor.ODataContext;
 import com.sap.core.odata.api.serialization.ODataSerializationException;
 import com.sap.core.odata.api.serialization.ODataSerializer;
+import com.sap.core.odata.core.edm.EdmDateTimeOffset;
 
 public class AtomEntrySerializer extends ODataSerializer {
 
@@ -118,15 +120,13 @@ public class AtomEntrySerializer extends ODataSerializer {
   private String createUpdatedText(AtomHelper atomHelper) throws EdmException {
     EdmProperty updatedProperty = atomHelper.getSyndicationProperty(EdmTargetPath.SYNDICATION_UPDATED);
     
-    if(updatedProperty != null) {
-      // XXX: 121127_mibo: check this cast(s)
-      EdmSimpleType st = (EdmSimpleType) updatedProperty.getType();
+    if(updatedProperty == null) {
+      // for the case that no 'syndication updated' is given it is specified to take current time
+      return EdmDateTimeOffset.getInstance().valueToString(new Date(), EdmLiteralKind.DEFAULT, null);
+    } else {
       Object data = getData().get(updatedProperty.getName());
-
-      return st.valueToString(data, EdmLiteralKind.DEFAULT, updatedProperty.getFacets());
+      return EdmDateTimeOffset.getInstance().valueToString(data, EdmLiteralKind.DEFAULT, updatedProperty.getFacets());
     }
-    
-    throw new EdmException(EdmException.COMMON);
   }
 
   private String createTitleText(AtomHelper atomHelper) throws EdmException {
