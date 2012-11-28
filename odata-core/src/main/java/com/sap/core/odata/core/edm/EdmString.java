@@ -69,17 +69,37 @@ public class EdmString implements EdmSimpleType {
 
   @Override
   public String valueToString(final Object value, final EdmLiteralKind literalKind, final EdmFacets facets) throws EdmSimpleTypeException {
-    final String valueAsString;
-    if(value instanceof String) {
-      valueAsString = (String)value;
-    } else {
-      valueAsString = String.valueOf(value);
-    }
-    
-    if (literalKind == EdmLiteralKind.URI) {
-      return toUriLiteral(valueAsString);
-    } 
-    return valueAsString;
+    if (value == null)
+      if (facets == null)
+        return null;
+      else if (facets.getDefaultValue() == null)
+        if (facets.isNullable() == null || facets.isNullable())
+          return null;
+        else
+          throw new EdmSimpleTypeException(EdmSimpleTypeException.VALUE_NULL_NOT_ALLOWED);
+      else
+        return facets.getDefaultValue();
+
+    if (literalKind == null)
+      throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_KIND_MISSING);
+
+    String result;
+    if (value instanceof String)
+      result = (String) value;
+    else
+      result = String.valueOf(value);
+
+    if (facets != null && facets.isUnicode() != null && !facets.isUnicode())
+      if (!result.matches("\\p{ASCII}*"))
+        throw new EdmSimpleTypeException(EdmSimpleTypeException.VALUE_FACETS_NOT_MATCHED.addContent(value, facets));
+
+    if (facets != null && facets.getMaxLength() != null && facets.getMaxLength() < result.length())
+      throw new EdmSimpleTypeException(EdmSimpleTypeException.VALUE_FACETS_NOT_MATCHED.addContent(value, facets));
+
+    if (literalKind == EdmLiteralKind.URI)
+      result = toUriLiteral(result);
+
+    return result;
   }
 
   @Override

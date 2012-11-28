@@ -315,6 +315,13 @@ public class EdmSimpleTypeTest {
     return facets;
   }
 
+  private EdmFacets getUnicodeFacets(final Boolean unicode) {
+    EdmFacets facets = mock(EdmFacets.class);
+    when(facets.isUnicode()).thenReturn(unicode);
+    when(facets.getMaxLength()).thenReturn(null);
+    return facets;
+  }
+
   private void expectErrorInValueToString(final EdmSimpleType instance, final Object value, final EdmLiteralKind literalKind, final EdmFacets facets) {
     try {
       instance.valueToString(value, literalKind, facets);
@@ -661,5 +668,67 @@ public class EdmSimpleTypeTest {
 
     expectErrorInValueToString(instance, 'A', EdmLiteralKind.DEFAULT, null);
     expectErrorInValueToString(instance, 1, null, null);
+  }
+
+  @Test
+  public void valueToStringString() throws Exception {
+    final EdmSimpleType instance = EdmSimpleTypeKind.String.getEdmSimpleTypeInstance();
+
+    assertEquals("text", instance.valueToString("text", EdmLiteralKind.DEFAULT, null));
+    assertEquals("a\nb", instance.valueToString("a\nb", EdmLiteralKind.JSON, null));
+    assertEquals("'true'", instance.valueToString(true, EdmLiteralKind.URI, null));
+
+    assertEquals("text", instance.valueToString("text", EdmLiteralKind.DEFAULT, getUnicodeFacets(true)));
+    assertEquals("text", instance.valueToString("text", EdmLiteralKind.DEFAULT, getUnicodeFacets(null)));
+    assertEquals("text", instance.valueToString("text", EdmLiteralKind.DEFAULT, getMaxLengthFacets(4)));
+    assertEquals("text", instance.valueToString("text", EdmLiteralKind.DEFAULT, getMaxLengthFacets(null)));
+
+    checkNull(instance);
+
+    expectErrorInValueToString(instance, "schräg", EdmLiteralKind.DEFAULT, getUnicodeFacets(false));
+    expectErrorInValueToString(instance, "text", EdmLiteralKind.DEFAULT, getMaxLengthFacets(3));
+
+    expectErrorInValueToString(instance, "text", null, null);
+  }
+
+  @Test
+  public void valueToStringTime() throws Exception {
+    final EdmSimpleType instance = EdmSimpleTypeKind.Time.getEdmSimpleTypeInstance();
+    Calendar dateTime = Calendar.getInstance();
+
+    dateTime.clear();
+    dateTime.setTimeZone(TimeZone.getTimeZone("GMT-11:30"));
+    dateTime.set(Calendar.HOUR_OF_DAY, 23);
+    dateTime.set(Calendar.MINUTE, 32);
+    dateTime.set(Calendar.SECOND, 3);
+    assertEquals("PT23H32M3S", instance.valueToString(dateTime, EdmLiteralKind.DEFAULT, null));
+    assertEquals("PT23H32M3S", instance.valueToString(dateTime, EdmLiteralKind.JSON, null));
+    assertEquals("time'PT23H32M3S'", instance.valueToString(dateTime, EdmLiteralKind.URI, null));
+
+    dateTime.add(Calendar.MILLISECOND, 1);
+    assertEquals("PT23H32M3.001S", instance.valueToString(dateTime, EdmLiteralKind.DEFAULT, null));
+    assertEquals("PT23H32M3.001S", instance.valueToString(dateTime, EdmLiteralKind.JSON, null));
+    assertEquals("time'PT23H32M3.001S'", instance.valueToString(dateTime, EdmLiteralKind.URI, null));
+
+    final Long millis = 84723007L;
+    assertEquals("PT23H32M3.007S", instance.valueToString(millis, EdmLiteralKind.DEFAULT, null));
+    assertEquals("PT23H32M3.007S", instance.valueToString(millis, EdmLiteralKind.JSON, null));
+    assertEquals("time'PT23H32M3.007S'", instance.valueToString(millis, EdmLiteralKind.URI, null));
+
+    assertTrue(instance.valueToString(new Date(millis), EdmLiteralKind.DEFAULT, null).contains("M3.007S"));
+
+    assertEquals("PT23H32M3.00S", instance.valueToString(dateTime, EdmLiteralKind.DEFAULT, getPrecisionScaleFacets(2, null)));
+    assertEquals("PT23H32M3S", instance.valueToString(dateTime, EdmLiteralKind.DEFAULT, getPrecisionScaleFacets(0, null)));
+    dateTime.add(Calendar.MILLISECOND, -14);
+    assertEquals("PT23H32M2.987S", instance.valueToString(dateTime, EdmLiteralKind.DEFAULT, getPrecisionScaleFacets(null, null)));
+    assertEquals("PT23H32M2.987S", instance.valueToString(dateTime, EdmLiteralKind.DEFAULT, getPrecisionScaleFacets(5, null)));
+    assertEquals("PT23H32M2.99S", instance.valueToString(dateTime, EdmLiteralKind.DEFAULT, getPrecisionScaleFacets(2, null)));
+    assertEquals("PT23H32M3S", instance.valueToString(dateTime, EdmLiteralKind.DEFAULT, getPrecisionScaleFacets(1, null)));
+    assertEquals("PT23H32M3S", instance.valueToString(dateTime, EdmLiteralKind.DEFAULT, getPrecisionScaleFacets(0, null)));
+
+    checkNull(instance);
+
+    expectErrorInValueToString(instance, 0, EdmLiteralKind.DEFAULT, null);
+    expectErrorInValueToString(instance, dateTime, null, null);
   }
 }
