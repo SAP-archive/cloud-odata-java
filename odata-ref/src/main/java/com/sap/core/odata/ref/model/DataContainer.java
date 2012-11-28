@@ -84,7 +84,6 @@ public class DataContainer {
 
     Manager emp3 = new Manager("Jonathan Smith", 56, room2, team1);
     emp3.setManager((Manager) emp1);
-    emp3.setEntryDate(generateDate("2012-12-12"));
     emp3.setLocation(new Location("Germany", "69190", "Walldorf"));
     emp3.setImageUri("/SAP/PUBLIC/BC/NWDEMO_MODEL/IMAGES/male_3_SmithJo.jpg");
     emp3.setImage("/male_3_SmithJo.jpg");
