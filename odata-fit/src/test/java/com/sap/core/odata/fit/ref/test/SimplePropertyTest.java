@@ -43,6 +43,7 @@ public class SimplePropertyTest extends AbstractRefTest {
     // assertTrue(getBody(response).contains("5</"));
 
     // response = callUri("Container2.Photos(Id=3,Type='image%2Fjpeg')/BinaryData/$value");
+
     // checkMediaType(response, IMAGE_JPEG);
     // assertNotNull(getBody(response));
 

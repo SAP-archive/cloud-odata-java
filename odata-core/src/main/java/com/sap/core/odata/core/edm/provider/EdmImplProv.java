@@ -4,7 +4,6 @@ import com.sap.core.odata.api.edm.EdmAssociation;
 import com.sap.core.odata.api.edm.EdmComplexType;
 import com.sap.core.odata.api.edm.EdmEntityContainer;
 import com.sap.core.odata.api.edm.EdmEntityType;
-import com.sap.core.odata.api.edm.EdmException;
 import com.sap.core.odata.api.edm.FullQualifiedName;
 import com.sap.core.odata.api.edm.provider.Association;
 import com.sap.core.odata.api.edm.provider.ComplexType;
@@ -27,7 +26,7 @@ public class EdmImplProv extends EdmImpl {
   protected EdmEntityContainer createEntityContainer(String name) throws ODataException {
     EntityContainerInfo enitityContainerInfo = edmProvider.getEntityContainer(name);
     if(enitityContainerInfo == null){
-      throw new EdmException(EdmException.COMMON);
+     return null;
     }
     return new EdmEntityContainerImplProv(this, enitityContainerInfo);
   }
@@ -36,7 +35,7 @@ public class EdmImplProv extends EdmImpl {
   protected EdmEntityType createEntityType(FullQualifiedName fqName) throws ODataException {
     EntityType entityType = edmProvider.getEntityType(fqName);
     if(entityType == null){
-      throw new EdmException(EdmException.COMMON);
+      return null;
     }
       
     return new EdmEntityTypeImplProv(this,entityType , fqName.getNamespace());
@@ -46,7 +45,7 @@ public class EdmImplProv extends EdmImpl {
   protected EdmComplexType createComplexType(FullQualifiedName fqName) throws ODataException {
     ComplexType complexType = edmProvider.getComplexType(fqName);
     if(complexType == null){
-      throw new EdmException(EdmException.COMMON);
+      return null;
     }
     return new EdmComplexTypeImplProv(this, complexType, fqName.getNamespace());
   }
@@ -55,7 +54,7 @@ public class EdmImplProv extends EdmImpl {
   protected EdmAssociation createAssociation(FullQualifiedName fqName) throws ODataException {
     Association association = edmProvider.getAssociation(fqName);
     if(association == null){
-      throw new EdmException(EdmException.COMMON);
+      return null;
     }
     return new EdmAssociationImplProv(this,association , fqName.getNamespace());
   }

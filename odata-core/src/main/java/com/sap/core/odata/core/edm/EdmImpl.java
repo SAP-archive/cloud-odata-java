@@ -21,7 +21,7 @@ public abstract class EdmImpl implements Edm {
   private Map<FullQualifiedName, EdmAssociation> edmAssociations;
 
   protected EdmServiceMetadata edmServiceMetadata;
-  
+
   public EdmImpl(EdmServiceMetadata edmServiceMetadata) {
     edmEntityContainers = new HashMap<String, EdmEntityContainer>();
     edmEntityTypes = new HashMap<FullQualifiedName, EdmEntityType>();
@@ -29,7 +29,7 @@ public abstract class EdmImpl implements Edm {
     edmAssociations = new HashMap<FullQualifiedName, EdmAssociation>();
     this.edmServiceMetadata = edmServiceMetadata;
   }
-  
+
   @Override
   public EdmEntityContainer getEntityContainer(String name) throws EdmException {
     if (edmEntityContainers.containsKey(name))
@@ -39,17 +39,19 @@ public abstract class EdmImpl implements Edm {
 
     try {
       edmEntityContainer = createEntityContainer(name);
-      
-      if (name == null && edmEntityContainers.containsKey(edmEntityContainer.getName())) {
-        //ensure that the same default entity container is stored in the HashMap under null and its name 
-        edmEntityContainer = edmEntityContainers.get(edmEntityContainer.getName());
-        edmEntityContainers.put(name, edmEntityContainer);
-      } else if (edmEntityContainers.containsKey(null) && name.equals(edmEntityContainers.get(null).getName())) {
-        //ensure that the same default entity container is stored in the HashMap under null and its name        
-        edmEntityContainer = edmEntityContainers.get(null);
-        edmEntityContainers.put(name, edmEntityContainer);
-      } else {
-        edmEntityContainers.put(name, edmEntityContainer);
+      if (edmEntityContainer != null) {
+        //TODO: Clarify what happens if the edmProvider is called with a null string or name == null
+        if (name == null && edmEntityContainers.containsKey(edmEntityContainer.getName())) {
+          //ensure that the same default entity container is stored in the HashMap under null and its name 
+          edmEntityContainer = edmEntityContainers.get(edmEntityContainer.getName());
+          edmEntityContainers.put(name, edmEntityContainer);
+        } else if (edmEntityContainers.containsKey(null) && name.equals(edmEntityContainers.get(null).getName())) {
+          //ensure that the same default entity container is stored in the HashMap under null and its name        
+          edmEntityContainer = edmEntityContainers.get(null);
+          edmEntityContainers.put(name, edmEntityContainer);
+        } else {
+          edmEntityContainers.put(name, edmEntityContainer);
+        }
       }
     } catch (ODataException e) {
       throw new EdmException(EdmException.COMMON, e);
@@ -68,7 +70,9 @@ public abstract class EdmImpl implements Edm {
 
     try {
       edmEntityType = createEntityType(fqName);
-      edmEntityTypes.put(fqName, edmEntityType);
+      if (edmEntityType != null) {
+        edmEntityTypes.put(fqName, edmEntityType);
+      }
     } catch (ODataException e) {
       throw new EdmException(EdmException.COMMON, e);
     }
@@ -86,7 +90,9 @@ public abstract class EdmImpl implements Edm {
 
     try {
       edmComplexType = createComplexType(fqName);
-      edmComplexTypes.put(fqName, edmComplexType);
+      if (edmComplexType != null) {
+        edmComplexTypes.put(fqName, edmComplexType);
+      }
     } catch (ODataException e) {
       throw new EdmException(EdmException.COMMON, e);
     }
@@ -104,7 +110,9 @@ public abstract class EdmImpl implements Edm {
 
     try {
       edmAssociation = createAssociation(fqName);
-      edmAssociations.put(fqName, edmAssociation);
+      if(edmAssociation != null){
+        edmAssociations.put(fqName, edmAssociation);
+      }     
     } catch (ODataException e) {
       throw new EdmException(EdmException.COMMON, e);
     }
