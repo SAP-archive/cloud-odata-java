@@ -25,15 +25,19 @@ public enum BinaryOperator
    * are there unsupported operators which should be mentioned here
    */
   
+  private String syntax;
   private String stringRespresentation;
   
-  /**
-   * Constructor  
-   * @param stringRespresentation
-   *   Just used to have a nice {@link #toString()} return value
-   */
-  BinaryOperator(String stringRespresentation)
+  
+  BinaryOperator(String syntax)
   {
+    this.syntax = syntax;
+    this.stringRespresentation = syntax;
+  }
+  
+  BinaryOperator( String syntax, String stringRespresentation)
+  {
+    this.syntax = syntax;
     this.stringRespresentation = stringRespresentation;
   }
   
@@ -41,5 +45,10 @@ public enum BinaryOperator
   public String toString()
   {
     return stringRespresentation;
+  }
+  
+  public String toSyntax()
+  {
+    return syntax;
   }
 }

@@ -7,24 +7,24 @@ import com.sap.core.odata.api.uri.expression.CommonExpression;
 import com.sap.core.odata.api.uri.expression.ExpressionKind;
 import com.sap.core.odata.api.uri.expression.ExpressionVisitor;
 
-public class BinaryExpressionImpl implements BinaryExpression 
+public class BinaryExpressionImpl implements BinaryExpression
 {
   private InfoBinaryOperator operatorInfo;
   CommonExpression leftSide;
   CommonExpression rightSide;
   EdmType edmType;
 
-  public BinaryExpressionImpl( InfoBinaryOperator operatorInfo, CommonExpression leftSide, CommonExpression rightSide) {
+  public BinaryExpressionImpl(InfoBinaryOperator operatorInfo, CommonExpression leftSide, CommonExpression rightSide) {
     this.operatorInfo = operatorInfo;
     this.leftSide = leftSide;
     this.rightSide = rightSide;
     edmType = null;
-    
+
   }
 
   @Override
   public BinaryOperator getOperator() {
-    return operatorInfo.getOperator(); 
+    return operatorInfo.getOperator();
   }
 
   @Override
@@ -38,7 +38,7 @@ public class BinaryExpressionImpl implements BinaryExpression
   {
     return rightSide;
   }
-  
+
   @Override
   public EdmType getEdmType()
   {
@@ -46,13 +46,13 @@ public class BinaryExpressionImpl implements BinaryExpression
   }
 
   @Override
-  public void setEdmType(EdmType edmType) 
+  public void setEdmType(EdmType edmType)
   {
     this.edmType = edmType;
   }
 
   @Override
-  public ExpressionKind getKind() 
+  public ExpressionKind getKind()
   {
     return ExpressionKind.BINARY;
   }
@@ -63,13 +63,13 @@ public class BinaryExpressionImpl implements BinaryExpression
   }
 
   @Override
-  public Object accept(ExpressionVisitor visitor) 
+  public Object accept(ExpressionVisitor visitor)
   {
-    Object retLeftSide = leftSide.accept(visitor); 
+    Object retLeftSide = leftSide.accept(visitor);
     Object retRightSide = rightSide.accept(visitor);
-    
+
     Object ret = visitor.visitBinary(this, operatorInfo.operator, retLeftSide, retRightSide);
     return ret;
   }
- 
+
 }

@@ -91,17 +91,7 @@ public class FilterParserImpl implements FilterParser
     this.useParameterPromotiom = useParameterPromotiom;
   }
 
-  Token expectToken(String expected) throws ExpressionException
-  {
-    Token rs_token = tokenList.GetToken();
-    if (rs_token.getUriLiteral() != expected)
-    {
-      throw new ParserExceptionSyntax(0);
-      //TODO add text for /iwcor/cx_ds_expr_syntax_error=>unexpected_token
-    }
-    return rs_token;
-  }
-
+  
   InfoBinaryOperator LookBinaerOperator()
   {
     Token token = tokenList.lookToken();
@@ -182,7 +172,7 @@ public class FilterParserImpl implements FilterParser
     int lv_pcount;
     CommonExpression lo_node;
 
-    expectToken(Character.toString(CharConst.GC_STR_OPENPAREN));
+    //expectToken(Character.toString(CharConst.GC_STR_OPENPAREN));
 
     while (lv_done == false)
     {
@@ -197,7 +187,7 @@ public class FilterParserImpl implements FilterParser
       if (lv_token.getKind() == TokenKind.COMMA)
 
       {
-        expectToken(Character.toString(CharConst.GC_STR_COMMA));
+        //expectToken(Character.toString(CharConst.GC_STR_COMMA));
       }
 
       else if (!(lv_token.getKind() == TokenKind.CLOSEPAREN))
@@ -221,7 +211,7 @@ public class FilterParserImpl implements FilterParser
       //TODO raise exception /iwcor/cx_ds_expr_syntax_error=>function_to_many_parameter
     }
 
-    expectToken(Character.toString(CharConst.GC_STR_CLOSEPAREN));
+    //expectToken(Character.toString(CharConst.GC_STR_CLOSEPAREN));
 
     return methodExpression;
   }

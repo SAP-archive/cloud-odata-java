@@ -26,7 +26,7 @@ public class Tokenizer
    * @param True -> Whitespace token will be added to token list; False otherwise
    * @return Returns this
    */
-  public Tokenizer SetFlagWhiteSpace(Boolean flagIncludeWhitespace)
+  public Tokenizer setFlagWhiteSpace(Boolean flagIncludeWhitespace)
   {
     this.flagIncludeWhitespace = flagIncludeWhitespace;
 
@@ -292,7 +292,7 @@ public class Tokenizer
 
           curPosition = curPosition + token.length();
           
-          tokens.appendToken(oldPosition, TokenKind.LITERAL, curCharacter);
+          tokens.appendToken(oldPosition, TokenKind.LITERAL, token);
 
           break;
         }

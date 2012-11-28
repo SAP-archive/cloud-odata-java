@@ -124,9 +124,6 @@ public class TokenList implements Iterator<Token>
     return tokens.elementAt(index);
   }
 
-  public Token GetToken() {
-    // TODO Auto-generated method stub
-    return null;
-  }
+  
 
 }
