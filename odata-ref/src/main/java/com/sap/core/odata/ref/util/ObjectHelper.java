@@ -54,7 +54,11 @@ public class ObjectHelper {
       @Override
       public Object createValue(Object value) {
         if(value != null) {
-          if(value instanceof Date) {
+          if(value.getClass().isPrimitive()) {
+            return value;
+          } else if(value instanceof Date) {
+            return value;
+          } else if(!ObjectHelper.isComplexType(value.getClass())) {
             return value;
           }
         }
@@ -136,7 +140,7 @@ public class ObjectHelper {
     return fieldId2FieldValue;
   }
 
-  private boolean isComplexType(Class<?> type) {
+  private static boolean isComplexType(Class<?> type) {
     boolean isComplex = true;
     if (type == String.class || type == Integer.class || type == Boolean.class || type == Date.class || type == Float.class || type == Object.class
     // || Collections.class.isAssignableFrom(type)
@@ -144,7 +148,7 @@ public class ObjectHelper {
         || type.isPrimitive()) {
       isComplex = false;
     }
-    LOG.debug("Class {} is complex? -> {}", type.getSimpleName(), isComplex);
+//    LOG.debug("Class {} is complex? -> {}", type.getSimpleName(), isComplex);
     return isComplex;
   }
 
