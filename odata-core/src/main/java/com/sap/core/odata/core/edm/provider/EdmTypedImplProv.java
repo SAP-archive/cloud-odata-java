@@ -30,13 +30,10 @@ public class EdmTypedImplProv extends EdmNamedImplProv implements EdmTyped {
       if (EdmSimpleTypeKind.edmNamespace.equals(typeName.getNamespace())) {
         edmType = EdmSimpleTypeFacadeImpl.getEdmSimpleType(EdmSimpleTypeKind.valueOf(typeName.getName()));
       } else {
-        try {
-          edmType = edm.getComplexType(namespace, typeName.getName());
-        } catch (EdmException e) {
-          edmType = null;
-        }
-        if (edmType == null)
-          edmType = edm.getEntityType(namespace, typeName.getName());
+        edmType = edm.getComplexType(namespace, typeName.getName());
+      }
+      if (edmType == null) {
+        edmType = edm.getEntityType(namespace, typeName.getName());
       }
     }
     return edmType;

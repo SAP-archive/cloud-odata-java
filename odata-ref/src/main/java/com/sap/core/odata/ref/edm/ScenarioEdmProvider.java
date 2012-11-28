@@ -31,7 +31,6 @@ import com.sap.core.odata.api.edm.provider.PropertyRef;
 import com.sap.core.odata.api.edm.provider.ReturnType;
 import com.sap.core.odata.api.edm.provider.Schema;
 import com.sap.core.odata.api.exception.ODataMessageException;
-import com.sap.core.odata.api.exception.ODataNotFoundException;
 
 /**
  * Provider for the entity data model used in the reference scenario
@@ -172,7 +171,7 @@ public class ScenarioEdmProvider extends EdmProviderDefault {
 
   @Override
   public EntityType getEntityType(final FullQualifiedName edmFQName) throws ODataMessageException {
-    if (NAMESPACE_1.equals(edmFQName.getNamespace()))
+    if (NAMESPACE_1.equals(edmFQName.getNamespace())) {
       if (ENTITY_TYPE_1_1.getName().equals(edmFQName.getName())) {
         Collection<Property> properties = new ArrayList<Property>();
         properties.add(new Property().setName("EmployeeId").setType(EdmSimpleTypeKind.String.getFullQualifiedName()).setFacets(new Facets().setNullable(false)));
@@ -229,11 +228,9 @@ public class ScenarioEdmProvider extends EdmProviderDefault {
         navigationProperties.add(new NavigationProperty().setName("nb_Rooms").setRelationship(ASSOCIATION_1_4).setFromRole(ROLE_1_5).setToRole(ROLE_1_3));
         return new EntityType().setName(ENTITY_TYPE_1_5.getName()).setAbstract(false).setProperties(properties).setHasStream(false).setKey(getKey("Id")).setNavigationProperties(navigationProperties);
 
-      } else {
-        throw new ODataNotFoundException(ODataNotFoundException.ENTITY);
       }
 
-    else if (NAMESPACE_2.equals(edmFQName.getNamespace()))
+    } else if (NAMESPACE_2.equals(edmFQName.getNamespace()))
       if (ENTITY_TYPE_2_1.getName().equals(edmFQName.getName())) {
         Collection<Property> properties = new ArrayList<Property>();
         properties.add(new Property().setName("Id").setType(EdmSimpleTypeKind.Int32.getFullQualifiedName()).setFacets(new Facets().setNullable(false).setConcurrencyMode(EdmConcurrencyMode.Fixed)));
@@ -245,12 +242,9 @@ public class ScenarioEdmProvider extends EdmProviderDefault {
         properties.add(new Property().setName("Содержание").setType(EdmSimpleTypeKind.String.getFullQualifiedName()).setFacets(new Facets().setNullable(true)).setCustomizableFeedMappings(new CustomizableFeedMappings().setFcKeepInContent(false).setFcNsPrefix("py").setFcNsUri("http://localhost").setFcTargetPath("Содержание")));
         return new EntityType().setName(ENTITY_TYPE_2_1.getName()).setAbstract(false).setProperties(properties).setHasStream(true).setKey(getKey("Id", "Type"));
 
-      } else {
-        throw new ODataNotFoundException(ODataNotFoundException.ENTITY);
       }
 
-    else
-      throw new ODataNotFoundException(ODataNotFoundException.ENTITY);
+    return null;
   }
 
   @Override
@@ -268,12 +262,9 @@ public class ScenarioEdmProvider extends EdmProviderDefault {
         properties.add(new Property().setName("CityName").setType(EdmSimpleTypeKind.String.getFullQualifiedName()));
         return new ComplexType().setName(COMPLEX_TYPE_2.getName()).setAbstract(false).setProperties(properties);
 
-      } else {
-        throw new ODataNotFoundException(ODataNotFoundException.ENTITY);
       }
 
-    else
-      throw new ODataNotFoundException(ODataNotFoundException.ENTITY);
+    return null;
   }
 
   @Override
@@ -287,11 +278,8 @@ public class ScenarioEdmProvider extends EdmProviderDefault {
         return new Association().setName(ASSOCIATION_1_3.getName()).setEnd1(new AssociationEnd().setType(ENTITY_TYPE_1_1).setRole(ROLE_1_1).setMultiplicity(EdmMultiplicity.MANY)).setEnd2(new AssociationEnd().setType(ENTITY_TYPE_1_3).setRole(ROLE_1_3).setMultiplicity(EdmMultiplicity.ONE));
       else if (ASSOCIATION_1_4.getName().equals(edmFQName.getName()))
         return new Association().setName(ASSOCIATION_1_4.getName()).setEnd1(new AssociationEnd().setType(ENTITY_TYPE_1_5).setRole(ROLE_1_5).setMultiplicity(EdmMultiplicity.ONE)).setEnd2(new AssociationEnd().setType(ENTITY_TYPE_1_3).setRole(ROLE_1_3).setMultiplicity(EdmMultiplicity.MANY));
-      else
-        throw new ODataNotFoundException(ODataNotFoundException.ENTITY);
 
-    else
-      throw new ODataNotFoundException(ODataNotFoundException.ENTITY);
+    return null;
   }
 
   @Override
@@ -300,13 +288,13 @@ public class ScenarioEdmProvider extends EdmProviderDefault {
       return new EntityContainerInfo().setName(ENTITY_CONTAINER_1).setDefaultEntityContainer(true);
     else if (ENTITY_CONTAINER_2.equals(name))
       return new EntityContainerInfo().setName(name).setDefaultEntityContainer(false);
-    else
-      throw new ODataNotFoundException(ODataNotFoundException.ENTITY);
+
+    return null;
   }
 
   @Override
   public EntitySet getEntitySet(final String entityContainer, final String name) throws ODataMessageException {
-    if (ENTITY_CONTAINER_1.equals(entityContainer))
+    if (ENTITY_CONTAINER_1.equals(entityContainer)) {
       if (ENTITY_SET_1_1.equals(name))
         return new EntitySet().setName(name).setEntityType(ENTITY_TYPE_1_1);
       else if (ENTITY_SET_1_2.equals(name))
@@ -317,17 +305,12 @@ public class ScenarioEdmProvider extends EdmProviderDefault {
         return new EntitySet().setName(name).setEntityType(ENTITY_TYPE_1_4);
       else if (ENTITY_SET_1_5.equals(name))
         return new EntitySet().setName(name).setEntityType(ENTITY_TYPE_1_5);
-      else
-        throw new ODataNotFoundException(ODataNotFoundException.ENTITY);
 
-    else if (ENTITY_CONTAINER_2.equals(entityContainer))
+    } else if (ENTITY_CONTAINER_2.equals(entityContainer))
       if (ENTITY_SET_2_1.equals(name))
         return new EntitySet().setName(name).setEntityType(ENTITY_TYPE_2_1);
-      else
-        throw new ODataNotFoundException(ODataNotFoundException.ENTITY);
 
-    else
-      throw new ODataNotFoundException(ODataNotFoundException.ENTITY);
+    return null;
   }
 
   @Override
@@ -358,12 +341,9 @@ public class ScenarioEdmProvider extends EdmProviderDefault {
       } else if (FUNCTION_IMPORT_7.equals(name)) {
         return new FunctionImport().setName(name).setReturnType(new ReturnType().setQualifiedName(new FullQualifiedName(NAMESPACE_1, "Employee")).setMultiplicity(EdmMultiplicity.ZERO_TO_ONE)).setEntitySet(ENTITY_SET_1_1).setHttpMethod("GET");
 
-      } else {
-        throw new ODataNotFoundException(ODataNotFoundException.ENTITY);
       }
 
-    else
-      throw new ODataNotFoundException(ODataNotFoundException.ENTITY);
+    return null;
   }
 
   @Override
@@ -377,11 +357,8 @@ public class ScenarioEdmProvider extends EdmProviderDefault {
         return new AssociationSet().setName(ASSOCIATION_1_3.getName()).setAssociation(ASSOCIATION_1_3).setEnd1(new AssociationSetEnd().setRole(ROLE_1_3).setEntitySet(ENTITY_SET_1_3)).setEnd2(new AssociationSetEnd().setRole(ROLE_1_1).setEntitySet(ENTITY_SET_1_1));
       else if (ASSOCIATION_1_4.equals(association))
         return new AssociationSet().setName(ASSOCIATION_1_4.getName()).setAssociation(ASSOCIATION_1_4).setEnd1(new AssociationSetEnd().setRole(ROLE_1_5).setEntitySet(ENTITY_SET_1_5)).setEnd2(new AssociationSetEnd().setRole(ROLE_1_3).setEntitySet(ENTITY_SET_1_3));
-      else
-        throw new ODataNotFoundException(ODataNotFoundException.ENTITY);
 
-    else
-      throw new ODataNotFoundException(ODataNotFoundException.ENTITY);
+    return null;
   }
 
   private Key getKey(final String... keyNames) {
