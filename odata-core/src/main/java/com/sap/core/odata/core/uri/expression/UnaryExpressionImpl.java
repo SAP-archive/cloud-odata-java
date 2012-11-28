@@ -33,7 +33,7 @@ public class UnaryExpressionImpl implements UnaryExpression
   }
 
   @Override
-  public CommonExpression getoperand() 
+  public CommonExpression getOperand() 
   {
     return operand;
   }
