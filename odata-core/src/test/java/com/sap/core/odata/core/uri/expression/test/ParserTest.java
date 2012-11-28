@@ -6,6 +6,7 @@ import static org.junit.Assert.fail;
 import org.junit.Test;
 
 import com.sap.core.odata.api.edm.EdmSimpleType;
+import com.sap.core.odata.api.uri.expression.BinaryExpression;
 import com.sap.core.odata.api.uri.expression.CommonExpression;
 import com.sap.core.odata.api.uri.expression.ExpressionException;
 import com.sap.core.odata.api.uri.expression.ExpressionKind;
@@ -28,7 +29,10 @@ import com.sap.core.odata.core.edm.EdmSingle;
 import com.sap.core.odata.core.edm.EdmString;
 import com.sap.core.odata.core.edm.EdmTime;
 import com.sap.core.odata.core.edm.Uint7;
+import com.sap.core.odata.core.uri.expression.BinaryExpressionImpl;
 import com.sap.core.odata.core.uri.expression.FilterParserImpl;
+import com.sap.core.odata.core.uri.expression.MethodExpressionImpl;
+import com.sap.core.odata.core.uri.expression.UnaryExpressionImpl;
 
 public class ParserTest {
 
@@ -70,7 +74,7 @@ public class ParserTest {
       return this;
     }
 
-    public void aSerialized(String expected) {
+    public ParserTool aSerialized(String expected) {
       String actual;
       ExpressionVisitor visitor = new TestVisitor();
       actual = tree.accept(visitor).toString();
@@ -79,6 +83,79 @@ public class ParserTest {
       System.out.println("  " + info + "Expected: " + expected + " Actual: " + actual);
 
       assertEquals(info, expected, actual);
+      return this;
+    }
+
+    public ParserTool left() {
+      switch (curNode.getKind())
+      {
+      case BINARY:
+        curNode = ((BinaryExpressionImpl) curNode).getLeftOperand();
+        break;
+      case LITERAL:
+      case MEMBER:
+      case METHOD:
+      case PROPERTY:
+        String info = "param(" + expression + ")-->";
+        info = "  " + info + "Expected: " + ExpressionKind.METHOD.toString() + " or " + ExpressionKind.METHOD.toString() + " Actual: " + curNode.getKind();
+        System.out.println(info);
+        fail(info);
+        break;
+      case UNARY:
+        curNode = ((UnaryExpressionImpl) curNode).getoperand();
+        break;
+      }
+      return this;
+    }
+
+    public ParserTool right() {
+      switch (curNode.getKind())
+      {
+      case BINARY:
+        curNode = ((BinaryExpressionImpl) curNode).getRightOperand();
+        break;
+      case LITERAL:
+      case MEMBER:
+      case METHOD:
+      case PROPERTY:
+        String info = "param(" + expression + ")-->";
+        info = "  " + info + "Expected: " + ExpressionKind.METHOD.toString() + " or " + ExpressionKind.METHOD.toString() + " Actual: " + curNode.getKind();
+        System.out.println(info);
+        fail(info);
+        break;
+      case UNARY:
+        curNode = ((UnaryExpressionImpl) curNode).getoperand();
+        break;
+      }
+      return this;
+    }
+
+    public ParserTool param(int i)
+    {
+      if (curNode.getKind() != ExpressionKind.METHOD)
+      {
+        String info = "param(" + expression + ")-->";
+        info = "  " + info + "Expected: " + ExpressionKind.METHOD.toString() + " Actual: " + curNode.getKind();
+        System.out.println(info);
+        fail(info);
+      }
+
+      MethodExpressionImpl methodExpressionImpl = (MethodExpressionImpl) curNode;
+      if (i >= methodExpressionImpl.getParameterCount())
+      {
+        String info = "param(" + expression + ")-->";
+        info = "  " + info + "Too wrong index! Expected max: " + methodExpressionImpl.getParameterCount() + " Actual: " + i;
+        System.out.println(info);
+        fail(info);
+      }
+
+      curNode = methodExpressionImpl.getParameters().elementAt(i);
+      return this;
+    }
+
+    public ParserTool root() {
+      curNode = this.tree;
+      return this;
     }
 
   }
@@ -95,23 +172,40 @@ public class ParserTest {
     return null;
   }
 
-  
-  
-  
+  @Test
+  public void TestLiteral()
+  {
+    GetPTF("sven").aSerialized("sven")
+        .aKind(ExpressionKind.PROPERTY);
+  }
+
   @Test
   public void TestSimpleSameBinary()
   {
     GetPTF("1d add 2d").aSerialized("{1d add 2d}");
     GetPTF("1d div 2d").aSerialized("{1d div 2d}");
+
+    GetPTF("1d add 2d").aSerialized("{1d add 2d}")
+        .aKind(ExpressionKind.BINARY)
+        .root().left().aKind(ExpressionKind.LITERAL)
+        .root().right().aKind(ExpressionKind.LITERAL);
+
   }
-  
+
+  @Test
+  public void TestSimpleSameBinaryBinary()
+  {
+    GetPTF("1d add 2d add 3d").aSerialized("{{1d add 2d} add 3d}");
+    GetPTF("1d div 2d div 3d").aSerialized("{{1d div 2d} div 3d}");
+  }
+
   @Test
   public void TestSimpleSameBinaryBinaryPriority()
   {
     GetPTF("1d add 2d div 3d").aSerialized("{1d add {2d div 3d}}");
     GetPTF("1d div 2d add 3d").aSerialized("{{1d div 2d} add 3d}");
   }
-  
+
   @Test
   public void TestSimpleSameBinaryBinaryBinaryPriority()
   {
@@ -125,14 +219,7 @@ public class ParserTest {
     GetPTF("1d div 2d div 3d div 4d").aSerialized("{{{1d div 2d} div 3d} div 4d}");
     //XXX maybe add generator for more deepness
   }
-  
-  @Test
-  public void TestSimpleSameBinaryBinary()
-  {
-    GetPTF("1d add 2d add 3d").aSerialized("{{1d add 2d} add 3d}");
-    GetPTF("1d div 2d div 3d").aSerialized("{{1d div 2d} div 3d}");
-  }
-  
+
   @Test
   public void TestDeepParenthesis()
   {
@@ -141,7 +228,7 @@ public class ParserTest {
     GetPTF("((2d))").aSerialized("2d");
     GetPTF("(((2d)))").aSerialized("2d");
   }
-  
+
   @Test
   public void TestParenthesisWithBinaryBinary()
   {
@@ -149,25 +236,25 @@ public class ParserTest {
     GetPTF("1d add (2d add 3d)").aSerialized("{1d add {2d add 3d}}");
     GetPTF("(1d add 2d) add 3d").aSerialized("{{1d add 2d} add 3d}");
     GetPTF("(1d add 2d add 3d)").aSerialized("{{1d add 2d} add 3d}");
-    
+
     GetPTF("1d add 2d div 3d").aSerialized("{1d add {2d div 3d}}");
     GetPTF("1d add (2d div 3d)").aSerialized("{1d add {2d div 3d}}");
     GetPTF("(1d add 2d) div 3d").aSerialized("{{1d add 2d} div 3d}");
     GetPTF("(1d add 2d div 3d)").aSerialized("{1d add {2d div 3d}}");
-    
+
     GetPTF("1d div 2d div 3d").aSerialized("{{1d div 2d} div 3d}");
     GetPTF("1d div (2d div 3d)").aSerialized("{1d div {2d div 3d}}");
     GetPTF("(1d div 2d) div 3d").aSerialized("{{1d div 2d} div 3d}");
     GetPTF("(1d div 2d div 3d)").aSerialized("{{1d div 2d} div 3d}");
   }
-    
+
   @Test
   public void TestSimpleUnaryOperator()
   {
     GetPTF("not true").aSerialized("{not true}");
     GetPTF("- 2d").aSerialized("{- 2d}");
   }
-  
+
   @Test
   public void TestDeepUnaryOperator()
   {
@@ -177,18 +264,18 @@ public class ParserTest {
     GetPTF("- - 2d").aSerialized("{- {- 2d}}");
     GetPTF("--- 2d").aSerialized("{- {- {- 2d}}}");
     GetPTF("- - - 2d").aSerialized("{- {- {- 2d}}}");
-    // 
-    //GetPTF("-(-(- 2d)))").aSerialized("{-{-{- 2d}}}");
+
+    GetPTF("-(-(- 2d))").aSerialized("{- {- {- 2d}}}");
+    GetPTF("not(not(not 2d))").aSerialized("{not {not {not 2d}}}");
   }
-  
+
   @Test
   public void TestMixedUnaryOperators()
   {
     GetPTF("not - true").aSerialized("{not {- true}}");
     GetPTF("- not true").aSerialized("{- {not true}}");
-    
   }
-  
+
   @Test
   public void TestSinglePlainLiterals()
   {
@@ -345,5 +432,10 @@ public class ParserTest {
         lcl_helper=>veri_type( iv_expression = `time'P1998Y02M01DT23H14M33S'` io_expected_type = lo_simple_type ).
     */
 
+  }
+
+  void Errors()
+  {
+    //GetPTF("-(-(- 2d)))").aSerialized("{-{-{- 2d}}}");
   }
 }

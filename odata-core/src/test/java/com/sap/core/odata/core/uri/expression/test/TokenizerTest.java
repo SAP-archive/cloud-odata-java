@@ -109,7 +109,7 @@ public class TokenizerTest {
    */
   public TokenTool GetTTW(String expression)
   {
-    Tokenizer tokenizer = new Tokenizer().SetFlagWhiteSpace(true);
+    Tokenizer tokenizer = new Tokenizer().setFlagWhiteSpace(true);
     try {
       TokenList tokens = tokenizer.tokenize(expression);
       return new TokenTool(tokens);

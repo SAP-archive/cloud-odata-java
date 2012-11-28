@@ -2,7 +2,6 @@ package com.sap.core.odata.core.uri.expression.test;
 
 import java.util.Vector;
 
-import com.sap.core.odata.api.edm.EdmException;
 import com.sap.core.odata.api.edm.EdmProperty;
 import com.sap.core.odata.api.uri.EdmLiteral;
 import com.sap.core.odata.api.uri.expression.BinaryExpression;
@@ -22,7 +21,7 @@ public class TestVisitor implements ExpressionVisitor {
   @Override
   public Object visitBinary(BinaryExpression binaryExpression, BinaryOperator operator, Object leftSide, Object rightSide)
   {
-    return "{" + leftSide.toString() + " " + operator.toString() + " " + rightSide.toString() + "}";
+    return "{" + leftSide.toString() + " " + operator.toSyntax() + " " + rightSide.toString() + "}";
   }
 
   @Override
@@ -61,20 +60,15 @@ public class TestVisitor implements ExpressionVisitor {
   }
 
   @Override
-  public Object visitProperty(PropertyExpression literal, EdmProperty edmProperty) 
+  public Object visitProperty(PropertyExpression literal, String uriLiteral, EdmProperty edmProperty) 
   {
-    try {
-      return edmProperty.getName();
-    } catch (EdmException e) {
-      // TODO create a new Visitor exeption
-    }
-    return null;
+    return uriLiteral;
   }
 
   @Override
   public Object visitUnary(UnaryExpression unaryExpression, UnaryOperator operator, Object operand) 
   {
-    return "{" + operator.toString() + " " + operand.toString() + "}";
+    return "{" + operator.toSyntax() + " " + operand.toString() + "}";
   }
 
 }

@@ -11,15 +11,19 @@ public enum UnaryOperator
   NOT("not");
   
   
+  private String syntax;
   private String stringRespresentation;
   
-  /**
-   * Constructor  
-   * @param stringRespresentation
-   *   Just used to have a nice {@link #toString()} return value
-   */
-  UnaryOperator(String stringRespresentation)
+  
+  UnaryOperator(String syntax)
   {
+    this.syntax = syntax;
+    this.stringRespresentation = syntax;
+  }
+  
+  UnaryOperator(String syntax, String stringRespresentation)
+  {
+    this.syntax = syntax;
     this.stringRespresentation = stringRespresentation;
   }
   
@@ -27,5 +31,10 @@ public enum UnaryOperator
   public String toString()
   {
     return stringRespresentation;
+  }
+  
+  public String toSyntax()
+  {
+    return syntax;
   }
 }
