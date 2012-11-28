@@ -66,7 +66,7 @@ public class EdmInt16 implements EdmSimpleType {
 
   @Override
   public String valueToString(final Object value, final EdmLiteralKind literalKind, final EdmFacets facets) throws EdmSimpleTypeException {
-    return ((Short) value).toString();
+    return String.valueOf(value);
   }
 
   @Override

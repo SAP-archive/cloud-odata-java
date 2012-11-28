@@ -69,10 +69,17 @@ public class EdmString implements EdmSimpleType {
 
   @Override
   public String valueToString(final Object value, final EdmLiteralKind literalKind, final EdmFacets facets) throws EdmSimpleTypeException {
-    if (literalKind == EdmLiteralKind.URI)
-      return toUriLiteral((String) value);
-    else
-      return (String) value;
+    final String valueAsString;
+    if(value instanceof String) {
+      valueAsString = (String)value;
+    } else {
+      valueAsString = String.valueOf(value);
+    }
+    
+    if (literalKind == EdmLiteralKind.URI) {
+      return toUriLiteral(valueAsString);
+    } 
+    return valueAsString;
   }
 
   @Override
