@@ -165,7 +165,7 @@ public class AtomEntrySerializationTest {
     String xmlString = StringHelper.inputStreamToString(xmlStream);
 
     assertXpathExists("/a:entry/a:updated", xmlString);
-    assertXpathEvaluatesTo("1999-01-01T00:00:00", "/a:entry/a:updated/text()", xmlString);
+    assertXpathEvaluatesTo("1999-01-01T00:00:00Z", "/a:entry/a:updated/text()", xmlString);
   }
 
   private ODataContext createContextMock() throws ODataException {
