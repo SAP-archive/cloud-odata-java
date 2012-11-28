@@ -13,6 +13,7 @@ import java.math.BigInteger;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.TimeZone;
+import java.util.UUID;
 
 import org.junit.Test;
 
@@ -498,6 +499,46 @@ public class EdmSimpleTypeTest {
     expectErrorInValueToString(instance, 1234, EdmLiteralKind.DEFAULT, getPrecisionScaleFacets(3, null));
     expectErrorInValueToString(instance, 0.00390625, EdmLiteralKind.DEFAULT, getPrecisionScaleFacets(5, null));
     expectErrorInValueToString(instance, 0.00390625, EdmLiteralKind.DEFAULT, getPrecisionScaleFacets(null, 7));
+
+    checkNull(instance);
+
+    expectErrorInValueToString(instance, 'A', EdmLiteralKind.DEFAULT, null);
+    expectErrorInValueToString(instance, 1, null, null);
+  }
+
+  @Test
+  public void valueToStringDouble() throws Exception {
+    final EdmSimpleType instance = EdmSimpleTypeKind.Double.getEdmSimpleTypeInstance();
+
+    assertEquals("0", instance.valueToString(0, EdmLiteralKind.DEFAULT, null));
+    assertEquals("0", instance.valueToString(0, EdmLiteralKind.JSON, null));
+    assertEquals("0D", instance.valueToString(0, EdmLiteralKind.URI, null));
+    assertEquals("8", instance.valueToString((byte) 8, EdmLiteralKind.DEFAULT, null));
+    assertEquals("16", instance.valueToString((short) 16, EdmLiteralKind.DEFAULT, null));
+    assertEquals("32", instance.valueToString((Integer) 32, EdmLiteralKind.DEFAULT, null));
+    assertEquals("255", instance.valueToString(255L, EdmLiteralKind.DEFAULT, null));
+    assertEquals("0.00390625", instance.valueToString(1.0 / 256, EdmLiteralKind.DEFAULT, null));
+    assertEquals("4.2E-41", instance.valueToString(42e-42, EdmLiteralKind.DEFAULT, null));
+    assertEquals("-0.125", instance.valueToString(-0.125f, EdmLiteralKind.DEFAULT, null));
+    assertEquals("-1234567890.12345", instance.valueToString(new BigDecimal("-1234567890.12345"), EdmLiteralKind.DEFAULT, null));
+
+    expectErrorInValueToString(instance, new BigDecimal("1234567890123456"), EdmLiteralKind.DEFAULT, null);
+    expectErrorInValueToString(instance, new BigDecimal(BigInteger.TEN, 400), EdmLiteralKind.DEFAULT, null);
+
+    checkNull(instance);
+
+    expectErrorInValueToString(instance, 'A', EdmLiteralKind.DEFAULT, null);
+    expectErrorInValueToString(instance, 1, null, null);
+  }
+
+  @Test
+  public void valueToStringGuid() throws Exception {
+    final EdmSimpleType instance = EdmSimpleTypeKind.Guid.getEdmSimpleTypeInstance();
+    final UUID uuid = UUID.randomUUID();
+
+    assertEquals(uuid.toString(), instance.valueToString(uuid, EdmLiteralKind.DEFAULT, null));
+    assertEquals(uuid.toString(), instance.valueToString(uuid, EdmLiteralKind.JSON, null));
+    assertEquals("guid'" + uuid.toString() + "'", instance.valueToString(uuid, EdmLiteralKind.URI, null));
 
     checkNull(instance);
 
