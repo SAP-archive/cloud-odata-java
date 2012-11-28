@@ -3,6 +3,7 @@ package com.sap.core.odata.api.uri;
 import java.util.List;
 import java.util.Map;
 
+import com.sap.core.odata.api.edm.EdmException;
 import com.sap.core.odata.api.processor.ODataPathSegment;
 
 /**
@@ -18,6 +19,6 @@ public interface UriParser {
    * @return {@link UriParserResult} the parsing result
    * @throws UriParserException
    */
-  public UriParserResult parse(List<ODataPathSegment> pathSegments, Map<String, String> queryParameters) throws UriParserException;
+  public UriParserResult parse(List<ODataPathSegment> pathSegments, Map<String, String> queryParameters) throws UriParserException, EdmException;
 
 }

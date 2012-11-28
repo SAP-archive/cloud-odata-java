@@ -30,11 +30,11 @@ import com.sap.core.odata.api.edm.EdmTyped;
 import com.sap.core.odata.api.enums.Format;
 import com.sap.core.odata.api.enums.InlineCount;
 import com.sap.core.odata.api.processor.ODataPathSegment;
+import com.sap.core.odata.api.uri.EdmLiteral;
 import com.sap.core.odata.api.uri.KeyPredicate;
 import com.sap.core.odata.api.uri.NavigationPropertySegment;
 import com.sap.core.odata.api.uri.NavigationSegment;
 import com.sap.core.odata.api.uri.SelectItem;
-import com.sap.core.odata.api.uri.EdmLiteral;
 import com.sap.core.odata.api.uri.UriParser;
 import com.sap.core.odata.api.uri.UriParserException;
 import com.sap.core.odata.api.uri.UriParserResult;
@@ -71,7 +71,7 @@ public class UriParserImpl implements UriParser {
    * @throws UriParserException
    */
   @Override
-  public UriParserResult parse(final List<ODataPathSegment> pathSegments, final Map<String, String> queryParameters) throws UriParserException {
+  public UriParserResult parse(final List<ODataPathSegment> pathSegments, final Map<String, String> queryParameters) throws UriParserException, EdmException {
     this.pathSegments = this.copyPathSegmentList(pathSegments);
     systemQueryOptions = new HashMap<SystemQueryOption, String>();
     otherQueryParameters = new HashMap<String, String>();
@@ -79,16 +79,12 @@ public class UriParserImpl implements UriParser {
 
     preparePathSegments();
 
-    try {
-      handleResourcePath();
+    handleResourcePath();
 
-      distributeQueryParameters(queryParameters);
-      checkSystemQueryOptionsCompatibility();
-      handleSystemQueryOptions();
-      handleOtherQueryParameters();
-    } catch (EdmException e) {
-      throw new UriParserException(UriParserException.EDM, e);
-    }
+    distributeQueryParameters(queryParameters);
+    checkSystemQueryOptionsCompatibility();
+    handleSystemQueryOptions();
+    handleOtherQueryParameters();
 
     UriParserImpl.LOG.debug(uriResult.toString());
     return uriResult;
@@ -147,22 +143,14 @@ public class UriParserImpl implements UriParser {
     }
 
     EdmEntitySet entitySet = null;
-    try {
-      entitySet = uriResult.getEntityContainer().getEntitySet(segmentName);
-    } catch (EdmException e) {}
-    ;
-    EdmFunctionImport functionImport = null;
-    if (entitySet == null)
-      try {
-        functionImport = uriResult.getEntityContainer().getFunctionImport(segmentName);
-      } catch (EdmException e) {
-        throw new UriParserException(UriParserException.NOTFOUND);
-      }
 
+    entitySet = uriResult.getEntityContainer().getEntitySet(segmentName);
     if (entitySet != null) {
       uriResult.setStartEntitySet(entitySet);
       handleEntitySet(entitySet, keyPredicate);
     } else {
+      EdmFunctionImport functionImport = null;
+      functionImport = uriResult.getEntityContainer().getFunctionImport(segmentName);
       if (functionImport != null) {
         uriResult.setFunctionImport(functionImport);
         handleFunctionImport(functionImport, emptyParentheses, keyPredicate);
@@ -699,14 +687,14 @@ public class UriParserImpl implements UriParser {
 
     uriResult.setCustomQueryOptions(otherQueryParameters);
   }
-  
+
   private List<String> copyPathSegmentList(List<ODataPathSegment> source) {
     List<String> copy = new ArrayList<String>();
-    
-    for(ODataPathSegment segement : source) {
+
+    for (ODataPathSegment segement : source) {
       copy.add(segement.getPath());
     }
-    
+
     return copy;
   }
 }
