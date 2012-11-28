@@ -24,6 +24,7 @@ public class EdmServiceMetadataImplProvTest {
   @Ignore
   @Test
   public void metadata() throws Exception{
+    //TODO: Import xmlunit and test at metadata xml
     EdmProvider edmProvider = mock(EdmProvider.class);
     EdmImplProv edmImplProv = new EdmImplProv(edmProvider);
     

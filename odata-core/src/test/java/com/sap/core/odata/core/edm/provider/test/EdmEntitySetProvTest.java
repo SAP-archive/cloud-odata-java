@@ -13,7 +13,6 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.sap.core.odata.api.edm.EdmEntitySet;
-import com.sap.core.odata.api.edm.EdmEntityType;
 import com.sap.core.odata.api.edm.EdmNavigationProperty;
 import com.sap.core.odata.api.edm.EdmTyped;
 import com.sap.core.odata.api.edm.FullQualifiedName;
@@ -27,6 +26,7 @@ import com.sap.core.odata.api.edm.provider.EntitySet;
 import com.sap.core.odata.api.edm.provider.EntityType;
 import com.sap.core.odata.api.edm.provider.NavigationProperty;
 import com.sap.core.odata.core.edm.provider.EdmEntityContainerImplProv;
+import com.sap.core.odata.core.edm.provider.EdmEntitySetImplProv;
 import com.sap.core.odata.core.edm.provider.EdmImplProv;
 
 /**
@@ -35,8 +35,9 @@ import com.sap.core.odata.core.edm.provider.EdmImplProv;
  */
 public class EdmEntitySetProvTest {
 
-  private static EdmEntityContainerImplProv edmEntityContainer;
-  private static EdmEntityContainerImplProv edmEntityContainerParent;
+  
+  private static EdmEntitySetImplProv edmEnitiySetFoo;
+  private static EdmEntitySetImplProv edmEnitiySetBar;
   private static EdmProvider edmProvider;
   @BeforeClass
   public static void getEdmEntityContainerImpl() throws Exception {
@@ -44,14 +45,9 @@ public class EdmEntitySetProvTest {
     edmProvider = mock(EdmProvider.class);
     EdmImplProv edmImplProv = new EdmImplProv(edmProvider);
 
-    EntityContainerInfo entityContainerParent = new EntityContainerInfo().setName("ContainerParent");
-    when(edmProvider.getEntityContainer("ContainerParent")).thenReturn(entityContainerParent);
-
-    EntitySet entitySetFooParent = new EntitySet().setName("fooParent");
-    when(edmProvider.getEntitySet("ContainerParent", "fooParent")).thenReturn(entitySetFooParent);
-
-    EntityContainerInfo entityContainer = new EntityContainerInfo().setName("Container").setExtendz("ContainerParent");
+    EntityContainerInfo entityContainer = new EntityContainerInfo().setName("Container");
     when(edmProvider.getEntityContainer("Container")).thenReturn(entityContainer);
+    EdmEntityContainerImplProv edmEntityContainer = new EdmEntityContainerImplProv(edmImplProv, entityContainer);
 
     EntitySet entitySetFoo = new EntitySet().setName("foo");
     when(edmProvider.getEntitySet("Container", "foo")).thenReturn(entitySetFoo);
@@ -83,81 +79,39 @@ public class EdmEntitySetProvTest {
     FullQualifiedName assocFQName = new FullQualifiedName("namespace", "fooBarAssoc");
     when(edmProvider.getAssociationSet("Container", assocFQName, "foo", "fromFoo")).thenReturn(associationSet);
 
-    
-    edmEntityContainer = new EdmEntityContainerImplProv(edmImplProv, entityContainer);
-    edmEntityContainerParent = new EdmEntityContainerImplProv(edmImplProv, entityContainerParent);
-
+   edmEnitiySetFoo = new EdmEntitySetImplProv(edmImplProv, entitySetFoo, edmEntityContainer);
+   edmEnitiySetBar = new EdmEntitySetImplProv(edmImplProv, entitySetBar, edmEntityContainer);
   }
 
   @Test
   public void testEntitySet1() throws Exception {
-    assertEquals("Container", edmEntityContainer.getName());
-    EntitySet entitySet1 = edmProvider.getEntitySet("Container", "foo");
-    assertEquals("foo", entitySet1.getName());
-
-    EdmEntitySet entitySet2 = edmEntityContainer.getEntitySet("foo");
-    assertEquals("foo", entitySet2.getName());
-
-    assertEquals(entitySet1.getName(), entitySet2.getName());
+    assertEquals("foo", edmEnitiySetFoo.getName());
+    assertEquals("Container", edmEnitiySetFoo.getEntityContainer().getName());
   }
 
   @Test
   public void testEntitySet2() throws Exception {
-    assertEquals("Container", edmEntityContainer.getName());
-    EntitySet entitySet1 = edmProvider.getEntitySet("Container", "bar");
-    assertEquals("bar", entitySet1.getName());
-
-    EdmEntitySet entitySet2 = edmEntityContainer.getEntitySet("bar");
-    assertEquals("bar", entitySet2.getName());
-
-    assertEquals(entitySet1.getName(), entitySet2.getName());
+    assertEquals("bar", edmEnitiySetBar.getName());
+    assertEquals("Container", edmEnitiySetBar.getEntityContainer().getName());
   }
 
   @Test
   public void testEntitySetNavigation() throws Exception {
-    EdmEntitySet entitySetStart = edmEntityContainer.getEntitySet("foo");
-    assertEquals("foo", entitySetStart.getName());
-    
-    EdmEntitySet entitySetEnd = edmEntityContainer.getEntitySet("bar");
-    assertEquals("bar", entitySetEnd.getName());
-
-    Collection<String> navPropertyyNames = entitySetStart.getEntityType().getNavigationPropertyNames();
+    Collection<String> navPropertyyNames = edmEnitiySetFoo.getEntityType().getNavigationPropertyNames();
     assertTrue(navPropertyyNames.contains("fooBarNav"));
-    EdmTyped navProperty = entitySetStart.getEntityType().getProperty("fooBarNav");
+    EdmTyped navProperty = edmEnitiySetFoo.getEntityType().getProperty("fooBarNav");
     assertNotNull(navProperty);
     
-    EdmEntitySet relatedEntitySet = entitySetStart.getRelatedEntitySet((EdmNavigationProperty) navProperty); 
+    EdmEntitySet relatedEntitySet = edmEnitiySetFoo.getRelatedEntitySet((EdmNavigationProperty) navProperty); 
     
-    assertEquals(entitySetEnd.getName(), relatedEntitySet.getName());
-  }
-  
-  
-  
-  @Test
-  public void testEntitySetContainer() throws Exception {
-    EdmEntitySet entitySet = edmEntityContainer.getEntitySet("foo");
-    assertEquals("foo", entitySet.getName());
-    assertEquals("Container", entitySet.getEntityContainer().getName());
-  }
-
-  @Test
-  public void testEntitySetParent() throws Exception {
-    assertEquals("ContainerParent", edmEntityContainerParent.getName());
-    EdmEntitySet entitySet1 = edmEntityContainer.getEntitySet("fooParent");
-    assertEquals("fooParent", entitySet1.getName());
-
-    EdmEntitySet entitySet2 = edmEntityContainer.getEntitySet("fooParent");
-    assertEquals("fooParent", entitySet2.getName());
-
-    assertEquals(entitySet1, entitySet2);
+    assertEquals(edmEnitiySetBar.getName(), relatedEntitySet.getName());
   }
 
   @Test
   public void testEntitySetType() throws Exception {
-    assertEquals("fooEntityType", edmProvider.getEntityType(new FullQualifiedName("namespace", "fooEntityType")).getName());
-    EdmEntityType entityType1 = edmEntityContainer.getEntitySet("foo").getEntityType();
-
-    assertEquals(entityType1.getName(), edmProvider.getEntityType(new FullQualifiedName("namespace", "fooEntityType")).getName());
+    
+    assertEquals("fooEntityType", edmEnitiySetFoo.getEntityType().getName());
+    assertEquals(edmEnitiySetFoo.getEntityType().getName(), edmProvider.getEntityType(new FullQualifiedName("namespace", "fooEntityType")).getName());
   }
 
 }
