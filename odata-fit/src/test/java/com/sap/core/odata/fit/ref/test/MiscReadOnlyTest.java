@@ -1,21 +1,18 @@
 package com.sap.core.odata.fit.ref.test;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 
+import org.apache.http.HttpHeaders;
 import org.apache.http.HttpResponse;
 import org.junit.Test;
 
-import com.sap.core.odata.api.enums.HttpStatusCodes;
-import com.sap.core.odata.testutils.helper.StringHelper;
-
+/**
+ * Read-only tests employing the reference scenario that use neither XML nor JSON
+ * @author SAP AG
+ */
 public class MiscReadOnlyTest extends AbstractRefTest {
-
-  public String checkUri(String uri) throws Exception {
-    HttpResponse response = callUri(uri, HttpStatusCodes.OK);
-    assertNotNull(response);
-    String payload = StringHelper.inputStreamToString(response.getEntity().getContent());
-    return payload;
-  }
 
   @Test
   public void checkUrls() throws Exception {
@@ -44,35 +41,36 @@ public class MiscReadOnlyTest extends AbstractRefTest {
 
   @Test
   public void count() throws Exception {
-    assertEquals("103", checkUri("Rooms()/$count"));
-    assertEquals("4", checkUri("Rooms('2')/nr_Employees/$count"));
-    assertEquals("1", checkUri("Employees('1')/ne_Room/$count"));
-    assertEquals("1", checkUri("Managers('3')/nm_Employees('5')/$count"));
-    assertEquals("4", checkUri("Rooms('2')/$links/nr_Employees/$count"));
-    assertEquals("1", checkUri("Employees('1')/$links/ne_Room/$count"));
-    assertEquals("1", checkUri("Managers('3')/$links/nm_Employees('5')/$count"));
+    assertEquals("103", getBody(callUri("Rooms()/$count")));
+    assertEquals("4", getBody(callUri("Rooms('2')/nr_Employees/$count")));
+    assertEquals("1", getBody(callUri("Employees('1')/ne_Room/$count")));
+    assertEquals("1", getBody(callUri("Managers('3')/nm_Employees('5')/$count")));
+    assertEquals("4", getBody(callUri("Rooms('2')/$links/nr_Employees/$count")));
+    assertEquals("1", getBody(callUri("Employees('1')/$links/ne_Room/$count")));
+    assertEquals("1", getBody(callUri("Managers('3')/$links/nm_Employees('5')/$count")));
 
-    // badRequest("Rooms('1')/Seats/$count");
-    //notFound("Managers('3')/nm_Employees('1')/$count");
+    badRequest("Rooms('1')/Seats/$count");
+    notFound("Managers('3')/nm_Employees('1')/$count");
   }
 
   @Test
   public void mediaResource() throws Exception {
-    checkUri("Employees('3')/$value");
-    //    checkMediaType(response, IMAGE_JPEG);
-    //    assertNull(response.getEntityTag());
+    HttpResponse response = callUri("Employees('3')/$value");
+    checkMediaType(response, IMAGE_JPEG);
+    assertNull(response.getFirstHeader(HttpHeaders.ETAG));
+    assertNotNull(getBody(response));
 
-    checkUri("Managers('1')/$value");
-    //    checkMediaType(response, IMAGE_JPEG);
-    //    assertNull(response.getEntityTag());
-    //    final byte[] expected = (byte[]) response.getEntity();
+    response = callUri("Managers('1')/$value");
+    checkMediaType(response, IMAGE_JPEG);
+    assertNull(response.getFirstHeader(HttpHeaders.ETAG));
+    final String expected = getBody(response);
 
-    checkUri("Employees('2')/ne_Manager/$value");
-    //    checkMediaType(response, IMAGE_JPEG);
-    //    assertNull(response.getEntityTag());
-    //    assertEquals(expected.length, ((byte[]) response.getEntity()).length);
+    response = callUri("Employees('2')/ne_Manager/$value");
+    checkMediaType(response, IMAGE_JPEG);
+    assertNull(response.getFirstHeader(HttpHeaders.ETAG));
+    assertEquals(expected, getBody(response));
 
-    //    notFound("Employees('99')/$value");
-    // badRequest("Teams('3')/$value");
+    notFound("Employees('99')/$value");
+    badRequest("Teams('3')/$value");
   }
 }
