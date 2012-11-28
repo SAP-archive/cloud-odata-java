@@ -58,4 +58,8 @@ public class EdmImplProv extends EdmImpl {
     }
     return new EdmAssociationImplProv(this,association , fqName.getNamespace());
   }
+
+  public EdmProvider getEdmProvider() {
+    return edmProvider;
+  } 
 }
