@@ -3,6 +3,7 @@ package com.sap.core.odata.core.serializer;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
@@ -31,6 +32,7 @@ import com.sap.core.odata.api.edm.EdmTyped;
 import com.sap.core.odata.api.processor.ODataContext;
 import com.sap.core.odata.api.serialization.ODataSerializationException;
 import com.sap.core.odata.api.serialization.ODataSerializer;
+import com.sap.core.odata.api.serialization.ODataSerializerProperties;
 import com.sap.core.odata.core.edm.EdmDateTimeOffset;
 
 public class AtomEntrySerializer extends ODataSerializer {
@@ -41,32 +43,54 @@ public class AtomEntrySerializer extends ODataSerializer {
   public static final String NS_ATOM = "http://www.w3.org/2005/Atom";
   public static final String NS_XML = "http://www.w3.org/XML/1998/namespace";
 
+  AtomEntrySerializer(ODataSerializerProperties properties) throws ODataSerializationException {
+    super(properties);
+  }
+  
+  @Override
+  public void serializeInto(OutputStream stream) throws ODataSerializationException {
+    try {
+      XMLStreamWriter writer = XMLOutputFactory.newInstance().createXMLStreamWriter(stream, "utf-8");
+      appendTo(writer);
+    } catch (Exception e) {
+      throw new ODataSerializationException(ODataSerializationException.COMMON, e);
+    }
+  }
+  
   @Override
   public InputStream serialize() throws ODataSerializationException {
     try {
       ByteArrayOutputStream out = new ByteArrayOutputStream();
-      XMLStreamWriter writer = XMLOutputFactory.newInstance().createXMLStreamWriter(out, "utf-8");
 
-      writer.writeStartElement("entry");
-      writer.writeDefaultNamespace(NS_ATOM);
-      writer.writeNamespace("m", NS_DATASERVICES_METADATA);
-      writer.writeNamespace("d", NS_DATASERVICES);
-      writer.writeAttribute(NS_XML, "base", this.getContext().getUriInfo().getBaseUri().toASCIIString());
-
-      handleAtomParts(writer);
-
-      handleEntity(writer, this.getData(), this.getEdmEntitySet());
+      this.serializeInto(out);
       
-      writer.writeEndElement();
-
-      writer.flush();
-
       return new ByteArrayInputStream(out.toByteArray());
     } catch (Exception e) {
       throw new ODataSerializationException(ODataSerializationException.COMMON, e);
     }
   }
 
+  void appendTo(XMLStreamWriter writer) throws ODataSerializationException {
+    try {
+      writer.writeStartElement("entry");
+      writer.writeDefaultNamespace(NS_ATOM);
+      writer.writeNamespace("m", NS_DATASERVICES_METADATA);
+      writer.writeNamespace("d", NS_DATASERVICES);
+      writer.writeAttribute(NS_XML, "base", getContext().getUriInfo().getBaseUri().toASCIIString());
+
+      handleAtomParts(writer);
+
+      handleEntity(writer, getData(), getEdmEntitySet());
+      
+      writer.writeEndElement();
+
+      writer.flush();
+    } catch (Exception e) {
+      throw new ODataSerializationException(ODataSerializationException.COMMON, e);
+    }
+  }
+
+  
   private void handleEntity(XMLStreamWriter writer, Map<String, Object> data, EdmEntitySet edm) throws EdmException, XMLStreamException {
     writer.writeStartElement(NS_DATASERVICES_METADATA, TAG_PROPERTIES);
     Set<Entry<String, Object>> entries = data.entrySet();
@@ -87,7 +111,6 @@ public class AtomEntrySerializer extends ODataSerializer {
           String valueAsString = st.valueToString(value, literalKind, facets);
           
           writer.writeStartElement(NS_DATASERVICES, name);
-//          if(valueAsString == null && prop.getFacets().isNullable()) {
           if(valueAsString == null) {
             writer.writeAttribute(NS_DATASERVICES_METADATA, "null", "true");
           } else {
@@ -195,10 +218,10 @@ public class AtomEntrySerializer extends ODataSerializer {
 
   private String createIdUri() throws ODataSerializationException {
     try {
-      ODataContext ctx = this.getContext();
-      Map<String, Object> data = this.getData();
+      ODataContext ctx = getContext();
+      Map<String, Object> data = getData();
 
-      EdmEntitySet es = this.getEdmEntitySet();
+      EdmEntitySet es = getEdmEntitySet();
       EdmEntityContainer ec = es.getEntityContainer();
       List<EdmProperty> kp = es.getEntityType().getKeyProperties();
 

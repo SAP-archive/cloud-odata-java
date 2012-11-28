@@ -11,6 +11,7 @@ import com.sap.core.odata.api.processor.ODataResponse.ODataResponseBuilder;
 import com.sap.core.odata.api.rt.RuntimeDelegate;
 import com.sap.core.odata.api.serialization.ODataSerializationException;
 import com.sap.core.odata.api.serialization.ODataSerializer;
+import com.sap.core.odata.api.serialization.ODataSerializerProperties;
 import com.sap.core.odata.api.uri.UriParser;
 import com.sap.core.odata.api.uri.expression.FilterParser;
 import com.sap.core.odata.core.ODataResponseBuilderImpl;
@@ -52,13 +53,18 @@ public class RuntimeDelegateImpl extends RuntimeDelegate {
   }
 
   @Override
-  protected ODataSerializer createSerializer__(Format format) throws ODataSerializationException {
-    return ODataSerializerFactory.create(format);
+  protected ODataSerializer createSerializer__(Format format, ODataSerializerProperties properties) throws ODataSerializationException {
+    return ODataSerializerFactory.create(format, properties);
   }
 
   @Override
   protected FilterParser getFilterParser__(Edm edm, EdmType edmType) {
     return new FilterParserImpl(edm,edmType);
+  }
+
+  @Override
+  protected ODataSerializerProperties createSerializerProperties__() throws ODataSerializationException {
+    return ODataSerializerFactory.createProperties();
   }
 
 }

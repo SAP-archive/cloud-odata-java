@@ -11,6 +11,7 @@ import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.api.processor.ODataResponse.ODataResponseBuilder;
 import com.sap.core.odata.api.serialization.ODataSerializationException;
 import com.sap.core.odata.api.serialization.ODataSerializer;
+import com.sap.core.odata.api.serialization.ODataSerializerProperties;
 import com.sap.core.odata.api.uri.UriParser;
 import com.sap.core.odata.api.uri.expression.FilterParser;
 
@@ -88,10 +89,17 @@ public abstract class RuntimeDelegate {
    * @return a OData serializer
    * @throws ODataException 
    */
-  protected abstract ODataSerializer createSerializer__(Format format) throws ODataSerializationException;
+  protected abstract ODataSerializer createSerializer__(Format format, ODataSerializerProperties properties) throws ODataSerializationException;
 
-  public static ODataSerializer createSerializer(Format atom) throws ODataSerializationException {
-    return RuntimeDelegate.getInstance().createSerializer__(atom);
+  public static ODataSerializer createSerializer(Format atom, ODataSerializerProperties properties) throws ODataSerializationException {
+    return RuntimeDelegate.getInstance().createSerializer__(atom, properties);
+  }
+
+  
+  protected abstract ODataSerializerProperties createSerializerProperties__() throws ODataSerializationException;
+  
+  public static ODataSerializerProperties createSerializerProperties() throws ODataSerializationException {
+    return RuntimeDelegate.getInstance().createSerializerProperties__();
   }
 
   public static EdmSimpleType getEdmSimpleType(EdmSimpleTypeKind edmSimpleType) {
@@ -122,4 +130,5 @@ public abstract class RuntimeDelegate {
   {
     return RuntimeDelegate.getInstance().getFilterParser__(edm, edmType);
   }
+
 }

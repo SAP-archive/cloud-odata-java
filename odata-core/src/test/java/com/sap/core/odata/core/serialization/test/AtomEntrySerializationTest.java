@@ -43,7 +43,9 @@ import com.sap.core.odata.api.enums.Format;
 import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.api.processor.ODataContext;
 import com.sap.core.odata.api.processor.ODataUriInfo;
+import com.sap.core.odata.api.serialization.ODataSerializationException;
 import com.sap.core.odata.api.serialization.ODataSerializer;
+import com.sap.core.odata.api.serialization.ODataSerializerProperties;
 import com.sap.core.odata.core.serializer.AtomEntrySerializer;
 import com.sap.core.odata.testutils.helper.StringHelper;
 import com.sap.core.odata.testutils.helper.XMLUnitHelper;
@@ -91,15 +93,7 @@ public class AtomEntrySerializationTest {
 
   @Test
   public void serializeEntry() throws IOException, XpathException, SAXException, XMLStreamException, FactoryConfigurationError, ODataException {
-    ODataSerializer ser = ODataSerializer.create(Format.ATOM);
-    assertNotNull(ser);
-
-    ODataContext ctx = createContextMock();
-    EdmEntitySet es = createEdmEntitySetMock(false);
-
-    ser.setContext(ctx);
-    ser.setData(this.data);
-    ser.setEdmEntitySet(es);
+    ODataSerializer ser = createAtomSerializer();
 
     InputStream xmlStream = ser.serialize();
     String xmlString = StringHelper.inputStreamToString(xmlStream);
@@ -108,17 +102,11 @@ public class AtomEntrySerializationTest {
     assertXpathEvaluatesTo(BASE_URI.toASCIIString(), "/a:entry/@xml:base", xmlString);
   }
 
+  
   @Test
   public void serializeEntryId() throws IOException, XpathException, SAXException, XMLStreamException, FactoryConfigurationError, ODataException {
-    ODataSerializer ser = ODataSerializer.create(Format.ATOM);
-    assertNotNull(ser);
-
-    ODataContext ctx = createContextMock();
     EdmEntitySet es = createEdmEntitySetMock(false);
-
-    ser.setContext(ctx);
-    ser.setData(this.data);
-    ser.setEdmEntitySet(es);
+    ODataSerializer ser = createAtomSerializer(es);
 
     InputStream xmlStream = ser.serialize();
     String xmlString = StringHelper.inputStreamToString(xmlStream);
@@ -131,15 +119,8 @@ public class AtomEntrySerializationTest {
 
   @Test
   public void serializeEntryTitle() throws Exception {
-    ODataSerializer ser = ODataSerializer.create(Format.ATOM);
-    assertNotNull(ser);
-
-    ODataContext ctx = createContextMock();
     EdmEntitySet es = createEdmEntitySetMock(false);
-
-    ser.setContext(ctx);
-    ser.setData(this.data);
-    ser.setEdmEntitySet(es);
+    ODataSerializer ser = createAtomSerializer(es);
 
     InputStream xmlStream = ser.serialize();
     String xmlString = StringHelper.inputStreamToString(xmlStream);
@@ -151,21 +132,38 @@ public class AtomEntrySerializationTest {
 
   @Test
   public void serializeEntryUpdated() throws Exception {
-    ODataSerializer ser = ODataSerializer.create(Format.ATOM);
-    assertNotNull(ser);
+    ODataSerializer ser = createAtomSerializer();
 
-    ODataContext ctx = createContextMock();
-    EdmEntitySet es = createEdmEntitySetMock(false);
-
-    ser.setContext(ctx);
-    ser.setData(this.data);
-    ser.setEdmEntitySet(es);
 
     InputStream xmlStream = ser.serialize();
     String xmlString = StringHelper.inputStreamToString(xmlStream);
 
     assertXpathExists("/a:entry/a:updated", xmlString);
     assertXpathEvaluatesTo("1999-01-01T00:00:00Z", "/a:entry/a:updated/text()", xmlString);
+  }
+
+  private ODataSerializer createAtomSerializer(ODataContext context, EdmEntitySet entitySet, Map<String, Object> data) throws ODataException, EdmException, ODataSerializationException {
+    ODataSerializerProperties props = ODataSerializerProperties.create();
+    props.setContext(context);
+    props.setData(data);
+    props.setEdmEntitySet(entitySet);
+    
+    ODataSerializer ser = ODataSerializer.create(Format.ATOM, props);
+    assertNotNull(ser);
+    return ser;
+  }
+
+  private ODataSerializer createAtomSerializer(EdmEntitySet es) throws ODataException, EdmException, ODataSerializationException {
+    ODataContext ctx = createContextMock();
+    
+    return createAtomSerializer(ctx, es, data);
+  }
+
+  private ODataSerializer createAtomSerializer() throws ODataException, EdmException, ODataSerializationException {
+    ODataContext ctx = createContextMock();
+    EdmEntitySet es = createEdmEntitySetMock(false);
+    
+    return createAtomSerializer(ctx, es, data);
   }
 
   private ODataContext createContextMock() throws ODataException {
@@ -246,15 +244,8 @@ public class AtomEntrySerializationTest {
 
   @Test
   public void serializeIds() throws IOException, XpathException, SAXException, XMLStreamException, FactoryConfigurationError, ODataException {
-    ODataSerializer ser = ODataSerializer.create(Format.ATOM);
-    assertNotNull(ser);
-
-    ODataContext ctx = createContextMock();
     EdmEntitySet es = createEdmEntitySetMock(true);
-
-    ser.setContext(ctx);
-    ser.setData(this.data);
-    ser.setEdmEntitySet(es);
+    ODataSerializer ser = createAtomSerializer(es);
 
     InputStream xmlStream = ser.serialize();
     String xmlString = StringHelper.inputStreamToString(xmlStream);
@@ -267,15 +258,8 @@ public class AtomEntrySerializationTest {
 
   @Test
   public void serializeProperties() throws IOException, XpathException, SAXException, XMLStreamException, FactoryConfigurationError, ODataException {
-    ODataSerializer ser = ODataSerializer.create(Format.ATOM);
-    assertNotNull(ser);
-
-    ODataContext ctx = createContextMock();
     EdmEntitySet es = createEdmEntitySetMock(true);
-
-    ser.setContext(ctx);
-    ser.setData(this.data);
-    ser.setEdmEntitySet(es);
+    ODataSerializer ser = createAtomSerializer(es);
 
     InputStream xmlStream = ser.serialize();
     String xmlString = StringHelper.inputStreamToString(xmlStream);
