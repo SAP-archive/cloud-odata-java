@@ -10,6 +10,10 @@ import com.sap.core.odata.api.edm.EdmSimpleTypeException;
 import com.sap.core.odata.api.edm.EdmSimpleTypeKind;
 import com.sap.core.odata.api.edm.EdmTypeKind;
 
+/**
+ * Implementation of the EDM simple type Int64
+ * @author SAP AG
+ */
 public class EdmInt64 implements EdmSimpleType {
 
   private static final EdmInt64 instance = new EdmInt64();

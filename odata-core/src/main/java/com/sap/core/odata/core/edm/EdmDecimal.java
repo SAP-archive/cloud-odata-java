@@ -11,6 +11,10 @@ import com.sap.core.odata.api.edm.EdmSimpleTypeException;
 import com.sap.core.odata.api.edm.EdmSimpleTypeKind;
 import com.sap.core.odata.api.edm.EdmTypeKind;
 
+/**
+ * Implementation of the EDM simple type Decimal
+ * @author SAP AG
+ */
 public class EdmDecimal implements EdmSimpleType {
 
   private static final EdmDecimal instance = new EdmDecimal();

@@ -10,6 +10,10 @@ import com.sap.core.odata.api.edm.EdmSimpleTypeException;
 import com.sap.core.odata.api.edm.EdmSimpleTypeKind;
 import com.sap.core.odata.api.edm.EdmTypeKind;
 
+/**
+ * Implementation of the EDM simple type Double
+ * @author SAP AG
+ */
 public class EdmDouble implements EdmSimpleType {
 
   // value-range limitations according to the CSDL document
@@ -97,9 +101,18 @@ public class EdmDouble implements EdmSimpleType {
         result = value.toString();
       else
         throw new EdmSimpleTypeException(EdmSimpleTypeException.VALUE_ILLEGAL_CONTENT.addContent(value));
-    else if (value instanceof Integer || value instanceof Short || value instanceof Byte
-        || value instanceof Double || value instanceof Float)
+    else if (value instanceof Integer || value instanceof Short || value instanceof Byte)
       result = value.toString();
+    else if (value instanceof Double)
+      if (((Double) value).isInfinite())
+        return value.toString().toUpperCase().substring(0, value.toString().length() - 5);
+      else
+        result = value.toString();
+    else if (value instanceof Float)
+      if (((Float) value).isInfinite())
+        return value.toString().toUpperCase().substring(0, value.toString().length() - 5);
+      else
+        result = value.toString();
     else if (value instanceof BigDecimal)
       if (((BigDecimal) value).precision() <= MAX_PRECISION && Math.abs(((BigDecimal) value).scale()) <= MAX_SCALE)
         result = ((BigDecimal) value).toString();

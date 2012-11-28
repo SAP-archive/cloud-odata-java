@@ -8,6 +8,10 @@ import com.sap.core.odata.api.edm.EdmSimpleTypeException;
 import com.sap.core.odata.api.edm.EdmSimpleTypeKind;
 import com.sap.core.odata.api.edm.EdmTypeKind;
 
+/**
+ * Implementation of the EDM simple type Int32
+ * @author SAP AG
+ */
 public class EdmInt32 implements EdmSimpleType {
 
   private static final EdmInt32 instance = new EdmInt32();
@@ -91,8 +95,10 @@ public class EdmInt32 implements EdmSimpleType {
     if (literalKind == null)
       throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_KIND_MISSING);
 
-    if (value instanceof Byte || value instanceof Short || value instanceof Integer || value instanceof Long)
-      if (((Number) value).longValue() >= Integer.MIN_VALUE && ((Number) value).longValue() <= Integer.MAX_VALUE)
+    if (value instanceof Byte || value instanceof Short || value instanceof Integer)
+      return value.toString();
+    else if (value instanceof Long)
+      if ((Long) value >= Integer.MIN_VALUE && (Long) value <= Integer.MAX_VALUE)
         return value.toString();
       else
         throw new EdmSimpleTypeException(EdmSimpleTypeException.VALUE_ILLEGAL_CONTENT.addContent(value));
