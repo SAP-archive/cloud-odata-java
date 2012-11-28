@@ -61,7 +61,7 @@ public class EdmEntityContainerImplProv implements EdmEntityContainer {
     try {
       entitySet = edm.edmProvider.getEntitySet(entityContainer.getName(), name);
     } catch (ODataException e) {
-      throw new EdmException(EdmException.COMMON, e);
+      throw new EdmException(EdmException.PROVIDERPROBLEM, e);
     }
 
     if (entitySet != null) {
@@ -69,7 +69,9 @@ public class EdmEntityContainerImplProv implements EdmEntityContainer {
       edmEntitySets.put(name, edmEntitySet);
     } else if (edmExtendedEntityContainer != null) {
       edmEntitySet = edmExtendedEntityContainer.getEntitySet(name);
-      edmEntitySets.put(name, edmEntitySet);
+      if (edmEntitySet != null) {
+        edmEntitySets.put(name, edmEntitySet);
+      }
     }
 
     return edmEntitySet;
@@ -93,7 +95,9 @@ public class EdmEntityContainerImplProv implements EdmEntityContainer {
       edmFunctionImports.put(name, edmFunctionImport);
     } else if (edmExtendedEntityContainer != null) {
       edmFunctionImport = edmExtendedEntityContainer.getFunctionImport(name);
-      edmFunctionImports.put(name, edmFunctionImport);
+      if (edmFunctionImport != null) {
+        edmFunctionImports.put(name, edmFunctionImport);
+      }
     }
 
     return edmFunctionImport;
@@ -117,7 +121,7 @@ public class EdmEntityContainerImplProv implements EdmEntityContainer {
     try {
       associationSet = edm.edmProvider.getAssociationSet(entityContainer.getName(), associationFQName, entitySetName, entitySetFromRole);
     } catch (ODataException e) {
-      throw new EdmException(EdmException.COMMON, e);
+      throw new EdmException(EdmException.PROVIDERPROBLEM, e);
     }
 
     if (associationSet != null) {

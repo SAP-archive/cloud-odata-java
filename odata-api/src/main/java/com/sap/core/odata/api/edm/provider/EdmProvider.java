@@ -16,7 +16,7 @@ import com.sap.core.odata.api.exception.ODataException;
 public interface EdmProvider {
 
   /**
-   * This method should return an {@link EntityContainerInfo}
+   * This method should return an {@link EntityContainerInfo} or <b>null</b> if nothing is found
    * @param name 
    * @return {@link EntityContainerInfo} for the given name
    * @throws ODataException
@@ -24,7 +24,7 @@ public interface EdmProvider {
   EntityContainerInfo getEntityContainer(String name) throws ODataException;
 
   /**
-   * This method should return an {@link EntityType}
+   * This method should return an {@link EntityType} or <b>null</b> if nothing is found
    * @param edmFQName
    * @return {@link EntityType} for the given name
    * @throws ODataException
@@ -32,7 +32,7 @@ public interface EdmProvider {
   EntityType getEntityType(FullQualifiedName edmFQName) throws ODataException;
 
   /**
-   * This method should return a {@link ComplexType}
+   * This method should return a {@link ComplexType} or <b>null</b> if nothing is found
    * @param edmFQName
    * @return {@link ComplexType} for the given name
    * @throws ODataException
@@ -40,7 +40,7 @@ public interface EdmProvider {
   ComplexType getComplexType(FullQualifiedName edmFQName) throws ODataException;
 
   /**
-   * This method should return an {@link Association}
+   * This method should return an {@link Association} or <b>null</b> if nothing is found
    * @param edmFQName
    * @return {@link Association} for the given name
    * @throws ODataException
@@ -48,7 +48,7 @@ public interface EdmProvider {
   Association getAssociation(FullQualifiedName edmFQName) throws ODataException;
 
   /**
-   * This method should return an {@link EntitySet}
+   * This method should return an {@link EntitySet} or <b>null</b> if nothing is found
    * @param entityContainer
    * @param name
    * @return {@link EntitySet} for the given container name and entity set name
@@ -57,7 +57,7 @@ public interface EdmProvider {
   EntitySet getEntitySet(String entityContainer, String name) throws ODataException;
 
   /**
-   * This method should return an {@link AssociationSet}
+   * This method should return an {@link AssociationSet} or <b>null</b> if nothing is found
    * @param entityContainer
    * @param association
    * @param sourceEntitySetName
@@ -68,7 +68,7 @@ public interface EdmProvider {
   AssociationSet getAssociationSet(String entityContainer, FullQualifiedName association, String sourceEntitySetName, String sourceEntitySetRole) throws ODataException;
 
   /**
-   * This method should return a {@link FunctionImport}
+   * This method should return a {@link FunctionImport} or <b>null</b> if nothing is found
    * @param entityContainer
    * @param name
    * @return {@link FunctionImport} for the given container name and function import name
@@ -77,7 +77,7 @@ public interface EdmProvider {
   FunctionImport getFunctionImport(String entityContainer, String name) throws ODataException;
 
   /**
-   * This method should return a collection of all {@link Schema}
+   * This method should return a collection of all {@link Schema} or <b>null</b> if nothing is found
    * @return Collection<{@link Schema}>
    * @throws ODataException
    */

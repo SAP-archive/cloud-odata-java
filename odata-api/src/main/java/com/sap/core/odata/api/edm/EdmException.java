@@ -8,6 +8,7 @@ public class EdmException extends ODataMessageException {
   private static final long serialVersionUID = 1L;
 
   public static final MessageReference COMMON = createMessageReference(EdmException.class, "COMMON");
+  public static final MessageReference PROVIDERPROBLEM = createMessageReference(EdmException.class, "PROVIDERPROBLEM");
 
   public EdmException(MessageReference messageReference) {
     super(messageReference);
