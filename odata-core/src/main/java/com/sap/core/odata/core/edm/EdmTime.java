@@ -10,6 +10,10 @@ import com.sap.core.odata.api.edm.EdmSimpleTypeException;
 import com.sap.core.odata.api.edm.EdmSimpleTypeKind;
 import com.sap.core.odata.api.edm.EdmTypeKind;
 
+/**
+ * Implementation of the EDM simple type Time
+ * @author SAP AG
+ */
 public class EdmTime implements EdmSimpleType {
 
   private static final EdmTime instance = new EdmTime();

@@ -519,7 +519,9 @@ public class EdmSimpleTypeTest {
     assertEquals("255", instance.valueToString(255L, EdmLiteralKind.DEFAULT, null));
     assertEquals("0.00390625", instance.valueToString(1.0 / 256, EdmLiteralKind.DEFAULT, null));
     assertEquals("4.2E-41", instance.valueToString(42e-42, EdmLiteralKind.DEFAULT, null));
+    assertEquals("INF", instance.valueToString(Double.POSITIVE_INFINITY, EdmLiteralKind.DEFAULT, null));
     assertEquals("-0.125", instance.valueToString(-0.125f, EdmLiteralKind.DEFAULT, null));
+    assertEquals("-INF", instance.valueToString(Float.NEGATIVE_INFINITY, EdmLiteralKind.DEFAULT, null));
     assertEquals("-1234567890.12345", instance.valueToString(new BigDecimal("-1234567890.12345"), EdmLiteralKind.DEFAULT, null));
 
     expectErrorInValueToString(instance, 1234567890123456L, EdmLiteralKind.DEFAULT, null);
@@ -609,6 +611,55 @@ public class EdmSimpleTypeTest {
     checkNull(instance);
 
     expectErrorInValueToString(instance, 1.0, EdmLiteralKind.DEFAULT, null);
+    expectErrorInValueToString(instance, 1, null, null);
+  }
+
+  @Test
+  public void valueToStringSByte() throws Exception {
+    final EdmSimpleType instance = EdmSimpleTypeKind.SByte.getEdmSimpleTypeInstance();
+
+    assertEquals("0", instance.valueToString(0, EdmLiteralKind.DEFAULT, null));
+    assertEquals("0", instance.valueToString(0, EdmLiteralKind.JSON, null));
+    assertEquals("0", instance.valueToString(0, EdmLiteralKind.URI, null));
+    assertEquals("8", instance.valueToString((byte) 8, EdmLiteralKind.DEFAULT, null));
+    assertEquals("16", instance.valueToString((short) 16, EdmLiteralKind.DEFAULT, null));
+    assertEquals("32", instance.valueToString((Integer) 32, EdmLiteralKind.DEFAULT, null));
+    assertEquals("64", instance.valueToString(64L, EdmLiteralKind.DEFAULT, null));
+
+    checkNull(instance);
+
+    expectErrorInValueToString(instance, -129, EdmLiteralKind.DEFAULT, null);
+    expectErrorInValueToString(instance, 128, EdmLiteralKind.DEFAULT, null);
+    expectErrorInValueToString(instance, 'A', EdmLiteralKind.DEFAULT, null);
+    expectErrorInValueToString(instance, 1, null, null);
+  }
+
+  @Test
+  public void valueToStringSingle() throws Exception {
+    final EdmSimpleType instance = EdmSimpleTypeKind.Single.getEdmSimpleTypeInstance();
+
+    assertEquals("0", instance.valueToString(0, EdmLiteralKind.DEFAULT, null));
+    assertEquals("0", instance.valueToString(0, EdmLiteralKind.JSON, null));
+    assertEquals("0F", instance.valueToString(0, EdmLiteralKind.URI, null));
+    assertEquals("8", instance.valueToString((byte) 8, EdmLiteralKind.DEFAULT, null));
+    assertEquals("16", instance.valueToString((short) 16, EdmLiteralKind.DEFAULT, null));
+    assertEquals("32", instance.valueToString((Integer) 32, EdmLiteralKind.DEFAULT, null));
+    assertEquals("255", instance.valueToString(255L, EdmLiteralKind.DEFAULT, null));
+    assertEquals("0.00390625", instance.valueToString(1.0 / 256, EdmLiteralKind.DEFAULT, null));
+    assertEquals("4.2E-8", instance.valueToString(42e-9, EdmLiteralKind.DEFAULT, null));
+    assertEquals("INF", instance.valueToString(Double.POSITIVE_INFINITY, EdmLiteralKind.DEFAULT, null));
+    assertEquals("-0.125", instance.valueToString(-0.125f, EdmLiteralKind.DEFAULT, null));
+    assertEquals("-INF", instance.valueToString(Float.NEGATIVE_INFINITY, EdmLiteralKind.DEFAULT, null));
+    assertEquals("-12345.67", instance.valueToString(new BigDecimal("-12345.67"), EdmLiteralKind.DEFAULT, null));
+
+    expectErrorInValueToString(instance, 12345678L, EdmLiteralKind.DEFAULT, null);
+    expectErrorInValueToString(instance, new BigDecimal("12345678"), EdmLiteralKind.DEFAULT, null);
+    expectErrorInValueToString(instance, new BigDecimal(BigInteger.TEN, 39), EdmLiteralKind.DEFAULT, null);
+    expectErrorInValueToString(instance, 42e38, EdmLiteralKind.DEFAULT, null);
+
+    checkNull(instance);
+
+    expectErrorInValueToString(instance, 'A', EdmLiteralKind.DEFAULT, null);
     expectErrorInValueToString(instance, 1, null, null);
   }
 }
