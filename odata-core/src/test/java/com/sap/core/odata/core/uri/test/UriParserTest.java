@@ -25,6 +25,7 @@ import com.sap.core.odata.api.edm.EdmTypeKind;
 import com.sap.core.odata.api.enums.Format;
 import com.sap.core.odata.api.enums.InlineCount;
 import com.sap.core.odata.api.exception.MessageReference;
+import com.sap.core.odata.api.exception.ODataMessageException;
 import com.sap.core.odata.api.processor.ODataPathSegment;
 import com.sap.core.odata.api.uri.UriParserException;
 import com.sap.core.odata.api.uri.UriParserResult;
@@ -55,7 +56,7 @@ public class UriParserTest {
     * @throws UriParserException
     * @throws EdmException
     */
-  private UriParserResultImpl parse(final String uri) throws UriParserException {
+  private UriParserResultImpl parse(final String uri) throws ODataMessageException {
     final String[] path = uri.split("\\?", -1);
     if (path.length > 2)
       throw new UriParserException(UriParserException.URISYNTAX);
@@ -107,7 +108,7 @@ public class UriParserTest {
     try {
       parse(uri);
       fail("Expected UriParserException not thrown");
-    } catch (UriParserException e) {
+    } catch (ODataMessageException e) {
       assertNotNull(e);
       assertEquals(exceptionContext.getKey(), e.getMessageReference().getKey());
     }

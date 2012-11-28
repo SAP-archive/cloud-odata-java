@@ -9,7 +9,6 @@ public class UriParserException extends ODataMessageException {
    */
   private static final long serialVersionUID = 1L;
 
-  public static final MessageReference EDM = createMessageReference(UriParserException.class, "EDM");
   public static final MessageReference URISYNTAX = createMessageReference(UriParserException.class, "URISYNTAX");
   public static final MessageReference MATCHPROBLEM = createMessageReference(UriParserException.class, "MATCHPROBLEM");
   public static final MessageReference ENTITYSETINSTEADOFENTITY = createMessageReference(UriParserException.class, "ENTITYSETINSTEADOFENTITY");
