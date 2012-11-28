@@ -1,33 +1,33 @@
 package com.sap.core.odata.fit.ref.test;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertTrue;
+
 import org.apache.http.HttpResponse;
 import org.junit.Test;
 
-import com.sap.core.odata.api.enums.HttpStatusCodes;
-import com.sap.core.odata.testutils.helper.StringHelper;
-
+/**
+ * @author SAP AG
+ */
 public class ServiceTest extends AbstractRefTest {
 
   @Test
   public void serviceDocument() throws Exception {
-    callUri("/", HttpStatusCodes.OK);
+    checkUri("/");
     // checkMediaType(response, new MediaType("application", "atomsvc+xml"));
-    //    String payload = StringHelper.inputStreamToString(response.getEntity().getContent());
 
     // notFound("invalid.svc/");
   }
 
   @Test
   public void metadataDocument() throws Exception {
-    HttpResponse response = callUri("$metadata", HttpStatusCodes.OK);
-    //    checkMediaType(response, MediaType.APPLICATION_XML_TYPE);
-    String payload = StringHelper.inputStreamToString(response.getEntity().getContent());
+    final HttpResponse response = callUri("$metadata");
+    checkMediaType(response, APPLICATION_XML);
+    final String payload = getBody(response);
     assertTrue(payload.contains("c_Location"));
     assertTrue(payload.contains("c_City"));
     assertTrue(payload.contains("Container1"));
 
     // notFound("$invalid");
-    callUri("$metadata?$format=json", HttpStatusCodes.BAD_REQUEST);
+    badRequest("$metadata?$format=json");
   }
 }
