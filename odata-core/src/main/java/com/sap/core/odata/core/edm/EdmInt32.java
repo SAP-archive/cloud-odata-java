@@ -62,15 +62,42 @@ public class EdmInt32 implements EdmSimpleType {
 
   @Override
   public Integer valueOfString(final String value, final EdmLiteralKind literalKind, final EdmFacets facets) throws EdmSimpleTypeException {
-    if (literalKind == EdmLiteralKind.URI)
-      return null;
-    else
-      return Integer.valueOf(value);
+    if (value == null)
+      if (facets == null || facets.isNullable() == null || facets.isNullable())
+        return null;
+      else
+        throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_NULL_NOT_ALLOWED);
+
+    try {
+      return Integer.parseInt(value);
+    } catch (NumberFormatException e) {
+      throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_ILLEGAL_CONTENT.addContent(value), e);
+    }
   }
 
   @Override
   public String valueToString(final Object value, final EdmLiteralKind literalKind, final EdmFacets facets) throws EdmSimpleTypeException {
-    return ((Integer) value).toString();
+    if (value == null)
+      if (facets == null)
+        return null;
+      else if (facets.getDefaultValue() == null)
+        if (facets.isNullable() == null || facets.isNullable())
+          return null;
+        else
+          throw new EdmSimpleTypeException(EdmSimpleTypeException.VALUE_NULL_NOT_ALLOWED);
+      else
+        return facets.getDefaultValue();
+
+    if (literalKind == null)
+      throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_KIND_MISSING);
+
+    if (value instanceof Byte || value instanceof Short || value instanceof Integer || value instanceof Long)
+      if (((Number) value).longValue() >= Integer.MIN_VALUE && ((Number) value).longValue() <= Integer.MAX_VALUE)
+        return value.toString();
+      else
+        throw new EdmSimpleTypeException(EdmSimpleTypeException.VALUE_ILLEGAL_CONTENT.addContent(value));
+    else
+      throw new EdmSimpleTypeException(EdmSimpleTypeException.VALUE_TYPE_NOT_SUPPORTED.addContent(value.getClass()));
   }
 
   @Override

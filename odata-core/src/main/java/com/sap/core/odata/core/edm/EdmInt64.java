@@ -1,5 +1,7 @@
 package com.sap.core.odata.core.edm;
 
+import java.math.BigInteger;
+
 import com.sap.core.odata.api.edm.EdmException;
 import com.sap.core.odata.api.edm.EdmFacets;
 import com.sap.core.odata.api.edm.EdmLiteralKind;
@@ -63,15 +65,53 @@ public class EdmInt64 implements EdmSimpleType {
 
   @Override
   public Long valueOfString(final String value, final EdmLiteralKind literalKind, final EdmFacets facets) throws EdmSimpleTypeException {
+    if (value == null)
+      if (facets == null || facets.isNullable() == null || facets.isNullable())
+        return null;
+      else
+        throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_NULL_NOT_ALLOWED);
+
     if (literalKind == EdmLiteralKind.URI)
-      return null;
+      throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_KIND_NOT_SUPPORTED.addContent(literalKind));
     else
-      return Long.parseLong(value);
+      try {
+        return Long.parseLong(value);
+      } catch (NumberFormatException e) {
+        throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_ILLEGAL_CONTENT.addContent(value), e);
+      }
   }
 
   @Override
   public String valueToString(final Object value, final EdmLiteralKind literalKind, final EdmFacets facets) throws EdmSimpleTypeException {
-    return ((Long) value).toString();
+    if (value == null)
+      if (facets == null)
+        return null;
+      else if (facets.getDefaultValue() == null)
+        if (facets.isNullable() == null || facets.isNullable())
+          return null;
+        else
+          throw new EdmSimpleTypeException(EdmSimpleTypeException.VALUE_NULL_NOT_ALLOWED);
+      else
+        return facets.getDefaultValue();
+
+    if (literalKind == null)
+      throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_KIND_MISSING);
+
+    if (value instanceof Byte || value instanceof Short || value instanceof Integer || value instanceof Long)
+      if (literalKind == EdmLiteralKind.URI)
+        return toUriLiteral(value.toString());
+      else
+        return value.toString();
+    else if (value instanceof BigInteger)
+      if (((BigInteger) value).bitLength() < Long.SIZE) // "<" because of the sign bit
+        if (literalKind == EdmLiteralKind.URI)
+          return toUriLiteral(value.toString());
+        else
+          return value.toString();
+      else
+        throw new EdmSimpleTypeException(EdmSimpleTypeException.VALUE_ILLEGAL_CONTENT.addContent(value));
+    else
+      throw new EdmSimpleTypeException(EdmSimpleTypeException.VALUE_TYPE_NOT_SUPPORTED.addContent(value.getClass()));
   }
 
   @Override

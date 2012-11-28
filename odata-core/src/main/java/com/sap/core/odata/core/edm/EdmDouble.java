@@ -92,7 +92,12 @@ public class EdmDouble implements EdmSimpleType {
       throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_KIND_MISSING);
 
     String result;
-    if (value instanceof Long || value instanceof Integer || value instanceof Short || value instanceof Byte
+    if (value instanceof Long)
+      if (Math.abs((Long) value) < Math.pow(10, MAX_PRECISION))
+        result = value.toString();
+      else
+        throw new EdmSimpleTypeException(EdmSimpleTypeException.VALUE_ILLEGAL_CONTENT.addContent(value));
+    else if (value instanceof Integer || value instanceof Short || value instanceof Byte
         || value instanceof Double || value instanceof Float)
       result = value.toString();
     else if (value instanceof BigDecimal)
