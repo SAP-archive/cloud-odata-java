@@ -61,8 +61,9 @@ public class ObjectHelper {
           } else if(!ObjectHelper.isComplexType(value.getClass())) {
             return value;
           }
+          return String.valueOf(value);
         }
-        return String.valueOf(value);
+        return value;
       }
     };
 
