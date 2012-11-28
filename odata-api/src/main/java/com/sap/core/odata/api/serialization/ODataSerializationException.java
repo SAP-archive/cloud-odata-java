@@ -12,6 +12,8 @@ public class ODataSerializationException extends ODataMessageException {
 
   public static final MessageReference ATOM_TITLE = createMessageReference(ODataSerializationException.class, "ATOM_TITLE");
 
+  public static final MessageReference MISSING_PROPERTY = createMessageReference(ODataSerializationException.class, "MISSING_PROPERTY");
+
   public ODataSerializationException(MessageReference messageReference) {
     super(messageReference);
   }
