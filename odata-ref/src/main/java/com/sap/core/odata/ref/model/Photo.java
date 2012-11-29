@@ -3,6 +3,7 @@ package com.sap.core.odata.ref.model;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Arrays;
 
 public class Photo {
   private static int counter = 1;
@@ -115,7 +116,7 @@ public class Photo {
         + "\"Name\":\"" + name + "\","
         + "\"Type\":\"" + type + "\","
         + "\"ImageUrl\":\"" + imageUrl + "\","
-        + "\"Image\":\"" + image + "\","
-        + "\"BinaryData\":\"" + binaryData + "\"}";
+        + "\"Image\":\"" + Arrays.toString(image) + "\","
+        + "\"BinaryData\":\"" + Arrays.toString(binaryData) + "\"}";
   }
 }

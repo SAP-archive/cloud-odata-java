@@ -14,19 +14,22 @@ import com.sap.core.odata.api.uri.EdmLiteral;
 import com.sap.core.odata.api.uri.UriParserException;
 import com.sap.core.odata.core.exception.ODataRuntimeException;
 
+/**
+ * @author SAP AG
+ */
 public class EdmSimpleTypeFacadeImpl implements EdmSimpleTypeFacade {
 
   private static final Pattern WHOLE_NUMBER_PATTERN = Pattern.compile("(-?\\p{Digit}+)([lL])?");
   private static final Pattern DECIMAL_NUMBER_PATTERN = Pattern.compile("(-?\\p{Digit}+(?:\\.\\p{Digit}*(?:[eE][-+]?\\p{Digit}+)?)?)([mMdDfF])");
   private static final Pattern STRING_VALUE_PATTERN = Pattern.compile("(X|binary|datetime|datetimeoffset|guid|time)?'(.*)'");
-  
+
   @Override
   public EdmLiteral parseUriLiteral(final String uriLiteral) throws UriParserException {
     final String literal = uriLiteral;
 
     if ("true".equals(literal) || "false".equals(literal))
       return new EdmLiteral(getEdmSimpleType(EdmSimpleTypeKind.Boolean), literal);
-    
+
     if ("null".equals(literal))
       return new EdmLiteral(getEdmSimpleType(EdmSimpleTypeKind.Null), literal);
 
@@ -57,7 +60,7 @@ public class EdmSimpleTypeFacadeImpl implements EdmSimpleTypeFacade {
           else
             return new EdmLiteral(getEdmSimpleType(EdmSimpleTypeKind.Int32), value);
         } catch (NumberFormatException e) {
-          throw new UriParserException(UriParserException.LITERALFORMAT);
+          throw new UriParserException(UriParserException.LITERALFORMAT.addContent(literal), e);
         }
     }
 
@@ -84,7 +87,7 @@ public class EdmSimpleTypeFacadeImpl implements EdmSimpleTypeFacade {
         try {
           b = Hex.decodeHex(value.toCharArray());
         } catch (DecoderException e) {
-          throw new UriParserException(UriParserException.NOTEXT, e);
+          throw new UriParserException(UriParserException.NOTEXT.addContent(literal), e);
         }
         return new EdmLiteral(getEdmSimpleType(EdmSimpleTypeKind.Binary), Base64.encodeBase64String(b));
       }
@@ -97,10 +100,10 @@ public class EdmSimpleTypeFacadeImpl implements EdmSimpleTypeFacade {
       else if ("time".equals(prefix))
         return new EdmLiteral(getEdmSimpleType(EdmSimpleTypeKind.Time), value);
     }
-    throw new UriParserException(UriParserException.UNKNOWNLITERAL);
+    throw new UriParserException(UriParserException.UNKNOWNLITERAL.addContent(literal));
   }
-  
-  public static EdmSimpleType getEdmSimpleType(EdmSimpleTypeKind edmSimpleType){
+
+  public static EdmSimpleType getEdmSimpleType(EdmSimpleTypeKind edmSimpleType) {
     EdmSimpleType edmType = null;
 
     switch (edmSimpleType) {
@@ -158,7 +161,7 @@ public class EdmSimpleTypeFacadeImpl implements EdmSimpleTypeFacade {
 
     return edmType;
   }
-  
+
   public static EdmSimpleType getInternalEdmSimpleTypeByString(String edmSimpleType) {
     EdmSimpleType edmType;
 

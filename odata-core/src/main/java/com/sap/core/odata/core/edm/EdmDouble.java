@@ -1,6 +1,7 @@
 package com.sap.core.odata.core.edm;
 
 import java.math.BigDecimal;
+import java.util.Locale;
 
 import com.sap.core.odata.api.edm.EdmException;
 import com.sap.core.odata.api.edm.EdmFacets;
@@ -105,12 +106,12 @@ public class EdmDouble implements EdmSimpleType {
       result = value.toString();
     else if (value instanceof Double)
       if (((Double) value).isInfinite())
-        return value.toString().toUpperCase().substring(0, value.toString().length() - 5);
+        return value.toString().toUpperCase(Locale.ROOT).substring(0, value.toString().length() - 5);
       else
         result = value.toString();
     else if (value instanceof Float)
       if (((Float) value).isInfinite())
-        return value.toString().toUpperCase().substring(0, value.toString().length() - 5);
+        return value.toString().toUpperCase(Locale.ROOT).substring(0, value.toString().length() - 5);
       else
         result = value.toString();
     else if (value instanceof BigDecimal)
