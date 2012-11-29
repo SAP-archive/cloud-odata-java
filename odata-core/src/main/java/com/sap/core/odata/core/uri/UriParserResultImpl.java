@@ -19,6 +19,8 @@ import com.sap.core.odata.api.uri.NavigationSegment;
 import com.sap.core.odata.api.uri.SelectItem;
 import com.sap.core.odata.api.uri.EdmLiteral;
 import com.sap.core.odata.api.uri.UriParserResult;
+import com.sap.core.odata.api.uri.expression.FilterExpression;
+import com.sap.core.odata.api.uri.expression.OrderByExpression;
 
 public class UriParserResultImpl implements UriParserResult {
 
@@ -38,9 +40,9 @@ public class UriParserResultImpl implements UriParserResult {
 
   private Format format;
   private String customFormat;
-  private String filter;
+  private FilterExpression filter;
   private InlineCount inlineCount;
-  private String orderBy;
+  private OrderByExpression orderBy;
   private String skipToken;
   private int skip;
   private Integer top;
@@ -180,12 +182,12 @@ public class UriParserResultImpl implements UriParserResult {
     return customFormat;
   }
 
-  public void setFilter(String filter) {
+  public void setFilter(FilterExpression filter) {
     this.filter = filter;
   }
 
   @Override
-  public String getFilter() {
+  public FilterExpression getFilter() {
     return filter;
   }
 
@@ -198,12 +200,12 @@ public class UriParserResultImpl implements UriParserResult {
     return inlineCount;
   }
 
-  public void setOrderBy(String orderBy) {
+  public void setOrderBy(OrderByExpression orderBy) {
     this.orderBy = orderBy;
   }
 
   @Override
-  public String getOrderBy() {
+  public OrderByExpression getOrderBy() {
     return orderBy;
   }
 

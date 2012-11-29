@@ -15,7 +15,12 @@ import com.sap.core.odata.api.uri.NavigationPropertySegment;
 import com.sap.core.odata.api.uri.NavigationSegment;
 import com.sap.core.odata.api.uri.SelectItem;
 import com.sap.core.odata.api.uri.EdmLiteral;
+import com.sap.core.odata.api.uri.expression.FilterExpression;
+import com.sap.core.odata.api.uri.expression.OrderByExpression;
 
+/**
+ * @author SAP AG
+ */
 public interface GetEntitySetView {
   /**
    * @return {@link EdmEntityContainer} the target entity container
@@ -33,7 +38,7 @@ public interface GetEntitySetView {
   public EdmEntitySet getTargetEntitySet();
 
   /**
-   * @return {@link EdmFunctionImport} the funktion import
+   * @return {@link EdmFunctionImport} the function import
    */
   public EdmFunctionImport getFunctionImport();
   
@@ -58,14 +63,14 @@ public interface GetEntitySetView {
   public Format getFormat();
 
   /**
-   * @return String the customer format
+   * @return the customer format
    */
   public String getCustomFormat();
 
   /**
-   * @return String the filter
+   * @return the filter expression
    */
-  public String getFilter();
+  public FilterExpression getFilter();
 
   /**
    * @return {@link InlineCount} the inline count
@@ -73,22 +78,22 @@ public interface GetEntitySetView {
   public InlineCount getInlineCount();
 
   /**
-   * @return String order by
+   * @return the order-by expression
    */
-  public String getOrderBy();
+  public OrderByExpression getOrderBy();
 
   /**
-   * @return String skip token
+   * @return the skip token
    */
   public String getSkipToken();
 
   /**
-   * @return String skip
+   * @return skip
    */
   public int getSkip();
 
   /**
-   * @return int top
+   * @return top
    */
   public Integer getTop();
 

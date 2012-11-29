@@ -14,7 +14,11 @@ import com.sap.core.odata.api.uri.NavigationPropertySegment;
 import com.sap.core.odata.api.uri.NavigationSegment;
 import com.sap.core.odata.api.uri.SelectItem;
 import com.sap.core.odata.api.uri.EdmLiteral;
+import com.sap.core.odata.api.uri.expression.FilterExpression;
 
+/**
+ * @author SAP AG
+ */
 public interface GetEntityView {
   /**
    * @return {@link EdmEntityContainer} the target entity container
@@ -32,7 +36,7 @@ public interface GetEntityView {
   public EdmEntitySet getTargetEntitySet();
 
   /**
-   * @return {@link EdmFunctionImport} the funktion import
+   * @return {@link EdmFunctionImport} the function import
    */
   public EdmFunctionImport getFunctionImport();
 
@@ -57,14 +61,14 @@ public interface GetEntityView {
   public Format getFormat();
 
   /**
-   * @return String the customer format
+   * @return the customer format
    */
   public String getCustomFormat();
 
   /**
-   * @return String the filter
+   * @return the filter expression
    */
-  public String getFilter();
+  public FilterExpression getFilter();
 
   /**
    * @return List of a list of {@link NavigationPropertySegment} to be expanded

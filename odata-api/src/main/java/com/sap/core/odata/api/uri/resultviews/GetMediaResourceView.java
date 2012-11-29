@@ -11,7 +11,11 @@ import com.sap.core.odata.api.enums.Format;
 import com.sap.core.odata.api.uri.KeyPredicate;
 import com.sap.core.odata.api.uri.NavigationSegment;
 import com.sap.core.odata.api.uri.EdmLiteral;
+import com.sap.core.odata.api.uri.expression.FilterExpression;
 
+/**
+ * @author SAP AG
+ */
 public interface GetMediaResourceView {
   /**
    * @return {@link EdmEntityContainer} the target entity container
@@ -29,7 +33,7 @@ public interface GetMediaResourceView {
   public EdmEntitySet getTargetEntitySet();
 
   /**
-   * @return {@link EdmFunctionImport} the funktion import
+   * @return {@link EdmFunctionImport} the function import
    */
   public EdmFunctionImport getFunctionImport();
   
@@ -54,14 +58,14 @@ public interface GetMediaResourceView {
   public Format getFormat();
 
   /**
-   * @return String the customer format
+   * @return the customer format
    */
   public String getCustomFormat();
 
   /**
-   * @return String the filter
+   * @return the filter expression
    */
-  public String getFilter();
+  public FilterExpression getFilter();
 
   /**
    * @return Map of {@literal <String,} {@link EdmLiteral}{@literal >} function import parameters
