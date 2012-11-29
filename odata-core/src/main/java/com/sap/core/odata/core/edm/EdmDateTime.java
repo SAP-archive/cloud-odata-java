@@ -117,7 +117,7 @@ public class EdmDateTime implements EdmSimpleType {
 
     switch (literalKind) {
     case DEFAULT:
-      int digits = 3;  // precision at most to milliseconds
+      int digits = 3; // precision at most to milliseconds
       if (facets != null && facets.getPrecision() != null && facets.getPrecision() < 3) {
         digits = facets.getPrecision();
         adjustMilliseconds(dateTimeValue, digits);
@@ -134,11 +134,11 @@ public class EdmDateTime implements EdmSimpleType {
       final String result = dateFormat.format(dateTimeValue.getTime());
       if (result.contains("."))
         if (digits == 0)
-          return result.substring(0, pattern.length() - 2);  // beware of the "'"s
+          return result.substring(0, pattern.length() - 2); // beware of the "'"s
         else if (digits == 3)
           return result;
         else
-          return result.substring(0, pattern.length() - 2 + 1 + digits);  // beware of the "'"s
+          return result.substring(0, pattern.length() - 2 + 1 + digits); // beware of the "'"s
       else
         return result;
 

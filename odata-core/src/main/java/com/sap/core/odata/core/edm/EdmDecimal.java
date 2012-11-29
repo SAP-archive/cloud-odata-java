@@ -118,7 +118,7 @@ public class EdmDecimal implements EdmSimpleType {
       result = value.toString();
       if (facets != null && facets.getPrecision() != null
           && (facets.getPrecision() < result.length() - 1
-              || !result.startsWith("-") && facets.getPrecision() < result.length()))
+          || !result.startsWith("-") && facets.getPrecision() < result.length()))
         throw new EdmSimpleTypeException(EdmSimpleTypeException.VALUE_FACETS_NOT_MATCHED.addContent(value, facets));
 
     } else if (value instanceof Double || value instanceof Float || value instanceof BigDecimal) {
@@ -131,7 +131,7 @@ public class EdmDecimal implements EdmSimpleType {
         bigDecimalValue = (BigDecimal) value;
       if (facets == null
           || (facets.getPrecision() == null || facets.getPrecision() >= bigDecimalValue.precision())
-              && (facets.getScale() == null || facets.getScale() >= bigDecimalValue.scale()))
+          && (facets.getScale() == null || facets.getScale() >= bigDecimalValue.scale()))
         result = bigDecimalValue.toPlainString();
       else
         throw new EdmSimpleTypeException(EdmSimpleTypeException.VALUE_FACETS_NOT_MATCHED.addContent(value, facets));

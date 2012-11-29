@@ -1,8 +1,7 @@
 package com.sap.core.odata.core.edm.provider.test;
 
 import static org.junit.Assert.assertEquals;
-import static org.custommonkey.xmlunit.XMLAssert.*;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -10,7 +9,6 @@ import java.util.List;
 
 import org.junit.Ignore;
 import org.junit.Test;
-import org.custommonkey.xmlunit.*;
 
 import com.sap.core.odata.api.edm.EdmConcurrencyMode;
 import com.sap.core.odata.api.edm.EdmContentKind;
@@ -45,31 +43,31 @@ import com.sap.core.odata.api.exception.ODataNotFoundException;
 import com.sap.core.odata.core.edm.provider.EdmImplProv;
 
 public class EdmServiceMetadataImplProvTest {
- 
+
   @Test
-  public void dataServiceVersion() throws Exception{
+  public void dataServiceVersion() throws Exception {
     EdmProvider edmProvider = mock(EdmProvider.class);
     EdmImplProv edmImplProv = new EdmImplProv(edmProvider);
-    
+
     EdmServiceMetadata serviceMetadata = edmImplProv.getServiceMetadata();
     assertEquals("2.0", serviceMetadata.getDataServiceVersion());
   }
-  
+
   @Ignore
   @Test
-  public void metadataRefScenario() throws Exception{
+  public void metadataRefScenario() throws Exception {
     EdmImplProv edmImplProv = new EdmImplProv(new edmProviderMock());
-    
+
     EdmServiceMetadata serviceMetadata = edmImplProv.getServiceMetadata();
     String metadata = serviceMetadata.getMetadata();
     System.out.println(metadata);
   }
 
-//  private EdmProvider getEdmProviderMock() throws Exception { 
-//    return new edmProviderMock();
-//  }
-  
-  private class edmProviderMock extends EdmProviderDefault{
+  //  private EdmProvider getEdmProviderMock() throws Exception { 
+  //    return new edmProviderMock();
+  //  }
+
+  private class edmProviderMock extends EdmProviderDefault {
 
     public static final String NAMESPACE_1 = "RefScenario";
     public static final String NAMESPACE_2 = "RefScenario2";

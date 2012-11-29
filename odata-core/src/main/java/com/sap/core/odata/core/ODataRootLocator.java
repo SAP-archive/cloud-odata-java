@@ -33,7 +33,7 @@ public class ODataRootLocator {
   private UriInfo uriInfo;
   @Context
   private Request request;
-  
+
   @Context
   private ServletConfig servletConfig;
 
@@ -62,7 +62,7 @@ public class ODataRootLocator {
     if (pathSplitAsString != null) {
       pathSplit = Integer.parseInt(pathSplitAsString);
     }
-    
+
     InitParameter param = odataLocator.new InitParameter();
     param.setServiceFactory(serviceFactory);
     param.setPathSegments(pathSegments);
@@ -70,7 +70,7 @@ public class ODataRootLocator {
     param.setUriInfo(uriInfo);
     param.setRequest(request);
     param.setPathSplit(pathSplit);
-    
+
     odataLocator.initialize(param);
 
     return odataLocator;

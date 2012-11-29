@@ -30,6 +30,7 @@ public class EdmDouble implements EdmSimpleType {
   public static EdmDouble getInstance() {
     return instance;
   }
+
   @Override
   public boolean equals(final Object obj) {
     return this == obj || obj instanceof EdmDouble;

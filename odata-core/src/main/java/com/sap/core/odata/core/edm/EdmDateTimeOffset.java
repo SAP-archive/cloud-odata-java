@@ -137,11 +137,10 @@ public class EdmDateTimeOffset implements EdmSimpleType {
         offsetString = "";
       else
         offsetString = String.format("%+03d%02d", offsetHours, offsetMinutes);
+    else if (offset == 0)
+      offsetString = "Z";
     else
-      if (offset == 0)
-        offsetString = "Z";
-      else
-        offsetString = String.format("%+03d:%02d", offsetHours, offsetMinutes);
+      offsetString = String.format("%+03d:%02d", offsetHours, offsetMinutes);
 
     switch (literalKind) {
     case DEFAULT:

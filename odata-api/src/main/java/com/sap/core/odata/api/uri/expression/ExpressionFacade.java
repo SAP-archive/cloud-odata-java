@@ -2,7 +2,6 @@ package com.sap.core.odata.api.uri.expression;
 
 import com.sap.core.odata.api.edm.Edm;
 import com.sap.core.odata.api.edm.EdmType;
-
 import com.sap.core.odata.api.rt.RuntimeDelegate;
 
 

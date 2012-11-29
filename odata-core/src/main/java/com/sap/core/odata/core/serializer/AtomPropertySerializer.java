@@ -20,10 +20,10 @@ public class AtomPropertySerializer {
     EdmType type = prop.getType();
 
     String name = prop.getName();
-    if(type instanceof EdmSimpleType) {
+    if (type instanceof EdmSimpleType) {
       EdmSimpleType st = (EdmSimpleType) type;
       appendEntity(writer, st, prop, value, name);
-    } else if(type instanceof EdmComplexType) {
+    } else if (type instanceof EdmComplexType) {
       appendEntity(writer, (EdmComplexType) type, prop, value, name);
     } else {
       writer.writeStartElement(AtomEntrySerializer.NS_DATASERVICES, name);
@@ -34,9 +34,9 @@ public class AtomPropertySerializer {
 
   private void appendEntity(XMLStreamWriter writer, EdmComplexType type, EdmProperty prop, Object value, String name) throws XMLStreamException, EdmException {
     writer.writeStartElement(AtomEntrySerializer.NS_DATASERVICES, name);
-    
+
     // TODO: mibo_121129: check if nullable
-    if(value == null) {
+    if (value == null) {
       writer.writeAttribute(AtomEntrySerializer.NS_DATASERVICES_METADATA, "null", "true");
     } else {
       Collection<String> propNames = type.getPropertyNames();
@@ -50,8 +50,8 @@ public class AtomPropertySerializer {
   }
 
   private Object extractChildValue(Object value, String name) {
-    if(value instanceof Map) {
-//      Map<String, Object> map = (Map<String, Object>) value;
+    if (value instanceof Map) {
+      //      Map<String, Object> map = (Map<String, Object>) value;
       Map<?, ?> map = (Map<?, ?>) value;
       return map.get(name);
     }
@@ -62,9 +62,9 @@ public class AtomPropertySerializer {
     EdmLiteralKind literalKind = EdmLiteralKind.DEFAULT;
     EdmFacets facets = prop.getFacets();
     String valueAsString = st.valueToString(value, literalKind, facets);
-    
+
     writer.writeStartElement(AtomEntrySerializer.NS_DATASERVICES, name);
-    if(valueAsString == null) {
+    if (valueAsString == null) {
       writer.writeAttribute(AtomEntrySerializer.NS_DATASERVICES_METADATA, "null", "true");
     } else {
       writer.writeCharacters(valueAsString);

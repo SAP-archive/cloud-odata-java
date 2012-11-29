@@ -61,7 +61,7 @@ public class PathSegmentTest {
   public void readonlyMatrixParameter() {
     this.segment.getMatrixParameters().get("m").clear();
   }
-  
+
   @Test
   public void noMatrixParameter() {
     assertEquals("segment", this.segmentNoMatrix.getPath());

@@ -41,32 +41,32 @@ public class TestVisitor implements ExpressionVisitor {
     StringBuilder sb = new StringBuilder();
     sb.append("{");
     sb.append(method.toString());
-    
-    for (int i = 0; i < retParameters.size(); i ++)
+
+    for (int i = 0; i < retParameters.size(); i++)
     {
-      if (i != 0 ) sb.append(",");
+      if (i != 0) sb.append(",");
       sb.append(retParameters.elementAt(i));
     }
-    
+
     sb.append("}");
-     
+
     return sb.toString();
   }
 
   @Override
-  public Object visitMember(MemberExpression memberExpression, Object source, Object path) 
+  public Object visitMember(MemberExpression memberExpression, Object source, Object path)
   {
     return "{" + source.toString() + "/" + path.toString() + "}";
   }
 
   @Override
-  public Object visitProperty(PropertyExpression literal, String uriLiteral, EdmProperty edmProperty) 
+  public Object visitProperty(PropertyExpression literal, String uriLiteral, EdmProperty edmProperty)
   {
     return uriLiteral;
   }
 
   @Override
-  public Object visitUnary(UnaryExpression unaryExpression, UnaryOperator operator, Object operand) 
+  public Object visitUnary(UnaryExpression unaryExpression, UnaryOperator operator, Object operand)
   {
     return "{" + operator.toSyntax() + " " + operand.toString() + "}";
   }

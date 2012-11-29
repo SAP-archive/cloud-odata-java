@@ -8,7 +8,7 @@ import com.sap.core.odata.api.edm.provider.Property;
 public class EdmPropertyImplProv extends EdmElementImplProv implements EdmProperty {
 
   private Property property;
-  
+
   public EdmPropertyImplProv(EdmImplProv edm, Property property) throws EdmException {
     super(edm, property.getName(), property.getType(), property.getFacets(), property.getMapping());
     this.property = property;

@@ -26,7 +26,7 @@ public class EdmImplProvTest {
 
     EntityType entityType = new EntityType().setName("EntityType1");
     when(edmProvider.getEntityType(new FullQualifiedName("EntityType1Ns", "EntityType1"))).thenReturn(entityType);
-    
+
     ComplexType complexType = new ComplexType().setName("ComplexType1");
     when(edmProvider.getComplexType(new FullQualifiedName("ComplexType1Ns", "ComplexType1"))).thenReturn(complexType);
 
@@ -36,7 +36,7 @@ public class EdmImplProvTest {
     EntityContainerInfo defaultEntityContainer = new EntityContainerInfo().setName("Container1");
     when(edmProvider.getEntityContainer(null)).thenReturn(defaultEntityContainer);
     when(edmProvider.getEntityContainer("Container1")).thenReturn(defaultEntityContainer);
-    
+
     edm = new EdmImplProv(edmProvider);
   }
 
@@ -44,7 +44,7 @@ public class EdmImplProvTest {
   public void testEntityType() throws EdmException {
     assertEquals("EntityType1", edm.getEntityType("EntityType1Ns", "EntityType1").getName());
   }
-  
+
   @Test
   public void testComplexType() throws EdmException {
     assertEquals("ComplexType1", edm.getComplexType("ComplexType1Ns", "ComplexType1").getName());

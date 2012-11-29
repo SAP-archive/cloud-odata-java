@@ -39,49 +39,48 @@ public class EdmFunctionImportImplProvTest {
   public static void getEdmEntityContainerImpl() throws Exception {
     EdmProvider edmProvider = mock(EdmProvider.class);
     EdmImplProv edmImplProv = new EdmImplProv(edmProvider);
-    
+
     EntityContainerInfo containerInfo = new EntityContainerInfo().setName("Container");
     when(edmProvider.getEntityContainer("Container")).thenReturn(containerInfo);
     edmEntityContainer = new EdmEntityContainerImplProv(edmImplProv, containerInfo);
-    
+
     EntitySet fooEntitySet = new EntitySet().setName("fooEntitySet");
     when(edmProvider.getEntitySet("Container", "fooEntitySet")).thenReturn(fooEntitySet);
-    
+
     ReturnType fooReturnType = new ReturnType().setQualifiedName(EdmSimpleTypeKind.String.getFullQualifiedName()).setMultiplicity(EdmMultiplicity.ONE);
-    
+
     Collection<FunctionImportParameter> parameters = new ArrayList<FunctionImportParameter>();
     FunctionImportParameter parameter = new FunctionImportParameter().setName("fooParameter1");
     parameters.add(parameter);
-    
+
     parameter = new FunctionImportParameter().setName("fooParameter2");
     parameters.add(parameter);
-    
+
     parameter = new FunctionImportParameter().setName("fooParameter3");
     parameters.add(parameter);
-    
+
     FunctionImport functionImportFoo = new FunctionImport().setName("foo").setHttpMethod(HttpMethods.GET).setReturnType(fooReturnType).setEntitySet("fooEntitySet").setParameters(parameters);
-    when(edmProvider.getFunctionImport("Container", "foo")).thenReturn(functionImportFoo);  
+    when(edmProvider.getFunctionImport("Container", "foo")).thenReturn(functionImportFoo);
     edmFunctionImport = new EdmFunctionImportImplProv(edmImplProv, functionImportFoo, edmEntityContainer);
-    
+
     FunctionImport functionImportBar = new FunctionImport().setName("bar").setHttpMethod(HttpMethods.GET);
-    when(edmProvider.getFunctionImport("Container", "bar")).thenReturn(functionImportBar);  
+    when(edmProvider.getFunctionImport("Container", "bar")).thenReturn(functionImportBar);
     edmFunctionImportWithoutParameters = new EdmFunctionImportImplProv(edmImplProv, functionImportBar, edmEntityContainer);
-    
+
   }
-  
 
   @Test
-  public void functionImport() throws Exception {    
+  public void functionImport() throws Exception {
     assertEquals("foo", edmFunctionImport.getName());
     assertEquals(HttpMethods.GET, edmFunctionImport.getHttpMethod());
-    
+
   }
-  
+
   @Test
   public void containerName() throws Exception {
     assertEquals(edmEntityContainer, edmFunctionImport.getEntityContainer());
   }
-  
+
   @Test
   public void returnType() throws Exception {
     EdmTyped returnType = edmFunctionImport.getReturnType();
@@ -89,7 +88,7 @@ public class EdmFunctionImportImplProvTest {
     assertEquals(EdmSimpleTypeKind.String.getFullQualifiedName().getName(), returnType.getType().getName());
     assertEquals(EdmMultiplicity.ONE, returnType.getMultiplicity());
   }
-  
+
   @Test
   public void entitySet() throws Exception {
     EdmEntitySet entitySet = edmFunctionImport.getEntitySet();
@@ -97,46 +96,45 @@ public class EdmFunctionImportImplProvTest {
     assertEquals("fooEntitySet", entitySet.getName());
     assertEquals(edmEntityContainer.getEntitySet("fooEntitySet"), entitySet);
   }
-  
+
   @Test
   public void parameterExisting() throws Exception {
     Collection<String> parameterNames = edmFunctionImport.getParameterNames();
     assertTrue(parameterNames.contains("fooParameter1"));
     assertTrue(parameterNames.contains("fooParameter2"));
     assertTrue(parameterNames.contains("fooParameter3"));
-    
+
     EdmParameter parameter = edmFunctionImport.getParameter("fooParameter1");
     assertNotNull(parameter);
     assertEquals("fooParameter1", parameter.getName());
-   
+
     parameter = null;
     parameter = edmFunctionImport.getParameter("fooParameter1");
     assertNotNull(parameter);
     assertEquals("fooParameter1", parameter.getName());
-    
+
     parameter = null;
     parameter = edmFunctionImport.getParameter("fooParameter2");
     assertNotNull(parameter);
     assertEquals("fooParameter2", parameter.getName());
-    
+
     parameter = null;
     parameter = edmFunctionImport.getParameter("fooParameter3");
     assertNotNull(parameter);
     assertEquals("fooParameter3", parameter.getName());
   }
-  
+
   @Test
   public void parameterNotExisting() throws Exception {
     assertNotNull(edmFunctionImportWithoutParameters.getParameterNames());
-    
+
     EdmParameter parameter = edmFunctionImportWithoutParameters.getParameter("fooParameter1");
     assertNull(parameter);
-    
+
     parameter = null;
     parameter = edmFunctionImportWithoutParameters.getParameter("fooParameter2");
     assertNull(parameter);
 
-    
     parameter = null;
     parameter = edmFunctionImportWithoutParameters.getParameter("fooParameter3");
     assertNull(parameter);

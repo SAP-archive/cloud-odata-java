@@ -12,7 +12,6 @@ import com.sap.core.odata.core.uri.expression.BinaryExpressionImpl;
 import com.sap.core.odata.core.uri.expression.MethodExpressionImpl;
 import com.sap.core.odata.core.uri.expression.UnaryExpressionImpl;
 
-
 public class ParserTool
 {
   private String expression;

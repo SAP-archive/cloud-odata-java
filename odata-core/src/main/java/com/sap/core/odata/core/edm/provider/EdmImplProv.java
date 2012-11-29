@@ -25,8 +25,8 @@ public class EdmImplProv extends EdmImpl {
   @Override
   protected EdmEntityContainer createEntityContainer(String name) throws ODataException {
     EntityContainerInfo enitityContainerInfo = edmProvider.getEntityContainer(name);
-    if(enitityContainerInfo == null){
-     return null;
+    if (enitityContainerInfo == null) {
+      return null;
     }
     return new EdmEntityContainerImplProv(this, enitityContainerInfo);
   }
@@ -34,17 +34,17 @@ public class EdmImplProv extends EdmImpl {
   @Override
   protected EdmEntityType createEntityType(FullQualifiedName fqName) throws ODataException {
     EntityType entityType = edmProvider.getEntityType(fqName);
-    if(entityType == null){
+    if (entityType == null) {
       return null;
     }
-      
-    return new EdmEntityTypeImplProv(this,entityType , fqName.getNamespace());
+
+    return new EdmEntityTypeImplProv(this, entityType, fqName.getNamespace());
   }
 
   @Override
   protected EdmComplexType createComplexType(FullQualifiedName fqName) throws ODataException {
     ComplexType complexType = edmProvider.getComplexType(fqName);
-    if(complexType == null){
+    if (complexType == null) {
       return null;
     }
     return new EdmComplexTypeImplProv(this, complexType, fqName.getNamespace());
@@ -53,13 +53,13 @@ public class EdmImplProv extends EdmImpl {
   @Override
   protected EdmAssociation createAssociation(FullQualifiedName fqName) throws ODataException {
     Association association = edmProvider.getAssociation(fqName);
-    if(association == null){
+    if (association == null) {
       return null;
     }
-    return new EdmAssociationImplProv(this,association , fqName.getNamespace());
+    return new EdmAssociationImplProv(this, association, fqName.getNamespace());
   }
 
   public EdmProvider getEdmProvider() {
     return edmProvider;
-  } 
+  }
 }

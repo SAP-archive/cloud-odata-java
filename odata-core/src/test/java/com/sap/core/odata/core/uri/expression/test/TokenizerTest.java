@@ -14,8 +14,6 @@ import com.sap.core.odata.core.uri.expression.TokenList;
 import com.sap.core.odata.core.uri.expression.Tokenizer;
 import com.sap.core.odata.core.uri.expression.TokenizerMessage;
 
-
-
 public class TokenizerTest {
 
   protected class TokenTool
@@ -93,8 +91,8 @@ public class TokenizerTest {
     try {
       TokenList tokens = tokenizer.tokenize(expression);//please 
       return new TokenTool(tokens);
-//    } catch (TokenizerRTException e) {
-//      fail("Error in tokenize" + e.getLocalizedMessage());
+      //    } catch (TokenizerRTException e) {
+      //      fail("Error in tokenize" + e.getLocalizedMessage());
     } catch (TokenizerMessage e) {
 
       fail("Error in tokenize" + e.getLocalizedMessage());
@@ -113,8 +111,8 @@ public class TokenizerTest {
     try {
       TokenList tokens = tokenizer.tokenize(expression);
       return new TokenTool(tokens);
-//    } catch (TokenizerRuntimeException e) {
-//      fail("Error in tokenize" + e.getLocalizedMessage());
+      //    } catch (TokenizerRuntimeException e) {
+      //      fail("Error in tokenize" + e.getLocalizedMessage());
     } catch (TokenizerMessage e) {
       fail("Error in tokenize" + e.getLocalizedMessage());
     }

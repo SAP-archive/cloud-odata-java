@@ -38,7 +38,7 @@ public class DispatcherTest {
   private static ODataService service;
 
   @BeforeClass
-  public static void createMockProcessor() throws ODataException {  
+  public static void createMockProcessor() throws ODataException {
     ServiceDocument serviceDocument = mock(ServiceDocument.class);
     when(serviceDocument.readServiceDocument(any(UriParserResultImpl.class))).thenAnswer(getAnswer());
 
@@ -126,7 +126,7 @@ public class DispatcherTest {
 
   private void checkDispatch(final ODataHttpMethod method, final UriType uriType, final boolean isValue, final String expectedMethodName) throws ODataException {
     Dispatcher dispatcher = new Dispatcher(service);
-    
+
     UriParserResultImpl uriParserResult = mock(UriParserResultImpl.class);
     when(uriParserResult.getUriType()).thenReturn(uriType);
     when(uriParserResult.isValue()).thenReturn(isValue);

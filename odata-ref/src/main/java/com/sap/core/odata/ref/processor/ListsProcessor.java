@@ -26,7 +26,6 @@ import com.sap.core.odata.api.exception.ODataNotImplementedException;
 import com.sap.core.odata.api.processor.ODataResponse;
 import com.sap.core.odata.api.processor.ODataSingleProcessor;
 import com.sap.core.odata.api.serialization.ODataSerializer;
-import com.sap.core.odata.api.serialization.ODataSerializerProperties;
 import com.sap.core.odata.api.uri.EdmLiteral;
 import com.sap.core.odata.api.uri.KeyPredicate;
 import com.sap.core.odata.api.uri.NavigationSegment;
@@ -96,7 +95,7 @@ public class ListsProcessor extends ODataSingleProcessor {
     Object serializedData = serialize(data, uriParserResultView);
     return ODataResponse
         .status(HttpStatusCodes.OK)
-//        .entity(data.toString())
+        //        .entity(data.toString())
         .entity(serializedData)
         .build();
   }
@@ -454,54 +453,45 @@ public class ListsProcessor extends ODataSingleProcessor {
     if (format == null) {
       return objects == null ? "NULL" : objects.toString();
     } else {
-      ODataSerializerProperties properties = ODataSerializerProperties.create();
-      properties.setContext(getContext());
-      properties.setEdmEntitySet(uriParserResultView.getTargetEntitySet());
       Map<String, Object> rawData = objectToMap(objects);
-      properties.setData(rawData);
-      ODataSerializer ser = ODataSerializer.create(format, properties);
+      ODataSerializer ser = ODataSerializer.create(format, getContext());
 
-      return ser.serialize();
+      return ser.serializeEntry(uriParserResultView.getTargetEntitySet(), rawData);
     }
   }
-  
+
   private Object serialize(Object object, GetEntityView uriParserResultView) throws ODataException {
     Format format = uriParserResultView.getFormat();
     if (format == null) {
       return object == null ? "NULL" : object.toString();
     } else {
-      ODataSerializerProperties properties = ODataSerializerProperties.create();
-      properties.setContext(getContext());
-      properties.setEdmEntitySet(uriParserResultView.getTargetEntitySet());
       Map<String, Object> rawData = objectToMap(object);
-      properties.setData(rawData);
-      ODataSerializer ser = ODataSerializer.create(format, properties);
+      ODataSerializer ser = ODataSerializer.create(format, getContext());
 
-      return ser.serialize();
+      return ser.serializeEntry(uriParserResultView.getTargetEntitySet(), rawData);
     }
   }
 
   private List<Map<String, Object>> objectsToList(List<Object> objects) throws ODataException {
-    List<Map<String, Object>> mappedObjects = new ArrayList<Map<String,Object>>();
-    
+    List<Map<String, Object>> mappedObjects = new ArrayList<Map<String, Object>>();
+
     for (Object object : objects) {
       mappedObjects.add(objectToMap(object));
     }
-    
-    return mappedObjects;
-  }
-  
-  private Map<String, Object> objectToMap(List<Object> objects) throws ODataException {
-    Map<String, Object> mappedObjects = new HashMap<String,Object>();
-    
-    for (Object object : objects) {
-      mappedObjects.put(String.valueOf(object.hashCode()), objectToMap(object));
-    }
-    
+
     return mappedObjects;
   }
 
-  
+  private Map<String, Object> objectToMap(List<Object> objects) throws ODataException {
+    Map<String, Object> mappedObjects = new HashMap<String, Object>();
+
+    for (Object object : objects) {
+      mappedObjects.put(String.valueOf(object.hashCode()), objectToMap(object));
+    }
+
+    return mappedObjects;
+  }
+
   private Map<String, Object> objectToMap(Object object) throws ODataException {
     ObjectHelper objHelper = ObjectHelper.init(object);
     try {

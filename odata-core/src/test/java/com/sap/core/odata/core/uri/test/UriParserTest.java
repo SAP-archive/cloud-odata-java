@@ -95,7 +95,7 @@ public class UriParserTest {
     }
     return queryParameters;
   }
-  
+
   private String unescape(final String s) throws UriParserException {
     try {
       return new URI(s).getPath();
@@ -116,15 +116,15 @@ public class UriParserTest {
 
   @Test
   public void copyPathSegmentsTest() throws Exception {
-   List<ODataPathSegment> pathSegments = new ArrayList<ODataPathSegment>();
-   pathSegments.add(new ODataPathSegmentImpl("$metadata", null));
-   UriParserResult result = new UriParserImpl(edm).parse(pathSegments, Collections.<String, String> emptyMap());
-   assertNotNull(result);
-   assertEquals(1, pathSegments.size());
-   assertEquals("$metadata", pathSegments.get(0).getPath());
-   
+    List<ODataPathSegment> pathSegments = new ArrayList<ODataPathSegment>();
+    pathSegments.add(new ODataPathSegmentImpl("$metadata", null));
+    UriParserResult result = new UriParserImpl(edm).parse(pathSegments, Collections.<String, String> emptyMap());
+    assertNotNull(result);
+    assertEquals(1, pathSegments.size());
+    assertEquals("$metadata", pathSegments.get(0).getPath());
+
   }
-  
+
   @Test
   public void parseNonsens() throws Exception {
     parseWrongUri("/bla", UriParserException.NOTFOUND);

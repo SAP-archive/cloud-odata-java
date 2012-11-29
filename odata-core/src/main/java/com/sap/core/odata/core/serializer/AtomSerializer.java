@@ -11,27 +11,25 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.sap.core.odata.api.edm.EdmEntitySet;
-import com.sap.core.odata.api.edm.EdmEntityType;
-import com.sap.core.odata.api.edm.EdmException;
+import com.sap.core.odata.api.processor.ODataContext;
 import com.sap.core.odata.api.serialization.ODataSerializationException;
 import com.sap.core.odata.api.serialization.ODataSerializer;
-import com.sap.core.odata.api.serialization.ODataSerializerProperties;
 
 public class AtomSerializer extends ODataSerializer {
 
   private static final Logger LOG = LoggerFactory.getLogger(AtomSerializer.class);
 
-  AtomSerializer(ODataSerializerProperties properties) throws ODataSerializationException {
-    super(properties);
+  AtomSerializer(ODataContext ctx) throws ODataSerializationException {
+    super(ctx);
   }
 
   @Override
-  public InputStream serialize() throws ODataSerializationException {
+  public InputStream serializeEntry(EdmEntitySet entitySet, Map<String, Object> data) throws ODataSerializationException {
     try {
       LOG.debug("Start serialization...");
       ByteArrayOutputStream out = new ByteArrayOutputStream();
 
-      this.serializeInto(out);
+      this.serializeInto(out, entitySet, data);
 
       out.flush();
       out.close();
@@ -42,26 +40,14 @@ public class AtomSerializer extends ODataSerializer {
     }
   }
 
-  @Override
-  public void serializeInto(OutputStream stream) throws ODataSerializationException {
+  public void serializeInto(OutputStream stream, EdmEntitySet entitySet, Map<String, Object> data) throws ODataSerializationException {
     try {
-      EdmEntitySet ees = getEdmEntitySet();
-      EdmEntityType eet = ees.getEntityType();
-
-      ODataSerializer serializer = createSerializerFor(eet);
+      AtomEntrySerializer serializer = new AtomEntrySerializer(this.getContext());
       LOG.debug("Use serializer class {}", serializer.getClass());
-      serializer.serializeInto(stream);
+      serializer.serializeInto(stream, entitySet, data);
     } catch (Exception e) {
       throw new ODataSerializationException(ODataSerializationException.COMMON);
     }
-  }
-
-  private ODataSerializer createSerializerFor(EdmEntityType entityType) throws ODataSerializationException, EdmException {
-
-    if (isMultiValueMap(getData())) {
-      return new AtomFeedSerializer(this.properties);
-    }
-    return new AtomEntrySerializer(properties);
   }
 
   private boolean isMultiValueMap(Map<String, Object> data) {

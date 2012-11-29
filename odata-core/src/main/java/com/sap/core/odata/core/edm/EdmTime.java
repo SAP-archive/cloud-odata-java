@@ -101,7 +101,7 @@ public class EdmTime implements EdmSimpleType {
       throw new EdmSimpleTypeException(EdmSimpleTypeException.VALUE_TYPE_NOT_SUPPORTED.addContent(value.getClass()));
     }
 
-    int digits = 3;  // precision at most to milliseconds
+    int digits = 3; // precision at most to milliseconds
     if (facets != null && facets.getPrecision() != null && facets.getPrecision() < 3) {
       digits = facets.getPrecision();
       adjustMilliseconds(dateTimeValue, digits);

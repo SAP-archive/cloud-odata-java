@@ -12,7 +12,7 @@ public class ODataUriInfoImpl implements ODataUriInfo {
   private List<ODataPathSegment> precedingPathSegment = Collections.emptyList();
   private List<ODataPathSegment> odataPathSegment = Collections.emptyList();
   private URI baseUri;
-  
+
   public void setODataPathSegment(List<ODataPathSegment> odataPathSegement) {
     this.odataPathSegment = odataPathSegement;
   }
@@ -24,7 +24,7 @@ public class ODataUriInfoImpl implements ODataUriInfo {
   public void setBaseUri(URI uri) {
     this.baseUri = uri;
   }
-  
+
   @Override
   public List<ODataPathSegment> getPrecedingPathSegmentList() {
     return Collections.unmodifiableList(this.precedingPathSegment);

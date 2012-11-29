@@ -14,7 +14,7 @@ public class EdmServiceMetadataImplProv implements EdmServiceMetadata {
 
   protected EdmProvider edmProvider;
   private double dataServiceVersion = 2.0;
-  
+
   public EdmServiceMetadataImplProv(EdmProvider edmProvider) {
     this.edmProvider = edmProvider;
   }
@@ -33,7 +33,7 @@ public class EdmServiceMetadataImplProv implements EdmServiceMetadata {
     } catch (ODataException e) {
       throw new EdmException(EdmException.COMMON, e);
     }
-    
+
     return writer.toString();
   }
 

@@ -30,10 +30,9 @@ import com.sap.core.odata.api.edm.EdmTyped;
 import com.sap.core.odata.api.processor.ODataContext;
 import com.sap.core.odata.api.serialization.ODataSerializationException;
 import com.sap.core.odata.api.serialization.ODataSerializer;
-import com.sap.core.odata.api.serialization.ODataSerializerProperties;
 import com.sap.core.odata.core.edm.EdmDateTimeOffset;
 
-public class AtomEntrySerializer extends ODataSerializer implements ODataXmlSerializer {
+public class AtomEntrySerializer extends ODataSerializer {
 
   private static final String TAG_PROPERTIES = "properties";
   public static final String NS_DATASERVICES = "http://schemas.microsoft.com/ado/2007/08/dataservices";
@@ -41,34 +40,33 @@ public class AtomEntrySerializer extends ODataSerializer implements ODataXmlSeri
   public static final String NS_ATOM = "http://www.w3.org/2005/Atom";
   public static final String NS_XML = "http://www.w3.org/XML/1998/namespace";
 
-  AtomEntrySerializer(ODataSerializerProperties properties) throws ODataSerializationException {
-    super(properties);
+  AtomEntrySerializer(ODataContext ctx) throws ODataSerializationException {
+    super(ctx);
   }
-  
-  @Override
-  public void serializeInto(OutputStream stream) throws ODataSerializationException {
+
+  public void serializeInto(OutputStream stream, EdmEntitySet entitySet, Map<String, Object> data) throws ODataSerializationException {
     try {
       XMLStreamWriter writer = XMLOutputFactory.newInstance().createXMLStreamWriter(stream, "utf-8");
-      appendTo(writer);
+      appendTo(writer, entitySet, data);
     } catch (Exception e) {
       throw new ODataSerializationException(ODataSerializationException.COMMON, e);
     }
   }
-  
+
   @Override
-  public InputStream serialize() throws ODataSerializationException {
+  public InputStream serializeEntry(EdmEntitySet entitySet, Map<String, Object> data) throws ODataSerializationException {
     try {
       ByteArrayOutputStream out = new ByteArrayOutputStream();
 
-      this.serializeInto(out);
-      
+      this.serializeInto(out, entitySet, data);
+
       return new ByteArrayInputStream(out.toByteArray());
     } catch (Exception e) {
       throw new ODataSerializationException(ODataSerializationException.COMMON, e);
     }
   }
 
-  public void appendTo(XMLStreamWriter writer) throws ODataSerializationException {
+  public void appendTo(XMLStreamWriter writer, EdmEntitySet entitySet, Map<String, Object> data) throws ODataSerializationException {
     try {
       writer.writeStartElement("entry");
       writer.writeDefaultNamespace(NS_ATOM);
@@ -76,10 +74,10 @@ public class AtomEntrySerializer extends ODataSerializer implements ODataXmlSeri
       writer.writeNamespace("d", NS_DATASERVICES);
       writer.writeAttribute(NS_XML, "base", getContext().getUriInfo().getBaseUri().toASCIIString());
 
-      handleAtomParts(writer);
+      handleAtomParts(writer, entitySet, data);
 
-      handleEntity(writer, getData(), getEdmEntitySet());
-      
+      handleEntity(writer, entitySet, data);
+
       writer.writeEndElement();
 
       writer.flush();
@@ -88,19 +86,18 @@ public class AtomEntrySerializer extends ODataSerializer implements ODataXmlSeri
     }
   }
 
-  
-  private void handleEntity(XMLStreamWriter writer, Map<String, Object> data, EdmEntitySet edm) throws EdmException, XMLStreamException {
+  private void handleEntity(XMLStreamWriter writer, EdmEntitySet entitySet, Map<String, Object> data) throws EdmException, XMLStreamException {
     writer.writeStartElement(NS_DATASERVICES_METADATA, TAG_PROPERTIES);
     Set<Entry<String, Object>> entries = data.entrySet();
 
     for (Entry<String, Object> entry : entries) {
       String name = entry.getKey();
-      EdmTyped property = edm.getEntityType().getProperty(name);
+      EdmTyped property = entitySet.getEntityType().getProperty(name);
 
-      if(property instanceof EdmProperty) {
+      if (property instanceof EdmProperty) {
         EdmProperty prop = (EdmProperty) property;
         Object value = entry.getValue();
-        
+
         AtomPropertySerializer aps = new AtomPropertySerializer();
         aps.appendTo(writer, prop, value);
       }
@@ -109,82 +106,82 @@ public class AtomEntrySerializer extends ODataSerializer implements ODataXmlSeri
     writer.writeEndElement();
   }
 
-  private void handleAtomParts(XMLStreamWriter writer) throws XMLStreamException, ODataSerializationException, EdmException {
-    AtomHelper atomHelper = AtomHelper.init(getEdmEntitySet());
+  private void handleAtomParts(XMLStreamWriter writer, EdmEntitySet entitySet, Map<String, Object> data) throws XMLStreamException, ODataSerializationException, EdmException {
+    AtomHelper atomHelper = AtomHelper.init(entitySet);
     writer.writeStartElement("id");
-    writer.writeCharacters(this.createIdUri());
+    writer.writeCharacters(this.createIdUri(entitySet, data));
     writer.writeEndElement();
 
     writer.writeStartElement("title");
     writer.writeAttribute("type", this.createTitleType(atomHelper));
-    writer.writeCharacters(createTitleText(atomHelper));
+    writer.writeCharacters(createTitleText(atomHelper, data));
     writer.writeEndElement();
-    
+
     writer.writeStartElement("updated");
-    writer.writeCharacters(createUpdatedText(atomHelper));
+    writer.writeCharacters(createUpdatedText(atomHelper, data));
     writer.writeEndElement();
   }
 
-  private String createUpdatedText(AtomHelper atomHelper) throws EdmException {
+  private String createUpdatedText(AtomHelper atomHelper, Map<String, Object> data) throws EdmException {
     EdmProperty updatedProperty = atomHelper.getSyndicationProperty(EdmTargetPath.SYNDICATION_UPDATED);
-    
-    if(!isSyndicationUpdatedAvailable(updatedProperty)) {
-      Object data = getData().get(updatedProperty.getName());
-      return EdmDateTimeOffset.getInstance().valueToString(data, EdmLiteralKind.DEFAULT, updatedProperty.getFacets());
+
+    if (!isSyndicationUpdatedAvailable(updatedProperty, data)) {
+      Object obj = data.get(updatedProperty.getName());
+      return EdmDateTimeOffset.getInstance().valueToString(obj, EdmLiteralKind.DEFAULT, updatedProperty.getFacets());
     } else {
       // for the case that no 'syndication updated' is given it is specified to take current time
       return EdmDateTimeOffset.getInstance().valueToString(new Date(), EdmLiteralKind.DEFAULT, null);
     }
   }
 
-  private boolean isSyndicationUpdatedAvailable(EdmProperty updatedProperty) throws EdmException {
-    return updatedProperty == null || getData().get(updatedProperty.getName()) == null;
+  private boolean isSyndicationUpdatedAvailable(EdmProperty updatedProperty, Map<String, Object> data) throws EdmException {
+    return updatedProperty == null || data.get(updatedProperty.getName()) == null;
   }
 
-  private String createTitleText(AtomHelper atomHelper) throws EdmException {
+  private String createTitleText(AtomHelper atomHelper, Map<String, Object> data) throws EdmException {
     EdmProperty titleProperty = atomHelper.getSyndicationProperty(EdmTargetPath.SYNDICATION_TITLE);
-    
-    if(titleProperty != null) {
-      return (String) getData().get(titleProperty.getName());
+
+    if (titleProperty != null) {
+      return (String) data.get(titleProperty.getName());
     }
-    
+
     throw new EdmException(EdmException.COMMON);
   }
 
   private String createTitleType(AtomHelper atomHelper) throws EdmException, ODataSerializationException {
     EdmProperty titleProperty = atomHelper.getSyndicationProperty(EdmTargetPath.SYNDICATION_TITLE);
-    
-    if(titleProperty != null) {
+
+    if (titleProperty != null) {
       switch (titleProperty.getType().getKind()) {
-        case SIMPLE :
-          EdmContentKind contentKind = titleProperty.getCustomizableFeedMappings().getFcContentKind();
-          if(contentKind != null) {
-            return contentKind.name();
-          } else {
-            throw new ODataSerializationException(ODataSerializationException.ATOM_TITLE);            
-          }
-        case COMPLEX :
-        case NAVIGATION :
-        default:
+      case SIMPLE:
+        EdmContentKind contentKind = titleProperty.getCustomizableFeedMappings().getFcContentKind();
+        if (contentKind != null) {
+          return contentKind.name();
+        } else {
+          throw new ODataSerializationException(ODataSerializationException.ATOM_TITLE);
+        }
+      case COMPLEX:
+      case NAVIGATION:
+      default:
       }
     }
-    
-    throw new ODataSerializationException(ODataSerializationException.ATOM_TITLE);            
+
+    throw new ODataSerializationException(ODataSerializationException.ATOM_TITLE);
   }
-  
+
   private static class AtomHelper {
     Map<String, EdmProperty> target2Property = new HashMap<String, EdmProperty>();
-    
+
     private AtomHelper(EdmEntitySet edmEntitySet) throws EdmException {
       EdmEntityType entityType = edmEntitySet.getEntityType();
       Collection<String> propertyNames = entityType.getPropertyNames();
-      for (String propertyName: propertyNames) {
+      for (String propertyName : propertyNames) {
         // XXX: 121127_mibo: check this cast(s)
         EdmProperty property = (EdmProperty) entityType.getProperty(propertyName);
         EdmCustomizableFeedMappings customizableFeedMappings = property.getCustomizableFeedMappings();
-        if(customizableFeedMappings != null) {
+        if (customizableFeedMappings != null) {
           String path = map2TargetPath(customizableFeedMappings.getFcTargetPath());
-          
+
           target2Property.put(path, property);
         }
       }
@@ -192,25 +189,24 @@ public class AtomEntrySerializer extends ODataSerializer implements ODataXmlSeri
 
     public static AtomHelper init(EdmEntitySet edmEntitySet) throws EdmException {
       AtomHelper helper = new AtomHelper(edmEntitySet);
-      
+
       return helper;
     }
 
     public EdmProperty getSyndicationProperty(String syndicationName) {
       return target2Property.get(syndicationName);
     }
-    
+
     private static String map2TargetPath(String fcTargetPath) {
       return fcTargetPath;
     }
   }
 
-  private String createIdUri() throws ODataSerializationException {
+  private String createIdUri(EdmEntitySet edmEntitySet, Map<String, Object> data) throws ODataSerializationException {
     try {
       ODataContext ctx = getContext();
-      Map<String, Object> data = getData();
 
-      EdmEntitySet es = getEdmEntitySet();
+      EdmEntitySet es = edmEntitySet;
       EdmEntityContainer ec = es.getEntityContainer();
       List<EdmProperty> kp = es.getEntityType().getKeyProperties();
 

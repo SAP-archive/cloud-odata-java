@@ -76,7 +76,7 @@ public class EdmEntityContainerImplProvTest {
     EdmNavigationProperty edmNavigationProperty = mock(EdmNavigationProperty.class);
     when(edmNavigationProperty.getRelationship()).thenReturn(edmAssociation);
     when(edmNavigationProperty.getFromRole()).thenReturn("wrongRole");
-    
+
     assertNull(edmEntityContainer.getAssociationSet(sourceEntitySet, edmNavigationProperty));
   }
 
@@ -98,7 +98,7 @@ public class EdmEntityContainerImplProvTest {
     EdmNavigationProperty edmNavigationProperty = mock(EdmNavigationProperty.class);
     when(edmNavigationProperty.getRelationship()).thenReturn(edmAssociation);
     when(edmNavigationProperty.getFromRole()).thenReturn("fromRole");
-    
+
     assertNotNull(edmEntityContainer.getAssociationSet(sourceEntitySet, edmNavigationProperty));
     assertEquals(edmEntityContainer.getAssociationSet(sourceEntitySet, edmNavigationProperty), edmEntityContainer.getAssociationSet(sourceEntitySet, edmNavigationProperty));
   }

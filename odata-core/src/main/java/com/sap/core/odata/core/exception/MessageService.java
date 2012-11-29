@@ -81,7 +81,7 @@ public class MessageService {
    */
   public static Locale getSupportedLocale(List<Locale> locales) {
     for (Locale locale : locales) {
-      if(isLocaleSupported(locale)) {
+      if (isLocaleSupported(locale)) {
         return locale;
       }
     }
@@ -90,14 +90,14 @@ public class MessageService {
 
   public static MessageService getInstance(List<Locale> locales) {
     MessageService service = null;
-    
+
     for (Locale locale : locales) {
       service = getInstance(locale);
-      if(service.getLocale().equals(locale)) {
+      if (service.getLocale().equals(locale)) {
         break;
       }
     }
-    
+
     return service;
   }
 
@@ -131,7 +131,7 @@ public class MessageService {
     } catch (MissingResourceException e) {
       return new Message(Locale.ENGLISH, "Missing message for key '" + key + "'!");
     } catch (MissingFormatArgumentException e) {
-      return new Message(Locale.ENGLISH, "Missing replacement for place holder in value '" + value + 
+      return new Message(Locale.ENGLISH, "Missing replacement for place holder in value '" + value +
           "' for following arguments '" + Arrays.toString(replacements) + "'!");
     }
   }

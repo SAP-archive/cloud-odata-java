@@ -8,10 +8,10 @@ import com.sap.core.odata.api.edm.EdmType;
 import com.sap.core.odata.api.edm.provider.EdmProvider;
 import com.sap.core.odata.api.enums.Format;
 import com.sap.core.odata.api.exception.ODataException;
+import com.sap.core.odata.api.processor.ODataContext;
 import com.sap.core.odata.api.processor.ODataResponse.ODataResponseBuilder;
 import com.sap.core.odata.api.serialization.ODataSerializationException;
 import com.sap.core.odata.api.serialization.ODataSerializer;
-import com.sap.core.odata.api.serialization.ODataSerializerProperties;
 import com.sap.core.odata.api.uri.UriParser;
 import com.sap.core.odata.api.uri.expression.FilterParser;
 
@@ -80,26 +80,18 @@ public abstract class RuntimeDelegate {
    * @return {@link Edm} implementation object
    */
   protected abstract Edm createEdm__(EdmProvider provider);
-  
+
   protected abstract FilterParser getFilterParser__(Edm edm, EdmType edmType);
-  
 
   /**
    * @param format serializer format
    * @return a OData serializer
    * @throws ODataException 
    */
-  protected abstract ODataSerializer createSerializer__(Format format, ODataSerializerProperties properties) throws ODataSerializationException;
+  protected abstract ODataSerializer createSerializer__(Format format, ODataContext ctx) throws ODataSerializationException;
 
-  public static ODataSerializer createSerializer(Format atom, ODataSerializerProperties properties) throws ODataSerializationException {
-    return RuntimeDelegate.getInstance().createSerializer__(atom, properties);
-  }
-
-  
-  protected abstract ODataSerializerProperties createSerializerProperties__() throws ODataSerializationException;
-  
-  public static ODataSerializerProperties createSerializerProperties() throws ODataSerializationException {
-    return RuntimeDelegate.getInstance().createSerializerProperties__();
+  public static ODataSerializer createSerializer(Format atom, ODataContext ctx) throws ODataSerializationException {
+    return RuntimeDelegate.getInstance().createSerializer__(atom, ctx);
   }
 
   public static EdmSimpleType getEdmSimpleType(EdmSimpleTypeKind edmSimpleType) {
@@ -125,9 +117,8 @@ public abstract class RuntimeDelegate {
   public static EdmSimpleType getInternalEdmSimpleTypeByString(String edmSimpleType) {
     return RuntimeDelegate.getInstance().getInternalEdmSimpleTypeByString__(edmSimpleType);
   }
-  
-  public static FilterParser getFilterParser(Edm edm, EdmType edmType)
-  {
+
+  public static FilterParser getFilterParser(Edm edm, EdmType edmType) {
     return RuntimeDelegate.getInstance().getFilterParser__(edm, edmType);
   }
 

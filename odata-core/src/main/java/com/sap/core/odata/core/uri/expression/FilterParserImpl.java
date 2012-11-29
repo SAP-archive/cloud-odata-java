@@ -91,7 +91,6 @@ public class FilterParserImpl implements FilterParser
     this.useParameterPromotiom = useParameterPromotiom;
   }
 
-  
   InfoBinaryOperator LookBinaerOperator()
   {
     Token token = tokenList.lookToken();
@@ -830,13 +829,13 @@ public class FilterParserImpl implements FilterParser
       {
         throw new Exception();/*TODO*//*
 
-                                                         RAISE EXCEPTION TYPE /iwcor/cx_ds_expr_parser_error "OK
-                                                         EXPORTING
-                                                         textid   = /iwcor/cx_ds_expr_parser_error=>property_not_in_type
-                                                         type     = lv_type_name
-                                                         property = is_property_token-value
-                                                         position = is_property_token-position.
-                                                         ENDIF.*/
+                                                          RAISE EXCEPTION TYPE /iwcor/cx_ds_expr_parser_error "OK
+                                                          EXPORTING
+                                                          textid   = /iwcor/cx_ds_expr_parser_error=>property_not_in_type
+                                                          type     = lv_type_name
+                                                          property = is_property_token-value
+                                                          position = is_property_token-position.
+                                                          ENDIF.*/
 
       }
     } catch (Exception ex)
