@@ -8,8 +8,8 @@ public class FilterExpressionImpl implements FilterExpression {
 
   private String filterExpression;
   private CommonExpression commonExpression;
-  
-  public FilterExpressionImpl(String filterExpression, CommonExpression childExpression) 
+
+  public FilterExpressionImpl(String filterExpression, CommonExpression childExpression)
   {
     this.filterExpression = filterExpression;
     this.commonExpression = childExpression;
@@ -26,12 +26,11 @@ public class FilterExpressionImpl implements FilterExpression {
   }
 
   @Override
-  public Object accept(ExpressionVisitor visitor) 
+  public Object accept(ExpressionVisitor visitor)
   {
     Object retCommonExpression = commonExpression.accept(visitor);
     Object ret = visitor.visitFilterExpression(this, filterExpression, retCommonExpression);
     return ret;
   }
 
- 
 }

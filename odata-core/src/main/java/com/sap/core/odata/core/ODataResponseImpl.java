@@ -13,7 +13,7 @@ public class ODataResponseImpl extends ODataResponse {
   private HashMap<String, String> header;
   private String idLiteral;
   private String eTag;
-  
+
   @Override
   public HttpStatusCodes getStatus() {
     return this.status;

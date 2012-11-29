@@ -355,7 +355,7 @@ public class EdmSimpleTypeTest {
     assertEquals("binary'AABBCCDDEEFF'", instance.valueToString(binary, EdmLiteralKind.URI, getMaxLengthFacets(6)));
     assertEquals("qrvM3e7/", instance.valueToString(binary, EdmLiteralKind.DEFAULT, getMaxLengthFacets(null)));
 
-    assertEquals("qg==", instance.valueToString(new Byte[] {new Byte((byte) 170)}, EdmLiteralKind.DEFAULT, null));
+    assertEquals("qg==", instance.valueToString(new Byte[] { new Byte((byte) 170) }, EdmLiteralKind.DEFAULT, null));
 
     checkNull(instance);
 

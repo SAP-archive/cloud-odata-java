@@ -36,7 +36,7 @@ public abstract class EdmStructuralTypeImplProv extends EdmNamedImplProv impleme
     resolveBaseType();
 
     buildPropertiesInternal();
-    
+
     edmProperties = new HashMap<String, EdmTyped>();
   }
 
@@ -93,7 +93,7 @@ public abstract class EdmStructuralTypeImplProv extends EdmNamedImplProv impleme
         edmPropertyNames.addAll(edmBaseType.getPropertyNames());
       }
     }
-    
+
     return edmPropertyNames;
   }
 

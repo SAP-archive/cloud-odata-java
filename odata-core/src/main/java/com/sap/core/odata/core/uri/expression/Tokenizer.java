@@ -14,7 +14,6 @@ public class Tokenizer
 
   private boolean flagIncludeWhitespace = false;
   private EdmSimpleTypeFacade typeDectector = null;
-  
 
   public Tokenizer()
   {
@@ -55,8 +54,8 @@ public class Tokenizer
     String rem_expr;
     String expression_sub;
     Matcher matcher;
-    
-    TokenList tokens = new TokenList(); 
+
+    TokenList tokens = new TokenList();
 
     expressionLength = iv_expression.length();
     while (curPosition < expressionLength)
@@ -80,7 +79,7 @@ public class Tokenizer
         {
           expression_sub = iv_expression.substring(oldPosition, oldPosition + lv_token_len);
           tokens.appendEdmTypedToken(oldPosition, TokenKind.WHITESPACE, expression_sub, null);
-          
+
         }
         break;
       case '(':
@@ -90,7 +89,7 @@ public class Tokenizer
       case ')':
         curPosition = curPosition + 1;
         tokens.appendToken(oldPosition, TokenKind.CLOSEPAREN, curCharacter);
-        
+
         break;
       case '\'':
         //read up to single ' and move pointer to the following char
@@ -137,9 +136,7 @@ public class Tokenizer
         }
         assert uriLiteral.getType() != null;
 
-
-        tokens.appendEdmTypedToken(oldPosition, TokenKind.SIMPLE_TYPE,  token, uriLiteral);
-
+        tokens.appendEdmTypedToken(oldPosition, TokenKind.SIMPLE_TYPE, token, uriLiteral);
 
         break;
       case ',':
@@ -223,7 +220,7 @@ public class Tokenizer
             tEx.setPrevious(ex);
             throw tEx;
           }
-          tokens.appendEdmTypedToken(oldPosition, TokenKind.SIMPLE_TYPE,token, uriLiteral);
+          tokens.appendEdmTypedToken(oldPosition, TokenKind.SIMPLE_TYPE, token, uriLiteral);
           break;
         }// matcher matches
 
@@ -246,21 +243,19 @@ public class Tokenizer
           token = matcher.group(1);
           curPosition = curPosition + token.length();
           tokens.appendToken(oldPosition, TokenKind.LITERAL, token);
-          
+
           break;
         }
 
-        
         //TODO maybe add check for constance like true false null
         if (rem_expr.equals("true") || rem_expr.equals("false"))
         {
           curPosition = curPosition + rem_expr.length();
-          tokens.appendEdmTypedToken(oldPosition, TokenKind.SIMPLE_TYPE,rem_expr, new EdmLiteral(
-               EdmSimpleTypeFacadeImpl.getEdmSimpleType(EdmSimpleTypeKind.Boolean),rem_expr));
+          tokens.appendEdmTypedToken(oldPosition, TokenKind.SIMPLE_TYPE, rem_expr, new EdmLiteral(
+              EdmSimpleTypeFacadeImpl.getEdmSimpleType(EdmSimpleTypeKind.Boolean), rem_expr));
           break;
         }
 
-        
         Pattern OTHER_LIT = Pattern.compile("^([[A-Za-z0-9]._~%!$&*+;:@-]+)");
         matcher = OTHER_LIT.matcher(rem_expr);
         if (matcher.find())
@@ -272,7 +267,7 @@ public class Tokenizer
             curPosition = curPosition + token.length();
 
             //its really a simple type
-            tokens.appendEdmTypedToken(oldPosition, TokenKind.SIMPLE_TYPE,token, uriLiteral);
+            tokens.appendEdmTypedToken(oldPosition, TokenKind.SIMPLE_TYPE, token, uriLiteral);
 
             break;
           } catch (UriParserException ex)
@@ -283,15 +278,14 @@ public class Tokenizer
           if (curCharacter == '-')
           {
             curPosition = curPosition + 1;
-            
-            
+
             tokens.appendToken(oldPosition, TokenKind.SYMBOL, curCharacter);
 
             break;
           }
 
           curPosition = curPosition + token.length();
-          
+
           tokens.appendToken(oldPosition, TokenKind.LITERAL, token);
 
           break;

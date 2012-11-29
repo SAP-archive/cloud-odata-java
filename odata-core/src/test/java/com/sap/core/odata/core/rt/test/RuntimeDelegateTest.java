@@ -12,5 +12,5 @@ public class RuntimeDelegateTest {
   public void testInstance() {
     assertNotNull(RuntimeDelegate.createODataResponseBuilder());
   }
-  
+
 }

@@ -7,11 +7,11 @@ import com.sap.core.odata.api.edm.EdmSimpleTypeKind;
 import com.sap.core.odata.api.edm.EdmType;
 import com.sap.core.odata.api.edm.provider.EdmProvider;
 import com.sap.core.odata.api.enums.Format;
+import com.sap.core.odata.api.processor.ODataContext;
 import com.sap.core.odata.api.processor.ODataResponse.ODataResponseBuilder;
 import com.sap.core.odata.api.rt.RuntimeDelegate;
 import com.sap.core.odata.api.serialization.ODataSerializationException;
 import com.sap.core.odata.api.serialization.ODataSerializer;
-import com.sap.core.odata.api.serialization.ODataSerializerProperties;
 import com.sap.core.odata.api.uri.UriParser;
 import com.sap.core.odata.api.uri.expression.FilterParser;
 import com.sap.core.odata.core.ODataResponseBuilderImpl;
@@ -39,7 +39,7 @@ public class RuntimeDelegateImpl extends RuntimeDelegate {
 
   @Override
   protected EdmSimpleType getInternalEdmSimpleTypeByString__(String edmSimpleType) {
-   return EdmSimpleTypeFacadeImpl.getInternalEdmSimpleTypeByString(edmSimpleType);
+    return EdmSimpleTypeFacadeImpl.getInternalEdmSimpleTypeByString(edmSimpleType);
   }
 
   @Override
@@ -53,18 +53,13 @@ public class RuntimeDelegateImpl extends RuntimeDelegate {
   }
 
   @Override
-  protected ODataSerializer createSerializer__(Format format, ODataSerializerProperties properties) throws ODataSerializationException {
-    return ODataSerializerFactory.create(format, properties);
+  protected ODataSerializer createSerializer__(Format format, ODataContext ctx) throws ODataSerializationException {
+    return ODataSerializerFactory.create(format, ctx);
   }
 
   @Override
   protected FilterParser getFilterParser__(Edm edm, EdmType edmType) {
-    return new FilterParserImpl(edm,edmType);
-  }
-
-  @Override
-  protected ODataSerializerProperties createSerializerProperties__() throws ODataSerializationException {
-    return ODataSerializerFactory.createProperties();
+    return new FilterParserImpl(edm, edmType);
   }
 
 }

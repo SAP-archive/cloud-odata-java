@@ -75,7 +75,7 @@ public class EdmBinary implements EdmSimpleType {
     case URI:
       return value.matches("(?:X|binary)'(?:\\p{XDigit}{2})*'")
           && (facets == null || facets.getMaxLength() == null
-              || facets.getMaxLength() * 2 >= value.length() - (value.startsWith("X") ? 3 : 8));
+          || facets.getMaxLength() * 2 >= value.length() - (value.startsWith("X") ? 3 : 8));
 
     default:
       return false;

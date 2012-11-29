@@ -39,33 +39,31 @@ public class EdmComplexTypeImplProvTest {
     keyPropertysFoo.add(new Property().setName("Name").setType(EdmSimpleTypeKind.String.getFullQualifiedName()));
     keyPropertysFoo.add(new Property().setName("Address").setType(EdmSimpleTypeKind.String.getFullQualifiedName()));
     fooComplexType.setProperties(keyPropertysFoo);
-    
+
     edmComplexType = new EdmComplexTypeImplProv(edmImplProv, fooComplexType, "namespace");
 
-    
     FullQualifiedName barBaseTypeName = new FullQualifiedName("namespace", "barBase");
     ComplexType barBase = new ComplexType().setName("barBase");
     when(edmProvider.getComplexType(barBaseTypeName)).thenReturn(barBase);
-    
+
     Collection<Property> propertysBarBase = new ArrayList<Property>();
     propertysBarBase.add(new Property().setName("Name").setType(EdmSimpleTypeKind.String.getFullQualifiedName()));
     propertysBarBase.add(new Property().setName("Address").setType(EdmSimpleTypeKind.String.getFullQualifiedName()));
     barBase.setProperties(propertysBarBase);
-    
+
     ComplexType barComplexType = new ComplexType().setName("barComplexType").setBaseType(barBaseTypeName);
     edmComplexTypeWithBaseType = new EdmComplexTypeImplProv(edmImplProv, barComplexType, "namespace");
-    
 
   }
-  
+
   @Test
-  public void getPropertiesNames() throws Exception {    
+  public void getPropertiesNames() throws Exception {
     Collection<String> properties = edmComplexType.getPropertyNames();
     assertNotNull(properties);
     assertTrue(properties.contains("Name"));
     assertTrue(properties.contains("Address"));
   }
-  
+
   @Test
   public void getPropertiesWithBaseType() throws Exception {
     Collection<String> properties = edmComplexTypeWithBaseType.getPropertyNames();
@@ -73,7 +71,7 @@ public class EdmComplexTypeImplProvTest {
     assertTrue(properties.contains("Name"));
     assertTrue(properties.contains("Address"));
   }
-  
+
   @Test
   public void getBaseType() throws Exception {
     EdmComplexType baseType = edmComplexTypeWithBaseType.getBaseType();
@@ -81,7 +79,7 @@ public class EdmComplexTypeImplProvTest {
     assertEquals("barBase", baseType.getName());
     assertEquals("namespace", baseType.getNamespace());
   }
-  
+
   @Test
   public void getProperty() throws Exception {
     EdmTyped property = edmComplexType.getProperty("Name");

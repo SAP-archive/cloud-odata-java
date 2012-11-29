@@ -13,16 +13,16 @@ public class PropertyExpressionImpl implements PropertyExpression {
   EdmType edmType;
   EdmProperty edmProperty;
   EdmLiteral edmLiteral;
-  
+
   public PropertyExpressionImpl(String uriLiteral, EdmProperty edmProperty, EdmLiteral edmLiteral) {
     this.uriLiteral = uriLiteral;
     this.edmProperty = edmProperty;
     this.edmLiteral = edmLiteral;
     if (edmLiteral != null)
     {
-      this.edmType= edmLiteral.getType();
+      this.edmType = edmLiteral.getType();
     }
-   }
+  }
 
   @Override
   public void setEdmType(EdmType edmType) {
@@ -35,7 +35,7 @@ public class PropertyExpressionImpl implements PropertyExpression {
   }
 
   @Override
-  public  EdmProperty getEdmProperty() {
+  public EdmProperty getEdmProperty() {
     return edmProperty;
   }
 
@@ -46,21 +46,19 @@ public class PropertyExpressionImpl implements PropertyExpression {
 
   @Override
   public String toUriLiteral() {
-     return uriLiteral;
+    return uriLiteral;
   }
 
   @Override
-  public EdmType getEdmType() 
+  public EdmType getEdmType()
   {
     return edmType;
   }
 
   @Override
   public Object accept(ExpressionVisitor visitor) {
-    Object ret = visitor.visitProperty(this,uriLiteral, edmProperty );
+    Object ret = visitor.visitProperty(this, uriLiteral, edmProperty);
     return ret;
   }
-
-
 
 }

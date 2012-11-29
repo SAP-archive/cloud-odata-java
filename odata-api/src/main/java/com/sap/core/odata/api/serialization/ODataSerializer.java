@@ -1,7 +1,6 @@
 package com.sap.core.odata.api.serialization;
 
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.util.Map;
 
 import com.sap.core.odata.api.edm.EdmEntitySet;
@@ -10,31 +9,21 @@ import com.sap.core.odata.api.processor.ODataContext;
 import com.sap.core.odata.api.rt.RuntimeDelegate;
 
 public abstract class ODataSerializer {
+ 
+  private final ODataContext context;
 
-  protected final ODataSerializerProperties properties;
-
-  protected ODataSerializer(ODataSerializerProperties properties) throws ODataSerializationException {
-    this.properties = properties;
-    this.properties.verify();
+  protected ODataSerializer(ODataContext ctx) throws ODataSerializationException {
+    this.context = ctx;
   }
   
-  public static ODataSerializer create(Format atom, ODataSerializerProperties properties) throws ODataSerializationException {
-    return RuntimeDelegate.createSerializer(atom, properties);
+  public static ODataSerializer create(Format atom, ODataContext ctx) throws ODataSerializationException {
+    return RuntimeDelegate.createSerializer(atom, ctx);
   }
 
-  public abstract InputStream serialize() throws ODataSerializationException;
-
-  public abstract void serializeInto(OutputStream stream) throws ODataSerializationException;
-
-  protected EdmEntitySet getEdmEntitySet() {
-    return properties.getEdmEntitySet();
-  }
+  public abstract InputStream serializeEntry(EdmEntitySet entitySet, Map<String, Object> data) throws ODataSerializationException;
 
   protected ODataContext getContext() {
-    return properties.getContext();
+    return this.context;
   }
 
-  protected Map<String, Object> getData() {
-    return properties.getData();
-  }
 }

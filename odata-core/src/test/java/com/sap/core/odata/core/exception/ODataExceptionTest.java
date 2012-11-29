@@ -32,9 +32,9 @@ public class ODataExceptionTest {
 
   @Test
   public void testODataContextedCauseLayer3() {
-    ODataException exception = new ODataException("Some message.", 
+    ODataException exception = new ODataException("Some message.",
         new IllegalArgumentException(
-                new ODataNotFoundException(ODataNotFoundException.ENTITY)));
+            new ODataNotFoundException(ODataNotFoundException.ENTITY)));
 
     Assert.assertEquals(true, exception.isCausedByHttpException());
   }

@@ -15,16 +15,14 @@ public class ODataContextImpl implements ODataContext {
 
   private ODataUriInfo uriInfo;
 
-  
-  
   public void putContextObject(String key, Object obj) throws ODataException {
     this.contextObjects.put(key, obj);
   }
-  
+
   public void setService(ODataService service) {
     this.service = service;
   }
-  
+
   @SuppressWarnings("unchecked")
   @Override
   public <T> T getObject(String key) throws ODataException {
@@ -33,17 +31,16 @@ public class ODataContextImpl implements ODataContext {
 
   @Override
   public ODataService getService() throws ODataException {
-    return  this.service;
+    return this.service;
   }
 
   public void setUriInfo(ODataUriInfo uriInfo) {
     this.uriInfo = uriInfo;
   }
-  
+
   @Override
   public ODataUriInfo getUriInfo() throws ODataException {
     return this.uriInfo;
   }
-
 
 }

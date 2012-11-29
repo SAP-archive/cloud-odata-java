@@ -81,7 +81,7 @@ public class TokenList implements Iterator<Token>
     Token actual = next();
     if (comma != actual.getKind())
       throw TokenizerMessage.unexpectedToken(currentToken, comma.toString(), actual);
-    
+
     return actual;
   }
 
@@ -123,7 +123,5 @@ public class TokenList implements Iterator<Token>
 
     return tokens.elementAt(index);
   }
-
-  
 
 }

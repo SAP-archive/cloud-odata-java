@@ -32,8 +32,10 @@ public class ODataExceptionMapperImpl implements ExceptionMapper<Exception> {
   private final static Logger LOG = LoggerFactory.getLogger(ODataExceptionMapperImpl.class);
   private static final Locale DEFAULT_RESPONSE_LOCALE = Locale.ENGLISH;
 
-  @Context UriInfo uriInfo;
-  @Context HttpHeaders httpHeaders;
+  @Context
+  UriInfo uriInfo;
+  @Context
+  HttpHeaders httpHeaders;
 
   @Override
   public Response toResponse(Exception exception) {
@@ -41,18 +43,18 @@ public class ODataExceptionMapperImpl implements ExceptionMapper<Exception> {
     final Response response;
 
     Exception toHandleException = extractException(exception);
-    
+
     if (toHandleException instanceof ODataApplicationException) {
-      response = buildResponseForApplicationException((ODataApplicationException) toHandleException);            
+      response = buildResponseForApplicationException((ODataApplicationException) toHandleException);
     } else if (toHandleException instanceof ODataHttpException) {
       response = buildResponseForHttpException((ODataHttpException) toHandleException);
     } else if (toHandleException instanceof UriParserException) {
-      response = buildResponseForUriParserException((UriParserException) toHandleException);      
+      response = buildResponseForUriParserException((UriParserException) toHandleException);
     } else {
       response = buildResponseForException(exception);
     }
-    
-    if(isInternalServerError(response)) {
+
+    if (isInternalServerError(response)) {
       ODataExceptionMapperImpl.LOG.error(exception.getMessage(), exception);
     }
 
@@ -64,14 +66,14 @@ public class ODataExceptionMapperImpl implements ExceptionMapper<Exception> {
   }
 
   private Exception extractException(Exception exception) {
-    if(exception instanceof ODataException) {
+    if (exception instanceof ODataException) {
       //
       ODataException odataException = (ODataException) exception;
-      if(odataException.isCausedByApplicationException()) {
+      if (odataException.isCausedByApplicationException()) {
         return odataException.getApplicationExceptionCause();
-      } else if(odataException.isCausedByHttpException()) {
+      } else if (odataException.isCausedByHttpException()) {
         return odataException.getHttpExceptionCause();
-      } else if(odataException.isCausedByMessageException()) {
+      } else if (odataException.isCausedByMessageException()) {
         return odataException.getMessageExceptionCause();
       }
     }
@@ -81,7 +83,7 @@ public class ODataExceptionMapperImpl implements ExceptionMapper<Exception> {
   private Response buildResponseForException(Exception exception) {
     ResponseBuilder responseBuilder = Response.noContent();
     return responseBuilder.entity(exception.getClass().getName() + " - " + exception.getMessage())
-                    .status(Status.INTERNAL_SERVER_ERROR).build();
+        .status(Status.INTERNAL_SERVER_ERROR).build();
   }
 
   private Response buildResponseForUriParserException(UriParserException exception) {
@@ -99,17 +101,16 @@ public class ODataExceptionMapperImpl implements ExceptionMapper<Exception> {
     Message localizedMessage = extractEntity(msgException.getMessageReference());
     ResponseBuilder responseBuilder = Response.noContent();
     return responseBuilder.entity("Language = '" + localizedMessage.getLang() + "', message = '" + localizedMessage.getText() + "'.")
-                    .status(extractStatus(msgException)).build();
+        .status(extractStatus(msgException)).build();
   }
 
-  
   private Status extractStatus(ODataException exception) {
     Status extractedStatus = Status.INTERNAL_SERVER_ERROR;
-    
+
     HttpStatusCodes httpStatus = null;
-    if(exception instanceof ODataHttpException) {
+    if (exception instanceof ODataHttpException) {
       httpStatus = ((ODataHttpException) exception).getHttpStatus();
-    } else if(exception instanceof ODataApplicationException) {
+    } else if (exception instanceof ODataApplicationException) {
       httpStatus = ((ODataApplicationException) exception).getHttpStatus();
     }
 

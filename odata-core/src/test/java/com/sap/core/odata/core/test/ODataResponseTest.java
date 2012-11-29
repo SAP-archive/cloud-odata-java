@@ -7,8 +7,6 @@ import org.junit.Test;
 import com.sap.core.odata.api.enums.HttpStatusCodes;
 import com.sap.core.odata.api.processor.ODataResponse;
 
-
-
 public class ODataResponseTest {
 
   @Test
@@ -21,7 +19,7 @@ public class ODataResponseTest {
   public void buildEntityResponseTest() {
     ODataResponse response = ODataResponse.entity("abc").build();
     assertEquals(HttpStatusCodes.OK, response.getStatus());
-    assertEquals("abc", response.getEntity());    
+    assertEquals("abc", response.getEntity());
   }
 
   @Test
@@ -34,5 +32,5 @@ public class ODataResponseTest {
     assertEquals("123", response.getHeader("abc"));
     assertEquals("456", response.getHeader("def"));
   }
-  
+
 }

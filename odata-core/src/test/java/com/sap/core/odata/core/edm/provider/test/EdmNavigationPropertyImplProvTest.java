@@ -54,7 +54,7 @@ public class EdmNavigationPropertyImplProvTest {
     assertEquals("toRole", navPropertyProvider.getToRole());
     assertEquals(EdmMultiplicity.ONE, navPropertyProvider.getMultiplicity());
     assertEquals("entityName", navPropertyProvider.getType().getName());
-    
+
     EdmAssociation association = navPropertyProvider.getRelationship();
     assertNotNull(association);
     assertEquals("associationName", association.getName());

@@ -1,12 +1,11 @@
 package com.sap.core.odata.core.uri.expression;
 
-
 /**
  * @author d039346
  * Internal error. If used(thrown) the thrower 
  */
 public class TokenizerRTException extends Exception {
-  
+
   /**
    * 
    */
@@ -18,6 +17,5 @@ public class TokenizerRTException extends Exception {
   public TokenizerRTException() {
     super();
   }
-  
-}
 
+}

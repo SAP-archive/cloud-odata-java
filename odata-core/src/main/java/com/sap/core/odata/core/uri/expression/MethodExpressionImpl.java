@@ -14,8 +14,7 @@ public class MethodExpressionImpl implements MethodExpression {
   InfoMethod infoMethod;
   EdmType returnType;
   Vector<CommonExpression> actualParameters;
-  
-  
+
   public MethodExpressionImpl(InfoMethod infoMethod) {
     this.infoMethod = infoMethod;
     this.returnType = infoMethod.getReturnType();
@@ -29,11 +28,11 @@ public class MethodExpressionImpl implements MethodExpression {
 
   @Override
   public void setEdmType(EdmType edmType) {
-    this.returnType =  edmType;
+    this.returnType = edmType;
   }
 
   @Override
-  public MethodOperator getMethod() 
+  public MethodOperator getMethod()
   {
     return infoMethod.getMethod();
   }
@@ -47,7 +46,6 @@ public class MethodExpressionImpl implements MethodExpression {
   public int getParameterCount() {
     return actualParameters.size();
   }
-
 
   public CommonExpression appendParameter(CommonExpression expression) {
     actualParameters.add(expression);
@@ -65,18 +63,17 @@ public class MethodExpressionImpl implements MethodExpression {
   }
 
   @Override
-  public Object accept(ExpressionVisitor visitor) 
+  public Object accept(ExpressionVisitor visitor)
   {
     Vector<Object> retParameters = new Vector<Object>();
-    for (CommonExpression parameter : actualParameters )
+    for (CommonExpression parameter : actualParameters)
     {
       Object retParameter = parameter.accept(visitor);
       retParameters.add(retParameter);
     }
-    
+
     Object ret = visitor.visitMethod(this, this.getMethod(), retParameters);
     return ret;
   }
- 
 
 }

@@ -4,7 +4,6 @@ import java.util.Vector;
 
 import com.sap.core.odata.api.edm.EdmSimpleType;
 
-
 /**
  * Parameter set is a vector of 1 or more EDM types, it is used to store the possible 
  * input and return types of a <i>OData filter operator</i> or <i>OData filter method</i>

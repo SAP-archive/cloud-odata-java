@@ -8,10 +8,10 @@ import com.sap.core.odata.api.uri.expression.LiteralExpression;
 
 public class LiteralExpressionImpl implements LiteralExpression {
 
-  EdmType edmType;         
+  EdmType edmType;
   EdmLiteral edmLiteral;
   String uriLiteral;
-  
+
   public LiteralExpressionImpl(String uriLiteral, EdmLiteral javaLiteral) {
     this.uriLiteral = uriLiteral;
     this.edmLiteral = javaLiteral;
@@ -19,7 +19,7 @@ public class LiteralExpressionImpl implements LiteralExpression {
   }
 
   @Override
-  public EdmType getEdmType() 
+  public EdmType getEdmType()
   {
     return edmType;
   }

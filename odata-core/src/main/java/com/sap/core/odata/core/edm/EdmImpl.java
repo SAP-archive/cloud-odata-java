@@ -110,9 +110,9 @@ public abstract class EdmImpl implements Edm {
 
     try {
       edmAssociation = createAssociation(fqName);
-      if(edmAssociation != null){
+      if (edmAssociation != null) {
         edmAssociations.put(fqName, edmAssociation);
-      }     
+      }
     } catch (ODataException e) {
       throw new EdmException(EdmException.COMMON, e);
     }

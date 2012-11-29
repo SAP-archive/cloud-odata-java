@@ -35,10 +35,10 @@ import com.sap.core.odata.core.edm.provider.EdmImplProv;
  */
 public class EdmEntitySetProvTest {
 
-  
   private static EdmEntitySetImplProv edmEnitiySetFoo;
   private static EdmEntitySetImplProv edmEnitiySetBar;
   private static EdmProvider edmProvider;
+
   @BeforeClass
   public static void getEdmEntityContainerImpl() throws Exception {
 
@@ -53,9 +53,9 @@ public class EdmEntitySetProvTest {
     when(edmProvider.getEntitySet("Container", "foo")).thenReturn(entitySetFoo);
 
     Collection<NavigationProperty> navigationProperties = new ArrayList<NavigationProperty>();
-    FullQualifiedName fooBarAssocName = new FullQualifiedName("namespace" , "fooBarAssoc");
+    FullQualifiedName fooBarAssocName = new FullQualifiedName("namespace", "fooBarAssoc");
     navigationProperties.add(new NavigationProperty().setName("fooBarNav").setFromRole("fromFoo").setRelationship(fooBarAssocName).setToRole("toBar"));
-    
+
     EntityType fooEntityType = new EntityType().setName("fooEntityType").setNavigationProperties(navigationProperties);
     FullQualifiedName fooEntityTypeFullName = new FullQualifiedName("namespace", "fooEntityType");
     entitySetFoo.setEntityType(fooEntityTypeFullName);
@@ -68,10 +68,10 @@ public class EdmEntitySetProvTest {
     FullQualifiedName barEntityTypeFullName = new FullQualifiedName("namespace", "barEntityType");
     entitySetBar.setEntityType(barEntityTypeFullName);
     when(edmProvider.getEntityType(barEntityTypeFullName)).thenReturn(barEntityType);
-    
+
     AssociationEnd fooEnd = new AssociationEnd().setRole("fromFoo");
     AssociationEnd barEnd = new AssociationEnd().setRole("toBar");
-    
+
     Association fooBarAssoc = new Association().setName("fooBarAssoc").setEnd1(fooEnd).setEnd2(barEnd);
     when(edmProvider.getAssociation(fooBarAssocName)).thenReturn(fooBarAssoc);
 
@@ -79,8 +79,8 @@ public class EdmEntitySetProvTest {
     FullQualifiedName assocFQName = new FullQualifiedName("namespace", "fooBarAssoc");
     when(edmProvider.getAssociationSet("Container", assocFQName, "foo", "fromFoo")).thenReturn(associationSet);
 
-   edmEnitiySetFoo = new EdmEntitySetImplProv(edmImplProv, entitySetFoo, edmEntityContainer);
-   edmEnitiySetBar = new EdmEntitySetImplProv(edmImplProv, entitySetBar, edmEntityContainer);
+    edmEnitiySetFoo = new EdmEntitySetImplProv(edmImplProv, entitySetFoo, edmEntityContainer);
+    edmEnitiySetBar = new EdmEntitySetImplProv(edmImplProv, entitySetBar, edmEntityContainer);
   }
 
   @Test
@@ -101,15 +101,15 @@ public class EdmEntitySetProvTest {
     assertTrue(navPropertyyNames.contains("fooBarNav"));
     EdmTyped navProperty = edmEnitiySetFoo.getEntityType().getProperty("fooBarNav");
     assertNotNull(navProperty);
-    
-    EdmEntitySet relatedEntitySet = edmEnitiySetFoo.getRelatedEntitySet((EdmNavigationProperty) navProperty); 
-    
+
+    EdmEntitySet relatedEntitySet = edmEnitiySetFoo.getRelatedEntitySet((EdmNavigationProperty) navProperty);
+
     assertEquals(edmEnitiySetBar.getName(), relatedEntitySet.getName());
   }
 
   @Test
   public void testEntitySetType() throws Exception {
-    
+
     assertEquals("fooEntityType", edmEnitiySetFoo.getEntityType().getName());
     assertEquals(edmEnitiySetFoo.getEntityType().getName(), edmProvider.getEntityType(new FullQualifiedName("namespace", "fooEntityType")).getName());
   }

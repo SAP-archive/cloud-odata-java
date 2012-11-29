@@ -56,14 +56,14 @@ public class EdmFunctionImportImplProv extends EdmNamedImplProv implements EdmFu
     } else {
       parameter = createParameter(name);
     }
-    
+
     return parameter;
   }
 
   private EdmParameter createParameter(String name) throws EdmException {
     EdmParameter edmParameter = null;
     if (parameters.containsKey(name)) {
-      FunctionImportParameter parameter = parameters.get(name);      
+      FunctionImportParameter parameter = parameters.get(name);
       edmParameter = new EdmParameterImplProv(edm, parameter.getName(), parameter.getQualifiedName(), parameter.getFacets(), parameter.getMapping());
       edmParameters.put(name, edmParameter);
     }
