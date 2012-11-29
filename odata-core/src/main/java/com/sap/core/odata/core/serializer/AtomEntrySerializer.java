@@ -22,12 +22,10 @@ import com.sap.core.odata.api.edm.EdmEntityContainer;
 import com.sap.core.odata.api.edm.EdmEntitySet;
 import com.sap.core.odata.api.edm.EdmEntityType;
 import com.sap.core.odata.api.edm.EdmException;
-import com.sap.core.odata.api.edm.EdmFacets;
 import com.sap.core.odata.api.edm.EdmLiteralKind;
 import com.sap.core.odata.api.edm.EdmProperty;
 import com.sap.core.odata.api.edm.EdmSimpleType;
 import com.sap.core.odata.api.edm.EdmTargetPath;
-import com.sap.core.odata.api.edm.EdmType;
 import com.sap.core.odata.api.edm.EdmTyped;
 import com.sap.core.odata.api.processor.ODataContext;
 import com.sap.core.odata.api.serialization.ODataSerializationException;
@@ -35,7 +33,7 @@ import com.sap.core.odata.api.serialization.ODataSerializer;
 import com.sap.core.odata.api.serialization.ODataSerializerProperties;
 import com.sap.core.odata.core.edm.EdmDateTimeOffset;
 
-public class AtomEntrySerializer extends ODataSerializer {
+public class AtomEntrySerializer extends ODataSerializer implements ODataXmlSerializer {
 
   private static final String TAG_PROPERTIES = "properties";
   public static final String NS_DATASERVICES = "http://schemas.microsoft.com/ado/2007/08/dataservices";
@@ -70,7 +68,7 @@ public class AtomEntrySerializer extends ODataSerializer {
     }
   }
 
-  void appendTo(XMLStreamWriter writer) throws ODataSerializationException {
+  public void appendTo(XMLStreamWriter writer) throws ODataSerializationException {
     try {
       writer.writeStartElement("entry");
       writer.writeDefaultNamespace(NS_ATOM);
@@ -101,23 +99,10 @@ public class AtomEntrySerializer extends ODataSerializer {
 
       if(property instanceof EdmProperty) {
         EdmProperty prop = (EdmProperty) property;
-        EdmType type = prop.getType();
+        Object value = entry.getValue();
         
-        if(type instanceof EdmSimpleType) {
-          EdmSimpleType st = (EdmSimpleType) type;
-          Object value = entry.getValue();
-          EdmLiteralKind literalKind = EdmLiteralKind.DEFAULT;
-          EdmFacets facets = prop.getFacets();
-          String valueAsString = st.valueToString(value, literalKind, facets);
-          
-          writer.writeStartElement(NS_DATASERVICES, name);
-          if(valueAsString == null) {
-            writer.writeAttribute(NS_DATASERVICES_METADATA, "null", "true");
-          } else {
-            writer.writeCharacters(valueAsString);
-          }
-          writer.writeEndElement();
-        }
+        AtomPropertySerializer aps = new AtomPropertySerializer();
+        aps.appendTo(writer, prop, value);
       }
     }
 
