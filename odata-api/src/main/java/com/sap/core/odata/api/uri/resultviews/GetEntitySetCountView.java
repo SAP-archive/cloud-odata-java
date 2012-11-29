@@ -10,7 +10,11 @@ import com.sap.core.odata.api.edm.EdmType;
 import com.sap.core.odata.api.uri.KeyPredicate;
 import com.sap.core.odata.api.uri.NavigationSegment;
 import com.sap.core.odata.api.uri.EdmLiteral;
+import com.sap.core.odata.api.uri.expression.FilterExpression;
 
+/**
+ * @author SAP AG
+ */
 public interface GetEntitySetCountView {
   /**
    * @return {@link EdmEntityContainer} the target entity container
@@ -28,7 +32,7 @@ public interface GetEntitySetCountView {
   public EdmEntitySet getTargetEntitySet();
 
   /**
-   * @return {@link EdmFunctionImport} the funktion import
+   * @return {@link EdmFunctionImport} the function import
    */
   public EdmFunctionImport getFunctionImport();
   
@@ -48,28 +52,27 @@ public interface GetEntitySetCountView {
   public List<NavigationSegment> getNavigationSegments();
 
   /**
-   * @return boolean
+   * @return whether $count has been used
    */
   public boolean isCount();
 
   /**
-   * @return String the customer format
+   * @return the custom format
    */
   public String getCustomFormat();
 
   /**
-   * @return String the filter
+   * @return the filter expression
    */
-  public String getFilter();
-
+  public FilterExpression getFilter();
 
   /**
-   * @return String skip
+   * @return skip
    */
   public int getSkip();
 
   /**
-   * @return int top
+   * @return top
    */
   public Integer getTop();
 

@@ -11,6 +11,8 @@ import com.sap.core.odata.api.edm.EdmProperty;
 import com.sap.core.odata.api.edm.EdmType;
 import com.sap.core.odata.api.enums.Format;
 import com.sap.core.odata.api.enums.InlineCount;
+import com.sap.core.odata.api.uri.expression.FilterExpression;
+import com.sap.core.odata.api.uri.expression.OrderByExpression;
 import com.sap.core.odata.api.uri.resultviews.DeleteResultView;
 import com.sap.core.odata.api.uri.resultviews.GetComplexPropertyView;
 import com.sap.core.odata.api.uri.resultviews.GetEntityCountView;
@@ -30,8 +32,8 @@ import com.sap.core.odata.api.uri.resultviews.PostResultView;
 import com.sap.core.odata.api.uri.resultviews.PutMergePatchResultView;
 
 /**
- * @author SAP AG
  * Parser results interface
+ * @author SAP AG
  */
 public interface UriParserResult extends GetServiceDocumentView, GetEntitySetView, GetEntityView, GetComplexPropertyView, GetSimplePropertyView,
     GetEntityLinkView, GetEntitySetLinksView, GetMetadataView, GetFunctionImportView, GetEntitySetCountView, GetEntityCountView, GetMediaResourceView, 
@@ -53,7 +55,7 @@ public interface UriParserResult extends GetServiceDocumentView, GetEntitySetVie
   public EdmEntitySet getTargetEntitySet();
 
   /**
-   * @return {@link EdmFunctionImport} the funktion import
+   * @return {@link EdmFunctionImport} the function import
    */
   public EdmFunctionImport getFunctionImport();
 
@@ -78,17 +80,17 @@ public interface UriParserResult extends GetServiceDocumentView, GetEntitySetVie
   public List<EdmProperty> getPropertyPath();
 
   /**
-   * @return boolean
+   * @return whether $count has been used
    */
   public boolean isCount();
 
   /**
-   * @return boolean
+   * @return whether $value has been used
    */
   public boolean isValue();
 
   /**
-   * @return boolean
+   * @return whether $links has been used
    */
   public boolean isLinks();
 
@@ -98,14 +100,14 @@ public interface UriParserResult extends GetServiceDocumentView, GetEntitySetVie
   public Format getFormat();
 
   /**
-   * @return String the customer format
+   * @return the custom format
    */
   public String getCustomFormat();
 
   /**
-   * @return String the filter
+   * @return the filter expression
    */
-  public String getFilter();
+  public FilterExpression getFilter();
 
   /**
    * @return {@link InlineCount} the inline count
@@ -113,22 +115,22 @@ public interface UriParserResult extends GetServiceDocumentView, GetEntitySetVie
   public InlineCount getInlineCount();
 
   /**
-   * @return String order by
+   * @return the order-by expression
    */
-  public String getOrderBy();
+  public OrderByExpression getOrderBy();
 
   /**
-   * @return String skip token
+   * @return skip token
    */
   public String getSkipToken();
 
   /**
-   * @return String skip
+   * @return skip
    */
   public int getSkip();
 
   /**
-   * @return int top
+   * @return top
    */
   public Integer getTop();
 

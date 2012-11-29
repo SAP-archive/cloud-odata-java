@@ -30,6 +30,8 @@ import com.sap.core.odata.api.serialization.ODataSerializerProperties;
 import com.sap.core.odata.api.uri.EdmLiteral;
 import com.sap.core.odata.api.uri.KeyPredicate;
 import com.sap.core.odata.api.uri.NavigationSegment;
+import com.sap.core.odata.api.uri.expression.FilterExpression;
+import com.sap.core.odata.api.uri.expression.OrderByExpression;
 import com.sap.core.odata.api.uri.resultviews.GetComplexPropertyView;
 import com.sap.core.odata.api.uri.resultviews.GetEntityCountView;
 import com.sap.core.odata.api.uri.resultviews.GetEntityLinkCountView;
@@ -371,7 +373,7 @@ public class ListsProcessor extends ODataSingleProcessor {
     return data;
   }
 
-  private <T> Integer applySystemQueryOptions(final EdmEntitySet targetEntitySet, List<T> data, final InlineCount inlineCount, final String filter, final String orderBy, final String skipToken, final int skip, final Integer top) throws ODataException {
+  private <T> Integer applySystemQueryOptions(final EdmEntitySet targetEntitySet, List<T> data, final InlineCount inlineCount, final FilterExpression filter, final OrderByExpression orderBy, final String skipToken, final int skip, final Integer top) throws ODataException {
     if (filter != null)
       for (T element : data)
         if (!appliesFilter(element, filter))
@@ -410,7 +412,7 @@ public class ListsProcessor extends ODataSingleProcessor {
     return count;
   }
 
-  private <T> boolean appliesFilter(final T data, final String filter) throws ODataException {
+  private <T> boolean appliesFilter(final T data, final FilterExpression filter) throws ODataException {
     if (data == null)
       return false;
     if (filter == null)

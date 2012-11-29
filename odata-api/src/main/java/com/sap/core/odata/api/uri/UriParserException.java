@@ -34,6 +34,9 @@ public class UriParserException extends ODataMessageException {
   public static final MessageReference INVALIDKEYPREDICATE = createMessageReference(UriParserException.class, "INVALIDKEYPREDICATE");
   public static final MessageReference INVALIDSYSTEMQUERYOPTION = createMessageReference(UriParserException.class, "INVALIDSYSTEMQUERYOPTION");
 
+  public static final MessageReference INVALIDFILTEREXPRESSION = createMessageReference(UriParserException.class, "INVALIDFILTEREXPRESSION");
+  public static final MessageReference INVALIDORDERBYEXPRESSION = createMessageReference(UriParserException.class, "INVALIDORDERBYEXPRESSION");
+
   public static final MessageReference LITERALFORMAT = createMessageReference(UriParserException.class, "LITERALFORMAT");
   public static final MessageReference UNKNOWNLITERAL = createMessageReference(UriParserException.class, "UNKNOWNLITERAL");
 

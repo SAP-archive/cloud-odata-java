@@ -12,7 +12,11 @@ import com.sap.core.odata.api.enums.InlineCount;
 import com.sap.core.odata.api.uri.KeyPredicate;
 import com.sap.core.odata.api.uri.NavigationSegment;
 import com.sap.core.odata.api.uri.EdmLiteral;
+import com.sap.core.odata.api.uri.expression.FilterExpression;
 
+/**
+ * @author SAP AG
+ */
 public interface GetEntitySetLinksView {
   /**
    * @return {@link EdmEntityContainer} the target entity container
@@ -30,7 +34,7 @@ public interface GetEntitySetLinksView {
   public EdmEntitySet getTargetEntitySet();
 
   /**
-   * @return {@link EdmFunctionImport} the funktion import
+   * @return {@link EdmFunctionImport} the function import
    */
   public EdmFunctionImport getFunctionImport();
   
@@ -50,7 +54,7 @@ public interface GetEntitySetLinksView {
   public List<NavigationSegment> getNavigationSegments();
 
   /**
-   * @return boolean
+   * @return whether $links has been used in the URI
    */
   public boolean isLinks();
 
@@ -60,14 +64,14 @@ public interface GetEntitySetLinksView {
   public Format getFormat();
 
   /**
-   * @return String the customer format
+   * @return custom format specification
    */
   public String getCustomFormat();
 
   /**
-   * @return String the filter
+   * @return the filter expression
    */
-  public String getFilter();
+  public FilterExpression getFilter();
 
   /**
    * @return {@link InlineCount} the inline count
@@ -75,17 +79,17 @@ public interface GetEntitySetLinksView {
   public InlineCount getInlineCount();
 
   /**
-   * @return String skip token
+   * @return skip token
    */
   public String getSkipToken();
 
   /**
-   * @return String skip
+   * @return skip
    */
   public int getSkip();
 
   /**
-   * @return int top
+   * @return top
    */
   public Integer getTop();
   
