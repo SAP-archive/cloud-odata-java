@@ -10,7 +10,7 @@ import java.util.Set;
 public class DataContainer {
 
   private static final int NUMBER_OF_PHOTOS = 4;
-  private static final String[] arrayForImageType = { "PNG", "BMP", "JPEG", "GIF" };
+  private static final String[] arrayForImageType = { "image/png", "image/bmp", "image/jpeg", "foo" };
   private static final boolean SCRUMTEAM_TRUE = true;
   private static final boolean SCRUMTEAM_FALSE = false;
   private static final String IMAGE_JPEG = "image/jpeg";
@@ -136,9 +136,8 @@ public class DataContainer {
     Set<Photo> photos = new HashSet<Photo>();
     for (int z = 0; z < NUMBER_OF_PHOTOS; z++) {
       Photo photo = new Photo("Photo " + (z + 1));
-      photo.setType("image/" + arrayForImageType[z % (arrayForImageType.length)].toLowerCase());
+      photo.setType(arrayForImageType[z % (arrayForImageType.length)]);
       photos.add(photo);
-
     }
     return photos;
   }

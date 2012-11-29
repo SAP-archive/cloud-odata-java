@@ -20,25 +20,30 @@ import com.sap.core.odata.testutils.fit.AbstractFitTest;
 import com.sap.core.odata.testutils.helper.StringHelper;
 
 /**
+ * Abstract base class for tests employing the reference scenario
  * @author SAP AG
  */
 public class AbstractRefTest extends AbstractFitTest {
 
-  protected static final String IMAGE_JPEG = "image/jpeg";
+  protected static final String APPLICATION_ATOM_XML = "application/atom+xml";
+  protected static final String APPLICATION_ATOM_XML_ENTRY = "application/atom+xml;type=entry";
+  protected static final String APPLICATION_ATOM_XML_FEED = "application/atom+xml;type=feed";
+  protected static final String APPLICATION_ATOMSVC_XML = "application/atomsvc+xml";
   protected static final String APPLICATION_XML = "application/xml";
   protected static final String TEXT_PLAIN = "text/plain";
+  protected static final String IMAGE_JPEG = "image/jpeg";
 
-  //  protected static final String EMPLOYEE_1_NAME = "Walter Winter";
-  //  protected static final String EMPLOYEE_2_NAME = "Frederic Fall";
+  protected static final String EMPLOYEE_1_NAME = "Walter Winter";
+  protected static final String EMPLOYEE_2_NAME = "Frederic Fall";
   protected static final String EMPLOYEE_3_NAME = "Jonathan Smith";
-  //  protected static final String EMPLOYEE_4_NAME = "Peter Burke";
-  //  protected static final String EMPLOYEE_5_NAME = "John Field";
-  //  protected static final String EMPLOYEE_6_NAME = "Susan Bay";
-  //  protected static final String MANAGER_NAME = EMPLOYEE_1_NAME;
+  protected static final String EMPLOYEE_4_NAME = "Peter Burke";
+  protected static final String EMPLOYEE_5_NAME = "John Field";
+  protected static final String EMPLOYEE_6_NAME = "Susan Bay";
+  protected static final String MANAGER_NAME = EMPLOYEE_1_NAME;
 
   protected static final String EMPLOYEE_2_AGE = "32";
   protected static final String EMPLOYEE_3_AGE = "56";
-  //  protected static final String EMPLOYEE_6_AGE = "29";
+  protected static final String EMPLOYEE_6_AGE = "29";
 
   protected static final String CITY_2_NAME = "Walldorf";
 
@@ -90,7 +95,7 @@ public class AbstractRefTest extends AbstractFitTest {
     assertNotNull(getBody(response));
   }
 
-  public String getBody(final HttpResponse response) throws Exception {
+  protected String getBody(final HttpResponse response) throws Exception {
     assertNotNull(response);
     assertNotNull(response.getEntity());
     assertNotNull(response.getEntity().getContent());
