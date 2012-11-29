@@ -8,6 +8,7 @@ import org.apache.http.HttpResponse;
 import org.junit.Test;
 
 /**
+ * Tests employing the reference scenario reading simple properties in XML format
  * @author SAP AG
  */
 public class SimplePropertyTest extends AbstractRefTest {
@@ -43,7 +44,6 @@ public class SimplePropertyTest extends AbstractRefTest {
     // assertTrue(getBody(response).contains("5</"));
 
     // response = callUri("Container2.Photos(Id=3,Type='image%2Fjpeg')/BinaryData/$value");
-
     // checkMediaType(response, IMAGE_JPEG);
     // assertNotNull(getBody(response));
 

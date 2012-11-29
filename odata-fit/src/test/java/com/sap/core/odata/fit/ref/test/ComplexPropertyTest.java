@@ -7,6 +7,7 @@ import org.apache.http.HttpResponse;
 import org.junit.Test;
 
 /**
+ * Tests employing the reference scenario reading complex properties in XML format
  * @author SAP AG
  */
 public class ComplexPropertyTest extends AbstractRefTest {

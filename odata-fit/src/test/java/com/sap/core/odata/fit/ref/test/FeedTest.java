@@ -5,26 +5,30 @@ import static org.junit.Assert.assertTrue;
 import org.apache.http.HttpResponse;
 import org.junit.Test;
 
-import com.sap.core.odata.api.enums.HttpStatusCodes;
-import com.sap.core.odata.testutils.helper.StringHelper;
-
+/**
+ * Tests employing the reference scenario reading entity sets in XML format
+ * @author SAP AG
+ */
 public class FeedTest extends AbstractRefTest {
 
   @Test
   public void feed() throws Exception {
-    HttpResponse response = callUri("Employees()", HttpStatusCodes.OK);
-    String payload = StringHelper.inputStreamToString(response.getEntity().getContent());
-//    // checkMediaType(response, MediaType.APPLICATION_ATOM_XML_TYPE);
+    HttpResponse response = callUri("Employees()");
+    // checkMediaType(response, APPLICATION_ATOM_XML_FEED);
+    final String payload = getBody(response);
     assertTrue(payload.contains("Employee"));
-//    // TODO: check content
+    assertTrue(payload.contains(EMPLOYEE_1_NAME));
+    assertTrue(payload.contains(EMPLOYEE_2_NAME));
+    assertTrue(payload.contains(EMPLOYEE_3_NAME));
+    assertTrue(payload.contains(EMPLOYEE_4_NAME));
+    assertTrue(payload.contains(EMPLOYEE_5_NAME));
+    assertTrue(payload.contains(EMPLOYEE_6_NAME));
 
-    response = callUri("Rooms()", HttpStatusCodes.OK);
-    payload = StringHelper.inputStreamToString(response.getEntity().getContent());
-    assertTrue(payload.contains("Room"));
-    // checkMediaType(response, MediaType.APPLICATION_ATOM_XML_TYPE);
+    response = callUri("Rooms()");
+    // checkMediaType(response, APPLICATION_ATOM_XML_FEED);
+    assertTrue(getBody(response).contains("Room"));
 
     // notFound("$top");
   }
-  
-  
+
 }

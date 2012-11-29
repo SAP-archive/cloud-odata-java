@@ -1,19 +1,23 @@
 package com.sap.core.odata.fit.ref.test;
 
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import org.apache.http.HttpResponse;
 import org.junit.Test;
 
 /**
+ * Tests employing the reference scenario reading the service document in XML format
  * @author SAP AG
  */
 public class ServiceTest extends AbstractRefTest {
 
   @Test
   public void serviceDocument() throws Exception {
-    checkUri("/");
-    // checkMediaType(response, new MediaType("application", "atomsvc+xml"));
+    final HttpResponse response = callUri("/");
+    // checkMediaType(response, APPLICATION_ATOMSVC_XML);
+    assertFalse(getBody(response).isEmpty());
+    // assertTrue(getBody(response).contains("Employees"));
 
     // notFound("invalid.svc/");
   }
