@@ -127,7 +127,7 @@ public class DataContainer {
       date = df.parse(dateString);
 
     } catch (ParseException e) {
-      throw new RuntimeException(e);
+      throw new RuntimeException("illegal date", e);
     }
     return date;
   }

@@ -456,7 +456,7 @@ public class UriParserImpl implements UriParser {
         try {
           queryOption = SystemQueryOption.valueOf(queryOptionString);
         } catch (IllegalArgumentException e) {
-          throw new UriParserException(UriParserException.INVALIDSYSTEMQUERYOPTION);
+          throw new UriParserException(UriParserException.INVALIDSYSTEMQUERYOPTION.addContent(queryOptionString), e);
         }
         final String value = queryParameters.get(queryOptionString);
         if ("".equals(value))
@@ -567,10 +567,10 @@ public class UriParserImpl implements UriParser {
     try {
       uriResult.setSkip(Integer.valueOf(skip));
     } catch (NumberFormatException e) {
-      throw new UriParserException(UriParserException.INVALIDVALUE);
+      throw new UriParserException(UriParserException.INVALIDVALUE.addContent(skip), e);
     }
     if (uriResult.getSkip() < 0)
-      throw new UriParserException(UriParserException.INVALIDNEGATIVEVALUE);
+      throw new UriParserException(UriParserException.INVALIDNEGATIVEVALUE.addContent(skip));
 
   }
 
@@ -578,10 +578,10 @@ public class UriParserImpl implements UriParser {
     try {
       uriResult.setTop(Integer.valueOf(top));
     } catch (NumberFormatException e) {
-      throw new UriParserException(UriParserException.INVALIDVALUE);
+      throw new UriParserException(UriParserException.INVALIDVALUE.addContent(top), e);
     }
     if (uriResult.getTop() < 0)
-      throw new UriParserException(UriParserException.INVALIDNEGATIVEVALUE);
+      throw new UriParserException(UriParserException.INVALIDNEGATIVEVALUE.addContent(top));
   }
 
   private void handleSystemQueryOptionExpand(String expandStatement) throws UriParserException, EdmException {

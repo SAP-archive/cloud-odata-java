@@ -1,5 +1,7 @@
 package com.sap.core.odata.core.edm;
 
+import java.util.Locale;
+
 import org.apache.commons.codec.DecoderException;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.codec.binary.Hex;
@@ -105,7 +107,7 @@ public class EdmBinary implements EdmSimpleType {
         try {
           return Hex.decodeHex(value.substring(value.startsWith("X") ? 2 : 7, value.length() - 1).toCharArray());
         } catch (DecoderException e) {
-          throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_ILLEGAL_CONTENT.addContent(value));
+          throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_ILLEGAL_CONTENT.addContent(value), e);
         }
       else
         throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_ILLEGAL_CONTENT.addContent(value));
@@ -151,7 +153,7 @@ public class EdmBinary implements EdmSimpleType {
     case JSON:
       return Base64.encodeBase64String(byteArrayValue);
     case URI:
-      return "binary'" + Hex.encodeHexString(byteArrayValue).toUpperCase() + "'";
+      return "binary'" + Hex.encodeHexString(byteArrayValue).toUpperCase(Locale.ROOT) + "'";
     default:
       throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_KIND_NOT_SUPPORTED.addContent(literalKind));
     }

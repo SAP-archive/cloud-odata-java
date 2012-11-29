@@ -1,6 +1,7 @@
 package com.sap.core.odata.ref.model;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class Building {
@@ -72,6 +73,6 @@ public class Building {
 
   @Override
   public String toString() {
-    return "{\"Id\":\"" + id + "\",\"Name\":\"" + name + "\",\"Image\":\"" + image + "\"}";
+    return "{\"Id\":\"" + id + "\",\"Name\":\"" + name + "\",\"Image\":\"" + Arrays.toString(image) + "\"}";
   }
 }
