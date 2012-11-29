@@ -394,11 +394,14 @@ public class ListsProcessor extends ODataSingleProcessor {
       });
 
     if (skipToken != null)
-      while (!getSkipToken(data.get(0), targetEntitySet).equals(skipToken))
+      while (!data.isEmpty() && !getSkipToken(data.get(0), targetEntitySet).equals(skipToken))
         data.remove(0);
 
-    for (int i = 0; i < skip; i++)
-      data.remove(0);
+    if (skip >= data.size())
+      data.clear();
+    else
+      for (int i = 0; i < skip; i++)
+        data.remove(0);
 
     if (top != null)
       while (data.size() > top)

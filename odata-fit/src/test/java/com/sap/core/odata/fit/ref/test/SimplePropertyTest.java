@@ -55,4 +55,18 @@ public class SimplePropertyTest extends AbstractRefTest {
     // notFound("Employees('2')/Age()");
   }
 
+  @Test
+  public void navigationSimpleProperty() throws Exception {
+    HttpResponse response = callUri("Employees('2')/ne_Room/nr_Employees('6')/Age");
+    // checkMediaType(response, APPLICATION_XML);
+    assertTrue(getBody(response).contains(EMPLOYEE_6_AGE));
+
+    response = callUri("Employees('4')/ne_Team/nt_Employees('5')/EmployeeName");
+    // checkMediaType(response, APPLICATION_XML);
+    assertTrue(getBody(response).contains(EMPLOYEE_5_NAME));
+
+    response = callUri("Rooms('2')/nr_Employees('4')/Location/City/CityName");
+    // checkMediaType(response, APPLICATION_XML);
+    assertTrue(getBody(response).contains(CITY_2_NAME));
+  }
 }
