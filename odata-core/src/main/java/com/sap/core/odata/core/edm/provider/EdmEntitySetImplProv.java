@@ -1,5 +1,7 @@
 package com.sap.core.odata.core.edm.provider;
 
+import com.sap.core.odata.api.edm.EdmAnnotatable;
+import com.sap.core.odata.api.edm.EdmAnnotations;
 import com.sap.core.odata.api.edm.EdmAssociationSet;
 import com.sap.core.odata.api.edm.EdmAssociationSetEnd;
 import com.sap.core.odata.api.edm.EdmEntityContainer;
@@ -10,7 +12,7 @@ import com.sap.core.odata.api.edm.EdmNavigationProperty;
 import com.sap.core.odata.api.edm.FullQualifiedName;
 import com.sap.core.odata.api.edm.provider.EntitySet;
 
-public class EdmEntitySetImplProv extends EdmNamedImplProv implements EdmEntitySet {
+public class EdmEntitySetImplProv extends EdmNamedImplProv implements EdmEntitySet, EdmAnnotatable {
 
   private EntitySet entitySet;
   private EdmEntityContainer edmEntityContainer;
@@ -37,8 +39,6 @@ public class EdmEntitySetImplProv extends EdmNamedImplProv implements EdmEntityS
   @Override
   public EdmEntitySet getRelatedEntitySet(EdmNavigationProperty navigationProperty) throws EdmException {
     EdmAssociationSet associationSet = edmEntityContainer.getAssociationSet(edmEntityContainer.getEntitySet(entitySet.getName()), navigationProperty);
-    if (associationSet == null)
-      throw new EdmException(EdmException.COMMON);
     EdmAssociationSetEnd toEnd = associationSet.getEnd(navigationProperty.getToRole());
     if (toEnd == null)
       throw new EdmException(EdmException.COMMON);
@@ -51,5 +51,10 @@ public class EdmEntitySetImplProv extends EdmNamedImplProv implements EdmEntityS
   @Override
   public EdmEntityContainer getEntityContainer() throws EdmException {
     return edmEntityContainer;
+  }
+
+  @Override
+  public EdmAnnotations getAnnotations() throws EdmException {
+    return new EdmAnnotationsImplProv(entitySet.getAnnotationAttributes(), entitySet.getAnnotationElements());
   }
 }

@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
+import com.sap.core.odata.api.edm.EdmAnnotatable;
+import com.sap.core.odata.api.edm.EdmAnnotations;
 import com.sap.core.odata.api.edm.EdmEntityContainer;
 import com.sap.core.odata.api.edm.EdmEntitySet;
 import com.sap.core.odata.api.edm.EdmException;
@@ -18,7 +20,7 @@ import com.sap.core.odata.api.edm.provider.ReturnType;
 /**
  * @author SAP AG
  */
-public class EdmFunctionImportImplProv extends EdmNamedImplProv implements EdmFunctionImport {
+public class EdmFunctionImportImplProv extends EdmNamedImplProv implements EdmFunctionImport, EdmAnnotatable {
 
   private FunctionImport functionImport;
   private EdmEntityContainer edmEntityContainer;
@@ -64,7 +66,7 @@ public class EdmFunctionImportImplProv extends EdmNamedImplProv implements EdmFu
     EdmParameter edmParameter = null;
     if (parameters.containsKey(name)) {
       FunctionImportParameter parameter = parameters.get(name);
-      edmParameter = new EdmParameterImplProv(edm, parameter.getName(), parameter.getQualifiedName(), parameter.getFacets(), parameter.getMapping());
+      edmParameter = new EdmParameterImplProv(edm, parameter);
       edmParameters.put(name, edmParameter);
     }
     return edmParameter;
@@ -94,5 +96,10 @@ public class EdmFunctionImportImplProv extends EdmNamedImplProv implements EdmFu
   @Override
   public EdmEntityContainer getEntityContainer() throws EdmException {
     return edmEntityContainer;
+  }
+
+  @Override
+  public EdmAnnotations getAnnotations() throws EdmException {
+    return new EdmAnnotationsImplProv(functionImport.getAnnotationAttributes(), functionImport.getAnnotationElements());
   }
 }

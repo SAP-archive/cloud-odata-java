@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
+import com.sap.core.odata.api.edm.EdmAnnotatable;
 import com.sap.core.odata.api.edm.EdmException;
 import com.sap.core.odata.api.edm.EdmStructuralType;
 import com.sap.core.odata.api.edm.EdmTypeKind;
@@ -17,10 +18,10 @@ import com.sap.core.odata.api.edm.provider.Property;
 /**
  * @author SAP AG
  */
-public abstract class EdmStructuralTypeImplProv extends EdmNamedImplProv implements EdmStructuralType {
+public abstract class EdmStructuralTypeImplProv extends EdmNamedImplProv implements EdmStructuralType, EdmAnnotatable {
 
   protected EdmStructuralType edmBaseType;
-  private ComplexType structuralType;
+  protected ComplexType structuralType;
   private EdmTypeKind edmTypeKind;
   protected String namespace;
   protected Map<String, EdmTyped> edmProperties;

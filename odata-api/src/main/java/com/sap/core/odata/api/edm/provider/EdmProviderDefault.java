@@ -13,7 +13,7 @@ public class EdmProviderDefault implements EdmProvider {
    * @see com.sap.core.odata.api.edm.provider.EdmProvider#getEntityContainer(java.lang.String)
    */
   @Override
-  public EntityContainerInfo getEntityContainer(String name) throws ODataException {
+  public EntityContainerInfo getEntityContainerInfo(String name) throws ODataException {
     throw new NotImplementedException();
   }
 

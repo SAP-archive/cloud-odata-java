@@ -1,5 +1,7 @@
 package com.sap.core.odata.core.edm.provider;
 
+import com.sap.core.odata.api.edm.EdmAnnotatable;
+import com.sap.core.odata.api.edm.EdmAnnotations;
 import com.sap.core.odata.api.edm.EdmAssociation;
 import com.sap.core.odata.api.edm.EdmException;
 import com.sap.core.odata.api.edm.EdmMultiplicity;
@@ -8,7 +10,7 @@ import com.sap.core.odata.api.edm.EdmType;
 import com.sap.core.odata.api.edm.FullQualifiedName;
 import com.sap.core.odata.api.edm.provider.NavigationProperty;
 
-public class EdmNavigationPropertyImplProv extends EdmTypedImplProv implements EdmNavigationProperty {
+public class EdmNavigationPropertyImplProv extends EdmTypedImplProv implements EdmNavigationProperty, EdmAnnotatable {
 
   private NavigationProperty navigationProperty;
 
@@ -41,6 +43,11 @@ public class EdmNavigationPropertyImplProv extends EdmTypedImplProv implements E
   @Override
   public String getToRole() throws EdmException {
     return navigationProperty.getToRole();
+  }
+
+  @Override
+  public EdmAnnotations getAnnotations() throws EdmException {
+    return new EdmAnnotationsImplProv(navigationProperty.getAnnotationAttributes(), navigationProperty.getAnnotationElements());    
   }
 
 }

@@ -41,7 +41,7 @@ public class EdmFunctionImportImplProvTest {
     EdmImplProv edmImplProv = new EdmImplProv(edmProvider);
 
     EntityContainerInfo containerInfo = new EntityContainerInfo().setName("Container");
-    when(edmProvider.getEntityContainer("Container")).thenReturn(containerInfo);
+    when(edmProvider.getEntityContainerInfo("Container")).thenReturn(containerInfo);
     edmEntityContainer = new EdmEntityContainerImplProv(edmImplProv, containerInfo);
 
     EntitySet fooEntitySet = new EntitySet().setName("fooEntitySet");

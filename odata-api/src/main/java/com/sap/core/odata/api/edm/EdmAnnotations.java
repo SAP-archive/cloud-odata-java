@@ -16,7 +16,7 @@ public interface EdmAnnotations {
    * 
    * @return Collection of {@link EdmAnnotationElement}
    */
-  Collection<EdmAnnotationElement> getAnnotationElements();
+  Collection<? extends EdmAnnotationElement> getAnnotationElements();
 
   /**
    * Get annotation element by full qualified name
@@ -25,15 +25,15 @@ public interface EdmAnnotations {
    * @param namespace
    * @return String
    */
-  //TODO return type to be discussed, see EdmAnnotationElement
-  String getAnnotationElement(String name, String namespace);
+
+  EdmAnnotationElement getAnnotationElement(String name, String namespace);
 
   /**
    * Get all annotation attributes for the CSDL element
    * 
    * @return Collection of {@link EdmAnnotationAttribute}
    */
-  Collection<EdmAnnotationAttribute> getAnnotationAttributes();
+  Collection<? extends EdmAnnotationAttribute> getAnnotationAttributes();
 
   /**
    * Get annotation attribute by full qualified name
@@ -42,7 +42,7 @@ public interface EdmAnnotations {
    * @param namespace
    * @return String
    */
-  String getAnnotationAttribute(String name, String namespace);
+  EdmAnnotationAttribute  getAnnotationAttribute(String name, String namespace);
 
   //TODO do we need a generic data container like
   //

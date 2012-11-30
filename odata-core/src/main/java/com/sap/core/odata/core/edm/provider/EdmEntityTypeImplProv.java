@@ -7,6 +7,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import com.sap.core.odata.api.edm.EdmAnnotations;
 import com.sap.core.odata.api.edm.EdmCustomizableFeedMappings;
 import com.sap.core.odata.api.edm.EdmEntityType;
 import com.sap.core.odata.api.edm.EdmException;
@@ -153,5 +154,10 @@ public class EdmEntityTypeImplProv extends EdmStructuralTypeImplProv implements 
 
   protected EdmTyped createNavigationProperty(NavigationProperty property) throws EdmException {
     return new EdmNavigationPropertyImplProv(edm, property);
+  }
+
+  @Override
+  public EdmAnnotations getAnnotations() throws EdmException {   
+    return new EdmAnnotationsImplProv(entityType.getAnnotationAttributes(), entityType.getAnnotationElements());
   }
 }

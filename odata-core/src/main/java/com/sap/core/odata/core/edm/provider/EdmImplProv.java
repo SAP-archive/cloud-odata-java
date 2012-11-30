@@ -24,7 +24,7 @@ public class EdmImplProv extends EdmImpl {
 
   @Override
   protected EdmEntityContainer createEntityContainer(String name) throws ODataException {
-    EntityContainerInfo enitityContainerInfo = edmProvider.getEntityContainer(name);
+    EntityContainerInfo enitityContainerInfo = edmProvider.getEntityContainerInfo(name);
     if (enitityContainerInfo == null) {
       return null;
     }
