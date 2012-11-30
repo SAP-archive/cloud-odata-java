@@ -171,7 +171,7 @@ public class FilterParserImpl implements FilterParser
     int lv_pcount;
     CommonExpression lo_node;
 
-    //expectToken(Character.toString(CharConst.GC_STR_OPENPAREN));
+    tokenList.expectToken(Character.toString(CharConst.GC_STR_OPENPAREN));
 
     while (lv_done == false)
     {
@@ -186,11 +186,10 @@ public class FilterParserImpl implements FilterParser
       if (lv_token.getKind() == TokenKind.COMMA)
 
       {
-        //expectToken(Character.toString(CharConst.GC_STR_COMMA));
+        tokenList.expectToken(Character.toString(CharConst.GC_STR_COMMA));
       }
 
-      else if (!(lv_token.getKind() == TokenKind.CLOSEPAREN))
-      {
+      else if (lv_token.getKind() == TokenKind.CLOSEPAREN)      {
         lv_done = true;
       }
       else
@@ -210,7 +209,7 @@ public class FilterParserImpl implements FilterParser
       //TODO raise exception /iwcor/cx_ds_expr_syntax_error=>function_to_many_parameter
     }
 
-    //expectToken(Character.toString(CharConst.GC_STR_CLOSEPAREN));
+    tokenList.expectToken(Character.toString(CharConst.GC_STR_CLOSEPAREN));
 
     return methodExpression;
   }
