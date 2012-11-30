@@ -8,7 +8,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.sap.core.odata.api.edm.EdmComplexType;
 import com.sap.core.odata.api.edm.EdmEntitySet;
+import com.sap.core.odata.api.edm.EdmEntityType;
 import com.sap.core.odata.api.edm.EdmException;
 import com.sap.core.odata.api.edm.EdmFunctionImport;
 import com.sap.core.odata.api.edm.EdmLiteralKind;
@@ -172,14 +174,19 @@ public class ListsProcessor extends ODataSingleProcessor {
         mapFunctionParameters(uriParserResultView.getFunctionImportParameters()),
         uriParserResultView.getNavigationSegments());
 
-    if (appliesFilter(data, uriParserResultView.getFilter()))
-      return ODataResponse
-          .status(HttpStatusCodes.OK)
-          .header(CONTENT_TYPE, APPLICATION_ATOM_XML_ENTRY)
-          .entity(serialize(uriParserResultView.getTargetEntitySet(), uriParserResultView.getFormat(), data))
-          .build();
-    else
+    if (!appliesFilter(data, uriParserResultView.getFilter()))
       throw new ODataNotFoundException(ODataNotFoundException.ENTITY);
+
+    // final EdmEntitySet entitySet = uriParserResultView.getTargetEntitySet();
+    // final Map<String, Object> values = getEntityValueMap(data, entitySet.getEntityType());
+
+    return ODataResponse
+        .status(HttpStatusCodes.OK)
+        .header(CONTENT_TYPE, APPLICATION_ATOM_XML_ENTRY)
+        .entity(
+            // ODataSerializer.create(uriParserResultView.getFormat(), getContext()).serializeEntry(entitySet, values))
+            serialize(uriParserResultView.getTargetEntitySet(), uriParserResultView.getFormat(), data))
+        .build();
   }
 
   @Override
@@ -207,15 +214,15 @@ public class ListsProcessor extends ODataSingleProcessor {
         mapFunctionParameters(uriParserResultView.getFunctionImportParameters()),
         uriParserResultView.getNavigationSegments());
 
-    // if (appliesFilter(data, uriParserResultView.getFilter()))
-    if (data != null)
-      return ODataResponse
+    // if (!appliesFilter(data, uriParserResultView.getFilter()))
+    if (data == null)
+      throw new ODataNotFoundException(ODataNotFoundException.ENTITY);
+
+    return ODataResponse
           .status(HttpStatusCodes.OK)
           .header(CONTENT_TYPE, APPLICATION_XML)
           .entity("Link to " + data)
           .build();
-    else
-      throw new ODataNotFoundException(ODataNotFoundException.ENTITY);
   }
 
   @Override
@@ -235,13 +242,15 @@ public class ListsProcessor extends ODataSingleProcessor {
     // if (!appliesFilter(data, uriParserResultView.getFilter()))
     //   throw new ODataNotFoundException(ODataNotFoundException.ENTITY);
 
-    for (EdmProperty property : uriParserResultView.getPropertyPath())
-      data = getPropertyValue(data, property);
+    EdmProperty property = null;
+    for (EdmProperty intermediateProperty : uriParserResultView.getPropertyPath())
+      data = getPropertyValue(data, property = intermediateProperty);
 
     return ODataResponse
         .status(HttpStatusCodes.OK)
         .header(CONTENT_TYPE, APPLICATION_XML)
-        .entity(data.toString())
+        .entity(ODataSerializer.create(Format.XML, getContext()).serializeProperty(property,
+            property.getType().getKind() == EdmTypeKind.COMPLEX ? getPropertyValueMap(data, property) : data))
         .build();
   }
 
@@ -263,16 +272,15 @@ public class ListsProcessor extends ODataSingleProcessor {
     //   throw new ODataNotFoundException(ODataNotFoundException.ENTITY);
 
     EdmProperty property = null;
-    for (EdmProperty intermediateProperty : uriParserResultView.getPropertyPath()) {
+    for (EdmProperty intermediateProperty : uriParserResultView.getPropertyPath())
       data = getPropertyValue(data, property = intermediateProperty);
-    }
 
     return ODataResponse
         .status(HttpStatusCodes.OK)
         .header(CONTENT_TYPE,
             (EdmSimpleType) property.getType() == EdmSimpleTypeKind.Binary.getEdmSimpleTypeInstance() ?
                 property.getMimeType() : TEXT_PLAIN)
-        .entity(data.toString())
+        .entity(data == null ? "" : data.toString())
         .build();
   }
 
@@ -469,6 +477,37 @@ public class ListsProcessor extends ODataSingleProcessor {
     } catch (InvocationTargetException e) {
       throw new ODataNotFoundException(null, e);
     }
+  }
+
+  private <T> Map<String, Object> getPropertyValueMap(final T data, final EdmProperty property) throws ODataException {
+    Map<String, Object> valueMap = new HashMap<String, Object>();
+    if (property.getType().getKind() == EdmTypeKind.COMPLEX) {
+      final EdmComplexType complexType = (EdmComplexType) property.getType();
+      for (final String propertyName : complexType.getPropertyNames()) {
+        final EdmProperty innerProperty = (EdmProperty) complexType.getProperty(propertyName);
+        final Object value = getPropertyValue(data, innerProperty);
+        if (innerProperty.getType().getKind() == EdmTypeKind.COMPLEX)
+          valueMap.put(propertyName, getPropertyValueMap(value, innerProperty));
+        else
+          valueMap.put(propertyName, value);
+      }
+    } else {
+      valueMap.put(property.getName(), data);
+    }
+    return valueMap;
+  }
+
+  private <T> Map<String, Object> getEntityValueMap(final T data, final EdmEntityType entityType) throws ODataException {
+    Map<String, Object> valueMap = new HashMap<String, Object>();
+    for (final String propertyName : entityType.getPropertyNames()) {
+      final EdmProperty property = (EdmProperty) entityType.getProperty(propertyName);
+      final Object value = getPropertyValue(data, property);
+      if (property.getType().getKind() == EdmTypeKind.COMPLEX)
+        valueMap.put(propertyName, getPropertyValueMap(value, property));
+      else
+        valueMap.put(propertyName, value);
+    }
+    return valueMap;
   }
 
   private Object serialize(EdmEntitySet entitySet, Format format, List<Object> objects) throws ODataException {

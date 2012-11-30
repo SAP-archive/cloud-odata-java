@@ -28,7 +28,7 @@ public class EdmAssociationEndImplProv implements EdmAssociationEnd, EdmAnnotata
   public EdmEntityType getEntityType() throws EdmException {
     final FullQualifiedName type = associationEnd.getType();
     EdmEntityType entityType = edm.getEntityType(type.getNamespace(), type.getName());
-    if(entityType == null){
+    if (entityType == null) {
       throw new EdmException(EdmException.COMMON);
     }
     return entityType;
@@ -41,7 +41,7 @@ public class EdmAssociationEndImplProv implements EdmAssociationEnd, EdmAnnotata
 
   @Override
   public EdmAnnotations getAnnotations() throws EdmException {
-   return new EdmAnnotationsImplProv(associationEnd.getAnnotationAttributes(), associationEnd.getAnnotationElements());
+    return new EdmAnnotationsImplProv(associationEnd.getAnnotationAttributes(), associationEnd.getAnnotationElements());
   }
 
 }
