@@ -57,6 +57,9 @@ public class ListsProcessor extends ODataSingleProcessor {
   private static final String CONTENT_TYPE = "Content-Type";
   private static final String TEXT_PLAIN = "text/plain";
   private static final String APPLICATION_OCTET_STREAM = "application/octet-stream";
+  private static final String APPLICATION_ATOM_XML_ENTRY = "application/atom+xml;type=entry";
+  private static final String APPLICATION_ATOM_XML_FEED = "application/atom+xml;type=feed";
+  private static final String APPLICATION_XML = "application/xml";
 
   private final ListsDataSource dataSource;
 
@@ -68,6 +71,7 @@ public class ListsProcessor extends ODataSingleProcessor {
   public ODataResponse readServiceDocument(final GetServiceDocumentView uriParserResultView) throws ODataException {
     return ODataResponse
         .status(HttpStatusCodes.OK)
+        .header(CONTENT_TYPE, APPLICATION_XML)
         .entity("this should be the service document")
         .build();
   }
@@ -92,11 +96,10 @@ public class ListsProcessor extends ODataSingleProcessor {
         uriParserResultView.getSkip(),
         uriParserResultView.getTop());
 
-    Object serializedData = serialize(data, uriParserResultView);
     return ODataResponse
         .status(HttpStatusCodes.OK)
-        //        .entity(data.toString())
-        .entity(serializedData)
+        .header(CONTENT_TYPE, APPLICATION_ATOM_XML_FEED)
+        .entity(serialize(data, uriParserResultView))
         .build();
   }
 
@@ -150,6 +153,7 @@ public class ListsProcessor extends ODataSingleProcessor {
 
     return ODataResponse
         .status(HttpStatusCodes.OK)
+        .header(CONTENT_TYPE, APPLICATION_XML)
         .entity("Links to " + data)
         .build();
   }
@@ -171,6 +175,7 @@ public class ListsProcessor extends ODataSingleProcessor {
     if (appliesFilter(data, uriParserResultView.getFilter()))
       return ODataResponse
           .status(HttpStatusCodes.OK)
+          .header(CONTENT_TYPE, APPLICATION_ATOM_XML_ENTRY)
           .entity(serialize(data, uriParserResultView))
           .build();
     else
@@ -206,6 +211,7 @@ public class ListsProcessor extends ODataSingleProcessor {
     if (data != null)
       return ODataResponse
           .status(HttpStatusCodes.OK)
+          .header(CONTENT_TYPE, APPLICATION_XML)
           .entity("Link to " + data)
           .build();
     else
@@ -234,6 +240,7 @@ public class ListsProcessor extends ODataSingleProcessor {
 
     return ODataResponse
         .status(HttpStatusCodes.OK)
+        .header(CONTENT_TYPE, APPLICATION_XML)
         .entity(data.toString())
         .build();
   }
@@ -301,6 +308,7 @@ public class ListsProcessor extends ODataSingleProcessor {
 
     return ODataResponse
         .status(HttpStatusCodes.OK)
+        .header(CONTENT_TYPE, APPLICATION_XML)
         .entity(data.toString())
         .build();
   }

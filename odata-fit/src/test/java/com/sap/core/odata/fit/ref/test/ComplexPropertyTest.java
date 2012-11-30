@@ -18,7 +18,7 @@ public class ComplexPropertyTest extends AbstractRefTest {
     assertEquals(CITY_2_NAME, getBody(response));
 
     response = callUri("Employees('2')/Location");
-    // checkMediaType(response, APPLICATION_XML);
+    checkMediaType(response, APPLICATION_XML);
     assertNotNull(getBody(response));
     // assertTrue(getBody(response).contains("PostalCode"));
 
