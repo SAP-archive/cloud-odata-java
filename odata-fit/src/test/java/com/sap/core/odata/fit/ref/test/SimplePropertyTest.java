@@ -20,7 +20,7 @@ public class SimplePropertyTest extends AbstractRefTest {
     assertEquals(EMPLOYEE_2_AGE, getBody(response));
 
     response = callUri("Employees('2')/Age");
-    // checkMediaType(response, APPLICATION_XML);
+    checkMediaType(response, APPLICATION_XML);
     assertTrue(getBody(response).contains(EMPLOYEE_2_AGE));
 
     response = callUri("Container2.Photos(Id=3,Type='image%2Fjpeg')/Image/$value");
@@ -28,7 +28,7 @@ public class SimplePropertyTest extends AbstractRefTest {
     assertNotNull(getBody(response));
 
     response = callUri("Container2.Photos(Id=3,Type='image%2Fjpeg')/Image");
-    // checkMediaType(response, APPLICATION_XML);
+    checkMediaType(response, APPLICATION_XML);
     assertNotNull(getBody(response));
     // assertTrue(getBody(response).contains("<d:Image m:type=\"Edm.Binary\" m:MimeType=\"image/jpeg\""));
 
@@ -38,7 +38,7 @@ public class SimplePropertyTest extends AbstractRefTest {
     assertEquals("5", getBody(response));
 
     response = callUri("Rooms('2')/Seats");
-    // checkMediaType(response, APPLICATION_XML);
+    checkMediaType(response, APPLICATION_XML);
     // checkEtag(response, "W/\"2\"");
     assertNotNull(getBody(response));
     // assertTrue(getBody(response).contains("5</"));
@@ -58,15 +58,15 @@ public class SimplePropertyTest extends AbstractRefTest {
   @Test
   public void navigationSimpleProperty() throws Exception {
     HttpResponse response = callUri("Employees('2')/ne_Room/nr_Employees('6')/Age");
-    // checkMediaType(response, APPLICATION_XML);
+    checkMediaType(response, APPLICATION_XML);
     assertTrue(getBody(response).contains(EMPLOYEE_6_AGE));
 
     response = callUri("Employees('4')/ne_Team/nt_Employees('5')/EmployeeName");
-    // checkMediaType(response, APPLICATION_XML);
+    checkMediaType(response, APPLICATION_XML);
     assertTrue(getBody(response).contains(EMPLOYEE_5_NAME));
 
     response = callUri("Rooms('2')/nr_Employees('4')/Location/City/CityName");
-    // checkMediaType(response, APPLICATION_XML);
+    checkMediaType(response, APPLICATION_XML);
     assertTrue(getBody(response).contains(CITY_2_NAME));
   }
 }
