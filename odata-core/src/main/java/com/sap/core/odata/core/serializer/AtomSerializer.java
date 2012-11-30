@@ -7,13 +7,19 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Map;
 
+import javax.xml.stream.XMLOutputFactory;
+import javax.xml.stream.XMLStreamWriter;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.sap.core.odata.api.edm.EdmEntitySet;
+import com.sap.core.odata.api.edm.EdmProperty;
 import com.sap.core.odata.api.processor.ODataContext;
 import com.sap.core.odata.api.serialization.ODataSerializationException;
 import com.sap.core.odata.api.serialization.ODataSerializer;
+
+// TODO usage of "ByteArrayInputStream(out.toByteArray())":  check synchronized call / copy of data
 
 public class AtomSerializer extends ODataSerializer {
 
@@ -50,11 +56,23 @@ public class AtomSerializer extends ODataSerializer {
     }
   }
 
-  private boolean isMultiValueMap(Map<String, Object> data) {
-    if (data == null || data.isEmpty()) {
-      return false;
+  @Override
+  public InputStream serializeProperty(EdmProperty edmProperty, Object value) throws ODataSerializationException {
+    try {
+      XmlPropertySerializer ps = new XmlPropertySerializer();
+
+      ByteArrayOutputStream out = new ByteArrayOutputStream();
+      XMLStreamWriter writer = XMLOutputFactory.newInstance().createXMLStreamWriter(out, "utf-8");
+      ps.append(writer, edmProperty, value);
+
+      writer.flush();
+      out.flush();
+      out.close();
+
+      return new ByteArrayInputStream(out.toByteArray());
+
+    } catch (Exception e) {
+      throw new ODataSerializationException(ODataSerializationException.COMMON, e);
     }
-    Object value = data.values().iterator().next();
-    return (value instanceof Map<?, ?>);
   }
 }
