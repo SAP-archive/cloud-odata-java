@@ -99,7 +99,7 @@ public class AtomEntrySerializer {
         Object value = entry.getValue();
 
         XmlPropertySerializer aps = new XmlPropertySerializer();
-        aps.append(writer, prop, value);
+        aps.append(writer, prop, value, true);
       }
     }
 

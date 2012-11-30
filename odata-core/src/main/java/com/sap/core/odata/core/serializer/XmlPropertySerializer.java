@@ -18,14 +18,16 @@ import com.sap.core.odata.core.edm.EdmString;
 
 public class XmlPropertySerializer {
 
-  public void append(XMLStreamWriter writer, EdmProperty edmProperty, Object value) throws EdmException, XMLStreamException, ODataSerializationException {
+  public void append(XMLStreamWriter writer, EdmProperty edmProperty, Object value, boolean isRootElement) throws EdmException, XMLStreamException, ODataSerializationException {
     EdmType edmType = edmProperty.getType();
 
     String name = edmProperty.getName();
 
     writer.writeStartElement(name);
-    writer.writeDefaultNamespace(AtomEntrySerializer.NS_DATASERVICES);
-    writer.writeNamespace("m", AtomEntrySerializer.NS_DATASERVICES_METADATA);
+    if (isRootElement) {
+      writer.writeDefaultNamespace(AtomEntrySerializer.NS_DATASERVICES);
+      writer.writeNamespace("m", AtomEntrySerializer.NS_DATASERVICES_METADATA);
+    }
 
     if (edmType instanceof EdmSimpleType) {
       EdmSimpleType st = (EdmSimpleType) edmType;
@@ -49,7 +51,7 @@ public class XmlPropertySerializer {
       for (String pName : propNames) {
         EdmProperty internalProperty = (EdmProperty) type.getProperty(pName);
         Object childValue = extractChildValue(value, pName);
-        append(writer, internalProperty, childValue);
+        append(writer, internalProperty, childValue, false);
       }
     }
   }
