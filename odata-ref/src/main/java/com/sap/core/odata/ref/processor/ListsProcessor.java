@@ -99,7 +99,7 @@ public class ListsProcessor extends ODataSingleProcessor {
     return ODataResponse
         .status(HttpStatusCodes.OK)
         .header(CONTENT_TYPE, APPLICATION_ATOM_XML_FEED)
-        .entity(serialize(data, uriParserResultView))
+        .entity(serialize(uriParserResultView.getTargetEntitySet(), uriParserResultView.getFormat(), data))
         .build();
   }
 
@@ -176,7 +176,7 @@ public class ListsProcessor extends ODataSingleProcessor {
       return ODataResponse
           .status(HttpStatusCodes.OK)
           .header(CONTENT_TYPE, APPLICATION_ATOM_XML_ENTRY)
-          .entity(serialize(data, uriParserResultView))
+          .entity(serialize(uriParserResultView.getTargetEntitySet(), uriParserResultView.getFormat(), data))
           .build();
     else
       throw new ODataNotFoundException(ODataNotFoundException.ENTITY);
@@ -429,8 +429,23 @@ public class ListsProcessor extends ODataSingleProcessor {
   }
 
   private <T> String getSkipToken(final T data, final EdmEntitySet entitySet) throws ODataException {
+    List<EdmProperty> keyProperties = entitySet.getEntityType().getKeyProperties();
+    // The key properties come from a hash map without predictable order.
+    // Since this implementation builds the skip token by concatenating the values
+    // of the key properties, order is relevant.
+    Collections.sort(keyProperties, new Comparator<EdmProperty>() {
+      @Override
+      public int compare(final EdmProperty keyProperty1, final EdmProperty keyProperty2) {
+        try {
+          return keyProperty1.getName().compareToIgnoreCase(keyProperty2.getName());
+        } catch (EdmException e) {
+          return 0;
+        }
+      }
+    });
+
     String skipToken = "";
-    for (EdmProperty property : entitySet.getEntityType().getKeyProperties()) {
+    for (final EdmProperty property : keyProperties) {
       final EdmSimpleType type = (EdmSimpleType) property.getType();
       skipToken = skipToken.concat(type.valueToString(getPropertyValue(data, property), EdmLiteralKind.DEFAULT, property.getFacets()));
     }
@@ -456,27 +471,25 @@ public class ListsProcessor extends ODataSingleProcessor {
     }
   }
 
-  private Object serialize(List<Object> objects, GetEntitySetView uriParserResultView) throws ODataException {
-    Format format = uriParserResultView.getFormat();
+  private Object serialize(EdmEntitySet entitySet, Format format, List<Object> objects) throws ODataException {
     if (format == null) {
       return objects == null ? "NULL" : objects.toString();
     } else {
       Map<String, Object> rawData = objectToMap(objects);
       ODataSerializer ser = ODataSerializer.create(format, getContext());
 
-      return ser.serializeEntry(uriParserResultView.getTargetEntitySet(), rawData);
+      return ser.serializeEntry(entitySet, rawData);
     }
   }
 
-  private Object serialize(Object object, GetEntityView uriParserResultView) throws ODataException {
-    Format format = uriParserResultView.getFormat();
+  private Object serialize(EdmEntitySet entitySet, Format format, Object object) throws ODataException {
     if (format == null) {
       return object == null ? "NULL" : object.toString();
     } else {
       Map<String, Object> rawData = objectToMap(object);
       ODataSerializer ser = ODataSerializer.create(format, getContext());
 
-      return ser.serializeEntry(uriParserResultView.getTargetEntitySet(), rawData);
+      return ser.serializeEntry(entitySet, rawData);
     }
   }
 
