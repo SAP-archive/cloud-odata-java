@@ -35,6 +35,7 @@ public class AtomServiceDocumentSerializer {
       xmlStreamWriter.writeStartElement("service");
       xmlStreamWriter.writeAttribute("base", serviceRoot);
       xmlStreamWriter.writeNamespace("atom", ATOM_NAMESPACE);
+      xmlStreamWriter.writeNamespace("app", APP_NAMESPACE);
 
       xmlStreamWriter.writeStartElement("workspace");
       xmlStreamWriter.writeStartElement(ATOM_NAMESPACE, "title");

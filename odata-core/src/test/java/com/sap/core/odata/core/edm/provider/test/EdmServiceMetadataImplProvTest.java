@@ -41,6 +41,7 @@ import com.sap.core.odata.api.edm.provider.Schema;
 import com.sap.core.odata.api.exception.ODataMessageException;
 import com.sap.core.odata.api.exception.ODataNotFoundException;
 import com.sap.core.odata.core.edm.provider.EdmImplProv;
+import com.sap.core.odata.testutils.helper.StringHelper;
 
 public class EdmServiceMetadataImplProvTest {
 
@@ -59,7 +60,7 @@ public class EdmServiceMetadataImplProvTest {
     EdmImplProv edmImplProv = new EdmImplProv(new edmProviderMock());
 
     EdmServiceMetadata serviceMetadata = edmImplProv.getServiceMetadata();
-    String metadata = serviceMetadata.getMetadata();
+    String metadata = StringHelper.inputStreamToString(serviceMetadata.getMetadata());
     System.out.println(metadata);
   }
 
