@@ -3,6 +3,7 @@ package com.sap.core.odata.ref.model;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.text.DateFormat;
 import java.util.Calendar;
 
 /**
@@ -183,7 +184,7 @@ public class Employee {
         + "\"CityName\":\"" + location.getCity().getCityName() + "\"},"
         + "\"Country\":\"" + location.getCountry() + "\"},"
         + "\"Age\":" + age + ","
-        + "\"EntryDate\":\"" + entryDate + "\","
+        + "\"EntryDate\":" + (entryDate == null ? "null" : "\"" + DateFormat.getInstance().format(entryDate.getTime()) + "\"") + ","
         + "\"ImageUrl\":\"" + imageUrl + "\"}";
   }
 }

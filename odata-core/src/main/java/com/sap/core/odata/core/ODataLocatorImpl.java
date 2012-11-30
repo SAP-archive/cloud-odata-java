@@ -13,7 +13,6 @@ import javax.ws.rs.GET;
 import javax.ws.rs.HeaderParam;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
-import javax.ws.rs.Produces;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
@@ -21,6 +20,7 @@ import javax.ws.rs.core.PathSegment;
 import javax.ws.rs.core.Request;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
+import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.UriInfo;
 
@@ -55,7 +55,10 @@ public final class ODataLocatorImpl {
   public Response handleGet() throws ODataException {
     List<ODataPathSegment> pathSegments = this.context.getUriInfo().getODataPathSegmentList(); //
     UriParserResultImpl uriParserResult = (UriParserResultImpl) this.uriParser.parse(pathSegments, this.queryParameters);
-    uriParserResult.setFormat(format);
+
+    // $format system query option has precedence
+    if (uriParserResult.getFormat() == null && uriParserResult.getCustomFormat() == null)
+      uriParserResult.setFormat(format);
 
     ODataResponse odataResponse = dispatcher.dispatch(ODataHttpMethod.GET, uriParserResult);
     Response response = this.convertResponse(odataResponse);
@@ -64,7 +67,6 @@ public final class ODataLocatorImpl {
   }
 
   @POST
-  @Produces(MediaType.TEXT_PLAIN)
   public Response handlePost(
       @HeaderParam("X-HTTP-Method") String xmethod
       ) throws ODataException {
@@ -81,7 +83,7 @@ public final class ODataLocatorImpl {
     } else if ("DELETE".equals(xmethod)) {
       response = this.handleDelete();
     } else {
-      response = Response.status(405).build(); // method not allowed!
+      response = Response.status(Status.METHOD_NOT_ALLOWED).build();
     }
 
     return response;
