@@ -4,6 +4,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import com.sap.core.odata.api.edm.Edm;
@@ -64,7 +65,8 @@ class EdmMock {
 
     EdmComplexType locationComplexType = mock(EdmComplexType.class);
     when(locationComplexType.getKind()).thenReturn(EdmTypeKind.COMPLEX);
-
+    when(locationComplexType.getPropertyNames()).thenReturn(Arrays.asList("City", "Country"));
+    
     EdmProperty locationComplexProperty = mock(EdmProperty.class);
     when(locationComplexProperty.getType()).thenReturn(locationComplexType);
     when(locationComplexProperty.getName()).thenReturn("Location");
@@ -75,6 +77,25 @@ class EdmMock {
     when(countryProperty.getName()).thenReturn("Country");
     when(locationComplexType.getProperty("Country")).thenReturn(countryProperty);
    
+    EdmComplexType cityComplexType = mock(EdmComplexType.class);
+    when(cityComplexType.getKind()).thenReturn(EdmTypeKind.COMPLEX);
+    when(cityComplexType.getPropertyNames()).thenReturn(Arrays.asList("PostalCode", "CityName"));
+    
+    EdmProperty cityProperty = mock(EdmProperty.class);
+    when(cityProperty.getType()).thenReturn(cityComplexType);
+    when(cityProperty.getName()).thenReturn("City");
+    when(locationComplexType.getProperty("City")).thenReturn(cityProperty);
+
+    EdmProperty postalCodeProperty = mock(EdmProperty.class);
+    when(postalCodeProperty.getType()).thenReturn(EdmSimpleTypeKind.String.getEdmSimpleTypeInstance());
+    when(postalCodeProperty.getName()).thenReturn("PostalCode");
+    when(cityComplexType.getProperty("PostalCode")).thenReturn(postalCodeProperty);
+    
+    EdmProperty cityNameProperty = mock(EdmProperty.class);
+    when(cityNameProperty.getType()).thenReturn(EdmSimpleTypeKind.String.getEdmSimpleTypeInstance());
+    when(cityNameProperty.getName()).thenReturn("CityName");
+    when(cityComplexType.getProperty("CityName")).thenReturn(cityNameProperty);
+    
     EdmEntitySet teamsEntitySet = createEntitySetMock(defaultContainer, "Teams", EdmSimpleTypeKind.String.getEdmSimpleTypeInstance(), "Id");
     when(teamsEntitySet.getEntityType().getProperty("nt_Employees")).thenReturn(employeeProperty);
     when(teamsEntitySet.getRelatedEntitySet(employeeProperty)).thenReturn(employeeEntitySet);
@@ -132,6 +153,7 @@ class EdmMock {
     when(edm.getDefaultEntityContainer()).thenReturn(defaultContainer);
     when(edm.getEntityContainer("Container1")).thenReturn(specificContainer);
     when(edm.getEntityContainer("Container2")).thenReturn(photoContainer);
+    when(edm.getEntityType("RefScenario", "Employee")).thenReturn(employeeType);
     return edm;
   }
 
