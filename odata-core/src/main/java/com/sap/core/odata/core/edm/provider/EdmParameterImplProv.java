@@ -1,17 +1,25 @@
 package com.sap.core.odata.core.edm.provider;
 
+import com.sap.core.odata.api.edm.EdmAnnotatable;
+import com.sap.core.odata.api.edm.EdmAnnotations;
 import com.sap.core.odata.api.edm.EdmException;
-import com.sap.core.odata.api.edm.EdmFacets;
-import com.sap.core.odata.api.edm.EdmMapping;
 import com.sap.core.odata.api.edm.EdmParameter;
-import com.sap.core.odata.api.edm.FullQualifiedName;
+import com.sap.core.odata.api.edm.provider.FunctionImportParameter;
 
 /**
  * @author SAP AG
  */
-public class EdmParameterImplProv extends EdmElementImplProv implements EdmParameter {
+public class EdmParameterImplProv extends EdmElementImplProv implements EdmParameter, EdmAnnotatable {
 
-  public EdmParameterImplProv(EdmImplProv edm, String name, FullQualifiedName typeName, EdmFacets edmFacets, EdmMapping edmMapping) throws EdmException {
-    super(edm, name, typeName, edmFacets, edmMapping);
+  FunctionImportParameter parameter;
+
+  public EdmParameterImplProv(EdmImplProv edm, FunctionImportParameter parameter) throws EdmException {
+    super(edm, parameter.getName(), parameter.getQualifiedName(), parameter.getFacets(), parameter.getMapping());
+    this.parameter = parameter;
+  }
+
+  @Override
+  public EdmAnnotations getAnnotations() throws EdmException {
+    return new EdmAnnotationsImplProv(parameter.getAnnotationAttributes(), parameter.getAnnotationElements());
   }
 }

@@ -46,7 +46,7 @@ public class EdmEntitySetProvTest {
     EdmImplProv edmImplProv = new EdmImplProv(edmProvider);
 
     EntityContainerInfo entityContainer = new EntityContainerInfo().setName("Container");
-    when(edmProvider.getEntityContainer("Container")).thenReturn(entityContainer);
+    when(edmProvider.getEntityContainerInfo("Container")).thenReturn(entityContainer);
     EdmEntityContainerImplProv edmEntityContainer = new EdmEntityContainerImplProv(edmImplProv, entityContainer);
 
     EntitySet entitySetFoo = new EntitySet().setName("foo");

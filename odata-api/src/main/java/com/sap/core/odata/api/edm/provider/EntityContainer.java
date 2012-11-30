@@ -13,8 +13,6 @@ public class EntityContainer extends EntityContainerInfo {
   private Collection<AssociationSet> associationSets;
   private Collection<FunctionImport> functionImports;
   private Documentation documentation;
-  private Collection<AnnotationAttribute> annotationAttributes;
-  private Collection<AnnotationElement> annotationElements;
 
   /**
    * @return <b>Collection</b> of all entity sets of the entity container
@@ -39,7 +37,7 @@ public class EntityContainer extends EntityContainerInfo {
   public Collection<AssociationSet> getAssociationSets() {
     return associationSets;
   }
-  
+
   /**
    * Sets the association sets of this {@link EntityContainer}
    * @param name
@@ -99,7 +97,7 @@ public class EntityContainer extends EntityContainerInfo {
     super.setDefaultEntityContainer(isDefaultEntityContainer);
     return this;
   }
-  
+
   /**
    * @return {@link Documentation} documentation
    */
@@ -114,40 +112,6 @@ public class EntityContainer extends EntityContainerInfo {
    */
   public EntityContainer setDocumentation(Documentation documentation) {
     this.documentation = documentation;
-    return this;
-  }
-
-  /**
-   * @return collection of {@link AnnotationAttribute} annotation attributes
-   */
-  public Collection<AnnotationAttribute> getAnnotationAttributes() {
-    return annotationAttributes;
-  }
-
-  /**
-   * Sets the collection of {@link AnnotationAttribute} for this {@link EntityContainer}
-   * @param annotationAttributes
-   * @return {@link EntityContainer} for method chaining
-   */
-  public EntityContainer setAnnotationAttributes(Collection<AnnotationAttribute> annotationAttributes) {
-    this.annotationAttributes = annotationAttributes;
-    return this;
-  }
-
-  /**
-   * @return collection of {@link AnnotationElement} annotation elements
-   */
-  public Collection<AnnotationElement> getAnnotationElements() {
-    return annotationElements;
-  }
-
-  /**
-   * Sets the collection of {@link AnnotationElement} for this {@link EntityContainer}
-   * @param annotationElements
-   * @return {@link EntityContainer} for method chaining
-   */
-  public EntityContainer setAnnotationElements(Collection<AnnotationElement> annotationElements) {
-    this.annotationElements = annotationElements;
     return this;
   }
 }

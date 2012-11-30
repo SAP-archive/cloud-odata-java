@@ -34,8 +34,8 @@ public class EdmImplProvTest {
     when(edmProvider.getAssociation(new FullQualifiedName("Association1Ns", "Association1"))).thenReturn(association);
 
     EntityContainerInfo defaultEntityContainer = new EntityContainerInfo().setName("Container1");
-    when(edmProvider.getEntityContainer(null)).thenReturn(defaultEntityContainer);
-    when(edmProvider.getEntityContainer("Container1")).thenReturn(defaultEntityContainer);
+    when(edmProvider.getEntityContainerInfo(null)).thenReturn(defaultEntityContainer);
+    when(edmProvider.getEntityContainerInfo("Container1")).thenReturn(defaultEntityContainer);
 
     edm = new EdmImplProv(edmProvider);
   }

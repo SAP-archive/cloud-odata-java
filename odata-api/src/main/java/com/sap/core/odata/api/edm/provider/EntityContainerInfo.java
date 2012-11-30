@@ -1,5 +1,7 @@
 package com.sap.core.odata.api.edm.provider;
 
+import java.util.Collection;
+
 /**
  * @author SAP AG
  * <p>
@@ -10,7 +12,9 @@ public class EntityContainerInfo {
   private String name;
   private String extendz;
   private boolean isDefaultEntityContainer;
-
+  private Collection<AnnotationAttribute> annotationAttributes;
+  private Collection<AnnotationElement> annotationElements;
+  
   /**
    * @return <b>String</b> name
    */
@@ -59,6 +63,40 @@ public class EntityContainerInfo {
    */
   public EntityContainerInfo setDefaultEntityContainer(boolean isDefaultEntityContainer) {
     this.isDefaultEntityContainer = isDefaultEntityContainer;
+    return this;
+  }
+  
+  /**
+   * @return collection of {@link AnnotationAttribute} annotation attributes
+   */
+  public Collection<AnnotationAttribute> getAnnotationAttributes() {
+    return annotationAttributes;
+  }
+
+  /**
+   * Sets the collection of {@link AnnotationAttribute} for this {@link EntityContainer}
+   * @param annotationAttributes
+   * @return {@link EntityContainer} for method chaining
+   */
+  public EntityContainerInfo setAnnotationAttributes(Collection<AnnotationAttribute> annotationAttributes) {
+    this.annotationAttributes = annotationAttributes;
+    return this;
+  }
+
+  /**
+   * @return collection of {@link AnnotationElement} annotation elements
+   */
+  public Collection<AnnotationElement> getAnnotationElements() {
+    return annotationElements;
+  }
+
+  /**
+   * Sets the collection of {@link AnnotationElement} for this {@link EntityContainer}
+   * @param annotationElements
+   * @return {@link EntityContainer} for method chaining
+   */
+  public EntityContainerInfo setAnnotationElements(Collection<AnnotationElement> annotationElements) {
+    this.annotationElements = annotationElements;
     return this;
   }
 

@@ -1,5 +1,6 @@
 package com.sap.core.odata.core.edm.provider;
 
+import com.sap.core.odata.api.edm.EdmAnnotations;
 import com.sap.core.odata.api.edm.EdmComplexType;
 import com.sap.core.odata.api.edm.EdmException;
 import com.sap.core.odata.api.edm.EdmTypeKind;
@@ -15,4 +16,11 @@ public class EdmComplexTypeImplProv extends EdmStructuralTypeImplProv implements
   public EdmComplexType getBaseType() throws EdmException {
     return (EdmComplexType) edmBaseType;
   }
+  
+  @Override
+  public EdmAnnotations getAnnotations() throws EdmException {
+    return new EdmAnnotationsImplProv(structuralType.getAnnotationAttributes(), structuralType.getAnnotationElements());    
+  }
+
+
 }

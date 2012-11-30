@@ -3,6 +3,8 @@ package com.sap.core.odata.core.edm.provider;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.sap.core.odata.api.edm.EdmAnnotatable;
+import com.sap.core.odata.api.edm.EdmAnnotations;
 import com.sap.core.odata.api.edm.EdmAssociation;
 import com.sap.core.odata.api.edm.EdmAssociationSet;
 import com.sap.core.odata.api.edm.EdmEntityContainer;
@@ -20,7 +22,7 @@ import com.sap.core.odata.api.exception.ODataException;
 /**
  * @author SAP AG
  */
-public class EdmEntityContainerImplProv implements EdmEntityContainer {
+public class EdmEntityContainerImplProv implements EdmEntityContainer, EdmAnnotatable {
 
   private EdmImplProv edm;
   private EntityContainerInfo entityContainer;
@@ -87,7 +89,7 @@ public class EdmEntityContainerImplProv implements EdmEntityContainer {
     try {
       functionImport = edm.edmProvider.getFunctionImport(entityContainer.getName(), name);
     } catch (ODataException e) {
-      throw new EdmException(EdmException.COMMON, e);
+      throw new EdmException(EdmException.PROVIDERPROBLEM, e);
     }
 
     if (functionImport != null) {
@@ -127,12 +129,14 @@ public class EdmEntityContainerImplProv implements EdmEntityContainer {
     if (associationSet != null) {
       edmAssociationSet = createAssociationSet(associationSet);
       edmAssociationSets.put(key, edmAssociationSet);
+      return edmAssociationSet;
     } else if (edmExtendedEntityContainer != null) {
       edmAssociationSet = edmExtendedEntityContainer.getAssociationSet(sourceEntitySet, navigationProperty);
       edmAssociationSets.put(key, edmAssociationSet);
+      return edmAssociationSet;
+    } else {
+      throw new EdmException(EdmException.COMMON);
     }
-
-    return edmAssociationSet;
   }
 
   private EdmEntitySet createEntitySet(EntitySet entitySet) throws EdmException {
@@ -150,5 +154,10 @@ public class EdmEntityContainerImplProv implements EdmEntityContainer {
   @Override
   public boolean isDefaultEntityContainer() {
     return this.isDefaultContainer;
+  }
+
+  @Override
+  public EdmAnnotations getAnnotations() throws EdmException {
+    return new EdmAnnotationsImplProv(entityContainer.getAnnotationAttributes(), entityContainer.getAnnotationElements());
   }
 }

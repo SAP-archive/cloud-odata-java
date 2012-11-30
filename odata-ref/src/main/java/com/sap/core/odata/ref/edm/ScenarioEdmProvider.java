@@ -283,7 +283,7 @@ public class ScenarioEdmProvider extends EdmProviderDefault {
   }
 
   @Override
-  public EntityContainerInfo getEntityContainer(final String name) throws ODataMessageException {
+  public EntityContainerInfo getEntityContainerInfo(final String name) throws ODataMessageException {
     if (name == null || ENTITY_CONTAINER_1.equals(name))
       return new EntityContainerInfo().setName(ENTITY_CONTAINER_1).setDefaultEntityContainer(true);
     else if (ENTITY_CONTAINER_2.equals(name))

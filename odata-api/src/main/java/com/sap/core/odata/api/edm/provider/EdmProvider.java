@@ -21,7 +21,7 @@ public interface EdmProvider {
    * @return {@link EntityContainerInfo} for the given name
    * @throws ODataException
    */
-  EntityContainerInfo getEntityContainer(String name) throws ODataException;
+  EntityContainerInfo getEntityContainerInfo(String name) throws ODataException;
 
   /**
    * This method should return an {@link EntityType} or <b>null</b> if nothing is found

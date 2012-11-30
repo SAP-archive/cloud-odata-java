@@ -35,6 +35,11 @@ public class EdmTypedImplProv extends EdmNamedImplProv implements EdmTyped {
       if (edmType == null) {
         edmType = edm.getEntityType(namespace, typeName.getName());
       }
+
+      if (edmType == null) {
+        throw new EdmException(EdmException.COMMON);
+      }
+
     }
     return edmType;
   }

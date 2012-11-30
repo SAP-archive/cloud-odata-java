@@ -3,7 +3,7 @@ package com.sap.core.odata.core.edm.provider.test;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNotSame;
-import static org.junit.Assert.assertNull;
+import static org.junit.Assert.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -31,7 +31,7 @@ public class EdmEntityContainerImplProvTest {
   public static void getEdmEntityContainerImpl() throws Exception {
     EdmProvider edmProvider = mock(EdmProvider.class);
     EdmImplProv edmImplProv = new EdmImplProv(edmProvider);
-    when(edmProvider.getEntityContainer("Container")).thenReturn(new EntityContainerInfo().setName("Container"));
+    when(edmProvider.getEntityContainerInfo("Container")).thenReturn(new EntityContainerInfo().setName("Container"));
 
     EntityContainerInfo entityContainer = new EntityContainerInfo().setName("Container1").setExtendz("Container");
 
@@ -76,8 +76,15 @@ public class EdmEntityContainerImplProvTest {
     EdmNavigationProperty edmNavigationProperty = mock(EdmNavigationProperty.class);
     when(edmNavigationProperty.getRelationship()).thenReturn(edmAssociation);
     when(edmNavigationProperty.getFromRole()).thenReturn("wrongRole");
-
-    assertNull(edmEntityContainer.getAssociationSet(sourceEntitySet, edmNavigationProperty));
+    
+    boolean failed = false;
+    try{
+    edmEntityContainer.getAssociationSet(sourceEntitySet, edmNavigationProperty);
+    }catch( EdmException e){
+      failed = true;
+    }
+    
+    assertTrue(failed);
   }
 
   @Test
