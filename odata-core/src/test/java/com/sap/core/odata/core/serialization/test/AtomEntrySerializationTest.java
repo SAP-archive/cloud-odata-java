@@ -2,13 +2,9 @@ package com.sap.core.odata.core.serialization.test;
 
 import static org.custommonkey.xmlunit.XMLAssert.assertXpathEvaluatesTo;
 import static org.custommonkey.xmlunit.XMLAssert.assertXpathExists;
-import static org.junit.Assert.assertNotNull;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Map;
 
 import javax.xml.stream.FactoryConfigurationError;
 import javax.xml.stream.XMLStreamException;
@@ -18,12 +14,7 @@ import org.junit.Test;
 import org.xml.sax.SAXException;
 
 import com.sap.core.odata.api.edm.EdmEntitySet;
-import com.sap.core.odata.api.edm.EdmException;
-import com.sap.core.odata.api.enums.Format;
 import com.sap.core.odata.api.exception.ODataException;
-import com.sap.core.odata.api.processor.ODataContext;
-import com.sap.core.odata.api.processor.ODataUriInfo;
-import com.sap.core.odata.api.serialization.ODataSerializationException;
 import com.sap.core.odata.api.serialization.ODataSerializer;
 import com.sap.core.odata.testutils.helper.StringHelper;
 
@@ -102,7 +93,7 @@ public class AtomEntrySerializationTest extends AbstractSerializerTest {
     InputStream xmlStream = ser.serializeEntry(this.createEdmEntitySetMock(false), this.data);
     String xmlString = StringHelper.inputStreamToString(xmlStream);
 
-    LOG.debug(xmlString);
+    log.debug(xmlString);
 
     assertXpathExists("/a:entry/m:properties", xmlString);
     assertXpathEvaluatesTo((String) data.get("roomId"), "/a:entry/m:properties/d:roomId/text()", xmlString);

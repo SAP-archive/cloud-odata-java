@@ -40,7 +40,7 @@ import com.sap.core.odata.testutils.helper.XMLUnitHelper;
 
 public abstract class AbstractSerializerTest {
 
-  protected final Logger LOG = LoggerFactory.getLogger(this.getClass());
+  protected final Logger log = LoggerFactory.getLogger(this.getClass());
 
   protected static final URI BASE_URI;
   static {
@@ -90,20 +90,27 @@ public abstract class AbstractSerializerTest {
     when(idp.getType()).thenReturn(EdmSimpleTypeKind.String.getEdmSimpleTypeInstance());
     kpl.add(idp);
   
+    EdmProperty idp2 = mock(EdmProperty.class);
+    when(idp2.getName()).thenReturn("age");
+    when(idp2.getType()).thenReturn(EdmSimpleTypeKind.Int32.getEdmSimpleTypeInstance());
     if (multipleIds) {
-      EdmProperty idp2 = mock(EdmProperty.class);
-      when(idp2.getName()).thenReturn("age");
-      when(idp2.getType()).thenReturn(EdmSimpleTypeKind.Int32.getEdmSimpleTypeInstance());
       kpl.add(idp2);
     }
-  
-    //
+    
     Set<EdmProperty> mockedProperties = new HashSet<EdmProperty>();
     EdmProperty edmRoomId = mock(EdmProperty.class);
     when(edmRoomId.getName()).thenReturn("roomId");
     when(edmRoomId.getType()).thenReturn(EdmSimpleTypeKind.String.getEdmSimpleTypeInstance());
+
     mockedProperties.add(edmRoomId);
-  
+    mockedProperties.add(idp);
+    mockedProperties.add(idp2);
+
+    EdmProperty imageUrl = mock(EdmProperty.class);
+    when(imageUrl.getName()).thenReturn("imageUrl");
+    when(imageUrl.getType()).thenReturn(EdmSimpleTypeKind.String.getEdmSimpleTypeInstance());
+    mockedProperties.add(imageUrl);
+    
     EdmProperty edmTeamId = mock(EdmProperty.class);
     when(edmTeamId.getName()).thenReturn("teamId");
     when(edmTeamId.getType()).thenReturn(EdmSimpleTypeKind.String.getEdmSimpleTypeInstance());

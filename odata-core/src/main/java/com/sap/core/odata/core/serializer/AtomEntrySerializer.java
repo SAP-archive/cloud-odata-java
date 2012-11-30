@@ -32,16 +32,17 @@ import com.sap.core.odata.api.serialization.ODataSerializationException;
 import com.sap.core.odata.api.serialization.ODataSerializer;
 import com.sap.core.odata.core.edm.EdmDateTimeOffset;
 
-public class AtomEntrySerializer extends ODataSerializer {
+public class AtomEntrySerializer {
 
   private static final String TAG_PROPERTIES = "properties";
   public static final String NS_DATASERVICES = "http://schemas.microsoft.com/ado/2007/08/dataservices";
   public static final String NS_DATASERVICES_METADATA = "http://schemas.microsoft.com/ado/2007/08/dataservices/metadata";
   public static final String NS_ATOM = "http://www.w3.org/2005/Atom";
   public static final String NS_XML = "http://www.w3.org/XML/1998/namespace";
+  private ODataContext context;
 
   AtomEntrySerializer(ODataContext ctx) throws ODataSerializationException {
-    super(ctx);
+    this.context = ctx;
   }
 
   public void serializeInto(OutputStream stream, EdmEntitySet entitySet, Map<String, Object> data) throws ODataSerializationException {
@@ -53,7 +54,6 @@ public class AtomEntrySerializer extends ODataSerializer {
     }
   }
 
-  @Override
   public InputStream serializeEntry(EdmEntitySet entitySet, Map<String, Object> data) throws ODataSerializationException {
     try {
       ByteArrayOutputStream out = new ByteArrayOutputStream();
@@ -72,7 +72,7 @@ public class AtomEntrySerializer extends ODataSerializer {
       writer.writeDefaultNamespace(NS_ATOM);
       writer.writeNamespace("m", NS_DATASERVICES_METADATA);
       writer.writeNamespace("d", NS_DATASERVICES);
-      writer.writeAttribute(NS_XML, "base", getContext().getUriInfo().getBaseUri().toASCIIString());
+      writer.writeAttribute(NS_XML, "base", this.context.getUriInfo().getBaseUri().toASCIIString());
 
       handleAtomParts(writer, entitySet, data);
 
@@ -86,7 +86,7 @@ public class AtomEntrySerializer extends ODataSerializer {
     }
   }
 
-  private void handleEntity(XMLStreamWriter writer, EdmEntitySet entitySet, Map<String, Object> data) throws EdmException, XMLStreamException {
+  private void handleEntity(XMLStreamWriter writer, EdmEntitySet entitySet, Map<String, Object> data) throws EdmException, XMLStreamException, ODataSerializationException {
     writer.writeStartElement(NS_DATASERVICES_METADATA, TAG_PROPERTIES);
     Set<Entry<String, Object>> entries = data.entrySet();
 
@@ -98,8 +98,8 @@ public class AtomEntrySerializer extends ODataSerializer {
         EdmProperty prop = (EdmProperty) property;
         Object value = entry.getValue();
 
-        AtomPropertySerializer aps = new AtomPropertySerializer();
-        aps.appendTo(writer, prop, value);
+        XmlPropertySerializer aps = new XmlPropertySerializer();
+        aps.append(writer, prop, value);
       }
     }
 
@@ -204,13 +204,11 @@ public class AtomEntrySerializer extends ODataSerializer {
 
   private String createIdUri(EdmEntitySet edmEntitySet, Map<String, Object> data) throws ODataSerializationException {
     try {
-      ODataContext ctx = getContext();
-
       EdmEntitySet es = edmEntitySet;
       EdmEntityContainer ec = es.getEntityContainer();
       List<EdmProperty> kp = es.getEntityType().getKeyProperties();
 
-      String id = ctx.getUriInfo().getBaseUri().toASCIIString();
+      String id = this.context.getUriInfo().getBaseUri().toASCIIString();
       if (!ec.isDefaultEntityContainer()) {
         id = id + ec.getName() + ".";
       }
