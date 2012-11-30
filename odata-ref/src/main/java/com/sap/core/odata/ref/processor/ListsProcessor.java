@@ -8,9 +8,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.sap.core.odata.api.edm.EdmComplexType;
 import com.sap.core.odata.api.edm.EdmEntitySet;
-import com.sap.core.odata.api.edm.EdmEntityType;
 import com.sap.core.odata.api.edm.EdmException;
 import com.sap.core.odata.api.edm.EdmFunctionImport;
 import com.sap.core.odata.api.edm.EdmLiteralKind;
@@ -18,6 +16,7 @@ import com.sap.core.odata.api.edm.EdmProperty;
 import com.sap.core.odata.api.edm.EdmSimpleType;
 import com.sap.core.odata.api.edm.EdmSimpleTypeException;
 import com.sap.core.odata.api.edm.EdmSimpleTypeKind;
+import com.sap.core.odata.api.edm.EdmStructuralType;
 import com.sap.core.odata.api.edm.EdmTypeKind;
 import com.sap.core.odata.api.enums.Format;
 import com.sap.core.odata.api.enums.HttpStatusCodes;
@@ -178,7 +177,7 @@ public class ListsProcessor extends ODataSingleProcessor {
       throw new ODataNotFoundException(ODataNotFoundException.ENTITY);
 
     // final EdmEntitySet entitySet = uriParserResultView.getTargetEntitySet();
-    // final Map<String, Object> values = getEntityValueMap(data, entitySet.getEntityType());
+    // final Map<String, Object> values = getStructuralTypeValueMap(data, entitySet.getEntityType());
 
     return ODataResponse
         .status(HttpStatusCodes.OK)
@@ -246,11 +245,13 @@ public class ListsProcessor extends ODataSingleProcessor {
     for (EdmProperty intermediateProperty : uriParserResultView.getPropertyPath())
       data = getPropertyValue(data, property = intermediateProperty);
 
+    final Object value = property.getType().getKind() == EdmTypeKind.COMPLEX ?
+        getStructuralTypeValueMap(data, (EdmStructuralType) property.getType()) : data;
+
     return ODataResponse
         .status(HttpStatusCodes.OK)
         .header(CONTENT_TYPE, APPLICATION_XML)
-        .entity(ODataSerializer.create(Format.XML, getContext()).serializeProperty(property,
-            property.getType().getKind() == EdmTypeKind.COMPLEX ? getPropertyValueMap(data, property) : data))
+        .entity(ODataSerializer.create(Format.XML, getContext()).serializeProperty(property, value))
         .build();
   }
 
@@ -479,34 +480,19 @@ public class ListsProcessor extends ODataSingleProcessor {
     }
   }
 
-  private <T> Map<String, Object> getPropertyValueMap(final T data, final EdmProperty property) throws ODataException {
+  private <T> Map<String, Object> getStructuralTypeValueMap(final T data, final EdmStructuralType type) throws ODataException {
     Map<String, Object> valueMap = new HashMap<String, Object>();
-    if (property.getType().getKind() == EdmTypeKind.COMPLEX) {
-      final EdmComplexType complexType = (EdmComplexType) property.getType();
-      for (final String propertyName : complexType.getPropertyNames()) {
-        final EdmProperty innerProperty = (EdmProperty) complexType.getProperty(propertyName);
-        final Object value = getPropertyValue(data, innerProperty);
-        if (innerProperty.getType().getKind() == EdmTypeKind.COMPLEX)
-          valueMap.put(propertyName, getPropertyValueMap(value, innerProperty));
-        else
-          valueMap.put(propertyName, value);
-      }
-    } else {
-      valueMap.put(property.getName(), data);
-    }
-    return valueMap;
-  }
 
-  private <T> Map<String, Object> getEntityValueMap(final T data, final EdmEntityType entityType) throws ODataException {
-    Map<String, Object> valueMap = new HashMap<String, Object>();
-    for (final String propertyName : entityType.getPropertyNames()) {
-      final EdmProperty property = (EdmProperty) entityType.getProperty(propertyName);
+    for (final String propertyName : type.getPropertyNames()) {
+      final EdmProperty property = (EdmProperty) type.getProperty(propertyName);
       final Object value = getPropertyValue(data, property);
+
       if (property.getType().getKind() == EdmTypeKind.COMPLEX)
-        valueMap.put(propertyName, getPropertyValueMap(value, property));
+        valueMap.put(propertyName, getStructuralTypeValueMap(value, (EdmStructuralType) property.getType()));
       else
         valueMap.put(propertyName, value);
-    }
+      }
+
     return valueMap;
   }
 
