@@ -40,16 +40,15 @@ public class SimplePropertyTest extends AbstractRefTest {
     response = callUri("Rooms('2')/Seats");
     checkMediaType(response, APPLICATION_XML);
     // checkEtag(response, "W/\"2\"");
-    assertNotNull(getBody(response));
-    // assertTrue(getBody(response).contains("5</"));
+    assertTrue(getBody(response).contains("5</"));
 
-    // response = callUri("Container2.Photos(Id=3,Type='image%2Fjpeg')/BinaryData/$value");
+    response = callUri("Container2.Photos(Id=3,Type='image%2Fjpeg')/BinaryData/$value");
     // checkMediaType(response, IMAGE_JPEG);
-    // assertNotNull(getBody(response));
+    assertNotNull(getBody(response));
 
-    // response = callUri("Container2.Photos(Id=3,Type='image%2Fjpeg')/BinaryData");
-    // checkMediaType(response, APPLICATION_XML);
-    // assertNotNull(getBody(response));
+    response = callUri("Container2.Photos(Id=3,Type='image%2Fjpeg')/BinaryData");
+    checkMediaType(response, APPLICATION_XML);
+    assertNotNull(getBody(response));
 
     // notFound("Employees('2')/Foo");
     // notFound("Employees('2')/Age()");

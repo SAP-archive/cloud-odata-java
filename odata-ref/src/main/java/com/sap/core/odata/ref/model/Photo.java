@@ -7,13 +7,15 @@ import java.util.Arrays;
 
 public class Photo {
   private static int counter = 1;
+  private static byte[] defaultImage;
+
   private int id;
   private String name;
   private String type = "image/jpeg";
   private String imageUrl = "http://localhost/darth.jpg";
-  private byte[] image = Photo.defaultImage;
+  private byte[] image = defaultImage;
   private byte[] binaryData;
-  private static byte[] defaultImage;
+  private String content;
 
   public Photo() {
   }
@@ -85,6 +87,14 @@ public class Photo {
 
   public byte[] getBinaryData() {
     return binaryData;
+  }
+
+  public void setContent(final String content) {
+    this.content = content;
+  }
+
+  public String getContent() {
+    return content;
   }
 
   public static void reset() {

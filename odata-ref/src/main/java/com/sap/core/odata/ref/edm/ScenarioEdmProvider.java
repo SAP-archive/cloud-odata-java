@@ -25,6 +25,7 @@ import com.sap.core.odata.api.edm.provider.Facets;
 import com.sap.core.odata.api.edm.provider.FunctionImport;
 import com.sap.core.odata.api.edm.provider.FunctionImportParameter;
 import com.sap.core.odata.api.edm.provider.Key;
+import com.sap.core.odata.api.edm.provider.Mapping;
 import com.sap.core.odata.api.edm.provider.NavigationProperty;
 import com.sap.core.odata.api.edm.provider.Property;
 import com.sap.core.odata.api.edm.provider.PropertyRef;
@@ -174,7 +175,7 @@ public class ScenarioEdmProvider extends EdmProviderDefault {
     if (NAMESPACE_1.equals(edmFQName.getNamespace())) {
       if (ENTITY_TYPE_1_1.getName().equals(edmFQName.getName())) {
         Collection<Property> properties = new ArrayList<Property>();
-        properties.add(new Property().setName("EmployeeId").setType(EdmSimpleTypeKind.String.getFullQualifiedName()).setFacets(new Facets().setNullable(false)));
+        properties.add(new Property().setName("EmployeeId").setType(EdmSimpleTypeKind.String.getFullQualifiedName()).setFacets(new Facets().setNullable(false)).setMapping(new Mapping().setValue("getId")));
         properties.add(new Property().setName("EmployeeName").setType(EdmSimpleTypeKind.String.getFullQualifiedName()).setCustomizableFeedMappings(
             new CustomizableFeedMappings().setFcTargetPath(EdmTargetPath.SYNDICATION_TITLE).setFcContentKind(EdmContentKind.text)));
         properties.add(new Property().setName("ManagerId").setType(EdmSimpleTypeKind.String.getFullQualifiedName()));
@@ -185,7 +186,7 @@ public class ScenarioEdmProvider extends EdmProviderDefault {
         properties.add(new Property().setName("EntryDate").setType(EdmSimpleTypeKind.DateTime.getFullQualifiedName())
             .setFacets(new Facets().setNullable(true))
             .setCustomizableFeedMappings(new CustomizableFeedMappings().setFcTargetPath(EdmTargetPath.SYNDICATION_UPDATED)));
-        properties.add(new Property().setName("ImageUrl").setType(EdmSimpleTypeKind.String.getFullQualifiedName()));
+        properties.add(new Property().setName("ImageUrl").setType(EdmSimpleTypeKind.String.getFullQualifiedName()).setMapping(new Mapping().setValue("getImageUri")));
         Collection<NavigationProperty> navigationProperties = new ArrayList<NavigationProperty>();
         navigationProperties.add(new NavigationProperty().setName("ne_Manager").setRelationship(ASSOCIATION_1_1).setFromRole(ROLE_1_1).setToRole(ROLE_1_4));
         navigationProperties.add(new NavigationProperty().setName("ne_Team").setRelationship(ASSOCIATION_1_2).setFromRole(ROLE_1_1).setToRole(ROLE_1_2));
@@ -200,7 +201,7 @@ public class ScenarioEdmProvider extends EdmProviderDefault {
 
       } else if (ENTITY_TYPE_1_2.getName().equals(edmFQName.getName())) {
         Collection<Property> properties = new ArrayList<Property>();
-        properties.add(new Property().setName("isScrumTeam").setType(EdmSimpleTypeKind.Boolean.getFullQualifiedName()).setFacets(new Facets().setNullable(true)));
+        properties.add(new Property().setName("isScrumTeam").setType(EdmSimpleTypeKind.Boolean.getFullQualifiedName()).setFacets(new Facets().setNullable(true)).setMapping(new Mapping().setValue("isScrumTeam")));
         Collection<NavigationProperty> navigationProperties = new ArrayList<NavigationProperty>();
         navigationProperties.add(new NavigationProperty().setName("nt_Employees").setRelationship(ASSOCIATION_1_2).setFromRole(ROLE_1_2).setToRole(ROLE_1_1));
         return new EntityType().setName(ENTITY_TYPE_1_2.getName()).setBaseType(ENTITY_TYPE_1_BASE).setAbstract(false).setProperties(properties).setHasStream(false).setNavigationProperties(navigationProperties);
@@ -236,10 +237,10 @@ public class ScenarioEdmProvider extends EdmProviderDefault {
         properties.add(new Property().setName("Id").setType(EdmSimpleTypeKind.Int32.getFullQualifiedName()).setFacets(new Facets().setNullable(false).setConcurrencyMode(EdmConcurrencyMode.Fixed)));
         properties.add(new Property().setName("Name").setType(EdmSimpleTypeKind.String.getFullQualifiedName()).setCustomizableFeedMappings(new CustomizableFeedMappings().setFcTargetPath(EdmTargetPath.SYNDICATION_TITLE)));
         properties.add(new Property().setName("Type").setType(EdmSimpleTypeKind.String.getFullQualifiedName()).setFacets(new Facets().setNullable(false)));
-        properties.add(new Property().setName("ImageUrl").setType(EdmSimpleTypeKind.String.getFullQualifiedName()).setCustomizableFeedMappings(new CustomizableFeedMappings().setFcTargetPath(EdmTargetPath.SYNDICATION_AUTHORURI)));
+        properties.add(new Property().setName("ImageUrl").setType(EdmSimpleTypeKind.String.getFullQualifiedName()).setCustomizableFeedMappings(new CustomizableFeedMappings().setFcTargetPath(EdmTargetPath.SYNDICATION_AUTHORURI)).setMapping(new Mapping().setValue("getImageUri")));
         properties.add(new Property().setName("Image").setType(EdmSimpleTypeKind.Binary.getFullQualifiedName()));
         properties.add(new Property().setName("BinaryData").setType(EdmSimpleTypeKind.Binary.getFullQualifiedName()).setFacets(new Facets().setNullable(true)).setMimeType("image/jpeg"));
-        properties.add(new Property().setName("Содержание").setType(EdmSimpleTypeKind.String.getFullQualifiedName()).setFacets(new Facets().setNullable(true)).setCustomizableFeedMappings(new CustomizableFeedMappings().setFcKeepInContent(false).setFcNsPrefix("py").setFcNsUri("http://localhost").setFcTargetPath("Содержание")));
+        properties.add(new Property().setName("Содержание").setType(EdmSimpleTypeKind.String.getFullQualifiedName()).setFacets(new Facets().setNullable(true)).setCustomizableFeedMappings(new CustomizableFeedMappings().setFcKeepInContent(false).setFcNsPrefix("py").setFcNsUri("http://localhost").setFcTargetPath("Содержание")).setMapping(new Mapping().setValue("getContent")));
         return new EntityType().setName(ENTITY_TYPE_2_1.getName()).setAbstract(false).setProperties(properties).setHasStream(true).setKey(getKey("Id", "Type"));
 
       }

@@ -10,8 +10,6 @@ import java.util.TimeZone;
  */
 public class DataContainer {
 
-  private static final int NUMBER_OF_PHOTOS = 4;
-  private static final String[] arrayForImageType = { "image/png", "image/bmp", "image/jpeg", "foo" };
   private static final boolean SCRUMTEAM_TRUE = true;
   private static final boolean SCRUMTEAM_FALSE = false;
   private static final String IMAGE_JPEG = "image/jpeg";
@@ -132,13 +130,27 @@ public class DataContainer {
   }
 
   private Set<Photo> generatePhotos() {
-    Set<Photo> photos = new HashSet<Photo>();
-    for (int z = 0; z < NUMBER_OF_PHOTOS; z++) {
-      Photo photo = new Photo("Photo " + (z + 1));
-      photo.setType(arrayForImageType[z % (arrayForImageType.length)]);
-      photos.add(photo);
-    }
-    return photos;
+    Set<Photo> photoSet = new HashSet<Photo>();
+
+    Photo photo1 = new Photo("Photo 1");
+    photo1.setType("image/png");
+    photo1.setContent("Образ");
+    photoSet.add(photo1);
+
+    Photo photo2 = new Photo("Photo 2");
+    photo2.setType("image/bmp");
+    photoSet.add(photo2);
+
+    Photo photo3 = new Photo("Photo 3");
+    photo3.setType("image/jpeg");
+    photoSet.add(photo3);
+
+    Photo photo4 = new Photo("Photo 4");
+    photo4.setType("foo");
+    photo4.setContent("Продукт");
+    photoSet.add(photo4);
+
+    return photoSet;
   }
 
   public Set<Photo> getPhotoSet() {
