@@ -41,6 +41,12 @@ public class ParserTest {
   }
 
   @Test
+  public void TestSimpleMethod()
+  {
+    GetPTF("startswith('Test','Te')").aSerialized("{STARTSWITH('Test','Te')}");
+  }
+  
+  @Test
   public void TestLiteral()
   {
     GetPTF("sven").aSerialized("sven")

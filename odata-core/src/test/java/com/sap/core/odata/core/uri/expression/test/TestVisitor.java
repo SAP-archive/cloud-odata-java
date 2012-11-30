@@ -42,13 +42,15 @@ public class TestVisitor implements ExpressionVisitor {
     sb.append("{");
     sb.append(method.toString());
 
+    sb.append("(");
     for (int i = 0; i < retParameters.size(); i++)
     {
       if (i != 0) sb.append(",");
       sb.append(retParameters.elementAt(i));
     }
 
-    sb.append("}");
+    sb.append(")}");
+
 
     return sb.toString();
   }

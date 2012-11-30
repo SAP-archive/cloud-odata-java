@@ -142,6 +142,7 @@ public class Tokenizer
       case ',':
         curPosition = curPosition + 1;
         tokens.appendToken(oldPosition, TokenKind.COMMA, curCharacter);
+        break;
       case '=':
       case '/':
       case '?':
