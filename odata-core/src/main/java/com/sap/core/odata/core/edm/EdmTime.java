@@ -35,6 +35,11 @@ public class EdmTime implements EdmSimpleType {
   }
 
   @Override
+  public int hashCode() {
+    return EdmSimpleTypeKind.Time.hashCode();
+  }
+
+  @Override
   public String getNamespace() throws EdmException {
     return EdmSimpleTypeKind.edmNamespace;
   }

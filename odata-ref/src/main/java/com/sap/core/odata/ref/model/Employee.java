@@ -3,8 +3,11 @@ package com.sap.core.odata.ref.model;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Date;
+import java.util.Calendar;
 
+/**
+ * @author SAP AG
+ */
 public class Employee {
   private static int counter = 1;
   private int employeeId;
@@ -16,7 +19,7 @@ public class Employee {
   private String imageType;
   private byte[] image;
   private String imageUrl;
-  private Date entryDate;
+  private Calendar entryDate;
   private Location location;
 
   public Employee() {
@@ -102,11 +105,11 @@ public class Employee {
     return location;
   }
 
-  public void setEntryDate(Date date) {
+  public void setEntryDate(final Calendar date) {
     this.entryDate = date;
   }
 
-  public Date getEntryDate() {
+  public Calendar getEntryDate() {
     return entryDate;
   }
 

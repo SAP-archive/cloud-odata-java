@@ -30,6 +30,11 @@ public class EdmString implements EdmSimpleType {
   }
 
   @Override
+  public int hashCode() {
+    return EdmSimpleTypeKind.String.hashCode();
+  }
+
+  @Override
   public String getNamespace() throws EdmException {
     return EdmSimpleTypeKind.edmNamespace;
   }
