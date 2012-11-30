@@ -30,6 +30,11 @@ public class EdmInt16 implements EdmSimpleType {
   }
 
   @Override
+  public int hashCode() {
+    return EdmSimpleTypeKind.Int16.hashCode();
+  }
+
+  @Override
   public String getNamespace() throws EdmException {
     return EdmSimpleTypeKind.edmNamespace;
   }

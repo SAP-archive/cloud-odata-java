@@ -2,11 +2,11 @@ package com.sap.core.odata.api.exception;
 
 import com.sap.core.odata.api.enums.HttpStatusCodes;
 
+/**
+ * @author SAP AG
+ */
 public abstract class ODataHttpException extends ODataMessageException {
 
-  /**
-   * 
-   */
   private static final long serialVersionUID = 1L;
   
   protected final HttpStatusCodes httpStatus;

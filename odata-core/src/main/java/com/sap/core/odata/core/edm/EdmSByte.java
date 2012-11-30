@@ -30,6 +30,11 @@ public class EdmSByte implements EdmSimpleType {
   }
 
   @Override
+  public int hashCode() {
+    return EdmSimpleTypeKind.SByte.hashCode();
+  }
+
+  @Override
   public String getNamespace() throws EdmException {
     return EdmSimpleTypeKind.edmNamespace;
   }

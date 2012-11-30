@@ -1,12 +1,13 @@
 package com.sap.core.odata.ref.model;
 
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.util.Calendar;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.TimeZone;
 
+/**
+ * @author SAP AG
+ */
 public class DataContainer {
 
   private static final int NUMBER_OF_PHOTOS = 4;
@@ -21,8 +22,8 @@ public class DataContainer {
   private Set<Room> roomSet = new HashSet<Room>();
   private Set<Employee> employeeSet = new HashSet<Employee>();
   private Set<Manager> managerSet = new HashSet<Manager>();
-  
-  public void init() {    
+
+  public void init() {
     photoSet = generatePhotos();
 
     // ------------- Buildings ---------------
@@ -64,19 +65,19 @@ public class DataContainer {
 
     // ------------- Employees and Managers ------------
     Employee emp1 = new Manager("Walter Winter", 52, room1, team1);
-    emp1.setEntryDate(generateDate("1999-01-01"));
     emp1.setManager((Manager) emp1);
     emp1.setLocation(new Location("Germany", "69124", "Heidelberg"));
+    emp1.setEntryDate(generateDate(1999, 1, 1));
     emp1.setImageUri("/SAP/PUBLIC/BC/NWDEMO_MODEL/IMAGES/male_1_WinterW.jpg");
     emp1.setImage("/male_1_WinterW.jpg");
     emp1.setImageType(IMAGE_JPEG);
     employeeSet.add(emp1);
-    managerSet.add((Manager)emp1);
+    managerSet.add((Manager) emp1);
 
     Employee emp2 = new Employee("Frederic Fall", 32, room2, team1);
-    emp2.setEntryDate(generateDate("2003-07-01"));
     emp2.setManager((Manager) emp1);
     emp2.setLocation(new Location("Germany", "69190", "Walldorf"));
+    emp2.setEntryDate(generateDate(2003, 7, 1));
     emp2.setImageUri("/SAP/PUBLIC/BC/NWDEMO_MODEL/IMAGES/male_2_FallF.jpg");
     emp2.setImage("/male_2_FallF.jpg");
     emp2.setImageType(IMAGE_JPEG);
@@ -85,16 +86,17 @@ public class DataContainer {
     Manager emp3 = new Manager("Jonathan Smith", 56, room2, team1);
     emp3.setManager((Manager) emp1);
     emp3.setLocation(new Location("Germany", "69190", "Walldorf"));
+    emp3.setEntryDate(null);
     emp3.setImageUri("/SAP/PUBLIC/BC/NWDEMO_MODEL/IMAGES/male_3_SmithJo.jpg");
     emp3.setImage("/male_3_SmithJo.jpg");
     emp3.setImageType(IMAGE_JPEG);
     employeeSet.add(emp3);
-    managerSet.add((Manager)emp3);
-    
+    managerSet.add((Manager) emp3);
+
     Employee emp4 = new Employee("Peter Burke", 39, room2, team2);
     emp4.setManager(emp3);
-    emp4.setEntryDate(generateDate("2004-09-12"));
     emp4.setLocation(new Location("Germany", "69190", "Walldorf"));
+    emp4.setEntryDate(generateDate(2004, 9, 12));
     emp4.setImageUri("/SAP/PUBLIC/BC/NWDEMO_MODEL/IMAGES/male_4_BurkeP.jpg");
     emp4.setImage("/male_4_BurkeP.jpg");
     emp4.setImageType(IMAGE_JPEG);
@@ -102,8 +104,8 @@ public class DataContainer {
 
     Employee emp5 = new Employee("John Field", 42, room3, team2);
     emp5.setManager(emp3);
-    emp5.setEntryDate(generateDate("2001-02-01"));
     emp5.setLocation(new Location("Germany", "69190", "Walldorf"));
+    emp5.setEntryDate(generateDate(2001, 2, 1));
     emp5.setImageUri("/SAP/PUBLIC/BC/NWDEMO_MODEL/IMAGES/male_5_FieldJ.jpg");
     emp5.setImage("/male_5_FieldJ.jpg");
     emp5.setImageType(IMAGE_JPEG);
@@ -111,8 +113,8 @@ public class DataContainer {
 
     Employee emp6 = new Employee("Susan Bay", 29, room2, team3);
     emp6.setManager((Manager) emp1);
-    emp6.setEntryDate(generateDate("2010-12-01"));
     emp6.setLocation(new Location("Germany", "69190", "Walldorf"));
+    emp6.setEntryDate(generateDate(2010, 12, 1));
     emp6.setImageUri("/SAP/PUBLIC/BC/NWDEMO_MODEL/IMAGES/female_6_BaySu.jpg");
     emp6.setImage("/female_6_BaySu.jpg");
     emp6.setImageType(IMAGE_JPEG);
@@ -120,15 +122,12 @@ public class DataContainer {
 
   }
 
-  private Date generateDate(String dateString) {
-    Date date = new Date();
-    try {
-      DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
-      date = df.parse(dateString);
+  private Calendar generateDate(final int year, final int month, final int day) {
+    Calendar date = Calendar.getInstance();
 
-    } catch (ParseException e) {
-      throw new RuntimeException("illegal date", e);
-    }
+    date.clear();
+    date.setTimeZone(TimeZone.getTimeZone("GMT"));
+    date.set(year, month - 1, day);  // month is zero-based!
     return date;
   }
 
@@ -163,26 +162,26 @@ public class DataContainer {
   }
 
   public void reset() {
-    if(photoSet != null){
-      photoSet.clear();  
+    if (photoSet != null) {
+      photoSet.clear();
     }
-    if(employeeSet != null){
+    if (employeeSet != null) {
       employeeSet.clear();
     }
-    
-    if(buildingSet != null){
+
+    if (buildingSet != null) {
       buildingSet.clear();
     }
-    
-    if(roomSet != null){
+
+    if (roomSet != null) {
       roomSet.clear();
     }
-    
-    if(teamSet != null){
-      teamSet.clear();  
+
+    if (teamSet != null) {
+      teamSet.clear();
     }
-    
-    if(managerSet != null){
+
+    if (managerSet != null) {
       managerSet.clear();
     }
     Team.reset();
@@ -194,6 +193,6 @@ public class DataContainer {
   }
 
   public Set<Manager> getManagerSet() {
-  return managerSet;
+    return managerSet;
   }
 }

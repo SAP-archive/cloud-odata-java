@@ -37,6 +37,11 @@ public class EdmDouble implements EdmSimpleType {
   }
 
   @Override
+  public int hashCode() {
+    return EdmSimpleTypeKind.Double.hashCode();
+  }
+
+  @Override
   public String getNamespace() throws EdmException {
     return EdmSimpleTypeKind.edmNamespace;
   }

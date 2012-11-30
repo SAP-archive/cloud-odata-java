@@ -3,8 +3,6 @@ package com.sap.core.odata.api.edm.provider;
 import java.util.Collection;
 
 import com.sap.core.odata.api.edm.EdmFacets;
-import com.sap.core.odata.api.edm.EdmType;
-import com.sap.core.odata.api.edm.EdmTypeKind;
 import com.sap.core.odata.api.edm.FullQualifiedName;
 
 /**

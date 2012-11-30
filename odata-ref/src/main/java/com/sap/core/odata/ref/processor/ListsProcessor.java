@@ -436,15 +436,15 @@ public class ListsProcessor extends ODataSingleProcessor {
     try {
       return data.getClass().getMethod(methodName).invoke(data);
     } catch (SecurityException e) {
-      throw new ODataNotFoundException(null);
+      throw new ODataNotFoundException(null, e);
     } catch (NoSuchMethodException e) {
-      throw new ODataNotFoundException(null);
+      throw new ODataNotFoundException(null, e);
     } catch (IllegalArgumentException e) {
-      throw new ODataNotFoundException(null);
+      throw new ODataNotFoundException(null, e);
     } catch (IllegalAccessException e) {
-      throw new ODataNotFoundException(null);
+      throw new ODataNotFoundException(null, e);
     } catch (InvocationTargetException e) {
-      throw new ODataNotFoundException(null);
+      throw new ODataNotFoundException(null, e);
     }
   }
 

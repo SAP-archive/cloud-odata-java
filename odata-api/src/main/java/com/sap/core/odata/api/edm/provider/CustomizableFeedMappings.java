@@ -2,7 +2,6 @@ package com.sap.core.odata.api.edm.provider;
 
 import com.sap.core.odata.api.edm.EdmContentKind;
 import com.sap.core.odata.api.edm.EdmCustomizableFeedMappings;
-import com.sap.core.odata.api.edm.EdmTargetPath;
 
 /**
  * @author SAP AG

@@ -7,10 +7,7 @@ import static org.junit.Assert.assertNotNull;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.util.Calendar;
 
 import org.junit.Test;
 
@@ -102,16 +99,10 @@ public class EmployeeTest {
   @Test
   public void testEntryDate() {
     Employee employee1 = new Employee();
-    try {
-      DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
-      Date date1 = df.parse("1999-01-01");
-      employee1.setEntryDate(date1);
-      Date testEntryDate = employee1.getEntryDate();
-      assertEquals(date1, testEntryDate);
-    } catch (ParseException e) {
-      throw new RuntimeException(e);
-    }
-
+    final Calendar date1 = Calendar.getInstance();
+    employee1.setEntryDate(date1);
+    Calendar testEntryDate = employee1.getEntryDate();
+    assertEquals(date1, testEntryDate);
   }
 
   @Test
