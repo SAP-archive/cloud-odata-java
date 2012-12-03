@@ -9,15 +9,15 @@ package com.sap.core.odata.api.edm;
  */
 public interface Edm {
 
-  public static final String NAMESPACE_EDM = "http://schemas.microsoft.com/ado/2008/09/edm";
-  public static final String NAMESPACE_APP = "http://www.w3.org/2007/app";
-  public static final String NAMESPACE_ATOM = "http://www.w3.org/2005/Atom";
-  public static final String NAMESPACE_D = "http://schemas.microsoft.com/ado/2007/08/dataservices";
-  public static final String NAMESPACE_M = "http://schemas.microsoft.com/ado/2007/08/dataservices/metadata";
-  public static final String NAMESPACE_EDMX = "http://schemas.microsoft.com/ado/2007/06/edmx";
-  public static final String NAMESPACE_REL = "http://schemas.microsoft.com/ado/2007/08/dataservices/related/";
-  public static final String NAMESPACE_REL_ASSOC = "http://schemas.microsoft.com/ado/2007/08/dataservices/relatedlinks/";
-  public static final String NAMESPACE_SCHEME = "http://schemas.microsoft.com/ado/2007/08/dataservices/scheme";
+  public static final String NAMESPACE_EDM_2008_09 = "http://schemas.microsoft.com/ado/2008/09/edm";
+  public static final String NAMESPACE_APP_2007 = "http://www.w3.org/2007/app";
+  public static final String NAMESPACE_ATOM_2005 = "http://www.w3.org/2005/Atom";
+  public static final String NAMESPACE_D_2007_08 = "http://schemas.microsoft.com/ado/2007/08/dataservices";
+  public static final String NAMESPACE_M_2007_08 = "http://schemas.microsoft.com/ado/2007/08/dataservices/metadata";
+  public static final String NAMESPACE_EDMX_2007_06 = "http://schemas.microsoft.com/ado/2007/06/edmx";
+  public static final String NAMESPACE_REL_2007_08 = "http://schemas.microsoft.com/ado/2007/08/dataservices/related/";
+  public static final String NAMESPACE_REL_ASSOC_2007_08 = "http://schemas.microsoft.com/ado/2007/08/dataservices/relatedlinks/";
+  public static final String NAMESPACE_SCHEME_2007_08 = "http://schemas.microsoft.com/ado/2007/08/dataservices/scheme";
   public static final String PREFIX_EDM = "edm";
   public static final String PREFIX_APP = "app";
   public static final String PREFIX_ATOM = "atom";

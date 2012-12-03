@@ -28,4 +28,20 @@ public class FormatXml {
   public static final String ATOM_HREF = "href";
   public static final String ATOM_TITLE = "title";
   public static final String ATOM_TITLE_DEFAULT = "Default";
+  public static final String ATOM_TEXT = "text";
+  public static final String ATOM_TYPE = "type";
+  public static final String ATOM_UPDATED = "updated";
+  public static final String ATOM_ID = "id";
+  public static final String ATOM_AUTHOR = "author";
+  public static final String ATOM_AUTHOR_NAME = "name";
+  public static final String ATOM_AUTHOR_EMAIL = "email";
+  public static final String ATOM_AUTHOR_URI = "uri";
+  public static final String ATOM_SUMMARY = "summary";
+  public static final String ATOM_CONTRIBUTOR = "contributor";
+  public static final String ATOM_CONTRIBUTOR_NAME = "name";
+  public static final String ATOM_CONTRIBUTOR_EMAIL = "email";
+  public static final String ATOM_CONTRIBUTOR_URI = "uri";
+  public static final String ATOM_PUBLISHED = "published";
+  public static final String ATOM_RIGHTS = "rights";
+
 }

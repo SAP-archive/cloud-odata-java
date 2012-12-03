@@ -9,6 +9,7 @@ import java.util.List;
 
 import com.sap.core.odata.api.edm.Edm;
 import com.sap.core.odata.api.edm.EdmComplexType;
+import com.sap.core.odata.api.edm.EdmCustomizableFeedMappings;
 import com.sap.core.odata.api.edm.EdmEntityContainer;
 import com.sap.core.odata.api.edm.EdmEntitySet;
 import com.sap.core.odata.api.edm.EdmEntityType;
@@ -21,9 +22,11 @@ import com.sap.core.odata.api.edm.EdmParameter;
 import com.sap.core.odata.api.edm.EdmProperty;
 import com.sap.core.odata.api.edm.EdmServiceMetadata;
 import com.sap.core.odata.api.edm.EdmSimpleTypeKind;
+import com.sap.core.odata.api.edm.EdmTargetPath;
 import com.sap.core.odata.api.edm.EdmType;
 import com.sap.core.odata.api.edm.EdmTypeKind;
 import com.sap.core.odata.api.edm.EdmTyped;
+import com.sap.core.odata.api.edm.provider.CustomizableFeedMappings;
 import com.sap.core.odata.api.exception.ODataException;
 
 class EdmMock {
@@ -36,6 +39,9 @@ class EdmMock {
     EdmEntitySet employeeEntitySet = createEntitySetMock(defaultContainer, "Employees", EdmSimpleTypeKind.String.getEdmSimpleTypeInstance(), "EmployeeId");
     EdmEntitySet managerEntitySet = createEntitySetMock(defaultContainer, "Managers", EdmSimpleTypeKind.String.getEdmSimpleTypeInstance(), "EmployeeId");
 
+    when(defaultContainer.getEntitySet("Employees")).thenReturn(employeeEntitySet);
+    when(defaultContainer.isDefaultEntityContainer()).thenReturn(true);
+    
     EdmType navigationType = mock(EdmType.class);
     when(navigationType.getKind()).thenReturn(EdmTypeKind.ENTITY);
 
@@ -52,18 +58,59 @@ class EdmMock {
     when(managerProperty.getType()).thenReturn(navigationType);
     when(managerProperty.getMultiplicity()).thenReturn(EdmMultiplicity.ONE);
     when(employeeEntitySet.getRelatedEntitySet(managerProperty)).thenReturn(managerEntitySet);
-
+    when(employeeEntitySet.getEntityContainer()).thenReturn(defaultContainer);
+    
     EdmEntityType employeeType = employeeEntitySet.getEntityType();
     when(employeeType.getKind()).thenReturn(EdmTypeKind.ENTITY);
     when(employeeType.hasStream()).thenReturn(true);
     when(employeeType.getProperty("ne_Manager")).thenReturn(managerProperty);
-    //when(employeeType.getProperty(matches(".+wrong|\\$links"))).thenThrow(new EdmException("Property not found"));
+    when(employeeType.getKeyPropertyNames()).thenReturn(Arrays.asList("EmployeeId"));
+    
+    EdmProperty employeeIdProperty = mock(EdmProperty.class);
+    when(employeeIdProperty.getType()).thenReturn(EdmSimpleTypeKind.String.getEdmSimpleTypeInstance());
+    when(employeeIdProperty.getName()).thenReturn("EmployeeId");
+    when(employeeType.getProperty("EmployeeId")).thenReturn(employeeIdProperty);
+    when(employeeType.getKeyProperties()).thenReturn(Arrays.asList(employeeIdProperty));
+    
+    EdmProperty employeeNameProperty = mock(EdmProperty.class);
+    when(employeeNameProperty.getType()).thenReturn(EdmSimpleTypeKind.String.getEdmSimpleTypeInstance());
+    when(employeeNameProperty.getName()).thenReturn("EmployeeName");
+    when(employeeType.getProperty("EmployeeName")).thenReturn(employeeNameProperty);
 
-    EdmProperty employeeSimpleProperty = mock(EdmProperty.class);
-    when(employeeSimpleProperty.getType()).thenReturn(EdmSimpleTypeKind.String.getEdmSimpleTypeInstance());
-    when(employeeSimpleProperty.getName()).thenReturn("EmployeeName");
-    when(employeeType.getProperty("EmployeeName")).thenReturn(employeeSimpleProperty);
+    EdmProperty employeeImageUrlProperty = mock(EdmProperty.class);
+    when(employeeImageUrlProperty.getType()).thenReturn(EdmSimpleTypeKind.String.getEdmSimpleTypeInstance());
+    when(employeeImageUrlProperty.getName()).thenReturn("ImageUrl");
+    when(employeeType.getProperty("ImageUrl")).thenReturn(employeeImageUrlProperty);
+    
+    EdmProperty employeeAgeProperty = mock(EdmProperty.class);
+    when(employeeAgeProperty.getType()).thenReturn(EdmSimpleTypeKind.Int32.getEdmSimpleTypeInstance());
+    when(employeeAgeProperty.getName()).thenReturn("Age");
+    when(employeeType.getProperty("Age")).thenReturn(employeeAgeProperty);
+    
+    EdmProperty employeeRoomIdProperty = mock(EdmProperty.class);
+    when(employeeRoomIdProperty.getType()).thenReturn(EdmSimpleTypeKind.String.getEdmSimpleTypeInstance());
+    when(employeeRoomIdProperty.getName()).thenReturn("RoomId");
+    when(employeeType.getProperty("RoomId")).thenReturn(employeeRoomIdProperty);
+    
+    EdmProperty employeeEntryDateProperty = mock(EdmProperty.class);
+    when(employeeEntryDateProperty.getType()).thenReturn(EdmSimpleTypeKind.DateTime.getEdmSimpleTypeInstance());
+    when(employeeEntryDateProperty.getName()).thenReturn("EntryDate");
+    when(employeeType.getProperty("EntryDate")).thenReturn(employeeEntryDateProperty);
 
+    
+    EdmCustomizableFeedMappings employeeUpdatedeMappings = mock(EdmCustomizableFeedMappings.class);
+    when(employeeUpdatedeMappings.getFcTargetPath()).thenReturn(EdmTargetPath.SYNDICATION_UPDATED);
+    when(employeeEntryDateProperty.getCustomizableFeedMappings()).thenReturn(employeeUpdatedeMappings);
+    
+    EdmProperty employeeTeamIdProperty = mock(EdmProperty.class);
+    when(employeeTeamIdProperty.getType()).thenReturn(EdmSimpleTypeKind.String.getEdmSimpleTypeInstance());
+    when(employeeTeamIdProperty.getName()).thenReturn("TeamId");
+    when(employeeType.getProperty("TeamId")).thenReturn(employeeTeamIdProperty);
+    
+    EdmCustomizableFeedMappings employeeTitleMappings = mock(EdmCustomizableFeedMappings.class);
+    when(employeeTitleMappings.getFcTargetPath()).thenReturn(EdmTargetPath.SYNDICATION_TITLE);
+    when(employeeNameProperty.getCustomizableFeedMappings()).thenReturn(employeeTitleMappings);
+    
     EdmComplexType locationComplexType = mock(EdmComplexType.class);
     when(locationComplexType.getKind()).thenReturn(EdmTypeKind.COMPLEX);
     when(locationComplexType.getPropertyNames()).thenReturn(Arrays.asList("City", "Country"));
@@ -90,8 +137,9 @@ class EdmMock {
     EdmProperty postalCodeProperty = mock(EdmProperty.class);
     when(postalCodeProperty.getType()).thenReturn(EdmSimpleTypeKind.String.getEdmSimpleTypeInstance());
     when(postalCodeProperty.getName()).thenReturn("PostalCode");
-    when(cityComplexType.getProperty("PostalCode")).thenReturn(postalCodeProperty);
 
+    when(cityComplexType.getProperty("PostalCode")).thenReturn(postalCodeProperty);
+    
     EdmProperty cityNameProperty = mock(EdmProperty.class);
     when(cityNameProperty.getType()).thenReturn(EdmSimpleTypeKind.String.getEdmSimpleTypeInstance());
     when(cityNameProperty.getName()).thenReturn("CityName");
@@ -155,6 +203,7 @@ class EdmMock {
     when(edm.getEntityContainer("Container1")).thenReturn(specificContainer);
     when(edm.getEntityContainer("Container2")).thenReturn(photoContainer);
     when(edm.getEntityType("RefScenario", "Employee")).thenReturn(employeeType);
+    
     return edm;
   }
 

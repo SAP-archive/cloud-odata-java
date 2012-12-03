@@ -10,7 +10,6 @@ import java.util.Map;
 
 import org.junit.Test;
 
-import com.sap.core.odata.api.edm.EdmEntitySet;
 import com.sap.core.odata.api.edm.EdmEntityType;
 import com.sap.core.odata.api.edm.EdmProperty;
 import com.sap.core.odata.api.edm.EdmTyped;
@@ -25,34 +24,34 @@ public class XmlPropertySerializationTest extends AbstractSerializerTest {
   public void serializeEmployeeId() throws Exception {
     ODataSerializer s = ODataSerializer.create(Format.XML, this.createContextMock());
    
-    EdmTyped edmTyped = this.createEdmEntitySetMock(false).getEntityType().getProperty("employeeId");
+    EdmTyped edmTyped = this.createEdmEntitySetMock(false).getEntityType().getProperty("EmployeeId");
     EdmProperty edmProperty = (EdmProperty) edmTyped; 
     
-    InputStream in = s.serializeProperty(edmProperty, this.data.get("employeeId"));
+    InputStream in = s.serializeProperty(edmProperty, this.employeeData.get("EmployeeId"));
     assertNotNull(in);
     String xml = StringHelper.inputStreamToString(in);
     assertNotNull(xml);
 
-    assertXpathExists("/d:employeeId", xml);
-    assertXpathEvaluatesTo("1", "/d:employeeId/text()", xml);
+    assertXpathExists("/d:EmployeeId", xml);
+    assertXpathEvaluatesTo("1", "/d:EmployeeId/text()", xml);
   }
 
   @Test
   public void serializeAge() throws Exception {
     ODataSerializer s = ODataSerializer.create(Format.XML, this.createContextMock());
    
-    EdmTyped edmTyped = this.createEdmEntitySetMock(false).getEntityType().getProperty("age");
+    EdmTyped edmTyped = this.createEdmEntitySetMock(false).getEntityType().getProperty("Age");
     EdmProperty edmProperty = (EdmProperty) edmTyped; 
     
-    InputStream in = s.serializeProperty(edmProperty, this.data.get("age"));
+    InputStream in = s.serializeProperty(edmProperty, this.employeeData.get("Age"));
     assertNotNull(in);
     String xml = StringHelper.inputStreamToString(in);
     assertNotNull(xml);
 
-    assertXpathExists("/d:age", xml);
-    assertXpathEvaluatesTo("52", "/d:age/text()", xml);
-    assertXpathExists("/d:age/@m:type", xml);
-    assertXpathEvaluatesTo("Edm.Int32", "/d:age/@m:type", xml);
+    assertXpathExists("/d:Age", xml);
+    assertXpathEvaluatesTo("52", "/d:Age/text()", xml);
+    assertXpathExists("/d:Age/@m:type", xml);
+    assertXpathEvaluatesTo("Edm.Int32", "/d:Age/@m:type", xml);
     
   }
 
@@ -60,17 +59,17 @@ public class XmlPropertySerializationTest extends AbstractSerializerTest {
   public void serializeImageUrl() throws Exception {
     ODataSerializer s = ODataSerializer.create(Format.XML, this.createContextMock());
    
-    EdmTyped edmTyped = this.createEdmEntitySetMock(false).getEntityType().getProperty("imageUrl");
+    EdmTyped edmTyped = this.createEdmEntitySetMock(false).getEntityType().getProperty("ImageUrl");
     EdmProperty edmProperty = (EdmProperty) edmTyped; 
     
-    InputStream in = s.serializeProperty(edmProperty, this.data.get("imageUrl"));
+    InputStream in = s.serializeProperty(edmProperty, this.employeeData.get("ImageUrl"));
     assertNotNull(in);
     String xml = StringHelper.inputStreamToString(in);
     assertNotNull(xml);
 
-    assertXpathExists("/d:imageUrl", xml);
-    assertXpathExists("/d:imageUrl/@m:null", xml);
-    assertXpathEvaluatesTo("true", "/d:imageUrl/@m:null", xml);
+    assertXpathExists("/d:ImageUrl", xml);
+    assertXpathExists("/d:ImageUrl/@m:null", xml);
+    assertXpathEvaluatesTo("true", "/d:ImageUrl/@m:null", xml);
     
   }
 
@@ -82,14 +81,8 @@ public class XmlPropertySerializationTest extends AbstractSerializerTest {
     EdmTyped edmTyped = edmEntityType.getProperty("Location");
     EdmProperty edmProperty = (EdmProperty) edmTyped; 
     
-    Map<String, Object> locationData = new HashMap<String, Object>();
-    Map<String, Object> cityData = new HashMap<String, Object>();
-    cityData.put("PostalCode", "33470");
-    cityData.put("CityName", "Duckburg");
-    locationData.put("City", cityData);
-    locationData.put("Country", "Calisota");
     
-    InputStream in = s.serializeProperty(edmProperty, locationData);
+    InputStream in = s.serializeProperty(edmProperty, this.employeeData.get("Location"));
     assertNotNull(in);
     String xml = StringHelper.inputStreamToString(in);
     assertNotNull(xml);
