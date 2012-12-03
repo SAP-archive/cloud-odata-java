@@ -24,10 +24,11 @@ import com.sap.core.odata.api.edm.EdmSimpleTypeKind;
 import com.sap.core.odata.api.edm.EdmType;
 import com.sap.core.odata.api.edm.EdmTypeKind;
 import com.sap.core.odata.api.edm.EdmTyped;
+import com.sap.core.odata.api.exception.ODataException;
 
 class EdmMock {
 
-  public static Edm createMockEdm() throws EdmException {
+  public static Edm createMockEdm() throws ODataException {
     EdmServiceMetadata serviceMetadata = mock(EdmServiceMetadata.class);
     when(serviceMetadata.getDataServiceVersion()).thenReturn("MockEdm");
 
@@ -66,7 +67,7 @@ class EdmMock {
     EdmComplexType locationComplexType = mock(EdmComplexType.class);
     when(locationComplexType.getKind()).thenReturn(EdmTypeKind.COMPLEX);
     when(locationComplexType.getPropertyNames()).thenReturn(Arrays.asList("City", "Country"));
-    
+
     EdmProperty locationComplexProperty = mock(EdmProperty.class);
     when(locationComplexProperty.getType()).thenReturn(locationComplexType);
     when(locationComplexProperty.getName()).thenReturn("Location");
@@ -76,11 +77,11 @@ class EdmMock {
     when(countryProperty.getType()).thenReturn(EdmSimpleTypeKind.String.getEdmSimpleTypeInstance());
     when(countryProperty.getName()).thenReturn("Country");
     when(locationComplexType.getProperty("Country")).thenReturn(countryProperty);
-   
+
     EdmComplexType cityComplexType = mock(EdmComplexType.class);
     when(cityComplexType.getKind()).thenReturn(EdmTypeKind.COMPLEX);
     when(cityComplexType.getPropertyNames()).thenReturn(Arrays.asList("PostalCode", "CityName"));
-    
+
     EdmProperty cityProperty = mock(EdmProperty.class);
     when(cityProperty.getType()).thenReturn(cityComplexType);
     when(cityProperty.getName()).thenReturn("City");
@@ -90,12 +91,12 @@ class EdmMock {
     when(postalCodeProperty.getType()).thenReturn(EdmSimpleTypeKind.String.getEdmSimpleTypeInstance());
     when(postalCodeProperty.getName()).thenReturn("PostalCode");
     when(cityComplexType.getProperty("PostalCode")).thenReturn(postalCodeProperty);
-    
+
     EdmProperty cityNameProperty = mock(EdmProperty.class);
     when(cityNameProperty.getType()).thenReturn(EdmSimpleTypeKind.String.getEdmSimpleTypeInstance());
     when(cityNameProperty.getName()).thenReturn("CityName");
     when(cityComplexType.getProperty("CityName")).thenReturn(cityNameProperty);
-    
+
     EdmEntitySet teamsEntitySet = createEntitySetMock(defaultContainer, "Teams", EdmSimpleTypeKind.String.getEdmSimpleTypeInstance(), "Id");
     when(teamsEntitySet.getEntityType().getProperty("nt_Employees")).thenReturn(employeeProperty);
     when(teamsEntitySet.getRelatedEntitySet(employeeProperty)).thenReturn(employeeEntitySet);
@@ -123,7 +124,7 @@ class EdmMock {
     when(managerPhotoFunctionImport.getParameterNames()).thenReturn(managerPhotoParameterNames);
     when(managerPhotoFunctionImport.getParameter("Id")).thenReturn(managerPhotoParameter);
     createFunctionImportMock(defaultContainer, "OldestEmployee", employeeType, EdmMultiplicity.ONE);
- 
+
     EdmEntityContainer specificContainer = mock(EdmEntityContainer.class);
     when(specificContainer.getEntitySet("Employees")).thenReturn(employeeEntitySet);
     when(specificContainer.getName()).thenReturn("Container1");
