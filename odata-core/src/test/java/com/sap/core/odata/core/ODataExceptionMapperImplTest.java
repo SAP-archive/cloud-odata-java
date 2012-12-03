@@ -22,7 +22,7 @@ import com.sap.core.odata.api.enums.HttpStatusCodes;
 import com.sap.core.odata.api.exception.ODataApplicationException;
 import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.api.exception.ODataNotFoundException;
-import com.sap.core.odata.api.uri.UriParserException;
+import com.sap.core.odata.api.uri.UriSyntaxException;
 import com.sap.core.odata.core.exception.ODataRuntimeException;
 
 public class ODataExceptionMapperImplTest {
@@ -169,7 +169,7 @@ public class ODataExceptionMapperImplTest {
   @Test
   public void testUriParserException() {
     // prepare
-    Exception exception = new UriParserException(UriParserException.EMPTYSEGMENT);
+    Exception exception = new UriSyntaxException(UriSyntaxException.EMPTYSEGMENT);
 
     // execute
     Response response = exceptionMapper.toResponse(exception);
@@ -185,7 +185,7 @@ public class ODataExceptionMapperImplTest {
   @Test
   public void testUriParserExceptionWrapped() {
     // prepare
-    Exception exception = new ODataException("outer exception", new UriParserException(UriParserException.EMPTYSEGMENT));
+    Exception exception = new ODataException("outer exception", new UriSyntaxException(UriSyntaxException.EMPTYSEGMENT));
 
     // execute
     Response response = exceptionMapper.toResponse(exception);

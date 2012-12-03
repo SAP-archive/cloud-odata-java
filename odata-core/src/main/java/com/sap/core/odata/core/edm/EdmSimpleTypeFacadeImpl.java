@@ -11,7 +11,7 @@ import com.sap.core.odata.api.edm.EdmSimpleType;
 import com.sap.core.odata.api.edm.EdmSimpleTypeFacade;
 import com.sap.core.odata.api.edm.EdmSimpleTypeKind;
 import com.sap.core.odata.api.uri.EdmLiteral;
-import com.sap.core.odata.api.uri.UriParserException;
+import com.sap.core.odata.api.uri.UriSyntaxException;
 import com.sap.core.odata.core.exception.ODataRuntimeException;
 
 /**
@@ -24,7 +24,7 @@ public class EdmSimpleTypeFacadeImpl implements EdmSimpleTypeFacade {
   private static final Pattern STRING_VALUE_PATTERN = Pattern.compile("(X|binary|datetime|datetimeoffset|guid|time)?'(.*)'");
 
   @Override
-  public EdmLiteral parseUriLiteral(final String uriLiteral) throws UriParserException {
+  public EdmLiteral parseUriLiteral(final String uriLiteral) throws UriSyntaxException {
     final String literal = uriLiteral;
 
     if ("true".equals(literal) || "false".equals(literal))
@@ -60,7 +60,7 @@ public class EdmSimpleTypeFacadeImpl implements EdmSimpleTypeFacade {
           else
             return new EdmLiteral(getEdmSimpleType(EdmSimpleTypeKind.Int32), value);
         } catch (NumberFormatException e) {
-          throw new UriParserException(UriParserException.LITERALFORMAT.addContent(literal), e);
+          throw new UriSyntaxException(UriSyntaxException.LITERALFORMAT.addContent(literal), e);
         }
     }
 
@@ -87,7 +87,7 @@ public class EdmSimpleTypeFacadeImpl implements EdmSimpleTypeFacade {
         try {
           b = Hex.decodeHex(value.toCharArray());
         } catch (DecoderException e) {
-          throw new UriParserException(UriParserException.NOTEXT.addContent(literal), e);
+          throw new UriSyntaxException(UriSyntaxException.NOTEXT.addContent(literal), e);
         }
         return new EdmLiteral(getEdmSimpleType(EdmSimpleTypeKind.Binary), Base64.encodeBase64String(b));
       }
@@ -100,7 +100,7 @@ public class EdmSimpleTypeFacadeImpl implements EdmSimpleTypeFacade {
       else if ("time".equals(prefix))
         return new EdmLiteral(getEdmSimpleType(EdmSimpleTypeKind.Time), value);
     }
-    throw new UriParserException(UriParserException.UNKNOWNLITERAL.addContent(literal));
+    throw new UriSyntaxException(UriSyntaxException.UNKNOWNLITERAL.addContent(literal));
   }
 
   public static EdmSimpleType getEdmSimpleType(EdmSimpleTypeKind edmSimpleType) {

@@ -1,10 +1,10 @@
 package com.sap.core.odata.api.edm;
 
 import com.sap.core.odata.api.uri.EdmLiteral;
-import com.sap.core.odata.api.uri.UriParserException;
+import com.sap.core.odata.api.uri.UriSyntaxException;
 
 public interface EdmSimpleTypeFacade {
 
-  public EdmLiteral parseUriLiteral(final String uriLiteral) throws UriParserException;
+  public EdmLiteral parseUriLiteral(final String uriLiteral) throws UriSyntaxException;
   
 }

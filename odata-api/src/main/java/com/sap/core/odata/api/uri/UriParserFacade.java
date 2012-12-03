@@ -21,7 +21,7 @@ public class UriParserFacade {
    * @param pathSegments
    * @param queryParameter
    * @return {@link UriParserResult} parsed uri result
-   * @throws UriParserException
+   * @throws UriSyntaxException
    */
   public static UriParserResult parse(Edm edm, List<ODataPathSegment> pathSegments, Map<String, String> queryParameter) throws ODataException{
     return RuntimeDelegate.getUriParser(edm).parse(pathSegments, queryParameter);

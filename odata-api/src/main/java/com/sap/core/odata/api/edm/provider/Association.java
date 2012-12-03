@@ -2,8 +2,6 @@ package com.sap.core.odata.api.edm.provider;
 
 import java.util.Collection;
 
-import com.sap.core.odata.api.edm.EdmAnnotationElement;
-
 /**
  * @author SAP AG
  * <p>
