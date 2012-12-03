@@ -3,6 +3,7 @@ package com.sap.core.odata.api.serialization;
 import java.io.InputStream;
 import java.util.Map;
 
+import com.sap.core.odata.api.edm.Edm;
 import com.sap.core.odata.api.edm.EdmEntitySet;
 import com.sap.core.odata.api.edm.EdmProperty;
 import com.sap.core.odata.api.enums.Format;
@@ -25,6 +26,8 @@ public abstract class ODataSerializer {
     return this.context;
   }
 
+  public abstract InputStream serializeServiceDocument(Edm edm, String serviceRoot) throws ODataSerializationException;
+  
   public abstract InputStream serializeEntry(EdmEntitySet entitySet, Map<String, Object> data) throws ODataSerializationException;
 
   public abstract InputStream serializeProperty(EdmProperty edmProperty, Object value) throws ODataSerializationException;

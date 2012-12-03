@@ -5,6 +5,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.UnsupportedEncodingException;
 import java.util.Map;
 
 import javax.xml.stream.XMLOutputFactory;
@@ -13,11 +15,14 @@ import javax.xml.stream.XMLStreamWriter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.sap.core.odata.api.edm.Edm;
 import com.sap.core.odata.api.edm.EdmEntitySet;
 import com.sap.core.odata.api.edm.EdmProperty;
+import com.sap.core.odata.api.edm.provider.DataServices;
 import com.sap.core.odata.api.processor.ODataContext;
 import com.sap.core.odata.api.serialization.ODataSerializationException;
 import com.sap.core.odata.api.serialization.ODataSerializer;
+import com.sap.core.odata.core.edm.provider.EdmMetadata;
 
 // TODO usage of "ByteArrayInputStream(out.toByteArray())":  check synchronized call / copy of data
 
@@ -29,6 +34,28 @@ public class AtomSerializer extends ODataSerializer {
     super(ctx);
   }
 
+  @Override
+  public InputStream serializeServiceDocument(Edm edm, String serviceRoot) throws ODataSerializationException {
+    OutputStreamWriter writer = null;
+
+    try {
+      ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+      writer = new OutputStreamWriter(outputStream, "UTF-8");
+      AtomServiceDocumentSerializer.writeServiceDocument(edm, serviceRoot, writer);
+      return new ByteArrayInputStream(outputStream.toByteArray());
+    } catch (UnsupportedEncodingException e) {
+      throw new ODataSerializationException(ODataSerializationException.COMMON, e);
+    } finally {
+      if (writer != null) {
+        try {
+          writer.close();
+        } catch (IOException e) {
+          throw new ODataSerializationException(ODataSerializationException.COMMON, e);
+        }
+      }
+    }
+  }
+  
   @Override
   public InputStream serializeEntry(EdmEntitySet entitySet, Map<String, Object> data) throws ODataSerializationException {
     try {
@@ -75,4 +102,5 @@ public class AtomSerializer extends ODataSerializer {
       throw new ODataSerializationException(ODataSerializationException.COMMON, e);
     }
   }
+
 }

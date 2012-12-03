@@ -1,6 +1,10 @@
 package com.sap.core.odata.api.processor;
 
+import java.io.InputStream;
+
+import com.sap.core.odata.api.edm.Edm;
 import com.sap.core.odata.api.edm.EdmServiceMetadata;
+import com.sap.core.odata.api.enums.Format;
 import com.sap.core.odata.api.enums.HttpStatusCodes;
 import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.api.exception.ODataNotImplementedException;
@@ -17,6 +21,7 @@ import com.sap.core.odata.api.processor.aspect.FunctionImport;
 import com.sap.core.odata.api.processor.aspect.FunctionImportValue;
 import com.sap.core.odata.api.processor.aspect.Metadata;
 import com.sap.core.odata.api.processor.aspect.ServiceDocument;
+import com.sap.core.odata.api.serialization.ODataSerializer;
 import com.sap.core.odata.api.uri.resultviews.GetComplexPropertyView;
 import com.sap.core.odata.api.uri.resultviews.GetEntityCountView;
 import com.sap.core.odata.api.uri.resultviews.GetEntityLinkCountView;
@@ -298,7 +303,16 @@ public abstract class ODataSingleProcessor
    */
   @Override
   public ODataResponse readServiceDocument(GetServiceDocumentView uriParserResultView) throws ODataException {
-    throw new ODataNotImplementedException();
+    //TODO: uriParserResultView.getFormat() only returns a valid format if the format is set via $format
+    //      Content Negotiation yet not implemented, but in general we should go for a format as separate parameter and not via uriResultViews
+    ODataSerializer odataSerializer = ODataSerializer.create(Format.XML, getContext());
+    InputStream serviceDocument = odataSerializer.serializeServiceDocument(getContext().getService().getEntityDataModel(), getContext().getUriInfo().getBaseUri().toString());
+    return ODataResponse
+        .status(HttpStatusCodes.OK)
+        .header("Content-Type", "application/xml")
+        .header("DataServiceVersion", Edm.DATA_SERVICE_VERSION_10)
+        .entity(serviceDocument)
+        .build();
   }
 
   /**
