@@ -141,7 +141,7 @@ public class EdmFunctionImportImplProvTest {
     parameter = edmFunctionImportWithoutParameters.getParameter("fooParameter3");
     assertNull(parameter);
   }
-  
+
   @Test
   public void parameterAnnotations() throws Exception {
     EdmParameter parameter = edmFunctionImport.getParameter("fooParameter1");
@@ -151,7 +151,7 @@ public class EdmFunctionImportImplProvTest {
     assertNull(annotations.getAnnotationAttributes());
     assertNull(annotations.getAnnotationElements());
   }
-  
+
   @Test
   public void getAnnotations() throws Exception {
     EdmAnnotatable annotatable = (EdmAnnotatable) edmFunctionImport;

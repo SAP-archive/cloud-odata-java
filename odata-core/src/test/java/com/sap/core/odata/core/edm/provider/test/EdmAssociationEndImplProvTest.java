@@ -27,28 +27,27 @@ public class EdmAssociationEndImplProvTest {
 
     edmProvider = mock(EdmProvider.class);
     EdmImplProv edmImplProv = new EdmImplProv(edmProvider);
-    
-    AssociationEnd end1 = new AssociationEnd().setRole("end1Role").setMultiplicity(EdmMultiplicity.ONE).setType(EdmSimpleTypeKind.String.getFullQualifiedName());  
-     
+
+    AssociationEnd end1 = new AssociationEnd().setRole("end1Role").setMultiplicity(EdmMultiplicity.ONE).setType(EdmSimpleTypeKind.String.getFullQualifiedName());
+
     associationEndProv = new EdmAssociationEndImplProv(edmImplProv, end1);
   }
-  
+
   @Test
-  public void testAssociationEnd() throws Exception{
+  public void testAssociationEnd() throws Exception {
     EdmAssociationEnd associationEnd = associationEndProv;
-  
-    assertEquals("end1Role",  associationEnd.getRole());
-    assertEquals(EdmMultiplicity.ONE, associationEnd.getMultiplicity());   
+
+    assertEquals("end1Role", associationEnd.getRole());
+    assertEquals(EdmMultiplicity.ONE, associationEnd.getMultiplicity());
   }
-  
-  
-  @Test(expected=EdmException.class)
-  public void testAssociationEntityType() throws Exception{
+
+  @Test(expected = EdmException.class)
+  public void testAssociationEntityType() throws Exception {
     EdmAssociationEnd associationEnd = associationEndProv;
     associationEnd.getEntityType();
-    
+
   }
-  
+
   @Test
   public void getAnnotations() throws Exception {
     EdmAnnotatable annotatable = (EdmAnnotatable) associationEndProv;

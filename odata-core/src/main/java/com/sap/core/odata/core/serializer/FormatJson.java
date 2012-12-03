@@ -1,7 +1,7 @@
 package com.sap.core.odata.core.serializer;
 
 public class FormatJson {
-  
+
   public static final String D = "d";
   public static final String RESULTS = "results";
   public static final String COUNT = "__count";

@@ -16,11 +16,10 @@ public class EdmComplexTypeImplProv extends EdmStructuralTypeImplProv implements
   public EdmComplexType getBaseType() throws EdmException {
     return (EdmComplexType) edmBaseType;
   }
-  
+
   @Override
   public EdmAnnotations getAnnotations() throws EdmException {
-    return new EdmAnnotationsImplProv(structuralType.getAnnotationAttributes(), structuralType.getAnnotationElements());    
+    return new EdmAnnotationsImplProv(structuralType.getAnnotationAttributes(), structuralType.getAnnotationElements());
   }
-
 
 }

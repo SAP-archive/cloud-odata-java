@@ -33,11 +33,11 @@ public class EdmAssociationSetEndImplProvTest {
     EntityContainerInfo entityContainer = new EntityContainerInfo().setName("Container");
     EdmEntityContainer edmEntityContainer = new EdmEntityContainerImplProv(edmImplProv, entityContainer);
 
-//    AssociationEnd end1 = new AssociationEnd().setRole("end1Role").setMultiplicity(EdmMultiplicity.ONE).setType(EdmSimpleTypeKind.String.getFullQualifiedName());
-//    AssociationEnd end2 = new AssociationEnd().setRole("end2Role").setMultiplicity(EdmMultiplicity.ONE).setType(EdmSimpleTypeKind.String.getFullQualifiedName());
-//    Association association = new Association().setName("association").setEnd1(end1).setEnd2(end2);
-//    FullQualifiedName assocName = new FullQualifiedName("namespace", "association");
-//    when(edmProvider.getAssociation(assocName)).thenReturn(association);
+    //    AssociationEnd end1 = new AssociationEnd().setRole("end1Role").setMultiplicity(EdmMultiplicity.ONE).setType(EdmSimpleTypeKind.String.getFullQualifiedName());
+    //    AssociationEnd end2 = new AssociationEnd().setRole("end2Role").setMultiplicity(EdmMultiplicity.ONE).setType(EdmSimpleTypeKind.String.getFullQualifiedName());
+    //    Association association = new Association().setName("association").setEnd1(end1).setEnd2(end2);
+    //    FullQualifiedName assocName = new FullQualifiedName("namespace", "association");
+    //    when(edmProvider.getAssociation(assocName)).thenReturn(association);
 
     AssociationSetEnd associationSetEnd = new AssociationSetEnd().setRole("end1Role").setEntitySet("entitySetRole1");
     EntitySet entitySet = new EntitySet().setName("entitySetRole1");
@@ -45,16 +45,15 @@ public class EdmAssociationSetEndImplProvTest {
 
     edmAssociationSetEnd = new EdmAssociationSetEndImplProv(associationSetEnd, edmEntityContainer.getEntitySet("entitySetRole1"));
   }
-  
-  
+
   @Test
-  public void testAssociationSetEnd() throws Exception{
+  public void testAssociationSetEnd() throws Exception {
     EdmAssociationSetEnd setEnd = edmAssociationSetEnd;
 
     assertEquals("end1Role", setEnd.getRole());
     assertEquals("entitySetRole1", setEnd.getEntitySet().getName());
   }
-  
+
   @Test
   public void getAnnotations() throws Exception {
     EdmAnnotatable annotatable = (EdmAnnotatable) edmAssociationSetEnd;

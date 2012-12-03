@@ -29,28 +29,26 @@ public class EdmAssociationImplProvTest {
 
     edmProvider = mock(EdmProvider.class);
     EdmImplProv edmImplProv = new EdmImplProv(edmProvider);
-    
+
     AssociationEnd end1 = new AssociationEnd().setRole("end1Role").setMultiplicity(EdmMultiplicity.ONE).setType(EdmSimpleTypeKind.String.getFullQualifiedName());
     AssociationEnd end2 = new AssociationEnd().setRole("end2Role").setMultiplicity(EdmMultiplicity.ONE).setType(EdmSimpleTypeKind.String.getFullQualifiedName());
-    
-    
+
     Association association = new Association().setName("association").setEnd1(end1).setEnd2(end2);
-    
-    
+
     associationProv = new EdmAssociationImplProv(edmImplProv, association, "namespace");
   }
-  
+
   @Test
-  public void testAssociation() throws Exception{
+  public void testAssociation() throws Exception {
     EdmAssociation association = associationProv;
-   
-    assertEquals(EdmTypeKind.ASSOCIATION,  association.getKind());
-    assertEquals("end1Role",  association.getEnd("end1Role").getRole());
-    assertEquals("end2Role",  association.getEnd("end2Role").getRole());
-    assertEquals("namespace",  association.getNamespace());
-    assertEquals(null, association.getEnd("endWrongRole"));    
+
+    assertEquals(EdmTypeKind.ASSOCIATION, association.getKind());
+    assertEquals("end1Role", association.getEnd("end1Role").getRole());
+    assertEquals("end2Role", association.getEnd("end2Role").getRole());
+    assertEquals("namespace", association.getNamespace());
+    assertEquals(null, association.getEnd("endWrongRole"));
   }
-  
+
   @Test
   public void getAnnotations() throws Exception {
     EdmAnnotatable annotatable = (EdmAnnotatable) associationProv;
@@ -58,5 +56,5 @@ public class EdmAssociationImplProvTest {
     assertNull(annotations.getAnnotationAttributes());
     assertNull(annotations.getAnnotationElements());
   }
-  
+
 }

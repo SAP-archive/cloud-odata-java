@@ -112,7 +112,7 @@ public class EdmPropertyImplProvTest {
     assertEquals(EdmTypeKind.ENTITY, propertyEntityProvider.getType().getKind());
     assertEquals("entityType", propertyEntityProvider.getType().getName());
   }
-  
+
   @Test
   public void getAnnotations() throws Exception {
     EdmAnnotatable annotatable = (EdmAnnotatable) propertyEntityProvider;

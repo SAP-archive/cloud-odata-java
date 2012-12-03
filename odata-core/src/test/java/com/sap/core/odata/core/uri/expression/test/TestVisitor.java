@@ -51,7 +51,6 @@ public class TestVisitor implements ExpressionVisitor {
 
     sb.append(")}");
 
-
     return sb.toString();
   }
 
