@@ -38,7 +38,7 @@ public class EdmAssociationImplProv extends EdmNamedImplProv implements EdmAssoc
     end = association.getEnd2();
     if (end.getRole().equals(role))
       return new EdmAssociationEndImplProv(edm, end);
-    //TODO: Throw exception here or deliver null?
+    
     return null;
   }
 

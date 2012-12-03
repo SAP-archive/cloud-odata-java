@@ -2,6 +2,7 @@ package com.sap.core.odata.core.edm.provider.test;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -12,6 +13,8 @@ import java.util.Collection;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import com.sap.core.odata.api.edm.EdmAnnotatable;
+import com.sap.core.odata.api.edm.EdmAnnotations;
 import com.sap.core.odata.api.edm.EdmEntitySet;
 import com.sap.core.odata.api.edm.EdmNavigationProperty;
 import com.sap.core.odata.api.edm.EdmTyped;
@@ -112,6 +115,15 @@ public class EdmEntitySetProvTest {
 
     assertEquals("fooEntityType", edmEnitiySetFoo.getEntityType().getName());
     assertEquals(edmEnitiySetFoo.getEntityType().getName(), edmProvider.getEntityType(new FullQualifiedName("namespace", "fooEntityType")).getName());
+  }
+
+  @Test
+  public void getAnnotations() throws Exception {
+    EdmAnnotatable annotatable = (EdmAnnotatable) edmEnitiySetFoo;
+    EdmAnnotations annotations = annotatable.getAnnotations();
+    assertNull(annotations.getAnnotationAttributes());
+    assertNull(annotations.getAnnotationElements());
+
   }
 
 }

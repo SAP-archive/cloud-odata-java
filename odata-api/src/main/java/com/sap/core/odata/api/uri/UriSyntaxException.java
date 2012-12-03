@@ -41,11 +41,6 @@ public class UriSyntaxException extends ODataBadRequestException {
 
   public static final MessageReference INCOMPATIBLELITERAL = createMessageReference(UriSyntaxException.class, "INCOMPATIBLELITERAL");
   public static final MessageReference INCOMPATIBLESYSTEMQUERYOPTION = createMessageReference(UriSyntaxException.class, "INCOMPATIBLESYSTEMQUERYOPTION");
-
-  public static final MessageReference NOTFOUND = createMessageReference(UriSyntaxException.class, "NOTFOUND");
-  public static final MessageReference ENTITYNOTFOUND = createMessageReference(UriSyntaxException.class, "ENTITYNOTFOUND");
-  public static final MessageReference CONTAINERNOTFOUND = createMessageReference(UriSyntaxException.class, "CONTAINERNOTFOUND");
-
   
   /**
    * {@inheritDoc}

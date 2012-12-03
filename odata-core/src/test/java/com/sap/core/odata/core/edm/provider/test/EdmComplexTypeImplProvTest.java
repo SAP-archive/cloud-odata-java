@@ -2,6 +2,7 @@ package com.sap.core.odata.core.edm.provider.test;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -12,6 +13,8 @@ import java.util.Collection;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import com.sap.core.odata.api.edm.EdmAnnotatable;
+import com.sap.core.odata.api.edm.EdmAnnotations;
 import com.sap.core.odata.api.edm.EdmComplexType;
 import com.sap.core.odata.api.edm.EdmSimpleTypeKind;
 import com.sap.core.odata.api.edm.EdmTyped;
@@ -85,5 +88,14 @@ public class EdmComplexTypeImplProvTest {
     EdmTyped property = edmComplexType.getProperty("Name");
     assertNotNull(property);
     assertEquals("Name", property.getName());
+  }
+
+  @Test
+  public void getAnnotations() throws Exception {
+    EdmAnnotatable annotatable = (EdmAnnotatable) edmComplexType;
+    EdmAnnotations annotations = annotatable.getAnnotations();
+    assertNull(annotations.getAnnotationAttributes());
+    assertNull(annotations.getAnnotationElements());
+
   }
 }
