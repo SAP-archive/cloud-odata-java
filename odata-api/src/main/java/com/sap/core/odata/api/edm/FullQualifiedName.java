@@ -49,6 +49,6 @@ public class FullQualifiedName {
 
   @Override
   public String toString() {
-    return namespace + "." + name;
+    return namespace + Edm.DELIMITER + name;
   }
 }

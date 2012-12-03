@@ -8,6 +8,9 @@ package com.sap.core.odata.api.edm;
  */
 public interface EdmSimpleType extends EdmType {
 
+  public static final String EDM_NAMESPACE = "Edm";
+  public static final String SYSTEM_NAMESPACE = "System";
+  
   /**
    * Checks type compatibility.
    *

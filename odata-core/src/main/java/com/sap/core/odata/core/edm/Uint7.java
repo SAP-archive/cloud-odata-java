@@ -27,7 +27,7 @@ public class Uint7 implements EdmSimpleType {
 
   @Override
   public String getNamespace() throws EdmException {
-    return EdmSimpleTypeKind.systemNamespace;
+    return EdmSimpleType.SYSTEM_NAMESPACE;
   }
 
   @Override

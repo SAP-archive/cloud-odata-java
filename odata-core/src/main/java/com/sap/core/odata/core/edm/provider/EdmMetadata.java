@@ -10,6 +10,7 @@ import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 
+import com.sap.core.odata.api.edm.Edm;
 import com.sap.core.odata.api.edm.EdmFacets;
 import com.sap.core.odata.api.edm.provider.AnnotationAttribute;
 import com.sap.core.odata.api.edm.provider.AnnotationElement;
@@ -39,25 +40,21 @@ import com.sap.core.odata.api.serialization.ODataSerializationException;
 
 public class EdmMetadata {
 
-  private static String EDMX_NAMESPACE = "http://schemas.microsoft.com/ado/2007/06/edmx";
-  private static String METADATA_NAMESPACE = "http://schemas.microsoft.com/ado/2007/08/dataservices/metadata";
-  private static String EDM_NAMESPACE = "http://schemas.microsoft.com/ado/2008/09/edm";
-
   public static void writeMetadata(DataServices metadata, Writer writer) throws ODataSerializationException {
 
     try {
       XMLStreamWriter xmlStreamWriter = XMLOutputFactory.newInstance().createXMLStreamWriter(writer);
 
       xmlStreamWriter.writeStartDocument();
-      xmlStreamWriter.setPrefix("edmx", EDMX_NAMESPACE);
-      xmlStreamWriter.setPrefix("m", METADATA_NAMESPACE);
-      xmlStreamWriter.setDefaultNamespace(EDM_NAMESPACE);
+      xmlStreamWriter.setPrefix(Edm.PREFIX_EDMX, Edm.NAMESPACE_EDMX);
+      xmlStreamWriter.setPrefix(Edm.PREFIX_M, Edm.NAMESPACE_M);
+      xmlStreamWriter.setDefaultNamespace(Edm.NAMESPACE_EDM);
 
-      xmlStreamWriter.writeStartElement(EDMX_NAMESPACE, "Edmx");
+      xmlStreamWriter.writeStartElement(Edm.NAMESPACE_EDMX, Edm.PREFIX_EDMX);
       xmlStreamWriter.writeAttribute("Version", "1.0");
-      xmlStreamWriter.writeNamespace("edmx", EDMX_NAMESPACE);
+      xmlStreamWriter.writeNamespace(Edm.PREFIX_EDMX, Edm.NAMESPACE_EDMX);
 
-      xmlStreamWriter.writeStartElement(EDMX_NAMESPACE, "DataServices");
+      xmlStreamWriter.writeStartElement(Edm.NAMESPACE_EDMX, "DataServices");
 
       //TODO Clarify
       //DataServiceVersion: This attribute MUST be in the data service metadata namespace 
@@ -69,8 +66,8 @@ public class EdmMetadata {
       //"FC_KeepInContent" Customizable Feed annotation (section 2.2.3.7.2.1) with a value equal to false 
       //is present in the CSDL document within the <edmx:DataServices> node. In this case, the attribute 
       //value MUST be 2.0.
-      xmlStreamWriter.writeAttribute("m", METADATA_NAMESPACE, "DataServiceVersion", metadata.getDataServiceVersion());
-      xmlStreamWriter.writeNamespace("m", METADATA_NAMESPACE);
+      xmlStreamWriter.writeAttribute(Edm.PREFIX_M, Edm.NAMESPACE_M, "DataServiceVersion", metadata.getDataServiceVersion());
+      xmlStreamWriter.writeNamespace(Edm.PREFIX_M, Edm.NAMESPACE_M);
 
       Collection<Schema> schemas = metadata.getSchemas();
       if (schemas != null) {
@@ -80,7 +77,7 @@ public class EdmMetadata {
             xmlStreamWriter.writeAttribute("Alias", schema.getAlias());
           }
           xmlStreamWriter.writeAttribute("Namespace", schema.getNamespace());
-          xmlStreamWriter.writeDefaultNamespace(EDM_NAMESPACE);
+          xmlStreamWriter.writeDefaultNamespace(Edm.NAMESPACE_EDM);
 
           writeAnnotationAttributes(schema.getAnnotationAttributes(), xmlStreamWriter);
 
@@ -109,7 +106,7 @@ public class EdmMetadata {
                 xmlStreamWriter.writeAttribute("Abstract", "true");
               }
               if (entityType.isHasStream()) {
-                xmlStreamWriter.writeAttribute("m", METADATA_NAMESPACE, "HasStream", "true");
+                xmlStreamWriter.writeAttribute(Edm.PREFIX_M, Edm.NAMESPACE_M, "HasStream", "true");
               }
 
               writeCustomizableFeedMappings(entityType.getCustomizableFeedMappings(), xmlStreamWriter);
@@ -260,7 +257,7 @@ public class EdmMetadata {
                 xmlStreamWriter.writeAttribute("Extends", entityContainer.getExtendz());
               }
               if (entityContainer.isDefaultEntityContainer()) {
-                xmlStreamWriter.writeAttribute("m", METADATA_NAMESPACE, "IsDefaultEntityContainer", "true");
+                xmlStreamWriter.writeAttribute(Edm.PREFIX_M, Edm.NAMESPACE_M, "IsDefaultEntityContainer", "true");
               }
 
               writeAnnotationAttributes(entityContainer.getAnnotationAttributes(), xmlStreamWriter);
@@ -316,7 +313,7 @@ public class EdmMetadata {
                     xmlStreamWriter.writeAttribute("EntitySet", functionImport.getEntitySet());
                   }
                   if (functionImport.getHttpMethod() != null) {
-                    xmlStreamWriter.writeAttribute("m", METADATA_NAMESPACE, "HttpMethod", functionImport.getHttpMethod());
+                    xmlStreamWriter.writeAttribute(Edm.PREFIX_M, Edm.NAMESPACE_M, "HttpMethod", functionImport.getHttpMethod());
                   }
 
                   writeAnnotationAttributes(functionImport.getAnnotationAttributes(), xmlStreamWriter);
@@ -389,22 +386,22 @@ public class EdmMetadata {
   private static void writeCustomizableFeedMappings(CustomizableFeedMappings customizableFeedMappings, XMLStreamWriter xmlStreamWriter) throws XMLStreamException {
     if (customizableFeedMappings != null) {
       if (customizableFeedMappings.getFcKeepInContent() != null) {
-        xmlStreamWriter.writeAttribute("m", METADATA_NAMESPACE, "FC_KeepInContent", customizableFeedMappings.getFcKeepInContent().toString().toLowerCase());
+        xmlStreamWriter.writeAttribute(Edm.PREFIX_M, Edm.NAMESPACE_M, "FC_KeepInContent", customizableFeedMappings.getFcKeepInContent().toString().toLowerCase());
       }
       if (customizableFeedMappings.getFcContentKind() != null) {
-        xmlStreamWriter.writeAttribute("m", METADATA_NAMESPACE, "FC_ContentKind", customizableFeedMappings.getFcContentKind().toString());
+        xmlStreamWriter.writeAttribute(Edm.PREFIX_M, Edm.NAMESPACE_M, "FC_ContentKind", customizableFeedMappings.getFcContentKind().toString());
       }
       if (customizableFeedMappings.getFcNsPrefix() != null) {
-        xmlStreamWriter.writeAttribute("m", METADATA_NAMESPACE, "FC_NsPrefix", customizableFeedMappings.getFcNsPrefix());
+        xmlStreamWriter.writeAttribute(Edm.PREFIX_M, Edm.NAMESPACE_M, "FC_NsPrefix", customizableFeedMappings.getFcNsPrefix());
       }
       if (customizableFeedMappings.getFcNsUri() != null) {
-        xmlStreamWriter.writeAttribute("m", METADATA_NAMESPACE, "FC_NsUri", customizableFeedMappings.getFcNsUri());
+        xmlStreamWriter.writeAttribute(Edm.PREFIX_M, Edm.NAMESPACE_M, "FC_NsUri", customizableFeedMappings.getFcNsUri());
       }
       if (customizableFeedMappings.getFcSourcePath() != null) {
-        xmlStreamWriter.writeAttribute("m", METADATA_NAMESPACE, "FC_SourcePath", customizableFeedMappings.getFcSourcePath());
+        xmlStreamWriter.writeAttribute(Edm.PREFIX_M, Edm.NAMESPACE_M, "FC_SourcePath", customizableFeedMappings.getFcSourcePath());
       }
       if (customizableFeedMappings.getFcTargetPath() != null) {
-        xmlStreamWriter.writeAttribute("m", METADATA_NAMESPACE, "FC_TargetPath", customizableFeedMappings.getFcTargetPath().toString());
+        xmlStreamWriter.writeAttribute(Edm.PREFIX_M, Edm.NAMESPACE_M, "FC_TargetPath", customizableFeedMappings.getFcTargetPath().toString());
       }
     }
   }
@@ -450,7 +447,7 @@ public class EdmMetadata {
         }
       }
       if (property.getMimeType() != null) {
-        xmlStreamWriter.writeAttribute("m", METADATA_NAMESPACE, "MimeType", property.getMimeType());
+        xmlStreamWriter.writeAttribute(Edm.PREFIX_M, Edm.NAMESPACE_M, "MimeType", property.getMimeType());
       }
 
       writeCustomizableFeedMappings(property.getCustomizableFeedMappings(), xmlStreamWriter);
