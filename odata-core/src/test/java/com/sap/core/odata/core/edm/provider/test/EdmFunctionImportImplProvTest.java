@@ -14,6 +14,8 @@ import org.eclipse.jetty.http.HttpMethods;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import com.sap.core.odata.api.edm.EdmAnnotatable;
+import com.sap.core.odata.api.edm.EdmAnnotations;
 import com.sap.core.odata.api.edm.EdmEntitySet;
 import com.sap.core.odata.api.edm.EdmMultiplicity;
 import com.sap.core.odata.api.edm.EdmParameter;
@@ -138,6 +140,24 @@ public class EdmFunctionImportImplProvTest {
     parameter = null;
     parameter = edmFunctionImportWithoutParameters.getParameter("fooParameter3");
     assertNull(parameter);
+  }
+  
+  @Test
+  public void parameterAnnotations() throws Exception {
+    EdmParameter parameter = edmFunctionImport.getParameter("fooParameter1");
+    assertNotNull(parameter);
+    EdmAnnotatable annotatable = (EdmAnnotatable) parameter;
+    EdmAnnotations annotations = annotatable.getAnnotations();
+    assertNull(annotations.getAnnotationAttributes());
+    assertNull(annotations.getAnnotationElements());
+  }
+  
+  @Test
+  public void getAnnotations() throws Exception {
+    EdmAnnotatable annotatable = (EdmAnnotatable) edmFunctionImport;
+    EdmAnnotations annotations = annotatable.getAnnotations();
+    assertNull(annotations.getAnnotationAttributes());
+    assertNull(annotations.getAnnotationElements());
 
   }
 }

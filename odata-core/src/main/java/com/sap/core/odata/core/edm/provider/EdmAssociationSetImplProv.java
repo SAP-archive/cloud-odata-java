@@ -25,7 +25,7 @@ public class EdmAssociationSetImplProv extends EdmNamedImplProv implements EdmAs
   @Override
   public EdmAssociation getAssociation() throws EdmException {
     EdmAssociation association = edm.getAssociation(associationSet.getAssociation().getNamespace(), associationSet.getAssociation().getName());
-    if(association == null){
+    if (association == null) {
       throw new EdmException(EdmException.COMMON);
     }
     return association;
@@ -33,14 +33,21 @@ public class EdmAssociationSetImplProv extends EdmNamedImplProv implements EdmAs
 
   @Override
   public EdmAssociationSetEnd getEnd(final String role) throws EdmException {
-    final AssociationSetEnd end =
-        associationSet.getEnd1().getRole().equals(role) ?
-            associationSet.getEnd1() : associationSet.getEnd2();
-     EdmEntitySet entitySet =  edmEntityContainer.getEntitySet(end.getEntitySet());   
-     if(entitySet == null){
-       throw new EdmException(EdmException.COMMON);
-     }
-       
+    AssociationSetEnd end;
+
+    if (associationSet.getEnd1().getRole().equals(role)) {
+      end = associationSet.getEnd1();
+    } else if (associationSet.getEnd2().getRole().equals(role)) {
+      end = associationSet.getEnd2();
+    } else {
+      return null;
+    }
+
+    EdmEntitySet entitySet = edmEntityContainer.getEntitySet(end.getEntitySet());
+    if (entitySet == null) {
+      throw new EdmException(EdmException.COMMON);
+    }
+
     return new EdmAssociationSetEndImplProv(end, entitySet);
   }
 

@@ -10,6 +10,8 @@ import static org.mockito.Mockito.when;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import com.sap.core.odata.api.edm.EdmAnnotatable;
+import com.sap.core.odata.api.edm.EdmAnnotations;
 import com.sap.core.odata.api.edm.EdmAssociation;
 import com.sap.core.odata.api.edm.EdmEntitySet;
 import com.sap.core.odata.api.edm.EdmException;
@@ -114,5 +116,13 @@ public class EdmEntityContainerImplProvTest {
   public void testFunctionImportCache() throws EdmException {
     assertEquals(edmEntityContainer.getFunctionImport("foo"), edmEntityContainer.getFunctionImport("foo"));
     assertNotSame(edmEntityContainer.getFunctionImport("foo"), edmEntityContainer.getFunctionImport("bar"));
+  }
+  
+  @Test
+  public void getAnnotations() throws Exception {
+    EdmAnnotatable annotatable = (EdmAnnotatable) edmEntityContainer;
+    EdmAnnotations annotations = annotatable.getAnnotations();
+    assertNull(annotations.getAnnotationAttributes());
+    assertNull(annotations.getAnnotationElements());
   }
 }

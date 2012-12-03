@@ -9,6 +9,8 @@ import static org.mockito.Mockito.when;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import com.sap.core.odata.api.edm.EdmAnnotatable;
+import com.sap.core.odata.api.edm.EdmAnnotations;
 import com.sap.core.odata.api.edm.EdmMultiplicity;
 import com.sap.core.odata.api.edm.EdmSimpleTypeKind;
 import com.sap.core.odata.api.edm.EdmTypeKind;
@@ -109,5 +111,14 @@ public class EdmPropertyImplProvTest {
     assertEquals("entityProperty", propertyEntityProvider.getName());
     assertEquals(EdmTypeKind.ENTITY, propertyEntityProvider.getType().getKind());
     assertEquals("entityType", propertyEntityProvider.getType().getName());
+  }
+  
+  @Test
+  public void getAnnotations() throws Exception {
+    EdmAnnotatable annotatable = (EdmAnnotatable) propertyEntityProvider;
+    EdmAnnotations annotations = annotatable.getAnnotations();
+    assertNull(annotations.getAnnotationAttributes());
+    assertNull(annotations.getAnnotationElements());
+
   }
 }

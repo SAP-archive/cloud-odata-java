@@ -144,7 +144,7 @@ public class UriParserImpl implements UriParser {
 
     uriResult.setEntityContainer(entityContainerName == null ? edm.getDefaultEntityContainer() : edm.getEntityContainer(entityContainerName));
     if (uriResult.getEntityContainer() == null) {
-      throw new UriSyntaxException(UriSyntaxException.CONTAINERNOTFOUND);
+      throw new UriNotMatchingException(UriNotMatchingException.CONTAINERNOTFOUND);
     }
 
     EdmEntitySet entitySet = null;
@@ -160,7 +160,7 @@ public class UriParserImpl implements UriParser {
         uriResult.setFunctionImport(functionImport);
         handleFunctionImport(functionImport, emptyParentheses, keyPredicate);
       } else {
-        throw new UriSyntaxException(UriSyntaxException.NOTFOUND);
+        throw new UriNotMatchingException(UriNotMatchingException.NOTFOUND);
       }
     }
   }
