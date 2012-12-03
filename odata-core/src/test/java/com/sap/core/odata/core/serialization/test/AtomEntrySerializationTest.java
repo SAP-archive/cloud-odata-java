@@ -14,8 +14,8 @@ import org.junit.Ignore;
 import org.junit.Test;
 import org.xml.sax.SAXException;
 
+import com.sap.core.odata.api.ep.ODataSerializer;
 import com.sap.core.odata.api.exception.ODataException;
-import com.sap.core.odata.api.serialization.ODataSerializer;
 import com.sap.core.odata.testutils.helper.StringHelper;
 import com.sap.core.odata.testutils.mocks.MockFacade;
 
@@ -84,7 +84,7 @@ public class AtomEntrySerializationTest extends AbstractSerializerTest {
     InputStream xmlStream = ser.serializeEntry(MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Employees"), this.employeeData);
     String xmlString = StringHelper.inputStreamToString(xmlStream);
 
-//    log.debug(xmlString);
+    log.debug(xmlString);
 
     assertXpathExists("/a:entry/m:properties", xmlString);
     assertXpathEvaluatesTo((String) employeeData.get("RoomId"), "/a:entry/m:properties/d:RoomId/text()", xmlString);

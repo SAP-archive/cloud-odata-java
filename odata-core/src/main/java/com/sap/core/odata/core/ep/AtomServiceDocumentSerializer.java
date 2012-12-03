@@ -1,4 +1,4 @@
-package com.sap.core.odata.core.serializer;
+package com.sap.core.odata.core.ep;
 
 import java.io.Writer;
 import java.util.Collection;
@@ -12,7 +12,7 @@ import com.sap.core.odata.api.edm.provider.EdmProvider;
 import com.sap.core.odata.api.edm.provider.EntityContainer;
 import com.sap.core.odata.api.edm.provider.EntitySet;
 import com.sap.core.odata.api.edm.provider.Schema;
-import com.sap.core.odata.api.serialization.ODataSerializationException;
+import com.sap.core.odata.api.ep.ODataSerializationException;
 import com.sap.core.odata.core.edm.provider.EdmImplProv;
 
 public class AtomServiceDocumentSerializer {

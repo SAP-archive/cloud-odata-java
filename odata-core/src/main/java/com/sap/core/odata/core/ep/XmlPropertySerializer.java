@@ -1,4 +1,4 @@
-package com.sap.core.odata.core.serializer;
+package com.sap.core.odata.core.ep;
 
 import java.util.Collection;
 import java.util.Map;
@@ -13,7 +13,7 @@ import com.sap.core.odata.api.edm.EdmLiteralKind;
 import com.sap.core.odata.api.edm.EdmProperty;
 import com.sap.core.odata.api.edm.EdmSimpleType;
 import com.sap.core.odata.api.edm.EdmType;
-import com.sap.core.odata.api.serialization.ODataSerializationException;
+import com.sap.core.odata.api.ep.ODataSerializationException;
 import com.sap.core.odata.core.edm.EdmString;
 
 public class XmlPropertySerializer {

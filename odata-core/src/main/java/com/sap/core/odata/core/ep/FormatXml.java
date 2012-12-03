@@ -1,4 +1,4 @@
-package com.sap.core.odata.core.serializer;
+package com.sap.core.odata.core.ep;
 
 public class FormatXml {
 

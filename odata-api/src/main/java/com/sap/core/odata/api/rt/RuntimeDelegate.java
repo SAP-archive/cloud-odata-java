@@ -7,10 +7,10 @@ import com.sap.core.odata.api.edm.EdmSimpleTypeKind;
 import com.sap.core.odata.api.edm.EdmType;
 import com.sap.core.odata.api.edm.provider.EdmProvider;
 import com.sap.core.odata.api.enums.Format;
+import com.sap.core.odata.api.ep.ODataSerializationException;
+import com.sap.core.odata.api.ep.ODataSerializer;
 import com.sap.core.odata.api.processor.ODataContext;
 import com.sap.core.odata.api.processor.ODataResponse.ODataResponseBuilder;
-import com.sap.core.odata.api.serialization.ODataSerializationException;
-import com.sap.core.odata.api.serialization.ODataSerializer;
 import com.sap.core.odata.api.uri.UriParser;
 import com.sap.core.odata.api.uri.expression.FilterParser;
 

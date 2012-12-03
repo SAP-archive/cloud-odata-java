@@ -1,4 +1,4 @@
-package com.sap.core.odata.api.serialization;
+package com.sap.core.odata.api.ep;
 
 import com.sap.core.odata.api.exception.MessageReference;
 import com.sap.core.odata.api.exception.ODataMessageException;

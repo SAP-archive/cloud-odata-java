@@ -1,8 +1,8 @@
-package com.sap.core.odata.core.serializer;
+package com.sap.core.odata.core.ep;
 
 import javax.xml.stream.XMLStreamWriter;
 
-import com.sap.core.odata.api.serialization.ODataSerializationException;
+import com.sap.core.odata.api.ep.ODataSerializationException;
 
 public interface ODataXmlSerializer {
 

@@ -1,4 +1,4 @@
-package com.sap.core.odata.core.serializer;
+package com.sap.core.odata.core.ep;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -14,9 +14,9 @@ import javax.xml.stream.XMLStreamWriter;
 import com.sap.core.odata.api.edm.Edm;
 import com.sap.core.odata.api.edm.EdmEntitySet;
 import com.sap.core.odata.api.edm.EdmProperty;
+import com.sap.core.odata.api.ep.ODataSerializationException;
+import com.sap.core.odata.api.ep.ODataSerializer;
 import com.sap.core.odata.api.processor.ODataContext;
-import com.sap.core.odata.api.serialization.ODataSerializationException;
-import com.sap.core.odata.api.serialization.ODataSerializer;
 
 // TODO usage of "ByteArrayInputStream(out.toByteArray())":  check synchronized call / copy of data
 public class AtomSerializer extends ODataSerializer {
