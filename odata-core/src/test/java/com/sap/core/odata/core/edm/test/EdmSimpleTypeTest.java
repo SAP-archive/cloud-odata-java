@@ -47,24 +47,24 @@ public class EdmSimpleTypeTest {
 
   @Test
   public void testNameSpace() throws Exception {
-    assertEquals(EdmSimpleTypeKind.systemNamespace, Bit.getInstance().getNamespace());
-    assertEquals(EdmSimpleTypeKind.systemNamespace, Uint7.getInstance().getNamespace());
+    assertEquals(EdmSimpleType.SYSTEM_NAMESPACE, Bit.getInstance().getNamespace());
+    assertEquals(EdmSimpleType.SYSTEM_NAMESPACE, Uint7.getInstance().getNamespace());
 
-    assertEquals(EdmSimpleTypeKind.edmNamespace, EdmNull.getInstance().getNamespace());
-    assertEquals(EdmSimpleTypeKind.edmNamespace, EdmBinary.getInstance().getNamespace());
-    assertEquals(EdmSimpleTypeKind.edmNamespace, EdmBoolean.getInstance().getNamespace());
-    assertEquals(EdmSimpleTypeKind.edmNamespace, EdmDateTime.getInstance().getNamespace());
-    assertEquals(EdmSimpleTypeKind.edmNamespace, EdmDateTimeOffset.getInstance().getNamespace());
-    assertEquals(EdmSimpleTypeKind.edmNamespace, EdmDecimal.getInstance().getNamespace());
-    assertEquals(EdmSimpleTypeKind.edmNamespace, EdmDouble.getInstance().getNamespace());
-    assertEquals(EdmSimpleTypeKind.edmNamespace, EdmGuid.getInstance().getNamespace());
-    assertEquals(EdmSimpleTypeKind.edmNamespace, EdmInt16.getInstance().getNamespace());
-    assertEquals(EdmSimpleTypeKind.edmNamespace, EdmInt32.getInstance().getNamespace());
-    assertEquals(EdmSimpleTypeKind.edmNamespace, EdmInt64.getInstance().getNamespace());
-    assertEquals(EdmSimpleTypeKind.edmNamespace, EdmSByte.getInstance().getNamespace());
-    assertEquals(EdmSimpleTypeKind.edmNamespace, EdmSingle.getInstance().getNamespace());
-    assertEquals(EdmSimpleTypeKind.edmNamespace, EdmString.getInstance().getNamespace());
-    assertEquals(EdmSimpleTypeKind.edmNamespace, EdmTime.getInstance().getNamespace());
+    assertEquals(EdmSimpleType.EDM_NAMESPACE, EdmNull.getInstance().getNamespace());
+    assertEquals(EdmSimpleType.EDM_NAMESPACE, EdmBinary.getInstance().getNamespace());
+    assertEquals(EdmSimpleType.EDM_NAMESPACE, EdmBoolean.getInstance().getNamespace());
+    assertEquals(EdmSimpleType.EDM_NAMESPACE, EdmDateTime.getInstance().getNamespace());
+    assertEquals(EdmSimpleType.EDM_NAMESPACE, EdmDateTimeOffset.getInstance().getNamespace());
+    assertEquals(EdmSimpleType.EDM_NAMESPACE, EdmDecimal.getInstance().getNamespace());
+    assertEquals(EdmSimpleType.EDM_NAMESPACE, EdmDouble.getInstance().getNamespace());
+    assertEquals(EdmSimpleType.EDM_NAMESPACE, EdmGuid.getInstance().getNamespace());
+    assertEquals(EdmSimpleType.EDM_NAMESPACE, EdmInt16.getInstance().getNamespace());
+    assertEquals(EdmSimpleType.EDM_NAMESPACE, EdmInt32.getInstance().getNamespace());
+    assertEquals(EdmSimpleType.EDM_NAMESPACE, EdmInt64.getInstance().getNamespace());
+    assertEquals(EdmSimpleType.EDM_NAMESPACE, EdmSByte.getInstance().getNamespace());
+    assertEquals(EdmSimpleType.EDM_NAMESPACE, EdmSingle.getInstance().getNamespace());
+    assertEquals(EdmSimpleType.EDM_NAMESPACE, EdmString.getInstance().getNamespace());
+    assertEquals(EdmSimpleType.EDM_NAMESPACE, EdmTime.getInstance().getNamespace());
   }
 
   @Test

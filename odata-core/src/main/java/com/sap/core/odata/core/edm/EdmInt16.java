@@ -36,7 +36,7 @@ public class EdmInt16 implements EdmSimpleType {
 
   @Override
   public String getNamespace() throws EdmException {
-    return EdmSimpleTypeKind.edmNamespace;
+    return EdmSimpleType.EDM_NAMESPACE;
   }
 
   @Override

@@ -17,9 +17,6 @@ import com.sap.core.odata.core.edm.provider.EdmImplProv;
 
 public class AtomServiceDocumentSerializer {
 
-  private static String APP_NAMESPACE = "http://www.w3.org/2007/app";
-  private static String ATOM_NAMESPACE = "http://www.w3.org/2005/Atom";
-
   public static void writeServiceDocument(Edm edm, String serviceRoot, Writer writer) throws ODataSerializationException {
 
     EdmProvider edmProvider = ((EdmImplProv) edm).getEdmProvider();
@@ -28,17 +25,17 @@ public class AtomServiceDocumentSerializer {
       XMLStreamWriter xmlStreamWriter = XMLOutputFactory.newInstance().createXMLStreamWriter(writer);
 
       xmlStreamWriter.writeStartDocument();
-      xmlStreamWriter.setPrefix("app", APP_NAMESPACE);
-      xmlStreamWriter.setPrefix("atom", ATOM_NAMESPACE);
-      xmlStreamWriter.setDefaultNamespace(APP_NAMESPACE);
+      xmlStreamWriter.setPrefix(Edm.PREFIX_APP, Edm.NAMESPACE_APP);
+      xmlStreamWriter.setPrefix(Edm.PREFIX_ATOM, Edm.NAMESPACE_ATOM);
+      xmlStreamWriter.setDefaultNamespace(Edm.NAMESPACE_APP);
 
       xmlStreamWriter.writeStartElement("service");
       xmlStreamWriter.writeAttribute("base", serviceRoot);
-      xmlStreamWriter.writeNamespace("atom", ATOM_NAMESPACE);
-      xmlStreamWriter.writeNamespace("app", APP_NAMESPACE);
+      xmlStreamWriter.writeNamespace("atom", Edm.NAMESPACE_ATOM);
+      xmlStreamWriter.writeNamespace("app", Edm.NAMESPACE_APP);
 
       xmlStreamWriter.writeStartElement("workspace");
-      xmlStreamWriter.writeStartElement(ATOM_NAMESPACE, "title");
+      xmlStreamWriter.writeStartElement(Edm.NAMESPACE_ATOM, "title");
       xmlStreamWriter.writeCharacters("Default");
       xmlStreamWriter.writeEndElement();
 
@@ -52,7 +49,7 @@ public class AtomServiceDocumentSerializer {
               for (EntitySet entitySet : entitySets) {
                 xmlStreamWriter.writeStartElement("collection");
                 xmlStreamWriter.writeAttribute("href", entitySet.getName());
-                xmlStreamWriter.writeStartElement(ATOM_NAMESPACE, "title");
+                xmlStreamWriter.writeStartElement(Edm.NAMESPACE_ATOM, "title");
                 xmlStreamWriter.writeCharacters(entitySet.getName());
                 xmlStreamWriter.writeEndElement();
                 xmlStreamWriter.writeEndElement();

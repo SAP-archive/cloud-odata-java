@@ -8,6 +8,7 @@ import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
 import java.util.Collection;
 
+import com.sap.core.odata.api.edm.Edm;
 import com.sap.core.odata.api.edm.EdmServiceMetadata;
 import com.sap.core.odata.api.edm.provider.DataServices;
 import com.sap.core.odata.api.edm.provider.EdmProvider;
@@ -61,7 +62,7 @@ public class EdmServiceMetadataImplProv implements EdmServiceMetadata {
     }
 
     if (dataServiceVersion == null) {
-      dataServiceVersion = "1.0";
+      dataServiceVersion = Edm.DATA_SERVICE_VERSION_10;
 
       if (schemas != null) {
         for (Schema schema : schemas) {
@@ -74,7 +75,7 @@ public class EdmServiceMetadataImplProv implements EdmServiceMetadata {
                   if (property.getCustomizableFeedMappings() != null) {
                     if (property.getCustomizableFeedMappings().getFcKeepInContent() != null) {
                       if (property.getCustomizableFeedMappings().getFcKeepInContent()) {
-                        dataServiceVersion = "2.0";
+                        dataServiceVersion = Edm.DATA_SERVICE_VERSION_20;
                         return dataServiceVersion;
                       }
                     }
@@ -83,7 +84,7 @@ public class EdmServiceMetadataImplProv implements EdmServiceMetadata {
                 if (entityType.getCustomizableFeedMappings() != null) {
                   if (entityType.getCustomizableFeedMappings().getFcKeepInContent() != null) {
                     if (entityType.getCustomizableFeedMappings().getFcKeepInContent()) {
-                      dataServiceVersion = "2.0";
+                      dataServiceVersion = Edm.DATA_SERVICE_VERSION_20;
                       return dataServiceVersion;
                     }
                   }

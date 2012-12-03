@@ -2,6 +2,7 @@ package com.sap.core.odata.core.edm.provider;
 
 import com.sap.core.odata.api.edm.EdmException;
 import com.sap.core.odata.api.edm.EdmMultiplicity;
+import com.sap.core.odata.api.edm.EdmSimpleType;
 import com.sap.core.odata.api.edm.EdmSimpleTypeKind;
 import com.sap.core.odata.api.edm.EdmType;
 import com.sap.core.odata.api.edm.EdmTyped;
@@ -27,7 +28,7 @@ public class EdmTypedImplProv extends EdmNamedImplProv implements EdmTyped {
   public EdmType getType() throws EdmException {
     if (edmType == null) {
       final String namespace = typeName.getNamespace();
-      if (EdmSimpleTypeKind.edmNamespace.equals(typeName.getNamespace())) {
+      if (EdmSimpleType.EDM_NAMESPACE.equals(typeName.getNamespace())) {
         edmType = EdmSimpleTypeFacadeImpl.getEdmSimpleType(EdmSimpleTypeKind.valueOf(typeName.getName()));
       } else {
         edmType = edm.getComplexType(namespace, typeName.getName());

@@ -14,11 +14,8 @@ public enum EdmSimpleTypeKind {
   Binary, Boolean, Byte, DateTime, DateTimeOffset, Decimal,
   Double, Guid, Int16, Int32, Int64, SByte, Single, String, Time, Null;
 
-  public static final String edmNamespace = "Edm";
-  public static final String systemNamespace = "System";
-
   public FullQualifiedName getFullQualifiedName() {
-    return new FullQualifiedName(edmNamespace, this.toString());
+    return new FullQualifiedName(EdmSimpleType.EDM_NAMESPACE, this.toString());
   }
   
   public EdmSimpleType getEdmSimpleTypeInstance(){
