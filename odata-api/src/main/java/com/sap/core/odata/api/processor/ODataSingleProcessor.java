@@ -306,7 +306,7 @@ public abstract class ODataSingleProcessor
     //TODO: uriParserResultView.getFormat() only returns a valid format if the format is set via $format
     //      Content Negotiation yet not implemented, but in general we should go for a format as separate parameter and not via uriResultViews
     ODataSerializer odataSerializer = ODataSerializer.create(Format.XML, getContext());
-    InputStream serviceDocument = odataSerializer.serializeServiceDocument(getContext().getService().getEntityDataModel(), getContext().getUriInfo().getBaseUri().toString());
+    InputStream serviceDocument = odataSerializer.serializeServiceDocument(getContext().getService().getEntityDataModel(), getContext().getUriInfo().getBaseUri().toASCIIString());
     return ODataResponse
         .status(HttpStatusCodes.OK)
         .header("Content-Type", "application/xml")
