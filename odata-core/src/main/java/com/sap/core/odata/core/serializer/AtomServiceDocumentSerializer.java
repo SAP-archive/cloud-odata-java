@@ -29,14 +29,14 @@ public class AtomServiceDocumentSerializer {
       xmlStreamWriter.setPrefix(Edm.PREFIX_ATOM, Edm.NAMESPACE_ATOM);
       xmlStreamWriter.setDefaultNamespace(Edm.NAMESPACE_APP);
 
-      xmlStreamWriter.writeStartElement("service");
-      xmlStreamWriter.writeAttribute("base", serviceRoot);
-      xmlStreamWriter.writeNamespace("atom", Edm.NAMESPACE_ATOM);
-      xmlStreamWriter.writeNamespace("app", Edm.NAMESPACE_APP);
+      xmlStreamWriter.writeStartElement(FormatXml.APP_SERVICE);
+      xmlStreamWriter.writeAttribute(FormatXml.XML_BASE, serviceRoot);
+      xmlStreamWriter.writeNamespace(Edm.PREFIX_ATOM, Edm.NAMESPACE_ATOM);
+      xmlStreamWriter.writeNamespace(Edm.PREFIX_APP, Edm.NAMESPACE_APP);
 
-      xmlStreamWriter.writeStartElement("workspace");
-      xmlStreamWriter.writeStartElement(Edm.NAMESPACE_ATOM, "title");
-      xmlStreamWriter.writeCharacters("Default");
+      xmlStreamWriter.writeStartElement(FormatXml.APP_WORKSPACE);
+      xmlStreamWriter.writeStartElement(Edm.NAMESPACE_ATOM, FormatXml.ATOM_TITLE);
+      xmlStreamWriter.writeCharacters(FormatXml.ATOM_TITLE_DEFAULT);
       xmlStreamWriter.writeEndElement();
 
       Collection<Schema> schemas = edmProvider.getSchemas();
@@ -47,9 +47,9 @@ public class AtomServiceDocumentSerializer {
             for (EntityContainer entityContainer : entityContainers) {
               Collection<EntitySet> entitySets = entityContainer.getEntitySets();
               for (EntitySet entitySet : entitySets) {
-                xmlStreamWriter.writeStartElement("collection");
-                xmlStreamWriter.writeAttribute("href", entitySet.getName());
-                xmlStreamWriter.writeStartElement(Edm.NAMESPACE_ATOM, "title");
+                xmlStreamWriter.writeStartElement(FormatXml.APP_COLLECTION);
+                xmlStreamWriter.writeAttribute(FormatXml.ATOM_HREF, entitySet.getName());
+                xmlStreamWriter.writeStartElement(Edm.NAMESPACE_ATOM, FormatXml.ATOM_TITLE);
                 xmlStreamWriter.writeCharacters(entitySet.getName());
                 xmlStreamWriter.writeEndElement();
                 xmlStreamWriter.writeEndElement();
