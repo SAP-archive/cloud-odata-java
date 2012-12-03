@@ -69,15 +69,6 @@ public class ListsProcessor extends ODataSingleProcessor {
   }
 
   @Override
-  public ODataResponse readServiceDocument(final GetServiceDocumentView uriParserResultView) throws ODataException {
-    return ODataResponse
-        .status(HttpStatusCodes.OK)
-        .header(CONTENT_TYPE, APPLICATION_XML)
-        .entity("this should be the service document")
-        .build();
-  }
-
-  @Override
   public ODataResponse readEntitySet(final GetEntitySetView uriParserResultView) throws ODataException {
     ArrayList<Object> data = new ArrayList<Object>();
     data.addAll((List<?>) retrieveData(
