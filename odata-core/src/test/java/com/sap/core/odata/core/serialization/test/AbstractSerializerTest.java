@@ -39,6 +39,8 @@ public abstract class AbstractSerializerTest {
 
   protected Map<String, Object> employeeData;
 
+  protected Map<String, Object> photoData;
+
   {
     this.employeeData = new HashMap<String, Object>();
 
@@ -64,6 +66,14 @@ public abstract class AbstractSerializerTest {
 
     this.employeeData.put("Location", locationData);
 
+    this.photoData = new HashMap<String, Object>();
+    photoData.put("Id", Integer.valueOf(1));
+    photoData.put("Name", "Mona Lisa");
+    photoData.put("Type", "JPG");
+    photoData.put("ImageUrl", "http://www.mopo.de/image/view/2012/6/4/16548086,13385561,medRes,maxh,234,maxw,234,Parodia_Mona_Lisa_Lego_Hamburger_Morgenpost.jpg");
+    photoData.put("Image", "ABCF");
+    photoData.put("BinaryData", "ABCD");
+    photoData.put("Содержание", "В лесу шумит водопад. Если он не торопится просп воды");
   }
 
   @Before

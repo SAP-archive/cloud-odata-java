@@ -194,9 +194,12 @@ class EdmMock {
     when(photoEntitySet.getName()).thenReturn("Photos");
     when(photoEntitySet.getEntityType()).thenReturn(photoEntityType);
     EdmEntityContainer photoContainer = mock(EdmEntityContainer.class);
+    when(photoContainer.isDefaultEntityContainer()).thenReturn(false);
     when(photoContainer.getEntitySet("Photos")).thenReturn(photoEntitySet);
     when(photoContainer.getName()).thenReturn("Container2");
 
+    when(photoEntitySet.getEntityContainer()).thenReturn(photoContainer);
+    
     Edm edm = mock(Edm.class);
     when(edm.getServiceMetadata()).thenReturn(serviceMetadata);
     when(edm.getDefaultEntityContainer()).thenReturn(defaultContainer);

@@ -64,17 +64,18 @@ public class AtomEntrySerializationTest extends AbstractSerializerTest {
     assertXpathEvaluatesTo("1999-01-01T00:00:00Z", "/a:entry/a:updated/text()", xmlString);
   }
 
-  @Ignore
   @Test
   public void serializeIds() throws IOException, XpathException, SAXException, XMLStreamException, FactoryConfigurationError, ODataException {
     ODataSerializer ser = createAtomSerializer();
-    InputStream xmlStream = ser.serializeEntry(MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Employees"), this.employeeData);
+    InputStream xmlStream = ser.serializeEntry(MockFacade.getMockEdm().getEntityContainer("Container2").getEntitySet("Photos"), this.photoData);
     String xmlString = StringHelper.inputStreamToString(xmlStream);
 
+    log.debug(xmlString);
+    
     assertXpathExists("/a:entry", xmlString);
     assertXpathEvaluatesTo(BASE_URI.toASCIIString(), "/a:entry/@xml:base", xmlString);
     assertXpathExists("/a:entry/a:id", xmlString);
-    assertXpathEvaluatesTo(BASE_URI.toASCIIString() + "Container.Employees(EmployeeId='1',Age=52)", "/a:entry/a:id/text()", xmlString);
+    assertXpathEvaluatesTo(BASE_URI.toASCIIString() + "Container2.Photos(Id=1,Type='JPG')", "/a:entry/a:id/text()", xmlString);
   }
 
   @Test
@@ -83,7 +84,7 @@ public class AtomEntrySerializationTest extends AbstractSerializerTest {
     InputStream xmlStream = ser.serializeEntry(MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Employees"), this.employeeData);
     String xmlString = StringHelper.inputStreamToString(xmlStream);
 
-    log.debug(xmlString);
+//    log.debug(xmlString);
 
     assertXpathExists("/a:entry/m:properties", xmlString);
     assertXpathEvaluatesTo((String) employeeData.get("RoomId"), "/a:entry/m:properties/d:RoomId/text()", xmlString);

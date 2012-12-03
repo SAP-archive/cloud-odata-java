@@ -69,7 +69,11 @@ public class AtomEntrySerializer {
 
       writer.writeStartElement(FormatXml.ATOM_TITLE);
       writer.writeAttribute("type", "text");
-      writer.writeCharacters(aia.getTitle());
+      if (aia.getTitle() != null) {
+        writer.writeCharacters(aia.getTitle());
+      } else {
+        writer.writeCharacters(entitySet.getName());
+      }
       writer.writeEndElement();
 
       writer.writeStartElement(FormatXml.ATOM_UPDATED);
