@@ -45,7 +45,7 @@ public class ParserTest {
   {
     GetPTF("startswith('Test','Te')").aSerialized("{STARTSWITH('Test','Te')}");
   }
-  
+
   @Test
   public void TestLiteral()
   {

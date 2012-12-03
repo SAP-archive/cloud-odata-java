@@ -47,7 +47,7 @@ public class EdmNavigationPropertyImplProv extends EdmTypedImplProv implements E
 
   @Override
   public EdmAnnotations getAnnotations() throws EdmException {
-    return new EdmAnnotationsImplProv(navigationProperty.getAnnotationAttributes(), navigationProperty.getAnnotationElements());    
+    return new EdmAnnotationsImplProv(navigationProperty.getAnnotationAttributes(), navigationProperty.getAnnotationElements());
   }
 
 }

@@ -28,8 +28,8 @@ import com.sap.core.odata.api.exception.MessageReference;
 import com.sap.core.odata.api.exception.ODataMessageException;
 import com.sap.core.odata.api.processor.ODataPathSegment;
 import com.sap.core.odata.api.uri.UriNotMatchingException;
-import com.sap.core.odata.api.uri.UriSyntaxException;
 import com.sap.core.odata.api.uri.UriParserResult;
+import com.sap.core.odata.api.uri.UriSyntaxException;
 import com.sap.core.odata.core.ODataPathSegmentImpl;
 import com.sap.core.odata.core.uri.UriParserImpl;
 import com.sap.core.odata.core.uri.UriParserResultImpl;
@@ -259,7 +259,7 @@ public class UriParserTest {
     assertTrue(result.getStartEntitySet().getEntityType().hasStream());
     assertEquals(UriType.URI17, result.getUriType());
     assertTrue(result.isValue());
- 
+
     assertEquals(1, result.getKeyPredicates().size());
     assertEquals("1", result.getKeyPredicates().get(0).getLiteral());
     assertEquals("EmployeeId", result.getKeyPredicates().get(0).getProperty().getName());

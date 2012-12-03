@@ -1,7 +1,8 @@
 package com.sap.core.odata.core.edm.provider.test;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -71,13 +72,13 @@ public class EdmAssociationSetImplProvTest {
     EdmAssociationSet associationSet = edmAssociationSet;
     associationSet.getEnd("end2Role");
   }
-  
+
   @Test
   public void testAssociationExists() throws Exception {
     EdmAssociationSet associationSet = edmAssociationSet;
     assertNotNull(associationSet.getAssociation());
   }
-  
+
   @Test
   public void testEntityContainer() throws Exception {
     EdmAssociationSet associationSet = edmAssociationSet;

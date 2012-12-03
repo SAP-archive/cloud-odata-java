@@ -157,7 +157,7 @@ public class EdmEntityTypeImplProv extends EdmStructuralTypeImplProv implements 
   }
 
   @Override
-  public EdmAnnotations getAnnotations() throws EdmException {   
+  public EdmAnnotations getAnnotations() throws EdmException {
     return new EdmAnnotationsImplProv(entityType.getAnnotationAttributes(), entityType.getAnnotationElements());
   }
 }

@@ -3,7 +3,8 @@ package com.sap.core.odata.core.edm.provider.test;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNotSame;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -78,14 +79,14 @@ public class EdmEntityContainerImplProvTest {
     EdmNavigationProperty edmNavigationProperty = mock(EdmNavigationProperty.class);
     when(edmNavigationProperty.getRelationship()).thenReturn(edmAssociation);
     when(edmNavigationProperty.getFromRole()).thenReturn("wrongRole");
-    
+
     boolean failed = false;
-    try{
-    edmEntityContainer.getAssociationSet(sourceEntitySet, edmNavigationProperty);
-    }catch( EdmException e){
+    try {
+      edmEntityContainer.getAssociationSet(sourceEntitySet, edmNavigationProperty);
+    } catch (EdmException e) {
       failed = true;
     }
-    
+
     assertTrue(failed);
   }
 
@@ -117,7 +118,7 @@ public class EdmEntityContainerImplProvTest {
     assertEquals(edmEntityContainer.getFunctionImport("foo"), edmEntityContainer.getFunctionImport("foo"));
     assertNotSame(edmEntityContainer.getFunctionImport("foo"), edmEntityContainer.getFunctionImport("bar"));
   }
-  
+
   @Test
   public void getAnnotations() throws Exception {
     EdmAnnotatable annotatable = (EdmAnnotatable) edmEntityContainer;

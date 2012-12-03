@@ -12,7 +12,6 @@ import com.sap.core.odata.api.edm.EdmFacets;
 import com.sap.core.odata.api.edm.EdmLiteralKind;
 import com.sap.core.odata.api.edm.EdmProperty;
 import com.sap.core.odata.api.edm.EdmSimpleType;
-import com.sap.core.odata.api.edm.EdmTargetPath;
 import com.sap.core.odata.api.edm.EdmType;
 import com.sap.core.odata.api.serialization.ODataSerializationException;
 import com.sap.core.odata.core.edm.EdmString;
@@ -28,7 +27,7 @@ public class XmlPropertySerializer {
       writer.writeStartElement(name);
       writer.writeDefaultNamespace(AtomEntrySerializer.NS_DATASERVICES);
       writer.writeNamespace("m", AtomEntrySerializer.NS_DATASERVICES_METADATA);
-    }else {
+    } else {
       writer.writeStartElement(AtomEntrySerializer.NS_DATASERVICES, name);
     }
 

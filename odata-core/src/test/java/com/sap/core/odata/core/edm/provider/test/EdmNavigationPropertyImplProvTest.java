@@ -62,7 +62,7 @@ public class EdmNavigationPropertyImplProvTest {
     assertNotNull(association);
     assertEquals("associationName", association.getName());
   }
-  
+
   @Test
   public void getAnnotations() throws Exception {
     EdmAnnotatable annotatable = (EdmAnnotatable) navPropertyProvider;

@@ -28,9 +28,9 @@ public class EdmAssociationSetEndImplProv implements EdmAssociationSetEnd, EdmAn
   public String getRole() {
     return role;
   }
-  
+
   @Override
   public EdmAnnotations getAnnotations() throws EdmException {
-   return new EdmAnnotationsImplProv(end.getAnnotationAttributes(), end.getAnnotationElements());
+    return new EdmAnnotationsImplProv(end.getAnnotationAttributes(), end.getAnnotationElements());
   }
 }

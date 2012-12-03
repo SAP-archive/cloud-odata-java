@@ -189,7 +189,7 @@ public class FilterParserImpl implements FilterParser
         tokenList.expectToken(Character.toString(CharConst.GC_STR_COMMA));
       }
 
-      else if (lv_token.getKind() == TokenKind.CLOSEPAREN)      {
+      else if (lv_token.getKind() == TokenKind.CLOSEPAREN) {
         lv_done = true;
       }
       else
@@ -828,13 +828,13 @@ public class FilterParserImpl implements FilterParser
       {
         throw new Exception();/*TODO*//*
 
-                                                          RAISE EXCEPTION TYPE /iwcor/cx_ds_expr_parser_error "OK
-                                                          EXPORTING
-                                                          textid   = /iwcor/cx_ds_expr_parser_error=>property_not_in_type
-                                                          type     = lv_type_name
-                                                          property = is_property_token-value
-                                                          position = is_property_token-position.
-                                                          ENDIF.*/
+                                                           RAISE EXCEPTION TYPE /iwcor/cx_ds_expr_parser_error "OK
+                                                           EXPORTING
+                                                           textid   = /iwcor/cx_ds_expr_parser_error=>property_not_in_type
+                                                           type     = lv_type_name
+                                                           property = is_property_token-value
+                                                           position = is_property_token-position.
+                                                           ENDIF.*/
 
       }
     } catch (Exception ex)

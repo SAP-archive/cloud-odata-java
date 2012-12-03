@@ -38,15 +38,13 @@ public class EdmAssociationImplProv extends EdmNamedImplProv implements EdmAssoc
     end = association.getEnd2();
     if (end.getRole().equals(role))
       return new EdmAssociationEndImplProv(edm, end);
-    
+
     return null;
   }
 
   @Override
   public EdmAnnotations getAnnotations() throws EdmException {
-   return new EdmAnnotationsImplProv(association.getAnnotationAttributes(), association.getAnnotationElements());
+    return new EdmAnnotationsImplProv(association.getAnnotationAttributes(), association.getAnnotationElements());
   }
-  
-  
 
 }

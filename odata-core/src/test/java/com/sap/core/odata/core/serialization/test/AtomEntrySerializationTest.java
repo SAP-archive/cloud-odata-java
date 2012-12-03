@@ -14,8 +14,6 @@ import org.junit.Ignore;
 import org.junit.Test;
 import org.xml.sax.SAXException;
 
-import com.sap.core.odata.api.edm.EdmEntitySet;
-import com.sap.core.odata.api.enums.Format;
 import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.api.serialization.ODataSerializer;
 import com.sap.core.odata.testutils.helper.StringHelper;
@@ -26,8 +24,7 @@ public class AtomEntrySerializationTest extends AbstractSerializerTest {
   @Test
   public void serializeEntry() throws IOException, XpathException, SAXException, XMLStreamException, FactoryConfigurationError, ODataException {
     ODataSerializer ser = createAtomSerializer();
-
-    InputStream xmlStream = ser.serializeEntry(this.createEdmEntitySetMock(false), this.employeeData);
+    InputStream xmlStream = ser.serializeEntry(MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Employees"), this.employeeData);
     String xmlString = StringHelper.inputStreamToString(xmlStream);
 
     assertXpathExists("/a:entry", xmlString);
@@ -36,10 +33,8 @@ public class AtomEntrySerializationTest extends AbstractSerializerTest {
 
   @Test
   public void serializeEntryId() throws IOException, XpathException, SAXException, XMLStreamException, FactoryConfigurationError, ODataException {
-    EdmEntitySet es = createEdmEntitySetMock(false);
-    ODataSerializer ser = createAtomSerializer(es);
-
-    InputStream xmlStream = ser.serializeEntry(this.createEdmEntitySetMock(false), this.employeeData);
+    ODataSerializer ser = createAtomSerializer();
+    InputStream xmlStream = ser.serializeEntry(MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Employees"), this.employeeData);
     String xmlString = StringHelper.inputStreamToString(xmlStream);
 
     assertXpathExists("/a:entry", xmlString);
@@ -50,10 +45,8 @@ public class AtomEntrySerializationTest extends AbstractSerializerTest {
 
   @Test
   public void serializeEntryTitle() throws Exception {
-    EdmEntitySet es = createEdmEntitySetMock(false);
-    ODataSerializer ser = createAtomSerializer(es);
-
-    InputStream xmlStream = ser.serializeEntry(this.createEdmEntitySetMock(false), this.employeeData);
+    ODataSerializer ser = createAtomSerializer();
+    InputStream xmlStream = ser.serializeEntry(MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Employees"), this.employeeData);
     String xmlString = StringHelper.inputStreamToString(xmlStream);
 
     assertXpathExists("/a:entry/a:title", xmlString);
@@ -64,8 +57,7 @@ public class AtomEntrySerializationTest extends AbstractSerializerTest {
   @Test
   public void serializeEntryUpdated() throws Exception {
     ODataSerializer ser = createAtomSerializer();
-
-    InputStream xmlStream = ser.serializeEntry(this.createEdmEntitySetMock(false), this.employeeData);
+    InputStream xmlStream = ser.serializeEntry(MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Employees"), this.employeeData);
     String xmlString = StringHelper.inputStreamToString(xmlStream);
 
     assertXpathExists("/a:entry/a:updated", xmlString);
@@ -75,10 +67,8 @@ public class AtomEntrySerializationTest extends AbstractSerializerTest {
   @Ignore
   @Test
   public void serializeIds() throws IOException, XpathException, SAXException, XMLStreamException, FactoryConfigurationError, ODataException {
-    EdmEntitySet es = createEdmEntitySetMock(true);
-    ODataSerializer ser = createAtomSerializer(es);
-
-    InputStream xmlStream = ser.serializeEntry(this.createEdmEntitySetMock(true), this.employeeData);
+    ODataSerializer ser = createAtomSerializer();
+    InputStream xmlStream = ser.serializeEntry(MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Employees"), this.employeeData);
     String xmlString = StringHelper.inputStreamToString(xmlStream);
 
     assertXpathExists("/a:entry", xmlString);
@@ -89,11 +79,8 @@ public class AtomEntrySerializationTest extends AbstractSerializerTest {
 
   @Test
   public void serializeProperties() throws IOException, XpathException, SAXException, XMLStreamException, FactoryConfigurationError, ODataException {
-    ODataSerializer serializer = ODataSerializer.create(Format.XML, this.createContextMock());
-
-    EdmEntitySet edmEntitySet = MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Employees");
-
-    InputStream xmlStream = serializer.serializeEntry(edmEntitySet, this.employeeData);
+    ODataSerializer ser = createAtomSerializer();
+    InputStream xmlStream = ser.serializeEntry(MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Employees"), this.employeeData);
     String xmlString = StringHelper.inputStreamToString(xmlStream);
 
     log.debug(xmlString);

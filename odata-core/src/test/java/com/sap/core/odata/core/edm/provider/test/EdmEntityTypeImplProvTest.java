@@ -149,7 +149,7 @@ public class EdmEntityTypeImplProvTest {
     assertNotNull(navProperties);
     assertTrue(navProperties.contains("barBaseNav"));
   }
-  
+
   @Test
   public void getAnnotations() throws Exception {
     EdmAnnotatable annotatable = (EdmAnnotatable) edmEntityType;
