@@ -51,7 +51,7 @@ public class EdmServiceMetadataImplProvTest {
     EdmImplProv edmImplProv = new EdmImplProv(edmProvider);
 
     EdmServiceMetadata serviceMetadata = edmImplProv.getServiceMetadata();
-    assertEquals("2.0", serviceMetadata.getDataServiceVersion());
+    assertEquals("1.0", serviceMetadata.getDataServiceVersion());
   }
 
   @Ignore
