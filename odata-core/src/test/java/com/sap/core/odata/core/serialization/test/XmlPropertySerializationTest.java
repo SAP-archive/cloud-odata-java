@@ -11,7 +11,7 @@ import org.junit.Test;
 import com.sap.core.odata.api.edm.EdmEntityType;
 import com.sap.core.odata.api.edm.EdmProperty;
 import com.sap.core.odata.api.edm.EdmTyped;
-import com.sap.core.odata.api.serialization.ODataSerializer;
+import com.sap.core.odata.api.ep.ODataSerializer;
 import com.sap.core.odata.testutils.helper.StringHelper;
 import com.sap.core.odata.testutils.mocks.MockFacade;
 

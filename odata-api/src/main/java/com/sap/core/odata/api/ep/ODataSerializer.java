@@ -1,4 +1,4 @@
-package com.sap.core.odata.api.serialization;
+package com.sap.core.odata.api.ep;
 
 import java.io.InputStream;
 import java.util.Map;

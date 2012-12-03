@@ -36,7 +36,7 @@ import com.sap.core.odata.api.edm.provider.ReferentialConstraint;
 import com.sap.core.odata.api.edm.provider.ReferentialConstraintRole;
 import com.sap.core.odata.api.edm.provider.Schema;
 import com.sap.core.odata.api.edm.provider.Using;
-import com.sap.core.odata.api.serialization.ODataSerializationException;
+import com.sap.core.odata.api.ep.ODataSerializationException;
 
 public class EdmMetadata {
 

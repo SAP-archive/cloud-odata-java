@@ -1,10 +1,10 @@
-package com.sap.core.odata.core.serializer;
+package com.sap.core.odata.core.ep;
 
 import com.sap.core.odata.api.enums.Format;
+import com.sap.core.odata.api.ep.ODataSerializationException;
+import com.sap.core.odata.api.ep.ODataSerializer;
 import com.sap.core.odata.api.exception.ODataNotImplementedException;
 import com.sap.core.odata.api.processor.ODataContext;
-import com.sap.core.odata.api.serialization.ODataSerializationException;
-import com.sap.core.odata.api.serialization.ODataSerializer;
 
 public class ODataSerializerFactory {
 

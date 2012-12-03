@@ -16,12 +16,12 @@ import org.slf4j.LoggerFactory;
 
 import com.sap.core.odata.api.edm.EdmException;
 import com.sap.core.odata.api.enums.Format;
+import com.sap.core.odata.api.ep.ODataSerializationException;
+import com.sap.core.odata.api.ep.ODataSerializer;
 import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.api.processor.ODataContext;
 import com.sap.core.odata.api.processor.ODataUriInfo;
-import com.sap.core.odata.api.serialization.ODataSerializationException;
-import com.sap.core.odata.api.serialization.ODataSerializer;
-import com.sap.core.odata.core.serializer.AtomEntrySerializer;
+import com.sap.core.odata.core.ep.AtomEntrySerializer;
 import com.sap.core.odata.testutils.helper.XMLUnitHelper;
 
 public abstract class AbstractSerializerTest {

@@ -1,4 +1,4 @@
-package com.sap.core.odata.core.serializer;
+package com.sap.core.odata.core.ep;
 
 import java.util.Collection;
 import java.util.Date;
@@ -21,8 +21,8 @@ import com.sap.core.odata.api.edm.EdmProperty;
 import com.sap.core.odata.api.edm.EdmSimpleType;
 import com.sap.core.odata.api.edm.EdmTargetPath;
 import com.sap.core.odata.api.edm.EdmTyped;
+import com.sap.core.odata.api.ep.ODataSerializationException;
 import com.sap.core.odata.api.processor.ODataContext;
-import com.sap.core.odata.api.serialization.ODataSerializationException;
 import com.sap.core.odata.core.edm.EdmDateTimeOffset;
 
 public class AtomEntrySerializer {
@@ -128,6 +128,9 @@ public class AtomEntrySerializer {
       EdmEntityContainer ec = entitySet.getEntityContainer();
 
       String id = this.context.getUriInfo().getBaseUri().toASCIIString();
+      
+      // TODO uri encoding of entrykey
+      
       if (!ec.isDefaultEntityContainer()) {
         id = id + ec.getName() + ".";
       }
