@@ -22,7 +22,7 @@ import com.sap.core.odata.api.enums.HttpStatusCodes;
 import com.sap.core.odata.api.exception.ODataApplicationException;
 import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.api.exception.ODataHttpException;
-import com.sap.core.odata.api.uri.UriParserException;
+import com.sap.core.odata.api.uri.UriSyntaxException;
 import com.sap.core.odata.core.exception.MessageService;
 import com.sap.core.odata.core.exception.MessageService.Message;
 
@@ -48,8 +48,6 @@ public class ODataExceptionMapperImpl implements ExceptionMapper<Exception> {
       response = buildResponseForApplicationException((ODataApplicationException) toHandleException);
     } else if (toHandleException instanceof ODataHttpException) {
       response = buildResponseForHttpException((ODataHttpException) toHandleException);
-    } else if (toHandleException instanceof UriParserException) {
-      response = buildResponseForUriParserException((UriParserException) toHandleException);
     } else {
       response = buildResponseForException(exception);
     }
@@ -84,11 +82,6 @@ public class ODataExceptionMapperImpl implements ExceptionMapper<Exception> {
     ResponseBuilder responseBuilder = Response.noContent();
     return responseBuilder.entity(exception.getClass().getName() + " - " + exception.getMessage())
         .status(Status.INTERNAL_SERVER_ERROR).build();
-  }
-
-  private Response buildResponseForUriParserException(UriParserException exception) {
-    ResponseBuilder responseBuilder = Response.noContent();
-    return responseBuilder.entity(exception.getMessage()).status(Status.BAD_REQUEST).build();
   }
 
   private Response buildResponseForApplicationException(ODataApplicationException exception) {

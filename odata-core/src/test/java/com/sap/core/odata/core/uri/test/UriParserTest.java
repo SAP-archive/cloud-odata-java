@@ -27,7 +27,8 @@ import com.sap.core.odata.api.enums.InlineCount;
 import com.sap.core.odata.api.exception.MessageReference;
 import com.sap.core.odata.api.exception.ODataMessageException;
 import com.sap.core.odata.api.processor.ODataPathSegment;
-import com.sap.core.odata.api.uri.UriParserException;
+import com.sap.core.odata.api.uri.UriNotMatchingException;
+import com.sap.core.odata.api.uri.UriSyntaxException;
 import com.sap.core.odata.api.uri.UriParserResult;
 import com.sap.core.odata.core.ODataPathSegmentImpl;
 import com.sap.core.odata.core.uri.UriParserImpl;
@@ -53,13 +54,13 @@ public class UriParserTest {
     * Query parameters can be included.
     * @param uri  the URI part
     * @return a {@link UriParserResultImpl} instance containing the parsed information
-    * @throws UriParserException
+    * @throws UriSyntaxException
     * @throws EdmException
     */
   private UriParserResultImpl parse(final String uri) throws ODataMessageException {
     final String[] path = uri.split("\\?", -1);
     if (path.length > 2)
-      throw new UriParserException(UriParserException.URISYNTAX);
+      throw new UriSyntaxException(UriSyntaxException.URISYNTAX);
 
     final List<ODataPathSegment> pathSegments = getPathSegments(path[0]);
     Map<String, String> queryParameters;
@@ -74,7 +75,7 @@ public class UriParserTest {
     return (UriParserResultImpl) result;
   }
 
-  private List<ODataPathSegment> getPathSegments(final String uri) throws UriParserException {
+  private List<ODataPathSegment> getPathSegments(final String uri) throws UriSyntaxException {
     List<ODataPathSegment> pathSegments = new ArrayList<ODataPathSegment>();
     for (final String segment : uri.split("/", -1)) {
       final String unescapedSegment = unescape(segment);
@@ -96,11 +97,11 @@ public class UriParserTest {
     return queryParameters;
   }
 
-  private String unescape(final String s) throws UriParserException {
+  private String unescape(final String s) throws UriSyntaxException {
     try {
       return new URI(s).getPath();
     } catch (URISyntaxException e) {
-      throw new UriParserException(UriParserException.NOTEXT);
+      throw new UriSyntaxException(UriSyntaxException.NOTEXT);
     }
   }
 
@@ -127,7 +128,7 @@ public class UriParserTest {
 
   @Test
   public void parseNonsens() throws Exception {
-    parseWrongUri("/bla", UriParserException.NOTFOUND);
+    parseWrongUri("/bla", UriSyntaxException.NOTFOUND);
   }
 
   @Test
@@ -150,7 +151,7 @@ public class UriParserTest {
 
   @Test
   public void parseMetadataError() throws Exception {
-    parseWrongUri("/$metadata/somethingwrong", UriParserException.MUSTBELASTSEGMENT);
+    parseWrongUri("/$metadata/somethingwrong", UriSyntaxException.MUSTBELASTSEGMENT);
   }
 
   @Test
@@ -161,17 +162,17 @@ public class UriParserTest {
 
   @Test
   public void parseBatchError() throws Exception {
-    parseWrongUri("/$batch/somethingwrong", UriParserException.MUSTBELASTSEGMENT);
+    parseWrongUri("/$batch/somethingwrong", UriSyntaxException.MUSTBELASTSEGMENT);
   }
 
   @Test
   public void parseSomethingEntitySet() throws Exception {
-    parseWrongUri("/somethingwrong", UriParserException.NOTFOUND);
+    parseWrongUri("/somethingwrong", UriSyntaxException.NOTFOUND);
   }
 
   @Test
   public void parseContainerWithoutEntitySet() throws Exception {
-    parseWrongUri("Container1.", UriParserException.MATCHPROBLEM);
+    parseWrongUri("Container1.", UriNotMatchingException.MATCHPROBLEM);
   }
 
   @Test
@@ -193,7 +194,7 @@ public class UriParserTest {
 
   @Test
   public void parseEmployeesEntitySetParenthesesCountNotLast() throws Exception {
-    parseWrongUri("/Employees()/$count/somethingwrong", UriParserException.NOTLASTSEGMENT);
+    parseWrongUri("/Employees()/$count/somethingwrong", UriSyntaxException.NOTLASTSEGMENT);
   }
 
   @Test
@@ -206,13 +207,13 @@ public class UriParserTest {
 
   @Test
   public void parseWrongEntities() throws Exception {
-    parseWrongUri("//", UriParserException.EMPTYSEGMENT);
-    parseWrongUri("/Employ ees('1')", UriParserException.NOTEXT);
-    parseWrongUri("/Employees()/somethingwrong", UriParserException.ENTITYSETINSTEADOFENTITY);
-    parseWrongUri("/Employees/somethingwrong", UriParserException.ENTITYSETINSTEADOFENTITY);
-    parseWrongUri("Employees/", UriParserException.EMPTYSEGMENT);
-    parseWrongUri("//Employees", UriParserException.EMPTYSEGMENT);
-    parseWrongUri("Employees//", UriParserException.EMPTYSEGMENT);
+    parseWrongUri("//", UriSyntaxException.EMPTYSEGMENT);
+    parseWrongUri("/Employ ees('1')", UriSyntaxException.NOTEXT);
+    parseWrongUri("/Employees()/somethingwrong", UriSyntaxException.ENTITYSETINSTEADOFENTITY);
+    parseWrongUri("/Employees/somethingwrong", UriSyntaxException.ENTITYSETINSTEADOFENTITY);
+    parseWrongUri("Employees/", UriSyntaxException.EMPTYSEGMENT);
+    parseWrongUri("//Employees", UriSyntaxException.EMPTYSEGMENT);
+    parseWrongUri("Employees//", UriSyntaxException.EMPTYSEGMENT);
   }
 
   @Test
@@ -327,21 +328,21 @@ public class UriParserTest {
 
   @Test
   public void simplePropertyWrong() throws Exception {
-    parseWrongUri("/Employees('1')/EmployeeName(1)", UriParserException.INVALIDSEGMENT);
-    parseWrongUri("/Employees('1')/EmployeeName()", UriParserException.INVALIDSEGMENT);
-    parseWrongUri("/Employees('1')/EmployeeName/something", UriParserException.INVALIDSEGMENT);
-    parseWrongUri("/Employees('1')/EmployeeName/$value/something", UriParserException.MUSTBELASTSEGMENT);
+    parseWrongUri("/Employees('1')/EmployeeName(1)", UriSyntaxException.INVALIDSEGMENT);
+    parseWrongUri("/Employees('1')/EmployeeName()", UriSyntaxException.INVALIDSEGMENT);
+    parseWrongUri("/Employees('1')/EmployeeName/something", UriSyntaxException.INVALIDSEGMENT);
+    parseWrongUri("/Employees('1')/EmployeeName/$value/something", UriSyntaxException.MUSTBELASTSEGMENT);
   }
 
   @Test
   public void complexPropertyWrong() throws Exception {
-    parseWrongUri("/Employees('1')/Location(1)", UriParserException.INVALIDSEGMENT);
-    parseWrongUri("/Employees('1')/Location/somethingwrong", UriParserException.PROPERTYNOTFOUND);
+    parseWrongUri("/Employees('1')/Location(1)", UriSyntaxException.INVALIDSEGMENT);
+    parseWrongUri("/Employees('1')/Location/somethingwrong", UriNotMatchingException.PROPERTYNOTFOUND);
   }
 
   @Test
   public void EmployeesNoProperty() throws Exception {
-    parseWrongUri("/Employees('1')/somethingwrong", UriParserException.PROPERTYNOTFOUND);
+    parseWrongUri("/Employees('1')/somethingwrong", UriNotMatchingException.PROPERTYNOTFOUND);
   }
 
   @Test
@@ -438,55 +439,55 @@ public class UriParserTest {
 
   @Test
   public void navigationPropertyWrong() throws Exception {
-    parseWrongUri("Employees('1')//ne_Manager", UriParserException.EMPTYSEGMENT);
-    parseWrongUri("Employees('1')/ne_Manager()", UriParserException.INVALIDSEGMENT);
-    parseWrongUri("Employees('1')/ne_Manager('1')", UriParserException.INVALIDSEGMENT);
-    parseWrongUri("Employees('1')/$links", UriParserException.NOTLASTSEGMENT);
-    parseWrongUri("Employees('1')/$links/ne_Manager('1')", UriParserException.INVALIDSEGMENT);
-    parseWrongUri("Employees('1')/$links/ne_Manager()", UriParserException.INVALIDSEGMENT);
-    parseWrongUri("Employees('1')/$links/ne_Manager/somethingwrong", UriParserException.INVALIDSEGMENT);
-    parseWrongUri("Employees('1')/ne_Manager/$count/somethingwrong", UriParserException.NOTLASTSEGMENT);
-    parseWrongUri("Employees('1')/$links/ne_Manager/$count/somethingwrong", UriParserException.NOTLASTSEGMENT);
-    parseWrongUri("Employees('1')/ne_Manager/$value", UriParserException.NOMEDIARESOURCE);
-    parseWrongUri("Managers('1')/nm_Employees('1')/$value/somethingwrong", UriParserException.MUSTBELASTSEGMENT);
-    parseWrongUri("Managers('1')/nm_Employees/$links", UriParserException.INVALIDSEGMENT);
-    parseWrongUri("Managers('1')/nm_Employees/$links/Manager", UriParserException.INVALIDSEGMENT);
-    parseWrongUri("Managers('1')/nm_Employees/somethingwrong", UriParserException.INVALIDSEGMENT);
-    parseWrongUri("Employees('1')/$links/somethingwrong", UriParserException.PROPERTYNOTFOUND);
-    parseWrongUri("Employees('1')/$links/EmployeeName", UriParserException.NONAVIGATIONPROPERTY);
-    parseWrongUri("Employees('1')/$links/$links/ne_Manager", UriParserException.PROPERTYNOTFOUND);
-    parseWrongUri("Managers('1')/nm_Employee/", UriParserException.EMPTYSEGMENT);
+    parseWrongUri("Employees('1')//ne_Manager", UriSyntaxException.EMPTYSEGMENT);
+    parseWrongUri("Employees('1')/ne_Manager()", UriSyntaxException.INVALIDSEGMENT);
+    parseWrongUri("Employees('1')/ne_Manager('1')", UriSyntaxException.INVALIDSEGMENT);
+    parseWrongUri("Employees('1')/$links", UriSyntaxException.NOTLASTSEGMENT);
+    parseWrongUri("Employees('1')/$links/ne_Manager('1')", UriSyntaxException.INVALIDSEGMENT);
+    parseWrongUri("Employees('1')/$links/ne_Manager()", UriSyntaxException.INVALIDSEGMENT);
+    parseWrongUri("Employees('1')/$links/ne_Manager/somethingwrong", UriSyntaxException.INVALIDSEGMENT);
+    parseWrongUri("Employees('1')/ne_Manager/$count/somethingwrong", UriSyntaxException.NOTLASTSEGMENT);
+    parseWrongUri("Employees('1')/$links/ne_Manager/$count/somethingwrong", UriSyntaxException.NOTLASTSEGMENT);
+    parseWrongUri("Employees('1')/ne_Manager/$value", UriSyntaxException.NOMEDIARESOURCE);
+    parseWrongUri("Managers('1')/nm_Employees('1')/$value/somethingwrong", UriSyntaxException.MUSTBELASTSEGMENT);
+    parseWrongUri("Managers('1')/nm_Employees/$links", UriSyntaxException.INVALIDSEGMENT);
+    parseWrongUri("Managers('1')/nm_Employees/$links/Manager", UriSyntaxException.INVALIDSEGMENT);
+    parseWrongUri("Managers('1')/nm_Employees/somethingwrong", UriSyntaxException.INVALIDSEGMENT);
+    parseWrongUri("Employees('1')/$links/somethingwrong", UriNotMatchingException.PROPERTYNOTFOUND);
+    parseWrongUri("Employees('1')/$links/EmployeeName", UriSyntaxException.NONAVIGATIONPROPERTY);
+    parseWrongUri("Employees('1')/$links/$links/ne_Manager", UriNotMatchingException.PROPERTYNOTFOUND);
+    parseWrongUri("Managers('1')/nm_Employee/", UriSyntaxException.EMPTYSEGMENT);
   }
 
   @Test
   public void navigationPathWrongMatch() throws Exception {
-    parseWrongUri("/Employees('1')/(somethingwrong(", UriParserException.MATCHPROBLEM);
+    parseWrongUri("/Employees('1')/(somethingwrong(", UriNotMatchingException.MATCHPROBLEM);
 
   }
 
   @Test
   public void navigationSegmentWrongMatch() throws Exception {
-    parseWrongUri("/Employees('1')/$links/(somethingwrong(", UriParserException.MATCHPROBLEM);
+    parseWrongUri("/Employees('1')/$links/(somethingwrong(", UriNotMatchingException.MATCHPROBLEM);
 
   }
 
   @Test
   public void parseTeamsEntityWithIntKeyValue() throws Exception {
-    parseWrongUri("/Teams(1)/$value", UriParserException.INCOMPATIBLELITERAL);
+    parseWrongUri("/Teams(1)/$value", UriSyntaxException.INCOMPATIBLELITERAL);
   }
 
   @Test
   public void parseWrongKey() throws Exception {
-    parseWrongUri("Employees(,'1')", UriParserException.INVALIDKEYPREDICATE);
-    parseWrongUri("Employees('1',)", UriParserException.INVALIDKEYPREDICATE);
-    parseWrongUri("Employees(EmployeeName='1')", UriParserException.INVALIDKEYPREDICATE);
-    parseWrongUri("Employees(EmployeeId='1',EmployeeId='1')", UriParserException.DUPLICATEKEYNAMES);
-    parseWrongUri("/Employees(EmployeeId='1',somethingwrong=abc)", UriParserException.INVALIDKEYPREDICATE);
-    parseWrongUri("/Employees(somethingwrong=1)", UriParserException.INVALIDKEYPREDICATE);
-    parseWrongUri("/Container2.Photos(Id=1,,Type='abc')", UriParserException.INVALIDKEYPREDICATE);
-    parseWrongUri("/Container2.Photos(Id=1;Type='abc')", UriParserException.INVALIDKEYPREDICATE);
-    parseWrongUri("Container2.Photos(Id=1,'abc')", UriParserException.MISSINGKEYPREDICATENAME);
-    parseWrongUri("Container2.Photos(Id=1)", UriParserException.INVALIDKEYPREDICATE);
+    parseWrongUri("Employees(,'1')", UriSyntaxException.INVALIDKEYPREDICATE);
+    parseWrongUri("Employees('1',)", UriSyntaxException.INVALIDKEYPREDICATE);
+    parseWrongUri("Employees(EmployeeName='1')", UriSyntaxException.INVALIDKEYPREDICATE);
+    parseWrongUri("Employees(EmployeeId='1',EmployeeId='1')", UriSyntaxException.DUPLICATEKEYNAMES);
+    parseWrongUri("/Employees(EmployeeId='1',somethingwrong=abc)", UriSyntaxException.INVALIDKEYPREDICATE);
+    parseWrongUri("/Employees(somethingwrong=1)", UriSyntaxException.INVALIDKEYPREDICATE);
+    parseWrongUri("/Container2.Photos(Id=1,,Type='abc')", UriSyntaxException.INVALIDKEYPREDICATE);
+    parseWrongUri("/Container2.Photos(Id=1;Type='abc')", UriSyntaxException.INVALIDKEYPREDICATE);
+    parseWrongUri("Container2.Photos(Id=1,'abc')", UriSyntaxException.MISSINGKEYPREDICATENAME);
+    parseWrongUri("Container2.Photos(Id=1)", UriSyntaxException.INVALIDKEYPREDICATE);
   }
 
   @Test
@@ -538,12 +539,12 @@ public class UriParserTest {
 
   @Test
   public void parseNonexistentContainer() throws Exception {
-    parseWrongUri("/somethingwrong.Employees()", UriParserException.CONTAINERNOTFOUND);
+    parseWrongUri("/somethingwrong.Employees()", UriSyntaxException.CONTAINERNOTFOUND);
   }
 
   @Test
   public void parseInvalidSegment() throws Exception {
-    parseWrongUri("/.somethingwrong", UriParserException.MATCHPROBLEM);
+    parseWrongUri("/.somethingwrong", UriNotMatchingException.MATCHPROBLEM);
   }
 
   @Test
@@ -594,12 +595,12 @@ public class UriParserTest {
 
   @Test
   public void parseWrongFunctionImports() throws Exception {
-    parseWrongUri("EmployeeSearch?q=42", UriParserException.INCOMPATIBLELITERAL);
-    parseWrongUri("AllLocations/$value", UriParserException.MUSTBELASTSEGMENT);
-    parseWrongUri("MaximalAge()", UriParserException.INVALIDSEGMENT);
-    parseWrongUri("MaximalAge/somethingwrong", UriParserException.INVALIDSEGMENT);
-    parseWrongUri("ManagerPhoto", UriParserException.MISSINGPARAMETER);
-    parseWrongUri("ManagerPhoto?Id='", UriParserException.UNKNOWNLITERAL);
+    parseWrongUri("EmployeeSearch?q=42", UriSyntaxException.INCOMPATIBLELITERAL);
+    parseWrongUri("AllLocations/$value", UriSyntaxException.MUSTBELASTSEGMENT);
+    parseWrongUri("MaximalAge()", UriSyntaxException.INVALIDSEGMENT);
+    parseWrongUri("MaximalAge/somethingwrong", UriSyntaxException.INVALIDSEGMENT);
+    parseWrongUri("ManagerPhoto", UriSyntaxException.MISSINGPARAMETER);
+    parseWrongUri("ManagerPhoto?Id='", UriSyntaxException.UNKNOWNLITERAL);
   }
 
   @Test
@@ -663,41 +664,41 @@ public class UriParserTest {
 
   @Test
   public void parseWrongSystemQueryOptions() throws Exception {
-    parseWrongUri("Employees??", UriParserException.URISYNTAX);
-    parseWrongUri("Employees?$inlinecount=no", UriParserException.INVALIDVALUE);
-    parseWrongUri("Employees?&$skiptoken==", UriParserException.INVALIDNULLVALUE);
-    parseWrongUri("Employees?$skip=-1", UriParserException.INVALIDNEGATIVEVALUE);
-    parseWrongUri("Employees?$skip='a'", UriParserException.INVALIDVALUE);
-    parseWrongUri("Employees?$top=-1", UriParserException.INVALIDNEGATIVEVALUE);
-    parseWrongUri("Employees?$top=12345678901234567890", UriParserException.INVALIDVALUE);
-    parseWrongUri("Employees?$somethingwrong", UriParserException.INVALIDSYSTEMQUERYOPTION);
-    parseWrongUri("Employees?$somethingwrong=", UriParserException.INVALIDSYSTEMQUERYOPTION);
-    parseWrongUri("Employees?$somethingwrong=adjaodjai", UriParserException.INVALIDSYSTEMQUERYOPTION);
-    parseWrongUri("Employees?$formatformat=xml", UriParserException.INVALIDSYSTEMQUERYOPTION);
-    parseWrongUri("Employees?$Format=atom", UriParserException.INVALIDSYSTEMQUERYOPTION);
+    parseWrongUri("Employees??", UriSyntaxException.URISYNTAX);
+    parseWrongUri("Employees?$inlinecount=no", UriSyntaxException.INVALIDVALUE);
+    parseWrongUri("Employees?&$skiptoken==", UriSyntaxException.INVALIDNULLVALUE);
+    parseWrongUri("Employees?$skip=-1", UriSyntaxException.INVALIDNEGATIVEVALUE);
+    parseWrongUri("Employees?$skip='a'", UriSyntaxException.INVALIDVALUE);
+    parseWrongUri("Employees?$top=-1", UriSyntaxException.INVALIDNEGATIVEVALUE);
+    parseWrongUri("Employees?$top=12345678901234567890", UriSyntaxException.INVALIDVALUE);
+    parseWrongUri("Employees?$somethingwrong", UriSyntaxException.INVALIDSYSTEMQUERYOPTION);
+    parseWrongUri("Employees?$somethingwrong=", UriSyntaxException.INVALIDSYSTEMQUERYOPTION);
+    parseWrongUri("Employees?$somethingwrong=adjaodjai", UriSyntaxException.INVALIDSYSTEMQUERYOPTION);
+    parseWrongUri("Employees?$formatformat=xml", UriSyntaxException.INVALIDSYSTEMQUERYOPTION);
+    parseWrongUri("Employees?$Format=atom", UriSyntaxException.INVALIDSYSTEMQUERYOPTION);
   }
 
   @Test
   public void parseWrongSystemQueryOptionInitialValues() throws Exception {
-    parseWrongUri("Employees?$expand=", UriParserException.INVALIDNULLVALUE);
-    parseWrongUri("Employees?$filter=", UriParserException.INVALIDNULLVALUE);
-    parseWrongUri("Employees?$orderby=", UriParserException.INVALIDNULLVALUE);
-    parseWrongUri("Employees?$format=", UriParserException.INVALIDNULLVALUE);
-    parseWrongUri("Employees?$skip=", UriParserException.INVALIDNULLVALUE);
-    parseWrongUri("Employees?$top=", UriParserException.INVALIDNULLVALUE);
-    parseWrongUri("Employees?$skiptoken=", UriParserException.INVALIDNULLVALUE);
-    parseWrongUri("Employees?$inlinecount=", UriParserException.INVALIDNULLVALUE);
-    parseWrongUri("Employees?$select=", UriParserException.INVALIDNULLVALUE);
+    parseWrongUri("Employees?$expand=", UriSyntaxException.INVALIDNULLVALUE);
+    parseWrongUri("Employees?$filter=", UriSyntaxException.INVALIDNULLVALUE);
+    parseWrongUri("Employees?$orderby=", UriSyntaxException.INVALIDNULLVALUE);
+    parseWrongUri("Employees?$format=", UriSyntaxException.INVALIDNULLVALUE);
+    parseWrongUri("Employees?$skip=", UriSyntaxException.INVALIDNULLVALUE);
+    parseWrongUri("Employees?$top=", UriSyntaxException.INVALIDNULLVALUE);
+    parseWrongUri("Employees?$skiptoken=", UriSyntaxException.INVALIDNULLVALUE);
+    parseWrongUri("Employees?$inlinecount=", UriSyntaxException.INVALIDNULLVALUE);
+    parseWrongUri("Employees?$select=", UriSyntaxException.INVALIDNULLVALUE);
 
-    parseWrongUri("Employees?$expand", UriParserException.INVALIDNULLVALUE);
-    parseWrongUri("Employees?$filter", UriParserException.INVALIDNULLVALUE);
-    parseWrongUri("Employees?$orderby", UriParserException.INVALIDNULLVALUE);
-    parseWrongUri("Employees?$format", UriParserException.INVALIDNULLVALUE);
-    parseWrongUri("Employees?$skip", UriParserException.INVALIDNULLVALUE);
-    parseWrongUri("Employees?$top", UriParserException.INVALIDNULLVALUE);
-    parseWrongUri("Employees?$skiptoken", UriParserException.INVALIDNULLVALUE);
-    parseWrongUri("Employees?$inlinecount", UriParserException.INVALIDNULLVALUE);
-    parseWrongUri("Employees?$select", UriParserException.INVALIDNULLVALUE);
+    parseWrongUri("Employees?$expand", UriSyntaxException.INVALIDNULLVALUE);
+    parseWrongUri("Employees?$filter", UriSyntaxException.INVALIDNULLVALUE);
+    parseWrongUri("Employees?$orderby", UriSyntaxException.INVALIDNULLVALUE);
+    parseWrongUri("Employees?$format", UriSyntaxException.INVALIDNULLVALUE);
+    parseWrongUri("Employees?$skip", UriSyntaxException.INVALIDNULLVALUE);
+    parseWrongUri("Employees?$top", UriSyntaxException.INVALIDNULLVALUE);
+    parseWrongUri("Employees?$skiptoken", UriSyntaxException.INVALIDNULLVALUE);
+    parseWrongUri("Employees?$inlinecount", UriSyntaxException.INVALIDNULLVALUE);
+    parseWrongUri("Employees?$select", UriSyntaxException.INVALIDNULLVALUE);
   }
 
   @Test
@@ -714,12 +715,12 @@ public class UriParserTest {
 
   @Test
   public void parseInCompatibleSystemQueryOptions() throws Exception {
-    parseWrongUri("$metadata?$top=1", UriParserException.INCOMPATIBLESYSTEMQUERYOPTION);
-    parseWrongUri("Employees('1')?$format=json&$inlinecount=allpages&$skiptoken=abc&$skip=2&$top=1", UriParserException.INCOMPATIBLESYSTEMQUERYOPTION);
-    parseWrongUri("/Employees('1')/Location/Country/$value?$format=json", UriParserException.INCOMPATIBLESYSTEMQUERYOPTION);
-    parseWrongUri("/Employees('1')/Location/Country/$value?$skip=2", UriParserException.INCOMPATIBLESYSTEMQUERYOPTION);
-    parseWrongUri("/Employees('1')/EmployeeName/$value?$format=json", UriParserException.INCOMPATIBLESYSTEMQUERYOPTION);
-    parseWrongUri("/Employees('1')/EmployeeName/$value?$skip=2", UriParserException.INCOMPATIBLESYSTEMQUERYOPTION);
+    parseWrongUri("$metadata?$top=1", UriSyntaxException.INCOMPATIBLESYSTEMQUERYOPTION);
+    parseWrongUri("Employees('1')?$format=json&$inlinecount=allpages&$skiptoken=abc&$skip=2&$top=1", UriSyntaxException.INCOMPATIBLESYSTEMQUERYOPTION);
+    parseWrongUri("/Employees('1')/Location/Country/$value?$format=json", UriSyntaxException.INCOMPATIBLESYSTEMQUERYOPTION);
+    parseWrongUri("/Employees('1')/Location/Country/$value?$skip=2", UriSyntaxException.INCOMPATIBLESYSTEMQUERYOPTION);
+    parseWrongUri("/Employees('1')/EmployeeName/$value?$format=json", UriSyntaxException.INCOMPATIBLESYSTEMQUERYOPTION);
+    parseWrongUri("/Employees('1')/EmployeeName/$value?$skip=2", UriSyntaxException.INCOMPATIBLESYSTEMQUERYOPTION);
   }
 
   @Test
@@ -794,18 +795,18 @@ public class UriParserTest {
 
   @Test
   public void parseSystemQueryOptionSelectNegative() throws Exception {
-    parseWrongUri("Employees?$select=somethingwrong", UriParserException.PROPERTYNOTFOUND);
-    parseWrongUri("Employees?$select=*/Somethingwrong", UriParserException.INVALIDSEGMENT);
-    parseWrongUri("Employees?$select=EmployeeName/*", UriParserException.INVALIDSEGMENT);
-    parseWrongUri("Employees?$select=,EmployeeName", UriParserException.EMPTYSEGMENT);
-    parseWrongUri("Employees?$select=EmployeeName,", UriParserException.EMPTYSEGMENT);
-    parseWrongUri("Employees?$select=EmployeeName,,Location", UriParserException.EMPTYSEGMENT);
-    parseWrongUri("Employees?$select=*EmployeeName", UriParserException.PROPERTYNOTFOUND);
-    parseWrongUri("Employees?$select=EmployeeName*", UriParserException.PROPERTYNOTFOUND);
-    parseWrongUri("Employees?$select=/EmployeeName", UriParserException.EMPTYSEGMENT);
-    parseWrongUri("Employees?$select=EmployeeName/", UriParserException.EMPTYSEGMENT);
-    parseWrongUri("Teams('1')?$select=nt_Employees/Id", UriParserException.PROPERTYNOTFOUND);
-    parseWrongUri("Teams('1')?$select=nt_Employees//*", UriParserException.EMPTYSEGMENT);
+    parseWrongUri("Employees?$select=somethingwrong", UriNotMatchingException.PROPERTYNOTFOUND);
+    parseWrongUri("Employees?$select=*/Somethingwrong", UriSyntaxException.INVALIDSEGMENT);
+    parseWrongUri("Employees?$select=EmployeeName/*", UriSyntaxException.INVALIDSEGMENT);
+    parseWrongUri("Employees?$select=,EmployeeName", UriSyntaxException.EMPTYSEGMENT);
+    parseWrongUri("Employees?$select=EmployeeName,", UriSyntaxException.EMPTYSEGMENT);
+    parseWrongUri("Employees?$select=EmployeeName,,Location", UriSyntaxException.EMPTYSEGMENT);
+    parseWrongUri("Employees?$select=*EmployeeName", UriNotMatchingException.PROPERTYNOTFOUND);
+    parseWrongUri("Employees?$select=EmployeeName*", UriNotMatchingException.PROPERTYNOTFOUND);
+    parseWrongUri("Employees?$select=/EmployeeName", UriSyntaxException.EMPTYSEGMENT);
+    parseWrongUri("Employees?$select=EmployeeName/", UriSyntaxException.EMPTYSEGMENT);
+    parseWrongUri("Teams('1')?$select=nt_Employees/Id", UriNotMatchingException.PROPERTYNOTFOUND);
+    parseWrongUri("Teams('1')?$select=nt_Employees//*", UriSyntaxException.EMPTYSEGMENT);
   }
 
   @Test
@@ -821,22 +822,22 @@ public class UriParserTest {
 
   @Test
   public void parseSystemQueryOptionExpandWrong() throws Exception {
-    parseWrongUri("Managers('1')?$expand=,nm_Employees", UriParserException.EMPTYSEGMENT);
-    parseWrongUri("Managers('1')?$expand=nm_Employees,", UriParserException.EMPTYSEGMENT);
-    parseWrongUri("Managers('1')?$expand=nm_Employees,,", UriParserException.EMPTYSEGMENT);
-    parseWrongUri("Managers('1')?$expand=nm_Employees,,nm_Employees", UriParserException.EMPTYSEGMENT);
-    parseWrongUri("Managers('1')?$expand=nm_Employees, somethingwrong", UriParserException.NOTEXT);
-    parseWrongUri("Managers('1')?$expand=/nm_Employees", UriParserException.EMPTYSEGMENT);
-    parseWrongUri("Managers('1')?$expand=nm_Employees/", UriParserException.EMPTYSEGMENT);
-    parseWrongUri("Managers('1')?$expand=nm_Employees//", UriParserException.EMPTYSEGMENT);
-    parseWrongUri("Managers('1')?$expand=somethingwrong", UriParserException.PROPERTYNOTFOUND);
-    parseWrongUri("Managers('1')?$expand=nm_Employees/EmployeeName", UriParserException.NONAVIGATIONPROPERTY);
-    parseWrongUri("Managers('1')?$expand=nm_Employees/somethingwrong", UriParserException.PROPERTYNOTFOUND);
-    parseWrongUri("Managers('1')?$expand=nm_Employees/*", UriParserException.PROPERTYNOTFOUND);
-    parseWrongUri("Managers('1')?$expand=nm_Employees/*,somethingwrong", UriParserException.PROPERTYNOTFOUND);
-    parseWrongUri("Managers('1')?$expand=nm_Employees/*,some()", UriParserException.PROPERTYNOTFOUND);
-    parseWrongUri("Managers('1')?$expand=nm_Employees/(...)", UriParserException.PROPERTYNOTFOUND);
-    parseWrongUri("Teams('1')?$expand=nt_Employees//ne_Manager", UriParserException.EMPTYSEGMENT);
+    parseWrongUri("Managers('1')?$expand=,nm_Employees", UriSyntaxException.EMPTYSEGMENT);
+    parseWrongUri("Managers('1')?$expand=nm_Employees,", UriSyntaxException.EMPTYSEGMENT);
+    parseWrongUri("Managers('1')?$expand=nm_Employees,,", UriSyntaxException.EMPTYSEGMENT);
+    parseWrongUri("Managers('1')?$expand=nm_Employees,,nm_Employees", UriSyntaxException.EMPTYSEGMENT);
+    parseWrongUri("Managers('1')?$expand=nm_Employees, somethingwrong", UriSyntaxException.NOTEXT);
+    parseWrongUri("Managers('1')?$expand=/nm_Employees", UriSyntaxException.EMPTYSEGMENT);
+    parseWrongUri("Managers('1')?$expand=nm_Employees/", UriSyntaxException.EMPTYSEGMENT);
+    parseWrongUri("Managers('1')?$expand=nm_Employees//", UriSyntaxException.EMPTYSEGMENT);
+    parseWrongUri("Managers('1')?$expand=somethingwrong", UriNotMatchingException.PROPERTYNOTFOUND);
+    parseWrongUri("Managers('1')?$expand=nm_Employees/EmployeeName", UriSyntaxException.NONAVIGATIONPROPERTY);
+    parseWrongUri("Managers('1')?$expand=nm_Employees/somethingwrong", UriNotMatchingException.PROPERTYNOTFOUND);
+    parseWrongUri("Managers('1')?$expand=nm_Employees/*", UriNotMatchingException.PROPERTYNOTFOUND);
+    parseWrongUri("Managers('1')?$expand=nm_Employees/*,somethingwrong", UriNotMatchingException.PROPERTYNOTFOUND);
+    parseWrongUri("Managers('1')?$expand=nm_Employees/*,some()", UriNotMatchingException.PROPERTYNOTFOUND);
+    parseWrongUri("Managers('1')?$expand=nm_Employees/(...)", UriNotMatchingException.PROPERTYNOTFOUND);
+    parseWrongUri("Teams('1')?$expand=nt_Employees//ne_Manager", UriSyntaxException.EMPTYSEGMENT);
   }
 
 }

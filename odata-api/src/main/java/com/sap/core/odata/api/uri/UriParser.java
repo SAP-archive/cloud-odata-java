@@ -17,8 +17,8 @@ public interface UriParser {
    * @param pathSegments to be parsed
    * @param queryParameters to be parsed
    * @return {@link UriParserResult} the parsing result
-   * @throws UriParserException
+   * @throws UriSyntaxException
    */
-  public UriParserResult parse(List<ODataPathSegment> pathSegments, Map<String, String> queryParameters) throws UriParserException, EdmException;
+  public UriParserResult parse(List<ODataPathSegment> pathSegments, Map<String, String> queryParameters) throws UriSyntaxException, UriNotMatchingException, EdmException;
 
 }

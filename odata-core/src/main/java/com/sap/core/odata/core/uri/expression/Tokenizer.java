@@ -6,7 +6,7 @@ import java.util.regex.Pattern;
 import com.sap.core.odata.api.edm.EdmSimpleTypeFacade;
 import com.sap.core.odata.api.edm.EdmSimpleTypeKind;
 import com.sap.core.odata.api.uri.EdmLiteral;
-import com.sap.core.odata.api.uri.UriParserException;
+import com.sap.core.odata.api.uri.UriSyntaxException;
 import com.sap.core.odata.core.edm.EdmSimpleTypeFacadeImpl;
 
 public class Tokenizer
@@ -125,7 +125,7 @@ public class Tokenizer
         try
         {
           uriLiteral = typeDectector.parseUriLiteral(token);
-        } catch (UriParserException ex)
+        } catch (UriSyntaxException ex)
         {
           // TODO:  create method for InvalidStringToken ID
           TokenizerMessage tEx = new TokenizerMessage(TokenizerMessage.PARSESTRINGTOKEN);
@@ -213,7 +213,7 @@ public class Tokenizer
           {
             uriLiteral = typeDectector.parseUriLiteral(token);
 
-          } catch (UriParserException ex)
+          } catch (UriSyntaxException ex)
           {
             TokenizerMessage tEx = new TokenizerMessage(TokenizerMessage.PARSESTRINGTOKEN);//TODO
             tEx.setPosition(curPosition);
@@ -271,7 +271,7 @@ public class Tokenizer
             tokens.appendEdmTypedToken(oldPosition, TokenKind.SIMPLE_TYPE, token, uriLiteral);
 
             break;
-          } catch (UriParserException ex)
+          } catch (UriSyntaxException ex)
           {
             //we thread is as normal literal
           }
