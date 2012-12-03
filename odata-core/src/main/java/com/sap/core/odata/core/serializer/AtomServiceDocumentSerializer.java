@@ -25,17 +25,17 @@ public class AtomServiceDocumentSerializer {
       XMLStreamWriter xmlStreamWriter = XMLOutputFactory.newInstance().createXMLStreamWriter(writer);
 
       xmlStreamWriter.writeStartDocument();
-      xmlStreamWriter.setPrefix(Edm.PREFIX_APP, Edm.NAMESPACE_APP);
-      xmlStreamWriter.setPrefix(Edm.PREFIX_ATOM, Edm.NAMESPACE_ATOM);
-      xmlStreamWriter.setDefaultNamespace(Edm.NAMESPACE_APP);
+      xmlStreamWriter.setPrefix(Edm.PREFIX_APP, Edm.NAMESPACE_APP_2007);
+      xmlStreamWriter.setPrefix(Edm.PREFIX_ATOM, Edm.NAMESPACE_ATOM_2005);
+      xmlStreamWriter.setDefaultNamespace(Edm.NAMESPACE_APP_2007);
 
       xmlStreamWriter.writeStartElement(FormatXml.APP_SERVICE);
       xmlStreamWriter.writeAttribute(FormatXml.XML_BASE, serviceRoot);
-      xmlStreamWriter.writeNamespace(Edm.PREFIX_ATOM, Edm.NAMESPACE_ATOM);
-      xmlStreamWriter.writeNamespace(Edm.PREFIX_APP, Edm.NAMESPACE_APP);
+      xmlStreamWriter.writeNamespace(Edm.PREFIX_ATOM, Edm.NAMESPACE_ATOM_2005);
+      xmlStreamWriter.writeNamespace(Edm.PREFIX_APP, Edm.NAMESPACE_APP_2007);
 
       xmlStreamWriter.writeStartElement(FormatXml.APP_WORKSPACE);
-      xmlStreamWriter.writeStartElement(Edm.NAMESPACE_ATOM, FormatXml.ATOM_TITLE);
+      xmlStreamWriter.writeStartElement(Edm.NAMESPACE_ATOM_2005, FormatXml.ATOM_TITLE);
       xmlStreamWriter.writeCharacters(FormatXml.ATOM_TITLE_DEFAULT);
       xmlStreamWriter.writeEndElement();
 
@@ -49,7 +49,7 @@ public class AtomServiceDocumentSerializer {
               for (EntitySet entitySet : entitySets) {
                 xmlStreamWriter.writeStartElement(FormatXml.APP_COLLECTION);
                 xmlStreamWriter.writeAttribute(FormatXml.ATOM_HREF, entitySet.getName());
-                xmlStreamWriter.writeStartElement(Edm.NAMESPACE_ATOM, FormatXml.ATOM_TITLE);
+                xmlStreamWriter.writeStartElement(Edm.NAMESPACE_ATOM_2005, FormatXml.ATOM_TITLE);
                 xmlStreamWriter.writeCharacters(entitySet.getName());
                 xmlStreamWriter.writeEndElement();
                 xmlStreamWriter.writeEndElement();
