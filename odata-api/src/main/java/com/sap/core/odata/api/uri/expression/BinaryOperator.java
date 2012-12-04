@@ -18,7 +18,7 @@ public enum BinaryOperator
   ADD("add"),
   SUB("sub"),
   MUL("mul"),
-  PROPERTY_ACCESS("/"),
+  PROPERTY_ACCESS("/","property access"),
   DIV("div"),
   MODULO("mod");
   /*TODO the operators above are already supported

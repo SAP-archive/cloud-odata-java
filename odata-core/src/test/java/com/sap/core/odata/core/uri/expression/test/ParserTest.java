@@ -2,9 +2,13 @@ package com.sap.core.odata.core.uri.expression.test;
 
 import static org.junit.Assert.fail;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import org.junit.Test;
 
-import com.sap.core.odata.api.uri.expression.ExpressionException;
+import com.sap.core.odata.api.uri.expression.ExceptionParseExpression;
 import com.sap.core.odata.api.uri.expression.ExpressionKind;
 import com.sap.core.odata.api.uri.expression.FilterExpression;
 import com.sap.core.odata.core.edm.Bit;
@@ -24,6 +28,7 @@ import com.sap.core.odata.core.edm.EdmSingle;
 import com.sap.core.odata.core.edm.EdmString;
 import com.sap.core.odata.core.edm.EdmTime;
 import com.sap.core.odata.core.edm.Uint7;
+import com.sap.core.odata.core.uri.expression.ExceptionExpressionInternalError;
 import com.sap.core.odata.core.uri.expression.FilterParserImpl;
 
 public class ParserTest {
@@ -34,7 +39,9 @@ public class ParserTest {
       FilterParserImpl parser = new FilterParserImpl(null, null);
       FilterExpression root = parser.ParseExpression(expression);
       return new ParserTool(expression, root);
-    } catch (ExpressionException e) {
+    } catch (ExceptionExpressionInternalError e) {
+      fail("Error in parser" + e.getLocalizedMessage());
+    } catch (ExceptionParseExpression e) {
       fail("Error in parser" + e.getLocalizedMessage());
     }
     return null;
@@ -43,7 +50,7 @@ public class ParserTest {
   @Test
   public void TestSimpleMethod()
   {
-    GetPTF("startswith('Test','Te')").aSerialized("{STARTSWITH('Test','Te')}");
+    GetPTF("startswith('Test','Te')").aSerialized("{startswith('Test','Te')}");
   }
 
   @Test
@@ -311,5 +318,42 @@ public class ParserTest {
   void Errors()
   {
     //GetPTF("-(-(- 2d)))").aSerialized("{-{-{- 2d}}}");
+  }
+
+  ExceptionParseExpression GetException()
+  { 
+    ExceptionParseExpression ex = new ExceptionParseExpression(ExceptionParseExpression.COMMON);
+    List<StackTraceElement> stack = new ArrayList<StackTraceElement>(Arrays.asList(ex.getStackTrace()));
+    stack.remove(0);
+    ex.setStackTrace(stack.toArray(new StackTraceElement[stack.size()]));
+    return ex;
+  }
+
+  void LevelB() throws ExceptionParseExpression
+  {
+    ExceptionParseExpression ex = GetException();
+    throw ex;
+  }
+
+  void LevelA() throws ExceptionParseExpression
+  {
+    try {
+      LevelB();
+    } catch (ExceptionParseExpression e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+      throw e;
+      //throw new ExceptionParseExpression(ExceptionParseExpression.COMMON);
+    }
+  }
+
+  //@Test
+  public void DynTest()
+  {
+    try {
+      LevelA();
+    } catch (ExceptionParseExpression e) {
+      e.printStackTrace();
+    }
   }
 }

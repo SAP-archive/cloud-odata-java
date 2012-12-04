@@ -4,6 +4,7 @@ import com.sap.core.odata.api.edm.EdmType;
 import com.sap.core.odata.api.uri.expression.BinaryExpression;
 import com.sap.core.odata.api.uri.expression.BinaryOperator;
 import com.sap.core.odata.api.uri.expression.CommonExpression;
+import com.sap.core.odata.api.uri.expression.ExceptionVisitExpression;
 import com.sap.core.odata.api.uri.expression.ExpressionKind;
 import com.sap.core.odata.api.uri.expression.ExpressionVisitor;
 
@@ -63,7 +64,7 @@ public class BinaryExpressionImpl implements BinaryExpression
   }
 
   @Override
-  public Object accept(ExpressionVisitor visitor)
+  public Object accept(ExpressionVisitor visitor) throws ExceptionVisitExpression 
   {
     Object retLeftSide = leftSide.accept(visitor);
     Object retRightSide = rightSide.accept(visitor);

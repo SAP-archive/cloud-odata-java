@@ -39,7 +39,7 @@ public class Tokenizer
    * @throws TokenizerMessage
    *          
    */
-  public TokenList tokenize(String iv_expression) throws TokenizerMessage
+  public TokenList tokenize(String iv_expression) throws ExceptionTokenizer
   {
     EdmLiteral uriLiteral;
     int curPosition = 0;
@@ -128,13 +128,13 @@ public class Tokenizer
         } catch (UriSyntaxException ex)
         {
           // TODO:  create method for InvalidStringToken ID
-          TokenizerMessage tEx = new TokenizerMessage(TokenizerMessage.PARSESTRINGTOKEN);
+          ExceptionTokenizer tEx = new ExceptionTokenizer(ExceptionTokenizer.PARSESTRINGTOKEN);
           tEx.setPosition(curPosition);
           tEx.setToken(token);
           tEx.setPrevious(ex);
           throw tEx;
         }
-        assert uriLiteral.getType() != null;
+        assert uriLiteral.getType() != null;//TODO remove assert
 
         tokens.appendEdmTypedToken(oldPosition, TokenKind.SIMPLE_TYPE, token, uriLiteral);
 
@@ -215,7 +215,7 @@ public class Tokenizer
 
           } catch (UriSyntaxException ex)
           {
-            TokenizerMessage tEx = new TokenizerMessage(TokenizerMessage.PARSESTRINGTOKEN);//TODO
+            ExceptionTokenizer tEx = new ExceptionTokenizer(ExceptionTokenizer.PARSESTRINGTOKEN);//TODO
             tEx.setPosition(curPosition);
             tEx.setToken(token);
             tEx.setPrevious(ex);
@@ -291,7 +291,7 @@ public class Tokenizer
 
           break;
         }
-        TokenizerMessage tEx = new TokenizerMessage(TokenizerMessage.PARSESTRINGTOKEN);
+        ExceptionTokenizer tEx = new ExceptionTokenizer(ExceptionTokenizer.PARSESTRINGTOKEN);
         tEx.setPosition(curPosition);
         tEx.setToken(token);
         throw tEx;

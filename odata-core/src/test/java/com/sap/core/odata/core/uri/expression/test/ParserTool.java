@@ -5,6 +5,7 @@ import static org.junit.Assert.fail;
 
 import com.sap.core.odata.api.edm.EdmSimpleType;
 import com.sap.core.odata.api.uri.expression.CommonExpression;
+import com.sap.core.odata.api.uri.expression.ExceptionVisitExpression;
 import com.sap.core.odata.api.uri.expression.ExpressionKind;
 import com.sap.core.odata.api.uri.expression.ExpressionVisitor;
 import com.sap.core.odata.api.uri.expression.FilterExpression;
@@ -51,9 +52,13 @@ public class ParserTool
   }
 
   public ParserTool aSerialized(String expected) {
-    String actual;
-    ExpressionVisitor visitor = new TestVisitor();
-    actual = tree.accept(visitor).toString();
+    String actual = null;
+    ExpressionVisitor visitor = new TestVisitorTool();
+    try {
+      actual = tree.accept(visitor).toString();
+    } catch (ExceptionVisitExpression e) {
+      fail("Error in visitor:" + e.getLocalizedMessage());
+    }
 
     String info = "GetSerialized(" + expression + ")-->";
     System.out.println("  " + info + "Expected: " + expected + " Actual: " + actual);

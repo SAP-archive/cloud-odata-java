@@ -1,8 +1,9 @@
 package com.sap.core.odata.core.uri.expression;
 
-import com.sap.core.odata.api.uri.expression.ExpressionException;
+import com.sap.core.odata.api.uri.expression.ExceptionParseExpression;
 
-public class ParserExceptionInternal extends ExpressionException {
+
+public class ParserExceptionInternal extends ExceptionParseExpression {
 
   /**
    * 
@@ -42,7 +43,7 @@ public class ParserExceptionInternal extends ExpressionException {
 
   public ParserExceptionInternal(int textID)
   {
-    //super(textID);
+    super();
     this.textID = textID;
     this.token = token;
     this.previous = previous;

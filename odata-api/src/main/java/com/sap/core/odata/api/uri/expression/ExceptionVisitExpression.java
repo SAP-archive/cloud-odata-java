@@ -8,7 +8,7 @@ import com.sap.core.odata.api.exception.ODataMessageException;
  * @author d039346
  *
  */
-public class ExpressionException extends ODataMessageException 
+public class ExceptionVisitExpression extends ODataMessageException 
 {
   private static final long serialVersionUID = 1L;
 
@@ -22,10 +22,16 @@ public class ExpressionException extends ODataMessageException
   
   //VON ABAP CX_DS_EXPR_SYNTAX_ERROR-TOKEN_INVALID "Invalid token detected at position &POSITION&"
   public static final MessageReference INVALID_TRAILING_TOKEN  = createMessageReference(ODataMessageException.class, "INVALID_TRAILING_TOKEN");
+  
+  //NEW Error during tokenizing
+  public static final MessageReference ERROR_IN_TOKENIZER = createMessageReference(ODataMessageException.class, "ERROR_IN_TOKENIZER");;
+  
+  //ABAP Expected token &TOKEN& not found
+  public static final MessageReference UNEXPECTED_TOKEN = createMessageReference(ODataMessageException.class, "UNEXPECTED_TOKEN");;
 
 
   
-  public ExpressionException previous;
+  public ExceptionVisitExpression previous;
   private CommonExpression filterTree;
 
 
@@ -34,17 +40,18 @@ public class ExpressionException extends ODataMessageException
   }
 
 
-  public ExpressionException() {
+  public ExceptionVisitExpression() {
     super(COMMON);
   }
 
-  public ExpressionException(MessageReference messageReference) {
+  public ExceptionVisitExpression(MessageReference messageReference) {
     super(messageReference);
   }
 
   
-  public ExpressionException(MessageReference invalidTrailingToken, Object object) {
-    super(invalidTrailingToken);
+  public ExceptionVisitExpression(MessageReference message, Object previous) {
+    super(message);
+    
   }
 
 

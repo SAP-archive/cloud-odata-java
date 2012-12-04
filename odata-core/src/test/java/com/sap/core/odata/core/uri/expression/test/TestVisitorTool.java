@@ -16,7 +16,7 @@ import com.sap.core.odata.api.uri.expression.PropertyExpression;
 import com.sap.core.odata.api.uri.expression.UnaryExpression;
 import com.sap.core.odata.api.uri.expression.UnaryOperator;
 
-public class TestVisitor implements ExpressionVisitor {
+public class TestVisitorTool implements ExpressionVisitor {
 
   @Override
   public Object visitBinary(BinaryExpression binaryExpression, BinaryOperator operator, Object leftSide, Object rightSide)
@@ -40,7 +40,7 @@ public class TestVisitor implements ExpressionVisitor {
   {
     StringBuilder sb = new StringBuilder();
     sb.append("{");
-    sb.append(method.toString());
+    sb.append(method.toSyntax());
 
     sb.append("(");
     for (int i = 0; i < retParameters.size(); i++)
