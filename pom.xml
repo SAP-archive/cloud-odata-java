@@ -55,6 +55,7 @@
 		<httpclient.version>4.2.1</httpclient.version>
 		<slf4j.version>1.7.1</slf4j.version>
 		<commonscodec.version>1.5</commonscodec.version>
+		<commonslang.version>3.1</commonslang.version>
 
 		<mockito.version>1.9.0</mockito.version>
 		<junit.version>4.10</junit.version>

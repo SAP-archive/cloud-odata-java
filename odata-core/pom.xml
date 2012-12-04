@@ -92,7 +92,12 @@
 			<artifactId>javax.ws.rs-api</artifactId>
 			<version>${jax.ws.rs.version}</version>
 		</dependency>
-
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-lang3</artifactId>
+			<version>${commonslang.version}</version>
+		</dependency>
+		
 		<dependency>
 			<groupId>com.sap.core.odata</groupId>
 			<artifactId>com.sap.core.odata.api</artifactId>
@@ -108,11 +113,6 @@
 			<artifactId>com.sap.core.odata.testutils</artifactId>
 			<version>${project.version}</version>
 			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>xmlunit</groupId>
-			<artifactId>xmlunit</artifactId>
-			<version>1.3</version>
 		</dependency>
 	</dependencies>
 
