@@ -31,7 +31,7 @@ public class AtomSerializer extends ODataSerializer {
 
     try {
       ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-      writer = new OutputStreamWriter(outputStream, "UTF-8");
+      writer = new OutputStreamWriter(outputStream, "utf-8");
       AtomServiceDocumentSerializer.writeServiceDocument(edm, serviceRoot, writer);
       return new ByteArrayInputStream(outputStream.toByteArray());
     } catch (UnsupportedEncodingException e) {
