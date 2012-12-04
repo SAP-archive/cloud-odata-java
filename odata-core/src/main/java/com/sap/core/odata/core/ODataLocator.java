@@ -37,7 +37,7 @@ import com.sap.core.odata.core.enums.ODataHttpMethod;
 import com.sap.core.odata.core.uri.UriParserImpl;
 import com.sap.core.odata.core.uri.UriParserResultImpl;
 
-public final class ODataLocatorImpl {
+public final class ODataLocator {
 
   private ODataService service;
 

@@ -36,7 +36,7 @@ public abstract class RuntimeDelegate {
       delegate = (RuntimeDelegateInstance) object;
 
     } catch (Exception e) {
-      throw new RuntimeException(e);
+      throw new RuntimeDelegateException(e);
     }
     return delegate;
   }
@@ -123,4 +123,14 @@ public abstract class RuntimeDelegate {
   public static FilterParser getFilterParser(Edm edm, EdmType edmType) {
     return RuntimeDelegate.getInstance().getFilterParser(edm, edmType);
   }
+  
+  private static class RuntimeDelegateException extends RuntimeException {
+
+    private static final long serialVersionUID = 1L;
+
+    public RuntimeDelegateException(Exception e) {
+      super(e);
+    }
+  }
+  
 }
