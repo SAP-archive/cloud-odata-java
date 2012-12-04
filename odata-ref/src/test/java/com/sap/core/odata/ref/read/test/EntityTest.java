@@ -38,6 +38,7 @@ import com.sap.core.odata.ref.processor.ScenarioDataSource;
 /**
  * @author SAP AG
  */
+@Ignore
 public class EntityTest {
 
   private static DataContainer dataContainer;

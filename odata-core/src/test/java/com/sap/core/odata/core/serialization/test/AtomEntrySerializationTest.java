@@ -29,6 +29,8 @@ public class AtomEntrySerializationTest extends AbstractSerializerTest {
     InputStream xmlStream = ser.serializeEntry(MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Employees"), this.employeeData);
     String xmlString = StringHelper.inputStreamToString(xmlStream);
 
+    log.debug(xmlString);
+
     assertXpathExists("/a:entry", xmlString);
     assertXpathEvaluatesTo(BASE_URI.toASCIIString(), "/a:entry/@xml:base", xmlString);
 
@@ -37,6 +39,13 @@ public class AtomEntrySerializationTest extends AbstractSerializerTest {
     assertXpathEvaluatesTo("Employees('1')/$value", "/a:entry/a:content/@src", xmlString);
     assertXpathExists("/a:entry/m:properties", xmlString);
 
+    assertXpathExists("/a:entry/a:link[@href=\"Employees('1')/$value\"]", xmlString);
+    assertXpathExists("/a:entry/a:link[@rel='edit-media']", xmlString);
+    assertXpathExists("/a:entry/a:link[@type='application/octet-stream']", xmlString);
+
+    assertXpathExists("/a:entry/a:link[@href=\"Employees('1')\"]", xmlString);
+    assertXpathExists("/a:entry/a:link[@rel='edit']", xmlString);
+    assertXpathExists("/a:entry/a:link[@title='Employee']", xmlString);
   }
 
   @Test
@@ -197,6 +206,22 @@ public class AtomEntrySerializationTest extends AbstractSerializerTest {
 
     t = (System.currentTimeMillis() - t) / 1000;
     log.debug("ms: " + t);
+  }
+
+  @Test
+  public void serializeAtomMediaResourceLinks() throws IOException, XpathException, SAXException, XMLStreamException, FactoryConfigurationError, ODataException {
+    ODataSerializer ser = createAtomSerializer();
+    InputStream xmlStream = ser.serializeEntry(MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Employees"), this.employeeData);
+    String xmlString = StringHelper.inputStreamToString(xmlStream);
+
+    log.debug(xmlString);
+
+    String rel = Edm.NAMESPACE_REL_2007_08 + "ne_Manager";
+
+    assertXpathExists("/a:entry/a:link[@href=\"Employees('1')/ne_Manager\"]", xmlString);
+    assertXpathExists("/a:entry/a:link[@rel='" + rel + "']", xmlString);
+    assertXpathExists("/a:entry/a:link[@type='application/atom+xml;type=entry']", xmlString);
+    assertXpathExists("/a:entry/a:link[@title='ne_Manager']", xmlString);
   }
 
 }
