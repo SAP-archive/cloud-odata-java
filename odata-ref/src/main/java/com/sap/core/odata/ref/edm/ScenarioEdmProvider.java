@@ -178,9 +178,9 @@ public class ScenarioEdmProvider extends EdmProviderDefault {
         properties.add(new Property().setName("EmployeeId").setType(EdmSimpleTypeKind.String.getFullQualifiedName()).setFacets(new Facets().setNullable(false)).setMapping(new Mapping().setValue("getId")));
         properties.add(new Property().setName("EmployeeName").setType(EdmSimpleTypeKind.String.getFullQualifiedName()).setCustomizableFeedMappings(
             new CustomizableFeedMappings().setFcTargetPath(EdmTargetPath.SYNDICATION_TITLE).setFcContentKind(EdmContentKind.text)));
-        properties.add(new Property().setName("ManagerId").setType(EdmSimpleTypeKind.String.getFullQualifiedName()));
-        properties.add(new Property().setName("TeamId").setType(EdmSimpleTypeKind.String.getFullQualifiedName()).setFacets(new Facets().setMaxLength(2)));
-        properties.add(new Property().setName("RoomId").setType(EdmSimpleTypeKind.String.getFullQualifiedName()));
+        properties.add(new Property().setName("ManagerId").setType(EdmSimpleTypeKind.String.getFullQualifiedName()).setMapping(new Mapping().setValue("getManager.getId")));
+        properties.add(new Property().setName("TeamId").setType(EdmSimpleTypeKind.String.getFullQualifiedName()).setFacets(new Facets().setMaxLength(2)).setMapping(new Mapping().setValue("getTeam.getId")));
+        properties.add(new Property().setName("RoomId").setType(EdmSimpleTypeKind.String.getFullQualifiedName()).setMapping(new Mapping().setValue("getRoom.getId")));
         properties.add(new Property().setName("Location").setType(COMPLEX_TYPE_1));
         properties.add(new Property().setName("Age").setType(EdmSimpleTypeKind.Int16.getFullQualifiedName()));
         properties.add(new Property().setName("EntryDate").setType(EdmSimpleTypeKind.DateTime.getFullQualifiedName())

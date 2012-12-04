@@ -1,6 +1,5 @@
 package com.sap.core.odata.fit.ref.test;
 
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import org.apache.http.HttpResponse;
@@ -15,9 +14,8 @@ public class ServiceTest extends AbstractRefTest {
   @Test
   public void serviceDocument() throws Exception {
     final HttpResponse response = callUri("/");
-    // checkMediaType(response, APPLICATION_ATOMSVC_XML);
-    assertFalse(getBody(response).isEmpty());
-    // assertTrue(getBody(response).contains("Employees"));
+    checkMediaType(response, APPLICATION_ATOMSVC_XML);
+    assertTrue(getBody(response).contains("Employees"));
 
     // notFound("invalid.svc/");
   }

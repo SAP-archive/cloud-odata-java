@@ -27,14 +27,12 @@ public class EntryXmlReadOnlyTest extends AbstractRefTest {
 
     response = callUri("Teams('2')");
     checkMediaType(response, APPLICATION_ATOM_XML_ENTRY);
-    assertFalse(getBody(response).isEmpty());
-    // assertTrue(getBody(response).contains(">2</"));
+    assertTrue(getBody(response).contains(">2</"));
 
     response = callUri("Rooms('1')");
     checkMediaType(response, APPLICATION_ATOM_XML_ENTRY);
     // checkEtag(response, "W/\"1\"");
-    assertFalse(getBody(response).isEmpty());
-    // assertTrue(getBody(response).contains(">1</"));
+    assertTrue(getBody(response).contains(">1</"));
 
     response = callUri("Rooms('1')?$expand=nr_Employees");
     checkMediaType(response, APPLICATION_ATOM_XML_ENTRY);
@@ -44,8 +42,7 @@ public class EntryXmlReadOnlyTest extends AbstractRefTest {
 
     response = callUri("Container2.Photos(Id=1,Type='image%2Fpng')");
     checkMediaType(response, APPLICATION_ATOM_XML_ENTRY);
-    assertFalse(getBody(response).isEmpty());
-    // assertTrue(getBody(response).contains(">image/png</"));    
+    assertTrue(getBody(response).contains(">image/png</"));    
 
     response = callUri("Container2.Photos(Id=4,Type='foo')");
     checkMediaType(response, APPLICATION_ATOM_XML_ENTRY);
