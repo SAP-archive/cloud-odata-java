@@ -90,4 +90,21 @@ public class AtomEntrySerializationTest extends AbstractSerializerTest {
     assertXpathEvaluatesTo((String) employeeData.get("RoomId"), "/a:entry/m:properties/d:RoomId/text()", xmlString);
     assertXpathEvaluatesTo((String) employeeData.get("TeamId"), "/a:entry/m:properties/d:TeamId/text()", xmlString);
   }
+
+  @Test
+  public void serializeWithValueEncoding() throws IOException, XpathException, SAXException, XMLStreamException, FactoryConfigurationError, ODataException {
+    this.photoData.put("Type", "<Ö>");
+
+    ODataSerializer ser = createAtomSerializer();
+    InputStream xmlStream = ser.serializeEntry(MockFacade.getMockEdm().getEntityContainer("Container2").getEntitySet("Photos"), this.photoData);
+    String xmlString = StringHelper.inputStreamToString(xmlStream);
+    
+    log.debug(xmlString);
+    
+    assertXpathExists("/a:entry", xmlString);
+    assertXpathEvaluatesTo(BASE_URI.toASCIIString(), "/a:entry/@xml:base", xmlString);
+    assertXpathExists("/a:entry/a:id", xmlString);
+    assertXpathEvaluatesTo(BASE_URI.toASCIIString() + "Container2.Photos(Id=1,Type='%3C%C3%96%3E')", "/a:entry/a:id/text()", xmlString);
+  }
+
 }
