@@ -28,7 +28,11 @@ public abstract class ODataSerializer {
 
   public abstract InputStream serializeServiceDocument(Edm edm, String serviceRoot) throws ODataSerializationException;
   
-  public abstract InputStream serializeEntry(EdmEntitySet entitySet, Map<String, Object> data) throws ODataSerializationException;
+  public abstract InputStream serializeEntry(EdmEntitySet entitySet, Map<String, Object> data, String mediaResourceMimeType) throws ODataSerializationException;
+
+  public InputStream serializeEntry(EdmEntitySet entitySet, Map<String, Object> data) throws ODataSerializationException {
+    return this.serializeEntry(entitySet, data, null);
+  }
 
   public abstract InputStream serializeProperty(EdmProperty edmProperty, Object value) throws ODataSerializationException;
 

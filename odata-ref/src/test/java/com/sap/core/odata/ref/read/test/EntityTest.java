@@ -16,6 +16,7 @@ import java.util.Collection;
 
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import com.sap.core.odata.api.edm.EdmEntityContainer;
@@ -57,7 +58,7 @@ public class EntityTest {
   public void setUp() throws Exception {
     mockedContext = mock(ODataContext.class);
     ODataUriInfo uriInfo = mock(ODataUriInfo.class);
-    when(uriInfo.getBaseUri()).thenReturn(new URI("http://localhost"));
+    when(uriInfo.getBaseUri()).thenReturn(new URI("http://localhost/"));
     when(mockedContext.getUriInfo()).thenReturn(uriInfo);
 
     processor.setContext(mockedContext);
