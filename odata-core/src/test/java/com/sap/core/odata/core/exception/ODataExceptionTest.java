@@ -2,10 +2,25 @@ package com.sap.core.odata.core.exception;
 
 import junit.framework.Assert;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
+import com.sap.core.odata.api.exception.ODataApplicationException;
+import com.sap.core.odata.api.exception.ODataBadRequestException;
+import com.sap.core.odata.api.exception.ODataConflictException;
 import com.sap.core.odata.api.exception.ODataException;
+import com.sap.core.odata.api.exception.ODataForbiddenException;
+import com.sap.core.odata.api.exception.ODataHttpException;
+import com.sap.core.odata.api.exception.ODataMessageException;
+import com.sap.core.odata.api.exception.ODataMethodNotAllowedException;
+import com.sap.core.odata.api.exception.ODataNotAcceptableException;
 import com.sap.core.odata.api.exception.ODataNotFoundException;
+import com.sap.core.odata.api.exception.ODataNotImplementedException;
+import com.sap.core.odata.api.exception.ODataPreconditionFailedException;
+import com.sap.core.odata.api.exception.ODataPreconditionRequiredException;
+import com.sap.core.odata.api.exception.ODataServiceUnavailableException;
+import com.sap.core.odata.api.exception.ODataUnsupportedMediaTypeException;
+import com.sap.core.odata.testutils.helper.ODataMessageTextVerifier;
 
 public class ODataExceptionTest {
 
@@ -38,4 +53,108 @@ public class ODataExceptionTest {
 
     Assert.assertEquals(true, exception.isCausedByHttpException());
   }
+
+  //The following tests verify whether all fields of type {@link MessageReference} of 
+  //the tested (Exception) class are provided in the <b>i18n.properties</b> file.
+  @Test
+  public void TestMessagesOfODataApplicationException()
+  {
+    ODataMessageTextVerifier.TestClass(ODataApplicationException.class);
+  }
+
+  @Test
+  @Ignore("TODO: Add the message texts belonging to the exception class and remove this line")
+  public void TestMessagesOfODataBadRequestException()
+  {
+    ODataMessageTextVerifier.TestClass(ODataBadRequestException.class);
+  }
+
+  @Test
+  @Ignore("TODO: Add the message texts belonging to the exception class and remove this line")
+  public void TestMessagesOfODataConflictException()
+  {
+    ODataMessageTextVerifier.TestClass(ODataConflictException.class);
+  }
+
+  @Test
+  public void TestMessagesOfODataException()
+  {
+    ODataMessageTextVerifier.TestClass(ODataException.class);
+  }
+
+  @Test
+  @Ignore("TODO: Add the message texts belonging to the exception class and remove this line")
+  public void TestMessagesOfODataForbiddenException()
+  {
+    ODataMessageTextVerifier.TestClass(ODataForbiddenException.class);
+  }
+
+  @Test
+  public void TestMessagesOfODataHttpException()
+  {
+    ODataMessageTextVerifier.TestClass(ODataHttpException.class);
+  }
+
+  @Test
+  @Ignore("TODO: Add the message texts belonging to the exception class and remove this line")
+  public void TestMessagesOfODataMessageException()
+  {
+    ODataMessageTextVerifier.TestClass(ODataMessageException.class);
+  }
+
+  @Test
+  @Ignore("TODO: Add the message texts belonging to the exception class and remove this line")
+  public void TestMessagesOfODataMethodNotAllowedException()
+  {
+    ODataMessageTextVerifier.TestClass(ODataMethodNotAllowedException.class);
+  }
+
+  @Test
+  @Ignore("TODO: Add the message texts belonging to the exception class and remove this line")
+  public void TestMessagesOfODataNotAcceptableException()
+  {
+    ODataMessageTextVerifier.TestClass(ODataNotAcceptableException.class);
+  }
+
+  @Test
+  @Ignore("TODO: Add the message texts belonging to the exception class and remove this line")
+  public void TestMessagesOfODataNotFoundException()
+  {
+    ODataMessageTextVerifier.TestClass(ODataNotFoundException.class);
+  }
+
+  @Test
+  public void TestMessagesOfODataNotImplementedException()
+  {
+    ODataMessageTextVerifier.TestClass(ODataNotImplementedException.class);
+  }
+
+  @Test
+  @Ignore("TODO: Add the message texts belonging to the exception class and remove this line")
+  public void TestMessagesOfODataPreconditionFailedException()
+  {
+    ODataMessageTextVerifier.TestClass(ODataPreconditionFailedException.class);
+  }
+
+  @Test
+  @Ignore("TODO: Add the message texts belonging to the exception class and remove this line")
+  public void TestMessagesOfODataPreconditionRequiredException()
+  {
+    ODataMessageTextVerifier.TestClass(ODataPreconditionRequiredException.class);
+  }
+
+  @Test
+  @Ignore("TODO: Add the message texts belonging to the exception class and remove this line")
+  public void TestMessagesOfODataServiceUnavailableException()
+  {
+    ODataMessageTextVerifier.TestClass(ODataServiceUnavailableException.class);
+  }
+
+  @Test
+  @Ignore("TODO: Add the message texts belonging to the exception class and remove this line")
+  public void TestMessagesOfODataUnsupportedMediaTypeException()
+  {
+    ODataMessageTextVerifier.TestClass(ODataUnsupportedMediaTypeException.class);
+  }
+
 }

@@ -1,24 +1,25 @@
-package com.sap.core.odata.core.uri.expression.test;
+package com.sap.core.odata.testutils.helper;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Locale;
 import java.util.ResourceBundle;
 import java.util.Vector;
 
-import org.junit.Test;
-import org.junit.rules.ErrorCollector;
-
 import com.sap.core.odata.api.exception.MessageReference;
-import com.sap.core.odata.core.exception.MessageService;
 
-public class ExceptionTextsTool {
+
+/**
+ * This class is a helper for writing proper error messages.
+ * Please use the static method {@link #TestClass(Class)} to 
+ * test whether all fields of type {@link MessageReference} of 
+ * the tested (Exception) class  are provided in the <b>i18n.properties</b> file.
+ * @author SAP AG
+ */
+public class ODataMessageTextVerifier {
 
   /**
    * Same as define in {@link MessageService}
@@ -29,7 +30,7 @@ public class ExceptionTextsTool {
   public ResourceBundle resourceBundle = ResourceBundle.getBundle(BUNDLE_NAME, locale);
   private Vector<Throwable> errorCollector;
 
-  public ExceptionTextsTool()
+  public ODataMessageTextVerifier()
   {
     errorCollector = new Vector<Throwable>();
   }
@@ -37,7 +38,7 @@ public class ExceptionTextsTool {
   private void failCollector(String text)
   {
     try {
-      System.out.println(text);
+      //System.out.println(text);
       fail(text);
     } catch (AssertionError ae)
     {
@@ -113,7 +114,7 @@ public class ExceptionTextsTool {
 
   static public void TestClass(Class<?> exceptionClassToBeTested)
   {
-    ExceptionTextsTool tool = new ExceptionTextsTool();
+    ODataMessageTextVerifier tool = new ODataMessageTextVerifier();
     tool.CheckMessagesOfClass(exceptionClassToBeTested);
     Vector<Throwable> errors = tool.getErrorCollector();
 
