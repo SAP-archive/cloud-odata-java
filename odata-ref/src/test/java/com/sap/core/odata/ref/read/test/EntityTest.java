@@ -108,45 +108,45 @@ public class EntityTest {
   public void readEmployees() throws Exception {
     final UriParserResult uriResult = mockUriResult("Employees", "EmployeeId", "5");
 
-//    ODataResponse response = processor.readEntity(uriResult);
-//    assertNotNull(response);
-//    assertTrue(readContent(response).contains("Employee"));
+    ODataResponse response = processor.readEntity(uriResult);
+    assertNotNull(response);
+    assertTrue(readContent(response).contains("Employee"));
   }
 
   @Test
   public void readTeams() throws Exception {
     final UriParserResult uriResult = mockUriResult("Teams", "Id", "1");
 
-//    ODataResponse response = processor.readEntity(uriResult);
-//    assertNotNull(response);
-//    assertTrue(readContent(response).contains("Team"));
+    ODataResponse response = processor.readEntity(uriResult);
+    assertNotNull(response);
+    assertTrue(readContent(response).contains("Team"));
   }
 
   @Test
   public void readRooms() throws Exception {
     final UriParserResult uriResult = mockUriResult("Rooms", "Id", "1");
 
-//    ODataResponse response = processor.readEntity(uriResult);
-//    assertNotNull(response);
-//    assertTrue(readContent(response).contains("Room"));
+    ODataResponse response = processor.readEntity(uriResult);
+    assertNotNull(response);
+    assertTrue(readContent(response).contains("Room"));
   }
 
   @Test
   public void readManagers() throws Exception {
     final UriParserResult uriResult = mockUriResult("Managers", "EmployeeId", "1");
 
-//    ODataResponse response = processor.readEntity(uriResult);
-//    assertNotNull(response);
-//    assertTrue(readContent(response).contains("Manager"));
+    ODataResponse response = processor.readEntity(uriResult);
+    assertNotNull(response);
+    assertTrue(readContent(response).contains("Manager"));
   }
 
   @Test
   public void readBuildings() throws Exception {
     final UriParserResult uriResult = mockUriResult("Buildings", "Id", "1");
 
-//    ODataResponse response = processor.readEntity(uriResult);
-//    assertNotNull(response);
-//    assertTrue(readContent(response).contains("Building"));
+    ODataResponse response = processor.readEntity(uriResult);
+    assertNotNull(response);
+    assertTrue(readContent(response).contains("Building"));
   }
 
 }
