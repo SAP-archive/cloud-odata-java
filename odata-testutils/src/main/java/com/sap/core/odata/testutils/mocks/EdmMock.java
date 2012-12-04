@@ -53,6 +53,7 @@ class EdmMock {
     when(managerEntitySet.getRelatedEntitySet(employeeProperty)).thenReturn(employeeEntitySet);
 
     EdmEntityType roomType = roomEntitySet.getEntityType();
+    when(roomType.getName()).thenReturn("Room");
     when(roomType.getPropertyNames()).thenReturn(Arrays.asList("Id"));
     when(roomType.hasStream()).thenReturn(false);
     EdmProperty roomId = roomType.getKeyProperties().get(0);
@@ -78,7 +79,8 @@ class EdmMock {
     when(employeeType.getKeyPropertyNames()).thenReturn(Arrays.asList("EmployeeId"));
     when(employeeType.getName()).thenReturn("Employee");
     when(employeeType.getNamespace()).thenReturn("RefScenario");
-
+    when(employeeType.getNavigationPropertyNames()).thenReturn(Arrays.asList("ne_Manager"));
+    
     EdmProperty employeeIdProperty = mock(EdmProperty.class);
     when(employeeIdProperty.getType()).thenReturn(EdmSimpleTypeKind.String.getEdmSimpleTypeInstance());
     when(employeeIdProperty.getName()).thenReturn("EmployeeId");
@@ -202,6 +204,7 @@ class EdmMock {
     photoKeyProperties.add(photoIdProperty);
     photoKeyProperties.add(photoTypeProperty);
     EdmEntityType photoEntityType = mock(EdmEntityType.class);
+    when(photoEntityType.getName()).thenReturn("Photo");
     when(photoEntityType.getPropertyNames()).thenReturn(Arrays.asList("Id"));
     when(photoEntityType.getKeyProperties()).thenReturn(photoKeyProperties);
     when(photoEntityType.getProperty("Id")).thenReturn(photoIdProperty);
