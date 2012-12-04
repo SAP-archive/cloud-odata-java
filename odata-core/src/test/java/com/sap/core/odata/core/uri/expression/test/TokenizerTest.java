@@ -8,11 +8,11 @@ import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.codec.binary.Hex;
 import org.junit.Test;
 
+import com.sap.core.odata.core.uri.expression.ExceptionTokenizer;
 import com.sap.core.odata.core.uri.expression.Token;
 import com.sap.core.odata.core.uri.expression.TokenKind;
 import com.sap.core.odata.core.uri.expression.TokenList;
 import com.sap.core.odata.core.uri.expression.Tokenizer;
-import com.sap.core.odata.core.uri.expression.TokenizerMessage;
 
 public class TokenizerTest {
 
@@ -93,7 +93,7 @@ public class TokenizerTest {
       return new TokenTool(tokens);
       //    } catch (TokenizerRTException e) {
       //      fail("Error in tokenize" + e.getLocalizedMessage());
-    } catch (TokenizerMessage e) {
+    } catch (ExceptionTokenizer e) {
 
       fail("Error in tokenize" + e.getLocalizedMessage());
     }
@@ -113,7 +113,7 @@ public class TokenizerTest {
       return new TokenTool(tokens);
       //    } catch (TokenizerRuntimeException e) {
       //      fail("Error in tokenize" + e.getLocalizedMessage());
-    } catch (TokenizerMessage e) {
+    } catch (ExceptionTokenizer e) {
       fail("Error in tokenize" + e.getLocalizedMessage());
     }
     return null;

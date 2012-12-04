@@ -4,6 +4,7 @@ import java.util.Vector;
 
 import com.sap.core.odata.api.edm.EdmType;
 import com.sap.core.odata.api.uri.expression.CommonExpression;
+import com.sap.core.odata.api.uri.expression.ExceptionVisitExpression;
 import com.sap.core.odata.api.uri.expression.ExpressionKind;
 import com.sap.core.odata.api.uri.expression.ExpressionVisitor;
 import com.sap.core.odata.api.uri.expression.MethodExpression;
@@ -63,7 +64,7 @@ public class MethodExpressionImpl implements MethodExpression {
   }
 
   @Override
-  public Object accept(ExpressionVisitor visitor)
+  public Object accept(ExpressionVisitor visitor) throws ExceptionVisitExpression
   {
     Vector<Object> retParameters = new Vector<Object>();
     for (CommonExpression parameter : actualParameters)

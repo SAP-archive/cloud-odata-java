@@ -4,6 +4,7 @@ import java.util.Iterator;
 import java.util.Vector;
 
 import com.sap.core.odata.api.uri.EdmLiteral;
+import com.sap.core.odata.api.uri.expression.ExceptionParseExpression;
 
 public class TokenList implements Iterator<Token>
 {
@@ -76,20 +77,20 @@ public class TokenList implements Iterator<Token>
     return i;
   }
 
-  public Token expectToken(TokenKind comma) throws TokenizerMessage
+  public Token expectToken(TokenKind comma) throws ExceptionTokenizerExpect
   {
     Token actual = next();
     if (comma != actual.getKind())
-      throw TokenizerMessage.unexpectedToken(currentToken, comma.toString(), actual);
-
+      //throw new ExceptionTokenizerExpect(ExceptionTokenizerExpect.unexpectedToken(currentToken, comma.toString(), actual));
+      throw new ExceptionTokenizerExpect(ExceptionTokenizerExpect.INVALID_TOKEN_AT);
     return actual;
   }
 
-  public Token expectToken(String literal) throws TokenizerMessage
+  public Token expectToken(String literal) throws ExceptionTokenizerExpect
   {
     Token actual = next();
     if (!literal.equals(actual.getUriLiteral()))
-      throw TokenizerMessage.unexpectedToken(currentToken, literal, actual);
+      throw new ExceptionTokenizerExpect(ExceptionTokenizerExpect.INVALID_TOKEN_AT);
     return actual;
 
   }

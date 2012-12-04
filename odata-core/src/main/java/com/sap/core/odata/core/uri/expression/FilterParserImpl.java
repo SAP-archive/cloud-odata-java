@@ -20,7 +20,7 @@ import com.sap.core.odata.api.edm.EdmTyped;
 import com.sap.core.odata.api.uri.expression.BinaryExpression;
 import com.sap.core.odata.api.uri.expression.BinaryOperator;
 import com.sap.core.odata.api.uri.expression.CommonExpression;
-import com.sap.core.odata.api.uri.expression.ExpressionException;
+import com.sap.core.odata.api.uri.expression.ExceptionParseExpression;
 import com.sap.core.odata.api.uri.expression.FilterExpression;
 import com.sap.core.odata.api.uri.expression.FilterParser;
 import com.sap.core.odata.api.uri.expression.LiteralExpression;
@@ -33,16 +33,21 @@ import com.sap.core.odata.core.edm.EdmSimpleTypeFacadeImpl;
 
 public class FilterParserImpl implements FilterParser
 {
+  /*do the static initialization*/
   static Map<String, InfoBinaryOperator> availableBinaryOperators;
   static Map<String, InfoMethod> availableFunctions;
   static Map<String, InfoUnaryOperator> availableUnaryOperators;
+  
+  static
+  {
+    initAvialTables();
+  }
 
-  protected boolean useParameterPromotiom;
-  protected Edm edm;
-  protected EdmType resourceEntityType;
-
-  CommonExpression MO_EXPR_NODE;
-  TokenList tokenList = null;
+  /*instance attributes*/
+  protected boolean promoteParameters = true;
+  protected Edm edm = null;
+  protected EdmType resourceEntityType = null;
+  protected TokenList tokenList = null;
 
   /**
    * Creates a new FilterParser implementation
@@ -56,160 +61,201 @@ public class FilterParserImpl implements FilterParser
   }
 
   @Override
-  public FilterExpression ParseExpression(String filterExpression) throws ExpressionException
+  public FilterExpression ParseExpression(String filterExpression) throws ExceptionParseExpression, ExceptionExpressionInternalError
   {
+    CommonExpression node = null;
+
     try
     {
       Tokenizer tokenizer = new Tokenizer();
       tokenList = tokenizer.tokenize(filterExpression); //throws TokenizerMessage
-
-      //if token list is empty
-      if (!tokenList.hasTokens())
-        return new FilterExpressionImpl(filterExpression, null);
-
-      CommonExpression nodeLeft = readElement();
-      CommonExpression node = readElements(nodeLeft, 0);
-
-      //post check
-      //TODO verify if is an internal error or an user error
-      //E.g. Test "a eq b b" or " a b"
-      if (tokenList.tokenCount() > tokenList.currentToken) //this indicates that not all tokens have been read
-        throw new ExpressionException(ExpressionException.INVALID_TRAILING_TOKEN, null);
-
-      //create and return filterExpression node
-      return new FilterExpressionImpl(filterExpression, node);
-    } catch (ExpressionException expressionException)
+    } catch (ExceptionTokenizer tokenizerException)
     {
-      throw new ExpressionException(ExpressionException.INVALID_TRAILING_TOKEN, null);
-    } catch (TokenizerMessage e) {
-      //TODO
+      //wrap the tokenizer exception
+      throw new ExceptionParseExpression(ExceptionParseExpression.ERROR_IN_TOKENIZER).setCause(tokenizerException);
     }
-    return null;
+
+    //if token list is empty
+    if (!tokenList.hasTokens())
+      return new FilterExpressionImpl(filterExpression, null);
+
+    try
+    {
+      CommonExpression nodeLeft = readElement();
+      node = readElements(nodeLeft, 0);
+    } catch (ExceptionParseExpression expressionException)
+    {
+      FilterExpression fe = new FilterExpressionImpl(filterExpression, null);
+      //add info an rethrow
+      throw expressionException.setFilterTree(fe);
+    }
+
+    //post check
+    //TODO verify if is an internal error or an user error. E.g. Test "a eq b b" or " a b"
+    if (tokenList.tokenCount() > tokenList.currentToken) //this indicates that not all tokens have been read
+      throw new ExceptionParseExpression(ExceptionParseExpression.INVALID_TRAILING_TOKEN_DETECTED, null);
+
+    //create and return filterExpression node
+    return new FilterExpressionImpl(filterExpression, node);
   }
 
-  public void setUseParameterPromotiom(boolean useParameterPromotiom) {
-    this.useParameterPromotiom = useParameterPromotiom;
+  public void setPromoteParameters(boolean promoteParameters) {
+    this.promoteParameters = promoteParameters;
   }
 
-  InfoBinaryOperator LookBinaerOperator()
-  {
-    Token token = tokenList.lookToken();
-
-    if (token == null)
-      return null;
-
-    return availableBinaryOperators.get(token.getUriLiteral());
-  }
-
-  CommonExpression readElements(CommonExpression leftExpression, int priority) throws ExpressionException, TokenizerMessage
+  protected CommonExpression readElements(CommonExpression leftExpression, int priority) throws ExceptionParseExpression, ExceptionExpressionInternalError
   {
     CommonExpression leftNode;
     CommonExpression rightNode;
     BinaryExpression binaryNode;
 
     leftNode = leftExpression;
-    InfoBinaryOperator operator = LookBinaerOperator();
+    InfoBinaryOperator operator = readBinaryOperator();
 
     while ((operator != null) && (operator.priority >= priority))
     {
       tokenList.next();
-      rightNode = readElement();
+      rightNode = readElement();//throws ExceptionParseExpression, ExceptionExpressionInternalError
 
-      InfoBinaryOperator nextOperator = LookBinaerOperator();
+      InfoBinaryOperator nextOperator = readBinaryOperator();
 
       if ((nextOperator != null) && (nextOperator.priority > operator.priority))
       {
         rightNode = readElements(rightNode, nextOperator.priority);//op2 is read in read_elements.
-        nextOperator = LookBinaerOperator();
+        nextOperator = readBinaryOperator();
       }
 
       binaryNode = new BinaryExpressionImpl(operator, leftNode, rightNode);
 
       try
       {
-        VALIDATE_BINARY_TYPES(binaryNode);
-      } catch (Exception ex)
+        validateBinaryOperator(binaryNode);
+      } catch (ExceptionParseExpression expressionException)
       {
-        //TODO
+        //Attach error information
+        expressionException.setFilterTree(binaryNode);
+        throw expressionException;
       }
 
       leftNode = binaryNode;
-      operator = LookBinaerOperator();
+      operator = readBinaryOperator();
     }
 
     return leftNode;
   }
 
-  private void VALIDATE_BINARY_TYPES(BinaryExpression lo_binary) {
-    // TODO Auto-generated method stub
-
-  }
-
   /**
-   * Reads a Parenthesis expression. Its is expected that the current token is of kind {@link TokenKind#OPENPAREN} 
-   * @return
-   * @throws ExpressionException
+   * Reads the content between parenthesis. Its is expected that the current token is of kind {@link TokenKind#OPENPAREN}
+   * because it MUST be check in the calling method ( when read the method name and the '(' is read).  
+   * @return An expression which reflects the content within the parenthesis
+   * @throws ExceptionParseExpression
+   *   While reading the elements in the parenthesis an error occured
    * @throws TokenizerMessage 
+   *   The next token did not match the expected token
    */
-  CommonExpression readParenthesis() throws ExpressionException, TokenizerMessage
+  protected CommonExpression readParenthesis() throws ExceptionParseExpression, ExceptionExpressionInternalError
   {
-    tokenList.expectToken(TokenKind.OPENPAREN);
+    //---check for '('    
+    try {
+      tokenList.expectToken(TokenKind.OPENPAREN);
+    } catch (ExceptionTokenizerExpect e)
+    { //Internal parsing error, even if there are no more token (then there should be a different exception).  
+      throw new ExceptionExpressionInternalError(ExceptionExpressionInternalError.ERROR_PARSING_PARENTHESIS, e);
+    }
 
     CommonExpression firstExpression = readElement();
     CommonExpression parenthesisExpression = readElements(firstExpression, 0);
 
-    tokenList.expectToken(TokenKind.CLOSEPAREN);
-
+    //---check for ')'
+    try {
+      tokenList.expectToken(TokenKind.CLOSEPAREN); //TokenizerMessage
+    } catch (ExceptionTokenizerExpect e)
+    {
+      //Internal parsing error, even if there are no more token (then there should be a different exception).
+      ExceptionExpressionInternalError eie = new ExceptionExpressionInternalError(ExceptionExpressionInternalError.ERROR_PARSING_PARENTHESIS, e);
+      eie.setExpression(parenthesisExpression);
+      throw eie;
+    }
     return parenthesisExpression;
   }
 
-  MethodExpression readParameters(InfoMethod IS_FUNC, MethodExpressionImpl methodExpression) throws ExpressionException, TokenizerMessage
-
+  /**
+   * Read the parameters of a method expression
+   * @param methodInfo
+   *   Signature information about the method whose parameters should be read
+   * @param methodExpression
+   *   Method expression to which the read parameters are added 
+   * @return
+   *   The method expression input parameter 
+   * @throws ExceptionParseExpression
+   * @throws ExceptionExpressionInternalError 
+   * @throws ExceptionTokenizerExpect 
+   *   The next token did not match the expected token
+   */
+  protected MethodExpression readParameters(InfoMethod methodInfo, MethodExpressionImpl methodExpression) throws ExceptionParseExpression, ExceptionExpressionInternalError
   {
-    boolean lv_done = false;
-    Token lv_token;
-    int lv_pcount;
-    CommonExpression lo_node;
+    CommonExpression expression;
+    boolean expectAnotherExpression = false;
 
-    tokenList.expectToken(Character.toString(CharConst.GC_STR_OPENPAREN));
-
-    while (lv_done == false)
-    {
-      lo_node = readElement();
-      //ls_tmp_node = readElements(lo_node, 0);
-      if (lo_node != null) //parameter list may be emty
-      {
-        methodExpression.appendParameter(lo_node);
-      }
-      lv_token = tokenList.lookToken();
-
-      if (lv_token.getKind() == TokenKind.COMMA)
-
-      {
-        tokenList.expectToken(Character.toString(CharConst.GC_STR_COMMA));
-      }
-
-      else if (lv_token.getKind() == TokenKind.CLOSEPAREN) {
-        lv_done = true;
-      }
-      else
-      {
-        //throw new Exception();///iwcor/cx_ds_expr_syntax_error=>function_invalid_parameter
-      }
-    } //end while
-
-    lv_pcount = methodExpression.getParameters().size();
-    if (lv_pcount < IS_FUNC.getMinParameter())
-    {
-      //TODO raise exception /iwcor/cx_ds_expr_syntax_error=>function_to_few_parameter
+    //---check for '('
+    try {
+      tokenList.expectToken(TokenKind.OPENPAREN); //throws ExceptionTokenizerExpect
+    } catch (ExceptionTokenizerExpect e) {
+      throw new ExceptionExpressionInternalError(ExceptionExpressionInternalError.ERROR_PARSING_PARENTHESIS, e);
     }
 
-    if ((IS_FUNC.getMaxParameter() > -1) && (lv_pcount > IS_FUNC.getMinParameter()))
+    Token token = tokenList.lookToken();
+    while (token.getKind() != TokenKind.CLOSEPAREN)
     {
-      //TODO raise exception /iwcor/cx_ds_expr_syntax_error=>function_to_many_parameter
+      expression = readElement();
+      //After a ',' inside the parenthesis which define the method parameters a expression is expected 
+      //E.g. $filter=startswith(Country,'UK',) --> is wrong
+      //E.g. $filter=startswith(Country,) --> is also wrong 
+      if ((expression == null) && (expectAnotherExpression != true))
+      {
+        throw new ExceptionParseExpression(ExceptionParseExpression.EXPRESSION_EXPECTED_AT_POS);
+      }
+      else if (expression != null) //parameter list may be empty
+      {
+        methodExpression.appendParameter(expression);
+      }
+
+
+      token = tokenList.lookToken();
+
+      if (token.getKind() == TokenKind.COMMA)
+      {
+        //eat the ','
+        try {
+          tokenList.expectToken(Character.toString(CharConst.GC_STR_COMMA));
+        } catch (ExceptionTokenizerExpect e)
+        {
+          ExceptionExpressionInternalError eie = new ExceptionExpressionInternalError(ExceptionExpressionInternalError.ERROR_PARSING_PARENTHESIS, e);
+          throw eie;
+        }
+      }
     }
 
-    tokenList.expectToken(Character.toString(CharConst.GC_STR_CLOSEPAREN));
+    //---check for ')'
+    try {
+      tokenList.expectToken(TokenKind.CLOSEPAREN);
+    } catch (ExceptionTokenizerExpect e)
+    {
+      //Internal parsing error, even if there are no more token (then there should be a different exception).
+      throw new ExceptionExpressionInternalError(ExceptionExpressionInternalError.ERROR_PARSING_PARENTHESIS, e);
+    }
+
+    //---check parameter count
+    int count = methodExpression.getParameters().size();
+    if (count < methodInfo.getMinParameter())
+    {
+      throw ExceptionParseExpression.NewToFewParameters(methodExpression);
+    }
+
+    if ((methodInfo.getMaxParameter() > -1) && (count > methodInfo.getMinParameter()))
+    {
+      throw ExceptionParseExpression.NewToManyParameters(methodExpression);
+    }
 
     return methodExpression;
   }
@@ -218,10 +264,11 @@ public class FilterParserImpl implements FilterParser
    * Reads: Unary operators, Methods, Properties, ...
    * but not binary operators which are handelt in {@link #readElements(CommonExpression, int)}
    * @return
-   * @throws ExpressionException
+   * @throws ExceptionParseExpression
+   * @throws ExceptionExpressionInternalError 
    * @throws TokenizerMessage 
    */
-  CommonExpression readElement() throws ExpressionException, TokenizerMessage
+  protected CommonExpression readElement() throws ExceptionParseExpression, ExceptionExpressionInternalError
   {
     CommonExpression node = null;
     Token token;
@@ -230,50 +277,44 @@ public class FilterParserImpl implements FilterParser
 
     if (lookToken.getKind() == TokenKind.OPENPAREN) //."if token a '(' then process read a new note for the '(' and return it.
     {
-      node = readParenthesis();
+      node = readParenthesis(); //throws ExceptionParseExpression,ExceptionExpressionInternalError
       return node;
     }
-    else if (lookToken.getKind() == TokenKind.CLOSEPAREN)// " ')'  finishes a pharenthesiz (it is no extra token)" +
+    else if (lookToken.getKind() == TokenKind.CLOSEPAREN)// " ')'  finishes a parenthesis (it is no extra token)" +
     {
-      return node;
+      return null;
     }
 
     else if (lookToken.getKind() == TokenKind.COMMA)//. " ','  is a separator for function parameter (it is no extra token)" +
 
     {
-      return node;
+      return null;
     }
 
     //-->Check if the token is a unary operator
     InfoUnaryOperator unaryOperator = isUnaryOperator(lookToken);
     if (unaryOperator != null)
     {
-
-      token = tokenList.expectToken(lookToken.getUriLiteral());
-      CommonExpression operand = readElement();
-      UnaryExpression unaryExpression = new UnaryExpressionImpl(unaryOperator, operand);
-      validateUnaryTypes(unaryExpression, token); //throws ExpressionInvalidOperatorTypeException
-      return unaryExpression;
+      return readUnaryoperator(lookToken, unaryOperator);
     }
+
+    //---expect the look ahead token
+    try {
+      token = tokenList.expectToken(lookToken.getUriLiteral());
+    } catch (ExceptionTokenizerExpect e)
+    {
+      //Internal parsing error, even if there are no more token (then there should be a different exception).  
+      throw new ExceptionExpressionInternalError(ExceptionExpressionInternalError.ERROR_PARSING_PARENTHESIS, e);
+    }
+    lookToken = tokenList.lookToken();
 
     //-->Check if the token is a method 
     //To avoid name clashes between method names and property names we accept here only method names if a "(" follows.
-    //Hence the parser accepts a property named "concat" 
-    token = tokenList.expectToken(lookToken.getUriLiteral());
-    lookToken = tokenList.lookToken();
-
+    //Hence the parser accepts a property named "concat"
     InfoMethod methodOperator = isMethod(token, lookToken);
     if (methodOperator != null)
     {
-      //check for function if the next token is a '('
-      MethodExpressionImpl method = new MethodExpressionImpl((InfoMethod) methodOperator);
-      readParameters((InfoMethod) methodOperator, method);
-      validateMethodTypes(method, token); //throws ExpressionInvalidOperatorTypeException
-      return method;
-    }
-    if ((lookToken != null) && (lookToken.getKind() == TokenKind.OPENPAREN))
-    {
-      //TODO error '(' without function name ahead
+      return readMethod(token, methodOperator);
     }
 
     //-->Check if token is a terminal 
@@ -284,51 +325,58 @@ public class FilterParserImpl implements FilterParser
       return literal;
     }
 
-    //-->Check if token is a property
+    //-->Check if token is a property, e.g. "name" or "adress"
     if (token.getKind() == TokenKind.LITERAL)
     {
-      node = new PropertyExpressionImpl(token.getUriLiteral(), null, token.getJavaLiteral());
-    }
-
-    //" e.g. "name" or "adress"
-    if ((this.edm != null) && (this.resourceEntityType != null))
-    {
-      /*TODO check this*/
       PropertyExpression property = new PropertyExpressionImpl(token.getUriLiteral(), null, token.getJavaLiteral());
       validatePropertyTypes(property);
+      return property;
     }
 
-    // "resource type could be an /IWCOR/IF_DS_EDM_STRUCT_TYPE
-    //ERROR
-
-    return node;
+    throw new ExceptionParseExpression(ExceptionParseExpression.INVALID_TOKEN);
 
   }
 
-  private void validatePropertyTypes(PropertyExpression property) {
-    // TODO Auto-generated method stub
-
-  }
-
-  private InfoMethod isMethod(Token token, Token lookToken)
+  protected CommonExpression readUnaryoperator(Token lookToken, InfoUnaryOperator unaryOperator) throws ExceptionParseExpression, ExceptionExpressionInternalError
   {
-    if ((lookToken != null) && (lookToken.getKind() == TokenKind.OPENPAREN))
-    {
-      return availableFunctions.get(token.getUriLiteral());
+    Token token = null;
+
+    //---read token
+    try {
+      token = tokenList.expectToken(lookToken.getUriLiteral());
+    } catch (ExceptionTokenizerExpect e) {
+      throw new ExceptionExpressionInternalError(ExceptionExpressionInternalError.ERROR_PARSING_PARENTHESIS, e);
     }
+
+    CommonExpression operand = readElement();
+    UnaryExpression unaryExpression = new UnaryExpressionImpl(unaryOperator, operand);
+    validataUnaryOperator(unaryExpression, token); //throws ExpressionInvalidOperatorTypeException
+    return unaryExpression;
+  }
+
+  protected CommonExpression readMethod(Token token, InfoMethod methodOperator) throws ExceptionParseExpression, ExceptionExpressionInternalError
+  {
+    MethodExpressionImpl method = new MethodExpressionImpl((InfoMethod) methodOperator);
+
+    readParameters((InfoMethod) methodOperator, method);
+    validateMethodTypes(method, token); //throws ExpressionInvalidOperatorTypeException
+    return method;
+  }
+
+  protected InfoBinaryOperator readBinaryOperator()
+  {
+    Token token = tokenList.lookToken();
+    if (token == null) return null;
+    if (token.getKind() == TokenKind.LITERAL)
+    {
+      InfoBinaryOperator operator = availableBinaryOperators.get(token.getUriLiteral());
+      return operator;
+    }
+
     return null;
   }
 
-  private void validateUnaryTypes(UnaryExpression unaryExpression, Token token) throws ExpressionInvalidOperatorTypeException {
-    //TODO check types 
-  }
-
-  private void VALIDATE_FUNCTION_TYPES(MethodExpression lo_function) {
-    // TODO Auto-generated method stub
-
-  }
-
-  CommonExpression readElementForMember(PropertyExpression io_parent_property) throws Exception
+  protected CommonExpression readElementForMember(PropertyExpression io_parent_property) throws Exception
   {
     Token lv_token;
     Token lv_look_token;
@@ -429,7 +477,7 @@ public class FilterParserImpl implements FilterParser
    *   <li>An instance of {@link InfoUnaryOperator} containing information about the specific unary operator</li> 
    *   <li><code>null</code> if the token is not an unary operator</li>
    */
-  InfoUnaryOperator isUnaryOperator(Token token)
+  protected InfoUnaryOperator isUnaryOperator(Token token)
   {
     if ((token.getKind() == TokenKind.LITERAL) || (token.getKind() == TokenKind.SYMBOL))
     {
@@ -439,37 +487,16 @@ public class FilterParserImpl implements FilterParser
     return null;
   }
 
-  static void addOneParameter()
+  protected InfoMethod isMethod(Token token, Token lookToken)
   {
-    /*
-     * 
-            DEFINE add_one_parameter.
-              clear ls_param_type.
-              ls_param_type-return_type = /iwcor/cl_ds_edm_simple_type=>gc_name_&1.
-              append /iwcor/cl_ds_edm_simple_type=>gc_name_&2 to ls_param_type-params.
-              append ls_param_type to lt_param_type.
-            END-OF-DEFINITION.
-
-            DEFINE add_two_parameters.
-              clear ls_param_type.
-              ls_param_type-return_type = /iwcor/cl_ds_edm_simple_type=>gc_name_&1.
-              append /iwcor/cl_ds_edm_simple_type=>gc_name_&2 to ls_param_type-params.
-              append /iwcor/cl_ds_edm_simple_type=>gc_name_&3 to ls_param_type-params.
-              append ls_param_type to lt_param_type.
-            END-OF-DEFINITION.
-
-            DEFINE add_three_parameters.
-              clear ls_param_type.
-              ls_param_type-return_type = /iwcor/cl_ds_edm_simple_type=>gc_name_&1.
-              append /iwcor/cl_ds_edm_simple_type=>gc_name_&2 to ls_param_type-params.
-              append /iwcor/cl_ds_edm_simple_type=>gc_name_&3 to ls_param_type-params.
-              append /iwcor/cl_ds_edm_simple_type=>gc_name_&4 to ls_param_type-params.
-              append ls_param_type to lt_param_type.
-            END-OF-DEFINITION.
-     */
+    if ((lookToken != null) && (lookToken.getKind() == TokenKind.OPENPAREN))
+    {
+      return availableFunctions.get(token.getUriLiteral());
+    }
+    return null;
   }
 
-  static void InitAvialTables()
+  static void initAvialTables()
   {
     availableBinaryOperators = new HashMap<String, InfoBinaryOperator>();
     availableFunctions = new HashMap<String, InfoMethod>();
@@ -756,7 +783,7 @@ public class FilterParserImpl implements FilterParser
 
   }
 
-  static String GetTypeName(EdmType IP_TYPE) throws EdmException
+  static String getTypeName(EdmType IP_TYPE) throws EdmException
   {
     String RV_TYPENAME = IP_TYPE.getName();
     return RV_TYPENAME;
@@ -790,7 +817,7 @@ public class FilterParserImpl implements FilterParser
     String lv_type_name;
 
     lo_resource_type = IO_RESOURCE_TYPE;
-    lv_type_name = GetTypeName(IO_RESOURCE_TYPE);
+    lv_type_name = getTypeName(IO_RESOURCE_TYPE);
 
     try
     {
@@ -828,6 +855,7 @@ public class FilterParserImpl implements FilterParser
       {
         throw new Exception();/*TODO*//*
 
+
                                                            RAISE EXCEPTION TYPE /iwcor/cx_ds_expr_parser_error "OK
                                                            EXPORTING
                                                            textid   = /iwcor/cx_ds_expr_parser_error=>property_not_in_type
@@ -835,6 +863,7 @@ public class FilterParserImpl implements FilterParser
                                                            property = is_property_token-value
                                                            position = is_property_token-position.
                                                            ENDIF.*/
+
 
       }
     } catch (Exception ex)
@@ -849,7 +878,12 @@ public class FilterParserImpl implements FilterParser
     return RO_PROPERTY;
   }
 
-  void validateMethodTypes(MethodExpression method, Token token)
+  protected void validateBinaryOperator(BinaryExpression lo_binary) throws ExceptionParseExpression
+  {
+    // TODO Auto-generated method stub
+  }
+
+  protected void validateMethodTypes(MethodExpression methodExpression, Token token)
   /*void VALIDATE_FUNCTION_TYPES(MethodExpression IO_EXPR_FUNCTION,
       Vector<EdmType> ET_ACTUAL_PARAMETERS,
       XXX_fuop_types_s ES_FORMAL_PARAM_COMBI)*/
@@ -898,50 +932,8 @@ public class FilterParserImpl implements FilterParser
      */
   }
 
-  void VALIDATE_BINARY_TYPES(BinaryExpression IO_EXPR_BINARY,
-      Vector<EdmType> ET_ACTUAL_PARAMETERS
-      )
-  {
-    /*#
-     * DATA:
-          lv_string TYPE string,
-          lt_act_param_types TYPE TABLE OF REF TO /iwcor/if_ds_edm_type WITH DEFAULT KEY,
-          ls_param_combinations TYPE fuop_types_s,
-          ls_used_combination TYPE param_types_s,
-          lv_promoted TYPE abap_bool,
-          lv_dynamic TYPE abap_bool.
-        APPEND io_expr_binary->left_operand->type TO lt_act_param_types .
-        APPEND io_expr_binary->right_operand->type TO lt_act_param_types .
-
-        "get the possible prameter comibnations
-        READ TABLE mt_fuops WITH KEY name = io_expr_binary->operator INTO ls_param_combinations.
-
-        validate_parameter_types(
-            EXPORTING
-              it_actual_parameters  = lt_act_param_types
-              is_formal_param_combi = ls_param_combinations
-            IMPORTING
-              es_used_combi         = ls_used_combination
-              ev_promoted           = lv_promoted ).
-
-        io_expr_binary->/iwcor/if_ds_expr_node~type = /iwcor/cl_ds_edm_simple_type=>get_instance( iv_name = ls_used_combination-return_type ).
-
-        if lv_dynamic = abap_true.
-          RETURN.
-        ENDIF.
-
-        if  mv_parameter_promotion = abap_true AND lv_promoted = abap_true.
-          READ TABLE ls_used_combination-params INDEX 1 INTO lv_string.
-          io_expr_binary->left_operand->type = /iwcor/cl_ds_edm_simple_type=>get_instance( iv_name = lv_string ).
-
-          READ TABLE ls_used_combination-params INDEX 2 INTO lv_string.
-          io_expr_binary->right_operand->type = /iwcor/cl_ds_edm_simple_type=>get_instance( iv_name = lv_string ).
-        ENDIF.
-     */
-  }
-
-  void VALIDATE_UNARY_TYPES(BinaryExpression IO_EXPR_UNARY,
-      Vector<EdmType> ET_ACTUAL_PARAMETERS)
+  protected void validataUnaryOperator(UnaryExpression IO_EXPR_UNARY,
+      Token token)
   {/*
    DATA:
           lv_string TYPE string,
@@ -977,7 +969,7 @@ public class FilterParserImpl implements FilterParser
           io_expr_unary->operand->type = /iwcor/cl_ds_edm_simple_type=>get_instance( iv_name = lv_string ).
         ENDIF.*/}
 
-  void VALIDATE_PARAMETER_TYPES(Vector<EdmType> IT_ACTUAL_PARAMETERS,
+  protected void validateParameterSet(Vector<EdmType> IT_ACTUAL_PARAMETERS,
       Vector<EdmType> ET_ACTUAL_PARAMETERS,
 
       boolean ev_dynamic,
@@ -1096,26 +1088,10 @@ public class FilterParserImpl implements FilterParser
                                                                                          */
   }
 
-  /*
-        class-methods ATTACH_ERROR_INFORMATION
-      importing
-        !IO_NODE type ref to /IWCOR/IF_DS_EXPR_NODE
-        !IV_POSITION type I
-        !IO_EXCEPTION type ref to CX_ROOT
-        !IV_TEXT type STRING optional .
-        if io_node IS BOUND.
-        CREATE DATA io_node->error_information.
-        io_node->error_information->position = iv_position.
-        io_node->error_information->exception = io_exception.
-        io_node->error_information->text = iv_text.
-      ENDIF.
-    ENDCLASS.
+  
 
-  */
+  protected void validatePropertyTypes(PropertyExpression property) {
+    // TODO Auto-generated method stub
 
-  static
-  {
-    InitAvialTables();
   }
-
 }
