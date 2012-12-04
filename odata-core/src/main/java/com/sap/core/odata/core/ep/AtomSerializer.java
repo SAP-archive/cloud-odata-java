@@ -48,13 +48,13 @@ public class AtomSerializer extends ODataSerializer {
   }
 
   @Override
-  public InputStream serializeEntry(EdmEntitySet entitySet, Map<String, Object> data) throws ODataSerializationException {
+  public InputStream serializeEntry(EdmEntitySet entitySet, Map<String, Object> data, String mediaResourceMimeType) throws ODataSerializationException {
     try {
       AtomEntrySerializer as = new AtomEntrySerializer(this.getContext());
 
       ByteArrayOutputStream out = new ByteArrayOutputStream();
       XMLStreamWriter writer = XMLOutputFactory.newInstance().createXMLStreamWriter(out, "utf-8");
-      as.append(writer, entitySet, data, true);
+      as.append(writer, entitySet, data, true, mediaResourceMimeType);
 
       writer.flush();
       out.flush();
