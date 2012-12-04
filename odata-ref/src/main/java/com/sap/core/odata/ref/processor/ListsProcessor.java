@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.sap.core.odata.api.edm.EdmEntitySet;
+import com.sap.core.odata.api.edm.EdmEntityType;
 import com.sap.core.odata.api.edm.EdmException;
 import com.sap.core.odata.api.edm.EdmFunctionImport;
 import com.sap.core.odata.api.edm.EdmLiteralKind;
@@ -17,6 +18,7 @@ import com.sap.core.odata.api.edm.EdmSimpleType;
 import com.sap.core.odata.api.edm.EdmSimpleTypeException;
 import com.sap.core.odata.api.edm.EdmSimpleTypeKind;
 import com.sap.core.odata.api.edm.EdmStructuralType;
+import com.sap.core.odata.api.edm.EdmType;
 import com.sap.core.odata.api.edm.EdmTypeKind;
 import com.sap.core.odata.api.enums.Format;
 import com.sap.core.odata.api.enums.HttpStatusCodes;
@@ -30,8 +32,14 @@ import com.sap.core.odata.api.processor.ODataSingleProcessor;
 import com.sap.core.odata.api.uri.EdmLiteral;
 import com.sap.core.odata.api.uri.KeyPredicate;
 import com.sap.core.odata.api.uri.NavigationSegment;
+import com.sap.core.odata.api.uri.expression.BinaryExpression;
+import com.sap.core.odata.api.uri.expression.CommonExpression;
 import com.sap.core.odata.api.uri.expression.FilterExpression;
+import com.sap.core.odata.api.uri.expression.MemberExpression;
+import com.sap.core.odata.api.uri.expression.MethodExpression;
 import com.sap.core.odata.api.uri.expression.OrderByExpression;
+import com.sap.core.odata.api.uri.expression.PropertyExpression;
+import com.sap.core.odata.api.uri.expression.UnaryExpression;
 import com.sap.core.odata.api.uri.resultviews.GetComplexPropertyView;
 import com.sap.core.odata.api.uri.resultviews.GetEntityCountView;
 import com.sap.core.odata.api.uri.resultviews.GetEntityLinkCountView;
@@ -44,7 +52,6 @@ import com.sap.core.odata.api.uri.resultviews.GetEntityView;
 import com.sap.core.odata.api.uri.resultviews.GetFunctionImportView;
 import com.sap.core.odata.api.uri.resultviews.GetMediaResourceView;
 import com.sap.core.odata.api.uri.resultviews.GetSimplePropertyView;
-import com.sap.core.odata.ref.util.ObjectHelper;
 
 /**
  * Implementation of the centralized parts of OData processing,
@@ -87,10 +94,20 @@ public class ListsProcessor extends ODataSingleProcessor {
         uriParserResultView.getSkip(),
         uriParserResultView.getTop());
 
+    Format format = uriParserResultView.getFormat();
+    if (format == null)
+      format = Format.ATOM;
+
+    final EdmEntitySet entitySet = uriParserResultView.getTargetEntitySet();
+    final EdmEntityType entityType = entitySet.getEntityType();
+    ArrayList<Map<String, Object>> values = new ArrayList<Map<String,Object>>();
+    for (final Object entryData : data)
+      values.add(getStructuralTypeValueMap(entryData, entityType));
+
     return ODataResponse
         .status(HttpStatusCodes.OK)
         .header(CONTENT_TYPE, APPLICATION_ATOM_XML_FEED)
-        .entity(serialize(uriParserResultView.getTargetEntitySet(), uriParserResultView.getFormat(), data))
+        .entity(data.toString())
         .build();
   }
 
@@ -241,8 +258,10 @@ public class ListsProcessor extends ODataSingleProcessor {
     if (format == null)
       format = Format.XML;
 
-    final Object value = property.getType().getKind() == EdmTypeKind.COMPLEX ?
-        getStructuralTypeValueMap(data, (EdmStructuralType) property.getType()) : data;
+    final EdmType type = property.getType();
+
+    final Object value = type.getKind() == EdmTypeKind.COMPLEX ?
+        getStructuralTypeValueMap(data, (EdmStructuralType) type) : data;
 
     return ODataResponse
         .status(HttpStatusCodes.OK)
@@ -272,12 +291,15 @@ public class ListsProcessor extends ODataSingleProcessor {
     for (EdmProperty intermediateProperty : uriParserResultView.getPropertyPath())
       data = getPropertyValue(data, property = intermediateProperty);
 
+    final EdmSimpleType type = (EdmSimpleType) property.getType();
+    final String value = type.valueToString(data, EdmLiteralKind.DEFAULT, property.getFacets());
+
     return ODataResponse
         .status(HttpStatusCodes.OK)
         .header(CONTENT_TYPE,
-            (EdmSimpleType) property.getType() == EdmSimpleTypeKind.Binary.getEdmSimpleTypeInstance() ?
+            type == EdmSimpleTypeKind.Binary.getEdmSimpleTypeInstance() ?
                 property.getMimeType() : TEXT_PLAIN)
-        .entity(data == null ? "" : data.toString())
+        .entity(value == null ? "" : value)
         .build();
   }
 
@@ -307,6 +329,7 @@ public class ListsProcessor extends ODataSingleProcessor {
   @Override
   public ODataResponse executeFunctionImport(final GetFunctionImportView uriParserResultView) throws ODataException {
     final EdmFunctionImport functionImport = uriParserResultView.getFunctionImport();
+
     final Object data = dataSource.readData(
         functionImport,
         mapFunctionParameters(uriParserResultView.getFunctionImportParameters()),
@@ -327,17 +350,20 @@ public class ListsProcessor extends ODataSingleProcessor {
   @Override
   public ODataResponse executeFunctionImportValue(final GetFunctionImportView uriParserResultView) throws ODataException {
     final EdmFunctionImport functionImport = uriParserResultView.getFunctionImport();
+    final EdmSimpleType type = (EdmSimpleType) functionImport.getReturnType().getType();
+
     final Object data = dataSource.readData(
         functionImport,
         mapFunctionParameters(uriParserResultView.getFunctionImportParameters()),
         null);
+    final String value = type.valueToString(data, EdmLiteralKind.DEFAULT, null);
 
     return ODataResponse
         .status(HttpStatusCodes.OK)
         .header(CONTENT_TYPE,
-            (EdmSimpleType) functionImport.getReturnType().getType() == EdmSimpleTypeKind.Binary.getEdmSimpleTypeInstance() ?
+            type == EdmSimpleTypeKind.Binary.getEdmSimpleTypeInstance() ?
                 APPLICATION_OCTET_STREAM : TEXT_PLAIN)
-        .entity(data.toString())
+        .entity(value == null ? "" : value)
         .build();
   }
 
@@ -433,10 +459,124 @@ public class ListsProcessor extends ODataSingleProcessor {
   private <T> boolean appliesFilter(final T data, final FilterExpression filter) throws ODataException {
     if (data == null)
       return false;
+
     if (filter == null)
       return true;
-    // TODO: implement filter evaluation
-    throw new ODataNotImplementedException();
+    else
+      return evaluateExpression(data, filter.getExpression()).equals("true");
+  }
+
+  private <T> String evaluateExpression(final T data, final CommonExpression expression) throws ODataException {
+    switch (expression.getKind()) {
+    case UNARY:
+      final UnaryExpression unaryExpression = (UnaryExpression) expression;
+      final String operand = evaluateExpression(data, unaryExpression.getOperand());
+
+      switch (unaryExpression.getOperator()) {
+      case NOT:
+        return Boolean.toString(!Boolean.parseBoolean(operand));
+      case MINUS:
+        if (operand.startsWith("-"))
+          return operand.substring(1);
+        else
+          return "-" + operand;
+      }
+
+    case BINARY:
+      final BinaryExpression binaryExpression = (BinaryExpression) expression;
+      // final EdmSimpleType binaryType = (EdmSimpleType) binaryExpression.getEdmType();
+      final String left = evaluateExpression(data, binaryExpression.getLeftOperand());
+      final String right = evaluateExpression(data, binaryExpression.getRightOperand());
+
+      switch (binaryExpression.getOperator()) {
+      case ADD:
+      case SUB:
+      case MUL:
+      case DIV:
+      case MODULO:
+        throw new ODataNotImplementedException();
+      case AND:
+        return Boolean.toString(left.equals("true") && right.equals("true"));
+      case OR:
+        return Boolean.toString(left.equals("true") || right.equals("true"));
+      case EQ:
+        return Boolean.toString(left.equals(right));
+      case NE:
+        return Boolean.toString(!left.equals(right));
+      case LT:
+      case LE:
+      case GT:
+      case GE:
+        throw new ODataNotImplementedException();
+      case PROPERTY_ACCESS:
+        throw new ODataNotImplementedException();
+      }
+
+    case PROPERTY:
+      final EdmProperty property = ((PropertyExpression) expression).getEdmProperty();
+      final EdmSimpleType type = (EdmSimpleType) property.getType();
+
+      return type.valueToString(getPropertyValue(data, property), EdmLiteralKind.DEFAULT, property.getFacets());
+
+    case MEMBER:
+      final CommonExpression path = ((MemberExpression) expression).getPath();
+      evaluateExpression(data, path);
+      throw new ODataNotImplementedException();
+
+    case LITERAL:
+      return expression.toUriLiteral();
+
+    case METHOD:
+      final MethodExpression methodExpression = (MethodExpression) expression;
+      final String first = evaluateExpression(data, methodExpression.getParameters().get(0));
+      final String second = methodExpression.getParameterCount() > 1 ?
+          evaluateExpression(data, methodExpression.getParameters().get(1)) : null;
+      final String third = methodExpression.getParameterCount() > 2 ?
+          evaluateExpression(data, methodExpression.getParameters().get(2)) : null;
+
+      switch (methodExpression.getMethod()) {
+      case ENDSWITH:
+        return Boolean.toString(first.endsWith(second));
+      case INDEXOF:
+        return Integer.toString(first.indexOf(second));
+      case STARTSWITH:
+        return Boolean.toString(first.startsWith(second));
+      case TOLOWER:
+        return first.toLowerCase();
+      case TOUPPER:
+        return first.toUpperCase();
+      case TRIM:
+        return first.trim();
+      case SUBSTRING:
+        final int offset = first.indexOf(second);
+        return first.substring(offset, offset + Integer.parseInt(third));
+      case SUBSTRINGOF:
+        return Boolean.toString(first.contains(second));
+      case CONCAT:
+        return first + second;
+      case LENGTH:
+        return Integer.toString(first.length());
+      case YEAR:
+        return String.valueOf(Integer.parseInt(first.substring(0, 4)));
+      case MONTH:
+        return String.valueOf(Integer.parseInt(first.substring(5, 7)));
+      case DAY:
+        return String.valueOf(Integer.parseInt(first.substring(8, 10)));
+      case HOUR:
+        return String.valueOf(Integer.parseInt(first.substring(11, 13)));
+      case MINUTE:
+        return String.valueOf(Integer.parseInt(first.substring(14, 16)));
+      case SECOND:
+        return String.valueOf(Integer.parseInt(first.substring(17, 19)));
+      case ROUND:
+      case FLOOR:
+      case CEILING:
+        throw new ODataNotImplementedException();        
+      }
+
+    default:
+      throw new ODataNotImplementedException();
+    }
   }
 
   private <T> String getSkipToken(final T data, final EdmEntitySet entitySet) throws ODataException {
@@ -503,33 +643,4 @@ public class ListsProcessor extends ODataSingleProcessor {
     return valueMap;
   }
 
-  private Object serialize(EdmEntitySet entitySet, Format format, List<Object> objects) throws ODataException {
-    if (format == null) {
-      return objects == null ? "NULL" : objects.toString();
-    } else {
-      Map<String, Object> rawData = objectToMap(objects);
-      ODataSerializer ser = ODataSerializer.create(format, getContext());
-
-      return ser.serializeEntry(entitySet, rawData);
-    }
-  }
-
-  private Map<String, Object> objectToMap(List<Object> objects) throws ODataException {
-    Map<String, Object> mappedObjects = new HashMap<String, Object>();
-
-    for (Object object : objects) {
-      mappedObjects.put(String.valueOf(object.hashCode()), objectToMap(object));
-    }
-
-    return mappedObjects;
-  }
-
-  private Map<String, Object> objectToMap(Object object) throws ODataException {
-    ObjectHelper objHelper = ObjectHelper.init(object);
-    try {
-      return objHelper.getFlatFieldValues();
-    } catch (IllegalAccessException e) {
-      throw new ODataException("Failure on object mapping.", e);
-    }
-  }
 }

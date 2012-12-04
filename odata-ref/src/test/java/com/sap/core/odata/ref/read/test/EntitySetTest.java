@@ -9,6 +9,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.sap.core.odata.api.edm.EdmEntitySet;
+import com.sap.core.odata.api.edm.EdmEntityType;
 import com.sap.core.odata.api.edm.EdmException;
 import com.sap.core.odata.api.processor.ODataResponse;
 import com.sap.core.odata.api.uri.UriParserResult;
@@ -34,11 +35,14 @@ public class EntitySetTest {
   }
 
   private UriParserResult mockUriResult(final String entitySetName) throws EdmException {
+    EdmEntityType entityType = mock(EdmEntityType.class);
     EdmEntitySet entitySet = mock(EdmEntitySet.class);
     when(entitySet.getName()).thenReturn(entitySetName);
+    when(entitySet.getEntityType()).thenReturn(entityType);
 
     UriParserResult uriResult = mock(UriParserResult.class);
     when(uriResult.getStartEntitySet()).thenReturn(entitySet);
+    when(uriResult.getTargetEntitySet()).thenReturn(entitySet);
     when(uriResult.getTop()).thenReturn(null);
     return uriResult;
   }
