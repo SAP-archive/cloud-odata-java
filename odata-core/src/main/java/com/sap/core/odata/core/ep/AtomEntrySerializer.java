@@ -46,7 +46,7 @@ public class AtomEntrySerializer {
         writer.writeDefaultNamespace(NS_ATOM);
         writer.writeNamespace("m", NS_DATASERVICES_METADATA);
         writer.writeNamespace("d", NS_DATASERVICES);
-        writer.writeAttribute(NS_XML, "base", this.context.getUriInfo().getBaseUri().toASCIIString());
+        writer.writeAttribute("xml", NS_XML, "base", this.context.getUriInfo().getBaseUri().toASCIIString());
       }
 
       AtomInfoAggregator aia = appendProperties(writer, entitySet, data);
