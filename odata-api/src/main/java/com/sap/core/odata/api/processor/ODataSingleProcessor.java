@@ -309,7 +309,7 @@ public abstract class ODataSingleProcessor
     InputStream serviceDocument = odataSerializer.serializeServiceDocument(getContext().getService().getEntityDataModel(), getContext().getUriInfo().getBaseUri().toASCIIString());
     return ODataResponse
         .status(HttpStatusCodes.OK)
-        .header("Content-Type", "application/xml")
+        .header("Content-Type", "application/atomsvc+xml")
         .header("DataServiceVersion", Edm.DATA_SERVICE_VERSION_10)
         .entity(serviceDocument)
         .build();

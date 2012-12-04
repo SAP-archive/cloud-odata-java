@@ -43,7 +43,6 @@ import com.sap.core.odata.api.uri.resultviews.GetEntitySetView;
 import com.sap.core.odata.api.uri.resultviews.GetEntityView;
 import com.sap.core.odata.api.uri.resultviews.GetFunctionImportView;
 import com.sap.core.odata.api.uri.resultviews.GetMediaResourceView;
-import com.sap.core.odata.api.uri.resultviews.GetServiceDocumentView;
 import com.sap.core.odata.api.uri.resultviews.GetSimplePropertyView;
 import com.sap.core.odata.ref.util.ObjectHelper;
 
@@ -167,15 +166,17 @@ public class ListsProcessor extends ODataSingleProcessor {
     if (!appliesFilter(data, uriParserResultView.getFilter()))
       throw new ODataNotFoundException(ODataNotFoundException.ENTITY);
 
-    // final EdmEntitySet entitySet = uriParserResultView.getTargetEntitySet();
-    // final Map<String, Object> values = getStructuralTypeValueMap(data, entitySet.getEntityType());
+    Format format = uriParserResultView.getFormat();
+    if (format == null)
+      format = Format.ATOM;
+
+    final EdmEntitySet entitySet = uriParserResultView.getTargetEntitySet();
+    final Map<String, Object> values = getStructuralTypeValueMap(data, entitySet.getEntityType());
 
     return ODataResponse
         .status(HttpStatusCodes.OK)
         .header(CONTENT_TYPE, APPLICATION_ATOM_XML_ENTRY)
-        .entity(
-            // ODataSerializer.create(uriParserResultView.getFormat(), getContext()).serializeEntry(entitySet, values))
-            serialize(uriParserResultView.getTargetEntitySet(), uriParserResultView.getFormat(), data))
+        .entity(ODataSerializer.create(format, getContext()).serializeEntry(entitySet, values))
         .build();
   }
 
@@ -209,10 +210,10 @@ public class ListsProcessor extends ODataSingleProcessor {
       throw new ODataNotFoundException(ODataNotFoundException.ENTITY);
 
     return ODataResponse
-          .status(HttpStatusCodes.OK)
-          .header(CONTENT_TYPE, APPLICATION_XML)
-          .entity("Link to " + data)
-          .build();
+        .status(HttpStatusCodes.OK)
+        .header(CONTENT_TYPE, APPLICATION_XML)
+        .entity("Link to " + data)
+        .build();
   }
 
   @Override
@@ -236,13 +237,17 @@ public class ListsProcessor extends ODataSingleProcessor {
     for (EdmProperty intermediateProperty : uriParserResultView.getPropertyPath())
       data = getPropertyValue(data, property = intermediateProperty);
 
+    Format format = uriParserResultView.getFormat();
+    if (format == null)
+      format = Format.XML;
+
     final Object value = property.getType().getKind() == EdmTypeKind.COMPLEX ?
         getStructuralTypeValueMap(data, (EdmStructuralType) property.getType()) : data;
 
     return ODataResponse
         .status(HttpStatusCodes.OK)
         .header(CONTENT_TYPE, APPLICATION_XML)
-        .entity(ODataSerializer.create(Format.XML, getContext()).serializeProperty(property, value))
+        .entity(ODataSerializer.create(format, getContext()).serializeProperty(property, value))
         .build();
   }
 
@@ -301,14 +306,20 @@ public class ListsProcessor extends ODataSingleProcessor {
 
   @Override
   public ODataResponse executeFunctionImport(final GetFunctionImportView uriParserResultView) throws ODataException {
+    final EdmFunctionImport functionImport = uriParserResultView.getFunctionImport();
     final Object data = dataSource.readData(
-        uriParserResultView.getFunctionImport(),
+        functionImport,
         mapFunctionParameters(uriParserResultView.getFunctionImportParameters()),
         null);
 
+    String contentType = APPLICATION_XML;
+    if (uriParserResultView.getFormat() == null
+        && functionImport.getReturnType().getType().getKind() == EdmTypeKind.ENTITY)
+      contentType = APPLICATION_ATOM_XML_ENTRY;
+
     return ODataResponse
         .status(HttpStatusCodes.OK)
-        .header(CONTENT_TYPE, APPLICATION_XML)
+        .header(CONTENT_TYPE, contentType)
         .entity(data.toString())
         .build();
   }
@@ -454,21 +465,26 @@ public class ListsProcessor extends ODataSingleProcessor {
 
   private <T> Object getPropertyValue(final T data, final EdmProperty property) throws ODataException {
     final String prefix = property.getType().getKind() == EdmTypeKind.SIMPLE && property.getType() == EdmSimpleTypeKind.Boolean.getEdmSimpleTypeInstance() ? "is" : "get";
+    final String defaultMethodName = prefix + property.getName();
     final String methodName = property.getMapping() == null ?
-        prefix + property.getName() : property.getMapping().getValue();
-    try {
-      return data.getClass().getMethod(methodName).invoke(data);
-    } catch (SecurityException e) {
-      throw new ODataNotFoundException(null, e);
-    } catch (NoSuchMethodException e) {
-      throw new ODataNotFoundException(null, e);
-    } catch (IllegalArgumentException e) {
-      throw new ODataNotFoundException(null, e);
-    } catch (IllegalAccessException e) {
-      throw new ODataNotFoundException(null, e);
-    } catch (InvocationTargetException e) {
-      throw new ODataNotFoundException(null, e);
-    }
+        defaultMethodName : property.getMapping().getValue();
+    Object dataObject = data;
+
+    for (final String method : methodName.split("\\.", -1))
+      try {
+        dataObject = dataObject.getClass().getMethod(method).invoke(dataObject);
+      } catch (SecurityException e) {
+        throw new ODataNotFoundException(null, e);
+      } catch (NoSuchMethodException e) {
+        throw new ODataNotFoundException(null, e);
+      } catch (IllegalArgumentException e) {
+        throw new ODataNotFoundException(null, e);
+      } catch (IllegalAccessException e) {
+        throw new ODataNotFoundException(null, e);
+      } catch (InvocationTargetException e) {
+        throw new ODataNotFoundException(null, e);
+      }
+    return dataObject;
   }
 
   private <T> Map<String, Object> getStructuralTypeValueMap(final T data, final EdmStructuralType type) throws ODataException {
@@ -482,7 +498,7 @@ public class ListsProcessor extends ODataSingleProcessor {
         valueMap.put(propertyName, getStructuralTypeValueMap(value, (EdmStructuralType) property.getType()));
       else
         valueMap.put(propertyName, value);
-      }
+    }
 
     return valueMap;
   }
@@ -496,27 +512,6 @@ public class ListsProcessor extends ODataSingleProcessor {
 
       return ser.serializeEntry(entitySet, rawData);
     }
-  }
-
-  private Object serialize(EdmEntitySet entitySet, Format format, Object object) throws ODataException {
-    if (format == null) {
-      return object == null ? "NULL" : object.toString();
-    } else {
-      Map<String, Object> rawData = objectToMap(object);
-      ODataSerializer ser = ODataSerializer.create(format, getContext());
-
-      return ser.serializeEntry(entitySet, rawData);
-    }
-  }
-
-  private List<Map<String, Object>> objectsToList(List<Object> objects) throws ODataException {
-    List<Map<String, Object>> mappedObjects = new ArrayList<Map<String, Object>>();
-
-    for (Object object : objects) {
-      mappedObjects.add(objectToMap(object));
-    }
-
-    return mappedObjects;
   }
 
   private Map<String, Object> objectToMap(List<Object> objects) throws ODataException {
