@@ -13,7 +13,10 @@ import java.util.Set;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 
+import org.apache.commons.lang3.StringEscapeUtils;
+
 import com.sap.core.odata.api.edm.Edm;
+import com.sap.core.odata.api.edm.EdmConcurrencyMode;
 import com.sap.core.odata.api.edm.EdmCustomizableFeedMappings;
 import com.sap.core.odata.api.edm.EdmEntityContainer;
 import com.sap.core.odata.api.edm.EdmEntitySet;
@@ -23,6 +26,7 @@ import com.sap.core.odata.api.edm.EdmLiteralKind;
 import com.sap.core.odata.api.edm.EdmProperty;
 import com.sap.core.odata.api.edm.EdmSimpleType;
 import com.sap.core.odata.api.edm.EdmTargetPath;
+import com.sap.core.odata.api.edm.EdmType;
 import com.sap.core.odata.api.edm.EdmTyped;
 import com.sap.core.odata.api.enums.MediaType;
 import com.sap.core.odata.api.ep.ODataSerializationException;
@@ -53,6 +57,11 @@ public class AtomEntrySerializer {
         writer.writeAttribute("xml", NS_XML, "base", this.context.getUriInfo().getBaseUri().toASCIIString());
       }
 
+      String etag = this.createETag(entitySet, data);
+      if (etag != null) {
+        writer.writeAttribute(NS_DATASERVICES_METADATA, FormatXml.M_ETAG, etag);
+      }
+
       AtomInfoAggregator aia;
       if (entitySet.getEntityType().hasStream()) {
         aia = appendProperties(writer, entitySet, data);
@@ -74,6 +83,43 @@ public class AtomEntrySerializer {
     }
   }
 
+  private String createETag(EdmEntitySet entitySet, Map<String, Object> data) throws EdmException {
+    String etag = null;
+    for (String propertyName : entitySet.getEntityType().getPropertyNames()) {
+      EdmTyped t = entitySet.getEntityType().getProperty(propertyName);
+      if (t instanceof EdmProperty) {
+        EdmProperty edmProperty = (EdmProperty) t;
+        if (isConcurrencyModeFixed(edmProperty)) {
+          if (etag == null) {
+            EdmType edmType = edmProperty.getType();
+            if (edmType instanceof EdmSimpleType) {
+              EdmSimpleType edmSimpleType = (EdmSimpleType) edmType;
+              etag = edmSimpleType.valueToString(data.get(propertyName), EdmLiteralKind.DEFAULT, edmProperty.getFacets());
+            }
+          } else {
+            EdmType edmType = edmProperty.getType();
+            if (edmType instanceof EdmSimpleType) {
+              EdmSimpleType edmSimpleType = (EdmSimpleType) edmType;
+              etag = etag + Edm.DELIMITER + edmSimpleType.valueToString(data.get(propertyName), EdmLiteralKind.DEFAULT, edmProperty.getFacets());
+            }
+          }
+        }
+      }
+    }
+
+    if (etag != null) {
+      etag = "W/\"" + etag + "\"";
+    }
+
+    etag = StringEscapeUtils.escapeXml(etag);
+    
+    return etag;
+  }
+
+  private boolean isConcurrencyModeFixed(EdmProperty edmProperty) throws EdmException {
+    return edmProperty.getFacets() != null && edmProperty.getFacets().getConcurrencyMode() == EdmConcurrencyMode.Fixed;
+  }
+
   private void appendAtomContentPart(XMLStreamWriter writer, EdmEntitySet entitySet, AtomInfoAggregator aia, Map<String, Object> data, String mediaResourceMimeType) throws XMLStreamException, EdmException, ODataSerializationException {
     try {
       String path = entitySet.getName() + "(" + this.createEntryKey(entitySet, data) + ")/$value";
@@ -83,7 +129,7 @@ public class AtomEntrySerializer {
       if (mediaResourceMimeType == null) {
         mediaResourceMimeType = MediaType.APPLICATION_OCTET_STREAM.toString();
       }
-      
+
       writer.writeStartElement(FormatXml.ATOM_CONTENT);
       writer.writeAttribute(FormatXml.ATOM_CONTENT_TYPE, mediaResourceMimeType);
       writer.writeAttribute(FormatXml.ATOM_CONTENT_SRC, uri.toASCIIString());

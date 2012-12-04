@@ -10,6 +10,7 @@ import javax.xml.stream.FactoryConfigurationError;
 import javax.xml.stream.XMLStreamException;
 
 import org.custommonkey.xmlunit.exceptions.XpathException;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.xml.sax.SAXException;
 
@@ -53,7 +54,7 @@ public class AtomEntrySerializationTest extends AbstractSerializerTest {
     assertXpathExists("/a:entry/m:properties", xmlString);
 
   }
-  
+
   @Test
   public void serializeAtomEntry() throws IOException, XpathException, SAXException, XMLStreamException, FactoryConfigurationError, ODataException {
     ODataSerializer ser = createAtomSerializer();
@@ -67,7 +68,7 @@ public class AtomEntrySerializationTest extends AbstractSerializerTest {
     assertXpathEvaluatesTo(MediaType.APPLICATION_XML.toString(), "/a:entry/a:content/@type", xmlString);
 
     assertXpathExists("/a:entry/a:content/m:properties", xmlString);
-}
+  }
 
   @Test
   public void serializeEntryId() throws IOException, XpathException, SAXException, XMLStreamException, FactoryConfigurationError, ODataException {
@@ -109,7 +110,7 @@ public class AtomEntrySerializationTest extends AbstractSerializerTest {
     String xmlString = StringHelper.inputStreamToString(xmlStream);
 
     log.debug(xmlString);
-    
+
     assertXpathExists("/a:entry", xmlString);
     assertXpathEvaluatesTo(BASE_URI.toASCIIString(), "/a:entry/@xml:base", xmlString);
     assertXpathExists("/a:entry/a:id", xmlString);
@@ -136,9 +137,9 @@ public class AtomEntrySerializationTest extends AbstractSerializerTest {
     ODataSerializer ser = createAtomSerializer();
     InputStream xmlStream = ser.serializeEntry(MockFacade.getMockEdm().getEntityContainer("Container2").getEntitySet("Photos"), this.photoData);
     String xmlString = StringHelper.inputStreamToString(xmlStream);
-    
+
     log.debug(xmlString);
-    
+
     assertXpathExists("/a:entry", xmlString);
     assertXpathEvaluatesTo(BASE_URI.toASCIIString(), "/a:entry/@xml:base", xmlString);
     assertXpathExists("/a:entry/a:id", xmlString);
@@ -158,6 +159,44 @@ public class AtomEntrySerializationTest extends AbstractSerializerTest {
     assertXpathEvaluatesTo(Edm.NAMESPACE_SCHEME_2007_08, "/a:entry/a:category/@scheme", xmlString);
   }
 
+  @Test
+  public void serializeETag() throws IOException, XpathException, SAXException, XMLStreamException, FactoryConfigurationError, ODataException {
+    ODataSerializer ser = createAtomSerializer();
+    InputStream xmlStream = ser.serializeEntry(MockFacade.getMockEdm().getEntityContainer("Container2").getEntitySet("Photos"), this.photoData);
+    String xmlString = StringHelper.inputStreamToString(xmlStream);
 
-  
+    log.debug(xmlString);
+
+    assertXpathExists("/a:entry", xmlString);
+    assertXpathExists("/a:entry/@m:etag", xmlString);
+    assertXpathEvaluatesTo("W/&quot;1&quot;", "/a:entry/@m:etag", xmlString);
+  }
+
+  @Test
+  public void serializeETagEncoding() throws IOException, XpathException, SAXException, XMLStreamException, FactoryConfigurationError, ODataException {
+    this.roomData.put("Id", "<\">");
+    ODataSerializer ser = createAtomSerializer();
+    InputStream xmlStream = ser.serializeEntry(MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Rooms"), this.roomData);
+    String xmlString = StringHelper.inputStreamToString(xmlStream);
+
+    log.debug(xmlString);
+
+    assertXpathExists("/a:entry", xmlString);
+    assertXpathExists("/a:entry/@m:etag", xmlString);
+    assertXpathEvaluatesTo("W/&quot;&lt;&quot;&gt;&quot;", "/a:entry/@m:etag", xmlString);
+  }
+
+  @Ignore("7 ms")
+  @Test
+  public void serializePerformance() throws IOException, XpathException, SAXException, XMLStreamException, FactoryConfigurationError, ODataException {
+    long t = System.currentTimeMillis();
+    for (int i = 0; i < 1000; i++) {
+      ODataSerializer ser = createAtomSerializer();
+      ser.serializeEntry(MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Rooms"), this.roomData);
+    }
+
+    t = (System.currentTimeMillis() - t) / 1000;
+    log.debug("ms: " + t);
+  }
+
 }

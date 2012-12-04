@@ -9,6 +9,7 @@ import java.util.List;
 
 import com.sap.core.odata.api.edm.Edm;
 import com.sap.core.odata.api.edm.EdmComplexType;
+import com.sap.core.odata.api.edm.EdmConcurrencyMode;
 import com.sap.core.odata.api.edm.EdmCustomizableFeedMappings;
 import com.sap.core.odata.api.edm.EdmEntityContainer;
 import com.sap.core.odata.api.edm.EdmEntitySet;
@@ -26,7 +27,6 @@ import com.sap.core.odata.api.edm.EdmTargetPath;
 import com.sap.core.odata.api.edm.EdmType;
 import com.sap.core.odata.api.edm.EdmTypeKind;
 import com.sap.core.odata.api.edm.EdmTyped;
-import com.sap.core.odata.api.edm.provider.CustomizableFeedMappings;
 import com.sap.core.odata.api.exception.ODataException;
 
 class EdmMock {
@@ -43,7 +43,7 @@ class EdmMock {
     when(defaultContainer.getEntitySet("Employees")).thenReturn(employeeEntitySet);
     when(defaultContainer.getEntitySet("Rooms")).thenReturn(roomEntitySet);
     when(defaultContainer.isDefaultEntityContainer()).thenReturn(true);
-    
+
     EdmType navigationType = mock(EdmType.class);
     when(navigationType.getKind()).thenReturn(EdmTypeKind.ENTITY);
 
@@ -53,7 +53,13 @@ class EdmMock {
     when(managerEntitySet.getRelatedEntitySet(employeeProperty)).thenReturn(employeeEntitySet);
 
     EdmEntityType roomType = roomEntitySet.getEntityType();
+    when(roomType.getPropertyNames()).thenReturn(Arrays.asList("Id"));
     when(roomType.hasStream()).thenReturn(false);
+    EdmProperty roomId = roomType.getKeyProperties().get(0);
+    EdmFacets roomIdFacet = mock(EdmFacets.class);
+    when(roomIdFacet.getMaxLength()).thenReturn(100);
+    when(roomIdFacet.getConcurrencyMode()).thenReturn(EdmConcurrencyMode.Fixed);
+    when(roomId.getFacets()).thenReturn(roomIdFacet);
     
     EdmEntityType managerType = managerEntitySet.getEntityType();
     when(managerType.getProperty("nm_Employees")).thenReturn(employeeProperty);
@@ -64,7 +70,7 @@ class EdmMock {
     when(managerProperty.getMultiplicity()).thenReturn(EdmMultiplicity.ONE);
     when(employeeEntitySet.getRelatedEntitySet(managerProperty)).thenReturn(managerEntitySet);
     when(employeeEntitySet.getEntityContainer()).thenReturn(defaultContainer);
-    
+
     EdmEntityType employeeType = employeeEntitySet.getEntityType();
     when(employeeType.getKind()).thenReturn(EdmTypeKind.ENTITY);
     when(employeeType.hasStream()).thenReturn(true);
@@ -72,13 +78,13 @@ class EdmMock {
     when(employeeType.getKeyPropertyNames()).thenReturn(Arrays.asList("EmployeeId"));
     when(employeeType.getName()).thenReturn("Employee");
     when(employeeType.getNamespace()).thenReturn("RefScenario");
-    
+
     EdmProperty employeeIdProperty = mock(EdmProperty.class);
     when(employeeIdProperty.getType()).thenReturn(EdmSimpleTypeKind.String.getEdmSimpleTypeInstance());
     when(employeeIdProperty.getName()).thenReturn("EmployeeId");
     when(employeeType.getProperty("EmployeeId")).thenReturn(employeeIdProperty);
     when(employeeType.getKeyProperties()).thenReturn(Arrays.asList(employeeIdProperty));
-    
+
     EdmProperty employeeNameProperty = mock(EdmProperty.class);
     when(employeeNameProperty.getType()).thenReturn(EdmSimpleTypeKind.String.getEdmSimpleTypeInstance());
     when(employeeNameProperty.getName()).thenReturn("EmployeeName");
@@ -88,36 +94,35 @@ class EdmMock {
     when(employeeImageUrlProperty.getType()).thenReturn(EdmSimpleTypeKind.String.getEdmSimpleTypeInstance());
     when(employeeImageUrlProperty.getName()).thenReturn("ImageUrl");
     when(employeeType.getProperty("ImageUrl")).thenReturn(employeeImageUrlProperty);
-    
+
     EdmProperty employeeAgeProperty = mock(EdmProperty.class);
     when(employeeAgeProperty.getType()).thenReturn(EdmSimpleTypeKind.Int32.getEdmSimpleTypeInstance());
     when(employeeAgeProperty.getName()).thenReturn("Age");
     when(employeeType.getProperty("Age")).thenReturn(employeeAgeProperty);
-    
+
     EdmProperty employeeRoomIdProperty = mock(EdmProperty.class);
     when(employeeRoomIdProperty.getType()).thenReturn(EdmSimpleTypeKind.String.getEdmSimpleTypeInstance());
     when(employeeRoomIdProperty.getName()).thenReturn("RoomId");
     when(employeeType.getProperty("RoomId")).thenReturn(employeeRoomIdProperty);
-    
+
     EdmProperty employeeEntryDateProperty = mock(EdmProperty.class);
     when(employeeEntryDateProperty.getType()).thenReturn(EdmSimpleTypeKind.DateTime.getEdmSimpleTypeInstance());
     when(employeeEntryDateProperty.getName()).thenReturn("EntryDate");
     when(employeeType.getProperty("EntryDate")).thenReturn(employeeEntryDateProperty);
 
-    
     EdmCustomizableFeedMappings employeeUpdatedeMappings = mock(EdmCustomizableFeedMappings.class);
     when(employeeUpdatedeMappings.getFcTargetPath()).thenReturn(EdmTargetPath.SYNDICATION_UPDATED);
     when(employeeEntryDateProperty.getCustomizableFeedMappings()).thenReturn(employeeUpdatedeMappings);
-    
+
     EdmProperty employeeTeamIdProperty = mock(EdmProperty.class);
     when(employeeTeamIdProperty.getType()).thenReturn(EdmSimpleTypeKind.String.getEdmSimpleTypeInstance());
     when(employeeTeamIdProperty.getName()).thenReturn("TeamId");
     when(employeeType.getProperty("TeamId")).thenReturn(employeeTeamIdProperty);
-    
+
     EdmCustomizableFeedMappings employeeTitleMappings = mock(EdmCustomizableFeedMappings.class);
     when(employeeTitleMappings.getFcTargetPath()).thenReturn(EdmTargetPath.SYNDICATION_TITLE);
     when(employeeNameProperty.getCustomizableFeedMappings()).thenReturn(employeeTitleMappings);
-    
+
     EdmComplexType locationComplexType = mock(EdmComplexType.class);
     when(locationComplexType.getKind()).thenReturn(EdmTypeKind.COMPLEX);
     when(locationComplexType.getPropertyNames()).thenReturn(Arrays.asList("City", "Country"));
@@ -146,7 +151,7 @@ class EdmMock {
     when(postalCodeProperty.getName()).thenReturn("PostalCode");
 
     when(cityComplexType.getProperty("PostalCode")).thenReturn(postalCodeProperty);
-    
+
     EdmProperty cityNameProperty = mock(EdmProperty.class);
     when(cityNameProperty.getType()).thenReturn(EdmSimpleTypeKind.String.getEdmSimpleTypeInstance());
     when(cityNameProperty.getName()).thenReturn("CityName");
@@ -187,6 +192,9 @@ class EdmMock {
     EdmProperty photoIdProperty = mock(EdmProperty.class);
     when(photoIdProperty.getType()).thenReturn(EdmSimpleTypeKind.Int32.getEdmSimpleTypeInstance());
     when(photoIdProperty.getName()).thenReturn("Id");
+    EdmFacets photoIdFacet = mock(EdmFacets.class);
+    when(photoIdFacet.getConcurrencyMode()).thenReturn(EdmConcurrencyMode.Fixed);
+    when(photoIdProperty.getFacets()).thenReturn(photoIdFacet);
     EdmProperty photoTypeProperty = mock(EdmProperty.class);
     when(photoTypeProperty.getType()).thenReturn(EdmSimpleTypeKind.String.getEdmSimpleTypeInstance());
     when(photoTypeProperty.getName()).thenReturn("Type");
@@ -194,6 +202,7 @@ class EdmMock {
     photoKeyProperties.add(photoIdProperty);
     photoKeyProperties.add(photoTypeProperty);
     EdmEntityType photoEntityType = mock(EdmEntityType.class);
+    when(photoEntityType.getPropertyNames()).thenReturn(Arrays.asList("Id"));
     when(photoEntityType.getKeyProperties()).thenReturn(photoKeyProperties);
     when(photoEntityType.getProperty("Id")).thenReturn(photoIdProperty);
     when(photoEntityType.getProperty("Type")).thenReturn(photoTypeProperty);
@@ -206,14 +215,14 @@ class EdmMock {
     when(photoContainer.getName()).thenReturn("Container2");
 
     when(photoEntitySet.getEntityContainer()).thenReturn(photoContainer);
-    
+
     Edm edm = mock(Edm.class);
     when(edm.getServiceMetadata()).thenReturn(serviceMetadata);
     when(edm.getDefaultEntityContainer()).thenReturn(defaultContainer);
     when(edm.getEntityContainer("Container1")).thenReturn(specificContainer);
     when(edm.getEntityContainer("Container2")).thenReturn(photoContainer);
     when(edm.getEntityType("RefScenario", "Employee")).thenReturn(employeeType);
-    
+
     return edm;
   }
 
@@ -225,7 +234,7 @@ class EdmMock {
     when(entitySet.getEntityType()).thenReturn(entityType);
 
     when(entitySet.getEntityContainer()).thenReturn(container);
-    
+
     when(container.getEntitySet(name)).thenReturn(entitySet);
 
     return entitySet;
