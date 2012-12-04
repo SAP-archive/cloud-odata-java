@@ -1,5 +1,6 @@
 package com.sap.core.odata.core.ep;
 
+import java.net.URI;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
@@ -23,6 +24,7 @@ import com.sap.core.odata.api.edm.EdmTargetPath;
 import com.sap.core.odata.api.edm.EdmTyped;
 import com.sap.core.odata.api.ep.ODataSerializationException;
 import com.sap.core.odata.api.processor.ODataContext;
+import com.sap.core.odata.api.processor.ODataPathSegment;
 import com.sap.core.odata.core.edm.EdmDateTimeOffset;
 
 public class AtomEntrySerializer {
@@ -127,9 +129,7 @@ public class AtomEntrySerializer {
     try {
       EdmEntityContainer ec = entitySet.getEntityContainer();
 
-      String id = this.context.getUriInfo().getBaseUri().toASCIIString();
-      
-      // TODO uri encoding of entrykey
+      String id = "";
       
       if (!ec.isDefaultEntityContainer()) {
         id = id + ec.getName() + ".";
@@ -137,7 +137,17 @@ public class AtomEntrySerializer {
       id = id + entitySet.getName();
       id = id + "(" + entryKey + ")";
 
-      return id;
+      URI baseUri = this.context.getUriInfo().getBaseUri();
+      String scheme = baseUri.getScheme();
+      String userInfo = baseUri.getUserInfo();
+      String host = baseUri.getHost();
+      int port = baseUri.getPort();
+      String path = baseUri.getPath() + id;
+      String query = baseUri.getQuery();
+      String fragment = baseUri.getFragment();
+      URI uri = new URI(scheme, userInfo, host, port, path, query, fragment);
+          
+      return uri.toASCIIString();
     } catch (Exception e) {
       throw new ODataSerializationException(ODataSerializationException.COMMON, e);
     }

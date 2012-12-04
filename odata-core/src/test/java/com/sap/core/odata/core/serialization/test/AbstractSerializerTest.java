@@ -31,7 +31,7 @@ public abstract class AbstractSerializerTest {
   protected static final URI BASE_URI;
   static {
     try {
-      BASE_URI = new URI("http://host:port/särvice/");
+      BASE_URI = new URI("http://host:80/service/");
     } catch (URISyntaxException e) {
       throw new RuntimeException(e);
     }
