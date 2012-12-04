@@ -1,9 +1,9 @@
 package com.sap.core.odata.core.uri.expression;
 
-import com.sap.core.odata.api.uri.expression.ExceptionParseExpression;
+import com.sap.core.odata.api.uri.expression.FilterParserException;
 
 
-public class ParserExceptionInternal extends ExceptionParseExpression {
+public class ParserExceptionInternal extends FilterParserException {
 
   /**
    * 

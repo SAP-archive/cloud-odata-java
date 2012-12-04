@@ -1,6 +1,6 @@
 package com.sap.core.odata.core.uri.expression;
 
-import com.sap.core.odata.api.uri.expression.ExceptionParseExpression;
+import com.sap.core.odata.api.uri.expression.FilterParserException;
 
 
 /**
@@ -11,7 +11,7 @@ import com.sap.core.odata.api.uri.expression.ExceptionParseExpression;
  *   or 
  *   $filter = 1234 5678
  */
-public class ParserExceptionSyntax extends ExceptionParseExpression {
+public class ParserExceptionSyntax extends FilterParserException {
 
   /**
    * 

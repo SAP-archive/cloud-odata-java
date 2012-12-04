@@ -40,7 +40,7 @@ import com.sap.core.odata.api.uri.UriParser;
 import com.sap.core.odata.api.uri.UriParserResult;
 import com.sap.core.odata.api.uri.UriSyntaxException;
 import com.sap.core.odata.api.uri.expression.CommonExpression;
-import com.sap.core.odata.api.uri.expression.ExceptionParseExpression;
+import com.sap.core.odata.api.uri.expression.FilterParserException;
 import com.sap.core.odata.api.uri.expression.OrderByExpression;
 import com.sap.core.odata.core.edm.EdmSimpleTypeFacadeImpl;
 import com.sap.core.odata.core.exception.ODataRuntimeException;
@@ -533,7 +533,7 @@ public class UriParserImpl implements UriParser {
   private void handleSystemQueryOptionFilter(final String filter) throws UriSyntaxException {
     try {
       uriResult.setFilter(new FilterParserImpl(edm, uriResult.getTargetType()).ParseExpression(filter));
-    } catch (ExceptionParseExpression e) {
+    } catch (FilterParserException e) {
       //throw new UriParserException(UriParserException.INVALIDFILTEREXPRESSION, e);
     } catch (ExceptionExpressionInternalError e) {
       // TODO Auto-generated catch block

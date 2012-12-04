@@ -12,9 +12,9 @@ public interface FilterParser
    *   Expression to be parsed
    * @return
    *   Expression tree which can be traversed with help of the interfaces {@link ExpressionVisitor} and {@link Visitable}
-   * @throws ExceptionParseExpression
+   * @throws FilterParserException
    * @throws ODataMessageException
    */
-  abstract FilterExpression ParseExpression(String expression) throws ExceptionParseExpression, ODataMessageException;
+  abstract FilterExpression ParseExpression(String expression) throws FilterParserException, ODataMessageException;
   
 }

@@ -8,7 +8,7 @@ import com.sap.core.odata.api.rt.RuntimeDelegate;
 
 public class ExpressionFacade
 {
-  public static FilterExpression parseFilter(Edm edm, EdmType edmType, String expression ) throws ExceptionParseExpression, ODataMessageException
+  public static FilterExpression parseFilter(Edm edm, EdmType edmType, String expression ) throws FilterParserException, ODataMessageException
   {
     return RuntimeDelegate.getFilterParser(edm, edmType).ParseExpression(expression);
   }
