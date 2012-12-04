@@ -26,6 +26,7 @@ public class FormatXml {
   public static final String ATOM_LINK = "link";
   public static final String ATOM_REL = "rel";
   public static final String ATOM_HREF = "href";
+  public static final String ATOM_SRC = "src";
   public static final String ATOM_TITLE = "title";
   public static final String ATOM_TITLE_DEFAULT = "Default";
   public static final String ATOM_TEXT = "text";
@@ -47,6 +48,4 @@ public class FormatXml {
   public static final String ATOM_CATEGORY_TERM = "term";
   public static final String ATOM_CATEGORY_SCHEME = "scheme";
   public static final String ATOM_CONTENT = "content";
-  public static final String ATOM_CONTENT_TYPE = "type";
-  public static final String ATOM_CONTENT_SRC = "src";
 }
