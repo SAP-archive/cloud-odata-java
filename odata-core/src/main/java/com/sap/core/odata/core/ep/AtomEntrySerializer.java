@@ -1,6 +1,7 @@
 package com.sap.core.odata.core.ep;
 
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
@@ -12,6 +13,7 @@ import java.util.Set;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 
+import com.sap.core.odata.api.edm.Edm;
 import com.sap.core.odata.api.edm.EdmCustomizableFeedMappings;
 import com.sap.core.odata.api.edm.EdmEntityContainer;
 import com.sap.core.odata.api.edm.EdmEntitySet;
@@ -22,9 +24,9 @@ import com.sap.core.odata.api.edm.EdmProperty;
 import com.sap.core.odata.api.edm.EdmSimpleType;
 import com.sap.core.odata.api.edm.EdmTargetPath;
 import com.sap.core.odata.api.edm.EdmTyped;
+import com.sap.core.odata.api.enums.MediaType;
 import com.sap.core.odata.api.ep.ODataSerializationException;
 import com.sap.core.odata.api.processor.ODataContext;
-import com.sap.core.odata.api.processor.ODataPathSegment;
 import com.sap.core.odata.core.edm.EdmDateTimeOffset;
 
 public class AtomEntrySerializer {
@@ -40,7 +42,7 @@ public class AtomEntrySerializer {
     this.context = ctx;
   }
 
-  public void append(XMLStreamWriter writer, EdmEntitySet entitySet, Map<String, Object> data, boolean isRootElement) throws ODataSerializationException {
+  public void append(XMLStreamWriter writer, EdmEntitySet entitySet, Map<String, Object> data, boolean isRootElement, String mediaResourceMimeType) throws ODataSerializationException {
     try {
       writer.writeStartElement("entry");
 
@@ -51,13 +53,42 @@ public class AtomEntrySerializer {
         writer.writeAttribute("xml", NS_XML, "base", this.context.getUriInfo().getBaseUri().toASCIIString());
       }
 
-      AtomInfoAggregator aia = appendProperties(writer, entitySet, data);
+      AtomInfoAggregator aia;
+      if (entitySet.getEntityType().hasStream()) {
+        aia = appendProperties(writer, entitySet, data);
+        appendAtomContentPart(writer, entitySet, aia, data, mediaResourceMimeType);
+      } else {
+        writer.writeStartElement(FormatXml.ATOM_CONTENT);
+        writer.writeAttribute(FormatXml.ATOM_CONTENT_TYPE, MediaType.APPLICATION_XML.toString());
+        aia = appendProperties(writer, entitySet, data);
+        writer.writeEndElement();
+      }
+
       appendAtomParts(writer, entitySet, aia, data);
 
       writer.writeEndElement();
 
       writer.flush();
     } catch (Exception e) {
+      throw new ODataSerializationException(ODataSerializationException.COMMON, e);
+    }
+  }
+
+  private void appendAtomContentPart(XMLStreamWriter writer, EdmEntitySet entitySet, AtomInfoAggregator aia, Map<String, Object> data, String mediaResourceMimeType) throws XMLStreamException, EdmException, ODataSerializationException {
+    try {
+      String path = entitySet.getName() + "(" + this.createEntryKey(entitySet, data) + ")/$value";
+      URI uri;
+      uri = new URI(null, null, null, -1, path, null, null);
+
+      if (mediaResourceMimeType == null) {
+        mediaResourceMimeType = MediaType.APPLICATION_OCTET_STREAM.toString();
+      }
+      
+      writer.writeStartElement(FormatXml.ATOM_CONTENT);
+      writer.writeAttribute(FormatXml.ATOM_CONTENT_TYPE, mediaResourceMimeType);
+      writer.writeAttribute(FormatXml.ATOM_CONTENT_SRC, uri.toASCIIString());
+      writer.writeEndElement();
+    } catch (URISyntaxException e) {
       throw new ODataSerializationException(ODataSerializationException.COMMON, e);
     }
   }
@@ -109,6 +140,13 @@ public class AtomEntrySerializer {
 
       appendAtomOptionalPart(writer, FormatXml.ATOM_RIGHTS, aia.getRights(), true);
       appendAtomOptionalPart(writer, FormatXml.ATOM_PUBLISHED, aia.getPublished(), false);
+
+      String term = entitySet.getEntityType().getNamespace() + Edm.DELIMITER + entitySet.getEntityType().getName();
+      writer.writeStartElement(FormatXml.ATOM_CATEGORY);
+      writer.writeAttribute(FormatXml.ATOM_CATEGORY_TERM, term);
+      writer.writeAttribute(FormatXml.ATOM_CATEGORY_SCHEME, Edm.NAMESPACE_SCHEME_2007_08);
+      writer.writeEndElement();
+
     } catch (Exception e) {
       throw new ODataSerializationException(ODataSerializationException.COMMON, e);
     }
@@ -130,7 +168,7 @@ public class AtomEntrySerializer {
       EdmEntityContainer ec = entitySet.getEntityContainer();
 
       String id = "";
-      
+
       if (!ec.isDefaultEntityContainer()) {
         id = id + ec.getName() + ".";
       }
@@ -146,7 +184,7 @@ public class AtomEntrySerializer {
       String query = baseUri.getQuery();
       String fragment = baseUri.getFragment();
       URI uri = new URI(scheme, userInfo, host, port, path, query, fragment);
-          
+
       return uri.toASCIIString();
     } catch (Exception e) {
       throw new ODataSerializationException(ODataSerializationException.COMMON, e);

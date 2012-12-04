@@ -6,6 +6,7 @@ import com.sap.core.odata.api.edm.Edm;
 import com.sap.core.odata.api.edm.EdmServiceMetadata;
 import com.sap.core.odata.api.enums.Format;
 import com.sap.core.odata.api.enums.HttpStatusCodes;
+import com.sap.core.odata.api.enums.MediaType;
 import com.sap.core.odata.api.ep.ODataSerializer;
 import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.api.exception.ODataNotImplementedException;
@@ -309,7 +310,7 @@ public abstract class ODataSingleProcessor
     InputStream serviceDocument = odataSerializer.serializeServiceDocument(getContext().getService().getEntityDataModel(), getContext().getUriInfo().getBaseUri().toASCIIString());
     return ODataResponse
         .status(HttpStatusCodes.OK)
-        .header("Content-Type", "application/atomsvc+xml")
+        .header("Content-Type", MediaType.APPLICATION_ATOM_SVC.toString())
         .header("DataServiceVersion", Edm.DATA_SERVICE_VERSION_10)
         .entity(serviceDocument)
         .build();
@@ -323,7 +324,7 @@ public abstract class ODataSingleProcessor
     EdmServiceMetadata edmServiceMetadata = getContext().getService().getEntityDataModel().getServiceMetadata();
     return ODataResponse
         .status(HttpStatusCodes.OK)
-        .header("Content-Type", "application/xml")
+        .header("Content-Type", MediaType.APPLICATION_XML.toString())
         .header("DataServiceVersion", edmServiceMetadata.getDataServiceVersion())
         .entity(edmServiceMetadata.getMetadata())
         .build();

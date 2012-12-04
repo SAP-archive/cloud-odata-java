@@ -43,5 +43,10 @@ public class FormatXml {
   public static final String ATOM_CONTRIBUTOR_URI = "uri";
   public static final String ATOM_PUBLISHED = "published";
   public static final String ATOM_RIGHTS = "rights";
-
+  public static final String ATOM_CATEGORY = "category";
+  public static final String ATOM_CATEGORY_TERM = "term";
+  public static final String ATOM_CATEGORY_SCHEME = "scheme";
+  public static final String ATOM_CONTENT = "content";
+  public static final String ATOM_CONTENT_TYPE = "type";
+  public static final String ATOM_CONTENT_SRC = "src";
 }

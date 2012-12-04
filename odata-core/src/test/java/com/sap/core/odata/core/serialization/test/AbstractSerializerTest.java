@@ -41,6 +41,8 @@ public abstract class AbstractSerializerTest {
 
   protected Map<String, Object> photoData;
 
+  protected Map<String, Object> roomData;
+
   {
     this.employeeData = new HashMap<String, Object>();
 
@@ -74,6 +76,12 @@ public abstract class AbstractSerializerTest {
     photoData.put("Image", "ABCF");
     photoData.put("BinaryData", "ABCD");
     photoData.put("Содержание", "В лесу шумит водопад. Если он не торопится просп воды");
+
+    this.roomData = new HashMap<String, Object>();
+    this.roomData.put("Id", "1");
+    this.roomData.put("Name", "Neu Schwanstein");
+    this.roomData.put("Seats", new Integer(20));
+    this.roomData.put("Version", new Integer(3));
   }
 
   @Before

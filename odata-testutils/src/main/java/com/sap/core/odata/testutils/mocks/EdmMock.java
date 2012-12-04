@@ -38,8 +38,10 @@ class EdmMock {
     EdmEntityContainer defaultContainer = mock(EdmEntityContainer.class);
     EdmEntitySet employeeEntitySet = createEntitySetMock(defaultContainer, "Employees", EdmSimpleTypeKind.String.getEdmSimpleTypeInstance(), "EmployeeId");
     EdmEntitySet managerEntitySet = createEntitySetMock(defaultContainer, "Managers", EdmSimpleTypeKind.String.getEdmSimpleTypeInstance(), "EmployeeId");
+    EdmEntitySet roomEntitySet = createEntitySetMock(defaultContainer, "Rooms", EdmSimpleTypeKind.String.getEdmSimpleTypeInstance(), "Id");
 
     when(defaultContainer.getEntitySet("Employees")).thenReturn(employeeEntitySet);
+    when(defaultContainer.getEntitySet("Rooms")).thenReturn(roomEntitySet);
     when(defaultContainer.isDefaultEntityContainer()).thenReturn(true);
     
     EdmType navigationType = mock(EdmType.class);
@@ -50,6 +52,9 @@ class EdmMock {
     when(employeeProperty.getMultiplicity()).thenReturn(EdmMultiplicity.MANY);
     when(managerEntitySet.getRelatedEntitySet(employeeProperty)).thenReturn(employeeEntitySet);
 
+    EdmEntityType roomType = roomEntitySet.getEntityType();
+    when(roomType.hasStream()).thenReturn(false);
+    
     EdmEntityType managerType = managerEntitySet.getEntityType();
     when(managerType.getProperty("nm_Employees")).thenReturn(employeeProperty);
     //when(managerType.getProperty("somethingwrong")).thenThrow(new EdmException("Property not found"));
@@ -65,6 +70,8 @@ class EdmMock {
     when(employeeType.hasStream()).thenReturn(true);
     when(employeeType.getProperty("ne_Manager")).thenReturn(managerProperty);
     when(employeeType.getKeyPropertyNames()).thenReturn(Arrays.asList("EmployeeId"));
+    when(employeeType.getName()).thenReturn("Employee");
+    when(employeeType.getNamespace()).thenReturn("RefScenario");
     
     EdmProperty employeeIdProperty = mock(EdmProperty.class);
     when(employeeIdProperty.getType()).thenReturn(EdmSimpleTypeKind.String.getEdmSimpleTypeInstance());
@@ -217,6 +224,8 @@ class EdmMock {
     when(entitySet.getName()).thenReturn(name);
     when(entitySet.getEntityType()).thenReturn(entityType);
 
+    when(entitySet.getEntityContainer()).thenReturn(container);
+    
     when(container.getEntitySet(name)).thenReturn(entitySet);
 
     return entitySet;

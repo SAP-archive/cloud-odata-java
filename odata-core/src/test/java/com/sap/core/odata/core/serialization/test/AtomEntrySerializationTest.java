@@ -10,10 +10,11 @@ import javax.xml.stream.FactoryConfigurationError;
 import javax.xml.stream.XMLStreamException;
 
 import org.custommonkey.xmlunit.exceptions.XpathException;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.xml.sax.SAXException;
 
+import com.sap.core.odata.api.edm.Edm;
+import com.sap.core.odata.api.enums.MediaType;
 import com.sap.core.odata.api.ep.ODataSerializer;
 import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.testutils.helper.StringHelper;
@@ -22,14 +23,51 @@ import com.sap.core.odata.testutils.mocks.MockFacade;
 public class AtomEntrySerializationTest extends AbstractSerializerTest {
 
   @Test
-  public void serializeEntry() throws IOException, XpathException, SAXException, XMLStreamException, FactoryConfigurationError, ODataException {
+  public void serializeAtomMediaResource() throws IOException, XpathException, SAXException, XMLStreamException, FactoryConfigurationError, ODataException {
     ODataSerializer ser = createAtomSerializer();
     InputStream xmlStream = ser.serializeEntry(MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Employees"), this.employeeData);
     String xmlString = StringHelper.inputStreamToString(xmlStream);
 
     assertXpathExists("/a:entry", xmlString);
     assertXpathEvaluatesTo(BASE_URI.toASCIIString(), "/a:entry/@xml:base", xmlString);
+
+    assertXpathExists("/a:entry/a:content", xmlString);
+    assertXpathEvaluatesTo(MediaType.APPLICATION_OCTET_STREAM.toString(), "/a:entry/a:content/@type", xmlString);
+    assertXpathEvaluatesTo("Employees('1')/$value", "/a:entry/a:content/@src", xmlString);
+    assertXpathExists("/a:entry/m:properties", xmlString);
+
   }
+
+  @Test
+  public void serializeAtomMediaResourceWithMimeType() throws IOException, XpathException, SAXException, XMLStreamException, FactoryConfigurationError, ODataException {
+    ODataSerializer ser = createAtomSerializer();
+    InputStream xmlStream = ser.serializeEntry(MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Employees"), this.employeeData, "abc");
+    String xmlString = StringHelper.inputStreamToString(xmlStream);
+
+    assertXpathExists("/a:entry", xmlString);
+    assertXpathEvaluatesTo(BASE_URI.toASCIIString(), "/a:entry/@xml:base", xmlString);
+
+    assertXpathExists("/a:entry/a:content", xmlString);
+    assertXpathEvaluatesTo("abc", "/a:entry/a:content/@type", xmlString);
+    assertXpathEvaluatesTo("Employees('1')/$value", "/a:entry/a:content/@src", xmlString);
+    assertXpathExists("/a:entry/m:properties", xmlString);
+
+  }
+  
+  @Test
+  public void serializeAtomEntry() throws IOException, XpathException, SAXException, XMLStreamException, FactoryConfigurationError, ODataException {
+    ODataSerializer ser = createAtomSerializer();
+    InputStream xmlStream = ser.serializeEntry(MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Rooms"), this.roomData);
+    String xmlString = StringHelper.inputStreamToString(xmlStream);
+
+    assertXpathExists("/a:entry", xmlString);
+    assertXpathEvaluatesTo(BASE_URI.toASCIIString(), "/a:entry/@xml:base", xmlString);
+
+    assertXpathExists("/a:entry/a:content", xmlString);
+    assertXpathEvaluatesTo(MediaType.APPLICATION_XML.toString(), "/a:entry/a:content/@type", xmlString);
+
+    assertXpathExists("/a:entry/a:content/m:properties", xmlString);
+}
 
   @Test
   public void serializeEntryId() throws IOException, XpathException, SAXException, XMLStreamException, FactoryConfigurationError, ODataException {
@@ -107,4 +145,19 @@ public class AtomEntrySerializationTest extends AbstractSerializerTest {
     assertXpathEvaluatesTo(BASE_URI.toASCIIString() + "Container2.Photos(Id=1,Type='%3C%C3%96%3E')", "/a:entry/a:id/text()", xmlString);
   }
 
+  @Test
+  public void serializeCategory() throws IOException, XpathException, SAXException, XMLStreamException, FactoryConfigurationError, ODataException {
+    ODataSerializer ser = createAtomSerializer();
+    InputStream xmlStream = ser.serializeEntry(MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Employees"), this.employeeData);
+    String xmlString = StringHelper.inputStreamToString(xmlStream);
+
+    assertXpathExists("/a:entry/a:category", xmlString);
+    assertXpathExists("/a:entry/a:category/@term", xmlString);
+    assertXpathExists("/a:entry/a:category/@scheme", xmlString);
+    assertXpathEvaluatesTo("RefScenario.Employee", "/a:entry/a:category/@term", xmlString);
+    assertXpathEvaluatesTo(Edm.NAMESPACE_SCHEME_2007_08, "/a:entry/a:category/@scheme", xmlString);
+  }
+
+
+  
 }
