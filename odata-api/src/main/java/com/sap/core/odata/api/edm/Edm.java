@@ -18,11 +18,13 @@ public interface Edm {
   public static final String NAMESPACE_REL_2007_08 = "http://schemas.microsoft.com/ado/2007/08/dataservices/related/";
   public static final String NAMESPACE_REL_ASSOC_2007_08 = "http://schemas.microsoft.com/ado/2007/08/dataservices/relatedlinks/";
   public static final String NAMESPACE_SCHEME_2007_08 = "http://schemas.microsoft.com/ado/2007/08/dataservices/scheme";
+  public static final String NAMESPACE_XML_1998 = "http://www.w3.org/XML/1998/namespace";
   public static final String PREFIX_EDM = "edm";
   public static final String PREFIX_APP = "app";
   public static final String PREFIX_ATOM = "atom";
   public static final String PREFIX_D = "d";
   public static final String PREFIX_M = "m";
+  public static final String PREFIX_XML = "xml";
   public static final String PREFIX_EDMX = "edmx";
   public static final String LINK_REL_SELF = "self";
   public static final String LINK_REL_EDIT_MEDIA = "edit-media";
@@ -31,7 +33,7 @@ public interface Edm {
   public static final String DATA_SERVICE_VERSION_10 = "1.0";
   public static final String DATA_SERVICE_VERSION_20 = "2.0";
   public static final String DELIMITER = ".";
-  
+
   /**
    * Get entity container by name
    * 

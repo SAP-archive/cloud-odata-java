@@ -19,10 +19,6 @@ public class FormatXml {
   public static final String APP_COLLECTION = "collection";
   public static final String ATOM_FEED = "feed";
   public static final String ATOM_ENTRY = "entry";
-  public static final String REL_EDIT = "edit";
-  public static final String REL_SELF = "self";
-  public static final String REL_EDIT_MEDIA = "edit-media";
-  public static final String REL_NEXT = "next";
   public static final String ATOM_LINK = "link";
   public static final String ATOM_REL = "rel";
   public static final String ATOM_HREF = "href";
