@@ -6,6 +6,7 @@ import java.util.Map;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 
+import com.sap.core.odata.api.edm.Edm;
 import com.sap.core.odata.api.edm.EdmComplexType;
 import com.sap.core.odata.api.edm.EdmException;
 import com.sap.core.odata.api.edm.EdmFacets;
@@ -25,10 +26,10 @@ public class XmlPropertySerializer {
 
     if (isRootElement) {
       writer.writeStartElement(name);
-      writer.writeDefaultNamespace(AtomEntrySerializer.NS_DATASERVICES);
-      writer.writeNamespace("m", AtomEntrySerializer.NS_DATASERVICES_METADATA);
+      writer.writeDefaultNamespace(Edm.NAMESPACE_EDM_2008_09);
+      writer.writeNamespace(Edm.PREFIX_M, Edm.NAMESPACE_EDMX_2007_06);
     } else {
-      writer.writeStartElement(AtomEntrySerializer.NS_DATASERVICES, name);
+      writer.writeStartElement(Edm.NAMESPACE_EDM_2008_09, name);
     }
 
     if (edmType instanceof EdmSimpleType) {
@@ -46,7 +47,7 @@ public class XmlPropertySerializer {
   private void appendProperty(XMLStreamWriter writer, EdmComplexType type, EdmProperty prop, Object value, AtomInfoAggregator aia) throws XMLStreamException, EdmException, ODataSerializationException {
 
     if (value == null) {
-      writer.writeAttribute(AtomEntrySerializer.NS_DATASERVICES_METADATA, "null", "true");
+      writer.writeAttribute(Edm.NAMESPACE_EDMX_2007_06, "null", "true");
     } else {
       Collection<String> propNames = type.getPropertyNames();
       for (String pName : propNames) {
@@ -75,10 +76,10 @@ public class XmlPropertySerializer {
     }
 
     if (valueAsString == null) {
-      writer.writeAttribute(AtomEntrySerializer.NS_DATASERVICES_METADATA, "null", "true");
+      writer.writeAttribute(Edm.NAMESPACE_EDMX_2007_06, "null", "true");
     } else {
       if (!(st instanceof EdmString)) {
-        writer.writeAttribute(AtomEntrySerializer.NS_DATASERVICES_METADATA, "type", st.getNamespace() + "." + st.getName());
+        writer.writeAttribute(Edm.NAMESPACE_EDMX_2007_06, FormatXml.ATOM_TYPE, st.getNamespace() + "." + st.getName());
       }
 
       writer.writeCharacters(valueAsString);

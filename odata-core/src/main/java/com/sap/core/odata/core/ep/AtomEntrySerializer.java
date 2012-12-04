@@ -2,9 +2,7 @@ package com.sap.core.odata.core.ep;
 
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.Collection;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -17,17 +15,14 @@ import org.apache.commons.lang3.StringEscapeUtils;
 
 import com.sap.core.odata.api.edm.Edm;
 import com.sap.core.odata.api.edm.EdmConcurrencyMode;
-import com.sap.core.odata.api.edm.EdmCustomizableFeedMappings;
 import com.sap.core.odata.api.edm.EdmEntityContainer;
 import com.sap.core.odata.api.edm.EdmEntitySet;
-import com.sap.core.odata.api.edm.EdmEntityType;
 import com.sap.core.odata.api.edm.EdmException;
 import com.sap.core.odata.api.edm.EdmLiteralKind;
 import com.sap.core.odata.api.edm.EdmMultiplicity;
 import com.sap.core.odata.api.edm.EdmNavigationProperty;
 import com.sap.core.odata.api.edm.EdmProperty;
 import com.sap.core.odata.api.edm.EdmSimpleType;
-import com.sap.core.odata.api.edm.EdmTargetPath;
 import com.sap.core.odata.api.edm.EdmType;
 import com.sap.core.odata.api.edm.EdmTyped;
 import com.sap.core.odata.api.enums.MediaType;
@@ -37,11 +32,6 @@ import com.sap.core.odata.core.edm.EdmDateTimeOffset;
 
 public class AtomEntrySerializer {
 
-  private static final String TAG_PROPERTIES = "properties";
-  public static final String NS_DATASERVICES = "http://schemas.microsoft.com/ado/2007/08/dataservices";
-  public static final String NS_DATASERVICES_METADATA = "http://schemas.microsoft.com/ado/2007/08/dataservices/metadata";
-  public static final String NS_ATOM = "http://www.w3.org/2005/Atom";
-  public static final String NS_XML = "http://www.w3.org/XML/1998/namespace";
   private ODataContext context;
 
   AtomEntrySerializer(ODataContext ctx) throws ODataSerializationException {
@@ -53,15 +43,15 @@ public class AtomEntrySerializer {
       writer.writeStartElement("entry");
 
       if (isRootElement) {
-        writer.writeDefaultNamespace(NS_ATOM);
-        writer.writeNamespace("m", NS_DATASERVICES_METADATA);
-        writer.writeNamespace("d", NS_DATASERVICES);
-        writer.writeAttribute("xml", NS_XML, "base", this.context.getUriInfo().getBaseUri().toASCIIString());
+        writer.writeDefaultNamespace(Edm.NAMESPACE_ATOM_2005);
+        writer.writeNamespace(Edm.PREFIX_M, Edm.NAMESPACE_EDMX_2007_06);
+        writer.writeNamespace(Edm.PREFIX_D, Edm.NAMESPACE_EDM_2008_09);
+        writer.writeAttribute(Edm.PREFIX_XML, Edm.NAMESPACE_XML_1998, "base", this.context.getUriInfo().getBaseUri().toASCIIString());
       }
 
       String etag = this.createETag(entitySet, data);
       if (etag != null) {
-        writer.writeAttribute(NS_DATASERVICES_METADATA, FormatXml.M_ETAG, etag);
+        writer.writeAttribute(Edm.NAMESPACE_EDMX_2007_06, FormatXml.M_ETAG, etag);
       }
 
       AtomInfoAggregator aia;
@@ -148,7 +138,7 @@ public class AtomEntrySerializer {
     } else {
       writer.writeAttribute(FormatXml.ATOM_TYPE, MediaType.APPLICATION_ATOM_XML_ENTRY.toString());
     }
-    
+
     writer.writeEndElement();
   }
 
@@ -217,7 +207,7 @@ public class AtomEntrySerializer {
       writer.writeEndElement();
 
       writer.writeStartElement(FormatXml.ATOM_TITLE);
-      writer.writeAttribute("type", "text");
+      writer.writeAttribute(FormatXml.M_TYPE, "text");
       if (aia.getTitle() != null) {
         writer.writeCharacters(aia.getTitle());
       } else {
@@ -339,10 +329,10 @@ public class AtomEntrySerializer {
   }
 
   private AtomInfoAggregator appendProperties(XMLStreamWriter writer, EdmEntitySet entitySet, Map<String, Object> data) throws EdmException, XMLStreamException, ODataSerializationException {
-    writer.writeStartElement(NS_DATASERVICES_METADATA, TAG_PROPERTIES);
+    writer.writeStartElement(Edm.NAMESPACE_EDMX_2007_06, FormatXml.M_PROPERTIES);
     Set<Entry<String, Object>> entries = data.entrySet();
 
-    AtomInfoAggregator aia = new AtomInfoAggregator(entitySet.getEntityType().getKeyPropertyNames());
+    AtomInfoAggregator aia = new AtomInfoAggregator();
 
     for (Entry<String, Object> entry : entries) {
       String name = entry.getKey();
@@ -361,78 +351,4 @@ public class AtomEntrySerializer {
 
     return aia;
   }
-
-  private void handleAtomParts(XMLStreamWriter writer, EdmEntitySet entitySet, Map<String, Object> data) throws XMLStreamException, ODataSerializationException, EdmException {
-    AtomHelper atomHelper = AtomHelper.init(entitySet);
-
-    writer.writeStartElement("title");
-    writer.writeAttribute("type", "text");
-    writer.writeCharacters(createTitleText(atomHelper, data));
-    writer.writeEndElement();
-
-    writer.writeStartElement("updated");
-    writer.writeCharacters(createUpdatedText(atomHelper, data));
-    writer.writeEndElement();
-  }
-
-  private String createUpdatedText(AtomHelper atomHelper, Map<String, Object> data) throws EdmException {
-    EdmProperty updatedProperty = atomHelper.getSyndicationProperty(EdmTargetPath.SYNDICATION_UPDATED);
-
-    if (!isSyndicationUpdatedAvailable(updatedProperty, data)) {
-      Object obj = data.get(updatedProperty.getName());
-      return EdmDateTimeOffset.getInstance().valueToString(obj, EdmLiteralKind.DEFAULT, updatedProperty.getFacets());
-    } else {
-      // for the case that no 'syndication updated' is given it is specified to take current time
-      return EdmDateTimeOffset.getInstance().valueToString(new Date(), EdmLiteralKind.DEFAULT, null);
-    }
-  }
-
-  private boolean isSyndicationUpdatedAvailable(EdmProperty updatedProperty, Map<String, Object> data) throws EdmException {
-    return updatedProperty == null || data.get(updatedProperty.getName()) == null;
-  }
-
-  private String createTitleText(AtomHelper atomHelper, Map<String, Object> data) throws EdmException {
-    String result = "";
-    EdmProperty titleProperty = atomHelper.getSyndicationProperty(EdmTargetPath.SYNDICATION_TITLE);
-
-    if (titleProperty != null) {
-      result = (String) data.get(titleProperty.getName());
-    }
-
-    return result;
-  }
-
-  private static class AtomHelper {
-    Map<String, EdmProperty> target2Property = new HashMap<String, EdmProperty>();
-
-    private AtomHelper(EdmEntitySet edmEntitySet) throws EdmException {
-      EdmEntityType entityType = edmEntitySet.getEntityType();
-      Collection<String> propertyNames = entityType.getPropertyNames();
-      for (String propertyName : propertyNames) {
-        // XXX: 121127_mibo: check this cast(s)
-        EdmProperty property = (EdmProperty) entityType.getProperty(propertyName);
-        EdmCustomizableFeedMappings customizableFeedMappings = property.getCustomizableFeedMappings();
-        if (customizableFeedMappings != null) {
-          String path = map2TargetPath(customizableFeedMappings.getFcTargetPath());
-
-          target2Property.put(path, property);
-        }
-      }
-    }
-
-    public static AtomHelper init(EdmEntitySet edmEntitySet) throws EdmException {
-      AtomHelper helper = new AtomHelper(edmEntitySet);
-
-      return helper;
-    }
-
-    public EdmProperty getSyndicationProperty(String syndicationName) {
-      return target2Property.get(syndicationName);
-    }
-
-    private static String map2TargetPath(String fcTargetPath) {
-      return fcTargetPath;
-    }
-  }
-
 }

@@ -14,6 +14,7 @@ import org.junit.Before;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.sap.core.odata.api.edm.Edm;
 import com.sap.core.odata.api.edm.EdmException;
 import com.sap.core.odata.api.enums.Format;
 import com.sap.core.odata.api.ep.ODataSerializationException;
@@ -87,9 +88,9 @@ public abstract class AbstractSerializerTest {
   @Before
   public void before() throws EdmException {
     Map<String, String> ns = new HashMap<String, String>();
-    ns.put("d", AtomEntrySerializer.NS_DATASERVICES);
-    ns.put("m", AtomEntrySerializer.NS_DATASERVICES_METADATA);
-    ns.put("a", AtomEntrySerializer.NS_ATOM);
+    ns.put("d", Edm.NAMESPACE_EDM_2008_09);
+    ns.put("m", Edm.NAMESPACE_EDMX_2007_06);
+    ns.put("a", Edm.NAMESPACE_ATOM_2005);
     XMLUnitHelper.registerXmlNs(ns);
   }
 

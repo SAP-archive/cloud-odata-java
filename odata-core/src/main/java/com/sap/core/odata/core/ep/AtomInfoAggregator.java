@@ -1,11 +1,8 @@
 package com.sap.core.odata.core.ep;
 
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 
 import com.sap.core.odata.api.edm.EdmConcurrencyMode;
 import com.sap.core.odata.api.edm.EdmCustomizableFeedMappings;
@@ -14,8 +11,6 @@ import com.sap.core.odata.api.edm.EdmProperty;
 import com.sap.core.odata.api.edm.EdmTargetPath;
 
 class AtomInfoAggregator {
-
-  private Set<String> keyPropertyNames;
 
   private HashMap<String, String> name2ETagValue = new HashMap<String, String>();
 
@@ -34,8 +29,7 @@ class AtomInfoAggregator {
 
   private String updatedPropertyName;
 
-  public AtomInfoAggregator(Collection<String> keyPropertyNames) {
-    this.keyPropertyNames = new HashSet<String>(keyPropertyNames);
+  public AtomInfoAggregator() {
   }
 
   public void addInfo(EdmProperty edmProperty, String value) throws EdmException {
