@@ -8,9 +8,9 @@ import java.util.List;
 
 import org.junit.Test;
 
-import com.sap.core.odata.api.uri.expression.ExceptionParseExpression;
 import com.sap.core.odata.api.uri.expression.ExpressionKind;
 import com.sap.core.odata.api.uri.expression.FilterExpression;
+import com.sap.core.odata.api.uri.expression.FilterParserException;
 import com.sap.core.odata.core.edm.Bit;
 import com.sap.core.odata.core.edm.EdmBinary;
 import com.sap.core.odata.core.edm.EdmBoolean;
@@ -31,7 +31,7 @@ import com.sap.core.odata.core.edm.Uint7;
 import com.sap.core.odata.core.uri.expression.ExceptionExpressionInternalError;
 import com.sap.core.odata.core.uri.expression.FilterParserImpl;
 
-public class ParserTest {
+public class TestParser {
 
   static public ParserTool GetPTF(String expression)
   {
@@ -41,7 +41,7 @@ public class ParserTest {
       return new ParserTool(expression, root);
     } catch (ExceptionExpressionInternalError e) {
       fail("Error in parser" + e.getLocalizedMessage());
-    } catch (ExceptionParseExpression e) {
+    } catch (FilterParserException e) {
       fail("Error in parser" + e.getLocalizedMessage());
     }
     return null;
@@ -320,26 +320,26 @@ public class ParserTest {
     //GetPTF("-(-(- 2d)))").aSerialized("{-{-{- 2d}}}");
   }
 
-  ExceptionParseExpression GetException()
+  FilterParserException GetException()
   { 
-    ExceptionParseExpression ex = new ExceptionParseExpression(ExceptionParseExpression.COMMON);
+    FilterParserException ex = new FilterParserException(FilterParserException.COMMON_ERROR);
     List<StackTraceElement> stack = new ArrayList<StackTraceElement>(Arrays.asList(ex.getStackTrace()));
     stack.remove(0);
     ex.setStackTrace(stack.toArray(new StackTraceElement[stack.size()]));
     return ex;
   }
 
-  void LevelB() throws ExceptionParseExpression
+  void LevelB() throws FilterParserException
   {
-    ExceptionParseExpression ex = GetException();
+    FilterParserException ex = GetException();
     throw ex;
   }
 
-  void LevelA() throws ExceptionParseExpression
+  void LevelA() throws FilterParserException
   {
     try {
       LevelB();
-    } catch (ExceptionParseExpression e) {
+    } catch (FilterParserException e) {
       // TODO Auto-generated catch block
       e.printStackTrace();
       throw e;
@@ -352,7 +352,7 @@ public class ParserTest {
   {
     try {
       LevelA();
-    } catch (ExceptionParseExpression e) {
+    } catch (FilterParserException e) {
       e.printStackTrace();
     }
   }

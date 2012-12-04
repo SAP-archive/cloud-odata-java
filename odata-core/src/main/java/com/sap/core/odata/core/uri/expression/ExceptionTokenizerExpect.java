@@ -2,7 +2,7 @@ package com.sap.core.odata.core.uri.expression;
 
 import com.sap.core.odata.api.exception.MessageReference;
 import com.sap.core.odata.api.exception.ODataMessageException;
-import com.sap.core.odata.api.uri.expression.ExceptionParseExpression;
+import com.sap.core.odata.api.uri.expression.FilterParserException;
 
 /**
  * This exception is thrown if a token should be read

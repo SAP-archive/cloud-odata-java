@@ -53,7 +53,7 @@ public class ParserTool
 
   public ParserTool aSerialized(String expected) {
     String actual = null;
-    ExpressionVisitor visitor = new TestVisitorTool();
+    ExpressionVisitor visitor = new VisitorTool();
     try {
       actual = tree.accept(visitor).toString();
     } catch (ExceptionVisitExpression e) {

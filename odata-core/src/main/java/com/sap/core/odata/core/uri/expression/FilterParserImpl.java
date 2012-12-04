@@ -20,7 +20,7 @@ import com.sap.core.odata.api.edm.EdmTyped;
 import com.sap.core.odata.api.uri.expression.BinaryExpression;
 import com.sap.core.odata.api.uri.expression.BinaryOperator;
 import com.sap.core.odata.api.uri.expression.CommonExpression;
-import com.sap.core.odata.api.uri.expression.ExceptionParseExpression;
+import com.sap.core.odata.api.uri.expression.FilterParserException;
 import com.sap.core.odata.api.uri.expression.FilterExpression;
 import com.sap.core.odata.api.uri.expression.FilterParser;
 import com.sap.core.odata.api.uri.expression.LiteralExpression;
@@ -61,7 +61,7 @@ public class FilterParserImpl implements FilterParser
   }
 
   @Override
-  public FilterExpression ParseExpression(String filterExpression) throws ExceptionParseExpression, ExceptionExpressionInternalError
+  public FilterExpression ParseExpression(String filterExpression) throws FilterParserException, ExceptionExpressionInternalError
   {
     CommonExpression node = null;
 
@@ -72,7 +72,7 @@ public class FilterParserImpl implements FilterParser
     } catch (ExceptionTokenizer tokenizerException)
     {
       //wrap the tokenizer exception
-      throw new ExceptionParseExpression(ExceptionParseExpression.ERROR_IN_TOKENIZER).setCause(tokenizerException);
+      throw new FilterParserException(FilterParserException.ERROR_IN_TOKENIZER).setCause(tokenizerException);
     }
 
     //if token list is empty
@@ -83,7 +83,7 @@ public class FilterParserImpl implements FilterParser
     {
       CommonExpression nodeLeft = readElement();
       node = readElements(nodeLeft, 0);
-    } catch (ExceptionParseExpression expressionException)
+    } catch (FilterParserException expressionException)
     {
       FilterExpression fe = new FilterExpressionImpl(filterExpression, null);
       //add info an rethrow
@@ -93,7 +93,7 @@ public class FilterParserImpl implements FilterParser
     //post check
     //TODO verify if is an internal error or an user error. E.g. Test "a eq b b" or " a b"
     if (tokenList.tokenCount() > tokenList.currentToken) //this indicates that not all tokens have been read
-      throw new ExceptionParseExpression(ExceptionParseExpression.INVALID_TRAILING_TOKEN_DETECTED, null);
+      throw new FilterParserException(FilterParserException.INVALID_TRAILING_TOKEN_DETECTED_AFTER_PARSING);
 
     //create and return filterExpression node
     return new FilterExpressionImpl(filterExpression, node);
@@ -103,7 +103,7 @@ public class FilterParserImpl implements FilterParser
     this.promoteParameters = promoteParameters;
   }
 
-  protected CommonExpression readElements(CommonExpression leftExpression, int priority) throws ExceptionParseExpression, ExceptionExpressionInternalError
+  protected CommonExpression readElements(CommonExpression leftExpression, int priority) throws FilterParserException, ExceptionExpressionInternalError
   {
     CommonExpression leftNode;
     CommonExpression rightNode;
@@ -130,7 +130,7 @@ public class FilterParserImpl implements FilterParser
       try
       {
         validateBinaryOperator(binaryNode);
-      } catch (ExceptionParseExpression expressionException)
+      } catch (FilterParserException expressionException)
       {
         //Attach error information
         expressionException.setFilterTree(binaryNode);
@@ -148,12 +148,12 @@ public class FilterParserImpl implements FilterParser
    * Reads the content between parenthesis. Its is expected that the current token is of kind {@link TokenKind#OPENPAREN}
    * because it MUST be check in the calling method ( when read the method name and the '(' is read).  
    * @return An expression which reflects the content within the parenthesis
-   * @throws ExceptionParseExpression
+   * @throws FilterParserException
    *   While reading the elements in the parenthesis an error occured
    * @throws TokenizerMessage 
    *   The next token did not match the expected token
    */
-  protected CommonExpression readParenthesis() throws ExceptionParseExpression, ExceptionExpressionInternalError
+  protected CommonExpression readParenthesis() throws FilterParserException, ExceptionExpressionInternalError
   {
     //---check for '('    
     try {
@@ -187,12 +187,12 @@ public class FilterParserImpl implements FilterParser
    *   Method expression to which the read parameters are added 
    * @return
    *   The method expression input parameter 
-   * @throws ExceptionParseExpression
+   * @throws FilterParserException
    * @throws ExceptionExpressionInternalError 
    * @throws ExceptionTokenizerExpect 
    *   The next token did not match the expected token
    */
-  protected MethodExpression readParameters(InfoMethod methodInfo, MethodExpressionImpl methodExpression) throws ExceptionParseExpression, ExceptionExpressionInternalError
+  protected MethodExpression readParameters(InfoMethod methodInfo, MethodExpressionImpl methodExpression) throws FilterParserException, ExceptionExpressionInternalError
   {
     CommonExpression expression;
     boolean expectAnotherExpression = false;
@@ -213,7 +213,7 @@ public class FilterParserImpl implements FilterParser
       //E.g. $filter=startswith(Country,) --> is also wrong 
       if ((expression == null) && (expectAnotherExpression != true))
       {
-        throw new ExceptionParseExpression(ExceptionParseExpression.EXPRESSION_EXPECTED_AT_POS);
+        throw new FilterParserException(FilterParserException.EXPRESSION_EXPECTED_AT_POS);
       }
       else if (expression != null) //parameter list may be empty
       {
@@ -249,12 +249,12 @@ public class FilterParserImpl implements FilterParser
     int count = methodExpression.getParameters().size();
     if (count < methodInfo.getMinParameter())
     {
-      throw ExceptionParseExpression.NewToFewParameters(methodExpression);
+      throw FilterParserException.NewToFewParameters(methodExpression);
     }
 
     if ((methodInfo.getMaxParameter() > -1) && (count > methodInfo.getMinParameter()))
     {
-      throw ExceptionParseExpression.NewToManyParameters(methodExpression);
+      throw FilterParserException.NewToManyParameters(methodExpression);
     }
 
     return methodExpression;
@@ -264,11 +264,11 @@ public class FilterParserImpl implements FilterParser
    * Reads: Unary operators, Methods, Properties, ...
    * but not binary operators which are handelt in {@link #readElements(CommonExpression, int)}
    * @return
-   * @throws ExceptionParseExpression
+   * @throws FilterParserException
    * @throws ExceptionExpressionInternalError 
    * @throws TokenizerMessage 
    */
-  protected CommonExpression readElement() throws ExceptionParseExpression, ExceptionExpressionInternalError
+  protected CommonExpression readElement() throws FilterParserException, ExceptionExpressionInternalError
   {
     CommonExpression node = null;
     Token token;
@@ -333,11 +333,11 @@ public class FilterParserImpl implements FilterParser
       return property;
     }
 
-    throw new ExceptionParseExpression(ExceptionParseExpression.INVALID_TOKEN);
+    throw new FilterParserException(FilterParserException.INVALID_TOKEN);
 
   }
 
-  protected CommonExpression readUnaryoperator(Token lookToken, InfoUnaryOperator unaryOperator) throws ExceptionParseExpression, ExceptionExpressionInternalError
+  protected CommonExpression readUnaryoperator(Token lookToken, InfoUnaryOperator unaryOperator) throws FilterParserException, ExceptionExpressionInternalError
   {
     Token token = null;
 
@@ -354,7 +354,7 @@ public class FilterParserImpl implements FilterParser
     return unaryExpression;
   }
 
-  protected CommonExpression readMethod(Token token, InfoMethod methodOperator) throws ExceptionParseExpression, ExceptionExpressionInternalError
+  protected CommonExpression readMethod(Token token, InfoMethod methodOperator) throws FilterParserException, ExceptionExpressionInternalError
   {
     MethodExpressionImpl method = new MethodExpressionImpl((InfoMethod) methodOperator);
 
@@ -878,7 +878,7 @@ public class FilterParserImpl implements FilterParser
     return RO_PROPERTY;
   }
 
-  protected void validateBinaryOperator(BinaryExpression lo_binary) throws ExceptionParseExpression
+  protected void validateBinaryOperator(BinaryExpression lo_binary) throws FilterParserException
   {
     // TODO Auto-generated method stub
   }
