@@ -23,6 +23,8 @@ import com.sap.core.odata.api.processor.aspect.FunctionImport;
 import com.sap.core.odata.api.processor.aspect.FunctionImportValue;
 import com.sap.core.odata.api.processor.aspect.Metadata;
 import com.sap.core.odata.api.processor.aspect.ServiceDocument;
+import com.sap.core.odata.api.service.ODataService;
+import com.sap.core.odata.api.service.ODataServiceFactory;
 import com.sap.core.odata.api.uri.resultviews.GetComplexPropertyView;
 import com.sap.core.odata.api.uri.resultviews.GetEntityCountView;
 import com.sap.core.odata.api.uri.resultviews.GetEntityLinkCountView;
@@ -39,9 +41,13 @@ import com.sap.core.odata.api.uri.resultviews.GetServiceDocumentView;
 import com.sap.core.odata.api.uri.resultviews.GetSimplePropertyView;
 
 /**
- * A default {@link ODataProcessor} that implements all processor aspects in a single class. It is recommended to derive from this class and it is required by the
- * {@link ODataServiceFactory} to build a {@link ODataService}. This abstract class provides a default not implemented behavior and sub classes have to overwrite 
- * only methods they want to support. 
+ * <p>A default {@link ODataProcessor} that implements all processor aspects in a single class.</p>
+ * <p>It is recommended to derive from this class and it is required by the
+ * {@link ODataServiceFactory} to build an {@link ODataService}.</p>
+ * <p>This abstract class provides a default behavior, returning the correct response
+ * for requests for the service or the metadata document, respectively, and throwing an
+ * {@link ODataNotImplementedException} for all other requests.
+ * Sub classes have to override only methods they want to support.</p> 
  * 
  * @author SAP AG
  */
@@ -68,7 +74,7 @@ public abstract class ODataSingleProcessor
   private ODataContext context;
 
   /**
-   * {@see ODataProcessor}
+   * @see ODataProcessor
    */
   @Override
   public void setContext(ODataContext context) {
@@ -76,7 +82,7 @@ public abstract class ODataSingleProcessor
   }
 
   /**
-   * {@see ODataProcessor}
+   * @see ODataProcessor
    */
   @Override
   public ODataContext getContext() {
@@ -84,7 +90,7 @@ public abstract class ODataSingleProcessor
   }
 
   /**
-   * {@see Batch}
+   * @see Batch
    */
   @Override
   public ODataResponse executeBatch() throws ODataException {
@@ -92,7 +98,7 @@ public abstract class ODataSingleProcessor
   }
 
   /**
-   * {@see FunctionImport}
+   * @see FunctionImport
    */
   @Override
   public ODataResponse executeFunctionImport(GetFunctionImportView uriParserResultView) throws ODataException {
@@ -100,7 +106,7 @@ public abstract class ODataSingleProcessor
   }
 
   /**
-   * {@see FunctionImportValue}
+   * @see FunctionImportValue
    */
   @Override
   public ODataResponse executeFunctionImportValue(GetFunctionImportView uriParserResultView) throws ODataException {
@@ -108,7 +114,7 @@ public abstract class ODataSingleProcessor
   }
 
   /**
-   * {@see EntitySimplePropertyValue}
+   * @see EntitySimplePropertyValue
    */
   @Override
   public ODataResponse readEntitySimplePropertyValue(GetSimplePropertyView uriParserResultView) throws ODataException {
@@ -116,7 +122,7 @@ public abstract class ODataSingleProcessor
   }
 
   /**
-   * {@see EntitySimplePropertyValue}
+   * @see EntitySimplePropertyValue
    */
   @Override
   public ODataResponse updateEntitySimplePropertyValue() throws ODataException {
@@ -124,7 +130,7 @@ public abstract class ODataSingleProcessor
   }
 
   /**
-   * {@see EntitySimplePropertyValue}
+   * @see EntitySimplePropertyValue
    */
   @Override
   public ODataResponse deleteEntitySimplePropertyValue() throws ODataException {
@@ -132,7 +138,7 @@ public abstract class ODataSingleProcessor
   }
 
   /**
-   * {@see EntitySimpleProperty}
+   * @see EntitySimpleProperty
    */
   @Override
   public ODataResponse readEntitySimpleProperty(GetSimplePropertyView uriParserResultView) throws ODataException {
@@ -140,7 +146,7 @@ public abstract class ODataSingleProcessor
   }
 
   /**
-   * {@see EntitySimpleProperty}
+   * @see EntitySimpleProperty
    */
   @Override
   public ODataResponse updateEntitySimpleProperty() throws ODataException {
@@ -148,7 +154,7 @@ public abstract class ODataSingleProcessor
   }
 
   /**
-   * {@see EntityMedia}
+   * @see EntityMedia
    */
   @Override
   public ODataResponse readEntityMedia(GetMediaResourceView uriParserResultView) throws ODataException {
@@ -156,7 +162,7 @@ public abstract class ODataSingleProcessor
   }
 
   /**
-   * {@see EntityMedia}
+   * @see EntityMedia
    */
   @Override
   public ODataResponse updateEntityMedia() throws ODataException {
@@ -164,7 +170,7 @@ public abstract class ODataSingleProcessor
   }
 
   /**
-   * {@see EntityMedia}
+   * @see EntityMedia
    */
   @Override
   public ODataResponse deleteEntityMedia() throws ODataException {
@@ -172,7 +178,7 @@ public abstract class ODataSingleProcessor
   }
 
   /**
-   * {@see EntityLinks}
+   * @see EntityLinks
    */
   @Override
   public ODataResponse readEntityLinks(GetEntitySetLinksView uriParserResultView) throws ODataException {
@@ -180,7 +186,7 @@ public abstract class ODataSingleProcessor
   }
 
   /**
-   * {@see EntityLinks}
+   * @see EntityLinks
    */
   @Override
   public ODataResponse countEntityLinks(GetEntitySetLinksCountView uriParserResultView) throws ODataException {
@@ -188,7 +194,7 @@ public abstract class ODataSingleProcessor
   }
 
   /**
-   * {@see EntityLink}
+   * @see EntityLink
    */
   @Override
   public ODataResponse createEntityLink() throws ODataException {
@@ -196,7 +202,7 @@ public abstract class ODataSingleProcessor
   }
 
   /**
-   * {@see EntityLink}
+   * @see EntityLink
    */
   @Override
   public ODataResponse readEntityLink(GetEntityLinkView uriParserResultView) throws ODataException {
@@ -204,7 +210,7 @@ public abstract class ODataSingleProcessor
   }
 
   /**
-   * {@see EntityLink}
+   * @see EntityLink
    */
   @Override
   public ODataResponse existsEntityLink(GetEntityLinkCountView uriParserResultView) throws ODataException {
@@ -212,7 +218,7 @@ public abstract class ODataSingleProcessor
   }
 
   /**
-   * {@see EntityLink}
+   * @see EntityLink
    */
   @Override
   public ODataResponse updateEntityLink() throws ODataException {
@@ -220,7 +226,7 @@ public abstract class ODataSingleProcessor
   }
 
   /**
-   * {@see EntityLink}
+   * @see EntityLink
    */
   @Override
   public ODataResponse deleteEntityLink() throws ODataException {
@@ -228,7 +234,7 @@ public abstract class ODataSingleProcessor
   }
 
   /**
-   * {@see EntityComplexProperty}
+   * @see EntityComplexProperty
    */
   @Override
   public ODataResponse readEntityComplexProperty(GetComplexPropertyView uriParserResultView) throws ODataException {
@@ -236,7 +242,7 @@ public abstract class ODataSingleProcessor
   }
 
   /**
-   * {@see EntityComplexProperty}
+   * @see EntityComplexProperty
    */
   @Override
   public ODataResponse updateEntityComplexProperty() throws ODataException {
@@ -244,7 +250,7 @@ public abstract class ODataSingleProcessor
   }
 
   /**
-   * {@see EntitySet}
+   * @see EntitySet
    */
   @Override
   public ODataResponse readEntitySet(GetEntitySetView uriParserResultView) throws ODataException {
@@ -252,7 +258,7 @@ public abstract class ODataSingleProcessor
   }
 
   /**
-   * {@see EntitySet}
+   * @see EntitySet
    */
   @Override
   public ODataResponse countEntitySet(GetEntitySetCountView uriParserResultView) throws ODataException {
@@ -260,7 +266,7 @@ public abstract class ODataSingleProcessor
   }
 
   /**
-   * {@see Entity}
+   * @see Entity
    */
   @Override
   public ODataResponse createEntity() throws ODataException {
@@ -268,7 +274,7 @@ public abstract class ODataSingleProcessor
   }
 
   /**
-   * {@see Entity}
+   * @see Entity
    */
   @Override
   public ODataResponse readEntity(GetEntityView uriParserResultView) throws ODataException {
@@ -276,7 +282,7 @@ public abstract class ODataSingleProcessor
   }
 
   /**
-   * {@see Entity}
+   * @see Entity
    */
   @Override
   public ODataResponse existsEntity(GetEntityCountView uriParserResultView) throws ODataException {
@@ -284,7 +290,7 @@ public abstract class ODataSingleProcessor
   }
 
   /**
-   * {@see Entity}
+   * @see Entity
    */
   @Override
   public ODataResponse updateEntity() throws ODataException {
@@ -292,7 +298,7 @@ public abstract class ODataSingleProcessor
   }
 
   /**
-   * {@see Entity}
+   * @see Entity
    */
   @Override
   public ODataResponse deleteEntity() throws ODataException {
@@ -300,7 +306,7 @@ public abstract class ODataSingleProcessor
   }
 
   /**
-   * {@see ServiceDocument}
+   * @see ServiceDocument
    */
   @Override
   public ODataResponse readServiceDocument(GetServiceDocumentView uriParserResultView) throws ODataException {
@@ -317,7 +323,7 @@ public abstract class ODataSingleProcessor
   }
 
   /**
-   * {@see Metadata}
+   * @see Metadata
    */
   @Override
   public ODataResponse readMetadata(GetMetadataView uriParserResultView) throws ODataException {
