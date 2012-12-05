@@ -67,7 +67,12 @@ public class EdmString implements EdmSimpleType {
   @Override
   public String valueOfString(final String value, final EdmLiteralKind literalKind, final EdmFacets facets) throws EdmSimpleTypeException {
     if (literalKind == EdmLiteralKind.URI)
-      return null;
+      if (value == null)
+        return null;
+      else if (value.length() >= 2 && value.startsWith("'") && value.endsWith("'"))
+        return value.substring(1, value.length() - 1);
+      else
+        throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_ILLEGAL_CONTENT.addContent(value));
     else
       return value;
   }
