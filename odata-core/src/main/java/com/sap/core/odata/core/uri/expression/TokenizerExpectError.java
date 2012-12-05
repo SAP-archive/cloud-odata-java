@@ -10,17 +10,18 @@ import com.sap.core.odata.api.exception.ODataMessageException;
  * in the {@link Tokenizer} or inside the {@link FilterParserImpl}.
  * <br><br>
  * <b>This exception in not in the public API</b>, but may be added as cause for
- * the {@link ExceptionExpressionInternalError} exception. 
+ * the {@link FilterParserInternalError} exception. 
  * @author SAP AG
   */
-public class ExceptionTokenizerExpect extends ODataMessageException {
+public class TokenizerExpectError extends ODataMessageException {
 
   private static final long serialVersionUID = 1L;
 
   public static final int ParseStringToken = 1;
   
 //Invalid token detected at position &POSITION&
-  static final MessageReference INVALID_TOKEN_AT = createMessageReference(ExceptionTokenizerExpect.class, "INVALID_TOKEN_AT");
+  public static final MessageReference INVALID_TOKEN_AT = createMessageReference(TokenizerExpectError.class, "INVALID_TOKEN_AT");
+  public static final MessageReference INVALID_TOKENKIND_AT = createMessageReference(TokenizerExpectError.class, "INVALID_TOKENKIND_AT");
 
   private String token;
   private Exception previous;
@@ -50,16 +51,39 @@ public class ExceptionTokenizerExpect extends ODataMessageException {
     this.position = position;
   }
 
-  public ExceptionTokenizerExpect(MessageReference messageReference)
+  public TokenizerExpectError(MessageReference messageReference)
   {
     super( messageReference);
     //this.textID = object;
-    this.token = token;
-    this.previous = previous;
+    //this.token = token;
+    //this.previous = previous;
   }
 
   public static Object unexpectedToken(int currentToken, String string, Token actual) {
     // TODO Auto-generated method stub
     return null;
+  }
+  
+  public static TokenizerExpectError createINVALID_TOKEN_AT(String expectedToken, Token actualToken)
+  {
+    MessageReference msgRef = TokenizerExpectError.INVALID_TOKEN_AT.create();
+    
+    msgRef.addContent(expectedToken);
+    msgRef.addContent(actualToken.getUriLiteral());
+    msgRef.addContent(actualToken.getPosition());
+    
+    return new TokenizerExpectError(msgRef);
+  }
+  
+  public static TokenizerExpectError createINVALID_TOKENKIND_AT(TokenKind expectedTokenKind, Token actualToken)
+  {
+    MessageReference msgRef = TokenizerExpectError.INVALID_TOKEN_AT.create();
+    
+    msgRef.addContent(expectedTokenKind.toString());
+    msgRef.addContent(actualToken.getKind().toString());
+    msgRef.addContent(actualToken.getUriLiteral());
+    msgRef.addContent(actualToken.getPosition());
+    
+    return new TokenizerExpectError(msgRef);
   }
 }

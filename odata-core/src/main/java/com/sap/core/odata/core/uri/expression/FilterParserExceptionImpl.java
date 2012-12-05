@@ -2,6 +2,7 @@ package com.sap.core.odata.core.uri.expression;
 
 import com.sap.core.odata.api.exception.MessageReference;
 import com.sap.core.odata.api.uri.expression.FilterParserException;
+import com.sap.core.odata.api.uri.expression.MethodExpression;
 
 /**
  * This class is used to create exceptions of type FilterParserException.
@@ -49,13 +50,30 @@ public class FilterParserExceptionImpl extends FilterParserException {
 
     return new FilterParserException(msgRef);
   }
-  
+
   static public FilterParserException createINVALID_TOKEN(Token token)
   {
     MessageReference msgRef = FilterParserException.INVALID_TOKEN.create();
 
     msgRef.addContent(token.getUriLiteral());
     msgRef.addContent(Integer.toString(token.getPosition()));
+
+    return new FilterParserException(msgRef);
+  }
+
+  public static FilterParserException createMETHOD_TO_FEW_PARAMETERS(MethodExpression methodExpression)
+  {
+    MessageReference msgRef = FilterParserException.METHOD_TO_FEW_PARAMETERS.create();
+    
+    msgRef.addContent(methodExpression.getMethod().toSyntax());
+
+    return new FilterParserException(msgRef);
+  }
+
+  public static FilterParserException createMETHOD_TO_MANY_PARAMETERS(MethodExpression methodExpression) {
+    MessageReference msgRef = FilterParserException.METHOD_TO_MANY_PARAMETERS.create();
+    
+    msgRef.addContent(methodExpression.getMethod().toSyntax());
 
     return new FilterParserException(msgRef);
   }

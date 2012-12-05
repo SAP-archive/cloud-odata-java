@@ -29,9 +29,9 @@ public class FilterParserException extends ODataBadRequestException
 
   public static final MessageReference INVALID_TOKEN = createMessageReference(FilterParserException.class, "INVALID_TOKEN");
   
-  private static final MessageReference METHOD_TO_FEW_PARAMETERS = createMessageReference(ODataMessageException.class, "TODO");//TODO
+  public static final MessageReference METHOD_TO_FEW_PARAMETERS = createMessageReference(FilterParserException.class, "METHOD_TO_FEW_PARAMETERS");//TODO
 
-  private static final MessageReference METHOD_TO_MANY_PARAMETERS = createMessageReference(ODataMessageException.class, "TODO");//TODO
+  public static final MessageReference METHOD_TO_MANY_PARAMETERS = createMessageReference(FilterParserException.class, "METHOD_TO_MANY_PARAMETERS");//TODO
 
   /*instance attributes*/
   private CommonExpression filterTree;
@@ -85,13 +85,7 @@ public class FilterParserException extends ODataBadRequestException
       
 
 
-  public static FilterParserException NewToFewParameters(MethodExpression methodExpression) {
-    return new FilterParserException(METHOD_TO_FEW_PARAMETERS);
-  }
-
-  public static FilterParserException NewToManyParameters(MethodExpression methodExpression) {
-    return new FilterParserException(METHOD_TO_MANY_PARAMETERS);
-  }
+  
 
 
 }

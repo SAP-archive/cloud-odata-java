@@ -28,7 +28,7 @@ import com.sap.core.odata.core.edm.EdmSingle;
 import com.sap.core.odata.core.edm.EdmString;
 import com.sap.core.odata.core.edm.EdmTime;
 import com.sap.core.odata.core.edm.Uint7;
-import com.sap.core.odata.core.uri.expression.ExceptionExpressionInternalError;
+import com.sap.core.odata.core.uri.expression.FilterParserInternalError;
 import com.sap.core.odata.core.uri.expression.FilterParserImpl;
 
 public class TestParser {
@@ -39,7 +39,7 @@ public class TestParser {
       FilterParserImpl parser = new FilterParserImpl(null, null);
       FilterExpression root = parser.ParseExpression(expression);
       return new ParserTool(expression, root);
-    } catch (ExceptionExpressionInternalError e) {
+    } catch (FilterParserInternalError e) {
       fail("Error in parser" + e.getLocalizedMessage());
     } catch (FilterParserException e) {
       fail("Error in parser" + e.getLocalizedMessage());

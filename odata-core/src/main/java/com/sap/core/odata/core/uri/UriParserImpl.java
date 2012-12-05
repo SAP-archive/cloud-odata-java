@@ -44,7 +44,7 @@ import com.sap.core.odata.api.uri.expression.FilterParserException;
 import com.sap.core.odata.api.uri.expression.OrderByExpression;
 import com.sap.core.odata.core.edm.EdmSimpleTypeFacadeImpl;
 import com.sap.core.odata.core.exception.ODataRuntimeException;
-import com.sap.core.odata.core.uri.expression.ExceptionExpressionInternalError;
+import com.sap.core.odata.core.uri.expression.FilterParserInternalError;
 import com.sap.core.odata.core.uri.expression.FilterParserImpl;
 
 /**
@@ -535,7 +535,7 @@ public class UriParserImpl implements UriParser {
       uriResult.setFilter(new FilterParserImpl(edm, uriResult.getTargetType()).ParseExpression(filter));
     } catch (FilterParserException e) {
       throw new UriSyntaxException(UriSyntaxException.INVALIDFILTEREXPRESSION.addContent(filter), e);
-    } catch (ExceptionExpressionInternalError e) {
+    } catch (FilterParserInternalError e) {
       throw new UriSyntaxException(UriSyntaxException.INVALIDFILTEREXPRESSION.addContent(filter), e);
     }
   }
