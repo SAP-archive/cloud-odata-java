@@ -37,7 +37,7 @@ public class FilterParserImpl implements FilterParser
   static Map<String, InfoBinaryOperator> availableBinaryOperators;
   static Map<String, InfoMethod> availableFunctions;
   static Map<String, InfoUnaryOperator> availableUnaryOperators;
-  
+
   static
   {
     initAvialTables();
@@ -61,7 +61,7 @@ public class FilterParserImpl implements FilterParser
   }
 
   @Override
-  public FilterExpression ParseExpression(String filterExpression) throws FilterParserException, ExceptionExpressionInternalError
+  public FilterExpression ParseExpression(String filterExpression) throws FilterParserException, FilterParserInternalError
   {
     CommonExpression node = null;
 
@@ -96,7 +96,6 @@ public class FilterParserImpl implements FilterParser
     if (tokenList.tokenCount() > tokenList.currentToken) //this indicates that not all tokens have been read
       throw FilterParserExceptionImpl.createINVALID_TRAILING_TOKEN_DETECTED_AFTER_PARSING(
           tokenList.elementAt(tokenList.currentToken));
-      
 
     //create and return filterExpression node
     return new FilterExpressionImpl(filterExpression, node);
@@ -106,7 +105,7 @@ public class FilterParserImpl implements FilterParser
     this.promoteParameters = promoteParameters;
   }
 
-  protected CommonExpression readElements(CommonExpression leftExpression, int priority) throws FilterParserException, ExceptionExpressionInternalError
+  protected CommonExpression readElements(CommonExpression leftExpression, int priority) throws FilterParserException, FilterParserInternalError
   {
     CommonExpression leftNode;
     CommonExpression rightNode;
@@ -156,14 +155,14 @@ public class FilterParserImpl implements FilterParser
    * @throws TokenizerMessage 
    *   The next token did not match the expected token
    */
-  protected CommonExpression readParenthesis() throws FilterParserException, ExceptionExpressionInternalError
+  protected CommonExpression readParenthesis() throws FilterParserException, FilterParserInternalError
   {
     //---check for '('    
     try {
       tokenList.expectToken(TokenKind.OPENPAREN);
-    } catch (ExceptionTokenizerExpect e)
+    } catch (TokenizerExpectError e)
     { //Internal parsing error, even if there are no more token (then there should be a different exception).  
-      throw new ExceptionExpressionInternalError(ExceptionExpressionInternalError.ERROR_PARSING_PARENTHESIS, e);
+      throw FilterParserInternalError.createERROR_PARSING_PARENTHESIS(e);
     }
 
     CommonExpression firstExpression = readElement();
@@ -172,12 +171,11 @@ public class FilterParserImpl implements FilterParser
     //---check for ')'
     try {
       tokenList.expectToken(TokenKind.CLOSEPAREN); //TokenizerMessage
-    } catch (ExceptionTokenizerExpect e)
+    } catch (TokenizerExpectError e)
     {
       //Internal parsing error, even if there are no more token (then there should be a different exception).
-      ExceptionExpressionInternalError eie = new ExceptionExpressionInternalError(ExceptionExpressionInternalError.ERROR_PARSING_PARENTHESIS, e);
-      eie.setExpression(parenthesisExpression);
-      throw eie;
+      throw FilterParserInternalError.createERROR_PARSING_PARENTHESIS(e)
+          .setExpression(parenthesisExpression);
     }
     return parenthesisExpression;
   }
@@ -191,11 +189,11 @@ public class FilterParserImpl implements FilterParser
    * @return
    *   The method expression input parameter 
    * @throws FilterParserException
-   * @throws ExceptionExpressionInternalError 
-   * @throws ExceptionTokenizerExpect 
+   * @throws FilterParserInternalError 
+   * @throws TokenizerExpectError 
    *   The next token did not match the expected token
    */
-  protected MethodExpression readParameters(InfoMethod methodInfo, MethodExpressionImpl methodExpression) throws FilterParserException, ExceptionExpressionInternalError
+  protected MethodExpression readParameters(InfoMethod methodInfo, MethodExpressionImpl methodExpression) throws FilterParserException, FilterParserInternalError
   {
     CommonExpression expression;
     boolean expectAnotherExpression = false;
@@ -203,8 +201,8 @@ public class FilterParserImpl implements FilterParser
     //---check for '('
     try {
       tokenList.expectToken(TokenKind.OPENPAREN); //throws ExceptionTokenizerExpect
-    } catch (ExceptionTokenizerExpect e) {
-      throw new ExceptionExpressionInternalError(ExceptionExpressionInternalError.ERROR_PARSING_PARENTHESIS, e);
+    } catch (TokenizerExpectError e) {
+      throw FilterParserInternalError.createERROR_PARSING_PARENTHESIS(e);
     }
 
     Token token = tokenList.lookToken();
@@ -223,7 +221,6 @@ public class FilterParserImpl implements FilterParser
         methodExpression.appendParameter(expression);
       }
 
-
       token = tokenList.lookToken();
 
       if (token.getKind() == TokenKind.COMMA)
@@ -231,10 +228,9 @@ public class FilterParserImpl implements FilterParser
         //eat the ','
         try {
           tokenList.expectToken(Character.toString(CharConst.GC_STR_COMMA));
-        } catch (ExceptionTokenizerExpect e)
+        } catch (TokenizerExpectError e)
         {
-          ExceptionExpressionInternalError eie = new ExceptionExpressionInternalError(ExceptionExpressionInternalError.ERROR_PARSING_PARENTHESIS, e);
-          throw eie;
+          throw FilterParserInternalError.createERROR_PARSING_PARENTHESIS(e);
         }
       }
     }
@@ -242,22 +238,23 @@ public class FilterParserImpl implements FilterParser
     //---check for ')'
     try {
       tokenList.expectToken(TokenKind.CLOSEPAREN);
-    } catch (ExceptionTokenizerExpect e)
+    } catch (TokenizerExpectError e)
     {
       //Internal parsing error, even if there are no more token (then there should be a different exception).
-      throw new ExceptionExpressionInternalError(ExceptionExpressionInternalError.ERROR_PARSING_PARENTHESIS, e);
+      throw FilterParserInternalError.createERROR_PARSING_METHOD(e);
     }
 
     //---check parameter count
     int count = methodExpression.getParameters().size();
     if (count < methodInfo.getMinParameter())
     {
-      throw FilterParserException.NewToFewParameters(methodExpression);
+      throw FilterParserExceptionImpl.createMETHOD_TO_FEW_PARAMETERS(methodExpression);
     }
 
     if ((methodInfo.getMaxParameter() > -1) && (count > methodInfo.getMinParameter()))
     {
-      throw FilterParserException.NewToManyParameters(methodExpression);
+
+      throw FilterParserExceptionImpl.createMETHOD_TO_MANY_PARAMETERS(methodExpression);
     }
 
     return methodExpression;
@@ -268,10 +265,10 @@ public class FilterParserImpl implements FilterParser
    * but not binary operators which are handelt in {@link #readElements(CommonExpression, int)}
    * @return
    * @throws FilterParserException
-   * @throws ExceptionExpressionInternalError 
+   * @throws FilterParserInternalError 
    * @throws TokenizerMessage 
    */
-  protected CommonExpression readElement() throws FilterParserException, ExceptionExpressionInternalError
+  protected CommonExpression readElement() throws FilterParserException, FilterParserInternalError
   {
     CommonExpression node = null;
     Token token;
@@ -304,10 +301,10 @@ public class FilterParserImpl implements FilterParser
     //---expect the look ahead token
     try {
       token = tokenList.expectToken(lookToken.getUriLiteral());
-    } catch (ExceptionTokenizerExpect e)
+    } catch (TokenizerExpectError e)
     {
-      //Internal parsing error, even if there are no more token (then there should be a different exception).  
-      throw new ExceptionExpressionInternalError(ExceptionExpressionInternalError.ERROR_PARSING_PARENTHESIS, e);
+      //Internal parsing error, even if there are no more token (then there should be a different exception).
+      throw FilterParserInternalError.createERROR_PARSING_PARENTHESIS(e);
     }
     lookToken = tokenList.lookToken();
 
@@ -342,15 +339,16 @@ public class FilterParserImpl implements FilterParser
 
   }
 
-  protected CommonExpression readUnaryoperator(Token lookToken, InfoUnaryOperator unaryOperator) throws FilterParserException, ExceptionExpressionInternalError
+  protected CommonExpression readUnaryoperator(Token lookToken, InfoUnaryOperator unaryOperator) throws FilterParserException, FilterParserInternalError
   {
     Token token = null;
 
     //---read token
     try {
       token = tokenList.expectToken(lookToken.getUriLiteral());
-    } catch (ExceptionTokenizerExpect e) {
-      throw new ExceptionExpressionInternalError(ExceptionExpressionInternalError.ERROR_PARSING_PARENTHESIS, e);
+    } catch (TokenizerExpectError e) {
+      
+      throw FilterParserInternalError.createERROR_PARSING_PARENTHESIS(e);
     }
 
     CommonExpression operand = readElement();
@@ -359,7 +357,7 @@ public class FilterParserImpl implements FilterParser
     return unaryExpression;
   }
 
-  protected CommonExpression readMethod(Token token, InfoMethod methodOperator) throws FilterParserException, ExceptionExpressionInternalError
+  protected CommonExpression readMethod(Token token, InfoMethod methodOperator) throws FilterParserException, FilterParserInternalError
   {
     MethodExpressionImpl method = new MethodExpressionImpl((InfoMethod) methodOperator);
 
@@ -861,14 +859,13 @@ public class FilterParserImpl implements FilterParser
         throw new Exception();/*TODO*//*
 
 
-                                                           RAISE EXCEPTION TYPE /iwcor/cx_ds_expr_parser_error "OK
-                                                           EXPORTING
-                                                           textid   = /iwcor/cx_ds_expr_parser_error=>property_not_in_type
-                                                           type     = lv_type_name
-                                                           property = is_property_token-value
-                                                           position = is_property_token-position.
-                                                           ENDIF.*/
-
+                                                              RAISE EXCEPTION TYPE /iwcor/cx_ds_expr_parser_error "OK
+                                                              EXPORTING
+                                                              textid   = /iwcor/cx_ds_expr_parser_error=>property_not_in_type
+                                                              type     = lv_type_name
+                                                              property = is_property_token-value
+                                                              position = is_property_token-position.
+                                                              ENDIF.*/
 
       }
     } catch (Exception ex)
@@ -1092,8 +1089,6 @@ public class FilterParserImpl implements FilterParser
                                                                                          function = is_formal_param_combi-name.
                                                                                          */
   }
-
-  
 
   protected void validatePropertyTypes(PropertyExpression property) {
     // TODO Auto-generated method stub

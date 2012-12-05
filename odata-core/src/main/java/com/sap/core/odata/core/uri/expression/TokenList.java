@@ -76,22 +76,20 @@ public class TokenList implements Iterator<Token>
     return i;
   }
 
-  public Token expectToken(TokenKind comma) throws ExceptionTokenizerExpect
+  public Token expectToken(TokenKind comma) throws TokenizerExpectError
   {
     Token actual = next();
     if (comma != actual.getKind())
-      //throw new ExceptionTokenizerExpect(ExceptionTokenizerExpect.unexpectedToken(currentToken, comma.toString(), actual));
-      throw new ExceptionTokenizerExpect(ExceptionTokenizerExpect.INVALID_TOKEN_AT);
+      throw TokenizerExpectError.createINVALID_TOKENKIND_AT( comma,actual);
     return actual;
   }
 
-  public Token expectToken(String literal) throws ExceptionTokenizerExpect
+  public Token expectToken(String literal) throws TokenizerExpectError
   {
     Token actual = next();
     if (!literal.equals(actual.getUriLiteral()))
-      throw new ExceptionTokenizerExpect(ExceptionTokenizerExpect.INVALID_TOKEN_AT);
+      throw TokenizerExpectError.createINVALID_TOKEN_AT( literal,actual);
     return actual;
-
   }
 
   public void skip()
