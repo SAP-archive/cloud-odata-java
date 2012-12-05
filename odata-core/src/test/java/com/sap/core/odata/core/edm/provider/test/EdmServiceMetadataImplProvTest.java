@@ -1,6 +1,6 @@
 package com.sap.core.odata.core.edm.provider.test;
 
-import static org.custommonkey.xmlunit.XMLAssert.*;
+import static org.custommonkey.xmlunit.XMLAssert.assertXpathExists;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
 
@@ -10,7 +10,6 @@ import java.util.Map;
 import org.custommonkey.xmlunit.NamespaceContext;
 import org.custommonkey.xmlunit.SimpleNamespaceContext;
 import org.custommonkey.xmlunit.XMLUnit;
-import org.custommonkey.xmlunit.XpathEngine;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -57,7 +56,6 @@ public class EdmServiceMetadataImplProvTest {
     assertXpathExists("/edmx:edmx/edmx:DataServices/a:Schema/a:ComplexType", metadata);
     assertXpathExists("/edmx:edmx/edmx:DataServices/a:Schema/a:Association", metadata);
     assertXpathExists("/edmx:edmx/edmx:DataServices/a:Schema/a:EntityContainer", metadata);
-    assertXpathExists("/edmx:edmx/edmx:DataServices/a:Schema/a:EntityContainer", metadata);
   }
 
   @Test
@@ -75,6 +73,22 @@ public class EdmServiceMetadataImplProvTest {
   public void testComplexTypeStructure() throws Exception {
     assertXpathExists("/edmx:edmx/edmx:DataServices/a:Schema/a:ComplexType[@Name]", metadata);
     assertXpathExists("/edmx:edmx/edmx:DataServices/a:Schema/a:ComplexType/a:Property[@Name and @Type]", metadata);
+  }
+  
+  @Test
+  public void testEntityContainerStructure() throws Exception {
+    assertXpathExists("/edmx:edmx/edmx:DataServices/a:Schema/a:EntityContainer[@Name]", metadata);
+    assertXpathExists("/edmx:edmx/edmx:DataServices/a:Schema/a:EntityContainer/a:EntitySet[@Name and @EntityType]", metadata);
+    assertXpathExists("/edmx:edmx/edmx:DataServices/a:Schema/a:EntityContainer/a:AssociationSet[@Name and @Association]", metadata);
+    assertXpathExists("/edmx:edmx/edmx:DataServices/a:Schema/a:EntityContainer//a:AssociationSet/a:End[@EntitySet and @Role]", metadata);
+    assertXpathExists("/edmx:edmx/edmx:DataServices/a:Schema/a:EntityContainer/a:FunctionImport[@Name and @ReturnType and @EntitySet and @m:HttpMethod]", metadata);
+    assertXpathExists("/edmx:edmx/edmx:DataServices/a:Schema/a:EntityContainer/a:FunctionImport/a:Parameter[@Name and @Type]", metadata);
+  }
+  
+  @Test
+  public void testAssociationStructure() throws Exception {
+    assertXpathExists("/edmx:edmx/edmx:DataServices/a:Schema/a:Association[@Name]", metadata);
+    assertXpathExists("/edmx:edmx/edmx:DataServices/a:Schema/a:Association/a:End[@Type and @Multiplicity and @Role]", metadata);
   }
 
   @Test
