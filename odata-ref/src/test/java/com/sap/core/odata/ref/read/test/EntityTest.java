@@ -12,11 +12,9 @@ import java.net.URI;
 import java.nio.CharBuffer;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import com.sap.core.odata.api.edm.EdmEntityContainer;
@@ -38,7 +36,6 @@ import com.sap.core.odata.ref.processor.ScenarioDataSource;
 /**
  * @author SAP AG
  */
-@Ignore
 public class EntityTest {
 
   private static DataContainer dataContainer;
@@ -80,17 +77,18 @@ public class EntityTest {
     ArrayList<KeyPredicate> keys = new ArrayList<KeyPredicate>();
     keys.add(key);
 
+    EdmEntityType entityType = mock(EdmEntityType.class);
+    when(entityType.getName()).thenReturn(entitySetName);
+    when(entityType.getProperty(keyProperty.getName())).thenReturn(keyProperty);
+    when(entityType.getPropertyNames()).thenReturn(Arrays.asList(keyName));
+
     EdmEntitySet entitySet = mock(EdmEntitySet.class);
     when(entitySet.getName()).thenReturn(entitySetName);
-    EdmEntityType entityType = mock(EdmEntityType.class);
-    when(entityType.getProperty(keyProperty.getName())).thenReturn(keyProperty);
-    Collection<String> propNames = Arrays.asList(keyProperty.getName());
-    when(entityType.getPropertyNames()).thenReturn(propNames);
     when(entitySet.getEntityType()).thenReturn(entityType);
 
-    EdmEntityContainer eec = mock(EdmEntityContainer.class);
-    when(eec.isDefaultEntityContainer()).thenReturn(Boolean.TRUE);
-    when(entitySet.getEntityContainer()).thenReturn(eec);
+    EdmEntityContainer entityContainer = mock(EdmEntityContainer.class);
+    when(entityContainer.isDefaultEntityContainer()).thenReturn(true);
+    when(entitySet.getEntityContainer()).thenReturn(entityContainer);
 
     UriParserResult uriResult = mock(UriParserResult.class);
     when(uriResult.getStartEntitySet()).thenReturn(entitySet);
