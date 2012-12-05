@@ -10,8 +10,8 @@ import org.apache.http.client.methods.HttpGet;
 
 import com.sap.core.odata.api.edm.provider.EdmProvider;
 import com.sap.core.odata.api.enums.HttpStatusCodes;
-import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.api.processor.ODataSingleProcessor;
+import com.sap.core.odata.api.service.ODataSingleProcessorService;
 import com.sap.core.odata.ref.edm.ScenarioEdmProvider;
 import com.sap.core.odata.ref.model.DataContainer;
 import com.sap.core.odata.ref.processor.ListsProcessor;
@@ -48,15 +48,13 @@ public class AbstractRefTest extends AbstractFitTest {
   protected static final String CITY_2_NAME = "Walldorf";
 
   @Override
-  protected EdmProvider createEdmProviderMock() {
-    return new ScenarioEdmProvider();
-  }
-
-  @Override
-  protected ODataSingleProcessor createProcessorMock() throws ODataException {
+  protected ODataSingleProcessorService createService() {
     DataContainer dataContainer = new DataContainer();
     dataContainer.reset();
-    return new ListsProcessor(new ScenarioDataSource(dataContainer));
+    ODataSingleProcessor processor = new ListsProcessor(new ScenarioDataSource(dataContainer));
+    EdmProvider provider = new ScenarioEdmProvider();
+
+    return new ODataSingleProcessorService(provider, processor) {};
   }
 
   protected HttpResponse callUri(final String uri, final HttpStatusCodes expectedStatusCode) throws Exception {

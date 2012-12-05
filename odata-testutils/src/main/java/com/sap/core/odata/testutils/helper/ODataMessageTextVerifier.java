@@ -11,7 +11,6 @@ import java.util.Vector;
 
 import com.sap.core.odata.api.exception.MessageReference;
 
-
 /**
  * This class is a helper for writing proper error messages.
  * Please use the static method {@link #TestClass(Class)} to 

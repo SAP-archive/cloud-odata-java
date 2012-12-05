@@ -4,7 +4,6 @@ import java.util.Iterator;
 import java.util.Vector;
 
 import com.sap.core.odata.api.uri.EdmLiteral;
-import com.sap.core.odata.api.uri.expression.FilterParserException;
 
 public class TokenList implements Iterator<Token>
 {

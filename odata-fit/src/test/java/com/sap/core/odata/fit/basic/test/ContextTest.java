@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import java.io.IOException;
@@ -30,8 +31,8 @@ import com.sap.core.odata.api.uri.resultviews.GetServiceDocumentView;
 public class ContextTest extends AbstractBasicTest {
 
   @Override
-  protected ODataSingleProcessor createProcessorMock() throws ODataException {
-    ODataSingleProcessor processor = super.createProcessorMock();
+  protected ODataSingleProcessor createProcessor() throws ODataException {
+    ODataSingleProcessor processor = mock(ODataSingleProcessor.class);
     when(((Metadata) processor).readMetadata(any(GetMetadataView.class))).thenReturn(ODataResponse.entity("metadata").status(HttpStatusCodes.OK).build());
     when(((ServiceDocument) processor).readServiceDocument(any(GetServiceDocumentView.class))).thenReturn(ODataResponse.entity("service document").status(HttpStatusCodes.OK).build());
     return processor;
@@ -39,11 +40,11 @@ public class ContextTest extends AbstractBasicTest {
 
   @Test
   public void checkContextExists() throws ClientProtocolException, IOException, ODataException {
-    assertNull(this.getProcessor().getContext());
+    assertNull(this.getService().getProcessor().getContext());
     HttpGet get = new HttpGet(URI.create(this.getEndpoint().toString() + "$metadata"));
     HttpResponse response = this.getHttpClient().execute(get);
 
-    ODataContext ctx = this.getProcessor().getContext();
+    ODataContext ctx = this.getService().getProcessor().getContext();
     assertNotNull(ctx);
 
     ODataService service = ctx.getService();
@@ -59,7 +60,7 @@ public class ContextTest extends AbstractBasicTest {
     HttpGet get = new HttpGet(URI.create(this.getEndpoint().toString()));
     this.getHttpClient().execute(get);
 
-    ODataContext ctx = this.getProcessor().getContext();
+    ODataContext ctx = this.getService().getProcessor().getContext();
     assertNotNull(ctx);
     assertEquals(this.getEndpoint().toString(), ctx.getUriInfo().getBaseUri().toASCIIString());
   }
@@ -69,7 +70,7 @@ public class ContextTest extends AbstractBasicTest {
     HttpGet get = new HttpGet(URI.create(this.getEndpoint().toString() + "/$metadata"));
     this.getHttpClient().execute(get);
 
-    ODataContext ctx = this.getProcessor().getContext();
+    ODataContext ctx = this.getService().getProcessor().getContext();
     assertNotNull(ctx);
     assertEquals(this.getEndpoint().toString(), ctx.getUriInfo().getBaseUri().toASCIIString());
   }

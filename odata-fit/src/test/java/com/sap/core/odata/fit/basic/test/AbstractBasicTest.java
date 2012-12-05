@@ -12,19 +12,21 @@ import com.sap.core.odata.api.edm.provider.EdmProvider;
 import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.api.processor.ODataContext;
 import com.sap.core.odata.api.processor.ODataSingleProcessor;
+import com.sap.core.odata.api.service.ODataSingleProcessorService;
 import com.sap.core.odata.testutils.fit.AbstractFitTest;
 
-public class AbstractBasicTest extends AbstractFitTest {
+public abstract class AbstractBasicTest extends AbstractFitTest {
 
   private ODataContext context;
-  
+
   @Override
-  protected ODataSingleProcessor createProcessorMock() throws ODataException {
-    ODataSingleProcessor processor = mock(ODataSingleProcessor.class);
+  protected ODataSingleProcessorService createService() throws ODataException {
+    EdmProvider provider = mock(EdmProvider.class);
+    ODataSingleProcessor processor = this.createProcessor();
 
     // science fiction (return context after setContext)
     // see http://www.planetgeek.ch/2010/07/20/mockito-answer-vs-return/
-    
+
     doAnswer(new Answer<Object>() {
       @Override
       public Object answer(InvocationOnMock invocation) throws Throwable {
@@ -40,12 +42,8 @@ public class AbstractBasicTest extends AbstractFitTest {
       }
     });
 
-    return processor;
+    return new ODataSingleProcessorService(provider, processor) {};
   }
 
-  @Override
-  protected EdmProvider createEdmProviderMock() {
-    EdmProvider edmProvider = mock(EdmProvider.class);
-    return edmProvider;
-  }
+  abstract ODataSingleProcessor createProcessor() throws ODataException;
 }

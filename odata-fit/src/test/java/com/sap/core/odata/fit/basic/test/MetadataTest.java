@@ -2,6 +2,7 @@ package com.sap.core.odata.fit.basic.test;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import java.io.IOException;
@@ -23,8 +24,8 @@ import com.sap.core.odata.testutils.helper.StringHelper;
 public class MetadataTest extends AbstractBasicTest {
 
   @Override
-  protected ODataSingleProcessor createProcessorMock() throws ODataException {
-    ODataSingleProcessor processor = super.createProcessorMock();
+  protected ODataSingleProcessor createProcessor() throws ODataException {
+    ODataSingleProcessor processor = mock(ODataSingleProcessor.class);
     when(((Metadata) processor).readMetadata(any(GetMetadataView.class))).thenReturn(ODataResponse.entity("metadata").status(HttpStatusCodes.OK).build());
     return processor;
   }

@@ -61,7 +61,7 @@ class EdmMock {
     when(roomIdFacet.getMaxLength()).thenReturn(100);
     when(roomIdFacet.getConcurrencyMode()).thenReturn(EdmConcurrencyMode.Fixed);
     when(roomId.getFacets()).thenReturn(roomIdFacet);
-    
+
     EdmEntityType managerType = managerEntitySet.getEntityType();
     when(managerType.getProperty("nm_Employees")).thenReturn(employeeProperty);
     //when(managerType.getProperty("somethingwrong")).thenThrow(new EdmException("Property not found"));
@@ -80,7 +80,7 @@ class EdmMock {
     when(employeeType.getName()).thenReturn("Employee");
     when(employeeType.getNamespace()).thenReturn("RefScenario");
     when(employeeType.getNavigationPropertyNames()).thenReturn(Arrays.asList("ne_Manager"));
-    
+
     EdmProperty employeeIdProperty = mock(EdmProperty.class);
     when(employeeIdProperty.getType()).thenReturn(EdmSimpleTypeKind.String.getEdmSimpleTypeInstance());
     when(employeeIdProperty.getName()).thenReturn("EmployeeId");
