@@ -68,7 +68,8 @@ public class AtomEntrySerializer {
 
       appendAtomNavigationLinks(writer, entitySet, data);
       appendAtomEditLink(writer, entitySet, data);
-      appendAtomParts(writer, entitySet, aia, data);
+      appendAtomMandatoryParts(writer, entitySet, aia, data);
+      appendAtomOptionalParts(writer, entitySet, aia);
 
       writer.writeEndElement();
 
@@ -80,6 +81,7 @@ public class AtomEntrySerializer {
 
   private String createETag(EdmEntitySet entitySet, Map<String, Object> data) throws EdmException {
     String etag = null;
+    
     for (String propertyName : entitySet.getEntityType().getPropertyNames()) {
       EdmTyped t = entitySet.getEntityType().getProperty(propertyName);
       if (t instanceof EdmProperty) {
@@ -103,10 +105,8 @@ public class AtomEntrySerializer {
     }
 
     if (etag != null) {
-      etag = "W/\"" + etag + "\"";
+      etag = StringEscapeUtils.escapeXml("W/\"" + etag + "\"");
     }
-
-    etag = StringEscapeUtils.escapeXml(etag);
 
     return etag;
   }
@@ -193,13 +193,11 @@ public class AtomEntrySerializer {
 
   private String createSelfLink(EdmEntitySet entitySet, Map<String, Object> data, String extension) throws EdmException, ODataSerializationException, URISyntaxException {
     String path = entitySet.getName() + "(" + this.createEntryKey(entitySet, data) + ")" + (extension == null ? "" : "/" + extension);
-    URI uri;
-    uri = new URI(null, null, null, -1, path, null, null);
-    String self = uri.toASCIIString();
-    return self;
+    URI uri = new URI(null, null, null, -1, path, null, null);
+    return uri.toASCIIString();
   }
 
-  private void appendAtomParts(XMLStreamWriter writer, EdmEntitySet entitySet, AtomInfoAggregator aia, Map<String, Object> data) throws ODataSerializationException {
+  private void appendAtomMandatoryParts(XMLStreamWriter writer, EdmEntitySet entitySet, AtomInfoAggregator aia, Map<String, Object> data) throws ODataSerializationException {
     try {
       writer.writeStartElement(FormatXml.ATOM_ID);
       String entryKey = this.createEntryKey(entitySet, data);
@@ -225,7 +223,13 @@ public class AtomEntrySerializer {
         writer.writeCharacters(EdmDateTimeOffset.getInstance().valueToString(new Date(), EdmLiteralKind.DEFAULT, null));
       }
       writer.writeEndElement();
+    } catch (Exception e) {
+      throw new ODataSerializationException(ODataSerializationException.COMMON, e);
+    }
+  }
 
+  private void appendAtomOptionalParts(XMLStreamWriter writer, EdmEntitySet entitySet, AtomInfoAggregator aia) throws ODataSerializationException {
+    try { 
       if (aia.getAuthorEmail() != null || aia.getAuthorName() != null || aia.getAuthorUri() != null) {
         writer.writeStartElement(FormatXml.ATOM_AUTHOR);
         appendAtomOptionalPart(writer, FormatXml.ATOM_AUTHOR_NAME, aia.getAuthorName(), false);
@@ -233,9 +237,9 @@ public class AtomEntrySerializer {
         appendAtomOptionalPart(writer, FormatXml.ATOM_AUTHOR_URI, aia.getAuthorUri(), false);
         writer.writeEndElement();
       }
-
+  
       appendAtomOptionalPart(writer, FormatXml.ATOM_SUMMARY, aia.getSummary(), true);
-
+  
       if (aia.getContributorEmail() != null || aia.getContributorName() != null || aia.getContributorUri() != null) {
         writer.writeStartElement(FormatXml.ATOM_CONTRIBUTOR);
         appendAtomOptionalPart(writer, FormatXml.ATOM_CONTRIBUTOR_NAME, aia.getContributorName(), false);
@@ -243,16 +247,15 @@ public class AtomEntrySerializer {
         appendAtomOptionalPart(writer, FormatXml.ATOM_CONTRIBUTOR_URI, aia.getContributorUri(), false);
         writer.writeEndElement();
       }
-
+  
       appendAtomOptionalPart(writer, FormatXml.ATOM_RIGHTS, aia.getRights(), true);
       appendAtomOptionalPart(writer, FormatXml.ATOM_PUBLISHED, aia.getPublished(), false);
-
+  
       String term = entitySet.getEntityType().getNamespace() + Edm.DELIMITER + entitySet.getEntityType().getName();
       writer.writeStartElement(FormatXml.ATOM_CATEGORY);
       writer.writeAttribute(FormatXml.ATOM_CATEGORY_TERM, term);
       writer.writeAttribute(FormatXml.ATOM_CATEGORY_SCHEME, Edm.NAMESPACE_SCHEME_2007_08);
       writer.writeEndElement();
-
     } catch (Exception e) {
       throw new ODataSerializationException(ODataSerializationException.COMMON, e);
     }
