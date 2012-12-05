@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -35,7 +36,9 @@ import com.sap.core.odata.api.uri.KeyPredicate;
 import com.sap.core.odata.api.uri.NavigationSegment;
 import com.sap.core.odata.api.uri.expression.BinaryExpression;
 import com.sap.core.odata.api.uri.expression.CommonExpression;
+import com.sap.core.odata.api.uri.expression.ExpressionKind;
 import com.sap.core.odata.api.uri.expression.FilterExpression;
+import com.sap.core.odata.api.uri.expression.LiteralExpression;
 import com.sap.core.odata.api.uri.expression.MemberExpression;
 import com.sap.core.odata.api.uri.expression.MethodExpression;
 import com.sap.core.odata.api.uri.expression.OrderByExpression;
@@ -420,9 +423,11 @@ public class ListsProcessor extends ODataSingleProcessor {
 
   private <T> Integer applySystemQueryOptions(final EdmEntitySet targetEntitySet, List<T> data, final InlineCount inlineCount, final FilterExpression filter, final OrderByExpression orderBy, final String skipToken, final int skip, final Integer top) throws ODataException {
     if (filter != null)
-      for (T element : data)
-        if (!appliesFilter(element, filter))
-          data.remove(element);
+      // Remove all elements the filter does not apply for.
+      // A for-each loop would not work with "remove", see Java documentation.
+      for (Iterator<T> iterator = data.iterator(); iterator.hasNext(); )
+        if (!appliesFilter(iterator.next(), filter))
+          iterator.remove();
 
     final Integer count = inlineCount == InlineCount.ALLPAGES ? data.size() : null;
 
@@ -558,17 +563,33 @@ public class ListsProcessor extends ODataSingleProcessor {
 
     case PROPERTY:
       final EdmProperty property = ((PropertyExpression) expression).getEdmProperty();
-      final EdmSimpleType type = (EdmSimpleType) property.getType();
-
-      return type.valueToString(getPropertyValue(data, property), EdmLiteralKind.DEFAULT, property.getFacets());
+      if (property == null)
+        return "";
+      //final EdmSimpleType type = (EdmSimpleType) property.getType();
+      //return type.valueToString(getPropertyValue(data, property), EdmLiteralKind.DEFAULT, property.getFacets());
 
     case MEMBER:
-      final CommonExpression path = ((MemberExpression) expression).getPath();
-      evaluateExpression(data, path);
-      throw new ODataNotImplementedException();
+      final MemberExpression memberExpression = (MemberExpression) expression;
+      final PropertyExpression memberPath = (PropertyExpression) memberExpression.getPath();
+      final EdmProperty memberProperty = memberPath.getEdmProperty();
+      final EdmSimpleType memberType = (EdmSimpleType) memberPath.getEdmType(); 
+      List<EdmProperty> propertyPath = new ArrayList<EdmProperty>();
+      CommonExpression currentExpression = memberExpression;
+      while (currentExpression != null && currentExpression.getKind() == ExpressionKind.MEMBER) {
+        final PropertyExpression path = (PropertyExpression) memberExpression.getPath();
+        final EdmProperty currentProperty = path.getEdmProperty();
+        propertyPath.add(0, currentProperty);
+        currentExpression = memberExpression.getSource();
+      }
+      Object currentData = data;
+      for (final EdmProperty intermediateProperty : propertyPath)
+        currentData = getPropertyValue(currentData, intermediateProperty);
+      return memberType.valueToString(getPropertyValue(currentData, memberProperty), EdmLiteralKind.DEFAULT, memberProperty.getFacets());
 
     case LITERAL:
-      throw new ODataNotImplementedException();
+      final LiteralExpression literal = (LiteralExpression) expression;
+      final EdmSimpleType literalType = (EdmSimpleType) literal.getEdmType();
+      return literalType.valueToString(literalType.valueOfString(literal.toUriLiteral(), EdmLiteralKind.URI, null), EdmLiteralKind.DEFAULT, null);
 
     case METHOD:
       final MethodExpression methodExpression = (MethodExpression) expression;

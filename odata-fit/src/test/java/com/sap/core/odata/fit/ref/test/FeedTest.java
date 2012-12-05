@@ -95,9 +95,10 @@ public class FeedTest extends AbstractRefTest {
 
   @Test
   public void filter() throws Exception {
-    // HttpResponse response = callUri("Employees?$filter=RoomId%20eq%20%273%27");
-    // checkMediaType(response, APPLICATION_ATOM_XML_FEED);
-    // String body = getBody(response);
+    HttpResponse response = callUri("Employees?$filter=RoomId%20eq%20%273%27");
+    checkMediaType(response, APPLICATION_ATOM_XML_FEED);
+    String body = getBody(response);
+    assertFalse(body.isEmpty());
     // count </entry> = 1
     // assertTrue(body.contains(EMPLOYEE_5_NAME));
 
@@ -107,32 +108,34 @@ public class FeedTest extends AbstractRefTest {
     // count </entry> = 2
     // assertTrue(body.contains(EMPLOYEE_6_NAME));
 
-    // response = callUri("Buildings?$filter=Image%20eq%20X%2700%27");
-    // checkMediaType(response, APPLICATION_ATOM_XML_FEED);
-    // assertFalse(getBody(response).contains("entry"));
+    response = callUri("Buildings?$filter=Image%20eq%20X%2700%27");
+    checkMediaType(response, APPLICATION_ATOM_XML_FEED);
+    assertFalse(getBody(response).contains("entry"));
 
-    // response = callUri("Employees?$filter=day(EntryDate)%20eq%20(Age%20mod%208%20add%201)");
-    // checkMediaType(response, APPLICATION_ATOM_XML_FEED);
-    // body = getBody(response);
+    response = callUri("Employees?$filter=day(EntryDate)%20eq%20(Age%20mod%208%20add%201)");
+    checkMediaType(response, APPLICATION_ATOM_XML_FEED);
+    body = getBody(response);
     // count </entry> = 1
     // assertTrue(body.contains(EMPLOYEE_2_NAME));
 
-    // response = callUri("Employees?$filter=indexof(ImageUrl,EmployeeId)%20mod%20(Age%20sub%2028)%20eq%20month(EntryDate)%20mul%203%20div%2027%20sub%201");
-    // checkMediaType(response, APPLICATION_ATOM_XML_FEED);
-    // body = getBody(response);
+    response = callUri("Employees?$filter=indexof(ImageUrl,EmployeeId)%20mod%20(Age%20sub%2028)%20eq%20month(EntryDate)%20mul%203%20div%2027%20sub%201");
+    checkMediaType(response, APPLICATION_ATOM_XML_FEED);
+    body = getBody(response);
     // count </entry> = 1
     // assertTrue(body.contains(EMPLOYEE_4_NAME));
 
-    // response = callUri("Employees?$filter=not(Age%20sub%2030%20ge%20-hour(EntryDate))");
-    // checkMediaType(response, APPLICATION_ATOM_XML_FEED);
-    // body = getBody(response);
+    response = callUri("Employees?$filter=not(Age%20sub%2030%20ge%20-hour(EntryDate))");
+    checkMediaType(response, APPLICATION_ATOM_XML_FEED);
+    body = getBody(response);
     // count </entry> = 1
     // assertTrue(body.contains(EMPLOYEE_6_NAME));
 
-    // response = callUri("Employees('1')/ne_Room/nr_Employees?$filter=EmployeeId eq '1'");
+    response = callUri("Employees('1')/ne_Room/nr_Employees?$filter=EmployeeId%20eq%20'1'");
+    assertFalse(getBody(response).isEmpty());
     // assertTrue(getBody(response).contains("entry"));
 
-    // response = callUri("Employees('1')/ne_Room/nr_Employees?$filter=EmployeeId eq '2'");
+    response = callUri("Employees('1')/ne_Room/nr_Employees?$filter=EmployeeId%20eq%20'2'");
+    assertFalse(getBody(response).isEmpty());
     // assertTrue(getBody(response).contains("entry"));
 
     // response = callUri("Employees?$filter=Location/City/PostalCode%20lt%20%2769150%27");
@@ -153,12 +156,12 @@ public class FeedTest extends AbstractRefTest {
     // count </entry> = 1
     // assertFalse(body.contains(EMPLOYEE_2_NAME));
 
-    // checkUri("Employees('1')/ne_Room/nr_Employees('1')?$filter=EmployeeId eq '1'");
-    // checkUri("Container2.Photos(Id=4,Type='foo')?$filter=%D0%A1%D0%BE%D0%B4%D0%B5%D1%80%D0%B6%D0%B0%D0%BD%D0%B8%D0%B5 eq '%D0%9F%D1%80%D0%BE%D0%B4%D1%83%D0%BA%D1%82'");
+    // checkUri("Employees('1')/ne_Room/nr_Employees('1')?$filter=EmployeeId%20eq%20'1'");
+    // checkUri("Container2.Photos(Id=4,Type='foo')?$filter=%D0%A1%D0%BE%D0%B4%D0%B5%D1%80%D0%B6%D0%B0%D0%BD%D0%B8%D0%B5%20eq%20'%D0%9F%D1%80%D0%BE%D0%B4%D1%83%D0%BA%D1%82'");
 
-    // notFound("Employees('4')?$filter=Age%20eq%2099");
-    // notFound("Rooms('1')/nr_Employees('1')?$filter=Age%20eq%2099");
-    // notFound("Employees('4')/ne_Room?$filter=Id%20eq%20%271%27");
+    notFound("Employees('4')?$filter=Age%20eq%2099");
+    notFound("Rooms('1')/nr_Employees('1')?$filter=Age%20eq%2099");
+    notFound("Employees('4')/ne_Room?$filter=Id%20eq%20%271%27");
 
     // badRequest("Employees?$filter=(EmployeeId");
     // badRequest("Employees?$filter=(EmployeeId)");
