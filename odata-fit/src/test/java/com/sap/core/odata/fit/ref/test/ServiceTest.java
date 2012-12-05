@@ -29,7 +29,7 @@ public class ServiceTest extends AbstractRefTest {
     assertTrue(payload.contains("c_City"));
     assertTrue(payload.contains("Container1"));
 
-    // notFound("$invalid");
+    notFound("$invalid");
     badRequest("$metadata?$format=json");
   }
 }
