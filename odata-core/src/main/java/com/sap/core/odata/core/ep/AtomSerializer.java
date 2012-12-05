@@ -49,39 +49,59 @@ public class AtomSerializer extends ODataSerializer {
 
   @Override
   public InputStream serializeEntry(EdmEntitySet entitySet, Map<String, Object> data, String mediaResourceMimeType) throws ODataSerializationException {
+    ByteArrayOutputStream outStream = null;
+
     try {
       AtomEntrySerializer as = new AtomEntrySerializer(this.getContext());
 
-      ByteArrayOutputStream out = new ByteArrayOutputStream();
-      XMLStreamWriter writer = XMLOutputFactory.newInstance().createXMLStreamWriter(out, "utf-8");
+      outStream = new ByteArrayOutputStream();
+      XMLStreamWriter writer = XMLOutputFactory.newInstance().createXMLStreamWriter(outStream, "utf-8");
       as.append(writer, entitySet, data, true, mediaResourceMimeType);
 
       writer.flush();
-      out.flush();
-      out.close();
-      return new ByteArrayInputStream(out.toByteArray());
+      outStream.flush();
+      outStream.close();
+      
+      return new ByteArrayInputStream(outStream.toByteArray());
     } catch (Exception e) {
       throw new ODataSerializationException(ODataSerializationException.COMMON, e);
+    } finally {
+      if (outStream != null) {
+        try {
+          outStream.close();
+        } catch (IOException e) {
+          throw new ODataSerializationException(ODataSerializationException.COMMON, e);
+        }
+      }
     }
   }
 
   @Override
   public InputStream serializeProperty(EdmProperty edmProperty, Object value) throws ODataSerializationException {
+    ByteArrayOutputStream outStream = null;
+
     try {
       XmlPropertySerializer ps = new XmlPropertySerializer();
 
-      ByteArrayOutputStream out = new ByteArrayOutputStream();
-      XMLStreamWriter writer = XMLOutputFactory.newInstance().createXMLStreamWriter(out, "utf-8");
+      outStream = new ByteArrayOutputStream();
+      XMLStreamWriter writer = XMLOutputFactory.newInstance().createXMLStreamWriter(outStream, "utf-8");
       ps.append(writer, edmProperty, value, true, null);
 
       writer.flush();
-      out.flush();
-      out.close();
+      outStream.flush();
+      outStream.close();
 
-      return new ByteArrayInputStream(out.toByteArray());
-
+      return new ByteArrayInputStream(outStream.toByteArray());
     } catch (Exception e) {
       throw new ODataSerializationException(ODataSerializationException.COMMON, e);
+    } finally {
+      if (outStream != null) {
+        try {
+          outStream.close();
+        } catch (IOException e) {
+          throw new ODataSerializationException(ODataSerializationException.COMMON, e);
+        }
+      }
     }
   }
 
