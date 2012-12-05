@@ -1,5 +1,6 @@
 package com.sap.core.odata.api.exception;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -11,13 +12,11 @@ import java.util.List;
  */
 public abstract class MessageReference {
 
-  private final String key;
-  private final List<Object> content;
+  protected final String key;
+  protected List<Object> content = null;
 
-  // because of use of 'Collections.EMPTY_LIST' we need a @SuppressWarnings("unchecked") annotation
-  @SuppressWarnings("unchecked")
   private MessageReference(String key) {
-    this(key, Collections.EMPTY_LIST);
+    this(key, null);
   }
 
   private MessageReference(String key, List<Object> content) {
@@ -64,10 +63,14 @@ public abstract class MessageReference {
    * 
    * @return
    */
+  // because of use of 'Collections.EMPTY_LIST' we need a @SuppressWarnings("unchecked") annotation
+  @SuppressWarnings("unchecked")
   public List<Object> getContent() {
+    if (content == null)
+      return Collections.unmodifiableList(Collections.EMPTY_LIST);
+
     return Collections.unmodifiableList(content);
   }
-
 
   /**
    * Simple inner class for realization of {@link MessageReference} interface.
@@ -76,11 +79,27 @@ public abstract class MessageReference {
     public SimpleMessageReference(String implKey) {
       super(implKey);
     }
+
     public SimpleMessageReference(String implKey, List<Object> content) {
       super(implKey, content);
     }
-    public SimpleMessageReference(String implKey, Object ... content) {
+
+    public SimpleMessageReference(String implKey, Object... content) {
       super(implKey, Arrays.asList(content));
     }
+
+    @Override
+    public MessageReference addContent(Object... content) {
+      if (this.content == null)
+        this.content = new ArrayList<Object>();
+      
+      for (Object object : content)
+        this.content.add(object);
+      return this;
+    }
+  }
+
+  public MessageReference create() {
+    return new SimpleMessageReference(this.key);
   }
 }

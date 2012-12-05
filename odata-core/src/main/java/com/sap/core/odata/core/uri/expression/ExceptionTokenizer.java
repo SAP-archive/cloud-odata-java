@@ -22,16 +22,18 @@ public class ExceptionTokenizer extends ODataMessageException {
   public static MessageReference PARSESTRINGTOKEN;
   
   private int textID;
-  private String token;
+  private String tokenString;
+  private Token token;
   private Exception previous;
   private int position;
 
-  public String getToken() {
+  public Token getToken() {
     return token;
   }
 
+  //TODO move to Token structured  
   public void setToken(String token) {
-    this.token = token;
+    this.tokenString = token;
   }
 
   public Exception getPrevious() {

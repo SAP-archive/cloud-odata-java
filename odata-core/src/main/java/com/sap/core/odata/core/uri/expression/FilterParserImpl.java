@@ -72,7 +72,8 @@ public class FilterParserImpl implements FilterParser
     } catch (ExceptionTokenizer tokenizerException)
     {
       //wrap the tokenizer exception
-      throw new FilterParserException(FilterParserException.ERROR_IN_TOKENIZER).setCause(tokenizerException);
+      throw FilterParserExceptionImpl.createERROR_IN_TOKENIZER(tokenizerException);
+      //throw new FilterParserException(FilterParserException.ERROR_IN_TOKENIZER).setCause(tokenizerException);
     }
 
     //if token list is empty
@@ -93,7 +94,9 @@ public class FilterParserImpl implements FilterParser
     //post check
     //TODO verify if is an internal error or an user error. E.g. Test "a eq b b" or " a b"
     if (tokenList.tokenCount() > tokenList.currentToken) //this indicates that not all tokens have been read
-      throw new FilterParserException(FilterParserException.INVALID_TRAILING_TOKEN_DETECTED_AFTER_PARSING);
+      throw FilterParserExceptionImpl.createINVALID_TRAILING_TOKEN_DETECTED_AFTER_PARSING(
+          tokenList.elementAt(tokenList.currentToken));
+      
 
     //create and return filterExpression node
     return new FilterExpressionImpl(filterExpression, node);
@@ -213,7 +216,7 @@ public class FilterParserImpl implements FilterParser
       //E.g. $filter=startswith(Country,) --> is also wrong 
       if ((expression == null) && (expectAnotherExpression != true))
       {
-        throw new FilterParserException(FilterParserException.EXPRESSION_EXPECTED_AT_POS);
+        throw FilterParserExceptionImpl.createEXPRESSION_EXPECTED_AT_POS(token);
       }
       else if (expression != null) //parameter list may be empty
       {
@@ -333,7 +336,9 @@ public class FilterParserImpl implements FilterParser
       return property;
     }
 
-    throw new FilterParserException(FilterParserException.INVALID_TOKEN);
+    //throw FilterParserExceptionImpl.createINVALID_TOKEN(token);
+    //throw new FilterParserException(FilterParserException.COMMON_ERROR.addContent("TEST"));
+    throw new FilterParserException(FilterParserException.COMMON_ERROR.create().addContent("TEST").addContent("TEST"));
 
   }
 
