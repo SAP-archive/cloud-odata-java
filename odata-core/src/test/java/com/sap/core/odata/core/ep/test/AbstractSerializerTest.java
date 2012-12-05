@@ -22,9 +22,11 @@ import com.sap.core.odata.api.ep.ODataSerializer;
 import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.api.processor.ODataContext;
 import com.sap.core.odata.api.processor.ODataUriInfo;
-import com.sap.core.odata.core.ep.AtomEntrySerializer;
 import com.sap.core.odata.testutils.helper.XMLUnitHelper;
 
+/**
+ * @author SAP AG
+*/
 public abstract class AbstractSerializerTest {
 
   protected final Logger log = LoggerFactory.getLogger(this.getClass());

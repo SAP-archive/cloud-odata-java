@@ -29,7 +29,7 @@ public class FeedTest extends AbstractRefTest {
     checkMediaType(response, APPLICATION_ATOM_XML_FEED);
     assertTrue(getBody(response).contains("Room"));
 
-    // notFound("$top");
+    notFound("$top");
   }
 
   @Test

@@ -22,6 +22,6 @@ public class ComplexPropertyTest extends AbstractRefTest {
     assertTrue(getBody(response).contains("PostalCode"));
 
     // notFound("Employees('2')/Location()");
-    // notFound("Employees('2')/Location/City/$value");
+    notFound("Employees('2')/Location/City/$value");
   }
 }
