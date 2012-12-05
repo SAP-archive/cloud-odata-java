@@ -15,22 +15,23 @@ public class FilterParserException extends ODataBadRequestException
   /*TODO add error texts to resource file*/
 
   //VON ABAP "An exception occurred"
-  public static final MessageReference COMMON_ERROR = createMessageReference(ODataMessageException.class, "COMMON");
+ 
+  public static final MessageReference COMMON_ERROR = createMessageReference(FilterParserException.class, "COMMON");
 
   //NEW Error during tokenizing
-  public static final MessageReference ERROR_IN_TOKENIZER = createMessageReference(ODataMessageException.class, "ERROR_IN_TOKENIZER");;
+  public static final MessageReference ERROR_IN_TOKENIZER = createMessageReference(FilterParserException.class, "ERROR_IN_TOKENIZER");
   
   //VON ABAP CX_DS_EXPR_SYNTAX_ERROR-TOKEN_INVALID "Invalid token detected at position &POSITION&"
-  public static final MessageReference INVALID_TRAILING_TOKEN_DETECTED_AFTER_PARSING = createMessageReference(ODataMessageException.class, "INVALID_TRAILING_TOKEN");
+  public static final MessageReference INVALID_TRAILING_TOKEN_DETECTED_AFTER_PARSING = createMessageReference(FilterParserException.class, "INVALID_TRAILING_TOKEN_DETECTED_AFTER_PARSING");
 
   //NORTHWIND Expression expected at position 25.
-  public static final MessageReference EXPRESSION_EXPECTED_AT_POS = createMessageReference(ODataMessageException.class, "TODO");//TODO
+  public static final MessageReference EXPRESSION_EXPECTED_AT_POS = createMessageReference(FilterParserException.class, "EXPRESSION_EXPECTED_AT_POS");//TODO
 
-  public static final MessageReference METHOD_TO_FEW_PARAMETERS = createMessageReference(ODataMessageException.class, "TODO");//TODO
+  public static final MessageReference INVALID_TOKEN = createMessageReference(FilterParserException.class, "INVALID_TOKEN");
+  
+  private static final MessageReference METHOD_TO_FEW_PARAMETERS = createMessageReference(ODataMessageException.class, "TODO");//TODO
 
-  public static final MessageReference METHOD_TO_MANY_PARAMETERS = createMessageReference(ODataMessageException.class, "TODO");//TODO
-
-  public static final MessageReference INVALID_TOKEN = createMessageReference(ODataMessageException.class, "TODO");//TODO
+  private static final MessageReference METHOD_TO_MANY_PARAMETERS = createMessageReference(ODataMessageException.class, "TODO");//TODO
 
   /*instance attributes*/
   private CommonExpression filterTree;
@@ -75,6 +76,13 @@ public class FilterParserException extends ODataBadRequestException
   }
 
 
+  public static FilterParserException ErrorInTokenizer(String token, int position)
+  {
+    MessageReference msgRef = FilterParserException.ERROR_IN_TOKENIZER.addContent(Integer.toString(position), token);
+    return new FilterParserException(msgRef);
+    
+  }
+      
 
 
   public static FilterParserException NewToFewParameters(MethodExpression methodExpression) {
