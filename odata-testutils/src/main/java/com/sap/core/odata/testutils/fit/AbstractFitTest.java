@@ -10,11 +10,7 @@ import org.junit.Before;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.sap.core.odata.api.edm.provider.EdmProvider;
 import com.sap.core.odata.api.exception.ODataException;
-import com.sap.core.odata.api.processor.ODataProcessor;
-import com.sap.core.odata.api.processor.ODataSingleProcessor;
-import com.sap.core.odata.api.service.ODataService;
 import com.sap.core.odata.api.service.ODataSingleProcessorService;
 import com.sap.core.odata.testutils.server.TestServer;
 
@@ -27,12 +23,10 @@ public abstract class AbstractFitTest {
   protected final Logger log = LoggerFactory.getLogger(this.getClass());
 
   private TestServer server = new TestServer();
- 
-  private ODataService service;
-  
-  private HttpClient httpClient = new DefaultHttpClient();
 
-  private EdmProvider edmProvider;
+  private ODataSingleProcessorService service;
+
+  private HttpClient httpClient = new DefaultHttpClient();
 
   protected URI getEndpoint() {
     return this.server.getEndpoint();
@@ -42,42 +36,25 @@ public abstract class AbstractFitTest {
     return httpClient;
   }
 
-  protected ODataProcessor getProcessor() throws ODataException {
-    return this.service.getProcessor();
+  protected ODataSingleProcessorService getService() {
+    return service;
   }
 
-  protected EdmProvider getEdmProvider() {
-    return this.edmProvider;
-  }
+  protected abstract ODataSingleProcessorService createService() throws ODataException;
 
   @Before
   public void before() throws Exception {
-    ODataSingleProcessor processor = this.createProcessorMock();
-    this.edmProvider = this.createEdmProviderMock();
-    
-    this.service = new ODataSingleProcessorService(this.edmProvider, (ODataSingleProcessor) processor) {};
-    ServiceFactory.setService(this.service);
-    
-    this.server.startServer(ServiceFactory.class);
+    this.service = createService();
+    FitStaticServiceFactory.setService(this.service);
+    this.server.startServer(FitStaticServiceFactory.class);
   }
-
-  /**
-   * @return mock provider
-   */
-  protected abstract EdmProvider createEdmProviderMock();
-
-  /**
-   * @return mock processor
-   */
-  protected abstract ODataSingleProcessor createProcessorMock() throws ODataException;
-
 
   @After
   public void after() throws Exception {
     try {
       this.server.stopServer();
     } finally {
-      ServiceFactory.setService(null);
+      FitStaticServiceFactory.setService(null);
     }
   }
 }

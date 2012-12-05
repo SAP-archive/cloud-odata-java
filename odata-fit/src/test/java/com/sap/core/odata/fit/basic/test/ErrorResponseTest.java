@@ -2,6 +2,7 @@ package com.sap.core.odata.fit.basic.test;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import java.io.IOException;
@@ -19,15 +20,14 @@ import com.sap.core.odata.api.uri.resultviews.GetServiceDocumentView;
 import com.sap.core.odata.core.exception.ODataRuntimeException;
 import com.sap.core.odata.testutils.helper.StringHelper;
 
-
 public class ErrorResponseTest extends AbstractBasicTest {
 
   @Override
-  protected ODataSingleProcessor createProcessorMock() throws ODataException {
-    ODataSingleProcessor processor = super.createProcessorMock();
+  protected ODataSingleProcessor createProcessor() throws ODataException {
+    ODataSingleProcessor processor = mock(ODataSingleProcessor.class);
 
     when(((ServiceDocument) processor).readServiceDocument(any(GetServiceDocumentView.class))).thenThrow(new ODataRuntimeException("unit testing"));
-    
+
     return processor;
   }
 

@@ -42,7 +42,7 @@ public class EntryXmlReadOnlyTest extends AbstractRefTest {
 
     response = callUri("Container2.Photos(Id=1,Type='image%2Fpng')");
     checkMediaType(response, APPLICATION_ATOM_XML_ENTRY);
-    assertTrue(getBody(response).contains(">image/png</"));    
+    assertTrue(getBody(response).contains(">image/png</"));
 
     response = callUri("Container2.Photos(Id=4,Type='foo')");
     checkMediaType(response, APPLICATION_ATOM_XML_ENTRY);
