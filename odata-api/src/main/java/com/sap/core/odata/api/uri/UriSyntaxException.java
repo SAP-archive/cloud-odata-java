@@ -3,10 +3,11 @@ package com.sap.core.odata.api.uri;
 import com.sap.core.odata.api.exception.MessageReference;
 import com.sap.core.odata.api.exception.ODataBadRequestException;
 
+/**
+ * @author SAP AG
+ */
 public class UriSyntaxException extends ODataBadRequestException {
-  /**
-   * 
-   */
+
   private static final long serialVersionUID = 1L;
 
   public static final MessageReference URISYNTAX = createMessageReference(UriSyntaxException.class, "URISYNTAX");

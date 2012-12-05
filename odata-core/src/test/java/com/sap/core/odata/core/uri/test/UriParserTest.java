@@ -36,6 +36,9 @@ import com.sap.core.odata.core.uri.UriParserResultImpl;
 import com.sap.core.odata.core.uri.UriType;
 import com.sap.core.odata.testutils.mocks.MockFacade;
 
+/**
+ * @author SAP AG
+ */
 public class UriParserTest {
 
   static {
@@ -54,10 +57,8 @@ public class UriParserTest {
     * Query parameters can be included.
     * @param uri  the URI part
     * @return a {@link UriParserResultImpl} instance containing the parsed information
-    * @throws UriSyntaxException
-    * @throws EdmException
     */
-  private UriParserResultImpl parse(final String uri) throws ODataMessageException {
+  private UriParserResultImpl parse(final String uri) throws UriSyntaxException, UriNotMatchingException, EdmException {
     final String[] path = uri.split("\\?", -1);
     if (path.length > 2)
       throw new UriSyntaxException(UriSyntaxException.URISYNTAX);
