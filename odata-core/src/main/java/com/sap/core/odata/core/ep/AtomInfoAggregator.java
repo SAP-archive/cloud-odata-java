@@ -1,8 +1,6 @@
 package com.sap.core.odata.core.ep;
 
-import java.util.Collections;
 import java.util.HashMap;
-import java.util.Map;
 
 import com.sap.core.odata.api.edm.EdmConcurrencyMode;
 import com.sap.core.odata.api.edm.EdmCustomizableFeedMappings;
@@ -31,6 +29,8 @@ class AtomInfoAggregator {
 
   public AtomInfoAggregator() {
   }
+  
+  
 
   public void addInfo(EdmProperty edmProperty, String value) throws EdmException {
     addTargetPathInfo(edmProperty, value);
@@ -74,10 +74,6 @@ class AtomInfoAggregator {
         this.authorEmail = valueAsString;
       }
     }
-  }
-
-  public Map<String, String> getETags() {
-    return Collections.unmodifiableMap(this.name2ETagValue);
   }
 
   public String getTitle() {

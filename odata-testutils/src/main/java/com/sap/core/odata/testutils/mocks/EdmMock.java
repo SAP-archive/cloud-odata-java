@@ -68,6 +68,7 @@ class EdmMock {
 
     EdmNavigationProperty managerProperty = mock(EdmNavigationProperty.class);
     when(managerProperty.getType()).thenReturn(navigationType);
+    when(managerProperty.getName()).thenReturn("ne_Manager");
     when(managerProperty.getMultiplicity()).thenReturn(EdmMultiplicity.ONE);
     when(employeeEntitySet.getRelatedEntitySet(managerProperty)).thenReturn(managerEntitySet);
     when(employeeEntitySet.getEntityContainer()).thenReturn(defaultContainer);
@@ -75,6 +76,7 @@ class EdmMock {
     EdmEntityType employeeType = employeeEntitySet.getEntityType();
     when(employeeType.getKind()).thenReturn(EdmTypeKind.ENTITY);
     when(employeeType.hasStream()).thenReturn(true);
+    when(employeeType.getPropertyNames()).thenReturn(Arrays.asList("EmployeeId", "EmployeeName", "ImageUrl", "Age", "RoomId", "EntryDate", "Location"));
     when(employeeType.getProperty("ne_Manager")).thenReturn(managerProperty);
     when(employeeType.getKeyPropertyNames()).thenReturn(Arrays.asList("EmployeeId"));
     when(employeeType.getName()).thenReturn("Employee");
@@ -127,6 +129,7 @@ class EdmMock {
 
     EdmComplexType locationComplexType = mock(EdmComplexType.class);
     when(locationComplexType.getKind()).thenReturn(EdmTypeKind.COMPLEX);
+    when(locationComplexType.getName()).thenReturn("Location");
     when(locationComplexType.getPropertyNames()).thenReturn(Arrays.asList("City", "Country"));
 
     EdmProperty locationComplexProperty = mock(EdmProperty.class);
@@ -141,6 +144,7 @@ class EdmMock {
 
     EdmComplexType cityComplexType = mock(EdmComplexType.class);
     when(cityComplexType.getKind()).thenReturn(EdmTypeKind.COMPLEX);
+    when(cityComplexType.getName()).thenReturn("City");
     when(cityComplexType.getPropertyNames()).thenReturn(Arrays.asList("PostalCode", "CityName"));
 
     EdmProperty cityProperty = mock(EdmProperty.class);
@@ -205,7 +209,8 @@ class EdmMock {
     photoKeyProperties.add(photoTypeProperty);
     EdmEntityType photoEntityType = mock(EdmEntityType.class);
     when(photoEntityType.getName()).thenReturn("Photo");
-    when(photoEntityType.getPropertyNames()).thenReturn(Arrays.asList("Id"));
+    when(photoEntityType.getPropertyNames()).thenReturn(Arrays.asList("Id", "Type"));
+    when(photoEntityType.getKeyPropertyNames()).thenReturn(Arrays.asList("Id", "Type"));
     when(photoEntityType.getKeyProperties()).thenReturn(photoKeyProperties);
     when(photoEntityType.getProperty("Id")).thenReturn(photoIdProperty);
     when(photoEntityType.getProperty("Type")).thenReturn(photoTypeProperty);
