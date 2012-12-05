@@ -42,6 +42,8 @@ public class ODataExceptionMapperImpl implements ExceptionMapper<Exception> {
     final Response response;
 
     Exception toHandleException = extractException(exception);
+    
+    exception.printStackTrace();
 
     if (toHandleException instanceof ODataApplicationException) {
       response = buildResponseForApplicationException((ODataApplicationException) toHandleException);
