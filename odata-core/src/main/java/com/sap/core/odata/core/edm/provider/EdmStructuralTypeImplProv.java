@@ -12,8 +12,10 @@ import com.sap.core.odata.api.edm.EdmStructuralType;
 import com.sap.core.odata.api.edm.EdmTypeKind;
 import com.sap.core.odata.api.edm.EdmTyped;
 import com.sap.core.odata.api.edm.FullQualifiedName;
+import com.sap.core.odata.api.edm.provider.ComplexProperty;
 import com.sap.core.odata.api.edm.provider.ComplexType;
 import com.sap.core.odata.api.edm.provider.Property;
+import com.sap.core.odata.api.edm.provider.SimpleProperty;
 
 /**
  * @author SAP AG
@@ -125,6 +127,14 @@ public abstract class EdmStructuralTypeImplProv extends EdmNamedImplProv impleme
   }
 
   protected EdmTyped createProperty(Property property) throws EdmException {
-    return new EdmPropertyImplProv(edm, property);
+    if(property instanceof SimpleProperty){
+      return new EdmSimplePropertyImplProv(edm, (SimpleProperty) property);
+    }else if(property instanceof ComplexProperty){
+      return new EdmComplexPropertyImplProv(edm, (ComplexProperty) property);
+    }else{
+      throw new EdmException(EdmException.COMMON);
+    }
+    
+    
   }
 }

@@ -22,6 +22,7 @@ import com.sap.core.odata.api.edm.FullQualifiedName;
 import com.sap.core.odata.api.edm.provider.ComplexType;
 import com.sap.core.odata.api.edm.provider.EdmProvider;
 import com.sap.core.odata.api.edm.provider.Property;
+import com.sap.core.odata.api.edm.provider.SimpleProperty;
 import com.sap.core.odata.core.edm.provider.EdmComplexTypeImplProv;
 import com.sap.core.odata.core.edm.provider.EdmImplProv;
 
@@ -39,8 +40,8 @@ public class EdmComplexTypeImplProvTest {
     ComplexType fooComplexType = new ComplexType().setName("fooComplexType");
 
     Collection<Property> keyPropertysFoo = new ArrayList<Property>();
-    keyPropertysFoo.add(new Property().setName("Name").setType(EdmSimpleTypeKind.String.getFullQualifiedName()));
-    keyPropertysFoo.add(new Property().setName("Address").setType(EdmSimpleTypeKind.String.getFullQualifiedName()));
+    keyPropertysFoo.add(new SimpleProperty().setName("Name").setType(EdmSimpleTypeKind.String));
+    keyPropertysFoo.add(new SimpleProperty().setName("Address").setType(EdmSimpleTypeKind.String));
     fooComplexType.setProperties(keyPropertysFoo);
 
     edmComplexType = new EdmComplexTypeImplProv(edmImplProv, fooComplexType, "namespace");
@@ -50,8 +51,8 @@ public class EdmComplexTypeImplProvTest {
     when(edmProvider.getComplexType(barBaseTypeName)).thenReturn(barBase);
 
     Collection<Property> propertysBarBase = new ArrayList<Property>();
-    propertysBarBase.add(new Property().setName("Name").setType(EdmSimpleTypeKind.String.getFullQualifiedName()));
-    propertysBarBase.add(new Property().setName("Address").setType(EdmSimpleTypeKind.String.getFullQualifiedName()));
+    propertysBarBase.add(new SimpleProperty().setName("Name").setType(EdmSimpleTypeKind.String));
+    propertysBarBase.add(new SimpleProperty().setName("Address").setType(EdmSimpleTypeKind.String));
     barBase.setProperties(propertysBarBase);
 
     ComplexType barComplexType = new ComplexType().setName("barComplexType").setBaseType(barBaseTypeName);

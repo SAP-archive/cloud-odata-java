@@ -3,17 +3,15 @@ package com.sap.core.odata.api.edm.provider;
 import java.util.Collection;
 
 import com.sap.core.odata.api.edm.EdmFacets;
-import com.sap.core.odata.api.edm.FullQualifiedName;
 
 /**
  * @author SAP AG
  *<p>
  * Objects of this class represent a property of an entity type in the EDM
  */
-public class Property {
+public abstract class Property {
 
   private String name;
-  private FullQualifiedName type;
   private EdmFacets facets;
   private CustomizableFeedMappings customizableFeedMappings;
   private String mimeType;
@@ -27,13 +25,6 @@ public class Property {
    */
   public String getName() {
     return name;
-  }
-
-  /**
-   * @return {@link FullQualifiedName} of the {@link EdmType} of this property
-   */
-  public FullQualifiedName getType() {
-    return type;
   }
 
   /**
@@ -93,17 +84,6 @@ public class Property {
    */
   public Property setName(String name) {
     this.name = name;
-    return this;
-  }
-
-  /**
-   * MANDATORY
-   * <p>Sets the {@link FullQualifiedName} for the {@link EdmTypeKind} of this {@link Property}
-   * @param type
-   * @return {@link Property} for method chaining
-   */
-  public Property setType(FullQualifiedName type) {
-    this.type = type;
     return this;
   }
 

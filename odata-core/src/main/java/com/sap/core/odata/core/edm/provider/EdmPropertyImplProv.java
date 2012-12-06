@@ -5,14 +5,15 @@ import com.sap.core.odata.api.edm.EdmAnnotations;
 import com.sap.core.odata.api.edm.EdmCustomizableFeedMappings;
 import com.sap.core.odata.api.edm.EdmException;
 import com.sap.core.odata.api.edm.EdmProperty;
+import com.sap.core.odata.api.edm.FullQualifiedName;
 import com.sap.core.odata.api.edm.provider.Property;
 
-public class EdmPropertyImplProv extends EdmElementImplProv implements EdmProperty, EdmAnnotatable {
+public abstract class EdmPropertyImplProv extends EdmElementImplProv implements EdmProperty, EdmAnnotatable {
 
   private Property property;
 
-  public EdmPropertyImplProv(EdmImplProv edm, Property property) throws EdmException {
-    super(edm, property.getName(), property.getType(), property.getFacets(), property.getMapping());
+  public EdmPropertyImplProv(EdmImplProv edm, FullQualifiedName propertyName, Property property) throws EdmException {
+    super(edm, property.getName(), propertyName, property.getFacets(), property.getMapping());
     this.property = property;
   }
 

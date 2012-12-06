@@ -15,16 +15,18 @@ import com.sap.core.odata.api.edm.EdmMultiplicity;
 import com.sap.core.odata.api.edm.EdmSimpleTypeKind;
 import com.sap.core.odata.api.edm.EdmTypeKind;
 import com.sap.core.odata.api.edm.FullQualifiedName;
+import com.sap.core.odata.api.edm.provider.ComplexProperty;
 import com.sap.core.odata.api.edm.provider.ComplexType;
 import com.sap.core.odata.api.edm.provider.CustomizableFeedMappings;
 import com.sap.core.odata.api.edm.provider.EdmProvider;
-import com.sap.core.odata.api.edm.provider.EntityType;
 import com.sap.core.odata.api.edm.provider.Facets;
 import com.sap.core.odata.api.edm.provider.Mapping;
-import com.sap.core.odata.api.edm.provider.Property;
+import com.sap.core.odata.api.edm.provider.SimpleProperty;
 import com.sap.core.odata.core.edm.EdmSimpleTypeFacadeImpl;
+import com.sap.core.odata.core.edm.provider.EdmComplexPropertyImplProv;
 import com.sap.core.odata.core.edm.provider.EdmImplProv;
 import com.sap.core.odata.core.edm.provider.EdmPropertyImplProv;
+import com.sap.core.odata.core.edm.provider.EdmSimplePropertyImplProv;
 
 public class EdmPropertyImplProvTest {
   private static EdmProvider edmProvider;
@@ -32,7 +34,6 @@ public class EdmPropertyImplProvTest {
   private static EdmPropertyImplProv propertySimpleWithFacetsProvider;
   private static EdmPropertyImplProv propertySimpleWithFacetsProvider2;
   private static EdmPropertyImplProv propertyComplexProvider;
-  private static EdmPropertyImplProv propertyEntityProvider;
 
   @BeforeClass
   public static void setup() throws Exception {
@@ -42,31 +43,24 @@ public class EdmPropertyImplProvTest {
 
     Mapping propertySimpleMapping = new Mapping().setMimeType("mimeType2").setValue("value");
     CustomizableFeedMappings propertySimpleFeedMappings = new CustomizableFeedMappings().setFcKeepInContent(true);
-    Property propertySimple = new Property().setName("PropertyName").setType(EdmSimpleTypeKind.String.getFullQualifiedName())
+    SimpleProperty propertySimple = new SimpleProperty().setName("PropertyName").setType(EdmSimpleTypeKind.String)
         .setMimeType("mimeType").setMapping(propertySimpleMapping).setCustomizableFeedMappings(propertySimpleFeedMappings);
-    propertySimpleProvider = new EdmPropertyImplProv(edmImplProv, propertySimple);
+    propertySimpleProvider = new EdmSimplePropertyImplProv(edmImplProv, propertySimple);
 
     Facets facets = new Facets().setNullable(false);
-    Property propertySimpleWithFacets = new Property().setName("PropertyName").setType(EdmSimpleTypeKind.String.getFullQualifiedName()).setFacets(facets);
-    propertySimpleWithFacetsProvider = new EdmPropertyImplProv(edmImplProv, propertySimpleWithFacets);
+    SimpleProperty propertySimpleWithFacets = new SimpleProperty().setName("PropertyName").setType(EdmSimpleTypeKind.String).setFacets(facets);
+    propertySimpleWithFacetsProvider = new EdmSimplePropertyImplProv(edmImplProv, propertySimpleWithFacets);
 
     Facets facets2 = new Facets().setNullable(true);
-    Property propertySimpleWithFacets2 = new Property().setName("PropertyName").setType(EdmSimpleTypeKind.String.getFullQualifiedName()).setFacets(facets2);
-    propertySimpleWithFacetsProvider2 = new EdmPropertyImplProv(edmImplProv, propertySimpleWithFacets2);
+    SimpleProperty propertySimpleWithFacets2 = new SimpleProperty().setName("PropertyName").setType(EdmSimpleTypeKind.String).setFacets(facets2);
+    propertySimpleWithFacetsProvider2 = new EdmSimplePropertyImplProv(edmImplProv, propertySimpleWithFacets2);
 
     ComplexType complexType = new ComplexType().setName("complexType");
     FullQualifiedName complexName = new FullQualifiedName("namespace", "complexType");
     when(edmProvider.getComplexType(complexName)).thenReturn(complexType);
 
-    Property propertyComplex = new Property().setName("complexProperty").setType(complexName);
-    propertyComplexProvider = new EdmPropertyImplProv(edmImplProv, propertyComplex);
-
-    EntityType entityType = new EntityType().setName("entityType");
-    FullQualifiedName entityName = new FullQualifiedName("namespace", "entityName");
-    when(edmProvider.getEntityType(entityName)).thenReturn(entityType);
-
-    Property propertyEntity = new Property().setName("entityProperty").setType(entityName);
-    propertyEntityProvider = new EdmPropertyImplProv(edmImplProv, propertyEntity);
+    ComplexProperty propertyComplex = new ComplexProperty().setName("complexProperty").setType(complexName);
+    propertyComplexProvider = new EdmComplexPropertyImplProv(edmImplProv, propertyComplex);
 
   }
 
@@ -106,16 +100,8 @@ public class EdmPropertyImplProvTest {
   }
 
   @Test
-  public void testPropertyEntity() throws Exception {
-    assertNotNull(propertyEntityProvider);
-    assertEquals("entityProperty", propertyEntityProvider.getName());
-    assertEquals(EdmTypeKind.ENTITY, propertyEntityProvider.getType().getKind());
-    assertEquals("entityType", propertyEntityProvider.getType().getName());
-  }
-
-  @Test
   public void getAnnotations() throws Exception {
-    EdmAnnotatable annotatable = (EdmAnnotatable) propertyEntityProvider;
+    EdmAnnotatable annotatable = (EdmAnnotatable) propertySimpleProvider;
     EdmAnnotations annotations = annotatable.getAnnotations();
     assertNull(annotations.getAnnotationAttributes());
     assertNull(annotations.getAnnotationElements());
