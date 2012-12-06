@@ -81,11 +81,16 @@ public class EdmDateTimeOffset implements EdmSimpleType {
 
     switch (literalKind) {
     case DEFAULT:
+      throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_KIND_NOT_SUPPORTED.addContent(literalKind));
+
     case JSON:
       throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_KIND_NOT_SUPPORTED.addContent(literalKind));
 
     case URI:
-      throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_KIND_NOT_SUPPORTED.addContent(literalKind));
+      if (value.length() > 10 && value.startsWith("datetimeoffset'") && value.endsWith("'"))
+        return valueOfString(value.substring(15, value.length() - 1), EdmLiteralKind.DEFAULT, facets);
+      else
+        throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_ILLEGAL_CONTENT.addContent(value));
 
     default:
       throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_KIND_NOT_SUPPORTED.addContent(literalKind));
