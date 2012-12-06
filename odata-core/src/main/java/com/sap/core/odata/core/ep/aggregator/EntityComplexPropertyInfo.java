@@ -4,13 +4,13 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Map;
 
-import com.sap.core.odata.api.edm.EdmComplexType;
 import com.sap.core.odata.api.edm.EdmException;
+import com.sap.core.odata.api.edm.EdmProperty;
 
 public class EntityComplexPropertyInfo extends EntityPropertyInfo {
   protected Map<String, EntityPropertyInfo> internalName2EntityPropertyInfo;
   
-  static EntityComplexPropertyInfo create(EdmComplexType property, Map<String, EntityPropertyInfo> childEntityInfos) throws EdmException {
+  static EntityComplexPropertyInfo create(EdmProperty property, Map<String, EntityPropertyInfo> childEntityInfos) throws EdmException {
     EntityComplexPropertyInfo info = new EntityComplexPropertyInfo();
     info.name = property.getName();
     info.internalName2EntityPropertyInfo = childEntityInfos;
@@ -18,7 +18,7 @@ public class EntityComplexPropertyInfo extends EntityPropertyInfo {
   }
   
   @Override
-  boolean isComplex() {
+  public boolean isComplex() {
     return true;
   }
   
