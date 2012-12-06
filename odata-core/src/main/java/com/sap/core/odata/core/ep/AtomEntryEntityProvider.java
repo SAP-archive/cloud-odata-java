@@ -13,6 +13,7 @@ import javax.xml.stream.XMLStreamWriter;
 import org.apache.commons.lang3.StringEscapeUtils;
 
 import com.sap.core.odata.api.edm.Edm;
+import com.sap.core.odata.api.edm.EdmCustomizableFeedMappings;
 import com.sap.core.odata.api.edm.EdmFacets;
 import com.sap.core.odata.api.edm.EdmLiteralKind;
 import com.sap.core.odata.api.edm.EdmMultiplicity;
@@ -57,6 +58,8 @@ public class AtomEntryEntityProvider {
       appendAtomEditLink(writer, eia, data);
       appendAtomNavigationLinks(writer, eia, data);
 
+      appendCustomProperties(writer, eia, data);
+      
       if (eia.isEntityTypeHasStream()) {
         appendAtomContentPart(writer, eia, data, mediaResourceMimeType);
         appendAtomContentLink(writer, eia, data, mediaResourceMimeType);
@@ -71,6 +74,23 @@ public class AtomEntryEntityProvider {
       writer.writeEndElement();
 
       writer.flush();
+    } catch (Exception e) {
+      throw new ODataEntityProviderException(ODataEntityProviderException.COMMON, e);
+    }
+  }
+
+  private void appendCustomProperties(XMLStreamWriter writer, EntityInfoAggregator eia, Map<String, Object> data) throws ODataEntityProviderException {
+    try {
+      List<String> noneSyndicationTargetPaths = eia.getNoneSyndicationTargetPathNames();
+      for (String tpName : noneSyndicationTargetPaths) {
+        EntityPropertyInfo info = eia.getPropertyInfo(tpName);
+        EdmCustomizableFeedMappings customMapping = info.getCustomMapping();
+        if(!customMapping.isFcKeepInContent()) {
+          XmlPropertyEntityProvider aps = new XmlPropertyEntityProvider();
+          Object value = data.get(info.getName());
+          aps.append(writer, info, value, false);
+        }
+      }
     } catch (Exception e) {
       throw new ODataEntityProviderException(ODataEntityProviderException.COMMON, e);
     }
@@ -375,9 +395,8 @@ public class AtomEntryEntityProvider {
         String name = entry.getKey();
         EntityPropertyInfo propertyInfo = eia.getPropertyInfo(name);
 
-        if(propertyInfo != null) {
+        if(propertyInfo != null && isNotMappedViaCustomMapping(propertyInfo)) {
           Object value = entry.getValue();
-          
           XmlPropertyEntityProvider aps = new XmlPropertyEntityProvider();
           aps.append(writer, propertyInfo, value, false);
         }
@@ -387,5 +406,13 @@ public class AtomEntryEntityProvider {
     } catch (Exception e) {
       throw new ODataEntityProviderException(ODataEntityProviderException.COMMON, e);
     }
+  }
+
+  private boolean isNotMappedViaCustomMapping(EntityPropertyInfo propertyInfo) {
+    EdmCustomizableFeedMappings customMapping = propertyInfo.getCustomMapping();
+    if(customMapping != null && customMapping.isFcKeepInContent() != null) {
+      return customMapping.isFcKeepInContent().booleanValue();
+    }
+    return true;
   }
 }

@@ -27,6 +27,10 @@ import com.sap.core.odata.api.edm.EdmTargetPath;
 import com.sap.core.odata.api.edm.EdmType;
 import com.sap.core.odata.api.edm.EdmTypeKind;
 import com.sap.core.odata.api.edm.EdmTyped;
+import com.sap.core.odata.api.edm.provider.CustomizableFeedMappings;
+import com.sap.core.odata.api.edm.provider.Facets;
+import com.sap.core.odata.api.edm.provider.Mapping;
+import com.sap.core.odata.api.edm.provider.SimpleProperty;
 import com.sap.core.odata.api.exception.ODataException;
 
 class EdmMock {
@@ -207,13 +211,20 @@ class EdmMock {
     List<EdmProperty> photoKeyProperties = new ArrayList<EdmProperty>();
     photoKeyProperties.add(photoIdProperty);
     photoKeyProperties.add(photoTypeProperty);
+
+    EdmProperty photoRusiaProperty = createProperty("Содержание", EdmSimpleTypeKind.String);
+    CustomizableFeedMappings cfm = new CustomizableFeedMappings().setFcKeepInContent(false).setFcNsPrefix("py").setFcNsUri("http://localhost").setFcTargetPath("Содержание");
+    when(photoRusiaProperty.getCustomizableFeedMappings()).thenReturn(cfm);
+    
     EdmEntityType photoEntityType = mock(EdmEntityType.class);
     when(photoEntityType.getName()).thenReturn("Photo");
-    when(photoEntityType.getPropertyNames()).thenReturn(Arrays.asList("Id", "Type"));
+    when(photoEntityType.getNamespace()).thenReturn("RefScenario2");
+    when(photoEntityType.getPropertyNames()).thenReturn(Arrays.asList("Id", "Type", "Содержание"));
     when(photoEntityType.getKeyPropertyNames()).thenReturn(Arrays.asList("Id", "Type"));
     when(photoEntityType.getKeyProperties()).thenReturn(photoKeyProperties);
     when(photoEntityType.getProperty("Id")).thenReturn(photoIdProperty);
     when(photoEntityType.getProperty("Type")).thenReturn(photoTypeProperty);
+    when(photoEntityType.getProperty(photoRusiaProperty.getName())).thenReturn(photoRusiaProperty);
     EdmEntitySet photoEntitySet = mock(EdmEntitySet.class);
     when(photoEntitySet.getName()).thenReturn("Photos");
     when(photoEntitySet.getEntityType()).thenReturn(photoEntityType);
@@ -221,6 +232,11 @@ class EdmMock {
     when(photoContainer.isDefaultEntityContainer()).thenReturn(false);
     when(photoContainer.getEntitySet("Photos")).thenReturn(photoEntitySet);
     when(photoContainer.getName()).thenReturn("Container2");
+    
+    //        properties.add(new SimpleProperty().setName("Содержание")
+     //.setType(EdmSimpleTypeKind.String).setFacets(new Facets().setNullable(true))
+    //.setCustomizableFeedMappings(new CustomizableFeedMappings().setFcKeepInContent(false).setFcNsPrefix("py").setFcNsUri("http://localhost").setFcTargetPath("Содержание")).setMapping(new Mapping().setValue("getContent")));
+
 
     when(photoEntitySet.getEntityContainer()).thenReturn(photoContainer);
 
@@ -234,6 +250,13 @@ class EdmMock {
     return edm;
   }
 
+  private static EdmProperty createProperty(String name, EdmSimpleTypeKind kind) throws EdmException {
+    EdmProperty property = mock(EdmProperty.class);
+    when(property.getType()).thenReturn(kind.getEdmSimpleTypeInstance());
+    when(property.getName()).thenReturn(name);
+    return property;
+  }
+  
   private static EdmEntitySet createEntitySetMock(final EdmEntityContainer container, final String name, final EdmType type, final String keyPropertyId) throws EdmException {
     EdmEntityType entityType = createEntityTypeMock(type, keyPropertyId);
 

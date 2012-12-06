@@ -5,12 +5,13 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
+import java.nio.charset.Charset;
 
 import org.apache.http.HttpEntity;
 
 public class StringHelper {
   public static String inputStreamToString(InputStream in) throws IOException {
-    BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(in));
+    BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(in, Charset.forName("UTF-8")));
     StringBuilder stringBuilder = new StringBuilder();
     String line = null;
 
