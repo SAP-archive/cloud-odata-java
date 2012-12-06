@@ -21,7 +21,7 @@ import com.sap.core.odata.api.edm.EdmStructuralType;
 import com.sap.core.odata.api.edm.EdmTargetPath;
 import com.sap.core.odata.api.edm.EdmType;
 import com.sap.core.odata.api.edm.EdmTyped;
-import com.sap.core.odata.api.ep.ODataSerializationException;
+import com.sap.core.odata.api.ep.ODataEntityProviderException;
 
 /**
  * Aggregator to get easy and fast access to all for a serializer necessary {@link EdmEntitySet} informations.
@@ -48,11 +48,11 @@ public class EntityInfoAggregator {
    * 
    * @param entitySet with which the {@link EntityInfoAggregator} is initialized.
    * @return created and initialized {@link EntityInfoAggregator}
-   * @throws ODataSerializationException
+   * @throws ODataEntityProviderException
    *          if during initialization of {@link EntityInfoAggregator} something goes wrong (e.g. exceptions during access
    *          of {@link EdmEntitySet}).
    */
-  public static EntityInfoAggregator create(EdmEntitySet entitySet) throws ODataSerializationException {
+  public static EntityInfoAggregator create(EdmEntitySet entitySet) throws ODataEntityProviderException {
     EntityInfoAggregator eia = new EntityInfoAggregator();
     eia.initialize(entitySet);
     return eia;
@@ -139,7 +139,7 @@ public class EntityInfoAggregator {
   // #
   // #########################################
   
-  private void initialize(EdmEntitySet entitySet) throws ODataSerializationException {
+  private void initialize(EdmEntitySet entitySet) throws ODataEntityProviderException {
     try {
       EdmEntityType type = entitySet.getEntityType();
       entitySetName = entitySet.getName();
@@ -156,7 +156,7 @@ public class EntityInfoAggregator {
       //
       keyPropertyNames.addAll(type.getKeyPropertyNames());
     } catch (Exception e) {
-      throw new ODataSerializationException(ODataSerializationException.COMMON, e);
+      throw new ODataEntityProviderException(ODataEntityProviderException.COMMON, e);
     }
   }
 

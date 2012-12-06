@@ -17,8 +17,8 @@ import org.slf4j.LoggerFactory;
 import com.sap.core.odata.api.edm.Edm;
 import com.sap.core.odata.api.edm.EdmException;
 import com.sap.core.odata.api.enums.Format;
-import com.sap.core.odata.api.ep.ODataSerializationException;
-import com.sap.core.odata.api.ep.ODataSerializer;
+import com.sap.core.odata.api.ep.ODataEntityProviderException;
+import com.sap.core.odata.api.ep.ODataEntityProvider;
 import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.api.processor.ODataContext;
 import com.sap.core.odata.api.processor.ODataUriInfo;
@@ -104,8 +104,8 @@ public abstract class AbstractSerializerTest {
     return ctx;
   }
 
-  protected ODataSerializer createAtomSerializer() throws ODataException, EdmException, ODataSerializationException {
-    ODataSerializer ser = ODataSerializer.create(Format.ATOM, createContextMock());
+  protected ODataEntityProvider createAtomSerializer() throws ODataException, EdmException, ODataEntityProviderException {
+    ODataEntityProvider ser = ODataEntityProvider.create(Format.ATOM, createContextMock());
     return ser;
   }
 

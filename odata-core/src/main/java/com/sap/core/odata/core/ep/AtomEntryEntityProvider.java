@@ -23,22 +23,22 @@ import com.sap.core.odata.api.edm.EdmTargetPath;
 import com.sap.core.odata.api.edm.EdmType;
 import com.sap.core.odata.api.edm.EdmTyped;
 import com.sap.core.odata.api.enums.MediaType;
-import com.sap.core.odata.api.ep.ODataSerializationException;
+import com.sap.core.odata.api.ep.ODataEntityProviderException;
 import com.sap.core.odata.api.processor.ODataContext;
 import com.sap.core.odata.core.edm.EdmDateTimeOffset;
 import com.sap.core.odata.core.ep.aggregator.EntityInfoAggregator;
 import com.sap.core.odata.core.ep.aggregator.EntityPropertyInfo;
 import com.sap.core.odata.core.ep.aggregator.NavigationPropertyInfo;
 
-public class AtomEntrySerializer {
+public class AtomEntryEntityProvider {
 
   private ODataContext context;
 
-  AtomEntrySerializer(ODataContext ctx) throws ODataSerializationException {
+  AtomEntryEntityProvider(ODataContext ctx) throws ODataEntityProviderException {
     this.context = ctx;
   }
 
-  public void append(XMLStreamWriter writer, EdmEntitySet entitySet, Map<String, Object> data, boolean isRootElement, String mediaResourceMimeType) throws ODataSerializationException {
+  public void append(XMLStreamWriter writer, EdmEntitySet entitySet, Map<String, Object> data, boolean isRootElement, String mediaResourceMimeType) throws ODataEntityProviderException {
     try {
       writer.writeStartElement("entry");
 
@@ -76,11 +76,11 @@ public class AtomEntrySerializer {
 
       writer.flush();
     } catch (Exception e) {
-      throw new ODataSerializationException(ODataSerializationException.COMMON, e);
+      throw new ODataEntityProviderException(ODataEntityProviderException.COMMON, e);
     }
   }
 
-  private String createETag(EdmEntitySet entitySet, Map<String, Object> data) throws ODataSerializationException {
+  private String createETag(EdmEntitySet entitySet, Map<String, Object> data) throws ODataEntityProviderException {
     try {
       String etag = null;
 
@@ -112,19 +112,19 @@ public class AtomEntrySerializer {
 
       return etag;
     } catch (Exception e) {
-      throw new ODataSerializationException(ODataSerializationException.COMMON, e);
+      throw new ODataEntityProviderException(ODataEntityProviderException.COMMON, e);
     }
   }
 
-  private boolean isConcurrencyModeFixed(EdmProperty edmProperty) throws ODataSerializationException {
+  private boolean isConcurrencyModeFixed(EdmProperty edmProperty) throws ODataEntityProviderException {
     try {
       return edmProperty.getFacets() != null && edmProperty.getFacets().getConcurrencyMode() == EdmConcurrencyMode.Fixed;
     } catch (Exception e) {
-      throw new ODataSerializationException(ODataSerializationException.COMMON, e);
+      throw new ODataEntityProviderException(ODataEntityProviderException.COMMON, e);
     }
   }
 
-  private void appendAtomNavigationLinks(XMLStreamWriter writer, EntityInfoAggregator eia, Map<String, Object> data) throws ODataSerializationException {
+  private void appendAtomNavigationLinks(XMLStreamWriter writer, EntityInfoAggregator eia, Map<String, Object> data) throws ODataEntityProviderException {
     try {
       for (NavigationPropertyInfo info : eia.getNavigationPropertyInfos()) {
         boolean isFeed = (info.getMultiplicity() == EdmMultiplicity.MANY);
@@ -132,11 +132,11 @@ public class AtomEntrySerializer {
         appendAtomNavigationLink(writer, self, info.getName(), isFeed);
       }
     } catch (Exception e) {
-      throw new ODataSerializationException(ODataSerializationException.COMMON, e);
+      throw new ODataEntityProviderException(ODataEntityProviderException.COMMON, e);
     }
   }
 
-  private void appendAtomNavigationLink(XMLStreamWriter writer, String self, String propertyName, boolean isFeed) throws ODataSerializationException {
+  private void appendAtomNavigationLink(XMLStreamWriter writer, String self, String propertyName, boolean isFeed) throws ODataEntityProviderException {
     try {
       writer.writeStartElement(FormatXml.ATOM_LINK);
       writer.writeAttribute(FormatXml.ATOM_HREF, self);
@@ -151,11 +151,11 @@ public class AtomEntrySerializer {
 
       writer.writeEndElement();
     } catch (Exception e) {
-      throw new ODataSerializationException(ODataSerializationException.COMMON, e);
+      throw new ODataEntityProviderException(ODataEntityProviderException.COMMON, e);
     }
   }
 
-  private void appendAtomEditLink(XMLStreamWriter writer, EntityInfoAggregator eia, Map<String, Object> data) throws ODataSerializationException {
+  private void appendAtomEditLink(XMLStreamWriter writer, EntityInfoAggregator eia, Map<String, Object> data) throws ODataEntityProviderException {
     try {
       String self = createSelfLink(eia, data, null);
 
@@ -165,11 +165,11 @@ public class AtomEntrySerializer {
       writer.writeAttribute(FormatXml.ATOM_TITLE, eia.getEntityTypeName());
       writer.writeEndElement();
     } catch (Exception e) {
-      throw new ODataSerializationException(ODataSerializationException.COMMON, e);
+      throw new ODataEntityProviderException(ODataEntityProviderException.COMMON, e);
     }
   }
 
-  private void appendAtomContentLink(XMLStreamWriter writer, EntityInfoAggregator eia, Map<String, Object> data, String mediaResourceMimeType) throws ODataSerializationException {
+  private void appendAtomContentLink(XMLStreamWriter writer, EntityInfoAggregator eia, Map<String, Object> data, String mediaResourceMimeType) throws ODataEntityProviderException {
     try {
       String self = createSelfLink(eia, data, "$value");
 
@@ -183,11 +183,11 @@ public class AtomEntrySerializer {
       writer.writeAttribute(FormatXml.ATOM_TYPE, mediaResourceMimeType);
       writer.writeEndElement();
     } catch (Exception e) {
-      throw new ODataSerializationException(ODataSerializationException.COMMON, e);
+      throw new ODataEntityProviderException(ODataEntityProviderException.COMMON, e);
     }
   }
 
-  private void appendAtomContentPart(XMLStreamWriter writer, EntityInfoAggregator eia, Map<String, Object> data, String mediaResourceMimeType) throws ODataSerializationException {
+  private void appendAtomContentPart(XMLStreamWriter writer, EntityInfoAggregator eia, Map<String, Object> data, String mediaResourceMimeType) throws ODataEntityProviderException {
     try {
       String self = createSelfLink(eia, data, "$value");
 
@@ -200,11 +200,11 @@ public class AtomEntrySerializer {
       writer.writeAttribute(FormatXml.ATOM_SRC, self);
       writer.writeEndElement();
     } catch (Exception e) {
-      throw new ODataSerializationException(ODataSerializationException.COMMON, e);
+      throw new ODataEntityProviderException(ODataEntityProviderException.COMMON, e);
     }
   }
 
-  private String createSelfLink(EntityInfoAggregator eia, Map<String, Object> data, String extension) throws ODataSerializationException {
+  private String createSelfLink(EntityInfoAggregator eia, Map<String, Object> data, String extension) throws ODataEntityProviderException {
     try {
       StringBuilder sb = new StringBuilder();
       if (!eia.isDefaultEntityContainer()) {
@@ -214,11 +214,11 @@ public class AtomEntrySerializer {
       URI uri = new URI(null, null, null, -1, sb.toString(), null, null);
       return uri.toASCIIString();
     } catch (Exception e) {
-      throw new ODataSerializationException(ODataSerializationException.COMMON, e);
+      throw new ODataEntityProviderException(ODataEntityProviderException.COMMON, e);
     }
   }
 
-  private void appendAtomMandatoryParts(XMLStreamWriter writer, EntityInfoAggregator eia, Map<String, Object> data) throws ODataSerializationException {
+  private void appendAtomMandatoryParts(XMLStreamWriter writer, EntityInfoAggregator eia, Map<String, Object> data) throws ODataEntityProviderException {
     try {
       writer.writeStartElement(FormatXml.ATOM_ID);
       String entryKey = this.createEntryKey(eia, data);
@@ -256,11 +256,11 @@ public class AtomEntrySerializer {
 
       writer.writeEndElement();
     } catch (Exception e) {
-      throw new ODataSerializationException(ODataSerializationException.COMMON, e);
+      throw new ODataEntityProviderException(ODataEntityProviderException.COMMON, e);
     }
   }
 
-  private String getTargetPathValue(EntityInfoAggregator eia, String targetPath, Map<String, Object> data) throws ODataSerializationException {
+  private String getTargetPathValue(EntityInfoAggregator eia, String targetPath, Map<String, Object> data) throws ODataEntityProviderException {
     try {
       EntityPropertyInfo info = eia.getTargetPathInfo(targetPath);
       if (info != null) {
@@ -270,11 +270,11 @@ public class AtomEntrySerializer {
       }
       return null;
     } catch (Exception e) {
-      throw new ODataSerializationException(ODataSerializationException.COMMON, e);
+      throw new ODataEntityProviderException(ODataEntityProviderException.COMMON, e);
     }
   }
 
-  private void appendAtomOptionalParts(XMLStreamWriter writer, EntityInfoAggregator eia, Map<String, Object> data) throws ODataSerializationException {
+  private void appendAtomOptionalParts(XMLStreamWriter writer, EntityInfoAggregator eia, Map<String, Object> data) throws ODataEntityProviderException {
     try {
       String authorEmail = getTargetPathValue(eia, EdmTargetPath.SYNDICATION_AUTHOREMAIL, data);
       String authorName = getTargetPathValue(eia, EdmTargetPath.SYNDICATION_AUTHORNAME, data);
@@ -312,11 +312,11 @@ public class AtomEntrySerializer {
       writer.writeAttribute(FormatXml.ATOM_CATEGORY_SCHEME, Edm.NAMESPACE_SCHEME_2007_08);
       writer.writeEndElement();
     } catch (Exception e) {
-      throw new ODataSerializationException(ODataSerializationException.COMMON, e);
+      throw new ODataEntityProviderException(ODataEntityProviderException.COMMON, e);
     }
   }
 
-  private void appendAtomOptionalPart(XMLStreamWriter writer, String name, String value, boolean writeType) throws ODataSerializationException {
+  private void appendAtomOptionalPart(XMLStreamWriter writer, String name, String value, boolean writeType) throws ODataEntityProviderException {
     try {
       if (value != null) {
         writer.writeStartElement(name);
@@ -327,11 +327,11 @@ public class AtomEntrySerializer {
         writer.writeEndElement();
       }
     } catch (Exception e) {
-      throw new ODataSerializationException(ODataSerializationException.COMMON, e);
+      throw new ODataEntityProviderException(ODataEntityProviderException.COMMON, e);
     }
   }
 
-  private String createAtomId(EntityInfoAggregator eia, String entryKey) throws ODataSerializationException {
+  private String createAtomId(EntityInfoAggregator eia, String entryKey) throws ODataEntityProviderException {
     try {
       String id = "";
 
@@ -353,11 +353,11 @@ public class AtomEntrySerializer {
 
       return uri.toASCIIString();
     } catch (Exception e) {
-      throw new ODataSerializationException(ODataSerializationException.COMMON, e);
+      throw new ODataEntityProviderException(ODataEntityProviderException.COMMON, e);
     }
   }
 
-  private String createEntryKey(EntityInfoAggregator eia, Map<String, Object> data) throws ODataSerializationException {
+  private String createEntryKey(EntityInfoAggregator eia, Map<String, Object> data) throws ODataEntityProviderException {
     try {
       List<EntityPropertyInfo> kp = eia.getKeyPropertyInfos();
       String keys = "";
@@ -383,11 +383,11 @@ public class AtomEntrySerializer {
       }
       return keys;
     } catch (Exception e) {
-      throw new ODataSerializationException(ODataSerializationException.COMMON, e);
+      throw new ODataEntityProviderException(ODataEntityProviderException.COMMON, e);
     }
   }
 
-  private void appendProperties(XMLStreamWriter writer, EdmEntitySet entitySet, Map<String, Object> data) throws ODataSerializationException {
+  private void appendProperties(XMLStreamWriter writer, EdmEntitySet entitySet, Map<String, Object> data) throws ODataEntityProviderException {
     try {
       writer.writeStartElement(Edm.NAMESPACE_EDMX_2007_06, FormatXml.M_PROPERTIES);
       Set<Entry<String, Object>> entries = data.entrySet();
@@ -400,14 +400,14 @@ public class AtomEntrySerializer {
           EdmProperty prop = (EdmProperty) property;
           Object value = entry.getValue();
 
-          XmlPropertySerializer aps = new XmlPropertySerializer();
+          XmlPropertyEntityProvider aps = new XmlPropertyEntityProvider();
           aps.append(writer, prop, value, false);
         }
       }
 
       writer.writeEndElement();
     } catch (Exception e) {
-      throw new ODataSerializationException(ODataSerializationException.COMMON, e);
+      throw new ODataEntityProviderException(ODataEntityProviderException.COMMON, e);
     }
   }
 }

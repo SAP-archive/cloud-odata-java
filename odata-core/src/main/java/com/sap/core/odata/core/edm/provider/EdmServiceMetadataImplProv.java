@@ -15,7 +15,7 @@ import com.sap.core.odata.api.edm.provider.EdmProvider;
 import com.sap.core.odata.api.edm.provider.EntityType;
 import com.sap.core.odata.api.edm.provider.Property;
 import com.sap.core.odata.api.edm.provider.Schema;
-import com.sap.core.odata.api.ep.ODataSerializationException;
+import com.sap.core.odata.api.ep.ODataEntityProviderException;
 import com.sap.core.odata.api.exception.ODataException;
 
 public class EdmServiceMetadataImplProv implements EdmServiceMetadata {
@@ -43,13 +43,13 @@ public class EdmServiceMetadataImplProv implements EdmServiceMetadata {
       EdmMetadata.writeMetadata(metadata, writer);
       return new ByteArrayInputStream(outputStream.toByteArray());
     } catch (UnsupportedEncodingException e) {
-      throw new ODataSerializationException(ODataSerializationException.COMMON, e);
+      throw new ODataEntityProviderException(ODataEntityProviderException.COMMON, e);
     } finally {
       if (writer != null) {
         try {
           writer.close();
         } catch (IOException e) {
-          throw new ODataSerializationException(ODataSerializationException.COMMON, e);
+          throw new ODataEntityProviderException(ODataEntityProviderException.COMMON, e);
         }
       }
     }

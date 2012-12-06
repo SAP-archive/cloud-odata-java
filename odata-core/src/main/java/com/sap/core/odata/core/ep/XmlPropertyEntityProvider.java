@@ -14,12 +14,12 @@ import com.sap.core.odata.api.edm.EdmLiteralKind;
 import com.sap.core.odata.api.edm.EdmProperty;
 import com.sap.core.odata.api.edm.EdmSimpleType;
 import com.sap.core.odata.api.edm.EdmType;
-import com.sap.core.odata.api.ep.ODataSerializationException;
+import com.sap.core.odata.api.ep.ODataEntityProviderException;
 import com.sap.core.odata.core.edm.EdmString;
 
-public class XmlPropertySerializer {
+public class XmlPropertyEntityProvider {
 
-  public void append(XMLStreamWriter writer, EdmProperty edmProperty, Object value, boolean isRootElement) throws EdmException, XMLStreamException, ODataSerializationException {
+  public void append(XMLStreamWriter writer, EdmProperty edmProperty, Object value, boolean isRootElement) throws EdmException, XMLStreamException, ODataEntityProviderException {
     EdmType edmType = edmProperty.getType();
 
     String name = edmProperty.getName();
@@ -38,13 +38,13 @@ public class XmlPropertySerializer {
     } else if (edmType instanceof EdmComplexType) {
       appendProperty(writer, (EdmComplexType) edmType, edmProperty, value);
     } else {
-      throw new ODataSerializationException(ODataSerializationException.UNSUPPORTED_PROPERTY_TYPE.addContent(edmType.getName()));
+      throw new ODataEntityProviderException(ODataEntityProviderException.UNSUPPORTED_PROPERTY_TYPE.addContent(edmType.getName()));
     }
 
     writer.writeEndElement();
   }
 
-  private void appendProperty(XMLStreamWriter writer, EdmComplexType type, EdmProperty prop, Object value) throws XMLStreamException, EdmException, ODataSerializationException {
+  private void appendProperty(XMLStreamWriter writer, EdmComplexType type, EdmProperty prop, Object value) throws XMLStreamException, EdmException, ODataEntityProviderException {
 
     if (value == null) {
       writer.writeAttribute(Edm.NAMESPACE_EDMX_2007_06, "null", "true");
