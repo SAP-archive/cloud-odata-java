@@ -1,4 +1,4 @@
-package com.sap.core.odata.core.ep;
+package com.sap.core.odata.core.ep.aggregator;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -6,15 +6,14 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import com.sap.core.odata.api.edm.EdmComplexType;
 import com.sap.core.odata.api.edm.EdmCustomizableFeedMappings;
 import com.sap.core.odata.api.edm.EdmEntitySet;
 import com.sap.core.odata.api.edm.EdmEntityType;
 import com.sap.core.odata.api.edm.EdmException;
-import com.sap.core.odata.api.edm.EdmFacets;
 import com.sap.core.odata.api.edm.EdmLiteralKind;
-import com.sap.core.odata.api.edm.EdmMultiplicity;
 import com.sap.core.odata.api.edm.EdmNavigationProperty;
 import com.sap.core.odata.api.edm.EdmProperty;
 import com.sap.core.odata.api.edm.EdmSimpleType;
@@ -24,30 +23,54 @@ import com.sap.core.odata.api.edm.EdmType;
 import com.sap.core.odata.api.edm.EdmTyped;
 import com.sap.core.odata.api.ep.ODataSerializationException;
 
+/**
+ * Aggregator to get easy and fast access to all for a serializer necessary {@link EdmEntitySet} informations.
+ */
 public class EntityInfoAggregator {
 
-//  private final EdmEntitySet entitySet;
+  private Map<String, EntityPropertyInfo> name2EntityPropertyInfo = new HashMap<String, EntityPropertyInfo>();
+  private Map<String, NavigationPropertyInfo> name2NavigationPropertyInfo = new HashMap<String, NavigationPropertyInfo>();
+  private Map<String, EntityPropertyInfo> targetPath2EntityPropertyInfo = new HashMap<String, EntityPropertyInfo>();
+  private List<String> keyPropertyNames = new ArrayList<String>();
+  private boolean isDefaultEntityContainer;
   private String entitySetName;
   private String entityTypeNamespace;
-  
-  EntityInfoAggregator() {
-  }
+  private String entityContainerName;
+  private String entityTypeName;
 
-  public static EntityInfoAggregator init(EdmEntitySet entitySet) throws ODataSerializationException {
+  /**
+   * Constructor is private to force creation over {@link #create(EdmEntitySet)} method.
+   */
+  private EntityInfoAggregator() { }
+
+  /**
+   * Create an {@link EntityInfoAggregator} based on given {@link EdmEntitySet}
+   * 
+   * @param entitySet with which the {@link EntityInfoAggregator} is initialized.
+   * @return created and initialized {@link EntityInfoAggregator}
+   * @throws ODataSerializationException
+   *          if during initialization of {@link EntityInfoAggregator} something goes wrong (e.g. exceptions during access
+   *          of {@link EdmEntitySet}).
+   */
+  public static EntityInfoAggregator create(EdmEntitySet entitySet) throws ODataSerializationException {
     EntityInfoAggregator eia = new EntityInfoAggregator();
     eia.initialize(entitySet);
     return eia;
   }
 
-  public String getPropertyNames() {
-    return name2EntityPropertyInfo.toString();
-  }
 
+  /**
+   * @return entity set name.
+   */
   public String getEntitySetName() {
     return entitySetName;
   }
 
 
+  /**
+   * @return <code>true</code> if the entity container of {@link EdmEntitySet} is the default container, 
+   *          otherwise <code>false</code>.
+   */
   public boolean isDefaultEntityContainer() {
     return isDefaultEntityContainer;
   }
@@ -64,8 +87,37 @@ public class EntityInfoAggregator {
     return entityTypeName;
   }
 
-  public List<EntityPropertyInfo> getKeyProperties() {
-    List<EntityPropertyInfo> keyProperties = new ArrayList<EntityInfoAggregator.EntityPropertyInfo>();
+  public String getEntityContainerName() {
+    return entityContainerName;
+  }
+  
+  /**
+   * @return unmodifiable set of all found target path names.
+   */
+  public Collection<String> getTargetPathNames() {
+    return Collections.unmodifiableCollection(targetPath2EntityPropertyInfo.keySet());
+  }
+  
+  /**
+   * @return unmodifiable set of all found navigation property names.
+   */
+  public Collection<String> getNavigationPropertyNames() {
+    return Collections.unmodifiableCollection(name2NavigationPropertyInfo.keySet());
+  }
+  
+
+  /**
+   * @return unmodifiable set of all property names.
+   */
+  public Set<String> getPropertyNames() {
+    return Collections.unmodifiableSet(name2EntityPropertyInfo.keySet());
+  }
+
+  /**
+   * @return list of all key property infos.
+   */
+  public List<EntityPropertyInfo> getKeyPropertyInfos() {
+    List<EntityPropertyInfo> keyProperties = new ArrayList<EntityPropertyInfo>();
     for (String keyPropertyName: keyPropertyNames) {
       EntityPropertyInfo e = name2EntityPropertyInfo.get(keyPropertyName);
       keyProperties.add(e);
@@ -73,25 +125,19 @@ public class EntityInfoAggregator {
     return keyProperties;
   }
 
-  public String getTargetPaths() {
-    return targetPath2EntityPropertyInfo.toString();
+  /**
+   * @return unmodifiable collection of all navigation properties.
+   */
+  public Collection<NavigationPropertyInfo> getNavigationPropertyInfos() {
+    return Collections.unmodifiableCollection(name2NavigationPropertyInfo.values());
   }
 
-  public String getNavigationPropertyNames() {
-    return name2NavigationPropertyInfo.toString();
-  }
-
-  public String getEntityContainerName() {
-    return entityContainerName;
-  }
   
-  private Map<String, EntityPropertyInfo> name2EntityPropertyInfo = new HashMap<String, EntityInfoAggregator.EntityPropertyInfo>();
-  private Map<String, NavigationPropertyInfo> name2NavigationPropertyInfo = new HashMap<String, EntityInfoAggregator.NavigationPropertyInfo>();
-  private Map<String, EntityPropertyInfo> targetPath2EntityPropertyInfo = new HashMap<String, EntityInfoAggregator.EntityPropertyInfo>();
-  private List<String> keyPropertyNames = new ArrayList<String>();
-  private boolean isDefaultEntityContainer;
-  private String entityContainerName;
-  private String entityTypeName;
+  // #########################################
+  // #
+  // # Start with private methods
+  // #
+  // #########################################
   
   private void initialize(EdmEntitySet entitySet) throws ODataSerializationException {
     try {
@@ -115,7 +161,7 @@ public class EntityInfoAggregator {
   }
 
   private Map<String, EntityPropertyInfo> createInfoObjects(EdmStructuralType type, Collection<String> propertyNames) throws EdmException {
-    Map<String, EntityPropertyInfo> infos = new HashMap<String, EntityInfoAggregator.EntityPropertyInfo>();
+    Map<String, EntityPropertyInfo> infos = new HashMap<String, EntityPropertyInfo>();
     
     for (String propertyName : propertyNames) {
       EdmTyped typed = type.getProperty(propertyName);
@@ -137,7 +183,7 @@ public class EntityInfoAggregator {
       } else if(typed instanceof EdmNavigationProperty) {
         EdmNavigationProperty navProperty = (EdmNavigationProperty) typed;
         NavigationPropertyInfo info = NavigationPropertyInfo.create(navProperty);
-        name2NavigationPropertyInfo.put(info.name, info);
+        name2NavigationPropertyInfo.put(info.getName(), info);
       }
     }
     
@@ -175,114 +221,5 @@ public class EntityInfoAggregator {
         targetPath2EntityPropertyInfo.put(EdmTargetPath.SYNDICATION_AUTHOREMAIL, value);
       }
     }
-  }
-
-  public String getTargetPath(String targetPath, Object value) throws ODataSerializationException {
-    try {
-      EntityPropertyInfo info = targetPath2EntityPropertyInfo.get(targetPath);
-      if(info != null) {
-        EdmSimpleType st = (EdmSimpleType) info.type;
-        return st.valueToString(value, EdmLiteralKind.DEFAULT, info.facets);
-      }
-      return null;
-    } catch(EdmException e) {
-      throw new ODataSerializationException(ODataSerializationException.COMMON);
-    }
-  }
-
-  static class EntityComplexPropertyInfo extends EntityPropertyInfo {
-    protected Map<String, EntityPropertyInfo> internalName2EntityPropertyInfo;
-    
-    static EntityComplexPropertyInfo create(EdmComplexType property, Map<String, EntityPropertyInfo> childEntityInfos) throws EdmException {
-      EntityComplexPropertyInfo info = new EntityComplexPropertyInfo();
-      info.name = property.getName();
-      info.internalName2EntityPropertyInfo = childEntityInfos;
-      return info;
-    }
-    
-    @Override
-    boolean isComplex() {
-      return true;
-    }
-    
-    @Override
-    public String toString() {
-      StringBuilder sb = new StringBuilder();
-      for (EntityPropertyInfo info: internalName2EntityPropertyInfo.values()) {
-        if(sb.length() == 0) {
-          sb.append(super.toString()).append("=>[").append(info.toString());
-        } else {
-          sb.append(", ").append(info.toString());
-        }
-      }
-      sb.append("]");
-      return sb.toString();
-    }
-    
-    public Collection<EntityPropertyInfo> getPropertyInfos() {
-      return Collections.unmodifiableCollection(internalName2EntityPropertyInfo.values());
-    }
-  }
-  
-  static class EntityPropertyInfo {
-    protected String name;
-    protected EdmType type;
-    protected EdmFacets facets;
-    
-    static EntityPropertyInfo create(EdmProperty property) throws EdmException {
-      EntityPropertyInfo info = new EntityPropertyInfo();
-      info.name = property.getName();
-      info.type = property.getType();
-      info.facets = property.getFacets();
-      return info;
-    }
-    
-    boolean isComplex() {
-      return false;
-    }
-
-    @Override
-    public String toString() {
-      return name;
-    }
-    
-    public String getName() {
-      return name;
-    }
-    public EdmType getType() {
-      return type;
-    }
-    public EdmFacets getFacets() {
-      return facets;
-    }
-  }
-  
-  static class NavigationPropertyInfo {
-    String name;
-    EdmMultiplicity multiplicity;
-    
-    static NavigationPropertyInfo create(EdmNavigationProperty property) throws EdmException {
-      NavigationPropertyInfo info = new NavigationPropertyInfo();
-      info.name = property.getName();
-      info.multiplicity = property.getMultiplicity();
-      return info;
-    }
-
-    @Override
-    public String toString() {
-      return name + "; multiplicity=" + multiplicity;
-    }
-
-    public EdmMultiplicity getMultiplicity() {
-      return multiplicity;
-    }
-
-    public String getName() {
-      return name;
-    }
-  }
-
-  public Collection<NavigationPropertyInfo> getNavigationPropertyInfos() {
-    return this.name2NavigationPropertyInfo.values();
   }
 }

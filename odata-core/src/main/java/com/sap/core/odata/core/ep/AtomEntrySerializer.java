@@ -26,8 +26,9 @@ import com.sap.core.odata.api.enums.MediaType;
 import com.sap.core.odata.api.ep.ODataSerializationException;
 import com.sap.core.odata.api.processor.ODataContext;
 import com.sap.core.odata.core.edm.EdmDateTimeOffset;
-import com.sap.core.odata.core.ep.EntityInfoAggregator.EntityPropertyInfo;
-import com.sap.core.odata.core.ep.EntityInfoAggregator.NavigationPropertyInfo;
+import com.sap.core.odata.core.ep.aggregator.EntityInfoAggregator;
+import com.sap.core.odata.core.ep.aggregator.EntityPropertyInfo;
+import com.sap.core.odata.core.ep.aggregator.NavigationPropertyInfo;
 
 public class AtomEntrySerializer {
 
@@ -41,7 +42,7 @@ public class AtomEntrySerializer {
     try {
       writer.writeStartElement("entry");
 
-      EntityInfoAggregator eia = EntityInfoAggregator.init(entitySet);
+      EntityInfoAggregator eia = EntityInfoAggregator.create(entitySet);
 
       if (isRootElement) {
         writer.writeDefaultNamespace(Edm.NAMESPACE_ATOM_2005);
@@ -358,7 +359,7 @@ public class AtomEntrySerializer {
 
   private String createEntryKey(EntityInfoAggregator eia, Map<String, Object> data) throws ODataSerializationException {
     try {
-      List<EntityPropertyInfo> kp = eia.getKeyProperties();
+      List<EntityPropertyInfo> kp = eia.getKeyPropertyInfos();
       String keys = "";
 
       if (kp.size() == 1) {
