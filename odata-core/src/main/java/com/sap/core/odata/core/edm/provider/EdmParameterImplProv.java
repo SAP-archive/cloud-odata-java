@@ -22,9 +22,13 @@ public class EdmParameterImplProv extends EdmElementImplProv implements EdmParam
 
   @Override
   public EdmType getType() throws EdmException {
-
-    return EdmSimpleTypeFacadeImpl.getEdmSimpleType(parameter.getType());
-
+    if (edmType == null) {
+      edmType = EdmSimpleTypeFacadeImpl.getEdmSimpleType(parameter.getType());
+      if (edmType == null) {
+        throw new EdmException(EdmException.COMMON);
+      }
+    }
+    return edmType;
   }
 
   @Override
