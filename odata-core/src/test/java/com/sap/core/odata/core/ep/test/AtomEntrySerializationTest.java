@@ -196,19 +196,6 @@ public class AtomEntrySerializationTest extends AbstractSerializerTest {
     assertXpathEvaluatesTo("W/&quot;&lt;&quot;&gt;&quot;", "/a:entry/@m:etag", xmlString);
   }
 
-  @Ignore("7 ms")
-  @Test
-  public void serializePerformance() throws IOException, XpathException, SAXException, XMLStreamException, FactoryConfigurationError, ODataException {
-    long t = System.currentTimeMillis();
-    for (int i = 0; i < 1000; i++) {
-      ODataEntityProvider ser = createAtomSerializer();
-      ser.writeEntry(MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Rooms"), this.roomData);
-    }
-
-    t = (System.currentTimeMillis() - t) / 1000;
-    log.debug("ms: " + t);
-  }
-
   @Test
   public void serializeAtomMediaResourceLinks() throws IOException, XpathException, SAXException, XMLStreamException, FactoryConfigurationError, ODataException {
     ODataEntityProvider ser = createAtomSerializer();
