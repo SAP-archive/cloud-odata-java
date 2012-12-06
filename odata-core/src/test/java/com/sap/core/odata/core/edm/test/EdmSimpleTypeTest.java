@@ -426,16 +426,21 @@ public class EdmSimpleTypeTest {
 
     assertEquals("2012-02-29T23:32:03.007", instance.valueToString(new Date(millis), EdmLiteralKind.DEFAULT, null));
 
-    assertEquals("2012-02-29T23:32:03.00", instance.valueToString(dateTime, EdmLiteralKind.DEFAULT, getPrecisionScaleFacets(2, null)));
+    dateTime.add(Calendar.MILLISECOND, 9);
+    assertEquals("2012-02-29T23:32:03.01", instance.valueToString(dateTime, EdmLiteralKind.DEFAULT, getPrecisionScaleFacets(2, null)));
+    dateTime.add(Calendar.MILLISECOND, -10);
     assertEquals("2012-02-29T23:32:03", instance.valueToString(dateTime, EdmLiteralKind.DEFAULT, getPrecisionScaleFacets(0, null)));
-    dateTime.add(Calendar.MILLISECOND, -14);
+    dateTime.add(Calendar.MILLISECOND, -13);
     assertEquals("2012-02-29T23:32:02.987", instance.valueToString(dateTime, EdmLiteralKind.DEFAULT, getPrecisionScaleFacets(null, null)));
-    assertEquals("2012-02-29T23:32:02.987", instance.valueToString(dateTime, EdmLiteralKind.DEFAULT, getPrecisionScaleFacets(5, null)));
+    assertEquals("2012-02-29T23:32:02.98700", instance.valueToString(dateTime, EdmLiteralKind.DEFAULT, getPrecisionScaleFacets(5, null)));
+    dateTime.add(Calendar.MILLISECOND, 3);
     assertEquals("2012-02-29T23:32:02.99", instance.valueToString(dateTime, EdmLiteralKind.DEFAULT, getPrecisionScaleFacets(2, null)));
-    assertEquals("2012-02-29T23:32:03", instance.valueToString(dateTime, EdmLiteralKind.DEFAULT, getPrecisionScaleFacets(1, null)));
-    assertEquals("2012-02-29T23:32:03", instance.valueToString(dateTime, EdmLiteralKind.DEFAULT, getPrecisionScaleFacets(0, null)));
+    dateTime.add(Calendar.MILLISECOND, -90);
+    assertEquals("2012-02-29T23:32:02.9", instance.valueToString(dateTime, EdmLiteralKind.DEFAULT, getPrecisionScaleFacets(1, null)));
 
     checkNull(instance);
+
+    expectErrorInValueToString(instance, dateTime, EdmLiteralKind.DEFAULT, getPrecisionScaleFacets(0, null));
 
     expectErrorInValueToString(instance, 0, EdmLiteralKind.DEFAULT, null);
     expectErrorInValueToString(instance, dateTime, null, null);
