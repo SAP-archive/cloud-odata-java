@@ -43,14 +43,14 @@ public abstract class AbstractFitTest {
   protected abstract ODataSingleProcessorService createService() throws ODataException;
 
   @Before
-  public void before() throws Exception {
+  public void before() throws ODataException {
     this.service = createService();
     FitStaticServiceFactory.setService(this.service);
     this.server.startServer(FitStaticServiceFactory.class);
   }
 
   @After
-  public void after() throws Exception {
+  public void after(){
     try {
       this.server.stopServer();
     } finally {

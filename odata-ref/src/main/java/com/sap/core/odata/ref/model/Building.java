@@ -37,7 +37,7 @@ public class Building {
   }
 
   public byte[] getImage() {
-    return image;
+    return image.clone();
   }
 
   public List<Room> getRooms() {

@@ -63,7 +63,7 @@ public class TestServer {
       this.server.setHandler(contextHandler);
       this.server.start();
     } catch (Exception e) {
-      throw new RuntimeException(e);
+      throw new ServerException(e);
     }
   }
 
@@ -73,7 +73,7 @@ public class TestServer {
         this.server.stop();
       }
     } catch (Exception e) {
-      throw new RuntimeException(e);
+      throw new ServerException(e);
     }
   }
 }

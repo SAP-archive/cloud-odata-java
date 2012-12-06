@@ -17,8 +17,7 @@ public class Photo {
   private byte[] binaryData;
   private String content;
 
-  public Photo() {
-  }
+  public Photo() {}
 
   public Photo(String name) {
     this();
@@ -38,7 +37,7 @@ public class Photo {
 
       Photo.defaultImage = bos.toByteArray();
     } catch (IOException e) {
-      throw new RuntimeException(e);
+      throw new ModelException(e);
     }
   }
 
@@ -73,7 +72,7 @@ public class Photo {
   }
 
   public byte[] getImage() {
-    return image;
+    return image.clone();
   }
 
   public void setImage(byte[] image) {
@@ -86,7 +85,11 @@ public class Photo {
   }
 
   public byte[] getBinaryData() {
-    return binaryData;
+    if (binaryData == null) {
+      return null;
+    } else {
+      return binaryData.clone();
+    }
   }
 
   public void setContent(final String content) {
