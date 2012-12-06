@@ -13,7 +13,6 @@ import com.sap.core.odata.api.edm.EdmFacets;
 import com.sap.core.odata.api.edm.EdmLiteralKind;
 import com.sap.core.odata.api.edm.EdmSimpleType;
 import com.sap.core.odata.api.ep.ODataEntityProviderException;
-import com.sap.core.odata.core.edm.EdmString;
 import com.sap.core.odata.core.ep.aggregator.EntityComplexPropertyInfo;
 import com.sap.core.odata.core.ep.aggregator.EntityPropertyInfo;
 
@@ -72,9 +71,6 @@ public class XmlPropertyEntityProvider {
     if (valueAsString == null) {
       writer.writeAttribute(Edm.NAMESPACE_EDMX_2007_06, "null", "true");
     } else {
-      if (!(st instanceof EdmString)) {
-        writer.writeAttribute(Edm.NAMESPACE_EDMX_2007_06, FormatXml.ATOM_TYPE, st.getNamespace() + "." + st.getName());
-      }
       writer.writeCharacters(valueAsString);
     }
   }
