@@ -15,7 +15,7 @@ import com.sap.core.odata.api.edm.provider.Schema;
 import com.sap.core.odata.api.ep.ODataEntityProviderException;
 import com.sap.core.odata.core.edm.provider.EdmImplProv;
 
-public class AtomServiceDocumentSerializer {
+public class AtomServiceDocumentProvider {
 
   public static void writeServiceDocument(Edm edm, String serviceRoot, Writer writer) throws ODataEntityProviderException {
 
@@ -48,7 +48,11 @@ public class AtomServiceDocumentSerializer {
               Collection<EntitySet> entitySets = entityContainer.getEntitySets();
               for (EntitySet entitySet : entitySets) {
                 xmlStreamWriter.writeStartElement(FormatXml.APP_COLLECTION);
-                xmlStreamWriter.writeAttribute(FormatXml.ATOM_HREF, entitySet.getName());
+                if (entityContainer.isDefaultEntityContainer()) {
+                  xmlStreamWriter.writeAttribute(FormatXml.ATOM_HREF, entitySet.getName());
+                } else {
+                  xmlStreamWriter.writeAttribute(FormatXml.ATOM_HREF, entityContainer.getName() + Edm.DELIMITER + entitySet.getName());
+                }
                 xmlStreamWriter.writeStartElement(Edm.NAMESPACE_ATOM_2005, FormatXml.ATOM_TITLE);
                 xmlStreamWriter.writeCharacters(entitySet.getName());
                 xmlStreamWriter.writeEndElement();
