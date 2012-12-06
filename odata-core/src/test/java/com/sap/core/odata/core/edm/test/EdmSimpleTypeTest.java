@@ -722,17 +722,20 @@ public class EdmSimpleTypeTest {
 
     assertTrue(instance.valueToString(new Date(millis), EdmLiteralKind.DEFAULT, null).contains("M3.007S"));
 
-    assertEquals("PT23H32M3.00S", instance.valueToString(dateTime, EdmLiteralKind.DEFAULT, getPrecisionScaleFacets(2, null)));
+    dateTime.add(Calendar.MILLISECOND, -1);
     assertEquals("PT23H32M3S", instance.valueToString(dateTime, EdmLiteralKind.DEFAULT, getPrecisionScaleFacets(0, null)));
-    dateTime.add(Calendar.MILLISECOND, -14);
+    assertEquals("PT23H32M3.0S", instance.valueToString(dateTime, EdmLiteralKind.DEFAULT, getPrecisionScaleFacets(1, null)));
+    dateTime.add(Calendar.MILLISECOND, 10);
+    assertEquals("PT23H32M3.01S", instance.valueToString(dateTime, EdmLiteralKind.DEFAULT, getPrecisionScaleFacets(2, null)));
+    dateTime.add(Calendar.MILLISECOND, -23);
     assertEquals("PT23H32M2.987S", instance.valueToString(dateTime, EdmLiteralKind.DEFAULT, getPrecisionScaleFacets(null, null)));
-    assertEquals("PT23H32M2.987S", instance.valueToString(dateTime, EdmLiteralKind.DEFAULT, getPrecisionScaleFacets(5, null)));
-    assertEquals("PT23H32M2.99S", instance.valueToString(dateTime, EdmLiteralKind.DEFAULT, getPrecisionScaleFacets(2, null)));
-    assertEquals("PT23H32M3S", instance.valueToString(dateTime, EdmLiteralKind.DEFAULT, getPrecisionScaleFacets(1, null)));
-    assertEquals("PT23H32M3S", instance.valueToString(dateTime, EdmLiteralKind.DEFAULT, getPrecisionScaleFacets(0, null)));
+    assertEquals("PT23H32M2.98700S", instance.valueToString(dateTime, EdmLiteralKind.DEFAULT, getPrecisionScaleFacets(5, null)));
+    dateTime.add(Calendar.MILLISECOND, -87);
+    assertEquals("PT23H32M2.9S", instance.valueToString(dateTime, EdmLiteralKind.DEFAULT, getPrecisionScaleFacets(1, null)));
 
     checkNull(instance);
 
+    expectErrorInValueToString(instance, dateTime, EdmLiteralKind.DEFAULT, getPrecisionScaleFacets(0, null));
     expectErrorInValueToString(instance, 0, EdmLiteralKind.DEFAULT, null);
     expectErrorInValueToString(instance, dateTime, null, null);
   }
