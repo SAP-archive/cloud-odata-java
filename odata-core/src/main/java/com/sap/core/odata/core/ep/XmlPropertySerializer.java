@@ -19,7 +19,7 @@ import com.sap.core.odata.core.edm.EdmString;
 
 public class XmlPropertySerializer {
 
-  public void append(XMLStreamWriter writer, EdmProperty edmProperty, Object value, boolean isRootElement, AtomInfoAggregator aia) throws EdmException, XMLStreamException, ODataSerializationException {
+  public void append(XMLStreamWriter writer, EdmProperty edmProperty, Object value, boolean isRootElement) throws EdmException, XMLStreamException, ODataSerializationException {
     EdmType edmType = edmProperty.getType();
 
     String name = edmProperty.getName();
@@ -34,9 +34,9 @@ public class XmlPropertySerializer {
 
     if (edmType instanceof EdmSimpleType) {
       EdmSimpleType st = (EdmSimpleType) edmType;
-      appendProperty(writer, st, edmProperty, value, aia);
+      appendProperty(writer, st, edmProperty, value);
     } else if (edmType instanceof EdmComplexType) {
-      appendProperty(writer, (EdmComplexType) edmType, edmProperty, value, aia);
+      appendProperty(writer, (EdmComplexType) edmType, edmProperty, value);
     } else {
       throw new ODataSerializationException(ODataSerializationException.UNSUPPORTED_PROPERTY_TYPE.addContent(edmType.getName()));
     }
@@ -44,7 +44,7 @@ public class XmlPropertySerializer {
     writer.writeEndElement();
   }
 
-  private void appendProperty(XMLStreamWriter writer, EdmComplexType type, EdmProperty prop, Object value, AtomInfoAggregator aia) throws XMLStreamException, EdmException, ODataSerializationException {
+  private void appendProperty(XMLStreamWriter writer, EdmComplexType type, EdmProperty prop, Object value) throws XMLStreamException, EdmException, ODataSerializationException {
 
     if (value == null) {
       writer.writeAttribute(Edm.NAMESPACE_EDMX_2007_06, "null", "true");
@@ -53,7 +53,7 @@ public class XmlPropertySerializer {
       for (String pName : propNames) {
         EdmProperty internalProperty = (EdmProperty) type.getProperty(pName);
         Object childValue = extractChildValue(value, pName);
-        append(writer, internalProperty, childValue, false, aia);
+        append(writer, internalProperty, childValue, false);
       }
     }
   }
@@ -66,14 +66,10 @@ public class XmlPropertySerializer {
     return String.valueOf(value);
   }
 
-  private void appendProperty(XMLStreamWriter writer, EdmSimpleType st, EdmProperty prop, Object value, AtomInfoAggregator aia) throws XMLStreamException, EdmException {
+  private void appendProperty(XMLStreamWriter writer, EdmSimpleType st, EdmProperty prop, Object value) throws XMLStreamException, EdmException {
     EdmLiteralKind literalKind = EdmLiteralKind.DEFAULT;
     EdmFacets facets = prop.getFacets();
     String valueAsString = st.valueToString(value, literalKind, facets);
-
-    if (aia != null) {
-      aia.addInfo(prop, valueAsString);
-    }
 
     if (valueAsString == null) {
       writer.writeAttribute(Edm.NAMESPACE_EDMX_2007_06, "null", "true");

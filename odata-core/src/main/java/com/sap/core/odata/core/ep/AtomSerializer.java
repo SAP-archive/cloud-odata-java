@@ -85,7 +85,7 @@ public class AtomSerializer extends ODataSerializer {
 
       outStream = new ByteArrayOutputStream();
       XMLStreamWriter writer = XMLOutputFactory.newInstance().createXMLStreamWriter(outStream, "utf-8");
-      ps.append(writer, edmProperty, value, true, null);
+      ps.append(writer, edmProperty, value, true);
 
       writer.flush();
       outStream.flush();
