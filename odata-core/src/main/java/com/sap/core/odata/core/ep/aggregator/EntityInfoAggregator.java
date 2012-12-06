@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -67,14 +68,6 @@ public class EntityInfoAggregator {
     try {
       EntityInfoAggregator eia = new EntityInfoAggregator();
       return eia.createEntityPropertyInfo(property);
-//      EdmType type = property.getType();
-//      
-//      if(type instanceof EdmStructuralType) {
-//      } else if(type instanceof EdmSimpleType) {
-//        return EntityPropertyInfo.create(property);
-//      } else {
-//        throw new ODataEntityProviderException(ODataEntityProviderException.UNSUPPORTED_PROPERTY_TYPE);        
-//      }
     } catch (Exception e) {
       throw new ODataEntityProviderException(ODataEntityProviderException.COMMON, e);
     }
@@ -120,6 +113,14 @@ public class EntityInfoAggregator {
    */
   public Collection<String> getTargetPathNames() {
     return Collections.unmodifiableCollection(targetPath2EntityPropertyInfo.keySet());
+  }
+
+  /**
+   * @return unmodifiable set of found <code>none syndication target path names</code> (all target
+   * path names which are not defined in {@value #SYN_TARGET_PATHS}).
+   */
+  public List<String> getNoneSyndicationTargetPathNames() {
+    return Collections.unmodifiableList(noneSyndicationTargetPaths);
   }
 
   /**
@@ -253,39 +254,36 @@ public class EntityInfoAggregator {
     }
   }
 
+  private List<String> noneSyndicationTargetPaths = new ArrayList<String>();
+  
   private void checkTargetPathInfo(EdmProperty property, EntityPropertyInfo value) throws ODataEntityProviderException {
     try {
       EdmCustomizableFeedMappings customizableFeedMappings = property.getCustomizableFeedMappings();
       if (customizableFeedMappings != null) {
         String targetPath = customizableFeedMappings.getFcTargetPath();
-        if (EdmTargetPath.SYNDICATION_TITLE.equals(targetPath)) {
-          targetPath2EntityPropertyInfo.put(EdmTargetPath.SYNDICATION_TITLE, value);
-        } else if (EdmTargetPath.SYNDICATION_UPDATED.equals(targetPath)) {
-          targetPath2EntityPropertyInfo.put(EdmTargetPath.SYNDICATION_UPDATED, value);
-        } else if (EdmTargetPath.SYNDICATION_SUMMARY.equals(targetPath)) {
-          targetPath2EntityPropertyInfo.put(EdmTargetPath.SYNDICATION_SUMMARY, value);
-        } else if (EdmTargetPath.SYNDICATION_SOURCE.equals(targetPath)) {
-          targetPath2EntityPropertyInfo.put(EdmTargetPath.SYNDICATION_SOURCE, value);
-        } else if (EdmTargetPath.SYNDICATION_RIGHTS.equals(targetPath)) {
-          targetPath2EntityPropertyInfo.put(EdmTargetPath.SYNDICATION_RIGHTS, value);
-        } else if (EdmTargetPath.SYNDICATION_PUBLISHED.equals(targetPath)) {
-          targetPath2EntityPropertyInfo.put(EdmTargetPath.SYNDICATION_PUBLISHED, value);
-        } else if (EdmTargetPath.SYNDICATION_CONTRIBUTORURI.equals(targetPath)) {
-          targetPath2EntityPropertyInfo.put(EdmTargetPath.SYNDICATION_CONTRIBUTORURI, value);
-        } else if (EdmTargetPath.SYNDICATION_CONTRIBUTORNAME.equals(targetPath)) {
-          targetPath2EntityPropertyInfo.put(EdmTargetPath.SYNDICATION_CONTRIBUTORNAME, value);
-        } else if (EdmTargetPath.SYNDICATION_CONTRIBUTOREMAIL.equals(targetPath)) {
-          targetPath2EntityPropertyInfo.put(EdmTargetPath.SYNDICATION_CONTRIBUTOREMAIL, value);
-        } else if (EdmTargetPath.SYNDICATION_AUTHORURI.equals(targetPath)) {
-          targetPath2EntityPropertyInfo.put(EdmTargetPath.SYNDICATION_AUTHORURI, value);
-        } else if (EdmTargetPath.SYNDICATION_AUTHORNAME.equals(targetPath)) {
-          targetPath2EntityPropertyInfo.put(EdmTargetPath.SYNDICATION_AUTHORNAME, value);
-        } else if (EdmTargetPath.SYNDICATION_AUTHOREMAIL.equals(targetPath)) {
-          targetPath2EntityPropertyInfo.put(EdmTargetPath.SYNDICATION_AUTHOREMAIL, value);
+        targetPath2EntityPropertyInfo.put(targetPath, value);
+        if(!SYN_TARGET_PATHS.contains(targetPath)) {
+          noneSyndicationTargetPaths.add(targetPath);
         }
       }
     } catch (Exception e) {
       throw new ODataEntityProviderException(ODataEntityProviderException.COMMON, e);
     }
+  }
+  
+  private static Set<String> SYN_TARGET_PATHS = new HashSet<String>();
+  static {
+    SYN_TARGET_PATHS.add(EdmTargetPath.SYNDICATION_AUTHOREMAIL);
+    SYN_TARGET_PATHS.add(EdmTargetPath.SYNDICATION_AUTHOREMAIL);
+    SYN_TARGET_PATHS.add(EdmTargetPath.SYNDICATION_AUTHORURI);
+    SYN_TARGET_PATHS.add(EdmTargetPath.SYNDICATION_PUBLISHED);
+    SYN_TARGET_PATHS.add(EdmTargetPath.SYNDICATION_RIGHTS);
+    SYN_TARGET_PATHS.add(EdmTargetPath.SYNDICATION_TITLE);
+    SYN_TARGET_PATHS.add(EdmTargetPath.SYNDICATION_UPDATED);
+    SYN_TARGET_PATHS.add(EdmTargetPath.SYNDICATION_CONTRIBUTORNAME);
+    SYN_TARGET_PATHS.add(EdmTargetPath.SYNDICATION_CONTRIBUTOREMAIL);
+    SYN_TARGET_PATHS.add(EdmTargetPath.SYNDICATION_CONTRIBUTORURI);
+    SYN_TARGET_PATHS.add(EdmTargetPath.SYNDICATION_SOURCE);
+    SYN_TARGET_PATHS.add(EdmTargetPath.SYNDICATION_SUMMARY);
   }
 }

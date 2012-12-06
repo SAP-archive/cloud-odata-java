@@ -1,5 +1,6 @@
 package com.sap.core.odata.core.ep.aggregator;
 
+import com.sap.core.odata.api.edm.EdmCustomizableFeedMappings;
 import com.sap.core.odata.api.edm.EdmException;
 import com.sap.core.odata.api.edm.EdmFacets;
 import com.sap.core.odata.api.edm.EdmProperty;
@@ -9,12 +10,14 @@ public class EntityPropertyInfo {
   protected String name;
   protected EdmType type;
   protected EdmFacets facets;
+  protected EdmCustomizableFeedMappings customMapping;
   
   static EntityPropertyInfo create(EdmProperty property) throws EdmException {
     EntityPropertyInfo info = new EntityPropertyInfo();
     info.name = property.getName();
     info.type = property.getType();
     info.facets = property.getFacets();
+    info.customMapping = property.getCustomizableFeedMappings();
     return info;
   }
   
@@ -30,6 +33,9 @@ public class EntityPropertyInfo {
   }
   public EdmFacets getFacets() {
     return facets;
+  }
+  public EdmCustomizableFeedMappings getCustomMapping() {
+    return customMapping;
   }
   
   @Override
