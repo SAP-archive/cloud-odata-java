@@ -1,6 +1,7 @@
 package com.sap.core.odata.core.rt;
 
 import com.sap.core.odata.api.edm.Edm;
+import com.sap.core.odata.api.edm.EdmEntityType;
 import com.sap.core.odata.api.edm.EdmSimpleType;
 import com.sap.core.odata.api.edm.EdmSimpleTypeFacade;
 import com.sap.core.odata.api.edm.EdmSimpleTypeKind;
@@ -58,7 +59,7 @@ public class RuntimeDelegateImpl extends RuntimeDelegateInstance {
   }
 
   @Override
-  protected FilterParser getFilterParser(Edm edm, EdmType edmType) {
+  protected FilterParser getFilterParser(Edm edm, EdmEntityType edmType) {
     return new FilterParserImpl(edm, edmType);
   }
 

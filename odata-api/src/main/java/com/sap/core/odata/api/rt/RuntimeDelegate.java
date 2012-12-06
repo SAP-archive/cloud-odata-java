@@ -1,6 +1,7 @@
 package com.sap.core.odata.api.rt;
 
 import com.sap.core.odata.api.edm.Edm;
+import com.sap.core.odata.api.edm.EdmEntityType;
 import com.sap.core.odata.api.edm.EdmSimpleType;
 import com.sap.core.odata.api.edm.EdmSimpleTypeFacade;
 import com.sap.core.odata.api.edm.EdmSimpleTypeKind;
@@ -81,7 +82,7 @@ public abstract class RuntimeDelegate {
      */
     protected abstract Edm createEdm(EdmProvider provider);
     
-    protected abstract FilterParser getFilterParser(Edm edm, EdmType edmType);
+    protected abstract FilterParser getFilterParser(Edm edm, EdmEntityType edmType);
     
     /**
      * @param format serializer format
@@ -120,7 +121,7 @@ public abstract class RuntimeDelegate {
     return RuntimeDelegate.getInstance().getInternalEdmSimpleTypeByString(edmSimpleType);
   }
 
-  public static FilterParser getFilterParser(Edm edm, EdmType edmType) {
+  public static FilterParser getFilterParser(Edm edm, EdmEntityType edmType) {
     return RuntimeDelegate.getInstance().getFilterParser(edm, edmType);
   }
   

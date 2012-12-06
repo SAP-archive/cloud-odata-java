@@ -78,4 +78,10 @@ public class FilterParserExceptionImpl extends FilterParserException {
     return new FilterParserException(msgRef);
   }
 
+  public static FilterParserException createLEFT_SIDE_NOT_STRUCTURAL_TYPE() {
+    MessageReference msgRef = FilterParserException.LEFT_SIDE_NOT_STRUCTURAL_TYPE.create();
+
+    return new FilterParserException(msgRef);
+  }
+
 }

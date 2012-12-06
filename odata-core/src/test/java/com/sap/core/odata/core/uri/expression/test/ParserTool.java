@@ -24,6 +24,7 @@ public class ParserTool
     this.expression = expression;
     this.tree = root.getExpression();
     this.curNode = this.tree;
+    
   }
 
   ParserTool aKind(ExpressionKind kind)

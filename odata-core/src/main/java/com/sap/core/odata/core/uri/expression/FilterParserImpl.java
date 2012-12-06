@@ -9,6 +9,8 @@ import java.util.Map;
 import java.util.Vector;
 
 import com.sap.core.odata.api.edm.Edm;
+import com.sap.core.odata.api.edm.EdmComplexType;
+import com.sap.core.odata.api.edm.EdmEntityType;
 import com.sap.core.odata.api.edm.EdmException;
 import com.sap.core.odata.api.edm.EdmProperty;
 import com.sap.core.odata.api.edm.EdmSimpleType;
@@ -24,6 +26,7 @@ import com.sap.core.odata.api.uri.expression.FilterExpression;
 import com.sap.core.odata.api.uri.expression.FilterParser;
 import com.sap.core.odata.api.uri.expression.FilterParserException;
 import com.sap.core.odata.api.uri.expression.LiteralExpression;
+import com.sap.core.odata.api.uri.expression.MemberExpression;
 import com.sap.core.odata.api.uri.expression.MethodExpression;
 import com.sap.core.odata.api.uri.expression.MethodOperator;
 import com.sap.core.odata.api.uri.expression.PropertyExpression;
@@ -46,18 +49,18 @@ public class FilterParserImpl implements FilterParser
   /*instance attributes*/
   protected boolean promoteParameters = true;
   protected Edm edm = null;
-  protected EdmType resourceEntityType = null;
+  protected EdmEntityType resourceEntityType = null;
   protected TokenList tokenList = null;
 
   /**
    * Creates a new FilterParser implementation
    * @param edm EntityDataModel   
-   * @param resourceEntityType EntityType of the resource on which the filter is applied
+   * @param edmType EntityType of the resource on which the filter is applied
    */
-  public FilterParserImpl(Edm edm, EdmType resourceEntityType)
+  public FilterParserImpl(Edm edm, EdmEntityType edmType)
   {
     this.edm = edm;
-    this.resourceEntityType = resourceEntityType;
+    this.resourceEntityType = edmType;
   }
 
   @Override
@@ -82,7 +85,7 @@ public class FilterParserImpl implements FilterParser
 
     try
     {
-      CommonExpression nodeLeft = readElement();
+      CommonExpression nodeLeft = readElement(null);
       node = readElements(nodeLeft, 0);
     } catch (FilterParserException expressionException)
     {
@@ -117,7 +120,7 @@ public class FilterParserImpl implements FilterParser
     while ((operator != null) && (operator.priority >= priority))
     {
       tokenList.next();
-      rightNode = readElement();//throws ExceptionParseExpression, ExceptionExpressionInternalError
+      rightNode = readElement(leftNode);//throws ExceptionParseExpression, ExceptionExpressionInternalError
 
       InfoBinaryOperator nextOperator = readBinaryOperator();
 
@@ -127,7 +130,15 @@ public class FilterParserImpl implements FilterParser
         nextOperator = readBinaryOperator();
       }
 
-      binaryNode = new BinaryExpressionImpl(operator, leftNode, rightNode);
+      //Although the member operator is also a binary operator, there is some special handling
+      if (operator.getOperator() == BinaryOperator.PROPERTY_ACCESS)
+      {
+        binaryNode = new MemberExpressionImpl(leftNode, rightNode);
+      }
+      else
+      {
+        binaryNode = new BinaryExpressionImpl(operator, leftNode, rightNode);
+      }
 
       try
       {
@@ -165,7 +176,7 @@ public class FilterParserImpl implements FilterParser
       throw FilterParserInternalError.createERROR_PARSING_PARENTHESIS(e);
     }
 
-    CommonExpression firstExpression = readElement();
+    CommonExpression firstExpression = readElement(null);
     CommonExpression parenthesisExpression = readElements(firstExpression, 0);
 
     //---check for ')'
@@ -208,7 +219,7 @@ public class FilterParserImpl implements FilterParser
     Token token = tokenList.lookToken();
     while (token.getKind() != TokenKind.CLOSEPAREN)
     {
-      expression = readElement();
+      expression = readElement(null);
       //After a ',' inside the parenthesis which define the method parameters a expression is expected 
       //E.g. $filter=startswith(Country,'UK',) --> is wrong
       //E.g. $filter=startswith(Country,) --> is also wrong 
@@ -263,12 +274,15 @@ public class FilterParserImpl implements FilterParser
   /**
    * Reads: Unary operators, Methods, Properties, ...
    * but not binary operators which are handelt in {@link #readElements(CommonExpression, int)}
+   * @param leftExpression 
+   *   Used while parsing properties. In this case ( e.g. parsing "a/b") the property "a" ( as leftExpression of "/") is relevant 
+   *   to verify whether the property "b" exists inside the edm
    * @return
    * @throws FilterParserException
    * @throws FilterParserInternalError 
    * @throws TokenizerMessage 
    */
-  protected CommonExpression readElement() throws FilterParserException, FilterParserInternalError
+  protected CommonExpression readElement(CommonExpression leftExpression) throws FilterParserException, FilterParserInternalError
   {
     CommonExpression node = null;
     Token token;
@@ -329,6 +343,7 @@ public class FilterParserImpl implements FilterParser
     if (token.getKind() == TokenKind.LITERAL)
     {
       PropertyExpression property = new PropertyExpressionImpl(token.getUriLiteral(), null, token.getJavaLiteral());
+      validateEdmProperty(leftExpression, property);
       validatePropertyTypes(property);
       return property;
     }
@@ -347,11 +362,11 @@ public class FilterParserImpl implements FilterParser
     try {
       token = tokenList.expectToken(lookToken.getUriLiteral());
     } catch (TokenizerExpectError e) {
-      
+
       throw FilterParserInternalError.createERROR_PARSING_PARENTHESIS(e);
     }
 
-    CommonExpression operand = readElement();
+    CommonExpression operand = readElement(null);
     UnaryExpression unaryExpression = new UnaryExpressionImpl(unaryOperator, operand);
     validataUnaryOperator(unaryExpression, token); //throws ExpressionInvalidOperatorTypeException
     return unaryExpression;
@@ -370,105 +385,18 @@ public class FilterParserImpl implements FilterParser
   {
     Token token = tokenList.lookToken();
     if (token == null) return null;
-    if (token.getKind() == TokenKind.LITERAL)
+    if ((token.getKind() == TokenKind.SYMBOL) && (token.getUriLiteral().equals("/")))
+    {
+      InfoBinaryOperator operator = availableBinaryOperators.get(token.getUriLiteral());
+      return operator;
+    }
+    else if (token.getKind() == TokenKind.LITERAL)
     {
       InfoBinaryOperator operator = availableBinaryOperators.get(token.getUriLiteral());
       return operator;
     }
 
     return null;
-  }
-
-  protected CommonExpression readElementForMember(PropertyExpression io_parent_property) throws Exception
-  {
-    Token lv_token;
-    Token lv_look_token;
-    PropertyExpression lo_edm_prop;
-    EdmTyped lo_parent_edm_prop;
-    //read next token
-    lv_token = tokenList.lookToken();
-    CommonExpression ro_node;
-
-    if (lv_token.getKind() == TokenKind.OPENPAREN) //."if token a '(' then process read a new note for the '(' and return it.
-    {
-      ro_node = readParenthesis();
-      return ro_node; //no edm cross check for parenthesis.
-    }
-    else if ((lv_token.getKind() == TokenKind.LITERAL) || (lv_token.getKind() == TokenKind.LITERAL))
-    {
-
-      tokenList.expectToken((String) lv_token.getUriLiteral());//TODO check this 
-
-      lv_look_token = tokenList.lookToken();
-
-      if (lv_look_token.getKind() == TokenKind.OPENPAREN)
-      {
-        //rigth hand sems to be a function
-        throw new Exception();//   /iwcor/cx_ds_expr_parser_error=>member_access_wrong_right_hand.        
-      }
-
-      //if no EDM check is necesarry
-      if (edm == null)
-      {
-        //create expression property node without reference to edm property
-        return new PropertyExpressionImpl(lv_look_token.getUriLiteral(), null, lv_look_token.getJavaLiteral());
-      }
-
-      //EDM data is available so we do the check
-      if (io_parent_property == null)
-      {
-        //inconsistence in Parser - io_parent_node MUST be filled
-        throw new Exception();//internal error
-      }
-
-      //get parent edm property of the parent expression node
-      lo_parent_edm_prop = io_parent_property.getEdmProperty();
-      if (lo_parent_edm_prop == null)
-      {
-        throw new Exception();//internal error
-      }
-
-      try
-      {
-        //get parent edm type of parent edm property
-        lo_parent_edm_prop = lo_parent_edm_prop;
-        if (lo_parent_edm_prop == null)
-        {
-          throw new Exception(); //inconsistence in EDM (a property MUST have always a type
-        }
-
-        //do typing for property; may be /IWCOR/IF_DS_EDM_PROPERTY or /IWCOR/IF_DS_EDM_NAV_PROPERTY
-        lo_edm_prop = (PropertyExpression) getProperty(lo_parent_edm_prop.getType(), lv_token);
-      } catch (Exception ex)
-      {
-        throw ex;
-      }
-      //create property node with reference to edm property
-      ro_node = new PropertyExpressionImpl(lv_token.getUriLiteral(), (EdmProperty) lo_edm_prop, lv_token.getJavaLiteral());
-
-      try
-      {
-        ro_node.setEdmType(lo_edm_prop.getEdmType());
-      } catch (Exception ex)
-      {
-        /*TODO
-         * CATCH /iwcor/cx_ds_edm_error INTO lx_edm_error.
-            RAISE EXCEPTION TYPE /iwcor/cx_ds_internal_error
-              EXPORTING
-                previous = lx_edm_error.
-          CATCH cx_sy_move_cast_error.
-            RAISE EXCEPTION TYPE /iwcor/cx_ds_internal_error
-              EXPORTING
-                previous = lx_edm_error.
-         */
-      }
-    } else
-    {
-      //TODO raise  textid = /iwcor/cx_ds_expr_parser_error=>member_access_wrong_right_hand.
-
-    }
-    CommonExpression RO_NODE = null;
-    return RO_NODE;
   }
 
   /**
@@ -859,13 +787,13 @@ public class FilterParserImpl implements FilterParser
         throw new Exception();/*TODO*//*
 
 
-                                                              RAISE EXCEPTION TYPE /iwcor/cx_ds_expr_parser_error "OK
-                                                              EXPORTING
-                                                              textid   = /iwcor/cx_ds_expr_parser_error=>property_not_in_type
-                                                              type     = lv_type_name
-                                                              property = is_property_token-value
-                                                              position = is_property_token-position.
-                                                              ENDIF.*/
+                                                                  RAISE EXCEPTION TYPE /iwcor/cx_ds_expr_parser_error "OK
+                                                                  EXPORTING
+                                                                  textid   = /iwcor/cx_ds_expr_parser_error=>property_not_in_type
+                                                                  type     = lv_type_name
+                                                                  property = is_property_token-value
+                                                                  position = is_property_token-position.
+                                                                  ENDIF.*/
 
       }
     } catch (Exception ex)
@@ -1090,8 +1018,56 @@ public class FilterParserImpl implements FilterParser
                                                                                          */
   }
 
-  protected void validatePropertyTypes(PropertyExpression property) {
-    // TODO Auto-generated method stub
+  protected void validatePropertyTypes(PropertyExpression property)
+  {
 
   }
+
+  private void validateEdmProperty(CommonExpression leftExpression, PropertyExpression property) throws FilterParserException {
+    // Exist if no edm provided
+    if ((this.edm == null) || (this.resourceEntityType == null))
+      return;
+
+    EdmStructuralType path = this.resourceEntityType; // default if there is a property of its own
+
+    if ((leftExpression == null) || (!(leftExpression instanceof MemberExpression)))
+    {
+      //e.g. "$filter='Hong Kong' eq city" --> "city" is checked against the resource entity type of the last URL segment 
+      validateEdmPropertyOfEntityType(this.resourceEntityType);
+      return;
+    }
+
+    //e.g. "$filter='Hong Kong' eq address/city" --> city is "checked" against the type of the property "address".
+    //     "address" itself must be a (navigation)property of the resource entity type of the last URL segment AND
+    //     "address" must have a structural edm type
+    MemberExpression member = (MemberExpression) leftExpression;
+    EdmType parentType = member.getPath().getEdmType();  //parentType point now to the type of property "address"
+
+    if (parentType instanceof EdmEntityType)
+    {
+      //e.g. "$filter='Hong Kong' eq navigationProp/city" --> "navigationProp" is a navigation property with a entity type
+      validateEdmPropertyOfEntityType((EdmEntityType) parentType);
+    }
+    else if (parentType instanceof EdmComplexType)
+    {
+      //e.g. "$filter='Hong Kong' eq address/city" --> "address" is a property with a complex type 
+      validateEdmPropertyOfEntityType((EdmComplexType) parentType);
+    }
+    else
+    {
+    //e.g. "$filter='Hong Kong' eq name/city" --> "name is of type String" 
+      throw FilterParserExceptionImpl.createLEFT_SIDE_NOT_STRUCTURAL_TYPE();
+    }
+
+    return;
+  }
+
+  private void validateEdmPropertyOfEntityType(EdmComplexType parentType) {
+    // TODO Auto-generated method stub
+  }
+
+  private void validateEdmPropertyOfEntityType(EdmEntityType parentType) {
+    // TODO Auto-generated method stub
+  }
+
 }

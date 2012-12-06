@@ -35,6 +35,7 @@ public class TechnicalScenarioEdmProvider extends EdmProviderDefault {
 
   public static final String NAMESPACE_1 = "TecRefScenario";
 
+
   private static final FullQualifiedName ET_KEY_IS_STRING = new FullQualifiedName(NAMESPACE_1, "EtKeyTypeString");
   private static final FullQualifiedName ET_KEY_IS_INTEGER = new FullQualifiedName(NAMESPACE_1, "EtKeyTypeInteger");
   private static final FullQualifiedName ET_COMPLEX_KEY = new FullQualifiedName(NAMESPACE_1, "EtComplexKey");
@@ -55,6 +56,7 @@ public class TechnicalScenarioEdmProvider extends EdmProviderDefault {
   private static final String ES_COMPLEX_KEY = "ComplexKey";
   private static final String ES_ALL_TYPES = "AllTypes";
   private static final String ES_STRING_FACETS = "StringFacets";
+
 
   @Override
   public List<Schema> getSchemas() throws ODataMessageException {
@@ -104,7 +106,9 @@ public class TechnicalScenarioEdmProvider extends EdmProviderDefault {
         properties.add(new SimpleProperty().setName("KeyString")
             .setType(EdmSimpleTypeKind.String)
             .setFacets(new Facets().setNullable(false)));
+
         List<NavigationProperty> navigationProperties = new ArrayList<NavigationProperty>();
+
         navigationProperties.add(new NavigationProperty().setName("navProperty").setFromRole(ROLE_1).setToRole(ROLE_2).setRelationship(ASSOCIATION_ET1_ET2));
         
         return new EntityType().setName(ET_KEY_IS_STRING.getName()).setProperties(properties).setNavigationProperties(navigationProperties).setKey(createKey("KeyString"));
@@ -115,11 +119,13 @@ public class TechnicalScenarioEdmProvider extends EdmProviderDefault {
         properties.add(new SimpleProperty().setName("KeyInteger")
             .setType(EdmSimpleTypeKind.String)
             .setFacets(new Facets().setNullable(false)));
+
         
         List<NavigationProperty> navigationProperties = new ArrayList<NavigationProperty>();
         navigationProperties.add(new NavigationProperty().setName("navProperty").setFromRole(ROLE_2).setToRole(ROLE_1).setRelationship(ASSOCIATION_ET1_ET2));
            
         return new EntityType().setName(ET_KEY_IS_INTEGER.getName()).setProperties(properties).setNavigationProperties(navigationProperties).setKey(createKey("KeyInteger"));
+
       }
       else if (ET_COMPLEX_KEY.getName().equals(edmFQName.getName()))
       {
@@ -130,6 +136,7 @@ public class TechnicalScenarioEdmProvider extends EdmProviderDefault {
         properties.add(new SimpleProperty().setName("KeyInteger")
             .setType(EdmSimpleTypeKind.String)
             .setFacets(new Facets().setNullable(false)));
+
         return new EntityType().setName(ET_COMPLEX_KEY.getName()).setProperties(properties).setKey(createKey("KeyInteger", "KeyString"));
       }
       else if (ET_ALL_TYPES.getName().equals(edmFQName.getName()))
