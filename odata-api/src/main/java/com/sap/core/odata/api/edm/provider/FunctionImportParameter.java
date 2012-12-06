@@ -13,7 +13,7 @@ public class FunctionImportParameter {
 
   private String name;
   private String mode;
-  private FullQualifiedName qualifiedName;
+  private FullQualifiedName type;
   private EdmFacets facets;
   private Mapping mapping;
   private Documentation documentation;
@@ -37,8 +37,8 @@ public class FunctionImportParameter {
   /**
    * @return {@link FullQualifiedName} of this parameter
    */
-  public FullQualifiedName getQualifiedName() {
-    return qualifiedName;
+  public FullQualifiedName getType() {
+    return type;
   }
 
   /**
@@ -100,11 +100,11 @@ public class FunctionImportParameter {
   /**
    * MANDATORY
    * <p>Sets the {@link FullQualifiedName} of this {@link FunctionImportParameter}
-   * @param qualifiedName
+   * @param type
    * @return {@link FunctionImportParameter} for method chaining
    */
-  public FunctionImportParameter setQualifiedName(FullQualifiedName qualifiedName) {
-    this.qualifiedName = qualifiedName;
+  public FunctionImportParameter setType(FullQualifiedName type) {
+    this.type = type;
     return this;
   }
 

@@ -327,7 +327,7 @@ public class EdmMetadata {
                     for (FunctionImportParameter functionImportParameter : functionImportParameters) {
                       xmlStreamWriter.writeStartElement("Parameter");
                       xmlStreamWriter.writeAttribute("Name", functionImportParameter.getName());
-                      xmlStreamWriter.writeAttribute("Type", functionImportParameter.getQualifiedName().toString());
+                      xmlStreamWriter.writeAttribute("Type", functionImportParameter.getType().toString());
                       if (functionImportParameter.getMode() != null) {
                         xmlStreamWriter.writeAttribute("Mode", functionImportParameter.getMode());
                       }
