@@ -1,21 +1,21 @@
 package com.sap.core.odata.core.ep;
 
 import com.sap.core.odata.api.enums.Format;
-import com.sap.core.odata.api.ep.ODataSerializationException;
-import com.sap.core.odata.api.ep.ODataSerializer;
+import com.sap.core.odata.api.ep.ODataEntityProviderException;
+import com.sap.core.odata.api.ep.ODataEntityProvider;
 import com.sap.core.odata.api.exception.ODataNotImplementedException;
 import com.sap.core.odata.api.processor.ODataContext;
 
-public class ODataSerializerFactory {
+public class EntityProviderFactory {
 
-  public static ODataSerializer create(Format format, ODataContext ctx) throws ODataSerializationException {
+  public static ODataEntityProvider create(Format format, ODataContext ctx) throws ODataEntityProviderException {
     try {
-      ODataSerializer serializer;
+      ODataEntityProvider provider;
 
       switch (format) {
       case ATOM:
       case XML:
-        serializer = new AtomSerializer(ctx);
+        provider = new AtomEntityProvider(ctx);
         break;
       case JSON:
         throw new ODataNotImplementedException();
@@ -23,9 +23,9 @@ public class ODataSerializerFactory {
         throw new ODataNotImplementedException();
       }
 
-      return serializer;
+      return provider;
     } catch (ODataNotImplementedException e) {
-      throw new ODataSerializationException(ODataSerializationException.COMMON, e);
+      throw new ODataEntityProviderException(ODataEntityProviderException.COMMON, e);
     }
   }
 }

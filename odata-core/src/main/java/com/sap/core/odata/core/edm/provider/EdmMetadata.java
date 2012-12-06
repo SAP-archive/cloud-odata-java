@@ -36,11 +36,11 @@ import com.sap.core.odata.api.edm.provider.ReferentialConstraint;
 import com.sap.core.odata.api.edm.provider.ReferentialConstraintRole;
 import com.sap.core.odata.api.edm.provider.Schema;
 import com.sap.core.odata.api.edm.provider.Using;
-import com.sap.core.odata.api.ep.ODataSerializationException;
+import com.sap.core.odata.api.ep.ODataEntityProviderException;
 
 public class EdmMetadata {
 
-  public static void writeMetadata(DataServices metadata, Writer writer) throws ODataSerializationException {
+  public static void writeMetadata(DataServices metadata, Writer writer) throws ODataEntityProviderException {
 
     try {
       XMLStreamWriter xmlStreamWriter = XMLOutputFactory.newInstance().createXMLStreamWriter(writer);
@@ -377,9 +377,9 @@ public class EdmMetadata {
 
       xmlStreamWriter.flush();
     } catch (XMLStreamException e) {
-      throw new ODataSerializationException(ODataSerializationException.COMMON, e);
+      throw new ODataEntityProviderException(ODataEntityProviderException.COMMON, e);
     } catch (FactoryConfigurationError e) {
-      throw new ODataSerializationException(ODataSerializationException.COMMON, e);
+      throw new ODataEntityProviderException(ODataEntityProviderException.COMMON, e);
     }
   }
 

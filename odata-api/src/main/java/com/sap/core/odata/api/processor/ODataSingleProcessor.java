@@ -7,7 +7,7 @@ import com.sap.core.odata.api.edm.EdmServiceMetadata;
 import com.sap.core.odata.api.enums.Format;
 import com.sap.core.odata.api.enums.HttpStatusCodes;
 import com.sap.core.odata.api.enums.MediaType;
-import com.sap.core.odata.api.ep.ODataSerializer;
+import com.sap.core.odata.api.ep.ODataEntityProvider;
 import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.api.exception.ODataNotImplementedException;
 import com.sap.core.odata.api.processor.aspect.Batch;
@@ -310,8 +310,8 @@ public abstract class ODataSingleProcessor
   public ODataResponse readServiceDocument(GetServiceDocumentView uriParserResultView) throws ODataException {
     //TODO: uriParserResultView.getFormat() only returns a valid format if the format is set via $format
     //      Content Negotiation yet not implemented, but in general we should go for a format as separate parameter and not via uriResultViews
-    ODataSerializer odataSerializer = ODataSerializer.create(Format.XML, getContext());
-    InputStream serviceDocument = odataSerializer.serializeServiceDocument(getContext().getService().getEntityDataModel(), getContext().getUriInfo().getBaseUri().toASCIIString());
+    ODataEntityProvider odataSerializer = ODataEntityProvider.create(Format.XML, getContext());
+    InputStream serviceDocument = odataSerializer.writeServiceDocument(getContext().getService().getEntityDataModel(), getContext().getUriInfo().getBaseUri().toASCIIString());
     return ODataResponse
         .status(HttpStatusCodes.OK)
         .header("Content-Type", MediaType.APPLICATION_ATOM_SVC.toString())

@@ -14,19 +14,19 @@ import javax.xml.stream.XMLStreamWriter;
 import com.sap.core.odata.api.edm.Edm;
 import com.sap.core.odata.api.edm.EdmEntitySet;
 import com.sap.core.odata.api.edm.EdmProperty;
-import com.sap.core.odata.api.ep.ODataSerializationException;
-import com.sap.core.odata.api.ep.ODataSerializer;
+import com.sap.core.odata.api.ep.ODataEntityProviderException;
+import com.sap.core.odata.api.ep.ODataEntityProvider;
 import com.sap.core.odata.api.processor.ODataContext;
 
 // TODO usage of "ByteArrayInputStream(out.toByteArray())":  check synchronized call / copy of data
-public class AtomSerializer extends ODataSerializer {
+public class AtomEntityProvider extends ODataEntityProvider {
 
-  AtomSerializer(ODataContext ctx) throws ODataSerializationException {
+  AtomEntityProvider(ODataContext ctx) throws ODataEntityProviderException {
     super(ctx);
   }
 
   @Override
-  public InputStream serializeServiceDocument(Edm edm, String serviceRoot) throws ODataSerializationException {
+  public InputStream writeServiceDocument(Edm edm, String serviceRoot) throws ODataEntityProviderException {
     OutputStreamWriter writer = null;
 
     try {
@@ -35,24 +35,29 @@ public class AtomSerializer extends ODataSerializer {
       AtomServiceDocumentSerializer.writeServiceDocument(edm, serviceRoot, writer);
       return new ByteArrayInputStream(outputStream.toByteArray());
     } catch (UnsupportedEncodingException e) {
-      throw new ODataSerializationException(ODataSerializationException.COMMON, e);
+      throw new ODataEntityProviderException(ODataEntityProviderException.COMMON, e);
     } finally {
       if (writer != null) {
         try {
           writer.close();
         } catch (IOException e) {
-          throw new ODataSerializationException(ODataSerializationException.COMMON, e);
+          throw new ODataEntityProviderException(ODataEntityProviderException.COMMON, e);
         }
       }
     }
   }
 
   @Override
-  public InputStream serializeEntry(EdmEntitySet entitySet, Map<String, Object> data, String mediaResourceMimeType) throws ODataSerializationException {
+  public InputStream writeFeed(EdmEntitySet entitySet, Map<String, Object> data, String mediaResourceMimeType) throws ODataEntityProviderException {
+    return null;
+  }
+  
+  @Override
+  public InputStream writeEntry(EdmEntitySet entitySet, Map<String, Object> data, String mediaResourceMimeType) throws ODataEntityProviderException {
     ByteArrayOutputStream outStream = null;
 
     try {
-      AtomEntrySerializer as = new AtomEntrySerializer(this.getContext());
+      AtomEntryEntityProvider as = new AtomEntryEntityProvider(this.getContext());
 
       outStream = new ByteArrayOutputStream();
       XMLStreamWriter writer = XMLOutputFactory.newInstance().createXMLStreamWriter(outStream, "utf-8");
@@ -64,24 +69,24 @@ public class AtomSerializer extends ODataSerializer {
       
       return new ByteArrayInputStream(outStream.toByteArray());
     } catch (Exception e) {
-      throw new ODataSerializationException(ODataSerializationException.COMMON, e);
+      throw new ODataEntityProviderException(ODataEntityProviderException.COMMON, e);
     } finally {
       if (outStream != null) {
         try {
           outStream.close();
         } catch (IOException e) {
-          throw new ODataSerializationException(ODataSerializationException.COMMON, e);
+          throw new ODataEntityProviderException(ODataEntityProviderException.COMMON, e);
         }
       }
     }
   }
 
   @Override
-  public InputStream serializeProperty(EdmProperty edmProperty, Object value) throws ODataSerializationException {
+  public InputStream writeProperty(EdmProperty edmProperty, Object value) throws ODataEntityProviderException {
     ByteArrayOutputStream outStream = null;
 
     try {
-      XmlPropertySerializer ps = new XmlPropertySerializer();
+      XmlPropertyEntityProvider ps = new XmlPropertyEntityProvider();
 
       outStream = new ByteArrayOutputStream();
       XMLStreamWriter writer = XMLOutputFactory.newInstance().createXMLStreamWriter(outStream, "utf-8");
@@ -93,13 +98,13 @@ public class AtomSerializer extends ODataSerializer {
 
       return new ByteArrayInputStream(outStream.toByteArray());
     } catch (Exception e) {
-      throw new ODataSerializationException(ODataSerializationException.COMMON, e);
+      throw new ODataEntityProviderException(ODataEntityProviderException.COMMON, e);
     } finally {
       if (outStream != null) {
         try {
           outStream.close();
         } catch (IOException e) {
-          throw new ODataSerializationException(ODataSerializationException.COMMON, e);
+          throw new ODataEntityProviderException(ODataEntityProviderException.COMMON, e);
         }
       }
     }

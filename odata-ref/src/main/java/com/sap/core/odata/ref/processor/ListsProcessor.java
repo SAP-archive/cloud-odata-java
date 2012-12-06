@@ -25,7 +25,7 @@ import com.sap.core.odata.api.edm.EdmTypeKind;
 import com.sap.core.odata.api.enums.Format;
 import com.sap.core.odata.api.enums.HttpStatusCodes;
 import com.sap.core.odata.api.enums.InlineCount;
-import com.sap.core.odata.api.ep.ODataSerializer;
+import com.sap.core.odata.api.ep.ODataEntityProvider;
 import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.api.exception.ODataNotFoundException;
 import com.sap.core.odata.api.exception.ODataNotImplementedException;
@@ -197,7 +197,7 @@ public class ListsProcessor extends ODataSingleProcessor {
     return ODataResponse
         .status(HttpStatusCodes.OK)
         .header(CONTENT_TYPE, APPLICATION_ATOM_XML_ENTRY)
-        .entity(ODataSerializer.create(format, getContext()).serializeEntry(entitySet, values))
+        .entity(ODataEntityProvider.create(format, getContext()).writeEntry(entitySet, values))
         .build();
   }
 
@@ -270,7 +270,7 @@ public class ListsProcessor extends ODataSingleProcessor {
     return ODataResponse
         .status(HttpStatusCodes.OK)
         .header(CONTENT_TYPE, APPLICATION_XML)
-        .entity(ODataSerializer.create(format, getContext()).serializeProperty(property, value))
+        .entity(ODataEntityProvider.create(format, getContext()).writeProperty(property, value))
         .build();
   }
 
