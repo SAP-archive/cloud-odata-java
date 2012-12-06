@@ -314,7 +314,7 @@ public class EdmProviderMock extends EdmProviderDefault {
     if (ENTITY_CONTAINER_1.equals(entityContainer))
       if (FUNCTION_IMPORT_1.equals(name)) {
         Collection<FunctionImportParameter> parameters = new ArrayList<FunctionImportParameter>();
-        parameters.add(new FunctionImportParameter().setName("q").setType(EdmSimpleTypeKind.String.getFullQualifiedName()).setFacets(new Facets().setNullable(true)));
+        parameters.add(new FunctionImportParameter().setName("q").setType(EdmSimpleTypeKind.String).setFacets(new Facets().setNullable(true)));
         return new FunctionImport().setName(name).setReturnType(new ReturnType().setQualifiedName(ENTITY_TYPE_1_1).setMultiplicity(EdmMultiplicity.MANY)).setEntitySet(ENTITY_SET_1_1).setHttpMethod("GET").setParameters(parameters);
 
       } else if (FUNCTION_IMPORT_2.equals(name)) {
@@ -331,7 +331,7 @@ public class EdmProviderMock extends EdmProviderDefault {
 
       } else if (FUNCTION_IMPORT_6.equals(name)) {
         Collection<FunctionImportParameter> parameters = new ArrayList<FunctionImportParameter>();
-        parameters.add(new FunctionImportParameter().setName("Id").setType(EdmSimpleTypeKind.String.getFullQualifiedName()).setFacets(new Facets().setNullable(false)));
+        parameters.add(new FunctionImportParameter().setName("Id").setType(EdmSimpleTypeKind.String).setFacets(new Facets().setNullable(false)));
         return new FunctionImport().setName(name).setReturnType(new ReturnType().setQualifiedName(EdmSimpleTypeKind.Binary.getFullQualifiedName()).setMultiplicity(EdmMultiplicity.ONE)).setHttpMethod("GET").setParameters(parameters);
 
       } else if (FUNCTION_IMPORT_7.equals(name)) {

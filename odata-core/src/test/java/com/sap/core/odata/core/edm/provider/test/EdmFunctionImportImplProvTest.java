@@ -52,13 +52,13 @@ public class EdmFunctionImportImplProvTest {
     ReturnType fooReturnType = new ReturnType().setQualifiedName(EdmSimpleTypeKind.String.getFullQualifiedName()).setMultiplicity(EdmMultiplicity.ONE);
 
     Collection<FunctionImportParameter> parameters = new ArrayList<FunctionImportParameter>();
-    FunctionImportParameter parameter = new FunctionImportParameter().setName("fooParameter1");
+    FunctionImportParameter parameter = new FunctionImportParameter().setName("fooParameter1").setType(EdmSimpleTypeKind.String);
     parameters.add(parameter);
 
-    parameter = new FunctionImportParameter().setName("fooParameter2");
+    parameter = new FunctionImportParameter().setName("fooParameter2").setType(EdmSimpleTypeKind.String);
     parameters.add(parameter);
 
-    parameter = new FunctionImportParameter().setName("fooParameter3");
+    parameter = new FunctionImportParameter().setName("fooParameter3").setType(EdmSimpleTypeKind.String);
     parameters.add(parameter);
 
     FunctionImport functionImportFoo = new FunctionImport().setName("foo").setHttpMethod(HttpMethods.GET).setReturnType(fooReturnType).setEntitySet("fooEntitySet").setParameters(parameters);
