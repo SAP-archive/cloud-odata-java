@@ -18,6 +18,7 @@ import com.sap.core.odata.api.edm.provider.Association;
 import com.sap.core.odata.api.edm.provider.AssociationEnd;
 import com.sap.core.odata.api.edm.provider.AssociationSet;
 import com.sap.core.odata.api.edm.provider.AssociationSetEnd;
+import com.sap.core.odata.api.edm.provider.ComplexProperty;
 import com.sap.core.odata.api.edm.provider.ComplexType;
 import com.sap.core.odata.api.edm.provider.CustomizableFeedMappings;
 import com.sap.core.odata.api.edm.provider.DataServices;
@@ -35,6 +36,7 @@ import com.sap.core.odata.api.edm.provider.PropertyRef;
 import com.sap.core.odata.api.edm.provider.ReferentialConstraint;
 import com.sap.core.odata.api.edm.provider.ReferentialConstraintRole;
 import com.sap.core.odata.api.edm.provider.Schema;
+import com.sap.core.odata.api.edm.provider.SimpleProperty;
 import com.sap.core.odata.api.edm.provider.Using;
 import com.sap.core.odata.api.ep.ODataEntityProviderException;
 
@@ -415,7 +417,15 @@ public class EdmMetadata {
     for (Property property : properties) {
       xmlStreamWriter.writeStartElement("Property");
       xmlStreamWriter.writeAttribute("Name", property.getName());
-      xmlStreamWriter.writeAttribute("Type", property.getType().toString());
+      if(property instanceof SimpleProperty){
+        //TODO: Should we rewrite edmsimpletypekind .toString()?
+        xmlStreamWriter.writeAttribute("Type", ((SimpleProperty) property).getType().getFullQualifiedName().toString());
+      }else if(property instanceof ComplexProperty) {
+        xmlStreamWriter.writeAttribute("Type", ((ComplexProperty) property).getType().toString());
+      }else{
+        //TODO throw right exception
+      }
+      
       EdmFacets facets = property.getFacets();
       if (facets != null) {
         if (facets.isNullable() != null) {

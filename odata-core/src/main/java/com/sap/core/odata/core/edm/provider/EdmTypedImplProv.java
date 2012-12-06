@@ -14,7 +14,7 @@ import com.sap.core.odata.core.edm.EdmSimpleTypeFacadeImpl;
  */
 public class EdmTypedImplProv extends EdmNamedImplProv implements EdmTyped {
 
-  private EdmType edmType;
+  protected EdmType edmType;
   private FullQualifiedName typeName;
   private EdmMultiplicity multiplicity;
 

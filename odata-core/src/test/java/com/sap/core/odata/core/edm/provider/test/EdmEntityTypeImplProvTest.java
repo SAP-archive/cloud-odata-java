@@ -25,6 +25,7 @@ import com.sap.core.odata.api.edm.provider.Key;
 import com.sap.core.odata.api.edm.provider.NavigationProperty;
 import com.sap.core.odata.api.edm.provider.Property;
 import com.sap.core.odata.api.edm.provider.PropertyRef;
+import com.sap.core.odata.api.edm.provider.SimpleProperty;
 import com.sap.core.odata.core.edm.provider.EdmEntityTypeImplProv;
 import com.sap.core.odata.core.edm.provider.EdmImplProv;
 
@@ -49,7 +50,7 @@ public class EdmEntityTypeImplProvTest {
     when(edmProvider.getEntityType(fooEntityTypeFullName)).thenReturn(fooEntityType);
 
     Collection<Property> keyPropertysFoo = new ArrayList<Property>();
-    Property keyPropFoo = new Property().setName("Id").setType(EdmSimpleTypeKind.String.getFullQualifiedName());
+    Property keyPropFoo = new SimpleProperty().setName("Id").setType(EdmSimpleTypeKind.String);
     keyPropertysFoo.add(keyPropFoo);
     fooEntityType.setProperties(keyPropertysFoo);
 
@@ -71,7 +72,7 @@ public class EdmEntityTypeImplProvTest {
     barBase.setNavigationProperties(navigationPropertiesBarBase);
 
     Collection<Property> keyPropertysBarBase = new ArrayList<Property>();
-    Property keyPropBarBase = new Property().setName("Id").setType(EdmSimpleTypeKind.String.getFullQualifiedName());
+    Property keyPropBarBase = new SimpleProperty().setName("Id").setType(EdmSimpleTypeKind.String);
     keyPropertysBarBase.add(keyPropBarBase);
     barBase.setProperties(keyPropertysBarBase);
 
