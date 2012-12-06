@@ -16,13 +16,10 @@ public class EdmComplexPropertyImplProv extends EdmPropertyImplProv {
   @Override
   public EdmType getType() throws EdmException {
     if (edmType == null) {
-
       edmType = edm.getComplexType(property.getType().getNamespace(), property.getType().getName());
-
       if (edmType == null) {
         throw new EdmException(EdmException.COMMON);
       }
-
     }
     return edmType;
   }

@@ -21,7 +21,6 @@ public class EdmSimplePropertyImplProv extends EdmPropertyImplProv{
       if (edmType == null) {
         throw new EdmException(EdmException.COMMON);
       }
-
     }
     return edmType;
   }

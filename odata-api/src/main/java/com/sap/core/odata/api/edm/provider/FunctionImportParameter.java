@@ -3,6 +3,7 @@ package com.sap.core.odata.api.edm.provider;
 import java.util.Collection;
 
 import com.sap.core.odata.api.edm.EdmFacets;
+import com.sap.core.odata.api.edm.EdmSimpleTypeKind;
 import com.sap.core.odata.api.edm.FullQualifiedName;
 
 /**
@@ -13,7 +14,7 @@ public class FunctionImportParameter {
 
   private String name;
   private String mode;
-  private FullQualifiedName type;
+  private EdmSimpleTypeKind type;
   private EdmFacets facets;
   private Mapping mapping;
   private Documentation documentation;
@@ -37,7 +38,7 @@ public class FunctionImportParameter {
   /**
    * @return {@link FullQualifiedName} of this parameter
    */
-  public FullQualifiedName getType() {
+  public EdmSimpleTypeKind getType() {
     return type;
   }
 
@@ -96,14 +97,14 @@ public class FunctionImportParameter {
     this.mode = mode;
     return this;
   }
-
+  
   /**
    * MANDATORY
-   * <p>Sets the {@link FullQualifiedName} of this {@link FunctionImportParameter}
+   * <p>Sets the {@link EdmSimpleTypeKind} of this {@link FunctionImportParameter}
    * @param type
    * @return {@link FunctionImportParameter} for method chaining
    */
-  public FunctionImportParameter setType(FullQualifiedName type) {
+  public FunctionImportParameter setType(EdmSimpleTypeKind type) {
     this.type = type;
     return this;
   }
