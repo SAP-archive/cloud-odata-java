@@ -1,10 +1,8 @@
 package com.sap.core.odata.core.edm.provider;
 
-import java.io.Reader;
 import java.io.Writer;
 import java.util.Collection;
 
-import javax.ws.rs.NotSupportedException;
 import javax.xml.stream.FactoryConfigurationError;
 import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
@@ -39,6 +37,7 @@ import com.sap.core.odata.api.edm.provider.Schema;
 import com.sap.core.odata.api.edm.provider.SimpleProperty;
 import com.sap.core.odata.api.edm.provider.Using;
 import com.sap.core.odata.api.ep.ODataEntityProviderException;
+import com.sap.core.odata.core.exception.ODataRuntimeException;
 
 public class EdmMetadata {
 
@@ -57,17 +56,6 @@ public class EdmMetadata {
       xmlStreamWriter.writeNamespace(Edm.PREFIX_EDMX, Edm.NAMESPACE_EDMX_2007_06);
 
       xmlStreamWriter.writeStartElement(Edm.NAMESPACE_EDMX_2007_06, "DataServices");
-
-      //TODO Clarify
-      //DataServiceVersion: This attribute MUST be in the data service metadata namespace 
-      //(http://schemas.microsoft.com/ado/2007/08/dataservices) and SHOULD be present on 
-      //a <edmx:DataServices> element [MC-EDMX] to indicate the version of the data service CSDL 
-      //annotations (attributes in the data service metadata namespace) used by the document. Consumers 
-      //of a data-service metadata endpoint SHOULD first read this attribute value to determine if they can 
-      //safely interpret all constructs within the document. The value of this attribute MUST be 1.0 unless a 
-      //"FC_KeepInContent" Customizable Feed annotation (section 2.2.3.7.2.1) with a value equal to false 
-      //is present in the CSDL document within the <edmx:DataServices> node. In this case, the attribute 
-      //value MUST be 2.0.
       xmlStreamWriter.writeAttribute(Edm.PREFIX_M, Edm.NAMESPACE_M_2007_08, "DataServiceVersion", metadata.getDataServiceVersion());
       xmlStreamWriter.writeNamespace(Edm.PREFIX_M, Edm.NAMESPACE_M_2007_08);
 
@@ -331,19 +319,8 @@ public class EdmMetadata {
                       if (functionImportParameter.getMode() != null) {
                         xmlStreamWriter.writeAttribute("Mode", functionImportParameter.getMode());
                       }
-                      EdmFacets facets = functionImportParameter.getFacets();
-                      if (facets != null) {
-                        if (facets.getMaxLength() != null) {
-                          xmlStreamWriter.writeAttribute("MaxLength", facets.getMaxLength().toString());
-                        }
-                        if (facets.getPrecision() != null) {
-                          xmlStreamWriter.writeAttribute("Precision", facets.getPrecision().toString());
-                        }
-                        if (facets.getScale() != null) {
-                          xmlStreamWriter.writeAttribute("Scale", facets.getScale().toString());
-                        }
-                        //TODO Clarify why ABAP also supports the Nullable facet
-                      }
+
+                      writeFacets(xmlStreamWriter, functionImportParameter.getFacets());
 
                       writeAnnotationAttributes(functionImportParameter.getAnnotationAttributes(), xmlStreamWriter);
 
@@ -409,53 +386,19 @@ public class EdmMetadata {
   }
 
   private static void writeProperties(Collection<Property> properties, XMLStreamWriter xmlStreamWriter) throws XMLStreamException {
-
-    //TODO Clarify questions
-    //<Property> can define a Nullable facet. The default value is Nullable=true. (Any Property that 
-    //has a Type of ComplexType, MUST also define a Nullable attribute which MUST be set to false.)
-
     for (Property property : properties) {
       xmlStreamWriter.writeStartElement("Property");
       xmlStreamWriter.writeAttribute("Name", property.getName());
-      if(property instanceof SimpleProperty){
-        //TODO: Should we rewrite edmsimpletypekind .toString()?
+      if (property instanceof SimpleProperty) {
         xmlStreamWriter.writeAttribute("Type", ((SimpleProperty) property).getType().getFullQualifiedName().toString());
-      }else if(property instanceof ComplexProperty) {
+      } else if (property instanceof ComplexProperty) {
         xmlStreamWriter.writeAttribute("Type", ((ComplexProperty) property).getType().toString());
-      }else{
-        //TODO throw right exception
+      } else {
+        throw new ODataRuntimeException();
       }
-      
-      EdmFacets facets = property.getFacets();
-      if (facets != null) {
-        if (facets.isNullable() != null) {
-          xmlStreamWriter.writeAttribute("Nullable", facets.isNullable().toString().toLowerCase());
-        }
-        if (facets.getDefaultValue() != null) {
-          xmlStreamWriter.writeAttribute("DefaultValue", facets.getDefaultValue());
-        }
-        if (facets.getMaxLength() != null) {
-          xmlStreamWriter.writeAttribute("MaxLength", facets.getMaxLength().toString());
-        }
-        if (facets.isFixedLength() != null) {
-          xmlStreamWriter.writeAttribute("FixedLength", facets.isFixedLength().toString().toLowerCase());
-        }
-        if (facets.getPrecision() != null) {
-          xmlStreamWriter.writeAttribute("Precision", facets.getPrecision().toString());
-        }
-        if (facets.getScale() != null) {
-          xmlStreamWriter.writeAttribute("Scale", facets.getScale().toString());
-        }
-        if (facets.isUnicode() != null) {
-          xmlStreamWriter.writeAttribute("Unicode", facets.isUnicode().toString());
-        }
-        if (facets.getCollation() != null) {
-          xmlStreamWriter.writeAttribute("Collation", facets.getCollation());
-        }
-        if (facets.getConcurrencyMode() != null) {
-          xmlStreamWriter.writeAttribute("ConcurrencyMode", facets.getConcurrencyMode().toString());
-        }
-      }
+
+      writeFacets(xmlStreamWriter, property.getFacets());
+
       if (property.getMimeType() != null) {
         xmlStreamWriter.writeAttribute(Edm.PREFIX_M, Edm.NAMESPACE_M_2007_08, "MimeType", property.getMimeType());
       }
@@ -469,6 +412,38 @@ public class EdmMetadata {
       writeAnnotationElements(property.getAnnotationElements(), xmlStreamWriter);
 
       xmlStreamWriter.writeEndElement();
+    }
+  }
+
+  private static void writeFacets(XMLStreamWriter xmlStreamWriter, EdmFacets facets) throws XMLStreamException {
+    if (facets != null) {
+      if (facets.isNullable() != null) {
+        xmlStreamWriter.writeAttribute("Nullable", facets.isNullable().toString().toLowerCase());
+      }
+      if (facets.getDefaultValue() != null) {
+        xmlStreamWriter.writeAttribute("DefaultValue", facets.getDefaultValue());
+      }
+      if (facets.getMaxLength() != null) {
+        xmlStreamWriter.writeAttribute("MaxLength", facets.getMaxLength().toString());
+      }
+      if (facets.isFixedLength() != null) {
+        xmlStreamWriter.writeAttribute("FixedLength", facets.isFixedLength().toString().toLowerCase());
+      }
+      if (facets.getPrecision() != null) {
+        xmlStreamWriter.writeAttribute("Precision", facets.getPrecision().toString());
+      }
+      if (facets.getScale() != null) {
+        xmlStreamWriter.writeAttribute("Scale", facets.getScale().toString());
+      }
+      if (facets.isUnicode() != null) {
+        xmlStreamWriter.writeAttribute("Unicode", facets.isUnicode().toString());
+      }
+      if (facets.getCollation() != null) {
+        xmlStreamWriter.writeAttribute("Collation", facets.getCollation());
+      }
+      if (facets.getConcurrencyMode() != null) {
+        xmlStreamWriter.writeAttribute("ConcurrencyMode", facets.getConcurrencyMode().toString());
+      }
     }
   }
 
@@ -537,7 +512,7 @@ public class EdmMetadata {
     }
   }
 
-  //TODO review annotation elements
+  //TODO Limitation: Annotation elements not supported as deep XML structure, because writeCharacters does XML encoding
   private static void writeAnnotationElements(Collection<AnnotationElement> annotationElements, XMLStreamWriter xmlStreamWriter) throws XMLStreamException {
     if (annotationElements != null) {
       for (AnnotationElement annotationElement : annotationElements) {
@@ -546,9 +521,5 @@ public class EdmMetadata {
         xmlStreamWriter.writeEndElement();
       }
     }
-  }
-
-  public static DataServices readMetadata(Reader reader) {
-    throw new NotSupportedException();
   }
 }
