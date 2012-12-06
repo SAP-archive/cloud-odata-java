@@ -71,7 +71,29 @@ public class EdmTime implements EdmSimpleType {
 
   @Override
   public Calendar valueOfString(final String value, final EdmLiteralKind literalKind, final EdmFacets facets) throws EdmSimpleTypeException {
-    return null;
+    if (value == null)
+      if (facets == null || facets.isNullable() == null || facets.isNullable())
+        return null;
+      else
+        throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_NULL_NOT_ALLOWED);
+
+    if (literalKind == null)
+      throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_KIND_MISSING);
+
+    switch (literalKind) {
+    case DEFAULT:
+    case JSON:
+      throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_KIND_NOT_SUPPORTED.addContent(literalKind));
+
+    case URI:
+      if (value.length() > 6 && value.startsWith("time'") && value.endsWith("'"))
+        return valueOfString(value.substring(5, value.length() - 1), EdmLiteralKind.DEFAULT, facets);
+      else
+        throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_ILLEGAL_CONTENT.addContent(value));
+
+    default:
+      throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_KIND_NOT_SUPPORTED.addContent(literalKind));
+    }
   }
 
   @Override
@@ -106,46 +128,36 @@ public class EdmTime implements EdmSimpleType {
       throw new EdmSimpleTypeException(EdmSimpleTypeException.VALUE_TYPE_NOT_SUPPORTED.addContent(value.getClass()));
     }
 
-    int digits = 3; // precision at most to milliseconds
-    if (facets != null && facets.getPrecision() != null && facets.getPrecision() < 3) {
-      digits = facets.getPrecision();
-      adjustMilliseconds(dateTimeValue, digits);
-    }
-
     // Arguably, Edm.Time is intended to represent a time of day, not an instance in time.
     // The year, month, and day parts of time instances are simply ignored.
     // The time value is interpreted and formatted as local time.
-    final String pattern = "'PT'H'H'm'M's";
+    final String pattern = "'PT'H'H'm'M's.SSS";
     SimpleDateFormat dateFormat = (SimpleDateFormat) SimpleDateFormat.getDateTimeInstance();
     dateFormat.setTimeZone(dateTimeValue.getTimeZone());
-    if (dateTimeValue.get(Calendar.MILLISECOND) == 0)
-      dateFormat.applyPattern(pattern);
-    else
-      dateFormat.applyPattern(pattern + ".SSS");
-
+    dateFormat.applyPattern(pattern);
     String result = dateFormat.format(dateTimeValue.getTime());
-    if (result.contains("."))
-      if (digits == 0)
-        result = result.substring(0, result.length() - 4) + "S";
+
+    if (facets == null || facets.getPrecision() == null)
+      while (result.endsWith("0"))
+        result = result.substring(0, result.length() - 1);
+    else if (facets.getPrecision() <= 3)
+      if (result.endsWith("000".substring(0, 3 - facets.getPrecision())))
+        result = result.substring(0, result.length() - (3 - facets.getPrecision()));
       else
-        result = result.substring(0, result.length() - 3 + digits) + "S";
+        throw new EdmSimpleTypeException(EdmSimpleTypeException.VALUE_FACETS_NOT_MATCHED.addContent(value, facets));
     else
-      result = result + "S";
+      for (int i = 4; i <= facets.getPrecision(); i++)
+        result += "0";
+
+    if (result.endsWith("."))
+      result = result.substring(0, result.length() - 1);
+
+    result += "S";
 
     if (literalKind == EdmLiteralKind.URI)
       return toUriLiteral(result);
     else
       return result;
-  }
-
-  private static void adjustMilliseconds(Calendar dateTimeValue, final int digits) {
-    int roundToValue = 1;
-    for (int i = 0; i < 3 - digits; i++)
-      roundToValue *= 10;
-    final int millis = dateTimeValue.get(Calendar.MILLISECOND);
-
-    if (millis % roundToValue >= 5)
-      dateTimeValue.add(Calendar.MILLISECOND, roundToValue - millis % roundToValue);
   }
 
   @Override
