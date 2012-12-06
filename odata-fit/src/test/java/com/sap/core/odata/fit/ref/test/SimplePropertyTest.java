@@ -30,7 +30,7 @@ public class SimplePropertyTest extends AbstractRefTest {
     response = callUri("Container2.Photos(Id=3,Type='image%2Fjpeg')/Image");
     checkMediaType(response, APPLICATION_XML);
     assertNotNull(getBody(response));
-    // assertTrue(getBody(response).contains("<d:Image m:type=\"Edm.Binary\" m:MimeType=\"image/jpeg\""));
+    // assertTrue(getBody(response).contains("<d:Image m:MimeType=\"image/jpeg\""));
 
     response = callUri("Rooms('2')/Seats/$value");
     checkMediaType(response, TEXT_PLAIN);
