@@ -4,10 +4,13 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import com.sap.core.odata.api.edm.EdmMultiplicity;
 import com.sap.core.odata.api.edm.EdmSimpleTypeKind;
 import com.sap.core.odata.api.edm.FullQualifiedName;
 import com.sap.core.odata.api.edm.provider.Association;
+import com.sap.core.odata.api.edm.provider.AssociationEnd;
 import com.sap.core.odata.api.edm.provider.AssociationSet;
+import com.sap.core.odata.api.edm.provider.AssociationSetEnd;
 import com.sap.core.odata.api.edm.provider.ComplexProperty;
 import com.sap.core.odata.api.edm.provider.ComplexType;
 import com.sap.core.odata.api.edm.provider.EdmProviderDefault;
@@ -18,6 +21,7 @@ import com.sap.core.odata.api.edm.provider.EntityType;
 import com.sap.core.odata.api.edm.provider.Facets;
 import com.sap.core.odata.api.edm.provider.FunctionImport;
 import com.sap.core.odata.api.edm.provider.Key;
+import com.sap.core.odata.api.edm.provider.NavigationProperty;
 import com.sap.core.odata.api.edm.provider.Property;
 import com.sap.core.odata.api.edm.provider.PropertyRef;
 import com.sap.core.odata.api.edm.provider.Schema;
@@ -39,7 +43,10 @@ public class TechnicalScenarioEdmProvider extends EdmProviderDefault {
   
   private static final FullQualifiedName CT_ADDRESS = new FullQualifiedName(NAMESPACE_1, "CtAdress");
   private static final FullQualifiedName CT_ALL_TYPES = new FullQualifiedName(NAMESPACE_1, "CtAllTypes");
-  
+
+  private static final FullQualifiedName ASSOCIATION_ET1_ET2 = new FullQualifiedName(NAMESPACE_1, "Association");
+  private static final String ROLE_1 = "Role1";
+  private static final String ROLE_2 = "Role2";
 
   private static final String ENTITY_CONTAINER_1 = "Container1";
   
@@ -95,7 +102,10 @@ public class TechnicalScenarioEdmProvider extends EdmProviderDefault {
         properties.add(new SimpleProperty().setName("KeyString")
             .setType(EdmSimpleTypeKind.String)
             .setFacets(new Facets().setNullable(false)));
-        return new EntityType().setName(ET_KEY_IS_STRING.getName()).setKey(createKey("KeyString"));
+        Collection<NavigationProperty> navigationProperties = new ArrayList<NavigationProperty>();
+        navigationProperties.add(new NavigationProperty().setName("navProperty").setFromRole(ROLE_1).setToRole(ROLE_2).setRelationship(ASSOCIATION_ET1_ET2));
+        
+        return new EntityType().setName(ET_KEY_IS_STRING.getName()).setProperties(properties).setNavigationProperties(navigationProperties).setKey(createKey("KeyString"));
       }
       else if (ET_KEY_IS_INTEGER.getName().equals(edmFQName.getName()))
       {
@@ -103,7 +113,11 @@ public class TechnicalScenarioEdmProvider extends EdmProviderDefault {
         properties.add(new SimpleProperty().setName("KeyInteger")
             .setType(EdmSimpleTypeKind.String)
             .setFacets(new Facets().setNullable(false)));
-        return new EntityType().setName(ET_KEY_IS_INTEGER.getName()).setKey(createKey("KeyInteger"));
+        
+        Collection<NavigationProperty> navigationProperties = new ArrayList<NavigationProperty>();
+        navigationProperties.add(new NavigationProperty().setName("navProperty").setFromRole(ROLE_2).setToRole(ROLE_1).setRelationship(ASSOCIATION_ET1_ET2));
+           
+        return new EntityType().setName(ET_KEY_IS_INTEGER.getName()).setProperties(properties).setNavigationProperties(navigationProperties).setKey(createKey("KeyInteger"));
       }
       else if (ET_COMPLEX_KEY.getName().equals(edmFQName.getName()))
       {
@@ -178,7 +192,13 @@ public class TechnicalScenarioEdmProvider extends EdmProviderDefault {
 
   @Override
   public Association getAssociation(final FullQualifiedName edmFQName) throws ODataMessageException {
-    
+    if(NAMESPACE_1.equals(edmFQName.getNamespace())){
+      if(ASSOCIATION_ET1_ET2.getName().equals(edmFQName.getName())){
+        AssociationEnd end1 = new AssociationEnd().setMultiplicity(EdmMultiplicity.ONE).setRole(ROLE_1).setType(ET_KEY_IS_STRING);
+        AssociationEnd end2 = new AssociationEnd().setMultiplicity(EdmMultiplicity.ONE).setRole(ROLE_2).setType(ET_KEY_IS_INTEGER);        
+        return new Association().setName("Association").setEnd1(end1).setEnd2(end2);
+      }
+    }
     
     return null;
   }
@@ -215,6 +235,14 @@ public class TechnicalScenarioEdmProvider extends EdmProviderDefault {
 
   @Override
   public AssociationSet getAssociationSet(final String entityContainer, final FullQualifiedName association, final String sourceEntitySetName, final String sourceEntitySetRole) throws ODataMessageException {
+    if(ENTITY_CONTAINER_1.equals(entityContainer)){
+      if(ASSOCIATION_ET1_ET2.equals(association)){
+        AssociationSetEnd end1 = new AssociationSetEnd().setRole(ROLE_1).setEntitySet(ES_KEY_IS_STRING);
+        AssociationSetEnd end2 = new AssociationSetEnd().setRole(ROLE_2).setEntitySet(ES_KEY_IS_INTEGER);
+        
+        return new AssociationSet().setName("AssociationSet").setEnd1(end1).setEnd2(end2);
+      }
+    }
     return null;
   }
 
