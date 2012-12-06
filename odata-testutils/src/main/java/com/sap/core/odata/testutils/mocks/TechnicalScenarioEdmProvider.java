@@ -1,4 +1,4 @@
-package com.sap.core.odata.ref.edm;
+package com.sap.core.odata.testutils.mocks;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -8,6 +8,7 @@ import com.sap.core.odata.api.edm.EdmSimpleTypeKind;
 import com.sap.core.odata.api.edm.FullQualifiedName;
 import com.sap.core.odata.api.edm.provider.Association;
 import com.sap.core.odata.api.edm.provider.AssociationSet;
+import com.sap.core.odata.api.edm.provider.ComplexProperty;
 import com.sap.core.odata.api.edm.provider.ComplexType;
 import com.sap.core.odata.api.edm.provider.EdmProviderDefault;
 import com.sap.core.odata.api.edm.provider.EntityContainer;
@@ -17,7 +18,6 @@ import com.sap.core.odata.api.edm.provider.EntityType;
 import com.sap.core.odata.api.edm.provider.Facets;
 import com.sap.core.odata.api.edm.provider.FunctionImport;
 import com.sap.core.odata.api.edm.provider.Key;
-import com.sap.core.odata.api.edm.provider.Mapping;
 import com.sap.core.odata.api.edm.provider.Property;
 import com.sap.core.odata.api.edm.provider.PropertyRef;
 import com.sap.core.odata.api.edm.provider.Schema;
@@ -36,11 +36,10 @@ public class TechnicalScenarioEdmProvider extends EdmProviderDefault {
   private static final FullQualifiedName ET_KEY_IS_INTEGER = new FullQualifiedName(NAMESPACE_1, "EtKeyTypeInteger");
   private static final FullQualifiedName ET_COMPLEX_KEY = new FullQualifiedName(NAMESPACE_1, "EtComplexKey");
   private static final FullQualifiedName ET_ALL_TYPES = new FullQualifiedName(NAMESPACE_1, "EtAllTypes");
-  private static final FullQualifiedName ENTITY_TYPE_1_BASE = new FullQualifiedName(NAMESPACE_1, "Base");
-  private static final FullQualifiedName ENTITY_TYPE_1_2 = new FullQualifiedName(NAMESPACE_1, "Team");
-  private static final FullQualifiedName ENTITY_TYPE_1_3 = new FullQualifiedName(NAMESPACE_1, "Room");
-  private static final FullQualifiedName ENTITY_TYPE_1_4 = new FullQualifiedName(NAMESPACE_1, "Manager");
-  private static final FullQualifiedName ENTITY_TYPE_1_5 = new FullQualifiedName(NAMESPACE_1, "Building");
+  
+  private static final FullQualifiedName CT_ADDRESS = new FullQualifiedName(NAMESPACE_1, "CtAdress");
+  private static final FullQualifiedName CT_ALL_TYPES = new FullQualifiedName(NAMESPACE_1, "CtAllTypes");
+  
 
   private static final String ENTITY_CONTAINER_1 = "Container1";
   
@@ -61,14 +60,12 @@ public class TechnicalScenarioEdmProvider extends EdmProviderDefault {
     entityTypes.add(getEntityType(ET_KEY_IS_INTEGER));
     entityTypes.add(getEntityType(ET_COMPLEX_KEY));
     entityTypes.add(getEntityType(ET_ALL_TYPES));
-    entityTypes.add(getEntityType(ENTITY_TYPE_1_BASE));
-    entityTypes.add(getEntityType(ENTITY_TYPE_1_2));
-    entityTypes.add(getEntityType(ENTITY_TYPE_1_3));
-    entityTypes.add(getEntityType(ENTITY_TYPE_1_4));
-    entityTypes.add(getEntityType(ENTITY_TYPE_1_5));
     schema.setEntityTypes(entityTypes);
-
     
+    List<ComplexType> complexTypes = new ArrayList<ComplexType>();
+    complexTypes.add(getComplexType(CT_ALL_TYPES));
+    schema.setComplexTypes(complexTypes);
+
     List<EntityContainer> entityContainers = new ArrayList<EntityContainer>();
     EntityContainer entityContainer = new EntityContainer();
     entityContainer.setName(ENTITY_CONTAINER_1).setDefaultEntityContainer(true);
@@ -137,7 +134,7 @@ public class TechnicalScenarioEdmProvider extends EdmProviderDefault {
         properties.add(new SimpleProperty().setName("Single").setType(EdmSimpleTypeKind.Single));
         properties.add(new SimpleProperty().setName("String").setType(EdmSimpleTypeKind.String));
         properties.add(new SimpleProperty().setName("Time").setType(EdmSimpleTypeKind.Time));
-
+        properties.add(new ComplexProperty().setName("ComplexType").setType(CT_ALL_TYPES));
         return new EntityType().setName(ET_ALL_TYPES.getName());
       }
     }
@@ -146,8 +143,36 @@ public class TechnicalScenarioEdmProvider extends EdmProviderDefault {
   }
 
   @Override
-  public ComplexType getComplexType(final FullQualifiedName edmFQName) throws ODataMessageException {
-    
+  public ComplexType getComplexType(final FullQualifiedName edmFQName) throws ODataMessageException 
+  {
+    if (NAMESPACE_1.equals(edmFQName.getNamespace()))
+      if (CT_ADDRESS.getName().equals(edmFQName.getName())) {
+        Collection<Property> properties = new ArrayList<Property>();
+        properties.add(new SimpleProperty().setName("Street").setType(EdmSimpleTypeKind.String));
+        properties.add(new SimpleProperty().setName("City").setType(EdmSimpleTypeKind.String));
+        return new ComplexType().setName(CT_ADDRESS.getName()).setAbstract(false).setProperties(properties);
+      }
+      else if (CT_ALL_TYPES.getName().equals(edmFQName.getName())) {
+        Collection<Property> properties = new ArrayList<Property>();
+        properties.add(new SimpleProperty().setName("Boolean").setType(EdmSimpleTypeKind.Boolean));
+        properties.add(new SimpleProperty().setName("Binary").setType(EdmSimpleTypeKind.Binary));
+        properties.add(new SimpleProperty().setName("Byte").setType(EdmSimpleTypeKind.Byte));
+        properties.add(new SimpleProperty().setName("DateTime").setType(EdmSimpleTypeKind.DateTime));
+        properties.add(new SimpleProperty().setName("DateTimeOffset").setType(EdmSimpleTypeKind.DateTimeOffset));
+        properties.add(new SimpleProperty().setName("Decimal").setType(EdmSimpleTypeKind.Decimal));
+        properties.add(new SimpleProperty().setName("Double").setType(EdmSimpleTypeKind.Double));
+        properties.add(new SimpleProperty().setName("Guid").setType(EdmSimpleTypeKind.Guid));
+        properties.add(new SimpleProperty().setName("Int16").setType(EdmSimpleTypeKind.Int16));
+        properties.add(new SimpleProperty().setName("Int32").setType(EdmSimpleTypeKind.Int32));
+        properties.add(new SimpleProperty().setName("Int64").setType(EdmSimpleTypeKind.Int64));
+        properties.add(new SimpleProperty().setName("SByte").setType(EdmSimpleTypeKind.SByte));
+        properties.add(new SimpleProperty().setName("Single").setType(EdmSimpleTypeKind.Single));
+        properties.add(new SimpleProperty().setName("String").setType(EdmSimpleTypeKind.String));
+        properties.add(new SimpleProperty().setName("Time").setType(EdmSimpleTypeKind.Time));
+        properties.add(new ComplexProperty().setName("Adress").setType(CT_ADDRESS));
+        return new ComplexType().setName(CT_ALL_TYPES.getName()).setAbstract(false).setProperties(properties);
+      } 
+
     return null;
   }
 

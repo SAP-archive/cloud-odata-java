@@ -8,6 +8,9 @@ import java.util.List;
 
 import org.junit.Test;
 
+import com.sap.core.odata.api.edm.Edm;
+import com.sap.core.odata.api.edm.EdmType;
+import com.sap.core.odata.api.rt.RuntimeDelegate;
 import com.sap.core.odata.api.uri.expression.ExpressionKind;
 import com.sap.core.odata.api.uri.expression.FilterExpression;
 import com.sap.core.odata.api.uri.expression.FilterParserException;
@@ -30,8 +33,11 @@ import com.sap.core.odata.core.edm.EdmTime;
 import com.sap.core.odata.core.edm.Uint7;
 import com.sap.core.odata.core.uri.expression.FilterParserInternalError;
 import com.sap.core.odata.core.uri.expression.FilterParserImpl;
+import com.sap.core.odata.testutils.mocks.TechnicalScenarioEdmProvider;
 
 public class TestParser {
+  
+  
 
   static public ParserTool GetPTF(String expression)
   {
@@ -46,19 +52,51 @@ public class TestParser {
     }
     return null;
   }
+  
+  static public ParserTool GetPTF(Edm edm, EdmType resourceEntityType, String expression) {
+    try {
+      FilterParserImpl parser = new FilterParserImpl(edm, resourceEntityType);
+      FilterExpression root = parser.ParseExpression(expression);
+      return new ParserTool(expression, root);
+    } catch (FilterParserInternalError e) {
+      fail("Error in parser" + e.getLocalizedMessage());
+    } catch (FilterParserException e) {
+      fail("Error in parser" + e.getLocalizedMessage());
+    }
+    return null;
+    
+  }
+  
+  
+  @Test 
+  public void TestProperties()
+  {
+    GetPTF("sven").aSerialized("sven").aKind(ExpressionKind.PROPERTY);
+    GetPTF("sven1 add sven2").aSerialized("{sven1 add sven2}")
+      .aKind(ExpressionKind.BINARY)
+      .root().left().aKind(ExpressionKind.PROPERTY).aUriLiteral("sven1")
+      .root().right().aKind(ExpressionKind.PROPERTY).aUriLiteral("sven2");
+  }
+  
+  @Test 
+  public void TestPropertiesWithEdm()
+  {
+    Edm edm = RuntimeDelegate.createEdm(new TechnicalScenarioEdmProvider());
+    GetPTF(edm, null,"sven");
+  }
+
+  
+
 
   @Test
   public void TestSimpleMethod()
   {
     GetPTF("startswith('Test','Te')").aSerialized("{startswith('Test','Te')}");
+    //add test for concat
+    GetPTF("startswith('Test','Te')").aSerialized("{startswith('Test','Te')}");
   }
 
-  @Test
-  public void TestLiteral()
-  {
-    GetPTF("sven").aSerialized("sven")
-        .aKind(ExpressionKind.PROPERTY);
-  }
+  
 
   @Test
   public void TestSimpleSameBinary()
@@ -156,7 +194,7 @@ public class TestParser {
     GetPTF("not - true").aSerialized("{not {- true}}");
     GetPTF("- not true").aSerialized("{- {not true}}");
   }
-
+  
   @Test
   public void TestSinglePlainLiterals()
   {
