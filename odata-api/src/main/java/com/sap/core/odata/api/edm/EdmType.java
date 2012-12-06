@@ -23,4 +23,5 @@ public interface EdmType extends EdmNamed {
    * @return {@link EdmTypeKind}
    */
   EdmTypeKind getKind();
+  //TODO may add a getFullQualifiedName method()
 }

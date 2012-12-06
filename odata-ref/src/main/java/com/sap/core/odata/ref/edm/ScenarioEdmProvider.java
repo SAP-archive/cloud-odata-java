@@ -174,6 +174,7 @@ public class ScenarioEdmProvider extends EdmProviderDefault {
 
   @Override
   public EntityType getEntityType(final FullQualifiedName edmFQName) throws ODataMessageException {
+    //TODO check think for setAbstract(false) the default value is false, to we need to set it?
     if (NAMESPACE_1.equals(edmFQName.getNamespace())) {
       if (ENTITY_TYPE_1_1.getName().equals(edmFQName.getName())) {
         Collection<Property> properties = new ArrayList<Property>();

@@ -2,7 +2,6 @@ package com.sap.core.odata.api.uri.expression;
 
 import com.sap.core.odata.api.exception.MessageReference;
 import com.sap.core.odata.api.exception.ODataBadRequestException;
-import com.sap.core.odata.api.exception.ODataMessageException;
 
 /**
  * @author d039346
