@@ -46,8 +46,7 @@ public class EntryXmlReadOnlyTest extends AbstractRefTest {
 
     response = callUri("Container2.Photos(Id=4,Type='foo')");
     checkMediaType(response, APPLICATION_ATOM_XML_ENTRY);
-    assertFalse(getBody(response).isEmpty());
-    // assertTrue(getBody(response).contains("src=\"Container2.Photos(Id=4,Type='foo')/$value\""));    
+    assertTrue(getBody(response).contains("src=\"Container2.Photos(Id=4,Type='foo')/$value\""));    
 
     notFound("Managers('5')");
     badRequest("Managers('3')?$top=1");
