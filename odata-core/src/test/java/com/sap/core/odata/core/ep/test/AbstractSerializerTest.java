@@ -88,7 +88,7 @@ public abstract class AbstractSerializerTest {
   }
 
   @Before
-  public void before() throws EdmException {
+  public void before() throws Exception {
     Map<String, String> ns = new HashMap<String, String>();
     ns.put("d", Edm.NAMESPACE_EDM_2008_09);
     ns.put("m", Edm.NAMESPACE_EDMX_2007_06);
