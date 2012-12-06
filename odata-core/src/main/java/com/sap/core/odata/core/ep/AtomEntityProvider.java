@@ -34,7 +34,7 @@ public class AtomEntityProvider extends ODataEntityProvider {
     try {
       ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
       writer = new OutputStreamWriter(outputStream, "utf-8");
-      AtomServiceDocumentSerializer.writeServiceDocument(edm, serviceRoot, writer);
+      AtomServiceDocumentProvider.writeServiceDocument(edm, serviceRoot, writer);
       return new ByteArrayInputStream(outputStream.toByteArray());
     } catch (UnsupportedEncodingException e) {
       throw new ODataEntityProviderException(ODataEntityProviderException.COMMON, e);
