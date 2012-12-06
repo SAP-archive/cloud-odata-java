@@ -9,7 +9,7 @@ import java.util.List;
 import org.junit.Test;
 
 import com.sap.core.odata.api.edm.Edm;
-import com.sap.core.odata.api.edm.EdmType;
+import com.sap.core.odata.api.edm.EdmEntityType;
 import com.sap.core.odata.api.rt.RuntimeDelegate;
 import com.sap.core.odata.api.uri.expression.ExpressionKind;
 import com.sap.core.odata.api.uri.expression.FilterExpression;
@@ -33,41 +33,21 @@ import com.sap.core.odata.core.edm.EdmTime;
 import com.sap.core.odata.core.edm.Uint7;
 import com.sap.core.odata.core.uri.expression.FilterParserImpl;
 import com.sap.core.odata.core.uri.expression.FilterParserInternalError;
+import com.sap.core.odata.testutils.mocks.TecEdmInfo;
 import com.sap.core.odata.testutils.mocks.TechnicalScenarioEdmProvider;
 
 public class TestParser {
   
+  Edm edm = null;
+  TecEdmInfo edmInfo = null;
   
-
-  static public ParserTool GetPTF(String expression)
+  public TestParser()
   {
-    try {
-      FilterParserImpl parser = new FilterParserImpl(null, null);
-      FilterExpression root = parser.ParseExpression(expression);
-      return new ParserTool(expression, root);
-    } catch (FilterParserInternalError e) {
-      fail("Error in parser" + e.getLocalizedMessage());
-    } catch (FilterParserException e) {
-      fail("Error in parser" + e.getLocalizedMessage());
-    }
-    return null;
+    edm = RuntimeDelegate.createEdm(new TechnicalScenarioEdmProvider());
+    edmInfo = new TecEdmInfo(edm);
   }
   
-  static public ParserTool GetPTF(Edm edm, EdmType resourceEntityType, String expression) {
-    try {
-      FilterParserImpl parser = new FilterParserImpl(edm, resourceEntityType);
-      FilterExpression root = parser.ParseExpression(expression);
-      return new ParserTool(expression, root);
-    } catch (FilterParserInternalError e) {
-      fail("Error in parser" + e.getLocalizedMessage());
-    } catch (FilterParserException e) {
-      fail("Error in parser" + e.getLocalizedMessage());
-    }
-    return null;
     
-  }
-  
-  
   @Test 
   public void TestProperties()
   {
@@ -79,11 +59,23 @@ public class TestParser {
   }
   
   @Test 
+  public void TestDeepProperties()
+  {
+    GetPTF("a/b").aSerialized("{a/b}").aKind(ExpressionKind.MEMBER);
+    GetPTF("a/b/c").aSerialized("{{a/b}/c}").aKind(ExpressionKind.MEMBER);
+  }
+  
+  
+  
+  @Test 
   public void TestPropertiesWithEdm()
   {
-    Edm edm = RuntimeDelegate.createEdm(new TechnicalScenarioEdmProvider());
-    GetPTF(edm, null,"sven");
+    EdmEntityType edmType = edmInfo.getEtAllTypes();
+    
+    GetPTF(edm, edmType,"sven");
   }
+
+  
 
   
 
@@ -394,4 +386,33 @@ public class TestParser {
       e.printStackTrace();
     }
   }
+  
+  static public ParserTool GetPTF(String expression)
+  {
+    try {
+      FilterParserImpl parser = new FilterParserImpl(null, null);
+      FilterExpression root = parser.ParseExpression(expression);
+      return new ParserTool(expression, root);
+    } catch (FilterParserInternalError e) {
+      fail("Error in parser" + e.getLocalizedMessage());
+    } catch (FilterParserException e) {
+      fail("Error in parser" + e.getLocalizedMessage());
+    }
+    return null;
+  }
+  
+  static public ParserTool GetPTF(Edm edm, EdmEntityType resourceEntityType, String expression) {
+    try {
+      FilterParserImpl parser = new FilterParserImpl(edm, resourceEntityType);
+      FilterExpression root = parser.ParseExpression(expression);
+      return new ParserTool(expression, root);
+    } catch (FilterParserInternalError e) {
+      fail("Error in parser" + e.getLocalizedMessage());
+    } catch (FilterParserException e) {
+      fail("Error in parser" + e.getLocalizedMessage());
+    }
+    return null;
+    
+  }
+  
 }

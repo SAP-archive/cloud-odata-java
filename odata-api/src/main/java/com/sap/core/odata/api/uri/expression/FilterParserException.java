@@ -24,13 +24,15 @@ public class FilterParserException extends ODataBadRequestException
   public static final MessageReference INVALID_TRAILING_TOKEN_DETECTED_AFTER_PARSING = createMessageReference(FilterParserException.class, "INVALID_TRAILING_TOKEN_DETECTED_AFTER_PARSING");
 
   //NORTHWIND Expression expected at position 25.
-  public static final MessageReference EXPRESSION_EXPECTED_AT_POS = createMessageReference(FilterParserException.class, "EXPRESSION_EXPECTED_AT_POS");//TODO
+  public static final MessageReference EXPRESSION_EXPECTED_AT_POS = createMessageReference(FilterParserException.class, "EXPRESSION_EXPECTED_AT_POS");
 
   public static final MessageReference INVALID_TOKEN = createMessageReference(FilterParserException.class, "INVALID_TOKEN");
   
-  public static final MessageReference METHOD_TO_FEW_PARAMETERS = createMessageReference(FilterParserException.class, "METHOD_TO_FEW_PARAMETERS");//TODO
+  public static final MessageReference METHOD_TO_FEW_PARAMETERS = createMessageReference(FilterParserException.class, "METHOD_TO_FEW_PARAMETERS");
 
-  public static final MessageReference METHOD_TO_MANY_PARAMETERS = createMessageReference(FilterParserException.class, "METHOD_TO_MANY_PARAMETERS");//TODO
+  public static final MessageReference METHOD_TO_MANY_PARAMETERS = createMessageReference(FilterParserException.class, "METHOD_TO_MANY_PARAMETERS");
+
+  public static final MessageReference LEFT_SIDE_NOT_STRUCTURAL_TYPE  = createMessageReference(FilterParserException.class, "LEFT_SIDE_NOT_STRUCTURAL_TYPE");
 
   /*instance attributes*/
   private CommonExpression filterTree;

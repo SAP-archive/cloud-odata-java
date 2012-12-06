@@ -567,16 +567,16 @@ public class ListsProcessor extends ODataSingleProcessor {
 
     case MEMBER:
       final MemberExpression memberExpression = (MemberExpression) expression;
-      final PropertyExpression memberPath = (PropertyExpression) memberExpression.getPath();
+      final PropertyExpression memberPath = (PropertyExpression) memberExpression.getProperty();
       final EdmProperty memberProperty = memberPath.getEdmProperty();
       final EdmSimpleType memberType = (EdmSimpleType) memberPath.getEdmType();
       List<EdmProperty> propertyPath = new ArrayList<EdmProperty>();
       CommonExpression currentExpression = memberExpression;
       while (currentExpression != null && currentExpression.getKind() == ExpressionKind.MEMBER) {
-        final PropertyExpression path = (PropertyExpression) memberExpression.getPath();
+        final PropertyExpression path = (PropertyExpression) memberExpression.getProperty();
         final EdmProperty currentProperty = path.getEdmProperty();
         propertyPath.add(0, currentProperty);
-        currentExpression = memberExpression.getSource();
+        currentExpression = memberExpression.getPath();
       }
       return memberType.valueToString(getPropertyValue(data, propertyPath), EdmLiteralKind.DEFAULT, memberProperty.getFacets());
 

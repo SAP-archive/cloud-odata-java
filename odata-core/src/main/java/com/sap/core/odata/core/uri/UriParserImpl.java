@@ -530,7 +530,9 @@ public class UriParserImpl implements UriParser {
 
   private void handleSystemQueryOptionFilter(final String filter) throws UriSyntaxException {
     try {
-      uriResult.setFilter(new FilterParserImpl(edm, uriResult.getTargetType()).ParseExpression(filter));
+      if (uriResult.getTargetType() instanceof EdmEntityType) //TODO improve with correct error 
+         uriResult.setFilter(new FilterParserImpl(edm, (EdmEntityType)uriResult.getTargetType()).ParseExpression(filter));
+      
     } catch (FilterParserException e) {
       throw new UriSyntaxException(UriSyntaxException.INVALIDFILTEREXPRESSION.addContent(filter), e);
     } catch (FilterParserInternalError e) {
