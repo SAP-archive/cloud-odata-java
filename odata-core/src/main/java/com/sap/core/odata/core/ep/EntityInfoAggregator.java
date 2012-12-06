@@ -23,12 +23,12 @@ import com.sap.core.odata.api.edm.EdmTargetPath;
 import com.sap.core.odata.api.edm.EdmType;
 import com.sap.core.odata.api.edm.EdmTyped;
 import com.sap.core.odata.api.ep.ODataSerializationException;
-import com.sap.core.odata.core.ep.EntityInfoAggregator.EntityPropertyInfo;
 
 public class EntityInfoAggregator {
 
 //  private final EdmEntitySet entitySet;
   private String entitySetName;
+  private String entityTypeNamespace;
   
   EntityInfoAggregator() {
   }
@@ -45,6 +45,23 @@ public class EntityInfoAggregator {
 
   public String getEntitySetName() {
     return entitySetName;
+  }
+
+
+  public boolean isDefaultEntityContainer() {
+    return isDefaultEntityContainer;
+  }
+
+  public EntityPropertyInfo getTargetPathInfo(String targetPath) {
+    return targetPath2EntityPropertyInfo.get(targetPath);
+  }
+
+  public String getEntityTypeNamespace() {
+    return entityTypeNamespace;
+  }
+  
+  public String getEntityTypeName() {
+    return entityTypeName;
   }
 
   public List<EntityPropertyInfo> getKeyProperties() {
@@ -74,11 +91,14 @@ public class EntityInfoAggregator {
   private List<String> keyPropertyNames = new ArrayList<String>();
   private boolean isDefaultEntityContainer;
   private String entityContainerName;
+  private String entityTypeName;
   
   private void initialize(EdmEntitySet entitySet) throws ODataSerializationException {
     try {
       EdmEntityType type = entitySet.getEntityType();
       entitySetName = entitySet.getName();
+      entityTypeName = type.getName();
+      entityTypeNamespace = type.getNamespace();
       isDefaultEntityContainer = entitySet.getEntityContainer().isDefaultEntityContainer();
       entityContainerName = entitySet.getEntityContainer().getName();
       //
@@ -252,14 +272,17 @@ public class EntityInfoAggregator {
     public String toString() {
       return name + "; multiplicity=" + multiplicity;
     }
+
+    public EdmMultiplicity getMultiplicity() {
+      return multiplicity;
+    }
+
+    public String getName() {
+      return name;
+    }
   }
 
-  public boolean isDefaultEntityContainer() {
-    return isDefaultEntityContainer;
+  public Collection<NavigationPropertyInfo> getNavigationPropertyInfos() {
+    return this.name2NavigationPropertyInfo.values();
   }
-
-  public EntityPropertyInfo getTargetPathInfo(String targetPath) {
-    return targetPath2EntityPropertyInfo.get(targetPath);
-  }
-
 }
