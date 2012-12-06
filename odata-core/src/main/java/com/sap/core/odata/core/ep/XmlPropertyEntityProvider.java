@@ -16,13 +16,15 @@ import com.sap.core.odata.api.edm.EdmSimpleType;
 import com.sap.core.odata.api.edm.EdmType;
 import com.sap.core.odata.api.ep.ODataEntityProviderException;
 import com.sap.core.odata.core.edm.EdmString;
+import com.sap.core.odata.core.ep.aggregator.EntityComplexPropertyInfo;
+import com.sap.core.odata.core.ep.aggregator.EntityPropertyInfo;
 
 public class XmlPropertyEntityProvider {
 
-  public void append(XMLStreamWriter writer, EdmProperty edmProperty, Object value, boolean isRootElement) throws EdmException, XMLStreamException, ODataEntityProviderException {
-    EdmType edmType = edmProperty.getType();
+  public void append(XMLStreamWriter writer, EntityPropertyInfo propertyInfo, Object value, boolean isRootElement) throws EdmException, XMLStreamException, ODataEntityProviderException {
+    EdmType edmType = propertyInfo.getType();
 
-    String name = edmProperty.getName();
+    String name = propertyInfo.getName();
 
     if (isRootElement) {
       writer.writeStartElement(name);
@@ -32,28 +34,25 @@ public class XmlPropertyEntityProvider {
       writer.writeStartElement(Edm.NAMESPACE_EDM_2008_09, name);
     }
 
-    if (edmType instanceof EdmSimpleType) {
-      EdmSimpleType st = (EdmSimpleType) edmType;
-      appendProperty(writer, st, edmProperty, value);
-    } else if (edmType instanceof EdmComplexType) {
-      appendProperty(writer, (EdmComplexType) edmType, edmProperty, value);
+    if (propertyInfo.isComplex()) {
+      EntityComplexPropertyInfo ecp = (EntityComplexPropertyInfo) propertyInfo;
+      appendProperty(writer, ecp, propertyInfo, value);
     } else {
-      throw new ODataEntityProviderException(ODataEntityProviderException.UNSUPPORTED_PROPERTY_TYPE.addContent(edmType.getName()));
+      appendProperty(writer, propertyInfo, value);
     }
 
     writer.writeEndElement();
   }
 
-  private void appendProperty(XMLStreamWriter writer, EdmComplexType type, EdmProperty prop, Object value) throws XMLStreamException, EdmException, ODataEntityProviderException {
+  private void appendProperty(XMLStreamWriter writer, EntityComplexPropertyInfo type, EntityPropertyInfo prop, Object value) throws XMLStreamException, EdmException, ODataEntityProviderException {
 
     if (value == null) {
       writer.writeAttribute(Edm.NAMESPACE_EDMX_2007_06, "null", "true");
     } else {
-      Collection<String> propNames = type.getPropertyNames();
-      for (String pName : propNames) {
-        EdmProperty internalProperty = (EdmProperty) type.getProperty(pName);
-        Object childValue = extractChildValue(value, pName);
-        append(writer, internalProperty, childValue, false);
+      Collection<EntityPropertyInfo> propertyInfos = type.getPropertyInfos();
+      for (EntityPropertyInfo childPropertyInfo : propertyInfos) {
+        Object childValue = extractChildValue(value, childPropertyInfo.getName());
+        append(writer, childPropertyInfo, childValue, false);
       }
     }
   }
@@ -66,9 +65,10 @@ public class XmlPropertyEntityProvider {
     return String.valueOf(value);
   }
 
-  private void appendProperty(XMLStreamWriter writer, EdmSimpleType st, EdmProperty prop, Object value) throws XMLStreamException, EdmException {
+  private void appendProperty(XMLStreamWriter writer, EntityPropertyInfo prop, Object value) throws XMLStreamException, EdmException {
     EdmLiteralKind literalKind = EdmLiteralKind.DEFAULT;
     EdmFacets facets = prop.getFacets();
+    EdmSimpleType st = (EdmSimpleType) prop.getType();
     String valueAsString = st.valueToString(value, literalKind, facets);
 
     if (valueAsString == null) {
@@ -81,5 +81,4 @@ public class XmlPropertyEntityProvider {
       writer.writeCharacters(valueAsString);
     }
   }
-
 }

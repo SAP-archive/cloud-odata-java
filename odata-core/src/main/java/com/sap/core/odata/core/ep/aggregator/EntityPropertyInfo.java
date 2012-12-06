@@ -18,7 +18,7 @@ public class EntityPropertyInfo {
     return info;
   }
   
-  boolean isComplex() {
+  public boolean isComplex() {
     return false;
   }
   

@@ -76,7 +76,7 @@ class EdmMock {
     EdmEntityType employeeType = employeeEntitySet.getEntityType();
     when(employeeType.getKind()).thenReturn(EdmTypeKind.ENTITY);
     when(employeeType.hasStream()).thenReturn(true);
-    when(employeeType.getPropertyNames()).thenReturn(Arrays.asList("EmployeeId", "EmployeeName", "ImageUrl", "Age", "RoomId", "EntryDate", "Location"));
+    when(employeeType.getPropertyNames()).thenReturn(Arrays.asList("EmployeeId", "EmployeeName", "ImageUrl", "Age", "TeamId", "RoomId", "EntryDate", "Location"));
     when(employeeType.getProperty("ne_Manager")).thenReturn(managerProperty);
     when(employeeType.getKeyPropertyNames()).thenReturn(Arrays.asList("EmployeeId"));
     when(employeeType.getName()).thenReturn("Employee");

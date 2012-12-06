@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
+import java.util.List;
 import java.util.Map;
 
 import javax.xml.stream.XMLOutputFactory;
@@ -17,6 +18,8 @@ import com.sap.core.odata.api.edm.EdmProperty;
 import com.sap.core.odata.api.ep.ODataEntityProviderException;
 import com.sap.core.odata.api.ep.ODataEntityProvider;
 import com.sap.core.odata.api.processor.ODataContext;
+import com.sap.core.odata.core.ep.aggregator.EntityInfoAggregator;
+import com.sap.core.odata.core.ep.aggregator.EntityPropertyInfo;
 
 // TODO usage of "ByteArrayInputStream(out.toByteArray())":  check synchronized call / copy of data
 public class AtomEntityProvider extends ODataEntityProvider {
@@ -58,10 +61,11 @@ public class AtomEntityProvider extends ODataEntityProvider {
 
     try {
       AtomEntryEntityProvider as = new AtomEntryEntityProvider(this.getContext());
+      EntityInfoAggregator eia = EntityInfoAggregator.create(entitySet);
 
       outStream = new ByteArrayOutputStream();
       XMLStreamWriter writer = XMLOutputFactory.newInstance().createXMLStreamWriter(outStream, "utf-8");
-      as.append(writer, entitySet, data, true, mediaResourceMimeType);
+      as.append(writer, eia, data, true, mediaResourceMimeType);
 
       writer.flush();
       outStream.flush();
@@ -87,10 +91,11 @@ public class AtomEntityProvider extends ODataEntityProvider {
 
     try {
       XmlPropertyEntityProvider ps = new XmlPropertyEntityProvider();
+      EntityPropertyInfo propertyInfo = EntityInfoAggregator.create(edmProperty);
 
       outStream = new ByteArrayOutputStream();
       XMLStreamWriter writer = XMLOutputFactory.newInstance().createXMLStreamWriter(outStream, "utf-8");
-      ps.append(writer, edmProperty, value, true);
+      ps.append(writer, propertyInfo, value, true);
 
       writer.flush();
       outStream.flush();

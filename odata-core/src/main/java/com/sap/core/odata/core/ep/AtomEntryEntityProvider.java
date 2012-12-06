@@ -1,6 +1,7 @@
 package com.sap.core.odata.core.ep;
 
 import java.net.URI;
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -12,8 +13,6 @@ import javax.xml.stream.XMLStreamWriter;
 import org.apache.commons.lang3.StringEscapeUtils;
 
 import com.sap.core.odata.api.edm.Edm;
-import com.sap.core.odata.api.edm.EdmConcurrencyMode;
-import com.sap.core.odata.api.edm.EdmEntitySet;
 import com.sap.core.odata.api.edm.EdmFacets;
 import com.sap.core.odata.api.edm.EdmLiteralKind;
 import com.sap.core.odata.api.edm.EdmMultiplicity;
@@ -21,7 +20,6 @@ import com.sap.core.odata.api.edm.EdmProperty;
 import com.sap.core.odata.api.edm.EdmSimpleType;
 import com.sap.core.odata.api.edm.EdmTargetPath;
 import com.sap.core.odata.api.edm.EdmType;
-import com.sap.core.odata.api.edm.EdmTyped;
 import com.sap.core.odata.api.enums.MediaType;
 import com.sap.core.odata.api.ep.ODataEntityProviderException;
 import com.sap.core.odata.api.processor.ODataContext;
@@ -38,11 +36,10 @@ public class AtomEntryEntityProvider {
     this.context = ctx;
   }
 
-  public void append(XMLStreamWriter writer, EdmEntitySet entitySet, Map<String, Object> data, boolean isRootElement, String mediaResourceMimeType) throws ODataEntityProviderException {
+  public void append(XMLStreamWriter writer, EntityInfoAggregator eia, Map<String, Object> data, boolean isRootElement, String mediaResourceMimeType) throws ODataEntityProviderException {
     try {
-      writer.writeStartElement("entry");
 
-      EntityInfoAggregator eia = EntityInfoAggregator.create(entitySet);
+      writer.writeStartElement("entry");
 
       if (isRootElement) {
         writer.writeDefaultNamespace(Edm.NAMESPACE_ATOM_2005);
@@ -51,24 +48,24 @@ public class AtomEntryEntityProvider {
         writer.writeAttribute(Edm.PREFIX_XML, Edm.NAMESPACE_XML_1998, "base", this.context.getUriInfo().getBaseUri().toASCIIString());
       }
 
-      String etag = this.createETag(entitySet, data);
+      String etag = createETag(eia, data);
       if (etag != null) {
         writer.writeAttribute(Edm.NAMESPACE_EDMX_2007_06, FormatXml.M_ETAG, etag);
       }
-      
+
       appendAtomMandatoryParts(writer, eia, data);
       appendAtomOptionalParts(writer, eia, data);
       appendAtomEditLink(writer, eia, data);
       appendAtomNavigationLinks(writer, eia, data);
 
-      if (entitySet.getEntityType().hasStream()) {
+      if (eia.isEntityTypeHasStream()) {
         appendAtomContentPart(writer, eia, data, mediaResourceMimeType);
         appendAtomContentLink(writer, eia, data, mediaResourceMimeType);
-        appendProperties(writer, entitySet, data);
+        appendProperties(writer, eia, data);
       } else {
         writer.writeStartElement(FormatXml.ATOM_CONTENT);
         writer.writeAttribute(FormatXml.ATOM_TYPE, MediaType.APPLICATION_XML.toString());
-        appendProperties(writer, entitySet, data);
+        appendProperties(writer, eia, data);
         writer.writeEndElement();
       }
 
@@ -80,28 +77,19 @@ public class AtomEntryEntityProvider {
     }
   }
 
-  private String createETag(EdmEntitySet entitySet, Map<String, Object> data) throws ODataEntityProviderException {
+  private String createETag(EntityInfoAggregator eia, Map<String, Object> data) throws ODataEntityProviderException {
     try {
       String etag = null;
 
-      for (String propertyName : entitySet.getEntityType().getPropertyNames()) {
-        EdmTyped t = entitySet.getEntityType().getProperty(propertyName);
-        if (t instanceof EdmProperty) {
-          EdmProperty edmProperty = (EdmProperty) t;
-          if (isConcurrencyModeFixed(edmProperty)) {
-            if (etag == null) {
-              EdmType edmType = edmProperty.getType();
-              if (edmType instanceof EdmSimpleType) {
-                EdmSimpleType edmSimpleType = (EdmSimpleType) edmType;
-                etag = edmSimpleType.valueToString(data.get(propertyName), EdmLiteralKind.DEFAULT, edmProperty.getFacets());
-              }
-            } else {
-              EdmType edmType = edmProperty.getType();
-              if (edmType instanceof EdmSimpleType) {
-                EdmSimpleType edmSimpleType = (EdmSimpleType) edmType;
-                etag = etag + Edm.DELIMITER + edmSimpleType.valueToString(data.get(propertyName), EdmLiteralKind.DEFAULT, edmProperty.getFacets());
-              }
-            }
+      Collection<EntityPropertyInfo> propertyInfos = eia.getETagPropertyInfos();
+      for (EntityPropertyInfo propertyInfo : propertyInfos) {
+        EdmType edmType = propertyInfo.getType();
+        if (edmType instanceof EdmSimpleType) {
+          EdmSimpleType edmSimpleType = (EdmSimpleType) edmType;
+          if (etag == null) {
+            etag = edmSimpleType.valueToString(data.get(propertyInfo.getName()), EdmLiteralKind.DEFAULT, propertyInfo.getFacets());
+          } else {
+            etag = etag + Edm.DELIMITER + edmSimpleType.valueToString(data.get(propertyInfo.getName()), EdmLiteralKind.DEFAULT, propertyInfo.getFacets());
           }
         }
       }
@@ -111,14 +99,6 @@ public class AtomEntryEntityProvider {
       }
 
       return etag;
-    } catch (Exception e) {
-      throw new ODataEntityProviderException(ODataEntityProviderException.COMMON, e);
-    }
-  }
-
-  private boolean isConcurrencyModeFixed(EdmProperty edmProperty) throws ODataEntityProviderException {
-    try {
-      return edmProperty.getFacets() != null && edmProperty.getFacets().getConcurrencyMode() == EdmConcurrencyMode.Fixed;
     } catch (Exception e) {
       throw new ODataEntityProviderException(ODataEntityProviderException.COMMON, e);
     }
@@ -387,21 +367,20 @@ public class AtomEntryEntityProvider {
     }
   }
 
-  private void appendProperties(XMLStreamWriter writer, EdmEntitySet entitySet, Map<String, Object> data) throws ODataEntityProviderException {
+  private void appendProperties(XMLStreamWriter writer, EntityInfoAggregator eia, Map<String, Object> data) throws ODataEntityProviderException {
     try {
       writer.writeStartElement(Edm.NAMESPACE_EDMX_2007_06, FormatXml.M_PROPERTIES);
       Set<Entry<String, Object>> entries = data.entrySet();
 
       for (Entry<String, Object> entry : entries) {
         String name = entry.getKey();
-        EdmTyped property = entitySet.getEntityType().getProperty(name);
+        EntityPropertyInfo propertyInfo = eia.getPropertyInfo(name);
 
-        if (property instanceof EdmProperty) {
-          EdmProperty prop = (EdmProperty) property;
+        if(propertyInfo != null) {
           Object value = entry.getValue();
-
+          
           XmlPropertyEntityProvider aps = new XmlPropertyEntityProvider();
-          aps.append(writer, prop, value, false);
+          aps.append(writer, propertyInfo, value, false);
         }
       }
 
