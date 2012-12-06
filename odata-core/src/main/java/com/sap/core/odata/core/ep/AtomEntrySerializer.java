@@ -23,6 +23,7 @@ import com.sap.core.odata.api.edm.EdmMultiplicity;
 import com.sap.core.odata.api.edm.EdmNavigationProperty;
 import com.sap.core.odata.api.edm.EdmProperty;
 import com.sap.core.odata.api.edm.EdmSimpleType;
+import com.sap.core.odata.api.edm.EdmSimpleTypeException;
 import com.sap.core.odata.api.edm.EdmTargetPath;
 import com.sap.core.odata.api.edm.EdmType;
 import com.sap.core.odata.api.edm.EdmTyped;
@@ -31,6 +32,7 @@ import com.sap.core.odata.api.ep.ODataSerializationException;
 import com.sap.core.odata.api.processor.ODataContext;
 import com.sap.core.odata.core.edm.EdmDateTimeOffset;
 import com.sap.core.odata.core.ep.EntityInfoAggregator.EntityPropertyInfo;
+import com.sap.core.odata.core.ep.EntityInfoAggregator.NavigationPropertyInfo;
 
 public class AtomEntrySerializer {
 
@@ -58,25 +60,22 @@ public class AtomEntrySerializer {
         writer.writeAttribute(Edm.NAMESPACE_EDMX_2007_06, FormatXml.M_ETAG, etag);
       }
 
-      AtomInfoAggregator aia;
       if (entitySet.getEntityType().hasStream()) {
-        aia = appendProperties(writer, entitySet, data);
-        appendAtomContentPart(writer, entitySet, aia, data, mediaResourceMimeType);
-        appendAtomContentLink(writer, entitySet, data, mediaResourceMimeType);
+        appendProperties(writer, entitySet, data);
+        appendAtomContentPart(writer, eia, data, mediaResourceMimeType);
+        appendAtomContentLink(writer, eia, data, mediaResourceMimeType);
       } else {
         writer.writeStartElement(FormatXml.ATOM_CONTENT);
         writer.writeAttribute(FormatXml.ATOM_TYPE, MediaType.APPLICATION_XML.toString());
-        aia = appendProperties(writer, entitySet, data);
+        appendProperties(writer, entitySet, data);
         writer.writeEndElement();
       }
       
 
-      appendAtomNavigationLinks(writer, entitySet, data);
-      appendAtomEditLink(writer, entitySet, data);
-      
+      appendAtomNavigationLinks(writer, eia, data);
+      appendAtomEditLink(writer, eia, data);
       appendAtomMandatoryParts(writer, eia, data);
-      
-      appendAtomOptionalParts(writer, entitySet, aia);
+      appendAtomOptionalParts(writer, eia, data);
 
       writer.writeEndElement();
 
@@ -122,15 +121,11 @@ public class AtomEntrySerializer {
     return edmProperty.getFacets() != null && edmProperty.getFacets().getConcurrencyMode() == EdmConcurrencyMode.Fixed;
   }
 
-  private void appendAtomNavigationLinks(XMLStreamWriter writer, EdmEntitySet entitySet, Map<String, Object> data) throws EdmException, ODataSerializationException, URISyntaxException, XMLStreamException {
-    for (String propertyName : entitySet.getEntityType().getNavigationPropertyNames()) {
-      EdmTyped t = entitySet.getEntityType().getProperty(propertyName);
-      if (t instanceof EdmNavigationProperty) {
-        EdmNavigationProperty edmProperty = (EdmNavigationProperty) t;
-        boolean isFeed = (edmProperty.getMultiplicity() == EdmMultiplicity.MANY);
-        String self = this.createSelfLink(entitySet, data, propertyName);
-        appendAtomNavigationLink(writer, self, propertyName, isFeed);
-      }
+  private void appendAtomNavigationLinks(XMLStreamWriter writer, EntityInfoAggregator eia, Map<String, Object> data) throws EdmException, ODataSerializationException, URISyntaxException, XMLStreamException {
+    for (NavigationPropertyInfo info: eia.getNavigationPropertyInfos()) {
+        boolean isFeed = (info.getMultiplicity() == EdmMultiplicity.MANY);
+        String self = this.createSelfLink(eia, data, info.getName());
+        appendAtomNavigationLink(writer, self, info.getName(), isFeed);
     }
   }
 
@@ -149,23 +144,23 @@ public class AtomEntrySerializer {
     writer.writeEndElement();
   }
 
-  private void appendAtomEditLink(XMLStreamWriter writer, EdmEntitySet entitySet, Map<String, Object> data) throws ODataSerializationException {
+  private void appendAtomEditLink(XMLStreamWriter writer, EntityInfoAggregator eia, Map<String, Object> data) throws ODataSerializationException {
     try {
-      String self = createSelfLink(entitySet, data, null);
+      String self = createSelfLink(eia, data, null);
 
       writer.writeStartElement(FormatXml.ATOM_LINK);
       writer.writeAttribute(FormatXml.ATOM_HREF, self);
       writer.writeAttribute(FormatXml.ATOM_REL, "edit");
-      writer.writeAttribute(FormatXml.ATOM_TITLE, entitySet.getEntityType().getName());
+      writer.writeAttribute(FormatXml.ATOM_TITLE, eia.getEntityTypeName());
       writer.writeEndElement();
     } catch (Exception e) {
       throw new ODataSerializationException(ODataSerializationException.COMMON, e);
     }
   }
 
-  private void appendAtomContentLink(XMLStreamWriter writer, EdmEntitySet entitySet, Map<String, Object> data, String mediaResourceMimeType) throws ODataSerializationException {
+  private void appendAtomContentLink(XMLStreamWriter writer, EntityInfoAggregator eia, Map<String, Object> data, String mediaResourceMimeType) throws ODataSerializationException {
     try {
-      String self = createSelfLink(entitySet, data, "$value");
+      String self = createSelfLink(eia, data, "$value");
 
       if (mediaResourceMimeType == null) {
         mediaResourceMimeType = MediaType.APPLICATION_OCTET_STREAM.toString();
@@ -181,9 +176,9 @@ public class AtomEntrySerializer {
     }
   }
 
-  private void appendAtomContentPart(XMLStreamWriter writer, EdmEntitySet entitySet, AtomInfoAggregator aia, Map<String, Object> data, String mediaResourceMimeType) throws ODataSerializationException {
+  private void appendAtomContentPart(XMLStreamWriter writer, EntityInfoAggregator eia, Map<String, Object> data, String mediaResourceMimeType) throws ODataSerializationException {
     try {
-      String self = createSelfLink(entitySet, data, "$value");
+      String self = createSelfLink(eia, data, "$value");
 
       if (mediaResourceMimeType == null) {
         mediaResourceMimeType = MediaType.APPLICATION_OCTET_STREAM.toString();
@@ -198,8 +193,8 @@ public class AtomEntrySerializer {
     }
   }
 
-  private String createSelfLink(EdmEntitySet entitySet, Map<String, Object> data, String extension) throws EdmException, ODataSerializationException, URISyntaxException {
-    String path = entitySet.getName() + "(" + this.createEntryKey(entitySet, data) + ")" + (extension == null ? "" : "/" + extension);
+  private String createSelfLink(EntityInfoAggregator eia, Map<String, Object> data, String extension) throws EdmException, ODataSerializationException, URISyntaxException {
+    String path = eia.getEntitySetName() + "(" + this.createEntryKey(eia, data) + ")" + (extension == null ? "" : "/" + extension);
     URI uri = new URI(null, null, null, -1, path, null, null);
     return uri.toASCIIString();
   }
@@ -246,30 +241,53 @@ public class AtomEntrySerializer {
     }
   }
 
-  private void appendAtomOptionalParts(XMLStreamWriter writer, EdmEntitySet entitySet, AtomInfoAggregator aia) throws ODataSerializationException {
+  private String getTargetPathValue(EntityInfoAggregator eia, String targetPath, Map<String, Object> data) throws ODataSerializationException {
+    try {
+      EntityPropertyInfo info = eia.getTargetPathInfo(targetPath);
+      if(info != null) {
+        EdmSimpleType type = (EdmSimpleType) info.getType();
+        Object value = data.get(info.getName());
+        return type.valueToString(value, EdmLiteralKind.DEFAULT, info.getFacets());
+      }
+      return null;
+    } catch (EdmSimpleTypeException e) {
+      throw new ODataSerializationException(ODataSerializationException.COMMON, e);
+    }
+  }
+  
+  private void appendAtomOptionalParts(XMLStreamWriter writer, EntityInfoAggregator eia, Map<String, Object> data) throws ODataSerializationException {
     try { 
-      if (aia.getAuthorEmail() != null || aia.getAuthorName() != null || aia.getAuthorUri() != null) {
+      String authorEmail = getTargetPathValue(eia, EdmTargetPath.SYNDICATION_AUTHOREMAIL, data);
+      String authorName = getTargetPathValue(eia, EdmTargetPath.SYNDICATION_AUTHORNAME, data);
+      String authorUri = getTargetPathValue(eia, EdmTargetPath.SYNDICATION_AUTHORURI, data);
+      if (authorEmail != null || authorName != null || authorUri != null) {
         writer.writeStartElement(FormatXml.ATOM_AUTHOR);
-        appendAtomOptionalPart(writer, FormatXml.ATOM_AUTHOR_NAME, aia.getAuthorName(), false);
-        appendAtomOptionalPart(writer, FormatXml.ATOM_AUTHOR_EMAIL, aia.getAuthorEmail(), false);
-        appendAtomOptionalPart(writer, FormatXml.ATOM_AUTHOR_URI, aia.getAuthorUri(), false);
+        appendAtomOptionalPart(writer, FormatXml.ATOM_AUTHOR_NAME, authorName, false);
+        appendAtomOptionalPart(writer, FormatXml.ATOM_AUTHOR_EMAIL, authorEmail, false);
+        appendAtomOptionalPart(writer, FormatXml.ATOM_AUTHOR_URI, authorUri, false);
         writer.writeEndElement();
       }
   
-      appendAtomOptionalPart(writer, FormatXml.ATOM_SUMMARY, aia.getSummary(), true);
+      String summary = getTargetPathValue(eia, EdmTargetPath.SYNDICATION_SUMMARY, data);
+      appendAtomOptionalPart(writer, FormatXml.ATOM_SUMMARY, summary, true);
   
-      if (aia.getContributorEmail() != null || aia.getContributorName() != null || aia.getContributorUri() != null) {
+      String contributorName = getTargetPathValue(eia, EdmTargetPath.SYNDICATION_CONTRIBUTORNAME, data);
+      String contributorEmail = getTargetPathValue(eia, EdmTargetPath.SYNDICATION_CONTRIBUTOREMAIL, data);
+      String contributorUri = getTargetPathValue(eia, EdmTargetPath.SYNDICATION_CONTRIBUTORURI, data);
+      if (contributorEmail != null || contributorName != null || contributorUri != null) {
         writer.writeStartElement(FormatXml.ATOM_CONTRIBUTOR);
-        appendAtomOptionalPart(writer, FormatXml.ATOM_CONTRIBUTOR_NAME, aia.getContributorName(), false);
-        appendAtomOptionalPart(writer, FormatXml.ATOM_CONTRIBUTOR_EMAIL, aia.getContributorEmail(), false);
-        appendAtomOptionalPart(writer, FormatXml.ATOM_CONTRIBUTOR_URI, aia.getContributorUri(), false);
+        appendAtomOptionalPart(writer, FormatXml.ATOM_CONTRIBUTOR_NAME, contributorName, false);
+        appendAtomOptionalPart(writer, FormatXml.ATOM_CONTRIBUTOR_EMAIL, contributorEmail, false);
+        appendAtomOptionalPart(writer, FormatXml.ATOM_CONTRIBUTOR_URI, contributorUri, false);
         writer.writeEndElement();
       }
   
-      appendAtomOptionalPart(writer, FormatXml.ATOM_RIGHTS, aia.getRights(), true);
-      appendAtomOptionalPart(writer, FormatXml.ATOM_PUBLISHED, aia.getPublished(), false);
+      String rights = getTargetPathValue(eia, EdmTargetPath.SYNDICATION_RIGHTS, data);
+      appendAtomOptionalPart(writer, FormatXml.ATOM_RIGHTS, rights, true);
+      String published = getTargetPathValue(eia, EdmTargetPath.SYNDICATION_PUBLISHED, data);
+      appendAtomOptionalPart(writer, FormatXml.ATOM_PUBLISHED, published, false);
   
-      String term = entitySet.getEntityType().getNamespace() + Edm.DELIMITER + entitySet.getEntityType().getName();
+      String term = eia.getEntityTypeNamespace() + Edm.DELIMITER + eia.getEntityTypeName();
       writer.writeStartElement(FormatXml.ATOM_CATEGORY);
       writer.writeAttribute(FormatXml.ATOM_CATEGORY_TERM, term);
       writer.writeAttribute(FormatXml.ATOM_CATEGORY_SCHEME, Edm.NAMESPACE_SCHEME_2007_08);
