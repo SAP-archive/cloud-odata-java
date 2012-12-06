@@ -16,7 +16,7 @@ public class FitStaticServiceFactory implements ODataServiceFactory {
   @Override
   public ODataService createService() throws ODataException {
     if (FitStaticServiceFactory.service == null) {
-      throw new NullPointerException("no static service set for JUnit test");
+      throw new IllegalArgumentException("no static service set for JUnit test");
     }
 
     return FitStaticServiceFactory.service;

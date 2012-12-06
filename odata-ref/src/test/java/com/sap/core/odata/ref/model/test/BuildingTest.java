@@ -1,5 +1,6 @@
 package com.sap.core.odata.ref.model.test;
 
+import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
@@ -39,7 +40,8 @@ public class BuildingTest {
     final byte[] byteArray = VALUE_IMAGE.getBytes();
     build1.setImage(byteArray);
     byte[] testArray = build1.getImage();
-    assertEquals(testArray, byteArray);
+    assertEquals(byteArray.length, testArray.length);
+    assertArrayEquals(byteArray, testArray);
   }
 
   @Test

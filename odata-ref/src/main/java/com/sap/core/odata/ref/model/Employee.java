@@ -123,7 +123,7 @@ public class Employee {
   }
 
   public byte[] getImage() {
-    return image;
+    return image.clone();
   }
 
   public void setImage(byte[] image) {
@@ -146,7 +146,7 @@ public class Employee {
 
       return bos.toByteArray();
     } catch (IOException e) {
-      throw new RuntimeException(e);
+      throw new ModelException(e);
     }
   }
 

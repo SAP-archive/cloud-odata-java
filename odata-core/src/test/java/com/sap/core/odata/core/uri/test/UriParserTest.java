@@ -25,6 +25,7 @@ import com.sap.core.odata.api.edm.EdmTypeKind;
 import com.sap.core.odata.api.enums.Format;
 import com.sap.core.odata.api.enums.InlineCount;
 import com.sap.core.odata.api.exception.MessageReference;
+import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.api.exception.ODataMessageException;
 import com.sap.core.odata.api.processor.ODataPathSegment;
 import com.sap.core.odata.api.uri.UriNotMatchingException;
@@ -48,7 +49,7 @@ public class UriParserTest {
   private static Edm edm;
 
   @BeforeClass
-  public static void getEdm() throws EdmException {
+  public static void getEdm() throws ODataException, EdmException {
     edm = MockFacade.getMockEdm();
   }
 

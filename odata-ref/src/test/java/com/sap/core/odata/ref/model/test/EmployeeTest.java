@@ -133,7 +133,8 @@ public class EmployeeTest {
     Employee employee1 = new Employee();
     employee1.setImage(byteArray);
     byte[] byteArrayOfImage = employee1.getImage();
-    assertEquals(byteArrayOfImage, byteArray);
+    assertEquals(byteArray.length, byteArrayOfImage.length);
+    assertArrayEquals(byteArray, byteArrayOfImage);
   }
 
   @Test
