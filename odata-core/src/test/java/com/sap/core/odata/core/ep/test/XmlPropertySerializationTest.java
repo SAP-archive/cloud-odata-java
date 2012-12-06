@@ -47,9 +47,6 @@ public class XmlPropertySerializationTest extends AbstractSerializerTest {
 
     assertXpathExists("/d:Age", xml);
     assertXpathEvaluatesTo("52", "/d:Age/text()", xml);
-    assertXpathExists("/d:Age/@m:type", xml);
-    assertXpathEvaluatesTo("Edm.Int32", "/d:Age/@m:type", xml);
-
   }
 
   @Test
