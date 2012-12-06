@@ -9,16 +9,31 @@
 <body>
 	<h1>odata lib</h1>
 	<hr>
+	<%
+	  String version = "gen/version.html";
+	%>
+	<%
+	  try {
+	%>
+	<jsp:include page='<%=version%>' />
+	<%
+	  } catch (Exception e) {
+	%>
+	<p>IDE Build</p>
+	<%
+	  }
+	%>
+	<hr>
 	<h2>Reference Scenario</h2>
 	<ul>
 		<li><a href="" target="_blank">index page</a></li>
 		<li><a href="ReferenceScenario.svc?_wadl" target="_blank">wadl</a>
-		</li> 
+		</li>
 		<li><a href="ReferenceScenario.svc/" target="_blank">service
 				document</a></li>
 		<li><a href="ReferenceScenario.svc/$metadata" target="_blank">metadata</a>
 		</li>
 	</ul>
 </body>
-</html>   
+</html>
 
