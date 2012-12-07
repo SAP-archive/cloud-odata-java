@@ -61,8 +61,8 @@ public class AtomEntryEntityProvider {
       appendCustomProperties(writer, eia, data);
       
       if (eia.isEntityTypeHasStream()) {
-        appendAtomContentPart(writer, eia, data, mediaResourceMimeType);
         appendAtomContentLink(writer, eia, data, mediaResourceMimeType);
+        appendAtomContentPart(writer, eia, data, mediaResourceMimeType);
         appendProperties(writer, eia, data);
       } else {
         writer.writeStartElement(FormatXml.ATOM_CONTENT);
