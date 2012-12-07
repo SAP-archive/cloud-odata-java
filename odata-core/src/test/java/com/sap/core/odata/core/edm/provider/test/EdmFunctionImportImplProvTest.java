@@ -8,7 +8,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
-import java.util.Collection;
+import java.util.List;
 
 import org.eclipse.jetty.http.HttpMethods;
 import org.junit.BeforeClass;
@@ -51,7 +51,7 @@ public class EdmFunctionImportImplProvTest {
 
     ReturnType fooReturnType = new ReturnType().setTypeName(EdmSimpleTypeKind.String.getFullQualifiedName()).setMultiplicity(EdmMultiplicity.ONE);
 
-    Collection<FunctionImportParameter> parameters = new ArrayList<FunctionImportParameter>();
+    List<FunctionImportParameter> parameters = new ArrayList<FunctionImportParameter>();
     FunctionImportParameter parameter = new FunctionImportParameter().setName("fooParameter1").setType(EdmSimpleTypeKind.String);
     parameters.add(parameter);
 
@@ -101,7 +101,7 @@ public class EdmFunctionImportImplProvTest {
 
   @Test
   public void parameterExisting() throws Exception {
-    Collection<String> parameterNames = edmFunctionImport.getParameterNames();
+    List<String> parameterNames = edmFunctionImport.getParameterNames();
     assertTrue(parameterNames.contains("fooParameter1"));
     assertTrue(parameterNames.contains("fooParameter2"));
     assertTrue(parameterNames.contains("fooParameter3"));

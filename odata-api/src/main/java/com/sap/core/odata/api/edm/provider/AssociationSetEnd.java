@@ -1,6 +1,6 @@
 package com.sap.core.odata.api.edm.provider;
 
-import java.util.Collection;
+import java.util.List;
 
 /**
  * Objects of this class represent an association set end
@@ -11,8 +11,8 @@ public class AssociationSetEnd {
   private String role;
   private String entitySet;
   private Documentation documentation;
-  private Collection<AnnotationAttribute> annotationAttributes;
-  private Collection<AnnotationElement> annotationElements;
+  private List<AnnotationAttribute> annotationAttributes;
+  private List<AnnotationElement> annotationElements;
 
   /**
    * @return <b>String</b> role
@@ -38,14 +38,14 @@ public class AssociationSetEnd {
   /**
    * @return collection of {@link AnnotationAttribute} annotation attributes
    */
-  public Collection<AnnotationAttribute> getAnnotationAttributes() {
+  public List<AnnotationAttribute> getAnnotationAttributes() {
     return annotationAttributes;
   }
 
   /**
    * @return collection of {@link AnnotationElement} annotation elements
    */
-  public Collection<AnnotationElement> getAnnotationElements() {
+  public List<AnnotationElement> getAnnotationElements() {
     return annotationElements;
   }
 
@@ -86,7 +86,7 @@ public class AssociationSetEnd {
    * @param annotationAttributes
    * @return {@link AssociationSetEnd} for method chaining
    */
-  public AssociationSetEnd setAnnotationAttributes(Collection<AnnotationAttribute> annotationAttributes) {
+  public AssociationSetEnd setAnnotationAttributes(List<AnnotationAttribute> annotationAttributes) {
     this.annotationAttributes = annotationAttributes;
     return this;
   }
@@ -96,7 +96,7 @@ public class AssociationSetEnd {
    * @param annotationElements
    * @return {@link AssociationSetEnd} for method chaining
    */
-  public AssociationSetEnd setAnnotationElements(Collection<AnnotationElement> annotationElements) {
+  public AssociationSetEnd setAnnotationElements(List<AnnotationElement> annotationElements) {
     this.annotationElements = annotationElements;
     return this;
   }

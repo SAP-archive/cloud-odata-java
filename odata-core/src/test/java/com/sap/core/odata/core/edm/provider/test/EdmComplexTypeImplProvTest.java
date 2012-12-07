@@ -8,7 +8,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
-import java.util.Collection;
+import java.util.List;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -39,7 +39,7 @@ public class EdmComplexTypeImplProvTest {
 
     ComplexType fooComplexType = new ComplexType().setName("fooComplexType");
 
-    Collection<Property> keyPropertysFoo = new ArrayList<Property>();
+    List<Property> keyPropertysFoo = new ArrayList<Property>();
     keyPropertysFoo.add(new SimpleProperty().setName("Name").setType(EdmSimpleTypeKind.String));
     keyPropertysFoo.add(new SimpleProperty().setName("Address").setType(EdmSimpleTypeKind.String));
     fooComplexType.setProperties(keyPropertysFoo);
@@ -50,7 +50,7 @@ public class EdmComplexTypeImplProvTest {
     ComplexType barBase = new ComplexType().setName("barBase");
     when(edmProvider.getComplexType(barBaseTypeName)).thenReturn(barBase);
 
-    Collection<Property> propertysBarBase = new ArrayList<Property>();
+    List<Property> propertysBarBase = new ArrayList<Property>();
     propertysBarBase.add(new SimpleProperty().setName("Name").setType(EdmSimpleTypeKind.String));
     propertysBarBase.add(new SimpleProperty().setName("Address").setType(EdmSimpleTypeKind.String));
     barBase.setProperties(propertysBarBase);
@@ -62,7 +62,7 @@ public class EdmComplexTypeImplProvTest {
 
   @Test
   public void getPropertiesNames() throws Exception {
-    Collection<String> properties = edmComplexType.getPropertyNames();
+    List<String> properties = edmComplexType.getPropertyNames();
     assertNotNull(properties);
     assertTrue(properties.contains("Name"));
     assertTrue(properties.contains("Address"));
@@ -70,7 +70,7 @@ public class EdmComplexTypeImplProvTest {
 
   @Test
   public void getPropertiesWithBaseType() throws Exception {
-    Collection<String> properties = edmComplexTypeWithBaseType.getPropertyNames();
+    List<String> properties = edmComplexTypeWithBaseType.getPropertyNames();
     assertNotNull(properties);
     assertTrue(properties.contains("Name"));
     assertTrue(properties.contains("Address"));

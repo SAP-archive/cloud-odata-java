@@ -1,7 +1,6 @@
 package com.sap.core.odata.testutils.mocks;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 import com.sap.core.odata.api.edm.EdmMultiplicity;
@@ -58,8 +57,8 @@ public class TechnicalScenarioEdmProvider extends EdmProviderDefault {
   private static final String ES_STRING_FACETS = "StringFacets";
 
   @Override
-  public Collection<Schema> getSchemas() throws ODataMessageException {
-    Collection<Schema> schemas = new ArrayList<Schema>();
+  public List<Schema> getSchemas() throws ODataMessageException {
+    List<Schema> schemas = new ArrayList<Schema>();
 
     Schema schema = new Schema();
     schema.setNamespace(NAMESPACE_1);
@@ -101,30 +100,30 @@ public class TechnicalScenarioEdmProvider extends EdmProviderDefault {
     {
       if (ET_KEY_IS_STRING.getName().equals(edmFQName.getName()))
       {
-        Collection<Property> properties = new ArrayList<Property>();
+        List<Property> properties = new ArrayList<Property>();
         properties.add(new SimpleProperty().setName("KeyString")
             .setType(EdmSimpleTypeKind.String)
             .setFacets(new Facets().setNullable(false)));
-        Collection<NavigationProperty> navigationProperties = new ArrayList<NavigationProperty>();
+        List<NavigationProperty> navigationProperties = new ArrayList<NavigationProperty>();
         navigationProperties.add(new NavigationProperty().setName("navProperty").setFromRole(ROLE_1).setToRole(ROLE_2).setRelationship(ASSOCIATION_ET1_ET2));
         
         return new EntityType().setName(ET_KEY_IS_STRING.getName()).setProperties(properties).setNavigationProperties(navigationProperties).setKey(createKey("KeyString"));
       }
       else if (ET_KEY_IS_INTEGER.getName().equals(edmFQName.getName()))
       {
-        Collection<Property> properties = new ArrayList<Property>();
+        List<Property> properties = new ArrayList<Property>();
         properties.add(new SimpleProperty().setName("KeyInteger")
             .setType(EdmSimpleTypeKind.String)
             .setFacets(new Facets().setNullable(false)));
         
-        Collection<NavigationProperty> navigationProperties = new ArrayList<NavigationProperty>();
+        List<NavigationProperty> navigationProperties = new ArrayList<NavigationProperty>();
         navigationProperties.add(new NavigationProperty().setName("navProperty").setFromRole(ROLE_2).setToRole(ROLE_1).setRelationship(ASSOCIATION_ET1_ET2));
            
         return new EntityType().setName(ET_KEY_IS_INTEGER.getName()).setProperties(properties).setNavigationProperties(navigationProperties).setKey(createKey("KeyInteger"));
       }
       else if (ET_COMPLEX_KEY.getName().equals(edmFQName.getName()))
       {
-        Collection<Property> properties = new ArrayList<Property>();
+        List<Property> properties = new ArrayList<Property>();
         properties.add(new SimpleProperty().setName("KeyString")
             .setType(EdmSimpleTypeKind.String)
             .setFacets(new Facets().setNullable(false)));
@@ -135,7 +134,7 @@ public class TechnicalScenarioEdmProvider extends EdmProviderDefault {
       }
       else if (ET_ALL_TYPES.getName().equals(edmFQName.getName()))
       {
-        Collection<Property> properties = new ArrayList<Property>();
+        List<Property> properties = new ArrayList<Property>();
         properties.add(new SimpleProperty().setName("Boolean").setType(EdmSimpleTypeKind.Boolean));
         properties.add(new SimpleProperty().setName("Binary").setType(EdmSimpleTypeKind.Binary));
         properties.add(new SimpleProperty().setName("Byte").setType(EdmSimpleTypeKind.Byte));
@@ -156,7 +155,7 @@ public class TechnicalScenarioEdmProvider extends EdmProviderDefault {
       }
       else if (ET_STRING_FACETS.getName().equals(edmFQName.getName()))
       {
-        Collection<Property> properties = new ArrayList<Property>();
+        List<Property> properties = new ArrayList<Property>();
         //TODO: What here?
 //        properties.add(new SimpleProperty().setName("StringCollation").setType(EdmSimpleTypeKind.String)
 //            .setFacets(new Facets().setCollation(collation)));
@@ -191,13 +190,13 @@ public class TechnicalScenarioEdmProvider extends EdmProviderDefault {
   {
     if (NAMESPACE_1.equals(edmFQName.getNamespace()))
       if (CT_ADDRESS.getName().equals(edmFQName.getName())) {
-        Collection<Property> properties = new ArrayList<Property>();
+        List<Property> properties = new ArrayList<Property>();
         properties.add(new SimpleProperty().setName("Street").setType(EdmSimpleTypeKind.String));
         properties.add(new SimpleProperty().setName("City").setType(EdmSimpleTypeKind.String));
         return new ComplexType().setName(CT_ADDRESS.getName()).setAbstract(false).setProperties(properties);
       }
       else if (CT_ALL_TYPES.getName().equals(edmFQName.getName())) {
-        Collection<Property> properties = new ArrayList<Property>();
+        List<Property> properties = new ArrayList<Property>();
         properties.add(new SimpleProperty().setName("Boolean").setType(EdmSimpleTypeKind.Boolean));
         properties.add(new SimpleProperty().setName("Binary").setType(EdmSimpleTypeKind.Binary));
         properties.add(new SimpleProperty().setName("Byte").setType(EdmSimpleTypeKind.Byte));
@@ -279,7 +278,7 @@ public class TechnicalScenarioEdmProvider extends EdmProviderDefault {
   }
 
   private Key createKey(final String... keyNames) {
-    Collection<PropertyRef> keyProperties = new ArrayList<PropertyRef>();
+    List<PropertyRef> keyProperties = new ArrayList<PropertyRef>();
     for (final String keyName : keyNames)
       keyProperties.add(new PropertyRef().setName(keyName));
     return new Key().setKeys(keyProperties);

@@ -8,7 +8,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
-import java.util.Collection;
+import java.util.List;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -55,7 +55,7 @@ public class EdmEntitySetProvTest {
     EntitySet entitySetFoo = new EntitySet().setName("foo");
     when(edmProvider.getEntitySet("Container", "foo")).thenReturn(entitySetFoo);
 
-    Collection<NavigationProperty> navigationProperties = new ArrayList<NavigationProperty>();
+    List<NavigationProperty> navigationProperties = new ArrayList<NavigationProperty>();
     FullQualifiedName fooBarAssocName = new FullQualifiedName("namespace", "fooBarAssoc");
     navigationProperties.add(new NavigationProperty().setName("fooBarNav").setFromRole("fromFoo").setRelationship(fooBarAssocName).setToRole("toBar"));
 
@@ -100,7 +100,7 @@ public class EdmEntitySetProvTest {
 
   @Test
   public void testEntitySetNavigation() throws Exception {
-    Collection<String> navPropertyyNames = edmEnitiySetFoo.getEntityType().getNavigationPropertyNames();
+    List<String> navPropertyyNames = edmEnitiySetFoo.getEntityType().getNavigationPropertyNames();
     assertTrue(navPropertyyNames.contains("fooBarNav"));
     EdmTyped navProperty = edmEnitiySetFoo.getEntityType().getProperty("fooBarNav");
     assertNotNull(navProperty);

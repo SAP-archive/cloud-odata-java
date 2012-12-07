@@ -1,6 +1,6 @@
 package com.sap.core.odata.api.edm.provider;
 
-import java.util.Collection;
+import java.util.List;
 
 /**
  * Objects of this class represent a Key for an entity type
@@ -8,28 +8,28 @@ import java.util.Collection;
  */
 public class Key {
 
-  private Collection<PropertyRef> keys;
-  private Collection<AnnotationAttribute> annotationAttributes;
-  private Collection<AnnotationElement> annotationElements;
+  private List<PropertyRef> keys;
+  private List<AnnotationAttribute> annotationAttributes;
+  private List<AnnotationElement> annotationElements;
 
   /**
-   * @return Collection<{@link PropertyRef}> references to the key properties
+   * @return List<{@link PropertyRef}> references to the key properties
    */
-  public Collection<PropertyRef> getKeys() {
+  public List<PropertyRef> getKeys() {
     return keys;
   }
 
   /**
-   * @return collection of {@link AnnotationAttribute} annotation attributes
+   * @return List of {@link AnnotationAttribute} annotation attributes
    */
-  public Collection<AnnotationAttribute> getAnnotationAttributes() {
+  public List<AnnotationAttribute> getAnnotationAttributes() {
     return annotationAttributes;
   }
 
   /**
-   * @return collection of {@link AnnotationElement} annotation elements
+   * @return List of {@link AnnotationElement} annotation elements
    */
-  public Collection<AnnotationElement> getAnnotationElements() {
+  public List<AnnotationElement> getAnnotationElements() {
     return annotationElements;
   }
 
@@ -39,27 +39,27 @@ public class Key {
    * @param keys
    * @return {@link Key} for method chaining
    */
-  public Key setKeys(Collection<PropertyRef> keys) {
+  public Key setKeys(List<PropertyRef> keys) {
     this.keys = keys;
     return this;
   }
 
   /**
-   * Sets the collection of {@link AnnotationAttribute} for this {@link Key}
+   * Sets the List of {@link AnnotationAttribute} for this {@link Key}
    * @param annotationAttributes
    * @return {@link Key} for method chaining
    */
-  public Key setAnnotationAttributes(Collection<AnnotationAttribute> annotationAttributes) {
+  public Key setAnnotationAttributes(List<AnnotationAttribute> annotationAttributes) {
     this.annotationAttributes = annotationAttributes;
     return this;
   }
 
   /**
-   * Sets the collection of {@link AnnotationElement} for this {@link Key}
+   * Sets the List of {@link AnnotationElement} for this {@link Key}
    * @param annotationElements
    * @return {@link Key} for method chaining
    */
-  public Key setAnnotationElements(Collection<AnnotationElement> annotationElements) {
+  public Key setAnnotationElements(List<AnnotationElement> annotationElements) {
     this.annotationElements = annotationElements;
     return this;
   }

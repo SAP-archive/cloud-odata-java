@@ -1,6 +1,6 @@
 package com.sap.core.odata.api.edm;
 
-import java.util.Collection;
+import java.util.List;
 
 /**
  * EdmStructuralType is the base for a complex type or an entity type
@@ -23,10 +23,10 @@ public interface EdmStructuralType extends EdmType {
   /**
    * Get all property names
    * 
-   * @return property names as type Collection<String>
+   * @return property names as type List<String>
    * @throws EdmException
    */
-  Collection<String> getPropertyNames() throws EdmException;
+  List<String> getPropertyNames() throws EdmException;
 
   /**
    * Get the base type

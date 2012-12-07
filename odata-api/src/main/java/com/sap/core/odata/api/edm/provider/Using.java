@@ -1,6 +1,7 @@
 package com.sap.core.odata.api.edm.provider;
 
 import java.util.Collection;
+import java.util.List;
 
 /**
  * @author SAP AG
@@ -10,8 +11,8 @@ public class Using {
   private String namespace;
   private String alias;
   private Documentation documentation;
-  private Collection<AnnotationAttribute> annotationAttributes;
-  private Collection<AnnotationElement> annotationElements;
+  private List<AnnotationAttribute> annotationAttributes;
+  private List<AnnotationElement> annotationElements;
 
   /**
    * MANDATORY
@@ -50,7 +51,7 @@ public class Using {
    * @param annotationAttributes
    * @return {@link Using} for method chaining
    */
-  public Using setAnnotationAttributes(Collection<AnnotationAttribute> annotationAttributes) {
+  public Using setAnnotationAttributes(List<AnnotationAttribute> annotationAttributes) {
     this.annotationAttributes = annotationAttributes;
     return this;
   }
@@ -60,7 +61,7 @@ public class Using {
    * @param annotationElements
    * @return {@link Using} for method chaining
    */
-  public Using setAnnotationElements(Collection<AnnotationElement> annotationElements) {
+  public Using setAnnotationElements(List<AnnotationElement> annotationElements) {
     this.annotationElements = annotationElements;
     return this;
   }

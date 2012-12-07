@@ -1,7 +1,7 @@
 package com.sap.core.odata.core.edm.provider;
 
 import java.util.ArrayList;
-import java.util.Collection;
+import java.util.List;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -28,7 +28,7 @@ public abstract class EdmStructuralTypeImplProv extends EdmNamedImplProv impleme
   protected String namespace;
   protected Map<String, EdmTyped> edmProperties;
   private Map<String, Property> properties;
-  private Collection<String> edmPropertyNames;
+  private List<String> edmPropertyNames;
 
   public EdmStructuralTypeImplProv(EdmImplProv edm, ComplexType structuralType, EdmTypeKind edmTypeKind, String namespace) throws EdmException {
     super(edm, structuralType.getName());
@@ -60,7 +60,7 @@ public abstract class EdmStructuralTypeImplProv extends EdmNamedImplProv impleme
   private void buildPropertiesInternal() throws EdmException {
     this.properties = new HashMap<String, Property>();
 
-    Collection<Property> properties = structuralType.getProperties();
+    List<Property> properties = structuralType.getProperties();
     if (properties != null) {
       Property property;
       for (Iterator<Property> iterator = properties.iterator(); iterator.hasNext();) {
@@ -88,7 +88,7 @@ public abstract class EdmStructuralTypeImplProv extends EdmNamedImplProv impleme
   }
 
   @Override
-  public Collection<String> getPropertyNames() throws EdmException {
+  public List<String> getPropertyNames() throws EdmException {
     if (edmPropertyNames == null) {
       edmPropertyNames = new ArrayList<String>();
       edmPropertyNames.addAll(properties.keySet());

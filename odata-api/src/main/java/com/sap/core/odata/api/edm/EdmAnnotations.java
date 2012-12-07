@@ -1,6 +1,6 @@
 package com.sap.core.odata.api.edm;
 
-import java.util.Collection;
+import java.util.List;
 
 /**
  * EdmAnnotations holds all annotation attributes and elements for a specific CSDL element.
@@ -14,9 +14,9 @@ public interface EdmAnnotations {
   /**
    * Get all annotation elements for the CSDL element
    * 
-   * @return Collection of {@link EdmAnnotationElement}
+   * @return List of {@link EdmAnnotationElement}
    */
-  Collection<? extends EdmAnnotationElement> getAnnotationElements();
+  List<? extends EdmAnnotationElement> getAnnotationElements();
 
   /**
    * Get annotation element by full qualified name
@@ -31,9 +31,9 @@ public interface EdmAnnotations {
   /**
    * Get all annotation attributes for the CSDL element
    * 
-   * @return Collection of {@link EdmAnnotationAttribute}
+   * @return List of {@link EdmAnnotationAttribute}
    */
-  Collection<? extends EdmAnnotationAttribute> getAnnotationAttributes();
+  List<? extends EdmAnnotationAttribute> getAnnotationAttributes();
 
   /**
    * Get annotation attribute by full qualified name

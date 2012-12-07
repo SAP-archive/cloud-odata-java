@@ -1,6 +1,5 @@
 package com.sap.core.odata.api.edm;
 
-import java.util.Collection;
 import java.util.List;
 
 /**
@@ -19,10 +18,10 @@ public interface EdmEntityType extends EdmStructuralType {
   /**
    * Get all key property names
    * 
-   * @return collection of key property names of type Collection<String>
+   * @return collection of key property names of type List<String>
    * @throws EdmException
    */
-  Collection<String> getKeyPropertyNames() throws EdmException;
+  List<String> getKeyPropertyNames() throws EdmException;
 
   /**
    * Get all key properties as list of {@link EdmProperty} 
@@ -56,8 +55,8 @@ public interface EdmEntityType extends EdmStructuralType {
   /**
    * Get all navigation property names
    * 
-   * @return collection of navigation properties of type Collection<String>
+   * @return collection of navigation properties of type List<String>
    * @throws EdmException
    */
-  Collection<String> getNavigationPropertyNames() throws EdmException;
+  List<String> getNavigationPropertyNames() throws EdmException;
 }

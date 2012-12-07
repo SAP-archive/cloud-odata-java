@@ -6,7 +6,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
-import java.util.Collection;
+import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,7 +27,7 @@ public class EdmServiceMetadataImplProv implements EdmServiceMetadata {
   
   private EdmProvider edmProvider;
   private String dataServiceVersion;
-  private Collection<Schema> schemas;
+  private List<Schema> schemas;
 
   public EdmServiceMetadataImplProv(EdmProvider edmProvider) {
     this.edmProvider = edmProvider;
@@ -72,10 +72,10 @@ public class EdmServiceMetadataImplProv implements EdmServiceMetadata {
 
       if (schemas != null) {
         for (Schema schema : schemas) {
-          Collection<EntityType> entityTypes = schema.getEntityTypes();
+          List<EntityType> entityTypes = schema.getEntityTypes();
           if (entityTypes != null) {
             for (EntityType entityType : entityTypes) {
-              Collection<Property> properties = entityType.getProperties();
+              List<Property> properties = entityType.getProperties();
               if (properties != null) {
                 for (Property property : properties) {
                   if (property.getCustomizableFeedMappings() != null) {

@@ -1,6 +1,6 @@
 package com.sap.core.odata.api.edm.provider;
 
-import java.util.Collection;
+import java.util.List;
 
 /**
  * Objects of this class represent an entity container including its child elements
@@ -8,15 +8,15 @@ import java.util.Collection;
  */
 public class EntityContainer extends EntityContainerInfo {
 
-  private Collection<EntitySet> entitySets;
-  private Collection<AssociationSet> associationSets;
-  private Collection<FunctionImport> functionImports;
+  private List<EntitySet> entitySets;
+  private List<AssociationSet> associationSets;
+  private List<FunctionImport> functionImports;
   private Documentation documentation;
 
   /**
-   * @return <b>Collection</b> of all entity sets of the entity container
+   * @return <b>List</b> of all entity sets of the entity container
    */
-  public Collection<EntitySet> getEntitySets() {
+  public List<EntitySet> getEntitySets() {
     return entitySets;
   }
 
@@ -25,15 +25,15 @@ public class EntityContainer extends EntityContainerInfo {
    * @param name
    * @return {@link EntityContainerInfo} for method chaining
    */
-  public EntityContainer setEntitySets(Collection<EntitySet> entitySets) {
+  public EntityContainer setEntitySets(List<EntitySet> entitySets) {
     this.entitySets = entitySets;
     return this;
   }
 
   /**
-   * @return <b>Collection</b> of all association sets of the entity container
+   * @return <b>List</b> of all association sets of the entity container
    */
-  public Collection<AssociationSet> getAssociationSets() {
+  public List<AssociationSet> getAssociationSets() {
     return associationSets;
   }
 
@@ -42,15 +42,15 @@ public class EntityContainer extends EntityContainerInfo {
    * @param name
    * @return {@link EntityContainerInfo} for method chaining
    */
-  public EntityContainer setAssociationSets(Collection<AssociationSet> associationStets) {
+  public EntityContainer setAssociationSets(List<AssociationSet> associationStets) {
     this.associationSets = associationStets;
     return this;
   }
 
   /**
-   * @return <b>Collection</b> of all function imports of the entity container
+   * @return <b>List</b> of all function imports of the entity container
    */
-  public Collection<FunctionImport> getFunctionImports() {
+  public List<FunctionImport> getFunctionImports() {
     return functionImports;
   }
 
@@ -59,7 +59,7 @@ public class EntityContainer extends EntityContainerInfo {
    * @param name
    * @return {@link EntityContainerInfo} for method chaining
    */
-  public EntityContainer setFunctionImports(Collection<FunctionImport> functionImports) {
+  public EntityContainer setFunctionImports(List<FunctionImport> functionImports) {
     this.functionImports = functionImports;
     return this;
   }

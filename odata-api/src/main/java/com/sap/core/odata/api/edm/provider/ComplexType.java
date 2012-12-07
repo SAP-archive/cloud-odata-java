@@ -1,6 +1,6 @@
 package com.sap.core.odata.api.edm.provider;
 
-import java.util.Collection;
+import java.util.List;
 
 import com.sap.core.odata.api.edm.FullQualifiedName;
 
@@ -13,11 +13,11 @@ public class ComplexType {
   private String name;
   private FullQualifiedName baseType;
   private boolean isAbstract;
-  private Collection<Property> properties;
+  private List<Property> properties;
   private Mapping mapping;
   private Documentation documentation;
-  private Collection<AnnotationAttribute> annotationAttributes;
-  private Collection<AnnotationElement> annotationElements;
+  private List<AnnotationAttribute> annotationAttributes;
+  private List<AnnotationElement> annotationElements;
 
   /**
    * @return <b>String</b> name
@@ -41,9 +41,9 @@ public class ComplexType {
   }
 
   /**
-   * @return Collection<{@link Property}> of all properties for this type
+   * @return List<{@link Property}> of all properties for this type
    */
-  public Collection<Property> getProperties() {
+  public List<Property> getProperties() {
     return properties;
   }
 
@@ -64,14 +64,14 @@ public class ComplexType {
   /**
    * @return collection of {@link AnnotationAttribute} annotation attributes
    */
-  public Collection<AnnotationAttribute> getAnnotationAttributes() {
+  public List<AnnotationAttribute> getAnnotationAttributes() {
     return annotationAttributes;
   }
 
   /**
    * @return collection of {@link AnnotationElement} annotation elements
    */
-  public Collection<AnnotationElement> getAnnotationElements() {
+  public List<AnnotationElement> getAnnotationElements() {
     return annotationElements;
   }
 
@@ -112,7 +112,7 @@ public class ComplexType {
    * @param properties
    * @return {@link ComplexType} for method chaining
    */
-  public ComplexType setProperties(Collection<Property> properties) {
+  public ComplexType setProperties(List<Property> properties) {
     this.properties = properties;
     return this;
   }
@@ -142,7 +142,7 @@ public class ComplexType {
    * @param annotationAttributes
    * @return {@link ComplexType} for method chaining
    */
-  public ComplexType setAnnotationAttributes(Collection<AnnotationAttribute> annotationAttributes) {
+  public ComplexType setAnnotationAttributes(List<AnnotationAttribute> annotationAttributes) {
     this.annotationAttributes = annotationAttributes;
     return this;
   }
@@ -152,7 +152,7 @@ public class ComplexType {
    * @param annotationElements
    * @return {@link ComplexType} for method chaining
    */
-  public ComplexType setAnnotationElements(Collection<AnnotationElement> annotationElements) {
+  public ComplexType setAnnotationElements(List<AnnotationElement> annotationElements) {
     this.annotationElements = annotationElements;
     return this;
   }

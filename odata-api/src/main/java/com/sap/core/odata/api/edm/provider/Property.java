@@ -1,6 +1,6 @@
 package com.sap.core.odata.api.edm.provider;
 
-import java.util.Collection;
+import java.util.List;
 
 import com.sap.core.odata.api.edm.EdmFacets;
 
@@ -16,8 +16,8 @@ public abstract class Property {
   private String mimeType;
   private Mapping mapping;
   private Documentation documentation;
-  private Collection<AnnotationAttribute> annotationAttributes;
-  private Collection<AnnotationElement> annotationElements;
+  private List<AnnotationAttribute> annotationAttributes;
+  private List<AnnotationElement> annotationElements;
 
   /**
    * @return <b>String</b> name of this property
@@ -62,16 +62,16 @@ public abstract class Property {
   }
 
   /**
-   * @return collection of {@link AnnotationAttribute} annotation attributes
+   * @return List of {@link AnnotationAttribute} annotation attributes
    */
-  public Collection<AnnotationAttribute> getAnnotationAttributes() {
+  public List<AnnotationAttribute> getAnnotationAttributes() {
     return annotationAttributes;
   }
 
   /**
-   * @return collection of {@link AnnotationElement} annotation elements
+   * @return List of {@link AnnotationElement} annotation elements
    */
-  public Collection<AnnotationElement> getAnnotationElements() {
+  public List<AnnotationElement> getAnnotationElements() {
     return annotationElements;
   }
 
@@ -137,21 +137,21 @@ public abstract class Property {
   }
 
   /**
-   * Sets the collection of {@link AnnotationAttribute} for this {@link Property}
+   * Sets the List of {@link AnnotationAttribute} for this {@link Property}
    * @param annotationAttributes
    * @return {@link Property} for method chaining
    */
-  public Property setAnnotationAttributes(Collection<AnnotationAttribute> annotationAttributes) {
+  public Property setAnnotationAttributes(List<AnnotationAttribute> annotationAttributes) {
     this.annotationAttributes = annotationAttributes;
     return this;
   }
 
   /**
-   * Sets the collection of {@link AnnotationElement} for this {@link Property}
+   * Sets the List of {@link AnnotationElement} for this {@link Property}
    * @param annotationElements
    * @return {@link Property} for method chaining
    */
-  public Property setAnnotationElements(Collection<AnnotationElement> annotationElements) {
+  public Property setAnnotationElements(List<AnnotationElement> annotationElements) {
     this.annotationElements = annotationElements;
     return this;
   }

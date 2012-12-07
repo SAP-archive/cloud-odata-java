@@ -8,7 +8,6 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 import org.junit.BeforeClass;
@@ -41,7 +40,7 @@ public class EdmEntityTypeImplProvTest {
     edmProvider = mock(EdmProvider.class);
     EdmImplProv edmImplProv = new EdmImplProv(edmProvider);
 
-    Collection<NavigationProperty> navigationProperties = new ArrayList<NavigationProperty>();
+    List<NavigationProperty> navigationProperties = new ArrayList<NavigationProperty>();
     FullQualifiedName fooBarAssocName = new FullQualifiedName("namespace", "fooBarAssoc");
     navigationProperties.add(new NavigationProperty().setName("fooBarNav").setFromRole("fromFoo").setRelationship(fooBarAssocName).setToRole("toBar"));
 
@@ -49,13 +48,13 @@ public class EdmEntityTypeImplProvTest {
     FullQualifiedName fooEntityTypeFullName = new FullQualifiedName("namespace", "fooEntityType");
     when(edmProvider.getEntityType(fooEntityTypeFullName)).thenReturn(fooEntityType);
 
-    Collection<Property> keyPropertysFoo = new ArrayList<Property>();
+    List<Property> keyPropertysFoo = new ArrayList<Property>();
     Property keyPropFoo = new SimpleProperty().setName("Id").setType(EdmSimpleTypeKind.String);
     keyPropertysFoo.add(keyPropFoo);
     fooEntityType.setProperties(keyPropertysFoo);
 
     PropertyRef refToKeyFoo = new PropertyRef().setName("Id");
-    Collection<PropertyRef> propRefKeysFoo = new ArrayList<PropertyRef>();
+    List<PropertyRef> propRefKeysFoo = new ArrayList<PropertyRef>();
     propRefKeysFoo.add(refToKeyFoo);
 
     Key fooTypeKey = new Key().setKeys(propRefKeysFoo);
@@ -67,17 +66,17 @@ public class EdmEntityTypeImplProvTest {
     EntityType barBase = new EntityType().setName("barBase");
     when(edmProvider.getEntityType(barBaseTypeName)).thenReturn(barBase);
 
-    Collection<NavigationProperty> navigationPropertiesBarBase = new ArrayList<NavigationProperty>();
+    List<NavigationProperty> navigationPropertiesBarBase = new ArrayList<NavigationProperty>();
     navigationPropertiesBarBase.add(new NavigationProperty().setName("barBaseNav"));
     barBase.setNavigationProperties(navigationPropertiesBarBase);
 
-    Collection<Property> keyPropertysBarBase = new ArrayList<Property>();
+    List<Property> keyPropertysBarBase = new ArrayList<Property>();
     Property keyPropBarBase = new SimpleProperty().setName("Id").setType(EdmSimpleTypeKind.String);
     keyPropertysBarBase.add(keyPropBarBase);
     barBase.setProperties(keyPropertysBarBase);
 
     PropertyRef refToKeyBarBase = new PropertyRef().setName("Id");
-    Collection<PropertyRef> propRefKeysBarBase = new ArrayList<PropertyRef>();
+    List<PropertyRef> propRefKeysBarBase = new ArrayList<PropertyRef>();
     propRefKeysBarBase.add(refToKeyBarBase);
 
     Key barBaseTypeKey = new Key().setKeys(propRefKeysBarBase);
@@ -100,25 +99,25 @@ public class EdmEntityTypeImplProvTest {
 
   @Test
   public void getKeyPropertiesNames() throws Exception {
-    Collection<String> keyProperties = edmEntityType.getKeyPropertyNames();
+    List<String> keyProperties = edmEntityType.getKeyPropertyNames();
     assertNotNull(keyProperties);
     assertTrue(keyProperties.contains("Id"));
 
-    Collection<String> properties = edmEntityType.getPropertyNames();
+    List<String> properties = edmEntityType.getPropertyNames();
     assertNotNull(properties);
     assertTrue(properties.contains("Id"));
   }
 
   @Test
   public void getPropertiesNames() throws Exception {
-    Collection<String> properties = edmEntityType.getPropertyNames();
+    List<String> properties = edmEntityType.getPropertyNames();
     assertNotNull(properties);
     assertTrue(properties.contains("Id"));
   }
 
   @Test
   public void getNavProperties() throws Exception {
-    Collection<String> navProperties = edmEntityType.getNavigationPropertyNames();
+    List<String> navProperties = edmEntityType.getNavigationPropertyNames();
     assertNotNull(navProperties);
     assertTrue(navProperties.contains("fooBarNav"));
   }
@@ -132,21 +131,21 @@ public class EdmEntityTypeImplProvTest {
 
   @Test
   public void getKeyPropertiesNamesWithBaseType() throws Exception {
-    Collection<String> keyProperties = edmEntityTypeWithBaseType.getKeyPropertyNames();
+    List<String> keyProperties = edmEntityTypeWithBaseType.getKeyPropertyNames();
     assertNotNull(keyProperties);
     assertTrue(keyProperties.contains("Id"));
   }
 
   @Test
   public void getPropertiesWithBaseType() throws Exception {
-    Collection<String> properties = edmEntityTypeWithBaseType.getPropertyNames();
+    List<String> properties = edmEntityTypeWithBaseType.getPropertyNames();
     assertNotNull(properties);
     assertTrue(properties.contains("Id"));
   }
 
   @Test
   public void getNavPropertiesWithBaseType() throws Exception {
-    Collection<String> navProperties = edmEntityTypeWithBaseType.getNavigationPropertyNames();
+    List<String> navProperties = edmEntityTypeWithBaseType.getNavigationPropertyNames();
     assertNotNull(navProperties);
     assertTrue(navProperties.contains("barBaseNav"));
   }
