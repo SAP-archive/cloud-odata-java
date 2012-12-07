@@ -254,14 +254,14 @@ public class ListsProcessor extends ODataSingleProcessor {
     // if (!appliesFilter(data, uriParserResultView.getFilter()))
     //   throw new ODataNotFoundException(ODataNotFoundException.ENTITY);
 
-    EdmProperty property = null;
-    for (EdmProperty intermediateProperty : uriParserResultView.getPropertyPath())
-      data = getPropertyValue(data, property = intermediateProperty);
+    final List<EdmProperty> propertyPath = uriParserResultView.getPropertyPath();
+    data = getPropertyValue(data, propertyPath);
 
     Format format = uriParserResultView.getFormat();
     if (format == null)
       format = Format.XML;
 
+    final EdmProperty property = propertyPath.get(propertyPath.size() - 1);
     final EdmType type = property.getType();
 
     final Object value = type.getKind() == EdmTypeKind.COMPLEX ?
@@ -291,13 +291,10 @@ public class ListsProcessor extends ODataSingleProcessor {
     // if (!appliesFilter(data, uriParserResultView.getFilter()))
     //   throw new ODataNotFoundException(ODataNotFoundException.ENTITY);
 
-    EdmProperty property = null;
-    Object propertyValue = data;
-    for (EdmProperty intermediateProperty : uriParserResultView.getPropertyPath())
-      propertyValue = getPropertyValue(propertyValue, property = intermediateProperty);
-
+    final List<EdmProperty> propertyPath = uriParserResultView.getPropertyPath();
+    final EdmProperty property = propertyPath.get(propertyPath.size() - 1);
     final EdmSimpleType type = (EdmSimpleType) property.getType();
-    final String value = type.valueToString(propertyValue, EdmLiteralKind.DEFAULT, property.getFacets());
+    final String value = type.valueToString(getPropertyValue(data, propertyPath), EdmLiteralKind.DEFAULT, property.getFacets());
 
     return ODataResponse
         .status(HttpStatusCodes.OK)
@@ -425,7 +422,7 @@ public class ListsProcessor extends ODataSingleProcessor {
     if (filter != null)
       // Remove all elements the filter does not apply for.
       // A for-each loop would not work with "remove", see Java documentation.
-      for (Iterator<T> iterator = data.iterator(); iterator.hasNext(); )
+      for (Iterator<T> iterator = data.iterator(); iterator.hasNext();)
         if (!appliesFilter(iterator.next(), filter))
           iterator.remove();
 
@@ -572,7 +569,7 @@ public class ListsProcessor extends ODataSingleProcessor {
       final MemberExpression memberExpression = (MemberExpression) expression;
       final PropertyExpression memberPath = (PropertyExpression) memberExpression.getPath();
       final EdmProperty memberProperty = memberPath.getEdmProperty();
-      final EdmSimpleType memberType = (EdmSimpleType) memberPath.getEdmType(); 
+      final EdmSimpleType memberType = (EdmSimpleType) memberPath.getEdmType();
       List<EdmProperty> propertyPath = new ArrayList<EdmProperty>();
       CommonExpression currentExpression = memberExpression;
       while (currentExpression != null && currentExpression.getKind() == ExpressionKind.MEMBER) {
@@ -581,10 +578,7 @@ public class ListsProcessor extends ODataSingleProcessor {
         propertyPath.add(0, currentProperty);
         currentExpression = memberExpression.getSource();
       }
-      Object currentData = data;
-      for (final EdmProperty intermediateProperty : propertyPath)
-        currentData = getPropertyValue(currentData, intermediateProperty);
-      return memberType.valueToString(getPropertyValue(currentData, memberProperty), EdmLiteralKind.DEFAULT, memberProperty.getFacets());
+      return memberType.valueToString(getPropertyValue(data, propertyPath), EdmLiteralKind.DEFAULT, memberProperty.getFacets());
 
     case LITERAL:
       final LiteralExpression literal = (LiteralExpression) expression;
@@ -672,6 +666,14 @@ public class ListsProcessor extends ODataSingleProcessor {
     return skipToken;
   }
 
+  private <T> Object getPropertyValue(final T data, final List<EdmProperty> propertyPath) throws ODataException {
+    Object dataObject = data;
+    for (final EdmProperty property : propertyPath)
+      if (dataObject != null)
+        dataObject = getPropertyValue(dataObject, property);
+    return dataObject;
+  }
+
   private <T> Object getPropertyValue(final T data, final EdmProperty property) throws ODataException {
     final String prefix = property.getType().getKind() == EdmTypeKind.SIMPLE && property.getType() == EdmSimpleTypeKind.Boolean.getEdmSimpleTypeInstance() ? "is" : "get";
     final String defaultMethodName = prefix + property.getName();
@@ -716,19 +718,21 @@ public class ListsProcessor extends ODataSingleProcessor {
     Object dataObject = data;
 
     for (final String method : methodName.split("\\.", -1))
-      try {
-        dataObject = dataObject.getClass().getMethod(method).invoke(dataObject);
-      } catch (SecurityException e) {
-        throw new ODataNotFoundException(null, e);
-      } catch (NoSuchMethodException e) {
-        throw new ODataNotFoundException(null, e);
-      } catch (IllegalArgumentException e) {
-        throw new ODataNotFoundException(null, e);
-      } catch (IllegalAccessException e) {
-        throw new ODataNotFoundException(null, e);
-      } catch (InvocationTargetException e) {
-        throw new ODataNotFoundException(null, e);
-      }
+      if (dataObject != null)
+        try {
+          dataObject = dataObject.getClass().getMethod(method).invoke(dataObject);
+        } catch (SecurityException e) {
+          throw new ODataNotFoundException(null, e);
+        } catch (NoSuchMethodException e) {
+          throw new ODataNotFoundException(null, e);
+        } catch (IllegalArgumentException e) {
+          throw new ODataNotFoundException(null, e);
+        } catch (IllegalAccessException e) {
+          throw new ODataNotFoundException(null, e);
+        } catch (InvocationTargetException e) {
+          throw new ODataNotFoundException(null, e);
+        }
+
     return dataObject;
   }
 

@@ -25,6 +25,11 @@ public class Bit implements EdmSimpleType {
   }
 
   @Override
+  public int hashCode() {
+    return -1;
+  }
+
+  @Override
   public String getNamespace() throws EdmException {
     return EdmSimpleType.SYSTEM_NAMESPACE;
   }

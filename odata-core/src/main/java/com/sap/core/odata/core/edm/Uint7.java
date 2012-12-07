@@ -25,6 +25,11 @@ public class Uint7 implements EdmSimpleType {
   }
 
   @Override
+  public int hashCode() {
+    return -7;
+  }
+
+  @Override
   public String getNamespace() throws EdmException {
     return EdmSimpleType.SYSTEM_NAMESPACE;
   }
