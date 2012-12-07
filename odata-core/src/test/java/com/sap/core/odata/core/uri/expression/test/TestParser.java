@@ -72,7 +72,9 @@ public class TestParser {
   {
     EdmEntityType edmType = edmInfo.getEtAllTypes();
     
-    GetPTF(edm, edmType,"sven");
+    GetPTF(edm, edmType,"String");
+    GetPTF(edm, edmType,"Complex/String");
+    //GetPTF(edm, edmType,"Complex/Address/City");
   }
 
   

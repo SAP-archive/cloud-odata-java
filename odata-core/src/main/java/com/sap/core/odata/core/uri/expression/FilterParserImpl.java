@@ -787,13 +787,13 @@ public class FilterParserImpl implements FilterParser
         throw new Exception();/*TODO*//*
 
 
-                                                                  RAISE EXCEPTION TYPE /iwcor/cx_ds_expr_parser_error "OK
-                                                                  EXPORTING
-                                                                  textid   = /iwcor/cx_ds_expr_parser_error=>property_not_in_type
-                                                                  type     = lv_type_name
-                                                                  property = is_property_token-value
-                                                                  position = is_property_token-position.
-                                                                  ENDIF.*/
+                                                                      RAISE EXCEPTION TYPE /iwcor/cx_ds_expr_parser_error "OK
+                                                                      EXPORTING
+                                                                      textid   = /iwcor/cx_ds_expr_parser_error=>property_not_in_type
+                                                                      type     = lv_type_name
+                                                                      property = is_property_token-value
+                                                                      position = is_property_token-position.
+                                                                      ENDIF.*/
 
       }
     } catch (Exception ex)
@@ -1023,7 +1023,7 @@ public class FilterParserImpl implements FilterParser
 
   }
 
-  private void validateEdmProperty(CommonExpression leftExpression, PropertyExpression property) throws FilterParserException {
+  private void validateEdmProperty(CommonExpression leftExpression, PropertyExpression property) throws FilterParserException, FilterParserInternalError {
     // Exist if no edm provided
     if ((this.edm == null) || (this.resourceEntityType == null))
       return;
@@ -1033,7 +1033,7 @@ public class FilterParserImpl implements FilterParser
     if ((leftExpression == null) || (!(leftExpression instanceof MemberExpression)))
     {
       //e.g. "$filter='Hong Kong' eq city" --> "city" is checked against the resource entity type of the last URL segment 
-      validateEdmPropertyOfEntityType(this.resourceEntityType);
+      validateEdmPropertyOfEntityType(property, this.resourceEntityType);
       return;
     }
 
@@ -1041,32 +1041,52 @@ public class FilterParserImpl implements FilterParser
     //     "address" itself must be a (navigation)property of the resource entity type of the last URL segment AND
     //     "address" must have a structural edm type
     MemberExpression member = (MemberExpression) leftExpression;
-    EdmType parentType = member.getPath().getEdmType();  //parentType point now to the type of property "address"
+    EdmType parentType = member.getPath().getEdmType(); //parentType point now to the type of property "address"
 
     if (parentType instanceof EdmEntityType)
     {
       //e.g. "$filter='Hong Kong' eq navigationProp/city" --> "navigationProp" is a navigation property with a entity type
-      validateEdmPropertyOfEntityType((EdmEntityType) parentType);
+      validateEdmPropertyOfEntityType(property, (EdmEntityType) parentType);
     }
     else if (parentType instanceof EdmComplexType)
     {
       //e.g. "$filter='Hong Kong' eq address/city" --> "address" is a property with a complex type 
-      validateEdmPropertyOfEntityType((EdmComplexType) parentType);
+      validateEdmPropertyOfComplexType( property,(EdmComplexType) parentType);
     }
     else
     {
-    //e.g. "$filter='Hong Kong' eq name/city" --> "name is of type String" 
+      //e.g. "$filter='Hong Kong' eq name/city" --> "name is of type String" 
       throw FilterParserExceptionImpl.createLEFT_SIDE_NOT_STRUCTURAL_TYPE();
     }
 
     return;
   }
 
-  private void validateEdmPropertyOfEntityType(EdmComplexType parentType) {
+  private void validateEdmPropertyOfComplexType(PropertyExpression property, EdmComplexType parentType) throws FilterParserException, FilterParserInternalError
+  {
+    try {
+      String propertyName = property.getPropertyName();
+      EdmTyped edmProperty = parentType.getProperty(propertyName);
+      
+      if (edmProperty != null)
+      {
+        property.setEdmType(edmProperty.getType());
+      }
+      else
+      {
+        throw FilterParserExceptionImpl.createPROPERTY_NAME_NOT_FOUND_IN_TYPE(parentType,property);
+      }
+      
+    } catch (EdmException e) {
+      throw FilterParserInternalError.createERROR_ACCESSING_EDM(e);
+    }
+    
     // TODO Auto-generated method stub
   }
 
-  private void validateEdmPropertyOfEntityType(EdmEntityType parentType) {
+  private void validateEdmPropertyOfEntityType(PropertyExpression property, EdmEntityType parentType)
+  {
+
     // TODO Auto-generated method stub
   }
 
