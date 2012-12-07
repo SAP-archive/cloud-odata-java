@@ -177,7 +177,7 @@ public class ServiceResolutionTest {
     this.server.setPathSplit(1);
     this.server.startServer(FitStaticServiceFactory.class);
 
-    HttpGet get = new HttpGet(URI.create(this.server.getEndpoint().toString() + "/aaa;n=2/"));
+    HttpGet get = new HttpGet(URI.create(this.server.getEndpoint().toString() + "aaa;n=2/"));
     HttpResponse response = this.httpClient.execute(get);
 
     assertEquals(200, response.getStatusLine().getStatusCode());
@@ -202,7 +202,7 @@ public class ServiceResolutionTest {
     this.server.setPathSplit(0);
     this.server.startServer(FitStaticServiceFactory.class);
 
-    HttpGet get = new HttpGet(URI.create(this.server.getEndpoint().toString() + "/$metadata;matrix"));
+    HttpGet get = new HttpGet(URI.create(this.server.getEndpoint().toString() + "$metadata;matrix"));
     HttpResponse response = this.httpClient.execute(get);
 
     InputStream stream = response.getEntity().getContent();
@@ -218,14 +218,14 @@ public class ServiceResolutionTest {
     this.server.setPathSplit(3);
     this.server.startServer(FitStaticServiceFactory.class);
 
-    HttpGet get = new HttpGet(URI.create(this.server.getEndpoint().toString() + "/aaa/bbb;n=2,3;m=1/ccc/"));
+    HttpGet get = new HttpGet(URI.create(this.server.getEndpoint().toString() + "aaa/bbb;n=2,3;m=1/ccc/"));
     HttpResponse response = this.httpClient.execute(get);
 
     assertEquals(200, response.getStatusLine().getStatusCode());
 
     ODataContext ctx = this.service.getProcessor().getContext();
     assertNotNull(ctx);
-    assertEquals("http://localhost:19080/test/aaa/bbb;n=2,3;m=1/ccc/", ctx.getUriInfo().getBaseUri().toASCIIString());
+    assertEquals(this.server.getEndpoint() + "aaa/bbb;n=2,3;m=1/ccc/", ctx.getUriInfo().getBaseUri().toASCIIString());
   }
 
   @Test
@@ -242,7 +242,7 @@ public class ServiceResolutionTest {
 
     ODataContext ctx = this.service.getProcessor().getContext();
     assertNotNull(ctx);
-    assertEquals("http://localhost:19080/test/aaa/%C3%A4%F0%A0%A2%BCb;n=2,3;m=1/c%20c/", ctx.getUriInfo().getBaseUri().toASCIIString());
+    assertEquals(this.server.getEndpoint() + "aaa/%C3%A4%F0%A0%A2%BCb;n=2,3;m=1/c%20c/", ctx.getUriInfo().getBaseUri().toASCIIString());
   }
 
 }

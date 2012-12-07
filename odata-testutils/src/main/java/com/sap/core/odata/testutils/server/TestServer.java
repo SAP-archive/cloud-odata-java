@@ -1,5 +1,7 @@
 package com.sap.core.odata.testutils.server;
 
+import java.net.BindException;
+import java.net.InetSocketAddress;
 import java.net.URI;
 
 import org.apache.cxf.jaxrs.servlet.CXFNonSpringJaxrsServlet;
@@ -21,7 +23,15 @@ public class TestServer {
 
   private static final Logger log = LoggerFactory.getLogger(TestServer.class);
 
-  private URI endpoint = URI.create("http://localhost:19080/test"); // no slash at the end !!!
+  private static final int PORT_MIN = 19000;
+  private static final int PORT_MAX = 19200;
+  private static final int PORT_INC = 10;
+
+  private static final String SCHEME = "http";
+  private static final String HOST = "localhost";
+  private static final String PATH = "/test";
+
+  private URI endpoint; //= URI.create("http://localhost:19080/test"); // no slash at the end !!!
 
   private int pathSplit = 0;
 
@@ -41,27 +51,42 @@ public class TestServer {
 
   public void startServer(Class<? extends ODataServiceFactory> factoryClass) {
     try {
+      for (int port = PORT_MIN; port <= PORT_MAX; port += PORT_INC) {
+        TestServer.log.debug("Try to start TestServer on port... " + port);
+        
+        CXFNonSpringJaxrsServlet odataServlet = new CXFNonSpringJaxrsServlet();
+        ServletHolder odataServletHolder = new ServletHolder(odataServlet);
+        odataServletHolder.setInitParameter("javax.ws.rs.Application", "com.sap.core.odata.core.ODataApplication");
+        odataServletHolder.setInitParameter(ODataServiceFactory.FACTORY_LABEL, factoryClass.getCanonicalName());
+
+        if (this.pathSplit > 0) {
+          odataServletHolder.setInitParameter(ODataServiceFactory.PATH_SPLIT_LABEL, Integer.toString(this.pathSplit));
+        }
+
+        ServletContextHandler contextHandler = new ServletContextHandler(ServletContextHandler.SESSIONS);
+        contextHandler.addServlet(odataServletHolder, PATH + "/*");
+        
+        this.endpoint = new URI(SCHEME, null, HOST, port, PATH, null, null);
+        this.server = new Server(port);
+        this.server.setHandler(contextHandler);
+        try {
+          this.server.start();
+          break;
+        } catch (BindException e) {
+          TestServer.log.debug("port is busy... " + port);
+        }
+      }
+
+      if (!this.server.isStarted()) {
+        throw new BindException("no free port in range of [" + PORT_MIN + ".." + PORT_MAX + "]");
+      }
+
       TestServer.log.debug("##################################");
-      TestServer.log.debug("## Starting server at endpoint");
+      TestServer.log.debug("## Started server at endpoint");
       TestServer.log.debug("## uri:         " + this.endpoint);
       TestServer.log.debug("## factory:     " + factoryClass.getCanonicalName());
       TestServer.log.debug("##################################");
 
-      CXFNonSpringJaxrsServlet odataServlet = new CXFNonSpringJaxrsServlet();
-      ServletHolder odataServletHolder = new ServletHolder(odataServlet);
-      odataServletHolder.setInitParameter("javax.ws.rs.Application", "com.sap.core.odata.core.ODataApplication");
-      odataServletHolder.setInitParameter(ODataServiceFactory.FACTORY_LABEL, factoryClass.getCanonicalName());
-
-      if (this.pathSplit > 0) {
-        odataServletHolder.setInitParameter(ODataServiceFactory.PATH_SPLIT_LABEL, Integer.toString(this.pathSplit));
-      }
-
-      ServletContextHandler contextHandler = new ServletContextHandler(ServletContextHandler.SESSIONS);
-      contextHandler.addServlet(odataServletHolder, this.endpoint.getPath() + "/*");
-
-      this.server = new Server(this.endpoint.getPort());
-      this.server.setHandler(contextHandler);
-      this.server.start();
     } catch (Exception e) {
       throw new ServerException(e);
     }
