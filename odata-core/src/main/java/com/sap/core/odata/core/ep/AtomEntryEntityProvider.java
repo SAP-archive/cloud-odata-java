@@ -43,14 +43,14 @@ public class AtomEntryEntityProvider {
 
       if (isRootElement) {
         writer.writeDefaultNamespace(Edm.NAMESPACE_ATOM_2005);
-        writer.writeNamespace(Edm.PREFIX_M, Edm.NAMESPACE_EDMX_2007_06);
-        writer.writeNamespace(Edm.PREFIX_D, Edm.NAMESPACE_EDM_2008_09);
+        writer.writeNamespace(Edm.PREFIX_M, Edm.NAMESPACE_M_2007_08);
+        writer.writeNamespace(Edm.PREFIX_D, Edm.NAMESPACE_D_2007_08);
         writer.writeAttribute(Edm.PREFIX_XML, Edm.NAMESPACE_XML_1998, "base", this.context.getUriInfo().getBaseUri().toASCIIString());
       }
 
       String etag = createETag(eia, data);
       if (etag != null) {
-        writer.writeAttribute(Edm.NAMESPACE_EDMX_2007_06, FormatXml.M_ETAG, etag);
+        writer.writeAttribute(Edm.NAMESPACE_M_2007_08, FormatXml.M_ETAG, etag);
       }
 
       appendAtomMandatoryParts(writer, eia, data);
@@ -388,7 +388,7 @@ public class AtomEntryEntityProvider {
 
   private void appendProperties(XMLStreamWriter writer, EntityInfoAggregator eia, Map<String, Object> data) throws ODataEntityProviderException {
     try {
-      writer.writeStartElement(Edm.NAMESPACE_EDMX_2007_06, FormatXml.M_PROPERTIES);
+      writer.writeStartElement(Edm.NAMESPACE_M_2007_08, FormatXml.M_PROPERTIES);
       Set<Entry<String, Object>> entries = data.entrySet();
 
       for (Entry<String, Object> entry : entries) {
