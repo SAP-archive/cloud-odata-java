@@ -5,7 +5,6 @@ import java.util.Collection;
 import java.util.List;
 
 import com.sap.core.odata.api.edm.EdmConcurrencyMode;
-import com.sap.core.odata.api.edm.EdmContentKind;
 import com.sap.core.odata.api.edm.EdmMultiplicity;
 import com.sap.core.odata.api.edm.EdmSimpleTypeKind;
 import com.sap.core.odata.api.edm.EdmTargetPath;
@@ -182,8 +181,7 @@ public class ScenarioEdmProvider extends EdmProviderDefault {
             .setMapping(new Mapping().setValue("getId")));
         properties.add(new SimpleProperty().setName("EmployeeName").setType(EdmSimpleTypeKind.String)
             .setCustomizableFeedMappings(new CustomizableFeedMappings()
-                .setFcTargetPath(EdmTargetPath.SYNDICATION_TITLE)
-                .setFcContentKind(EdmContentKind.text)));
+                .setFcTargetPath(EdmTargetPath.SYNDICATION_TITLE)));
         properties.add(new SimpleProperty().setName("ManagerId").setType(EdmSimpleTypeKind.String)
             .setMapping(new Mapping().setValue("getManager.getId")));
         properties.add(new SimpleProperty().setName("TeamId").setType(EdmSimpleTypeKind.String)
@@ -320,13 +318,13 @@ public class ScenarioEdmProvider extends EdmProviderDefault {
         Collection<Property> properties = new ArrayList<Property>();
         properties.add(new ComplexProperty().setName("City").setType(COMPLEX_TYPE_2));
         properties.add(new SimpleProperty().setName("Country").setType(EdmSimpleTypeKind.String));
-        return new ComplexType().setName(COMPLEX_TYPE_1.getName()).setAbstract(false).setProperties(properties);
+        return new ComplexType().setName(COMPLEX_TYPE_1.getName()).setProperties(properties);
 
       } else if (COMPLEX_TYPE_2.getName().equals(edmFQName.getName())) {
         Collection<Property> properties = new ArrayList<Property>();
         properties.add(new SimpleProperty().setName("PostalCode").setType(EdmSimpleTypeKind.String));
         properties.add(new SimpleProperty().setName("CityName").setType(EdmSimpleTypeKind.String));
-        return new ComplexType().setName(COMPLEX_TYPE_2.getName()).setAbstract(false).setProperties(properties);
+        return new ComplexType().setName(COMPLEX_TYPE_2.getName()).setProperties(properties);
       }
 
     return null;
