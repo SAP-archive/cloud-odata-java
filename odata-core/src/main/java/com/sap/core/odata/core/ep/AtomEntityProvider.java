@@ -11,6 +11,9 @@ import java.util.Map;
 import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamWriter;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.sap.core.odata.api.edm.Edm;
 import com.sap.core.odata.api.edm.EdmEntitySet;
 import com.sap.core.odata.api.edm.EdmProperty;
@@ -23,6 +26,8 @@ import com.sap.core.odata.core.ep.aggregator.EntityPropertyInfo;
 // TODO usage of "ByteArrayInputStream(out.toByteArray())":  check synchronized call / copy of data
 public class AtomEntityProvider extends ODataEntityProvider {
 
+  private static final Logger LOG = LoggerFactory.getLogger(AtomEntityProvider.class);
+  
   AtomEntityProvider(ODataContext ctx) throws ODataEntityProviderException {
     super(ctx);
   }
@@ -43,7 +48,8 @@ public class AtomEntityProvider extends ODataEntityProvider {
         try {
           writer.close();
         } catch (IOException e) {
-          throw new ODataEntityProviderException(ODataEntityProviderException.COMMON, e);
+          // don't throw in finally!  
+          LOG.error(e.getLocalizedMessage(), e);
         }
       }
     }
@@ -78,7 +84,8 @@ public class AtomEntityProvider extends ODataEntityProvider {
         try {
           outStream.close();
         } catch (IOException e) {
-          throw new ODataEntityProviderException(ODataEntityProviderException.COMMON, e);
+          // don't throw in finally!  
+          LOG.error(e.getLocalizedMessage(), e);
         }
       }
     }
@@ -108,7 +115,8 @@ public class AtomEntityProvider extends ODataEntityProvider {
         try {
           outStream.close();
         } catch (IOException e) {
-          throw new ODataEntityProviderException(ODataEntityProviderException.COMMON, e);
+          // don't throw in finally!  
+          LOG.error(e.getLocalizedMessage(), e);
         }
       }
     }
