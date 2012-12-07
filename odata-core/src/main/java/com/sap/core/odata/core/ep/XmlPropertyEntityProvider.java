@@ -23,12 +23,12 @@ public class XmlPropertyEntityProvider {
 
     if (isRootElement) {
       writer.writeStartElement(name);
-      writer.writeDefaultNamespace(Edm.NAMESPACE_EDM_2008_09);
-      writer.writeNamespace(Edm.PREFIX_M, Edm.NAMESPACE_EDMX_2007_06);
+      writer.writeDefaultNamespace(Edm.NAMESPACE_D_2007_08);
+      writer.writeNamespace(Edm.PREFIX_M, Edm.NAMESPACE_M_2007_08);
     } else if (hasCustomNamespace(propertyInfo)) {
       writeStartElementWithCustomNamespace(writer, propertyInfo, name);
     } else {
-      writer.writeStartElement(Edm.NAMESPACE_EDM_2008_09, name);
+      writer.writeStartElement(Edm.NAMESPACE_D_2007_08, name);
     }
 
     if (propertyInfo.isComplex()) {
@@ -44,7 +44,7 @@ public class XmlPropertyEntityProvider {
   private void appendProperty(XMLStreamWriter writer, EntityComplexPropertyInfo type, EntityPropertyInfo prop, Object value) throws XMLStreamException, EdmException, ODataEntityProviderException {
 
     if (value == null) {
-      writer.writeAttribute(Edm.NAMESPACE_EDMX_2007_06, "null", "true");
+      writer.writeAttribute(Edm.NAMESPACE_M_2007_08, "null", "true");
     } else {
       Collection<EntityPropertyInfo> propertyInfos = type.getPropertyInfos();
       for (EntityPropertyInfo childPropertyInfo : propertyInfos) {
@@ -69,7 +69,7 @@ public class XmlPropertyEntityProvider {
     String valueAsString = st.valueToString(value, literalKind, facets);
 
     if (valueAsString == null) {
-      writer.writeAttribute(Edm.NAMESPACE_EDMX_2007_06, "null", "true");
+      writer.writeAttribute(Edm.NAMESPACE_M_2007_08, "null", "true");
     } else {
       writer.writeCharacters(valueAsString);
     }
