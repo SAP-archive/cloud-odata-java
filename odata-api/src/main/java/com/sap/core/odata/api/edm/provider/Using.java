@@ -4,7 +4,6 @@ import java.util.Collection;
 
 /**
  * @author SAP AG
- * 
  */
 public class Using {
 

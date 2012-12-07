@@ -4,7 +4,7 @@ package com.sap.core.odata.api.edm;
  * A CSDL Property element
  * 
  * EdmProperty defines a simple type or a complex type.
- * 
+ * <p>IMPORTANT
  * Do not implement this interface. This interface is intended for usage only.
  * 
  * @author SAP AG

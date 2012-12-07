@@ -4,7 +4,7 @@ import java.util.Collection;
 
 /**
  * EdmAnnotations holds all annotation attributes and elements for a specific CSDL element.
- * 
+ * <p>IMPORTANT
  * Do not implement this interface. This interface is intended for usage only.
  * 
  * @author SAP AG

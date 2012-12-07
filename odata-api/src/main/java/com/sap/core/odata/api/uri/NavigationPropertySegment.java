@@ -5,8 +5,8 @@ import com.sap.core.odata.api.edm.EdmNavigationProperty;
 
 
 /**
- * @author SAP AG
  * Navigation property segments
+ * @author SAP AG
  */
 public interface NavigationPropertySegment {
 

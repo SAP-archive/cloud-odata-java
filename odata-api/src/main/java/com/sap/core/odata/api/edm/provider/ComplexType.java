@@ -5,9 +5,8 @@ import java.util.Collection;
 import com.sap.core.odata.api.edm.FullQualifiedName;
 
 /**
+ * Objects of this class represent a complex type
  * @author SAP AG
- * <p>
- * Objects of this class represent a complex type in the EDM
  */
 public class ComplexType {
 

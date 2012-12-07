@@ -5,9 +5,8 @@ import com.sap.core.odata.api.edm.EdmCustomizableFeedMappings;
 import com.sap.core.odata.api.edm.EdmTargetPath;
 
 /**
+ * Objects of this class represent customizable feed mappings
  * @author SAP AG
- * <p>
- * Objects of this class represent customizable feed mappings in the EDM
  */
 public class CustomizableFeedMappings implements EdmCustomizableFeedMappings {
 

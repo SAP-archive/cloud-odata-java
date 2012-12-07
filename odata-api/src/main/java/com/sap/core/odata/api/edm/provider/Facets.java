@@ -4,8 +4,8 @@ import com.sap.core.odata.api.edm.EdmConcurrencyMode;
 import com.sap.core.odata.api.edm.EdmFacets;
 
 /**
+ * Objects of this class represent the facets a entity type, property or function import can have
  * @author SAP AG
- *
  */
 public class Facets implements EdmFacets {
 

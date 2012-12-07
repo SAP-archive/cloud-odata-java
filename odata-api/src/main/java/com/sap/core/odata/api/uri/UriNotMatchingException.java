@@ -4,6 +4,7 @@ import com.sap.core.odata.api.exception.MessageReference;
 import com.sap.core.odata.api.exception.ODataNotFoundException;
 
 /**
+ * This Exception results in a 404 Not Found
  * @author SAP AG
  */
 public class UriNotMatchingException extends ODataNotFoundException {

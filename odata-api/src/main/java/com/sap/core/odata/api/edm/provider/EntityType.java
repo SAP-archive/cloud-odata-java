@@ -5,6 +5,7 @@ import java.util.Collection;
 import com.sap.core.odata.api.edm.FullQualifiedName;
 
 /**
+ * Objects of this class represent an entity type
  * @author SAP AG
  *
  */

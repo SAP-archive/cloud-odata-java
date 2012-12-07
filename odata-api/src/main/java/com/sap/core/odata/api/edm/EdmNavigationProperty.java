@@ -4,7 +4,7 @@ package com.sap.core.odata.api.edm;
  * A CSDL NavigationProperty element
  * 
  * EdmNavigationProperty allows navigation from one entity type to another via a relationship.
- * 
+ * <p>IMPORTANT
  * Do not implement this interface. This interface is intended for usage only.
  * 
  * @author SAP AG

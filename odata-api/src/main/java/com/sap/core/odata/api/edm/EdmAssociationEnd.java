@@ -4,7 +4,7 @@ package com.sap.core.odata.api.edm;
  * A CSDL AssociationEnd element
  * 
  * EdmAssociationEnd defines one side of the relationship of two entity types.
- * 
+ * <p>IMPORTANT
  * Do not implement this interface. This interface is intended for usage only.
  * 
  * @author SAP AG

@@ -2,7 +2,7 @@ package com.sap.core.odata.api.edm;
 
 /**
  * Entity Data Model (EDM)
- * 
+ * <p>IMPORTANT
  * Do not implement this interface. This interface is intended for usage only.
  * 
  * @author SAP AG

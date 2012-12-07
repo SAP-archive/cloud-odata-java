@@ -2,7 +2,8 @@ package com.sap.core.odata.api.edm;
 
 /**
  * EdmSimpleType is a primitive type as defined in the Entity Data Model (EDM).
- *
+ *<p>IMPORTANT
+ * Do not implement this interface. This interface is intended for usage only
  * @author SAP AG
  *
  */

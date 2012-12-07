@@ -3,9 +3,8 @@ package com.sap.core.odata.api.edm.provider;
 import java.util.Collection;
 
 /**
+ * Objects of this class represent an association
  * @author SAP AG
- * <p>
- * Objects of this class represent an association in the EDM
  */
 public class Association {
 

@@ -4,7 +4,7 @@ package com.sap.core.odata.api.edm;
  * A CSDL EntityContainer element
  * 
  * EdmEntityContainer holds the information of EntitySets, FunctionImports and AssociationSets contained
- * 
+ * <p>IMPORTANT
  * Do not implement this interface. This interface is intended for usage only.
  * 
  * @author SAP AG

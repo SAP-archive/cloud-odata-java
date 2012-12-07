@@ -4,8 +4,8 @@ import com.sap.core.odata.api.edm.EdmProperty;
 
 
 /**
- * @author SAP AG
  * Key predicate interface
+ * @author SAP AG
  */
 public interface KeyPredicate {
 

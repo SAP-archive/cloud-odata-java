@@ -3,9 +3,8 @@ package com.sap.core.odata.api.edm.provider;
 import com.sap.core.odata.api.edm.EdmAnnotationElement;
 
 /**
+ * Objects of this class represent an annotation element
  * @author SAP AG
-  * <p>
- * Objects of this class represent an annotation element in the EDM
  */
 public class AnnotationElement implements EdmAnnotationElement {
 
