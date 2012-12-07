@@ -1,8 +1,11 @@
 package com.sap.core.odata.core.uri.expression;
 
+import com.sap.core.odata.api.edm.EdmComplexType;
+import com.sap.core.odata.api.edm.EdmException;
 import com.sap.core.odata.api.exception.MessageReference;
 import com.sap.core.odata.api.uri.expression.FilterParserException;
 import com.sap.core.odata.api.uri.expression.MethodExpression;
+import com.sap.core.odata.api.uri.expression.PropertyExpression;
 
 /**
  * This class is used to create exceptions of type FilterParserException.
@@ -82,6 +85,21 @@ public class FilterParserExceptionImpl extends FilterParserException {
     MessageReference msgRef = FilterParserException.LEFT_SIDE_NOT_STRUCTURAL_TYPE.create();
 
     return new FilterParserException(msgRef);
+  }
+
+  public static FilterParserException createPROPERTY_NAME_NOT_FOUND_IN_TYPE(EdmComplexType parentType, PropertyExpression property) throws FilterParserInternalError {
+    MessageReference msgRef = FilterParserException.PROPERTY_NAME_NOT_FOUND_IN_TYPE.create();
+    
+    try {
+      msgRef.addContent(property.getPropertyName());
+      msgRef.addContent(parentType.getNamespace() + "." + parentType.getName());
+    } catch (EdmException e) {
+      throw FilterParserInternalError.createERROR_ACCESSING_EDM(null);    
+    }
+
+    return new FilterParserException(msgRef);
+    
+
   }
 
 }

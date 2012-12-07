@@ -34,6 +34,8 @@ public class FilterParserException extends ODataBadRequestException
 
   public static final MessageReference LEFT_SIDE_NOT_STRUCTURAL_TYPE  = createMessageReference(FilterParserException.class, "LEFT_SIDE_NOT_STRUCTURAL_TYPE");
 
+  public static final MessageReference PROPERTY_NAME_NOT_FOUND_IN_TYPE   = createMessageReference(FilterParserException.class, "PROPERTY_NAME_NOT_FOUND_IN_TYPE");
+
   /*instance attributes*/
   private CommonExpression filterTree;
 

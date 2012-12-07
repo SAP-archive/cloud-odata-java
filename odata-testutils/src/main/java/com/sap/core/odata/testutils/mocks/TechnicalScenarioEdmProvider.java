@@ -36,26 +36,26 @@ public class TechnicalScenarioEdmProvider extends EdmProviderDefault {
   public static final String NAMESPACE_1 = "TecRefScenario";
 
 
-  private static final FullQualifiedName ET_KEY_IS_STRING = new FullQualifiedName(NAMESPACE_1, "EtKeyTypeString");
-  private static final FullQualifiedName ET_KEY_IS_INTEGER = new FullQualifiedName(NAMESPACE_1, "EtKeyTypeInteger");
-  private static final FullQualifiedName ET_COMPLEX_KEY = new FullQualifiedName(NAMESPACE_1, "EtComplexKey");
-  private static final FullQualifiedName ET_ALL_TYPES = new FullQualifiedName(NAMESPACE_1, "EtAllTypes");
-  private static final FullQualifiedName ET_STRING_FACETS = new FullQualifiedName(NAMESPACE_1, "EtStringFacets");
+  public static final FullQualifiedName ET_KEY_IS_STRING = new FullQualifiedName(NAMESPACE_1, "EtKeyTypeString");
+  public static final FullQualifiedName ET_KEY_IS_INTEGER = new FullQualifiedName(NAMESPACE_1, "EtKeyTypeInteger");
+  public static final FullQualifiedName ET_COMPLEX_KEY = new FullQualifiedName(NAMESPACE_1, "EtComplexKey");
+  public static final FullQualifiedName ET_ALL_TYPES = new FullQualifiedName(NAMESPACE_1, "EtAllTypes");
+  public static final FullQualifiedName ET_STRING_FACETS = new FullQualifiedName(NAMESPACE_1, "EtStringFacets");
 
-  private static final FullQualifiedName CT_ADDRESS = new FullQualifiedName(NAMESPACE_1, "CtAdress");
-  private static final FullQualifiedName CT_ALL_TYPES = new FullQualifiedName(NAMESPACE_1, "CtAllTypes");
+  public static final FullQualifiedName CT_ADDRESS = new FullQualifiedName(NAMESPACE_1, "CtAdress");
+  public static final FullQualifiedName CT_ALL_TYPES = new FullQualifiedName(NAMESPACE_1, "CtAllTypes");
 
-  private static final FullQualifiedName ASSOCIATION_ET1_ET2 = new FullQualifiedName(NAMESPACE_1, "Association");
-  private static final String ROLE_1 = "Role1";
-  private static final String ROLE_2 = "Role2";
+  public static final FullQualifiedName ASSOCIATION_ET1_ET2 = new FullQualifiedName(NAMESPACE_1, "Association");
+  public static final String ROLE_1 = "Role1";
+  public static final String ROLE_2 = "Role2";
 
-  private static final String ENTITY_CONTAINER_1 = "Container1";
+  public static final String ENTITY_CONTAINER_1 = "Container1";
 
-  private static final String ES_KEY_IS_STRING = "KeyTypeString";
-  private static final String ES_KEY_IS_INTEGER = "KeyTypeInteger";
-  private static final String ES_COMPLEX_KEY = "ComplexKey";
-  private static final String ES_ALL_TYPES = "AllTypes";
-  private static final String ES_STRING_FACETS = "StringFacets";
+  public static final String ES_KEY_IS_STRING = "KeyTypeString";
+  public static final String ES_KEY_IS_INTEGER = "KeyTypeInteger";
+  public static final String ES_COMPLEX_KEY = "ComplexKey";
+  public static final String ES_ALL_TYPES = "AllTypes";
+  public static final String ES_STRING_FACETS = "StringFacets";
 
 
   @Override
@@ -157,7 +157,7 @@ public class TechnicalScenarioEdmProvider extends EdmProviderDefault {
         properties.add(new SimpleProperty().setName("Single").setType(EdmSimpleTypeKind.Single));
         properties.add(new SimpleProperty().setName("String").setType(EdmSimpleTypeKind.String));
         properties.add(new SimpleProperty().setName("Time").setType(EdmSimpleTypeKind.Time));
-        properties.add(new ComplexProperty().setName("ComplexType").setType(CT_ALL_TYPES));
+        properties.add(new ComplexProperty().setName("Complex").setType(CT_ALL_TYPES));
         return new EntityType().setName(ET_ALL_TYPES.getName()).setProperties(properties);
       }
       else if (ET_STRING_FACETS.getName().equals(edmFQName.getName()))
@@ -219,7 +219,7 @@ public class TechnicalScenarioEdmProvider extends EdmProviderDefault {
         properties.add(new SimpleProperty().setName("Single").setType(EdmSimpleTypeKind.Single));
         properties.add(new SimpleProperty().setName("String").setType(EdmSimpleTypeKind.String));
         properties.add(new SimpleProperty().setName("Time").setType(EdmSimpleTypeKind.Time));
-        properties.add(new ComplexProperty().setName("Adress").setType(CT_ADDRESS));
+        properties.add(new ComplexProperty().setName("Address").setType(CT_ADDRESS));
         return new ComplexType().setName(CT_ALL_TYPES.getName()).setAbstract(false).setProperties(properties);
       }
 
