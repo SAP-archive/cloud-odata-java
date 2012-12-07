@@ -51,7 +51,7 @@ public class EdmMetadata {
       xmlStreamWriter.setPrefix(Edm.PREFIX_M, Edm.NAMESPACE_M_2007_08);
       xmlStreamWriter.setDefaultNamespace(Edm.NAMESPACE_EDM_2008_09);
 
-      xmlStreamWriter.writeStartElement(Edm.NAMESPACE_EDMX_2007_06, Edm.PREFIX_EDMX);
+      xmlStreamWriter.writeStartElement(Edm.NAMESPACE_EDMX_2007_06, "Edmx");
       xmlStreamWriter.writeAttribute("Version", "1.0");
       xmlStreamWriter.writeNamespace(Edm.PREFIX_EDMX, Edm.NAMESPACE_EDMX_2007_06);
 
@@ -315,7 +315,7 @@ public class EdmMetadata {
                     for (FunctionImportParameter functionImportParameter : functionImportParameters) {
                       xmlStreamWriter.writeStartElement("Parameter");
                       xmlStreamWriter.writeAttribute("Name", functionImportParameter.getName());
-                      xmlStreamWriter.writeAttribute("Type", functionImportParameter.getType().toString());
+                      xmlStreamWriter.writeAttribute("Type", functionImportParameter.getType().getFullQualifiedName().toString());
                       if (functionImportParameter.getMode() != null) {
                         xmlStreamWriter.writeAttribute("Mode", functionImportParameter.getMode());
                       }
