@@ -28,9 +28,6 @@ import com.sap.core.odata.api.edm.EdmType;
 import com.sap.core.odata.api.edm.EdmTypeKind;
 import com.sap.core.odata.api.edm.EdmTyped;
 import com.sap.core.odata.api.edm.provider.CustomizableFeedMappings;
-import com.sap.core.odata.api.edm.provider.Facets;
-import com.sap.core.odata.api.edm.provider.Mapping;
-import com.sap.core.odata.api.edm.provider.SimpleProperty;
 import com.sap.core.odata.api.exception.ODataException;
 
 class EdmMock {

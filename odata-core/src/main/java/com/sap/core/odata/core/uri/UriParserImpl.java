@@ -44,8 +44,8 @@ import com.sap.core.odata.api.uri.expression.FilterParserException;
 import com.sap.core.odata.api.uri.expression.OrderByExpression;
 import com.sap.core.odata.core.edm.EdmSimpleTypeFacadeImpl;
 import com.sap.core.odata.core.exception.ODataRuntimeException;
-import com.sap.core.odata.core.uri.expression.FilterParserInternalError;
 import com.sap.core.odata.core.uri.expression.FilterParserImpl;
+import com.sap.core.odata.core.uri.expression.FilterParserInternalError;
 
 /**
  * @author SAP AG
