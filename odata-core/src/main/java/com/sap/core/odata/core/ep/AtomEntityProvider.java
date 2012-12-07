@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
+import java.util.List;
 import java.util.Map;
 
 import javax.xml.stream.XMLOutputFactory;
@@ -56,7 +57,7 @@ public class AtomEntityProvider extends ODataEntityProvider {
   }
 
   @Override
-  public InputStream writeFeed(EdmEntitySet entitySet, Map<String, Object> data, String mediaResourceMimeType) throws ODataEntityProviderException {
+  public InputStream writeFeed(EdmEntitySet entitySet, List<Map<String, Object>> data, String mediaResourceMimeType) throws ODataEntityProviderException {
     return null;
   }
   
