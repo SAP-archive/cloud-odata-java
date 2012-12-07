@@ -49,54 +49,54 @@ public class EdmServiceMetadataImplProvTest {
 
   @Test
   public void testSchemaStructure() throws Exception {
-    assertXpathExists("/edmx:edmx", metadata);
-    assertXpathExists("/edmx:edmx/edmx:DataServices", metadata);
-    assertXpathExists("/edmx:edmx/edmx:DataServices/a:Schema", metadata);
-    assertXpathExists("/edmx:edmx/edmx:DataServices/a:Schema/a:EntityType", metadata);
-    assertXpathExists("/edmx:edmx/edmx:DataServices/a:Schema/a:ComplexType", metadata);
-    assertXpathExists("/edmx:edmx/edmx:DataServices/a:Schema/a:Association", metadata);
-    assertXpathExists("/edmx:edmx/edmx:DataServices/a:Schema/a:EntityContainer", metadata);
+    assertXpathExists("/edmx:Edmx", metadata);
+    assertXpathExists("/edmx:Edmx/edmx:DataServices", metadata);
+    assertXpathExists("/edmx:Edmx/edmx:DataServices/a:Schema", metadata);
+    assertXpathExists("/edmx:Edmx/edmx:DataServices/a:Schema/a:EntityType", metadata);
+    assertXpathExists("/edmx:Edmx/edmx:DataServices/a:Schema/a:ComplexType", metadata);
+    assertXpathExists("/edmx:Edmx/edmx:DataServices/a:Schema/a:Association", metadata);
+    assertXpathExists("/edmx:Edmx/edmx:DataServices/a:Schema/a:EntityContainer", metadata);
   }
 
   @Test
   public void testEntityTypeStructure() throws Exception {
-    assertXpathExists("/edmx:edmx/edmx:DataServices/a:Schema/a:EntityType[@Name and @m:HasStream]", metadata);
-    assertXpathExists("/edmx:edmx/edmx:DataServices/a:Schema/a:EntityType[@Name and @BaseType and @m:HasStream]", metadata);
-    assertXpathExists("/edmx:edmx/edmx:DataServices/a:Schema/a:EntityType/a:Key", metadata);
-    assertXpathExists("/edmx:edmx/edmx:DataServices/a:Schema/a:EntityType/a:Key/a:PropertyRef[@Name]", metadata);
-    assertXpathExists("/edmx:edmx/edmx:DataServices/a:Schema/a:EntityType/a:Property[@Name and @Type]", metadata);
-    assertXpathExists("/edmx:edmx/edmx:DataServices/a:Schema/a:EntityType/a:Property[@Name and @Type and @Nullable and @m:FC_TargetPath]", metadata);
-    assertXpathExists("/edmx:edmx/edmx:DataServices/a:Schema/a:EntityType/a:NavigationProperty[@Name and @Relationship and @FromRole and @ToRole]", metadata);
+    assertXpathExists("/edmx:Edmx/edmx:DataServices/a:Schema/a:EntityType[@Name and @m:HasStream]", metadata);
+    assertXpathExists("/edmx:Edmx/edmx:DataServices/a:Schema/a:EntityType[@Name and @BaseType and @m:HasStream]", metadata);
+    assertXpathExists("/edmx:Edmx/edmx:DataServices/a:Schema/a:EntityType/a:Key", metadata);
+    assertXpathExists("/edmx:Edmx/edmx:DataServices/a:Schema/a:EntityType/a:Key/a:PropertyRef[@Name]", metadata);
+    assertXpathExists("/edmx:Edmx/edmx:DataServices/a:Schema/a:EntityType/a:Property[@Name and @Type]", metadata);
+    assertXpathExists("/edmx:Edmx/edmx:DataServices/a:Schema/a:EntityType/a:Property[@Name and @Type and @Nullable and @m:FC_TargetPath]", metadata);
+    assertXpathExists("/edmx:Edmx/edmx:DataServices/a:Schema/a:EntityType/a:NavigationProperty[@Name and @Relationship and @FromRole and @ToRole]", metadata);
   }
 
   @Test
   public void testComplexTypeStructure() throws Exception {
-    assertXpathExists("/edmx:edmx/edmx:DataServices/a:Schema/a:ComplexType[@Name]", metadata);
-    assertXpathExists("/edmx:edmx/edmx:DataServices/a:Schema/a:ComplexType/a:Property[@Name and @Type]", metadata);
+    assertXpathExists("/edmx:Edmx/edmx:DataServices/a:Schema/a:ComplexType[@Name]", metadata);
+    assertXpathExists("/edmx:Edmx/edmx:DataServices/a:Schema/a:ComplexType/a:Property[@Name and @Type]", metadata);
   }
   
   @Test
   public void testEntityContainerStructure() throws Exception {
-    assertXpathExists("/edmx:edmx/edmx:DataServices/a:Schema/a:EntityContainer[@Name]", metadata);
-    assertXpathExists("/edmx:edmx/edmx:DataServices/a:Schema/a:EntityContainer/a:EntitySet[@Name and @EntityType]", metadata);
-    assertXpathExists("/edmx:edmx/edmx:DataServices/a:Schema/a:EntityContainer/a:AssociationSet[@Name and @Association]", metadata);
-    assertXpathExists("/edmx:edmx/edmx:DataServices/a:Schema/a:EntityContainer//a:AssociationSet/a:End[@EntitySet and @Role]", metadata);
-    assertXpathExists("/edmx:edmx/edmx:DataServices/a:Schema/a:EntityContainer/a:FunctionImport[@Name and @ReturnType and @EntitySet and @m:HttpMethod]", metadata);
-    assertXpathExists("/edmx:edmx/edmx:DataServices/a:Schema/a:EntityContainer/a:FunctionImport/a:Parameter[@Name and @Type]", metadata);
+    assertXpathExists("/edmx:Edmx/edmx:DataServices/a:Schema/a:EntityContainer[@Name]", metadata);
+    assertXpathExists("/edmx:Edmx/edmx:DataServices/a:Schema/a:EntityContainer/a:EntitySet[@Name and @EntityType]", metadata);
+    assertXpathExists("/edmx:Edmx/edmx:DataServices/a:Schema/a:EntityContainer/a:AssociationSet[@Name and @Association]", metadata);
+    assertXpathExists("/edmx:Edmx/edmx:DataServices/a:Schema/a:EntityContainer//a:AssociationSet/a:End[@EntitySet and @Role]", metadata);
+    assertXpathExists("/edmx:Edmx/edmx:DataServices/a:Schema/a:EntityContainer/a:FunctionImport[@Name and @ReturnType and @EntitySet and @m:HttpMethod]", metadata);
+    assertXpathExists("/edmx:Edmx/edmx:DataServices/a:Schema/a:EntityContainer/a:FunctionImport/a:Parameter[@Name and @Type]", metadata);
   }
   
   @Test
   public void testAssociationStructure() throws Exception {
-    assertXpathExists("/edmx:edmx/edmx:DataServices/a:Schema/a:Association[@Name]", metadata);
-    assertXpathExists("/edmx:edmx/edmx:DataServices/a:Schema/a:Association/a:End[@Type and @Multiplicity and @Role]", metadata);
+    assertXpathExists("/edmx:Edmx/edmx:DataServices/a:Schema/a:Association[@Name]", metadata);
+    assertXpathExists("/edmx:Edmx/edmx:DataServices/a:Schema/a:Association/a:End[@Type and @Multiplicity and @Role]", metadata);
   }
 
   @Test
   public void testRefScenarioContent() throws Exception {
-    assertXpathExists("/edmx:edmx/edmx:DataServices/a:Schema/a:EntityType[@Name='Employee']", metadata);
-    assertXpathExists("/edmx:edmx/edmx:DataServices/a:Schema/a:EntityType[@Name='Base']", metadata);
-    assertXpathExists("/edmx:edmx/edmx:DataServices/a:Schema/a:EntityType[@Name='Team']", metadata);
-    assertXpathExists("/edmx:edmx/edmx:DataServices/a:Schema/a:EntityType[@Name='Room']", metadata);
-    assertXpathExists("/edmx:edmx/edmx:DataServices/a:Schema/a:EntityType[@Name='Building']", metadata);
+    assertXpathExists("/edmx:Edmx/edmx:DataServices/a:Schema/a:EntityType[@Name='Employee']", metadata);
+    assertXpathExists("/edmx:Edmx/edmx:DataServices/a:Schema/a:EntityType[@Name='Base']", metadata);
+    assertXpathExists("/edmx:Edmx/edmx:DataServices/a:Schema/a:EntityType[@Name='Team']", metadata);
+    assertXpathExists("/edmx:Edmx/edmx:DataServices/a:Schema/a:EntityType[@Name='Room']", metadata);
+    assertXpathExists("/edmx:Edmx/edmx:DataServices/a:Schema/a:EntityType[@Name='Building']", metadata);
   }
 }
