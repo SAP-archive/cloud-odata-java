@@ -9,8 +9,9 @@ import com.sap.core.odata.api.edm.EdmFacets;
  */
 public class Facets implements EdmFacets {
 
-  /** Specification default is TRUE */
-  Boolean nullable = Boolean.TRUE;
+  /** Specification default is TRUE but we wont set it here because 
+   * we want to know if its set explicitly by an application */
+  Boolean nullable;
   String defaultValue;
   Integer maxLength;
   Boolean fixedLength;
