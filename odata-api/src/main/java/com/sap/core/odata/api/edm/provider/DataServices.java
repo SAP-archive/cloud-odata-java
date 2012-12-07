@@ -3,9 +3,8 @@ package com.sap.core.odata.api.edm.provider;
 import java.util.Collection;
 
 /**
- * @author SAP AG
- * <p>
  * Objects of this class represent the data service. They contain all schemas of the EDM as well as the dataServiceVersion
+ * @author SAP AG
  */
 public class DataServices {
 

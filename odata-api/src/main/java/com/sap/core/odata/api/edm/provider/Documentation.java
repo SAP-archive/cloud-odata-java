@@ -3,9 +3,8 @@ package com.sap.core.odata.api.edm.provider;
 import java.util.Collection;
 
 /**
- * @author SAP AG
- * <p>
  * Objects of this class represent documentation
+ * @author SAP AG
  */
 public class Documentation {
 

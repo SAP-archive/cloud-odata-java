@@ -4,6 +4,7 @@ import com.sap.core.odata.api.exception.MessageReference;
 import com.sap.core.odata.api.exception.ODataBadRequestException;
 
 /**
+ * This exception results in a 400 Bad Request
  * @author SAP AG
  */
 public class UriSyntaxException extends ODataBadRequestException {

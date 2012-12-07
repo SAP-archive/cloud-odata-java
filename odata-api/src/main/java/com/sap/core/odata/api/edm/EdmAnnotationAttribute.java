@@ -4,7 +4,7 @@ package com.sap.core.odata.api.edm;
  * A CSDL AnnotationAttribute element
  * 
  * EdmAnnotationAttribute is a custom XML attribute which can be applied to a CSDL element.
- * 
+ * <p>IMPORTANT
  * Do not implement this interface. This interface is intended for usage only.
  * 
  * @author SAP AG

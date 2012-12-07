@@ -6,12 +6,11 @@ import com.sap.core.odata.api.edm.FullQualifiedName;
 import com.sap.core.odata.api.exception.ODataException;
 
 /**
- * @author SAP AG
- * <p>
  * Provider for the EDM. Implemented by {@link EdmProviderDefault} which shall be extended by an application.
- * 
+ * <p>IMPORTANT
  * Do not implement this interface. This interface is intended for usage only.
  *
+ * @author SAP AG
  */
 public interface EdmProvider {
 

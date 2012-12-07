@@ -4,7 +4,7 @@ import java.util.Collection;
 
 /**
  * EdmStructuralType is the base for a complex type or an entity type
- * 
+ * <p>IMPORTANT
  * Do not implement this interface. This interface is intended for usage only.
  * 
  * @author SAP AG

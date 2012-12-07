@@ -3,9 +3,8 @@ package com.sap.core.odata.api.edm.provider;
 import java.util.Collection;
 
 /**
+ * Objects of this class represent an entity container
  * @author SAP AG
- * <p>
- * Objects of this class represent an entity container in the EDM
  */
 public class EntityContainerInfo {
 

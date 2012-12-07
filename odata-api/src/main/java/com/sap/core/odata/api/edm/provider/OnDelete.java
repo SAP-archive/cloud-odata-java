@@ -5,8 +5,8 @@ import java.util.Collection;
 import com.sap.core.odata.api.edm.EdmAction;
 
 /**
+ * Objects of this class represent an OnDelete Action
  * @author SAP AG
- *
  */
 public class OnDelete {
 

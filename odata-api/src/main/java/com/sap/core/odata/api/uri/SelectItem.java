@@ -5,8 +5,8 @@ import java.util.List;
 import com.sap.core.odata.api.edm.EdmTyped;
 
 /**
- * @author SAP AG
  * Select item interface
+ * @author SAP AG
  */
 public interface SelectItem {
 

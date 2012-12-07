@@ -2,7 +2,7 @@ package com.sap.core.odata.api.edm;
 
 /**
  * EdmAnnotatable can be applied to CSDL elements as described in the Conceptual Schema Definition Language
- * 
+ * <p>IMPORTANT
  * Do not implement this interface. This interface is intended for usage only.
  * 
  * @author SAP AG

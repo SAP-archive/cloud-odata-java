@@ -3,8 +3,8 @@ package com.sap.core.odata.api.edm.provider;
 import com.sap.core.odata.api.edm.EdmMapping;
 
 /**
+ * Object of this class represent the mapping of a value to a mime type
  * @author SAP AG
- *
  */
 public class Mapping implements EdmMapping {
 

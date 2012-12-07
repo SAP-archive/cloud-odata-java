@@ -4,9 +4,8 @@ import java.util.Collection;
 import java.util.List;
 
 /**
+ * Objects of this class represent a schema
  * @author SAP AG
- * <p>
- * Objects of this class represent a schema in the EDM
  */
 public class Schema {
 

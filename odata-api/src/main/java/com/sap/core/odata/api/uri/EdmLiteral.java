@@ -2,7 +2,7 @@ package com.sap.core.odata.api.uri;
 
 import com.sap.core.odata.api.edm.EdmSimpleType;
 
-/**
+/** 
  * UriLiteral representation
  * @author SAP AG
  */

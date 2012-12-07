@@ -9,7 +9,7 @@ import java.util.List;
  * EdmEntityType holds a set of related information like {@link EdmSimpleType} properties and {@link EdmComplexType} properties
  * and in addition to a complex type {@link EdmComplexType} it provided information about key properties, customizable feed mappings
  * and navigation properties {@link EdmNavigationProperty} 
- * 
+ * <p>IMPORTANT
  * Do not implement this interface. This interface is intended for usage only.
  * 
  * @author SAP AG

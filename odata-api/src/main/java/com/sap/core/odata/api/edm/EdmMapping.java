@@ -2,7 +2,7 @@ package com.sap.core.odata.api.edm;
 
 /**
  * EdmMapping holds custom mapping information which can be applied to a CSDL element.
- * 
+ * <p>IMPORTANT
  * Do not implement this interface. This interface is intended for usage only.
  * 
  * @author SAP AG

@@ -7,6 +7,11 @@ import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 import com.sap.core.odata.api.edm.FullQualifiedName;
 import com.sap.core.odata.api.exception.ODataException;
 
+/**
+ * Default EDM Provider which is to be extended by the application
+ * @author SAP AG
+ *
+ */
 public class EdmProviderDefault implements EdmProvider {
 
   /* (non-Javadoc)

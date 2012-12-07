@@ -7,8 +7,8 @@ import com.sap.core.odata.api.edm.EdmException;
 import com.sap.core.odata.api.processor.ODataPathSegment;
 
 /**
+ * Uri Parser interface
  * @author SAP AG
- * Uri parser interface
  */
 public interface UriParser {
   

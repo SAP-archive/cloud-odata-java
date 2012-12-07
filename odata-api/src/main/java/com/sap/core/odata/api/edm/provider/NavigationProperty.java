@@ -5,8 +5,8 @@ import java.util.Collection;
 import com.sap.core.odata.api.edm.FullQualifiedName;
 
 /**
+ * Objects of this Class represent a navigation property
  * @author SAP AG
- *
  */
 public class NavigationProperty {
 

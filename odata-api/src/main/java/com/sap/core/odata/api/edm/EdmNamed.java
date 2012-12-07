@@ -2,7 +2,7 @@ package com.sap.core.odata.api.edm;
 
 /**
  * EdmName is the base interface for nearly all CSDL constructs.
- * 
+ * <p>IMPORTANT
  * Do not implement this interface. This interface is intended for usage only.
  * 
  * @author SAP AG

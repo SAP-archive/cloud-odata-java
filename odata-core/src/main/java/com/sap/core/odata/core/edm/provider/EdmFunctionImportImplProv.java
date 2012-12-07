@@ -90,7 +90,7 @@ public class EdmFunctionImportImplProv extends EdmNamedImplProv implements EdmFu
   @Override
   public EdmTyped getReturnType() throws EdmException {
     final ReturnType returnType = functionImport.getReturnType();
-    return new EdmTypedImplProv(edm, functionImport.getName(), returnType.getQualifiedName(), returnType.getMultiplicity());
+    return new EdmTypedImplProv(edm, functionImport.getName(), returnType.getTypeName(), returnType.getMultiplicity());
   }
 
   @Override

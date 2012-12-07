@@ -11,7 +11,7 @@ import java.util.Collection;
  * <li>{@link EdmSimpleType} or a collection of simple types
  * <li>{@link EdmEntityType} or a collection of entity types
  * <li>{@link EdmEntitySet}
- * 
+ * <p>IMPORTANT
  * Do not implement this interface. This interface is intended for usage only.
  * 
  * @author SAP AG

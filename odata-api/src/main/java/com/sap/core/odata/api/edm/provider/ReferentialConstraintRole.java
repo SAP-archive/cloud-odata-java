@@ -3,8 +3,8 @@ package com.sap.core.odata.api.edm.provider;
 import java.util.Collection;
 
 /**
+ * Objects of this Class represent a referential constraint role
  * @author SAP AG
- * <p>Objects of this Class represent a referential constraint role
  */
 public class ReferentialConstraintRole {
 

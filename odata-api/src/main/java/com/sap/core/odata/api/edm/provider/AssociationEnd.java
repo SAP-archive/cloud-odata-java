@@ -6,9 +6,8 @@ import com.sap.core.odata.api.edm.EdmMultiplicity;
 import com.sap.core.odata.api.edm.FullQualifiedName;
 
 /**
+ * Objects of this class represent an association end
  * @author SAP AG
- * <p>
- * Objects of this class represent an association end in the EDM
  */
 public class AssociationEnd {
 

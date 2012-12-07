@@ -5,9 +5,8 @@ import java.util.Collection;
 import com.sap.core.odata.api.edm.FullQualifiedName;
 
 /**
+ * Objects of this class represent an entity set
  * @author SAP AG
- * <p>
- * Objects of this class represent an entity set in the EDM
  */
 public class EntitySet {
 

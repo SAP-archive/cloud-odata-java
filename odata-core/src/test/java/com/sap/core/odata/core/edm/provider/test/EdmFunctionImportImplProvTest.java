@@ -49,7 +49,7 @@ public class EdmFunctionImportImplProvTest {
     EntitySet fooEntitySet = new EntitySet().setName("fooEntitySet");
     when(edmProvider.getEntitySet("Container", "fooEntitySet")).thenReturn(fooEntitySet);
 
-    ReturnType fooReturnType = new ReturnType().setQualifiedName(EdmSimpleTypeKind.String.getFullQualifiedName()).setMultiplicity(EdmMultiplicity.ONE);
+    ReturnType fooReturnType = new ReturnType().setTypeName(EdmSimpleTypeKind.String.getFullQualifiedName()).setMultiplicity(EdmMultiplicity.ONE);
 
     Collection<FunctionImportParameter> parameters = new ArrayList<FunctionImportParameter>();
     FunctionImportParameter parameter = new FunctionImportParameter().setName("fooParameter1").setType(EdmSimpleTypeKind.String);

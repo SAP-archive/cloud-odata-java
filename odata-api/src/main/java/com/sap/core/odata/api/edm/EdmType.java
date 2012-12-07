@@ -2,7 +2,7 @@ package com.sap.core.odata.api.edm;
 
 /**
  * EdmType holds the namespace of a given type and its type as {@link EdmTypeKind}.
- * 
+ * <p>IMPORTANT
  * Do not implement this interface. This interface is intended for usage only.
  * 
  * @author SAP AG

@@ -3,6 +3,7 @@ package com.sap.core.odata.api.edm.provider;
 import java.util.Collection;
 
 /**
+ * Objects of this class represent a reference to a property via its name
  * @author SAP AG
  *
  */

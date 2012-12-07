@@ -7,8 +7,8 @@ import com.sap.core.odata.api.edm.EdmSimpleTypeKind;
 import com.sap.core.odata.api.edm.FullQualifiedName;
 
 /**
+ * Objects of this class represent function import parameters
  * @author SAP AG
- *
  */
 public class FunctionImportParameter {
 

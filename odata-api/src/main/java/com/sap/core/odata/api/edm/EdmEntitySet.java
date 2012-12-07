@@ -4,7 +4,7 @@ package com.sap.core.odata.api.edm;
  * A CSDL EntitySet element
  * 
  * EdmEntitySet is the container for entity type instances
- * 
+ * <p>IMPORTANT
  * Do not implement this interface. This interface is intended for usage only.
  * 
  * @author SAP AG

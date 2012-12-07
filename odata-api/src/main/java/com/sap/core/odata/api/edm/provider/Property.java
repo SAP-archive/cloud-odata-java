@@ -5,9 +5,8 @@ import java.util.Collection;
 import com.sap.core.odata.api.edm.EdmFacets;
 
 /**
+ * Objects of this class represent a property of an entity type
  * @author SAP AG
- *<p>
- * Objects of this class represent a property of an entity type in the EDM
  */
 public abstract class Property {
 

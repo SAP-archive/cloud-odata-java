@@ -4,19 +4,19 @@ import com.sap.core.odata.api.edm.EdmMultiplicity;
 import com.sap.core.odata.api.edm.FullQualifiedName;
 
 /**
+ * Objects of this Class represent a return type of a function import
  * @author SAP AG
- * <p>Objects of this Class represent a return type
  */
 public class ReturnType {
 
-  private FullQualifiedName qualifiedName;
+  private FullQualifiedName typeName;
   private EdmMultiplicity multiplicity;
 
   /**
-   * @return {@link FullQualifiedName} of this {@link ReturnType}
+   * @return {@link FullQualifiedName} type of this {@link ReturnType}
    */
-  public FullQualifiedName getQualifiedName() {
-    return qualifiedName;
+  public FullQualifiedName getTypeName() {
+    return typeName;
   }
 
   /**
@@ -28,12 +28,12 @@ public class ReturnType {
 
   /**
    * MANDATORY
-   * <p>Sets the {@link FullQualifiedName} of this {@link ReturnType}
+   * <p>Sets the type  of this {@link ReturnType} via the types {@link FullQualifiedName}
    * @param qualifiedName
    * @return {@link ReturnType} for method chaining
    */
-  public ReturnType setQualifiedName(FullQualifiedName qualifiedName) {
-    this.qualifiedName = qualifiedName;
+  public ReturnType setTypeName(FullQualifiedName qualifiedName) {
+    this.typeName = qualifiedName;
     return this;
   }
 
@@ -51,9 +51,9 @@ public class ReturnType {
   @Override
   public String toString() {
     if (EdmMultiplicity.MANY == multiplicity) {
-      return "Collection(" + qualifiedName + ")";
+      return "Collection(" + typeName + ")";
     } else {
-      return qualifiedName.toString();
+      return typeName.toString();
     }
   }
   

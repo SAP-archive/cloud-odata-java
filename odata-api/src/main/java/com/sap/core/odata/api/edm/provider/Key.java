@@ -3,8 +3,8 @@ package com.sap.core.odata.api.edm.provider;
 import java.util.Collection;
 
 /**
+ * Objects of this class represent a Key for an entity type
  * @author SAP AG
- *
  */
 public class Key {
 
