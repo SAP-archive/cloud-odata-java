@@ -80,7 +80,7 @@ public class EdmServiceMetadataImplProv implements EdmServiceMetadata {
                 for (Property property : properties) {
                   if (property.getCustomizableFeedMappings() != null) {
                     if (property.getCustomizableFeedMappings().getFcKeepInContent() != null) {
-                      if (property.getCustomizableFeedMappings().getFcKeepInContent()) {
+                      if (!property.getCustomizableFeedMappings().getFcKeepInContent()) {
                         dataServiceVersion = Edm.DATA_SERVICE_VERSION_20;
                         return dataServiceVersion;
                       }
