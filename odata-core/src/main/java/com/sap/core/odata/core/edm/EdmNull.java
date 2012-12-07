@@ -25,6 +25,11 @@ public class EdmNull implements EdmSimpleType {
   }
 
   @Override
+  public int hashCode() {
+    return 0;
+  }
+
+  @Override
   public String getNamespace() throws EdmException {
     return EdmSimpleType.EDM_NAMESPACE;
   }
