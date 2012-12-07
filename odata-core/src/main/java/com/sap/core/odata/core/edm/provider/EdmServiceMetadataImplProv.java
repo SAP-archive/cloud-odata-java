@@ -8,6 +8,9 @@ import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
 import java.util.Collection;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.sap.core.odata.api.edm.Edm;
 import com.sap.core.odata.api.edm.EdmServiceMetadata;
 import com.sap.core.odata.api.edm.provider.DataServices;
@@ -20,6 +23,8 @@ import com.sap.core.odata.api.exception.ODataException;
 
 public class EdmServiceMetadataImplProv implements EdmServiceMetadata {
 
+  private static final Logger LOG = LoggerFactory.getLogger(EdmServiceMetadataImplProv.class);
+  
   private EdmProvider edmProvider;
   private String dataServiceVersion;
   private Collection<Schema> schemas;
@@ -49,7 +54,8 @@ public class EdmServiceMetadataImplProv implements EdmServiceMetadata {
         try {
           writer.close();
         } catch (IOException e) {
-          throw new ODataEntityProviderException(ODataEntityProviderException.COMMON, e);
+          // don't throw in finally!  
+          LOG.error(e.getLocalizedMessage(), e);
         }
       }
     }
