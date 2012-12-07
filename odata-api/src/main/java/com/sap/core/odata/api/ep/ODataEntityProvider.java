@@ -1,6 +1,7 @@
 package com.sap.core.odata.api.ep;
 
 import java.io.InputStream;
+import java.util.List;
 import java.util.Map;
 
 import com.sap.core.odata.api.edm.Edm;
@@ -28,7 +29,7 @@ public abstract class ODataEntityProvider {
 
   public abstract InputStream writeServiceDocument(Edm edm, String serviceRoot) throws ODataEntityProviderException;
 
-  public abstract InputStream writeFeed(EdmEntitySet entitySet, Map<String, Object> data, String mediaResourceMimeType) throws ODataEntityProviderException;
+  public abstract InputStream writeFeed(EdmEntitySet entitySet, List<Map<String, Object>> data, String mediaResourceMimeType) throws ODataEntityProviderException;
 
   public abstract InputStream writeEntry(EdmEntitySet entitySet, Map<String, Object> data, String mediaResourceMimeType) throws ODataEntityProviderException;
 
