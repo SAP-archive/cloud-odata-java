@@ -183,11 +183,11 @@ public class ScenarioEdmProvider extends EdmProviderDefault {
                 .setFcTargetPath(EdmTargetPath.SYNDICATION_TITLE)));
         properties.add(new SimpleProperty().setName("ManagerId").setType(EdmSimpleTypeKind.String)
             .setMapping(new Mapping().setValue("getManager.getId")));
+        properties.add(new SimpleProperty().setName("RoomId").setType(EdmSimpleTypeKind.String)
+            .setMapping(new Mapping().setValue("getRoom.getId")));
         properties.add(new SimpleProperty().setName("TeamId").setType(EdmSimpleTypeKind.String)
             .setFacets(new Facets().setMaxLength(2))
             .setMapping(new Mapping().setValue("getTeam.getId")));
-        properties.add(new SimpleProperty().setName("RoomId").setType(EdmSimpleTypeKind.String)
-            .setMapping(new Mapping().setValue("getRoom.getId")));
         properties.add(new ComplexProperty().setName("Location").setType(COMPLEX_TYPE_1));
         properties.add(new SimpleProperty().setName("Age").setType(EdmSimpleTypeKind.Int16));
         properties.add(new SimpleProperty().setName("EntryDate").setType(EdmSimpleTypeKind.DateTime)
