@@ -25,14 +25,14 @@ public class AtomServiceDocumentProvider {
       XMLStreamWriter xmlStreamWriter = XMLOutputFactory.newInstance().createXMLStreamWriter(writer);
 
       xmlStreamWriter.writeStartDocument();
-      xmlStreamWriter.setPrefix(Edm.PREFIX_APP, Edm.NAMESPACE_APP_2007);
+      xmlStreamWriter.setPrefix(Edm.PREFIX_XML, Edm.NAMESPACE_XML_1998);
       xmlStreamWriter.setPrefix(Edm.PREFIX_ATOM, Edm.NAMESPACE_ATOM_2005);
       xmlStreamWriter.setDefaultNamespace(Edm.NAMESPACE_APP_2007);
 
       xmlStreamWriter.writeStartElement(FormatXml.APP_SERVICE);
-      xmlStreamWriter.writeAttribute(FormatXml.XML_BASE, serviceRoot);
+      xmlStreamWriter.writeAttribute(Edm.NAMESPACE_XML_1998, FormatXml.XML_BASE, serviceRoot);
+      xmlStreamWriter.writeDefaultNamespace(Edm.NAMESPACE_APP_2007);
       xmlStreamWriter.writeNamespace(Edm.PREFIX_ATOM, Edm.NAMESPACE_ATOM_2005);
-      xmlStreamWriter.writeNamespace(Edm.PREFIX_APP, Edm.NAMESPACE_APP_2007);
 
       xmlStreamWriter.writeStartElement(FormatXml.APP_WORKSPACE);
       xmlStreamWriter.writeStartElement(Edm.NAMESPACE_ATOM_2005, FormatXml.ATOM_TITLE);
