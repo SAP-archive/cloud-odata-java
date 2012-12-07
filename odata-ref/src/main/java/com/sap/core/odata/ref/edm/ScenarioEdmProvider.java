@@ -93,11 +93,11 @@ public class ScenarioEdmProvider extends EdmProviderDefault {
 
     List<EntityType> entityTypes = new ArrayList<EntityType>();
     entityTypes.add(getEntityType(ENTITY_TYPE_1_1));
-    entityTypes.add(getEntityType(ENTITY_TYPE_1_BASE));
     entityTypes.add(getEntityType(ENTITY_TYPE_1_2));
     entityTypes.add(getEntityType(ENTITY_TYPE_1_3));
     entityTypes.add(getEntityType(ENTITY_TYPE_1_4));
     entityTypes.add(getEntityType(ENTITY_TYPE_1_5));
+    entityTypes.add(getEntityType(ENTITY_TYPE_1_BASE));
     schema.setEntityTypes(entityTypes);
 
     List<ComplexType> complexTypes = new ArrayList<ComplexType>();
