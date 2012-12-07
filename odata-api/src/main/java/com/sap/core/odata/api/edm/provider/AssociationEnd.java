@@ -1,6 +1,6 @@
 package com.sap.core.odata.api.edm.provider;
 
-import java.util.Collection;
+import java.util.List;
 
 import com.sap.core.odata.api.edm.EdmMultiplicity;
 import com.sap.core.odata.api.edm.FullQualifiedName;
@@ -16,8 +16,8 @@ public class AssociationEnd {
   private EdmMultiplicity multiplicity;
   private OnDelete onDelete;
   private Documentation documentation;
-  private Collection<AnnotationAttribute> annotationAttributes;
-  private Collection<AnnotationElement> annotationElements;
+  private List<AnnotationAttribute> annotationAttributes;
+  private List<AnnotationElement> annotationElements;
 
   /**
    * @return {@link FullQualifiedName} full qualified name  (namespace and name)
@@ -57,14 +57,14 @@ public class AssociationEnd {
   /**
    * @return collection of {@link AnnotationAttribute} annotation attributes
    */
-  public Collection<AnnotationAttribute> getAnnotationAttributes() {
+  public List<AnnotationAttribute> getAnnotationAttributes() {
     return annotationAttributes;
   }
 
   /**
    * @return collection of {@link AnnotationElement} annotation elements
    */
-  public Collection<AnnotationElement> getAnnotationElements() {
+  public List<AnnotationElement> getAnnotationElements() {
     return annotationElements;
   }
 
@@ -126,7 +126,7 @@ public class AssociationEnd {
    * @param annotationAttributes
    * @return {@link AssociationEnd} for method chaining
    */
-  public AssociationEnd setAnnotationAttributes(Collection<AnnotationAttribute> annotationAttributes) {
+  public AssociationEnd setAnnotationAttributes(List<AnnotationAttribute> annotationAttributes) {
     this.annotationAttributes = annotationAttributes;
     return this;
   }
@@ -136,7 +136,7 @@ public class AssociationEnd {
    * @param annotationElements
    * @return {@link AssociationEnd} for method chaining
    */
-  public AssociationEnd setAnnotationElements(Collection<AnnotationElement> annotationElements) {
+  public AssociationEnd setAnnotationElements(List<AnnotationElement> annotationElements) {
     this.annotationElements = annotationElements;
     return this;
   }

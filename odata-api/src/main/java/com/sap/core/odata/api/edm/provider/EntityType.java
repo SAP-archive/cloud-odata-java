@@ -1,6 +1,6 @@
 package com.sap.core.odata.api.edm.provider;
 
-import java.util.Collection;
+import java.util.List;
 
 import com.sap.core.odata.api.edm.FullQualifiedName;
 
@@ -14,7 +14,7 @@ public class EntityType extends ComplexType {
   private boolean hasStream;
   private CustomizableFeedMappings customizableFeedMappings;
   private Key key;
-  private Collection<NavigationProperty> navigationProperties;
+  private List<NavigationProperty> navigationProperties;
 
   /**
    * @return <b>boolean</b> if this EntityType is a media resource
@@ -38,9 +38,9 @@ public class EntityType extends ComplexType {
   }
 
   /**
-   * @return Collection<{@link NavigationProperty}> of this entity type
+   * @return List<{@link NavigationProperty}> of this entity type
    */
-  public Collection<NavigationProperty> getNavigationProperties() {
+  public List<NavigationProperty> getNavigationProperties() {
     return navigationProperties;
   }
 
@@ -79,7 +79,7 @@ public class EntityType extends ComplexType {
    * @param navigationProperties
    * @return {@link EntityType} for method chaining
    */
-  public EntityType setNavigationProperties(Collection<NavigationProperty> navigationProperties) {
+  public EntityType setNavigationProperties(List<NavigationProperty> navigationProperties) {
     this.navigationProperties = navigationProperties;
     return this;
   }
@@ -115,7 +115,7 @@ public class EntityType extends ComplexType {
    * @param
    * @return {@link EntityType} for method chaining
    */
-  public EntityType setProperties(Collection<Property> properties) {
+  public EntityType setProperties(List<Property> properties) {
     super.setProperties(properties);
     return this;
   }
@@ -143,7 +143,7 @@ public class EntityType extends ComplexType {
    * @param annotationAttributes
    * @return {@link EntityType} for method chaining
    */
-  public EntityType setAnnotationAttributes(Collection<AnnotationAttribute> annotationAttributes) {
+  public EntityType setAnnotationAttributes(List<AnnotationAttribute> annotationAttributes) {
     super.setAnnotationAttributes(annotationAttributes);
     return this;
   }
@@ -153,7 +153,7 @@ public class EntityType extends ComplexType {
    * @param annotationElements
    * @return {@link EntityType} for method chaining
    */
-  public EntityType setAnnotationElements(Collection<AnnotationElement> annotationElements) {
+  public EntityType setAnnotationElements(List<AnnotationElement> annotationElements) {
     super.setAnnotationElements(annotationElements);
     return this;
   }

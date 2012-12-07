@@ -1,6 +1,6 @@
 package com.sap.core.odata.api.edm.provider;
 
-import java.util.Collection;
+import java.util.List;
 
 /**
  * Objects of this class represent the data service. They contain all schemas of the EDM as well as the dataServiceVersion
@@ -8,7 +8,7 @@ import java.util.Collection;
  */
 public class DataServices {
 
-  private Collection<Schema> schemas;
+  private List<Schema> schemas;
   private String dataServiceVersion;
 
   /**
@@ -16,7 +16,7 @@ public class DataServices {
    * @param schemas
    * @return {@link DataServices} for method chaining
    */
-  public DataServices setSchemas(Collection<Schema> schemas) {
+  public DataServices setSchemas(List<Schema> schemas) {
     this.schemas = schemas;
     return this;
   }
@@ -32,9 +32,9 @@ public class DataServices {
   }
 
   /**
-   * @return Collection<{@link Schema}>
+   * @return List<{@link Schema}>
    */
-  public Collection<Schema> getSchemas() {
+  public List<Schema> getSchemas() {
     return schemas;
   }
 

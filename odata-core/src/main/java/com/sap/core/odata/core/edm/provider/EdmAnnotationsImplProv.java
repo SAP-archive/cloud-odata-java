@@ -1,6 +1,6 @@
 package com.sap.core.odata.core.edm.provider;
 
-import java.util.Collection;
+import java.util.List;
 import java.util.Iterator;
 
 import com.sap.core.odata.api.edm.EdmAnnotationAttribute;
@@ -11,16 +11,16 @@ import com.sap.core.odata.api.edm.provider.AnnotationElement;
 
 public class EdmAnnotationsImplProv implements EdmAnnotations {
 
-  private Collection<AnnotationAttribute> annotationAttributes;
-  private Collection<? extends EdmAnnotationElement> annotationElements;
+  private List<AnnotationAttribute> annotationAttributes;
+  private List<? extends EdmAnnotationElement> annotationElements;
 
-  public EdmAnnotationsImplProv(Collection<AnnotationAttribute> annotationAttributes, Collection<AnnotationElement> annotationElements) {
+  public EdmAnnotationsImplProv(List<AnnotationAttribute> annotationAttributes, List<AnnotationElement> annotationElements) {
     this.annotationAttributes = annotationAttributes;
     this.annotationElements = annotationElements;
   }
 
   @Override
-  public Collection<? extends EdmAnnotationElement> getAnnotationElements() {
+  public List<? extends EdmAnnotationElement> getAnnotationElements() {
     return annotationElements;
   }
 
@@ -40,7 +40,7 @@ public class EdmAnnotationsImplProv implements EdmAnnotations {
   }
 
   @Override
-  public Collection<? extends EdmAnnotationAttribute> getAnnotationAttributes() {
+  public List<? extends EdmAnnotationAttribute> getAnnotationAttributes() {
     return annotationAttributes;
   }
 

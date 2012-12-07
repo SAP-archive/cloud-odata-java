@@ -1,6 +1,6 @@
 package com.sap.core.odata.api.edm.provider;
 
-import java.util.Collection;
+import java.util.List;
 
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
@@ -74,7 +74,7 @@ public class EdmProviderDefault implements EdmProvider {
    * @see com.sap.core.odata.api.edm.provider.EdmProvider#getSchemas()
    */
   @Override
-  public Collection<Schema> getSchemas() throws ODataException {
+  public List<Schema> getSchemas() throws ODataException {
     throw new NotImplementedException();
   }
 }

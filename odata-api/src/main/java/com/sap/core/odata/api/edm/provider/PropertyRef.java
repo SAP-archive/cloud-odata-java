@@ -1,6 +1,6 @@
 package com.sap.core.odata.api.edm.provider;
 
-import java.util.Collection;
+import java.util.List;
 
 /**
  * Objects of this class represent a reference to a property via its name
@@ -10,8 +10,8 @@ import java.util.Collection;
 public class PropertyRef {
 
   private String name;
-  private Collection<AnnotationAttribute> annotationAttributes;
-  private Collection<AnnotationElement> annotationElements;
+  private List<AnnotationAttribute> annotationAttributes;
+  private List<AnnotationElement> annotationElements;
 
   /**
    * @return <b>String</b> name of the {@link Property} this {@link PropertyRef} is referencing to
@@ -21,16 +21,16 @@ public class PropertyRef {
   }
 
   /**
-   * @return collection of {@link AnnotationAttribute} annotation attributes
+   * @return List of {@link AnnotationAttribute} annotation attributes
    */
-  public Collection<AnnotationAttribute> getAnnotationAttributes() {
+  public List<AnnotationAttribute> getAnnotationAttributes() {
     return annotationAttributes;
   }
 
   /**
-   * @return collection of {@link AnnotationElement} annotation elements
+   * @return List of {@link AnnotationElement} annotation elements
    */
-  public Collection<AnnotationElement> getAnnotationElements() {
+  public List<AnnotationElement> getAnnotationElements() {
     return annotationElements;
   }
 
@@ -46,21 +46,21 @@ public class PropertyRef {
   }
 
   /**
-   * Sets the collection of {@link AnnotationAttribute} for this {@link PropertyRef}
+   * Sets the List of {@link AnnotationAttribute} for this {@link PropertyRef}
    * @param annotationAttributes
    * @return {@link PropertyRef} for method chaining
    */
-  public PropertyRef setAnnotationAttributes(Collection<AnnotationAttribute> annotationAttributes) {
+  public PropertyRef setAnnotationAttributes(List<AnnotationAttribute> annotationAttributes) {
     this.annotationAttributes = annotationAttributes;
     return this;
   }
 
   /**
-   * Sets the collection of {@link AnnotationElement} for this {@link PropertyRef}
+   * Sets the List of {@link AnnotationElement} for this {@link PropertyRef}
    * @param annotationElements
    * @return {@link PropertyRef} for method chaining
    */
-  public PropertyRef setAnnotationElements(Collection<AnnotationElement> annotationElements) {
+  public PropertyRef setAnnotationElements(List<AnnotationElement> annotationElements) {
     this.annotationElements = annotationElements;
     return this;
   }

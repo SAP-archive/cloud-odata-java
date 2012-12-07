@@ -1,7 +1,6 @@
 package com.sap.core.odata.core.edm.provider;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -28,7 +27,7 @@ public class EdmEntityTypeImplProv extends EdmStructuralTypeImplProv implements 
   private List<String> edmKeyPropertyNames;
 
   private Map<String, NavigationProperty> navigationProperties;
-  private Collection<String> edmNavigationPropertyNames;
+  private List<String> edmNavigationPropertyNames;
 
   public EdmEntityTypeImplProv(EdmImplProv edm, EntityType entityType, String namespace) throws EdmException {
     super(edm, (ComplexType) entityType, EdmTypeKind.ENTITY, namespace);
@@ -40,7 +39,7 @@ public class EdmEntityTypeImplProv extends EdmStructuralTypeImplProv implements 
   private void buildNavigationPropertiesInternal() throws EdmException {
     this.navigationProperties = new HashMap<String, NavigationProperty>();
 
-    Collection<NavigationProperty> navigationProperties = entityType.getNavigationProperties();
+    List<NavigationProperty> navigationProperties = entityType.getNavigationProperties();
     if (navigationProperties != null) {
       NavigationProperty navigationProperty;
       for (Iterator<NavigationProperty> iterator = navigationProperties.iterator(); iterator.hasNext();) {
@@ -51,7 +50,7 @@ public class EdmEntityTypeImplProv extends EdmStructuralTypeImplProv implements 
   }
 
   @Override
-  public Collection<String> getKeyPropertyNames() throws EdmException {
+  public List<String> getKeyPropertyNames() throws EdmException {
     if (edmKeyPropertyNames == null) {
       if (edmBaseType != null) {
         return ((EdmEntityType) edmBaseType).getKeyPropertyNames();
@@ -115,7 +114,7 @@ public class EdmEntityTypeImplProv extends EdmStructuralTypeImplProv implements 
   }
 
   @Override
-  public Collection<String> getNavigationPropertyNames() throws EdmException {
+  public List<String> getNavigationPropertyNames() throws EdmException {
     if (edmNavigationPropertyNames == null) {
       edmNavigationPropertyNames = new ArrayList<String>();
       edmNavigationPropertyNames.addAll(navigationProperties.keySet());

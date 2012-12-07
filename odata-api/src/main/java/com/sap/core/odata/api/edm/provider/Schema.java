@@ -1,6 +1,5 @@
 package com.sap.core.odata.api.edm.provider;
 
-import java.util.Collection;
 import java.util.List;
 
 /**
@@ -16,8 +15,8 @@ public class Schema {
   private List<ComplexType> complexTypes;
   private List<Association> associations;
   private List<EntityContainer> entityContainers;
-  private Collection<AnnotationAttribute> annotationAttributes;
-  private Collection<AnnotationElement> annotationElements;
+  private List<AnnotationAttribute> annotationAttributes;
+  private List<AnnotationElement> annotationElements;
 
   /**
    * MANDATORY
@@ -95,21 +94,21 @@ public class Schema {
   }
 
   /**
-   * Sets the collection of {@link AnnotationAttribute} for this {@link Schema}
+   * Sets the List of {@link AnnotationAttribute} for this {@link Schema}
    * @param annotationAttributes
    * @return {@link Schema} for method chaining
    */
-  public Schema setAnnotationAttributes(Collection<AnnotationAttribute> annotationAttributes) {
+  public Schema setAnnotationAttributes(List<AnnotationAttribute> annotationAttributes) {
     this.annotationAttributes = annotationAttributes;
     return this;
   }
 
   /**
-   * Sets the collection of {@link AnnotationElement} for this {@link Schema}
+   * Sets the List of {@link AnnotationElement} for this {@link Schema}
    * @param annotationElements
    * @return {@link Schema} for method chaining
    */
-  public Schema setAnnotationElements(Collection<AnnotationElement> annotationElements) {
+  public Schema setAnnotationElements(List<AnnotationElement> annotationElements) {
     this.annotationElements = annotationElements;
     return this;
   }
@@ -164,16 +163,16 @@ public class Schema {
   }
 
   /**
-   * @return collection of {@link AnnotationAttribute} annotation attributes
+   * @return List of {@link AnnotationAttribute} annotation attributes
    */
-  public Collection<AnnotationAttribute> getAnnotationAttributes() {
+  public List<AnnotationAttribute> getAnnotationAttributes() {
     return annotationAttributes;
   }
 
   /**
-   * @return collection of {@link AnnotationElement} annotation elements
+   * @return List of {@link AnnotationElement} annotation elements
    */
-  public Collection<AnnotationElement> getAnnotationElements() {
+  public List<AnnotationElement> getAnnotationElements() {
     return annotationElements;
   }
 }

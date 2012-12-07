@@ -1,9 +1,11 @@
 package com.sap.core.odata.core.edm.provider;
 
-import java.util.Collection;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import com.sap.core.odata.api.edm.EdmAnnotatable;
 import com.sap.core.odata.api.edm.EdmAnnotations;
@@ -26,6 +28,7 @@ public class EdmFunctionImportImplProv extends EdmNamedImplProv implements EdmFu
   private EdmEntityContainer edmEntityContainer;
   private Map<String, EdmParameter> edmParameters;
   private Map<String, FunctionImportParameter> parameters;
+  private List<String> parametersList;
 
   public EdmFunctionImportImplProv(EdmImplProv edm, FunctionImport functionImport, EdmEntityContainer edmEntityContainer) throws EdmException {
     super(edm, functionImport.getName());
@@ -40,7 +43,7 @@ public class EdmFunctionImportImplProv extends EdmNamedImplProv implements EdmFu
   private void buildFunctionImportParametersInternal() {
     this.parameters = new HashMap<String, FunctionImportParameter>();
 
-    Collection<FunctionImportParameter> parameters = functionImport.getParameters();
+    List<FunctionImportParameter> parameters = functionImport.getParameters();
     if (parameters != null) {
       FunctionImportParameter functionImportParameter;
       for (Iterator<FunctionImportParameter> iterator = parameters.iterator(); iterator.hasNext();) {
@@ -73,8 +76,18 @@ public class EdmFunctionImportImplProv extends EdmNamedImplProv implements EdmFu
   }
 
   @Override
-  public Collection<String> getParameterNames() throws EdmException {
-    return parameters.keySet();
+  public List<String> getParameterNames() throws EdmException {
+    if (parametersList == null) {
+      parametersList = new ArrayList<String>();
+
+      Set<String> keySet = parameters.keySet();
+      Iterator<String> iterator = keySet.iterator();
+      while (iterator.hasNext()) {
+        parametersList.add(iterator.next());
+      }
+    }
+    
+    return parametersList;
   }
 
   @Override

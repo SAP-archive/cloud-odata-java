@@ -1,6 +1,6 @@
 package com.sap.core.odata.api.edm.provider;
 
-import java.util.Collection;
+import java.util.List;
 
 /**
  * Objects of this Class represent a referential constraint
@@ -11,8 +11,8 @@ public class ReferentialConstraint {
   private ReferentialConstraintRole principal;
   private ReferentialConstraintRole dependent;
   private Documentation documentation;
-  private Collection<AnnotationAttribute> annotationAttributes;
-  private Collection<AnnotationElement> annotationElements;
+  private List<AnnotationAttribute> annotationAttributes;
+  private List<AnnotationElement> annotationElements;
 
   /**
    * @return {@link ReferentialConstraintRole} the principal of this {@link ReferentialConstraint}
@@ -36,16 +36,16 @@ public class ReferentialConstraint {
   }
 
   /**
-   * @return collection of {@link AnnotationAttribute} annotation attributes
+   * @return List of {@link AnnotationAttribute} annotation attributes
    */
-  public Collection<AnnotationAttribute> getAnnotationAttributes() {
+  public List<AnnotationAttribute> getAnnotationAttributes() {
     return annotationAttributes;
   }
 
   /**
-   * @return collection of {@link AnnotationElement} annotation elements
+   * @return List of {@link AnnotationElement} annotation elements
    */
-  public Collection<AnnotationElement> getAnnotationElements() {
+  public List<AnnotationElement> getAnnotationElements() {
     return annotationElements;
   }
 
@@ -82,21 +82,21 @@ public class ReferentialConstraint {
   }
 
   /**
-   * Sets the collection of {@link AnnotationAttribute} for this {@link ReferentialConstraint}
+   * Sets the List of {@link AnnotationAttribute} for this {@link ReferentialConstraint}
    * @param annotationAttributes
    * @return {@link ReferentialConstraint} for method chaining
    */
-  public ReferentialConstraint setAnnotationAttributes(Collection<AnnotationAttribute> annotationAttributes) {
+  public ReferentialConstraint setAnnotationAttributes(List<AnnotationAttribute> annotationAttributes) {
     this.annotationAttributes = annotationAttributes;
     return this;
   }
 
   /**
-   * Sets the collection of {@link AnnotationElement} for this {@link ReferentialConstraint}
+   * Sets the List of {@link AnnotationElement} for this {@link ReferentialConstraint}
    * @param annotationElements
    * @return {@link ReferentialConstraint} for method chaining
    */
-  public ReferentialConstraint setAnnotationElements(Collection<AnnotationElement> annotationElements) {
+  public ReferentialConstraint setAnnotationElements(List<AnnotationElement> annotationElements) {
     this.annotationElements = annotationElements;
     return this;
   }

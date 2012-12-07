@@ -1,6 +1,6 @@
 package com.sap.core.odata.api.edm.provider;
 
-import java.util.Collection;
+import java.util.List;
 
 /**
  * Objects of this class represent documentation
@@ -10,8 +10,8 @@ public class Documentation {
 
   private String summary;
   private String longDescription;
-  private Collection<AnnotationAttribute> annotationAttributes;
-  private Collection<AnnotationElement> annotationElements;
+  private List<AnnotationAttribute> annotationAttributes;
+  private List<AnnotationElement> annotationElements;
 
   /**
    * @return <b>String</b> summary
@@ -30,14 +30,14 @@ public class Documentation {
   /**
    * @return collection of {@link AnnotationAttribute} annotation attributes
    */
-  public Collection<AnnotationAttribute> getAnnotationAttributes() {
+  public List<AnnotationAttribute> getAnnotationAttributes() {
     return annotationAttributes;
   }
 
   /**
    * @return collection of {@link AnnotationElement} annotation elements
    */
-  public Collection<AnnotationElement> getAnnotationElements() {
+  public List<AnnotationElement> getAnnotationElements() {
     return annotationElements;
   }
 
@@ -66,7 +66,7 @@ public class Documentation {
    * @param annotationAttributes
    * @return {@link Documentation} for method chaining
    */
-  public Documentation setAnnotationAttributes(Collection<AnnotationAttribute> annotationAttributes) {
+  public Documentation setAnnotationAttributes(List<AnnotationAttribute> annotationAttributes) {
     this.annotationAttributes = annotationAttributes;
     return this;
   }
@@ -76,7 +76,7 @@ public class Documentation {
    * @param annotationElements
    * @return {@link Documentation} for method chaining
    */
-  public Documentation setAnnotationElements(Collection<AnnotationElement> annotationElements) {
+  public Documentation setAnnotationElements(List<AnnotationElement> annotationElements) {
     this.annotationElements = annotationElements;
     return this;
   }

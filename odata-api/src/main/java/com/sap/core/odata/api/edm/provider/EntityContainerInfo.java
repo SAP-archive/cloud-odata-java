@@ -1,6 +1,6 @@
 package com.sap.core.odata.api.edm.provider;
 
-import java.util.Collection;
+import java.util.List;
 
 /**
  * Objects of this class represent an entity container
@@ -11,8 +11,8 @@ public class EntityContainerInfo {
   private String name;
   private String extendz;
   private boolean isDefaultEntityContainer;
-  private Collection<AnnotationAttribute> annotationAttributes;
-  private Collection<AnnotationElement> annotationElements;
+  private List<AnnotationAttribute> annotationAttributes;
+  private List<AnnotationElement> annotationElements;
   
   /**
    * @return <b>String</b> name
@@ -68,7 +68,7 @@ public class EntityContainerInfo {
   /**
    * @return collection of {@link AnnotationAttribute} annotation attributes
    */
-  public Collection<AnnotationAttribute> getAnnotationAttributes() {
+  public List<AnnotationAttribute> getAnnotationAttributes() {
     return annotationAttributes;
   }
 
@@ -77,7 +77,7 @@ public class EntityContainerInfo {
    * @param annotationAttributes
    * @return {@link EntityContainer} for method chaining
    */
-  public EntityContainerInfo setAnnotationAttributes(Collection<AnnotationAttribute> annotationAttributes) {
+  public EntityContainerInfo setAnnotationAttributes(List<AnnotationAttribute> annotationAttributes) {
     this.annotationAttributes = annotationAttributes;
     return this;
   }
@@ -85,7 +85,7 @@ public class EntityContainerInfo {
   /**
    * @return collection of {@link AnnotationElement} annotation elements
    */
-  public Collection<AnnotationElement> getAnnotationElements() {
+  public List<AnnotationElement> getAnnotationElements() {
     return annotationElements;
   }
 
@@ -94,7 +94,7 @@ public class EntityContainerInfo {
    * @param annotationElements
    * @return {@link EntityContainer} for method chaining
    */
-  public EntityContainerInfo setAnnotationElements(Collection<AnnotationElement> annotationElements) {
+  public EntityContainerInfo setAnnotationElements(List<AnnotationElement> annotationElements) {
     this.annotationElements = annotationElements;
     return this;
   }

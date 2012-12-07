@@ -4,7 +4,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
 import java.util.ArrayList;
-import java.util.Collection;
+import java.util.List;
 import java.util.Iterator;
 
 import org.junit.BeforeClass;
@@ -23,11 +23,11 @@ public class EdmAnnotationsImplProvTest {
   @BeforeClass
   public static void getEdmEntityContainerImpl() throws Exception {
 
-    Collection<AnnotationAttribute> annotationAttributes = new ArrayList<AnnotationAttribute>();
+    List<AnnotationAttribute> annotationAttributes = new ArrayList<AnnotationAttribute>();
     AnnotationAttribute attribute = new AnnotationAttribute().setName("attributeName").setNamespace("namespace").setPrefix("prefix").setText("Text");
     annotationAttributes.add(attribute);
 
-    Collection<AnnotationElement> annotationElements = new ArrayList<AnnotationElement>();
+    List<AnnotationElement> annotationElements = new ArrayList<AnnotationElement>();
     AnnotationElement element = new AnnotationElement().setName("elementName").setNamespace("namespace").setPrefix("prefix").setXmlData("xmlData");
     annotationElements.add(element);
 
@@ -37,7 +37,7 @@ public class EdmAnnotationsImplProvTest {
 
   @Test
   public void testAttributes() {
-    Collection<? extends EdmAnnotationAttribute> annotations = annotationsProvider.getAnnotationAttributes();
+    List<? extends EdmAnnotationAttribute> annotations = annotationsProvider.getAnnotationAttributes();
     assertEquals(1, annotations.size());
 
     Iterator<? extends EdmAnnotationAttribute> iterator = annotations.iterator();
@@ -67,7 +67,7 @@ public class EdmAnnotationsImplProvTest {
 
   @Test
   public void testElements() {
-    Collection<? extends EdmAnnotationElement> annotations = annotationsProvider.getAnnotationElements();
+    List<? extends EdmAnnotationElement> annotations = annotationsProvider.getAnnotationElements();
     assertEquals(1, annotations.size());
 
     Iterator<? extends EdmAnnotationElement> iterator = annotations.iterator();

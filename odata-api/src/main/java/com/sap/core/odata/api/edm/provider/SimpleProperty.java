@@ -1,6 +1,6 @@
 package com.sap.core.odata.api.edm.provider;
 
-import java.util.Collection;
+import java.util.List;
 
 import com.sap.core.odata.api.edm.EdmFacets;
 import com.sap.core.odata.api.edm.EdmSimpleTypeKind;
@@ -86,19 +86,19 @@ public class SimpleProperty extends Property {
   }
 
   /* (non-Javadoc)
-   * @see com.sap.core.odata.api.edm.provider.Property#setAnnotationAttributes(java.util.Collection)
+   * @see com.sap.core.odata.api.edm.provider.Property#setAnnotationAttributes(java.util.List)
    */
   @Override
-  public SimpleProperty setAnnotationAttributes(Collection<AnnotationAttribute> annotationAttributes) {
+  public SimpleProperty setAnnotationAttributes(List<AnnotationAttribute> annotationAttributes) {
     super.setAnnotationAttributes(annotationAttributes);
     return this;
   }
 
   /* (non-Javadoc)
-   * @see com.sap.core.odata.api.edm.provider.Property#setAnnotationElements(java.util.Collection)
+   * @see com.sap.core.odata.api.edm.provider.Property#setAnnotationElements(java.util.List)
    */
   @Override
-  public SimpleProperty setAnnotationElements(Collection<AnnotationElement> annotationElements) {
+  public SimpleProperty setAnnotationElements(List<AnnotationElement> annotationElements) {
     super.setAnnotationElements(annotationElements);
     return this;
   }

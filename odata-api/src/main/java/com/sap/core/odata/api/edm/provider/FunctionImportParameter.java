@@ -1,6 +1,6 @@
 package com.sap.core.odata.api.edm.provider;
 
-import java.util.Collection;
+import java.util.List;
 
 import com.sap.core.odata.api.edm.EdmFacets;
 import com.sap.core.odata.api.edm.EdmSimpleTypeKind;
@@ -18,8 +18,8 @@ public class FunctionImportParameter {
   private EdmFacets facets;
   private Mapping mapping;
   private Documentation documentation;
-  private Collection<AnnotationAttribute> annotationAttributes;
-  private Collection<AnnotationElement> annotationElements;
+  private List<AnnotationAttribute> annotationAttributes;
+  private List<AnnotationElement> annotationElements;
 
   /**
    * @return <b>String</b> name of the parameter
@@ -66,14 +66,14 @@ public class FunctionImportParameter {
   /**
    * @return collection of {@link AnnotationAttribute} annotation attributes
    */
-  public Collection<AnnotationAttribute> getAnnotationAttributes() {
+  public List<AnnotationAttribute> getAnnotationAttributes() {
     return annotationAttributes;
   }
 
   /**
    * @return collection of {@link AnnotationElement} annotation elements
    */
-  public Collection<AnnotationElement> getAnnotationElements() {
+  public List<AnnotationElement> getAnnotationElements() {
     return annotationElements;
   }
 
@@ -145,7 +145,7 @@ public class FunctionImportParameter {
    * @param annotationAttributes
    * @return {@link FunctionImportParameter} for method chaining
    */
-  public FunctionImportParameter setAnnotationAttributes(Collection<AnnotationAttribute> annotationAttributes) {
+  public FunctionImportParameter setAnnotationAttributes(List<AnnotationAttribute> annotationAttributes) {
     this.annotationAttributes = annotationAttributes;
     return this;
   }
@@ -155,7 +155,7 @@ public class FunctionImportParameter {
    * @param annotationElements
    * @return {@link FunctionImportParameter} for method chaining
    */
-  public FunctionImportParameter setAnnotationElements(Collection<AnnotationElement> annotationElements) {
+  public FunctionImportParameter setAnnotationElements(List<AnnotationElement> annotationElements) {
     this.annotationElements = annotationElements;
     return this;
   }

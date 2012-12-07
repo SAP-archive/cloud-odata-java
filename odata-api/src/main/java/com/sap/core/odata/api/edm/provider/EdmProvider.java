@@ -1,6 +1,6 @@
 package com.sap.core.odata.api.edm.provider;
 
-import java.util.Collection;
+import java.util.List;
 
 import com.sap.core.odata.api.edm.FullQualifiedName;
 import com.sap.core.odata.api.exception.ODataException;
@@ -77,10 +77,10 @@ public interface EdmProvider {
 
   /**
    * This method should return a collection of all {@link Schema} or <b>null</b> if nothing is found
-   * @return Collection<{@link Schema}>
+   * @return List<{@link Schema}>
    * @throws ODataException
    */
-  Collection<Schema> getSchemas() throws ODataException;
+  List<Schema> getSchemas() throws ODataException;
 
   //TODO required for validation if namspace is defined????
   //List<EdmNamespaceInfo> getNamespaceInfos() throws ODataMessageException;

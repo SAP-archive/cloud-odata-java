@@ -1,6 +1,6 @@
 package com.sap.core.odata.api.edm.provider;
 
-import java.util.Collection;
+import java.util.List;
 
 /**
  * Objects of this class represent a function import
@@ -12,10 +12,10 @@ public class FunctionImport {
   private ReturnType returnType;
   private String entitySet;
   private String httpMethod;
-  private Collection<FunctionImportParameter> parameters;
+  private List<FunctionImportParameter> parameters;
   private Documentation documentation;
-  private Collection<AnnotationAttribute> annotationAttributes;
-  private Collection<AnnotationElement> annotationElements;
+  private List<AnnotationAttribute> annotationAttributes;
+  private List<AnnotationElement> annotationElements;
 
   /**
    * @return <b>String</b> name of this function import
@@ -46,9 +46,9 @@ public class FunctionImport {
   }
 
   /**
-   * @return Collection<{@link FunctionImportParameter}>s of this function import
+   * @return List<{@link FunctionImportParameter}>s of this function import
    */
-  public Collection<FunctionImportParameter> getParameters() {
+  public List<FunctionImportParameter> getParameters() {
     return parameters;
   }
 
@@ -62,14 +62,14 @@ public class FunctionImport {
   /**
    * @return collection of {@link AnnotationAttribute} annotation attributes
    */
-  public Collection<AnnotationAttribute> getAnnotationAttributes() {
+  public List<AnnotationAttribute> getAnnotationAttributes() {
     return annotationAttributes;
   }
 
   /**
    * @return collection of {@link AnnotationElement} annotation elements
    */
-  public Collection<AnnotationElement> getAnnotationElements() {
+  public List<AnnotationElement> getAnnotationElements() {
     return annotationElements;
   }
 
@@ -123,7 +123,7 @@ public class FunctionImport {
    * @param parameters
    * @return {@link FunctionImport} for method chaining
    */
-  public FunctionImport setParameters(Collection<FunctionImportParameter> parameters) {
+  public FunctionImport setParameters(List<FunctionImportParameter> parameters) {
     this.parameters = parameters;
     return this;
   }
@@ -143,7 +143,7 @@ public class FunctionImport {
    * @param annotationAttributes
    * @return {@link FunctionImport} for method chaining
    */
-  public FunctionImport setAnnotationAttributes(Collection<AnnotationAttribute> annotationAttributes) {
+  public FunctionImport setAnnotationAttributes(List<AnnotationAttribute> annotationAttributes) {
     this.annotationAttributes = annotationAttributes;
     return this;
   }
@@ -153,7 +153,7 @@ public class FunctionImport {
    * @param annotationElements
    * @return {@link FunctionImport} for method chaining
    */
-  public FunctionImport setAnnotationElements(Collection<AnnotationElement> annotationElements) {
+  public FunctionImport setAnnotationElements(List<AnnotationElement> annotationElements) {
     this.annotationElements = annotationElements;
     return this;
   }
