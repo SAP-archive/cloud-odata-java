@@ -2,12 +2,11 @@ package com.sap.core.odata.core.uri.expression;
 
 import com.sap.core.odata.api.exception.MessageReference;
 import com.sap.core.odata.api.exception.ODataMessageException;
-import com.sap.core.odata.api.uri.expression.FilterParserException;
 
 /**
  * This exception is thrown if there is an error during tokenizing.<br>
  * <b>This exception in not in the public API</b>, but may be added as cause for
- * the {@link FilterParserException} exception.  
+ * the {@link com.sap.core.odata.api.uri.expression.FilterParserException} exception.  
  * @author SAP AG
  */
 public class ExceptionTokenizer extends ODataMessageException {

@@ -7,8 +7,6 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import javax.ws.rs.core.PathSegment;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -74,7 +72,7 @@ public class UriParserImpl implements UriParser {
   /**
    * Parse the URI part after an OData service root,
    * already splitted into path segments and query parameters.
-   * @param pathSegments  the {@link PathSegment}s of the resource path, already unescaped
+   * @param pathSegments  the {@link ODataPathSegment}s of the resource path, already unescaped
    * @param queryParameters  the query parameters, already unescaped
    * @return a {@link UriParserResultImpl} instance containing the parsed information
    */

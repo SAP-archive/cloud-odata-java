@@ -9,7 +9,6 @@ import com.sap.core.odata.api.edm.provider.EdmProvider;
 import com.sap.core.odata.api.enums.Format;
 import com.sap.core.odata.api.ep.ODataEntityProvider;
 import com.sap.core.odata.api.ep.ODataEntityProviderException;
-import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.api.processor.ODataContext;
 import com.sap.core.odata.api.processor.ODataResponse.ODataResponseBuilder;
 import com.sap.core.odata.api.uri.UriParser;
@@ -87,7 +86,7 @@ public abstract class RuntimeDelegate {
     /**
      * @param format serializer format
      * @return a OData serializer
-     * @throws ODataException 
+     * @throws ODataEntityProviderException 
      */
     protected abstract ODataEntityProvider createSerializer(Format format, ODataContext ctx) throws ODataEntityProviderException;
   }

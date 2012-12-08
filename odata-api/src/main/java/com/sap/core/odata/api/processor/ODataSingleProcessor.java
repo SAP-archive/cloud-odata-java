@@ -23,8 +23,6 @@ import com.sap.core.odata.api.processor.aspect.FunctionImport;
 import com.sap.core.odata.api.processor.aspect.FunctionImportValue;
 import com.sap.core.odata.api.processor.aspect.Metadata;
 import com.sap.core.odata.api.processor.aspect.ServiceDocument;
-import com.sap.core.odata.api.service.ODataService;
-import com.sap.core.odata.api.service.ODataServiceFactory;
 import com.sap.core.odata.api.uri.resultviews.GetComplexPropertyView;
 import com.sap.core.odata.api.uri.resultviews.GetEntityCountView;
 import com.sap.core.odata.api.uri.resultviews.GetEntityLinkCountView;
@@ -43,7 +41,7 @@ import com.sap.core.odata.api.uri.resultviews.GetSimplePropertyView;
 /**
  * <p>A default {@link ODataProcessor} that implements all processor aspects in a single class.</p>
  * <p>It is recommended to derive from this class and it is required by the
- * {@link ODataServiceFactory} to build an {@link ODataService}.</p>
+ * {@link com.sap.core.odata.api.service.ODataServiceFactory} to build an {@link com.sap.core.odata.api.service.ODataService}.</p>
  * <p>This abstract class provides a default behavior, returning the correct response
  * for requests for the service or the metadata document, respectively, and throwing an
  * {@link ODataNotImplementedException} for all other requests.
