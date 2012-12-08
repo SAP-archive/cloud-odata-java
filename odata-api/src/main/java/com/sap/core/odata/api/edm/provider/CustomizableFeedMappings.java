@@ -2,7 +2,6 @@ package com.sap.core.odata.api.edm.provider;
 
 import com.sap.core.odata.api.edm.EdmContentKind;
 import com.sap.core.odata.api.edm.EdmCustomizableFeedMappings;
-import com.sap.core.odata.api.edm.EdmTargetPath;
 
 /**
  * Objects of this class represent customizable feed mappings
@@ -118,7 +117,7 @@ public class CustomizableFeedMappings implements EdmCustomizableFeedMappings {
   }
 
   /**
-   * Sets the target path. Constants available {@link EdmTargetPath}
+   * Sets the target path. Constants available {@link com.sap.core.odata.api.edm.EdmTargetPath}
    * @param fcTargetPath
    * @return {@link CustomizableFeedMappings} for method chaining
    */

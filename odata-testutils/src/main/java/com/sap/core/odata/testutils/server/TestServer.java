@@ -1,7 +1,6 @@
 package com.sap.core.odata.testutils.server;
 
 import java.net.BindException;
-import java.net.InetSocketAddress;
 import java.net.URI;
 
 import org.apache.cxf.jaxrs.servlet.CXFNonSpringJaxrsServlet;

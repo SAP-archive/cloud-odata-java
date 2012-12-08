@@ -4,7 +4,6 @@ import java.util.List;
 
 import com.sap.core.odata.api.edm.EdmFacets;
 import com.sap.core.odata.api.edm.EdmSimpleTypeKind;
-import com.sap.core.odata.api.edm.FullQualifiedName;
 
 /**
  * Objects of this class represent function import parameters
@@ -36,7 +35,7 @@ public class FunctionImportParameter {
   }
 
   /**
-   * @return {@link FullQualifiedName} of this parameter
+   * @return {@link EdmSimpleTypeKind} of this parameter
    */
   public EdmSimpleTypeKind getType() {
     return type;
