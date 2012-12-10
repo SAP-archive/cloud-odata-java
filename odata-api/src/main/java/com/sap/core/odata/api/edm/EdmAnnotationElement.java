@@ -37,6 +37,5 @@ public interface EdmAnnotationElement {
    * 
    * @return String
    */
-  //TODO return type to be discussed
   String getXmlData();
 }

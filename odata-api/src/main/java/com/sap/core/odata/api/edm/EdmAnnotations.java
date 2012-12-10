@@ -43,8 +43,4 @@ public interface EdmAnnotations {
    * @return String
    */
   EdmAnnotationAttribute  getAnnotationAttribute(String name, String namespace);
-
-  //TODO do we need a generic data container like
-  //
-  //  Object getData(String name);
 }

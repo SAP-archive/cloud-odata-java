@@ -512,7 +512,6 @@ public class EdmMetadata {
     }
   }
 
-  //TODO Limitation: Annotation elements not supported as deep XML structure, because writeCharacters does XML encoding
   private static void writeAnnotationElements(Collection<AnnotationElement> annotationElements, XMLStreamWriter xmlStreamWriter) throws XMLStreamException {
     if (annotationElements != null) {
       for (AnnotationElement annotationElement : annotationElements) {
