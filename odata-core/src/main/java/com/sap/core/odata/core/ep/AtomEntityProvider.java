@@ -184,8 +184,16 @@ public class AtomEntityProvider extends ODataEntityProvider {
   }
 
   @Override
-  public ODataEntityContent writeMediaResource(EdmProperty edmProperty, Object value) throws ODataEntityProviderException {
-    return null;
+  public ODataEntityContent writeMediaResource(String mimeType, byte [] data) throws ODataEntityProviderException {
+    ODataEntityContentImpl content = new ODataEntityContentImpl();
+    try {
+      ByteArrayInputStream bais = new ByteArrayInputStream(data);
+      content.setContentStream(bais);
+      content.setContentHeader(mimeType);
+      return content;
+    } catch (Exception e) {
+      throw new ODataEntityProviderException(ODataEntityProviderException.COMMON, e);
+    }
   }
 
 }

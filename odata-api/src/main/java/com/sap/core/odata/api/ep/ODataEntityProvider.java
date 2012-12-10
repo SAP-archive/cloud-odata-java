@@ -36,7 +36,7 @@ public abstract class ODataEntityProvider {
 
   public abstract ODataEntityContent writeText(EdmProperty edmProperty, Object value) throws ODataEntityProviderException;
   
-  public abstract ODataEntityContent writeMediaResource(EdmProperty edmProperty, Object value) throws ODataEntityProviderException;
+  public abstract ODataEntityContent writeMediaResource(String mimeType, byte [] data) throws ODataEntityProviderException;
 
   /**
    * 
