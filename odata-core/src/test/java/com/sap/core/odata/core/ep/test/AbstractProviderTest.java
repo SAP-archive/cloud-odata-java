@@ -27,7 +27,7 @@ import com.sap.core.odata.testutils.helper.XMLUnitHelper;
 /**
  * @author SAP AG
 */
-public abstract class AbstractSerializerTest {
+public abstract class AbstractProviderTest {
 
   protected final Logger log = LoggerFactory.getLogger(this.getClass());
 
@@ -104,7 +104,7 @@ public abstract class AbstractSerializerTest {
     return ctx;
   }
 
-  protected ODataEntityProvider createAtomSerializer() throws ODataException, EdmException, ODataEntityProviderException {
+  protected ODataEntityProvider createAtomEntityProvider() throws ODataException, EdmException, ODataEntityProviderException {
     ODataEntityProvider ser = ODataEntityProvider.create(Format.ATOM, createContextMock());
     return ser;
   }

@@ -1,6 +1,5 @@
 package com.sap.core.odata.api.ep;
 
-import java.io.InputStream;
 import java.util.List;
 import java.util.Map;
 
@@ -27,13 +26,17 @@ public abstract class ODataEntityProvider {
     return this.context;
   }
 
-  public abstract InputStream writeServiceDocument(Edm edm, String serviceRoot) throws ODataEntityProviderException;
+  public abstract ODataEntityContent writeServiceDocument(Edm edm, String serviceRoot) throws ODataEntityProviderException;
 
-  public abstract InputStream writeFeed(EdmEntitySet entitySet, List<Map<String, Object>> data, String mediaResourceMimeType) throws ODataEntityProviderException;
+  public abstract ODataEntityContent writeFeed(EdmEntitySet entitySet, List<Map<String, Object>> data, String mediaResourceMimeType) throws ODataEntityProviderException;
 
-  public abstract InputStream writeEntry(EdmEntitySet entitySet, Map<String, Object> data, String mediaResourceMimeType) throws ODataEntityProviderException;
+  public abstract ODataEntityContent writeEntry(EdmEntitySet entitySet, Map<String, Object> data, String mediaResourceMimeType) throws ODataEntityProviderException;
 
-  public abstract InputStream writeProperty(EdmProperty edmProperty, Object value) throws ODataEntityProviderException;
+  public abstract ODataEntityContent writeProperty(EdmProperty edmProperty, Object value) throws ODataEntityProviderException;
+
+  public abstract ODataEntityContent writeText(EdmProperty edmProperty, Object value) throws ODataEntityProviderException;
+  
+  public abstract ODataEntityContent writeMediaResource(EdmProperty edmProperty, Object value) throws ODataEntityProviderException;
 
   /**
    * 
@@ -42,7 +45,7 @@ public abstract class ODataEntityProvider {
    * @return
    * @throws ODataEntityProviderException
    */
-  public InputStream writeEntry(EdmEntitySet entitySet, Map<String, Object> data) throws ODataEntityProviderException {
+  public ODataEntityContent writeEntry(EdmEntitySet entitySet, Map<String, Object> data) throws ODataEntityProviderException {
     return this.writeEntry(entitySet, data, null);
   }
 }

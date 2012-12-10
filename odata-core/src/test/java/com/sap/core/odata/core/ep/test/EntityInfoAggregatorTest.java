@@ -9,7 +9,7 @@ import com.sap.core.odata.core.ep.aggregator.EntityInfoAggregator;
 import com.sap.core.odata.testutils.mocks.MockFacade;
 
 
-public class EntityInfoAggregatorTest extends AbstractSerializerTest {
+public class EntityInfoAggregatorTest extends AbstractProviderTest {
 
   @Test
   public void simpleTest() throws Exception {

@@ -25,6 +25,7 @@ import com.sap.core.odata.api.edm.EdmTypeKind;
 import com.sap.core.odata.api.enums.Format;
 import com.sap.core.odata.api.enums.HttpStatusCodes;
 import com.sap.core.odata.api.enums.InlineCount;
+import com.sap.core.odata.api.ep.ODataEntityContent;
 import com.sap.core.odata.api.ep.ODataEntityProvider;
 import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.api.exception.ODataNotFoundException;
@@ -194,10 +195,11 @@ public class ListsProcessor extends ODataSingleProcessor {
     final EdmEntitySet entitySet = uriParserResultView.getTargetEntitySet();
     final Map<String, Object> values = getStructuralTypeValueMap(data, entitySet.getEntityType());
 
+    ODataEntityContent content = ODataEntityProvider.create(format, getContext()).writeEntry(entitySet, values);
+
     return ODataResponse
         .status(HttpStatusCodes.OK)
-        .header(CONTENT_TYPE, APPLICATION_ATOM_XML_ENTRY)
-        .entity(ODataEntityProvider.create(format, getContext()).writeEntry(entitySet, values))
+        .entity(content)
         .build();
   }
 
@@ -267,10 +269,11 @@ public class ListsProcessor extends ODataSingleProcessor {
     final Object value = type.getKind() == EdmTypeKind.COMPLEX ?
         getStructuralTypeValueMap(data, (EdmStructuralType) type) : data;
 
+    ODataEntityContent content = ODataEntityProvider.create(format, getContext()).writeProperty(property, value);
+
     return ODataResponse
         .status(HttpStatusCodes.OK)
-        .header(CONTENT_TYPE, APPLICATION_XML)
-        .entity(ODataEntityProvider.create(format, getContext()).writeProperty(property, value))
+        .entity(content)
         .build();
   }
 
@@ -293,13 +296,23 @@ public class ListsProcessor extends ODataSingleProcessor {
 
     final List<EdmProperty> propertyPath = uriParserResultView.getPropertyPath();
     final EdmProperty property = propertyPath.get(propertyPath.size() - 1);
-    final EdmSimpleType type = (EdmSimpleType) property.getType();
-    final String value = type.valueToString(getPropertyValue(data, propertyPath), EdmLiteralKind.DEFAULT, property.getFacets());
+
+    Object value;
+    if (property.getMapping() != null) {
+      String mimeTypeMappingName = property.getMapping().getMimeType();
+      HashMap<String, Object> tmp = new HashMap<String, Object>();
+      tmp.put(mimeTypeMappingName, this.getValue(data, mimeTypeMappingName));
+      tmp.put(property.getName(), getPropertyValue(data, propertyPath));
+      value = tmp;
+    } else {
+      value = getPropertyValue(data, propertyPath);
+    }
+    
+    ODataEntityContent content = ODataEntityProvider.create(Format.XML, getContext()).writeText(property, value);
 
     return ODataResponse
         .status(HttpStatusCodes.OK)
-        .header(CONTENT_TYPE, getPropertyMimeType(data, property))
-        .entity(value == null ? "" : value)
+        .entity(content)
         .build();
   }
 
