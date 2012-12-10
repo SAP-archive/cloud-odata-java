@@ -2,7 +2,9 @@ package com.sap.core.odata.core;
 
 import java.util.HashMap;
 
+import com.sap.core.odata.api.enums.HttpHeaders;
 import com.sap.core.odata.api.enums.HttpStatusCodes;
+import com.sap.core.odata.api.ep.ODataEntityContent;
 import com.sap.core.odata.api.processor.ODataResponse;
 import com.sap.core.odata.api.processor.ODataResponse.ODataResponseBuilder;
 
@@ -18,10 +20,23 @@ public class ODataResponseBuilderImpl extends ODataResponseBuilder {
   public ODataResponse build() {
     ODataResponseImpl response = new ODataResponseImpl();
 
+    if (entity instanceof ODataEntityContent) {
+      ODataEntityContent content = (ODataEntityContent) entity;
+
+      response.setEntity(content.getContent());
+      header.put(HttpHeaders.CONTENT_TYPE, content.getContentHeader());
+      response.setHeader(this.header);
+
+      if (content.getETag() != null) {
+        response.setETag(content.getETag());
+      }
+    } else {
+      response.setEntity(this.entity);
+      response.setHeader(this.header);
+      response.setETag(this.eTag);
+    }
+
     response.setStatus(this.status);
-    response.setEntity(this.entity);
-    response.setHeader(this.header);
-    response.setETag(this.eTag);
     response.setIdLiteral(this.idLiteral);
 
     return response;

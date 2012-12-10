@@ -3,6 +3,7 @@ package com.sap.core.odata.api.processor;
 import java.util.Set;
 
 import com.sap.core.odata.api.enums.HttpStatusCodes;
+import com.sap.core.odata.api.ep.ODataEntityContent;
 import com.sap.core.odata.api.rt.RuntimeDelegate;
 
 /**

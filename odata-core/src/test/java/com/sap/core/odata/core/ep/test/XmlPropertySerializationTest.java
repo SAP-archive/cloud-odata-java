@@ -2,7 +2,7 @@ package com.sap.core.odata.core.ep.test;
 
 import static org.custommonkey.xmlunit.XMLAssert.assertXpathEvaluatesTo;
 import static org.custommonkey.xmlunit.XMLAssert.assertXpathExists;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.*;
 
 import java.io.InputStream;
 
@@ -11,22 +11,26 @@ import org.junit.Test;
 import com.sap.core.odata.api.edm.EdmEntityType;
 import com.sap.core.odata.api.edm.EdmProperty;
 import com.sap.core.odata.api.edm.EdmTyped;
+import com.sap.core.odata.api.enums.MediaType;
+import com.sap.core.odata.api.ep.ODataEntityContent;
 import com.sap.core.odata.api.ep.ODataEntityProvider;
 import com.sap.core.odata.testutils.helper.StringHelper;
 import com.sap.core.odata.testutils.mocks.MockFacade;
 
-public class XmlPropertySerializationTest extends AbstractSerializerTest {
+public class XmlPropertySerializationTest extends AbstractProviderTest {
 
   @Test
   public void serializeEmployeeId() throws Exception {
-    ODataEntityProvider s = createAtomSerializer();
+    ODataEntityProvider s = createAtomEntityProvider();
     EdmTyped edmTyped = MockFacade.getMockEdm().getEntityType("RefScenario", "Employee").getProperty("EmployeeId");
     EdmProperty edmProperty = (EdmProperty) edmTyped;
 
-    InputStream in = s.writeProperty(edmProperty, this.employeeData.get("EmployeeId"));
-    assertNotNull(in);
+    ODataEntityContent content = s.writeProperty(edmProperty, this.employeeData.get("EmployeeId"));
+    assertNotNull(content);
+    assertNotNull(content.getContent());
+    assertEquals(MediaType.APPLICATION_XML.toString(), content.getContentHeader());
 
-    String xml = StringHelper.inputStreamToString(in);
+    String xml = StringHelper.inputStreamToString(content.getContent());
     assertNotNull(xml);
 
     assertXpathExists("/d:EmployeeId", xml);
@@ -35,14 +39,16 @@ public class XmlPropertySerializationTest extends AbstractSerializerTest {
 
   @Test
   public void serializeAge() throws Exception {
-    ODataEntityProvider s = createAtomSerializer();
+    ODataEntityProvider s = createAtomEntityProvider();
 
     EdmTyped edmTyped = MockFacade.getMockEdm().getEntityType("RefScenario", "Employee").getProperty("Age");
     EdmProperty edmProperty = (EdmProperty) edmTyped;
 
-    InputStream in = s.writeProperty(edmProperty, this.employeeData.get("Age"));
-    assertNotNull(in);
-    String xml = StringHelper.inputStreamToString(in);
+    ODataEntityContent content = s.writeProperty(edmProperty, this.employeeData.get("Age"));
+    assertNotNull(content);
+    assertNotNull(content.getContent());
+    assertEquals(MediaType.APPLICATION_XML.toString(), content.getContentHeader());
+    String xml = StringHelper.inputStreamToString(content.getContent());
     assertNotNull(xml);
 
     assertXpathExists("/d:Age", xml);
@@ -51,14 +57,16 @@ public class XmlPropertySerializationTest extends AbstractSerializerTest {
 
   @Test
   public void serializeImageUrl() throws Exception {
-    ODataEntityProvider s = createAtomSerializer();
+    ODataEntityProvider s = createAtomEntityProvider();
 
     EdmTyped edmTyped = MockFacade.getMockEdm().getEntityType("RefScenario", "Employee").getProperty("ImageUrl");
     EdmProperty edmProperty = (EdmProperty) edmTyped;
 
-    InputStream in = s.writeProperty(edmProperty, this.employeeData.get("ImageUrl"));
-    assertNotNull(in);
-    String xml = StringHelper.inputStreamToString(in);
+    ODataEntityContent content = s.writeProperty(edmProperty, this.employeeData.get("ImageUrl"));
+    assertNotNull(content);
+    assertNotNull(content.getContent());
+    assertEquals(MediaType.APPLICATION_XML.toString(), content.getContentHeader());
+    String xml = StringHelper.inputStreamToString(content.getContent());
     assertNotNull(xml);
 
     assertXpathExists("/d:ImageUrl", xml);
@@ -69,15 +77,17 @@ public class XmlPropertySerializationTest extends AbstractSerializerTest {
 
   @Test
   public void serializeLocation() throws Exception {
-    ODataEntityProvider s = createAtomSerializer();
+    ODataEntityProvider s = createAtomEntityProvider();
 
     EdmEntityType edmEntityType = MockFacade.getMockEdm().getEntityType("RefScenario", "Employee");
     EdmTyped edmTyped = edmEntityType.getProperty("Location");
     EdmProperty edmProperty = (EdmProperty) edmTyped;
 
-    InputStream in = s.writeProperty(edmProperty, this.employeeData.get("Location"));
-    assertNotNull(in);
-    String xml = StringHelper.inputStreamToString(in);
+    ODataEntityContent content = s.writeProperty(edmProperty, this.employeeData.get("Location"));
+    assertNotNull(content);
+    assertNotNull(content.getContent());
+    assertEquals(MediaType.APPLICATION_XML.toString(), content.getContentHeader());
+    String xml = StringHelper.inputStreamToString(content.getContent());
     assertNotNull(xml);
 
     this.log.debug(xml);

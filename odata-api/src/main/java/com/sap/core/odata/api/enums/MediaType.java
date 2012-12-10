@@ -7,7 +7,8 @@ public enum MediaType {
   APPLICATION_ATOM_XML_FEED("application/atom+xml;type=feed"),
   APPLICATION_ATOM_SVC("application/atomsvc+xml"),
   APPLICATION_JSON("application/json"),
-  APPLICATION_OCTET_STREAM("application/octet-stream");
+  APPLICATION_OCTET_STREAM("application/octet-stream"),
+  TEXT_PLAIN("text/plain");
 
   private String value;
 

@@ -31,6 +31,7 @@ import com.sap.core.odata.core.ep.aggregator.NavigationPropertyInfo;
 public class AtomEntryEntityProvider {
 
   private ODataContext context;
+  private String etag;
 
   AtomEntryEntityProvider(ODataContext ctx) throws ODataEntityProviderException {
     this.context = ctx;
@@ -48,9 +49,9 @@ public class AtomEntryEntityProvider {
         writer.writeAttribute(Edm.PREFIX_XML, Edm.NAMESPACE_XML_1998, "base", this.context.getUriInfo().getBaseUri().toASCIIString());
       }
 
-      String etag = createETag(eia, data);
+      etag = createETag(eia, data);
       if (etag != null) {
-        writer.writeAttribute(Edm.NAMESPACE_M_2007_08, FormatXml.M_ETAG, etag);
+        writer.writeAttribute(Edm.NAMESPACE_M_2007_08, FormatXml.M_ETAG, StringEscapeUtils.escapeXml(etag));
       }
 
       appendAtomMandatoryParts(writer, eia, data);
@@ -114,7 +115,7 @@ public class AtomEntryEntityProvider {
       }
 
       if (etag != null) {
-        etag = StringEscapeUtils.escapeXml("W/\"" + etag + "\"");
+        etag = "W/\"" + etag + "\"";
       }
 
       return etag;
@@ -414,5 +415,9 @@ public class AtomEntryEntityProvider {
       return customMapping.isFcKeepInContent().booleanValue();
     }
     return true;
+  }
+
+  public String getETag() {
+    return etag;
   }
 }
