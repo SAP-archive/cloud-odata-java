@@ -40,7 +40,6 @@ public abstract class EdmImpl implements Edm {
     try {
       edmEntityContainer = createEntityContainer(name);
       if (edmEntityContainer != null) {
-        //TODO: Clarify what happens if the edmProvider is called with a null string or name == null
         if (name == null && edmEntityContainers.containsKey(edmEntityContainer.getName())) {
           //ensure that the same default entity container is stored in the HashMap under null and its name 
           edmEntityContainer = edmEntityContainers.get(edmEntityContainer.getName());

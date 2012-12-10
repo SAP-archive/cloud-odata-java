@@ -16,7 +16,7 @@ public interface EdmProvider {
 
   /**
    * This method should return an {@link EntityContainerInfo} or <b>null</b> if nothing is found
-   * @param name 
+   * @param name (null for default container)
    * @return {@link EntityContainerInfo} for the given name
    * @throws ODataException
    */
