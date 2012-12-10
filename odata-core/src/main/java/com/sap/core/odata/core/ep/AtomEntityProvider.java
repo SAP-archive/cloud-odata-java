@@ -1,8 +1,8 @@
 package com.sap.core.odata.core.ep;
 
 import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
 import java.util.Collections;
@@ -28,6 +28,7 @@ import com.sap.core.odata.api.ep.ODataEntityProviderException;
 import com.sap.core.odata.api.processor.ODataContext;
 import com.sap.core.odata.core.ep.aggregator.EntityInfoAggregator;
 import com.sap.core.odata.core.ep.aggregator.EntityPropertyInfo;
+import com.sap.core.odata.core.ep.util.CircleStreamBuffer;
 
 // TODO usage of "ByteArrayInputStream(out.toByteArray())":  check synchronized call / copy of data
 public class AtomEntityProvider extends ODataEntityProvider {
@@ -44,11 +45,12 @@ public class AtomEntityProvider extends ODataEntityProvider {
     ODataEntityContentImpl content = new ODataEntityContentImpl();
 
     try {
-      ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+      CircleStreamBuffer csb = new CircleStreamBuffer();
+      OutputStream outputStream = csb.getOutputStream();
       writer = new OutputStreamWriter(outputStream, "utf-8");
       AtomServiceDocumentProvider.writeServiceDocument(edm, serviceRoot, writer);
 
-      content.setContentStream(new ByteArrayInputStream(outputStream.toByteArray()));
+      content.setContentStream(csb.getInputStream());
       content.setContentHeader(MediaType.APPLICATION_ATOM_SVC.toString());
 
       return content;
@@ -68,14 +70,15 @@ public class AtomEntityProvider extends ODataEntityProvider {
 
   @Override
   public ODataEntityContent writeEntry(EdmEntitySet entitySet, Map<String, Object> data, String mediaResourceMimeType) throws ODataEntityProviderException {
-    ByteArrayOutputStream outStream = null;
+    OutputStream outStream = null;
     ODataEntityContentImpl content = new ODataEntityContentImpl();
 
     try {
       AtomEntryEntityProvider as = new AtomEntryEntityProvider(this.getContext());
       EntityInfoAggregator eia = EntityInfoAggregator.create(entitySet);
 
-      outStream = new ByteArrayOutputStream();
+      CircleStreamBuffer csb = new CircleStreamBuffer();
+      outStream = csb.getOutputStream();
       XMLStreamWriter writer = XMLOutputFactory.newInstance().createXMLStreamWriter(outStream, "utf-8");
       as.append(writer, eia, data, true, mediaResourceMimeType);
 
@@ -83,7 +86,7 @@ public class AtomEntityProvider extends ODataEntityProvider {
       outStream.flush();
       outStream.close();
 
-      content.setContentStream(new ByteArrayInputStream(outStream.toByteArray()));
+      content.setContentStream(csb.getInputStream());
       content.setContentHeader(MediaType.APPLICATION_ATOM_XML_ENTRY.toString());
       content.setETag(as.getETag());
 
@@ -104,14 +107,15 @@ public class AtomEntityProvider extends ODataEntityProvider {
 
   @Override
   public ODataEntityContent writeProperty(EdmProperty edmProperty, Object value) throws ODataEntityProviderException {
-    ByteArrayOutputStream outStream = null;
+    OutputStream outStream = null;
     ODataEntityContentImpl content = new ODataEntityContentImpl();
 
     try {
       XmlPropertyEntityProvider ps = new XmlPropertyEntityProvider();
       EntityPropertyInfo propertyInfo = EntityInfoAggregator.create(edmProperty);
 
-      outStream = new ByteArrayOutputStream();
+      CircleStreamBuffer csb = new CircleStreamBuffer();
+      outStream = csb.getOutputStream();
       XMLStreamWriter writer = XMLOutputFactory.newInstance().createXMLStreamWriter(outStream, "utf-8");
       ps.append(writer, propertyInfo, value, true);
 
@@ -119,7 +123,7 @@ public class AtomEntityProvider extends ODataEntityProvider {
       outStream.flush();
       outStream.close();
 
-      content.setContentStream(new ByteArrayInputStream(outStream.toByteArray()));
+      content.setContentStream(csb.getInputStream());
       content.setContentHeader(MediaType.APPLICATION_XML.toString());
 
       return content;
