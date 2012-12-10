@@ -329,14 +329,15 @@ public class ListsProcessor extends ODataSingleProcessor {
       throw new ODataNotFoundException(ODataNotFoundException.ENTITY);
 
     final EdmEntitySet entitySet = uriParserResultView.getTargetEntitySet();
-    StringBuilder mimeType = new StringBuilder();
-    final byte[] binaryData = dataSource.readBinaryData(entitySet, data, mimeType);
+    StringBuilder mimeTypeBuilder = new StringBuilder();
+    final byte[] binaryData = dataSource.readBinaryData(entitySet, data, mimeTypeBuilder);
+
+    String mimeType = mimeTypeBuilder.toString().isEmpty() ? APPLICATION_OCTET_STREAM : mimeTypeBuilder.toString();
+    ODataEntityContent content = ODataEntityProvider.create(Format.XML, getContext()).writeMediaResource(mimeType, binaryData);
 
     return ODataResponse
         .status(HttpStatusCodes.OK)
-        .header(CONTENT_TYPE,
-            mimeType.toString().isEmpty() ? APPLICATION_OCTET_STREAM : mimeType.toString())
-        .entity(binaryData)
+        .entity(content)
         .build();
   }
 
