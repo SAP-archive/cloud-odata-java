@@ -38,7 +38,7 @@ public class AtomEntryEntityProvider {
   public void append(XMLStreamWriter writer, EntityInfoAggregator eia, Map<String, Object> data, boolean isRootElement, String mediaResourceMimeType) throws ODataEntityProviderException {
     try {
 
-      writer.writeStartElement("entry");
+      writer.writeStartElement(FormatXml.ATOM_ENTRY);
 
       if (isRootElement) {
         writer.writeDefaultNamespace(Edm.NAMESPACE_ATOM_2005);
@@ -52,18 +52,25 @@ public class AtomEntryEntityProvider {
         writer.writeAttribute(Edm.NAMESPACE_M_2007_08, FormatXml.M_ETAG, etag);
       }
 
+      // write all atom infos (mandatory and optional)
       appendAtomMandatoryParts(writer, eia, data);
       appendAtomOptionalParts(writer, eia, data);
-      appendAtomEditLink(writer, eia, data);
-      appendAtomNavigationLinks(writer, eia, data);
-
-      appendCustomProperties(writer, eia, data);
       
       if (eia.isEntityTypeHasStream()) {
+        // write all links
+        appendAtomEditLink(writer, eia, data);
         appendAtomContentLink(writer, eia, data, mediaResourceMimeType);
+        appendAtomNavigationLinks(writer, eia, data);
+        // write properties/content
+        appendCustomProperties(writer, eia, data);
         appendAtomContentPart(writer, eia, data, mediaResourceMimeType);
         appendProperties(writer, eia, data);
       } else {
+        // write all links
+        appendAtomEditLink(writer, eia, data);
+        appendAtomNavigationLinks(writer, eia, data);
+        // write properties/content
+        appendCustomProperties(writer, eia, data);
         writer.writeStartElement(FormatXml.ATOM_CONTENT);
         writer.writeAttribute(FormatXml.ATOM_TYPE, MediaType.APPLICATION_XML.toString());
         appendProperties(writer, eia, data);

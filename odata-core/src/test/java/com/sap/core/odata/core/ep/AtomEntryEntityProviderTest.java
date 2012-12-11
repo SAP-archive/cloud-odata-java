@@ -6,11 +6,16 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
 
 import javax.xml.stream.FactoryConfigurationError;
 import javax.xml.stream.XMLStreamException;
 
+import org.custommonkey.xmlunit.XMLAssert;
+import org.custommonkey.xmlunit.XMLUnit;
 import org.custommonkey.xmlunit.exceptions.XpathException;
+import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.xml.sax.SAXException;
@@ -70,6 +75,44 @@ public class AtomEntryEntityProviderTest extends AbstractProviderTest {
     assertXpathEvaluatesTo("Employees('1')/$value", "/a:entry/a:content/@src", xmlString);
     assertXpathExists("/a:entry/m:properties", xmlString);
 
+  }
+
+  
+  @Test
+  public void serializeEmployeeAndCheckOrderOfTags() throws IOException, XpathException, SAXException, XMLStreamException, FactoryConfigurationError, ODataException {
+    ODataEntityProvider ser = createAtomEntityProvider();
+    ODataEntityContent content= ser.writeEntry(MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Employees"), this.employeeData, "abc");
+    String xmlString = verifyContent(content);
+
+//    log.debug(xmlString);
+    
+    assertXpathExists("/a:entry", xmlString);
+    assertXpathExists("/a:entry/a:content", xmlString);
+    // verify self link
+    assertXpathExists("/a:entry/a:link[@href=\"Employees('1')\"]", xmlString);
+    // verify content media link
+    assertXpathExists("/a:entry/a:link[@href=\"Employees('1')/$value\"]", xmlString);
+    // verify one navigation link
+    assertXpathExists("/a:entry/a:link[@title='ne_Manager']", xmlString);
+
+    // verify content
+    assertXpathExists("/a:entry/a:content[@type='abc']", xmlString);
+    // verify properties
+    assertXpathExists("/a:entry/m:properties", xmlString);
+    assertXpathEvaluatesTo("5", "count(/a:entry/m:properties/*)", xmlString);
+    
+    // verify order of tags
+    verifyTagOrdering(xmlString, "id", "title", "updated", "category", "link", "content", "properties");
+  }
+
+  private void verifyTagOrdering(String xmlString, String ... toCheckTags) {
+    int lastTagPos = -1;
+    for (String tagName : toCheckTags) {
+      int currentTagPos = xmlString.indexOf(tagName);
+      Assert.assertTrue("Tag with name '" + tagName + "' is not in correct order. Expected order is '" + Arrays.toString(toCheckTags) + "'.", 
+      		lastTagPos < currentTagPos);
+      lastTagPos = currentTagPos;
+    }
   }
 
   @Test
