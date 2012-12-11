@@ -51,7 +51,7 @@ public class AtomEntryEntityProvider {
 
       etag = createETag(eia, data);
       if (etag != null) {
-        writer.writeAttribute(Edm.NAMESPACE_M_2007_08, FormatXml.M_ETAG, StringEscapeUtils.escapeXml(etag));
+        writer.writeAttribute(Edm.NAMESPACE_M_2007_08, FormatXml.M_ETAG, etag);
       }
 
       appendAtomMandatoryParts(writer, eia, data);

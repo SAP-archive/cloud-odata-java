@@ -179,7 +179,7 @@ public class AtomEntryEntityProviderTest extends AbstractProviderTest {
 
     assertXpathExists("/a:entry", xmlString);
     assertXpathExists("/a:entry/@m:etag", xmlString);
-    assertXpathEvaluatesTo("W/&quot;1&quot;", "/a:entry/@m:etag", xmlString);
+    assertXpathEvaluatesTo("W/\"1\"", "/a:entry/@m:etag", xmlString);
   }
 
   @Test
@@ -197,7 +197,7 @@ public class AtomEntryEntityProviderTest extends AbstractProviderTest {
 
     assertXpathExists("/a:entry", xmlString);
     assertXpathExists("/a:entry/@m:etag", xmlString);
-    assertXpathEvaluatesTo("W/&quot;&lt;&quot;&gt;&quot;", "/a:entry/@m:etag", xmlString);
+    assertXpathEvaluatesTo("W/\"<\">\"", "/a:entry/@m:etag", xmlString);
   }
   
   @Test
