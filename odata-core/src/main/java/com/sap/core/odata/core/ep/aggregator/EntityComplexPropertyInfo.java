@@ -13,6 +13,9 @@ public class EntityComplexPropertyInfo extends EntityPropertyInfo {
   static EntityComplexPropertyInfo create(EdmProperty property, Map<String, EntityPropertyInfo> childEntityInfos) throws EdmException {
     EntityComplexPropertyInfo info = new EntityComplexPropertyInfo();
     info.name = property.getName();
+    info.type = property.getType();
+    info.facets = property.getFacets();
+    info.customMapping = property.getCustomizableFeedMappings();
     info.internalName2EntityPropertyInfo = childEntityInfos;
     return info;
   }

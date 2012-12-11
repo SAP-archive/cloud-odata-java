@@ -98,6 +98,8 @@ public class XmlPropertySerializationTest extends AbstractProviderTest {
     assertXpathExists("/d:Location/d:City/d:CityName", xml);
     assertXpathExists("/d:Location/d:Country", xml);
 
+    assertXpathEvaluatesTo("RefScenario.c_Location", "/d:Location/@m:type", xml);
+    
     assertXpathEvaluatesTo("33470", "/d:Location/d:City/d:PostalCode/text()", xml);
     assertXpathEvaluatesTo("Duckburg", "/d:Location/d:City/d:CityName/text()", xml);
     assertXpathEvaluatesTo("Calisota", "/d:Location/d:Country/text()", xml);
