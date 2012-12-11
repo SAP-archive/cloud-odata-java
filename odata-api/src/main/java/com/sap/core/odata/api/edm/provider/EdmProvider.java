@@ -81,7 +81,4 @@ public interface EdmProvider {
    * @throws ODataException
    */
   List<Schema> getSchemas() throws ODataException;
-
-  //TODO required for validation if namspace is defined????
-  //List<EdmNamespaceInfo> getNamespaceInfos() throws ODataMessageException;
 }
