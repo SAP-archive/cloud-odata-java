@@ -5,7 +5,6 @@ import com.sap.core.odata.api.edm.EdmEntityType;
 import com.sap.core.odata.api.edm.EdmSimpleType;
 import com.sap.core.odata.api.edm.EdmSimpleTypeFacade;
 import com.sap.core.odata.api.edm.EdmSimpleTypeKind;
-import com.sap.core.odata.api.edm.EdmType;
 import com.sap.core.odata.api.edm.provider.EdmProvider;
 import com.sap.core.odata.api.enums.Format;
 import com.sap.core.odata.api.ep.ODataEntityProvider;
@@ -15,7 +14,7 @@ import com.sap.core.odata.api.processor.ODataResponse.ODataResponseBuilder;
 import com.sap.core.odata.api.rt.RuntimeDelegate.RuntimeDelegateInstance;
 import com.sap.core.odata.api.uri.UriParser;
 import com.sap.core.odata.api.uri.expression.FilterParser;
-import com.sap.core.odata.core.ODataResponseBuilderImpl;
+import com.sap.core.odata.core.ODataResponseImpl;
 import com.sap.core.odata.core.edm.EdmSimpleTypeFacadeImpl;
 import com.sap.core.odata.core.edm.provider.EdmImplProv;
 import com.sap.core.odata.core.ep.EntityProviderFactory;
@@ -26,7 +25,8 @@ public class RuntimeDelegateImpl extends RuntimeDelegateInstance {
 
   @Override
   protected ODataResponseBuilder createODataResponseBuilder() {
-    return new ODataResponseBuilderImpl();
+    ODataResponseImpl r = new ODataResponseImpl();
+    return r.new ODataResponseBuilderImpl();
   }
 
   protected EdmSimpleType getEdmSimpleType(EdmSimpleTypeKind edmSimpleType) {

@@ -10,8 +10,6 @@ import java.util.Set;
 
 import javax.xml.stream.XMLStreamWriter;
 
-import org.apache.commons.lang3.StringEscapeUtils;
-
 import com.sap.core.odata.api.edm.Edm;
 import com.sap.core.odata.api.edm.EdmCustomizableFeedMappings;
 import com.sap.core.odata.api.edm.EdmFacets;

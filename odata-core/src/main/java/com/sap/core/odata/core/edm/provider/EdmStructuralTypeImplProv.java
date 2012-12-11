@@ -1,9 +1,9 @@
 package com.sap.core.odata.core.edm.provider;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import com.sap.core.odata.api.edm.EdmAnnotatable;

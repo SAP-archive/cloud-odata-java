@@ -4,18 +4,14 @@
  */
 package com.sap.core.odata.core.ep.util;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-import org.hamcrest.BaseMatcher;
-import org.hamcrest.Matcher;
-import org.hamcrest.core.Is;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.Matchers;
 
 /**
  * 

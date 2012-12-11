@@ -12,7 +12,6 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.sap.core.odata.api.processor.ODataPathSegment;
-import com.sap.core.odata.core.ODataPathSegmentImpl;
 
 public class PathSegmentTest {
 
