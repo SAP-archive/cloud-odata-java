@@ -1,4 +1,4 @@
-package com.sap.core.odata.core.rt.test;
+package com.sap.core.odata.core.rt;
 
 import static org.junit.Assert.assertNotNull;
 

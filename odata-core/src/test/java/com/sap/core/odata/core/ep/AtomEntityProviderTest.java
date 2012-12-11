@@ -1,4 +1,4 @@
-package com.sap.core.odata.core.ep.test;
+package com.sap.core.odata.core.ep;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
