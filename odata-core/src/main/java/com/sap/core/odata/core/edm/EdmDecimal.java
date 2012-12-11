@@ -17,6 +17,8 @@ import com.sap.core.odata.api.edm.EdmTypeKind;
  */
 public class EdmDecimal implements EdmSimpleType {
 
+  private static final String PATTERN = "-?\\p{Digit}*(?:\\.\\p{Digit}*)?";
+
   private static final EdmDecimal instance = new EdmDecimal();
 
   private EdmDecimal() {
@@ -68,31 +70,35 @@ public class EdmDecimal implements EdmSimpleType {
 
   @Override
   public boolean validate(final String value, final EdmLiteralKind literalKind, final EdmFacets facets) {
-    try {
-      valueOfString(value, literalKind, facets);
-      return true;
-    } catch (EdmSimpleTypeException e) {
+    if (value == null)
+      return facets == null || facets.isNullable() == null || facets.isNullable();
+    else if (literalKind == null)
       return false;
-    }
+    else if (literalKind == EdmLiteralKind.URI)
+      return value.matches(PATTERN + "(?:M|m)");
+    else
+      return value.matches(PATTERN);
   }
 
   @Override
   public BigDecimal valueOfString(final String value, final EdmLiteralKind literalKind, final EdmFacets facets) throws EdmSimpleTypeException {
-    if (value == null)
-      if (facets == null || facets.isNullable() == null || facets.isNullable())
-        return null;
-      else
-        throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_NULL_NOT_ALLOWED);
-
     if (literalKind == null)
       throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_KIND_MISSING);
 
+    if (!validate(value, literalKind, facets))
+      if (value == null)
+        throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_NULL_NOT_ALLOWED);
+      else
+        throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_ILLEGAL_CONTENT.addContent(value));
+
+    if (value == null)
+      return null;
+
     BigDecimal valueBigDecimal;
-    try {
+    if (literalKind == EdmLiteralKind.URI)
+      valueBigDecimal = new BigDecimal(value.substring(0, value.length() - 1));
+    else
       valueBigDecimal = new BigDecimal(value);
-    } catch (NumberFormatException e) {
-      throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_ILLEGAL_CONTENT.addContent(value), e);
-    }
 
     if (facets == null
         || (facets.getPrecision() == null || facets.getPrecision() >= valueBigDecimal.precision())

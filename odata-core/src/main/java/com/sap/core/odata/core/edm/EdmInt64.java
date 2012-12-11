@@ -80,14 +80,20 @@ public class EdmInt64 implements EdmSimpleType {
       else
         throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_NULL_NOT_ALLOWED);
 
-    if (literalKind == EdmLiteralKind.URI)
-      throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_KIND_NOT_SUPPORTED.addContent(literalKind));
-    else
-      try {
+    if (literalKind == null)
+      throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_KIND_MISSING);
+
+    try {
+      if (literalKind == EdmLiteralKind.URI)
+        if (value.endsWith("L") || value.endsWith("l"))
+          return Long.parseLong(value.substring(0, value.length() - 1));
+        else
+          throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_ILLEGAL_CONTENT.addContent(value));
+      else
         return Long.parseLong(value);
-      } catch (NumberFormatException e) {
-        throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_ILLEGAL_CONTENT.addContent(value), e);
-      }
+    } catch (NumberFormatException e) {
+      throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_ILLEGAL_CONTENT.addContent(value), e);
+    }
   }
 
   @Override

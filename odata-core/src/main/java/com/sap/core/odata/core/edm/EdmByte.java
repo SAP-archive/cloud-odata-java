@@ -74,6 +74,9 @@ public class EdmByte implements EdmSimpleType {
       else
         throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_NULL_NOT_ALLOWED);
 
+    if (literalKind == null)
+      throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_KIND_MISSING);
+
     Short valueShort;
     try {
       valueShort = Short.parseShort(value);

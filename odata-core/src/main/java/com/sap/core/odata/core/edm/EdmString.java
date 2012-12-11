@@ -66,15 +66,33 @@ public class EdmString implements EdmSimpleType {
 
   @Override
   public String valueOfString(final String value, final EdmLiteralKind literalKind, final EdmFacets facets) throws EdmSimpleTypeException {
-    if (literalKind == EdmLiteralKind.URI)
-      if (value == null)
+    if (value == null)
+      if (facets == null || facets.isNullable() == null || facets.isNullable())
         return null;
-      else if (value.length() >= 2 && value.startsWith("'") && value.endsWith("'"))
-        return value.substring(1, value.length() - 1);
+      else
+        throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_NULL_NOT_ALLOWED);
+
+    if (literalKind == null)
+      throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_KIND_MISSING);
+
+    String result;
+    if (literalKind == EdmLiteralKind.URI)
+      if (value.length() >= 2 && value.startsWith("'") && value.endsWith("'"))
+        result = value.substring(1, value.length() - 1);
       else
         throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_ILLEGAL_CONTENT.addContent(value));
     else
-      return value;
+      result = value;
+
+    if (facets != null) {
+      if (facets.isUnicode() != null && !facets.isUnicode())
+        if (!result.matches("\\p{ASCII}*"))
+          throw new EdmSimpleTypeException(EdmSimpleTypeException.VALUE_FACETS_NOT_MATCHED.addContent(value, facets));
+      if (facets.getMaxLength() != null && facets.getMaxLength() < result.length())
+        throw new EdmSimpleTypeException(EdmSimpleTypeException.VALUE_FACETS_NOT_MATCHED.addContent(value, facets));
+    }
+
+    return result;
   }
 
   @Override

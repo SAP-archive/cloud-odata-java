@@ -17,6 +17,7 @@ import com.sap.core.odata.api.edm.EdmTypeKind;
  */
 public class EdmDouble implements EdmSimpleType {
 
+  private static final String PATTERN = "-?\\p{Digit}{1,15}(?:\\.\\p{Digit}{1,15})?(?:(?:E|e)-?\\p{Digit}{1,3})?";
   // value-range limitations according to the CSDL document
   private static final int MAX_PRECISION = 15;
   private static final int MAX_SCALE = 308;
@@ -70,20 +71,48 @@ public class EdmDouble implements EdmSimpleType {
   }
 
   public boolean validate(final String value, final EdmLiteralKind literalKind, final EdmFacets facets) {
-    try {
-      valueOfString(value, literalKind, facets);
+    if (value == null)
+      return facets == null || facets.isNullable() == null || facets.isNullable();
+    else if (value.matches("NaN|-?INF"))
       return true;
-    } catch (EdmSimpleTypeException e) {
+    else if (literalKind == null)
       return false;
-    }
+    else if (literalKind == EdmLiteralKind.URI)
+      return value.matches(PATTERN + "(?:D|d)");
+    else
+      return value.matches(PATTERN);
   }
 
   @Override
   public Double valueOfString(final String value, final EdmLiteralKind literalKind, final EdmFacets facets) throws EdmSimpleTypeException {
-    if (literalKind == EdmLiteralKind.URI)
+    if (literalKind == null)
+      throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_KIND_MISSING);
+
+    if (!validate(value, literalKind, facets))
+      if (value == null)
+        throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_NULL_NOT_ALLOWED);
+      else
+        throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_ILLEGAL_CONTENT.addContent(value));
+
+    if (value == null)
       return null;
+    else if (value.equals("-INF"))
+      return Double.NEGATIVE_INFINITY;
+    else if (value.equals("INF"))
+      return Double.POSITIVE_INFINITY;
+    else if (value.equals("NaN"))
+      return Double.NaN;
+
+    Double result;
+    if (literalKind == EdmLiteralKind.URI)
+      result = Double.parseDouble(value.substring(0, value.length() - 1));
     else
-      return Double.parseDouble(value);
+      result = Double.parseDouble(value);
+
+    if (result.isInfinite())
+      throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_ILLEGAL_CONTENT.addContent(value));
+    else
+      return result;
   }
 
   @Override

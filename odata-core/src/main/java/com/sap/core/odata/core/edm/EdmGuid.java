@@ -70,20 +70,19 @@ public class EdmGuid implements EdmSimpleType {
 
   @Override
   public UUID valueOfString(final String value, final EdmLiteralKind literalKind, final EdmFacets facets) throws EdmSimpleTypeException {
-    if (value == null)
-      if (facets == null || facets.isNullable() == null || facets.isNullable())
-        return null;
-      else
-        throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_NULL_NOT_ALLOWED);
-
     if (literalKind == null)
       throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_KIND_MISSING);
 
     if (validate(value, literalKind, facets))
-      if (literalKind == EdmLiteralKind.URI)
+      if (value == null)
+        return null;
+      else if (literalKind == EdmLiteralKind.URI)
         return UUID.fromString(value.substring(5, value.length() - 1));
       else
         return UUID.fromString(value);
+
+    else if (value == null)
+      throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_NULL_NOT_ALLOWED);
     else
       throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_ILLEGAL_CONTENT.addContent(value));
   }

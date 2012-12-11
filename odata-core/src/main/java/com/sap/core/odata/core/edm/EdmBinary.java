@@ -68,58 +68,37 @@ public class EdmBinary implements EdmSimpleType {
     if (literalKind == null)
       return false;
 
-    switch (literalKind) {
-    case DEFAULT:
-    case JSON:
-      try {
-        return valueOfString(value, literalKind, facets) != null;
-      } catch (EdmSimpleTypeException e) {
-        return false;
-      }
-
-    case URI:
+    if (literalKind == EdmLiteralKind.URI)
       return value.matches("(?:X|binary)'(?:\\p{XDigit}{2})*'")
           && (facets == null || facets.getMaxLength() == null
           || facets.getMaxLength() * 2 >= value.length() - (value.startsWith("X") ? 3 : 8));
-
-    default:
-      return false;
-    }
+    else
+      return Base64.isBase64(value)
+          && (facets == null || facets.getMaxLength() == null
+          || facets.getMaxLength() * 4 >= value.length() * 3);
   }
 
   @Override
   public byte[] valueOfString(final String value, final EdmLiteralKind literalKind, final EdmFacets facets) throws EdmSimpleTypeException {
-    if (value == null)
-      if (facets == null || facets.isNullable() == null || facets.isNullable())
-        return null;
-      else
-        throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_NULL_NOT_ALLOWED);
-
     if (literalKind == null)
       throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_KIND_MISSING);
 
-    switch (literalKind) {
-    case DEFAULT:
-    case JSON:
-      final byte[] byteValue = Base64.decodeBase64(value);
-      if (facets == null || facets.getMaxLength() == null || facets.getMaxLength() >= byteValue.length)
-        return byteValue;
-      else
-        throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_FACETS_NOT_MATCHED.addContent(value, facets));
-
-    case URI:
-      if (validate(value, literalKind, facets))
+    if (validate(value, literalKind, facets))
+      if (value == null)
+        return null;
+      else if (literalKind == EdmLiteralKind.URI)
         try {
           return Hex.decodeHex(value.substring(value.startsWith("X") ? 2 : 7, value.length() - 1).toCharArray());
         } catch (DecoderException e) {
           throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_ILLEGAL_CONTENT.addContent(value), e);
         }
       else
-        throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_ILLEGAL_CONTENT.addContent(value));
+        return Base64.decodeBase64(value);
 
-    default:
-      throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_KIND_NOT_SUPPORTED.addContent(literalKind));
-    }
+    else if (value == null)
+      throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_NULL_NOT_ALLOWED);
+    else
+      throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_ILLEGAL_CONTENT.addContent(value));
   }
 
   @Override
