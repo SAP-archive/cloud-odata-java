@@ -1,7 +1,5 @@
 package com.sap.core.odata.api.processor;
 
-import java.io.InputStream;
-
 import com.sap.core.odata.api.edm.Edm;
 import com.sap.core.odata.api.edm.EdmServiceMetadata;
 import com.sap.core.odata.api.enums.Format;
