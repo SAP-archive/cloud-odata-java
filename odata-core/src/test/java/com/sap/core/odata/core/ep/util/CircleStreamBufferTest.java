@@ -19,11 +19,59 @@ import org.junit.Test;
  */
 public class CircleStreamBufferTest {
 
+  private static final boolean LOG_ON = false;
+
   public CircleStreamBufferTest() {
   }
 
   @Before
   public void setUp() {
+  }
+
+  @Test
+  public void testSimpleWriteReadSignBySign() throws Exception {
+    CircleStreamBuffer csb = new CircleStreamBuffer();
+
+    OutputStream write = csb.getOutputStream();
+    byte[] writeData = "Test".getBytes("UTF-8");
+    for (int i = 0; i < writeData.length; i++) {
+      write.write(writeData[i]);
+    }
+
+    InputStream inStream = csb.getInputStream();
+    byte[] buffer = new byte[4];
+    for (int i = 0; i < buffer.length; i++) {
+      buffer[i] = (byte) inStream.read();
+    }
+
+    String result = new String(buffer);
+    log("Test result = [" + result + "]");
+
+    assertEquals("Test", result);
+  }
+
+  @Test
+  public void testSimpleWriteReadSignBySignMoreThenBufferSize() throws Exception {
+    CircleStreamBuffer csb = new CircleStreamBuffer(128);
+
+    OutputStream write = csb.getOutputStream();
+    int signs = 1024;
+    String testData = createTestString(signs);
+    byte[] writeData = testData.getBytes("UTF-8");
+    for (int i = 0; i < writeData.length; i++) {
+      write.write(writeData[i]);
+    }
+
+    InputStream inStream = csb.getInputStream();
+    byte[] buffer = new byte[signs];
+    for (int i = 0; i < buffer.length; i++) {
+      buffer[i] = (byte) inStream.read();
+    }
+
+    String result = new String(buffer);
+    log("Test result = [" + result + "]");
+
+    assertEquals(testData, result);
   }
 
   @Test
@@ -38,11 +86,12 @@ public class CircleStreamBufferTest {
     int count = inStream.read(buffer);
 
     String result = new String(buffer);
-    System.out.println("Test result = [" + result + "]");
+    log("Test result = [" + result + "]");
 
+    assertEquals(4, count);
     assertEquals("Test", result);
   }
-
+  
   @Test
   public void testSimpleWriteReadTwice() throws Exception {
     CircleStreamBuffer csb = new CircleStreamBuffer();
@@ -54,14 +103,14 @@ public class CircleStreamBufferTest {
     outStream.write("Test_1".getBytes());
     String firstResult = readFrom(inStream);
 
-    System.out.println("Test result = [" + firstResult + "]");
+    log("Test result = [" + firstResult + "]");
     assertEquals("Test_1", firstResult);
 
     // second writeInternal/read cyclus
     outStream.write("Test_2".getBytes());
     String secondResult = readFrom(inStream);
 
-    System.out.println("Test result = [" + secondResult + "]");
+    log("Test result = [" + secondResult + "]");
     assertEquals("Test_2", secondResult);
   }
 
@@ -77,7 +126,7 @@ public class CircleStreamBufferTest {
     outStream.write(testData.getBytes());
     String result = readFrom(inStream);
 
-    System.out.println("Test result = [" + result + "]");
+    log("Test result = [" + result + "]");
     assertEquals(signs, result.length());
     assertEquals(testData, result);
   }
@@ -95,7 +144,7 @@ public class CircleStreamBufferTest {
     outStream.write(testData.getBytes());
     String result = readFrom(inStream, bufferSize * 2);
 
-    System.out.println("Test result = [" + result + "]");
+    log("Test result = [" + result + "]");
     assertEquals(signs, result.length());
     assertEquals(testData, result);
   }
@@ -112,7 +161,7 @@ public class CircleStreamBufferTest {
     String testData = createTestString(signs);
     outStream.write(testData.getBytes());
     String result = readFrom(inStream);
-    // System.out.println("Test result = [" + result + "]");
+    // log("Test result = [" + result + "]");
 
     assertEquals(signs, result.length());
     assertEquals(testData, result);
@@ -147,5 +196,11 @@ public class CircleStreamBufferTest {
     }
 
     return b.toString();
+  }
+
+  private void log(String toLog) {
+    if(LOG_ON) {
+      System.out.println(toLog);
+    }
   }
 }
