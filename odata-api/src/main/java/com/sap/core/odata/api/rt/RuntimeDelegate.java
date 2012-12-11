@@ -5,7 +5,6 @@ import com.sap.core.odata.api.edm.EdmEntityType;
 import com.sap.core.odata.api.edm.EdmSimpleType;
 import com.sap.core.odata.api.edm.EdmSimpleTypeFacade;
 import com.sap.core.odata.api.edm.EdmSimpleTypeKind;
-import com.sap.core.odata.api.edm.EdmType;
 import com.sap.core.odata.api.edm.provider.EdmProvider;
 import com.sap.core.odata.api.enums.Format;
 import com.sap.core.odata.api.ep.ODataEntityProvider;
@@ -16,7 +15,7 @@ import com.sap.core.odata.api.uri.UriParser;
 import com.sap.core.odata.api.uri.expression.FilterParser;
 
 /**
- * Abstract class to get odata core implementations of api interfaces
+ * Abstract class to get OData core implementations of API interfaces
  * @author SAP AG
  */
 public abstract class RuntimeDelegate {

@@ -15,6 +15,7 @@ import com.sap.core.odata.api.edm.EdmEntityType;
 import com.sap.core.odata.api.edm.EdmException;
 import com.sap.core.odata.api.edm.EdmFunctionImport;
 import com.sap.core.odata.api.edm.EdmLiteralKind;
+import com.sap.core.odata.api.edm.EdmMultiplicity;
 import com.sap.core.odata.api.edm.EdmProperty;
 import com.sap.core.odata.api.edm.EdmSimpleType;
 import com.sap.core.odata.api.edm.EdmSimpleTypeException;
@@ -25,7 +26,6 @@ import com.sap.core.odata.api.edm.EdmTypeKind;
 import com.sap.core.odata.api.enums.Format;
 import com.sap.core.odata.api.enums.HttpStatusCodes;
 import com.sap.core.odata.api.enums.InlineCount;
-import com.sap.core.odata.api.ep.ODataEntityContent;
 import com.sap.core.odata.api.ep.ODataEntityProvider;
 import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.api.exception.ODataNotFoundException;
@@ -105,13 +105,14 @@ public class ListsProcessor extends ODataSingleProcessor {
 
     final EdmEntitySet entitySet = uriParserResultView.getTargetEntitySet();
     final EdmEntityType entityType = entitySet.getEntityType();
-    ArrayList<Map<String, Object>> values = new ArrayList<Map<String, Object>>();
+    List<Map<String, Object>> values = new ArrayList<Map<String, Object>>();
     for (final Object entryData : data)
       values.add(getStructuralTypeValueMap(entryData, entityType));
 
     return ODataResponse
         .status(HttpStatusCodes.OK)
         .header(CONTENT_TYPE, APPLICATION_ATOM_XML_FEED)
+        // .entity(ODataEntityProvider.create(format, getContext()).writeFeed(entitySet, values, null))
         .entity(data.toString())
         .build();
   }
@@ -195,11 +196,9 @@ public class ListsProcessor extends ODataSingleProcessor {
     final EdmEntitySet entitySet = uriParserResultView.getTargetEntitySet();
     final Map<String, Object> values = getStructuralTypeValueMap(data, entitySet.getEntityType());
 
-    ODataEntityContent content = ODataEntityProvider.create(format, getContext()).writeEntry(entitySet, values);
-
     return ODataResponse
         .status(HttpStatusCodes.OK)
-        .entity(content)
+        .entity(ODataEntityProvider.create(format, getContext()).writeEntry(entitySet, values))
         .build();
   }
 
@@ -269,11 +268,9 @@ public class ListsProcessor extends ODataSingleProcessor {
     final Object value = type.getKind() == EdmTypeKind.COMPLEX ?
         getStructuralTypeValueMap(data, (EdmStructuralType) type) : data;
 
-    ODataEntityContent content = ODataEntityProvider.create(format, getContext()).writeProperty(property, value);
-
     return ODataResponse
         .status(HttpStatusCodes.OK)
-        .entity(content)
+        .entity(ODataEntityProvider.create(format, getContext()).writeProperty(property, value))
         .build();
   }
 
@@ -296,23 +293,19 @@ public class ListsProcessor extends ODataSingleProcessor {
 
     final List<EdmProperty> propertyPath = uriParserResultView.getPropertyPath();
     final EdmProperty property = propertyPath.get(propertyPath.size() - 1);
+    Object value = getPropertyValue(data, propertyPath);
 
-    Object value;
-    if (property.getMapping() != null) {
-      String mimeTypeMappingName = property.getMapping().getMimeType();
-      HashMap<String, Object> tmp = new HashMap<String, Object>();
-      tmp.put(mimeTypeMappingName, this.getValue(data, mimeTypeMappingName));
-      tmp.put(property.getName(), getPropertyValue(data, propertyPath));
-      value = tmp;
-    } else {
-      value = getPropertyValue(data, propertyPath);
+    if (property.getMapping() != null && property.getMapping().getMimeType() != null) {
+      Map<String, Object> valueWithMimeType = new HashMap<String, Object>();
+      valueWithMimeType.put(property.getName(), value);
+      final String mimeTypeMappingName = property.getMapping().getMimeType();
+      valueWithMimeType.put(mimeTypeMappingName, getValue(data, mimeTypeMappingName));
+      value = valueWithMimeType;
     }
-    
-    ODataEntityContent content = ODataEntityProvider.create(Format.XML, getContext()).writeText(property, value);
 
     return ODataResponse
         .status(HttpStatusCodes.OK)
-        .entity(content)
+        .entity(ODataEntityProvider.create(Format.XML, getContext()).writeText(property, value))
         .build();
   }
 
@@ -332,34 +325,55 @@ public class ListsProcessor extends ODataSingleProcessor {
     StringBuilder mimeTypeBuilder = new StringBuilder();
     final byte[] binaryData = dataSource.readBinaryData(entitySet, data, mimeTypeBuilder);
 
-    String mimeType = mimeTypeBuilder.toString().isEmpty() ? APPLICATION_OCTET_STREAM : mimeTypeBuilder.toString();
-    ODataEntityContent content = ODataEntityProvider.create(Format.XML, getContext()).writeMediaResource(mimeType, binaryData);
+    final String mimeType = mimeTypeBuilder.toString().isEmpty() ? APPLICATION_OCTET_STREAM : mimeTypeBuilder.toString();
 
     return ODataResponse
         .status(HttpStatusCodes.OK)
-        .entity(content)
+        .entity(ODataEntityProvider.create(Format.XML, getContext()).writeMediaResource(mimeType, binaryData))
         .build();
   }
 
   @Override
   public ODataResponse executeFunctionImport(final GetFunctionImportView uriParserResultView) throws ODataException {
     final EdmFunctionImport functionImport = uriParserResultView.getFunctionImport();
+    final EdmType type = functionImport.getReturnType().getType();
 
     final Object data = dataSource.readData(
         functionImport,
         mapFunctionParameters(uriParserResultView.getFunctionImportParameters()),
         null);
 
-    String contentType = APPLICATION_XML;
-    if (uriParserResultView.getFormat() == null
-        && functionImport.getReturnType().getType().getKind() == EdmTypeKind.ENTITY)
-      contentType = APPLICATION_ATOM_XML_ENTRY;
+    Format format = uriParserResultView.getFormat();
+    if (format == null)
+      if (type.getKind() == EdmTypeKind.ENTITY)
+        format = Format.ATOM;
+      else
+        format = Format.XML;
 
-    return ODataResponse
-        .status(HttpStatusCodes.OK)
-        .header(CONTENT_TYPE, contentType)
-        .entity(data.toString())
-        .build();
+    if (functionImport.getReturnType().getMultiplicity() == EdmMultiplicity.MANY) {
+      return ODataResponse
+          .status(HttpStatusCodes.OK)
+          .header(CONTENT_TYPE, APPLICATION_XML)
+          .entity(data.toString())
+          .build();
+    } else if (type.getKind() == EdmTypeKind.ENTITY) {
+      final Map<String, Object> values = getStructuralTypeValueMap(data, (EdmEntityType) type);
+      return ODataResponse
+          .status(HttpStatusCodes.OK)
+          .header(CONTENT_TYPE, format == Format.ATOM ? APPLICATION_ATOM_XML_ENTRY : APPLICATION_XML)
+          // .entity(ODataEntityProvider.create(format, getContext()).writeEntry(null, values))
+          .entity(values.toString())
+          .build();
+    } else {
+      final Object value = type.getKind() == EdmTypeKind.COMPLEX ?
+          getStructuralTypeValueMap(data, (EdmStructuralType) type) : data;
+      return ODataResponse
+          .status(HttpStatusCodes.OK)
+          .header(CONTENT_TYPE, APPLICATION_XML)
+          // .entity(ODataEntityProvider.create(format, getContext()).writeProperty(null, value))
+          .entity(value.toString())
+          .build();
+    }
   }
 
   @Override
@@ -581,16 +595,15 @@ public class ListsProcessor extends ODataSingleProcessor {
 
     case MEMBER:
       final MemberExpression memberExpression = (MemberExpression) expression;
-      final PropertyExpression memberPath = (PropertyExpression) memberExpression.getProperty();
+      final PropertyExpression memberPath = (PropertyExpression) memberExpression.getPath();
       final EdmProperty memberProperty = memberPath.getEdmProperty();
       final EdmSimpleType memberType = (EdmSimpleType) memberPath.getEdmType();
       List<EdmProperty> propertyPath = new ArrayList<EdmProperty>();
       CommonExpression currentExpression = memberExpression;
       while (currentExpression != null && currentExpression.getKind() == ExpressionKind.MEMBER) {
-        final PropertyExpression path = (PropertyExpression) memberExpression.getProperty();
-        final EdmProperty currentProperty = path.getEdmProperty();
-        propertyPath.add(0, currentProperty);
-        currentExpression = memberExpression.getPath();
+        final MemberExpression currentMember = (MemberExpression) currentExpression;
+        propertyPath.add(0, ((PropertyExpression) currentMember.getProperty()).getEdmProperty());
+        currentExpression = currentMember.getPath();
       }
       return memberType.valueToString(getPropertyValue(data, propertyPath), EdmLiteralKind.DEFAULT, memberProperty.getFacets());
 
@@ -695,21 +708,6 @@ public class ListsProcessor extends ODataSingleProcessor {
         defaultMethodName : property.getMapping().getValue();
 
     return getValue(data, methodName);
-  }
-
-  private <T> String getPropertyMimeType(final T data, final EdmProperty property) throws ODataException {
-    final EdmSimpleType type = (EdmSimpleType) property.getType();
-
-    if (type == EdmSimpleTypeKind.Binary.getEdmSimpleTypeInstance())
-      if (property.getMimeType() == null)
-        if (property.getMapping() == null || property.getMapping().getMimeType() == null)
-          return TEXT_PLAIN;
-        else
-          return getValue(data, property.getMapping().getMimeType()).toString();
-      else
-        return property.getMimeType();
-    else
-      return TEXT_PLAIN;
   }
 
   private <T> Map<String, Object> getStructuralTypeValueMap(final T data, final EdmStructuralType type) throws ODataException {

@@ -2,9 +2,8 @@ package com.sap.core.odata.core.ep;
 
 import static org.custommonkey.xmlunit.XMLAssert.assertXpathEvaluatesTo;
 import static org.custommonkey.xmlunit.XMLAssert.assertXpathExists;
-import static org.junit.Assert.*;
-
-import java.io.InputStream;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 import org.junit.Test;
 
@@ -17,6 +16,9 @@ import com.sap.core.odata.api.ep.ODataEntityProvider;
 import com.sap.core.odata.testutils.helper.StringHelper;
 import com.sap.core.odata.testutils.mocks.MockFacade;
 
+/**
+ * @author SAP AG
+ */
 public class XmlPropertySerializationTest extends AbstractProviderTest {
 
   @Test
