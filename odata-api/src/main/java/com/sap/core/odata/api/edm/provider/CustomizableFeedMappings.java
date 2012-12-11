@@ -9,7 +9,6 @@ import com.sap.core.odata.api.edm.EdmCustomizableFeedMappings;
  */
 public class CustomizableFeedMappings implements EdmCustomizableFeedMappings {
 
-  //TODO: Revisit Javadoc for descriptions
   private Boolean fcKeepInContent;
   private EdmContentKind fcContentKind;
   private String fcNsPrefix;
