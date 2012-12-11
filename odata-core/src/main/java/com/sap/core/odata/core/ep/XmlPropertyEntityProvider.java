@@ -12,6 +12,7 @@ import com.sap.core.odata.api.edm.EdmException;
 import com.sap.core.odata.api.edm.EdmFacets;
 import com.sap.core.odata.api.edm.EdmLiteralKind;
 import com.sap.core.odata.api.edm.EdmSimpleType;
+import com.sap.core.odata.api.enums.Format;
 import com.sap.core.odata.api.ep.ODataEntityProviderException;
 import com.sap.core.odata.core.ep.aggregator.EntityComplexPropertyInfo;
 import com.sap.core.odata.core.ep.aggregator.EntityPropertyInfo;
@@ -46,6 +47,8 @@ public class XmlPropertyEntityProvider {
     if (value == null) {
       writer.writeAttribute(Edm.NAMESPACE_M_2007_08, "null", "true");
     } else {
+//      writer.writeAttribute(Edm.NAMESPACE_M_2007_08, "type", prop.getType().getNamespace() + Edm.DELIMITER + prop.getType().getName());//
+      writer.writeAttribute(Edm.NAMESPACE_M_2007_08, "type", type.getType().getNamespace() + Edm.DELIMITER + type.getType().getName());//
       Collection<EntityPropertyInfo> propertyInfos = type.getPropertyInfos();
       for (EntityPropertyInfo childPropertyInfo : propertyInfos) {
         Object childValue = extractChildValue(value, childPropertyInfo.getName());

@@ -130,7 +130,8 @@ class EdmMock {
 
     EdmComplexType locationComplexType = mock(EdmComplexType.class);
     when(locationComplexType.getKind()).thenReturn(EdmTypeKind.COMPLEX);
-    when(locationComplexType.getName()).thenReturn("Location");
+    when(locationComplexType.getName()).thenReturn("c_Location");
+    when(locationComplexType.getNamespace()).thenReturn("RefScenario");
     when(locationComplexType.getPropertyNames()).thenReturn(Arrays.asList("City", "Country"));
 
     EdmProperty locationComplexProperty = mock(EdmProperty.class);
@@ -146,6 +147,7 @@ class EdmMock {
     EdmComplexType cityComplexType = mock(EdmComplexType.class);
     when(cityComplexType.getKind()).thenReturn(EdmTypeKind.COMPLEX);
     when(cityComplexType.getName()).thenReturn("City");
+    when(cityComplexType.getNamespace()).thenReturn("RefScenario");
     when(cityComplexType.getPropertyNames()).thenReturn(Arrays.asList("PostalCode", "CityName"));
 
     EdmProperty cityProperty = mock(EdmProperty.class);
