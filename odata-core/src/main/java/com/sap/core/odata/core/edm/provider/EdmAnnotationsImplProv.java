@@ -1,7 +1,7 @@
 package com.sap.core.odata.core.edm.provider;
 
-import java.util.List;
 import java.util.Iterator;
+import java.util.List;
 
 import com.sap.core.odata.api.edm.EdmAnnotationAttribute;
 import com.sap.core.odata.api.edm.EdmAnnotationElement;

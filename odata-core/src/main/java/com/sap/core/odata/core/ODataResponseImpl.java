@@ -3,7 +3,9 @@ package com.sap.core.odata.core;
 import java.util.HashMap;
 import java.util.Set;
 
+import com.sap.core.odata.api.enums.HttpHeaders;
 import com.sap.core.odata.api.enums.HttpStatusCodes;
+import com.sap.core.odata.api.ep.ODataEntityContent;
 import com.sap.core.odata.api.processor.ODataResponse;
 
 public class ODataResponseImpl extends ODataResponse {
@@ -19,21 +21,9 @@ public class ODataResponseImpl extends ODataResponse {
     return this.status;
   }
 
-  public void setStatus(HttpStatusCodes status) {
-    this.status = status;
-  }
-
-  public void setEntity(Object entity) {
-    this.entity = entity;
-  }
-
   @Override
   public Object getEntity() {
     return this.entity;
-  }
-
-  public void setHeader(HashMap<String, String> header) {
-    this.header = header;
   }
 
   @Override
@@ -56,12 +46,72 @@ public class ODataResponseImpl extends ODataResponse {
     return this.eTag;
   }
 
-  public void setIdLiteral(String idLiteral) {
-    this.idLiteral = idLiteral;
-  }
+  public class ODataResponseBuilderImpl extends ODataResponseBuilder {
+    private HttpStatusCodes status = HttpStatusCodes.OK;
+    private Object entity;
+    private HashMap<String, String> header = new HashMap<String, String>();
+    private String idLiteral;
+    private String eTag;
 
-  public void setETag(String eTag) {
-    this.eTag = eTag;
+    @Override
+    public ODataResponse build() {
+      if (entity instanceof ODataEntityContent) {
+        ODataEntityContent content = (ODataEntityContent) entity;
+
+        ODataResponseImpl.this.entity = content.getContent();
+        header.put(HttpHeaders.CONTENT_TYPE, content.getContentHeader());
+        ODataResponseImpl.this.header = this.header;
+
+        if (content.getETag() != null) {
+          ODataResponseImpl.this.eTag = content.getETag();
+        }
+      } else {
+        ODataResponseImpl.this.entity = this.entity;
+        ODataResponseImpl.this.header = this.header;
+        ODataResponseImpl.this.eTag = this.eTag;
+      }
+
+      ODataResponseImpl.this.status = this.status;
+      ODataResponseImpl.this.idLiteral = this.idLiteral;
+
+      return ODataResponseImpl.this;
+    }
+
+    @Override
+    public ODataResponseBuilder status(HttpStatusCodes status) {
+      this.status = status;
+      return this;
+    }
+
+    @Override
+    public ODataResponseBuilder entity(Object entity) {
+      this.entity = entity;
+      return this;
+    }
+
+    @Override
+    public ODataResponseBuilder header(String name, String value) {
+      if (value == null) {
+        this.header.remove(name);
+      } else {
+        this.header.put(name, value);
+      }
+
+      return this;
+    }
+
+    @Override
+    public ODataResponseBuilder idLiteral(String idLiteral) {
+      this.idLiteral = idLiteral;
+      return this;
+    }
+
+    @Override
+    public ODataResponseBuilder eTag(String eTag) {
+      this.eTag = eTag;
+      return this;
+    }
+
   }
 
 }
