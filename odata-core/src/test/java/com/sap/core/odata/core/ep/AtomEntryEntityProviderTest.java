@@ -7,13 +7,10 @@ import static org.junit.Assert.assertNotNull;
 
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.List;
 
 import javax.xml.stream.FactoryConfigurationError;
 import javax.xml.stream.XMLStreamException;
 
-import org.custommonkey.xmlunit.XMLAssert;
-import org.custommonkey.xmlunit.XMLUnit;
 import org.custommonkey.xmlunit.exceptions.XpathException;
 import org.junit.Assert;
 import org.junit.Ignore;
@@ -103,16 +100,6 @@ public class AtomEntryEntityProviderTest extends AbstractProviderTest {
     
     // verify order of tags
     verifyTagOrdering(xmlString, "id", "title", "updated", "category", "link", "content", "properties");
-  }
-
-  private void verifyTagOrdering(String xmlString, String ... toCheckTags) {
-    int lastTagPos = -1;
-    for (String tagName : toCheckTags) {
-      int currentTagPos = xmlString.indexOf(tagName);
-      Assert.assertTrue("Tag with name '" + tagName + "' is not in correct order. Expected order is '" + Arrays.toString(toCheckTags) + "'.", 
-      		lastTagPos < currentTagPos);
-      lastTagPos = currentTagPos;
-    }
   }
 
   @Test
@@ -269,4 +256,13 @@ public class AtomEntryEntityProviderTest extends AbstractProviderTest {
     assertXpathExists("/a:entry/a:link[@title='ne_Manager']", xmlString);
   }
 
+  private void verifyTagOrdering(String xmlString, String ... toCheckTags) {
+    int lastTagPos = -1;
+    for (String tagName : toCheckTags) {
+      int currentTagPos = xmlString.indexOf(tagName);
+      Assert.assertTrue("Tag with name '" + tagName + "' is not in correct order. Expected order is '" + Arrays.toString(toCheckTags) + "'.", 
+          lastTagPos < currentTagPos);
+      lastTagPos = currentTagPos;
+    }
+  }
 }
