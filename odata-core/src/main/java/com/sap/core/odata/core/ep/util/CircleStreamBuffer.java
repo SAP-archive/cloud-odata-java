@@ -16,6 +16,8 @@ import java.util.concurrent.LinkedBlockingQueue;
 public class CircleStreamBuffer {
 
   private final static int DEFAULT_CAPACITY = 8192;
+  private final static int MAX_CAPACITY = DEFAULT_CAPACITY * 32;
+  private int currentAllocateCapacity = DEFAULT_CAPACITY;
 
   private boolean writeMode = true;
   private boolean writeClosed = false;
@@ -32,9 +34,8 @@ public class CircleStreamBuffer {
   }
 
   public CircleStreamBuffer(int bufferSize) {
-    ByteBuffer buffer = ByteBuffer.allocateDirect(bufferSize);
-    bufferQueue.add(buffer);
-    currentWriteBuffer = buffer;
+    currentAllocateCapacity = bufferSize;
+    createNewWriteBuffer();
     inStream = new InternalInputStream(this);
     outStream = new InternalOutputStream(this);
   }
@@ -162,30 +163,50 @@ public class CircleStreamBuffer {
 
     if (writeMode) {
       if (remaining() < size) {
-        if (size < DEFAULT_CAPACITY) {
-          size = DEFAULT_CAPACITY;
-        }
-        ByteBuffer b = ByteBuffer.allocate(size);
-        bufferQueue.add(b);
-        currentWriteBuffer = b;
+        createNewWriteBuffer(size);
       }
-
     } else {
       writeMode = true;
-      ByteBuffer b = ByteBuffer.allocate(DEFAULT_CAPACITY);
-      bufferQueue.add(b);
-      currentWriteBuffer = b;
+      createNewWriteBuffer();
     }
 
     return currentWriteBuffer;
   }
 
-
   private void write(int b) throws IOException {
     ByteBuffer writeBuffer = getWriteBuffer(1);
+    writeBuffer.put((byte) b);
+  }
 
-    byte toWrite = (byte) b;
-    writeBuffer.put(toWrite);
+  private void createNewWriteBuffer() {
+    createNewWriteBuffer(currentAllocateCapacity);
+  }
+  
+  /**
+   * Creates a new buffer (per {@link #allocateBuffer(int)}) with the requested capacity as minimum capacity, add the new allocated
+   * buffer to the {@link #bufferQueue} and set it as {@link #currentWriteBuffer}.
+   * 
+   * @param requestedCapacity minimum capacity for new allocated buffer
+   */
+  private void createNewWriteBuffer(int requestedCapacity) {
+    ByteBuffer b = allocateBuffer(requestedCapacity);
+    bufferQueue.add(b);
+    currentWriteBuffer = b;
+  }
+
+  /**
+   * 
+   * @param requestedCapacity
+   * @return
+   */
+  private ByteBuffer allocateBuffer(int requestedCapacity) {
+    if (requestedCapacity < currentAllocateCapacity) {
+      requestedCapacity = currentAllocateCapacity * 2;
+    }
+    if(currentAllocateCapacity > MAX_CAPACITY) {
+      currentAllocateCapacity = MAX_CAPACITY;
+    }
+    return ByteBuffer.allocateDirect(requestedCapacity);
   }
 
   // #############################################
