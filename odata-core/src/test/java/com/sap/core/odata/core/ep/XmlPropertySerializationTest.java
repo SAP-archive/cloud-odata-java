@@ -1,4 +1,4 @@
-package com.sap.core.odata.core.ep.test;
+package com.sap.core.odata.core.ep;
 
 import static org.custommonkey.xmlunit.XMLAssert.assertXpathEvaluatesTo;
 import static org.custommonkey.xmlunit.XMLAssert.assertXpathExists;

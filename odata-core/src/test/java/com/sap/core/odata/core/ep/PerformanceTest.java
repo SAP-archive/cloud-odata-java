@@ -20,7 +20,6 @@ import com.sap.core.odata.api.edm.Edm;
 import com.sap.core.odata.api.edm.EdmEntitySet;
 import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.core.ep.aggregator.EntityInfoAggregator;
-import com.sap.core.odata.core.ep.test.AbstractProviderTest;
 import com.sap.core.odata.testutils.mocks.MockFacade;
 
 public class PerformanceTest extends AbstractProviderTest {
