@@ -65,11 +65,16 @@ public class EdmBoolean implements EdmSimpleType {
 
   @Override
   public Boolean valueOfString(final String value, final EdmLiteralKind literalKind, final EdmFacets facets) throws EdmSimpleTypeException {
+    if (literalKind == null)
+      throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_KIND_MISSING);
+
     if (validate(value, literalKind, facets))
       if (value == null)
         return null;
       else
         return "true".equals(value) || "1".equals(value);
+    else if (value == null)
+      throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_NULL_NOT_ALLOWED);
     else
       throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_ILLEGAL_CONTENT.addContent(value));
   }

@@ -72,6 +72,9 @@ public class EdmSByte implements EdmSimpleType {
       else
         throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_NULL_NOT_ALLOWED);
 
+    if (literalKind == null)
+      throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_KIND_MISSING);
+
     try {
       return Byte.parseByte(value);
     } catch (NumberFormatException e) {
