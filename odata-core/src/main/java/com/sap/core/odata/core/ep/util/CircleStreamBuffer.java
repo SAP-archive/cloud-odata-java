@@ -17,7 +17,9 @@ public class CircleStreamBuffer {
 
   private final static int DEFAULT_CAPACITY = 8192;
 
-  boolean writeMode = true;
+  private boolean writeMode = true;
+  private boolean writeClosed = false;
+  private boolean readClosed = false;
 
   private Queue<ByteBuffer> bufferQueue = new LinkedBlockingQueue<ByteBuffer>();
   private ByteBuffer currentWriteBuffer;
@@ -55,21 +57,23 @@ public class CircleStreamBuffer {
     return outStream;
   }
 
-  private void write(byte[] data, int off, int len) {
-    ByteBuffer writeBuffer = getWriteBuffer(len);
-    writeBuffer.put(data, off, len);
+  
+  // #############################################
+  // #
+  // # Common parts
+  // #
+  // #############################################
+
+
+  public void closeWrite() {
+    this.writeClosed = true;
   }
 
-  private int read() throws IOException {
-    ByteBuffer readBuffer = getReadBuffer();
-    if (readBuffer == null) {
-      return -1;
-    }
-
-    return readBuffer.getInt();
+  public void closeRead() {
+    this.readClosed = true;
   }
 
-  private int remaining() {
+  private int remaining() throws IOException {
     if (writeMode) {
       return currentWriteBuffer.remaining();
     } else {
@@ -80,43 +84,17 @@ public class CircleStreamBuffer {
       return toRead.remaining();
     }
   }
+  
+  // #############################################
+  // #
+  // # Reading parts
+  // #
+  // #############################################
 
-  private int read(byte[] b, int off, int len) {
-    ByteBuffer toRead = getReadBuffer();
-    if (toRead == null) {
-      return -1;
+  private ByteBuffer getReadBuffer() throws IOException {
+    if(readClosed) {
+      throw new IOException("Tried to read from closed stream.");
     }
-
-    final int remaining = toRead.remaining();
-    if (remaining <= len) {
-      len = remaining;
-    }
-    toRead.get(b, off, len);
-    return len;
-  }
-
-  private ByteBuffer getWriteBuffer(int size) {
-    if (writeMode) {
-      if (remaining() < size) {
-        if (size < DEFAULT_CAPACITY) {
-          size = DEFAULT_CAPACITY;
-        }
-        ByteBuffer b = ByteBuffer.allocate(size);
-        bufferQueue.add(b);
-        currentWriteBuffer = b;
-      }
-
-    } else {
-      writeMode = true;
-      ByteBuffer b = ByteBuffer.allocate(DEFAULT_CAPACITY);
-      bufferQueue.add(b);
-      currentWriteBuffer = b;
-    }
-
-    return currentWriteBuffer;
-  }
-
-  private ByteBuffer getReadBuffer() {
 
     boolean next = false;
     ByteBuffer tmp = null;
@@ -142,10 +120,79 @@ public class CircleStreamBuffer {
     return tmp;
   }
 
-  private void write(int b) {
-    ByteBuffer writeBuffer = getWriteBuffer(1);
-    writeBuffer.put((byte) b);
+  private int read(byte[] b, int off, int len) throws IOException {
+    ByteBuffer toRead = getReadBuffer();
+    if (toRead == null) {
+      return -1;
+    }
+
+    final int remaining = toRead.remaining();
+    if (remaining <= len) {
+      len = remaining;
+    }
+    toRead.get(b, off, len);
+    return len;
   }
+
+
+  private int read() throws IOException {
+    ByteBuffer readBuffer = getReadBuffer();
+    if (readBuffer == null) {
+      return -1;
+    }
+
+    return readBuffer.get();
+  }
+  
+  // #############################################
+  // #
+  // # Writing parts
+  // #
+  // #############################################
+
+  private void write(byte[] data, int off, int len) throws IOException {
+    ByteBuffer writeBuffer = getWriteBuffer(len);
+    writeBuffer.put(data, off, len);
+  }
+
+  private ByteBuffer getWriteBuffer(int size) throws IOException {
+    if (writeClosed) {
+      throw new IOException("Tried to write into closed stream.");
+    }
+
+    if (writeMode) {
+      if (remaining() < size) {
+        if (size < DEFAULT_CAPACITY) {
+          size = DEFAULT_CAPACITY;
+        }
+        ByteBuffer b = ByteBuffer.allocate(size);
+        bufferQueue.add(b);
+        currentWriteBuffer = b;
+      }
+
+    } else {
+      writeMode = true;
+      ByteBuffer b = ByteBuffer.allocate(DEFAULT_CAPACITY);
+      bufferQueue.add(b);
+      currentWriteBuffer = b;
+    }
+
+    return currentWriteBuffer;
+  }
+
+
+  private void write(int b) throws IOException {
+    ByteBuffer writeBuffer = getWriteBuffer(1);
+
+    byte toWrite = (byte) b;
+    writeBuffer.put(toWrite);
+  }
+
+  // #############################################
+  // #
+  // # Inner classes (streams)
+  // #
+  // #############################################
 
   /**
    * 
@@ -172,11 +219,10 @@ public class CircleStreamBuffer {
     public int read(byte[] b, int off, int len) throws IOException {
       return inBuffer.read(b, off, len);
     }
-    
+
     @Override
     public void close() throws IOException {
-      // TODO: support for closing
-      super.close();
+      inBuffer.closeRead();
     }
   }
 
@@ -199,11 +245,10 @@ public class CircleStreamBuffer {
     public void write(byte[] b, int off, int len) throws IOException {
       outBuffer.write(b, off, len);
     }
-    
+
     @Override
     public void close() throws IOException {
-      // TODO: support for closing
-      super.close();
+      outBuffer.closeWrite();
     }
   }
 }
