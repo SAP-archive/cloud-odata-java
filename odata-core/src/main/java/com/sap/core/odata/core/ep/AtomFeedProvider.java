@@ -16,6 +16,7 @@ import com.sap.core.odata.api.processor.ODataContext;
 import com.sap.core.odata.api.uri.resultviews.GetEntitySetView;
 import com.sap.core.odata.core.edm.EdmDateTimeOffset;
 import com.sap.core.odata.core.ep.aggregator.EntityInfoAggregator;
+import com.sap.core.odata.core.ep.util.UriUtils;
 import com.sap.core.odata.core.uri.SystemQueryOption;
 
 public class AtomFeedProvider {
@@ -110,8 +111,7 @@ public class AtomFeedProvider {
     try {
       String query = SystemQueryOption.$skiptoken + "=" + nextSkiptoken;
       String path = createSelfLink(eia);
-      URI uri = new URI(null, null, null, -1, path, query, null);
-      return uri.toASCIIString();
+      return UriUtils.encodeUri(path, query);
     } catch (Exception e) {
       throw new ODataEntityProviderException(ODataEntityProviderException.COMMON, e);
     }
@@ -124,8 +124,7 @@ public class AtomFeedProvider {
         sb.append(eia.getEntityContainerName()).append(Edm.DELIMITER);
       }
       sb.append(eia.getEntitySetName());
-      URI uri = new URI(null, null, null, -1, sb.toString(), null, null);
-      return uri.toASCIIString();
+      return UriUtils.encodeUri(sb.toString());
     } catch (Exception e) {
       throw new ODataEntityProviderException(ODataEntityProviderException.COMMON, e);
     }
@@ -165,24 +164,14 @@ public class AtomFeedProvider {
       String id = "";
 
       if (!eia.isDefaultEntityContainer()) {
-        id = id + eia.getEntityContainerName() + ".";
+        id += eia.getEntityContainerName() + ".";
       }
-      id = id + eia.getEntitySetName();
+      id += eia.getEntitySetName();
 
       URI baseUri = this.context.getUriInfo().getBaseUri();
-      String scheme = baseUri.getScheme();
-      String userInfo = baseUri.getUserInfo();
-      String host = baseUri.getHost();
-      int port = baseUri.getPort();
-      String path = baseUri.getPath() + id;
-      String query = baseUri.getQuery();
-      String fragment = baseUri.getFragment();
-      URI uri = new URI(scheme, userInfo, host, port, path, query, fragment);
-
-      return uri.toASCIIString();
+      return UriUtils.encodeUri(baseUri, id);
     } catch (Exception e) {
       throw new ODataEntityProviderException(ODataEntityProviderException.COMMON, e);
     }
   }
-
 }
