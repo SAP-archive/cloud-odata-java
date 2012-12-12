@@ -9,6 +9,7 @@ import com.sap.core.odata.api.edm.EdmProperty;
 import com.sap.core.odata.api.enums.Format;
 import com.sap.core.odata.api.processor.ODataContext;
 import com.sap.core.odata.api.rt.RuntimeDelegate;
+import com.sap.core.odata.api.uri.resultviews.GetEntitySetView;
 
 public abstract class ODataEntityProvider {
 
@@ -28,7 +29,7 @@ public abstract class ODataEntityProvider {
 
   public abstract ODataEntityContent writeServiceDocument(Edm edm, String serviceRoot) throws ODataEntityProviderException;
 
-  public abstract ODataEntityContent writeFeed(EdmEntitySet entitySet, List<Map<String, Object>> data, String mediaResourceMimeType) throws ODataEntityProviderException;
+  public abstract ODataEntityContent writeFeed(GetEntitySetView entitySetView, List<Map<String, Object>> data, String mediaResourceMimeType) throws ODataEntityProviderException;
 
   public abstract ODataEntityContent writeEntry(EdmEntitySet entitySet, Map<String, Object> data, String mediaResourceMimeType) throws ODataEntityProviderException;
 

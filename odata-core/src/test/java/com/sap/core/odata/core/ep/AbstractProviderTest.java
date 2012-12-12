@@ -5,6 +5,7 @@ import static org.mockito.Mockito.when;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
@@ -46,6 +47,8 @@ public abstract class AbstractProviderTest {
 
   protected Map<String, Object> roomData;
 
+  protected ArrayList<Map<String, Object>> roomsData;
+
   {
     this.employeeData = new HashMap<String, Object>();
 
@@ -85,6 +88,17 @@ public abstract class AbstractProviderTest {
     this.roomData.put("Name", "Neu Schwanstein");
     this.roomData.put("Seats", new Integer(20));
     this.roomData.put("Version", new Integer(3));
+    
+    this.roomsData = new ArrayList<Map<String, Object>>();
+    for (int i= 1; i <= 103; i++) {
+      HashMap<String, Object> tmp = new HashMap<String, Object>();
+      tmp.put("Id", "" + i);
+      tmp.put("Name", "Neu Schwanstein" + i);
+      tmp.put("Seats", new Integer(20));
+      tmp.put("Version", new Integer(3));
+      this.roomsData.add(tmp);
+    }
+    
   }
 
   @Before

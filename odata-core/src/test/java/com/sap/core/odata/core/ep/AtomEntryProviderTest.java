@@ -25,7 +25,7 @@ import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.testutils.helper.StringHelper;
 import com.sap.core.odata.testutils.mocks.MockFacade;
 
-public class AtomEntryEntityProviderTest extends AbstractProviderTest {
+public class AtomEntryProviderTest extends AbstractProviderTest {
 
   @Test
   public void serializeAtomMediaResource() throws IOException, XpathException, SAXException, XMLStreamException, FactoryConfigurationError, ODataException {
