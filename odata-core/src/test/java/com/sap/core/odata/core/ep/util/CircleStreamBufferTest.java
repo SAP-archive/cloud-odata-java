@@ -167,6 +167,29 @@ public class CircleStreamBufferTest {
     assertEquals(testData, result);
   }
 
+  @Test(expected=IOException.class)
+  public void testCloseInputStream() throws Exception {
+    CircleStreamBuffer csb = new CircleStreamBuffer();
+
+    OutputStream write = csb.getOutputStream();
+    write.write("Test".getBytes(), 0, 4);
+
+    InputStream inStream = csb.getInputStream();
+    inStream.close();
+    byte[] buffer = new byte[4];
+    int count = inStream.read(buffer);
+    assertEquals(4, count);
+  }
+
+  @Test(expected=IOException.class)
+  public void testCloseOutputStream() throws Exception {
+    CircleStreamBuffer csb = new CircleStreamBuffer();
+
+    OutputStream write = csb.getOutputStream();
+    write.close();
+    write.write("Test".getBytes(), 0, 4);
+  }
+
   // ###################################################
   // #
   // # Below here are test helper methods
