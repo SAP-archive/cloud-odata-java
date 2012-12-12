@@ -17,7 +17,6 @@ import com.sap.core.odata.api.edm.EdmTypeKind;
  */
 public class EdmSingle implements EdmSimpleType {
 
-  private static final String PATTERN = "-?\\p{Digit}{1,7}(?:\\.\\p{Digit}{1,7})?(?:(?:E|e)-?\\p{Digit}{1,2})?";
   // value-range limitations according to the CSDL document
   private static final int MAX_PRECISION = 7;
   private static final int MAX_SCALE = 38;
@@ -71,43 +70,45 @@ public class EdmSingle implements EdmSimpleType {
 
   @Override
   public boolean validate(final String value, final EdmLiteralKind literalKind, final EdmFacets facets) {
-    if (value == null)
-      return facets == null || facets.isNullable() == null || facets.isNullable();
-    else if (value.matches("NaN|-?INF"))
+    try {
+      valueOfString(value, literalKind, facets);
       return true;
-    else if (literalKind == null)
+    } catch (EdmSimpleTypeException e) {
       return false;
-    else if (literalKind == EdmLiteralKind.URI)
-      return value.matches(PATTERN + "(?:F|f)");
-    else
-      return value.matches(PATTERN);
+    }
   }
 
   @Override
   public Float valueOfString(final String value, final EdmLiteralKind literalKind, final EdmFacets facets) throws EdmSimpleTypeException {
+    if (value == null)
+      if (facets == null || facets.isNullable() == null || facets.isNullable())
+        return null;
+      else
+        throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_NULL_NOT_ALLOWED);
+
     if (literalKind == null)
       throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_KIND_MISSING);
 
-    if (!validate(value, literalKind, facets))
-      if (value == null)
-        throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_NULL_NOT_ALLOWED);
-      else
-        throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_ILLEGAL_CONTENT.addContent(value));
-
-    if (value == null)
-      return null;
-    else if (value.equals("-INF"))
+    if (value.equals("-INF"))
       return Float.NEGATIVE_INFINITY;
     else if (value.equals("INF"))
       return Float.POSITIVE_INFINITY;
     else if (value.equals("NaN"))
       return Float.NaN;
 
+    if (!value.matches("-?\\p{Digit}{1,7}(?:\\.\\p{Digit}{1,7})?(?:(?:E|e)-?\\p{Digit}{1,2})?"
+        + (literalKind == EdmLiteralKind.URI ? "(?:F|f)" : "")))
+      throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_ILLEGAL_CONTENT.addContent(value));
+
     Float result;
-    if (literalKind == EdmLiteralKind.URI)
-      result = Float.parseFloat(value.substring(0, value.length() - 1));
-    else
-      result = Float.parseFloat(value);
+    try {
+      if (literalKind == EdmLiteralKind.URI)
+        result = Float.parseFloat(value.substring(0, value.length() - 1));
+      else
+        result = Float.parseFloat(value);
+    } catch (NumberFormatException e) {
+      throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_ILLEGAL_CONTENT.addContent(value), e);
+    }
 
     if (result.isInfinite())
       throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_ILLEGAL_CONTENT.addContent(value));

@@ -822,11 +822,45 @@ public class EdmSimpleTypeTest {
   @Test
   public void valueOfStringDateTime() throws Exception {
     final EdmSimpleType instance = EdmSimpleTypeKind.DateTime.getEdmSimpleTypeInstance();
+    Calendar dateTime = Calendar.getInstance();
 
-    expectErrorInValueToString(instance, "2012-02-29T23:32:02.9", EdmLiteralKind.DEFAULT, getPrecisionScaleFacets(0, null));
-    expectErrorInValueToString(instance, "/Date(1)/", EdmLiteralKind.JSON, null);
-    expectErrorInValueToString(instance, "datetime'2012-02-29T23:32:02+01:00'", EdmLiteralKind.URI, null);
-    expectErrorInValueToString(instance, "date'2012-02-29T23:32:02'", EdmLiteralKind.URI, null);
+    dateTime.clear();
+    dateTime.setTimeZone(TimeZone.getTimeZone("GMT"));
+    dateTime.set(2012, 1, 29, 23, 32, 3);
+    assertEquals(dateTime, instance.valueOfString("2012-02-29T23:32:03", EdmLiteralKind.DEFAULT, null));
+    assertEquals(dateTime, instance.valueOfString("2012-02-29T23:32:03", EdmLiteralKind.JSON, null));
+    assertEquals(dateTime, instance.valueOfString("\\/Date(1330558323000)\\/", EdmLiteralKind.JSON, null));
+    assertEquals(dateTime, instance.valueOfString("datetime'2012-02-29T23:32:03'", EdmLiteralKind.URI, null));
+
+    dateTime.add(Calendar.MILLISECOND, 1);
+    assertEquals(dateTime, instance.valueOfString("2012-02-29T23:32:03.001", EdmLiteralKind.DEFAULT, null));
+    assertEquals(dateTime, instance.valueOfString("\\/Date(1330558323001)\\/", EdmLiteralKind.JSON, null));
+    assertEquals(dateTime, instance.valueOfString("datetime'2012-02-29T23:32:03.001'", EdmLiteralKind.URI, null));
+
+    dateTime.add(Calendar.MILLISECOND, 9);
+    assertEquals(dateTime, instance.valueOfString("2012-02-29T23:32:03.01", EdmLiteralKind.DEFAULT, getPrecisionScaleFacets(2, null)));
+    assertEquals(dateTime, instance.valueOfString("2012-02-29T23:32:03.0100000", EdmLiteralKind.DEFAULT, getPrecisionScaleFacets(2, null)));
+    dateTime.add(Calendar.MILLISECOND, -10);
+    assertEquals(dateTime, instance.valueOfString("2012-02-29T23:32:03.000", EdmLiteralKind.DEFAULT, getPrecisionScaleFacets(0, null)));
+    dateTime.add(Calendar.MILLISECOND, -13);
+    assertEquals(dateTime, instance.valueOfString("2012-02-29T23:32:02.987", EdmLiteralKind.DEFAULT, getPrecisionScaleFacets(null, null)));
+    assertEquals(dateTime, instance.valueOfString("2012-02-29T23:32:02.98700", EdmLiteralKind.DEFAULT, getPrecisionScaleFacets(5, null)));
+    dateTime.add(Calendar.MILLISECOND, 3);
+    assertEquals(dateTime, instance.valueOfString("2012-02-29T23:32:02.99", EdmLiteralKind.DEFAULT, getPrecisionScaleFacets(2, null)));
+    dateTime.add(Calendar.MILLISECOND, -90);
+    assertEquals(dateTime, instance.valueOfString("2012-02-29T23:32:02.9", EdmLiteralKind.DEFAULT, getPrecisionScaleFacets(1, null)));
+    dateTime.add(Calendar.MILLISECOND, -2900);
+    assertEquals(dateTime, instance.valueOfString("2012-02-29T23:32", EdmLiteralKind.DEFAULT, null));
+
+    expectErrorInValueOfString(instance, "2012-02-29T23:32:02.9", EdmLiteralKind.DEFAULT, getPrecisionScaleFacets(0, null));
+    expectErrorInValueOfString(instance, "2012-02-29T23:32:02.98700", EdmLiteralKind.DEFAULT, getPrecisionScaleFacets(2, null));
+    expectErrorInValueOfString(instance, "2012-02-29T23:32:02.9876", EdmLiteralKind.DEFAULT, null);
+    expectErrorInValueOfString(instance, "20120229T233202", EdmLiteralKind.DEFAULT, null);
+    expectErrorInValueOfString(instance, "/Date(1)/", EdmLiteralKind.JSON, null);
+    expectErrorInValueOfString(instance, "datetime'2012-02-29T23:32:02+01:00'", EdmLiteralKind.URI, null);
+    expectErrorInValueOfString(instance, "date'2012-02-29T23:32:02'", EdmLiteralKind.URI, null);
+    expectErrorInValueOfString(instance, "datetime'2012-02-29T23:32:02", EdmLiteralKind.URI, null);
+    expectErrorInValueOfString(instance, "datetime'", EdmLiteralKind.URI, null);
   }
 
   @Test
@@ -852,13 +886,21 @@ public class EdmSimpleTypeTest {
     assertEquals(new BigDecimal(32768), instance.valueOfString("32768", EdmLiteralKind.DEFAULT, getPrecisionScaleFacets(5, null)));
     assertEquals(new BigDecimal(0.5), instance.valueOfString("0.5", EdmLiteralKind.DEFAULT, getPrecisionScaleFacets(1, null)));
     assertEquals(new BigDecimal(0.5), instance.valueOfString("0.5", EdmLiteralKind.DEFAULT, getPrecisionScaleFacets(null, 1)));
+    assertEquals(new BigDecimal("12.3"), instance.valueOfString("12.3", EdmLiteralKind.DEFAULT, getPrecisionScaleFacets(3, 1)));
     expectErrorInValueOfString(instance, "-1234", EdmLiteralKind.DEFAULT, getPrecisionScaleFacets(2, null));
     expectErrorInValueOfString(instance, "1234", EdmLiteralKind.DEFAULT, getPrecisionScaleFacets(3, null));
+    expectErrorInValueOfString(instance, "12.34", EdmLiteralKind.DEFAULT, getPrecisionScaleFacets(3, null));
+    expectErrorInValueOfString(instance, "12.34", EdmLiteralKind.DEFAULT, getPrecisionScaleFacets(3, 2));
+    expectErrorInValueOfString(instance, "12.34", EdmLiteralKind.DEFAULT, getPrecisionScaleFacets(4, 1));
     expectErrorInValueOfString(instance, "0.00390625", EdmLiteralKind.DEFAULT, getPrecisionScaleFacets(5, null));
     expectErrorInValueOfString(instance, "0.00390625", EdmLiteralKind.DEFAULT, getPrecisionScaleFacets(null, 7));
 
     expectErrorInValueOfString(instance, "-1E2", EdmLiteralKind.DEFAULT, null);
+    expectErrorInValueOfString(instance, "1.", EdmLiteralKind.DEFAULT, null);
+    expectErrorInValueOfString(instance, ".1", EdmLiteralKind.DEFAULT, null);
     expectErrorInValueOfString(instance, "1.0.1", EdmLiteralKind.DEFAULT, null);
+    expectErrorInValueOfString(instance, "1M", EdmLiteralKind.JSON, null);
+    expectErrorInValueOfString(instance, "0", EdmLiteralKind.URI, null);
     expectErrorInValueOfString(instance, "1.0D", EdmLiteralKind.URI, null);
     expectErrorInValueOfString(instance, "0F", EdmLiteralKind.URI, null);
     expectErrorInValueOfString(instance, "0x42", EdmLiteralKind.DEFAULT, null);
