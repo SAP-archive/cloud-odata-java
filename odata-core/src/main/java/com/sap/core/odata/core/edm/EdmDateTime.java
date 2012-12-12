@@ -4,6 +4,8 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.TimeZone;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import com.sap.core.odata.api.edm.EdmException;
 import com.sap.core.odata.api.edm.EdmFacets;
@@ -19,6 +21,8 @@ import com.sap.core.odata.api.edm.EdmTypeKind;
  */
 public class EdmDateTime implements EdmSimpleType {
 
+  private static final Pattern PATTERN = Pattern.compile("(\\p{Digit}{1,4})-(\\p{Digit}{1,2})-(\\p{Digit}{1,2})T(\\p{Digit}{1,2}):(\\p{Digit}{1,2})(?::(\\p{Digit}{1,2})(\\.\\p{Digit}{1,7})?)?");
+  private static final Pattern JSON_PATTERN = Pattern.compile("\\\\/Date\\((-?\\p{Digit}+)\\)\\\\/");
   private static final EdmDateTime instance = new EdmDateTime();
 
   private EdmDateTime() {
@@ -82,27 +86,46 @@ public class EdmDateTime implements EdmSimpleType {
 
     Calendar dateTimeValue = Calendar.getInstance();
     dateTimeValue.clear();
+    dateTimeValue.setTimeZone(TimeZone.getTimeZone("GMT"));
 
-    switch (literalKind) {
-    case DEFAULT:
-      throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_KIND_NOT_SUPPORTED.addContent(literalKind));
-
-    case JSON:
-      if (value.matches("\\\\/Date\\((-?\\p{Digit}+)\\)\\\\/"))
+    if (literalKind == EdmLiteralKind.JSON) {
+      if (JSON_PATTERN.matcher(value).matches()) {
         dateTimeValue.setTimeInMillis(Long.decode(value.substring(7, value.length() - 3)));
-      else
-        throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_ILLEGAL_CONTENT.addContent(value));
-      return dateTimeValue;
-
-    case URI:
+        return dateTimeValue;
+      }
+    } else if (literalKind == EdmLiteralKind.URI) {
       if (value.length() > 10 && value.startsWith("datetime'") && value.endsWith("'"))
         return valueOfString(value.substring(9, value.length() - 1), EdmLiteralKind.DEFAULT, facets);
       else
         throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_ILLEGAL_CONTENT.addContent(value));
-
-    default:
-      throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_KIND_NOT_SUPPORTED.addContent(literalKind));
     }
+
+    final Matcher matcher = PATTERN.matcher(value);
+    if (!matcher.matches())
+      throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_ILLEGAL_CONTENT.addContent(value));
+
+    dateTimeValue.set(Short.parseShort(matcher.group(1)),
+        Byte.parseByte(matcher.group(2)) - 1,
+        Byte.parseByte(matcher.group(3)),
+        Byte.parseByte(matcher.group(4)),
+        Byte.parseByte(matcher.group(5)));
+    if (matcher.group(6) != null)
+      dateTimeValue.set(Calendar.SECOND, Byte.parseByte(matcher.group(6)));
+
+    if (matcher.group(7) != null) {
+      String milliSeconds = matcher.group(7).substring(1);
+      while (milliSeconds.endsWith("0"))
+        milliSeconds = milliSeconds.substring(0, milliSeconds.length() - 1);
+      if (milliSeconds.length() > 3)
+        throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_ILLEGAL_CONTENT.addContent(value));
+      if (facets != null && facets.getPrecision() != null && facets.getPrecision() < milliSeconds.length())
+        throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_FACETS_NOT_MATCHED.addContent(value, facets));
+      while (milliSeconds.length() < 3)
+        milliSeconds += "0";
+      dateTimeValue.set(Calendar.MILLISECOND, Short.parseShort(milliSeconds));
+    }
+
+    return dateTimeValue;
   }
 
   @Override

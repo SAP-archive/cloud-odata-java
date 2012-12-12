@@ -2,6 +2,8 @@ package com.sap.core.odata.core.edm;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import com.sap.core.odata.api.edm.EdmException;
 import com.sap.core.odata.api.edm.EdmFacets;
@@ -17,7 +19,7 @@ import com.sap.core.odata.api.edm.EdmTypeKind;
  */
 public class EdmDecimal implements EdmSimpleType {
 
-  private static final String PATTERN = "-?\\p{Digit}*(?:\\.\\p{Digit}*)?";
+  private static final Pattern PATTERN = Pattern.compile("-?0*(\\p{Digit}+?)(\\.\\p{Digit}+?)?0*(M|m)?");
 
   private static final EdmDecimal instance = new EdmDecimal();
 
@@ -72,12 +74,27 @@ public class EdmDecimal implements EdmSimpleType {
   public boolean validate(final String value, final EdmLiteralKind literalKind, final EdmFacets facets) {
     if (value == null)
       return facets == null || facets.isNullable() == null || facets.isNullable();
-    else if (literalKind == null)
+
+    if (literalKind == null)
       return false;
-    else if (literalKind == EdmLiteralKind.URI)
-      return value.matches(PATTERN + "(?:M|m)");
-    else
-      return value.matches(PATTERN);
+
+    final Matcher matcher = PATTERN.matcher(value);
+    if (!matcher.matches())
+      return false;
+
+    if (literalKind == EdmLiteralKind.URI) {
+      if (matcher.group(3) == null)
+        return false;
+    } else {
+      if (matcher.group(3) != null)
+        return false;
+    }
+
+    final int significantIntegerDigits = matcher.group(1).equals("0") ? 0 : matcher.group(1).length();
+    final int decimals = matcher.group(2) == null ? 0 : matcher.group(2).length() - 1;
+    return facets == null
+        || (facets.getPrecision() == null || facets.getPrecision() >= significantIntegerDigits + decimals)
+        && (facets.getScale() == null || facets.getScale() >= decimals);
   }
 
   @Override
