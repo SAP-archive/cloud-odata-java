@@ -85,7 +85,7 @@ public class ListsProcessor extends ODataSingleProcessor {
         mapFunctionParameters(uriParserResultView.getFunctionImportParameters()),
         uriParserResultView.getNavigationSegments()));
 
-    applySystemQueryOptions(
+    Integer count = applySystemQueryOptions(
         uriParserResultView.getTargetEntitySet(),
         data,
         uriParserResultView.getInlineCount(),
@@ -106,7 +106,7 @@ public class ListsProcessor extends ODataSingleProcessor {
 
     return ODataResponse
         .status(HttpStatusCodes.OK)
-        .entity(ODataEntityProvider.create(format, getContext()).writeFeed(uriParserResultView, values, null, values.size(), null))
+        .entity(ODataEntityProvider.create(format, getContext()).writeFeed(uriParserResultView, values, null, count == null ? 0 : count, null))
         .build();
   }
 
@@ -147,7 +147,7 @@ public class ListsProcessor extends ODataSingleProcessor {
         mapFunctionParameters(uriParserResultView.getFunctionImportParameters()),
         uriParserResultView.getNavigationSegments()));
 
-    applySystemQueryOptions(
+    Integer count = applySystemQueryOptions(
         uriParserResultView.getTargetEntitySet(),
         data,
         uriParserResultView.getInlineCount(),
@@ -161,7 +161,7 @@ public class ListsProcessor extends ODataSingleProcessor {
     return ODataResponse
         .status(HttpStatusCodes.OK)
         .header(CONTENT_TYPE, MediaType.APPLICATION_XML.toString())
-        .entity("Links to " + data)
+        .entity("Links to " + data + "; inlinecount=" + count)
         .build();
   }
 
