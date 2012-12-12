@@ -296,7 +296,7 @@ public class ScenarioEdmProvider extends EdmProviderDefault {
             .setFacets(new Facets().setNullable(true))
             .setCustomizableFeedMappings(new CustomizableFeedMappings()
                 .setFcKeepInContent(false)
-                .setFcNsPrefix("py")
+                .setFcNsPrefix("ру") // CYRILLIC SMALL LETTER ER + CYRILLIC SMALL LETTER U
                 .setFcNsUri("http://localhost")
                 .setFcTargetPath("Содержание"))
             .setMapping(new Mapping().setValue("getContent")));
