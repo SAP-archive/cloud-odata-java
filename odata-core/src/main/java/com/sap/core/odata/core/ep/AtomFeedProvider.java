@@ -40,11 +40,23 @@ public class AtomFeedProvider {
       if (entitySetView.getInlineCount() == InlineCount.ALLPAGES) {
         appendInlineCount(writer, data.size());
       }
-      
+
+      appendEntries(writer, eia, data, mediaResourceMimeType);
+
       writer.writeEndElement();
     } catch (Exception e) {
       throw new ODataEntityProviderException(ODataEntityProviderException.COMMON, e);
     }
+  }
+
+  private void appendEntries(XMLStreamWriter writer, EntityInfoAggregator eia, List<Map<String, Object>> data, String mediaResourceMimeType) throws ODataEntityProviderException {
+    AtomEntryEntityProvider entryProvider = new AtomEntryEntityProvider(context);
+    boolean isRootElement = false;
+
+    for (Map<String, Object> singleEntryData : data) {
+      entryProvider.append(writer, eia, singleEntryData, isRootElement, mediaResourceMimeType);
+    }
+
   }
 
   private void appendInlineCount(XMLStreamWriter writer, int size) throws ODataEntityProviderException {
@@ -84,7 +96,7 @@ public class AtomFeedProvider {
       throw new ODataEntityProviderException(ODataEntityProviderException.COMMON, e);
     }
   }
-  
+
   private void appendAtomMandatoryParts(XMLStreamWriter writer, EntityInfoAggregator eia) throws ODataEntityProviderException {
     try {
       writer.writeStartElement(FormatXml.ATOM_ID);
@@ -93,14 +105,14 @@ public class AtomFeedProvider {
 
       writer.writeStartElement(FormatXml.ATOM_TITLE);
       writer.writeAttribute(FormatXml.M_TYPE, "text");
-        writer.writeCharacters(eia.getEntitySetName());
+      writer.writeCharacters(eia.getEntitySetName());
       writer.writeEndElement();
 
       writer.writeStartElement(FormatXml.ATOM_UPDATED);
 
       Object updateDate = null;
       EdmFacets updateFacets = null;
-        updateDate = new Date();
+      updateDate = new Date();
       writer.writeCharacters(EdmDateTimeOffset.getInstance().valueToString(updateDate, EdmLiteralKind.DEFAULT, updateFacets));
       writer.writeEndElement();
 
