@@ -37,8 +37,8 @@ public class FeedTest extends AbstractRefTest {
     HttpResponse response = callUri("Employees('3')/ne_Room/nr_Employees()");
     checkMediaType(response, APPLICATION_ATOM_XML_FEED);
     String body = getBody(response);
-    // assertTrue(body.contains("feed"));
-    // assertTrue(body.contains("entry"));
+    assertTrue(body.contains("feed"));
+    assertTrue(body.contains("entry"));
     // count <d:EmployeeName> = 4
     assertTrue(body.contains(EMPLOYEE_2_NAME));
     assertTrue(body.contains(EMPLOYEE_3_NAME));
@@ -63,8 +63,8 @@ public class FeedTest extends AbstractRefTest {
     HttpResponse response = callUri("Employees?$skip=1&$top=1");
     checkMediaType(response, APPLICATION_ATOM_XML_FEED);
     String body = getBody(response);
-    // assertTrue(body.contains("feed"));
-    // assertTrue(body.contains("entry"));
+    assertTrue(body.contains("feed"));
+    assertTrue(body.contains("entry"));
     // count <d:EmployeeName> = 1
     assertTrue(body.contains(EMPLOYEE_2_NAME));
 
