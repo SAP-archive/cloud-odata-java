@@ -10,6 +10,7 @@ import org.apache.http.client.methods.HttpGet;
 
 import com.sap.core.odata.api.edm.provider.EdmProvider;
 import com.sap.core.odata.api.enums.HttpStatusCodes;
+import com.sap.core.odata.api.enums.MediaType;
 import com.sap.core.odata.api.processor.ODataSingleProcessor;
 import com.sap.core.odata.api.service.ODataSingleProcessorService;
 import com.sap.core.odata.ref.edm.ScenarioEdmProvider;
@@ -25,12 +26,6 @@ import com.sap.core.odata.testutils.helper.StringHelper;
  */
 public class AbstractRefTest extends AbstractFitTest {
 
-  protected static final String APPLICATION_ATOM_XML = "application/atom+xml";
-  protected static final String APPLICATION_ATOM_XML_ENTRY = "application/atom+xml;type=entry";
-  protected static final String APPLICATION_ATOM_XML_FEED = "application/atom+xml;type=feed";
-  protected static final String APPLICATION_ATOMSVC_XML = "application/atomsvc+xml";
-  protected static final String APPLICATION_XML = "application/xml";
-  protected static final String TEXT_PLAIN = "text/plain";
   protected static final String IMAGE_JPEG = "image/jpeg";
 
   protected static final String EMPLOYEE_1_NAME = "Walter Winter";
@@ -98,6 +93,10 @@ public class AbstractRefTest extends AbstractFitTest {
     assertNotNull(response.getEntity());
     assertNotNull(response.getEntity().getContent());
     return StringHelper.inputStreamToString(response.getEntity().getContent());
+  }
+
+  protected void checkMediaType(final HttpResponse response, final MediaType expectedMediaType) {
+    assertEquals(expectedMediaType.toString(), response.getFirstHeader(HttpHeaders.CONTENT_TYPE).getValue());
   }
 
   protected void checkMediaType(final HttpResponse response, final String expectedMediaType) {
