@@ -29,7 +29,11 @@ public abstract class ODataEntityProvider {
 
   public abstract ODataEntityContent writeServiceDocument(Edm edm, String serviceRoot) throws ODataEntityProviderException;
 
-  public abstract ODataEntityContent writeFeed(GetEntitySetView entitySetView, List<Map<String, Object>> data, String mediaResourceMimeType) throws ODataEntityProviderException;
+  public ODataEntityContent writeFeed(GetEntitySetView entitySetView, List<Map<String, Object>> data, String mediaResourceMimeType) throws ODataEntityProviderException{
+    return writeFeed(entitySetView, data, mediaResourceMimeType, -1, null);
+  }
+
+  public abstract ODataEntityContent writeFeed(GetEntitySetView entitySetView, List<Map<String, Object>> data, String mediaResourceMimeType, int inlinecount, String nextSkiptoken) throws ODataEntityProviderException;
 
   public abstract ODataEntityContent writeEntry(EdmEntitySet entitySet, Map<String, Object> data, String mediaResourceMimeType) throws ODataEntityProviderException;
 

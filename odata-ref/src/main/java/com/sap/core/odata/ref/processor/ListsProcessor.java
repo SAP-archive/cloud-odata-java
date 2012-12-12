@@ -106,7 +106,7 @@ public class ListsProcessor extends ODataSingleProcessor {
 
     return ODataResponse
         .status(HttpStatusCodes.OK)
-        .entity(ODataEntityProvider.create(format, getContext()).writeFeed(uriParserResultView, values, null))
+        .entity(ODataEntityProvider.create(format, getContext()).writeFeed(uriParserResultView, values, null, values.size(), null))
         .build();
   }
 

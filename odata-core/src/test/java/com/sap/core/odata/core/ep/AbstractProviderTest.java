@@ -88,9 +88,11 @@ public abstract class AbstractProviderTest {
     this.roomData.put("Name", "Neu Schwanstein");
     this.roomData.put("Seats", new Integer(20));
     this.roomData.put("Version", new Integer(3));
-    
+  }
+
+  protected void initializeRoomData(int count) {
     this.roomsData = new ArrayList<Map<String, Object>>();
-    for (int i= 1; i <= 103; i++) {
+    for (int i = 1; i <= count; i++) {
       HashMap<String, Object> tmp = new HashMap<String, Object>();
       tmp.put("Id", "" + i);
       tmp.put("Name", "Neu Schwanstein" + i);
@@ -98,7 +100,6 @@ public abstract class AbstractProviderTest {
       tmp.put("Version", new Integer(3));
       this.roomsData.add(tmp);
     }
-    
   }
 
   @Before

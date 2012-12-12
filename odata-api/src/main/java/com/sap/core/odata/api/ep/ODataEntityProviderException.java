@@ -14,7 +14,9 @@ public class ODataEntityProviderException extends ODataMessageException {
 
   public static final MessageReference MISSING_PROPERTY = createMessageReference(ODataEntityProviderException.class, "MISSING_PROPERTY");
 
-  public static final MessageReference UNSUPPORTED_PROPERTY_TYPE = createMessageReference(ODataEntityProviderException.class, "UNSUPPORTED_PROPERTY_TYPE");;
+  public static final MessageReference UNSUPPORTED_PROPERTY_TYPE = createMessageReference(ODataEntityProviderException.class, "UNSUPPORTED_PROPERTY_TYPE");
+
+  public static final MessageReference INLINECOUNT_INVALID = createMessageReference(ODataEntityProviderException.class, "INLINECOUNT_INVALID");;
 
   public ODataEntityProviderException(MessageReference messageReference) {
     super(messageReference);

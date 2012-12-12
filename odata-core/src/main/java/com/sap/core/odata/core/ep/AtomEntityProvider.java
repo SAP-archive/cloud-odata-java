@@ -143,20 +143,20 @@ public class AtomEntityProvider extends ODataEntityProvider {
   }
 
   @Override
-  public ODataEntityContent writeFeed(GetEntitySetView entitySetView, List<Map<String, Object>> data, String mediaResourceMimeType) throws ODataEntityProviderException {
+  public ODataEntityContent writeFeed(GetEntitySetView entitySetView, List<Map<String, Object>> data, String mediaResourceMimeType, int inlinecount, String nextSkiptoken) throws ODataEntityProviderException {
     OutputStream outStream = null;
     ODataEntityContentImpl content = new ODataEntityContentImpl();
 
     try {
       EdmEntitySet entitySet = entitySetView.getTargetEntitySet();
-      
+
       AtomFeedProvider as = new AtomFeedProvider(this.getContext());
       EntityInfoAggregator eia = EntityInfoAggregator.create(entitySet);
 
       CircleStreamBuffer csb = new CircleStreamBuffer();
       outStream = csb.getOutputStream();
       XMLStreamWriter writer = XMLOutputFactory.newInstance().createXMLStreamWriter(outStream, "utf-8");
-      as.append(writer, eia, data, entitySetView, mediaResourceMimeType);
+      as.append(writer, eia, data, entitySetView, mediaResourceMimeType, inlinecount, nextSkiptoken);
 
       writer.flush();
       outStream.flush();
@@ -177,19 +177,19 @@ public class AtomEntityProvider extends ODataEntityProvider {
         }
       }
     }
- }
+  }
 
   @Override
   public ODataEntityContent writeText(EdmProperty edmProperty, Object value) throws ODataEntityProviderException {
     ODataEntityContentImpl content = new ODataEntityContentImpl();
 
     try {
-      Map<?, ?> mappedData = Collections.emptyMap();
+      Map<?, ?> mappedData = Collections.emptyMap(); 
 
       if (value instanceof Map) {
         mappedData = (Map<?, ?>) value;
         value = mappedData.get(edmProperty.getName());
-      } 
+      }
 
       EdmSimpleType type = (EdmSimpleType) edmProperty.getType();
       String stringValue = type.valueToString(value, EdmLiteralKind.DEFAULT, edmProperty.getFacets());
@@ -221,7 +221,7 @@ public class AtomEntityProvider extends ODataEntityProvider {
   }
 
   @Override
-  public ODataEntityContent writeMediaResource(String mimeType, byte [] data) throws ODataEntityProviderException {
+  public ODataEntityContent writeMediaResource(String mimeType, byte[] data) throws ODataEntityProviderException {
     ODataEntityContentImpl content = new ODataEntityContentImpl();
     try {
       ByteArrayInputStream bais = new ByteArrayInputStream(data);
