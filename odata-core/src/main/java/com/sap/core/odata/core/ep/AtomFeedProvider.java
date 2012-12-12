@@ -16,6 +16,7 @@ import com.sap.core.odata.api.processor.ODataContext;
 import com.sap.core.odata.api.uri.resultviews.GetEntitySetView;
 import com.sap.core.odata.core.edm.EdmDateTimeOffset;
 import com.sap.core.odata.core.ep.aggregator.EntityInfoAggregator;
+import com.sap.core.odata.core.uri.SystemQueryOption;
 
 public class AtomFeedProvider {
 
@@ -25,7 +26,7 @@ public class AtomFeedProvider {
     this.context = context;
   }
 
-  public void append(XMLStreamWriter writer, EntityInfoAggregator eia, List<Map<String, Object>> data, GetEntitySetView entitySetView, String mediaResourceMimeType) throws ODataEntityProviderException {
+  public void append(XMLStreamWriter writer, EntityInfoAggregator eia, List<Map<String, Object>> data, GetEntitySetView entitySetView, String mediaResourceMimeType, int inlinecount, String nextSkiptoken) throws ODataEntityProviderException {
     try {
       writer.writeStartElement("feed");
 
@@ -38,15 +39,32 @@ public class AtomFeedProvider {
       appendAtomMandatoryParts(writer, eia);
       appendAtomSelfLink(writer, eia);
       if (entitySetView.getInlineCount() == InlineCount.ALLPAGES) {
-        appendInlineCount(writer, data.size());
+        appendInlineCount(writer, inlinecount);
       }
 
       appendEntries(writer, eia, data, mediaResourceMimeType);
 
+      if (nextSkiptoken != null) {
+        appendNextLink(writer, eia, nextSkiptoken);
+      }
+      
       writer.writeEndElement();
     } catch (Exception e) {
       throw new ODataEntityProviderException(ODataEntityProviderException.COMMON, e);
     }
+  }
+
+  private void appendNextLink(XMLStreamWriter writer, EntityInfoAggregator eia, String nextSkiptoken) throws ODataEntityProviderException {
+   try{
+    String nextLink = createNextLink(eia, nextSkiptoken);
+
+    writer.writeStartElement(FormatXml.ATOM_LINK);
+    writer.writeAttribute(FormatXml.ATOM_HREF, nextLink);
+    writer.writeAttribute(FormatXml.ATOM_REL, "next");
+    writer.writeEndElement();
+  } catch (Exception e) {
+    throw new ODataEntityProviderException(ODataEntityProviderException.COMMON, e);
+  }
   }
 
   private void appendEntries(XMLStreamWriter writer, EntityInfoAggregator eia, List<Map<String, Object>> data, String mediaResourceMimeType) throws ODataEntityProviderException {
@@ -59,10 +77,15 @@ public class AtomFeedProvider {
 
   }
 
-  private void appendInlineCount(XMLStreamWriter writer, int size) throws ODataEntityProviderException {
+  private void appendInlineCount(XMLStreamWriter writer, int inlinecount) throws ODataEntityProviderException {
+
+    if (inlinecount < 0) {
+      throw new ODataEntityProviderException(ODataEntityProviderException.INLINECOUNT_INVALID);
+    }
+
     try {
       writer.writeStartElement(Edm.NAMESPACE_M_2007_08, FormatXml.M_COUNT);
-      writer.writeCharacters(String.valueOf(size));
+      writer.writeCharacters(String.valueOf(inlinecount));
       writer.writeEndElement();
     } catch (Exception e) {
       throw new ODataEntityProviderException(ODataEntityProviderException.COMMON, e);
@@ -78,6 +101,17 @@ public class AtomFeedProvider {
       writer.writeAttribute(FormatXml.ATOM_REL, "self");
       writer.writeAttribute(FormatXml.ATOM_TITLE, eia.getEntitySetName());
       writer.writeEndElement();
+    } catch (Exception e) {
+      throw new ODataEntityProviderException(ODataEntityProviderException.COMMON, e);
+    }
+  }
+
+  private String createNextLink(EntityInfoAggregator eia, String nextSkiptoken) throws ODataEntityProviderException {
+    try {
+      String query = SystemQueryOption.$skiptoken + "=" + nextSkiptoken;
+      String path = createSelfLink(eia);
+      URI uri = new URI(null, null, null, -1, path, query, null);
+      return uri.toASCIIString();
     } catch (Exception e) {
       throw new ODataEntityProviderException(ODataEntityProviderException.COMMON, e);
     }
