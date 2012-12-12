@@ -10,6 +10,8 @@ import org.apache.http.HttpHeaders;
 import org.apache.http.HttpResponse;
 import org.junit.Test;
 
+import com.sap.core.odata.api.enums.MediaType;
+
 /**
  * Tests employing the reference scenario reading function-import output in XML format
  * @author SAP AG
@@ -21,26 +23,26 @@ public class FunctionImportTest extends AbstractRefTest {
     HttpResponse response;
 
     response = callUri("EmployeeSearch('1')/ne_Room/Id/$value?q='alter'");
-    checkMediaType(response, TEXT_PLAIN);
+    checkMediaType(response, MediaType.TEXT_PLAIN);
     // checkEtag(response, "W/\"1\"");
     assertEquals("1", getBody(response));
 
     assertFalse(getBody(callUri("EmployeeSearch?q='-'")).contains("entry"));
 
     response = callUri("AllLocations");
-    checkMediaType(response, APPLICATION_XML);
+    checkMediaType(response, MediaType.APPLICATION_XML);
     assertTrue(getBody(response).contains(CITY_2_NAME));
 
     response = callUri("AllUsedRoomIds");
-    checkMediaType(response, APPLICATION_XML);
+    checkMediaType(response, MediaType.APPLICATION_XML);
     assertTrue(getBody(response).contains("3"));
 
     response = callUri("MaximalAge");
-    checkMediaType(response, APPLICATION_XML);
+    checkMediaType(response, MediaType.APPLICATION_XML);
     assertTrue(getBody(response).contains(EMPLOYEE_3_AGE));
 
     response = callUri("MostCommonLocation");
-    checkMediaType(response, APPLICATION_XML);
+    checkMediaType(response, MediaType.APPLICATION_XML);
     assertTrue(getBody(response).contains(CITY_2_NAME));
 
     checkUri("ManagerPhoto?Id='1'");
@@ -51,11 +53,11 @@ public class FunctionImportTest extends AbstractRefTest {
     assertNotNull(getBody(response));
 
     response = callUri("OldestEmployee");
-    checkMediaType(response, APPLICATION_ATOM_XML_ENTRY);
+    checkMediaType(response, MediaType.APPLICATION_ATOM_XML_ENTRY);
     assertTrue(getBody(response).contains(EMPLOYEE_3_NAME));
 
     response = callUri("OldestEmployee?$format=xml");
-    checkMediaType(response, APPLICATION_XML);
+    checkMediaType(response, MediaType.APPLICATION_XML);
     assertTrue(getBody(response).contains(EMPLOYEE_3_NAME));
 
     badRequest("AllLocations/$count");
