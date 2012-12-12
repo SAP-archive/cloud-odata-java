@@ -81,11 +81,11 @@ public class AtomFeedProviderTest extends AbstractProviderTest {
     String xmlString = StringHelper.inputStreamToString(content.getContent());
     return xmlString;
   }
-  
+
   @Test
   public void testInlineCountAllpages() throws Exception {
     when(view.getInlineCount()).thenReturn(InlineCount.ALLPAGES);
-    
+
     ODataEntityProvider ser = createAtomEntityProvider();
     ODataEntityContent content = ser.writeFeed(view, this.roomsData, "mediatype");
     String xmlString = verifyContent(content);
@@ -97,12 +97,25 @@ public class AtomFeedProviderTest extends AbstractProviderTest {
   @Test
   public void testInlineCountNone() throws Exception {
     when(view.getInlineCount()).thenReturn(InlineCount.NONE);
-    
+
     ODataEntityProvider ser = createAtomEntityProvider();
     ODataEntityContent content = ser.writeFeed(view, this.roomsData, "mediatype");
     String xmlString = verifyContent(content);
 
     assertXpathNotExists("/a:feed/m:count", xmlString);
+  }
+
+  @Test
+  public void testEntries() throws Exception {
+    ODataEntityProvider ser = createAtomEntityProvider();
+    ODataEntityContent content = ser.writeFeed(view, this.roomsData, "mediatype");
+    String xmlString = verifyContent(content);
+
+    System.out.println(xmlString);
+    
+    assertXpathExists("/a:feed/a:entry[1]", xmlString);
+    assertXpathExists("/a:feed/a:entry[2]", xmlString);
+    assertXpathExists("/a:feed/a:entry[103]", xmlString);
   }
 
 }
