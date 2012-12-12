@@ -92,11 +92,6 @@
 			<artifactId>javax.ws.rs-api</artifactId>
 			<version>${jax.ws.rs.version}</version>
 		</dependency>
-		<dependency>
-			<groupId>org.apache.commons</groupId>
-			<artifactId>commons-lang3</artifactId>
-			<version>${commonslang.version}</version>
-		</dependency>
 		
 		<dependency>
 			<groupId>com.sap.core.odata</groupId>

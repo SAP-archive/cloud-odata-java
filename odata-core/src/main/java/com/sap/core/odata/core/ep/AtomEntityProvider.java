@@ -26,6 +26,7 @@ import com.sap.core.odata.api.ep.ODataEntityContent;
 import com.sap.core.odata.api.ep.ODataEntityProvider;
 import com.sap.core.odata.api.ep.ODataEntityProviderException;
 import com.sap.core.odata.api.processor.ODataContext;
+import com.sap.core.odata.api.uri.resultviews.GetEntitySetView;
 import com.sap.core.odata.core.ep.aggregator.EntityInfoAggregator;
 import com.sap.core.odata.core.ep.aggregator.EntityPropertyInfo;
 import com.sap.core.odata.core.ep.util.CircleStreamBuffer;
@@ -142,9 +143,41 @@ public class AtomEntityProvider extends ODataEntityProvider {
   }
 
   @Override
-  public ODataEntityContent writeFeed(EdmEntitySet entitySet, List<Map<String, Object>> data, String mediaResourceMimeType) throws ODataEntityProviderException {
-    return null;
-  }
+  public ODataEntityContent writeFeed(GetEntitySetView entitySetView, List<Map<String, Object>> data, String mediaResourceMimeType) throws ODataEntityProviderException {
+    OutputStream outStream = null;
+    ODataEntityContentImpl content = new ODataEntityContentImpl();
+
+    try {
+      EdmEntitySet entitySet = entitySetView.getTargetEntitySet();
+      
+      AtomFeedProvider as = new AtomFeedProvider(this.getContext());
+      EntityInfoAggregator eia = EntityInfoAggregator.create(entitySet);
+
+      CircleStreamBuffer csb = new CircleStreamBuffer();
+      outStream = csb.getOutputStream();
+      XMLStreamWriter writer = XMLOutputFactory.newInstance().createXMLStreamWriter(outStream, "utf-8");
+      as.append(writer, eia, data, entitySetView, mediaResourceMimeType);
+
+      writer.flush();
+      outStream.flush();
+      outStream.close();
+
+      content.setContentStream(csb.getInputStream());
+      content.setContentHeader(MediaType.APPLICATION_ATOM_XML_FEED.toString());
+      return content;
+    } catch (Exception e) {
+      throw new ODataEntityProviderException(ODataEntityProviderException.COMMON, e);
+    } finally {
+      if (outStream != null) {
+        try {
+          outStream.close();
+        } catch (IOException e) {
+          // don't throw in finally!  
+          LOG.error(e.getLocalizedMessage(), e);
+        }
+      }
+    }
+ }
 
   @Override
   public ODataEntityContent writeText(EdmProperty edmProperty, Object value) throws ODataEntityProviderException {
