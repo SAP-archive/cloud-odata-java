@@ -68,6 +68,7 @@ import com.sap.core.odata.api.uri.resultviews.GetSimplePropertyView;
 public class ListsProcessor extends ODataSingleProcessor {
 
   private static final String CONTENT_TYPE = "Content-Type";
+  private static final int SERVER_PAGING_SIZE = 100;
 
   private final ListsDataSource dataSource;
 
@@ -85,8 +86,9 @@ public class ListsProcessor extends ODataSingleProcessor {
         mapFunctionParameters(uriParserResultView.getFunctionImportParameters()),
         uriParserResultView.getNavigationSegments()));
 
+    final EdmEntitySet entitySet = uriParserResultView.getTargetEntitySet();
     final Integer count = applySystemQueryOptions(
-        uriParserResultView.getTargetEntitySet(),
+        entitySet,
         data,
         uriParserResultView.getInlineCount(),
         uriParserResultView.getFilter(),
@@ -95,18 +97,39 @@ public class ListsProcessor extends ODataSingleProcessor {
         uriParserResultView.getSkip(),
         uriParserResultView.getTop());
 
+    // Limit the number of returned entities and provide a "next" link
+    // if there are further entities.
+    // Almost all system query options in the current request must be carried
+    // over to the URI for the "next" link, with the exception of $skiptoken
+    // and $skip, but this is currently not done.
+    String nextSkipToken = null;
+    if (data.size() > SERVER_PAGING_SIZE
+        && uriParserResultView.getFilter() == null
+        && uriParserResultView.getOrderBy() == null
+        && uriParserResultView.getExpand().isEmpty()
+        && uriParserResultView.getSelect().isEmpty()) {
+      if (uriParserResultView.getOrderBy() == null
+          && uriParserResultView.getSkipToken() == null
+          && uriParserResultView.getSkip() == null
+          && uriParserResultView.getTop() == null) // applySystemQueryOptions did not sort
+        sortInDefaultOrder(entitySet, data);
+      nextSkipToken = getSkipToken(entitySet, data.get(SERVER_PAGING_SIZE));
+      while (data.size() > SERVER_PAGING_SIZE)
+        data.remove(SERVER_PAGING_SIZE);
+    }
+
     Format format = uriParserResultView.getFormat();
     if (format == null)
       format = Format.ATOM;
 
-    final EdmEntityType entityType = uriParserResultView.getTargetEntitySet().getEntityType();
+    final EdmEntityType entityType = entitySet.getEntityType();
     List<Map<String, Object>> values = new ArrayList<Map<String, Object>>();
     for (final Object entryData : data)
       values.add(getStructuralTypeValueMap(entryData, entityType));
 
     return ODataResponse
         .status(HttpStatusCodes.OK)
-        .entity(ODataEntityProvider.create(format, getContext()).writeFeed(uriParserResultView, values, null, count == null ? 0 : count, null))
+        .entity(ODataEntityProvider.create(format, getContext()).writeFeed(uriParserResultView, values, null, count == null ? 0 : count, nextSkipToken))
         .build();
   }
 
@@ -441,7 +464,7 @@ public class ListsProcessor extends ODataSingleProcessor {
     return data;
   }
 
-  private <T> Integer applySystemQueryOptions(final EdmEntitySet targetEntitySet, List<T> data, final InlineCount inlineCount, final FilterExpression filter, final OrderByExpression orderBy, final String skipToken, final Integer skip, final Integer top) throws ODataException {
+  private <T> Integer applySystemQueryOptions(final EdmEntitySet entitySet, List<T> data, final InlineCount inlineCount, final FilterExpression filter, final OrderByExpression orderBy, final String skipToken, final Integer skip, final Integer top) throws ODataException {
     if (filter != null)
       // Remove all elements the filter does not apply for.
       // A for-each loop would not work with "remove", see Java documentation.
@@ -454,19 +477,10 @@ public class ListsProcessor extends ODataSingleProcessor {
     if (orderBy != null)
       throw new ODataNotImplementedException();
     else if (skipToken != null || skip != null || top != null)
-      Collections.sort(data, new Comparator<T>() {
-        @Override
-        public int compare(T entity1, T entity2) {
-          try {
-            return getSkipToken(entity1, targetEntitySet).compareTo(getSkipToken(entity2, targetEntitySet));
-          } catch (ODataException e) {
-            return 0;
-          }
-        }
-      });
+      sortInDefaultOrder(entitySet, data);
 
     if (skipToken != null)
-      while (!data.isEmpty() && !getSkipToken(data.get(0), targetEntitySet).equals(skipToken))
+      while (!data.isEmpty() && !getSkipToken(entitySet, data.get(0)).equals(skipToken))
         data.remove(0);
 
     if (skip != null)
@@ -481,6 +495,19 @@ public class ListsProcessor extends ODataSingleProcessor {
         data.remove(top.intValue());
 
     return count;
+  }
+
+  private <T> void sortInDefaultOrder(final EdmEntitySet entitySet, List<T> data) {
+    Collections.sort(data, new Comparator<T>() {
+      @Override
+      public int compare(final T entity1, final T entity2) {
+        try {
+          return getSkipToken(entitySet, entity1).compareTo(getSkipToken(entitySet, entity2));
+        } catch (ODataException e) {
+          return 0;
+        }
+      }
+    });
   }
 
   private <T> boolean appliesFilter(final T data, final FilterExpression filter) throws ODataException {
@@ -665,7 +692,7 @@ public class ListsProcessor extends ODataSingleProcessor {
     }
   }
 
-  private <T> String getSkipToken(final T data, final EdmEntitySet entitySet) throws ODataException {
+  private <T> String getSkipToken(final EdmEntitySet entitySet, final T data) throws ODataException {
     List<EdmProperty> keyProperties = entitySet.getEntityType().getKeyProperties();
     // The key properties come from a hash map without predictable order.
     // Since this implementation builds the skip token by concatenating the values

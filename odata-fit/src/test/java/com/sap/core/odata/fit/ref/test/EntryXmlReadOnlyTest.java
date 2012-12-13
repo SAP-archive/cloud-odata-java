@@ -33,12 +33,12 @@ public class EntryXmlReadOnlyTest extends AbstractRefTest {
 
     response = callUri("Rooms('1')");
     checkMediaType(response, MediaType.APPLICATION_ATOM_XML_ENTRY);
-    // checkEtag(response, "W/\"1\"");
+    checkEtag(response, "W/\"1\"");
     assertTrue(getBody(response).contains(">1</"));
 
     response = callUri("Rooms('1')?$expand=nr_Employees");
     checkMediaType(response, MediaType.APPLICATION_ATOM_XML_ENTRY);
-//    assertNull(response.getFirstHeader(HttpHeaders.ETAG));
+    // assertNull(response.getFirstHeader(HttpHeaders.ETAG));
     assertFalse(getBody(response).isEmpty());
     // assertTrue(getBody(response).contains(EMPLOYEE_1_NAME));
 

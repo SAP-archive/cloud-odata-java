@@ -104,6 +104,7 @@ public class AbstractRefTest extends AbstractFitTest {
   }
 
   protected void checkEtag(final HttpResponse response, final String expectedEtag) {
+    assertNotNull(response.getFirstHeader(HttpHeaders.ETAG));
     final String entityTag = response.getFirstHeader(HttpHeaders.ETAG).getValue();
     assertNotNull(entityTag);
     assertEquals(expectedEtag, entityTag);
