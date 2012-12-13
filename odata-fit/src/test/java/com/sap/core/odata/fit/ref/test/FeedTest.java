@@ -1,5 +1,6 @@
 package com.sap.core.odata.fit.ref.test;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
@@ -13,6 +14,13 @@ import com.sap.core.odata.api.enums.MediaType;
  * @author SAP AG
  */
 public class FeedTest extends AbstractRefTest {
+
+  private void checkCount(final String content, final String searchString, final int expectedCount) {
+    int count = -1;
+    for (int index = -1; index >= 0 || count == -1; index = content.indexOf(searchString, index + 1))
+      count++;
+    assertEquals(expectedCount, count);
+  }
 
   @Test
   public void feed() throws Exception {
@@ -41,7 +49,7 @@ public class FeedTest extends AbstractRefTest {
     String body = getBody(response);
     assertTrue(body.contains("feed"));
     assertTrue(body.contains("entry"));
-    // count <d:EmployeeName> = 4
+    checkCount(body, "<d:EmployeeName>", 4);
     assertTrue(body.contains(EMPLOYEE_2_NAME));
     assertTrue(body.contains(EMPLOYEE_3_NAME));
     assertTrue(body.contains(EMPLOYEE_4_NAME));
@@ -51,13 +59,13 @@ public class FeedTest extends AbstractRefTest {
 
     response = callUri("Rooms('2')/nr_Employees");
     checkMediaType(response, MediaType.APPLICATION_ATOM_XML_FEED);
-    assertFalse(getBody(response).isEmpty());
-    // count <d:EmployeeName> = 4
+    checkCount(getBody(response), "<d:EmployeeName>", 4);
 
     // response = callUri("Employees('2')/ne_Team/nt_Employees?$orderby=Age&$top=1");
     // checkMediaType(response, APPLICATION_ATOM_XML_FEED);
-    // count <d:EmployeeName> = 1
-    // assertTrue(getBody(response).contains(EMPLOYEE_2_NAME));
+    // body = getBody(response);
+    // checkCount(body, "<d:EmployeeName>", 1);
+    // assertTrue(body.contains(EMPLOYEE_2_NAME));
   }
 
   @Test
@@ -67,7 +75,7 @@ public class FeedTest extends AbstractRefTest {
     String body = getBody(response);
     assertTrue(body.contains("feed"));
     assertTrue(body.contains("entry"));
-    // count <d:EmployeeName> = 1
+    checkCount(body, "<d:EmployeeName>", 1);
     assertTrue(body.contains(EMPLOYEE_2_NAME));
 
     response = callUri("Teams()?$skip=4");
@@ -84,7 +92,7 @@ public class FeedTest extends AbstractRefTest {
     HttpResponse response = callUri("Employees?$skiptoken=6");
     checkMediaType(response, MediaType.APPLICATION_ATOM_XML_FEED);
     String body = getBody(response);
-    // count <d:EmployeeName> = 1
+    checkCount(body, "<d:EmployeeName>", 1);
     assertTrue(body.contains(EMPLOYEE_6_NAME));
     assertFalse(body.contains(EMPLOYEE_1_NAME));
 
@@ -92,7 +100,7 @@ public class FeedTest extends AbstractRefTest {
     checkMediaType(response, MediaType.APPLICATION_ATOM_XML_FEED);
     body = getBody(response);
     assertFalse(body.isEmpty());
-    // count <d:Name> = 1
+    checkCount(body, "<d:Name>", 1);
   }
 
   @Test
@@ -100,7 +108,7 @@ public class FeedTest extends AbstractRefTest {
     HttpResponse response = callUri("Managers()?$inlinecount=allpages");
     checkMediaType(response, MediaType.APPLICATION_ATOM_XML_FEED);
     String body = getBody(response);
-    // count </entry> = 2
+    checkCount(body, "</entry>", 2);
     assertTrue(body.contains("<m:count>2</m:count>"));
 
     response = callUri("Employees()?$top=3&$inlinecount=none");
@@ -121,13 +129,13 @@ public class FeedTest extends AbstractRefTest {
     checkMediaType(response, MediaType.APPLICATION_ATOM_XML_FEED);
     String body = getBody(response);
     assertFalse(body.isEmpty());
-    // count </entry> = 1
+    // checkCount(body, "</entry>", 1);
     // assertTrue(body.contains(EMPLOYEE_5_NAME));
 
     // response = callUri("Employees?$filter=EntryDate%20gt%20datetime%272003-12-24T00%3A00%3A00%27");
     // checkMediaType(response, APPLICATION_ATOM_XML_FEED);
     // body = getBody(response);
-    // count </entry> = 2
+    // checkCount(body, "</entry>", 2);
     // assertTrue(body.contains(EMPLOYEE_6_NAME));
 
     response = callUri("Buildings?$filter=Image%20eq%20X%2700%27");
@@ -137,19 +145,19 @@ public class FeedTest extends AbstractRefTest {
     response = callUri("Employees?$filter=day(EntryDate)%20eq%20(Age%20mod%208%20add%201)");
     checkMediaType(response, MediaType.APPLICATION_ATOM_XML_FEED);
     body = getBody(response);
-    // count </entry> = 1
+    // checkCount(body, "</entry>", 1);
     // assertTrue(body.contains(EMPLOYEE_2_NAME));
 
     response = callUri("Employees?$filter=indexof(ImageUrl,EmployeeId)%20mod%20(Age%20sub%2028)%20eq%20month(EntryDate)%20mul%203%20div%2027%20sub%201");
     checkMediaType(response, MediaType.APPLICATION_ATOM_XML_FEED);
     body = getBody(response);
-    // count </entry> = 1
+    // checkCount(body, "</entry>", 1);
     // assertTrue(body.contains(EMPLOYEE_4_NAME));
 
     response = callUri("Employees?$filter=not(Age%20sub%2030%20ge%20-hour(EntryDate))");
     checkMediaType(response, MediaType.APPLICATION_ATOM_XML_FEED);
     body = getBody(response);
-    // count </entry> = 1
+    // checkCount(body, "</entry>", 1);
     // assertTrue(body.contains(EMPLOYEE_6_NAME));
 
     response = callUri("Employees('1')/ne_Room/nr_Employees?$filter=EmployeeId%20eq%20'1'");
@@ -163,19 +171,19 @@ public class FeedTest extends AbstractRefTest {
     // response = callUri("Employees?$filter=Location/City/PostalCode%20lt%20%2769150%27");
     // checkMediaType(response, APPLICATION_ATOM_XML_FEED);
     // body = getBody(response);
-    // count </entry> = 1
+    // checkCount(body, "</entry>", 1);
     // assertTrue(body.contains("69124"));
 
     // response = callUri("Employees?$filter=length(trim(Location/City/CityName))%20gt%209");
     // checkMediaType(response, APPLICATION_ATOM_XML_FEED);
     // body = getBody(response);
-    // count </entry> = 1
+    // checkCount(body, "</entry>", 1);
     // assertFalse(body.contains(CITY_2_NAME));
 
     // response = callUri("Employees('2')?$filter=Age%20eq%2032");
     // checkMediaType(response, APPLICATION_ATOM_XML_ENTRY);
     // body = getBody(response);
-    // count </entry> = 1
+    // checkCount(body, "</entry>", 1);
     // assertFalse(body.contains(EMPLOYEE_2_NAME));
 
     // checkUri("Employees('1')/ne_Room/nr_Employees('1')?$filter=EmployeeId%20eq%20'1'");

@@ -90,8 +90,8 @@ public class ListsProcessor extends ODataSingleProcessor {
     final Integer count = applySystemQueryOptions(
         entitySet,
         data,
-        uriParserResultView.getInlineCount(),
         uriParserResultView.getFilter(),
+        uriParserResultView.getInlineCount(),
         uriParserResultView.getOrderBy(),
         uriParserResultView.getSkipToken(),
         uriParserResultView.getSkip(),
@@ -105,7 +105,9 @@ public class ListsProcessor extends ODataSingleProcessor {
     String nextSkipToken = null;
     if (data.size() > SERVER_PAGING_SIZE
         && uriParserResultView.getFilter() == null
+        && uriParserResultView.getInlineCount() == null
         && uriParserResultView.getOrderBy() == null
+        && uriParserResultView.getTop() == null
         && uriParserResultView.getExpand().isEmpty()
         && uriParserResultView.getSelect().isEmpty()) {
       if (uriParserResultView.getOrderBy() == null
@@ -146,8 +148,8 @@ public class ListsProcessor extends ODataSingleProcessor {
     applySystemQueryOptions(
         uriParserResultView.getTargetEntitySet(),
         data,
-        null,
         uriParserResultView.getFilter(),
+        null,
         null,
         null,
         uriParserResultView.getSkip(),
@@ -173,8 +175,8 @@ public class ListsProcessor extends ODataSingleProcessor {
     final Integer count = applySystemQueryOptions(
         uriParserResultView.getTargetEntitySet(),
         data,
-        uriParserResultView.getInlineCount(),
         uriParserResultView.getFilter(),
+        uriParserResultView.getInlineCount(),
         // uriParserResultView.getOrderBy(),
         null,
         uriParserResultView.getSkipToken(),
@@ -464,7 +466,7 @@ public class ListsProcessor extends ODataSingleProcessor {
     return data;
   }
 
-  private <T> Integer applySystemQueryOptions(final EdmEntitySet entitySet, List<T> data, final InlineCount inlineCount, final FilterExpression filter, final OrderByExpression orderBy, final String skipToken, final Integer skip, final Integer top) throws ODataException {
+  private <T> Integer applySystemQueryOptions(final EdmEntitySet entitySet, List<T> data, final FilterExpression filter, final InlineCount inlineCount, final OrderByExpression orderBy, final String skipToken, final Integer skip, final Integer top) throws ODataException {
     if (filter != null)
       // Remove all elements the filter does not apply for.
       // A for-each loop would not work with "remove", see Java documentation.
