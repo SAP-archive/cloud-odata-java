@@ -33,6 +33,8 @@ public class EntityInfoAggregator {
   private Map<String, NavigationPropertyInfo> name2NavigationPropertyInfo = new HashMap<String, NavigationPropertyInfo>();
   private Map<String, EntityPropertyInfo> targetPath2EntityPropertyInfo = new HashMap<String, EntityPropertyInfo>();
   private List<String> keyPropertyNames = new ArrayList<String>();
+  /** list with all property names in the order based on order in {@link EdmProperty} (normally [key, entity, navigation]) */
+  private List<String> allPropertyNames = new ArrayList<String>();
   private List<String> etagPropertyNames = new ArrayList<String>();
   private boolean isDefaultEntityContainer;
   private String entitySetName;
@@ -133,8 +135,8 @@ public class EntityInfoAggregator {
   /**
    * @return unmodifiable set of all property names.
    */
-  public Set<String> getPropertyNames() {
-    return Collections.unmodifiableSet(name2EntityPropertyInfo.keySet());
+  public List<String> getPropertyNames() {
+    return Collections.unmodifiableList(allPropertyNames);
   }
 
   public Collection<EntityPropertyInfo> getPropertyInfos() {
@@ -190,7 +192,7 @@ public class EntityInfoAggregator {
       isDefaultEntityContainer = entitySet.getEntityContainer().isDefaultEntityContainer();
       entityContainerName = entitySet.getEntityContainer().getName();
       //
-      Collection<String> propertyNames = new ArrayList<String>();
+      List<String> propertyNames = new ArrayList<String>();
       propertyNames.addAll(type.getPropertyNames());
       propertyNames.addAll(type.getNavigationPropertyNames());
       //
@@ -202,12 +204,13 @@ public class EntityInfoAggregator {
     }
   }
 
-  private Map<String, EntityPropertyInfo> createInfoObjects(EdmStructuralType type, Collection<String> propertyNames) throws ODataEntityProviderException {
+  private Map<String, EntityPropertyInfo> createInfoObjects(EdmStructuralType type, List<String> propertyNames) throws ODataEntityProviderException {
     try {
       Map<String, EntityPropertyInfo> infos = new HashMap<String, EntityPropertyInfo>();
 
       for (String propertyName : propertyNames) {
         EdmTyped typed = type.getProperty(propertyName);
+        allPropertyNames.add(typed.getName());
 
         if (typed instanceof EdmProperty) {
           EdmProperty property = (EdmProperty) typed;
@@ -215,7 +218,7 @@ public class EntityInfoAggregator {
           checkETagRelevant(property);
 
           EntityPropertyInfo info = createEntityPropertyInfo(property);
-          infos.put(info.name, info);
+          infos.put(info.getName(), info);
 
           checkTargetPathInfo(property, info);
         } else if (typed instanceof EdmNavigationProperty) {
