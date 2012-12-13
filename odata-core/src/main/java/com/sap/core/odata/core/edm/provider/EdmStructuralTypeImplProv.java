@@ -2,7 +2,6 @@ package com.sap.core.odata.core.edm.provider;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -58,16 +57,11 @@ public abstract class EdmStructuralTypeImplProv extends EdmNamedImplProv impleme
   }
 
   private void buildPropertiesInternal() throws EdmException {
-    this.properties = new HashMap<String, Property>();
+    properties = new HashMap<String, Property>();
 
-    List<Property> properties = structuralType.getProperties();
-    if (properties != null) {
-      Property property;
-      for (Iterator<Property> iterator = properties.iterator(); iterator.hasNext();) {
-        property = iterator.next();
-        this.properties.put(property.getName(), property);
-      }
-    }
+    if (structuralType.getProperties() != null)
+      for (final Property property : structuralType.getProperties())
+        properties.put(property.getName(), property);
   }
 
   @Override
@@ -91,10 +85,11 @@ public abstract class EdmStructuralTypeImplProv extends EdmNamedImplProv impleme
   public List<String> getPropertyNames() throws EdmException {
     if (edmPropertyNames == null) {
       edmPropertyNames = new ArrayList<String>();
-      edmPropertyNames.addAll(properties.keySet());
-      if (edmBaseType != null) {
+      if (edmBaseType != null)
         edmPropertyNames.addAll(edmBaseType.getPropertyNames());
-      }
+      if (structuralType.getProperties() != null)
+        for (final Property property : structuralType.getProperties())
+          edmPropertyNames.add(property.getName());
     }
 
     return edmPropertyNames;
@@ -127,14 +122,13 @@ public abstract class EdmStructuralTypeImplProv extends EdmNamedImplProv impleme
   }
 
   protected EdmTyped createProperty(Property property) throws EdmException {
-    if(property instanceof SimpleProperty){
+    if (property instanceof SimpleProperty) {
       return new EdmSimplePropertyImplProv(edm, (SimpleProperty) property);
-    }else if(property instanceof ComplexProperty){
+    } else if (property instanceof ComplexProperty) {
       return new EdmComplexPropertyImplProv(edm, (ComplexProperty) property);
-    }else{
+    } else {
       throw new EdmException(EdmException.COMMON);
     }
-    
-    
+
   }
 }

@@ -2,7 +2,6 @@ package com.sap.core.odata.core.edm.provider;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -37,16 +36,11 @@ public class EdmEntityTypeImplProv extends EdmStructuralTypeImplProv implements 
   }
 
   private void buildNavigationPropertiesInternal() throws EdmException {
-    this.navigationProperties = new HashMap<String, NavigationProperty>();
+    navigationProperties = new HashMap<String, NavigationProperty>();
 
-    List<NavigationProperty> navigationProperties = entityType.getNavigationProperties();
-    if (navigationProperties != null) {
-      NavigationProperty navigationProperty;
-      for (Iterator<NavigationProperty> iterator = navigationProperties.iterator(); iterator.hasNext();) {
-        navigationProperty = iterator.next();
-        this.navigationProperties.put(navigationProperty.getName(), navigationProperty);
-      }
-    }
+    if (entityType.getNavigationProperties() != null)
+      for (final NavigationProperty navigationProperty : entityType.getNavigationProperties())
+        navigationProperties.put(navigationProperty.getName(), navigationProperty);
   }
 
   @Override
@@ -58,14 +52,12 @@ public class EdmEntityTypeImplProv extends EdmStructuralTypeImplProv implements 
 
       edmKeyPropertyNames = new ArrayList<String>();
 
-      if (entityType.getKey() != null) {
-        for (Iterator<PropertyRef> iterator = entityType.getKey().getKeys().iterator(); iterator.hasNext();) {
-          edmKeyPropertyNames.add(iterator.next().getName());
-        }
-      } else {
+      if (entityType.getKey() != null)
+        for (final PropertyRef keyProperty : entityType.getKey().getKeys())
+          edmKeyPropertyNames.add(keyProperty.getName());
+      else
         //Entity Type does not define a key
         throw new EdmException(EdmException.COMMON);
-      }
     }
 
     return edmKeyPropertyNames;
@@ -80,23 +72,17 @@ public class EdmEntityTypeImplProv extends EdmStructuralTypeImplProv implements 
 
       if (keyProperties == null) {
         keyProperties = new HashMap<String, EdmProperty>();
-        EdmProperty edmProperty;
+        edmKeyProperties = new ArrayList<EdmProperty>();
+
         for (String keyPropertyName : getKeyPropertyNames()) {
-          try {
-            edmProperty = (EdmProperty) getProperty(keyPropertyName);
-          } catch (ClassCastException e) {
-            throw new EdmException(EdmException.COMMON, e);
-          }
-          if (edmProperty != null) {
-            keyProperties.put(keyPropertyName, edmProperty);
+          final EdmTyped edmProperty = (EdmProperty) getProperty(keyPropertyName);
+          if (edmProperty != null && edmProperty instanceof EdmProperty) {
+            keyProperties.put(keyPropertyName, (EdmProperty) edmProperty);
+            edmKeyProperties.add((EdmProperty) edmProperty);
           } else {
             throw new EdmException(EdmException.COMMON);
           }
-
         }
-        edmKeyProperties = new ArrayList<EdmProperty>();
-        edmKeyProperties.addAll(keyProperties.values());
-
       }
     }
 
@@ -117,10 +103,11 @@ public class EdmEntityTypeImplProv extends EdmStructuralTypeImplProv implements 
   public List<String> getNavigationPropertyNames() throws EdmException {
     if (edmNavigationPropertyNames == null) {
       edmNavigationPropertyNames = new ArrayList<String>();
-      edmNavigationPropertyNames.addAll(navigationProperties.keySet());
-      if (edmBaseType != null) {
+      if (edmBaseType != null)
         edmNavigationPropertyNames.addAll(((EdmEntityType) edmBaseType).getNavigationPropertyNames());
-      }
+      if (entityType.getNavigationProperties() != null)
+        for (final NavigationProperty navigationProperty : entityType.getNavigationProperties())
+          edmNavigationPropertyNames.add(navigationProperty.getName());
     }
     return edmNavigationPropertyNames;
   }
