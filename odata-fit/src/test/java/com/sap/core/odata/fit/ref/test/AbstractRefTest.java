@@ -96,11 +96,24 @@ public class AbstractRefTest extends AbstractFitTest {
   }
 
   protected void checkMediaType(final HttpResponse response, final MediaType expectedMediaType) {
-    assertEquals(expectedMediaType.toString(), response.getFirstHeader(HttpHeaders.CONTENT_TYPE).getValue());
+    checkMediaType(response, expectedMediaType, true);
   }
 
   protected void checkMediaType(final HttpResponse response, final String expectedMediaType) {
-    assertEquals(expectedMediaType, response.getFirstHeader(HttpHeaders.CONTENT_TYPE).getValue());
+    checkMediaType(response, expectedMediaType, true);
+  }
+
+  protected void checkMediaType(final HttpResponse response, final MediaType expectedMediaType, boolean withDefaultCharset) {
+    checkMediaType(response, expectedMediaType.toString(), withDefaultCharset);
+  }
+
+  protected void checkMediaType(final HttpResponse response, final String expectedMediaType, boolean withDefaultCharset) {
+    String expected = expectedMediaType.toString();
+    if(withDefaultCharset) {
+      expected += "; charset=utf-8";
+    }
+    assertEquals("MediaType was not excepected (charset expected=[" + withDefaultCharset +"]).", 
+        expected, response.getFirstHeader(HttpHeaders.CONTENT_TYPE).getValue());
   }
 
   protected void checkEtag(final HttpResponse response, final String expectedEtag) {

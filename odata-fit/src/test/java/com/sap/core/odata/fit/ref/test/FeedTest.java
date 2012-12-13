@@ -116,7 +116,7 @@ public class FeedTest extends AbstractRefTest {
     assertFalse(getBody(response).contains("</m:count>"));
 
     response = callUri("Rooms('2')/$links/nr_Employees?$skip=9&$inlinecount=allpages");
-    checkMediaType(response, MediaType.APPLICATION_XML);
+    checkMediaType(response, MediaType.APPLICATION_XML, false);
     assertFalse(getBody(response).isEmpty());
     // assertTrue(getBody(response).contains("4</m:count>"));
 

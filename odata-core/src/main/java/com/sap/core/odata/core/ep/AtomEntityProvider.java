@@ -26,16 +26,16 @@ import com.sap.core.odata.api.ep.ODataEntityContent;
 import com.sap.core.odata.api.ep.ODataEntityProvider;
 import com.sap.core.odata.api.ep.ODataEntityProviderException;
 import com.sap.core.odata.api.ep.ODataEntityProviderProperties;
-import com.sap.core.odata.api.processor.ODataContext;
 import com.sap.core.odata.api.uri.resultviews.GetEntitySetView;
 import com.sap.core.odata.core.ep.aggregator.EntityInfoAggregator;
 import com.sap.core.odata.core.ep.aggregator.EntityPropertyInfo;
 import com.sap.core.odata.core.ep.util.CircleStreamBuffer;
 
-// TODO usage of "ByteArrayInputStream(out.toByteArray())":  check synchronized call / copy of data
 public class AtomEntityProvider extends ODataEntityProvider {
 
   private static final Logger LOG = LoggerFactory.getLogger(AtomEntityProvider.class);
+  /** Default used charset for writer and response content header */
+  private static final String DEFAULT_CHARSET = "utf-8";
 
   AtomEntityProvider() throws ODataEntityProviderException {
     super();
@@ -49,11 +49,11 @@ public class AtomEntityProvider extends ODataEntityProvider {
     try {
       CircleStreamBuffer csb = new CircleStreamBuffer();
       OutputStream outputStream = csb.getOutputStream();
-      writer = new OutputStreamWriter(outputStream, "utf-8");
+      writer = new OutputStreamWriter(outputStream, DEFAULT_CHARSET);
       AtomServiceDocumentProvider.writeServiceDocument(edm, serviceRoot, writer);
 
       content.setContentStream(csb.getInputStream());
-      content.setContentHeader(MediaType.APPLICATION_ATOM_SVC.toString());
+      content.setContentHeader(createContentHeader(MediaType.APPLICATION_ATOM_SVC));
 
       return content;
     } catch (UnsupportedEncodingException e) {
@@ -81,7 +81,7 @@ public class AtomEntityProvider extends ODataEntityProvider {
 
       CircleStreamBuffer csb = new CircleStreamBuffer();
       outStream = csb.getOutputStream();
-      XMLStreamWriter writer = XMLOutputFactory.newInstance().createXMLStreamWriter(outStream, "utf-8");
+      XMLStreamWriter writer = XMLOutputFactory.newInstance().createXMLStreamWriter(outStream, DEFAULT_CHARSET);
       as.append(writer, eia, data, true);
 
       writer.flush();
@@ -89,7 +89,7 @@ public class AtomEntityProvider extends ODataEntityProvider {
       outStream.close();
 
       content.setContentStream(csb.getInputStream());
-      content.setContentHeader(MediaType.APPLICATION_ATOM_XML_ENTRY.toString());
+      content.setContentHeader(createContentHeader(MediaType.APPLICATION_ATOM_XML_ENTRY));
       content.setETag(as.getETag());
 
       return content;
@@ -118,7 +118,7 @@ public class AtomEntityProvider extends ODataEntityProvider {
 
       CircleStreamBuffer csb = new CircleStreamBuffer();
       outStream = csb.getOutputStream();
-      XMLStreamWriter writer = XMLOutputFactory.newInstance().createXMLStreamWriter(outStream, "utf-8");
+      XMLStreamWriter writer = XMLOutputFactory.newInstance().createXMLStreamWriter(outStream, DEFAULT_CHARSET);
       ps.append(writer, propertyInfo, value, true);
 
       writer.flush();
@@ -126,7 +126,7 @@ public class AtomEntityProvider extends ODataEntityProvider {
       outStream.close();
 
       content.setContentStream(csb.getInputStream());
-      content.setContentHeader(MediaType.APPLICATION_XML.toString());
+      content.setContentHeader(createContentHeader(MediaType.APPLICATION_XML));
 
       return content;
     } catch (Exception e) {
@@ -156,7 +156,7 @@ public class AtomEntityProvider extends ODataEntityProvider {
 
       CircleStreamBuffer csb = new CircleStreamBuffer();
       outStream = csb.getOutputStream();
-      XMLStreamWriter writer = XMLOutputFactory.newInstance().createXMLStreamWriter(outStream, "utf-8");
+      XMLStreamWriter writer = XMLOutputFactory.newInstance().createXMLStreamWriter(outStream, DEFAULT_CHARSET);
       atomFeedProvider.append(writer, eia, data, entitySetView);
 
       writer.flush();
@@ -164,7 +164,7 @@ public class AtomEntityProvider extends ODataEntityProvider {
       outStream.close();
 
       content.setContentStream(csb.getInputStream());
-      content.setContentHeader(MediaType.APPLICATION_ATOM_XML_FEED.toString());
+      content.setContentHeader(createContentHeader(MediaType.APPLICATION_ATOM_XML_FEED));
       return content;
     } catch (Exception e) {
       throw new ODataEntityProviderException(ODataEntityProviderException.COMMON, e);
@@ -198,7 +198,7 @@ public class AtomEntityProvider extends ODataEntityProvider {
         stringValue = "";
       }
 
-      ByteArrayInputStream bais = new ByteArrayInputStream(stringValue.getBytes("UTF-8"));
+      ByteArrayInputStream bais = new ByteArrayInputStream(stringValue.getBytes(DEFAULT_CHARSET));
       content.setContentStream(bais);
 
       String contentHeader = MediaType.TEXT_PLAIN.toString();
@@ -234,4 +234,7 @@ public class AtomEntityProvider extends ODataEntityProvider {
     }
   }
 
+  private String createContentHeader(MediaType mediaType) {
+    return mediaType.toString() + "; charset=" + DEFAULT_CHARSET;
+  }
 }
