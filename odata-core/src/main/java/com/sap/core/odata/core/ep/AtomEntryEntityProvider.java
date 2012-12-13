@@ -147,13 +147,12 @@ public class AtomEntryEntityProvider {
       writer.writeStartElement(FormatXml.ATOM_LINK);
       writer.writeAttribute(FormatXml.ATOM_HREF, self);
       writer.writeAttribute(FormatXml.ATOM_REL, Edm.NAMESPACE_REL_2007_08 + propertyName);
-      writer.writeAttribute(FormatXml.ATOM_TITLE, propertyName);
-
       if (isFeed) {
         writer.writeAttribute(FormatXml.ATOM_TYPE, MediaType.APPLICATION_ATOM_XML_FEED.toString());
       } else {
         writer.writeAttribute(FormatXml.ATOM_TYPE, MediaType.APPLICATION_ATOM_XML_ENTRY.toString());
       }
+      writer.writeAttribute(FormatXml.ATOM_TITLE, propertyName);
 
       writer.writeEndElement();
     } catch (Exception e) {
