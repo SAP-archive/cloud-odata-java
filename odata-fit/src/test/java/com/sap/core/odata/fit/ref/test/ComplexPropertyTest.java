@@ -16,7 +16,7 @@ public class ComplexPropertyTest extends AbstractRefTest {
   @Test
   public void complexProperty() throws Exception {
     HttpResponse response = callUri("Employees('2')/Location/City/CityName/$value");
-    checkMediaType(response, MediaType.TEXT_PLAIN);
+    checkMediaType(response, MediaType.TEXT_PLAIN, false);
     assertEquals(CITY_2_NAME, getBody(response));
 
     response = callUri("Employees('2')/Location");

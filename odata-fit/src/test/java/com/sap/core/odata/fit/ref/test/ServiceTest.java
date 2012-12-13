@@ -25,7 +25,7 @@ public class ServiceTest extends AbstractRefTest {
   @Test
   public void metadataDocument() throws Exception {
     final HttpResponse response = callUri("$metadata");
-    checkMediaType(response, MediaType.APPLICATION_XML);
+    checkMediaType(response, MediaType.APPLICATION_XML, false);
     final String payload = getBody(response);
     assertTrue(payload.contains("c_Location"));
     assertTrue(payload.contains("c_City"));
