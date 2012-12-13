@@ -20,6 +20,7 @@ import com.sap.core.odata.api.edm.EdmException;
 import com.sap.core.odata.api.enums.Format;
 import com.sap.core.odata.api.ep.ODataEntityProvider;
 import com.sap.core.odata.api.ep.ODataEntityProviderException;
+import com.sap.core.odata.api.ep.ODataEntityProviderProperties;
 import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.api.processor.ODataContext;
 import com.sap.core.odata.api.processor.ODataUriInfo;
@@ -33,6 +34,7 @@ public abstract class AbstractProviderTest {
   protected final Logger log = LoggerFactory.getLogger(this.getClass());
 
   protected static final URI BASE_URI;
+
   static {
     try {
       BASE_URI = new URI("http://host:80/service/");
@@ -40,6 +42,7 @@ public abstract class AbstractProviderTest {
       throw new RuntimeException(e);
     }
   }
+  protected static final ODataEntityProviderProperties DEFAULT_PROPERTIES = ODataEntityProviderProperties.baseUri(BASE_URI).build();
 
   protected Map<String, Object> employeeData;
 
@@ -120,7 +123,7 @@ public abstract class AbstractProviderTest {
   }
 
   protected ODataEntityProvider createAtomEntityProvider() throws ODataException, EdmException, ODataEntityProviderException {
-    ODataEntityProvider ser = ODataEntityProvider.create(Format.ATOM, createContextMock());
+    ODataEntityProvider ser = ODataEntityProvider.create(Format.ATOM);
     return ser;
   }
 

@@ -88,12 +88,12 @@ public abstract class RuntimeDelegate {
      * @return a OData serializer
      * @throws ODataEntityProviderException 
      */
-    protected abstract ODataEntityProvider createSerializer(Format format, ODataContext ctx) throws ODataEntityProviderException;
+    protected abstract ODataEntityProvider createSerializer(Format format) throws ODataEntityProviderException;
   }
 
 
-  public static ODataEntityProvider createSerializer(Format atom, ODataContext ctx) throws ODataEntityProviderException {
-    return RuntimeDelegate.getInstance().createSerializer(atom, ctx);
+  public static ODataEntityProvider createSerializer(Format atom) throws ODataEntityProviderException {
+    return RuntimeDelegate.getInstance().createSerializer(atom);
   }
 
   public static EdmSimpleType getEdmSimpleType(EdmSimpleTypeKind edmSimpleType) {

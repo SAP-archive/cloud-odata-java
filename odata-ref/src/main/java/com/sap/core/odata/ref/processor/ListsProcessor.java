@@ -28,6 +28,7 @@ import com.sap.core.odata.api.enums.HttpStatusCodes;
 import com.sap.core.odata.api.enums.InlineCount;
 import com.sap.core.odata.api.enums.MediaType;
 import com.sap.core.odata.api.ep.ODataEntityProvider;
+import com.sap.core.odata.api.ep.ODataEntityProviderProperties;
 import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.api.exception.ODataNotFoundException;
 import com.sap.core.odata.api.exception.ODataNotImplementedException;
@@ -129,9 +130,14 @@ public class ListsProcessor extends ODataSingleProcessor {
     for (final Object entryData : data)
       values.add(getStructuralTypeValueMap(entryData, entityType));
 
+    ODataEntityProviderProperties properties = ODataEntityProviderProperties.baseUri(getContext().getUriInfo().getBaseUri())
+        .inlineCount(count)
+        .skipToken(nextSkipToken)
+        .build();
+    
     return ODataResponse
         .status(HttpStatusCodes.OK)
-        .entity(ODataEntityProvider.create(format, getContext()).writeFeed(uriParserResultView, values, null, count == null ? 0 : count, nextSkipToken))
+        .entity(ODataEntityProvider.create(format).writeFeed(uriParserResultView, values, properties))
         .build();
   }
 
@@ -214,9 +220,11 @@ public class ListsProcessor extends ODataSingleProcessor {
     final EdmEntitySet entitySet = uriParserResultView.getTargetEntitySet();
     final Map<String, Object> values = getStructuralTypeValueMap(data, entitySet.getEntityType());
 
+    ODataEntityProviderProperties properties = ODataEntityProviderProperties.baseUri(getContext().getUriInfo().getBaseUri()).build();
+
     return ODataResponse
         .status(HttpStatusCodes.OK)
-        .entity(ODataEntityProvider.create(format, getContext()).writeEntry(entitySet, values))
+        .entity(ODataEntityProvider.create(format).writeEntry(entitySet, values, properties))
         .build();
   }
 
@@ -288,7 +296,7 @@ public class ListsProcessor extends ODataSingleProcessor {
 
     return ODataResponse
         .status(HttpStatusCodes.OK)
-        .entity(ODataEntityProvider.create(format, getContext()).writeProperty(property, value))
+        .entity(ODataEntityProvider.create(format).writeProperty(property, value))
         .build();
   }
 
@@ -323,7 +331,7 @@ public class ListsProcessor extends ODataSingleProcessor {
 
     return ODataResponse
         .status(HttpStatusCodes.OK)
-        .entity(ODataEntityProvider.create(Format.XML, getContext()).writeText(property, value))
+        .entity(ODataEntityProvider.create(Format.XML).writeText(property, value))
         .build();
   }
 
@@ -348,7 +356,7 @@ public class ListsProcessor extends ODataSingleProcessor {
 
     return ODataResponse
         .status(HttpStatusCodes.OK)
-        .entity(ODataEntityProvider.create(Format.XML, getContext()).writeMediaResource(mimeType, binaryData))
+        .entity(ODataEntityProvider.create(Format.XML).writeMediaResource(mimeType, binaryData))
         .build();
   }
 

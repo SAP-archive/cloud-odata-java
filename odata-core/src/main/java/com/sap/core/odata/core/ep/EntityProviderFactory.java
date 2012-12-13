@@ -8,14 +8,14 @@ import com.sap.core.odata.api.processor.ODataContext;
 
 public class EntityProviderFactory {
 
-  public static ODataEntityProvider create(Format format, ODataContext ctx) throws ODataEntityProviderException {
+  public static ODataEntityProvider create(Format format) throws ODataEntityProviderException {
     try {
       ODataEntityProvider provider;
 
       switch (format) {
       case ATOM:
       case XML:
-        provider = new AtomEntityProvider(ctx);
+        provider = new AtomEntityProvider();
         break;
       case JSON:
         throw new ODataNotImplementedException();

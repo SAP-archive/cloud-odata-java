@@ -25,6 +25,7 @@ import com.sap.core.odata.api.enums.MediaType;
 import com.sap.core.odata.api.ep.ODataEntityContent;
 import com.sap.core.odata.api.ep.ODataEntityProvider;
 import com.sap.core.odata.api.ep.ODataEntityProviderException;
+import com.sap.core.odata.api.ep.ODataEntityProviderProperties;
 import com.sap.core.odata.api.processor.ODataContext;
 import com.sap.core.odata.api.uri.resultviews.GetEntitySetView;
 import com.sap.core.odata.core.ep.aggregator.EntityInfoAggregator;
@@ -36,8 +37,8 @@ public class AtomEntityProvider extends ODataEntityProvider {
 
   private static final Logger LOG = LoggerFactory.getLogger(AtomEntityProvider.class);
 
-  AtomEntityProvider(ODataContext ctx) throws ODataEntityProviderException {
-    super(ctx);
+  AtomEntityProvider() throws ODataEntityProviderException {
+    super();
   }
 
   @Override
@@ -70,18 +71,18 @@ public class AtomEntityProvider extends ODataEntityProvider {
   }
 
   @Override
-  public ODataEntityContent writeEntry(EdmEntitySet entitySet, Map<String, Object> data, String mediaResourceMimeType) throws ODataEntityProviderException {
+  public ODataEntityContent writeEntry(EdmEntitySet entitySet, Map<String, Object> data, ODataEntityProviderProperties properties) throws ODataEntityProviderException {
     OutputStream outStream = null;
     ODataEntityContentImpl content = new ODataEntityContentImpl();
 
     try {
-      AtomEntryEntityProvider as = new AtomEntryEntityProvider(this.getContext());
+      AtomEntryEntityProvider as = new AtomEntryEntityProvider(properties);
       EntityInfoAggregator eia = EntityInfoAggregator.create(entitySet);
 
       CircleStreamBuffer csb = new CircleStreamBuffer();
       outStream = csb.getOutputStream();
       XMLStreamWriter writer = XMLOutputFactory.newInstance().createXMLStreamWriter(outStream, "utf-8");
-      as.append(writer, eia, data, true, mediaResourceMimeType);
+      as.append(writer, eia, data, true);
 
       writer.flush();
       outStream.flush();
@@ -143,20 +144,20 @@ public class AtomEntityProvider extends ODataEntityProvider {
   }
 
   @Override
-  public ODataEntityContent writeFeed(GetEntitySetView entitySetView, List<Map<String, Object>> data, String mediaResourceMimeType, int inlinecount, String nextSkiptoken) throws ODataEntityProviderException {
+  public ODataEntityContent writeFeed(GetEntitySetView entitySetView, List<Map<String, Object>> data, ODataEntityProviderProperties properties) throws ODataEntityProviderException {
     OutputStream outStream = null;
     ODataEntityContentImpl content = new ODataEntityContentImpl();
 
     try {
       EdmEntitySet entitySet = entitySetView.getTargetEntitySet();
 
-      AtomFeedProvider as = new AtomFeedProvider(this.getContext());
+      AtomFeedProvider atomFeedProvider = new AtomFeedProvider(properties);
       EntityInfoAggregator eia = EntityInfoAggregator.create(entitySet);
 
       CircleStreamBuffer csb = new CircleStreamBuffer();
       outStream = csb.getOutputStream();
       XMLStreamWriter writer = XMLOutputFactory.newInstance().createXMLStreamWriter(outStream, "utf-8");
-      as.append(writer, eia, data, entitySetView, mediaResourceMimeType, inlinecount, nextSkiptoken);
+      atomFeedProvider.append(writer, eia, data, entitySetView);
 
       writer.flush();
       outStream.flush();

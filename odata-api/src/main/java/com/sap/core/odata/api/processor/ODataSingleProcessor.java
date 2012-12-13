@@ -309,7 +309,7 @@ public abstract class ODataSingleProcessor
   public ODataResponse readServiceDocument(GetServiceDocumentView uriParserResultView) throws ODataException {
     //TODO: uriParserResultView.getFormat() only returns a valid format if the format is set via $format
     //      Content Negotiation yet not implemented, but in general we should go for a format as separate parameter and not via uriResultViews
-    ODataEntityProvider odataSerializer = ODataEntityProvider.create(Format.XML, getContext());
+    ODataEntityProvider odataSerializer = ODataEntityProvider.create(Format.XML);
     ODataEntityContent serviceDocument = odataSerializer.writeServiceDocument(getContext().getService().getEntityDataModel(), getContext().getUriInfo().getBaseUri().toASCIIString());
     return ODataResponse
         .status(HttpStatusCodes.OK)
