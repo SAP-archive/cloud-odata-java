@@ -5,8 +5,6 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
 
 import javax.xml.stream.XMLStreamWriter;
 
@@ -384,14 +382,14 @@ public class AtomEntryEntityProvider {
   private void appendProperties(XMLStreamWriter writer, EntityInfoAggregator eia, Map<String, Object> data) throws ODataEntityProviderException {
     try {
       writer.writeStartElement(Edm.NAMESPACE_M_2007_08, FormatXml.M_PROPERTIES);
-      Set<Entry<String, Object>> entries = data.entrySet();
 
-      for (Entry<String, Object> entry : entries) {
-        String name = entry.getKey();
-        EntityPropertyInfo propertyInfo = eia.getPropertyInfo(name);
+      List<String> propertyNames = eia.getPropertyNames();
+      
+      for (String propertyName: propertyNames) {
+        EntityPropertyInfo propertyInfo = eia.getPropertyInfo(propertyName);
 
         if(propertyInfo != null && isNotMappedViaCustomMapping(propertyInfo)) {
-          Object value = entry.getValue();
+          Object value = data.get(propertyName);
           XmlPropertyEntityProvider aps = new XmlPropertyEntityProvider();
           aps.append(writer, propertyInfo, value, false);
         }

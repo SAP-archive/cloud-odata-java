@@ -10,6 +10,7 @@ import java.util.List;
 import com.sap.core.odata.api.edm.Edm;
 import com.sap.core.odata.api.edm.EdmComplexType;
 import com.sap.core.odata.api.edm.EdmConcurrencyMode;
+import com.sap.core.odata.api.edm.EdmContentKind;
 import com.sap.core.odata.api.edm.EdmCustomizableFeedMappings;
 import com.sap.core.odata.api.edm.EdmEntityContainer;
 import com.sap.core.odata.api.edm.EdmEntitySet;
@@ -117,6 +118,7 @@ class EdmMock {
 
     EdmCustomizableFeedMappings employeeUpdatedeMappings = mock(EdmCustomizableFeedMappings.class);
     when(employeeUpdatedeMappings.getFcTargetPath()).thenReturn(EdmTargetPath.SYNDICATION_UPDATED);
+    when(employeeUpdatedeMappings.isFcKeepInContent()).thenReturn(Boolean.TRUE);
     when(employeeEntryDateProperty.getCustomizableFeedMappings()).thenReturn(employeeUpdatedeMappings);
 
     EdmProperty employeeTeamIdProperty = mock(EdmProperty.class);
@@ -126,6 +128,7 @@ class EdmMock {
 
     EdmCustomizableFeedMappings employeeTitleMappings = mock(EdmCustomizableFeedMappings.class);
     when(employeeTitleMappings.getFcTargetPath()).thenReturn(EdmTargetPath.SYNDICATION_TITLE);
+    when(employeeTitleMappings.isFcKeepInContent()).thenReturn(Boolean.TRUE);
     when(employeeNameProperty.getCustomizableFeedMappings()).thenReturn(employeeTitleMappings);
 
     EdmComplexType locationComplexType = mock(EdmComplexType.class);

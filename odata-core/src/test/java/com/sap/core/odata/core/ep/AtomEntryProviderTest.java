@@ -84,7 +84,7 @@ public class AtomEntryProviderTest extends AbstractProviderTest {
     ODataEntityContent content= ser.writeEntry(MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Employees"), this.employeeData, properties);
     String xmlString = verifyContent(content);
 
-//    log.debug(xmlString);
+    log.debug(xmlString);
     
     assertXpathExists("/a:entry", xmlString);
     assertXpathExists("/a:entry/a:content", xmlString);
@@ -99,10 +99,29 @@ public class AtomEntryProviderTest extends AbstractProviderTest {
     assertXpathExists("/a:entry/a:content[@type='abc']", xmlString);
     // verify properties
     assertXpathExists("/a:entry/m:properties", xmlString);
-    assertXpathEvaluatesTo("5", "count(/a:entry/m:properties/*)", xmlString);
+    assertXpathEvaluatesTo("8", "count(/a:entry/m:properties/*)", xmlString);
     
     // verify order of tags
     verifyTagOrdering(xmlString, "id", "title", "updated", "category", "link", "content", "properties");
+  }
+
+  @Test
+  public void serializeEmployeeAndCheckOrderOfPropertyTags() throws IOException, XpathException, SAXException, XMLStreamException, FactoryConfigurationError, ODataException {
+    ODataEntityProvider ser = createAtomEntityProvider();
+    ODataEntityProviderProperties properties = ODataEntityProviderProperties.baseUri(BASE_URI).mediaResourceMimeType("abc").build();
+    ODataEntityContent content= ser.writeEntry(MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Employees"), this.employeeData, properties);
+    String xmlString = verifyContent(content);
+
+    log.debug(xmlString);
+    
+    assertXpathExists("/a:entry", xmlString);
+    assertXpathExists("/a:entry/a:content", xmlString);
+    // verify properties
+    assertXpathExists("/a:entry/m:properties", xmlString);
+    assertXpathEvaluatesTo("8", "count(/a:entry/m:properties/*)", xmlString);
+    
+    // verify order of tags
+    verifyTagOrdering(xmlString, "EmployeeId", "EmployeeName", "ImageUrl", "Age", "TeamId", "RoomId", "EntryDate", "Location");
   }
 
   @Test
