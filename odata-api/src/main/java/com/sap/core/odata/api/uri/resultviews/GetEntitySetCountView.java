@@ -12,7 +12,6 @@ import com.sap.core.odata.api.uri.KeyPredicate;
 import com.sap.core.odata.api.uri.NavigationSegment;
 import com.sap.core.odata.api.uri.expression.FilterExpression;
 
-
 /**
  * @author SAP AG
  */
@@ -36,7 +35,7 @@ public interface GetEntitySetCountView {
    * @return {@link EdmFunctionImport} the function import
    */
   public EdmFunctionImport getFunctionImport();
-  
+
   /**
    * @return {@link EdmType} the target type of the entity set
    */
@@ -70,7 +69,7 @@ public interface GetEntitySetCountView {
   /**
    * @return skip
    */
-  public int getSkip();
+  public Integer getSkip();
 
   /**
    * @return top
@@ -81,7 +80,7 @@ public interface GetEntitySetCountView {
    * @return Map of {@literal <String,} {@link EdmLiteral}{@literal >} function import parameters
    */
   public Map<String, EdmLiteral> getFunctionImportParameters();
-  
+
   /**
    * @return Map of {@literal<String, String>} custom query options
    */

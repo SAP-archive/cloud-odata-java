@@ -589,7 +589,7 @@ public class UriParserImpl implements UriParser {
       throw new UriSyntaxException(UriSyntaxException.INVALIDNEGATIVEVALUE.addContent(top));
   }
 
-  private void handleSystemQueryOptionExpand(String expandStatement) throws UriSyntaxException, UriNotMatchingException, EdmException {
+  private void handleSystemQueryOptionExpand(final String expandStatement) throws UriSyntaxException, UriNotMatchingException, EdmException {
     ArrayList<ArrayList<NavigationPropertySegment>> expand = new ArrayList<ArrayList<NavigationPropertySegment>>();
 
     if (expandStatement.startsWith(",") || expandStatement.endsWith(","))

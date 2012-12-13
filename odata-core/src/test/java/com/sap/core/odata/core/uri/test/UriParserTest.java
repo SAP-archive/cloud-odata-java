@@ -613,14 +613,15 @@ public class UriParserTest {
     assertEquals(Format.JSON, result.getFormat());
     assertEquals(InlineCount.ALLPAGES, result.getInlineCount());
     assertEquals("abc", result.getSkipToken());
-    assertEquals(2, result.getSkip());
+    assertEquals(2, result.getSkip().intValue());
     assertEquals(1, result.getTop().intValue());
 
-    result = parse("Employees?$format=atom&$inlinecount=none&$top=0");
+    result = parse("Employees?$format=atom&$inlinecount=none&$skip=0&$top=0");
     assertEquals("Employees", result.getTargetEntitySet().getName());
     assertEquals(UriType.URI1, result.getUriType());
     assertEquals(Format.ATOM, result.getFormat());
     assertEquals(InlineCount.NONE, result.getInlineCount());
+    assertEquals(0, result.getSkip().intValue());
     assertEquals(0, result.getTop().intValue());
 
     result = parse("Employees?$format=json&$inlinecount=none");
@@ -628,6 +629,8 @@ public class UriParserTest {
     assertEquals(UriType.URI1, result.getUriType());
     assertEquals(Format.JSON, result.getFormat());
     assertEquals(InlineCount.NONE, result.getInlineCount());
+    assertNull(result.getSkip());
+    assertNull(result.getTop());
 
     result = parse("Employees?$format=atom");
     assertEquals("Employees", result.getTargetEntitySet().getName());
@@ -711,7 +714,7 @@ public class UriParserTest {
     assertEquals(Format.JSON, result.getFormat());
     assertEquals(InlineCount.ALLPAGES, result.getInlineCount());
     assertEquals("abc", result.getSkipToken());
-    assertEquals(2, result.getSkip());
+    assertEquals(2, result.getSkip().intValue());
     assertEquals(1, result.getTop().intValue());
   }
 
