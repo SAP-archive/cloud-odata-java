@@ -37,7 +37,7 @@ public interface GetEntitySetLinksView {
    * @return {@link EdmFunctionImport} the function import
    */
   public EdmFunctionImport getFunctionImport();
-  
+
   /**
    * @return {@link EdmType} the target type of the entity set
    */
@@ -86,18 +86,18 @@ public interface GetEntitySetLinksView {
   /**
    * @return skip
    */
-  public int getSkip();
+  public Integer getSkip();
 
   /**
    * @return top
    */
   public Integer getTop();
-  
+
   /**
    * @return Map of {@literal <String,} {@link EdmLiteral}{@literal >} function import parameters
    */
   public Map<String, EdmLiteral> getFunctionImportParameters();
-  
+
   /**
    * @return Map of {@literal<String, String>} custom query options
    */

@@ -85,7 +85,7 @@ public class ListsProcessor extends ODataSingleProcessor {
         mapFunctionParameters(uriParserResultView.getFunctionImportParameters()),
         uriParserResultView.getNavigationSegments()));
 
-    Integer count = applySystemQueryOptions(
+    final Integer count = applySystemQueryOptions(
         uriParserResultView.getTargetEntitySet(),
         data,
         uriParserResultView.getInlineCount(),
@@ -147,7 +147,7 @@ public class ListsProcessor extends ODataSingleProcessor {
         mapFunctionParameters(uriParserResultView.getFunctionImportParameters()),
         uriParserResultView.getNavigationSegments()));
 
-    Integer count = applySystemQueryOptions(
+    final Integer count = applySystemQueryOptions(
         uriParserResultView.getTargetEntitySet(),
         data,
         uriParserResultView.getInlineCount(),
@@ -441,7 +441,7 @@ public class ListsProcessor extends ODataSingleProcessor {
     return data;
   }
 
-  private <T> Integer applySystemQueryOptions(final EdmEntitySet targetEntitySet, List<T> data, final InlineCount inlineCount, final FilterExpression filter, final OrderByExpression orderBy, final String skipToken, final int skip, final Integer top) throws ODataException {
+  private <T> Integer applySystemQueryOptions(final EdmEntitySet targetEntitySet, List<T> data, final InlineCount inlineCount, final FilterExpression filter, final OrderByExpression orderBy, final String skipToken, final Integer skip, final Integer top) throws ODataException {
     if (filter != null)
       // Remove all elements the filter does not apply for.
       // A for-each loop would not work with "remove", see Java documentation.
@@ -453,7 +453,7 @@ public class ListsProcessor extends ODataSingleProcessor {
 
     if (orderBy != null)
       throw new ODataNotImplementedException();
-    else if (skipToken != null || skip != 0 || top != null)
+    else if (skipToken != null || skip != null || top != null)
       Collections.sort(data, new Comparator<T>() {
         @Override
         public int compare(T entity1, T entity2) {
@@ -469,11 +469,12 @@ public class ListsProcessor extends ODataSingleProcessor {
       while (!data.isEmpty() && !getSkipToken(data.get(0), targetEntitySet).equals(skipToken))
         data.remove(0);
 
-    if (skip >= data.size())
-      data.clear();
-    else
-      for (int i = 0; i < skip; i++)
-        data.remove(0);
+    if (skip != null)
+      if (skip >= data.size())
+        data.clear();
+      else
+        for (int i = 0; i < skip; i++)
+          data.remove(0);
 
     if (top != null)
       while (data.size() > top)

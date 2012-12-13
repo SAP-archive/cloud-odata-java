@@ -90,7 +90,7 @@ public interface GetEntitySetView {
   /**
    * @return skip
    */
-  public int getSkip();
+  public Integer getSkip();
 
   /**
    * @return top

@@ -127,7 +127,7 @@ public interface UriParserResult extends GetServiceDocumentView, GetEntitySetVie
   /**
    * @return skip
    */
-  public int getSkip();
+  public Integer getSkip();
 
   /**
    * @return top

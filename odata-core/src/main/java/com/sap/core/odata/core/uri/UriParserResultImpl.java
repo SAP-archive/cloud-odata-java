@@ -22,6 +22,9 @@ import com.sap.core.odata.api.uri.UriParserResult;
 import com.sap.core.odata.api.uri.expression.FilterExpression;
 import com.sap.core.odata.api.uri.expression.OrderByExpression;
 
+/**
+ * @author SAP AG
+ */
 public class UriParserResultImpl implements UriParserResult {
 
   private UriType uriType;
@@ -44,7 +47,7 @@ public class UriParserResultImpl implements UriParserResult {
   private InlineCount inlineCount;
   private OrderByExpression orderBy;
   private String skipToken;
-  private int skip;
+  private Integer skip;
   private Integer top;
   private List<ArrayList<NavigationPropertySegment>> expand = Collections.emptyList();
   private List<SelectItem> select = Collections.emptyList();
@@ -218,16 +221,16 @@ public class UriParserResultImpl implements UriParserResult {
     return skipToken;
   }
 
-  public void setSkip(int skip) {
+  public void setSkip(final Integer skip) {
     this.skip = skip;
   }
 
   @Override
-  public int getSkip() {
+  public Integer getSkip() {
     return skip;
   }
 
-  public void setTop(Integer top) {
+  public void setTop(final Integer top) {
     this.top = top;
   }
 
