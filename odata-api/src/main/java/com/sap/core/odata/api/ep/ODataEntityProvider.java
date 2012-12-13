@@ -30,7 +30,16 @@ public abstract class ODataEntityProvider {
   public abstract ODataEntityContent writeServiceDocument(Edm edm, String serviceRoot) throws ODataEntityProviderException;
 
   public ODataEntityContent writeFeed(GetEntitySetView entitySetView, List<Map<String, Object>> data, String mediaResourceMimeType) throws ODataEntityProviderException{
-    return writeFeed(entitySetView, data, mediaResourceMimeType, -1, null);
+    ODataEpOptionalProperties properties = ODataEpOptionalProperties.builder()
+        .mediaResourceMimeType(mediaResourceMimeType)
+        .inlineCount(-1)
+        .build();
+    return writeFeed(entitySetView, data, properties);
+  }
+
+  public ODataEntityContent writeFeed(GetEntitySetView entitySetView, List<Map<String, Object>> data, ODataEpOptionalProperties optionalProperties) throws ODataEntityProviderException
+  {
+    return writeFeed(entitySetView, data, optionalProperties.getMediaResourceMimeType(), optionalProperties.getInlineCount(), optionalProperties.getNextSkipToken());
   }
 
   public abstract ODataEntityContent writeFeed(GetEntitySetView entitySetView, List<Map<String, Object>> data, String mediaResourceMimeType, int inlinecount, String nextSkiptoken) throws ODataEntityProviderException;
