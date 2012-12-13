@@ -19,6 +19,7 @@ import com.sap.core.odata.api.enums.MediaType;
 import com.sap.core.odata.api.ep.ODataEntityContent;
 import com.sap.core.odata.api.ep.ODataEntityProvider;
 import com.sap.core.odata.api.ep.ODataEntityProviderException;
+import com.sap.core.odata.api.ep.ODataEntityProviderProperties;
 import com.sap.core.odata.api.uri.resultviews.GetEntitySetView;
 import com.sap.core.odata.testutils.helper.StringHelper;
 import com.sap.core.odata.testutils.mocks.MockFacade;
@@ -42,7 +43,8 @@ public class AtomFeedProviderTest extends AbstractProviderTest {
   @Test
   public void testFeedNamespaces() throws Exception {
     ODataEntityProvider ser = createAtomEntityProvider();
-    ODataEntityContent content = ser.writeFeed(view, this.roomsData, "mediatype");
+    ODataEntityProviderProperties properties = ODataEntityProviderProperties.baseUri(BASE_URI).mediaResourceMimeType("mediatype").build();
+    ODataEntityContent content = ser.writeFeed(view, this.roomsData, properties);
     String xmlString = verifyContent(content);
 
     assertXpathExists("/a:feed", xmlString);
@@ -52,7 +54,8 @@ public class AtomFeedProviderTest extends AbstractProviderTest {
   @Test
   public void testSelfLink() throws Exception {
     ODataEntityProvider ser = createAtomEntityProvider();
-    ODataEntityContent content = ser.writeFeed(view, this.roomsData, "mediatype");
+    ODataEntityProviderProperties properties = ODataEntityProviderProperties.baseUri(BASE_URI).mediaResourceMimeType("mediatype").build();
+    ODataEntityContent content = ser.writeFeed(view, this.roomsData, properties);
     String xmlString = verifyContent(content);
 
     assertXpathExists("/a:feed/a:link[@rel='self']", xmlString);
@@ -63,7 +66,8 @@ public class AtomFeedProviderTest extends AbstractProviderTest {
   @Test
   public void testFeedMandatoryParts() throws Exception {
     ODataEntityProvider ser = createAtomEntityProvider();
-    ODataEntityContent content = ser.writeFeed(view, this.roomsData, "mediatype");
+    ODataEntityProviderProperties properties = ODataEntityProviderProperties.baseUri(BASE_URI).mediaResourceMimeType("mediatype").build();
+    ODataEntityContent content = ser.writeFeed(view, this.roomsData, properties);
     String xmlString = verifyContent(content);
 
     assertXpathExists("/a:feed/a:id", xmlString);
@@ -91,7 +95,11 @@ public class AtomFeedProviderTest extends AbstractProviderTest {
     when(view.getInlineCount()).thenReturn(InlineCount.ALLPAGES);
 
     ODataEntityProvider ser = createAtomEntityProvider();
-    ODataEntityContent content = ser.writeFeed(view, this.roomsData, "mediatype", 103, null);
+    ODataEntityProviderProperties properties = ODataEntityProviderProperties.baseUri(BASE_URI)
+        .mediaResourceMimeType("mediatype")
+        .inlineCount(Integer.valueOf(103))
+        .build();
+    ODataEntityContent content = ser.writeFeed(view, this.roomsData, properties);
     String xmlString = verifyContent(content);
 
     assertXpathExists("/a:feed/m:count", xmlString);
@@ -103,7 +111,8 @@ public class AtomFeedProviderTest extends AbstractProviderTest {
     when(view.getInlineCount()).thenReturn(InlineCount.NONE);
 
     ODataEntityProvider ser = createAtomEntityProvider();
-    ODataEntityContent content = ser.writeFeed(view, this.roomsData, "mediatype");
+    ODataEntityProviderProperties properties = ODataEntityProviderProperties.baseUri(BASE_URI).mediaResourceMimeType("mediatype").build();
+    ODataEntityContent content = ser.writeFeed(view, this.roomsData, properties);
     String xmlString = verifyContent(content);
 
     assertXpathNotExists("/a:feed/m:count", xmlString);
@@ -114,7 +123,11 @@ public class AtomFeedProviderTest extends AbstractProviderTest {
     when(view.getInlineCount()).thenReturn(InlineCount.NONE);
 
     ODataEntityProvider ser = createAtomEntityProvider();
-    ODataEntityContent content = ser.writeFeed(view, this.roomsData, "mediatype", -1, "äbc");
+    ODataEntityProviderProperties properties = ODataEntityProviderProperties.baseUri(BASE_URI)
+        .mediaResourceMimeType("mediatype")
+        .skipToken("äbc")
+        .build();
+    ODataEntityContent content = ser.writeFeed(view, this.roomsData, properties);
     String xmlString = verifyContent(content);
 
     System.out.println(xmlString);
@@ -128,7 +141,8 @@ public class AtomFeedProviderTest extends AbstractProviderTest {
     when(view.getInlineCount()).thenReturn(InlineCount.NONE);
 
     ODataEntityProvider ser = createAtomEntityProvider();
-    ODataEntityContent content = ser.writeFeed(view, this.roomsData, "mediatype");
+    ODataEntityProviderProperties properties = ODataEntityProviderProperties.baseUri(BASE_URI).mediaResourceMimeType("mediatype").build();
+    ODataEntityContent content = ser.writeFeed(view, this.roomsData, properties);
     String xmlString = verifyContent(content);
 
     System.out.println(xmlString);
@@ -141,7 +155,8 @@ public class AtomFeedProviderTest extends AbstractProviderTest {
     when(view.getInlineCount()).thenReturn(InlineCount.ALLPAGES);
 
     ODataEntityProvider ser = createAtomEntityProvider();
-    ser.writeFeed(view, this.roomsData, "mediatype");
+    ODataEntityProviderProperties properties = ODataEntityProviderProperties.baseUri(BASE_URI).mediaResourceMimeType("mediatype").build();
+    ser.writeFeed(view, this.roomsData, properties);
   }
 
   @Test
@@ -149,7 +164,8 @@ public class AtomFeedProviderTest extends AbstractProviderTest {
     initializeRoomData(103);
 
     ODataEntityProvider ser = createAtomEntityProvider();
-    ODataEntityContent content = ser.writeFeed(view, this.roomsData, "mediatype");
+    ODataEntityProviderProperties properties = ODataEntityProviderProperties.baseUri(BASE_URI).mediaResourceMimeType("mediatype").build();
+    ODataEntityContent content = ser.writeFeed(view, this.roomsData, properties);
     String xmlString = verifyContent(content);
 
     assertXpathExists("/a:feed/a:entry[1]", xmlString);

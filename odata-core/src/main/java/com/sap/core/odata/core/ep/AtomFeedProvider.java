@@ -12,7 +12,7 @@ import com.sap.core.odata.api.edm.EdmFacets;
 import com.sap.core.odata.api.edm.EdmLiteralKind;
 import com.sap.core.odata.api.enums.InlineCount;
 import com.sap.core.odata.api.ep.ODataEntityProviderException;
-import com.sap.core.odata.api.processor.ODataContext;
+import com.sap.core.odata.api.ep.ODataEntityProviderProperties;
 import com.sap.core.odata.api.uri.resultviews.GetEntitySetView;
 import com.sap.core.odata.core.edm.EdmDateTimeOffset;
 import com.sap.core.odata.core.ep.aggregator.EntityInfoAggregator;
@@ -21,32 +21,32 @@ import com.sap.core.odata.core.uri.SystemQueryOption;
 
 public class AtomFeedProvider {
 
-  private ODataContext context;
+  private ODataEntityProviderProperties properties;
 
-  public AtomFeedProvider(ODataContext context) {
-    this.context = context;
+  public AtomFeedProvider(ODataEntityProviderProperties properties) {
+    this.properties = properties;
   }
 
-  public void append(XMLStreamWriter writer, EntityInfoAggregator eia, List<Map<String, Object>> data, GetEntitySetView entitySetView, String mediaResourceMimeType, int inlinecount, String nextSkiptoken) throws ODataEntityProviderException {
+  public void append(XMLStreamWriter writer, EntityInfoAggregator eia, List<Map<String, Object>> data, GetEntitySetView entitySetView) throws ODataEntityProviderException {
     try {
       writer.writeStartElement("feed");
 
       writer.writeDefaultNamespace(Edm.NAMESPACE_ATOM_2005);
       writer.writeNamespace(Edm.PREFIX_M, Edm.NAMESPACE_M_2007_08);
       writer.writeNamespace(Edm.PREFIX_D, Edm.NAMESPACE_D_2007_08);
-      writer.writeAttribute(Edm.PREFIX_XML, Edm.NAMESPACE_XML_1998, "base", this.context.getUriInfo().getBaseUri().toASCIIString());
+      writer.writeAttribute(Edm.PREFIX_XML, Edm.NAMESPACE_XML_1998, "base", properties.getBaseUri().toASCIIString());
 
       // write all atom infos (mandatory and optional)
       appendAtomMandatoryParts(writer, eia);
       appendAtomSelfLink(writer, eia);
       if (entitySetView.getInlineCount() == InlineCount.ALLPAGES) {
-        appendInlineCount(writer, inlinecount);
+        appendInlineCount(writer, properties.getInlineCount());
       }
 
-      appendEntries(writer, eia, data, mediaResourceMimeType);
+      appendEntries(writer, eia, data, properties.getMediaResourceMimeType());
 
-      if (nextSkiptoken != null) {
-        appendNextLink(writer, eia, nextSkiptoken);
+      if (properties.getSkipToken() != null) {
+        appendNextLink(writer, eia, properties.getSkipToken());
       }
       
       writer.writeEndElement();
@@ -69,13 +69,12 @@ public class AtomFeedProvider {
   }
 
   private void appendEntries(XMLStreamWriter writer, EntityInfoAggregator eia, List<Map<String, Object>> data, String mediaResourceMimeType) throws ODataEntityProviderException {
-    AtomEntryEntityProvider entryProvider = new AtomEntryEntityProvider(context);
+    AtomEntryEntityProvider entryProvider = new AtomEntryEntityProvider(properties);
     boolean isRootElement = false;
 
     for (Map<String, Object> singleEntryData : data) {
-      entryProvider.append(writer, eia, singleEntryData, isRootElement, mediaResourceMimeType);
+      entryProvider.append(writer, eia, singleEntryData, isRootElement);
     }
-
   }
 
   private void appendInlineCount(XMLStreamWriter writer, int inlinecount) throws ODataEntityProviderException {
@@ -168,7 +167,7 @@ public class AtomFeedProvider {
       }
       id += eia.getEntitySetName();
 
-      URI baseUri = this.context.getUriInfo().getBaseUri();
+      URI baseUri = properties.getBaseUri();
       return UriUtils.encodeUri(baseUri, id);
     } catch (Exception e) {
       throw new ODataEntityProviderException(ODataEntityProviderException.COMMON, e);

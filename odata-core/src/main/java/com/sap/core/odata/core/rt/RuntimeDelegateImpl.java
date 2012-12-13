@@ -54,8 +54,8 @@ public class RuntimeDelegateImpl extends RuntimeDelegateInstance {
   }
 
   @Override
-  protected ODataEntityProvider createSerializer(Format format, ODataContext ctx) throws ODataEntityProviderException {
-    return EntityProviderFactory.create(format, ctx);
+  protected ODataEntityProvider createSerializer(Format format) throws ODataEntityProviderException {
+    return EntityProviderFactory.create(format);
   }
 
   @Override

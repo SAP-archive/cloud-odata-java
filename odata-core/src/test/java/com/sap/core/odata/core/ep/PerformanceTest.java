@@ -21,6 +21,8 @@ import org.xml.sax.SAXException;
 
 import com.sap.core.odata.api.edm.Edm;
 import com.sap.core.odata.api.edm.EdmEntitySet;
+import com.sap.core.odata.api.ep.ODataEntityContent;
+import com.sap.core.odata.api.ep.ODataEntityProviderProperties;
 import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.core.ep.aggregator.EntityInfoAggregator;
 import com.sap.core.odata.core.ep.util.CircleStreamBuffer;
@@ -44,7 +46,8 @@ public class PerformanceTest extends AbstractProviderTest {
     super.before();
     System.gc();
 
-    provider = new AtomEntryEntityProvider(createContextMock());
+    ODataEntityProviderProperties properties = ODataEntityProviderProperties.baseUri(BASE_URI).build();
+    provider = new AtomEntryEntityProvider(properties);
     edmEntitySet = MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Rooms");
 
     if(useCsb) {
@@ -93,7 +96,7 @@ public class PerformanceTest extends AbstractProviderTest {
 
     for (int i = 0; i < TIMES; i++) {
       EntityInfoAggregator eia = EntityInfoAggregator.create(edmEntitySet);
-      provider.append(writer, eia, roomData, false, null);
+      provider.append(writer, eia, roomData, false);
     }
     stopTimer(t, "readAtomEntry");
   }
@@ -108,7 +111,7 @@ public class PerformanceTest extends AbstractProviderTest {
 
     for (int i = 0; i < TIMES; i++) {
       EntityInfoAggregator eia = EntityInfoAggregator.create(edmEntitySet);
-      provider.append(writer, eia, roomData, false, null);
+      provider.append(writer, eia, roomData, false);
     }
     stopTimer(t, "readAtomEntry");
   }
@@ -120,7 +123,7 @@ public class PerformanceTest extends AbstractProviderTest {
 
     EntityInfoAggregator eia = EntityInfoAggregator.create(edmEntitySet);
     for (int i = 0; i < TIMES; i++) {
-      provider.append(writer, eia, roomData, false, null);
+      provider.append(writer, eia, roomData, false);
     }
     stopTimer(t, "readAtomEntryOptimized");
     printMemoryUsage("readAtomEntryOptimized -> Finish");
@@ -137,7 +140,7 @@ public class PerformanceTest extends AbstractProviderTest {
 
     EntityInfoAggregator eia = EntityInfoAggregator.create(edmEntitySet);
     for (int i = 0; i < TIMES; i++) {
-      provider.append(writer, eia, roomData, false, null);
+      provider.append(writer, eia, roomData, false);
     }
     stopTimer(t, "readAtomEntryOptimizedCsb");
     printMemoryUsage("readAtomEntryOptimizedCsb -> Finish");

@@ -20,6 +20,7 @@ import com.sap.core.odata.api.edm.EdmTargetPath;
 import com.sap.core.odata.api.edm.EdmType;
 import com.sap.core.odata.api.enums.MediaType;
 import com.sap.core.odata.api.ep.ODataEntityProviderException;
+import com.sap.core.odata.api.ep.ODataEntityProviderProperties;
 import com.sap.core.odata.api.processor.ODataContext;
 import com.sap.core.odata.core.edm.EdmDateTimeOffset;
 import com.sap.core.odata.core.ep.aggregator.EntityInfoAggregator;
@@ -29,14 +30,14 @@ import com.sap.core.odata.core.ep.util.UriUtils;
 
 public class AtomEntryEntityProvider {
 
-  private ODataContext context;
   private String etag;
+  private ODataEntityProviderProperties properties;
 
-  AtomEntryEntityProvider(ODataContext ctx) throws ODataEntityProviderException {
-    this.context = ctx;
+  AtomEntryEntityProvider(ODataEntityProviderProperties properties) throws ODataEntityProviderException {
+    this.properties = properties;
   }
 
-  public void append(XMLStreamWriter writer, EntityInfoAggregator eia, Map<String, Object> data, boolean isRootElement, String mediaResourceMimeType) throws ODataEntityProviderException {
+  public void append(XMLStreamWriter writer, EntityInfoAggregator eia, Map<String, Object> data, boolean isRootElement) throws ODataEntityProviderException {
     try {
 
       writer.writeStartElement(FormatXml.ATOM_ENTRY);
@@ -45,7 +46,7 @@ public class AtomEntryEntityProvider {
         writer.writeDefaultNamespace(Edm.NAMESPACE_ATOM_2005);
         writer.writeNamespace(Edm.PREFIX_M, Edm.NAMESPACE_M_2007_08);
         writer.writeNamespace(Edm.PREFIX_D, Edm.NAMESPACE_D_2007_08);
-        writer.writeAttribute(Edm.PREFIX_XML, Edm.NAMESPACE_XML_1998, "base", this.context.getUriInfo().getBaseUri().toASCIIString());
+        writer.writeAttribute(Edm.PREFIX_XML, Edm.NAMESPACE_XML_1998, "base", properties.getBaseUri().toASCIIString());
       }
 
       etag = createETag(eia, data);
@@ -60,11 +61,11 @@ public class AtomEntryEntityProvider {
       if (eia.isEntityTypeHasStream()) {
         // write all links
         appendAtomEditLink(writer, eia, data);
-        appendAtomContentLink(writer, eia, data, mediaResourceMimeType);
+        appendAtomContentLink(writer, eia, data, properties.getMediaResourceMimeType());
         appendAtomNavigationLinks(writer, eia, data);
         // write properties/content
         appendCustomProperties(writer, eia, data);
-        appendAtomContentPart(writer, eia, data, mediaResourceMimeType);
+        appendAtomContentPart(writer, eia, data, properties.getMediaResourceMimeType());
         appendProperties(writer, eia, data);
       } else {
         // write all links
@@ -345,7 +346,7 @@ public class AtomEntryEntityProvider {
       }
       id += eia.getEntitySetName() + "(" + entryKey + ")";
 
-      URI baseUri = this.context.getUriInfo().getBaseUri();
+      URI baseUri = properties.getBaseUri();
       return UriUtils.encodeUri(baseUri, id);
     } catch (Exception e) {
       throw new ODataEntityProviderException(ODataEntityProviderException.COMMON, e);
