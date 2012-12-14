@@ -17,6 +17,7 @@ import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.api.processor.ODataSingleProcessor;
 import com.sap.core.odata.api.processor.aspect.ServiceDocument;
 import com.sap.core.odata.api.uri.resultviews.GetServiceDocumentView;
+import com.sap.core.odata.core.ODataExceptionMapperImpl;
 import com.sap.core.odata.core.exception.ODataRuntimeException;
 import com.sap.core.odata.testutils.helper.StringHelper;
 
@@ -33,6 +34,7 @@ public class ErrorResponseTest extends AbstractBasicTest {
 
   @Test
   public void test500RuntimeError() throws ClientProtocolException, IOException, ODataException {
+    disableLogging(ODataExceptionMapperImpl.class);
 
     HttpGet get = new HttpGet(URI.create(this.getEndpoint().toString()));
     HttpResponse response = this.getHttpClient().execute(get);
