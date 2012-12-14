@@ -2,11 +2,18 @@ package com.sap.core.odata.core.ep;
 
 import static org.custommonkey.xmlunit.XMLAssert.assertXpathEvaluatesTo;
 import static org.custommonkey.xmlunit.XMLAssert.assertXpathExists;
+import static org.custommonkey.xmlunit.XMLAssert.assertXpathNotExists;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.xml.stream.FactoryConfigurationError;
 import javax.xml.stream.XMLStreamException;
@@ -18,6 +25,11 @@ import org.junit.Test;
 import org.xml.sax.SAXException;
 
 import com.sap.core.odata.api.edm.Edm;
+import com.sap.core.odata.api.edm.EdmCustomizableFeedMappings;
+import com.sap.core.odata.api.edm.EdmEntitySet;
+import com.sap.core.odata.api.edm.EdmProperty;
+import com.sap.core.odata.api.edm.EdmTargetPath;
+import com.sap.core.odata.api.edm.EdmTyped;
 import com.sap.core.odata.api.enums.MediaType;
 import com.sap.core.odata.api.ep.ODataEntityContent;
 import com.sap.core.odata.api.ep.ODataEntityProvider;
@@ -84,8 +96,6 @@ public class AtomEntryProviderTest extends AbstractProviderTest {
     ODataEntityContent content= ser.writeEntry(MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Employees"), this.employeeData, properties);
     String xmlString = verifyContent(content);
 
-    log.debug(xmlString);
-    
     assertXpathExists("/a:entry", xmlString);
     assertXpathExists("/a:entry/a:content", xmlString);
     // verify self link
@@ -102,17 +112,22 @@ public class AtomEntryProviderTest extends AbstractProviderTest {
     assertXpathEvaluatesTo("8", "count(/a:entry/m:properties/*)", xmlString);
     
     // verify order of tags
-    verifyTagOrdering(xmlString, "id", "title", "updated", "category", "link", "content", "properties");
+    verifyTagOrdering(xmlString, "id", "title", "updated", "category", 
+        "link((?:(?!link).)*?)edit", 
+        "link((?:(?!link).)*?)edit-media", 
+        "link((?:(?!link).)*?)ne_Manager", 
+        "content", "properties");
   }
 
   @Test
   public void serializeEmployeeAndCheckOrderOfPropertyTags() throws IOException, XpathException, SAXException, XMLStreamException, FactoryConfigurationError, ODataException {
     ODataEntityProvider ser = createAtomEntityProvider();
     ODataEntityProviderProperties properties = ODataEntityProviderProperties.baseUri(BASE_URI).mediaResourceMimeType("abc").build();
-    ODataEntityContent content= ser.writeEntry(MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Employees"), this.employeeData, properties);
+    EdmEntitySet employeeEntitySet = MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Employees");
+    ODataEntityContent content= ser.writeEntry(employeeEntitySet, this.employeeData, properties);
     String xmlString = verifyContent(content);
 
-    log.debug(xmlString);
+//    log.debug(xmlString);
     
     assertXpathExists("/a:entry", xmlString);
     assertXpathExists("/a:entry/a:content", xmlString);
@@ -121,7 +136,39 @@ public class AtomEntryProviderTest extends AbstractProviderTest {
     assertXpathEvaluatesTo("8", "count(/a:entry/m:properties/*)", xmlString);
     
     // verify order of tags
-    verifyTagOrdering(xmlString, "EmployeeId", "EmployeeName", "ImageUrl", "Age", "TeamId", "RoomId", "EntryDate", "Location");
+    List<String> expectedPropertyNamesFromEdm = employeeEntitySet.getEntityType().getPropertyNames();
+    verifyTagOrdering(xmlString, expectedPropertyNamesFromEdm.toArray(new String[0]));
+  }
+
+  
+  @Test
+  public void serializeEmployeeAndCheckKeepInContentFalse() throws IOException, XpathException, SAXException, XMLStreamException, FactoryConfigurationError, ODataException {
+    ODataEntityProvider ser = createAtomEntityProvider();
+    ODataEntityProviderProperties properties = ODataEntityProviderProperties.baseUri(BASE_URI).mediaResourceMimeType("abc").build();
+    EdmEntitySet employeeEntitySet = MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Employees");
+
+    // set "keepInContent" to false for EntryDate
+    EdmCustomizableFeedMappings employeeUpdatedeMappings = mock(EdmCustomizableFeedMappings.class);
+    when(employeeUpdatedeMappings.getFcTargetPath()).thenReturn(EdmTargetPath.SYNDICATION_UPDATED);
+    when(employeeUpdatedeMappings.isFcKeepInContent()).thenReturn(Boolean.FALSE);
+    EdmTyped employeeEntryDateProperty = employeeEntitySet.getEntityType().getProperty("EntryDate");
+    when(((EdmProperty)employeeEntryDateProperty).getCustomizableFeedMappings()).thenReturn(employeeUpdatedeMappings);
+    
+    ODataEntityContent content= ser.writeEntry(employeeEntitySet, this.employeeData, properties);
+    String xmlString = verifyContent(content);
+
+    assertXpathExists("/a:entry", xmlString);
+    assertXpathExists("/a:entry/a:content", xmlString);
+    // verify properties
+    assertXpathExists("/a:entry/m:properties", xmlString);
+    assertXpathEvaluatesTo("7", "count(/a:entry/m:properties/*)", xmlString);
+    //
+    assertXpathNotExists("/a:entry/m:properties/d:EntryDate", xmlString);
+
+    // verify order of tags
+    List<String> expectedPropertyNamesFromEdm = new ArrayList<String>(employeeEntitySet.getEntityType().getPropertyNames());
+    expectedPropertyNamesFromEdm.remove(String.valueOf("EntryDate"));
+    verifyTagOrdering(xmlString, expectedPropertyNamesFromEdm.toArray(new String[0]));
   }
 
   @Test
@@ -280,11 +327,20 @@ public class AtomEntryProviderTest extends AbstractProviderTest {
 
   private void verifyTagOrdering(String xmlString, String ... toCheckTags) {
     int lastTagPos = -1;
+    
     for (String tagName : toCheckTags) {
-      int currentTagPos = xmlString.indexOf(tagName);
-      Assert.assertTrue("Tag with name '" + tagName + "' is not in correct order. Expected order is '" + Arrays.toString(toCheckTags) + "'.", 
-          lastTagPos < currentTagPos);
-      lastTagPos = currentTagPos;
+      Pattern p = Pattern.compile(tagName);
+      Matcher m = p.matcher(xmlString);
+      
+      if(m.find()) {
+        int currentTagPos = m.start();
+        Assert.assertTrue("Tag with name '" + tagName + "' is not in correct order. Expected order is '" + Arrays.toString(toCheckTags) + "'.", 
+            lastTagPos < currentTagPos);
+        lastTagPos = currentTagPos;
+      } else {
+        Assert.fail("Expected tag '" + tagName + "' was not found in input [\n\n" + xmlString + "\n\n].");
+      }
+      
     }
   }
 }
