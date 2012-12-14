@@ -102,7 +102,7 @@ public class ListsProcessor extends ODataSingleProcessor {
     // if there are further entities.
     // Almost all system query options in the current request must be carried
     // over to the URI for the "next" link, with the exception of $skiptoken
-    // and $skip, but this is currently not done.
+    // and $skip; this is missing currently.
     String nextSkipToken = null;
     if (data.size() > SERVER_PAGING_SIZE
         && uriParserResultView.getFilter() == null
@@ -130,14 +130,15 @@ public class ListsProcessor extends ODataSingleProcessor {
     for (final Object entryData : data)
       values.add(getStructuralTypeValueMap(entryData, entityType));
 
-    ODataEntityProviderProperties properties = ODataEntityProviderProperties.baseUri(getContext().getUriInfo().getBaseUri())
+    final ODataEntityProviderProperties feedProperties = ODataEntityProviderProperties
+        .baseUri(getContext().getUriInfo().getBaseUri())
         .inlineCount(count)
         .skipToken(nextSkipToken)
         .build();
-    
+
     return ODataResponse
         .status(HttpStatusCodes.OK)
-        .entity(ODataEntityProvider.create(format).writeFeed(uriParserResultView, values, properties))
+        .entity(ODataEntityProvider.create(format).writeFeed(uriParserResultView, values, feedProperties))
         .build();
   }
 
@@ -220,11 +221,12 @@ public class ListsProcessor extends ODataSingleProcessor {
     final EdmEntitySet entitySet = uriParserResultView.getTargetEntitySet();
     final Map<String, Object> values = getStructuralTypeValueMap(data, entitySet.getEntityType());
 
-    ODataEntityProviderProperties properties = ODataEntityProviderProperties.baseUri(getContext().getUriInfo().getBaseUri()).build();
+    final ODataEntityProviderProperties entryProperties = ODataEntityProviderProperties
+        .baseUri(getContext().getUriInfo().getBaseUri()).build();
 
     return ODataResponse
         .status(HttpStatusCodes.OK)
-        .entity(ODataEntityProvider.create(format).writeEntry(entitySet, values, properties))
+        .entity(ODataEntityProvider.create(format).writeEntry(entitySet, values, entryProperties))
         .build();
   }
 
@@ -389,7 +391,7 @@ public class ListsProcessor extends ODataSingleProcessor {
           .status(HttpStatusCodes.OK)
           .header(CONTENT_TYPE, format == Format.ATOM ?
               MediaType.APPLICATION_ATOM_XML_ENTRY.toString() : MediaType.APPLICATION_XML.toString())
-          // .entity(ODataEntityProvider.create(format, getContext()).writeEntry(null, values))
+          // .entity(ODataEntityProvider.create(format).writeEntry(null, values, null))
           .entity(values.toString())
           .build();
     } else {
@@ -398,7 +400,7 @@ public class ListsProcessor extends ODataSingleProcessor {
       return ODataResponse
           .status(HttpStatusCodes.OK)
           .header(CONTENT_TYPE, MediaType.APPLICATION_XML.toString())
-          // .entity(ODataEntityProvider.create(format, getContext()).writeProperty(null, value))
+          // .entity(ODataEntityProvider.create(format).writeProperty(null, value))
           .entity(value.toString())
           .build();
     }
@@ -703,23 +705,8 @@ public class ListsProcessor extends ODataSingleProcessor {
   }
 
   private <T> String getSkipToken(final EdmEntitySet entitySet, final T data) throws ODataException {
-    List<EdmProperty> keyProperties = entitySet.getEntityType().getKeyProperties();
-    // The key properties come from a hash map without predictable order.
-    // Since this implementation builds the skip token by concatenating the values
-    // of the key properties, order is relevant.
-    Collections.sort(keyProperties, new Comparator<EdmProperty>() {
-      @Override
-      public int compare(final EdmProperty keyProperty1, final EdmProperty keyProperty2) {
-        try {
-          return keyProperty1.getName().compareToIgnoreCase(keyProperty2.getName());
-        } catch (EdmException e) {
-          return 0;
-        }
-      }
-    });
-
     String skipToken = "";
-    for (final EdmProperty property : keyProperties) {
+    for (final EdmProperty property : entitySet.getEntityType().getKeyProperties()) {
       final EdmSimpleType type = (EdmSimpleType) property.getType();
       skipToken = skipToken.concat(type.valueToString(getPropertyValue(data, property), EdmLiteralKind.DEFAULT, property.getFacets()));
     }

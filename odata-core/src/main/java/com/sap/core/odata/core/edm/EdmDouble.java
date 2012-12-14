@@ -89,27 +89,27 @@ public class EdmDouble implements EdmSimpleType {
     if (literalKind == null)
       throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_KIND_MISSING);
 
-    if (value.equals("-INF"))
-      return Double.NEGATIVE_INFINITY;
-    else if (value.equals("INF"))
-      return Double.POSITIVE_INFINITY;
-    else if (value.equals("NaN"))
-      return Double.NaN;
-
     if (!value.matches("-?\\p{Digit}{1,15}(?:\\.\\p{Digit}{1,15})?(?:(?:E|e)-?\\p{Digit}{1,3})?"
         + (literalKind == EdmLiteralKind.URI ? "(?:D|d)" : "")))
-      throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_ILLEGAL_CONTENT.addContent(value));
-
-    Double result;
-    try {
-      if (literalKind == EdmLiteralKind.URI)
-        result = Double.parseDouble(value.substring(0, value.length() - 1));
+      if (value.equals("-INF"))
+        return Double.NEGATIVE_INFINITY;
+      else if (value.equals("INF"))
+        return Double.POSITIVE_INFINITY;
+      else if (value.equals("NaN"))
+        return Double.NaN;
       else
-        result = Double.parseDouble(value);
-    } catch (NumberFormatException e) {
-      throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_ILLEGAL_CONTENT.addContent(value), e);
-    }
+        throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_ILLEGAL_CONTENT.addContent(value));
 
+    // The number format is checked above, so we don't have to catch NumberFormatException.
+    Double result;
+    if (literalKind == EdmLiteralKind.URI)
+      result = Double.valueOf(value.substring(0, value.length() - 1));
+    else
+      result = Double.valueOf(value);
+
+    // Values outside the value range have been set to Infinity by Double.valueOf();
+    // "real" infinite values have been treated already above, so we can throw an exception
+    // if we see them here.
     if (result.isInfinite())
       throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_ILLEGAL_CONTENT.addContent(value));
     else

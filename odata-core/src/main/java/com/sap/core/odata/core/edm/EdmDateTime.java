@@ -21,7 +21,9 @@ import com.sap.core.odata.api.edm.EdmTypeKind;
  */
 public class EdmDateTime implements EdmSimpleType {
 
-  private static final Pattern PATTERN = Pattern.compile("(\\p{Digit}{1,4})-(\\p{Digit}{1,2})-(\\p{Digit}{1,2})T(\\p{Digit}{1,2}):(\\p{Digit}{1,2})(?::(\\p{Digit}{1,2})(\\.\\p{Digit}{1,7})?)?");
+  private static final Pattern PATTERN = Pattern.compile(
+      "(\\p{Digit}{1,4})-(\\p{Digit}{1,2})-(\\p{Digit}{1,2})"
+          + "T(\\p{Digit}{1,2}):(\\p{Digit}{1,2})(?::(\\p{Digit}{1,2})(\\.\\p{Digit}{1,7})?)?");
   private static final Pattern JSON_PATTERN = Pattern.compile("\\\\/Date\\((-?\\p{Digit}+)\\)\\\\/");
   private static final EdmDateTime instance = new EdmDateTime();
 
@@ -88,11 +90,18 @@ public class EdmDateTime implements EdmSimpleType {
     dateTimeValue.clear();
     dateTimeValue.setTimeZone(TimeZone.getTimeZone("GMT"));
 
+    // In JSON, we allow also the XML literal form, so there is on purpose
+    // no exception if the JSON pattern does not match.
     if (literalKind == EdmLiteralKind.JSON) {
       if (JSON_PATTERN.matcher(value).matches()) {
-        dateTimeValue.setTimeInMillis(Long.decode(value.substring(7, value.length() - 3)));
+        try {
+          dateTimeValue.setTimeInMillis(Long.parseLong(value.substring(7, value.length() - 3)));
+        } catch (NumberFormatException e) {
+          throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_ILLEGAL_CONTENT.addContent(value), e);
+        }
         return dateTimeValue;
       }
+
     } else if (literalKind == EdmLiteralKind.URI) {
       if (value.length() > 10 && value.startsWith("datetime'") && value.endsWith("'"))
         return valueOfString(value.substring(9, value.length() - 1), EdmLiteralKind.DEFAULT, facets);
@@ -104,8 +113,9 @@ public class EdmDateTime implements EdmSimpleType {
     if (!matcher.matches())
       throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_ILLEGAL_CONTENT.addContent(value));
 
-    dateTimeValue.set(Short.parseShort(matcher.group(1)),
-        Byte.parseByte(matcher.group(2)) - 1,
+    dateTimeValue.set(
+        Short.parseShort(matcher.group(1)),
+        Byte.parseByte(matcher.group(2)) - 1, // month is zero-based
         Byte.parseByte(matcher.group(3)),
         Byte.parseByte(matcher.group(4)),
         Byte.parseByte(matcher.group(5)));
@@ -125,6 +135,17 @@ public class EdmDateTime implements EdmSimpleType {
       dateTimeValue.set(Calendar.MILLISECOND, Short.parseShort(milliSeconds));
     }
 
+    // The Calendar class does not check any values until a get method is called,
+    // so we do just that to validate the fields set above, not because we want
+    // to return something else.  For strict checks, the lenient mode is switched
+    // off temporarily.
+    dateTimeValue.setLenient(false);
+    try {
+      dateTimeValue.getTimeInMillis();
+    } catch (IllegalArgumentException e) {
+      throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_ILLEGAL_CONTENT.addContent(value), e);
+    }
+    dateTimeValue.setLenient(true);
     return dateTimeValue;
   }
 
