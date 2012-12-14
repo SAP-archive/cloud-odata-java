@@ -5,6 +5,7 @@ import static org.custommonkey.xmlunit.XMLAssert.assertXpathExists;
 import static org.custommonkey.xmlunit.XMLAssert.assertXpathNotExists;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -20,7 +21,6 @@ import javax.xml.stream.XMLStreamException;
 
 import org.custommonkey.xmlunit.exceptions.XpathException;
 import org.junit.Assert;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.xml.sax.SAXException;
 
@@ -300,15 +300,20 @@ public class AtomEntryProviderTest extends AbstractProviderTest {
   }
   
   @Test
-  @Ignore("Weird failure for XPath/XMLUnit")
   public void serializeCustomMapping() throws IOException, XpathException, SAXException, XMLStreamException, FactoryConfigurationError, ODataException {
     ODataEntityProvider ser = createAtomEntityProvider();
     ODataEntityContent content= ser.writeEntry(MockFacade.getMockEdm().getEntityContainer("Container2").getEntitySet("Photos"), this.photoData, DEFAULT_PROPERTIES);
     String xmlString = verifyContent(content);
 
     assertXpathExists("/a:entry", xmlString);
-    assertXpathExists("/a:entry/ру:Содержание", xmlString);
-    assertXpathEvaluatesTo("", "/a:entry/ру:Содержание/text()", xmlString);
+//    assertXpathExists("/a:entry/ру:Содержание", xmlString);
+//    assertXpathEvaluatesTo("", "/a:entry/ру:Содержание/text()", xmlString);
+    // ugly, but problems with XMLUnit and 'namespace:ру'
+    final String tagcontent = (String) photoData.get("Содержание");
+    assertTrue("Expected result was not found in input [\n\n" + xmlString + "\n\n].",
+//        Pattern.matches(".*<ру:Содержание xmlns:ру=\"http://localhost\">" + tagcontent + "</ру:Содержание>.*", xmlString));
+        Pattern.matches(".*:Содержание xmlns:..=\"http://localhost\">" + tagcontent + "</..:Содержание>.*", xmlString));
+    verifyTagOrdering(xmlString, "category", "Содержание", "content", "properties");
   }
 
   @Test
