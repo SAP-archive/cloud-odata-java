@@ -4,6 +4,8 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.TimeZone;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import com.sap.core.odata.api.edm.EdmException;
 import com.sap.core.odata.api.edm.EdmFacets;
@@ -14,11 +16,16 @@ import com.sap.core.odata.api.edm.EdmSimpleTypeKind;
 import com.sap.core.odata.api.edm.EdmTypeKind;
 
 /**
- * Implementation of the EDM simple type Time
+ * <p>Implementation of the EDM simple type Time</p>
+ * <p>Arguably, this type is intended to represent a time of day, not an instance in time.
+ * The year, month, and day parts of time instances are simply ignored.
+ * The time value is interpreted and formatted as local time.</p>
  * @author SAP AG
  */
 public class EdmTime implements EdmSimpleType {
 
+  private static final Pattern PATTERN = Pattern.compile(
+      "PT(?:(\\p{Digit}+)H)?(?:(\\p{Digit}+)M)?(?:(\\p{Digit}+)(?:\\.(\\p{Digit}+?)0*)?S)?");
   private static final EdmTime instance = new EdmTime();
 
   private EdmTime() {
@@ -80,20 +87,38 @@ public class EdmTime implements EdmSimpleType {
     if (literalKind == null)
       throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_KIND_MISSING);
 
-    switch (literalKind) {
-    case DEFAULT:
-    case JSON:
-      throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_KIND_NOT_SUPPORTED.addContent(literalKind));
-
-    case URI:
+    if (literalKind == EdmLiteralKind.URI)
       if (value.length() > 6 && value.startsWith("time'") && value.endsWith("'"))
         return valueOfString(value.substring(5, value.length() - 1), EdmLiteralKind.DEFAULT, facets);
       else
         throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_ILLEGAL_CONTENT.addContent(value));
 
-    default:
-      throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_KIND_NOT_SUPPORTED.addContent(literalKind));
-    }
+    final Matcher matcher = PATTERN.matcher(value);
+    if (!matcher.matches()
+        || (matcher.group(1) == null && matcher.group(2) == null && matcher.group(3) == null))
+      throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_ILLEGAL_CONTENT.addContent(value));
+
+    Calendar dateTimeValue = Calendar.getInstance();
+    dateTimeValue.clear();
+
+    if (matcher.group(1) != null)
+      dateTimeValue.set(Calendar.HOUR, Integer.parseInt(matcher.group(1)));
+    if (matcher.group(2) != null)
+        dateTimeValue.set(Calendar.MINUTE, Integer.parseInt(matcher.group(2)));
+    if (matcher.group(3) != null)
+      dateTimeValue.set(Calendar.SECOND, Integer.parseInt(matcher.group(3)));
+
+    if (matcher.group(4) != null)
+      if (facets == null || facets.getPrecision() == null || facets.getPrecision() >= matcher.group(4).length())
+        if (matcher.group(4).length() <= 3)
+          dateTimeValue.set(Calendar.MILLISECOND,
+              Short.parseShort(matcher.group(4) + "000".substring(0, 3 - matcher.group(4).length())));
+        else
+          throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_ILLEGAL_CONTENT.addContent(value));
+      else
+        throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_FACETS_NOT_MATCHED.addContent(value, facets));
+
+    return dateTimeValue;
   }
 
   @Override
@@ -128,9 +153,6 @@ public class EdmTime implements EdmSimpleType {
       throw new EdmSimpleTypeException(EdmSimpleTypeException.VALUE_TYPE_NOT_SUPPORTED.addContent(value.getClass()));
     }
 
-    // Arguably, Edm.Time is intended to represent a time of day, not an instance in time.
-    // The year, month, and day parts of time instances are simply ignored.
-    // The time value is interpreted and formatted as local time.
     final String pattern = "'PT'H'H'm'M's.SSS";
     SimpleDateFormat dateFormat = (SimpleDateFormat) SimpleDateFormat.getDateTimeInstance();
     dateFormat.setTimeZone(dateTimeValue.getTimeZone());

@@ -1077,8 +1077,47 @@ public class EdmSimpleTypeTest {
   @Test
   public void valueOfStringTime() throws Exception {
     final EdmSimpleType instance = EdmSimpleTypeKind.Time.getEdmSimpleTypeInstance();
+    Calendar dateTime = Calendar.getInstance();
 
-    expectErrorInValueToString(instance, "P2012Y2M29DT23H32M2S", EdmLiteralKind.DEFAULT, null);
-    expectErrorInValueToString(instance, "datetime'PT23H32M2S'", EdmLiteralKind.URI, null);
+    dateTime.clear();
+    dateTime.set(Calendar.HOUR_OF_DAY, 23);
+    dateTime.set(Calendar.MINUTE, 32);
+    dateTime.set(Calendar.SECOND, 3);
+    assertEquals(dateTime, instance.valueOfString("PT23H32M3S", EdmLiteralKind.DEFAULT, null));
+    assertEquals(dateTime, instance.valueOfString("PT23H32M3S", EdmLiteralKind.JSON, null));
+    assertEquals(dateTime, instance.valueOfString("time'PT23H32M3S'", EdmLiteralKind.URI, null));
+
+    dateTime.add(Calendar.MILLISECOND, 1);
+    assertEquals(dateTime, instance.valueOfString("PT23H32M3.001S", EdmLiteralKind.DEFAULT, null));
+    assertEquals(dateTime, instance.valueOfString("PT23H32M3.001S", EdmLiteralKind.JSON, null));
+    assertEquals(dateTime, instance.valueOfString("time'PT23H32M3.001S'", EdmLiteralKind.URI, null));
+
+    dateTime.add(Calendar.MILLISECOND, -1);
+    assertEquals(dateTime, instance.valueOfString("PT23H32M3S", EdmLiteralKind.DEFAULT, getPrecisionScaleFacets(0, null)));
+    dateTime.add(Calendar.MILLISECOND, 10);
+    assertEquals(dateTime, instance.valueOfString("PT23H32M3.01S", EdmLiteralKind.DEFAULT, getPrecisionScaleFacets(2, null)));
+    dateTime.add(Calendar.MILLISECOND, -23);
+    assertEquals(dateTime, instance.valueOfString("PT23H32M2.987S", EdmLiteralKind.DEFAULT, getPrecisionScaleFacets(null, null)));
+    assertEquals(dateTime, instance.valueOfString("PT23H32M2.98700S", EdmLiteralKind.DEFAULT, getPrecisionScaleFacets(5, null)));
+    dateTime.add(Calendar.MILLISECOND, -87);
+    assertEquals(dateTime, instance.valueOfString("PT23H32M2.9S", EdmLiteralKind.DEFAULT, getPrecisionScaleFacets(1, null)));
+
+    dateTime.add(Calendar.HOUR, -23);
+    assertEquals(dateTime, instance.valueOfString("PT32M2.9S", EdmLiteralKind.DEFAULT, null));
+    dateTime.add(Calendar.MINUTE, -32);
+    assertEquals(dateTime, instance.valueOfString("PT2.9S", EdmLiteralKind.DEFAULT, null));
+    assertEquals(dateTime, instance.valueOfString("PT2.900S", EdmLiteralKind.JSON, null));
+    dateTime.add(Calendar.MILLISECOND, -2900);
+    assertEquals(dateTime, instance.valueOfString("PT0S", EdmLiteralKind.DEFAULT, null));
+    dateTime.add(Calendar.MINUTE, 59);
+    assertEquals(dateTime, instance.valueOfString("PT59M", EdmLiteralKind.DEFAULT, null));
+
+    expectErrorInValueOfString(instance, "PT1H2M3.1234S", EdmLiteralKind.DEFAULT, null);
+    expectErrorInValueOfString(instance, "PT13H2M3.9S", EdmLiteralKind.DEFAULT, getPrecisionScaleFacets(0, null));
+    expectErrorInValueOfString(instance, "P2012Y2M29DT23H32M2S", EdmLiteralKind.DEFAULT, null);
+    expectErrorInValueOfString(instance, "PT", EdmLiteralKind.DEFAULT, null);
+    expectErrorInValueOfString(instance, "datetime'PT23H32M2S'", EdmLiteralKind.URI, null);
+    expectErrorInValueOfString(instance, "time'", EdmLiteralKind.URI, null);
+    expectErrorInValueOfString(instance, "time''PT", EdmLiteralKind.URI, null);
   }
 }
