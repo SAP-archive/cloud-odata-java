@@ -10,14 +10,6 @@ import com.sap.core.odata.api.service.ODataService;
 public interface ODataContext {
 
   /**
-   * Access to untyped context objects. 
-   * @param key access object by key
-   * @return an object or null if not found
-   * @throws {@link ODataException}
-   */
-  <T> T getObject(String key) throws ODataException;
-
-  /**
    * @return ODataService related for this context
    * @throws ODataException
    */
