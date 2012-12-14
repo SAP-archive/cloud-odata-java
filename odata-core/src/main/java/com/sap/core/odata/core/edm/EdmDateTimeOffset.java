@@ -3,6 +3,8 @@ package com.sap.core.odata.core.edm;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.TimeZone;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import com.sap.core.odata.api.edm.EdmException;
 import com.sap.core.odata.api.edm.EdmFacets;
@@ -18,6 +20,14 @@ import com.sap.core.odata.api.edm.EdmTypeKind;
  */
 public class EdmDateTimeOffset implements EdmSimpleType {
 
+  private static final Pattern PATTERN = Pattern.compile(
+      "(\\p{Digit}{1,4})-(\\p{Digit}{1,2})-(\\p{Digit}{1,2})"
+          + "T(\\p{Digit}{1,2}):(\\p{Digit}{1,2})(?::(\\p{Digit}{1,2})(\\.\\p{Digit}{1,7})?)?"
+          + "(Z|([-+]\\p{Digit}{1,2}:\\p{Digit}{2}))?");
+  private static final Pattern JSON_PATTERN = Pattern.compile(
+      "\\\\/Date\\((-?\\p{Digit}+)"
+          + "(?:(\\+|-)(\\p{Digit}{1,4}))?"
+          + "\\)\\\\/");
   private static final EdmDateTimeOffset instance = new EdmDateTimeOffset();
 
   private EdmDateTimeOffset() {
@@ -79,21 +89,60 @@ public class EdmDateTimeOffset implements EdmSimpleType {
     if (literalKind == null)
       throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_KIND_MISSING);
 
-    switch (literalKind) {
-    case DEFAULT:
-      throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_KIND_NOT_SUPPORTED.addContent(literalKind));
+    if (literalKind == EdmLiteralKind.JSON) {
+      final Matcher matcher = JSON_PATTERN.matcher(value);
+      if (matcher.matches()) {
+        Calendar dateTimeValue = Calendar.getInstance(TimeZone.getTimeZone("GMT"));
+        dateTimeValue.clear();
+        try {
+          dateTimeValue.setTimeInMillis(Long.parseLong(matcher.group(1)));
+        } catch (NumberFormatException e) {
+          throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_ILLEGAL_CONTENT.addContent(value), e);
+        }
+        if (matcher.group(2) != null) {
+          final int offsetInMinutes = Integer.parseInt(matcher.group(3));
+          if (offsetInMinutes == 0)
+            return dateTimeValue;
+          if (offsetInMinutes >= 24 * 60)
+            throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_ILLEGAL_CONTENT.addContent(value));
+          dateTimeValue.setTimeZone(TimeZone.getTimeZone(
+              "GMT" + matcher.group(2) + String.valueOf(offsetInMinutes / 60)
+              + ":" + String.format("%02d", offsetInMinutes % 60)));
+          // Subtract the time-zone offset to counter the automatic adjustment above
+          // caused by the fact that the Calendar instance created above is in the
+          // "GMT" timezone.
+          dateTimeValue.add(Calendar.MILLISECOND, 0 - dateTimeValue.get(Calendar.ZONE_OFFSET));
+        }
+        return dateTimeValue;
+      }
 
-    case JSON:
-      throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_KIND_NOT_SUPPORTED.addContent(literalKind));
-
-    case URI:
+    } else if (literalKind == EdmLiteralKind.URI) {
       if (value.length() > 16 && value.startsWith("datetimeoffset'") && value.endsWith("'"))
         return valueOfString(value.substring(15, value.length() - 1), EdmLiteralKind.DEFAULT, facets);
       else
         throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_ILLEGAL_CONTENT.addContent(value));
+    }
 
-    default:
-      throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_KIND_NOT_SUPPORTED.addContent(literalKind));
+    final Matcher matcher = PATTERN.matcher(value);
+    if (!matcher.matches())
+      throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_ILLEGAL_CONTENT.addContent(value));
+
+    if (matcher.group(8) == null) {
+      return EdmDateTime.getInstance().valueOfString(value, EdmLiteralKind.DEFAULT, facets);
+    } else {
+      Calendar dateTimeValue = EdmDateTime.getInstance().valueOfString(value.substring(0, matcher.start(8)), EdmLiteralKind.DEFAULT, facets);
+      if (matcher.group(9) == null || matcher.group(9).matches("[-+]0+:0+")) {
+        return dateTimeValue;
+      } else {
+        dateTimeValue.setTimeZone(TimeZone.getTimeZone("GMT" + matcher.group(9)));
+        if (dateTimeValue.get(Calendar.ZONE_OFFSET) == 0) // invalid offset
+          throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_ILLEGAL_CONTENT.addContent(value));
+        // Subtract the time-zone offset to counter the automatic adjustment above
+        // caused by the fact that the Calendar instance returned from EdmDateTime
+        // is in the "GMT" timezone.
+        dateTimeValue.add(Calendar.MILLISECOND, 0 - dateTimeValue.get(Calendar.ZONE_OFFSET));
+        return dateTimeValue;
+      }
     }
   }
 
@@ -132,38 +181,23 @@ public class EdmDateTimeOffset implements EdmSimpleType {
     final int offset = dateTimeValue.get(Calendar.ZONE_OFFSET) + dateTimeValue.get(Calendar.DST_OFFSET);
     dateTimeValue.add(Calendar.MILLISECOND, offset); // to counter UTC output below
     final int offsetInMinutes = offset / 60 / 1000;
-    final int offsetHours = offsetInMinutes / 60;
-    final int offsetMinutes = Math.abs(offsetInMinutes % 60);
 
-    String localTimeString;
-    if (literalKind == EdmLiteralKind.JSON)
-      localTimeString = Long.toString(dateTimeValue.getTimeInMillis());
-    else
-      localTimeString = EdmDateTime.getInstance().valueToString(dateTimeValue, EdmLiteralKind.DEFAULT, facets);
+    if (literalKind == EdmLiteralKind.JSON) {
+      return "\\/Date("
+          + Long.toString(dateTimeValue.getTimeInMillis())
+          + (offset == 0 ? "" : String.format("%+05d", offsetInMinutes))
+          + ")\\/";
 
-    String offsetString;
-    if (literalKind == EdmLiteralKind.JSON)
-      if (offset == 0)
-        offsetString = "";
+    } else {
+      final String localTimeString = EdmDateTime.getInstance().valueToString(dateTimeValue, EdmLiteralKind.DEFAULT, facets);
+      final int offsetHours = offsetInMinutes / 60;
+      final int offsetMinutes = Math.abs(offsetInMinutes % 60);
+      final String offsetString = offset == 0 ? "Z" : String.format("%+03d:%02d", offsetHours, offsetMinutes);
+
+      if (literalKind == EdmLiteralKind.URI)
+        return "datetimeoffset'" + localTimeString + offsetString + "'";
       else
-        offsetString = String.format("%+03d%02d", offsetHours, offsetMinutes);
-    else if (offset == 0)
-      offsetString = "Z";
-    else
-      offsetString = String.format("%+03d:%02d", offsetHours, offsetMinutes);
-
-    switch (literalKind) {
-    case DEFAULT:
-      return localTimeString + offsetString;
-
-    case JSON:
-      return "\\/Date(" + localTimeString + offsetString + ")\\/";
-
-    case URI:
-      return "datetimeoffset'" + localTimeString + offsetString + "'";
-
-    default:
-      throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_KIND_NOT_SUPPORTED.addContent(literalKind));
+        return localTimeString + offsetString;
     }
   }
 

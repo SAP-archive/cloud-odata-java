@@ -89,27 +89,27 @@ public class EdmSingle implements EdmSimpleType {
     if (literalKind == null)
       throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_KIND_MISSING);
 
-    if (value.equals("-INF"))
-      return Float.NEGATIVE_INFINITY;
-    else if (value.equals("INF"))
-      return Float.POSITIVE_INFINITY;
-    else if (value.equals("NaN"))
-      return Float.NaN;
-
     if (!value.matches("-?\\p{Digit}{1,7}(?:\\.\\p{Digit}{1,7})?(?:(?:E|e)-?\\p{Digit}{1,2})?"
         + (literalKind == EdmLiteralKind.URI ? "(?:F|f)" : "")))
-      throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_ILLEGAL_CONTENT.addContent(value));
-
-    Float result;
-    try {
-      if (literalKind == EdmLiteralKind.URI)
-        result = Float.parseFloat(value.substring(0, value.length() - 1));
+      if (value.equals("-INF"))
+        return Float.NEGATIVE_INFINITY;
+      else if (value.equals("INF"))
+        return Float.POSITIVE_INFINITY;
+      else if (value.equals("NaN"))
+        return Float.NaN;
       else
-        result = Float.parseFloat(value);
-    } catch (NumberFormatException e) {
-      throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_ILLEGAL_CONTENT.addContent(value), e);
-    }
+        throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_ILLEGAL_CONTENT.addContent(value));
 
+    // The number format is checked above, so we don't have to catch NumberFormatException.
+    Float result;
+    if (literalKind == EdmLiteralKind.URI)
+      result = Float.valueOf(value.substring(0, value.length() - 1));
+    else
+      result = Float.valueOf(value);
+
+    // Values outside the value range have been set to Infinity by Float.valueOf();
+    // "real" infinite values have been treated already above, so we can throw an exception
+    // if we see them here.
     if (result.isInfinite())
       throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_ILLEGAL_CONTENT.addContent(value));
     else
