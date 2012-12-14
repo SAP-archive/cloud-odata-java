@@ -21,7 +21,7 @@ public abstract class AbstractBasicTest extends AbstractFitTest {
 
   @Override
   protected ODataSingleProcessorService createService() throws ODataException {
-    EdmProvider provider = mock(EdmProvider.class);
+    EdmProvider provider = createEdmProvider();
     ODataSingleProcessor processor = this.createProcessor();
 
     // science fiction (return context after setContext)
@@ -45,5 +45,9 @@ public abstract class AbstractBasicTest extends AbstractFitTest {
     return new ODataSingleProcessorService(provider, processor) {};
   }
 
+  EdmProvider createEdmProvider() {
+    return mock(EdmProvider.class);
+  }
+  
   abstract ODataSingleProcessor createProcessor() throws ODataException;
 }
