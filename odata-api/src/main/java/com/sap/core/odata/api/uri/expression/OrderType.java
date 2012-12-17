@@ -1,29 +1,20 @@
 package com.sap.core.odata.api.uri.expression;
-/*X*/
 
-/**
- * Enumerations for supported unary operators of the OData expression parser
- * for OData version 2.0
- * @author SAP AG 
- */
-public enum UnaryOperator
-{
-  MINUS("-", "negation"),
-  NOT("not");
-  
+public enum OrderType {
+  asc("asc"),
+  desc("desc");
   
   private String syntax;
   private String stringRespresentation;
   
-  
-  private UnaryOperator(String syntax)
+  private OrderType(String syntax)
   {
     this.syntax = syntax;
     this.stringRespresentation = syntax;
   }
   
   
-  private UnaryOperator(String syntax, String stringRespresentation)
+  private OrderType( String syntax, String stringRespresentation)
   {
     this.syntax = syntax;
     this.stringRespresentation = stringRespresentation;
@@ -31,17 +22,17 @@ public enum UnaryOperator
   
   
   /** 
-   * @return Methods name for usage in in text
+   * @return Operators name for usage in in text
    */
   @Override
   public String toString()
   {
     return stringRespresentation;
   }
-  
+ 
   
   /**
-   * @return Syntax of the unary operator as used in the URL. 
+   * @return URI literal of the unary operator as used in the URL. 
    */
   public String toUriLiteral()
   {

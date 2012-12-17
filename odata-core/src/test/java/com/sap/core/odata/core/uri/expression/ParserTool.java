@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
 import com.sap.core.odata.api.edm.EdmSimpleType;
+import com.sap.core.odata.api.exception.ODataApplicationException;
 import com.sap.core.odata.api.uri.expression.CommonExpression;
 import com.sap.core.odata.api.uri.expression.ExceptionVisitExpression;
 import com.sap.core.odata.api.uri.expression.ExpressionKind;
@@ -58,6 +59,8 @@ public class ParserTool
     try {
       actual = tree.accept(visitor).toString();
     } catch (ExceptionVisitExpression e) {
+      fail("Error in visitor:" + e.getLocalizedMessage());
+    } catch (ODataApplicationException e) {
       fail("Error in visitor:" + e.getLocalizedMessage());
     }
 

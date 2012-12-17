@@ -32,8 +32,15 @@ public class PropertyExpressionImpl implements PropertyExpression {
   }
 
   @Override
-  public String getPropertyName() throws EdmException {
-    return edmProperty.getName();
+  public String getPropertyName() 
+  {
+    if (edmProperty == null) return "";
+
+    try {
+      return edmProperty.getName();
+    } catch (EdmException e) {
+      return "";
+    }
   }
 
   public EdmLiteral getEdmLiteral()

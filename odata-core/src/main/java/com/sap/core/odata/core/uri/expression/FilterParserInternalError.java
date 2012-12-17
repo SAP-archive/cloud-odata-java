@@ -48,5 +48,10 @@ public class FilterParserInternalError extends ODataMessageException {
   {
     return new FilterParserInternalError(ERROR_ACCESSING_EDM, cause);
   }
+  
+  public static FilterParserInternalError createCOMMON()
+  {
+    return new FilterParserInternalError(COMMON);
+  }
 
 }

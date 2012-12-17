@@ -1,6 +1,7 @@
 package com.sap.core.odata.core.uri.expression;
 
 import com.sap.core.odata.api.edm.EdmType;
+import com.sap.core.odata.api.exception.ODataApplicationException;
 import com.sap.core.odata.api.uri.expression.BinaryExpression;
 import com.sap.core.odata.api.uri.expression.BinaryOperator;
 import com.sap.core.odata.api.uri.expression.CommonExpression;
@@ -33,6 +34,7 @@ public class BinaryExpressionImpl implements BinaryExpression
     return leftSide;
   }
 
+
   @Override
   public CommonExpression getRightOperand()
   {
@@ -64,7 +66,7 @@ public class BinaryExpressionImpl implements BinaryExpression
   }
 
   @Override
-  public Object accept(ExpressionVisitor visitor) throws ExceptionVisitExpression
+  public Object accept(ExpressionVisitor visitor) throws ExceptionVisitExpression, ODataApplicationException
   {
     Object retLeftSide = leftSide.accept(visitor);
     Object retRightSide = rightSide.accept(visitor);

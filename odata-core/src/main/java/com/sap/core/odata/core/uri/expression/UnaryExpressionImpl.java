@@ -3,6 +3,7 @@ package com.sap.core.odata.core.uri.expression;
 /*1*/
 
 import com.sap.core.odata.api.edm.EdmType;
+import com.sap.core.odata.api.exception.ODataApplicationException;
 import com.sap.core.odata.api.uri.expression.CommonExpression;
 import com.sap.core.odata.api.uri.expression.ExceptionVisitExpression;
 import com.sap.core.odata.api.uri.expression.ExpressionKind;
@@ -60,7 +61,7 @@ public class UnaryExpressionImpl implements UnaryExpression
   }
 
   @Override
-  public Object accept(ExpressionVisitor visitor) throws ExceptionVisitExpression
+  public Object accept(ExpressionVisitor visitor) throws ExceptionVisitExpression, ODataApplicationException
   {
     Object retOperand = operand.accept(visitor);
 

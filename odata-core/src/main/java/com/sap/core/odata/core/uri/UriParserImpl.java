@@ -27,6 +27,7 @@ import com.sap.core.odata.api.edm.EdmTypeKind;
 import com.sap.core.odata.api.edm.EdmTyped;
 import com.sap.core.odata.api.enums.ContentType;
 import com.sap.core.odata.api.enums.InlineCount;
+import com.sap.core.odata.api.exception.ODataMessageException;
 import com.sap.core.odata.api.processor.ODataPathSegment;
 import com.sap.core.odata.api.uri.EdmLiteral;
 import com.sap.core.odata.api.uri.KeyPredicate;
@@ -37,13 +38,13 @@ import com.sap.core.odata.api.uri.UriNotMatchingException;
 import com.sap.core.odata.api.uri.UriParser;
 import com.sap.core.odata.api.uri.UriParserResult;
 import com.sap.core.odata.api.uri.UriSyntaxException;
-import com.sap.core.odata.api.uri.expression.CommonExpression;
 import com.sap.core.odata.api.uri.expression.FilterParserException;
-import com.sap.core.odata.api.uri.expression.OrderByExpression;
+import com.sap.core.odata.api.uri.expression.OrderByParserException;
 import com.sap.core.odata.core.edm.EdmSimpleTypeFacadeImpl;
 import com.sap.core.odata.core.exception.ODataRuntimeException;
 import com.sap.core.odata.core.uri.expression.FilterParserImpl;
 import com.sap.core.odata.core.uri.expression.FilterParserInternalError;
+import com.sap.core.odata.core.uri.expression.OrderByParserImpl;
 
 /**
  * @author SAP AG
@@ -535,7 +536,7 @@ public class UriParserImpl implements UriParser {
   private void handleSystemQueryOptionFilter(final String filter) throws UriSyntaxException {
     try {
       if (uriResult.getTargetType() instanceof EdmEntityType) //TODO improve with correct error 
-        uriResult.setFilter(new FilterParserImpl(edm, (EdmEntityType) uriResult.getTargetType()).parseExpression(filter));
+        uriResult.setFilter(new FilterParserImpl(edm, (EdmEntityType) uriResult.getTargetType()).parseFilterString(filter));
 
     } catch (FilterParserException e) {
       throw new UriSyntaxException(UriSyntaxException.INVALIDFILTEREXPRESSION.addContent(filter), e);
@@ -544,6 +545,18 @@ public class UriParserImpl implements UriParser {
     }
   }
 
+  
+  private void handleSystemQueryOptionOrderBy(final String orderBy) throws UriSyntaxException, EdmException {
+    try {
+      if (uriResult.getTargetType() instanceof EdmEntityType) //TODO improve with correct error
+        uriResult.setOrderBy(new OrderByParserImpl(edm, (EdmEntityType) uriResult.getTargetType()).parseOrderByString(orderBy) );
+    } catch (OrderByParserException e) {
+      throw new UriSyntaxException(UriSyntaxException.INVALIDORDERBYEXPRESSION.addContent(orderBy), e);
+    } catch (ODataMessageException e) {
+      throw new UriSyntaxException(UriSyntaxException.INVALIDORDERBYEXPRESSION.addContent(orderBy), e);
+    }
+  }
+  
   private void handleSystemQueryOptionInlineCount(final String inlineCount) throws UriSyntaxException {
     if ("allpages".equals(inlineCount))
       uriResult.setInlineCount(InlineCount.ALLPAGES);
@@ -553,20 +566,7 @@ public class UriParserImpl implements UriParser {
       throw new UriSyntaxException(UriSyntaxException.INVALIDVALUE.addContent(inlineCount));
   }
 
-  private void handleSystemQueryOptionOrderBy(final String orderBy) throws UriSyntaxException, EdmException {
-    // TODO: $orderby
-    uriResult.setOrderBy(new OrderByExpression() {
-      @Override
-      public CommonExpression getOrdersCount() {
-        return null;
-      }
-
-      @Override
-      public List<CommonExpression> getOrders() {
-        return null;
-      }
-    });
-  }
+  
 
   private void handleSystemQueryOptionSkipToken(final String skiptoken) throws UriSyntaxException {
     uriResult.setSkipToken(skiptoken);

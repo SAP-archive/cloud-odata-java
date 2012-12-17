@@ -68,7 +68,7 @@ public class FilterParserExceptionImpl extends FilterParserException {
   {
     MessageReference msgRef = FilterParserException.METHOD_TO_FEW_PARAMETERS.create();
 
-    msgRef.addContent(methodExpression.getMethod().toSyntax());
+    msgRef.addContent(methodExpression.getMethod().toUriLiteral());
 
     return new FilterParserException(msgRef);
   }
@@ -76,7 +76,7 @@ public class FilterParserExceptionImpl extends FilterParserException {
   public static FilterParserException createMETHOD_TO_MANY_PARAMETERS(MethodExpression methodExpression) {
     MessageReference msgRef = FilterParserException.METHOD_TO_MANY_PARAMETERS.create();
 
-    msgRef.addContent(methodExpression.getMethod().toSyntax());
+    msgRef.addContent(methodExpression.getMethod().toUriLiteral());
 
     return new FilterParserException(msgRef);
   }

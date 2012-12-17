@@ -20,8 +20,6 @@ public class ExceptionTokenizer extends ODataMessageException {
 
   public static MessageReference PARSESTRINGTOKEN;
 
-  private int textID;
-  private String tokenString;
   private Token token;
   private Exception previous;
   private int position;
@@ -30,9 +28,9 @@ public class ExceptionTokenizer extends ODataMessageException {
     return token;
   }
 
-  //TODO move to Token structured  
-  public void setToken(String token) {
-    this.tokenString = token;
+
+  public void setToken(Token token) {
+    this.token = token;
   }
 
   public Exception getPrevious() {

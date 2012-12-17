@@ -1,33 +1,40 @@
 package com.sap.core.odata.api.uri.expression;
 
-import java.util.Vector;
+import java.util.List;
 
 /**
- * Represents a method expression in the expression tree returned by the methods 
+ * Represents a method expression in the expression tree returned by the methods:
  * <li>{@link FilterParser#ParseExpression(String)}</li>
  * <li>{@link OrderByParser#parseOrderExpression(String)}</li> 
  * <br>
  * <br>
- * A method expression node is inserted in the expression tree for any valid
- * ODATA methodoperator in {@link MethodOperator} (e.g. for "substringof", "concat", "year", ... )
+ * <p>A method expression node is inserted in the expression tree for any valid
+ * OData method operator in {@link MethodOperator} (e.g. for "substringof", "concat", "year", ... )
  * <br>
  * <br>
  * @author SAP AG
- * @see {@link FilterParser}
- * @see {@link OrderByParser}
+ * @see FilterParser
+ * @see OrderByParser
  */
 public interface MethodExpression extends CommonExpression
 {
 
   /**
-   * @return Method
+   * @return Returns the method object that represents the used method 
    * @see MethodOperator
    */
   public MethodOperator getMethod();
   
+  /**
+   * @return Returns the number of provided method parameters
+   */
   public int getParameterCount();
 
-  public Vector<CommonExpression> getParameters();
+  /**
+   * @return Returns a ordered list of expressions defining the input parameters for the used method
+   * @see CommonExpression
+   */
+  public List<CommonExpression> getParameters();
 
   
 }

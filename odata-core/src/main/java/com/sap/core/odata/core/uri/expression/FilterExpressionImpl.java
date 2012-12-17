@@ -1,6 +1,7 @@
 package com.sap.core.odata.core.uri.expression;
 
 import com.sap.core.odata.api.edm.EdmType;
+import com.sap.core.odata.api.exception.ODataApplicationException;
 import com.sap.core.odata.api.uri.expression.CommonExpression;
 import com.sap.core.odata.api.uri.expression.ExceptionVisitExpression;
 import com.sap.core.odata.api.uri.expression.ExpressionKind;
@@ -29,7 +30,7 @@ public class FilterExpressionImpl implements FilterExpression {
   }
 
   @Override
-  public Object accept(ExpressionVisitor visitor) throws ExceptionVisitExpression
+  public Object accept(ExpressionVisitor visitor) throws ExceptionVisitExpression, ODataApplicationException
   {
     Object retCommonExpression = commonExpression.accept(visitor);
     Object ret = visitor.visitFilterExpression(this, filterString, retCommonExpression);

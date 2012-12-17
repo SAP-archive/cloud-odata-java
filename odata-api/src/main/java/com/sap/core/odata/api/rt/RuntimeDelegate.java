@@ -12,6 +12,7 @@ import com.sap.core.odata.api.ep.ODataEntityProviderException;
 import com.sap.core.odata.api.processor.ODataResponse.ODataResponseBuilder;
 import com.sap.core.odata.api.uri.UriParser;
 import com.sap.core.odata.api.uri.expression.FilterParser;
+import com.sap.core.odata.api.uri.expression.OrderByParser;
 
 /**
  * Abstract class to get OData core implementations of API interfaces
@@ -81,6 +82,7 @@ public abstract class RuntimeDelegate {
     protected abstract Edm createEdm(EdmProvider provider);
     
     protected abstract FilterParser getFilterParser(Edm edm, EdmEntityType edmType);
+    protected abstract OrderByParser getOrderByParser(Edm edm, EdmEntityType edmType);
     
     /**
      * @param contentType requested content type
@@ -121,6 +123,10 @@ public abstract class RuntimeDelegate {
 
   public static FilterParser getFilterParser(Edm edm, EdmEntityType edmType) {
     return RuntimeDelegate.getInstance().getFilterParser(edm, edmType);
+  }
+  
+  public static OrderByParser getOrderByParser(Edm edm, EdmEntityType edmType) {
+    return RuntimeDelegate.getInstance().getOrderByParser(edm, edmType);
   }
   
   private static class RuntimeDelegateException extends RuntimeException {

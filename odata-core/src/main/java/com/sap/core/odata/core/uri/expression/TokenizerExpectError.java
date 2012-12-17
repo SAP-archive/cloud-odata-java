@@ -54,9 +54,6 @@ public class TokenizerExpectError extends ODataMessageException {
   public TokenizerExpectError(MessageReference messageReference)
   {
     super(messageReference);
-    //this.textID = object;
-    //this.token = token;
-    //this.previous = previous;
   }
 
   public static Object unexpectedToken(int currentToken, String string, Token actual) {
