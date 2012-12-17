@@ -56,7 +56,7 @@ public class ODataExceptionMapperImpl implements ExceptionMapper<Exception> {
     }
 
     if (isInternalServerError(response)) {
-      ODataExceptionMapperImpl.LOG.error(exception.getMessage(), exception);
+      LOG.error(exception.getMessage(), exception);
     }
 
     return response;
@@ -102,15 +102,17 @@ public class ODataExceptionMapperImpl implements ExceptionMapper<Exception> {
     return buildResponseInternal(entity, format, status);
   }
   
-  private Response buildResponseInternal(String entity, Format format, int status){
+  private Response buildResponseInternal(String entity, Format format, int status) {
     ResponseBuilder responseBuilder = Response.noContent();
-    if(Format.JSON.equals(format)){
-      responseBuilder.entity(entity).type(MediaType.APPLICATION_JSON_TYPE).status(status).build();
-    }else{
-      return responseBuilder.entity(entity).type(MediaType.APPLICATION_XML_TYPE).status(status).build();
-    }
     
-    return null;
+    switch (format) {
+      case JSON:
+        return responseBuilder.entity(entity).type(MediaType.APPLICATION_JSON_TYPE).status(status).build();
+      case XML:
+        return responseBuilder.entity(entity).type(MediaType.APPLICATION_XML_TYPE).status(status).build();
+      default:
+        return Response.status(Status.UNSUPPORTED_MEDIA_TYPE).build();
+    }
   }
 
   private int extractStatus(ODataException exception) {
@@ -154,21 +156,15 @@ public class ODataExceptionMapperImpl implements ExceptionMapper<Exception> {
 
   private Format getFormat() {
     List<MediaType> acceptableMediaTypes = httpHeaders.getAcceptableMediaTypes();
-    Format format = Format.XML;
 
-    for (int i = 0; i < acceptableMediaTypes.size(); i++) {
-      MediaType type = acceptableMediaTypes.get(i);
-
+    for (MediaType type : acceptableMediaTypes) {
       if (type.isWildcardType() || MediaType.APPLICATION_ATOM_XML_TYPE.equals(type) || MediaType.APPLICATION_XML_TYPE.equals(type)) {
-        format = Format.XML;
-        break;
+        return Format.XML;
       } else if (MediaType.APPLICATION_JSON_TYPE.equals(type)) {
-        format = Format.JSON;
-        break;
+        return Format.JSON;
       }
     }
-
-    return format;
+    return Format.XML;
   }
 
   private String buildErrorCode(Exception e) {
