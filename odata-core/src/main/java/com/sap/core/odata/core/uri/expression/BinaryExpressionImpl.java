@@ -64,7 +64,7 @@ public class BinaryExpressionImpl implements BinaryExpression
   }
 
   @Override
-  public Object accept(ExpressionVisitor visitor) throws ExceptionVisitExpression 
+  public Object accept(ExpressionVisitor visitor) throws ExceptionVisitExpression
   {
     Object retLeftSide = leftSide.accept(visitor);
     Object retRightSide = rightSide.accept(visitor);

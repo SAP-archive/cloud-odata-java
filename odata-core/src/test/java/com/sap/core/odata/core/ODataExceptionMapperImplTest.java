@@ -3,7 +3,6 @@ package com.sap.core.odata.core;
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertNotNull;
 import static junit.framework.Assert.assertTrue;
-import static org.custommonkey.xmlunit.XMLAssert.assertXpathExists;
 import static org.custommonkey.xmlunit.XMLAssert.assertXpathValuesEqual;
 
 import java.io.IOException;
@@ -211,7 +210,7 @@ public class ODataExceptionMapperImplTest {
   }
 
   @Test
-  public void testUriParserExceptionWrapped() throws Exception{
+  public void testUriParserExceptionWrapped() throws Exception {
     // prepare
     Exception exception = new ODataException("outer exception", new UriSyntaxException(UriSyntaxException.EMPTYSEGMENT));
 
@@ -225,7 +224,7 @@ public class ODataExceptionMapperImplTest {
     String errorMessage = response.getEntity().toString();
     assertXpathValuesEqual("\"" + UriSyntaxException.EMPTYSEGMENT.getKey() + "\"", "/a:error/a:code", errorMessage);
     //TODO: Check for text
-     }
+  }
 
   @Test
   public void testIoException() throws Exception {

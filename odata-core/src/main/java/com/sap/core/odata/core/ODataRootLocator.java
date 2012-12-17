@@ -3,6 +3,7 @@ package com.sap.core.odata.core;
 import java.util.List;
 
 import javax.servlet.ServletConfig;
+import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.core.Context;
@@ -13,7 +14,7 @@ import javax.ws.rs.core.UriInfo;
 
 import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.api.service.ODataServiceFactory;
-import com.sap.core.odata.core.ODataLocator.InitParameter;
+import com.sap.core.odata.core.ODataSubLocator.InitParameter;
 import com.sap.core.odata.core.exception.ODataRuntimeException;
 
 /**
@@ -38,6 +39,9 @@ public class ODataRootLocator {
   @Context
   private ServletConfig servletConfig;
 
+  @Context
+  private HttpServletRequest servletRequest;
+
   /**
    * Default root behavior which will delegate all paths to a ODataLocator.
    * @param odataPathSegments all segments have to be OData
@@ -49,7 +53,11 @@ public class ODataRootLocator {
    */
   @Path("/{pathSegments: .*}")
   public ODataLocator handleRequest(@PathParam("pathSegments") List<PathSegment> pathSegments) throws ODataException, ClassNotFoundException, InstantiationException, IllegalAccessException {
-    ODataLocator odataLocator = new ODataLocator();
+    ODataSubLocator odataLocator = new ODataSubLocator();
+
+    if (servletRequest.getPathInfo() == null) {
+      return handleRedirect();
+    }
 
     String factoryClassName = this.servletConfig.getInitParameter(ODataServiceFactory.FACTORY_LABEL);
     if (factoryClassName == null) {
@@ -75,5 +83,9 @@ public class ODataRootLocator {
     odataLocator.initialize(param);
 
     return odataLocator;
+  }
+
+  private ODataLocator handleRedirect() {
+    return new ODataRedirectLocator();
   }
 }

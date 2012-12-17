@@ -83,7 +83,7 @@ public class ODataMessageTextVerifier {
       if (field.getType().isAssignableFrom(MessageReference.class))
       {
         //field should be final
-        assertEquals("MsgRef Error--> Error: field should be final. ",true, Modifier.isFinal(field.getModifiers()));
+        assertEquals("MsgRef Error--> Error: field should be final. ", true, Modifier.isFinal(field.getModifiers()));
 
         MessageReference msgRef = null;
         try {

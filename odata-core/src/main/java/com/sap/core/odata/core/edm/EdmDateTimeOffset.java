@@ -107,7 +107,7 @@ public class EdmDateTimeOffset implements EdmSimpleType {
             throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_ILLEGAL_CONTENT.addContent(value));
           dateTimeValue.setTimeZone(TimeZone.getTimeZone(
               "GMT" + matcher.group(2) + String.valueOf(offsetInMinutes / 60)
-              + ":" + String.format("%02d", offsetInMinutes % 60)));
+                  + ":" + String.format("%02d", offsetInMinutes % 60)));
           // Subtract the time-zone offset to counter the automatic adjustment above
           // caused by the fact that the Calendar instance created above is in the
           // "GMT" timezone.

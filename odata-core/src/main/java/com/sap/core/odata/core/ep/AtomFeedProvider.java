@@ -48,7 +48,7 @@ public class AtomFeedProvider {
       if (properties.getSkipToken() != null) {
         appendNextLink(writer, eia, properties.getSkipToken());
       }
-      
+
       writer.writeEndElement();
     } catch (Exception e) {
       throw new ODataEntityProviderException(ODataEntityProviderException.COMMON, e);
@@ -56,16 +56,16 @@ public class AtomFeedProvider {
   }
 
   private void appendNextLink(XMLStreamWriter writer, EntityInfoAggregator eia, String nextSkiptoken) throws ODataEntityProviderException {
-   try{
-    String nextLink = createNextLink(eia, nextSkiptoken);
+    try {
+      String nextLink = createNextLink(eia, nextSkiptoken);
 
-    writer.writeStartElement(FormatXml.ATOM_LINK);
-    writer.writeAttribute(FormatXml.ATOM_HREF, nextLink);
-    writer.writeAttribute(FormatXml.ATOM_REL, "next");
-    writer.writeEndElement();
-  } catch (Exception e) {
-    throw new ODataEntityProviderException(ODataEntityProviderException.COMMON, e);
-  }
+      writer.writeStartElement(FormatXml.ATOM_LINK);
+      writer.writeAttribute(FormatXml.ATOM_HREF, nextLink);
+      writer.writeAttribute(FormatXml.ATOM_REL, "next");
+      writer.writeEndElement();
+    } catch (Exception e) {
+      throw new ODataEntityProviderException(ODataEntityProviderException.COMMON, e);
+    }
   }
 
   private void appendEntries(XMLStreamWriter writer, EntityInfoAggregator eia, List<Map<String, Object>> data, String mediaResourceMimeType) throws ODataEntityProviderException {

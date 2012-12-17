@@ -40,7 +40,7 @@ public class FilterExpressionImpl implements FilterExpression {
   public CommonExpression setEdmType(EdmType edmType) {
     this.edmType = edmType;
     return this;
-    
+
   }
 
   @Override
@@ -58,5 +58,4 @@ public class FilterExpressionImpl implements FilterExpression {
     return "";
   }
 
-  
 }

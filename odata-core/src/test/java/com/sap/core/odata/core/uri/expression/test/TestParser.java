@@ -37,50 +37,42 @@ import com.sap.core.odata.testutils.mocks.TecEdmInfo;
 import com.sap.core.odata.testutils.mocks.TechnicalScenarioEdmProvider;
 
 public class TestParser {
-  
+
   Edm edm = null;
   TecEdmInfo edmInfo = null;
-  
+
   public TestParser()
   {
     edm = RuntimeDelegate.createEdm(new TechnicalScenarioEdmProvider());
     edmInfo = new TecEdmInfo(edm);
   }
-  
-    
-  @Test 
+
+  @Test
   public void TestProperties()
   {
     GetPTF("sven").aSerialized("sven").aKind(ExpressionKind.PROPERTY);
     GetPTF("sven1 add sven2").aSerialized("{sven1 add sven2}")
-      .aKind(ExpressionKind.BINARY)
-      .root().left().aKind(ExpressionKind.PROPERTY).aUriLiteral("sven1")
-      .root().right().aKind(ExpressionKind.PROPERTY).aUriLiteral("sven2");
+        .aKind(ExpressionKind.BINARY)
+        .root().left().aKind(ExpressionKind.PROPERTY).aUriLiteral("sven1")
+        .root().right().aKind(ExpressionKind.PROPERTY).aUriLiteral("sven2");
   }
-  
-  @Test 
+
+  @Test
   public void TestDeepProperties()
   {
     GetPTF("a/b").aSerialized("{a/b}").aKind(ExpressionKind.MEMBER);
     GetPTF("a/b/c").aSerialized("{{a/b}/c}").aKind(ExpressionKind.MEMBER);
   }
-  
-  
-  
-  @Test 
+
+  @Test
   public void TestPropertiesWithEdm()
   {
     EdmEntityType edmType = edmInfo.getEtAllTypes();
-    
-    GetPTF(edm, edmType,"String");
-    GetPTF(edm, edmType,"Complex/String");
+
+    GetPTF(edm, edmType, "String");
+    GetPTF(edm, edmType, "Complex/String");
     //GetPTF(edm, edmType,"Complex/Address/City");
   }
-
-  
-
-  
-
 
   @Test
   public void TestSimpleMethod()
@@ -89,8 +81,6 @@ public class TestParser {
     //add test for concat
     GetPTF("startswith('Test','Te')").aSerialized("{startswith('Test','Te')}");
   }
-
-  
 
   @Test
   public void TestSimpleSameBinary()
@@ -188,7 +178,7 @@ public class TestParser {
     GetPTF("not - true").aSerialized("{not {- true}}");
     GetPTF("- not true").aSerialized("{- {not true}}");
   }
-  
+
   @Test
   public void TestSinglePlainLiterals()
   {
@@ -353,7 +343,7 @@ public class TestParser {
   }
 
   FilterParserException GetException()
-  { 
+  {
     FilterParserException ex = new FilterParserException(FilterParserException.COMMON_ERROR);
     List<StackTraceElement> stack = new ArrayList<StackTraceElement>(Arrays.asList(ex.getStackTrace()));
     stack.remove(0);
@@ -388,7 +378,7 @@ public class TestParser {
       e.printStackTrace();
     }
   }
-  
+
   static public ParserTool GetPTF(String expression)
   {
     try {
@@ -402,7 +392,7 @@ public class TestParser {
     }
     return null;
   }
-  
+
   static public ParserTool GetPTF(Edm edm, EdmEntityType resourceEntityType, String expression) {
     try {
       FilterParserImpl parser = new FilterParserImpl(edm, resourceEntityType);
@@ -414,7 +404,7 @@ public class TestParser {
       fail("Error in parser" + e.getLocalizedMessage());
     }
     return null;
-    
+
   }
-  
+
 }

@@ -21,12 +21,10 @@ public class CircleStreamBufferTest {
 
   private static final boolean LOG_ON = false;
 
-  public CircleStreamBufferTest() {
-  }
+  public CircleStreamBufferTest() {}
 
   @Before
-  public void setUp() {
-  }
+  public void setUp() {}
 
   @Test
   public void testSimpleWriteReadSignBySign() throws Exception {
@@ -91,7 +89,7 @@ public class CircleStreamBufferTest {
     assertEquals(4, count);
     assertEquals("Test", result);
   }
-  
+
   @Test
   public void testSimpleWriteReadTwice() throws Exception {
     CircleStreamBuffer csb = new CircleStreamBuffer();
@@ -167,7 +165,7 @@ public class CircleStreamBufferTest {
     assertEquals(testData, result);
   }
 
-  @Test(expected=IOException.class)
+  @Test(expected = IOException.class)
   public void testCloseInputStream() throws Exception {
     CircleStreamBuffer csb = new CircleStreamBuffer();
 
@@ -181,7 +179,7 @@ public class CircleStreamBufferTest {
     assertEquals(4, count);
   }
 
-  @Test(expected=IOException.class)
+  @Test(expected = IOException.class)
   public void testCloseOutputStream() throws Exception {
     CircleStreamBuffer csb = new CircleStreamBuffer();
 
@@ -222,7 +220,7 @@ public class CircleStreamBufferTest {
   }
 
   private void log(String toLog) {
-    if(LOG_ON) {
+    if (LOG_ON) {
       System.out.println(toLog);
     }
   }

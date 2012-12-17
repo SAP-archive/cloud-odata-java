@@ -12,7 +12,7 @@ import com.sap.core.odata.core.edm.provider.EdmImplProv;
 import com.sap.core.odata.core.edm.provider.EdmSimplePropertyImplProv;
 
 public class EdmNamedImplProvTest {
-  @Test(expected=EdmException.class)
+  @Test(expected = EdmException.class)
   public void testPropertySimple() throws Exception {
 
     EdmProvider edmProvider = mock(EdmProvider.class);

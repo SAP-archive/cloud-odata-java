@@ -35,7 +35,7 @@ public class XmlPropertyEntityProvider {
   public void append(XMLStreamWriter writer, EntityPropertyInfo propertyInfo, Object value, boolean isRootElement) throws ODataEntityProviderException {
     try {
       String name = propertyInfo.getName();
-      
+
       if (isRootElement) {
         writer.writeStartElement(name);
         writer.writeDefaultNamespace(Edm.NAMESPACE_D_2007_08);
@@ -45,14 +45,14 @@ public class XmlPropertyEntityProvider {
       } else {
         writer.writeStartElement(Edm.NAMESPACE_D_2007_08, name);
       }
-      
+
       if (propertyInfo.isComplex()) {
         EntityComplexPropertyInfo ecp = (EntityComplexPropertyInfo) propertyInfo;
         appendProperty(writer, ecp, value);
       } else {
         appendProperty(writer, propertyInfo, value);
       }
-      
+
       writer.writeEndElement();
     } catch (Exception e) {
       throw new ODataEntityProviderException(ODataEntityProviderException.COMMON, e);

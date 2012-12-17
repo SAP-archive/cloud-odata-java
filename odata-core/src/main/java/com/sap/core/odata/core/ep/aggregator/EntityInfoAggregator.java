@@ -46,8 +46,7 @@ public class EntityInfoAggregator {
   /**
    * Constructor is private to force creation over {@link #create(EdmEntitySet)} method.
    */
-  private EntityInfoAggregator() {
-  }
+  private EntityInfoAggregator() {}
 
   /**
    * Create an {@link EntityInfoAggregator} based on given {@link EdmEntitySet}
@@ -65,7 +64,7 @@ public class EntityInfoAggregator {
     eia.initialize(entitySet);
     return eia;
   }
-  
+
   public static EntityPropertyInfo create(EdmProperty property) throws ODataEntityProviderException {
     try {
       EntityInfoAggregator eia = new EntityInfoAggregator();
@@ -181,7 +180,6 @@ public class EntityInfoAggregator {
   // #
   // #########################################
 
-
   private void initialize(EdmEntitySet entitySet) throws ODataEntityProviderException {
     try {
       EdmEntityType type = entitySet.getEntityType();
@@ -258,14 +256,14 @@ public class EntityInfoAggregator {
   }
 
   private List<String> noneSyndicationTargetPaths = new ArrayList<String>();
-  
+
   private void checkTargetPathInfo(EdmProperty property, EntityPropertyInfo value) throws ODataEntityProviderException {
     try {
       EdmCustomizableFeedMappings customizableFeedMappings = property.getCustomizableFeedMappings();
       if (customizableFeedMappings != null) {
         String targetPath = customizableFeedMappings.getFcTargetPath();
         targetPath2EntityPropertyInfo.put(targetPath, value);
-        if(!SYN_TARGET_PATHS.contains(targetPath)) {
+        if (!SYN_TARGET_PATHS.contains(targetPath)) {
           noneSyndicationTargetPaths.add(targetPath);
         }
       }
@@ -273,7 +271,7 @@ public class EntityInfoAggregator {
       throw new ODataEntityProviderException(ODataEntityProviderException.COMMON, e);
     }
   }
-  
+
   private static Set<String> SYN_TARGET_PATHS = new HashSet<String>();
   static {
     SYN_TARGET_PATHS.add(EdmTargetPath.SYNDICATION_AUTHOREMAIL);

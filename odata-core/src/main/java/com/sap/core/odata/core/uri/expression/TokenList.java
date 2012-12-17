@@ -80,7 +80,7 @@ public class TokenList implements Iterator<Token>
   {
     Token actual = next();
     if (comma != actual.getKind())
-      throw TokenizerExpectError.createINVALID_TOKENKIND_AT( comma,actual);
+      throw TokenizerExpectError.createINVALID_TOKENKIND_AT(comma, actual);
     return actual;
   }
 
@@ -88,7 +88,7 @@ public class TokenList implements Iterator<Token>
   {
     Token actual = next();
     if (!literal.equals(actual.getUriLiteral()))
-      throw TokenizerExpectError.createINVALID_TOKEN_AT( literal,actual);
+      throw TokenizerExpectError.createINVALID_TOKEN_AT(literal, actual);
     return actual;
   }
 

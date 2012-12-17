@@ -18,7 +18,6 @@ import com.sap.core.odata.api.edm.EdmStructuralType;
 import com.sap.core.odata.api.edm.EdmType;
 import com.sap.core.odata.api.edm.EdmTypeKind;
 import com.sap.core.odata.api.edm.EdmTyped;
-import com.sap.core.odata.api.exception.ODataMessageException;
 import com.sap.core.odata.api.uri.expression.BinaryExpression;
 import com.sap.core.odata.api.uri.expression.BinaryOperator;
 import com.sap.core.odata.api.uri.expression.CommonExpression;
@@ -787,13 +786,13 @@ public class FilterParserImpl implements FilterParser
         throw new Exception();/*TODO*//*
 
 
-                                                                       RAISE EXCEPTION TYPE /iwcor/cx_ds_expr_parser_error "OK
-                                                                       EXPORTING
-                                                                       textid   = /iwcor/cx_ds_expr_parser_error=>property_not_in_type
-                                                                       type     = lv_type_name
-                                                                       property = is_property_token-value
-                                                                       position = is_property_token-position.
-                                                                       ENDIF.*/
+                                                                        RAISE EXCEPTION TYPE /iwcor/cx_ds_expr_parser_error "OK
+                                                                        EXPORTING
+                                                                        textid   = /iwcor/cx_ds_expr_parser_error=>property_not_in_type
+                                                                        type     = lv_type_name
+                                                                        property = is_property_token-value
+                                                                        position = is_property_token-position.
+                                                                        ENDIF.*/
 
       }
     } catch (Exception ex)
@@ -1087,7 +1086,7 @@ public class FilterParserImpl implements FilterParser
     try {
       String propertyName = property.getUriLiteral();
       EdmTyped edmProperty = parentType.getProperty(propertyName);
-      
+
       if (edmProperty != null)
       {
         property.setEdmType(edmProperty.getType());
@@ -1096,7 +1095,7 @@ public class FilterParserImpl implements FilterParser
       {
         throw FilterParserExceptionImpl.createPROPERTY_NAME_NOT_FOUND_IN_TYPE(parentType, property);
       }
-  
+
     } catch (EdmException e) {
       throw FilterParserInternalError.createERROR_ACCESSING_EDM(e);
     }

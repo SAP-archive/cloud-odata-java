@@ -185,7 +185,7 @@ public class AtomEntityProvider extends ODataEntityProvider {
     ODataEntityContentImpl content = new ODataEntityContentImpl();
 
     try {
-      Map<?, ?> mappedData = Collections.emptyMap(); 
+      Map<?, ?> mappedData = Collections.emptyMap();
 
       if (value instanceof Map) {
         mappedData = (Map<?, ?>) value;

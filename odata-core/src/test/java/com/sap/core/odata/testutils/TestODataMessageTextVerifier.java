@@ -25,16 +25,15 @@ public class TestODataMessageTextVerifier
 
     //TODO change to List
     Vector<Throwable> ec = tool.getErrorCollector();
-   
-    assertEquals("!!!Error in testtool",2,ec.size());
+
+    assertEquals("!!!Error in testtool", 2, ec.size());
 
     assertNotNull("!!!Error in testtool", ec.elementAt(0));
     assertEquals("Error", "Error-->Messagetext for key:\"com.sap.core.odata.testutils.mocks.SampleClassForInvalidMessageReferences.DOES_NOT_EXIST\" missing", ec.elementAt(0).getMessage());
-    
+
     assertNotNull("!!!Error in testtool", ec.elementAt(1));
     assertEquals("Error", "Error-->Messagetext for key:\"com.sap.core.odata.testutils.mocks.SampleClassForInvalidMessageReferences.EXITS_BUT_EMPTY\" empty", ec.elementAt(1).getMessage());
-    
-    
+
   }
 
 }

@@ -754,14 +754,14 @@ public class EdmSimpleTypeTest {
     for (EdmSimpleTypeKind kind : EdmSimpleTypeKind.values()) {
       if (kind == EdmSimpleTypeKind.Null)
         continue;
-     final EdmSimpleType instance = kind.getEdmSimpleTypeInstance();
+      final EdmSimpleType instance = kind.getEdmSimpleTypeInstance();
       assertNull(instance.valueOfString(null, EdmLiteralKind.DEFAULT, null));
       assertNull(instance.valueOfString(null, EdmLiteralKind.DEFAULT, getNullableFacets(true)));
       assertNull(instance.valueOfString(null, EdmLiteralKind.DEFAULT, getNullableFacets(null)));
 
       expectErrorInValueOfString(instance, null, EdmLiteralKind.DEFAULT, getNullableFacets(false));
       expectErrorInValueOfString(instance, "", null, null);
-   }
+    }
   }
 
   @Test

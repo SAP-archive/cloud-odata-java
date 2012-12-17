@@ -35,7 +35,6 @@ public class TechnicalScenarioEdmProvider extends EdmProviderDefault {
 
   public static final String NAMESPACE_1 = "TecRefScenario";
 
-
   public static final FullQualifiedName ET_KEY_IS_STRING = new FullQualifiedName(NAMESPACE_1, "EtKeyTypeString");
   public static final FullQualifiedName ET_KEY_IS_INTEGER = new FullQualifiedName(NAMESPACE_1, "EtKeyTypeInteger");
   public static final FullQualifiedName ET_COMPLEX_KEY = new FullQualifiedName(NAMESPACE_1, "EtComplexKey");
@@ -56,7 +55,6 @@ public class TechnicalScenarioEdmProvider extends EdmProviderDefault {
   public static final String ES_COMPLEX_KEY = "ComplexKey";
   public static final String ES_ALL_TYPES = "AllTypes";
   public static final String ES_STRING_FACETS = "StringFacets";
-
 
   @Override
   public List<Schema> getSchemas() throws ODataMessageException {
@@ -110,7 +108,7 @@ public class TechnicalScenarioEdmProvider extends EdmProviderDefault {
         List<NavigationProperty> navigationProperties = new ArrayList<NavigationProperty>();
 
         navigationProperties.add(new NavigationProperty().setName("navProperty").setFromRole(ROLE_1).setToRole(ROLE_2).setRelationship(ASSOCIATION_ET1_ET2));
-        
+
         return new EntityType().setName(ET_KEY_IS_STRING.getName()).setProperties(properties).setNavigationProperties(navigationProperties).setKey(createKey("KeyString"));
       }
       else if (ET_KEY_IS_INTEGER.getName().equals(edmFQName.getName()))
@@ -120,10 +118,9 @@ public class TechnicalScenarioEdmProvider extends EdmProviderDefault {
             .setType(EdmSimpleTypeKind.String)
             .setFacets(new Facets().setNullable(false)));
 
-        
         List<NavigationProperty> navigationProperties = new ArrayList<NavigationProperty>();
         navigationProperties.add(new NavigationProperty().setName("navProperty").setFromRole(ROLE_2).setToRole(ROLE_1).setRelationship(ASSOCIATION_ET1_ET2));
-           
+
         return new EntityType().setName(ET_KEY_IS_INTEGER.getName()).setProperties(properties).setNavigationProperties(navigationProperties).setKey(createKey("KeyInteger"));
 
       }
@@ -164,27 +161,27 @@ public class TechnicalScenarioEdmProvider extends EdmProviderDefault {
       {
         List<Property> properties = new ArrayList<Property>();
         //TODO: What here?
-//        properties.add(new SimpleProperty().setName("StringCollation").setType(EdmSimpleTypeKind.String)
-//            .setFacets(new Facets().setCollation(collation)));
-        
+        //        properties.add(new SimpleProperty().setName("StringCollation").setType(EdmSimpleTypeKind.String)
+        //            .setFacets(new Facets().setCollation(collation)));
+
         properties.add(new SimpleProperty().setName("StringDefaultValue").setType(EdmSimpleTypeKind.String)
             .setFacets(new Facets().setDefaultValue("defaultValue")));
-        
+
         properties.add(new SimpleProperty().setName("StringFixedLength").setType(EdmSimpleTypeKind.String)
             .setFacets(new Facets().setFixedLength(true)));
-        
+
         properties.add(new SimpleProperty().setName("StringMaxLength").setType(EdmSimpleTypeKind.String)
             .setFacets(new Facets().setMaxLength(15)));
-        
+
         properties.add(new SimpleProperty().setName("StringLength").setType(EdmSimpleTypeKind.String)
             .setFacets(new Facets().setMaxLength(15).setFixedLength(true)));
-        
+
         properties.add(new SimpleProperty().setName("StringNullable").setType(EdmSimpleTypeKind.String)
             .setFacets(new Facets().setNullable(false)));
-         
+
         properties.add(new SimpleProperty().setName("StringUnicode").setType(EdmSimpleTypeKind.String)
             .setFacets(new Facets().setUnicode(false)));
-        
+
         return new EntityType().setName(ET_STRING_FACETS.getName()).setProperties(properties);
       }
     }

@@ -16,7 +16,7 @@ public class ScenarioServiceFactory implements ODataServiceFactory {
   public ODataService createService() throws ODataException {
     DataContainer dataContainer = new DataContainer();
     dataContainer.reset();
-    ODataService service = new ODataSingleProcessorService(new ScenarioEdmProvider(), new ListsProcessor(new ScenarioDataSource(dataContainer ))) {};
+    ODataService service = new ODataSingleProcessorService(new ScenarioEdmProvider(), new ListsProcessor(new ScenarioDataSource(dataContainer))) {};
     return service;
   }
 

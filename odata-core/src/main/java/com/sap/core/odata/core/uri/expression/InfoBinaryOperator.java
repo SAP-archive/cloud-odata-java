@@ -35,7 +35,7 @@ class InfoBinaryOperator
   public BinaryOperator getOperator() {
     return operator;
   }
-  
+
   public int getPriority() {
     return priority;
   }

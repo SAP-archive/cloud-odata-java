@@ -39,7 +39,7 @@ public class PerformanceTest extends AbstractProviderTest {
   private XMLStreamWriter writer;
 
   private boolean useCsb = true;
-  
+
   @Before
   public void before() throws Exception {
     super.before();
@@ -49,7 +49,7 @@ public class PerformanceTest extends AbstractProviderTest {
     provider = new AtomEntryEntityProvider(properties);
     edmEntitySet = MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Rooms");
 
-    if(useCsb) {
+    if (useCsb) {
       csb = new CircleStreamBuffer();
       outStream = csb.getOutputStream();
     } else {
@@ -71,14 +71,14 @@ public class PerformanceTest extends AbstractProviderTest {
     writer.flush();
     outStream.flush();
 
-    if(useCsb) {
+    if (useCsb) {
       String content = StringHelper.inputStreamToString(csb.getInputStream());
       assertNotNull(content);
     } else {
-      InputStream in = new ByteArrayInputStream(((ByteArrayOutputStream)outStream).toByteArray());
+      InputStream in = new ByteArrayInputStream(((ByteArrayOutputStream) outStream).toByteArray());
       String content = StringHelper.inputStreamToString(in);
       assertNotNull(content);
-//      assertNotNull(((ByteArrayOutputStream)outStream).toByteArray());      
+      //      assertNotNull(((ByteArrayOutputStream)outStream).toByteArray());      
     }
 
     try {
@@ -105,7 +105,7 @@ public class PerformanceTest extends AbstractProviderTest {
     useCsb = true;
     before();
     assertNotNull(csb);
-    
+
     long t = startTimer();
 
     for (int i = 0; i < TIMES; i++) {
@@ -149,14 +149,14 @@ public class PerformanceTest extends AbstractProviderTest {
     log.debug("-------------------------------------------");
     log.debug("Memory usage for test: {}", testName);
     long freeMemory = Runtime.getRuntime().freeMemory();
-    log.debug("Free Memory (kbytes): {}", freeMemory/1024);
+    log.debug("Free Memory (kbytes): {}", freeMemory / 1024);
     long maxMemory = Runtime.getRuntime().maxMemory();
-    log.debug("Maximum memory (kbytes): {}", (maxMemory == Long.MAX_VALUE ? "no limit" : maxMemory/1024));
+    log.debug("Maximum memory (kbytes): {}", (maxMemory == Long.MAX_VALUE ? "no limit" : maxMemory / 1024));
     long memory = Runtime.getRuntime().totalMemory();
-    log.debug("Total Memory (kbytes): {}", memory/1024);
+    log.debug("Total Memory (kbytes): {}", memory / 1024);
     log.debug("-------------------------------------------");
   }
-  
+
   private void stopTimer(long t, String msg) {
     t = (System.nanoTime() - t) / TIMES;
 

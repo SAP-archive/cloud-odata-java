@@ -125,7 +125,7 @@ public class DataContainer {
 
     date.clear();
     date.setTimeZone(TimeZone.getTimeZone("GMT"));
-    date.set(year, month - 1, day);  // month is zero-based!
+    date.set(year, month - 1, day); // month is zero-based!
     return date;
   }
 

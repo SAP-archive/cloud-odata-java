@@ -33,7 +33,7 @@ public abstract class AbstractFitTest {
   private HttpClient httpClient = new DefaultHttpClient();
 
   private final Map<Class<?>, Level> disabledLoggings = new HashMap<Class<?>, Level>();
-  
+
   protected URI getEndpoint() {
     return this.server.getEndpoint();
   }
@@ -48,7 +48,6 @@ public abstract class AbstractFitTest {
 
   protected abstract ODataSingleProcessorService createService() throws ODataException;
 
-  
   /**
    * Disable logging for over handed classes.
    * Disabled logging will be automatically re-enabled after test execution (see {@link #reEnableLogging()} and 
@@ -56,10 +55,10 @@ public abstract class AbstractFitTest {
    * 
    * @param classes
    */
-  protected void disableLogging(Class<?> ... classes) {
+  protected void disableLogging(Class<?>... classes) {
     for (Class<?> clazz : classes) {
       org.apache.log4j.Logger l = org.apache.log4j.Logger.getLogger(clazz);
-      if(l != null) {
+      if (l != null) {
         disabledLoggings.put(clazz, l.getEffectiveLevel());
         l.setLevel(Level.OFF);
       }
@@ -67,7 +66,7 @@ public abstract class AbstractFitTest {
   }
 
   protected void reEnableLogging() {
-    for (Entry<Class<?>, Level> entry: disabledLoggings.entrySet()) {
+    for (Entry<Class<?>, Level> entry : disabledLoggings.entrySet()) {
       org.apache.log4j.Logger l = org.apache.log4j.Logger.getLogger(entry.getKey());
       l.setLevel(entry.getValue());
     }
@@ -82,9 +81,9 @@ public abstract class AbstractFitTest {
   }
 
   @After
-  public void after(){
+  public void after() {
     reEnableLogging();
-    
+
     try {
       this.server.stopServer();
     } finally {
