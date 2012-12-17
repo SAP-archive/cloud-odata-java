@@ -85,8 +85,8 @@ public class ODataExceptionMapperImpl implements ExceptionMapper<Exception> {
 
   private Response buildResponseForApplicationException(ODataApplicationException exception) {
     ResponseBuilder responseBuilder = Response.noContent();
-    Status status = extractStatus(exception);
-    return responseBuilder.entity(exception.getMessage()).status(status).build();
+    int statusCode = extractStatus(exception);
+    return responseBuilder.entity(exception.getMessage()).status(statusCode).build();
   }
 
   private Response buildResponseForHttpException(ODataHttpException msgException) {
@@ -96,26 +96,16 @@ public class ODataExceptionMapperImpl implements ExceptionMapper<Exception> {
         .status(extractStatus(msgException)).build();
   }
 
-  private Status extractStatus(ODataException exception) {
-    Status extractedStatus = Status.INTERNAL_SERVER_ERROR;
+  private int extractStatus(ODataException exception) {
+    int extractedStatusCode = HttpStatusCodes.INTERNAL_SERVER_ERROR.getStatusCode();
 
-    HttpStatusCodes httpStatus = null;
     if (exception instanceof ODataHttpException) {
-      httpStatus = ((ODataHttpException) exception).getHttpStatus();
+      extractedStatusCode = ((ODataHttpException) exception).getHttpStatus().getStatusCode();
     } else if (exception instanceof ODataApplicationException) {
-      httpStatus = ((ODataApplicationException) exception).getHttpStatus();
+      extractedStatusCode = ((ODataApplicationException) exception).getHttpStatus().getStatusCode();
     }
 
-    if (httpStatus != null) {
-      try {
-        extractedStatus = Status.valueOf(httpStatus.name());
-      } catch (IllegalArgumentException e) {
-        // no mapping found -> INTERNAL_SERVER_ERROR
-        LOG.error("no mapping found -> INTERNAL_SERVER_ERROR", e);
-      }
-    }
-
-    return extractedStatus;
+    return extractedStatusCode;
   }
 
   private Message extractEntity(com.sap.core.odata.api.exception.MessageReference context) {
