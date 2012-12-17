@@ -7,7 +7,6 @@ import static org.mockito.Mockito.when;
 
 import java.io.IOException;
 import java.net.URI;
-import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.http.HttpResponse;
@@ -20,9 +19,8 @@ import org.junit.Test;
 import org.mockito.Matchers;
 
 import com.sap.core.odata.api.edm.provider.EdmProvider;
-import com.sap.core.odata.api.exception.ODataBadRequestException;
+import com.sap.core.odata.api.exception.MessageReference;
 import com.sap.core.odata.api.exception.ODataException;
-import com.sap.core.odata.api.exception.ODataForbiddenException;
 import com.sap.core.odata.api.exception.ODataHttpException;
 import com.sap.core.odata.api.exception.ODataNotFoundException;
 import com.sap.core.odata.api.processor.ODataSingleProcessor;
@@ -30,6 +28,7 @@ import com.sap.core.odata.api.uri.KeyPredicate;
 import com.sap.core.odata.api.uri.resultviews.GetEntityView;
 import com.sap.core.odata.core.uri.UriParserResultImpl;
 import com.sap.core.odata.ref.edm.ScenarioEdmProvider;
+import com.sap.core.odata.testutils.helper.ClassHelper;
 import com.sap.core.odata.testutils.helper.StringHelper;
 
 public class HttpExceptionResponseTest extends AbstractBasicTest {
@@ -61,12 +60,9 @@ public class HttpExceptionResponseTest extends AbstractBasicTest {
   }
 
   @Test
-  public void testGenericHttpExceptions() throws ClientProtocolException, IOException, ODataException {
+  public void testGenericHttpExceptions() throws Exception {
 
-    List<ODataHttpException> toTestExceptions = new ArrayList<ODataHttpException>();
-    toTestExceptions.add(new ODataNotFoundException(ODataNotFoundException.ENTITY));
-    toTestExceptions.add(new ODataBadRequestException(ODataBadRequestException.COMMON));
-    toTestExceptions.add(new ODataForbiddenException(ODataForbiddenException.COMMON));
+    List<ODataHttpException> toTestExceptions = getHttpExceptionsForTest();
 
     int firstKey = 1;
     for (ODataHttpException oDataException : toTestExceptions) {
@@ -90,6 +86,16 @@ public class HttpExceptionResponseTest extends AbstractBasicTest {
     }
     
   }
+
+  
+  private List<ODataHttpException> getHttpExceptionsForTest() throws Exception {
+    List<Class<ODataHttpException>> exClasses = ClassHelper.getAssignableClasses("com.sap.core.odata.api.exception", ODataHttpException.class);
+//    log.debug("Found exception classes: " + exClasses.toString());
+    
+    MessageReference mr = MessageReference.create(ODataHttpException.class, "SIMPLE FOR TEST");
+    return ClassHelper.getClassInstances(exClasses, new Class<?>[]{MessageReference.class}, new Object[]{mr});
+  }
+
 
   /**
    * 
