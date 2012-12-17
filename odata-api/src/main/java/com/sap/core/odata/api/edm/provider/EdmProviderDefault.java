@@ -2,10 +2,9 @@ package com.sap.core.odata.api.edm.provider;
 
 import java.util.List;
 
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
-
 import com.sap.core.odata.api.edm.FullQualifiedName;
 import com.sap.core.odata.api.exception.ODataException;
+import com.sap.core.odata.api.exception.ODataNotImplementedException;
 
 /**
  * Default EDM Provider which is to be extended by the application
@@ -19,7 +18,7 @@ public class EdmProviderDefault implements EdmProvider {
    */
   @Override
   public EntityContainerInfo getEntityContainerInfo(String name) throws ODataException {
-    throw new NotImplementedException();
+    throw new ODataNotImplementedException();
   }
 
   /* (non-Javadoc)
@@ -27,7 +26,7 @@ public class EdmProviderDefault implements EdmProvider {
    */
   @Override
   public EntityType getEntityType(FullQualifiedName edmFQName) throws ODataException {
-    throw new NotImplementedException();
+    throw new ODataNotImplementedException();
   }
 
   /* (non-Javadoc)
@@ -35,7 +34,7 @@ public class EdmProviderDefault implements EdmProvider {
    */
   @Override
   public ComplexType getComplexType(FullQualifiedName edmFQName) throws ODataException {
-    throw new NotImplementedException();
+    throw new ODataNotImplementedException();
   }
 
   /* (non-Javadoc)
@@ -43,7 +42,7 @@ public class EdmProviderDefault implements EdmProvider {
    */
   @Override
   public Association getAssociation(FullQualifiedName edmFQName) throws ODataException {
-    throw new NotImplementedException();
+    throw new ODataNotImplementedException();
   }
 
   /* (non-Javadoc)
@@ -51,7 +50,7 @@ public class EdmProviderDefault implements EdmProvider {
    */
   @Override
   public EntitySet getEntitySet(String entityContainer, String name) throws ODataException {
-    throw new NotImplementedException();
+    throw new ODataNotImplementedException();
   }
 
   /* (non-Javadoc)
@@ -59,7 +58,7 @@ public class EdmProviderDefault implements EdmProvider {
    */
   @Override
   public AssociationSet getAssociationSet(String entityContainer, FullQualifiedName association, String sourceEntitySetName, String sourceEntitySetRole) throws ODataException {
-    throw new NotImplementedException();
+    throw new ODataNotImplementedException();
   }
 
   /* (non-Javadoc)
@@ -67,7 +66,7 @@ public class EdmProviderDefault implements EdmProvider {
    */
   @Override
   public FunctionImport getFunctionImport(String entityContainer, String name) throws ODataException {
-    throw new NotImplementedException();
+    throw new ODataNotImplementedException();
   }
 
   /* (non-Javadoc)
@@ -75,6 +74,6 @@ public class EdmProviderDefault implements EdmProvider {
    */
   @Override
   public List<Schema> getSchemas() throws ODataException {
-    throw new NotImplementedException();
+    throw new ODataNotImplementedException();
   }
 }
