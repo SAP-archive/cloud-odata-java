@@ -6,6 +6,7 @@ import static junit.framework.Assert.assertTrue;
 import static org.custommonkey.xmlunit.XMLAssert.assertXpathValuesEqual;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -34,7 +35,9 @@ import com.sap.core.odata.api.exception.ODataApplicationException;
 import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.api.exception.ODataNotFoundException;
 import com.sap.core.odata.api.uri.UriSyntaxException;
+import com.sap.core.odata.core.exception.MessageService;
 import com.sap.core.odata.core.exception.ODataRuntimeException;
+import com.sap.core.odata.testutils.helper.StringHelper;
 
 public class ODataExceptionMapperImplTest {
 
@@ -73,11 +76,9 @@ public class ODataExceptionMapperImplTest {
     // verify
     Assert.assertNotNull(response);
     Assert.assertEquals(HttpStatusCodes.NOT_FOUND.getStatusCode(), response.getStatus());
-    Assert.assertTrue(response.getEntity() instanceof String);
-    String errorMessage = response.getEntity().toString();
+    String errorMessage = StringHelper.inputStreamToString((InputStream) response.getEntity());
     assertXpathValuesEqual("\"" + ODataNotFoundException.ENTITY.getKey() + "\"", "/a:error/a:code", errorMessage);
-    //TODO:Check for text
-    //Assert.assertEquals("Language = 'en', message = 'Requested entity could not be found.'.", response.getEntity().toString());
+    assertXpathValuesEqual("\"" + MessageService.getMessage(Locale.ENGLISH, ODataNotFoundException.ENTITY).getText() + "\"", "/a:error/a:message", errorMessage);
   }
 
   @Test
@@ -94,11 +95,9 @@ public class ODataExceptionMapperImplTest {
     // verify
     Assert.assertNotNull(response);
     Assert.assertEquals(HttpStatusCodes.NOT_FOUND.getStatusCode(), response.getStatus());
-    Assert.assertTrue(response.getEntity() instanceof String);
-    String errorMessage = response.getEntity().toString();
+    String errorMessage = StringHelper.inputStreamToString((InputStream) response.getEntity());
     assertXpathValuesEqual("\"" + ODataNotFoundException.ENTITY.getKey() + "\"", "/a:error/a:code", errorMessage);
-    //TODO:Check for text
-    //Assert.assertEquals("Language = 'de', message = 'Die angefragte Entit\u00e4t wurde nicht gefunden.'.", response.getEntity().toString());
+    assertXpathValuesEqual("\"" + MessageService.getMessage(Locale.GERMAN, ODataNotFoundException.ENTITY).getText() + "\"", "/a:error/a:message", errorMessage);
   }
 
   @Test
@@ -114,11 +113,9 @@ public class ODataExceptionMapperImplTest {
     // verify
     Assert.assertNotNull(response);
     Assert.assertEquals(HttpStatusCodes.NOT_FOUND.getStatusCode(), response.getStatus());
-    Assert.assertTrue(response.getEntity() instanceof String);
-    String errorMessage = response.getEntity().toString();
+    String errorMessage = StringHelper.inputStreamToString((InputStream) response.getEntity());
     assertXpathValuesEqual("\"" + ODataNotFoundException.ENTITY.getKey() + "\"", "/a:error/a:code", errorMessage);
-    //    TODO:Check for text
-    //Assert.assertEquals("Language = 'en', message = 'Requested entity could not be found.'.", response.getEntity().toString());
+    assertXpathValuesEqual("\"" + MessageService.getMessage(Locale.ENGLISH, ODataNotFoundException.ENTITY).getText() + "\"", "/a:error/a:message", errorMessage);
   }
 
   @Test
@@ -133,7 +130,7 @@ public class ODataExceptionMapperImplTest {
     // verify
     Assert.assertNotNull(response);
     Assert.assertEquals(Status.INTERNAL_SERVER_ERROR.getStatusCode(), response.getStatus());
-    String errorMessage = response.getEntity().toString();
+    String errorMessage = StringHelper.inputStreamToString((InputStream) response.getEntity());
     assertXpathValuesEqual("\"" + exception.getClass().getName() + "\"", "/a:error/a:code", errorMessage);
     assertXpathValuesEqual("\"expected exception message\"", "/a:error/a:message", errorMessage);
   }
@@ -150,8 +147,7 @@ public class ODataExceptionMapperImplTest {
     // verify
     Assert.assertNotNull(response);
     Assert.assertEquals(Status.INTERNAL_SERVER_ERROR.getStatusCode(), response.getStatus());
-    Assert.assertTrue(response.getEntity() instanceof String);
-    String errorMessage = response.getEntity().toString();
+    String errorMessage = StringHelper.inputStreamToString((InputStream) response.getEntity());
     assertXpathValuesEqual("\"" + ODataApplicationException.class.getName() + "\"", "/a:error/a:code", errorMessage);
     assertXpathValuesEqual("\"expected exception message\"", "/a:error/a:message", errorMessage);
   }
@@ -169,8 +165,7 @@ public class ODataExceptionMapperImplTest {
     // verify
     Assert.assertNotNull(response);
     Assert.assertEquals(Status.OK.getStatusCode(), response.getStatus());
-    Assert.assertTrue(response.getEntity() instanceof String);
-    String errorMessage = response.getEntity().toString();
+    String errorMessage = StringHelper.inputStreamToString((InputStream) response.getEntity());
     assertXpathValuesEqual("\"" + exception.getClass().getName() + "\"", "/a:error/a:code", errorMessage);
     assertXpathValuesEqual("\"expected exception message\"", "/a:error/a:message", errorMessage);
   }
@@ -188,8 +183,7 @@ public class ODataExceptionMapperImplTest {
     // verify
     assertNotNull(response);
     assertEquals(Status.OK.getStatusCode(), response.getStatus());
-    assertTrue(response.getEntity() instanceof String);
-    String errorMessage = response.getEntity().toString();
+    String errorMessage = StringHelper.inputStreamToString((InputStream) response.getEntity());
     assertXpathValuesEqual("\"" + ODataApplicationException.class.getName() + "\"", "/a:error/a:code", errorMessage);
     assertXpathValuesEqual("\"expected exception message\"", "/a:error/a:message", errorMessage);
   }
@@ -205,8 +199,9 @@ public class ODataExceptionMapperImplTest {
     // verify
     Assert.assertNotNull(response);
     Assert.assertEquals(Status.BAD_REQUEST.getStatusCode(), response.getStatus());
-    String errorMessage = response.getEntity().toString();
+    String errorMessage = StringHelper.inputStreamToString((InputStream) response.getEntity());
     assertXpathValuesEqual("\"" + UriSyntaxException.EMPTYSEGMENT.getKey() + "\"", "/a:error/a:code", errorMessage);
+    assertXpathValuesEqual("\"" + MessageService.getMessage(Locale.ENGLISH, UriSyntaxException.EMPTYSEGMENT).getText() + "\"", "/a:error/a:message", errorMessage);
   }
 
   @Test
@@ -220,10 +215,9 @@ public class ODataExceptionMapperImplTest {
     // verify
     Assert.assertNotNull(response);
     Assert.assertEquals(Status.BAD_REQUEST.getStatusCode(), response.getStatus());
-    Assert.assertTrue(response.getEntity() instanceof String);
-    String errorMessage = response.getEntity().toString();
+    String errorMessage = StringHelper.inputStreamToString((InputStream) response.getEntity());
     assertXpathValuesEqual("\"" + UriSyntaxException.EMPTYSEGMENT.getKey() + "\"", "/a:error/a:code", errorMessage);
-    //TODO: Check for text
+    assertXpathValuesEqual("\"" + MessageService.getMessage(Locale.ENGLISH, UriSyntaxException.EMPTYSEGMENT).getText() + "\"", "/a:error/a:message", errorMessage);
   }
 
   @Test
@@ -238,8 +232,7 @@ public class ODataExceptionMapperImplTest {
     // verify
     Assert.assertNotNull(response);
     Assert.assertEquals(Status.INTERNAL_SERVER_ERROR.getStatusCode(), response.getStatus());
-    Assert.assertTrue(response.getEntity() instanceof String);
-    String errorMessage = response.getEntity().toString();
+    String errorMessage = StringHelper.inputStreamToString((InputStream) response.getEntity());
     assertXpathValuesEqual("\"" + exception.getClass().getName() + "\"", "/a:error/a:code", errorMessage);
     assertXpathValuesEqual("\"expected exception message\"", "/a:error/a:message", errorMessage);
   }
@@ -256,8 +249,7 @@ public class ODataExceptionMapperImplTest {
     // verify
     Assert.assertNotNull(response);
     Assert.assertEquals(HttpStatusCodes.INTERNAL_SERVER_ERROR.getStatusCode(), response.getStatus());
-    Assert.assertTrue(response.getEntity() instanceof String);
-    String errorMessage = response.getEntity().toString();
+    String errorMessage = StringHelper.inputStreamToString((InputStream) response.getEntity());
     assertXpathValuesEqual("\"" + exception.getClass().getName() + "\"", "/a:error/a:code", errorMessage);
     assertXpathValuesEqual("\"Some odd exception\"", "/a:error/a:message", errorMessage);
   }
@@ -274,8 +266,7 @@ public class ODataExceptionMapperImplTest {
     // verify
     Assert.assertNotNull(response);
     Assert.assertEquals(HttpStatusCodes.INTERNAL_SERVER_ERROR.getStatusCode(), response.getStatus());
-    Assert.assertTrue(response.getEntity() instanceof String);
-    String errorMessage = response.getEntity().toString();
+    String errorMessage = StringHelper.inputStreamToString((InputStream) response.getEntity());
     assertXpathValuesEqual("\"" + exception.getClass().getName() + "\"", "/a:error/a:code", errorMessage);
     assertXpathValuesEqual("\"Some odd runtime exception\"", "/a:error/a:message", errorMessage);
   }
