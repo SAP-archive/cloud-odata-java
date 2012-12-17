@@ -32,7 +32,7 @@ public class VisitorTool implements ExpressionVisitor {
   @Override
   public Object visitLiteral(LiteralExpression literal, EdmLiteral edmLiteral)
   {
-    return "" + literal.toUriLiteral() + "";
+    return "" + literal.getUriLiteral() + "";
   }
 
   @Override

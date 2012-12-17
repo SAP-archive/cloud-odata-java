@@ -39,8 +39,9 @@ public class MemberExpressionImpl implements BinaryExpression, MemberExpression
   }
 
   @Override
-  public void setEdmType(EdmType edmType) {
+  public CommonExpression setEdmType(EdmType edmType) {
     this.edmType = edmType;
+    return this;
   }
 
   public BinaryOperator getOperator()
@@ -54,7 +55,7 @@ public class MemberExpressionImpl implements BinaryExpression, MemberExpression
   }
 
   @Override
-  public String toUriLiteral() {
+  public String getUriLiteral() {
 
     return CharConst.MEMBER_OPERATOR;
   }

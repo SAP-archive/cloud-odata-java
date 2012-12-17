@@ -645,7 +645,7 @@ public class ListsProcessor extends ODataSingleProcessor {
     case LITERAL:
       final LiteralExpression literal = (LiteralExpression) expression;
       final EdmSimpleType literalType = (EdmSimpleType) literal.getEdmType();
-      return literalType.valueToString(literalType.valueOfString(literal.toUriLiteral(), EdmLiteralKind.URI, null), EdmLiteralKind.DEFAULT, null);
+      return literalType.valueToString(literalType.valueOfString(literal.getUriLiteral(), EdmLiteralKind.URI, null), EdmLiteralKind.DEFAULT, null);
 
     case METHOD:
       final MethodExpression methodExpression = (MethodExpression) expression;

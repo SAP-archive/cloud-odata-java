@@ -9,12 +9,11 @@ import com.sap.core.odata.api.uri.expression.BinaryOperator;
  */
 class InfoBinaryOperator
 {
-
-  BinaryOperator operator;
-  String category;
-  String syntax;
-  int priority;
-  Vector<ParameterSet> allowedParameterTypes;
+  private BinaryOperator operator;
+  private String category;
+  private String syntax;
+  private int priority;
+  private Vector<ParameterSet> allowedParameterTypes;
 
   public InfoBinaryOperator(BinaryOperator operator, String category, String syntax, int priority) {
     this.allowedParameterTypes = new Vector<ParameterSet>();
@@ -35,6 +34,10 @@ class InfoBinaryOperator
 
   public BinaryOperator getOperator() {
     return operator;
+  }
+  
+  public int getPriority() {
+    return priority;
   }
 
   public void addParameterSet(ParameterSet parameterSet)

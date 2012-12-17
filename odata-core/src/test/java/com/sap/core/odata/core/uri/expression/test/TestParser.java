@@ -393,7 +393,7 @@ public class TestParser {
   {
     try {
       FilterParserImpl parser = new FilterParserImpl(null, null);
-      FilterExpression root = parser.ParseExpression(expression);
+      FilterExpression root = parser.parseExpression(expression);
       return new ParserTool(expression, root);
     } catch (FilterParserInternalError e) {
       fail("Error in parser" + e.getLocalizedMessage());
@@ -406,7 +406,7 @@ public class TestParser {
   static public ParserTool GetPTF(Edm edm, EdmEntityType resourceEntityType, String expression) {
     try {
       FilterParserImpl parser = new FilterParserImpl(edm, resourceEntityType);
-      FilterExpression root = parser.ParseExpression(expression);
+      FilterExpression root = parser.parseExpression(expression);
       return new ParserTool(expression, root);
     } catch (FilterParserInternalError e) {
       fail("Error in parser" + e.getLocalizedMessage());

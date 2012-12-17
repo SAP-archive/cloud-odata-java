@@ -12,9 +12,9 @@ import com.sap.core.odata.api.uri.expression.MethodOperator;
 
 public class MethodExpressionImpl implements MethodExpression {
 
-  InfoMethod infoMethod;
-  EdmType returnType;
-  Vector<CommonExpression> actualParameters;
+  private InfoMethod infoMethod;
+  private EdmType returnType;
+  private Vector<CommonExpression> actualParameters;
 
   public MethodExpressionImpl(InfoMethod infoMethod) {
     this.infoMethod = infoMethod;
@@ -28,8 +28,9 @@ public class MethodExpressionImpl implements MethodExpression {
   }
 
   @Override
-  public void setEdmType(EdmType edmType) {
+  public CommonExpression setEdmType(EdmType edmType) {
     this.returnType = edmType;
+    return this;
   }
 
   @Override
@@ -59,7 +60,7 @@ public class MethodExpressionImpl implements MethodExpression {
   }
 
   @Override
-  public String toUriLiteral() {
+  public String getUriLiteral() {
     return infoMethod.getSyntax();
   }
 

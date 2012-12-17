@@ -1,6 +1,8 @@
 package com.sap.core.odata.api.uri.expression;
 
+import com.sap.core.odata.api.exception.ODataMessageException;
+
 public interface OrderByParser 
 {
-  public void parseOrderExpression(String expression); 
+  abstract OrderByExpression parseExpression(String expression) throws FilterParserException, ODataMessageException;
 }

@@ -7,37 +7,43 @@ package com.sap.core.odata.api.uri.expression;
  */
 public enum ExpressionKind {
   /**
-   * Literals like "1.1d" or "'This is a string'" 
+   * Used to mark the root node of a filter expression tree
+   * @see FilterExpression  
+   */
+  FILTER,
+  /**
+   * Literals like "1.1d" or "'This is a string'"
+   * @see LiteralExpression 
    */
   LITERAL,
   
   /**
-   * Unary operators like "not" and "-" 
-   * @see {@link UnaryExpression}
+   * Unary operators like "not" and "-"
+   * @see UnaryExpression
    */
   UNARY,
   
   /**
    * Binary operators like "eq" and "or" 
-   * @see {@link BinaryExpression}
+   * @see BinaryExpression
    */
   BINARY,
   
   /**
    * Method operators like "substringof" and "concat" 
-   * @see {@link MethodExpression}
+   * @see MethodExpression
    */
   METHOD,
   
   /**
    * Member access operator like "/" in "adress/street"
-   * @see {@link MemberExpression} 
+   * @see MemberExpression 
    */
   MEMBER,
   
   /**
    * Property like "age" 
-   * @see {link {@link PropertyExpression}
+   * @see PropertyExpression
    */
   PROPERTY;
 }
