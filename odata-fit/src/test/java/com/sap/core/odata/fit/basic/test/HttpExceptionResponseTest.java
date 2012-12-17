@@ -1,5 +1,6 @@
 package com.sap.core.odata.fit.basic.test;
 
+import static org.custommonkey.xmlunit.XMLAssert.assertXpathValuesEqual;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
@@ -7,11 +8,17 @@ import static org.mockito.Mockito.when;
 
 import java.io.IOException;
 import java.net.URI;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.methods.HttpGet;
+import org.custommonkey.xmlunit.NamespaceContext;
+import org.custommonkey.xmlunit.SimpleNamespaceContext;
+import org.custommonkey.xmlunit.XMLUnit;
 import org.hamcrest.BaseMatcher;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
@@ -26,9 +33,11 @@ import com.sap.core.odata.api.exception.ODataNotFoundException;
 import com.sap.core.odata.api.processor.ODataSingleProcessor;
 import com.sap.core.odata.api.uri.KeyPredicate;
 import com.sap.core.odata.api.uri.resultviews.GetEntityView;
+import com.sap.core.odata.core.exception.MessageService;
 import com.sap.core.odata.core.uri.UriParserResultImpl;
 import com.sap.core.odata.ref.edm.ScenarioEdmProvider;
 import com.sap.core.odata.testutils.helper.ClassHelper;
+import com.sap.core.odata.testutils.helper.StringHelper;
 
 public class HttpExceptionResponseTest extends AbstractBasicTest {
 
@@ -48,15 +57,19 @@ public class HttpExceptionResponseTest extends AbstractBasicTest {
   }
 
   @Test
-  public void test404HttpNotFound() throws ClientProtocolException, IOException, ODataException {
+  public void test404HttpNotFound() throws Exception {
     when(processor.readEntity(any(GetEntityView.class))).thenThrow(new ODataNotFoundException(ODataNotFoundException.ENTITY));
 
     HttpResponse response = executeGetRequest("Managers('199')");
     assertEquals(404, response.getStatusLine().getStatusCode());
 
-    //String content = StringHelper.inputStreamToString(response.getEntity().getContent());
-    //TODO: Check for text the right way
-    //assertEquals("Language = 'en', message = 'Requested entity could not be found.'.", content);
+    String content = StringHelper.inputStreamToString(response.getEntity().getContent());
+    Map<String, String> prefixMap = new HashMap<String, String>();
+    prefixMap.put("a", "http://schemas.microsoft.com/ado/2007/08/dataservices/metadata");
+    NamespaceContext ctx = new SimpleNamespaceContext(prefixMap);
+    XMLUnit.setXpathNamespaceContext(ctx);
+    assertXpathValuesEqual("\"" + ODataNotFoundException.ENTITY.getKey() + "\"", "/a:error/a:code", content);
+    assertXpathValuesEqual("\"" + MessageService.getMessage(Locale.ENGLISH, ODataNotFoundException.ENTITY).getText() + "\"", "/a:error/a:message", content);
   }
 
   @Test
@@ -70,18 +83,22 @@ public class HttpExceptionResponseTest extends AbstractBasicTest {
       Matcher<GetEntityView> match = new EntityKeyMatcher(key);
       when(processor.readEntity(Matchers.argThat(match))).thenThrow(oDataException);
 
-      //
       String uri = getEndpoint().toString() + "Managers('" + key + "')";
       HttpGet get = new HttpGet(URI.create(uri));
       HttpResponse response = getHttpClient().execute(get);
 
-      //TODO:check
-      //      assertEquals("Expected status code does not match for exception type '" + oDataException.getClass().getSimpleName() + "'.", 
-      //          oDataException.getHttpStatus().getStatusCode(), response.getStatusLine().getStatusCode());
-      //      
-      //      String content = StringHelper.inputStreamToString(response.getEntity().getContent());
-      //      assertEquals("Language = 'en', message = 'Requested entity could not be found.'.", content);
+      assertEquals("Expected status code does not match for exception type '" + oDataException.getClass().getSimpleName() + "'.",
+          oDataException.getHttpStatus().getStatusCode(), response.getStatusLine().getStatusCode());
 
+      String content = StringHelper.inputStreamToString(response.getEntity().getContent());
+      Map<String, String> prefixMap = new HashMap<String, String>();
+      prefixMap.put("a", "http://schemas.microsoft.com/ado/2007/08/dataservices/metadata");
+      NamespaceContext ctx = new SimpleNamespaceContext(prefixMap);
+      XMLUnit.setXpathNamespaceContext(ctx);
+      assertXpathValuesEqual("\"com.sap.core.odata.api.exception.ODataHttpException.SIMPLE FOR TEST\"", "/a:error/a:code", content);
+
+      //TODO: How to check for the right text here?
+      //assertXpathValuesEqual("\"" + MessageService.getMessage(Locale.ENGLISH, ODataNotFoundException.ENTITY).getText() + "\"", "/a:error/a:message", content);
       get.releaseConnection();
     }
 

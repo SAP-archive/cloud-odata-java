@@ -1,6 +1,7 @@
 package com.sap.core.odata.core.ep;
 
-import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.util.Locale;
 
@@ -12,14 +13,15 @@ import org.slf4j.LoggerFactory;
 
 import com.sap.core.odata.api.edm.Edm;
 import com.sap.core.odata.api.enums.Format;
+import com.sap.core.odata.core.ep.util.CircleStreamBuffer;
 
 public class ODataExceptionSerializer {
 
   private final static Logger LOG = LoggerFactory.getLogger(ODataExceptionSerializer.class);
 
-  public static String serialize(String errorCode, String message, Format format, Locale locale) {
+  public static InputStream serialize(String errorCode, String message, Format format, Locale locale) {
 
-    String returnMessage = null;
+    InputStream returnMessage = null;
     switch (format) {
     case ATOM:
     case XML:
@@ -37,14 +39,15 @@ public class ODataExceptionSerializer {
     return returnMessage;
   }
 
-  private static String serialzieJson(String errorCode, String message, Locale locale) {
+  private static InputStream serialzieJson(String errorCode, String message, Locale locale) {
     return null;
   }
 
-  private static String serializeXml(String errorCode, String message, Locale locale) {
-    String outputMessage = null;
+  private static InputStream serializeXml(String errorCode, String message, Locale locale) {
+    InputStream outputMessage = null;
     try {
-      ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+      CircleStreamBuffer csb = new CircleStreamBuffer();
+      OutputStream outputStream = csb.getOutputStream();
       OutputStreamWriter writer = new OutputStreamWriter(
           outputStream, "utf-8");
       XMLStreamWriter xmlStreamWriter = XMLOutputFactory
@@ -52,7 +55,7 @@ public class ODataExceptionSerializer {
 
       xmlStreamWriter.writeStartDocument();
       xmlStreamWriter.writeStartElement("error");
-      xmlStreamWriter.writeNamespace("xmlns", Edm.NAMESPACE_M_2007_08);
+      xmlStreamWriter.writeDefaultNamespace(Edm.NAMESPACE_M_2007_08);
       xmlStreamWriter.writeStartElement("code");
       xmlStreamWriter.writeCharacters(errorCode);
       xmlStreamWriter.writeEndElement();
@@ -64,12 +67,10 @@ public class ODataExceptionSerializer {
       outputStream.flush();
       writer.flush();
       xmlStreamWriter.flush();
-      byte[] data = outputStream.toByteArray();
-      outputStream.close();
-      outputMessage = new String(data);
+
+      outputMessage = csb.getInputStream();
     } catch (Exception e) {
       LOG.error("Fatal Error when serializing an Exception.", e);
-      outputMessage = "Fatal Error when serializing an Exception.";
     }
     return outputMessage;
   }

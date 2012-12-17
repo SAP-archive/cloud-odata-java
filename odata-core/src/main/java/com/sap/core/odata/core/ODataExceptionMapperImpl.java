@@ -1,5 +1,6 @@
 package com.sap.core.odata.core;
 
+import java.io.InputStream;
 import java.text.ParseException;
 import java.util.Arrays;
 import java.util.List;
@@ -66,7 +67,7 @@ public class ODataExceptionMapperImpl implements ExceptionMapper<Exception> {
   }
 
   private Response buildResponseForWebApplicationException(WebApplicationException webApplicationException) {
-    String entity = ODataExceptionSerializer.serialize(buildErrorCode(webApplicationException), webApplicationException.getMessage(), getFormat(), DEFAULT_RESPONSE_LOCALE);
+    InputStream entity = ODataExceptionSerializer.serialize(buildErrorCode(webApplicationException), webApplicationException.getMessage(), getFormat(), DEFAULT_RESPONSE_LOCALE);
     return buildResponseInternal(entity, getFormat(), webApplicationException.getResponse().getStatus());
   }
 
@@ -91,14 +92,14 @@ public class ODataExceptionMapperImpl implements ExceptionMapper<Exception> {
 
   private Response buildResponseForException(Exception exception) {
     Format format = getFormat();
-    String entity = ODataExceptionSerializer.serialize(buildErrorCode(exception), exception.getMessage(), format, DEFAULT_RESPONSE_LOCALE);
+    InputStream entity = ODataExceptionSerializer.serialize(buildErrorCode(exception), exception.getMessage(), format, DEFAULT_RESPONSE_LOCALE);
     return buildResponseInternal(entity, format, Status.INTERNAL_SERVER_ERROR.getStatusCode());
   }
 
   private Response buildResponseForApplicationException(ODataApplicationException exception) {
     int status = extractStatus(exception);
     Format format = getFormat();
-    String entity = ODataExceptionSerializer.serialize(exception.getCode(), exception.getMessage(), format, DEFAULT_RESPONSE_LOCALE);
+    InputStream entity = ODataExceptionSerializer.serialize(exception.getCode(), exception.getMessage(), format, DEFAULT_RESPONSE_LOCALE);
     return buildResponseInternal(entity, format, status);
   }
 
@@ -106,11 +107,11 @@ public class ODataExceptionMapperImpl implements ExceptionMapper<Exception> {
     Message localizedMessage = extractEntity(msgException.getMessageReference());
     int status = extractStatus(msgException);
     Format format = getFormat();
-    String entity = ODataExceptionSerializer.serialize(buildErrorCode(msgException), localizedMessage.getText(), format, localizedMessage.getLocale());
+    InputStream entity = ODataExceptionSerializer.serialize(buildErrorCode(msgException), localizedMessage.getText(), format, localizedMessage.getLocale());
     return buildResponseInternal(entity, format, status);
   }
 
-  private Response buildResponseInternal(String entity, Format format, int status) {
+  private Response buildResponseInternal(InputStream entity, Format format, int status) {
     ResponseBuilder responseBuilder = Response.noContent();
 
     switch (format) {
