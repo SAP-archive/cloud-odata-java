@@ -11,7 +11,7 @@ public class EntityPropertyInfo {
   protected EdmType type;
   protected EdmFacets facets;
   protected EdmCustomizableFeedMappings customMapping;
-  
+
   static EntityPropertyInfo create(EdmProperty property) throws EdmException {
     EntityPropertyInfo info = new EntityPropertyInfo();
     info.name = property.getName();
@@ -20,24 +20,27 @@ public class EntityPropertyInfo {
     info.customMapping = property.getCustomizableFeedMappings();
     return info;
   }
-  
+
   public boolean isComplex() {
     return false;
   }
-  
+
   public String getName() {
     return name;
   }
+
   public EdmType getType() {
     return type;
   }
+
   public EdmFacets getFacets() {
     return facets;
   }
+
   public EdmCustomizableFeedMappings getCustomMapping() {
     return customMapping;
   }
-  
+
   @Override
   public String toString() {
     return name;

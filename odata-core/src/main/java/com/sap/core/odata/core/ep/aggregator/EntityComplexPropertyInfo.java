@@ -9,7 +9,7 @@ import com.sap.core.odata.api.edm.EdmProperty;
 
 public class EntityComplexPropertyInfo extends EntityPropertyInfo {
   protected Map<String, EntityPropertyInfo> internalName2EntityPropertyInfo;
-  
+
   static EntityComplexPropertyInfo create(EdmProperty property, Map<String, EntityPropertyInfo> childEntityInfos) throws EdmException {
     EntityComplexPropertyInfo info = new EntityComplexPropertyInfo();
     info.name = property.getName();
@@ -19,21 +19,21 @@ public class EntityComplexPropertyInfo extends EntityPropertyInfo {
     info.internalName2EntityPropertyInfo = childEntityInfos;
     return info;
   }
-  
+
   @Override
   public boolean isComplex() {
     return true;
   }
-  
+
   public Collection<EntityPropertyInfo> getPropertyInfos() {
     return Collections.unmodifiableCollection(internalName2EntityPropertyInfo.values());
   }
-  
+
   @Override
   public String toString() {
     StringBuilder sb = new StringBuilder();
-    for (EntityPropertyInfo info: internalName2EntityPropertyInfo.values()) {
-      if(sb.length() == 0) {
+    for (EntityPropertyInfo info : internalName2EntityPropertyInfo.values()) {
+      if (sb.length() == 0) {
         sb.append(super.toString()).append("=>[").append(info.toString());
       } else {
         sb.append(", ").append(info.toString());

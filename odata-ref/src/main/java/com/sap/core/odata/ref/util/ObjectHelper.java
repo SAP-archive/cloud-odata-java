@@ -14,7 +14,7 @@ import org.slf4j.LoggerFactory;
 public class ObjectHelper {
 
   private static final Logger LOG = LoggerFactory.getLogger(ObjectHelper.class);
-  
+
   private final Object object;
   private final Map<String, Field> fieldsToIds;
   private Map<String, Object> fieldId2Value;
@@ -51,14 +51,15 @@ public class ObjectHelper {
       public String createKey(String key) {
         return key.substring(0, 1).toUpperCase() + key.substring(1);
       }
+
       @Override
       public Object createValue(Object value) {
-        if(value != null) {
-          if(value.getClass().isPrimitive()) {
+        if (value != null) {
+          if (value.getClass().isPrimitive()) {
             return value;
-          } else if(value instanceof Date) {
+          } else if (value instanceof Date) {
             return value;
-          } else if(!ObjectHelper.isComplexType(value.getClass())) {
+          } else if (!ObjectHelper.isComplexType(value.getClass())) {
             return value;
           }
           return String.valueOf(value);
@@ -69,7 +70,7 @@ public class ObjectHelper {
 
     return mapToId(object, fieldsToIds, mapper);
   }
-  
+
   private <T, K> Map<T, K> mapToId(Object object, Map<String, Field> fieldsToIds, Mapper<T, K> mapper) throws IllegalAccessException {
 
     Map<T, K> fieldId2FieldValue = new HashMap<T, K>();
@@ -86,7 +87,6 @@ public class ObjectHelper {
     return fieldId2FieldValue;
   }
 
-  
   private Object getFieldValue(final Object inInstance, final Field field) throws IllegalAccessException {
     final boolean accessible = field.isAccessible();
     if (!accessible) {
@@ -144,12 +144,12 @@ public class ObjectHelper {
   private static boolean isComplexType(Class<?> type) {
     boolean isComplex = true;
     if (type == String.class || type == Integer.class || type == Boolean.class || type == Date.class || type == Float.class || type == Object.class
-    // || Collections.class.isAssignableFrom(type)
-    // || type.isArray()
+        // || Collections.class.isAssignableFrom(type)
+        // || type.isArray()
         || type.isPrimitive()) {
       isComplex = false;
     }
-//    LOG.debug("Class {} is complex? -> {}", type.getSimpleName(), isComplex);
+    //    LOG.debug("Class {} is complex? -> {}", type.getSimpleName(), isComplex);
     return isComplex;
   }
 

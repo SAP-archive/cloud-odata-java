@@ -14,7 +14,7 @@ public class UriUtils {
     URI uri = new URI(null, null, null, -1, path, query, null);
     return uri.toASCIIString();
   }
-  
+
   public static String encodeUri(URI baseUri, String pathExtension) throws URISyntaxException {
     String scheme = baseUri.getScheme();
     String userInfo = baseUri.getUserInfo();

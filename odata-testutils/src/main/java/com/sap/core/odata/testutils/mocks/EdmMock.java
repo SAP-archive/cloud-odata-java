@@ -216,7 +216,7 @@ class EdmMock {
     EdmProperty photoRusiaProperty = createProperty("Содержание", EdmSimpleTypeKind.String);
     CustomizableFeedMappings cfm = new CustomizableFeedMappings().setFcKeepInContent(false).setFcNsPrefix("py").setFcNsUri("http://localhost").setFcTargetPath("Содержание");
     when(photoRusiaProperty.getCustomizableFeedMappings()).thenReturn(cfm);
-    
+
     EdmEntityType photoEntityType = mock(EdmEntityType.class);
     when(photoEntityType.getName()).thenReturn("Photo");
     when(photoEntityType.getNamespace()).thenReturn("RefScenario2");
@@ -233,11 +233,10 @@ class EdmMock {
     when(photoContainer.isDefaultEntityContainer()).thenReturn(false);
     when(photoContainer.getEntitySet("Photos")).thenReturn(photoEntitySet);
     when(photoContainer.getName()).thenReturn("Container2");
-    
-    //        properties.add(new SimpleProperty().setName("Содержание")
-     //.setType(EdmSimpleTypeKind.String).setFacets(new Facets().setNullable(true))
-    //.setCustomizableFeedMappings(new CustomizableFeedMappings().setFcKeepInContent(false).setFcNsPrefix("py").setFcNsUri("http://localhost").setFcTargetPath("Содержание")).setMapping(new Mapping().setValue("getContent")));
 
+    //        properties.add(new SimpleProperty().setName("Содержание")
+    //.setType(EdmSimpleTypeKind.String).setFacets(new Facets().setNullable(true))
+    //.setCustomizableFeedMappings(new CustomizableFeedMappings().setFcKeepInContent(false).setFcNsPrefix("py").setFcNsUri("http://localhost").setFcTargetPath("Содержание")).setMapping(new Mapping().setValue("getContent")));
 
     when(photoEntitySet.getEntityContainer()).thenReturn(photoContainer);
 
@@ -257,7 +256,7 @@ class EdmMock {
     when(property.getName()).thenReturn(name);
     return property;
   }
-  
+
   private static EdmEntitySet createEntitySetMock(final EdmEntityContainer container, final String name, final EdmType type, final String keyPropertyId) throws EdmException {
     EdmEntityType entityType = createEntityTypeMock(type, keyPropertyId);
 

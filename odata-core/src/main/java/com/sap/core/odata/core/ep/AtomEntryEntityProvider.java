@@ -54,7 +54,7 @@ public class AtomEntryEntityProvider {
       // write all atom infos (mandatory and optional)
       appendAtomMandatoryParts(writer, eia, data);
       appendAtomOptionalParts(writer, eia, data);
-      
+
       if (eia.isEntityTypeHasStream()) {
         // write all links
         appendAtomEditLink(writer, eia, data);
@@ -90,7 +90,7 @@ public class AtomEntryEntityProvider {
       for (String tpName : noneSyndicationTargetPaths) {
         EntityPropertyInfo info = eia.getPropertyInfo(tpName);
         EdmCustomizableFeedMappings customMapping = info.getCustomMapping();
-        if(!customMapping.isFcKeepInContent()) {
+        if (!customMapping.isFcKeepInContent()) {
           XmlPropertyEntityProvider aps = new XmlPropertyEntityProvider();
           Object value = data.get(info.getName());
           aps.append(writer, info, value, false);
@@ -384,11 +384,11 @@ public class AtomEntryEntityProvider {
       writer.writeStartElement(Edm.NAMESPACE_M_2007_08, FormatXml.M_PROPERTIES);
 
       List<String> propertyNames = eia.getPropertyNames();
-      
-      for (String propertyName: propertyNames) {
+
+      for (String propertyName : propertyNames) {
         EntityPropertyInfo propertyInfo = eia.getPropertyInfo(propertyName);
 
-        if(propertyInfo != null && isNotMappedViaCustomMapping(propertyInfo)) {
+        if (propertyInfo != null && isNotMappedViaCustomMapping(propertyInfo)) {
           Object value = data.get(propertyName);
           XmlPropertyEntityProvider aps = new XmlPropertyEntityProvider();
           aps.append(writer, propertyInfo, value, false);
@@ -403,7 +403,7 @@ public class AtomEntryEntityProvider {
 
   private boolean isNotMappedViaCustomMapping(EntityPropertyInfo propertyInfo) {
     EdmCustomizableFeedMappings customMapping = propertyInfo.getCustomMapping();
-    if(customMapping != null && customMapping.isFcKeepInContent() != null) {
+    if (customMapping != null && customMapping.isFcKeepInContent() != null) {
       return customMapping.isFcKeepInContent().booleanValue();
     }
     return true;

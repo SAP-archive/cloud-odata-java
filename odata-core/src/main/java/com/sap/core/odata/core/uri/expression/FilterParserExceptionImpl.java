@@ -1,6 +1,5 @@
 package com.sap.core.odata.core.uri.expression;
 
-import com.sap.core.odata.api.edm.EdmComplexType;
 import com.sap.core.odata.api.edm.EdmException;
 import com.sap.core.odata.api.edm.EdmStructuralType;
 import com.sap.core.odata.api.exception.MessageReference;
@@ -68,7 +67,7 @@ public class FilterParserExceptionImpl extends FilterParserException {
   public static FilterParserException createMETHOD_TO_FEW_PARAMETERS(MethodExpression methodExpression)
   {
     MessageReference msgRef = FilterParserException.METHOD_TO_FEW_PARAMETERS.create();
-    
+
     msgRef.addContent(methodExpression.getMethod().toSyntax());
 
     return new FilterParserException(msgRef);
@@ -76,7 +75,7 @@ public class FilterParserExceptionImpl extends FilterParserException {
 
   public static FilterParserException createMETHOD_TO_MANY_PARAMETERS(MethodExpression methodExpression) {
     MessageReference msgRef = FilterParserException.METHOD_TO_MANY_PARAMETERS.create();
-    
+
     msgRef.addContent(methodExpression.getMethod().toSyntax());
 
     return new FilterParserException(msgRef);
@@ -90,16 +89,15 @@ public class FilterParserExceptionImpl extends FilterParserException {
 
   public static FilterParserException createPROPERTY_NAME_NOT_FOUND_IN_TYPE(EdmStructuralType parentType, PropertyExpression property) throws FilterParserInternalError {
     MessageReference msgRef = FilterParserException.PROPERTY_NAME_NOT_FOUND_IN_TYPE.create();
-    
+
     try {
       msgRef.addContent(property.getPropertyName());
       msgRef.addContent(parentType.getNamespace() + "." + parentType.getName());
     } catch (EdmException e) {
-      throw FilterParserInternalError.createERROR_ACCESSING_EDM(null);    
+      throw FilterParserInternalError.createERROR_ACCESSING_EDM(null);
     }
 
     return new FilterParserException(msgRef);
-    
 
   }
 

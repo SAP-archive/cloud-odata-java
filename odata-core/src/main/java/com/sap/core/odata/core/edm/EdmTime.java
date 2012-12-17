@@ -104,7 +104,7 @@ public class EdmTime implements EdmSimpleType {
     if (matcher.group(1) != null)
       dateTimeValue.set(Calendar.HOUR, Integer.parseInt(matcher.group(1)));
     if (matcher.group(2) != null)
-        dateTimeValue.set(Calendar.MINUTE, Integer.parseInt(matcher.group(2)));
+      dateTimeValue.set(Calendar.MINUTE, Integer.parseInt(matcher.group(2)));
     if (matcher.group(3) != null)
       dateTimeValue.set(Calendar.SECOND, Integer.parseInt(matcher.group(3)));
 

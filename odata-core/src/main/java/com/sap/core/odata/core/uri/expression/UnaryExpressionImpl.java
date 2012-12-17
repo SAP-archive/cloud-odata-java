@@ -60,7 +60,7 @@ public class UnaryExpressionImpl implements UnaryExpression
   }
 
   @Override
-  public Object accept(ExpressionVisitor visitor)throws ExceptionVisitExpression
+  public Object accept(ExpressionVisitor visitor) throws ExceptionVisitExpression
   {
     Object retOperand = operand.accept(visitor);
 

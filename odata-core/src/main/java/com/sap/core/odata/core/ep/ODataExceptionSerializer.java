@@ -14,9 +14,9 @@ import com.sap.core.odata.api.edm.Edm;
 import com.sap.core.odata.api.enums.Format;
 
 public class ODataExceptionSerializer {
-  
+
   private final static Logger LOG = LoggerFactory.getLogger(ODataExceptionSerializer.class);
-  
+
   public static String serialize(String errorCode, String message, Format format, Locale locale) {
 
     String returnMessage = null;
@@ -57,8 +57,8 @@ public class ODataExceptionSerializer {
       xmlStreamWriter.writeCharacters(errorCode);
       xmlStreamWriter.writeEndElement();
       xmlStreamWriter.writeStartElement("message");
-      xmlStreamWriter.writeAttribute(Edm.PREFIX_XML,Edm.NAMESPACE_XML_1998, "lang", getLang(locale));
-      xmlStreamWriter.writeCharacters(message);
+      xmlStreamWriter.writeAttribute(Edm.PREFIX_XML, Edm.NAMESPACE_XML_1998, "lang", getLang(locale));
+      xmlStreamWriter.writeCharacters(message == null ? "" : message);
       xmlStreamWriter.writeEndDocument();
 
       outputStream.flush();
@@ -73,7 +73,7 @@ public class ODataExceptionSerializer {
     }
     return outputMessage;
   }
-  
+
   /**
    * Get language as defined in RFC 4646 based on {@link Locale}.
    * 

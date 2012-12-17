@@ -121,7 +121,7 @@ public class FeedTest extends AbstractRefTest {
     // assertTrue(getBody(response).contains("4</m:count>"));
 
     badRequest("Employees()?$top=3&$inlinecount=allpages123");
-}
+  }
 
   @Test
   public void filter() throws Exception {

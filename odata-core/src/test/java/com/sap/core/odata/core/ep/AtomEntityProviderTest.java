@@ -14,7 +14,7 @@ import com.sap.core.odata.testutils.helper.StringHelper;
 import com.sap.core.odata.testutils.mocks.MockFacade;
 
 public class AtomEntityProviderTest extends AbstractProviderTest {
-  
+
   @Test
   public void writeText() throws Exception {
     ODataEntityProvider s = createAtomEntityProvider();
@@ -29,6 +29,5 @@ public class AtomEntityProviderTest extends AbstractProviderTest {
     String value = StringHelper.inputStreamToString(content.getContent());
     assertEquals(this.employeeData.get("Age").toString(), value);
   }
-  
 
 }

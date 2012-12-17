@@ -29,7 +29,6 @@ import com.sap.core.odata.api.uri.resultviews.GetEntityView;
 import com.sap.core.odata.core.uri.UriParserResultImpl;
 import com.sap.core.odata.ref.edm.ScenarioEdmProvider;
 import com.sap.core.odata.testutils.helper.ClassHelper;
-import com.sap.core.odata.testutils.helper.StringHelper;
 
 public class HttpExceptionResponseTest extends AbstractBasicTest {
 
@@ -38,10 +37,10 @@ public class HttpExceptionResponseTest extends AbstractBasicTest {
   @Override
   protected ODataSingleProcessor createProcessor() throws ODataException {
     processor = mock(ODataSingleProcessor.class);
-    
+
     return processor;
   }
-  
+
   @Override
   EdmProvider createEdmProvider() {
     EdmProvider provider = new ScenarioEdmProvider();
@@ -70,33 +69,31 @@ public class HttpExceptionResponseTest extends AbstractBasicTest {
       String key = String.valueOf(firstKey++);
       Matcher<GetEntityView> match = new EntityKeyMatcher(key);
       when(processor.readEntity(Matchers.argThat(match))).thenThrow(oDataException);
-      
+
       //
       String uri = getEndpoint().toString() + "Managers('" + key + "')";
       HttpGet get = new HttpGet(URI.create(uri));
       HttpResponse response = getHttpClient().execute(get);
-      
+
       //TODO:check
-//      assertEquals("Expected status code does not match for exception type '" + oDataException.getClass().getSimpleName() + "'.", 
-//          oDataException.getHttpStatus().getStatusCode(), response.getStatusLine().getStatusCode());
-//      
-//      String content = StringHelper.inputStreamToString(response.getEntity().getContent());
-//      assertEquals("Language = 'en', message = 'Requested entity could not be found.'.", content);
-      
+      //      assertEquals("Expected status code does not match for exception type '" + oDataException.getClass().getSimpleName() + "'.", 
+      //          oDataException.getHttpStatus().getStatusCode(), response.getStatusLine().getStatusCode());
+      //      
+      //      String content = StringHelper.inputStreamToString(response.getEntity().getContent());
+      //      assertEquals("Language = 'en', message = 'Requested entity could not be found.'.", content);
+
       get.releaseConnection();
     }
-    
+
   }
 
-  
   private List<ODataHttpException> getHttpExceptionsForTest() throws Exception {
     List<Class<ODataHttpException>> exClasses = ClassHelper.getAssignableClasses("com.sap.core.odata.api.exception", ODataHttpException.class);
-//    log.debug("Found exception classes: " + exClasses.toString());
-    
-    MessageReference mr = MessageReference.create(ODataHttpException.class, "SIMPLE FOR TEST");
-    return ClassHelper.getClassInstances(exClasses, new Class<?>[]{MessageReference.class}, new Object[]{mr});
-  }
+    //    log.debug("Found exception classes: " + exClasses.toString());
 
+    MessageReference mr = MessageReference.create(ODataHttpException.class, "SIMPLE FOR TEST");
+    return ClassHelper.getClassInstances(exClasses, new Class<?>[] { MessageReference.class }, new Object[] { mr });
+  }
 
   /**
    * 
@@ -104,21 +101,21 @@ public class HttpExceptionResponseTest extends AbstractBasicTest {
   private class EntityKeyMatcher extends BaseMatcher<GetEntityView> {
 
     private final String keyLiteral;
-    
+
     public EntityKeyMatcher(String keyLiteral) {
-      if(keyLiteral == null) {
+      if (keyLiteral == null) {
         throw new IllegalArgumentException("Key parameter MUST NOT be NULL.");
       }
       this.keyLiteral = keyLiteral;
     }
-    
+
     @Override
     public boolean matches(Object item) {
-      if(item instanceof UriParserResultImpl) {
+      if (item instanceof UriParserResultImpl) {
         UriParserResultImpl upr = (UriParserResultImpl) item;
         List<KeyPredicate> keyPredicates = upr.getKeyPredicates();
         for (KeyPredicate keyPredicate : keyPredicates) {
-          if(keyLiteral.equals(keyPredicate.getLiteral())) {
+          if (keyLiteral.equals(keyPredicate.getLiteral())) {
             return true;
           }
         }
@@ -128,11 +125,11 @@ public class HttpExceptionResponseTest extends AbstractBasicTest {
 
     @Override
     public void describeTo(Description description) {
-//      description.appendText("");
+      //      description.appendText("");
     }
-    
+
   }
-  
+
   /**
    * 
    * @param request

@@ -11,7 +11,7 @@ import com.sap.core.odata.api.processor.ODataPathSegment;
 public class MockFacade {
 
   public static Edm getMockEdm() throws ODataException {
-      return EdmMock.createMockEdm();
+    return EdmMock.createMockEdm();
   }
 
   public static List<String> getPathSegmentsAsStringMock() {

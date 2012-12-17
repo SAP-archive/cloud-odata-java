@@ -48,6 +48,6 @@ public abstract class AbstractBasicTest extends AbstractFitTest {
   EdmProvider createEdmProvider() {
     return mock(EdmProvider.class);
   }
-  
+
   abstract ODataSingleProcessor createProcessor() throws ODataException;
 }

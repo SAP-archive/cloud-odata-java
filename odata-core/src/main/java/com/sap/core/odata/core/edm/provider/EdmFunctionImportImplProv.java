@@ -86,7 +86,7 @@ public class EdmFunctionImportImplProv extends EdmNamedImplProv implements EdmFu
         parametersList.add(iterator.next());
       }
     }
-    
+
     return parametersList;
   }
 

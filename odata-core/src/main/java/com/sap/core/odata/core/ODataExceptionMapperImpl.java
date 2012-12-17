@@ -47,10 +47,13 @@ public class ODataExceptionMapperImpl implements ExceptionMapper<Exception> {
     final Response response;
 
     Exception toHandleException = extractException(exception);
+
     if (toHandleException instanceof ODataApplicationException) {
       response = buildResponseForApplicationException((ODataApplicationException) toHandleException);
     } else if (toHandleException instanceof ODataHttpException) {
       response = buildResponseForHttpException((ODataHttpException) toHandleException);
+    } else if (toHandleException instanceof WebApplicationException) {
+      response = buildResponseForWebApplicationException((WebApplicationException) toHandleException);
     } else {
       response = buildResponseForException(exception);
     }
@@ -60,6 +63,11 @@ public class ODataExceptionMapperImpl implements ExceptionMapper<Exception> {
     }
 
     return response;
+  }
+
+  private Response buildResponseForWebApplicationException(WebApplicationException webApplicationException) {
+    String entity = ODataExceptionSerializer.serialize(buildErrorCode(webApplicationException), webApplicationException.getMessage(), getFormat(), DEFAULT_RESPONSE_LOCALE);
+    return buildResponseInternal(entity, getFormat(), webApplicationException.getResponse().getStatus());
   }
 
   private boolean isInternalServerError(final Response response) {
@@ -101,17 +109,17 @@ public class ODataExceptionMapperImpl implements ExceptionMapper<Exception> {
     String entity = ODataExceptionSerializer.serialize(buildErrorCode(msgException), localizedMessage.getText(), format, localizedMessage.getLocale());
     return buildResponseInternal(entity, format, status);
   }
-  
+
   private Response buildResponseInternal(String entity, Format format, int status) {
     ResponseBuilder responseBuilder = Response.noContent();
-    
+
     switch (format) {
-      case JSON:
-        return responseBuilder.entity(entity).type(MediaType.APPLICATION_JSON_TYPE).status(status).build();
-      case XML:
-        return responseBuilder.entity(entity).type(MediaType.APPLICATION_XML_TYPE).status(status).build();
-      default:
-        return Response.status(Status.UNSUPPORTED_MEDIA_TYPE).build();
+    case JSON:
+      return responseBuilder.entity(entity).type(MediaType.APPLICATION_JSON_TYPE).status(status).build();
+    case XML:
+      return responseBuilder.entity(entity).type(MediaType.APPLICATION_XML_TYPE).status(status).build();
+    default:
+      return Response.status(Status.UNSUPPORTED_MEDIA_TYPE).build();
     }
   }
 

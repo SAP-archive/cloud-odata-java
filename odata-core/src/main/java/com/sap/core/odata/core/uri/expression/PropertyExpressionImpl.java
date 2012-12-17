@@ -35,7 +35,7 @@ public class PropertyExpressionImpl implements PropertyExpression {
   public String getPropertyName() throws EdmException {
     return edmProperty.getName();
   }
-  
+
   public EdmLiteral getEdmLiteral()
   {
     return edmLiteral;

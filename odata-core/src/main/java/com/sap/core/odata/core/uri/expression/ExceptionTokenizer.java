@@ -19,7 +19,7 @@ public class ExceptionTokenizer extends ODataMessageException {
   public static final int ParseStringToken = 1;
 
   public static MessageReference PARSESTRINGTOKEN;
-  
+
   private int textID;
   private String tokenString;
   private Token token;

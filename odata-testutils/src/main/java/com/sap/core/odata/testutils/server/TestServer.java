@@ -52,7 +52,7 @@ public class TestServer {
     try {
       for (int port = PORT_MIN; port <= PORT_MAX; port += PORT_INC) {
         TestServer.log.debug("Try to start TestServer on port... " + port);
-        
+
         CXFNonSpringJaxrsServlet odataServlet = new CXFNonSpringJaxrsServlet();
         ServletHolder odataServletHolder = new ServletHolder(odataServlet);
         odataServletHolder.setInitParameter("javax.ws.rs.Application", "com.sap.core.odata.core.ODataApplication");
@@ -64,7 +64,7 @@ public class TestServer {
 
         ServletContextHandler contextHandler = new ServletContextHandler(ServletContextHandler.SESSIONS);
         contextHandler.addServlet(odataServletHolder, PATH + "/*");
-        
+
         this.endpoint = new URI(SCHEME, null, HOST, port, PATH, null, null);
         this.server = new Server(port);
         this.server.setHandler(contextHandler);

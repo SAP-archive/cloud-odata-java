@@ -24,7 +24,7 @@ import com.sap.core.odata.api.exception.ODataException;
 public class EdmServiceMetadataImplProv implements EdmServiceMetadata {
 
   private static final Logger LOG = LoggerFactory.getLogger(EdmServiceMetadataImplProv.class);
-  
+
   private EdmProvider edmProvider;
   private String dataServiceVersion;
   private List<Schema> schemas;

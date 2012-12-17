@@ -18,7 +18,7 @@ public class TecEdmInfo
   {
     this.edm = edm;
   }
-  
+
   public EdmEntityType getEtAllTypes()
   {
     try {

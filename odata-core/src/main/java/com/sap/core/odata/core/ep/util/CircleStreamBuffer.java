@@ -58,13 +58,11 @@ public class CircleStreamBuffer {
     return outStream;
   }
 
-  
   // #############################################
   // #
   // # Common parts
   // #
   // #############################################
-
 
   public void closeWrite() {
     this.writeClosed = true;
@@ -85,7 +83,7 @@ public class CircleStreamBuffer {
       return toRead.remaining();
     }
   }
-  
+
   // #############################################
   // #
   // # Reading parts
@@ -93,7 +91,7 @@ public class CircleStreamBuffer {
   // #############################################
 
   private ByteBuffer getReadBuffer() throws IOException {
-    if(readClosed) {
+    if (readClosed) {
       throw new IOException("Tried to read from closed stream.");
     }
 
@@ -135,7 +133,6 @@ public class CircleStreamBuffer {
     return len;
   }
 
-
   private int read() throws IOException {
     ByteBuffer readBuffer = getReadBuffer();
     if (readBuffer == null) {
@@ -144,7 +141,7 @@ public class CircleStreamBuffer {
 
     return readBuffer.get();
   }
-  
+
   // #############################################
   // #
   // # Writing parts
@@ -181,7 +178,7 @@ public class CircleStreamBuffer {
   private void createNewWriteBuffer() {
     createNewWriteBuffer(currentAllocateCapacity);
   }
-  
+
   /**
    * Creates a new buffer (per {@link #allocateBuffer(int)}) with the requested capacity as minimum capacity, add the new allocated
    * buffer to the {@link #bufferQueue} and set it as {@link #currentWriteBuffer}.
@@ -203,7 +200,7 @@ public class CircleStreamBuffer {
     if (requestedCapacity < currentAllocateCapacity) {
       requestedCapacity = currentAllocateCapacity * 2;
     }
-    if(currentAllocateCapacity > MAX_CAPACITY) {
+    if (currentAllocateCapacity > MAX_CAPACITY) {
       currentAllocateCapacity = MAX_CAPACITY;
     }
     return ByteBuffer.allocateDirect(requestedCapacity);

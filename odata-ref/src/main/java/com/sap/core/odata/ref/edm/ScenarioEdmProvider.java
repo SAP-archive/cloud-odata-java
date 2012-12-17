@@ -264,7 +264,7 @@ public class ScenarioEdmProvider extends EdmProviderDefault {
             .setFacets(new Facets().setNullable(false)));
         properties.add(new SimpleProperty().setName("Name").setType(EdmSimpleTypeKind.String)
             .setCustomizableFeedMappings(new CustomizableFeedMappings()
-            .setFcTargetPath(EdmTargetPath.SYNDICATION_AUTHORNAME)));
+                .setFcTargetPath(EdmTargetPath.SYNDICATION_AUTHORNAME)));
         properties.add(new SimpleProperty().setName("Image").setType(EdmSimpleTypeKind.Binary));
         List<NavigationProperty> navigationProperties = new ArrayList<NavigationProperty>();
         navigationProperties.add(new NavigationProperty().setName("nb_Rooms")
