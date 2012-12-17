@@ -10,7 +10,7 @@ import com.sap.core.odata.api.uri.expression.MethodOperator;
  */
 class InfoMethod
 {
-  MethodOperator method;
+  private MethodOperator method;
   private String syntax;
   private int minParameter;
   private int maxParameter;

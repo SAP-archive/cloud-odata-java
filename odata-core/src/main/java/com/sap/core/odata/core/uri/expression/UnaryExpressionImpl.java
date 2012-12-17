@@ -47,13 +47,14 @@ public class UnaryExpressionImpl implements UnaryExpression
   }
 
   @Override
-  public void setEdmType(EdmType edmType)
+  public CommonExpression setEdmType(EdmType edmType)
   {
     this.edmType = edmType;
+    return this;
   }
 
   @Override
-  public String toUriLiteral() {
+  public String getUriLiteral() {
     return operatorInfo.getSyntax();
 
   }

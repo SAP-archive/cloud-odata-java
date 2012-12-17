@@ -1,8 +1,7 @@
 package com.sap.core.odata.api.uri.expression;
-/*1*/
- 
+
 /**
- * Contains enumerations for supported binary operators of the ODATA expression parser 
+ * Enumerations for supported binary operators of the ODATA expression parser 
  * for ODATA version 2.0 (with some restrictions)
 */
 public enum BinaryOperator
@@ -18,35 +17,45 @@ public enum BinaryOperator
   ADD("add"),
   SUB("sub"),
   MUL("mul"),
-  PROPERTY_ACCESS("/","property access"),
   DIV("div"),
-  MODULO("mod");
-  /*TODO the operators above are already supported
-   * are there unsupported operators which should be mentioned here
-   */
+  MODULO("mod"),
   
+  /**
+   * Property access operator. E.g. $filter=address/city eq "Sydney"
+   */
+  PROPERTY_ACCESS("/","property access");
+ 
   private String syntax;
   private String stringRespresentation;
   
   
-  BinaryOperator(String syntax)
+  private BinaryOperator(String syntax)
   {
     this.syntax = syntax;
     this.stringRespresentation = syntax;
   }
   
-  BinaryOperator( String syntax, String stringRespresentation)
+  
+  private BinaryOperator( String syntax, String stringRespresentation)
   {
     this.syntax = syntax;
     this.stringRespresentation = stringRespresentation;
   }
   
+  
+  /** 
+   * @return Operators name for usage in in text
+   */
   @Override
   public String toString()
   {
     return stringRespresentation;
   }
+ 
   
+  /**
+   * @return Syntax of the binary operator as used in the URL for the $filter parameter
+   */
   public String toSyntax()
   {
     return syntax;

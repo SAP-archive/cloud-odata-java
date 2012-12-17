@@ -5,15 +5,12 @@ import com.sap.core.odata.api.exception.MessageReference;
 import com.sap.core.odata.api.exception.ODataMessageException;
 
 /**
- * @author d039346
- *
+ * @author SAP AG
  */
 public class ExceptionVisitExpression extends ODataMessageException 
 {
-  private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 77L;
 
-  /*TODO add error texts to resource file*/
-  
   //VON ABAP "An exception occurred"
   public static final MessageReference COMMON = createMessageReference(ODataMessageException.class, "COMMON");
   
@@ -29,15 +26,15 @@ public class ExceptionVisitExpression extends ODataMessageException
   //ABAP Expected token &TOKEN& not found
   public static final MessageReference UNEXPECTED_TOKEN = createMessageReference(ODataMessageException.class, "UNEXPECTED_TOKEN");;
 
-
   
   public ExceptionVisitExpression previous;
   private CommonExpression filterTree;
 
-
-  public Exception getPrevious() {
+   @Override
+   public Exception getCause()
+   {
     return previous;
-  }
+   }
 
 
   public ExceptionVisitExpression() {
@@ -49,9 +46,8 @@ public class ExceptionVisitExpression extends ODataMessageException
   }
 
   
-  public ExceptionVisitExpression(MessageReference message, Object previous) {
-    super(message);
-    
+  public ExceptionVisitExpression(MessageReference message, Throwable cause) {
+    super(message,cause);
   }
 
 

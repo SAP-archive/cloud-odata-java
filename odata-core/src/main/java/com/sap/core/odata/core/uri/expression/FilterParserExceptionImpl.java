@@ -2,6 +2,7 @@ package com.sap.core.odata.core.uri.expression;
 
 import com.sap.core.odata.api.edm.EdmComplexType;
 import com.sap.core.odata.api.edm.EdmException;
+import com.sap.core.odata.api.edm.EdmStructuralType;
 import com.sap.core.odata.api.exception.MessageReference;
 import com.sap.core.odata.api.uri.expression.FilterParserException;
 import com.sap.core.odata.api.uri.expression.MethodExpression;
@@ -87,7 +88,7 @@ public class FilterParserExceptionImpl extends FilterParserException {
     return new FilterParserException(msgRef);
   }
 
-  public static FilterParserException createPROPERTY_NAME_NOT_FOUND_IN_TYPE(EdmComplexType parentType, PropertyExpression property) throws FilterParserInternalError {
+  public static FilterParserException createPROPERTY_NAME_NOT_FOUND_IN_TYPE(EdmStructuralType parentType, PropertyExpression property) throws FilterParserInternalError {
     MessageReference msgRef = FilterParserException.PROPERTY_NAME_NOT_FOUND_IN_TYPE.create();
     
     try {

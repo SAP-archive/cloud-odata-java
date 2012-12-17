@@ -15,6 +15,6 @@ public interface FilterParser
    * @throws FilterParserException
    * @throws ODataMessageException
    */
-  abstract FilterExpression ParseExpression(String expression) throws FilterParserException, ODataMessageException;
+  abstract FilterExpression parseExpression(String expression) throws FilterParserException, ODataMessageException;
   
 }

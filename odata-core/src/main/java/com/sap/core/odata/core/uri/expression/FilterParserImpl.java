@@ -18,6 +18,7 @@ import com.sap.core.odata.api.edm.EdmStructuralType;
 import com.sap.core.odata.api.edm.EdmType;
 import com.sap.core.odata.api.edm.EdmTypeKind;
 import com.sap.core.odata.api.edm.EdmTyped;
+import com.sap.core.odata.api.exception.ODataMessageException;
 import com.sap.core.odata.api.uri.expression.BinaryExpression;
 import com.sap.core.odata.api.uri.expression.BinaryOperator;
 import com.sap.core.odata.api.uri.expression.CommonExpression;
@@ -63,7 +64,7 @@ public class FilterParserImpl implements FilterParser
   }
 
   @Override
-  public FilterExpression ParseExpression(String filterExpression) throws FilterParserException, FilterParserInternalError
+  public FilterExpression parseExpression(String filterExpression) throws FilterParserException, FilterParserInternalError
   {
     CommonExpression node = null;
 
@@ -116,16 +117,16 @@ public class FilterParserImpl implements FilterParser
     leftNode = leftExpression;
     InfoBinaryOperator operator = readBinaryOperator();
 
-    while ((operator != null) && (operator.priority >= priority))
+    while ((operator != null) && (operator.getPriority() >= priority))
     {
       tokenList.next();
       rightNode = readElement(leftNode);//throws ExceptionParseExpression, ExceptionExpressionInternalError
 
       InfoBinaryOperator nextOperator = readBinaryOperator();
 
-      if ((nextOperator != null) && (nextOperator.priority > operator.priority))
+      if ((nextOperator != null) && (nextOperator.getPriority() > operator.getPriority()))
       {
-        rightNode = readElements(rightNode, nextOperator.priority);//op2 is read in read_elements.
+        rightNode = readElements(rightNode, nextOperator.getPriority());//op2 is read in read_elements.
         nextOperator = readBinaryOperator();
       }
 
@@ -786,13 +787,13 @@ public class FilterParserImpl implements FilterParser
         throw new Exception();/*TODO*//*
 
 
-                                                                      RAISE EXCEPTION TYPE /iwcor/cx_ds_expr_parser_error "OK
-                                                                      EXPORTING
-                                                                      textid   = /iwcor/cx_ds_expr_parser_error=>property_not_in_type
-                                                                      type     = lv_type_name
-                                                                      property = is_property_token-value
-                                                                      position = is_property_token-position.
-                                                                      ENDIF.*/
+                                                                       RAISE EXCEPTION TYPE /iwcor/cx_ds_expr_parser_error "OK
+                                                                       EXPORTING
+                                                                       textid   = /iwcor/cx_ds_expr_parser_error=>property_not_in_type
+                                                                       type     = lv_type_name
+                                                                       property = is_property_token-value
+                                                                       position = is_property_token-position.
+                                                                       ENDIF.*/
 
       }
     } catch (Exception ex)
@@ -1050,7 +1051,7 @@ public class FilterParserImpl implements FilterParser
     else if (parentType instanceof EdmComplexType)
     {
       //e.g. "$filter='Hong Kong' eq address/city" --> "address" is a property with a complex type 
-      validateEdmPropertyOfComplexType( property,(EdmComplexType) parentType);
+      validateEdmPropertyOfComplexType(property, (EdmComplexType) parentType);
     }
     else
     {
@@ -1064,7 +1065,27 @@ public class FilterParserImpl implements FilterParser
   private void validateEdmPropertyOfComplexType(PropertyExpression property, EdmComplexType parentType) throws FilterParserException, FilterParserInternalError
   {
     try {
-      String propertyName = property.getPropertyName();
+      String propertyName = property.getUriLiteral();
+      EdmTyped edmProperty = parentType.getProperty(propertyName);
+
+      if (edmProperty != null)
+      {
+        property.setEdmType(edmProperty.getType());
+      }
+      else
+      {
+        throw FilterParserExceptionImpl.createPROPERTY_NAME_NOT_FOUND_IN_TYPE(parentType, property);
+      }
+
+    } catch (EdmException e) {
+      throw FilterParserInternalError.createERROR_ACCESSING_EDM(e);
+    }
+  }
+
+  private void validateEdmPropertyOfEntityType(PropertyExpression property, EdmEntityType parentType) throws FilterParserException, FilterParserInternalError
+  {
+    try {
+      String propertyName = property.getUriLiteral();
       EdmTyped edmProperty = parentType.getProperty(propertyName);
       
       if (edmProperty != null)
@@ -1073,20 +1094,12 @@ public class FilterParserImpl implements FilterParser
       }
       else
       {
-        throw FilterParserExceptionImpl.createPROPERTY_NAME_NOT_FOUND_IN_TYPE(parentType,property);
+        throw FilterParserExceptionImpl.createPROPERTY_NAME_NOT_FOUND_IN_TYPE(parentType, property);
       }
-      
+  
     } catch (EdmException e) {
       throw FilterParserInternalError.createERROR_ACCESSING_EDM(e);
     }
-    
-    // TODO Auto-generated method stub
-  }
-
-  private void validateEdmPropertyOfEntityType(PropertyExpression property, EdmEntityType parentType)
-  {
-
-    // TODO Auto-generated method stub
   }
 
 }

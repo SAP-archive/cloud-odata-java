@@ -10,7 +10,6 @@ public class ExpressionFacade
 {
   public static FilterExpression parseFilter(Edm edm, EdmEntityType edmType, String expression ) throws FilterParserException, ODataMessageException
   {
-    return RuntimeDelegate.getFilterParser(edm, edmType).ParseExpression(expression);
+    return RuntimeDelegate.getFilterParser(edm, edmType).parseExpression(expression);
   }
-
 }

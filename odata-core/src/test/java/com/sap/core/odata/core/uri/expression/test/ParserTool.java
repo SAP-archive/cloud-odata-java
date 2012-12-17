@@ -38,9 +38,9 @@ public class ParserTool
 
   public ParserTool aUriLiteral(String uriLiteral) {
     String info = "GetUriLiteral(" + expression + ")-->";
-    System.out.println("  " + info + "Expected: " + uriLiteral + " Actual: " + curNode.toUriLiteral());
+    System.out.println("  " + info + "Expected: " + uriLiteral + " Actual: " + curNode.getUriLiteral());
 
-    assertEquals(info, curNode.toUriLiteral(), uriLiteral);
+    assertEquals(info, curNode.getUriLiteral(), uriLiteral);
     return this;
   }
 
