@@ -1,6 +1,5 @@
 package com.sap.core.odata.api.uri.expression;
 
-import com.sap.core.odata.api.edm.EdmType;
 
 /**
  * Represents a binary expression node in the expression tree returned by the methods 
@@ -12,13 +11,13 @@ import com.sap.core.odata.api.edm.EdmType;
  * ODATA binary operator in {@link BinaryOperator} (e.g. for "and", "div", "eg", ... )
  * <br>
  * @author SAP AG
- * @see {@link FilterParser}
- * @see {@link OrderByParser}
+ * @see FilterParser
+ * @see OrderByParser
  */
 public interface BinaryExpression extends CommonExpression
 {
   /**
-    * @return Operator object that represent the operator
+    * @return Operator object that represents the used operator
     * @see BinaryOperator
     */
   public BinaryOperator getOperator();

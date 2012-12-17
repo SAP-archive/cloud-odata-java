@@ -1,6 +1,7 @@
 package com.sap.core.odata.core.uri.expression;
 
-import java.util.Vector;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.sap.core.odata.api.uri.expression.BinaryOperator;
 
@@ -13,10 +14,10 @@ class InfoBinaryOperator
   private String category;
   private String syntax;
   private int priority;
-  private Vector<ParameterSet> allowedParameterTypes;
+  private List<ParameterSet> allowedParameterTypes;
 
   public InfoBinaryOperator(BinaryOperator operator, String category, String syntax, int priority) {
-    this.allowedParameterTypes = new Vector<ParameterSet>();
+    this.allowedParameterTypes = new ArrayList<ParameterSet>();
 
     this.operator = operator;
     this.category = category;
@@ -45,4 +46,9 @@ class InfoBinaryOperator
     this.allowedParameterTypes.add(parameterSet);
   }
 
+  public List<ParameterSet> getParameterSet()
+  {
+    return allowedParameterTypes;
+  }
+  
 }

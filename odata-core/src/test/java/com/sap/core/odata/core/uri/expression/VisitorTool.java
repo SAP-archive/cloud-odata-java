@@ -1,5 +1,6 @@
 package com.sap.core.odata.core.uri.expression;
 
+import java.util.List;
 import java.util.Vector;
 
 import com.sap.core.odata.api.edm.EdmProperty;
@@ -12,6 +13,7 @@ import com.sap.core.odata.api.uri.expression.LiteralExpression;
 import com.sap.core.odata.api.uri.expression.MemberExpression;
 import com.sap.core.odata.api.uri.expression.MethodExpression;
 import com.sap.core.odata.api.uri.expression.MethodOperator;
+import com.sap.core.odata.api.uri.expression.OrderByExpression;
 import com.sap.core.odata.api.uri.expression.PropertyExpression;
 import com.sap.core.odata.api.uri.expression.UnaryExpression;
 import com.sap.core.odata.api.uri.expression.UnaryOperator;
@@ -21,7 +23,7 @@ public class VisitorTool implements ExpressionVisitor {
   @Override
   public Object visitBinary(BinaryExpression binaryExpression, BinaryOperator operator, Object leftSide, Object rightSide)
   {
-    return "{" + leftSide.toString() + " " + operator.toSyntax() + " " + rightSide.toString() + "}";
+    return "{" + leftSide.toString() + " " + operator.toUriLiteral() + " " + rightSide.toString() + "}";
   }
 
   @Override
@@ -40,7 +42,7 @@ public class VisitorTool implements ExpressionVisitor {
   {
     StringBuilder sb = new StringBuilder();
     sb.append("{");
-    sb.append(method.toSyntax());
+    sb.append(method.toUriLiteral());
 
     sb.append("(");
     for (int i = 0; i < retParameters.size(); i++)
@@ -69,7 +71,13 @@ public class VisitorTool implements ExpressionVisitor {
   @Override
   public Object visitUnary(UnaryExpression unaryExpression, UnaryOperator operator, Object operand)
   {
-    return "{" + operator.toSyntax() + " " + operand.toString() + "}";
+    return "{" + operator.toUriLiteral() + " " + operand.toString() + "}";
+  }
+
+  @Override
+  public Object visitOrderByExpression(OrderByExpression orderByExpression, String expressionString, List<Object> orders) {
+    // TODO Auto-generated method stub
+    return null;
   }
 
 }

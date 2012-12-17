@@ -130,7 +130,7 @@ public class Tokenizer
           // TODO:  create method for InvalidStringToken ID
           ExceptionTokenizer tEx = new ExceptionTokenizer(ExceptionTokenizer.PARSESTRINGTOKEN);
           tEx.setPosition(curPosition);
-          tEx.setToken(token);
+          tEx.setToken(new Token(TokenKind.UNKNOWN,oldPosition,token));
           tEx.setPrevious(ex);
           throw tEx;
         }
@@ -217,7 +217,7 @@ public class Tokenizer
           {
             ExceptionTokenizer tEx = new ExceptionTokenizer(ExceptionTokenizer.PARSESTRINGTOKEN);//TODO
             tEx.setPosition(curPosition);
-            tEx.setToken(token);
+            tEx.setToken(new Token(TokenKind.UNKNOWN,oldPosition,token));
             tEx.setPrevious(ex);
             throw tEx;
           }
@@ -293,7 +293,7 @@ public class Tokenizer
         }
         ExceptionTokenizer tEx = new ExceptionTokenizer(ExceptionTokenizer.PARSESTRINGTOKEN);
         tEx.setPosition(curPosition);
-        tEx.setToken(token);
+        tEx.setToken(new Token(TokenKind.UNKNOWN,oldPosition,token));
         throw tEx;
       } //ENDCASE.
     } //ENDWHILE.

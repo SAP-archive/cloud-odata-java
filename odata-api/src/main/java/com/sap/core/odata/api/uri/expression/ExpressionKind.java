@@ -1,9 +1,8 @@
 package com.sap.core.odata.api.uri.expression;
 /*1*/
 /**
- * Enum describing all possible node types inside an expression tree
+ * Enumeration describing all possible node types inside an expression tree
  * @author SAP AG
- *
  */
 public enum ExpressionKind {
   /**

@@ -4,8 +4,7 @@ import com.sap.core.odata.api.exception.MessageReference;
 import com.sap.core.odata.api.exception.ODataBadRequestException;
 
 /**
- * @author d039346
- *
+ * @author SAP AG
  */
 public class FilterParserException extends ODataBadRequestException
 {

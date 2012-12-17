@@ -8,7 +8,7 @@ import com.sap.core.odata.api.edm.EdmType;
  * <li>{@link OrderByParser#parseOrderExpression(String)}</li> 
  * <br>
  * <br>
- * This interface defines the default methods for all expression tree nodes 
+ * <p>This interface defines the default methods for all expression tree nodes 
  * <br>
  * <br>
  * @author SAP AG
@@ -30,7 +30,7 @@ public interface CommonExpression extends Visitable
    * for an expression representing the "concat" method will return always 
    * "Edm.String".<br>
    * <br>
-   * This type information is set while parsing the $filter or $orderby 
+   * <p>This type information is set while parsing the $filter or $orderby 
    * expressions and used to do a first validation of the expression.
    * For calculating operators like "add, sub, mul" this type
    * information is purely based on input and output types of the 
@@ -39,7 +39,7 @@ public interface CommonExpression extends Visitable
    * will return Edm.Byte and not Edm.Ind16 because the parser performs no real 
    * addition.<br>
    * <br>
-   * However, the application may change this type while evaluating the 
+   * <p>However, the application may change this type while evaluating the 
    * expression tree.
    */
   EdmType getEdmType();

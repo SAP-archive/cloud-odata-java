@@ -1,8 +1,9 @@
 package com.sap.core.odata.api.uri.expression;
-
+/*X*/
 /**
  * Enumerations for all supported methods of the ODATA expression parser 
  * for ODATA version 2.0 (with some restrictions). 
+ * @author SAP AG
  */
 public enum MethodOperator
 {
@@ -53,9 +54,9 @@ public enum MethodOperator
   }
 
   /**
-   * @return Syntax of the method as used in the URL for the $filter parameter
+   * @return URI literal of the unary operator as used in the URL. 
    */
-  public String toSyntax()
+  public String toUriLiteral()
   {
     return syntax;
   }

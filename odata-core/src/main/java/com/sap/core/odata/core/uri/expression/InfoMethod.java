@@ -1,6 +1,7 @@
 package com.sap.core.odata.core.uri.expression;
 
-import java.util.Vector;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.sap.core.odata.api.edm.EdmType;
 import com.sap.core.odata.api.uri.expression.MethodOperator;
@@ -14,10 +15,10 @@ class InfoMethod
   private String syntax;
   private int minParameter;
   private int maxParameter;
-  private Vector<ParameterSet> allowedParameterTypes = null;
+  private List<ParameterSet> allowedParameterTypes = null;
 
   public InfoMethod(MethodOperator method, String syntax, int minParameters, int maxParameters) {
-    allowedParameterTypes = new Vector<ParameterSet>();
+    allowedParameterTypes = new ArrayList<ParameterSet>();
 
     this.method = method;
     this.syntax = syntax;
@@ -61,15 +62,20 @@ class InfoMethod
       return null;
 
     if (parameterCount == 1)
-      return allowedParameterTypes.elementAt(0).getReturnType();
+      return allowedParameterTypes.get(0).getReturnType();
 
     //There are more than 1 possible return type, check if they are equal, if not return null.
-    EdmType returnType = allowedParameterTypes.elementAt(0).getReturnType();
+    EdmType returnType = allowedParameterTypes.get(0).getReturnType();
     for (int i = 1; i < parameterCount; i++)
-      if (returnType != allowedParameterTypes.elementAt(i))
+      if (returnType != allowedParameterTypes.get(i))
         return null;
 
     return returnType;
   }
 
+  
+  public List<ParameterSet> getParameterSet()
+  {
+    return allowedParameterTypes;
+  }
 }

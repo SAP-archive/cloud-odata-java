@@ -47,6 +47,7 @@ public enum TokenKind {
    * with a letter
    */
   LITERAL,
-  TYPED_LITERAL_TODO_CHECK
+  TYPED_LITERAL_TODO_CHECK,
+  UNKNOWN
 
 }

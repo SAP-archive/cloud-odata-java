@@ -1,12 +1,9 @@
 package com.sap.core.odata.core.uri.expression;
 
-/*TODO remove all @SuppressWarnings("unused")*/
-//TODO check all Exceptions
-//TODO check variableNames
-
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
-import java.util.Vector;
 
 import com.sap.core.odata.api.edm.Edm;
 import com.sap.core.odata.api.edm.EdmComplexType;
@@ -14,9 +11,7 @@ import com.sap.core.odata.api.edm.EdmEntityType;
 import com.sap.core.odata.api.edm.EdmException;
 import com.sap.core.odata.api.edm.EdmSimpleType;
 import com.sap.core.odata.api.edm.EdmSimpleTypeKind;
-import com.sap.core.odata.api.edm.EdmStructuralType;
 import com.sap.core.odata.api.edm.EdmType;
-import com.sap.core.odata.api.edm.EdmTypeKind;
 import com.sap.core.odata.api.edm.EdmTyped;
 import com.sap.core.odata.api.uri.expression.BinaryExpression;
 import com.sap.core.odata.api.uri.expression.BinaryOperator;
@@ -33,6 +28,10 @@ import com.sap.core.odata.api.uri.expression.UnaryExpression;
 import com.sap.core.odata.api.uri.expression.UnaryOperator;
 import com.sap.core.odata.core.edm.EdmSimpleTypeFacadeImpl;
 
+/**
+ * @author SAP AG
+ *
+ */
 public class FilterParserImpl implements FilterParser
 {
   /*do the static initialization*/
@@ -40,13 +39,13 @@ public class FilterParserImpl implements FilterParser
   static Map<String, InfoMethod> availableFunctions;
   static Map<String, InfoUnaryOperator> availableUnaryOperators;
 
+  
   static
   {
     initAvialTables();
   }
 
   /*instance attributes*/
-  protected boolean promoteParameters = true;
   protected Edm edm = null;
   protected EdmEntityType resourceEntityType = null;
   protected TokenList tokenList = null;
@@ -62,8 +61,9 @@ public class FilterParserImpl implements FilterParser
     this.resourceEntityType = edmType;
   }
 
+  
   @Override
-  public FilterExpression parseExpression(String filterExpression) throws FilterParserException, FilterParserInternalError
+  public FilterExpression parseFilterString(String filterExpression) throws FilterParserException, FilterParserInternalError
   {
     CommonExpression node = null;
 
@@ -101,10 +101,6 @@ public class FilterParserImpl implements FilterParser
 
     //create and return filterExpression node
     return new FilterExpressionImpl(filterExpression, node);
-  }
-
-  public void setPromoteParameters(boolean promoteParameters) {
-    this.promoteParameters = promoteParameters;
   }
 
   protected CommonExpression readElements(CommonExpression leftExpression, int priority) throws FilterParserException, FilterParserInternalError
@@ -343,14 +339,13 @@ public class FilterParserImpl implements FilterParser
     {
       PropertyExpression property = new PropertyExpressionImpl(token.getUriLiteral(), null, token.getJavaLiteral());
       validateEdmProperty(leftExpression, property);
-      validatePropertyTypes(property);
+      //validatePropertyTypes(property);
       return property;
     }
+    
+    //
 
-    //throw FilterParserExceptionImpl.createINVALID_TOKEN(token);
-    //throw new FilterParserException(FilterParserException.COMMON_ERROR.addContent("TEST"));
-    throw new FilterParserException(FilterParserException.COMMON_ERROR.create().addContent("TEST").addContent("TEST"));
-
+    throw FilterParserInternalError.createCOMMON();
   }
 
   protected CommonExpression readUnaryoperator(Token lookToken, InfoUnaryOperator unaryOperator) throws FilterParserException, FilterParserInternalError
@@ -431,7 +426,7 @@ public class FilterParserImpl implements FilterParser
     availableBinaryOperators = new HashMap<String, InfoBinaryOperator>();
     availableFunctions = new HashMap<String, InfoMethod>();
     availableUnaryOperators = new HashMap<String, InfoUnaryOperator>();
-    Vector<ParameterSet> combination = null;
+    List<ParameterSet> combination = null;
 
     EdmSimpleType boolean_ = EdmSimpleTypeFacadeImpl.getEdmSimpleType(EdmSimpleTypeKind.Boolean);
     EdmSimpleType sbyte = EdmSimpleTypeFacadeImpl.getEdmSimpleType(EdmSimpleTypeKind.SByte);
@@ -453,7 +448,7 @@ public class FilterParserImpl implements FilterParser
     availableBinaryOperators.put("/", new InfoBinaryOperator(BinaryOperator.PROPERTY_ACCESS, "Primary", "/", 100));
 
     //---Multiplicative---
-    combination = new Vector<ParameterSet>();
+    combination = new ArrayList<ParameterSet>();
     combination.add(new ParameterSet(sbyte, sbyte, sbyte));
     combination.add(new ParameterSet(byte_, byte_, byte_));
     combination.add(new ParameterSet(int16, int16, int16));
@@ -462,19 +457,13 @@ public class FilterParserImpl implements FilterParser
     combination.add(new ParameterSet(single, single, single));
     combination.add(new ParameterSet(double_, double_, double_));
     combination.add(new ParameterSet(decimal_, decimal_, decimal_));
-    //mul
-
-    //XXX_MT_FUOPS.put(CharConst.GC_OPERATOR_MUL, combination);
+    
     availableBinaryOperators.put(CharConst.GC_OPERATOR_MUL, new InfoBinaryOperator(BinaryOperator.MUL, "Multiplicative", CharConst.GC_OPERATOR_MUL, 60));
-    //div
-    //XXX_MT_FUOPS.put(CharConst.GC_OPERATOR_DIV, combination);
     availableBinaryOperators.put(CharConst.GC_OPERATOR_DIV, new InfoBinaryOperator(BinaryOperator.DIV, "Multiplicative", CharConst.GC_OPERATOR_DIV, 60));
-    //mod
-    //XXX_MT_FUOPS.put(CharConst.GC_OPERATOR_MOD, combination);
     availableBinaryOperators.put(CharConst.GC_OPERATOR_MOD, new InfoBinaryOperator(BinaryOperator.MODULO, "Multiplicative", CharConst.GC_OPERATOR_MOD, 60));
 
     //---Additive---
-    combination = new Vector<ParameterSet>();
+    combination = new ArrayList<ParameterSet>();
     combination.add(new ParameterSet(sbyte, sbyte, sbyte));
     combination.add(new ParameterSet(byte_, byte_, byte_));
     combination.add(new ParameterSet(int16, int16, int16));
@@ -484,13 +473,11 @@ public class FilterParserImpl implements FilterParser
     combination.add(new ParameterSet(double_, double_, double_));
     combination.add(new ParameterSet(decimal_, decimal_, decimal_));
 
-    //XXX_MT_FUOPS.put(CharConst.GC_OPERATOR_ADD, combination);
-    availableBinaryOperators.put(CharConst.GC_OPERATOR_ADD, new InfoBinaryOperator(BinaryOperator.ADD, "Multiplicative", CharConst.GC_OPERATOR_ADD, 50));
-    //XXX_MT_FUOPS.put(CharConst.GC_OPERATOR_SUB, combination);
-    availableBinaryOperators.put(CharConst.GC_OPERATOR_SUB, new InfoBinaryOperator(BinaryOperator.SUB, "Multiplicative", CharConst.GC_OPERATOR_SUB, 50));
+    availableBinaryOperators.put(CharConst.GC_OPERATOR_ADD, new InfoBinaryOperator(BinaryOperator.ADD, "Additive", CharConst.GC_OPERATOR_ADD, 50));
+    availableBinaryOperators.put(CharConst.GC_OPERATOR_SUB, new InfoBinaryOperator(BinaryOperator.SUB, "Additive", CharConst.GC_OPERATOR_SUB, 50));
 
     //---Relational---
-    combination = new Vector<ParameterSet>();
+    combination = new ArrayList<ParameterSet>();
     combination.add(new ParameterSet(boolean_, string, string));
     combination.add(new ParameterSet(boolean_, time, time));
     combination.add(new ParameterSet(boolean_, datetime, datetime));
@@ -506,22 +493,13 @@ public class FilterParserImpl implements FilterParser
     combination.add(new ParameterSet(boolean_, decimal_, decimal_));
     combination.add(new ParameterSet(boolean_, binary, binary));
 
-    //lt
-
-    //XXX_MT_FUOPS.put(CharConst.GC_OPERATOR_LT, combination);
-    availableBinaryOperators.put(CharConst.GC_OPERATOR_LT, new InfoBinaryOperator(BinaryOperator.LT, "Multiplicative", CharConst.GC_OPERATOR_LT, 40));
-    //gt
-    //XXX_MT_FUOPS.put(CharConst.GC_OPERATOR_GT, combination);
-    availableBinaryOperators.put(CharConst.GC_OPERATOR_GT, new InfoBinaryOperator(BinaryOperator.GT, "Multiplicative", CharConst.GC_OPERATOR_GT, 40));
-    //ge
-    //XXX_MT_FUOPS.put(CharConst.GC_OPERATOR_GE, combination);
-    availableBinaryOperators.put(CharConst.GC_OPERATOR_GE, new InfoBinaryOperator(BinaryOperator.GE, "Multiplicative", CharConst.GC_OPERATOR_GE, 40));
-    //le
-    //XXX_MT_FUOPS.put(CharConst.GC_OPERATOR_LE, combination);
-    availableBinaryOperators.put(CharConst.GC_OPERATOR_LE, new InfoBinaryOperator(BinaryOperator.LE, "Multiplicative", CharConst.GC_OPERATOR_LE, 40));
+    availableBinaryOperators.put(CharConst.GC_OPERATOR_LT, new InfoBinaryOperator(BinaryOperator.LT, "Relational", CharConst.GC_OPERATOR_LT, 40));
+    availableBinaryOperators.put(CharConst.GC_OPERATOR_GT, new InfoBinaryOperator(BinaryOperator.GT, "Relational", CharConst.GC_OPERATOR_GT, 40));
+    availableBinaryOperators.put(CharConst.GC_OPERATOR_GE, new InfoBinaryOperator(BinaryOperator.GE, "Relational", CharConst.GC_OPERATOR_GE, 40));
+    availableBinaryOperators.put(CharConst.GC_OPERATOR_LE, new InfoBinaryOperator(BinaryOperator.LE, "Relational", CharConst.GC_OPERATOR_LE, 40));
 
     //---Equality---
-    combination = new Vector<ParameterSet>();
+    combination = new ArrayList<ParameterSet>();
     combination.add(new ParameterSet(boolean_, boolean_, boolean_));
     combination.add(new ParameterSet(boolean_, string, string));
     combination.add(new ParameterSet(boolean_, time, time));
@@ -538,161 +516,130 @@ public class FilterParserImpl implements FilterParser
     combination.add(new ParameterSet(boolean_, decimal_, decimal_));
     combination.add(new ParameterSet(boolean_, binary, binary));
 
-    //eq
-
-    //XXX_MT_FUOPS.put(CharConst.GC_OPERATOR_EQ, combination);
-    availableBinaryOperators.put(CharConst.GC_OPERATOR_EQ, new InfoBinaryOperator(BinaryOperator.EQ, "Multiplicative", CharConst.GC_OPERATOR_EQ, 30));
-    //ne
-    //XXX_MT_FUOPS.put(CharConst.GC_OPERATOR_NE, combination);
-    availableBinaryOperators.put(CharConst.GC_OPERATOR_NE, new InfoBinaryOperator(BinaryOperator.NE, "Multiplicative", CharConst.GC_OPERATOR_NE, 30));
+    availableBinaryOperators.put(CharConst.GC_OPERATOR_EQ, new InfoBinaryOperator(BinaryOperator.EQ, "Equality", CharConst.GC_OPERATOR_EQ, 30));
+    availableBinaryOperators.put(CharConst.GC_OPERATOR_NE, new InfoBinaryOperator(BinaryOperator.NE, "Equality", CharConst.GC_OPERATOR_NE, 30));
 
     //"---Conditinal AND---
-    combination = new Vector<ParameterSet>();
+    combination = new ArrayList<ParameterSet>();
     combination.add(new ParameterSet(boolean_, boolean_, boolean_));
 
-    //XXX_MT_FUOPS.put(CharConst.GC_OPERATOR_AND, combination);
-    availableBinaryOperators.put(CharConst.GC_OPERATOR_AND, new InfoBinaryOperator(BinaryOperator.AND, "Multiplicative", CharConst.GC_OPERATOR_AND, 20));
+    availableBinaryOperators.put(CharConst.GC_OPERATOR_AND, new InfoBinaryOperator(BinaryOperator.AND, "Conditinal", CharConst.GC_OPERATOR_AND, 20));
 
     //---Conditinal OR---
-    combination = new Vector<ParameterSet>();
+    combination = new ArrayList<ParameterSet>();
     combination.add(new ParameterSet(boolean_, boolean_, boolean_));
 
-    //XXX_MT_FUOPS.put(CharConst.GC_OPERATOR_OR, combination);
-    availableBinaryOperators.put(CharConst.GC_OPERATOR_OR, new InfoBinaryOperator(BinaryOperator.OR, "Multiplicative", CharConst.GC_OPERATOR_OR, 10));
+    availableBinaryOperators.put(CharConst.GC_OPERATOR_OR, new InfoBinaryOperator(BinaryOperator.OR, "Conditinal", CharConst.GC_OPERATOR_OR, 10));
 
     //endswith
-    combination = new Vector<ParameterSet>();
+    combination = new ArrayList<ParameterSet>();
     combination.add(new ParameterSet(boolean_, string, string));
-    //XXX_MT_FUOPS.put(CharConst.GC_FUNCTION_ENDSWITH, combination);
     availableFunctions.put(CharConst.GC_FUNCTION_ENDSWITH, new InfoMethod(MethodOperator.ENDSWITH, CharConst.GC_FUNCTION_ENDSWITH, 2, 2));
 
     //indexof
-    combination = new Vector<ParameterSet>();
+    combination = new ArrayList<ParameterSet>();
     combination.add(new ParameterSet(int32, string, string));
-    //XXX_MT_FUOPS.put(CharConst.GC_FUNCTION_INDEXOF, combination);
     availableFunctions.put(CharConst.GC_FUNCTION_INDEXOF, new InfoMethod(MethodOperator.INDEXOF, CharConst.GC_FUNCTION_INDEXOF, 2, 2));
 
     //startswith
-    combination = new Vector<ParameterSet>();
+    combination = new ArrayList<ParameterSet>();
     combination.add(new ParameterSet(boolean_, string, string));
-    //XXX_MT_FUOPS.put(CharConst.GC_FUNCTION_STARTSWITH, combination);
     availableFunctions.put(CharConst.GC_FUNCTION_STARTSWITH, new InfoMethod(MethodOperator.STARTSWITH, CharConst.GC_FUNCTION_STARTSWITH, 2, 2));
 
     //tolower
-    combination = new Vector<ParameterSet>();
+    combination = new ArrayList<ParameterSet>();
     combination.add(new ParameterSet(string, string));
-    //XXX_MT_FUOPS.put(CharConst.GC_FUNCTION_TOLOWER, combination);
     availableFunctions.put(CharConst.GC_FUNCTION_TOLOWER, new InfoMethod(MethodOperator.TOLOWER, CharConst.GC_FUNCTION_TOLOWER, 1, 1));
 
     //toupper
-    combination = new Vector<ParameterSet>();
+    combination = new ArrayList<ParameterSet>();
     combination.add(new ParameterSet(string, string));
-    //XXX_MT_FUOPS.put(CharConst.GC_FUNCTION_TOUPPER, combination);
     availableFunctions.put(CharConst.GC_FUNCTION_TOUPPER, new InfoMethod(MethodOperator.TOUPPER, CharConst.GC_FUNCTION_TOUPPER, 1, 1));
 
     //trim
-    combination = new Vector<ParameterSet>();
+    combination = new ArrayList<ParameterSet>();
     combination.add(new ParameterSet(string, string));
-    //XXX_MT_FUOPS.put(CharConst.GC_FUNCTION_TRIM, combination);
     availableFunctions.put(CharConst.GC_FUNCTION_TRIM, new InfoMethod(MethodOperator.TRIM, CharConst.GC_FUNCTION_TRIM, 1, 1));
 
     //substring
-    combination = new Vector<ParameterSet>();
+    combination = new ArrayList<ParameterSet>();
     combination.add(new ParameterSet(string, string, int32));
     combination.add(new ParameterSet(string, string, int32, int32));
-    //XXX_MT_FUOPS.put(CharConst.GC_FUNCTION_SUBSTRING, combination);
     availableFunctions.put(CharConst.GC_FUNCTION_SUBSTRING, new InfoMethod(MethodOperator.SUBSTRING, CharConst.GC_FUNCTION_SUBSTRING, 1, -1));
 
     //substringof
-    combination = new Vector<ParameterSet>();
+    combination = new ArrayList<ParameterSet>();
     combination.add(new ParameterSet(boolean_, string, string));
-    //XXX_MT_FUOPS.put(CharConst.GC_FUNCTION_SUBSTRINGOF, combination);
     availableFunctions.put(CharConst.GC_FUNCTION_SUBSTRINGOF, new InfoMethod(MethodOperator.SUBSTRINGOF, CharConst.GC_FUNCTION_SUBSTRINGOF, 1, -1));
 
     //concat
-    combination = new Vector<ParameterSet>();
+    combination = new ArrayList<ParameterSet>();
     combination.add(new ParameterSet(string, string, string));
-    //XXX_MT_FUOPS.put(CharConst.GC_FUNCTION_CONCAT, combination);
     availableFunctions.put(CharConst.GC_FUNCTION_CONCAT, new InfoMethod(MethodOperator.CONCAT, CharConst.GC_FUNCTION_CONCAT, 2, -1));
 
     //length
-    combination = new Vector<ParameterSet>();
+    combination = new ArrayList<ParameterSet>();
     combination.add(new ParameterSet(int32, string));
-    //XXX_MT_FUOPS.put(CharConst.GC_FUNCTION_LENGTH, combination);
     availableFunctions.put(CharConst.GC_FUNCTION_LENGTH, new InfoMethod(MethodOperator.LENGTH, CharConst.GC_FUNCTION_LENGTH, 1, 1));
 
     //year
-    combination = new Vector<ParameterSet>();
+    combination = new ArrayList<ParameterSet>();
     combination.add(new ParameterSet(int32, datetime));
-    //XXX_MT_FUOPS.put(CharConst.GC_FUNCTION_YEAR, combination);
     availableFunctions.put(CharConst.GC_FUNCTION_YEAR, new InfoMethod(MethodOperator.YEAR, CharConst.GC_FUNCTION_YEAR, 1, 1));
 
     //month
-    combination = new Vector<ParameterSet>();
+    combination = new ArrayList<ParameterSet>();
     combination.add(new ParameterSet(int32, datetime));
-    //XXX_MT_FUOPS.put(CharConst.GC_FUNCTION_MONTH, combination);
     availableFunctions.put(CharConst.GC_FUNCTION_MONTH, new InfoMethod(MethodOperator.MONTH, CharConst.GC_FUNCTION_MONTH, 1, 1));
 
     //day
-    combination = new Vector<ParameterSet>();
+    combination = new ArrayList<ParameterSet>();
     combination.add(new ParameterSet(int32, datetime));
-    //XXX_MT_FUOPS.put(CharConst.GC_FUNCTION_DAY, combination);
     availableFunctions.put(CharConst.GC_FUNCTION_DAY, new InfoMethod(MethodOperator.DAY, CharConst.GC_FUNCTION_DAY, 1, 1));
 
     //hour
-    combination = new Vector<ParameterSet>();
+    combination = new ArrayList<ParameterSet>();
     combination.add(new ParameterSet(int32, datetime));
     combination.add(new ParameterSet(int32, time));
     combination.add(new ParameterSet(int32, datetimeoffset));
-
-    //XXX_MT_FUOPS.put(CharConst.GC_FUNCTION_HOUR, combination);
     availableFunctions.put(CharConst.GC_FUNCTION_HOUR, new InfoMethod(MethodOperator.HOUR, CharConst.GC_FUNCTION_HOUR, 1, 1));
 
     //minute
-    combination = new Vector<ParameterSet>();
+    combination = new ArrayList<ParameterSet>();
     combination.add(new ParameterSet(int32, datetime));
     combination.add(new ParameterSet(int32, time));
     combination.add(new ParameterSet(int32, datetimeoffset));
-
-    //XXX_MT_FUOPS.put(CharConst.GC_FUNCTION_MINUTE, combination);
     availableFunctions.put(CharConst.GC_FUNCTION_MINUTE, new InfoMethod(MethodOperator.MINUTE, CharConst.GC_FUNCTION_MINUTE, 1, 1));
 
     //second
-    combination = new Vector<ParameterSet>();
+    combination = new ArrayList<ParameterSet>();
     combination.add(new ParameterSet(int32, datetime));
     combination.add(new ParameterSet(int32, time));
     combination.add(new ParameterSet(int32, datetimeoffset));
-    //XXX_MT_FUOPS.put(CharConst.GC_FUNCTION_SECOND, combination);
     availableFunctions.put(CharConst.GC_FUNCTION_SECOND, new InfoMethod(MethodOperator.SECOND, CharConst.GC_FUNCTION_SECOND, 1, 1));
 
     //round
-    combination = new Vector<ParameterSet>();
+    combination = new ArrayList<ParameterSet>();
     combination.add(new ParameterSet(decimal_, decimal_));
     combination.add(new ParameterSet(double_, double_));
-
-    //XXX_MT_FUOPS.put(CharConst.GC_FUNCTION_ROUND, combination);
     availableFunctions.put(CharConst.GC_FUNCTION_ROUND, new InfoMethod(MethodOperator.ROUND, CharConst.GC_FUNCTION_ROUND, 1, 1));
 
     //ceiling
-    combination = new Vector<ParameterSet>();
+    combination = new ArrayList<ParameterSet>();
     combination.add(new ParameterSet(decimal_, decimal_));
     combination.add(new ParameterSet(double_, double_));
-
-    //XXX_MT_FUOPS.put(CharConst.GC_FUNCTION_CEILING, combination);
     availableFunctions.put(CharConst.GC_FUNCTION_CEILING, new InfoMethod(MethodOperator.CEILING, CharConst.GC_FUNCTION_CEILING, 1, 1));
 
     //floor
-    combination = new Vector<ParameterSet>();
+    combination = new ArrayList<ParameterSet>();
     combination.add(new ParameterSet(decimal_, decimal_));
     combination.add(new ParameterSet(double_, double_));
-
-    //XXX_MT_FUOPS.put(CharConst.GC_FUNCTION_FLOOR, combination);
     availableFunctions.put(CharConst.GC_FUNCTION_FLOOR, new InfoMethod(MethodOperator.FLOOR, CharConst.GC_FUNCTION_FLOOR, 1, 1));
 
     //---unary---
 
     //minus
-    combination = new Vector<ParameterSet>();
+    combination = new ArrayList<ParameterSet>();
     combination.add(new ParameterSet(sbyte, sbyte));
     combination.add(new ParameterSet(byte_, byte_));
     combination.add(new ParameterSet(int16, int16));
@@ -703,208 +650,105 @@ public class FilterParserImpl implements FilterParser
     combination.add(new ParameterSet(decimal_, decimal_));
 
     //minus
-
-    //XXX_MT_FUOPS.put(CharConst.GC_OPERATOR_MINUS, combination);
     availableUnaryOperators.put(CharConst.GC_OPERATOR_MINUS, new InfoUnaryOperator(UnaryOperator.MINUS, "minus", CharConst.GC_OPERATOR_MINUS));
-
     //not
-    //XXX_MT_FUOPS.put(CharConst.GC_OPERATOR_NOT, combination);
     availableUnaryOperators.put(CharConst.GC_OPERATOR_NOT, new InfoUnaryOperator(UnaryOperator.NOT, "not", CharConst.GC_OPERATOR_NOT));
 
   }
+  
+  private void validateEdmProperty(CommonExpression leftExpression, PropertyExpression property) throws FilterParserException, FilterParserInternalError {
+    // Exist if no edm provided
+    if ((this.edm == null) || (this.resourceEntityType == null))
+      return;
 
-  static String getTypeName(EdmType IP_TYPE) throws EdmException
-  {
-    String RV_TYPENAME = IP_TYPE.getName();
-    return RV_TYPENAME;
-    /*TODO check for zero pointer*/
-    /*
-     * DATA: lx_ds_edm_error TYPE REF TO /iwcor/cx_ds_edm_error.
-        if io_type IS BOUND.
-          TRY.
-              rv_typename = io_type->/iwcor/if_ds_edm_named~get_name( ).
-            CATCH /iwcor/cx_ds_edm_error INTO lx_ds_edm_error.
-              RAISE EXCEPTION TYPE /iwcor/cx_ds_internal_error "OK
-                EXPORTING
-                  previous = lx_ds_edm_error.
-          ENDTRY.
-        ENDIF.
-        if rv_typename IS INITIAL.
-          rv_typename = '<unknown>'.
-        ENDIF.
-     */
-  }
-
-  static EdmTyped getProperty(EdmType IO_RESOURCE_TYPE, Token IS_TOKEN) throws EdmException
-  {
-    EdmTyped RO_PROPERTY = null;
-
-    EdmType lo_resource_type;
-    EdmTyped lo_edm_nav_typed;
-    EdmStructuralType lo_edm_struct_type;
-    EdmTyped lo_untyped_edm_property;
-
-    String lv_type_name;
-
-    lo_resource_type = IO_RESOURCE_TYPE;
-    lv_type_name = getTypeName(IO_RESOURCE_TYPE);
-
-    try
+    if ((leftExpression == null) || (!(leftExpression instanceof MemberExpression)))
     {
-      //if navigation type resolve it
-      if (lo_resource_type.getKind() == EdmTypeKind.NAVIGATION)
-      {
-        lo_edm_nav_typed = (EdmTyped) lo_resource_type;
-        lo_resource_type = lo_edm_nav_typed.getType(); //should be /IWCOR/IF_DS_EDM_ENTITY_TYPE
-      }
-
-      //do typing for mo_resource_type
-      if ((lo_resource_type.getKind() == EdmTypeKind.COMPLEX) || (lo_resource_type.getKind() == EdmTypeKind.ENTITY))
-      {
-
-        //only these type can have properties at the moment
-        lo_edm_struct_type = (EdmStructuralType) lo_resource_type;
-        lo_untyped_edm_property = lo_edm_struct_type.getProperty((String) IS_TOKEN.getUriLiteral());
-      }
-      else
-      {
-        throw new Exception();/*TODO*/
-        /*   RAISE EXCEPTION TYPE /iwcor/cx_ds_expr_parser_error "OK
-             EXPORTING
-               position = is_property_token-position
-               textid = /iwcor/cx_ds_expr_parser_error=>type_has_no_properties
-               type   = lv_type_name.*/
-      }
-
-      if (lo_untyped_edm_property != null)
-      {
-        //do typing for property
-        RO_PROPERTY = lo_untyped_edm_property;//may be /IWCOR/IF_DS_EDM_PROPERTY or /IWCOR/IF_DS_EDM_NAV_PROPERTY" +
-      }
-      else
-      {
-        throw new Exception();/*TODO*//*
-
-
-                                                                        RAISE EXCEPTION TYPE /iwcor/cx_ds_expr_parser_error "OK
-                                                                        EXPORTING
-                                                                        textid   = /iwcor/cx_ds_expr_parser_error=>property_not_in_type
-                                                                        type     = lv_type_name
-                                                                        property = is_property_token-value
-                                                                        position = is_property_token-position.
-                                                                        ENDIF.*/
-
-      }
-    } catch (Exception ex)
-    {/*
-     
-     CATCH /iwcor/cx_ds_edm_error INTO lx_ds_edm_error.
-       RAISE EXCEPTION TYPE /iwcor/cx_ds_internal_error "OK
-         EXPORTING
-           previous = lx_ds_edm_error.*/
+      //e.g. "$filter='Hong Kong' eq city" --> "city" is checked against the resource entity type of the last URL segment 
+      validateEdmPropertyOfEntityType(property, this.resourceEntityType);
+      return;
     }
 
-    return RO_PROPERTY;
+    //e.g. "$filter='Hong Kong' eq address/city" --> city is "checked" against the type of the property "address".
+    //     "address" itself must be a (navigation)property of the resource entity type of the last URL segment AND
+    //     "address" must have a structural edm type
+    MemberExpression member = (MemberExpression) leftExpression;
+    EdmType parentType = member.getPath().getEdmType(); //parentType point now to the type of property "address"
+
+    if (parentType instanceof EdmEntityType)
+    {
+      //e.g. "$filter='Hong Kong' eq navigationProp/city" --> "navigationProp" is a navigation property with a entity type
+      validateEdmPropertyOfEntityType(property, (EdmEntityType) parentType);
+    }
+    else if (parentType instanceof EdmComplexType)
+    {
+      //e.g. "$filter='Hong Kong' eq address/city" --> "address" is a property with a complex type 
+      validateEdmPropertyOfComplexType(property, (EdmComplexType) parentType);
+    }
+    else
+    {
+      //e.g. "$filter='Hong Kong' eq name/city" --> "name is of type String" 
+      throw FilterParserExceptionImpl.createLEFT_SIDE_NOT_STRUCTURAL_TYPE();
+    }
+
+    return;
   }
 
-  protected void validateBinaryOperator(BinaryExpression lo_binary) throws FilterParserException
+  private void validateEdmPropertyOfComplexType(PropertyExpression property, EdmComplexType parentType) throws FilterParserException, FilterParserInternalError
   {
-    // TODO Auto-generated method stub
+    try {
+      String propertyName = property.getUriLiteral();
+      EdmTyped edmProperty = parentType.getProperty(propertyName);
+
+      if (edmProperty != null)
+      {
+        property.setEdmType(edmProperty.getType());
+      }
+      else
+      {
+        throw FilterParserExceptionImpl.createPROPERTY_NAME_NOT_FOUND_IN_TYPE(parentType, property);
+      }
+
+    } catch (EdmException e) {
+      throw FilterParserInternalError.createERROR_ACCESSING_EDM(e);
+    }
   }
 
-  protected void validateMethodTypes(MethodExpression methodExpression, Token token)
-  /*void VALIDATE_FUNCTION_TYPES(MethodExpression IO_EXPR_FUNCTION,
-      Vector<EdmType> ET_ACTUAL_PARAMETERS,
-      XXX_fuop_types_s ES_FORMAL_PARAM_COMBI)*/
-
+  private void validateEdmPropertyOfEntityType(PropertyExpression property, EdmEntityType parentType) throws FilterParserException, FilterParserInternalError
   {
-    /*
-    String ld_string;
-    CommonExpression  lo_node;
-    CommonExpression      ld_funk_param_iter ;
-    Vector<EdmType> lt_act_param_types;
-    Vector<param_types_s>ls_param_combinations;
-    //fuop_types_s ls_param_combinations;
-    param_types_s ls_used_combination;
+    try {
+      String propertyName = property.getUriLiteral();
+      EdmTyped edmProperty = parentType.getProperty(propertyName);
+
+      if (edmProperty != null)
+      {
+        property.setEdmType(edmProperty.getType());
+      }
+      else
+      {
+        throw FilterParserExceptionImpl.createPROPERTY_NAME_NOT_FOUND_IN_TYPE(parentType, property);
+      }
+
+    } catch (EdmException e) {
+      throw FilterParserInternalError.createERROR_ACCESSING_EDM(e);
+    }
+  }
+
+  
+  protected void validateBinaryOperator(BinaryExpression binaryExpression) throws FilterParserException
+  {
+    InfoBinaryOperator binOpt = availableBinaryOperators.get(binaryExpression.getOperator().toUriLiteral());
     
-    boolean lv_promoted;
-    boolean lv_dynamic;
-
-    //get actual parameter types
-    for (CommonExpression tmp : IO_EXPR_FUNCTION.GetParameters())
-    {
-      lt_act_param_types.add(ld_funk_param_iter.GetEdmType());
-    }
-     
-
-     //get the possible prameter combinations
-    ls_param_combinations = MT_FUOPS.get(IO_EXPR_FUNCTION.GetFunctionName());
-
-        VALIDATE_PARAMETER_TYPES(lt_act_param_types,ls_param_combinations,  ls_used_combination,lv_promoted );
-
-        io_expr_function->/iwcor/if_ds_expr_node~type = /iwcor/cl_ds_edm_simple_type=>get_instance( iv_name = ls_used_combination-return_type ).
-
-        if lv_dynamic = abap_true.
-          RETURN.
-        ENDIF.
-
-        "set return type
-        lo_node ?= io_expr_function.
-        lo_node->type = /iwcor/cl_ds_edm_simple_type=>get_instance( iv_name = ls_used_combination-return_type ).
-
-        if  mv_parameter_promotion = abap_true AND lv_promoted = abap_true.
-          LOOP AT ls_used_combination-params REFERENCE INTO ld_string.
-            READ TABLE io_expr_function->parameters INDEX sy-tabix INTO ld_funk_param_iter.
-            ld_funk_param_iter->type = /iwcor/cl_ds_edm_simple_type=>get_instance( iv_name = ld_string->* ).
-          ENDLOOP.
-        ENDIF.
-     */
+    List<ParameterSet> allowedParameterTypesCombinations = binOpt.getParameterSet();
+    List<EdmType> actualParameterTypes = new ArrayList<EdmType>();
+    actualParameterTypes.add(binaryExpression.getLeftOperand().getEdmType());
+    actualParameterTypes.add(binaryExpression.getRightOperand().getEdmType());
+        
+    validateParameterSet(actualParameterTypes,allowedParameterTypesCombinations);
   }
 
-  protected void validataUnaryOperator(UnaryExpression IO_EXPR_UNARY,
-      Token token)
-  {/*
-   DATA:
-          lv_string TYPE string,
-          lt_act_param_types TYPE TABLE OF REF TO /iwcor/if_ds_edm_type WITH DEFAULT KEY,
-          ls_param_combinations TYPE fuop_types_s,
-          ls_used_combination TYPE param_types_s,
-          lv_promoted TYPE abap_bool,
-          lv_dynamic TYPE abap_bool.
-
-        APPEND io_expr_unary->operand->type TO lt_act_param_types.
-
-        "get the possible prameter comibnations
-        READ TABLE mt_fuops WITH KEY name = io_expr_unary->operator INTO ls_param_combinations.
-
-        validate_parameter_types(
-            EXPORTING
-              it_actual_parameters  = lt_act_param_types
-              is_formal_param_combi = ls_param_combinations
-            IMPORTING
-              ev_dynamic            = lv_dynamic
-              es_used_combi         = ls_used_combination
-              ev_promoted           = lv_promoted ).
-
-        io_expr_unary->/iwcor/if_ds_expr_node~type = /iwcor/cl_ds_edm_simple_type=>get_instance( iv_name = ls_used_combination-return_type ).
-
-        if lv_dynamic = abap_true.
-          RETURN.
-        ENDIF.
-
-
-        if  mv_parameter_promotion = abap_true AND lv_promoted = abap_true.
-          READ TABLE ls_used_combination-params INDEX 1 INTO lv_string.
-          io_expr_unary->operand->type = /iwcor/cl_ds_edm_simple_type=>get_instance( iv_name = lv_string ).
-        ENDIF.*/}
-
-  protected void validateParameterSet(Vector<EdmType> IT_ACTUAL_PARAMETERS,
-      Vector<EdmType> ET_ACTUAL_PARAMETERS,
-
-      boolean ev_dynamic,
-      //param_types_s es_used_combi,
-      boolean ev_promoted)
-  {
+  private void validateParameterSet(List<EdmType> actualParameterTypes, List<ParameterSet> allowedParameterTypesCombinations) {
+ 
+  
     /*
     String lv_act;
     String lv_form;
@@ -1016,89 +860,94 @@ public class FilterParserImpl implements FilterParser
                                                                                          function = is_formal_param_combi-name.
                                                                                          */
   }
+  
+  protected void validateMethodTypes(MethodExpression methodExpression, Token token)
+  /*void VALIDATE_FUNCTION_TYPES(MethodExpression IO_EXPR_FUNCTION,
+      Vector<EdmType> ET_ACTUAL_PARAMETERS,
+      XXX_fuop_types_s ES_FORMAL_PARAM_COMBI)*/
 
-  protected void validatePropertyTypes(PropertyExpression property)
   {
+    /*
+    String ld_string;
+    CommonExpression  lo_node;
+    CommonExpression      ld_funk_param_iter ;
+    Vector<EdmType> lt_act_param_types;
+    Vector<param_types_s>ls_param_combinations;
+    //fuop_types_s ls_param_combinations;
+    param_types_s ls_used_combination;
+    
+    boolean lv_promoted;
+    boolean lv_dynamic;
 
+    //get actual parameter types
+    for (CommonExpression tmp : IO_EXPR_FUNCTION.GetParameters())
+    {
+      lt_act_param_types.add(ld_funk_param_iter.GetEdmType());
+    }
+     
+
+     //get the possible prameter combinations
+    ls_param_combinations = MT_FUOPS.get(IO_EXPR_FUNCTION.GetFunctionName());
+
+        VALIDATE_PARAMETER_TYPES(lt_act_param_types,ls_param_combinations,  ls_used_combination,lv_promoted );
+
+        io_expr_function->/iwcor/if_ds_expr_node~type = /iwcor/cl_ds_edm_simple_type=>get_instance( iv_name = ls_used_combination-return_type ).
+
+        if lv_dynamic = abap_true.
+          RETURN.
+        ENDIF.
+
+        "set return type
+        lo_node ?= io_expr_function.
+        lo_node->type = /iwcor/cl_ds_edm_simple_type=>get_instance( iv_name = ls_used_combination-return_type ).
+
+        if  mv_parameter_promotion = abap_true AND lv_promoted = abap_true.
+          LOOP AT ls_used_combination-params REFERENCE INTO ld_string.
+            READ TABLE io_expr_function->parameters INDEX sy-tabix INTO ld_funk_param_iter.
+            ld_funk_param_iter->type = /iwcor/cl_ds_edm_simple_type=>get_instance( iv_name = ld_string->* ).
+          ENDLOOP.
+        ENDIF.
+     */
   }
 
-  private void validateEdmProperty(CommonExpression leftExpression, PropertyExpression property) throws FilterParserException, FilterParserInternalError {
-    // Exist if no edm provided
-    if ((this.edm == null) || (this.resourceEntityType == null))
-      return;
+  protected void validataUnaryOperator(UnaryExpression IO_EXPR_UNARY,
+      Token token)
+  {/*
+   DATA:
+          lv_string TYPE string,
+          lt_act_param_types TYPE TABLE OF REF TO /iwcor/if_ds_edm_type WITH DEFAULT KEY,
+          ls_param_combinations TYPE fuop_types_s,
+          ls_used_combination TYPE param_types_s,
+          lv_promoted TYPE abap_bool,
+          lv_dynamic TYPE abap_bool.
 
-    EdmStructuralType path = this.resourceEntityType; // default if there is a property of its own
+        APPEND io_expr_unary->operand->type TO lt_act_param_types.
 
-    if ((leftExpression == null) || (!(leftExpression instanceof MemberExpression)))
-    {
-      //e.g. "$filter='Hong Kong' eq city" --> "city" is checked against the resource entity type of the last URL segment 
-      validateEdmPropertyOfEntityType(property, this.resourceEntityType);
-      return;
-    }
+        "get the possible prameter comibnations
+        READ TABLE mt_fuops WITH KEY name = io_expr_unary->operator INTO ls_param_combinations.
 
-    //e.g. "$filter='Hong Kong' eq address/city" --> city is "checked" against the type of the property "address".
-    //     "address" itself must be a (navigation)property of the resource entity type of the last URL segment AND
-    //     "address" must have a structural edm type
-    MemberExpression member = (MemberExpression) leftExpression;
-    EdmType parentType = member.getPath().getEdmType(); //parentType point now to the type of property "address"
+        validate_parameter_types(
+            EXPORTING
+              it_actual_parameters  = lt_act_param_types
+              is_formal_param_combi = ls_param_combinations
+            IMPORTING
+              ev_dynamic            = lv_dynamic
+              es_used_combi         = ls_used_combination
+              ev_promoted           = lv_promoted ).
 
-    if (parentType instanceof EdmEntityType)
-    {
-      //e.g. "$filter='Hong Kong' eq navigationProp/city" --> "navigationProp" is a navigation property with a entity type
-      validateEdmPropertyOfEntityType(property, (EdmEntityType) parentType);
-    }
-    else if (parentType instanceof EdmComplexType)
-    {
-      //e.g. "$filter='Hong Kong' eq address/city" --> "address" is a property with a complex type 
-      validateEdmPropertyOfComplexType(property, (EdmComplexType) parentType);
-    }
-    else
-    {
-      //e.g. "$filter='Hong Kong' eq name/city" --> "name is of type String" 
-      throw FilterParserExceptionImpl.createLEFT_SIDE_NOT_STRUCTURAL_TYPE();
-    }
+        io_expr_unary->/iwcor/if_ds_expr_node~type = /iwcor/cl_ds_edm_simple_type=>get_instance( iv_name = ls_used_combination-return_type ).
 
-    return;
-  }
+        if lv_dynamic = abap_true.
+          RETURN.
+        ENDIF.
 
-  private void validateEdmPropertyOfComplexType(PropertyExpression property, EdmComplexType parentType) throws FilterParserException, FilterParserInternalError
-  {
-    try {
-      String propertyName = property.getUriLiteral();
-      EdmTyped edmProperty = parentType.getProperty(propertyName);
 
-      if (edmProperty != null)
-      {
-        property.setEdmType(edmProperty.getType());
-      }
-      else
-      {
-        throw FilterParserExceptionImpl.createPROPERTY_NAME_NOT_FOUND_IN_TYPE(parentType, property);
-      }
+        if  mv_parameter_promotion = abap_true AND lv_promoted = abap_true.
+          READ TABLE ls_used_combination-params INDEX 1 INTO lv_string.
+          io_expr_unary->operand->type = /iwcor/cl_ds_edm_simple_type=>get_instance( iv_name = lv_string ).
+        ENDIF.*/}
 
-    } catch (EdmException e) {
-      throw FilterParserInternalError.createERROR_ACCESSING_EDM(e);
-    }
-  }
 
-  private void validateEdmPropertyOfEntityType(PropertyExpression property, EdmEntityType parentType) throws FilterParserException, FilterParserInternalError
-  {
-    try {
-      String propertyName = property.getUriLiteral();
-      EdmTyped edmProperty = parentType.getProperty(propertyName);
-
-      if (edmProperty != null)
-      {
-        property.setEdmType(edmProperty.getType());
-      }
-      else
-      {
-        throw FilterParserExceptionImpl.createPROPERTY_NAME_NOT_FOUND_IN_TYPE(parentType, property);
-      }
-
-    } catch (EdmException e) {
-      throw FilterParserInternalError.createERROR_ACCESSING_EDM(e);
-    }
-  }
 
 }
+
