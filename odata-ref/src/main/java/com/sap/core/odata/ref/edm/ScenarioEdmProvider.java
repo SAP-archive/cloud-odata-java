@@ -31,7 +31,7 @@ import com.sap.core.odata.api.edm.provider.PropertyRef;
 import com.sap.core.odata.api.edm.provider.ReturnType;
 import com.sap.core.odata.api.edm.provider.Schema;
 import com.sap.core.odata.api.edm.provider.SimpleProperty;
-import com.sap.core.odata.api.exception.ODataMessageException;
+import com.sap.core.odata.api.exception.ODataException;
 
 /**
  * Provider for the entity data model used in the reference scenario
@@ -83,7 +83,7 @@ public class ScenarioEdmProvider extends EdmProviderDefault {
   private static final String FUNCTION_IMPORT_7 = "OldestEmployee";
 
   @Override
-  public List<Schema> getSchemas() throws ODataMessageException {
+  public List<Schema> getSchemas() throws ODataException {
     List<Schema> schemas = new ArrayList<Schema>();
 
     Schema schema = new Schema();
@@ -171,7 +171,7 @@ public class ScenarioEdmProvider extends EdmProviderDefault {
   }
 
   @Override
-  public EntityType getEntityType(final FullQualifiedName edmFQName) throws ODataMessageException {
+  public EntityType getEntityType(final FullQualifiedName edmFQName) throws ODataException {
     if (NAMESPACE_1.equals(edmFQName.getNamespace())) {
       if (ENTITY_TYPE_1_1.getName().equals(edmFQName.getName())) {
         List<Property> properties = new ArrayList<Property>();
@@ -311,7 +311,7 @@ public class ScenarioEdmProvider extends EdmProviderDefault {
   }
 
   @Override
-  public ComplexType getComplexType(final FullQualifiedName edmFQName) throws ODataMessageException {
+  public ComplexType getComplexType(final FullQualifiedName edmFQName) throws ODataException {
     if (NAMESPACE_1.equals(edmFQName.getNamespace()))
       if (COMPLEX_TYPE_1.getName().equals(edmFQName.getName())) {
         List<Property> properties = new ArrayList<Property>();
@@ -330,7 +330,7 @@ public class ScenarioEdmProvider extends EdmProviderDefault {
   }
 
   @Override
-  public Association getAssociation(final FullQualifiedName edmFQName) throws ODataMessageException {
+  public Association getAssociation(final FullQualifiedName edmFQName) throws ODataException {
     if (NAMESPACE_1.equals(edmFQName.getNamespace()))
       if (ASSOCIATION_1_1.getName().equals(edmFQName.getName()))
         return new Association().setName(ASSOCIATION_1_1.getName())
@@ -353,7 +353,7 @@ public class ScenarioEdmProvider extends EdmProviderDefault {
   }
 
   @Override
-  public EntityContainerInfo getEntityContainerInfo(final String name) throws ODataMessageException {
+  public EntityContainerInfo getEntityContainerInfo(final String name) throws ODataException {
     if (name == null || ENTITY_CONTAINER_1.equals(name))
       return new EntityContainerInfo().setName(ENTITY_CONTAINER_1).setDefaultEntityContainer(true);
     else if (ENTITY_CONTAINER_2.equals(name))
@@ -363,7 +363,7 @@ public class ScenarioEdmProvider extends EdmProviderDefault {
   }
 
   @Override
-  public EntitySet getEntitySet(final String entityContainer, final String name) throws ODataMessageException {
+  public EntitySet getEntitySet(final String entityContainer, final String name) throws ODataException {
     if (ENTITY_CONTAINER_1.equals(entityContainer)) {
       if (ENTITY_SET_1_1.equals(name))
         return new EntitySet().setName(name).setEntityType(ENTITY_TYPE_1_1);
@@ -384,7 +384,7 @@ public class ScenarioEdmProvider extends EdmProviderDefault {
   }
 
   @Override
-  public FunctionImport getFunctionImport(final String entityContainer, final String name) throws ODataMessageException {
+  public FunctionImport getFunctionImport(final String entityContainer, final String name) throws ODataException {
     if (ENTITY_CONTAINER_1.equals(entityContainer))
       if (FUNCTION_IMPORT_1.equals(name)) {
         List<FunctionImportParameter> parameters = new ArrayList<FunctionImportParameter>();
@@ -437,7 +437,7 @@ public class ScenarioEdmProvider extends EdmProviderDefault {
   }
 
   @Override
-  public AssociationSet getAssociationSet(final String entityContainer, final FullQualifiedName association, final String sourceEntitySetName, final String sourceEntitySetRole) throws ODataMessageException {
+  public AssociationSet getAssociationSet(final String entityContainer, final FullQualifiedName association, final String sourceEntitySetName, final String sourceEntitySetRole) throws ODataException {
     if (ENTITY_CONTAINER_1.equals(entityContainer))
       if (ASSOCIATION_1_1.equals(association))
         return new AssociationSet().setName(ASSOCIATION_1_1.getName())
