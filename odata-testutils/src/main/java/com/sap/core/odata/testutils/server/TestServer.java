@@ -12,6 +12,9 @@ import org.slf4j.LoggerFactory;
 
 import com.sap.core.odata.api.service.ODataServiceFactory;
 
+/**
+ * @author SAP AG
+ */
 public class TestServer {
 
   public TestServer() {}
