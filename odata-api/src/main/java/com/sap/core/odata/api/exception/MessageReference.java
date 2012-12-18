@@ -6,9 +6,10 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * A {@link MessageReference} references to the used message for a {@link ODataHttpException} and is used to support 
+ * A {@link MessageReference} references to the used message for an {@link ODataHttpException} and is used to support
  * internationalization and translation of exception messages for all {@link ODataHttpException} and sub classes.
- * Theses classes all contains  an {@link MessageReference} object which can be mapped to a related key and message in the resource bundles.
+ * Theses classes all contains a {@link MessageReference} object which can be mapped to a related key and message in the resource bundles.
+ * @author SAP AG
  */
 public abstract class MessageReference {
 
@@ -40,8 +41,6 @@ public abstract class MessageReference {
 
   /**
    * Returns message key.
-   * 
-   * @return
    */
   public String getKey() {
     return key;
@@ -49,9 +48,6 @@ public abstract class MessageReference {
 
   /**
    * Add given content to message reference.
-   * 
-   * @param content
-   * @return
    */
   public MessageReference addContent(Object... content) {
     return new SimpleMessageReference(this.key, content);
@@ -60,16 +56,12 @@ public abstract class MessageReference {
   /**
    * Receive content for this {@link MessageReference}.
    * Beware that returned list is immutable.
-   * 
-   * @return
    */
-  // because of use of 'Collections.EMPTY_LIST' we need a @SuppressWarnings("unchecked") annotation
-  @SuppressWarnings("unchecked")
-  public List<Object> getContent() {
+  public List<?> getContent() {
     if (content == null)
-      return Collections.unmodifiableList(Collections.EMPTY_LIST);
-
-    return Collections.unmodifiableList(content);
+      return Collections.emptyList();
+    else
+      return Collections.unmodifiableList(content);
   }
 
   /**
