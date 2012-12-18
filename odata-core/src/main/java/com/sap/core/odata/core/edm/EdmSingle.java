@@ -3,19 +3,16 @@ package com.sap.core.odata.core.edm;
 import java.math.BigDecimal;
 import java.util.Locale;
 
-import com.sap.core.odata.api.edm.EdmException;
 import com.sap.core.odata.api.edm.EdmFacets;
 import com.sap.core.odata.api.edm.EdmLiteralKind;
 import com.sap.core.odata.api.edm.EdmSimpleType;
 import com.sap.core.odata.api.edm.EdmSimpleTypeException;
-import com.sap.core.odata.api.edm.EdmSimpleTypeKind;
-import com.sap.core.odata.api.edm.EdmTypeKind;
 
 /**
  * Implementation of the EDM simple type Single
  * @author SAP AG
  */
-public class EdmSingle implements EdmSimpleType {
+public class EdmSingle extends AbstractSimpleType {
 
   // value-range limitations according to the CSDL document
   private static final int MAX_PRECISION = 7;
@@ -23,37 +20,8 @@ public class EdmSingle implements EdmSimpleType {
 
   private static final EdmSingle instance = new EdmSingle();
 
-  private EdmSingle() {
-
-  }
-
   public static EdmSingle getInstance() {
     return instance;
-  }
-
-  @Override
-  public boolean equals(final Object obj) {
-    return this == obj || obj instanceof EdmSingle;
-  }
-
-  @Override
-  public int hashCode() {
-    return EdmSimpleTypeKind.Single.hashCode();
-  }
-
-  @Override
-  public String getNamespace() throws EdmException {
-    return EdmSimpleType.EDM_NAMESPACE;
-  }
-
-  @Override
-  public EdmTypeKind getKind() {
-    return EdmTypeKind.SIMPLE;
-  }
-
-  @Override
-  public String getName() throws EdmException {
-    return EdmSimpleTypeKind.Single.toString();
   }
 
   @Override
@@ -69,22 +37,9 @@ public class EdmSingle implements EdmSimpleType {
   }
 
   @Override
-  public boolean validate(final String value, final EdmLiteralKind literalKind, final EdmFacets facets) {
-    try {
-      valueOfString(value, literalKind, facets);
-      return true;
-    } catch (EdmSimpleTypeException e) {
-      return false;
-    }
-  }
-
-  @Override
   public Float valueOfString(final String value, final EdmLiteralKind literalKind, final EdmFacets facets) throws EdmSimpleTypeException {
     if (value == null)
-      if (facets == null || facets.isNullable() == null || facets.isNullable())
-        return null;
-      else
-        throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_NULL_NOT_ALLOWED);
+      return getCheckedNullValue(facets);
 
     if (literalKind == null)
       throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_KIND_MISSING);
@@ -119,15 +74,7 @@ public class EdmSingle implements EdmSimpleType {
   @Override
   public String valueToString(final Object value, final EdmLiteralKind literalKind, final EdmFacets facets) throws EdmSimpleTypeException {
     if (value == null)
-      if (facets == null)
-        return null;
-      else if (facets.getDefaultValue() == null)
-        if (facets.isNullable() == null || facets.isNullable())
-          return null;
-        else
-          throw new EdmSimpleTypeException(EdmSimpleTypeException.VALUE_NULL_NOT_ALLOWED);
-      else
-        return facets.getDefaultValue();
+      return getNullOrDefaultValue(facets);
 
     if (literalKind == null)
       throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_KIND_MISSING);
@@ -160,17 +107,10 @@ public class EdmSingle implements EdmSimpleType {
     else
       throw new EdmSimpleTypeException(EdmSimpleTypeException.VALUE_TYPE_NOT_SUPPORTED.addContent(value.getClass()));
 
-    switch (literalKind) {
-    case DEFAULT:
-    case JSON:
-      return result;
-
-    case URI:
+    if (literalKind == EdmLiteralKind.URI)
       return toUriLiteral(result);
-
-    default:
-      throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_KIND_NOT_SUPPORTED.addContent(literalKind));
-    }
+    else
+      return result;
   }
 
   @Override

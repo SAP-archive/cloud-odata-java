@@ -6,58 +6,20 @@ import org.apache.commons.codec.DecoderException;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.codec.binary.Hex;
 
-import com.sap.core.odata.api.edm.EdmException;
 import com.sap.core.odata.api.edm.EdmFacets;
 import com.sap.core.odata.api.edm.EdmLiteralKind;
-import com.sap.core.odata.api.edm.EdmSimpleType;
 import com.sap.core.odata.api.edm.EdmSimpleTypeException;
-import com.sap.core.odata.api.edm.EdmSimpleTypeKind;
-import com.sap.core.odata.api.edm.EdmTypeKind;
 
 /**
  * Implementation of the EDM simple type Binary
  * @author SAP AG
  */
-public class EdmBinary implements EdmSimpleType {
+public class EdmBinary extends AbstractSimpleType {
 
   private static final EdmBinary instance = new EdmBinary();
 
-  private EdmBinary() {
-
-  }
-
   public static EdmBinary getInstance() {
     return instance;
-  }
-
-  @Override
-  public boolean equals(final Object obj) {
-    return this == obj || obj instanceof EdmBinary;
-  }
-
-  @Override
-  public int hashCode() {
-    return EdmSimpleTypeKind.Binary.hashCode();
-  }
-
-  @Override
-  public String getNamespace() throws EdmException {
-    return EdmSimpleType.EDM_NAMESPACE;
-  }
-
-  @Override
-  public EdmTypeKind getKind() {
-    return EdmTypeKind.SIMPLE;
-  }
-
-  @Override
-  public String getName() throws EdmException {
-    return EdmSimpleTypeKind.Binary.toString();
-  }
-
-  @Override
-  public boolean isCompatible(final EdmSimpleType simpleType) {
-    return simpleType instanceof EdmBinary;
   }
 
   @Override
@@ -104,15 +66,7 @@ public class EdmBinary implements EdmSimpleType {
   @Override
   public String valueToString(final Object value, final EdmLiteralKind literalKind, final EdmFacets facets) throws EdmSimpleTypeException {
     if (value == null)
-      if (facets == null)
-        return null;
-      else if (facets.getDefaultValue() == null)
-        if (facets.isNullable() == null || facets.isNullable())
-          return null;
-        else
-          throw new EdmSimpleTypeException(EdmSimpleTypeException.VALUE_NULL_NOT_ALLOWED);
-      else
-        return facets.getDefaultValue();
+      return getNullOrDefaultValue(facets);
 
     byte[] byteArrayValue;
     if (value instanceof byte[]) {
@@ -131,16 +85,10 @@ public class EdmBinary implements EdmSimpleType {
 
     if (literalKind == null)
       throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_KIND_MISSING);
-
-    switch (literalKind) {
-    case DEFAULT:
-    case JSON:
-      return Base64.encodeBase64String(byteArrayValue);
-    case URI:
+    else if (literalKind == EdmLiteralKind.URI)
       return "binary'" + Hex.encodeHexString(byteArrayValue).toUpperCase(Locale.ROOT) + "'";
-    default:
-      throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_KIND_NOT_SUPPORTED.addContent(literalKind));
-    }
+    else
+      return Base64.encodeBase64String(byteArrayValue);
   }
 
   @Override

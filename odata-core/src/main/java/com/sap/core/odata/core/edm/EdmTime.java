@@ -7,13 +7,9 @@ import java.util.TimeZone;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import com.sap.core.odata.api.edm.EdmException;
 import com.sap.core.odata.api.edm.EdmFacets;
 import com.sap.core.odata.api.edm.EdmLiteralKind;
-import com.sap.core.odata.api.edm.EdmSimpleType;
 import com.sap.core.odata.api.edm.EdmSimpleTypeException;
-import com.sap.core.odata.api.edm.EdmSimpleTypeKind;
-import com.sap.core.odata.api.edm.EdmTypeKind;
 
 /**
  * <p>Implementation of the EDM simple type Time</p>
@@ -23,7 +19,7 @@ import com.sap.core.odata.api.edm.EdmTypeKind;
  * Parsing returns a Calendar object where all unused fields have been cleared.</p>
  * @author SAP AG
  */
-public class EdmTime implements EdmSimpleType {
+public class EdmTime extends AbstractSimpleType {
 
   private static final Pattern PATTERN = Pattern.compile(
       "PT(?:(\\p{Digit}{1,2})H)?(?:(\\p{Digit}{1,4})M)?(?:(\\p{Digit}{1,5})(?:\\.(\\p{Digit}+?)0*)?S)?");
@@ -34,52 +30,9 @@ public class EdmTime implements EdmSimpleType {
   }
 
   @Override
-  public boolean equals(final Object obj) {
-    return this == obj || obj instanceof EdmTime;
-  }
-
-  @Override
-  public int hashCode() {
-    return EdmSimpleTypeKind.Time.hashCode();
-  }
-
-  @Override
-  public String getNamespace() throws EdmException {
-    return EdmSimpleType.EDM_NAMESPACE;
-  }
-
-  @Override
-  public EdmTypeKind getKind() {
-    return EdmTypeKind.SIMPLE;
-  }
-
-  @Override
-  public String getName() throws EdmException {
-    return EdmSimpleTypeKind.Time.toString();
-  }
-
-  @Override
-  public boolean isCompatible(final EdmSimpleType simpleType) {
-    return simpleType instanceof EdmTime;
-  }
-
-  @Override
-  public boolean validate(final String value, final EdmLiteralKind literalKind, final EdmFacets facets) {
-    try {
-      valueOfString(value, literalKind, facets);
-      return true;
-    } catch (EdmSimpleTypeException e) {
-      return false;
-    }
-  }
-
-  @Override
   public Calendar valueOfString(final String value, final EdmLiteralKind literalKind, final EdmFacets facets) throws EdmSimpleTypeException {
     if (value == null)
-      if (facets == null || facets.isNullable() == null || facets.isNullable())
-        return null;
-      else
-        throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_NULL_NOT_ALLOWED);
+      return getCheckedNullValue(facets);
 
     if (literalKind == null)
       throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_KIND_MISSING);
@@ -128,15 +81,7 @@ public class EdmTime implements EdmSimpleType {
   @Override
   public String valueToString(final Object value, final EdmLiteralKind literalKind, final EdmFacets facets) throws EdmSimpleTypeException {
     if (value == null)
-      if (facets == null)
-        return null;
-      else if (facets.getDefaultValue() == null)
-        if (facets.isNullable() == null || facets.isNullable())
-          return null;
-        else
-          throw new EdmSimpleTypeException(EdmSimpleTypeException.VALUE_NULL_NOT_ALLOWED);
-      else
-        return facets.getDefaultValue();
+      return getNullOrDefaultValue(facets);
 
     if (literalKind == null)
       throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_KIND_MISSING);
