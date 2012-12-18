@@ -1084,6 +1084,7 @@ public class EdmSimpleTypeTest {
     dateTime.set(Calendar.MINUTE, 32);
     dateTime.set(Calendar.SECOND, 3);
     assertEquals(dateTime, instance.valueOfString("PT23H32M3S", EdmLiteralKind.DEFAULT, null));
+    assertEquals(dateTime, instance.valueOfString("PT84723S", EdmLiteralKind.DEFAULT, null));
     assertEquals(dateTime, instance.valueOfString("PT23H32M3S", EdmLiteralKind.JSON, null));
     assertEquals(dateTime, instance.valueOfString("time'PT23H32M3S'", EdmLiteralKind.URI, null));
 
@@ -1115,6 +1116,9 @@ public class EdmSimpleTypeTest {
     expectErrorInValueOfString(instance, "PT1H2M3.1234S", EdmLiteralKind.DEFAULT, null);
     expectErrorInValueOfString(instance, "PT13H2M3.9S", EdmLiteralKind.DEFAULT, getPrecisionScaleFacets(0, null));
     expectErrorInValueOfString(instance, "P2012Y2M29DT23H32M2S", EdmLiteralKind.DEFAULT, null);
+    expectErrorInValueOfString(instance, "PT24H", EdmLiteralKind.DEFAULT, null);
+    expectErrorInValueOfString(instance, "PT99999S", EdmLiteralKind.JSON, null);
+    expectErrorInValueOfString(instance, "PT999H", EdmLiteralKind.DEFAULT, null);
     expectErrorInValueOfString(instance, "PT", EdmLiteralKind.DEFAULT, null);
     expectErrorInValueOfString(instance, "datetime'PT23H32M2S'", EdmLiteralKind.URI, null);
     expectErrorInValueOfString(instance, "time'", EdmLiteralKind.URI, null);

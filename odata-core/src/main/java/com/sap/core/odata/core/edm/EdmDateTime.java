@@ -27,10 +27,6 @@ public class EdmDateTime implements EdmSimpleType {
   private static final Pattern JSON_PATTERN = Pattern.compile("\\\\/Date\\((-?\\p{Digit}+)\\)\\\\/");
   private static final EdmDateTime instance = new EdmDateTime();
 
-  private EdmDateTime() {
-
-  }
-
   public static EdmDateTime getInstance() {
     return instance;
   }
@@ -86,28 +82,36 @@ public class EdmDateTime implements EdmSimpleType {
     if (literalKind == null)
       throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_KIND_MISSING);
 
-    Calendar dateTimeValue = Calendar.getInstance();
-    dateTimeValue.clear();
-    dateTimeValue.setTimeZone(TimeZone.getTimeZone("GMT"));
-
     // In JSON, we allow also the XML literal form, so there is on purpose
     // no exception if the JSON pattern does not match.
-    if (literalKind == EdmLiteralKind.JSON) {
+    if (literalKind == EdmLiteralKind.JSON)
       if (JSON_PATTERN.matcher(value).matches()) {
+        long millis;
         try {
-          dateTimeValue.setTimeInMillis(Long.parseLong(value.substring(7, value.length() - 3)));
+          millis = Long.parseLong(value.substring(7, value.length() - 3));
         } catch (NumberFormatException e) {
           throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_ILLEGAL_CONTENT.addContent(value), e);
         }
+        Calendar dateTimeValue = Calendar.getInstance();
+        dateTimeValue.clear();
+        dateTimeValue.setTimeZone(TimeZone.getTimeZone("GMT"));
+        dateTimeValue.setTimeInMillis(millis);
         return dateTimeValue;
       }
 
-    } else if (literalKind == EdmLiteralKind.URI) {
+    if (literalKind == EdmLiteralKind.URI)
       if (value.length() > 10 && value.startsWith("datetime'") && value.endsWith("'"))
-        return valueOfString(value.substring(9, value.length() - 1), EdmLiteralKind.DEFAULT, facets);
+        return parseLiteral(value.substring(9, value.length() - 1), facets);
       else
         throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_ILLEGAL_CONTENT.addContent(value));
-    }
+
+    return parseLiteral(value, facets);
+  }
+
+  private Calendar parseLiteral(final String value, final EdmFacets facets) throws EdmSimpleTypeException {
+    Calendar dateTimeValue = Calendar.getInstance();
+    dateTimeValue.clear();
+    dateTimeValue.setTimeZone(TimeZone.getTimeZone("GMT"));
 
     final Matcher matcher = PATTERN.matcher(value);
     if (!matcher.matches())
