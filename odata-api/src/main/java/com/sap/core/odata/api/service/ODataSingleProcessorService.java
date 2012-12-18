@@ -22,12 +22,14 @@ import com.sap.core.odata.api.processor.aspect.ServiceDocument;
 import com.sap.core.odata.api.rt.RuntimeDelegate;
 
 /**
- * A default implementation that uses {@link ODataSingleProcessor}. Usually custom services derive from this class and create an instance by {@link ODataSerivceFactory}
- * and populate it by custom {@link EdmProvider} and custom {@link ODataSingleProcessor} implementation.
- * 
+ * <p>An {@link ODataService} implementation that uses {@link ODataSingleProcessor}.</p>
+ * <p>Usually custom services create an instance by their implementation of
+ * {@link ODataServiceFactory} and populate it with their custom {@link EdmProvider}
+ * and custom {@link ODataSingleProcessor} implementations.</p>
+ *
  * @author SAP AG
  */
-public abstract class ODataSingleProcessorService implements ODataService {
+public class ODataSingleProcessorService implements ODataService {
 
   private ODataSingleProcessor processor;
   private Edm edm;
