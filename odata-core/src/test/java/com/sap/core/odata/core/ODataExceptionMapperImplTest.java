@@ -2,7 +2,6 @@ package com.sap.core.odata.core;
 
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertNotNull;
-import static junit.framework.Assert.assertTrue;
 import static org.custommonkey.xmlunit.XMLAssert.assertXpathValuesEqual;
 
 import java.io.IOException;

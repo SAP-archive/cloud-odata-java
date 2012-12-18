@@ -196,7 +196,7 @@ public class UriParserTest {
 
   @Test
   public void parseEmployeesEntitySetParenthesesCountNotLast() throws Exception {
-    parseWrongUri("/Employees()/$count/somethingwrong", UriSyntaxException.NOTLASTSEGMENT);
+    parseWrongUri("/Employees()/$count/somethingwrong", UriSyntaxException.MUSTBELASTSEGMENT);
   }
 
   @Test
@@ -444,12 +444,12 @@ public class UriParserTest {
     parseWrongUri("Employees('1')//ne_Manager", UriSyntaxException.EMPTYSEGMENT);
     parseWrongUri("Employees('1')/ne_Manager()", UriSyntaxException.INVALIDSEGMENT);
     parseWrongUri("Employees('1')/ne_Manager('1')", UriSyntaxException.INVALIDSEGMENT);
-    parseWrongUri("Employees('1')/$links", UriSyntaxException.NOTLASTSEGMENT);
+    parseWrongUri("Employees('1')/$links", UriSyntaxException.MUSTNOTBELASTSEGMENT);
     parseWrongUri("Employees('1')/$links/ne_Manager('1')", UriSyntaxException.INVALIDSEGMENT);
     parseWrongUri("Employees('1')/$links/ne_Manager()", UriSyntaxException.INVALIDSEGMENT);
     parseWrongUri("Employees('1')/$links/ne_Manager/somethingwrong", UriSyntaxException.INVALIDSEGMENT);
-    parseWrongUri("Employees('1')/ne_Manager/$count/somethingwrong", UriSyntaxException.NOTLASTSEGMENT);
-    parseWrongUri("Employees('1')/$links/ne_Manager/$count/somethingwrong", UriSyntaxException.NOTLASTSEGMENT);
+    parseWrongUri("Employees('1')/ne_Manager/$count/somethingwrong", UriSyntaxException.MUSTBELASTSEGMENT);
+    parseWrongUri("Employees('1')/$links/ne_Manager/$count/somethingwrong", UriSyntaxException.MUSTBELASTSEGMENT);
     parseWrongUri("Employees('1')/ne_Manager/$value", UriSyntaxException.NOMEDIARESOURCE);
     parseWrongUri("Managers('1')/nm_Employees('1')/$value/somethingwrong", UriSyntaxException.MUSTBELASTSEGMENT);
     parseWrongUri("Managers('1')/nm_Employees/$links", UriSyntaxException.INVALIDSEGMENT);
