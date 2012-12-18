@@ -135,7 +135,7 @@ public class UriParserImpl implements UriParser {
   private void handleNormalInitialSegment() throws UriSyntaxException, UriNotMatchingException, EdmException {
     final Matcher matcher = INITIAL_SEGMENT_PATTERN.matcher(currentPathSegment);
     if (!matcher.matches())
-      throw new UriNotMatchingException(UriNotMatchingException.MATCHPROBLEM);
+      throw new UriNotMatchingException(UriNotMatchingException.MATCHPROBLEM.addContent(currentPathSegment));
 
     final String entityContainerName = matcher.group(1);
     final String segmentName = matcher.group(2);
@@ -180,7 +180,7 @@ public class UriParserImpl implements UriParser {
         if (uriResult.isCount())
           uriResult.setUriType(UriType.URI15);
         else
-          throw new UriSyntaxException(UriSyntaxException.ENTITYSETINSTEADOFENTITY);
+          throw new UriSyntaxException(UriSyntaxException.ENTITYSETINSTEADOFENTITY.addContent(entitySet.getName()));
       }
     } else {
       uriResult.setKeyPredicates(parseKey(keyPredicate, entityType));
@@ -210,7 +210,7 @@ public class UriParserImpl implements UriParser {
     } else if ("$links".equals(currentPathSegment)) {
       this.uriResult.setLinks(true);
       if (pathSegments.isEmpty())
-        throw new UriSyntaxException(UriSyntaxException.NOTLASTSEGMENT.addContent(currentPathSegment));
+        throw new UriSyntaxException(UriSyntaxException.MUSTNOTBELASTSEGMENT.addContent(currentPathSegment));
       currentPathSegment = pathSegments.remove(0);
       handleNavigationProperties();
 
@@ -285,7 +285,7 @@ public class UriParserImpl implements UriParser {
       break;
 
     default:
-      throw new UriSyntaxException(UriSyntaxException.INVALIDPROPERTYTYPE);
+      throw new UriSyntaxException(UriSyntaxException.INVALIDPROPERTYTYPE.addContent(property.getType().getKind()));
     }
   }
 
@@ -315,7 +315,7 @@ public class UriParserImpl implements UriParser {
       else if (type.getKind() == EdmTypeKind.COMPLEX)
         this.uriResult.setUriType(UriType.URI3);
       else
-        throw new UriSyntaxException(UriSyntaxException.INVALIDPROPERTYTYPE);
+        throw new UriSyntaxException(UriSyntaxException.INVALIDPROPERTYTYPE.addContent(type.getKind()));
       this.uriResult.setTargetType(type);
     } else {
 
@@ -344,7 +344,7 @@ public class UriParserImpl implements UriParser {
         break;
 
       default:
-        throw new UriSyntaxException(UriSyntaxException.INVALIDPROPERTYTYPE);
+        throw new UriSyntaxException(UriSyntaxException.INVALIDPROPERTYTYPE.addContent(type.getKind()));
       }
     }
   }
@@ -359,7 +359,7 @@ public class UriParserImpl implements UriParser {
       if (pathSegments.isEmpty())
         uriResult.setCount(true);
       else
-        throw new UriSyntaxException(UriSyntaxException.NOTLASTSEGMENT.addContent(currentPathSegment));
+        throw new UriSyntaxException(UriSyntaxException.MUSTBELASTSEGMENT.addContent(currentPathSegment));
   }
 
   private ArrayList<KeyPredicate> parseKey(final String keyPredicate, final EdmEntityType entityType) throws UriSyntaxException, EdmException {
@@ -420,7 +420,7 @@ public class UriParserImpl implements UriParser {
     }
 
     if (emptyParentheses != null)
-      throw new UriSyntaxException(UriSyntaxException.INVALIDSEGMENT);
+      throw new UriSyntaxException(UriSyntaxException.INVALIDSEGMENT.addContent(emptyParentheses));
 
     uriResult.setTargetType(type);
     switch (type.getKind()) {
@@ -434,7 +434,7 @@ public class UriParserImpl implements UriParser {
       uriResult.setUriType(UriType.URI10);
       break;
     default:
-      throw new UriSyntaxException(UriSyntaxException.INVALIDRETURNTYPE);
+      throw new UriSyntaxException(UriSyntaxException.INVALIDRETURNTYPE.addContent(type.getKind()));
     }
 
     if (!pathSegments.isEmpty())
@@ -460,7 +460,7 @@ public class UriParserImpl implements UriParser {
         }
         final String value = queryParameters.get(queryOptionString);
         if ("".equals(value))
-          throw new UriSyntaxException(UriSyntaxException.INVALIDNULLVALUE);
+          throw new UriSyntaxException(UriSyntaxException.INVALIDNULLVALUE.addContent(queryOptionString));
         else
           systemQueryOptions.put(queryOption, value);
       } else {
@@ -546,7 +546,7 @@ public class UriParserImpl implements UriParser {
     else if ("none".equals(inlineCount))
       uriResult.setInlineCount(InlineCount.NONE);
     else
-      throw new UriSyntaxException(UriSyntaxException.INVALIDVALUE);
+      throw new UriSyntaxException(UriSyntaxException.INVALIDVALUE.addContent(inlineCount));
   }
 
   private void handleSystemQueryOptionOrderBy(final String orderBy) throws UriSyntaxException, EdmException {

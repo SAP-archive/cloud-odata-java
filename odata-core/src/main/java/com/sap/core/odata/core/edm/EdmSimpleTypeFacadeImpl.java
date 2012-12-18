@@ -87,7 +87,7 @@ public class EdmSimpleTypeFacadeImpl implements EdmSimpleTypeFacade {
         try {
           b = Hex.decodeHex(value.toCharArray());
         } catch (DecoderException e) {
-          throw new UriSyntaxException(UriSyntaxException.NOTEXT.addContent(literal), e);
+          throw new UriSyntaxException(UriSyntaxException.NOTEXT.addContent(e.getClass().getName()), e);
         }
         return new EdmLiteral(getEdmSimpleType(EdmSimpleTypeKind.Binary), Base64.encodeBase64String(b));
       }
