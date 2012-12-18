@@ -5,55 +5,22 @@ import java.math.BigInteger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import com.sap.core.odata.api.edm.EdmException;
 import com.sap.core.odata.api.edm.EdmFacets;
 import com.sap.core.odata.api.edm.EdmLiteralKind;
 import com.sap.core.odata.api.edm.EdmSimpleType;
 import com.sap.core.odata.api.edm.EdmSimpleTypeException;
-import com.sap.core.odata.api.edm.EdmSimpleTypeKind;
-import com.sap.core.odata.api.edm.EdmTypeKind;
 
 /**
  * Implementation of the EDM simple type Decimal
  * @author SAP AG
  */
-public class EdmDecimal implements EdmSimpleType {
+public class EdmDecimal extends AbstractSimpleType {
 
   private static final Pattern PATTERN = Pattern.compile("-?0*(\\p{Digit}+?)(\\.\\p{Digit}+?)?0*(M|m)?");
-
   private static final EdmDecimal instance = new EdmDecimal();
-
-  private EdmDecimal() {
-
-  }
 
   public static EdmDecimal getInstance() {
     return instance;
-  }
-
-  @Override
-  public boolean equals(final Object obj) {
-    return this == obj || obj instanceof EdmDecimal;
-  }
-
-  @Override
-  public int hashCode() {
-    return EdmSimpleTypeKind.Decimal.hashCode();
-  }
-
-  @Override
-  public String getNamespace() throws EdmException {
-    return EdmSimpleType.EDM_NAMESPACE;
-  }
-
-  @Override
-  public EdmTypeKind getKind() {
-    return EdmTypeKind.SIMPLE;
-  }
-
-  @Override
-  public String getName() throws EdmException {
-    return EdmSimpleTypeKind.Decimal.toString();
   }
 
   @Override
@@ -128,15 +95,7 @@ public class EdmDecimal implements EdmSimpleType {
   @Override
   public String valueToString(final Object value, final EdmLiteralKind literalKind, final EdmFacets facets) throws EdmSimpleTypeException {
     if (value == null)
-      if (facets == null)
-        return null;
-      else if (facets.getDefaultValue() == null)
-        if (facets.isNullable() == null || facets.isNullable())
-          return null;
-        else
-          throw new EdmSimpleTypeException(EdmSimpleTypeException.VALUE_NULL_NOT_ALLOWED);
-      else
-        return facets.getDefaultValue();
+      return getNullOrDefaultValue(facets);
 
     if (literalKind == null)
       throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_KIND_MISSING);
@@ -168,17 +127,10 @@ public class EdmDecimal implements EdmSimpleType {
       throw new EdmSimpleTypeException(EdmSimpleTypeException.VALUE_TYPE_NOT_SUPPORTED.addContent(value.getClass()));
     }
 
-    switch (literalKind) {
-    case DEFAULT:
-    case JSON:
-      return result;
-
-    case URI:
+    if (literalKind == EdmLiteralKind.URI)
       return toUriLiteral(result);
-
-    default:
-      throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_KIND_NOT_SUPPORTED.addContent(literalKind));
-    }
+    else
+      return result;
   }
 
   @Override

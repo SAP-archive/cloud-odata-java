@@ -1,52 +1,20 @@
 package com.sap.core.odata.core.edm;
 
-import com.sap.core.odata.api.edm.EdmException;
 import com.sap.core.odata.api.edm.EdmFacets;
 import com.sap.core.odata.api.edm.EdmLiteralKind;
 import com.sap.core.odata.api.edm.EdmSimpleType;
 import com.sap.core.odata.api.edm.EdmSimpleTypeException;
-import com.sap.core.odata.api.edm.EdmSimpleTypeKind;
-import com.sap.core.odata.api.edm.EdmTypeKind;
 
 /**
  * Implementation of the EDM simple type Boolean
  * @author SAP AG
  */
-public class EdmBoolean implements EdmSimpleType {
+public class EdmBoolean extends AbstractSimpleType {
 
   private static final EdmBoolean instance = new EdmBoolean();
 
-  private EdmBoolean() {
-
-  }
-
   public static EdmBoolean getInstance() {
     return instance;
-  }
-
-  @Override
-  public boolean equals(Object obj) {
-    return this == obj || obj instanceof EdmBoolean;
-  }
-
-  @Override
-  public int hashCode() {
-    return EdmSimpleTypeKind.Boolean.hashCode();
-  }
-
-  @Override
-  public String getNamespace() throws EdmException {
-    return EdmSimpleType.EDM_NAMESPACE;
-  }
-
-  @Override
-  public EdmTypeKind getKind() {
-    return EdmTypeKind.SIMPLE;
-  }
-
-  @Override
-  public String getName() throws EdmException {
-    return EdmSimpleTypeKind.Boolean.toString();
   }
 
   @Override
@@ -82,15 +50,7 @@ public class EdmBoolean implements EdmSimpleType {
   @Override
   public String valueToString(final Object value, final EdmLiteralKind literalKind, final EdmFacets facets) throws EdmSimpleTypeException {
     if (value == null)
-      if (facets == null)
-        return null;
-      else if (facets.getDefaultValue() == null)
-        if (facets.isNullable() == null || facets.isNullable())
-          return null;
-        else
-          throw new EdmSimpleTypeException(EdmSimpleTypeException.VALUE_NULL_NOT_ALLOWED);
-      else
-        return facets.getDefaultValue();
+      return getNullOrDefaultValue(facets);
 
     if (literalKind == null)
       throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_KIND_MISSING);
@@ -99,10 +59,5 @@ public class EdmBoolean implements EdmSimpleType {
       return (Boolean) value ? "true" : "false";
     else
       throw new EdmSimpleTypeException(EdmSimpleTypeException.VALUE_TYPE_NOT_SUPPORTED.addContent(value.getClass()));
-  }
-
-  @Override
-  public String toUriLiteral(final String literal) throws EdmSimpleTypeException {
-    return literal;
   }
 }

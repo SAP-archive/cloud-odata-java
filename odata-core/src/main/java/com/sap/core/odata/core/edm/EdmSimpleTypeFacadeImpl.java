@@ -103,75 +103,52 @@ public class EdmSimpleTypeFacadeImpl implements EdmSimpleTypeFacade {
     throw new UriSyntaxException(UriSyntaxException.UNKNOWNLITERAL.addContent(literal));
   }
 
-  public static EdmSimpleType getEdmSimpleType(EdmSimpleTypeKind edmSimpleType) {
-    EdmSimpleType edmType = null;
+  public static EdmSimpleType getEdmSimpleType(final EdmSimpleTypeKind edmSimpleType) {
 
     switch (edmSimpleType) {
     case Binary:
-      edmType = EdmBinary.getInstance();
-      break;
+      return EdmBinary.getInstance();
     case Boolean:
-      edmType = EdmBoolean.getInstance();
-      break;
+      return EdmBoolean.getInstance();
     case Byte:
-      edmType = EdmByte.getInstance();
-      break;
+      return EdmByte.getInstance();
     case DateTime:
-      edmType = EdmDateTime.getInstance();
-      break;
+      return EdmDateTime.getInstance();
     case DateTimeOffset:
-      edmType = EdmDateTimeOffset.getInstance();
-      break;
+      return EdmDateTimeOffset.getInstance();
     case Decimal:
-      edmType = EdmDecimal.getInstance();
-      break;
+      return EdmDecimal.getInstance();
     case Double:
-      edmType = EdmDouble.getInstance();
-      break;
+      return EdmDouble.getInstance();
     case Guid:
-      edmType = EdmGuid.getInstance();
-      break;
+      return EdmGuid.getInstance();
     case Int16:
-      edmType = EdmInt16.getInstance();
-      break;
+      return EdmInt16.getInstance();
     case Int32:
-      edmType = EdmInt32.getInstance();
-      break;
+      return EdmInt32.getInstance();
     case Int64:
-      edmType = EdmInt64.getInstance();
-      break;
+      return EdmInt64.getInstance();
     case SByte:
-      edmType = EdmSByte.getInstance();
-      break;
+      return EdmSByte.getInstance();
     case Single:
-      edmType = EdmSingle.getInstance();
-      break;
+      return EdmSingle.getInstance();
     case String:
-      edmType = EdmString.getInstance();
-      break;
+      return EdmString.getInstance();
     case Time:
-      edmType = EdmTime.getInstance();
-      break;
+      return EdmTime.getInstance();
     case Null:
-      edmType = EdmNull.getInstance();
-      break;
+      return EdmNull.getInstance();
     default:
       throw new ODataRuntimeException("Invalid Type " + edmSimpleType);
     }
-
-    return edmType;
   }
 
-  public static EdmSimpleType getInternalEdmSimpleTypeByString(String edmSimpleType) {
-    EdmSimpleType edmType;
-
-    if ("Bit".equals(edmSimpleType)) {
-      edmType = Bit.getInstance();
-    } else if ("Uint7".equals(edmSimpleType)) {
-      edmType = Uint7.getInstance();
-    } else {
+  public static EdmSimpleType getInternalEdmSimpleTypeByString(final String edmSimpleType) {
+    if ("Bit".equals(edmSimpleType))
+      return Bit.getInstance();
+    else if ("Uint7".equals(edmSimpleType))
+      return Uint7.getInstance();
+    else
       throw new ODataRuntimeException("Invalid internal Type " + edmSimpleType);
-    }
-    return edmType;
   }
 }
