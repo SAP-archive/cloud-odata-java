@@ -9,7 +9,7 @@ package com.sap.core.odata.api.edm;
  * 
  * @author SAP AG
  */
-public interface EdmNavigationProperty extends EdmTyped {
+public interface EdmNavigationProperty extends EdmTyped, EdmMappable {
 
   /**
    * Get the relationship of the navigation property

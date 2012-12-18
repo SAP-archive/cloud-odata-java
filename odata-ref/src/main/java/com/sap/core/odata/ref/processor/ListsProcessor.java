@@ -724,8 +724,8 @@ public class ListsProcessor extends ODataSingleProcessor {
   private <T> Object getPropertyValue(final T data, final EdmProperty property) throws ODataException {
     final String prefix = property.getType().getKind() == EdmTypeKind.SIMPLE && property.getType() == EdmSimpleTypeKind.Boolean.getEdmSimpleTypeInstance() ? "is" : "get";
     final String defaultMethodName = prefix + property.getName();
-    final String methodName = property.getMapping() == null || property.getMapping().getValue() == null ?
-        defaultMethodName : property.getMapping().getValue();
+    final String methodName = property.getMapping() == null || property.getMapping().getInternalName() == null ?
+        defaultMethodName : property.getMapping().getInternalName();
 
     return getValue(data, methodName);
   }

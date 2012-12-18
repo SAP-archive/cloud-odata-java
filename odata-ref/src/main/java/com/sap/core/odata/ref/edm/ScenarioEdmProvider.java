@@ -177,24 +177,24 @@ public class ScenarioEdmProvider extends EdmProviderDefault {
         List<Property> properties = new ArrayList<Property>();
         properties.add(new SimpleProperty().setName("EmployeeId").setType(EdmSimpleTypeKind.String)
             .setFacets(new Facets().setNullable(false))
-            .setMapping(new Mapping().setValue("getId")));
+            .setMapping(new Mapping().setInternalName("getId")));
         properties.add(new SimpleProperty().setName("EmployeeName").setType(EdmSimpleTypeKind.String)
             .setCustomizableFeedMappings(new CustomizableFeedMappings()
                 .setFcTargetPath(EdmTargetPath.SYNDICATION_TITLE)));
         properties.add(new SimpleProperty().setName("ManagerId").setType(EdmSimpleTypeKind.String)
-            .setMapping(new Mapping().setValue("getManager.getId")));
+            .setMapping(new Mapping().setInternalName("getManager.getId")));
         properties.add(new SimpleProperty().setName("RoomId").setType(EdmSimpleTypeKind.String)
-            .setMapping(new Mapping().setValue("getRoom.getId")));
+            .setMapping(new Mapping().setInternalName("getRoom.getId")));
         properties.add(new SimpleProperty().setName("TeamId").setType(EdmSimpleTypeKind.String)
             .setFacets(new Facets().setMaxLength(2))
-            .setMapping(new Mapping().setValue("getTeam.getId")));
+            .setMapping(new Mapping().setInternalName("getTeam.getId")));
         properties.add(new ComplexProperty().setName("Location").setType(COMPLEX_TYPE_1));
         properties.add(new SimpleProperty().setName("Age").setType(EdmSimpleTypeKind.Int16));
         properties.add(new SimpleProperty().setName("EntryDate").setType(EdmSimpleTypeKind.DateTime)
             .setFacets(new Facets().setNullable(true))
             .setCustomizableFeedMappings(new CustomizableFeedMappings().setFcTargetPath(EdmTargetPath.SYNDICATION_UPDATED)));
         properties.add(new SimpleProperty().setName("ImageUrl").setType(EdmSimpleTypeKind.String)
-            .setMapping(new Mapping().setValue("getImageUri")));
+            .setMapping(new Mapping().setInternalName("getImageUri")));
         List<NavigationProperty> navigationProperties = new ArrayList<NavigationProperty>();
         navigationProperties.add(new NavigationProperty().setName("ne_Manager")
             .setRelationship(ASSOCIATION_1_1).setFromRole(ROLE_1_1).setToRole(ROLE_1_4));
@@ -224,7 +224,7 @@ public class ScenarioEdmProvider extends EdmProviderDefault {
         List<Property> properties = new ArrayList<Property>();
         properties.add(new SimpleProperty().setName("isScrumTeam").setType(EdmSimpleTypeKind.Boolean)
             .setFacets(new Facets().setNullable(true))
-            .setMapping(new Mapping().setValue("isScrumTeam")));
+            .setMapping(new Mapping().setInternalName("isScrumTeam")));
         List<NavigationProperty> navigationProperties = new ArrayList<NavigationProperty>();
         navigationProperties.add(new NavigationProperty().setName("nt_Employees")
             .setRelationship(ASSOCIATION_1_2).setFromRole(ROLE_1_2).setToRole(ROLE_1_1));
@@ -286,7 +286,7 @@ public class ScenarioEdmProvider extends EdmProviderDefault {
             .setFacets(new Facets().setNullable(false)));
         properties.add(new SimpleProperty().setName("ImageUrl").setType(EdmSimpleTypeKind.String)
             .setCustomizableFeedMappings(new CustomizableFeedMappings().setFcTargetPath(EdmTargetPath.SYNDICATION_AUTHORURI))
-            .setMapping(new Mapping().setValue("getImageUri")));
+            .setMapping(new Mapping().setInternalName("getImageUri")));
         properties.add(new SimpleProperty().setName("Image").setType(EdmSimpleTypeKind.Binary)
             .setMapping(new Mapping().setMimeType("getType")));
         properties.add(new SimpleProperty().setName("BinaryData").setType(EdmSimpleTypeKind.Binary)
@@ -299,7 +299,7 @@ public class ScenarioEdmProvider extends EdmProviderDefault {
                 .setFcNsPrefix("ру") // CYRILLIC SMALL LETTER ER + CYRILLIC SMALL LETTER U
                 .setFcNsUri("http://localhost")
                 .setFcTargetPath("Содержание"))
-            .setMapping(new Mapping().setValue("getContent")));
+            .setMapping(new Mapping().setInternalName("getContent")));
         return new EntityType().setName(ENTITY_TYPE_2_1.getName())
             .setProperties(properties)
             .setHasStream(true)

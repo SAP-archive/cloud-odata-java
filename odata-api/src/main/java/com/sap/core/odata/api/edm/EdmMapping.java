@@ -12,9 +12,9 @@ public interface EdmMapping {
   /**
    * Get the mapping value
    * 
-   * @return mapping value as String
+   * @return mapping name as String
    */
-  String getValue();
+  String getInternalName();
   
   /**
    * Get the mime type (of Media Resource or an EdmBinary)
@@ -22,4 +22,11 @@ public interface EdmMapping {
    * @return mime type as String
    */
   String getMimeType();
+  
+  /**
+   * Get the object this mapping is set to
+   * 
+   * @return {@link Object} mapped object
+   */
+  Object getObject();
 }

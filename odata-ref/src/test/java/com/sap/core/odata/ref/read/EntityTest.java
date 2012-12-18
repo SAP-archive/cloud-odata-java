@@ -67,7 +67,7 @@ public class EntityTest {
     when(keyProperty.getName()).thenReturn(keyName);
     when(keyProperty.getType()).thenReturn(EdmSimpleTypeKind.String.getEdmSimpleTypeInstance());
     EdmMapping mapping = mock(EdmMapping.class);
-    when(mapping.getValue()).thenReturn("getId");
+    when(mapping.getInternalName()).thenReturn("getId");
     when(keyProperty.getMapping()).thenReturn(mapping);
 
     KeyPredicate key = mock(KeyPredicate.class);
