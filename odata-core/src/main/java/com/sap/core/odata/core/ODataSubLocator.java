@@ -52,17 +52,16 @@ public final class ODataSubLocator implements ODataLocator {
 
   private Map<String, String> queryParameters;
 
-  private Format format;
-
   @GET
   public Response handleGet() throws ODataException {
     List<ODataPathSegment> pathSegments = this.context.getUriInfo().getODataPathSegmentList(); //
     UriParserResultImpl uriParserResult = (UriParserResultImpl) this.uriParser.parse(pathSegments, this.queryParameters);
 
     // $format system query option has precedence
-    if (uriParserResult.getFormat() == null && uriParserResult.getCustomFormat() == null)
-      uriParserResult.setFormat(format);
-
+    if (uriParserResult.getFormat() == null && uriParserResult.getCustomFormat() == null) {
+//      uriParserResult.setFormat(format);
+    }
+    
     ODataResponse odataResponse = dispatcher.dispatch(ODataHttpMethod.GET, uriParserResult);
     Response response = this.convertResponse(odataResponse);
 
@@ -126,7 +125,8 @@ public final class ODataSubLocator implements ODataLocator {
     this.context.setUriInfo(this.buildODataUriInfo(param));
 
     this.queryParameters = this.convertToSinglevaluedMap(param.getUriInfo().getQueryParameters());
-    this.format = extractFormat(param.getHttpHeaders());
+
+    List<MediaType> mediaTypes = param.httpHeaders.getAcceptableMediaTypes();
 
     this.service = param.getServiceFactory().createService();
     this.context.setService(this.service);
@@ -136,19 +136,6 @@ public final class ODataSubLocator implements ODataLocator {
     this.dispatcher = new Dispatcher(this.service);
   }
 
-  private Format extractFormat(HttpHeaders httpHeaders) {
-    List<MediaType> types = httpHeaders.getAcceptableMediaTypes();
-    for (MediaType mediaType : types) {
-      if (MediaType.APPLICATION_ATOM_XML_TYPE.equals(mediaType)) {
-        return Format.ATOM;
-      } else if (MediaType.APPLICATION_JSON_TYPE.equals(mediaType)) {
-        return Format.JSON;
-      } else if (MediaType.APPLICATION_XML_TYPE.equals(mediaType)) {
-        return Format.XML;
-      }
-    }
-    return null;
-  }
 
   private ODataUriInfo buildODataUriInfo(InitParameter param) throws ODataException {
     ODataUriInfoImpl odataUriInfo = new ODataUriInfoImpl();
