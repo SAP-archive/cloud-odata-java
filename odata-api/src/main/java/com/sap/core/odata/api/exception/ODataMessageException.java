@@ -1,11 +1,12 @@
 package com.sap.core.odata.api.exception;
 
-
 /**
- * Base exception class for all exceptions in <code>OData</code> library which contains a message which will be displayed to 
- * a possible client and therefore needs support for internationalization.
- * For support of internationalization and translated message all {@link ODataHttpException} and sub classes contains 
- * a {@link MessageReference} object which can be mapped to a related key and message in the resource bundles.
+ * Base exception class for all exceptions in the <code>OData</code> library
+ * which contains a message which will be displayed to a possible client and therefore
+ * needs support for internationalization.  To support internationalization and translation of messages,
+ * {@link ODataHttpException} and its sub classes contain a {@link MessageReference} object
+ * which can be mapped to a related key and message in the resource bundles.
+ * @author SAP AG
  */
 public abstract class ODataMessageException extends ODataException {
 
@@ -54,7 +55,6 @@ public abstract class ODataMessageException extends ODataException {
   protected static final MessageReference createMessageReference(Class<? extends ODataMessageException> clazz, String messageReferenceKey) {
     return MessageReference.create(clazz, messageReferenceKey);
   }
-  
 
   /**
    * Get the related {@link MessageReference}
