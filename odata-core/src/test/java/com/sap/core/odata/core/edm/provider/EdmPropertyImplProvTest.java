@@ -41,7 +41,7 @@ public class EdmPropertyImplProvTest {
     edmProvider = mock(EdmProvider.class);
     EdmImplProv edmImplProv = new EdmImplProv(edmProvider);
 
-    Mapping propertySimpleMapping = new Mapping().setMimeType("mimeType2").setValue("value");
+    Mapping propertySimpleMapping = new Mapping().setMimeType("mimeType2").setInternalName("value");
     CustomizableFeedMappings propertySimpleFeedMappings = new CustomizableFeedMappings().setFcKeepInContent(true);
     SimpleProperty propertySimple = new SimpleProperty().setName("PropertyName").setType(EdmSimpleTypeKind.String)
         .setMimeType("mimeType").setMapping(propertySimpleMapping).setCustomizableFeedMappings(propertySimpleFeedMappings);
@@ -74,7 +74,7 @@ public class EdmPropertyImplProvTest {
     assertNotNull(propertySimpleProvider.getMapping());
     assertEquals("mimeType2", propertySimpleProvider.getMapping().getMimeType());
     assertNotNull(propertySimpleProvider.getCustomizableFeedMappings());
-    assertEquals("value", propertySimpleProvider.getMapping().getValue());
+    assertEquals("value", propertySimpleProvider.getMapping().getInternalName());
     assertNull(propertySimpleProvider.getFacets());
     assertNotNull(propertySimpleProvider.getMultiplicity());
     assertEquals(EdmMultiplicity.ZERO_TO_ONE, propertySimpleProvider.getMultiplicity());

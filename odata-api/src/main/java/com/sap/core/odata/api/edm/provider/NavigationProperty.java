@@ -15,6 +15,7 @@ public class NavigationProperty {
   private String fromRole;
   private String toRole;
   private Documentation documentation;
+  private Mapping mapping;
   private List<AnnotationAttribute> annotationAttributes;
   private List<AnnotationElement> annotationElements;
 
@@ -46,6 +47,13 @@ public class NavigationProperty {
     return toRole;
   }
 
+  /**
+   * @return {@link Mapping} of this navigation property
+   */
+  public Mapping getMapping() {
+    return mapping;
+  }
+  
   /**
    * @return {@link Documentation} documentation
    */
@@ -108,6 +116,16 @@ public class NavigationProperty {
    */
   public NavigationProperty setToRole(String toRole) {
     this.toRole = toRole;
+    return this;
+  }
+  
+  /**
+   * Sets the {@link Mapping} for this {@link NavigationProperty}
+   * @param mapping
+   * @return {@link NavigationProperty} for method chaining
+   */
+  public NavigationProperty setMapping(Mapping mapping) {
+    this.mapping = mapping;
     return this;
   }
 

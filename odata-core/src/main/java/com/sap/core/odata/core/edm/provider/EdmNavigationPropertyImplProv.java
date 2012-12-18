@@ -4,6 +4,7 @@ import com.sap.core.odata.api.edm.EdmAnnotatable;
 import com.sap.core.odata.api.edm.EdmAnnotations;
 import com.sap.core.odata.api.edm.EdmAssociation;
 import com.sap.core.odata.api.edm.EdmException;
+import com.sap.core.odata.api.edm.EdmMapping;
 import com.sap.core.odata.api.edm.EdmMultiplicity;
 import com.sap.core.odata.api.edm.EdmNavigationProperty;
 import com.sap.core.odata.api.edm.EdmType;
@@ -48,6 +49,11 @@ public class EdmNavigationPropertyImplProv extends EdmTypedImplProv implements E
   @Override
   public EdmAnnotations getAnnotations() throws EdmException {
     return new EdmAnnotationsImplProv(navigationProperty.getAnnotationAttributes(), navigationProperty.getAnnotationElements());
+  }
+
+  @Override
+  public EdmMapping getMapping() throws EdmException {
+   return  navigationProperty.getMapping();
   }
 
 }

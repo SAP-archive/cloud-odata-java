@@ -10,12 +10,13 @@ public class Mapping implements EdmMapping {
 
   private String value;
   private String mimeType;
+  private Object mappedObject;
 
   /* (non-Javadoc)
    * @see com.sap.core.odata.api.edm.EdmMapping#getValue()
    */
   @Override
-  public String getValue() {
+  public String getInternalName() {
     return value;
   }
 
@@ -26,6 +27,14 @@ public class Mapping implements EdmMapping {
   public String getMimeType() {
     return mimeType;
   }
+  
+  /* (non-Javadoc)
+   * @see com.sap.core.odata.api.edm.EdmMapping#getObject()
+   */
+  @Override
+  public Object getObject() {
+    return mappedObject;
+  }
 
   /**
    * MANDATORY
@@ -33,19 +42,28 @@ public class Mapping implements EdmMapping {
    * @param value
    * @return {@link Mapping} for method chaining
    */
-  public Mapping setValue(String value) {
+  public Mapping setInternalName(String value) {
     this.value = value;
     return this;
   }
 
   /**
-   * MANDATORY
-   * <p>Sets the mime type for this {@link Mapping}
+   * Sets the mime type for this {@link Mapping}
    * @param mimeType
    * @return {@link Mapping} for method chaining
    */
   public Mapping setMimeType(String mimeType) {
     this.mimeType = mimeType;
+    return this;
+  }
+  
+  /**
+   * Sets the object for this mapping.
+   * @param mappedObject
+   * @return {@link Mapping} for method chaining
+   */
+  public Mapping setObject(Object mappedObject){
+    this.mappedObject = mappedObject;
     return this;
   }
 }
