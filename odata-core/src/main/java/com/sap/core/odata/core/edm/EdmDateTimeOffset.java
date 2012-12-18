@@ -30,10 +30,6 @@ public class EdmDateTimeOffset implements EdmSimpleType {
           + "\\)\\\\/");
   private static final EdmDateTimeOffset instance = new EdmDateTimeOffset();
 
-  private EdmDateTimeOffset() {
-
-  }
-
   public static EdmDateTimeOffset getInstance() {
     return instance;
   }
@@ -94,11 +90,13 @@ public class EdmDateTimeOffset implements EdmSimpleType {
       if (matcher.matches()) {
         Calendar dateTimeValue = Calendar.getInstance(TimeZone.getTimeZone("GMT"));
         dateTimeValue.clear();
+        long millis;
         try {
-          dateTimeValue.setTimeInMillis(Long.parseLong(matcher.group(1)));
+          millis = Long.parseLong(matcher.group(1));
         } catch (NumberFormatException e) {
           throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_ILLEGAL_CONTENT.addContent(value), e);
         }
+        dateTimeValue.setTimeInMillis(millis);
         if (matcher.group(2) != null) {
           final int offsetInMinutes = Integer.parseInt(matcher.group(3));
           if (offsetInMinutes == 0)
