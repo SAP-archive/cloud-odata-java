@@ -1,6 +1,7 @@
 package com.sap.core.odata.api.service;
 
 import com.sap.core.odata.api.exception.ODataException;
+import com.sap.core.odata.api.processor.ODataContext;
 
 /**
  * Implement this interface to create own instance of {@link ODataService}. Usually the factory implementation is passed as servlet
@@ -45,8 +46,9 @@ public interface ODataServiceFactory {
 
   /**
    * Create instance of custom {@link ODataService}.
+   * @param ctx OData context object
    * @return A new service instance.
    * @throws {@link ODataException} is thrown in case of error.
    */
-  ODataService createService() throws ODataException;
+  ODataService createService(ODataContext ctx) throws ODataException;
 }
