@@ -102,7 +102,8 @@ public class MessageService {
   }
 
   public static Message getMessage(Locale language, MessageReference context) {
-    return getMessage(language, context.getKey(), context.getContent());
+    Object[] contentAsArray = context.getContent().toArray(new Object[0]);
+    return getMessage(language, context.getKey(), contentAsArray);
   }
 
   public static Message getMessage(Locale locale, String key, Object... replacements) {
