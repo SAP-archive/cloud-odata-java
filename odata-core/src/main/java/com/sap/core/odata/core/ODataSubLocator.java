@@ -127,7 +127,7 @@ public final class ODataSubLocator implements ODataLocator {
 
     List<MediaType> mediaTypes = param.httpHeaders.getAcceptableMediaTypes();
 
-    this.service = param.getServiceFactory().createService();
+    this.service = param.getServiceFactory().createService(this.context);
     this.context.setService(this.service);
     this.service.getProcessor().setContext(this.context);
 
