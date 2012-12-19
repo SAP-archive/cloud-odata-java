@@ -1,6 +1,5 @@
 package com.sap.core.odata.api.exception;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -39,6 +38,10 @@ public abstract class MessageReference {
     return new SimpleMessageReference(clazz.getName() + "." + key);
   }
 
+  public MessageReference create() {
+    return new SimpleMessageReference(this.key);
+  }
+  
   /**
    * Returns message key.
    */
@@ -79,19 +82,5 @@ public abstract class MessageReference {
     public SimpleMessageReference(String implKey, Object... content) {
       super(implKey, Arrays.asList(content));
     }
-
-    @Override
-    public MessageReference addContent(Object... content) {
-      if (this.content == null)
-        this.content = new ArrayList<Object>();
-      
-      for (Object object : content)
-        this.content.add(object);
-      return this;
-    }
-  }
-
-  public MessageReference create() {
-    return new SimpleMessageReference(this.key);
   }
 }
