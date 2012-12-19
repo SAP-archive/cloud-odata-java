@@ -17,6 +17,9 @@ import com.sap.core.odata.api.edm.Edm;
 import com.sap.core.odata.api.enums.ContentType;
 import com.sap.core.odata.core.ep.util.CircleStreamBuffer;
 
+/**
+ * @author SAP AG
+ */
 public class ODataExceptionSerializer {
 
   private final static Logger LOG = LoggerFactory.getLogger(ODataExceptionSerializer.class);
@@ -31,7 +34,7 @@ public class ODataExceptionSerializer {
       returnMessage = serializeXml(errorCode, message, locale);
       break;
     case JSON:
-      returnMessage = serialzieJson(errorCode, message, locale);
+      returnMessage = serializeJson(errorCode, message, locale);
       break;
     default:
       returnMessage = serializeXml(errorCode, message, locale);
@@ -41,7 +44,7 @@ public class ODataExceptionSerializer {
     return returnMessage;
   }
 
-  private static InputStream serialzieJson(String errorCode, String message, Locale locale) {
+  private static InputStream serializeJson(String errorCode, String message, Locale locale) {
     String notsupported = "not supported error format JSON";
     return new ByteArrayInputStream(notsupported.getBytes(Charset.forName("utf-8")));
   }

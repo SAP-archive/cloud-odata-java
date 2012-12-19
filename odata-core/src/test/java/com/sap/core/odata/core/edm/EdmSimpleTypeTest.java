@@ -25,23 +25,6 @@ import com.sap.core.odata.api.edm.EdmSimpleType;
 import com.sap.core.odata.api.edm.EdmSimpleTypeException;
 import com.sap.core.odata.api.edm.EdmSimpleTypeKind;
 import com.sap.core.odata.api.edm.EdmTypeKind;
-import com.sap.core.odata.core.edm.Bit;
-import com.sap.core.odata.core.edm.EdmBinary;
-import com.sap.core.odata.core.edm.EdmBoolean;
-import com.sap.core.odata.core.edm.EdmDateTime;
-import com.sap.core.odata.core.edm.EdmDateTimeOffset;
-import com.sap.core.odata.core.edm.EdmDecimal;
-import com.sap.core.odata.core.edm.EdmDouble;
-import com.sap.core.odata.core.edm.EdmGuid;
-import com.sap.core.odata.core.edm.EdmInt16;
-import com.sap.core.odata.core.edm.EdmInt32;
-import com.sap.core.odata.core.edm.EdmInt64;
-import com.sap.core.odata.core.edm.EdmNull;
-import com.sap.core.odata.core.edm.EdmSByte;
-import com.sap.core.odata.core.edm.EdmSingle;
-import com.sap.core.odata.core.edm.EdmString;
-import com.sap.core.odata.core.edm.EdmTime;
-import com.sap.core.odata.core.edm.Uint7;
 
 /**
  * @author SAP AG

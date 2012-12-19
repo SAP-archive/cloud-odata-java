@@ -5,6 +5,8 @@ import junit.framework.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
 
+import com.sap.core.odata.api.edm.EdmException;
+import com.sap.core.odata.api.edm.EdmSimpleTypeException;
 import com.sap.core.odata.api.exception.ODataApplicationException;
 import com.sap.core.odata.api.exception.ODataBadRequestException;
 import com.sap.core.odata.api.exception.ODataConflictException;
@@ -20,6 +22,8 @@ import com.sap.core.odata.api.exception.ODataPreconditionFailedException;
 import com.sap.core.odata.api.exception.ODataPreconditionRequiredException;
 import com.sap.core.odata.api.exception.ODataServiceUnavailableException;
 import com.sap.core.odata.api.exception.ODataUnsupportedMediaTypeException;
+import com.sap.core.odata.api.uri.UriNotMatchingException;
+import com.sap.core.odata.api.uri.UriSyntaxException;
 import com.sap.core.odata.testutils.helper.ODataMessageTextVerifier;
 
 public class ODataExceptionTest {
@@ -57,9 +61,52 @@ public class ODataExceptionTest {
   //The following tests verify whether all fields of type {@link MessageReference} of 
   //the tested (Exception) class are provided in the <b>i18n.properties</b> file.
   @Test
+  public void TestMessagesOfODataException()
+  {
+    ODataMessageTextVerifier.TestClass(ODataException.class);
+  }
+
+  @Test
   public void TestMessagesOfODataApplicationException()
   {
     ODataMessageTextVerifier.TestClass(ODataApplicationException.class);
+  }
+
+  @Test
+  @Ignore("TODO: Add the message texts belonging to the exception class and remove this line")
+  public void TestMessagesOfODataMessageException()
+  {
+    ODataMessageTextVerifier.TestClass(ODataMessageException.class);
+  }
+
+  @Test
+  public void TestMessagesOfUriNotMatchingException()
+  {
+    ODataMessageTextVerifier.TestClass(UriNotMatchingException.class);
+  }
+
+  @Test
+  public void TestMessagesOfUriSyntaxException()
+  {
+    ODataMessageTextVerifier.TestClass(UriSyntaxException.class);
+  }
+
+  @Test
+  public void TestMessagesOfEdmException()
+  {
+    ODataMessageTextVerifier.TestClass(EdmException.class);
+  }
+
+  @Test
+  public void TestMessagesOfEdmSimpleTypeException()
+  {
+    ODataMessageTextVerifier.TestClass(EdmSimpleTypeException.class);
+  }
+
+  @Test
+  public void TestMessagesOfODataHttpException()
+  {
+    ODataMessageTextVerifier.TestClass(ODataHttpException.class);
   }
 
   @Test
@@ -77,29 +124,10 @@ public class ODataExceptionTest {
   }
 
   @Test
-  public void TestMessagesOfODataException()
-  {
-    ODataMessageTextVerifier.TestClass(ODataException.class);
-  }
-
-  @Test
   @Ignore("TODO: Add the message texts belonging to the exception class and remove this line")
   public void TestMessagesOfODataForbiddenException()
   {
     ODataMessageTextVerifier.TestClass(ODataForbiddenException.class);
-  }
-
-  @Test
-  public void TestMessagesOfODataHttpException()
-  {
-    ODataMessageTextVerifier.TestClass(ODataHttpException.class);
-  }
-
-  @Test
-  @Ignore("TODO: Add the message texts belonging to the exception class and remove this line")
-  public void TestMessagesOfODataMessageException()
-  {
-    ODataMessageTextVerifier.TestClass(ODataMessageException.class);
   }
 
   @Test
@@ -117,7 +145,6 @@ public class ODataExceptionTest {
   }
 
   @Test
-  @Ignore("TODO: Add the message texts belonging to the exception class and remove this line")
   public void TestMessagesOfODataNotFoundException()
   {
     ODataMessageTextVerifier.TestClass(ODataNotFoundException.class);

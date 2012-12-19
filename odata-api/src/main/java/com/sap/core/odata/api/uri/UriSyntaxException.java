@@ -23,7 +23,7 @@ public class UriSyntaxException extends ODataBadRequestException {
   public static final MessageReference DUPLICATEKEYNAMES = createMessageReference(UriSyntaxException.class, "DUPLICATEKEYNAMES");
 
   public static final MessageReference EMPTYSEGMENT = createMessageReference(UriSyntaxException.class, "EMPTYSEGMENT");
-  public static final MessageReference MUSTNOTBELASTSEGMENT = createMessageReference(UriSyntaxException.class, "NOTLASTSEGMENT");
+  public static final MessageReference MUSTNOTBELASTSEGMENT = createMessageReference(UriSyntaxException.class, "MUSTNOTBELASTSEGMENT");
   public static final MessageReference MUSTBELASTSEGMENT = createMessageReference(UriSyntaxException.class, "MUSTBELASTSEGMENT");
   public static final MessageReference INVALIDSEGMENT = createMessageReference(UriSyntaxException.class, "INVALIDSEGMENT");
 

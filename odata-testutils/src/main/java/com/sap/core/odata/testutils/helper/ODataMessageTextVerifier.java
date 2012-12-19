@@ -6,6 +6,7 @@ import static org.junit.Assert.fail;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.Locale;
+import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 import java.util.Vector;
 
@@ -53,7 +54,7 @@ public class ODataMessageTextVerifier {
       String key = msgRef.getKey();
       value = resourceBundle.getString(key);
       return value;
-    } catch (java.util.MissingResourceException ex)
+    } catch (MissingResourceException ex)
     {
       failCollector("Error-->Messagetext for key:\"" + msgRef.getKey() + "\" missing");
     }
@@ -72,9 +73,9 @@ public class ODataMessageTextVerifier {
     }
   }
 
-  public void CheckMessagesOfClass(Class<?> exceptionClassToBeTested)
+  public void CheckMessagesOfClass(Class<? extends Exception> exceptionClassToBeTested)
   {
-    Class<?> testClass = exceptionClassToBeTested;
+    Class<? extends Exception> testClass = exceptionClassToBeTested;
     //try {
 
     for (Field field : testClass.getDeclaredFields())
@@ -111,7 +112,7 @@ public class ODataMessageTextVerifier {
     return errorCollector;
   }
 
-  static public void TestClass(Class<?> exceptionClassToBeTested)
+  static public void TestClass(Class<? extends Exception> exceptionClassToBeTested)
   {
     ODataMessageTextVerifier tool = new ODataMessageTextVerifier();
     tool.CheckMessagesOfClass(exceptionClassToBeTested);
