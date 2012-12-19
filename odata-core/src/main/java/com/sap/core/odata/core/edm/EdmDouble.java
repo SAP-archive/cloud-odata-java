@@ -2,6 +2,8 @@ package com.sap.core.odata.core.edm;
 
 import java.math.BigDecimal;
 import java.util.Locale;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import com.sap.core.odata.api.edm.EdmFacets;
 import com.sap.core.odata.api.edm.EdmLiteralKind;
@@ -18,6 +20,8 @@ public class EdmDouble extends AbstractSimpleType {
   private static final int MAX_PRECISION = 15;
   private static final int MAX_SCALE = 308;
 
+  private static final Pattern PATTERN = Pattern.compile(
+      "-?\\p{Digit}{1,15}(?:\\.\\p{Digit}{1,15})?(?:(?:E|e)-?\\p{Digit}{1,3})?(D|d)?");
   private static final EdmDouble instance = new EdmDouble();
 
   public static EdmDouble getInstance() {
@@ -39,14 +43,16 @@ public class EdmDouble extends AbstractSimpleType {
 
   @Override
   public Double valueOfString(final String value, final EdmLiteralKind literalKind, final EdmFacets facets) throws EdmSimpleTypeException {
-    if (value == null)
-      return getCheckedNullValue(facets);
+    if (value == null) {
+      checkNullLiteralAllowed(facets);
+      return null;
+    }
 
     if (literalKind == null)
       throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_KIND_MISSING);
 
-    if (!value.matches("-?\\p{Digit}{1,15}(?:\\.\\p{Digit}{1,15})?(?:(?:E|e)-?\\p{Digit}{1,3})?"
-        + (literalKind == EdmLiteralKind.URI ? "(?:D|d)" : "")))
+    final Matcher matcher = PATTERN.matcher(value);
+    if (!matcher.matches())
       if (value.equals("-INF"))
         return Double.NEGATIVE_INFINITY;
       else if (value.equals("INF"))
@@ -55,6 +61,8 @@ public class EdmDouble extends AbstractSimpleType {
         return Double.NaN;
       else
         throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_ILLEGAL_CONTENT.addContent(value));
+    if ((literalKind == EdmLiteralKind.URI) == (matcher.group(1) == null))
+      throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_ILLEGAL_CONTENT.addContent(value));
 
     // The number format is checked above, so we don't have to catch NumberFormatException.
     Double result;
@@ -75,7 +83,7 @@ public class EdmDouble extends AbstractSimpleType {
   @Override
   public String valueToString(final Object value, final EdmLiteralKind literalKind, final EdmFacets facets) throws EdmSimpleTypeException {
     if (value == null)
-      return getNullOrDefaultValue(facets);
+      return getNullOrDefaultLiteral(facets);
 
     if (literalKind == null)
       throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_KIND_MISSING);

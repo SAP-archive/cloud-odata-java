@@ -19,6 +19,11 @@ public class EdmNull extends AbstractSimpleType {
   }
 
   @Override
+  public int hashCode() {
+    return 0;
+  }
+
+  @Override
   public String toUriLiteral(final String literal) {
     return "null";
   }

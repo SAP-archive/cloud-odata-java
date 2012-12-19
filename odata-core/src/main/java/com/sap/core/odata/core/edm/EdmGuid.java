@@ -51,7 +51,7 @@ public class EdmGuid extends AbstractSimpleType {
   @Override
   public String valueToString(final Object value, final EdmLiteralKind literalKind, final EdmFacets facets) throws EdmSimpleTypeException {
     if (value == null)
-      return getNullOrDefaultValue(facets);
+      return getNullOrDefaultLiteral(facets);
 
     if (literalKind == null)
       throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_KIND_MISSING);

@@ -2,6 +2,8 @@ package com.sap.core.odata.core.edm;
 
 import java.math.BigDecimal;
 import java.util.Locale;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import com.sap.core.odata.api.edm.EdmFacets;
 import com.sap.core.odata.api.edm.EdmLiteralKind;
@@ -18,6 +20,8 @@ public class EdmSingle extends AbstractSimpleType {
   private static final int MAX_PRECISION = 7;
   private static final int MAX_SCALE = 38;
 
+  private static final Pattern PATTERN = Pattern.compile(
+      "-?\\p{Digit}{1,7}(?:\\.\\p{Digit}{1,7})?(?:(?:E|e)-?\\p{Digit}{1,2})?(F|f)?");
   private static final EdmSingle instance = new EdmSingle();
 
   public static EdmSingle getInstance() {
@@ -38,14 +42,16 @@ public class EdmSingle extends AbstractSimpleType {
 
   @Override
   public Float valueOfString(final String value, final EdmLiteralKind literalKind, final EdmFacets facets) throws EdmSimpleTypeException {
-    if (value == null)
-      return getCheckedNullValue(facets);
+    if (value == null) {
+      checkNullLiteralAllowed(facets);
+      return null;
+    }
 
     if (literalKind == null)
       throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_KIND_MISSING);
 
-    if (!value.matches("-?\\p{Digit}{1,7}(?:\\.\\p{Digit}{1,7})?(?:(?:E|e)-?\\p{Digit}{1,2})?"
-        + (literalKind == EdmLiteralKind.URI ? "(?:F|f)" : "")))
+    final Matcher matcher = PATTERN.matcher(value);
+    if (!matcher.matches())
       if (value.equals("-INF"))
         return Float.NEGATIVE_INFINITY;
       else if (value.equals("INF"))
@@ -54,6 +60,8 @@ public class EdmSingle extends AbstractSimpleType {
         return Float.NaN;
       else
         throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_ILLEGAL_CONTENT.addContent(value));
+    if ((literalKind == EdmLiteralKind.URI) == (matcher.group(1) == null))
+      throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_ILLEGAL_CONTENT.addContent(value));
 
     // The number format is checked above, so we don't have to catch NumberFormatException.
     Float result;
@@ -74,7 +82,7 @@ public class EdmSingle extends AbstractSimpleType {
   @Override
   public String valueToString(final Object value, final EdmLiteralKind literalKind, final EdmFacets facets) throws EdmSimpleTypeException {
     if (value == null)
-      return getNullOrDefaultValue(facets);
+      return getNullOrDefaultLiteral(facets);
 
     if (literalKind == null)
       throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_KIND_MISSING);

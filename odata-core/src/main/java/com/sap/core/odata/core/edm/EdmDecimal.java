@@ -48,14 +48,8 @@ public class EdmDecimal extends AbstractSimpleType {
     final Matcher matcher = PATTERN.matcher(value);
     if (!matcher.matches())
       return false;
-
-    if (literalKind == EdmLiteralKind.URI) {
-      if (matcher.group(3) == null)
-        return false;
-    } else {
-      if (matcher.group(3) != null)
-        return false;
-    }
+    if ((literalKind == EdmLiteralKind.URI) == (matcher.group(3) == null))
+      return false;
 
     final int significantIntegerDigits = matcher.group(1).equals("0") ? 0 : matcher.group(1).length();
     final int decimals = matcher.group(2) == null ? 0 : matcher.group(2).length() - 1;
@@ -95,7 +89,7 @@ public class EdmDecimal extends AbstractSimpleType {
   @Override
   public String valueToString(final Object value, final EdmLiteralKind literalKind, final EdmFacets facets) throws EdmSimpleTypeException {
     if (value == null)
-      return getNullOrDefaultValue(facets);
+      return getNullOrDefaultLiteral(facets);
 
     if (literalKind == null)
       throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_KIND_MISSING);
