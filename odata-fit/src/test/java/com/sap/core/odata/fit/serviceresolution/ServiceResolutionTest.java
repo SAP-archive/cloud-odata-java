@@ -26,6 +26,7 @@ import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
 import com.sap.core.odata.api.edm.provider.EdmProvider;
+import com.sap.core.odata.api.enums.ContentType;
 import com.sap.core.odata.api.enums.HttpStatusCodes;
 import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.api.processor.ODataContext;
@@ -77,8 +78,8 @@ public class ServiceResolutionTest {
       }
     });
 
-    when(((Metadata) processor).readMetadata(any(GetMetadataView.class))).thenReturn(ODataResponse.entity("metadata").status(HttpStatusCodes.OK).build());
-    when(((ServiceDocument) processor).readServiceDocument(any(GetServiceDocumentView.class))).thenReturn(ODataResponse.entity("servicedocument").status(HttpStatusCodes.OK).build());
+    when(((Metadata) processor).readMetadata(any(GetMetadataView.class),any(ContentType.class))).thenReturn(ODataResponse.entity("metadata").status(HttpStatusCodes.OK).build());
+    when(((ServiceDocument) processor).readServiceDocument(any(GetServiceDocumentView.class),any(ContentType.class))).thenReturn(ODataResponse.entity("servicedocument").status(HttpStatusCodes.OK).build());
   }
 
   @After

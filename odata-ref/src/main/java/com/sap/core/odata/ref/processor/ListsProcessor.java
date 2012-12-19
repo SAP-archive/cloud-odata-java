@@ -23,10 +23,9 @@ import com.sap.core.odata.api.edm.EdmSimpleTypeKind;
 import com.sap.core.odata.api.edm.EdmStructuralType;
 import com.sap.core.odata.api.edm.EdmType;
 import com.sap.core.odata.api.edm.EdmTypeKind;
-import com.sap.core.odata.api.enums.Format;
+import com.sap.core.odata.api.enums.ContentType;
 import com.sap.core.odata.api.enums.HttpStatusCodes;
 import com.sap.core.odata.api.enums.InlineCount;
-import com.sap.core.odata.api.enums.MediaType;
 import com.sap.core.odata.api.ep.ODataEntityProvider;
 import com.sap.core.odata.api.ep.ODataEntityProviderProperties;
 import com.sap.core.odata.api.exception.ODataException;
@@ -78,7 +77,7 @@ public class ListsProcessor extends ODataSingleProcessor {
   }
 
   @Override
-  public ODataResponse readEntitySet(final GetEntitySetView uriParserResultView) throws ODataException {
+  public ODataResponse readEntitySet(final GetEntitySetView uriParserResultView, ContentType contentType) throws ODataException {
     ArrayList<Object> data = new ArrayList<Object>();
     data.addAll((List<?>) retrieveData(
         uriParserResultView.getStartEntitySet(),
@@ -121,10 +120,6 @@ public class ListsProcessor extends ODataSingleProcessor {
         data.remove(SERVER_PAGING_SIZE);
     }
 
-    Format format = uriParserResultView.getFormat();
-    if (format == null)
-      format = Format.ATOM;
-
     final EdmEntityType entityType = entitySet.getEntityType();
     List<Map<String, Object>> values = new ArrayList<Map<String, Object>>();
     for (final Object entryData : data)
@@ -138,12 +133,12 @@ public class ListsProcessor extends ODataSingleProcessor {
 
     return ODataResponse
         .status(HttpStatusCodes.OK)
-        .entity(ODataEntityProvider.create(format).writeFeed(uriParserResultView, values, feedProperties))
+        .entity(ODataEntityProvider.create(contentType).writeFeed(uriParserResultView, values, feedProperties))
         .build();
   }
 
   @Override
-  public ODataResponse countEntitySet(final GetEntitySetCountView uriParserResultView) throws ODataException {
+  public ODataResponse countEntitySet(final GetEntitySetCountView uriParserResultView, ContentType contentType) throws ODataException {
     ArrayList<Object> data = new ArrayList<Object>();
     data.addAll((List<?>) retrieveData(
         uriParserResultView.getStartEntitySet(),
@@ -164,13 +159,13 @@ public class ListsProcessor extends ODataSingleProcessor {
 
     return ODataResponse
         .status(HttpStatusCodes.OK)
-        .header(CONTENT_TYPE, MediaType.TEXT_PLAIN.toString())
+        .header(CONTENT_TYPE, ContentType.TEXT_PLAIN.toString())
         .entity(String.valueOf(data.size()))
         .build();
   }
 
   @Override
-  public ODataResponse readEntityLinks(final GetEntitySetLinksView uriParserResultView) throws ODataException {
+  public ODataResponse readEntityLinks(final GetEntitySetLinksView uriParserResultView, ContentType contentType) throws ODataException {
     ArrayList<Object> data = new ArrayList<Object>();
     data.addAll((List<?>) retrieveData(
         uriParserResultView.getStartEntitySet(),
@@ -192,18 +187,18 @@ public class ListsProcessor extends ODataSingleProcessor {
 
     return ODataResponse
         .status(HttpStatusCodes.OK)
-        .header(CONTENT_TYPE, MediaType.APPLICATION_XML.toString())
+        .header(CONTENT_TYPE, ContentType.APPLICATION_XML.toString())
         .entity("Links to " + data + "; inlinecount=" + count)
         .build();
   }
 
   @Override
-  public ODataResponse countEntityLinks(final GetEntitySetLinksCountView uriParserResultView) throws ODataException {
-    return countEntitySet((GetEntitySetCountView) uriParserResultView);
+  public ODataResponse countEntityLinks(final GetEntitySetLinksCountView uriParserResultView, ContentType contentType) throws ODataException {
+    return countEntitySet((GetEntitySetCountView) uriParserResultView, contentType);
   }
 
   @Override
-  public ODataResponse readEntity(final GetEntityView uriParserResultView) throws ODataException {
+  public ODataResponse readEntity(final GetEntityView uriParserResultView, ContentType contentType) throws ODataException {
     final Object data = retrieveData(
         uriParserResultView.getStartEntitySet(),
         uriParserResultView.getKeyPredicates(),
@@ -214,10 +209,6 @@ public class ListsProcessor extends ODataSingleProcessor {
     if (!appliesFilter(data, uriParserResultView.getFilter()))
       throw new ODataNotFoundException(ODataNotFoundException.ENTITY);
 
-    Format format = uriParserResultView.getFormat();
-    if (format == null)
-      format = Format.ATOM;
-
     final EdmEntitySet entitySet = uriParserResultView.getTargetEntitySet();
     final Map<String, Object> values = getStructuralTypeValueMap(data, entitySet.getEntityType());
 
@@ -226,12 +217,12 @@ public class ListsProcessor extends ODataSingleProcessor {
 
     return ODataResponse
         .status(HttpStatusCodes.OK)
-        .entity(ODataEntityProvider.create(format).writeEntry(entitySet, values, entryProperties))
+        .entity(ODataEntityProvider.create(contentType).writeEntry(entitySet, values, entryProperties))
         .build();
   }
 
   @Override
-  public ODataResponse existsEntity(final GetEntityCountView uriParserResultView) throws ODataException {
+  public ODataResponse existsEntity(final GetEntityCountView uriParserResultView, ContentType contentType) throws ODataException {
     final Object data = retrieveData(
         uriParserResultView.getStartEntitySet(),
         uriParserResultView.getKeyPredicates(),
@@ -241,13 +232,13 @@ public class ListsProcessor extends ODataSingleProcessor {
 
     return ODataResponse
         .status(HttpStatusCodes.OK)
-        .header(CONTENT_TYPE, MediaType.TEXT_PLAIN.toString())
+        .header(CONTENT_TYPE, ContentType.TEXT_PLAIN.toString())
         .entity(appliesFilter(data, uriParserResultView.getFilter()) ? "1" : "0")
         .build();
   }
 
   @Override
-  public ODataResponse readEntityLink(final GetEntityLinkView uriParserResultView) throws ODataException {
+  public ODataResponse readEntityLink(final GetEntityLinkView uriParserResultView, ContentType contentType) throws ODataException {
     final Object data = retrieveData(
         uriParserResultView.getStartEntitySet(),
         uriParserResultView.getKeyPredicates(),
@@ -261,18 +252,18 @@ public class ListsProcessor extends ODataSingleProcessor {
 
     return ODataResponse
         .status(HttpStatusCodes.OK)
-        .header(CONTENT_TYPE, MediaType.APPLICATION_XML.toString())
+        .header(CONTENT_TYPE, ContentType.APPLICATION_XML.toString())
         .entity("Link to " + data)
         .build();
   }
 
   @Override
-  public ODataResponse existsEntityLink(final GetEntityLinkCountView uriParserResultView) throws ODataException {
-    return existsEntity((GetEntityCountView) uriParserResultView);
+  public ODataResponse existsEntityLink(final GetEntityLinkCountView uriParserResultView, ContentType contentType) throws ODataException {
+    return existsEntity((GetEntityCountView) uriParserResultView, contentType);
   }
 
   @Override
-  public ODataResponse readEntityComplexProperty(final GetComplexPropertyView uriParserResultView) throws ODataException {
+  public ODataResponse readEntityComplexProperty(final GetComplexPropertyView uriParserResultView, ContentType contentType) throws ODataException {
     Object data = retrieveData(
         uriParserResultView.getStartEntitySet(),
         uriParserResultView.getKeyPredicates(),
@@ -286,10 +277,6 @@ public class ListsProcessor extends ODataSingleProcessor {
     final List<EdmProperty> propertyPath = uriParserResultView.getPropertyPath();
     data = getPropertyValue(data, propertyPath);
 
-    Format format = uriParserResultView.getFormat();
-    if (format == null)
-      format = Format.XML;
-
     final EdmProperty property = propertyPath.get(propertyPath.size() - 1);
     final EdmType type = property.getType();
 
@@ -298,17 +285,17 @@ public class ListsProcessor extends ODataSingleProcessor {
 
     return ODataResponse
         .status(HttpStatusCodes.OK)
-        .entity(ODataEntityProvider.create(format).writeProperty(property, value))
+        .entity(ODataEntityProvider.create(contentType).writeProperty(property, value))
         .build();
   }
 
   @Override
-  public ODataResponse readEntitySimpleProperty(final GetSimplePropertyView uriParserResultView) throws ODataException {
-    return readEntityComplexProperty((GetComplexPropertyView) uriParserResultView);
+  public ODataResponse readEntitySimpleProperty(final GetSimplePropertyView uriParserResultView, ContentType contentType) throws ODataException {
+    return readEntityComplexProperty((GetComplexPropertyView) uriParserResultView, contentType);
   }
 
   @Override
-  public ODataResponse readEntitySimplePropertyValue(final GetSimplePropertyView uriParserResultView) throws ODataException {
+  public ODataResponse readEntitySimplePropertyValue(final GetSimplePropertyView uriParserResultView, ContentType contentType) throws ODataException {
     Object data = retrieveData(
         uriParserResultView.getStartEntitySet(),
         uriParserResultView.getKeyPredicates(),
@@ -333,12 +320,12 @@ public class ListsProcessor extends ODataSingleProcessor {
 
     return ODataResponse
         .status(HttpStatusCodes.OK)
-        .entity(ODataEntityProvider.create(Format.XML).writeText(property, value))
+        .entity(ODataEntityProvider.create(ContentType.APPLICATION_XML).writeText(property, value))
         .build();
   }
 
   @Override
-  public ODataResponse readEntityMedia(final GetMediaResourceView uriParserResultView) throws ODataException {
+  public ODataResponse readEntityMedia(final GetMediaResourceView uriParserResultView, ContentType contentType) throws ODataException {
     final Object data = retrieveData(
         uriParserResultView.getStartEntitySet(),
         uriParserResultView.getKeyPredicates(),
@@ -354,43 +341,39 @@ public class ListsProcessor extends ODataSingleProcessor {
     final byte[] binaryData = dataSource.readBinaryData(entitySet, data, mimeTypeBuilder);
 
     final String mimeType = mimeTypeBuilder.toString().isEmpty() ?
-        MediaType.APPLICATION_OCTET_STREAM.toString() : mimeTypeBuilder.toString();
+        ContentType.APPLICATION_OCTET_STREAM.toString() : mimeTypeBuilder.toString();
 
     return ODataResponse
         .status(HttpStatusCodes.OK)
-        .entity(ODataEntityProvider.create(Format.XML).writeMediaResource(mimeType, binaryData))
+        .entity(ODataEntityProvider.create(ContentType.APPLICATION_XML).writeMediaResource(mimeType, binaryData))
         .build();
   }
 
   @Override
-  public ODataResponse executeFunctionImport(final GetFunctionImportView uriParserResultView) throws ODataException {
+  public ODataResponse executeFunctionImport(final GetFunctionImportView uriParserResultView, ContentType contentType) throws ODataException {
     final EdmFunctionImport functionImport = uriParserResultView.getFunctionImport();
     final EdmType type = functionImport.getReturnType().getType();
 
+    System.out.println(contentType.toString());
+    
     final Object data = dataSource.readData(
         functionImport,
         mapFunctionParameters(uriParserResultView.getFunctionImportParameters()),
         null);
 
-    Format format = uriParserResultView.getFormat();
-    if (format == null)
-      if (type.getKind() == EdmTypeKind.ENTITY)
-        format = Format.ATOM;
-      else
-        format = Format.XML;
-
     if (functionImport.getReturnType().getMultiplicity() == EdmMultiplicity.MANY) {
       return ODataResponse
           .status(HttpStatusCodes.OK)
-          .header(CONTENT_TYPE, MediaType.APPLICATION_XML.toString())
+          .header(CONTENT_TYPE, contentType == ContentType.APPLICATION_ATOM_XML ?
+              ContentType.APPLICATION_ATOM_XML_FEED.toString() : ContentType.APPLICATION_XML.toString())
           .entity(data.toString())
           .build();
     } else if (type.getKind() == EdmTypeKind.ENTITY) {
       final Map<String, Object> values = getStructuralTypeValueMap(data, (EdmEntityType) type);
       return ODataResponse
           .status(HttpStatusCodes.OK)
-          .header(CONTENT_TYPE, format == Format.ATOM ?
-              MediaType.APPLICATION_ATOM_XML_ENTRY.toString() : MediaType.APPLICATION_XML.toString())
+          .header(CONTENT_TYPE, contentType == ContentType.APPLICATION_ATOM_XML ?
+              ContentType.APPLICATION_ATOM_XML_ENTRY.toString() : ContentType.APPLICATION_XML.toString())
           // .entity(ODataEntityProvider.create(format).writeEntry(null, values, null))
           .entity(values.toString())
           .build();
@@ -399,7 +382,7 @@ public class ListsProcessor extends ODataSingleProcessor {
           getStructuralTypeValueMap(data, (EdmStructuralType) type) : data;
       return ODataResponse
           .status(HttpStatusCodes.OK)
-          .header(CONTENT_TYPE, MediaType.APPLICATION_XML.toString())
+          .header(CONTENT_TYPE, ContentType.APPLICATION_XML.toString())
           // .entity(ODataEntityProvider.create(format).writeProperty(null, value))
           .entity(value.toString())
           .build();
@@ -407,7 +390,7 @@ public class ListsProcessor extends ODataSingleProcessor {
   }
 
   @Override
-  public ODataResponse executeFunctionImportValue(final GetFunctionImportView uriParserResultView) throws ODataException {
+  public ODataResponse executeFunctionImportValue(final GetFunctionImportView uriParserResultView, ContentType contentType) throws ODataException {
     final EdmFunctionImport functionImport = uriParserResultView.getFunctionImport();
     final EdmSimpleType type = (EdmSimpleType) functionImport.getReturnType().getType();
 
@@ -421,7 +404,7 @@ public class ListsProcessor extends ODataSingleProcessor {
         .status(HttpStatusCodes.OK)
         .header(CONTENT_TYPE,
             type == EdmSimpleTypeKind.Binary.getEdmSimpleTypeInstance() ?
-                MediaType.APPLICATION_OCTET_STREAM.toString() : MediaType.TEXT_PLAIN.toString())
+                ContentType.APPLICATION_OCTET_STREAM.toString() : ContentType.TEXT_PLAIN.toString())
         .entity(value == null ? "" : value)
         .build();
   }

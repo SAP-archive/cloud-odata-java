@@ -13,6 +13,7 @@ import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.methods.HttpGet;
 import org.junit.Test;
 
+import com.sap.core.odata.api.enums.ContentType;
 import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.api.processor.ODataSingleProcessor;
 import com.sap.core.odata.api.processor.aspect.ServiceDocument;
@@ -27,7 +28,7 @@ public class ErrorResponseTest extends AbstractBasicTest {
   protected ODataSingleProcessor createProcessor() throws ODataException {
     ODataSingleProcessor processor = mock(ODataSingleProcessor.class);
 
-    when(((ServiceDocument) processor).readServiceDocument(any(GetServiceDocumentView.class))).thenThrow(new ODataRuntimeException("unit testing"));
+    when(((ServiceDocument) processor).readServiceDocument(any(GetServiceDocumentView.class),any(ContentType.class))).thenThrow(new ODataRuntimeException("unit testing"));
 
     return processor;
   }

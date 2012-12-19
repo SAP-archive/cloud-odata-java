@@ -15,7 +15,7 @@ import org.junit.Test;
 
 import com.sap.core.odata.api.edm.EdmEntitySet;
 import com.sap.core.odata.api.enums.InlineCount;
-import com.sap.core.odata.api.enums.MediaType;
+import com.sap.core.odata.api.enums.ContentType;
 import com.sap.core.odata.api.ep.ODataEntityContent;
 import com.sap.core.odata.api.ep.ODataEntityProvider;
 import com.sap.core.odata.api.ep.ODataEntityProviderException;
@@ -84,7 +84,7 @@ public class AtomFeedProviderTest extends AbstractProviderTest {
   private String verifyContent(ODataEntityContent content) throws IOException {
     assertNotNull(content);
     assertNotNull(content.getContent());
-    assertEquals(MediaType.APPLICATION_ATOM_XML_FEED.toString() + "; charset=utf-8", content.getContentHeader());
+    assertEquals(ContentType.APPLICATION_ATOM_XML_FEED.toString() + "; charset=utf-8", content.getContentHeader());
     String xmlString = StringHelper.inputStreamToString(content.getContent());
     return xmlString;
   }

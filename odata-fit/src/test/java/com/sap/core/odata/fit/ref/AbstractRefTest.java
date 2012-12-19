@@ -10,7 +10,7 @@ import org.apache.http.client.methods.HttpGet;
 
 import com.sap.core.odata.api.edm.provider.EdmProvider;
 import com.sap.core.odata.api.enums.HttpStatusCodes;
-import com.sap.core.odata.api.enums.MediaType;
+import com.sap.core.odata.api.enums.ContentType;
 import com.sap.core.odata.api.processor.ODataSingleProcessor;
 import com.sap.core.odata.api.service.ODataSingleProcessorService;
 import com.sap.core.odata.ref.edm.ScenarioEdmProvider;
@@ -95,7 +95,7 @@ public class AbstractRefTest extends AbstractFitTest {
     return StringHelper.inputStreamToString(response.getEntity().getContent());
   }
 
-  protected void checkMediaType(final HttpResponse response, final MediaType expectedMediaType) {
+  protected void checkMediaType(final HttpResponse response, final ContentType expectedMediaType) {
     checkMediaType(response, expectedMediaType, true);
   }
 
@@ -103,7 +103,7 @@ public class AbstractRefTest extends AbstractFitTest {
     checkMediaType(response, expectedMediaType, true);
   }
 
-  protected void checkMediaType(final HttpResponse response, final MediaType expectedMediaType, final boolean withDefaultCharset) {
+  protected void checkMediaType(final HttpResponse response, final ContentType expectedMediaType, final boolean withDefaultCharset) {
     checkMediaType(response, expectedMediaType.toString(), withDefaultCharset);
   }
 

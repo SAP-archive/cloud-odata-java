@@ -57,11 +57,6 @@ public interface GetEntityCountView {
   public boolean isCount();
 
   /**
-   * @return the customer format
-   */
-  public String getCustomFormat();
-
-  /**
    * @return the filter expression
    */
   public FilterExpression getFilter();

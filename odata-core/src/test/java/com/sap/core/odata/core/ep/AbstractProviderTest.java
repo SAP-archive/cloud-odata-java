@@ -17,7 +17,7 @@ import org.slf4j.LoggerFactory;
 
 import com.sap.core.odata.api.edm.Edm;
 import com.sap.core.odata.api.edm.EdmException;
-import com.sap.core.odata.api.enums.Format;
+import com.sap.core.odata.api.enums.ContentType;
 import com.sap.core.odata.api.ep.ODataEntityProvider;
 import com.sap.core.odata.api.ep.ODataEntityProviderException;
 import com.sap.core.odata.api.ep.ODataEntityProviderProperties;
@@ -123,7 +123,7 @@ public abstract class AbstractProviderTest {
   }
 
   protected ODataEntityProvider createAtomEntityProvider() throws ODataException, EdmException, ODataEntityProviderException {
-    ODataEntityProvider ser = ODataEntityProvider.create(Format.ATOM);
+    ODataEntityProvider ser = ODataEntityProvider.create(ContentType.APPLICATION_ATOM_XML);
     return ser;
   }
 

@@ -16,7 +16,7 @@ import com.sap.core.odata.api.edm.EdmMultiplicity;
 import com.sap.core.odata.api.edm.EdmSimpleType;
 import com.sap.core.odata.api.edm.EdmTargetPath;
 import com.sap.core.odata.api.edm.EdmType;
-import com.sap.core.odata.api.enums.MediaType;
+import com.sap.core.odata.api.enums.ContentType;
 import com.sap.core.odata.api.ep.ODataEntityProviderException;
 import com.sap.core.odata.api.ep.ODataEntityProviderProperties;
 import com.sap.core.odata.core.edm.EdmDateTimeOffset;
@@ -71,7 +71,7 @@ public class AtomEntryEntityProvider {
         // write properties/content
         appendCustomProperties(writer, eia, data);
         writer.writeStartElement(FormatXml.ATOM_CONTENT);
-        writer.writeAttribute(FormatXml.ATOM_TYPE, MediaType.APPLICATION_XML.toString());
+        writer.writeAttribute(FormatXml.ATOM_TYPE, ContentType.APPLICATION_XML.toString());
         appendProperties(writer, eia, data);
         writer.writeEndElement();
       }
@@ -146,9 +146,9 @@ public class AtomEntryEntityProvider {
       writer.writeAttribute(FormatXml.ATOM_HREF, self);
       writer.writeAttribute(FormatXml.ATOM_REL, Edm.NAMESPACE_REL_2007_08 + propertyName);
       if (isFeed) {
-        writer.writeAttribute(FormatXml.ATOM_TYPE, MediaType.APPLICATION_ATOM_XML_FEED.toString());
+        writer.writeAttribute(FormatXml.ATOM_TYPE, ContentType.APPLICATION_ATOM_XML_FEED.toString());
       } else {
-        writer.writeAttribute(FormatXml.ATOM_TYPE, MediaType.APPLICATION_ATOM_XML_ENTRY.toString());
+        writer.writeAttribute(FormatXml.ATOM_TYPE, ContentType.APPLICATION_ATOM_XML_ENTRY.toString());
       }
       writer.writeAttribute(FormatXml.ATOM_TITLE, propertyName);
 
@@ -177,7 +177,7 @@ public class AtomEntryEntityProvider {
       String self = createSelfLink(eia, data, "$value");
 
       if (mediaResourceMimeType == null) {
-        mediaResourceMimeType = MediaType.APPLICATION_OCTET_STREAM.toString();
+        mediaResourceMimeType = ContentType.APPLICATION_OCTET_STREAM.toString();
       }
 
       writer.writeStartElement(FormatXml.ATOM_LINK);
@@ -195,7 +195,7 @@ public class AtomEntryEntityProvider {
       String self = createSelfLink(eia, data, "$value");
 
       if (mediaResourceMimeType == null) {
-        mediaResourceMimeType = MediaType.APPLICATION_OCTET_STREAM.toString();
+        mediaResourceMimeType = ContentType.APPLICATION_OCTET_STREAM.toString();
       }
 
       writer.writeStartElement(FormatXml.ATOM_CONTENT);

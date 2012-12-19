@@ -25,7 +25,7 @@ import com.sap.core.odata.api.edm.EdmSimpleTypeFacade;
 import com.sap.core.odata.api.edm.EdmType;
 import com.sap.core.odata.api.edm.EdmTypeKind;
 import com.sap.core.odata.api.edm.EdmTyped;
-import com.sap.core.odata.api.enums.Format;
+import com.sap.core.odata.api.enums.ContentType;
 import com.sap.core.odata.api.enums.InlineCount;
 import com.sap.core.odata.api.processor.ODataPathSegment;
 import com.sap.core.odata.api.uri.EdmLiteral;
@@ -518,14 +518,18 @@ public class UriParserImpl implements UriParser {
   }
 
   private void handleSystemQueryOptionFormat(final String format) throws UriSyntaxException {
-    if ("atom".equals(format))
-      uriResult.setFormat(Format.ATOM);
-    else if ("json".equals(format))
-      uriResult.setFormat(Format.JSON);
-    else if ("xml".equals(format))
-      uriResult.setFormat(Format.XML);
-    else
-      uriResult.setFormat(format);
+    if ("atom".equals(format)) {
+      uriResult.setContentType(ContentType.APPLICATION_ATOM_XML);
+    }
+    else if ("json".equals(format)) {
+      uriResult.setContentType(ContentType.APPLICATION_JSON);
+    }
+    else if ("xml".equals(format)) {
+      uriResult.setContentType(ContentType.APPLICATION_XML);
+    }
+    else {
+      uriResult.setContentType(ContentType.create(format));
+    }
   }
 
   private void handleSystemQueryOptionFilter(final String filter) throws UriSyntaxException {

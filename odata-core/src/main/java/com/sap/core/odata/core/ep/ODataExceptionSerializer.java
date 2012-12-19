@@ -1,8 +1,10 @@
 package com.sap.core.odata.core.ep;
 
+import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+import java.nio.charset.Charset;
 import java.util.Locale;
 
 import javax.xml.stream.XMLOutputFactory;
@@ -12,19 +14,20 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.sap.core.odata.api.edm.Edm;
-import com.sap.core.odata.api.enums.Format;
+import com.sap.core.odata.api.enums.ContentType;
 import com.sap.core.odata.core.ep.util.CircleStreamBuffer;
 
 public class ODataExceptionSerializer {
 
   private final static Logger LOG = LoggerFactory.getLogger(ODataExceptionSerializer.class);
 
-  public static InputStream serialize(String errorCode, String message, Format format, Locale locale) {
+  public static InputStream serialize(String errorCode, String message, ContentType contentType, Locale locale) {
 
-    InputStream returnMessage = null;
-    switch (format) {
-    case ATOM:
+    InputStream returnMessage;
+
+    switch (contentType.getODataFormat()) {
     case XML:
+    case ATOM:
       returnMessage = serializeXml(errorCode, message, locale);
       break;
     case JSON:
@@ -33,14 +36,14 @@ public class ODataExceptionSerializer {
     default:
       returnMessage = serializeXml(errorCode, message, locale);
       break;
-
     }
 
     return returnMessage;
   }
 
   private static InputStream serialzieJson(String errorCode, String message, Locale locale) {
-    return null;
+    String notsupported = "not supported error format JSON";
+    return new ByteArrayInputStream(notsupported.getBytes(Charset.forName("utf-8")));
   }
 
   private static InputStream serializeXml(String errorCode, String message, Locale locale) {

@@ -11,7 +11,7 @@ import com.sap.core.odata.api.edm.EdmEntitySet;
 import com.sap.core.odata.api.edm.EdmFunctionImport;
 import com.sap.core.odata.api.edm.EdmProperty;
 import com.sap.core.odata.api.edm.EdmType;
-import com.sap.core.odata.api.enums.Format;
+import com.sap.core.odata.api.enums.ContentType;
 import com.sap.core.odata.api.enums.InlineCount;
 import com.sap.core.odata.api.uri.EdmLiteral;
 import com.sap.core.odata.api.uri.KeyPredicate;
@@ -41,8 +41,7 @@ public class UriParserResultImpl implements UriParserResult {
   private boolean value;
   private boolean links;
 
-  private Format format;
-  private String customFormat;
+  private ContentType contentType;
   private FilterExpression filter;
   private InlineCount inlineCount;
   private OrderByExpression orderBy;
@@ -167,22 +166,13 @@ public class UriParserResultImpl implements UriParserResult {
     return links;
   }
 
-  public void setFormat(Format format) {
-    this.format = format;
-  }
-
-  public void setFormat(String customFormat) {
-    this.customFormat = customFormat;
+  public void setContentType(ContentType contentType) {
+    this.contentType = contentType;
   }
 
   @Override
-  public Format getFormat() {
-    return format;
-  }
-
-  @Override
-  public String getCustomFormat() {
-    return customFormat;
+  public ContentType getContentType() {
+    return contentType;
   }
 
   public void setFilter(FilterExpression filter) {
@@ -292,7 +282,7 @@ public class UriParserResultImpl implements UriParserResult {
         + "isCount=" + count + ", "
         + "isValue=" + value + ", "
         + "isLinks=" + links + ", "
-        + "format=" + format + ", customFormat=" + customFormat + ", "
+        + "contentType=" + contentType + ", "
         + "filter=" + filter + ", "
         + "inlineCount=" + inlineCount + ", "
         + "orderBy=" + orderBy + ", "

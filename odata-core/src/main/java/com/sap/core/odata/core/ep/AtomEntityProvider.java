@@ -21,7 +21,7 @@ import com.sap.core.odata.api.edm.EdmLiteralKind;
 import com.sap.core.odata.api.edm.EdmProperty;
 import com.sap.core.odata.api.edm.EdmSimpleType;
 import com.sap.core.odata.api.edm.EdmSimpleTypeKind;
-import com.sap.core.odata.api.enums.MediaType;
+import com.sap.core.odata.api.enums.ContentType;
 import com.sap.core.odata.api.ep.ODataEntityContent;
 import com.sap.core.odata.api.ep.ODataEntityProvider;
 import com.sap.core.odata.api.ep.ODataEntityProviderException;
@@ -53,7 +53,7 @@ public class AtomEntityProvider extends ODataEntityProvider {
       AtomServiceDocumentProvider.writeServiceDocument(edm, serviceRoot, writer);
 
       content.setContentStream(csb.getInputStream());
-      content.setContentHeader(createContentHeader(MediaType.APPLICATION_ATOM_SVC));
+      content.setContentHeader(createContentHeader(ContentType.APPLICATION_ATOM_SVC));
 
       return content;
     } catch (UnsupportedEncodingException e) {
@@ -89,7 +89,7 @@ public class AtomEntityProvider extends ODataEntityProvider {
       outStream.close();
 
       content.setContentStream(csb.getInputStream());
-      content.setContentHeader(createContentHeader(MediaType.APPLICATION_ATOM_XML_ENTRY));
+      content.setContentHeader(createContentHeader(ContentType.APPLICATION_ATOM_XML_ENTRY));
       content.setETag(as.getETag());
 
       return content;
@@ -126,7 +126,7 @@ public class AtomEntityProvider extends ODataEntityProvider {
       outStream.close();
 
       content.setContentStream(csb.getInputStream());
-      content.setContentHeader(createContentHeader(MediaType.APPLICATION_XML));
+      content.setContentHeader(createContentHeader(ContentType.APPLICATION_XML));
 
       return content;
     } catch (Exception e) {
@@ -164,7 +164,7 @@ public class AtomEntityProvider extends ODataEntityProvider {
       outStream.close();
 
       content.setContentStream(csb.getInputStream());
-      content.setContentHeader(createContentHeader(MediaType.APPLICATION_ATOM_XML_FEED));
+      content.setContentHeader(createContentHeader(ContentType.APPLICATION_ATOM_XML_FEED));
       return content;
     } catch (Exception e) {
       throw new ODataEntityProviderException(ODataEntityProviderException.COMMON, e);
@@ -201,7 +201,7 @@ public class AtomEntityProvider extends ODataEntityProvider {
       ByteArrayInputStream bais = new ByteArrayInputStream(stringValue.getBytes(DEFAULT_CHARSET));
       content.setContentStream(bais);
 
-      String contentHeader = MediaType.TEXT_PLAIN.toString();
+      String contentHeader = ContentType.TEXT_PLAIN.toString();
       if (type == EdmSimpleTypeKind.Binary.getEdmSimpleTypeInstance()) {
         if (edmProperty.getMimeType() != null) {
           contentHeader = edmProperty.getMimeType();
@@ -234,7 +234,7 @@ public class AtomEntityProvider extends ODataEntityProvider {
     }
   }
 
-  private String createContentHeader(MediaType mediaType) {
+  private String createContentHeader(ContentType mediaType) {
     return mediaType.toString() + "; charset=" + DEFAULT_CHARSET;
   }
 }
