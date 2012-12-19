@@ -53,7 +53,17 @@ public class ContentType {
   }
 
   public static ContentType create(String type, String subtype) {
-    return new ContentType(type, subtype);
+    ODataFormat odFormat;
+    if (subtype.contains("atom")) {
+      odFormat = ODataFormat.ATOM;
+    } else if (subtype.contains("xml")) {
+      odFormat = ODataFormat.XML;
+    } else if (subtype.contains("json")) {
+      odFormat = ODataFormat.JSON;
+    } else {
+      odFormat = ODataFormat.CUSTOM;
+    }
+    return new ContentType(type, subtype, odFormat);
   }
 
   /**
@@ -75,12 +85,14 @@ public class ContentType {
     if (types.contains("/")) {
       String[] tokens = types.split("/");
       if (tokens.length == 2) {
-        return new ContentType(tokens[0], tokens[1]).addParameters(parametersMap);
+//        return new ContentType(tokens[0], tokens[1]).addParameters(parametersMap);
+        return create(tokens[0], tokens[1]).addParameters(parametersMap);
       } else {
         throw new IllegalArgumentException("Too many '/' in format '" + format + "'.");
       }
     } else {
-      return new ContentType(types, "*").addParameters(parametersMap);
+//      return new ContentType(types, "*").addParameters(parametersMap);
+      return create(types, "*").addParameters(parametersMap);
     }
   }
 
@@ -123,20 +135,20 @@ public class ContentType {
 
   @Override
   public int hashCode() {
-//    final int prime = 31;
-//    int result = 1;
-//
-//    Set<Entry<String, String>> entries = parameters.entrySet();
-//    for (Entry<String, String> entry : entries) {
-//      String key = entry.getKey();
-//      String value = entry.getValue();
-//      result = prime * result + ((key == null) ? 0 : key.hashCode());
-//      result = prime * result + ((value == null) ? 0 : value.hashCode());
-//    }
-//
-//    result = prime * result + ((subtype == null) ? 0 : subtype.hashCode());
-//    result = prime * result + ((type == null) ? 0 : type.hashCode());
-//    return result;
+    // final int prime = 31;
+    // int result = 1;
+    //
+    // Set<Entry<String, String>> entries = parameters.entrySet();
+    // for (Entry<String, String> entry : entries) {
+    // String key = entry.getKey();
+    // String value = entry.getValue();
+    // result = prime * result + ((key == null) ? 0 : key.hashCode());
+    // result = prime * result + ((value == null) ? 0 : value.hashCode());
+    // }
+    //
+    // result = prime * result + ((subtype == null) ? 0 : subtype.hashCode());
+    // result = prime * result + ((type == null) ? 0 : type.hashCode());
+    // return result;
     return 1;
   }
 
