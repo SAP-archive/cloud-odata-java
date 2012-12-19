@@ -7,6 +7,7 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 
 import com.sap.core.odata.api.enums.ContentType;
+import com.sap.core.odata.api.enums.ContentType.ODataFormat;
 
 // 14.1 Accept
 //
@@ -28,14 +29,97 @@ public class ContentTypeTest {
   @Test
   public void testContentTypeCreation() {
     ContentType mt = ContentType.create("type", "subtype");
+    
     assertEquals("type", mt.getType());
     assertEquals("subtype", mt.getSubtype());
     assertEquals("type/subtype", mt.toString());
+    assertEquals(ODataFormat.CUSTOM, mt.getODataFormat());
+  }
+
+  @Test
+  public void testContentTypeCreationAtom() {
+    ContentType mt = ContentType.create("application", "atom+xml");
+    
+    assertEquals("application", mt.getType());
+    assertEquals("atom+xml", mt.getSubtype());
+    assertEquals("application/atom+xml", mt.toString());
+    assertEquals(ODataFormat.ATOM, mt.getODataFormat());
+  }
+
+  @Test
+  public void testContentTypeCreationXml() {
+    ContentType mt = ContentType.create("application", "xml");
+    
+    assertEquals("application", mt.getType());
+    assertEquals("xml", mt.getSubtype());
+    assertEquals("application/xml", mt.toString());
+    assertEquals(ODataFormat.XML, mt.getODataFormat());
+  }
+
+  @Test
+  public void testContentTypeCreationJson() {
+    ContentType mt = ContentType.create("application", "json");
+    
+    assertEquals("application", mt.getType());
+    assertEquals("json", mt.getSubtype());
+    assertEquals("application/json", mt.toString());
+    assertEquals(ODataFormat.JSON, mt.getODataFormat());
+  }
+
+  @Test
+  public void testContentTypeCreationOneString() {
+    ContentType mt = ContentType.create("type/subtype");
+    
+    assertEquals("type", mt.getType());
+    assertEquals("subtype", mt.getSubtype());
+    assertEquals("type/subtype", mt.toString());
+    assertEquals(ODataFormat.CUSTOM, mt.getODataFormat());
+  }
+
+  @Test
+  public void testContentTypeCreationAtomOneString() {
+    ContentType mt = ContentType.create("application/atom+xml");
+    
+    assertEquals("application", mt.getType());
+    assertEquals("atom+xml", mt.getSubtype());
+    assertEquals("application/atom+xml", mt.toString());
+    assertEquals(ODataFormat.ATOM, mt.getODataFormat());
+  }
+
+  @Test
+  public void testContentTypeCreationXmlOneString() {
+    ContentType mt = ContentType.create("application/xml");
+    
+    assertEquals("application", mt.getType());
+    assertEquals("xml", mt.getSubtype());
+    assertEquals("application/xml", mt.toString());
+    assertEquals(ODataFormat.XML, mt.getODataFormat());
+  }
+
+  @Test
+  public void testContentTypeCreationXmlWithParaOneString() {
+    ContentType mt = ContentType.create("application/xml;q=0.9");
+    
+    assertEquals("application", mt.getType());
+    assertEquals("xml", mt.getSubtype());
+    assertEquals("application/xml;q=0.9", mt.toString());
+    assertEquals(ODataFormat.XML, mt.getODataFormat());
+  }
+
+  @Test
+  public void testContentTypeCreationJsonOneString() {
+    ContentType mt = ContentType.create("application/json");
+    
+    assertEquals("application", mt.getType());
+    assertEquals("json", mt.getSubtype());
+    assertEquals("application/json", mt.toString());
+    assertEquals(ODataFormat.JSON, mt.getODataFormat());
   }
 
   @Test
   public void testContentTypeWithParameterCreation() {
     ContentType mt = ContentType.create("type", "subtype").addParameter("key", "value");
+
     assertEquals("type", mt.getType());
     assertEquals("subtype", mt.getSubtype());
     assertEquals(1, mt.getParameters().size());
