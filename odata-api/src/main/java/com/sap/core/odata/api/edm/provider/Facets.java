@@ -4,13 +4,13 @@ import com.sap.core.odata.api.edm.EdmConcurrencyMode;
 import com.sap.core.odata.api.edm.EdmFacets;
 
 /**
- * Objects of this class represent the facets a entity type, property or function import can have
+ * Objects of this class represent the facets an entity type, property or function import can have
  * @author SAP AG
  */
 public class Facets implements EdmFacets {
 
-  /** Specification default is TRUE but we wont set it here because 
-   * we want to know if its set explicitly by an application */
+  /** Specification default is TRUE but we won't set it here because 
+   * we want to know if it's set explicitly by an application. */
   Boolean nullable;
   String defaultValue;
   Integer maxLength;
@@ -181,4 +181,16 @@ public class Facets implements EdmFacets {
     return this;
   }
 
+  @Override
+  public String toString() {
+    return "Nullable=" + nullable + ", "
+        + "DefaultValue=" + defaultValue + ", "
+        + "MaxLength=" + maxLength + ", "
+        + "FixedLength=" + fixedLength + ", "
+        + "Precision=" + precision + ", "
+        + "Scale=" + scale + ", "
+        + "Unicode=" + unicode + ", "
+        + "Collation=" + collation + ", "
+        + "ConcurrencyMode=" + concurrencyMode;
+  }
 }
