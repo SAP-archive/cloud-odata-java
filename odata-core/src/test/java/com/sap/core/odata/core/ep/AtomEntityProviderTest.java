@@ -7,7 +7,7 @@ import org.junit.Test;
 
 import com.sap.core.odata.api.edm.EdmProperty;
 import com.sap.core.odata.api.edm.EdmTyped;
-import com.sap.core.odata.api.enums.MediaType;
+import com.sap.core.odata.api.enums.ContentType;
 import com.sap.core.odata.api.ep.ODataEntityContent;
 import com.sap.core.odata.api.ep.ODataEntityProvider;
 import com.sap.core.odata.testutils.helper.StringHelper;
@@ -25,7 +25,7 @@ public class AtomEntityProviderTest extends AbstractProviderTest {
     ODataEntityContent content = s.writeText(edmProperty, this.employeeData.get("Age"));
     assertNotNull(content);
     assertNotNull(content.getContent());
-    assertEquals(MediaType.TEXT_PLAIN.toString(), content.getContentHeader());
+    assertEquals(ContentType.TEXT_PLAIN.toString(), content.getContentHeader());
     String value = StringHelper.inputStreamToString(content.getContent());
     assertEquals(this.employeeData.get("Age").toString(), value);
   }

@@ -1,5 +1,6 @@
 package com.sap.core.odata.api.uri.resultviews;
 
+import java.text.Format;
 import java.util.List;
 import java.util.Map;
 
@@ -8,7 +9,7 @@ import com.sap.core.odata.api.edm.EdmEntitySet;
 import com.sap.core.odata.api.edm.EdmFunctionImport;
 import com.sap.core.odata.api.edm.EdmProperty;
 import com.sap.core.odata.api.edm.EdmType;
-import com.sap.core.odata.api.enums.Format;
+import com.sap.core.odata.api.enums.ContentType;
 import com.sap.core.odata.api.uri.EdmLiteral;
 import com.sap.core.odata.api.uri.KeyPredicate;
 import com.sap.core.odata.api.uri.NavigationSegment;
@@ -57,12 +58,7 @@ public interface GetComplexPropertyView {
   /**
    * @return {@link Format} the format
    */
-  public Format getFormat();
-
-  /**
-   * @return String the customer format
-   */
-  public String getCustomFormat();
+  public ContentType getContentType();
 
   /**
    * @return Map of {@literal <String,} {@link EdmLiteral}{@literal >} function import parameters

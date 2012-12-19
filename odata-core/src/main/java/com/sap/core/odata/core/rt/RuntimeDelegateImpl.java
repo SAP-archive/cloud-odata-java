@@ -6,7 +6,7 @@ import com.sap.core.odata.api.edm.EdmSimpleType;
 import com.sap.core.odata.api.edm.EdmSimpleTypeFacade;
 import com.sap.core.odata.api.edm.EdmSimpleTypeKind;
 import com.sap.core.odata.api.edm.provider.EdmProvider;
-import com.sap.core.odata.api.enums.Format;
+import com.sap.core.odata.api.enums.ContentType;
 import com.sap.core.odata.api.ep.ODataEntityProvider;
 import com.sap.core.odata.api.ep.ODataEntityProviderException;
 import com.sap.core.odata.api.processor.ODataResponse.ODataResponseBuilder;
@@ -53,8 +53,8 @@ public class RuntimeDelegateImpl extends RuntimeDelegateInstance {
   }
 
   @Override
-  protected ODataEntityProvider createSerializer(Format format) throws ODataEntityProviderException {
-    return EntityProviderFactory.create(format);
+  protected ODataEntityProvider createSerializer(ContentType contentType) throws ODataEntityProviderException {
+    return EntityProviderFactory.create(contentType);
   }
 
   @Override

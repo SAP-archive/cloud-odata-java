@@ -2,9 +2,8 @@ package com.sap.core.odata.api.processor;
 
 import com.sap.core.odata.api.edm.Edm;
 import com.sap.core.odata.api.edm.EdmServiceMetadata;
-import com.sap.core.odata.api.enums.Format;
+import com.sap.core.odata.api.enums.ContentType;
 import com.sap.core.odata.api.enums.HttpStatusCodes;
-import com.sap.core.odata.api.enums.MediaType;
 import com.sap.core.odata.api.ep.ODataEntityContent;
 import com.sap.core.odata.api.ep.ODataEntityProvider;
 import com.sap.core.odata.api.exception.ODataException;
@@ -90,7 +89,7 @@ public abstract class ODataSingleProcessor
    * @see Batch
    */
   @Override
-  public ODataResponse executeBatch() throws ODataException {
+  public ODataResponse executeBatch(ContentType contentType) throws ODataException {
     throw new ODataNotImplementedException();
   }
 
@@ -98,7 +97,7 @@ public abstract class ODataSingleProcessor
    * @see FunctionImport
    */
   @Override
-  public ODataResponse executeFunctionImport(GetFunctionImportView uriParserResultView) throws ODataException {
+  public ODataResponse executeFunctionImport(GetFunctionImportView uriParserResultView,ContentType contentType) throws ODataException {
     throw new ODataNotImplementedException();
   }
 
@@ -106,7 +105,7 @@ public abstract class ODataSingleProcessor
    * @see FunctionImportValue
    */
   @Override
-  public ODataResponse executeFunctionImportValue(GetFunctionImportView uriParserResultView) throws ODataException {
+  public ODataResponse executeFunctionImportValue(GetFunctionImportView uriParserResultView,ContentType contentType) throws ODataException {
     throw new ODataNotImplementedException();
   }
 
@@ -114,7 +113,7 @@ public abstract class ODataSingleProcessor
    * @see EntitySimplePropertyValue
    */
   @Override
-  public ODataResponse readEntitySimplePropertyValue(GetSimplePropertyView uriParserResultView) throws ODataException {
+  public ODataResponse readEntitySimplePropertyValue(GetSimplePropertyView uriParserResultView,ContentType contentType) throws ODataException {
     throw new ODataNotImplementedException();
   }
 
@@ -122,7 +121,7 @@ public abstract class ODataSingleProcessor
    * @see EntitySimplePropertyValue
    */
   @Override
-  public ODataResponse updateEntitySimplePropertyValue() throws ODataException {
+  public ODataResponse updateEntitySimplePropertyValue(ContentType contentType) throws ODataException {
     throw new ODataNotImplementedException();
   }
 
@@ -130,7 +129,7 @@ public abstract class ODataSingleProcessor
    * @see EntitySimplePropertyValue
    */
   @Override
-  public ODataResponse deleteEntitySimplePropertyValue() throws ODataException {
+  public ODataResponse deleteEntitySimplePropertyValue(ContentType contentType) throws ODataException {
     throw new ODataNotImplementedException();
   }
 
@@ -138,7 +137,7 @@ public abstract class ODataSingleProcessor
    * @see EntitySimpleProperty
    */
   @Override
-  public ODataResponse readEntitySimpleProperty(GetSimplePropertyView uriParserResultView) throws ODataException {
+  public ODataResponse readEntitySimpleProperty(GetSimplePropertyView uriParserResultView, ContentType contentType) throws ODataException {
     throw new ODataNotImplementedException();
   }
 
@@ -146,7 +145,7 @@ public abstract class ODataSingleProcessor
    * @see EntitySimpleProperty
    */
   @Override
-  public ODataResponse updateEntitySimpleProperty() throws ODataException {
+  public ODataResponse updateEntitySimpleProperty(ContentType contentType) throws ODataException {
     throw new ODataNotImplementedException();
   }
 
@@ -154,7 +153,7 @@ public abstract class ODataSingleProcessor
    * @see EntityMedia
    */
   @Override
-  public ODataResponse readEntityMedia(GetMediaResourceView uriParserResultView) throws ODataException {
+  public ODataResponse readEntityMedia(GetMediaResourceView uriParserResultView, ContentType contentType) throws ODataException {
     throw new ODataNotImplementedException();
   }
 
@@ -162,7 +161,7 @@ public abstract class ODataSingleProcessor
    * @see EntityMedia
    */
   @Override
-  public ODataResponse updateEntityMedia() throws ODataException {
+  public ODataResponse updateEntityMedia(ContentType contentType) throws ODataException {
     throw new ODataNotImplementedException();
   }
 
@@ -170,7 +169,7 @@ public abstract class ODataSingleProcessor
    * @see EntityMedia
    */
   @Override
-  public ODataResponse deleteEntityMedia() throws ODataException {
+  public ODataResponse deleteEntityMedia(ContentType contentType) throws ODataException {
     throw new ODataNotImplementedException();
   }
 
@@ -178,7 +177,7 @@ public abstract class ODataSingleProcessor
    * @see EntityLinks
    */
   @Override
-  public ODataResponse readEntityLinks(GetEntitySetLinksView uriParserResultView) throws ODataException {
+  public ODataResponse readEntityLinks(GetEntitySetLinksView uriParserResultView, ContentType contentType) throws ODataException {
     throw new ODataNotImplementedException();
   }
 
@@ -186,7 +185,7 @@ public abstract class ODataSingleProcessor
    * @see EntityLinks
    */
   @Override
-  public ODataResponse countEntityLinks(GetEntitySetLinksCountView uriParserResultView) throws ODataException {
+  public ODataResponse countEntityLinks(GetEntitySetLinksCountView uriParserResultView, ContentType contentType) throws ODataException {
     throw new ODataNotImplementedException();
   }
 
@@ -194,7 +193,7 @@ public abstract class ODataSingleProcessor
    * @see EntityLink
    */
   @Override
-  public ODataResponse createEntityLink() throws ODataException {
+  public ODataResponse createEntityLink(ContentType contentType) throws ODataException {
     throw new ODataNotImplementedException();
   }
 
@@ -202,7 +201,7 @@ public abstract class ODataSingleProcessor
    * @see EntityLink
    */
   @Override
-  public ODataResponse readEntityLink(GetEntityLinkView uriParserResultView) throws ODataException {
+  public ODataResponse readEntityLink(GetEntityLinkView uriParserResultView, ContentType contentType) throws ODataException {
     throw new ODataNotImplementedException();
   }
 
@@ -210,7 +209,7 @@ public abstract class ODataSingleProcessor
    * @see EntityLink
    */
   @Override
-  public ODataResponse existsEntityLink(GetEntityLinkCountView uriParserResultView) throws ODataException {
+  public ODataResponse existsEntityLink(GetEntityLinkCountView uriParserResultView, ContentType contentType) throws ODataException {
     throw new ODataNotImplementedException();
   }
 
@@ -218,7 +217,7 @@ public abstract class ODataSingleProcessor
    * @see EntityLink
    */
   @Override
-  public ODataResponse updateEntityLink() throws ODataException {
+  public ODataResponse updateEntityLink(ContentType contentType) throws ODataException {
     throw new ODataNotImplementedException();
   }
 
@@ -226,7 +225,7 @@ public abstract class ODataSingleProcessor
    * @see EntityLink
    */
   @Override
-  public ODataResponse deleteEntityLink() throws ODataException {
+  public ODataResponse deleteEntityLink(ContentType contentType) throws ODataException {
     throw new ODataNotImplementedException();
   }
 
@@ -234,7 +233,7 @@ public abstract class ODataSingleProcessor
    * @see EntityComplexProperty
    */
   @Override
-  public ODataResponse readEntityComplexProperty(GetComplexPropertyView uriParserResultView) throws ODataException {
+  public ODataResponse readEntityComplexProperty(GetComplexPropertyView uriParserResultView, ContentType contentType) throws ODataException {
     throw new ODataNotImplementedException();
   }
 
@@ -242,7 +241,7 @@ public abstract class ODataSingleProcessor
    * @see EntityComplexProperty
    */
   @Override
-  public ODataResponse updateEntityComplexProperty() throws ODataException {
+  public ODataResponse updateEntityComplexProperty(ContentType contentType) throws ODataException {
     throw new ODataNotImplementedException();
   }
 
@@ -250,7 +249,7 @@ public abstract class ODataSingleProcessor
    * @see EntitySet
    */
   @Override
-  public ODataResponse readEntitySet(GetEntitySetView uriParserResultView) throws ODataException {
+  public ODataResponse readEntitySet(GetEntitySetView uriParserResultView, ContentType contentType) throws ODataException {
     throw new ODataNotImplementedException();
   }
 
@@ -258,7 +257,7 @@ public abstract class ODataSingleProcessor
    * @see EntitySet
    */
   @Override
-  public ODataResponse countEntitySet(GetEntitySetCountView uriParserResultView) throws ODataException {
+  public ODataResponse countEntitySet(GetEntitySetCountView uriParserResultView, ContentType contentType) throws ODataException {
     throw new ODataNotImplementedException();
   }
 
@@ -266,7 +265,7 @@ public abstract class ODataSingleProcessor
    * @see Entity
    */
   @Override
-  public ODataResponse createEntity() throws ODataException {
+  public ODataResponse createEntity(ContentType contentType) throws ODataException {
     throw new ODataNotImplementedException();
   }
 
@@ -274,7 +273,7 @@ public abstract class ODataSingleProcessor
    * @see Entity
    */
   @Override
-  public ODataResponse readEntity(GetEntityView uriParserResultView) throws ODataException {
+  public ODataResponse readEntity(GetEntityView uriParserResultView, ContentType contentType) throws ODataException {
     throw new ODataNotImplementedException();
   }
 
@@ -282,7 +281,7 @@ public abstract class ODataSingleProcessor
    * @see Entity
    */
   @Override
-  public ODataResponse existsEntity(GetEntityCountView uriParserResultView) throws ODataException {
+  public ODataResponse existsEntity(GetEntityCountView uriParserResultView, ContentType contentType) throws ODataException {
     throw new ODataNotImplementedException();
   }
 
@@ -290,7 +289,7 @@ public abstract class ODataSingleProcessor
    * @see Entity
    */
   @Override
-  public ODataResponse updateEntity() throws ODataException {
+  public ODataResponse updateEntity(ContentType contentType) throws ODataException {
     throw new ODataNotImplementedException();
   }
 
@@ -298,7 +297,7 @@ public abstract class ODataSingleProcessor
    * @see Entity
    */
   @Override
-  public ODataResponse deleteEntity() throws ODataException {
+  public ODataResponse deleteEntity(ContentType contentType) throws ODataException {
     throw new ODataNotImplementedException();
   }
 
@@ -306,16 +305,12 @@ public abstract class ODataSingleProcessor
    * @see ServiceDocument
    */
   @Override
-  public ODataResponse readServiceDocument(GetServiceDocumentView uriParserResultView) throws ODataException {
-    //TODO: uriParserResultView.getFormat() only returns a valid format if the format is set via $format
-    //      Content Negotiation yet not implemented, but in general we should go for a format as separate parameter and not via uriResultViews
-    ODataEntityProvider odataSerializer = ODataEntityProvider.create(Format.XML);
+  public ODataResponse readServiceDocument(GetServiceDocumentView uriParserResultView, ContentType contentType) throws ODataException {
+    ODataEntityProvider odataSerializer = ODataEntityProvider.create(contentType);
     ODataEntityContent serviceDocument = odataSerializer.writeServiceDocument(getContext().getService().getEntityDataModel(), getContext().getUriInfo().getBaseUri().toASCIIString());
     return ODataResponse
-        .status(HttpStatusCodes.OK)
-        .header("Content-Type", serviceDocument.getContentHeader())
         .header("DataServiceVersion", Edm.DATA_SERVICE_VERSION_10)
-        .entity(serviceDocument.getContent())
+        .entity(serviceDocument)
         .build();
   }
 
@@ -323,11 +318,11 @@ public abstract class ODataSingleProcessor
    * @see Metadata
    */
   @Override
-  public ODataResponse readMetadata(GetMetadataView uriParserResultView) throws ODataException {
+  public ODataResponse readMetadata(GetMetadataView uriParserResultView, ContentType contentType) throws ODataException {
     EdmServiceMetadata edmServiceMetadata = getContext().getService().getEntityDataModel().getServiceMetadata();
     return ODataResponse
         .status(HttpStatusCodes.OK)
-        .header("Content-Type", MediaType.APPLICATION_XML.toString())
+        .header("Content-Type", contentType.toString())
         .header("DataServiceVersion", edmServiceMetadata.getDataServiceVersion())
         .entity(edmServiceMetadata.getMetadata())
         .build();

@@ -12,6 +12,7 @@ import org.junit.Test;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
+import com.sap.core.odata.api.enums.ContentType;
 import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.api.processor.ODataResponse;
 import com.sap.core.odata.api.processor.aspect.Batch;
@@ -39,59 +40,59 @@ public class DispatcherTest {
   @BeforeClass
   public static void createMockProcessor() throws ODataException {
     ServiceDocument serviceDocument = mock(ServiceDocument.class);
-    when(serviceDocument.readServiceDocument(any(UriParserResultImpl.class))).thenAnswer(getAnswer());
+    when(serviceDocument.readServiceDocument(any(UriParserResultImpl.class), any(ContentType.class))).thenAnswer(getAnswer());
 
     EntitySet entitySet = mock(EntitySet.class);
-    when(entitySet.readEntitySet(any(UriParserResultImpl.class))).thenAnswer(getAnswer());
-    when(entitySet.countEntitySet(any(UriParserResultImpl.class))).thenAnswer(getAnswer());
-    when(entitySet.createEntity()).thenAnswer(getAnswer());
+    when(entitySet.readEntitySet(any(UriParserResultImpl.class), any(ContentType.class))).thenAnswer(getAnswer());
+    when(entitySet.countEntitySet(any(UriParserResultImpl.class), any(ContentType.class))).thenAnswer(getAnswer());
+    when(entitySet.createEntity(any(ContentType.class))).thenAnswer(getAnswer());
 
     Entity entity = mock(Entity.class);
-    when(entity.readEntity(any(UriParserResultImpl.class))).thenAnswer(getAnswer());
-    when(entity.existsEntity(any(UriParserResultImpl.class))).thenAnswer(getAnswer());
-    when(entity.deleteEntity()).thenAnswer(getAnswer());
-    when(entity.updateEntity()).thenAnswer(getAnswer());
+    when(entity.readEntity(any(UriParserResultImpl.class), any(ContentType.class))).thenAnswer(getAnswer());
+    when(entity.existsEntity(any(UriParserResultImpl.class), any(ContentType.class))).thenAnswer(getAnswer());
+    when(entity.deleteEntity(any(ContentType.class))).thenAnswer(getAnswer());
+    when(entity.updateEntity(any(ContentType.class))).thenAnswer(getAnswer());
 
     EntityComplexProperty entityComplexProperty = mock(EntityComplexProperty.class);
-    when(entityComplexProperty.readEntityComplexProperty(any(UriParserResultImpl.class))).thenAnswer(getAnswer());
-    when(entityComplexProperty.updateEntityComplexProperty()).thenAnswer(getAnswer());
+    when(entityComplexProperty.readEntityComplexProperty(any(UriParserResultImpl.class), any(ContentType.class))).thenAnswer(getAnswer());
+    when(entityComplexProperty.updateEntityComplexProperty(any(ContentType.class))).thenAnswer(getAnswer());
 
     EntitySimpleProperty entitySimpleProperty = mock(EntitySimpleProperty.class);
-    when(entitySimpleProperty.readEntitySimpleProperty(any(UriParserResultImpl.class))).thenAnswer(getAnswer());
-    when(entitySimpleProperty.updateEntitySimpleProperty()).thenAnswer(getAnswer());
+    when(entitySimpleProperty.readEntitySimpleProperty(any(UriParserResultImpl.class), any(ContentType.class))).thenAnswer(getAnswer());
+    when(entitySimpleProperty.updateEntitySimpleProperty(any(ContentType.class))).thenAnswer(getAnswer());
 
     EntitySimplePropertyValue entitySimplePropertyValue = mock(EntitySimplePropertyValue.class);
-    when(entitySimplePropertyValue.readEntitySimplePropertyValue(any(UriParserResultImpl.class))).thenAnswer(getAnswer());
-    when(entitySimplePropertyValue.deleteEntitySimplePropertyValue()).thenAnswer(getAnswer());
-    when(entitySimplePropertyValue.updateEntitySimplePropertyValue()).thenAnswer(getAnswer());
+    when(entitySimplePropertyValue.readEntitySimplePropertyValue(any(UriParserResultImpl.class), any(ContentType.class))).thenAnswer(getAnswer());
+    when(entitySimplePropertyValue.deleteEntitySimplePropertyValue(any(ContentType.class))).thenAnswer(getAnswer());
+    when(entitySimplePropertyValue.updateEntitySimplePropertyValue(any(ContentType.class))).thenAnswer(getAnswer());
 
     EntityLink entityLink = mock(EntityLink.class);
-    when(entityLink.readEntityLink(any(UriParserResultImpl.class))).thenAnswer(getAnswer());
-    when(entityLink.existsEntityLink(any(UriParserResultImpl.class))).thenAnswer(getAnswer());
-    when(entityLink.deleteEntityLink()).thenAnswer(getAnswer());
-    when(entityLink.updateEntityLink()).thenAnswer(getAnswer());
+    when(entityLink.readEntityLink(any(UriParserResultImpl.class), any(ContentType.class))).thenAnswer(getAnswer());
+    when(entityLink.existsEntityLink(any(UriParserResultImpl.class), any(ContentType.class))).thenAnswer(getAnswer());
+    when(entityLink.deleteEntityLink(any(ContentType.class))).thenAnswer(getAnswer());
+    when(entityLink.updateEntityLink(any(ContentType.class))).thenAnswer(getAnswer());
 
     EntityLinks entityLinks = mock(EntityLinks.class);
-    when(entityLinks.readEntityLinks(any(UriParserResultImpl.class))).thenAnswer(getAnswer());
-    when(entityLinks.countEntityLinks(any(UriParserResultImpl.class))).thenAnswer(getAnswer());
-    when(entityLinks.createEntityLink()).thenAnswer(getAnswer());
+    when(entityLinks.readEntityLinks(any(UriParserResultImpl.class), any(ContentType.class))).thenAnswer(getAnswer());
+    when(entityLinks.countEntityLinks(any(UriParserResultImpl.class), any(ContentType.class))).thenAnswer(getAnswer());
+    when(entityLinks.createEntityLink(any(ContentType.class))).thenAnswer(getAnswer());
 
     Metadata metadata = mock(Metadata.class);
-    when(metadata.readMetadata(any(UriParserResultImpl.class))).thenAnswer(getAnswer());
+    when(metadata.readMetadata(any(UriParserResultImpl.class), any(ContentType.class))).thenAnswer(getAnswer());
 
     Batch batch = mock(Batch.class);
-    when(batch.executeBatch()).thenAnswer(getAnswer());
+    when(batch.executeBatch(any(ContentType.class))).thenAnswer(getAnswer());
 
     FunctionImport functionImport = mock(FunctionImport.class);
-    when(functionImport.executeFunctionImport(any(UriParserResultImpl.class))).thenAnswer(getAnswer());
+    when(functionImport.executeFunctionImport(any(UriParserResultImpl.class), any(ContentType.class))).thenAnswer(getAnswer());
 
     FunctionImportValue functionImportValue = mock(FunctionImportValue.class);
-    when(functionImportValue.executeFunctionImportValue(any(UriParserResultImpl.class))).thenAnswer(getAnswer());
+    when(functionImportValue.executeFunctionImportValue(any(UriParserResultImpl.class), any(ContentType.class))).thenAnswer(getAnswer());
 
     EntityMedia entityMedia = mock(EntityMedia.class);
-    when(entityMedia.readEntityMedia(any(UriParserResultImpl.class))).thenAnswer(getAnswer());
-    when(entityMedia.deleteEntityMedia()).thenAnswer(getAnswer());
-    when(entityMedia.updateEntityMedia()).thenAnswer(getAnswer());
+    when(entityMedia.readEntityMedia(any(UriParserResultImpl.class), any(ContentType.class))).thenAnswer(getAnswer());
+    when(entityMedia.deleteEntityMedia(any(ContentType.class))).thenAnswer(getAnswer());
+    when(entityMedia.updateEntityMedia(any(ContentType.class))).thenAnswer(getAnswer());
 
     service = mock(ODataService.class);
     when(service.getServiceDocumentProcessor()).thenReturn(serviceDocument);
@@ -129,7 +130,7 @@ public class DispatcherTest {
     UriParserResultImpl uriParserResult = mock(UriParserResultImpl.class);
     when(uriParserResult.getUriType()).thenReturn(uriType);
     when(uriParserResult.isValue()).thenReturn(isValue);
-    final ODataResponse response = dispatcher.dispatch(method, uriParserResult);
+    final ODataResponse response = dispatcher.dispatch(method, uriParserResult, ContentType.APPLICATION_XML);
     assertEquals(expectedMethodName, response.getEntity());
   }
 

@@ -1,9 +1,15 @@
 package com.sap.core.odata.api.service;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.sap.core.odata.api.edm.Edm;
 import com.sap.core.odata.api.edm.provider.EdmProvider;
+import com.sap.core.odata.api.enums.ContentType;
 import com.sap.core.odata.api.enums.ODataVersion;
 import com.sap.core.odata.api.exception.ODataException;
+import com.sap.core.odata.api.exception.ODataNotImplementedException;
+import com.sap.core.odata.api.processor.ContentTypeSupport;
 import com.sap.core.odata.api.processor.ODataProcessor;
 import com.sap.core.odata.api.processor.ODataSingleProcessor;
 import com.sap.core.odata.api.processor.aspect.Batch;
@@ -18,6 +24,7 @@ import com.sap.core.odata.api.processor.aspect.EntitySimplePropertyValue;
 import com.sap.core.odata.api.processor.aspect.FunctionImport;
 import com.sap.core.odata.api.processor.aspect.FunctionImportValue;
 import com.sap.core.odata.api.processor.aspect.Metadata;
+import com.sap.core.odata.api.processor.aspect.ProcessorAspect;
 import com.sap.core.odata.api.processor.aspect.ServiceDocument;
 import com.sap.core.odata.api.rt.RuntimeDelegate;
 
@@ -33,7 +40,7 @@ public class ODataSingleProcessorService implements ODataService {
 
   private ODataSingleProcessor processor;
   private Edm edm;
-  
+
   /**
    * Construct service
    * @param provider A custom {@link EdmProvider}
@@ -170,5 +177,55 @@ public class ODataSingleProcessorService implements ODataService {
   @Override
   public ODataProcessor getProcessor() throws ODataException {
     return (ODataProcessor) this.processor;
+  }
+
+  @Override
+  public List<ContentType> getSupportedContentTypes(ProcessorAspect processorAspect) throws ODataException {
+    List<ContentType> result = new ArrayList<ContentType>();
+
+    switch (processorAspect) {
+    case BATCH:
+      result.add(ContentType.MULTIPART_MIXED);
+      break;
+    case ENTITY:
+      result.add(ContentType.APPLICATION_ATOM_XML_ENTRY);
+      result.add(ContentType.APPLICATION_ATOM_XML);
+      result.add(ContentType.APPLICATION_JSON);
+      break;
+    case FUNCTION_IMPORT:
+    case ENTITY_LINK:
+    case ENTITY_LINKS:
+    case ENTITY_SIMPLE_PROPERTY:
+    case ENTITY_COMPLEX_PROPERTY:
+      result.add(ContentType.APPLICATION_XML);
+      result.add(ContentType.APPLICATION_JSON);
+      break;
+    case ENTITY_MEDIA:
+    case ENTITY_SIMPLE_PROPERTY_VALUE:
+    case FUNCTION_IMPORT_VALUE:
+      result.add(ContentType.WILDCARD);
+      break;
+    case ENTITY_SET:
+      result.add(ContentType.APPLICATION_ATOM_XML_FEED);
+      result.add(ContentType.APPLICATION_ATOM_XML);
+      result.add(ContentType.APPLICATION_JSON);
+      break;
+    case METDDATA:
+      result.add(ContentType.APPLICATION_XML);
+      break;
+    case SERVICE_DOCUMENT:
+      result.add(ContentType.APPLICATION_ATOM_SVC);
+      result.add(ContentType.APPLICATION_JSON);
+      break;
+    default:
+      throw new ODataNotImplementedException();
+    }
+
+    if (processor instanceof ContentTypeSupport) {
+      ContentTypeSupport cts = (ContentTypeSupport) processor;
+      result.addAll(cts.getSupportedContentTypes(processorAspect));
+    }
+
+    return result;
   }
 }

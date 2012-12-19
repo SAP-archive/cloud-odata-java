@@ -1,5 +1,6 @@
 package com.sap.core.odata.api.uri.resultviews;
 
+import java.text.Format;
 import java.util.List;
 import java.util.Map;
 
@@ -7,7 +8,7 @@ import com.sap.core.odata.api.edm.EdmEntityContainer;
 import com.sap.core.odata.api.edm.EdmEntitySet;
 import com.sap.core.odata.api.edm.EdmFunctionImport;
 import com.sap.core.odata.api.edm.EdmType;
-import com.sap.core.odata.api.enums.Format;
+import com.sap.core.odata.api.enums.ContentType;
 import com.sap.core.odata.api.enums.InlineCount;
 import com.sap.core.odata.api.uri.EdmLiteral;
 import com.sap.core.odata.api.uri.KeyPredicate;
@@ -61,12 +62,7 @@ public interface GetEntitySetLinksView {
   /**
    * @return {@link Format} the format
    */
-  public Format getFormat();
-
-  /**
-   * @return custom format specification
-   */
-  public String getCustomFormat();
+  public ContentType getContentType();
 
   /**
    * @return the filter expression

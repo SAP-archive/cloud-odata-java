@@ -26,6 +26,7 @@ import org.junit.Test;
 import org.mockito.Matchers;
 
 import com.sap.core.odata.api.edm.provider.EdmProvider;
+import com.sap.core.odata.api.enums.ContentType;
 import com.sap.core.odata.api.exception.MessageReference;
 import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.api.exception.ODataHttpException;
@@ -58,7 +59,7 @@ public class HttpExceptionResponseTest extends AbstractBasicTest {
 
   @Test
   public void test404HttpNotFound() throws Exception {
-    when(processor.readEntity(any(GetEntityView.class))).thenThrow(new ODataNotFoundException(ODataNotFoundException.ENTITY));
+    when(processor.readEntity(any(GetEntityView.class),any(ContentType.class))).thenThrow(new ODataNotFoundException(ODataNotFoundException.ENTITY));
 
     HttpResponse response = executeGetRequest("Managers('199')");
     assertEquals(404, response.getStatusLine().getStatusCode());
@@ -81,7 +82,7 @@ public class HttpExceptionResponseTest extends AbstractBasicTest {
     for (ODataHttpException oDataException : toTestExceptions) {
       String key = String.valueOf(firstKey++);
       Matcher<GetEntityView> match = new EntityKeyMatcher(key);
-      when(processor.readEntity(Matchers.argThat(match))).thenThrow(oDataException);
+      when(processor.readEntity(Matchers.argThat(match),any(ContentType.class))).thenThrow(oDataException);
 
       String uri = getEndpoint().toString() + "Managers('" + key + "')";
       HttpGet get = new HttpGet(URI.create(uri));

@@ -62,11 +62,6 @@ public interface GetEntitySetLinksCountView {
   public boolean isLinks();
 
   /**
-   * @return the custom format
-   */
-  public String getCustomFormat();
-
-  /**
    * @return the filter expression
    */
   public FilterExpression getFilter();

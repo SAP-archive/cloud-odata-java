@@ -58,11 +58,6 @@ public interface GetEntityLinkCountView {
   public boolean isLinks();
 
   /**
-   * @return String the customer format
-   */
-  public String getCustomFormat();
-
-  /**
    * @return Map of {@literal <String,} {@link EdmLiteral}{@literal >} function import parameters
    */
   public Map<String, EdmLiteral> getFunctionImportParameters();

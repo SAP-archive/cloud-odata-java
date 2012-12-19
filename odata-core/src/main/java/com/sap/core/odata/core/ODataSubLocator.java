@@ -5,8 +5,10 @@ import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -16,7 +18,6 @@ import javax.ws.rs.OPTIONS;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.core.HttpHeaders;
-import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.PathSegment;
 import javax.ws.rs.core.Request;
@@ -26,13 +27,16 @@ import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.UriInfo;
 
+import com.sap.core.odata.api.enums.ContentType;
 import com.sap.core.odata.api.exception.ODataBadRequestException;
 import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.api.exception.ODataMethodNotAllowedException;
+import com.sap.core.odata.api.exception.ODataNotAcceptableException;
 import com.sap.core.odata.api.exception.ODataNotFoundException;
 import com.sap.core.odata.api.processor.ODataPathSegment;
 import com.sap.core.odata.api.processor.ODataResponse;
 import com.sap.core.odata.api.processor.ODataUriInfo;
+import com.sap.core.odata.api.processor.aspect.ProcessorAspect;
 import com.sap.core.odata.api.service.ODataService;
 import com.sap.core.odata.api.service.ODataServiceFactory;
 import com.sap.core.odata.core.enums.ODataHttpMethod;
@@ -51,20 +55,52 @@ public final class ODataSubLocator implements ODataLocator {
 
   private Map<String, String> queryParameters;
 
+  private List<ContentType> acceptedContentTypes;
+
   @GET
   public Response handleGet() throws ODataException {
     List<ODataPathSegment> pathSegments = this.context.getUriInfo().getODataPathSegmentList(); //
     UriParserResultImpl uriParserResult = (UriParserResultImpl) this.uriParser.parse(pathSegments, this.queryParameters);
 
-    // $format system query option has precedence
-    if (uriParserResult.getFormat() == null && uriParserResult.getCustomFormat() == null) {
-//      uriParserResult.setFormat(format);
-    }
-    
-    ODataResponse odataResponse = dispatcher.dispatch(ODataHttpMethod.GET, uriParserResult);
+    ProcessorAspect processorAspect = dispatcher.mapUriTypeToProcessorAspect(uriParserResult);
+    List<ContentType> supportedContentTypes = service.getSupportedContentTypes(processorAspect);
+    List<ContentType> resultedContentTypes = determineAcceptedContentTypes(uriParserResult, acceptedContentTypes);
+    ContentType contentType = contentNegotiation(resultedContentTypes, supportedContentTypes);
+
+    ODataResponse odataResponse = dispatcher.dispatch(ODataHttpMethod.GET, uriParserResult, contentType);
     Response response = this.convertResponse(odataResponse);
 
     return response;
+  }
+
+  private ContentType contentNegotiation(List<ContentType> contentTypes, List<ContentType> supportedContentTypes) throws ODataException {
+    Set<ContentType> setSupported = new HashSet<ContentType>(supportedContentTypes);
+
+    if (contentTypes.isEmpty()) {
+      if (!setSupported.isEmpty()) {
+        return supportedContentTypes.get(0);
+      }
+    } else {
+      for (ContentType ct : contentTypes) {
+        if (setSupported.contains(ct)) {
+          return ct;
+        }
+      }
+    }
+
+    throw new ODataNotAcceptableException(ODataNotAcceptableException.COMMON.addContent(contentTypes.toString()));
+  }
+
+  private List<ContentType> determineAcceptedContentTypes(UriParserResultImpl uriParserResult, List<ContentType> contentTypes) {
+    List<ContentType> result;
+    if (uriParserResult.getContentType() != null) {
+      result = new ArrayList<ContentType>();
+      result.add(uriParserResult.getContentType());
+    } else {
+      result = contentTypes;
+    }
+
+    return result;
   }
 
   @POST
@@ -125,7 +161,7 @@ public final class ODataSubLocator implements ODataLocator {
 
     this.queryParameters = this.convertToSinglevaluedMap(param.getUriInfo().getQueryParameters());
 
-    List<MediaType> mediaTypes = param.httpHeaders.getAcceptableMediaTypes();
+    acceptedContentTypes = convertMediaTypes(param.httpHeaders.getAcceptableMediaTypes());
 
     this.service = param.getServiceFactory().createService(this.context);
     this.context.setService(this.service);
@@ -135,6 +171,16 @@ public final class ODataSubLocator implements ODataLocator {
     this.dispatcher = new Dispatcher(this.service);
   }
 
+  private List<ContentType> convertMediaTypes(List<javax.ws.rs.core.MediaType> acceptableMediaTypes) {
+    List<ContentType> mediaTypes = new ArrayList<ContentType>();
+
+    for (javax.ws.rs.core.MediaType x : acceptableMediaTypes) {
+      ContentType mt = ContentType.create(x.getType(), x.getSubtype()).addParameters(x.getParameters());
+      mediaTypes.add(mt);
+    }
+
+    return mediaTypes;
+  }
 
   private ODataUriInfo buildODataUriInfo(InitParameter param) throws ODataException {
     ODataUriInfoImpl odataUriInfo = new ODataUriInfoImpl();

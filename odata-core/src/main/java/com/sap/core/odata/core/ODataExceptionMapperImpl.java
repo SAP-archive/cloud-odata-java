@@ -20,7 +20,7 @@ import javax.ws.rs.ext.Provider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.sap.core.odata.api.enums.Format;
+import com.sap.core.odata.api.enums.ContentType;
 import com.sap.core.odata.api.enums.HttpStatusCodes;
 import com.sap.core.odata.api.exception.MessageReference;
 import com.sap.core.odata.api.exception.ODataApplicationException;
@@ -67,8 +67,8 @@ public class ODataExceptionMapperImpl implements ExceptionMapper<Exception> {
   }
 
   private Response buildResponseForWebApplicationException(WebApplicationException webApplicationException) {
-    InputStream entity = ODataExceptionSerializer.serialize(buildErrorCode(webApplicationException), webApplicationException.getMessage(), getFormat(), DEFAULT_RESPONSE_LOCALE);
-    return buildResponseInternal(entity, getFormat(), webApplicationException.getResponse().getStatus());
+    InputStream entity = ODataExceptionSerializer.serialize(buildErrorCode(webApplicationException), webApplicationException.getMessage(), getContentType(), DEFAULT_RESPONSE_LOCALE);
+    return buildResponseInternal(entity, getContentType(), webApplicationException.getResponse().getStatus());
   }
 
   private boolean isInternalServerError(final Response response) {
@@ -91,37 +91,39 @@ public class ODataExceptionMapperImpl implements ExceptionMapper<Exception> {
   }
 
   private Response buildResponseForException(Exception exception) {
-    Format format = getFormat();
-    InputStream entity = ODataExceptionSerializer.serialize(buildErrorCode(exception), exception.getMessage(), format, DEFAULT_RESPONSE_LOCALE);
-    return buildResponseInternal(entity, format, Status.INTERNAL_SERVER_ERROR.getStatusCode());
+    ContentType contentType = getContentType();
+    InputStream entity = ODataExceptionSerializer.serialize(buildErrorCode(exception), exception.getMessage(), contentType, DEFAULT_RESPONSE_LOCALE);
+    return buildResponseInternal(entity, contentType, Status.INTERNAL_SERVER_ERROR.getStatusCode());
   }
 
   private Response buildResponseForApplicationException(ODataApplicationException exception) {
     int status = extractStatus(exception);
-    Format format = getFormat();
-    InputStream entity = ODataExceptionSerializer.serialize(exception.getCode(), exception.getMessage(), format, DEFAULT_RESPONSE_LOCALE);
-    return buildResponseInternal(entity, format, status);
+    ContentType contentType = getContentType();
+    InputStream entity = ODataExceptionSerializer.serialize(exception.getCode(), exception.getMessage(), contentType, DEFAULT_RESPONSE_LOCALE);
+    return buildResponseInternal(entity, contentType, status);
   }
 
   private Response buildResponseForHttpException(ODataHttpException msgException) {
     Message localizedMessage = extractEntity(msgException.getMessageReference());
     int status = extractStatus(msgException);
-    Format format = getFormat();
-    InputStream entity = ODataExceptionSerializer.serialize(buildErrorCode(msgException), localizedMessage.getText(), format, localizedMessage.getLocale());
-    return buildResponseInternal(entity, format, status);
+    ContentType contentType = getContentType();
+    InputStream entity = ODataExceptionSerializer.serialize(buildErrorCode(msgException), localizedMessage.getText(), contentType, localizedMessage.getLocale());
+    return buildResponseInternal(entity, contentType, status);
   }
 
-  private Response buildResponseInternal(InputStream entity, Format format, int status) {
+  private Response buildResponseInternal(InputStream entity, ContentType contentType, int status) {
     ResponseBuilder responseBuilder = Response.noContent();
 
-    switch (format) {
+    switch (contentType.getODataFormat()) {
+    case XML:
+    case ATOM:
+      return responseBuilder.entity(entity).type(MediaType.APPLICATION_XML_TYPE).status(status).build();
     case JSON:
       return responseBuilder.entity(entity).type(MediaType.APPLICATION_JSON_TYPE).status(status).build();
-    case XML:
-      return responseBuilder.entity(entity).type(MediaType.APPLICATION_XML_TYPE).status(status).build();
     default:
       return Response.status(Status.UNSUPPORTED_MEDIA_TYPE).build();
     }
+
   }
 
   private int extractStatus(ODataException exception) {
@@ -163,17 +165,17 @@ public class ODataExceptionMapperImpl implements ExceptionMapper<Exception> {
     }
   }
 
-  private Format getFormat() {
+  private ContentType getContentType() {
     List<MediaType> acceptableMediaTypes = httpHeaders.getAcceptableMediaTypes();
 
     for (MediaType type : acceptableMediaTypes) {
       if (type.isWildcardType() || MediaType.APPLICATION_ATOM_XML_TYPE.equals(type) || MediaType.APPLICATION_XML_TYPE.equals(type)) {
-        return Format.XML;
+        return ContentType.APPLICATION_XML;
       } else if (MediaType.APPLICATION_JSON_TYPE.equals(type)) {
-        return Format.JSON;
+        return ContentType.APPLICATION_JSON;
       }
     }
-    return Format.XML;
+    return ContentType.APPLICATION_XML;
   }
 
   private String buildErrorCode(Exception e) {

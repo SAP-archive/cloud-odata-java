@@ -1,9 +1,10 @@
 package com.sap.core.odata.api.uri.resultviews;
 
+import java.text.Format;
 import java.util.Map;
 
 import com.sap.core.odata.api.edm.EdmFunctionImport;
-import com.sap.core.odata.api.enums.Format;
+import com.sap.core.odata.api.enums.ContentType;
 import com.sap.core.odata.api.uri.EdmLiteral;
 
 public interface GetFunctionImportView {
@@ -15,12 +16,7 @@ public interface GetFunctionImportView {
   /**
    * @return {@link Format} the format
    */
-  public Format getFormat();
-
-  /**
-   * @return String the customer format
-   */
-  public String getCustomFormat();
+  public ContentType getContentType();
 
   /**
    * @return Map of {@literal <String,} {@link EdmLiteral}{@literal >} function import parameters

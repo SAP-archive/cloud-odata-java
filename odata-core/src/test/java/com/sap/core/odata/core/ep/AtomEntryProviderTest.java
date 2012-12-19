@@ -30,7 +30,7 @@ import com.sap.core.odata.api.edm.EdmEntitySet;
 import com.sap.core.odata.api.edm.EdmProperty;
 import com.sap.core.odata.api.edm.EdmTargetPath;
 import com.sap.core.odata.api.edm.EdmTyped;
-import com.sap.core.odata.api.enums.MediaType;
+import com.sap.core.odata.api.enums.ContentType;
 import com.sap.core.odata.api.ep.ODataEntityContent;
 import com.sap.core.odata.api.ep.ODataEntityProvider;
 import com.sap.core.odata.api.ep.ODataEntityProviderProperties;
@@ -50,7 +50,7 @@ public class AtomEntryProviderTest extends AbstractProviderTest {
     assertXpathEvaluatesTo(BASE_URI.toASCIIString(), "/a:entry/@xml:base", xmlString);
 
     assertXpathExists("/a:entry/a:content", xmlString);
-    assertXpathEvaluatesTo(MediaType.APPLICATION_OCTET_STREAM.toString(), "/a:entry/a:content/@type", xmlString);
+    assertXpathEvaluatesTo(ContentType.APPLICATION_OCTET_STREAM.toString(), "/a:entry/a:content/@type", xmlString);
     assertXpathEvaluatesTo("Employees('1')/$value", "/a:entry/a:content/@src", xmlString);
     assertXpathExists("/a:entry/m:properties", xmlString);
 
@@ -66,7 +66,7 @@ public class AtomEntryProviderTest extends AbstractProviderTest {
   private String verifyContent(ODataEntityContent content) throws IOException {
     assertNotNull(content);
     assertNotNull(content.getContent());
-    assertEquals(MediaType.APPLICATION_ATOM_XML_ENTRY.toString() + "; charset=utf-8", content.getContentHeader());
+    assertEquals(ContentType.APPLICATION_ATOM_XML_ENTRY.toString() + "; charset=utf-8", content.getContentHeader());
     String xmlString = StringHelper.inputStreamToString(content.getContent());
     return xmlString;
   }
@@ -179,7 +179,7 @@ public class AtomEntryProviderTest extends AbstractProviderTest {
     assertXpathEvaluatesTo(BASE_URI.toASCIIString(), "/a:entry/@xml:base", xmlString);
 
     assertXpathExists("/a:entry/a:content", xmlString);
-    assertXpathEvaluatesTo(MediaType.APPLICATION_XML.toString(), "/a:entry/a:content/@type", xmlString);
+    assertXpathEvaluatesTo(ContentType.APPLICATION_XML.toString(), "/a:entry/a:content/@type", xmlString);
 
     assertXpathExists("/a:entry/a:content/m:properties", xmlString);
   }
@@ -287,7 +287,7 @@ public class AtomEntryProviderTest extends AbstractProviderTest {
 
     assertNotNull(content);
     assertNotNull(content.getContent());
-    assertEquals(MediaType.APPLICATION_ATOM_XML_ENTRY.toString() + "; charset=utf-8", content.getContentHeader());
+    assertEquals(ContentType.APPLICATION_ATOM_XML_ENTRY.toString() + "; charset=utf-8", content.getContentHeader());
     assertEquals("W/\"<\">\"", content.getETag());
 
     String xmlString = StringHelper.inputStreamToString(content.getContent());

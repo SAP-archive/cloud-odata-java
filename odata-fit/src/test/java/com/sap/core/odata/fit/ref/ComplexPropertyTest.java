@@ -6,7 +6,7 @@ import static org.junit.Assert.assertTrue;
 import org.apache.http.HttpResponse;
 import org.junit.Test;
 
-import com.sap.core.odata.api.enums.MediaType;
+import com.sap.core.odata.api.enums.ContentType;
 
 /**
  * Tests employing the reference scenario reading complex properties in XML format
@@ -16,11 +16,11 @@ public class ComplexPropertyTest extends AbstractRefTest {
   @Test
   public void complexProperty() throws Exception {
     HttpResponse response = callUri("Employees('2')/Location/City/CityName/$value");
-    checkMediaType(response, MediaType.TEXT_PLAIN, false);
+    checkMediaType(response, ContentType.TEXT_PLAIN, false);
     assertEquals(CITY_2_NAME, getBody(response));
 
     response = callUri("Employees('2')/Location");
-    checkMediaType(response, MediaType.APPLICATION_XML);
+    checkMediaType(response, ContentType.APPLICATION_XML);
     assertTrue(getBody(response).contains("PostalCode"));
 
     // notFound("Employees('2')/Location()");

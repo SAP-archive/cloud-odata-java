@@ -24,6 +24,7 @@ import com.sap.core.odata.api.edm.EdmException;
 import com.sap.core.odata.api.edm.EdmMapping;
 import com.sap.core.odata.api.edm.EdmProperty;
 import com.sap.core.odata.api.edm.EdmSimpleTypeKind;
+import com.sap.core.odata.api.enums.ContentType;
 import com.sap.core.odata.api.processor.ODataContext;
 import com.sap.core.odata.api.processor.ODataResponse;
 import com.sap.core.odata.api.processor.ODataUriInfo;
@@ -108,7 +109,7 @@ public class EntityTest {
   public void readEmployees() throws Exception {
     final UriParserResult uriResult = mockUriResult("Employees", "EmployeeId", "5");
 
-    ODataResponse response = processor.readEntity(uriResult);
+    ODataResponse response = processor.readEntity(uriResult, ContentType.APPLICATION_ATOM_XML_ENTRY);
     assertNotNull(response);
     assertTrue(readContent(response).contains("Employee"));
   }
@@ -117,7 +118,7 @@ public class EntityTest {
   public void readTeams() throws Exception {
     final UriParserResult uriResult = mockUriResult("Teams", "Id", "1");
 
-    ODataResponse response = processor.readEntity(uriResult);
+    ODataResponse response = processor.readEntity(uriResult, ContentType.APPLICATION_ATOM_XML_ENTRY);
     assertNotNull(response);
     assertTrue(readContent(response).contains("Team"));
   }
@@ -126,7 +127,7 @@ public class EntityTest {
   public void readRooms() throws Exception {
     final UriParserResult uriResult = mockUriResult("Rooms", "Id", "1");
 
-    ODataResponse response = processor.readEntity(uriResult);
+    ODataResponse response = processor.readEntity(uriResult, ContentType.APPLICATION_ATOM_XML_FEED);
     assertNotNull(response);
     assertTrue(readContent(response).contains("Room"));
   }
@@ -135,7 +136,7 @@ public class EntityTest {
   public void readManagers() throws Exception {
     final UriParserResult uriResult = mockUriResult("Managers", "EmployeeId", "1");
 
-    ODataResponse response = processor.readEntity(uriResult);
+    ODataResponse response = processor.readEntity(uriResult, ContentType.APPLICATION_ATOM_XML_ENTRY);
     assertNotNull(response);
     assertTrue(readContent(response).contains("Manager"));
   }
@@ -144,7 +145,7 @@ public class EntityTest {
   public void readBuildings() throws Exception {
     final UriParserResult uriResult = mockUriResult("Buildings", "Id", "1");
 
-    ODataResponse response = processor.readEntity(uriResult);
+    ODataResponse response = processor.readEntity(uriResult, ContentType.APPLICATION_ATOM_XML_ENTRY);
     assertNotNull(response);
     assertTrue(readContent(response).contains("Building"));
   }

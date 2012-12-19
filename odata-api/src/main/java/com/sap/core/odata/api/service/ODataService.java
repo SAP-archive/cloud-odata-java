@@ -1,6 +1,9 @@
 package com.sap.core.odata.api.service;
 
+import java.util.List;
+
 import com.sap.core.odata.api.edm.Edm;
+import com.sap.core.odata.api.enums.ContentType;
 import com.sap.core.odata.api.enums.ODataVersion;
 import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.api.processor.ODataProcessor;
@@ -16,6 +19,7 @@ import com.sap.core.odata.api.processor.aspect.EntitySimplePropertyValue;
 import com.sap.core.odata.api.processor.aspect.FunctionImport;
 import com.sap.core.odata.api.processor.aspect.FunctionImportValue;
 import com.sap.core.odata.api.processor.aspect.Metadata;
+import com.sap.core.odata.api.processor.aspect.ProcessorAspect;
 import com.sap.core.odata.api.processor.aspect.ServiceDocument;
 
 /**
@@ -137,5 +141,7 @@ public interface ODataService {
    * @see ODataProcessor
    */
   ODataProcessor getProcessor() throws ODataException;
+
+  List<ContentType> getSupportedContentTypes(ProcessorAspect processorAspect) throws ODataException;
   
 }
