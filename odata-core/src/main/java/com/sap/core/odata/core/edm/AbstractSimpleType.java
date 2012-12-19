@@ -72,14 +72,22 @@ public abstract class AbstractSimpleType implements EdmSimpleType {
     return literal;
   }
 
-  protected static <T> T getCheckedNullValue(final EdmFacets facets) throws EdmSimpleTypeException {
-    if (facets == null || facets.isNullable() == null || facets.isNullable())
-      return null;
-    else
+  /**
+   * Checks whether the metadata allow a null literal.
+   * @param facets   metadata given as {@link EdmFacets}
+   * @throws EdmSimpleTypeException  if the metadata constraints are not met
+   */
+  protected static final void checkNullLiteralAllowed(final EdmFacets facets) throws EdmSimpleTypeException {
+    if (facets != null && facets.isNullable() != null && !facets.isNullable())
       throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_NULL_NOT_ALLOWED);
   }
 
-  protected static String getNullOrDefaultValue(final EdmFacets facets) throws EdmSimpleTypeException {
+  /**
+   * Returns <code>null</code> or the default literal as specified in the metadata.
+   * @param facets  metadata given as {@link EdmFacets}
+   * @throws EdmSimpleTypeException  if the metadata constraints are not met
+   */
+  protected static final String getNullOrDefaultLiteral(final EdmFacets facets) throws EdmSimpleTypeException {
     if (facets == null)
       return null;
     else if (facets.getDefaultValue() == null)

@@ -963,6 +963,7 @@ public class EdmSimpleTypeTest {
     expectErrorInValueOfString(instance, "42.42.42", EdmLiteralKind.DEFAULT, null);
     expectErrorInValueOfString(instance, "42.42.42D", EdmLiteralKind.URI, null);
     expectErrorInValueOfString(instance, "42F", EdmLiteralKind.DEFAULT, null);
+    expectErrorInValueOfString(instance, "42", EdmLiteralKind.URI, null);
     expectErrorInValueOfString(instance, "0x42P42", EdmLiteralKind.DEFAULT, null);
   }
 
@@ -1051,6 +1052,7 @@ public class EdmSimpleTypeTest {
     expectErrorInValueOfString(instance, "42.42.42", EdmLiteralKind.DEFAULT, null);
     expectErrorInValueOfString(instance, "42.42.42F", EdmLiteralKind.URI, null);
     expectErrorInValueOfString(instance, "42D", EdmLiteralKind.DEFAULT, null);
+    expectErrorInValueOfString(instance, "42", EdmLiteralKind.URI, null);
     expectErrorInValueOfString(instance, "0x42P4", EdmLiteralKind.DEFAULT, null);
   }
 
@@ -1123,5 +1125,20 @@ public class EdmSimpleTypeTest {
     expectErrorInValueOfString(instance, "datetime'PT23H32M2S'", EdmLiteralKind.URI, null);
     expectErrorInValueOfString(instance, "time'", EdmLiteralKind.URI, null);
     expectErrorInValueOfString(instance, "time''PT", EdmLiteralKind.URI, null);
+  }
+
+  @Test
+  public void validate() throws Exception {
+    for (EdmSimpleTypeKind kind : EdmSimpleTypeKind.values()) {
+      if (kind == EdmSimpleTypeKind.Null)
+        continue;
+      final EdmSimpleType instance = kind.getEdmSimpleTypeInstance();
+      assertTrue(instance.validate(null, null, null));
+      assertTrue(instance.validate(null, null, getNullableFacets(true)));
+      assertFalse(instance.validate(null, null, getNullableFacets(false)));
+      assertFalse(instance.validate("", null, null));
+      assertFalse(instance.validate("ä", EdmLiteralKind.DEFAULT, getUnicodeFacets(false)));
+      assertFalse(instance.validate("ä", EdmLiteralKind.URI, null));
+    }
   }
 }

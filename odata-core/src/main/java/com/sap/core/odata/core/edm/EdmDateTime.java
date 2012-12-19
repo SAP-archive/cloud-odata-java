@@ -29,8 +29,10 @@ public class EdmDateTime extends AbstractSimpleType {
 
   @Override
   public Calendar valueOfString(final String value, final EdmLiteralKind literalKind, final EdmFacets facets) throws EdmSimpleTypeException {
-    if (value == null)
-      return getCheckedNullValue(facets);
+    if (value == null) {
+      checkNullLiteralAllowed(facets);
+      return null;
+    }
 
     if (literalKind == null)
       throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_KIND_MISSING);
@@ -109,7 +111,7 @@ public class EdmDateTime extends AbstractSimpleType {
   @Override
   public String valueToString(final Object value, final EdmLiteralKind literalKind, final EdmFacets facets) throws EdmSimpleTypeException {
     if (value == null)
-      return getNullOrDefaultValue(facets);
+      return getNullOrDefaultLiteral(facets);
 
     if (literalKind == null)
       throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_KIND_MISSING);
@@ -125,40 +127,34 @@ public class EdmDateTime extends AbstractSimpleType {
     else
       throw new EdmSimpleTypeException(EdmSimpleTypeException.VALUE_TYPE_NOT_SUPPORTED.addContent(value.getClass()));
 
-    switch (literalKind) {
-    case DEFAULT:
-      final String pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS";
-      SimpleDateFormat dateFormat = (SimpleDateFormat) SimpleDateFormat.getDateTimeInstance();
-      dateFormat.setTimeZone(TimeZone.getTimeZone("GMT"));
-      dateFormat.applyPattern(pattern);
-      String result = dateFormat.format(dateTimeValue.getTime());
-
-      if (facets == null || facets.getPrecision() == null)
-        while (result.endsWith("0"))
-          result = result.substring(0, result.length() - 1);
-      else if (facets.getPrecision() <= 3)
-        if (result.endsWith("000".substring(0, 3 - facets.getPrecision())))
-          result = result.substring(0, result.length() - (3 - facets.getPrecision()));
-        else
-          throw new EdmSimpleTypeException(EdmSimpleTypeException.VALUE_FACETS_NOT_MATCHED.addContent(value, facets));
-      else
-        for (int i = 4; i <= facets.getPrecision(); i++)
-          result += "0";
-
-      if (result.endsWith("."))
-        result = result.substring(0, result.length() - 1);
-
-      return result;
-
-    case JSON:
+    if (literalKind == EdmLiteralKind.JSON)
       return "\\/Date(" + dateTimeValue.getTimeInMillis() + ")\\/";
 
-    case URI:
-      return toUriLiteral(valueToString(value, EdmLiteralKind.DEFAULT, facets));
+    final String pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS";
+    SimpleDateFormat dateFormat = (SimpleDateFormat) SimpleDateFormat.getDateTimeInstance();
+    dateFormat.setTimeZone(TimeZone.getTimeZone("GMT"));
+    dateFormat.applyPattern(pattern);
+    String result = dateFormat.format(dateTimeValue.getTime());
 
-    default:
-      throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_KIND_NOT_SUPPORTED.addContent(literalKind));
-    }
+    if (facets == null || facets.getPrecision() == null)
+      while (result.endsWith("0"))
+        result = result.substring(0, result.length() - 1);
+    else if (facets.getPrecision() <= 3)
+      if (result.endsWith("000".substring(0, 3 - facets.getPrecision())))
+        result = result.substring(0, result.length() - (3 - facets.getPrecision()));
+      else
+        throw new EdmSimpleTypeException(EdmSimpleTypeException.VALUE_FACETS_NOT_MATCHED.addContent(value, facets));
+    else
+      for (int i = 4; i <= facets.getPrecision(); i++)
+        result += "0";
+
+    if (result.endsWith("."))
+      result = result.substring(0, result.length() - 1);
+
+    if (literalKind == EdmLiteralKind.URI)
+      return toUriLiteral(result);
+    else
+      return result;
   }
 
   @Override

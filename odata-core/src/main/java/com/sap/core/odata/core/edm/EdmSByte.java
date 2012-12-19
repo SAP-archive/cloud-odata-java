@@ -26,8 +26,10 @@ public class EdmSByte extends AbstractSimpleType {
 
   @Override
   public Byte valueOfString(final String value, final EdmLiteralKind literalKind, final EdmFacets facets) throws EdmSimpleTypeException {
-    if (value == null)
-      return getCheckedNullValue(facets);
+    if (value == null) {
+      checkNullLiteralAllowed(facets);
+      return null;
+    }
 
     if (literalKind == null)
       throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_KIND_MISSING);
@@ -42,7 +44,7 @@ public class EdmSByte extends AbstractSimpleType {
   @Override
   public String valueToString(final Object value, final EdmLiteralKind literalKind, final EdmFacets facets) throws EdmSimpleTypeException {
     if (value == null)
-      return getNullOrDefaultValue(facets);
+      return getNullOrDefaultLiteral(facets);
 
     if (literalKind == null)
       throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_KIND_MISSING);
