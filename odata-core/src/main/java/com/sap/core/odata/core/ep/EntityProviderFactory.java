@@ -11,6 +11,8 @@ public class EntityProviderFactory {
     try {
       ODataEntityProvider provider;
 
+      provider = new AtomEntityProvider();
+
       switch (contentType.getODataFormat()) {
       case ATOM:
       case XML:
@@ -19,7 +21,7 @@ public class EntityProviderFactory {
       case JSON:
         throw new ODataNotImplementedException();
       default:
-        throw new ODataNotImplementedException();
+//        throw new ODataNotImplementedException();
       }
 
       return provider;
