@@ -4,14 +4,16 @@ import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.api.processor.ODataContext;
 
 /**
- * Implement this interface to create own instance of {@link ODataService}. Usually the factory implementation is passed as servlet
- * init parameter to a JAX-RS runtime which will instantiate a {@link ODataService} implementation using this factory. For convenience 
- * it is recommended to sub class {@link ODataSingleProcessorService}.<p>
- *  
+ * <p>Implement this interface to create own instance of {@link ODataService}.</p>
+ * <p>Usually the factory implementation is passed as servlet init parameter
+ * to a JAX-RS runtime which will instantiate a {@link ODataService}
+ * implementation using this factory.
+ * For convenience it is recommended to sub class {@link ODataSingleProcessorService}.</p>
+ *
  * <pre>
  * {@code
  * <servlet>
- *  <servlet-name>ReferenceScenarioServlet</servlet-name><br>
+ *  <servlet-name>ReferenceScenarioServlet</servlet-name>
  *  <servlet-class>org.apache.cxf.jaxrs.servlet.CXFNonSpringJaxrsServlet</servlet-class>
  *  <init-param>
  *    <param-name>javax.ws.rs.Application</param-name>
@@ -27,10 +29,8 @@ import com.sap.core.odata.api.processor.ODataContext;
  *  </init-param>
  *  <load-on-startup>1</load-on-startup>
  * </servlet>
- *  } 
- *  </pre>
- * 
- * com.sap.core.odata.processor.factory
+ * }
+ * </pre>
  */
 public interface ODataServiceFactory {
 
@@ -48,7 +48,7 @@ public interface ODataServiceFactory {
    * Create instance of custom {@link ODataService}.
    * @param ctx OData context object
    * @return A new service instance.
-   * @throws {@link ODataException} is thrown in case of error.
+   * @throws ODataException in case of error
    */
   ODataService createService(ODataContext ctx) throws ODataException;
 }

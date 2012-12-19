@@ -1,5 +1,6 @@
 package com.sap.core.odata.api.uri;
 
+import com.sap.core.odata.api.edm.EdmLiteralKind;
 import com.sap.core.odata.api.edm.EdmSimpleType;
 
 /** 
@@ -11,8 +12,9 @@ public final class EdmLiteral {
   private String literal;
 
   /**
-   * @param {@link EdmSimpleType} type
-   * @param {@link String} literal
+   * @param {@link EdmSimpleType} simple type
+   * @param {@link String} literal in default (<em>not</em> URI) representation
+   * @see EdmLiteralKind
    */
   public EdmLiteral(final EdmSimpleType type, final String literal) {
     this.type = type;
@@ -27,7 +29,7 @@ public final class EdmLiteral {
   }
 
   /**
-   * @return String literal
+   * @return {@link String} literal in default (<em>not</em> URI) representation
    */
   public String getLiteral() {
     return literal;
