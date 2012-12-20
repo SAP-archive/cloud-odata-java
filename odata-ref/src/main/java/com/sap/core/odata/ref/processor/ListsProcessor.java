@@ -250,10 +250,15 @@ public class ListsProcessor extends ODataSingleProcessor {
     if (data == null)
       throw new ODataNotFoundException(ODataNotFoundException.ENTITY);
 
+    final EdmEntitySet entitySet = uriParserResultView.getTargetEntitySet();
+    final Map<String, Object> values = getStructuralTypeValueMap(data, entitySet.getEntityType());
+
+    final ODataEntityProviderProperties entryProperties = ODataEntityProviderProperties
+        .baseUri(getContext().getUriInfo().getBaseUri()).build();
+
     return ODataResponse
         .status(HttpStatusCodes.OK)
-        .header(CONTENT_TYPE, ContentType.APPLICATION_XML.toString())
-        .entity("Link to " + data)
+        .entity(ODataEntityProvider.create(contentType).writeLink(entitySet, values, entryProperties))
         .build();
   }
 

@@ -23,11 +23,6 @@ public class Bit extends AbstractSimpleType {
   }
 
   @Override
-  public boolean validate(final String value, final EdmLiteralKind literalKind, final EdmFacets facets) {
-    return EdmSByte.getInstance().validate(value, literalKind, facets);
-  }
-
-  @Override
   public Byte valueOfString(final String value, final EdmLiteralKind literalKind, final EdmFacets facets) throws EdmSimpleTypeException {
     return EdmSByte.getInstance().valueOfString(value, literalKind, facets);
   }
