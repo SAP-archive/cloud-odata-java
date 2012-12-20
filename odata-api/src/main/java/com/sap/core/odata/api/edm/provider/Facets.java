@@ -1,5 +1,8 @@
 package com.sap.core.odata.api.edm.provider;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.sap.core.odata.api.edm.EdmConcurrencyMode;
 import com.sap.core.odata.api.edm.EdmFacets;
 
@@ -21,74 +24,40 @@ public class Facets implements EdmFacets {
   String collation;
   EdmConcurrencyMode concurrencyMode;
 
-  /* (non-Javadoc)
-   * @see com.sap.core.odata.api.edm.EdmFacets#isNullable()
-   */
   public Boolean isNullable() {
     return nullable;
   }
 
-  /* (non-Javadoc)
-   * @see com.sap.core.odata.api.edm.EdmFacets#getDefaultValue()
-   */
   public String getDefaultValue() {
     return defaultValue;
   }
 
-  /* (non-Javadoc)
-   * @see com.sap.core.odata.api.edm.EdmFacets#getMaxLength()
-   */
   public Integer getMaxLength() {
     return maxLength;
   }
 
-  /* (non-Javadoc)
-   * @see com.sap.core.odata.api.edm.EdmFacets#isFixedLength()
-   */
   public Boolean isFixedLength() {
     return fixedLength;
   }
 
-  /* (non-Javadoc)
-   * @see com.sap.core.odata.api.edm.EdmFacets#getPrecision()
-   */
   public Integer getPrecision() {
     return precision;
   }
 
-  /* (non-Javadoc)
-   * @see com.sap.core.odata.api.edm.EdmFacets#getScale()
-   */
   public Integer getScale() {
     return scale;
   }
 
-  /* (non-Javadoc)
-   * @see com.sap.core.odata.api.edm.EdmFacets#isUnicode()
-   */
   public Boolean isUnicode() {
     return unicode;
   }
 
-  /* (non-Javadoc)
-   * @see com.sap.core.odata.api.edm.EdmFacets#getCollation()
-   */
   public String getCollation() {
     return collation;
   }
 
-  /* (non-Javadoc)
-   * @see com.sap.core.odata.api.edm.EdmFacets#getConcurrencyMode()
-   */
   public EdmConcurrencyMode getConcurrencyMode() {
     return concurrencyMode;
-  }
-
-  /**
-   * @return <b>boolean</b> if this {@link Facets} is nullable
-   */
-  public Boolean getNullable() {
-    return nullable;
   }
 
   /**
@@ -183,14 +152,25 @@ public class Facets implements EdmFacets {
 
   @Override
   public String toString() {
-    return "Nullable=" + nullable + ", "
-        + "DefaultValue=" + defaultValue + ", "
-        + "MaxLength=" + maxLength + ", "
-        + "FixedLength=" + fixedLength + ", "
-        + "Precision=" + precision + ", "
-        + "Scale=" + scale + ", "
-        + "Unicode=" + unicode + ", "
-        + "Collation=" + collation + ", "
-        + "ConcurrencyMode=" + concurrencyMode;
+    List<String> values = new ArrayList<String>();
+    if (nullable != null)
+      values.add("Nullable=" + nullable);
+    if (defaultValue != null)
+      values.add("DefaultValue=" + defaultValue);
+    if (maxLength != null)
+      values.add("MaxLength=" + maxLength);
+    if (fixedLength != null)
+      values.add("FixedLength=" + fixedLength);
+    if (precision != null)
+      values.add("Precision=" + precision);
+    if (scale != null)
+      values.add("Scale=" + scale);
+    if (unicode != null)
+      values.add("Unicode=" + unicode);
+    if (collation != null)
+      values.add("Collation=" + collation);
+    if (concurrencyMode != null)
+      values.add("ConcurrencyMode=" + concurrencyMode);
+    return values.toString();
   }
 }
