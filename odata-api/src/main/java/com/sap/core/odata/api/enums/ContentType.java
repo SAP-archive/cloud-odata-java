@@ -4,6 +4,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.TreeMap;
@@ -12,6 +13,10 @@ import java.util.TreeMap;
  * 
  */
 public class ContentType {
+
+  public enum ODataFormat {
+    ATOM, XML, JSON, CUSTOM
+  }
 
   private String type;
   private String subtype;
@@ -85,13 +90,11 @@ public class ContentType {
     if (types.contains("/")) {
       String[] tokens = types.split("/");
       if (tokens.length == 2) {
-//        return new ContentType(tokens[0], tokens[1]).addParameters(parametersMap);
         return create(tokens[0], tokens[1]).addParameters(parametersMap);
       } else {
         throw new IllegalArgumentException("Too many '/' in format '" + format + "'.");
       }
     } else {
-//      return new ContentType(types, "*").addParameters(parametersMap);
       return create(types, "*").addParameters(parametersMap);
     }
   }
@@ -109,11 +112,22 @@ public class ContentType {
       for (String parameter : formatParmeters) {
         String[] keyValue = parameter.split("=");
         String key = keyValue[0];
-        String value = (keyValue.length > 1 ? keyValue[1] : null);
-        parameters.put(key, value);
+        if(isParameterAllowed(key)) {
+          String value = (keyValue.length > 1 ? keyValue[1] : null);
+          parameters.put(key, value);
+        }
       }
     }
     return parameters;
+  }
+
+  private static boolean isParameterAllowed(String key) {
+    if(key == null) {
+      return false;
+    } else if("q".equals(key.toLowerCase(Locale.US))) {
+      return false;
+    }
+    return true;
   }
 
   public String getType() {
@@ -187,10 +201,9 @@ public class ContentType {
         return false;
       }
     } else if (!subtype.equals(other.subtype)) {
-      if (subtype.equals(MEDIA_TYPE_WILDCARD) || other.subtype.equals(MEDIA_TYPE_WILDCARD)) {
-        return true;
+      if (!subtype.equals(MEDIA_TYPE_WILDCARD) && !other.subtype.equals(MEDIA_TYPE_WILDCARD)) {
+        return false;
       }
-      return false;
     }
 
     // type checks
@@ -199,23 +212,33 @@ public class ContentType {
         return false;
       }
     } else if (!type.equals(other.type)) {
-      if (type.equals(MEDIA_TYPE_WILDCARD) || other.type.equals(MEDIA_TYPE_WILDCARD)) {
-        return true;
+      if (!type.equals(MEDIA_TYPE_WILDCARD) && !other.type.equals(MEDIA_TYPE_WILDCARD)) {
+        return false;
       }
-      return false;
     }
     return true;
   }
 
-  @Override
-  public String toString() {
+  /**
+   * Get {@link ContentType} as string as defined in RFC 2616 (http://www.ietf.org/rfc/rfc2616.txt - chapter 14.17: Content-Type)
+   * 
+   * @return
+   */
+  public String toContentTypeString() {
     StringBuilder sb = new StringBuilder();
     sb.append(type).append("/").append(subtype);
     for (String key : parameters.keySet()) {
-      String value = parameters.get(key);
-      sb.append(";").append(key).append("=").append(value);
+      if(isParameterAllowed(key)) {
+        String value = parameters.get(key);
+        sb.append(";").append(key).append("=").append(value);
+      }
     }
     return sb.toString();
+  }
+  
+  @Override
+  public String toString() {
+    return toContentTypeString();
   }
 
   public ContentType addParameters(Map<String, String> parameters) {
@@ -227,7 +250,33 @@ public class ContentType {
     return odataFormat;
   }
 
-  public enum ODataFormat {
-    ATOM, XML, JSON, CUSTOM
+  /**
+   * Compare wildcards counts/weights of both {@link ContentType}.
+   * 
+   * The smaller {@link ContentType} has lesser weighted wildcards then the bigger {@link ContentType}.
+   * As result this method returns this object weighted wildcards minus the given parameter object weighted wildcards.
+   * 
+   * A type wildcard is weighted with <code>2</code> and a subtype wildcard is weighted with <code>1</code>.
+   * 
+   * @param otherContentType {@link ContentType} to be compared to
+   * @return this object weighted wildcards minus the given parameter object weighted wildcards.
+   */
+  public int compareWildcardCounts(ContentType otherContentType) {
+    return countWildcars() - otherContentType.countWildcars();
+  }
+
+  private int countWildcars() {
+    int count = 0;
+    if("*".equals(type)) {
+      count += 2;
+    }
+    if("*".equals(subtype)) {
+      count++;
+    }
+    return count;
+  }
+  
+  public boolean isWildcard() {
+    return ("*".equals(type) && "*".equals(subtype));
   }
 }

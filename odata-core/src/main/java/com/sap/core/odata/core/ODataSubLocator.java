@@ -74,23 +74,38 @@ public final class ODataSubLocator implements ODataLocator {
     return response;
   }
 
-  private ContentType contentNegotiation(List<ContentType> contentTypes, List<ContentType> supportedContentTypes) throws ODataException {
+  ContentType contentNegotiation(List<ContentType> contentTypes, List<ContentType> supportedContentTypes) throws ODataException {
     Set<ContentType> setSupported = new HashSet<ContentType>(supportedContentTypes);
 
     if (contentTypes.isEmpty()) {
       if (!setSupported.isEmpty()) {
         return supportedContentTypes.get(0);
-      }
+      } 
     } else {
       for (ContentType ct : contentTypes) {
-        if (setSupported.contains(ct)) {
-          return ct;
+        ContentType match = match(ct, supportedContentTypes);
+        if(match != null) {
+          return match;
         }
       }
     }
 
     throw new ODataNotAcceptableException(ODataNotAcceptableException.COMMON.addContent(contentTypes.toString()));
   }
+
+  private ContentType match(ContentType requestedContentType, List<ContentType> supportedContentTypes) {
+    for (ContentType supportedContentType : supportedContentTypes) {
+      if(requestedContentType.equals(supportedContentType)) {
+        if(requestedContentType.compareWildcardCounts(supportedContentType) < 0) {
+          return requestedContentType;
+        } else {
+          return supportedContentType;
+        }
+      }
+    }
+    return null;
+  }
+
 
   private List<ContentType> determineAcceptedContentTypes(UriParserResultImpl uriParserResult, List<ContentType> contentTypes) {
     List<ContentType> result;
