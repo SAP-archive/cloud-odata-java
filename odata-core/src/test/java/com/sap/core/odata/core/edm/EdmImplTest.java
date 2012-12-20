@@ -17,6 +17,9 @@ import com.sap.core.odata.api.edm.FullQualifiedName;
 import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.core.edm.EdmImpl;
 
+/**
+ * @author SAP AG
+ */
 public class EdmImplTest extends EdmImpl {
 
   private static EdmImplTest edm;

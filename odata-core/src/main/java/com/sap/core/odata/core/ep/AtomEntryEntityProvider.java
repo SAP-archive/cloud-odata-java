@@ -25,6 +25,9 @@ import com.sap.core.odata.core.ep.aggregator.EntityPropertyInfo;
 import com.sap.core.odata.core.ep.aggregator.NavigationPropertyInfo;
 import com.sap.core.odata.core.ep.util.UriUtils;
 
+/**
+ * @author SAP AG
+ */
 public class AtomEntryEntityProvider {
 
   private String etag;
@@ -338,7 +341,7 @@ public class AtomEntryEntityProvider {
       String id = "";
 
       if (!eia.isDefaultEntityContainer()) {
-        id += eia.getEntityContainerName() + ".";
+        id += eia.getEntityContainerName() + Edm.DELIMITER;
       }
       id += eia.getEntitySetName() + "(" + entryKey + ")";
 

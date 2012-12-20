@@ -9,7 +9,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+import javax.xml.stream.FactoryConfigurationError;
 import javax.xml.stream.XMLOutputFactory;
+import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 
 import org.slf4j.Logger;
@@ -31,6 +33,9 @@ import com.sap.core.odata.core.ep.aggregator.EntityInfoAggregator;
 import com.sap.core.odata.core.ep.aggregator.EntityPropertyInfo;
 import com.sap.core.odata.core.ep.util.CircleStreamBuffer;
 
+/**
+ * @author SAP AG
+ */
 public class AtomEntityProvider extends ODataEntityProvider {
 
   private static final Logger LOG = LoggerFactory.getLogger(AtomEntityProvider.class);
@@ -236,5 +241,43 @@ public class AtomEntityProvider extends ODataEntityProvider {
 
   private String createContentHeader(ContentType mediaType) {
     return mediaType.toString() + "; charset=" + DEFAULT_CHARSET;
+  }
+
+  @Override
+  public ODataEntityContent writeLink(final EdmEntitySet entitySet, final Map<String, Object> data, final ODataEntityProviderProperties properties) throws ODataEntityProviderException {
+    CircleStreamBuffer buffer = new CircleStreamBuffer();
+    OutputStream outStream = buffer.getOutputStream();
+      
+    try {
+      XMLStreamWriter writer = XMLOutputFactory.newInstance().createXMLStreamWriter(outStream, DEFAULT_CHARSET);
+
+      XmlLinkEntityProvider entity = new XmlLinkEntityProvider(properties);
+      final EntityInfoAggregator entityInfo = EntityInfoAggregator.create(entitySet);
+      entity.append(writer, entityInfo, data, true);
+
+      writer.flush();
+      outStream.flush();
+      outStream.close();
+    } catch (IOException e1) {
+      throw new ODataEntityProviderException(ODataEntityProviderException.COMMON, e1);
+    } catch (XMLStreamException e2) {
+      throw new ODataEntityProviderException(ODataEntityProviderException.COMMON, e2);
+    } catch (FactoryConfigurationError e3) {
+      throw new ODataEntityProviderException(ODataEntityProviderException.COMMON, e3);
+    } finally {
+      if (outStream != null)
+        try {
+          outStream.close();
+        } catch (IOException e) {
+          // don't throw in finally!  
+          LOG.error(e.getLocalizedMessage(), e);
+        }
+    }
+
+    ODataEntityContentImpl content = new ODataEntityContentImpl();
+    content.setContentStream(buffer.getInputStream());
+    content.setContentHeader(createContentHeader(ContentType.APPLICATION_XML));
+
+    return content;
   }
 }

@@ -32,21 +32,24 @@ import com.sap.core.odata.core.edm.EdmString;
 import com.sap.core.odata.core.edm.EdmTime;
 import com.sap.core.odata.core.edm.Uint7;
 
+/**
+ * @author SAP AG
+ */
 public class EdmSimpleTypeFacadeTest {
 
-  public EdmSimpleType parse(String literal) throws UriSyntaxException {
+  public EdmSimpleType parse(final String literal) throws UriSyntaxException {
     EdmLiteral uriLiteral = EdmSimpleTypeKind.parseUriLiteral(literal);
     return uriLiteral.getType();
   }
 
-  public void compare(EdmSimpleTypeKind simpleType) {
+  public void compare(final EdmSimpleTypeKind simpleType) {
     EdmSimpleType bin1 = EdmSimpleTypeFacadeImpl.getEdmSimpleType(simpleType);
     assertNotNull(bin1);
 
     EdmSimpleType bin2 = EdmSimpleTypeFacadeImpl.getEdmSimpleType(simpleType);
     assertNotNull(bin2);
 
-    assertTrue(bin1.equals(bin2));
+    assertEquals(bin1, bin2);
   }
 
   @Test
@@ -58,7 +61,6 @@ public class EdmSimpleTypeFacadeTest {
     binary = parse("binary'FA12AAA1'");
     assertNotNull(binary);
     assertTrue(binary instanceof EdmBinary);
-
   }
 
   @Test
@@ -183,7 +185,9 @@ public class EdmSimpleTypeFacadeTest {
 
   @Test
   public void parseUriLiteralNull() throws UriSyntaxException {
-
+    EdmSimpleType in = parse("null");
+    assertNotNull(in);
+    assertTrue(in instanceof EdmNull);
   }
 
   @Test

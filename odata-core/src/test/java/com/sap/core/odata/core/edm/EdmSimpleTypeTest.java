@@ -55,6 +55,10 @@ public class EdmSimpleTypeTest {
 
   @Test
   public void testNames() throws Exception {
+    assertEquals("Bit", Bit.getInstance().getName());
+    assertEquals("Uint7", Uint7.getInstance().getName());
+    assertEquals("Null", EdmNull.getInstance().getName());
+
     assertEquals("Binary", EdmSimpleTypeKind.Binary.getEdmSimpleTypeInstance().getName());
     assertEquals("Boolean", EdmSimpleTypeKind.Boolean.getEdmSimpleTypeInstance().getName());
     assertEquals("Byte", EdmSimpleTypeKind.Byte.getEdmSimpleTypeInstance().getName());
@@ -81,6 +85,12 @@ public class EdmSimpleTypeTest {
   private void testCompatibility(final EdmSimpleType type, final EdmSimpleType... edmSimpleTypes) {
     for (EdmSimpleType compatible : edmSimpleTypes)
       assertTrue(type.isCompatible(compatible));
+  }
+
+  @Test
+  public void testUint7Compatibility() {
+    testCompatibility(Uint7.getInstance(), Uint7.getInstance(), Bit.getInstance());
+    assertFalse(Uint7.getInstance().isCompatible(EdmSimpleTypeKind.String.getEdmSimpleTypeInstance()));
   }
 
   @Test

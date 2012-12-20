@@ -1,5 +1,8 @@
 package com.sap.core.odata.core.ep;
 
+/**
+ * @author SAP AG
+ */
 public class FormatXml {
 
   public static final String XML_HEADER_NO = "no";
@@ -14,6 +17,7 @@ public class FormatXml {
   public static final String M_NULL = "null";
   public static final String D_ELEMENT = "element";
   public static final String D_LINKS = "links";
+  public static final String D_URI = "uri";
   public static final String APP_SERVICE = "service";
   public static final String APP_WORKSPACE = "workspace";
   public static final String APP_COLLECTION = "collection";

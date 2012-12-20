@@ -1,6 +1,5 @@
 package com.sap.core.odata.core.edm;
 
-
 /**
  * Implementation of the simple type Null
  * @author SAP AG

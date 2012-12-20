@@ -10,9 +10,13 @@ import com.sap.core.odata.api.enums.ContentType;
 import com.sap.core.odata.api.rt.RuntimeDelegate;
 import com.sap.core.odata.api.uri.resultviews.GetEntitySetView;
 
+/**
+ * Abstract provider for writing output
+ * @author SAP AG
+ */
 public abstract class ODataEntityProvider {
 
-  protected ODataEntityProvider() throws ODataEntityProviderException { }
+  protected ODataEntityProvider() throws ODataEntityProviderException {}
 
   public static ODataEntityProvider create(ContentType contentType) throws ODataEntityProviderException {
     return RuntimeDelegate.createSerializer(contentType);
@@ -27,6 +31,8 @@ public abstract class ODataEntityProvider {
   public abstract ODataEntityContent writeProperty(EdmProperty edmProperty, Object value) throws ODataEntityProviderException;
 
   public abstract ODataEntityContent writeText(EdmProperty edmProperty, Object value) throws ODataEntityProviderException;
-  
-  public abstract ODataEntityContent writeMediaResource(String mimeType, byte [] data) throws ODataEntityProviderException;
+
+  public abstract ODataEntityContent writeMediaResource(String mimeType, byte[] data) throws ODataEntityProviderException;
+
+  public abstract ODataEntityContent writeLink(EdmEntitySet entitySet, Map<String, Object> data, ODataEntityProviderProperties properties) throws ODataEntityProviderException;
 }

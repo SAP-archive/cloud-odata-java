@@ -11,7 +11,7 @@ import java.util.concurrent.LinkedBlockingQueue;
  * Circular stream buffer to write/read into/from one single buffer.
  * With support of {@link InputStream} and {@link OutputStream} access to buffered data.
  * 
- * @author d046871
+ * @author SAP AG
  */
 public class CircleStreamBuffer {
 
