@@ -102,7 +102,7 @@ public class ContentTypeTest {
     
     assertEquals("application", mt.getType());
     assertEquals("xml", mt.getSubtype());
-    assertEquals("application/xml;q=0.9", mt.toString());
+    assertEquals("application/xml", mt.toString());
     assertEquals(ODataFormat.XML, mt.getODataFormat());
   }
 
@@ -238,6 +238,24 @@ public class ContentTypeTest {
   }
 
   @Test
+  public void testEqualWithDiffTypeWildcardSubtype() {
+    ContentType t1 = ContentType.create("ccc/bbb");
+    ContentType t2 = ContentType.create("aaa/*");
+    
+    assertFalse(t1.equals(t2));
+    assertFalse(t2.equals(t1));
+  }
+
+  @Test
+  public void testEqualWithDiffSubTypeWildcardSubtype() {
+    ContentType t1 = ContentType.create("*/bbb");
+    ContentType t2 = ContentType.create("aaa/ccc");
+    
+    assertFalse(t1.equals(t2));
+    assertFalse(t2.equals(t1));
+  }
+
+  @Test
   public void testEqualWithWildcardAndParameters() {
     ContentType t1 = ContentType.create("aaa/bbb;x=y;a");
     ContentType t2 = ContentType.create("*");
@@ -312,5 +330,50 @@ public class ContentTypeTest {
     
     assertFalse(t1.equals(t2));
     assertFalse(t2.equals(t1));
+  }
+  
+  @Test
+  public void testCompareSame() {
+    ContentType t1 = ContentType.create("aaa/bbb");
+    ContentType t2 = ContentType.create("aaa/bbb");
+    
+    assertEquals(0, t1.compareWildcardCounts(t2));
+    assertEquals(0, t2.compareWildcardCounts(t1));
+  }
+  
+  @Test
+  public void testCompareOneWildcard() {
+    ContentType t1 = ContentType.create("*/bbb");
+    ContentType t2 = ContentType.create("aaa/bbb");
+    
+    assertEquals(2, t1.compareWildcardCounts(t2));
+    assertEquals(-2, t2.compareWildcardCounts(t1));
+  }
+
+  @Test
+  public void testCompareTwoWildcard() {
+    ContentType t1 = ContentType.create("*/*");
+    ContentType t2 = ContentType.create("aaa/bbb");
+    
+    assertEquals(3, t1.compareWildcardCounts(t2));
+    assertEquals(-3, t2.compareWildcardCounts(t1));
+  }
+
+  @Test
+  public void testCompareSubWildcard() {
+    ContentType t1 = ContentType.create("aaa/*");
+    ContentType t2 = ContentType.create("aaa/bbb");
+    
+    assertEquals(1, t1.compareWildcardCounts(t2));
+    assertEquals(-1, t2.compareWildcardCounts(t1));
+  }
+
+  @Test
+  public void testCompareCrossWildcard() {
+    ContentType t1 = ContentType.create("aaa/*");
+    ContentType t2 = ContentType.create("*/bbb");
+    
+    assertEquals(-1, t1.compareWildcardCounts(t2));
+    assertEquals(1, t2.compareWildcardCounts(t1));
   }
 }

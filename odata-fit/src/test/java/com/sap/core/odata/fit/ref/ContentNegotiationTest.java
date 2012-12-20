@@ -20,6 +20,7 @@ import com.sap.core.odata.ref.model.DataContainer;
 import com.sap.core.odata.ref.processor.ListsProcessor;
 import com.sap.core.odata.ref.processor.ScenarioDataSource;
 import com.sap.core.odata.testutils.fit.AbstractFitTest;
+import com.sap.core.odata.testutils.helper.StringHelper;
 
 public class ContentNegotiationTest extends AbstractFitTest {
 
@@ -53,6 +54,16 @@ public class ContentNegotiationTest extends AbstractFitTest {
     assertEquals(406, response.getStatusLine().getStatusCode());
   }
 
+  @Test
+  public void testBrowserAcceptHeader() throws Exception {
+    HttpGet get = new HttpGet(URI.create(this.getEndpoint().toString() + "$metadata"));
+    get.addHeader(HttpHeaders.ACCEPT, "text/html, application/xhtml+xml, application/xml;q=0.9, */*;q=0.8");
+    
+    HttpResponse response = this.getHttpClient().execute(get);
+    assertEquals(200, response.getStatusLine().getStatusCode());
+    assertEquals("application/xml", response.getFirstHeader(HttpHeaders.CONTENT_TYPE).getValue());
+  }
+  
 //  @Test
 //  public void testContentTypeServiceDocument() throws Exception {
 //    HttpGet get = new HttpGet(URI.create(this.getEndpoint().toString() ));
