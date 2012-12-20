@@ -82,9 +82,7 @@ public class ODataExceptionSerializer {
   }
 
   /**
-   * Get language as defined in RFC 4646 based on {@link Locale}.
-   * 
-   * @return
+   * Gets language and country as defined in RFC 4646 based on {@link Locale}.
    */
   private static String getLang(Locale locale) {
     if (locale.getCountry().isEmpty()) {

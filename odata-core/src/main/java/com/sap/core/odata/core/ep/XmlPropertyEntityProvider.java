@@ -17,8 +17,8 @@ import com.sap.core.odata.core.ep.aggregator.EntityComplexPropertyInfo;
 import com.sap.core.odata.core.ep.aggregator.EntityPropertyInfo;
 
 /**
- * Internal EntityProvider for simple and complex edm properties which are pre analyzed as {@link EntityPropertyInfo}.
- * 
+ * Internal EntityProvider for simple and complex EDM properties which are pre-analyzed as {@link EntityPropertyInfo}.
+ * @author SAP AG
  */
 public class XmlPropertyEntityProvider {
 
