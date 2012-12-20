@@ -20,6 +20,8 @@ import com.sap.core.odata.testutils.server.TestServer;
 
 public abstract class AbstractFitTest {
 
+  private static final String CLASSNAME_ODATA_EXCEPTION_MAPPER = "com.sap.core.odata.core.ODataExceptionMapperImpl";
+
   static {
     DOMConfigurator.configureAndWatch("log4j.xml");
   }
@@ -48,6 +50,24 @@ public abstract class AbstractFitTest {
 
   protected abstract ODataSingleProcessorService createService() throws ODataException;
 
+  
+  /**
+   * Disable logging for class with classname {@value #CLASSNAME_ODATA_EXCEPTION_MAPPER}.
+   * If no class with this classname can be found an error log entry is written.
+   * <br /> 
+   * Disabled logging will be automatically re-enabled after test execution (see {@link #reEnableLogging()} and 
+   * {@link #after()}).
+   * 
+   * @param classes
+   */
+  protected void disableLogging() {
+    try {
+      disableLogging(Class.forName(CLASSNAME_ODATA_EXCEPTION_MAPPER));
+    } catch (ClassNotFoundException e) {
+      log.error("Expected class was not found for disabling of logging.");
+    }
+  }
+  
   /**
    * Disable logging for over handed classes.
    * Disabled logging will be automatically re-enabled after test execution (see {@link #reEnableLogging()} and 
