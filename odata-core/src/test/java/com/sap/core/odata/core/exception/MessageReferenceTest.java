@@ -27,4 +27,21 @@ public class MessageReferenceTest {
     assertEquals(1, e.getMessageReference().getContent().size());
     assertEquals(1, e2.getMessageReference().getContent().size());
   }
+  
+  @Test
+  public void testAddMoreContent() {
+    String content = "content";
+    ODataMessageException e = new UriNotMatchingException(
+        UriNotMatchingException.ENTITYNOTFOUND.addContent(content).addContent("content_2"));
+    assertEquals(2, e.getMessageReference().getContent().size());
+    assertTrue(e.getMessageReference().getContent().contains("content"));
+    assertTrue(e.getMessageReference().getContent().contains("content_2"));
+
+    ODataMessageException e2 = new UriNotMatchingException(UriNotMatchingException.ENTITYNOTFOUND.addContent("content_3"));
+    assertEquals(2, e.getMessageReference().getContent().size());
+    assertTrue(e.getMessageReference().getContent().contains("content"));
+    assertTrue(e.getMessageReference().getContent().contains("content_2"));
+    assertEquals(1, e2.getMessageReference().getContent().size());
+    assertTrue(e2.getMessageReference().getContent().contains("content_3"));
+  }
 }
