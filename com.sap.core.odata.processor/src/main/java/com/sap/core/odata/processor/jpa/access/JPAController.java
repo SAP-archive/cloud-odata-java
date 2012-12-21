@@ -9,7 +9,7 @@ public class JPAController {
 	public static JPAEdmBuilder getJPAEdmBuilder(ODataJPAContext oDataJPAContext) {
 		JPAEdmBuilder builder = null;
 
-		builder = new JPAEdmBuilderV2(oDataJPAContext.getPersistenceUnitName());
+		builder = new JPAEdmBuilderV2(oDataJPAContext.getPersistenceUnitName(),oDataJPAContext.getEntityManagerFactory());
 		return builder;
 
 	}

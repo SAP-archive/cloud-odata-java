@@ -5,12 +5,10 @@ import java.util.List;
 import java.util.Set;
 
 import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
 import javax.persistence.metamodel.Attribute;
 import javax.persistence.metamodel.Attribute.PersistentAttributeType;
 import javax.persistence.metamodel.Metamodel;
 
-import com.sap.core.odata.api.edm.EdmFacets;
 import com.sap.core.odata.api.edm.EdmSimpleTypeKind;
 import com.sap.core.odata.api.edm.FullQualifiedName;
 import com.sap.core.odata.api.edm.provider.ComplexProperty;
@@ -28,10 +26,10 @@ public class JPAEdmBuilderV2 implements JPAEdmBuilder {
 	private EntityManagerFactory emf = null;
 	private Metamodel metaModel = null;
 
-	public JPAEdmBuilderV2(String pUnitName) {
+	public JPAEdmBuilderV2(String pUnitName,EntityManagerFactory emf) {
 		this.pUnitName = pUnitName;
-		emf = Persistence.createEntityManagerFactory(this.pUnitName);
-		metaModel = emf.getMetamodel();
+		this.emf = emf;
+		metaModel = this.emf.getMetamodel();
 	}
 
 	@Override
@@ -99,14 +97,17 @@ public class JPAEdmBuilderV2 implements JPAEdmBuilder {
 		SimpleProperty simpleProperty = new SimpleProperty();
 
 		//Property Name
-		FullQualifiedName fullQualifiedName = new FullQualifiedName(pUnitName, jpaAttribute.getName());
-		simpleProperty.setName(fullQualifiedName.toString());
+		simpleProperty.setName(jpaAttribute.getName());
 		
 		//Edm Type
 		EdmSimpleTypeKind simpleTypeKind = JPATypeConvertor.convertToEdmSimpleType(jpaAttribute.getJavaType());
 		simpleProperty.setType(simpleTypeKind);
 		
+		//Facets
 		Facets facets = new Facets( );
+		
+		simpleProperty.setFacets(facets);
+		
 		
 		return simpleProperty;
 	}

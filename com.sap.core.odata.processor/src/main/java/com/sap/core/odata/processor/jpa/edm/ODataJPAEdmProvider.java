@@ -24,6 +24,7 @@ public class ODataJPAEdmProvider implements EdmProvider {
 
 	private List<Schema> schemas;
 	private HashMap<String, EntityType> entityTypes;
+	private HashMap<String,EntityContainerInfo> entityContainerInfos;
 
 	public ODataJPAEdmProvider() {
 		builder = JPAController.getJPAEdmBuilder(oDataJPAContext);
@@ -41,8 +42,12 @@ public class ODataJPAEdmProvider implements EdmProvider {
 	@Override
 	public EntityContainerInfo getEntityContainerInfo(String name)
 			throws ODataException {
-		// TODO Auto-generated method stub
-		return null;
+		EntityContainerInfo entityContainer = entityContainerInfos.get(name);
+		if ( entityContainer == null )
+		{
+		
+		}
+		return entityContainer;
 	}
 
 	@Override
@@ -50,10 +55,13 @@ public class ODataJPAEdmProvider implements EdmProvider {
 			throws ODataException {
 		
 		EntityType entityType = entityTypes.get(edmFQName.toString());
-		if (entityType == null) {
+		// Build the EntityType 
+		// if EntityType is not buffered and EntityType Name is not Null
+		if (entityType == null && edmFQName != null) {
 			entityType = builder.getEntityType(edmFQName);
 			entityTypes.put(edmFQName.toString(), entityType);
 		}
+		
 		return entityType;
 	}
 
