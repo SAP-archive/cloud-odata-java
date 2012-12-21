@@ -4,6 +4,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -292,6 +293,29 @@ public class ContentType {
 
   public ODataFormat getODataFormat() {
     return odataFormat;
+  }
+
+  /**
+   * Find best match between this {@link ContentType} and the {@link ContentType} in the list.
+   * If a match (this {@link ContentType} is equal to a {@link ContentType} in list) is found either this or the {@link ContentType}
+   * from the list is returned based on which {@link ContentType} has less {@value #WILDCARD} characters set 
+   * (checked with {@link #compareWildcardCounts(ContentType)}.
+   * If no match (none {@link ContentType} in list is equal to this {@link ContentType}) is found <code>NULL</code> is returned.
+   * 
+   * @param toMatchContentTypes
+   * @return
+   */
+  public ContentType match(List<ContentType> toMatchContentTypes) {
+    for (ContentType supportedContentType : toMatchContentTypes) {
+      if(equals(supportedContentType)) {
+        if(compareWildcardCounts(supportedContentType) < 0) {
+          return this;
+        } else {
+          return supportedContentType;
+        }
+      }
+    }
+    return null;
   }
 
   /**

@@ -56,22 +56,27 @@ public final class ODataSubLocator implements ODataLocator {
 
   private Map<String, String> queryParameters;
 
-  private List<ContentType> acceptedContentTypes;
+  private List<ContentType> acceptHeaderContentTypes;
 
   @GET
   public Response handleGet() throws ODataException {
     List<ODataPathSegment> pathSegments = this.context.getUriInfo().getODataPathSegmentList(); //
     UriParserResultImpl uriParserResult = (UriParserResultImpl) this.uriParser.parse(pathSegments, this.queryParameters);
 
-    ProcessorAspect processorAspect = dispatcher.mapUriTypeToProcessorAspect(uriParserResult);
-    List<ContentType> supportedContentTypes = service.getSupportedContentTypes(processorAspect);
-    List<ContentType> resultedContentTypes = determineAcceptedContentTypes(uriParserResult, acceptedContentTypes);
-    ContentType contentType = contentNegotiation(resultedContentTypes, supportedContentTypes);
+    ContentType contentType = doContentNegotiation(uriParserResult);
 
     ODataResponse odataResponse = dispatcher.dispatch(ODataHttpMethod.GET, uriParserResult, contentType);
     Response response = this.convertResponse(odataResponse);
 
     return response;
+  }
+
+  private ContentType doContentNegotiation(UriParserResultImpl uriParserResult) throws ODataException {
+    ProcessorAspect processorAspect = dispatcher.mapUriTypeToProcessorAspect(uriParserResult);
+    List<ContentType> supportedContentTypes = service.getSupportedContentTypes(processorAspect);
+    List<ContentType> acceptedContentTypes = getAcceptedContentTypes(uriParserResult, acceptHeaderContentTypes);
+    ContentType contentType = contentNegotiation(acceptedContentTypes, supportedContentTypes);
+    return contentType;
   }
 
   ContentType contentNegotiation(List<ContentType> contentTypes, List<ContentType> supportedContentTypes) throws ODataException {
@@ -83,7 +88,7 @@ public final class ODataSubLocator implements ODataLocator {
       } 
     } else {
       for (ContentType ct : contentTypes) {
-        ContentType match = match(ct, supportedContentTypes);
+        ContentType match = ct.match(supportedContentTypes);
         if(match != null) {
           return match;
         }
@@ -93,21 +98,8 @@ public final class ODataSubLocator implements ODataLocator {
     throw new ODataNotAcceptableException(ODataNotAcceptableException.COMMON.addContent(contentTypes.toString()));
   }
 
-  private ContentType match(ContentType requestedContentType, List<ContentType> supportedContentTypes) {
-    for (ContentType supportedContentType : supportedContentTypes) {
-      if(requestedContentType.equals(supportedContentType)) {
-        if(requestedContentType.compareWildcardCounts(supportedContentType) < 0) {
-          return requestedContentType;
-        } else {
-          return supportedContentType;
-        }
-      }
-    }
-    return null;
-  }
 
-
-  private List<ContentType> determineAcceptedContentTypes(UriParserResultImpl uriParserResult, List<ContentType> contentTypes) {
+  private List<ContentType> getAcceptedContentTypes(UriParserResultImpl uriParserResult, List<ContentType> contentTypes) {
     List<ContentType> result;
     if (uriParserResult.getContentType() != null) {
       result = new ArrayList<ContentType>();
@@ -177,7 +169,7 @@ public final class ODataSubLocator implements ODataLocator {
 
     this.queryParameters = this.convertToSinglevaluedMap(param.getUriInfo().getQueryParameters());
 
-    acceptedContentTypes = convertMediaTypes(param.httpHeaders.getAcceptableMediaTypes());
+    acceptHeaderContentTypes = convertMediaTypes(param.httpHeaders.getAcceptableMediaTypes());
 
     this.service = param.getServiceFactory().createService(this.context);
     this.context.setService(this.service);
