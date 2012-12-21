@@ -28,8 +28,8 @@ public class XmlLinksEntityProvider {
       writer.writeStartElement(FormatXml.D_LINKS);
       writer.writeDefaultNamespace(Edm.NAMESPACE_D_2007_08);
       if (properties.getInlineCount() != null) {
-        writer.writeStartElement("m", FormatXml.M_COUNT, Edm.NAMESPACE_M_2007_08);
-        writer.writeNamespace("m", Edm.NAMESPACE_M_2007_08);
+        writer.writeStartElement(Edm.PREFIX_M, FormatXml.M_COUNT, Edm.NAMESPACE_M_2007_08);
+        writer.writeNamespace(Edm.PREFIX_M, Edm.NAMESPACE_M_2007_08);
         writer.writeCharacters(properties.getInlineCount().toString());
         writer.writeEndElement();
       }

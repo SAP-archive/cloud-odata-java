@@ -1,20 +1,22 @@
 package com.sap.core.odata.api.uri.resultviews;
 
-import java.text.Format;
 import java.util.Map;
 
 import com.sap.core.odata.api.edm.EdmFunctionImport;
 import com.sap.core.odata.api.enums.ContentType;
 import com.sap.core.odata.api.uri.EdmLiteral;
 
+/**
+ * @author SAP AG
+ */
 public interface GetFunctionImportView {
   /**
-   * @return {@link EdmFunctionImport} the funktion import
+   * @return {@link EdmFunctionImport} the function import
    */
   public EdmFunctionImport getFunctionImport();
 
   /**
-   * @return {@link Format} the format
+   * @return {@link ContentType} the content type
    */
   public ContentType getContentType();
 

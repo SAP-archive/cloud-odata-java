@@ -1,12 +1,13 @@
 package com.sap.core.odata.api.uri.resultviews;
 
-import java.text.Format;
-
 import com.sap.core.odata.api.enums.ContentType;
 
+/**
+ * @author SAP AG
+ */
 public interface GetServiceDocumentView {
   /**
-   * @return {@link Format} the format
+   * @return {@link ContentType} the content type
    */
   public ContentType getContentType();
 }
