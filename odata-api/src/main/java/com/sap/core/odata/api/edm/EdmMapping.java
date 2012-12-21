@@ -24,9 +24,9 @@ public interface EdmMapping {
   String getMimeType();
   
   /**
-   * Get the object this mapping is set to
+   * Get the data container for this mapping
    * 
-   * @return {@link Object} mapped object
+   * @return {@link Object} data container
    */
-  Object getObject();
+  Object getDataContainer();
 }
