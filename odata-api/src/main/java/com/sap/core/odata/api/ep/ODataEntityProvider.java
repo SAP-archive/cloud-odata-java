@@ -35,4 +35,6 @@ public abstract class ODataEntityProvider {
   public abstract ODataEntityContent writeMediaResource(String mimeType, byte[] data) throws ODataEntityProviderException;
 
   public abstract ODataEntityContent writeLink(EdmEntitySet entitySet, Map<String, Object> data, ODataEntityProviderProperties properties) throws ODataEntityProviderException;
+
+  public abstract ODataEntityContent writeLinks(EdmEntitySet entitySet, List<Map<String, Object>> data, ODataEntityProviderProperties properties) throws ODataEntityProviderException;
 }

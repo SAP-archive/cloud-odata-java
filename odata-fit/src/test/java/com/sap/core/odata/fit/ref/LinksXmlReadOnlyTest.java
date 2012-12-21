@@ -1,5 +1,6 @@
 package com.sap.core.odata.fit.ref;
 
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import org.apache.http.HttpResponse;
@@ -33,5 +34,15 @@ public final class LinksXmlReadOnlyTest extends AbstractRefTest {
 
     badRequest("Employees('6')/$links/");
     badRequest("Employees('6')/ne_Manager/$links");
+  }
+
+  @Test
+  public void links() throws Exception {
+    HttpResponse response = callUri("Managers('3')/$links/nm_Employees()");
+    checkMediaType(response, ContentType.APPLICATION_XML);
+    final String body = getBody(response);
+    assertTrue(body.contains("Employees('4')</uri>"));
+    assertTrue(body.contains("Employees('5')</uri>"));
+    assertFalse(body.contains("6"));
   }
 }

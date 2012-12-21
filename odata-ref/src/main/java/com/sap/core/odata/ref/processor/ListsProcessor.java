@@ -185,10 +185,22 @@ public class ListsProcessor extends ODataSingleProcessor {
         uriParserResultView.getSkip(),
         uriParserResultView.getTop());
 
+    final EdmEntitySet entitySet = uriParserResultView.getTargetEntitySet();
+
+    List<Map<String, Object>> values = new ArrayList<Map<String, Object>>();
+    for (final Object entryData : data) {
+      Map<String, Object> entryValues = new HashMap<String, Object>();
+      for (final EdmProperty property : entitySet.getEntityType().getKeyProperties())
+        entryValues.put(property.getName(), getPropertyValue(entryData, property));
+      values.add(entryValues);
+    }
+
+    final ODataEntityProviderProperties entryProperties = ODataEntityProviderProperties
+        .baseUri(getContext().getUriInfo().getBaseUri()).inlineCount(count).build();
+
     return ODataResponse
         .status(HttpStatusCodes.OK)
-        .header(CONTENT_TYPE, ContentType.APPLICATION_XML.toString())
-        .entity("Links to " + data + "; inlinecount=" + count)
+        .entity(ODataEntityProvider.create(contentType).writeLinks(entitySet, values, entryProperties))
         .build();
   }
 
@@ -251,7 +263,10 @@ public class ListsProcessor extends ODataSingleProcessor {
       throw new ODataNotFoundException(ODataNotFoundException.ENTITY);
 
     final EdmEntitySet entitySet = uriParserResultView.getTargetEntitySet();
-    final Map<String, Object> values = getStructuralTypeValueMap(data, entitySet.getEntityType());
+
+    Map<String, Object> values = new HashMap<String, Object>();
+    for (final EdmProperty property : entitySet.getEntityType().getKeyProperties())
+      values.put(property.getName(), getPropertyValue(data, property));
 
     final ODataEntityProviderProperties entryProperties = ODataEntityProviderProperties
         .baseUri(getContext().getUriInfo().getBaseUri()).build();

@@ -213,9 +213,9 @@ class EdmMock {
     photoKeyProperties.add(photoIdProperty);
     photoKeyProperties.add(photoTypeProperty);
 
-    EdmProperty photoRusiaProperty = createProperty("Содержание", EdmSimpleTypeKind.String);
+    EdmProperty photoRussianProperty = createProperty("Содержание", EdmSimpleTypeKind.String);
     CustomizableFeedMappings cfm = new CustomizableFeedMappings().setFcKeepInContent(false).setFcNsPrefix("py").setFcNsUri("http://localhost").setFcTargetPath("Содержание");
-    when(photoRusiaProperty.getCustomizableFeedMappings()).thenReturn(cfm);
+    when(photoRussianProperty.getCustomizableFeedMappings()).thenReturn(cfm);
 
     EdmEntityType photoEntityType = mock(EdmEntityType.class);
     when(photoEntityType.getName()).thenReturn("Photo");
@@ -225,7 +225,7 @@ class EdmMock {
     when(photoEntityType.getKeyProperties()).thenReturn(photoKeyProperties);
     when(photoEntityType.getProperty("Id")).thenReturn(photoIdProperty);
     when(photoEntityType.getProperty("Type")).thenReturn(photoTypeProperty);
-    when(photoEntityType.getProperty(photoRusiaProperty.getName())).thenReturn(photoRusiaProperty);
+    when(photoEntityType.getProperty(photoRussianProperty.getName())).thenReturn(photoRussianProperty);
     EdmEntitySet photoEntitySet = mock(EdmEntitySet.class);
     when(photoEntitySet.getName()).thenReturn("Photos");
     when(photoEntitySet.getEntityType()).thenReturn(photoEntityType);
@@ -276,10 +276,14 @@ class EdmMock {
     when(edmProperty.getName()).thenReturn(keyPropertyId);
     when(edmProperty.getType()).thenReturn(type);
 
+    List<String> keyPropertyNames = new ArrayList<String>();
+    keyPropertyNames.add(keyPropertyId);
+
     List<EdmProperty> keyProperties = new ArrayList<EdmProperty>();
     keyProperties.add(edmProperty);
 
     EdmEntityType entityType = mock(EdmEntityType.class);
+    when(entityType.getKeyPropertyNames()).thenReturn(keyPropertyNames);
     when(entityType.getKeyProperties()).thenReturn(keyProperties);
     when(entityType.getProperty(keyPropertyId)).thenReturn(edmProperty);
     return entityType;
