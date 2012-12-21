@@ -64,6 +64,8 @@ public abstract class ODataSingleProcessor
     Batch
 {
 
+  private static final String DEFAULT_SERVICE_CHARSET = "utf-8";
+  
   /**
    * A request context object usually injected by the OData library.
    */
@@ -308,7 +310,10 @@ public abstract class ODataSingleProcessor
   public ODataResponse readServiceDocument(GetServiceDocumentView uriParserResultView, ContentType contentType) throws ODataException {
     ODataEntityProvider odataSerializer = ODataEntityProvider.create(contentType);
     ODataEntityContent serviceDocument = odataSerializer.writeServiceDocument(getContext().getService().getEntityDataModel(), getContext().getUriInfo().getBaseUri().toASCIIString());
+    contentType = ContentType.create(contentType, ContentType.PARAMETER_CHARSET, DEFAULT_SERVICE_CHARSET);
+
     return ODataResponse
+        .header("Content-Type", contentType.toString())
         .header("DataServiceVersion", Edm.DATA_SERVICE_VERSION_10)
         .entity(serviceDocument)
         .build();
@@ -320,6 +325,8 @@ public abstract class ODataSingleProcessor
   @Override
   public ODataResponse readMetadata(GetMetadataView uriParserResultView, ContentType contentType) throws ODataException {
     EdmServiceMetadata edmServiceMetadata = getContext().getService().getEntityDataModel().getServiceMetadata();
+//    contentType.addParameter(ContentType.PARAMETER_CHARSET, DEFAULT_SERVICE_CHARSET);
+
     return ODataResponse
         .status(HttpStatusCodes.OK)
         .header("Content-Type", contentType.toString())
