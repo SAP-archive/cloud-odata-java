@@ -20,7 +20,7 @@ public class MemberExpressionImpl implements BinaryExpression, MemberExpression
   {
     this.path = path;
     this.property = property;
-    this.edmType = null;
+    this.edmType = property.getEdmType();
   }
 
   @Override

@@ -1,6 +1,7 @@
 package com.sap.core.odata.api.uri.expression;
 
 import com.sap.core.odata.api.edm.EdmProperty;
+import com.sap.core.odata.api.edm.EdmTyped;
 
 /**
  * Represents a property expression in the expression tree returned by the methods:
@@ -25,9 +26,10 @@ public interface PropertyExpression extends CommonExpression
   public String getPropertyName();
   
   /**
-   * @return Returns the EDM property matching the property name used in the expression String
-   * @see EdmProperty    
+   * @return Returns the EDM property matching the property name used in the expression String.
+   *   This may be an instance of EdmProperty or EdmNavigationProperty
+   * @see EdmTyped    
    */
-  public EdmProperty getEdmProperty();
+  public EdmTyped getEdmProperty();
   
 }

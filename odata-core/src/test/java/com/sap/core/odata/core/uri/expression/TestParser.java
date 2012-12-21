@@ -9,7 +9,11 @@ import java.util.List;
 import org.junit.Test;
 
 import com.sap.core.odata.api.edm.Edm;
+import com.sap.core.odata.api.edm.EdmComplexType;
 import com.sap.core.odata.api.edm.EdmEntityType;
+import com.sap.core.odata.api.edm.EdmException;
+import com.sap.core.odata.api.edm.EdmProperty;
+import com.sap.core.odata.api.edm.EdmSimpleType;
 import com.sap.core.odata.api.rt.RuntimeDelegate;
 import com.sap.core.odata.api.uri.expression.ExpressionKind;
 import com.sap.core.odata.api.uri.expression.FilterExpression;
@@ -31,8 +35,7 @@ import com.sap.core.odata.core.edm.EdmSingle;
 import com.sap.core.odata.core.edm.EdmString;
 import com.sap.core.odata.core.edm.EdmTime;
 import com.sap.core.odata.core.edm.Uint7;
-import com.sap.core.odata.core.uri.expression.FilterParserImpl;
-import com.sap.core.odata.core.uri.expression.FilterParserInternalError;
+import com.sap.core.odata.core.edm.provider.EdmComplexPropertyImplProv;
 import com.sap.core.odata.testutils.mocks.TecEdmInfo;
 import com.sap.core.odata.testutils.mocks.TechnicalScenarioEdmProvider;
 
@@ -48,7 +51,7 @@ public class TestParser {
   }
 
   @Test
-  public void TestProperties()
+  public void testProperties()
   {
     GetPTF("sven").aSerialized("sven").aKind(ExpressionKind.PROPERTY);
     GetPTF("sven1 add sven2").aSerialized("{sven1 add sven2}")
@@ -58,24 +61,65 @@ public class TestParser {
   }
 
   @Test
-  public void TestDeepProperties()
+  public void testDeepProperties()
   {
     GetPTF("a/b").aSerialized("{a/b}").aKind(ExpressionKind.MEMBER);
-    GetPTF("a/b/c").aSerialized("{{a/b}/c}").aKind(ExpressionKind.MEMBER);
+    GetPTF("a/b/c").aSerialized("{{a/b}/c}")
+        .root().aKind(ExpressionKind.MEMBER)
+        .root().left().aKind(ExpressionKind.MEMBER)
+        .root().left().left().aKind(ExpressionKind.PROPERTY).aUriLiteral("a")
+        .root().left().right().aKind(ExpressionKind.PROPERTY).aUriLiteral("b")
+        .root().right().aKind(ExpressionKind.PROPERTY).aUriLiteral("c");
   }
 
   @Test
-  public void TestPropertiesWithEdm()
+  public void testPropertiesWithEdm()
   {
-    EdmEntityType edmType = edmInfo.getEtAllTypes();
+    try {
+      EdmEntityType edmEtAllTypes = edmInfo.getTypeEtAllTypes();
+      EdmProperty string = (EdmProperty) edmEtAllTypes.getProperty("String");
+      EdmSimpleType stringType = (EdmSimpleType) string.getType();
+      EdmComplexPropertyImplProv complex = (EdmComplexPropertyImplProv) edmEtAllTypes.getProperty("Complex");
+      EdmComplexType complexType = (EdmComplexType) complex.getType();
+      EdmProperty complexString = (EdmProperty) complexType.getProperty("String");
+      EdmSimpleType complexStringType = (EdmSimpleType) complexString.getType();
+      EdmComplexPropertyImplProv complexAddress = (EdmComplexPropertyImplProv) complexType.getProperty("Address");
+      EdmComplexType complexAddressType = (EdmComplexType) complexAddress.getType();
+      EdmProperty complexAddressCity = (EdmProperty) complexAddressType.getProperty("City");
+      EdmSimpleType complexAddressCityType = (EdmSimpleType) complexAddressCity.getType();
 
-    GetPTF(edm, edmType, "String");
-    GetPTF(edm, edmType, "Complex/String");
-    //GetPTF(edm, edmType,"Complex/Address/City");
+      GetPTF(edm, edmEtAllTypes, "String").aEdmProperty(string).aEdmType(stringType);
+
+      GetPTF(edm, edmEtAllTypes, "Complex/String")
+          .root().left().aEdmProperty(complex).aEdmType(complexType)
+          .root().right().aEdmProperty(complexString).aEdmType(complexStringType)
+          .root().aKind(ExpressionKind.MEMBER).aEdmType(complexStringType);
+
+      GetPTF(edm, edmEtAllTypes, "Complex/Address/City")
+          .root().aKind(ExpressionKind.MEMBER)
+          .root().left().aKind(ExpressionKind.MEMBER)
+          .root().left().left().aKind(ExpressionKind.PROPERTY).aEdmProperty(complex).aEdmType(complexType)
+          .root().left().right().aKind(ExpressionKind.PROPERTY).aEdmProperty(complexAddress).aEdmType(complexAddressType)
+          .root().left().aEdmType(complexAddressType)
+          .root().right().aKind(ExpressionKind.PROPERTY).aEdmProperty(complexAddressCity).aEdmType(complexAddressCityType)
+          .root().aEdmType(complexAddressCityType);
+
+    } catch (EdmException e) {
+      fail("Error in testPropertiesWithEdm:" + e.getLocalizedMessage());
+      e.printStackTrace();
+    }
   }
 
   @Test
-  public void TestSimpleMethod()
+  public void testPromotion()
+  {
+    //GetPTF("100 add 1").aEdmType(EdmSByte.getInstance());
+    GetPTF("100 add -100").aEdmType(EdmSByte.getInstance());
+    //GetPTF("1000 add 1000").aEdmType(EdmInt16.getInstance());
+  }
+
+  @Test
+  public void testSimpleMethod()
   {
     GetPTF("startswith('Test','Te')").aSerialized("{startswith('Test','Te')}");
     //add test for concat
@@ -83,7 +127,7 @@ public class TestParser {
   }
 
   @Test
-  public void TestSimpleSameBinary()
+  public void testSimpleSameBinary()
   {
     GetPTF("1d add 2d").aSerialized("{1d add 2d}");
     GetPTF("1d div 2d").aSerialized("{1d div 2d}");
@@ -96,21 +140,21 @@ public class TestParser {
   }
 
   @Test
-  public void TestSimpleSameBinaryBinary()
+  public void testSimpleSameBinaryBinary()
   {
     GetPTF("1d add 2d add 3d").aSerialized("{{1d add 2d} add 3d}");
     GetPTF("1d div 2d div 3d").aSerialized("{{1d div 2d} div 3d}");
   }
 
   @Test
-  public void TestSimpleSameBinaryBinaryPriority()
+  public void testSimpleSameBinaryBinaryPriority()
   {
     GetPTF("1d add 2d div 3d").aSerialized("{1d add {2d div 3d}}");
     GetPTF("1d div 2d add 3d").aSerialized("{{1d div 2d} add 3d}");
   }
 
   @Test
-  public void TestSimpleSameBinaryBinaryBinaryPriority()
+  public void testSimpleSameBinaryBinaryBinaryPriority()
   {
     GetPTF("1d add 2d add 3d add 4d").aSerialized("{{{1d add 2d} add 3d} add 4d}");
     GetPTF("1d add 2d add 3d div 4d").aSerialized("{{1d add 2d} add {3d div 4d}}");
@@ -124,7 +168,7 @@ public class TestParser {
   }
 
   @Test
-  public void TestDeepParenthesis()
+  public void testDeepParenthesis()
   {
     GetPTF("2d").aSerialized("2d");
     GetPTF("(2d)").aSerialized("2d");
@@ -133,7 +177,7 @@ public class TestParser {
   }
 
   @Test
-  public void TestParenthesisWithBinaryBinary()
+  public void testParenthesisWithBinaryBinary()
   {
     GetPTF("1d add 2d add 3d").aSerialized("{{1d add 2d} add 3d}");
     GetPTF("1d add (2d add 3d)").aSerialized("{1d add {2d add 3d}}");
@@ -152,14 +196,14 @@ public class TestParser {
   }
 
   @Test
-  public void TestSimpleUnaryOperator()
+  public void testSimpleUnaryOperator()
   {
     GetPTF("not true").aSerialized("{not true}");
     GetPTF("- 2d").aSerialized("{- 2d}");
   }
 
   @Test
-  public void TestDeepUnaryOperator()
+  public void testDeepUnaryOperator()
   {
     GetPTF("not not true").aSerialized("{not {not true}}");
     GetPTF("not not not true").aSerialized("{not {not {not true}}}");
@@ -173,14 +217,21 @@ public class TestParser {
   }
 
   @Test
-  public void TestMixedUnaryOperators()
+  public void testMixedUnaryOperators()
   {
     GetPTF("not - true").aSerialized("{not {- true}}");
     GetPTF("- not true").aSerialized("{- {not true}}");
   }
 
   @Test
-  public void TestSinglePlainLiterals()
+  public void testDeepMixedUnaryOperators()
+  {
+    GetPTF("- not - true").aSerialized("{- {not {- true}}}");
+    GetPTF("not - not true").aSerialized("{not {- {not true}}}");
+  }
+
+  @Test
+  public void testSinglePlainLiterals()
   {
     //assertEquals("Hier", 44, 33);
     //---
@@ -263,7 +314,7 @@ public class TestParser {
 
   }
 
-  public void TestSinglePlainLiteralsABAP()
+  public void testSinglePlainLiteralsABAP()
   {
     //---
     //Checks from ABAP
@@ -340,6 +391,9 @@ public class TestParser {
   void Errors()
   {
     //GetPTF("-(-(- 2d)))").aSerialized("{-{-{- 2d}}}");
+    //TODO verify if is an internal error or an user error. E.g. Test "a eq b b" or " a b"
+    //     should lead to createINVALID_TRAILING_TOKEN_DETECTED_AFTER_PARSING
+
   }
 
   FilterParserException GetException()
@@ -362,7 +416,6 @@ public class TestParser {
     try {
       LevelB();
     } catch (FilterParserException e) {
-      // TODO Auto-generated catch block
       e.printStackTrace();
       throw e;
       //throw new ExceptionParseExpression(ExceptionParseExpression.COMMON);
@@ -370,7 +423,7 @@ public class TestParser {
   }
 
   //@Test
-  public void DynTest()
+  public void testExceptionStack()
   {
     try {
       LevelA();

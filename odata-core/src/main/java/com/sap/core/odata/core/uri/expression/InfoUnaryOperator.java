@@ -1,6 +1,5 @@
 package com.sap.core.odata.core.uri.expression;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import com.sap.core.odata.api.edm.EdmType;
@@ -15,13 +14,15 @@ class InfoUnaryOperator
   UnaryOperator operator;
   private String category;
   private String syntax;
-  private List<ParameterSet> allowedParameterTypes = null;
+  ParameterSetCombination combination;
+  
 
-  public InfoUnaryOperator(UnaryOperator operator, String category, String syntax) {
-    allowedParameterTypes = new ArrayList<ParameterSet>();
+  public InfoUnaryOperator(UnaryOperator operator, String category, String syntax,   ParameterSetCombination combination)
+  {
     this.operator = operator;
     this.category = category;
     this.syntax = syntax;
+    this.combination = combination;
   }
 
   public String getCategory() {
@@ -36,15 +37,14 @@ class InfoUnaryOperator
     return operator;
   }
 
-  public void addParameterSet(ParameterSet parameterSet)
-  {
-    this.allowedParameterTypes.add(parameterSet);
+  public EdmType validateParameterSet(List<EdmType> actualParameterTypes) throws FilterParserInternalError {
+    return combination.validate(actualParameterTypes);
   }
 
   /**
    * Returns the EdmType of the returned value of a Method
    * If a method may have different return types (depending on the input type) null will be returned. 
-   */
+   *//*
   public EdmType getReturnType()
   {
     int parameterCount = allowedParameterTypes.size();
@@ -61,10 +61,6 @@ class InfoUnaryOperator
         return null;
 
     return returnType;
-  }
+  }*/
 
-  public List<ParameterSet> getParameterSet()
-  {
-    return allowedParameterTypes;
   }
-}

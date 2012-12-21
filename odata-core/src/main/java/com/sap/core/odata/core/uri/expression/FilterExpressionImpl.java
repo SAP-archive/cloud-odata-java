@@ -12,6 +12,11 @@ public class FilterExpressionImpl implements FilterExpression {
   private String filterString;
   private EdmType edmType;
   private CommonExpression commonExpression;
+  
+  public FilterExpressionImpl(String filterExpression)
+  {
+    this.filterString = filterExpression;
+  }
 
   public FilterExpressionImpl(String filterExpression, CommonExpression childExpression)
   {

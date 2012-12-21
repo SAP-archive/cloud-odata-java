@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Vector;
 
 import com.sap.core.odata.api.edm.EdmProperty;
+import com.sap.core.odata.api.edm.EdmTyped;
 import com.sap.core.odata.api.uri.EdmLiteral;
 
 /**
@@ -104,7 +105,7 @@ public interface ExpressionVisitor
   * @return
   *   Returns the <b>value</b> of the corresponding property ( which may be a single value or a structured value
   */
-  Object visitProperty(PropertyExpression propertyExpression, String uriLiteral, EdmProperty edmProperty);
+  Object visitProperty(PropertyExpression propertyExpression, String uriLiteral, EdmTyped edmProperty);
 
   /**
    * Visits a unary expression

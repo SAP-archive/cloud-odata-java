@@ -3,7 +3,7 @@ package com.sap.core.odata.core.uri.expression;
 import java.util.List;
 import java.util.Vector;
 
-import com.sap.core.odata.api.edm.EdmProperty;
+import com.sap.core.odata.api.edm.EdmTyped;
 import com.sap.core.odata.api.uri.EdmLiteral;
 import com.sap.core.odata.api.uri.expression.BinaryExpression;
 import com.sap.core.odata.api.uri.expression.BinaryOperator;
@@ -63,7 +63,7 @@ public class VisitorTool implements ExpressionVisitor {
   }
 
   @Override
-  public Object visitProperty(PropertyExpression literal, String uriLiteral, EdmProperty edmProperty)
+  public Object visitProperty(PropertyExpression literal, String uriLiteral, EdmTyped edmProperty)
   {
     return uriLiteral;
   }

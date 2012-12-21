@@ -1,8 +1,8 @@
 package com.sap.core.odata.core.uri.expression;
 
 import com.sap.core.odata.api.edm.EdmException;
-import com.sap.core.odata.api.edm.EdmProperty;
 import com.sap.core.odata.api.edm.EdmType;
+import com.sap.core.odata.api.edm.EdmTyped;
 import com.sap.core.odata.api.uri.EdmLiteral;
 import com.sap.core.odata.api.uri.expression.CommonExpression;
 import com.sap.core.odata.api.uri.expression.ExpressionKind;
@@ -12,12 +12,12 @@ import com.sap.core.odata.api.uri.expression.PropertyExpression;
 public class PropertyExpressionImpl implements PropertyExpression {
   private String uriLiteral;
   private EdmType edmType;
-  private EdmProperty edmProperty;
+  private EdmTyped edmProperty;
   private EdmLiteral edmLiteral;
 
-  public PropertyExpressionImpl(String uriLiteral, EdmProperty edmProperty, EdmLiteral edmLiteral) {
+  public PropertyExpressionImpl(String uriLiteral,  EdmLiteral edmLiteral) {
     this.uriLiteral = uriLiteral;
-    this.edmProperty = edmProperty;
+    
     this.edmLiteral = edmLiteral;
     if (edmLiteral != null)
     {
@@ -25,6 +25,14 @@ public class PropertyExpressionImpl implements PropertyExpression {
     }
   }
 
+  
+  public CommonExpression setEdmProperty(EdmTyped edmProperty) 
+  { 
+    //used EdmTyped because it may be a EdmProperty or a EdmNavigationProperty
+    this.edmProperty = edmProperty;
+    return this; 
+  }
+  
   @Override
   public CommonExpression setEdmType(EdmType edmType) {
     this.edmType = edmType;
@@ -49,7 +57,7 @@ public class PropertyExpressionImpl implements PropertyExpression {
   }
 
   @Override
-  public EdmProperty getEdmProperty() {
+  public EdmTyped getEdmProperty() {
     return edmProperty;
   }
 
@@ -74,5 +82,7 @@ public class PropertyExpressionImpl implements PropertyExpression {
     Object ret = visitor.visitProperty(this, uriLiteral, edmProperty);
     return ret;
   }
+
+  
 
 }

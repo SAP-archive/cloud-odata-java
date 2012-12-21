@@ -19,7 +19,7 @@ public class TecEdmInfo
     this.edm = edm;
   }
 
-  public EdmEntityType getEtAllTypes()
+  public EdmEntityType getTypeEtAllTypes()
   {
     try {
       return edm
