@@ -1,6 +1,5 @@
 package com.sap.core.odata.core.uri.expression;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import com.sap.core.odata.api.edm.EdmType;
@@ -12,19 +11,30 @@ import com.sap.core.odata.api.uri.expression.MethodOperator;
  */
 class InfoMethod
 {
-  private MethodOperator method;
-  private String syntax;
-  private int minParameter;
-  private int maxParameter;
-  private List<ParameterSet> allowedParameterTypes = null;
 
-  public InfoMethod(MethodOperator method, String syntax, int minParameters, int maxParameters) {
-    allowedParameterTypes = new ArrayList<ParameterSet>();
+  public MethodOperator method;
+  public String syntax;
+  public int minParameter;
+  public int maxParameter;
+  ParameterSetCombination combination;
+  
 
+  public InfoMethod(MethodOperator method, String syntax,  ParameterSetCombination combination)
+  {
+    this.method = method;
+    this.syntax = syntax;
+    this.minParameter = 1;
+    this.maxParameter = 1;
+    this.combination = combination;
+  }
+
+  public InfoMethod(MethodOperator method, String syntax, int minParameters, int maxParameters,  ParameterSetCombination combination)
+  {
     this.method = method;
     this.syntax = syntax;
     this.minParameter = minParameters;
     this.maxParameter = maxParameters;
+    this.combination = combination;
   }
 
   public MethodOperator getMethod()
@@ -47,18 +57,17 @@ class InfoMethod
     return maxParameter;
   }
 
-  public void addParameterSet(ParameterSet parameterSet)
+  public EdmType validateParameterSet(List<EdmType> actualParameterTypes) throws FilterParserInternalError
   {
-    allowedParameterTypes.add(parameterSet);
+    return combination.validate(actualParameterTypes);
   }
 
   /**
    * Returns the EdmType of the returned value of a Method
    * If a method may have different return types (depending on the input type) null will be returned. 
    */
-  public EdmType getReturnType()
-  {
-    int parameterCount = allowedParameterTypes.size();
+  public EdmType getReturnType() {
+  /*  int parameterCount = allowedParameterTypes.size();
     if (parameterCount == 0)
       return null;
 
@@ -71,12 +80,8 @@ class InfoMethod
       if (returnType != allowedParameterTypes.get(i))
         return null;
 
-    return returnType;
-  }
-
-  
-  public List<ParameterSet> getParameterSet()
-  {
-    return allowedParameterTypes;
+    return returnType;*/
+    //TODO
+    return null;
   }
 }

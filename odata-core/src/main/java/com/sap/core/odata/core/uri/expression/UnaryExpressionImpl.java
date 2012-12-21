@@ -20,7 +20,7 @@ public class UnaryExpressionImpl implements UnaryExpression
   public UnaryExpressionImpl(InfoUnaryOperator operatorInfo, CommonExpression operand) {
     this.operatorInfo = operatorInfo;
     this.operand = operand;
-    this.edmType = operatorInfo.getReturnType();
+    //this.edmType = operatorInfo.getReturnType(); //TODO check
   }
 
   @Override

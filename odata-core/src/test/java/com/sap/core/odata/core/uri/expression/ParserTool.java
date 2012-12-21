@@ -3,16 +3,15 @@ package com.sap.core.odata.core.uri.expression;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
-import com.sap.core.odata.api.edm.EdmSimpleType;
+import com.sap.core.odata.api.edm.EdmException;
+import com.sap.core.odata.api.edm.EdmProperty;
+import com.sap.core.odata.api.edm.EdmType;
 import com.sap.core.odata.api.exception.ODataApplicationException;
 import com.sap.core.odata.api.uri.expression.CommonExpression;
 import com.sap.core.odata.api.uri.expression.ExceptionVisitExpression;
 import com.sap.core.odata.api.uri.expression.ExpressionKind;
 import com.sap.core.odata.api.uri.expression.ExpressionVisitor;
 import com.sap.core.odata.api.uri.expression.FilterExpression;
-import com.sap.core.odata.core.uri.expression.BinaryExpressionImpl;
-import com.sap.core.odata.core.uri.expression.MethodExpressionImpl;
-import com.sap.core.odata.core.uri.expression.UnaryExpressionImpl;
 
 public class ParserTool
 {
@@ -20,12 +19,12 @@ public class ParserTool
   private CommonExpression tree;
   private CommonExpression curNode;
 
-  public ParserTool(String expression, FilterExpression root) {
+  public ParserTool(String expression, FilterExpression root)
+  {
     System.out.println("ParserTool - Testing: " + expression);
     this.expression = expression;
     this.tree = root.getExpression();
     this.curNode = this.tree;
-
   }
 
   ParserTool aKind(ExpressionKind kind)
@@ -37,7 +36,8 @@ public class ParserTool
     return this;
   }
 
-  public ParserTool aUriLiteral(String uriLiteral) {
+  public ParserTool aUriLiteral(String uriLiteral)
+  {
     String info = "GetUriLiteral(" + expression + ")-->";
     System.out.println("  " + info + "Expected: " + uriLiteral + " Actual: " + curNode.getUriLiteral());
 
@@ -45,15 +45,44 @@ public class ParserTool
     return this;
   }
 
-  public ParserTool aEdmType(EdmSimpleType boolInst) {
+  public ParserTool aEdmType(EdmType type) 
+  {
     String info = "GetEdmType(" + expression + ")-->";
-    System.out.println("  " + info + "Expected: " + boolInst.toString() + " Actual: " + curNode.getEdmType().toString());
+    try {
+      System.out.println("  " + info + "Expected: " + type.getName() + " Actual: " + curNode.getEdmType().getName());
+    } catch (EdmException e) {
+      fail("Error in aEdmType:" + e.getLocalizedMessage());
+    }
 
-    assertEquals(info, curNode.getEdmType().equals(boolInst), true);
+    assertEquals(info, curNode.getEdmType(), type);
     return this;
   }
 
-  public ParserTool aSerialized(String expected) {
+  public ParserTool aEdmProperty(EdmProperty string)
+  {
+    String info = "GetEdmProperty(" + expression + ")-->";
+    
+    if (curNode.getKind() !=ExpressionKind.PROPERTY)
+    {
+      String out = info + "Expected: " + ExpressionKind.PROPERTY + " Actual: " + curNode.getKind().toString();
+      System.out.println("  " + out);
+      fail(out);
+    }
+    
+    PropertyExpressionImpl propertyExpression = (PropertyExpressionImpl)curNode;
+    try {
+      System.out.println("  " + info + "Expected: Property'" + string.getName() + "' Actual: " + propertyExpression.getEdmProperty().getName());
+    } catch (EdmException e) {
+      fail("Error in aEdmProperty:" + e.getLocalizedMessage());
+    }
+
+    assertEquals(info, string,  propertyExpression.getEdmProperty());
+    return this;
+  }
+  
+  
+  public ParserTool aSerialized(String expected)
+  {
     String actual = null;
     ExpressionVisitor visitor = new VisitorTool();
     try {
@@ -71,18 +100,22 @@ public class ParserTool
     return this;
   }
 
+  
+
   public ParserTool left() {
     switch (curNode.getKind())
     {
     case BINARY:
       curNode = ((BinaryExpressionImpl) curNode).getLeftOperand();
       break;
-    case LITERAL:
     case MEMBER:
+      curNode = ((MemberExpressionImpl) curNode).getPath();
+      break;
+    case LITERAL:
     case METHOD:
     case PROPERTY:
       String info = "param(" + expression + ")-->";
-      info = "  " + info + "Expected: " + ExpressionKind.METHOD.toString() + " or " + ExpressionKind.METHOD.toString() + " Actual: " + curNode.getKind();
+      info = "  " + info + "Expected: " + ExpressionKind.BINARY.toString() + " or " + ExpressionKind.MEMBER.toString() + " Actual: " + curNode.getKind();
       System.out.println(info);
       fail(info);
       break;
@@ -99,12 +132,14 @@ public class ParserTool
     case BINARY:
       curNode = ((BinaryExpressionImpl) curNode).getRightOperand();
       break;
-    case LITERAL:
     case MEMBER:
+      curNode = ((MemberExpressionImpl) curNode).getProperty();
+      break;
+    case LITERAL:
     case METHOD:
     case PROPERTY:
       String info = "param(" + expression + ")-->";
-      info = "  " + info + "Expected: " + ExpressionKind.METHOD.toString() + " or " + ExpressionKind.METHOD.toString() + " Actual: " + curNode.getKind();
+      info = "  " + info + "Expected: " + ExpressionKind.BINARY.toString() + " or " + ExpressionKind.MEMBER.toString() + " Actual: " + curNode.getKind();
       System.out.println(info);
       fail(info);
       break;

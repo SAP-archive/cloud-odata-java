@@ -32,7 +32,7 @@ public class FilterParserExceptionImpl extends FilterParserException {
     msgRef.addContent(token.getUriLiteral());
     msgRef.addContent(Integer.toString(token.getPosition()));
 
-    return new FilterParserException(msgRef);
+    return new FilterParserException(msgRef,exceptionTokenizer);
   }
 
   static public FilterParserException createINVALID_TRAILING_TOKEN_DETECTED_AFTER_PARSING(Token token)

@@ -1,8 +1,13 @@
 package com.sap.core.odata.testutils.mocks;
 
+import static org.junit.Assert.fail;
+
 import java.util.ArrayList;
 import java.util.List;
 
+import com.sap.core.odata.api.edm.Edm;
+import com.sap.core.odata.api.edm.EdmEntityType;
+import com.sap.core.odata.api.edm.EdmException;
 import com.sap.core.odata.api.edm.EdmMultiplicity;
 import com.sap.core.odata.api.edm.EdmSimpleTypeKind;
 import com.sap.core.odata.api.edm.FullQualifiedName;
@@ -287,4 +292,5 @@ public class TechnicalScenarioEdmProvider extends EdmProviderDefault {
       keyProperties.add(new PropertyRef().setName(keyName));
     return new Key().setKeys(keyProperties);
   }
+  
 }
