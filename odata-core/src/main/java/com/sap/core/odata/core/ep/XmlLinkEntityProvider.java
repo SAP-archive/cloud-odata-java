@@ -53,7 +53,7 @@ public class XmlLinkEntityProvider {
     }
   }
 
-  private String createEntryKey(final EntityInfoAggregator entityInfo, final Map<String, Object> data) throws ODataEntityProviderException {
+  private static String createEntryKey(final EntityInfoAggregator entityInfo, final Map<String, Object> data) throws ODataEntityProviderException {
     final List<EntityPropertyInfo> keyPropertyInfos = entityInfo.getKeyPropertyInfos();
     String keys = "";
 

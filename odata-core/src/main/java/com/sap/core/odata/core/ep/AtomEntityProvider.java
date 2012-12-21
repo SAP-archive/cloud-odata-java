@@ -247,7 +247,7 @@ public class AtomEntityProvider extends ODataEntityProvider {
   public ODataEntityContent writeLink(final EdmEntitySet entitySet, final Map<String, Object> data, final ODataEntityProviderProperties properties) throws ODataEntityProviderException {
     CircleStreamBuffer buffer = new CircleStreamBuffer();
     OutputStream outStream = buffer.getOutputStream();
-      
+
     try {
       XMLStreamWriter writer = XMLOutputFactory.newInstance().createXMLStreamWriter(outStream, DEFAULT_CHARSET);
 
@@ -258,20 +258,58 @@ public class AtomEntityProvider extends ODataEntityProvider {
       writer.flush();
       outStream.flush();
       outStream.close();
-    } catch (IOException e1) {
+    } catch (FactoryConfigurationError e1) {
       throw new ODataEntityProviderException(ODataEntityProviderException.COMMON, e1);
     } catch (XMLStreamException e2) {
       throw new ODataEntityProviderException(ODataEntityProviderException.COMMON, e2);
-    } catch (FactoryConfigurationError e3) {
+    } catch (IOException e3) {
       throw new ODataEntityProviderException(ODataEntityProviderException.COMMON, e3);
     } finally {
       if (outStream != null)
         try {
           outStream.close();
         } catch (IOException e) {
-          // don't throw in finally!  
-          LOG.error(e.getLocalizedMessage(), e);
-        }
+        // don't throw in finally!  
+        LOG.error(e.getLocalizedMessage(), e);
+      }
+    }
+
+    ODataEntityContentImpl content = new ODataEntityContentImpl();
+    content.setContentStream(buffer.getInputStream());
+    content.setContentHeader(createContentHeader(ContentType.APPLICATION_XML));
+
+    return content;
+  }
+
+  @Override
+  public ODataEntityContent writeLinks(final EdmEntitySet entitySet, final List<Map<String, Object>> data, final ODataEntityProviderProperties properties) throws ODataEntityProviderException {
+    CircleStreamBuffer buffer = new CircleStreamBuffer();
+    OutputStream outStream = buffer.getOutputStream();
+
+    try {
+      XMLStreamWriter writer = XMLOutputFactory.newInstance().createXMLStreamWriter(outStream, DEFAULT_CHARSET);
+
+      XmlLinksEntityProvider entity = new XmlLinksEntityProvider(properties);
+      final EntityInfoAggregator entityInfo = EntityInfoAggregator.create(entitySet);
+      entity.append(writer, entityInfo, data);
+
+      writer.flush();
+      outStream.flush();
+      outStream.close();
+    } catch (FactoryConfigurationError e1) {
+      throw new ODataEntityProviderException(ODataEntityProviderException.COMMON, e1);
+    } catch (XMLStreamException e2) {
+      throw new ODataEntityProviderException(ODataEntityProviderException.COMMON, e2);
+    } catch (IOException e3) {
+      throw new ODataEntityProviderException(ODataEntityProviderException.COMMON, e3);
+    } finally {
+      if (outStream != null)
+        try {
+          outStream.close();
+        } catch (IOException e) {
+        // don't throw in finally!  
+        LOG.error(e.getLocalizedMessage(), e);
+      }
     }
 
     ODataEntityContentImpl content = new ODataEntityContentImpl();
