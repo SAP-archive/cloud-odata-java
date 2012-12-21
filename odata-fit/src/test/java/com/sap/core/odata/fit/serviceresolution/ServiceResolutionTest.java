@@ -234,8 +234,11 @@ public class ServiceResolutionTest {
     this.server.setPathSplit(3);
     this.server.startServer(FitStaticServiceFactory.class);
 
-    URI uri = new URI(this.server.getEndpoint().getScheme(), null, this.server.getEndpoint().getHost(), this.server.getEndpoint().getPort(), this.server.getEndpoint().getPath() + "/aaa/ä𠢼b;n=2,3;m=1/c c/", null, null);
+    
+    
+    URI uri = new URI(this.server.getEndpoint().getScheme(), null, this.server.getEndpoint().getHost(), this.server.getEndpoint().getPort(), this.server.getEndpoint().getPath() + "/aaa/äдержb;n=2,3;m=1/c c/", null, null);
 
+    
     HttpGet get = new HttpGet(uri);
     HttpResponse response = this.httpClient.execute(get);
 
@@ -243,7 +246,7 @@ public class ServiceResolutionTest {
 
     ODataContext ctx = this.service.getProcessor().getContext();
     assertNotNull(ctx);
-    assertEquals(this.server.getEndpoint() + "aaa/%C3%A4%F0%A0%A2%BCb;n=2,3;m=1/c%20c/", ctx.getUriInfo().getBaseUri().toASCIIString());
+    assertEquals(this.server.getEndpoint() + "aaa/%C3%A4%D0%B4%D0%B5%D1%80%D0%B6b;n=2,3;m=1/c%20c/", ctx.getUriInfo().getBaseUri().toASCIIString());
   }
 
 }
