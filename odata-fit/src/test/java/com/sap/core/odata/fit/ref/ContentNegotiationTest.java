@@ -12,6 +12,7 @@ import org.junit.Test;
 
 import com.sap.core.odata.api.edm.provider.EdmProvider;
 import com.sap.core.odata.api.enums.ContentType;
+import com.sap.core.odata.api.enums.HttpStatusCodes;
 import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.api.processor.ODataSingleProcessor;
 import com.sap.core.odata.api.service.ODataSingleProcessorService;
@@ -20,8 +21,11 @@ import com.sap.core.odata.ref.model.DataContainer;
 import com.sap.core.odata.ref.processor.ListsProcessor;
 import com.sap.core.odata.ref.processor.ScenarioDataSource;
 import com.sap.core.odata.testutils.fit.AbstractFitTest;
-import com.sap.core.odata.testutils.helper.StringHelper;
 
+/**
+ * Tests employing the reference scenario for content negotiation
+ * @author SAP AG
+ */
 public class ContentNegotiationTest extends AbstractFitTest {
 
   @Override
@@ -40,7 +44,7 @@ public class ContentNegotiationTest extends AbstractFitTest {
 
     HttpResponse response = this.getHttpClient().execute(get);
 
-    assertEquals(200, response.getStatusLine().getStatusCode());
+    assertEquals(HttpStatusCodes.OK.getStatusCode(), response.getStatusLine().getStatusCode());
     Header header = response.getFirstHeader(HttpHeaders.CONTENT_TYPE);
     assertEquals(ContentType.APPLICATION_XML.toString(), header.getValue());
   }
@@ -51,7 +55,7 @@ public class ContentNegotiationTest extends AbstractFitTest {
     get.addHeader(HttpHeaders.ACCEPT, "image/gif");
     
     HttpResponse response = this.getHttpClient().execute(get);
-    assertEquals(406, response.getStatusLine().getStatusCode());
+    assertEquals(HttpStatusCodes.NOT_ACCEPTABLE.getStatusCode(), response.getStatusLine().getStatusCode());
   }
 
   @Test
@@ -60,7 +64,7 @@ public class ContentNegotiationTest extends AbstractFitTest {
     get.addHeader(HttpHeaders.ACCEPT, "text/html, application/xhtml+xml, application/xml;q=0.9, */*;q=0.8");
     
     HttpResponse response = this.getHttpClient().execute(get);
-    assertEquals(200, response.getStatusLine().getStatusCode());
+    assertEquals(HttpStatusCodes.OK.getStatusCode(), response.getStatusLine().getStatusCode());
     assertEquals("application/xml", response.getFirstHeader(HttpHeaders.CONTENT_TYPE).getValue());
   }
   
@@ -70,7 +74,7 @@ public class ContentNegotiationTest extends AbstractFitTest {
 //
 //    HttpResponse response = this.getHttpClient().execute(get);
 //
-//    assertEquals(200, response.getStatusLine().getStatusCode());
+//    assertEquals(HttpStatusCodes.OK.getStatusCode(), response.getStatusLine().getStatusCode());
 //    Header header = response.getFirstHeader(HttpHeaders.CONTENT_TYPE);
 //    assertEquals(ContentType.APPLICATION_ATOM_SVC.toString(), header.getValue());
 //  }

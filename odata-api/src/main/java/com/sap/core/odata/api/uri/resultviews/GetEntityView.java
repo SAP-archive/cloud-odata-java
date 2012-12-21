@@ -1,6 +1,5 @@
 package com.sap.core.odata.api.uri.resultviews;
 
-import java.text.Format;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -57,7 +56,7 @@ public interface GetEntityView {
   public List<NavigationSegment> getNavigationSegments();
 
   /**
-   * @return {@link Format} the format
+   * @return {@link ContentType} the content type
    */
   public ContentType getContentType();
 

@@ -1,6 +1,5 @@
 package com.sap.core.odata.api.uri.resultviews;
 
-import java.text.Format;
 import java.util.List;
 import java.util.Map;
 
@@ -14,6 +13,9 @@ import com.sap.core.odata.api.uri.EdmLiteral;
 import com.sap.core.odata.api.uri.KeyPredicate;
 import com.sap.core.odata.api.uri.NavigationSegment;
 
+/**
+ * @author SAP AG
+ */
 public interface GetSimplePropertyView {
   /**
    * @return {@link EdmEntityContainer} the target entity container
@@ -31,7 +33,7 @@ public interface GetSimplePropertyView {
   public EdmEntitySet getTargetEntitySet();
 
   /**
-   * @return {@link EdmFunctionImport} the funktion import
+   * @return {@link EdmFunctionImport} the function import
    */
   public EdmFunctionImport getFunctionImport();
   
@@ -61,7 +63,7 @@ public interface GetSimplePropertyView {
   public boolean isValue();
 
   /**
-   * @return {@link Format} the format
+   * @return {@link ContentType} the content type
    */
   public ContentType getContentType();
 

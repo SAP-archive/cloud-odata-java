@@ -1,6 +1,5 @@
 package com.sap.core.odata.api.uri.resultviews;
 
-import java.text.Format;
 import java.util.List;
 import java.util.Map;
 
@@ -60,7 +59,7 @@ public interface GetEntitySetLinksView {
   public boolean isLinks();
 
   /**
-   * @return {@link Format} the format
+   * @return {@link ContentType} the content type
    */
   public ContentType getContentType();
 

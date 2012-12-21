@@ -2,6 +2,7 @@ package com.sap.core.odata.core.edm.provider;
 
 import java.io.Writer;
 import java.util.Collection;
+import java.util.Locale;
 
 import javax.xml.stream.FactoryConfigurationError;
 import javax.xml.stream.XMLOutputFactory;
@@ -39,6 +40,10 @@ import com.sap.core.odata.api.edm.provider.Using;
 import com.sap.core.odata.api.ep.ODataEntityProviderException;
 import com.sap.core.odata.core.exception.ODataRuntimeException;
 
+/**
+ * Metadata writing in XML format
+ * @author SAP AG
+ */
 public class EdmMetadata {
 
   public static void writeMetadata(DataServices metadata, Writer writer) throws ODataEntityProviderException {
@@ -365,7 +370,7 @@ public class EdmMetadata {
   private static void writeCustomizableFeedMappings(CustomizableFeedMappings customizableFeedMappings, XMLStreamWriter xmlStreamWriter) throws XMLStreamException {
     if (customizableFeedMappings != null) {
       if (customizableFeedMappings.getFcKeepInContent() != null) {
-        xmlStreamWriter.writeAttribute(Edm.PREFIX_M, Edm.NAMESPACE_M_2007_08, "FC_KeepInContent", customizableFeedMappings.getFcKeepInContent().toString().toLowerCase());
+        xmlStreamWriter.writeAttribute(Edm.PREFIX_M, Edm.NAMESPACE_M_2007_08, "FC_KeepInContent", customizableFeedMappings.getFcKeepInContent().toString().toLowerCase(Locale.ROOT));
       }
       if (customizableFeedMappings.getFcContentKind() != null) {
         xmlStreamWriter.writeAttribute(Edm.PREFIX_M, Edm.NAMESPACE_M_2007_08, "FC_ContentKind", customizableFeedMappings.getFcContentKind().toString());
@@ -418,7 +423,7 @@ public class EdmMetadata {
   private static void writeFacets(XMLStreamWriter xmlStreamWriter, EdmFacets facets) throws XMLStreamException {
     if (facets != null) {
       if (facets.isNullable() != null) {
-        xmlStreamWriter.writeAttribute("Nullable", facets.isNullable().toString().toLowerCase());
+        xmlStreamWriter.writeAttribute("Nullable", facets.isNullable().toString().toLowerCase(Locale.ROOT));
       }
       if (facets.getDefaultValue() != null) {
         xmlStreamWriter.writeAttribute("DefaultValue", facets.getDefaultValue());
@@ -427,7 +432,7 @@ public class EdmMetadata {
         xmlStreamWriter.writeAttribute("MaxLength", facets.getMaxLength().toString());
       }
       if (facets.isFixedLength() != null) {
-        xmlStreamWriter.writeAttribute("FixedLength", facets.isFixedLength().toString().toLowerCase());
+        xmlStreamWriter.writeAttribute("FixedLength", facets.isFixedLength().toString().toLowerCase(Locale.ROOT));
       }
       if (facets.getPrecision() != null) {
         xmlStreamWriter.writeAttribute("Precision", facets.getPrecision().toString());
