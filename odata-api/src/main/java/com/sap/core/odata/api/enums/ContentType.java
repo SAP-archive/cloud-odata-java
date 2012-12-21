@@ -14,6 +14,8 @@ import java.util.TreeMap;
  */
 public class ContentType {
 
+
+
   public enum ODataFormat {
     ATOM, XML, JSON, CUSTOM
   }
@@ -24,13 +26,15 @@ public class ContentType {
   private ODataFormat odataFormat;
 
   private static final String PARAMETER_SEPARATOR = ";";
+  private static final String TYPE_SUBTYPE_SEPARATOR = "/";
   private static final String MEDIA_TYPE_WILDCARD = "*";
+
   public static final String PARAMETER_CHARSET = "charset";
+  public static final String PARAMETER_Q = "q";
 
   public final static ContentType WILDCARD = new ContentType(MEDIA_TYPE_WILDCARD, MEDIA_TYPE_WILDCARD);
 
   public final static ContentType APPLICATION_XML = new ContentType("application", "xml", ODataFormat.XML);
-//  public final static ContentType APPLICATION_XML_UTF_8 = new ContentType("application", "xml", ODataFormat.XML).addParameter(PARAMETER_CHARSET, "utf-8");
   public static final ContentType APPLICATION_ATOM_XML = new ContentType("application", "atom+xml", ODataFormat.ATOM);
   public final static ContentType APPLICATION_ATOM_XML_ENTRY = new ContentType("application", "atom+xml", ODataFormat.ATOM, parameterMap("type", "entry"));
   public final static ContentType APPLICATION_ATOM_XML_FEED = new ContentType("application", "atom+xml", ODataFormat.ATOM, parameterMap("type", "feed"));
@@ -62,22 +66,7 @@ public class ContentType {
     this(type, subtype, odataFormat, null);
   }
   
-  private static ODataFormat mapToODataFormat(String subtype) {
-    ODataFormat odFormat = null;
-    if (subtype.contains("atom")) {
-      odFormat = ODataFormat.ATOM;
-    } else if (subtype.contains("xml")) {
-      odFormat = ODataFormat.XML;
-    } else if (subtype.contains("json")) {
-      odFormat = ODataFormat.JSON;
-    } else {
-      odFormat = ODataFormat.CUSTOM;
-    }
-    return odFormat;
-  }
-
   private ContentType(String type, String subtype, ODataFormat odataFormat, Map<String, String> parameters) {
-
     this.odataFormat = odataFormat;
     this.type = type == null ? MEDIA_TYPE_WILDCARD : type;
     this.subtype = subtype == null ? MEDIA_TYPE_WILDCARD : subtype;
@@ -92,9 +81,25 @@ public class ContentType {
         }
       });
       this.parameters.putAll(parameters);
+      this.parameters.remove(PARAMETER_Q);
     }
   }
 
+  private static ODataFormat mapToODataFormat(String subtype) {
+    ODataFormat odFormat = null;
+    if (subtype.contains("atom")) {
+      odFormat = ODataFormat.ATOM;
+    } else if (subtype.contains("xml")) {
+      odFormat = ODataFormat.XML;
+    } else if (subtype.contains("json")) {
+      odFormat = ODataFormat.JSON;
+    } else {
+      odFormat = ODataFormat.CUSTOM;
+    }
+    return odFormat;
+  }
+  
+  
   public static ContentType create(String type, String subtype) {
     return new ContentType(type, subtype, mapToODataFormat(subtype), null);
   }
@@ -126,20 +131,20 @@ public class ContentType {
     //
     Map<String, String> parametersMap = splitParameters(parameters);
     //
-    if (types.contains("/")) {
-      String[] tokens = types.split("/");
+    if (types.contains(TYPE_SUBTYPE_SEPARATOR)) {
+      String[] tokens = types.split(TYPE_SUBTYPE_SEPARATOR);
       if (tokens.length == 2) {
         return create(tokens[0], tokens[1], parametersMap);
       } else {
         throw new IllegalArgumentException("Too many '/' in format '" + format + "'.");
       }
     } else {
-      return create(types, "*", parametersMap);
+      return create(types, MEDIA_TYPE_WILDCARD, parametersMap);
     }
   }
 
   /**
-   * Valid input <code>;</code> separated <code>key = value</code> pairs.
+   * Valid input are <code>;</code> separated <code>key = value</code> pairs.
    * 
    * @param format
    * @return
@@ -163,7 +168,7 @@ public class ContentType {
   private static boolean isParameterAllowed(String key) {
     if(key == null) {
       return false;
-    } else if("q".equals(key.toLowerCase(Locale.US))) {
+    } else if(PARAMETER_Q.equals(key.toLowerCase(Locale.US))) {
       return false;
     }
     return true;
@@ -176,16 +181,6 @@ public class ContentType {
   public String getSubtype() {
     return subtype;
   }
-
-//  private ContentType addParameter(String key, String value) {
-//    if(isConstant) {
-//      ContentType ct = modify();
-//      ct.addParameter(key, value);
-//      return ct;
-//    }
-//    parameters.put(key, value);
-//    return this;
-//  }
 
   public Map<String, String> getParameters() {
     return Collections.unmodifiableMap(parameters);
@@ -221,6 +216,34 @@ public class ContentType {
       return false;
 
     ContentType other = (ContentType) obj;
+    
+    // subtype checks
+    if (subtype == null) {
+      if (other.subtype != null) {
+        return false;
+      }
+    } else if (!subtype.equals(other.subtype)) {
+      if (!subtype.equals(MEDIA_TYPE_WILDCARD) && !other.subtype.equals(MEDIA_TYPE_WILDCARD)) {
+        return false;
+      }
+    }
+    
+    // type checks
+    if (type == null) {
+      if (other.type != null) {
+        return false;
+      }
+    } else if (!type.equals(other.type)) {
+      if (!type.equals(MEDIA_TYPE_WILDCARD) && !other.type.equals(MEDIA_TYPE_WILDCARD)) {
+        return false;
+      }
+    }
+
+    //
+    if(countWildcars() > 0 || other.countWildcars() > 0) {
+      return true;
+    }
+    
     // parameter checks
     if (parameters == null) {
       if (other.parameters != null) {
@@ -237,32 +260,11 @@ public class ContentType {
           return false;
         }
       }
-    } 
-//    else {
-//      return false;
-//    }
-
-    // subtype checks
-    if (subtype == null) {
-      if (other.subtype != null) {
-        return false;
-      }
-    } else if (!subtype.equals(other.subtype)) {
-      if (!subtype.equals(MEDIA_TYPE_WILDCARD) && !other.subtype.equals(MEDIA_TYPE_WILDCARD)) {
-        return false;
-      }
+    } else {
+      return false;
     }
-
-    // type checks
-    if (type == null) {
-      if (other.type != null) {
-        return false;
-      }
-    } else if (!type.equals(other.type)) {
-      if (!type.equals(MEDIA_TYPE_WILDCARD) && !other.type.equals(MEDIA_TYPE_WILDCARD)) {
-        return false;
-      }
-    }
+    
+    // all tests passed
     return true;
   }
 
@@ -273,7 +275,7 @@ public class ContentType {
    */
   public String toContentTypeString() {
     StringBuilder sb = new StringBuilder();
-    sb.append(type).append("/").append(subtype);
+    sb.append(type).append(TYPE_SUBTYPE_SEPARATOR).append(subtype);
     for (String key : parameters.keySet()) {
       if(isParameterAllowed(key)) {
         String value = parameters.get(key);
@@ -309,16 +311,16 @@ public class ContentType {
 
   private int countWildcars() {
     int count = 0;
-    if("*".equals(type)) {
+    if(MEDIA_TYPE_WILDCARD.equals(type)) {
       count += 2;
     }
-    if("*".equals(subtype)) {
+    if(MEDIA_TYPE_WILDCARD.equals(subtype)) {
       count++;
     }
     return count;
   }
   
   public boolean isWildcard() {
-    return ("*".equals(type) && "*".equals(subtype));
+    return (MEDIA_TYPE_WILDCARD.equals(type) && MEDIA_TYPE_WILDCARD.equals(subtype));
   }
 }

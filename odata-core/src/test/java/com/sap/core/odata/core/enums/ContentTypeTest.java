@@ -7,6 +7,7 @@ import static org.junit.Assert.assertTrue;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import com.sap.core.odata.api.enums.ContentType;
@@ -305,6 +306,7 @@ public class ContentTypeTest {
   }
 
   @Test
+  @Ignore("If ContentType contains wildcards parameters are ignored.")
   public void testUnEqualWithWildcardSubtypeAndDiffParameters() {
     ContentType t1 = ContentType.create("aaa/bbb;x=z");
     ContentType t2 = ContentType.create("aaa/*;x=y");
@@ -340,6 +342,42 @@ public class ContentTypeTest {
     
     assertFalse(t1.equals(t2));
     assertFalse(t2.equals(t1));
+  }
+
+  @Test
+  public void testUnEqualParametersCounts() {
+    ContentType t1 = ContentType.create("aaa/bbb");
+    ContentType t2 = ContentType.create("aaa/bbb;x=y;a=b");
+    
+    assertFalse(t1.equals(t2));
+    assertFalse(t2.equals(t1));
+  }
+
+  @Test
+  public void testUnEqualParametersCountsIgnoreQ() {
+    ContentType t1 = ContentType.create("aaa/bbb;q=0.9");
+    ContentType t2 = ContentType.create("aaa/bbb;x=y;a=b");
+    
+    assertFalse(t1.equals(t2));
+    assertFalse(t2.equals(t1));
+  }
+
+  @Test
+  public void testEqualParametersCountsIgnoreQ() {
+    ContentType t1 = ContentType.create("aaa/bbb;q=0.9;x=y;a=b");
+    ContentType t2 = ContentType.create("aaa/bbb;x=y;a=b");
+    
+    assertTrue(t1.equals(t2));
+    assertTrue(t2.equals(t1));
+  }
+
+  @Test
+  public void testEqualParametersCountsWithQ() {
+    ContentType t1 = ContentType.create("aaa", "bbb", addParameters("a", "b", "x", "y", "q", "0.9"));
+    ContentType t2 = ContentType.create("aaa/bbb;x=y;a=b");
+    
+    assertTrue(t1.equals(t2));
+    assertTrue(t2.equals(t1));
   }
 
   @Test
