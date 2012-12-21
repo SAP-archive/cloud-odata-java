@@ -216,6 +216,7 @@ public class ODataSingleProcessorService implements ODataService {
     case SERVICE_DOCUMENT:
       result.add(ContentType.APPLICATION_ATOM_SVC);
       result.add(ContentType.APPLICATION_JSON);
+      result.add(ContentType.APPLICATION_XML);
       break;
     default:
       throw new ODataNotImplementedException();

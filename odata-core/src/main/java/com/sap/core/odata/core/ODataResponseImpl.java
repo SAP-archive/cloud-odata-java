@@ -59,7 +59,10 @@ public class ODataResponseImpl extends ODataResponse {
         ODataEntityContent content = (ODataEntityContent) entity;
 
         ODataResponseImpl.this.entity = content.getContent();
-        header.put(HttpHeaders.CONTENT_TYPE, content.getContentHeader());
+        if(!header.containsKey(HttpHeaders.CONTENT_TYPE)) {
+          // do not overwrite manually set 'Content-Type' by 'ODataEntityContent'
+          header.put(HttpHeaders.CONTENT_TYPE, content.getContentHeader());
+        }
         ODataResponseImpl.this.header = this.header;
 
         if (content.getETag() != null) {

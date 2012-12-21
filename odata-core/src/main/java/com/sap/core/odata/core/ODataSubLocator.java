@@ -191,7 +191,7 @@ public final class ODataSubLocator implements ODataLocator {
     List<ContentType> mediaTypes = new ArrayList<ContentType>();
 
     for (javax.ws.rs.core.MediaType x : acceptableMediaTypes) {
-      ContentType mt = ContentType.create(x.getType(), x.getSubtype()).addParameters(x.getParameters());
+      ContentType mt = ContentType.create(x.getType(), x.getSubtype(), x.getParameters());
       mediaTypes.add(mt);
     }
 
