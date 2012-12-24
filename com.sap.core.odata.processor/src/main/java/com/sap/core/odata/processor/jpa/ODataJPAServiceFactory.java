@@ -15,49 +15,49 @@ import com.sap.core.odata.processor.jpa.edm.ODataJPAEdmProvider;
  * <p>
  * JPAService Factory creates an OData Service out of a JPA Persistent Unit
  * </p>
- * 
+ *
  * @author SAP AG
  */
 
 public abstract class ODataJPAServiceFactory implements ODataServiceFactory {
-	
+
 	private ODataJPAContext oDataJPAContext;
-	
+
 	public final ODataService createService(ODataContext ctx) throws ODataException {
-		
+
 		//Initialize OData JPA Context
 		oDataJPAContext = initializeJPAContext();
-		
+
 		validatePreConditions( );
-		
+
 		// OData JPA Processor
 		ODataJPAProcessor odataJPAProcessor = new ODataJPAProcessor();
 		odataJPAProcessor.setOdataJPAContext(oDataJPAContext);
 
 		// OData Entity Data Model Provider based on JPA
-		ODataJPAEdmProvider edmProvider = new ODataJPAEdmProvider();
+		ODataJPAEdmProvider edmProvider = new ODataJPAEdmProvider(oDataJPAContext);
 		edmProvider.setODataJPAContext(oDataJPAContext);
 
 		return new ODataJPAProcessorService(edmProvider, odataJPAProcessor);
 	}
 
 	private void validatePreConditions() throws ODataJPAException{
-		
+
 		if ( oDataJPAContext.getEntityManagerFactory() == null ){
 			Message msg = new Message(Locale.ENGLISH, "EntityManagerFactory not initialized");
 			throw new ODataJPAException(msg.getText());
 		}
-			
-		
+
+
 	}
 
 	public abstract ODataJPAContext initializeJPAContext();
-	
+
 	public final ODataJPAContext getODataJPAContext( )
 	{
-		if ( oDataJPAContext == null ) 
+		if ( oDataJPAContext == null )
 				oDataJPAContext = new ODataJPAContextImpl( );
 		return oDataJPAContext;
-		
+
 	}
 }
