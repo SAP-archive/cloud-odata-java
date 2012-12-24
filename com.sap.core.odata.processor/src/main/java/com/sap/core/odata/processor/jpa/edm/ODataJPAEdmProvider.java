@@ -30,6 +30,10 @@ public class ODataJPAEdmProvider implements EdmProvider {
 		builder = JPAController.getJPAEdmBuilder(oDataJPAContext);
 		entityTypes = new HashMap<String, EntityType>();
 	}
+	public ODataJPAEdmProvider(ODataJPAContext oDataJPAContext) {
+		builder = JPAController.getJPAEdmBuilder(oDataJPAContext);
+		entityTypes = new HashMap<String, EntityType>();
+	}
 
 	public ODataJPAContext getODataJPAContext() {
 		return oDataJPAContext;

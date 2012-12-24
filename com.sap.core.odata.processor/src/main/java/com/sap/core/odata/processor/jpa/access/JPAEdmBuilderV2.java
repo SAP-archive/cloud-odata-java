@@ -25,7 +25,7 @@ import com.sap.core.odata.processor.jpa.access.api.JPAEdmBuilder;
 
 public class JPAEdmBuilderV2 implements JPAEdmBuilder {
 
-	private static final String ENTITY_CONTAINER = "SalesOrderProcessingContainer";
+	private static final String ENTITY_CONTAINER = "GatewayMetadataContainer";
 	private static final String KEY_NAME = "id";
 
 	private String pUnitName;
@@ -51,6 +51,7 @@ public class JPAEdmBuilderV2 implements JPAEdmBuilder {
 		// Create Entity Types
 		schema.setEntityTypes(getEntityTypes());
 		schema.setEntityContainers(getEntityContainers());
+		schemas.add(schema);
 		return schemas;
 	}
 
@@ -111,6 +112,7 @@ public class JPAEdmBuilderV2 implements JPAEdmBuilder {
 				entityType = new EntityType();
 				entityType.setProperties(getEntityProperties(jpaEntityType));
 				entityType.setKey(getKey(jpaEntityType));
+				entityType.setName(entityName);
 			}
 		}
 
