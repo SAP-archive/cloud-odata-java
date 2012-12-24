@@ -7,6 +7,31 @@
 	<version>0.0.1-SNAPSHOT</version>
 	<name>com.sap.core.odata.processor.web Maven Webapp</name>
 	<url>http://maven.apache.org</url>
+	<build>
+			<finalName>com.sap.core.odata.processor.ref.web</finalName>
+			<plugins>
+			      <plugin>
+			        <groupId>org.apache.maven.plugins</groupId>
+			        <artifactId>maven-eclipse-plugin</artifactId>
+			        <version>2.9</version>
+			        <configuration>
+			          <wtpversion>2.0</wtpversion>
+			          <!-- <downloadSources>true</downloadSources> -->
+			          <!-- <downloadJavadocs>true</downloadJavadocs> -->
+			          <projectNameTemplate>[artifactId]-[version]</projectNameTemplate>
+			        </configuration>
+			      </plugin>
+			      <plugin>
+			        <groupId>org.apache.maven.plugins</groupId>
+			        <artifactId>maven-compiler-plugin</artifactId>
+			        <configuration>
+			          <source>1.6</source>
+			          <target>1.6</target>
+			        </configuration>
+			      </plugin>
+			    </plugins>
+	
+	</build>
 	<dependencies>
 		<dependency>
 			<groupId>junit</groupId>
@@ -76,7 +101,5 @@
 		</dependency>
 	</dependencies>
 
-	<build>
-		<finalName>com.sap.core.odata.processor.ref.web</finalName>
-	</build>
+	
 </project>
