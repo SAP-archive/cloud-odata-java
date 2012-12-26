@@ -14,8 +14,22 @@ public class SalesOrderHeader {
 	public SalesOrderHeader() {
 		this.creationDate = new Date(System.currentTimeMillis());
 		//No arguement constructor
-	}	
+	}
+		
 
+	public SalesOrderHeader(int buyerId, String buyerName,
+			BuyerAddress buyerAddress, String currencyCode, double netAmount,
+			boolean deliveryStatus) {
+		
+		this();
+		this.buyerId = buyerId;
+		this.buyerName = buyerName;
+		this.buyerAddress = buyerAddress;
+		this.currencyCode = currencyCode;
+		this.netAmount = netAmount;
+		this.deliveryStatus = deliveryStatus;
+	}
+	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "SO_ID")

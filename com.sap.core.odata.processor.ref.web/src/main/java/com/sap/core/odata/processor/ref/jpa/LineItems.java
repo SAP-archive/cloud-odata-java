@@ -10,6 +10,11 @@ public class LineItems {
 		//No arguement constructor
 	}
 
+	public LineItems(String name) {
+		super();
+		this.name = name;
+	}
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "LINE_ITEM_ID")

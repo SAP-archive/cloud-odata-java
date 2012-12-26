@@ -2,11 +2,7 @@ package com.sap.core.odata.processor.ref.jpa;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
-import javax.persistence.Entity;
-import javax.persistence.Table;
 
-@Entity
-@Table(name = "T_BUYERADDRESS")
 @Embeddable
 public class BuyerAddress {
 
