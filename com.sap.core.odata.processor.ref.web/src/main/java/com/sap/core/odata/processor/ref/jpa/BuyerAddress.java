@@ -10,6 +10,15 @@ public class BuyerAddress {
 		//No arguement constructor
 	}
 
+	public BuyerAddress(short houseNumber, String streetName, String city,
+			String country) {
+		super();
+		this.houseNumber = houseNumber;
+		this.streetName = streetName;
+		this.city = city;
+		this.country = country;
+	}
+
 	@Column(name = "HOUSE_NUMBER")
 	private short houseNumber;
 
