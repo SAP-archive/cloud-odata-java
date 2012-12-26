@@ -2,6 +2,8 @@ package com.sap.core.odata.processor.jpa.access;
 
 import com.sap.core.odata.processor.jpa.ODataJPANameMapper;
 import com.sap.core.odata.processor.jpa.access.api.JPAEdmBuilder;
+import com.sap.core.odata.processor.jpa.access.api.JPQLContext;
+import com.sap.core.odata.processor.jpa.access.api.JPQLContextType;
 import com.sap.core.odata.processor.jpa.access.api.NameMapper;
 import com.sap.core.odata.processor.jpa.api.ODataJPAContext;
 
@@ -17,5 +19,9 @@ public class JPAController {
 	public static NameMapper getNameMapper( ){
 		return new ODataJPANameMapper();
 	}
-
+	
+	public static JPQLContext getJPQLContext(JPQLContextType contextType){
+		JPQLContext jpqlContext = new JPQLContextImpl();
+		return jpqlContext;
+	}
 }
