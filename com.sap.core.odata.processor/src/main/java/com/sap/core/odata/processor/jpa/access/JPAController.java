@@ -21,7 +21,7 @@ public class JPAController {
 	}
 	
 	public static JPQLContext getJPQLContext(JPQLContextType contextType){
-		JPQLContext jpqlContext = new JPQLContextImpl();
+		JPQLContext jpqlContext = new JPQLContextImpl(contextType);
 		return jpqlContext;
 	}
 }
