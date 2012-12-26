@@ -9,7 +9,7 @@ public class JPQLStatement {
 	public static JPQLStatementBuilder setJPQLContext(JPQLContext context){
 		switch (context.getContextType()) {
 		case SELECT:
-			return new JPQLSelectStatementBuilder(context);
+			return new JPQLSelectStatementBuilder(context, new JPQLStatement());
 		default:
 			break;
 		}
@@ -17,8 +17,8 @@ public class JPQLStatement {
 		return null;
 	}
 	
-	public JPQLStatement(String statement){
-		this.statement = statement;
+	private JPQLStatement(){
+		this.statement = null;
 	}
 	
 	@Override
@@ -26,5 +26,9 @@ public class JPQLStatement {
 		return statement;
 	}
 	
+	public void setStatement(String statement)
+	{
+		this.statement = statement;
+	}
 	
 }
