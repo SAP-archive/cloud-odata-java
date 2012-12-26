@@ -192,7 +192,7 @@ public class ExpressionParsingUtility {
 	  }
 	
 	public static HashMap<String, String> parseOrderByExpression(OrderByExpression orderByExpression){
-		HashMap<String, String> orderByMap = new HashMap<>();
+		HashMap<String, String> orderByMap = new HashMap<String, String>();
 		if(orderByExpression != null){
 			List<OrderExpression> orderBys= orderByExpression.getOrders();
 			String orderByField = null;
