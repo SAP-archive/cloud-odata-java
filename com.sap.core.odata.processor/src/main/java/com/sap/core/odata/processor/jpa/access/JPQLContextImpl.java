@@ -4,6 +4,7 @@ import java.util.HashMap;
 
 import com.sap.core.odata.api.uri.expression.FilterExpression;
 import com.sap.core.odata.processor.jpa.access.api.JPQLContext;
+import com.sap.core.odata.processor.jpa.access.api.JPQLContextType;
 import com.sap.core.odata.processor.jpa.access.api.JPQLDeleteContext;
 import com.sap.core.odata.processor.jpa.access.api.JPQLModifyContext;
 import com.sap.core.odata.processor.jpa.access.api.JPQLSelectContext;
@@ -13,6 +14,11 @@ public class JPQLContextImpl implements JPQLContext , JPQLSelectContext, JPQLMod
 	private String[] selectedFields;
 	private HashMap<String, String> orderByCollection;
 	private FilterExpression whereCondition;
+	private JPQLContextType contextType;
+	
+	public JPQLContextImpl (JPQLContextType contextType){
+		this.contextType = contextType;
+	}
 	@Override
 	public void setJPAEntityName(String jpaEntityName) {
 		this.jpaEntityName = jpaEntityName;		
@@ -61,5 +67,11 @@ public class JPQLContextImpl implements JPQLContext , JPQLSelectContext, JPQLMod
 	public String[] getSelectedFields() {
 		return selectedFields;
 	}
+	
+	@Override
+	public JPQLContextType getContextType() {
+		return contextType;
+	}
+
 
 }
