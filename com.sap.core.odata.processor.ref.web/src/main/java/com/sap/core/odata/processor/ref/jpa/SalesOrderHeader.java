@@ -1,6 +1,8 @@
 package com.sap.core.odata.processor.ref.jpa;
 
-import java.util.Calendar;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 import javax.persistence.*;
 
@@ -9,55 +11,105 @@ import javax.persistence.*;
 @NamedQuery(name = "AllSOHeader", query = "select so from SalesOrderHeader so")
 public class SalesOrderHeader {
 
+	public SalesOrderHeader() {
+		this.creationDate = new Date(System.currentTimeMillis());
+		//No arguement constructor
+	}	
+
 	@Id
-	private long id;
-	@Column(name = "NAME")
-	  private String name;
-	@Column(name = "DESCRIPTION")
-	  private String description;
-	@Column(name = "PRICE")
-		private int price;
-	@Temporal(TemporalType.TIMESTAMP)
-		private Calendar deliveryDate;
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "SO_ID")
+	private long soId;
 
-	public Calendar getDeliveryDate() {
-		return deliveryDate;
+	@Temporal(TemporalType.DATE)
+	private Date creationDate;
+
+	@Column(name = "BUYER_ID")
+	private int buyerId;
+
+	@Column(name = "BUYER_NAME")
+	private String buyerName;
+
+	@Embedded
+	private BuyerAddress buyerAddress;
+
+	@Column(name = "CURRENCY_CODE")
+	private String currencyCode;
+
+	@Column(name = "NET_AMOUNT")
+	private double netAmount;
+
+	@Column(name = "DELIVERY_STATUS")
+	private boolean deliveryStatus;
+
+	@OneToMany(mappedBy = "SalesOrderHeader", cascade = CascadeType.ALL)
+	private final List<LineItems> lineItems = new ArrayList<LineItems>();
+
+	public long getSoId() {
+		return soId;
 	}
 
-	public void setDeliveryDate(Calendar deliveryDate) {
-		this.deliveryDate = deliveryDate;
+	public void setSoId(long soId) {
+		this.soId = soId;
 	}
 
-	public String getName() {
-		return name;
+	public Date getCreationDate() {
+		return creationDate;
 	}
 
-	public void setName(String name) {
-		this.name = name;
+	public void setCreationDate(Date creationDate) {
+		this.creationDate = creationDate;
 	}
 
-	public String getDescription() {
-		return description;
+	public int getBuyerId() {
+		return buyerId;
 	}
 
-	public void setDescription(String description) {
-		this.description = description;
+	public void setBuyerId(int buyerId) {
+		this.buyerId = buyerId;
 	}
 
-	public int getPrice() {
-		return price;
+	public String getBuyerName() {
+		return buyerName;
 	}
 
-	public void setPrice(int price) {
-		this.price = price;
+	public void setBuyerName(String buyerName) {
+		this.buyerName = buyerName;
 	}
 
-	public long getId() {
-		return id;
+	public BuyerAddress getBuyerAddress() {
+		return buyerAddress;
 	}
 
-	public void setId(long id) {
-		this.id = id;
+	public void setBuyerAddress(BuyerAddress buyerAddress) {
+		this.buyerAddress = buyerAddress;
 	}
 
+	public String getCurrencyCode() {
+		return currencyCode;
+	}
+
+	public void setCurrencyCode(String currencyCode) {
+		this.currencyCode = currencyCode;
+	}
+
+	public double getNetAmount() {
+		return netAmount;
+	}
+
+	public void setNetAmount(double netAmount) {
+		this.netAmount = netAmount;
+	}
+
+	public boolean getDeliveryStatus() {
+		return deliveryStatus;
+	}
+
+	public void setDeliveryStatus(boolean deliveryStatus) {
+		this.deliveryStatus = deliveryStatus;
+	}
+
+	public List<LineItems> getLineItems() {
+		return this.lineItems;
+	}
 }
