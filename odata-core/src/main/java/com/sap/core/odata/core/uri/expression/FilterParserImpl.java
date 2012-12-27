@@ -30,7 +30,6 @@ import com.sap.core.odata.core.edm.EdmSimpleTypeFacadeImpl;
 
 /**
  * @author SAP AG
- *
  */
 public class FilterParserImpl implements FilterParser
 {
@@ -39,7 +38,6 @@ public class FilterParserImpl implements FilterParser
   static Map<String, InfoMethod> availableFunctions;
   static Map<String, InfoUnaryOperator> availableUnaryOperators;
 
-  
   static
   {
     initAvialTables();
@@ -61,7 +59,6 @@ public class FilterParserImpl implements FilterParser
     this.resourceEntityType = edmType;
   }
 
-  
   @Override
   public FilterExpression parseFilterString(String filterExpression) throws FilterParserException, FilterParserInternalError
   {
@@ -342,7 +339,7 @@ public class FilterParserImpl implements FilterParser
       //validatePropertyTypes(property);
       return property;
     }
-    
+
     //
 
     throw FilterParserInternalError.createCOMMON();
@@ -457,7 +454,7 @@ public class FilterParserImpl implements FilterParser
     combination.add(new ParameterSet(single, single, single));
     combination.add(new ParameterSet(double_, double_, double_));
     combination.add(new ParameterSet(decimal_, decimal_, decimal_));
-    
+
     availableBinaryOperators.put(CharConst.GC_OPERATOR_MUL, new InfoBinaryOperator(BinaryOperator.MUL, "Multiplicative", CharConst.GC_OPERATOR_MUL, 60));
     availableBinaryOperators.put(CharConst.GC_OPERATOR_DIV, new InfoBinaryOperator(BinaryOperator.DIV, "Multiplicative", CharConst.GC_OPERATOR_DIV, 60));
     availableBinaryOperators.put(CharConst.GC_OPERATOR_MOD, new InfoBinaryOperator(BinaryOperator.MODULO, "Multiplicative", CharConst.GC_OPERATOR_MOD, 60));
@@ -655,7 +652,7 @@ public class FilterParserImpl implements FilterParser
     availableUnaryOperators.put(CharConst.GC_OPERATOR_NOT, new InfoUnaryOperator(UnaryOperator.NOT, "not", CharConst.GC_OPERATOR_NOT));
 
   }
-  
+
   private void validateEdmProperty(CommonExpression leftExpression, PropertyExpression property) throws FilterParserException, FilterParserInternalError {
     // Exist if no edm provided
     if ((this.edm == null) || (this.resourceEntityType == null))
@@ -733,22 +730,20 @@ public class FilterParserImpl implements FilterParser
     }
   }
 
-  
   protected void validateBinaryOperator(BinaryExpression binaryExpression) throws FilterParserException
   {
     InfoBinaryOperator binOpt = availableBinaryOperators.get(binaryExpression.getOperator().toUriLiteral());
-    
+
     List<ParameterSet> allowedParameterTypesCombinations = binOpt.getParameterSet();
     List<EdmType> actualParameterTypes = new ArrayList<EdmType>();
     actualParameterTypes.add(binaryExpression.getLeftOperand().getEdmType());
     actualParameterTypes.add(binaryExpression.getRightOperand().getEdmType());
-        
-    validateParameterSet(actualParameterTypes,allowedParameterTypesCombinations);
+
+    validateParameterSet(actualParameterTypes, allowedParameterTypesCombinations);
   }
 
   private void validateParameterSet(List<EdmType> actualParameterTypes, List<ParameterSet> allowedParameterTypesCombinations) {
- 
-  
+
     /*
     String lv_act;
     String lv_form;
@@ -860,7 +855,7 @@ public class FilterParserImpl implements FilterParser
                                                                                          function = is_formal_param_combi-name.
                                                                                          */
   }
-  
+
   protected void validateMethodTypes(MethodExpression methodExpression, Token token)
   /*void VALIDATE_FUNCTION_TYPES(MethodExpression IO_EXPR_FUNCTION,
       Vector<EdmType> ET_ACTUAL_PARAMETERS,
@@ -947,7 +942,4 @@ public class FilterParserImpl implements FilterParser
           io_expr_unary->operand->type = /iwcor/cl_ds_edm_simple_type=>get_instance( iv_name = lv_string ).
         ENDIF.*/}
 
-
-
 }
-

@@ -30,9 +30,11 @@ public abstract class ODataEntityProvider {
 
   public abstract ODataEntityContent writeProperty(EdmProperty edmProperty, Object value) throws ODataEntityProviderException;
 
-  public abstract ODataEntityContent writeText(EdmProperty edmProperty, Object value) throws ODataEntityProviderException;
+  public abstract ODataEntityContent writePropertyValue(EdmProperty edmProperty, Object value) throws ODataEntityProviderException;
 
-  public abstract ODataEntityContent writeMediaResource(String mimeType, byte[] data) throws ODataEntityProviderException;
+  public abstract ODataEntityContent writeText(String value) throws ODataEntityProviderException;
+
+  public abstract ODataEntityContent writeBinary(String mimeType, byte[] data) throws ODataEntityProviderException;
 
   public abstract ODataEntityContent writeLink(EdmEntitySet entitySet, Map<String, Object> data, ODataEntityProviderProperties properties) throws ODataEntityProviderException;
 

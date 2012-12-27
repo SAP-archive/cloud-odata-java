@@ -16,13 +16,13 @@ import com.sap.core.odata.testutils.mocks.MockFacade;
 public class AtomEntityProviderTest extends AbstractProviderTest {
 
   @Test
-  public void writeText() throws Exception {
+  public void writePropertyValue() throws Exception {
     ODataEntityProvider s = createAtomEntityProvider();
 
     EdmTyped edmTyped = MockFacade.getMockEdm().getEntityType("RefScenario", "Employee").getProperty("Age");
     EdmProperty edmProperty = (EdmProperty) edmTyped;
 
-    ODataEntityContent content = s.writeText(edmProperty, this.employeeData.get("Age"));
+    ODataEntityContent content = s.writePropertyValue(edmProperty, this.employeeData.get("Age"));
     assertNotNull(content);
     assertNotNull(content.getContent());
     assertEquals(ContentType.TEXT_PLAIN.toString(), content.getContentHeader());

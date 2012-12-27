@@ -3,13 +3,14 @@ package com.sap.core.odata.testutils.helper;
 import java.io.File;
 import java.io.FileFilter;
 import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- *
+ * @author SAP AG
  */
 public class ClassHelper {
   public static final FileFilter JAVA_FILE_FILTER = new FileFilter() {
@@ -26,9 +27,8 @@ public class ClassHelper {
    * 
    * @param exClasses
    * @return
-   * @throws Exception
    */
-  public static <T> List<T> getClassInstances(List<Class<T>> exClasses) throws Exception {
+  public static <T> List<T> getClassInstances(List<Class<T>> exClasses) {
     return getClassInstances(exClasses, EMPTY_CLASS_ARRAY, EMPTY_OBJECT_ARRAY);
   }
 
@@ -37,9 +37,8 @@ public class ClassHelper {
    * @param exClasses
    * @param ctorParameters
    * @return
-   * @throws Exception
    */
-  public static <T> List<T> getClassInstances(List<Class<T>> exClasses, Object... ctorParameters) throws Exception {
+  public static <T> List<T> getClassInstances(List<Class<T>> exClasses, Object... ctorParameters) {
     List<Class<?>> ctorParameterClasses = new ArrayList<Class<?>>();
     for (Object object : ctorParameters) {
       ctorParameterClasses.add(object.getClass());
@@ -53,16 +52,23 @@ public class ClassHelper {
    * @param ctorParameterClasses
    * @param ctorParameters
    * @return
-   * @throws Exception
    */
-  public static <T> List<T> getClassInstances(List<Class<T>> exClasses, Class<?>[] ctorParameterClasses, Object[] ctorParameters) throws Exception {
+  public static <T> List<T> getClassInstances(List<Class<T>> exClasses, Class<?>[] ctorParameterClasses, Object[] ctorParameters) {
 
     List<T> toTestExceptions = new ArrayList<T>();
     for (Class<T> clazz : exClasses) {
       if (isNotAbstractOrInterface(clazz)) {
-        Constructor<T> ctor = clazz.getConstructor(ctorParameterClasses);
-        T ex = ctor.newInstance(ctorParameters);
-        toTestExceptions.add(ex);
+        Constructor<T> ctor;
+        try {
+          ctor = clazz.getConstructor(ctorParameterClasses);
+          T ex = ctor.newInstance(ctorParameters);
+          toTestExceptions.add(ex);
+        } catch (SecurityException e) {
+        } catch (NoSuchMethodException e) {
+        } catch (IllegalArgumentException e) {
+        } catch (InstantiationException e) {
+        } catch (IllegalAccessException e) {
+        } catch (InvocationTargetException e) {}
       }
     }
     return toTestExceptions;
