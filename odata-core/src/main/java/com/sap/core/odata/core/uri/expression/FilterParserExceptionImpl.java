@@ -94,7 +94,7 @@ public class FilterParserExceptionImpl extends FilterParserException {
       msgRef.addContent(property.getPropertyName());
       msgRef.addContent(parentType.getNamespace() + "." + parentType.getName());
     } catch (EdmException e) {
-      throw FilterParserInternalError.createERROR_ACCESSING_EDM(null);
+      throw FilterParserInternalError.createERROR_ACCESSING_EDM(e);
     }
 
     return new FilterParserException(msgRef);

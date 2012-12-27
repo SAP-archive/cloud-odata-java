@@ -67,7 +67,6 @@ import com.sap.core.odata.api.uri.resultviews.GetSimplePropertyView;
  */
 public class ListsProcessor extends ODataSingleProcessor {
 
-  private static final String CONTENT_TYPE = "Content-Type";
   private static final int SERVER_PAGING_SIZE = 100;
 
   private final ListsDataSource dataSource;
@@ -159,8 +158,7 @@ public class ListsProcessor extends ODataSingleProcessor {
 
     return ODataResponse
         .status(HttpStatusCodes.OK)
-        .header(CONTENT_TYPE, ContentType.TEXT_PLAIN.toString())
-        .entity(String.valueOf(data.size()))
+        .entity(ODataEntityProvider.create(ContentType.APPLICATION_XML).writeText(String.valueOf(data.size())))
         .build();
   }
 
@@ -244,8 +242,8 @@ public class ListsProcessor extends ODataSingleProcessor {
 
     return ODataResponse
         .status(HttpStatusCodes.OK)
-        .header(CONTENT_TYPE, ContentType.TEXT_PLAIN.toString())
-        .entity(appliesFilter(data, uriParserResultView.getFilter()) ? "1" : "0")
+        .entity(ODataEntityProvider.create(ContentType.APPLICATION_XML).writeText(
+            appliesFilter(data, uriParserResultView.getFilter()) ? "1" : "0"))
         .build();
   }
 
@@ -340,7 +338,7 @@ public class ListsProcessor extends ODataSingleProcessor {
 
     return ODataResponse
         .status(HttpStatusCodes.OK)
-        .entity(ODataEntityProvider.create(ContentType.APPLICATION_XML).writeText(property, value))
+        .entity(ODataEntityProvider.create(ContentType.APPLICATION_XML).writePropertyValue(property, value))
         .build();
   }
 
@@ -365,7 +363,7 @@ public class ListsProcessor extends ODataSingleProcessor {
 
     return ODataResponse
         .status(HttpStatusCodes.OK)
-        .entity(ODataEntityProvider.create(ContentType.APPLICATION_XML).writeMediaResource(mimeType, binaryData))
+        .entity(ODataEntityProvider.create(ContentType.APPLICATION_XML).writeBinary(mimeType, binaryData))
         .build();
   }
 
@@ -382,14 +380,14 @@ public class ListsProcessor extends ODataSingleProcessor {
     if (functionImport.getReturnType().getMultiplicity() == EdmMultiplicity.MANY) {
       return ODataResponse
           .status(HttpStatusCodes.OK)
-          .header(CONTENT_TYPE, contentType.toString())
+          .header("CONTENT-TYPE", contentType.toString())
           .entity(data.toString())
           .build();
     } else if (type.getKind() == EdmTypeKind.ENTITY) {
       final Map<String, Object> values = getStructuralTypeValueMap(data, (EdmEntityType) type);
       return ODataResponse
           .status(HttpStatusCodes.OK)
-          .header(CONTENT_TYPE, contentType.toString())
+          .header("CONTENT-TYPE", contentType.toString())
           // .entity(ODataEntityProvider.create(format).writeEntry(null, values, null))
           .entity(values.toString())
           .build();
@@ -398,7 +396,7 @@ public class ListsProcessor extends ODataSingleProcessor {
           getStructuralTypeValueMap(data, (EdmStructuralType) type) : data;
       return ODataResponse
           .status(HttpStatusCodes.OK)
-          .header(CONTENT_TYPE, contentType.toString())
+          .header("CONTENT-TYPE", contentType.toString())
           // .entity(ODataEntityProvider.create(format).writeProperty(null, value))
           .entity(value.toString())
           .build();
@@ -414,15 +412,21 @@ public class ListsProcessor extends ODataSingleProcessor {
         functionImport,
         mapFunctionParameters(uriParserResultView.getFunctionImportParameters()),
         null);
-    final String value = type.valueToString(data, EdmLiteralKind.DEFAULT, null);
 
-    return ODataResponse
-        .status(HttpStatusCodes.OK)
-        .header(CONTENT_TYPE,
-            type == EdmSimpleTypeKind.Binary.getEdmSimpleTypeInstance() ?
-                ContentType.APPLICATION_OCTET_STREAM.toString() : ContentType.TEXT_PLAIN.toString())
-        .entity(value == null ? "" : value)
-        .build();
+    if (type == EdmSimpleTypeKind.Binary.getEdmSimpleTypeInstance()) {
+      return ODataResponse
+          .status(HttpStatusCodes.OK)
+          .entity(ODataEntityProvider.create(ContentType.APPLICATION_XML)
+              .writeBinary(ContentType.APPLICATION_OCTET_STREAM.toContentTypeString(), (byte[]) data))
+          .build();
+    } else {
+      final String value = type.valueToString(data, EdmLiteralKind.DEFAULT, null);
+      return ODataResponse
+          .status(HttpStatusCodes.OK)
+          .entity(ODataEntityProvider.create(ContentType.APPLICATION_XML)
+              .writeText(value == null ? "" : value))
+          .build();
+    }
   }
 
   private HashMap<String, Object> mapKey(final List<KeyPredicate> keys) throws EdmException {

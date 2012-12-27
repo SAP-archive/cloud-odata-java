@@ -1,6 +1,7 @@
 package com.sap.core.odata.ref.edm;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import com.sap.core.odata.api.edm.EdmConcurrencyMode;
@@ -110,7 +111,6 @@ public class ScenarioEdmProvider extends EdmProviderDefault {
     associations.add(getAssociation(ASSOCIATION_1_4));
     schema.setAssociations(associations);
 
-    List<EntityContainer> entityContainers = new ArrayList<EntityContainer>();
     EntityContainer entityContainer = new EntityContainer();
     entityContainer.setName(ENTITY_CONTAINER_1).setDefaultEntityContainer(true);
 
@@ -139,31 +139,19 @@ public class ScenarioEdmProvider extends EdmProviderDefault {
     functionImports.add(getFunctionImport(ENTITY_CONTAINER_1, FUNCTION_IMPORT_7));
     entityContainer.setFunctionImports(functionImports);
 
-    entityContainers.add(entityContainer);
-    schema.setEntityContainers(entityContainers);
+    schema.setEntityContainers(Arrays.asList(entityContainer));
 
     schemas.add(schema);
 
     schema = new Schema();
     schema.setNamespace(NAMESPACE_2);
 
-    entityTypes = new ArrayList<EntityType>();
-    entityTypes.add(getEntityType(ENTITY_TYPE_2_1));
-    schema.setEntityTypes(entityTypes);
+    schema.setEntityTypes(Arrays.asList(getEntityType(ENTITY_TYPE_2_1)));
 
-    entityContainers = new ArrayList<EntityContainer>();
     entityContainer = new EntityContainer();
     entityContainer.setName(ENTITY_CONTAINER_2);
-
-    entitySets = new ArrayList<EntitySet>();
-    entitySets.add(getEntitySet(ENTITY_CONTAINER_2, ENTITY_SET_2_1));
-    entityContainer.setEntitySets(entitySets);
-
-    entitySets = new ArrayList<EntitySet>();
-    entitySets.add(getEntitySet(ENTITY_CONTAINER_2, ENTITY_SET_2_1));
-
-    entityContainers.add(entityContainer);
-    schema.setEntityContainers(entityContainers);
+    entityContainer.setEntitySets(Arrays.asList(getEntitySet(ENTITY_CONTAINER_2, ENTITY_SET_2_1)));
+    schema.setEntityContainers(Arrays.asList(entityContainer));
 
     schemas.add(schema);
 

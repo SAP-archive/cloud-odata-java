@@ -186,7 +186,7 @@ public class AtomEntityProvider extends ODataEntityProvider {
   }
 
   @Override
-  public ODataEntityContent writeText(EdmProperty edmProperty, Object value) throws ODataEntityProviderException {
+  public ODataEntityContent writePropertyValue(EdmProperty edmProperty, Object value) throws ODataEntityProviderException {
     ODataEntityContentImpl content = new ODataEntityContentImpl();
 
     try {
@@ -227,7 +227,21 @@ public class AtomEntityProvider extends ODataEntityProvider {
   }
 
   @Override
-  public ODataEntityContent writeMediaResource(String mimeType, byte[] data) throws ODataEntityProviderException {
+  public ODataEntityContent writeText(final String value) throws ODataEntityProviderException {
+    ODataEntityContentImpl content = new ODataEntityContentImpl();
+    ByteArrayInputStream stream;
+    try {
+      stream = new ByteArrayInputStream(value.getBytes(DEFAULT_CHARSET));
+    } catch (UnsupportedEncodingException e) {
+      throw new ODataEntityProviderException(ODataEntityProviderException.COMMON, e);
+    }
+    content.setContentStream(stream);
+    content.setContentHeader(ContentType.TEXT_PLAIN.toContentTypeString());
+    return content;
+  }
+
+  @Override
+  public ODataEntityContent writeBinary(String mimeType, byte[] data) throws ODataEntityProviderException {
     ODataEntityContentImpl content = new ODataEntityContentImpl();
     try {
       ByteArrayInputStream bais = new ByteArrayInputStream(data);
