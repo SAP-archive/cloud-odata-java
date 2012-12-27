@@ -1,24 +1,17 @@
 package com.sap.core.odata.processor.jpa.jpql.api;
 
-import com.sap.core.odata.processor.jpa.jpql.JPQLSelectStatementBuilder;
+import com.sap.core.odata.processor.jpa.jpql.JPQLBuilderFactory;
 
 public class JPQLStatement {
 	
 	protected String statement;
 	
 	public static JPQLStatementBuilder setJPQLContext(JPQLContext context){
-		switch (context.getContextType()) {
-		case SELECT:
-			return new JPQLSelectStatementBuilder(context, new JPQLStatement());
-		default:
-			break;
-		}
-		
-		return null;
+		return JPQLStatementBuilder.create(context);
 	}
 	
-	private JPQLStatement(){
-		this.statement = null;
+	private JPQLStatement(String statement){
+		this.statement = statement;
 	}
 	
 	@Override
@@ -26,9 +19,20 @@ public class JPQLStatement {
 		return statement;
 	}
 	
-	public void setStatement(String statement)
-	{
-		this.statement = statement;
+	public static abstract class JPQLStatementBuilder{
+		
+		protected JPQLStatementBuilder( ){ }
+		
+		private static final JPQLStatementBuilder create(JPQLContext context){
+			return JPQLBuilderFactory.getStatementBuilder(context);
+		}
+		
+		protected final JPQLStatement createStatement(String statement)
+		{
+			return new JPQLStatement(statement);
+		}
+		
+		public abstract JPQLStatement build( );
 	}
 	
 }

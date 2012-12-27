@@ -4,14 +4,14 @@ import java.util.HashMap;
 
 import com.sap.core.odata.api.uri.expression.FilterExpression;
 
-public interface JPQLSelectContext extends JPQLContext {
+public abstract class JPQLSelectContext extends JPQLContext {
 	
-	public void setSelectedFields(String[] selectedFields);
-	public void setOrderByCollection(HashMap<String, String> orderByCollection);
-	public void setWhereExpression(FilterExpression filterExpression);
+	protected abstract void setSelectedFields(String[] selectedFields);
+	protected abstract void setOrderByCollection(HashMap<String, String> orderByCollection);
+	protected abstract void setWhereExpression(FilterExpression filterExpression);
 	
-	public String[] getSelectedFields();
-	public HashMap<String, String> getOrderByCollection();
-	public FilterExpression getWhereExpression();
+	public abstract String[] getSelectedFields();
+	public abstract HashMap<String, String> getOrderByCollection();
+	public abstract FilterExpression getWhereExpression();
 
 }

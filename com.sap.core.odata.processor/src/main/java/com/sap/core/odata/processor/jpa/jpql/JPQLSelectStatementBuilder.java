@@ -8,20 +8,19 @@ import com.sap.core.odata.processor.jpa.access.ExpressionParsingUtility;
 import com.sap.core.odata.processor.jpa.jpql.api.JPQLContext;
 import com.sap.core.odata.processor.jpa.jpql.api.JPQLSelectContext;
 import com.sap.core.odata.processor.jpa.jpql.api.JPQLStatement;
-import com.sap.core.odata.processor.jpa.jpql.api.JPQLStatementBuilder;
 
-public class JPQLSelectStatementBuilder extends JPQLStatementBuilder{
+public class JPQLSelectStatementBuilder extends com.sap.core.odata.processor.jpa.jpql.api.JPQLStatement.JPQLStatementBuilder{
 	
 	JPQLStatement jpqlStatement;
 	private JPQLSelectContext context;
-	public JPQLSelectStatementBuilder(JPQLContext context, JPQLStatement jpqlStatement) {
-		this.jpqlStatement = jpqlStatement;
+	
+	public JPQLSelectStatementBuilder(JPQLContext context) {
 		this.context = (JPQLSelectContext) context;
 	}
 
 	@Override
 	public JPQLStatement build() {
-		this.jpqlStatement.setStatement(createJPQLQuery());
+		this.jpqlStatement = createStatement(createJPQLQuery());
 		return this.jpqlStatement;
 		
 	}
@@ -30,7 +29,7 @@ public class JPQLSelectStatementBuilder extends JPQLStatementBuilder{
 
 		StringBuilder jpqlQuery = new StringBuilder();
 		String tableAlias = "gwt1";
-		String fromClause = context.getJPAEntityName() + " " + tableAlias;
+		String fromClause = ((JPQLContext) context).getJPAEntityName() + " " + tableAlias;
 		String query = "SELECT %s FROM %s";
 		StringBuilder orderByBuilder = new StringBuilder();
 		
