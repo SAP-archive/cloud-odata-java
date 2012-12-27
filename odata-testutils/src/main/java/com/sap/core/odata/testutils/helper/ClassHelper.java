@@ -8,6 +8,7 @@ import java.lang.reflect.Modifier;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * @author SAP AG
@@ -16,7 +17,7 @@ public class ClassHelper {
   public static final FileFilter JAVA_FILE_FILTER = new FileFilter() {
     @Override
     public boolean accept(File path) {
-      return path.isFile() && path.getName().toLowerCase().endsWith("class");
+      return path.isFile() && path.getName().toLowerCase(Locale.ROOT).endsWith("class");
     }
   };
   public static final String CLASS_FILE_ENDING = ".class";
@@ -64,11 +65,18 @@ public class ClassHelper {
           T ex = ctor.newInstance(ctorParameters);
           toTestExceptions.add(ex);
         } catch (SecurityException e) {
+          continue;
         } catch (NoSuchMethodException e) {
+          continue;
         } catch (IllegalArgumentException e) {
+          continue;
         } catch (InstantiationException e) {
+          continue;
         } catch (IllegalAccessException e) {
-        } catch (InvocationTargetException e) {}
+          continue;
+        } catch (InvocationTargetException e) {
+          continue;
+        }
       }
     }
     return toTestExceptions;

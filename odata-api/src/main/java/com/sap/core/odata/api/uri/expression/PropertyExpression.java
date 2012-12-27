@@ -1,6 +1,5 @@
 package com.sap.core.odata.api.uri.expression;
 
-import com.sap.core.odata.api.edm.EdmException;
 import com.sap.core.odata.api.edm.EdmProperty;
 
 /**
@@ -21,8 +20,7 @@ import com.sap.core.odata.api.edm.EdmProperty;
 public interface PropertyExpression extends CommonExpression
 {
   /**
-   * @returns Returns the property name as used in the EDM
-   * @throws EdmException
+   * @return the property name as used in the EDM
    */
   public String getPropertyName();
   

@@ -103,7 +103,7 @@ public class CircleStreamBuffer {
     } else {
       tmp = bufferQueue.peek();
       if (tmp != null && !tmp.hasRemaining()) {
-        bufferQueue.poll();
+        tmp = bufferQueue.poll();
         next = true;
       }
     }
