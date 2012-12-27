@@ -1,6 +1,6 @@
-package com.sap.core.odata.processor.jpa.access.api;
+package com.sap.core.odata.processor.jpa.jpql.api;
 
-import com.sap.core.odata.processor.jpa.access.JPQLSelectStatementBuilder;
+import com.sap.core.odata.processor.jpa.jpql.JPQLSelectStatementBuilder;
 
 public class JPQLStatement {
 	

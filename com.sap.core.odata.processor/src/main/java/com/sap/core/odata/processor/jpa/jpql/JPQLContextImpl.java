@@ -1,13 +1,13 @@
-package com.sap.core.odata.processor.jpa.access;
+package com.sap.core.odata.processor.jpa.jpql;
 
 import java.util.HashMap;
 
 import com.sap.core.odata.api.uri.expression.FilterExpression;
-import com.sap.core.odata.processor.jpa.access.api.JPQLContext;
-import com.sap.core.odata.processor.jpa.access.api.JPQLContextType;
-import com.sap.core.odata.processor.jpa.access.api.JPQLDeleteContext;
-import com.sap.core.odata.processor.jpa.access.api.JPQLModifyContext;
-import com.sap.core.odata.processor.jpa.access.api.JPQLSelectContext;
+import com.sap.core.odata.processor.jpa.jpql.api.JPQLContext;
+import com.sap.core.odata.processor.jpa.jpql.api.JPQLContextType;
+import com.sap.core.odata.processor.jpa.jpql.api.JPQLDeleteContext;
+import com.sap.core.odata.processor.jpa.jpql.api.JPQLModifyContext;
+import com.sap.core.odata.processor.jpa.jpql.api.JPQLSelectContext;
 
 public class JPQLContextImpl implements JPQLContext , JPQLSelectContext, JPQLModifyContext, JPQLDeleteContext {
 	private String jpaEntityName;

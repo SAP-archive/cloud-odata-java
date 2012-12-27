@@ -13,11 +13,11 @@ import com.sap.core.odata.api.processor.ODataResponse.ODataResponseBuilder;
 import com.sap.core.odata.api.processor.ODataSingleProcessor;
 import com.sap.core.odata.api.uri.resultviews.GetEntitySetView;
 import com.sap.core.odata.processor.jpa.access.JPAController;
-import com.sap.core.odata.processor.jpa.access.api.JPQLContextType;
-import com.sap.core.odata.processor.jpa.access.api.JPQLSelectContext;
-import com.sap.core.odata.processor.jpa.access.api.JPQLStatement;
-import com.sap.core.odata.processor.jpa.access.api.JPQLStatementBuilder;
 import com.sap.core.odata.processor.jpa.api.ODataJPAContext;
+import com.sap.core.odata.processor.jpa.jpql.api.JPQLContextType;
+import com.sap.core.odata.processor.jpa.jpql.api.JPQLSelectContext;
+import com.sap.core.odata.processor.jpa.jpql.api.JPQLStatement;
+import com.sap.core.odata.processor.jpa.jpql.api.JPQLStatementBuilder;
 
 public class ODataJPAProcessor extends ODataSingleProcessor {
 	
@@ -46,9 +46,7 @@ public class ODataJPAProcessor extends ODataSingleProcessor {
 		Query jpqlQuery = odataJPAContext.getEntityManagerFactory().createEntityManager().createQuery(selectStatement.toString());
 		List<Object> jpaEntities = jpqlQuery.getResultList();
 		
-		ODataResponseBuilder odataResponseBuilder = ODataResponse.status(HttpStatusCodes.OK);
-	    
-		return odataResponseBuilder.build();
+		return null;
 	  }
 
 

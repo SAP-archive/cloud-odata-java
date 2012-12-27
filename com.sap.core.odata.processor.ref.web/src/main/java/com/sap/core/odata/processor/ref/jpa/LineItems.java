@@ -7,11 +7,12 @@ import javax.persistence.*;
 public class LineItems {
 
 	public LineItems() {
-		//No arguement constructor
+		super();
+		//No arg const.
 	}
 
 	public LineItems(String name) {
-		super();
+		this();
 		this.name = name;
 	}
 

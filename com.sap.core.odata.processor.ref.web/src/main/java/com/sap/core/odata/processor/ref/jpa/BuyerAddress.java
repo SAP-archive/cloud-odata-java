@@ -6,13 +6,14 @@ import javax.persistence.Embeddable;
 @Embeddable
 public class BuyerAddress {
 
-	public BuyerAddress() {		
-		//No arguement constructor
+	public BuyerAddress() {	
+		super();
+		//No arg const.		
 	}
 
 	public BuyerAddress(short houseNumber, String streetName, String city,
 			String country) {
-		super();
+		this();
 		this.houseNumber = houseNumber;
 		this.streetName = streetName;
 		this.city = city;
