@@ -27,11 +27,11 @@ public class JPATypeConvertor {
 			return EdmSimpleTypeKind.Decimal;
 		else if (jpaType.equals(byte[].class))
 			return EdmSimpleTypeKind.Binary;
-		else if (jpaType.equals(Byte.class))
+		else if (jpaType.equals(Byte.class) ||  jpaType.equals(byte.class))
 			return EdmSimpleTypeKind.Byte;
 		else if (jpaType.equals(Byte[].class))
 			return EdmSimpleTypeKind.Binary;
-		else if (jpaType.equals(Boolean.class))
+		else if (jpaType.equals(Boolean.class) ||  jpaType.equals(boolean.class))
 			return EdmSimpleTypeKind.Boolean;
 		else if (jpaType.equals(Date.class))
 			return EdmSimpleTypeKind.DateTime;
