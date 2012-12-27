@@ -4,7 +4,8 @@ import com.sap.core.odata.api.exception.MessageReference;
 import com.sap.core.odata.api.exception.ODataBadRequestException;
 
 /**
- * This exception results in a 400 Bad Request
+ * Exception for violation of the OData URI construction rules,
+ * resulting in a 400 Bad Request response
  * @author SAP AG
  */
 public class UriSyntaxException extends ODataBadRequestException {
@@ -44,16 +45,10 @@ public class UriSyntaxException extends ODataBadRequestException {
   public static final MessageReference INCOMPATIBLELITERAL = createMessageReference(UriSyntaxException.class, "INCOMPATIBLELITERAL");
   public static final MessageReference INCOMPATIBLESYSTEMQUERYOPTION = createMessageReference(UriSyntaxException.class, "INCOMPATIBLESYSTEMQUERYOPTION");
   
-  /**
-   * {@inheritDoc}
-   */
   public UriSyntaxException(MessageReference MessageReference) {
     super(MessageReference);
   }
   
-  /**
-   * {@inheritDoc}
-   */
   public UriSyntaxException(MessageReference messageReference, Throwable cause) {
     super(messageReference, cause);
   }

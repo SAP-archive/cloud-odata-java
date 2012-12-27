@@ -15,6 +15,7 @@ import org.slf4j.LoggerFactory;
 
 import com.sap.core.odata.api.edm.Edm;
 import com.sap.core.odata.api.enums.ContentType;
+import com.sap.core.odata.api.enums.ContentType.ODataFormat;
 import com.sap.core.odata.core.ep.util.CircleStreamBuffer;
 
 /**
@@ -24,32 +25,19 @@ public class ODataExceptionSerializer {
 
   private final static Logger LOG = LoggerFactory.getLogger(ODataExceptionSerializer.class);
 
-  public static InputStream serialize(String errorCode, String message, ContentType contentType, Locale locale) {
-
-    InputStream returnMessage;
-
-    switch (contentType.getODataFormat()) {
-    case XML:
-    case ATOM:
-      returnMessage = serializeXml(errorCode, message, locale);
-      break;
-    case JSON:
-      returnMessage = serializeJson(errorCode, message, locale);
-      break;
-    default:
-      returnMessage = serializeXml(errorCode, message, locale);
-      break;
-    }
-
-    return returnMessage;
+  public static InputStream serialize(String errorCode, String message, String innerError, ContentType contentType, Locale locale) {
+    if (contentType.getODataFormat() == ODataFormat.JSON)
+      return serializeJson(errorCode, message, innerError, locale);
+    else
+      return serializeXml(errorCode, message, innerError, locale);
   }
 
-  private static InputStream serializeJson(String errorCode, String message, Locale locale) {
+  private static InputStream serializeJson(String errorCode, String message, String innerError, Locale locale) {
     String notsupported = "not supported error format JSON";
     return new ByteArrayInputStream(notsupported.getBytes(Charset.forName("utf-8")));
   }
 
-  private static InputStream serializeXml(String errorCode, String message, Locale locale) {
+  private static InputStream serializeXml(String errorCode, String message, String innerError, Locale locale) {
     InputStream outputMessage = null;
     try {
       CircleStreamBuffer csb = new CircleStreamBuffer();
@@ -60,14 +48,21 @@ public class ODataExceptionSerializer {
           .newInstance().createXMLStreamWriter(writer);
 
       xmlStreamWriter.writeStartDocument();
-      xmlStreamWriter.writeStartElement("error");
+      xmlStreamWriter.writeStartElement(FormatXml.M_ERROR);
       xmlStreamWriter.writeDefaultNamespace(Edm.NAMESPACE_M_2007_08);
-      xmlStreamWriter.writeStartElement("code");
+      xmlStreamWriter.writeStartElement(FormatXml.M_CODE);
       xmlStreamWriter.writeCharacters(errorCode);
       xmlStreamWriter.writeEndElement();
-      xmlStreamWriter.writeStartElement("message");
-      xmlStreamWriter.writeAttribute(Edm.PREFIX_XML, Edm.NAMESPACE_XML_1998, "lang", getLang(locale));
+      xmlStreamWriter.writeStartElement(FormatXml.M_MESSAGE);
+      xmlStreamWriter.writeAttribute(Edm.PREFIX_XML, Edm.NAMESPACE_XML_1998, FormatXml.XML_LANG, getLang(locale));
       xmlStreamWriter.writeCharacters(message == null ? "" : message);
+      xmlStreamWriter.writeEndElement();
+      if (innerError != null) {
+        xmlStreamWriter.writeStartElement(FormatXml.M_INNER_ERROR);
+        xmlStreamWriter.writeCharacters(innerError);
+        xmlStreamWriter.writeEndElement();
+      }
+      xmlStreamWriter.writeEndElement();
       xmlStreamWriter.writeEndDocument();
 
       outputStream.flush();
