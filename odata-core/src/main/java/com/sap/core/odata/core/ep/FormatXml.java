@@ -9,18 +9,28 @@ public class FormatXml {
   public static final String XML_HEADER_FULL = "full";
   public static final String XML_HEADER_WITHOUT_ENCODING = "without encoding";
   public static final String XML_BASE = "base";
+  public static final String XML_LANG = "lang";
+
   public static final String M_PROPERTIES = "properties";
   public static final String M_MIME_TYPE = "MimeType";
+
   public static final String M_ETAG = "etag";
   public static final String M_COUNT = "count";
   public static final String M_TYPE = "type";
   public static final String M_NULL = "null";
-  public static final String D_ELEMENT = "element";
+
+  public static final String M_ERROR = "error";
+  public static final String M_CODE = "code";
+  public static final String M_MESSAGE = "message";
+  public static final String M_INNER_ERROR = "innererror";
+
   public static final String D_LINKS = "links";
   public static final String D_URI = "uri";
+
   public static final String APP_SERVICE = "service";
   public static final String APP_WORKSPACE = "workspace";
   public static final String APP_COLLECTION = "collection";
+
   public static final String ATOM_FEED = "feed";
   public static final String ATOM_ENTRY = "entry";
   public static final String ATOM_LINK = "link";
