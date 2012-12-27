@@ -20,14 +20,12 @@ public class DataGenerator {
 
 	public void generate() {
 		this.entityManager.getTransaction().begin();
-
 		for (int i = 0; i < DataGenerator.MAX_SALES_ORDER; i++) {
 			BuyerAddress ba = new BuyerAddress((short) i, "Street_" + i,
 					"City_" + i, "Country_" + i);
 			SalesOrderHeader order = new SalesOrderHeader(i, "Test_Buyer_" + i,
 					ba, "Currency_Code_" + i, (double) i, ((i % 2) == 0) ? true
 							: false);
-
 			for (int j = 0; j < DataGenerator.MAX_LINE_ITEMS_PER_SALES_ORDER; j++) {
 				LineItems lineItem = new LineItems("Line_Item_" + j);
 				order.getLineItems().add(lineItem);
@@ -35,7 +33,6 @@ public class DataGenerator {
 			}
 			this.entityManager.persist(order);
 		}
-
 		this.entityManager.getTransaction().commit();
 	}
 
@@ -47,14 +44,12 @@ public class DataGenerator {
 		for (LineItems part : queryPart.getResultList()) {
 			this.entityManager.remove(part);
 		}
-
 		TypedQuery<SalesOrderHeader> queryWhole = this.entityManager
 				.createQuery("SELECT m FROM SalesOrderHeader m",
 						SalesOrderHeader.class);
 		for (SalesOrderHeader whole : queryWhole.getResultList()) {
 			this.entityManager.remove(whole);
 		}
-
 		this.entityManager.getTransaction().commit();
 	}
 
