@@ -26,6 +26,7 @@ import com.sap.core.odata.api.ep.ODataEntityProviderException;
 
 /**
  * Aggregator to get easy and fast access to all for a serializer necessary {@link EdmEntitySet} informations.
+ * @author SAP AG
  */
 public class EntityInfoAggregator {
 
@@ -117,8 +118,8 @@ public class EntityInfoAggregator {
   }
 
   /**
-   * @return unmodifiable set of found <code>none syndication target path names</code> (all target
-   * path names which are not defined in {@value #SYN_TARGET_PATHS}).
+   * @return unmodifiable set of found <code>none syndication target path names</code>
+   * (all target path names which are not pre-defined).
    */
   public List<String> getNoneSyndicationTargetPathNames() {
     return Collections.unmodifiableList(noneSyndicationTargetPaths);

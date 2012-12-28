@@ -82,8 +82,7 @@ public class TokenizerTest {
 
   /**
    * Create TokenTool ( and Token list) without respecting whitespaces
-   * @param Expression to be tokenized
-   * @return
+   * @param expression Expression to be tokenized
    */
   public TokenTool GetTT(String expression)
   {
@@ -102,8 +101,7 @@ public class TokenizerTest {
 
   /**
    * Create TokenTool ( and Token list) without respecting whitespaces
-   * @param Expression to be tokenized
-   * @return
+   * @param expression Expression to be tokenized
    */
   public TokenTool GetTTW(String expression)
   {

@@ -22,7 +22,7 @@ public class EntityContainer extends EntityContainerInfo {
 
   /**
    * Sets the entity sets of this {@link EntityContainer}
-   * @param name
+   * @param entitySets
    * @return {@link EntityContainerInfo} for method chaining
    */
   public EntityContainer setEntitySets(List<EntitySet> entitySets) {
@@ -39,11 +39,11 @@ public class EntityContainer extends EntityContainerInfo {
 
   /**
    * Sets the association sets of this {@link EntityContainer}
-   * @param name
+   * @param associationSets
    * @return {@link EntityContainerInfo} for method chaining
    */
-  public EntityContainer setAssociationSets(List<AssociationSet> associationStets) {
-    this.associationSets = associationStets;
+  public EntityContainer setAssociationSets(List<AssociationSet> associationSets) {
+    this.associationSets = associationSets;
     return this;
   }
 
@@ -56,7 +56,7 @@ public class EntityContainer extends EntityContainerInfo {
 
   /**
    * Sets the function imports of this {@link EntityContainer}
-   * @param name
+   * @param functionImports
    * @return {@link EntityContainerInfo} for method chaining
    */
   public EntityContainer setFunctionImports(List<FunctionImport> functionImports) {

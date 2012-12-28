@@ -7,6 +7,7 @@ import com.sap.core.odata.api.uri.expression.BinaryOperator;
 
 /**
  * Describes a binary operator which is allowed in OData expressions
+ * @author SAP AG
  */
 class InfoBinaryOperator
 {

@@ -28,6 +28,9 @@ import com.sap.core.odata.core.edm.provider.EdmImplProv;
 import com.sap.core.odata.core.edm.provider.EdmPropertyImplProv;
 import com.sap.core.odata.core.edm.provider.EdmSimplePropertyImplProv;
 
+/**
+ * @author SAP AG
+ */
 public class EdmPropertyImplProvTest {
   private static EdmProvider edmProvider;
   private static EdmPropertyImplProv propertySimpleProvider;
@@ -101,10 +104,9 @@ public class EdmPropertyImplProvTest {
 
   @Test
   public void getAnnotations() throws Exception {
-    EdmAnnotatable annotatable = (EdmAnnotatable) propertySimpleProvider;
+    EdmAnnotatable annotatable = propertySimpleProvider;
     EdmAnnotations annotations = annotatable.getAnnotations();
     assertNull(annotations.getAnnotationAttributes());
     assertNull(annotations.getAnnotationElements());
-
   }
 }

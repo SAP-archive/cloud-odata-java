@@ -8,6 +8,7 @@ import com.sap.core.odata.api.uri.expression.MethodOperator;
 
 /**
  * Describes a method expression which is allowed in OData expressions
+ * @author SAP AG
  */
 class InfoMethod
 {

@@ -8,6 +8,7 @@ import com.sap.core.odata.api.uri.expression.UnaryOperator;
 
 /**
  * Describes a unary operator which is allowed in OData expressions
+ * @author SAP AG
  */
 class InfoUnaryOperator
 {

@@ -36,8 +36,8 @@ public class ExceptionVisitExpression extends ODataMessageException
   }
 
   /**
-   * See erroneous filter tree for debug information
-   * @param Erroneous filter tree
+   * Sets erroneous filter tree for debug information.
+   * @param filterTree Erroneous filter tree
    */
   public void setFilterTree(CommonExpression filterTree)
   {

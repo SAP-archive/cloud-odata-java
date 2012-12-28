@@ -4,8 +4,8 @@ import com.sap.core.odata.api.edm.EdmType;
 
 /**
  * Parent class of all classes used to build the expression tree returned by 
- * <li>{@link FilterParser#ParseExpression(String)}</li>
- * <li>{@link OrderByParser#parseOrderExpression(String)}</li> 
+ * <li>{@link FilterParser#parseFilterString(String)}</li>
+ * <li>{@link OrderByParser#parseOrderByString(String)}</li> 
  * <br>
  * <br>
  * <p>This interface defines the default methods for all expression tree nodes 

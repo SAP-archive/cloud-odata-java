@@ -9,7 +9,8 @@ import com.sap.core.odata.api.edm.EdmSimpleType;
  * input and return types of a <i>OData filter operator</i> or <i>OData filter method</i>
  * @see InfoMethod 
  * @see InfoBinaryOperator 
- * @see InfoUnaryOperator 
+ * @see InfoUnaryOperator
+ * @author SAP AG 
  */
 class ParameterSet
 {

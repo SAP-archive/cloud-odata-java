@@ -28,6 +28,9 @@ import com.sap.core.odata.core.ep.util.CircleStreamBuffer;
 import com.sap.core.odata.testutils.helper.StringHelper;
 import com.sap.core.odata.testutils.mocks.MockFacade;
 
+/**
+ * @author SAP AG
+ */
 public class PerformanceTest extends AbstractProviderTest {
 
   private static final long TIMES = 100L;

@@ -53,7 +53,7 @@ public class AssociationSetEnd {
    * MANDATORY
    * <p>Sets the role of this {@link AssociationSetEnd}
    * @param role
-   * @return {@link AssociatioSetnEnd} for method chaining
+   * @return {@link AssociationSetEnd} for method chaining
    */
   public AssociationSetEnd setRole(String role) {
     this.role = role;

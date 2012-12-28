@@ -26,6 +26,9 @@ import com.sap.core.odata.api.edm.provider.SimpleProperty;
 import com.sap.core.odata.core.edm.provider.EdmComplexTypeImplProv;
 import com.sap.core.odata.core.edm.provider.EdmImplProv;
 
+/**
+ * @author SAP AG
+ */
 public class EdmComplexTypeImplProvTest {
   private static EdmComplexTypeImplProv edmComplexType;
   private static EdmComplexTypeImplProv edmComplexTypeWithBaseType;
@@ -93,10 +96,9 @@ public class EdmComplexTypeImplProvTest {
 
   @Test
   public void getAnnotations() throws Exception {
-    EdmAnnotatable annotatable = (EdmAnnotatable) edmComplexType;
+    EdmAnnotatable annotatable = edmComplexType;
     EdmAnnotations annotations = annotatable.getAnnotations();
     assertNull(annotations.getAnnotationAttributes());
     assertNull(annotations.getAnnotationElements());
-
   }
 }

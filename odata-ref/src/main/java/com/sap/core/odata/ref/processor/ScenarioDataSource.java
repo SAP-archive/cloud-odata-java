@@ -205,7 +205,7 @@ public class ScenarioDataSource implements ListsDataSource {
       if (parameters.get("Id") == null)
         throw new ODataNotFoundException(ODataNotFoundException.ENTITY);
       for (Employee potentialManager : dataContainer.getEmployeeSet())
-        if (potentialManager.getId().equals((String) parameters.get("Id"))
+        if (potentialManager.getId().equals(parameters.get("Id"))
             && isManager(potentialManager))
           return potentialManager.getImage();
       throw new ODataNotFoundException(ODataNotFoundException.ENTITY);

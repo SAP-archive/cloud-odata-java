@@ -2,7 +2,7 @@ package com.sap.core.odata.api.uri.expression;
 
 /**
  * Represents a order expression in the expression tree returned by the method 
- * <li>{@link OrderByParser#parseOrderExpression(String)}</li> 
+ * <li>{@link OrderByParser#parseOrderByString(String)}</li> 
  * <br>
  * <br>
  * <p>A order expression node is inserted in the expression tree for any valid

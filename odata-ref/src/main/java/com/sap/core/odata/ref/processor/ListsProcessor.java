@@ -446,8 +446,7 @@ public class ListsProcessor extends ODataSingleProcessor {
       HashMap<String, Object> parameterMap = new HashMap<String, Object>();
       for (final String parameterName : functionImportParameters.keySet()) {
         final EdmLiteral literal = functionImportParameters.get(parameterName);
-        final EdmSimpleType type = (EdmSimpleType) literal.getType();
-        parameterMap.put(parameterName, type.valueOfString(literal.getLiteral(), EdmLiteralKind.DEFAULT, null));
+        parameterMap.put(parameterName, literal.getType().valueOfString(literal.getLiteral(), EdmLiteralKind.DEFAULT, null));
       }
       return parameterMap;
     }

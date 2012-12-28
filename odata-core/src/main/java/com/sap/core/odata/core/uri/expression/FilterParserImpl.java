@@ -365,9 +365,9 @@ public class FilterParserImpl implements FilterParser
 
   protected CommonExpression readMethod(Token token, InfoMethod methodOperator) throws FilterParserException, FilterParserInternalError
   {
-    MethodExpressionImpl method = new MethodExpressionImpl((InfoMethod) methodOperator);
+    MethodExpressionImpl method = new MethodExpressionImpl(methodOperator);
 
-    readParameters((InfoMethod) methodOperator, method);
+    readParameters(methodOperator, method);
     validateMethodTypes(method, token); //throws ExpressionInvalidOperatorTypeException
     return method;
   }

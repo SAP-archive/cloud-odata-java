@@ -43,7 +43,7 @@ public class AtomFeedProvider {
         appendInlineCount(writer, properties.getInlineCount());
       }
 
-      appendEntries(writer, eia, data, properties.getMediaResourceMimeType());
+      appendEntries(writer, eia, data);
 
       if (properties.getSkipToken() != null) {
         appendNextLink(writer, eia, properties.getSkipToken());
@@ -68,13 +68,10 @@ public class AtomFeedProvider {
     }
   }
 
-  private void appendEntries(XMLStreamWriter writer, EntityInfoAggregator eia, List<Map<String, Object>> data, String mediaResourceMimeType) throws ODataEntityProviderException {
+  private void appendEntries(XMLStreamWriter writer, EntityInfoAggregator eia, List<Map<String, Object>> data) throws ODataEntityProviderException {
     AtomEntryEntityProvider entryProvider = new AtomEntryEntityProvider(properties);
-    boolean isRootElement = false;
-
-    for (Map<String, Object> singleEntryData : data) {
-      entryProvider.append(writer, eia, singleEntryData, isRootElement);
-    }
+    for (Map<String, Object> singleEntryData : data)
+      entryProvider.append(writer, eia, singleEntryData, false);
   }
 
   private void appendInlineCount(XMLStreamWriter writer, int inlinecount) throws ODataEntityProviderException {

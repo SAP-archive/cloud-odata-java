@@ -22,8 +22,8 @@ public class Tokenizer
 
   /**
    * Inform the Tokenizer whether extra tokens for whitespace characters should be added to the token list or not.
-   * @param True -> Whitespace token will be added to token list; False otherwise
-   * @return Returns this
+   * @param flagIncludeWhitespace True -> Whitespace token will be added to token list; False otherwise
+   * @return this
    */
   public Tokenizer setFlagWhiteSpace(Boolean flagIncludeWhitespace)
   {
@@ -34,10 +34,7 @@ public class Tokenizer
 
   /**
    * Tokenizes an expression as defined per OData specification 
-   * @param Expression 
    * @return Token list 
-   * @throws TokenizerMessage
-   *          
    */
   public TokenList tokenize(String iv_expression) throws ExceptionTokenizer
   {

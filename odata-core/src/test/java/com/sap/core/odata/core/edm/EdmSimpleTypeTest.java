@@ -410,7 +410,7 @@ public class EdmSimpleTypeTest {
     assertEquals("0", instance.valueToString(0, EdmLiteralKind.URI, null));
     assertEquals("8", instance.valueToString((byte) 8, EdmLiteralKind.DEFAULT, null));
     assertEquals("16", instance.valueToString((short) 16, EdmLiteralKind.DEFAULT, null));
-    assertEquals("32", instance.valueToString((Integer) 32, EdmLiteralKind.DEFAULT, null));
+    assertEquals("32", instance.valueToString(Integer.valueOf(32), EdmLiteralKind.DEFAULT, null));
     assertEquals("255", instance.valueToString(255L, EdmLiteralKind.DEFAULT, null));
 
     expectErrorInValueToString(instance, -1, EdmLiteralKind.DEFAULT, null);
@@ -505,7 +505,7 @@ public class EdmSimpleTypeTest {
     assertEquals("0M", instance.valueToString(0, EdmLiteralKind.URI, null));
     assertEquals("8", instance.valueToString((byte) 8, EdmLiteralKind.DEFAULT, null));
     assertEquals("16", instance.valueToString((short) 16, EdmLiteralKind.DEFAULT, null));
-    assertEquals("32", instance.valueToString((Integer) 32, EdmLiteralKind.DEFAULT, null));
+    assertEquals("32", instance.valueToString(Integer.valueOf(32), EdmLiteralKind.DEFAULT, null));
     assertEquals("255", instance.valueToString(255L, EdmLiteralKind.DEFAULT, null));
     assertEquals("123456789012345678901234567890", instance.valueToString(new BigInteger("123456789012345678901234567890"), EdmLiteralKind.DEFAULT, null));
     assertEquals("0.00390625", instance.valueToString(1.0 / 256, EdmLiteralKind.DEFAULT, null));
@@ -538,7 +538,7 @@ public class EdmSimpleTypeTest {
     assertEquals("0D", instance.valueToString(0, EdmLiteralKind.URI, null));
     assertEquals("8", instance.valueToString((byte) 8, EdmLiteralKind.DEFAULT, null));
     assertEquals("16", instance.valueToString((short) 16, EdmLiteralKind.DEFAULT, null));
-    assertEquals("32", instance.valueToString((Integer) 32, EdmLiteralKind.DEFAULT, null));
+    assertEquals("32", instance.valueToString(Integer.valueOf(32), EdmLiteralKind.DEFAULT, null));
     assertEquals("255", instance.valueToString(255L, EdmLiteralKind.DEFAULT, null));
     assertEquals("0.00390625", instance.valueToString(1.0 / 256, EdmLiteralKind.DEFAULT, null));
     assertEquals("4.2E-41", instance.valueToString(42e-42, EdmLiteralKind.DEFAULT, null));
@@ -577,7 +577,7 @@ public class EdmSimpleTypeTest {
     assertEquals("0", instance.valueToString(0, EdmLiteralKind.URI, null));
     assertEquals("8", instance.valueToString((byte) 8, EdmLiteralKind.DEFAULT, null));
     assertEquals("16", instance.valueToString((short) 16, EdmLiteralKind.DEFAULT, null));
-    assertEquals("32", instance.valueToString((Integer) 32, EdmLiteralKind.DEFAULT, null));
+    assertEquals("32", instance.valueToString(Integer.valueOf(32), EdmLiteralKind.DEFAULT, null));
     assertEquals("255", instance.valueToString(255L, EdmLiteralKind.DEFAULT, null));
 
     expectErrorInValueToString(instance, 123456, EdmLiteralKind.DEFAULT, null);
@@ -596,7 +596,7 @@ public class EdmSimpleTypeTest {
     assertEquals("0", instance.valueToString(0, EdmLiteralKind.URI, null));
     assertEquals("8", instance.valueToString((byte) 8, EdmLiteralKind.DEFAULT, null));
     assertEquals("16", instance.valueToString((short) 16, EdmLiteralKind.DEFAULT, null));
-    assertEquals("32", instance.valueToString((Integer) 32, EdmLiteralKind.DEFAULT, null));
+    assertEquals("32", instance.valueToString(Integer.valueOf(32), EdmLiteralKind.DEFAULT, null));
     assertEquals("255", instance.valueToString(255L, EdmLiteralKind.DEFAULT, null));
 
     expectErrorInValueToString(instance, 12345678901L, EdmLiteralKind.DEFAULT, null);
@@ -615,7 +615,7 @@ public class EdmSimpleTypeTest {
     assertEquals("0L", instance.valueToString(0, EdmLiteralKind.URI, null));
     assertEquals("8", instance.valueToString((byte) 8, EdmLiteralKind.DEFAULT, null));
     assertEquals("16", instance.valueToString((short) 16, EdmLiteralKind.DEFAULT, null));
-    assertEquals("32", instance.valueToString((Integer) 32, EdmLiteralKind.DEFAULT, null));
+    assertEquals("32", instance.valueToString(Integer.valueOf(32), EdmLiteralKind.DEFAULT, null));
     assertEquals("255", instance.valueToString(255L, EdmLiteralKind.DEFAULT, null));
     assertEquals("12345678901L", instance.valueToString(12345678901L, EdmLiteralKind.URI, null));
     assertEquals("1234567890123456789", instance.valueToString(new BigInteger("1234567890123456789"), EdmLiteralKind.DEFAULT, null));
@@ -636,7 +636,7 @@ public class EdmSimpleTypeTest {
     assertEquals("0", instance.valueToString(0, EdmLiteralKind.URI, null));
     assertEquals("8", instance.valueToString((byte) 8, EdmLiteralKind.DEFAULT, null));
     assertEquals("16", instance.valueToString((short) 16, EdmLiteralKind.DEFAULT, null));
-    assertEquals("32", instance.valueToString((Integer) 32, EdmLiteralKind.DEFAULT, null));
+    assertEquals("32", instance.valueToString(Integer.valueOf(32), EdmLiteralKind.DEFAULT, null));
     assertEquals("64", instance.valueToString(64L, EdmLiteralKind.DEFAULT, null));
 
     expectErrorInValueToString(instance, -129, EdmLiteralKind.DEFAULT, null);
@@ -654,7 +654,7 @@ public class EdmSimpleTypeTest {
     assertEquals("0F", instance.valueToString(0, EdmLiteralKind.URI, null));
     assertEquals("8", instance.valueToString((byte) 8, EdmLiteralKind.DEFAULT, null));
     assertEquals("16", instance.valueToString((short) 16, EdmLiteralKind.DEFAULT, null));
-    assertEquals("32", instance.valueToString((Integer) 32, EdmLiteralKind.DEFAULT, null));
+    assertEquals("32", instance.valueToString(Integer.valueOf(32), EdmLiteralKind.DEFAULT, null));
     assertEquals("255", instance.valueToString(255L, EdmLiteralKind.DEFAULT, null));
     assertEquals("0.00390625", instance.valueToString(1.0 / 256, EdmLiteralKind.DEFAULT, null));
     assertEquals("4.2E-8", instance.valueToString(42e-9, EdmLiteralKind.DEFAULT, null));

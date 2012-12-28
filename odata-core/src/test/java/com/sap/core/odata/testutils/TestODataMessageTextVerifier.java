@@ -3,7 +3,7 @@ package com.sap.core.odata.testutils;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
-import java.util.Vector;
+import java.util.List;
 
 import org.junit.Test;
 
@@ -23,16 +23,15 @@ public class TestODataMessageTextVerifier
     ODataMessageTextVerifier tool = new ODataMessageTextVerifier();
     tool.CheckMessagesOfClass(SampleClassForInvalidMessageReferences.class);
 
-    //TODO change to List
-    Vector<Throwable> ec = tool.getErrorCollector();
+    List<Throwable> ec = tool.getErrorCollector();
 
     assertEquals("!!!Error in testtool", 2, ec.size());
 
-    assertNotNull("!!!Error in testtool", ec.elementAt(0));
-    assertEquals("Error", "Error-->Messagetext for key:\"com.sap.core.odata.testutils.mocks.SampleClassForInvalidMessageReferences.DOES_NOT_EXIST\" missing", ec.elementAt(0).getMessage());
+    assertNotNull("!!!Error in testtool", ec.get(0));
+    assertEquals("Error", "Error-->Messagetext for key:\"com.sap.core.odata.testutils.mocks.SampleClassForInvalidMessageReferences.DOES_NOT_EXIST\" missing", ec.get(0).getMessage());
 
-    assertNotNull("!!!Error in testtool", ec.elementAt(1));
-    assertEquals("Error", "Error-->Messagetext for key:\"com.sap.core.odata.testutils.mocks.SampleClassForInvalidMessageReferences.EXITS_BUT_EMPTY\" empty", ec.elementAt(1).getMessage());
+    assertNotNull("!!!Error in testtool", ec.get(1));
+    assertEquals("Error", "Error-->Messagetext for key:\"com.sap.core.odata.testutils.mocks.SampleClassForInvalidMessageReferences.EXITS_BUT_EMPTY\" empty", ec.get(1).getMessage());
 
   }
 

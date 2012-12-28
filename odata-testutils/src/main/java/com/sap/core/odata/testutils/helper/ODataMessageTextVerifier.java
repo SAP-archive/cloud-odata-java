@@ -5,10 +5,11 @@ import static org.junit.Assert.fail;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
-import java.util.Vector;
 
 import com.sap.core.odata.api.exception.MessageReference;
 
@@ -28,11 +29,11 @@ public class ODataMessageTextVerifier {
   private static final Locale locale = Locale.ROOT;
 
   public ResourceBundle resourceBundle = ResourceBundle.getBundle(BUNDLE_NAME, locale);
-  private Vector<Throwable> errorCollector;
+  private List<Throwable> errorCollector;
 
   public ODataMessageTextVerifier()
   {
-    errorCollector = new Vector<Throwable>();
+    errorCollector = new ArrayList<Throwable>();
   }
 
   private void failCollector(String text)
@@ -108,7 +109,7 @@ public class ODataMessageTextVerifier {
     }
   }
 
-  public Vector<Throwable> getErrorCollector() {
+  public List<Throwable> getErrorCollector() {
     return errorCollector;
   }
 
@@ -116,9 +117,7 @@ public class ODataMessageTextVerifier {
   {
     ODataMessageTextVerifier tool = new ODataMessageTextVerifier();
     tool.CheckMessagesOfClass(exceptionClassToBeTested);
-    Vector<Throwable> errors = tool.getErrorCollector();
-
-    for (Throwable throwable : errors)
+    for (Throwable throwable : tool.getErrorCollector())
     {
       fail(throwable.getMessage());
     }

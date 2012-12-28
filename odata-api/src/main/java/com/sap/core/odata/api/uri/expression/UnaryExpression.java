@@ -2,8 +2,8 @@ package com.sap.core.odata.api.uri.expression;
 
 /**
  * Represents a unary expression node in the expression tree returned by the methods:
- * <li>{@link FilterParser#ParseExpression(String)}</li>
- * <li>{@link OrderByParser#parseOrderExpression(String)}</li> 
+ * <li>{@link FilterParser#parseFilterString(String)}</li>
+ * <li>{@link OrderByParser#parseOrderByString(String)}</li> 
  * <br>
  * <br>
  * <p>A unary expression node is inserted in the expression tree for any valid

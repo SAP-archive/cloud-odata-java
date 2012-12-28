@@ -12,7 +12,6 @@ import com.sap.core.odata.api.edm.EdmException;
 import com.sap.core.odata.api.edm.EdmProperty;
 import com.sap.core.odata.api.edm.EdmTypeKind;
 import com.sap.core.odata.api.edm.EdmTyped;
-import com.sap.core.odata.api.edm.provider.ComplexType;
 import com.sap.core.odata.api.edm.provider.EntityType;
 import com.sap.core.odata.api.edm.provider.NavigationProperty;
 import com.sap.core.odata.api.edm.provider.PropertyRef;
@@ -29,7 +28,7 @@ public class EdmEntityTypeImplProv extends EdmStructuralTypeImplProv implements 
   private List<String> edmNavigationPropertyNames;
 
   public EdmEntityTypeImplProv(EdmImplProv edm, EntityType entityType, String namespace) throws EdmException {
-    super(edm, (ComplexType) entityType, EdmTypeKind.ENTITY, namespace);
+    super(edm, entityType, EdmTypeKind.ENTITY, namespace);
     this.entityType = entityType;
 
     buildNavigationPropertiesInternal();
@@ -75,7 +74,7 @@ public class EdmEntityTypeImplProv extends EdmStructuralTypeImplProv implements 
         edmKeyProperties = new ArrayList<EdmProperty>();
 
         for (String keyPropertyName : getKeyPropertyNames()) {
-          final EdmTyped edmProperty = (EdmProperty) getProperty(keyPropertyName);
+          final EdmTyped edmProperty = getProperty(keyPropertyName);
           if (edmProperty != null && edmProperty instanceof EdmProperty) {
             keyProperties.put(keyPropertyName, (EdmProperty) edmProperty);
             edmKeyProperties.add((EdmProperty) edmProperty);

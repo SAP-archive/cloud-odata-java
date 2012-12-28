@@ -18,6 +18,9 @@ import com.sap.core.odata.api.edm.provider.EdmProvider;
 import com.sap.core.odata.core.edm.provider.EdmAssociationEndImplProv;
 import com.sap.core.odata.core.edm.provider.EdmImplProv;
 
+/**
+ * @author SAP AG
+ */
 public class EdmAssociationEndImplProvTest {
   private static EdmAssociationEndImplProv associationEndProv;
   private static EdmProvider edmProvider;
@@ -45,12 +48,11 @@ public class EdmAssociationEndImplProvTest {
   public void testAssociationEntityType() throws Exception {
     EdmAssociationEnd associationEnd = associationEndProv;
     associationEnd.getEntityType();
-
   }
 
   @Test
   public void getAnnotations() throws Exception {
-    EdmAnnotatable annotatable = (EdmAnnotatable) associationEndProv;
+    EdmAnnotatable annotatable = associationEndProv;
     EdmAnnotations annotations = annotatable.getAnnotations();
     assertNull(annotations.getAnnotationAttributes());
     assertNull(annotations.getAnnotationElements());

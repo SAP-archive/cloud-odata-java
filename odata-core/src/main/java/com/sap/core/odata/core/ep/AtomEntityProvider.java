@@ -19,6 +19,7 @@ import org.slf4j.LoggerFactory;
 
 import com.sap.core.odata.api.edm.Edm;
 import com.sap.core.odata.api.edm.EdmEntitySet;
+import com.sap.core.odata.api.edm.EdmException;
 import com.sap.core.odata.api.edm.EdmLiteralKind;
 import com.sap.core.odata.api.edm.EdmProperty;
 import com.sap.core.odata.api.edm.EdmSimpleType;
@@ -203,8 +204,12 @@ public class AtomEntityProvider extends ODataEntityProvider {
         stringValue = "";
       }
 
-      ByteArrayInputStream bais = new ByteArrayInputStream(stringValue.getBytes(DEFAULT_CHARSET));
-      content.setContentStream(bais);
+      try {
+        ByteArrayInputStream bais = new ByteArrayInputStream(stringValue.getBytes(DEFAULT_CHARSET));
+        content.setContentStream(bais);
+      } catch (UnsupportedEncodingException e) {
+        throw new ODataEntityProviderException(ODataEntityProviderException.COMMON, e);
+      }
 
       String contentHeader = ContentType.TEXT_PLAIN.toString();
       if (type == EdmSimpleTypeKind.Binary.getEdmSimpleTypeInstance()) {
@@ -221,7 +226,7 @@ public class AtomEntityProvider extends ODataEntityProvider {
       content.setContentHeader(contentHeader);
 
       return content;
-    } catch (Exception e) {
+    } catch (EdmException e) {
       throw new ODataEntityProviderException(ODataEntityProviderException.COMMON, e);
     }
   }
@@ -243,14 +248,10 @@ public class AtomEntityProvider extends ODataEntityProvider {
   @Override
   public ODataEntityContent writeBinary(String mimeType, byte[] data) throws ODataEntityProviderException {
     ODataEntityContentImpl content = new ODataEntityContentImpl();
-    try {
-      ByteArrayInputStream bais = new ByteArrayInputStream(data);
-      content.setContentStream(bais);
-      content.setContentHeader(mimeType);
-      return content;
-    } catch (Exception e) {
-      throw new ODataEntityProviderException(ODataEntityProviderException.COMMON, e);
-    }
+    ByteArrayInputStream bais = new ByteArrayInputStream(data);
+    content.setContentStream(bais);
+    content.setContentHeader(mimeType);
+    return content;
   }
 
   private String createContentHeader(ContentType mediaType) {
@@ -283,7 +284,7 @@ public class AtomEntityProvider extends ODataEntityProvider {
         try {
           outStream.close();
         } catch (IOException e) {
-        // don't throw in finally!  
+          // don't throw in finally!  
         LOG.error(e.getLocalizedMessage(), e);
       }
     }
@@ -321,7 +322,7 @@ public class AtomEntityProvider extends ODataEntityProvider {
         try {
           outStream.close();
         } catch (IOException e) {
-        // don't throw in finally!  
+          // don't throw in finally!  
         LOG.error(e.getLocalizedMessage(), e);
       }
     }
