@@ -23,15 +23,15 @@ public class DataGenerator {
 		for (int i = 0; i < DataGenerator.MAX_SALES_ORDER; i++) {
 			BuyerAddress ba = new BuyerAddress((short) i, "Street_" + i,
 					"City_" + i, "Country_" + i);
-			SalesOrderHeader order = new SalesOrderHeader(i, "Test_Buyer_" + i,
+			SalesOrderHeader salesOrder = new SalesOrderHeader(i, "Test_Buyer_" + i,
 					ba, "Currency_Code_" + i, (double) i, ((i % 2) == 0) ? true
 							: false);
 			for (int j = 0; j < DataGenerator.MAX_LINE_ITEMS_PER_SALES_ORDER; j++) {
 				LineItems lineItem = new LineItems("Line_Item_" + j);
-				order.getLineItems().add(lineItem);
-				this.entityManager.persist(lineItem);
+				salesOrder.getLineItems().add(lineItem);
+				this.entityManager.persist(lineItem); 
 			}
-			this.entityManager.persist(order);
+			this.entityManager.persist(salesOrder);
 		}
 		this.entityManager.getTransaction().commit();
 	}
@@ -39,15 +39,15 @@ public class DataGenerator {
 	public void clean() {
 		this.entityManager.getTransaction().begin();
 
-		TypedQuery<LineItems> queryPart = this.entityManager.createQuery(
+		TypedQuery<LineItems> queryLineItems = this.entityManager.createQuery(
 				"SELECT m FROM LineItems m", LineItems.class);
-		for (LineItems part : queryPart.getResultList()) {
+		for (LineItems part : queryLineItems.getResultList()) {
 			this.entityManager.remove(part);
 		}
-		TypedQuery<SalesOrderHeader> queryWhole = this.entityManager
+		TypedQuery<SalesOrderHeader> querySalesOrder = this.entityManager
 				.createQuery("SELECT m FROM SalesOrderHeader m",
 						SalesOrderHeader.class);
-		for (SalesOrderHeader whole : queryWhole.getResultList()) {
+		for (SalesOrderHeader whole : querySalesOrder.getResultList()) {
 			this.entityManager.remove(whole);
 		}
 		this.entityManager.getTransaction().commit();

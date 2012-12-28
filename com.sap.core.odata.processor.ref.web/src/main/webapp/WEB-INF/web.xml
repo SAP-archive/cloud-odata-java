@@ -5,7 +5,7 @@
 	id="WebApp_ID" version="2.5">
 	<display-name>com.sap.core.odata.processor.ref.web</display-name>
 	<welcome-file-list>
-		<welcome-file>index.jsp</welcome-file>
+		<welcome-file>Main.jsp</welcome-file>
 	</welcome-file-list>
 	<servlet>
 		<servlet-name>JPARefScenarioServlet</servlet-name>
@@ -13,7 +13,7 @@
 		<init-param>
 			<param-name>javax.ws.rs.Application</param-name>
 			<param-value>com.sap.core.odata.core.ODataApplication</param-value>
-		</init-param>
+		</init-param> 
 		<init-param>
 			<param-name>com.sap.core.odata.service.factory</param-name>
 			<param-value>com.sap.core.odata.processor.ref.JPAReferenceServiceFactory</param-value>
