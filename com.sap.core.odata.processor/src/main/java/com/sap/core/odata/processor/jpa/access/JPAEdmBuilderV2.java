@@ -143,7 +143,8 @@ public class JPAEdmBuilderV2 implements JPAEdmBuilder {
 				{
 					formKey(entityKey,jpaAttribute);
 				}
-				properties.add(createComplexProperty(jpaAttribute));
+				/*To be implemented later
+				properties.add(createComplexProperty(jpaAttribute));*/
 			}
 			else if(PersistentAttributeType.BASIC.toString().equals(jpaAttribute.getPersistentAttributeType().toString()))
 			{
