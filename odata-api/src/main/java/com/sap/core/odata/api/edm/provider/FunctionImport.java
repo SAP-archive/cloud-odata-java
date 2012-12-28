@@ -13,6 +13,7 @@ public class FunctionImport {
   private String entitySet;
   private String httpMethod;
   private List<FunctionImportParameter> parameters;
+  private Mapping mapping;
   private Documentation documentation;
   private List<AnnotationAttribute> annotationAttributes;
   private List<AnnotationElement> annotationElements;
@@ -50,6 +51,13 @@ public class FunctionImport {
    */
   public List<FunctionImportParameter> getParameters() {
     return parameters;
+  }
+
+  /**
+   * @return {@link Mapping} for this type
+   */
+  public Mapping getMapping() {
+    return mapping;
   }
 
   /**
@@ -125,6 +133,16 @@ public class FunctionImport {
    */
   public FunctionImport setParameters(List<FunctionImportParameter> parameters) {
     this.parameters = parameters;
+    return this;
+  }
+
+  /**
+   * Sets the {@link Mapping}
+   * @param mapping
+   * @return {@link FunctionImport} for method chaining
+   */
+  public FunctionImport setMapping(Mapping mapping) {
+    this.mapping = mapping;
     return this;
   }
 

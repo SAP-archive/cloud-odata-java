@@ -16,7 +16,7 @@ import java.util.Collection;
  * 
  * @author SAP AG
  */
-public interface EdmFunctionImport extends EdmNamed {
+public interface EdmFunctionImport extends EdmMappable, EdmNamed {
 
   /**
    * Get the parameter by name

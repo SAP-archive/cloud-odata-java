@@ -12,6 +12,7 @@ public class EntitySet {
 
   private String name;
   private FullQualifiedName entityType;
+  private Mapping mapping;
   private Documentation documentation;
   private List<AnnotationAttribute> annotationAttributes;
   private List<AnnotationElement> annotationElements;
@@ -28,6 +29,13 @@ public class EntitySet {
    */
   public FullQualifiedName getEntityType() {
     return entityType;
+  }
+
+  /**
+   * @return {@link Mapping} for this type
+   */
+  public Mapping getMapping() {
+    return mapping;
   }
 
   /**
@@ -70,6 +78,16 @@ public class EntitySet {
    */
   public EntitySet setEntityType(FullQualifiedName entityType) {
     this.entityType = entityType;
+    return this;
+  }
+
+  /**
+   * Sets the {@link Mapping}
+   * @param mapping
+   * @return {@link EntitySet} for method chaining
+   */
+  public EntitySet setMapping(Mapping mapping) {
+    this.mapping = mapping;
     return this;
   }
 

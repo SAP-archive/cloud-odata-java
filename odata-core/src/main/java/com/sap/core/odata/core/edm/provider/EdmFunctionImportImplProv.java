@@ -13,6 +13,7 @@ import com.sap.core.odata.api.edm.EdmEntityContainer;
 import com.sap.core.odata.api.edm.EdmEntitySet;
 import com.sap.core.odata.api.edm.EdmException;
 import com.sap.core.odata.api.edm.EdmFunctionImport;
+import com.sap.core.odata.api.edm.EdmMapping;
 import com.sap.core.odata.api.edm.EdmParameter;
 import com.sap.core.odata.api.edm.EdmTyped;
 import com.sap.core.odata.api.edm.provider.FunctionImport;
@@ -114,5 +115,10 @@ public class EdmFunctionImportImplProv extends EdmNamedImplProv implements EdmFu
   @Override
   public EdmAnnotations getAnnotations() throws EdmException {
     return new EdmAnnotationsImplProv(functionImport.getAnnotationAttributes(), functionImport.getAnnotationElements());
+  }
+
+  @Override
+  public EdmMapping getMapping() throws EdmException {
+    return functionImport.getMapping();
   }
 }
