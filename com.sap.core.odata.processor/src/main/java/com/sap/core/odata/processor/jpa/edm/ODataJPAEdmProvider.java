@@ -2,17 +2,20 @@ package com.sap.core.odata.processor.jpa.edm;
 
 import java.util.HashMap;
 import java.util.List;
+
 import com.sap.core.odata.api.edm.FullQualifiedName;
 import com.sap.core.odata.api.edm.provider.Association;
 import com.sap.core.odata.api.edm.provider.AssociationSet;
 import com.sap.core.odata.api.edm.provider.ComplexType;
 import com.sap.core.odata.api.edm.provider.EdmProvider;
+import com.sap.core.odata.api.edm.provider.EntityContainer;
 import com.sap.core.odata.api.edm.provider.EntityContainerInfo;
 import com.sap.core.odata.api.edm.provider.EntitySet;
 import com.sap.core.odata.api.edm.provider.EntityType;
 import com.sap.core.odata.api.edm.provider.FunctionImport;
 import com.sap.core.odata.api.edm.provider.Schema;
 import com.sap.core.odata.api.exception.ODataException;
+import com.sap.core.odata.processor.exception.ODataJPAModelException;
 import com.sap.core.odata.processor.jpa.access.JPAController;
 import com.sap.core.odata.processor.jpa.access.api.JPAEdmBuilder;
 import com.sap.core.odata.processor.jpa.api.ODataJPAContext;
@@ -24,15 +27,17 @@ public class ODataJPAEdmProvider implements EdmProvider {
 
 	private List<Schema> schemas;
 	private HashMap<String, EntityType> entityTypes;
-	private HashMap<String,EntityContainerInfo> entityContainerInfos;
+	private HashMap<String, EntityContainerInfo> entityContainerInfos;
 
 	public ODataJPAEdmProvider() {
-		builder = JPAController.getJPAEdmBuilder(oDataJPAContext);
 		entityTypes = new HashMap<String, EntityType>();
+		entityContainerInfos = new HashMap<String, EntityContainerInfo>();
 	}
+
 	public ODataJPAEdmProvider(ODataJPAContext oDataJPAContext) {
-		builder = JPAController.getJPAEdmBuilder(oDataJPAContext);
 		entityTypes = new HashMap<String, EntityType>();
+		entityContainerInfos = new HashMap<String, EntityContainerInfo>();
+		builder = JPAController.getJPAEdmBuilder(oDataJPAContext);
 	}
 
 	public ODataJPAContext getODataJPAContext() {
@@ -46,69 +51,115 @@ public class ODataJPAEdmProvider implements EdmProvider {
 	@Override
 	public EntityContainerInfo getEntityContainerInfo(String name)
 			throws ODataException {
-		EntityContainerInfo entityContainer = entityContainerInfos.get(name);
-		if ( entityContainer == null )
-		{
-		
+
+		if (entityContainerInfos.containsKey(name))
+			return entityContainerInfos.get(name);
+
+		else {
+
+			if (schemas == null)
+				getSchemas();
+
+			for (EntityContainer container : schemas.get(0)
+					.getEntityContainers()) {
+				if (name == null && container.isDefaultEntityContainer()) {
+					entityContainerInfos.put(name, container);
+					return container;
+				} else if (name.equals(container.getName())) {
+					return container;
+				}
+			}
 		}
-		return entityContainer;
+
+		throw new ODataJPAModelException("JPA: Invalid EntityContainer " + name);
 	}
 
 	@Override
 	public EntityType getEntityType(FullQualifiedName edmFQName)
 			throws ODataException {
-		
-		EntityType entityType = entityTypes.get(edmFQName.toString());
-		// Build the EntityType 
-		// if EntityType is not buffered and EntityType Name is not Null
-		if (entityType == null && edmFQName != null) {
-			entityType = builder.getEntityType(edmFQName);
-			entityTypes.put(edmFQName.toString(), entityType);
+
+		// Load from Buffer
+		if (entityTypes.containsKey(edmFQName.toString()))
+			return entityTypes.get(edmFQName.toString());
+
+		if (schemas == null)
+			getSchemas();
+
+		if (edmFQName != null) {
+			for (Schema schema : schemas) {
+				if (schema.getNamespace().equals(edmFQName.getNamespace())) {
+					for (EntityType et : schema.getEntityTypes()) {
+						if (et.getName().equals(edmFQName.getName())) {
+							entityTypes.put(edmFQName.toString(), et);
+							return et;
+						}
+					}
+				}
+			}
 		}
-		
-		return entityType;
+
+		throw new ODataJPAModelException("JPA: Invalid entitytype "
+				+ edmFQName.toString());
 	}
 
 	@Override
 	public ComplexType getComplexType(FullQualifiedName edmFQName)
 			throws ODataException {
-		// TODO Auto-generated method stub
-		return null;
+
+		throw new ODataJPAModelException("JPA: Invalid complextype "
+				+ edmFQName.toString());
 	}
 
 	@Override
 	public Association getAssociation(FullQualifiedName edmFQName)
 			throws ODataException {
-		// TODO Auto-generated method stub
-		return null;
+
+		throw new ODataJPAModelException("JPA: Invalid association "
+				+ edmFQName.toString());
 	}
 
 	@Override
 	public EntitySet getEntitySet(String entityContainer, String name)
 			throws ODataException {
-		// TODO Auto-generated method stub
-		return null;
+		
+		EntityContainer container = null;
+		if (!entityContainerInfos.containsKey(entityContainer))
+			container = (EntityContainer) getEntityContainerInfo(entityContainer);
+		else
+			container = (EntityContainer) entityContainerInfos.get(entityContainer);
+		
+		if(container != null && name != null)
+			for( EntitySet es : container.getEntitySets())
+				if(name.equals(es.getName()))
+					return es;
+		
+		throw new ODataJPAModelException("JPA: Invalid entityset " + name);
 	}
 
 	@Override
 	public AssociationSet getAssociationSet(String entityContainer,
 			FullQualifiedName association, String sourceEntitySetName,
 			String sourceEntitySetRole) throws ODataException {
-		// TODO Auto-generated method stub
-		return null;
+
+		throw new ODataJPAModelException("JPA: Invalid associationset "
+				+ association.toString());
 	}
 
 	@Override
 	public FunctionImport getFunctionImport(String entityContainer, String name)
 			throws ODataException {
-		// TODO Auto-generated method stub
-		return null;
+
+		throw new ODataJPAModelException("JPA: Invalid function import " + name);
 	}
 
 	@Override
 	public List<Schema> getSchemas() throws ODataException {
-		if (schemas == null)
+		if (schemas == null) {
 			schemas = builder.getSchemas();
+			if (builder == null)
+				throw new ODataJPAModelException(
+						"JPA: Edm Builder not initialized");
+		}
 
 		return schemas;
 

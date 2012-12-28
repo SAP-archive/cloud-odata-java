@@ -6,7 +6,7 @@ public class JPQLStatement {
 	
 	protected String statement;
 	
-	public static JPQLStatementBuilder setJPQLContext(JPQLContext context){
+	public static JPQLStatementBuilder createBuilder(JPQLContext context){
 		return JPQLStatementBuilder.create(context);
 	}
 	

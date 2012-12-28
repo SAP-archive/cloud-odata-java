@@ -1,8 +1,13 @@
 package com.sap.core.odata.processor.jpa.jpql;
 
 import java.util.HashMap;
+
+import com.sap.core.odata.api.edm.EdmException;
 import com.sap.core.odata.api.uri.expression.FilterExpression;
+import com.sap.core.odata.api.uri.resultviews.GetEntitySetView;
+import com.sap.core.odata.processor.jpa.access.ExpressionParsingUtility;
 import com.sap.core.odata.processor.jpa.jpql.api.JPQLContext;
+import com.sap.core.odata.processor.jpa.jpql.api.JPQLContextType;
 import com.sap.core.odata.processor.jpa.jpql.api.JPQLSelectContext;
 
 public class JPQLSelectContextImpl extends JPQLSelectContext {
@@ -42,13 +47,41 @@ public class JPQLSelectContextImpl extends JPQLSelectContext {
 		return this.whereCondition;
 	}
 
-	public static class JPQLSelectContextBuilder
+	public class JPQLSelectContextBuilder
 			extends
 			com.sap.core.odata.processor.jpa.jpql.api.JPQLContext.JPQLContextBuilder {
 
+		private GetEntitySetView entitySetView;
+
 		@Override
 		public JPQLContext build() {
-			return null;
+			if (entitySetView != null) {
+
+				try {
+					
+					JPQLSelectContextImpl.this.setType(JPQLContextType.SELECT);
+					
+					JPQLSelectContextImpl.this.setJPAEntityName(entitySetView
+							.getTargetEntitySet().getEntityType().getName());
+					JPQLSelectContextImpl.this
+							.setOrderByCollection(ExpressionParsingUtility
+									.parseOrderByExpression(entitySetView
+											.getOrderBy()));
+				} catch (EdmException e) {
+					e.printStackTrace();
+				}
+
+			}
+
+			return JPQLSelectContextImpl.this;
+
+		}
+
+		@Override
+		protected void setResultsView(Object resultsView) {
+			if (resultsView instanceof GetEntitySetView) {
+				this.entitySetView = (GetEntitySetView) resultsView;
+			}
 
 		}
 

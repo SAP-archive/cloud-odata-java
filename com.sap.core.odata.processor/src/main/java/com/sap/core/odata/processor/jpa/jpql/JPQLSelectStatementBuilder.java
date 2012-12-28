@@ -36,7 +36,8 @@ public class JPQLSelectStatementBuilder extends com.sap.core.odata.processor.jpa
 		jpqlQuery.append(String.format(query, tableAlias, fromClause));
 		
 		try {
-			jpqlQuery.append(" WHERE ").append(ExpressionParsingUtility.parseWhereExpression(context.getWhereExpression()));
+			if(context.getWhereExpression()!=null)
+				jpqlQuery.append(" WHERE ").append(ExpressionParsingUtility.parseWhereExpression(context.getWhereExpression()));
 		} catch (ODataException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

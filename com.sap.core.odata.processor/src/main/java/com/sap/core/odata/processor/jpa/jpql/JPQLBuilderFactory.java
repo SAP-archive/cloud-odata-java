@@ -1,6 +1,5 @@
 package com.sap.core.odata.processor.jpa.jpql;
 
-import com.sap.core.odata.processor.jpa.jpql.JPQLSelectContextImpl.JPQLSelectContextBuilder;
 import com.sap.core.odata.processor.jpa.jpql.api.JPQLContext;
 import com.sap.core.odata.processor.jpa.jpql.api.JPQLContext.JPQLContextBuilder;
 import com.sap.core.odata.processor.jpa.jpql.api.JPQLContextType;
@@ -24,13 +23,10 @@ public abstract class JPQLBuilderFactory {
 		JPQLContextBuilder contextBuilder = null;
 		switch (contextType) {
 		case SELECT:
-			contextBuilder =  new JPQLSelectContextBuilder();
+			JPQLSelectContextImpl context = new JPQLSelectContextImpl();
+			contextBuilder =  context.new JPQLSelectContextBuilder();
 			break;
-		case MODIFY:
-			contextBuilder = new JPQLModifyContextBuilder();
-			break;
-		case DELETE:
-			contextBuilder = new JPQLDeleteContextBuilder();
+		
 		default:
 			break;
 		}
