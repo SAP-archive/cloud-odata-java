@@ -8,6 +8,7 @@ import com.sap.core.odata.api.edm.EdmEntityContainer;
 import com.sap.core.odata.api.edm.EdmEntitySet;
 import com.sap.core.odata.api.edm.EdmEntityType;
 import com.sap.core.odata.api.edm.EdmException;
+import com.sap.core.odata.api.edm.EdmMapping;
 import com.sap.core.odata.api.edm.EdmNavigationProperty;
 import com.sap.core.odata.api.edm.FullQualifiedName;
 import com.sap.core.odata.api.edm.provider.EntitySet;
@@ -56,5 +57,10 @@ public class EdmEntitySetImplProv extends EdmNamedImplProv implements EdmEntityS
   @Override
   public EdmAnnotations getAnnotations() throws EdmException {
     return new EdmAnnotationsImplProv(entitySet.getAnnotationAttributes(), entitySet.getAnnotationElements());
+  }
+
+  @Override
+  public EdmMapping getMapping() throws EdmException {
+    return entitySet.getMapping();
   }
 }

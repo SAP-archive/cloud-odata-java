@@ -9,7 +9,7 @@ package com.sap.core.odata.api.edm;
  * 
  * @author SAP AG
  */
-public interface EdmEntitySet extends EdmNamed {
+public interface EdmEntitySet extends EdmMappable, EdmNamed {
 
   /**
    * Get the entity type
