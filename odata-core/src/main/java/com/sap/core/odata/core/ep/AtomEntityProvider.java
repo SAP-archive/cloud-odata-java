@@ -18,18 +18,24 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.sap.core.odata.api.edm.Edm;
+import com.sap.core.odata.api.edm.EdmComplexType;
 import com.sap.core.odata.api.edm.EdmEntitySet;
 import com.sap.core.odata.api.edm.EdmException;
+import com.sap.core.odata.api.edm.EdmFunctionImport;
 import com.sap.core.odata.api.edm.EdmLiteralKind;
+import com.sap.core.odata.api.edm.EdmMultiplicity;
 import com.sap.core.odata.api.edm.EdmProperty;
 import com.sap.core.odata.api.edm.EdmSimpleType;
 import com.sap.core.odata.api.edm.EdmSimpleTypeKind;
+import com.sap.core.odata.api.edm.EdmType;
+import com.sap.core.odata.api.edm.EdmTypeKind;
 import com.sap.core.odata.api.enums.ContentType;
 import com.sap.core.odata.api.ep.ODataEntityContent;
 import com.sap.core.odata.api.ep.ODataEntityProvider;
 import com.sap.core.odata.api.ep.ODataEntityProviderException;
 import com.sap.core.odata.api.ep.ODataEntityProviderProperties;
 import com.sap.core.odata.api.uri.resultviews.GetEntitySetView;
+import com.sap.core.odata.core.ep.aggregator.EntityComplexPropertyInfo;
 import com.sap.core.odata.core.ep.aggregator.EntityInfoAggregator;
 import com.sap.core.odata.core.ep.aggregator.EntityPropertyInfo;
 import com.sap.core.odata.core.ep.util.CircleStreamBuffer;
@@ -82,12 +88,12 @@ public class AtomEntityProvider extends ODataEntityProvider {
     ODataEntityContentImpl content = new ODataEntityContentImpl();
 
     try {
-      AtomEntryEntityProvider as = new AtomEntryEntityProvider(properties);
-      EntityInfoAggregator eia = EntityInfoAggregator.create(entitySet);
-
       CircleStreamBuffer csb = new CircleStreamBuffer();
       outStream = csb.getOutputStream();
       XMLStreamWriter writer = XMLOutputFactory.newInstance().createXMLStreamWriter(outStream, DEFAULT_CHARSET);
+
+      AtomEntryEntityProvider as = new AtomEntryEntityProvider(properties);
+      EntityInfoAggregator eia = EntityInfoAggregator.create(entitySet);
       as.append(writer, eia, data, true);
 
       writer.flush();
@@ -115,16 +121,20 @@ public class AtomEntityProvider extends ODataEntityProvider {
 
   @Override
   public ODataEntityContent writeProperty(EdmProperty edmProperty, Object value) throws ODataEntityProviderException {
+    EntityPropertyInfo propertyInfo = EntityInfoAggregator.create(edmProperty);
+    return writeSingleTypedElement(propertyInfo, value);
+  }
+
+  private ODataEntityContent writeSingleTypedElement(final EntityPropertyInfo propertyInfo, final Object value) throws ODataEntityProviderException {
     OutputStream outStream = null;
     ODataEntityContentImpl content = new ODataEntityContentImpl();
 
     try {
-      XmlPropertyEntityProvider ps = new XmlPropertyEntityProvider();
-      EntityPropertyInfo propertyInfo = EntityInfoAggregator.create(edmProperty);
-
       CircleStreamBuffer csb = new CircleStreamBuffer();
       outStream = csb.getOutputStream();
       XMLStreamWriter writer = XMLOutputFactory.newInstance().createXMLStreamWriter(outStream, DEFAULT_CHARSET);
+
+      XmlPropertyEntityProvider ps = new XmlPropertyEntityProvider();
       ps.append(writer, propertyInfo, value, true);
 
       writer.flush();
@@ -155,14 +165,13 @@ public class AtomEntityProvider extends ODataEntityProvider {
     ODataEntityContentImpl content = new ODataEntityContentImpl();
 
     try {
-      EdmEntitySet entitySet = entitySetView.getTargetEntitySet();
-
-      AtomFeedProvider atomFeedProvider = new AtomFeedProvider(properties);
-      EntityInfoAggregator eia = EntityInfoAggregator.create(entitySet);
-
       CircleStreamBuffer csb = new CircleStreamBuffer();
       outStream = csb.getOutputStream();
       XMLStreamWriter writer = XMLOutputFactory.newInstance().createXMLStreamWriter(outStream, DEFAULT_CHARSET);
+
+      AtomFeedProvider atomFeedProvider = new AtomFeedProvider(properties);
+      EdmEntitySet entitySet = entitySetView.getTargetEntitySet();
+      EntityInfoAggregator eia = EntityInfoAggregator.create(entitySet);
       atomFeedProvider.append(writer, eia, data, entitySetView);
 
       writer.flush();
@@ -187,45 +196,34 @@ public class AtomEntityProvider extends ODataEntityProvider {
   }
 
   @Override
-  public ODataEntityContent writePropertyValue(EdmProperty edmProperty, Object value) throws ODataEntityProviderException {
-    ODataEntityContentImpl content = new ODataEntityContentImpl();
-
+  public ODataEntityContent writePropertyValue(final EdmProperty edmProperty, Object value) throws ODataEntityProviderException {
     try {
-      Map<?, ?> mappedData = Collections.emptyMap();
-
+      Map<?, ?> mappedData;
       if (value instanceof Map) {
         mappedData = (Map<?, ?>) value;
         value = mappedData.get(edmProperty.getName());
+      } else {
+        mappedData = Collections.emptyMap();
       }
 
-      EdmSimpleType type = (EdmSimpleType) edmProperty.getType();
-      String stringValue = type.valueToString(value, EdmLiteralKind.DEFAULT, edmProperty.getFacets());
-      if (stringValue == null) {
-        stringValue = "";
-      }
+      final EdmSimpleType type = (EdmSimpleType) edmProperty.getType();
 
-      try {
-        ByteArrayInputStream bais = new ByteArrayInputStream(stringValue.getBytes(DEFAULT_CHARSET));
-        content.setContentStream(bais);
-      } catch (UnsupportedEncodingException e) {
-        throw new ODataEntityProviderException(ODataEntityProviderException.COMMON, e);
-      }
-
-      String contentHeader = ContentType.TEXT_PLAIN.toString();
       if (type == EdmSimpleTypeKind.Binary.getEdmSimpleTypeInstance()) {
+        String contentType = ContentType.APPLICATION_OCTET_STREAM.toContentTypeString();
         if (edmProperty.getMimeType() != null) {
-          contentHeader = edmProperty.getMimeType();
+          contentType = edmProperty.getMimeType();
         } else {
           if (edmProperty.getMapping() != null && edmProperty.getMapping().getMimeType() != null) {
             String mimeTypeMapping = edmProperty.getMapping().getMimeType();
-            contentHeader = (String) mappedData.get(mimeTypeMapping);
+            contentType = (String) mappedData.get(mimeTypeMapping);
           }
         }
+        return writeBinary(contentType, (byte[]) value);
+
+      } else {
+        return writeText(type.valueToString(value, EdmLiteralKind.DEFAULT, edmProperty.getFacets()));
       }
 
-      content.setContentHeader(contentHeader);
-
-      return content;
     } catch (EdmException e) {
       throw new ODataEntityProviderException(ODataEntityProviderException.COMMON, e);
     }
@@ -234,13 +232,15 @@ public class AtomEntityProvider extends ODataEntityProvider {
   @Override
   public ODataEntityContent writeText(final String value) throws ODataEntityProviderException {
     ODataEntityContentImpl content = new ODataEntityContentImpl();
-    ByteArrayInputStream stream;
-    try {
-      stream = new ByteArrayInputStream(value.getBytes(DEFAULT_CHARSET));
-    } catch (UnsupportedEncodingException e) {
-      throw new ODataEntityProviderException(ODataEntityProviderException.COMMON, e);
+    if (value != null) {
+      ByteArrayInputStream stream;
+      try {
+        stream = new ByteArrayInputStream(value.getBytes(DEFAULT_CHARSET));
+      } catch (UnsupportedEncodingException e) {
+        throw new ODataEntityProviderException(ODataEntityProviderException.COMMON, e);
+      }
+      content.setContentStream(stream);
     }
-    content.setContentStream(stream);
     content.setContentHeader(ContentType.TEXT_PLAIN.toContentTypeString());
     return content;
   }
@@ -248,8 +248,10 @@ public class AtomEntityProvider extends ODataEntityProvider {
   @Override
   public ODataEntityContent writeBinary(String mimeType, byte[] data) throws ODataEntityProviderException {
     ODataEntityContentImpl content = new ODataEntityContentImpl();
-    ByteArrayInputStream bais = new ByteArrayInputStream(data);
-    content.setContentStream(bais);
+    if (data != null) {
+      ByteArrayInputStream bais = new ByteArrayInputStream(data);
+      content.setContentStream(bais);
+    }
     content.setContentHeader(mimeType);
     return content;
   }
@@ -332,5 +334,26 @@ public class AtomEntityProvider extends ODataEntityProvider {
     content.setContentHeader(createContentHeader(ContentType.APPLICATION_XML));
 
     return content;
+  }
+
+  @Override
+  public ODataEntityContent writeFunctionImport(final EdmFunctionImport functionImport, Object data, final ODataEntityProviderProperties properties) throws ODataEntityProviderException {
+    try {
+      final EdmType type = functionImport.getReturnType().getType();
+
+      if (type.getKind() == EdmTypeKind.ENTITY)
+        return writeEntry(functionImport.getEntitySet(), (Map<String, Object>) data, properties);
+
+      if (functionImport.getReturnType().getMultiplicity() == EdmMultiplicity.MANY) {
+        return null;
+      } else if (type.getKind() == EdmTypeKind.COMPLEX) {
+        return writeSingleTypedElement(new EntityComplexPropertyInfo(functionImport.getName(), type, null, null,
+            EntityInfoAggregator.create((EdmComplexType) type)), data);
+      } else {
+        return writeSingleTypedElement(new EntityPropertyInfo(functionImport.getName(), type, null, null), data);
+      }
+    } catch (EdmException e) {
+      throw new ODataEntityProviderException(ODataEntityProviderException.COMMON, e);
+    }
   }
 }

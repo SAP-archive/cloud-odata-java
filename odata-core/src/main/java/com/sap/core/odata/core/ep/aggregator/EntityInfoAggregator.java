@@ -1,6 +1,7 @@
 package com.sap.core.odata.core.ep.aggregator;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -30,6 +31,20 @@ import com.sap.core.odata.api.ep.ODataEntityProviderException;
  */
 public class EntityInfoAggregator {
 
+  private static final Set<String> SYN_TARGET_PATHS = new HashSet<String>(Arrays.asList(
+      EdmTargetPath.SYNDICATION_AUTHOREMAIL,
+      EdmTargetPath.SYNDICATION_AUTHOREMAIL,
+      EdmTargetPath.SYNDICATION_AUTHORURI,
+      EdmTargetPath.SYNDICATION_PUBLISHED,
+      EdmTargetPath.SYNDICATION_RIGHTS,
+      EdmTargetPath.SYNDICATION_TITLE,
+      EdmTargetPath.SYNDICATION_UPDATED,
+      EdmTargetPath.SYNDICATION_CONTRIBUTORNAME,
+      EdmTargetPath.SYNDICATION_CONTRIBUTOREMAIL,
+      EdmTargetPath.SYNDICATION_CONTRIBUTORURI,
+      EdmTargetPath.SYNDICATION_SOURCE,
+      EdmTargetPath.SYNDICATION_SUMMARY));
+
   private Map<String, EntityPropertyInfo> name2EntityPropertyInfo = new HashMap<String, EntityPropertyInfo>();
   private Map<String, NavigationPropertyInfo> name2NavigationPropertyInfo = new HashMap<String, NavigationPropertyInfo>();
   private Map<String, EntityPropertyInfo> targetPath2EntityPropertyInfo = new HashMap<String, EntityPropertyInfo>();
@@ -37,6 +52,7 @@ public class EntityInfoAggregator {
   /** list with all property names in the order based on order in {@link EdmProperty} (normally [key, entity, navigation]) */
   private List<String> allPropertyNames = new ArrayList<String>();
   private List<String> etagPropertyNames = new ArrayList<String>();
+  private List<String> noneSyndicationTargetPaths = new ArrayList<String>();
   private boolean isDefaultEntityContainer;
   private String entitySetName;
   private String entityTypeNamespace;
@@ -70,7 +86,16 @@ public class EntityInfoAggregator {
     try {
       EntityInfoAggregator eia = new EntityInfoAggregator();
       return eia.createEntityPropertyInfo(property);
-    } catch (Exception e) {
+    } catch (EdmException e) {
+      throw new ODataEntityProviderException(ODataEntityProviderException.COMMON, e);
+    }
+  }
+
+  public static Map<String, EntityPropertyInfo> create(final EdmComplexType complexType) throws ODataEntityProviderException {
+    try {
+      EntityInfoAggregator entityInfo = new EntityInfoAggregator();
+      return entityInfo.createInfoObjects(complexType, complexType.getPropertyNames());
+    } catch (EdmException e) {
       throw new ODataEntityProviderException(ODataEntityProviderException.COMMON, e);
     }
   }
@@ -162,8 +187,7 @@ public class EntityInfoAggregator {
   public List<EntityPropertyInfo> getKeyPropertyInfos() {
     List<EntityPropertyInfo> keyProperties = new ArrayList<EntityPropertyInfo>();
     for (String keyPropertyName : keyPropertyNames) {
-      EntityPropertyInfo e = name2EntityPropertyInfo.get(keyPropertyName);
-      keyProperties.add(e);
+      keyProperties.add(name2EntityPropertyInfo.get(keyPropertyName));
     }
     return keyProperties;
   }
@@ -198,7 +222,7 @@ public class EntityInfoAggregator {
       name2EntityPropertyInfo = createInfoObjects(type, propertyNames);
       //
       keyPropertyNames.addAll(type.getKeyPropertyNames());
-    } catch (Exception e) {
+    } catch (EdmException e) {
       throw new ODataEntityProviderException(ODataEntityProviderException.COMMON, e);
     }
   }
@@ -228,7 +252,7 @@ public class EntityInfoAggregator {
       }
 
       return infos;
-    } catch (Exception e) {
+    } catch (EdmException e) {
       throw new ODataEntityProviderException(ODataEntityProviderException.COMMON, e);
     }
   }
@@ -251,12 +275,10 @@ public class EntityInfoAggregator {
       if (edmProperty.getFacets() != null && edmProperty.getFacets().getConcurrencyMode() == EdmConcurrencyMode.Fixed) {
         etagPropertyNames.add(edmProperty.getName());
       }
-    } catch (Exception e) {
+    } catch (EdmException e) {
       throw new ODataEntityProviderException(ODataEntityProviderException.COMMON, e);
     }
   }
-
-  private List<String> noneSyndicationTargetPaths = new ArrayList<String>();
 
   private void checkTargetPathInfo(EdmProperty property, EntityPropertyInfo value) throws ODataEntityProviderException {
     try {
@@ -268,24 +290,8 @@ public class EntityInfoAggregator {
           noneSyndicationTargetPaths.add(targetPath);
         }
       }
-    } catch (Exception e) {
+    } catch (EdmException e) {
       throw new ODataEntityProviderException(ODataEntityProviderException.COMMON, e);
     }
-  }
-
-  private static Set<String> SYN_TARGET_PATHS = new HashSet<String>();
-  static {
-    SYN_TARGET_PATHS.add(EdmTargetPath.SYNDICATION_AUTHOREMAIL);
-    SYN_TARGET_PATHS.add(EdmTargetPath.SYNDICATION_AUTHOREMAIL);
-    SYN_TARGET_PATHS.add(EdmTargetPath.SYNDICATION_AUTHORURI);
-    SYN_TARGET_PATHS.add(EdmTargetPath.SYNDICATION_PUBLISHED);
-    SYN_TARGET_PATHS.add(EdmTargetPath.SYNDICATION_RIGHTS);
-    SYN_TARGET_PATHS.add(EdmTargetPath.SYNDICATION_TITLE);
-    SYN_TARGET_PATHS.add(EdmTargetPath.SYNDICATION_UPDATED);
-    SYN_TARGET_PATHS.add(EdmTargetPath.SYNDICATION_CONTRIBUTORNAME);
-    SYN_TARGET_PATHS.add(EdmTargetPath.SYNDICATION_CONTRIBUTOREMAIL);
-    SYN_TARGET_PATHS.add(EdmTargetPath.SYNDICATION_CONTRIBUTORURI);
-    SYN_TARGET_PATHS.add(EdmTargetPath.SYNDICATION_SOURCE);
-    SYN_TARGET_PATHS.add(EdmTargetPath.SYNDICATION_SUMMARY);
   }
 }
