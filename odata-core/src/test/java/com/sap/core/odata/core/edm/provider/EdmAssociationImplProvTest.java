@@ -19,6 +19,9 @@ import com.sap.core.odata.api.edm.provider.EdmProvider;
 import com.sap.core.odata.core.edm.provider.EdmAssociationImplProv;
 import com.sap.core.odata.core.edm.provider.EdmImplProv;
 
+/**
+ * @author SAP AG
+ */
 public class EdmAssociationImplProvTest {
 
   private static EdmAssociationImplProv associationProv;
@@ -51,7 +54,7 @@ public class EdmAssociationImplProvTest {
 
   @Test
   public void getAnnotations() throws Exception {
-    EdmAnnotatable annotatable = (EdmAnnotatable) associationProv;
+    EdmAnnotatable annotatable = associationProv;
     EdmAnnotations annotations = annotatable.getAnnotations();
     assertNull(annotations.getAnnotationAttributes());
     assertNull(annotations.getAnnotationElements());

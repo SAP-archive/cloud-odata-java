@@ -17,9 +17,9 @@ public class TokenList implements Iterator<Token>
 
   /**
    * Append StringValue Token to tokens parameter
-   * @param Position of parsed token 
-   * @param Kind of parsed token
-   * @param Stringvalue of parsed token
+   * @param position Position of parsed token 
+   * @param kind Kind of parsed token
+   * @param uriLiteral String value of parsed token
    */
   public void appendToken(int position, TokenKind kind, String uriLiteral)
   {
@@ -30,10 +30,9 @@ public class TokenList implements Iterator<Token>
 
   /**
    * Append CharValue Token to tokens parameter
-   * @param Token list to be extended
-   * @param Position of parsed token 
-   * @param Kind of parsed token
-   * @param Charvalue of parsed token
+   * @param position Position of parsed token 
+   * @param kind Kind of parsed token
+   * @param charValue Char value of parsed token
    */
   public void appendToken(int position, TokenKind kind, char charValue)
   {
@@ -44,10 +43,9 @@ public class TokenList implements Iterator<Token>
 
   /**
    * Append UriLiteral Token to tokens parameter
-   * @param Token list to be extended
-   * @param Position of parsed token 
-   * @param Kind of parsed token
-   * @param EdmLiteral of parsed token containing type and value of UriLiteral 
+   * @param position Position of parsed token 
+   * @param kind Kind of parsed token
+   * @param javaLiteral EdmLiteral of parsed token containing type and value of UriLiteral 
    */
   public void appendEdmTypedToken(int position, TokenKind kind, String uriLiteral, EdmLiteral javaLiteral)
   {

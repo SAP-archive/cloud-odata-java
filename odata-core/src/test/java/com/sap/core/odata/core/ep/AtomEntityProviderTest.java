@@ -13,6 +13,9 @@ import com.sap.core.odata.api.ep.ODataEntityProvider;
 import com.sap.core.odata.testutils.helper.StringHelper;
 import com.sap.core.odata.testutils.mocks.MockFacade;
 
+/**
+ * @author SAP AG
+ */
 public class AtomEntityProviderTest extends AbstractProviderTest {
 
   @Test

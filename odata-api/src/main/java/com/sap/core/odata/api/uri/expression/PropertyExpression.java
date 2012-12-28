@@ -4,8 +4,8 @@ import com.sap.core.odata.api.edm.EdmProperty;
 
 /**
  * Represents a property expression in the expression tree returned by the methods:
- * <li>{@link FilterParser#ParseExpression(String)}</li>
- * <li>{@link OrderByParser#parseOrderExpression(String)}</li> 
+ * <li>{@link FilterParser#parseFilterString(String)}</li>
+ * <li>{@link OrderByParser#parseOrderByString(String)}</li> 
  * <br>
  * <br>
  * <p>A property expression node is inserted in the expression tree for any property.

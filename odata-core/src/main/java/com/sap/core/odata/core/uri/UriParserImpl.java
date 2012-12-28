@@ -32,7 +32,6 @@ import com.sap.core.odata.api.processor.ODataPathSegment;
 import com.sap.core.odata.api.uri.EdmLiteral;
 import com.sap.core.odata.api.uri.KeyPredicate;
 import com.sap.core.odata.api.uri.NavigationPropertySegment;
-import com.sap.core.odata.api.uri.NavigationSegment;
 import com.sap.core.odata.api.uri.SelectItem;
 import com.sap.core.odata.api.uri.UriNotMatchingException;
 import com.sap.core.odata.api.uri.UriParser;
@@ -300,7 +299,7 @@ public class UriParserImpl implements UriParser {
     navigationSegment.setNavigationProperty(navigationProperty);
     if (keyPredicateName != null)
       navigationSegment.setKeyPredicates(parseKey(keyPredicateName, targetEntitySet.getEntityType()));
-    uriResult.addNavigationSegment((NavigationSegment) navigationSegment);
+    uriResult.addNavigationSegment(navigationSegment);
   }
 
   private void handlePropertyPath(final EdmProperty property) throws UriSyntaxException, UriNotMatchingException, EdmException {

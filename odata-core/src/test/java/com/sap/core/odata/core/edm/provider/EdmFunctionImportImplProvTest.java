@@ -31,6 +31,9 @@ import com.sap.core.odata.core.edm.provider.EdmEntityContainerImplProv;
 import com.sap.core.odata.core.edm.provider.EdmFunctionImportImplProv;
 import com.sap.core.odata.core.edm.provider.EdmImplProv;
 
+/**
+ * @author SAP AG
+ */
 public class EdmFunctionImportImplProvTest {
 
   private static EdmFunctionImportImplProv edmFunctionImport;
@@ -154,10 +157,9 @@ public class EdmFunctionImportImplProvTest {
 
   @Test
   public void getAnnotations() throws Exception {
-    EdmAnnotatable annotatable = (EdmAnnotatable) edmFunctionImport;
+    EdmAnnotatable annotatable = edmFunctionImport;
     EdmAnnotations annotations = annotatable.getAnnotations();
     assertNull(annotations.getAnnotationAttributes());
     assertNull(annotations.getAnnotationElements());
-
   }
 }

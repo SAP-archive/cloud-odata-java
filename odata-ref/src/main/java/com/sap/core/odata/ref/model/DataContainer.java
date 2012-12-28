@@ -89,7 +89,7 @@ public class DataContainer {
     emp3.setImage("/male_3_SmithJo.jpg");
     emp3.setImageType(IMAGE_JPEG);
     employeeSet.add(emp3);
-    managerSet.add((Manager) emp3);
+    managerSet.add(emp3);
 
     Employee emp4 = new Employee("Peter Burke", 39, room2, team2);
     emp4.setManager(emp3);

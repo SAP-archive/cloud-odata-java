@@ -3,7 +3,8 @@ package com.sap.core.odata.api.uri.expression;
 import java.util.List;
 
 /**
- * Represents a $orderby expression in the expression tree returned by {@link OrderByParser#parseOrderExpression(String)}
+ * Represents a $orderby expression in the expression tree returned by
+ * {@link OrderByParser#parseOrderByString(String)}
  * Used to define the <b>root</b> expression node in an $filter expression tree.
  * 
  * @author SAP AG

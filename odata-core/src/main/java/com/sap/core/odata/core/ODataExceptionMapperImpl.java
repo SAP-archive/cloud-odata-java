@@ -187,14 +187,15 @@ public class ODataExceptionMapperImpl implements ExceptionMapper<Exception> {
   }
 
   private String getInnerError(final Exception exception) {
-    if (System.getProperty("odata.debug") == null)
+    if (uriInfo.getQueryParameters().containsKey("odata.debug")) {
+      ByteArrayOutputStream stream = new ByteArrayOutputStream();
+      PrintWriter writer = new PrintWriter(stream);
+      exception.printStackTrace(writer);
+      writer.close();
+      return stream.toString();
+    } else {
       return null;
-
-    ByteArrayOutputStream stream = new ByteArrayOutputStream();
-    PrintWriter writer = new PrintWriter(stream);
-    exception.printStackTrace(writer);
-    writer.close();
-    return stream.toString();
+    }
   }
 
 }

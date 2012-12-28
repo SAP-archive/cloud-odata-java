@@ -4,7 +4,7 @@ import com.sap.core.odata.api.exception.MessageReference;
 import com.sap.core.odata.api.exception.ODataNotFoundException;
 
 /**
- * This Exception results in a 404 Not Found
+ * URI-parsing exception resulting in a 404 Not Found response
  * @author SAP AG
  */
 public class UriNotMatchingException extends ODataNotFoundException {
@@ -17,17 +17,10 @@ public class UriNotMatchingException extends ODataNotFoundException {
   public static final MessageReference ENTITYNOTFOUND = createMessageReference(UriNotMatchingException.class, "ENTITYNOTFOUND");
   public static final MessageReference PROPERTYNOTFOUND = createMessageReference(UriNotMatchingException.class, "PROPERTYNOTFOUND");
 
-
-  /**
-   * {@inheritDoc}
-   */
   public UriNotMatchingException(MessageReference messageReference) {
     super(messageReference);
   }
 
-  /**
-   * {@inheritDoc}
-   */
   public UriNotMatchingException(MessageReference messageReference, Throwable cause) {
     super(messageReference, cause);
   }

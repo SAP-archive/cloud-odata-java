@@ -1,6 +1,7 @@
 package com.sap.core.odata.core.ep;
 
 import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
@@ -8,6 +9,7 @@ import java.nio.charset.Charset;
 import java.util.Locale;
 
 import javax.xml.stream.XMLOutputFactory;
+import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 
 import org.slf4j.Logger;
@@ -42,8 +44,7 @@ public class ODataExceptionSerializer {
     try {
       CircleStreamBuffer csb = new CircleStreamBuffer();
       OutputStream outputStream = csb.getOutputStream();
-      OutputStreamWriter writer = new OutputStreamWriter(
-          outputStream, "utf-8");
+      OutputStreamWriter writer = new OutputStreamWriter(outputStream, "utf-8");
       XMLStreamWriter xmlStreamWriter = XMLOutputFactory
           .newInstance().createXMLStreamWriter(writer);
 
@@ -55,7 +56,8 @@ public class ODataExceptionSerializer {
       xmlStreamWriter.writeEndElement();
       xmlStreamWriter.writeStartElement(FormatXml.M_MESSAGE);
       xmlStreamWriter.writeAttribute(Edm.PREFIX_XML, Edm.NAMESPACE_XML_1998, FormatXml.XML_LANG, getLang(locale));
-      xmlStreamWriter.writeCharacters(message == null ? "" : message);
+      if (message != null)
+        xmlStreamWriter.writeCharacters(message);
       xmlStreamWriter.writeEndElement();
       if (innerError != null) {
         xmlStreamWriter.writeStartElement(FormatXml.M_INNER_ERROR);
@@ -70,7 +72,9 @@ public class ODataExceptionSerializer {
       xmlStreamWriter.flush();
 
       outputMessage = csb.getInputStream();
-    } catch (Exception e) {
+    } catch (XMLStreamException e) {
+      LOG.error("Fatal Error when serializing an Exception.", e);
+    } catch (IOException e) {
       LOG.error("Fatal Error when serializing an Exception.", e);
     }
     return outputMessage;
@@ -80,10 +84,10 @@ public class ODataExceptionSerializer {
    * Gets language and country as defined in RFC 4646 based on {@link Locale}.
    */
   private static String getLang(Locale locale) {
-    if (locale.getCountry().isEmpty()) {
+    if (locale.getCountry().isEmpty())
       return locale.getLanguage();
-    }
-    return locale.getLanguage() + "-" + locale.getCountry();
+    else
+      return locale.getLanguage() + "-" + locale.getCountry();
   }
 
 }

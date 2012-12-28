@@ -26,6 +26,7 @@ import com.sap.core.odata.core.exception.ODataRuntimeException;
  * <code>/{custom path}{odata path}  e.g. http://host:port/webapp/bmw/odata.svc/$metadata</code><br>
  * The first segment defined by a servlet mapping belong to customer context and the following segments are OData specific.
  * </p>
+ * @author SAP AG
  */
 public class ODataRootLocator {
 
@@ -44,7 +45,7 @@ public class ODataRootLocator {
 
   /**
    * Default root behavior which will delegate all paths to a ODataLocator.
-   * @param odataPathSegments all segments have to be OData
+   * @param pathSegments all segments have to be OData
    * @return a locator handling OData protocol
    * @throws ODataException 
    * @throws ClassNotFoundException 

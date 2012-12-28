@@ -8,6 +8,9 @@ import com.sap.core.odata.api.edm.EdmEntitySet;
 import com.sap.core.odata.core.ep.aggregator.EntityInfoAggregator;
 import com.sap.core.odata.testutils.mocks.MockFacade;
 
+/**
+ * @author SAP AG
+ */
 public class EntityInfoAggregatorTest extends AbstractProviderTest {
 
   @Test

@@ -22,6 +22,9 @@ import com.sap.core.odata.api.edm.provider.NavigationProperty;
 import com.sap.core.odata.core.edm.provider.EdmImplProv;
 import com.sap.core.odata.core.edm.provider.EdmNavigationPropertyImplProv;
 
+/**
+ * @author SAP AG
+ */
 public class EdmNavigationPropertyImplProvTest {
 
   private static EdmProvider edmProvider;
@@ -65,10 +68,9 @@ public class EdmNavigationPropertyImplProvTest {
 
   @Test
   public void getAnnotations() throws Exception {
-    EdmAnnotatable annotatable = (EdmAnnotatable) navPropertyProvider;
+    EdmAnnotatable annotatable = navPropertyProvider;
     EdmAnnotations annotations = annotatable.getAnnotations();
     assertNull(annotations.getAnnotationAttributes());
     assertNull(annotations.getAnnotationElements());
-
   }
 }

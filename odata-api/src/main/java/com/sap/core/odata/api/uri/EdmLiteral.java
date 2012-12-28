@@ -12,8 +12,8 @@ public final class EdmLiteral {
   private String literal;
 
   /**
-   * @param {@link EdmSimpleType} simple type
-   * @param {@link String} literal in default (<em>not</em> URI) representation
+   * @param type {@link EdmSimpleType} simple type
+   * @param literal {@link String} literal in default (<em>not</em> URI) representation
    * @see EdmLiteralKind
    */
   public EdmLiteral(final EdmSimpleType type, final String literal) {

@@ -9,6 +9,9 @@ import org.junit.Test;
 
 import com.sap.core.odata.api.ep.ODataEntityProviderProperties;
 
+/**
+ * @author SAP AG
+ */
 public class ODataEntityProviderPropertiesTest {
 
   @Test

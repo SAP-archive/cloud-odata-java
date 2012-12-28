@@ -7,7 +7,6 @@ import com.sap.core.odata.api.edm.FullQualifiedName;
 /**
  * Objects of this class represent an entity type
  * @author SAP AG
- *
  */
 public class EntityType extends ComplexType {
 
@@ -85,7 +84,7 @@ public class EntityType extends ComplexType {
   }
 
   /**
-   * @param
+   * @param name
    * @return {@link EntityType} for method chaining
    */
   public EntityType setName(String name) {
@@ -94,7 +93,7 @@ public class EntityType extends ComplexType {
   }
 
   /**
-   * @param
+   * @param baseType
    * @return {@link EntityType} for method chaining
    */
   public EntityType setBaseType(FullQualifiedName baseType) {
@@ -103,7 +102,7 @@ public class EntityType extends ComplexType {
   }
 
   /**
-   * @param
+   * @param isAbstract
    * @return {@link EntityType} for method chaining
    */
   public EntityType setAbstract(boolean isAbstract) {
@@ -112,7 +111,7 @@ public class EntityType extends ComplexType {
   }
 
   /**
-   * @param
+   * @param properties
    * @return {@link EntityType} for method chaining
    */
   public EntityType setProperties(List<Property> properties) {
@@ -121,7 +120,7 @@ public class EntityType extends ComplexType {
   }
 
   /**
-   * @param
+   * @param mapping
    * @return {@link EntityType} for method chaining
    */
   public EntityType setMapping(Mapping mapping) {
@@ -130,7 +129,7 @@ public class EntityType extends ComplexType {
   }
 
   /**
-   * @param
+   * @param documentation
    * @return {@link EntityType} for method chaining
    */
   public EntityType setDocumentation(Documentation documentation) {
