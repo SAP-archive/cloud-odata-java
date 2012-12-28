@@ -9,7 +9,7 @@ import java.util.List;
  * 
  * @author SAP AG
  */
-public interface EdmStructuralType extends EdmType {
+public interface EdmStructuralType extends EdmMappable, EdmType {
 
   /**
    * Get property by name
