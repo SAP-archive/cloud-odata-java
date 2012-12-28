@@ -6,19 +6,28 @@ import com.sap.core.odata.api.edm.EdmFacets;
 import com.sap.core.odata.api.edm.EdmProperty;
 import com.sap.core.odata.api.edm.EdmType;
 
+/**
+ * author SAP AG
+ */
 public class EntityPropertyInfo {
   protected String name;
   protected EdmType type;
   protected EdmFacets facets;
   protected EdmCustomizableFeedMappings customMapping;
 
-  static EntityPropertyInfo create(EdmProperty property) throws EdmException {
-    EntityPropertyInfo info = new EntityPropertyInfo();
-    info.name = property.getName();
-    info.type = property.getType();
-    info.facets = property.getFacets();
-    info.customMapping = property.getCustomizableFeedMappings();
-    return info;
+  public EntityPropertyInfo(final String name, final EdmType type, final EdmFacets facets, final EdmCustomizableFeedMappings customizableFeedMapping) {
+    this.name = name;
+    this.type = type;
+    this.facets = facets;
+    this.customMapping = customizableFeedMapping;
+  }
+
+  static EntityPropertyInfo create(final EdmProperty property) throws EdmException {
+    return new EntityPropertyInfo(
+        property.getName(),
+        property.getType(),
+        property.getFacets(),
+        property.getCustomizableFeedMappings());
   }
 
   public boolean isComplex() {

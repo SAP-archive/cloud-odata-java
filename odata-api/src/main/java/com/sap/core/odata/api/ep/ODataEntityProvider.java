@@ -5,6 +5,7 @@ import java.util.Map;
 
 import com.sap.core.odata.api.edm.Edm;
 import com.sap.core.odata.api.edm.EdmEntitySet;
+import com.sap.core.odata.api.edm.EdmFunctionImport;
 import com.sap.core.odata.api.edm.EdmProperty;
 import com.sap.core.odata.api.enums.ContentType;
 import com.sap.core.odata.api.rt.RuntimeDelegate;
@@ -39,4 +40,6 @@ public abstract class ODataEntityProvider {
   public abstract ODataEntityContent writeLink(EdmEntitySet entitySet, Map<String, Object> data, ODataEntityProviderProperties properties) throws ODataEntityProviderException;
 
   public abstract ODataEntityContent writeLinks(EdmEntitySet entitySet, List<Map<String, Object>> data, ODataEntityProviderProperties properties) throws ODataEntityProviderException;
+
+  public abstract ODataEntityContent writeFunctionImport(EdmFunctionImport functionImport, Object data, ODataEntityProviderProperties properties) throws ODataEntityProviderException;
 }

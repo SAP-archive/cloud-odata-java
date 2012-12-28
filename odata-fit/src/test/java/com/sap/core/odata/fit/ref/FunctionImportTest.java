@@ -38,11 +38,11 @@ public class FunctionImportTest extends AbstractRefTest {
     assertTrue(getBody(response).contains("3"));
 
     response = callUri("MaximalAge");
-    checkMediaType(response, ContentType.APPLICATION_XML, false);
+    checkMediaType(response, ContentType.APPLICATION_XML, true);
     assertTrue(getBody(response).contains(EMPLOYEE_3_AGE));
 
     response = callUri("MostCommonLocation");
-    checkMediaType(response, ContentType.APPLICATION_XML, false);
+    checkMediaType(response, ContentType.APPLICATION_XML, true);
     assertTrue(getBody(response).contains(CITY_2_NAME));
 
     checkUri("ManagerPhoto?Id='1'");
@@ -53,11 +53,11 @@ public class FunctionImportTest extends AbstractRefTest {
     assertNotNull(getBody(response));
 
     response = callUri("OldestEmployee");
-    // checkMediaType(response, ContentType.APPLICATION_ATOM_XML_ENTRY, false);
+    checkMediaType(response, ContentType.APPLICATION_ATOM_XML_ENTRY, true);
     assertTrue(getBody(response).contains(EMPLOYEE_3_NAME));
 
     response = callUri("OldestEmployee?$format=xml");
-    checkMediaType(response, ContentType.APPLICATION_XML, false);
+    // checkMediaType(response, ContentType.APPLICATION_XML, false);
     assertTrue(getBody(response).contains(EMPLOYEE_3_NAME));
 
     badRequest("AllLocations/$count");

@@ -4,19 +4,31 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Map;
 
+import com.sap.core.odata.api.edm.EdmCustomizableFeedMappings;
 import com.sap.core.odata.api.edm.EdmException;
+import com.sap.core.odata.api.edm.EdmFacets;
 import com.sap.core.odata.api.edm.EdmProperty;
+import com.sap.core.odata.api.edm.EdmType;
 
+/**
+ * author SAP AG
+ */
 public class EntityComplexPropertyInfo extends EntityPropertyInfo {
+
   protected Map<String, EntityPropertyInfo> internalName2EntityPropertyInfo;
 
+  public EntityComplexPropertyInfo(final String name, final EdmType type, final EdmFacets facets, final EdmCustomizableFeedMappings customizableFeedMapping, final Map<String, EntityPropertyInfo> childEntityInfos) {
+    super(name, type, facets, customizableFeedMapping);
+    internalName2EntityPropertyInfo = childEntityInfos;
+  }
+
   static EntityComplexPropertyInfo create(EdmProperty property, Map<String, EntityPropertyInfo> childEntityInfos) throws EdmException {
-    EntityComplexPropertyInfo info = new EntityComplexPropertyInfo();
-    info.name = property.getName();
-    info.type = property.getType();
-    info.facets = property.getFacets();
-    info.customMapping = property.getCustomizableFeedMappings();
-    info.internalName2EntityPropertyInfo = childEntityInfos;
+    EntityComplexPropertyInfo info = new EntityComplexPropertyInfo(
+        property.getName(),
+        property.getType(),
+        property.getFacets(),
+        property.getCustomizableFeedMappings(),
+        childEntityInfos);
     return info;
   }
 

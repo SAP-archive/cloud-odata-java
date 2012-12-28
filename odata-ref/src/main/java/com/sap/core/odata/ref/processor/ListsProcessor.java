@@ -383,22 +383,15 @@ public class ListsProcessor extends ODataSingleProcessor {
           .header("CONTENT-TYPE", contentType.toString())
           .entity(data.toString())
           .build();
-    } else if (type.getKind() == EdmTypeKind.ENTITY) {
-      final Map<String, Object> values = getStructuralTypeValueMap(data, (EdmEntityType) type);
-      return ODataResponse
-          .status(HttpStatusCodes.OK)
-          .header("CONTENT-TYPE", contentType.toString())
-          // .entity(ODataEntityProvider.create(format).writeEntry(null, values, null))
-          .entity(values.toString())
-          .build();
+
     } else {
-      final Object value = type.getKind() == EdmTypeKind.COMPLEX ?
-          getStructuralTypeValueMap(data, (EdmStructuralType) type) : data;
+      final Object value = type.getKind() == EdmTypeKind.SIMPLE ?
+          data : getStructuralTypeValueMap(data, (EdmStructuralType) type);
+      final ODataEntityProviderProperties entryProperties = ODataEntityProviderProperties
+          .baseUri(getContext().getUriInfo().getBaseUri()).build();
       return ODataResponse
           .status(HttpStatusCodes.OK)
-          .header("CONTENT-TYPE", contentType.toString())
-          // .entity(ODataEntityProvider.create(format).writeProperty(null, value))
-          .entity(value.toString())
+          .entity(ODataEntityProvider.create(contentType).writeFunctionImport(functionImport, value, entryProperties))
           .build();
     }
   }
