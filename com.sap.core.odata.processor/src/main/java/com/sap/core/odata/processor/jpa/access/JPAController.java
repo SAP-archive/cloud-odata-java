@@ -17,5 +17,5 @@ public class JPAController {
 	public static NameMapper getNameMapper( ){
 		return new ODataJPANameMapper();
 	}
-	
+
 }

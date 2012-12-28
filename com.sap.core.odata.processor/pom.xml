@@ -6,12 +6,8 @@
 	<artifactId>OData-Processor</artifactId>
 	<packaging>jar</packaging>
 
-	<!--  <parent>
-		<groupId>com.sap.core.odata</groupId>
-		<artifactId>com.sap.core.odata.parent</artifactId>
-		<version>0.0.0-SNAPSHOT</version>
-		<relativePath>..</relativePath>
-	</parent> -->
+	<!-- <parent> <groupId>com.sap.core.odata</groupId> <artifactId>com.sap.core.odata.parent</artifactId> 
+		<version>0.0.0-SNAPSHOT</version> <relativePath>..</relativePath> </parent> -->
 
 	<dependencies>
 		<dependency>
@@ -19,6 +15,7 @@
 			<artifactId>javax.persistence</artifactId>
 			<version>2.0.3.v201010191057</version>
 		</dependency>
+		<!-- ODATA4SAP Support -->
 		<dependency>
 			<groupId>com.sap.core.odata</groupId>
 			<artifactId>com.sap.core.odata.api</artifactId>
@@ -30,7 +27,46 @@
 			<artifactId>com.sap.core.odata.core</artifactId>
 			<version>0.0.0-SNAPSHOT</version>
 		</dependency>
+		<!-- JPA Support -->
+		<dependency>
+			<groupId>org.eclipse.persistence</groupId>
+			<artifactId>eclipselink</artifactId>
+			<version>2.1.2</version>
+		</dependency>
+		<dependency>
+			<groupId>org.hsqldb</groupId>
+			<artifactId>hsqldb</artifactId>
+			<version>1.8.0.10</version>
+		</dependency>
+		<dependency>
+			<groupId>org.eclipse.persistence</groupId>
+			<artifactId>javax.persistence</artifactId>
+			<version>2.0.0</version>
+		</dependency>
+		<!-- For JUnits -->
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.9</version>
+		</dependency>
+		<dependency>
+			<groupId>org.easymock</groupId>
+			<artifactId>org.easymock</artifactId>
+			<version>2.4.0</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.objenesis</groupId>
+			<artifactId>objenesis</artifactId>
+			<version>1.2</version>
+		</dependency>
+		<dependency>
+			<groupId>cglib</groupId>
+			<artifactId>cglib-nodep</artifactId>
+			<version>2.2.2</version>
+		</dependency>
 	</dependencies>
+	
 
 
 	<groupId>com.sap.core.odata</groupId>
