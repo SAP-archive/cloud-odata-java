@@ -145,7 +145,7 @@ public class JPAEdmBuilderV2 implements JPAEdmBuilder {
 				}
 				properties.add(createComplexProperty(jpaAttribute));
 			}
-			else
+			else if(PersistentAttributeType.BASIC.toString().equals(jpaAttribute.getPersistentAttributeType().toString()))
 			{
 				properties.add(createSimpleProperty(jpaAttribute));
 				SingularAttribute<?,?> attribute = (SingularAttribute<?, ?>) jpaAttribute;
