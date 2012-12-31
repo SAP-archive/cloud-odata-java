@@ -14,7 +14,9 @@ import javax.persistence.metamodel.SingularAttribute;
 
 import com.sap.core.odata.api.edm.EdmSimpleTypeKind;
 import com.sap.core.odata.api.edm.FullQualifiedName;
+import com.sap.core.odata.api.edm.provider.Association;
 import com.sap.core.odata.api.edm.provider.ComplexProperty;
+import com.sap.core.odata.api.edm.provider.ComplexType;
 import com.sap.core.odata.api.edm.provider.EntityContainer;
 import com.sap.core.odata.api.edm.provider.EntitySet;
 import com.sap.core.odata.api.edm.provider.EntityType;
@@ -48,8 +50,14 @@ public class JPAEdmBuilderV2 implements JPAEdmBuilder {
 		Schema schema = new Schema();
 		schema.setNamespace(pUnitName);
 
-		// Create Entity Types
+		// Set Entity Types
 		schema.setEntityTypes(getEntityTypes());
+		// Set Complex Types
+
+		/*To be uncommented later		
+		schema.setComplexTypes(getComplexTypes());*/
+		
+		// Set Entity Container
 		schema.setEntityContainers(getEntityContainers());
 		schemas.add(schema);
 		return schemas;
@@ -113,8 +121,44 @@ public class JPAEdmBuilderV2 implements JPAEdmBuilder {
 
 		return entityType;
 	}
+	@Override
+	public List<ComplexType> getComplexTypes()
+	{
+		Set<javax.persistence.metamodel.EmbeddableType<?>> jpaComplexTypes = metaModel.getEmbeddables();
+		List<ComplexType> complexTypes = new ArrayList<ComplexType>();
+		for (javax.persistence.metamodel.EmbeddableType<?> jpaComplexType : jpaComplexTypes) {
+			complexTypes.add(getComplexType(new FullQualifiedName(pUnitName,jpaComplexType.getJavaType().getName())));
+		}
+
+		return complexTypes;
+	}
 
 
+@Override
+	public ComplexType getComplexType(FullQualifiedName fullQualifiedName) {
+		String complexTypeName = fullQualifiedName.getName();
+		List<Property> properties = new ArrayList<Property>();
+		for (javax.persistence.metamodel.EmbeddableType<?> jpaEntityType : metaModel.getEmbeddables()) {
+			if ( jpaEntityType.getJavaType().getName().equals(complexTypeName) )
+			{
+				 for (Attribute<?, ?> attribute : jpaEntityType.getAttributes()) {
+					 if(attribute.isCollection())
+					 {}
+					 else if(PersistentAttributeType.EMBEDDED.toString().equals(attribute.getPersistentAttributeType().toString()))
+					 {
+						/*To be uncommented later
+						properties.add(createComplexProperty(attribute));*/
+					 }
+					 else if(PersistentAttributeType.BASIC.toString().equals(attribute.getPersistentAttributeType().toString()))
+					 {
+						 properties.add(createSimpleProperty(attribute));
+					 }
+				 }
+				 return new ComplexType().setName(fullQualifiedName.getName()).setProperties(properties);
+			}
+		}
+		return null;
+	}
 
 	/*private Key getKey(javax.persistence.metamodel.EntityType<?> jpaEntityType) {
 		if(jpaEntityType.hasSingleIdAttribute())
@@ -143,8 +187,8 @@ public class JPAEdmBuilderV2 implements JPAEdmBuilder {
 				{
 					formKey(entityKey,jpaAttribute);
 				}
-				/*To be implemented later
-				properties.add(createComplexProperty(jpaAttribute));*/
+				//To be implemented later
+				properties.add(createComplexProperty(jpaAttribute));
 			}
 			else if(PersistentAttributeType.BASIC.toString().equals(jpaAttribute.getPersistentAttributeType().toString()))
 			{
@@ -192,6 +236,20 @@ public class JPAEdmBuilderV2 implements JPAEdmBuilder {
 	}
 
 	private ComplexProperty createComplexProperty(Attribute<?, ?> jpaAttribute){
+		ComplexProperty complexProperty = new ComplexProperty();
+		complexProperty.setName(jpaAttribute.getName());
+		complexProperty.setType(new FullQualifiedName(pUnitName, jpaAttribute.getName()));
+		return complexProperty;
+	}
+	public List<Association> getAssociations()
+	{
+		for(javax.persistence.metamodel.EntityType<?> jpaEntityType : metaModel.getEntities())
+		{
+			for(javax.persistence.metamodel.Attribute<?,?> attribute:jpaEntityType.getAttributes())
+			{
+	//			attribute.getJavaType().get
+			}
+		}
 		return null;
 	}
 
