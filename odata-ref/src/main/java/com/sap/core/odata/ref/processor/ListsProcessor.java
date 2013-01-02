@@ -130,7 +130,9 @@ public class ListsProcessor extends ODataSingleProcessor {
         .skipToken(nextSkipToken)
         .build();
 
-    return ODataResponse.fromResponse(ODataEntityProvider.create(contentType).writeFeed(uriParserResultView, values, feedProperties)).status(HttpStatusCodes.OK).build();
+    return ODataResponse.fromResponse(ODataEntityProvider.create(contentType).writeFeed(uriParserResultView, values, feedProperties))
+        .status(HttpStatusCodes.OK)
+        .build();
   }
 
   @Override
@@ -154,7 +156,8 @@ public class ListsProcessor extends ODataSingleProcessor {
         uriParserResultView.getTop());
 
     return ODataResponse.fromResponse(ODataEntityProvider.create(ContentType.APPLICATION_XML).writeText(String.valueOf(data.size())))
-        .status(HttpStatusCodes.OK).build();
+        .status(HttpStatusCodes.OK)
+        .build();
   }
 
   @Override

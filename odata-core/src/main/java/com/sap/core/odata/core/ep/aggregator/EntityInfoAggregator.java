@@ -17,6 +17,7 @@ import com.sap.core.odata.api.edm.EdmEntitySet;
 import com.sap.core.odata.api.edm.EdmEntityType;
 import com.sap.core.odata.api.edm.EdmException;
 import com.sap.core.odata.api.edm.EdmFunctionImport;
+import com.sap.core.odata.api.edm.EdmMultiplicity;
 import com.sap.core.odata.api.edm.EdmNavigationProperty;
 import com.sap.core.odata.api.edm.EdmProperty;
 import com.sap.core.odata.api.edm.EdmSimpleType;
@@ -26,6 +27,7 @@ import com.sap.core.odata.api.edm.EdmType;
 import com.sap.core.odata.api.edm.EdmTypeKind;
 import com.sap.core.odata.api.edm.EdmTyped;
 import com.sap.core.odata.api.ep.ODataEntityProviderException;
+import com.sap.core.odata.core.ep.FormatXml;
 
 /**
  * Aggregator to get easy and fast access to all for a serializer necessary {@link EdmEntitySet} informations.
@@ -317,6 +319,9 @@ public class EntityInfoAggregator {
   }
 
   private EntityPropertyInfo createEntityPropertyInfo(EdmFunctionImport functionImport, EdmType type) throws EdmException, ODataEntityProviderException {
+    final String name = functionImport.getReturnType().getMultiplicity() == EdmMultiplicity.MANY ?
+        FormatXml.D_ELEMENT : functionImport.getName();
+
     EntityPropertyInfo epi;
 
     if (type.getKind() == EdmTypeKind.COMPLEX) {
@@ -324,14 +329,13 @@ public class EntityInfoAggregator {
       Map<String, EntityPropertyInfo> eia = EntityInfoAggregator.create(complex);
 
       List<EntityPropertyInfo> childEntityInfoList = new ArrayList<EntityPropertyInfo>();
-      for (String name : complex.getPropertyNames()) {
-        childEntityInfoList.add(eia.get(name));
-      }
-      epi = new EntityComplexPropertyInfo(functionImport.getName(), type, null, null, childEntityInfoList);
+      for (String propertyName : complex.getPropertyNames())
+        childEntityInfoList.add(eia.get(propertyName));
+      epi = new EntityComplexPropertyInfo(name, type, null, null, childEntityInfoList);
 
     } else if (type.getKind() == EdmTypeKind.SIMPLE) {
 
-      epi = new EntityPropertyInfo(functionImport.getName(), type, null, null);
+      epi = new EntityPropertyInfo(name, type, null, null);
     } else {
       throw new ODataEntityProviderException(ODataEntityProviderException.UNSUPPORTED_PROPERTY_TYPE.addContent(type.getKind()));
     }
