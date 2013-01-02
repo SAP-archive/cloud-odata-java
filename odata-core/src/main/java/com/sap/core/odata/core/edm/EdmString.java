@@ -29,7 +29,7 @@ public class EdmString extends AbstractSimpleType {
     String result;
     if (literalKind == EdmLiteralKind.URI)
       if (value.length() >= 2 && value.startsWith("'") && value.endsWith("'"))
-        result = value.substring(1, value.length() - 1);
+        result = (value.substring(1, value.length() - 1)).replace("''", "'");
       else
         throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_ILLEGAL_CONTENT.addContent(value));
     else
@@ -75,7 +75,7 @@ public class EdmString extends AbstractSimpleType {
 
   @Override
   public String toUriLiteral(final String literal) throws EdmSimpleTypeException {
-    return "'" + literal + "'";
+    return "'" + literal.replace("'", "''") + "'";
   }
 
 }
