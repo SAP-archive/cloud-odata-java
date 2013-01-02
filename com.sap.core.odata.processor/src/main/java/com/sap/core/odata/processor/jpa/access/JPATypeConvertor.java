@@ -6,10 +6,11 @@ import java.util.Date;
 import java.util.UUID;
 
 import com.sap.core.odata.api.edm.EdmSimpleTypeKind;
+import com.sap.core.odata.processor.jpa.exception.ODataJPAModelException;
 
 public class JPATypeConvertor {
 	
-	public static EdmSimpleTypeKind convertToEdmSimpleType(Class<?> jpaType){
+	public static EdmSimpleTypeKind convertToEdmSimpleType(Class<?> jpaType) throws ODataJPAModelException{
 		
 		if (jpaType.equals(String.class))
 			return EdmSimpleTypeKind.String;
@@ -40,6 +41,6 @@ public class JPATypeConvertor {
 		else if (jpaType.equals(UUID.class))
 			return EdmSimpleTypeKind.Guid;
 		
-		return null;
+		throw new ODataJPAModelException(ODataJPAModelException.TYPE_NOT_SUPPORTED.addContent(jpaType.toString()));
 	}
 }

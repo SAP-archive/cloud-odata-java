@@ -1,6 +1,7 @@
 package com.sap.core.odata.processor.jpa.jpql.api;
 
 import com.sap.core.odata.processor.jpa.api.ODataJPAContext;
+import com.sap.core.odata.processor.jpa.exception.ODataJPAModelException;
 import com.sap.core.odata.processor.jpa.jpql.JPQLBuilderFactory;
 
 public abstract class JPQLContext {
@@ -37,7 +38,7 @@ public abstract class JPQLContext {
 			return contextBuilder;
 		}
 		
-		public abstract JPQLContext build( );
+		public abstract JPQLContext build( ) throws ODataJPAModelException;
 		protected abstract void setResultsView(Object resultsView);
 	}
 }

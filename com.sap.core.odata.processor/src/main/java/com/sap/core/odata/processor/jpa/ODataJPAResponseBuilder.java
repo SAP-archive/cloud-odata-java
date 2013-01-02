@@ -16,12 +16,12 @@ import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.api.processor.ODataResponse;
 import com.sap.core.odata.api.uri.resultviews.GetEntitySetView;
 import com.sap.core.odata.processor.jpa.api.ODataJPAContext;
-import com.sap.core.odata.processor.jpa.jpql.api.JPQLContext;
+import com.sap.core.odata.processor.jpa.exception.ODataJPARuntimeException;
 
 public final class ODataJPAResponseBuilder {
 
 	public static ODataResponse build(List<Object> jpaEntities,
-			GetEntitySetView resultsView, ContentType contentType,ODataJPAContext odataJPAContext) {
+			GetEntitySetView resultsView, ContentType contentType,ODataJPAContext odataJPAContext) throws ODataJPARuntimeException {
 
 		EdmEntityType edmEntityType = null;
 		ODataResponse odataResponse = null;
@@ -48,7 +48,7 @@ public final class ODataJPAResponseBuilder {
 				        .skipToken("")
 				        .build();
 			} catch (ODataException e) {
-				e.printStackTrace();
+				throw new ODataJPARuntimeException(ODataJPARuntimeException.COMMON.addContent(e.getMessage()),e);
 			}
 		    
 			odataResponse = ODataResponse
@@ -58,9 +58,9 @@ public final class ODataJPAResponseBuilder {
 					.build();
 			
 		} catch (ODataEntityProviderException e) {
-			e.printStackTrace();
+			throw new ODataJPARuntimeException(ODataJPARuntimeException.COMMON.addContent(e.getMessage()),e);
 		} catch (EdmException e) {
-			e.printStackTrace();
+			throw new ODataJPARuntimeException(ODataJPARuntimeException.COMMON.addContent(e.getMessage()),e);
 		}
 
 		return odataResponse;
