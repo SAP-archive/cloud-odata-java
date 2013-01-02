@@ -194,7 +194,8 @@ class EdmMock {
     when(managerPhotoParameter.getFacets()).thenReturn(managerPhotoParameterFacets);
     when(managerPhotoFunctionImport.getParameterNames()).thenReturn(managerPhotoParameterNames);
     when(managerPhotoFunctionImport.getParameter("Id")).thenReturn(managerPhotoParameter);
-    createFunctionImportMock(defaultContainer, "OldestEmployee", employeeType, EdmMultiplicity.ONE);
+    EdmFunctionImport oldestEmployeeFunctionImport = createFunctionImportMock(defaultContainer, "OldestEmployee", employeeType, EdmMultiplicity.ONE);
+    when(oldestEmployeeFunctionImport.getEntitySet()).thenReturn(employeeEntitySet);
 
     EdmEntityContainer specificContainer = mock(EdmEntityContainer.class);
     when(specificContainer.getEntitySet("Employees")).thenReturn(employeeEntitySet);

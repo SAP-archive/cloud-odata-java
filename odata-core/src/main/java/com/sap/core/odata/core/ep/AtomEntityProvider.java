@@ -363,7 +363,7 @@ public class AtomEntityProvider extends ODataEntityProvider {
 
       final EntityPropertyInfo info = EntityInfoAggregator.create(functionImport);
       if (isCollection) {
-        return writeCollection(FormatXml.D_ELEMENT, info, (List<?>) data);
+        return writeCollection(functionImport.getName(), info, (List<?>) data);
       } else {
         return writeSingleTypedElement(info, data);
       }
