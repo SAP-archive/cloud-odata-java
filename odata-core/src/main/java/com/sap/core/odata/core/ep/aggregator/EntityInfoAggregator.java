@@ -16,40 +16,48 @@ import com.sap.core.odata.api.edm.EdmCustomizableFeedMappings;
 import com.sap.core.odata.api.edm.EdmEntitySet;
 import com.sap.core.odata.api.edm.EdmEntityType;
 import com.sap.core.odata.api.edm.EdmException;
+import com.sap.core.odata.api.edm.EdmFunctionImport;
+import com.sap.core.odata.api.edm.EdmMultiplicity;
 import com.sap.core.odata.api.edm.EdmNavigationProperty;
 import com.sap.core.odata.api.edm.EdmProperty;
 import com.sap.core.odata.api.edm.EdmSimpleType;
 import com.sap.core.odata.api.edm.EdmStructuralType;
 import com.sap.core.odata.api.edm.EdmTargetPath;
 import com.sap.core.odata.api.edm.EdmType;
+import com.sap.core.odata.api.edm.EdmTypeKind;
 import com.sap.core.odata.api.edm.EdmTyped;
 import com.sap.core.odata.api.ep.ODataEntityProviderException;
+import com.sap.core.odata.core.ep.FormatXml;
 
 /**
  * Aggregator to get easy and fast access to all for a serializer necessary {@link EdmEntitySet} informations.
+ * 
  * @author SAP AG
  */
 public class EntityInfoAggregator {
 
   private static final Set<String> SYN_TARGET_PATHS = new HashSet<String>(Arrays.asList(
-      EdmTargetPath.SYNDICATION_AUTHOREMAIL,
-      EdmTargetPath.SYNDICATION_AUTHOREMAIL,
-      EdmTargetPath.SYNDICATION_AUTHORURI,
+      EdmTargetPath.SYNDICATION_AUTHOREMAIL, 
+      EdmTargetPath.SYNDICATION_AUTHOREMAIL, 
+      EdmTargetPath.SYNDICATION_AUTHORURI, 
       EdmTargetPath.SYNDICATION_PUBLISHED,
-      EdmTargetPath.SYNDICATION_RIGHTS,
-      EdmTargetPath.SYNDICATION_TITLE,
-      EdmTargetPath.SYNDICATION_UPDATED,
-      EdmTargetPath.SYNDICATION_CONTRIBUTORNAME,
-      EdmTargetPath.SYNDICATION_CONTRIBUTOREMAIL,
+      EdmTargetPath.SYNDICATION_RIGHTS, 
+      EdmTargetPath.SYNDICATION_TITLE, 
+      EdmTargetPath.SYNDICATION_UPDATED, 
+      EdmTargetPath.SYNDICATION_CONTRIBUTORNAME, 
+      EdmTargetPath.SYNDICATION_CONTRIBUTOREMAIL, 
       EdmTargetPath.SYNDICATION_CONTRIBUTORURI,
-      EdmTargetPath.SYNDICATION_SOURCE,
+      EdmTargetPath.SYNDICATION_SOURCE, 
       EdmTargetPath.SYNDICATION_SUMMARY));
 
   private Map<String, EntityPropertyInfo> name2EntityPropertyInfo = new HashMap<String, EntityPropertyInfo>();
   private Map<String, NavigationPropertyInfo> name2NavigationPropertyInfo = new HashMap<String, NavigationPropertyInfo>();
   private Map<String, EntityPropertyInfo> targetPath2EntityPropertyInfo = new HashMap<String, EntityPropertyInfo>();
   private List<String> keyPropertyNames = new ArrayList<String>();
-  /** list with all property names in the order based on order in {@link EdmProperty} (normally [key, entity, navigation]) */
+  /**
+   * list with all property names in the order based on order in {@link EdmProperty} (normally [key, entity,
+   * navigation])
+   */
   private List<String> allPropertyNames = new ArrayList<String>();
   private List<String> etagPropertyNames = new ArrayList<String>();
   private List<String> noneSyndicationTargetPaths = new ArrayList<String>();
@@ -63,7 +71,8 @@ public class EntityInfoAggregator {
   /**
    * Constructor is private to force creation over {@link #create(EdmEntitySet)} method.
    */
-  private EntityInfoAggregator() {}
+  private EntityInfoAggregator() {
+  }
 
   /**
    * Create an {@link EntityInfoAggregator} based on given {@link EdmEntitySet}
@@ -82,6 +91,16 @@ public class EntityInfoAggregator {
     return eia;
   }
 
+  /**
+   * Create an {@link EntityPropertyInfo} based on given {@link EdmProperty}
+   * 
+   * @param property
+   *          for which the {@link EntityPropertyInfo} is created.
+   * @return created {@link EntityPropertyInfo}
+   * @throws ODataEntityProviderException
+   *           if create of {@link EntityPropertyInfo} something goes wrong (e.g. exceptions during
+   *           access of {@link EdmProperty}).
+   */
   public static EntityPropertyInfo create(EdmProperty property) throws ODataEntityProviderException {
     try {
       EntityInfoAggregator eia = new EntityInfoAggregator();
@@ -91,10 +110,39 @@ public class EntityInfoAggregator {
     }
   }
 
+  /**
+   * Create an map of <code>complex type property name</code> to {@link EntityPropertyInfo} based on given {@link EdmComplexType}
+   * 
+   * @param complexType
+   *          for which the {@link EntityPropertyInfo} is created.
+   * @return created map of <code>complex type property name</code> to {@link EntityPropertyInfo}
+   * @throws ODataEntityProviderException
+   *           if create of {@link EntityPropertyInfo} something goes wrong (e.g. exceptions during
+   *           access of {@link EntityPropertyInfo}).
+   */
   public static Map<String, EntityPropertyInfo> create(final EdmComplexType complexType) throws ODataEntityProviderException {
     try {
       EntityInfoAggregator entityInfo = new EntityInfoAggregator();
       return entityInfo.createInfoObjects(complexType, complexType.getPropertyNames());
+    } catch (EdmException e) {
+      throw new ODataEntityProviderException(ODataEntityProviderException.COMMON, e);
+    }
+  }
+
+  /**
+   * Create an {@link EntityPropertyInfo} based on given {@link EdmFunctionImport}
+   * 
+   * @param functionImport
+   *          for which the {@link EntityPropertyInfo} is created.
+   * @return created {@link EntityPropertyInfo}
+   * @throws ODataEntityProviderException
+   *           if create of {@link EntityPropertyInfo} something goes wrong (e.g. exceptions during
+   *           access of {@link EdmFunctionImport}).
+   */
+  public static EntityPropertyInfo create(EdmFunctionImport functionImport) throws ODataEntityProviderException {
+    try {
+      EntityInfoAggregator eia = new EntityInfoAggregator();
+      return eia.createEntityPropertyInfo(functionImport, functionImport.getReturnType().getType());
     } catch (EdmException e) {
       throw new ODataEntityProviderException(ODataEntityProviderException.COMMON, e);
     }
@@ -143,8 +191,8 @@ public class EntityInfoAggregator {
   }
 
   /**
-   * @return unmodifiable set of found <code>none syndication target path names</code>
-   * (all target path names which are not pre-defined).
+   * @return unmodifiable set of found <code>none syndication target path names</code> (all target path names which are
+   *         not pre-defined).
    */
   public List<String> getNoneSyndicationTargetPathNames() {
     return Collections.unmodifiableList(noneSyndicationTargetPaths);
@@ -258,16 +306,39 @@ public class EntityInfoAggregator {
   }
 
   private EntityPropertyInfo createEntityPropertyInfo(EdmProperty property) throws EdmException, ODataEntityProviderException {
-    EdmType t = property.getType();
-    if (t instanceof EdmSimpleType) {
+    EdmType type = property.getType();
+    if (type instanceof EdmSimpleType) {
       return EntityPropertyInfo.create(property);
-    } else if (t instanceof EdmComplexType) {
-      EdmComplexType complex = (EdmComplexType) t;
+    } else if (type instanceof EdmComplexType) {
+      EdmComplexType complex = (EdmComplexType) type;
       Map<String, EntityPropertyInfo> recursiveInfos = createInfoObjects(complex, complex.getPropertyNames());
-      return EntityComplexPropertyInfo.create(property, recursiveInfos);
+      return EntityComplexPropertyInfo.create(property, complex.getPropertyNames(), recursiveInfos);
     } else {
       throw new ODataEntityProviderException(ODataEntityProviderException.UNSUPPORTED_PROPERTY_TYPE);
     }
+  }
+
+  private EntityPropertyInfo createEntityPropertyInfo(EdmFunctionImport functionImport, EdmType type) throws EdmException, ODataEntityProviderException {
+    EntityPropertyInfo epi;
+
+    if (type.getKind() == EdmTypeKind.COMPLEX) {
+      EdmComplexType complex = (EdmComplexType) type;
+      Map<String, EntityPropertyInfo> eia = EntityInfoAggregator.create(complex);
+
+      List<EntityPropertyInfo> childEntityInfoList = new ArrayList<EntityPropertyInfo>();
+      for (String name : complex.getPropertyNames()) {
+        childEntityInfoList.add(eia.get(name));
+      }
+      epi = new EntityComplexPropertyInfo(functionImport.getName(), type, null, null, childEntityInfoList);
+
+    } else if (type.getKind() == EdmTypeKind.SIMPLE) {
+
+      epi = new EntityPropertyInfo(functionImport.getName(), type, null, null);
+    } else {
+      throw new ODataEntityProviderException(ODataEntityProviderException.UNSUPPORTED_PROPERTY_TYPE.addContent(type.getKind()));
+    }
+
+    return epi;
   }
 
   private void checkETagRelevant(EdmProperty edmProperty) throws ODataEntityProviderException {

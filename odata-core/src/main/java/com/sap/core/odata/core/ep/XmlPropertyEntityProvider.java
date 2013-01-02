@@ -1,6 +1,6 @@
 package com.sap.core.odata.core.ep;
 
-import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 
 import javax.xml.stream.XMLStreamException;
@@ -74,7 +74,7 @@ public class XmlPropertyEntityProvider {
       writer.writeAttribute(Edm.NAMESPACE_M_2007_08, FormatXml.ATOM_NULL, FormatXml.ATOM_VALUE_TRUE);
     } else {
       writer.writeAttribute(Edm.NAMESPACE_M_2007_08, FormatXml.ATOM_TYPE, getFqnTypeName(propertyInfo));
-      Collection<EntityPropertyInfo> propertyInfos = propertyInfo.getPropertyInfos();
+      List<EntityPropertyInfo> propertyInfos = propertyInfo.getPropertyInfos();
       for (EntityPropertyInfo childPropertyInfo : propertyInfos) {
         Object childValue = extractChildValue(value, childPropertyInfo.getName());
         append(writer, childPropertyInfo, childValue, false);

@@ -1,7 +1,8 @@
 package com.sap.core.odata.core.ep.aggregator;
 
-import java.util.Collection;
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 
 import com.sap.core.odata.api.edm.EdmCustomizableFeedMappings;
@@ -15,20 +16,25 @@ import com.sap.core.odata.api.edm.EdmType;
  */
 public class EntityComplexPropertyInfo extends EntityPropertyInfo {
 
-  protected Map<String, EntityPropertyInfo> internalName2EntityPropertyInfo;
+  protected List<EntityPropertyInfo> entityPropertyInfo;
 
-  public EntityComplexPropertyInfo(final String name, final EdmType type, final EdmFacets facets, final EdmCustomizableFeedMappings customizableFeedMapping, final Map<String, EntityPropertyInfo> childEntityInfos) {
+  EntityComplexPropertyInfo(final String name, final EdmType type, final EdmFacets facets, final EdmCustomizableFeedMappings customizableFeedMapping, final List<EntityPropertyInfo> childEntityInfos) {
     super(name, type, facets, customizableFeedMapping);
-    internalName2EntityPropertyInfo = childEntityInfos;
+    entityPropertyInfo = childEntityInfos;
   }
 
-  static EntityComplexPropertyInfo create(EdmProperty property, Map<String, EntityPropertyInfo> childEntityInfos) throws EdmException {
+  static EntityComplexPropertyInfo create(EdmProperty property, List<String> propertyNames, Map<String, EntityPropertyInfo> childEntityInfos) throws EdmException {
+    List<EntityPropertyInfo> childEntityInfoList = new ArrayList<EntityPropertyInfo>(childEntityInfos.size());
+    for (String name : propertyNames) {
+      childEntityInfoList.add(childEntityInfos.get(name));
+    }
+    
     EntityComplexPropertyInfo info = new EntityComplexPropertyInfo(
         property.getName(),
         property.getType(),
         property.getFacets(),
         property.getCustomizableFeedMappings(),
-        childEntityInfos);
+        childEntityInfoList);
     return info;
   }
 
@@ -37,14 +43,14 @@ public class EntityComplexPropertyInfo extends EntityPropertyInfo {
     return true;
   }
 
-  public Collection<EntityPropertyInfo> getPropertyInfos() {
-    return Collections.unmodifiableCollection(internalName2EntityPropertyInfo.values());
+  public List<EntityPropertyInfo> getPropertyInfos() {
+    return Collections.unmodifiableList(entityPropertyInfo);
   }
 
   @Override
   public String toString() {
     StringBuilder sb = new StringBuilder();
-    for (EntityPropertyInfo info : internalName2EntityPropertyInfo.values()) {
+    for (EntityPropertyInfo info : entityPropertyInfo) {
       if (sb.length() == 0) {
         sb.append(super.toString()).append("=>[").append(info.toString());
       } else {

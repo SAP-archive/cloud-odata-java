@@ -18,7 +18,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.sap.core.odata.api.edm.Edm;
-import com.sap.core.odata.api.edm.EdmComplexType;
 import com.sap.core.odata.api.edm.EdmEntitySet;
 import com.sap.core.odata.api.edm.EdmException;
 import com.sap.core.odata.api.edm.EdmFunctionImport;
@@ -35,7 +34,6 @@ import com.sap.core.odata.api.ep.ODataEntityProvider;
 import com.sap.core.odata.api.ep.ODataEntityProviderException;
 import com.sap.core.odata.api.ep.ODataEntityProviderProperties;
 import com.sap.core.odata.api.uri.resultviews.GetEntitySetView;
-import com.sap.core.odata.core.ep.aggregator.EntityComplexPropertyInfo;
 import com.sap.core.odata.core.ep.aggregator.EntityInfoAggregator;
 import com.sap.core.odata.core.ep.aggregator.EntityPropertyInfo;
 import com.sap.core.odata.core.ep.util.CircleStreamBuffer;
@@ -75,7 +73,7 @@ public class AtomEntityProvider extends ODataEntityProvider {
         try {
           writer.close();
         } catch (IOException e) {
-          // don't throw in finally!  
+          // don't throw in finally!
           LOG.error(e.getLocalizedMessage(), e);
         }
       }
@@ -112,7 +110,7 @@ public class AtomEntityProvider extends ODataEntityProvider {
         try {
           outStream.close();
         } catch (IOException e) {
-          // don't throw in finally!  
+          // don't throw in finally!
           LOG.error(e.getLocalizedMessage(), e);
         }
       }
@@ -152,7 +150,7 @@ public class AtomEntityProvider extends ODataEntityProvider {
         try {
           outStream.close();
         } catch (IOException e) {
-          // don't throw in finally!  
+          // don't throw in finally!
           LOG.error(e.getLocalizedMessage(), e);
         }
       }
@@ -188,7 +186,7 @@ public class AtomEntityProvider extends ODataEntityProvider {
         try {
           outStream.close();
         } catch (IOException e) {
-          // don't throw in finally!  
+          // don't throw in finally!
           LOG.error(e.getLocalizedMessage(), e);
         }
       }
@@ -286,9 +284,9 @@ public class AtomEntityProvider extends ODataEntityProvider {
         try {
           outStream.close();
         } catch (IOException e) {
-          // don't throw in finally!  
-        LOG.error(e.getLocalizedMessage(), e);
-      }
+          // don't throw in finally!
+          LOG.error(e.getLocalizedMessage(), e);
+        }
     }
 
     ODataEntityContentImpl content = new ODataEntityContentImpl();
@@ -324,9 +322,9 @@ public class AtomEntityProvider extends ODataEntityProvider {
         try {
           outStream.close();
         } catch (IOException e) {
-          // don't throw in finally!  
-        LOG.error(e.getLocalizedMessage(), e);
-      }
+          // don't throw in finally!
+          LOG.error(e.getLocalizedMessage(), e);
+        }
     }
 
     ODataEntityContentImpl content = new ODataEntityContentImpl();
@@ -362,7 +360,7 @@ public class AtomEntityProvider extends ODataEntityProvider {
         try {
           outStream.close();
         } catch (IOException e) {
-          // don't throw in finally!  
+          // don't throw in finally!
           LOG.error(e.getLocalizedMessage(), e);
         }
       }
@@ -372,7 +370,6 @@ public class AtomEntityProvider extends ODataEntityProvider {
   @Override
   public ODataEntityContent writeFunctionImport(final EdmFunctionImport functionImport, Object data, final ODataEntityProviderProperties properties) throws ODataEntityProviderException {
     try {
-      final String name = functionImport.getName();
       final EdmType type = functionImport.getReturnType().getType();
       final boolean isCollection = functionImport.getReturnType().getMultiplicity() == EdmMultiplicity.MANY;
 
@@ -382,19 +379,12 @@ public class AtomEntityProvider extends ODataEntityProvider {
         return writeEntry(functionImport.getEntitySet(), map, properties);
       }
 
-      final EntityPropertyInfo info = (type.getKind() == EdmTypeKind.COMPLEX) ?
-          new EntityComplexPropertyInfo(isCollection ? FormatXml.D_ELEMENT : name, type, null, null,
-              EntityInfoAggregator.create((EdmComplexType) type)) :
-          new EntityPropertyInfo(isCollection ? FormatXml.D_ELEMENT : name, type, null, null);
-
-      if (isCollection)
-        return writeCollection(name, info, (List<?>) data);
-      else if (type.getKind() == EdmTypeKind.COMPLEX)
-        return writeSingleTypedElement(new EntityComplexPropertyInfo(name, type, null, null,
-            EntityInfoAggregator.create((EdmComplexType) type)), data);
-      else
+      final EntityPropertyInfo info = EntityInfoAggregator.create(functionImport);
+      if (isCollection) {
+        return writeCollection(FormatXml.D_ELEMENT, info, (List<?>) data);
+      } else {
         return writeSingleTypedElement(info, data);
-
+      }
     } catch (EdmException e) {
       throw new ODataEntityProviderException(ODataEntityProviderException.COMMON, e);
     }
