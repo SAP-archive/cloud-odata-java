@@ -66,7 +66,7 @@ public class DataContainer {
     emp1.setManager((Manager) emp1);
     emp1.setLocation(new Location("Germany", "69124", "Heidelberg"));
     emp1.setEntryDate(generateDate(1999, 1, 1));
-    emp1.setImageUri("/SAP/PUBLIC/BC/NWDEMO_MODEL/IMAGES/male_1_WinterW.jpg");
+    emp1.setImageUri("Employees('1')/$value");
     emp1.setImage("/male_1_WinterW.jpg");
     emp1.setImageType(IMAGE_JPEG);
     employeeSet.add(emp1);
@@ -76,16 +76,16 @@ public class DataContainer {
     emp2.setManager((Manager) emp1);
     emp2.setLocation(new Location("Germany", "69190", "Walldorf"));
     emp2.setEntryDate(generateDate(2003, 7, 1));
-    emp2.setImageUri("/SAP/PUBLIC/BC/NWDEMO_MODEL/IMAGES/male_2_FallF.jpg");
+    emp2.setImageUri("Employees('2')/$value");
     emp2.setImage("/male_2_FallF.jpg");
     emp2.setImageType(IMAGE_JPEG);
     employeeSet.add(emp2);
 
     Manager emp3 = new Manager("Jonathan Smith", 56, room2, team1);
     emp3.setManager((Manager) emp1);
-    emp3.setLocation(new Location("Germany", "69190", "Walldorf"));
+    emp3.setLocation(emp2.getLocation());
     emp3.setEntryDate(null);
-    emp3.setImageUri("/SAP/PUBLIC/BC/NWDEMO_MODEL/IMAGES/male_3_SmithJo.jpg");
+    emp3.setImageUri("Employees('3')/$value");
     emp3.setImage("/male_3_SmithJo.jpg");
     emp3.setImageType(IMAGE_JPEG);
     employeeSet.add(emp3);
@@ -93,27 +93,27 @@ public class DataContainer {
 
     Employee emp4 = new Employee("Peter Burke", 39, room2, team2);
     emp4.setManager(emp3);
-    emp4.setLocation(new Location("Germany", "69190", "Walldorf"));
+    emp4.setLocation(emp2.getLocation());
     emp4.setEntryDate(generateDate(2004, 9, 12));
-    emp4.setImageUri("/SAP/PUBLIC/BC/NWDEMO_MODEL/IMAGES/male_4_BurkeP.jpg");
+    emp4.setImageUri("Employees('4')/$value");
     emp4.setImage("/male_4_BurkeP.jpg");
     emp4.setImageType(IMAGE_JPEG);
     employeeSet.add(emp4);
 
     Employee emp5 = new Employee("John Field", 42, room3, team2);
     emp5.setManager(emp3);
-    emp5.setLocation(new Location("Germany", "69190", "Walldorf"));
+    emp5.setLocation(emp2.getLocation());
     emp5.setEntryDate(generateDate(2001, 2, 1));
-    emp5.setImageUri("/SAP/PUBLIC/BC/NWDEMO_MODEL/IMAGES/male_5_FieldJ.jpg");
+    emp5.setImageUri("Employees('5')/$value");
     emp5.setImage("/male_5_FieldJ.jpg");
     emp5.setImageType(IMAGE_JPEG);
     employeeSet.add(emp5);
 
     Employee emp6 = new Employee("Susan Bay", 29, room2, team3);
     emp6.setManager((Manager) emp1);
-    emp6.setLocation(new Location("Germany", "69190", "Walldorf"));
+    emp6.setLocation(emp2.getLocation());
     emp6.setEntryDate(generateDate(2010, 12, 1));
-    emp6.setImageUri("/SAP/PUBLIC/BC/NWDEMO_MODEL/IMAGES/female_6_BaySu.jpg");
+    emp6.setImageUri("Employees('6')/$value");
     emp6.setImage("/female_6_BaySu.jpg");
     emp6.setImageType(IMAGE_JPEG);
     employeeSet.add(emp6);
@@ -142,7 +142,7 @@ public class DataContainer {
     photoSet.add(photo2);
 
     Photo photo3 = new Photo("Photo 3");
-    photo3.setType("image/jpeg");
+    photo3.setType(IMAGE_JPEG);
     photoSet.add(photo3);
 
     Photo photo4 = new Photo("Photo 4");
@@ -153,24 +153,28 @@ public class DataContainer {
     return photoSet;
   }
 
-  public Set<Photo> getPhotoSet() {
-    return photoSet;
-  }
-
   public Set<Employee> getEmployeeSet() {
     return employeeSet;
   }
 
-  public Set<Building> getBuildingSet() {
-    return buildingSet;
+  public Set<Team> getTeamSet() {
+    return teamSet;
   }
 
   public Set<Room> getRoomSet() {
     return roomSet;
   }
 
-  public Set<Team> getTeamSet() {
-    return teamSet;
+  public Set<Manager> getManagerSet() {
+    return managerSet;
+  }
+
+  public Set<Building> getBuildingSet() {
+    return buildingSet;
+  }
+
+  public Set<Photo> getPhotoSet() {
+    return photoSet;
   }
 
   public void reset() {
@@ -202,9 +206,5 @@ public class DataContainer {
     Room.reset();
     Photo.reset();
     init();
-  }
-
-  public Set<Manager> getManagerSet() {
-    return managerSet;
   }
 }

@@ -380,15 +380,14 @@ public class ListsProcessor extends ODataSingleProcessor {
     Object value;
     if (type.getKind() == EdmTypeKind.SIMPLE)
       value = data;
-    else
-      if (functionImport.getReturnType().getMultiplicity() == EdmMultiplicity.MANY) {
-        List<Map<String, Object>> values = new ArrayList<Map<String, Object>>();
-        for (final Object typeData : (List<?>) data)
-          values.add(getStructuralTypeValueMap(typeData, (EdmStructuralType) type));
-        value = values;
-      } else {
-        value = getStructuralTypeValueMap(data, (EdmStructuralType) type);
-      }
+    else if (functionImport.getReturnType().getMultiplicity() == EdmMultiplicity.MANY) {
+      List<Map<String, Object>> values = new ArrayList<Map<String, Object>>();
+      for (final Object typeData : (List<?>) data)
+        values.add(getStructuralTypeValueMap(typeData, (EdmStructuralType) type));
+      value = values;
+    } else {
+      value = getStructuralTypeValueMap(data, (EdmStructuralType) type);
+    }
 
     final ODataEntityProviderProperties entryProperties = ODataEntityProviderProperties
         .baseUri(getContext().getUriInfo().getBaseUri()).build();
@@ -554,21 +553,46 @@ public class ListsProcessor extends ODataSingleProcessor {
 
     case BINARY:
       final BinaryExpression binaryExpression = (BinaryExpression) expression;
-      final EdmSimpleType binaryType = (EdmSimpleType) binaryExpression.getEdmType();
+      final EdmSimpleType type = (EdmSimpleType) binaryExpression.getLeftOperand().getEdmType();
       final String left = evaluateExpression(data, binaryExpression.getLeftOperand());
       final String right = evaluateExpression(data, binaryExpression.getRightOperand());
 
       switch (binaryExpression.getOperator()) {
       case ADD:
-        return Double.toString(Double.valueOf(left) + Double.valueOf(right));
+        if (binaryExpression.getEdmType() == EdmSimpleTypeKind.Decimal.getEdmSimpleTypeInstance()
+            || binaryExpression.getEdmType() == EdmSimpleTypeKind.Double.getEdmSimpleTypeInstance()
+            || binaryExpression.getEdmType() == EdmSimpleTypeKind.Single.getEdmSimpleTypeInstance())
+          return Double.toString(Double.valueOf(left) + Double.valueOf(right));
+        else
+          return Long.toString(Long.valueOf(left) + Long.valueOf(right));
       case SUB:
-        return Double.toString(Double.valueOf(left) - Double.valueOf(right));
+        if (binaryExpression.getEdmType() == EdmSimpleTypeKind.Decimal.getEdmSimpleTypeInstance()
+            || binaryExpression.getEdmType() == EdmSimpleTypeKind.Double.getEdmSimpleTypeInstance()
+            || binaryExpression.getEdmType() == EdmSimpleTypeKind.Single.getEdmSimpleTypeInstance())
+          return Double.toString(Double.valueOf(left) - Double.valueOf(right));
+        else
+          return Long.toString(Long.valueOf(left) - Long.valueOf(right));
       case MUL:
-        return Double.toString(Double.valueOf(left) * Double.valueOf(right));
+        if (binaryExpression.getEdmType() == EdmSimpleTypeKind.Decimal.getEdmSimpleTypeInstance()
+            || binaryExpression.getEdmType() == EdmSimpleTypeKind.Double.getEdmSimpleTypeInstance()
+            || binaryExpression.getEdmType() == EdmSimpleTypeKind.Single.getEdmSimpleTypeInstance())
+          return Double.toString(Double.valueOf(left) * Double.valueOf(right));
+        else
+          return Long.toString(Long.valueOf(left) * Long.valueOf(right));
       case DIV:
-        return Double.toString(Double.valueOf(left) / Double.valueOf(right));
+        if (binaryExpression.getEdmType() == EdmSimpleTypeKind.Decimal.getEdmSimpleTypeInstance()
+            || binaryExpression.getEdmType() == EdmSimpleTypeKind.Double.getEdmSimpleTypeInstance()
+            || binaryExpression.getEdmType() == EdmSimpleTypeKind.Single.getEdmSimpleTypeInstance())
+          return Double.toString(Double.valueOf(left) / Double.valueOf(right));
+        else
+          return Long.toString(Long.valueOf(left) / Long.valueOf(right));
       case MODULO:
-        return Double.toString(Double.valueOf(left) % Double.valueOf(right));
+        if (binaryExpression.getEdmType() == EdmSimpleTypeKind.Decimal.getEdmSimpleTypeInstance()
+            || binaryExpression.getEdmType() == EdmSimpleTypeKind.Double.getEdmSimpleTypeInstance()
+            || binaryExpression.getEdmType() == EdmSimpleTypeKind.Single.getEdmSimpleTypeInstance())
+          return Double.toString(Double.valueOf(left) % Double.valueOf(right));
+        else
+          return Long.toString(Long.valueOf(left) % Long.valueOf(right));
       case AND:
         return Boolean.toString(left.equals("true") && right.equals("true"));
       case OR:
@@ -578,38 +602,38 @@ public class ListsProcessor extends ODataSingleProcessor {
       case NE:
         return Boolean.toString(!left.equals(right));
       case LT:
-        if (binaryType == EdmSimpleTypeKind.String.getEdmSimpleTypeInstance()
-            || binaryType == EdmSimpleTypeKind.DateTime.getEdmSimpleTypeInstance()
-            || binaryType == EdmSimpleTypeKind.DateTimeOffset.getEdmSimpleTypeInstance()
-            || binaryType == EdmSimpleTypeKind.Guid.getEdmSimpleTypeInstance()
-            || binaryType == EdmSimpleTypeKind.Time.getEdmSimpleTypeInstance())
+        if (type == EdmSimpleTypeKind.String.getEdmSimpleTypeInstance()
+            || type == EdmSimpleTypeKind.DateTime.getEdmSimpleTypeInstance()
+            || type == EdmSimpleTypeKind.DateTimeOffset.getEdmSimpleTypeInstance()
+            || type == EdmSimpleTypeKind.Guid.getEdmSimpleTypeInstance()
+            || type == EdmSimpleTypeKind.Time.getEdmSimpleTypeInstance())
           return Boolean.toString(left.compareTo(right) < 0);
         else
           return Boolean.toString(Double.valueOf(left) < Double.valueOf(right));
       case LE:
-        if (binaryType == EdmSimpleTypeKind.String.getEdmSimpleTypeInstance()
-            || binaryType == EdmSimpleTypeKind.DateTime.getEdmSimpleTypeInstance()
-            || binaryType == EdmSimpleTypeKind.DateTimeOffset.getEdmSimpleTypeInstance()
-            || binaryType == EdmSimpleTypeKind.Guid.getEdmSimpleTypeInstance()
-            || binaryType == EdmSimpleTypeKind.Time.getEdmSimpleTypeInstance())
+        if (type == EdmSimpleTypeKind.String.getEdmSimpleTypeInstance()
+            || type == EdmSimpleTypeKind.DateTime.getEdmSimpleTypeInstance()
+            || type == EdmSimpleTypeKind.DateTimeOffset.getEdmSimpleTypeInstance()
+            || type == EdmSimpleTypeKind.Guid.getEdmSimpleTypeInstance()
+            || type == EdmSimpleTypeKind.Time.getEdmSimpleTypeInstance())
           return Boolean.toString(left.compareTo(right) <= 0);
         else
           return Boolean.toString(Double.valueOf(left) <= Double.valueOf(right));
       case GT:
-        if (binaryType == EdmSimpleTypeKind.String.getEdmSimpleTypeInstance()
-            || binaryType == EdmSimpleTypeKind.DateTime.getEdmSimpleTypeInstance()
-            || binaryType == EdmSimpleTypeKind.DateTimeOffset.getEdmSimpleTypeInstance()
-            || binaryType == EdmSimpleTypeKind.Guid.getEdmSimpleTypeInstance()
-            || binaryType == EdmSimpleTypeKind.Time.getEdmSimpleTypeInstance())
+        if (type == EdmSimpleTypeKind.String.getEdmSimpleTypeInstance()
+            || type == EdmSimpleTypeKind.DateTime.getEdmSimpleTypeInstance()
+            || type == EdmSimpleTypeKind.DateTimeOffset.getEdmSimpleTypeInstance()
+            || type == EdmSimpleTypeKind.Guid.getEdmSimpleTypeInstance()
+            || type == EdmSimpleTypeKind.Time.getEdmSimpleTypeInstance())
           return Boolean.toString(left.compareTo(right) > 0);
         else
           return Boolean.toString(Double.valueOf(left) > Double.valueOf(right));
       case GE:
-        if (binaryType == EdmSimpleTypeKind.String.getEdmSimpleTypeInstance()
-            || binaryType == EdmSimpleTypeKind.DateTime.getEdmSimpleTypeInstance()
-            || binaryType == EdmSimpleTypeKind.DateTimeOffset.getEdmSimpleTypeInstance()
-            || binaryType == EdmSimpleTypeKind.Guid.getEdmSimpleTypeInstance()
-            || binaryType == EdmSimpleTypeKind.Time.getEdmSimpleTypeInstance())
+        if (type == EdmSimpleTypeKind.String.getEdmSimpleTypeInstance()
+            || type == EdmSimpleTypeKind.DateTime.getEdmSimpleTypeInstance()
+            || type == EdmSimpleTypeKind.DateTimeOffset.getEdmSimpleTypeInstance()
+            || type == EdmSimpleTypeKind.Guid.getEdmSimpleTypeInstance()
+            || type == EdmSimpleTypeKind.Time.getEdmSimpleTypeInstance())
           return Boolean.toString(left.compareTo(right) >= 0);
         else
           return Boolean.toString(Double.valueOf(left) >= Double.valueOf(right));
@@ -621,14 +645,14 @@ public class ListsProcessor extends ODataSingleProcessor {
 
     case PROPERTY:
       final EdmProperty property = (EdmProperty) ((PropertyExpression) expression).getEdmProperty();
-      final EdmSimpleType type = (EdmSimpleType) property.getType();
-      return type.valueToString(getPropertyValue(data, property), EdmLiteralKind.DEFAULT, property.getFacets());
+      final EdmSimpleType propertyType = (EdmSimpleType) property.getType();
+      return propertyType.valueToString(getPropertyValue(data, property), EdmLiteralKind.DEFAULT, property.getFacets());
 
     case MEMBER:
       final MemberExpression memberExpression = (MemberExpression) expression;
-      final PropertyExpression memberPath = (PropertyExpression) memberExpression.getPath();
-      final EdmProperty memberProperty = (EdmProperty) memberPath.getEdmProperty();
-      final EdmSimpleType memberType = (EdmSimpleType) memberPath.getEdmType();
+      final PropertyExpression propertyExpression = (PropertyExpression) memberExpression.getProperty();
+      final EdmProperty memberProperty = (EdmProperty) propertyExpression.getEdmProperty();
+      final EdmSimpleType memberType = (EdmSimpleType) memberExpression.getEdmType();
       List<EdmProperty> propertyPath = new ArrayList<EdmProperty>();
       CommonExpression currentExpression = memberExpression;
       while (currentExpression != null && currentExpression.getKind() == ExpressionKind.MEMBER) {
@@ -636,6 +660,7 @@ public class ListsProcessor extends ODataSingleProcessor {
         propertyPath.add(0, (EdmProperty) ((PropertyExpression) currentMember.getProperty()).getEdmProperty());
         currentExpression = currentMember.getPath();
       }
+      propertyPath.add(0, (EdmProperty) ((PropertyExpression) currentExpression).getEdmProperty());
       return memberType.valueToString(getPropertyValue(data, propertyPath), EdmLiteralKind.DEFAULT, memberProperty.getFacets());
 
     case LITERAL:

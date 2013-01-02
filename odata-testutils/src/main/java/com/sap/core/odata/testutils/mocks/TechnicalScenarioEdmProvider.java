@@ -1,13 +1,9 @@
 package com.sap.core.odata.testutils.mocks;
 
-import static org.junit.Assert.fail;
-
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
-import com.sap.core.odata.api.edm.Edm;
-import com.sap.core.odata.api.edm.EdmEntityType;
-import com.sap.core.odata.api.edm.EdmException;
 import com.sap.core.odata.api.edm.EdmMultiplicity;
 import com.sap.core.odata.api.edm.EdmSimpleTypeKind;
 import com.sap.core.odata.api.edm.FullQualifiedName;
@@ -33,7 +29,7 @@ import com.sap.core.odata.api.edm.provider.SimpleProperty;
 import com.sap.core.odata.api.exception.ODataMessageException;
 
 /**
- * Provider for the entity data model used in the reference scenario
+ * Provider for the entity data model used as technical reference scenario
  * @author SAP AG
  */
 public class TechnicalScenarioEdmProvider extends EdmProviderDefault {
@@ -63,40 +59,29 @@ public class TechnicalScenarioEdmProvider extends EdmProviderDefault {
 
   @Override
   public List<Schema> getSchemas() throws ODataMessageException {
-    List<Schema> schemas = new ArrayList<Schema>();
-
     Schema schema = new Schema();
     schema.setNamespace(NAMESPACE_1);
 
-    List<EntityType> entityTypes = new ArrayList<EntityType>();
-    entityTypes.add(getEntityType(ET_KEY_IS_STRING));
-    entityTypes.add(getEntityType(ET_KEY_IS_INTEGER));
-    entityTypes.add(getEntityType(ET_COMPLEX_KEY));
-    entityTypes.add(getEntityType(ET_ALL_TYPES));
-    schema.setEntityTypes(entityTypes);
+    schema.setEntityTypes(Arrays.asList(
+        getEntityType(ET_KEY_IS_STRING),
+        getEntityType(ET_KEY_IS_INTEGER),
+        getEntityType(ET_COMPLEX_KEY),
+        getEntityType(ET_ALL_TYPES)));
 
-    List<ComplexType> complexTypes = new ArrayList<ComplexType>();
-    complexTypes.add(getComplexType(CT_ALL_TYPES));
-    schema.setComplexTypes(complexTypes);
+    schema.setComplexTypes(Arrays.asList(getComplexType(CT_ALL_TYPES)));
 
-    List<EntityContainer> entityContainers = new ArrayList<EntityContainer>();
     EntityContainer entityContainer = new EntityContainer();
     entityContainer.setName(ENTITY_CONTAINER_1).setDefaultEntityContainer(true);
+    entityContainer.setEntitySets(Arrays.asList(
+        getEntitySet(ENTITY_CONTAINER_1, ES_KEY_IS_STRING),
+        getEntitySet(ENTITY_CONTAINER_1, ES_KEY_IS_INTEGER),
+        getEntitySet(ENTITY_CONTAINER_1, ES_COMPLEX_KEY),
+        getEntitySet(ENTITY_CONTAINER_1, ES_ALL_TYPES),
+        getEntitySet(ENTITY_CONTAINER_1, ES_STRING_FACETS)));
 
-    List<EntitySet> entitySets = new ArrayList<EntitySet>();
-    entitySets.add(getEntitySet(ENTITY_CONTAINER_1, ES_KEY_IS_STRING));
-    entitySets.add(getEntitySet(ENTITY_CONTAINER_1, ES_KEY_IS_INTEGER));
-    entitySets.add(getEntitySet(ENTITY_CONTAINER_1, ES_COMPLEX_KEY));
-    entitySets.add(getEntitySet(ENTITY_CONTAINER_1, ES_ALL_TYPES));
-    entitySets.add(getEntitySet(ENTITY_CONTAINER_1, ES_STRING_FACETS));
-    entityContainer.setEntitySets(entitySets);
+    schema.setEntityContainers(Arrays.asList(entityContainer));
 
-    entityContainers.add(entityContainer);
-    schema.setEntityContainers(entityContainers);
-
-    schemas.add(schema);
-
-    return schemas;
+    return Arrays.asList(schema);
   }
 
   @Override
@@ -292,5 +277,5 @@ public class TechnicalScenarioEdmProvider extends EdmProviderDefault {
       keyProperties.add(new PropertyRef().setName(keyName));
     return new Key().setKeys(keyProperties);
   }
-  
+
 }

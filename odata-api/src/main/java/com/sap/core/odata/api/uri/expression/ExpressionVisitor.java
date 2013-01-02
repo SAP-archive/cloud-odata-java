@@ -3,7 +3,6 @@ package com.sap.core.odata.api.uri.expression;
 import java.util.List;
 import java.util.Vector;
 
-import com.sap.core.odata.api.edm.EdmProperty;
 import com.sap.core.odata.api.edm.EdmTyped;
 import com.sap.core.odata.api.uri.EdmLiteral;
 

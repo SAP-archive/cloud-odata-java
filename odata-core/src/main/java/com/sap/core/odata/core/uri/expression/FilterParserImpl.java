@@ -348,7 +348,7 @@ public class FilterParserImpl implements FilterParser
 
     CommonExpression operand = readElement(null);
     UnaryExpression unaryExpression = new UnaryExpressionImpl(unaryOperator, operand);
-    validataUnaryOperator(unaryExpression); //throws ExpressionInvalidOperatorTypeException
+    validateUnaryOperator(unaryExpression); //throws ExpressionInvalidOperatorTypeException
     return unaryExpression;
   }
 
@@ -357,7 +357,7 @@ public class FilterParserImpl implements FilterParser
     MethodExpressionImpl method = new MethodExpressionImpl(methodOperator);
 
 
-    readParameters((InfoMethod) methodOperator, method);
+    readParameters(methodOperator, method);
     validateMethodTypes(method); //throws ExpressionInvalidOperatorTypeException
 
     return method;
@@ -757,7 +757,7 @@ public class FilterParserImpl implements FilterParser
   }
 
 
-  protected void validataUnaryOperator(UnaryExpression unaryExpression) throws FilterParserInternalError
+  protected void validateUnaryOperator(UnaryExpression unaryExpression) throws FilterParserInternalError
   {
     InfoUnaryOperator unOpt = availableUnaryOperators.get(unaryExpression.getOperator().toUriLiteral());
 

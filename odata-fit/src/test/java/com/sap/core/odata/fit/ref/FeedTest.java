@@ -127,25 +127,24 @@ public class FeedTest extends AbstractRefTest {
     HttpResponse response = callUri("Employees?$filter=RoomId%20eq%20%273%27");
     checkMediaType(response, ContentType.APPLICATION_ATOM_XML_FEED);
     String body = getBody(response);
-    assertFalse(body.isEmpty());
-    // checkCount(body, "</entry>", 1);
-    // assertTrue(body.contains(EMPLOYEE_5_NAME));
+    checkCount(body, "</entry>", 1);
+    assertTrue(body.contains(EMPLOYEE_5_NAME));
 
     response = callUri("Employees?$filter=EntryDate%20gt%20datetime%272003-12-24T00%3A00%3A00%27");
     checkMediaType(response, ContentType.APPLICATION_ATOM_XML_FEED);
     body = getBody(response);
-    // checkCount(body, "</entry>", 2);
-    // assertTrue(body.contains(EMPLOYEE_6_NAME));
+    checkCount(body, "</entry>", 2);
+    assertTrue(body.contains(EMPLOYEE_6_NAME));
 
-    // response = callUri("Buildings?$filter=Image%20eq%20X%2700%27");
-    // checkMediaType(response, ContentType.APPLICATION_ATOM_XML_FEED);
-    // assertFalse(getBody(response).contains("entry"));
+    response = callUri("Buildings?$filter=Image%20eq%20X%2700%27");
+    checkMediaType(response, ContentType.APPLICATION_ATOM_XML_FEED);
+    assertFalse(getBody(response).contains("entry"));
 
     response = callUri("Employees?$filter=day(EntryDate)%20eq%20(Age%20mod%208%20add%201)");
     checkMediaType(response, ContentType.APPLICATION_ATOM_XML_FEED);
     body = getBody(response);
-    // checkCount(body, "</entry>", 1);
-    // assertTrue(body.contains(EMPLOYEE_2_NAME));
+    checkCount(body, "</entry>", 1);
+    assertTrue(body.contains(EMPLOYEE_2_NAME));
 
     response = callUri("Employees?$filter=indexof(ImageUrl,EmployeeId)%20mod%20(Age%20sub%2028)%20eq%20month(EntryDate)%20mul%203%20div%2027%20sub%201");
     checkMediaType(response, ContentType.APPLICATION_ATOM_XML_FEED);
@@ -156,22 +155,20 @@ public class FeedTest extends AbstractRefTest {
     response = callUri("Employees?$filter=not(Age%20sub%2030%20ge%20-hour(EntryDate))");
     checkMediaType(response, ContentType.APPLICATION_ATOM_XML_FEED);
     body = getBody(response);
-    // checkCount(body, "</entry>", 1);
-    // assertTrue(body.contains(EMPLOYEE_6_NAME));
+    checkCount(body, "</entry>", 1);
+    assertTrue(body.contains(EMPLOYEE_6_NAME));
 
     response = callUri("Employees('1')/ne_Room/nr_Employees?$filter=EmployeeId%20eq%20'1'");
-    assertFalse(getBody(response).isEmpty());
-    // assertTrue(getBody(response).contains("entry"));
+    assertTrue(getBody(response).contains("entry"));
 
     response = callUri("Employees('1')/ne_Room/nr_Employees?$filter=EmployeeId%20eq%20'2'");
-    assertFalse(getBody(response).isEmpty());
-    // assertTrue(getBody(response).contains("entry"));
+    assertFalse(getBody(response).contains("entry"));
 
     response = callUri("Employees?$filter=Location/City/PostalCode%20lt%20%2769150%27");
     checkMediaType(response, ContentType.APPLICATION_ATOM_XML_FEED);
     body = getBody(response);
-    // checkCount(body, "</entry>", 1);
-    // assertTrue(body.contains("69124"));
+    checkCount(body, "</entry>", 1);
+    assertTrue(body.contains("69124"));
 
     // response = callUri("Employees?$filter=length(trim(Location/City/CityName))%20gt%209");
     // checkMediaType(response, ContentType.APPLICATION_ATOM_XML_FEED);
@@ -183,7 +180,7 @@ public class FeedTest extends AbstractRefTest {
     checkMediaType(response, ContentType.APPLICATION_ATOM_XML_ENTRY);
     body = getBody(response);
     checkCount(body, "</entry>", 1);
-    // assertFalse(body.contains(EMPLOYEE_2_NAME));
+    assertTrue(body.contains(EMPLOYEE_2_NAME));
 
     checkUri("Employees('1')/ne_Room/nr_Employees('1')?$filter=EmployeeId%20eq%20'1'");
     // checkUri("Container2.Photos(Id=4,Type='foo')?$filter=%D0%A1%D0%BE%D0%B4%D0%B5%D1%80%D0%B6%D0%B0%D0%BD%D0%B8%D0%B5%20eq%20'%D0%9F%D1%80%D0%BE%D0%B4%D1%83%D0%BA%D1%82'");
