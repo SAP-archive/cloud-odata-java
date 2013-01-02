@@ -5,8 +5,23 @@ import java.net.URISyntaxException;
 
 public class UriUtils {
 
-  public static String encodeUri(String toEncode) throws URISyntaxException {
-    URI uri = new URI(null, null, null, -1, toEncode, null, null);
+  /**
+   * Encoding for uri path element (ATTENTION: not for encoding of complete urls)
+   * 
+   * @param path
+   * @return
+   * @throws URISyntaxException
+   */
+  public static String encodeUriPath(String path) throws URISyntaxException {
+    String toEncodePath = path;
+    if(path != null && !(path.startsWith("/") || path.startsWith("./"))) {
+      toEncodePath = "/" + path;
+    }
+    URI uri = new URI(null, null, null, -1, toEncodePath, null, null);
+
+    if(path != toEncodePath) {
+      return uri.toASCIIString().substring(1);
+    }
     return uri.toASCIIString();
   }
 
