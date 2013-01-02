@@ -4,6 +4,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+/**
+ * @author SAP AG
+ */
 public class Building {
   private static int counter = 1;
   private int id;
@@ -37,7 +40,10 @@ public class Building {
   }
 
   public byte[] getImage() {
-    return image.clone();
+    if (image == null)
+      return null;
+    else
+      return image.clone();
   }
 
   public List<Room> getRooms() {
@@ -58,17 +64,13 @@ public class Building {
   }
 
   @Override
-  public boolean equals(Object obj) {
+  public boolean equals(final Object obj) {
     if (this == obj)
       return true;
-    if (obj == null)
+    if (obj == null || getClass() != obj.getClass())
       return false;
-    if (getClass() != obj.getClass())
-      return false;
-    Building other = (Building) obj;
-    if (id != other.id)
-      return false;
-    return true;
+    
+    return (id == ((Building) obj).id);
   }
 
   @Override
