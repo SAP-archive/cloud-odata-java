@@ -36,8 +36,9 @@ public class Mock {
 		Set<EntityType<?>> entities = new HashSet<EntityType<?>>();
 		EntityType<?> entity = EasyMock.createMock(EntityType.class);
 		EasyMock.expect(entity.getName()).andReturn(MockData.ENTITY_NAME);
-		EasyMock.expect(entity.getAttributes()).andReturn(mockAttributeSet());
-		EasyMock.expect(entity.getId(java.lang.Long.class)).andReturn(mockSingularAttribute(MockData.ENTITY_ID_NAME,MockData.ENTITY_ID_TYPE));
+	//	EasyMock.expect(entity.getAttributes()).andReturn(mockAttributeSet());
+	//	EasyMock.expect(entity.getId(java.lang.Long.class)).andReturn(mockSingularAttribute(MockData.ENTITY_ID_NAME,MockData.ENTITY_ID_TYPE));
+		return entities;
 	}
 	private static Set<Attribute<?, ?>> mockAttributeSet() {
 		// TODO Auto-generated method stub
@@ -47,7 +48,8 @@ public class Mock {
 	{
 		SingularAttribute<?, ?> attribute = EasyMock.createMock(SingularAttribute.class);
 		EasyMock.expect(attribute.getName()).andReturn(name);
-		EasyMock.expect(attribute.getJavaType()).andReturn((Class<?>) javaType);
+	//	EasyMock.expect(attribute.getJavaType()).andReturn((Class<?>) javaType);
+		return attribute;
 	}
 
 }

@@ -7,12 +7,13 @@ import com.sap.core.odata.api.edm.provider.ComplexType;
 import com.sap.core.odata.api.edm.provider.EntitySet;
 import com.sap.core.odata.api.edm.provider.EntityType;
 import com.sap.core.odata.api.edm.provider.Schema;
+import com.sap.core.odata.processor.jpa.exception.ODataJPAModelException;
 
 public interface JPAEdmBuilder {
-	public List<Schema> getSchemas( );
-	public List<EntityType> getEntityTypes( );
-	public EntityType getEntityType(FullQualifiedName fqName);
-	public EntitySet getEntitySet(FullQualifiedName fqName);
-	public List<ComplexType> getComplexTypes();
-	public ComplexType getComplexType(FullQualifiedName fullQualifiedName);
+	public List<Schema> getSchemas( ) throws ODataJPAModelException;
+	public List<EntityType> getEntityTypes( ) throws ODataJPAModelException;
+	public EntityType getEntityType(FullQualifiedName fqName) throws ODataJPAModelException;
+	public EntitySet getEntitySet(FullQualifiedName fqName) throws ODataJPAModelException;
+	public ComplexType getComplexType(FullQualifiedName fullQualifiedName) throws ODataJPAModelException;
+
 }

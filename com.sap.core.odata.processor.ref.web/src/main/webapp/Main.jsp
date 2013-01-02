@@ -13,7 +13,7 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>Insert title here</title>
+<title>Welcome to JPA implementation</title>
 </head>
 <body>
         <h1>Data Generator</h1>
