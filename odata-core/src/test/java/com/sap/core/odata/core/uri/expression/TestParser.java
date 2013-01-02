@@ -16,8 +16,8 @@ import com.sap.core.odata.api.edm.EdmProperty;
 import com.sap.core.odata.api.edm.EdmSimpleType;
 import com.sap.core.odata.api.rt.RuntimeDelegate;
 import com.sap.core.odata.api.uri.expression.ExpressionKind;
-import com.sap.core.odata.api.uri.expression.FilterExpression;
 import com.sap.core.odata.api.uri.expression.FilterParserException;
+import com.sap.core.odata.api.uri.expression.SortOrder;
 import com.sap.core.odata.core.edm.Bit;
 import com.sap.core.odata.core.edm.EdmBinary;
 import com.sap.core.odata.core.edm.EdmBoolean;
@@ -39,7 +39,8 @@ import com.sap.core.odata.core.edm.provider.EdmComplexPropertyImplProv;
 import com.sap.core.odata.testutils.mocks.TecEdmInfo;
 import com.sap.core.odata.testutils.mocks.TechnicalScenarioEdmProvider;
 
-public class TestParser {
+public class TestParser extends TestBase
+{
 
   Edm edm = null;
   TecEdmInfo edmInfo = null;
@@ -48,6 +49,77 @@ public class TestParser {
   {
     edm = RuntimeDelegate.createEdm(new TechnicalScenarioEdmProvider());
     edmInfo = new TecEdmInfo(edm);
+  }
+  
+  
+
+  @Test
+  public void testOrderBy()
+  {
+    GetPTO("sven").aSerialized("{oc({o(sven, asc)})}");
+    GetPTO("sven asc").aSerialized("{oc({o(sven, asc)})}");
+    GetPTO("sven desc").aSerialized("{oc({o(sven, desc)})}");
+    GetPTO("sven     asc").aSerialized("{oc({o(sven, asc)})}");
+    GetPTO("sven     desc").aSerialized("{oc({o(sven, desc)})}");
+
+    GetPTO("sven, test").aSerialized("{oc({o(sven, asc)},{o(test, asc)})}");
+    GetPTO("sven   ,    test").aSerialized("{oc({o(sven, asc)},{o(test, asc)})}");
+
+    GetPTO("sven, test asc").aSerialized("{oc({o(sven, asc)},{o(test, asc)})}");
+
+    GetPTO("sven asc, test").aSerialized("{oc({o(sven, asc)},{o(test, asc)})}");
+
+    GetPTO("sven asc, test asc").aSerialized("{oc({o(sven, asc)},{o(test, asc)})}");
+    GetPTO("sven, test desc").aSerialized("{oc({o(sven, asc)},{o(test, desc)})}");
+    GetPTO("sven desc, test").aSerialized("{oc({o(sven, desc)},{o(test, asc)})}");
+    GetPTO("sven desc, test desc").aSerialized("{oc({o(sven, desc)},{o(test, desc)})}");
+
+    GetPTO("'sven', 77").order(1).aSortOrder(SortOrder.asc);
+    GetPTO("'sven', 77 desc")
+    .root().order(0).aSortOrder(SortOrder.asc).aExpr().aEdmType(EdmString.getInstance())
+    .root().order(1).aSortOrder(SortOrder.desc).aExpr().aEdmType(Uint7.getInstance());
+
+  }
+
+  @Test
+  public void testPromotion()
+  {
+    //SByte <--> SByte
+    GetPTF("-10").aEdmType(EdmSByte.getInstance());
+    GetPTF("-10 add -10").aEdmType(EdmSByte.getInstance());
+
+    //Byte <--> Byte
+    GetPTF("200").aEdmType(EdmByte.getInstance());
+    GetPTF("200 add 200").aEdmType(EdmByte.getInstance());
+
+    //SByte <--> Byte
+    GetPTF("-10 add 200").aEdmType(EdmInt16.getInstance());
+    //Byte <--> SByte
+    GetPTF("200 add -10").aEdmType(EdmInt16.getInstance());
+
+    //Uint7 <--> Uint7
+    GetPTF("100").aEdmType(Uint7.getInstance());
+    GetPTF("100 add 100").aEdmType(EdmSByte.getInstance());
+
+    //Uint7 <--> Byte
+    GetPTF("100 add 200").aEdmType(EdmByte.getInstance());
+
+    //Byte <--> Uint7
+    GetPTF("200 add 100").aEdmType(EdmByte.getInstance());
+
+    //Uint7 <--> SByte
+    GetPTF("100 add -10").aEdmType(EdmSByte.getInstance());
+
+    //SByte <--> Uint7 
+    GetPTF("-10 add 100").aEdmType(EdmSByte.getInstance());
+
+    //TODO extend Matrix
+    GetPTF("1000").aEdmType(EdmInt16.getInstance());
+    GetPTF("1000 add 1000").aEdmType(EdmInt16.getInstance());
+
+    GetPTF("concat('a','b')").aEdmType(EdmString.getInstance());
+    GetPTF("concat('a','b','c')").aEdmType(EdmString.getInstance());
+    //TODO extend Matrix
   }
 
   @Test
@@ -111,19 +183,17 @@ public class TestParser {
   }
 
   @Test
-  public void testPromotion()
-  {
-    //GetPTF("100 add 1").aEdmType(EdmSByte.getInstance());
-    GetPTF("100 add -100").aEdmType(EdmSByte.getInstance());
-    //GetPTF("1000 add 1000").aEdmType(EdmInt16.getInstance());
-  }
-
-  @Test
   public void testSimpleMethod()
   {
     GetPTF("startswith('Test','Te')").aSerialized("{startswith('Test','Te')}");
     //add test for concat
     GetPTF("startswith('Test','Te')").aSerialized("{startswith('Test','Te')}");
+
+    GetPTF("startswith('Test', concat('A','B'))").aSerialized("{startswith('Test',{concat('A','B')})}");
+
+    //TODO enable 
+    //GetPTF("substring('Test', 1 add 2)").aSerialized("{substring('Test',{1 add 2})}");
+
   }
 
   @Test
@@ -165,6 +235,22 @@ public class TestParser {
     GetPTF("1d div 2d div 3d add 4d").aSerialized("{{{1d div 2d} div 3d} add 4d}");
     GetPTF("1d div 2d div 3d div 4d").aSerialized("{{{1d div 2d} div 3d} div 4d}");
     //XXX maybe add generator for more deepness
+  }
+  
+  @Test
+  public void testComplexMixedPriority()
+  {
+     GetPTF("a      or c      and e     ").aSerializedCompr("{ a       or { c       and  e      }}");
+     GetPTF("a      or c      and e eq f").aSerializedCompr("{ a       or { c       and {e eq f}}}");
+     GetPTF("a      or c eq d and e     ").aSerializedCompr("{ a       or {{c eq d} and  e      }}");
+     GetPTF("a      or c eq d and e eq f").aSerializedCompr("{ a       or {{c eq d} and {e eq f}}}");
+     GetPTF("a eq b or c      and e     ").aSerializedCompr("{{a eq b} or { c       and  e      }}");
+     GetPTF("a eq b or c      and e eq f").aSerializedCompr("{{a eq b} or { c       and {e eq f}}}");
+     GetPTF("a eq b or c eq d and e     ").aSerializedCompr("{{a eq b} or {{c eq d} and  e      }}");
+     GetPTF("a eq b or c eq d and e eq f").aSerializedCompr("{{a eq b} or {{c eq d} and {e eq f}}}");
+     
+     //helper
+     GetPTF("(a eq b) or (c eq d) and (e eq f)").aSerialized("{{a eq b} or {{c eq d} and {e eq f}}}");
   }
 
   @Test
@@ -314,80 +400,7 @@ public class TestParser {
 
   }
 
-  public void testSinglePlainLiteralsABAP()
-  {
-    //---
-    //Checks from ABAP
-    //---
-    //GetPTF("X'1234567890ABCDEF'").aKind(ExpressionKind.LITERAL);
-
-    /*    
-        lo_simple_type = /iwcor/cl_ds_edm_simple_type=>binary( ).
-        lcl_helper=>veri_type( iv_expression = `X'1234567890ABCDEF'` io_expected_type = lo_simple_type ).
-
-        lo_simple_type = /iwcor/cl_ds_edm_simple_type=>boolean( ).
-        lcl_helper=>veri_type( iv_expression = `true` io_expected_type = lo_simple_type ).
-
-        lo_simple_type = /iwcor/cl_ds_edm_simple_type=>get_instance( iv_name = 'Bit' ).
-        lcl_helper=>veri_type( iv_expression = `1` io_expected_type = lo_simple_type ).
-
-        lo_simple_type = /iwcor/cl_ds_edm_simple_type=>get_instance( iv_name = 'Bit' ).
-        lcl_helper=>veri_type( iv_expression = `0` io_expected_type = lo_simple_type ).
-
-        lo_simple_type = /iwcor/cl_ds_edm_simple_type=>get_instance( iv_name = 'UInt7' ).
-        lcl_helper=>veri_type( iv_expression = `123` io_expected_type = lo_simple_type ).
-
-        lo_simple_type = /iwcor/cl_ds_edm_simple_type=>byte( ).
-        lcl_helper=>veri_type( iv_expression = `130` io_expected_type = lo_simple_type ).
-
-        lo_simple_type = /iwcor/cl_ds_edm_simple_type=>datetime( ).
-        lcl_helper=>veri_type( iv_expression = `datetime'2011-07-31T23:30:59'` io_expected_type = lo_simple_type ).
-
-        lo_simple_type = /iwcor/cl_ds_edm_simple_type=>datetimeoffset( ).
-        lcl_helper=>veri_type( iv_expression = `datetimeoffset'2002-10-10T12:00:00-05:00'` io_expected_type = lo_simple_type ).
-
-        lo_simple_type = /iwcor/cl_ds_edm_simple_type=>decimal( ).
-        lcl_helper=>veri_type( iv_expression = `1.1M` io_expected_type = lo_simple_type ).
-
-        lo_simple_type = /iwcor/cl_ds_edm_simple_type=>double( ).
-        lcl_helper=>veri_type( iv_expression = `1.1D` io_expected_type = lo_simple_type ).
-
-        lo_simple_type = /iwcor/cl_ds_edm_simple_type=>double( ).
-        lcl_helper=>veri_type( iv_expression = `1.1E+02D` io_expected_type = lo_simple_type ).
-
-        lo_simple_type = /iwcor/cl_ds_edm_simple_type=>guid( ).
-        lcl_helper=>veri_type( iv_expression = `guid'12345678-1234-1234-1234-123456789012'` io_expected_type = lo_simple_type ).
-
-        lo_simple_type = /iwcor/cl_ds_edm_simple_type=>float( ).
-        lcl_helper=>veri_type( iv_expression = `1.1F` io_expected_type = lo_simple_type ).
-
-        lo_simple_type = /iwcor/cl_ds_edm_simple_type=>int16( ).
-        lcl_helper=>veri_type( iv_expression = `12345` io_expected_type = lo_simple_type ).
-
-        lo_simple_type = /iwcor/cl_ds_edm_simple_type=>int32( ).
-        lcl_helper=>veri_type( iv_expression = `1234512345` io_expected_type = lo_simple_type ).
-
-        lo_simple_type = /iwcor/cl_ds_edm_simple_type=>int64( ).
-        lcl_helper=>veri_type( iv_expression = `12345L` io_expected_type = lo_simple_type ).
-
-        lo_simple_type = /iwcor/cl_ds_edm_simple_type=>sbyte( ).
-        lcl_helper=>veri_type( iv_expression = `-12` io_expected_type = lo_simple_type ).
-
-        lo_simple_type = /iwcor/cl_ds_edm_simple_type=>single( ).
-        lcl_helper=>veri_type( iv_expression = `1.1F` io_expected_type = lo_simple_type ).
-
-        lo_simple_type = /iwcor/cl_ds_edm_simple_type=>string( ).
-        lcl_helper=>veri_type( iv_expression = `'TEST'` io_expected_type = lo_simple_type ).
-
-        lo_simple_type = /iwcor/cl_ds_edm_simple_type=>time( ).
-        lcl_helper=>veri_type( iv_expression = `time'P1998Y02M01D'` io_expected_type = lo_simple_type ).
-
-        lo_simple_type = /iwcor/cl_ds_edm_simple_type=>time( ).
-        lcl_helper=>veri_type( iv_expression = `time'P1998Y02M01DT23H14M33S'` io_expected_type = lo_simple_type ).
-    */
-
-  }
-
+  
   void Errors()
   {
     //GetPTF("-(-(- 2d)))").aSerialized("{-{-{- 2d}}}");
@@ -432,32 +445,6 @@ public class TestParser {
     }
   }
 
-  static public ParserTool GetPTF(String expression)
-  {
-    try {
-      FilterParserImpl parser = new FilterParserImpl(null, null);
-      FilterExpression root = parser.parseFilterString(expression);
-      return new ParserTool(expression, root);
-    } catch (FilterParserInternalError e) {
-      fail("Error in parser" + e.getLocalizedMessage());
-    } catch (FilterParserException e) {
-      fail("Error in parser" + e.getLocalizedMessage());
-    }
-    return null;
-  }
 
-  static public ParserTool GetPTF(Edm edm, EdmEntityType resourceEntityType, String expression) {
-    try {
-      FilterParserImpl parser = new FilterParserImpl(edm, resourceEntityType);
-      FilterExpression root = parser.parseFilterString(expression);
-      return new ParserTool(expression, root);
-    } catch (FilterParserInternalError e) {
-      fail("Error in parser" + e.getLocalizedMessage());
-    } catch (FilterParserException e) {
-      fail("Error in parser" + e.getLocalizedMessage());
-    }
-    return null;
-
-  }
 
 }

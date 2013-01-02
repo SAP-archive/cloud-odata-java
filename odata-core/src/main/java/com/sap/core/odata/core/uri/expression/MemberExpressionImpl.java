@@ -45,6 +45,7 @@ public class MemberExpressionImpl implements BinaryExpression, MemberExpression
     return this;
   }
 
+  @Override
   public BinaryOperator getOperator()
   {
     return BinaryOperator.PROPERTY_ACCESS;

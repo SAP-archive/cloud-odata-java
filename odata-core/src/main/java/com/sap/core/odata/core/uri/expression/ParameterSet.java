@@ -81,6 +81,7 @@ class ParameterSet
     if ((actSize > paramSize) && (furtherType == null))
       throw FilterParserInternalError.createINVALID_TYPE_COUNT();
 
+    
     for (int i = 0; i < actSize; i++)
     {
       EdmType actType = actualParameterTypes.get(i);
@@ -88,11 +89,10 @@ class ParameterSet
         return false;
       
       EdmSimpleType paramType = null;
-
       if (i < paramSize) {
         paramType = types.get(i);
       } else {
-        paramType = furtherType;
+        paramType = furtherType; // for methods with variable amount of method parameters  
       }
       
       if (!actType.equals(paramType))
@@ -102,13 +102,11 @@ class ParameterSet
         if (!allowPromotion)
           return false;
 
-        //Its allowed to promoted the actual parameter
-        if ((paramType).isCompatible((EdmSimpleType) actType))
-          return true;
-
-        //the type simply don't match
-        return false;
-
+        //Its allowed to promoted the actual parameter!!!
+        
+        //The type simply don't match
+        if (!paramType.isCompatible((EdmSimpleType) actType))
+          return false;
       }
     }
     return true;

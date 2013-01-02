@@ -11,10 +11,10 @@ import com.sap.core.odata.api.uri.expression.ExpressionVisitor;
 
 public class BinaryExpressionImpl implements BinaryExpression
 {
-  private InfoBinaryOperator operatorInfo;
-  private CommonExpression leftSide;
-  private CommonExpression rightSide;
-  private EdmType edmType;
+  protected InfoBinaryOperator operatorInfo;
+  protected CommonExpression leftSide;
+  protected CommonExpression rightSide;
+  protected EdmType edmType;
 
   public BinaryExpressionImpl(InfoBinaryOperator operatorInfo, CommonExpression leftSide, CommonExpression rightSide) {
     this.operatorInfo = operatorInfo;
@@ -24,16 +24,16 @@ public class BinaryExpressionImpl implements BinaryExpression
   }
 
   @Override
-  public BinaryOperator getOperator() {
+  public BinaryOperator getOperator() 
+  {
     return operatorInfo.getOperator();
   }
-
+  
   @Override
   public CommonExpression getLeftOperand()
   {
     return leftSide;
   }
-
 
   @Override
   public CommonExpression getRightOperand()
@@ -61,7 +61,8 @@ public class BinaryExpressionImpl implements BinaryExpression
   }
 
   @Override
-  public String getUriLiteral() {
+  public String getUriLiteral() 
+  {
     return operatorInfo.getSyntax();
   }
 

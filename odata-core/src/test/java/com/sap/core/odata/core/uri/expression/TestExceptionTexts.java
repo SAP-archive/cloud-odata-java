@@ -26,5 +26,12 @@ public class TestExceptionTexts {
   {
     ODataMessageTextVerifier.TestClass(TokenizerExpectError.class);
   }
+  
+  @Test
+  public void TestExceptionTokenizerMessages()
+  {
+    ODataMessageTextVerifier.TestClass(TokenizerException.class);
+  }
+
 
 }

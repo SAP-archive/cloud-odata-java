@@ -36,9 +36,9 @@ public class Tokenizer
    * Tokenizes an expression as defined per OData specification 
    * @return Token list 
    */
-  public TokenList tokenize(String iv_expression) throws ExceptionTokenizer
+  public TokenList tokenize(String iv_expression) throws TokenizerException
   {
-    EdmLiteral uriLiteral;
+    EdmLiteral edmLiteral;
     int curPosition = 0;
     int curPositionPlus1;
     final int expressionLength;
@@ -121,25 +121,21 @@ public class Tokenizer
 
         try
         {
-          uriLiteral = typeDectector.parseUriLiteral(token);
+          edmLiteral = typeDectector.parseUriLiteral(token);
         } catch (UriSyntaxException ex)
         {
-          // TODO:  create method for InvalidStringToken ID
-          ExceptionTokenizer tEx = new ExceptionTokenizer(ExceptionTokenizer.PARSESTRINGTOKEN);
-          tEx.setPosition(curPosition);
-          tEx.setToken(new Token(TokenKind.UNKNOWN,oldPosition,token));
-          tEx.setPrevious(ex);
-          throw tEx;
+          throw TokenizerException.createTYPEDECTECTION_FAILED_ON_STRING(ex, oldPosition, token);
         }
-        assert uriLiteral.getType() != null;//TODO remove assert
-
-        tokens.appendEdmTypedToken(oldPosition, TokenKind.SIMPLE_TYPE, token, uriLiteral);
+        
+        tokens.appendEdmTypedToken(oldPosition, TokenKind.SIMPLE_TYPE, token, edmLiteral);
 
         break;
+        
       case ',':
         curPosition = curPosition + 1;
         tokens.appendToken(oldPosition, TokenKind.COMMA, curCharacter);
         break;
+        
       case '=':
       case '/':
       case '?':
@@ -208,17 +204,13 @@ public class Tokenizer
 
           try
           {
-            uriLiteral = typeDectector.parseUriLiteral(token);
-
+            edmLiteral = typeDectector.parseUriLiteral(token);
           } catch (UriSyntaxException ex)
           {
-            ExceptionTokenizer tEx = new ExceptionTokenizer(ExceptionTokenizer.PARSESTRINGTOKEN);//TODO
-            tEx.setPosition(curPosition);
-            tEx.setToken(new Token(TokenKind.UNKNOWN,oldPosition,token));
-            tEx.setPrevious(ex);
-            throw tEx;
+            throw TokenizerException.createTYPEDECTECTION_FAILED_ON_EDMTYPE(ex, oldPosition, token);
           }
-          tokens.appendEdmTypedToken(oldPosition, TokenKind.SIMPLE_TYPE, token, uriLiteral);
+          
+          tokens.appendEdmTypedToken(oldPosition, TokenKind.SIMPLE_TYPE, token, edmLiteral);
           break;
         }// matcher matches
 
@@ -261,11 +253,11 @@ public class Tokenizer
           token = matcher.group(1);
           try
           {
-            uriLiteral = typeDectector.parseUriLiteral(token);
+            edmLiteral = typeDectector.parseUriLiteral(token);
             curPosition = curPosition + token.length();
 
             //its really a simple type
-            tokens.appendEdmTypedToken(oldPosition, TokenKind.SIMPLE_TYPE, token, uriLiteral);
+            tokens.appendEdmTypedToken(oldPosition, TokenKind.SIMPLE_TYPE, token, edmLiteral);
 
             break;
           } catch (UriSyntaxException ex)
@@ -288,13 +280,12 @@ public class Tokenizer
 
           break;
         }
-        ExceptionTokenizer tEx = new ExceptionTokenizer(ExceptionTokenizer.PARSESTRINGTOKEN);
-        tEx.setPosition(curPosition);
-        tEx.setToken(new Token(TokenKind.UNKNOWN,oldPosition,token));
-        throw tEx;
+        
+        throw TokenizerException.createUNKNOWN_CHARACTER( oldPosition, token);
       } //ENDCASE.
     } //ENDWHILE.
 
     return tokens;
   }
+
 }
