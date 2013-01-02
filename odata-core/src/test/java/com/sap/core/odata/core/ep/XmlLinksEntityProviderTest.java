@@ -5,12 +5,14 @@ import static org.custommonkey.xmlunit.XMLAssert.assertXpathExists;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
+import java.io.InputStream;
+
 import org.junit.Test;
 
 import com.sap.core.odata.api.edm.EdmEntitySet;
 import com.sap.core.odata.api.enums.ContentType;
-import com.sap.core.odata.api.ep.ODataEntityContent;
 import com.sap.core.odata.api.ep.ODataEntityProviderProperties;
+import com.sap.core.odata.api.processor.ODataResponse;
 import com.sap.core.odata.testutils.helper.StringHelper;
 import com.sap.core.odata.testutils.mocks.MockFacade;
 
@@ -24,12 +26,12 @@ public class XmlLinksEntityProviderTest extends AbstractProviderTest {
     final EdmEntitySet entitySet = MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Rooms");
     initializeRoomData(2);
 
-    final ODataEntityContent content = createAtomEntityProvider().writeLinks(entitySet, roomsData, DEFAULT_PROPERTIES);
-    assertNotNull(content);
-    assertNotNull(content.getContent());
-    assertEquals(ContentType.APPLICATION_XML.toString() + "; charset=utf-8", content.getContentHeader());
+    final ODataResponse response = createAtomEntityProvider().writeLinks(entitySet, roomsData, DEFAULT_PROPERTIES);
+    assertNotNull(response);
+    assertNotNull(response.getEntity());
+    assertEquals(ContentType.APPLICATION_XML.toString() + "; charset=utf-8", response.getContentHeader());
 
-    final String xml = StringHelper.inputStreamToString(content.getContent());
+    final String xml = StringHelper.inputStreamToString((InputStream)response.getEntity());
     assertNotNull(xml);
 
     assertXpathExists("/d:links", xml);
@@ -42,12 +44,12 @@ public class XmlLinksEntityProviderTest extends AbstractProviderTest {
     final EdmEntitySet entitySet = MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Rooms");
     initializeRoomData(1);
 
-    final ODataEntityContent content = createAtomEntityProvider().writeLinks(entitySet, roomsData,
+    final ODataResponse response = createAtomEntityProvider().writeLinks(entitySet, roomsData,
         ODataEntityProviderProperties.baseUri(BASE_URI).inlineCount(3).build());
-    assertNotNull(content);
-    assertNotNull(content.getContent());
+    assertNotNull(response);
+    assertNotNull(response.getEntity());
 
-    final String xml = StringHelper.inputStreamToString(content.getContent());
+    final String xml = StringHelper.inputStreamToString((InputStream)response.getEntity());
     assertNotNull(xml);
 
     assertXpathExists("/d:links", xml);

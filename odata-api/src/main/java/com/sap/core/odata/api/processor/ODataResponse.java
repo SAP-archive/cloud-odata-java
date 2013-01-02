@@ -3,6 +3,7 @@ package com.sap.core.odata.api.processor;
 import java.util.Set;
 
 import com.sap.core.odata.api.enums.HttpStatusCodes;
+import com.sap.core.odata.api.processor.ODataResponse.ODataResponseBuilder;
 import com.sap.core.odata.api.rt.RuntimeDelegate;
 
 /**
@@ -38,6 +39,11 @@ public abstract class ODataResponse {
    * @return a header value or null if not set
    */
   public abstract String getHeader(String name);
+  
+  /**
+   * @return content header value or null if not set
+   */
+  public abstract String getContentHeader();
 
   public abstract String getIdLiteral();
 
@@ -62,6 +68,16 @@ public abstract class ODataResponse {
   }
 
   /**
+   * @param response
+   * @return a new builder object
+   */
+  public static ODataResponseBuilder fromResponse(ODataResponse response) {
+    ODataResponseBuilder b = ODataResponseBuilder.newInstance();
+    b.fromResponse(response);
+    return b;
+  }
+
+  /**
    * @param entity
    * @return a builder object
    */
@@ -80,6 +96,23 @@ public abstract class ODataResponse {
     ODataResponseBuilder b = ODataResponseBuilder.newInstance();
     b.header(name, value);
     return b;
+  }
+  
+  /**
+   * @param value content header value
+   * @return a builder object
+   */
+  public static ODataResponseBuilder contentHeader(String value) {
+    ODataResponseBuilder b = ODataResponseBuilder.newInstance();
+    b.contentHeader(value);
+    return b;
+  }
+  
+  /**
+   * @return returns a new builder object
+   */
+  public static ODataResponseBuilder newBuilder() {
+    return ODataResponseBuilder.newInstance();
   }
 
   /**
@@ -106,6 +139,11 @@ public abstract class ODataResponse {
     public abstract ODataResponseBuilder idLiteral(String idLiteral);
 
     public abstract ODataResponseBuilder eTag(String eTag);
+
+    public abstract ODataResponseBuilder contentHeader(String contentHeader);
+
+    protected abstract ODataResponseBuilder fromResponse(ODataResponse response);
   }
+
 
 }

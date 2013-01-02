@@ -3,13 +3,15 @@ package com.sap.core.odata.core.ep;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
+import java.io.InputStream;
+
 import org.junit.Test;
 
 import com.sap.core.odata.api.edm.EdmProperty;
 import com.sap.core.odata.api.edm.EdmTyped;
 import com.sap.core.odata.api.enums.ContentType;
-import com.sap.core.odata.api.ep.ODataEntityContent;
 import com.sap.core.odata.api.ep.ODataEntityProvider;
+import com.sap.core.odata.api.processor.ODataResponse;
 import com.sap.core.odata.testutils.helper.StringHelper;
 import com.sap.core.odata.testutils.mocks.MockFacade;
 
@@ -25,11 +27,11 @@ public class AtomEntityProviderTest extends AbstractProviderTest {
     EdmTyped edmTyped = MockFacade.getMockEdm().getEntityType("RefScenario", "Employee").getProperty("Age");
     EdmProperty edmProperty = (EdmProperty) edmTyped;
 
-    ODataEntityContent content = s.writePropertyValue(edmProperty, this.employeeData.get("Age"));
-    assertNotNull(content);
-    assertNotNull(content.getContent());
-    assertEquals(ContentType.TEXT_PLAIN.toString(), content.getContentHeader());
-    String value = StringHelper.inputStreamToString(content.getContent());
+    ODataResponse response = s.writePropertyValue(edmProperty, this.employeeData.get("Age"));
+    assertNotNull(response);
+    assertNotNull(response.getEntity());
+    assertEquals(ContentType.TEXT_PLAIN.toString(), response.getContentHeader());
+    String value = StringHelper.inputStreamToString((InputStream) response.getEntity());
     assertEquals(this.employeeData.get("Age").toString(), value);
   }
 

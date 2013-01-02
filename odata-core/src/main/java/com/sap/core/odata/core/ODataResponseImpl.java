@@ -5,7 +5,6 @@ import java.util.Set;
 
 import com.sap.core.odata.api.enums.HttpHeaders;
 import com.sap.core.odata.api.enums.HttpStatusCodes;
-import com.sap.core.odata.api.ep.ODataEntityContent;
 import com.sap.core.odata.api.processor.ODataResponse;
 
 public class ODataResponseImpl extends ODataResponse {
@@ -46,6 +45,11 @@ public class ODataResponseImpl extends ODataResponse {
     return this.eTag;
   }
 
+  @Override
+  public String getContentHeader() {
+    return this.header.get(HttpHeaders.CONTENT_TYPE);
+  }
+
   public class ODataResponseBuilderImpl extends ODataResponseBuilder {
     private HttpStatusCodes status = HttpStatusCodes.OK;
     private Object entity;
@@ -55,25 +59,9 @@ public class ODataResponseImpl extends ODataResponse {
 
     @Override
     public ODataResponse build() {
-      if (entity instanceof ODataEntityContent) {
-        ODataEntityContent content = (ODataEntityContent) entity;
-
-        ODataResponseImpl.this.entity = content.getContent();
-        if(!header.containsKey(HttpHeaders.CONTENT_TYPE)) {
-          // do not overwrite manually set 'Content-Type' by 'ODataEntityContent'
-          header.put(HttpHeaders.CONTENT_TYPE, content.getContentHeader());
-        }
-        ODataResponseImpl.this.header = this.header;
-
-        if (content.getETag() != null) {
-          ODataResponseImpl.this.eTag = content.getETag();
-        }
-      } else {
-        ODataResponseImpl.this.entity = this.entity;
-        ODataResponseImpl.this.header = this.header;
-        ODataResponseImpl.this.eTag = this.eTag;
-      }
-
+      ODataResponseImpl.this.entity = this.entity;
+      ODataResponseImpl.this.header = this.header;
+      ODataResponseImpl.this.eTag = this.eTag;
       ODataResponseImpl.this.status = this.status;
       ODataResponseImpl.this.idLiteral = this.idLiteral;
 
@@ -115,6 +103,27 @@ public class ODataResponseImpl extends ODataResponse {
       return this;
     }
 
+    @Override
+    public ODataResponseBuilder contentHeader(String value) {
+      this.header.put(javax.ws.rs.core.HttpHeaders.CONTENT_TYPE, value);
+      return this;
+    }
+
+    @Override
+    protected ODataResponseBuilder fromResponse(ODataResponse response) {
+      this.entity = response.getEntity();
+      this.eTag = response.getETag();
+      this.idLiteral = response.getIdLiteral();
+      
+      this.header = new HashMap<String, String>();
+      for (String key : response.getHeaderNames()) {
+        this.header.put(key, response.getHeader(key));
+      }
+      
+      return this;
+    }
+
   }
+
 
 }

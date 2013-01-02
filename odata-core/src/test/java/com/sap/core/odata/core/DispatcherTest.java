@@ -121,6 +121,7 @@ public class DispatcherTest {
   private static ODataResponse mockResponse(final String value) {
     ODataResponse response = mock(ODataResponse.class);
     when(response.getEntity()).thenReturn(value);
+    
     return response;
   }
 

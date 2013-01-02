@@ -130,10 +130,7 @@ public class ListsProcessor extends ODataSingleProcessor {
         .skipToken(nextSkipToken)
         .build();
 
-    return ODataResponse
-        .status(HttpStatusCodes.OK)
-        .entity(ODataEntityProvider.create(contentType).writeFeed(uriParserResultView, values, feedProperties))
-        .build();
+    return ODataResponse.fromResponse(ODataEntityProvider.create(contentType).writeFeed(uriParserResultView, values, feedProperties)).status(HttpStatusCodes.OK).build();
   }
 
   @Override
@@ -156,10 +153,8 @@ public class ListsProcessor extends ODataSingleProcessor {
         uriParserResultView.getSkip(),
         uriParserResultView.getTop());
 
-    return ODataResponse
-        .status(HttpStatusCodes.OK)
-        .entity(ODataEntityProvider.create(ContentType.APPLICATION_XML).writeText(String.valueOf(data.size())))
-        .build();
+    return ODataResponse.fromResponse(ODataEntityProvider.create(ContentType.APPLICATION_XML).writeText(String.valueOf(data.size())))
+        .status(HttpStatusCodes.OK).build();
   }
 
   @Override
@@ -196,9 +191,8 @@ public class ListsProcessor extends ODataSingleProcessor {
     final ODataEntityProviderProperties entryProperties = ODataEntityProviderProperties
         .baseUri(getContext().getUriInfo().getBaseUri()).inlineCount(count).build();
 
-    return ODataResponse
+    return ODataResponse.fromResponse(ODataEntityProvider.create(contentType).writeLinks(entitySet, values, entryProperties))
         .status(HttpStatusCodes.OK)
-        .entity(ODataEntityProvider.create(contentType).writeLinks(entitySet, values, entryProperties))
         .build();
   }
 
@@ -225,9 +219,8 @@ public class ListsProcessor extends ODataSingleProcessor {
     final ODataEntityProviderProperties entryProperties = ODataEntityProviderProperties
         .baseUri(getContext().getUriInfo().getBaseUri()).build();
 
-    return ODataResponse
+    return ODataResponse.fromResponse(ODataEntityProvider.create(contentType).writeEntry(entitySet, values, entryProperties))
         .status(HttpStatusCodes.OK)
-        .entity(ODataEntityProvider.create(contentType).writeEntry(entitySet, values, entryProperties))
         .build();
   }
 
@@ -240,10 +233,9 @@ public class ListsProcessor extends ODataSingleProcessor {
         mapFunctionParameters(uriParserResultView.getFunctionImportParameters()),
         uriParserResultView.getNavigationSegments());
 
-    return ODataResponse
+    return ODataResponse.fromResponse(ODataEntityProvider.create(ContentType.APPLICATION_XML).writeText(
+        appliesFilter(data, uriParserResultView.getFilter()) ? "1" : "0"))
         .status(HttpStatusCodes.OK)
-        .entity(ODataEntityProvider.create(ContentType.APPLICATION_XML).writeText(
-            appliesFilter(data, uriParserResultView.getFilter()) ? "1" : "0"))
         .build();
   }
 
@@ -269,9 +261,8 @@ public class ListsProcessor extends ODataSingleProcessor {
     final ODataEntityProviderProperties entryProperties = ODataEntityProviderProperties
         .baseUri(getContext().getUriInfo().getBaseUri()).build();
 
-    return ODataResponse
+    return ODataResponse.fromResponse(ODataEntityProvider.create(contentType).writeLink(entitySet, values, entryProperties))
         .status(HttpStatusCodes.OK)
-        .entity(ODataEntityProvider.create(contentType).writeLink(entitySet, values, entryProperties))
         .build();
   }
 
@@ -301,10 +292,10 @@ public class ListsProcessor extends ODataSingleProcessor {
     final Object value = type.getKind() == EdmTypeKind.COMPLEX ?
         getStructuralTypeValueMap(data, (EdmStructuralType) type) : data;
 
-    return ODataResponse
+    return ODataResponse.fromResponse(ODataEntityProvider.create(contentType).writeProperty(property, value))
         .status(HttpStatusCodes.OK)
-        .entity(ODataEntityProvider.create(contentType).writeProperty(property, value))
         .build();
+
   }
 
   @Override
@@ -336,9 +327,8 @@ public class ListsProcessor extends ODataSingleProcessor {
       value = valueWithMimeType;
     }
 
-    return ODataResponse
+    return ODataResponse.fromResponse(ODataEntityProvider.create(ContentType.APPLICATION_XML).writePropertyValue(property, value))
         .status(HttpStatusCodes.OK)
-        .entity(ODataEntityProvider.create(ContentType.APPLICATION_XML).writePropertyValue(property, value))
         .build();
   }
 
@@ -361,9 +351,8 @@ public class ListsProcessor extends ODataSingleProcessor {
     final String mimeType = mimeTypeBuilder.toString().isEmpty() ?
         ContentType.APPLICATION_OCTET_STREAM.toString() : mimeTypeBuilder.toString();
 
-    return ODataResponse
+    return ODataResponse.fromResponse(ODataEntityProvider.create(ContentType.APPLICATION_XML).writeBinary(mimeType, binaryData))
         .status(HttpStatusCodes.OK)
-        .entity(ODataEntityProvider.create(ContentType.APPLICATION_XML).writeBinary(mimeType, binaryData))
         .build();
   }
 
@@ -392,9 +381,8 @@ public class ListsProcessor extends ODataSingleProcessor {
     final ODataEntityProviderProperties entryProperties = ODataEntityProviderProperties
         .baseUri(getContext().getUriInfo().getBaseUri()).build();
 
-    return ODataResponse
+    return ODataResponse.fromResponse(ODataEntityProvider.create(contentType).writeFunctionImport(functionImport, value, entryProperties))
         .status(HttpStatusCodes.OK)
-        .entity(ODataEntityProvider.create(contentType).writeFunctionImport(functionImport, value, entryProperties))
         .build();
   }
 
@@ -409,17 +397,15 @@ public class ListsProcessor extends ODataSingleProcessor {
         null);
 
     if (type == EdmSimpleTypeKind.Binary.getEdmSimpleTypeInstance()) {
-      return ODataResponse
+      return ODataResponse.fromResponse(ODataEntityProvider.create(ContentType.APPLICATION_XML)
+          .writeBinary(ContentType.APPLICATION_OCTET_STREAM.toContentTypeString(), (byte[]) data))
           .status(HttpStatusCodes.OK)
-          .entity(ODataEntityProvider.create(ContentType.APPLICATION_XML)
-              .writeBinary(ContentType.APPLICATION_OCTET_STREAM.toContentTypeString(), (byte[]) data))
           .build();
     } else {
       final String value = type.valueToString(data, EdmLiteralKind.DEFAULT, null);
-      return ODataResponse
+      return ODataResponse.fromResponse(ODataEntityProvider.create(ContentType.APPLICATION_XML)
+          .writeText(value == null ? "" : value))
           .status(HttpStatusCodes.OK)
-          .entity(ODataEntityProvider.create(ContentType.APPLICATION_XML)
-              .writeText(value == null ? "" : value))
           .build();
     }
   }
