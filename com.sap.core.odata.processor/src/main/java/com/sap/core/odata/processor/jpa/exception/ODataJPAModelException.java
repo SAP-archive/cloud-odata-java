@@ -26,6 +26,7 @@ public class ODataJPAModelException extends ODataMessageException{
 	/**
 	 * 
 	 */
+	
 	private static final long serialVersionUID = 7940106375606950703L;
 
 }
