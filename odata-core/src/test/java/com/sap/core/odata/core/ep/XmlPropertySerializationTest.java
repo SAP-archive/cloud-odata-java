@@ -14,6 +14,7 @@ import com.sap.core.odata.api.enums.ContentType;
 import com.sap.core.odata.api.ep.ODataEntityContent;
 import com.sap.core.odata.api.ep.ODataEntityProvider;
 import com.sap.core.odata.testutils.helper.StringHelper;
+import com.sap.core.odata.testutils.helper.XMLUnitHelper;
 import com.sap.core.odata.testutils.mocks.MockFacade;
 
 /**
@@ -99,6 +100,12 @@ public class XmlPropertySerializationTest extends AbstractProviderTest {
     assertXpathExists("/d:Location/d:City/d:PostalCode", xml);
     assertXpathExists("/d:Location/d:City/d:CityName", xml);
     assertXpathExists("/d:Location/d:Country", xml);
+
+    // verify order of tags
+    // first outer tags (city/country)
+    XMLUnitHelper.verifyTagOrdering(xml, "City", "Country");
+    // then inner tags (postalcode/cityname)
+    XMLUnitHelper.verifyTagOrdering(xml, "PostalCode", "CityName");
 
     assertXpathEvaluatesTo("RefScenario.c_Location", "/d:Location/@m:type", xml);
 

@@ -15,7 +15,7 @@ public class EntityPropertyInfo {
   protected EdmFacets facets;
   protected EdmCustomizableFeedMappings customMapping;
 
-  public EntityPropertyInfo(final String name, final EdmType type, final EdmFacets facets, final EdmCustomizableFeedMappings customizableFeedMapping) {
+  EntityPropertyInfo(final String name, final EdmType type, final EdmFacets facets, final EdmCustomizableFeedMappings customizableFeedMapping) {
     this.name = name;
     this.type = type;
     this.facets = facets;

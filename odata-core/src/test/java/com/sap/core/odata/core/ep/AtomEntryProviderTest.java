@@ -11,16 +11,13 @@ import static org.mockito.Mockito.when;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import javax.xml.stream.FactoryConfigurationError;
 import javax.xml.stream.XMLStreamException;
 
 import org.custommonkey.xmlunit.exceptions.XpathException;
-import org.junit.Assert;
 import org.junit.Test;
 import org.xml.sax.SAXException;
 
@@ -36,6 +33,7 @@ import com.sap.core.odata.api.ep.ODataEntityProvider;
 import com.sap.core.odata.api.ep.ODataEntityProviderProperties;
 import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.testutils.helper.StringHelper;
+import com.sap.core.odata.testutils.helper.XMLUnitHelper;
 import com.sap.core.odata.testutils.mocks.MockFacade;
 
 public class AtomEntryProviderTest extends AbstractProviderTest {
@@ -329,21 +327,6 @@ public class AtomEntryProviderTest extends AbstractProviderTest {
   }
 
   private void verifyTagOrdering(String xmlString, String... toCheckTags) {
-    int lastTagPos = -1;
-
-    for (String tagName : toCheckTags) {
-      Pattern p = Pattern.compile(tagName);
-      Matcher m = p.matcher(xmlString);
-
-      if (m.find()) {
-        int currentTagPos = m.start();
-        Assert.assertTrue("Tag with name '" + tagName + "' is not in correct order. Expected order is '" + Arrays.toString(toCheckTags) + "'.",
-            lastTagPos < currentTagPos);
-        lastTagPos = currentTagPos;
-      } else {
-        Assert.fail("Expected tag '" + tagName + "' was not found in input [\n\n" + xmlString + "\n\n].");
-      }
-
-    }
+    XMLUnitHelper.verifyTagOrdering(xmlString, toCheckTags);
   }
 }
