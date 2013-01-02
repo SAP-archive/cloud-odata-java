@@ -39,8 +39,8 @@ public class FilterExpressionImpl implements FilterExpression
   public Object accept(ExpressionVisitor visitor) throws ExceptionVisitExpression, ODataApplicationException
   {
     Object retCommonExpression = commonExpression.accept(visitor);
-    Object ret = visitor.visitFilterExpression(this, filterString, retCommonExpression);
-    return ret;
+    
+    return visitor.visitFilterExpression(this, filterString, retCommonExpression);
   }
 
   @Override
