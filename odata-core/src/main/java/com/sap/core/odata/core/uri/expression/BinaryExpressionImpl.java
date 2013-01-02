@@ -72,8 +72,7 @@ public class BinaryExpressionImpl implements BinaryExpression
     Object retLeftSide = leftSide.accept(visitor);
     Object retRightSide = rightSide.accept(visitor);
 
-    Object ret = visitor.visitBinary(this, operatorInfo.getOperator(), retLeftSide, retRightSide);
-    return ret;
+    return visitor.visitBinary(this, operatorInfo.getOperator(), retLeftSide, retRightSide);
   }
 
 }

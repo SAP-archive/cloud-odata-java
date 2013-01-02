@@ -192,8 +192,7 @@ public class TestParser extends TestBase
     GetPTF("startswith('Test', concat('A','B'))").aSerialized("{startswith('Test',{concat('A','B')})}");
 
     //TODO enable 
-    //GetPTF("substring('Test', 1 add 2)").aSerialized("{substring('Test',{1 add 2})}");
-
+    GetPTF("substring('Test', 1 add 2)").aSerialized("{substring('Test',{1 add 2})}");
   }
 
   @Test

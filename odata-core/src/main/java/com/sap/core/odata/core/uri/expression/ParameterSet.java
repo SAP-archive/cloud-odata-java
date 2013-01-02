@@ -35,7 +35,7 @@ class ParameterSet
 
   public ParameterSet(EdmSimpleType returnType, EdmSimpleType type1, EdmSimpleType type2, EdmSimpleType type3)
   {
-    types.add(returnType);
+    this.returnType = returnType;
     types.add(type1);
     types.add(type2);
     types.add(type3);
@@ -74,12 +74,14 @@ class ParameterSet
     int paramSize = types.size();
 
     if (actSize < paramSize)
-      throw FilterParserInternalError.createINVALID_TYPE_COUNT(); //to few actual Parameters
+      return false;
+      //throw FilterParserInternalError.createINVALID_TYPE_COUNT(); //to few actual Parameters
 
     //This may happen if the number of supplied actual method parameters is higher then than the number
     //of allowed method parameters but this should be checked before, hence this is an internal error in the parser
     if ((actSize > paramSize) && (furtherType == null))
-      throw FilterParserInternalError.createINVALID_TYPE_COUNT();
+      return false;
+      //throw FilterParserInternalError.createINVALID_TYPE_COUNT();
 
     
     for (int i = 0; i < actSize; i++)

@@ -32,9 +32,9 @@ import com.sap.core.odata.core.edm.EdmSimpleTypeFacadeImpl;
 public class FilterParserImpl implements FilterParser
 {
   /*do the static initialization*/
-  static Map<String, InfoBinaryOperator> availableBinaryOperators;
-  static Map<String, InfoMethod> availableMethods;
-  static Map<String, InfoUnaryOperator> availableUnaryOperators;
+  protected static Map<String, InfoBinaryOperator> availableBinaryOperators;
+  protected static Map<String, InfoMethod> availableMethods;
+  protected static Map<String, InfoUnaryOperator> availableUnaryOperators;
 
   static
   {
@@ -65,13 +65,14 @@ public class FilterParserImpl implements FilterParser
     try
     {
       tokenList = new Tokenizer().tokenize(filterExpression); //throws TokenizerException
+      if (!tokenList.hasTokens())
+      {
+        return new FilterExpressionImpl(filterExpression);
+      }
     } catch (TokenizerException tokenizerException)
     {
       throw FilterParserExceptionImpl.createERROR_IN_TOKENIZER(tokenizerException);
     }
-
-    if (!tokenList.hasTokens())
-      return new FilterExpressionImpl(filterExpression);
 
     try
     {
@@ -103,8 +104,8 @@ public class FilterParserImpl implements FilterParser
 
     while ((operator != null) && (operator.getPriority() >= priority))
     {
-      tokenList.next();                             //eat the operator
-      rightNode = readElement(leftNode);            //throws FilterParserException, FilterParserInternalError
+      tokenList.next(); //eat the operator
+      rightNode = readElement(leftNode); //throws FilterParserException, FilterParserInternalError
 
       InfoBinaryOperator nextOperator = readBinaryOperator();
 
@@ -209,11 +210,13 @@ public class FilterParserImpl implements FilterParser
     while (token.getKind() != TokenKind.CLOSEPAREN)
     {
       expression = readElement(null);
+      expression = readElements(expression, 0);
+      //TODO add recursion
       //After a ',' inside the parenthesis which define the method parameters a expression is expected 
       //E.g. $filter=startswith(Country,'UK',) --> is wrong
       //E.g. $filter=startswith(Country,) --> is also wrong
-      //TODO add recursion
-      if ((expression == null) && (expectAnotherExpression != true))
+      
+      if ((expression == null) && (expectAnotherExpression == true))
       {
         throw FilterParserExceptionImpl.createEXPRESSION_EXPECTED_AT_POS(token);
       }
@@ -254,7 +257,6 @@ public class FilterParserImpl implements FilterParser
 
     if ((methodInfo.getMaxParameter() > -1) && (count > methodInfo.getMinParameter()))
     {
-
       throw FilterParserExceptionImpl.createMETHOD_TO_MANY_PARAMETERS(methodExpression);
     }
 
