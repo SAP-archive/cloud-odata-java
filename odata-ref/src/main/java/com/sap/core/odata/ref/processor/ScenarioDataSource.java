@@ -183,13 +183,16 @@ public class ScenarioDataSource implements ListsDataSource {
       }
 
     } else if (function.getName().equals("AllLocations")) {
-      return getLocations();
+      ArrayList<Location> locations = new ArrayList<Location>();
+      for (final Location location : getLocations().keySet())
+        locations.add(location);
+      return locations;
 
     } else if (function.getName().equals("AllUsedRoomIds")) {
-      ArrayList<Room> data = new ArrayList<Room>();
+      ArrayList<String> data = new ArrayList<String>();
       for (Room room : dataContainer.getRoomSet())
         if (!room.getEmployees().isEmpty())
-          data.add(room);
+          data.add(room.getId());
       if (data.isEmpty())
         throw new ODataNotFoundException(null);
       else
@@ -233,7 +236,9 @@ public class ScenarioDataSource implements ListsDataSource {
       if (employee.getLocation() != null && employee.getLocation().getCity() != null) {
         boolean found = false;
         for (final Location location : locations.keySet())
-          if (employee.getLocation().getCity().getPostalCode() == location.getCity().getPostalCode() && employee.getLocation().getCity().getCityName() == location.getCity().getCityName() && employee.getLocation().getCountry() == location.getCountry()) {
+          if (employee.getLocation().getCity().getPostalCode() == location.getCity().getPostalCode()
+              && employee.getLocation().getCity().getCityName() == location.getCity().getCityName()
+              && employee.getLocation().getCountry() == location.getCountry()) {
             found = true;
             locations.put(location, locations.get(location) + 1);
           }

@@ -24,6 +24,7 @@ public class FormatXml {
   public static final String M_MESSAGE = "message";
   public static final String M_INNER_ERROR = "innererror";
 
+  public static final String D_ELEMENT = "element";
   public static final String D_LINKS = "links";
   public static final String D_URI = "uri";
 
