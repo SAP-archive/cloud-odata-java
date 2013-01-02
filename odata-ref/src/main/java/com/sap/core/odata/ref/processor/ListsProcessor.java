@@ -377,23 +377,26 @@ public class ListsProcessor extends ODataSingleProcessor {
         mapFunctionParameters(uriParserResultView.getFunctionImportParameters()),
         null);
 
-    if (functionImport.getReturnType().getMultiplicity() == EdmMultiplicity.MANY) {
-      return ODataResponse
-          .status(HttpStatusCodes.OK)
-          .header("CONTENT-TYPE", contentType.toString())
-          .entity(data.toString())
-          .build();
+    Object value;
+    if (type.getKind() == EdmTypeKind.SIMPLE)
+      value = data;
+    else
+      if (functionImport.getReturnType().getMultiplicity() == EdmMultiplicity.MANY) {
+        List<Map<String, Object>> values = new ArrayList<Map<String, Object>>();
+        for (final Object typeData : (List<?>) data)
+          values.add(getStructuralTypeValueMap(typeData, (EdmStructuralType) type));
+        value = values;
+      } else {
+        value = getStructuralTypeValueMap(data, (EdmStructuralType) type);
+      }
 
-    } else {
-      final Object value = type.getKind() == EdmTypeKind.SIMPLE ?
-          data : getStructuralTypeValueMap(data, (EdmStructuralType) type);
-      final ODataEntityProviderProperties entryProperties = ODataEntityProviderProperties
-          .baseUri(getContext().getUriInfo().getBaseUri()).build();
-      return ODataResponse
-          .status(HttpStatusCodes.OK)
-          .entity(ODataEntityProvider.create(contentType).writeFunctionImport(functionImport, value, entryProperties))
-          .build();
-    }
+    final ODataEntityProviderProperties entryProperties = ODataEntityProviderProperties
+        .baseUri(getContext().getUriInfo().getBaseUri()).build();
+
+    return ODataResponse
+        .status(HttpStatusCodes.OK)
+        .entity(ODataEntityProvider.create(contentType).writeFunctionImport(functionImport, value, entryProperties))
+        .build();
   }
 
   @Override
@@ -618,10 +621,8 @@ public class ListsProcessor extends ODataSingleProcessor {
 
     case PROPERTY:
       final EdmProperty property = (EdmProperty) ((PropertyExpression) expression).getEdmProperty();
-      if (property == null)
-        return "";
-      //final EdmSimpleType type = (EdmSimpleType) property.getType();
-      //return type.valueToString(getPropertyValue(data, property), EdmLiteralKind.DEFAULT, property.getFacets());
+      final EdmSimpleType type = (EdmSimpleType) property.getType();
+      return type.valueToString(getPropertyValue(data, property), EdmLiteralKind.DEFAULT, property.getFacets());
 
     case MEMBER:
       final MemberExpression memberExpression = (MemberExpression) expression;

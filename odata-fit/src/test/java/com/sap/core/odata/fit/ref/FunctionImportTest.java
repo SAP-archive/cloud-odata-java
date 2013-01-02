@@ -30,11 +30,11 @@ public class FunctionImportTest extends AbstractRefTest {
     assertFalse(getBody(callUri("EmployeeSearch?q='-'")).contains("entry"));
 
     response = callUri("AllLocations");
-    checkMediaType(response, ContentType.APPLICATION_XML, false);
+    checkMediaType(response, ContentType.APPLICATION_XML, true);
     assertTrue(getBody(response).contains(CITY_2_NAME));
 
     response = callUri("AllUsedRoomIds");
-    checkMediaType(response, ContentType.APPLICATION_XML, false);
+    checkMediaType(response, ContentType.APPLICATION_XML, true);
     assertTrue(getBody(response).contains("3"));
 
     response = callUri("MaximalAge");

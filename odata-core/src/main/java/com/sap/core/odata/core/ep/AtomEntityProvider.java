@@ -336,22 +336,65 @@ public class AtomEntityProvider extends ODataEntityProvider {
     return content;
   }
 
+  private ODataEntityContent writeCollection(final String name, final EntityPropertyInfo propertyInfo, final List<?> data) throws ODataEntityProviderException {
+    OutputStream outStream = null;
+    ODataEntityContentImpl content = new ODataEntityContentImpl();
+
+    try {
+      CircleStreamBuffer buffer = new CircleStreamBuffer();
+      outStream = buffer.getOutputStream();
+      XMLStreamWriter writer = XMLOutputFactory.newInstance().createXMLStreamWriter(outStream, DEFAULT_CHARSET);
+
+      XmlCollectionEntityProvider.append(writer, name, propertyInfo, data);
+
+      writer.flush();
+      outStream.flush();
+      outStream.close();
+
+      content.setContentStream(buffer.getInputStream());
+      content.setContentHeader(createContentHeader(ContentType.APPLICATION_XML));
+
+      return content;
+    } catch (Exception e) {
+      throw new ODataEntityProviderException(ODataEntityProviderException.COMMON, e);
+    } finally {
+      if (outStream != null) {
+        try {
+          outStream.close();
+        } catch (IOException e) {
+          // don't throw in finally!  
+          LOG.error(e.getLocalizedMessage(), e);
+        }
+      }
+    }
+  }
+
   @Override
   public ODataEntityContent writeFunctionImport(final EdmFunctionImport functionImport, Object data, final ODataEntityProviderProperties properties) throws ODataEntityProviderException {
     try {
+      final String name = functionImport.getName();
       final EdmType type = functionImport.getReturnType().getType();
+      final boolean isCollection = functionImport.getReturnType().getMultiplicity() == EdmMultiplicity.MANY;
 
-      if (type.getKind() == EdmTypeKind.ENTITY)
-        return writeEntry(functionImport.getEntitySet(), (Map<String, Object>) data, properties);
-
-      if (functionImport.getReturnType().getMultiplicity() == EdmMultiplicity.MANY) {
-        return null;
-      } else if (type.getKind() == EdmTypeKind.COMPLEX) {
-        return writeSingleTypedElement(new EntityComplexPropertyInfo(functionImport.getName(), type, null, null,
-            EntityInfoAggregator.create((EdmComplexType) type)), data);
-      } else {
-        return writeSingleTypedElement(new EntityPropertyInfo(functionImport.getName(), type, null, null), data);
+      if (type.getKind() == EdmTypeKind.ENTITY) {
+        @SuppressWarnings("unchecked")
+        Map<String, Object> map = (Map<String, Object>) data;
+        return writeEntry(functionImport.getEntitySet(), map, properties);
       }
+
+      final EntityPropertyInfo info = (type.getKind() == EdmTypeKind.COMPLEX) ?
+          new EntityComplexPropertyInfo(isCollection ? FormatXml.D_ELEMENT : name, type, null, null,
+              EntityInfoAggregator.create((EdmComplexType) type)) :
+          new EntityPropertyInfo(isCollection ? FormatXml.D_ELEMENT : name, type, null, null);
+
+      if (isCollection)
+        return writeCollection(name, info, (List<?>) data);
+      else if (type.getKind() == EdmTypeKind.COMPLEX)
+        return writeSingleTypedElement(new EntityComplexPropertyInfo(name, type, null, null,
+            EntityInfoAggregator.create((EdmComplexType) type)), data);
+      else
+        return writeSingleTypedElement(info, data);
+
     } catch (EdmException e) {
       throw new ODataEntityProviderException(ODataEntityProviderException.COMMON, e);
     }
