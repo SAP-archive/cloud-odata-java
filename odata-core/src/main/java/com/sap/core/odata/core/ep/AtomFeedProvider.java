@@ -120,7 +120,7 @@ public class AtomFeedProvider {
         sb.append(eia.getEntityContainerName()).append(Edm.DELIMITER);
       }
       sb.append(eia.getEntitySetName());
-      return UriUtils.encodeUri(sb.toString());
+      return UriUtils.encodeUriPath(sb.toString());
     } catch (Exception e) {
       throw new ODataEntityProviderException(ODataEntityProviderException.COMMON, e);
     }

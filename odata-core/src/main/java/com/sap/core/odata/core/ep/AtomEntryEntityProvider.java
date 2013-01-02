@@ -217,7 +217,7 @@ public class AtomEntryEntityProvider {
         sb.append(eia.getEntityContainerName()).append(Edm.DELIMITER);
       }
       sb.append(eia.getEntitySetName()).append("(").append(this.createEntryKey(eia, data)).append(")").append((extension == null ? "" : "/" + extension));
-      return UriUtils.encodeUri(sb.toString());
+      return UriUtils.encodeUriPath(sb.toString());
     } catch (Exception e) {
       throw new ODataEntityProviderException(ODataEntityProviderException.COMMON, e);
     }
