@@ -1,23 +1,28 @@
 package com.sap.core.odata.processor.jpa.jpql;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import com.sap.core.odata.api.edm.EdmException;
+import com.sap.core.odata.api.uri.SelectItem;
 import com.sap.core.odata.api.uri.expression.FilterExpression;
 import com.sap.core.odata.api.uri.resultviews.GetEntitySetView;
 import com.sap.core.odata.processor.jpa.access.ExpressionParsingUtility;
+import com.sap.core.odata.processor.jpa.exception.ODataJPAModelException;
+import com.sap.core.odata.processor.jpa.exception.ODataJPARuntimeException;
 import com.sap.core.odata.processor.jpa.jpql.api.JPQLContext;
 import com.sap.core.odata.processor.jpa.jpql.api.JPQLContextType;
 import com.sap.core.odata.processor.jpa.jpql.api.JPQLSelectContext;
 
 public class JPQLSelectContextImpl extends JPQLSelectContext {
 
-	private String[] selectedFields;
+	private ArrayList<String> selectedFields;
 	private HashMap<String, String> orderByCollection;
 	private FilterExpression whereCondition;
 
 	@Override
-	protected final void setSelectedFields(String[] selectedFields) {
+	protected final void setSelectedFields(ArrayList<String> selectedFields) {
 		this.selectedFields = selectedFields;
 	}
 
@@ -33,7 +38,7 @@ public class JPQLSelectContextImpl extends JPQLSelectContext {
 	}
 
 	@Override
-	public String[] getSelectedFields() {
+	public ArrayList<String> getSelectedFields() {
 		return this.selectedFields;
 	}
 
@@ -54,21 +59,34 @@ public class JPQLSelectContextImpl extends JPQLSelectContext {
 		private GetEntitySetView entitySetView;
 
 		@Override
-		public JPQLContext build() {
+		public JPQLContext build() throws ODataJPAModelException {
 			if (entitySetView != null) {
 
 				try {
-					
+
 					JPQLSelectContextImpl.this.setType(JPQLContextType.SELECT);
-					
+
 					JPQLSelectContextImpl.this.setJPAEntityName(entitySetView
 							.getTargetEntitySet().getEntityType().getName());
 					JPQLSelectContextImpl.this
 							.setOrderByCollection(ExpressionParsingUtility
 									.parseOrderByExpression(entitySetView
 											.getOrderBy()));
+
+					List<SelectItem> selectItemList = entitySetView.getSelect();
+					if (selectItemList != null) {
+						ArrayList<String> selectedFields = new ArrayList<String>(
+								selectItemList.size());
+						for (SelectItem item : selectItemList) {
+							selectedFields.add(item. getProperty(). getName());
+						}
+						JPQLSelectContextImpl.this.setSelectedFields(selectedFields);
+					}
+
 				} catch (EdmException e) {
-					e.printStackTrace();
+					throw new ODataJPAModelException(
+							ODataJPARuntimeException.RUNTIME_EXCEPTION.addContent(e
+									.getMessage()), e);
 				}
 
 			}

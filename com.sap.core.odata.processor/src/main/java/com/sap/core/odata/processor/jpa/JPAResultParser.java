@@ -7,6 +7,7 @@ import com.sap.core.odata.api.edm.EdmEntityType;
 import com.sap.core.odata.api.edm.EdmException;
 import com.sap.core.odata.api.edm.EdmProperty;
 import com.sap.core.odata.api.edm.provider.Mapping;
+import com.sap.core.odata.processor.jpa.exception.ODataJPARuntimeException;
 
 public final class JPAResultParser {
 
@@ -33,7 +34,7 @@ public final class JPAResultParser {
 	 * method. Then uses the getters method to extract the value from JPAEntity.
 	 */
 	public final HashMap<String, Object> parse2EdmEntity(Object jpaEntity,
-			EdmEntityType entityType) {
+			EdmEntityType entityType) throws ODataJPARuntimeException {
 
 		if (jpaEntity == null || entityType == null)
 			return null;
@@ -53,11 +54,11 @@ public final class JPAResultParser {
 									getGetterName(property), (Class<?>[]) null));
 				}
 			} catch (NoSuchMethodException e) {
-				e.printStackTrace();
+				throw new ODataJPARuntimeException(ODataJPARuntimeException.RUNTIME_EXCEPTION.addContent(e.getMessage()),e);
 			} catch (SecurityException e) {
-				e.printStackTrace();
+				throw new ODataJPARuntimeException(ODataJPARuntimeException.RUNTIME_EXCEPTION.addContent(e.getMessage()),e);
 			} catch (EdmException e) {
-				e.printStackTrace();
+				throw new ODataJPARuntimeException(ODataJPARuntimeException.RUNTIME_EXCEPTION.addContent(e.getMessage()),e);
 			}
 		}
 
@@ -67,17 +68,17 @@ public final class JPAResultParser {
 				Object propertyValue = getters.get(key).invoke(jpaEntity);
 				edmEntity.put(key, propertyValue);
 			} catch (IllegalAccessException e) {
-				e.printStackTrace();
+				throw new ODataJPARuntimeException(ODataJPARuntimeException.RUNTIME_EXCEPTION.addContent(e.getMessage()),e);
 			} catch (IllegalArgumentException e) {
-				e.printStackTrace();
+				throw new ODataJPARuntimeException(ODataJPARuntimeException.RUNTIME_EXCEPTION.addContent(e.getMessage()),e);
 			} catch (InvocationTargetException e) {
-				e.printStackTrace();
+				throw new ODataJPARuntimeException(ODataJPARuntimeException.RUNTIME_EXCEPTION.addContent(e.getMessage()),e);
 			}
 		}
 		return edmEntity;
 	}
 
-	private String getGetterName(EdmProperty property) {
+	private String getGetterName(EdmProperty property) throws ODataJPARuntimeException {
 		Mapping mapping = null;
 		String name = null;
 		try {
@@ -88,7 +89,7 @@ public final class JPAResultParser {
 			else
 				name = mapping.getInternalName();
 		} catch (EdmException e) {
-			e.printStackTrace();
+			throw new ODataJPARuntimeException(ODataJPARuntimeException.RUNTIME_EXCEPTION.addContent(e.getMessage()),e);
 		}
 
 		if (name != null) {

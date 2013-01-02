@@ -45,7 +45,7 @@ public class ODataJPAProcessor extends ODataSingleProcessor {
 
 		// Build OData Response out of a JPA Response
 		ODataResponse odataResponse = ODataJPAResponseBuilder.build(
-				jpaEntities, uriParserResultView, contentType,odataJPAContext);
+				jpaEntities,uriParserResultView,contentType,odataJPAContext);
 		
 		return odataResponse;
 	}

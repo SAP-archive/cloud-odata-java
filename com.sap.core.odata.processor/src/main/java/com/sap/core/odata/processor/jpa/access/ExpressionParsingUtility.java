@@ -193,7 +193,7 @@ public class ExpressionParsingUtility {
 	
 	public static HashMap<String, String> parseOrderByExpression(OrderByExpression orderByExpression){
 		HashMap<String, String> orderByMap = new HashMap<String, String>();
-		if(orderByExpression != null){
+		if(orderByExpression != null && orderByExpression.getOrders() != null ){
 			List<OrderExpression> orderBys= orderByExpression.getOrders();
 			String orderByField = null;
 			String orderByDirection = null;
@@ -201,7 +201,7 @@ public class ExpressionParsingUtility {
 				
 				try {
 					orderByField = orderBy.getExpression().getEdmType().getName();
-					orderByDirection = (orderBy.getSortOrder() == OrderType.asc)? "" : " DESC";
+					orderByDirection = (orderBy.getSortOrder() == OrderType.asc)? "" : "DESC";
 					orderByMap.put(orderByField, orderByDirection);
 				} catch (EdmException e) {
 					// TODO Auto-generated catch block
