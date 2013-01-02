@@ -44,5 +44,17 @@ public enum ExpressionKind {
    * Property like "age" 
    * @see PropertyExpression
    */
-  PROPERTY;
+  PROPERTY,
+  
+  /**
+   * Order expression like "age desc" 
+   * @see PropertyExpression
+   */
+  ORDER,
+  
+  /**
+   * Orderby expression like "age desc, name asc" 
+   * @see PropertyExpression
+   */
+  ORDERBY;
 }

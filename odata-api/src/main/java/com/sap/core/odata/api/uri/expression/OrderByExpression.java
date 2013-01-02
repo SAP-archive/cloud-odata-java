@@ -10,7 +10,7 @@ import java.util.List;
  * @author SAP AG
  * @see OrderByParser
  */
-public interface OrderByExpression 
+public interface OrderByExpression extends CommonExpression
 {
   /**
    * @return Returns the $filter expression string used to build the expression tree
@@ -29,6 +29,6 @@ public interface OrderByExpression
   /**
    * @return Returns the count of order expressions contained in the $orderby expression string
    */
-  public CommonExpression getOrdersCount();
+  public int getOrdersCount();
 
 }

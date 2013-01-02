@@ -1,5 +1,7 @@
 package com.sap.core.odata.core.uri.expression;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Vector;
 
 import com.sap.core.odata.api.edm.EdmType;
@@ -15,12 +17,12 @@ public class MethodExpressionImpl implements MethodExpression {
 
   private InfoMethod infoMethod;
   private EdmType returnType;
-  private Vector<CommonExpression> actualParameters;
+  private List<CommonExpression> actualParameters;
 
   public MethodExpressionImpl(InfoMethod infoMethod) {
     this.infoMethod = infoMethod;
     this.returnType = infoMethod.getReturnType();
-    this.actualParameters = new Vector<CommonExpression>();
+    this.actualParameters = new ArrayList<CommonExpression>();
   }
 
   @Override
@@ -41,7 +43,7 @@ public class MethodExpressionImpl implements MethodExpression {
   }
 
   @Override
-  public Vector<CommonExpression> getParameters() {
+  public List<CommonExpression> getParameters() {
     return actualParameters;
   }
 

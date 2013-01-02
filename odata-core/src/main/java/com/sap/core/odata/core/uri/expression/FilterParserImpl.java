@@ -64,30 +64,30 @@ public class FilterParserImpl implements FilterParser
 
     try
     {
-      Tokenizer tokenizer = new Tokenizer();
-      tokenList = tokenizer.tokenize(filterExpression); //throws TokenizerMessage
-    } catch (ExceptionTokenizer tokenizerException)
+      tokenList = new Tokenizer().tokenize(filterExpression); //throws TokenizerException
+    } catch (TokenizerException tokenizerException)
     {
       throw FilterParserExceptionImpl.createERROR_IN_TOKENIZER(tokenizerException);
     }
 
     if (!tokenList.hasTokens())
-      return new FilterExpressionImpl(filterExpression, null);
+      return new FilterExpressionImpl(filterExpression);
 
     try
     {
       CommonExpression nodeLeft = readElement(null);
       node = readElements(nodeLeft, 0);
-    } catch (FilterParserException expressionException)
+    } catch (FilterParserException filterParserException)
     {
-      FilterExpression fe = new FilterExpressionImpl(filterExpression, null);
-      throw expressionException.setFilterTree(fe);
+      //Add empty filterTree to Exception
+      throw filterParserException.setFilterTree(new FilterExpressionImpl(filterExpression));
     }
 
     //post check
     if (tokenList.tokenCount() > tokenList.currentToken) //this indicates that not all tokens have been read
-      throw FilterParserExceptionImpl.createINVALID_TRAILING_TOKEN_DETECTED_AFTER_PARSING(
-          tokenList.elementAt(tokenList.currentToken));
+    {
+      throw FilterParserExceptionImpl.createINVALID_TRAILING_TOKEN_DETECTED_AFTER_PARSING(tokenList.elementAt(tokenList.currentToken));
+    }
 
     //create and return filterExpression node
     return new FilterExpressionImpl(filterExpression, node);
@@ -103,18 +103,21 @@ public class FilterParserImpl implements FilterParser
 
     while ((operator != null) && (operator.getPriority() >= priority))
     {
-      tokenList.next();
-      rightNode = readElement(leftNode);//throws ExceptionParseExpression, ExceptionExpressionInternalError
+      tokenList.next();                             //eat the operator
+      rightNode = readElement(leftNode);            //throws FilterParserException, FilterParserInternalError
 
       InfoBinaryOperator nextOperator = readBinaryOperator();
 
-      if ((nextOperator != null) && (nextOperator.getPriority() > operator.getPriority()))
+      //It must be "while" because for example in "Filter=a or c eq d and e eq f"
+      //after reading the "eq" operator the "and" operator must be consumed too. This is due to the fact that "and" has a higher priority than "or" 
+      while ((nextOperator != null) && (nextOperator.getPriority() > operator.getPriority()))
       {
-        rightNode = readElements(rightNode, nextOperator.getPriority());//op2 is read in read_elements.
+        //recurse until the a binary operator with a lower priority is detected 
+        rightNode = readElements(rightNode, nextOperator.getPriority());
         nextOperator = readBinaryOperator();
       }
 
-      //Although the member operator is also a binary operator, there is some special handling
+      //Although the member operator is also a binary operator, there is some special handling in the filterTree
       if (operator.getOperator() == BinaryOperator.PROPERTY_ACCESS)
       {
         binaryNode = new MemberExpressionImpl(leftNode, rightNode);
@@ -129,9 +132,8 @@ public class FilterParserImpl implements FilterParser
         validateBinaryOperator(binaryNode);
       } catch (FilterParserException expressionException)
       {
-        //Attach error information
-        expressionException.setFilterTree(binaryNode);
-        throw expressionException;
+        //Extend the error information
+        throw expressionException.setFilterTree(binaryNode);
       }
 
       leftNode = binaryNode;
@@ -146,30 +148,32 @@ public class FilterParserImpl implements FilterParser
    * because it MUST be check in the calling method ( when read the method name and the '(' is read).  
    * @return An expression which reflects the content within the parenthesis
    * @throws FilterParserException
-   *   While reading the elements in the parenthesis an error occured
+   *   While reading the elements in the parenthesis an error occurred
    * @throws TokenizerMessage 
    *   The next token did not match the expected token
    */
   protected CommonExpression readParenthesis() throws FilterParserException, FilterParserInternalError
   {
-    //---check for '('    
+    //check for '('
     try {
       tokenList.expectToken(TokenKind.OPENPAREN);
     } catch (TokenizerExpectError e)
     {
-      //Internal parsing error, even if there are no more token (then there should be a different exception).  
+      //Internal parsing error (even if there are no more tokens, -> then there should be a different exception)
+      //The existing of a '(' is verified BEFORE this method is called --> so it's a internal error
       throw FilterParserInternalError.createERROR_PARSING_PARENTHESIS(e);
     }
 
     CommonExpression firstExpression = readElement(null);
     CommonExpression parenthesisExpression = readElements(firstExpression, 0);
 
-    //---check for ')'
+    //check for ')'
     try {
       tokenList.expectToken(TokenKind.CLOSEPAREN); //TokenizerMessage
     } catch (TokenizerExpectError e)
     {
       //Internal parsing error, even if there are no more token (then there should be a different exception).
+      //TODO check if this could be an normal Exception
       throw FilterParserInternalError.createERROR_PARSING_PARENTHESIS(parenthesisExpression, e);
     }
     return parenthesisExpression;
@@ -193,10 +197,11 @@ public class FilterParserImpl implements FilterParser
     CommonExpression expression;
     boolean expectAnotherExpression = false;
 
-    //---check for '('
+    //check for '('
     try {
       tokenList.expectToken(TokenKind.OPENPAREN); //throws ExceptionTokenizerExpect
     } catch (TokenizerExpectError e) {
+      //The existing of a '(' is verified BEFORE this method is called --> so it's a internal error
       throw FilterParserInternalError.createERROR_PARSING_PARENTHESIS(e);
     }
 
@@ -206,7 +211,8 @@ public class FilterParserImpl implements FilterParser
       expression = readElement(null);
       //After a ',' inside the parenthesis which define the method parameters a expression is expected 
       //E.g. $filter=startswith(Country,'UK',) --> is wrong
-      //E.g. $filter=startswith(Country,) --> is also wrong 
+      //E.g. $filter=startswith(Country,) --> is also wrong
+      //TODO add recursion
       if ((expression == null) && (expectAnotherExpression != true))
       {
         throw FilterParserExceptionImpl.createEXPRESSION_EXPECTED_AT_POS(token);
@@ -336,11 +342,9 @@ public class FilterParserImpl implements FilterParser
 
   protected CommonExpression readUnaryoperator(Token lookToken, InfoUnaryOperator unaryOperator) throws FilterParserException, FilterParserInternalError
   {
-    Token token = null;
-
     //---read token
     try {
-      token = tokenList.expectToken(lookToken.getUriLiteral());
+      tokenList.expectToken(lookToken.getUriLiteral());
     } catch (TokenizerExpectError e) {
 
       throw FilterParserInternalError.createERROR_PARSING_PARENTHESIS(e);
@@ -355,7 +359,6 @@ public class FilterParserImpl implements FilterParser
   protected CommonExpression readMethod(Token token, InfoMethod methodOperator) throws FilterParserException, FilterParserInternalError
   {
     MethodExpressionImpl method = new MethodExpressionImpl(methodOperator);
-
 
     readParameters(methodOperator, method);
     validateMethodTypes(method); //throws ExpressionInvalidOperatorTypeException
@@ -459,7 +462,6 @@ public class FilterParserImpl implements FilterParser
         new InfoBinaryOperator(BinaryOperator.DIV, "Multiplicative", CharConst.GC_OPERATOR_DIV, 60, combination));
     availableBinaryOperators.put(CharConst.GC_OPERATOR_MOD,
         new InfoBinaryOperator(BinaryOperator.MODULO, "Multiplicative", CharConst.GC_OPERATOR_MOD, 60, combination));
-
 
     //---Additive---
     combination = new ParameterSetCombination.PSCflex();
@@ -666,7 +668,6 @@ public class FilterParserImpl implements FilterParser
 
   }
 
-
   protected void validateEdmProperty(CommonExpression leftExpression, PropertyExpressionImpl property) throws FilterParserException, FilterParserInternalError {
 
     // Exist if no edm provided
@@ -756,7 +757,6 @@ public class FilterParserImpl implements FilterParser
     }
   }
 
-
   protected void validateUnaryOperator(UnaryExpression unaryExpression) throws FilterParserInternalError
   {
     InfoUnaryOperator unOpt = availableUnaryOperators.get(unaryExpression.getOperator().toUriLiteral());
@@ -764,7 +764,6 @@ public class FilterParserImpl implements FilterParser
     //List<ParameterSet> allowedParameterTypesCombinations = binOpt.getParameterSet();
     List<EdmType> actualParameterTypes = new ArrayList<EdmType>();
     actualParameterTypes.add(unaryExpression.getOperand().getEdmType());
-
 
     EdmType edmType = unOpt.validateParameterSet(actualParameterTypes);
     unaryExpression.setEdmType(edmType);
@@ -784,7 +783,6 @@ public class FilterParserImpl implements FilterParser
     binaryExpression.setEdmType(edmType);
   }
 
-
   protected void validateMethodTypes(MethodExpression methodExpression) throws FilterParserInternalError
   {
     InfoMethod methOpt = availableMethods.get(methodExpression.getMethod().toUriLiteral());
@@ -795,31 +793,8 @@ public class FilterParserImpl implements FilterParser
     {
       actualParameterTypes.add(parameter.getEdmType());
     }
-    
+
     EdmType edmType = methOpt.validateParameterSet(actualParameterTypes);
     methodExpression.setEdmType(edmType);
   }
-/*
-  private EdmSimpleType validateParameterSet(List<ParameterSet> allowedParameterTypesCombinations, List<EdmType> actualParameterTypes) throws FilterParserInternalError
-  {
-    //first check for exact parameter combination
-    for (ParameterSet parameterSet : allowedParameterTypesCombinations)
-    {
-      boolean s = parameterSet.equals(actualParameterTypes, false);
-      if (s)
-        return parameterSet.getReturnType();
-    }
-
-
-    //first check for parameter combination with promotion
-    for (ParameterSet parameterSet : allowedParameterTypesCombinations)
-    {
-      boolean s = parameterSet.equals(actualParameterTypes, true);
-      if (s)
-        return parameterSet.getReturnType();
-    }
-    return null;
-  }*/
-
 }
-

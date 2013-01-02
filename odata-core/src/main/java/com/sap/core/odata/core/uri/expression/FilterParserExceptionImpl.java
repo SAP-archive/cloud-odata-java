@@ -3,6 +3,7 @@ package com.sap.core.odata.core.uri.expression;
 import com.sap.core.odata.api.edm.EdmException;
 import com.sap.core.odata.api.edm.EdmStructuralType;
 import com.sap.core.odata.api.exception.MessageReference;
+import com.sap.core.odata.api.exception.ODataBadRequestException;
 import com.sap.core.odata.api.uri.expression.FilterParserException;
 import com.sap.core.odata.api.uri.expression.MethodExpression;
 import com.sap.core.odata.api.uri.expression.PropertyExpression;
@@ -15,16 +16,16 @@ import com.sap.core.odata.api.uri.expression.PropertyExpression;
  * 
  * @author SAP AG
  */
-public class FilterParserExceptionImpl extends FilterParserException {
-
+public class FilterParserExceptionImpl extends FilterParserException 
+{
   private static final long serialVersionUID = 77L;
 
   static public FilterParserException createCOMMON()
   {
-    return new FilterParserException(FilterParserException.COMMON);
+    return new FilterParserException(ODataBadRequestException.COMMON);
   }
 
-  static public FilterParserException createERROR_IN_TOKENIZER(ExceptionTokenizer exceptionTokenizer)
+  static public FilterParserException createERROR_IN_TOKENIZER(TokenizerException exceptionTokenizer)
   {
     Token token = exceptionTokenizer.getToken();
     MessageReference msgRef = FilterParserException.ERROR_IN_TOKENIZER.create();
@@ -73,7 +74,8 @@ public class FilterParserExceptionImpl extends FilterParserException {
     return new FilterParserException(msgRef);
   }
 
-  public static FilterParserException createMETHOD_TO_MANY_PARAMETERS(MethodExpression methodExpression) {
+  public static FilterParserException createMETHOD_TO_MANY_PARAMETERS(MethodExpression methodExpression) 
+  {
     MessageReference msgRef = FilterParserException.METHOD_TO_MANY_PARAMETERS.create();
 
     msgRef.addContent(methodExpression.getMethod().toUriLiteral());
@@ -81,13 +83,15 @@ public class FilterParserExceptionImpl extends FilterParserException {
     return new FilterParserException(msgRef);
   }
 
-  public static FilterParserException createLEFT_SIDE_NOT_STRUCTURAL_TYPE() {
+  public static FilterParserException createLEFT_SIDE_NOT_STRUCTURAL_TYPE() 
+  {
     MessageReference msgRef = FilterParserException.LEFT_SIDE_NOT_STRUCTURAL_TYPE.create();
 
     return new FilterParserException(msgRef);
   }
 
-  public static FilterParserException createPROPERTY_NAME_NOT_FOUND_IN_TYPE(EdmStructuralType parentType, PropertyExpression property) throws FilterParserInternalError {
+  public static FilterParserException createPROPERTY_NAME_NOT_FOUND_IN_TYPE(EdmStructuralType parentType, PropertyExpression property) throws FilterParserInternalError 
+  {
     MessageReference msgRef = FilterParserException.PROPERTY_NAME_NOT_FOUND_IN_TYPE.create();
 
     try {
@@ -98,7 +102,6 @@ public class FilterParserExceptionImpl extends FilterParserException {
     }
 
     return new FilterParserException(msgRef);
-
   }
 
 }

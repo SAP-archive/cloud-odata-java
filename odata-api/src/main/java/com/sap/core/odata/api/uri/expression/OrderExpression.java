@@ -13,13 +13,13 @@ package com.sap.core.odata.api.uri.expression;
  * @author SAP AG
  * @see OrderByParser
  */
-public interface OrderExpression 
+public interface OrderExpression  extends CommonExpression
 {
   
   /**
    * @return Returns the sort order (ascending or descending) of the order expression  
    */
-  OrderType getSortOrder();
+  SortOrder getSortOrder();
   
   /**
    * @return Returns the expression node which defines the data used to order the output
@@ -27,4 +27,6 @@ public interface OrderExpression
    * @see CommonExpression
    */
   CommonExpression getExpression();
+
+
 }
