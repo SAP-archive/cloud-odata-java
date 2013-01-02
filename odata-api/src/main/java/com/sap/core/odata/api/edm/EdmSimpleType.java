@@ -62,7 +62,7 @@ public interface EdmSimpleType extends EdmType {
    * Converts literal representation to URI literal representation.
    *
    * @param literal  the literal in default representation
-   * @return URI literal representation as String
+   * @return URI literal representation as URI-encoded String
    */
   public String toUriLiteral(String literal) throws EdmSimpleTypeException;
 }

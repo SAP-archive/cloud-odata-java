@@ -71,7 +71,7 @@ public class EdmDateTimeOffset extends AbstractSimpleType {
 
     } else if (literalKind == EdmLiteralKind.URI) {
       if (value.length() > 16 && value.startsWith("datetimeoffset'") && value.endsWith("'"))
-        return valueOfString(value.substring(15, value.length() - 1), EdmLiteralKind.DEFAULT, facets);
+        return valueOfString(value.substring(15, value.length() - 1).replace("%3A", ":"), EdmLiteralKind.DEFAULT, facets);
       else
         throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_ILLEGAL_CONTENT.addContent(value));
     }
@@ -140,7 +140,7 @@ public class EdmDateTimeOffset extends AbstractSimpleType {
       final String offsetString = offset == 0 ? "Z" : String.format("%+03d:%02d", offsetHours, offsetMinutes);
 
       if (literalKind == EdmLiteralKind.URI)
-        return "datetimeoffset'" + localTimeString + offsetString + "'";
+        return toUriLiteral(localTimeString + offsetString);
       else
         return localTimeString + offsetString;
     }
@@ -148,7 +148,7 @@ public class EdmDateTimeOffset extends AbstractSimpleType {
 
   @Override
   public String toUriLiteral(final String literal) throws EdmSimpleTypeException {
-    return "datetimeoffset'" + literal + "'";
+    return "datetimeoffset'" + literal.replace(":", "%3A") + "'";
   }
 
 }
