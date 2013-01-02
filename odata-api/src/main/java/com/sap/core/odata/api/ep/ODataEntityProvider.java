@@ -8,6 +8,7 @@ import com.sap.core.odata.api.edm.EdmEntitySet;
 import com.sap.core.odata.api.edm.EdmFunctionImport;
 import com.sap.core.odata.api.edm.EdmProperty;
 import com.sap.core.odata.api.enums.ContentType;
+import com.sap.core.odata.api.processor.ODataResponse;
 import com.sap.core.odata.api.rt.RuntimeDelegate;
 import com.sap.core.odata.api.uri.resultviews.GetEntitySetView;
 
@@ -23,23 +24,23 @@ public abstract class ODataEntityProvider {
     return RuntimeDelegate.createSerializer(contentType);
   }
 
-  public abstract ODataEntityContent writeServiceDocument(Edm edm, String serviceRoot) throws ODataEntityProviderException;
+  public abstract ODataResponse writeServiceDocument(Edm edm, String serviceRoot) throws ODataEntityProviderException;
 
-  public abstract ODataEntityContent writeFeed(GetEntitySetView entitySetView, List<Map<String, Object>> data, ODataEntityProviderProperties properties) throws ODataEntityProviderException;
+  public abstract ODataResponse writeFeed(GetEntitySetView entitySetView, List<Map<String, Object>> data, ODataEntityProviderProperties properties) throws ODataEntityProviderException;
 
-  public abstract ODataEntityContent writeEntry(EdmEntitySet entitySet, Map<String, Object> data, ODataEntityProviderProperties properties) throws ODataEntityProviderException;
+  public abstract ODataResponse writeEntry(EdmEntitySet entitySet, Map<String, Object> data, ODataEntityProviderProperties properties) throws ODataEntityProviderException;
 
-  public abstract ODataEntityContent writeProperty(EdmProperty edmProperty, Object value) throws ODataEntityProviderException;
+  public abstract ODataResponse writeProperty(EdmProperty edmProperty, Object value) throws ODataEntityProviderException;
 
-  public abstract ODataEntityContent writePropertyValue(EdmProperty edmProperty, Object value) throws ODataEntityProviderException;
+  public abstract ODataResponse writePropertyValue(EdmProperty edmProperty, Object value) throws ODataEntityProviderException;
 
-  public abstract ODataEntityContent writeText(String value) throws ODataEntityProviderException;
+  public abstract ODataResponse writeText(String value) throws ODataEntityProviderException;
 
-  public abstract ODataEntityContent writeBinary(String mimeType, byte[] data) throws ODataEntityProviderException;
+  public abstract ODataResponse writeBinary(String mimeType, byte[] data) throws ODataEntityProviderException;
 
-  public abstract ODataEntityContent writeLink(EdmEntitySet entitySet, Map<String, Object> data, ODataEntityProviderProperties properties) throws ODataEntityProviderException;
+  public abstract ODataResponse writeLink(EdmEntitySet entitySet, Map<String, Object> data, ODataEntityProviderProperties properties) throws ODataEntityProviderException;
 
-  public abstract ODataEntityContent writeLinks(EdmEntitySet entitySet, List<Map<String, Object>> data, ODataEntityProviderProperties properties) throws ODataEntityProviderException;
+  public abstract ODataResponse writeLinks(EdmEntitySet entitySet, List<Map<String, Object>> data, ODataEntityProviderProperties properties) throws ODataEntityProviderException;
 
-  public abstract ODataEntityContent writeFunctionImport(EdmFunctionImport functionImport, Object data, ODataEntityProviderProperties properties) throws ODataEntityProviderException;
+  public abstract ODataResponse writeFunctionImport(EdmFunctionImport functionImport, Object data, ODataEntityProviderProperties properties) throws ODataEntityProviderException;
 }

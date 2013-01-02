@@ -4,7 +4,6 @@ import com.sap.core.odata.api.edm.Edm;
 import com.sap.core.odata.api.edm.EdmServiceMetadata;
 import com.sap.core.odata.api.enums.ContentType;
 import com.sap.core.odata.api.enums.HttpStatusCodes;
-import com.sap.core.odata.api.ep.ODataEntityContent;
 import com.sap.core.odata.api.ep.ODataEntityProvider;
 import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.api.exception.ODataNotImplementedException;
@@ -309,14 +308,12 @@ public abstract class ODataSingleProcessor
   @Override
   public ODataResponse readServiceDocument(GetServiceDocumentView uriParserResultView, ContentType contentType) throws ODataException {
     ODataEntityProvider odataSerializer = ODataEntityProvider.create(contentType);
-    ODataEntityContent serviceDocument = odataSerializer.writeServiceDocument(getContext().getService().getEntityDataModel(), getContext().getUriInfo().getBaseUri().toASCIIString());
     contentType = ContentType.create(contentType, ContentType.PARAMETER_CHARSET, DEFAULT_SERVICE_CHARSET);
 
-    return ODataResponse
-        .header("Content-Type", contentType.toString())
-        .header("DataServiceVersion", Edm.DATA_SERVICE_VERSION_10)
-        .entity(serviceDocument)
-        .build();
+    ODataResponse response = ODataResponse.fromResponse(odataSerializer.writeServiceDocument(getContext().getService().getEntityDataModel(), getContext().getUriInfo().getBaseUri().toASCIIString()))
+      .header("Content-Type", contentType.toString())
+      .header("DataServiceVersion", Edm.DATA_SERVICE_VERSION_10).build();
+    return response;
   }
 
   /**
@@ -325,8 +322,7 @@ public abstract class ODataSingleProcessor
   @Override
   public ODataResponse readMetadata(GetMetadataView uriParserResultView, ContentType contentType) throws ODataException {
     EdmServiceMetadata edmServiceMetadata = getContext().getService().getEntityDataModel().getServiceMetadata();
-//    contentType.addParameter(ContentType.PARAMETER_CHARSET, DEFAULT_SERVICE_CHARSET);
-
+//  contentType.addParameter(ContentType.PARAMETER_CHARSET, DEFAULT_SERVICE_CHARSET);
     return ODataResponse
         .status(HttpStatusCodes.OK)
         .header("Content-Type", contentType.toString())

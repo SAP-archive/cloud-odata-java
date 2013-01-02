@@ -5,14 +5,16 @@ import static org.custommonkey.xmlunit.XMLAssert.assertXpathExists;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
+import java.io.InputStream;
+
 import org.junit.Test;
 
 import com.sap.core.odata.api.edm.EdmEntityType;
 import com.sap.core.odata.api.edm.EdmProperty;
 import com.sap.core.odata.api.edm.EdmTyped;
 import com.sap.core.odata.api.enums.ContentType;
-import com.sap.core.odata.api.ep.ODataEntityContent;
 import com.sap.core.odata.api.ep.ODataEntityProvider;
+import com.sap.core.odata.api.processor.ODataResponse;
 import com.sap.core.odata.testutils.helper.StringHelper;
 import com.sap.core.odata.testutils.helper.XMLUnitHelper;
 import com.sap.core.odata.testutils.mocks.MockFacade;
@@ -28,12 +30,12 @@ public class XmlPropertySerializationTest extends AbstractProviderTest {
     EdmTyped edmTyped = MockFacade.getMockEdm().getEntityType("RefScenario", "Employee").getProperty("EmployeeId");
     EdmProperty edmProperty = (EdmProperty) edmTyped;
 
-    ODataEntityContent content = s.writeProperty(edmProperty, this.employeeData.get("EmployeeId"));
-    assertNotNull(content);
-    assertNotNull(content.getContent());
-    assertEquals(ContentType.APPLICATION_XML.toString() + "; charset=utf-8", content.getContentHeader());
+    ODataResponse response = s.writeProperty(edmProperty, this.employeeData.get("EmployeeId"));
+    assertNotNull(response);
+    assertNotNull(response.getEntity());
+    assertEquals(ContentType.APPLICATION_XML.toString() + "; charset=utf-8", response.getContentHeader());
 
-    String xml = StringHelper.inputStreamToString(content.getContent());
+    String xml = StringHelper.inputStreamToString((InputStream)response.getEntity());
     assertNotNull(xml);
 
     assertXpathExists("/d:EmployeeId", xml);
@@ -47,11 +49,11 @@ public class XmlPropertySerializationTest extends AbstractProviderTest {
     EdmTyped edmTyped = MockFacade.getMockEdm().getEntityType("RefScenario", "Employee").getProperty("Age");
     EdmProperty edmProperty = (EdmProperty) edmTyped;
 
-    ODataEntityContent content = s.writeProperty(edmProperty, this.employeeData.get("Age"));
-    assertNotNull(content);
-    assertNotNull(content.getContent());
-    assertEquals(ContentType.APPLICATION_XML.toString() + "; charset=utf-8", content.getContentHeader());
-    String xml = StringHelper.inputStreamToString(content.getContent());
+    ODataResponse response = s.writeProperty(edmProperty, this.employeeData.get("Age"));
+    assertNotNull(response);
+    assertNotNull(response.getEntity());
+    assertEquals(ContentType.APPLICATION_XML.toString() + "; charset=utf-8", response.getContentHeader());
+    String xml = StringHelper.inputStreamToString((InputStream)response.getEntity());
     assertNotNull(xml);
 
     assertXpathExists("/d:Age", xml);
@@ -65,11 +67,11 @@ public class XmlPropertySerializationTest extends AbstractProviderTest {
     EdmTyped edmTyped = MockFacade.getMockEdm().getEntityType("RefScenario", "Employee").getProperty("ImageUrl");
     EdmProperty edmProperty = (EdmProperty) edmTyped;
 
-    ODataEntityContent content = s.writeProperty(edmProperty, this.employeeData.get("ImageUrl"));
-    assertNotNull(content);
-    assertNotNull(content.getContent());
-    assertEquals(ContentType.APPLICATION_XML.toString() + "; charset=utf-8", content.getContentHeader());
-    String xml = StringHelper.inputStreamToString(content.getContent());
+    ODataResponse response = s.writeProperty(edmProperty, this.employeeData.get("ImageUrl"));
+    assertNotNull(response);
+    assertNotNull(response.getEntity());
+    assertEquals(ContentType.APPLICATION_XML.toString() + "; charset=utf-8", response.getContentHeader());
+    String xml = StringHelper.inputStreamToString((InputStream)response.getEntity());
     assertNotNull(xml);
 
     assertXpathExists("/d:ImageUrl", xml);
@@ -86,11 +88,11 @@ public class XmlPropertySerializationTest extends AbstractProviderTest {
     EdmTyped edmTyped = edmEntityType.getProperty("Location");
     EdmProperty edmProperty = (EdmProperty) edmTyped;
 
-    ODataEntityContent content = s.writeProperty(edmProperty, this.employeeData.get("Location"));
-    assertNotNull(content);
-    assertNotNull(content.getContent());
-    assertEquals(ContentType.APPLICATION_XML.toString() + "; charset=utf-8", content.getContentHeader());
-    String xml = StringHelper.inputStreamToString(content.getContent());
+    ODataResponse response = s.writeProperty(edmProperty, this.employeeData.get("Location"));
+    assertNotNull(response);
+    assertNotNull(response.getEntity());
+    assertEquals(ContentType.APPLICATION_XML.toString() + "; charset=utf-8", response.getContentHeader());
+    String xml = StringHelper.inputStreamToString((InputStream)response.getEntity());
     assertNotNull(xml);
 
     this.log.debug(xml);
