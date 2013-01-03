@@ -23,38 +23,60 @@ import com.sap.core.odata.core.ep.aggregator.EntityPropertyInfo;
 public class XmlPropertyEntityProvider {
 
   /**
-   * Append {@link Object} <code>value</code> based on {@link EntityPropertyInfo} to {@link XMLStreamWriter}.
-   * Based on <code>isRootElement</code> the default namespace is written or not.
+   * Append {@link Object} <code>value</code> based on {@link EntityPropertyInfo} to {@link XMLStreamWriter}
+   * in an already existing XML structure.
+   * 
+   * @param writer
+   * @param name  Name of the outer XML tag
+   * @param propertyInfo
+   * @param value
+   * @throws ODataEntityProviderException
+   */
+  public void append(XMLStreamWriter writer, String name, EntityPropertyInfo propertyInfo, Object value) throws ODataEntityProviderException {
+    try {
+      if (hasCustomNamespace(propertyInfo))
+        writeStartElementWithCustomNamespace(writer, propertyInfo, name);
+      else
+        writer.writeStartElement(Edm.NAMESPACE_D_2007_08, name);
+
+      if (propertyInfo.isComplex())
+        appendProperty(writer, (EntityComplexPropertyInfo) propertyInfo, value);
+      else
+        appendProperty(writer, propertyInfo, value);
+
+      writer.writeEndElement();
+    } catch (XMLStreamException e) {
+      throw new ODataEntityProviderException(ODataEntityProviderException.COMMON, e);
+    } catch (EdmException e) {
+      throw new ODataEntityProviderException(ODataEntityProviderException.COMMON, e);
+    }
+  }
+
+  /**
+   * Append {@link Object} <code>value</code> based on {@link EntityPropertyInfo} to {@link XMLStreamWriter}
+   * as a stand-alone XML structure, including writing of default namespace declarations.
+   * The name of the outermost XML element comes from the {@link EntityPropertyInfo}.
    * 
    * @param writer
    * @param propertyInfo
    * @param value
-   * @param isRootElement
    * @throws ODataEntityProviderException
    */
-  public void append(XMLStreamWriter writer, EntityPropertyInfo propertyInfo, Object value, boolean isRootElement) throws ODataEntityProviderException {
+  public void append(XMLStreamWriter writer, EntityPropertyInfo propertyInfo, Object value) throws ODataEntityProviderException {
     try {
-      String name = propertyInfo.getName();
+      writer.writeStartElement(propertyInfo.getName());
+      writer.writeDefaultNamespace(Edm.NAMESPACE_D_2007_08);
+      writer.writeNamespace(Edm.PREFIX_M, Edm.NAMESPACE_M_2007_08);
 
-      if (isRootElement) {
-        writer.writeStartElement(name);
-        writer.writeDefaultNamespace(Edm.NAMESPACE_D_2007_08);
-        writer.writeNamespace(Edm.PREFIX_M, Edm.NAMESPACE_M_2007_08);
-      } else if (hasCustomNamespace(propertyInfo)) {
-        writeStartElementWithCustomNamespace(writer, propertyInfo, name);
-      } else {
-        writer.writeStartElement(Edm.NAMESPACE_D_2007_08, name);
-      }
-
-      if (propertyInfo.isComplex()) {
-        EntityComplexPropertyInfo ecp = (EntityComplexPropertyInfo) propertyInfo;
-        appendProperty(writer, ecp, value);
-      } else {
+      if (propertyInfo.isComplex())
+        appendProperty(writer, (EntityComplexPropertyInfo) propertyInfo, value);
+      else
         appendProperty(writer, propertyInfo, value);
-      }
 
       writer.writeEndElement();
-    } catch (Exception e) {
+    } catch (XMLStreamException e) {
+      throw new ODataEntityProviderException(ODataEntityProviderException.COMMON, e);
+    } catch (EdmException e) {
       throw new ODataEntityProviderException(ODataEntityProviderException.COMMON, e);
     }
   }
@@ -77,7 +99,7 @@ public class XmlPropertyEntityProvider {
       List<EntityPropertyInfo> propertyInfos = propertyInfo.getPropertyInfos();
       for (EntityPropertyInfo childPropertyInfo : propertyInfos) {
         Object childValue = extractChildValue(value, childPropertyInfo.getName());
-        append(writer, childPropertyInfo, childValue, false);
+        append(writer, childPropertyInfo.getName(), childPropertyInfo, childValue);
       }
     }
   }

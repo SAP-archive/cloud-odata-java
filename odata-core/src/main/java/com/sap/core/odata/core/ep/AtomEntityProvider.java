@@ -129,7 +129,7 @@ public class AtomEntityProvider extends ODataEntityProvider {
       XMLStreamWriter writer = XMLOutputFactory.newInstance().createXMLStreamWriter(outStream, DEFAULT_CHARSET);
 
       XmlPropertyEntityProvider ps = new XmlPropertyEntityProvider();
-      ps.append(writer, propertyInfo, value, true);
+      ps.append(writer, propertyInfo, value);
 
       writer.flush();
       outStream.flush();
@@ -319,7 +319,7 @@ public class AtomEntityProvider extends ODataEntityProvider {
     return ODataResponse.entity(buffer.getInputStream()).contentHeader(createContentHeader(ContentType.APPLICATION_XML)).build();
   }
 
-  private ODataResponse writeCollection(final String name, final EntityPropertyInfo propertyInfo, final List<?> data) throws ODataEntityProviderException {
+  private ODataResponse writeCollection(final EntityPropertyInfo propertyInfo, final List<?> data) throws ODataEntityProviderException {
     OutputStream outStream = null;
 
     try {
@@ -327,7 +327,7 @@ public class AtomEntityProvider extends ODataEntityProvider {
       outStream = buffer.getOutputStream();
       XMLStreamWriter writer = XMLOutputFactory.newInstance().createXMLStreamWriter(outStream, DEFAULT_CHARSET);
 
-      XmlCollectionEntityProvider.append(writer, name, propertyInfo, data);
+      XmlCollectionEntityProvider.append(writer, propertyInfo, data);
 
       writer.flush();
       outStream.flush();
@@ -363,7 +363,7 @@ public class AtomEntityProvider extends ODataEntityProvider {
 
       final EntityPropertyInfo info = EntityInfoAggregator.create(functionImport);
       if (isCollection) {
-        return writeCollection(functionImport.getName(), info, (List<?>) data);
+        return writeCollection(info, (List<?>) data);
       } else {
         return writeSingleTypedElement(info, data);
       }

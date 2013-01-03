@@ -96,7 +96,7 @@ public class AtomEntryEntityProvider {
         if (!customMapping.isFcKeepInContent()) {
           XmlPropertyEntityProvider aps = new XmlPropertyEntityProvider();
           Object value = data.get(info.getName());
-          aps.append(writer, info, value, false);
+          aps.append(writer, info.getName(), info, value);
         }
       }
     } catch (Exception e) {
@@ -394,7 +394,7 @@ public class AtomEntryEntityProvider {
         if (propertyInfo != null && isNotMappedViaCustomMapping(propertyInfo)) {
           Object value = data.get(propertyName);
           XmlPropertyEntityProvider aps = new XmlPropertyEntityProvider();
-          aps.append(writer, propertyInfo, value, false);
+          aps.append(writer, propertyInfo.getName(), propertyInfo, value);
         }
       }
 
