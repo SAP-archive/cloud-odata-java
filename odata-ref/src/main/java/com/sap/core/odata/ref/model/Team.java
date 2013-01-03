@@ -3,6 +3,9 @@ package com.sap.core.odata.ref.model;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+* @author SAP AG
+*/
 public class Team {
   private static int counter = 1;
   private int id;
@@ -67,14 +70,10 @@ public class Team {
   public boolean equals(Object obj) {
     if (this == obj)
       return true;
-    if (obj == null)
+    if (obj == null || getClass() != obj.getClass())
       return false;
-    if (getClass() != obj.getClass())
-      return false;
-    Team other = (Team) obj;
-    if (id != other.id)
-      return false;
-    return true;
+
+    return id == ((Team) obj).id;
   }
 
   @Override

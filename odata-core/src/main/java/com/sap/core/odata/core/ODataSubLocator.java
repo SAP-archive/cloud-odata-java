@@ -27,7 +27,6 @@ import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.UriInfo;
 
-
 import com.sap.core.odata.api.enums.ContentType;
 import com.sap.core.odata.api.exception.ODataBadRequestException;
 import com.sap.core.odata.api.exception.ODataException;
@@ -151,7 +150,11 @@ public final class ODataSubLocator implements ODataLocator {
 
   @DELETE
   public Response handleDelete() throws ODataException {
-    return Response.ok().entity("DELETE: status 200 ok").build();
+    final List<ODataPathSegment> pathSegments = context.getUriInfo().getODataPathSegmentList();
+    final UriParserResultImpl uriParserResult = (UriParserResultImpl) uriParser.parse(pathSegments, queryParameters);
+
+    final ODataResponse odataResponse = dispatcher.dispatch(ODataHttpMethod.DELETE, uriParserResult, null);
+    return convertResponse(odataResponse);
   }
 
   @OPTIONS

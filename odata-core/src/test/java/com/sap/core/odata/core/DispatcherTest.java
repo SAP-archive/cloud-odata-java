@@ -33,6 +33,10 @@ import com.sap.core.odata.core.enums.ODataHttpMethod;
 import com.sap.core.odata.core.uri.UriParserResultImpl;
 import com.sap.core.odata.core.uri.UriType;
 
+/**
+ * Tests for request dispatching according to URI type and HTTP method
+ * @author SAP AG
+ */
 public class DispatcherTest {
 
   private static ODataService service;
@@ -50,7 +54,7 @@ public class DispatcherTest {
     Entity entity = mock(Entity.class);
     when(entity.readEntity(any(UriParserResultImpl.class), any(ContentType.class))).thenAnswer(getAnswer());
     when(entity.existsEntity(any(UriParserResultImpl.class), any(ContentType.class))).thenAnswer(getAnswer());
-    when(entity.deleteEntity(any(ContentType.class))).thenAnswer(getAnswer());
+    when(entity.deleteEntity(any(UriParserResultImpl.class), any(ContentType.class))).thenAnswer(getAnswer());
     when(entity.updateEntity(any(ContentType.class))).thenAnswer(getAnswer());
 
     EntityComplexProperty entityComplexProperty = mock(EntityComplexProperty.class);
@@ -69,7 +73,7 @@ public class DispatcherTest {
     EntityLink entityLink = mock(EntityLink.class);
     when(entityLink.readEntityLink(any(UriParserResultImpl.class), any(ContentType.class))).thenAnswer(getAnswer());
     when(entityLink.existsEntityLink(any(UriParserResultImpl.class), any(ContentType.class))).thenAnswer(getAnswer());
-    when(entityLink.deleteEntityLink(any(ContentType.class))).thenAnswer(getAnswer());
+    when(entityLink.deleteEntityLink(any(UriParserResultImpl.class), any(ContentType.class))).thenAnswer(getAnswer());
     when(entityLink.updateEntityLink(any(ContentType.class))).thenAnswer(getAnswer());
 
     EntityLinks entityLinks = mock(EntityLinks.class);
@@ -131,7 +135,8 @@ public class DispatcherTest {
     UriParserResultImpl uriParserResult = mock(UriParserResultImpl.class);
     when(uriParserResult.getUriType()).thenReturn(uriType);
     when(uriParserResult.isValue()).thenReturn(isValue);
-    final ODataResponse response = dispatcher.dispatch(method, uriParserResult, ContentType.APPLICATION_XML);
+    final ContentType contentType = method == ODataHttpMethod.GET ? ContentType.APPLICATION_XML : null;
+    final ODataResponse response = dispatcher.dispatch(method, uriParserResult, contentType);
     assertEquals(expectedMethodName, response.getEntity());
   }
 
@@ -187,10 +192,6 @@ public class DispatcherTest {
     checkDispatch(ODataHttpMethod.MERGE, UriType.URI5, true, "updateEntitySimplePropertyValue");
 
     checkDispatch(ODataHttpMethod.GET, UriType.URI6A, "readEntity");
-    checkDispatch(ODataHttpMethod.PUT, UriType.URI6A, "updateEntity");
-    checkDispatch(ODataHttpMethod.DELETE, UriType.URI6A, "deleteEntity");
-    checkDispatch(ODataHttpMethod.PATCH, UriType.URI6A, "updateEntity");
-    checkDispatch(ODataHttpMethod.MERGE, UriType.URI6A, "updateEntity");
 
     checkDispatch(ODataHttpMethod.GET, UriType.URI6B, "readEntitySet");
     checkDispatch(ODataHttpMethod.POST, UriType.URI6B, "createEntity");
@@ -254,7 +255,11 @@ public class DispatcherTest {
     wrongDispatch(ODataHttpMethod.POST, UriType.URI5);
     wrongDispatch(ODataHttpMethod.DELETE, UriType.URI5);
 
+    wrongDispatch(ODataHttpMethod.PUT, UriType.URI6A);
     wrongDispatch(ODataHttpMethod.POST, UriType.URI6A);
+    wrongDispatch(ODataHttpMethod.DELETE, UriType.URI6A);
+    wrongDispatch(ODataHttpMethod.PATCH, UriType.URI6A);
+    wrongDispatch(ODataHttpMethod.MERGE, UriType.URI6A);
 
     wrongDispatch(ODataHttpMethod.PUT, UriType.URI6B);
     wrongDispatch(ODataHttpMethod.DELETE, UriType.URI6B);

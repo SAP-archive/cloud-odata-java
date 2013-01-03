@@ -88,4 +88,22 @@ public interface ListsDataSource {
    * @return the new data object
    */
   Object newDataObject(EdmEntitySet entitySet) throws ODataNotImplementedException, EdmException, ODataApplicationException;
+
+  /**
+   * <p>Deletes a single data object identified by the specified entity set and key.</p>
+   * @param entitySet  the {@link EdmEntitySet} of the entity to be deleted
+   * @param keys  the entity key as map of key names to key values
+   */
+  void deleteData(EdmEntitySet entitySet, Map<String, Object> keys) throws ODataNotImplementedException, ODataNotFoundException, EdmException, ODataApplicationException;
+
+  /**
+   * <p>Deletes the relation from the specified source data to a target entity
+   * specified by entity set and key.</p>
+   * @param sourceEntitySet  the {@link EdmEntitySet} of the source entity
+   * @param sourceData  the data object of the source entity
+   * @param targetEntitySet  the {@link EdmEntitySet} of the target entity
+   * @param targetKeys  the key of the target entity as map of key names to key values
+   *                    (optional)
+   */
+  void deleteRelation(EdmEntitySet sourceEntitySet, Object sourceData, EdmEntitySet targetEntitySet, Map<String, Object> targetKeys) throws ODataNotImplementedException, ODataNotFoundException, EdmException, ODataApplicationException;
 }

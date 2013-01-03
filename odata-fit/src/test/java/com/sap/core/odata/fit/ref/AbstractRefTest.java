@@ -6,11 +6,12 @@ import static org.junit.Assert.assertTrue;
 
 import org.apache.http.HttpHeaders;
 import org.apache.http.HttpResponse;
+import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpGet;
 
 import com.sap.core.odata.api.edm.provider.EdmProvider;
-import com.sap.core.odata.api.enums.HttpStatusCodes;
 import com.sap.core.odata.api.enums.ContentType;
+import com.sap.core.odata.api.enums.HttpStatusCodes;
 import com.sap.core.odata.api.processor.ODataSingleProcessor;
 import com.sap.core.odata.api.service.ODataSingleProcessorService;
 import com.sap.core.odata.ref.edm.ScenarioEdmProvider;
@@ -121,5 +122,22 @@ public class AbstractRefTest extends AbstractFitTest {
     final String entityTag = response.getFirstHeader(HttpHeaders.ETAG).getValue();
     assertNotNull(entityTag);
     assertEquals(expectedEtag, entityTag);
+  }
+
+  protected void deleteUri(final String uri, final HttpStatusCodes expectedStatusCode) throws Exception {
+    final HttpResponse response = getHttpClient().execute(new HttpDelete(getEndpoint() + uri));
+
+    assertNotNull(response);
+    assertEquals(expectedStatusCode.getStatusCode(), response.getStatusLine().getStatusCode());
+
+    if (expectedStatusCode == HttpStatusCodes.NO_CONTENT)
+      assertTrue(response.getEntity() == null || response.getEntity().getContent() == null);
+    else
+      if (response.getEntity() != null)
+        response.getEntity().getContent().close();
+  }
+
+  protected void deleteUriOk(final String uri) throws Exception {
+    deleteUri(uri, HttpStatusCodes.NO_CONTENT);
   }
 }
