@@ -35,4 +35,13 @@ public class JPQLStatement {
 		public abstract JPQLStatement build( );
 	}
 	
+	public static class Operator {
+		public static final String STRING_OPERATOR_EQ = "=";
+		public static final String STRING_OPERATOR_NE = "<>";
+		public static final String STRING_OPERATOR_LT = "<";
+		public static final String STRING_OPERATOR_LE = "<=";
+		public static final String STRING_OPERATOR_GT = ">";
+		public static final String STRING_OPERATOR_GE = ">="; 		
+	}
+	
 }
