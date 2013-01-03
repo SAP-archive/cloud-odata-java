@@ -47,10 +47,10 @@ public class SalesOrderHeader {
 	@Embedded
 	private BuyerAddress buyerAddress;
 
-	@Column(name = "CURRENCY_CODE")
+	@Column(name = "CURRENCY_CODE",length = 10)
 	private String currencyCode;
 
-	@Column(name = "NET_AMOUNT")
+	@Column(name = "NET_AMOUNT",precision = 5)
 	private double netAmount;
 
 	@Column(name = "DELIVERY_STATUS")

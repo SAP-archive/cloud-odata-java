@@ -1,15 +1,19 @@
 package com.sap.core.odata.processor.jpa.access;
 
+import java.lang.reflect.AnnotatedElement;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+import javax.persistence.Column;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.metamodel.Attribute;
 import javax.persistence.metamodel.Attribute.PersistentAttributeType;
+import javax.persistence.metamodel.EmbeddableType;
 import javax.persistence.metamodel.Metamodel;
 import javax.persistence.metamodel.SingularAttribute;
 
+import com.sap.core.odata.api.edm.EdmFacets;
 import com.sap.core.odata.api.edm.EdmSimpleTypeKind;
 import com.sap.core.odata.api.edm.FullQualifiedName;
 import com.sap.core.odata.api.edm.provider.Association;
@@ -32,11 +36,12 @@ public class JPAEdmBuilderV2 implements JPAEdmBuilder {
 	private String pUnitName;
 	private EntityManagerFactory emf = null;
 	private Metamodel metaModel = null;
-
+	private List<ComplexType> complexTypes;
 	public JPAEdmBuilderV2(String pUnitName, EntityManagerFactory emf) {
 		this.pUnitName = pUnitName;
 		this.emf = emf;
 		metaModel = this.emf.getMetamodel();
+		complexTypes = new ArrayList<ComplexType>();
 	}
 
 	@Override
@@ -51,8 +56,12 @@ public class JPAEdmBuilderV2 implements JPAEdmBuilder {
 		// Set Entity Types
 		schema.setEntityTypes(getEntityTypes());
 
-		// Set Complex Types
-		schema.setComplexTypes(getComplexTypes());
+		
+		/*// Set Complex Types
+		if(!complexTypes.isEmpty())
+		{
+			schema.setComplexTypes(complexTypes);
+		}*/
 
 		// Set Entity Container
 		schema.setEntityContainers(getEntityContainers());
@@ -95,30 +104,27 @@ public class JPAEdmBuilderV2 implements JPAEdmBuilder {
 		return entityType;
 	}
 
-	@Override
-	public ComplexType getComplexType(FullQualifiedName fullQualifiedName)
+	
+	private ComplexType getComplexType(Attribute<?, ?> attribute)
 			throws ODataJPAModelException {
-		String complexTypeName = fullQualifiedName.getName();
 		List<Property> properties = new ArrayList<Property>();
-		for (javax.persistence.metamodel.EmbeddableType<?> jpaEntityType : metaModel
-				.getEmbeddables()) {
-			if (jpaEntityType.getJavaType().getName().equals(complexTypeName)) {
-				for (Attribute<?, ?> attribute : jpaEntityType.getAttributes()) {
-					if (attribute.isCollection()) {
+		String complexTypeName = pUnitName+"."+attribute.getName();
+		EmbeddableType<?> embdType = metaModel.embeddable(attribute.getJavaType());
+				for (Attribute<?, ?> attr : embdType.getAttributes()) {
+					if (attr.isCollection()) {
 					} else if (PersistentAttributeType.EMBEDDED.toString()
-							.equals(attribute.getPersistentAttributeType()
+							.equals(attr.getPersistentAttributeType()
 									.toString())) {
-						properties.add(createComplexProperty(attribute));
+						properties.add(createComplexProperty(attr));
 					} else if (PersistentAttributeType.BASIC.toString().equals(
-							attribute.getPersistentAttributeType().toString())) {
-						properties.add(createSimpleProperty(attribute));
+							attr.getPersistentAttributeType().toString())) {
+						properties.add(createSimpleProperty(attr));
 					}
 				}
-				return new ComplexType().setName(fullQualifiedName.getName())
+				return new ComplexType().setName(complexTypeName)
 						.setProperties(properties);
-			}
-		}
-		return null;
+		
+		
 	}
 	
 	@Override
@@ -150,17 +156,7 @@ public class JPAEdmBuilderV2 implements JPAEdmBuilder {
 		return entitySets;
 	}
 
-	private List<ComplexType> getComplexTypes() throws ODataJPAModelException {
-		Set<javax.persistence.metamodel.EmbeddableType<?>> jpaComplexTypes = metaModel
-				.getEmbeddables();
-		List<ComplexType> complexTypes = new ArrayList<ComplexType>();
-		for (javax.persistence.metamodel.EmbeddableType<?> jpaComplexType : jpaComplexTypes) {
-			complexTypes.add(getComplexType(new FullQualifiedName(pUnitName,
-					jpaComplexType.getJavaType().getName())));
-		}
-
-		return complexTypes;
-	}
+	
 
 	/*
 	 * private Key getKey(javax.persistence.metamodel.EntityType<?>
@@ -185,6 +181,7 @@ public class JPAEdmBuilderV2 implements JPAEdmBuilder {
 			Key entityKey) throws ODataJPAModelException {
 
 		List<Property> properties = new ArrayList<Property>();
+		SimpleProperty simpleProperty;
 		for (Attribute<?, ?> jpaAttribute : jpaEntityType.getAttributes()) {
 			if (PersistentAttributeType.EMBEDDED.toString().equals(
 					jpaAttribute.getPersistentAttributeType().toString())) {
@@ -192,15 +189,21 @@ public class JPAEdmBuilderV2 implements JPAEdmBuilder {
 						.equals(jpaAttribute.getJavaType())) {
 					formKey(entityKey, jpaAttribute);
 				}
-				// To be implemented later
-				properties.add(createComplexProperty(jpaAttribute));
-			} else if (PersistentAttributeType.BASIC.toString().equals(
+				/*// To be implemented later
+				complexTypes.add(getComplexType(jpaAttribute));
+				//properties.add(createComplexProperty(jpaAttribute));
+*/			} else if (PersistentAttributeType.BASIC.toString().equals(
 					jpaAttribute.getPersistentAttributeType().toString())) {
-				properties.add(createSimpleProperty(jpaAttribute));
+				simpleProperty = createSimpleProperty(jpaAttribute);
 				SingularAttribute<?, ?> attribute = (SingularAttribute<?, ?>) jpaAttribute;
 				if (attribute.isId()) {
+					Facets facet = (Facets) simpleProperty.getFacets();
+					facet.setNullable(false);
+					simpleProperty.setFacets(facet);
 					formKey(entityKey, jpaAttribute);
+					
 				}
+				properties.add(simpleProperty);
 			}
 		}
 		return properties;
@@ -231,11 +234,36 @@ public class JPAEdmBuilderV2 implements JPAEdmBuilder {
 		simpleProperty.setType(simpleTypeKind);
 
 		// Facets
-		Facets facets = new Facets();
-
-		simpleProperty.setFacets(facets);
+		
+		simpleProperty.setFacets(setFacets(jpaAttribute));
 
 		return simpleProperty;
+	}
+
+	private EdmFacets setFacets(Attribute<?, ?> jpaAttribute) throws ODataJPAModelException {
+		Facets facets = new Facets();
+		if(jpaAttribute.getJavaMember() instanceof AnnotatedElement)
+		{
+			Column column = ((AnnotatedElement) jpaAttribute.getJavaMember()).getAnnotation(Column.class);
+			if(column != null)
+			{
+				EdmSimpleTypeKind attrEmdType = JPATypeConvertor.convertToEdmSimpleType(jpaAttribute.getJavaType());
+				if(column.nullable())
+				{
+					facets.setNullable(true);
+				}
+				if(column.length()!=0 && attrEmdType.equals(EdmSimpleTypeKind.String))
+				{
+					facets.setMaxLength(column.length());
+				}
+				if(column.precision()!=0 && attrEmdType.equals(EdmSimpleTypeKind.Double))
+				{
+					facets.setPrecision(column.precision());
+				}
+			}
+			return facets;
+		}
+		return facets;
 	}
 
 	private ComplexProperty createComplexProperty(Attribute<?, ?> jpaAttribute) {
