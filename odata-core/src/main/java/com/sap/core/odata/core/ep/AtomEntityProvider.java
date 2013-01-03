@@ -89,6 +89,7 @@ public class AtomEntityProvider extends ODataEntityProvider {
       CircleStreamBuffer csb = new CircleStreamBuffer();
       outStream = csb.getOutputStream();
       XMLStreamWriter writer = XMLOutputFactory.newInstance().createXMLStreamWriter(outStream, DEFAULT_CHARSET);
+      writer.writeStartDocument();
 
       AtomEntryEntityProvider as = new AtomEntryEntityProvider(properties);
       EntityInfoAggregator eia = EntityInfoAggregator.create(entitySet);
@@ -127,6 +128,7 @@ public class AtomEntityProvider extends ODataEntityProvider {
       CircleStreamBuffer csb = new CircleStreamBuffer();
       outStream = csb.getOutputStream();
       XMLStreamWriter writer = XMLOutputFactory.newInstance().createXMLStreamWriter(outStream, DEFAULT_CHARSET);
+      writer.writeStartDocument();
 
       XmlPropertyEntityProvider ps = new XmlPropertyEntityProvider();
       ps.append(writer, propertyInfo, value);
@@ -159,6 +161,7 @@ public class AtomEntityProvider extends ODataEntityProvider {
       CircleStreamBuffer csb = new CircleStreamBuffer();
       outStream = csb.getOutputStream();
       XMLStreamWriter writer = XMLOutputFactory.newInstance().createXMLStreamWriter(outStream, DEFAULT_CHARSET);
+      writer.writeStartDocument();
 
       AtomFeedProvider atomFeedProvider = new AtomFeedProvider(properties);
       EdmEntitySet entitySet = entitySetView.getTargetEntitySet();
@@ -257,6 +260,7 @@ public class AtomEntityProvider extends ODataEntityProvider {
 
     try {
       XMLStreamWriter writer = XMLOutputFactory.newInstance().createXMLStreamWriter(outStream, DEFAULT_CHARSET);
+      writer.writeStartDocument();
 
       XmlLinkEntityProvider entity = new XmlLinkEntityProvider(properties);
       final EntityInfoAggregator entityInfo = EntityInfoAggregator.create(entitySet);
@@ -291,6 +295,7 @@ public class AtomEntityProvider extends ODataEntityProvider {
 
     try {
       XMLStreamWriter writer = XMLOutputFactory.newInstance().createXMLStreamWriter(outStream, DEFAULT_CHARSET);
+      writer.writeStartDocument();
 
       XmlLinksEntityProvider entity = new XmlLinksEntityProvider(properties);
       final EntityInfoAggregator entityInfo = EntityInfoAggregator.create(entitySet);
@@ -326,6 +331,7 @@ public class AtomEntityProvider extends ODataEntityProvider {
       CircleStreamBuffer buffer = new CircleStreamBuffer();
       outStream = buffer.getOutputStream();
       XMLStreamWriter writer = XMLOutputFactory.newInstance().createXMLStreamWriter(outStream, DEFAULT_CHARSET);
+      writer.writeStartDocument();
 
       XmlCollectionEntityProvider.append(writer, propertyInfo, data);
 
