@@ -64,7 +64,8 @@ public class Employee {
 
   public void setManager(Manager manager) {
     this.manager = manager;
-    this.manager.getEmployees().add(this);
+    if (manager != null)
+      this.manager.getEmployees().add(this);
   }
 
   public Manager getManager() {
@@ -74,7 +75,8 @@ public class Employee {
 
   public void setTeam(Team team) {
     this.team = team;
-    this.team.getEmployees().add(this);
+    if (team != null)
+      this.team.getEmployees().add(this);
   }
 
   public Team getTeam() {
@@ -83,7 +85,8 @@ public class Employee {
 
   public void setRoom(Room room) {
     this.room = room;
-    this.room.getEmployees().add(this);
+    if (room != null)
+      this.room.getEmployees().add(this);
   }
 
   public Room getRoom() {
@@ -163,14 +166,10 @@ public class Employee {
   public boolean equals(Object obj) {
     if (this == obj)
       return true;
-    if (obj == null)
+    if (obj == null || getClass() != obj.getClass())
       return false;
-    if (getClass() != obj.getClass())
-      return false;
-    Employee other = (Employee) obj;
-    if (employeeId != other.employeeId)
-      return false;
-    return true;
+
+    return employeeId == ((Employee) obj).employeeId;
   }
 
   @Override

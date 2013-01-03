@@ -20,6 +20,7 @@ import com.sap.core.odata.api.processor.aspect.FunctionImport;
 import com.sap.core.odata.api.processor.aspect.FunctionImportValue;
 import com.sap.core.odata.api.processor.aspect.Metadata;
 import com.sap.core.odata.api.processor.aspect.ServiceDocument;
+import com.sap.core.odata.api.uri.resultviews.DeleteResultView;
 import com.sap.core.odata.api.uri.resultviews.GetComplexPropertyView;
 import com.sap.core.odata.api.uri.resultviews.GetEntityCountView;
 import com.sap.core.odata.api.uri.resultviews.GetEntityLinkCountView;
@@ -226,7 +227,7 @@ public abstract class ODataSingleProcessor
    * @see EntityLink
    */
   @Override
-  public ODataResponse deleteEntityLink(ContentType contentType) throws ODataException {
+  public ODataResponse deleteEntityLink(DeleteResultView uriParserResultView, ContentType contentType) throws ODataException {
     throw new ODataNotImplementedException();
   }
 
@@ -298,7 +299,7 @@ public abstract class ODataSingleProcessor
    * @see Entity
    */
   @Override
-  public ODataResponse deleteEntity(ContentType contentType) throws ODataException {
+  public ODataResponse deleteEntity(DeleteResultView uriParserResultView, ContentType contentType) throws ODataException {
     throw new ODataNotImplementedException();
   }
 

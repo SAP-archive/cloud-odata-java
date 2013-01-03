@@ -1,6 +1,7 @@
 package com.sap.core.odata.core;
 
 import com.sap.core.odata.api.enums.ContentType;
+import com.sap.core.odata.api.exception.ODataBadRequestException;
 import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.api.exception.ODataMethodNotAllowedException;
 import com.sap.core.odata.api.processor.ODataResponse;
@@ -10,6 +11,10 @@ import com.sap.core.odata.core.enums.ODataHttpMethod;
 import com.sap.core.odata.core.exception.ODataRuntimeException;
 import com.sap.core.odata.core.uri.UriParserResultImpl;
 
+/**
+ * Request dispatching according to URI type and HTTP method
+ * @author SAP AG
+ */
 public class Dispatcher {
 
   public Dispatcher(ODataService service) {
@@ -18,7 +23,7 @@ public class Dispatcher {
 
   private ODataService service;
 
-  public ODataResponse dispatch(final ODataHttpMethod method, final UriParserResultImpl uriParserResult, ContentType contentType) throws ODataException {
+  public ODataResponse dispatch(final ODataHttpMethod method, final UriParserResultImpl uriParserResult, final ContentType contentType) throws ODataException {
     switch (uriParserResult.getUriType()) {
     case URI0:
       if (method == ODataHttpMethod.GET)
@@ -38,16 +43,26 @@ public class Dispatcher {
       }
 
     case URI2:
-    case URI6A:
       switch (method) {
       case GET:
         return this.service.getEntityProcessor().readEntity(uriParserResult, contentType);
       case PUT:
       case PATCH:
       case MERGE:
-        return this.service.getEntityProcessor().updateEntity(contentType);
+        if (contentType == null
+            && uriParserResult.getExpand().isEmpty()
+            && uriParserResult.getSelect().isEmpty())
+          return this.service.getEntityProcessor().updateEntity(contentType);
+        else
+          throw new ODataBadRequestException(ODataBadRequestException.COMMON);
       case DELETE:
-        return this.service.getEntityProcessor().deleteEntity(contentType);
+        if (contentType == null
+            && uriParserResult.getFilter() == null
+            && uriParserResult.getExpand().isEmpty()
+            && uriParserResult.getSelect().isEmpty())
+          return service.getEntityProcessor().deleteEntity(uriParserResult, contentType);
+        else
+          throw new ODataBadRequestException(ODataBadRequestException.COMMON);
       default:
         throw new ODataMethodNotAllowedException(ODataMethodNotAllowedException.DISPATCH);
       }
@@ -88,6 +103,12 @@ public class Dispatcher {
         throw new ODataMethodNotAllowedException(ODataMethodNotAllowedException.DISPATCH);
       }
 
+    case URI6A:
+      if (method == ODataHttpMethod.GET)
+        return this.service.getEntityProcessor().readEntity(uriParserResult, contentType);
+      else
+        throw new ODataMethodNotAllowedException(ODataMethodNotAllowedException.DISPATCH);
+
     case URI7A:
       switch (method) {
       case GET:
@@ -97,7 +118,10 @@ public class Dispatcher {
       case MERGE:
         return this.service.getEntityLinkProcessor().updateEntityLink(contentType);
       case DELETE:
-        return this.service.getEntityLinkProcessor().deleteEntityLink(contentType);
+        if (contentType == null)
+          return service.getEntityLinkProcessor().deleteEntityLink(uriParserResult, contentType);
+        else
+          throw new ODataBadRequestException(ODataBadRequestException.COMMON);
       default:
         throw new ODataMethodNotAllowedException(ODataMethodNotAllowedException.DISPATCH);
       }

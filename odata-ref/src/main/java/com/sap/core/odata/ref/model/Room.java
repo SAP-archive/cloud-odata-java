@@ -3,6 +3,9 @@ package com.sap.core.odata.ref.model;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+* @author SAP AG
+*/
 public class Room {
   private static int counter = 1;
   private int id;
@@ -56,7 +59,8 @@ public class Room {
 
   public void setBuilding(Building building) {
     this.building = building;
-    this.building.getRooms().add(this);
+    if (building != null)
+      this.building.getRooms().add(this);
   }
 
   public Building getBuilding() {
@@ -84,14 +88,10 @@ public class Room {
   public boolean equals(Object obj) {
     if (this == obj)
       return true;
-    if (obj == null)
+    if (obj == null || getClass() != obj.getClass())
       return false;
-    if (getClass() != obj.getClass())
-      return false;
-    Room other = (Room) obj;
-    if (id != other.id)
-      return false;
-    return true;
+
+    return id == ((Room) obj).id;
   }
 
   @Override

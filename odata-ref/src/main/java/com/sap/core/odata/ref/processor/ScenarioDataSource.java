@@ -2,6 +2,7 @@ package com.sap.core.odata.ref.processor;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -102,16 +103,19 @@ public class ScenarioDataSource implements ListsDataSource {
       ArrayList<Object> data = new ArrayList<Object>();
       if ("Teams".equals(sourceEntitySet.getName())) {
         for (final Employee employee : dataContainer.getEmployeeSet())
-          if (employee.getTeam().getId().equals(((Team) sourceData).getId()))
-            data.add(employee);
+          if (employee.getTeam() != null)
+            if (employee.getTeam().getId().equals(((Team) sourceData).getId()))
+              data.add(employee);
       } else if ("Rooms".equals(sourceEntitySet.getName())) {
         for (final Employee employee : dataContainer.getEmployeeSet())
-          if (employee.getRoom().getId().equals(((Room) sourceData).getId()))
-            data.add(employee);
+          if (employee.getRoom() != null)
+            if (employee.getRoom().getId().equals(((Room) sourceData).getId()))
+              data.add(employee);
       } else if ("Managers".equals(sourceEntitySet.getName())) {
         for (final Employee employee : dataContainer.getEmployeeSet())
-          if (employee.getManager().getId().equals(((Manager) sourceData).getId()))
-            data.add(employee);
+          if (employee.getManager() != null)
+            if (employee.getManager().getId().equals(((Manager) sourceData).getId()))
+              data.add(employee);
       }
       if (data.isEmpty())
         throw new ODataNotFoundException(null);
@@ -311,6 +315,105 @@ public class ScenarioDataSource implements ListsDataSource {
       return new Photo();
     else
       throw new ODataNotImplementedException();
+  }
+
+  @Override
+  public void deleteData(final EdmEntitySet entitySet, final Map<String, Object> keys) throws ODataNotImplementedException, ODataNotFoundException, EdmException, ODataApplicationException {
+    final Object data = readData(entitySet, keys);
+
+    if ("Employees".equals(entitySet.getName())) {
+      if (data instanceof Manager)
+        for (Employee employee : ((Manager) data).getEmployees())
+          employee.setManager(null);
+      ((Employee) data).getTeam().getEmployees().remove(data);
+      ((Employee) data).getRoom().getEmployees().remove(data);
+      ((Employee) data).getManager().getEmployees().remove(data);
+      dataContainer.getEmployeeSet().remove(data);
+    } else if ("Teams".equals(entitySet.getName())) {
+      for (Employee employee : ((Team) data).getEmployees())
+        employee.setTeam(null);
+      dataContainer.getTeamSet().remove(data);
+    } else if ("Rooms".equals(entitySet.getName())) {
+      for (Employee employee : ((Room) data).getEmployees())
+        employee.setRoom(null);
+      ((Room) data).getBuilding().getRooms().remove(data);
+      dataContainer.getRoomSet().remove(data);
+    } else if ("Managers".equals(entitySet.getName())) {
+      for (Employee employee : ((Manager) data).getEmployees())
+        employee.setManager(null);
+      ((Manager) data).getTeam().getEmployees().remove(data);
+      ((Manager) data).getRoom().getEmployees().remove(data);
+      ((Manager) data).getManager().getEmployees().remove(data);
+      dataContainer.getManagerSet().remove(data);
+    } else if ("Buildings".equals(entitySet.getName())) {
+      for (Room room : ((Building) data).getRooms())
+        room.setBuilding(null);
+      dataContainer.getBuildingSet().remove(data);
+    } else if ("Photos".equals(entitySet.getName())) {
+      dataContainer.getPhotoSet().remove(data);
+    } else {
+      throw new ODataNotImplementedException();
+    }
+  }
+
+  @Override
+  public void deleteRelation(final EdmEntitySet sourceEntitySet, Object sourceData, final EdmEntitySet targetEntitySet, final Map<String, Object> targetKeys) throws ODataNotImplementedException, ODataNotFoundException, EdmException, ODataApplicationException {
+    if ("Employees".equals(targetEntitySet.getName())) {
+      if ("Teams".equals(sourceEntitySet.getName())) {
+        for (Iterator<Employee> iterator = ((Team) sourceData).getEmployees().iterator(); iterator.hasNext();) {
+          final Employee employee = iterator.next();
+          if (employee.getId().equals(targetKeys.get("EmployeeId"))) {
+            employee.setTeam(null);
+            iterator.remove();
+          }
+        }
+      } else if ("Rooms".equals(sourceEntitySet.getName())) {
+        for (Iterator<Employee> iterator = ((Room) sourceData).getEmployees().iterator(); iterator.hasNext();) {
+          final Employee employee = iterator.next();
+          if (employee.getId().equals(targetKeys.get("EmployeeId"))) {
+            employee.setRoom(null);
+            iterator.remove();
+          }
+        }
+      } else if ("Managers".equals(sourceEntitySet.getName())) {
+        for (Iterator<Employee> iterator = ((Manager) sourceData).getEmployees().iterator(); iterator.hasNext();) {
+          final Employee employee = iterator.next();
+          if (employee.getId().equals(targetKeys.get("EmployeeId"))) {
+            employee.setManager(null);
+            iterator.remove();
+          }
+        }
+      }
+
+    } else if ("Teams".equals(targetEntitySet.getName())) {
+      ((Employee) sourceData).getTeam().getEmployees().remove(sourceData);
+      ((Employee) sourceData).setTeam(null);
+
+    } else if ("Rooms".equals(targetEntitySet.getName())) {
+      if ("Employees".equals(sourceEntitySet.getName())) {
+        ((Employee) sourceData).getRoom().getEmployees().remove(sourceData);
+        ((Employee) sourceData).setRoom(null);
+      } else if ("Buildings".equals(sourceEntitySet.getName())) {
+        for (Iterator<Room> iterator = ((Building) sourceData).getRooms().iterator(); iterator.hasNext();) {
+          final Room room = iterator.next();
+          if (room.getId().equals(targetKeys.get("Id"))) {
+            room.setBuilding(null);
+            iterator.remove();
+          }
+        }
+      }
+
+    } else if ("Managers".equals(targetEntitySet.getName())) {
+      ((Employee) sourceData).getManager().getEmployees().remove(sourceData);
+      ((Employee) sourceData).setManager(null);
+
+    } else if ("Buildings".equals(targetEntitySet.getName())) {
+      ((Room) sourceData).getBuilding().getRooms().remove(sourceData);
+      ((Room) sourceData).setBuilding(null);
+
+    } else {
+      throw new ODataNotImplementedException();
+    }
   }
 
 }

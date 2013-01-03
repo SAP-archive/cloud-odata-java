@@ -12,6 +12,9 @@ import com.sap.core.odata.api.uri.EdmLiteral;
 import com.sap.core.odata.api.uri.KeyPredicate;
 import com.sap.core.odata.api.uri.NavigationSegment;
 
+/**
+* @author SAP AG
+*/
 public interface DeleteResultView {
   /**
    * @return {@link EdmEntityContainer} the target entity container
@@ -29,7 +32,7 @@ public interface DeleteResultView {
   public EdmEntitySet getTargetEntitySet();
 
   /**
-   * @return {@link EdmFunctionImport} the funktion import
+   * @return {@link EdmFunctionImport} the function import
    */
   public EdmFunctionImport getFunctionImport();
 

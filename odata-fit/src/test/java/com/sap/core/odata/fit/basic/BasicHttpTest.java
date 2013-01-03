@@ -30,6 +30,9 @@ import com.sap.core.odata.api.uri.resultviews.GetServiceDocumentView;
 import com.sap.core.odata.testutils.helper.HttpMerge;
 import com.sap.core.odata.testutils.helper.StringHelper;
 
+/**
+ * @author SAP AG
+ */
 public class BasicHttpTest extends AbstractBasicTest {
 
   @Override
@@ -99,8 +102,8 @@ public class BasicHttpTest extends AbstractBasicTest {
 
     String payload = StringHelper.inputStreamToString(response.getEntity().getContent());
 
-    assertTrue(payload.contains(delete.getMethod()));
-    assertEquals(200, response.getStatusLine().getStatusCode());
+    assertTrue(payload.contains("error"));
+    assertEquals(HttpStatusCodes.NOT_FOUND.getStatusCode(), response.getStatusLine().getStatusCode());
   }
 
   @Test

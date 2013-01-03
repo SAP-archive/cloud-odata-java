@@ -44,8 +44,10 @@ import com.sap.core.odata.api.uri.expression.LiteralExpression;
 import com.sap.core.odata.api.uri.expression.MemberExpression;
 import com.sap.core.odata.api.uri.expression.MethodExpression;
 import com.sap.core.odata.api.uri.expression.OrderByExpression;
+import com.sap.core.odata.api.uri.expression.OrderExpression;
 import com.sap.core.odata.api.uri.expression.PropertyExpression;
 import com.sap.core.odata.api.uri.expression.UnaryExpression;
+import com.sap.core.odata.api.uri.resultviews.DeleteResultView;
 import com.sap.core.odata.api.uri.resultviews.GetComplexPropertyView;
 import com.sap.core.odata.api.uri.resultviews.GetEntityCountView;
 import com.sap.core.odata.api.uri.resultviews.GetEntityLinkCountView;
@@ -243,6 +245,14 @@ public class ListsProcessor extends ODataSingleProcessor {
   }
 
   @Override
+  public ODataResponse deleteEntity(final DeleteResultView uriParserResultView, final ContentType contentType) throws ODataException {
+    dataSource.deleteData(
+        uriParserResultView.getStartEntitySet(),
+        mapKey(uriParserResultView.getKeyPredicates()));
+    return ODataResponse.status(HttpStatusCodes.NO_CONTENT).build();
+  }
+
+  @Override
   public ODataResponse readEntityLink(final GetEntityLinkView uriParserResultView, final ContentType contentType) throws ODataException {
     final Object data = retrieveData(
         uriParserResultView.getStartEntitySet(),
@@ -272,6 +282,36 @@ public class ListsProcessor extends ODataSingleProcessor {
   @Override
   public ODataResponse existsEntityLink(final GetEntityLinkCountView uriParserResultView, final ContentType contentType) throws ODataException {
     return existsEntity((GetEntityCountView) uriParserResultView, contentType);
+  }
+
+  @Override
+  public ODataResponse deleteEntityLink(final DeleteResultView uriParserResultView, final ContentType contentType) throws ODataException {
+    final List<NavigationSegment> navigationSegments = uriParserResultView.getNavigationSegments();
+    final List<NavigationSegment> previousSegments = navigationSegments.subList(0, navigationSegments.size() - 1);
+
+    final Object sourceData = retrieveData(
+        uriParserResultView.getStartEntitySet(),
+        uriParserResultView.getKeyPredicates(),
+        uriParserResultView.getFunctionImport(),
+        mapFunctionParameters(uriParserResultView.getFunctionImportParameters()),
+        previousSegments);
+
+    EdmEntitySet entitySet;
+    if (previousSegments.isEmpty())
+      entitySet = uriParserResultView.getStartEntitySet();
+    else
+      entitySet = previousSegments.get(previousSegments.size() - 1).getEntitySet();
+    final NavigationSegment navigationSegment = navigationSegments.get(navigationSegments.size() - 1);
+    final HashMap<String, Object> keys = mapKey(navigationSegment.getKeyPredicates());
+    final Object targetData = dataSource.readRelatedData(
+        entitySet, sourceData, navigationSegment.getEntitySet(), keys);
+
+    // if (!appliesFilter(targetData, uriParserResultView.getFilter()))
+    if (targetData == null)
+      throw new ODataNotFoundException(ODataNotFoundException.ENTITY);
+
+    dataSource.deleteRelation(entitySet, sourceData, navigationSegment.getEntitySet(), keys);
+    return ODataResponse.status(HttpStatusCodes.NO_CONTENT).build();
   }
 
   @Override
@@ -473,7 +513,7 @@ public class ListsProcessor extends ODataSingleProcessor {
     final Integer count = inlineCount == InlineCount.ALLPAGES ? data.size() : null;
 
     if (orderBy != null)
-      throw new ODataNotImplementedException();
+      sort(data, orderBy);
     else if (skipToken != null || skip != null || top != null)
       sortInDefaultOrder(entitySet, data);
 
@@ -493,6 +533,26 @@ public class ListsProcessor extends ODataSingleProcessor {
         data.remove(top.intValue());
 
     return count;
+  }
+
+  private <T> void sort(List<T> data, final OrderByExpression orderBy) {
+    Collections.sort(data, new Comparator<T>() {
+      @Override
+      public int compare(final T entity1, final T entity2) {
+        try {
+          int result = 0;
+          for (OrderExpression expression : orderBy.getOrders()) {
+            result = evaluateExpression(entity1, expression.getExpression()).compareTo(
+                evaluateExpression(entity2, expression.getExpression()));
+            if (result != 0)
+              break;
+          }
+          return result;
+        } catch (ODataException e) {
+          return 0;
+        }
+      }
+    });
   }
 
   private <T> void sortInDefaultOrder(final EdmEntitySet entitySet, List<T> data) {
