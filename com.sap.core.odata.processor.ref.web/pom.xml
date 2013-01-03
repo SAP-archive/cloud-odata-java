@@ -5,7 +5,6 @@
 	<artifactId>com.sap.core.odata.processor.ref.web</artifactId>
 	<packaging>war</packaging>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>com.sap.core.odata.processor.web Maven Webapp</name>
 	<url>http://maven.apache.org</url>
 	<build>
 			<finalName>com.sap.core.odata.processor.ref.web</finalName>
@@ -24,6 +23,7 @@
 			      <plugin>
 			        <groupId>org.apache.maven.plugins</groupId>
 			        <artifactId>maven-compiler-plugin</artifactId>
+			        <version>2.3.2</version>
 			        <configuration>
 			          <source>1.6</source>
 			          <target>1.6</target>
@@ -40,11 +40,6 @@
 			<scope>test</scope>
 		</dependency>
 		<!-- OData4SAP Support -->
-		<dependency>
-			<groupId>com.sap.core.odata</groupId>
-			<artifactId>OData-Processor</artifactId>
-			<version>0.0.0-SNAPSHOT</version>
-		</dependency>
 		<dependency>
 			<groupId>com.sap.core.odata</groupId>
 			<artifactId>com.sap.core.odata.api</artifactId>
@@ -99,7 +94,13 @@
 			<artifactId>hsqldb</artifactId>
 			<version>1.8.0.10</version>
 		</dependency>
+		<dependency>
+			<groupId>com.sap.core.odata</groupId>
+			<artifactId>com.sap.core.odata.processor</artifactId>
+			<version>0.0.0-SNAPSHOT</version>
+		</dependency>
 	</dependencies>
 
 	
+	<name>OData JPA Reference Scenario</name>
 </project>

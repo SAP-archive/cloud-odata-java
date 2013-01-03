@@ -3,12 +3,37 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-	<artifactId>OData-Processor</artifactId>
+	<artifactId>com.sap.core.odata.processor</artifactId>
 	<packaging>jar</packaging>
 
 	<!-- <parent> <groupId>com.sap.core.odata</groupId> <artifactId>com.sap.core.odata.parent</artifactId> 
 		<version>0.0.0-SNAPSHOT</version> <relativePath>..</relativePath> </parent> -->
-
+	<build>
+		<pluginManagement>
+			<plugins>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-compiler-plugin</artifactId>
+					<version>2.3.2</version>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-jar-plugin</artifactId>
+					<version>2.3.2</version>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-source-plugin</artifactId>
+					<version>2.1.2</version>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-javadoc-plugin</artifactId>
+					<version>2.8.1</version>
+				</plugin>
+			</plugins>
+		</pluginManagement>
+	</build>
 	<dependencies>
 		<dependency>
 			<groupId>javax</groupId>
@@ -66,7 +91,13 @@
 			<version>2.2.2</version>
 		</dependency>
 	</dependencies>
-	
+
+	<distributionManagement>
+		<snapshotRepository>
+			<id>snapshot.repository</id>
+			<url>http://nexus:8081/nexus/content/repositories/deploy.snapshots/</url>
+		</snapshotRepository>
+	</distributionManagement>
 
 
 	<groupId>com.sap.core.odata</groupId>
