@@ -20,6 +20,7 @@ import com.sap.core.odata.api.uri.expression.OrderExpression;
 import com.sap.core.odata.api.uri.expression.OrderType;
 import com.sap.core.odata.api.uri.expression.PropertyExpression;
 import com.sap.core.odata.api.uri.expression.UnaryExpression;
+import com.sap.core.odata.processor.jpa.constants.OdataProcessorConstants;
 
 public class ExpressionParsingUtility {
 	
@@ -63,45 +64,51 @@ public class ExpressionParsingUtility {
 	      case OR:
 	        return Boolean.toString(left.equals("true") || right.equals("true"));
 	      case EQ:
-	        return Boolean.toString(left.equals(right));
+	        //return Boolean.toString(left.equals(right));
+	    	  return left + OdataProcessorConstants.STRING_OPERATOR_EQ+ right;
 	      case NE:
-	        return Boolean.toString(!left.equals(right));
+	        //return Boolean.toString(!left.equals(right));
+	    	  return left + OdataProcessorConstants.STRING_OPERATOR_NE + right;
 	      case LT:
-	        if (binaryType == EdmSimpleTypeKind.String.getEdmSimpleTypeInstance()
+	        /*if (binaryType == EdmSimpleTypeKind.String.getEdmSimpleTypeInstance()
 	            || binaryType == EdmSimpleTypeKind.DateTime.getEdmSimpleTypeInstance()
 	            || binaryType == EdmSimpleTypeKind.DateTimeOffset.getEdmSimpleTypeInstance()
 	            || binaryType == EdmSimpleTypeKind.Guid.getEdmSimpleTypeInstance()
 	            || binaryType == EdmSimpleTypeKind.Time.getEdmSimpleTypeInstance())
 	          return Boolean.toString(left.compareTo(right) < 0);
 	        else
-	          return Boolean.toString(Double.valueOf(left) < Double.valueOf(right));
+	          return Boolean.toString(Double.valueOf(left) < Double.valueOf(right));*/
+	    	  return left + OdataProcessorConstants.STRING_OPERATOR_LT + right;
 	      case LE:
-	        if (binaryType == EdmSimpleTypeKind.String.getEdmSimpleTypeInstance()
+	        /*if (binaryType == EdmSimpleTypeKind.String.getEdmSimpleTypeInstance()
 	            || binaryType == EdmSimpleTypeKind.DateTime.getEdmSimpleTypeInstance()
 	            || binaryType == EdmSimpleTypeKind.DateTimeOffset.getEdmSimpleTypeInstance()
 	            || binaryType == EdmSimpleTypeKind.Guid.getEdmSimpleTypeInstance()
 	            || binaryType == EdmSimpleTypeKind.Time.getEdmSimpleTypeInstance())
 	          return Boolean.toString(left.compareTo(right) <= 0);
 	        else
-	          return Boolean.toString(Double.valueOf(left) <= Double.valueOf(right));
+	          return Boolean.toString(Double.valueOf(left) <= Double.valueOf(right));*/
+	    	  return left + OdataProcessorConstants.STRING_OPERATOR_LE + right;
 	      case GT:
-	        if (binaryType == EdmSimpleTypeKind.String.getEdmSimpleTypeInstance()
+	        /*if (binaryType == EdmSimpleTypeKind.String.getEdmSimpleTypeInstance()
 	            || binaryType == EdmSimpleTypeKind.DateTime.getEdmSimpleTypeInstance()
 	            || binaryType == EdmSimpleTypeKind.DateTimeOffset.getEdmSimpleTypeInstance()
 	            || binaryType == EdmSimpleTypeKind.Guid.getEdmSimpleTypeInstance()
 	            || binaryType == EdmSimpleTypeKind.Time.getEdmSimpleTypeInstance())
 	          return Boolean.toString(left.compareTo(right) > 0);
 	        else
-	          return Boolean.toString(Double.valueOf(left) > Double.valueOf(right));
+	          return Boolean.toString(Double.valueOf(left) > Double.valueOf(right));*/
+	    	  return left + OdataProcessorConstants.STRING_OPERATOR_GT + right;
 	      case GE:
-	        if (binaryType == EdmSimpleTypeKind.String.getEdmSimpleTypeInstance()
+	        /*if (binaryType == EdmSimpleTypeKind.String.getEdmSimpleTypeInstance()
 	            || binaryType == EdmSimpleTypeKind.DateTime.getEdmSimpleTypeInstance()
 	            || binaryType == EdmSimpleTypeKind.DateTimeOffset.getEdmSimpleTypeInstance()
 	            || binaryType == EdmSimpleTypeKind.Guid.getEdmSimpleTypeInstance()
 	            || binaryType == EdmSimpleTypeKind.Time.getEdmSimpleTypeInstance())
 	          return Boolean.toString(left.compareTo(right) >= 0);
 	        else
-	          return Boolean.toString(Double.valueOf(left) >= Double.valueOf(right));
+	          return Boolean.toString(Double.valueOf(left) >= Double.valueOf(right));*/
+	    	  return left + OdataProcessorConstants.STRING_OPERATOR_GE + right;
 	      case PROPERTY_ACCESS:
 	        throw new ODataNotImplementedException();
 	      default:
@@ -109,11 +116,12 @@ public class ExpressionParsingUtility {
 	      }
 
 	    case PROPERTY:
-	      final EdmProperty property = ((PropertyExpression) whereExpression).getEdmProperty();
-	      if (property == null)
-	        return "";
+//	      final EdmProperty property = ((PropertyExpression) whereExpression).getEdmProperty();
+//	      if (property == null)
+//	        return "";
 	      //final EdmSimpleType type = (EdmSimpleType) property.getType();
 	      //return type.valueToString(getPropertyValue(data, property), EdmLiteralKind.DEFAULT, property.getFacets());
+	    	return ((PropertyExpression) whereExpression).getPropertyName();//TODO - check
 
 //	    case MEMBER:
 //	      final MemberExpression memberExpression = (MemberExpression) expression;
@@ -130,9 +138,10 @@ public class ExpressionParsingUtility {
 //	      return memberType.valueToString(getPropertyValue(data, propertyPath), EdmLiteralKind.DEFAULT, memberProperty.getFacets());
 
 	    case LITERAL:
-	      final LiteralExpression literal = (LiteralExpression) whereExpression;
-	      final EdmSimpleType literalType = (EdmSimpleType) literal.getEdmType();
-	      return literalType.valueToString(literalType.valueOfString(literal.getUriLiteral(), EdmLiteralKind.URI, null), EdmLiteralKind.DEFAULT, null);
+	    	final LiteralExpression literal = (LiteralExpression) whereExpression;
+		      final EdmSimpleType literalType = (EdmSimpleType) literal.getEdmType();
+		      //return literalType.valueToString(literalType.valueOfString(literal.getUriLiteral(), EdmLiteralKind.URI, null), EdmLiteralKind.DEFAULT, null);
+		      return literalType.getName(); //TODO
 
 	    case METHOD:
 	      final MethodExpression methodExpression = (MethodExpression) whereExpression;
@@ -208,7 +217,7 @@ public class ExpressionParsingUtility {
 					e.printStackTrace();
 				}				
 			}			
-		}
+		} 
 		return orderByMap;		
 	}
 
