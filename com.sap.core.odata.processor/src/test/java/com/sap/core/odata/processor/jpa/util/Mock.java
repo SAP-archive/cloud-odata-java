@@ -1,55 +1,90 @@
 package com.sap.core.odata.processor.jpa.util;
-
 import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Set;
-
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.metamodel.Attribute;
-import javax.persistence.metamodel.EntityType;
-import javax.persistence.metamodel.Metamodel;
-import javax.persistence.metamodel.SingularAttribute;
+import java.util.List;
 
 import org.easymock.EasyMock;
 
+import com.sap.core.odata.api.edm.FullQualifiedName;
+import com.sap.core.odata.api.edm.provider.EntityContainer;
+import com.sap.core.odata.api.edm.provider.EntitySet;
+import com.sap.core.odata.api.edm.provider.EntityType;
+import com.sap.core.odata.api.edm.provider.Schema;
+import com.sap.core.odata.processor.jpa.access.api.JPAEdmBuilder;
+import com.sap.core.odata.processor.jpa.api.ODataJPAContext;
+import com.sap.core.odata.processor.jpa.exception.ODataJPAModelException;
 import com.sap.core.odata.processor.jpa.util.MockData;
-
 public class Mock {
 	
-	
-	
-	public static EntityManagerFactory mockEntityManagerFactory()
+	public static JPAEdmBuilder mockjpaEdmBuilder() throws ODataJPAModelException
 	{
-		EntityManagerFactory emf = EasyMock.createMock(EntityManagerFactory.class);
-		EasyMock.expect(emf.getMetamodel()).andReturn(mockMetaModel());
-		return emf;
+		JPAEdmBuilder builder = EasyMock.createMock(JPAEdmBuilder.class);
+		EasyMock.expect(builder.getSchemas()).andReturn(mockSchemas()).times(10);
+		EasyMock.replay(builder);
+		return builder;
 		
 	}
-	public static Metamodel mockMetaModel()
-	{
-		Metamodel metaModel = EasyMock.createMock(Metamodel.class);
-		EasyMock.expect(metaModel.getEntities());
-		return metaModel;
+
+	private static List<Schema> mockSchemas() {
+		List<Schema> schemas = new ArrayList<Schema>();
+		schemas.add(mockSchema());
+		return schemas;
 	}
-	public static Set<EntityType<?>> mockEntities()
-	{
-		Set<EntityType<?>> entities = new HashSet<EntityType<?>>();
-		EntityType<?> entity = EasyMock.createMock(EntityType.class);
-		EasyMock.expect(entity.getName()).andReturn(MockData.ENTITY_NAME);
-	//	EasyMock.expect(entity.getAttributes()).andReturn(mockAttributeSet());
-	//	EasyMock.expect(entity.getId(java.lang.Long.class)).andReturn(mockSingularAttribute(MockData.ENTITY_ID_NAME,MockData.ENTITY_ID_TYPE));
+
+	private static Schema mockSchema() {
+		Schema schema = new Schema();
+		schema.setNamespace(MockData.NAME_SPACE);
+		schema.setEntityTypes(mockEntityTypes());
+		schema.setEntityContainers(mockEnityContainers());
+		return schema;
+	}
+
+	private static List<EntityContainer> mockEnityContainers() {
+		List<EntityContainer> entityContainers = new ArrayList<EntityContainer>();
+		entityContainers.add(mockEntityContainer(MockData.ENTITY_CONTAINER_NAME));
+		return entityContainers;
+	}
+
+	private static EntityContainer mockEntityContainer(
+			String entityContainerName) {
+		EntityContainer entityContainer = new EntityContainer();
+		entityContainer.setName(entityContainerName);
+		entityContainer.setDefaultEntityContainer(true);
+		entityContainer.setEntitySets(mockEntitySets());
+		return entityContainer;
+	}
+
+	private static List<EntitySet> mockEntitySets() {
+		List<EntitySet> entitySets = new ArrayList<EntitySet>();
+		entitySets.add(mockEntitySet(MockData.ENTITY_NAME_1));
+		entitySets.add(mockEntitySet(MockData.ENTITY_NAME_2));
+		return entitySets;
+	}
+
+	private static EntitySet mockEntitySet(String entityName) {
+		EntitySet entitySet = new EntitySet();
+		entitySet.setName(entityName+"s");
+		entitySet.setEntityType(new FullQualifiedName(MockData.NAME_SPACE, entityName));
+		return entitySet;
+	}
+
+	private static List<EntityType> mockEntityTypes() {
+		List<EntityType> entities = new ArrayList<EntityType>();
+		entities.add(mockEntity(MockData.ENTITY_NAME_1));
+		entities.add(mockEntity(MockData.ENTITY_NAME_2));
 		return entities;
 	}
-	private static Set<Attribute<?, ?>> mockAttributeSet() {
-		// TODO Auto-generated method stub
-		return null;
+
+	private static EntityType mockEntity(String entityName) {
+		EntityType entity = new EntityType();
+		entity.setName(entityName);
+		return entity;
 	}
-	public static SingularAttribute<?, ?> mockSingularAttribute(String name,Class<?> javaType)
+	public static ODataJPAContext mockODataJPAContext()
 	{
-		SingularAttribute<?, ?> attribute = EasyMock.createMock(SingularAttribute.class);
-		EasyMock.expect(attribute.getName()).andReturn(name);
-	//	EasyMock.expect(attribute.getJavaType()).andReturn((Class<?>) javaType);
-		return attribute;
+		ODataJPAContext odataJPAContext = EasyMock.createMock(ODataJPAContext.class);
+		EasyMock.expect(odataJPAContext.getPersistenceUnitName()).andReturn(MockData.NAME_SPACE).times(2);
+		EasyMock.replay(odataJPAContext);
+		return odataJPAContext;
 	}
 
 }

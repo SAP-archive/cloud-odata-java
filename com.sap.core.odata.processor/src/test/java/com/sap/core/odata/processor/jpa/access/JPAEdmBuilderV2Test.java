@@ -1,24 +1,13 @@
 package com.sap.core.odata.processor.jpa.access;
 
-import static org.junit.Assert.*;
-
-import java.util.HashMap;
-import java.util.Map;
-
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
-import javax.persistence.PersistenceContext;
-
 import org.junit.BeforeClass;
-import org.junit.Test;
 
 public class JPAEdmBuilderV2Test {
 	
-	@PersistenceContext(unitName = "salesorderprocessing")
-	private static final String PUNIT_NAME = "salesorderprocessing";
+	
 	@BeforeClass
 	  public static void setup() throws Exception {
-		EntityManagerFactory emf=null;
+		/*EntityManagerFactory emf=null;
 		try
 		{
 			emf = Persistence.createEntityManagerFactory(PUNIT_NAME);
@@ -31,10 +20,10 @@ public class JPAEdmBuilderV2Test {
 		{
 			JPAEdmBuilderV2 builder = new JPAEdmBuilderV2(PUNIT_NAME, emf);
 		}
-		
+		*/
 	  }
 
-	@Test
+	/*@Test
 	public void testGetSchemas() {
 		fail("Not yet implemented");
 	}
@@ -58,5 +47,5 @@ public class JPAEdmBuilderV2Test {
 	public void testFormKey() {
 		fail("Not yet implemented");
 	}
-
+*/
 }

@@ -5,10 +5,7 @@ import java.util.List;
 import java.util.Locale;
 
 import com.sap.core.odata.api.edm.EdmException;
-import com.sap.core.odata.api.edm.EdmLiteralKind;
-import com.sap.core.odata.api.edm.EdmProperty;
 import com.sap.core.odata.api.edm.EdmSimpleType;
-import com.sap.core.odata.api.edm.EdmSimpleTypeKind;
 import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.api.exception.ODataNotImplementedException;
 import com.sap.core.odata.api.uri.expression.BinaryExpression;

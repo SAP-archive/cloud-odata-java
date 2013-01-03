@@ -41,6 +41,7 @@ public class ODataJPAProcessor extends ODataSingleProcessor {
 		// Execute JPQL Statement
 		Query jpqlQuery = odataJPAContext.getEntityManagerFactory()
 				.createEntityManager().createQuery(selectStatement.toString());
+		@SuppressWarnings("unchecked")
 		List<Object> jpaEntities = jpqlQuery.getResultList();
 
 		// Build OData Response out of a JPA Response
