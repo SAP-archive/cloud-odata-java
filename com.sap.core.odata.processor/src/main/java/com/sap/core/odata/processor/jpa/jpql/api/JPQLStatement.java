@@ -36,12 +36,16 @@ public class JPQLStatement {
 	}
 	
 	public static class Operator {
-		public static final String STRING_OPERATOR_EQ = "=";
-		public static final String STRING_OPERATOR_NE = "<>";
-		public static final String STRING_OPERATOR_LT = "<";
-		public static final String STRING_OPERATOR_LE = "<=";
-		public static final String STRING_OPERATOR_GT = ">";
-		public static final String STRING_OPERATOR_GE = ">="; 		
+		public static final String EQ = "=";
+		public static final String NE = "<>";
+		public static final String LT = "<";
+		public static final String LE = "<=";
+		public static final String GT = ">";
+		public static final String GE = ">=";
+		public static final String AND = "AND";
+		public static final String NOT = "NOT";
+		public static final String OR = "OR";
+		
 	}
 	
 }

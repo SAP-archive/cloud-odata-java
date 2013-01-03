@@ -20,7 +20,7 @@ import com.sap.core.odata.api.uri.expression.OrderExpression;
 import com.sap.core.odata.api.uri.expression.OrderType;
 import com.sap.core.odata.api.uri.expression.PropertyExpression;
 import com.sap.core.odata.api.uri.expression.UnaryExpression;
-import com.sap.core.odata.processor.jpa.constants.OdataProcessorConstants;
+import com.sap.core.odata.processor.jpa.jpql.api.JPQLStatement;
 
 public class ExpressionParsingUtility {
 	
@@ -65,10 +65,10 @@ public class ExpressionParsingUtility {
 	        return Boolean.toString(left.equals("true") || right.equals("true"));
 	      case EQ:
 	        //return Boolean.toString(left.equals(right));
-	    	  return left + OdataProcessorConstants.STRING_OPERATOR_EQ+ right;
+	    	  return left + JPQLStatement.Operator.EQ+ right;
 	      case NE:
 	        //return Boolean.toString(!left.equals(right));
-	    	  return left + OdataProcessorConstants.STRING_OPERATOR_NE + right;
+	    	  return left + JPQLStatement.Operator.NE + right;
 	      case LT:
 	        /*if (binaryType == EdmSimpleTypeKind.String.getEdmSimpleTypeInstance()
 	            || binaryType == EdmSimpleTypeKind.DateTime.getEdmSimpleTypeInstance()
@@ -78,7 +78,7 @@ public class ExpressionParsingUtility {
 	          return Boolean.toString(left.compareTo(right) < 0);
 	        else
 	          return Boolean.toString(Double.valueOf(left) < Double.valueOf(right));*/
-	    	  return left + OdataProcessorConstants.STRING_OPERATOR_LT + right;
+	    	  return left + JPQLStatement.Operator.LT + right;
 	      case LE:
 	        /*if (binaryType == EdmSimpleTypeKind.String.getEdmSimpleTypeInstance()
 	            || binaryType == EdmSimpleTypeKind.DateTime.getEdmSimpleTypeInstance()
@@ -88,7 +88,7 @@ public class ExpressionParsingUtility {
 	          return Boolean.toString(left.compareTo(right) <= 0);
 	        else
 	          return Boolean.toString(Double.valueOf(left) <= Double.valueOf(right));*/
-	    	  return left + OdataProcessorConstants.STRING_OPERATOR_LE + right;
+	    	  return left + JPQLStatement.Operator.LE + right;
 	      case GT:
 	        /*if (binaryType == EdmSimpleTypeKind.String.getEdmSimpleTypeInstance()
 	            || binaryType == EdmSimpleTypeKind.DateTime.getEdmSimpleTypeInstance()
@@ -98,7 +98,7 @@ public class ExpressionParsingUtility {
 	          return Boolean.toString(left.compareTo(right) > 0);
 	        else
 	          return Boolean.toString(Double.valueOf(left) > Double.valueOf(right));*/
-	    	  return left + OdataProcessorConstants.STRING_OPERATOR_GT + right;
+	    	  return left + JPQLStatement.Operator.GT + right;
 	      case GE:
 	        /*if (binaryType == EdmSimpleTypeKind.String.getEdmSimpleTypeInstance()
 	            || binaryType == EdmSimpleTypeKind.DateTime.getEdmSimpleTypeInstance()
@@ -108,7 +108,7 @@ public class ExpressionParsingUtility {
 	          return Boolean.toString(left.compareTo(right) >= 0);
 	        else
 	          return Boolean.toString(Double.valueOf(left) >= Double.valueOf(right));*/
-	    	  return left + OdataProcessorConstants.STRING_OPERATOR_GE + right;
+	    	  return left + JPQLStatement.Operator.GE + right;
 	      case PROPERTY_ACCESS:
 	        throw new ODataNotImplementedException();
 	      default:
