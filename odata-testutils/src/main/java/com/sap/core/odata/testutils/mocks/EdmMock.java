@@ -40,9 +40,11 @@ class EdmMock {
     EdmEntitySet employeeEntitySet = createEntitySetMock(defaultContainer, "Employees", EdmSimpleTypeKind.String.getEdmSimpleTypeInstance(), "EmployeeId");
     EdmEntitySet managerEntitySet = createEntitySetMock(defaultContainer, "Managers", EdmSimpleTypeKind.String.getEdmSimpleTypeInstance(), "EmployeeId");
     EdmEntitySet roomEntitySet = createEntitySetMock(defaultContainer, "Rooms", EdmSimpleTypeKind.String.getEdmSimpleTypeInstance(), "Id");
+    EdmEntitySet teamEntitySet = createEntitySetMock(defaultContainer, "Teams", EdmSimpleTypeKind.String.getEdmSimpleTypeInstance(), "Id");
 
     when(defaultContainer.getEntitySet("Employees")).thenReturn(employeeEntitySet);
     when(defaultContainer.getEntitySet("Rooms")).thenReturn(roomEntitySet);
+    when(defaultContainer.getEntitySet("Teams")).thenReturn(teamEntitySet);
     when(defaultContainer.isDefaultEntityContainer()).thenReturn(true);
 
     EdmType navigationType = mock(EdmType.class);
@@ -74,15 +76,32 @@ class EdmMock {
     when(employeeEntitySet.getRelatedEntitySet(managerProperty)).thenReturn(managerEntitySet);
     when(employeeEntitySet.getEntityContainer()).thenReturn(defaultContainer);
 
+    EdmNavigationProperty teamNavigationProperty = mock(EdmNavigationProperty.class);
+    when(teamNavigationProperty.getType()).thenReturn(navigationType);
+    when(teamNavigationProperty.getName()).thenReturn("ne_Team");
+    when(teamNavigationProperty.getMultiplicity()).thenReturn(EdmMultiplicity.ONE);
+    when(employeeEntitySet.getRelatedEntitySet(teamNavigationProperty)).thenReturn(teamEntitySet);
+    when(employeeEntitySet.getEntityContainer()).thenReturn(defaultContainer);
+
+    EdmNavigationProperty roomNavigationProperty = mock(EdmNavigationProperty.class);
+    when(roomNavigationProperty.getType()).thenReturn(navigationType);
+    when(roomNavigationProperty.getName()).thenReturn("ne_Room");
+    when(roomNavigationProperty.getMultiplicity()).thenReturn(EdmMultiplicity.ONE);
+    when(employeeEntitySet.getRelatedEntitySet(roomNavigationProperty)).thenReturn(roomEntitySet);
+    when(employeeEntitySet.getEntityContainer()).thenReturn(defaultContainer);
+
+    
     EdmEntityType employeeType = employeeEntitySet.getEntityType();
     when(employeeType.getKind()).thenReturn(EdmTypeKind.ENTITY);
     when(employeeType.hasStream()).thenReturn(true);
     when(employeeType.getPropertyNames()).thenReturn(Arrays.asList("EmployeeId", "EmployeeName", "ImageUrl", "Age", "TeamId", "RoomId", "EntryDate", "Location"));
     when(employeeType.getProperty("ne_Manager")).thenReturn(managerProperty);
+    when(employeeType.getProperty("ne_Team")).thenReturn(teamNavigationProperty);
+    when(employeeType.getProperty("ne_Room")).thenReturn(roomNavigationProperty);
     when(employeeType.getKeyPropertyNames()).thenReturn(Arrays.asList("EmployeeId"));
     when(employeeType.getName()).thenReturn("Employee");
     when(employeeType.getNamespace()).thenReturn("RefScenario");
-    when(employeeType.getNavigationPropertyNames()).thenReturn(Arrays.asList("ne_Manager"));
+    when(employeeType.getNavigationPropertyNames()).thenReturn(Arrays.asList("ne_Manager", "ne_Team", "ne_Room"));
 
     EdmProperty employeeIdProperty = mock(EdmProperty.class);
     when(employeeIdProperty.getType()).thenReturn(EdmSimpleTypeKind.String.getEdmSimpleTypeInstance());
