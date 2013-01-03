@@ -49,8 +49,8 @@ public class EntityInfoAggregator {
       EdmTargetPath.SYNDICATION_SUMMARY));
 
   private Map<String, EntityPropertyInfo> name2EntityPropertyInfo = new HashMap<String, EntityPropertyInfo>();
-  private Map<String, NavigationPropertyInfo> name2NavigationPropertyInfo = new HashMap<String, NavigationPropertyInfo>();
   private Map<String, EntityPropertyInfo> targetPath2EntityPropertyInfo = new HashMap<String, EntityPropertyInfo>();
+  private List<NavigationPropertyInfo> navigationPropertyInfos = new ArrayList<NavigationPropertyInfo>();
   private List<String> keyPropertyNames = new ArrayList<String>();
   /**
    * list with all property names in the order based on order in {@link EdmProperty} (normally [key, entity,
@@ -199,8 +199,12 @@ public class EntityInfoAggregator {
   /**
    * @return unmodifiable set of all found navigation property names.
    */
-  public Collection<String> getNavigationPropertyNames() {
-    return Collections.unmodifiableCollection(name2NavigationPropertyInfo.keySet());
+  public List<String> getNavigationPropertyNames() {
+    List<String> navPropNames = new ArrayList<String>();
+    for (NavigationPropertyInfo info : navigationPropertyInfos) {
+      navPropNames.add(info.getName());
+    }
+    return Collections.unmodifiableList(navPropNames);
   }
 
   /**
@@ -241,8 +245,8 @@ public class EntityInfoAggregator {
   /**
    * @return unmodifiable collection of all navigation properties.
    */
-  public Collection<NavigationPropertyInfo> getNavigationPropertyInfos() {
-    return Collections.unmodifiableCollection(name2NavigationPropertyInfo.values());
+  public List<NavigationPropertyInfo> getNavigationPropertyInfos() {
+    return Collections.unmodifiableList(navigationPropertyInfos);
   }
 
   // #########################################
@@ -293,7 +297,7 @@ public class EntityInfoAggregator {
         } else if (typed instanceof EdmNavigationProperty) {
           EdmNavigationProperty navProperty = (EdmNavigationProperty) typed;
           NavigationPropertyInfo info = NavigationPropertyInfo.create(navProperty);
-          name2NavigationPropertyInfo.put(info.getName(), info);
+          navigationPropertyInfos.add(info);
         }
       }
 

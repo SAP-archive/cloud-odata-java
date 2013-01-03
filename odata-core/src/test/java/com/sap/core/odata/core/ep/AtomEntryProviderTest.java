@@ -60,6 +60,14 @@ public class AtomEntryProviderTest extends AbstractProviderTest {
     assertXpathExists("/a:entry/a:link[@href=\"Employees('1')\"]", xmlString);
     assertXpathExists("/a:entry/a:link[@rel='edit']", xmlString);
     assertXpathExists("/a:entry/a:link[@title='Employee']", xmlString);
+    
+    // assert navigation link order
+    verifyTagOrdering(xmlString,
+        "link((?:(?!link).)*?)edit",
+        "link((?:(?!link).)*?)edit-media",
+        "link((?:(?!link).)*?)ne_Manager",
+        "link((?:(?!link).)*?)ne_Team",
+        "link((?:(?!link).)*?)ne_Room");
   }
 
   private String verifyResponse(ODataResponse response) throws IOException {
