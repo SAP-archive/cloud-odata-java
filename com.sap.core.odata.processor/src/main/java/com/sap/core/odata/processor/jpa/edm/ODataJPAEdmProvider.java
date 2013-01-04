@@ -33,11 +33,13 @@ public class ODataJPAEdmProvider implements EdmProvider {
 	public ODataJPAEdmProvider() {
 		entityTypes = new HashMap<String, EntityType>();
 		entityContainerInfos = new HashMap<String, EntityContainerInfo>();
+		complexTypes = new HashMap<String, ComplexType>();
 	}
 
 	public ODataJPAEdmProvider(ODataJPAContext oDataJPAContext) {
 		entityTypes = new HashMap<String, EntityType>();
 		entityContainerInfos = new HashMap<String, EntityContainerInfo>();
+		complexTypes = new HashMap<String, ComplexType>();
 		builder = JPAController.getJPAEdmBuilder(oDataJPAContext);
 	}
 
@@ -66,7 +68,7 @@ public class ODataJPAEdmProvider implements EdmProvider {
 				if (name == null && container.isDefaultEntityContainer()) {
 					entityContainerInfos.put(name, container);
 					return container;
-				} else if (name.equals(container.getName())) {
+				} else if (name != null && name.equals(container.getName())) {
 					return container;
 				}
 			}
@@ -81,7 +83,7 @@ public class ODataJPAEdmProvider implements EdmProvider {
 			throws ODataException {
 
 		// Load from Buffer
-		if (entityTypes.containsKey(edmFQName.toString()))
+		if (edmFQName != null && entityTypes.containsKey(edmFQName.toString()))
 			return entityTypes.get(edmFQName.toString());
 		else if (schemas == null)
 			getSchemas();
@@ -108,11 +110,11 @@ public class ODataJPAEdmProvider implements EdmProvider {
 	public ComplexType getComplexType(FullQualifiedName edmFQName)
 			throws ODataException {
 
-		if (complexTypes.containsKey(edmFQName.toString()))
+		if (edmFQName != null && complexTypes.containsKey(edmFQName.toString()))
 			return complexTypes.get(edmFQName.toString());
 		else if (schemas == null)
 			getSchemas();
-		
+
 		if (edmFQName != null)
 			for (Schema schema : schemas) {
 				if (schema.getNamespace().equals(edmFQName.getNamespace())) {
@@ -179,12 +181,11 @@ public class ODataJPAEdmProvider implements EdmProvider {
 
 	@Override
 	public List<Schema> getSchemas() throws ODataException {
-		if (schemas == null) {
+		if (schemas == null && builder != null)
 			schemas = builder.getSchemas();
-			if (builder == null)
-				throw new ODataJPAModelException(
-						ODataJPAModelException.BUILDER_NULL);
-		}
+		if (builder == null)
+			throw new ODataJPAModelException(
+					ODataJPAModelException.BUILDER_NULL);
 
 		return schemas;
 

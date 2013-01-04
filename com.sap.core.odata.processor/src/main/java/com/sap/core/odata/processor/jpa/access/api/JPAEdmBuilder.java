@@ -14,6 +14,5 @@ public interface JPAEdmBuilder {
 	public List<EntityType> getEntityTypes( ) throws ODataJPAModelException;
 	public EntityType getEntityType(FullQualifiedName fqName) throws ODataJPAModelException;
 	public EntitySet getEntitySet(FullQualifiedName fqName) throws ODataJPAModelException;
-	public ComplexType getComplexType(FullQualifiedName fullQualifiedName) throws ODataJPAModelException;
-
+	
 }

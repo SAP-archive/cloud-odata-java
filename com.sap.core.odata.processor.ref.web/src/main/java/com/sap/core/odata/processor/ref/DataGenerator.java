@@ -3,7 +3,7 @@ package com.sap.core.odata.processor.ref;
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 
-import com.sap.core.odata.processor.ref.jpa.BuyerAddress;
+import com.sap.core.odata.processor.ref.jpa.Address;
 import com.sap.core.odata.processor.ref.jpa.LineItems;
 import com.sap.core.odata.processor.ref.jpa.SalesOrderHeader;
 
@@ -21,7 +21,7 @@ public class DataGenerator {
 	public void generate() {
 		this.entityManager.getTransaction().begin();
 		for (int i = 0; i < DataGenerator.MAX_SALES_ORDER; i++) {
-			BuyerAddress ba = new BuyerAddress((short) i, "Street_" + i,
+			Address ba = new Address((short) i, "Street_" + i,
 					"City_" + i, "Country_" + i);
 			SalesOrderHeader salesOrder = new SalesOrderHeader(i, "Test_Buyer_" + i,
 					ba, "Currency_Code_" + i, (double) i, ((i % 2) == 0) ? true
