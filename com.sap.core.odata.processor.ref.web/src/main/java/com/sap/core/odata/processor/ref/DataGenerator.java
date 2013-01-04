@@ -24,7 +24,7 @@ public class DataGenerator {
 			Address ba = new Address((short) i, "Street_" + i,
 					"City_" + i, "Country_" + i);
 			SalesOrderHeader salesOrder = new SalesOrderHeader(i, "Test_Buyer_" + i,
-					ba, "Currency_Code_" + i, (double) i, ((i % 2) == 0) ? true
+					ba, "Cur_Code_" + i, (double) i, ((i % 2) == 0) ? true
 							: false);
 			for (int j = 0; j < DataGenerator.MAX_LINE_ITEMS_PER_SALES_ORDER; j++) {
 				LineItems lineItem = new LineItems("Line_Item_" + j);
