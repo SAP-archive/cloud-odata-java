@@ -24,7 +24,7 @@ import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.api.processor.ODataContext;
 import com.sap.core.odata.api.uri.PathInfo;
 import com.sap.core.odata.core.enums.ContentType;
-import com.sap.core.odata.testutils.helper.XMLUnitHelper;
+import com.sap.core.odata.testutil.helper.XMLUnitHelper;
 
 /**
  * @author SAP AG

@@ -34,7 +34,7 @@ import com.sap.core.odata.api.exception.ODataNotFoundException;
 import com.sap.core.odata.api.uri.UriSyntaxException;
 import com.sap.core.odata.core.exception.MessageService;
 import com.sap.core.odata.core.exception.ODataRuntimeException;
-import com.sap.core.odata.testutils.helper.StringHelper;
+import com.sap.core.odata.testutil.helper.StringHelper;
 
 /**
  * @author SAP AG

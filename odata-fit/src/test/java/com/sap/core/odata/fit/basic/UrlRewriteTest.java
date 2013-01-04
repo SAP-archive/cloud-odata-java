@@ -28,9 +28,9 @@ import com.sap.core.odata.api.processor.feature.Metadata;
 import com.sap.core.odata.api.processor.feature.ServiceDocument;
 import com.sap.core.odata.api.uri.info.GetMetadataUriInfo;
 import com.sap.core.odata.api.uri.info.GetServiceDocumentUriInfo;
-import com.sap.core.odata.testutils.helper.HttpMerge;
-import com.sap.core.odata.testutils.helper.HttpSomethingUnsupported;
-import com.sap.core.odata.testutils.helper.StringHelper;
+import com.sap.core.odata.testutil.helper.HttpMerge;
+import com.sap.core.odata.testutil.helper.HttpSomethingUnsupported;
+import com.sap.core.odata.testutil.helper.StringHelper;
 
 /**
  * @author SAP AG
