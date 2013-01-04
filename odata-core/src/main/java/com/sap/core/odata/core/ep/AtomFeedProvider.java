@@ -27,7 +27,7 @@ public class AtomFeedProvider {
     this.properties = properties;
   }
 
-  public void append(XMLStreamWriter writer, EntityInfoAggregator eia, List<Map<String, Object>> data, GetEntitySetUriInfo entitySetView) throws EntityProviderException {
+  public void append(XMLStreamWriter writer, EntityInfoAggregator eia, List<Map<String, Object>> data) throws EntityProviderException {
     try {
       writer.writeStartElement("feed");
 
@@ -39,7 +39,7 @@ public class AtomFeedProvider {
       // write all atom infos (mandatory and optional)
       appendAtomMandatoryParts(writer, eia);
       appendAtomSelfLink(writer, eia);
-      if (entitySetView.getInlineCount() == InlineCount.ALLPAGES) {
+      if (this.properties.getInlineCountType() == InlineCount.ALLPAGES) {
         appendInlineCount(writer, properties.getInlineCount());
       }
 

@@ -5,7 +5,7 @@ import java.util.List;
 
 import com.sap.core.odata.api.ODataService;
 import com.sap.core.odata.api.ODataServiceFactory;
-import com.sap.core.odata.api.commons.ODataVersion;
+import com.sap.core.odata.api.ODataServiceVersion;
 import com.sap.core.odata.api.edm.Edm;
 import com.sap.core.odata.api.edm.provider.EdmProvider;
 import com.sap.core.odata.api.exception.ODataException;
@@ -63,8 +63,8 @@ public class ODataSingleProcessorService implements ODataService {
    * @see ODataService
    */
   @Override
-  public ODataVersion getODataVersion() throws ODataException {
-    return ODataVersion.V20;
+  public ODataServiceVersion getVersion() throws ODataException {
+    return ODataServiceVersion.V20;
   }
 
   /**

@@ -133,9 +133,10 @@ public class ListsProcessor extends ODataSingleProcessor {
         .baseUri(getContext().getUriInfo().getServiceRoot())
         .inlineCount(count)
         .skipToken(nextSkipToken)
+        .inlineCountType(uriParserResultView.getInlineCount())
         .build();
 
-    return ODataResponse.fromResponse(EntityProvider.create(contentType).writeFeed(uriParserResultView, values, feedProperties))
+    return ODataResponse.fromResponse(EntityProvider.create(contentType).writeFeed(uriParserResultView.getTargetEntitySet(), values, feedProperties))
         .status(HttpStatusCodes.OK)
         .build();
   }

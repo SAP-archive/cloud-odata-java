@@ -152,9 +152,9 @@ public class AtomEntityProvider extends EntityProvider {
       }
     }
   }
-
+  
   @Override
-  public ODataResponse writeFeed(GetEntitySetUriInfo entitySetView, List<Map<String, Object>> data, EntityProviderProperties properties) throws EntityProviderException {
+  public ODataResponse writeFeed(EdmEntitySet entitySet, List<Map<String, Object>> data, EntityProviderProperties properties) throws EntityProviderException {
     OutputStream outStream = null;
 
     try {
@@ -164,9 +164,9 @@ public class AtomEntityProvider extends EntityProvider {
       writer.writeStartDocument();
 
       AtomFeedProvider atomFeedProvider = new AtomFeedProvider(properties);
-      EdmEntitySet entitySet = entitySetView.getTargetEntitySet();
+      //EdmEntitySet entitySet = entitySetView.getTargetEntitySet();
       EntityInfoAggregator eia = EntityInfoAggregator.create(entitySet);
-      atomFeedProvider.append(writer, eia, data, entitySetView);
+      atomFeedProvider.append(writer, eia, data);
 
       writer.flush();
       outStream.flush();
