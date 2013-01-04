@@ -3,6 +3,7 @@ package com.sap.core.odata.core;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -34,13 +35,16 @@ import com.sap.core.odata.api.exception.ODataNotAcceptableException;
 import com.sap.core.odata.api.exception.ODataNotFoundException;
 import com.sap.core.odata.api.processor.ODataResponse;
 import com.sap.core.odata.api.processor.feature.ProcessorFeature;
-import com.sap.core.odata.api.uri.PathSegment;
 import com.sap.core.odata.api.uri.PathInfo;
+import com.sap.core.odata.api.uri.PathSegment;
 import com.sap.core.odata.core.enums.ContentType;
 import com.sap.core.odata.core.enums.ODataHttpMethod;
-import com.sap.core.odata.core.uri.UriParserImpl;
 import com.sap.core.odata.core.uri.UriInfoImpl;
+import com.sap.core.odata.core.uri.UriParserImpl;
 
+/**
+ * @author SAP AG
+ */
 public final class ODataSubLocator implements ODataLocator {
 
   private ODataService service;
@@ -57,7 +61,7 @@ public final class ODataSubLocator implements ODataLocator {
 
   @GET
   public Response handleGet() throws ODataException {
-    List<PathSegment> pathSegments = this.context.getUriInfo().getODataSegments(); //
+    List<PathSegment> pathSegments = this.context.getUriInfo().getODataSegments();
     UriInfoImpl uriParserResult = (UriInfoImpl) this.uriParser.parse(pathSegments, this.queryParameters);
 
     ContentType contentType = doContentNegotiation(uriParserResult);
@@ -69,21 +73,18 @@ public final class ODataSubLocator implements ODataLocator {
   }
 
   private ContentType doContentNegotiation(UriInfoImpl uriParserResult) throws ODataException {
-    ProcessorFeature processorAspect = dispatcher.mapUriTypeToProcessorAspect(uriParserResult);
-    List<ContentType> supportedContentTypes = getSupportedContentTypes(processorAspect);
+    ProcessorFeature processorFeature = dispatcher.mapUriTypeToProcessorFeature(uriParserResult);
+    List<ContentType> supportedContentTypes = getSupportedContentTypes(processorFeature);
     List<ContentType> acceptedContentTypes = getAcceptedContentTypes(uriParserResult, acceptHeaderContentTypes);
     ContentType contentType = contentNegotiation(acceptedContentTypes, supportedContentTypes);
     return contentType;
   }
 
-  private List<ContentType> getSupportedContentTypes(ProcessorFeature processorAspect) throws ODataException {
+  private List<ContentType> getSupportedContentTypes(ProcessorFeature processorFeature) throws ODataException {
     List<ContentType> resultContentTypes = new ArrayList<ContentType>();
-    List<String> supportedContentTypes = service.getSupportedContentTypes(processorAspect);
-    
-    for (String contentType : supportedContentTypes) {
+    for (String contentType : service.getSupportedContentTypes(processorFeature))
       resultContentTypes.add(ContentType.create(contentType));
-    }
-    
+
     return resultContentTypes;
   }
 
@@ -97,27 +98,19 @@ public final class ODataSubLocator implements ODataLocator {
     } else {
       for (ContentType ct : contentTypes) {
         ContentType match = ct.match(supportedContentTypes);
-        if(match != null) {
+        if (match != null)
           return match;
-        }
       }
     }
 
     throw new ODataNotAcceptableException(ODataNotAcceptableException.COMMON.addContent(contentTypes.toString()));
   }
 
-
   private List<ContentType> getAcceptedContentTypes(UriInfoImpl uriParserResult, List<ContentType> contentTypes) {
-    List<ContentType> result;
-    if (uriParserResult.getContentType() != null) {
-      result = new ArrayList<ContentType>();
-      ContentType ct = ContentType.create(uriParserResult.getContentType());
-      result.add(ct);
-    } else {
-      result = contentTypes;
-    }
-
-    return result;
+    if (uriParserResult.getContentType() == null)
+      return contentTypes;
+    else
+     return Arrays.asList(ContentType.create(uriParserResult.getContentType()));
   }
 
   @POST
@@ -163,7 +156,7 @@ public final class ODataSubLocator implements ODataLocator {
     final List<PathSegment> pathSegments = context.getUriInfo().getODataSegments();
     final UriInfoImpl uriParserResult = (UriInfoImpl) uriParser.parse(pathSegments, queryParameters);
 
-    final ODataResponse odataResponse = dispatcher.dispatch(ODataHttpMethod.DELETE, uriParserResult, null);
+    final ODataResponse odataResponse = dispatcher.dispatch(ODataHttpMethod.DELETE, uriParserResult, uriParserResult.getContentType());
     return convertResponse(odataResponse);
   }
 
@@ -217,37 +210,37 @@ public final class ODataSubLocator implements ODataLocator {
   }
 
   private void splitPath(ODataUriInfoImpl odataUriInfo, InitParameter param) throws ODataException {
-    List<javax.ws.rs.core.PathSegment> precedingPathSegements;
-    List<javax.ws.rs.core.PathSegment> pathSegements;
+    List<javax.ws.rs.core.PathSegment> precedingPathSegments;
+    List<javax.ws.rs.core.PathSegment> pathSegments;
 
     if (param.getPathSplit() == 0) {
-      precedingPathSegements = Collections.emptyList();
-      pathSegements = param.getPathSegments();
+      precedingPathSegments = Collections.emptyList();
+      pathSegments = param.getPathSegments();
     } else {
       if (param.getPathSegments().size() < param.getPathSplit()) {
         throw new ODataBadRequestException(ODataBadRequestException.URLTOSHORT);
       }
 
-      precedingPathSegements = param.getPathSegments().subList(0, param.getPathSplit());
+      precedingPathSegments = param.getPathSegments().subList(0, param.getPathSplit());
       int pathSegmentCount = param.getPathSegments().size();
-      pathSegements = param.getPathSegments().subList(param.getPathSplit(), pathSegmentCount);
+      pathSegments = param.getPathSegments().subList(param.getPathSplit(), pathSegmentCount);
     }
 
     // post condition: we do not allow matrix parameter in OData path segments
-    for (javax.ws.rs.core.PathSegment ps : pathSegements) {
+    for (javax.ws.rs.core.PathSegment ps : pathSegments) {
       if (ps.getMatrixParameters() != null && !ps.getMatrixParameters().isEmpty()) {
         throw new ODataNotFoundException(ODataNotFoundException.MATRIX.addContent(ps.getMatrixParameters().keySet(), ps.getPath()));
       }
     }
 
-    odataUriInfo.setODataPathSegment(this.convertPathSegmentList(pathSegements));
-    odataUriInfo.setPrecedingPathSegment(this.convertPathSegmentList(precedingPathSegements));
+    odataUriInfo.setODataPathSegment(this.convertPathSegmentList(pathSegments));
+    odataUriInfo.setPrecedingPathSegment(this.convertPathSegmentList(precedingPathSegments));
   }
 
-  private URI buildBaseUri(javax.ws.rs.core.UriInfo uriInfo, List<PathSegment> precedingPathSegements) throws ODataException {
+  private URI buildBaseUri(javax.ws.rs.core.UriInfo uriInfo, List<PathSegment> precedingPathSegments) throws ODataException {
     try {
       UriBuilder uriBuilder = uriInfo.getBaseUriBuilder();
-      for (PathSegment ps : precedingPathSegements) {
+      for (PathSegment ps : precedingPathSegments) {
         uriBuilder = uriBuilder.path(ps.getPath());
         for (String key : ps.getMatrixParameters().keySet()) {
           Object[] v = ps.getMatrixParameters().get(key).toArray();
@@ -288,18 +281,16 @@ public final class ODataSubLocator implements ODataLocator {
   }
 
   private Response convertResponse(final ODataResponse odataResponse) {
-    ResponseBuilder responseBuilder = Response.noContent();
+    ResponseBuilder responseBuilder = Response.noContent()
+        .status(odataResponse.getStatus().getStatusCode())
+        .entity(odataResponse.getEntity());
 
-    responseBuilder = responseBuilder.status(odataResponse.getStatus().getStatusCode());
-    responseBuilder = responseBuilder.entity(odataResponse.getEntity());
-
-    for (String name : odataResponse.getHeaderNames())
+    for (final String name : odataResponse.getHeaderNames())
       responseBuilder = responseBuilder.header(name, odataResponse.getHeader(name));
 
     String eTag = odataResponse.getETag();
-    if (eTag != null) {
+    if (eTag != null)
       responseBuilder.header(HttpHeaders.ETAG, eTag);
-    }
 
     return responseBuilder.build();
   }

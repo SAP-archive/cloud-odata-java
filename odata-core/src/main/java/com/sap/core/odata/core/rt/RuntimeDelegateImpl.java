@@ -16,12 +16,14 @@ import com.sap.core.odata.api.uri.expression.OrderByParser;
 import com.sap.core.odata.core.ODataResponseImpl;
 import com.sap.core.odata.core.edm.EdmSimpleTypeFacadeImpl;
 import com.sap.core.odata.core.edm.provider.EdmImplProv;
-import com.sap.core.odata.core.enums.ContentType;
 import com.sap.core.odata.core.ep.EntityProviderFactory;
 import com.sap.core.odata.core.uri.UriParserImpl;
 import com.sap.core.odata.core.uri.expression.FilterParserImpl;
 import com.sap.core.odata.core.uri.expression.OrderByParserImpl;
 
+/**
+ * @author SAP AG
+ */
 public class RuntimeDelegateImpl extends RuntimeDelegateInstance {
 
   @Override

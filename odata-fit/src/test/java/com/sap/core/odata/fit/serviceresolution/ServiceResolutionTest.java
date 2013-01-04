@@ -36,11 +36,13 @@ import com.sap.core.odata.api.processor.feature.Metadata;
 import com.sap.core.odata.api.processor.feature.ServiceDocument;
 import com.sap.core.odata.api.uri.info.GetMetadataUriInfo;
 import com.sap.core.odata.api.uri.info.GetServiceDocumentUriInfo;
-import com.sap.core.odata.core.enums.ContentType;
 import com.sap.core.odata.testutils.fit.FitStaticServiceFactory;
 import com.sap.core.odata.testutils.helper.StringHelper;
 import com.sap.core.odata.testutils.server.TestServer;
 
+/**
+ * @author SAP AG
+ */
 public class ServiceResolutionTest {
 
   static {

@@ -31,7 +31,6 @@ public interface EdmProperty extends EdmElement {
    * Get the info if the property is a simple property
    * 
    * @return true, if it is a simple property
-   * @throws EdmException
    */
   boolean isSimple();
 }

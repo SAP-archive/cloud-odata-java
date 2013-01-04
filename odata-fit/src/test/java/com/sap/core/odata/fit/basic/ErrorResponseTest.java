@@ -17,10 +17,12 @@ import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.api.processor.ODataSingleProcessor;
 import com.sap.core.odata.api.processor.feature.ServiceDocument;
 import com.sap.core.odata.api.uri.info.GetServiceDocumentUriInfo;
-import com.sap.core.odata.core.enums.ContentType;
 import com.sap.core.odata.core.exception.ODataRuntimeException;
 import com.sap.core.odata.testutils.helper.StringHelper;
 
+/**
+ * @author SAP AG
+ */
 public class ErrorResponseTest extends AbstractBasicTest {
 
   @Override
