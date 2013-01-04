@@ -2,8 +2,8 @@ package com.sap.core.odata.core.uri.expression;
 
 import java.util.List;
 
+import com.sap.core.odata.api.edm.EdmLiteral;
 import com.sap.core.odata.api.edm.EdmTyped;
-import com.sap.core.odata.api.uri.EdmLiteral;
 import com.sap.core.odata.api.uri.expression.BinaryExpression;
 import com.sap.core.odata.api.uri.expression.BinaryOperator;
 import com.sap.core.odata.api.uri.expression.ExpressionVisitor;

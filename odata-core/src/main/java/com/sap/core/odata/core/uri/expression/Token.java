@@ -2,8 +2,8 @@ package com.sap.core.odata.core.uri.expression;
 
 /*1*/
 
+import com.sap.core.odata.api.edm.EdmLiteral;
 import com.sap.core.odata.api.edm.EdmType;
-import com.sap.core.odata.api.uri.EdmLiteral;
 
 public class Token {
 

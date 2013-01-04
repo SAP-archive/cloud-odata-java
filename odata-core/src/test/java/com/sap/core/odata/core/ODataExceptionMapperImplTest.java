@@ -26,8 +26,8 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import com.sap.core.odata.api.commons.HttpStatusCodes;
 import com.sap.core.odata.api.edm.Edm;
-import com.sap.core.odata.api.enums.HttpStatusCodes;
 import com.sap.core.odata.api.exception.ODataApplicationException;
 import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.api.exception.ODataNotFoundException;

@@ -25,21 +25,21 @@ import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriBuilder;
 
+import com.sap.core.odata.api.ODataService;
+import com.sap.core.odata.api.ODataServiceFactory;
 import com.sap.core.odata.api.exception.ODataBadRequestException;
 import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.api.exception.ODataMethodNotAllowedException;
 import com.sap.core.odata.api.exception.ODataNotAcceptableException;
 import com.sap.core.odata.api.exception.ODataNotFoundException;
 import com.sap.core.odata.api.processor.ODataResponse;
-import com.sap.core.odata.api.processor.aspect.ProcessorAspect;
-import com.sap.core.odata.api.service.ODataService;
-import com.sap.core.odata.api.service.ODataServiceFactory;
+import com.sap.core.odata.api.processor.feature.ProcessorFeature;
 import com.sap.core.odata.api.uri.PathSegment;
-import com.sap.core.odata.api.uri.UriInfo;
+import com.sap.core.odata.api.uri.PathInfo;
 import com.sap.core.odata.core.enums.ContentType;
 import com.sap.core.odata.core.enums.ODataHttpMethod;
 import com.sap.core.odata.core.uri.UriParserImpl;
-import com.sap.core.odata.core.uri.UriParserResultImpl;
+import com.sap.core.odata.core.uri.UriInfoImpl;
 
 public final class ODataSubLocator implements ODataLocator {
 
@@ -57,8 +57,8 @@ public final class ODataSubLocator implements ODataLocator {
 
   @GET
   public Response handleGet() throws ODataException {
-    List<PathSegment> pathSegments = this.context.getUriInfo().getODataPathSegmentList(); //
-    UriParserResultImpl uriParserResult = (UriParserResultImpl) this.uriParser.parse(pathSegments, this.queryParameters);
+    List<PathSegment> pathSegments = this.context.getUriInfo().getODataSegments(); //
+    UriInfoImpl uriParserResult = (UriInfoImpl) this.uriParser.parse(pathSegments, this.queryParameters);
 
     ContentType contentType = doContentNegotiation(uriParserResult);
 
@@ -68,15 +68,15 @@ public final class ODataSubLocator implements ODataLocator {
     return response;
   }
 
-  private ContentType doContentNegotiation(UriParserResultImpl uriParserResult) throws ODataException {
-    ProcessorAspect processorAspect = dispatcher.mapUriTypeToProcessorAspect(uriParserResult);
+  private ContentType doContentNegotiation(UriInfoImpl uriParserResult) throws ODataException {
+    ProcessorFeature processorAspect = dispatcher.mapUriTypeToProcessorAspect(uriParserResult);
     List<ContentType> supportedContentTypes = getSupportedContentTypes(processorAspect);
     List<ContentType> acceptedContentTypes = getAcceptedContentTypes(uriParserResult, acceptHeaderContentTypes);
     ContentType contentType = contentNegotiation(acceptedContentTypes, supportedContentTypes);
     return contentType;
   }
 
-  private List<ContentType> getSupportedContentTypes(ProcessorAspect processorAspect) throws ODataException {
+  private List<ContentType> getSupportedContentTypes(ProcessorFeature processorAspect) throws ODataException {
     List<ContentType> resultContentTypes = new ArrayList<ContentType>();
     List<String> supportedContentTypes = service.getSupportedContentTypes(processorAspect);
     
@@ -107,7 +107,7 @@ public final class ODataSubLocator implements ODataLocator {
   }
 
 
-  private List<ContentType> getAcceptedContentTypes(UriParserResultImpl uriParserResult, List<ContentType> contentTypes) {
+  private List<ContentType> getAcceptedContentTypes(UriInfoImpl uriParserResult, List<ContentType> contentTypes) {
     List<ContentType> result;
     if (uriParserResult.getContentType() != null) {
       result = new ArrayList<ContentType>();
@@ -160,8 +160,8 @@ public final class ODataSubLocator implements ODataLocator {
 
   @DELETE
   public Response handleDelete() throws ODataException {
-    final List<PathSegment> pathSegments = context.getUriInfo().getODataPathSegmentList();
-    final UriParserResultImpl uriParserResult = (UriParserResultImpl) uriParser.parse(pathSegments, queryParameters);
+    final List<PathSegment> pathSegments = context.getUriInfo().getODataSegments();
+    final UriInfoImpl uriParserResult = (UriInfoImpl) uriParser.parse(pathSegments, queryParameters);
 
     final ODataResponse odataResponse = dispatcher.dispatch(ODataHttpMethod.DELETE, uriParserResult, null);
     return convertResponse(odataResponse);
@@ -203,12 +203,12 @@ public final class ODataSubLocator implements ODataLocator {
     return mediaTypes;
   }
 
-  private UriInfo buildODataUriInfo(InitParameter param) throws ODataException {
+  private PathInfo buildODataUriInfo(InitParameter param) throws ODataException {
     ODataUriInfoImpl odataUriInfo = new ODataUriInfoImpl();
 
     this.splitPath(odataUriInfo, param);
 
-    URI uri = buildBaseUri(param.getUriInfo(), odataUriInfo.getPrecedingPathSegmentList());
+    URI uri = buildBaseUri(param.getUriInfo(), odataUriInfo.getPrecedingSegments());
     odataUriInfo.setBaseUri(uri);
 
     this.context.setUriInfo(odataUriInfo);

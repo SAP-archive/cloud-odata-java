@@ -3,7 +3,7 @@
  */
 package com.sap.core.odata.api.exception;
 
-import com.sap.core.odata.api.enums.HttpStatusCodes;
+import com.sap.core.odata.api.commons.HttpStatusCodes;
 
 /**
  *

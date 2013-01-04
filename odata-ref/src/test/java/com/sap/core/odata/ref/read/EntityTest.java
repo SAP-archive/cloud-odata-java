@@ -27,8 +27,8 @@ import com.sap.core.odata.api.edm.EdmSimpleTypeKind;
 import com.sap.core.odata.api.processor.ODataContext;
 import com.sap.core.odata.api.processor.ODataResponse;
 import com.sap.core.odata.api.uri.KeyPredicate;
+import com.sap.core.odata.api.uri.PathInfo;
 import com.sap.core.odata.api.uri.UriInfo;
-import com.sap.core.odata.api.uri.UriParserResult;
 import com.sap.core.odata.core.enums.ContentType;
 import com.sap.core.odata.ref.model.DataContainer;
 import com.sap.core.odata.ref.processor.ListsProcessor;
@@ -56,14 +56,14 @@ public class EntityTest {
   @Before
   public void setUp() throws Exception {
     mockedContext = mock(ODataContext.class);
-    UriInfo uriInfo = mock(UriInfo.class);
-    when(uriInfo.getBaseUri()).thenReturn(new URI("http://localhost/"));
+    PathInfo uriInfo = mock(PathInfo.class);
+    when(uriInfo.getServiceRoot()).thenReturn(new URI("http://localhost/"));
     when(mockedContext.getUriInfo()).thenReturn(uriInfo);
 
     processor.setContext(mockedContext);
   }
 
-  private UriParserResult mockUriResult(final String entitySetName, final String keyName, final String keyValue) throws EdmException {
+  private UriInfo mockUriResult(final String entitySetName, final String keyName, final String keyValue) throws EdmException {
     EdmProperty keyProperty = mock(EdmProperty.class);
     when(keyProperty.getName()).thenReturn(keyName);
     when(keyProperty.getType()).thenReturn(EdmSimpleTypeKind.String.getEdmSimpleTypeInstance());
@@ -91,7 +91,7 @@ public class EntityTest {
     when(entityContainer.isDefaultEntityContainer()).thenReturn(true);
     when(entitySet.getEntityContainer()).thenReturn(entityContainer);
 
-    UriParserResult uriResult = mock(UriParserResult.class);
+    UriInfo uriResult = mock(UriInfo.class);
     when(uriResult.getStartEntitySet()).thenReturn(entitySet);
     when(uriResult.getTargetEntitySet()).thenReturn(entitySet);
     when(uriResult.getKeyPredicates()).thenReturn(keys);
@@ -107,7 +107,7 @@ public class EntityTest {
 
   @Test
   public void readEmployees() throws Exception {
-    final UriParserResult uriResult = mockUriResult("Employees", "EmployeeId", "5");
+    final UriInfo uriResult = mockUriResult("Employees", "EmployeeId", "5");
 
     ODataResponse response = processor.readEntity(uriResult, ContentType.APPLICATION_ATOM_XML_ENTRY.toContentTypeString());
     assertNotNull(response);
@@ -116,7 +116,7 @@ public class EntityTest {
 
   @Test
   public void readTeams() throws Exception {
-    final UriParserResult uriResult = mockUriResult("Teams", "Id", "1");
+    final UriInfo uriResult = mockUriResult("Teams", "Id", "1");
 
     ODataResponse response = processor.readEntity(uriResult, ContentType.APPLICATION_ATOM_XML_ENTRY.toContentTypeString());
     assertNotNull(response);
@@ -125,7 +125,7 @@ public class EntityTest {
 
   @Test
   public void readRooms() throws Exception {
-    final UriParserResult uriResult = mockUriResult("Rooms", "Id", "1");
+    final UriInfo uriResult = mockUriResult("Rooms", "Id", "1");
 
     ODataResponse response = processor.readEntity(uriResult, ContentType.APPLICATION_ATOM_XML_FEED.toContentTypeString());
     assertNotNull(response);
@@ -134,7 +134,7 @@ public class EntityTest {
 
   @Test
   public void readManagers() throws Exception {
-    final UriParserResult uriResult = mockUriResult("Managers", "EmployeeId", "1");
+    final UriInfo uriResult = mockUriResult("Managers", "EmployeeId", "1");
 
     ODataResponse response = processor.readEntity(uriResult, ContentType.APPLICATION_ATOM_XML_ENTRY.toContentTypeString());
     assertNotNull(response);
@@ -143,7 +143,7 @@ public class EntityTest {
 
   @Test
   public void readBuildings() throws Exception {
-    final UriParserResult uriResult = mockUriResult("Buildings", "Id", "1");
+    final UriInfo uriResult = mockUriResult("Buildings", "Id", "1");
 
     ODataResponse response = processor.readEntity(uriResult, ContentType.APPLICATION_ATOM_XML_ENTRY.toContentTypeString());
     assertNotNull(response);

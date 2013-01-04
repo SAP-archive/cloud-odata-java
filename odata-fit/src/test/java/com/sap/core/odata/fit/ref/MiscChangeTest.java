@@ -2,7 +2,7 @@ package com.sap.core.odata.fit.ref;
 
 import org.junit.Test;
 
-import com.sap.core.odata.api.enums.HttpStatusCodes;
+import com.sap.core.odata.api.commons.HttpStatusCodes;
 
 /**
  * Tests employing the reference scenario that use neither XML nor JSON

@@ -12,12 +12,12 @@ import com.sap.core.odata.api.edm.provider.EdmProvider;
 import com.sap.core.odata.api.edm.provider.EntityContainer;
 import com.sap.core.odata.api.edm.provider.EntitySet;
 import com.sap.core.odata.api.edm.provider.Schema;
-import com.sap.core.odata.api.ep.ODataEntityProviderException;
+import com.sap.core.odata.api.ep.EntityProviderException;
 import com.sap.core.odata.core.edm.provider.EdmImplProv;
 
 public class AtomServiceDocumentProvider {
 
-  public static void writeServiceDocument(Edm edm, String serviceRoot, Writer writer) throws ODataEntityProviderException {
+  public static void writeServiceDocument(Edm edm, String serviceRoot, Writer writer) throws EntityProviderException {
 
     EdmProvider edmProvider = ((EdmImplProv) edm).getEdmProvider();
 
@@ -69,9 +69,9 @@ public class AtomServiceDocumentProvider {
 
       xmlStreamWriter.flush();
     } catch (Exception e) {
-      throw new ODataEntityProviderException(ODataEntityProviderException.COMMON, e);
+      throw new EntityProviderException(EntityProviderException.COMMON, e);
     } catch (FactoryConfigurationError e) {
-      throw new ODataEntityProviderException(ODataEntityProviderException.COMMON, e);
+      throw new EntityProviderException(EntityProviderException.COMMON, e);
     }
   }
 }

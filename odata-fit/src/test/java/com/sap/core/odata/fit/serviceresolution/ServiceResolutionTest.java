@@ -25,17 +25,17 @@ import org.junit.Test;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
+import com.sap.core.odata.api.commons.HttpStatusCodes;
 import com.sap.core.odata.api.edm.provider.EdmProvider;
-import com.sap.core.odata.api.enums.HttpStatusCodes;
 import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.api.processor.ODataContext;
 import com.sap.core.odata.api.processor.ODataResponse;
 import com.sap.core.odata.api.processor.ODataSingleProcessor;
-import com.sap.core.odata.api.processor.aspect.Metadata;
-import com.sap.core.odata.api.processor.aspect.ServiceDocument;
-import com.sap.core.odata.api.service.ODataSingleProcessorService;
-import com.sap.core.odata.api.uri.resultviews.GetMetadataView;
-import com.sap.core.odata.api.uri.resultviews.GetServiceDocumentView;
+import com.sap.core.odata.api.processor.ODataSingleProcessorService;
+import com.sap.core.odata.api.processor.feature.Metadata;
+import com.sap.core.odata.api.processor.feature.ServiceDocument;
+import com.sap.core.odata.api.uri.info.GetMetadataUriInfo;
+import com.sap.core.odata.api.uri.info.GetServiceDocumentUriInfo;
 import com.sap.core.odata.core.enums.ContentType;
 import com.sap.core.odata.testutils.fit.FitStaticServiceFactory;
 import com.sap.core.odata.testutils.helper.StringHelper;
@@ -78,8 +78,8 @@ public class ServiceResolutionTest {
       }
     });
 
-    when(((Metadata) processor).readMetadata(any(GetMetadataView.class),any(String.class))).thenReturn(ODataResponse.entity("metadata").status(HttpStatusCodes.OK).build());
-    when(((ServiceDocument) processor).readServiceDocument(any(GetServiceDocumentView.class),any(String.class))).thenReturn(ODataResponse.entity("servicedocument").status(HttpStatusCodes.OK).build());
+    when(((Metadata) processor).readMetadata(any(GetMetadataUriInfo.class),any(String.class))).thenReturn(ODataResponse.entity("metadata").status(HttpStatusCodes.OK).build());
+    when(((ServiceDocument) processor).readServiceDocument(any(GetServiceDocumentUriInfo.class),any(String.class))).thenReturn(ODataResponse.entity("servicedocument").status(HttpStatusCodes.OK).build());
   }
 
   @After
@@ -106,8 +106,8 @@ public class ServiceResolutionTest {
     ODataContext ctx = this.service.getProcessor().getContext();
     assertNotNull(ctx);
 
-    assertTrue(ctx.getUriInfo().getPrecedingPathSegmentList().isEmpty());
-    assertEquals("$metadata", ctx.getUriInfo().getODataPathSegmentList().get(0).getPath());
+    assertTrue(ctx.getUriInfo().getPrecedingSegments().isEmpty());
+    assertEquals("$metadata", ctx.getUriInfo().getODataSegments().get(0).getPath());
   }
 
   @Test
@@ -123,8 +123,8 @@ public class ServiceResolutionTest {
     ODataContext ctx = this.service.getProcessor().getContext();
     assertNotNull(ctx);
 
-    assertEquals("aaa", ctx.getUriInfo().getPrecedingPathSegmentList().get(0).getPath());
-    assertEquals("$metadata", ctx.getUriInfo().getODataPathSegmentList().get(0).getPath());
+    assertEquals("aaa", ctx.getUriInfo().getPrecedingSegments().get(0).getPath());
+    assertEquals("$metadata", ctx.getUriInfo().getODataSegments().get(0).getPath());
   }
 
   @Test
@@ -140,9 +140,9 @@ public class ServiceResolutionTest {
     ODataContext ctx = this.service.getProcessor().getContext();
     assertNotNull(ctx);
 
-    assertEquals("aaa", ctx.getUriInfo().getPrecedingPathSegmentList().get(0).getPath());
-    assertEquals("bbb", ctx.getUriInfo().getPrecedingPathSegmentList().get(1).getPath());
-    assertEquals("$metadata", ctx.getUriInfo().getODataPathSegmentList().get(0).getPath());
+    assertEquals("aaa", ctx.getUriInfo().getPrecedingSegments().get(0).getPath());
+    assertEquals("bbb", ctx.getUriInfo().getPrecedingSegments().get(1).getPath());
+    assertEquals("$metadata", ctx.getUriInfo().getODataSegments().get(0).getPath());
   }
 
   @Test
@@ -169,8 +169,8 @@ public class ServiceResolutionTest {
     ODataContext ctx = this.service.getProcessor().getContext();
     assertNotNull(ctx);
 
-    assertEquals("", ctx.getUriInfo().getODataPathSegmentList().get(0).getPath());
-    assertEquals("aaa", ctx.getUriInfo().getPrecedingPathSegmentList().get(0).getPath());
+    assertEquals("", ctx.getUriInfo().getODataSegments().get(0).getPath());
+    assertEquals("aaa", ctx.getUriInfo().getPrecedingSegments().get(0).getPath());
   }
 
   @Test
@@ -186,15 +186,15 @@ public class ServiceResolutionTest {
     ODataContext ctx = this.service.getProcessor().getContext();
     assertNotNull(ctx);
 
-    assertEquals("", ctx.getUriInfo().getODataPathSegmentList().get(0).getPath());
-    assertEquals("aaa", ctx.getUriInfo().getPrecedingPathSegmentList().get(0).getPath());
+    assertEquals("", ctx.getUriInfo().getODataSegments().get(0).getPath());
+    assertEquals("aaa", ctx.getUriInfo().getPrecedingSegments().get(0).getPath());
 
-    assertNotNull(ctx.getUriInfo().getPrecedingPathSegmentList().get(0).getMatrixParameters());
+    assertNotNull(ctx.getUriInfo().getPrecedingSegments().get(0).getMatrixParameters());
 
     String key, value;
-    key = ctx.getUriInfo().getPrecedingPathSegmentList().get(0).getMatrixParameters().keySet().iterator().next();
+    key = ctx.getUriInfo().getPrecedingSegments().get(0).getMatrixParameters().keySet().iterator().next();
     assertEquals("n", key);
-    value = ctx.getUriInfo().getPrecedingPathSegmentList().get(0).getMatrixParameters().get(key).get(0);
+    value = ctx.getUriInfo().getPrecedingSegments().get(0).getMatrixParameters().get(key).get(0);
     assertEquals("2", value);
   }
 
@@ -226,7 +226,7 @@ public class ServiceResolutionTest {
 
     ODataContext ctx = this.service.getProcessor().getContext();
     assertNotNull(ctx);
-    assertEquals(this.server.getEndpoint() + "aaa/bbb;n=2,3;m=1/ccc/", ctx.getUriInfo().getBaseUri().toASCIIString());
+    assertEquals(this.server.getEndpoint() + "aaa/bbb;n=2,3;m=1/ccc/", ctx.getUriInfo().getServiceRoot().toASCIIString());
   }
 
   @Test
@@ -246,7 +246,7 @@ public class ServiceResolutionTest {
 
     ODataContext ctx = this.service.getProcessor().getContext();
     assertNotNull(ctx);
-    assertEquals(this.server.getEndpoint() + "aaa/%C3%A4%D0%B4%D0%B5%D1%80%D0%B6b;n=2,3;m=1/c%20c/", ctx.getUriInfo().getBaseUri().toASCIIString());
+    assertEquals(this.server.getEndpoint() + "aaa/%C3%A4%D0%B4%D0%B5%D1%80%D0%B6b;n=2,3;m=1/c%20c/", ctx.getUriInfo().getServiceRoot().toASCIIString());
   }
 
 }

@@ -10,12 +10,14 @@ import java.util.regex.Pattern;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.sap.core.odata.api.commons.InlineCount;
 import com.sap.core.odata.api.edm.Edm;
 import com.sap.core.odata.api.edm.EdmComplexType;
 import com.sap.core.odata.api.edm.EdmEntitySet;
 import com.sap.core.odata.api.edm.EdmEntityType;
 import com.sap.core.odata.api.edm.EdmException;
 import com.sap.core.odata.api.edm.EdmFunctionImport;
+import com.sap.core.odata.api.edm.EdmLiteral;
 import com.sap.core.odata.api.edm.EdmMultiplicity;
 import com.sap.core.odata.api.edm.EdmNavigationProperty;
 import com.sap.core.odata.api.edm.EdmParameter;
@@ -25,16 +27,14 @@ import com.sap.core.odata.api.edm.EdmSimpleTypeFacade;
 import com.sap.core.odata.api.edm.EdmType;
 import com.sap.core.odata.api.edm.EdmTypeKind;
 import com.sap.core.odata.api.edm.EdmTyped;
-import com.sap.core.odata.api.enums.InlineCount;
 import com.sap.core.odata.api.exception.ODataMessageException;
-import com.sap.core.odata.api.uri.EdmLiteral;
 import com.sap.core.odata.api.uri.KeyPredicate;
 import com.sap.core.odata.api.uri.NavigationPropertySegment;
 import com.sap.core.odata.api.uri.PathSegment;
 import com.sap.core.odata.api.uri.SelectItem;
 import com.sap.core.odata.api.uri.UriNotMatchingException;
 import com.sap.core.odata.api.uri.UriParser;
-import com.sap.core.odata.api.uri.UriParserResult;
+import com.sap.core.odata.api.uri.UriInfo;
 import com.sap.core.odata.api.uri.UriSyntaxException;
 import com.sap.core.odata.api.uri.expression.FilterParserException;
 import com.sap.core.odata.api.uri.expression.OrderByParserException;
@@ -60,7 +60,7 @@ public class UriParserImpl extends UriParser {
   private final EdmSimpleTypeFacade simpleTypeFacade;
   private List<String> pathSegments;
   private String currentPathSegment;
-  private UriParserResultImpl uriResult;
+  private UriInfoImpl uriResult;
   private Map<SystemQueryOption, String> systemQueryOptions;
   private Map<String, String> otherQueryParameters;
 
@@ -74,14 +74,14 @@ public class UriParserImpl extends UriParser {
    * already splitted into path segments and query parameters.
    * @param pathSegments  the {@link PathSegment}s of the resource path, already unescaped
    * @param queryParameters  the query parameters, already unescaped
-   * @return a {@link UriParserResultImpl} instance containing the parsed information
+   * @return a {@link UriInfoImpl} instance containing the parsed information
    */
   @Override
-  public UriParserResult parse(final List<PathSegment> pathSegments, final Map<String, String> queryParameters) throws UriSyntaxException, UriNotMatchingException, EdmException {
+  public UriInfo parse(final List<PathSegment> pathSegments, final Map<String, String> queryParameters) throws UriSyntaxException, UriNotMatchingException, EdmException {
     this.pathSegments = this.copyPathSegmentList(pathSegments);
     systemQueryOptions = new HashMap<SystemQueryOption, String>();
     otherQueryParameters = new HashMap<String, String>();
-    uriResult = new UriParserResultImpl();
+    uriResult = new UriInfoImpl();
 
     preparePathSegments();
 

@@ -3,7 +3,7 @@ package com.sap.core.odata.core.uri.expression;
 import java.util.Iterator;
 import java.util.Vector;
 
-import com.sap.core.odata.api.uri.EdmLiteral;
+import com.sap.core.odata.api.edm.EdmLiteral;
 
 public class TokenList implements Iterator<Token>
 {

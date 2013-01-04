@@ -6,7 +6,7 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 
 import com.sap.core.odata.api.edm.Edm;
-import com.sap.core.odata.api.ep.ODataEntityProviderException;
+import com.sap.core.odata.api.ep.EntityProviderException;
 import com.sap.core.odata.core.ep.aggregator.EntityPropertyInfo;
 
 /**
@@ -15,7 +15,7 @@ import com.sap.core.odata.core.ep.aggregator.EntityPropertyInfo;
  */
 public class XmlCollectionEntityProvider {
 
-  public static void append(XMLStreamWriter writer, final EntityPropertyInfo propertyInfo, final List<?> data) throws ODataEntityProviderException {
+  public static void append(XMLStreamWriter writer, final EntityPropertyInfo propertyInfo, final List<?> data) throws EntityProviderException {
     try {
       writer.writeStartElement(propertyInfo.getName());
       writer.writeDefaultNamespace(Edm.NAMESPACE_D_2007_08);
@@ -27,7 +27,7 @@ public class XmlCollectionEntityProvider {
       writer.writeEndElement();
       writer.flush();
     } catch (XMLStreamException e) {
-      throw new ODataEntityProviderException(ODataEntityProviderException.COMMON, e);
+      throw new EntityProviderException(EntityProviderException.COMMON, e);
     }
   }
 }

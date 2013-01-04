@@ -9,7 +9,7 @@ import org.junit.Test;
 
 import com.sap.core.odata.api.edm.EdmProperty;
 import com.sap.core.odata.api.edm.EdmTyped;
-import com.sap.core.odata.api.ep.ODataEntityProvider;
+import com.sap.core.odata.api.ep.EntityProvider;
 import com.sap.core.odata.api.processor.ODataResponse;
 import com.sap.core.odata.core.enums.ContentType;
 import com.sap.core.odata.testutils.helper.StringHelper;
@@ -22,7 +22,7 @@ public class AtomEntityProviderTest extends AbstractProviderTest {
 
   @Test
   public void writePropertyValue() throws Exception {
-    ODataEntityProvider s = createAtomEntityProvider();
+    EntityProvider s = createAtomEntityProvider();
 
     EdmTyped edmTyped = MockFacade.getMockEdm().getEntityType("RefScenario", "Employee").getProperty("Age");
     EdmProperty edmProperty = (EdmProperty) edmTyped;

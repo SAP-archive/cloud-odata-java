@@ -15,7 +15,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.sap.core.odata.api.exception.ODataException;
-import com.sap.core.odata.api.service.ODataSingleProcessorService;
+import com.sap.core.odata.api.processor.ODataSingleProcessorService;
 import com.sap.core.odata.testutils.server.TestServer;
 
 public abstract class AbstractFitTest {

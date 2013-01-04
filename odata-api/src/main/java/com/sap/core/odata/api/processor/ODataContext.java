@@ -2,9 +2,9 @@ package com.sap.core.odata.api.processor;
 
 import java.util.List;
 
+import com.sap.core.odata.api.ODataService;
 import com.sap.core.odata.api.exception.ODataException;
-import com.sap.core.odata.api.service.ODataService;
-import com.sap.core.odata.api.uri.UriInfo;
+import com.sap.core.odata.api.uri.PathInfo;
 
 /**
  * Compilation of generic context objects. 
@@ -21,7 +21,7 @@ public interface ODataContext {
    * @return a OData URI info object
    * @throws ODataException
    */
-  UriInfo getUriInfo() throws ODataException;
+  PathInfo getUriInfo() throws ODataException;
 
   /**
    * Start runtime measurement

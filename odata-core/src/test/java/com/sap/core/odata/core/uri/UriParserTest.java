@@ -18,22 +18,22 @@ import org.apache.log4j.xml.DOMConfigurator;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import com.sap.core.odata.api.commons.InlineCount;
 import com.sap.core.odata.api.edm.Edm;
 import com.sap.core.odata.api.edm.EdmException;
 import com.sap.core.odata.api.edm.EdmSimpleTypeKind;
 import com.sap.core.odata.api.edm.EdmTypeKind;
-import com.sap.core.odata.api.enums.InlineCount;
 import com.sap.core.odata.api.exception.MessageReference;
 import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.api.exception.ODataMessageException;
 import com.sap.core.odata.api.uri.PathSegment;
 import com.sap.core.odata.api.uri.UriNotMatchingException;
-import com.sap.core.odata.api.uri.UriParserResult;
+import com.sap.core.odata.api.uri.UriInfo;
 import com.sap.core.odata.api.uri.UriSyntaxException;
 import com.sap.core.odata.core.ODataPathSegmentImpl;
 import com.sap.core.odata.core.enums.ContentType;
 import com.sap.core.odata.core.uri.UriParserImpl;
-import com.sap.core.odata.core.uri.UriParserResultImpl;
+import com.sap.core.odata.core.uri.UriInfoImpl;
 import com.sap.core.odata.core.uri.UriType;
 import com.sap.core.odata.testutils.mocks.MockFacade;
 
@@ -57,9 +57,9 @@ public class UriParserTest {
     * Parse the URI part after an OData service root, given as string.
     * Query parameters can be included.
     * @param uri  the URI part
-    * @return a {@link UriParserResultImpl} instance containing the parsed information
+    * @return a {@link UriInfoImpl} instance containing the parsed information
     */
-  private UriParserResultImpl parse(final String uri) throws UriSyntaxException, UriNotMatchingException, EdmException {
+  private UriInfoImpl parse(final String uri) throws UriSyntaxException, UriNotMatchingException, EdmException {
     final String[] path = uri.split("\\?", -1);
     if (path.length > 2)
       throw new UriSyntaxException(UriSyntaxException.URISYNTAX);
@@ -72,9 +72,9 @@ public class UriParserTest {
       queryParameters = new HashMap<String, String>();
     }
 
-    UriParserResult result = new UriParserImpl(edm).parse(pathSegments, queryParameters);
+    UriInfo result = new UriParserImpl(edm).parse(pathSegments, queryParameters);
 
-    return (UriParserResultImpl) result;
+    return (UriInfoImpl) result;
   }
 
   private List<PathSegment> getPathSegments(final String uri) throws UriSyntaxException {
@@ -121,7 +121,7 @@ public class UriParserTest {
   public void copyPathSegmentsTest() throws Exception {
     List<PathSegment> pathSegments = new ArrayList<PathSegment>();
     pathSegments.add(new ODataPathSegmentImpl("$metadata", null));
-    UriParserResult result = new UriParserImpl(edm).parse(pathSegments, Collections.<String, String> emptyMap());
+    UriInfo result = new UriParserImpl(edm).parse(pathSegments, Collections.<String, String> emptyMap());
     assertNotNull(result);
     assertEquals(1, pathSegments.size());
     assertEquals("$metadata", pathSegments.get(0).getPath());
@@ -135,19 +135,19 @@ public class UriParserTest {
 
   @Test
   public void parseServiceDocument() throws Exception {
-    UriParserResultImpl result = parse("/");
+    UriInfoImpl result = parse("/");
     assertEquals(UriType.URI0, result.getUriType());
 
     result = parse("");
     assertEquals(UriType.URI0, result.getUriType());
 
-    result = (UriParserResultImpl) new UriParserImpl(edm).parse(Collections.<PathSegment> emptyList(), Collections.<String, String> emptyMap());
+    result = (UriInfoImpl) new UriParserImpl(edm).parse(Collections.<PathSegment> emptyList(), Collections.<String, String> emptyMap());
     assertEquals(UriType.URI0, result.getUriType());
   }
 
   @Test
   public void parseMetadata() throws Exception {
-    UriParserResultImpl result = parse("/$metadata");
+    UriInfoImpl result = parse("/$metadata");
     assertEquals(UriType.URI8, result.getUriType());
   }
 
@@ -158,7 +158,7 @@ public class UriParserTest {
 
   @Test
   public void parseBatch() throws Exception {
-    UriParserResultImpl result = parse("/$batch");
+    UriInfoImpl result = parse("/$batch");
     assertEquals(UriType.URI9, result.getUriType());
   }
 
@@ -179,7 +179,7 @@ public class UriParserTest {
 
   @Test
   public void parseEmployeesEntitySet() throws Exception {
-    UriParserResultImpl result = parse("/Employees");
+    UriInfoImpl result = parse("/Employees");
     assertNull(result.getEntityContainer().getName());
     assertEquals("Employees", result.getTargetEntitySet().getName());
     assertEquals(UriType.URI1, result.getUriType());
@@ -187,7 +187,7 @@ public class UriParserTest {
 
   @Test
   public void parseEmployeesEntitySetParenthesesCount() throws Exception {
-    UriParserResultImpl result = parse("/Employees()/$count");
+    UriInfoImpl result = parse("/Employees()/$count");
     assertNull(result.getEntityContainer().getName());
     assertEquals("Employees", result.getTargetEntitySet().getName());
     assertEquals(UriType.URI15, result.getUriType());
@@ -201,7 +201,7 @@ public class UriParserTest {
 
   @Test
   public void parseEmployeesEntitySetParentheses() throws Exception {
-    UriParserResultImpl result = parse("/Employees()");
+    UriInfoImpl result = parse("/Employees()");
     assertNull(result.getEntityContainer().getName());
     assertEquals("Employees", result.getTargetEntitySet().getName());
     assertEquals(UriType.URI1, result.getUriType());
@@ -220,7 +220,7 @@ public class UriParserTest {
 
   @Test
   public void parseEmployeesEntityWithKey() throws Exception {
-    UriParserResultImpl result = parse("/Employees('1')");
+    UriInfoImpl result = parse("/Employees('1')");
     assertNull(result.getEntityContainer().getName());
     assertEquals("Employees", result.getTargetEntitySet().getName());
     assertEquals(UriType.URI2, result.getUriType());
@@ -232,7 +232,7 @@ public class UriParserTest {
 
   @Test
   public void parseEmployeesEntity() throws Exception {
-    UriParserResultImpl result = parse("/Employees('1')");
+    UriInfoImpl result = parse("/Employees('1')");
     assertNull(result.getEntityContainer().getName());
     assertEquals("Employees", result.getTargetEntitySet().getName());
     assertEquals(UriType.URI2, result.getUriType());
@@ -244,7 +244,7 @@ public class UriParserTest {
 
   @Test
   public void parseEmployeesEntityWithExplicitKey() throws Exception {
-    UriParserResultImpl result = parse("/Employees(EmployeeId='1')");
+    UriInfoImpl result = parse("/Employees(EmployeeId='1')");
     assertNull(result.getEntityContainer().getName());
     assertEquals("Employees", result.getTargetEntitySet().getName());
     assertEquals(UriType.URI2, result.getUriType());
@@ -256,7 +256,7 @@ public class UriParserTest {
 
   @Test
   public void parseEmployeesEntityWithKeyValue() throws Exception {
-    UriParserResultImpl result = parse("/Employees('1')/$value");
+    UriInfoImpl result = parse("/Employees('1')/$value");
     assertEquals("Employees", result.getTargetEntitySet().getName());
     assertTrue(result.getStartEntitySet().getEntityType().hasStream());
     assertEquals(UriType.URI17, result.getUriType());
@@ -269,7 +269,7 @@ public class UriParserTest {
 
   @Test
   public void parseEmployeesEntityWithKeyCount() throws Exception {
-    UriParserResultImpl result = parse("/Employees('1')/$count");
+    UriInfoImpl result = parse("/Employees('1')/$count");
     assertEquals("Employees", result.getTargetEntitySet().getName());
     assertEquals(UriType.URI16, result.getUriType());
     assertTrue(result.isCount());
@@ -281,7 +281,7 @@ public class UriParserTest {
 
   @Test
   public void parseEmployeesSimpleProperty() throws Exception {
-    UriParserResultImpl result = parse("/Employees('1')/EmployeeName");
+    UriInfoImpl result = parse("/Employees('1')/EmployeeName");
     assertNull(result.getEntityContainer().getName());
     assertEquals("Employees", result.getTargetEntitySet().getName());
     assertEquals(UriType.URI5, result.getUriType());
@@ -290,7 +290,7 @@ public class UriParserTest {
 
   @Test
   public void parseEmployeesSimplePropertyValue() throws Exception {
-    UriParserResultImpl result = parse("/Employees('1')/EmployeeName/$value");
+    UriInfoImpl result = parse("/Employees('1')/EmployeeName/$value");
     assertNull(result.getEntityContainer().getName());
     assertEquals("Employees", result.getTargetEntitySet().getName());
     assertEquals(UriType.URI5, result.getUriType());
@@ -300,7 +300,7 @@ public class UriParserTest {
 
   @Test
   public void parseEmployeesComplexProperty() throws Exception {
-    UriParserResultImpl result = parse("/Employees('1')/Location");
+    UriInfoImpl result = parse("/Employees('1')/Location");
     assertNull(result.getEntityContainer().getName());
     assertEquals("Employees", result.getTargetEntitySet().getName());
     assertEquals(UriType.URI3, result.getUriType());
@@ -309,7 +309,7 @@ public class UriParserTest {
 
   @Test
   public void parseEmployeesComplexPropertyWithEntity() throws Exception {
-    UriParserResultImpl result = parse("/Employees('1')/Location/Country");
+    UriInfoImpl result = parse("/Employees('1')/Location/Country");
     assertNull(result.getEntityContainer().getName());
     assertEquals("Employees", result.getTargetEntitySet().getName());
     assertEquals(UriType.URI4, result.getUriType());
@@ -319,7 +319,7 @@ public class UriParserTest {
 
   @Test
   public void parseEmployeesComplexPropertyWithEntityValue() throws Exception {
-    UriParserResultImpl result = parse("/Employees('1')/Location/Country/$value");
+    UriInfoImpl result = parse("/Employees('1')/Location/Country/$value");
     assertNull(result.getEntityContainer().getName());
     assertEquals("Employees", result.getTargetEntitySet().getName());
     assertEquals(UriType.URI4, result.getUriType());
@@ -349,35 +349,35 @@ public class UriParserTest {
 
   @Test
   public void parseNavigationPropertyWithEntityResult() throws Exception {
-    UriParserResultImpl result = parse("/Employees('1')/ne_Manager");
+    UriInfoImpl result = parse("/Employees('1')/ne_Manager");
     assertEquals("Managers", result.getTargetEntitySet().getName());
     assertEquals(UriType.URI6A, result.getUriType());
   }
 
   @Test
   public void parseNavigationPropertyWithEntitySetResult() throws Exception {
-    UriParserResultImpl result = parse("/Managers('1')/nm_Employees");
+    UriInfoImpl result = parse("/Managers('1')/nm_Employees");
     assertEquals("Employees", result.getTargetEntitySet().getName());
     assertEquals(UriType.URI6B, result.getUriType());
   }
 
   @Test
   public void parseNavigationPropertyWithEntitySetResultParenthesis() throws Exception {
-    UriParserResultImpl result = parse("/Managers('1')/nm_Employees()");
+    UriInfoImpl result = parse("/Managers('1')/nm_Employees()");
     assertEquals("Employees", result.getTargetEntitySet().getName());
     assertEquals(UriType.URI6B, result.getUriType());
   }
 
   @Test
   public void parseNavigationPropertyWithEntityResultWithKey() throws Exception {
-    UriParserResultImpl result = parse("/Managers('1')/nm_Employees('1')");
+    UriInfoImpl result = parse("/Managers('1')/nm_Employees('1')");
     assertEquals("Employees", result.getTargetEntitySet().getName());
     assertEquals(UriType.URI6A, result.getUriType());
   }
 
   @Test
   public void parseNavigationPropertyWithLinksOne() throws Exception {
-    UriParserResultImpl result = parse("/Employees('1')/$links/ne_Manager");
+    UriInfoImpl result = parse("/Employees('1')/$links/ne_Manager");
     assertEquals("Managers", result.getTargetEntitySet().getName());
     assertTrue(result.isLinks());
     assertEquals(UriType.URI7A, result.getUriType());
@@ -385,7 +385,7 @@ public class UriParserTest {
 
   @Test
   public void parseNavigationPropertyWithLinksMany() throws Exception {
-    UriParserResultImpl result = parse("/Managers('1')/$links/nm_Employees");
+    UriInfoImpl result = parse("/Managers('1')/$links/nm_Employees");
     assertEquals("Employees", result.getTargetEntitySet().getName());
     assertTrue(result.isLinks());
     assertEquals(UriType.URI7B, result.getUriType());
@@ -393,7 +393,7 @@ public class UriParserTest {
 
   @Test
   public void parseNavigationPropertyWithManagersCount() throws Exception {
-    UriParserResultImpl result = parse("/Employees('1')/ne_Manager/$count");
+    UriInfoImpl result = parse("/Employees('1')/ne_Manager/$count");
     assertEquals("Managers", result.getTargetEntitySet().getName());
     assertTrue(result.isCount());
     assertEquals(UriType.URI16, result.getUriType());
@@ -401,7 +401,7 @@ public class UriParserTest {
 
   @Test
   public void parseNavigationPropertyWithEmployeesCount() throws Exception {
-    UriParserResultImpl result = parse("/Managers('1')/nm_Employees/$count");
+    UriInfoImpl result = parse("/Managers('1')/nm_Employees/$count");
     assertEquals("Employees", result.getTargetEntitySet().getName());
     assertTrue(result.isCount());
     assertEquals(UriType.URI15, result.getUriType());
@@ -409,7 +409,7 @@ public class UriParserTest {
 
   @Test
   public void parseNavigationPropertyWithEmployeeCount() throws Exception {
-    UriParserResultImpl result = parse("Managers('1')/nm_Employees('1')/$count");
+    UriInfoImpl result = parse("Managers('1')/nm_Employees('1')/$count");
     assertEquals("Employees", result.getTargetEntitySet().getName());
     assertTrue(result.isCount());
     assertEquals(UriType.URI16, result.getUriType());
@@ -417,7 +417,7 @@ public class UriParserTest {
 
   @Test
   public void parseNavigationPropertyWithLinksCountMany() throws Exception {
-    UriParserResultImpl result = parse("/Managers('1')/$links/nm_Employees/$count");
+    UriInfoImpl result = parse("/Managers('1')/$links/nm_Employees/$count");
     assertEquals("Employees", result.getTargetEntitySet().getName());
     assertTrue(result.isLinks());
     assertTrue(result.isCount());
@@ -426,7 +426,7 @@ public class UriParserTest {
 
   @Test
   public void parseNavigationPropertyWithLinksCountOne() throws Exception {
-    UriParserResultImpl result = parse("/Employees('1')/$links/ne_Manager/$count");
+    UriInfoImpl result = parse("/Employees('1')/$links/ne_Manager/$count");
     assertEquals("Managers", result.getTargetEntitySet().getName());
     assertTrue(result.isLinks());
     assertTrue(result.isCount());
@@ -494,7 +494,7 @@ public class UriParserTest {
 
   @Test
   public void parsePhotoEntityWithExplicitKeySet() throws Exception {
-    UriParserResultImpl result = parse("/Container2.Photos(Id=1,Type='abc')");
+    UriInfoImpl result = parse("/Container2.Photos(Id=1,Type='abc')");
     assertEquals("Container2", result.getEntityContainer().getName());
     assertEquals("Photos", result.getTargetEntitySet().getName());
     assertEquals(UriType.URI2, result.getUriType());
@@ -513,7 +513,7 @@ public class UriParserTest {
 
   @Test
   public void parseContainerEmployeesEntitySet() throws Exception {
-    UriParserResultImpl result = parse("/Container1.Employees");
+    UriInfoImpl result = parse("/Container1.Employees");
     assertEquals("Container1", result.getEntityContainer().getName());
     assertEquals("Employees", result.getTargetEntitySet().getName());
     assertEquals(UriType.URI1, result.getUriType());
@@ -521,7 +521,7 @@ public class UriParserTest {
 
   @Test
   public void parseContainerEmployeesEntitySetParenthese() throws Exception {
-    UriParserResultImpl result = parse("/Container1.Employees()");
+    UriInfoImpl result = parse("/Container1.Employees()");
     assertEquals("Container1", result.getEntityContainer().getName());
     assertEquals("Employees", result.getTargetEntitySet().getName());
     assertEquals(UriType.URI1, result.getUriType());
@@ -529,7 +529,7 @@ public class UriParserTest {
 
   @Test
   public void parseContainerEmployeesEntityWithKey() throws Exception {
-    UriParserResultImpl result = parse("/Container1.Employees('1')");
+    UriInfoImpl result = parse("/Container1.Employees('1')");
     assertEquals("Container1", result.getEntityContainer().getName());
     assertEquals("Employees", result.getTargetEntitySet().getName());
     assertEquals(UriType.URI2, result.getUriType());
@@ -551,7 +551,7 @@ public class UriParserTest {
 
   @Test
   public void parseFunctionImports() throws Exception {
-    UriParserResultImpl result = parse("EmployeeSearch");
+    UriInfoImpl result = parse("EmployeeSearch");
     assertEquals("EmployeeSearch", result.getFunctionImport().getName());
     assertEquals(EdmTypeKind.ENTITY, result.getTargetType().getKind());
     assertEquals(UriType.URI1, result.getUriType());
@@ -588,7 +588,7 @@ public class UriParserTest {
 
   @Test
   public void parseFunctionImportParameters() throws Exception {
-    UriParserResultImpl result = parse("EmployeeSearch?q='Hugo'&notaparameter=2");
+    UriInfoImpl result = parse("EmployeeSearch?q='Hugo'&notaparameter=2");
     assertEquals("EmployeeSearch", result.getFunctionImport().getName());
     assertEquals(1, result.getFunctionImportParameters().size());
     assertEquals(EdmSimpleTypeKind.String.getEdmSimpleTypeInstance(), result.getFunctionImportParameters().get("q").getType());
@@ -607,7 +607,7 @@ public class UriParserTest {
 
   @Test
   public void parseSystemQueryOptions() throws Exception {
-    UriParserResultImpl result = parse("Employees?$format=json&$inlinecount=allpages&$skiptoken=abc&$skip=2&$top=1");
+    UriInfoImpl result = parse("Employees?$format=json&$inlinecount=allpages&$skiptoken=abc&$skip=2&$top=1");
     assertEquals("Employees", result.getTargetEntitySet().getName());
     assertEquals(UriType.URI1, result.getUriType());
     assertEquals(ContentType.APPLICATION_JSON.toContentTypeString(), result.getContentType());
@@ -708,7 +708,7 @@ public class UriParserTest {
 
   @Test
   public void parseCompatibleSystemQueryOptions() throws Exception {
-    UriParserResultImpl result = parse("Employees?$format=json&$inlinecount=allpages&$skiptoken=abc&$skip=2&$top=1");
+    UriInfoImpl result = parse("Employees?$format=json&$inlinecount=allpages&$skiptoken=abc&$skip=2&$top=1");
     assertEquals("Employees", result.getStartEntitySet().getName());
     assertEquals(UriType.URI1, result.getUriType());
     assertEquals(ContentType.APPLICATION_JSON.toContentTypeString(), result.getContentType());
@@ -730,7 +730,7 @@ public class UriParserTest {
 
   @Test
   public void parsePossibleQueryOptions() throws Exception {
-    UriParserResultImpl result = parse("EmployeeSearch?q='a'&sap-client=100&sap-ds-debug=true");
+    UriInfoImpl result = parse("EmployeeSearch?q='a'&sap-client=100&sap-ds-debug=true");
     assertEquals(2, result.getCustomQueryOptions().size());
     assertEquals("100", result.getCustomQueryOptions().get("sap-client"));
     assertEquals("true", result.getCustomQueryOptions().get("sap-ds-debug"));
@@ -738,7 +738,7 @@ public class UriParserTest {
 
   @Test
   public void parseSystemQueryOptionSelectSingle() throws Exception {
-    UriParserResultImpl result = parse("Employees?$select=EmployeeName");
+    UriInfoImpl result = parse("Employees?$select=EmployeeName");
     assertEquals("Employees", result.getTargetEntitySet().getName());
     assertEquals(UriType.URI1, result.getUriType());
     assertEquals(1, result.getSelect().size());
@@ -771,7 +771,7 @@ public class UriParserTest {
 
   @Test
   public void parseSystemQueryOptionSelectMultiple() throws Exception {
-    UriParserResultImpl result = parse("Employees?$select=EmployeeName,Location");
+    UriInfoImpl result = parse("Employees?$select=EmployeeName,Location");
     assertEquals("Employees", result.getTargetEntitySet().getName());
     assertEquals(UriType.URI1, result.getUriType());
     assertEquals(2, result.getSelect().size());
@@ -816,7 +816,7 @@ public class UriParserTest {
 
   @Test
   public void parseSystemQueryOptionExpand() throws Exception {
-    UriParserResultImpl result = parse("Managers('1')?$expand=nm_Employees");
+    UriInfoImpl result = parse("Managers('1')?$expand=nm_Employees");
     assertEquals("Managers", result.getTargetEntitySet().getName());
     assertEquals(UriType.URI2, result.getUriType());
     assertEquals(1, result.getExpand().size());

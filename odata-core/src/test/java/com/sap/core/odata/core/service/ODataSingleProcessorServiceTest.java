@@ -13,10 +13,10 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.sap.core.odata.api.edm.provider.EdmProvider;
-import com.sap.core.odata.api.processor.ContentTypeSupport;
 import com.sap.core.odata.api.processor.ODataSingleProcessor;
-import com.sap.core.odata.api.processor.aspect.ProcessorAspect;
-import com.sap.core.odata.api.service.ODataSingleProcessorService;
+import com.sap.core.odata.api.processor.ODataSingleProcessorService;
+import com.sap.core.odata.api.processor.feature.ContentTypeSupport;
+import com.sap.core.odata.api.processor.feature.ProcessorFeature;
 import com.sap.core.odata.core.enums.ContentType;
 
 public class ODataSingleProcessorServiceTest {
@@ -34,7 +34,7 @@ public class ODataSingleProcessorServiceTest {
 
   @Test
   public void defaultSupportedContentTypesForEntitySet() throws Exception {
-    List<String> types = service.getSupportedContentTypes(ProcessorAspect.ENTITY_SET);
+    List<String> types = service.getSupportedContentTypes(ProcessorFeature.ENTITY_SET);
     assertTrue(types.contains(ContentType.APPLICATION_ATOM_XML.toContentTypeString()));
     assertTrue(types.contains(ContentType.APPLICATION_ATOM_XML_FEED.toContentTypeString()));
     assertTrue(types.contains(ContentType.APPLICATION_JSON.toContentTypeString()));
@@ -42,7 +42,7 @@ public class ODataSingleProcessorServiceTest {
 
   @Test
   public void defaultSupportedContentTypesForEntity() throws Exception {
-    List<String> types = service.getSupportedContentTypes(ProcessorAspect.ENTITY);
+    List<String> types = service.getSupportedContentTypes(ProcessorFeature.ENTITY);
     assertTrue(types.contains(ContentType.APPLICATION_ATOM_XML.toContentTypeString()));
     assertTrue(types.contains(ContentType.APPLICATION_ATOM_XML_ENTRY.toContentTypeString()));
     assertTrue(types.contains(ContentType.APPLICATION_JSON.toContentTypeString()));
@@ -59,41 +59,41 @@ public class ODataSingleProcessorServiceTest {
 
   @Test
   public void defaultSupportedContentTypesForServiceDocument() throws Exception {
-    List<String> types = service.getSupportedContentTypes(ProcessorAspect.SERVICE_DOCUMENT);
+    List<String> types = service.getSupportedContentTypes(ProcessorFeature.SERVICE_DOCUMENT);
     assertTrue(types.contains(ContentType.APPLICATION_ATOM_SVC.toContentTypeString()));
     assertTrue(types.contains(ContentType.APPLICATION_JSON.toContentTypeString()));
   }
 
   @Test
   public void defaultSupportedContentTypesForMetadata() throws Exception {
-    List<String> types = service.getSupportedContentTypes(ProcessorAspect.METDDATA);
+    List<String> types = service.getSupportedContentTypes(ProcessorFeature.METDDATA);
     assertTrue(types.contains(ContentType.APPLICATION_XML.toContentTypeString()));
   }
 
   @Test
   public void defaultSupportedContentTypesForFunctionImport() throws Exception {
-    List<String> types = service.getSupportedContentTypes(ProcessorAspect.FUNCTION_IMPORT);
+    List<String> types = service.getSupportedContentTypes(ProcessorFeature.FUNCTION_IMPORT);
     assertTrue(types.contains(ContentType.APPLICATION_XML.toContentTypeString()));
     assertTrue(types.contains(ContentType.APPLICATION_JSON.toContentTypeString()));
   }
 
   @Test
   public void defaultSupportedContentTypesForEntityComplexProperty() throws Exception {
-    List<String> types = service.getSupportedContentTypes(ProcessorAspect.ENTITY_COMPLEX_PROPERTY);
+    List<String> types = service.getSupportedContentTypes(ProcessorFeature.ENTITY_COMPLEX_PROPERTY);
     assertTrue(types.contains(ContentType.APPLICATION_XML.toContentTypeString()));
     assertTrue(types.contains(ContentType.APPLICATION_JSON.toContentTypeString()));
   }
 
   @Test
   public void defaultSupportedContentTypesForEntitySimpleProperty() throws Exception {
-    List<String> types = service.getSupportedContentTypes(ProcessorAspect.ENTITY_SIMPLE_PROPERTY);
+    List<String> types = service.getSupportedContentTypes(ProcessorFeature.ENTITY_SIMPLE_PROPERTY);
     assertTrue(types.contains(ContentType.APPLICATION_XML.toContentTypeString()));
     assertTrue(types.contains(ContentType.APPLICATION_JSON.toContentTypeString()));
   }
 
   @Test
   public void defaultSupportedContentTypesForEntityLinks() throws Exception {
-    List<String> types = service.getSupportedContentTypes(ProcessorAspect.ENTITY_LINKS);
+    List<String> types = service.getSupportedContentTypes(ProcessorFeature.ENTITY_LINKS);
     assertTrue(types.contains(ContentType.APPLICATION_XML.toContentTypeString()));
     assertTrue(types.contains(ContentType.APPLICATION_JSON.toContentTypeString()));
   }
@@ -102,7 +102,7 @@ public class ODataSingleProcessorServiceTest {
   public void defaultSupportedContentTypesForEntityLink() throws Exception {
     ContentType ctGif = ContentType.create("image", "gif");
 
-    List<String> types = service.getSupportedContentTypes(ProcessorAspect.ENTITY_LINK);
+    List<String> types = service.getSupportedContentTypes(ProcessorFeature.ENTITY_LINK);
     assertTrue(types.contains(ContentType.APPLICATION_XML.toContentTypeString()));
     assertTrue(types.contains(ContentType.APPLICATION_JSON.toContentTypeString()));
     assertFalse(types.contains(ctGif.toContentTypeString()));
@@ -111,34 +111,34 @@ public class ODataSingleProcessorServiceTest {
   @Test
   public void defaultSupportedContentTypesAndGifForEntityLink() throws Exception {
     String ctGif = ContentType.create("image", "gif").toContentTypeString();
-    when(((ContentTypeSupport) processor).getSupportedContentTypes(ProcessorAspect.ENTITY_LINK)).thenReturn(Arrays.asList(ctGif));
+    when(((ContentTypeSupport) processor).getSupportedContentTypes(ProcessorFeature.ENTITY_LINK)).thenReturn(Arrays.asList(ctGif));
     
-    List<String> types = service.getSupportedContentTypes(ProcessorAspect.ENTITY_LINK);
+    List<String> types = service.getSupportedContentTypes(ProcessorFeature.ENTITY_LINK);
     assertTrue(types.contains(ctGif));
   }
   
 
   @Test
   public void defaultSupportedContentTypesForEntityMedia() throws Exception {
-    List<String> types = service.getSupportedContentTypes(ProcessorAspect.ENTITY_MEDIA);
+    List<String> types = service.getSupportedContentTypes(ProcessorFeature.ENTITY_MEDIA);
     assertTrue(types.contains(ContentType.WILDCARD.toContentTypeString()));
   }
 
   @Test
   public void defaultSupportedContentTypesForSimplePropertyValue() throws Exception {
-    List<String> types = service.getSupportedContentTypes(ProcessorAspect.ENTITY_SIMPLE_PROPERTY_VALUE);
+    List<String> types = service.getSupportedContentTypes(ProcessorFeature.ENTITY_SIMPLE_PROPERTY_VALUE);
     assertTrue(types.contains(ContentType.WILDCARD.toContentTypeString()));
   }
 
   @Test
   public void defaultSupportedContentTypesForFunctionImportValue() throws Exception {
-    List<String> types = service.getSupportedContentTypes(ProcessorAspect.FUNCTION_IMPORT_VALUE);
+    List<String> types = service.getSupportedContentTypes(ProcessorFeature.FUNCTION_IMPORT_VALUE);
     assertTrue(types.contains(ContentType.WILDCARD.toContentTypeString()));
   }
 
   @Test
   public void defaultSupportedContentTypesForBatch() throws Exception {
-    List<String> types = service.getSupportedContentTypes(ProcessorAspect.BATCH);
+    List<String> types = service.getSupportedContentTypes(ProcessorFeature.BATCH);
     assertTrue(types.contains(ContentType.MULTIPART_MIXED.toContentTypeString()));
   }
 }

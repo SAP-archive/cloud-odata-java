@@ -37,7 +37,7 @@ import com.sap.core.odata.api.edm.provider.ReferentialConstraintRole;
 import com.sap.core.odata.api.edm.provider.Schema;
 import com.sap.core.odata.api.edm.provider.SimpleProperty;
 import com.sap.core.odata.api.edm.provider.Using;
-import com.sap.core.odata.api.ep.ODataEntityProviderException;
+import com.sap.core.odata.api.ep.EntityProviderException;
 import com.sap.core.odata.core.exception.ODataRuntimeException;
 
 /**
@@ -46,7 +46,7 @@ import com.sap.core.odata.core.exception.ODataRuntimeException;
  */
 public class EdmMetadata {
 
-  public static void writeMetadata(DataServices metadata, Writer writer) throws ODataEntityProviderException {
+  public static void writeMetadata(DataServices metadata, Writer writer) throws EntityProviderException {
 
     try {
       XMLStreamWriter xmlStreamWriter = XMLOutputFactory.newInstance().createXMLStreamWriter(writer);
@@ -361,9 +361,9 @@ public class EdmMetadata {
 
       xmlStreamWriter.flush();
     } catch (XMLStreamException e) {
-      throw new ODataEntityProviderException(ODataEntityProviderException.COMMON, e);
+      throw new EntityProviderException(EntityProviderException.COMMON, e);
     } catch (FactoryConfigurationError e) {
-      throw new ODataEntityProviderException(ODataEntityProviderException.COMMON, e);
+      throw new EntityProviderException(EntityProviderException.COMMON, e);
     }
   }
 

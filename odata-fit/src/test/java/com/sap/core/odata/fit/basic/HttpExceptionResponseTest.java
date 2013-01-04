@@ -32,10 +32,10 @@ import com.sap.core.odata.api.exception.ODataHttpException;
 import com.sap.core.odata.api.exception.ODataNotFoundException;
 import com.sap.core.odata.api.processor.ODataSingleProcessor;
 import com.sap.core.odata.api.uri.KeyPredicate;
-import com.sap.core.odata.api.uri.resultviews.GetEntityView;
+import com.sap.core.odata.api.uri.info.GetEntityUriInfo;
 import com.sap.core.odata.core.enums.ContentType;
 import com.sap.core.odata.core.exception.MessageService;
-import com.sap.core.odata.core.uri.UriParserResultImpl;
+import com.sap.core.odata.core.uri.UriInfoImpl;
 import com.sap.core.odata.ref.edm.ScenarioEdmProvider;
 import com.sap.core.odata.testutils.helper.ClassHelper;
 import com.sap.core.odata.testutils.helper.StringHelper;
@@ -59,7 +59,7 @@ public class HttpExceptionResponseTest extends AbstractBasicTest {
 
   @Test
   public void test404HttpNotFound() throws Exception {
-    when(processor.readEntity(any(GetEntityView.class),any(String.class))).thenThrow(new ODataNotFoundException(ODataNotFoundException.ENTITY));
+    when(processor.readEntity(any(GetEntityUriInfo.class),any(String.class))).thenThrow(new ODataNotFoundException(ODataNotFoundException.ENTITY));
 
     HttpResponse response = executeGetRequest("Managers('199')");
     assertEquals(404, response.getStatusLine().getStatusCode());
@@ -81,7 +81,7 @@ public class HttpExceptionResponseTest extends AbstractBasicTest {
     int firstKey = 1;
     for (ODataHttpException oDataException : toTestExceptions) {
       String key = String.valueOf(firstKey++);
-      Matcher<GetEntityView> match = new EntityKeyMatcher(key);
+      Matcher<GetEntityUriInfo> match = new EntityKeyMatcher(key);
       when(processor.readEntity(Matchers.argThat(match),any(String.class))).thenThrow(oDataException);
 
       String uri = getEndpoint().toString() + "Managers('" + key + "')";
@@ -116,7 +116,7 @@ public class HttpExceptionResponseTest extends AbstractBasicTest {
   /**
    * 
    */
-  private class EntityKeyMatcher extends BaseMatcher<GetEntityView> {
+  private class EntityKeyMatcher extends BaseMatcher<GetEntityUriInfo> {
 
     private final String keyLiteral;
 
@@ -129,8 +129,8 @@ public class HttpExceptionResponseTest extends AbstractBasicTest {
 
     @Override
     public boolean matches(Object item) {
-      if (item instanceof UriParserResultImpl) {
-        UriParserResultImpl upr = (UriParserResultImpl) item;
+      if (item instanceof UriInfoImpl) {
+        UriInfoImpl upr = (UriInfoImpl) item;
         List<KeyPredicate> keyPredicates = upr.getKeyPredicates();
         for (KeyPredicate keyPredicate : keyPredicates) {
           if (keyLiteral.equals(keyPredicate.getLiteral())) {

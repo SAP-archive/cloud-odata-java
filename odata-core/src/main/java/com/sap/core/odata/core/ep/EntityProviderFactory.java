@@ -1,20 +1,20 @@
 package com.sap.core.odata.core.ep;
 
-import com.sap.core.odata.api.ep.ODataEntityProvider;
-import com.sap.core.odata.api.ep.ODataEntityProviderException;
+import com.sap.core.odata.api.ep.EntityProvider;
+import com.sap.core.odata.api.ep.EntityProviderException;
 import com.sap.core.odata.api.exception.ODataNotAcceptableException;
 import com.sap.core.odata.api.exception.ODataNotImplementedException;
 import com.sap.core.odata.core.enums.ContentType;
 
 public class EntityProviderFactory {
 
-  public static ODataEntityProvider create(String contentType) throws ODataEntityProviderException {
+  public static EntityProvider create(String contentType) throws EntityProviderException {
     return create(ContentType.create(contentType));
   }
   
-  public static ODataEntityProvider create(ContentType contentType) throws ODataEntityProviderException {
+  public static EntityProvider create(ContentType contentType) throws EntityProviderException {
     try {
-      ODataEntityProvider provider;
+      EntityProvider provider;
 
       switch (contentType.getODataFormat()) {
       case ATOM:
@@ -29,9 +29,9 @@ public class EntityProviderFactory {
 
       return provider;
     } catch (ODataNotImplementedException e) {
-      throw new ODataEntityProviderException(ODataEntityProviderException.COMMON, e);
+      throw new EntityProviderException(EntityProviderException.COMMON, e);
     } catch (ODataNotAcceptableException e) {
-      throw new ODataEntityProviderException(ODataEntityProviderException.COMMON, e);
+      throw new EntityProviderException(EntityProviderException.COMMON, e);
     }
   }
 }

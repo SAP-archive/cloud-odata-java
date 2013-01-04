@@ -3,9 +3,9 @@ package com.sap.core.odata.core.uri.expression;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.sap.core.odata.api.edm.EdmLiteral;
 import com.sap.core.odata.api.edm.EdmSimpleTypeFacade;
 import com.sap.core.odata.api.edm.EdmSimpleTypeKind;
-import com.sap.core.odata.api.uri.EdmLiteral;
 import com.sap.core.odata.api.uri.UriSyntaxException;
 import com.sap.core.odata.core.edm.EdmSimpleTypeFacadeImpl;
 

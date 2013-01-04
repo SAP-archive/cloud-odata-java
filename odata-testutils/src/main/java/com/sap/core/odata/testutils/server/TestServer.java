@@ -10,7 +10,7 @@ import org.eclipse.jetty.servlet.ServletHolder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.sap.core.odata.api.service.ODataServiceFactory;
+import com.sap.core.odata.api.ODataServiceFactory;
 
 /**
  * @author SAP AG

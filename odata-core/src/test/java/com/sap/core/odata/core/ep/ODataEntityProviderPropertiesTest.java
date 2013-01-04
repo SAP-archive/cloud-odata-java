@@ -7,7 +7,7 @@ import java.net.URI;
 
 import org.junit.Test;
 
-import com.sap.core.odata.api.ep.ODataEntityProviderProperties;
+import com.sap.core.odata.api.ep.EntityProviderProperties;
 
 /**
  * @author SAP AG
@@ -18,7 +18,7 @@ public class ODataEntityProviderPropertiesTest {
   public void buildFeedProperties() throws Exception {
     String mediaResourceMimeType = "text/html";
     URI baseUri = new URI("http://localhost:80/");
-    ODataEntityProviderProperties properties = ODataEntityProviderProperties.baseUri(baseUri)
+    EntityProviderProperties properties = EntityProviderProperties.baseUri(baseUri)
         .mediaResourceMimeType(mediaResourceMimeType)
         .inlineCount(-1)
         .skipToken("UUID=A823K34WER3@#$20")
@@ -33,7 +33,7 @@ public class ODataEntityProviderPropertiesTest {
   @Test
   public void buildFeedPropertiesDefaults() throws Exception {
     URI baseUri = new URI("http://localhost:80/");
-    ODataEntityProviderProperties properties = ODataEntityProviderProperties.baseUri(baseUri).build();
+    EntityProviderProperties properties = EntityProviderProperties.baseUri(baseUri).build();
 
     assertEquals("http://localhost:80/", properties.getBaseUri().toASCIIString());
     assertNull(properties.getInlineCount());

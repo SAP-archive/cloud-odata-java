@@ -9,10 +9,10 @@ import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpGet;
 
+import com.sap.core.odata.api.commons.HttpStatusCodes;
 import com.sap.core.odata.api.edm.provider.EdmProvider;
-import com.sap.core.odata.api.enums.HttpStatusCodes;
 import com.sap.core.odata.api.processor.ODataSingleProcessor;
-import com.sap.core.odata.api.service.ODataSingleProcessorService;
+import com.sap.core.odata.api.processor.ODataSingleProcessorService;
 import com.sap.core.odata.core.enums.ContentType;
 import com.sap.core.odata.ref.edm.ScenarioEdmProvider;
 import com.sap.core.odata.ref.model.DataContainer;

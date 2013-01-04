@@ -10,7 +10,7 @@ import java.io.InputStream;
 import org.junit.Test;
 
 import com.sap.core.odata.api.edm.EdmEntitySet;
-import com.sap.core.odata.api.ep.ODataEntityProviderProperties;
+import com.sap.core.odata.api.ep.EntityProviderProperties;
 import com.sap.core.odata.api.processor.ODataResponse;
 import com.sap.core.odata.core.enums.ContentType;
 import com.sap.core.odata.testutils.helper.StringHelper;
@@ -45,7 +45,7 @@ public class XmlLinksEntityProviderTest extends AbstractProviderTest {
     initializeRoomData(1);
 
     final ODataResponse response = createAtomEntityProvider().writeLinks(entitySet, roomsData,
-        ODataEntityProviderProperties.baseUri(BASE_URI).inlineCount(3).build());
+        EntityProviderProperties.baseUri(BASE_URI).inlineCount(3).build());
     assertNotNull(response);
     assertNotNull(response.getEntity());
 

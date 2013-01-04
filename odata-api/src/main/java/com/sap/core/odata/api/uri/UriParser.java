@@ -20,10 +20,10 @@ public abstract class UriParser {
    * @param edm
    * @param pathSegments
    * @param queryParameter
-   * @return {@link UriParserResult} parsed uri result
+   * @return {@link UriInfo} parsed uri result
    * @throws UriSyntaxException
    */
-  public static UriParserResult parse(Edm edm, List<PathSegment> pathSegments, Map<String, String> queryParameter) throws ODataException {
+  public static UriInfo parse(Edm edm, List<PathSegment> pathSegments, Map<String, String> queryParameter) throws ODataException {
     return RuntimeDelegate.getUriParser(edm).parse(pathSegments, queryParameter);
   }
 
@@ -32,8 +32,8 @@ public abstract class UriParser {
    * 
    * @param pathSegments
    * @param queryParameter
-   * @return {@link UriParserResult} parsed uri result
+   * @return {@link UriInfo} parsed uri result
    * @throws UriSyntaxException
    */
-  public abstract UriParserResult parse(List<PathSegment> pathSegments, Map<String, String> queryParameters) throws UriSyntaxException, UriNotMatchingException, EdmException;  
+  public abstract UriInfo parse(List<PathSegment> pathSegments, Map<String, String> queryParameters) throws UriSyntaxException, UriNotMatchingException, EdmException;  
 }

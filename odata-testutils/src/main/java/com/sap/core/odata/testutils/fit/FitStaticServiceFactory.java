@@ -1,10 +1,10 @@
 package com.sap.core.odata.testutils.fit;
 
+import com.sap.core.odata.api.ODataService;
+import com.sap.core.odata.api.ODataServiceFactory;
 import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.api.processor.ODataContext;
-import com.sap.core.odata.api.service.ODataService;
-import com.sap.core.odata.api.service.ODataServiceFactory;
-import com.sap.core.odata.api.service.ODataSingleProcessorService;
+import com.sap.core.odata.api.processor.ODataSingleProcessorService;
 
 public class FitStaticServiceFactory implements ODataServiceFactory {
 

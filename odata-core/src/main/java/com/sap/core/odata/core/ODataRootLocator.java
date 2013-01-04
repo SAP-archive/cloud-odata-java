@@ -12,8 +12,8 @@ import javax.ws.rs.core.PathSegment;
 import javax.ws.rs.core.Request;
 import javax.ws.rs.core.UriInfo;
 
+import com.sap.core.odata.api.ODataServiceFactory;
 import com.sap.core.odata.api.exception.ODataException;
-import com.sap.core.odata.api.service.ODataServiceFactory;
 import com.sap.core.odata.core.ODataSubLocator.InitParameter;
 import com.sap.core.odata.core.exception.ODataRuntimeException;
 
