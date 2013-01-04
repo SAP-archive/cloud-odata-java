@@ -6,7 +6,6 @@ import java.util.Locale;
 
 import com.sap.core.odata.api.edm.EdmException;
 import com.sap.core.odata.api.edm.EdmLiteralKind;
-import com.sap.core.odata.api.edm.EdmProperty;
 import com.sap.core.odata.api.edm.EdmSimpleType;
 import com.sap.core.odata.api.edm.EdmSimpleTypeKind;
 import com.sap.core.odata.api.exception.ODataException;
@@ -52,7 +51,7 @@ public class ExpressionParsingUtility {
 	    	return parseWhereExpression(filterExpression.getExpression());
 	    case BINARY:
 	      final BinaryExpression binaryExpression = (BinaryExpression) whereExpression;
-	      final EdmSimpleType binaryType = (EdmSimpleType) binaryExpression.getEdmType();
+//	      final EdmSimpleType binaryType = (EdmSimpleType) binaryExpression.getEdmType();
 	      final String left = parseWhereExpression(binaryExpression.getLeftOperand());
 	      final String right = parseWhereExpression(binaryExpression.getRightOperand());
 
