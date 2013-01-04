@@ -3,22 +3,37 @@ package com.sap.core.odata.api.uri;
 import java.util.List;
 import java.util.Map;
 
+import com.sap.core.odata.api.edm.Edm;
 import com.sap.core.odata.api.edm.EdmException;
-import com.sap.core.odata.api.processor.ODataPathSegment;
+import com.sap.core.odata.api.exception.ODataException;
+import com.sap.core.odata.api.rt.RuntimeDelegate;
+
 
 /**
- * Uri Parser interface
+ * Class to wrap UriParser functionality 
  * @author SAP AG
  */
-public interface UriParser {
+public abstract class UriParser {
   
   /**
-   * parses the given path segments and query parameter
-   * @param pathSegments to be parsed
-   * @param queryParameters to be parsed
-   * @return {@link UriParserResult} the parsing result
+   * Parse path segments and query parameters for the given EDM
+   * @param edm
+   * @param pathSegments
+   * @param queryParameter
+   * @return {@link UriParserResult} parsed uri result
    * @throws UriSyntaxException
    */
-  public UriParserResult parse(List<ODataPathSegment> pathSegments, Map<String, String> queryParameters) throws UriSyntaxException, UriNotMatchingException, EdmException;
+  public static UriParserResult parse(Edm edm, List<PathSegment> pathSegments, Map<String, String> queryParameter) throws ODataException {
+    return RuntimeDelegate.getUriParser(edm).parse(pathSegments, queryParameter);
+  }
 
+  /**
+   * Parse path segments and query parameters.
+   * 
+   * @param pathSegments
+   * @param queryParameter
+   * @return {@link UriParserResult} parsed uri result
+   * @throws UriSyntaxException
+   */
+  public abstract UriParserResult parse(List<PathSegment> pathSegments, Map<String, String> queryParameters) throws UriSyntaxException, UriNotMatchingException, EdmException;  
 }

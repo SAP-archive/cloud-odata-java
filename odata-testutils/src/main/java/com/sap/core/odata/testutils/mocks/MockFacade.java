@@ -6,7 +6,7 @@ import java.util.Map;
 
 import com.sap.core.odata.api.edm.Edm;
 import com.sap.core.odata.api.exception.ODataException;
-import com.sap.core.odata.api.processor.ODataPathSegment;
+import com.sap.core.odata.api.uri.PathSegment;
 
 public class MockFacade {
 
@@ -20,9 +20,9 @@ public class MockFacade {
     return pathSegmentsMock;
   }
 
-  public static List<ODataPathSegment> getPathSegmentsAsODataPathSegmentMock() {
-    ArrayList<ODataPathSegment> pathSegmentsMock = new ArrayList<ODataPathSegment>();
-    pathSegmentsMock.add(new ODataPathSegment() {
+  public static List<PathSegment> getPathSegmentsAsODataPathSegmentMock() {
+    ArrayList<PathSegment> pathSegmentsMock = new ArrayList<PathSegment>();
+    pathSegmentsMock.add(new PathSegment() {
 
       @Override
       public String getPath() {

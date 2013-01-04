@@ -27,10 +27,10 @@ import com.sap.core.odata.api.edm.EdmTypeKind;
 import com.sap.core.odata.api.edm.EdmTyped;
 import com.sap.core.odata.api.enums.InlineCount;
 import com.sap.core.odata.api.exception.ODataMessageException;
-import com.sap.core.odata.api.processor.ODataPathSegment;
 import com.sap.core.odata.api.uri.EdmLiteral;
 import com.sap.core.odata.api.uri.KeyPredicate;
 import com.sap.core.odata.api.uri.NavigationPropertySegment;
+import com.sap.core.odata.api.uri.PathSegment;
 import com.sap.core.odata.api.uri.SelectItem;
 import com.sap.core.odata.api.uri.UriNotMatchingException;
 import com.sap.core.odata.api.uri.UriParser;
@@ -48,7 +48,7 @@ import com.sap.core.odata.core.uri.expression.OrderByParserImpl;
 /**
  * @author SAP AG
  */
-public class UriParserImpl implements UriParser {
+public class UriParserImpl extends UriParser {
 
   private static final Logger LOG = LoggerFactory.getLogger(UriParserImpl.class);
 
@@ -72,12 +72,12 @@ public class UriParserImpl implements UriParser {
   /**
    * Parse the URI part after an OData service root,
    * already splitted into path segments and query parameters.
-   * @param pathSegments  the {@link ODataPathSegment}s of the resource path, already unescaped
+   * @param pathSegments  the {@link PathSegment}s of the resource path, already unescaped
    * @param queryParameters  the query parameters, already unescaped
    * @return a {@link UriParserResultImpl} instance containing the parsed information
    */
   @Override
-  public UriParserResult parse(final List<ODataPathSegment> pathSegments, final Map<String, String> queryParameters) throws UriSyntaxException, UriNotMatchingException, EdmException {
+  public UriParserResult parse(final List<PathSegment> pathSegments, final Map<String, String> queryParameters) throws UriSyntaxException, UriNotMatchingException, EdmException {
     this.pathSegments = this.copyPathSegmentList(pathSegments);
     systemQueryOptions = new HashMap<SystemQueryOption, String>();
     otherQueryParameters = new HashMap<String, String>();
@@ -714,10 +714,10 @@ public class UriParserImpl implements UriParser {
     uriResult.setCustomQueryOptions(otherQueryParameters);
   }
 
-  private List<String> copyPathSegmentList(final List<ODataPathSegment> source) {
+  private List<String> copyPathSegmentList(final List<PathSegment> source) {
     List<String> copy = new ArrayList<String>();
 
-    for (final ODataPathSegment segment : source)
+    for (final PathSegment segment : source)
       copy.add(segment.getPath());
 
     return copy;
