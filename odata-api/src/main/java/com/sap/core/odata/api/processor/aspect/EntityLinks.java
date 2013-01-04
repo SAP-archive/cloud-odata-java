@@ -1,6 +1,5 @@
 package com.sap.core.odata.api.processor.aspect;
 
-import com.sap.core.odata.api.enums.ContentType;
 import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.api.processor.ODataResponse;
 import com.sap.core.odata.api.uri.resultviews.GetEntitySetLinksCountView;
@@ -18,19 +17,19 @@ public interface EntityLinks {
    * @return a odata response object
    * @throws ODataException
    */
-  ODataResponse readEntityLinks(GetEntitySetLinksView uriParserResultView, ContentType contentType) throws ODataException;
+  ODataResponse readEntityLinks(GetEntitySetLinksView uriParserResultView, String contentType) throws ODataException;
 
   /**
    * @param contentType 
    * @return a odata response object
    * @throws ODataException
    */
-  ODataResponse countEntityLinks(GetEntitySetLinksCountView uriParserResultView, ContentType contentType) throws ODataException;
+  ODataResponse countEntityLinks(GetEntitySetLinksCountView uriParserResultView, String contentType) throws ODataException;
 
   /**
    * @param contentType 
    * @return a odata response object
    * @throws ODataException
    */
-  ODataResponse createEntityLink(ContentType contentType) throws ODataException;
+  ODataResponse createEntityLink(String contentType) throws ODataException;
 }

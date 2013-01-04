@@ -1,6 +1,5 @@
 package com.sap.core.odata.api.processor.aspect;
 
-import com.sap.core.odata.api.enums.ContentType;
 import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.api.processor.ODataResponse;
 import com.sap.core.odata.api.uri.resultviews.GetSimplePropertyView;
@@ -18,12 +17,12 @@ public interface EntitySimpleProperty {
    * @return a {@link ODataResponse} object
    * @throws ODataException
    */
-  ODataResponse readEntitySimpleProperty(GetSimplePropertyView uriParserResultView, ContentType contentType) throws ODataException;
+  ODataResponse readEntitySimpleProperty(GetSimplePropertyView uriParserResultView, String contentType) throws ODataException;
 
   /**
    * @param contentType 
    * @return a {@link ODataResponse} object
    * @throws ODataException
    */
-  ODataResponse updateEntitySimpleProperty(ContentType contentType) throws ODataException;
+  ODataResponse updateEntitySimpleProperty(String contentType) throws ODataException;
 }

@@ -15,13 +15,13 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.sap.core.odata.api.edm.EdmEntitySet;
-import com.sap.core.odata.api.enums.ContentType;
 import com.sap.core.odata.api.enums.InlineCount;
 import com.sap.core.odata.api.ep.ODataEntityProvider;
 import com.sap.core.odata.api.ep.ODataEntityProviderException;
 import com.sap.core.odata.api.ep.ODataEntityProviderProperties;
 import com.sap.core.odata.api.processor.ODataResponse;
 import com.sap.core.odata.api.uri.resultviews.GetEntitySetView;
+import com.sap.core.odata.core.enums.ContentType;
 import com.sap.core.odata.testutils.helper.StringHelper;
 import com.sap.core.odata.testutils.mocks.MockFacade;
 

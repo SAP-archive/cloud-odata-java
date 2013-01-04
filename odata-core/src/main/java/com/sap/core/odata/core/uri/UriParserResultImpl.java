@@ -11,7 +11,6 @@ import com.sap.core.odata.api.edm.EdmEntitySet;
 import com.sap.core.odata.api.edm.EdmFunctionImport;
 import com.sap.core.odata.api.edm.EdmProperty;
 import com.sap.core.odata.api.edm.EdmType;
-import com.sap.core.odata.api.enums.ContentType;
 import com.sap.core.odata.api.enums.InlineCount;
 import com.sap.core.odata.api.uri.EdmLiteral;
 import com.sap.core.odata.api.uri.KeyPredicate;
@@ -21,6 +20,7 @@ import com.sap.core.odata.api.uri.SelectItem;
 import com.sap.core.odata.api.uri.UriParserResult;
 import com.sap.core.odata.api.uri.expression.FilterExpression;
 import com.sap.core.odata.api.uri.expression.OrderByExpression;
+import com.sap.core.odata.core.enums.ContentType;
 
 /**
  * @author SAP AG
@@ -171,8 +171,11 @@ public class UriParserResultImpl implements UriParserResult {
   }
 
   @Override
-  public ContentType getContentType() {
-    return contentType;
+  public String getContentType() {
+    if(contentType == null) {
+      return null;
+    }
+    return contentType.toContentTypeString();
   }
 
   public void setFilter(FilterExpression filter) {

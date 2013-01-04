@@ -27,7 +27,6 @@ import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.UriInfo;
 
-import com.sap.core.odata.api.enums.ContentType;
 import com.sap.core.odata.api.exception.ODataBadRequestException;
 import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.api.exception.ODataMethodNotAllowedException;
@@ -39,6 +38,7 @@ import com.sap.core.odata.api.processor.ODataUriInfo;
 import com.sap.core.odata.api.processor.aspect.ProcessorAspect;
 import com.sap.core.odata.api.service.ODataService;
 import com.sap.core.odata.api.service.ODataServiceFactory;
+import com.sap.core.odata.core.enums.ContentType;
 import com.sap.core.odata.core.enums.ODataHttpMethod;
 import com.sap.core.odata.core.uri.UriParserImpl;
 import com.sap.core.odata.core.uri.UriParserResultImpl;
@@ -64,7 +64,7 @@ public final class ODataSubLocator implements ODataLocator {
 
     ContentType contentType = doContentNegotiation(uriParserResult);
 
-    ODataResponse odataResponse = dispatcher.dispatch(ODataHttpMethod.GET, uriParserResult, contentType);
+    ODataResponse odataResponse = dispatcher.dispatch(ODataHttpMethod.GET, uriParserResult, contentType.toContentTypeString());
     Response response = this.convertResponse(odataResponse);
 
     return response;
@@ -72,10 +72,21 @@ public final class ODataSubLocator implements ODataLocator {
 
   private ContentType doContentNegotiation(UriParserResultImpl uriParserResult) throws ODataException {
     ProcessorAspect processorAspect = dispatcher.mapUriTypeToProcessorAspect(uriParserResult);
-    List<ContentType> supportedContentTypes = service.getSupportedContentTypes(processorAspect);
+    List<ContentType> supportedContentTypes = getSupportedContentTypes(processorAspect);
     List<ContentType> acceptedContentTypes = getAcceptedContentTypes(uriParserResult, acceptHeaderContentTypes);
     ContentType contentType = contentNegotiation(acceptedContentTypes, supportedContentTypes);
     return contentType;
+  }
+
+  private List<ContentType> getSupportedContentTypes(ProcessorAspect processorAspect) throws ODataException {
+    List<ContentType> resultContentTypes = new ArrayList<ContentType>();
+    List<String> supportedContentTypes = service.getSupportedContentTypes(processorAspect);
+    
+    for (String contentType : supportedContentTypes) {
+      resultContentTypes.add(ContentType.create(contentType));
+    }
+    
+    return resultContentTypes;
   }
 
   ContentType contentNegotiation(List<ContentType> contentTypes, List<ContentType> supportedContentTypes) throws ODataException {
@@ -102,7 +113,8 @@ public final class ODataSubLocator implements ODataLocator {
     List<ContentType> result;
     if (uriParserResult.getContentType() != null) {
       result = new ArrayList<ContentType>();
-      result.add(uriParserResult.getContentType());
+      ContentType ct = ContentType.create(uriParserResult.getContentType());
+      result.add(ct);
     } else {
       result = contentTypes;
     }

@@ -6,7 +6,6 @@ import com.sap.core.odata.api.edm.EdmSimpleType;
 import com.sap.core.odata.api.edm.EdmSimpleTypeFacade;
 import com.sap.core.odata.api.edm.EdmSimpleTypeKind;
 import com.sap.core.odata.api.edm.provider.EdmProvider;
-import com.sap.core.odata.api.enums.ContentType;
 import com.sap.core.odata.api.ep.ODataEntityProvider;
 import com.sap.core.odata.api.ep.ODataEntityProviderException;
 import com.sap.core.odata.api.processor.ODataResponse.ODataResponseBuilder;
@@ -17,6 +16,7 @@ import com.sap.core.odata.api.uri.expression.OrderByParser;
 import com.sap.core.odata.core.ODataResponseImpl;
 import com.sap.core.odata.core.edm.EdmSimpleTypeFacadeImpl;
 import com.sap.core.odata.core.edm.provider.EdmImplProv;
+import com.sap.core.odata.core.enums.ContentType;
 import com.sap.core.odata.core.ep.EntityProviderFactory;
 import com.sap.core.odata.core.uri.UriParserImpl;
 import com.sap.core.odata.core.uri.expression.FilterParserImpl;
@@ -55,7 +55,7 @@ public class RuntimeDelegateImpl extends RuntimeDelegateInstance {
   }
 
   @Override
-  protected ODataEntityProvider createSerializer(ContentType contentType) throws ODataEntityProviderException {
+  protected ODataEntityProvider createSerializer(String contentType) throws ODataEntityProviderException {
     return EntityProviderFactory.create(contentType);
   }
 

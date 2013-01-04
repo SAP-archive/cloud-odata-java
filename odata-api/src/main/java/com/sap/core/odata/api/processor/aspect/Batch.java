@@ -1,6 +1,5 @@
 package com.sap.core.odata.api.processor.aspect;
 
-import com.sap.core.odata.api.enums.ContentType;
 import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.api.processor.ODataResponse;
 
@@ -17,5 +16,5 @@ public interface Batch {
    * @return a {@link ODataResponse} object
    * @throws ODataException
    */
-  ODataResponse executeBatch(ContentType contentType) throws ODataException;
+  ODataResponse executeBatch(String contentType) throws ODataException;
 }

@@ -3,7 +3,6 @@ package com.sap.core.odata.api.service;
 import java.util.List;
 
 import com.sap.core.odata.api.edm.Edm;
-import com.sap.core.odata.api.enums.ContentType;
 import com.sap.core.odata.api.enums.ODataVersion;
 import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.api.processor.ODataProcessor;
@@ -142,6 +141,6 @@ public interface ODataService {
    */
   ODataProcessor getProcessor() throws ODataException;
 
-  List<ContentType> getSupportedContentTypes(ProcessorAspect processorAspect) throws ODataException;
+  List<String> getSupportedContentTypes(ProcessorAspect processorAspect) throws ODataException;
   
 }

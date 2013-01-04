@@ -19,12 +19,12 @@ import org.junit.Test;
 import com.sap.core.odata.api.edm.EdmEntityContainer;
 import com.sap.core.odata.api.edm.EdmEntitySet;
 import com.sap.core.odata.api.edm.EdmEntityType;
-import com.sap.core.odata.api.enums.ContentType;
 import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.api.processor.ODataContext;
 import com.sap.core.odata.api.processor.ODataResponse;
 import com.sap.core.odata.api.processor.ODataUriInfo;
 import com.sap.core.odata.api.uri.UriParserResult;
+import com.sap.core.odata.core.enums.ContentType;
 import com.sap.core.odata.ref.model.DataContainer;
 import com.sap.core.odata.ref.processor.ListsProcessor;
 import com.sap.core.odata.ref.processor.ScenarioDataSource;
@@ -84,7 +84,7 @@ public class EntitySetTest {
   public void readEmployees() throws Exception {
     final UriParserResult uriResult = mockUriResult("Employees");
 
-    ODataResponse response = processor.readEntitySet(uriResult,ContentType.APPLICATION_ATOM_XML_FEED);
+    ODataResponse response = processor.readEntitySet(uriResult,ContentType.APPLICATION_ATOM_XML_FEED.toContentTypeString());
     assertNotNull(response);
     assertTrue(readContent(response).contains("Employee"));
   }
@@ -93,7 +93,7 @@ public class EntitySetTest {
   public void readTeams() throws Exception {
     final UriParserResult uriResult = mockUriResult("Teams");
 
-    ODataResponse response = processor.readEntitySet(uriResult,ContentType.APPLICATION_ATOM_XML_FEED);
+    ODataResponse response = processor.readEntitySet(uriResult,ContentType.APPLICATION_ATOM_XML_FEED.toContentTypeString());
     assertNotNull(response);
     assertTrue(readContent(response).contains("Team"));
   }
@@ -102,7 +102,7 @@ public class EntitySetTest {
   public void readRooms() throws Exception {
     final UriParserResult uriResult = mockUriResult("Rooms");
 
-    ODataResponse response = processor.readEntitySet(uriResult,ContentType.APPLICATION_ATOM_XML_FEED);
+    ODataResponse response = processor.readEntitySet(uriResult,ContentType.APPLICATION_ATOM_XML_FEED.toContentTypeString());
     assertNotNull(response);
     assertTrue(readContent(response).contains("Room"));
   }
@@ -111,7 +111,7 @@ public class EntitySetTest {
   public void readManagers() throws Exception {
     final UriParserResult uriResult = mockUriResult("Managers");
 
-    ODataResponse response = processor.readEntitySet(uriResult,ContentType.APPLICATION_ATOM_XML_FEED);
+    ODataResponse response = processor.readEntitySet(uriResult,ContentType.APPLICATION_ATOM_XML_FEED.toContentTypeString());
     assertNotNull(response);
     assertTrue(readContent(response).contains("Manager"));
   }
@@ -120,7 +120,7 @@ public class EntitySetTest {
   public void readBuildings() throws Exception {
     final UriParserResult uriResult = mockUriResult("Buildings");
 
-    ODataResponse response = processor.readEntitySet(uriResult,ContentType.APPLICATION_ATOM_XML_FEED);
+    ODataResponse response = processor.readEntitySet(uriResult,ContentType.APPLICATION_ATOM_XML_FEED.toContentTypeString());
     assertNotNull(response);
     assertTrue(readContent(response).contains("Building"));
   }
@@ -129,7 +129,7 @@ public class EntitySetTest {
   public void readPhotos() throws Exception {
     final UriParserResult uriResult = mockUriResult("Photos");
 
-    ODataResponse response = processor.readEntitySet(uriResult,ContentType.APPLICATION_ATOM_XML_FEED);
+    ODataResponse response = processor.readEntitySet(uriResult,ContentType.APPLICATION_ATOM_XML_FEED.toContentTypeString());
     assertNotNull(response);
     assertTrue(readContent(response).contains("Photo"));
   }

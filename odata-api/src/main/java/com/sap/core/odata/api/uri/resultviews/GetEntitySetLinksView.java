@@ -7,7 +7,6 @@ import com.sap.core.odata.api.edm.EdmEntityContainer;
 import com.sap.core.odata.api.edm.EdmEntitySet;
 import com.sap.core.odata.api.edm.EdmFunctionImport;
 import com.sap.core.odata.api.edm.EdmType;
-import com.sap.core.odata.api.enums.ContentType;
 import com.sap.core.odata.api.enums.InlineCount;
 import com.sap.core.odata.api.uri.EdmLiteral;
 import com.sap.core.odata.api.uri.KeyPredicate;
@@ -59,9 +58,9 @@ public interface GetEntitySetLinksView {
   public boolean isLinks();
 
   /**
-   * @return {@link ContentType} the content type
+   * @return {@link String} the content type
    */
-  public ContentType getContentType();
+  public String getContentType();
 
   /**
    * @return the filter expression

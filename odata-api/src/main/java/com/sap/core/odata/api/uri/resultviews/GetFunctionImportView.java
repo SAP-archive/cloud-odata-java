@@ -3,7 +3,6 @@ package com.sap.core.odata.api.uri.resultviews;
 import java.util.Map;
 
 import com.sap.core.odata.api.edm.EdmFunctionImport;
-import com.sap.core.odata.api.enums.ContentType;
 import com.sap.core.odata.api.uri.EdmLiteral;
 
 /**
@@ -16,9 +15,9 @@ public interface GetFunctionImportView {
   public EdmFunctionImport getFunctionImport();
 
   /**
-   * @return {@link ContentType} the content type
+   * @return {@link String} the content type
    */
-  public ContentType getContentType();
+  public String getContentType();
 
   /**
    * @return Map of {@literal <String,} {@link EdmLiteral}{@literal >} function import parameters
