@@ -17,9 +17,9 @@ public interface EdmMapping {
   String getInternalName();
   
   /**
-   * Get the mime type (of Media Resource or an EdmBinary)
+   * Get the mapping name for mime type lookup
    * 
-   * @return mime type as String
+   * @return mapping name as String
    */
   String getMimeType();
   
