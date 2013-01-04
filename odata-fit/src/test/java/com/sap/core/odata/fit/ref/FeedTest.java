@@ -7,7 +7,7 @@ import static org.junit.Assert.assertTrue;
 import org.apache.http.HttpResponse;
 import org.junit.Test;
 
-import com.sap.core.odata.api.enums.ContentType;
+import com.sap.core.odata.core.enums.ContentType;
 
 /**
  * Tests employing the reference scenario reading entity sets in XML format

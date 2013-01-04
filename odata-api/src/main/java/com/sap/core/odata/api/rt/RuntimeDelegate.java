@@ -6,7 +6,6 @@ import com.sap.core.odata.api.edm.EdmSimpleType;
 import com.sap.core.odata.api.edm.EdmSimpleTypeFacade;
 import com.sap.core.odata.api.edm.EdmSimpleTypeKind;
 import com.sap.core.odata.api.edm.provider.EdmProvider;
-import com.sap.core.odata.api.enums.ContentType;
 import com.sap.core.odata.api.ep.ODataEntityProvider;
 import com.sap.core.odata.api.ep.ODataEntityProviderException;
 import com.sap.core.odata.api.processor.ODataResponse.ODataResponseBuilder;
@@ -89,11 +88,11 @@ public abstract class RuntimeDelegate {
      * @return a OData entity provider for requested content type
      * @throws ODataEntityProviderException 
      */
-    protected abstract ODataEntityProvider createSerializer(ContentType contentType) throws ODataEntityProviderException;
+    protected abstract ODataEntityProvider createSerializer(String contentType) throws ODataEntityProviderException;
   }
 
 
-  public static ODataEntityProvider createSerializer(ContentType contentType) throws ODataEntityProviderException {
+  public static ODataEntityProvider createSerializer(String contentType) throws ODataEntityProviderException {
     return RuntimeDelegate.getInstance().createSerializer(contentType);
   }
 

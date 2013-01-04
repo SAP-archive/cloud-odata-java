@@ -5,7 +5,6 @@ import java.util.List;
 
 import com.sap.core.odata.api.edm.Edm;
 import com.sap.core.odata.api.edm.provider.EdmProvider;
-import com.sap.core.odata.api.enums.ContentType;
 import com.sap.core.odata.api.enums.ODataVersion;
 import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.api.exception.ODataNotImplementedException;
@@ -38,6 +37,15 @@ import com.sap.core.odata.api.rt.RuntimeDelegate;
  */
 public class ODataSingleProcessorService implements ODataService {
 
+  private static final String WILDCARD = "*/*";
+  private static final String MULTIPART_MIXED = "multipart/mixed";
+  private static final String APPLICATION_XML = "application/xml";
+  private static final String APPLICATION_ATOM_XML = "application/atom+xml";
+  private static final String APPLICATION_ATOM_XML_ENTRY = "application/atom+xml; type=entry";
+  private static final String APPLICATION_ATOM_XML_FEED = "application/atom+xml; type=feed";
+  private static final String APPLICATION_ATOM_SVC = "application/atomsvc+xml";
+  private static final String APPLICATION_JSON = "application/json";
+  
   private ODataSingleProcessor processor;
   private Edm edm;
 
@@ -180,43 +188,43 @@ public class ODataSingleProcessorService implements ODataService {
   }
 
   @Override
-  public List<ContentType> getSupportedContentTypes(ProcessorAspect processorAspect) throws ODataException {
-    List<ContentType> result = new ArrayList<ContentType>();
+  public List<String> getSupportedContentTypes(ProcessorAspect processorAspect) throws ODataException {
+    List<String> result = new ArrayList<String>();
 
     switch (processorAspect) {
     case BATCH:
-      result.add(ContentType.MULTIPART_MIXED);
+      result.add(MULTIPART_MIXED);
       break;
     case ENTITY:
-      result.add(ContentType.APPLICATION_ATOM_XML_ENTRY);
-      result.add(ContentType.APPLICATION_ATOM_XML);
-      result.add(ContentType.APPLICATION_JSON);
+      result.add(APPLICATION_ATOM_XML_ENTRY);
+      result.add(APPLICATION_ATOM_XML);
+      result.add(APPLICATION_JSON);
       break;
     case FUNCTION_IMPORT:
     case ENTITY_LINK:
     case ENTITY_LINKS:
     case ENTITY_SIMPLE_PROPERTY:
     case ENTITY_COMPLEX_PROPERTY:
-      result.add(ContentType.APPLICATION_XML);
-      result.add(ContentType.APPLICATION_JSON);
+      result.add(APPLICATION_XML);
+      result.add(APPLICATION_JSON);
       break;
     case ENTITY_MEDIA:
     case ENTITY_SIMPLE_PROPERTY_VALUE:
     case FUNCTION_IMPORT_VALUE:
-      result.add(ContentType.WILDCARD);
+      result.add(WILDCARD);
       break;
     case ENTITY_SET:
-      result.add(ContentType.APPLICATION_ATOM_XML_FEED);
-      result.add(ContentType.APPLICATION_ATOM_XML);
-      result.add(ContentType.APPLICATION_JSON);
+      result.add(APPLICATION_ATOM_XML_FEED);
+      result.add(APPLICATION_ATOM_XML);
+      result.add(APPLICATION_JSON);
       break;
     case METDDATA:
-      result.add(ContentType.APPLICATION_XML);
+      result.add(APPLICATION_XML);
       break;
     case SERVICE_DOCUMENT:
-      result.add(ContentType.APPLICATION_ATOM_SVC);
-      result.add(ContentType.APPLICATION_JSON);
-      result.add(ContentType.APPLICATION_XML);
+      result.add(APPLICATION_ATOM_SVC);
+      result.add(APPLICATION_JSON);
+      result.add(APPLICATION_XML);
       break;
     default:
       throw new ODataNotImplementedException();

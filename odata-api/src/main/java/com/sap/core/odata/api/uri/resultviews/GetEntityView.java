@@ -8,7 +8,6 @@ import com.sap.core.odata.api.edm.EdmEntityContainer;
 import com.sap.core.odata.api.edm.EdmEntitySet;
 import com.sap.core.odata.api.edm.EdmFunctionImport;
 import com.sap.core.odata.api.edm.EdmType;
-import com.sap.core.odata.api.enums.ContentType;
 import com.sap.core.odata.api.uri.EdmLiteral;
 import com.sap.core.odata.api.uri.KeyPredicate;
 import com.sap.core.odata.api.uri.NavigationPropertySegment;
@@ -56,9 +55,9 @@ public interface GetEntityView {
   public List<NavigationSegment> getNavigationSegments();
 
   /**
-   * @return {@link ContentType} the content type
+   * @return {@link String} the content type
    */
-  public ContentType getContentType();
+  public String getContentType();
 
   /**
    * @return the filter expression

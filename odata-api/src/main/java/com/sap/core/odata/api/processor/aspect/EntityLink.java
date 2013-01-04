@@ -1,6 +1,5 @@
 package com.sap.core.odata.api.processor.aspect;
 
-import com.sap.core.odata.api.enums.ContentType;
 import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.api.processor.ODataResponse;
 import com.sap.core.odata.api.uri.resultviews.DeleteResultView;
@@ -19,7 +18,7 @@ public interface EntityLink {
    * @return a {@link ODataResponse} object
    * @throws ODataException
    */
-  ODataResponse readEntityLink(GetEntityLinkView uriParserResultView, ContentType contentType) throws ODataException;
+  ODataResponse readEntityLink(GetEntityLinkView uriParserResultView, String contentType) throws ODataException;
 
   /**
    * @param uriParserResultView
@@ -27,14 +26,14 @@ public interface EntityLink {
    * @return a {@link ODataResponse} object
    * @throws ODataException
    */
-  ODataResponse existsEntityLink(GetEntityLinkCountView uriParserResultView, ContentType contentType) throws ODataException;
+  ODataResponse existsEntityLink(GetEntityLinkCountView uriParserResultView, String contentType) throws ODataException;
 
   /**
    * @param contentType 
    * @return a {@link ODataResponse} object
    * @throws ODataException
    */
-  ODataResponse updateEntityLink(ContentType contentType) throws ODataException;
+  ODataResponse updateEntityLink(String contentType) throws ODataException;
 
   /**
    * @param uriParserResultView
@@ -42,5 +41,5 @@ public interface EntityLink {
    * @return an {@link ODataResponse} object
    * @throws ODataException
    */
-  ODataResponse deleteEntityLink(DeleteResultView uriParserResultView, ContentType contentType) throws ODataException;
+  ODataResponse deleteEntityLink(DeleteResultView uriParserResultView, String contentType) throws ODataException;
 }

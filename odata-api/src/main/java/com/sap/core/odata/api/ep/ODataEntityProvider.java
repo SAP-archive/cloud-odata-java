@@ -7,7 +7,6 @@ import com.sap.core.odata.api.edm.Edm;
 import com.sap.core.odata.api.edm.EdmEntitySet;
 import com.sap.core.odata.api.edm.EdmFunctionImport;
 import com.sap.core.odata.api.edm.EdmProperty;
-import com.sap.core.odata.api.enums.ContentType;
 import com.sap.core.odata.api.processor.ODataResponse;
 import com.sap.core.odata.api.rt.RuntimeDelegate;
 import com.sap.core.odata.api.uri.resultviews.GetEntitySetView;
@@ -20,7 +19,7 @@ public abstract class ODataEntityProvider {
 
   protected ODataEntityProvider() throws ODataEntityProviderException {}
 
-  public static ODataEntityProvider create(ContentType contentType) throws ODataEntityProviderException {
+  public static ODataEntityProvider create(String contentType) throws ODataEntityProviderException {
     return RuntimeDelegate.createSerializer(contentType);
   }
 

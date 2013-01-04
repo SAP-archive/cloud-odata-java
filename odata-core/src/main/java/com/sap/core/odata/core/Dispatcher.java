@@ -1,12 +1,12 @@
 package com.sap.core.odata.core;
 
-import com.sap.core.odata.api.enums.ContentType;
 import com.sap.core.odata.api.exception.ODataBadRequestException;
 import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.api.exception.ODataMethodNotAllowedException;
 import com.sap.core.odata.api.processor.ODataResponse;
 import com.sap.core.odata.api.processor.aspect.ProcessorAspect;
 import com.sap.core.odata.api.service.ODataService;
+import com.sap.core.odata.core.enums.ContentType;
 import com.sap.core.odata.core.enums.ODataHttpMethod;
 import com.sap.core.odata.core.exception.ODataRuntimeException;
 import com.sap.core.odata.core.uri.UriParserResultImpl;
@@ -23,7 +23,7 @@ public class Dispatcher {
 
   private ODataService service;
 
-  public ODataResponse dispatch(final ODataHttpMethod method, final UriParserResultImpl uriParserResult, final ContentType contentType) throws ODataException {
+  public ODataResponse dispatch(final ODataHttpMethod method, final UriParserResultImpl uriParserResult, final String contentType) throws ODataException {
     switch (uriParserResult.getUriType()) {
     case URI0:
       if (method == ODataHttpMethod.GET)

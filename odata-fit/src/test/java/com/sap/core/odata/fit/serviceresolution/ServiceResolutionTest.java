@@ -26,7 +26,6 @@ import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
 import com.sap.core.odata.api.edm.provider.EdmProvider;
-import com.sap.core.odata.api.enums.ContentType;
 import com.sap.core.odata.api.enums.HttpStatusCodes;
 import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.api.processor.ODataContext;
@@ -37,6 +36,7 @@ import com.sap.core.odata.api.processor.aspect.ServiceDocument;
 import com.sap.core.odata.api.service.ODataSingleProcessorService;
 import com.sap.core.odata.api.uri.resultviews.GetMetadataView;
 import com.sap.core.odata.api.uri.resultviews.GetServiceDocumentView;
+import com.sap.core.odata.core.enums.ContentType;
 import com.sap.core.odata.testutils.fit.FitStaticServiceFactory;
 import com.sap.core.odata.testutils.helper.StringHelper;
 import com.sap.core.odata.testutils.server.TestServer;
@@ -78,8 +78,8 @@ public class ServiceResolutionTest {
       }
     });
 
-    when(((Metadata) processor).readMetadata(any(GetMetadataView.class),any(ContentType.class))).thenReturn(ODataResponse.entity("metadata").status(HttpStatusCodes.OK).build());
-    when(((ServiceDocument) processor).readServiceDocument(any(GetServiceDocumentView.class),any(ContentType.class))).thenReturn(ODataResponse.entity("servicedocument").status(HttpStatusCodes.OK).build());
+    when(((Metadata) processor).readMetadata(any(GetMetadataView.class),any(String.class))).thenReturn(ODataResponse.entity("metadata").status(HttpStatusCodes.OK).build());
+    when(((ServiceDocument) processor).readServiceDocument(any(GetServiceDocumentView.class),any(String.class))).thenReturn(ODataResponse.entity("servicedocument").status(HttpStatusCodes.OK).build());
   }
 
   @After

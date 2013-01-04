@@ -11,8 +11,8 @@ import java.util.Arrays;
 import org.junit.Test;
 
 import com.sap.core.odata.api.edm.EdmFunctionImport;
-import com.sap.core.odata.api.enums.ContentType;
 import com.sap.core.odata.api.processor.ODataResponse;
+import com.sap.core.odata.core.enums.ContentType;
 import com.sap.core.odata.testutils.helper.StringHelper;
 import com.sap.core.odata.testutils.mocks.MockFacade;
 

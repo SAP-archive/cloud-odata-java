@@ -1,13 +1,17 @@
 package com.sap.core.odata.core.ep;
 
-import com.sap.core.odata.api.enums.ContentType;
 import com.sap.core.odata.api.ep.ODataEntityProvider;
 import com.sap.core.odata.api.ep.ODataEntityProviderException;
 import com.sap.core.odata.api.exception.ODataNotAcceptableException;
 import com.sap.core.odata.api.exception.ODataNotImplementedException;
+import com.sap.core.odata.core.enums.ContentType;
 
 public class EntityProviderFactory {
 
+  public static ODataEntityProvider create(String contentType) throws ODataEntityProviderException {
+    return create(ContentType.create(contentType));
+  }
+  
   public static ODataEntityProvider create(ContentType contentType) throws ODataEntityProviderException {
     try {
       ODataEntityProvider provider;

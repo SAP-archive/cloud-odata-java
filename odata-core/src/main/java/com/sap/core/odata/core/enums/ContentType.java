@@ -1,4 +1,4 @@
-package com.sap.core.odata.api.enums;
+package com.sap.core.odata.core.enums;
 
 import java.util.Collections;
 import java.util.Comparator;
@@ -14,8 +14,6 @@ import java.util.TreeMap;
  * 
  */
 public class ContentType {
-
-
 
   public enum ODataFormat {
     ATOM, XML, JSON, CUSTOM
@@ -125,6 +123,10 @@ public class ContentType {
    * @return
    */
   public static ContentType create(String format) {
+    if(format == null) {
+      throw new IllegalArgumentException("Parameter format must no be null.");
+    }
+    
     // split 'types' and 'parameters'
     String[] typesAndParameters = format.split(PARAMETER_SEPARATOR, 2);
     String types = typesAndParameters[0];

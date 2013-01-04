@@ -13,13 +13,13 @@ import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.methods.HttpGet;
 import org.junit.Test;
 
-import com.sap.core.odata.api.enums.ContentType;
 import com.sap.core.odata.api.enums.HttpStatusCodes;
 import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.api.processor.ODataResponse;
 import com.sap.core.odata.api.processor.ODataSingleProcessor;
 import com.sap.core.odata.api.processor.aspect.Metadata;
 import com.sap.core.odata.api.uri.resultviews.GetMetadataView;
+import com.sap.core.odata.core.enums.ContentType;
 import com.sap.core.odata.testutils.helper.StringHelper;
 
 public class MetadataTest extends AbstractBasicTest {
@@ -27,7 +27,7 @@ public class MetadataTest extends AbstractBasicTest {
   @Override
   protected ODataSingleProcessor createProcessor() throws ODataException {
     ODataSingleProcessor processor = mock(ODataSingleProcessor.class);
-    when(((Metadata) processor).readMetadata(any(GetMetadataView.class),any(ContentType.class))).thenReturn(ODataResponse.entity("metadata").status(HttpStatusCodes.OK).build());
+    when(((Metadata) processor).readMetadata(any(GetMetadataView.class),any(String.class))).thenReturn(ODataResponse.entity("metadata").status(HttpStatusCodes.OK).build());
     return processor;
   }
 

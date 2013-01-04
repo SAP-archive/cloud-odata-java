@@ -10,8 +10,7 @@ import java.util.Map;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import com.sap.core.odata.api.enums.ContentType;
-import com.sap.core.odata.api.enums.ContentType.ODataFormat;
+import com.sap.core.odata.core.enums.ContentType.ODataFormat;
 
 // 14.1 Accept
 //

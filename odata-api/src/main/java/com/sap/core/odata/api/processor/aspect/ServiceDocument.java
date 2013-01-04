@@ -1,6 +1,5 @@
 package com.sap.core.odata.api.processor.aspect;
 
-import com.sap.core.odata.api.enums.ContentType;
 import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.api.processor.ODataResponse;
 import com.sap.core.odata.api.uri.resultviews.GetServiceDocumentView;
@@ -18,6 +17,6 @@ public interface ServiceDocument {
    * @return a {@link ODataResponse} object
    * @throws ODataException
    */
-  ODataResponse readServiceDocument(GetServiceDocumentView uriParserResultView, ContentType contentType) throws ODataException;
+  ODataResponse readServiceDocument(GetServiceDocumentView uriParserResultView, String contentType) throws ODataException;
 
 }

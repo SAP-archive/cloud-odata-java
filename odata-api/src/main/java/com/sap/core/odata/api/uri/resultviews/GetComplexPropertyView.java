@@ -8,7 +8,6 @@ import com.sap.core.odata.api.edm.EdmEntitySet;
 import com.sap.core.odata.api.edm.EdmFunctionImport;
 import com.sap.core.odata.api.edm.EdmProperty;
 import com.sap.core.odata.api.edm.EdmType;
-import com.sap.core.odata.api.enums.ContentType;
 import com.sap.core.odata.api.uri.EdmLiteral;
 import com.sap.core.odata.api.uri.KeyPredicate;
 import com.sap.core.odata.api.uri.NavigationSegment;
@@ -55,9 +54,9 @@ public interface GetComplexPropertyView {
   public List<EdmProperty> getPropertyPath();
 
   /**
-   * @return {@link ContentType} the content type
+   * @return {@link String} the content type
    */
-  public ContentType getContentType();
+  public String getContentType();
 
   /**
    * @return Map of {@literal <String,} {@link EdmLiteral}{@literal >} function import parameters

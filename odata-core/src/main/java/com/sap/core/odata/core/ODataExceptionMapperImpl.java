@@ -22,14 +22,14 @@ import javax.ws.rs.ext.Provider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.sap.core.odata.api.enums.ContentType;
-import com.sap.core.odata.api.enums.ContentType.ODataFormat;
 import com.sap.core.odata.api.enums.HttpStatusCodes;
 import com.sap.core.odata.api.exception.MessageReference;
 import com.sap.core.odata.api.exception.ODataApplicationException;
 import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.api.exception.ODataHttpException;
 import com.sap.core.odata.api.exception.ODataMessageException;
+import com.sap.core.odata.core.enums.ContentType;
+import com.sap.core.odata.core.enums.ContentType.ODataFormat;
 import com.sap.core.odata.core.ep.ODataExceptionSerializer;
 import com.sap.core.odata.core.exception.MessageService;
 import com.sap.core.odata.core.exception.MessageService.Message;
