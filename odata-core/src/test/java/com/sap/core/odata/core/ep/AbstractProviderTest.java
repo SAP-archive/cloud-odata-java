@@ -22,7 +22,7 @@ import com.sap.core.odata.api.ep.ODataEntityProviderException;
 import com.sap.core.odata.api.ep.ODataEntityProviderProperties;
 import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.api.processor.ODataContext;
-import com.sap.core.odata.api.processor.ODataUriInfo;
+import com.sap.core.odata.api.uri.UriInfo;
 import com.sap.core.odata.core.enums.ContentType;
 import com.sap.core.odata.testutils.helper.XMLUnitHelper;
 
@@ -115,7 +115,7 @@ public abstract class AbstractProviderTest {
   }
 
   protected ODataContext createContextMock() throws ODataException {
-    ODataUriInfo uriInfo = mock(ODataUriInfo.class);
+    UriInfo uriInfo = mock(UriInfo.class);
     when(uriInfo.getBaseUri()).thenReturn(BASE_URI);
     ODataContext ctx = mock(ODataContext.class);
     when(ctx.getUriInfo()).thenReturn(uriInfo);

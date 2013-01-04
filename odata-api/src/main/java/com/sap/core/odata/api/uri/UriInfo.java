@@ -1,16 +1,15 @@
-package com.sap.core.odata.api.processor;
+package com.sap.core.odata.api.uri;
 
 import java.net.URI;
 import java.util.List;
 
-import com.sap.core.odata.api.uri.PathSegment;
 
 /**
  * Object to keep OData URI information. 
  * 
  * @author SAP AG
  */
-public interface ODataUriInfo {
+public interface UriInfo {
 
   /**
    * Returns preceding path segments  

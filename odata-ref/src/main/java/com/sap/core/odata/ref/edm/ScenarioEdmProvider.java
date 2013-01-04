@@ -16,7 +16,7 @@ import com.sap.core.odata.api.edm.provider.AssociationSetEnd;
 import com.sap.core.odata.api.edm.provider.ComplexProperty;
 import com.sap.core.odata.api.edm.provider.ComplexType;
 import com.sap.core.odata.api.edm.provider.CustomizableFeedMappings;
-import com.sap.core.odata.api.edm.provider.EdmProviderDefault;
+import com.sap.core.odata.api.edm.provider.EdmProvider;
 import com.sap.core.odata.api.edm.provider.EntityContainer;
 import com.sap.core.odata.api.edm.provider.EntityContainerInfo;
 import com.sap.core.odata.api.edm.provider.EntitySet;
@@ -38,7 +38,7 @@ import com.sap.core.odata.api.exception.ODataException;
  * Provider for the entity data model used in the reference scenario
  * @author SAP AG
  */
-public class ScenarioEdmProvider extends EdmProviderDefault {
+public class ScenarioEdmProvider extends EdmProvider {
 
   public static final String NAMESPACE_1 = "RefScenario";
   public static final String NAMESPACE_2 = "RefScenario2";

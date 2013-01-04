@@ -7,8 +7,8 @@ import java.util.Map;
 
 import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.api.processor.ODataContext;
-import com.sap.core.odata.api.processor.ODataUriInfo;
 import com.sap.core.odata.api.service.ODataService;
+import com.sap.core.odata.api.uri.UriInfo;
 
 public class ODataContextImpl implements ODataContext {
 
@@ -56,13 +56,13 @@ public class ODataContextImpl implements ODataContext {
     return (ODataService) getParameter(SERVICE);
   }
 
-  public void setUriInfo(ODataUriInfo uriInfo) {
+  public void setUriInfo(UriInfo uriInfo) {
     setParameter(URI_INFO, uriInfo);
   }
 
   @Override
-  public ODataUriInfo getUriInfo() throws ODataException {
-    return (ODataUriInfo) getParameter(URI_INFO);
+  public UriInfo getUriInfo() throws ODataException {
+    return (UriInfo) getParameter(URI_INFO);
   }
 
   @SuppressWarnings("unchecked")
