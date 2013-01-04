@@ -1,5 +1,6 @@
 package com.sap.core.odata.api.processor;
 
+import java.util.List;
 
 import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.api.service.ODataService;
@@ -20,5 +21,84 @@ public interface ODataContext {
    * @throws ODataException
    */
   ODataUriInfo getUriInfo() throws ODataException;
-  
+
+  /**
+   * Start runtime measurement
+   * 
+   * @param classname where the runtime measurement starts
+   * @param methodName where the runtime measurement starts
+   * @return handle for the started runtime measurement which can be used for stopping
+   */
+  int startRuntimeMeasurement(String className, String methodName);
+
+  /**
+   * Stop runtime measurement
+   * 
+   * @param handle of runtime measurement to be stopped
+   */
+  void stopRuntimeMeasurement(int handle);
+
+  /**
+   * Get the list of all runtime measurements
+   * 
+   * @return list of all runtime measurements of type {@link RuntimeMeasurement}
+   */
+  List<RuntimeMeasurement> getRuntimeMeasurements();
+
+  /**
+   * Set parameter
+   * 
+   * @param name of parameter (name is used as key, existing values are overwritten)
+   * @param value of parameter as object
+   */
+  void setParameter(String name, Object value);
+
+  /**
+   * Remove parameter
+   * 
+   * @param name of parameter to be removed
+   */
+  void removeParameter(String name);
+
+  /**
+   * Get the parameter
+   * 
+   * @param name of parameter
+   * @return parameter value as {@link Object} for the given name
+   */
+  Object getParameter(String name);
+
+  /**
+   * Get information about enabled debug mode
+   * 
+   * @return debugMode as boolean
+   */
+  boolean isInDebugMode();
+
+  /**
+   * Enable debug mode
+   * 
+   * @param debugMode as boolean
+   */
+  void setDebugMode(boolean debugMode);
+
+  public interface RuntimeMeasurement {
+
+    void setMethod(String method);
+
+    String getMethod();
+
+    void setClassname(String classname);
+
+    String getClassname();
+
+    void setTime_stop(long time_stop);
+
+    long getTime_stop();
+
+    void setTime_start(long time_start);
+
+    long getTime_start();
+
+  }
 }
