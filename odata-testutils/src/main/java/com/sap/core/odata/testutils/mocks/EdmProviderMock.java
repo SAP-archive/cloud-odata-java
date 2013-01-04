@@ -16,7 +16,7 @@ import com.sap.core.odata.api.edm.provider.AssociationSetEnd;
 import com.sap.core.odata.api.edm.provider.ComplexProperty;
 import com.sap.core.odata.api.edm.provider.ComplexType;
 import com.sap.core.odata.api.edm.provider.CustomizableFeedMappings;
-import com.sap.core.odata.api.edm.provider.EdmProviderDefault;
+import com.sap.core.odata.api.edm.provider.EdmProvider;
 import com.sap.core.odata.api.edm.provider.EntityContainer;
 import com.sap.core.odata.api.edm.provider.EntityContainerInfo;
 import com.sap.core.odata.api.edm.provider.EntitySet;
@@ -34,7 +34,7 @@ import com.sap.core.odata.api.edm.provider.Schema;
 import com.sap.core.odata.api.edm.provider.SimpleProperty;
 import com.sap.core.odata.api.exception.ODataMessageException;
 
-public class EdmProviderMock extends EdmProviderDefault {
+public class EdmProviderMock extends EdmProvider {
 
   public static final String NAMESPACE_1 = "RefScenario";
   public static final String NAMESPACE_2 = "RefScenario2";

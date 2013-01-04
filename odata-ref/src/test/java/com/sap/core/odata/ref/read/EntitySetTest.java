@@ -22,7 +22,7 @@ import com.sap.core.odata.api.edm.EdmEntityType;
 import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.api.processor.ODataContext;
 import com.sap.core.odata.api.processor.ODataResponse;
-import com.sap.core.odata.api.processor.ODataUriInfo;
+import com.sap.core.odata.api.uri.UriInfo;
 import com.sap.core.odata.api.uri.UriParserResult;
 import com.sap.core.odata.core.enums.ContentType;
 import com.sap.core.odata.ref.model.DataContainer;
@@ -49,7 +49,7 @@ public class EntitySetTest {
   @Before
   public void setUp() throws Exception {
     ODataContext context = mock(ODataContext.class);
-    ODataUriInfo uriInfo = mock(ODataUriInfo.class);
+    UriInfo uriInfo = mock(UriInfo.class);
     when(uriInfo.getBaseUri()).thenReturn(new URI("http://localhost/"));
     when(context.getUriInfo()).thenReturn(uriInfo);
 

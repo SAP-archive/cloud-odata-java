@@ -24,7 +24,6 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriBuilder;
-import javax.ws.rs.core.UriInfo;
 
 import com.sap.core.odata.api.exception.ODataBadRequestException;
 import com.sap.core.odata.api.exception.ODataException;
@@ -32,11 +31,11 @@ import com.sap.core.odata.api.exception.ODataMethodNotAllowedException;
 import com.sap.core.odata.api.exception.ODataNotAcceptableException;
 import com.sap.core.odata.api.exception.ODataNotFoundException;
 import com.sap.core.odata.api.processor.ODataResponse;
-import com.sap.core.odata.api.processor.ODataUriInfo;
 import com.sap.core.odata.api.processor.aspect.ProcessorAspect;
 import com.sap.core.odata.api.service.ODataService;
 import com.sap.core.odata.api.service.ODataServiceFactory;
 import com.sap.core.odata.api.uri.PathSegment;
+import com.sap.core.odata.api.uri.UriInfo;
 import com.sap.core.odata.core.enums.ContentType;
 import com.sap.core.odata.core.enums.ODataHttpMethod;
 import com.sap.core.odata.core.uri.UriParserImpl;
@@ -204,7 +203,7 @@ public final class ODataSubLocator implements ODataLocator {
     return mediaTypes;
   }
 
-  private ODataUriInfo buildODataUriInfo(InitParameter param) throws ODataException {
+  private UriInfo buildODataUriInfo(InitParameter param) throws ODataException {
     ODataUriInfoImpl odataUriInfo = new ODataUriInfoImpl();
 
     this.splitPath(odataUriInfo, param);
@@ -245,7 +244,7 @@ public final class ODataSubLocator implements ODataLocator {
     odataUriInfo.setPrecedingPathSegment(this.convertPathSegmentList(precedingPathSegements));
   }
 
-  private URI buildBaseUri(UriInfo uriInfo, List<PathSegment> precedingPathSegements) throws ODataException {
+  private URI buildBaseUri(javax.ws.rs.core.UriInfo uriInfo, List<PathSegment> precedingPathSegements) throws ODataException {
     try {
       UriBuilder uriBuilder = uriInfo.getBaseUriBuilder();
       for (PathSegment ps : precedingPathSegements) {
@@ -309,7 +308,7 @@ public final class ODataSubLocator implements ODataLocator {
 
     private List<javax.ws.rs.core.PathSegment> pathSegments;
     private HttpHeaders httpHeaders;
-    private UriInfo uriInfo;
+    private javax.ws.rs.core.UriInfo uriInfo;
     private Request request;
     private int pathSplit;
     private ODataServiceFactory serviceFactory;
@@ -338,11 +337,11 @@ public final class ODataSubLocator implements ODataLocator {
       this.httpHeaders = httpHeaders;
     }
 
-    public UriInfo getUriInfo() {
+    public javax.ws.rs.core.UriInfo getUriInfo() {
       return uriInfo;
     }
 
-    public void setUriInfo(UriInfo uriInfo) {
+    public void setUriInfo(javax.ws.rs.core.UriInfo uriInfo) {
       this.uriInfo = uriInfo;
     }
 

@@ -26,8 +26,8 @@ import com.sap.core.odata.api.edm.EdmProperty;
 import com.sap.core.odata.api.edm.EdmSimpleTypeKind;
 import com.sap.core.odata.api.processor.ODataContext;
 import com.sap.core.odata.api.processor.ODataResponse;
-import com.sap.core.odata.api.processor.ODataUriInfo;
 import com.sap.core.odata.api.uri.KeyPredicate;
+import com.sap.core.odata.api.uri.UriInfo;
 import com.sap.core.odata.api.uri.UriParserResult;
 import com.sap.core.odata.core.enums.ContentType;
 import com.sap.core.odata.ref.model.DataContainer;
@@ -56,7 +56,7 @@ public class EntityTest {
   @Before
   public void setUp() throws Exception {
     mockedContext = mock(ODataContext.class);
-    ODataUriInfo uriInfo = mock(ODataUriInfo.class);
+    UriInfo uriInfo = mock(UriInfo.class);
     when(uriInfo.getBaseUri()).thenReturn(new URI("http://localhost/"));
     when(mockedContext.getUriInfo()).thenReturn(uriInfo);
 
