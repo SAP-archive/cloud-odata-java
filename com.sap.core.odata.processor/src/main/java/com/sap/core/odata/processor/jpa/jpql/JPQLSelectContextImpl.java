@@ -72,6 +72,7 @@ public class JPQLSelectContextImpl extends JPQLSelectContext {
 							.setOrderByCollection(ExpressionParsingUtility
 									.parseOrderByExpression(entitySetView
 											.getOrderBy()));
+					JPQLSelectContextImpl.this.setWhereExpression(entitySetView.getFilter());
 
 					List<SelectItem> selectItemList = entitySetView.getSelect();
 					if (selectItemList != null) {
