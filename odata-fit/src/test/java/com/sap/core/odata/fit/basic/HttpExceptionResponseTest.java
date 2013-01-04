@@ -36,8 +36,8 @@ import com.sap.core.odata.api.uri.info.GetEntityUriInfo;
 import com.sap.core.odata.core.exception.MessageService;
 import com.sap.core.odata.core.uri.UriInfoImpl;
 import com.sap.core.odata.ref.edm.ScenarioEdmProvider;
-import com.sap.core.odata.testutils.helper.ClassHelper;
-import com.sap.core.odata.testutils.helper.StringHelper;
+import com.sap.core.odata.testutil.helper.ClassHelper;
+import com.sap.core.odata.testutil.helper.StringHelper;
 
 /**
  * @author SAP AG

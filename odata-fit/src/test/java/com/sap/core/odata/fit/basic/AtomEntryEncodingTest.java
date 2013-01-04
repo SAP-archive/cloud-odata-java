@@ -20,9 +20,9 @@ import com.sap.core.odata.ref.edm.ScenarioEdmProvider;
 import com.sap.core.odata.ref.model.DataContainer;
 import com.sap.core.odata.ref.processor.ListsProcessor;
 import com.sap.core.odata.ref.processor.ScenarioDataSource;
-import com.sap.core.odata.testutils.fit.AbstractFitTest;
-import com.sap.core.odata.testutils.helper.StringHelper;
-import com.sap.core.odata.testutils.helper.XMLUnitHelper;
+import com.sap.core.odata.testutil.fit.AbstractFitTest;
+import com.sap.core.odata.testutil.helper.StringHelper;
+import com.sap.core.odata.testutil.helper.XMLUnitHelper;
 
 public class AtomEntryEncodingTest extends AbstractFitTest {
 

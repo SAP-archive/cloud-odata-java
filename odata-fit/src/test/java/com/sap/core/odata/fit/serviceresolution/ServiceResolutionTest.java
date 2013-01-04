@@ -36,9 +36,9 @@ import com.sap.core.odata.api.processor.feature.Metadata;
 import com.sap.core.odata.api.processor.feature.ServiceDocument;
 import com.sap.core.odata.api.uri.info.GetMetadataUriInfo;
 import com.sap.core.odata.api.uri.info.GetServiceDocumentUriInfo;
-import com.sap.core.odata.testutils.fit.FitStaticServiceFactory;
-import com.sap.core.odata.testutils.helper.StringHelper;
-import com.sap.core.odata.testutils.server.TestServer;
+import com.sap.core.odata.testutil.fit.FitStaticServiceFactory;
+import com.sap.core.odata.testutil.helper.StringHelper;
+import com.sap.core.odata.testutil.server.TestServer;
 
 /**
  * @author SAP AG

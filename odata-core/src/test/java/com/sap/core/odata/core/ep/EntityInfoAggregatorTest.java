@@ -6,7 +6,7 @@ import org.junit.Test;
 
 import com.sap.core.odata.api.edm.EdmEntitySet;
 import com.sap.core.odata.core.ep.aggregator.EntityInfoAggregator;
-import com.sap.core.odata.testutils.mocks.MockFacade;
+import com.sap.core.odata.testutil.mock.MockFacade;
 
 /**
  * @author SAP AG

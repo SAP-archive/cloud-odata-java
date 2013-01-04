@@ -5,7 +5,7 @@ import org.junit.Test;
 import com.sap.core.odata.api.uri.expression.FilterParserException;
 import com.sap.core.odata.core.uri.expression.FilterParserInternalError;
 import com.sap.core.odata.core.uri.expression.TokenizerExpectError;
-import com.sap.core.odata.testutils.helper.ODataMessageTextVerifier;
+import com.sap.core.odata.testutil.helper.ODataMessageTextVerifier;
 
 public class TestExceptionTexts {
 

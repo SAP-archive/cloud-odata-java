@@ -24,7 +24,7 @@ import com.sap.core.odata.api.exception.ODataServiceUnavailableException;
 import com.sap.core.odata.api.exception.ODataUnsupportedMediaTypeException;
 import com.sap.core.odata.api.uri.UriNotMatchingException;
 import com.sap.core.odata.api.uri.UriSyntaxException;
-import com.sap.core.odata.testutils.helper.ODataMessageTextVerifier;
+import com.sap.core.odata.testutil.helper.ODataMessageTextVerifier;
 
 public class ODataExceptionTest {
 

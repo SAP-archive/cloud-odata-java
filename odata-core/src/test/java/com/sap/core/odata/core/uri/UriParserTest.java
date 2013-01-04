@@ -35,7 +35,7 @@ import com.sap.core.odata.core.enums.ContentType;
 import com.sap.core.odata.core.uri.UriParserImpl;
 import com.sap.core.odata.core.uri.UriInfoImpl;
 import com.sap.core.odata.core.uri.UriType;
-import com.sap.core.odata.testutils.mocks.MockFacade;
+import com.sap.core.odata.testutil.mock.MockFacade;
 
 /**
  * @author SAP AG
