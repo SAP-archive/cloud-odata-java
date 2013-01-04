@@ -13,8 +13,8 @@ import com.sap.core.odata.api.edm.EdmEntitySet;
 import com.sap.core.odata.api.ep.EntityProviderProperties;
 import com.sap.core.odata.api.processor.ODataResponse;
 import com.sap.core.odata.core.enums.ContentType;
-import com.sap.core.odata.testutils.helper.StringHelper;
-import com.sap.core.odata.testutils.mocks.MockFacade;
+import com.sap.core.odata.testutil.helper.StringHelper;
+import com.sap.core.odata.testutil.mock.MockFacade;
 
 /**
  * @author SAP AG

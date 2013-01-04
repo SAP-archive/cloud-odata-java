@@ -19,7 +19,7 @@ import com.sap.core.odata.api.processor.ODataResponse;
 import com.sap.core.odata.api.processor.ODataSingleProcessor;
 import com.sap.core.odata.api.processor.feature.Metadata;
 import com.sap.core.odata.api.uri.info.GetMetadataUriInfo;
-import com.sap.core.odata.testutils.helper.StringHelper;
+import com.sap.core.odata.testutil.helper.StringHelper;
 
 /**
  * @author SAP AG

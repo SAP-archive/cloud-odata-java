@@ -13,7 +13,7 @@ import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.api.processor.ODataContext;
 import com.sap.core.odata.api.processor.ODataSingleProcessor;
 import com.sap.core.odata.api.processor.ODataSingleProcessorService;
-import com.sap.core.odata.testutils.fit.AbstractFitTest;
+import com.sap.core.odata.testutil.fit.AbstractFitTest;
 
 public abstract class AbstractBasicTest extends AbstractFitTest {
 
