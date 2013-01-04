@@ -9,5 +9,7 @@ public interface MockData {
 	public static Class<?> ENTITY_ID_TYPE = java.lang.Long.class;
 	public static String NAME_SPACE ="salesorderprocessing";
 	public static String ENTITY_CONTAINER_NAME = "salesorderprocessingContainer";
+	public static String COMPLEX_TYPE_NAME = "Address";
+	public static String PERSISTENVE_UNIT_NAME = "salesorderprocessing";
 
 }

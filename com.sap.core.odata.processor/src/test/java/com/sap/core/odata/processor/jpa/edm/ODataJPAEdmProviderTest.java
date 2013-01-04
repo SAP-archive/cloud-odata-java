@@ -42,7 +42,18 @@ public class ODataJPAEdmProviderTest {
 		
 	}
 
-	
+	@Test
+	public void testgetComplexType()
+	{
+		FullQualifiedName complexTypeName = new FullQualifiedName(MockData.NAME_SPACE, MockData.COMPLEX_TYPE_NAME);
+		String nameStr = null;
+		try {
+			nameStr = edmProvider.getComplexType(complexTypeName).getName();
+		} catch (ODataException e) {
+			fail("Odata Exception raised with "+e.getMessage());
+		}
+		assertEquals(MockData.COMPLEX_TYPE_NAME, nameStr);
+	}
 
 	@Test
 	public void testGetEntityContainerInfo() {
