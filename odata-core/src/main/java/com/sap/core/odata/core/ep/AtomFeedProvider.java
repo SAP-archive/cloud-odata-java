@@ -13,12 +13,14 @@ import com.sap.core.odata.api.edm.EdmFacets;
 import com.sap.core.odata.api.edm.EdmLiteralKind;
 import com.sap.core.odata.api.ep.EntityProviderException;
 import com.sap.core.odata.api.ep.EntityProviderProperties;
-import com.sap.core.odata.api.uri.info.GetEntitySetUriInfo;
 import com.sap.core.odata.core.edm.EdmDateTimeOffset;
 import com.sap.core.odata.core.ep.aggregator.EntityInfoAggregator;
 import com.sap.core.odata.core.ep.util.UriUtils;
 import com.sap.core.odata.core.uri.SystemQueryOption;
 
+/**
+ * @author SAP AG
+ */
 public class AtomFeedProvider {
 
   private EntityProviderProperties properties;

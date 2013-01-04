@@ -45,7 +45,7 @@ public class ODataSingleProcessorService implements ODataService {
   private static final String APPLICATION_ATOM_XML_FEED = "application/atom+xml; type=feed";
   private static final String APPLICATION_ATOM_SVC = "application/atomsvc+xml";
   private static final String APPLICATION_JSON = "application/json";
-  
+
   private ODataSingleProcessor processor;
   private Edm edm;
 
@@ -188,10 +188,10 @@ public class ODataSingleProcessorService implements ODataService {
   }
 
   @Override
-  public List<String> getSupportedContentTypes(ProcessorFeature processorAspect) throws ODataException {
+  public List<String> getSupportedContentTypes(ProcessorFeature processorFeature) throws ODataException {
     List<String> result = new ArrayList<String>();
 
-    switch (processorAspect) {
+    switch (processorFeature) {
     case BATCH:
       result.add(MULTIPART_MIXED);
       break;
@@ -218,7 +218,7 @@ public class ODataSingleProcessorService implements ODataService {
       result.add(APPLICATION_ATOM_XML);
       result.add(APPLICATION_JSON);
       break;
-    case METDDATA:
+    case METADATA:
       result.add(APPLICATION_XML);
       break;
     case SERVICE_DOCUMENT:
@@ -230,10 +230,8 @@ public class ODataSingleProcessorService implements ODataService {
       throw new ODataNotImplementedException();
     }
 
-    if (processor instanceof ContentTypeSupport) {
-      ContentTypeSupport cts = (ContentTypeSupport) processor;
-      result.addAll(cts.getSupportedContentTypes(processorAspect));
-    }
+    if (processor instanceof ContentTypeSupport)
+      result.addAll(((ContentTypeSupport) processor).getSupportedContentTypes(processorFeature));
 
     return result;
   }

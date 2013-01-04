@@ -1,6 +1,7 @@
 package com.sap.core.odata.ref.processor;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -36,22 +37,20 @@ public class ScenarioDataSource implements ListsDataSource {
 
   @Override
   public List<?> readData(final EdmEntitySet entitySet) throws ODataNotImplementedException, ODataNotFoundException, EdmException {
-    List<Object> data = new ArrayList<Object>();
     if ("Employees".equals(entitySet.getName()))
-      data.addAll(dataContainer.getEmployeeSet());
+      return Arrays.asList(dataContainer.getEmployeeSet().toArray());
     else if ("Teams".equals(entitySet.getName()))
-      data.addAll(dataContainer.getTeamSet());
+      return Arrays.asList(dataContainer.getTeamSet().toArray());
     else if ("Rooms".equals(entitySet.getName()))
-      data.addAll(dataContainer.getRoomSet());
+      return Arrays.asList(dataContainer.getRoomSet().toArray());
     else if ("Managers".equals(entitySet.getName()))
-      data.addAll(dataContainer.getManagerSet());
+      return Arrays.asList(dataContainer.getManagerSet().toArray());
     else if ("Buildings".equals(entitySet.getName()))
-      data.addAll(dataContainer.getBuildingSet());
+      return Arrays.asList(dataContainer.getBuildingSet().toArray());
     else if ("Photos".equals(entitySet.getName()))
-      data.addAll(dataContainer.getPhotoSet());
+      return Arrays.asList(dataContainer.getPhotoSet().toArray());
     else
       throw new ODataNotImplementedException();
-    return data;
   }
 
   @Override
@@ -101,22 +100,13 @@ public class ScenarioDataSource implements ListsDataSource {
   public Object readRelatedData(final EdmEntitySet sourceEntitySet, final Object sourceData, final EdmEntitySet targetEntitySet, final Map<String, Object> targetKeys) throws ODataNotImplementedException, ODataNotFoundException, EdmException {
     if ("Employees".equals(targetEntitySet.getName())) {
       ArrayList<Object> data = new ArrayList<Object>();
-      if ("Teams".equals(sourceEntitySet.getName())) {
-        for (final Employee employee : dataContainer.getEmployeeSet())
-          if (employee.getTeam() != null)
-            if (employee.getTeam().getId().equals(((Team) sourceData).getId()))
-              data.add(employee);
-      } else if ("Rooms".equals(sourceEntitySet.getName())) {
-        for (final Employee employee : dataContainer.getEmployeeSet())
-          if (employee.getRoom() != null)
-            if (employee.getRoom().getId().equals(((Room) sourceData).getId()))
-              data.add(employee);
-      } else if ("Managers".equals(sourceEntitySet.getName())) {
-        for (final Employee employee : dataContainer.getEmployeeSet())
-          if (employee.getManager() != null)
-            if (employee.getManager().getId().equals(((Manager) sourceData).getId()))
-              data.add(employee);
-      }
+      if ("Teams".equals(sourceEntitySet.getName()))
+        data.addAll(((Team) sourceData).getEmployees());
+      else if ("Rooms".equals(sourceEntitySet.getName()))
+        data.addAll(((Room) sourceData).getEmployees());
+      else if ("Managers".equals(sourceEntitySet.getName()))
+        data.addAll(((Manager) sourceData).getEmployees());
+
       if (data.isEmpty())
         throw new ODataNotFoundException(null);
       if (targetKeys.isEmpty())
@@ -180,21 +170,18 @@ public class ScenarioDataSource implements ListsDataSource {
         if (keys.isEmpty())
           return found;
         else
-          for (Employee employee : found)
+          for (final Employee employee : found)
             if (employee.getId().equals(keys.get("EmployeeId")))
               return employee;
         throw new ODataNotFoundException(ODataNotFoundException.ENTITY);
       }
 
     } else if (function.getName().equals("AllLocations")) {
-      ArrayList<Location> locations = new ArrayList<Location>();
-      for (final Location location : getLocations().keySet())
-        locations.add(location);
-      return locations;
+      return Arrays.asList(getLocations().keySet().toArray());
 
     } else if (function.getName().equals("AllUsedRoomIds")) {
       ArrayList<String> data = new ArrayList<String>();
-      for (Room room : dataContainer.getRoomSet())
+      for (final Room room : dataContainer.getRoomSet())
         if (!room.getEmployees().isEmpty())
           data.add(room.getId());
       if (data.isEmpty())
@@ -211,10 +198,9 @@ public class ScenarioDataSource implements ListsDataSource {
     } else if (function.getName().equals("ManagerPhoto")) {
       if (parameters.get("Id") == null)
         throw new ODataNotFoundException(ODataNotFoundException.ENTITY);
-      for (Employee potentialManager : dataContainer.getEmployeeSet())
-        if (potentialManager.getId().equals(parameters.get("Id"))
-            && isManager(potentialManager))
-          return potentialManager.getImage();
+      for (final Manager manager : dataContainer.getManagerSet())
+        if (manager.getId().equals(parameters.get("Id")))
+          return manager.getImage();
       throw new ODataNotFoundException(ODataNotFoundException.ENTITY);
 
     } else if (function.getName().equals("OldestEmployee")) {
@@ -227,9 +213,12 @@ public class ScenarioDataSource implements ListsDataSource {
 
   private List<Employee> searchEmployees(final String search) {
     List<Employee> employees = new ArrayList<Employee>();
-    for (Employee employee : dataContainer.getEmployeeSet())
-      if (employee.getEmployeeName().contains(search) || employee.getLocation() != null
-          && (employee.getLocation().getCity().getCityName().contains(search) || employee.getLocation().getCity().getPostalCode().contains(search) || employee.getLocation().getCountry().contains(search)))
+    for (final Employee employee : dataContainer.getEmployeeSet())
+      if (employee.getEmployeeName().contains(search)
+          || employee.getLocation() != null
+          && (employee.getLocation().getCity().getCityName().contains(search)
+              || employee.getLocation().getCity().getPostalCode().contains(search)
+              || employee.getLocation().getCountry().contains(search)))
         employees.add(employee);
     return employees;
   }
@@ -272,13 +261,6 @@ public class ScenarioDataSource implements ListsDataSource {
       if (oldestEmployee == null || employee.getAge() > oldestEmployee.getAge())
         oldestEmployee = employee;
     return oldestEmployee;
-  }
-
-  private boolean isManager(final Employee potentialManager) {
-    for (final Employee employee : dataContainer.getEmployeeSet())
-      if (potentialManager.getId().equals(employee.getManager().getId()))
-        return true;
-    return false;
   }
 
   @Override
@@ -329,15 +311,18 @@ public class ScenarioDataSource implements ListsDataSource {
       ((Employee) data).getRoom().getEmployees().remove(data);
       ((Employee) data).getManager().getEmployees().remove(data);
       dataContainer.getEmployeeSet().remove(data);
+
     } else if ("Teams".equals(entitySet.getName())) {
       for (Employee employee : ((Team) data).getEmployees())
         employee.setTeam(null);
       dataContainer.getTeamSet().remove(data);
+
     } else if ("Rooms".equals(entitySet.getName())) {
       for (Employee employee : ((Room) data).getEmployees())
         employee.setRoom(null);
       ((Room) data).getBuilding().getRooms().remove(data);
       dataContainer.getRoomSet().remove(data);
+
     } else if ("Managers".equals(entitySet.getName())) {
       for (Employee employee : ((Manager) data).getEmployees())
         employee.setManager(null);
@@ -345,12 +330,15 @@ public class ScenarioDataSource implements ListsDataSource {
       ((Manager) data).getRoom().getEmployees().remove(data);
       ((Manager) data).getManager().getEmployees().remove(data);
       dataContainer.getManagerSet().remove(data);
+
     } else if ("Buildings".equals(entitySet.getName())) {
       for (Room room : ((Building) data).getRooms())
         room.setBuilding(null);
       dataContainer.getBuildingSet().remove(data);
+
     } else if ("Photos".equals(entitySet.getName())) {
       dataContainer.getPhotoSet().remove(data);
+
     } else {
       throw new ODataNotImplementedException();
     }

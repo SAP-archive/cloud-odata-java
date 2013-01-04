@@ -31,7 +31,7 @@ public abstract class UriParser {
    * Parse path segments and query parameters.
    * 
    * @param pathSegments
-   * @param queryParameter
+   * @param queryParameters
    * @return {@link UriInfo} parsed uri result
    * @throws UriSyntaxException
    */

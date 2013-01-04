@@ -6,9 +6,10 @@ import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.api.exception.ODataMethodNotAllowedException;
 import com.sap.core.odata.api.processor.ODataResponse;
 import com.sap.core.odata.api.processor.feature.ProcessorFeature;
-import com.sap.core.odata.core.enums.ContentType;
+import com.sap.core.odata.api.uri.UriSyntaxException;
 import com.sap.core.odata.core.enums.ODataHttpMethod;
 import com.sap.core.odata.core.exception.ODataRuntimeException;
+import com.sap.core.odata.core.uri.SystemQueryOption;
 import com.sap.core.odata.core.uri.UriInfoImpl;
 
 /**
@@ -17,11 +18,11 @@ import com.sap.core.odata.core.uri.UriInfoImpl;
  */
 public class Dispatcher {
 
+  private final ODataService service;
+
   public Dispatcher(ODataService service) {
     this.service = service;
   }
-
-  private ODataService service;
 
   public ODataResponse dispatch(final ODataHttpMethod method, final UriInfoImpl uriParserResult, final String contentType) throws ODataException {
     switch (uriParserResult.getUriType()) {
@@ -56,13 +57,16 @@ public class Dispatcher {
         else
           throw new ODataBadRequestException(ODataBadRequestException.COMMON);
       case DELETE:
-        if (contentType == null
-            && uriParserResult.getFilter() == null
-            && uriParserResult.getExpand().isEmpty()
-            && uriParserResult.getSelect().isEmpty())
-          return service.getEntityProcessor().deleteEntity(uriParserResult, contentType);
+        if (contentType != null)
+          throw new UriSyntaxException(UriSyntaxException.INCOMPATIBLESYSTEMQUERYOPTION.addContent(SystemQueryOption.$format));
+        else if (uriParserResult.getFilter() != null)
+          throw new UriSyntaxException(UriSyntaxException.INCOMPATIBLESYSTEMQUERYOPTION.addContent(SystemQueryOption.$filter));
+        else if (!uriParserResult.getExpand().isEmpty())
+          throw new UriSyntaxException(UriSyntaxException.INCOMPATIBLESYSTEMQUERYOPTION.addContent(SystemQueryOption.$expand));
+        else if (!uriParserResult.getSelect().isEmpty())
+          throw new UriSyntaxException(UriSyntaxException.INCOMPATIBLESYSTEMQUERYOPTION.addContent(SystemQueryOption.$select));
         else
-          throw new ODataBadRequestException(ODataBadRequestException.COMMON);
+          return service.getEntityProcessor().deleteEntity(uriParserResult, contentType);
       default:
         throw new ODataMethodNotAllowedException(ODataMethodNotAllowedException.DISPATCH);
       }
@@ -121,7 +125,7 @@ public class Dispatcher {
         if (contentType == null)
           return service.getEntityLinkProcessor().deleteEntityLink(uriParserResult, contentType);
         else
-          throw new ODataBadRequestException(ODataBadRequestException.COMMON);
+          throw new UriSyntaxException(UriSyntaxException.INCOMPATIBLESYSTEMQUERYOPTION.addContent(SystemQueryOption.$format));
       default:
         throw new ODataMethodNotAllowedException(ODataMethodNotAllowedException.DISPATCH);
       }
@@ -201,76 +205,68 @@ public class Dispatcher {
     }
   }
 
-  public ProcessorFeature mapUriTypeToProcessorAspect(UriInfoImpl uriParserResult) {
-    ProcessorFeature aspect;
+  public ProcessorFeature mapUriTypeToProcessorFeature(UriInfoImpl uriParserResult) {
+    ProcessorFeature feature;
 
     switch (uriParserResult.getUriType()) {
     case URI0:
-      aspect = ProcessorFeature.SERVICE_DOCUMENT;
+      feature = ProcessorFeature.SERVICE_DOCUMENT;
       break;
     case URI1:
     case URI6B:
-      aspect = ProcessorFeature.ENTITY_SET;
+    case URI15:
+      feature = ProcessorFeature.ENTITY_SET;
       break;
     case URI2:
     case URI6A:
-      aspect = ProcessorFeature.ENTITY;
+    case URI16:
+      feature = ProcessorFeature.ENTITY;
       break;
     case URI3:
-      aspect = ProcessorFeature.ENTITY_COMPLEX_PROPERTY;
+      feature = ProcessorFeature.ENTITY_COMPLEX_PROPERTY;
       break;
     case URI4:
     case URI5:
       if (uriParserResult.isValue()) {
-        aspect = ProcessorFeature.ENTITY_SIMPLE_PROPERTY_VALUE;
+        feature = ProcessorFeature.ENTITY_SIMPLE_PROPERTY_VALUE;
       } else {
-        aspect = ProcessorFeature.ENTITY_SIMPLE_PROPERTY;
+        feature = ProcessorFeature.ENTITY_SIMPLE_PROPERTY;
       }
       break;
     case URI7A:
-      aspect = ProcessorFeature.ENTITY_LINK;
+    case URI50A:
+      feature = ProcessorFeature.ENTITY_LINK;
       break;
     case URI7B:
-      aspect = ProcessorFeature.ENTITY_LINKS;
+    case URI50B:
+      feature = ProcessorFeature.ENTITY_LINKS;
       break;
     case URI8:
-      aspect = ProcessorFeature.METDDATA;
+      feature = ProcessorFeature.METADATA;
       break;
     case URI9:
-      aspect = ProcessorFeature.BATCH;
+      feature = ProcessorFeature.BATCH;
       break;
     case URI10:
     case URI11:
     case URI12:
     case URI13:
-      aspect = ProcessorFeature.FUNCTION_IMPORT;
+      feature = ProcessorFeature.FUNCTION_IMPORT;
       break;
     case URI14:
       if (uriParserResult.isValue()) {
-        aspect = ProcessorFeature.FUNCTION_IMPORT_VALUE;
+        feature = ProcessorFeature.FUNCTION_IMPORT_VALUE;
       } else {
-        aspect = ProcessorFeature.FUNCTION_IMPORT;
+        feature = ProcessorFeature.FUNCTION_IMPORT;
       }
       break;
-    case URI15:
-      aspect = ProcessorFeature.ENTITY_SET;
-      break;
-    case URI16:
-      aspect = ProcessorFeature.ENTITY;
-      break;
     case URI17:
-      aspect = ProcessorFeature.ENTITY_MEDIA;
-      break;
-    case URI50A:
-      aspect = ProcessorFeature.ENTITY_LINK;
-      break;
-    case URI50B:
-      aspect = ProcessorFeature.ENTITY_LINKS;
+      feature = ProcessorFeature.ENTITY_MEDIA;
       break;
     default:
       throw new ODataRuntimeException("Unknown or not implemented URI type: " + uriParserResult.getUriType());
     }
 
-    return aspect;
+    return feature;
   }
 }

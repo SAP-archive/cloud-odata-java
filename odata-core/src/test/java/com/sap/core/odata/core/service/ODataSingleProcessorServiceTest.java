@@ -19,6 +19,9 @@ import com.sap.core.odata.api.processor.feature.ContentTypeSupport;
 import com.sap.core.odata.api.processor.feature.ProcessorFeature;
 import com.sap.core.odata.core.enums.ContentType;
 
+/**
+ * @author SAP AG
+ */
 public class ODataSingleProcessorServiceTest {
 
   private ODataSingleProcessorService service;
@@ -66,7 +69,7 @@ public class ODataSingleProcessorServiceTest {
 
   @Test
   public void defaultSupportedContentTypesForMetadata() throws Exception {
-    List<String> types = service.getSupportedContentTypes(ProcessorFeature.METDDATA);
+    List<String> types = service.getSupportedContentTypes(ProcessorFeature.METADATA);
     assertTrue(types.contains(ContentType.APPLICATION_XML.toContentTypeString()));
   }
 

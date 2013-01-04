@@ -27,8 +27,10 @@ import com.sap.core.odata.api.processor.feature.Metadata;
 import com.sap.core.odata.api.processor.feature.ServiceDocument;
 import com.sap.core.odata.api.uri.info.GetMetadataUriInfo;
 import com.sap.core.odata.api.uri.info.GetServiceDocumentUriInfo;
-import com.sap.core.odata.core.enums.ContentType;
 
+/**
+ * @author SAP AG
+ */
 public class ContextTest extends AbstractBasicTest {
 
   @Override

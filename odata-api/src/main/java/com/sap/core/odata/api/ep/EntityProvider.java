@@ -9,7 +9,6 @@ import com.sap.core.odata.api.edm.EdmFunctionImport;
 import com.sap.core.odata.api.edm.EdmProperty;
 import com.sap.core.odata.api.processor.ODataResponse;
 import com.sap.core.odata.api.rt.RuntimeDelegate;
-import com.sap.core.odata.api.uri.info.GetEntitySetUriInfo;
 
 /**
  * Abstract provider for writing output

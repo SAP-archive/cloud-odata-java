@@ -69,9 +69,6 @@ import com.sap.core.odata.api.uri.info.GetSimplePropertyUriInfo;
 public class ListsProcessor extends ODataSingleProcessor {
 
   private static final int SERVER_PAGING_SIZE = 100;
-
-  private static final String APPLICATION_XML = "application/xml";
-
   private static final String APPLICATION_OCTET_STREAM = "application/octet-stream";
 
   private final ListsDataSource dataSource;
@@ -91,11 +88,12 @@ public class ListsProcessor extends ODataSingleProcessor {
         uriParserResultView.getNavigationSegments()));
 
     final EdmEntitySet entitySet = uriParserResultView.getTargetEntitySet();
+    final InlineCount inlineCountType = uriParserResultView.getInlineCount();
     final Integer count = applySystemQueryOptions(
         entitySet,
         data,
         uriParserResultView.getFilter(),
-        uriParserResultView.getInlineCount(),
+        inlineCountType,
         uriParserResultView.getOrderBy(),
         uriParserResultView.getSkipToken(),
         uriParserResultView.getSkip(),
@@ -109,7 +107,7 @@ public class ListsProcessor extends ODataSingleProcessor {
     String nextSkipToken = null;
     if (data.size() > SERVER_PAGING_SIZE
         && uriParserResultView.getFilter() == null
-        && uriParserResultView.getInlineCount() == null
+        && inlineCountType == null
         && uriParserResultView.getOrderBy() == null
         && uriParserResultView.getTop() == null
         && uriParserResultView.getExpand().isEmpty()
@@ -131,12 +129,12 @@ public class ListsProcessor extends ODataSingleProcessor {
 
     final EntityProviderProperties feedProperties = EntityProviderProperties
         .baseUri(getContext().getUriInfo().getServiceRoot())
+        .inlineCountType(inlineCountType)
         .inlineCount(count)
         .skipToken(nextSkipToken)
-        .inlineCountType(uriParserResultView.getInlineCount())
         .build();
 
-    return ODataResponse.fromResponse(EntityProvider.create(contentType).writeFeed(uriParserResultView.getTargetEntitySet(), values, feedProperties))
+    return ODataResponse.fromResponse(EntityProvider.create(contentType).writeFeed(entitySet, values, feedProperties))
         .status(HttpStatusCodes.OK)
         .build();
   }
@@ -161,7 +159,7 @@ public class ListsProcessor extends ODataSingleProcessor {
         uriParserResultView.getSkip(),
         uriParserResultView.getTop());
 
-    return ODataResponse.fromResponse(EntityProvider.create(APPLICATION_XML).writeText(String.valueOf(data.size())))
+    return ODataResponse.fromResponse(EntityProvider.create(contentType).writeText(String.valueOf(data.size())))
         .status(HttpStatusCodes.OK)
         .build();
   }
@@ -242,7 +240,7 @@ public class ListsProcessor extends ODataSingleProcessor {
         mapFunctionParameters(uriParserResultView.getFunctionImportParameters()),
         uriParserResultView.getNavigationSegments());
 
-    return ODataResponse.fromResponse(EntityProvider.create(APPLICATION_XML).writeText(
+    return ODataResponse.fromResponse(EntityProvider.create(contentType).writeText(
         appliesFilter(data, uriParserResultView.getFilter()) ? "1" : "0"))
         .status(HttpStatusCodes.OK)
         .build();
@@ -334,15 +332,12 @@ public class ListsProcessor extends ODataSingleProcessor {
     data = getPropertyValue(data, propertyPath);
 
     final EdmProperty property = propertyPath.get(propertyPath.size() - 1);
-    final EdmType type = property.getType();
-
-    final Object value = type.getKind() == EdmTypeKind.COMPLEX ?
-        getStructuralTypeValueMap(data, (EdmStructuralType) type) : data;
+    final Object value = property.isSimple() ?
+        data : getStructuralTypeValueMap(data, (EdmStructuralType) property.getType());
 
     return ODataResponse.fromResponse(EntityProvider.create(contentType).writeProperty(property, value))
         .status(HttpStatusCodes.OK)
         .build();
-
   }
 
   @Override
@@ -374,7 +369,7 @@ public class ListsProcessor extends ODataSingleProcessor {
       value = valueWithMimeType;
     }
 
-    return ODataResponse.fromResponse(EntityProvider.create(APPLICATION_XML).writePropertyValue(property, value))
+    return ODataResponse.fromResponse(EntityProvider.create("application/xml").writePropertyValue(property, value))
         .status(HttpStatusCodes.OK)
         .build();
   }
@@ -398,7 +393,7 @@ public class ListsProcessor extends ODataSingleProcessor {
     final String mimeType = mimeTypeBuilder.toString().isEmpty() ?
         APPLICATION_OCTET_STREAM : mimeTypeBuilder.toString();
 
-    return ODataResponse.fromResponse(EntityProvider.create(APPLICATION_XML).writeBinary(mimeType, binaryData))
+    return ODataResponse.fromResponse(EntityProvider.create("application/xml").writeBinary(mimeType, binaryData))
         .status(HttpStatusCodes.OK)
         .build();
   }
@@ -444,13 +439,13 @@ public class ListsProcessor extends ODataSingleProcessor {
         null);
 
     if (type == EdmSimpleTypeKind.Binary.getEdmSimpleTypeInstance()) {
-      return ODataResponse.fromResponse(EntityProvider.create(APPLICATION_XML)
+      return ODataResponse.fromResponse(EntityProvider.create("application/xml")
           .writeBinary(APPLICATION_OCTET_STREAM, (byte[]) data))
           .status(HttpStatusCodes.OK)
           .build();
     } else {
       final String value = type.valueToString(data, EdmLiteralKind.DEFAULT, null);
-      return ODataResponse.fromResponse(EntityProvider.create(APPLICATION_XML)
+      return ODataResponse.fromResponse(EntityProvider.create(contentType)
           .writeText(value == null ? "" : value))
           .status(HttpStatusCodes.OK)
           .build();
@@ -811,10 +806,10 @@ public class ListsProcessor extends ODataSingleProcessor {
       final EdmProperty property = (EdmProperty) type.getProperty(propertyName);
       final Object value = getPropertyValue(data, property);
 
-      if (property.getType().getKind() == EdmTypeKind.COMPLEX)
-        valueMap.put(propertyName, getStructuralTypeValueMap(value, (EdmStructuralType) property.getType()));
-      else
+      if (property.isSimple())
         valueMap.put(propertyName, value);
+      else
+        valueMap.put(propertyName, getStructuralTypeValueMap(value, (EdmStructuralType) property.getType()));
     }
 
     return valueMap;
