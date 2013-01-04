@@ -5,9 +5,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.sap.core.odata.api.processor.ODataPathSegment;
+import com.sap.core.odata.api.uri.PathSegment;
 
-public class ODataPathSegmentImpl implements ODataPathSegment {
+public class ODataPathSegmentImpl implements PathSegment {
 
   private String path;
   private Map<String, List<String>> matrixParameter;

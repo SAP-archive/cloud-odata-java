@@ -11,12 +11,12 @@ import java.util.Map;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.sap.core.odata.api.processor.ODataPathSegment;
+import com.sap.core.odata.api.uri.PathSegment;
 
 public class PathSegmentTest {
 
-  ODataPathSegment segment;
-  ODataPathSegment segmentNoMatrix;
+  PathSegment segment;
+  PathSegment segmentNoMatrix;
 
   @Before
   public void before() {

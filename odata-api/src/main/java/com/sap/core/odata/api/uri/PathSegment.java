@@ -1,4 +1,4 @@
-package com.sap.core.odata.api.processor;
+package com.sap.core.odata.api.uri;
 
 import java.util.List;
 import java.util.Map;
@@ -14,7 +14,7 @@ import java.util.Map;
  * 
  * @author SAP AG
  */
-public interface ODataPathSegment {
+public interface PathSegment {
 
   /**
    * Returns a URI path element. In the example above, 'color' will be an element.

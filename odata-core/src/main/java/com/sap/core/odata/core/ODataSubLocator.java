@@ -19,7 +19,6 @@ import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MultivaluedMap;
-import javax.ws.rs.core.PathSegment;
 import javax.ws.rs.core.Request;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
@@ -32,12 +31,12 @@ import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.api.exception.ODataMethodNotAllowedException;
 import com.sap.core.odata.api.exception.ODataNotAcceptableException;
 import com.sap.core.odata.api.exception.ODataNotFoundException;
-import com.sap.core.odata.api.processor.ODataPathSegment;
 import com.sap.core.odata.api.processor.ODataResponse;
 import com.sap.core.odata.api.processor.ODataUriInfo;
 import com.sap.core.odata.api.processor.aspect.ProcessorAspect;
 import com.sap.core.odata.api.service.ODataService;
 import com.sap.core.odata.api.service.ODataServiceFactory;
+import com.sap.core.odata.api.uri.PathSegment;
 import com.sap.core.odata.core.enums.ContentType;
 import com.sap.core.odata.core.enums.ODataHttpMethod;
 import com.sap.core.odata.core.uri.UriParserImpl;
@@ -59,7 +58,7 @@ public final class ODataSubLocator implements ODataLocator {
 
   @GET
   public Response handleGet() throws ODataException {
-    List<ODataPathSegment> pathSegments = this.context.getUriInfo().getODataPathSegmentList(); //
+    List<PathSegment> pathSegments = this.context.getUriInfo().getODataPathSegmentList(); //
     UriParserResultImpl uriParserResult = (UriParserResultImpl) this.uriParser.parse(pathSegments, this.queryParameters);
 
     ContentType contentType = doContentNegotiation(uriParserResult);
@@ -162,7 +161,7 @@ public final class ODataSubLocator implements ODataLocator {
 
   @DELETE
   public Response handleDelete() throws ODataException {
-    final List<ODataPathSegment> pathSegments = context.getUriInfo().getODataPathSegmentList();
+    final List<PathSegment> pathSegments = context.getUriInfo().getODataPathSegmentList();
     final UriParserResultImpl uriParserResult = (UriParserResultImpl) uriParser.parse(pathSegments, queryParameters);
 
     final ODataResponse odataResponse = dispatcher.dispatch(ODataHttpMethod.DELETE, uriParserResult, null);
@@ -219,12 +218,12 @@ public final class ODataSubLocator implements ODataLocator {
   }
 
   private void splitPath(ODataUriInfoImpl odataUriInfo, InitParameter param) throws ODataException {
-    List<PathSegment> precedingPathSegements;
-    List<PathSegment> odataPathSegements;
+    List<javax.ws.rs.core.PathSegment> precedingPathSegements;
+    List<javax.ws.rs.core.PathSegment> pathSegements;
 
     if (param.getPathSplit() == 0) {
       precedingPathSegements = Collections.emptyList();
-      odataPathSegements = param.getPathSegments();
+      pathSegements = param.getPathSegments();
     } else {
       if (param.getPathSegments().size() < param.getPathSplit()) {
         throw new ODataBadRequestException(ODataBadRequestException.URLTOSHORT);
@@ -232,24 +231,24 @@ public final class ODataSubLocator implements ODataLocator {
 
       precedingPathSegements = param.getPathSegments().subList(0, param.getPathSplit());
       int pathSegmentCount = param.getPathSegments().size();
-      odataPathSegements = param.getPathSegments().subList(param.getPathSplit(), pathSegmentCount);
+      pathSegements = param.getPathSegments().subList(param.getPathSplit(), pathSegmentCount);
     }
 
     // post condition: we do not allow matrix parameter in OData path segments
-    for (PathSegment ps : odataPathSegements) {
+    for (javax.ws.rs.core.PathSegment ps : pathSegements) {
       if (ps.getMatrixParameters() != null && !ps.getMatrixParameters().isEmpty()) {
         throw new ODataNotFoundException(ODataNotFoundException.MATRIX.addContent(ps.getMatrixParameters().keySet(), ps.getPath()));
       }
     }
 
-    odataUriInfo.setODataPathSegment(this.convertPathSegmentList(odataPathSegements));
+    odataUriInfo.setODataPathSegment(this.convertPathSegmentList(pathSegements));
     odataUriInfo.setPrecedingPathSegment(this.convertPathSegmentList(precedingPathSegements));
   }
 
-  private URI buildBaseUri(UriInfo uriInfo, List<ODataPathSegment> precedingPathSegements) throws ODataException {
+  private URI buildBaseUri(UriInfo uriInfo, List<PathSegment> precedingPathSegements) throws ODataException {
     try {
       UriBuilder uriBuilder = uriInfo.getBaseUriBuilder();
-      for (ODataPathSegment ps : precedingPathSegements) {
+      for (PathSegment ps : precedingPathSegements) {
         uriBuilder = uriBuilder.path(ps.getPath());
         for (String key : ps.getMatrixParameters().keySet()) {
           Object[] v = ps.getMatrixParameters().get(key).toArray();
@@ -268,11 +267,11 @@ public final class ODataSubLocator implements ODataLocator {
     }
   }
 
-  public List<ODataPathSegment> convertPathSegmentList(List<PathSegment> pathSegments) {
-    ArrayList<ODataPathSegment> converted = new ArrayList<ODataPathSegment>();
+  public List<PathSegment> convertPathSegmentList(List<javax.ws.rs.core.PathSegment> pathSegments) {
+    ArrayList<PathSegment> converted = new ArrayList<PathSegment>();
 
-    for (PathSegment pathSegment : pathSegments) {
-      ODataPathSegment segment = new ODataPathSegmentImpl(pathSegment.getPath(), pathSegment.getMatrixParameters());
+    for (javax.ws.rs.core.PathSegment pathSegment : pathSegments) {
+      PathSegment segment = new ODataPathSegmentImpl(pathSegment.getPath(), pathSegment.getMatrixParameters());
       converted.add(segment);
     }
     return converted;
@@ -308,7 +307,7 @@ public final class ODataSubLocator implements ODataLocator {
 
   public class InitParameter {
 
-    private List<PathSegment> pathSegments;
+    private List<javax.ws.rs.core.PathSegment> pathSegments;
     private HttpHeaders httpHeaders;
     private UriInfo uriInfo;
     private Request request;
@@ -323,11 +322,11 @@ public final class ODataSubLocator implements ODataLocator {
       this.serviceFactory = serviceFactory;
     }
 
-    public List<PathSegment> getPathSegments() {
+    public List<javax.ws.rs.core.PathSegment> getPathSegments() {
       return pathSegments;
     }
 
-    public void setPathSegments(List<PathSegment> pathSegments) {
+    public void setPathSegments(List<javax.ws.rs.core.PathSegment> pathSegments) {
       this.pathSegments = pathSegments;
     }
 
