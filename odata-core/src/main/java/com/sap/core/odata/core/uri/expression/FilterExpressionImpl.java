@@ -8,7 +8,8 @@ import com.sap.core.odata.api.uri.expression.ExpressionKind;
 import com.sap.core.odata.api.uri.expression.ExpressionVisitor;
 import com.sap.core.odata.api.uri.expression.FilterExpression;
 
-public class FilterExpressionImpl implements FilterExpression {
+public class FilterExpressionImpl implements FilterExpression 
+{
   private String filterString;
   private EdmType edmType;
   private CommonExpression commonExpression;
@@ -43,24 +44,28 @@ public class FilterExpressionImpl implements FilterExpression {
   }
 
   @Override
-  public CommonExpression setEdmType(EdmType edmType) {
+  public CommonExpression setEdmType(EdmType edmType) 
+  {
     this.edmType = edmType;
     return this;
 
   }
 
   @Override
-  public EdmType getEdmType() {
+  public EdmType getEdmType() 
+  {
     return edmType;
   }
 
   @Override
-  public ExpressionKind getKind() {
+  public ExpressionKind getKind() 
+  {
     return ExpressionKind.FILTER;
   }
 
   @Override
-  public String getUriLiteral() {
+  public String getUriLiteral() 
+  {
     return "";
   }
 

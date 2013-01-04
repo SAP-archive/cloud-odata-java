@@ -1,20 +1,20 @@
 package com.sap.core.odata.api.uri.expression;
 
-public enum OrderType {
+public enum SortOrder {
   asc("asc"),
   desc("desc");
   
   private String syntax;
   private String stringRespresentation;
   
-  private OrderType(String syntax)
+  private SortOrder(String syntax)
   {
     this.syntax = syntax;
     this.stringRespresentation = syntax;
   }
   
   
-  private OrderType( String syntax, String stringRespresentation)
+  private SortOrder( String syntax, String stringRespresentation)
   {
     this.syntax = syntax;
     this.stringRespresentation = stringRespresentation;

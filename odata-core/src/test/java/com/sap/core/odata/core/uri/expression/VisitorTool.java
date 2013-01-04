@@ -1,7 +1,6 @@
 package com.sap.core.odata.core.uri.expression;
 
 import java.util.List;
-import java.util.Vector;
 
 import com.sap.core.odata.api.edm.EdmTyped;
 import com.sap.core.odata.api.uri.EdmLiteral;
@@ -14,6 +13,8 @@ import com.sap.core.odata.api.uri.expression.MemberExpression;
 import com.sap.core.odata.api.uri.expression.MethodExpression;
 import com.sap.core.odata.api.uri.expression.MethodOperator;
 import com.sap.core.odata.api.uri.expression.OrderByExpression;
+import com.sap.core.odata.api.uri.expression.OrderExpression;
+import com.sap.core.odata.api.uri.expression.SortOrder;
 import com.sap.core.odata.api.uri.expression.PropertyExpression;
 import com.sap.core.odata.api.uri.expression.UnaryExpression;
 import com.sap.core.odata.api.uri.expression.UnaryOperator;
@@ -38,7 +39,7 @@ public class VisitorTool implements ExpressionVisitor {
   }
 
   @Override
-  public Object visitMethod(MethodExpression methodExpression, MethodOperator method, Vector<Object> retParameters)
+  public Object visitMethod(MethodExpression methodExpression, MethodOperator method, List<Object> retParameters)
   {
     StringBuilder sb = new StringBuilder();
     sb.append("{");
@@ -48,7 +49,7 @@ public class VisitorTool implements ExpressionVisitor {
     for (int i = 0; i < retParameters.size(); i++)
     {
       if (i != 0) sb.append(",");
-      sb.append(retParameters.elementAt(i));
+      sb.append(retParameters.get(i));
     }
 
     sb.append(")}");
@@ -75,9 +76,28 @@ public class VisitorTool implements ExpressionVisitor {
   }
 
   @Override
-  public Object visitOrderByExpression(OrderByExpression orderByExpression, String expressionString, List<Object> orders) {
-    // TODO Auto-generated method stub
-    return null;
+  public Object visitOrderByExpression(OrderByExpression orderByExpression, String expressionString, List<Object> orders) 
+  {
+    StringBuilder sb = new StringBuilder();
+    sb.append("{");
+    sb.append("oc");
+
+    sb.append("(");
+    for (int i = 0; i < orders.size(); i++)
+    {
+      if (i != 0) sb.append(",");
+      sb.append(orders.get(i));
+    }
+
+    sb.append(")}");
+
+    return sb.toString();
+  }
+
+  @Override
+  public Object visitOrder(OrderExpression orderExpression, Object filterResult, SortOrder sortOrder)
+  {
+    return "{o(" + filterResult + ", " + sortOrder.toString() + ")}";
   }
 
 }

@@ -1,7 +1,6 @@
 package com.sap.core.odata.api.uri.expression;
 
 import java.util.List;
-import java.util.Vector;
 
 import com.sap.core.odata.api.edm.EdmTyped;
 import com.sap.core.odata.api.uri.EdmLiteral;
@@ -55,7 +54,20 @@ public interface ExpressionVisitor
    *   The overall result of evaluating the expression tree ( which may be a single value or a structured value )  
    */
   Object visitOrderByExpression(OrderByExpression orderByExpression, String expressionString, List<Object> orders);
-
+  
+  /**
+   * Visits a order expression
+   * @param orderExpression
+   *   The visited order expression node
+   * @param filterResult
+   *   The result of visiting the filter expression contained in the order
+   * @param sortOrder
+   *   The sort order
+   * @return
+   *   The overall result of evaluating the expression tree ( which may be a single value or a structured value )  
+   */
+  Object visitOrder(OrderExpression orderExpression, Object filterResult, SortOrder sortOrder);
+  
   /**
    * Visits a literal expression 
    * @param literal
@@ -78,7 +90,7 @@ public interface ExpressionVisitor
    * @return
    *   Returns the result from evaluating the method and the method parameters 
    */
-  Object visitMethod(MethodExpression methodExpression, MethodOperator method, Vector<Object> parameters);
+  Object visitMethod(MethodExpression methodExpression, MethodOperator method, List<Object> parameters);
 
   /**
    * Visits a member expression
