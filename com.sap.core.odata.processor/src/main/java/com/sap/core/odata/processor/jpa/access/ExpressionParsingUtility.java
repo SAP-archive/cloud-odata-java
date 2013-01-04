@@ -26,6 +26,7 @@ import com.sap.core.odata.processor.jpa.jpql.api.JPQLStatement;
 public class ExpressionParsingUtility {
 	
 	public static final String SPACE = " ";
+	public static final String TABLE_ALIAS = "gwt1";
 	
 	public static String parseWhereExpression(final CommonExpression whereExpression) throws ODataException {
 	    switch (whereExpression.getKind()) {
@@ -51,7 +52,7 @@ public class ExpressionParsingUtility {
 	    	return parseWhereExpression(filterExpression.getExpression());
 	    case BINARY:
 	      final BinaryExpression binaryExpression = (BinaryExpression) whereExpression;
-	      //final EdmSimpleType binaryType = (EdmSimpleType) binaryExpression.getEdmType();
+	      final EdmSimpleType binaryType = (EdmSimpleType) binaryExpression.getEdmType();
 	      final String left = parseWhereExpression(binaryExpression.getLeftOperand());
 	      final String right = parseWhereExpression(binaryExpression.getRightOperand());
 
@@ -125,12 +126,10 @@ public class ExpressionParsingUtility {
 	      }
 
 	    case PROPERTY:
-//	      final EdmProperty property = ((PropertyExpression) whereExpression).getEdmProperty();
-//	      if (property == null)
-//	        return "";
-	      //final EdmSimpleType type = (EdmSimpleType) property.getType();
-	      //return type.valueToString(getPropertyValue(data, property), EdmLiteralKind.DEFAULT, property.getFacets());
-	    	return ((PropertyExpression) whereExpression).getPropertyName();//TODO - check
+//	      	final EdmProperty property = (EdmProperty) ((PropertyExpression) expression).getEdmProperty();
+//	        final EdmSimpleType propertyType = (EdmSimpleType) property.getType();
+//	        return propertyType.valueToString(getPropertyValue(data, property), EdmLiteralKind.DEFAULT, property.getFacets());
+	    	return TABLE_ALIAS+"."+((PropertyExpression) whereExpression).getPropertyName();//TODO - check
 
 //	    case MEMBER:
 //	      final MemberExpression memberExpression = (MemberExpression) expression;
@@ -148,9 +147,9 @@ public class ExpressionParsingUtility {
 
 	    case LITERAL:
 	    	final LiteralExpression literal = (LiteralExpression) whereExpression;
-		      final EdmSimpleType literalType = (EdmSimpleType) literal.getEdmType();
-		      return literalType.valueToString(literalType.valueOfString(literal.getUriLiteral(), EdmLiteralKind.URI, null), EdmLiteralKind.DEFAULT, null);
-//		      return literalType.getName(); //TODO
+		    final EdmSimpleType literalType = (EdmSimpleType) literal.getEdmType();
+		    String value = literalType.valueToString(literalType.valueOfString(literal.getUriLiteral(), EdmLiteralKind.URI, null), EdmLiteralKind.DEFAULT, null);
+		    return evaluateComparingExpression(value, literalType);
 
 	    case METHOD:
 	      final MethodExpression methodExpression = (MethodExpression) whereExpression;
@@ -228,6 +227,21 @@ public class ExpressionParsingUtility {
 			}			
 		} 
 		return orderByMap;		
+	}
+	
+	private static String evaluateComparingExpression(String value, EdmSimpleType edmSimpleType){
+		if (edmSimpleType == EdmSimpleTypeKind.String.getEdmSimpleTypeInstance()
+	            || edmSimpleType == EdmSimpleTypeKind.Guid.getEdmSimpleTypeInstance())
+		{
+			value = "\'"+value+"\'";
+		}else if(edmSimpleType == EdmSimpleTypeKind.DateTime.getEdmSimpleTypeInstance()
+	            || edmSimpleType == EdmSimpleTypeKind.DateTimeOffset.getEdmSimpleTypeInstance()	)
+		{
+			value = "{d \'"+value+"\'}";
+		}else if(edmSimpleType == EdmSimpleTypeKind.Time.getEdmSimpleTypeInstance()){
+			value = "{t \'"+value+"\'}";
+		}
+		return value;
 	}
 
 }

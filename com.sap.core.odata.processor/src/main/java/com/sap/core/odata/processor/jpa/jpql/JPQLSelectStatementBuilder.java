@@ -28,7 +28,7 @@ public class JPQLSelectStatementBuilder extends com.sap.core.odata.processor.jpa
 	private String createJPQLQuery() {
 
 		StringBuilder jpqlQuery = new StringBuilder();
-		String tableAlias = "gwt1";
+		String tableAlias = ExpressionParsingUtility.TABLE_ALIAS;
 		String fromClause = ((JPQLContext) context).getJPAEntityName() + " " + tableAlias;
 		String query = "SELECT %s FROM %s";
 		StringBuilder orderByBuilder = new StringBuilder();
