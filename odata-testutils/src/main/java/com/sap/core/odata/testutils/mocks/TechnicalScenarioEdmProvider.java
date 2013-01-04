@@ -13,7 +13,7 @@ import com.sap.core.odata.api.edm.provider.AssociationSet;
 import com.sap.core.odata.api.edm.provider.AssociationSetEnd;
 import com.sap.core.odata.api.edm.provider.ComplexProperty;
 import com.sap.core.odata.api.edm.provider.ComplexType;
-import com.sap.core.odata.api.edm.provider.EdmProviderDefault;
+import com.sap.core.odata.api.edm.provider.EdmProvider;
 import com.sap.core.odata.api.edm.provider.EntityContainer;
 import com.sap.core.odata.api.edm.provider.EntityContainerInfo;
 import com.sap.core.odata.api.edm.provider.EntitySet;
@@ -32,7 +32,7 @@ import com.sap.core.odata.api.exception.ODataMessageException;
  * Provider for the entity data model used as technical reference scenario
  * @author SAP AG
  */
-public class TechnicalScenarioEdmProvider extends EdmProviderDefault {
+public class TechnicalScenarioEdmProvider extends EdmProvider {
 
   public static final String NAMESPACE_1 = "TecRefScenario";
 

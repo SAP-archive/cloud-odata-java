@@ -4,10 +4,10 @@ import java.net.URI;
 import java.util.Collections;
 import java.util.List;
 
-import com.sap.core.odata.api.processor.ODataUriInfo;
+import com.sap.core.odata.api.uri.UriInfo;
 import com.sap.core.odata.api.uri.PathSegment;
 
-public class ODataUriInfoImpl implements ODataUriInfo {
+public class ODataUriInfoImpl implements UriInfo {
 
   private List<PathSegment> precedingPathSegment = Collections.emptyList();
   private List<PathSegment> odataPathSegment = Collections.emptyList();

@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.api.service.ODataService;
+import com.sap.core.odata.api.uri.UriInfo;
 
 /**
  * Compilation of generic context objects. 
@@ -20,7 +21,7 @@ public interface ODataContext {
    * @return a OData URI info object
    * @throws ODataException
    */
-  ODataUriInfo getUriInfo() throws ODataException;
+  UriInfo getUriInfo() throws ODataException;
 
   /**
    * Start runtime measurement
