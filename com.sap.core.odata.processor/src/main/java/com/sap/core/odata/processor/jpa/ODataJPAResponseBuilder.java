@@ -29,19 +29,18 @@ public final class ODataJPAResponseBuilder {
 		try {
 			edmEntityType = resultsView.getTargetEntitySet().getEntityType();
 
-			List<Map<String, Object>> edmEntityListMap = new ArrayList<Map<String, Object>>();
-			Map<String, Object> edmEntity = null;
+			List<Map<String, Object>> edmEntityList = new ArrayList<Map<String, Object>>();
+			Map<String, Object> edmPropertyValueMap = null;
 			
 			JPAResultParser jpaResultParser = JPAResultParser.create( );
 			for (Object jpaEntity : jpaEntities) {
-				edmEntity = jpaResultParser.parse2EdmEntity(jpaEntity,
-						edmEntityType);
-				edmEntityListMap.add(edmEntity);
+				edmPropertyValueMap = jpaResultParser.parse2EdmPropertyValueMap(jpaEntity,edmEntityType);
+				edmEntityList.add(edmPropertyValueMap);
 			}
 			
 		    ODataEntityProviderProperties feedProperties = null;;
 			try {
-				 final Integer count = resultsView.getInlineCount() == InlineCount.ALLPAGES ? edmEntityListMap.size() : null;
+				 final Integer count = resultsView.getInlineCount() == InlineCount.ALLPAGES ? edmEntityList.size() : null;
 				feedProperties = ODataEntityProviderProperties
 				        .baseUri(odataJPAContext.getODataContext().getUriInfo().getBaseUri())
 				        .inlineCount(count)
@@ -51,11 +50,10 @@ public final class ODataJPAResponseBuilder {
 				throw new ODataJPARuntimeException(ODataJPARuntimeException.COMMON.addContent(e.getMessage()),e);
 			}
 		    
-			odataResponse = ODataResponse
-					.status(HttpStatusCodes.OK)
-					.entity(ODataEntityProvider.create(contentType).writeFeed(
-							resultsView, edmEntityListMap, feedProperties))
-					.build();
+			odataResponse = ODataResponse.fromResponse(ODataEntityProvider.create(contentType).writeFeed(resultsView, edmEntityList, feedProperties))
+			        .status(HttpStatusCodes.OK)
+			        .build();
+			
 			
 		} catch (ODataEntityProviderException e) {
 			throw new ODataJPARuntimeException(ODataJPARuntimeException.COMMON.addContent(e.getMessage()),e);
