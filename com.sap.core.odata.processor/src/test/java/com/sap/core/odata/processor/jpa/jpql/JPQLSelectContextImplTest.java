@@ -105,6 +105,7 @@ public class JPQLSelectContextImplTest {
 					entitySet);
 			EasyMock.expect(resultsView.getOrderBy()).andStubReturn(orderBy);
 			EasyMock.expect(resultsView.getSelect()).andStubReturn(selectItemList);
+			EasyMock.expect(resultsView.getFilter()).andReturn(null);
 			EasyMock.replay(resultsView);
 
 		} catch (EdmException e1) {
