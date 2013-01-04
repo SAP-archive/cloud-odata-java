@@ -5,6 +5,7 @@ import java.util.List;
 import org.easymock.EasyMock;
 
 import com.sap.core.odata.api.edm.FullQualifiedName;
+import com.sap.core.odata.api.edm.provider.ComplexType;
 import com.sap.core.odata.api.edm.provider.EntityContainer;
 import com.sap.core.odata.api.edm.provider.EntitySet;
 import com.sap.core.odata.api.edm.provider.EntityType;
@@ -35,7 +36,20 @@ public class Mock {
 		schema.setNamespace(MockData.NAME_SPACE);
 		schema.setEntityTypes(mockEntityTypes());
 		schema.setEntityContainers(mockEnityContainers());
+		schema.setComplexTypes(mockComplexTypes());
 		return schema;
+	}
+
+	private static List<ComplexType> mockComplexTypes() {
+		List<ComplexType> complexTypes = new ArrayList<ComplexType>();
+		complexTypes.add(mockComplexType(MockData.COMPLEX_TYPE_NAME));
+		return complexTypes;
+	}
+
+	private static ComplexType mockComplexType(String complexTypeName) {
+		ComplexType complexType = new ComplexType();
+		complexType.setName(complexTypeName);
+		return complexType;
 	}
 
 	private static List<EntityContainer> mockEnityContainers() {
