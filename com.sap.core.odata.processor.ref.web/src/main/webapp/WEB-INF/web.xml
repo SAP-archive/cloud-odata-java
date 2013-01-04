@@ -22,6 +22,6 @@
 	</servlet>
 	<servlet-mapping>
 		<servlet-name>JPARefScenarioServlet</servlet-name>
-		<url-pattern>/JPARefScenarioServlet.svc/*</url-pattern>
+		<url-pattern>/SalesOrderProcessing.svc/*</url-pattern>
 	</servlet-mapping>
 </web-app>

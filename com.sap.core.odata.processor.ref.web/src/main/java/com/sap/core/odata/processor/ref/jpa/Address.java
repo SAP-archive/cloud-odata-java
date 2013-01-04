@@ -4,14 +4,14 @@ import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
 @Embeddable
-public class BuyerAddress {
+public class Address {
 
-	public BuyerAddress() {	
+	public Address() {	
 		super();
-		//No arg const.		
+		
 	}
 
-	public BuyerAddress(short houseNumber, String streetName, String city,
+	public Address(short houseNumber, String streetName, String city,
 			String country) {
 		this();
 		this.houseNumber = houseNumber;

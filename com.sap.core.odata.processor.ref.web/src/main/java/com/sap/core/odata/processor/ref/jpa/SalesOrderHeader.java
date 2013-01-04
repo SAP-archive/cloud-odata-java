@@ -18,7 +18,7 @@ public class SalesOrderHeader {
 		
 
 	public SalesOrderHeader(int buyerId, String buyerName,
-			BuyerAddress buyerAddress, String currencyCode, double netAmount,
+			Address buyerAddress, String currencyCode, double netAmount,
 			boolean deliveryStatus) {
 		
 		this();
@@ -45,7 +45,7 @@ public class SalesOrderHeader {
 	private String buyerName;
 
 	@Embedded
-	private BuyerAddress buyerAddress;
+	private Address buyerAddress;
 
 	@Column(name = "CURRENCY_CODE",length = 10)
 	private String currencyCode;
@@ -91,11 +91,11 @@ public class SalesOrderHeader {
 		this.buyerName = buyerName;
 	}
 
-	public BuyerAddress getBuyerAddress() {
+	public Address getBuyerAddress() {
 		return buyerAddress;
 	}
 
-	public void setBuyerAddress(BuyerAddress buyerAddress) {
+	public void setBuyerAddress(Address buyerAddress) {
 		this.buyerAddress = buyerAddress;
 	}
 
