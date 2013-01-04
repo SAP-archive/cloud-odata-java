@@ -24,4 +24,9 @@ public class EdmSimplePropertyImplProv extends EdmPropertyImplProv {
     }
     return edmType;
   }
+
+  @Override
+  public boolean isSimple() {
+    return true;
+  }
 }
