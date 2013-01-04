@@ -28,12 +28,12 @@ import com.sap.core.odata.api.edm.EdmSimpleType;
 import com.sap.core.odata.api.edm.EdmSimpleTypeKind;
 import com.sap.core.odata.api.edm.EdmType;
 import com.sap.core.odata.api.edm.EdmTypeKind;
-import com.sap.core.odata.api.ep.ODataEntityProvider;
-import com.sap.core.odata.api.ep.ODataEntityProviderException;
-import com.sap.core.odata.api.ep.ODataEntityProviderProperties;
+import com.sap.core.odata.api.ep.EntityProvider;
+import com.sap.core.odata.api.ep.EntityProviderException;
+import com.sap.core.odata.api.ep.EntityProviderProperties;
 import com.sap.core.odata.api.processor.ODataResponse;
 import com.sap.core.odata.api.processor.ODataResponse.ODataResponseBuilder;
-import com.sap.core.odata.api.uri.resultviews.GetEntitySetView;
+import com.sap.core.odata.api.uri.info.GetEntitySetUriInfo;
 import com.sap.core.odata.core.enums.ContentType;
 import com.sap.core.odata.core.ep.aggregator.EntityInfoAggregator;
 import com.sap.core.odata.core.ep.aggregator.EntityPropertyInfo;
@@ -42,18 +42,18 @@ import com.sap.core.odata.core.ep.util.CircleStreamBuffer;
 /**
  * @author SAP AG
  */
-public class AtomEntityProvider extends ODataEntityProvider {
+public class AtomEntityProvider extends EntityProvider {
 
   private static final Logger LOG = LoggerFactory.getLogger(AtomEntityProvider.class);
   /** Default used charset for writer and response content header */
   private static final String DEFAULT_CHARSET = "utf-8";
 
-  AtomEntityProvider() throws ODataEntityProviderException {
+  AtomEntityProvider() throws EntityProviderException {
     super();
   }
 
   @Override
-  public ODataResponse writeServiceDocument(Edm edm, String serviceRoot) throws ODataEntityProviderException {
+  public ODataResponse writeServiceDocument(Edm edm, String serviceRoot) throws EntityProviderException {
     OutputStreamWriter writer = null;
 
     try {
@@ -68,7 +68,7 @@ public class AtomEntityProvider extends ODataEntityProvider {
       
       return response;
     } catch (UnsupportedEncodingException e) {
-      throw new ODataEntityProviderException(ODataEntityProviderException.COMMON, e);
+      throw new EntityProviderException(EntityProviderException.COMMON, e);
     } finally {
       if (writer != null) {
         try {
@@ -82,7 +82,7 @@ public class AtomEntityProvider extends ODataEntityProvider {
   }
 
   @Override
-  public ODataResponse writeEntry(EdmEntitySet entitySet, Map<String, Object> data, ODataEntityProviderProperties properties) throws ODataEntityProviderException {
+  public ODataResponse writeEntry(EdmEntitySet entitySet, Map<String, Object> data, EntityProviderProperties properties) throws EntityProviderException {
     OutputStream outStream = null;
 
     try {
@@ -102,7 +102,7 @@ public class AtomEntityProvider extends ODataEntityProvider {
       ODataResponse response = ODataResponse.entity(csb.getInputStream()).contentHeader(createContentHeader(ContentType.APPLICATION_ATOM_XML_ENTRY)).eTag(as.getETag()).build();
       return response;
     } catch (Exception e) {
-      throw new ODataEntityProviderException(ODataEntityProviderException.COMMON, e);
+      throw new EntityProviderException(EntityProviderException.COMMON, e);
     } finally {
       if (outStream != null) {
         try {
@@ -116,12 +116,12 @@ public class AtomEntityProvider extends ODataEntityProvider {
   }
 
   @Override
-  public ODataResponse writeProperty(EdmProperty edmProperty, Object value) throws ODataEntityProviderException {
+  public ODataResponse writeProperty(EdmProperty edmProperty, Object value) throws EntityProviderException {
     EntityPropertyInfo propertyInfo = EntityInfoAggregator.create(edmProperty);
     return writeSingleTypedElement(propertyInfo, value);
   }
 
-  private ODataResponse writeSingleTypedElement(final EntityPropertyInfo propertyInfo, final Object value) throws ODataEntityProviderException {
+  private ODataResponse writeSingleTypedElement(final EntityPropertyInfo propertyInfo, final Object value) throws EntityProviderException {
     OutputStream outStream = null;
 
     try {
@@ -140,7 +140,7 @@ public class AtomEntityProvider extends ODataEntityProvider {
       ODataResponse response = ODataResponse.entity(csb.getInputStream()).contentHeader(createContentHeader(ContentType.APPLICATION_XML)).build();
       return response;
     } catch (Exception e) {
-      throw new ODataEntityProviderException(ODataEntityProviderException.COMMON, e);
+      throw new EntityProviderException(EntityProviderException.COMMON, e);
     } finally {
       if (outStream != null) {
         try {
@@ -154,7 +154,7 @@ public class AtomEntityProvider extends ODataEntityProvider {
   }
 
   @Override
-  public ODataResponse writeFeed(GetEntitySetView entitySetView, List<Map<String, Object>> data, ODataEntityProviderProperties properties) throws ODataEntityProviderException {
+  public ODataResponse writeFeed(GetEntitySetUriInfo entitySetView, List<Map<String, Object>> data, EntityProviderProperties properties) throws EntityProviderException {
     OutputStream outStream = null;
 
     try {
@@ -175,7 +175,7 @@ public class AtomEntityProvider extends ODataEntityProvider {
       ODataResponse response = ODataResponse.entity(csb.getInputStream()).contentHeader(createContentHeader(ContentType.APPLICATION_ATOM_XML_FEED)).build();
       return response;
     } catch (Exception e) {
-      throw new ODataEntityProviderException(ODataEntityProviderException.COMMON, e);
+      throw new EntityProviderException(EntityProviderException.COMMON, e);
     } finally {
       if (outStream != null) {
         try {
@@ -189,7 +189,7 @@ public class AtomEntityProvider extends ODataEntityProvider {
   }
 
   @Override
-  public ODataResponse writePropertyValue(final EdmProperty edmProperty, Object value) throws ODataEntityProviderException {
+  public ODataResponse writePropertyValue(final EdmProperty edmProperty, Object value) throws EntityProviderException {
     try {
       Map<?, ?> mappedData;
       if (value instanceof Map) {
@@ -218,19 +218,19 @@ public class AtomEntityProvider extends ODataEntityProvider {
       }
 
     } catch (EdmException e) {
-      throw new ODataEntityProviderException(ODataEntityProviderException.COMMON, e);
+      throw new EntityProviderException(EntityProviderException.COMMON, e);
     }
   }
 
   @Override
-  public ODataResponse writeText(final String value) throws ODataEntityProviderException {
+  public ODataResponse writeText(final String value) throws EntityProviderException {
     ODataResponseBuilder builder = ODataResponse.newBuilder();
     if (value != null) {
       ByteArrayInputStream stream;
       try {
         stream = new ByteArrayInputStream(value.getBytes(DEFAULT_CHARSET));
       } catch (UnsupportedEncodingException e) {
-        throw new ODataEntityProviderException(ODataEntityProviderException.COMMON, e);
+        throw new EntityProviderException(EntityProviderException.COMMON, e);
       }
       builder.entity(stream);
     }
@@ -239,7 +239,7 @@ public class AtomEntityProvider extends ODataEntityProvider {
   }
 
   @Override
-  public ODataResponse writeBinary(String mimeType, byte[] data) throws ODataEntityProviderException {
+  public ODataResponse writeBinary(String mimeType, byte[] data) throws EntityProviderException {
     ODataResponseBuilder builder = ODataResponse.newBuilder();
     if (data != null) {
       ByteArrayInputStream bais = new ByteArrayInputStream(data);
@@ -254,7 +254,7 @@ public class AtomEntityProvider extends ODataEntityProvider {
   }
 
   @Override
-  public ODataResponse writeLink(final EdmEntitySet entitySet, final Map<String, Object> data, final ODataEntityProviderProperties properties) throws ODataEntityProviderException {
+  public ODataResponse writeLink(final EdmEntitySet entitySet, final Map<String, Object> data, final EntityProviderProperties properties) throws EntityProviderException {
     CircleStreamBuffer buffer = new CircleStreamBuffer();
     OutputStream outStream = buffer.getOutputStream();
 
@@ -270,11 +270,11 @@ public class AtomEntityProvider extends ODataEntityProvider {
       outStream.flush();
       outStream.close();
     } catch (FactoryConfigurationError e1) {
-      throw new ODataEntityProviderException(ODataEntityProviderException.COMMON, e1);
+      throw new EntityProviderException(EntityProviderException.COMMON, e1);
     } catch (XMLStreamException e2) {
-      throw new ODataEntityProviderException(ODataEntityProviderException.COMMON, e2);
+      throw new EntityProviderException(EntityProviderException.COMMON, e2);
     } catch (IOException e3) {
-      throw new ODataEntityProviderException(ODataEntityProviderException.COMMON, e3);
+      throw new EntityProviderException(EntityProviderException.COMMON, e3);
     } finally {
       if (outStream != null)
         try {
@@ -289,7 +289,7 @@ public class AtomEntityProvider extends ODataEntityProvider {
   }
 
   @Override
-  public ODataResponse writeLinks(final EdmEntitySet entitySet, final List<Map<String, Object>> data, final ODataEntityProviderProperties properties) throws ODataEntityProviderException {
+  public ODataResponse writeLinks(final EdmEntitySet entitySet, final List<Map<String, Object>> data, final EntityProviderProperties properties) throws EntityProviderException {
     CircleStreamBuffer buffer = new CircleStreamBuffer();
     OutputStream outStream = buffer.getOutputStream();
 
@@ -305,11 +305,11 @@ public class AtomEntityProvider extends ODataEntityProvider {
       outStream.flush();
       outStream.close();
     } catch (FactoryConfigurationError e1) {
-      throw new ODataEntityProviderException(ODataEntityProviderException.COMMON, e1);
+      throw new EntityProviderException(EntityProviderException.COMMON, e1);
     } catch (XMLStreamException e2) {
-      throw new ODataEntityProviderException(ODataEntityProviderException.COMMON, e2);
+      throw new EntityProviderException(EntityProviderException.COMMON, e2);
     } catch (IOException e3) {
-      throw new ODataEntityProviderException(ODataEntityProviderException.COMMON, e3);
+      throw new EntityProviderException(EntityProviderException.COMMON, e3);
     } finally {
       if (outStream != null)
         try {
@@ -324,7 +324,7 @@ public class AtomEntityProvider extends ODataEntityProvider {
     return ODataResponse.entity(buffer.getInputStream()).contentHeader(createContentHeader(ContentType.APPLICATION_XML)).build();
   }
 
-  private ODataResponse writeCollection(final EntityPropertyInfo propertyInfo, final List<?> data) throws ODataEntityProviderException {
+  private ODataResponse writeCollection(final EntityPropertyInfo propertyInfo, final List<?> data) throws EntityProviderException {
     OutputStream outStream = null;
 
     try {
@@ -342,7 +342,7 @@ public class AtomEntityProvider extends ODataEntityProvider {
 
       return ODataResponse.entity(buffer.getInputStream()).contentHeader(createContentHeader(ContentType.APPLICATION_XML)).build();
     } catch (Exception e) {
-      throw new ODataEntityProviderException(ODataEntityProviderException.COMMON, e);
+      throw new EntityProviderException(EntityProviderException.COMMON, e);
     } finally {
       if (outStream != null) {
         try {
@@ -356,7 +356,7 @@ public class AtomEntityProvider extends ODataEntityProvider {
   }
 
   @Override
-  public ODataResponse writeFunctionImport(final EdmFunctionImport functionImport, Object data, final ODataEntityProviderProperties properties) throws ODataEntityProviderException {
+  public ODataResponse writeFunctionImport(final EdmFunctionImport functionImport, Object data, final EntityProviderProperties properties) throws EntityProviderException {
     try {
       final EdmType type = functionImport.getReturnType().getType();
       final boolean isCollection = functionImport.getReturnType().getMultiplicity() == EdmMultiplicity.MANY;
@@ -374,7 +374,7 @@ public class AtomEntityProvider extends ODataEntityProvider {
         return writeSingleTypedElement(info, data);
       }
     } catch (EdmException e) {
-      throw new ODataEntityProviderException(ODataEntityProviderException.COMMON, e);
+      throw new EntityProviderException(EntityProviderException.COMMON, e);
     }
   }
 }

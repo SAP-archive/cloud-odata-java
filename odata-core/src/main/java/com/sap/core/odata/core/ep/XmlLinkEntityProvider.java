@@ -11,8 +11,8 @@ import com.sap.core.odata.api.edm.Edm;
 import com.sap.core.odata.api.edm.EdmLiteralKind;
 import com.sap.core.odata.api.edm.EdmSimpleType;
 import com.sap.core.odata.api.edm.EdmSimpleTypeException;
-import com.sap.core.odata.api.ep.ODataEntityProviderException;
-import com.sap.core.odata.api.ep.ODataEntityProviderProperties;
+import com.sap.core.odata.api.ep.EntityProviderException;
+import com.sap.core.odata.api.ep.EntityProviderProperties;
 import com.sap.core.odata.core.ep.aggregator.EntityInfoAggregator;
 import com.sap.core.odata.core.ep.aggregator.EntityPropertyInfo;
 import com.sap.core.odata.core.ep.util.UriUtils;
@@ -23,13 +23,13 @@ import com.sap.core.odata.core.ep.util.UriUtils;
  */
 public class XmlLinkEntityProvider {
 
-  private final ODataEntityProviderProperties properties;
+  private final EntityProviderProperties properties;
 
-  XmlLinkEntityProvider(final ODataEntityProviderProperties properties) throws ODataEntityProviderException {
+  XmlLinkEntityProvider(final EntityProviderProperties properties) throws EntityProviderException {
     this.properties = properties;
   }
 
-  public void append(XMLStreamWriter writer, final EntityInfoAggregator entityInfo, final Map<String, Object> data, final boolean isRootElement) throws ODataEntityProviderException {
+  public void append(XMLStreamWriter writer, final EntityInfoAggregator entityInfo, final Map<String, Object> data, final boolean isRootElement) throws EntityProviderException {
     try {
       writer.writeStartElement(FormatXml.D_URI);
       if (isRootElement)
@@ -38,22 +38,22 @@ public class XmlLinkEntityProvider {
       writer.writeEndElement();
       writer.flush();
     } catch (XMLStreamException e) {
-      throw new ODataEntityProviderException(ODataEntityProviderException.COMMON, e);
+      throw new EntityProviderException(EntityProviderException.COMMON, e);
     }
   }
 
-  private String createAbsoluteUri(final EntityInfoAggregator entityInfo, final Map<String, Object> data) throws ODataEntityProviderException {
+  private String createAbsoluteUri(final EntityInfoAggregator entityInfo, final Map<String, Object> data) throws EntityProviderException {
     try {
       return UriUtils.encodeUri(properties.getBaseUri(),
           (entityInfo.isDefaultEntityContainer() ? "" : entityInfo.getEntityContainerName() + Edm.DELIMITER)
               + entityInfo.getEntitySetName()
               + "(" + createEntryKey(entityInfo, data) + ")");
     } catch (URISyntaxException e) {
-      throw new ODataEntityProviderException(ODataEntityProviderException.COMMON, e);
+      throw new EntityProviderException(EntityProviderException.COMMON, e);
     }
   }
 
-  private static String createEntryKey(final EntityInfoAggregator entityInfo, final Map<String, Object> data) throws ODataEntityProviderException {
+  private static String createEntryKey(final EntityInfoAggregator entityInfo, final Map<String, Object> data) throws EntityProviderException {
     final List<EntityPropertyInfo> keyPropertyInfos = entityInfo.getKeyPropertyInfos();
     String keys = "";
 
@@ -66,7 +66,7 @@ public class XmlLinkEntityProvider {
       try {
         keys += type.valueToString(data.get(keyPropertyInfo.getName()), EdmLiteralKind.URI, keyPropertyInfo.getFacets());
       } catch (EdmSimpleTypeException e) {
-        throw new ODataEntityProviderException(ODataEntityProviderException.COMMON, e);
+        throw new EntityProviderException(EntityProviderException.COMMON, e);
       }
     }
 

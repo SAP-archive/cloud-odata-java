@@ -16,8 +16,8 @@ import com.sap.core.odata.api.edm.EdmMultiplicity;
 import com.sap.core.odata.api.edm.EdmSimpleType;
 import com.sap.core.odata.api.edm.EdmTargetPath;
 import com.sap.core.odata.api.edm.EdmType;
-import com.sap.core.odata.api.ep.ODataEntityProviderException;
-import com.sap.core.odata.api.ep.ODataEntityProviderProperties;
+import com.sap.core.odata.api.ep.EntityProviderException;
+import com.sap.core.odata.api.ep.EntityProviderProperties;
 import com.sap.core.odata.core.edm.EdmDateTimeOffset;
 import com.sap.core.odata.core.enums.ContentType;
 import com.sap.core.odata.core.ep.aggregator.EntityInfoAggregator;
@@ -31,13 +31,13 @@ import com.sap.core.odata.core.ep.util.UriUtils;
 public class AtomEntryEntityProvider {
 
   private String etag;
-  private ODataEntityProviderProperties properties;
+  private EntityProviderProperties properties;
 
-  AtomEntryEntityProvider(ODataEntityProviderProperties properties) throws ODataEntityProviderException {
+  AtomEntryEntityProvider(EntityProviderProperties properties) throws EntityProviderException {
     this.properties = properties;
   }
 
-  public void append(XMLStreamWriter writer, EntityInfoAggregator eia, Map<String, Object> data, boolean isRootElement) throws ODataEntityProviderException {
+  public void append(XMLStreamWriter writer, EntityInfoAggregator eia, Map<String, Object> data, boolean isRootElement) throws EntityProviderException {
     try {
 
       writer.writeStartElement(FormatXml.ATOM_ENTRY);
@@ -83,11 +83,11 @@ public class AtomEntryEntityProvider {
 
       writer.flush();
     } catch (Exception e) {
-      throw new ODataEntityProviderException(ODataEntityProviderException.COMMON, e);
+      throw new EntityProviderException(EntityProviderException.COMMON, e);
     }
   }
 
-  private void appendCustomProperties(XMLStreamWriter writer, EntityInfoAggregator eia, Map<String, Object> data) throws ODataEntityProviderException {
+  private void appendCustomProperties(XMLStreamWriter writer, EntityInfoAggregator eia, Map<String, Object> data) throws EntityProviderException {
     try {
       List<String> noneSyndicationTargetPaths = eia.getNoneSyndicationTargetPathNames();
       for (String tpName : noneSyndicationTargetPaths) {
@@ -100,11 +100,11 @@ public class AtomEntryEntityProvider {
         }
       }
     } catch (Exception e) {
-      throw new ODataEntityProviderException(ODataEntityProviderException.COMMON, e);
+      throw new EntityProviderException(EntityProviderException.COMMON, e);
     }
   }
 
-  private String createETag(EntityInfoAggregator eia, Map<String, Object> data) throws ODataEntityProviderException {
+  private String createETag(EntityInfoAggregator eia, Map<String, Object> data) throws EntityProviderException {
     try {
       String etag = null;
 
@@ -127,11 +127,11 @@ public class AtomEntryEntityProvider {
 
       return etag;
     } catch (Exception e) {
-      throw new ODataEntityProviderException(ODataEntityProviderException.COMMON, e);
+      throw new EntityProviderException(EntityProviderException.COMMON, e);
     }
   }
 
-  private void appendAtomNavigationLinks(XMLStreamWriter writer, EntityInfoAggregator eia, Map<String, Object> data) throws ODataEntityProviderException {
+  private void appendAtomNavigationLinks(XMLStreamWriter writer, EntityInfoAggregator eia, Map<String, Object> data) throws EntityProviderException {
     try {
       for (NavigationPropertyInfo info : eia.getNavigationPropertyInfos()) {
         boolean isFeed = (info.getMultiplicity() == EdmMultiplicity.MANY);
@@ -139,11 +139,11 @@ public class AtomEntryEntityProvider {
         appendAtomNavigationLink(writer, self, info.getName(), isFeed);
       }
     } catch (Exception e) {
-      throw new ODataEntityProviderException(ODataEntityProviderException.COMMON, e);
+      throw new EntityProviderException(EntityProviderException.COMMON, e);
     }
   }
 
-  private void appendAtomNavigationLink(XMLStreamWriter writer, String self, String propertyName, boolean isFeed) throws ODataEntityProviderException {
+  private void appendAtomNavigationLink(XMLStreamWriter writer, String self, String propertyName, boolean isFeed) throws EntityProviderException {
     try {
       writer.writeStartElement(FormatXml.ATOM_LINK);
       writer.writeAttribute(FormatXml.ATOM_HREF, self);
@@ -157,11 +157,11 @@ public class AtomEntryEntityProvider {
 
       writer.writeEndElement();
     } catch (Exception e) {
-      throw new ODataEntityProviderException(ODataEntityProviderException.COMMON, e);
+      throw new EntityProviderException(EntityProviderException.COMMON, e);
     }
   }
 
-  private void appendAtomEditLink(XMLStreamWriter writer, EntityInfoAggregator eia, Map<String, Object> data) throws ODataEntityProviderException {
+  private void appendAtomEditLink(XMLStreamWriter writer, EntityInfoAggregator eia, Map<String, Object> data) throws EntityProviderException {
     try {
       String self = createSelfLink(eia, data, null);
 
@@ -171,11 +171,11 @@ public class AtomEntryEntityProvider {
       writer.writeAttribute(FormatXml.ATOM_TITLE, eia.getEntityTypeName());
       writer.writeEndElement();
     } catch (Exception e) {
-      throw new ODataEntityProviderException(ODataEntityProviderException.COMMON, e);
+      throw new EntityProviderException(EntityProviderException.COMMON, e);
     }
   }
 
-  private void appendAtomContentLink(XMLStreamWriter writer, EntityInfoAggregator eia, Map<String, Object> data, String mediaResourceMimeType) throws ODataEntityProviderException {
+  private void appendAtomContentLink(XMLStreamWriter writer, EntityInfoAggregator eia, Map<String, Object> data, String mediaResourceMimeType) throws EntityProviderException {
     try {
       String self = createSelfLink(eia, data, "$value");
 
@@ -189,11 +189,11 @@ public class AtomEntryEntityProvider {
       writer.writeAttribute(FormatXml.ATOM_TYPE, mediaResourceMimeType);
       writer.writeEndElement();
     } catch (Exception e) {
-      throw new ODataEntityProviderException(ODataEntityProviderException.COMMON, e);
+      throw new EntityProviderException(EntityProviderException.COMMON, e);
     }
   }
 
-  private void appendAtomContentPart(XMLStreamWriter writer, EntityInfoAggregator eia, Map<String, Object> data, String mediaResourceMimeType) throws ODataEntityProviderException {
+  private void appendAtomContentPart(XMLStreamWriter writer, EntityInfoAggregator eia, Map<String, Object> data, String mediaResourceMimeType) throws EntityProviderException {
     try {
       String self = createSelfLink(eia, data, "$value");
 
@@ -206,11 +206,11 @@ public class AtomEntryEntityProvider {
       writer.writeAttribute(FormatXml.ATOM_SRC, self);
       writer.writeEndElement();
     } catch (Exception e) {
-      throw new ODataEntityProviderException(ODataEntityProviderException.COMMON, e);
+      throw new EntityProviderException(EntityProviderException.COMMON, e);
     }
   }
 
-  private String createSelfLink(EntityInfoAggregator eia, Map<String, Object> data, String extension) throws ODataEntityProviderException {
+  private String createSelfLink(EntityInfoAggregator eia, Map<String, Object> data, String extension) throws EntityProviderException {
     try {
       StringBuilder sb = new StringBuilder();
       if (!eia.isDefaultEntityContainer()) {
@@ -219,11 +219,11 @@ public class AtomEntryEntityProvider {
       sb.append(eia.getEntitySetName()).append("(").append(this.createEntryKey(eia, data)).append(")").append((extension == null ? "" : "/" + extension));
       return UriUtils.encodeUriPath(sb.toString());
     } catch (Exception e) {
-      throw new ODataEntityProviderException(ODataEntityProviderException.COMMON, e);
+      throw new EntityProviderException(EntityProviderException.COMMON, e);
     }
   }
 
-  private void appendAtomMandatoryParts(XMLStreamWriter writer, EntityInfoAggregator eia, Map<String, Object> data) throws ODataEntityProviderException {
+  private void appendAtomMandatoryParts(XMLStreamWriter writer, EntityInfoAggregator eia, Map<String, Object> data) throws EntityProviderException {
     try {
       writer.writeStartElement(FormatXml.ATOM_ID);
       String entryKey = this.createEntryKey(eia, data);
@@ -261,11 +261,11 @@ public class AtomEntryEntityProvider {
 
       writer.writeEndElement();
     } catch (Exception e) {
-      throw new ODataEntityProviderException(ODataEntityProviderException.COMMON, e);
+      throw new EntityProviderException(EntityProviderException.COMMON, e);
     }
   }
 
-  private String getTargetPathValue(EntityInfoAggregator eia, String targetPath, Map<String, Object> data) throws ODataEntityProviderException {
+  private String getTargetPathValue(EntityInfoAggregator eia, String targetPath, Map<String, Object> data) throws EntityProviderException {
     try {
       EntityPropertyInfo info = eia.getTargetPathInfo(targetPath);
       if (info != null) {
@@ -275,11 +275,11 @@ public class AtomEntryEntityProvider {
       }
       return null;
     } catch (Exception e) {
-      throw new ODataEntityProviderException(ODataEntityProviderException.COMMON, e);
+      throw new EntityProviderException(EntityProviderException.COMMON, e);
     }
   }
 
-  private void appendAtomOptionalParts(XMLStreamWriter writer, EntityInfoAggregator eia, Map<String, Object> data) throws ODataEntityProviderException {
+  private void appendAtomOptionalParts(XMLStreamWriter writer, EntityInfoAggregator eia, Map<String, Object> data) throws EntityProviderException {
     try {
       String authorEmail = getTargetPathValue(eia, EdmTargetPath.SYNDICATION_AUTHOREMAIL, data);
       String authorName = getTargetPathValue(eia, EdmTargetPath.SYNDICATION_AUTHORNAME, data);
@@ -317,11 +317,11 @@ public class AtomEntryEntityProvider {
       writer.writeAttribute(FormatXml.ATOM_CATEGORY_SCHEME, Edm.NAMESPACE_SCHEME_2007_08);
       writer.writeEndElement();
     } catch (Exception e) {
-      throw new ODataEntityProviderException(ODataEntityProviderException.COMMON, e);
+      throw new EntityProviderException(EntityProviderException.COMMON, e);
     }
   }
 
-  private void appendAtomOptionalPart(XMLStreamWriter writer, String name, String value, boolean writeType) throws ODataEntityProviderException {
+  private void appendAtomOptionalPart(XMLStreamWriter writer, String name, String value, boolean writeType) throws EntityProviderException {
     try {
       if (value != null) {
         writer.writeStartElement(name);
@@ -332,11 +332,11 @@ public class AtomEntryEntityProvider {
         writer.writeEndElement();
       }
     } catch (Exception e) {
-      throw new ODataEntityProviderException(ODataEntityProviderException.COMMON, e);
+      throw new EntityProviderException(EntityProviderException.COMMON, e);
     }
   }
 
-  private String createAtomId(EntityInfoAggregator eia, String entryKey) throws ODataEntityProviderException {
+  private String createAtomId(EntityInfoAggregator eia, String entryKey) throws EntityProviderException {
     try {
       String id = "";
 
@@ -348,11 +348,11 @@ public class AtomEntryEntityProvider {
       URI baseUri = properties.getBaseUri();
       return UriUtils.encodeUri(baseUri, id);
     } catch (Exception e) {
-      throw new ODataEntityProviderException(ODataEntityProviderException.COMMON, e);
+      throw new EntityProviderException(EntityProviderException.COMMON, e);
     }
   }
 
-  private String createEntryKey(EntityInfoAggregator eia, Map<String, Object> data) throws ODataEntityProviderException {
+  private String createEntryKey(EntityInfoAggregator eia, Map<String, Object> data) throws EntityProviderException {
     try {
       List<EntityPropertyInfo> kp = eia.getKeyPropertyInfos();
       String keys = "";
@@ -378,11 +378,11 @@ public class AtomEntryEntityProvider {
       }
       return keys;
     } catch (Exception e) {
-      throw new ODataEntityProviderException(ODataEntityProviderException.COMMON, e);
+      throw new EntityProviderException(EntityProviderException.COMMON, e);
     }
   }
 
-  private void appendProperties(XMLStreamWriter writer, EntityInfoAggregator eia, Map<String, Object> data) throws ODataEntityProviderException {
+  private void appendProperties(XMLStreamWriter writer, EntityInfoAggregator eia, Map<String, Object> data) throws EntityProviderException {
     try {
       writer.writeStartElement(Edm.NAMESPACE_M_2007_08, FormatXml.M_PROPERTIES);
 
@@ -400,7 +400,7 @@ public class AtomEntryEntityProvider {
 
       writer.writeEndElement();
     } catch (Exception e) {
-      throw new ODataEntityProviderException(ODataEntityProviderException.COMMON, e);
+      throw new EntityProviderException(EntityProviderException.COMMON, e);
     }
   }
 

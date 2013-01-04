@@ -21,7 +21,7 @@ import org.xml.sax.SAXException;
 
 import com.sap.core.odata.api.edm.Edm;
 import com.sap.core.odata.api.edm.EdmEntitySet;
-import com.sap.core.odata.api.ep.ODataEntityProviderProperties;
+import com.sap.core.odata.api.ep.EntityProviderProperties;
 import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.core.ep.aggregator.EntityInfoAggregator;
 import com.sap.core.odata.core.ep.util.CircleStreamBuffer;
@@ -48,7 +48,7 @@ public class PerformanceTest extends AbstractProviderTest {
     super.before();
     System.gc();
 
-    ODataEntityProviderProperties properties = ODataEntityProviderProperties.baseUri(BASE_URI).build();
+    EntityProviderProperties properties = EntityProviderProperties.baseUri(BASE_URI).build();
     provider = new AtomEntryEntityProvider(properties);
     edmEntitySet = MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Rooms");
 

@@ -7,8 +7,8 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 
 import com.sap.core.odata.api.edm.Edm;
-import com.sap.core.odata.api.ep.ODataEntityProviderException;
-import com.sap.core.odata.api.ep.ODataEntityProviderProperties;
+import com.sap.core.odata.api.ep.EntityProviderException;
+import com.sap.core.odata.api.ep.EntityProviderProperties;
 import com.sap.core.odata.core.ep.aggregator.EntityInfoAggregator;
 
 /**
@@ -17,13 +17,13 @@ import com.sap.core.odata.core.ep.aggregator.EntityInfoAggregator;
  */
 public class XmlLinksEntityProvider {
 
-  private final ODataEntityProviderProperties properties;
+  private final EntityProviderProperties properties;
 
-  XmlLinksEntityProvider(final ODataEntityProviderProperties properties) throws ODataEntityProviderException {
+  XmlLinksEntityProvider(final EntityProviderProperties properties) throws EntityProviderException {
     this.properties = properties;
   }
 
-  public void append(XMLStreamWriter writer, final EntityInfoAggregator entityInfo, final List<Map<String, Object>> data) throws ODataEntityProviderException {
+  public void append(XMLStreamWriter writer, final EntityInfoAggregator entityInfo, final List<Map<String, Object>> data) throws EntityProviderException {
     try {
       writer.writeStartElement(FormatXml.D_LINKS);
       writer.writeDefaultNamespace(Edm.NAMESPACE_D_2007_08);
@@ -39,7 +39,7 @@ public class XmlLinksEntityProvider {
       writer.writeEndElement();
       writer.flush();
     } catch (XMLStreamException e) {
-      throw new ODataEntityProviderException(ODataEntityProviderException.COMMON, e);
+      throw new EntityProviderException(EntityProviderException.COMMON, e);
     }
   }
 }

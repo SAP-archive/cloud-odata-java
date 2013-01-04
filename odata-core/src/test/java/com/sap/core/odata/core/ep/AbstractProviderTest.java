@@ -17,12 +17,12 @@ import org.slf4j.LoggerFactory;
 
 import com.sap.core.odata.api.edm.Edm;
 import com.sap.core.odata.api.edm.EdmException;
-import com.sap.core.odata.api.ep.ODataEntityProvider;
-import com.sap.core.odata.api.ep.ODataEntityProviderException;
-import com.sap.core.odata.api.ep.ODataEntityProviderProperties;
+import com.sap.core.odata.api.ep.EntityProvider;
+import com.sap.core.odata.api.ep.EntityProviderException;
+import com.sap.core.odata.api.ep.EntityProviderProperties;
 import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.api.processor.ODataContext;
-import com.sap.core.odata.api.uri.UriInfo;
+import com.sap.core.odata.api.uri.PathInfo;
 import com.sap.core.odata.core.enums.ContentType;
 import com.sap.core.odata.testutils.helper.XMLUnitHelper;
 
@@ -42,7 +42,7 @@ public abstract class AbstractProviderTest {
       throw new RuntimeException(e);
     }
   }
-  protected static final ODataEntityProviderProperties DEFAULT_PROPERTIES = ODataEntityProviderProperties.baseUri(BASE_URI).build();
+  protected static final EntityProviderProperties DEFAULT_PROPERTIES = EntityProviderProperties.baseUri(BASE_URI).build();
 
   protected Map<String, Object> employeeData;
 
@@ -115,15 +115,15 @@ public abstract class AbstractProviderTest {
   }
 
   protected ODataContext createContextMock() throws ODataException {
-    UriInfo uriInfo = mock(UriInfo.class);
-    when(uriInfo.getBaseUri()).thenReturn(BASE_URI);
+    PathInfo uriInfo = mock(PathInfo.class);
+    when(uriInfo.getServiceRoot()).thenReturn(BASE_URI);
     ODataContext ctx = mock(ODataContext.class);
     when(ctx.getUriInfo()).thenReturn(uriInfo);
     return ctx;
   }
 
-  protected ODataEntityProvider createAtomEntityProvider() throws ODataException, EdmException, ODataEntityProviderException {
-    ODataEntityProvider ser = ODataEntityProvider.create(ContentType.APPLICATION_ATOM_XML.toContentTypeString());
+  protected EntityProvider createAtomEntityProvider() throws ODataException, EdmException, EntityProviderException {
+    EntityProvider ser = EntityProvider.create(ContentType.APPLICATION_ATOM_XML.toContentTypeString());
     return ser;
   }
 

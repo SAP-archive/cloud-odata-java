@@ -22,8 +22,8 @@ import com.sap.core.odata.api.edm.EdmEntityType;
 import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.api.processor.ODataContext;
 import com.sap.core.odata.api.processor.ODataResponse;
+import com.sap.core.odata.api.uri.PathInfo;
 import com.sap.core.odata.api.uri.UriInfo;
-import com.sap.core.odata.api.uri.UriParserResult;
 import com.sap.core.odata.core.enums.ContentType;
 import com.sap.core.odata.ref.model.DataContainer;
 import com.sap.core.odata.ref.processor.ListsProcessor;
@@ -49,14 +49,14 @@ public class EntitySetTest {
   @Before
   public void setUp() throws Exception {
     ODataContext context = mock(ODataContext.class);
-    UriInfo uriInfo = mock(UriInfo.class);
-    when(uriInfo.getBaseUri()).thenReturn(new URI("http://localhost/"));
+    PathInfo uriInfo = mock(PathInfo.class);
+    when(uriInfo.getServiceRoot()).thenReturn(new URI("http://localhost/"));
     when(context.getUriInfo()).thenReturn(uriInfo);
 
     processor.setContext(context);
   }
 
-  private UriParserResult mockUriResult(final String entitySetName) throws ODataException, URISyntaxException {
+  private UriInfo mockUriResult(final String entitySetName) throws ODataException, URISyntaxException {
     EdmEntityType entityType = mock(EdmEntityType.class);
     when(entityType.getName()).thenReturn(entitySetName);
     EdmEntityContainer entityContainer = mock(EdmEntityContainer.class);
@@ -66,7 +66,7 @@ public class EntitySetTest {
     when(entitySet.getEntityType()).thenReturn(entityType);
     when(entitySet.getEntityContainer()).thenReturn(entityContainer);
 
-    UriParserResult uriResult = mock(UriParserResult.class);
+    UriInfo uriResult = mock(UriInfo.class);
     when(uriResult.getStartEntitySet()).thenReturn(entitySet);
     when(uriResult.getTargetEntitySet()).thenReturn(entitySet);
     when(uriResult.getTop()).thenReturn(null);
@@ -82,7 +82,7 @@ public class EntitySetTest {
 
   @Test
   public void readEmployees() throws Exception {
-    final UriParserResult uriResult = mockUriResult("Employees");
+    final UriInfo uriResult = mockUriResult("Employees");
 
     ODataResponse response = processor.readEntitySet(uriResult,ContentType.APPLICATION_ATOM_XML_FEED.toContentTypeString());
     assertNotNull(response);
@@ -91,7 +91,7 @@ public class EntitySetTest {
 
   @Test
   public void readTeams() throws Exception {
-    final UriParserResult uriResult = mockUriResult("Teams");
+    final UriInfo uriResult = mockUriResult("Teams");
 
     ODataResponse response = processor.readEntitySet(uriResult,ContentType.APPLICATION_ATOM_XML_FEED.toContentTypeString());
     assertNotNull(response);
@@ -100,7 +100,7 @@ public class EntitySetTest {
 
   @Test
   public void readRooms() throws Exception {
-    final UriParserResult uriResult = mockUriResult("Rooms");
+    final UriInfo uriResult = mockUriResult("Rooms");
 
     ODataResponse response = processor.readEntitySet(uriResult,ContentType.APPLICATION_ATOM_XML_FEED.toContentTypeString());
     assertNotNull(response);
@@ -109,7 +109,7 @@ public class EntitySetTest {
 
   @Test
   public void readManagers() throws Exception {
-    final UriParserResult uriResult = mockUriResult("Managers");
+    final UriInfo uriResult = mockUriResult("Managers");
 
     ODataResponse response = processor.readEntitySet(uriResult,ContentType.APPLICATION_ATOM_XML_FEED.toContentTypeString());
     assertNotNull(response);
@@ -118,7 +118,7 @@ public class EntitySetTest {
 
   @Test
   public void readBuildings() throws Exception {
-    final UriParserResult uriResult = mockUriResult("Buildings");
+    final UriInfo uriResult = mockUriResult("Buildings");
 
     ODataResponse response = processor.readEntitySet(uriResult,ContentType.APPLICATION_ATOM_XML_FEED.toContentTypeString());
     assertNotNull(response);
@@ -127,7 +127,7 @@ public class EntitySetTest {
 
   @Test
   public void readPhotos() throws Exception {
-    final UriParserResult uriResult = mockUriResult("Photos");
+    final UriInfo uriResult = mockUriResult("Photos");
 
     ODataResponse response = processor.readEntitySet(uriResult,ContentType.APPLICATION_ATOM_XML_FEED.toContentTypeString());
     assertNotNull(response);

@@ -2,8 +2,8 @@ package com.sap.core.odata.api.uri.expression;
 
 import java.util.List;
 
+import com.sap.core.odata.api.edm.EdmLiteral;
 import com.sap.core.odata.api.edm.EdmTyped;
-import com.sap.core.odata.api.uri.EdmLiteral;
 
 /**
  * Interface {@link ExpressionVisitor} is used to traverse a $filter or $orderby expression tree.

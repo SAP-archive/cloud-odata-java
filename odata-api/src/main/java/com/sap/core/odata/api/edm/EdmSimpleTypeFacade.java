@@ -1,6 +1,5 @@
 package com.sap.core.odata.api.edm;
 
-import com.sap.core.odata.api.uri.EdmLiteral;
 import com.sap.core.odata.api.uri.UriSyntaxException;
 
 public interface EdmSimpleTypeFacade {

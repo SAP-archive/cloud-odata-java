@@ -3,8 +3,8 @@ package com.sap.core.odata.core;
 import java.util.HashMap;
 import java.util.Set;
 
-import com.sap.core.odata.api.enums.HttpHeaders;
-import com.sap.core.odata.api.enums.HttpStatusCodes;
+import com.sap.core.odata.api.commons.HttpHeaders;
+import com.sap.core.odata.api.commons.HttpStatusCodes;
 import com.sap.core.odata.api.processor.ODataResponse;
 
 public class ODataResponseImpl extends ODataResponse {

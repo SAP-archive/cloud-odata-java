@@ -4,7 +4,7 @@ import com.sap.core.odata.api.exception.ODataException;
 
 /**
  * A <code>ODataProcessor</code> is the root interface for processor implementation. A processor handles OData requests like reading or writing entities. All possible
- * actions are defined in the {@link com.sap.core.odata.api.processor.aspect} package.
+ * actions are defined in the {@link com.sap.core.odata.api.processor.feature} package.
  * @author SAP AG
  */
 public interface ODataProcessor {

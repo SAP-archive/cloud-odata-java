@@ -12,7 +12,7 @@ import com.sap.core.odata.api.edm.EdmException;
 import com.sap.core.odata.api.edm.EdmFacets;
 import com.sap.core.odata.api.edm.EdmLiteralKind;
 import com.sap.core.odata.api.edm.EdmSimpleType;
-import com.sap.core.odata.api.ep.ODataEntityProviderException;
+import com.sap.core.odata.api.ep.EntityProviderException;
 import com.sap.core.odata.core.ep.aggregator.EntityComplexPropertyInfo;
 import com.sap.core.odata.core.ep.aggregator.EntityPropertyInfo;
 
@@ -30,9 +30,9 @@ public class XmlPropertyEntityProvider {
    * @param name  Name of the outer XML tag
    * @param propertyInfo
    * @param value
-   * @throws ODataEntityProviderException
+   * @throws EntityProviderException
    */
-  public void append(XMLStreamWriter writer, String name, EntityPropertyInfo propertyInfo, Object value) throws ODataEntityProviderException {
+  public void append(XMLStreamWriter writer, String name, EntityPropertyInfo propertyInfo, Object value) throws EntityProviderException {
     try {
       if (hasCustomNamespace(propertyInfo))
         writeStartElementWithCustomNamespace(writer, propertyInfo, name);
@@ -46,9 +46,9 @@ public class XmlPropertyEntityProvider {
 
       writer.writeEndElement();
     } catch (XMLStreamException e) {
-      throw new ODataEntityProviderException(ODataEntityProviderException.COMMON, e);
+      throw new EntityProviderException(EntityProviderException.COMMON, e);
     } catch (EdmException e) {
-      throw new ODataEntityProviderException(ODataEntityProviderException.COMMON, e);
+      throw new EntityProviderException(EntityProviderException.COMMON, e);
     }
   }
 
@@ -60,9 +60,9 @@ public class XmlPropertyEntityProvider {
    * @param writer
    * @param propertyInfo
    * @param value
-   * @throws ODataEntityProviderException
+   * @throws EntityProviderException
    */
-  public void append(XMLStreamWriter writer, EntityPropertyInfo propertyInfo, Object value) throws ODataEntityProviderException {
+  public void append(XMLStreamWriter writer, EntityPropertyInfo propertyInfo, Object value) throws EntityProviderException {
     try {
       writer.writeStartElement(propertyInfo.getName());
       writer.writeDefaultNamespace(Edm.NAMESPACE_D_2007_08);
@@ -75,9 +75,9 @@ public class XmlPropertyEntityProvider {
 
       writer.writeEndElement();
     } catch (XMLStreamException e) {
-      throw new ODataEntityProviderException(ODataEntityProviderException.COMMON, e);
+      throw new EntityProviderException(EntityProviderException.COMMON, e);
     } catch (EdmException e) {
-      throw new ODataEntityProviderException(ODataEntityProviderException.COMMON, e);
+      throw new EntityProviderException(EntityProviderException.COMMON, e);
     }
   }
 
@@ -88,9 +88,9 @@ public class XmlPropertyEntityProvider {
    * @param value
    * @throws XMLStreamException
    * @throws EdmException
-   * @throws ODataEntityProviderException
+   * @throws EntityProviderException
    */
-  private void appendProperty(XMLStreamWriter writer, EntityComplexPropertyInfo propertyInfo, Object value) throws XMLStreamException, EdmException, ODataEntityProviderException {
+  private void appendProperty(XMLStreamWriter writer, EntityComplexPropertyInfo propertyInfo, Object value) throws XMLStreamException, EdmException, EntityProviderException {
 
     if (value == null) {
       writer.writeAttribute(Edm.NAMESPACE_M_2007_08, FormatXml.ATOM_NULL, FormatXml.ATOM_VALUE_TRUE);

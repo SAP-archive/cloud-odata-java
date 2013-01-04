@@ -12,7 +12,7 @@ import org.junit.Test;
 import com.sap.core.odata.api.edm.EdmEntityType;
 import com.sap.core.odata.api.edm.EdmProperty;
 import com.sap.core.odata.api.edm.EdmTyped;
-import com.sap.core.odata.api.ep.ODataEntityProvider;
+import com.sap.core.odata.api.ep.EntityProvider;
 import com.sap.core.odata.api.processor.ODataResponse;
 import com.sap.core.odata.core.enums.ContentType;
 import com.sap.core.odata.testutils.helper.StringHelper;
@@ -26,7 +26,7 @@ public class XmlPropertySerializationTest extends AbstractProviderTest {
 
   @Test
   public void serializeEmployeeId() throws Exception {
-    ODataEntityProvider s = createAtomEntityProvider();
+    EntityProvider s = createAtomEntityProvider();
     EdmTyped edmTyped = MockFacade.getMockEdm().getEntityType("RefScenario", "Employee").getProperty("EmployeeId");
     EdmProperty edmProperty = (EdmProperty) edmTyped;
 
@@ -44,7 +44,7 @@ public class XmlPropertySerializationTest extends AbstractProviderTest {
 
   @Test
   public void serializeAge() throws Exception {
-    ODataEntityProvider s = createAtomEntityProvider();
+    EntityProvider s = createAtomEntityProvider();
 
     EdmTyped edmTyped = MockFacade.getMockEdm().getEntityType("RefScenario", "Employee").getProperty("Age");
     EdmProperty edmProperty = (EdmProperty) edmTyped;
@@ -62,7 +62,7 @@ public class XmlPropertySerializationTest extends AbstractProviderTest {
 
   @Test
   public void serializeImageUrl() throws Exception {
-    ODataEntityProvider s = createAtomEntityProvider();
+    EntityProvider s = createAtomEntityProvider();
 
     EdmTyped edmTyped = MockFacade.getMockEdm().getEntityType("RefScenario", "Employee").getProperty("ImageUrl");
     EdmProperty edmProperty = (EdmProperty) edmTyped;
@@ -82,7 +82,7 @@ public class XmlPropertySerializationTest extends AbstractProviderTest {
 
   @Test
   public void serializeLocation() throws Exception {
-    ODataEntityProvider s = createAtomEntityProvider();
+    EntityProvider s = createAtomEntityProvider();
 
     EdmEntityType edmEntityType = MockFacade.getMockEdm().getEntityType("RefScenario", "Employee");
     EdmTyped edmTyped = edmEntityType.getProperty("Location");

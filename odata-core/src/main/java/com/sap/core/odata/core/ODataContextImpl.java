@@ -5,10 +5,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.sap.core.odata.api.ODataService;
 import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.api.processor.ODataContext;
-import com.sap.core.odata.api.service.ODataService;
-import com.sap.core.odata.api.uri.UriInfo;
+import com.sap.core.odata.api.uri.PathInfo;
 
 public class ODataContextImpl implements ODataContext {
 
@@ -56,13 +56,13 @@ public class ODataContextImpl implements ODataContext {
     return (ODataService) getParameter(SERVICE);
   }
 
-  public void setUriInfo(UriInfo uriInfo) {
+  public void setUriInfo(PathInfo uriInfo) {
     setParameter(URI_INFO, uriInfo);
   }
 
   @Override
-  public UriInfo getUriInfo() throws ODataException {
-    return (UriInfo) getParameter(URI_INFO);
+  public PathInfo getUriInfo() throws ODataException {
+    return (PathInfo) getParameter(URI_INFO);
   }
 
   @SuppressWarnings("unchecked")

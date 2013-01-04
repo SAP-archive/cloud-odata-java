@@ -1,15 +1,15 @@
 package com.sap.core.odata.core;
 
+import com.sap.core.odata.api.ODataService;
 import com.sap.core.odata.api.exception.ODataBadRequestException;
 import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.api.exception.ODataMethodNotAllowedException;
 import com.sap.core.odata.api.processor.ODataResponse;
-import com.sap.core.odata.api.processor.aspect.ProcessorAspect;
-import com.sap.core.odata.api.service.ODataService;
+import com.sap.core.odata.api.processor.feature.ProcessorFeature;
 import com.sap.core.odata.core.enums.ContentType;
 import com.sap.core.odata.core.enums.ODataHttpMethod;
 import com.sap.core.odata.core.exception.ODataRuntimeException;
-import com.sap.core.odata.core.uri.UriParserResultImpl;
+import com.sap.core.odata.core.uri.UriInfoImpl;
 
 /**
  * Request dispatching according to URI type and HTTP method
@@ -23,7 +23,7 @@ public class Dispatcher {
 
   private ODataService service;
 
-  public ODataResponse dispatch(final ODataHttpMethod method, final UriParserResultImpl uriParserResult, final String contentType) throws ODataException {
+  public ODataResponse dispatch(final ODataHttpMethod method, final UriInfoImpl uriParserResult, final String contentType) throws ODataException {
     switch (uriParserResult.getUriType()) {
     case URI0:
       if (method == ODataHttpMethod.GET)
@@ -201,71 +201,71 @@ public class Dispatcher {
     }
   }
 
-  public ProcessorAspect mapUriTypeToProcessorAspect(UriParserResultImpl uriParserResult) {
-    ProcessorAspect aspect;
+  public ProcessorFeature mapUriTypeToProcessorAspect(UriInfoImpl uriParserResult) {
+    ProcessorFeature aspect;
 
     switch (uriParserResult.getUriType()) {
     case URI0:
-      aspect = ProcessorAspect.SERVICE_DOCUMENT;
+      aspect = ProcessorFeature.SERVICE_DOCUMENT;
       break;
     case URI1:
     case URI6B:
-      aspect = ProcessorAspect.ENTITY_SET;
+      aspect = ProcessorFeature.ENTITY_SET;
       break;
     case URI2:
     case URI6A:
-      aspect = ProcessorAspect.ENTITY;
+      aspect = ProcessorFeature.ENTITY;
       break;
     case URI3:
-      aspect = ProcessorAspect.ENTITY_COMPLEX_PROPERTY;
+      aspect = ProcessorFeature.ENTITY_COMPLEX_PROPERTY;
       break;
     case URI4:
     case URI5:
       if (uriParserResult.isValue()) {
-        aspect = ProcessorAspect.ENTITY_SIMPLE_PROPERTY_VALUE;
+        aspect = ProcessorFeature.ENTITY_SIMPLE_PROPERTY_VALUE;
       } else {
-        aspect = ProcessorAspect.ENTITY_SIMPLE_PROPERTY;
+        aspect = ProcessorFeature.ENTITY_SIMPLE_PROPERTY;
       }
       break;
     case URI7A:
-      aspect = ProcessorAspect.ENTITY_LINK;
+      aspect = ProcessorFeature.ENTITY_LINK;
       break;
     case URI7B:
-      aspect = ProcessorAspect.ENTITY_LINKS;
+      aspect = ProcessorFeature.ENTITY_LINKS;
       break;
     case URI8:
-      aspect = ProcessorAspect.METDDATA;
+      aspect = ProcessorFeature.METDDATA;
       break;
     case URI9:
-      aspect = ProcessorAspect.BATCH;
+      aspect = ProcessorFeature.BATCH;
       break;
     case URI10:
     case URI11:
     case URI12:
     case URI13:
-      aspect = ProcessorAspect.FUNCTION_IMPORT;
+      aspect = ProcessorFeature.FUNCTION_IMPORT;
       break;
     case URI14:
       if (uriParserResult.isValue()) {
-        aspect = ProcessorAspect.FUNCTION_IMPORT_VALUE;
+        aspect = ProcessorFeature.FUNCTION_IMPORT_VALUE;
       } else {
-        aspect = ProcessorAspect.FUNCTION_IMPORT;
+        aspect = ProcessorFeature.FUNCTION_IMPORT;
       }
       break;
     case URI15:
-      aspect = ProcessorAspect.ENTITY_SET;
+      aspect = ProcessorFeature.ENTITY_SET;
       break;
     case URI16:
-      aspect = ProcessorAspect.ENTITY;
+      aspect = ProcessorFeature.ENTITY;
       break;
     case URI17:
-      aspect = ProcessorAspect.ENTITY_MEDIA;
+      aspect = ProcessorFeature.ENTITY_MEDIA;
       break;
     case URI50A:
-      aspect = ProcessorAspect.ENTITY_LINK;
+      aspect = ProcessorFeature.ENTITY_LINK;
       break;
     case URI50B:
-      aspect = ProcessorAspect.ENTITY_LINKS;
+      aspect = ProcessorFeature.ENTITY_LINKS;
       break;
     default:
       throw new ODataRuntimeException("Unknown or not implemented URI type: " + uriParserResult.getUriType());

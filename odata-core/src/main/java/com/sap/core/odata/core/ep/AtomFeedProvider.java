@@ -7,13 +7,13 @@ import java.util.Map;
 
 import javax.xml.stream.XMLStreamWriter;
 
+import com.sap.core.odata.api.commons.InlineCount;
 import com.sap.core.odata.api.edm.Edm;
 import com.sap.core.odata.api.edm.EdmFacets;
 import com.sap.core.odata.api.edm.EdmLiteralKind;
-import com.sap.core.odata.api.enums.InlineCount;
-import com.sap.core.odata.api.ep.ODataEntityProviderException;
-import com.sap.core.odata.api.ep.ODataEntityProviderProperties;
-import com.sap.core.odata.api.uri.resultviews.GetEntitySetView;
+import com.sap.core.odata.api.ep.EntityProviderException;
+import com.sap.core.odata.api.ep.EntityProviderProperties;
+import com.sap.core.odata.api.uri.info.GetEntitySetUriInfo;
 import com.sap.core.odata.core.edm.EdmDateTimeOffset;
 import com.sap.core.odata.core.ep.aggregator.EntityInfoAggregator;
 import com.sap.core.odata.core.ep.util.UriUtils;
@@ -21,13 +21,13 @@ import com.sap.core.odata.core.uri.SystemQueryOption;
 
 public class AtomFeedProvider {
 
-  private ODataEntityProviderProperties properties;
+  private EntityProviderProperties properties;
 
-  public AtomFeedProvider(ODataEntityProviderProperties properties) {
+  public AtomFeedProvider(EntityProviderProperties properties) {
     this.properties = properties;
   }
 
-  public void append(XMLStreamWriter writer, EntityInfoAggregator eia, List<Map<String, Object>> data, GetEntitySetView entitySetView) throws ODataEntityProviderException {
+  public void append(XMLStreamWriter writer, EntityInfoAggregator eia, List<Map<String, Object>> data, GetEntitySetUriInfo entitySetView) throws EntityProviderException {
     try {
       writer.writeStartElement("feed");
 
@@ -51,11 +51,11 @@ public class AtomFeedProvider {
 
       writer.writeEndElement();
     } catch (Exception e) {
-      throw new ODataEntityProviderException(ODataEntityProviderException.COMMON, e);
+      throw new EntityProviderException(EntityProviderException.COMMON, e);
     }
   }
 
-  private void appendNextLink(XMLStreamWriter writer, EntityInfoAggregator eia, String nextSkiptoken) throws ODataEntityProviderException {
+  private void appendNextLink(XMLStreamWriter writer, EntityInfoAggregator eia, String nextSkiptoken) throws EntityProviderException {
     try {
       String nextLink = createNextLink(eia, nextSkiptoken);
 
@@ -64,20 +64,20 @@ public class AtomFeedProvider {
       writer.writeAttribute(FormatXml.ATOM_REL, "next");
       writer.writeEndElement();
     } catch (Exception e) {
-      throw new ODataEntityProviderException(ODataEntityProviderException.COMMON, e);
+      throw new EntityProviderException(EntityProviderException.COMMON, e);
     }
   }
 
-  private void appendEntries(XMLStreamWriter writer, EntityInfoAggregator eia, List<Map<String, Object>> data) throws ODataEntityProviderException {
+  private void appendEntries(XMLStreamWriter writer, EntityInfoAggregator eia, List<Map<String, Object>> data) throws EntityProviderException {
     AtomEntryEntityProvider entryProvider = new AtomEntryEntityProvider(properties);
     for (Map<String, Object> singleEntryData : data)
       entryProvider.append(writer, eia, singleEntryData, false);
   }
 
-  private void appendInlineCount(XMLStreamWriter writer, int inlinecount) throws ODataEntityProviderException {
+  private void appendInlineCount(XMLStreamWriter writer, int inlinecount) throws EntityProviderException {
 
     if (inlinecount < 0) {
-      throw new ODataEntityProviderException(ODataEntityProviderException.INLINECOUNT_INVALID);
+      throw new EntityProviderException(EntityProviderException.INLINECOUNT_INVALID);
     }
 
     try {
@@ -85,11 +85,11 @@ public class AtomFeedProvider {
       writer.writeCharacters(String.valueOf(inlinecount));
       writer.writeEndElement();
     } catch (Exception e) {
-      throw new ODataEntityProviderException(ODataEntityProviderException.COMMON, e);
+      throw new EntityProviderException(EntityProviderException.COMMON, e);
     }
   }
 
-  private void appendAtomSelfLink(XMLStreamWriter writer, EntityInfoAggregator eia) throws ODataEntityProviderException {
+  private void appendAtomSelfLink(XMLStreamWriter writer, EntityInfoAggregator eia) throws EntityProviderException {
     try {
       String selfLink = createSelfLink(eia);
 
@@ -99,21 +99,21 @@ public class AtomFeedProvider {
       writer.writeAttribute(FormatXml.ATOM_TITLE, eia.getEntitySetName());
       writer.writeEndElement();
     } catch (Exception e) {
-      throw new ODataEntityProviderException(ODataEntityProviderException.COMMON, e);
+      throw new EntityProviderException(EntityProviderException.COMMON, e);
     }
   }
 
-  private String createNextLink(EntityInfoAggregator eia, String nextSkiptoken) throws ODataEntityProviderException {
+  private String createNextLink(EntityInfoAggregator eia, String nextSkiptoken) throws EntityProviderException {
     try {
       String query = SystemQueryOption.$skiptoken + "=" + nextSkiptoken;
       String path = createSelfLink(eia);
       return UriUtils.encodeUri(path, query);
     } catch (Exception e) {
-      throw new ODataEntityProviderException(ODataEntityProviderException.COMMON, e);
+      throw new EntityProviderException(EntityProviderException.COMMON, e);
     }
   }
 
-  private String createSelfLink(EntityInfoAggregator eia) throws ODataEntityProviderException {
+  private String createSelfLink(EntityInfoAggregator eia) throws EntityProviderException {
     try {
       StringBuilder sb = new StringBuilder();
       if (!eia.isDefaultEntityContainer()) {
@@ -122,11 +122,11 @@ public class AtomFeedProvider {
       sb.append(eia.getEntitySetName());
       return UriUtils.encodeUriPath(sb.toString());
     } catch (Exception e) {
-      throw new ODataEntityProviderException(ODataEntityProviderException.COMMON, e);
+      throw new EntityProviderException(EntityProviderException.COMMON, e);
     }
   }
 
-  private void appendAtomMandatoryParts(XMLStreamWriter writer, EntityInfoAggregator eia) throws ODataEntityProviderException {
+  private void appendAtomMandatoryParts(XMLStreamWriter writer, EntityInfoAggregator eia) throws EntityProviderException {
     try {
       writer.writeStartElement(FormatXml.ATOM_ID);
       writer.writeCharacters(createAtomId(eia));
@@ -151,11 +151,11 @@ public class AtomFeedProvider {
       writer.writeEndElement();
 
     } catch (Exception e) {
-      throw new ODataEntityProviderException(ODataEntityProviderException.COMMON, e);
+      throw new EntityProviderException(EntityProviderException.COMMON, e);
     }
   }
 
-  private String createAtomId(EntityInfoAggregator eia) throws ODataEntityProviderException {
+  private String createAtomId(EntityInfoAggregator eia) throws EntityProviderException {
     try {
       String id = "";
 
@@ -167,7 +167,7 @@ public class AtomFeedProvider {
       URI baseUri = properties.getBaseUri();
       return UriUtils.encodeUri(baseUri, id);
     } catch (Exception e) {
-      throw new ODataEntityProviderException(ODataEntityProviderException.COMMON, e);
+      throw new EntityProviderException(EntityProviderException.COMMON, e);
     }
   }
 }
