@@ -67,7 +67,7 @@ public class ODataContextImpl implements ODataContext {
 
   @SuppressWarnings("unchecked")
   @Override
-  public int startRuntimeMeasurement(String classname, String method) {
+  public int startRuntimeMeasurement(String className, String methodName) {
     List<RuntimeMeasurement> runtimeMeasurements;
     
     if (getParameter(RUNTIME_MEASUREMENTS) == null) {
@@ -78,9 +78,9 @@ public class ODataContextImpl implements ODataContext {
 
     if (isInDebugMode()) {
       RuntimeMeasurement measurement = new RuntimeMeasurementImpl();
-      measurement.setTime_start(System.nanoTime());
-      measurement.setClassname(classname);
-      measurement.setMethod(method);
+      measurement.setTimeStarted(System.nanoTime());
+      measurement.setClassName(className);
+      measurement.setMethodName(methodName);
 
       runtimeMeasurements.add(measurement);
     }
@@ -94,7 +94,7 @@ public class ODataContextImpl implements ODataContext {
     if (isInDebugMode()) {
       try {
         RuntimeMeasurement runtimeMeasurement = ((List<RuntimeMeasurement>)getParameter(RUNTIME_MEASUREMENTS)).get(handle);
-        runtimeMeasurement.setTime_stop(System.nanoTime());
+        runtimeMeasurement.setTimeStopped(System.nanoTime());
       } catch (NullPointerException e) {
         //nothing to handle
       } catch (IndexOutOfBoundsException e) {
@@ -116,43 +116,43 @@ public class ODataContextImpl implements ODataContext {
     private String methodName;
 
     @Override
-    public long getTime_start() {
+    public long getTimeStarted() {
       return timeStarted;
     }
 
     @Override
-    public void setTime_start(long time_start) {
+    public void setTimeStarted(long time_start) {
       this.timeStarted = time_start;
     }
 
     @Override
-    public long getTime_stop() {
+    public long getTimeStopped() {
       return timeStopped;
     }
 
     @Override
-    public void setTime_stop(long time_stop) {
+    public void setTimeStopped(long time_stop) {
       this.timeStopped = time_stop;
     }
 
     @Override
-    public String getClassname() {
+    public String getClassName() {
       return className;
     }
 
     @Override
-    public void setClassname(String classname) {
-      this.className = classname;
+    public void setClassName(String className) {
+      this.className = className;
     }
 
     @Override
-    public String getMethod() {
+    public String getMethodName() {
       return methodName;
     }
 
     @Override
-    public void setMethod(String method) {
-      this.methodName = method;
+    public void setMethodName(String methodName) {
+      this.methodName = methodName;
     }
   }
 

@@ -84,21 +84,21 @@ public interface ODataContext {
 
   public interface RuntimeMeasurement {
 
-    void setMethod(String method);
+    void setMethodName(String methodName);
 
-    String getMethod();
+    String getMethodName();
 
-    void setClassname(String classname);
+    void setClassName(String className);
 
-    String getClassname();
+    String getClassName();
 
-    void setTime_stop(long time_stop);
+    void setTimeStopped(long timeStopped);
 
-    long getTime_stop();
+    long getTimeStopped();
 
-    void setTime_start(long time_start);
+    void setTimeStarted(long timeStarted);
 
-    long getTime_start();
+    long getTimeStarted();
 
   }
 }
