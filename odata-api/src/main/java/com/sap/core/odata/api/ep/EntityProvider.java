@@ -25,7 +25,7 @@ public abstract class EntityProvider {
 
   public abstract ODataResponse writeServiceDocument(Edm edm, String serviceRoot) throws EntityProviderException;
 
-  public abstract ODataResponse writeFeed(GetEntitySetUriInfo entitySetView, List<Map<String, Object>> data, EntityProviderProperties properties) throws EntityProviderException;
+  public abstract ODataResponse writeFeed(EdmEntitySet entitySet, List<Map<String, Object>> data, EntityProviderProperties properties) throws EntityProviderException;
 
   public abstract ODataResponse writeEntry(EdmEntitySet entitySet, Map<String, Object> data, EntityProviderProperties properties) throws EntityProviderException;
 

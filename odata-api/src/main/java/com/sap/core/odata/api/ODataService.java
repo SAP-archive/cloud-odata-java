@@ -2,7 +2,6 @@ package com.sap.core.odata.api;
 
 import java.util.List;
 
-import com.sap.core.odata.api.commons.ODataVersion;
 import com.sap.core.odata.api.edm.Edm;
 import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.api.processor.ODataProcessor;
@@ -32,9 +31,9 @@ public interface ODataService {
   /**
    * @return implemented OData version of this service
    * @throws ODataException
-   * @see ODataVersion
+   * @see ODataServiceVersion
    */
-  ODataVersion getODataVersion() throws ODataException;
+  ODataServiceVersion getVersion() throws ODataException;
 
   /**
    * @return entity data model of this service 

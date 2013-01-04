@@ -2,6 +2,8 @@ package com.sap.core.odata.api.ep;
 
 import java.net.URI;
 
+import com.sap.core.odata.api.commons.InlineCount;
+
 /**
  * 
  */
@@ -17,14 +19,22 @@ public class EntityProviderProperties {
   private String mediaResourceMimeType;
   private String skipToken;
   private Integer inlineCount;
+  private InlineCount inlineCountType;
 
-  private EntityProviderProperties() { }
-  
+  private EntityProviderProperties() {}
+
   /**
    * @return the mediaResourceMimeType
    */
   public final String getMediaResourceMimeType() {
     return mediaResourceMimeType;
+  }
+
+  /**
+  * @return the inlineCountType
+  */
+  public final InlineCount getInlineCountType() {
+    return inlineCountType;
   }
 
   /**
@@ -63,6 +73,16 @@ public class EntityProviderProperties {
       epOptProperties.mediaResourceMimeType = mediaResourceMimeType;
       return this;
     }
+    
+    /**
+     * @param inlineCountType
+     *          the inlineCount to set
+     */
+    public final ODataEntityProviderPropertiesBuilder inlineCountType(InlineCount inlineCountType) {
+      epOptProperties.inlineCountType = inlineCountType;
+      return this;
+    }
+
 
     /**
      * @param inlineCount
@@ -91,7 +111,7 @@ public class EntityProviderProperties {
       epOptProperties.baseUri = baseUri;
       return this;
     }
-    
+
     public final EntityProviderProperties build() {
       return epOptProperties;
     }
