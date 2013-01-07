@@ -19,6 +19,11 @@ public class FilterParserInternalError extends ODataMessageException {
   {
     super(messageReference);
   }
+  
+  public FilterParserInternalError(MessageReference messageReference, Throwable cause)
+  {
+    super(messageReference, cause);
+  }
 
   public FilterParserInternalError(MessageReference messageReference, TokenizerExpectError cause)
   {
@@ -60,6 +65,10 @@ public class FilterParserInternalError extends ODataMessageException {
   {
     return new FilterParserInternalError(COMMON);
   }
+  
+  public static FilterParserInternalError createCOMMON(Throwable e) {
+    return new FilterParserInternalError(COMMON,e);
+  }
 
   public static FilterParserInternalError createINVALID_TYPE_COUNT() {
     return new FilterParserInternalError(INVALID_TYPE_COUNT);
@@ -68,5 +77,7 @@ public class FilterParserInternalError extends ODataMessageException {
   public static FilterParserInternalError createERROR_ACCESSING_EDM() {
     return new FilterParserInternalError(ERROR_ACCESSING_EDM);
   }
+
+
 
 }

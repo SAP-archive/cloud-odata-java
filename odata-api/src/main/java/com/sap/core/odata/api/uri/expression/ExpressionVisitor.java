@@ -8,7 +8,7 @@ import com.sap.core.odata.api.edm.EdmTyped;
 /**
  * Interface {@link ExpressionVisitor} is used to traverse a $filter or $orderby expression tree.
  * Any class instance implementing this interface can be passed to the method {@link Visitable#accept(ExpressionVisitor)}
- * of an expression node to start the traversing. While traversing, the appropriate methods of the visitor
+ * of an expression node to start the traversing. While traversing, the appropriate methods of the visitor implementation
  * will be called.
  * @author SAP AG
  */

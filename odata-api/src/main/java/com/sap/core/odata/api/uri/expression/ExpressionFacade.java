@@ -38,7 +38,7 @@ public class ExpressionFacade
    * @param edmType
    *   EDM type of the OData entity/complex type/.. addressed by the URL.
    * @param expression
-   *   $orderby expression to be parsed
+   *   $orderby expression string to be parsed
    * @return
    *   Expression tree which can be traversed with help of the interfaces {@link ExpressionVisitor} and {@link Visitable}
    * @throws OrderByParserException

@@ -215,7 +215,7 @@ public class FilterParserImpl implements FilterParser
       //After a ',' inside the parenthesis which define the method parameters a expression is expected 
       //E.g. $filter=startswith(Country,'UK',) --> is wrong
       //E.g. $filter=startswith(Country,) --> is also wrong
-      
+
       if ((expression == null) && (expectAnotherExpression == true))
       {
         throw FilterParserExceptionImpl.createEXPRESSION_EXPECTED_AT_POS(token);
@@ -281,19 +281,13 @@ public class FilterParserImpl implements FilterParser
     Token lookToken;
     lookToken = tokenList.lookToken();
 
-    if (lookToken.getKind() == TokenKind.OPENPAREN) //."if token a '(' then process read a new note for the '(' and return it.
+    switch (lookToken.getKind())
     {
-      node = readParenthesis(); //throws ExceptionParseExpression,ExceptionExpressionInternalError
+    case OPENPAREN:
+      node = readParenthesis(); 
       return node;
-    }
-    else if (lookToken.getKind() == TokenKind.CLOSEPAREN)// " ')'  finishes a parenthesis (it is no extra token)" +
-    {
-      return null;
-    }
-
-    else if (lookToken.getKind() == TokenKind.COMMA)//. " ','  is a separator for function parameter (it is no extra token)" +
-
-    {
+    case CLOSEPAREN:  // ')'  finishes a parenthesis (it is no extra token)" +
+    case COMMA:       //. " ','  is a separator for function parameters (it is no extra token)" +
       return null;
     }
 
@@ -310,7 +304,7 @@ public class FilterParserImpl implements FilterParser
     } catch (TokenizerExpectError e)
     {
       //Internal parsing error, even if there are no more token (then there should be a different exception).
-      throw FilterParserInternalError.createERROR_PARSING_PARENTHESIS(e);
+      throw FilterParserInternalError.createCOMMON(e);
     }
     lookToken = tokenList.lookToken();
 
