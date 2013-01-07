@@ -4,24 +4,24 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import com.sap.core.odata.api.commons.HttpStatusCodes;
+import com.sap.core.odata.api.commons.InlineCount;
 import com.sap.core.odata.api.edm.EdmEntityType;
 import com.sap.core.odata.api.edm.EdmException;
-import com.sap.core.odata.api.enums.ContentType;
-import com.sap.core.odata.api.enums.HttpStatusCodes;
-import com.sap.core.odata.api.enums.InlineCount;
-import com.sap.core.odata.api.ep.ODataEntityProvider;
-import com.sap.core.odata.api.ep.ODataEntityProviderException;
-import com.sap.core.odata.api.ep.ODataEntityProviderProperties;
+import com.sap.core.odata.api.ep.EntityProvider;
+import com.sap.core.odata.api.ep.EntityProviderException;
+import com.sap.core.odata.api.ep.EntityProviderProperties;
 import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.api.processor.ODataResponse;
-import com.sap.core.odata.api.uri.resultviews.GetEntitySetView;
+import com.sap.core.odata.api.uri.info.GetEntitySetUriInfo;
+import com.sap.core.odata.core.enums.ContentType;
 import com.sap.core.odata.processor.jpa.api.ODataJPAContext;
 import com.sap.core.odata.processor.jpa.exception.ODataJPARuntimeException;
 
 public final class ODataJPAResponseBuilder {
 
 	public static ODataResponse build(List<Object> jpaEntities,
-			GetEntitySetView resultsView, ContentType contentType,ODataJPAContext odataJPAContext) throws ODataJPARuntimeException {
+			GetEntitySetUriInfo resultsView, String contentType,ODataJPAContext odataJPAContext) throws ODataJPARuntimeException {
 
 		EdmEntityType edmEntityType = null;
 		ODataResponse odataResponse = null;
@@ -38,11 +38,11 @@ public final class ODataJPAResponseBuilder {
 				edmEntityList.add(edmPropertyValueMap);
 			}
 			
-		    ODataEntityProviderProperties feedProperties = null;;
+		    EntityProviderProperties feedProperties = null;;
 			try {
 				 final Integer count = resultsView.getInlineCount() == InlineCount.ALLPAGES ? edmEntityList.size() : null;
-				feedProperties = ODataEntityProviderProperties
-				        .baseUri(odataJPAContext.getODataContext().getUriInfo().getBaseUri())
+				feedProperties = EntityProviderProperties
+				        .baseUri(odataJPAContext.getODataContext().getUriInfo().getServiceRoot())
 				        .inlineCount(count)
 				        .skipToken("")
 				        .build();
@@ -50,12 +50,12 @@ public final class ODataJPAResponseBuilder {
 				throw ODataJPARuntimeException.throwException(ODataJPARuntimeException.GENERAL.addContent(e.getMessage()),e);
 			}
 		    
-			odataResponse = ODataResponse.fromResponse(ODataEntityProvider.create(contentType).writeFeed(resultsView, edmEntityList, feedProperties))
+			odataResponse = ODataResponse.fromResponse(EntityProvider.create(contentType).writeFeed(resultsView.getTargetEntitySet(), edmEntityList, feedProperties))
 			        .status(HttpStatusCodes.OK)
 			        .build();
 			
 			
-		} catch (ODataEntityProviderException e) {
+		} catch (EntityProviderException e) {
 			throw ODataJPARuntimeException.throwException(ODataJPARuntimeException.GENERAL.addContent(e.getMessage()),e);
 		} catch (EdmException e) {
 			throw ODataJPARuntimeException.throwException(ODataJPARuntimeException.GENERAL.addContent(e.getMessage()),e);

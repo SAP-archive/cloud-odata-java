@@ -7,7 +7,7 @@ import java.util.List;
 import com.sap.core.odata.api.edm.EdmException;
 import com.sap.core.odata.api.uri.SelectItem;
 import com.sap.core.odata.api.uri.expression.FilterExpression;
-import com.sap.core.odata.api.uri.resultviews.GetEntitySetView;
+import com.sap.core.odata.api.uri.info.GetEntitySetUriInfo;
 import com.sap.core.odata.processor.jpa.access.ExpressionParsingUtility;
 import com.sap.core.odata.processor.jpa.exception.ODataJPAModelException;
 import com.sap.core.odata.processor.jpa.exception.ODataJPARuntimeException;
@@ -56,7 +56,7 @@ public class JPQLSelectContextImpl extends JPQLSelectContext {
 			extends
 			com.sap.core.odata.processor.jpa.jpql.api.JPQLContext.JPQLContextBuilder {
 
-		private GetEntitySetView entitySetView;
+		private GetEntitySetUriInfo entitySetView;
 
 		@Override
 		public JPQLContext build() throws ODataJPAModelException {
@@ -98,8 +98,8 @@ public class JPQLSelectContextImpl extends JPQLSelectContext {
 
 		@Override
 		protected void setResultsView(Object resultsView) {
-			if (resultsView instanceof GetEntitySetView) {
-				this.entitySetView = (GetEntitySetView) resultsView;
+			if (resultsView instanceof GetEntitySetUriInfo) {
+				this.entitySetView = (GetEntitySetUriInfo) resultsView;
 			}
 
 		}

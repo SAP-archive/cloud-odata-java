@@ -14,7 +14,7 @@ import com.sap.core.odata.api.edm.EdmEntityType;
 import com.sap.core.odata.api.edm.EdmException;
 import com.sap.core.odata.api.uri.SelectItem;
 import com.sap.core.odata.api.uri.expression.OrderByExpression;
-import com.sap.core.odata.api.uri.resultviews.GetEntitySetView;
+import com.sap.core.odata.api.uri.info.GetEntitySetUriInfo;
 import com.sap.core.odata.processor.jpa.api.ODataJPAContext;
 import com.sap.core.odata.processor.jpa.exception.ODataJPAModelException;
 import com.sap.core.odata.processor.jpa.jpql.JPQLSelectContextImpl;
@@ -35,7 +35,7 @@ public class JPQLSelectStatementBuilderTest {
 		//Object Instantiation
 		
 		JPQLSelectContextImpl jpqlSelectContextImpl = new JPQLSelectContextImpl();
-		GetEntitySetView getEntitySetView = EasyMock.createMock(GetEntitySetView.class);
+		GetEntitySetUriInfo getEntitySetView = EasyMock.createMock(GetEntitySetUriInfo.class);
 		ODataJPAContext odataJPAContext = EasyMock.createMock(ODataJPAContext.class);
 		EdmEntitySet edmEntitySet = EasyMock.createMock(EdmEntitySet.class);
 		EdmEntityType edmEntityType = EasyMock.createMock(EdmEntityType.class);

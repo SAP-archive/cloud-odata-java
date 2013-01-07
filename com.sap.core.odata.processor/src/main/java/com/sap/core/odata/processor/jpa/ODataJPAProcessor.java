@@ -4,11 +4,12 @@ import java.util.List;
 
 import javax.persistence.Query;
 
-import com.sap.core.odata.api.enums.ContentType;
+import com.sap.core.odata.core.enums.ContentType;
 import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.api.processor.ODataResponse;
 import com.sap.core.odata.api.processor.ODataSingleProcessor;
-import com.sap.core.odata.api.uri.resultviews.GetEntitySetView;
+import com.sap.core.odata.api.uri.info.GetEntitySetUriInfo;
+
 import com.sap.core.odata.processor.jpa.api.ODataJPAContext;
 import com.sap.core.odata.processor.jpa.jpql.api.JPQLContext;
 import com.sap.core.odata.processor.jpa.jpql.api.JPQLContextType;
@@ -26,9 +27,10 @@ public class ODataJPAProcessor extends ODataSingleProcessor {
 		this.odataJPAContext = odataJPAContext;
 	}
 
+	//TODO - check the extending method of readEntitySet and check for String contewntType passed.
 	@Override
-	public ODataResponse readEntitySet(GetEntitySetView uriParserResultView,
-			ContentType contentType) throws ODataException {
+	public ODataResponse readEntitySet(GetEntitySetUriInfo uriParserResultView,
+			String contentType) throws ODataException {
 
 		// Build JPQL Context
 		JPQLContext selectContext = JPQLContext.createBuilder(
