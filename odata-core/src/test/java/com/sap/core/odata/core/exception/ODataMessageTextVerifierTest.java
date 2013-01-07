@@ -1,4 +1,4 @@
-package com.sap.core.odata.testutil;
+package com.sap.core.odata.core.exception;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -14,7 +14,7 @@ import com.sap.core.odata.testutil.mock.SampleClassForInvalidMessageReferences;
  * This class tests the {@link ODataMessageTextVerifier}
  * @Author SAP AG
  */
-public class TestODataMessageTextVerifier
+public class ODataMessageTextVerifierTest
 {
 
   @Test
