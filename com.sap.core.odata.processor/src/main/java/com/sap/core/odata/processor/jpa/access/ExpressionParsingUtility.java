@@ -17,8 +17,8 @@ import com.sap.core.odata.api.uri.expression.LiteralExpression;
 import com.sap.core.odata.api.uri.expression.MethodExpression;
 import com.sap.core.odata.api.uri.expression.OrderByExpression;
 import com.sap.core.odata.api.uri.expression.OrderExpression;
-import com.sap.core.odata.api.uri.expression.OrderType;
 import com.sap.core.odata.api.uri.expression.PropertyExpression;
+import com.sap.core.odata.api.uri.expression.SortOrder;
 import com.sap.core.odata.api.uri.expression.UnaryExpression;
 import com.sap.core.odata.processor.jpa.jpql.api.JPQLStatement;
 
@@ -217,7 +217,7 @@ public class ExpressionParsingUtility {
 				
 				try {
 					orderByField = orderBy.getExpression().getEdmType().getName();
-					orderByDirection = (orderBy.getSortOrder() == OrderType.asc)? "" : "DESC";
+					orderByDirection = (orderBy.getSortOrder() == SortOrder.asc)? "" : "DESC";
 					orderByMap.put(orderByField, orderByDirection);
 				} catch (EdmException e) {
 					// TODO Auto-generated catch block

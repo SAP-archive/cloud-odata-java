@@ -20,7 +20,7 @@ import com.sap.core.odata.processor.jpa.access.api.JPAEdmBuilder;
 import com.sap.core.odata.processor.jpa.api.ODataJPAContext;
 import com.sap.core.odata.processor.jpa.exception.ODataJPAModelException;
 
-public class ODataJPAEdmProvider implements EdmProvider {
+public class ODataJPAEdmProvider extends EdmProvider {
 
 	private ODataJPAContext oDataJPAContext;
 	private JPAEdmBuilder builder;

@@ -2,8 +2,8 @@ package com.sap.core.odata.processor.jpa;
 
 import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.api.processor.ODataContext;
-import com.sap.core.odata.api.service.ODataService;
-import com.sap.core.odata.api.service.ODataServiceFactory;
+import com.sap.core.odata.api.ODataService;
+import com.sap.core.odata.api.ODataServiceFactory;
 import com.sap.core.odata.processor.jpa.api.ODataJPAContext;
 import com.sap.core.odata.processor.jpa.edm.ODataJPAEdmProvider;
 import com.sap.core.odata.processor.jpa.exception.ODataJPARuntimeException;

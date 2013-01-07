@@ -18,8 +18,8 @@ import com.sap.core.odata.api.uri.SelectItem;
 import com.sap.core.odata.api.uri.expression.CommonExpression;
 import com.sap.core.odata.api.uri.expression.OrderByExpression;
 import com.sap.core.odata.api.uri.expression.OrderExpression;
-import com.sap.core.odata.api.uri.expression.OrderType;
-import com.sap.core.odata.api.uri.resultviews.GetEntitySetView;
+import com.sap.core.odata.api.uri.expression.SortOrder;
+import com.sap.core.odata.api.uri.info.GetEntitySetUriInfo;
 import com.sap.core.odata.processor.jpa.api.ODataJPAContext;
 import com.sap.core.odata.processor.jpa.exception.ODataJPAModelException;
 import com.sap.core.odata.processor.jpa.jpql.JPQLSelectContextImpl.JPQLSelectContextBuilder;
@@ -31,15 +31,15 @@ public class JPQLSelectContextImplTest {
 
 	private static String entityTypeName = "MockEntity";
 	private static String[] fields = { "Field1", "Field2" };
-	private static OrderType[] orderType = { OrderType.asc, OrderType.desc };
+	private static SortOrder[] orderType = { SortOrder.asc, SortOrder.desc };
 
 	private static JPQLSelectContextBuilder builder;
 	private static JPQLSelectContext selectContext;
 
 	@BeforeClass
 	public static void setup() {
-		GetEntitySetView resultsView = EasyMock
-				.createMock(GetEntitySetView.class);
+		GetEntitySetUriInfo resultsView = EasyMock
+				.createMock(GetEntitySetUriInfo.class);
 		ODataJPAContext odataJPAContext = EasyMock
 				.createMock(ODataJPAContext.class);
 		EdmEntitySet entitySet = EasyMock.createMock(EdmEntitySet.class);
