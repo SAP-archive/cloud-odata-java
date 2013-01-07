@@ -4,7 +4,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 
 import com.sap.core.odata.processor.ref.jpa.Address;
-import com.sap.core.odata.processor.ref.jpa.LineItems;
+import com.sap.core.odata.processor.ref.jpa.SalesOrderItem;
 import com.sap.core.odata.processor.ref.jpa.SalesOrderHeader;
 
 public class DataGenerator {
@@ -27,7 +27,7 @@ public class DataGenerator {
 					ba, "Cur_Code_" + i, (double) i, ((i % 2) == 0) ? true
 							: false);
 			for (int j = 0; j < DataGenerator.MAX_LINE_ITEMS_PER_SALES_ORDER; j++) {
-				LineItems lineItem = new LineItems("Line_Item_" + j);
+				SalesOrderItem lineItem = new SalesOrderItem("Line_Item_" + j);
 				salesOrder.getLineItems().add(lineItem);
 				this.entityManager.persist(lineItem); 
 			}
@@ -39,9 +39,9 @@ public class DataGenerator {
 	public void clean() {
 		this.entityManager.getTransaction().begin();
 
-		TypedQuery<LineItems> queryLineItems = this.entityManager.createQuery(
-				"SELECT m FROM LineItems m", LineItems.class);
-		for (LineItems part : queryLineItems.getResultList()) {
+		TypedQuery<SalesOrderItem> queryLineItems = this.entityManager.createQuery(
+				"SELECT m FROM SalesOrderItem m", SalesOrderItem.class);
+		for (SalesOrderItem part : queryLineItems.getResultList()) {
 			this.entityManager.remove(part);
 		}
 		TypedQuery<SalesOrderHeader> querySalesOrder = this.entityManager
