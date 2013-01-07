@@ -1,4 +1,4 @@
-package com.sap.core.odata.processor.ref;
+package com.sap.core.odata.processor.ref.util;
 
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
@@ -20,6 +20,7 @@ public class DataGenerator {
 
 	public void generate() {
 		this.entityManager.getTransaction().begin();
+		int count = 0;
 		for (int i = 0; i < DataGenerator.MAX_SALESORDER; i++) {
 			Address ba = new Address((short) i, "Street_" + i,
 					"City_" + i, "Country_" + i);
@@ -27,11 +28,16 @@ public class DataGenerator {
 					ba, "Cur_Code_" + i, (double) i, ((i % 2) == 0) ? true
 							: false);
 			for (int j = 0; j < DataGenerator.MAX_SALESORDERITEM_PER_SALESORDER; j++) {
-				SalesOrderItem salesOrderItem = new SalesOrderItem("SalesOrderItem_" + j);
+				SalesOrderItem salesOrderItem = new SalesOrderItem("SalesOrderItem_" + j,j,(double) ((j*200)/4));
 				salesOrder.getSalesOrderItem().add(salesOrderItem);
 				this.entityManager.persist(salesOrderItem); 
 			}
 			this.entityManager.persist(salesOrder);
+			
+			count++;
+			
+			if((i==7)&&(count==8))
+			{ i--;}
 		}
 		this.entityManager.getTransaction().commit();
 	}
