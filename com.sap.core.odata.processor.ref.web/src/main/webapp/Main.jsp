@@ -5,7 +5,7 @@
 <%@page import="javax.persistence.Persistence"%>
 <%@page import="javax.persistence.Query"%>
 <%@page	import="com.sap.core.odata.processor.ref.JPAReferenceServiceFactory"%>
-<%@page import="com.sap.core.odata.processor.ref.DataGenerator"%>
+<%@page import="com.sap.core.odata.processor.ref.util.DataGenerator"%>
 
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
@@ -16,7 +16,40 @@
 <title>Welcome to JPA implementation</title>
 </head>
 <body>
-        <h1>Data Generator</h1>
+    <h1>SAP OData library</h1>
+    <hr />
+	<%
+		String version = "gen/version.html";
+	%>
+	<%
+		try {
+	%>
+	<jsp:include page='<%=version%>' />
+	<%
+		} catch (Exception e) {
+	%>
+	<p>IDE Build</p>
+	<%
+		}
+	%>
+	<hr />
+	<h2>Reference Scenario</h2>
+	<ul>
+		<li><a href="" target="_blank">index page</a></li>
+		<li><a href="" target="_blank">wadl</a></li><!-- ReferenceScenario.svc?_wadl -->
+		<li><a href="" target="_blank">service document</a></li><!-- ReferenceScenario.svc/ -->
+		<li><a href="" target="_blank">metadata</a></li><!-- ReferenceScenario.svc/$metadata -->
+	</ul>
+	<hr />
+        <form name="form1" method="get">
+            <input type="hidden" name="button" value="Generate">
+            <input type="submit" value="Generate Data" width="100%">
+        </form>
+        <br>
+        <form name="form2" method="get">
+            <input type="hidden" name="button" value="Clean">
+            <input type="submit" value="   Clean Data  " width="100%">
+        </form>
         
         <% 
         EntityManagerFactory entityManagerFactory = Persistence.createEntityManagerFactory("salesorderprocessing");
@@ -53,19 +86,10 @@
         		}
        		}
         %>
-			<h2><%=(msg) %></h2>
+			<h3><%=(msg) %></h2>
         <%
             }
         %>
-        <br>
-        <form name="form1" method="get">
-            <input type="hidden" name="button" value="Generate">
-            <input type="submit" value="Generate Data">
-        </form>
-        <br>
-        <form name="form2" method="get">
-            <input type="hidden" name="button" value="Clean">
-            <input type="submit" value="Clean Data">
-        </form>
+        
     </body>
 </html>
