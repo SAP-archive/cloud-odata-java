@@ -8,10 +8,10 @@ import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.codec.binary.Hex;
 
 import com.sap.core.odata.api.edm.EdmLiteral;
+import com.sap.core.odata.api.edm.EdmLiteralException;
 import com.sap.core.odata.api.edm.EdmSimpleType;
 import com.sap.core.odata.api.edm.EdmSimpleTypeFacade;
 import com.sap.core.odata.api.edm.EdmSimpleTypeKind;
-import com.sap.core.odata.api.uri.UriSyntaxException;
 import com.sap.core.odata.core.exception.ODataRuntimeException;
 
 /**
@@ -24,7 +24,12 @@ public class EdmSimpleTypeFacadeImpl implements EdmSimpleTypeFacade {
   private static final Pattern STRING_VALUE_PATTERN = Pattern.compile("(X|binary|datetime|datetimeoffset|guid|time)?'(.*)'");
 
   @Override
-  public EdmLiteral parseUriLiteral(final String uriLiteral) throws UriSyntaxException {
+  /*TODO check
+   * It looks like "datetime'345345345'" <- obviously wrong#
+   * is parsed to EdmLiteral( EdmDateTime instance, "datetime'345345345'")
+   * But its not verified if datetime'345345345' is really a VALID datetime literal
+   */
+  public EdmLiteral parseUriLiteral(final String uriLiteral) throws EdmLiteralException {
     final String literal = uriLiteral;
 
     if ("true".equals(literal) || "false".equals(literal))
@@ -60,7 +65,7 @@ public class EdmSimpleTypeFacadeImpl implements EdmSimpleTypeFacade {
           else
             return new EdmLiteral(getEdmSimpleType(EdmSimpleTypeKind.Int32), value);
         } catch (NumberFormatException e) {
-          throw new UriSyntaxException(UriSyntaxException.LITERALFORMAT.addContent(literal), e);
+          throw new EdmLiteralException(EdmLiteralException.LITERALFORMAT.addContent(literal), e);
         }
     }
 
@@ -87,7 +92,7 @@ public class EdmSimpleTypeFacadeImpl implements EdmSimpleTypeFacade {
         try {
           b = Hex.decodeHex(value.toCharArray());
         } catch (DecoderException e) {
-          throw new UriSyntaxException(UriSyntaxException.NOTEXT.addContent(e.getClass().getName()), e);
+          throw new EdmLiteralException(EdmLiteralException.NOTEXT.addContent(e.getClass().getName()), e);
         }
         return new EdmLiteral(getEdmSimpleType(EdmSimpleTypeKind.Binary), Base64.encodeBase64String(b));
       }
@@ -100,7 +105,7 @@ public class EdmSimpleTypeFacadeImpl implements EdmSimpleTypeFacade {
       else if ("time".equals(prefix))
         return new EdmLiteral(getEdmSimpleType(EdmSimpleTypeKind.Time), value);
     }
-    throw new UriSyntaxException(UriSyntaxException.UNKNOWNLITERAL.addContent(literal));
+    throw new EdmLiteralException(EdmLiteralException.UNKNOWNLITERAL.addContent(literal));
   }
 
   public static EdmSimpleType getEdmSimpleType(final EdmSimpleTypeKind edmSimpleType) {

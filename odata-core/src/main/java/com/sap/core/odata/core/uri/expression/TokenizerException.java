@@ -2,6 +2,7 @@ package com.sap.core.odata.core.uri.expression;
 
 /*TODO cleanup the messages*/
 
+import com.sap.core.odata.api.edm.EdmLiteralException;
 import com.sap.core.odata.api.exception.MessageReference;
 import com.sap.core.odata.api.exception.ODataMessageException;
 import com.sap.core.odata.api.uri.UriSyntaxException;
@@ -55,7 +56,7 @@ public class TokenizerException extends ODataMessageException
   }
   
   
-  static public TokenizerException createTYPEDECTECTION_FAILED_ON_STRING(UriSyntaxException ex, int position, String uriLiteral) 
+  static public TokenizerException createTYPEDECTECTION_FAILED_ON_STRING(EdmLiteralException ex, int position, String uriLiteral) 
   {
     MessageReference msgRef = TokenizerException.TYPEDECTECTION_FAILED_ON_STRING.create();
 
@@ -66,7 +67,7 @@ public class TokenizerException extends ODataMessageException
     return new TokenizerException(msgRef).setToken(token);
   }
   
-  static public TokenizerException createTYPEDECTECTION_FAILED_ON_EDMTYPE(UriSyntaxException ex, int position, String uriLiteral) 
+  static public TokenizerException createTYPEDECTECTION_FAILED_ON_EDMTYPE(EdmLiteralException ex, int position, String uriLiteral) 
   {
     MessageReference msgRef = TokenizerException.TYPEDECTECTION_FAILED_ON_EDMTYPE.create();
 

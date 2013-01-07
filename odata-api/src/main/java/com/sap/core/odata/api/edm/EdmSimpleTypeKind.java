@@ -1,7 +1,7 @@
 package com.sap.core.odata.api.edm;
 
 import com.sap.core.odata.api.rt.RuntimeDelegate;
-import com.sap.core.odata.api.uri.UriSyntaxException;
+
 
 /**
  * EdmSimpleTypeKind holds all EdmSimpleTypes defined as primitive type in the Entity Data Model (EDM).
@@ -21,7 +21,7 @@ public enum EdmSimpleTypeKind {
     return RuntimeDelegate.getEdmSimpleType(this);
   }
 
-  public static EdmLiteral parseUriLiteral(final String uriLiteral) throws UriSyntaxException {
+  public static EdmLiteral parseUriLiteral(final String uriLiteral) throws EdmLiteralException {
     return RuntimeDelegate.getSimpleTypeFacade().parseUriLiteral(uriLiteral);
   }
 

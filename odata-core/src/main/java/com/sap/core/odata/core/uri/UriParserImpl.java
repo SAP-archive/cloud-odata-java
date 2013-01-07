@@ -18,6 +18,7 @@ import com.sap.core.odata.api.edm.EdmEntityType;
 import com.sap.core.odata.api.edm.EdmException;
 import com.sap.core.odata.api.edm.EdmFunctionImport;
 import com.sap.core.odata.api.edm.EdmLiteral;
+import com.sap.core.odata.api.edm.EdmLiteralException;
 import com.sap.core.odata.api.edm.EdmMultiplicity;
 import com.sap.core.odata.api.edm.EdmNavigationProperty;
 import com.sap.core.odata.api.edm.EdmParameter;
@@ -27,6 +28,7 @@ import com.sap.core.odata.api.edm.EdmSimpleTypeFacade;
 import com.sap.core.odata.api.edm.EdmType;
 import com.sap.core.odata.api.edm.EdmTypeKind;
 import com.sap.core.odata.api.edm.EdmTyped;
+import com.sap.core.odata.api.exception.MessageReference;
 import com.sap.core.odata.api.exception.ODataMessageException;
 import com.sap.core.odata.api.uri.KeyPredicate;
 import com.sap.core.odata.api.uri.NavigationPropertySegment;
@@ -544,18 +546,17 @@ public class UriParserImpl extends UriParser {
     }
   }
 
-  
   private void handleSystemQueryOptionOrderBy(final String orderBy) throws UriSyntaxException, EdmException {
     try {
       if (uriResult.getTargetType() instanceof EdmEntityType) //TODO improve with correct error
-        uriResult.setOrderBy(new OrderByParserImpl(edm, (EdmEntityType) uriResult.getTargetType()).parseOrderByString(orderBy) );
+        uriResult.setOrderBy(new OrderByParserImpl(edm, (EdmEntityType) uriResult.getTargetType()).parseOrderByString(orderBy));
     } catch (OrderByParserException e) {
       throw new UriSyntaxException(UriSyntaxException.INVALIDORDERBYEXPRESSION.addContent(orderBy), e);
     } catch (ODataMessageException e) {
       throw new UriSyntaxException(UriSyntaxException.INVALIDORDERBYEXPRESSION.addContent(orderBy), e);
     }
   }
-  
+
   private void handleSystemQueryOptionInlineCount(final String inlineCount) throws UriSyntaxException {
     if ("allpages".equals(inlineCount))
       uriResult.setInlineCount(InlineCount.ALLPAGES);
@@ -564,8 +565,6 @@ public class UriParserImpl extends UriParser {
     else
       throw new UriSyntaxException(UriSyntaxException.INVALIDVALUE.addContent(inlineCount));
   }
-
-  
 
   private void handleSystemQueryOptionSkipToken(final String skiptoken) throws UriSyntaxException {
     uriResult.setSkipToken(skiptoken);
@@ -696,22 +695,59 @@ public class UriParserImpl extends UriParser {
   private void handleOtherQueryParameters() throws UriSyntaxException, EdmException {
     final EdmFunctionImport functionImport = uriResult.getFunctionImport();
 
-    if (functionImport != null)
-      for (String parameterName : functionImport.getParameterNames()) {
-        final EdmParameter parameter = functionImport.getParameter(parameterName);
-        final String value = otherQueryParameters.remove(parameterName);
-        if (value == null)
-          if (parameter.getFacets() == null || parameter.getFacets().isNullable())
-            continue;
-          else
-            throw new UriSyntaxException(UriSyntaxException.MISSINGPARAMETER);
-        final EdmLiteral uriLiteral = simpleTypeFacade.parseUriLiteral(value);
-        if (!((EdmSimpleType) parameter.getType()).isCompatible(uriLiteral.getType()))
-          throw new UriSyntaxException(UriSyntaxException.INCOMPATIBLELITERAL);
-        uriResult.addFunctionImportParameter(parameterName, uriLiteral);
+    if (functionImport == null)
+    {
+      uriResult.setCustomQueryOptions(otherQueryParameters);
+      return;
+    }
+
+    for (String parameterName : functionImport.getParameterNames())
+    {
+      final EdmParameter parameter = functionImport.getParameter(parameterName);
+      final String value = otherQueryParameters.remove(parameterName);
+      EdmLiteral uriLiteral;
+
+      if (value == null)
+      {
+        if (parameter.getFacets() == null || parameter.getFacets().isNullable())
+          continue;
+        else
+          throw new UriSyntaxException(UriSyntaxException.MISSINGPARAMETER);
       }
 
+      try
+      {
+        uriLiteral = simpleTypeFacade.parseUriLiteral(value);
+      } catch (EdmLiteralException ex)
+      {
+        throw convertEdmLiteralException(ex);
+      }
+
+      if (!((EdmSimpleType) parameter.getType()).isCompatible(uriLiteral.getType()))
+        throw new UriSyntaxException(UriSyntaxException.INCOMPATIBLELITERAL);
+
+      uriResult.addFunctionImportParameter(parameterName, uriLiteral);
+    }
+
     uriResult.setCustomQueryOptions(otherQueryParameters);
+  }
+
+  private UriSyntaxException convertEdmLiteralException(EdmLiteralException ex) {
+    MessageReference mRef = ex.getMessageReference();
+    String mRefKey = mRef.getKey();
+    if (mRefKey == EdmLiteralException.LITERALFORMAT.getKey())
+    {
+      return new UriSyntaxException(UriSyntaxException.LITERALFORMAT.addContent(mRef.getContent()), ex);
+    }
+    else if (mRefKey == EdmLiteralException.NOTEXT.getKey())
+    {
+      return new UriSyntaxException(UriSyntaxException.NOTEXT.addContent(mRef.getContent()), ex);
+    }
+    else if (mRefKey == EdmLiteralException.UNKNOWNLITERAL.getKey())
+    {
+      return new UriSyntaxException(UriSyntaxException.UNKNOWNLITERAL.addContent(mRef.getContent()), ex);
+    }
+    return new UriSyntaxException(UriSyntaxException.COMMON, ex);
   }
 
   private List<String> copyPathSegmentList(final List<PathSegment> source) {
