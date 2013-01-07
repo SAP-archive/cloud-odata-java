@@ -1,4 +1,4 @@
-package com.sap.core.odata.core;
+package com.sap.core.odata.core.rest;
 
 import java.net.URI;
 
@@ -9,6 +9,8 @@ import javax.ws.rs.OPTIONS;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.core.Response;
+
+import com.sap.core.odata.core.ODataLocator;
 
 public class ODataRedirectLocator implements ODataLocator {
 

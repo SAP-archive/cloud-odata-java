@@ -1,4 +1,4 @@
-package com.sap.core.odata.core;
+package com.sap.core.odata.core.rest;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -37,6 +37,11 @@ import com.sap.core.odata.api.processor.ODataResponse;
 import com.sap.core.odata.api.processor.feature.ProcessorFeature;
 import com.sap.core.odata.api.uri.PathInfo;
 import com.sap.core.odata.api.uri.PathSegment;
+import com.sap.core.odata.core.Dispatcher;
+import com.sap.core.odata.core.ODataContextImpl;
+import com.sap.core.odata.core.ODataLocator;
+import com.sap.core.odata.core.ODataPathSegmentImpl;
+import com.sap.core.odata.core.ODataUriInfoImpl;
 import com.sap.core.odata.core.enums.ContentType;
 import com.sap.core.odata.core.enums.ODataHttpMethod;
 import com.sap.core.odata.core.uri.UriInfoImpl;

@@ -1,4 +1,4 @@
-package com.sap.core.odata.core;
+package com.sap.core.odata.core.rest;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -9,5 +9,5 @@ import javax.ws.rs.HttpMethod;
 
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
-@HttpMethod("MERGE")
-public @interface MERGE {}
+@HttpMethod("PATCH")
+public @interface PATCH {}
