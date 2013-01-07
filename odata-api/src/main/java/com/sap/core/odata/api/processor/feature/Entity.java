@@ -11,7 +11,7 @@ import com.sap.core.odata.api.uri.info.GetEntityUriInfo;
  * 
  * @author SAP AG
  */
-public interface Entity {
+public interface Entity extends ProcessorFeature {
 
   /**
    * @param contentType 

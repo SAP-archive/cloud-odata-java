@@ -11,7 +11,7 @@ import com.sap.core.odata.api.uri.info.GetEntityLinkUriInfo;
  * 
  * @author SAP AG
  */
-public interface EntityLink {
+public interface EntityLink extends ProcessorFeature {
   /**
    * @param uriParserResultView
    * @param contentType 

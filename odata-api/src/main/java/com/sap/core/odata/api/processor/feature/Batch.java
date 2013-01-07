@@ -9,7 +9,7 @@ import com.sap.core.odata.api.processor.ODataResponse;
  * @author SAP AG
  *
  */
-public interface Batch {
+public interface Batch extends ProcessorFeature {
 
   /**
    * @param contentType 

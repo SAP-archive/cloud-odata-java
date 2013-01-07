@@ -10,7 +10,7 @@ import com.sap.core.odata.api.ep.EntityProvider;
 import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.api.exception.ODataNotImplementedException;
 import com.sap.core.odata.api.processor.feature.Batch;
-import com.sap.core.odata.api.processor.feature.ContentTypeSupport;
+import com.sap.core.odata.api.processor.feature.CustomContentType;
 import com.sap.core.odata.api.processor.feature.Entity;
 import com.sap.core.odata.api.processor.feature.EntityComplexProperty;
 import com.sap.core.odata.api.processor.feature.EntityLink;
@@ -41,7 +41,7 @@ import com.sap.core.odata.api.uri.info.GetServiceDocumentUriInfo;
 import com.sap.core.odata.api.uri.info.GetSimplePropertyUriInfo;
 
 /**
- * <p>A default {@link ODataProcessor} that implements all processor aspects in a single class.</p>
+ * <p>A default {@link ODataProcessor} that implements all processor features in a single class.</p>
  * <p>It is recommended to derive from this class and it is required by the
  * {@link com.sap.core.odata.api.ODataServiceFactory} to build an {@link com.sap.core.odata.api.ODataService}.</p>
  * <p>This abstract class provides a default behavior, returning the correct response
@@ -66,7 +66,7 @@ public abstract class ODataSingleProcessor
     FunctionImport,
     FunctionImportValue,
     Batch,
-    ContentTypeSupport
+    CustomContentType
 {
 
   private static final String PARAMETER_CHARSET = "charset";
@@ -340,10 +340,10 @@ public abstract class ODataSingleProcessor
   }
 
   /**
-   * @see ContentTypeSupport
+   * @see CustomContentType
    */
   @Override
-  public List<String> getSupportedContentTypes(ProcessorFeature processorAspect) throws ODataException {
+  public List<String> getCustomContentTypes(Class<? extends ProcessorFeature> processorFeature) throws ODataException {
     return Collections.emptyList();
   }
 }

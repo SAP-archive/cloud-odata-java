@@ -5,7 +5,20 @@ import com.sap.core.odata.api.exception.ODataBadRequestException;
 import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.api.exception.ODataMethodNotAllowedException;
 import com.sap.core.odata.api.processor.ODataResponse;
+import com.sap.core.odata.api.processor.feature.Batch;
+import com.sap.core.odata.api.processor.feature.Entity;
+import com.sap.core.odata.api.processor.feature.EntitySet;
+import com.sap.core.odata.api.processor.feature.EntityComplexProperty;
+import com.sap.core.odata.api.processor.feature.EntityLink;
+import com.sap.core.odata.api.processor.feature.EntityLinks;
+import com.sap.core.odata.api.processor.feature.EntityMedia;
+import com.sap.core.odata.api.processor.feature.EntitySimpleProperty;
+import com.sap.core.odata.api.processor.feature.EntitySimplePropertyValue;
+import com.sap.core.odata.api.processor.feature.FunctionImport;
+import com.sap.core.odata.api.processor.feature.FunctionImportValue;
+import com.sap.core.odata.api.processor.feature.Metadata;
 import com.sap.core.odata.api.processor.feature.ProcessorFeature;
+import com.sap.core.odata.api.processor.feature.ServiceDocument;
 import com.sap.core.odata.api.uri.UriSyntaxException;
 import com.sap.core.odata.core.commons.ODataHttpMethod;
 import com.sap.core.odata.core.exception.ODataRuntimeException;
@@ -205,63 +218,63 @@ public class Dispatcher {
     }
   }
 
-  public ProcessorFeature mapUriTypeToProcessorFeature(UriInfoImpl uriParserResult) {
-    ProcessorFeature feature;
+  public Class<? extends ProcessorFeature> mapUriTypeToProcessorFeature(UriInfoImpl uriParserResult) {
+    Class<? extends ProcessorFeature> feature;
 
     switch (uriParserResult.getUriType()) {
     case URI0:
-      feature = ProcessorFeature.SERVICE_DOCUMENT;
+      feature = ServiceDocument.class;
       break;
     case URI1:
     case URI6B:
     case URI15:
-      feature = ProcessorFeature.ENTITY_SET;
+      feature = EntitySet.class;
       break;
     case URI2:
     case URI6A:
     case URI16:
-      feature = ProcessorFeature.ENTITY;
+      feature = Entity.class;
       break;
     case URI3:
-      feature = ProcessorFeature.ENTITY_COMPLEX_PROPERTY;
+      feature = EntityComplexProperty.class;
       break;
     case URI4:
     case URI5:
       if (uriParserResult.isValue()) {
-        feature = ProcessorFeature.ENTITY_SIMPLE_PROPERTY_VALUE;
+        feature = EntitySimplePropertyValue.class;
       } else {
-        feature = ProcessorFeature.ENTITY_SIMPLE_PROPERTY;
+        feature = EntitySimpleProperty.class;
       }
       break;
     case URI7A:
     case URI50A:
-      feature = ProcessorFeature.ENTITY_LINK;
+      feature = EntityLink.class;
       break;
     case URI7B:
     case URI50B:
-      feature = ProcessorFeature.ENTITY_LINKS;
+      feature = EntityLinks.class;
       break;
     case URI8:
-      feature = ProcessorFeature.METADATA;
+      feature = Metadata.class;
       break;
     case URI9:
-      feature = ProcessorFeature.BATCH;
+      feature = Batch.class;
       break;
     case URI10:
     case URI11:
     case URI12:
     case URI13:
-      feature = ProcessorFeature.FUNCTION_IMPORT;
+      feature = FunctionImport.class;
       break;
     case URI14:
       if (uriParserResult.isValue()) {
-        feature = ProcessorFeature.FUNCTION_IMPORT_VALUE;
+        feature = FunctionImportValue.class;
       } else {
-        feature = ProcessorFeature.FUNCTION_IMPORT;
+        feature = FunctionImport.class;
       }
       break;
     case URI17:
-      feature = ProcessorFeature.ENTITY_MEDIA;
+      feature = EntityMedia.class;
       break;
     default:
       throw new ODataRuntimeException("Unknown or not implemented URI type: " + uriParserResult.getUriType());
