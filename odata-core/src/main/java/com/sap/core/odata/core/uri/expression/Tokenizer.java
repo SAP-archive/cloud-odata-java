@@ -4,9 +4,9 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import com.sap.core.odata.api.edm.EdmLiteral;
+import com.sap.core.odata.api.edm.EdmLiteralException;
 import com.sap.core.odata.api.edm.EdmSimpleTypeFacade;
 import com.sap.core.odata.api.edm.EdmSimpleTypeKind;
-import com.sap.core.odata.api.uri.UriSyntaxException;
 import com.sap.core.odata.core.edm.EdmSimpleTypeFacadeImpl;
 
 public class Tokenizer
@@ -122,7 +122,7 @@ public class Tokenizer
         try
         {
           edmLiteral = typeDectector.parseUriLiteral(token);
-        } catch (UriSyntaxException ex)
+        } catch (EdmLiteralException ex)
         {
           throw TokenizerException.createTYPEDECTECTION_FAILED_ON_STRING(ex, oldPosition, token);
         }
@@ -205,7 +205,7 @@ public class Tokenizer
           try
           {
             edmLiteral = typeDectector.parseUriLiteral(token);
-          } catch (UriSyntaxException ex)
+          } catch (EdmLiteralException ex)
           {
             throw TokenizerException.createTYPEDECTECTION_FAILED_ON_EDMTYPE(ex, oldPosition, token);
           }
@@ -260,7 +260,7 @@ public class Tokenizer
             tokens.appendEdmTypedToken(oldPosition, TokenKind.SIMPLE_TYPE, token, edmLiteral);
 
             break;
-          } catch (UriSyntaxException ex)
+          } catch (EdmLiteralException ex)
           {
             //we thread is as normal literal
           }

@@ -6,6 +6,7 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 import com.sap.core.odata.api.edm.EdmException;
+import com.sap.core.odata.api.edm.EdmLiteralException;
 import com.sap.core.odata.api.edm.EdmSimpleTypeException;
 import com.sap.core.odata.api.exception.ODataApplicationException;
 import com.sap.core.odata.api.exception.ODataBadRequestException;
@@ -89,6 +90,12 @@ public class ODataExceptionTest {
   public void TestMessagesOfUriSyntaxException()
   {
     ODataMessageTextVerifier.TestClass(UriSyntaxException.class);
+  }
+  
+  @Test
+  public void TestMessagesOfEdmLiteralException()
+  {
+    ODataMessageTextVerifier.TestClass(EdmLiteralException.class);
   }
 
   @Test

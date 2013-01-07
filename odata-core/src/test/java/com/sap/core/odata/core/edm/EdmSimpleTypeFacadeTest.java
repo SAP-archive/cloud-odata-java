@@ -10,6 +10,7 @@ import org.junit.Test;
 
 import com.sap.core.odata.api.edm.EdmException;
 import com.sap.core.odata.api.edm.EdmLiteral;
+import com.sap.core.odata.api.edm.EdmLiteralException;
 import com.sap.core.odata.api.edm.EdmSimpleType;
 import com.sap.core.odata.api.edm.EdmSimpleTypeKind;
 import com.sap.core.odata.api.uri.UriSyntaxException;
@@ -37,7 +38,7 @@ import com.sap.core.odata.core.edm.Uint7;
  */
 public class EdmSimpleTypeFacadeTest {
 
-  public EdmSimpleType parse(final String literal) throws UriSyntaxException {
+  public EdmSimpleType parse(final String literal) throws EdmLiteralException {
     EdmLiteral uriLiteral = EdmSimpleTypeKind.parseUriLiteral(literal);
     return uriLiteral.getType();
   }
@@ -53,7 +54,7 @@ public class EdmSimpleTypeFacadeTest {
   }
 
   @Test
-  public void parseUriLiteralBinary() throws UriSyntaxException {
+  public void parseUriLiteralBinary() throws EdmLiteralException {
     EdmSimpleType binary = parse("X'Fa12aAA1'");
     assertNotNull(binary);
     assertTrue(binary instanceof EdmBinary);
@@ -64,7 +65,7 @@ public class EdmSimpleTypeFacadeTest {
   }
 
   @Test
-  public void parseUriLiteralBoolean() throws UriSyntaxException {
+  public void parseUriLiteralBoolean() throws EdmLiteralException {
     EdmSimpleType bool = parse("true");
     assertNotNull(bool);
     assertTrue(bool instanceof EdmBoolean);
@@ -75,7 +76,7 @@ public class EdmSimpleTypeFacadeTest {
   }
 
   @Test
-  public void parseUriLiteralBit() throws UriSyntaxException {
+  public void parseUriLiteralBit() throws EdmLiteralException {
     EdmSimpleType bit = parse("1");
     assertNotNull(bit);
     assertTrue(bit instanceof Bit);
@@ -86,21 +87,21 @@ public class EdmSimpleTypeFacadeTest {
   }
 
   @Test
-  public void parseUriLiteralByte() throws UriSyntaxException {
+  public void parseUriLiteralByte() throws EdmLiteralException {
     EdmSimpleType byt = parse("255");
     assertNotNull(byt);
     assertTrue(byt instanceof EdmByte);
   }
 
   @Test
-  public void parseUriLiteralUint7() throws UriSyntaxException {
+  public void parseUriLiteralUint7() throws EdmLiteralException {
     EdmSimpleType uInt7 = parse("123");
     assertNotNull(uInt7);
     assertTrue(uInt7 instanceof Uint7);
   }
 
   @Test
-  public void parseUriLiteralDateTime() throws UriSyntaxException {
+  public void parseUriLiteralDateTime() throws EdmLiteralException {
     EdmSimpleType dt = parse("datetime'2009-12-26T21%3A23%3A38'");
     assertNotNull(dt);
     assertTrue(dt instanceof EdmDateTime);
@@ -108,10 +109,15 @@ public class EdmSimpleTypeFacadeTest {
     dt = parse("datetime'2009-12-26T21%3A23%3A38'");
     assertNotNull(dt);
     assertTrue(dt instanceof EdmDateTime);
+    
+    /*TODO why does this don't throws an exception*/ 
+    dt = parse("datetime'ABC'");
+    assertNotNull(dt);
+    assertTrue(dt instanceof EdmDateTime);
   }
 
   @Test
-  public void parseUriLiteralDateTimeOffset() throws UriSyntaxException {
+  public void parseUriLiteralDateTimeOffset() throws EdmLiteralException {
     EdmSimpleType dto = parse("datetimeoffset'2009-12-26T21%3A23%3A38Z'");
     assertNotNull(dto);
     assertTrue(dto instanceof EdmDateTimeOffset);
@@ -122,7 +128,7 @@ public class EdmSimpleTypeFacadeTest {
   }
 
   @Test
-  public void parseUriLiteralDecimal() throws UriSyntaxException {
+  public void parseUriLiteralDecimal() throws EdmLiteralException {
     EdmSimpleType dec = parse("4.5m");
     assertNotNull(dec);
     assertTrue(dec instanceof EdmDecimal);
@@ -133,7 +139,7 @@ public class EdmSimpleTypeFacadeTest {
   }
 
   @Test
-  public void parseUriLiteralDouble() throws UriSyntaxException {
+  public void parseUriLiteralDouble() throws EdmLiteralException {
     EdmSimpleType doub = parse("4.5d");
     assertNotNull(doub);
     assertTrue(doub instanceof EdmDouble);
@@ -144,14 +150,14 @@ public class EdmSimpleTypeFacadeTest {
   }
 
   @Test
-  public void parseUriLiteralGuid() throws UriSyntaxException {
+  public void parseUriLiteralGuid() throws EdmLiteralException {
     EdmSimpleType guid = parse("guid'1225c695-cfb8-4ebb-aaaa-80da344efa6a'");
     assertNotNull(guid);
     assertTrue(guid instanceof EdmGuid);
   }
 
   @Test
-  public void parseUriLiteralInt16() throws UriSyntaxException {
+  public void parseUriLiteralInt16() throws EdmLiteralException {
     EdmSimpleType in = parse("-32768");
     assertNotNull(in);
     assertTrue(in instanceof EdmInt16);
@@ -162,7 +168,7 @@ public class EdmSimpleTypeFacadeTest {
   }
 
   @Test
-  public void parseUriLiteralInt32() throws UriSyntaxException {
+  public void parseUriLiteralInt32() throws EdmLiteralException {
     EdmSimpleType in = parse("-327687");
     assertNotNull(in);
     assertTrue(in instanceof EdmInt32);
@@ -173,7 +179,7 @@ public class EdmSimpleTypeFacadeTest {
   }
 
   @Test
-  public void parseUriLiteralInt64() throws UriSyntaxException {
+  public void parseUriLiteralInt64() throws EdmLiteralException {
     EdmSimpleType in = parse("64L");
     assertNotNull(in);
     assertTrue(in instanceof EdmInt64);
@@ -184,35 +190,35 @@ public class EdmSimpleTypeFacadeTest {
   }
 
   @Test
-  public void parseUriLiteralNull() throws UriSyntaxException {
+  public void parseUriLiteralNull() throws EdmLiteralException {
     EdmSimpleType in = parse("null");
     assertNotNull(in);
     assertTrue(in instanceof EdmNull);
   }
 
   @Test
-  public void parseUriLiteralSByte() throws UriSyntaxException {
+  public void parseUriLiteralSByte() throws EdmLiteralException {
     EdmSimpleType sb = parse("-123");
     assertNotNull(sb);
     assertTrue(sb instanceof EdmSByte);
   }
 
   @Test
-  public void parseUriLiteralSingle() throws UriSyntaxException {
+  public void parseUriLiteralSingle() throws EdmLiteralException {
     EdmSimpleType sing = parse("4.5f");
     assertNotNull(sing);
     assertTrue(sing instanceof EdmSingle);
   }
 
   @Test
-  public void parseUriLiteralString() throws UriSyntaxException {
+  public void parseUriLiteralString() throws EdmLiteralException {
     EdmSimpleType str = parse("'abc'");
     assertNotNull(str);
     assertTrue(str instanceof EdmString);
   }
 
   @Test
-  public void parseUriLiteralTime() throws UriSyntaxException {
+  public void parseUriLiteralTime() throws EdmLiteralException {
     EdmSimpleType time = parse("time'P120D'");
     assertNotNull(time);
     assertTrue(time instanceof EdmTime);
@@ -382,7 +388,7 @@ public class EdmSimpleTypeFacadeTest {
     try {
       EdmSimpleTypeKind.parseUriLiteral(literal);
       fail("Expected UriParserException not thrown");
-    } catch (UriSyntaxException e) {
+    } catch (EdmLiteralException e) {
       assertNotNull(e);
     }
   }
@@ -397,7 +403,7 @@ public class EdmSimpleTypeFacadeTest {
     parseWrongLiteralContent("12345678901234567890");
   }
 
-  private void parseIncompatibleLiteralContent(final String literal, final EdmSimpleType type) throws UriSyntaxException {
+  private void parseIncompatibleLiteralContent(final String literal, final EdmSimpleType type) throws EdmLiteralException {
     final EdmLiteral uriLiteral = EdmSimpleTypeKind.parseUriLiteral(literal);
     assertFalse(type.isCompatible(uriLiteral.getType()));
   }
