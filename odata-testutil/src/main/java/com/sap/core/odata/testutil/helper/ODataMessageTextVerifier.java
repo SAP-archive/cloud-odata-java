@@ -15,9 +15,10 @@ import com.sap.core.odata.api.exception.MessageReference;
 
 /**
  * This class is a helper for writing proper error messages.
- * Please use the static method {@link #TestClass(Class)} to 
- * test whether all fields of type {@link MessageReference} of 
- * the tested (Exception) class  are provided in the <b>i18n.properties</b> file.
+ * Please use the static method {@link #TestClass(Class)} to
+ * test whether all fields of type {@link MessageReference} of
+ * the tested (Exception) class are provided in the <b>i18n.properties</b> file.
+ * 
  * @author SAP AG
  */
 public class ODataMessageTextVerifier {
@@ -31,18 +32,15 @@ public class ODataMessageTextVerifier {
   public ResourceBundle resourceBundle = ResourceBundle.getBundle(BUNDLE_NAME, locale);
   private List<Throwable> errorCollector;
 
-  public ODataMessageTextVerifier()
-  {
+  public ODataMessageTextVerifier() {
     errorCollector = new ArrayList<Throwable>();
   }
 
-  private void failCollector(String text)
-  {
+  private void failCollector(String text) {
     try {
-      //System.out.println(text);
+      // System.out.println(text);
       fail(text);
-    } catch (AssertionError ae)
-    {
+    } catch (AssertionError ae) {
       errorCollector.add(ae);
     }
   }
@@ -50,41 +48,34 @@ public class ODataMessageTextVerifier {
   private String getMessage(MessageReference msgRef) {
     String value = null;
 
-    try
-    {
+    try {
       String key = msgRef.getKey();
       value = resourceBundle.getString(key);
       return value;
-    } catch (MissingResourceException ex)
-    {
+    } catch (MissingResourceException ex) {
       failCollector("Error-->Messagetext for key:\"" + msgRef.getKey() + "\" missing");
     }
     return null;
   }
 
-  private void assertExistMessage(MessageReference msgRef)
-  {
+  private void assertExistMessage(MessageReference msgRef) {
     String text = getMessage(msgRef);
     if (text == null)
-      return; //checked in getMessage
+      return; // checked in getMessage
 
-    if (text.length() == 0)
-    {
+    if (text.length() == 0) {
       failCollector("Error-->Messagetext for key:\"" + msgRef.getKey() + "\" empty");
     }
   }
 
-  public void CheckMessagesOfClass(Class<? extends Exception> exceptionClassToBeTested)
-  {
+  public void CheckMessagesOfClass(Class<? extends Exception> exceptionClassToBeTested) {
     Class<? extends Exception> testClass = exceptionClassToBeTested;
-    //try {
+    // try {
 
-    for (Field field : testClass.getDeclaredFields())
-    {
-      //if field from type  MessageReference
-      if (field.getType().isAssignableFrom(MessageReference.class))
-      {
-        //field should be final
+    for (Field field : testClass.getDeclaredFields()) {
+      // if field from type MessageReference
+      if (field.getType().isAssignableFrom(MessageReference.class)) {
+        // field should be final
         assertEquals("MsgRef Error--> Error: field should be final. ", true, Modifier.isFinal(field.getModifiers()));
 
         MessageReference msgRef = null;
@@ -98,8 +89,7 @@ public class ODataMessageTextVerifier {
           break;
         }
 
-        if (msgRef == null)
-        {
+        if (msgRef == null) {
           failCollector("MsgRef Error--> Not assigned: MsgRef " + field.getName() + " of class \"" + testClass.getSimpleName() + "\"");
           break;
         }
@@ -113,12 +103,10 @@ public class ODataMessageTextVerifier {
     return errorCollector;
   }
 
-  static public void TestClass(Class<? extends Exception> exceptionClassToBeTested)
-  {
+  static public void TestClass(Class<? extends Exception> exceptionClassToBeTested) {
     ODataMessageTextVerifier tool = new ODataMessageTextVerifier();
     tool.CheckMessagesOfClass(exceptionClassToBeTested);
-    for (Throwable throwable : tool.getErrorCollector())
-    {
+    for (Throwable throwable : tool.getErrorCollector()) {
       fail(throwable.getMessage());
     }
   }
