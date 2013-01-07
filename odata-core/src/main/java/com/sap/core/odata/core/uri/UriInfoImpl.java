@@ -20,7 +20,6 @@ import com.sap.core.odata.api.uri.SelectItem;
 import com.sap.core.odata.api.uri.UriInfo;
 import com.sap.core.odata.api.uri.expression.FilterExpression;
 import com.sap.core.odata.api.uri.expression.OrderByExpression;
-import com.sap.core.odata.core.commons.ContentType;
 
 /**
  * @author SAP AG
@@ -41,7 +40,7 @@ public class UriInfoImpl implements UriInfo {
   private boolean value;
   private boolean links;
 
-  private ContentType contentType;
+  private String format;
   private FilterExpression filter;
   private InlineCount inlineCount;
   private OrderByExpression orderBy;
@@ -166,16 +165,13 @@ public class UriInfoImpl implements UriInfo {
     return links;
   }
 
-  public void setContentType(ContentType contentType) {
-    this.contentType = contentType;
+  public void setFormat(String contentType) {
+    this.format = contentType;
   }
 
   @Override
-  public String getContentType() {
-    if(contentType == null) {
-      return null;
-    }
-    return contentType.toContentTypeString();
+  public String getFormat() {
+    return format;
   }
 
   public void setFilter(FilterExpression filter) {
@@ -285,7 +281,7 @@ public class UriInfoImpl implements UriInfo {
         + "isCount=" + count + ", "
         + "isValue=" + value + ", "
         + "isLinks=" + links + ", "
-        + "contentType=" + contentType + ", "
+        + "contentType=" + format + ", "
         + "filter=" + filter + ", "
         + "inlineCount=" + inlineCount + ", "
         + "orderBy=" + orderBy + ", "

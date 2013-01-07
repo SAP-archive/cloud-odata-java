@@ -64,7 +64,7 @@ public interface GetSimplePropertyUriInfo {
   /**
    * @return {@link String} the content type
    */
-  public String getContentType();
+  public String getFormat();
 
   /**
    * @return Map of {@literal <String,} {@link EdmLiteral}{@literal >} function import parameters

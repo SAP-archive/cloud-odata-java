@@ -34,13 +34,12 @@ import com.sap.core.odata.api.uri.KeyPredicate;
 import com.sap.core.odata.api.uri.NavigationPropertySegment;
 import com.sap.core.odata.api.uri.PathSegment;
 import com.sap.core.odata.api.uri.SelectItem;
+import com.sap.core.odata.api.uri.UriInfo;
 import com.sap.core.odata.api.uri.UriNotMatchingException;
 import com.sap.core.odata.api.uri.UriParser;
-import com.sap.core.odata.api.uri.UriInfo;
 import com.sap.core.odata.api.uri.UriSyntaxException;
 import com.sap.core.odata.api.uri.expression.FilterParserException;
 import com.sap.core.odata.api.uri.expression.OrderByParserException;
-import com.sap.core.odata.core.commons.ContentType;
 import com.sap.core.odata.core.edm.EdmSimpleTypeFacadeImpl;
 import com.sap.core.odata.core.exception.ODataRuntimeException;
 import com.sap.core.odata.core.uri.expression.FilterParserImpl;
@@ -520,18 +519,7 @@ public class UriParserImpl extends UriParser {
   }
 
   private void handleSystemQueryOptionFormat(final String format) throws UriSyntaxException {
-    if ("atom".equals(format)) {
-      uriResult.setContentType(ContentType.APPLICATION_ATOM_XML);
-    }
-    else if ("json".equals(format)) {
-      uriResult.setContentType(ContentType.APPLICATION_JSON);
-    }
-    else if ("xml".equals(format)) {
-      uriResult.setContentType(ContentType.APPLICATION_XML);
-    }
-    else {
-      uriResult.setContentType(ContentType.create(format));
-    }
+    uriResult.setFormat(format);
   }
 
   private void handleSystemQueryOptionFilter(final String filter) throws UriSyntaxException {

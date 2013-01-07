@@ -8,5 +8,5 @@ public interface GetServiceDocumentUriInfo {
   /**
    * @return {@link String} the content type
    */
-  public String getContentType();
+  public String getFormat();
 }

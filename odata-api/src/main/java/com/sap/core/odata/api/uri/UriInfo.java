@@ -97,7 +97,7 @@ public interface UriInfo extends GetServiceDocumentUriInfo, GetEntitySetUriInfo,
   /**
    * @return {@link String} the content type
    */
-  public String getContentType();
+  public String getFormat();
 
   /**
    * @return the filter expression

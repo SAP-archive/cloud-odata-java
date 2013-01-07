@@ -60,7 +60,7 @@ public interface GetEntitySetLinksUriInfo {
   /**
    * @return {@link String} the content type
    */
-  public String getContentType();
+  public String getFormat();
 
   /**
    * @return the filter expression

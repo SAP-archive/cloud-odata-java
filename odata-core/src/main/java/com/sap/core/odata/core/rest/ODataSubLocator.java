@@ -3,7 +3,6 @@ package com.sap.core.odata.core.rest;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -69,19 +68,54 @@ public final class ODataSubLocator implements ODataLocator {
     List<PathSegment> pathSegments = this.context.getUriInfo().getODataSegments();
     UriInfoImpl uriParserResult = (UriInfoImpl) this.uriParser.parse(pathSegments, this.queryParameters);
 
-    ContentType contentType = doContentNegotiation(uriParserResult);
+    String format = doContentNegotiation(uriParserResult);
 
-    ODataResponse odataResponse = dispatcher.dispatch(ODataHttpMethod.GET, uriParserResult, contentType.toContentTypeString());
+    ODataResponse odataResponse = dispatcher.dispatch(ODataHttpMethod.GET, uriParserResult, format);
     Response response = this.convertResponse(odataResponse);
 
     return response;
   }
 
-  private ContentType doContentNegotiation(UriInfoImpl uriParserResult) throws ODataException {
+  private String doContentNegotiation(UriInfoImpl uriParserResult) throws ODataException {
+    String format;
+    if(uriParserResult.getFormat() == null) {
+      format = doContentNegotiationForAcceptHeader(uriParserResult).toContentTypeString();
+    } else {
+      format = doContentNegotiationForFormat(uriParserResult);
+    }
+    return format;
+  }
+
+  private String doContentNegotiationForFormat(UriInfoImpl uriParserResult) throws ODataException {
+    String format = getFormat(uriParserResult);
+    ContentType tmp = ContentType.create(format);
     Class<? extends ProcessorFeature> processorFeature = dispatcher.mapUriTypeToProcessorFeature(uriParserResult);
     List<ContentType> supportedContentTypes = getSupportedContentTypes(processorFeature);
-    List<ContentType> acceptedContentTypes = getAcceptedContentTypes(uriParserResult, acceptHeaderContentTypes);
-    ContentType contentType = contentNegotiation(acceptedContentTypes, supportedContentTypes);
+    for (ContentType contentType : supportedContentTypes) {
+      if(contentType.equals(tmp)) {
+        return format;
+      }
+    }
+    
+    throw new ODataNotAcceptableException(ODataNotAcceptableException.NOT_SUPPORTED_CONTENT_TYPE.addContent(format));
+  }
+
+  private String getFormat(UriInfoImpl uriParserResult) {
+    String format = uriParserResult.getFormat();
+    if("xml".equals(format)) {
+      format = ContentType.APPLICATION_XML.toContentTypeString();
+    } else if("atom".equals(format)) {
+      format = ContentType.APPLICATION_ATOM_XML.toContentTypeString();
+    } else if("json".equals(format)) {
+      format = ContentType.APPLICATION_JSON.toContentTypeString();      
+    }
+    return format;
+  }
+
+  private ContentType doContentNegotiationForAcceptHeader(UriInfoImpl uriParserResult) throws ODataException {
+    Class<? extends ProcessorFeature> processorFeature = dispatcher.mapUriTypeToProcessorFeature(uriParserResult);
+    List<ContentType> supportedContentTypes = getSupportedContentTypes(processorFeature);
+    ContentType contentType = contentNegotiation(acceptHeaderContentTypes, supportedContentTypes);
     return contentType;
   }
 
@@ -109,13 +143,6 @@ public final class ODataSubLocator implements ODataLocator {
     }
 
     throw new ODataNotAcceptableException(ODataNotAcceptableException.NOT_SUPPORTED_CONTENT_TYPE.addContent(contentTypes.toString()));
-  }
-
-  private List<ContentType> getAcceptedContentTypes(UriInfoImpl uriParserResult, List<ContentType> contentTypes) {
-    if (uriParserResult.getContentType() == null)
-      return contentTypes;
-    else
-     return Arrays.asList(ContentType.create(uriParserResult.getContentType()));
   }
 
   @POST
@@ -161,7 +188,7 @@ public final class ODataSubLocator implements ODataLocator {
     final List<PathSegment> pathSegments = context.getUriInfo().getODataSegments();
     final UriInfoImpl uriParserResult = (UriInfoImpl) uriParser.parse(pathSegments, queryParameters);
 
-    final ODataResponse odataResponse = dispatcher.dispatch(ODataHttpMethod.DELETE, uriParserResult, uriParserResult.getContentType());
+    final ODataResponse odataResponse = dispatcher.dispatch(ODataHttpMethod.DELETE, uriParserResult, uriParserResult.getFormat());
     return convertResponse(odataResponse);
   }
 
