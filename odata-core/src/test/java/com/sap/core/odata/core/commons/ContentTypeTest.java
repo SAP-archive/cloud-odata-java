@@ -1,4 +1,4 @@
-package com.sap.core.odata.core.enums;
+package com.sap.core.odata.core.commons;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -10,7 +10,8 @@ import java.util.Map;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import com.sap.core.odata.core.enums.ContentType.ODataFormat;
+import com.sap.core.odata.core.commons.ContentType;
+import com.sap.core.odata.core.commons.ContentType.ODataFormat;
 
 // 14.1 Accept
 //

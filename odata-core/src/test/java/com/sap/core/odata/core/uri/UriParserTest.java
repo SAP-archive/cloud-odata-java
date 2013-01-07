@@ -31,7 +31,7 @@ import com.sap.core.odata.api.uri.UriNotMatchingException;
 import com.sap.core.odata.api.uri.UriInfo;
 import com.sap.core.odata.api.uri.UriSyntaxException;
 import com.sap.core.odata.core.ODataPathSegmentImpl;
-import com.sap.core.odata.core.enums.ContentType;
+import com.sap.core.odata.core.commons.ContentType;
 import com.sap.core.odata.core.uri.UriParserImpl;
 import com.sap.core.odata.core.uri.UriInfoImpl;
 import com.sap.core.odata.core.uri.UriType;

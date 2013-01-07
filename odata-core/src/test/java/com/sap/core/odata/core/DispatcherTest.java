@@ -28,8 +28,8 @@ import com.sap.core.odata.api.processor.feature.FunctionImport;
 import com.sap.core.odata.api.processor.feature.FunctionImportValue;
 import com.sap.core.odata.api.processor.feature.Metadata;
 import com.sap.core.odata.api.processor.feature.ServiceDocument;
-import com.sap.core.odata.core.enums.ContentType;
-import com.sap.core.odata.core.enums.ODataHttpMethod;
+import com.sap.core.odata.core.commons.ContentType;
+import com.sap.core.odata.core.commons.ODataHttpMethod;
 import com.sap.core.odata.core.uri.UriInfoImpl;
 import com.sap.core.odata.core.uri.UriType;
 

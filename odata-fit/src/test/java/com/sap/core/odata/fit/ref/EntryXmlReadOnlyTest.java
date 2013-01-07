@@ -8,7 +8,7 @@ import org.apache.http.HttpHeaders;
 import org.apache.http.HttpResponse;
 import org.junit.Test;
 
-import com.sap.core.odata.core.enums.ContentType;
+import com.sap.core.odata.core.commons.ContentType;
 
 /**
  * Tests employing the reference scenario reading a single entity in XML format

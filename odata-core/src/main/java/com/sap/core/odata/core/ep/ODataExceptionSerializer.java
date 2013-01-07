@@ -16,8 +16,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.sap.core.odata.api.edm.Edm;
-import com.sap.core.odata.core.enums.ContentType;
-import com.sap.core.odata.core.enums.ContentType.ODataFormat;
+import com.sap.core.odata.core.commons.ContentType;
+import com.sap.core.odata.core.commons.ContentType.ODataFormat;
 import com.sap.core.odata.core.ep.util.CircleStreamBuffer;
 
 /**

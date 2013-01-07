@@ -7,7 +7,7 @@ import com.sap.core.odata.api.exception.ODataMethodNotAllowedException;
 import com.sap.core.odata.api.processor.ODataResponse;
 import com.sap.core.odata.api.processor.feature.ProcessorFeature;
 import com.sap.core.odata.api.uri.UriSyntaxException;
-import com.sap.core.odata.core.enums.ODataHttpMethod;
+import com.sap.core.odata.core.commons.ODataHttpMethod;
 import com.sap.core.odata.core.exception.ODataRuntimeException;
 import com.sap.core.odata.core.uri.SystemQueryOption;
 import com.sap.core.odata.core.uri.UriInfoImpl;

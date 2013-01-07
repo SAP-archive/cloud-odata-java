@@ -17,7 +17,7 @@ import com.sap.core.odata.api.processor.ODataSingleProcessor;
 import com.sap.core.odata.api.processor.ODataSingleProcessorService;
 import com.sap.core.odata.api.processor.feature.ContentTypeSupport;
 import com.sap.core.odata.api.processor.feature.ProcessorFeature;
-import com.sap.core.odata.core.enums.ContentType;
+import com.sap.core.odata.core.commons.ContentType;
 
 /**
  * @author SAP AG

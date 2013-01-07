@@ -1,4 +1,4 @@
-package com.sap.core.odata.core.enums;
+package com.sap.core.odata.core.commons;
 
 import java.util.Collections;
 import java.util.Comparator;
