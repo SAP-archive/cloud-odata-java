@@ -36,7 +36,7 @@ public interface CommonExpression extends Visitable
    * information is purely based on input and output types of the 
    * operator as defined in the OData specification.
    * So for $filter=2 add 7 the {@link #getEdmType()} method of the binary expression 
-   * will return Edm.Byte and not Edm.Ind16 because the parser performs no real 
+   * will return Edm.Byte and not Edm.Int16 because the parser performs no real 
    * addition.<br>
    * <br>
    * <p>However, the application may change this type while evaluating the 

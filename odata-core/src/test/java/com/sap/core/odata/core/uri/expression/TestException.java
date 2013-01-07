@@ -7,7 +7,14 @@ import com.sap.core.odata.core.uri.expression.FilterParserInternalError;
 import com.sap.core.odata.core.uri.expression.TokenizerExpectError;
 import com.sap.core.odata.testutil.helper.ODataMessageTextVerifier;
 
-public class TestExceptionTexts {
+public class TestException extends TestBase
+{
+  
+  @Test
+  public void TestMParseFilterStringE()
+  {
+    
+  }
 
   @Test
   public void TestFilterParserExceptionMessages()
@@ -33,5 +40,6 @@ public class TestExceptionTexts {
     ODataMessageTextVerifier.TestClass(TokenizerException.class);
   }
 
+  
 
 }
