@@ -35,9 +35,11 @@
 	<hr />
 	<h2>Reference Scenario</h2>
 	<ul>
-		<li><a href="SalesOrderProcessing.svc?_wadl" target="_blank">wadl</a></li><!-- ReferenceScenario.svc?_wadl -->
-		<li><a href="SalesOrderProcessing.svc/" target="_blank">service document</a></li><!-- ReferenceScenario.svc/ -->
-		<li><a href="SalesOrderProcessing.svc/$metadata" target="_blank">metadata</a></li><!-- ReferenceScenario.svc/$metadata -->
+		<li><a href="SalesOrderProcessing.svc?_wadl" target="_blank">wadl</a></li>
+		<li><a href="SalesOrderProcessing.svc/" target="_blank">service document</a></li>
+		<li><a href="SalesOrderProcessing.svc/$metadata" target="_blank">metadata</a></li>
+		<li><a href="SalesOrderProcessing.svc/SalesOrderHeaders" target="_blank">Simple Query</a></li>
+		<li><a href="SalesOrderProcessing.svc/SalesOrderHeaders?$filter=buyerId eq 7" target="_blank">Query with $filter for buyerId 7</a></li>
 	</ul>
 	<hr />
 		<h4>Reference Scenario Data Generation </h4>
