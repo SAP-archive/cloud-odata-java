@@ -10,7 +10,7 @@ import com.sap.core.odata.api.uri.info.GetMediaResourceUriInfo;
  * @author SAP AG
  *
  */
-public interface EntityMedia {
+public interface EntityMedia extends ProcessorFeature {
   
   /**
    * @param contentType 

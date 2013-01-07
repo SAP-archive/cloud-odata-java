@@ -21,5 +21,4 @@ public interface ODataProcessor {
    * @throws ODataException
    */
   ODataContext getContext() throws ODataException;
-
 }

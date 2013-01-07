@@ -10,7 +10,7 @@ import com.sap.core.odata.api.uri.info.GetComplexPropertyUriInfo;
  * @author SAP AG
  *
  */
-public interface EntityComplexProperty {
+public interface EntityComplexProperty extends ProcessorFeature {
   /**
    * @param contentType 
    * @return a {@link ODataResponse} object

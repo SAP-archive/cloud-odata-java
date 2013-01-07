@@ -10,7 +10,7 @@ import com.sap.core.odata.api.uri.info.GetSimplePropertyUriInfo;
  * @author SAP AG
  *
  */
-public interface EntitySimpleProperty {
+public interface EntitySimpleProperty extends ProcessorFeature {
   
   /**
    * @param contentType 

@@ -78,14 +78,14 @@ public final class ODataSubLocator implements ODataLocator {
   }
 
   private ContentType doContentNegotiation(UriInfoImpl uriParserResult) throws ODataException {
-    ProcessorFeature processorFeature = dispatcher.mapUriTypeToProcessorFeature(uriParserResult);
+    Class<? extends ProcessorFeature> processorFeature = dispatcher.mapUriTypeToProcessorFeature(uriParserResult);
     List<ContentType> supportedContentTypes = getSupportedContentTypes(processorFeature);
     List<ContentType> acceptedContentTypes = getAcceptedContentTypes(uriParserResult, acceptHeaderContentTypes);
     ContentType contentType = contentNegotiation(acceptedContentTypes, supportedContentTypes);
     return contentType;
   }
 
-  private List<ContentType> getSupportedContentTypes(ProcessorFeature processorFeature) throws ODataException {
+  private List<ContentType> getSupportedContentTypes(Class<? extends ProcessorFeature> processorFeature) throws ODataException {
     List<ContentType> resultContentTypes = new ArrayList<ContentType>();
     for (String contentType : service.getSupportedContentTypes(processorFeature))
       resultContentTypes.add(ContentType.create(contentType));

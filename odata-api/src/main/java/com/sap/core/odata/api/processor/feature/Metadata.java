@@ -10,7 +10,7 @@ import com.sap.core.odata.api.uri.info.GetMetadataUriInfo;
  * @author SAP AG
  *
  */
-public interface Metadata {
+public interface Metadata extends ProcessorFeature {
 
   /**
    * @param contentType 
