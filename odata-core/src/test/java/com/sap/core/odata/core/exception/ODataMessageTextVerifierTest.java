@@ -12,14 +12,13 @@ import com.sap.core.odata.testutil.mock.SampleClassForInvalidMessageReferences;
 
 /**
  * This class tests the {@link ODataMessageTextVerifier}
+ * 
  * @Author SAP AG
  */
-public class ODataMessageTextVerifierTest
-{
+public class ODataMessageTextVerifierTest {
 
   @Test
-  public void TestExceptionText()
-  {
+  public void TestExceptionText() {
     ODataMessageTextVerifier tool = new ODataMessageTextVerifier();
     tool.CheckMessagesOfClass(SampleClassForInvalidMessageReferences.class);
 
