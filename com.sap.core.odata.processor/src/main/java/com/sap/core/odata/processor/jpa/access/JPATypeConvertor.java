@@ -41,6 +41,6 @@ public class JPATypeConvertor {
 		else if (jpaType.equals(UUID.class))
 			return EdmSimpleTypeKind.Guid;
 		
-		throw new ODataJPAModelException(ODataJPAModelException.TYPE_NOT_SUPPORTED.addContent(jpaType.toString()));
+		throw ODataJPAModelException.throwException(ODataJPAModelException.TYPE_NOT_SUPPORTED.addContent(jpaType.toString()),null);
 	}
 }

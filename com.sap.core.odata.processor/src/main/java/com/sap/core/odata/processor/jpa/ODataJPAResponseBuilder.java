@@ -47,7 +47,7 @@ public final class ODataJPAResponseBuilder {
 				        .skipToken("")
 				        .build();
 			} catch (ODataException e) {
-				throw new ODataJPARuntimeException(ODataJPARuntimeException.COMMON.addContent(e.getMessage()),e);
+				throw ODataJPARuntimeException.throwException(ODataJPARuntimeException.GENERAL.addContent(e.getMessage()),e);
 			}
 		    
 			odataResponse = ODataResponse.fromResponse(ODataEntityProvider.create(contentType).writeFeed(resultsView, edmEntityList, feedProperties))
@@ -56,9 +56,9 @@ public final class ODataJPAResponseBuilder {
 			
 			
 		} catch (ODataEntityProviderException e) {
-			throw new ODataJPARuntimeException(ODataJPARuntimeException.COMMON.addContent(e.getMessage()),e);
+			throw ODataJPARuntimeException.throwException(ODataJPARuntimeException.GENERAL.addContent(e.getMessage()),e);
 		} catch (EdmException e) {
-			throw new ODataJPARuntimeException(ODataJPARuntimeException.COMMON.addContent(e.getMessage()),e);
+			throw ODataJPARuntimeException.throwException(ODataJPARuntimeException.GENERAL.addContent(e.getMessage()),e);
 		}
 
 		return odataResponse;

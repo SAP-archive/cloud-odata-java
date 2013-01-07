@@ -85,7 +85,7 @@ public class JPQLSelectContextImpl extends JPQLSelectContext {
 					}
 
 				} catch (EdmException e) {
-					throw new ODataJPAModelException(
+					throw ODataJPAModelException.throwException(
 							ODataJPARuntimeException.RUNTIME_EXCEPTION.addContent(e
 									.getMessage()), e);
 				}

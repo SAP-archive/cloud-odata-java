@@ -3,15 +3,11 @@ package com.sap.core.odata.processor.jpa;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.HashMap;
-import java.util.Map;
-
-import com.sap.core.odata.api.edm.EdmEntityType;
 import com.sap.core.odata.api.edm.EdmException;
 import com.sap.core.odata.api.edm.EdmMapping;
 import com.sap.core.odata.api.edm.EdmProperty;
 import com.sap.core.odata.api.edm.EdmStructuralType;
 import com.sap.core.odata.api.edm.EdmTypeKind;
-import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.processor.jpa.exception.ODataJPARuntimeException;
 
 public final class JPAResultParser {
@@ -71,19 +67,19 @@ public final class JPAResultParser {
 				edmEntity.put(key, propertyValue);
 				
 			} catch (EdmException e) {
-				throw new ODataJPARuntimeException(
+				throw ODataJPARuntimeException.throwException(
 						ODataJPARuntimeException.RUNTIME_EXCEPTION.addContent(e
 								.getMessage()), e);
 			} catch (IllegalAccessException e) {
-				throw new ODataJPARuntimeException(
+				throw ODataJPARuntimeException.throwException(
 						ODataJPARuntimeException.RUNTIME_EXCEPTION.addContent(e
 								.getMessage()), e);
 			} catch (IllegalArgumentException e) {
-				throw new ODataJPARuntimeException(
+				throw ODataJPARuntimeException.throwException(
 						ODataJPARuntimeException.RUNTIME_EXCEPTION.addContent(e
 								.getMessage()), e);
 			} catch (InvocationTargetException e) {
-				throw new ODataJPARuntimeException(
+				throw ODataJPARuntimeException.throwException(
 						ODataJPARuntimeException.RUNTIME_EXCEPTION.addContent(e
 								.getMessage()), e);
 			}
@@ -104,7 +100,7 @@ public final class JPAResultParser {
 			else
 				name = mapping.getInternalName();
 		} catch (EdmException e) {
-			throw new ODataJPARuntimeException(
+			throw ODataJPARuntimeException.throwException(
 					ODataJPARuntimeException.RUNTIME_EXCEPTION.addContent(e
 							.getMessage()), e);
 		}
@@ -134,15 +130,15 @@ public final class JPAResultParser {
 								(Class<?>[]) null));
 			}
 		} catch (NoSuchMethodException e) {
-			throw new ODataJPARuntimeException(
+			throw ODataJPARuntimeException.throwException(
 					ODataJPARuntimeException.RUNTIME_EXCEPTION.addContent(e
 							.getMessage()), e);
 		} catch (SecurityException e) {
-			throw new ODataJPARuntimeException(
+			throw ODataJPARuntimeException.throwException(
 					ODataJPARuntimeException.RUNTIME_EXCEPTION.addContent(e
 							.getMessage()), e);
 		} catch (EdmException e) {
-			throw new ODataJPARuntimeException(
+			throw ODataJPARuntimeException.throwException(
 					ODataJPARuntimeException.RUNTIME_EXCEPTION.addContent(e
 							.getMessage()), e);
 		}
