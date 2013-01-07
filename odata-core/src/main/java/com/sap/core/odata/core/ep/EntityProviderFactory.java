@@ -4,7 +4,7 @@ import com.sap.core.odata.api.ep.EntityProvider;
 import com.sap.core.odata.api.ep.EntityProviderException;
 import com.sap.core.odata.api.exception.ODataNotAcceptableException;
 import com.sap.core.odata.api.exception.ODataNotImplementedException;
-import com.sap.core.odata.core.enums.ContentType;
+import com.sap.core.odata.core.commons.ContentType;
 
 public class EntityProviderFactory {
 

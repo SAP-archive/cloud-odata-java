@@ -12,7 +12,7 @@ import org.junit.Test;
 
 import com.sap.core.odata.api.edm.EdmFunctionImport;
 import com.sap.core.odata.api.processor.ODataResponse;
-import com.sap.core.odata.core.enums.ContentType;
+import com.sap.core.odata.core.commons.ContentType;
 import com.sap.core.odata.testutil.helper.StringHelper;
 import com.sap.core.odata.testutil.mock.MockFacade;
 

@@ -20,7 +20,7 @@ import com.sap.core.odata.api.uri.SelectItem;
 import com.sap.core.odata.api.uri.UriInfo;
 import com.sap.core.odata.api.uri.expression.FilterExpression;
 import com.sap.core.odata.api.uri.expression.OrderByExpression;
-import com.sap.core.odata.core.enums.ContentType;
+import com.sap.core.odata.core.commons.ContentType;
 
 /**
  * @author SAP AG

@@ -42,8 +42,8 @@ import com.sap.core.odata.core.ODataContextImpl;
 import com.sap.core.odata.core.ODataLocator;
 import com.sap.core.odata.core.ODataPathSegmentImpl;
 import com.sap.core.odata.core.ODataUriInfoImpl;
-import com.sap.core.odata.core.enums.ContentType;
-import com.sap.core.odata.core.enums.ODataHttpMethod;
+import com.sap.core.odata.core.commons.ContentType;
+import com.sap.core.odata.core.commons.ODataHttpMethod;
 import com.sap.core.odata.core.uri.UriInfoImpl;
 import com.sap.core.odata.core.uri.UriParserImpl;
 

@@ -24,7 +24,7 @@ import com.sap.core.odata.api.processor.ODataContext;
 import com.sap.core.odata.api.processor.ODataResponse;
 import com.sap.core.odata.api.uri.PathInfo;
 import com.sap.core.odata.api.uri.UriInfo;
-import com.sap.core.odata.core.enums.ContentType;
+import com.sap.core.odata.core.commons.ContentType;
 import com.sap.core.odata.ref.model.DataContainer;
 import com.sap.core.odata.ref.processor.ListsProcessor;
 import com.sap.core.odata.ref.processor.ScenarioDataSource;
