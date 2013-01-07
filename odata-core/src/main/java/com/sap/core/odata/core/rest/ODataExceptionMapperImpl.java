@@ -1,4 +1,4 @@
-package com.sap.core.odata.core;
+package com.sap.core.odata.core.rest;
 
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;

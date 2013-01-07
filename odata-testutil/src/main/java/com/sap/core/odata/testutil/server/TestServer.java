@@ -58,7 +58,7 @@ public class TestServer {
 
         CXFNonSpringJaxrsServlet odataServlet = new CXFNonSpringJaxrsServlet();
         ServletHolder odataServletHolder = new ServletHolder(odataServlet);
-        odataServletHolder.setInitParameter("javax.ws.rs.Application", "com.sap.core.odata.core.ODataApplication");
+        odataServletHolder.setInitParameter("javax.ws.rs.Application", "com.sap.core.odata.core.rest.app.ODataApplication");
         odataServletHolder.setInitParameter(ODataServiceFactory.FACTORY_LABEL, factoryClass.getCanonicalName());
 
         if (this.pathSplit > 0) {
