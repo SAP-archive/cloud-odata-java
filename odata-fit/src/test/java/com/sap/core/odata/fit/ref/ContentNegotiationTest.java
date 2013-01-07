@@ -9,6 +9,7 @@ import org.apache.http.Header;
 import org.apache.http.HttpHeaders;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpGet;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import com.sap.core.odata.api.edm.provider.EdmProvider;
@@ -34,6 +35,67 @@ public class ContentNegotiationTest extends AbstractFitTest {
 
     return new ODataSingleProcessorService(provider, processor);
   }
+
+  @Test
+  public void testFormatOverwriteAcceptHeader() throws Exception {
+    HttpGet get = new HttpGet(URI.create(this.getEndpoint().toString() + "?$format=xml"));
+    get.addHeader(HttpHeaders.ACCEPT, "image/gif");
+    
+    HttpResponse response = this.getHttpClient().execute(get);
+    
+    assertEquals(200, response.getStatusLine().getStatusCode());
+    Header header = response.getFirstHeader(HttpHeaders.CONTENT_TYPE);
+    
+    assertEquals(ContentType.APPLICATION_XML.toContentTypeString() + "; charset=utf-8", header.getValue());
+  }
+
+  @Test
+  public void testFormatXml() throws Exception {
+    HttpGet get = new HttpGet(URI.create(this.getEndpoint().toString() + "?$format=xml"));
+    
+    HttpResponse response = this.getHttpClient().execute(get);
+    
+    assertEquals(200, response.getStatusLine().getStatusCode());
+    Header header = response.getFirstHeader(HttpHeaders.CONTENT_TYPE);
+    
+    assertEquals(ContentType.APPLICATION_XML.toContentTypeString() + "; charset=utf-8", header.getValue());
+  }
+
+  @Test
+  @Ignore("JSON is currently not supported")
+  public void testFormatJson() throws Exception {
+    HttpGet get = new HttpGet(URI.create(this.getEndpoint().toString() + "?$format=json"));
+    
+    HttpResponse response = this.getHttpClient().execute(get);
+    
+    assertEquals(200, response.getStatusLine().getStatusCode());
+    Header header = response.getFirstHeader(HttpHeaders.CONTENT_TYPE);
+    
+    assertEquals(ContentType.APPLICATION_JSON.toContentTypeString() + "; charset=utf-8", header.getValue());
+  }
+
+  @Test
+  public void testFormatAtom() throws Exception {
+    HttpGet get = new HttpGet(URI.create(this.getEndpoint().toString() + "Rooms('1')?$format=atom"));
+    
+    HttpResponse response = this.getHttpClient().execute(get);
+    
+    assertEquals(200, response.getStatusLine().getStatusCode());
+    Header header = response.getFirstHeader(HttpHeaders.CONTENT_TYPE);
+    
+    assertEquals(ContentType.APPLICATION_ATOM_XML_ENTRY.toContentTypeString() + "; charset=utf-8", header.getValue());
+  }
+
+
+  @Test
+  public void testFormatNotSupported() throws Exception {
+    HttpGet get = new HttpGet(URI.create(this.getEndpoint().toString() + "?$format=XXXML"));
+
+    HttpResponse response = this.getHttpClient().execute(get);
+
+    assertEquals(406, response.getStatusLine().getStatusCode());
+  }
+
 
   @Test
   public void testContentTypeMetadata() throws Exception {

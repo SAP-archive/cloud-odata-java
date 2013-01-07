@@ -610,7 +610,7 @@ public class UriParserTest {
     UriInfoImpl result = parse("Employees?$format=json&$inlinecount=allpages&$skiptoken=abc&$skip=2&$top=1");
     assertEquals("Employees", result.getTargetEntitySet().getName());
     assertEquals(UriType.URI1, result.getUriType());
-    assertEquals(ContentType.APPLICATION_JSON.toContentTypeString(), result.getContentType());
+    assertEquals("json", result.getFormat());
     assertEquals(InlineCount.ALLPAGES, result.getInlineCount());
     assertEquals("abc", result.getSkipToken());
     assertEquals(2, result.getSkip().intValue());
@@ -619,7 +619,7 @@ public class UriParserTest {
     result = parse("Employees?$format=atom&$inlinecount=none&$skip=0&$top=0");
     assertEquals("Employees", result.getTargetEntitySet().getName());
     assertEquals(UriType.URI1, result.getUriType());
-    assertEquals(ContentType.APPLICATION_ATOM_XML.toContentTypeString(), result.getContentType());
+    assertEquals("atom", result.getFormat());
     assertEquals(InlineCount.NONE, result.getInlineCount());
     assertEquals(0, result.getSkip().intValue());
     assertEquals(0, result.getTop().intValue());
@@ -627,7 +627,7 @@ public class UriParserTest {
     result = parse("Employees?$format=json&$inlinecount=none");
     assertEquals("Employees", result.getTargetEntitySet().getName());
     assertEquals(UriType.URI1, result.getUriType());
-    assertEquals(ContentType.APPLICATION_JSON.toContentTypeString(), result.getContentType());
+    assertEquals("json", result.getFormat());
     assertEquals(InlineCount.NONE, result.getInlineCount());
     assertNull(result.getSkip());
     assertNull(result.getTop());
@@ -635,30 +635,30 @@ public class UriParserTest {
     result = parse("Employees?$format=atom");
     assertEquals("Employees", result.getTargetEntitySet().getName());
     assertEquals(UriType.URI1, result.getUriType());
-    assertEquals(ContentType.APPLICATION_ATOM_XML.toContentTypeString(), result.getContentType());
+    assertEquals("atom", result.getFormat());
 
     result = parse("Employees?$format=xml");
     assertEquals("Employees", result.getTargetEntitySet().getName());
     assertEquals(UriType.URI1, result.getUriType());
-    assertEquals(ContentType.APPLICATION_XML.toContentTypeString(), result.getContentType());
+    assertEquals("xml", result.getFormat());
     assertNull(result.getTop());
 
     result = parse("Employees?$format=xml&$format=json");
-    assertEquals(ContentType.APPLICATION_JSON.toContentTypeString(), result.getContentType());
+    assertEquals("json", result.getFormat());
 
     result = parse("Employees?$format=custom/*");
-    assertNotNull(result.getContentType());
-    assertEquals("custom/*", result.getContentType().toString());
+    assertNotNull(result.getFormat());
+    assertEquals("custom/*", result.getFormat().toString());
 
     result = parse("/Employees('1')/Location/Country?$format=json");
     assertEquals("Employees", result.getTargetEntitySet().getName());
     assertEquals(UriType.URI4, result.getUriType());
-    assertEquals(ContentType.APPLICATION_JSON.toContentTypeString(), result.getContentType());
+    assertEquals("json", result.getFormat());
 
     result = parse("/Employees('1')/EmployeeName?$format=json");
     assertEquals("Employees", result.getTargetEntitySet().getName());
     assertEquals(UriType.URI5, result.getUriType());
-    assertEquals(ContentType.APPLICATION_JSON.toContentTypeString(), result.getContentType());
+    assertEquals("json", result.getFormat());
 
     result = parse("Employees?$filter=Age%20gt%2020&$orderby=EmployeeName%20desc");
     assertEquals("Employees", result.getTargetEntitySet().getName());
@@ -711,7 +711,7 @@ public class UriParserTest {
     UriInfoImpl result = parse("Employees?$format=json&$inlinecount=allpages&$skiptoken=abc&$skip=2&$top=1");
     assertEquals("Employees", result.getStartEntitySet().getName());
     assertEquals(UriType.URI1, result.getUriType());
-    assertEquals(ContentType.APPLICATION_JSON.toContentTypeString(), result.getContentType());
+    assertEquals("json", result.getFormat());
     assertEquals(InlineCount.ALLPAGES, result.getInlineCount());
     assertEquals("abc", result.getSkipToken());
     assertEquals(2, result.getSkip().intValue());
