@@ -3,7 +3,7 @@ package com.sap.core.odata.processor.ref.jpa;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "T_LINEITEMS")
+@Table(name = "T_SALESORDERITEM")
 public class SalesOrderItem {
 
 	public SalesOrderItem() {
@@ -18,7 +18,7 @@ public class SalesOrderItem {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "LINE_ITEM_ID")
+	@Column(name = "SALESORDERITEM_ID")
 	private long liId;
 
 	@Column(name = "PRODUCT_NAME")
@@ -27,10 +27,10 @@ public class SalesOrderItem {
 	@Column(name = "PRODUCT_ID")
 	private int productId;
 	
-	@Column(name = "PRODUCT_PRICE")
+	@Column(name = "PRICE")
 	private double price;
 	
-	@JoinColumn(name = "SO_LINE_ITEM_ID", referencedColumnName = "SO_ID")
+	@JoinColumn(name = "SALESORDERITEM_ITEM_ID", referencedColumnName = "SO_ID")
 	@ManyToOne
 	private SalesOrderHeader salesOrderHeader;
 
@@ -58,11 +58,11 @@ public class SalesOrderItem {
 		this.productId = productId;
 	}
 	
-	public double getProductPrice() {
+	public double getPrice() {
 		return price;
 	}
 
-	public void setProductPrice(double price) {
+	public void setPrice(double price) {
 		this.price = price;
 	}
 	
@@ -72,7 +72,7 @@ public class SalesOrderItem {
 
 	public void setSalesOrderHeader(SalesOrderHeader salesOrderHeader) {
 		this.salesOrderHeader = salesOrderHeader;
-		this.salesOrderHeader.getLineItems().add(this);
+		this.salesOrderHeader.getSalesOrderItem().add(this);
 	}
 
 }
