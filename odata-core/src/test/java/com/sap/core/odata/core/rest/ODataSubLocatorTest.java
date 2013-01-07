@@ -1,4 +1,4 @@
-package com.sap.core.odata.core;
+package com.sap.core.odata.core.rest;
 
 import static org.junit.Assert.assertEquals;
 
@@ -9,6 +9,7 @@ import org.junit.Test;
 
 import com.sap.core.odata.api.exception.ODataNotAcceptableException;
 import com.sap.core.odata.core.enums.ContentType;
+import com.sap.core.odata.core.rest.ODataSubLocator;
 
 public class ODataSubLocatorTest {
 
