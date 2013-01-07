@@ -6,7 +6,7 @@
 		transaction-type="RESOURCE_LOCAL">
 		<provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
 		<class>com.sap.core.odata.processor.ref.jpa.SalesOrderHeader</class>
-		<class>com.sap.core.odata.processor.ref.jpa.LineItems</class>
+		<class>com.sap.core.odata.processor.ref.jpa.SalesOrderItem</class>
 		<properties>
 			<property name="eclipselink.jdbc.driver" value="org.hsqldb.jdbcDriver" />
 			<property name="eclipselink.jdbc.url" value="jdbc:hsqldb:mem:com.sap.sample" />

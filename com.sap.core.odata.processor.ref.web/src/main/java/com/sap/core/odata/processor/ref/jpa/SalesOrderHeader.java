@@ -57,7 +57,7 @@ public class SalesOrderHeader {
 	private boolean deliveryStatus;
 
 	@OneToMany(mappedBy = "SalesOrderHeader", cascade = CascadeType.ALL)
-	private final List<LineItems> lineItems = new ArrayList<LineItems>();
+	private final List<SalesOrderItem> salesOrderItem = new ArrayList<SalesOrderItem>();
 
 	public long getSoId() {
 		return soId;
@@ -123,7 +123,7 @@ public class SalesOrderHeader {
 		this.deliveryStatus = deliveryStatus;
 	}
 
-	public List<LineItems> getLineItems() {
-		return this.lineItems;
+	public List<SalesOrderItem> getLineItems() {
+		return this.salesOrderItem;
 	}
 }
