@@ -123,7 +123,7 @@ public class SalesOrderHeader {
 		this.deliveryStatus = deliveryStatus;
 	}
 
-	public List<SalesOrderItem> getLineItems() {
+	public List<SalesOrderItem> getSalesOrderItem() {
 		return this.salesOrderItem;
 	}
 }

@@ -9,8 +9,8 @@ import com.sap.core.odata.processor.ref.jpa.SalesOrderHeader;
 
 public class DataGenerator {
 
-	private static final int MAX_SALES_ORDER = 10;
-	private static final int MAX_LINE_ITEMS_PER_SALES_ORDER = 3;
+	private static final int MAX_SALESORDER = 10;
+	private static final int MAX_SALESORDERITEM_PER_SALESORDER = 3;
 
 	private EntityManager entityManager;
 
@@ -20,16 +20,16 @@ public class DataGenerator {
 
 	public void generate() {
 		this.entityManager.getTransaction().begin();
-		for (int i = 0; i < DataGenerator.MAX_SALES_ORDER; i++) {
+		for (int i = 0; i < DataGenerator.MAX_SALESORDER; i++) {
 			Address ba = new Address((short) i, "Street_" + i,
 					"City_" + i, "Country_" + i);
 			SalesOrderHeader salesOrder = new SalesOrderHeader(i, "Test_Buyer_" + i,
 					ba, "Cur_Code_" + i, (double) i, ((i % 2) == 0) ? true
 							: false);
-			for (int j = 0; j < DataGenerator.MAX_LINE_ITEMS_PER_SALES_ORDER; j++) {
-				SalesOrderItem lineItem = new SalesOrderItem("Line_Item_" + j);
-				salesOrder.getLineItems().add(lineItem);
-				this.entityManager.persist(lineItem); 
+			for (int j = 0; j < DataGenerator.MAX_SALESORDERITEM_PER_SALESORDER; j++) {
+				SalesOrderItem salesOrderItem = new SalesOrderItem("SalesOrderItem_" + j);
+				salesOrder.getSalesOrderItem().add(salesOrderItem);
+				this.entityManager.persist(salesOrderItem); 
 			}
 			this.entityManager.persist(salesOrder);
 		}
@@ -39,9 +39,9 @@ public class DataGenerator {
 	public void clean() {
 		this.entityManager.getTransaction().begin();
 
-		TypedQuery<SalesOrderItem> queryLineItems = this.entityManager.createQuery(
+		TypedQuery<SalesOrderItem> querySalesOrderItem = this.entityManager.createQuery(
 				"SELECT m FROM SalesOrderItem m", SalesOrderItem.class);
-		for (SalesOrderItem part : queryLineItems.getResultList()) {
+		for (SalesOrderItem part : querySalesOrderItem.getResultList()) {
 			this.entityManager.remove(part);
 		}
 		TypedQuery<SalesOrderHeader> querySalesOrder = this.entityManager
