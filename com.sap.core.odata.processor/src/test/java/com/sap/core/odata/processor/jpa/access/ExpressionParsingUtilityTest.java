@@ -2,10 +2,6 @@ package com.sap.core.odata.processor.jpa.access;
 
 import static org.junit.Assert.assertEquals;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-
 import org.easymock.EasyMock;
 import org.junit.Test;
 
@@ -20,10 +16,8 @@ import com.sap.core.odata.api.uri.expression.BinaryOperator;
 import com.sap.core.odata.api.uri.expression.CommonExpression;
 import com.sap.core.odata.api.uri.expression.ExpressionKind;
 import com.sap.core.odata.api.uri.expression.LiteralExpression;
-import com.sap.core.odata.api.uri.expression.OrderByExpression;
-import com.sap.core.odata.api.uri.expression.OrderExpression;
-//import com.sap.core.odata.api.uri.expression.OrderType;
 import com.sap.core.odata.api.uri.expression.PropertyExpression;
+//import com.sap.core.odata.api.uri.expression.OrderType;
 
 public class ExpressionParsingUtilityTest {
 
@@ -45,7 +39,7 @@ public class ExpressionParsingUtilityTest {
 
 		parsedStr = parsedStr.concat(ExpressionParsingUtility.parseWhereExpression(getBinaryExpression(exp1, BinaryOperator.AND, exp2)));
 		System.out.println("Parsed String obtained - "+parsedStr);
-		assertEquals(getAliasedProperty("SalesOrder")+ " >= 1234 AND "+getAliasedProperty("SalesABC")+ " <> XYZ", parsedStr);
+		assertEquals(getAliasedProperty("SalesOrder")+ " >=  1234 AND "+getAliasedProperty("SalesABC")+ " <> XYZ", parsedStr);
 	}
 	
 	@Test
@@ -57,7 +51,7 @@ public class ExpressionParsingUtilityTest {
 
 		parsedStr = ExpressionParsingUtility.parseWhereExpression(getBinaryExpression(exp1, BinaryOperator.AND, exp2));
 		System.out.println("Parsed String obtained - "+parsedStr);
-		assertEquals(getAliasedProperty("SalesOrder")+ " >= 1234 AND "+getAliasedProperty("SalesABC")+ " <> XYZ", parsedStr);
+		assertEquals(getAliasedProperty("SalesOrder")+ " >=  1234 AND "+getAliasedProperty("SalesABC")+ " <> XYZ", parsedStr);
 	}
 	
 	@Test
@@ -86,7 +80,7 @@ public class ExpressionParsingUtilityTest {
 		
 //		finalParsedStr = ExpressionParsingUtility.parseWhereExpression((BinaryExpression) getBinaryExpression(be1, BinaryOperator.OR, be2));
 		
-		assertEquals(getAliasedProperty("LineItems")+ " > 2345 AND "+getAliasedProperty("SalesOrder")+ " >= Amazon", parsedStr2);
+		assertEquals(getAliasedProperty("LineItems")+ " > 2345 AND "+getAliasedProperty("SalesOrder")+ " >=  Amazon", parsedStr2);
 		
 //		assertEquals(getAliasedProperty("SalesOrder")+ " < 1234 AND "+getAliasedProperty("SalesABC")+ " <= XYZ" + " OR "
 //					+getAliasedProperty("LineItems")+ " > 2345 AND "+getAliasedProperty("SalesOrder")+ " >= Amazon"
