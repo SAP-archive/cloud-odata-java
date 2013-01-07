@@ -6,7 +6,7 @@
 <%@page import="javax.persistence.Query"%>
 <%@page
 	import="com.sap.core.odata.processor.ref.JPAReferenceServiceFactory"%>
-<%@page import="com.sap.core.odata.processor.ref.DataGenerator"%>
+<%@page import="com.sap.core.odata.processor.ref.util.DataGenerator"%>
 
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
