@@ -11,11 +11,14 @@ public class SalesOrderItem {
 		//No arg const.
 	}
 
-	public SalesOrderItem(String productName) {
-		this();
-		this.productName = productName;
-	}
 	
+	public SalesOrderItem(String productName, int productId, double price) {
+		super();
+		this.productName = productName;
+		this.productId = productId;
+		this.price = price;
+	}
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "SALESORDERITEM_ID")
