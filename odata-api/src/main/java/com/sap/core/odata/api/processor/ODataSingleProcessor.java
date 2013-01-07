@@ -1,5 +1,8 @@
 package com.sap.core.odata.api.processor;
 
+import java.util.Collections;
+import java.util.List;
+
 import com.sap.core.odata.api.commons.HttpStatusCodes;
 import com.sap.core.odata.api.edm.Edm;
 import com.sap.core.odata.api.edm.EdmServiceMetadata;
@@ -7,6 +10,7 @@ import com.sap.core.odata.api.ep.EntityProvider;
 import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.api.exception.ODataNotImplementedException;
 import com.sap.core.odata.api.processor.feature.Batch;
+import com.sap.core.odata.api.processor.feature.ContentTypeSupport;
 import com.sap.core.odata.api.processor.feature.Entity;
 import com.sap.core.odata.api.processor.feature.EntityComplexProperty;
 import com.sap.core.odata.api.processor.feature.EntityLink;
@@ -18,6 +22,7 @@ import com.sap.core.odata.api.processor.feature.EntitySimplePropertyValue;
 import com.sap.core.odata.api.processor.feature.FunctionImport;
 import com.sap.core.odata.api.processor.feature.FunctionImportValue;
 import com.sap.core.odata.api.processor.feature.Metadata;
+import com.sap.core.odata.api.processor.feature.ProcessorFeature;
 import com.sap.core.odata.api.processor.feature.ServiceDocument;
 import com.sap.core.odata.api.uri.info.DeleteUriInfo;
 import com.sap.core.odata.api.uri.info.GetComplexPropertyUriInfo;
@@ -60,7 +65,8 @@ public abstract class ODataSingleProcessor
     EntitySimplePropertyValue,
     FunctionImport,
     FunctionImportValue,
-    Batch
+    Batch,
+    ContentTypeSupport
 {
 
   private static final String PARAMETER_CHARSET = "charset";
@@ -333,4 +339,12 @@ public abstract class ODataSingleProcessor
         .build();
   }
 
+  /**
+   * @see ContentTypeSupport
+   */
+  @Override
+  public List<String> getSupportedContentTypes(ProcessorFeature processorAspect) throws ODataException {
+    return Collections.emptyList();
+  }
 }
+
