@@ -50,7 +50,6 @@ public abstract class AbstractFitTest {
 
   protected abstract ODataSingleProcessorService createService() throws ODataException;
 
-  
   /**
    * Disable logging for class with classname {@value #CLASSNAME_ODATA_EXCEPTION_MAPPER}.
    * If no class with this classname can be found an error log entry is written.
@@ -67,7 +66,7 @@ public abstract class AbstractFitTest {
       log.error("Expected class was not found for disabling of logging.");
     }
   }
-  
+
   /**
    * Disable logging for over handed classes.
    * Disabled logging will be automatically re-enabled after test execution (see {@link #reEnableLogging()} and 
@@ -94,10 +93,14 @@ public abstract class AbstractFitTest {
   }
 
   @Before
-  public void before() throws Exception {
-    this.service = createService();
-    FitStaticServiceFactory.setService(this.service);
-    this.server.startServer(FitStaticServiceFactory.class);
+  public void before() {
+    try {
+      this.service = createService();
+      FitStaticServiceFactory.setService(this.service);
+      this.server.startServer(FitStaticServiceFactory.class);
+    } catch (ODataException e) {
+      throw new RuntimeException(e);
+    }
   }
 
   @After

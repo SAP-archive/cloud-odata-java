@@ -36,7 +36,7 @@ public class AtomEntryEncodingTest extends AbstractFitTest {
   }
 
   @Before
-  public void before() throws Exception {
+  public void before() {
     super.before();
 
     Map<String, String> ns = new HashMap<String, String>();
