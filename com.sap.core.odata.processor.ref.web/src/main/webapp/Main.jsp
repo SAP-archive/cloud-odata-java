@@ -16,7 +16,7 @@
 <title>Welcome to JPA implementation</title>
 </head>
 <body>
-    <h1>SAP OData library</h1>
+    <h1>SAP ODataJPA library</h1>
     <hr />
 	<%
 		String version = "gen/version.html";
@@ -37,10 +37,11 @@
 	<ul>
 		<li><a href="" target="_blank">index page</a></li>
 		<li><a href="" target="_blank">wadl</a></li><!-- ReferenceScenario.svc?_wadl -->
-		<li><a href="" target="_blank">service document</a></li><!-- ReferenceScenario.svc/ -->
-		<li><a href="" target="_blank">metadata</a></li><!-- ReferenceScenario.svc/$metadata -->
+		<li><a href="http://localhost:8080/com.sap.core.odata.processor.ref.web/SalesOrderProcessing.svc/" target="_blank">service document</a></li><!-- ReferenceScenario.svc/ -->
+		<li><a href="http://localhost:8080/com.sap.core.odata.processor.ref.web/SalesOrderProcessing.svc/$metadata" target="_blank">metadata</a></li><!-- ReferenceScenario.svc/$metadata -->
 	</ul>
 	<hr />
+		<h4>Reference Scenario Data Generation </h4>
         <form name="form1" method="get">
             <input type="hidden" name="button" value="Generate">
             <input type="submit" value="Generate Data" width="100%">
@@ -86,7 +87,7 @@
         		}
        		}
         %>
-			<h4><%=(msg) %></h4>
+			<h5><%=(msg) %></h5>
         <%
             }
         %>

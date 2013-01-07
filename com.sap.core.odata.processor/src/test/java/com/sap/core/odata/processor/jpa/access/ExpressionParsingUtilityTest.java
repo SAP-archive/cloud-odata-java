@@ -28,7 +28,6 @@ public class ExpressionParsingUtilityTest {
 		
 		// Simple Binary query - 
 		parsedStr = ExpressionParsingUtility.parseWhereExpression(getBinaryExpressionMockedObj(BinaryOperator.EQ, ExpressionKind.PROPERTY, "SalesOrder", "1234"));
-		System.out.println("Parsed String obtained - "+parsedStr);
 		assertEquals(getAliasedProperty("SalesOrder")+ " = 1234", parsedStr);
 		
 		// complex query - 
@@ -38,7 +37,6 @@ public class ExpressionParsingUtilityTest {
 		CommonExpression exp2 = getBinaryExpressionMockedObj(BinaryOperator.NE, ExpressionKind.PROPERTY, "SalesABC", "XYZ");
 
 		parsedStr = parsedStr.concat(ExpressionParsingUtility.parseWhereExpression(getBinaryExpression(exp1, BinaryOperator.AND, exp2)));
-		System.out.println("Parsed String obtained - "+parsedStr);
 		assertEquals(getAliasedProperty("SalesOrder")+ " >=  1234 AND "+getAliasedProperty("SalesABC")+ " <> XYZ", parsedStr);
 	}
 	
@@ -50,7 +48,6 @@ public class ExpressionParsingUtilityTest {
 		CommonExpression exp2 = getBinaryExpressionMockedObj(BinaryOperator.NE, ExpressionKind.PROPERTY, "SalesABC", "XYZ");
 
 		parsedStr = ExpressionParsingUtility.parseWhereExpression(getBinaryExpression(exp1, BinaryOperator.AND, exp2));
-		System.out.println("Parsed String obtained - "+parsedStr);
 		assertEquals(getAliasedProperty("SalesOrder")+ " >=  1234 AND "+getAliasedProperty("SalesABC")+ " <> XYZ", parsedStr);
 	}
 	
@@ -66,7 +63,6 @@ public class ExpressionParsingUtilityTest {
 		CommonExpression exp2 = getBinaryExpressionMockedObj(BinaryOperator.LE, ExpressionKind.PROPERTY, "SalesABC", "XYZ");
 		
 		parsedStr1 = ExpressionParsingUtility.parseWhereExpression((BinaryExpression) getBinaryExpression(exp1, BinaryOperator.AND, exp2));
-		System.out.println("Parsed String 1 obtained - "+parsedStr1);
 //		BinaryExpression be1 = (BinaryExpression) getBinaryExpression(exp1, BinaryOperator.AND, exp2);
 		
 		assertEquals(getAliasedProperty("SalesOrder")+ " < 1234 AND "+getAliasedProperty("SalesABC")+ " <= XYZ", parsedStr1);
@@ -75,9 +71,7 @@ public class ExpressionParsingUtilityTest {
 		CommonExpression exp4 = getBinaryExpressionMockedObj(BinaryOperator.GE, ExpressionKind.PROPERTY, "SalesOrder", "Amazon");
 
 		parsedStr2 = ExpressionParsingUtility.parseWhereExpression(getBinaryExpression(exp3, BinaryOperator.AND, exp4));
-		System.out.println("Parsed String 2 obtained - "+parsedStr2);
 //		BinaryExpression be2 = (BinaryExpression) getBinaryExpression(exp3, BinaryOperator.AND, exp4);
-		
 //		finalParsedStr = ExpressionParsingUtility.parseWhereExpression((BinaryExpression) getBinaryExpression(be1, BinaryOperator.OR, be2));
 		
 		assertEquals(getAliasedProperty("LineItems")+ " > 2345 AND "+getAliasedProperty("SalesOrder")+ " >=  Amazon", parsedStr2);
