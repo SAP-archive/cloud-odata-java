@@ -35,10 +35,9 @@
 	<hr />
 	<h2>Reference Scenario</h2>
 	<ul>
-		<li><a href="" target="_blank">index page</a></li>
-		<li><a href="" target="_blank">wadl</a></li><!-- ReferenceScenario.svc?_wadl -->
-		<li><a href="http://localhost:8080/com.sap.core.odata.processor.ref.web/SalesOrderProcessing.svc/" target="_blank">service document</a></li><!-- ReferenceScenario.svc/ -->
-		<li><a href="http://localhost:8080/com.sap.core.odata.processor.ref.web/SalesOrderProcessing.svc/$metadata" target="_blank">metadata</a></li><!-- ReferenceScenario.svc/$metadata -->
+		<li><a href="SalesOrderProcessing.svc?_wadl" target="_blank">wadl</a></li><!-- ReferenceScenario.svc?_wadl -->
+		<li><a href="SalesOrderProcessing.svc/" target="_blank">service document</a></li><!-- ReferenceScenario.svc/ -->
+		<li><a href="SalesOrderProcessing.svc/$metadata" target="_blank">metadata</a></li><!-- ReferenceScenario.svc/$metadata -->
 	</ul>
 	<hr />
 		<h4>Reference Scenario Data Generation </h4>
