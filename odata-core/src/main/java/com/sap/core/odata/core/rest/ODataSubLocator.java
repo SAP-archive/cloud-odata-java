@@ -108,7 +108,7 @@ public final class ODataSubLocator implements ODataLocator {
       }
     }
 
-    throw new ODataNotAcceptableException(ODataNotAcceptableException.COMMON.addContent(contentTypes.toString()));
+    throw new ODataNotAcceptableException(ODataNotAcceptableException.NOT_SUPPORTED_CONTENT_TYPE.addContent(contentTypes.toString()));
   }
 
   private List<ContentType> getAcceptedContentTypes(UriInfoImpl uriParserResult, List<ContentType> contentTypes) {
