@@ -65,7 +65,7 @@ public final class ODataSubLocator implements ODataLocator {
 
   @GET
   public Response handleGet() throws ODataException {
-    List<PathSegment> pathSegments = this.context.getUriInfo().getODataSegments();
+    List<PathSegment> pathSegments = this.context.getPathInfo().getODataSegments();
     UriInfoImpl uriParserResult = (UriInfoImpl) this.uriParser.parse(pathSegments, this.queryParameters);
 
     String format = doContentNegotiation(uriParserResult);
@@ -185,7 +185,7 @@ public final class ODataSubLocator implements ODataLocator {
 
   @DELETE
   public Response handleDelete() throws ODataException {
-    final List<PathSegment> pathSegments = context.getUriInfo().getODataSegments();
+    final List<PathSegment> pathSegments = context.getPathInfo().getODataSegments();
     final UriInfoImpl uriParserResult = (UriInfoImpl) uriParser.parse(pathSegments, queryParameters);
 
     final ODataResponse odataResponse = dispatcher.dispatch(ODataHttpMethod.DELETE, uriParserResult, uriParserResult.getFormat());

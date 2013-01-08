@@ -55,7 +55,7 @@ public class ContextTest extends AbstractBasicTest {
 
     assertEquals(Status.OK.getStatusCode(), response.getStatusLine().getStatusCode());
 
-    assertEquals("$metadata", ctx.getUriInfo().getODataSegments().get(0).getPath());
+    assertEquals("$metadata", ctx.getPathInfo().getODataSegments().get(0).getPath());
   }
 
   @Test
@@ -65,7 +65,7 @@ public class ContextTest extends AbstractBasicTest {
 
     ODataContext ctx = this.getService().getProcessor().getContext();
     assertNotNull(ctx);
-    assertEquals(this.getEndpoint().toString(), ctx.getUriInfo().getServiceRoot().toASCIIString());
+    assertEquals(this.getEndpoint().toString(), ctx.getPathInfo().getServiceRoot().toASCIIString());
   }
 
   @Test
@@ -75,7 +75,7 @@ public class ContextTest extends AbstractBasicTest {
 
     ODataContext ctx = this.getService().getProcessor().getContext();
     assertNotNull(ctx);
-    assertEquals(this.getEndpoint().toString(), ctx.getUriInfo().getServiceRoot().toASCIIString());
+    assertEquals(this.getEndpoint().toString(), ctx.getPathInfo().getServiceRoot().toASCIIString());
   }
 
 }

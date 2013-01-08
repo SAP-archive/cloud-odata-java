@@ -14,7 +14,7 @@ public class ODataContextImpl implements ODataContext {
 
   private static String DEBUG_MODE = "~debugMode";
   private static String SERVICE = "~service";
-  private static String URI_INFO = "~uriInfo";
+  private static String PATH_INFO = "~pathInfo";
   private static String RUNTIME_MEASUREMENTS = "~runtimeMeasurements";
 
   private Map<String, Object> parameterTable = new HashMap<String, Object>();
@@ -57,12 +57,12 @@ public class ODataContextImpl implements ODataContext {
   }
 
   public void setUriInfo(PathInfo uriInfo) {
-    setParameter(URI_INFO, uriInfo);
+    setParameter(PATH_INFO, uriInfo);
   }
 
   @Override
-  public PathInfo getUriInfo() throws ODataException {
-    return (PathInfo) getParameter(URI_INFO);
+  public PathInfo getPathInfo() throws ODataException {
+    return (PathInfo) getParameter(PATH_INFO);
   }
 
   @SuppressWarnings("unchecked")

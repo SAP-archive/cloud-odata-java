@@ -320,7 +320,7 @@ public abstract class ODataSingleProcessor
     EntityProvider odataSerializer = EntityProvider.create(contentType);
     contentType += "; " + DEFAULT_SERVICE_CHARSET_PARAMETER;
 
-    ODataResponse response = ODataResponse.fromResponse(odataSerializer.writeServiceDocument(getContext().getService().getEntityDataModel(), getContext().getUriInfo().getServiceRoot().toASCIIString()))
+    ODataResponse response = ODataResponse.fromResponse(odataSerializer.writeServiceDocument(getContext().getService().getEntityDataModel(), getContext().getPathInfo().getServiceRoot().toASCIIString()))
       .header("Content-Type", contentType)
       .header("DataServiceVersion", Edm.DATA_SERVICE_VERSION_10).build();
     return response;

@@ -51,7 +51,7 @@ public class EntitySetTest {
     ODataContext context = mock(ODataContext.class);
     PathInfo uriInfo = mock(PathInfo.class);
     when(uriInfo.getServiceRoot()).thenReturn(new URI("http://localhost/"));
-    when(context.getUriInfo()).thenReturn(uriInfo);
+    when(context.getPathInfo()).thenReturn(uriInfo);
 
     processor.setContext(context);
   }
