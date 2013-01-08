@@ -19,7 +19,7 @@ public class ServiceTest extends AbstractRefTest {
     checkMediaType(response, ContentType.APPLICATION_ATOM_SVC);
     assertTrue(getBody(response).contains("Employees"));
 
-    // notFound("invalid.svc/");
+    notFound("invalid.svc");
   }
 
   @Test

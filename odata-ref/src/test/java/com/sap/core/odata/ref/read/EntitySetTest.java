@@ -84,7 +84,7 @@ public class EntitySetTest {
   public void readEmployees() throws Exception {
     final UriInfo uriResult = mockUriResult("Employees");
 
-    ODataResponse response = processor.readEntitySet(uriResult,ContentType.APPLICATION_ATOM_XML_FEED.toContentTypeString());
+    ODataResponse response = processor.readEntitySet(uriResult, ContentType.APPLICATION_ATOM_XML_FEED.toContentTypeString());
     assertNotNull(response);
     assertTrue(readContent(response).contains("Employee"));
   }
@@ -93,7 +93,7 @@ public class EntitySetTest {
   public void readTeams() throws Exception {
     final UriInfo uriResult = mockUriResult("Teams");
 
-    ODataResponse response = processor.readEntitySet(uriResult,ContentType.APPLICATION_ATOM_XML_FEED.toContentTypeString());
+    ODataResponse response = processor.readEntitySet(uriResult, ContentType.APPLICATION_ATOM_XML_FEED.toContentTypeString());
     assertNotNull(response);
     assertTrue(readContent(response).contains("Team"));
   }
@@ -102,7 +102,7 @@ public class EntitySetTest {
   public void readRooms() throws Exception {
     final UriInfo uriResult = mockUriResult("Rooms");
 
-    ODataResponse response = processor.readEntitySet(uriResult,ContentType.APPLICATION_ATOM_XML_FEED.toContentTypeString());
+    ODataResponse response = processor.readEntitySet(uriResult, ContentType.APPLICATION_ATOM_XML_FEED.toContentTypeString());
     assertNotNull(response);
     assertTrue(readContent(response).contains("Room"));
   }
@@ -111,7 +111,7 @@ public class EntitySetTest {
   public void readManagers() throws Exception {
     final UriInfo uriResult = mockUriResult("Managers");
 
-    ODataResponse response = processor.readEntitySet(uriResult,ContentType.APPLICATION_ATOM_XML_FEED.toContentTypeString());
+    ODataResponse response = processor.readEntitySet(uriResult, ContentType.APPLICATION_ATOM_XML_FEED.toContentTypeString());
     assertNotNull(response);
     assertTrue(readContent(response).contains("Manager"));
   }
@@ -120,7 +120,7 @@ public class EntitySetTest {
   public void readBuildings() throws Exception {
     final UriInfo uriResult = mockUriResult("Buildings");
 
-    ODataResponse response = processor.readEntitySet(uriResult,ContentType.APPLICATION_ATOM_XML_FEED.toContentTypeString());
+    ODataResponse response = processor.readEntitySet(uriResult, ContentType.APPLICATION_ATOM_XML_FEED.toContentTypeString());
     assertNotNull(response);
     assertTrue(readContent(response).contains("Building"));
   }
@@ -129,7 +129,7 @@ public class EntitySetTest {
   public void readPhotos() throws Exception {
     final UriInfo uriResult = mockUriResult("Photos");
 
-    ODataResponse response = processor.readEntitySet(uriResult,ContentType.APPLICATION_ATOM_XML_FEED.toContentTypeString());
+    ODataResponse response = processor.readEntitySet(uriResult, ContentType.APPLICATION_ATOM_XML_FEED.toContentTypeString());
     assertNotNull(response);
     assertTrue(readContent(response).contains("Photo"));
   }

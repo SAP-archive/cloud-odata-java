@@ -1,161 +1,87 @@
 package com.sap.core.odata.fit.ref;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-import java.net.URI;
-
-import org.apache.http.Header;
 import org.apache.http.HttpHeaders;
 import org.apache.http.HttpResponse;
-import org.apache.http.client.methods.HttpGet;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import com.sap.core.odata.api.edm.provider.EdmProvider;
-import com.sap.core.odata.api.exception.ODataException;
-import com.sap.core.odata.api.processor.ODataSingleProcessor;
-import com.sap.core.odata.api.processor.ODataSingleProcessorService;
+import com.sap.core.odata.api.commons.HttpStatusCodes;
 import com.sap.core.odata.core.commons.ContentType;
-import com.sap.core.odata.ref.edm.ScenarioEdmProvider;
-import com.sap.core.odata.ref.model.DataContainer;
-import com.sap.core.odata.ref.processor.ListsProcessor;
-import com.sap.core.odata.ref.processor.ScenarioDataSource;
-import com.sap.core.odata.testutil.fit.AbstractFitTest;
-import com.sap.core.odata.testutil.helper.StringHelper;
 
-public class ContentNegotiationTest extends AbstractFitTest {
+/**
+ * @author SAP AG
+ */
+public class ContentNegotiationTest extends AbstractRefTest {
 
-  @Override
-  protected ODataSingleProcessorService createService() throws ODataException {
-    DataContainer dataContainer = new DataContainer();
-    dataContainer.reset();
-    ODataSingleProcessor processor = new ListsProcessor(new ScenarioDataSource(dataContainer));
-    EdmProvider provider = new ScenarioEdmProvider();
-
-    return new ODataSingleProcessorService(provider, processor);
+  @Test
+  public void formatOverwriteAcceptHeader() throws Exception {
+    final HttpResponse response = callUri("?$format=xml", HttpHeaders.ACCEPT, "image/gif", HttpStatusCodes.OK);
+    checkMediaType(response, ContentType.APPLICATION_XML);
   }
 
   @Test
-  public void testFormatOverwriteAcceptHeader() throws Exception {
-    HttpGet get = new HttpGet(URI.create(this.getEndpoint().toString() + "?$format=xml"));
-    get.addHeader(HttpHeaders.ACCEPT, "image/gif");
-    
-    HttpResponse response = this.getHttpClient().execute(get);
-    
-    assertEquals(200, response.getStatusLine().getStatusCode());
-    Header header = response.getFirstHeader(HttpHeaders.CONTENT_TYPE);
-    
-    assertEquals(ContentType.APPLICATION_XML.toContentTypeString() + "; charset=utf-8", header.getValue());
-  }
-
-  @Test
-  public void testFormatXml() throws Exception {
-    HttpGet get = new HttpGet(URI.create(this.getEndpoint().toString() + "?$format=xml"));
-    
-    HttpResponse response = this.getHttpClient().execute(get);
-    
-    assertEquals(200, response.getStatusLine().getStatusCode());
-    Header header = response.getFirstHeader(HttpHeaders.CONTENT_TYPE);
-    
-    assertEquals(ContentType.APPLICATION_XML.toContentTypeString() + "; charset=utf-8", header.getValue());
+  public void formatXml() throws Exception {
+    final HttpResponse response = callUri("?$format=xml");
+    checkMediaType(response, ContentType.APPLICATION_XML);
   }
 
   @Test
   @Ignore("JSON is currently not supported")
-  public void testFormatJson() throws Exception {
-    HttpGet get = new HttpGet(URI.create(this.getEndpoint().toString() + "?$format=json"));
-    
-    HttpResponse response = this.getHttpClient().execute(get);
-    
-    assertEquals(200, response.getStatusLine().getStatusCode());
-    Header header = response.getFirstHeader(HttpHeaders.CONTENT_TYPE);
-    
-    assertEquals(ContentType.APPLICATION_JSON.toContentTypeString() + "; charset=utf-8", header.getValue());
+  public void formatJson() throws Exception {
+    final HttpResponse response = callUri("?$format=json");
+    checkMediaType(response, ContentType.APPLICATION_JSON);
   }
 
   @Test
-  public void testFormatAtom() throws Exception {
-    HttpGet get = new HttpGet(URI.create(this.getEndpoint().toString() + "Rooms('1')?$format=atom"));
-    
-    HttpResponse response = this.getHttpClient().execute(get);
-    
-    assertEquals(200, response.getStatusLine().getStatusCode());
-    Header header = response.getFirstHeader(HttpHeaders.CONTENT_TYPE);
-    
-    assertEquals(ContentType.APPLICATION_ATOM_XML_ENTRY.toContentTypeString() + "; charset=utf-8", header.getValue());
-  }
-
-
-  @Test
-  public void testFormatNotSupported() throws Exception {
-    HttpGet get = new HttpGet(URI.create(this.getEndpoint().toString() + "?$format=XXXML"));
-
-    HttpResponse response = this.getHttpClient().execute(get);
-
-    assertEquals(406, response.getStatusLine().getStatusCode());
-  }
-
-
-  @Test
-  public void testContentTypeMetadata() throws Exception {
-    HttpGet get = new HttpGet(URI.create(this.getEndpoint().toString() + "$metadata"));
-
-    HttpResponse response = this.getHttpClient().execute(get);
-
-    assertEquals(200, response.getStatusLine().getStatusCode());
-    Header header = response.getFirstHeader(HttpHeaders.CONTENT_TYPE);
-    assertEquals(ContentType.APPLICATION_XML.toString(), header.getValue());
+  public void formatAtom() throws Exception {
+    final HttpResponse response = callUri("Rooms('1')?$format=atom");
+    checkMediaType(response, ContentType.APPLICATION_ATOM_XML_ENTRY);
   }
 
   @Test
-  public void testContentTypeMetadataNotAccepted() throws Exception {
-    HttpGet get = new HttpGet(URI.create(this.getEndpoint().toString() + "$metadata"));
-    get.addHeader(HttpHeaders.ACCEPT, "image/gif");
-    
-    HttpResponse response = this.getHttpClient().execute(get);
-    assertEquals(406, response.getStatusLine().getStatusCode());
+  public void formatNotSupported() throws Exception {
+    callUri("?$format=XXXML", HttpStatusCodes.NOT_ACCEPTABLE);
   }
 
   @Test
-  public void testBrowserAcceptHeader() throws Exception {
-    HttpGet get = new HttpGet(URI.create(this.getEndpoint().toString() + "$metadata"));
-    get.addHeader(HttpHeaders.ACCEPT, "text/html, application/xhtml+xml, application/xml;q=0.9, */*;q=0.8");
-    
-    HttpResponse response = this.getHttpClient().execute(get);
-    assertEquals(200, response.getStatusLine().getStatusCode());
-    assertEquals("application/xml", response.getFirstHeader(HttpHeaders.CONTENT_TYPE).getValue());
+  public void contentTypeMetadata() throws Exception {
+    final HttpResponse response = callUri("$metadata");
+    checkMediaType(response, ContentType.APPLICATION_XML, false);
   }
-  
+
   @Test
-  public void testContentTypeServiceDocumentWoAcceptHeader() throws Exception {
-    HttpGet get = new HttpGet(URI.create(this.getEndpoint().toString() ));
-
-    HttpResponse response = this.getHttpClient().execute(get);
-
-    assertEquals(200, response.getStatusLine().getStatusCode());
-    Header header = response.getFirstHeader(HttpHeaders.CONTENT_TYPE);
-    assertEquals(ContentType.APPLICATION_ATOM_SVC.toString() + "; charset=utf-8", header.getValue());
-    
-    String responseBody = StringHelper.httpEntityToString(response.getEntity());
-    assertTrue(responseBody.length() > 100);
-    log.debug(responseBody);
+  public void contentTypeMetadataNotAccepted() throws Exception {
+    callUri("$metadata", HttpHeaders.ACCEPT, "image/gif", HttpStatusCodes.NOT_ACCEPTABLE);
   }
-  
-  @Test
-  public void testContentTypeServiceDocumentAcceptHeaders() throws Exception {
-    HttpGet get = new HttpGet(URI.create(this.getEndpoint().toString() ));
-    get.setHeader(HttpHeaders.ACCEPT, "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8");
-    
-    HttpResponse response = this.getHttpClient().execute(get);
 
-    assertEquals(200, response.getStatusLine().getStatusCode());
-    Header header = response.getFirstHeader(HttpHeaders.CONTENT_TYPE);
-    assertEquals(ContentType.APPLICATION_XML.toString() + "; charset=utf-8", header.getValue());
-    
-    String responseBody = StringHelper.httpEntityToString(response.getEntity());
-    assertTrue(responseBody.length() > 100);
-    log.debug(responseBody);
+  @Test
+  public void browserAcceptHeader() throws Exception {
+    final HttpResponse response = callUri("$metadata",
+        HttpHeaders.ACCEPT, "text/html, application/xhtml+xml, application/xml;q=0.9, */*;q=0.8",
+        HttpStatusCodes.OK);
+    checkMediaType(response, ContentType.APPLICATION_XML, false);
+  }
+
+  @Test
+  public void contentTypeServiceDocumentWoAcceptHeader() throws Exception {
+    final HttpResponse response = callUri("");
+    checkMediaType(response, ContentType.APPLICATION_ATOM_SVC);
+    final String body = getBody(response);
+    assertTrue(body.length() > 100);
+    log.debug(body);
+  }
+
+  @Test
+  public void contentTypeServiceDocumentAcceptHeaders() throws Exception {
+    final HttpResponse response = callUri("",
+        HttpHeaders.ACCEPT, "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+        HttpStatusCodes.OK);
+    checkMediaType(response, ContentType.APPLICATION_XML);
+    final String body = getBody(response);
+    assertTrue(body.length() > 100);
+    log.debug(body);
   }
 
 }
