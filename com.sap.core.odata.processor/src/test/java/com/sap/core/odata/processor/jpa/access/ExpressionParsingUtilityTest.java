@@ -49,6 +49,9 @@ public class ExpressionParsingUtilityTest {
 
 		parsedStr = ExpressionParsingUtility.parseWhereExpression(getBinaryExpression(exp1, BinaryOperator.AND, exp2));
 		assertEquals(getAliasedProperty("SalesOrder")+ " >= 1234 AND "+getAliasedProperty("SalesABC")+ " <> XYZ", parsedStr);
+		
+		parsedStr = ExpressionParsingUtility.parseWhereExpression(getBinaryExpression(exp1, BinaryOperator.OR, exp2));
+		assertEquals(getAliasedProperty("SalesOrder")+ " >= 1234 OR "+getAliasedProperty("SalesABC")+ " <> XYZ", parsedStr);
 	}
 	
 	@Test
@@ -99,9 +102,9 @@ public class ExpressionParsingUtilityTest {
 	
 	private LiteralExpression getLiteralExpressionMockedObj(String uriLiteral) throws EdmException{
 		LiteralExpression rightOperandLiteralExpresion = EasyMock.createMock(LiteralExpression.class);
-		EasyMock.expect(rightOperandLiteralExpresion.getKind()).andReturn(ExpressionKind.LITERAL).times(10);
-		EasyMock.expect(rightOperandLiteralExpresion.getUriLiteral()).andReturn(uriLiteral).times(10);// "1234"
-		EasyMock.expect(rightOperandLiteralExpresion.getEdmType()).andReturn(getEdmSimpleTypeMockedObj(uriLiteral)).times(10);
+		EasyMock.expect(rightOperandLiteralExpresion.getKind()).andStubReturn(ExpressionKind.LITERAL);
+		EasyMock.expect(rightOperandLiteralExpresion.getUriLiteral()).andStubReturn(uriLiteral);// "1234"
+		EasyMock.expect(rightOperandLiteralExpresion.getEdmType()).andStubReturn(getEdmSimpleTypeMockedObj(uriLiteral));
 		EasyMock.replay(rightOperandLiteralExpresion);
 		return rightOperandLiteralExpresion;
 		
@@ -109,12 +112,12 @@ public class ExpressionParsingUtilityTest {
 	
 	private EdmSimpleType getEdmSimpleTypeMockedObj(String value) throws EdmException{
 		EdmSimpleType edmSimpleType = EasyMock.createMock(EdmSimpleType.class);
-		EasyMock.expect(edmSimpleType.getName()).andReturn(value).times(15);
-		EasyMock.expect(edmSimpleType.getKind()).andReturn(EdmTypeKind.SIMPLE);
-		EasyMock.expect(edmSimpleType.valueOfString(value, EdmLiteralKind.URI, getEdmFacetsMockedObj())).andReturn(value).times(10);
-		EasyMock.expect(edmSimpleType.valueOfString(value, EdmLiteralKind.URI, null)).andReturn(value).times(10);
-		EasyMock.expect(edmSimpleType.valueToString(value, EdmLiteralKind.DEFAULT, getEdmFacetsMockedObj())).andReturn(value).times(10);
-		EasyMock.expect(edmSimpleType.valueToString(value, EdmLiteralKind.DEFAULT, null)).andReturn(value).times(10);
+		EasyMock.expect(edmSimpleType.getName()).andStubReturn(value);
+		EasyMock.expect(edmSimpleType.getKind()).andStubReturn(EdmTypeKind.SIMPLE);
+		EasyMock.expect(edmSimpleType.valueOfString(value, EdmLiteralKind.URI, getEdmFacetsMockedObj())).andStubReturn(value);
+		EasyMock.expect(edmSimpleType.valueOfString(value, EdmLiteralKind.URI, null)).andStubReturn(value);
+		EasyMock.expect(edmSimpleType.valueToString(value, EdmLiteralKind.DEFAULT, getEdmFacetsMockedObj())).andStubReturn(value);
+		EasyMock.expect(edmSimpleType.valueToString(value, EdmLiteralKind.DEFAULT, null)).andStubReturn(value);
 		EasyMock.replay(edmSimpleType);
 		return edmSimpleType;
 	}
@@ -128,18 +131,18 @@ public class ExpressionParsingUtilityTest {
 	
 	private PropertyExpression getPropertyExpressionMockedObj(ExpressionKind expKind, String propertyName){
 		PropertyExpression  leftOperandPropertyExpresion  = EasyMock.createMock(PropertyExpression.class);
-		EasyMock.expect(leftOperandPropertyExpresion.getKind()).andReturn(ExpressionKind.PROPERTY);
-		EasyMock.expect(leftOperandPropertyExpresion.getPropertyName()).andReturn(propertyName);
+		EasyMock.expect(leftOperandPropertyExpresion.getKind()).andStubReturn(ExpressionKind.PROPERTY);
+		EasyMock.expect(leftOperandPropertyExpresion.getPropertyName()).andStubReturn(propertyName);
 		EasyMock.replay(leftOperandPropertyExpresion);
 		return leftOperandPropertyExpresion;
 	}
 	
 	private BinaryExpression getBinaryExpressionMockedObj(BinaryOperator operator, ExpressionKind leftOperandExpKind, String propertyName,  String literalStr) throws EdmException{
 		BinaryExpression binaryExpression = EasyMock.createMock(BinaryExpression.class);
-		EasyMock.expect(binaryExpression.getKind()).andReturn(ExpressionKind.BINARY).times(10);
-		EasyMock.expect(binaryExpression.getLeftOperand()).andReturn(getPropertyExpressionMockedObj(leftOperandExpKind, propertyName));
-		EasyMock.expect(binaryExpression.getOperator()).andReturn(operator).times(10);
-		EasyMock.expect(binaryExpression.getRightOperand()).andReturn(getLiteralExpressionMockedObj(literalStr));
+		EasyMock.expect(binaryExpression.getKind()).andStubReturn(ExpressionKind.BINARY);
+		EasyMock.expect(binaryExpression.getLeftOperand()).andStubReturn(getPropertyExpressionMockedObj(leftOperandExpKind, propertyName));
+		EasyMock.expect(binaryExpression.getOperator()).andStubReturn(operator);
+		EasyMock.expect(binaryExpression.getRightOperand()).andStubReturn(getLiteralExpressionMockedObj(literalStr));
 		
 		EasyMock.replay(binaryExpression);
 		return binaryExpression;		
@@ -147,10 +150,10 @@ public class ExpressionParsingUtilityTest {
 	
 	private CommonExpression getBinaryExpression(final CommonExpression leftOperand, final BinaryOperator operator, final CommonExpression rightOperand) {
 		BinaryExpression binaryExpression = EasyMock.createMock(BinaryExpression.class);
-		EasyMock.expect(binaryExpression.getKind()).andReturn(ExpressionKind.BINARY);
-		EasyMock.expect(binaryExpression.getLeftOperand()).andReturn(leftOperand);
-		EasyMock.expect(binaryExpression.getRightOperand()).andReturn(rightOperand);
-		EasyMock.expect(binaryExpression.getOperator()).andReturn(operator);
+		EasyMock.expect(binaryExpression.getKind()).andStubReturn(ExpressionKind.BINARY);
+		EasyMock.expect(binaryExpression.getLeftOperand()).andStubReturn(leftOperand);
+		EasyMock.expect(binaryExpression.getRightOperand()).andStubReturn(rightOperand);
+		EasyMock.expect(binaryExpression.getOperator()).andStubReturn(operator);
 		
 		EasyMock.replay(binaryExpression);
 		return binaryExpression;
@@ -159,7 +162,7 @@ public class ExpressionParsingUtilityTest {
 
 /*	private OrderByExpression getOrderByExpressionMockedObj() throws EdmException {
 		OrderByExpression orderByExpression = EasyMock.createMock(OrderByExpression.class);
-		EasyMock.expect(orderByExpression.getOrders()).andReturn(getOrdersMockedObj());
+		EasyMock.expect(orderByExpression.getOrders()).andStubReturn(getOrdersMockedObj());
 		EasyMock.replay(orderByExpression);
 		return orderByExpression;
 	}
@@ -174,9 +177,9 @@ public class ExpressionParsingUtilityTest {
 
 	private OrderExpression getOrderExpressionMockedObj(int index) throws EdmException {
 		OrderExpression orderExpression = EasyMock.createMock(OrderExpression.class);
-		EasyMock.expect(orderExpression.getSortOrder()).andReturn(OrderType.desc);
-		EasyMock.expect(orderExpression.getExpression()).andReturn(getLiteralExpressionMockedObj("Name "+index)).times(10);
-		//EasyMock.expect(orderExpression.getExpression().getEdmType().getName()).andReturn("Name "+index);
+		EasyMock.expect(orderExpression.getSortOrder()).andStubReturn(OrderType.desc);
+		EasyMock.expect(orderExpression.getExpression()).andStubReturn(getLiteralExpressionMockedObj("Name "+index)).times(10);
+		//EasyMock.expect(orderExpression.getExpression().getEdmType().getName()).andStubReturn("Name "+index);
 		
 		EasyMock.replay(orderExpression);
 		return null;
