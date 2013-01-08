@@ -511,7 +511,7 @@ public class ListsProcessor extends ODataSingleProcessor {
           .build();
     } else {
       final String value = type.valueToString(data, EdmLiteralKind.DEFAULT, null);
-      return ODataResponse.fromResponse(EntityProvider.create(contentType)
+      return ODataResponse.fromResponse(EntityProvider.create()
           .writeText(value == null ? "" : value))
           .status(HttpStatusCodes.OK)
           .build();

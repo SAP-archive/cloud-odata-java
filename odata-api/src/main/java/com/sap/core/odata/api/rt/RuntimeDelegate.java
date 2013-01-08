@@ -8,6 +8,7 @@ import com.sap.core.odata.api.edm.EdmSimpleTypeKind;
 import com.sap.core.odata.api.edm.provider.EdmProvider;
 import com.sap.core.odata.api.ep.EntityProvider;
 import com.sap.core.odata.api.ep.EntityProviderException;
+import com.sap.core.odata.api.ep.EntityValueProvider;
 import com.sap.core.odata.api.processor.ODataResponse.ODataResponseBuilder;
 import com.sap.core.odata.api.uri.UriParser;
 import com.sap.core.odata.api.uri.expression.FilterParser;
@@ -89,12 +90,19 @@ public abstract class RuntimeDelegate {
      * @throws EntityProviderException 
      */
     protected abstract EntityProvider createSerializer(String contentType) throws EntityProviderException;
-  }
+
+    protected abstract EntityValueProvider createEntityValueProvider() throws EntityProviderException;
+}
 
 
   public static EntityProvider createSerializer(String contentType) throws EntityProviderException {
     return RuntimeDelegate.getInstance().createSerializer(contentType);
   }
+  
+  public static EntityValueProvider createEntityValueProvider() throws EntityProviderException {
+    return RuntimeDelegate.getInstance().createEntityValueProvider();
+  }
+
 
   public static EdmSimpleType getEdmSimpleType(EdmSimpleTypeKind edmSimpleType) {
     return RuntimeDelegate.getInstance().getEdmSimpleType(edmSimpleType);
@@ -136,5 +144,5 @@ public abstract class RuntimeDelegate {
       super(e);
     }
   }
-  
+
 }
