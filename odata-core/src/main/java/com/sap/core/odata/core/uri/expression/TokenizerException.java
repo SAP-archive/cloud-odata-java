@@ -5,7 +5,6 @@ package com.sap.core.odata.core.uri.expression;
 import com.sap.core.odata.api.edm.EdmLiteralException;
 import com.sap.core.odata.api.exception.MessageReference;
 import com.sap.core.odata.api.exception.ODataMessageException;
-import com.sap.core.odata.api.uri.UriSyntaxException;
 
 /**
  * This exception is thrown if there is an error during tokenizing.<br>

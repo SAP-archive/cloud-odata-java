@@ -11,7 +11,6 @@ import com.sap.core.odata.api.edm.provider.EdmProvider;
 import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.api.exception.ODataNotImplementedException;
 import com.sap.core.odata.api.processor.feature.Batch;
-import com.sap.core.odata.api.processor.feature.CustomContentType;
 import com.sap.core.odata.api.processor.feature.Entity;
 import com.sap.core.odata.api.processor.feature.EntityComplexProperty;
 import com.sap.core.odata.api.processor.feature.EntityLink;
@@ -186,42 +185,40 @@ public class ODataSingleProcessorService implements ODataService {
   public ODataProcessor getProcessor() throws ODataException {
     return this.processor;
   }
-  
+
   @Override
   public List<String> getSupportedContentTypes(Class<? extends ProcessorFeature> processorFeature) throws ODataException {
     List<String> result = new ArrayList<String>();
-    
-    if (processor instanceof CustomContentType) {
-      result.addAll(((CustomContentType) processor).getCustomContentTypes(processorFeature));
-    }
 
-    if(processorFeature == Batch.class) {
+    result.addAll(processor.getCustomContentTypes(processorFeature));
+
+    if (processorFeature == Batch.class) {
       result.add(MULTIPART_MIXED);
-    } else if(processorFeature == Entity.class) {
+    } else if (processorFeature == Entity.class) {
       result.add(APPLICATION_ATOM_XML_ENTRY);
       result.add(APPLICATION_ATOM_XML);
       result.add(APPLICATION_JSON);
-    } else if(processorFeature == FunctionImport.class
+    } else if (processorFeature == FunctionImport.class
         || processorFeature == EntityLink.class
         || processorFeature == EntityLinks.class
         || processorFeature == EntitySimpleProperty.class
         || processorFeature == EntityComplexProperty.class) {
       result.add(APPLICATION_XML);
       result.add(APPLICATION_JSON);
-    } else if(processorFeature == EntityMedia.class
+    } else if (processorFeature == EntityMedia.class
         || processorFeature == EntitySimplePropertyValue.class
         || processorFeature == FunctionImportValue.class) {
       result.add(WILDCARD);
-    } else if(processorFeature == EntitySet.class) {
-        result.add(APPLICATION_ATOM_XML_FEED);
-        result.add(APPLICATION_ATOM_XML);
-        result.add(APPLICATION_JSON);
-    } else if(processorFeature == Metadata.class) {
-        result.add(APPLICATION_XML);  
-    } else if(processorFeature == ServiceDocument.class) {
-        result.add(APPLICATION_ATOM_SVC);
-        result.add(APPLICATION_JSON);
-        result.add(APPLICATION_XML);
+    } else if (processorFeature == EntitySet.class) {
+      result.add(APPLICATION_ATOM_XML_FEED);
+      result.add(APPLICATION_ATOM_XML);
+      result.add(APPLICATION_JSON);
+    } else if (processorFeature == Metadata.class) {
+      result.add(APPLICATION_XML);
+    } else if (processorFeature == ServiceDocument.class) {
+      result.add(APPLICATION_ATOM_SVC);
+      result.add(APPLICATION_JSON);
+      result.add(APPLICATION_XML);
     } else {
       throw new ODataNotImplementedException();
     }

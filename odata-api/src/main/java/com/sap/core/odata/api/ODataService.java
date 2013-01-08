@@ -1,7 +1,6 @@
 package com.sap.core.odata.api;
 
 import java.util.List;
-import java.util.Set;
 
 import com.sap.core.odata.api.edm.Edm;
 import com.sap.core.odata.api.exception.ODataException;
@@ -142,9 +141,8 @@ public interface ODataService {
   ODataProcessor getProcessor() throws ODataException;
 
   /**
-   * 
    * @param processorFeature 
-   * @return ordered list of all from this service supported <code>content types</code>.
+   * @return ordered list of all <code>content types</code> this service supports
    * @throws ODataException
    */
   List<String> getSupportedContentTypes(Class<? extends ProcessorFeature> processorFeature) throws ODataException;
