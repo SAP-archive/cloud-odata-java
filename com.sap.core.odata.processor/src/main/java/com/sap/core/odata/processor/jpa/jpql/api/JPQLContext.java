@@ -2,6 +2,7 @@ package com.sap.core.odata.processor.jpa.jpql.api;
 
 import com.sap.core.odata.processor.jpa.api.ODataJPAContext;
 import com.sap.core.odata.processor.jpa.exception.ODataJPAModelException;
+import com.sap.core.odata.processor.jpa.exception.ODataJPARuntimeException;
 import com.sap.core.odata.processor.jpa.jpql.JPQLBuilderFactory;
 
 public abstract class JPQLContext {
@@ -38,7 +39,7 @@ public abstract class JPQLContext {
 			return contextBuilder;
 		}
 		
-		public abstract JPQLContext build( ) throws ODataJPAModelException;
+		public abstract JPQLContext build( ) throws ODataJPAModelException, ODataJPARuntimeException;
 		protected abstract void setResultsView(Object resultsView);
 	}
 }

@@ -17,6 +17,7 @@ import com.sap.core.odata.api.uri.expression.OrderByExpression;
 import com.sap.core.odata.api.uri.info.GetEntitySetUriInfo;
 import com.sap.core.odata.processor.jpa.api.ODataJPAContext;
 import com.sap.core.odata.processor.jpa.exception.ODataJPAModelException;
+import com.sap.core.odata.processor.jpa.exception.ODataJPARuntimeException;
 import com.sap.core.odata.processor.jpa.jpql.JPQLSelectContextImpl;
 import com.sap.core.odata.processor.jpa.jpql.JPQLSelectStatementBuilder;
 import com.sap.core.odata.processor.jpa.jpql.api.JPQLContext.JPQLContextBuilder;
@@ -59,8 +60,7 @@ public class JPQLSelectStatementBuilderTest {
 		try {
 			jpqlSelectContextImpl = (JPQLSelectContextImpl) contextBuilder1.build();
 		} catch (ODataJPAModelException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			fail("Model Exception thrown");
 		}
 		
 		jpqlSelectStatementBuilder = new JPQLSelectStatementBuilder(jpqlSelectContextImpl);
@@ -70,10 +70,11 @@ public class JPQLSelectStatementBuilderTest {
 		/**
 	 * Test method for {@link com.sap.core.odata.processor.jpa.jpql.JPQLSelectStatementBuilder#build)}.
 	 * @throws EdmException 
+		 * @throws ODataJPARuntimeException 
 	 */
 	
 	@Test
-	public void testBuild() throws EdmException {
+	public void testBuild() throws EdmException, ODataJPARuntimeException {
 		
 		assertEquals("SELECT gwt1 FROM SalesOrderHeader gwt1",jpqlSelectStatementBuilder.build().toString());
 	}

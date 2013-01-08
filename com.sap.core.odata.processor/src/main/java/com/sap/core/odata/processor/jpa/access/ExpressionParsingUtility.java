@@ -20,6 +20,7 @@ import com.sap.core.odata.api.uri.expression.OrderExpression;
 import com.sap.core.odata.api.uri.expression.PropertyExpression;
 import com.sap.core.odata.api.uri.expression.SortOrder;
 import com.sap.core.odata.api.uri.expression.UnaryExpression;
+import com.sap.core.odata.processor.jpa.exception.ODataJPARuntimeException;
 import com.sap.core.odata.processor.jpa.jpql.api.JPQLStatement;
 
 public class ExpressionParsingUtility {
@@ -207,7 +208,7 @@ public class ExpressionParsingUtility {
 	    }
 	  }
 	
-	public static HashMap<String, String> parseOrderByExpression(OrderByExpression orderByExpression){
+	public static HashMap<String, String> parseOrderByExpression(OrderByExpression orderByExpression) throws ODataJPARuntimeException{
 		HashMap<String, String> orderByMap = new HashMap<String, String>();
 		if(orderByExpression != null && orderByExpression.getOrders() != null ){
 			List<OrderExpression> orderBys= orderByExpression.getOrders();
@@ -220,8 +221,9 @@ public class ExpressionParsingUtility {
 					orderByDirection = (orderBy.getSortOrder() == SortOrder.asc)? "" : "DESC";
 					orderByMap.put(orderByField, orderByDirection);
 				} catch (EdmException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+					throw ODataJPARuntimeException.throwException(
+							ODataJPARuntimeException.RUNTIME_EXCEPTION.addContent(e
+									.getMessage()), e);
 				}				
 			}			
 		} 

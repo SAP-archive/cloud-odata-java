@@ -5,6 +5,7 @@ import java.util.Map.Entry;
 
 import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.processor.jpa.access.ExpressionParsingUtility;
+import com.sap.core.odata.processor.jpa.exception.ODataJPARuntimeException;
 import com.sap.core.odata.processor.jpa.jpql.api.JPQLContext;
 import com.sap.core.odata.processor.jpa.jpql.api.JPQLSelectContext;
 import com.sap.core.odata.processor.jpa.jpql.api.JPQLStatement;
@@ -19,13 +20,13 @@ public class JPQLSelectStatementBuilder extends com.sap.core.odata.processor.jpa
 	}
 
 	@Override
-	public JPQLStatement build() {
+	public JPQLStatement build() throws ODataJPARuntimeException {
 		this.jpqlStatement = createStatement(createJPQLQuery());
 		return this.jpqlStatement;
 		
 	}
 
-	private String createJPQLQuery() {
+	private String createJPQLQuery() throws ODataJPARuntimeException {
 
 		StringBuilder jpqlQuery = new StringBuilder();
 		String tableAlias = ExpressionParsingUtility.TABLE_ALIAS;
@@ -39,8 +40,7 @@ public class JPQLSelectStatementBuilder extends com.sap.core.odata.processor.jpa
 			if(context.getWhereExpression()!=null)
 				jpqlQuery.append(" WHERE ").append(ExpressionParsingUtility.parseWhereExpression(context.getWhereExpression()));
 		} catch (ODataException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			throw ODataJPARuntimeException.throwException(ODataJPARuntimeException.GENERAL.addContent(e.getMessage()),e);
 		}
 		
 				

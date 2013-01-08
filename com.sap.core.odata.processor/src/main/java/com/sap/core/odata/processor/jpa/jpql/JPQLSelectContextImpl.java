@@ -59,7 +59,7 @@ public class JPQLSelectContextImpl extends JPQLSelectContext {
 		private GetEntitySetUriInfo entitySetView;
 
 		@Override
-		public JPQLContext build() throws ODataJPAModelException {
+		public JPQLContext build() throws ODataJPAModelException, ODataJPARuntimeException {
 			if (entitySetView != null) {
 
 				try {
@@ -86,6 +86,10 @@ public class JPQLSelectContextImpl extends JPQLSelectContext {
 
 				} catch (EdmException e) {
 					throw ODataJPAModelException.throwException(
+							ODataJPARuntimeException.RUNTIME_EXCEPTION.addContent(e
+									.getMessage()), e);
+				} catch (ODataJPARuntimeException e) {
+					throw ODataJPARuntimeException.throwException(
 							ODataJPARuntimeException.RUNTIME_EXCEPTION.addContent(e
 									.getMessage()), e);
 				}

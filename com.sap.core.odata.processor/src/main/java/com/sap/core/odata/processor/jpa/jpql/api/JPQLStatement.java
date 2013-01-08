@@ -1,5 +1,6 @@
 package com.sap.core.odata.processor.jpa.jpql.api;
 
+import com.sap.core.odata.processor.jpa.exception.ODataJPARuntimeException;
 import com.sap.core.odata.processor.jpa.jpql.JPQLBuilderFactory;
 
 public class JPQLStatement {
@@ -32,7 +33,7 @@ public class JPQLStatement {
 			return new JPQLStatement(statement);
 		}
 		
-		public abstract JPQLStatement build( );
+		public abstract JPQLStatement build( ) throws ODataJPARuntimeException;
 	}
 	
 	public static class Operator {

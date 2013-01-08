@@ -22,6 +22,7 @@ import com.sap.core.odata.api.uri.expression.SortOrder;
 import com.sap.core.odata.api.uri.info.GetEntitySetUriInfo;
 import com.sap.core.odata.processor.jpa.api.ODataJPAContext;
 import com.sap.core.odata.processor.jpa.exception.ODataJPAModelException;
+import com.sap.core.odata.processor.jpa.exception.ODataJPARuntimeException;
 import com.sap.core.odata.processor.jpa.jpql.JPQLSelectContextImpl.JPQLSelectContextBuilder;
 import com.sap.core.odata.processor.jpa.jpql.api.JPQLContext;
 import com.sap.core.odata.processor.jpa.jpql.api.JPQLContextType;
@@ -117,6 +118,8 @@ public class JPQLSelectContextImplTest {
 			selectContext = (JPQLSelectContext) builder.build();
 		} catch (ODataJPAModelException e) {
 			fail("Exception not Expected");
+		} catch (ODataJPARuntimeException e) {
+			fail("Runtime Exception thrown");
 		}
 	}
 
