@@ -5,6 +5,7 @@ import com.sap.core.odata.api.processor.ODataResponse;
 import com.sap.core.odata.api.uri.info.DeleteUriInfo;
 import com.sap.core.odata.api.uri.info.GetEntityLinkCountUriInfo;
 import com.sap.core.odata.api.uri.info.GetEntityLinkUriInfo;
+import com.sap.core.odata.api.uri.info.PutMergePatchUriInfo;
 
 /**
  * Execute an OData entity link request. 
@@ -13,33 +14,33 @@ import com.sap.core.odata.api.uri.info.GetEntityLinkUriInfo;
  */
 public interface EntityLink extends ProcessorFeature {
   /**
-   * @param uriParserResultView
+   * @param uriInfo
    * @param contentType 
    * @return a {@link ODataResponse} object
    * @throws ODataException
    */
-  ODataResponse readEntityLink(GetEntityLinkUriInfo uriParserResultView, String contentType) throws ODataException;
+  ODataResponse readEntityLink(GetEntityLinkUriInfo uriInfo, String contentType) throws ODataException;
 
   /**
-   * @param uriParserResultView
+   * @param uriInfo
    * @param contentType 
    * @return a {@link ODataResponse} object
    * @throws ODataException
    */
-  ODataResponse existsEntityLink(GetEntityLinkCountUriInfo uriParserResultView, String contentType) throws ODataException;
+  ODataResponse existsEntityLink(GetEntityLinkCountUriInfo uriInfo, String contentType) throws ODataException;
 
   /**
    * @param contentType 
    * @return a {@link ODataResponse} object
    * @throws ODataException
    */
-  ODataResponse updateEntityLink(String contentType) throws ODataException;
+  ODataResponse updateEntityLink(PutMergePatchUriInfo uriInfo, String contentType) throws ODataException;
 
   /**
-   * @param uriParserResultView
+   * @param uriInfo
    * @param contentType
    * @return an {@link ODataResponse} object
    * @throws ODataException
    */
-  ODataResponse deleteEntityLink(DeleteUriInfo uriParserResultView, String contentType) throws ODataException;
+  ODataResponse deleteEntityLink(DeleteUriInfo uriInfo, String contentType) throws ODataException;
 }

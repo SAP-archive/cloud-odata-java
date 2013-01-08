@@ -8,7 +8,6 @@ import com.sap.core.odata.api.uri.info.GetServiceDocumentUriInfo;
  * Execute a OData service document request. 
  * 
  * @author SAP AG
- *
  */
 public interface ServiceDocument extends ProcessorFeature {
   
@@ -17,6 +16,6 @@ public interface ServiceDocument extends ProcessorFeature {
    * @return a {@link ODataResponse} object
    * @throws ODataException
    */
-  ODataResponse readServiceDocument(GetServiceDocumentUriInfo uriParserResultView, String contentType) throws ODataException;
+  ODataResponse readServiceDocument(GetServiceDocumentUriInfo uriInfo, String contentType) throws ODataException;
 
 }

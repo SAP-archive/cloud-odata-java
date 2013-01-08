@@ -8,7 +8,6 @@ import com.sap.core.odata.api.uri.info.GetMetadataUriInfo;
  * Execute a OData metadata request. 
  * 
  * @author SAP AG
- *
  */
 public interface Metadata extends ProcessorFeature {
 
@@ -17,6 +16,6 @@ public interface Metadata extends ProcessorFeature {
    * @return a {@link ODataResponse} object
    * @throws ODataException
    */
-  ODataResponse readMetadata(GetMetadataUriInfo uriParserResultView, String contentType) throws ODataException;
+  ODataResponse readMetadata(GetMetadataUriInfo uriInfo, String contentType) throws ODataException;
 
 }

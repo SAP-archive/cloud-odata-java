@@ -8,7 +8,6 @@ import com.sap.core.odata.api.uri.info.GetFunctionImportUriInfo;
  * Execute a OData function import request. 
  * 
  * @author SAP AG
- *
  */
 public interface FunctionImport extends ProcessorFeature {
   
@@ -17,6 +16,6 @@ public interface FunctionImport extends ProcessorFeature {
    * @return a {@link ODataResponse} object
    * @throws ODataException
    */
-  ODataResponse executeFunctionImport(GetFunctionImportUriInfo uriParserResultView, String contentType) throws ODataException;
+  ODataResponse executeFunctionImport(GetFunctionImportUriInfo uriInfo, String contentType) throws ODataException;
 
 }

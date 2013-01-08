@@ -51,7 +51,7 @@ public class Dispatcher {
       case GET:
         return this.service.getEntitySetProcessor().readEntitySet(uriParserResult, contentType);
       case POST:
-        return this.service.getEntitySetProcessor().createEntity(contentType);
+        return this.service.getEntitySetProcessor().createEntity(uriParserResult, contentType);
       default:
         throw new ODataMethodNotAllowedException(ODataMethodNotAllowedException.DISPATCH);
       }
@@ -66,7 +66,7 @@ public class Dispatcher {
         if (contentType == null
             && uriParserResult.getExpand().isEmpty()
             && uriParserResult.getSelect().isEmpty())
-          return this.service.getEntityProcessor().updateEntity(contentType);
+          return this.service.getEntityProcessor().updateEntity(uriParserResult, contentType);
         else
           throw new ODataBadRequestException(ODataBadRequestException.COMMON);
       case DELETE:
@@ -91,7 +91,7 @@ public class Dispatcher {
       case PUT:
       case PATCH:
       case MERGE:
-        return this.service.getEntityComplexPropertyProcessor().updateEntityComplexProperty(contentType);
+        return this.service.getEntityComplexPropertyProcessor().updateEntityComplexProperty(uriParserResult, contentType);
       default:
         throw new ODataMethodNotAllowedException(ODataMethodNotAllowedException.DISPATCH);
       }
@@ -108,12 +108,12 @@ public class Dispatcher {
       case PATCH:
       case MERGE:
         if (uriParserResult.isValue())
-          return this.service.getEntitySimplePropertyValueProcessor().updateEntitySimplePropertyValue(contentType);
+          return this.service.getEntitySimplePropertyValueProcessor().updateEntitySimplePropertyValue(uriParserResult, contentType);
         else
-          return this.service.getEntitySimplePropertyProcessor().updateEntitySimpleProperty(contentType);
+          return this.service.getEntitySimplePropertyProcessor().updateEntitySimpleProperty(uriParserResult, contentType);
       case DELETE:
         if (uriParserResult.isValue())
-          return this.service.getEntitySimplePropertyValueProcessor().deleteEntitySimplePropertyValue(contentType);
+          return this.service.getEntitySimplePropertyValueProcessor().deleteEntitySimplePropertyValue(uriParserResult, contentType);
         else
           throw new ODataMethodNotAllowedException(ODataMethodNotAllowedException.DISPATCH);
       default:
@@ -133,7 +133,7 @@ public class Dispatcher {
       case PUT:
       case PATCH:
       case MERGE:
-        return this.service.getEntityLinkProcessor().updateEntityLink(contentType);
+        return this.service.getEntityLinkProcessor().updateEntityLink(uriParserResult, contentType);
       case DELETE:
         if (contentType == null)
           return service.getEntityLinkProcessor().deleteEntityLink(uriParserResult, contentType);
@@ -148,7 +148,7 @@ public class Dispatcher {
       case GET:
         return this.service.getEntityLinksProcessor().readEntityLinks(uriParserResult, contentType);
       case POST:
-        return this.service.getEntityLinksProcessor().createEntityLink(contentType);
+        return this.service.getEntityLinksProcessor().createEntityLink(uriParserResult, contentType);
       default:
         throw new ODataMethodNotAllowedException(ODataMethodNotAllowedException.DISPATCH);
       }
@@ -169,47 +169,47 @@ public class Dispatcher {
     case URI11:
     case URI12:
     case URI13:
-      return this.service.getFunctionImportProcessor().executeFunctionImport(uriParserResult,contentType);
+      return this.service.getFunctionImportProcessor().executeFunctionImport(uriParserResult, contentType);
 
     case URI14:
       if (uriParserResult.isValue())
-        return this.service.getFunctionImportValueProcessor().executeFunctionImportValue(uriParserResult,contentType);
+        return this.service.getFunctionImportValueProcessor().executeFunctionImportValue(uriParserResult, contentType);
       else
-        return this.service.getFunctionImportProcessor().executeFunctionImport(uriParserResult,contentType);
+        return this.service.getFunctionImportProcessor().executeFunctionImport(uriParserResult, contentType);
 
     case URI15:
       if (method == ODataHttpMethod.GET)
-        return this.service.getEntitySetProcessor().countEntitySet(uriParserResult,contentType);
+        return this.service.getEntitySetProcessor().countEntitySet(uriParserResult, contentType);
       else
         throw new ODataMethodNotAllowedException(ODataMethodNotAllowedException.DISPATCH);
 
     case URI16:
       if (method == ODataHttpMethod.GET)
-        return this.service.getEntityProcessor().existsEntity(uriParserResult,contentType);
+        return this.service.getEntityProcessor().existsEntity(uriParserResult, contentType);
       else
         throw new ODataMethodNotAllowedException(ODataMethodNotAllowedException.DISPATCH);
 
     case URI17:
       switch (method) {
       case GET:
-        return this.service.getEntityMediaProcessor().readEntityMedia(uriParserResult,contentType);
+        return this.service.getEntityMediaProcessor().readEntityMedia(uriParserResult, contentType);
       case PUT:
-        return this.service.getEntityMediaProcessor().updateEntityMedia(contentType);
+        return this.service.getEntityMediaProcessor().updateEntityMedia(uriParserResult, contentType);
       case DELETE:
-        return this.service.getEntityMediaProcessor().deleteEntityMedia(contentType);
+        return this.service.getEntityMediaProcessor().deleteEntityMedia(uriParserResult, contentType);
       default:
         throw new ODataMethodNotAllowedException(ODataMethodNotAllowedException.DISPATCH);
       }
 
     case URI50A:
       if (method == ODataHttpMethod.GET)
-        return this.service.getEntityLinkProcessor().existsEntityLink(uriParserResult,contentType);
+        return this.service.getEntityLinkProcessor().existsEntityLink(uriParserResult, contentType);
       else
         throw new ODataMethodNotAllowedException(ODataMethodNotAllowedException.DISPATCH);
 
     case URI50B:
       if (method == ODataHttpMethod.GET)
-        return this.service.getEntityLinksProcessor().countEntityLinks(uriParserResult,contentType);
+        return this.service.getEntityLinksProcessor().countEntityLinks(uriParserResult, contentType);
       else
         throw new ODataMethodNotAllowedException(ODataMethodNotAllowedException.DISPATCH);
 
@@ -218,7 +218,7 @@ public class Dispatcher {
     }
   }
 
-  public Class<? extends ProcessorFeature> mapUriTypeToProcessorFeature(UriInfoImpl uriParserResult) {
+  public Class<? extends ProcessorFeature> mapUriTypeToProcessorFeature(final UriInfoImpl uriParserResult) {
     Class<? extends ProcessorFeature> feature;
 
     switch (uriParserResult.getUriType()) {
