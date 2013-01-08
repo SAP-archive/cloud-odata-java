@@ -2,7 +2,6 @@ package com.sap.core.odata.processor.jpa.access;
 
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 
 import com.sap.core.odata.api.edm.EdmException;
 import com.sap.core.odata.api.edm.EdmLiteralKind;
@@ -14,7 +13,6 @@ import com.sap.core.odata.api.uri.expression.BinaryExpression;
 import com.sap.core.odata.api.uri.expression.CommonExpression;
 import com.sap.core.odata.api.uri.expression.FilterExpression;
 import com.sap.core.odata.api.uri.expression.LiteralExpression;
-import com.sap.core.odata.api.uri.expression.MethodExpression;
 import com.sap.core.odata.api.uri.expression.OrderByExpression;
 import com.sap.core.odata.api.uri.expression.OrderExpression;
 import com.sap.core.odata.api.uri.expression.PropertyExpression;
@@ -57,7 +55,7 @@ public class ExpressionParsingUtility {
 	      final String right = parseWhereExpression(binaryExpression.getRightOperand());
 
 	      switch (binaryExpression.getOperator()) {
-		      case ADD:
+		      /*case ADD:
 		        return Double.toString(Double.valueOf(left) + Double.valueOf(right));
 		      case SUB:
 		        return Double.toString(Double.valueOf(left) - Double.valueOf(right));
@@ -66,7 +64,7 @@ public class ExpressionParsingUtility {
 		      case DIV:
 		        return Double.toString(Double.valueOf(left) / Double.valueOf(right));
 		      case MODULO:
-		        return Double.toString(Double.valueOf(left) % Double.valueOf(right));
+		        return Double.toString(Double.valueOf(left) % Double.valueOf(right));*/
 		      case AND:
 		        //return Boolean.toString(left.equals("true") && right.equals("true"));
 		    	  return left + SPACE + JPQLStatement.Operator.AND + SPACE + right; 
@@ -151,7 +149,7 @@ public class ExpressionParsingUtility {
 		    String value = literalType.valueToString(literalType.valueOfString(literal.getUriLiteral(), EdmLiteralKind.URI, null), EdmLiteralKind.DEFAULT, null);
 		    return evaluateComparingExpression(value, literalType);
 
-	    case METHOD:
+	    /*case METHOD:
 	      final MethodExpression methodExpression = (MethodExpression) whereExpression;
 	      final String first = parseWhereExpression(methodExpression.getParameters().get(0));
 	      final String second = methodExpression.getParameterCount() > 1 ?
@@ -201,7 +199,7 @@ public class ExpressionParsingUtility {
 		        return Long.toString(Math.round(Math.ceil(Double.valueOf(first))));
 		      default:
 		        throw new ODataNotImplementedException();
-	      }
+	      }*/
 
 	    default:
 	      throw new ODataNotImplementedException();
