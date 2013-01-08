@@ -198,7 +198,7 @@ public class JPAEdmBuilderV2 implements JPAEdmBuilder {
 				}
 
 				ComplexType complexType = new ComplexType();
-				complexType.setName(fullQualifiedName.getName());
+				complexType.setName(jpaEntityType.getJavaType().getSimpleName());
 				complexType.setProperties(properties);
 
 				if (flag == false) {
