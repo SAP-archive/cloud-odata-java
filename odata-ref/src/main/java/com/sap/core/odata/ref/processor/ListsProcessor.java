@@ -45,6 +45,7 @@ import com.sap.core.odata.api.uri.expression.MethodExpression;
 import com.sap.core.odata.api.uri.expression.OrderByExpression;
 import com.sap.core.odata.api.uri.expression.OrderExpression;
 import com.sap.core.odata.api.uri.expression.PropertyExpression;
+import com.sap.core.odata.api.uri.expression.SortOrder;
 import com.sap.core.odata.api.uri.expression.UnaryExpression;
 import com.sap.core.odata.api.uri.info.DeleteUriInfo;
 import com.sap.core.odata.api.uri.info.GetComplexPropertyUriInfo;
@@ -622,9 +623,11 @@ public class ListsProcessor extends ODataSingleProcessor {
       public int compare(final T entity1, final T entity2) {
         try {
           int result = 0;
-          for (OrderExpression expression : orderBy.getOrders()) {
+          for (final OrderExpression expression : orderBy.getOrders()) {
             result = evaluateExpression(entity1, expression.getExpression()).compareTo(
                 evaluateExpression(entity2, expression.getExpression()));
+            if (expression.getSortOrder() == SortOrder.desc)
+              result = - result;
             if (result != 0)
               break;
           }

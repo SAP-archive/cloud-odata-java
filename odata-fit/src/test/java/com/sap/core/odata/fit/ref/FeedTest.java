@@ -61,11 +61,11 @@ public class FeedTest extends AbstractRefTest {
     checkMediaType(response, ContentType.APPLICATION_ATOM_XML_FEED);
     checkCount(getBody(response), "<d:EmployeeName>", 4);
 
-    // response = callUri("Employees('2')/ne_Team/nt_Employees?$orderby=Age&$top=1");
-    // checkMediaType(response, APPLICATION_ATOM_XML_FEED);
-    // body = getBody(response);
-    // checkCount(body, "<d:EmployeeName>", 1);
-    // assertTrue(body.contains(EMPLOYEE_2_NAME));
+    response = callUri("Employees('2')/ne_Team/nt_Employees?$orderby=Age&$top=1");
+    checkMediaType(response, ContentType.APPLICATION_ATOM_XML_FEED);
+    body = getBody(response);
+    checkCount(body, "<d:EmployeeName>", 1);
+    assertTrue(body.contains(EMPLOYEE_2_NAME));
   }
 
   @Test
@@ -101,6 +101,23 @@ public class FeedTest extends AbstractRefTest {
     body = getBody(response);
     assertFalse(body.isEmpty());
     checkCount(body, "<d:Name>", 1);
+  }
+
+  @Test
+  public void orderBy() throws Exception {
+    HttpResponse response = callUri("Employees?$orderby=EmployeeId%20desc&$skip=5");
+    checkMediaType(response, ContentType.APPLICATION_ATOM_XML_FEED);
+    String body = getBody(response);
+    checkCount(body, "</entry>", 1);
+    assertTrue(body.contains(EMPLOYEE_1_NAME));
+
+    response = callUri("Rooms?$orderby=Seats%20desc,Name&$skip=102");
+    body = getBody(response);
+    checkCount(body, "</entry>", 1);
+    assertTrue(body.contains("Room 1</d:Name>"));
+
+    // badRequest("Employees?$orderby=(id");
+    // badRequest("Employees?$orderby=id");
   }
 
   @Test
