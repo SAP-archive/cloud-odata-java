@@ -117,7 +117,7 @@ public class ExpressionParsingUtility {
 		          return Boolean.toString(left.compareTo(right) >= 0);
 		        else
 		          return Boolean.toString(Double.valueOf(left) >= Double.valueOf(right));*/
-		    	  return left + SPACE + JPQLStatement.Operator.GE + SPACE + SPACE + right;
+		    	  return left + SPACE + JPQLStatement.Operator.GE + SPACE + right;
 		      case PROPERTY_ACCESS:
 		        throw new ODataNotImplementedException();
 		      default:
