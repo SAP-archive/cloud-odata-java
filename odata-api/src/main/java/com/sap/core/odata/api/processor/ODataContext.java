@@ -29,7 +29,7 @@ public interface ODataContext {
   /**
    * Start runtime measurement
    * 
-   * @param classname where the runtime measurement starts
+   * @param className where the runtime measurement starts
    * @param methodName where the runtime measurement starts
    * @return handle for the started runtime measurement which can be used for stopping
    */
@@ -87,22 +87,16 @@ public interface ODataContext {
   void setDebugMode(boolean debugMode);
 
   public interface RuntimeMeasurement {
-
     void setMethodName(String methodName);
-
     String getMethodName();
 
     void setClassName(String className);
-
     String getClassName();
 
     void setTimeStopped(long timeStopped);
-
     long getTimeStopped();
 
     void setTimeStarted(long timeStarted);
-
     long getTimeStarted();
-
   }
 }

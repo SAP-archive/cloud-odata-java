@@ -192,11 +192,16 @@ public class Dispatcher {
     case URI17:
       switch (method) {
       case GET:
-        return this.service.getEntityMediaProcessor().readEntityMedia(uriParserResult, contentType);
+        return service.getEntityMediaProcessor().readEntityMedia(uriParserResult, contentType);
       case PUT:
-        return this.service.getEntityMediaProcessor().updateEntityMedia(uriParserResult, contentType);
+        return service.getEntityMediaProcessor().updateEntityMedia(uriParserResult, contentType);
       case DELETE:
-        return this.service.getEntityMediaProcessor().deleteEntityMedia(uriParserResult, contentType);
+        if (contentType != null)
+          throw new UriSyntaxException(UriSyntaxException.INCOMPATIBLESYSTEMQUERYOPTION.addContent(SystemQueryOption.$format));
+        else if (uriParserResult.getFilter() != null)
+          throw new UriSyntaxException(UriSyntaxException.INCOMPATIBLESYSTEMQUERYOPTION.addContent(SystemQueryOption.$filter));
+        else
+          return service.getEntityMediaProcessor().deleteEntityMedia(uriParserResult, contentType);
       default:
         throw new ODataMethodNotAllowedException(ODataMethodNotAllowedException.DISPATCH);
       }
