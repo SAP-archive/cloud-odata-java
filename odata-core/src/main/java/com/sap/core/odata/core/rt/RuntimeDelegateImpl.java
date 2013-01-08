@@ -8,6 +8,7 @@ import com.sap.core.odata.api.edm.EdmSimpleTypeKind;
 import com.sap.core.odata.api.edm.provider.EdmProvider;
 import com.sap.core.odata.api.ep.EntityProvider;
 import com.sap.core.odata.api.ep.EntityProviderException;
+import com.sap.core.odata.api.ep.EntityValueProvider;
 import com.sap.core.odata.api.processor.ODataResponse.ODataResponseBuilder;
 import com.sap.core.odata.api.rt.RuntimeDelegate.RuntimeDelegateInstance;
 import com.sap.core.odata.api.uri.UriParser;
@@ -62,6 +63,11 @@ public class RuntimeDelegateImpl extends RuntimeDelegateInstance {
   }
 
   @Override
+  protected EntityValueProvider createEntityValueProvider() throws EntityProviderException {
+    return EntityProviderFactory.create("XML");
+  }
+  
+  @Override
   protected FilterParser getFilterParser(Edm edm, EdmEntityType edmType) {
     return new FilterParserImpl(edm, edmType);
   }
@@ -70,5 +76,4 @@ public class RuntimeDelegateImpl extends RuntimeDelegateInstance {
   protected OrderByParser getOrderByParser(Edm edm, EdmEntityType edmType) {
     return new OrderByParserImpl(edm, edmType);
   }
-
 }

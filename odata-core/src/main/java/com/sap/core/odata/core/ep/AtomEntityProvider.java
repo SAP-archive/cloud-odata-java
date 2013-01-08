@@ -221,7 +221,6 @@ public class AtomEntityProvider extends EntityProvider {
     }
   }
 
-  @Override
   public ODataResponse writeText(final String value) throws EntityProviderException {
     ODataResponseBuilder builder = ODataResponse.newBuilder();
     if (value != null) {
