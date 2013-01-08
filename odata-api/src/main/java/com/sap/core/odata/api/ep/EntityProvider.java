@@ -14,12 +14,16 @@ import com.sap.core.odata.api.rt.RuntimeDelegate;
  * Abstract provider for writing output
  * @author SAP AG
  */
-public abstract class EntityProvider {
+public abstract class EntityProvider extends EntityValueProvider {
 
   protected EntityProvider() throws EntityProviderException {}
 
   public static EntityProvider create(String contentType) throws EntityProviderException {
     return RuntimeDelegate.createSerializer(contentType);
+  }
+
+  public static EntityValueProvider create() throws EntityProviderException {
+    return RuntimeDelegate.createEntityValueProvider();
   }
 
   public abstract ODataResponse writeServiceDocument(Edm edm, String serviceRoot) throws EntityProviderException;
@@ -29,12 +33,6 @@ public abstract class EntityProvider {
   public abstract ODataResponse writeEntry(EdmEntitySet entitySet, Map<String, Object> data, EntityProviderProperties properties) throws EntityProviderException;
 
   public abstract ODataResponse writeProperty(EdmProperty edmProperty, Object value) throws EntityProviderException;
-
-  public abstract ODataResponse writePropertyValue(EdmProperty edmProperty, Object value) throws EntityProviderException;
-
-  public abstract ODataResponse writeText(String value) throws EntityProviderException;
-
-  public abstract ODataResponse writeBinary(String mimeType, byte[] data) throws EntityProviderException;
 
   public abstract ODataResponse writeLink(EdmEntitySet entitySet, Map<String, Object> data, EntityProviderProperties properties) throws EntityProviderException;
 
