@@ -27,14 +27,10 @@ import com.sap.core.odata.api.exception.MessageReference;
 import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.api.exception.ODataMessageException;
 import com.sap.core.odata.api.uri.PathSegment;
-import com.sap.core.odata.api.uri.UriNotMatchingException;
 import com.sap.core.odata.api.uri.UriInfo;
+import com.sap.core.odata.api.uri.UriNotMatchingException;
 import com.sap.core.odata.api.uri.UriSyntaxException;
 import com.sap.core.odata.core.ODataPathSegmentImpl;
-import com.sap.core.odata.core.commons.ContentType;
-import com.sap.core.odata.core.uri.UriParserImpl;
-import com.sap.core.odata.core.uri.UriInfoImpl;
-import com.sap.core.odata.core.uri.UriType;
 import com.sap.core.odata.testutil.mock.MockFacade;
 
 /**
