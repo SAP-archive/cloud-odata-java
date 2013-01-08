@@ -55,7 +55,7 @@ public class DataContainer {
     roomSet.add(room2);
     roomSet.add(room3);
     for (int i = 4; i <= 103; i++) {
-      Room roomN = new Room("Room " + i, (4 + i) / 5);
+      Room roomN = new Room("Room " + i, 4 + (i - 3) % 5);
       roomN.setBuilding(building3);
       roomN.setVersion(1);
       roomSet.add(roomN);
