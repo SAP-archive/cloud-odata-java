@@ -274,8 +274,26 @@ public class ScenarioDataSource implements ListsDataSource {
       return employee.getImage();
     } else if ("Photos".equals(entitySet.getName())) {
       final Photo photo = (Photo) mediaLinkEntryData;
-      mimeType.append(photo.getType());
+      mimeType.append(photo.getImageType());
       return photo.getImage();
+    } else {
+      throw new ODataNotImplementedException();
+    }
+  }
+
+  @Override
+  public void writeBinaryData(final EdmEntitySet entitySet, final Object mediaLinkEntryData, final byte[] binaryData, final String mimeType) throws ODataNotImplementedException, ODataNotFoundException, EdmException, ODataApplicationException {
+    if (mediaLinkEntryData == null)
+      throw new ODataNotFoundException(null);
+
+    if ("Employees".equals(entitySet.getName()) || "Managers".equals(entitySet.getName())) {
+      final Employee employee = (Employee) mediaLinkEntryData;
+      employee.setImage(binaryData);
+      employee.setImageType(mimeType);
+    } else if ("Photos".equals(entitySet.getName())) {
+      final Photo photo = (Photo) mediaLinkEntryData;
+      photo.setImage(binaryData);
+      photo.setImageType(mimeType);
     } else {
       throw new ODataNotImplementedException();
     }
@@ -403,5 +421,4 @@ public class ScenarioDataSource implements ListsDataSource {
       throw new ODataNotImplementedException();
     }
   }
-
 }

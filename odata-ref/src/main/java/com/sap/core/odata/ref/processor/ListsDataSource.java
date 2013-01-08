@@ -27,14 +27,14 @@ import com.sap.core.odata.api.exception.ODataNotImplementedException;
 public interface ListsDataSource {
 
   /**
-   * <p>Retrieves the whole data list for the specified entity set.</p>
+   * Retrieves the whole data list for the specified entity set.
    * @param entitySet  the requested {@link EdmEntitySet}
    * @return the requested data list
    */
   List<?> readData(EdmEntitySet entitySet) throws ODataNotImplementedException, ODataNotFoundException, EdmException, ODataApplicationException;
 
   /**
-   * <p>Retrieves a single data object for the specified entity set and key.</p>
+   * Retrieves a single data object for the specified entity set and key.
    * @param entitySet  the requested {@link EdmEntitySet}
    * @param keys  the entity key as map of key names to key values
    * @return the requested data object
@@ -70,8 +70,8 @@ public interface ListsDataSource {
   Object readRelatedData(EdmEntitySet sourceEntitySet, Object sourceData, EdmEntitySet targetEntitySet, Map<String, Object> targetKeys) throws ODataNotImplementedException, ODataNotFoundException, EdmException, ODataApplicationException;
 
   /**
-   * <p>Retrieves the binary data for the media resource associated to
-   * the specified media-link entry.</p>
+   * Retrieves the binary data for the media resource associated to the
+   * specified media-link entry.
    * @param entitySet  the {@link EdmEntitySet} of the media-link entry
    * @param mediaLinkEntryData  the data object of the media-link entry
    * @param mimeType  an empty {@link StringBuilder} to which the MIME type
@@ -90,15 +90,25 @@ public interface ListsDataSource {
   Object newDataObject(EdmEntitySet entitySet) throws ODataNotImplementedException, EdmException, ODataApplicationException;
 
   /**
-   * <p>Deletes a single data object identified by the specified entity set and key.</p>
+   * Writes the binary data for the media resource associated to the
+   * specified media-link entry.
+   * @param entitySet  the {@link EdmEntitySet} of the media-link entry
+   * @param mediaLinkEntryData  the data object of the media-link entry
+   * @param binaryData  the binary data of the media resource
+   * @param mimeType  the MIME type of the binary data
+   */
+  void writeBinaryData(EdmEntitySet entitySet, Object mediaLinkEntryData, byte[] binaryData, String mimeType) throws ODataNotImplementedException, ODataNotFoundException, EdmException, ODataApplicationException;
+
+  /**
+   * Deletes a single data object identified by the specified entity set and key.
    * @param entitySet  the {@link EdmEntitySet} of the entity to be deleted
    * @param keys  the entity key as map of key names to key values
    */
   void deleteData(EdmEntitySet entitySet, Map<String, Object> keys) throws ODataNotImplementedException, ODataNotFoundException, EdmException, ODataApplicationException;
 
   /**
-   * <p>Deletes the relation from the specified source data to a target entity
-   * specified by entity set and key.</p>
+   * Deletes the relation from the specified source data to a target entity
+   * specified by entity set and key.
    * @param sourceEntitySet  the {@link EdmEntitySet} of the source entity
    * @param sourceData  the data object of the source entity
    * @param targetEntitySet  the {@link EdmEntitySet} of the target entity

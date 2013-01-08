@@ -34,4 +34,11 @@ public class MiscChangeTest extends AbstractRefTest {
     deleteUri("Managers('3')/$links/nm_Employees()", HttpStatusCodes.METHOD_NOT_ALLOWED);
     deleteUri("Managers('3')/$links/nm_Employees('1')", HttpStatusCodes.NOT_FOUND);
   }
+
+  @Test
+  public void deleteMediaResource() throws Exception {
+    deleteUriOk("Managers('1')/$value");
+
+    deleteUri("Teams('2')/$value", HttpStatusCodes.BAD_REQUEST);
+  }
 }
