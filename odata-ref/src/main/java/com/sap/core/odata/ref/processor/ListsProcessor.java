@@ -78,26 +78,26 @@ public class ListsProcessor extends ODataSingleProcessor {
   }
 
   @Override
-  public ODataResponse readEntitySet(final GetEntitySetUriInfo uriParserResultView, final String contentType) throws ODataException {
+  public ODataResponse readEntitySet(final GetEntitySetUriInfo uriInfo, final String contentType) throws ODataException {
     ArrayList<Object> data = new ArrayList<Object>();
     data.addAll((List<?>) retrieveData(
-        uriParserResultView.getStartEntitySet(),
-        uriParserResultView.getKeyPredicates(),
-        uriParserResultView.getFunctionImport(),
-        mapFunctionParameters(uriParserResultView.getFunctionImportParameters()),
-        uriParserResultView.getNavigationSegments()));
+        uriInfo.getStartEntitySet(),
+        uriInfo.getKeyPredicates(),
+        uriInfo.getFunctionImport(),
+        mapFunctionParameters(uriInfo.getFunctionImportParameters()),
+        uriInfo.getNavigationSegments()));
 
-    final EdmEntitySet entitySet = uriParserResultView.getTargetEntitySet();
-    final InlineCount inlineCountType = uriParserResultView.getInlineCount();
+    final EdmEntitySet entitySet = uriInfo.getTargetEntitySet();
+    final InlineCount inlineCountType = uriInfo.getInlineCount();
     final Integer count = applySystemQueryOptions(
         entitySet,
         data,
-        uriParserResultView.getFilter(),
+        uriInfo.getFilter(),
         inlineCountType,
-        uriParserResultView.getOrderBy(),
-        uriParserResultView.getSkipToken(),
-        uriParserResultView.getSkip(),
-        uriParserResultView.getTop());
+        uriInfo.getOrderBy(),
+        uriInfo.getSkipToken(),
+        uriInfo.getSkip(),
+        uriInfo.getTop());
 
     // Limit the number of returned entities and provide a "next" link
     // if there are further entities.
@@ -106,16 +106,16 @@ public class ListsProcessor extends ODataSingleProcessor {
     // and $skip; this is missing currently.
     String nextSkipToken = null;
     if (data.size() > SERVER_PAGING_SIZE
-        && uriParserResultView.getFilter() == null
+        && uriInfo.getFilter() == null
         && inlineCountType == null
-        && uriParserResultView.getOrderBy() == null
-        && uriParserResultView.getTop() == null
-        && uriParserResultView.getExpand().isEmpty()
-        && uriParserResultView.getSelect().isEmpty()) {
-      if (uriParserResultView.getOrderBy() == null
-          && uriParserResultView.getSkipToken() == null
-          && uriParserResultView.getSkip() == null
-          && uriParserResultView.getTop() == null) // applySystemQueryOptions did not sort
+        && uriInfo.getOrderBy() == null
+        && uriInfo.getTop() == null
+        && uriInfo.getExpand().isEmpty()
+        && uriInfo.getSelect().isEmpty()) {
+      if (uriInfo.getOrderBy() == null
+          && uriInfo.getSkipToken() == null
+          && uriInfo.getSkip() == null
+          && uriInfo.getTop() == null) // applySystemQueryOptions did not sort
         sortInDefaultOrder(entitySet, data);
       nextSkipToken = getSkipToken(entitySet, data.get(SERVER_PAGING_SIZE));
       while (data.size() > SERVER_PAGING_SIZE)
@@ -139,24 +139,24 @@ public class ListsProcessor extends ODataSingleProcessor {
   }
 
   @Override
-  public ODataResponse countEntitySet(final GetEntitySetCountUriInfo uriParserResultView, final String contentType) throws ODataException {
+  public ODataResponse countEntitySet(final GetEntitySetCountUriInfo uriInfo, final String contentType) throws ODataException {
     ArrayList<Object> data = new ArrayList<Object>();
     data.addAll((List<?>) retrieveData(
-        uriParserResultView.getStartEntitySet(),
-        uriParserResultView.getKeyPredicates(),
-        uriParserResultView.getFunctionImport(),
-        mapFunctionParameters(uriParserResultView.getFunctionImportParameters()),
-        uriParserResultView.getNavigationSegments()));
+        uriInfo.getStartEntitySet(),
+        uriInfo.getKeyPredicates(),
+        uriInfo.getFunctionImport(),
+        mapFunctionParameters(uriInfo.getFunctionImportParameters()),
+        uriInfo.getNavigationSegments()));
 
     applySystemQueryOptions(
-        uriParserResultView.getTargetEntitySet(),
+        uriInfo.getTargetEntitySet(),
         data,
-        uriParserResultView.getFilter(),
+        uriInfo.getFilter(),
         null,
         null,
         null,
-        uriParserResultView.getSkip(),
-        uriParserResultView.getTop());
+        uriInfo.getSkip(),
+        uriInfo.getTop());
 
     return ODataResponse.fromResponse(EntityProvider.create(contentType).writeText(String.valueOf(data.size())))
         .status(HttpStatusCodes.OK)
@@ -164,27 +164,27 @@ public class ListsProcessor extends ODataSingleProcessor {
   }
 
   @Override
-  public ODataResponse readEntityLinks(final GetEntitySetLinksUriInfo uriParserResultView, final String contentType) throws ODataException {
+  public ODataResponse readEntityLinks(final GetEntitySetLinksUriInfo uriInfo, final String contentType) throws ODataException {
     ArrayList<Object> data = new ArrayList<Object>();
     data.addAll((List<?>) retrieveData(
-        uriParserResultView.getStartEntitySet(),
-        uriParserResultView.getKeyPredicates(),
-        uriParserResultView.getFunctionImport(),
-        mapFunctionParameters(uriParserResultView.getFunctionImportParameters()),
-        uriParserResultView.getNavigationSegments()));
+        uriInfo.getStartEntitySet(),
+        uriInfo.getKeyPredicates(),
+        uriInfo.getFunctionImport(),
+        mapFunctionParameters(uriInfo.getFunctionImportParameters()),
+        uriInfo.getNavigationSegments()));
 
     final Integer count = applySystemQueryOptions(
-        uriParserResultView.getTargetEntitySet(),
+        uriInfo.getTargetEntitySet(),
         data,
-        uriParserResultView.getFilter(),
-        uriParserResultView.getInlineCount(),
-        // uriParserResultView.getOrderBy(),
+        uriInfo.getFilter(),
+        uriInfo.getInlineCount(),
+        // uriInfo.getOrderBy(),
         null,
-        uriParserResultView.getSkipToken(),
-        uriParserResultView.getSkip(),
-        uriParserResultView.getTop());
+        uriInfo.getSkipToken(),
+        uriInfo.getSkip(),
+        uriInfo.getTop());
 
-    final EdmEntitySet entitySet = uriParserResultView.getTargetEntitySet();
+    final EdmEntitySet entitySet = uriInfo.getTargetEntitySet();
 
     List<Map<String, Object>> values = new ArrayList<Map<String, Object>>();
     for (final Object entryData : data) {
@@ -203,23 +203,23 @@ public class ListsProcessor extends ODataSingleProcessor {
   }
 
   @Override
-  public ODataResponse countEntityLinks(final GetEntitySetLinksCountUriInfo uriParserResultView, final String contentType) throws ODataException {
-    return countEntitySet((GetEntitySetCountUriInfo) uriParserResultView, contentType);
+  public ODataResponse countEntityLinks(final GetEntitySetLinksCountUriInfo uriInfo, final String contentType) throws ODataException {
+    return countEntitySet((GetEntitySetCountUriInfo) uriInfo, contentType);
   }
 
   @Override
-  public ODataResponse readEntity(final GetEntityUriInfo uriParserResultView, final String contentType) throws ODataException {
+  public ODataResponse readEntity(final GetEntityUriInfo uriInfo, final String contentType) throws ODataException {
     final Object data = retrieveData(
-        uriParserResultView.getStartEntitySet(),
-        uriParserResultView.getKeyPredicates(),
-        uriParserResultView.getFunctionImport(),
-        mapFunctionParameters(uriParserResultView.getFunctionImportParameters()),
-        uriParserResultView.getNavigationSegments());
+        uriInfo.getStartEntitySet(),
+        uriInfo.getKeyPredicates(),
+        uriInfo.getFunctionImport(),
+        mapFunctionParameters(uriInfo.getFunctionImportParameters()),
+        uriInfo.getNavigationSegments());
 
-    if (!appliesFilter(data, uriParserResultView.getFilter()))
+    if (!appliesFilter(data, uriInfo.getFilter()))
       throw new ODataNotFoundException(ODataNotFoundException.ENTITY);
 
-    final EdmEntitySet entitySet = uriParserResultView.getTargetEntitySet();
+    final EdmEntitySet entitySet = uriInfo.getTargetEntitySet();
     final Map<String, Object> values = getStructuralTypeValueMap(data, entitySet.getEntityType());
 
     final EntityProviderProperties entryProperties = EntityProviderProperties
@@ -231,42 +231,42 @@ public class ListsProcessor extends ODataSingleProcessor {
   }
 
   @Override
-  public ODataResponse existsEntity(final GetEntityCountUriInfo uriParserResultView, final String contentType) throws ODataException {
+  public ODataResponse existsEntity(final GetEntityCountUriInfo uriInfo, final String contentType) throws ODataException {
     final Object data = retrieveData(
-        uriParserResultView.getStartEntitySet(),
-        uriParserResultView.getKeyPredicates(),
-        uriParserResultView.getFunctionImport(),
-        mapFunctionParameters(uriParserResultView.getFunctionImportParameters()),
-        uriParserResultView.getNavigationSegments());
+        uriInfo.getStartEntitySet(),
+        uriInfo.getKeyPredicates(),
+        uriInfo.getFunctionImport(),
+        mapFunctionParameters(uriInfo.getFunctionImportParameters()),
+        uriInfo.getNavigationSegments());
 
     return ODataResponse.fromResponse(EntityProvider.create(contentType).writeText(
-        appliesFilter(data, uriParserResultView.getFilter()) ? "1" : "0"))
+        appliesFilter(data, uriInfo.getFilter()) ? "1" : "0"))
         .status(HttpStatusCodes.OK)
         .build();
   }
 
   @Override
-  public ODataResponse deleteEntity(final DeleteUriInfo uriParserResultView, final String contentType) throws ODataException {
+  public ODataResponse deleteEntity(final DeleteUriInfo uriInfo, final String contentType) throws ODataException {
     dataSource.deleteData(
-        uriParserResultView.getStartEntitySet(),
-        mapKey(uriParserResultView.getKeyPredicates()));
+        uriInfo.getStartEntitySet(),
+        mapKey(uriInfo.getKeyPredicates()));
     return ODataResponse.status(HttpStatusCodes.NO_CONTENT).build();
   }
 
   @Override
-  public ODataResponse readEntityLink(final GetEntityLinkUriInfo uriParserResultView, final String contentType) throws ODataException {
+  public ODataResponse readEntityLink(final GetEntityLinkUriInfo uriInfo, final String contentType) throws ODataException {
     final Object data = retrieveData(
-        uriParserResultView.getStartEntitySet(),
-        uriParserResultView.getKeyPredicates(),
-        uriParserResultView.getFunctionImport(),
-        mapFunctionParameters(uriParserResultView.getFunctionImportParameters()),
-        uriParserResultView.getNavigationSegments());
+        uriInfo.getStartEntitySet(),
+        uriInfo.getKeyPredicates(),
+        uriInfo.getFunctionImport(),
+        mapFunctionParameters(uriInfo.getFunctionImportParameters()),
+        uriInfo.getNavigationSegments());
 
-    // if (!appliesFilter(data, uriParserResultView.getFilter()))
+    // if (!appliesFilter(data, uriInfo.getFilter()))
     if (data == null)
       throw new ODataNotFoundException(ODataNotFoundException.ENTITY);
 
-    final EdmEntitySet entitySet = uriParserResultView.getTargetEntitySet();
+    final EdmEntitySet entitySet = uriInfo.getTargetEntitySet();
 
     Map<String, Object> values = new HashMap<String, Object>();
     for (final EdmProperty property : entitySet.getEntityType().getKeyProperties())
@@ -281,25 +281,25 @@ public class ListsProcessor extends ODataSingleProcessor {
   }
 
   @Override
-  public ODataResponse existsEntityLink(final GetEntityLinkCountUriInfo uriParserResultView, final String contentType) throws ODataException {
-    return existsEntity((GetEntityCountUriInfo) uriParserResultView, contentType);
+  public ODataResponse existsEntityLink(final GetEntityLinkCountUriInfo uriInfo, final String contentType) throws ODataException {
+    return existsEntity((GetEntityCountUriInfo) uriInfo, contentType);
   }
 
   @Override
-  public ODataResponse deleteEntityLink(final DeleteUriInfo uriParserResultView, final String contentType) throws ODataException {
-    final List<NavigationSegment> navigationSegments = uriParserResultView.getNavigationSegments();
+  public ODataResponse deleteEntityLink(final DeleteUriInfo uriInfo, final String contentType) throws ODataException {
+    final List<NavigationSegment> navigationSegments = uriInfo.getNavigationSegments();
     final List<NavigationSegment> previousSegments = navigationSegments.subList(0, navigationSegments.size() - 1);
 
     final Object sourceData = retrieveData(
-        uriParserResultView.getStartEntitySet(),
-        uriParserResultView.getKeyPredicates(),
-        uriParserResultView.getFunctionImport(),
-        mapFunctionParameters(uriParserResultView.getFunctionImportParameters()),
+        uriInfo.getStartEntitySet(),
+        uriInfo.getKeyPredicates(),
+        uriInfo.getFunctionImport(),
+        mapFunctionParameters(uriInfo.getFunctionImportParameters()),
         previousSegments);
 
     EdmEntitySet entitySet;
     if (previousSegments.isEmpty())
-      entitySet = uriParserResultView.getStartEntitySet();
+      entitySet = uriInfo.getStartEntitySet();
     else
       entitySet = previousSegments.get(previousSegments.size() - 1).getEntitySet();
     final NavigationSegment navigationSegment = navigationSegments.get(navigationSegments.size() - 1);
@@ -307,7 +307,7 @@ public class ListsProcessor extends ODataSingleProcessor {
     final Object targetData = dataSource.readRelatedData(
         entitySet, sourceData, navigationSegment.getEntitySet(), keys);
 
-    // if (!appliesFilter(targetData, uriParserResultView.getFilter()))
+    // if (!appliesFilter(targetData, uriInfo.getFilter()))
     if (targetData == null)
       throw new ODataNotFoundException(ODataNotFoundException.ENTITY);
 
@@ -316,18 +316,18 @@ public class ListsProcessor extends ODataSingleProcessor {
   }
 
   @Override
-  public ODataResponse readEntityComplexProperty(final GetComplexPropertyUriInfo uriParserResultView, final String contentType) throws ODataException {
+  public ODataResponse readEntityComplexProperty(final GetComplexPropertyUriInfo uriInfo, final String contentType) throws ODataException {
     Object data = retrieveData(
-        uriParserResultView.getStartEntitySet(),
-        uriParserResultView.getKeyPredicates(),
-        uriParserResultView.getFunctionImport(),
-        mapFunctionParameters(uriParserResultView.getFunctionImportParameters()),
-        uriParserResultView.getNavigationSegments());
+        uriInfo.getStartEntitySet(),
+        uriInfo.getKeyPredicates(),
+        uriInfo.getFunctionImport(),
+        mapFunctionParameters(uriInfo.getFunctionImportParameters()),
+        uriInfo.getNavigationSegments());
 
-    // if (!appliesFilter(data, uriParserResultView.getFilter()))
+    // if (!appliesFilter(data, uriInfo.getFilter()))
     //   throw new ODataNotFoundException(ODataNotFoundException.ENTITY);
 
-    final List<EdmProperty> propertyPath = uriParserResultView.getPropertyPath();
+    final List<EdmProperty> propertyPath = uriInfo.getPropertyPath();
     data = getPropertyValue(data, propertyPath);
 
     final EdmProperty property = propertyPath.get(propertyPath.size() - 1);
@@ -340,23 +340,23 @@ public class ListsProcessor extends ODataSingleProcessor {
   }
 
   @Override
-  public ODataResponse readEntitySimpleProperty(final GetSimplePropertyUriInfo uriParserResultView, final String contentType) throws ODataException {
-    return readEntityComplexProperty((GetComplexPropertyUriInfo) uriParserResultView, contentType);
+  public ODataResponse readEntitySimpleProperty(final GetSimplePropertyUriInfo uriInfo, final String contentType) throws ODataException {
+    return readEntityComplexProperty((GetComplexPropertyUriInfo) uriInfo, contentType);
   }
 
   @Override
-  public ODataResponse readEntitySimplePropertyValue(final GetSimplePropertyUriInfo uriParserResultView, final String contentType) throws ODataException {
+  public ODataResponse readEntitySimplePropertyValue(final GetSimplePropertyUriInfo uriInfo, final String contentType) throws ODataException {
     Object data = retrieveData(
-        uriParserResultView.getStartEntitySet(),
-        uriParserResultView.getKeyPredicates(),
-        uriParserResultView.getFunctionImport(),
-        mapFunctionParameters(uriParserResultView.getFunctionImportParameters()),
-        uriParserResultView.getNavigationSegments());
+        uriInfo.getStartEntitySet(),
+        uriInfo.getKeyPredicates(),
+        uriInfo.getFunctionImport(),
+        mapFunctionParameters(uriInfo.getFunctionImportParameters()),
+        uriInfo.getNavigationSegments());
 
-    // if (!appliesFilter(data, uriParserResultView.getFilter()))
+    // if (!appliesFilter(data, uriInfo.getFilter()))
     //   throw new ODataNotFoundException(ODataNotFoundException.ENTITY);
 
-    final List<EdmProperty> propertyPath = uriParserResultView.getPropertyPath();
+    final List<EdmProperty> propertyPath = uriInfo.getPropertyPath();
     final EdmProperty property = propertyPath.get(propertyPath.size() - 1);
     Object value = getPropertyValue(data, propertyPath);
 
@@ -374,18 +374,18 @@ public class ListsProcessor extends ODataSingleProcessor {
   }
 
   @Override
-  public ODataResponse readEntityMedia(final GetMediaResourceUriInfo uriParserResultView, final String contentType) throws ODataException {
+  public ODataResponse readEntityMedia(final GetMediaResourceUriInfo uriInfo, final String contentType) throws ODataException {
     final Object data = retrieveData(
-        uriParserResultView.getStartEntitySet(),
-        uriParserResultView.getKeyPredicates(),
-        uriParserResultView.getFunctionImport(),
-        mapFunctionParameters(uriParserResultView.getFunctionImportParameters()),
-        uriParserResultView.getNavigationSegments());
+        uriInfo.getStartEntitySet(),
+        uriInfo.getKeyPredicates(),
+        uriInfo.getFunctionImport(),
+        mapFunctionParameters(uriInfo.getFunctionImportParameters()),
+        uriInfo.getNavigationSegments());
 
-    if (!appliesFilter(data, uriParserResultView.getFilter()))
+    if (!appliesFilter(data, uriInfo.getFilter()))
       throw new ODataNotFoundException(ODataNotFoundException.ENTITY);
 
-    final EdmEntitySet entitySet = uriParserResultView.getTargetEntitySet();
+    final EdmEntitySet entitySet = uriInfo.getTargetEntitySet();
     StringBuilder mimeTypeBuilder = new StringBuilder();
     final byte[] binaryData = dataSource.readBinaryData(entitySet, data, mimeTypeBuilder);
 
@@ -398,13 +398,18 @@ public class ListsProcessor extends ODataSingleProcessor {
   }
 
   @Override
-  public ODataResponse executeFunctionImport(final GetFunctionImportUriInfo uriParserResultView, final String contentType) throws ODataException {
-    final EdmFunctionImport functionImport = uriParserResultView.getFunctionImport();
+  public ODataResponse deleteEntityMedia(final DeleteUriInfo uriInfo, final String contentType) throws ODataException {
+    return null;
+  }
+
+  @Override
+  public ODataResponse executeFunctionImport(final GetFunctionImportUriInfo uriInfo, final String contentType) throws ODataException {
+    final EdmFunctionImport functionImport = uriInfo.getFunctionImport();
     final EdmType type = functionImport.getReturnType().getType();
 
     final Object data = dataSource.readData(
         functionImport,
-        mapFunctionParameters(uriParserResultView.getFunctionImportParameters()),
+        mapFunctionParameters(uriInfo.getFunctionImportParameters()),
         null);
 
     Object value;
@@ -428,13 +433,13 @@ public class ListsProcessor extends ODataSingleProcessor {
   }
 
   @Override
-  public ODataResponse executeFunctionImportValue(final GetFunctionImportUriInfo uriParserResultView, final String contentType) throws ODataException {
-    final EdmFunctionImport functionImport = uriParserResultView.getFunctionImport();
+  public ODataResponse executeFunctionImportValue(final GetFunctionImportUriInfo uriInfo, final String contentType) throws ODataException {
+    final EdmFunctionImport functionImport = uriInfo.getFunctionImport();
     final EdmSimpleType type = (EdmSimpleType) functionImport.getReturnType().getType();
 
     final Object data = dataSource.readData(
         functionImport,
-        mapFunctionParameters(uriParserResultView.getFunctionImportParameters()),
+        mapFunctionParameters(uriInfo.getFunctionImportParameters()),
         null);
 
     if (type == EdmSimpleTypeKind.Binary.getEdmSimpleTypeInstance()) {

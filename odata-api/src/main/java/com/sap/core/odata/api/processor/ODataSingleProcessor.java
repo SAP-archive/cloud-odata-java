@@ -39,6 +39,8 @@ import com.sap.core.odata.api.uri.info.GetMediaResourceUriInfo;
 import com.sap.core.odata.api.uri.info.GetMetadataUriInfo;
 import com.sap.core.odata.api.uri.info.GetServiceDocumentUriInfo;
 import com.sap.core.odata.api.uri.info.GetSimplePropertyUriInfo;
+import com.sap.core.odata.api.uri.info.PostUriInfo;
+import com.sap.core.odata.api.uri.info.PutMergePatchUriInfo;
 
 /**
  * <p>A default {@link ODataProcessor} that implements all processor features in a single class.</p>
@@ -106,7 +108,7 @@ public abstract class ODataSingleProcessor
    * @see FunctionImport
    */
   @Override
-  public ODataResponse executeFunctionImport(GetFunctionImportUriInfo uriParserResultView,String contentType) throws ODataException {
+  public ODataResponse executeFunctionImport(GetFunctionImportUriInfo uriInfo, String contentType) throws ODataException {
     throw new ODataNotImplementedException();
   }
 
@@ -114,7 +116,7 @@ public abstract class ODataSingleProcessor
    * @see FunctionImportValue
    */
   @Override
-  public ODataResponse executeFunctionImportValue(GetFunctionImportUriInfo uriParserResultView,String contentType) throws ODataException {
+  public ODataResponse executeFunctionImportValue(GetFunctionImportUriInfo uriInfo, String contentType) throws ODataException {
     throw new ODataNotImplementedException();
   }
 
@@ -122,7 +124,7 @@ public abstract class ODataSingleProcessor
    * @see EntitySimplePropertyValue
    */
   @Override
-  public ODataResponse readEntitySimplePropertyValue(GetSimplePropertyUriInfo uriParserResultView,String contentType) throws ODataException {
+  public ODataResponse readEntitySimplePropertyValue(GetSimplePropertyUriInfo uriInfo, String contentType) throws ODataException {
     throw new ODataNotImplementedException();
   }
 
@@ -130,7 +132,7 @@ public abstract class ODataSingleProcessor
    * @see EntitySimplePropertyValue
    */
   @Override
-  public ODataResponse updateEntitySimplePropertyValue(String contentType) throws ODataException {
+  public ODataResponse updateEntitySimplePropertyValue(PutMergePatchUriInfo uriInfo, String contentType) throws ODataException {
     throw new ODataNotImplementedException();
   }
 
@@ -138,7 +140,7 @@ public abstract class ODataSingleProcessor
    * @see EntitySimplePropertyValue
    */
   @Override
-  public ODataResponse deleteEntitySimplePropertyValue(String contentType) throws ODataException {
+  public ODataResponse deleteEntitySimplePropertyValue(DeleteUriInfo uriInfo, String contentType) throws ODataException {
     throw new ODataNotImplementedException();
   }
 
@@ -146,7 +148,7 @@ public abstract class ODataSingleProcessor
    * @see EntitySimpleProperty
    */
   @Override
-  public ODataResponse readEntitySimpleProperty(GetSimplePropertyUriInfo uriParserResultView, String contentType) throws ODataException {
+  public ODataResponse readEntitySimpleProperty(GetSimplePropertyUriInfo uriInfo, String contentType) throws ODataException {
     throw new ODataNotImplementedException();
   }
 
@@ -154,7 +156,7 @@ public abstract class ODataSingleProcessor
    * @see EntitySimpleProperty
    */
   @Override
-  public ODataResponse updateEntitySimpleProperty(String contentType) throws ODataException {
+  public ODataResponse updateEntitySimpleProperty(PutMergePatchUriInfo uriInfo, String contentType) throws ODataException {
     throw new ODataNotImplementedException();
   }
 
@@ -162,7 +164,7 @@ public abstract class ODataSingleProcessor
    * @see EntityMedia
    */
   @Override
-  public ODataResponse readEntityMedia(GetMediaResourceUriInfo uriParserResultView, String contentType) throws ODataException {
+  public ODataResponse readEntityMedia(GetMediaResourceUriInfo uriInfo, String contentType) throws ODataException {
     throw new ODataNotImplementedException();
   }
 
@@ -170,7 +172,7 @@ public abstract class ODataSingleProcessor
    * @see EntityMedia
    */
   @Override
-  public ODataResponse updateEntityMedia(String contentType) throws ODataException {
+  public ODataResponse updateEntityMedia(PutMergePatchUriInfo uriInfo, String contentType) throws ODataException {
     throw new ODataNotImplementedException();
   }
 
@@ -178,7 +180,7 @@ public abstract class ODataSingleProcessor
    * @see EntityMedia
    */
   @Override
-  public ODataResponse deleteEntityMedia(String contentType) throws ODataException {
+  public ODataResponse deleteEntityMedia(DeleteUriInfo uriInfo, String contentType) throws ODataException {
     throw new ODataNotImplementedException();
   }
 
@@ -186,7 +188,7 @@ public abstract class ODataSingleProcessor
    * @see EntityLinks
    */
   @Override
-  public ODataResponse readEntityLinks(GetEntitySetLinksUriInfo uriParserResultView, String contentType) throws ODataException {
+  public ODataResponse readEntityLinks(GetEntitySetLinksUriInfo uriInfo, String contentType) throws ODataException {
     throw new ODataNotImplementedException();
   }
 
@@ -194,7 +196,7 @@ public abstract class ODataSingleProcessor
    * @see EntityLinks
    */
   @Override
-  public ODataResponse countEntityLinks(GetEntitySetLinksCountUriInfo uriParserResultView, String contentType) throws ODataException {
+  public ODataResponse countEntityLinks(GetEntitySetLinksCountUriInfo uriInfo, String contentType) throws ODataException {
     throw new ODataNotImplementedException();
   }
 
@@ -202,7 +204,7 @@ public abstract class ODataSingleProcessor
    * @see EntityLink
    */
   @Override
-  public ODataResponse createEntityLink(String contentType) throws ODataException {
+  public ODataResponse createEntityLink(PostUriInfo uriInfo, String contentType) throws ODataException {
     throw new ODataNotImplementedException();
   }
 
@@ -210,7 +212,7 @@ public abstract class ODataSingleProcessor
    * @see EntityLink
    */
   @Override
-  public ODataResponse readEntityLink(GetEntityLinkUriInfo uriParserResultView, String contentType) throws ODataException {
+  public ODataResponse readEntityLink(GetEntityLinkUriInfo uriInfo, String contentType) throws ODataException {
     throw new ODataNotImplementedException();
   }
 
@@ -218,7 +220,7 @@ public abstract class ODataSingleProcessor
    * @see EntityLink
    */
   @Override
-  public ODataResponse existsEntityLink(GetEntityLinkCountUriInfo uriParserResultView, String contentType) throws ODataException {
+  public ODataResponse existsEntityLink(GetEntityLinkCountUriInfo uriInfo, String contentType) throws ODataException {
     throw new ODataNotImplementedException();
   }
 
@@ -226,7 +228,7 @@ public abstract class ODataSingleProcessor
    * @see EntityLink
    */
   @Override
-  public ODataResponse updateEntityLink(String contentType) throws ODataException {
+  public ODataResponse updateEntityLink(PutMergePatchUriInfo uriInfo, String contentType) throws ODataException {
     throw new ODataNotImplementedException();
   }
 
@@ -234,7 +236,7 @@ public abstract class ODataSingleProcessor
    * @see EntityLink
    */
   @Override
-  public ODataResponse deleteEntityLink(DeleteUriInfo uriParserResultView, String contentType) throws ODataException {
+  public ODataResponse deleteEntityLink(DeleteUriInfo uriInfo, String contentType) throws ODataException {
     throw new ODataNotImplementedException();
   }
 
@@ -242,7 +244,7 @@ public abstract class ODataSingleProcessor
    * @see EntityComplexProperty
    */
   @Override
-  public ODataResponse readEntityComplexProperty(GetComplexPropertyUriInfo uriParserResultView, String contentType) throws ODataException {
+  public ODataResponse readEntityComplexProperty(GetComplexPropertyUriInfo uriInfo, String contentType) throws ODataException {
     throw new ODataNotImplementedException();
   }
 
@@ -250,7 +252,7 @@ public abstract class ODataSingleProcessor
    * @see EntityComplexProperty
    */
   @Override
-  public ODataResponse updateEntityComplexProperty(String contentType) throws ODataException {
+  public ODataResponse updateEntityComplexProperty(PutMergePatchUriInfo uriInfo, String contentType) throws ODataException {
     throw new ODataNotImplementedException();
   }
 
@@ -258,7 +260,7 @@ public abstract class ODataSingleProcessor
    * @see EntitySet
    */
   @Override
-  public ODataResponse readEntitySet(GetEntitySetUriInfo uriParserResultView, String contentType) throws ODataException {
+  public ODataResponse readEntitySet(GetEntitySetUriInfo uriInfo, String contentType) throws ODataException {
     throw new ODataNotImplementedException();
   }
 
@@ -266,7 +268,7 @@ public abstract class ODataSingleProcessor
    * @see EntitySet
    */
   @Override
-  public ODataResponse countEntitySet(GetEntitySetCountUriInfo uriParserResultView, String contentType) throws ODataException {
+  public ODataResponse countEntitySet(GetEntitySetCountUriInfo uriInfo, String contentType) throws ODataException {
     throw new ODataNotImplementedException();
   }
 
@@ -274,7 +276,7 @@ public abstract class ODataSingleProcessor
    * @see Entity
    */
   @Override
-  public ODataResponse createEntity(String contentType) throws ODataException {
+  public ODataResponse createEntity(PostUriInfo uriInfo, String contentType) throws ODataException {
     throw new ODataNotImplementedException();
   }
 
@@ -282,7 +284,7 @@ public abstract class ODataSingleProcessor
    * @see Entity
    */
   @Override
-  public ODataResponse readEntity(GetEntityUriInfo uriParserResultView, String contentType) throws ODataException {
+  public ODataResponse readEntity(GetEntityUriInfo uriInfo, String contentType) throws ODataException {
     throw new ODataNotImplementedException();
   }
 
@@ -290,7 +292,7 @@ public abstract class ODataSingleProcessor
    * @see Entity
    */
   @Override
-  public ODataResponse existsEntity(GetEntityCountUriInfo uriParserResultView, String contentType) throws ODataException {
+  public ODataResponse existsEntity(GetEntityCountUriInfo uriInfo, String contentType) throws ODataException {
     throw new ODataNotImplementedException();
   }
 
@@ -298,7 +300,7 @@ public abstract class ODataSingleProcessor
    * @see Entity
    */
   @Override
-  public ODataResponse updateEntity(String contentType) throws ODataException {
+  public ODataResponse updateEntity(PutMergePatchUriInfo uriInfo, String contentType) throws ODataException {
     throw new ODataNotImplementedException();
   }
 
@@ -306,7 +308,7 @@ public abstract class ODataSingleProcessor
    * @see Entity
    */
   @Override
-  public ODataResponse deleteEntity(DeleteUriInfo uriParserResultView, String contentType) throws ODataException {
+  public ODataResponse deleteEntity(DeleteUriInfo uriInfo, String contentType) throws ODataException {
     throw new ODataNotImplementedException();
   }
 
@@ -314,7 +316,7 @@ public abstract class ODataSingleProcessor
    * @see ServiceDocument
    */
   @Override
-  public ODataResponse readServiceDocument(GetServiceDocumentUriInfo uriParserResultView, String contentType) throws ODataException {
+  public ODataResponse readServiceDocument(GetServiceDocumentUriInfo uriInfo, String contentType) throws ODataException {
     EntityProvider odataSerializer = EntityProvider.create(contentType);
     contentType += "; " + DEFAULT_SERVICE_CHARSET_PARAMETER;
 
@@ -328,7 +330,7 @@ public abstract class ODataSingleProcessor
    * @see Metadata
    */
   @Override
-  public ODataResponse readMetadata(GetMetadataUriInfo uriParserResultView, String contentType) throws ODataException {
+  public ODataResponse readMetadata(GetMetadataUriInfo uriInfo, String contentType) throws ODataException {
     EdmServiceMetadata edmServiceMetadata = getContext().getService().getEntityDataModel().getServiceMetadata();
 
     return ODataResponse
