@@ -129,7 +129,7 @@ public class ListsProcessor extends ODataSingleProcessor {
 
     ODataContext context = getContext();
     final EntityProviderProperties feedProperties = EntityProviderProperties
-        .baseUri(context.getUriInfo().getServiceRoot())
+        .baseUri(getContext().getPathInfo().getServiceRoot())
         .inlineCountType(inlineCountType)
         .inlineCount(count)
         .skipToken(nextSkipToken)
@@ -205,7 +205,7 @@ public class ListsProcessor extends ODataSingleProcessor {
     }
 
     final EntityProviderProperties entryProperties = EntityProviderProperties
-        .baseUri(getContext().getUriInfo().getServiceRoot()).inlineCount(count).build();
+        .baseUri(getContext().getPathInfo().getServiceRoot()).inlineCount(count).build();
 
     ODataContext context = getContext();
     int timingHandle = 0;
@@ -241,7 +241,7 @@ public class ListsProcessor extends ODataSingleProcessor {
     final Map<String, Object> values = getStructuralTypeValueMap(data, entitySet.getEntityType());
 
     final EntityProviderProperties entryProperties = EntityProviderProperties
-        .baseUri(getContext().getUriInfo().getServiceRoot()).build();
+        .baseUri(getContext().getPathInfo().getServiceRoot()).build();
 
     ODataContext context = getContext();
     int timingHandle = 0;
@@ -300,7 +300,7 @@ public class ListsProcessor extends ODataSingleProcessor {
 
     ODataContext context = getContext();
     final EntityProviderProperties entryProperties = EntityProviderProperties
-        .baseUri(context.getUriInfo().getServiceRoot()).build();
+        .baseUri(getContext().getPathInfo().getServiceRoot()).build();
 
     int timingHandle = 0;
     if (context.isInDebugMode())
@@ -480,7 +480,7 @@ public class ListsProcessor extends ODataSingleProcessor {
 
     ODataContext context = getContext();
     final EntityProviderProperties entryProperties = EntityProviderProperties
-        .baseUri(context.getUriInfo().getServiceRoot()).build();
+        .baseUri(getContext().getPathInfo().getServiceRoot()).build();
 
     int timingHandle = 0;
     if (context.isInDebugMode())

@@ -115,10 +115,10 @@ public abstract class AbstractProviderTest {
   }
 
   protected ODataContext createContextMock() throws ODataException {
-    PathInfo uriInfo = mock(PathInfo.class);
-    when(uriInfo.getServiceRoot()).thenReturn(BASE_URI);
+    PathInfo pathInfo = mock(PathInfo.class);
+    when(pathInfo.getServiceRoot()).thenReturn(BASE_URI);
     ODataContext ctx = mock(ODataContext.class);
-    when(ctx.getUriInfo()).thenReturn(uriInfo);
+    when(ctx.getPathInfo()).thenReturn(pathInfo);
     return ctx;
   }
 

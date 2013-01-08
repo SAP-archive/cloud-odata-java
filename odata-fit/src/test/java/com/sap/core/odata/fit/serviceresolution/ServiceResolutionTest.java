@@ -108,8 +108,8 @@ public class ServiceResolutionTest {
     ODataContext ctx = this.service.getProcessor().getContext();
     assertNotNull(ctx);
 
-    assertTrue(ctx.getUriInfo().getPrecedingSegments().isEmpty());
-    assertEquals("$metadata", ctx.getUriInfo().getODataSegments().get(0).getPath());
+    assertTrue(ctx.getPathInfo().getPrecedingSegments().isEmpty());
+    assertEquals("$metadata", ctx.getPathInfo().getODataSegments().get(0).getPath());
   }
 
   @Test
@@ -125,8 +125,8 @@ public class ServiceResolutionTest {
     ODataContext ctx = this.service.getProcessor().getContext();
     assertNotNull(ctx);
 
-    assertEquals("aaa", ctx.getUriInfo().getPrecedingSegments().get(0).getPath());
-    assertEquals("$metadata", ctx.getUriInfo().getODataSegments().get(0).getPath());
+    assertEquals("aaa", ctx.getPathInfo().getPrecedingSegments().get(0).getPath());
+    assertEquals("$metadata", ctx.getPathInfo().getODataSegments().get(0).getPath());
   }
 
   @Test
@@ -142,9 +142,9 @@ public class ServiceResolutionTest {
     ODataContext ctx = this.service.getProcessor().getContext();
     assertNotNull(ctx);
 
-    assertEquals("aaa", ctx.getUriInfo().getPrecedingSegments().get(0).getPath());
-    assertEquals("bbb", ctx.getUriInfo().getPrecedingSegments().get(1).getPath());
-    assertEquals("$metadata", ctx.getUriInfo().getODataSegments().get(0).getPath());
+    assertEquals("aaa", ctx.getPathInfo().getPrecedingSegments().get(0).getPath());
+    assertEquals("bbb", ctx.getPathInfo().getPrecedingSegments().get(1).getPath());
+    assertEquals("$metadata", ctx.getPathInfo().getODataSegments().get(0).getPath());
   }
 
   @Test
@@ -171,8 +171,8 @@ public class ServiceResolutionTest {
     ODataContext ctx = this.service.getProcessor().getContext();
     assertNotNull(ctx);
 
-    assertEquals("", ctx.getUriInfo().getODataSegments().get(0).getPath());
-    assertEquals("aaa", ctx.getUriInfo().getPrecedingSegments().get(0).getPath());
+    assertEquals("", ctx.getPathInfo().getODataSegments().get(0).getPath());
+    assertEquals("aaa", ctx.getPathInfo().getPrecedingSegments().get(0).getPath());
   }
 
   @Test
@@ -188,15 +188,15 @@ public class ServiceResolutionTest {
     ODataContext ctx = this.service.getProcessor().getContext();
     assertNotNull(ctx);
 
-    assertEquals("", ctx.getUriInfo().getODataSegments().get(0).getPath());
-    assertEquals("aaa", ctx.getUriInfo().getPrecedingSegments().get(0).getPath());
+    assertEquals("", ctx.getPathInfo().getODataSegments().get(0).getPath());
+    assertEquals("aaa", ctx.getPathInfo().getPrecedingSegments().get(0).getPath());
 
-    assertNotNull(ctx.getUriInfo().getPrecedingSegments().get(0).getMatrixParameters());
+    assertNotNull(ctx.getPathInfo().getPrecedingSegments().get(0).getMatrixParameters());
 
     String key, value;
-    key = ctx.getUriInfo().getPrecedingSegments().get(0).getMatrixParameters().keySet().iterator().next();
+    key = ctx.getPathInfo().getPrecedingSegments().get(0).getMatrixParameters().keySet().iterator().next();
     assertEquals("n", key);
-    value = ctx.getUriInfo().getPrecedingSegments().get(0).getMatrixParameters().get(key).get(0);
+    value = ctx.getPathInfo().getPrecedingSegments().get(0).getMatrixParameters().get(key).get(0);
     assertEquals("2", value);
   }
 
@@ -228,7 +228,7 @@ public class ServiceResolutionTest {
 
     ODataContext ctx = this.service.getProcessor().getContext();
     assertNotNull(ctx);
-    assertEquals(this.server.getEndpoint() + "aaa/bbb;n=2,3;m=1/ccc/", ctx.getUriInfo().getServiceRoot().toASCIIString());
+    assertEquals(this.server.getEndpoint() + "aaa/bbb;n=2,3;m=1/ccc/", ctx.getPathInfo().getServiceRoot().toASCIIString());
   }
 
   @Test
@@ -248,7 +248,7 @@ public class ServiceResolutionTest {
 
     ODataContext ctx = this.service.getProcessor().getContext();
     assertNotNull(ctx);
-    assertEquals(this.server.getEndpoint() + "aaa/%C3%A4%D0%B4%D0%B5%D1%80%D0%B6b;n=2,3;m=1/c%20c/", ctx.getUriInfo().getServiceRoot().toASCIIString());
+    assertEquals(this.server.getEndpoint() + "aaa/%C3%A4%D0%B4%D0%B5%D1%80%D0%B6b;n=2,3;m=1/c%20c/", ctx.getPathInfo().getServiceRoot().toASCIIString());
   }
 
 }

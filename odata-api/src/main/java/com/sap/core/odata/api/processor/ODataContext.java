@@ -21,10 +21,10 @@ public interface ODataContext {
   ODataService getService() throws ODataException;
 
   /**
-   * @return a OData URI info object
+   * @return a OData path info object
    * @throws ODataException
    */
-  PathInfo getUriInfo() throws ODataException;
+  PathInfo getPathInfo() throws ODataException;
 
   /**
    * Start runtime measurement
