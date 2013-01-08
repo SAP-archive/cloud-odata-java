@@ -64,13 +64,15 @@ public class FilterParserImpl implements FilterParser
 
     try
     {
-      tokenList = new Tokenizer().tokenize(filterExpression); //throws TokenizerException
+      //Throws TokenizerException and FilterParserException. FilterParserException is catch somewhere above 
+      tokenList = new Tokenizer(filterExpression).tokenize();  
       if (!tokenList.hasTokens())
       {
         return new FilterExpressionImpl(filterExpression);
       }
     } catch (TokenizerException tokenizerException)
     {
+      //tested with TestParserExceptions.TestPMparseFilterString
       throw FilterParserExceptionImpl.createERROR_IN_TOKENIZER(tokenizerException);
     }
 

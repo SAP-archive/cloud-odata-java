@@ -3,19 +3,28 @@ package com.sap.core.odata.core.uri.expression;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
+import java.util.Locale;
+
 import org.junit.Test;
 
+import com.sap.core.odata.api.edm.Edm;
+import com.sap.core.odata.api.edm.EdmEntityType;
 import com.sap.core.odata.api.edm.EdmException;
 import com.sap.core.odata.api.edm.EdmProperty;
 import com.sap.core.odata.api.edm.EdmType;
+import com.sap.core.odata.api.exception.MessageReference;
 import com.sap.core.odata.api.exception.ODataApplicationException;
+import com.sap.core.odata.api.exception.ODataMessageException;
 import com.sap.core.odata.api.uri.expression.CommonExpression;
 import com.sap.core.odata.api.uri.expression.ExceptionVisitExpression;
 import com.sap.core.odata.api.uri.expression.ExpressionKind;
 import com.sap.core.odata.api.uri.expression.ExpressionVisitor;
-import com.sap.core.odata.api.uri.expression.FilterExpression;
-import com.sap.core.odata.api.uri.expression.OrderByExpression;
+import com.sap.core.odata.api.uri.expression.FilterParserException;
+import com.sap.core.odata.api.uri.expression.OrderByParserException;
 import com.sap.core.odata.api.uri.expression.SortOrder;
+import com.sap.core.odata.core.exception.MessageService;
+import com.sap.core.odata.core.exception.MessageService.Message;
+import com.sun.org.apache.bcel.internal.generic.Type;
 
 public class ParserTool
 {
@@ -23,24 +32,67 @@ public class ParserTool
   private String expression;
   private CommonExpression tree;
   private CommonExpression curNode;
+  private Exception curException;
+  private Exception exception;
+  private static final Locale DEFAULT_LANGUAGE = new Locale("test", "SAP");
   
   public static void dout(String out)
   {
     if (debug) System.out.println(out);
   }
 
-  public ParserTool(String expression, FilterExpression root)
+  public ParserTool(String expression, boolean isOrder)
   {
     dout("ParserTool - Testing: " + expression);
     this.expression = expression;
-    this.tree = root.getExpression();
+
+    try {
+      if (!isOrder)
+      {
+        FilterParserImpl parser = new FilterParserImpl(null, null);
+        this.tree = parser.parseFilterString(expression).getExpression();
+      }
+      else
+      {
+        OrderByParserImpl parser = new OrderByParserImpl(null, null);
+        this.tree = parser.parseOrderByString(expression);
+      }
+    } catch (FilterParserException e) {
+      this.exception = e;
+    } catch (FilterParserInternalError e) {
+      this.exception = e;
+    } catch (OrderByParserException e) {
+      this.exception = e;
+    }
+
     this.curNode = this.tree;
+    this.curException = this.exception;
   }
 
-  public ParserTool(String expression, OrderByExpression root) {
+  public ParserTool(Edm edm, EdmEntityType resourceEntityType, String expression, boolean isOrder)
+  {
     dout("ParserTool - Testing: " + expression);
     this.expression = expression;
-    this.tree = root;
+
+    try {
+      if (!isOrder)
+      {
+        FilterParserImpl parser = new FilterParserImpl(edm, resourceEntityType);
+        this.tree = parser.parseFilterString(expression).getExpression();
+      }
+      else
+      {
+        OrderByParserImpl parser = new OrderByParserImpl(edm, resourceEntityType);
+        this.tree = parser.parseOrderByString(expression);
+      }
+    } catch (FilterParserException e) {
+      this.curException = e;
+    } catch (FilterParserInternalError e) {
+      this.curException = e;
+    } catch (OrderByParserException e) {
+      this.curException = e;
+    }
+
     this.curNode = this.tree;
   }
 
@@ -62,6 +114,210 @@ public class ParserTool
     return this;
   }
 
+  /**
+   * Verifies that the thrown exception is of {@paramref expected}
+   * @param expected
+   *   Expected Exception class 
+   * @return
+   */
+  public ParserTool aExType(Class<? extends Exception> expected)
+  {
+    String info = "GetExceptionType(" + expression + ")-->";
+
+    if (curException == null)
+    {
+      fail("Error in aExType: Expected exception " + expected.getName());
+    }
+
+    dout("  " + info + "Expected: " + expected.getName() + " Actual: " + curException.getClass().getName());
+
+    if (expected != curException.getClass())
+    {
+      fail("  " + info + "Expected: " + expected.getName() + " Actual: " + curException.getClass().getName());
+    }
+    return this;
+  }
+
+  
+  /**
+   * Verifies that the message text of the thrown exception serialized is {@paramref expected}
+   * @param expected
+   *   Expected message text 
+   * @return
+   */
+  public ParserTool aExMsgText(String messageText)
+  {
+    String info = "aExMessageText(" + expression + ")-->";
+    if (curException == null)
+    {
+      fail("Error in aExMessageText: Expected exception.");
+    }
+
+    ODataMessageException messageException;
+
+    try
+    {
+      messageException = (ODataMessageException) curException;
+    } catch (ClassCastException ex)
+    {
+      fail("Error in aExNext: curException not an ODataMessageException");
+      return this;
+    }
+    
+    
+    Message ms = MessageService.getMessage(DEFAULT_LANGUAGE, messageException.getMessageReference());
+    info = "  " + info + "Expected: '" + messageText + "' Actual: '" + ms.getText()+ "'";
+
+    dout(info);
+    assertEquals(info, messageText, ms.getText());
+    
+    return this;
+  }
+  
+  /**
+   * Verifies that all place holders in the message text definition of the thrown exception are provided with content
+   * @return
+   */
+  public ParserTool aExMsgContentAllSet()
+  {
+    String info = "aExMessageTextNoEmptyTag(" + expression + ")-->";
+    if (curException == null)
+    {
+      fail("Error in aExMessageText: Expected exception.");
+    }
+
+    ODataMessageException messageException;
+
+    try
+    {
+      messageException = (ODataMessageException) curException;
+    } catch (ClassCastException ex)
+    {
+      fail("Error in aExNext: curException not an ODataMessageException");
+      return this;
+    }
+    
+    
+    Message ms = MessageService.getMessage(DEFAULT_LANGUAGE, messageException.getMessageReference());
+    info = "  " + info + "Messagetext: '" + ms.getText() + "contains [%";
+
+    dout(info);
+
+    if (ms.getText().contains("[%"))
+    {
+      fail(info);
+    }
+    return this;
+  }
+  
+  /**
+   * Verifies that the message text of the thrown exception is not empty
+   * @return
+   */
+  public ParserTool aExMsgNotEmpty()
+  {
+    String info = "aExTextNotEmpty(" + expression + ")-->";
+    if (curException == null)
+    {
+      fail("Error in aExMessageText: Expected exception.");
+    }
+
+    ODataMessageException messageException;
+
+    try
+    {
+      messageException = (ODataMessageException) curException;
+    } catch (ClassCastException ex)
+    {
+      fail("Error in aExNext: curException not an ODataMessageException");
+      return this;
+    }
+    
+    Message ms = MessageService.getMessage(DEFAULT_LANGUAGE, messageException.getMessageReference());
+    info = "  " + info + "check if Messagetext is empty";
+    dout(info);
+
+    if (ms.getText().length() == 0)
+    {
+      fail(info);
+    }
+    return this;
+  }
+
+  public ParserTool aExKey(MessageReference expressionExpectedAtPos) {
+    String expectedKey = expressionExpectedAtPos.getKey();
+    ODataMessageException messageException;
+
+    String info = "GetExceptionType(" + expression + ")-->";
+
+    if (curException == null)
+    {
+      fail("Error in aExType: Expected exception");
+    }
+
+    try
+    {
+      messageException = (ODataMessageException) curException;
+    } catch (ClassCastException ex)
+    {
+      fail("Error in aExNext: curException not an ODataMessageException");
+      return this;
+    }
+
+    String actualKey = messageException.getMessageReference().getKey();
+    dout("  " + info + "Expected key: " + expectedKey + " Actual: " + actualKey);
+
+    if (expectedKey != actualKey)
+    {
+      fail("  " + info + "Expected: " + expectedKey + " Actual: " + actualKey);
+    }
+    return this;
+  }
+  
+  public ParserTool aExMsgPrint() {
+    ODataMessageException messageException;
+
+    if (curException == null)
+    {
+      fail("Error in aExMsgPrint: Expected exception");
+    }
+
+    
+    try
+    {
+      messageException = (ODataMessageException) curException;
+    } catch (ClassCastException ex)
+    {
+      fail("Error in aExNext: curException not an ODataMessageException");
+      return this;
+    }
+
+    Message ms = MessageService.getMessage(DEFAULT_LANGUAGE, messageException.getMessageReference());
+    dout("Messge --> ");
+    dout("  " + ms.getText());
+    dout("Messge <-- ");
+    
+    return this;
+  }
+
+  public ParserTool aExPrint()
+  {
+    curException.printStackTrace();
+    return this;
+  }
+
+  public ParserTool exNext()
+  {
+    try
+    {
+      curException = (Exception) curException.getCause();
+    } catch (ClassCastException ex)
+    {
+      fail("Error in aExNext: Cause not an Exception");
+    }
+    return this;
+  }
+
   public ParserTool aEdmType(EdmType type)
   {
     String info = "GetEdmType(" + expression + ")-->";
@@ -74,37 +330,36 @@ public class ParserTool
     assertEquals(info, type, curNode.getEdmType());
     return this;
   }
-  
-  public ParserTool aSortOrder(SortOrder orderType)  
+
+  public ParserTool aSortOrder(SortOrder orderType)
   {
     String info = "GetSortOrder(" + expression + ")-->";
-    
+
     if (curNode.getKind() != ExpressionKind.ORDER)
     {
       String out = info + "Expected: " + ExpressionKind.ORDER + " Actual: " + curNode.getKind().toString();
       dout("  " + out);
       fail(out);
     }
-   
+
     OrderExpressionImpl orderExpression = (OrderExpressionImpl) curNode;
     dout("  " + info + "Expected: " + orderType.toString() + " Actual: " + orderExpression.getSortOrder().toString());
 
     assertEquals(info, orderType, orderExpression.getSortOrder());
     return this;
   }
-  
+
   public ParserTool aExpr()
   {
     String info = "GetSortOrder(" + expression + ")-->";
-    
-    if ((curNode.getKind() != ExpressionKind.ORDER) && (curNode.getKind() != ExpressionKind.FILTER) )
+
+    if ((curNode.getKind() != ExpressionKind.ORDER) && (curNode.getKind() != ExpressionKind.FILTER))
     {
       String out = info + "Expected: " + ExpressionKind.ORDER + " or " + ExpressionKind.FILTER + " Actual: " + curNode.getKind().toString();
       dout("  " + out);
       fail(out);
     }
-   
-    
+
     if (curNode.getKind() == ExpressionKind.FILTER)
     {
       FilterExpressionImpl filterExpression = (FilterExpressionImpl) curNode;
@@ -115,11 +370,9 @@ public class ParserTool
       OrderExpressionImpl orderByExpression = (OrderExpressionImpl) curNode;
       curNode = orderByExpression.getExpression();
     }
-        
+
     return this;
   }
-  
-  
 
   public ParserTool aEdmProperty(EdmProperty string)
   {
@@ -142,13 +395,13 @@ public class ParserTool
     assertEquals(info, string, propertyExpression.getEdmProperty());
     return this;
   }
-  
+
   public ParserTool aSerializedCompr(String expected)
   {
     aSerialized(compress(expected));
     return this;
   }
-  
+
   public ParserTool aSerialized(String expected)
   {
     String actual = null;
@@ -215,7 +468,7 @@ public class ParserTool
     }
     return this;
   }
-  
+
   public ParserTool order(int i)
   {
     if (curNode.getKind() != ExpressionKind.ORDERBY)
@@ -224,8 +477,8 @@ public class ParserTool
       info = "  " + info + "Expected: " + ExpressionKind.ORDERBY.toString() + " Actual: " + curNode.getKind();
       dout(info);
       fail(info);
-    } 
-    
+    }
+
     OrderByExpressionImpl orderByExpressionImpl = (OrderByExpressionImpl) curNode;
     if (i >= orderByExpressionImpl.getOrdersCount())
     {
@@ -234,10 +487,10 @@ public class ParserTool
       dout(info);
       fail(info);
     }
-    
+
     curNode = orderByExpressionImpl.getOrders().get(i);
     return this;
-  
+
   }
 
   public ParserTool param(int i)
@@ -267,47 +520,52 @@ public class ParserTool
     curNode = this.tree;
     return this;
   }
-  
+
   static public String compress(String expression)
   {
     String ret = "";
-    char [] charArray = expression.trim().toCharArray();
+    char[] charArray = expression.trim().toCharArray();
     Character oldChar = null;
     for (char x : charArray)
     {
-      if (( x != ' ') || (oldChar == null) || (oldChar !=' '))
+      if ((x != ' ') || (oldChar == null) || (oldChar != ' '))
         ret += x;
-      
+
       oldChar = x;
     }
     ret = ret.replace("{ ", "{");
     ret = ret.replace(" }", "}");
     return ret;
   }
-  
+
   public static class testParserTool
   {
-  @Test
-  public void testCompr()
-  {
-    //leading and trainling spaces
-    assertEquals("Error in parsertool" , compress("   a"), "a");
-    assertEquals("Error in parsertool" , compress("a    "), "a");
-    assertEquals("Error in parsertool" , compress("   a    "), "a");
-    
-    
-    assertEquals("Error in parsertool" , compress("{ a}"), "{a}");
-    assertEquals("Error in parsertool" , compress("{   a}"), "{a}");
-    assertEquals("Error in parsertool" , compress("{a   }"), "{a}");
-    assertEquals("Error in parsertool" , compress("{   a   }"), "{a}");
-    
-    assertEquals("Error in parsertool" , compress("{ a }"), "{a}");
-    assertEquals("Error in parsertool" , compress("{ a a }"), "{a a}");
-    assertEquals("Error in parsertool" , compress("{ a   a }"), "{a a}");
-    
-    assertEquals("Error in parsertool" , compress("   {   a   a   }   "), "{a a}");
-    
-    assertEquals("Error in parsertool" , compress("   {   a { }  a   }   "), "{a {} a}");
+    @Test
+    public void testCompr()
+    {
+      //leading and trainling spaces
+      assertEquals("Error in parsertool", compress("   a"), "a");
+      assertEquals("Error in parsertool", compress("a    "), "a");
+      assertEquals("Error in parsertool", compress("   a    "), "a");
+
+      assertEquals("Error in parsertool", compress("{ a}"), "{a}");
+      assertEquals("Error in parsertool", compress("{   a}"), "{a}");
+      assertEquals("Error in parsertool", compress("{a   }"), "{a}");
+      assertEquals("Error in parsertool", compress("{   a   }"), "{a}");
+
+      assertEquals("Error in parsertool", compress("{ a }"), "{a}");
+      assertEquals("Error in parsertool", compress("{ a a }"), "{a a}");
+      assertEquals("Error in parsertool", compress("{ a   a }"), "{a a}");
+
+      assertEquals("Error in parsertool", compress("   {   a   a   }   "), "{a a}");
+
+      assertEquals("Error in parsertool", compress("   {   a { }  a   }   "), "{a {} a}");
+    }
   }
+
+  public ParserTool exRoot() {
+    curException = exception; 
+    return this;
   }
+
 }

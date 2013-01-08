@@ -27,10 +27,11 @@ import com.sap.core.odata.core.edm.Uint7;
  * 
  */
 public class TestAbapCompatibility extends TestBase {
-
+  
   @Test
   public void abapTestParameterPromotion() //copy of ABAP method test_parameter_promotion
   {
+
     //lo_simple_type = /iwcor/cl_ds_edm_simple_type=>binary( ).
     //lcl_helper=>veri_type( iv_expression = `X'1234567890ABCDEF'` io_expected_type = lo_simple_type ).
     GetPTF("X'1234567890ABCDEF'").aEdmType(EdmBinary.getInstance());

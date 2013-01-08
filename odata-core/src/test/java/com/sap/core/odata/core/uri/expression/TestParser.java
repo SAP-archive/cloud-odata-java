@@ -314,6 +314,13 @@ public class TestParser extends TestBase
     GetPTF("- not - true").aSerialized("{- {not {- true}}}");
     GetPTF("not - not true").aSerialized("{not {- {not true}}}");
   }
+  
+  @Test
+  public void testString() 
+  {
+    GetPTF("'TEST'").aSerialized("'TEST'");
+    GetPTF("'TE''ST'").aSerialized("'TE'ST'");
+  }
 
   @Test
   public void testSinglePlainLiterals()
