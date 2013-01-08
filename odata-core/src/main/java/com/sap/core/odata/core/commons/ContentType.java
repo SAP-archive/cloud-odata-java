@@ -11,18 +11,14 @@ import java.util.Map.Entry;
 import java.util.TreeMap;
 
 /**
- * 
+ * Internal used {@link ContentType} for odata library.
+ * Once created an {@link ContentType} is IMMUTABLE.
  */
 public class ContentType {
 
   public enum ODataFormat {
     ATOM, XML, JSON, CUSTOM
   }
-
-  private String type;
-  private String subtype;
-  private Map<String, String> parameters;
-  private ODataFormat odataFormat;
 
   private static final String PARAMETER_SEPARATOR = ";";
   private static final String TYPE_SUBTYPE_SEPARATOR = "/";
@@ -31,28 +27,23 @@ public class ContentType {
   public static final String PARAMETER_CHARSET = "charset";
   public static final String PARAMETER_Q = "q";
 
-  public final static ContentType WILDCARD = new ContentType(MEDIA_TYPE_WILDCARD, MEDIA_TYPE_WILDCARD);
+  public static final ContentType WILDCARD = new ContentType(MEDIA_TYPE_WILDCARD, MEDIA_TYPE_WILDCARD);
 
-  public final static ContentType APPLICATION_XML = new ContentType("application", "xml", ODataFormat.XML);
+  public static final ContentType APPLICATION_XML = new ContentType("application", "xml", ODataFormat.XML);
   public static final ContentType APPLICATION_ATOM_XML = new ContentType("application", "atom+xml", ODataFormat.ATOM);
-  public final static ContentType APPLICATION_ATOM_XML_ENTRY = new ContentType("application", "atom+xml", ODataFormat.ATOM, parameterMap("type", "entry"));
-  public final static ContentType APPLICATION_ATOM_XML_FEED = new ContentType("application", "atom+xml", ODataFormat.ATOM, parameterMap("type", "feed"));
-  public final static ContentType APPLICATION_ATOM_SVC = new ContentType("application", "atomsvc+xml", ODataFormat.ATOM);
-  public final static ContentType APPLICATION_JSON = new ContentType("application", "json", ODataFormat.JSON);
-  public final static ContentType APPLICATION_OCTET_STREAM = new ContentType("application", "octet-stream");
-  public final static ContentType TEXT_PLAIN = new ContentType("text", "plain");
+  public static final ContentType APPLICATION_ATOM_XML_ENTRY = new ContentType("application", "atom+xml", ODataFormat.ATOM, parameterMap("type", "entry"));
+  public static final ContentType APPLICATION_ATOM_XML_FEED = new ContentType("application", "atom+xml", ODataFormat.ATOM, parameterMap("type", "feed"));
+  public static final ContentType APPLICATION_ATOM_SVC = new ContentType("application", "atomsvc+xml", ODataFormat.ATOM);
+  public static final ContentType APPLICATION_JSON = new ContentType("application", "json", ODataFormat.JSON);
+  public static final ContentType APPLICATION_OCTET_STREAM = new ContentType("application", "octet-stream");
+  public static final ContentType TEXT_PLAIN = new ContentType("text", "plain");
   public static final ContentType MULTIPART_MIXED = new ContentType("multipart", "mixed");
 
-  private static Map<String, String> parameterMap(String ... content) {
-    Map<String, String> map = new HashMap<String, String>();
-    for (int i = 0; i < content.length-1; i+=2) {
-      String key = content[i];
-      String value = content[i+1];
-      map.put(key, value);
-    }
-    return map;
-  }
-
+  private String type;
+  private String subtype;
+  private Map<String, String> parameters;
+  private ODataFormat odataFormat;
+  
   private ContentType(String type, String subtype) {
     this(type, subtype, ODataFormat.CUSTOM, null);
   }
@@ -84,30 +75,35 @@ public class ContentType {
     }
   }
 
-  private static ODataFormat mapToODataFormat(String subtype) {
-    ODataFormat odFormat = null;
-    if (subtype.contains("atom")) {
-      odFormat = ODataFormat.ATOM;
-    } else if (subtype.contains("xml")) {
-      odFormat = ODataFormat.XML;
-    } else if (subtype.contains("json")) {
-      odFormat = ODataFormat.JSON;
-    } else {
-      odFormat = ODataFormat.CUSTOM;
-    }
-    return odFormat;
-  }
-  
-  
+  /**
+   * 
+   * @param type
+   * @param subtype
+   * @return
+   */
   public static ContentType create(String type, String subtype) {
     return new ContentType(type, subtype, mapToODataFormat(subtype), null);
   }
   
+  /**
+   * 
+   * @param type
+   * @param subtype
+   * @param parameters
+   * @return
+   */
   public static ContentType create(String type, String subtype, Map<String, String> parameters) {
     ODataFormat odFormat = mapToODataFormat(subtype);
     return new ContentType(type, subtype, odFormat, parameters);
   }
 
+  /**
+   * 
+   * @param contentType
+   * @param parameterKey
+   * @param parameterValue
+   * @return
+   */
   public static ContentType create(ContentType contentType, String parameterKey, String parameterValue) {
     ContentType ct = new ContentType(contentType.type, contentType.subtype, contentType.odataFormat, contentType.parameters);
     ct.parameters.put(parameterKey, parameterValue);
@@ -144,6 +140,35 @@ public class ContentType {
     } else {
       return create(types, MEDIA_TYPE_WILDCARD, parametersMap);
     }
+  }
+
+  private static ODataFormat mapToODataFormat(String subtype) {
+    ODataFormat odFormat = null;
+    if (subtype.contains("atom")) {
+      odFormat = ODataFormat.ATOM;
+    } else if (subtype.contains("xml")) {
+      odFormat = ODataFormat.XML;
+    } else if (subtype.contains("json")) {
+      odFormat = ODataFormat.JSON;
+    } else {
+      odFormat = ODataFormat.CUSTOM;
+    }
+    return odFormat;
+  }
+
+  /**
+   * 
+   * @param content
+   * @return
+   */
+  private static Map<String, String> parameterMap(String ... content) {
+    Map<String, String> map = new HashMap<String, String>();
+    for (int i = 0; i < content.length-1; i+=2) {
+      String key = content[i];
+      String value = content[i+1];
+      map.put(key, value);
+    }
+    return map;
   }
 
   /**
@@ -185,29 +210,28 @@ public class ContentType {
     return subtype;
   }
 
+  /**
+   * 
+   * @return parameters of this {@link ContentType} as unmodifiable map.
+   */
   public Map<String, String> getParameters() {
     return Collections.unmodifiableMap(parameters);
   }
 
   @Override
   public int hashCode() {
-    // final int prime = 31;
-    // int result = 1;
-    //
-    // Set<Entry<String, String>> entries = parameters.entrySet();
-    // for (Entry<String, String> entry : entries) {
-    // String key = entry.getKey();
-    // String value = entry.getValue();
-    // result = prime * result + ((key == null) ? 0 : key.hashCode());
-    // result = prime * result + ((value == null) ? 0 : value.hashCode());
-    // }
-    //
-    // result = prime * result + ((subtype == null) ? 0 : subtype.hashCode());
-    // result = prime * result + ((type == null) ? 0 : type.hashCode());
-    // return result;
     return 1;
   }
 
+  /**
+   * {@link ContentType}s are equal 
+   * <ul>
+   * <li>if <code>type</code>, <code>subtype</code> and all <code>parameters</code> have the same value.</li>
+   * <li>if <code>type</code> and/or <code>subtype</code> is set to {@value #MEDIA_TYPE_WILDCARD} (in such a case the <code>parameters</code> are ignored).</li>
+   * </ul>
+   * 
+   * @return <code>true</code> if both instances are equal (see definition above), otherwise <code>false</code>.
+   */
   @Override
   public boolean equals(Object obj) {
     // basic checks
@@ -242,7 +266,7 @@ public class ContentType {
       }
     }
 
-    //
+    // if wildcards are set, content types are defined as 'equal'
     if(countWildcars() > 0 || other.countWildcars() > 0) {
       return true;
     }
@@ -305,7 +329,7 @@ public class ContentType {
    * If no match (none {@link ContentType} in list is equal to this {@link ContentType}) is found <code>NULL</code> is returned.
    * 
    * @param toMatchContentTypes
-   * @return
+   * @return best matched content type in list or <code>NULL</code> if none content type match to this content type instance
    */
   public ContentType match(List<ContentType> toMatchContentTypes) {
     for (ContentType supportedContentType : toMatchContentTypes) {
@@ -345,7 +369,11 @@ public class ContentType {
     }
     return count;
   }
-  
+
+  /**
+   * 
+   * @return <code>true</code> if both <code>type</code> and <code>subtype</code> of this instance are a {@value #MEDIA_TYPE_WILDCARD}.
+   */
   public boolean isWildcard() {
     return (MEDIA_TYPE_WILDCARD.equals(type) && MEDIA_TYPE_WILDCARD.equals(subtype));
   }
