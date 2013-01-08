@@ -10,12 +10,15 @@ import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.api.processor.ODataContext;
 import com.sap.core.odata.api.uri.PathInfo;
 
+/**
+ * @author SAP AG
+ */
 public class ODataContextImpl implements ODataContext {
 
-  private static String DEBUG_MODE = "~debugMode";
-  private static String SERVICE = "~service";
-  private static String PATH_INFO = "~pathInfo";
-  private static String RUNTIME_MEASUREMENTS = "~runtimeMeasurements";
+  private static final String DEBUG_MODE = "~debugMode";
+  private static final String SERVICE = "~service";
+  private static final String PATH_INFO = "~pathInfo";
+  private static final String RUNTIME_MEASUREMENTS = "~runtimeMeasurements";
 
   private Map<String, Object> parameterTable = new HashMap<String, Object>();
 
@@ -65,41 +68,36 @@ public class ODataContextImpl implements ODataContext {
     return (PathInfo) getParameter(PATH_INFO);
   }
 
-  @SuppressWarnings("unchecked")
   @Override
   public int startRuntimeMeasurement(String className, String methodName) {
-    List<RuntimeMeasurement> runtimeMeasurements;
-    
-    if (getParameter(RUNTIME_MEASUREMENTS) == null) {
-      runtimeMeasurements = new ArrayList<RuntimeMeasurement>();
-    } else {
-      runtimeMeasurements = (List<RuntimeMeasurement>) getParameter(RUNTIME_MEASUREMENTS);
-    }
-
     if (isInDebugMode()) {
       RuntimeMeasurement measurement = new RuntimeMeasurementImpl();
       measurement.setTimeStarted(System.nanoTime());
       measurement.setClassName(className);
       measurement.setMethodName(methodName);
 
+      @SuppressWarnings("unchecked")
+      List<RuntimeMeasurement> runtimeMeasurements = (List<RuntimeMeasurement>) getParameter(RUNTIME_MEASUREMENTS);
+      if (runtimeMeasurements == null) {
+        runtimeMeasurements = new ArrayList<RuntimeMeasurement>();
+        setParameter(RUNTIME_MEASUREMENTS, runtimeMeasurements);
+      }
       runtimeMeasurements.add(measurement);
+
+      return runtimeMeasurements.size() - 1;
     }
 
-    return runtimeMeasurements.size() - 1;
+    return 0;
   }
 
-  @SuppressWarnings("unchecked")
   @Override
   public void stopRuntimeMeasurement(int handle) {
     if (isInDebugMode()) {
-      try {
-        RuntimeMeasurement runtimeMeasurement = ((List<RuntimeMeasurement>)getParameter(RUNTIME_MEASUREMENTS)).get(handle);
-        runtimeMeasurement.setTimeStopped(System.nanoTime());
-      } catch (NullPointerException e) {
-        //nothing to handle
-      } catch (IndexOutOfBoundsException e) {
-        // nothing to handle
-      }
+      @SuppressWarnings("unchecked")
+      List<RuntimeMeasurement> runtimeMeasurements = (List<RuntimeMeasurement>) getParameter(RUNTIME_MEASUREMENTS);
+
+      if (runtimeMeasurements != null && handle >= 0 && handle < runtimeMeasurements.size())
+        runtimeMeasurements.get(handle).setTimeStopped(System.nanoTime());
     }
   }
 
@@ -153,6 +151,11 @@ public class ODataContextImpl implements ODataContext {
     @Override
     public void setMethodName(String methodName) {
       this.methodName = methodName;
+    }
+
+    @Override
+    public String toString() {
+      return className + "." + methodName + ": " + (timeStopped - timeStarted);
     }
   }
 
