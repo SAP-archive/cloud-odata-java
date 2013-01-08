@@ -57,7 +57,7 @@ public interface GetEntityLinkUriInfo {
   public boolean isLinks();
 
   /**
-   * @return {@link String} the content type
+   * @return the format (as set as <code>$format</code> query parameter)
    */
   public String getFormat();
 
