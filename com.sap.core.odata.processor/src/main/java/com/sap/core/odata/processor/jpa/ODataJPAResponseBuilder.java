@@ -14,7 +14,6 @@ import com.sap.core.odata.api.ep.EntityProviderProperties;
 import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.api.processor.ODataResponse;
 import com.sap.core.odata.api.uri.info.GetEntitySetUriInfo;
-import com.sap.core.odata.core.enums.ContentType;
 import com.sap.core.odata.processor.jpa.api.ODataJPAContext;
 import com.sap.core.odata.processor.jpa.exception.ODataJPARuntimeException;
 
