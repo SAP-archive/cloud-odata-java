@@ -39,10 +39,11 @@ public abstract class MessageReference {
     return new SimpleMessageReference(clazz.getName() + "." + key);
   }
 
-  public MessageReference create() {
-    return new SimpleMessageReference(this.key);
+  public MessageReference create()
+  {
+    return new SingleMessageReference(this.key);
   }
-  
+
   /**
    * Returns message key.
    */
@@ -54,7 +55,7 @@ public abstract class MessageReference {
    * Add given content to message reference.
    */
   public MessageReference addContent(Object... content) {
-    if(this.content == null) {
+    if (this.content == null) {
       return new SimpleMessageReference(this.key, content);
     } else {
       List<Object> mergedContent = new ArrayList<Object>(this.content.size() + content.length);
@@ -89,6 +90,30 @@ public abstract class MessageReference {
 
     public SimpleMessageReference(String implKey, Object... content) {
       super(implKey, Arrays.asList(content));
+    }
+  }
+
+  private static class SingleMessageReference extends MessageReference {
+    public SingleMessageReference(String implKey) {
+      super(implKey);
+    }
+
+    public SingleMessageReference(String implKey, List<Object> content) {
+      super(implKey, content);
+    }
+
+    public SingleMessageReference(String implKey, Object... content) {
+      super(implKey, Arrays.asList(content));
+    }
+
+    @Override
+    public MessageReference addContent(Object... content) {
+      
+      if (this.content == null)
+        this.content = new ArrayList<Object>();
+
+      this.content.addAll(Arrays.asList(content));
+      return this;
     }
   }
 }

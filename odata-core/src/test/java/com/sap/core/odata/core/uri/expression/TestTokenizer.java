@@ -8,6 +8,7 @@ import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.codec.binary.Hex;
 import org.junit.Test;
 
+import com.sap.core.odata.api.uri.expression.FilterParserException;
 import com.sap.core.odata.core.uri.expression.TokenizerException;
 import com.sap.core.odata.core.uri.expression.Token;
 import com.sap.core.odata.core.uri.expression.TokenKind;
@@ -86,15 +87,18 @@ public class TestTokenizer {
    */
   public TokenTool GetTT(String expression)
   {
-    Tokenizer tokenizer = new Tokenizer();
+    Tokenizer tokenizer = new Tokenizer(expression);
     try {
-      TokenList tokens = tokenizer.tokenize(expression);//please 
+      TokenList tokens = tokenizer.tokenize();//please 
       return new TokenTool(tokens);
       //    } catch (TokenizerRTException e) {
       //      fail("Error in tokenize" + e.getLocalizedMessage());
     } catch (TokenizerException e) {
 
       fail("Error in tokenize" + e.getLocalizedMessage());
+    } catch (FilterParserException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
     }
     return null;
   }
@@ -105,14 +109,17 @@ public class TestTokenizer {
    */
   public TokenTool GetTTW(String expression)
   {
-    Tokenizer tokenizer = new Tokenizer().setFlagWhiteSpace(true);
+    Tokenizer tokenizer = new Tokenizer(expression).setFlagWhiteSpace(true);
     try {
-      TokenList tokens = tokenizer.tokenize(expression);
+      TokenList tokens = tokenizer.tokenize();
       return new TokenTool(tokens);
       //    } catch (TokenizerRuntimeException e) {
       //      fail("Error in tokenize" + e.getLocalizedMessage());
     } catch (TokenizerException e) {
       fail("Error in tokenize" + e.getLocalizedMessage());
+    } catch (FilterParserException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
     }
     return null;
   }

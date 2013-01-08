@@ -16,7 +16,7 @@ import com.sap.core.odata.api.uri.expression.PropertyExpression;
  * 
  * @author SAP AG
  */
-public class FilterParserExceptionImpl extends FilterParserException 
+public class FilterParserExceptionImpl extends FilterParserException
 {
   private static final long serialVersionUID = 77L;
 
@@ -33,7 +33,7 @@ public class FilterParserExceptionImpl extends FilterParserException
     msgRef.addContent(token.getUriLiteral());
     msgRef.addContent(Integer.toString(token.getPosition()));
 
-    return new FilterParserException(msgRef,exceptionTokenizer);
+    return new FilterParserException(msgRef, exceptionTokenizer);
   }
 
   static public FilterParserException createINVALID_TRAILING_TOKEN_DETECTED_AFTER_PARSING(Token token)
@@ -74,7 +74,7 @@ public class FilterParserExceptionImpl extends FilterParserException
     return new FilterParserException(msgRef);
   }
 
-  public static FilterParserException createMETHOD_TO_MANY_PARAMETERS(MethodExpression methodExpression) 
+  public static FilterParserException createMETHOD_TO_MANY_PARAMETERS(MethodExpression methodExpression)
   {
     MessageReference msgRef = FilterParserException.METHOD_TO_MANY_PARAMETERS.create();
 
@@ -83,14 +83,14 @@ public class FilterParserExceptionImpl extends FilterParserException
     return new FilterParserException(msgRef);
   }
 
-  public static FilterParserException createLEFT_SIDE_NOT_STRUCTURAL_TYPE() 
+  public static FilterParserException createLEFT_SIDE_NOT_STRUCTURAL_TYPE()
   {
     MessageReference msgRef = FilterParserException.LEFT_SIDE_NOT_STRUCTURAL_TYPE.create();
 
     return new FilterParserException(msgRef);
   }
 
-  public static FilterParserException createPROPERTY_NAME_NOT_FOUND_IN_TYPE(EdmStructuralType parentType, PropertyExpression property) throws FilterParserInternalError 
+  public static FilterParserException createPROPERTY_NAME_NOT_FOUND_IN_TYPE(EdmStructuralType parentType, PropertyExpression property) throws FilterParserInternalError
   {
     MessageReference msgRef = FilterParserException.PROPERTY_NAME_NOT_FOUND_IN_TYPE.create();
 
@@ -100,6 +100,15 @@ public class FilterParserExceptionImpl extends FilterParserException
     } catch (EdmException e) {
       throw FilterParserInternalError.createERROR_ACCESSING_EDM(e);
     }
+
+    return new FilterParserException(msgRef);
+  }
+
+  public static FilterParserException createTOKEN_UNDETERMINATED_STRING(int position, String iv_expression) {
+    MessageReference msgRef = FilterParserException.TOKEN_UNDETERMINATED_STRING.create();
+
+    msgRef.addContent(position);
+    msgRef.addContent(iv_expression);
 
     return new FilterParserException(msgRef);
   }

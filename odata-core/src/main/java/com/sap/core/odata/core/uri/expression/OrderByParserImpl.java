@@ -26,12 +26,14 @@ public class OrderByParserImpl extends FilterParserImpl implements OrderByParser
 
     try
     {
-      Tokenizer tokenizer = new Tokenizer();
-      tokenList = tokenizer.tokenize(orderByExpression); //throws TokenizerMessage
+      tokenList =  new Tokenizer(orderByExpression).tokenize(); //throws TokenizerMessage
     } catch (TokenizerException tokenizerException)
     {
       //throw FilterParserExceptionImpl.createERROR_IN_TOKENIZER(tokenizerException);
       //TODO change name
+    } catch (Exception e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
     }
 
     boolean weiter = false;

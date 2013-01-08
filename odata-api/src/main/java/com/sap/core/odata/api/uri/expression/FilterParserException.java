@@ -34,7 +34,8 @@ public class FilterParserException extends ODataBadRequestException
   public static final MessageReference LEFT_SIDE_NOT_STRUCTURAL_TYPE  = createMessageReference(FilterParserException.class, "LEFT_SIDE_NOT_STRUCTURAL_TYPE");
 
   public static final MessageReference PROPERTY_NAME_NOT_FOUND_IN_TYPE   = createMessageReference(FilterParserException.class, "PROPERTY_NAME_NOT_FOUND_IN_TYPE");
-
+  
+  public static final MessageReference TOKEN_UNDETERMINATED_STRING   = createMessageReference(FilterParserException.class, "TOKEN_UNDETERMINATED_STRING");
   /*instance attributes*/
   private CommonExpression filterTree;
 
@@ -48,8 +49,7 @@ public class FilterParserException extends ODataBadRequestException
   }
 
   public FilterParserException(MessageReference messageReference, Throwable cause) {
-    super(messageReference);
-    this.initCause(cause);
+    super(messageReference,cause );
   }
 
   /**
