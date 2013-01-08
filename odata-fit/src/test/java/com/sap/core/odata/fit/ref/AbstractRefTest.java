@@ -53,9 +53,12 @@ public class AbstractRefTest extends AbstractFitTest {
     return new ODataSingleProcessorService(provider, processor) {};
   }
 
-  protected HttpResponse callUri(final String uri, final HttpStatusCodes expectedStatusCode) throws Exception {
-    final HttpGet request = new HttpGet(this.getEndpoint() + uri);
-    final HttpResponse response = this.getHttpClient().execute(request);
+  protected HttpResponse callUri(final String uri, final String additionalHeader, final String additionalHeaderValue, final HttpStatusCodes expectedStatusCode) throws Exception {
+    final HttpGet request = new HttpGet(getEndpoint() + uri);
+    if (additionalHeader != null)
+      request.addHeader(additionalHeader, additionalHeaderValue);
+
+    final HttpResponse response = getHttpClient().execute(request);
 
     assertNotNull(response);
     assertEquals(expectedStatusCode.getStatusCode(), response.getStatusLine().getStatusCode());
@@ -69,6 +72,10 @@ public class AbstractRefTest extends AbstractFitTest {
     }
 
     return response;
+  }
+
+  protected HttpResponse callUri(final String uri, final HttpStatusCodes expectedStatusCode) throws Exception {
+    return callUri(uri, null, null, expectedStatusCode);
   }
 
   protected HttpResponse callUri(final String urlString) throws Exception {

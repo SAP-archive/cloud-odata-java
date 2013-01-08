@@ -717,12 +717,10 @@ public class ListsProcessor extends ODataSingleProcessor {
         else
           return Long.toString(Long.valueOf(left) * Long.valueOf(right));
       case DIV:
-        if (binaryExpression.getEdmType() == EdmSimpleTypeKind.Decimal.getEdmSimpleTypeInstance()
-            || binaryExpression.getEdmType() == EdmSimpleTypeKind.Double.getEdmSimpleTypeInstance()
-            || binaryExpression.getEdmType() == EdmSimpleTypeKind.Single.getEdmSimpleTypeInstance())
-          return Double.toString(Double.valueOf(left) / Double.valueOf(right));
-        else
-          return Long.toString(Long.valueOf(left) / Long.valueOf(right));
+        String number = Double.toString(Double.valueOf(left) / Double.valueOf(right));
+        if (number.endsWith(".0"))
+          number = number.replace(".0", "");
+        return number;
       case MODULO:
         if (binaryExpression.getEdmType() == EdmSimpleTypeKind.Decimal.getEdmSimpleTypeInstance()
             || binaryExpression.getEdmType() == EdmSimpleTypeKind.Double.getEdmSimpleTypeInstance()

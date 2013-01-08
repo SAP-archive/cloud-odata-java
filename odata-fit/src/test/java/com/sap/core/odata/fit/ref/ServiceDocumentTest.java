@@ -6,7 +6,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.http.HttpResponse;
-import org.custommonkey.xmlunit.NamespaceContext;
 import org.custommonkey.xmlunit.SimpleNamespaceContext;
 import org.custommonkey.xmlunit.XMLUnit;
 import org.junit.Test;
@@ -25,8 +24,7 @@ public class ServiceDocumentTest extends AbstractRefTest {
     Map<String, String> prefixMap = new HashMap<String, String>();
     prefixMap.put("atom", "http://www.w3.org/2005/Atom");
     prefixMap.put("a", "http://www.w3.org/2007/app");
-    NamespaceContext ctx = new SimpleNamespaceContext(prefixMap);
-    XMLUnit.setXpathNamespaceContext(ctx);
+    XMLUnit.setXpathNamespaceContext(new SimpleNamespaceContext(prefixMap));
 
     assertXpathExists("/a:service", payload);
     assertXpathExists("/a:service/a:workspace", payload);

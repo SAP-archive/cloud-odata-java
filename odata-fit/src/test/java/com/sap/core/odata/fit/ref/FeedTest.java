@@ -149,8 +149,8 @@ public class FeedTest extends AbstractRefTest {
     response = callUri("Employees?$filter=indexof(ImageUrl,EmployeeId)%20mod%20(Age%20sub%2028)%20eq%20month(EntryDate)%20mul%203%20div%2027%20sub%201");
     checkMediaType(response, ContentType.APPLICATION_ATOM_XML_FEED);
     body = getBody(response);
-    // checkCount(body, "</entry>", 1);
-    // assertTrue(body.contains(EMPLOYEE_4_NAME));
+    checkCount(body, "</entry>", 1);
+    assertTrue(body.contains(EMPLOYEE_4_NAME));
 
     response = callUri("Employees?$filter=not(Age%20sub%2030%20ge%20-hour(EntryDate))");
     checkMediaType(response, ContentType.APPLICATION_ATOM_XML_FEED);
@@ -170,11 +170,11 @@ public class FeedTest extends AbstractRefTest {
     checkCount(body, "</entry>", 1);
     assertTrue(body.contains("69124"));
 
-    // response = callUri("Employees?$filter=length(trim(Location/City/CityName))%20gt%209");
-    // checkMediaType(response, ContentType.APPLICATION_ATOM_XML_FEED);
-    // body = getBody(response);
-    // checkCount(body, "</entry>", 1);
-    // assertFalse(body.contains(CITY_2_NAME));
+    response = callUri("Employees?$filter=length(trim(Location/City/CityName))%20gt%209");
+    checkMediaType(response, ContentType.APPLICATION_ATOM_XML_FEED);
+    body = getBody(response);
+    checkCount(body, "</entry>", 1);
+    assertFalse(body.contains(CITY_2_NAME));
 
     response = callUri("Employees('2')?$filter=Age%20eq%2032");
     checkMediaType(response, ContentType.APPLICATION_ATOM_XML_ENTRY);
