@@ -91,7 +91,7 @@ public class AtomEntryEntityProvider {
     try {
       List<String> noneSyndicationTargetPaths = eia.getNoneSyndicationTargetPathNames();
       for (String tpName : noneSyndicationTargetPaths) {
-        EntityPropertyInfo info = eia.getPropertyInfo(tpName);
+        EntityPropertyInfo info = eia.getTargetPathInfo(tpName);
         EdmCustomizableFeedMappings customMapping = info.getCustomMapping();
         if (!customMapping.isFcKeepInContent()) {
           XmlPropertyEntityProvider aps = new XmlPropertyEntityProvider();

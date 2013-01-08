@@ -237,15 +237,21 @@ class EdmMock {
     CustomizableFeedMappings cfm = new CustomizableFeedMappings().setFcKeepInContent(false).setFcNsPrefix("py").setFcNsUri("http://localhost").setFcTargetPath("Содержание");
     when(photoRussianProperty.getCustomizableFeedMappings()).thenReturn(cfm);
 
+    EdmProperty customProperty = createProperty("CustomProperty", EdmSimpleTypeKind.String);
+    CustomizableFeedMappings customFeedMapping = new CustomizableFeedMappings()
+                                  .setFcKeepInContent(false).setFcNsPrefix("custom").setFcNsUri("http://localhost").setFcTargetPath("TarPath");
+    when(customProperty.getCustomizableFeedMappings()).thenReturn(customFeedMapping);
+
     EdmEntityType photoEntityType = mock(EdmEntityType.class);
     when(photoEntityType.getName()).thenReturn("Photo");
     when(photoEntityType.getNamespace()).thenReturn("RefScenario2");
-    when(photoEntityType.getPropertyNames()).thenReturn(Arrays.asList("Id", "Type", "Содержание"));
+    when(photoEntityType.getPropertyNames()).thenReturn(Arrays.asList("Id", "Type", "Содержание", "CustomProperty"));
     when(photoEntityType.getKeyPropertyNames()).thenReturn(Arrays.asList("Id", "Type"));
     when(photoEntityType.getKeyProperties()).thenReturn(photoKeyProperties);
     when(photoEntityType.getProperty("Id")).thenReturn(photoIdProperty);
     when(photoEntityType.getProperty("Type")).thenReturn(photoTypeProperty);
     when(photoEntityType.getProperty(photoRussianProperty.getName())).thenReturn(photoRussianProperty);
+    when(photoEntityType.getProperty(customProperty.getName())).thenReturn(customProperty);
     EdmEntitySet photoEntitySet = mock(EdmEntitySet.class);
     when(photoEntitySet.getName()).thenReturn("Photos");
     when(photoEntitySet.getEntityType()).thenReturn(photoEntityType);

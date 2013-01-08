@@ -322,6 +322,20 @@ public class AtomEntryProviderTest extends AbstractProviderTest {
   }
 
   @Test
+  public void testCustomProperties() throws Exception {
+    EntityProvider ser = createAtomEntityProvider();
+    EdmEntitySet entitySet = MockFacade.getMockEdm().getEntityContainer("Container2").getEntitySet("Photos");
+
+    ODataResponse response = ser.writeEntry(entitySet, this.photoData, DEFAULT_PROPERTIES);
+    String xmlString = verifyResponse(response);
+
+    assertXpathExists("/a:entry", xmlString);
+    assertTrue("Expected result was not found in input [\n\n" + xmlString + "\n\n].",
+        Pattern.matches(".*<custom:CustomProperty xmlns:custom=\"http://localhost\" m:null=\"true\"/>.*", xmlString));
+    verifyTagOrdering(xmlString, "category", "Содержание", "CustomProperty", "content", "properties");
+  }
+
+  @Test
   public void serializeAtomMediaResourceLinks() throws IOException, XpathException, SAXException, XMLStreamException, FactoryConfigurationError, ODataException {
     EntityProvider ser = createAtomEntityProvider();
     ODataResponse response = ser.writeEntry(MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Employees"), this.employeeData, DEFAULT_PROPERTIES);
