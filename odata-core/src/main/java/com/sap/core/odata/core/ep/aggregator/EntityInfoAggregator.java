@@ -352,12 +352,12 @@ public class EntityInfoAggregator {
     }
   }
 
-  private void checkTargetPathInfo(EdmProperty property, EntityPropertyInfo value) throws EntityProviderException {
+  private void checkTargetPathInfo(EdmProperty property, EntityPropertyInfo propertyInfo) throws EntityProviderException {
     try {
       EdmCustomizableFeedMappings customizableFeedMappings = property.getCustomizableFeedMappings();
       if (customizableFeedMappings != null) {
         String targetPath = customizableFeedMappings.getFcTargetPath();
-        targetPath2EntityPropertyInfo.put(targetPath, value);
+        targetPath2EntityPropertyInfo.put(targetPath, propertyInfo);
         if (!SYN_TARGET_PATHS.contains(targetPath)) {
           noneSyndicationTargetPaths.add(targetPath);
         }
