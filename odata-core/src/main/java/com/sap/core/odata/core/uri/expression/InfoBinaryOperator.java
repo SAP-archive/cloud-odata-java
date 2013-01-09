@@ -17,7 +17,7 @@ class InfoBinaryOperator
   private int priority;
   ParameterSetCombination combination;
 
-  public InfoBinaryOperator(BinaryOperator operator, String category, String syntax, int priority,   ParameterSetCombination combination) {
+  public InfoBinaryOperator(BinaryOperator operator, String category, String syntax, int priority, ParameterSetCombination combination) {
     this.operator = operator;
     this.category = category;
     this.syntax = syntax;
@@ -44,29 +44,5 @@ class InfoBinaryOperator
   public EdmType validateParameterSet(List<EdmType> actualParameterTypes) throws FilterParserInternalError {
     return combination.validate(actualParameterTypes);
   }
-
-  static class DetectedBinaryOperator
-  {
-    protected InfoBinaryOperator operator;
-    protected Token token;
-    
-    public DetectedBinaryOperator(InfoBinaryOperator operator, Token token)
-    {
-      this.operator = operator;
-      this.token = token;
-    }
-    
-    public Token getToken()
-    {
-      return token;
-    }
-    
-    public InfoBinaryOperator getOP()
-    {
-      return operator;
-    }
-    
-  }
-  
 
 }

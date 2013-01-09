@@ -20,6 +20,7 @@ public class TokenizerExpectError extends ODataMessageException {
   public static final int ParseStringToken = 1;
 
   //Invalid token detected at position &POSITION&
+  public static final MessageReference NO_TOKEN_AVAILABLE = createMessageReference(TokenizerExpectError.class, "NO_TOKEN_AVAILABLE");
   public static final MessageReference INVALID_TOKEN_AT = createMessageReference(TokenizerExpectError.class, "INVALID_TOKEN_AT");
   public static final MessageReference INVALID_TOKENKIND_AT = createMessageReference(TokenizerExpectError.class, "INVALID_TOKENKIND_AT");
 
@@ -83,4 +84,13 @@ public class TokenizerExpectError extends ODataMessageException {
 
     return new TokenizerExpectError(msgRef);
   }
+  public static TokenizerExpectError createNO_TOKEN_AVAILABLE(TokenKind expectedTokenKind)
+  {
+    MessageReference msgRef = TokenizerExpectError.INVALID_TOKEN_AT.create();
+
+    msgRef.addContent(expectedTokenKind.toString());
+
+    return new TokenizerExpectError(msgRef);
+  }
+
 }

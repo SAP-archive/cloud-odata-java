@@ -105,43 +105,33 @@ public class FilterParserImpl implements FilterParser
     CommonExpression rightNode;
     BinaryExpression binaryNode;
 
-    InfoBinaryOperator.DetectedBinaryOperator operator = readBinaryOperator();
-    InfoBinaryOperator operatorInfo = null;
-    if (operator != null)
-      operatorInfo = operator.getOP();
+    ActualBinaryOperator operator = readBinaryOperator();
+    ActualBinaryOperator nextOperator;
 
-    InfoBinaryOperator.DetectedBinaryOperator nextOperator;
-    InfoBinaryOperator nextOperatorInfo = null;
 
-    while ((operatorInfo != null) && (operatorInfo.getPriority() >= priority))
+    while ((operator != null) && (operator.getOP().getPriority() >= priority))
     {
       tokenList.next(); //eat the operator
       rightNode = readElement(leftNode); //throws FilterParserException, FilterParserInternalError
-
       nextOperator = readBinaryOperator();
-      if (nextOperator != null)
-        nextOperatorInfo = nextOperator.getOP();
 
       // It must be "while" because for example in "Filter=a or c eq d and e eq f"
       // after reading the "eq" operator the "and" operator must be consumed too. This is due to the fact that "and" has a higher priority than "or" 
-      while ((nextOperatorInfo != null) && (nextOperatorInfo.getPriority() > operatorInfo.getPriority()))
+      while ((nextOperator != null) && (nextOperator.getOP().getPriority() > operator.getOP().getPriority()))
       {
         //recurse until the a binary operator with a lower priority is detected 
-        rightNode = readElements(rightNode, nextOperatorInfo.getPriority());
+        rightNode = readElements(rightNode, nextOperator.getOP().getPriority());
         nextOperator = readBinaryOperator();
-        nextOperatorInfo = null; 
-        if (nextOperator != null)
-          nextOperatorInfo = nextOperator.getOP();
       }
 
       // Although the member operator is also a binary operator, there is some special handling in the filterTree
-      if (operatorInfo.getOperator() == BinaryOperator.PROPERTY_ACCESS)
+      if (operator.getOP().getOperator() == BinaryOperator.PROPERTY_ACCESS)
       {
         binaryNode = new MemberExpressionImpl(leftNode, rightNode);
       }
       else
       {
-        binaryNode = new BinaryExpressionImpl(operatorInfo, leftNode, rightNode, operator.getToken());
+        binaryNode = new BinaryExpressionImpl(operator.getOP(), leftNode, rightNode, operator.getToken());
       }
 
       try
@@ -156,9 +146,6 @@ public class FilterParserImpl implements FilterParser
 
       leftNode = binaryNode;
       operator = readBinaryOperator();
-      operatorInfo = null;
-      if (operator != null)
-        operatorInfo = operator.getOP();
     }
 
     return leftNode;
@@ -175,13 +162,15 @@ public class FilterParserImpl implements FilterParser
    */
   protected CommonExpression readParenthesis() throws FilterParserException, FilterParserInternalError
   {
+    Token openParenthesis;
     //check for '('
     try {
-      tokenList.expectToken(TokenKind.OPENPAREN);
+      openParenthesis = tokenList.expectToken(TokenKind.OPENPAREN);
     } catch (TokenizerExpectError e)
     {
       //Internal parsing error (even if there are no more tokens, -> then there should be a different exception)
       //The existing of a '(' is verified BEFORE this method is called --> so it's a internal error
+      // Not tested, exception should not occur
       throw FilterParserInternalError.createERROR_PARSING_PARENTHESIS(e);
     }
 
@@ -195,7 +184,7 @@ public class FilterParserImpl implements FilterParser
     {
       //Internal parsing error, even if there are no more token (then there should be a different exception).
       //TODO check if this could be an normal Exception
-      throw FilterParserInternalError.createERROR_PARSING_PARENTHESIS(parenthesisExpression, e);
+      throw FilterParserExceptionImpl.createMISSING_CLOSING_PHARENTHESIS(openParenthesis.getPosition(), curExpression, e);
     }
     return parenthesisExpression;
   }
@@ -382,22 +371,24 @@ public class FilterParserImpl implements FilterParser
     return method;
   }
 
-  protected InfoBinaryOperator.DetectedBinaryOperator readBinaryOperator()
+  protected ActualBinaryOperator readBinaryOperator()
   {
+    InfoBinaryOperator operator = null;
     Token token = tokenList.lookToken();
-    if (token == null) return null;
+    if (token == null) 
+      return null;
     if ((token.getKind() == TokenKind.SYMBOL) && (token.getUriLiteral().equals("/")))
     {
-      InfoBinaryOperator operator = availableBinaryOperators.get(token.getUriLiteral());
-      return new InfoBinaryOperator.DetectedBinaryOperator(operator, token);
+      operator = availableBinaryOperators.get(token.getUriLiteral());
     }
     else if (token.getKind() == TokenKind.LITERAL)
     {
-      InfoBinaryOperator operator = availableBinaryOperators.get(token.getUriLiteral());
-      return new InfoBinaryOperator.DetectedBinaryOperator(operator, token);
+      operator = availableBinaryOperators.get(token.getUriLiteral()); 
     }
-
-    return null;
+    
+    if (operator == null)
+        return null;
+    return new ActualBinaryOperator(operator, token);
   }
 
   /**

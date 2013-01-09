@@ -136,5 +136,16 @@ public class FilterParserExceptionImpl extends FilterParserException
 
     return new FilterParserException(msgRef);
   }
+  
+  
+  
+  public static FilterParserException createMISSING_CLOSING_PHARENTHESIS(int position, String expression, TokenizerExpectError e) {
+    MessageReference msgRef = FilterParserException.MISSING_CLOSING_PHARENTHESIS.create();
+
+    msgRef.addContent(position);
+    msgRef.addContent(expression);
+
+    return new FilterParserException(msgRef,e);
+  }
 
 }

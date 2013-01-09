@@ -77,6 +77,11 @@ public class TokenList implements Iterator<Token>
   public Token expectToken(TokenKind comma) throws TokenizerExpectError
   {
     Token actual = next();
+    if ( actual == null)
+    {
+      throw TokenizerExpectError.createNO_TOKEN_AVAILABLE(comma);
+    }
+    
     if (comma != actual.getKind())
       throw TokenizerExpectError.createINVALID_TOKENKIND_AT(comma, actual);
     return actual;
