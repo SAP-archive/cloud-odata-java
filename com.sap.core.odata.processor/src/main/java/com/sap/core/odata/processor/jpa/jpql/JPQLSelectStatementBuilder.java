@@ -52,7 +52,7 @@ public class JPQLSelectStatementBuilder extends com.sap.core.odata.processor.jpa
 					orderByBuilder.append(", ");
 				}
 				Entry<String, String> entry = orderItr.next();
-				orderByBuilder.append(tableAlias+"."+entry.getKey()).append(entry.getValue());				
+				orderByBuilder.append(tableAlias+"."+entry.getKey()).append(" "+entry.getValue());				
 				i++;
 			}
 			jpqlQuery.append(" ORDER BY ").append(orderByBuilder);
