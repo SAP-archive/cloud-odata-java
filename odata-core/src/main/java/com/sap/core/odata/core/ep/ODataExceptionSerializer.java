@@ -5,7 +5,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
-import java.nio.charset.Charset;
+import java.io.UnsupportedEncodingException;
 import java.util.Locale;
 
 import javax.xml.stream.XMLOutputFactory;
@@ -35,8 +35,13 @@ public class ODataExceptionSerializer {
   }
 
   private static InputStream serializeJson(String errorCode, String message, String innerError, Locale locale) {
-    String notsupported = "not supported error format JSON";
-    return new ByteArrayInputStream(notsupported.getBytes(Charset.forName("utf-8")));
+    String notsupported = "not supported error format JSON; " + errorCode + ", " + message;
+    try {
+      return new ByteArrayInputStream(notsupported.getBytes("UTF-8"));
+    } catch (UnsupportedEncodingException e) {
+      LOG.error("Fatal Error when serializing an Exception.", e);
+      return null;
+    }
   }
 
   private static InputStream serializeXml(String errorCode, String message, String innerError, Locale locale) {
@@ -44,7 +49,7 @@ public class ODataExceptionSerializer {
     try {
       CircleStreamBuffer csb = new CircleStreamBuffer();
       OutputStream outputStream = csb.getOutputStream();
-      OutputStreamWriter writer = new OutputStreamWriter(outputStream, "utf-8");
+      OutputStreamWriter writer = new OutputStreamWriter(outputStream, "UTF-8");
       XMLStreamWriter xmlStreamWriter = XMLOutputFactory
           .newInstance().createXMLStreamWriter(writer);
 
@@ -73,9 +78,9 @@ public class ODataExceptionSerializer {
 
       outputMessage = csb.getInputStream();
     } catch (XMLStreamException e) {
-      LOG.error("Fatal Error when serializing an Exception.", e);
+      LOG.error("Fatal Error when serializing an Exception", e);
     } catch (IOException e) {
-      LOG.error("Fatal Error when serializing an Exception.", e);
+      LOG.error("Fatal Error when serializing an Exception", e);
     }
     return outputMessage;
   }

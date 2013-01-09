@@ -19,14 +19,14 @@ public class Room {
     this(null);
   }
 
-  public Room(String name) {
+  public Room(final String name) {
     id = counter++;
     setName(name);
   }
 
-  public Room(String name, int seats) {
+  public Room(final String name, final int seats) {
     this(name);
-    this.setSeats(seats);
+    setSeats(seats);
   }
 
   public String getId() {
@@ -37,11 +37,11 @@ public class Room {
     return this.name;
   }
 
-  public void setName(String name) {
+  public void setName(final String name) {
     this.name = name;
   }
 
-  public void setSeats(int seats) {
+  public void setSeats(final int seats) {
     this.seats = seats;
   }
 
@@ -49,7 +49,7 @@ public class Room {
     return seats;
   }
 
-  public void setVersion(int version) {
+  public void setVersion(final int version) {
     this.version = version;
   }
 
@@ -58,16 +58,18 @@ public class Room {
   }
 
   public void setBuilding(Building building) {
-    this.building = building;
+    if (this.building != null)
+      this.building.getRooms().remove(this);
     if (building != null)
-      this.building.getRooms().add(this);
+      building.getRooms().add(this);
+    this.building = building;
   }
 
   public Building getBuilding() {
     return building;
   }
 
-  public void setEmployees(List<Employee> employeesList) {
+  public void setEmployees(final List<Employee> employeesList) {
     this.employees = employeesList;
   }
 
@@ -85,7 +87,7 @@ public class Room {
   }
 
   @Override
-  public boolean equals(Object obj) {
+  public boolean equals(final Object obj) {
     if (this == obj)
       return true;
     if (obj == null || getClass() != obj.getClass())
