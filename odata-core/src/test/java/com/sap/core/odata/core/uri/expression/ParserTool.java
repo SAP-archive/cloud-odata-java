@@ -5,7 +5,10 @@ import static org.junit.Assert.fail;
 
 import java.util.Locale;
 
+import org.apache.log4j.xml.DOMConfigurator;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.sap.core.odata.api.edm.Edm;
 import com.sap.core.odata.api.edm.EdmEntityType;
@@ -30,6 +33,13 @@ import com.sap.core.odata.core.exception.MessageService.Message;
  */
 public class ParserTool
 {
+
+  static {
+    DOMConfigurator.configureAndWatch("log4j.xml");
+  }
+  
+  private static final Logger log = LoggerFactory.getLogger(ParserTool.class);
+  
   private static boolean debug = true;
   private String expression;
   private CommonExpression tree;
@@ -40,7 +50,7 @@ public class ParserTool
   
   public static void dout(String out)
   {
-    if (debug) System.out.println(out);
+    if (debug) ParserTool.log.debug(out);
   }
 
   public ParserTool(String expression, boolean isOrder)

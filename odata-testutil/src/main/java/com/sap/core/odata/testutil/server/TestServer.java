@@ -54,7 +54,7 @@ public class TestServer {
   public void startServer(Class<? extends ODataServiceFactory> factoryClass) {
     try {
       for (int port = PORT_MIN; port <= PORT_MAX; port += PORT_INC) {
-        TestServer.log.debug("Try to start TestServer on port... " + port);
+        TestServer.log.info("Try to start TestServer on port... " + port);
 
         CXFNonSpringJaxrsServlet odataServlet = new CXFNonSpringJaxrsServlet();
         ServletHolder odataServletHolder = new ServletHolder(odataServlet);
@@ -75,19 +75,14 @@ public class TestServer {
           this.server.start();
           break;
         } catch (BindException e) {
-          TestServer.log.debug("port is busy... " + port);
+          TestServer.log.info("port is busy... " + port);
         }
       }
 
       if (!this.server.isStarted()) {
         throw new BindException("no free port in range of [" + PORT_MIN + ".." + PORT_MAX + "]");
       }
-
-      TestServer.log.debug("##################################");
-      TestServer.log.debug("## Started server at endpoint");
-      TestServer.log.debug("## uri:         " + this.endpoint);
-      TestServer.log.debug("## factory:     " + factoryClass.getCanonicalName());
-      TestServer.log.debug("##################################");
+      TestServer.log.info("server endpoint: " + this.endpoint);
 
     } catch (Exception e) {
       throw new ServerException(e);

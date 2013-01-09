@@ -95,8 +95,6 @@ public class XmlPropertySerializationTest extends AbstractProviderTest {
     String xml = StringHelper.inputStreamToString((InputStream)response.getEntity());
     assertNotNull(xml);
 
-    this.log.debug(xml);
-
     assertXpathExists("/d:Location", xml);
     assertXpathExists("/d:Location/d:City", xml);
     assertXpathExists("/d:Location/d:City/d:PostalCode", xml);
