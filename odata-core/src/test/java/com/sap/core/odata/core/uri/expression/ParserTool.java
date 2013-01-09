@@ -24,8 +24,10 @@ import com.sap.core.odata.api.uri.expression.OrderByParserException;
 import com.sap.core.odata.api.uri.expression.SortOrder;
 import com.sap.core.odata.core.exception.MessageService;
 import com.sap.core.odata.core.exception.MessageService.Message;
-import com.sun.org.apache.bcel.internal.generic.Type;
 
+/**
+ * @author SAP AG
+ */
 public class ParserTool
 {
   private static boolean debug = true;
@@ -141,9 +143,8 @@ public class ParserTool
   
   /**
    * Verifies that the message text of the thrown exception serialized is {@paramref expected}
-   * @param expected
-   *   Expected message text 
-   * @return
+   * @param messageText  expected message text 
+   * @return  this
    */
   public ParserTool aExMsgText(String messageText)
   {

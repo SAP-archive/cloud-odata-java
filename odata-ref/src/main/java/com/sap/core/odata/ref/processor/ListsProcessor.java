@@ -136,15 +136,12 @@ public class ListsProcessor extends ODataSingleProcessor {
         .skipToken(nextSkipToken)
         .build();
 
-    int timingHandle = 0;
-    if (context.isInDebugMode())
-      timingHandle = context.startRuntimeMeasurement("EntityProvider", "writeFeed");
+    final int timingHandle = context.startRuntimeMeasurement("EntityProvider", "writeFeed");
 
     final ODataResponse response = EntityProvider.create(contentType)
         .writeFeed(entitySet, values, feedProperties);
 
-    if (context.isInDebugMode())
-      context.stopRuntimeMeasurement(timingHandle);
+    context.stopRuntimeMeasurement(timingHandle);
 
     return ODataResponse.fromResponse(response).status(HttpStatusCodes.OK).build();
   }
@@ -209,14 +206,11 @@ public class ListsProcessor extends ODataSingleProcessor {
         .baseUri(getContext().getPathInfo().getServiceRoot()).inlineCount(count).build();
 
     ODataContext context = getContext();
-    int timingHandle = 0;
-    if (context.isInDebugMode())
-      timingHandle = context.startRuntimeMeasurement("EntityProvider", "writeLinks");
+    final int timingHandle = context.startRuntimeMeasurement("EntityProvider", "writeLinks");
 
     final ODataResponse response = EntityProvider.create(contentType).writeLinks(entitySet, values, entryProperties);
 
-    if (context.isInDebugMode())
-      context.stopRuntimeMeasurement(timingHandle);
+    context.stopRuntimeMeasurement(timingHandle);
 
     return ODataResponse.fromResponse(response).status(HttpStatusCodes.OK).build();
   }
@@ -245,14 +239,11 @@ public class ListsProcessor extends ODataSingleProcessor {
         .baseUri(getContext().getPathInfo().getServiceRoot()).build();
 
     ODataContext context = getContext();
-    int timingHandle = 0;
-    if (context.isInDebugMode())
-      timingHandle = context.startRuntimeMeasurement("EntityProvider", "writeEntry");
+    final int timingHandle = context.startRuntimeMeasurement("EntityProvider", "writeEntry");
 
     final ODataResponse response = EntityProvider.create(contentType).writeEntry(entitySet, values, entryProperties);
 
-    if (context.isInDebugMode())
-      context.stopRuntimeMeasurement(timingHandle);
+    context.stopRuntimeMeasurement(timingHandle);
 
     return ODataResponse.fromResponse(response).status(HttpStatusCodes.OK).build();
   }
@@ -303,14 +294,11 @@ public class ListsProcessor extends ODataSingleProcessor {
     final EntityProviderProperties entryProperties = EntityProviderProperties
         .baseUri(getContext().getPathInfo().getServiceRoot()).build();
 
-    int timingHandle = 0;
-    if (context.isInDebugMode())
-      timingHandle = context.startRuntimeMeasurement("EntityProvider", "writeLink");
+    final int timingHandle = context.startRuntimeMeasurement("EntityProvider", "writeLink");
 
     final ODataResponse response = EntityProvider.create(contentType).writeLink(entitySet, values, entryProperties);
 
-    if (context.isInDebugMode())
-      context.stopRuntimeMeasurement(timingHandle);
+    context.stopRuntimeMeasurement(timingHandle);
 
     return ODataResponse.fromResponse(response).status(HttpStatusCodes.OK).build();
   }
@@ -370,14 +358,11 @@ public class ListsProcessor extends ODataSingleProcessor {
         data : getStructuralTypeValueMap(data, (EdmStructuralType) property.getType());
 
     ODataContext context = getContext();
-    int timingHandle = 0;
-    if (context.isInDebugMode())
-      timingHandle = context.startRuntimeMeasurement("EntityProvider", "writeProperty");
+    final int timingHandle = context.startRuntimeMeasurement("EntityProvider", "writeProperty");
 
     final ODataResponse response = EntityProvider.create(contentType).writeProperty(property, value);
 
-    if (context.isInDebugMode())
-      context.stopRuntimeMeasurement(timingHandle);
+    context.stopRuntimeMeasurement(timingHandle);
 
     return ODataResponse.fromResponse(response).status(HttpStatusCodes.OK).build();
   }
@@ -483,14 +468,11 @@ public class ListsProcessor extends ODataSingleProcessor {
     final EntityProviderProperties entryProperties = EntityProviderProperties
         .baseUri(getContext().getPathInfo().getServiceRoot()).build();
 
-    int timingHandle = 0;
-    if (context.isInDebugMode())
-      timingHandle = context.startRuntimeMeasurement("EntityProvider", "writeFunctionImport");
+    final int timingHandle = context.startRuntimeMeasurement("EntityProvider", "writeFunctionImport");
 
     final ODataResponse response = EntityProvider.create(contentType).writeFunctionImport(functionImport, value, entryProperties);
 
-    if (context.isInDebugMode())
-      context.stopRuntimeMeasurement(timingHandle);
+    context.stopRuntimeMeasurement(timingHandle);
 
     return ODataResponse.fromResponse(response).status(HttpStatusCodes.OK).build();
   }
@@ -547,9 +529,7 @@ public class ListsProcessor extends ODataSingleProcessor {
     final HashMap<String, Object> keys = mapKey(keyPredicates);
 
     ODataContext context = getContext();
-    int timingHandle = 0;
-    if (context.isInDebugMode())
-      timingHandle = context.startRuntimeMeasurement(getClass().getSimpleName(), "retrieveData");
+    final int timingHandle = context.startRuntimeMeasurement(getClass().getSimpleName(), "retrieveData");
 
     if (functionImport == null)
       if (keys.isEmpty())
@@ -570,17 +550,14 @@ public class ListsProcessor extends ODataSingleProcessor {
       currentEntitySet = navigationSegment.getEntitySet();
     }
 
-    if (context.isInDebugMode())
-      context.stopRuntimeMeasurement(timingHandle);
+    context.stopRuntimeMeasurement(timingHandle);
 
     return data;
   }
 
   private <T> Integer applySystemQueryOptions(final EdmEntitySet entitySet, List<T> data, final FilterExpression filter, final InlineCount inlineCount, final OrderByExpression orderBy, final String skipToken, final Integer skip, final Integer top) throws ODataException {
     ODataContext context = getContext();
-    int timingHandle = 0;
-    if (context.isInDebugMode())
-      timingHandle = context.startRuntimeMeasurement(getClass().getSimpleName(), "applySystemQueryOptions");
+    final int timingHandle = context.startRuntimeMeasurement(getClass().getSimpleName(), "applySystemQueryOptions");
 
     if (filter != null)
       // Remove all elements the filter does not apply for.
@@ -611,8 +588,7 @@ public class ListsProcessor extends ODataSingleProcessor {
       while (data.size() > top)
         data.remove(top.intValue());
 
-    if (context.isInDebugMode())
-      context.stopRuntimeMeasurement(timingHandle);
+    context.stopRuntimeMeasurement(timingHandle);
 
     return count;
   }
@@ -659,17 +635,14 @@ public class ListsProcessor extends ODataSingleProcessor {
       return true;
 
     ODataContext context = getContext();
-    int timingHandle = 0;
-    if (context.isInDebugMode())
-      timingHandle = context.startRuntimeMeasurement(getClass().getSimpleName(), "appliesFilter");
+    final int timingHandle = context.startRuntimeMeasurement(getClass().getSimpleName(), "appliesFilter");
 
     try {
       return evaluateExpression(data, filter.getExpression()).equals("true");
     } catch (RuntimeException e) {
       return false;
     } finally {
-      if (context.isInDebugMode())
-        context.stopRuntimeMeasurement(timingHandle);
+      context.stopRuntimeMeasurement(timingHandle);
     }
   }
 
@@ -891,9 +864,7 @@ public class ListsProcessor extends ODataSingleProcessor {
 
   private <T> Map<String, Object> getStructuralTypeValueMap(final T data, final EdmStructuralType type) throws ODataException {
     ODataContext context = getContext();
-    int timingHandle = 0;
-    if (context.isInDebugMode())
-      timingHandle = context.startRuntimeMeasurement(getClass().getSimpleName(), "getStructuralTypeValueMap");
+    final int timingHandle = context.startRuntimeMeasurement(getClass().getSimpleName(), "getStructuralTypeValueMap");
 
     Map<String, Object> valueMap = new HashMap<String, Object>();
 
@@ -907,8 +878,7 @@ public class ListsProcessor extends ODataSingleProcessor {
         valueMap.put(propertyName, getStructuralTypeValueMap(value, (EdmStructuralType) property.getType()));
     }
 
-    if (context.isInDebugMode())
-      context.stopRuntimeMeasurement(timingHandle);
+    context.stopRuntimeMeasurement(timingHandle);
 
     return valueMap;
   }

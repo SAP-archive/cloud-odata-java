@@ -200,7 +200,7 @@ public class FeedTest extends AbstractRefTest {
     assertTrue(body.contains(EMPLOYEE_2_NAME));
 
     checkUri("Employees('1')/ne_Room/nr_Employees('1')?$filter=EmployeeId%20eq%20'1'");
-    // checkUri("Container2.Photos(Id=4,Type='foo')?$filter=%D0%A1%D0%BE%D0%B4%D0%B5%D1%80%D0%B6%D0%B0%D0%BD%D0%B8%D0%B5%20eq%20'%D0%9F%D1%80%D0%BE%D0%B4%D1%83%D0%BA%D1%82'");
+    checkUri("Container2.Photos(Id=4,Type='foo')?$filter=%D0%A1%D0%BE%D0%B4%D0%B5%D1%80%D0%B6%D0%B0%D0%BD%D0%B8%D0%B5%20eq%20'%D0%9F%D1%80%D0%BE%D0%B4%D1%83%D0%BA%D1%82'");
 
     notFound("Employees('4')?$filter=Age%20eq%2099");
     notFound("Rooms('1')/nr_Employees('1')?$filter=Age%20eq%2099");
@@ -208,8 +208,8 @@ public class FeedTest extends AbstractRefTest {
 
     // badRequest("Employees?$filter=(EmployeeId");
     // badRequest("Employees?$filter=(EmployeeId)");
-    // badRequest("Employees?$filter=loca/city/cityname%20eq%20%27Heidelberg%27");
+    badRequest("Employees?$filter=loca/city/cityname%20eq%20%27Heidelberg%27");
     // badRequest("Employees?$filter=endswith(Location,'y')");
-    // badRequest("Buildings?$filter=Image%20eq%20X%27notonlyhexdigits%27");
+    badRequest("Buildings?$filter=Image%20eq%20X%27notonlyhexdigits%27");
   }
 }
