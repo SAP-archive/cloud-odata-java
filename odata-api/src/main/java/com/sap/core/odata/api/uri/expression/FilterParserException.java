@@ -39,6 +39,8 @@ public class FilterParserException extends ODataBadRequestException
   
   public static final MessageReference INVALID_TYPES_FOR_BINARY_OPERATOR= createMessageReference(FilterParserException.class, "INVALID_TYPES_FOR_BINARY_OPERATOR");
   
+  public static final MessageReference MISSING_CLOSING_PHARENTHESIS= createMessageReference(FilterParserException.class, "MISSING_CLOSING_PHARENTHESIS");
+  
   /*instance attributes*/
   private CommonExpression filterTree;
 

@@ -6,7 +6,15 @@ import com.sap.core.odata.api.uri.expression.FilterParserException;
 
 public class TestParserExceptions extends TestBase {
   
-  
+  @Test
+  public void TestPMreadParenthesis()
+  {
+    //http://services.odata.org/Northwind/Northwind.svc/Products(1)/Supplier?$filter=(123
+    //-->')' or operator expected at position 4.
+    GetPTF("(123").aExType(FilterParserException.class)
+    .aExMsgText("Missing closing parenthesis \")\" for opening parenthesis \"(\" at position  1 in \"(123\".");
+    
+  }
   
   @Test
   public void TestPMvalidateBinaryOperator() /*PM = Parsermethod*/
@@ -15,7 +23,6 @@ public class TestParserExceptions extends TestBase {
     //-->Operator 'add' incompatible with operand types 'System.Int32' and 'System.String' at position 4.
     GetPTF("123 add 'abc'").aExType(FilterParserException.class)
         .aExKey(FilterParserException.INVALID_TYPES_FOR_BINARY_OPERATOR)
-        .printExMessage()
         .aExMsgText("Operator \"add\" incompatible with operand types \"System.Uint7\" and \"System.Uint7\" at position 5 in \"123 add 'abc'\".");
   }
 

@@ -70,7 +70,7 @@ public class Tokenizer
         break;
 
       case '(':
-        tokens.appendToken(curPosition, TokenKind.OPENPAREN, curCharacter);
+        tokens.appendToken(curPosition+1, TokenKind.OPENPAREN, curCharacter);
         curPosition = curPosition + 1;
 
         break;
