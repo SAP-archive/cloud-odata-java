@@ -15,17 +15,17 @@ public interface GetFunctionImportUriInfo {
   public EdmFunctionImport getFunctionImport();
 
   /**
-   * @return the format (as set as <code>$format</code> query parameter)
+   * @return the format (as set as <code>$format</code> query parameter) or null
    */
   public String getFormat();
 
   /**
-   * @return Map of {@literal <String,} {@link EdmLiteral}{@literal >} function import parameters
+   * @return Map of {@literal <String,} {@link EdmLiteral}{@literal >} function import parameters or EmptyMap
    */
   public Map<String, EdmLiteral> getFunctionImportParameters();
 
   /**
-   * @return Map of {@literal<String, String>} custom query options
+   * @return Map of {@literal<String, String>} custom query options or EmptyMap
    */
   public Map<String, String> getCustomQueryOptions();
 }

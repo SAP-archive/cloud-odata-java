@@ -6,7 +6,7 @@ package com.sap.core.odata.api.uri.info;
  */
 public interface GetServiceDocumentUriInfo {
   /**
-   * @return the format (as set as <code>$format</code> query parameter)
+   * @return the format (as set as <code>$format</code> query parameter) or null
    */
   public String getFormat();
 }
