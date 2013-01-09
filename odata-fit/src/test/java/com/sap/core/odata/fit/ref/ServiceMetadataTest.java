@@ -123,36 +123,35 @@ public class ServiceMetadataTest extends AbstractRefTest {
     assertXpathExists("/edmx:Edmx/edmx:DataServices/a:Schema/a:Association[@Name='BuildingRooms']/a:End[@Type='RefScenario.Building' and @Multiplicity='1' and @Role='r_Building']", payload);
     assertXpathExists("/edmx:Edmx/edmx:DataServices/a:Schema/a:Association[@Name='BuildingRooms']/a:End[@Type='RefScenario.Room' and @Multiplicity='*' and @Role='r_Room']", payload);
   }
-  
+
   @Test
   public void testEntityContainer() throws Exception {
     assertXpathExists("/edmx:Edmx/edmx:DataServices/a:Schema/a:EntityContainer[@Name='Container1' and @m:IsDefaultEntityContainer='true']", payload);
-    
+
     //EntitySets
     assertXpathExists("/edmx:Edmx/edmx:DataServices/a:Schema/a:EntityContainer[@Name='Container1' and @m:IsDefaultEntityContainer='true']/a:EntitySet[@Name='Employees' and @EntityType='RefScenario.Employee']", payload);
     assertXpathExists("/edmx:Edmx/edmx:DataServices/a:Schema/a:EntityContainer[@Name='Container1' and @m:IsDefaultEntityContainer='true']/a:EntitySet[@Name='Teams' and @EntityType='RefScenario.Team']", payload);
     assertXpathExists("/edmx:Edmx/edmx:DataServices/a:Schema/a:EntityContainer[@Name='Container1' and @m:IsDefaultEntityContainer='true']/a:EntitySet[@Name='Rooms' and @EntityType='RefScenario.Room']", payload);
     assertXpathExists("/edmx:Edmx/edmx:DataServices/a:Schema/a:EntityContainer[@Name='Container1' and @m:IsDefaultEntityContainer='true']/a:EntitySet[@Name='Managers' and @EntityType='RefScenario.Manager']", payload);
     assertXpathExists("/edmx:Edmx/edmx:DataServices/a:Schema/a:EntityContainer[@Name='Container1' and @m:IsDefaultEntityContainer='true']/a:EntitySet[@Name='Buildings' and @EntityType='RefScenario.Building']", payload);
-    
+
     //AssociationSets
     assertXpathExists("/edmx:Edmx/edmx:DataServices/a:Schema/a:EntityContainer[@Name='Container1' and @m:IsDefaultEntityContainer='true']/a:AssociationSet[@Name='ManagerEmployees' and @Association='RefScenario.ManagerEmployees']", payload);
     assertXpathExists("/edmx:Edmx/edmx:DataServices/a:Schema/a:EntityContainer[@Name='Container1' and @m:IsDefaultEntityContainer='true']/a:AssociationSet[@Name='ManagerEmployees' and @Association='RefScenario.ManagerEmployees']/a:End[@EntitySet='Managers' and @Role='r_Manager']", payload);
     assertXpathExists("/edmx:Edmx/edmx:DataServices/a:Schema/a:EntityContainer[@Name='Container1' and @m:IsDefaultEntityContainer='true']/a:AssociationSet[@Name='ManagerEmployees' and @Association='RefScenario.ManagerEmployees']/a:End[@EntitySet='Employees' and @Role='r_Employees']", payload);
-    
+
     assertXpathExists("/edmx:Edmx/edmx:DataServices/a:Schema/a:EntityContainer[@Name='Container1' and @m:IsDefaultEntityContainer='true']/a:AssociationSet[@Name='TeamEmployees' and @Association='RefScenario.TeamEmployees']", payload);
     assertXpathExists("/edmx:Edmx/edmx:DataServices/a:Schema/a:EntityContainer[@Name='Container1' and @m:IsDefaultEntityContainer='true']/a:AssociationSet[@Name='TeamEmployees' and @Association='RefScenario.TeamEmployees']/a:End[@EntitySet='Teams' and @Role='r_Team']", payload);
     assertXpathExists("/edmx:Edmx/edmx:DataServices/a:Schema/a:EntityContainer[@Name='Container1' and @m:IsDefaultEntityContainer='true']/a:AssociationSet[@Name='TeamEmployees' and @Association='RefScenario.TeamEmployees']/a:End[@EntitySet='Employees' and @Role='r_Employees']", payload);
-    
+
     assertXpathExists("/edmx:Edmx/edmx:DataServices/a:Schema/a:EntityContainer[@Name='Container1' and @m:IsDefaultEntityContainer='true']/a:AssociationSet[@Name='RoomEmployees' and @Association='RefScenario.RoomEmployees']", payload);
     assertXpathExists("/edmx:Edmx/edmx:DataServices/a:Schema/a:EntityContainer[@Name='Container1' and @m:IsDefaultEntityContainer='true']/a:AssociationSet[@Name='RoomEmployees' and @Association='RefScenario.RoomEmployees']/a:End[@EntitySet='Rooms' and @Role='r_Room']", payload);
     assertXpathExists("/edmx:Edmx/edmx:DataServices/a:Schema/a:EntityContainer[@Name='Container1' and @m:IsDefaultEntityContainer='true']/a:AssociationSet[@Name='RoomEmployees' and @Association='RefScenario.RoomEmployees']/a:End[@EntitySet='Employees' and @Role='r_Employees']", payload);
-    
+
     assertXpathExists("/edmx:Edmx/edmx:DataServices/a:Schema/a:EntityContainer[@Name='Container1' and @m:IsDefaultEntityContainer='true']/a:AssociationSet[@Name='BuildingRooms' and @Association='RefScenario.BuildingRooms']", payload);
     assertXpathExists("/edmx:Edmx/edmx:DataServices/a:Schema/a:EntityContainer[@Name='Container1' and @m:IsDefaultEntityContainer='true']/a:AssociationSet[@Name='BuildingRooms' and @Association='RefScenario.BuildingRooms']/a:End[@EntitySet='Buildings' and @Role='r_Building']", payload);
     assertXpathExists("/edmx:Edmx/edmx:DataServices/a:Schema/a:EntityContainer[@Name='Container1' and @m:IsDefaultEntityContainer='true']/a:AssociationSet[@Name='BuildingRooms' and @Association='RefScenario.BuildingRooms']/a:End[@EntitySet='Rooms' and @Role='r_Room']", payload);
-    
-    
+
     //FunctionImports
     assertXpathExists("/edmx:Edmx/edmx:DataServices/a:Schema/a:EntityContainer[@Name='Container1' and @m:IsDefaultEntityContainer='true']/a:FunctionImport[@Name='EmployeeSearch' and @ReturnType='Collection(RefScenario.Employee)' and @m:HttpMethod='GET' and @EntitySet='Employees']", payload);
     assertXpathExists("/edmx:Edmx/edmx:DataServices/a:Schema/a:EntityContainer[@Name='Container1' and @m:IsDefaultEntityContainer='true']/a:FunctionImport[@Name='EmployeeSearch' and @ReturnType='Collection(RefScenario.Employee)' and @m:HttpMethod='GET' and @EntitySet='Employees']/a:Parameter[@Name='q' and @Type='Edm.String' and @Nullable='true']", payload);
@@ -162,12 +161,12 @@ public class ServiceMetadataTest extends AbstractRefTest {
     assertXpathExists("/edmx:Edmx/edmx:DataServices/a:Schema/a:EntityContainer[@Name='Container1' and @m:IsDefaultEntityContainer='true']/a:FunctionImport[@Name='MostCommonLocation' and @ReturnType='RefScenario.c_Location' and @m:HttpMethod='GET']", payload);
     assertXpathExists("/edmx:Edmx/edmx:DataServices/a:Schema/a:EntityContainer[@Name='Container1' and @m:IsDefaultEntityContainer='true']/a:FunctionImport[@Name='ManagerPhoto' and @ReturnType='Edm.Binary' and @m:HttpMethod='GET']", payload);
     assertXpathExists("/edmx:Edmx/edmx:DataServices/a:Schema/a:EntityContainer[@Name='Container1' and @m:IsDefaultEntityContainer='true']/a:FunctionImport[@Name='ManagerPhoto' and @ReturnType='Edm.Binary' and @m:HttpMethod='GET']/a:Parameter[@Name='Id' and @Type='Edm.String' and @Nullable='false']", payload);
-    assertXpathExists("/edmx:Edmx/edmx:DataServices/a:Schema/a:EntityContainer[@Name='Container1' and @m:IsDefaultEntityContainer='true']/a:FunctionImport[@Name='OldestEmployee' and @ReturnType='RefScenario.Employee' and @m:HttpMethod='GET' and @EntitySet='Employees']", payload);    
+    assertXpathExists("/edmx:Edmx/edmx:DataServices/a:Schema/a:EntityContainer[@Name='Container1' and @m:IsDefaultEntityContainer='true']/a:FunctionImport[@Name='OldestEmployee' and @ReturnType='RefScenario.Employee' and @m:HttpMethod='GET' and @EntitySet='Employees']", payload);
   }
 
   @Test
   public void testSchema2() throws Exception {
-    
+
     //EntityType   
     assertXpathExists("/edmx:Edmx/edmx:DataServices/a:Schema[@Namespace='RefScenario2']/a:EntityType[@Name='Photo' and @m:HasStream='true']", payload);
     assertXpathExists("/edmx:Edmx/edmx:DataServices/a:Schema[@Namespace='RefScenario2']/a:EntityType[@Name='Photo' and @m:HasStream='true']/a:Key", payload);
@@ -178,14 +177,12 @@ public class ServiceMetadataTest extends AbstractRefTest {
     assertXpathExists("/edmx:Edmx/edmx:DataServices/a:Schema[@Namespace='RefScenario2']/a:EntityType[@Name='Photo' and @m:HasStream='true']/a:Property[@Name='Type' and @Type='Edm.String' and @Nullable='false']", payload);
     assertXpathExists("/edmx:Edmx/edmx:DataServices/a:Schema[@Namespace='RefScenario2']/a:EntityType[@Name='Photo' and @m:HasStream='true']/a:Property[@Name='ImageUrl' and @Type='Edm.String' and @m:FC_TargetPath='SyndicationAuthorUri']", payload);
     assertXpathExists("/edmx:Edmx/edmx:DataServices/a:Schema[@Namespace='RefScenario2']/a:EntityType[@Name='Photo' and @m:HasStream='true']/a:Property[@Name='Image' and @Type='Edm.Binary']", payload);
-    assertXpathExists("/edmx:Edmx/edmx:DataServices/a:Schema[@Namespace='RefScenario2']/a:EntityType[@Name='Photo' and @m:HasStream='true']/a:Property[@Name='BinaryData' and @Type='Edm.Binary' and @Nullable='true' and @m:MimeType='image/jpeg']", payload);  
+    assertXpathExists("/edmx:Edmx/edmx:DataServices/a:Schema[@Namespace='RefScenario2']/a:EntityType[@Name='Photo' and @m:HasStream='true']/a:Property[@Name='BinaryData' and @Type='Edm.Binary' and @Nullable='true' and @m:MimeType='image/jpeg']", payload);
     assertXpathExists("/edmx:Edmx/edmx:DataServices/a:Schema[@Namespace='RefScenario2']/a:EntityType[@Name='Photo' and @m:HasStream='true']/a:Property[@Name='Содержание' and @Type='Edm.String' and @Nullable='true' and @m:FC_KeepInContent='false' and @m:FC_NsPrefix='ру' and @m:FC_NsUri='http://localhost' and @m:FC_TargetPath='Содержание']", payload);
-    
-    
+
     //EntityContainer
     assertXpathExists("/edmx:Edmx/edmx:DataServices/a:Schema[@Namespace='RefScenario2']/a:EntityContainer[@Name='Container2']", payload);
     assertXpathExists("/edmx:Edmx/edmx:DataServices/a:Schema[@Namespace='RefScenario2']/a:EntityContainer[@Name='Container2']/a:EntitySet[@Name='Photos' and @EntityType='RefScenario2.Photo']", payload);
   }
-  
-  
+
 }
