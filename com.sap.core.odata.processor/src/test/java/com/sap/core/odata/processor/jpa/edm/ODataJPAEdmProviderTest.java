@@ -4,14 +4,20 @@ import static org.junit.Assert.*;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+
+import javax.persistence.metamodel.EntityType;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.sap.core.odata.api.edm.FullQualifiedName;
+import com.sap.core.odata.api.edm.provider.ComplexType;
+import com.sap.core.odata.api.edm.provider.EntityContainerInfo;
 import com.sap.core.odata.api.edm.provider.Schema;
 import com.sap.core.odata.api.exception.ODataException;
+import com.sap.core.odata.processor.jpa.exception.ODataJPAModelException;
 import com.sap.core.odata.processor.jpa.util.Mock;
 import com.sap.core.odata.processor.jpa.util.MockData;
 
@@ -54,6 +60,28 @@ public class ODataJPAEdmProviderTest {
 		}
 		assertEquals(MockData.COMPLEX_TYPE_NAME, nameStr);
 	}
+	@Test
+	public void testgetComplexTypeWithBuffer() throws Exception
+	{
+		HashMap<String, ComplexType> compTypes = new HashMap<String, ComplexType>();
+		ComplexType comp = new ComplexType();
+		comp.setName(MockData.COMPLEX_TYPE_NAME);
+		compTypes.put(MockData.NAME_SPACE+"."+MockData.COMPLEX_TYPE_NAME, comp);
+		ODataJPAEdmProvider jpaEdmProv = new ODataJPAEdmProvider();
+		Class claz = jpaEdmProv.getClass();
+		Field f = claz.getDeclaredField("complexTypes");
+		f.setAccessible(true);
+		f.set(jpaEdmProv, compTypes);
+		assertEquals(comp, jpaEdmProv.getComplexType(new FullQualifiedName(MockData.NAME_SPACE, MockData.COMPLEX_TYPE_NAME)));
+		try
+		{
+			jpaEdmProv.getComplexType(new FullQualifiedName(MockData.NAME_SPACE, "abc"));
+		}
+		catch(ODataJPAModelException e)
+		{
+			assertTrue(true);
+		}
+	}
 
 	@Test
 	public void testGetEntityContainerInfo() {
@@ -66,6 +94,28 @@ public class ODataJPAEdmProviderTest {
 		
 		assertEquals(MockData.ENTITY_CONTAINER_NAME, nameStr);
 	}
+	@Test
+	public void testGetEntityContainerInfoWithBuffer() throws Exception
+	{
+		HashMap<String, EntityContainerInfo> entityContainerInfos = new HashMap<String, EntityContainerInfo>();
+		EntityContainerInfo entityContainer = new EntityContainerInfo();
+		entityContainer.setName(MockData.ENTITY_CONTAINER_NAME);
+		entityContainerInfos.put(MockData.ENTITY_CONTAINER_NAME, entityContainer);
+		ODataJPAEdmProvider jpaEdmProv = new ODataJPAEdmProvider();
+		Class claz = jpaEdmProv.getClass();
+		Field f = claz.getDeclaredField("entityContainerInfos");
+		f.setAccessible(true);
+		f.set(jpaEdmProv, entityContainerInfos);
+		assertEquals(entityContainer, jpaEdmProv.getEntityContainerInfo(MockData.ENTITY_CONTAINER_NAME));
+		try
+		{
+			jpaEdmProv.getEntityContainerInfo(MockData.ENTITY_CONTAINER_NAME);
+		}
+		catch(ODataJPAModelException e)
+		{
+			assertTrue(true);
+		}
+	}
 
 	@Test
 	public void testGetEntityType() {
@@ -77,6 +127,28 @@ public class ODataJPAEdmProviderTest {
 			fail("OData exception raised with " + e.getMessage());
 		}
 		assertEquals(MockData.ENTITY_NAME_2, entityName);
+	}
+	@Test
+	public void testGetEntityTypeWithBuffer() throws Exception
+	{
+		HashMap<String, com.sap.core.odata.api.edm.provider.EntityType> entityTypes = new HashMap<String,com.sap.core.odata.api.edm.provider.EntityType >();
+		com.sap.core.odata.api.edm.provider.EntityType entity = new com.sap.core.odata.api.edm.provider.EntityType();
+		entity.setName(MockData.ENTITY_NAME_1);
+		entityTypes.put(MockData.NAME_SPACE+"."+MockData.ENTITY_NAME_1, entity);
+		ODataJPAEdmProvider jpaEdmProv = new ODataJPAEdmProvider();
+		Class claz = jpaEdmProv.getClass();
+		Field f = claz.getDeclaredField("entityTypes");
+		f.setAccessible(true);
+		f.set(jpaEdmProv, entityTypes);
+		assertEquals(entity, jpaEdmProv.getEntityType(new FullQualifiedName(MockData.NAME_SPACE, MockData.ENTITY_NAME_1)));
+		try
+		{
+			jpaEdmProv.getEntityType(new FullQualifiedName(MockData.NAME_SPACE, "abc"));
+		}
+		catch(ODataJPAModelException e)
+		{
+			assertTrue(true);
+		}
 	}
 
 	@Test
