@@ -7,9 +7,6 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.sap.core.odata.api.commons.InlineCount;
 import com.sap.core.odata.api.edm.Edm;
 import com.sap.core.odata.api.edm.EdmComplexType;
@@ -52,8 +49,6 @@ import com.sap.core.odata.core.uri.expression.OrderByParserImpl;
  */
 public class UriParserImpl extends UriParser {
 
-  private static final Logger LOG = LoggerFactory.getLogger(UriParserImpl.class);
-
   private static final Pattern INITIAL_SEGMENT_PATTERN = Pattern.compile("(?:([^.()]+)\\.)?([^.()]+)(?:\\((.+)\\)|(\\(\\)))?");
   private static final Pattern NAVIGATION_SEGMENT_PATTERN = Pattern.compile("([^()]+)(?:\\((.+)\\)|(\\(\\)))?");
   private static final Pattern NAMED_VALUE_PATTERN = Pattern.compile("(?:([^=]+)=)?([^=]+)");
@@ -94,7 +89,6 @@ public class UriParserImpl extends UriParser {
     handleSystemQueryOptions();
     handleOtherQueryParameters();
 
-    UriParserImpl.LOG.debug(uriResult.toString());
     return uriResult;
   }
 
@@ -112,8 +106,6 @@ public class UriParserImpl extends UriParser {
   }
 
   private void handleResourcePath() throws UriSyntaxException, UriNotMatchingException, EdmException {
-    UriParserImpl.LOG.debug("parsing: " + pathSegments);
-
     if (pathSegments.isEmpty()) {
       uriResult.setUriType(UriType.URI0);
     } else {
@@ -143,7 +135,6 @@ public class UriParserImpl extends UriParser {
     final String segmentName = matcher.group(2);
     final String keyPredicate = matcher.group(3);
     final String emptyParentheses = matcher.group(4);
-    UriParserImpl.LOG.debug("RegEx (" + currentPathSegment + ") : entityContainerName=" + entityContainerName + ", segmentName=" + segmentName + ", keyPredicate=" + keyPredicate + ", emptyParentheses=" + emptyParentheses);
 
     uriResult.setEntityContainer(entityContainerName == null ? edm.getDefaultEntityContainer() : edm.getEntityContainer(entityContainerName));
     if (uriResult.getEntityContainer() == null)
@@ -230,7 +221,6 @@ public class UriParserImpl extends UriParser {
     final String navigationPropertyName = matcher.group(1);
     final String keyPredicateName = matcher.group(2);
     final String emptyParentheses = matcher.group(3);
-    UriParserImpl.LOG.debug("RegEx (" + currentPathSegment + "): NavigationProperty=" + navigationPropertyName + ", keyPredicate=" + keyPredicateName + ", emptyParentheses=" + emptyParentheses);
 
     final EdmTyped property = uriResult.getTargetEntitySet().getEntityType().getProperty(navigationPropertyName);
     if (property == null)
@@ -377,7 +367,6 @@ public class UriParserImpl extends UriParser {
 
       String name = matcher.group(1);
       final String value = matcher.group(2);
-      UriParserImpl.LOG.debug("RegEx (" + keyPredicate + "): name=" + name + ", value=" + value);
 
       if (name == null)
         if (keyProperties.size() == 1)
@@ -451,7 +440,6 @@ public class UriParserImpl extends UriParser {
   }
 
   private void distributeQueryParameters(final Map<String, String> queryParameters) throws UriSyntaxException {
-    UriParserImpl.LOG.debug("query parameters: " + queryParameters);
     for (String queryOptionString : queryParameters.keySet())
       if (queryOptionString.startsWith("$")) {
         SystemQueryOption queryOption;

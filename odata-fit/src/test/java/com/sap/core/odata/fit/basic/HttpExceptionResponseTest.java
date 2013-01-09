@@ -77,7 +77,8 @@ public class HttpExceptionResponseTest extends AbstractBasicTest {
 
   @Test
   public void testGenericHttpExceptions() throws Exception {
-
+    disableLogging();
+    
     List<ODataHttpException> toTestExceptions = getHttpExceptionsForTest();
 
     int firstKey = 1;
@@ -109,7 +110,6 @@ public class HttpExceptionResponseTest extends AbstractBasicTest {
 
   private List<ODataHttpException> getHttpExceptionsForTest() throws Exception {
     List<Class<ODataHttpException>> exClasses = ClassHelper.getAssignableClasses("com.sap.core.odata.api.exception", ODataHttpException.class);
-    //    log.debug("Found exception classes: " + exClasses.toString());
 
     MessageReference mr = MessageReference.create(ODataHttpException.class, "SIMPLE FOR TEST");
     return ClassHelper.getClassInstances(exClasses, new Class<?>[] { MessageReference.class }, new Object[] { mr });
@@ -159,8 +159,6 @@ public class HttpExceptionResponseTest extends AbstractBasicTest {
    */
   private HttpResponse executeGetRequest(String request) throws ClientProtocolException, IOException {
     String uri = getEndpoint().toString() + request;
-    log.debug("Execute get request for uri '" + uri + "'");
-
     HttpGet get = new HttpGet(URI.create(uri));
     return getHttpClient().execute(get);
   }

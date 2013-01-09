@@ -20,7 +20,6 @@ public class ExceptionsTest extends AbstractRefTest {
   public void exceptionBasicTest() throws Exception {
     final HttpResponse response = callUri("Employe", HttpStatusCodes.NOT_FOUND);
     final String payload = getBody(response);
-    log.debug(payload);
 
     Map<String, String> prefixMap = new HashMap<String, String>();
     prefixMap.put("a", "http://schemas.microsoft.com/ado/2007/08/dataservices/metadata");

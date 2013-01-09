@@ -70,7 +70,6 @@ public class ContentNegotiationTest extends AbstractRefTest {
     checkMediaType(response, HttpContentType.APPLICATION_ATOM_SVC);
     final String body = getBody(response);
     assertTrue(body.length() > 100);
-    log.debug(body);
   }
 
   @Test
@@ -81,7 +80,6 @@ public class ContentNegotiationTest extends AbstractRefTest {
     checkMediaType(response, HttpContentType.APPLICATION_XML);
     final String body = getBody(response);
     assertTrue(body.length() > 100);
-    log.debug(body);
   }
 
 }

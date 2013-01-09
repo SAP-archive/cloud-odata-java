@@ -16,6 +16,7 @@ import javax.xml.stream.XMLStreamWriter;
 import org.custommonkey.xmlunit.exceptions.XpathException;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.xml.sax.SAXException;
 
@@ -31,9 +32,10 @@ import com.sap.core.odata.testutil.mock.MockFacade;
 /**
  * @author SAP AG
  */
+@Ignore("enable for manual performance testing")
 public class PerformanceTest extends AbstractProviderTest {
 
-  private static final long TIMES = 100L;
+  private static final long TIMES = 1000L;
 
   private AtomEntryEntityProvider provider;
   private EdmEntitySet edmEntitySet;
@@ -46,7 +48,6 @@ public class PerformanceTest extends AbstractProviderTest {
   @Before
   public void before() throws Exception {
     super.before();
-    System.gc();
 
     EntityProviderProperties properties = EntityProviderProperties.baseUri(BASE_URI).build();
     provider = new AtomEntryEntityProvider(properties);
@@ -81,7 +82,6 @@ public class PerformanceTest extends AbstractProviderTest {
       InputStream in = new ByteArrayInputStream(((ByteArrayOutputStream) outStream).toByteArray());
       String content = StringHelper.inputStreamToString(in);
       assertNotNull(content);
-      //      assertNotNull(((ByteArrayOutputStream)outStream).toByteArray());      
     }
 
     try {
@@ -89,7 +89,6 @@ public class PerformanceTest extends AbstractProviderTest {
     } finally {
       outStream.close();
     }
-    //
   }
 
   @Test
@@ -120,7 +119,6 @@ public class PerformanceTest extends AbstractProviderTest {
 
   @Test
   public void readAtomEntryOptimized() throws IOException, XpathException, SAXException, XMLStreamException, FactoryConfigurationError, ODataException {
-    printMemoryUsage("readAtomEntryOptimized -> Start");
     long t = startTimer();
 
     EntityInfoAggregator eia = EntityInfoAggregator.create(edmEntitySet);
@@ -128,7 +126,6 @@ public class PerformanceTest extends AbstractProviderTest {
       provider.append(writer, eia, roomData, false);
     }
     stopTimer(t, "readAtomEntryOptimized");
-    printMemoryUsage("readAtomEntryOptimized -> Finish");
   }
 
   @Test
@@ -137,7 +134,6 @@ public class PerformanceTest extends AbstractProviderTest {
     before();
     assertNotNull(csb);
 
-    printMemoryUsage("readAtomEntryOptimizedCsb -> Start");
     long t = startTimer();
 
     EntityInfoAggregator eia = EntityInfoAggregator.create(edmEntitySet);
@@ -145,19 +141,6 @@ public class PerformanceTest extends AbstractProviderTest {
       provider.append(writer, eia, roomData, false);
     }
     stopTimer(t, "readAtomEntryOptimizedCsb");
-    printMemoryUsage("readAtomEntryOptimizedCsb -> Finish");
-  }
-
-  private void printMemoryUsage(String testName) {
-    log.debug("-------------------------------------------");
-    log.debug("Memory usage for test: {}", testName);
-    long freeMemory = Runtime.getRuntime().freeMemory();
-    log.debug("Free Memory (kbytes): {}", freeMemory / 1024);
-    long maxMemory = Runtime.getRuntime().maxMemory();
-    log.debug("Maximum memory (kbytes): {}", (maxMemory == Long.MAX_VALUE ? "no limit" : maxMemory / 1024));
-    long memory = Runtime.getRuntime().totalMemory();
-    log.debug("Total Memory (kbytes): {}", memory / 1024);
-    log.debug("-------------------------------------------");
   }
 
   private void stopTimer(long t, String msg) {

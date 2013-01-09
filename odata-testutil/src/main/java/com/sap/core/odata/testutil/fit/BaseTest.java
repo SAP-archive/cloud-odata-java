@@ -24,7 +24,7 @@ import org.slf4j.LoggerFactory;
 public abstract class BaseTest {
 
   private static final String CLASSNAME_ODATA_EXCEPTION_MAPPER = "com.sap.core.odata.core.rest.ODataExceptionMapperImpl";
-
+  
   static {
     DOMConfigurator.configureAndWatch("log4j.xml");
   }
@@ -48,13 +48,12 @@ public abstract class BaseTest {
     @Override
     protected void starting(Description description) {
       super.starting(description);
-      BaseTest.this.log.info("--- starting (" + description.getDisplayName() + ") ------------------------------------");
+      BaseTest.this.log.info("starting " + description.getDisplayName());
     }
 
     @Override
     protected void finished(Description description) {
       super.finished(description);
-      BaseTest.this.log.info("--- finished (" + description.getDisplayName() + ") ------------------------------------");
     }
 
   };

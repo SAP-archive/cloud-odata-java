@@ -132,8 +132,6 @@ public class AtomFeedProviderTest extends AbstractProviderTest {
     ODataResponse response = ser.writeFeed(view.getTargetEntitySet(), this.roomsData, properties);
     String xmlString = verifyResponse(response);
 
-    System.out.println(xmlString);
-
     assertXpathExists("/a:feed/a:link[@rel='next']", xmlString);
     assertXpathEvaluatesTo("Rooms?$skiptoken=%C3%A4bc", "/a:feed/a:link[@rel='next']/@href", xmlString);
   }
@@ -146,8 +144,6 @@ public class AtomFeedProviderTest extends AbstractProviderTest {
     EntityProviderProperties properties = EntityProviderProperties.baseUri(BASE_URI).mediaResourceMimeType("mediatype").build();
     ODataResponse response = ser.writeFeed(view.getTargetEntitySet(), this.roomsData, properties);
     String xmlString = verifyResponse(response);
-
-    System.out.println(xmlString);
 
     assertXpathNotExists("/a:feed/a:link[@rel='next']", xmlString);
   }
