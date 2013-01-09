@@ -60,7 +60,7 @@ public class AtomEntryProviderTest extends AbstractProviderTest {
     assertXpathExists("/a:entry/a:link[@href=\"Employees('1')\"]", xmlString);
     assertXpathExists("/a:entry/a:link[@rel='edit']", xmlString);
     assertXpathExists("/a:entry/a:link[@title='Employee']", xmlString);
-    
+
     // assert navigation link order
     verifyTagOrdering(xmlString,
         "link((?:(?!link).)*?)edit",
@@ -74,7 +74,7 @@ public class AtomEntryProviderTest extends AbstractProviderTest {
     assertNotNull(response);
     assertNotNull(response.getEntity());
     assertEquals(ContentType.APPLICATION_ATOM_XML_ENTRY.toString() + "; charset=utf-8", response.getContentHeader());
-    String xmlString = StringHelper.inputStreamToString((InputStream)response.getEntity());
+    String xmlString = StringHelper.inputStreamToString((InputStream) response.getEntity());
     return xmlString;
   }
 
@@ -297,7 +297,7 @@ public class AtomEntryProviderTest extends AbstractProviderTest {
     assertEquals(ContentType.APPLICATION_ATOM_XML_ENTRY.toString() + "; charset=utf-8", response.getContentHeader());
     assertEquals("W/\"<\">\"", response.getETag());
 
-    String xmlString = StringHelper.inputStreamToString((InputStream)response.getEntity());
+    String xmlString = StringHelper.inputStreamToString((InputStream) response.getEntity());
 
     assertXpathExists("/a:entry", xmlString);
     assertXpathExists("/a:entry/@m:etag", xmlString);

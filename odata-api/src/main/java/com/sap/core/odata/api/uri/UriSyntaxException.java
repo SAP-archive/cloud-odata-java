@@ -44,11 +44,11 @@ public class UriSyntaxException extends ODataBadRequestException {
 
   public static final MessageReference INCOMPATIBLELITERAL = createMessageReference(UriSyntaxException.class, "INCOMPATIBLELITERAL");
   public static final MessageReference INCOMPATIBLESYSTEMQUERYOPTION = createMessageReference(UriSyntaxException.class, "INCOMPATIBLESYSTEMQUERYOPTION");
-  
+
   public UriSyntaxException(MessageReference MessageReference) {
     super(MessageReference);
   }
-  
+
   public UriSyntaxException(MessageReference messageReference, Throwable cause) {
     super(messageReference, cause);
   }

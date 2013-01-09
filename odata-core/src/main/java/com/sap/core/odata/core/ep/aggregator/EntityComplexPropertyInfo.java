@@ -28,7 +28,7 @@ public class EntityComplexPropertyInfo extends EntityPropertyInfo {
     for (String name : propertyNames) {
       childEntityInfoList.add(childEntityInfos.get(name));
     }
-    
+
     EntityComplexPropertyInfo info = new EntityComplexPropertyInfo(
         property.getName(),
         property.getType(),

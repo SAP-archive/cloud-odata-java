@@ -20,30 +20,27 @@ public enum BinaryOperator
   MUL("mul"),
   DIV("div"),
   MODULO("mod"),
-  
+
   /**
    * Property access operator. E.g. $filter=address/city eq "Sydney"
    */
-  PROPERTY_ACCESS("/","property access");
- 
+  PROPERTY_ACCESS("/", "property access");
+
   private String syntax;
   private String stringRespresentation;
-  
-  
+
   private BinaryOperator(String syntax)
   {
     this.syntax = syntax;
     this.stringRespresentation = syntax;
   }
-  
-  
-  private BinaryOperator( String syntax, String stringRespresentation)
+
+  private BinaryOperator(String syntax, String stringRespresentation)
   {
     this.syntax = syntax;
     this.stringRespresentation = stringRespresentation;
   }
-  
-  
+
   /** 
    * @return Operators name for usage in in text
    */
@@ -52,8 +49,7 @@ public enum BinaryOperator
   {
     return stringRespresentation;
   }
- 
-  
+
   /**
    * @return URI literal of the unary operator as used in the URL. 
    */

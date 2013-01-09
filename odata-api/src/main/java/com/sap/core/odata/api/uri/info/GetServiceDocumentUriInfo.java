@@ -1,6 +1,5 @@
 package com.sap.core.odata.api.uri.info;
 
-
 /**
  * @author SAP AG
  */

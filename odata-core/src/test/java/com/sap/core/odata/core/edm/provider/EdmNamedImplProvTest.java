@@ -8,8 +8,6 @@ import com.sap.core.odata.api.edm.EdmException;
 import com.sap.core.odata.api.edm.EdmSimpleTypeKind;
 import com.sap.core.odata.api.edm.provider.EdmProvider;
 import com.sap.core.odata.api.edm.provider.SimpleProperty;
-import com.sap.core.odata.core.edm.provider.EdmImplProv;
-import com.sap.core.odata.core.edm.provider.EdmSimplePropertyImplProv;
 
 public class EdmNamedImplProvTest {
   @Test(expected = EdmException.class)

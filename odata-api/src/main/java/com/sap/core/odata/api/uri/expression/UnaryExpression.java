@@ -14,7 +14,7 @@ package com.sap.core.odata.api.uri.expression;
  * @see FilterParser
  * @see OrderByParser
  */
-public interface UnaryExpression extends CommonExpression 
+public interface UnaryExpression extends CommonExpression
 {
 
   /**

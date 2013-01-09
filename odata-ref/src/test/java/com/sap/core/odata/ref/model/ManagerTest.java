@@ -8,11 +8,6 @@ import java.util.List;
 
 import org.junit.Test;
 
-import com.sap.core.odata.ref.model.Employee;
-import com.sap.core.odata.ref.model.Manager;
-import com.sap.core.odata.ref.model.Room;
-import com.sap.core.odata.ref.model.Team;
-
 public class ManagerTest {
 
   private static final String VALUE_NAME = "Peter Schulz";

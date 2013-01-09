@@ -31,7 +31,7 @@ public interface GetEntityLinkCountUriInfo {
    * @return {@link EdmFunctionImport} the function import
    */
   public EdmFunctionImport getFunctionImport();
-  
+
   /**
    * @return {@link EdmType} the target type of the entity set
    */
@@ -46,7 +46,7 @@ public interface GetEntityLinkCountUriInfo {
    * @return list of {@link NavigationSegment} or EmptyList
    */
   public List<NavigationSegment> getNavigationSegments();
-  
+
   /**
    * @return boolean
    */
@@ -61,7 +61,7 @@ public interface GetEntityLinkCountUriInfo {
    * @return Map of {@literal <String,} {@link EdmLiteral}{@literal >} function import parameters or EmptyMap
    */
   public Map<String, EdmLiteral> getFunctionImportParameters();
-  
+
   /**
    * @return Map of {@literal<String, String>} custom query options or EmptyMap
    */

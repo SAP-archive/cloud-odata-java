@@ -37,9 +37,9 @@ public class ParserTool
   static {
     DOMConfigurator.configureAndWatch("log4j.xml");
   }
-  
+
   private static final Logger log = LoggerFactory.getLogger(ParserTool.class);
-  
+
   private static boolean debug = true;
   private String expression;
   private CommonExpression tree;
@@ -47,7 +47,7 @@ public class ParserTool
   private Exception curException;
   private Exception exception;
   private static final Locale DEFAULT_LANGUAGE = new Locale("test", "SAP");
-  
+
   public static void dout(String out)
   {
     if (debug) ParserTool.log.debug(out);
@@ -150,7 +150,6 @@ public class ParserTool
     return this;
   }
 
-  
   /**
    * Verifies that the message text of the thrown exception serialized is {@paramref messageText}
    * @param messageText  
@@ -175,17 +174,16 @@ public class ParserTool
       fail("Error in aExNext: curException not an ODataMessageException");
       return this;
     }
-    
-    
+
     Message ms = MessageService.getMessage(DEFAULT_LANGUAGE, messageException.getMessageReference());
-    info = "  " + info + "Expected: '" + messageText + "' Actual: '" + ms.getText()+ "'";
+    info = "  " + info + "Expected: '" + messageText + "' Actual: '" + ms.getText() + "'";
 
     dout(info);
     assertEquals(info, messageText, ms.getText());
-    
+
     return this;
   }
-  
+
   /**
    * Verifies that all place holders in the message text definition of the thrown exception are provided with content
    * @return
@@ -208,8 +206,7 @@ public class ParserTool
       fail("Error in aExNext: curException not an ODataMessageException");
       return this;
     }
-    
-    
+
     Message ms = MessageService.getMessage(DEFAULT_LANGUAGE, messageException.getMessageReference());
     info = "  " + info + "Messagetext: '" + ms.getText() + "contains [%";
 
@@ -221,7 +218,7 @@ public class ParserTool
     }
     return this;
   }
-  
+
   /**
    * Verifies that the message text of the thrown exception is not empty
    * @return
@@ -244,7 +241,7 @@ public class ParserTool
       fail("Error in aExNext: curException not an ODataMessageException");
       return this;
     }
-    
+
     Message ms = MessageService.getMessage(DEFAULT_LANGUAGE, messageException.getMessageReference());
     info = "  " + info + "check if Messagetext is empty";
     dout(info);
@@ -285,7 +282,7 @@ public class ParserTool
     }
     return this;
   }
-  
+
   public ParserTool printExMessage() {
     ODataMessageException messageException;
 
@@ -294,7 +291,6 @@ public class ParserTool
       fail("Error in aExMsgPrint: Expected exception");
     }
 
-    
     try
     {
       messageException = (ODataMessageException) curException;
@@ -308,7 +304,7 @@ public class ParserTool
     dout("Messge --> ");
     dout("  " + ms.getText());
     dout("Messge <-- ");
-    
+
     return this;
   }
 
@@ -576,7 +572,7 @@ public class ParserTool
   }
 
   public ParserTool exRoot() {
-    curException = exception; 
+    curException = exception;
     return this;
   }
 

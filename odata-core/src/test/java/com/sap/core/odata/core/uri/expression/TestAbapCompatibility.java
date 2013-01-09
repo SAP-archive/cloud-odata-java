@@ -27,7 +27,7 @@ import com.sap.core.odata.core.edm.Uint7;
  * 
  */
 public class TestAbapCompatibility extends TestBase {
-  
+
   @Test
   public void abapTestParameterPromotion() //copy of ABAP method test_parameter_promotion
   {

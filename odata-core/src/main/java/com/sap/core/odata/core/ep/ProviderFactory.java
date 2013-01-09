@@ -16,7 +16,7 @@ public class ProviderFactory {
   public static EntityProvider create(String contentType) throws EntityProviderException {
     return create(ContentType.create(contentType));
   }
-  
+
   public static EntityProvider create(ContentType contentType) throws EntityProviderException {
     try {
       EntityProvider provider;

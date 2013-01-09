@@ -24,7 +24,6 @@ public class XMLUnitHelper {
     engine.setNamespaceContext(ctx);
   }
 
-  
   /**
    * Verify order of <code>tags</code> in given <code>xmlString</code>.
    * 

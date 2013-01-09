@@ -1,4 +1,5 @@
 package com.sap.core.odata.api.uri.expression;
+
 /*1*/
 import com.sap.core.odata.api.edm.EdmType;
 
@@ -22,8 +23,7 @@ public interface CommonExpression extends Visitable
    * @see ExpressionKind
    */
   ExpressionKind getKind();
-  
-  
+
   /**
    * @return The return type of the value represented with 
    * this expression. For example the {@link #getEdmType()} method
@@ -43,14 +43,14 @@ public interface CommonExpression extends Visitable
    * expression tree.
    */
   EdmType getEdmType();
-  
+
   /**
    * Set the edmType of this expression
    * @param edmType Type to be set
    * @return A self reference
    */
   CommonExpression setEdmType(EdmType edmType);
-  
+
   /**
    * Returns the URI literal which lead to the creation of this expression.
    * @return

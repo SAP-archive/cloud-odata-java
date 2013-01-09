@@ -69,7 +69,7 @@ public class Building {
       return true;
     if (obj == null || getClass() != obj.getClass())
       return false;
-    
+
     return (id == ((Building) obj).id);
   }
 

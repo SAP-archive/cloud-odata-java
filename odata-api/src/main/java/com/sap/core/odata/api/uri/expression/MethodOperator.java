@@ -1,4 +1,5 @@
 package com.sap.core.odata.api.uri.expression;
+
 /*X*/
 /**
  * Enumerations for all supported methods of the ODATA expression parser 
@@ -30,14 +31,12 @@ public enum MethodOperator
   private String syntax;
   private String stringRespresentation;
 
-  
   private MethodOperator(String syntax)
   {
     this.syntax = syntax;
     this.stringRespresentation = syntax;
   }
 
-  
   private MethodOperator(String syntax, String stringRespresentation)
   {
     this.syntax = syntax;

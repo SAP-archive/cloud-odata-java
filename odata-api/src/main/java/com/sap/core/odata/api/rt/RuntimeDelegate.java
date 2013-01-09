@@ -1,15 +1,19 @@
 package com.sap.core.odata.api.rt;
 
+import java.util.List;
+
 import com.sap.core.odata.api.edm.Edm;
 import com.sap.core.odata.api.edm.EdmEntityType;
 import com.sap.core.odata.api.edm.EdmSimpleType;
 import com.sap.core.odata.api.edm.EdmSimpleTypeFacade;
 import com.sap.core.odata.api.edm.EdmSimpleTypeKind;
 import com.sap.core.odata.api.edm.provider.EdmProvider;
+import com.sap.core.odata.api.ep.BasicProvider;
 import com.sap.core.odata.api.ep.EntityProvider;
 import com.sap.core.odata.api.ep.EntityProviderException;
-import com.sap.core.odata.api.ep.BasicProvider;
+import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.api.processor.ODataResponse.ODataResponseBuilder;
+import com.sap.core.odata.api.processor.feature.ProcessorFeature;
 import com.sap.core.odata.api.uri.UriParser;
 import com.sap.core.odata.api.uri.expression.FilterParser;
 import com.sap.core.odata.api.uri.expression.OrderByParser;
@@ -40,50 +44,51 @@ public abstract class RuntimeDelegate {
     }
     return delegate;
   }
-  
+
   public static abstract class RuntimeDelegateInstance {
     /**
      * Get a OData response builder
      * @return {@link ODataResponseBuilder} object
      */
     protected abstract ODataResponseBuilder createODataResponseBuilder();
-    
+
     /**
      * Gets an {@link EdmSimpleType} implementation for a given {@link EdmSimpleTypeKind}
      * @param edmSimpleTypeKind
      * @return {@link EdmSimpleType}
      */
     protected abstract EdmSimpleType getEdmSimpleType(EdmSimpleTypeKind edmSimpleTypeKind);
-    
+
     /**
      * Get a UriParser object
      * @return {@link UriParser} object
      */
     protected abstract UriParser getUriParser(Edm edm);
-    
+
     /**
      * Gets an {@link EdmSimpleType} implementation for a given simple-type name.
      * @param edmSimpleType  name of the simple type
      * @return {@link EdmSimpleType}
      */
     protected abstract EdmSimpleType getInternalEdmSimpleTypeByString(String edmSimpleType);
-    
+
     /**
      * Gets an implementation of the EDM simple-type facade.
      * @return {@link EdmSimpleTypeFacade}
      */
     protected abstract EdmSimpleTypeFacade getSimpleTypeFacade();
-    
+
     /**
      * Creates an entity data model.
      * @param provider A {@link EdmProvider} instance
      * @return {@link Edm} implementation object
      */
     protected abstract Edm createEdm(EdmProvider provider);
-    
+
     protected abstract FilterParser getFilterParser(Edm edm, EdmEntityType edmType);
+
     protected abstract OrderByParser getOrderByParser(Edm edm, EdmEntityType edmType);
-    
+
     /**
      * @param contentType requested content type
      * @return a OData entity provider for requested content type
@@ -92,17 +97,17 @@ public abstract class RuntimeDelegate {
     protected abstract EntityProvider createSerializer(String contentType) throws EntityProviderException;
 
     protected abstract BasicProvider createBasicProvider() throws EntityProviderException;
-}
 
+    protected abstract List<String> getSupportedContentTypes(List<String> customContentTypes, Class<? extends ProcessorFeature> processorFeature) throws ODataException;
+  }
 
   public static EntityProvider createSerializer(String contentType) throws EntityProviderException {
     return RuntimeDelegate.getInstance().createSerializer(contentType);
   }
-  
+
   public static BasicProvider createBasicProvider() throws EntityProviderException {
     return RuntimeDelegate.getInstance().createBasicProvider();
   }
-
 
   public static EdmSimpleType getEdmSimpleType(EdmSimpleTypeKind edmSimpleType) {
     return RuntimeDelegate.getInstance().getEdmSimpleType(edmSimpleType);
@@ -131,11 +136,15 @@ public abstract class RuntimeDelegate {
   public static FilterParser getFilterParser(Edm edm, EdmEntityType edmType) {
     return RuntimeDelegate.getInstance().getFilterParser(edm, edmType);
   }
-  
+
   public static OrderByParser getOrderByParser(Edm edm, EdmEntityType edmType) {
     return RuntimeDelegate.getInstance().getOrderByParser(edm, edmType);
   }
-  
+
+  public static List<String> getSupportedContentTypes(List<String> customContentTypes, Class<? extends ProcessorFeature> processorFeature) throws ODataException {
+    return RuntimeDelegate.getInstance().getSupportedContentTypes(customContentTypes, processorFeature);
+  }
+
   private static class RuntimeDelegateException extends RuntimeException {
 
     private static final long serialVersionUID = 1L;

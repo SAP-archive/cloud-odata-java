@@ -53,7 +53,7 @@ public class NavigationProperty {
   public Mapping getMapping() {
     return mapping;
   }
-  
+
   /**
    * @return {@link Documentation} documentation
    */
@@ -118,7 +118,7 @@ public class NavigationProperty {
     this.toRole = toRole;
     return this;
   }
-  
+
   /**
    * Sets the {@link Mapping} for this {@link NavigationProperty}
    * @param mapping

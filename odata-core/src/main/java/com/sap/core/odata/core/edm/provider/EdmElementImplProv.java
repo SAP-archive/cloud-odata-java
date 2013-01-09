@@ -10,7 +10,7 @@ import com.sap.core.odata.api.edm.FullQualifiedName;
 /**
  * @author SAP AG
  */
-public abstract class EdmElementImplProv extends EdmTypedImplProv  implements EdmElement{
+public abstract class EdmElementImplProv extends EdmTypedImplProv implements EdmElement {
 
   private EdmFacets edmFacets;
   private EdmMapping edmMapping;

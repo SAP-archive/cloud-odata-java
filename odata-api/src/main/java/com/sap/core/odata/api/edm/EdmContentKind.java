@@ -8,6 +8,6 @@ package com.sap.core.odata.api.edm;
  * @author SAP AG
  */
 public enum EdmContentKind {
-  
+
   text, html, xhtml;
 }

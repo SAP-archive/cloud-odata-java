@@ -20,7 +20,6 @@ public interface SelectItem {
    * @return {@link EdmTyped} property of this select item
    */
   public EdmTyped getProperty();
-  
 
   /**
    * @return List of {@link NavigationPropertySegment} for this select item

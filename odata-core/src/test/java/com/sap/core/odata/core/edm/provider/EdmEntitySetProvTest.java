@@ -28,9 +28,6 @@ import com.sap.core.odata.api.edm.provider.EntityContainerInfo;
 import com.sap.core.odata.api.edm.provider.EntitySet;
 import com.sap.core.odata.api.edm.provider.EntityType;
 import com.sap.core.odata.api.edm.provider.NavigationProperty;
-import com.sap.core.odata.core.edm.provider.EdmEntityContainerImplProv;
-import com.sap.core.odata.core.edm.provider.EdmEntitySetImplProv;
-import com.sap.core.odata.core.edm.provider.EdmImplProv;
 
 /**
  * @author SAP AG

@@ -15,7 +15,7 @@ public interface EdmEntityContainer extends EdmNamed {
    * @return <b>boolean</b> true if this is the default container
    */
   boolean isDefaultEntityContainer();
-  
+
   /**
    * Get contained EntitySet by name
    * 

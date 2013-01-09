@@ -2,7 +2,6 @@ package com.sap.core.odata.api.edm;
 
 import com.sap.core.odata.api.rt.RuntimeDelegate;
 
-
 /**
  * EdmSimpleTypeKind holds all EdmSimpleTypes defined as primitive type in the Entity Data Model (EDM).
  * 
@@ -16,8 +15,8 @@ public enum EdmSimpleTypeKind {
   public FullQualifiedName getFullQualifiedName() {
     return new FullQualifiedName(EdmSimpleType.EDM_NAMESPACE, this.toString());
   }
-  
-  public EdmSimpleType getEdmSimpleTypeInstance(){
+
+  public EdmSimpleType getEdmSimpleTypeInstance() {
     return RuntimeDelegate.getEdmSimpleType(this);
   }
 

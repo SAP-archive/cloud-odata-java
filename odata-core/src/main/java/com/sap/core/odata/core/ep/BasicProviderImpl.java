@@ -50,7 +50,7 @@ public class BasicProviderImpl extends BasicProvider {
       ODataResponse response = ODataResponse.entity(csb.getInputStream())
           .contentHeader(createContentHeader(ContentType.APPLICATION_ATOM_SVC))
           .build();
-      
+
       return response;
     } catch (UnsupportedEncodingException e) {
       throw new EntityProviderException(EntityProviderException.COMMON, e);
@@ -65,7 +65,6 @@ public class BasicProviderImpl extends BasicProvider {
       }
     }
   }
-
 
   @Override
   public ODataResponse writePropertyValue(final EdmProperty edmProperty, Object value) throws EntityProviderException {

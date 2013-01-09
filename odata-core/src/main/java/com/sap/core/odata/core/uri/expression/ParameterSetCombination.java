@@ -7,14 +7,14 @@ import com.sap.core.odata.api.edm.EdmSimpleType;
 import com.sap.core.odata.api.edm.EdmType;
 
 public interface ParameterSetCombination {
-  
+
   void add(ParameterSet parameterSet);
+
   EdmType validate(List<EdmType> actualParameterTypes) throws FilterParserInternalError;
-  
+
   public static class PSCflex implements ParameterSetCombination
   {
     public List<ParameterSet> combinations = new ArrayList<ParameterSet>();
-    
 
     @Override
     public void add(ParameterSet parameterSet) {
@@ -42,7 +42,7 @@ public interface ParameterSetCombination {
       return null;
     }
   }
-  
+
   public static class PSCReturnTypeEqLastParameter implements ParameterSetCombination
   {
 
@@ -54,12 +54,8 @@ public interface ParameterSetCombination {
     @Override
     public EdmType validate(List<EdmType> actualParameterTypes) throws FilterParserInternalError {
       //TODO add check 
-      return  actualParameterTypes.get(actualParameterTypes.size()-1);
+      return actualParameterTypes.get(actualParameterTypes.size() - 1);
     }
   }
 
-  
-
-  
-  
 }

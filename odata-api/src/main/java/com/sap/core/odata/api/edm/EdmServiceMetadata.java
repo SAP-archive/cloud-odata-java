@@ -3,6 +3,7 @@ package com.sap.core.odata.api.edm;
 import java.io.InputStream;
 
 import com.sap.core.odata.api.exception.ODataException;
+
 /**
  * Objects of this class provide the service metadata
  * @author SAP AG

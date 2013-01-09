@@ -96,7 +96,7 @@ public class FunctionImportParameter {
     this.mode = mode;
     return this;
   }
-  
+
   /**
    * MANDATORY
    * <p>Sets the {@link EdmSimpleTypeKind} of this {@link FunctionImportParameter}

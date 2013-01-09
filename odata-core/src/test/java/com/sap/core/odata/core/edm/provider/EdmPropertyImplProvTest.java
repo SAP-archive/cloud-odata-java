@@ -23,10 +23,6 @@ import com.sap.core.odata.api.edm.provider.Facets;
 import com.sap.core.odata.api.edm.provider.Mapping;
 import com.sap.core.odata.api.edm.provider.SimpleProperty;
 import com.sap.core.odata.core.edm.EdmSimpleTypeFacadeImpl;
-import com.sap.core.odata.core.edm.provider.EdmComplexPropertyImplProv;
-import com.sap.core.odata.core.edm.provider.EdmImplProv;
-import com.sap.core.odata.core.edm.provider.EdmPropertyImplProv;
-import com.sap.core.odata.core.edm.provider.EdmSimplePropertyImplProv;
 
 /**
  * @author SAP AG

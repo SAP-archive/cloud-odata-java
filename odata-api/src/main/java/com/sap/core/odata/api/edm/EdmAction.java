@@ -10,6 +10,6 @@ package com.sap.core.odata.api.edm;
  * @author SAP AG
  */
 public enum EdmAction {
-  
+
   Cascade, None;
 }

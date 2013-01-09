@@ -14,12 +14,12 @@ public class UriUtils {
    */
   public static String encodeUriPath(String path) throws URISyntaxException {
     String toEncodePath = path;
-    if(path != null && !(path.startsWith("/") || path.startsWith("./"))) {
+    if (path != null && !(path.startsWith("/") || path.startsWith("./"))) {
       toEncodePath = "/" + path;
     }
     URI uri = new URI(null, null, null, -1, toEncodePath, null, null);
 
-    if(path != toEncodePath) {
+    if (path != toEncodePath) {
       return uri.toASCIIString().substring(1);
     }
     return uri.toASCIIString();

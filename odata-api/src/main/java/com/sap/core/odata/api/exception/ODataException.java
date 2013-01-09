@@ -53,7 +53,7 @@ public class ODataException extends Exception {
   public boolean isCausedByApplicationException() {
     return getApplicationExceptionCause() != null;
   }
-  
+
   /**
    * Check whether this exception was caused by a {@link ODataMessageException} exception.
    * 
@@ -62,7 +62,7 @@ public class ODataException extends Exception {
   public boolean isCausedByMessageException() {
     return getMessageExceptionCause() != null;
   }
-  
+
   /**
    * Search for and return first (from top) {@link ODataMessageException} in cause hierarchy.
    * If no {@link ODataMessageException} in cause hierarchy <code>NULL</code> is returned. 
@@ -84,8 +84,7 @@ public class ODataException extends Exception {
   public ODataApplicationException getApplicationExceptionCause() {
     return getSpecificCause(ODataApplicationException.class);
   }
-  
-  
+
   private <T> T getSpecificCause(Class<T> causeClass) {
     Throwable cause = getCause();
     while (cause != null) {

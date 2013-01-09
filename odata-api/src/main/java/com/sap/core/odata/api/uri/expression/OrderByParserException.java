@@ -1,4 +1,5 @@
 package com.sap.core.odata.api.uri.expression;
+
 /*TODO all*/
 import com.sap.core.odata.api.exception.MessageReference;
 import com.sap.core.odata.api.exception.ODataBadRequestException;
@@ -13,7 +14,7 @@ public class OrderByParserException extends ODataBadRequestException
   /*TODO add error texts to resource file*/
 
   //VON ABAP "An exception occurred"
- 
+
   public static final MessageReference COMMON_ERROR = createMessageReference(OrderByParserException.class, "COMMON");
 
   /*instance attributes*/
@@ -41,8 +42,6 @@ public class OrderByParserException extends ODataBadRequestException
     return filterTree;
   }
 
-  
-  
   /**
    * See erroneous filter tree for debug information
    * @param filterTree
@@ -52,14 +51,10 @@ public class OrderByParserException extends ODataBadRequestException
     this.filterTree = filterTree;
     return this;
   }
-  
+
   public OrderByParserException setCause(Throwable tokenizerException) {
     this.initCause(tokenizerException);
     return this;
   }
-
-
-  
-
 
 }

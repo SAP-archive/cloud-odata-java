@@ -35,7 +35,7 @@ public interface GetSimplePropertyUriInfo {
    * @return {@link EdmFunctionImport} the function import
    */
   public EdmFunctionImport getFunctionImport();
-  
+
   /**
    * @return {@link EdmType} the target type of the entity set
    */
@@ -70,7 +70,7 @@ public interface GetSimplePropertyUriInfo {
    * @return Map of {@literal <String,} {@link EdmLiteral}{@literal >} function import parameters or EmptyMap
    */
   public Map<String, EdmLiteral> getFunctionImportParameters();
-  
+
   /**
    * @return Map of {@literal<String, String>} custom query options or EmptyMap
    */

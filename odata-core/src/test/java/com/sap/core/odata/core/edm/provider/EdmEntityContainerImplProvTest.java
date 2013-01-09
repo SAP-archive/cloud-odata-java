@@ -23,8 +23,6 @@ import com.sap.core.odata.api.edm.provider.EdmProvider;
 import com.sap.core.odata.api.edm.provider.EntityContainerInfo;
 import com.sap.core.odata.api.edm.provider.EntitySet;
 import com.sap.core.odata.api.edm.provider.FunctionImport;
-import com.sap.core.odata.core.edm.provider.EdmEntityContainerImplProv;
-import com.sap.core.odata.core.edm.provider.EdmImplProv;
 
 /**
  * @author SAP AG

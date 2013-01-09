@@ -136,12 +136,11 @@ public class Tokenizer
     return tokens;
   }
 
-
   private boolean checkForLiteral(int oldPosition, char curCharacter, String rem_expr) {
-      //Pattern OTHER_LIT = Pattern.compile("^([[A-Za-z0-9]._~%!$&*+;:@-]+)");
+    //Pattern OTHER_LIT = Pattern.compile("^([[A-Za-z0-9]._~%!$&*+;:@-]+)");
     final Pattern OTHER_LIT = Pattern.compile("(?:\\p{L}|\\p{Digit}|[-._~%!$&*+;:@])+");
     final Matcher matcher = OTHER_LIT.matcher(rem_expr);
-    if (matcher.lookingAt()) 
+    if (matcher.lookingAt())
     {
       token = matcher.group();
       try {
@@ -224,7 +223,7 @@ public class Tokenizer
     {
       token = matcher1.group(1);
       curPosition = curPosition + token.length();
-      tokens.appendToken(oldPosition+1, TokenKind.LITERAL, token);
+      tokens.appendToken(oldPosition + 1, TokenKind.LITERAL, token);
       return true;
     }
     return false;
@@ -304,7 +303,7 @@ public class Tokenizer
 
     if (!wasHochkomma)
       //Exception tested within TestPMparseFilterString
-      throw FilterParserExceptionImpl.createTOKEN_UNDETERMINATED_STRING(oldPosition+1, expression);
+      throw FilterParserExceptionImpl.createTOKEN_UNDETERMINATED_STRING(oldPosition + 1, expression);
 
     try
     {

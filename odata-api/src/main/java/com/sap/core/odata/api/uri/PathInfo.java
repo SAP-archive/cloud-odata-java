@@ -3,7 +3,6 @@ package com.sap.core.odata.api.uri;
 import java.net.URI;
 import java.util.List;
 
-
 /**
  * Object to keep OData URI information. 
  * 
@@ -27,5 +26,5 @@ public interface PathInfo {
    * @return absolute base uri of the request
    */
   URI getServiceRoot();
-  
+
 }

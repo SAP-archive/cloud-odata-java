@@ -1,6 +1,5 @@
 package com.sap.core.odata.api.edm;
 
-
 /** 
  * UriLiteral representation
  * @author SAP AG

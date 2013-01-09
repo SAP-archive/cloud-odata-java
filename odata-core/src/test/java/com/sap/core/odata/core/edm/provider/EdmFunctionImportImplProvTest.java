@@ -27,9 +27,6 @@ import com.sap.core.odata.api.edm.provider.EntitySet;
 import com.sap.core.odata.api.edm.provider.FunctionImport;
 import com.sap.core.odata.api.edm.provider.FunctionImportParameter;
 import com.sap.core.odata.api.edm.provider.ReturnType;
-import com.sap.core.odata.core.edm.provider.EdmEntityContainerImplProv;
-import com.sap.core.odata.core.edm.provider.EdmFunctionImportImplProv;
-import com.sap.core.odata.core.edm.provider.EdmImplProv;
 
 /**
  * @author SAP AG

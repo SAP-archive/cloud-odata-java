@@ -19,7 +19,6 @@ public class TokenizerException extends ODataMessageException
   public static final MessageReference TYPEDECTECTION_FAILED_ON_STRING = createMessageReference(TokenizerException.class, "TYPEDECTECTION_FAILED_ON_STRING");
   public static final MessageReference TYPEDECTECTION_FAILED_ON_EDMTYPE = createMessageReference(TokenizerException.class, "TYPEDECTECTION_FAILED_ON_EDMTYPE");
   public static final MessageReference UNKNOWN_CHARACTER = createMessageReference(TokenizerException.class, "UNKNOWN_CHARACTER");
-  
 
   private Token token;
   private int position;
@@ -34,7 +33,7 @@ public class TokenizerException extends ODataMessageException
     return this;
   }
 
-    public int getPosition()
+  public int getPosition()
   {
     return position;
   }
@@ -43,7 +42,7 @@ public class TokenizerException extends ODataMessageException
   {
     this.position = position;
   }
-  
+
   public TokenizerException(MessageReference messageReference)
   {
     super(messageReference);
@@ -51,44 +50,40 @@ public class TokenizerException extends ODataMessageException
 
   public TokenizerException(MessageReference messageReference, Throwable cause)
   {
-    super(messageReference,  cause);
+    super(messageReference, cause);
   }
-  
-  
-  static public TokenizerException createTYPEDECTECTION_FAILED_ON_STRING(EdmLiteralException ex, int position, String uriLiteral) 
+
+  static public TokenizerException createTYPEDECTECTION_FAILED_ON_STRING(EdmLiteralException ex, int position, String uriLiteral)
   {
     MessageReference msgRef = TokenizerException.TYPEDECTECTION_FAILED_ON_STRING.create();
 
     msgRef.addContent(uriLiteral);
     msgRef.addContent(position);
-    Token token = new Token(TokenKind.UNKNOWN,position,uriLiteral);
-    
+    Token token = new Token(TokenKind.UNKNOWN, position, uriLiteral);
+
     return new TokenizerException(msgRef).setToken(token);
   }
-  
-  static public TokenizerException createTYPEDECTECTION_FAILED_ON_EDMTYPE(EdmLiteralException ex, int position, String uriLiteral) 
+
+  static public TokenizerException createTYPEDECTECTION_FAILED_ON_EDMTYPE(EdmLiteralException ex, int position, String uriLiteral)
   {
     MessageReference msgRef = TokenizerException.TYPEDECTECTION_FAILED_ON_EDMTYPE.create();
 
     msgRef.addContent(uriLiteral);
     msgRef.addContent(position);
-    Token token = new Token(TokenKind.UNKNOWN,position,uriLiteral);
-    
+    Token token = new Token(TokenKind.UNKNOWN, position, uriLiteral);
+
     return new TokenizerException(msgRef).setToken(token);
   }
-  
-  static public TokenizerException createUNKNOWN_CHARACTER(int position, String uriLiteral) 
+
+  static public TokenizerException createUNKNOWN_CHARACTER(int position, String uriLiteral)
   {
     MessageReference msgRef = TokenizerException.UNKNOWN_CHARACTER.create();
 
     msgRef.addContent(uriLiteral);
     msgRef.addContent(position);
-    Token token = new Token(TokenKind.UNKNOWN,position,uriLiteral);
-    
+    Token token = new Token(TokenKind.UNKNOWN, position, uriLiteral);
+
     return new TokenizerException(msgRef).setToken(token);
   }
-  
-  
-  
-  
+
 }

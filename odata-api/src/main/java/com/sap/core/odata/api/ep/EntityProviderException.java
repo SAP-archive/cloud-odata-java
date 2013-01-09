@@ -3,11 +3,10 @@ package com.sap.core.odata.api.ep;
 import com.sap.core.odata.api.exception.MessageReference;
 import com.sap.core.odata.api.exception.ODataMessageException;
 
-
 public class EntityProviderException extends ODataMessageException {
 
   private static final long serialVersionUID = 1L;
-  
+
   public static final MessageReference COMMON = createMessageReference(EntityProviderException.class, "COMMON");
 
   public static final MessageReference ATOM_TITLE = createMessageReference(EntityProviderException.class, "ATOM_TITLE");
@@ -21,7 +20,7 @@ public class EntityProviderException extends ODataMessageException {
   public EntityProviderException(MessageReference messageReference) {
     super(messageReference);
   }
-  
+
   public EntityProviderException(MessageReference messageReference, Throwable cause) {
     super(messageReference, cause);
   }

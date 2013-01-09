@@ -9,11 +9,6 @@ import org.apache.commons.codec.binary.Hex;
 import org.junit.Test;
 
 import com.sap.core.odata.api.uri.expression.FilterParserException;
-import com.sap.core.odata.core.uri.expression.TokenizerException;
-import com.sap.core.odata.core.uri.expression.Token;
-import com.sap.core.odata.core.uri.expression.TokenKind;
-import com.sap.core.odata.core.uri.expression.TokenList;
-import com.sap.core.odata.core.uri.expression.Tokenizer;
 
 public class TestTokenizer {
 

@@ -15,7 +15,6 @@ import com.sap.core.odata.api.edm.EdmEntityType;
 import com.sap.core.odata.api.edm.EdmException;
 import com.sap.core.odata.api.edm.FullQualifiedName;
 import com.sap.core.odata.api.exception.ODataException;
-import com.sap.core.odata.core.edm.EdmImpl;
 
 /**
  * @author SAP AG

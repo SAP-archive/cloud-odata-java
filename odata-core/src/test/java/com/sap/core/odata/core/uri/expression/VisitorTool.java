@@ -14,8 +14,8 @@ import com.sap.core.odata.api.uri.expression.MethodExpression;
 import com.sap.core.odata.api.uri.expression.MethodOperator;
 import com.sap.core.odata.api.uri.expression.OrderByExpression;
 import com.sap.core.odata.api.uri.expression.OrderExpression;
-import com.sap.core.odata.api.uri.expression.SortOrder;
 import com.sap.core.odata.api.uri.expression.PropertyExpression;
+import com.sap.core.odata.api.uri.expression.SortOrder;
 import com.sap.core.odata.api.uri.expression.UnaryExpression;
 import com.sap.core.odata.api.uri.expression.UnaryOperator;
 
@@ -76,7 +76,7 @@ public class VisitorTool implements ExpressionVisitor {
   }
 
   @Override
-  public Object visitOrderByExpression(OrderByExpression orderByExpression, String expressionString, List<Object> orders) 
+  public Object visitOrderByExpression(OrderByExpression orderByExpression, String expressionString, List<Object> orders)
   {
     StringBuilder sb = new StringBuilder();
     sb.append("{");

@@ -23,8 +23,6 @@ import com.sap.core.odata.api.edm.provider.ComplexType;
 import com.sap.core.odata.api.edm.provider.EdmProvider;
 import com.sap.core.odata.api.edm.provider.Property;
 import com.sap.core.odata.api.edm.provider.SimpleProperty;
-import com.sap.core.odata.core.edm.provider.EdmComplexTypeImplProv;
-import com.sap.core.odata.core.edm.provider.EdmImplProv;
 
 /**
  * @author SAP AG

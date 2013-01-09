@@ -19,7 +19,7 @@ public class FilterParserInternalError extends ODataMessageException {
   {
     super(messageReference);
   }
-  
+
   public FilterParserInternalError(MessageReference messageReference, Throwable cause)
   {
     super(messageReference, cause);
@@ -45,12 +45,11 @@ public class FilterParserInternalError extends ODataMessageException {
     return new FilterParserInternalError(ERROR_PARSING_METHOD, cause);
   }
 
-  
   public static FilterParserInternalError createERROR_PARSING_PARENTHESIS(TokenizerExpectError cause)
   {
     return new FilterParserInternalError(ERROR_PARSING_PARENTHESIS, cause);
   }
-  
+
   public static FilterParserInternalError createERROR_PARSING_PARENTHESIS(CommonExpression parenthesisExpression, TokenizerExpectError cause)
   {
     return new FilterParserInternalError(ERROR_PARSING_PARENTHESIS, cause).setExpression(parenthesisExpression);
@@ -60,14 +59,14 @@ public class FilterParserInternalError extends ODataMessageException {
   {
     return new FilterParserInternalError(ERROR_ACCESSING_EDM, cause);
   }
-  
+
   public static FilterParserInternalError createCOMMON()
   {
     return new FilterParserInternalError(COMMON);
   }
-  
+
   public static FilterParserInternalError createCOMMON(Throwable e) {
-    return new FilterParserInternalError(COMMON,e);
+    return new FilterParserInternalError(COMMON, e);
   }
 
   public static FilterParserInternalError createINVALID_TYPE_COUNT() {
@@ -77,7 +76,5 @@ public class FilterParserInternalError extends ODataMessageException {
   public static FilterParserInternalError createERROR_ACCESSING_EDM() {
     return new FilterParserInternalError(ERROR_ACCESSING_EDM);
   }
-
-
 
 }

@@ -38,7 +38,7 @@ public abstract class ODataResponse {
    * @return a header value or null if not set
    */
   public abstract String getHeader(String name);
-  
+
   /**
    * @return content header value or null if not set
    */
@@ -96,7 +96,7 @@ public abstract class ODataResponse {
     b.header(name, value);
     return b;
   }
-  
+
   /**
    * @param value content header value
    * @return a builder object
@@ -106,7 +106,7 @@ public abstract class ODataResponse {
     b.contentHeader(value);
     return b;
   }
-  
+
   /**
    * @return returns a new builder object
    */
@@ -143,6 +143,5 @@ public abstract class ODataResponse {
 
     protected abstract ODataResponseBuilder fromResponse(ODataResponse response);
   }
-
 
 }

@@ -53,7 +53,7 @@ public class EdmNavigationPropertyImplProv extends EdmTypedImplProv implements E
 
   @Override
   public EdmMapping getMapping() throws EdmException {
-   return  navigationProperty.getMapping();
+    return navigationProperty.getMapping();
   }
 
 }

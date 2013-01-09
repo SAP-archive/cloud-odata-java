@@ -61,7 +61,7 @@ public class HttpExceptionResponseTest extends AbstractBasicTest {
 
   @Test
   public void test404HttpNotFound() throws Exception {
-    when(processor.readEntity(any(GetEntityUriInfo.class),any(String.class))).thenThrow(new ODataNotFoundException(ODataNotFoundException.ENTITY));
+    when(processor.readEntity(any(GetEntityUriInfo.class), any(String.class))).thenThrow(new ODataNotFoundException(ODataNotFoundException.ENTITY));
 
     HttpResponse response = executeGetRequest("Managers('199')");
     assertEquals(404, response.getStatusLine().getStatusCode());
@@ -78,14 +78,14 @@ public class HttpExceptionResponseTest extends AbstractBasicTest {
   @Test
   public void testGenericHttpExceptions() throws Exception {
     disableLogging();
-    
+
     List<ODataHttpException> toTestExceptions = getHttpExceptionsForTest();
 
     int firstKey = 1;
     for (ODataHttpException oDataException : toTestExceptions) {
       String key = String.valueOf(firstKey++);
       Matcher<GetEntityUriInfo> match = new EntityKeyMatcher(key);
-      when(processor.readEntity(Matchers.argThat(match),any(String.class))).thenThrow(oDataException);
+      when(processor.readEntity(Matchers.argThat(match), any(String.class))).thenThrow(oDataException);
 
       String uri = getEndpoint().toString() + "Managers('" + key + "')";
       HttpGet get = new HttpGet(URI.create(uri));

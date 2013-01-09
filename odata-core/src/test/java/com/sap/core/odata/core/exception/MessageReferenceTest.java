@@ -1,6 +1,7 @@
 package com.sap.core.odata.core.exception;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
@@ -13,7 +14,7 @@ public class MessageReferenceTest {
   public void testAddContent() {
     String content = "content";
     ODataMessageException e = new UriNotMatchingException(UriNotMatchingException.ENTITYNOTFOUND.addContent(content));
-    
+
     assertEquals(1, e.getMessageReference().getContent().size());
   }
 
@@ -27,7 +28,7 @@ public class MessageReferenceTest {
     assertEquals(1, e.getMessageReference().getContent().size());
     assertEquals(1, e2.getMessageReference().getContent().size());
   }
-  
+
   @Test
   public void testAddMoreContent() {
     String content = "content";
