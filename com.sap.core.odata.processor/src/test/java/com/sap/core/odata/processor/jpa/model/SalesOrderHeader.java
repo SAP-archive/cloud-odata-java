@@ -1,6 +1,9 @@
 package com.sap.core.odata.processor.jpa.model;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
+
 import javax.persistence.*;
 
 @Entity
@@ -15,12 +18,13 @@ public class SalesOrderHeader {
 		
 
 	public SalesOrderHeader(int buyerId, String buyerName,
-			String currencyCode, double netAmount,
+			Address buyerAddress, String currencyCode, double netAmount,
 			boolean deliveryStatus) {
 		
 		this();
 		this.buyerId = buyerId;
 		this.buyerName = buyerName;
+		this.buyerAddress = buyerAddress;
 		this.currencyCode = currencyCode;
 		this.netAmount = netAmount;
 		this.deliveryStatus = deliveryStatus;
@@ -40,7 +44,8 @@ public class SalesOrderHeader {
 	@Column(name = "BUYER_NAME")
 	private String buyerName;
 
-	
+	@Embedded
+	private Address buyerAddress;
 
 	@Column(name = "CURRENCY_CODE",length = 10)
 	private String currencyCode;
@@ -51,7 +56,8 @@ public class SalesOrderHeader {
 	@Column(name = "DELIVERY_STATUS")
 	private boolean deliveryStatus;
 
-	
+	/*@OneToMany(mappedBy = "SalesOrderHeader", cascade = CascadeType.ALL)
+	private final List<SalesOrderItem> salesOrderItem = new ArrayList<SalesOrderItem>();*/
 
 	public long getSoId() {
 		return soId;
@@ -85,7 +91,14 @@ public class SalesOrderHeader {
 		this.buyerName = buyerName;
 	}
 
-	
+	public Address getBuyerAddress() {
+		return buyerAddress;
+	}
+
+	public void setBuyerAddress(Address buyerAddress) {
+		this.buyerAddress = buyerAddress;
+	}
+
 	public String getCurrencyCode() {
 		return currencyCode;
 	}
@@ -110,5 +123,7 @@ public class SalesOrderHeader {
 		this.deliveryStatus = deliveryStatus;
 	}
 
-	
+	/*public List<SalesOrderItem> getSalesOrderItem() {
+		return this.salesOrderItem;
+	}*/
 }
