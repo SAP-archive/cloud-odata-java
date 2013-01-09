@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import com.sap.core.odata.api.commons.HttpContentType;
 import com.sap.core.odata.api.commons.HttpStatusCodes;
 import com.sap.core.odata.api.commons.InlineCount;
 import com.sap.core.odata.api.edm.EdmEntitySet;
@@ -70,8 +71,6 @@ import com.sap.core.odata.api.uri.info.GetSimplePropertyUriInfo;
 public class ListsProcessor extends ODataSingleProcessor {
 
   private static final int SERVER_PAGING_SIZE = 100;
-  private static final String APPLICATION_OCTET_STREAM = "application/octet-stream";
-  private static final String APPLICATION_XML = "application/xml";
 
   private final ListsDataSource dataSource;
 
@@ -396,7 +395,7 @@ public class ListsProcessor extends ODataSingleProcessor {
       value = valueWithMimeType;
     }
 
-    return ODataResponse.fromResponse(EntityProvider.create(APPLICATION_XML).writePropertyValue(property, value))
+    return ODataResponse.fromResponse(EntityProvider.create(HttpContentType.APPLICATION_XML).writePropertyValue(property, value))
         .status(HttpStatusCodes.OK)
         .build();
   }
@@ -418,9 +417,9 @@ public class ListsProcessor extends ODataSingleProcessor {
     final byte[] binaryData = dataSource.readBinaryData(entitySet, data, mimeTypeBuilder);
 
     final String mimeType = mimeTypeBuilder.toString().isEmpty() ?
-        APPLICATION_OCTET_STREAM : mimeTypeBuilder.toString();
+        HttpContentType.APPLICATION_OCTET_STREAM : mimeTypeBuilder.toString();
 
-    return ODataResponse.fromResponse(EntityProvider.create(APPLICATION_XML).writeBinary(mimeType, binaryData))
+    return ODataResponse.fromResponse(EntityProvider.create(HttpContentType.APPLICATION_XML).writeBinary(mimeType, binaryData))
         .status(HttpStatusCodes.OK)
         .build();
   }
@@ -488,8 +487,8 @@ public class ListsProcessor extends ODataSingleProcessor {
         null);
 
     if (type == EdmSimpleTypeKind.Binary.getEdmSimpleTypeInstance()) {
-      return ODataResponse.fromResponse(EntityProvider.create(APPLICATION_XML)
-          .writeBinary(APPLICATION_OCTET_STREAM, (byte[]) data))
+      return ODataResponse.fromResponse(EntityProvider.create(HttpContentType.APPLICATION_XML)
+          .writeBinary(HttpContentType.APPLICATION_OCTET_STREAM, (byte[]) data))
           .status(HttpStatusCodes.OK)
           .build();
     } else {

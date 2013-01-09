@@ -5,7 +5,7 @@ import static org.junit.Assert.assertTrue;
 import org.apache.http.HttpResponse;
 import org.junit.Test;
 
-import com.sap.core.odata.core.commons.ContentType;
+import com.sap.core.odata.api.commons.HttpContentType;
 
 /**
  * Tests employing the reference scenario reading the service document in XML format
@@ -16,7 +16,7 @@ public class ServiceTest extends AbstractRefTest {
   @Test
   public void serviceDocument() throws Exception {
     final HttpResponse response = callUri("/");
-    checkMediaType(response, ContentType.APPLICATION_ATOM_SVC);
+    checkMediaType(response, HttpContentType.APPLICATION_ATOM_SVC);
     assertTrue(getBody(response).contains("Employees"));
 
     notFound("invalid.svc");
@@ -25,7 +25,7 @@ public class ServiceTest extends AbstractRefTest {
   @Test
   public void metadataDocument() throws Exception {
     final HttpResponse response = callUri("$metadata");
-    checkMediaType(response, ContentType.APPLICATION_XML, false);
+    checkMediaType(response, HttpContentType.APPLICATION_XML, false);
     final String payload = getBody(response);
     assertTrue(payload.contains("c_Location"));
     assertTrue(payload.contains("c_City"));

@@ -27,6 +27,7 @@ import com.sap.core.odata.testutil.helper.StringHelper;
  */
 public class AbstractRefTest extends AbstractFitTest {
 
+  protected static final String IMAGE_GIF = "image/gif";
   protected static final String IMAGE_JPEG = "image/jpeg";
 
   protected static final String EMPLOYEE_1_NAME = "Walter Winter";
