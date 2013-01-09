@@ -38,7 +38,6 @@ import com.sap.core.odata.api.uri.PathInfo;
 import com.sap.core.odata.api.uri.PathSegment;
 import com.sap.core.odata.core.Dispatcher;
 import com.sap.core.odata.core.ODataContextImpl;
-import com.sap.core.odata.core.ODataLocator;
 import com.sap.core.odata.core.ODataPathSegmentImpl;
 import com.sap.core.odata.core.ODataUriInfoImpl;
 import com.sap.core.odata.core.commons.ContentType;
