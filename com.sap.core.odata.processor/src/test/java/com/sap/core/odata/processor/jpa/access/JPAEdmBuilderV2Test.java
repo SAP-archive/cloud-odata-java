@@ -1,13 +1,27 @@
 package com.sap.core.odata.processor.jpa.access;
 
-import org.junit.BeforeClass;
+import static org.junit.Assert.fail;
+
+import java.util.List;
+
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.Persistence;
+import static org.junit.Assert.*;
+import org.junit.*;
+
+import com.sap.core.odata.api.edm.provider.Schema;
+import com.sap.core.odata.processor.jpa.exception.ODataJPAModelException;
+import com.sap.core.odata.processor.jpa.util.MockData;
 
 public class JPAEdmBuilderV2Test {
 	
 	
+	private static final String PUNIT_NAME = "salesorderprocessing";
+	private static JPAEdmBuilderV2 builder;
+
 	@BeforeClass
 	  public static void setup() throws Exception {
-		/*EntityManagerFactory emf=null;
+		EntityManagerFactory emf=null;
 		try
 		{
 			emf = Persistence.createEntityManagerFactory(PUNIT_NAME);
@@ -18,34 +32,26 @@ public class JPAEdmBuilderV2Test {
 		}
 		if(emf != null)
 		{
-			JPAEdmBuilderV2 builder = new JPAEdmBuilderV2(PUNIT_NAME, emf);
+			builder = new JPAEdmBuilderV2(PUNIT_NAME, emf);
 		}
-		*/
+		
+		
 	  }
 
-	/*@Test
+	@Test
 	public void testGetSchemas() {
-		fail("Not yet implemented");
+		List<Schema> schemas = null;
+		try {
+			schemas = builder.getSchemas();
+		} catch (ODataJPAModelException e) {
+			fail("JPA Model exception raised with message "+e.getMessage());
+		}
+		assertEquals(schemas.size(), 1);
+		for(Schema schema:schemas)
+		{
+			assertEquals(schema.getNamespace(),MockData.NAME_SPACE);
+		}
+		
 	}
 
-	@Test
-	public void testGetEntitySet() {
-		fail("Not yet implemented");
-	}
-
-	@Test
-	public void testGetEntityTypes() {
-		fail("Not yet implemented");
-	}
-
-	@Test
-	public void testGetEntityType() {
-		fail("Not yet implemented");
-	}
-
-	@Test
-	public void testFormKey() {
-		fail("Not yet implemented");
-	}
-*/
 }
