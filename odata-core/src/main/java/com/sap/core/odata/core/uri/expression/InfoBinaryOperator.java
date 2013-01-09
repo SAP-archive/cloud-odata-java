@@ -45,6 +45,28 @@ class InfoBinaryOperator
     return combination.validate(actualParameterTypes);
   }
 
- 
+  static class DetectedBinaryOperator
+  {
+    protected InfoBinaryOperator operator;
+    protected Token token;
+    
+    public DetectedBinaryOperator(InfoBinaryOperator operator, Token token)
+    {
+      this.operator = operator;
+      this.token = token;
+    }
+    
+    public Token getToken()
+    {
+      return token;
+    }
+    
+    public InfoBinaryOperator getOP()
+    {
+      return operator;
+    }
+    
+  }
+  
 
 }

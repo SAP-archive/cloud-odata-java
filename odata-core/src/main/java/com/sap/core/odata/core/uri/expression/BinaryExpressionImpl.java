@@ -15,11 +15,13 @@ public class BinaryExpressionImpl implements BinaryExpression
   protected CommonExpression leftSide;
   protected CommonExpression rightSide;
   protected EdmType edmType;
+  protected Token token;
 
-  public BinaryExpressionImpl(InfoBinaryOperator operatorInfo, CommonExpression leftSide, CommonExpression rightSide) {
+  public BinaryExpressionImpl(InfoBinaryOperator operatorInfo, CommonExpression leftSide, CommonExpression rightSide, Token token) {
     this.operatorInfo = operatorInfo;
     this.leftSide = leftSide;
     this.rightSide = rightSide;
+    this.token = token;
     edmType = null;
   }
 
@@ -74,5 +76,12 @@ public class BinaryExpressionImpl implements BinaryExpression
 
     return visitor.visitBinary(this, operatorInfo.getOperator(), retLeftSide, retRightSide);
   }
+
+    public Token getToken() 
+  {
+    return token;
+  }
+  
+ 
 
 }

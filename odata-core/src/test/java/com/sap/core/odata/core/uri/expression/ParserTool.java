@@ -142,8 +142,9 @@ public class ParserTool
 
   
   /**
-   * Verifies that the message text of the thrown exception serialized is {@paramref expected}
-   * @param messageText  expected message text 
+   * Verifies that the message text of the thrown exception serialized is {@paramref messageText}
+   * @param messageText  
+   *   Expected message text 
    * @return  this
    */
   public ParserTool aExMsgText(String messageText)
@@ -275,7 +276,7 @@ public class ParserTool
     return this;
   }
   
-  public ParserTool aExMsgPrint() {
+  public ParserTool printExMessage() {
     ODataMessageException messageException;
 
     if (curException == null)
@@ -301,7 +302,7 @@ public class ParserTool
     return this;
   }
 
-  public ParserTool aExPrint()
+  public ParserTool exPrintStack()
   {
     curException.printStackTrace();
     return this;

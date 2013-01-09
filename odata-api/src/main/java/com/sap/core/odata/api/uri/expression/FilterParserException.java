@@ -36,6 +36,9 @@ public class FilterParserException extends ODataBadRequestException
   public static final MessageReference PROPERTY_NAME_NOT_FOUND_IN_TYPE   = createMessageReference(FilterParserException.class, "PROPERTY_NAME_NOT_FOUND_IN_TYPE");
   
   public static final MessageReference TOKEN_UNDETERMINATED_STRING   = createMessageReference(FilterParserException.class, "TOKEN_UNDETERMINATED_STRING");
+  
+  public static final MessageReference INVALID_TYPES_FOR_BINARY_OPERATOR= createMessageReference(FilterParserException.class, "INVALID_TYPES_FOR_BINARY_OPERATOR");
+  
   /*instance attributes*/
   private CommonExpression filterTree;
 
