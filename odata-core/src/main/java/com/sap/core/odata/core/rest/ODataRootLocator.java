@@ -36,12 +36,11 @@ public class ODataRootLocator {
   private UriInfo uriInfo;
   @Context
   private Request request;
-
   @Context
   private ServletConfig servletConfig;
-
   @Context
   private HttpServletRequest servletRequest;
+  
 
   /**
    * Default root behavior which will delegate all paths to a ODataLocator.
@@ -79,6 +78,7 @@ public class ODataRootLocator {
     param.setHttpHeaders(httpHeaders);
     param.setUriInfo(uriInfo);
     param.setRequest(request);
+    param.setServletRequest(servletRequest);
     param.setPathSplit(pathSplit);
 
     odataLocator.initialize(param);

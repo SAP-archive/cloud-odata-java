@@ -6,6 +6,7 @@ import com.sap.core.odata.api.edm.EdmProperty;
 import com.sap.core.odata.api.exception.ODataBadRequestException;
 import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.api.exception.ODataMethodNotAllowedException;
+import com.sap.core.odata.api.processor.ODataRequest;
 import com.sap.core.odata.api.processor.ODataResponse;
 import com.sap.core.odata.api.processor.feature.Batch;
 import com.sap.core.odata.api.processor.feature.Entity;
