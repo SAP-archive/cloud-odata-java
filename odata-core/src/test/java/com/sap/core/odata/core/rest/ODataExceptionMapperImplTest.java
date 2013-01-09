@@ -35,12 +35,13 @@ import com.sap.core.odata.api.uri.UriSyntaxException;
 import com.sap.core.odata.core.exception.MessageService;
 import com.sap.core.odata.core.exception.ODataRuntimeException;
 import com.sap.core.odata.core.rest.ODataExceptionMapperImpl;
+import com.sap.core.odata.testutil.fit.BaseTest;
 import com.sap.core.odata.testutil.helper.StringHelper;
 
 /**
  * @author SAP AG
  */
-public class ODataExceptionMapperImplTest {
+public class ODataExceptionMapperImplTest extends BaseTest {
 
   ODataExceptionMapperImpl exceptionMapper;
 
@@ -52,12 +53,16 @@ public class ODataExceptionMapperImplTest {
   }
 
   @Before
-  public void setUp() {
+  public void before() {
+    super.before();
     exceptionMapper = new ODataExceptionMapperImpl();
     exceptionMapper.httpHeaders = mock(HttpHeaders.class);
     exceptionMapper.uriInfo = mock(UriInfo.class);
     MultivaluedHashMap<String, String> map = new MultivaluedHashMap<String, String>();
     when(exceptionMapper.uriInfo.getQueryParameters()).thenReturn(map);
+
+    disableLogging();
+
   }
 
   @Test
