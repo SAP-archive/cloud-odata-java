@@ -16,4 +16,5 @@ public interface HttpContentType {
   String APPLICATION_OCTET_STREAM = "application/octet-stream";
   String TEXT_PLAIN = "text/plain";
   String MULTIPART_MIXED = "multipart/mixed";
+  String WILDCARD = "*/*";
 }
