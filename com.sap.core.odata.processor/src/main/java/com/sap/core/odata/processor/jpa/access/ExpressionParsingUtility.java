@@ -13,6 +13,7 @@ import com.sap.core.odata.api.uri.expression.BinaryExpression;
 import com.sap.core.odata.api.uri.expression.CommonExpression;
 import com.sap.core.odata.api.uri.expression.FilterExpression;
 import com.sap.core.odata.api.uri.expression.LiteralExpression;
+import com.sap.core.odata.api.uri.expression.MemberExpression;
 import com.sap.core.odata.api.uri.expression.OrderByExpression;
 import com.sap.core.odata.api.uri.expression.OrderExpression;
 import com.sap.core.odata.api.uri.expression.PropertyExpression;
@@ -46,8 +47,7 @@ public class ExpressionParsingUtility {
 	      }
 	      
 	    case FILTER:
-	    	final FilterExpression filterExpression = (FilterExpression)whereExpression;
-	    	return parseWhereExpression(filterExpression.getExpression());
+	    	return parseWhereExpression(((FilterExpression)whereExpression).getExpression());
 	    case BINARY:
 	      final BinaryExpression binaryExpression = (BinaryExpression) whereExpression;
 //	      final EdmSimpleType binaryType = (EdmSimpleType) binaryExpression.getEdmType();
@@ -67,7 +67,7 @@ public class ExpressionParsingUtility {
 		        return Double.toString(Double.valueOf(left) % Double.valueOf(right));*/
 		      case AND:
 		        //return Boolean.toString(left.equals("true") && right.equals("true"));
-		    	  return left + SPACE + JPQLStatement.Operator.AND + SPACE + right; 
+		    	  return left + SPACE + JPQLStatement.Operator.AND + SPACE + right;
 		      case OR:
 		        //return Boolean.toString(left.equals("true") || right.equals("true"));
 		    	  return left + SPACE + JPQLStatement.Operator.OR + SPACE + right;
@@ -127,21 +127,37 @@ public class ExpressionParsingUtility {
 //	      	final EdmProperty property = (EdmProperty) ((PropertyExpression) expression).getEdmProperty();
 //	        final EdmSimpleType propertyType = (EdmSimpleType) property.getType();
 //	        return propertyType.valueToString(getPropertyValue(data, property), EdmLiteralKind.DEFAULT, property.getFacets());
-	    	return TABLE_ALIAS+"."+((PropertyExpression) whereExpression).getPropertyName();//TODO - check
+	    	return TABLE_ALIAS+"."+((PropertyExpression) whereExpression).getPropertyName();
 
-//	    case MEMBER:
-//	      final MemberExpression memberExpression = (MemberExpression) expression;
-//	      final PropertyExpression memberPath = (PropertyExpression) memberExpression.getPath();
-//	      final EdmProperty memberProperty = memberPath.getEdmProperty();
-//	      final EdmSimpleType memberType = (EdmSimpleType) memberPath.getEdmType();
-//	      List<EdmProperty> propertyPath = new ArrayList<EdmProperty>();
-//	      CommonExpression currentExpression = memberExpression;
-//	      while (currentExpression != null && currentExpression.getKind() == ExpressionKind.MEMBER) {
-//	        final MemberExpression currentMember = (MemberExpression) currentExpression;
-//	        propertyPath.add(0, ((PropertyExpression) currentMember.getProperty()).getEdmProperty());
-//	        currentExpression = currentMember.getPath();
-//	      }
-//	      return memberType.valueToString(getPropertyValue(data, propertyPath), EdmLiteralKind.DEFAULT, memberProperty.getFacets());
+	    case MEMBER:
+	      /*final MemberExpression memberExpression = (MemberExpression) expression;
+	      final PropertyExpression memberPath = (PropertyExpression) memberExpression.getPath();
+	      final EdmProperty memberProperty = memberPath.getEdmProperty();
+	      final EdmSimpleType memberType = (EdmSimpleType) memberPath.getEdmType();
+	      List<EdmProperty> propertyPath = new ArrayList<EdmProperty>();
+	      CommonExpression currentExpression = memberExpression;
+	      while (currentExpression != null && currentExpression.getKind() == ExpressionKind.MEMBER) {
+	        final MemberExpression currentMember = (MemberExpression) currentExpression;
+	        propertyPath.add(0, ((PropertyExpression) currentMember.getProperty()).getEdmProperty());
+	        currentExpression = currentMember.getPath();
+	      }
+	      return memberType.valueToString(getPropertyValue(data, propertyPath), EdmLiteralKind.DEFAULT, memberProperty.getFacets());
+	      
+	      final PropertyExpression memberPath = (PropertyExpression) memberExpression.getPath();
+		      //final EdmProperty memberProperty = memberPath.getEdmProperty();
+		      StringBuilder pathStr = new StringBuilder("");
+		      CommonExpression currentExpression = memberExpression;
+		      while (currentExpression != null && currentExpression.getKind() == ExpressionKind.MEMBER) {
+		        final MemberExpression currentMember = (MemberExpression) currentExpression;
+		        pathStr.append(TABLE_ALIAS + "." + (PropertyExpression) currentExpression.getPath().getUriLiteral());
+		        //propertyPath.add(0, ((PropertyExpression) currentMember.getProperty()).getEdmProperty());
+		        currentExpression = currentMember.getPath();
+		      }*/ 
+
+	    	final MemberExpression memberExpression = (MemberExpression) whereExpression;
+	        final PropertyExpression propertyExpressionPath = (PropertyExpression) memberExpression.getPath();
+	        
+	    	return TABLE_ALIAS+"."+propertyExpressionPath.getUriLiteral()+"."+memberExpression.getProperty().getUriLiteral();
 
 	    case LITERAL:
 	    	final LiteralExpression literal = (LiteralExpression) whereExpression;

@@ -15,7 +15,9 @@ import com.sap.core.odata.api.uri.expression.BinaryExpression;
 import com.sap.core.odata.api.uri.expression.BinaryOperator;
 import com.sap.core.odata.api.uri.expression.CommonExpression;
 import com.sap.core.odata.api.uri.expression.ExpressionKind;
+import com.sap.core.odata.api.uri.expression.FilterExpression;
 import com.sap.core.odata.api.uri.expression.LiteralExpression;
+import com.sap.core.odata.api.uri.expression.MemberExpression;
 import com.sap.core.odata.api.uri.expression.PropertyExpression;
 //import com.sap.core.odata.api.uri.expression.OrderType;
 
@@ -55,6 +57,12 @@ public class ExpressionParsingUtilityTest {
 	}
 	
 	@Test
+	public void testParseFilterExpression() throws ODataException {
+		assertEquals(getAliasedProperty("SalesOrder"), 
+				ExpressionParsingUtility.parseWhereExpression(getFilterExpressionMockedObj(ExpressionKind.PROPERTY, "SalesOrder")));
+	}
+	
+	@Test
 	public void testAllBinaryOperators() throws ODataException { //Test for all Binary Operators 
 		// complex query - 
 		String parsedStr1 = "";
@@ -84,6 +92,31 @@ public class ExpressionParsingUtilityTest {
 //					, finalParsedStr);
 		
 		
+	}
+	
+	@Test
+	public void testParseMemberExpression() throws ODataException {
+		assertEquals(getAliasedProperty("Address")+"."+ "city"+" = "+"\'City_3\'", ExpressionParsingUtility.parseWhereExpression(getBinaryExpression(getMemberExpressionMockedObj("Address", "city"), 
+				BinaryOperator.EQ, getLiteralExpressionMockedObj("\'City_3\'"))));
+		
+	}
+	
+	private CommonExpression getMemberExpressionMockedObj(String pathUriLiteral, String propertyUriLiteral) {
+		MemberExpression memberExpression = EasyMock.createMock(MemberExpression.class);
+		EasyMock.expect(memberExpression.getPath()).andReturn(getPropertyExpressionPath(pathUriLiteral)).times(10);
+		EasyMock.expect(memberExpression.getProperty()).andReturn(getPropertyExpressionPath(propertyUriLiteral)).times(10);
+		EasyMock.expect(memberExpression.getKind()).andReturn(ExpressionKind.MEMBER).times(10);
+		
+		EasyMock.replay(memberExpression);
+		return memberExpression;
+	}
+
+	private CommonExpression getPropertyExpressionPath(String uriLiteral) {
+		PropertyExpression 	propertyExpression = EasyMock.createMock(PropertyExpression.class);
+		EasyMock.expect(propertyExpression.getUriLiteral()).andReturn(uriLiteral).times(10);
+		
+		EasyMock.replay(propertyExpression);
+		return propertyExpression;
 	}
 
 /*	@Test
@@ -146,6 +179,15 @@ public class ExpressionParsingUtilityTest {
 		
 		EasyMock.replay(binaryExpression);
 		return binaryExpression;		
+	}
+	
+	private FilterExpression getFilterExpressionMockedObj(ExpressionKind leftOperandExpKind, String propertyName) throws EdmException{
+		FilterExpression filterExpression = EasyMock.createMock(FilterExpression.class);
+		EasyMock.expect(filterExpression.getKind()).andStubReturn(ExpressionKind.FILTER);
+		EasyMock.expect(filterExpression.getExpression()).andStubReturn(getPropertyExpressionMockedObj(leftOperandExpKind, propertyName));
+		
+		EasyMock.replay(filterExpression);
+		return filterExpression;		
 	}
 	
 	private CommonExpression getBinaryExpression(final CommonExpression leftOperand, final BinaryOperator operator, final CommonExpression rightOperand) {
