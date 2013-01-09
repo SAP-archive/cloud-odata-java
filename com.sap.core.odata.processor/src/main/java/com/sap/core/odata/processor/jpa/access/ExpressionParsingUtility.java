@@ -36,7 +36,7 @@ public class ExpressionParsingUtility {
 	      switch (unaryExpression.getOperator()) {
 	      case NOT:
 	        //return Boolean.toString(!Boolean.parseBoolean(operand));
-	    	  return SPACE + JPQLStatement.Operator.NOT + SPACE + operand;
+	    	  return JPQLStatement.Operator.NOT + "("+  operand +")";
 	      case MINUS:
 	        if (operand.startsWith("-"))
 	          return operand.substring(1);
