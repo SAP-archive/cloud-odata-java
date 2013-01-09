@@ -45,6 +45,7 @@ public class FilterParserImpl implements FilterParser
   protected Edm edm = null;
   protected EdmEntityType resourceEntityType = null;
   protected TokenList tokenList = null;
+  protected String curExpression;
 
   /**
    * Creates a new FilterParser implementation
@@ -61,18 +62,18 @@ public class FilterParserImpl implements FilterParser
   public FilterExpression parseFilterString(String filterExpression) throws FilterParserException, FilterParserInternalError
   {
     CommonExpression node = null;
-
+    curExpression = filterExpression;
     try
     {
-      //Throws TokenizerException and FilterParserException. FilterParserException is catch somewhere above 
-      tokenList = new Tokenizer(filterExpression).tokenize();  
+      // Throws TokenizerException and FilterParserException. FilterParserException is catch somewhere above 
+      tokenList = new Tokenizer(filterExpression).tokenize();
       if (!tokenList.hasTokens())
       {
         return new FilterExpressionImpl(filterExpression);
       }
     } catch (TokenizerException tokenizerException)
     {
-      //tested with TestParserExceptions.TestPMparseFilterString
+      // Tested with TestParserExceptions.TestPMparseFilterString
       throw FilterParserExceptionImpl.createERROR_IN_TOKENIZER(tokenizerException);
     }
 
@@ -82,17 +83,19 @@ public class FilterParserImpl implements FilterParser
       node = readElements(nodeLeft, 0);
     } catch (FilterParserException filterParserException)
     {
-      //Add empty filterTree to Exception
+      // Add empty filterTree to Exception
+      // Tested for original throw point
       throw filterParserException.setFilterTree(new FilterExpressionImpl(filterExpression));
     }
 
-    //post check
+    // Post check
     if (tokenList.tokenCount() > tokenList.currentToken) //this indicates that not all tokens have been read
     {
-      throw FilterParserExceptionImpl.createINVALID_TRAILING_TOKEN_DETECTED_AFTER_PARSING(tokenList.elementAt(tokenList.currentToken));
+      // Tested with TestParserExceptions.TestPMparseFilterString
+      throw FilterParserExceptionImpl.createINVALID_TRAILING_TOKEN_DETECTED_AFTER_PARSING(tokenList.elementAt(tokenList.currentToken), filterExpression);
     }
 
-    //create and return filterExpression node
+    // Create and return filterExpression node
     return new FilterExpressionImpl(filterExpression, node);
   }
 
@@ -102,32 +105,43 @@ public class FilterParserImpl implements FilterParser
     CommonExpression rightNode;
     BinaryExpression binaryNode;
 
-    InfoBinaryOperator operator = readBinaryOperator();
+    InfoBinaryOperator.DetectedBinaryOperator operator = readBinaryOperator();
+    InfoBinaryOperator operatorInfo = null;
+    if (operator != null)
+      operatorInfo = operator.getOP();
 
-    while ((operator != null) && (operator.getPriority() >= priority))
+    InfoBinaryOperator.DetectedBinaryOperator nextOperator;
+    InfoBinaryOperator nextOperatorInfo = null;
+
+    while ((operatorInfo != null) && (operatorInfo.getPriority() >= priority))
     {
       tokenList.next(); //eat the operator
       rightNode = readElement(leftNode); //throws FilterParserException, FilterParserInternalError
 
-      InfoBinaryOperator nextOperator = readBinaryOperator();
+      nextOperator = readBinaryOperator();
+      if (nextOperator != null)
+        nextOperatorInfo = nextOperator.getOP();
 
-      //It must be "while" because for example in "Filter=a or c eq d and e eq f"
-      //after reading the "eq" operator the "and" operator must be consumed too. This is due to the fact that "and" has a higher priority than "or" 
-      while ((nextOperator != null) && (nextOperator.getPriority() > operator.getPriority()))
+      // It must be "while" because for example in "Filter=a or c eq d and e eq f"
+      // after reading the "eq" operator the "and" operator must be consumed too. This is due to the fact that "and" has a higher priority than "or" 
+      while ((nextOperatorInfo != null) && (nextOperatorInfo.getPriority() > operatorInfo.getPriority()))
       {
         //recurse until the a binary operator with a lower priority is detected 
-        rightNode = readElements(rightNode, nextOperator.getPriority());
+        rightNode = readElements(rightNode, nextOperatorInfo.getPriority());
         nextOperator = readBinaryOperator();
+        nextOperatorInfo = null; 
+        if (nextOperator != null)
+          nextOperatorInfo = nextOperator.getOP();
       }
 
-      //Although the member operator is also a binary operator, there is some special handling in the filterTree
-      if (operator.getOperator() == BinaryOperator.PROPERTY_ACCESS)
+      // Although the member operator is also a binary operator, there is some special handling in the filterTree
+      if (operatorInfo.getOperator() == BinaryOperator.PROPERTY_ACCESS)
       {
         binaryNode = new MemberExpressionImpl(leftNode, rightNode);
       }
       else
       {
-        binaryNode = new BinaryExpressionImpl(operator, leftNode, rightNode);
+        binaryNode = new BinaryExpressionImpl(operatorInfo, leftNode, rightNode, operator.getToken());
       }
 
       try
@@ -135,12 +149,16 @@ public class FilterParserImpl implements FilterParser
         validateBinaryOperator(binaryNode);
       } catch (FilterParserException expressionException)
       {
-        //Extend the error information
+        // Extend the error information
+        // Tested for original throw point
         throw expressionException.setFilterTree(binaryNode);
       }
 
       leftNode = binaryNode;
       operator = readBinaryOperator();
+      operatorInfo = null;
+      if (operator != null)
+        operatorInfo = operator.getOP();
     }
 
     return leftNode;
@@ -286,10 +304,10 @@ public class FilterParserImpl implements FilterParser
     switch (lookToken.getKind())
     {
     case OPENPAREN:
-      node = readParenthesis(); 
+      node = readParenthesis();
       return node;
-    case CLOSEPAREN:  // ')'  finishes a parenthesis (it is no extra token)" +
-    case COMMA:       //. " ','  is a separator for function parameters (it is no extra token)" +
+    case CLOSEPAREN: // ')'  finishes a parenthesis (it is no extra token)" +
+    case COMMA: //. " ','  is a separator for function parameters (it is no extra token)" +
       return null;
     }
 
@@ -364,19 +382,19 @@ public class FilterParserImpl implements FilterParser
     return method;
   }
 
-  protected InfoBinaryOperator readBinaryOperator()
+  protected InfoBinaryOperator.DetectedBinaryOperator readBinaryOperator()
   {
     Token token = tokenList.lookToken();
     if (token == null) return null;
     if ((token.getKind() == TokenKind.SYMBOL) && (token.getUriLiteral().equals("/")))
     {
       InfoBinaryOperator operator = availableBinaryOperators.get(token.getUriLiteral());
-      return operator;
+      return new InfoBinaryOperator.DetectedBinaryOperator(operator, token);
     }
     else if (token.getKind() == TokenKind.LITERAL)
     {
       InfoBinaryOperator operator = availableBinaryOperators.get(token.getUriLiteral());
-      return operator;
+      return new InfoBinaryOperator.DetectedBinaryOperator(operator, token);
     }
 
     return null;
@@ -774,10 +792,29 @@ public class FilterParserImpl implements FilterParser
 
     //List<ParameterSet> allowedParameterTypesCombinations = binOpt.getParameterSet();
     List<EdmType> actualParameterTypes = new ArrayList<EdmType>();
-    actualParameterTypes.add(binaryExpression.getLeftOperand().getEdmType());
-    actualParameterTypes.add(binaryExpression.getRightOperand().getEdmType());
+    EdmType operand = binaryExpression.getLeftOperand().getEdmType();
+    if (operand == null) return;
+    actualParameterTypes.add(operand);
+
+    operand = binaryExpression.getRightOperand().getEdmType();
+    if (operand == null) return;
+    actualParameterTypes.add(operand);
 
     EdmType edmType = binOpt.validateParameterSet(actualParameterTypes);
+    if (edmType == null)
+    {
+      BinaryExpressionImpl binaryExpressionImpl = (BinaryExpressionImpl) binaryExpression;
+
+      // Tested with TestParserExceptions.TestPMvalidateBinaryOperator
+      throw FilterParserExceptionImpl.createINVALID_TYPES_FOR_BINARY_OPERATOR(
+          binaryExpressionImpl.getToken().getPosition(), curExpression,
+          binaryExpression.getOperator(),
+          binaryExpression.getLeftOperand().getEdmType(),
+          binaryExpression.getLeftOperand().getEdmType()
+          );
+
+    }
+
     binaryExpression.setEdmType(edmType);
   }
 

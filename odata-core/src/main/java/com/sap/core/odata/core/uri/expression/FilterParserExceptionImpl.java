@@ -2,8 +2,10 @@ package com.sap.core.odata.core.uri.expression;
 
 import com.sap.core.odata.api.edm.EdmException;
 import com.sap.core.odata.api.edm.EdmStructuralType;
+import com.sap.core.odata.api.edm.EdmType;
 import com.sap.core.odata.api.exception.MessageReference;
 import com.sap.core.odata.api.exception.ODataBadRequestException;
+import com.sap.core.odata.api.uri.expression.BinaryOperator;
 import com.sap.core.odata.api.uri.expression.FilterParserException;
 import com.sap.core.odata.api.uri.expression.MethodExpression;
 import com.sap.core.odata.api.uri.expression.PropertyExpression;
@@ -36,12 +38,13 @@ public class FilterParserExceptionImpl extends FilterParserException
     return new FilterParserException(msgRef, exceptionTokenizer);
   }
 
-  static public FilterParserException createINVALID_TRAILING_TOKEN_DETECTED_AFTER_PARSING(Token token)
+  static public FilterParserException createINVALID_TRAILING_TOKEN_DETECTED_AFTER_PARSING(Token token, String filterExpression)
   {
     MessageReference msgRef = FilterParserException.INVALID_TRAILING_TOKEN_DETECTED_AFTER_PARSING.create();
 
     msgRef.addContent(token.getUriLiteral());
     msgRef.addContent(Integer.toString(token.getPosition()));
+    msgRef.addContent(filterExpression);
 
     return new FilterParserException(msgRef);
   }
@@ -104,11 +107,32 @@ public class FilterParserExceptionImpl extends FilterParserException
     return new FilterParserException(msgRef);
   }
 
-  public static FilterParserException createTOKEN_UNDETERMINATED_STRING(int position, String iv_expression) {
+  public static FilterParserException createTOKEN_UNDETERMINATED_STRING(int position, String expression) {
     MessageReference msgRef = FilterParserException.TOKEN_UNDETERMINATED_STRING.create();
 
     msgRef.addContent(position);
-    msgRef.addContent(iv_expression);
+    msgRef.addContent(expression);
+
+    return new FilterParserException(msgRef);
+  }
+
+  public static FilterParserException createINVALID_TYPES_FOR_BINARY_OPERATOR(int position, String expression, BinaryOperator op, EdmType left, EdmType right) {
+    MessageReference msgRef = FilterParserException.INVALID_TYPES_FOR_BINARY_OPERATOR.create();
+
+    msgRef.addContent(op.toUriLiteral());
+
+    try {
+      msgRef.addContent(left.getNamespace() + "." + left.getName());
+    } catch (EdmException e) {
+      msgRef.addContent("");
+    }
+    try {
+      msgRef.addContent(right.getNamespace() + "." + right.getName());
+    } catch (EdmException e) {
+      msgRef.addContent("");
+    }
+    msgRef.addContent(position);
+    msgRef.addContent(expression);
 
     return new FilterParserException(msgRef);
   }
