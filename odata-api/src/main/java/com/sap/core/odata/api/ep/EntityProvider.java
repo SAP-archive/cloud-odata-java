@@ -18,7 +18,7 @@ public abstract class EntityProvider {
   protected EntityProvider() throws EntityProviderException {}
 
   public static EntityProvider create(String contentType) throws EntityProviderException {
-    return RuntimeDelegate.createSerializer(contentType);
+    return RuntimeDelegate.createEntityProvider(contentType);
   }
 
   public abstract ODataResponse writeFeed(EdmEntitySet entitySet, List<Map<String, Object>> data, EntityProviderProperties properties) throws EntityProviderException;

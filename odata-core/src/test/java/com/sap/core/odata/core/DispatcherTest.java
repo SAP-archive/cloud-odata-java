@@ -14,6 +14,7 @@ import org.mockito.stubbing.Answer;
 
 import com.sap.core.odata.api.ODataService;
 import com.sap.core.odata.api.exception.ODataException;
+import com.sap.core.odata.api.processor.ODataRequest;
 import com.sap.core.odata.api.processor.ODataResponse;
 import com.sap.core.odata.api.processor.feature.Batch;
 import com.sap.core.odata.api.processor.feature.Entity;
@@ -136,7 +137,8 @@ public class DispatcherTest {
     when(uriParserResult.getUriType()).thenReturn(uriType);
     when(uriParserResult.isValue()).thenReturn(isValue);
     final String contentType = method == ODataHttpMethod.GET ? ContentType.APPLICATION_XML.toContentTypeString() : null;
-    final ODataResponse response = dispatcher.dispatch(method, uriParserResult, contentType);
+    ODataRequest request = ODataRequestImpl.create(null, contentType).build();
+    final ODataResponse response = dispatcher.dispatch(method, uriParserResult, request);
     assertEquals(expectedMethodName, response.getEntity());
   }
 

@@ -4,6 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.sap.core.odata.api.commons.HttpContentType;
+import com.sap.core.odata.api.ec.BasicConsumer;
+import com.sap.core.odata.api.ec.EntityConsumer;
+import com.sap.core.odata.api.ec.EntityConsumerException;
 import com.sap.core.odata.api.edm.Edm;
 import com.sap.core.odata.api.edm.EdmEntityType;
 import com.sap.core.odata.api.edm.EdmSimpleType;
@@ -35,6 +38,7 @@ import com.sap.core.odata.api.uri.UriParser;
 import com.sap.core.odata.api.uri.expression.FilterParser;
 import com.sap.core.odata.api.uri.expression.OrderByParser;
 import com.sap.core.odata.core.ODataResponseImpl;
+import com.sap.core.odata.core.ec.ConsumerFactory;
 import com.sap.core.odata.core.edm.EdmSimpleTypeFacadeImpl;
 import com.sap.core.odata.core.edm.provider.EdmImplProv;
 import com.sap.core.odata.core.ep.ProviderFactory;
@@ -78,7 +82,7 @@ public class RuntimeDelegateImpl extends RuntimeDelegateInstance {
   }
 
   @Override
-  protected EntityProvider createSerializer(String contentType) throws EntityProviderException {
+  protected EntityProvider createEntityProvider(String contentType) throws EntityProviderException {
     return ProviderFactory.create(contentType);
   }
 
@@ -87,6 +91,16 @@ public class RuntimeDelegateImpl extends RuntimeDelegateInstance {
     return ProviderFactory.create();
   }
 
+  @Override
+  protected BasicConsumer createBasicConsumer() throws EntityConsumerException {
+    return ConsumerFactory.createBasicConsumer();
+  }
+  
+  @Override
+  protected EntityConsumer createEntityConsumer(String contentType) throws EntityConsumerException {
+    return ConsumerFactory.createEntityConsumer(contentType);
+  }
+  
   @Override
   protected FilterParser getFilterParser(Edm edm, EdmEntityType edmType) {
     return new FilterParserImpl(edm, edmType);

@@ -2,6 +2,9 @@ package com.sap.core.odata.api.rt;
 
 import java.util.List;
 
+import com.sap.core.odata.api.ec.BasicConsumer;
+import com.sap.core.odata.api.ec.EntityConsumer;
+import com.sap.core.odata.api.ec.EntityConsumerException;
 import com.sap.core.odata.api.edm.Edm;
 import com.sap.core.odata.api.edm.EdmEntityType;
 import com.sap.core.odata.api.edm.EdmSimpleType;
@@ -89,24 +92,37 @@ public abstract class RuntimeDelegate {
 
     protected abstract OrderByParser getOrderByParser(Edm edm, EdmEntityType edmType);
 
+    protected abstract BasicProvider createBasicProvider() throws EntityProviderException;
+
     /**
      * @param contentType requested content type
      * @return a OData entity provider for requested content type
      * @throws EntityProviderException 
      */
-    protected abstract EntityProvider createSerializer(String contentType) throws EntityProviderException;
+    protected abstract EntityProvider createEntityProvider(String contentType) throws EntityProviderException;
 
-    protected abstract BasicProvider createBasicProvider() throws EntityProviderException;
-
+    protected abstract BasicConsumer createBasicConsumer() throws EntityConsumerException;
+    
+    protected abstract EntityConsumer createEntityConsumer(String contentType) throws EntityConsumerException;
+    
     protected abstract List<String> getSupportedContentTypes(List<String> customContentTypes, Class<? extends ProcessorFeature> processorFeature) throws ODataException;
+
   }
 
-  public static EntityProvider createSerializer(String contentType) throws EntityProviderException {
-    return RuntimeDelegate.getInstance().createSerializer(contentType);
+  public static EntityProvider createEntityProvider(String contentType) throws EntityProviderException {
+    return RuntimeDelegate.getInstance().createEntityProvider(contentType);
   }
 
   public static BasicProvider createBasicProvider() throws EntityProviderException {
     return RuntimeDelegate.getInstance().createBasicProvider();
+  }
+
+  public static BasicConsumer createBasicConsumer() throws EntityConsumerException {
+    return RuntimeDelegate.getInstance().createBasicConsumer();
+  }
+
+  public static EntityConsumer createEntityConsumer(String contentType) throws EntityConsumerException {
+    return RuntimeDelegate.getInstance().createEntityConsumer(contentType);
   }
 
   public static EdmSimpleType getEdmSimpleType(EdmSimpleTypeKind edmSimpleType) {
@@ -153,5 +169,4 @@ public abstract class RuntimeDelegate {
       super(e);
     }
   }
-
 }

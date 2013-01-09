@@ -92,8 +92,7 @@ public class AtomEntryEntityProvider {
       List<String> noneSyndicationTargetPaths = eia.getNoneSyndicationTargetPathNames();
       for (String tpName : noneSyndicationTargetPaths) {
         EntityPropertyInfo info = eia.getTargetPathInfo(tpName);
-        EdmCustomizableFeedMappings customMapping = info.getCustomMapping();
-        if (!customMapping.isFcKeepInContent()) {
+        if (!isKeepInContent(info)) {
           XmlPropertyEntityProvider aps = new XmlPropertyEntityProvider();
           Object value = data.get(info.getName());
           aps.append(writer, info.getName(), info, value);
@@ -102,6 +101,11 @@ public class AtomEntryEntityProvider {
     } catch (Exception e) {
       throw new EntityProviderException(EntityProviderException.COMMON, e);
     }
+  }
+
+  private boolean isKeepInContent(EntityPropertyInfo info) {
+    EdmCustomizableFeedMappings customMapping = info.getCustomMapping();
+    return Boolean.TRUE.equals(customMapping.isFcKeepInContent());
   }
 
   private String createETag(EntityInfoAggregator eia, Map<String, Object> data) throws EntityProviderException {
