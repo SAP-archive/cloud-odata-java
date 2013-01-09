@@ -26,11 +26,11 @@ public class BinaryExpressionImpl implements BinaryExpression
   }
 
   @Override
-  public BinaryOperator getOperator() 
+  public BinaryOperator getOperator()
   {
     return operatorInfo.getOperator();
   }
-  
+
   @Override
   public CommonExpression getLeftOperand()
   {
@@ -63,7 +63,7 @@ public class BinaryExpressionImpl implements BinaryExpression
   }
 
   @Override
-  public String getUriLiteral() 
+  public String getUriLiteral()
   {
     return operatorInfo.getSyntax();
   }
@@ -77,11 +77,9 @@ public class BinaryExpressionImpl implements BinaryExpression
     return visitor.visitBinary(this, operatorInfo.getOperator(), retLeftSide, retRightSide);
   }
 
-    public Token getToken() 
+  public Token getToken()
   {
     return token;
   }
-  
- 
 
 }

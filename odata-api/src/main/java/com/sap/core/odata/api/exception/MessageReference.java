@@ -108,7 +108,7 @@ public abstract class MessageReference {
 
     @Override
     public MessageReference addContent(Object... content) {
-      
+
       if (this.content == null)
         this.content = new ArrayList<Object>();
 

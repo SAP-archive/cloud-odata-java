@@ -11,7 +11,7 @@ import com.sap.core.odata.api.uri.info.PutMergePatchUriInfo;
  * @author SAP AG
  */
 public interface EntitySimpleProperty extends ProcessorFeature {
-  
+
   /**
    * @param contentType 
    * @return a {@link ODataResponse} object

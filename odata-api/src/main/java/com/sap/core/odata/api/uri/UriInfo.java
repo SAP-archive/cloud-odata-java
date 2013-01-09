@@ -36,7 +36,7 @@ import com.sap.core.odata.api.uri.info.PutMergePatchUriInfo;
  * @author SAP AG
  */
 public interface UriInfo extends GetServiceDocumentUriInfo, GetEntitySetUriInfo, GetEntityUriInfo, GetComplexPropertyUriInfo, GetSimplePropertyUriInfo,
-    GetEntityLinkUriInfo, GetEntitySetLinksUriInfo, GetMetadataUriInfo, GetFunctionImportUriInfo, GetEntitySetCountUriInfo, GetEntityCountUriInfo, GetMediaResourceUriInfo, 
+    GetEntityLinkUriInfo, GetEntitySetLinksUriInfo, GetMetadataUriInfo, GetFunctionImportUriInfo, GetEntitySetCountUriInfo, GetEntityCountUriInfo, GetMediaResourceUriInfo,
     GetEntityLinkCountUriInfo, GetEntitySetLinksCountUriInfo, PutMergePatchUriInfo, PostUriInfo, DeleteUriInfo {
 
   /**
@@ -106,7 +106,7 @@ public interface UriInfo extends GetServiceDocumentUriInfo, GetEntitySetUriInfo,
 
   /**
    * @return {@link InlineCount} the inline count or null
-   */ 
+   */
   public InlineCount getInlineCount();
 
   /**

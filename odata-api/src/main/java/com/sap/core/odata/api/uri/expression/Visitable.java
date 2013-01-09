@@ -1,7 +1,7 @@
 package com.sap.core.odata.api.uri.expression;
+
 /*X*/
 import com.sap.core.odata.api.exception.ODataApplicationException;
-
 
 /**
  * The interface {@link Visitable} is part of the visitor pattern used to traverse 
@@ -12,7 +12,7 @@ import com.sap.core.odata.api.exception.ODataApplicationException;
  *
  */
 public interface Visitable {
-  
+
   /**
    * Method {@link #accept(ExpressionVisitor)} is called when traversing the expression tree. This method is invoked on each 
    * expression used as node in an expression tree. The implementations should roughly  

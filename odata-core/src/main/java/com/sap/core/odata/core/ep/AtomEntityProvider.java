@@ -113,7 +113,7 @@ public class AtomEntityProvider extends EntityProvider {
       }
     }
   }
-  
+
   @Override
   public ODataResponse writeFeed(EdmEntitySet entitySet, List<Map<String, Object>> data, EntityProviderProperties properties) throws EntityProviderException {
     OutputStream outStream = null;
@@ -181,8 +181,8 @@ public class AtomEntityProvider extends EntityProvider {
           outStream.close();
         } catch (IOException e) {
           // don't throw in finally!
-          LOG.error(e.getLocalizedMessage(), e);
-        }
+        LOG.error(e.getLocalizedMessage(), e);
+      }
     }
 
     return ODataResponse.entity(buffer.getInputStream()).contentHeader(createContentHeader(ContentType.APPLICATION_XML)).build();
@@ -216,10 +216,9 @@ public class AtomEntityProvider extends EntityProvider {
           outStream.close();
         } catch (IOException e) {
           // don't throw in finally!
-          LOG.error(e.getLocalizedMessage(), e);
-        }
+        LOG.error(e.getLocalizedMessage(), e);
+      }
     }
-
 
     return ODataResponse.entity(buffer.getInputStream()).contentHeader(createContentHeader(ContentType.APPLICATION_XML)).build();
   }
@@ -238,7 +237,6 @@ public class AtomEntityProvider extends EntityProvider {
       writer.flush();
       outStream.flush();
       outStream.close();
-
 
       return ODataResponse.entity(buffer.getInputStream()).contentHeader(createContentHeader(ContentType.APPLICATION_XML)).build();
     } catch (Exception e) {

@@ -27,7 +27,7 @@ public class Mapping implements EdmMapping {
   public String getMimeType() {
     return mimeType;
   }
-  
+
   /* (non-Javadoc)
    * @see com.sap.core.odata.api.edm.EdmMapping#getObject()
    */
@@ -56,13 +56,13 @@ public class Mapping implements EdmMapping {
     this.mimeType = mimeType;
     return this;
   }
-  
+
   /**
    * Sets the data container for this mapping.
    * @param dataContainer
    * @return {@link Mapping} for method chaining
    */
-  public Mapping setDataContainer(Object dataContainer){
+  public Mapping setDataContainer(Object dataContainer) {
     this.dataContainer = dataContainer;
     return this;
   }

@@ -15,7 +15,6 @@ import org.junit.Test;
 
 import com.sap.core.odata.api.edm.EdmServiceMetadata;
 import com.sap.core.odata.api.edm.provider.EdmProvider;
-import com.sap.core.odata.core.edm.provider.EdmImplProv;
 import com.sap.core.odata.testutil.helper.StringHelper;
 import com.sap.core.odata.testutil.mock.EdmProviderMock;
 

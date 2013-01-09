@@ -13,7 +13,7 @@ public enum HttpStatusCodes {
   NO_CONTENT(204, "No Content"),
   RESET_CONTENT(205, "Reset Content"),
   PARTIAL_CONTENT(206, "Partial Content"),
-  
+
   MOVED_PERMANENTLY(301, "Moved Permanently"),
   FOUND(302, "Found"),
   SEE_OTHER(303, "See Other"),
@@ -98,5 +98,5 @@ public enum HttpStatusCodes {
   public String toString() {
     return info;
   }
-  
+
 }

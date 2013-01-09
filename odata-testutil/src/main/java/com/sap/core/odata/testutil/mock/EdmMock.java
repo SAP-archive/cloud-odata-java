@@ -90,7 +90,6 @@ class EdmMock {
     when(employeeEntitySet.getRelatedEntitySet(roomNavigationProperty)).thenReturn(roomEntitySet);
     when(employeeEntitySet.getEntityContainer()).thenReturn(defaultContainer);
 
-    
     EdmEntityType employeeType = employeeEntitySet.getEntityType();
     when(employeeType.getKind()).thenReturn(EdmTypeKind.ENTITY);
     when(employeeType.hasStream()).thenReturn(true);
@@ -239,7 +238,7 @@ class EdmMock {
 
     EdmProperty customProperty = createProperty("CustomProperty", EdmSimpleTypeKind.String);
     CustomizableFeedMappings customFeedMapping = new CustomizableFeedMappings()
-                                  .setFcKeepInContent(false).setFcNsPrefix("custom").setFcNsUri("http://localhost").setFcTargetPath("TarPath");
+        .setFcKeepInContent(false).setFcNsPrefix("custom").setFcNsUri("http://localhost").setFcTargetPath("TarPath");
     when(customProperty.getCustomizableFeedMappings()).thenReturn(customFeedMapping);
 
     EdmEntityType photoEntityType = mock(EdmEntityType.class);

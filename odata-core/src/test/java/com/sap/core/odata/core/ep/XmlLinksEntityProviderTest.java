@@ -31,7 +31,7 @@ public class XmlLinksEntityProviderTest extends AbstractProviderTest {
     assertNotNull(response.getEntity());
     assertEquals(ContentType.APPLICATION_XML.toString() + "; charset=utf-8", response.getContentHeader());
 
-    final String xml = StringHelper.inputStreamToString((InputStream)response.getEntity());
+    final String xml = StringHelper.inputStreamToString((InputStream) response.getEntity());
     assertNotNull(xml);
 
     assertXpathExists("/d:links", xml);
@@ -49,7 +49,7 @@ public class XmlLinksEntityProviderTest extends AbstractProviderTest {
     assertNotNull(response);
     assertNotNull(response.getEntity());
 
-    final String xml = StringHelper.inputStreamToString((InputStream)response.getEntity());
+    final String xml = StringHelper.inputStreamToString((InputStream) response.getEntity());
     assertNotNull(xml);
 
     assertXpathExists("/d:links", xml);

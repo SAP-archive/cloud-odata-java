@@ -25,8 +25,6 @@ import com.sap.core.odata.api.edm.provider.NavigationProperty;
 import com.sap.core.odata.api.edm.provider.Property;
 import com.sap.core.odata.api.edm.provider.PropertyRef;
 import com.sap.core.odata.api.edm.provider.SimpleProperty;
-import com.sap.core.odata.core.edm.provider.EdmEntityTypeImplProv;
-import com.sap.core.odata.core.edm.provider.EdmImplProv;
 
 /**
  * @author SAP AG

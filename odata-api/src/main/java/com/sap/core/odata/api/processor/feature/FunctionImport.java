@@ -10,7 +10,7 @@ import com.sap.core.odata.api.uri.info.GetFunctionImportUriInfo;
  * @author SAP AG
  */
 public interface FunctionImport extends ProcessorFeature {
-  
+
   /**
    * @param contentType 
    * @return a {@link ODataResponse} object

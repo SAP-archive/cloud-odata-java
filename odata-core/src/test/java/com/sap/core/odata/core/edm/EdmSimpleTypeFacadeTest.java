@@ -14,24 +14,6 @@ import com.sap.core.odata.api.edm.EdmLiteralException;
 import com.sap.core.odata.api.edm.EdmSimpleType;
 import com.sap.core.odata.api.edm.EdmSimpleTypeKind;
 import com.sap.core.odata.api.uri.UriSyntaxException;
-import com.sap.core.odata.core.edm.Bit;
-import com.sap.core.odata.core.edm.EdmBinary;
-import com.sap.core.odata.core.edm.EdmBoolean;
-import com.sap.core.odata.core.edm.EdmByte;
-import com.sap.core.odata.core.edm.EdmDateTime;
-import com.sap.core.odata.core.edm.EdmDateTimeOffset;
-import com.sap.core.odata.core.edm.EdmDecimal;
-import com.sap.core.odata.core.edm.EdmDouble;
-import com.sap.core.odata.core.edm.EdmGuid;
-import com.sap.core.odata.core.edm.EdmInt16;
-import com.sap.core.odata.core.edm.EdmInt32;
-import com.sap.core.odata.core.edm.EdmInt64;
-import com.sap.core.odata.core.edm.EdmSByte;
-import com.sap.core.odata.core.edm.EdmSimpleTypeFacadeImpl;
-import com.sap.core.odata.core.edm.EdmSingle;
-import com.sap.core.odata.core.edm.EdmString;
-import com.sap.core.odata.core.edm.EdmTime;
-import com.sap.core.odata.core.edm.Uint7;
 
 /**
  * @author SAP AG
@@ -109,8 +91,8 @@ public class EdmSimpleTypeFacadeTest {
     dt = parse("datetime'2009-12-26T21%3A23%3A38'");
     assertNotNull(dt);
     assertTrue(dt instanceof EdmDateTime);
-    
-    /*TODO why does this don't throws an exception*/ 
+
+    /*TODO why does this don't throws an exception*/
     dt = parse("datetime'ABC'");
     assertNotNull(dt);
     assertTrue(dt instanceof EdmDateTime);

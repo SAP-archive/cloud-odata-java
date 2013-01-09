@@ -91,7 +91,7 @@ public class ODataExceptionTest {
   {
     ODataMessageTextVerifier.TestClass(UriSyntaxException.class);
   }
-  
+
   @Test
   public void TestMessagesOfEdmLiteralException()
   {

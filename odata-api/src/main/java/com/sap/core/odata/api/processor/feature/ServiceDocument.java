@@ -10,7 +10,7 @@ import com.sap.core.odata.api.uri.info.GetServiceDocumentUriInfo;
  * @author SAP AG
  */
 public interface ServiceDocument extends ProcessorFeature {
-  
+
   /**
    * @param contentType 
    * @return a {@link ODataResponse} object

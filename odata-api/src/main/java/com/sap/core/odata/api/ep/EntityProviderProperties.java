@@ -73,7 +73,7 @@ public class EntityProviderProperties {
       epOptProperties.mediaResourceMimeType = mediaResourceMimeType;
       return this;
     }
-    
+
     /**
      * @param inlineCountType
      *          the inlineCount to set
@@ -82,7 +82,6 @@ public class EntityProviderProperties {
       epOptProperties.inlineCountType = inlineCountType;
       return this;
     }
-
 
     /**
      * @param inlineCount

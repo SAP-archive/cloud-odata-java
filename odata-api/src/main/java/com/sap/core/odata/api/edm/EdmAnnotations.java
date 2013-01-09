@@ -42,5 +42,5 @@ public interface EdmAnnotations {
    * @param namespace
    * @return String
    */
-  EdmAnnotationAttribute  getAnnotationAttribute(String name, String namespace);
+  EdmAnnotationAttribute getAnnotationAttribute(String name, String namespace);
 }

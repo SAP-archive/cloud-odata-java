@@ -17,7 +17,7 @@ public interface GetComplexPropertyUriInfo {
    * @return {@link EdmEntityContainer} the target entity container
    */
   public EdmEntityContainer getEntityContainer();
-  
+
   /**
    * @return {@link EdmEntitySet}
    */
@@ -32,7 +32,7 @@ public interface GetComplexPropertyUriInfo {
    * @return {@link EdmFunctionImport} the function import
    */
   public EdmFunctionImport getFunctionImport();
-  
+
   /**
    * @return {@link EdmType} the target type of the entity set
    */
@@ -42,7 +42,7 @@ public interface GetComplexPropertyUriInfo {
    * @return list of {@link KeyPredicate} or EmptyList
    */
   public List<KeyPredicate> getKeyPredicates();
-  
+
   /**
    * @return list of {@link NavigationSegment} or EmptyList
    */
@@ -62,7 +62,7 @@ public interface GetComplexPropertyUriInfo {
    * @return Map of {@literal <String,} {@link EdmLiteral}{@literal >} function import parameters or EmptyMap
    */
   public Map<String, EdmLiteral> getFunctionImportParameters();
-  
+
   /**
    * @return Map of {@literal<String, String>} custom query options or EmptyMap
    */

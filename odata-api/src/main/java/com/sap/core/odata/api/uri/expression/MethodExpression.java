@@ -24,7 +24,7 @@ public interface MethodExpression extends CommonExpression
    * @see MethodOperator
    */
   public MethodOperator getMethod();
-  
+
   /**
    * @return Returns the number of provided method parameters
    */
@@ -36,5 +36,4 @@ public interface MethodExpression extends CommonExpression
    */
   public List<CommonExpression> getParameters();
 
-  
 }

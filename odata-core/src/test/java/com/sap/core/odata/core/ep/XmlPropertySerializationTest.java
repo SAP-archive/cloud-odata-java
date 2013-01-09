@@ -35,7 +35,7 @@ public class XmlPropertySerializationTest extends AbstractProviderTest {
     assertNotNull(response.getEntity());
     assertEquals(ContentType.APPLICATION_XML.toString() + "; charset=utf-8", response.getContentHeader());
 
-    String xml = StringHelper.inputStreamToString((InputStream)response.getEntity());
+    String xml = StringHelper.inputStreamToString((InputStream) response.getEntity());
     assertNotNull(xml);
 
     assertXpathExists("/d:EmployeeId", xml);
@@ -53,7 +53,7 @@ public class XmlPropertySerializationTest extends AbstractProviderTest {
     assertNotNull(response);
     assertNotNull(response.getEntity());
     assertEquals(ContentType.APPLICATION_XML.toString() + "; charset=utf-8", response.getContentHeader());
-    String xml = StringHelper.inputStreamToString((InputStream)response.getEntity());
+    String xml = StringHelper.inputStreamToString((InputStream) response.getEntity());
     assertNotNull(xml);
 
     assertXpathExists("/d:Age", xml);
@@ -71,7 +71,7 @@ public class XmlPropertySerializationTest extends AbstractProviderTest {
     assertNotNull(response);
     assertNotNull(response.getEntity());
     assertEquals(ContentType.APPLICATION_XML.toString() + "; charset=utf-8", response.getContentHeader());
-    String xml = StringHelper.inputStreamToString((InputStream)response.getEntity());
+    String xml = StringHelper.inputStreamToString((InputStream) response.getEntity());
     assertNotNull(xml);
 
     assertXpathExists("/d:ImageUrl", xml);
@@ -92,7 +92,7 @@ public class XmlPropertySerializationTest extends AbstractProviderTest {
     assertNotNull(response);
     assertNotNull(response.getEntity());
     assertEquals(ContentType.APPLICATION_XML.toString() + "; charset=utf-8", response.getContentHeader());
-    String xml = StringHelper.inputStreamToString((InputStream)response.getEntity());
+    String xml = StringHelper.inputStreamToString((InputStream) response.getEntity());
     assertNotNull(xml);
 
     assertXpathExists("/d:Location", xml);

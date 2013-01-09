@@ -87,14 +87,14 @@ public class AtomFeedProviderTest extends AbstractProviderTest {
     assertNotNull(response);
     assertNotNull(response.getEntity());
     assertEquals(ContentType.APPLICATION_ATOM_XML_FEED.toString() + "; charset=utf-8", response.getContentHeader());
-    String xmlString = StringHelper.inputStreamToString((InputStream)response.getEntity());
+    String xmlString = StringHelper.inputStreamToString((InputStream) response.getEntity());
     return xmlString;
   }
 
   @Test
   public void testInlineCountAllpages() throws Exception {
     initializeRoomData(20);
-    
+
     EntityProvider ser = createAtomEntityProvider();
     EntityProviderProperties properties = EntityProviderProperties.baseUri(BASE_URI)
         .mediaResourceMimeType("mediatype")

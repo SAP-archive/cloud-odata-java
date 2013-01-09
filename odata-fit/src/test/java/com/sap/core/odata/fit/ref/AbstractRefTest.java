@@ -140,9 +140,8 @@ public class AbstractRefTest extends AbstractFitTest {
 
     if (expectedStatusCode == HttpStatusCodes.NO_CONTENT)
       assertTrue(response.getEntity() == null || response.getEntity().getContent() == null);
-    else
-      if (response.getEntity() != null)
-        response.getEntity().getContent().close();
+    else if (response.getEntity() != null)
+      response.getEntity().getContent().close();
   }
 
   protected void deleteUriOk(final String uri) throws Exception {

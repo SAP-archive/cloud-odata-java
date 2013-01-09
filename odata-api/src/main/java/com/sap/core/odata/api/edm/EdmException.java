@@ -13,7 +13,7 @@ public class EdmException extends ODataMessageException {
   public EdmException(MessageReference messageReference) {
     super(messageReference);
   }
-  
+
   public EdmException(MessageReference messageReference, Throwable cause) {
     super(messageReference, cause);
   }

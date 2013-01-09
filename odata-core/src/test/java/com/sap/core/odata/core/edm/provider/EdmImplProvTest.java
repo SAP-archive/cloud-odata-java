@@ -14,7 +14,6 @@ import com.sap.core.odata.api.edm.provider.ComplexType;
 import com.sap.core.odata.api.edm.provider.EdmProvider;
 import com.sap.core.odata.api.edm.provider.EntityContainerInfo;
 import com.sap.core.odata.api.edm.provider.EntityType;
-import com.sap.core.odata.core.edm.provider.EdmImplProv;
 
 public class EdmImplProvTest {
 

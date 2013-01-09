@@ -15,14 +15,14 @@ public interface EdmMapping {
    * @return mapping name as String
    */
   String getInternalName();
-  
+
   /**
    * Get the mapping name for mime type lookup
    * 
    * @return mapping name as String
    */
   String getMimeType();
-  
+
   /**
    * Get the data container for this mapping
    * 

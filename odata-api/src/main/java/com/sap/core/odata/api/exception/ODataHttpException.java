@@ -8,7 +8,7 @@ import com.sap.core.odata.api.commons.HttpStatusCodes;
 public abstract class ODataHttpException extends ODataMessageException {
 
   private static final long serialVersionUID = 1L;
-  
+
   protected final HttpStatusCodes httpStatus;
 
   public ODataHttpException(MessageReference messageReference, HttpStatusCodes httpStatus) {

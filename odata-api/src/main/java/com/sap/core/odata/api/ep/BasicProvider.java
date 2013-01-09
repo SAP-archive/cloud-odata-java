@@ -46,7 +46,7 @@ public abstract class BasicProvider {
    * @throws EntityProviderException
    */
   public abstract ODataResponse writeText(String value) throws EntityProviderException;
-  
+
   /**
    * Write binary content with content type header set to given <code>mime type</code> parameter.
    * 

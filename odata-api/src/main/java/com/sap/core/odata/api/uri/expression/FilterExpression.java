@@ -1,4 +1,5 @@
 package com.sap.core.odata.api.uri.expression;
+
 /*TODO add docu*/
 
 /**
@@ -10,7 +11,7 @@ package com.sap.core.odata.api.uri.expression;
  */
 public interface FilterExpression extends CommonExpression
 {
-  
+
   /**
    * @return Returns the $filter expression string used to build the expression tree
    */
@@ -20,5 +21,5 @@ public interface FilterExpression extends CommonExpression
    * @return Returns the expression node representing the first <i>operator</i>,<i>method</i> or <i>property</i> of the expression tree
    */
   CommonExpression getExpression();
- 
+
 }

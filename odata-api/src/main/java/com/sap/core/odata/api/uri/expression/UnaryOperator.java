@@ -1,4 +1,5 @@
 package com.sap.core.odata.api.uri.expression;
+
 /*X*/
 
 /**
@@ -10,26 +11,22 @@ public enum UnaryOperator
 {
   MINUS("-", "negation"),
   NOT("not");
-  
-  
+
   private String syntax;
   private String stringRespresentation;
-  
-  
+
   private UnaryOperator(String syntax)
   {
     this.syntax = syntax;
     this.stringRespresentation = syntax;
   }
-  
-  
+
   private UnaryOperator(String syntax, String stringRespresentation)
   {
     this.syntax = syntax;
     this.stringRespresentation = stringRespresentation;
   }
-  
-  
+
   /** 
    * @return Methods name for usage in in text
    */
@@ -38,8 +35,7 @@ public enum UnaryOperator
   {
     return stringRespresentation;
   }
-  
-  
+
   /**
    * @return Syntax of the unary operator as used in the URL. 
    */

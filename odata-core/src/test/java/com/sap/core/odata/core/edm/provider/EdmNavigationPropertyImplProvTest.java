@@ -19,8 +19,6 @@ import com.sap.core.odata.api.edm.provider.AssociationEnd;
 import com.sap.core.odata.api.edm.provider.EdmProvider;
 import com.sap.core.odata.api.edm.provider.EntityType;
 import com.sap.core.odata.api.edm.provider.NavigationProperty;
-import com.sap.core.odata.core.edm.provider.EdmImplProv;
-import com.sap.core.odata.core.edm.provider.EdmNavigationPropertyImplProv;
 
 /**
  * @author SAP AG

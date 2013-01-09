@@ -25,7 +25,7 @@ public interface GetEntitySetUriInfo {
    * @return {@link EdmEntityContainer} the target entity container
    */
   public EdmEntityContainer getEntityContainer();
-  
+
   /**
    * @return {@link EdmEntitySet}
    */
@@ -40,7 +40,7 @@ public interface GetEntitySetUriInfo {
    * @return {@link EdmFunctionImport} the function import
    */
   public EdmFunctionImport getFunctionImport();
-  
+
   /**
    * @return {@link EdmType} the target type of the entity set
    */
@@ -55,7 +55,7 @@ public interface GetEntitySetUriInfo {
    * @return list of {@link NavigationSegment} or EmptyList
    */
   public List<NavigationSegment> getNavigationSegments();
-  
+
   /**
    * @return the format (as set as <code>$format</code> query parameter) or null
    */
@@ -100,7 +100,7 @@ public interface GetEntitySetUriInfo {
    * @return List of {@link SelectItem} to be selected or EmptyList
    */
   public List<SelectItem> getSelect();
-  
+
   /**
    * @return Map of {@literal <String,} {@link EdmLiteral}{@literal >} function import parameters or EmptyMap
    */

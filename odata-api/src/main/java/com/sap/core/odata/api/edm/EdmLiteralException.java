@@ -14,11 +14,11 @@ public class EdmLiteralException extends EdmException {
   public static final MessageReference NOTEXT = createMessageReference(EdmLiteralException.class, "NOTEXT");
   public static final MessageReference LITERALFORMAT = createMessageReference(EdmLiteralException.class, "LITERALFORMAT");
   public static final MessageReference UNKNOWNLITERAL = createMessageReference(EdmLiteralException.class, "UNKNOWNLITERAL");
-  
+
   public EdmLiteralException(MessageReference MessageReference) {
     super(MessageReference);
   }
-  
+
   public EdmLiteralException(MessageReference messageReference, Throwable cause) {
     super(messageReference, cause);
   }

@@ -13,7 +13,7 @@ public class EntityContainerInfo {
   private boolean isDefaultEntityContainer;
   private List<AnnotationAttribute> annotationAttributes;
   private List<AnnotationElement> annotationElements;
-  
+
   /**
    * @return <b>String</b> name
    */
@@ -64,7 +64,7 @@ public class EntityContainerInfo {
     this.isDefaultEntityContainer = isDefaultEntityContainer;
     return this;
   }
-  
+
   /**
    * @return collection of {@link AnnotationAttribute} annotation attributes
    */

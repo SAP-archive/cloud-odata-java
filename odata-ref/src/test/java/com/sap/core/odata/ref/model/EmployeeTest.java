@@ -11,12 +11,6 @@ import java.util.Calendar;
 
 import org.junit.Test;
 
-import com.sap.core.odata.ref.model.Employee;
-import com.sap.core.odata.ref.model.Location;
-import com.sap.core.odata.ref.model.Manager;
-import com.sap.core.odata.ref.model.Room;
-import com.sap.core.odata.ref.model.Team;
-
 public class EmployeeTest {
 
   private static final int VALUE_AGE = 36;

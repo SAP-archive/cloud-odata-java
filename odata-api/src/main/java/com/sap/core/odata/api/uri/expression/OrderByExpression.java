@@ -16,7 +16,7 @@ public interface OrderByExpression extends CommonExpression
    * @return Returns the $filter expression string used to build the expression tree
    */
   String getExpressionString();
-  
+
   /**
    * @return 
    *   Returns a ordered list of order expressions contained in the $orderby expression string

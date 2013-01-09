@@ -26,7 +26,7 @@ public interface EdmProperty extends EdmElement {
    * @throws EdmException
    */
   String getMimeType() throws EdmException;
-  
+
   /**
    * Get the info if the property is a simple property
    * 

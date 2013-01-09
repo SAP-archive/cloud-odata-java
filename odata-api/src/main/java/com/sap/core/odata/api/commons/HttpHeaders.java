@@ -118,5 +118,5 @@ public interface HttpHeaders {
    * See {@link <a href="http://www.ietf.org/rfc/rfc2109.txt">IETF RFC 2109</a>}.
    */
   public static final String SET_COOKIE = "Set-Cookie";
-  
+
 }

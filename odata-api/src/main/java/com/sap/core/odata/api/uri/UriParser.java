@@ -8,13 +8,12 @@ import com.sap.core.odata.api.edm.EdmException;
 import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.api.rt.RuntimeDelegate;
 
-
 /**
  * Class to wrap UriParser functionality 
  * @author SAP AG
  */
 public abstract class UriParser {
-  
+
   /**
    * Parse path segments and query parameters for the given EDM
    * @param edm
@@ -35,5 +34,5 @@ public abstract class UriParser {
    * @return {@link UriInfo} parsed uri result
    * @throws UriSyntaxException
    */
-  public abstract UriInfo parse(List<PathSegment> pathSegments, Map<String, String> queryParameters) throws UriSyntaxException, UriNotMatchingException, EdmException;  
+  public abstract UriInfo parse(List<PathSegment> pathSegments, Map<String, String> queryParameters) throws UriSyntaxException, UriNotMatchingException, EdmException;
 }

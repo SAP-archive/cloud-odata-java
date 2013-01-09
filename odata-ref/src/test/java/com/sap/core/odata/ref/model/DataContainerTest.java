@@ -9,9 +9,6 @@ import java.util.Set;
 
 import org.junit.Test;
 
-import com.sap.core.odata.ref.model.DataContainer;
-import com.sap.core.odata.ref.model.Team;
-
 public class DataContainerTest {
   private DataContainer dc = new DataContainer();
   private static final String NAME = "Other name for team";

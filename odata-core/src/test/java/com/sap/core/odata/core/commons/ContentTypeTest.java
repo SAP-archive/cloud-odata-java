@@ -11,7 +11,6 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 import com.sap.core.odata.api.commons.HttpContentType;
-import com.sap.core.odata.core.commons.ContentType;
 import com.sap.core.odata.core.commons.ContentType.ODataFormat;
 
 // 14.1 Accept
@@ -34,7 +33,7 @@ public class ContentTypeTest {
   @Test
   public void creationFromHttpContentTypeAtomXmlEntry() {
     ContentType mt = ContentType.create(HttpContentType.APPLICATION_ATOM_XML_ENTRY);
-    
+
     assertEquals("application", mt.getType());
     assertEquals("atom+xml", mt.getSubtype());
     assertEquals("application/atom+xml; type=entry", mt.toString());
@@ -47,7 +46,7 @@ public class ContentTypeTest {
   @Test
   public void creationFromHttpContentTypeMultipartMixed() {
     ContentType mt = ContentType.create(HttpContentType.MULTIPART_MIXED);
-    
+
     assertEquals("multipart", mt.getType());
     assertEquals("mixed", mt.getSubtype());
     assertEquals("multipart/mixed", mt.toString());
@@ -59,7 +58,7 @@ public class ContentTypeTest {
   @Test
   public void creationFromHttpContentTypeApplicationXml() {
     ContentType mt = ContentType.create(HttpContentType.APPLICATION_XML);
-    
+
     assertEquals("application", mt.getType());
     assertEquals("xml", mt.getSubtype());
     assertEquals("application/xml", mt.toString());
@@ -71,7 +70,7 @@ public class ContentTypeTest {
   @Test
   public void creationFromHttpContentTypeApplicationJson() {
     ContentType mt = ContentType.create(HttpContentType.APPLICATION_JSON);
-    
+
     assertEquals("application", mt.getType());
     assertEquals("json", mt.getSubtype());
     assertEquals("application/json", mt.toString());
@@ -80,11 +79,10 @@ public class ContentTypeTest {
     assertEquals(ContentType.APPLICATION_JSON, mt);
   }
 
-  
   @Test
   public void testContentTypeCreation() {
     ContentType mt = ContentType.create("type", "subtype");
-    
+
     assertEquals("type", mt.getType());
     assertEquals("subtype", mt.getSubtype());
     assertEquals("type/subtype", mt.toString());
@@ -94,7 +92,7 @@ public class ContentTypeTest {
   @Test
   public void testContentTypeCreationAtom() {
     ContentType mt = ContentType.create("application", "atom+xml");
-    
+
     assertEquals("application", mt.getType());
     assertEquals("atom+xml", mt.getSubtype());
     assertEquals("application/atom+xml", mt.toString());
@@ -104,7 +102,7 @@ public class ContentTypeTest {
   @Test
   public void testContentTypeCreationXml() {
     ContentType mt = ContentType.create("application", "xml");
-    
+
     assertEquals("application", mt.getType());
     assertEquals("xml", mt.getSubtype());
     assertEquals("application/xml", mt.toString());
@@ -114,7 +112,7 @@ public class ContentTypeTest {
   @Test
   public void testContentTypeCreationJson() {
     ContentType mt = ContentType.create("application", "json");
-    
+
     assertEquals("application", mt.getType());
     assertEquals("json", mt.getSubtype());
     assertEquals("application/json", mt.toString());
@@ -124,7 +122,7 @@ public class ContentTypeTest {
   @Test
   public void testContentTypeCreationOneString() {
     ContentType mt = ContentType.create("type/subtype");
-    
+
     assertEquals("type", mt.getType());
     assertEquals("subtype", mt.getSubtype());
     assertEquals("type/subtype", mt.toString());
@@ -134,7 +132,7 @@ public class ContentTypeTest {
   @Test
   public void testContentTypeCreationAtomOneString() {
     ContentType mt = ContentType.create("application/atom+xml");
-    
+
     assertEquals("application", mt.getType());
     assertEquals("atom+xml", mt.getSubtype());
     assertEquals("application/atom+xml", mt.toString());
@@ -144,7 +142,7 @@ public class ContentTypeTest {
   @Test
   public void testContentTypeCreationXmlOneString() {
     ContentType mt = ContentType.create("application/xml");
-    
+
     assertEquals("application", mt.getType());
     assertEquals("xml", mt.getSubtype());
     assertEquals("application/xml", mt.toString());
@@ -154,7 +152,7 @@ public class ContentTypeTest {
   @Test
   public void testContentTypeCreationXmlWithParaOneString() {
     ContentType mt = ContentType.create("application/xml;q=0.9");
-    
+
     assertEquals("application", mt.getType());
     assertEquals("xml", mt.getSubtype());
     assertEquals("application/xml", mt.toString());
@@ -164,7 +162,7 @@ public class ContentTypeTest {
   @Test
   public void testContentTypeCreationJsonOneString() {
     ContentType mt = ContentType.create("application/json");
-    
+
     assertEquals("application", mt.getType());
     assertEquals("json", mt.getSubtype());
     assertEquals("application/json", mt.toString());
@@ -182,17 +180,17 @@ public class ContentTypeTest {
     assertEquals("type/subtype; key=value", mt.toString());
   }
 
-//  private Map<String, String> addParameter(String key, String value) {
-//    Map<String, String> map = new HashMap<String, String>();
-//    map.put(key, value);
-//    return map;
-//  }
+  //  private Map<String, String> addParameter(String key, String value) {
+  //    Map<String, String> map = new HashMap<String, String>();
+  //    map.put(key, value);
+  //    return map;
+  //  }
 
-  private Map<String, String> addParameters(String ... content) {
+  private Map<String, String> addParameters(String... content) {
     Map<String, String> map = new HashMap<String, String>();
-    for (int i = 0; i < content.length-1; i+=2) {
+    for (int i = 0; i < content.length - 1; i += 2) {
       String key = content[i];
-      String value = content[i+1];
+      String value = content[i + 1];
       map.put(key, value);
     }
     return map;
@@ -259,12 +257,12 @@ public class ContentTypeTest {
     assertEquals("*", t.getSubtype());
     assertEquals(2, t.getParameters().size());
   }
-  
+
   @Test
   public void testSimpleEqual() {
     ContentType t1 = ContentType.create("aaa/bbb");
     ContentType t2 = ContentType.create("aaa/bbb");
-    
+
     assertEquals(t1, t2);
   }
 
@@ -272,7 +270,7 @@ public class ContentTypeTest {
   public void testEqualWithParameters() {
     ContentType t1 = ContentType.create("aaa/bbb;x=y;a");
     ContentType t2 = ContentType.create("aaa/bbb;x=y;a");
-    
+
     assertEquals(t1, t2);
     assertTrue(t1.equals(t2));
     assertTrue(t2.equals(t1));
@@ -282,7 +280,7 @@ public class ContentTypeTest {
   public void testEqualWithUnsortedParameters() {
     ContentType t1 = ContentType.create("aaa/bbb;x=y;a=b");
     ContentType t2 = ContentType.create("aaa/bbb;a=b;x=y");
-    
+
     assertEquals(t1, t2);
     assertTrue(t1.equals(t2));
     assertTrue(t2.equals(t1));
@@ -292,7 +290,7 @@ public class ContentTypeTest {
   public void testEqualWithWildcard() {
     ContentType t1 = ContentType.create("aaa/bbb");
     ContentType t2 = ContentType.create("*");
-    
+
     assertTrue(t1.equals(t2));
     assertTrue(t2.equals(t1));
     assertEquals(t1, t2);
@@ -302,7 +300,7 @@ public class ContentTypeTest {
   public void testEqualWithWildcardSubtype() {
     ContentType t1 = ContentType.create("aaa/bbb");
     ContentType t2 = ContentType.create("aaa/*");
-    
+
     assertEquals(t1, t2);
     assertTrue(t1.equals(t2));
     assertTrue(t2.equals(t1));
@@ -312,7 +310,7 @@ public class ContentTypeTest {
   public void testEqualWithDiffTypeWildcardSubtype() {
     ContentType t1 = ContentType.create("ccc/bbb");
     ContentType t2 = ContentType.create("aaa/*");
-    
+
     assertFalse(t1.equals(t2));
     assertFalse(t2.equals(t1));
   }
@@ -321,7 +319,7 @@ public class ContentTypeTest {
   public void testEqualWithDiffSubTypeWildcardSubtype() {
     ContentType t1 = ContentType.create("*/bbb");
     ContentType t2 = ContentType.create("aaa/ccc");
-    
+
     assertFalse(t1.equals(t2));
     assertFalse(t2.equals(t1));
   }
@@ -330,7 +328,7 @@ public class ContentTypeTest {
   public void testEqualWithWildcardAndParameters() {
     ContentType t1 = ContentType.create("aaa/bbb;x=y;a");
     ContentType t2 = ContentType.create("*");
-    
+
     assertEquals(t1, t2);
     assertTrue(t1.equals(t2));
     assertTrue(t2.equals(t1));
@@ -340,17 +338,17 @@ public class ContentTypeTest {
   public void testEqualWithWildcardSubtypeAndParameters() {
     ContentType t1 = ContentType.create("aaa/bbb;x=y;a");
     ContentType t2 = ContentType.create("aaa/*");
-    
+
     assertEquals(t1, t2);
     assertTrue(t1.equals(t2));
     assertTrue(t2.equals(t1));
   }
-  
+
   @Test
   public void testEqualWithWildcardSubtypeAndParametersBoth() {
     ContentType t1 = ContentType.create("aaa/bbb;x=y");
     ContentType t2 = ContentType.create("aaa/*;x=y");
-    
+
     assertEquals(t1, t2);
     assertTrue(t1.equals(t2));
     assertTrue(t2.equals(t1));
@@ -361,17 +359,16 @@ public class ContentTypeTest {
   public void testUnEqualWithWildcardSubtypeAndDiffParameters() {
     ContentType t1 = ContentType.create("aaa/bbb;x=z");
     ContentType t2 = ContentType.create("aaa/*;x=y");
-    
+
     assertFalse(t1.equals(t2));
     assertFalse(t2.equals(t1));
   }
-  
-  
+
   @Test
   public void testUnSimpleEqual() {
     ContentType t1 = ContentType.create("aaa/ccc");
     ContentType t2 = ContentType.create("aaa/bbb");
-    
+
     assertFalse(t1.equals(t2));
     assertFalse(t2.equals(t1));
   }
@@ -380,17 +377,16 @@ public class ContentTypeTest {
   public void testUnEqualTypesWithParameters() {
     ContentType t1 = ContentType.create("aaa/bbb;x=y;a");
     ContentType t2 = ContentType.create("ccc/bbb;x=y;a");
-    
+
     assertFalse(t1.equals(t2));
     assertFalse(t2.equals(t1));
   }
-
 
   @Test
   public void testUnEqualParameters() {
     ContentType t1 = ContentType.create("aaa/bbb;x=y;a");
     ContentType t2 = ContentType.create("aaa/bbb;x=y;a=b");
-    
+
     assertFalse(t1.equals(t2));
     assertFalse(t2.equals(t1));
   }
@@ -399,7 +395,7 @@ public class ContentTypeTest {
   public void testUnEqualParametersCounts() {
     ContentType t1 = ContentType.create("aaa/bbb");
     ContentType t2 = ContentType.create("aaa/bbb;x=y;a=b");
-    
+
     assertFalse(t1.equals(t2));
     assertFalse(t2.equals(t1));
   }
@@ -408,7 +404,7 @@ public class ContentTypeTest {
   public void testUnEqualParametersCountsIgnoreQ() {
     ContentType t1 = ContentType.create("aaa/bbb;q=0.9");
     ContentType t2 = ContentType.create("aaa/bbb;x=y;a=b");
-    
+
     assertFalse(t1.equals(t2));
     assertFalse(t2.equals(t1));
   }
@@ -417,7 +413,7 @@ public class ContentTypeTest {
   public void testEqualParametersCountsIgnoreQ() {
     ContentType t1 = ContentType.create("aaa/bbb;q=0.9;x=y;a=b");
     ContentType t2 = ContentType.create("aaa/bbb;x=y;a=b");
-    
+
     assertTrue(t1.equals(t2));
     assertTrue(t2.equals(t1));
   }
@@ -426,7 +422,7 @@ public class ContentTypeTest {
   public void testEqualParametersCountsWithQ() {
     ContentType t1 = ContentType.create("aaa", "bbb", addParameters("a", "b", "x", "y", "q", "0.9"));
     ContentType t2 = ContentType.create("aaa/bbb;x=y;a=b");
-    
+
     assertTrue(t1.equals(t2));
     assertTrue(t2.equals(t1));
   }
@@ -435,25 +431,25 @@ public class ContentTypeTest {
   public void testUnEqualWithUnsortedParameters() {
     ContentType t1 = ContentType.create("aaa/bbb;x=z;a=b");
     ContentType t2 = ContentType.create("aaa/bbb;a=b;x=y");
-    
+
     assertFalse(t1.equals(t2));
     assertFalse(t2.equals(t1));
   }
-  
+
   @Test
   public void testCompareSame() {
     ContentType t1 = ContentType.create("aaa/bbb");
     ContentType t2 = ContentType.create("aaa/bbb");
-    
+
     assertEquals(0, t1.compareWildcardCounts(t2));
     assertEquals(0, t2.compareWildcardCounts(t1));
   }
-  
+
   @Test
   public void testCompareOneWildcard() {
     ContentType t1 = ContentType.create("*/bbb");
     ContentType t2 = ContentType.create("aaa/bbb");
-    
+
     assertEquals(2, t1.compareWildcardCounts(t2));
     assertEquals(-2, t2.compareWildcardCounts(t1));
   }
@@ -462,7 +458,7 @@ public class ContentTypeTest {
   public void testCompareTwoWildcard() {
     ContentType t1 = ContentType.create("*/*");
     ContentType t2 = ContentType.create("aaa/bbb");
-    
+
     assertEquals(3, t1.compareWildcardCounts(t2));
     assertEquals(-3, t2.compareWildcardCounts(t1));
   }
@@ -471,7 +467,7 @@ public class ContentTypeTest {
   public void testCompareSubWildcard() {
     ContentType t1 = ContentType.create("aaa/*");
     ContentType t2 = ContentType.create("aaa/bbb");
-    
+
     assertEquals(1, t1.compareWildcardCounts(t2));
     assertEquals(-1, t2.compareWildcardCounts(t1));
   }
@@ -480,7 +476,7 @@ public class ContentTypeTest {
   public void testCompareCrossWildcard() {
     ContentType t1 = ContentType.create("aaa/*");
     ContentType t2 = ContentType.create("*/bbb");
-    
+
     assertEquals(-1, t1.compareWildcardCounts(t2));
     assertEquals(1, t2.compareWildcardCounts(t1));
   }

@@ -26,7 +26,7 @@ public class OrderByParserImpl extends FilterParserImpl implements OrderByParser
 
     try
     {
-      tokenList =  new Tokenizer(orderByExpression).tokenize(); //throws TokenizerMessage
+      tokenList = new Tokenizer(orderByExpression).tokenize(); //throws TokenizerMessage
     } catch (TokenizerException tokenizerException)
     {
       //throw FilterParserExceptionImpl.createERROR_IN_TOKENIZER(tokenizerException);
@@ -76,13 +76,13 @@ public class OrderByParserImpl extends FilterParserImpl implements OrderByParser
       {
         orderNode.setSortOrder(SortOrder.asc);
         tokenList.next();
-        token  = tokenList.lookToken();
+        token = tokenList.lookToken();
       }
       else
       {
         //TODO add syntax error
       }
-      
+
       orderCollection.addOrder(orderNode);
 
       //ls_token may be a ',' or  empty.
@@ -91,15 +91,15 @@ public class OrderByParserImpl extends FilterParserImpl implements OrderByParser
         weiter = true;
         break;
       }
-      else if(token.getKind() == TokenKind.COMMA)
+      else if (token.getKind() == TokenKind.COMMA)
       {
         tokenList.next();
-        token  = tokenList.lookToken();
+        token = tokenList.lookToken();
         /*
          * error xmlns="http://schemas.microsoft.com/ado/2007/08/dataservices/metadata">
-<code/>
-<message xml:lang="en-US">Expression expected at position 10.</message>
-</error>
+        <code/>
+        <message xml:lang="en-US">Expression expected at position 10.</message>
+        </error>
          */
       }
     }

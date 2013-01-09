@@ -30,7 +30,7 @@ public class ComplexProperty extends Property {
     this.type = type;
     return this;
   }
-  
+
   /* (non-Javadoc)
    * @see com.sap.core.odata.api.edm.provider.Property#setName(java.lang.String)
    */

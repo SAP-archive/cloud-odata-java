@@ -55,7 +55,7 @@ public class UnaryExpressionImpl implements UnaryExpression
   }
 
   @Override
-  public String getUriLiteral() 
+  public String getUriLiteral()
   {
     return operatorInfo.getSyntax();
   }

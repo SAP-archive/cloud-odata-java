@@ -106,7 +106,7 @@ public abstract class EdmStructuralTypeImplProv extends EdmNamedImplProv impleme
   public EdmTypeKind getKind() {
     return edmTypeKind;
   }
-  
+
   @Override
   public EdmMapping getMapping() throws EdmException {
     return structuralType.getMapping();

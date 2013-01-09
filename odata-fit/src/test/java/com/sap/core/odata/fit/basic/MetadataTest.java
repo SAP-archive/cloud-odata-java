@@ -29,7 +29,7 @@ public class MetadataTest extends AbstractBasicTest {
   @Override
   protected ODataSingleProcessor createProcessor() throws ODataException {
     ODataSingleProcessor processor = mock(ODataSingleProcessor.class);
-    when(((Metadata) processor).readMetadata(any(GetMetadataUriInfo.class),any(String.class))).thenReturn(ODataResponse.entity("metadata").status(HttpStatusCodes.OK).build());
+    when(((Metadata) processor).readMetadata(any(GetMetadataUriInfo.class), any(String.class))).thenReturn(ODataResponse.entity("metadata").status(HttpStatusCodes.OK).build());
     return processor;
   }
 

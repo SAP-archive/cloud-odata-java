@@ -23,12 +23,12 @@ public interface PropertyExpression extends CommonExpression
    * @return the property name as used in the EDM
    */
   public String getPropertyName();
-  
+
   /**
    * @return Returns the EDM property matching the property name used in the expression String.
    *   This may be an instance of EdmProperty or EdmNavigationProperty
    * @see EdmTyped    
    */
   public EdmTyped getEdmProperty();
-  
+
 }

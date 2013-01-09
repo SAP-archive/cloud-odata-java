@@ -27,7 +27,6 @@ import com.sap.core.odata.testutil.mock.MockFacade;
 
 public class UriInfoTest {
 
-  
   private static Edm edm;
 
   @BeforeClass
@@ -88,7 +87,7 @@ public class UriInfoTest {
       throw new UriSyntaxException(UriSyntaxException.NOTEXT);
     }
   }
-  
+
   @Test
   public void everythingInitial() throws Exception {
     UriInfoImpl result = parse("/");
@@ -113,7 +112,7 @@ public class UriInfoTest {
     assertNull(result.getSkip());
     assertNull(result.getTop());
   }
-  
+
   @Test
   public void allInitial() throws Exception {
     UriInfoImpl result = parse("/Employees");
@@ -124,34 +123,35 @@ public class UriInfoTest {
     assertEquals(Collections.emptyList(), result.getExpand());
     assertEquals(Collections.emptyList(), result.getSelect());
     assertEquals(Collections.emptyMap(), result.getFunctionImportParameters());
-    assertEquals(Collections.emptyMap(), result.getCustomQueryOptions());  
+    assertEquals(Collections.emptyMap(), result.getCustomQueryOptions());
   }
+
   @Test
   public void someInitial() throws Exception {
     UriInfoImpl result = parse("/Employees('1')");
 
     assertNotSame(Collections.emptyList(), result.getKeyPredicates());
-    
+
     assertEquals(Collections.emptyList(), result.getNavigationSegments());
     assertEquals(Collections.emptyList(), result.getPropertyPath());
     assertEquals(Collections.emptyList(), result.getExpand());
     assertEquals(Collections.emptyList(), result.getSelect());
     assertEquals(Collections.emptyMap(), result.getFunctionImportParameters());
-    assertEquals(Collections.emptyMap(), result.getCustomQueryOptions());  
+    assertEquals(Collections.emptyMap(), result.getCustomQueryOptions());
   }
-  
+
   @Test
   public void someInitial2() throws Exception {
     UriInfoImpl result = parse("/Employees('1')/ne_Manager");
 
-    assertNotSame(Collections.emptyList(), result.getKeyPredicates());  
+    assertNotSame(Collections.emptyList(), result.getKeyPredicates());
     assertNotSame(Collections.emptyList(), result.getNavigationSegments());
-    
+
     assertEquals(Collections.emptyList(), result.getPropertyPath());
     assertEquals(Collections.emptyList(), result.getExpand());
     assertEquals(Collections.emptyList(), result.getSelect());
     assertEquals(Collections.emptyMap(), result.getFunctionImportParameters());
-    assertEquals(Collections.emptyMap(), result.getCustomQueryOptions());  
+    assertEquals(Collections.emptyMap(), result.getCustomQueryOptions());
   }
-  
+
 }

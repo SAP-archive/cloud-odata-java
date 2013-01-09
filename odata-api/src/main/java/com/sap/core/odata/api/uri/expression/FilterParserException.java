@@ -13,12 +13,12 @@ public class FilterParserException extends ODataBadRequestException
   /*TODO add error texts to resource file*/
 
   //VON ABAP "An exception occurred"
- 
+
   public static final MessageReference COMMON_ERROR = createMessageReference(FilterParserException.class, "COMMON");
 
   //NEW Error during tokenizing
   public static final MessageReference ERROR_IN_TOKENIZER = createMessageReference(FilterParserException.class, "ERROR_IN_TOKENIZER");
-  
+
   //VON ABAP CX_DS_EXPR_SYNTAX_ERROR-TOKEN_INVALID "Invalid token detected at position &POSITION&"
   public static final MessageReference INVALID_TRAILING_TOKEN_DETECTED_AFTER_PARSING = createMessageReference(FilterParserException.class, "INVALID_TRAILING_TOKEN_DETECTED_AFTER_PARSING");
 
@@ -26,18 +26,18 @@ public class FilterParserException extends ODataBadRequestException
   public static final MessageReference EXPRESSION_EXPECTED_AT_POS = createMessageReference(FilterParserException.class, "EXPRESSION_EXPECTED_AT_POS");
 
   public static final MessageReference INVALID_TOKEN = createMessageReference(FilterParserException.class, "INVALID_TOKEN");
-  
+
   public static final MessageReference METHOD_TO_FEW_PARAMETERS = createMessageReference(FilterParserException.class, "METHOD_TO_FEW_PARAMETERS");
 
   public static final MessageReference METHOD_TO_MANY_PARAMETERS = createMessageReference(FilterParserException.class, "METHOD_TO_MANY_PARAMETERS");
 
-  public static final MessageReference LEFT_SIDE_NOT_STRUCTURAL_TYPE  = createMessageReference(FilterParserException.class, "LEFT_SIDE_NOT_STRUCTURAL_TYPE");
+  public static final MessageReference LEFT_SIDE_NOT_STRUCTURAL_TYPE = createMessageReference(FilterParserException.class, "LEFT_SIDE_NOT_STRUCTURAL_TYPE");
 
-  public static final MessageReference PROPERTY_NAME_NOT_FOUND_IN_TYPE   = createMessageReference(FilterParserException.class, "PROPERTY_NAME_NOT_FOUND_IN_TYPE");
-  
-  public static final MessageReference TOKEN_UNDETERMINATED_STRING   = createMessageReference(FilterParserException.class, "TOKEN_UNDETERMINATED_STRING");
-  
-  public static final MessageReference INVALID_TYPES_FOR_BINARY_OPERATOR= createMessageReference(FilterParserException.class, "INVALID_TYPES_FOR_BINARY_OPERATOR");
+  public static final MessageReference PROPERTY_NAME_NOT_FOUND_IN_TYPE = createMessageReference(FilterParserException.class, "PROPERTY_NAME_NOT_FOUND_IN_TYPE");
+
+  public static final MessageReference TOKEN_UNDETERMINATED_STRING = createMessageReference(FilterParserException.class, "TOKEN_UNDETERMINATED_STRING");
+
+  public static final MessageReference INVALID_TYPES_FOR_BINARY_OPERATOR = createMessageReference(FilterParserException.class, "INVALID_TYPES_FOR_BINARY_OPERATOR");
   
   public static final MessageReference MISSING_CLOSING_PHARENTHESIS= createMessageReference(FilterParserException.class, "MISSING_CLOSING_PHARENTHESIS");
   
@@ -54,7 +54,7 @@ public class FilterParserException extends ODataBadRequestException
   }
 
   public FilterParserException(MessageReference messageReference, Throwable cause) {
-    super(messageReference,cause );
+    super(messageReference, cause);
   }
 
   /**
@@ -65,8 +65,6 @@ public class FilterParserException extends ODataBadRequestException
     return filterTree;
   }
 
-  
-  
   /**
    * See erroneous filter tree for debug information
    * @param filterTree
@@ -76,23 +74,17 @@ public class FilterParserException extends ODataBadRequestException
     this.filterTree = filterTree;
     return this;
   }
-  
+
   public FilterParserException setCause(Throwable tokenizerException) {
     this.initCause(tokenizerException);
     return this;
   }
 
-
   public static FilterParserException ErrorInTokenizer(String token, int position)
   {
     MessageReference msgRef = FilterParserException.ERROR_IN_TOKENIZER.addContent(Integer.toString(position), token);
     return new FilterParserException(msgRef);
-    
+
   }
-      
-
-
-  
-
 
 }

@@ -14,17 +14,17 @@ public enum ODataServiceVersion {
     return this.version;
   }
 
-  public static ODataServiceVersion fromString(String version) 
+  public static ODataServiceVersion fromString(String version)
   {
     for (ODataServiceVersion it : ODataServiceVersion.values())
     {
       if (it.version.equals(version))
       {
-          return it;
+        return it;
       }
     }
-    
+
     throw new IllegalArgumentException(version);
   }
-  
+
 }

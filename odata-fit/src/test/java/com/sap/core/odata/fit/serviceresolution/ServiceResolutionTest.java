@@ -18,7 +18,6 @@ import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.log4j.xml.DOMConfigurator;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -55,32 +54,32 @@ public class ServiceResolutionTest extends BaseTest {
   public void before() {
     super.before();
     try {
-    ODataSingleProcessor processor = mock(ODataSingleProcessor.class);
-    EdmProvider provider = mock(EdmProvider.class);
+      ODataSingleProcessor processor = mock(ODataSingleProcessor.class);
+      EdmProvider provider = mock(EdmProvider.class);
 
-    this.service = new ODataSingleProcessorService(provider, processor) {};
-    FitStaticServiceFactory.setService(this.service);
+      this.service = new ODataSingleProcessorService(provider, processor) {};
+      FitStaticServiceFactory.setService(this.service);
 
-    // science fiction (return context after setContext)
-    // see http://www.planetgeek.ch/2010/07/20/mockito-answer-vs-return/
+      // science fiction (return context after setContext)
+      // see http://www.planetgeek.ch/2010/07/20/mockito-answer-vs-return/
 
-    doAnswer(new Answer<Object>() {
-      @Override
-      public Object answer(InvocationOnMock invocation) throws Throwable {
-        ServiceResolutionTest.this.context = (ODataContext) invocation.getArguments()[0];
-        return null;
-      }
-    }).when(processor).setContext(any(ODataContext.class));
+      doAnswer(new Answer<Object>() {
+        @Override
+        public Object answer(InvocationOnMock invocation) throws Throwable {
+          ServiceResolutionTest.this.context = (ODataContext) invocation.getArguments()[0];
+          return null;
+        }
+      }).when(processor).setContext(any(ODataContext.class));
 
-    when(processor.getContext()).thenAnswer(new Answer<ODataContext>() {
-      @Override
-      public ODataContext answer(InvocationOnMock invocation) throws Throwable {
-        return ServiceResolutionTest.this.context;
-      }
-    });
+      when(processor.getContext()).thenAnswer(new Answer<ODataContext>() {
+        @Override
+        public ODataContext answer(InvocationOnMock invocation) throws Throwable {
+          return ServiceResolutionTest.this.context;
+        }
+      });
 
-    when(((Metadata) processor).readMetadata(any(GetMetadataUriInfo.class),any(String.class))).thenReturn(ODataResponse.entity("metadata").status(HttpStatusCodes.OK).build());
-      when(((ServiceDocument) processor).readServiceDocument(any(GetServiceDocumentUriInfo.class),any(String.class))).thenReturn(ODataResponse.entity("servicedocument").status(HttpStatusCodes.OK).build());
+      when(((Metadata) processor).readMetadata(any(GetMetadataUriInfo.class), any(String.class))).thenReturn(ODataResponse.entity("metadata").status(HttpStatusCodes.OK).build());
+      when(((ServiceDocument) processor).readServiceDocument(any(GetServiceDocumentUriInfo.class), any(String.class))).thenReturn(ODataResponse.entity("servicedocument").status(HttpStatusCodes.OK).build());
     } catch (ODataException e) {
       throw new RuntimeException(e);
     }
@@ -239,11 +238,8 @@ public class ServiceResolutionTest extends BaseTest {
     this.server.setPathSplit(3);
     this.server.startServer(FitStaticServiceFactory.class);
 
-    
-    
     URI uri = new URI(this.server.getEndpoint().getScheme(), null, this.server.getEndpoint().getHost(), this.server.getEndpoint().getPort(), this.server.getEndpoint().getPath() + "/aaa/äдержb;n=2,3;m=1/c c/", null, null);
 
-    
     HttpGet get = new HttpGet(uri);
     HttpResponse response = this.httpClient.execute(get);
 

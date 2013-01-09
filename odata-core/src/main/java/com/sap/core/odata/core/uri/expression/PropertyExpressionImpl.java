@@ -15,9 +15,9 @@ public class PropertyExpressionImpl implements PropertyExpression {
   private EdmTyped edmProperty;
   private EdmLiteral edmLiteral;
 
-  public PropertyExpressionImpl(String uriLiteral,  EdmLiteral edmLiteral) {
+  public PropertyExpressionImpl(String uriLiteral, EdmLiteral edmLiteral) {
     this.uriLiteral = uriLiteral;
-    
+
     this.edmLiteral = edmLiteral;
     if (edmLiteral != null)
     {
@@ -25,14 +25,13 @@ public class PropertyExpressionImpl implements PropertyExpression {
     }
   }
 
-  
-  public CommonExpression setEdmProperty(EdmTyped edmProperty) 
-  { 
+  public CommonExpression setEdmProperty(EdmTyped edmProperty)
+  {
     //used EdmTyped because it may be a EdmProperty or a EdmNavigationProperty
     this.edmProperty = edmProperty;
-    return this; 
+    return this;
   }
-  
+
   @Override
   public CommonExpression setEdmType(EdmType edmType) {
     this.edmType = edmType;
@@ -40,7 +39,7 @@ public class PropertyExpressionImpl implements PropertyExpression {
   }
 
   @Override
-  public String getPropertyName() 
+  public String getPropertyName()
   {
     if (edmProperty == null) return "";
 
@@ -82,7 +81,5 @@ public class PropertyExpressionImpl implements PropertyExpression {
     Object ret = visitor.visitProperty(this, uriLiteral, edmProperty);
     return ret;
   }
-
-  
 
 }

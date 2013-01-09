@@ -74,7 +74,7 @@ public abstract class ODataSingleProcessor
   private static final String PARAMETER_CHARSET = "charset";
   private static final String DEFAULT_SERVICE_CHARSET = "utf-8";
   private static final String DEFAULT_SERVICE_CHARSET_PARAMETER = PARAMETER_CHARSET + "=" + DEFAULT_SERVICE_CHARSET;
-  
+
   /**
    * A request context object usually injected by the OData library.
    */
@@ -321,8 +321,8 @@ public abstract class ODataSingleProcessor
     contentType += "; " + DEFAULT_SERVICE_CHARSET_PARAMETER;
 
     ODataResponse response = ODataResponse.fromResponse(odataSerializer.writeServiceDocument(getContext().getService().getEntityDataModel(), getContext().getPathInfo().getServiceRoot().toASCIIString()))
-      .header("Content-Type", contentType)
-      .header("DataServiceVersion", Edm.DATA_SERVICE_VERSION_10).build();
+        .header("Content-Type", contentType)
+        .header("DataServiceVersion", Edm.DATA_SERVICE_VERSION_10).build();
     return response;
   }
 
@@ -349,4 +349,3 @@ public abstract class ODataSingleProcessor
     return Collections.emptyList();
   }
 }
-

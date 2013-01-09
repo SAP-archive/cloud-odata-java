@@ -9,9 +9,6 @@ import java.util.List;
 
 import org.junit.Test;
 
-import com.sap.core.odata.ref.model.Building;
-import com.sap.core.odata.ref.model.Room;
-
 public class BuildingTest {
 
   private static final String VALUE_NAME = "bd01";

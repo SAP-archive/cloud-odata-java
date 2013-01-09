@@ -23,7 +23,7 @@ public interface GetEntityUriInfo {
    * @return {@link EdmEntityContainer} the target entity container
    */
   public EdmEntityContainer getEntityContainer();
-  
+
   /**
    * @return {@link EdmEntitySet}
    */
@@ -43,7 +43,7 @@ public interface GetEntityUriInfo {
    * @return {@link EdmType} the target type of the entity set
    */
   public EdmType getTargetType();
-  
+
   /**
    * @return list of {@link KeyPredicate} or EmptyList
    */

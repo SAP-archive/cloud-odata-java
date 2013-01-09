@@ -35,17 +35,17 @@ import com.sap.core.odata.api.ep.EntityProviderException;
 public class EntityInfoAggregator {
 
   private static final Set<String> SYN_TARGET_PATHS = new HashSet<String>(Arrays.asList(
-      EdmTargetPath.SYNDICATION_AUTHOREMAIL, 
-      EdmTargetPath.SYNDICATION_AUTHOREMAIL, 
-      EdmTargetPath.SYNDICATION_AUTHORURI, 
+      EdmTargetPath.SYNDICATION_AUTHOREMAIL,
+      EdmTargetPath.SYNDICATION_AUTHOREMAIL,
+      EdmTargetPath.SYNDICATION_AUTHORURI,
       EdmTargetPath.SYNDICATION_PUBLISHED,
-      EdmTargetPath.SYNDICATION_RIGHTS, 
-      EdmTargetPath.SYNDICATION_TITLE, 
-      EdmTargetPath.SYNDICATION_UPDATED, 
-      EdmTargetPath.SYNDICATION_CONTRIBUTORNAME, 
-      EdmTargetPath.SYNDICATION_CONTRIBUTOREMAIL, 
+      EdmTargetPath.SYNDICATION_RIGHTS,
+      EdmTargetPath.SYNDICATION_TITLE,
+      EdmTargetPath.SYNDICATION_UPDATED,
+      EdmTargetPath.SYNDICATION_CONTRIBUTORNAME,
+      EdmTargetPath.SYNDICATION_CONTRIBUTOREMAIL,
       EdmTargetPath.SYNDICATION_CONTRIBUTORURI,
-      EdmTargetPath.SYNDICATION_SOURCE, 
+      EdmTargetPath.SYNDICATION_SOURCE,
       EdmTargetPath.SYNDICATION_SUMMARY));
 
   private Map<String, EntityPropertyInfo> name2EntityPropertyInfo = new HashMap<String, EntityPropertyInfo>();
@@ -69,8 +69,7 @@ public class EntityInfoAggregator {
   /**
    * Constructor is private to force creation over {@link #create(EdmEntitySet)} method.
    */
-  private EntityInfoAggregator() {
-  }
+  private EntityInfoAggregator() {}
 
   /**
    * Create an {@link EntityInfoAggregator} based on given {@link EdmEntitySet}

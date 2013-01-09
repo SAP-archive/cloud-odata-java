@@ -56,7 +56,7 @@ public class OrderExpressionImpl implements OrderExpression {
 
   @Override
   public Object accept(ExpressionVisitor visitor) throws ExceptionVisitExpression, ODataApplicationException {
-    
+
     Object obj = expression.accept(visitor);
     Object ret = visitor.visitOrder(this, obj, orderType);
     return ret;

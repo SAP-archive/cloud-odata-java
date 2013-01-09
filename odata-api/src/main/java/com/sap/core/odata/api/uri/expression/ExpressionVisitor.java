@@ -41,7 +41,7 @@ public interface ExpressionVisitor
    *   The overall result of evaluating the expression tree    
    */
   Object visitFilterExpression(FilterExpression filterExpression, String expressionString, Object expression);
-  
+
   /**
    * Visits a orderby expression
    * @param orderByExpression
@@ -54,7 +54,7 @@ public interface ExpressionVisitor
    *   The overall result of evaluating the expression tree ( which may be a single value or a structured value )  
    */
   Object visitOrderByExpression(OrderByExpression orderByExpression, String expressionString, List<Object> orders);
-  
+
   /**
    * Visits a order expression
    * @param orderExpression
@@ -67,7 +67,7 @@ public interface ExpressionVisitor
    *   The overall result of evaluating the expression tree ( which may be a single value or a structured value )  
    */
   Object visitOrder(OrderExpression orderExpression, Object filterResult, SortOrder sortOrder);
-  
+
   /**
    * Visits a literal expression 
    * @param literal

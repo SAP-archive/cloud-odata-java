@@ -56,6 +56,5 @@ public class ReturnType {
       return typeName.toString();
     }
   }
-  
-  
+
 }

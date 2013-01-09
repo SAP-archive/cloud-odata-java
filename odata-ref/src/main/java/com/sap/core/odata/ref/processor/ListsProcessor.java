@@ -603,7 +603,7 @@ public class ListsProcessor extends ODataSingleProcessor {
             result = evaluateExpression(entity1, expression.getExpression()).compareTo(
                 evaluateExpression(entity2, expression.getExpression()));
             if (expression.getSortOrder() == SortOrder.desc)
-              result = - result;
+              result = -result;
             if (result != 0)
               break;
           }

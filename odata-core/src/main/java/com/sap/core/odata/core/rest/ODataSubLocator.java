@@ -78,7 +78,7 @@ public final class ODataSubLocator implements ODataLocator {
 
   private String doContentNegotiation(UriInfoImpl uriParserResult) throws ODataException {
     String format;
-    if(uriParserResult.getFormat() == null) {
+    if (uriParserResult.getFormat() == null) {
       format = doContentNegotiationForAcceptHeader(uriParserResult).toContentTypeString();
     } else {
       format = doContentNegotiationForFormat(uriParserResult);
@@ -92,22 +92,22 @@ public final class ODataSubLocator implements ODataLocator {
     Class<? extends ProcessorFeature> processorFeature = dispatcher.mapUriTypeToProcessorFeature(uriParserResult);
     List<ContentType> supportedContentTypes = getSupportedContentTypes(processorFeature);
     for (ContentType contentType : supportedContentTypes) {
-      if(contentType.equals(tmp)) {
+      if (contentType.equals(tmp)) {
         return format;
       }
     }
-    
+
     throw new ODataNotAcceptableException(ODataNotAcceptableException.NOT_SUPPORTED_CONTENT_TYPE.addContent(format));
   }
 
   private String getFormat(UriInfoImpl uriParserResult) {
     String format = uriParserResult.getFormat();
-    if("xml".equals(format)) {
+    if ("xml".equals(format)) {
       format = ContentType.APPLICATION_XML.toContentTypeString();
-    } else if("atom".equals(format)) {
+    } else if ("atom".equals(format)) {
       format = ContentType.APPLICATION_ATOM_XML.toContentTypeString();
-    } else if("json".equals(format)) {
-      format = ContentType.APPLICATION_JSON.toContentTypeString();      
+    } else if ("json".equals(format)) {
+      format = ContentType.APPLICATION_JSON.toContentTypeString();
     }
     return format;
   }
@@ -133,7 +133,7 @@ public final class ODataSubLocator implements ODataLocator {
     if (contentTypes.isEmpty()) {
       if (!setSupported.isEmpty()) {
         return supportedContentTypes.get(0);
-      } 
+      }
     } else {
       for (ContentType ct : contentTypes) {
         ContentType match = ct.match(supportedContentTypes);

@@ -118,11 +118,10 @@ public class ODataSingleProcessorServiceTest {
   public void defaultSupportedContentTypesAndGifForEntityLink() throws Exception {
     String ctGif = ContentType.create("image", "gif").toContentTypeString();
     when(((CustomContentType) processor).getCustomContentTypes(EntityLink.class)).thenReturn(Arrays.asList(ctGif));
-    
+
     List<String> types = service.getSupportedContentTypes(EntityLink.class);
     assertTrue(types.contains(ctGif));
   }
-  
 
   @Test
   public void defaultSupportedContentTypesForEntityMedia() throws Exception {

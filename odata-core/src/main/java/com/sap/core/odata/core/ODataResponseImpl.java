@@ -114,16 +114,15 @@ public class ODataResponseImpl extends ODataResponse {
       this.entity = response.getEntity();
       this.eTag = response.getETag();
       this.idLiteral = response.getIdLiteral();
-      
+
       this.header = new HashMap<String, String>();
       for (String key : response.getHeaderNames()) {
         this.header.put(key, response.getHeader(key));
       }
-      
+
       return this;
     }
 
   }
-
 
 }

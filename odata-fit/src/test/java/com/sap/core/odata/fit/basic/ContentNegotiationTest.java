@@ -1,7 +1,8 @@
 package com.sap.core.odata.fit.basic;
 
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Matchers.*;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -31,29 +32,28 @@ public class ContentNegotiationTest extends AbstractBasicTest {
     ODataResponse value = ODataResponse.status(HttpStatusCodes.OK).contentHeader("cvs").build();
     when(((ServiceDocument) processor).readServiceDocument(any(GetServiceDocumentUriInfo.class), eq("cvs"))).thenReturn(value);
     when(((CustomContentType) processor).getCustomContentTypes(ServiceDocument.class)).thenReturn(Arrays.asList("cvs"));
-    
-    
+
     return processor;
   }
 
   @Test
   public void testFormatCustom() throws Exception {
     HttpGet get = new HttpGet(URI.create(this.getEndpoint().toString() + "?$format=cvs"));
-    
+
     HttpResponse response = this.getHttpClient().execute(get);
-    
+
     assertEquals(200, response.getStatusLine().getStatusCode());
     Header header = response.getFirstHeader(HttpHeaders.CONTENT_TYPE);
-    
+
     assertEquals("cvs", header.getValue());
   }
 
   @Test
   public void testFormatNotAccepted() throws Exception {
     HttpGet get = new HttpGet(URI.create(this.getEndpoint().toString() + "?$format=cvsOrSomethingElse"));
-    
+
     HttpResponse response = this.getHttpClient().execute(get);
-    
+
     assertEquals(406, response.getStatusLine().getStatusCode());
   }
 }
