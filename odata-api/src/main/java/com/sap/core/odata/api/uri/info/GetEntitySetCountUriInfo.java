@@ -42,12 +42,12 @@ public interface GetEntitySetCountUriInfo {
   public EdmType getTargetType();
 
   /**
-   * @return list of {@link KeyPredicate}
+   * @return list of {@link KeyPredicate} or EmptyList
    */
   public List<KeyPredicate> getKeyPredicates();
 
   /**
-   * @return list of {@link NavigationSegment}
+   * @return list of {@link NavigationSegment} or EmptyList
    */
   public List<NavigationSegment> getNavigationSegments();
 
@@ -57,27 +57,27 @@ public interface GetEntitySetCountUriInfo {
   public boolean isCount();
 
   /**
-   * @return the filter expression
+   * @return the filter expression or null
    */
   public FilterExpression getFilter();
 
   /**
-   * @return skip
+   * @return skip or null
    */
   public Integer getSkip();
 
   /**
-   * @return top
+   * @return top or null
    */
   public Integer getTop();
 
   /**
-   * @return Map of {@literal <String,} {@link EdmLiteral}{@literal >} function import parameters
+   * @return Map of {@literal <String,} {@link EdmLiteral}{@literal >} function import parameters or EmptyMap
    */
   public Map<String, EdmLiteral> getFunctionImportParameters();
 
   /**
-   * @return Map of {@literal<String, String>} custom query options
+   * @return Map of {@literal<String, String>} custom query options or EmptyMap
    */
   public Map<String, String> getCustomQueryOptions();
 }

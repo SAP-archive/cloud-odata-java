@@ -7,7 +7,7 @@ import java.util.Map;
  */
 public interface GetMetadataUriInfo {
   /**
-   * @return Map of {@literal<String, String>} custom query options
+   * @return Map of {@literal<String, String>} custom query options or EmptyMap
    */
   public Map<String, String> getCustomQueryOptions();
 }

@@ -28,7 +28,7 @@ public interface GetEntityLinkCountUriInfo {
   public EdmEntitySet getTargetEntitySet();
 
   /**
-   * @return {@link EdmFunctionImport} the funktion import
+   * @return {@link EdmFunctionImport} the function import
    */
   public EdmFunctionImport getFunctionImport();
   
@@ -38,12 +38,12 @@ public interface GetEntityLinkCountUriInfo {
   public EdmType getTargetType();
 
   /**
-   * @return list of {@link KeyPredicate}
+   * @return list of {@link KeyPredicate} or EmptyList
    */
   public List<KeyPredicate> getKeyPredicates();
 
   /**
-   * @return list of {@link NavigationSegment}
+   * @return list of {@link NavigationSegment} or EmptyList
    */
   public List<NavigationSegment> getNavigationSegments();
   
@@ -58,12 +58,12 @@ public interface GetEntityLinkCountUriInfo {
   public boolean isLinks();
 
   /**
-   * @return Map of {@literal <String,} {@link EdmLiteral}{@literal >} function import parameters
+   * @return Map of {@literal <String,} {@link EdmLiteral}{@literal >} function import parameters or EmptyMap
    */
   public Map<String, EdmLiteral> getFunctionImportParameters();
   
   /**
-   * @return Map of {@literal<String, String>} custom query options
+   * @return Map of {@literal<String, String>} custom query options or EmptyMap
    */
   public Map<String, String> getCustomQueryOptions();
 }

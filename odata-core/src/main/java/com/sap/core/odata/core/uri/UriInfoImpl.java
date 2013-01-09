@@ -49,8 +49,8 @@ public class UriInfoImpl implements UriInfo {
   private Integer top;
   private List<ArrayList<NavigationPropertySegment>> expand = Collections.emptyList();
   private List<SelectItem> select = Collections.emptyList();
-  private Map<String, EdmLiteral> functionImportParameters;
-  private Map<String, String> customQueryOptions;
+  private Map<String, EdmLiteral> functionImportParameters = Collections.emptyMap();
+  private Map<String, String> customQueryOptions = Collections.emptyMap();
 
   public UriType getUriType() {
     return this.uriType;
@@ -247,7 +247,7 @@ public class UriInfoImpl implements UriInfo {
   }
 
   public void addFunctionImportParameter(final String name, final EdmLiteral value) {
-    if (functionImportParameters == null)
+    if (functionImportParameters.equals(Collections.EMPTY_MAP))
       functionImportParameters = new HashMap<String, EdmLiteral>();
 
     functionImportParameters.put(name, value);
