@@ -10,6 +10,7 @@ import java.util.Map;
 import org.junit.Ignore;
 import org.junit.Test;
 
+import com.sap.core.odata.api.commons.HttpContentType;
 import com.sap.core.odata.core.commons.ContentType;
 import com.sap.core.odata.core.commons.ContentType.ODataFormat;
 
@@ -30,6 +31,56 @@ import com.sap.core.odata.core.commons.ContentType.ODataFormat;
 
 public class ContentTypeTest {
 
+  @Test
+  public void creationFromHttpContentTypeAtomXmlEntry() {
+    ContentType mt = ContentType.create(HttpContentType.APPLICATION_ATOM_XML_ENTRY);
+    
+    assertEquals("application", mt.getType());
+    assertEquals("atom+xml", mt.getSubtype());
+    assertEquals("application/atom+xml; type=entry", mt.toString());
+    assertEquals(ODataFormat.ATOM, mt.getODataFormat());
+    assertEquals(1, mt.getParameters().size());
+    assertEquals("entry", mt.getParameters().get("type"));
+    assertEquals(ContentType.APPLICATION_ATOM_XML_ENTRY, mt);
+  }
+
+  @Test
+  public void creationFromHttpContentTypeMultipartMixed() {
+    ContentType mt = ContentType.create(HttpContentType.MULTIPART_MIXED);
+    
+    assertEquals("multipart", mt.getType());
+    assertEquals("mixed", mt.getSubtype());
+    assertEquals("multipart/mixed", mt.toString());
+    assertEquals(ODataFormat.CUSTOM, mt.getODataFormat());
+    assertEquals(0, mt.getParameters().size());
+    assertEquals(ContentType.MULTIPART_MIXED, mt);
+  }
+
+  @Test
+  public void creationFromHttpContentTypeApplicationXml() {
+    ContentType mt = ContentType.create(HttpContentType.APPLICATION_XML);
+    
+    assertEquals("application", mt.getType());
+    assertEquals("xml", mt.getSubtype());
+    assertEquals("application/xml", mt.toString());
+    assertEquals(ODataFormat.XML, mt.getODataFormat());
+    assertEquals(0, mt.getParameters().size());
+    assertEquals(ContentType.APPLICATION_XML, mt);
+  }
+
+  @Test
+  public void creationFromHttpContentTypeApplicationJson() {
+    ContentType mt = ContentType.create(HttpContentType.APPLICATION_JSON);
+    
+    assertEquals("application", mt.getType());
+    assertEquals("json", mt.getSubtype());
+    assertEquals("application/json", mt.toString());
+    assertEquals(ODataFormat.JSON, mt.getODataFormat());
+    assertEquals(0, mt.getParameters().size());
+    assertEquals(ContentType.APPLICATION_JSON, mt);
+  }
+
+  
   @Test
   public void testContentTypeCreation() {
     ContentType mt = ContentType.create("type", "subtype");

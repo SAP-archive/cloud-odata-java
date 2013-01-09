@@ -128,7 +128,7 @@ public class ContentType {
     String types = typesAndParameters[0];
     String parameters = (typesAndParameters.length > 1 ? typesAndParameters[1] : null);
     //
-    Map<String, String> parametersMap = splitParameters(parameters);
+    Map<String, String> parametersMap = parseParameters(parameters);
     //
     if (types.contains(TYPE_SUBTYPE_SEPARATOR)) {
       String[] tokens = types.split(TYPE_SUBTYPE_SEPARATOR);
@@ -174,23 +174,23 @@ public class ContentType {
   /**
    * Valid input are <code>;</code> separated <code>key = value</code> pairs.
    * 
-   * @param format
+   * @param parameters
    * @return
    */
-  private static Map<String, String> splitParameters(String format) {
-    Map<String, String> parameters = new HashMap<String, String>();
-    if (format != null) {
-      String[] formatParmeters = format.split(PARAMETER_SEPARATOR);
-      for (String parameter : formatParmeters) {
+  private static Map<String, String> parseParameters(String parameters) {
+    Map<String, String> parameterMap = new HashMap<String, String>();
+    if (parameters != null) {
+      String[] splittedParmeters = parameters.split(PARAMETER_SEPARATOR);
+      for (String parameter : splittedParmeters) {
         String[] keyValue = parameter.split("=");
-        String key = keyValue[0];
+        String key = keyValue[0].trim().toLowerCase(Locale.ENGLISH);
         if(isParameterAllowed(key)) {
-          String value = (keyValue.length > 1 ? keyValue[1] : null);
-          parameters.put(key, value);
+          String value = ((keyValue != null && keyValue.length > 1) ? keyValue[1].trim() : null);
+          parameterMap.put(key, value);
         }
       }
     }
-    return parameters;
+    return parameterMap;
   }
 
   private static boolean isParameterAllowed(String key) {
