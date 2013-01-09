@@ -10,6 +10,10 @@ import com.sap.core.odata.api.edm.EdmSimpleTypeKind;
 import com.sap.core.odata.api.uri.expression.FilterParserException;
 import com.sap.core.odata.core.edm.EdmSimpleTypeFacadeImpl;
 
+/**
+ * Expression tokenizer
+ * @author SAP AG
+ */
 public class Tokenizer
 {
 
@@ -48,7 +52,6 @@ public class Tokenizer
    */
   public TokenList tokenize() throws TokenizerException, FilterParserException
   {
-    EdmLiteral edmLiteral;
     curPosition = 0;
     int oldPosition;
     char curCharacter;
@@ -134,29 +137,24 @@ public class Tokenizer
     }
     return tokens;
   }
-  
-  private boolean checkForLiteral(int oldPosition, char curCharacter, String rem_expr) 
-  {
-    //Pattern OTHER_LIT = Pattern.compile("^([[A-Za-z0-9]._~%!$&*+;:@-]+)");
-    final Pattern OTHER_LIT = Pattern.compile("^([\\w._~%!$&*+;:@-]+)");
-    Matcher matcher = OTHER_LIT.matcher(rem_expr);
-    if (matcher.find())
-    {
-      token = matcher.group(1);
-      try
-      {
+
+  private boolean checkForLiteral(int oldPosition, char curCharacter, String rem_expr) {
+    final Pattern OTHER_LIT = Pattern.compile("(?:\\p{L}|\\p{Digit}|[-._~%!$&*+;:@])+");
+    final Matcher matcher = OTHER_LIT.matcher(rem_expr);
+    if (matcher.lookingAt()) {
+      token = matcher.group();
+      try {
         EdmLiteral edmLiteral = typeDectector.parseUriLiteral(token);
-        curPosition = curPosition + token.length();
-        //it is a simple type
+        curPosition += token.length();
+        // It is a simple type.
         tokens.appendEdmTypedToken(oldPosition, TokenKind.SIMPLE_TYPE, token, edmLiteral);
         return true;
-      } catch (EdmLiteralException ex)
-      { //we thread is as normal untyped literal 
-
+      } catch (EdmLiteralException e) {
+        // We treat it as normal untyped literal. 
       }
 
-      //The '-' is checked here ( and not in the switch statement) because is may
-      //part of negative number
+      // The '-' is checked here (and not in the switch statement) because it may be
+      // part of a negative number.
       if (curCharacter == '-')
       {
         curPosition = curPosition + 1;
