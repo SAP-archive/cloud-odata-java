@@ -1,20 +1,32 @@
 package com.sap.core.odata.api.ep;
 
+import com.sap.core.odata.api.edm.Edm;
 import com.sap.core.odata.api.edm.EdmProperty;
 import com.sap.core.odata.api.processor.ODataResponse;
 import com.sap.core.odata.api.rt.RuntimeDelegate;
 
 /**
- * Abstract provider for writing output
+ * Abstract basic (content type independent) provider for writing output
  * @author SAP AG
  */
-public abstract class EntityValueProvider {
+public abstract class BasicProvider {
 
-  protected EntityValueProvider() throws EntityProviderException {}
+  protected BasicProvider() throws EntityProviderException {}
 
-  public static EntityValueProvider create() throws EntityProviderException {
-    return RuntimeDelegate.createEntityValueProvider();
+  public static BasicProvider create() throws EntityProviderException {
+    return RuntimeDelegate.createBasicProvider();
   }
+
+  /**
+   * Write service document based on given {@link Edm} and <code>service root</code> as
+   * content type "<code>application/atomsvc+xml; charset=utf-8</code>".
+   * 
+   * @param edm
+   * @param serviceRoot
+   * @return
+   * @throws EntityProviderException
+   */
+  public abstract ODataResponse writeServiceDocument(Edm edm, String serviceRoot) throws EntityProviderException;
 
   /**
    * Write property as content type <code>application/octet-stream</code> or <code>text/plain</code>.

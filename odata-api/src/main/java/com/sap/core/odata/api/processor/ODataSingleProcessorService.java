@@ -6,6 +6,7 @@ import java.util.List;
 import com.sap.core.odata.api.ODataService;
 import com.sap.core.odata.api.ODataServiceFactory;
 import com.sap.core.odata.api.ODataServiceVersion;
+import com.sap.core.odata.api.commons.HttpContentType;
 import com.sap.core.odata.api.edm.Edm;
 import com.sap.core.odata.api.edm.provider.EdmProvider;
 import com.sap.core.odata.api.exception.ODataException;
@@ -35,15 +36,6 @@ import com.sap.core.odata.api.rt.RuntimeDelegate;
  * @author SAP AG
  */
 public class ODataSingleProcessorService implements ODataService {
-
-  private static final String WILDCARD = "*/*";
-  private static final String MULTIPART_MIXED = "multipart/mixed";
-  private static final String APPLICATION_XML = "application/xml";
-  private static final String APPLICATION_ATOM_XML = "application/atom+xml";
-  private static final String APPLICATION_ATOM_XML_ENTRY = "application/atom+xml; type=entry";
-  private static final String APPLICATION_ATOM_XML_FEED = "application/atom+xml; type=feed";
-  private static final String APPLICATION_ATOM_SVC = "application/atomsvc+xml";
-  private static final String APPLICATION_JSON = "application/json";
 
   private ODataSingleProcessor processor;
   private Edm edm;
@@ -193,32 +185,34 @@ public class ODataSingleProcessorService implements ODataService {
     result.addAll(processor.getCustomContentTypes(processorFeature));
 
     if (processorFeature == Batch.class) {
-      result.add(MULTIPART_MIXED);
+      result.add(HttpContentType.MULTIPART_MIXED);
     } else if (processorFeature == Entity.class) {
-      result.add(APPLICATION_ATOM_XML_ENTRY);
-      result.add(APPLICATION_ATOM_XML);
-      result.add(APPLICATION_JSON);
+      result.add(HttpContentType.APPLICATION_ATOM_XML_ENTRY);
+      result.add(HttpContentType.APPLICATION_ATOM_XML);
+      result.add(HttpContentType.APPLICATION_JSON);
+      result.add(HttpContentType.APPLICATION_XML);
     } else if (processorFeature == FunctionImport.class
         || processorFeature == EntityLink.class
         || processorFeature == EntityLinks.class
         || processorFeature == EntitySimpleProperty.class
         || processorFeature == EntityComplexProperty.class) {
-      result.add(APPLICATION_XML);
-      result.add(APPLICATION_JSON);
+      result.add(HttpContentType.APPLICATION_XML);
+      result.add(HttpContentType.APPLICATION_JSON);
     } else if (processorFeature == EntityMedia.class
         || processorFeature == EntitySimplePropertyValue.class
         || processorFeature == FunctionImportValue.class) {
-      result.add(WILDCARD);
+      result.add(HttpContentType.WILDCARD);
     } else if (processorFeature == EntitySet.class) {
-      result.add(APPLICATION_ATOM_XML_FEED);
-      result.add(APPLICATION_ATOM_XML);
-      result.add(APPLICATION_JSON);
+      result.add(HttpContentType.APPLICATION_ATOM_XML_FEED);
+      result.add(HttpContentType.APPLICATION_ATOM_XML);
+      result.add(HttpContentType.APPLICATION_JSON);
+      result.add(HttpContentType.APPLICATION_XML);
     } else if (processorFeature == Metadata.class) {
-      result.add(APPLICATION_XML);
+      result.add(HttpContentType.APPLICATION_XML);
     } else if (processorFeature == ServiceDocument.class) {
-      result.add(APPLICATION_ATOM_SVC);
-      result.add(APPLICATION_JSON);
-      result.add(APPLICATION_XML);
+      result.add(HttpContentType.APPLICATION_ATOM_SVC);
+      result.add(HttpContentType.APPLICATION_JSON);
+      result.add(HttpContentType.APPLICATION_XML);
     } else {
       throw new ODataNotImplementedException();
     }

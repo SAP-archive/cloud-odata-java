@@ -26,6 +26,7 @@ import com.sap.core.odata.api.edm.EdmSimpleTypeKind;
 import com.sap.core.odata.api.edm.EdmStructuralType;
 import com.sap.core.odata.api.edm.EdmType;
 import com.sap.core.odata.api.edm.EdmTypeKind;
+import com.sap.core.odata.api.ep.BasicProvider;
 import com.sap.core.odata.api.ep.EntityProvider;
 import com.sap.core.odata.api.ep.EntityProviderProperties;
 import com.sap.core.odata.api.exception.ODataException;
@@ -165,7 +166,7 @@ public class ListsProcessor extends ODataSingleProcessor {
         uriInfo.getSkip(),
         uriInfo.getTop());
 
-    return ODataResponse.fromResponse(EntityProvider.create(contentType).writeText(String.valueOf(data.size())))
+    return ODataResponse.fromResponse(BasicProvider.create().writeText(String.valueOf(data.size())))
         .status(HttpStatusCodes.OK)
         .build();
   }
@@ -256,7 +257,7 @@ public class ListsProcessor extends ODataSingleProcessor {
         mapFunctionParameters(uriInfo.getFunctionImportParameters()),
         uriInfo.getNavigationSegments());
 
-    return ODataResponse.fromResponse(EntityProvider.create(contentType).writeText(
+    return ODataResponse.fromResponse(BasicProvider.create().writeText(
         appliesFilter(data, uriInfo.getFilter()) ? "1" : "0"))
         .status(HttpStatusCodes.OK)
         .build();
@@ -395,7 +396,7 @@ public class ListsProcessor extends ODataSingleProcessor {
       value = valueWithMimeType;
     }
 
-    return ODataResponse.fromResponse(EntityProvider.create(HttpContentType.APPLICATION_XML).writePropertyValue(property, value))
+    return ODataResponse.fromResponse(BasicProvider.create().writePropertyValue(property, value))
         .status(HttpStatusCodes.OK)
         .build();
   }
@@ -419,7 +420,7 @@ public class ListsProcessor extends ODataSingleProcessor {
     final String mimeType = mimeTypeBuilder.toString().isEmpty() ?
         HttpContentType.APPLICATION_OCTET_STREAM : mimeTypeBuilder.toString();
 
-    return ODataResponse.fromResponse(EntityProvider.create(HttpContentType.APPLICATION_XML).writeBinary(mimeType, binaryData))
+    return ODataResponse.fromResponse(BasicProvider.create().writeBinary(mimeType, binaryData))
         .status(HttpStatusCodes.OK)
         .build();
   }
@@ -487,13 +488,13 @@ public class ListsProcessor extends ODataSingleProcessor {
         null);
 
     if (type == EdmSimpleTypeKind.Binary.getEdmSimpleTypeInstance()) {
-      return ODataResponse.fromResponse(EntityProvider.create(HttpContentType.APPLICATION_XML)
+      return ODataResponse.fromResponse(BasicProvider.create()
           .writeBinary(HttpContentType.APPLICATION_OCTET_STREAM, (byte[]) data))
           .status(HttpStatusCodes.OK)
           .build();
     } else {
       final String value = type.valueToString(data, EdmLiteralKind.DEFAULT, null);
-      return ODataResponse.fromResponse(EntityProvider.create()
+      return ODataResponse.fromResponse(BasicProvider.create()
           .writeText(value == null ? "" : value))
           .status(HttpStatusCodes.OK)
           .build();

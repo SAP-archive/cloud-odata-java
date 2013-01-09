@@ -6,7 +6,7 @@ import java.util.List;
 import com.sap.core.odata.api.commons.HttpStatusCodes;
 import com.sap.core.odata.api.edm.Edm;
 import com.sap.core.odata.api.edm.EdmServiceMetadata;
-import com.sap.core.odata.api.ep.EntityProvider;
+import com.sap.core.odata.api.ep.BasicProvider;
 import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.api.exception.ODataNotImplementedException;
 import com.sap.core.odata.api.processor.feature.Batch;
@@ -317,7 +317,7 @@ public abstract class ODataSingleProcessor
    */
   @Override
   public ODataResponse readServiceDocument(GetServiceDocumentUriInfo uriInfo, String contentType) throws ODataException {
-    EntityProvider odataSerializer = EntityProvider.create(contentType);
+    BasicProvider odataSerializer = BasicProvider.create();
     contentType += "; " + DEFAULT_SERVICE_CHARSET_PARAMETER;
 
     ODataResponse response = ODataResponse.fromResponse(odataSerializer.writeServiceDocument(getContext().getService().getEntityDataModel(), getContext().getPathInfo().getServiceRoot().toASCIIString()))

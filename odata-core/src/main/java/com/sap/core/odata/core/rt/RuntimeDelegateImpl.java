@@ -8,7 +8,7 @@ import com.sap.core.odata.api.edm.EdmSimpleTypeKind;
 import com.sap.core.odata.api.edm.provider.EdmProvider;
 import com.sap.core.odata.api.ep.EntityProvider;
 import com.sap.core.odata.api.ep.EntityProviderException;
-import com.sap.core.odata.api.ep.EntityValueProvider;
+import com.sap.core.odata.api.ep.BasicProvider;
 import com.sap.core.odata.api.processor.ODataResponse.ODataResponseBuilder;
 import com.sap.core.odata.api.rt.RuntimeDelegate.RuntimeDelegateInstance;
 import com.sap.core.odata.api.uri.UriParser;
@@ -17,7 +17,7 @@ import com.sap.core.odata.api.uri.expression.OrderByParser;
 import com.sap.core.odata.core.ODataResponseImpl;
 import com.sap.core.odata.core.edm.EdmSimpleTypeFacadeImpl;
 import com.sap.core.odata.core.edm.provider.EdmImplProv;
-import com.sap.core.odata.core.ep.EntityProviderFactory;
+import com.sap.core.odata.core.ep.ProviderFactory;
 import com.sap.core.odata.core.uri.UriParserImpl;
 import com.sap.core.odata.core.uri.expression.FilterParserImpl;
 import com.sap.core.odata.core.uri.expression.OrderByParserImpl;
@@ -59,12 +59,12 @@ public class RuntimeDelegateImpl extends RuntimeDelegateInstance {
 
   @Override
   protected EntityProvider createSerializer(String contentType) throws EntityProviderException {
-    return EntityProviderFactory.create(contentType);
+    return ProviderFactory.create(contentType);
   }
 
   @Override
-  protected EntityValueProvider createEntityValueProvider() throws EntityProviderException {
-    return EntityProviderFactory.create("XML");
+  protected BasicProvider createBasicProvider() throws EntityProviderException {
+    return ProviderFactory.create();
   }
   
   @Override

@@ -1,12 +1,17 @@
 package com.sap.core.odata.core.ep;
 
+import com.sap.core.odata.api.ep.BasicProvider;
 import com.sap.core.odata.api.ep.EntityProvider;
 import com.sap.core.odata.api.ep.EntityProviderException;
 import com.sap.core.odata.api.exception.ODataNotAcceptableException;
 import com.sap.core.odata.api.exception.ODataNotImplementedException;
 import com.sap.core.odata.core.commons.ContentType;
 
-public class EntityProviderFactory {
+public class ProviderFactory {
+
+  public static BasicProvider create() throws EntityProviderException {
+    return new BasicProviderImpl();
+  }
 
   public static EntityProvider create(String contentType) throws EntityProviderException {
     return create(ContentType.create(contentType));

@@ -3,7 +3,6 @@ package com.sap.core.odata.api.ep;
 import java.util.List;
 import java.util.Map;
 
-import com.sap.core.odata.api.edm.Edm;
 import com.sap.core.odata.api.edm.EdmEntitySet;
 import com.sap.core.odata.api.edm.EdmFunctionImport;
 import com.sap.core.odata.api.edm.EdmProperty;
@@ -14,19 +13,13 @@ import com.sap.core.odata.api.rt.RuntimeDelegate;
  * Abstract provider for writing output
  * @author SAP AG
  */
-public abstract class EntityProvider extends EntityValueProvider {
+public abstract class EntityProvider {
 
   protected EntityProvider() throws EntityProviderException {}
 
   public static EntityProvider create(String contentType) throws EntityProviderException {
     return RuntimeDelegate.createSerializer(contentType);
   }
-
-  public static EntityValueProvider create() throws EntityProviderException {
-    return RuntimeDelegate.createEntityValueProvider();
-  }
-
-  public abstract ODataResponse writeServiceDocument(Edm edm, String serviceRoot) throws EntityProviderException;
 
   public abstract ODataResponse writeFeed(EdmEntitySet entitySet, List<Map<String, Object>> data, EntityProviderProperties properties) throws EntityProviderException;
 
