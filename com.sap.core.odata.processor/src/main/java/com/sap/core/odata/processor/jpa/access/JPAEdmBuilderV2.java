@@ -186,8 +186,9 @@ public class JPAEdmBuilderV2 implements JPAEdmBuilder {
 				.getEmbeddables()) {
 			if (jpaEntityType.getJavaType().getName().equals(complexTypeName)) {
 				for (Attribute<?, ?> attribute : jpaEntityType.getAttributes()) {
-					if (attribute.isCollection()) {
-					} else if (PersistentAttributeType.EMBEDDED.toString()
+					/*if (attribute.isCollection()) {
+						
+					}*/ if (PersistentAttributeType.EMBEDDED.toString()
 							.equals(attribute.getPersistentAttributeType()
 									.toString())) {
 						properties.add(createComplexProperty(attribute));

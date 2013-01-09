@@ -82,55 +82,61 @@ public class ODataJPAEdmProvider extends EdmProvider {
 	@Override
 	public EntityType getEntityType(FullQualifiedName edmFQName)
 			throws ODataException {
-
-		// Load from Buffer
-		if (edmFQName != null && entityTypes.containsKey(edmFQName.toString()))
-			return entityTypes.get(edmFQName.toString());
-		else if (schemas == null)
-			getSchemas();
-
 		if (edmFQName != null) {
-			for (Schema schema : schemas) {
-				if (schema.getNamespace().equals(edmFQName.getNamespace())) {
-					for (EntityType et : schema.getEntityTypes()) {
-						if (et.getName().equals(edmFQName.getName())) {
-							entityTypes.put(edmFQName.toString(), et);
-							return et;
+			// Load from Buffer
+			if (edmFQName != null
+					&& entityTypes.containsKey(edmFQName.toString()))
+				return entityTypes.get(edmFQName.toString());
+			else if (schemas == null)
+				getSchemas();
+
+			if (edmFQName != null) {
+				for (Schema schema : schemas) {
+					if (schema.getNamespace().equals(edmFQName.getNamespace())) {
+						for (EntityType et : schema.getEntityTypes()) {
+							if (et.getName().equals(edmFQName.getName())) {
+								entityTypes.put(edmFQName.toString(), et);
+								return et;
+							}
 						}
 					}
 				}
 			}
-		}
 
-		throw ODataJPAModelException.throwException(
-				ODataJPAModelException.INVALID_ENTITY_TYPE.addContent(edmFQName
-						.toString()),null);
+			throw ODataJPAModelException.throwException(
+					ODataJPAModelException.INVALID_ENTITY_TYPE
+							.addContent(edmFQName.toString()), null);
+		}
+		return null;
 	}
 
 	@Override
 	public ComplexType getComplexType(FullQualifiedName edmFQName)
 			throws ODataException {
+		if (edmFQName != null) {
+			if (edmFQName != null
+					&& complexTypes.containsKey(edmFQName.toString()))
+				return complexTypes.get(edmFQName.toString());
+			else if (schemas == null)
+				getSchemas();
 
-		if (edmFQName != null && complexTypes.containsKey(edmFQName.toString()))
-			return complexTypes.get(edmFQName.toString());
-		else if (schemas == null)
-			getSchemas();
-
-		if (edmFQName != null)
-			for (Schema schema : schemas) {
-				if (schema.getNamespace().equals(edmFQName.getNamespace())) {
-					for (ComplexType ct : schema.getComplexTypes()) {
-						if (ct.getName().equals(edmFQName.getName())) {
-							complexTypes.put(edmFQName.toString(), ct);
-							return ct;
+			if (edmFQName != null)
+				for (Schema schema : schemas) {
+					if (schema.getNamespace().equals(edmFQName.getNamespace())) {
+						for (ComplexType ct : schema.getComplexTypes()) {
+							if (ct.getName().equals(edmFQName.getName())) {
+								complexTypes.put(edmFQName.toString(), ct);
+								return ct;
+							}
 						}
 					}
 				}
-			}
 
-		throw ODataJPAModelException.throwException(
-				ODataJPAModelException.INVALID_COMPLEX_TYPE
-						.addContent(edmFQName.toString()),null);
+			throw ODataJPAModelException.throwException(
+					ODataJPAModelException.INVALID_COMPLEX_TYPE
+							.addContent(edmFQName.toString()), null);
+		}
+		return null;
 	}
 
 	@Override
@@ -139,7 +145,7 @@ public class ODataJPAEdmProvider extends EdmProvider {
 
 		throw ODataJPAModelException.throwException(
 				ODataJPAModelException.INVALID_ASSOCIATION.addContent(edmFQName
-						.toString()),null);
+						.toString()), null);
 	}
 
 	@Override
@@ -158,8 +164,9 @@ public class ODataJPAEdmProvider extends EdmProvider {
 				if (name.equals(es.getName()))
 					return es;
 
-		throw ODataJPAModelException.throwException(
-				ODataJPAModelException.INVALID_ENTITYSET.addContent(name),null);
+		throw ODataJPAModelException
+				.throwException(ODataJPAModelException.INVALID_ENTITYSET
+						.addContent(name), null);
 	}
 
 	@Override
@@ -169,15 +176,16 @@ public class ODataJPAEdmProvider extends EdmProvider {
 
 		throw ODataJPAModelException.throwException(
 				ODataJPAModelException.INVALID_ENTITYSET.addContent(association
-						.toString()),null);
+						.toString()), null);
 	}
 
 	@Override
 	public FunctionImport getFunctionImport(String entityContainer, String name)
 			throws ODataException {
 
-		throw ODataJPAModelException.throwException(
-				ODataJPAModelException.INVALID_ENTITYSET.addContent(name),null);
+		throw ODataJPAModelException
+				.throwException(ODataJPAModelException.INVALID_ENTITYSET
+						.addContent(name), null);
 	}
 
 	@Override
@@ -186,7 +194,7 @@ public class ODataJPAEdmProvider extends EdmProvider {
 			schemas = builder.getSchemas();
 		if (builder == null)
 			throw ODataJPAModelException.throwException(
-					ODataJPAModelException.BUILDER_NULL,null);
+					ODataJPAModelException.BUILDER_NULL, null);
 
 		return schemas;
 
