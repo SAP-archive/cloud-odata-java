@@ -1,7 +1,9 @@
 package com.sap.core.odata.ref.processor;
 
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -402,6 +404,28 @@ public class ListsProcessor extends ODataSingleProcessor {
   }
 
   @Override
+  public ODataResponse deleteEntitySimplePropertyValue(final DeleteUriInfo uriInfo, final String contentType) throws ODataException {
+    final Object data = retrieveData(
+        uriInfo.getStartEntitySet(),
+        uriInfo.getKeyPredicates(),
+        uriInfo.getFunctionImport(),
+        mapFunctionParameters(uriInfo.getFunctionImportParameters()),
+        uriInfo.getNavigationSegments());
+
+    if (data == null)
+      throw new ODataNotFoundException(ODataNotFoundException.ENTITY);
+
+    final List<EdmProperty> propertyPath = uriInfo.getPropertyPath();
+    final EdmProperty property = propertyPath.get(propertyPath.size() - 1);
+
+    setPropertyValue(data, propertyPath, null);
+    if (property.getMapping() != null && property.getMapping().getMimeType() != null)
+      setValue(data, getSetterMethodName(property.getMapping().getMimeType()), null);
+
+    return ODataResponse.status(HttpStatusCodes.NO_CONTENT).build();
+  }
+
+  @Override
   public ODataResponse readEntityMedia(final GetMediaResourceUriInfo uriInfo, final String contentType) throws ODataException {
     final Object data = retrieveData(
         uriInfo.getStartEntitySet(),
@@ -603,7 +627,7 @@ public class ListsProcessor extends ODataSingleProcessor {
             result = evaluateExpression(entity1, expression.getExpression()).compareTo(
                 evaluateExpression(entity2, expression.getExpression()));
             if (expression.getSortOrder() == SortOrder.desc)
-              result = - result;
+              result = -result;
             if (result != 0)
               break;
           }
@@ -854,12 +878,32 @@ public class ListsProcessor extends ODataSingleProcessor {
   }
 
   private <T> Object getPropertyValue(final T data, final EdmProperty property) throws ODataException {
+    return getValue(data, getGetterMethodName(property));
+  }
+
+  private <T, V> void setPropertyValue(final T data, final List<EdmProperty> propertyPath, final V value) throws ODataException {
+    Object dataObject = data;
+    for (final EdmProperty property : propertyPath)
+      if (dataObject != null)
+        if (property.isSimple())
+          setPropertyValue(dataObject, property, value);
+        else
+          dataObject = getPropertyValue(dataObject, property);
+  }
+
+  private <T, V> void setPropertyValue(final T data, final EdmProperty property, final V value) throws ODataException {
+    setValue(data, getSetterMethodName(getGetterMethodName(property)), value);
+  }
+
+  private String getGetterMethodName(final EdmProperty property) throws EdmException {
     final String prefix = property.getType().getKind() == EdmTypeKind.SIMPLE && property.getType() == EdmSimpleTypeKind.Boolean.getEdmSimpleTypeInstance() ? "is" : "get";
     final String defaultMethodName = prefix + property.getName();
-    final String methodName = property.getMapping() == null || property.getMapping().getInternalName() == null ?
+    return property.getMapping() == null || property.getMapping().getInternalName() == null ?
         defaultMethodName : property.getMapping().getInternalName();
+  }
 
-    return getValue(data, methodName);
+  private String getSetterMethodName(final String getterMethodName) {
+    return getterMethodName.replaceFirst("^is", "set").replaceFirst("^get", "set");
   }
 
   private <T> Map<String, Object> getStructuralTypeValueMap(final T data, final EdmStructuralType type) throws ODataException {
@@ -905,4 +949,24 @@ public class ListsProcessor extends ODataSingleProcessor {
     return dataObject;
   }
 
+  private <T, V> void setValue(final T data, final String methodName, final V value) throws ODataNotFoundException {
+    try {
+      boolean found = false;
+      for (final Method method : Arrays.asList(data.getClass().getMethods()))
+        if (method.getName().equals(methodName)) {
+          found = true;
+          method.invoke(data, value);
+        }
+      if (!found)
+        throw new ODataNotFoundException(null);
+    } catch (SecurityException e) {
+      throw new ODataNotFoundException(null, e);
+    } catch (IllegalArgumentException e) {
+      throw new ODataNotFoundException(null, e);
+    } catch (IllegalAccessException e) {
+      throw new ODataNotFoundException(null, e);
+    } catch (InvocationTargetException e) {
+      throw new ODataNotFoundException(null, e);
+    }
+  }
 }

@@ -18,7 +18,7 @@ public class Building {
     this(null);
   }
 
-  public Building(String name) {
+  public Building(final String name) {
     id = counter++;
     setName(name);
   }
@@ -27,7 +27,7 @@ public class Building {
     return Integer.toString(id);
   }
 
-  public void setName(String name) {
+  public void setName(final String name) {
     this.name = name;
   }
 
@@ -35,7 +35,7 @@ public class Building {
     return name;
   }
 
-  public void setImage(byte[] byteArray) {
+  public void setImage(final byte[] byteArray) {
     image = byteArray;
   }
 
@@ -50,7 +50,7 @@ public class Building {
     return rooms;
   }
 
-  public void setRooms(List<Room> listOfRooms) {
+  public void setRooms(final List<Room> listOfRooms) {
     this.rooms = listOfRooms;
   }
 

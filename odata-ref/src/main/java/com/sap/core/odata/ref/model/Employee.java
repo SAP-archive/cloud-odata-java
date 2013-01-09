@@ -27,35 +27,32 @@ public class Employee {
     this(null, 0);
   }
 
-  public Employee(String name, int age) {
+  public Employee(final String name, final int age) {
     employeeId = counter++;
-    this.setEmployeeName(name);
-    this.setAge(age);
-
+    setEmployeeName(name);
+    setAge(age);
   }
 
-  public Employee(String name, int age, Room room, Team team) {
+  public Employee(final String name, final int age, Room room, Team team) {
     this(name, age);
-    this.setRoom(room);
-    this.setTeam(team);
+    setRoom(room);
+    setTeam(team);
   }
 
   public String getId() {
     return Integer.toString(employeeId);
   }
 
-  public void setEmployeeName(String employeeName) {
+  public void setEmployeeName(final String employeeName) {
     this.employeeName = employeeName;
-
   }
 
   public String getEmployeeName() {
     return employeeName;
   }
 
-  public void setAge(int age) {
+  public void setAge(final int age) {
     this.age = age;
-
   }
 
   public int getAge() {
@@ -63,20 +60,23 @@ public class Employee {
   }
 
   public void setManager(Manager manager) {
-    this.manager = manager;
+    if (this.manager != null)
+      this.manager.getEmployees().remove(this);
     if (manager != null)
-      this.manager.getEmployees().add(this);
+      manager.getEmployees().add(this);
+    this.manager = manager;
   }
 
   public Manager getManager() {
     return manager;
-
   }
 
   public void setTeam(Team team) {
-    this.team = team;
+    if (this.team != null)
+      this.team.getEmployees().remove(this);
     if (team != null)
-      this.team.getEmployees().add(this);
+      team.getEmployees().add(this);
+    this.team = team;
   }
 
   public Team getTeam() {
@@ -84,16 +84,18 @@ public class Employee {
   }
 
   public void setRoom(Room room) {
-    this.room = room;
+    if (this.room != null)
+      this.room.getEmployees().remove(this);
     if (room != null)
-      this.room.getEmployees().add(this);
+      room.getEmployees().add(this);
+    this.room = room;
   }
 
   public Room getRoom() {
     return room;
   }
 
-  public void setImageUri(String imageUri) {
+  public void setImageUri(final String imageUri) {
     this.imageUrl = imageUri;
   }
 
@@ -101,7 +103,7 @@ public class Employee {
     return imageUrl;
   }
 
-  public void setLocation(Location location) {
+  public void setLocation(final Location location) {
     this.location = location;
   }
 
@@ -121,7 +123,7 @@ public class Employee {
     return imageType;
   }
 
-  public void setImageType(String imageType) {
+  public void setImageType(final String imageType) {
     this.imageType = imageType;
   }
 
@@ -129,25 +131,24 @@ public class Employee {
     return image.clone();
   }
 
-  public void setImage(byte[] image) {
+  public void setImage(final byte[] image) {
     this.image = image;
   }
 
-  public void setImage(String imageUrl) {
+  public void setImage(final String imageUrl) {
     image = loadImage(imageUrl);
   }
 
-  private byte[] loadImage(String imageUrl) {
+  private byte[] loadImage(final String imageUrl) {
     try {
       InputStream in = Employee.class.getResourceAsStream(imageUrl);
       // InputStream in = new BufferedInputStream(new FileInputStream(imageUrl));
-      ByteArrayOutputStream bos = new ByteArrayOutputStream();
+      ByteArrayOutputStream stream = new ByteArrayOutputStream();
       int c = 0;
-      while ((c = in.read()) != -1) {
-        bos.write((char) c);
-      }
+      while ((c = in.read()) != -1)
+        stream.write((char) c);
 
-      return bos.toByteArray();
+      return stream.toByteArray();
     } catch (IOException e) {
       throw new ModelException(e);
     }
@@ -163,7 +164,7 @@ public class Employee {
   }
 
   @Override
-  public boolean equals(Object obj) {
+  public boolean equals(final Object obj) {
     if (this == obj)
       return true;
     if (obj == null || getClass() != obj.getClass())

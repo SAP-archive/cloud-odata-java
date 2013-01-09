@@ -3,6 +3,9 @@ package com.sap.core.odata.ref.model;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * @author SAP AG
+ */
 public class Manager extends Employee {
 
   private List<Employee> employees = new ArrayList<Employee>();
@@ -11,15 +14,15 @@ public class Manager extends Employee {
     this(null, 0);
   }
 
-  public Manager(String name, int age) {
+  public Manager(final String name, final int age) {
     super(name, age);
   }
 
-  public Manager(String name, int age, Room room, Team team) {
+  public Manager(final String name, final int age, Room room, Team team) {
     super(name, age, room, team);
   }
 
-  public void setEmployees(List<Employee> employees) {
+  public void setEmployees(final List<Employee> employees) {
     this.employees = employees;
   }
 

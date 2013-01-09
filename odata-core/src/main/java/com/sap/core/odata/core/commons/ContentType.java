@@ -11,8 +11,9 @@ import java.util.Map.Entry;
 import java.util.TreeMap;
 
 /**
- * Internal used {@link ContentType} for odata library.
- * Once created an {@link ContentType} is IMMUTABLE.
+ * Internally used {@link ContentType} for OData library.
+ * Once created a {@link ContentType} is IMMUTABLE.
+ * @author SAP AG
  */
 public class ContentType {
 
@@ -43,7 +44,7 @@ public class ContentType {
   private String subtype;
   private Map<String, String> parameters;
   private ODataFormat odataFormat;
-  
+
   private ContentType(String type, String subtype) {
     this(type, subtype, ODataFormat.CUSTOM, null);
   }
@@ -55,13 +56,13 @@ public class ContentType {
   private ContentType(String type, String subtype, ODataFormat odataFormat) {
     this(type, subtype, odataFormat, null);
   }
-  
+
   private ContentType(String type, String subtype, ODataFormat odataFormat, Map<String, String> parameters) {
     this.odataFormat = odataFormat;
     this.type = type == null ? MEDIA_TYPE_WILDCARD : type;
     this.subtype = subtype == null ? MEDIA_TYPE_WILDCARD : subtype;
 
-    if(parameters == null) {
+    if (parameters == null) {
       this.parameters = Collections.emptyMap();
     } else {
       this.parameters = new TreeMap<String, String>(new Comparator<String>() {
@@ -76,7 +77,7 @@ public class ContentType {
   }
 
   /**
-   * 
+   * Creates a content type from type and subtype
    * @param type
    * @param subtype
    * @return
@@ -84,7 +85,7 @@ public class ContentType {
   public static ContentType create(String type, String subtype) {
     return new ContentType(type, subtype, mapToODataFormat(subtype), null);
   }
-  
+
   /**
    * 
    * @param type
@@ -93,8 +94,7 @@ public class ContentType {
    * @return
    */
   public static ContentType create(String type, String subtype, Map<String, String> parameters) {
-    ODataFormat odFormat = mapToODataFormat(subtype);
-    return new ContentType(type, subtype, odFormat, parameters);
+    return new ContentType(type, subtype, mapToODataFormat(subtype), parameters);
   }
 
   /**
@@ -119,10 +119,9 @@ public class ContentType {
    * @return
    */
   public static ContentType create(String format) {
-    if(format == null) {
+    if (format == null)
       throw new IllegalArgumentException("Parameter format must no be null.");
-    }
-    
+
     // split 'types' and 'parameters'
     String[] typesAndParameters = format.split(PARAMETER_SEPARATOR, 2);
     String types = typesAndParameters[0];
@@ -143,17 +142,17 @@ public class ContentType {
   }
 
   private static ODataFormat mapToODataFormat(String subtype) {
-    ODataFormat odFormat = null;
+    ODataFormat odataFormat = null;
     if (subtype.contains("atom")) {
-      odFormat = ODataFormat.ATOM;
+      odataFormat = ODataFormat.ATOM;
     } else if (subtype.contains("xml")) {
-      odFormat = ODataFormat.XML;
+      odataFormat = ODataFormat.XML;
     } else if (subtype.contains("json")) {
-      odFormat = ODataFormat.JSON;
+      odataFormat = ODataFormat.JSON;
     } else {
-      odFormat = ODataFormat.CUSTOM;
+      odataFormat = ODataFormat.CUSTOM;
     }
-    return odFormat;
+    return odataFormat;
   }
 
   /**
@@ -161,11 +160,11 @@ public class ContentType {
    * @param content
    * @return
    */
-  private static Map<String, String> parameterMap(String ... content) {
+  private static Map<String, String> parameterMap(String... content) {
     Map<String, String> map = new HashMap<String, String>();
-    for (int i = 0; i < content.length-1; i+=2) {
+    for (int i = 0; i < content.length - 1; i += 2) {
       String key = content[i];
-      String value = content[i+1];
+      String value = content[i + 1];
       map.put(key, value);
     }
     return map;
@@ -175,17 +174,17 @@ public class ContentType {
    * Valid input are <code>;</code> separated <code>key = value</code> pairs.
    * 
    * @param parameters
-   * @return
+   * @return Map with keys mapped to values
    */
   private static Map<String, String> parseParameters(String parameters) {
     Map<String, String> parameterMap = new HashMap<String, String>();
     if (parameters != null) {
-      String[] splittedParmeters = parameters.split(PARAMETER_SEPARATOR);
-      for (String parameter : splittedParmeters) {
+      String[] splittedParameters = parameters.split(PARAMETER_SEPARATOR);
+      for (String parameter : splittedParameters) {
         String[] keyValue = parameter.split("=");
         String key = keyValue[0].trim().toLowerCase(Locale.ENGLISH);
-        if(isParameterAllowed(key)) {
-          String value = ((keyValue != null && keyValue.length > 1) ? keyValue[1].trim() : null);
+        if (isParameterAllowed(key)) {
+          String value = keyValue.length > 1 ? keyValue[1].trim() : null;
           parameterMap.put(key, value);
         }
       }
@@ -193,13 +192,8 @@ public class ContentType {
     return parameterMap;
   }
 
-  private static boolean isParameterAllowed(String key) {
-    if(key == null) {
-      return false;
-    } else if(PARAMETER_Q.equals(key.toLowerCase(Locale.US))) {
-      return false;
-    }
-    return true;
+  private static boolean isParameterAllowed(final String key) {
+    return key != null && !PARAMETER_Q.equals(key.toLowerCase(Locale.US));
   }
 
   public String getType() {
@@ -243,7 +237,7 @@ public class ContentType {
       return false;
 
     ContentType other = (ContentType) obj;
-    
+
     // subtype checks
     if (subtype == null) {
       if (other.subtype != null) {
@@ -254,7 +248,7 @@ public class ContentType {
         return false;
       }
     }
-    
+
     // type checks
     if (type == null) {
       if (other.type != null) {
@@ -267,10 +261,10 @@ public class ContentType {
     }
 
     // if wildcards are set, content types are defined as 'equal'
-    if(countWildcars() > 0 || other.countWildcars() > 0) {
+    if (countWildcards() > 0 || other.countWildcards() > 0) {
       return true;
     }
-    
+
     // parameter checks
     if (parameters == null) {
       if (other.parameters != null) {
@@ -290,7 +284,7 @@ public class ContentType {
     } else {
       return false;
     }
-    
+
     // all tests passed
     return true;
   }
@@ -304,14 +298,14 @@ public class ContentType {
     StringBuilder sb = new StringBuilder();
     sb.append(type).append(TYPE_SUBTYPE_SEPARATOR).append(subtype);
     for (String key : parameters.keySet()) {
-      if(isParameterAllowed(key)) {
+      if (isParameterAllowed(key)) {
         String value = parameters.get(key);
         sb.append("; ").append(key).append("=").append(value);
       }
     }
     return sb.toString();
   }
-  
+
   @Override
   public String toString() {
     return toContentTypeString();
@@ -333,8 +327,8 @@ public class ContentType {
    */
   public ContentType match(List<ContentType> toMatchContentTypes) {
     for (ContentType supportedContentType : toMatchContentTypes) {
-      if(equals(supportedContentType)) {
-        if(compareWildcardCounts(supportedContentType) < 0) {
+      if (equals(supportedContentType)) {
+        if (compareWildcardCounts(supportedContentType) < 0) {
           return this;
         } else {
           return supportedContentType;
@@ -356,15 +350,15 @@ public class ContentType {
    * @return this object weighted wildcards minus the given parameter object weighted wildcards.
    */
   public int compareWildcardCounts(ContentType otherContentType) {
-    return countWildcars() - otherContentType.countWildcars();
+    return countWildcards() - otherContentType.countWildcards();
   }
 
-  private int countWildcars() {
+  private int countWildcards() {
     int count = 0;
-    if(MEDIA_TYPE_WILDCARD.equals(type)) {
+    if (MEDIA_TYPE_WILDCARD.equals(type)) {
       count += 2;
     }
-    if(MEDIA_TYPE_WILDCARD.equals(subtype)) {
+    if (MEDIA_TYPE_WILDCARD.equals(subtype)) {
       count++;
     }
     return count;
