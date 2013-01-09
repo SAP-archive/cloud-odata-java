@@ -36,6 +36,7 @@ import com.sap.core.odata.api.processor.feature.Metadata;
 import com.sap.core.odata.api.processor.feature.ServiceDocument;
 import com.sap.core.odata.api.uri.info.GetMetadataUriInfo;
 import com.sap.core.odata.api.uri.info.GetServiceDocumentUriInfo;
+import com.sap.core.odata.testutil.fit.BaseTest;
 import com.sap.core.odata.testutil.fit.FitStaticServiceFactory;
 import com.sap.core.odata.testutil.helper.StringHelper;
 import com.sap.core.odata.testutil.server.TestServer;
@@ -43,11 +44,7 @@ import com.sap.core.odata.testutil.server.TestServer;
 /**
  * @author SAP AG
  */
-public class ServiceResolutionTest {
-
-  static {
-    DOMConfigurator.configureAndWatch("log4j.xml");
-  }
+public class ServiceResolutionTest extends BaseTest {
 
   private HttpClient httpClient = new DefaultHttpClient();
   private TestServer server = new TestServer();
@@ -55,7 +52,9 @@ public class ServiceResolutionTest {
   private ODataSingleProcessorService service;
 
   @Before
-  public void before() throws Exception {
+  public void before() {
+    super.before();
+    try {
     ODataSingleProcessor processor = mock(ODataSingleProcessor.class);
     EdmProvider provider = mock(EdmProvider.class);
 
@@ -81,12 +80,16 @@ public class ServiceResolutionTest {
     });
 
     when(((Metadata) processor).readMetadata(any(GetMetadataUriInfo.class),any(String.class))).thenReturn(ODataResponse.entity("metadata").status(HttpStatusCodes.OK).build());
-    when(((ServiceDocument) processor).readServiceDocument(any(GetServiceDocumentUriInfo.class),any(String.class))).thenReturn(ODataResponse.entity("servicedocument").status(HttpStatusCodes.OK).build());
+      when(((ServiceDocument) processor).readServiceDocument(any(GetServiceDocumentUriInfo.class),any(String.class))).thenReturn(ODataResponse.entity("servicedocument").status(HttpStatusCodes.OK).build());
+    } catch (ODataException e) {
+      throw new RuntimeException(e);
+    }
   }
 
   @After
-  public void after() throws Exception {
+  public void after() {
     try {
+      super.after();
       if (this.server != null) {
         this.server.stopServer();
       }
