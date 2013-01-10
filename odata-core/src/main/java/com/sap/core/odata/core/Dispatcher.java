@@ -6,6 +6,7 @@ import com.sap.core.odata.api.edm.EdmProperty;
 import com.sap.core.odata.api.exception.ODataBadRequestException;
 import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.api.exception.ODataMethodNotAllowedException;
+import com.sap.core.odata.api.processor.ODataRequest;
 import com.sap.core.odata.api.processor.ODataResponse;
 import com.sap.core.odata.api.processor.feature.Batch;
 import com.sap.core.odata.api.processor.feature.Entity;
@@ -40,7 +41,9 @@ public class Dispatcher {
     this.service = service;
   }
 
-  public ODataResponse dispatch(final ODataHttpMethod method, final UriInfoImpl uriInfo, final String contentType) throws ODataException {
+  public ODataResponse dispatch(final ODataHttpMethod method, final UriInfoImpl uriInfo, final ODataRequest request) throws ODataException {
+    final String contentType = request.getContentHeader();
+
     switch (uriInfo.getUriType()) {
     case URI0:
       if (method == ODataHttpMethod.GET)

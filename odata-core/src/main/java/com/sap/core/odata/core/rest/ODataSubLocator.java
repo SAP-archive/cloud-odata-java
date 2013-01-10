@@ -1,5 +1,6 @@
 package com.sap.core.odata.core.rest;
 
+import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
@@ -10,6 +11,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.servlet.ServletInputStream;
+import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.HEAD;
@@ -32,6 +35,7 @@ import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.api.exception.ODataMethodNotAllowedException;
 import com.sap.core.odata.api.exception.ODataNotAcceptableException;
 import com.sap.core.odata.api.exception.ODataNotFoundException;
+import com.sap.core.odata.api.processor.ODataRequest;
 import com.sap.core.odata.api.processor.ODataResponse;
 import com.sap.core.odata.api.processor.feature.ProcessorFeature;
 import com.sap.core.odata.api.uri.PathInfo;
@@ -39,6 +43,7 @@ import com.sap.core.odata.api.uri.PathSegment;
 import com.sap.core.odata.core.Dispatcher;
 import com.sap.core.odata.core.ODataContextImpl;
 import com.sap.core.odata.core.ODataPathSegmentImpl;
+import com.sap.core.odata.core.ODataRequestImpl;
 import com.sap.core.odata.core.ODataUriInfoImpl;
 import com.sap.core.odata.core.commons.ContentType;
 import com.sap.core.odata.core.commons.ODataHttpMethod;
@@ -62,14 +67,18 @@ public final class ODataSubLocator implements ODataLocator {
 
   private List<ContentType> acceptHeaderContentTypes;
 
+  private ServletInputStream contentBody;
+
   @GET
   public Response handleGet() throws ODataException {
     List<PathSegment> pathSegments = this.context.getPathInfo().getODataSegments();
     UriInfoImpl uriParserResult = (UriInfoImpl) this.uriParser.parse(pathSegments, this.queryParameters);
 
-    String format = doContentNegotiation(uriParserResult);
+    String contentType = doContentNegotiation(uriParserResult);
+    
+    ODataRequest odataRequest = ODataRequestImpl.create(contentBody, contentType).build();
 
-    ODataResponse odataResponse = dispatcher.dispatch(ODataHttpMethod.GET, uriParserResult, format);
+    ODataResponse odataResponse = dispatcher.dispatch(ODataHttpMethod.GET, uriParserResult, odataRequest);
     Response response = this.convertResponse(odataResponse);
 
     return response;
@@ -187,7 +196,8 @@ public final class ODataSubLocator implements ODataLocator {
     final List<PathSegment> pathSegments = context.getPathInfo().getODataSegments();
     final UriInfoImpl uriParserResult = (UriInfoImpl) uriParser.parse(pathSegments, queryParameters);
 
-    final ODataResponse odataResponse = dispatcher.dispatch(ODataHttpMethod.DELETE, uriParserResult, uriParserResult.getFormat());
+    ODataRequest request = ODataRequestImpl.create(contentBody, uriParserResult.getFormat()).build();
+    final ODataResponse odataResponse = dispatcher.dispatch(ODataHttpMethod.DELETE, uriParserResult, request);
     return convertResponse(odataResponse);
   }
 
@@ -207,6 +217,12 @@ public final class ODataSubLocator implements ODataLocator {
     this.queryParameters = this.convertToSinglevaluedMap(param.getUriInfo().getQueryParameters());
 
     acceptHeaderContentTypes = convertMediaTypes(param.httpHeaders.getAcceptableMediaTypes());
+    try {
+      contentBody = param.getServletRequest().getInputStream();
+//      contentBody = param.getServletRequest().getReader();
+    } catch (IOException e) {
+      throw new ODataException("Error getting request content body reader.", e);
+    }
 
     this.service = param.getServiceFactory().createService(this.context);
     this.context.setService(this.service);
@@ -334,6 +350,7 @@ public final class ODataSubLocator implements ODataLocator {
     private Request request;
     private int pathSplit;
     private ODataServiceFactory serviceFactory;
+    private HttpServletRequest servletRequest;
 
     public ODataServiceFactory getServiceFactory() {
       return serviceFactory;
@@ -381,6 +398,14 @@ public final class ODataSubLocator implements ODataLocator {
 
     public void setPathSplit(int pathSplit) {
       this.pathSplit = pathSplit;
+    }
+    
+    public void setServletRequest(HttpServletRequest servletRequest) {
+      this.servletRequest = servletRequest;
+    }
+    
+    public HttpServletRequest getServletRequest() {
+      return servletRequest;
     }
   }
 
