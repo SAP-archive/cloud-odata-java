@@ -8,6 +8,11 @@ import com.sap.core.odata.api.edm.EdmProperty;
 import com.sap.core.odata.api.processor.ODataRequest;
 import com.sap.core.odata.api.rt.RuntimeDelegate;
 
+/**
+ * Abstract entity (content type dependent) consumer for reading input (from {@link ODataRequest}).
+ * 
+ * @author SAP AG
+ */
 public abstract class EntityConsumer {
 
   protected EntityConsumer() throws EntityConsumerException {}
