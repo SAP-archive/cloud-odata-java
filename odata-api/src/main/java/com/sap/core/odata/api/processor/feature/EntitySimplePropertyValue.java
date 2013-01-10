@@ -1,6 +1,7 @@
 package com.sap.core.odata.api.processor.feature;
 
 import com.sap.core.odata.api.exception.ODataException;
+import com.sap.core.odata.api.processor.ODataRequest;
 import com.sap.core.odata.api.processor.ODataResponse;
 import com.sap.core.odata.api.uri.info.DeleteUriInfo;
 import com.sap.core.odata.api.uri.info.GetSimplePropertyUriInfo;
@@ -21,11 +22,11 @@ public interface EntitySimplePropertyValue extends ProcessorFeature {
   ODataResponse readEntitySimplePropertyValue(GetSimplePropertyUriInfo uriInfo, String contentType) throws ODataException;
 
   /**
-   * @param contentType 
+   * @param request 
    * @return a {@link ODataResponse} object
    * @throws ODataException
    */
-  ODataResponse updateEntitySimplePropertyValue(PutMergePatchUriInfo uriInfo, String contentType) throws ODataException;
+  ODataResponse updateEntitySimplePropertyValue(PutMergePatchUriInfo uriInfo, ODataRequest request) throws ODataException;
 
   /**
    * @param contentType 

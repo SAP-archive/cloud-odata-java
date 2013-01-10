@@ -10,12 +10,14 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URI;
 
+import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPatch;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpPut;
+import org.apache.http.entity.StringEntity;
 import org.junit.Test;
 
 import com.sap.core.odata.api.commons.HttpStatusCodes;
@@ -77,21 +79,55 @@ public class BasicHttpTest extends AbstractBasicTest {
     HttpPut put = new HttpPut(URI.create(this.getEndpoint().toString() + "/aaa/bbb/ccc"));
     HttpResponse response = this.getHttpClient().execute(put);
 
+//    String payload = StringHelper.inputStreamToString(response.getEntity().getContent());
+//    assertTrue(payload.contains(put.getMethod()));
+    assertEquals(404, response.getStatusLine().getStatusCode());
+  }
+  
+  @Test
+  public void testPutWithContent() throws MalformedURLException, IOException {
+    HttpPut put = new HttpPut(URI.create(this.getEndpoint().toString()));
+    String xml = 
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
+        "<entry xmlns=\"http://www.w3.org/2005/Atom\" xmlns:m=\"http://schemas.microsoft.com/ado/2007/08/dataservices/metadata\" xmlns:d=\"http://schemas.microsoft.com/ado/2007/08/dataservices\" xml:base=\"https://refodata.prod.jpaas.sapbydesign.com/com.sap.core.odata.ref.web/ReferenceScenario.svc/\">" + 
+        "</entry>";
+    HttpEntity entity = new StringEntity(xml);
+    put.setEntity(entity);
+    HttpResponse response = this.getHttpClient().execute(put);
+
     String payload = StringHelper.inputStreamToString(response.getEntity().getContent());
 
-    assertTrue(payload.contains(put.getMethod()));
-    assertEquals(200, response.getStatusLine().getStatusCode());
+    assertTrue(payload.contains("error"));
+    assertEquals(HttpStatusCodes.METHOD_NOT_ALLOWED.getStatusCode(), response.getStatusLine().getStatusCode());
   }
 
+
   @Test
-  public void testPost() throws MalformedURLException, IOException {
+  public void testPostMethodNotAllowedWithContent() throws MalformedURLException, IOException {
+    HttpPost post = new HttpPost(URI.create(this.getEndpoint().toString()));
+    String xml = 
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
+        "<entry xmlns=\"http://www.w3.org/2005/Atom\" xmlns:m=\"http://schemas.microsoft.com/ado/2007/08/dataservices/metadata\" xmlns:d=\"http://schemas.microsoft.com/ado/2007/08/dataservices\" xml:base=\"https://refodata.prod.jpaas.sapbydesign.com/com.sap.core.odata.ref.web/ReferenceScenario.svc/\">" + 
+        "</entry>";
+    HttpEntity entity = new StringEntity(xml);
+    post.setEntity(entity);
+    HttpResponse response = this.getHttpClient().execute(post);
+
+    String payload = StringHelper.inputStreamToString(response.getEntity().getContent());
+
+    assertTrue(payload.contains("error"));
+    assertEquals(HttpStatusCodes.METHOD_NOT_ALLOWED.getStatusCode(), response.getStatusLine().getStatusCode());
+  }
+  
+  @Test
+  public void testPostNotFound() throws MalformedURLException, IOException {
     HttpPost post = new HttpPost(URI.create(this.getEndpoint().toString() + "/aaa/bbb/ccc"));
     HttpResponse response = this.getHttpClient().execute(post);
 
     String payload = StringHelper.inputStreamToString(response.getEntity().getContent());
 
-    assertTrue(payload.contains(post.getMethod()));
-    assertEquals(200, response.getStatusLine().getStatusCode());
+    assertTrue(payload.contains("error"));
+    assertEquals(HttpStatusCodes.NOT_FOUND.getStatusCode(), response.getStatusLine().getStatusCode());
   }
 
   @Test

@@ -1,6 +1,7 @@
 package com.sap.core.odata.api.processor.feature;
 
 import com.sap.core.odata.api.exception.ODataException;
+import com.sap.core.odata.api.processor.ODataRequest;
 import com.sap.core.odata.api.processor.ODataResponse;
 import com.sap.core.odata.api.uri.info.GetEntitySetLinksCountUriInfo;
 import com.sap.core.odata.api.uri.info.GetEntitySetLinksUriInfo;
@@ -27,9 +28,9 @@ public interface EntityLinks extends ProcessorFeature {
   ODataResponse countEntityLinks(GetEntitySetLinksCountUriInfo uriInfo, String contentType) throws ODataException;
 
   /**
-   * @param contentType 
+   * @param request 
    * @return a odata response object
    * @throws ODataException
    */
-  ODataResponse createEntityLink(PostUriInfo uriInfo, String contentType) throws ODataException;
+  ODataResponse createEntityLink(PostUriInfo uriInfo, ODataRequest request) throws ODataException;
 }
