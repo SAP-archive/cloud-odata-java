@@ -36,7 +36,6 @@ public abstract class AbstractFitTest extends BaseTest {
   @Before
   public void before() {
     try {
-      super.before();
       this.service = createService();
       FitStaticServiceFactory.setService(this.service);
       this.server.startServer(FitStaticServiceFactory.class);
@@ -48,7 +47,6 @@ public abstract class AbstractFitTest extends BaseTest {
   @After
   public void after() {
     try {
-      super.after();
       this.server.stopServer();
     } finally {
       FitStaticServiceFactory.setService(null);

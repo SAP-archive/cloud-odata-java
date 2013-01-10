@@ -53,7 +53,6 @@ public class ODataExceptionMapperImplTest extends BaseTest {
 
   @Before
   public void before() {
-    super.before();
     exceptionMapper = new ODataExceptionMapperImpl();
     exceptionMapper.httpHeaders = mock(HttpHeaders.class);
     exceptionMapper.uriInfo = mock(UriInfo.class);

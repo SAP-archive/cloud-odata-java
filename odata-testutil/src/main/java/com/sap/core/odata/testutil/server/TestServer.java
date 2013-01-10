@@ -54,8 +54,6 @@ public class TestServer {
   public void startServer(Class<? extends ODataServiceFactory> factoryClass) {
     try {
       for (int port = PORT_MIN; port <= PORT_MAX; port += PORT_INC) {
-        TestServer.log.info("Try to start TestServer on port... " + port);
-
         CXFNonSpringJaxrsServlet odataServlet = new CXFNonSpringJaxrsServlet();
         ServletHolder odataServletHolder = new ServletHolder(odataServlet);
         odataServletHolder.setInitParameter("javax.ws.rs.Application", "com.sap.core.odata.core.rest.app.ODataApplication");
@@ -82,7 +80,7 @@ public class TestServer {
       if (!this.server.isStarted()) {
         throw new BindException("no free port in range of [" + PORT_MIN + ".." + PORT_MAX + "]");
       }
-      TestServer.log.info("server endpoint: " + this.endpoint);
+//      TestServer.log.info("server endpoint: " + this.endpoint);
 
     } catch (Exception e) {
       throw new ServerException(e);

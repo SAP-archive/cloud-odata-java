@@ -52,7 +52,6 @@ public class ServiceResolutionTest extends BaseTest {
 
   @Before
   public void before() {
-    super.before();
     try {
       ODataSingleProcessor processor = mock(ODataSingleProcessor.class);
       EdmProvider provider = mock(EdmProvider.class);
@@ -88,7 +87,6 @@ public class ServiceResolutionTest extends BaseTest {
   @After
   public void after() {
     try {
-      super.after();
       if (this.server != null) {
         this.server.stopServer();
       }
