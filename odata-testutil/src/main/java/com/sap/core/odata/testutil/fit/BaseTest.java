@@ -6,8 +6,6 @@ import java.util.Map.Entry;
 
 import org.apache.log4j.Level;
 import org.apache.log4j.xml.DOMConfigurator;
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Rule;
 import org.junit.rules.TestRule;
 import org.junit.rules.TestWatcher;
@@ -54,21 +52,19 @@ public abstract class BaseTest {
     @Override
     protected void finished(Description description) {
       super.finished(description);
+      try {} finally {
+        reEnableLogging();
+      }
     }
 
+    @Override
+    protected void succeeded(Description description) {
+      super.succeeded(description);
+    }
+
+    
+    
   };
-
-  @Before
-  public void before() {
-
-  }
-
-  @After
-  public void after() {
-    try {} finally {
-      reEnableLogging();
-    }
-  }
 
   /**
    * Disable logging for class with classname {@value #CLASSNAME_ODATA_EXCEPTION_MAPPER}.
