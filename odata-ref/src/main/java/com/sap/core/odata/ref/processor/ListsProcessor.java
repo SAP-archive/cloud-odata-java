@@ -85,23 +85,6 @@ public class ListsProcessor extends ODataSingleProcessor {
   }
 
   @Override
-  public ODataResponse createEntity(PostUriInfo uriInfo, ODataRequest request) throws ODataException {
-    EntityConsumer ec = EntityConsumer.create(request.getContentHeader());
-    EdmEntitySet entitySet = uriInfo.getTargetEntitySet();
-    
-    Map<String, Object> entryMap = ec.readEntry(entitySet, request);
-    
-    String responseXml = 
-        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
-        "<entry xmlns=\"http://www.w3.org/2005/Atom\" xmlns:m=\"http://schemas.microsoft.com/ado/2007/08/dataservices/metadata\" xmlns:d=\"http://schemas.microsoft.com/ado/2007/08/dataservices\" xml:base=\"https://refodata.prod.jpaas.sapbydesign.com/com.sap.core.odata.ref.web/ReferenceScenario.svc/\">" + 
-        entryMap.toString() + 
-        "</entry>";
-    
-    return ODataResponse.status(HttpStatusCodes.OK).entity(responseXml).build();
-  }
-  
-  
-  @Override
   public ODataResponse readEntitySet(final GetEntitySetUriInfo uriInfo, final String contentType) throws ODataException {
     ArrayList<Object> data = new ArrayList<Object>();
     data.addAll((List<?>) retrieveData(
@@ -291,6 +274,24 @@ public class ListsProcessor extends ODataSingleProcessor {
         uriInfo.getStartEntitySet(),
         mapKey(uriInfo.getKeyPredicates()));
     return ODataResponse.status(HttpStatusCodes.NO_CONTENT).build();
+  }
+
+  @Override
+  public ODataResponse createEntity(final PostUriInfo uriInfo, final ODataRequest request) throws ODataException {
+    final EdmEntitySet entitySet = uriInfo.getTargetEntitySet();
+    ODataContext context = getContext();
+
+    final int timingHandle = context.startRuntimeMeasurement("EntityConsumer", "readEntry");
+
+    final EntityConsumer consumer = EntityConsumer.create(request.getContentHeader());
+    final Map<String, Object> entryMap = consumer.readEntry(entitySet, request);
+
+    context.stopRuntimeMeasurement(timingHandle);
+
+    // TODO: create entity
+
+    // TODO: return correct response, including Location header
+    return ODataResponse.status(HttpStatusCodes.CREATED).entity(entryMap.toString()).build();
   }
 
   @Override

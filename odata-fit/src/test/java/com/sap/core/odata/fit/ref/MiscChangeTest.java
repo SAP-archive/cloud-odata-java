@@ -27,9 +27,9 @@ public class MiscChangeTest extends AbstractRefTest {
 
   @Test
   public void deletePropertyValue() throws Exception {
-//    deleteUriOk("Employees('2')/Age/$value");
-//    deleteUriOk("Employees('2')/Location/City/PostalCode/$value");
-//    deleteUriOk("Employees('2')/ne_Manager/Age/$value");
+    deleteUriOk("Employees('2')/Age/$value");
+    deleteUriOk("Employees('2')/Location/City/PostalCode/$value");
+    deleteUriOk("Employees('2')/ne_Manager/Age/$value");
 
     deleteUri("Employees('2')/Age", HttpStatusCodes.METHOD_NOT_ALLOWED);
     deleteUri("Employees('2')/Foo/$value", HttpStatusCodes.NOT_FOUND);
@@ -40,8 +40,8 @@ public class MiscChangeTest extends AbstractRefTest {
   @Test
   public void deleteLink() throws Exception {
     deleteUriOk("Employees('6')/$links/ne_Room");
-//    deleteUriOk("Managers('3')/$links/nm_Employees('5')");
-//    deleteUriOk("Employees('2')/ne_Team/$links/nt_Employees('1')");
+    deleteUriOk("Managers('3')/$links/nm_Employees('5')");
+    deleteUriOk("Employees('2')/ne_Team/$links/nt_Employees('1')");
 
     deleteUri("Managers('3')/$links/nm_Employees()", HttpStatusCodes.METHOD_NOT_ALLOWED);
     deleteUri("Managers('3')/$links/nm_Employees('1')", HttpStatusCodes.NOT_FOUND);

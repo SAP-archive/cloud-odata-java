@@ -7,10 +7,14 @@ import static org.junit.Assert.assertNotNull;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Arrays;
 import java.util.Calendar;
 
 import org.junit.Test;
 
+/**
+ * @author SAP AG
+ */
 public class EmployeeTest {
 
   private static final int VALUE_AGE = 36;
@@ -55,6 +59,7 @@ public class EmployeeTest {
   public void testManager() {
     Employee employee1 = new Employee();
     Manager manager1 = new Manager();
+    manager1.setEmployees(Arrays.asList(employee1));
     employee1.setManager(manager1);
     Manager testManager = employee1.getManager();
     assertEquals(manager1, testManager);
@@ -65,6 +70,7 @@ public class EmployeeTest {
   public void testTeam() {
     Employee employee1 = new Employee();
     final Team team1 = new Team();
+    team1.setEmployees(Arrays.asList(employee1));
     employee1.setTeam(team1);
     Team testTeam = employee1.getTeam();
     assertEquals(team1, testTeam);
@@ -75,6 +81,7 @@ public class EmployeeTest {
   public void testRoom() {
     Employee employee1 = new Employee();
     Room room1 = new Room();
+    room1.setEmployees(Arrays.asList(employee1));
     employee1.setRoom(room1);
     Room testRoom = employee1.getRoom();
     assertEquals(room1, testRoom);
