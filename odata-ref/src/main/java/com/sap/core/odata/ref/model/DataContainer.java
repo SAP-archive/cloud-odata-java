@@ -14,15 +14,21 @@ public class DataContainer {
   private static final boolean SCRUMTEAM_FALSE = false;
   private static final String IMAGE_JPEG = "image/jpeg";
 
-  private Set<Photo> photoSet;
-  private Set<Building> buildingSet = new HashSet<Building>();
+  private Set<Employee> employeeSet = new HashSet<Employee>();
   private Set<Team> teamSet = new HashSet<Team>();
   private Set<Room> roomSet = new HashSet<Room>();
-  private Set<Employee> employeeSet = new HashSet<Employee>();
   private Set<Manager> managerSet = new HashSet<Manager>();
+  private Set<Building> buildingSet = new HashSet<Building>();
+  private Set<Photo> photoSet;
 
   public void init() {
-    photoSet = generatePhotos();
+    // ------------- Teams ---------------
+    Team team1 = new Team("Team 1", SCRUMTEAM_FALSE);
+    Team team2 = new Team("Team 2", SCRUMTEAM_TRUE);
+    Team team3 = new Team("Team 3", SCRUMTEAM_FALSE);
+    teamSet.add(team1);
+    teamSet.add(team2);
+    teamSet.add(team3);
 
     // ------------- Buildings ---------------
     Building building1 = new Building("Building 1");
@@ -32,22 +38,16 @@ public class DataContainer {
     buildingSet.add(building2);
     buildingSet.add(building3);
 
-    // ------------- Teams ---------------
-    Team team1 = new Team("Team 1", SCRUMTEAM_FALSE);
-    Team team2 = new Team("Team 2", SCRUMTEAM_TRUE);
-    Team team3 = new Team("Team 3", SCRUMTEAM_FALSE);
-    teamSet.add(team1);
-    teamSet.add(team2);
-    teamSet.add(team3);
-
     // ------------- Rooms ---------------
-
     Room room1 = new Room("Room 1", 1);
     Room room2 = new Room("Room 2", 5);
     Room room3 = new Room("Room 3", 4);
     room1.setBuilding(building1);
+    building1.getRooms().add(room1);
     room2.setBuilding(building2);
+    building2.getRooms().add(room2);
     room3.setBuilding(building2);
+    building2.getRooms().add(room3);
     room1.setVersion(1);
     room2.setVersion(2);
     room3.setVersion(3);
@@ -57,23 +57,30 @@ public class DataContainer {
     for (int i = 4; i <= 103; i++) {
       Room roomN = new Room("Room " + i, 4 + (i - 3) % 5);
       roomN.setBuilding(building3);
+      building3.getRooms().add(roomN);
       roomN.setVersion(1);
       roomSet.add(roomN);
     }
 
     // ------------- Employees and Managers ------------
-    Employee emp1 = new Manager("Walter Winter", 52, room1, team1);
-    emp1.setManager((Manager) emp1);
+    Manager emp1 = new Manager("Walter Winter", 52, room1, team1);
+    emp1.setManager(emp1);
+    emp1.getEmployees().add(emp1);
+    team1.getEmployees().add(emp1);
+    room1.getEmployees().add(emp1);
     emp1.setLocation(new Location("Germany", "69124", "Heidelberg"));
     emp1.setEntryDate(generateDate(1999, 1, 1));
     emp1.setImageUri("Employees('1')/$value");
     emp1.setImage("/male_1_WinterW.jpg");
     emp1.setImageType(IMAGE_JPEG);
     employeeSet.add(emp1);
-    managerSet.add((Manager) emp1);
+    managerSet.add(emp1);
 
     Employee emp2 = new Employee("Frederic Fall", 32, room2, team1);
-    emp2.setManager((Manager) emp1);
+    emp2.setManager(emp1);
+    emp1.getEmployees().add(emp2);
+    team1.getEmployees().add(emp2);
+    room2.getEmployees().add(emp2);
     emp2.setLocation(new Location("Germany", "69190", "Walldorf"));
     emp2.setEntryDate(generateDate(2003, 7, 1));
     emp2.setImageUri("Employees('2')/$value");
@@ -82,7 +89,10 @@ public class DataContainer {
     employeeSet.add(emp2);
 
     Manager emp3 = new Manager("Jonathan Smith", 56, room2, team1);
-    emp3.setManager((Manager) emp1);
+    emp3.setManager(emp1);
+    emp1.getEmployees().add(emp3);
+    team1.getEmployees().add(emp3);
+    room2.getEmployees().add(emp3);
     emp3.setLocation(emp2.getLocation());
     emp3.setEntryDate(null);
     emp3.setImageUri("Employees('3')/$value");
@@ -93,6 +103,9 @@ public class DataContainer {
 
     Employee emp4 = new Employee("Peter Burke", 39, room2, team2);
     emp4.setManager(emp3);
+    emp3.getEmployees().add(emp4);
+    team2.getEmployees().add(emp4);
+    room2.getEmployees().add(emp4);
     emp4.setLocation(emp2.getLocation());
     emp4.setEntryDate(generateDate(2004, 9, 12));
     emp4.setImageUri("Employees('4')/$value");
@@ -102,6 +115,9 @@ public class DataContainer {
 
     Employee emp5 = new Employee("John Field", 42, room3, team2);
     emp5.setManager(emp3);
+    emp3.getEmployees().add(emp5);
+    team2.getEmployees().add(emp5);
+    room3.getEmployees().add(emp5);
     emp5.setLocation(emp2.getLocation());
     emp5.setEntryDate(generateDate(2001, 2, 1));
     emp5.setImageUri("Employees('5')/$value");
@@ -110,7 +126,10 @@ public class DataContainer {
     employeeSet.add(emp5);
 
     Employee emp6 = new Employee("Susan Bay", 29, room2, team3);
-    emp6.setManager((Manager) emp1);
+    emp6.setManager(emp1);
+    emp1.getEmployees().add(emp6);
+    team3.getEmployees().add(emp6);
+    room2.getEmployees().add(emp6);
     emp6.setLocation(emp2.getLocation());
     emp6.setEntryDate(generateDate(2010, 12, 1));
     emp6.setImageUri("Employees('6')/$value");
@@ -118,6 +137,8 @@ public class DataContainer {
     emp6.setImageType(IMAGE_JPEG);
     employeeSet.add(emp6);
 
+    // ------------- Photos ---------------
+    photoSet = generatePhotos();
   }
 
   private Calendar generateDate(final int year, final int month, final int day) {
@@ -178,32 +199,23 @@ public class DataContainer {
   }
 
   public void reset() {
-    if (photoSet != null) {
-      photoSet.clear();
-    }
-    if (employeeSet != null) {
+    if (employeeSet != null)
       employeeSet.clear();
-    }
-
-    if (buildingSet != null) {
-      buildingSet.clear();
-    }
-
-    if (roomSet != null) {
-      roomSet.clear();
-    }
-
-    if (teamSet != null) {
+    if (teamSet != null)
       teamSet.clear();
-    }
-
-    if (managerSet != null) {
+    if (roomSet != null)
+      roomSet.clear();
+    if (managerSet != null)
       managerSet.clear();
-    }
-    Team.reset();
-    Building.reset();
+    if (buildingSet != null)
+      buildingSet.clear();
+    if (photoSet != null)
+      photoSet.clear();
+
     Employee.reset();
+    Team.reset();
     Room.reset();
+    Building.reset();
     Photo.reset();
     init();
   }

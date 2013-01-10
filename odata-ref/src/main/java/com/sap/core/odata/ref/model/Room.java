@@ -10,8 +10,8 @@ public class Room {
   private static int counter = 1;
   private int id;
   private String name;
-  private int seats;
-  private int version;
+  private Integer seats;
+  private Integer version;
   private Building building;
   private List<Employee> employees = new ArrayList<Employee>();
 
@@ -41,7 +41,7 @@ public class Room {
     this.name = name;
   }
 
-  public void setSeats(final int seats) {
+  public void setSeats(final Integer seats) {
     this.seats = seats;
   }
 
@@ -49,7 +49,7 @@ public class Room {
     return seats;
   }
 
-  public void setVersion(final int version) {
+  public void setVersion(final Integer version) {
     this.version = version;
   }
 
@@ -57,11 +57,7 @@ public class Room {
     return version;
   }
 
-  public void setBuilding(Building building) {
-    if (this.building != null)
-      this.building.getRooms().remove(this);
-    if (building != null)
-      building.getRooms().add(this);
+  public void setBuilding(final Building building) {
     this.building = building;
   }
 

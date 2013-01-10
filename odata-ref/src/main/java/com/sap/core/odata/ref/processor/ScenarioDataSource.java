@@ -322,31 +322,35 @@ public class ScenarioDataSource implements ListsDataSource {
     final Object data = readData(entitySet, keys);
 
     if ("Employees".equals(entitySet.getName()) || "Managers".equals(entitySet.getName())) {
-//      if (data instanceof Manager)
-//        for (Employee employee : ((Manager) data).getEmployees())
-//          employee.setManager(null);
-      ((Employee) data).setManager(null);
-      ((Employee) data).setTeam(null);
-      ((Employee) data).setRoom(null);
-      if ("Managers".equals(entitySet.getName()))
+      if (data instanceof Manager)
+        for (Employee employee : ((Manager) data).getEmployees())
+          employee.setManager(null);
+      final Employee employee = (Employee) data;
+      if (employee.getManager() != null)
+        employee.getManager().getEmployees().remove(employee);
+      if (employee.getTeam() != null)
+        employee.getTeam().getEmployees().remove(employee);
+      if (employee.getRoom() != null)
+        employee.getRoom().getEmployees().remove(employee);
+      if (data instanceof Manager)
         dataContainer.getManagerSet().remove(data);
-      else
-        dataContainer.getEmployeeSet().remove(data);
+      dataContainer.getEmployeeSet().remove(data);
 
     } else if ("Teams".equals(entitySet.getName())) {
-//      for (Employee employee : ((Team) data).getEmployees())
-//        employee.setTeam(null);
+      for (Employee employee : ((Team) data).getEmployees())
+        employee.setTeam(null);
       dataContainer.getTeamSet().remove(data);
 
     } else if ("Rooms".equals(entitySet.getName())) {
-//      for (Employee employee : ((Room) data).getEmployees())
-//        employee.setRoom(null);
-      ((Room) data).setBuilding(null);
+      for (Employee employee : ((Room) data).getEmployees())
+        employee.setRoom(null);
+      if (((Room) data).getBuilding() != null)
+        ((Room) data).getBuilding().getRooms().remove(data);
       dataContainer.getRoomSet().remove(data);
 
     } else if ("Buildings".equals(entitySet.getName())) {
-//      for (Room room : ((Building) data).getRooms())
-//        room.setBuilding(null);
+      for (Room room : ((Building) data).getRooms())
+        room.setBuilding(null);
       dataContainer.getBuildingSet().remove(data);
 
     } else if ("Photos".equals(entitySet.getName())) {

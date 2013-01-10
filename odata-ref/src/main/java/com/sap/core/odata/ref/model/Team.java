@@ -10,7 +10,7 @@ public class Team {
   private static int counter = 1;
   private int id;
   private String name;
-  private boolean isScrumTeam;
+  private Boolean isScrumTeam;
   private List<Employee> employees;
 
   public Team() {
@@ -44,7 +44,7 @@ public class Team {
     return isScrumTeam;
   }
 
-  public void setScrumTeam(final boolean isScrumTeam) {
+  public void setScrumTeam(final Boolean isScrumTeam) {
     this.isScrumTeam = isScrumTeam;
   }
 

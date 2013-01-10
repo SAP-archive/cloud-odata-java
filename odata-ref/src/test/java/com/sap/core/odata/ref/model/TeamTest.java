@@ -3,11 +3,14 @@ package com.sap.core.odata.ref.model;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.junit.Test;
 
+/**
+ * @author SAP AG
+ */
 public class TeamTest {
 
   private static final String VALUE_NAME = "Team 1";
@@ -41,13 +44,10 @@ public class TeamTest {
     Team team1 = new Team(VALUE_NAME);
     Employee employee1 = new Employee();
     Employee employee2 = new Employee();
-    List<Employee> testList = new ArrayList<Employee>();
-    testList.add(employee1);
-    testList.add(employee2);
-    // Relationship should be set by n site
-    for (Employee emp : testList) {
+    List<Employee> testList = Arrays.asList(employee1, employee2);
+    team1.setEmployees(testList);
+    for (Employee emp : testList)
       emp.setTeam(team1);
-    }
     assertEquals(testList, team1.getEmployees());
     assertEquals(team1, employee1.getTeam());
   }

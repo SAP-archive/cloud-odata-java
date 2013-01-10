@@ -3,11 +3,14 @@ package com.sap.core.odata.ref.model;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.junit.Test;
 
+/**
+ * @author SAP AG
+ */
 public class RoomTest {
 
   private static final int VALUE_VERSION_NR = 1;
@@ -41,6 +44,7 @@ public class RoomTest {
   public void testBuilding() {
     Room room1 = new Room();
     Building build1 = new Building();
+    build1.getRooms().add(room1);
     room1.setBuilding(build1);
     Building testBuild = room1.getBuilding();
     assertEquals(build1, testBuild);
@@ -52,11 +56,9 @@ public class RoomTest {
   public void testEmployees() {
     Employee employee1 = new Employee();
     Employee employee2 = new Employee();
-    List<Employee> employeesList = new ArrayList<Employee>();
-    employeesList.add(employee1);
-    employeesList.add(employee2);
-    // Relationship should be set by n site
+    List<Employee> employeesList = Arrays.asList(employee1, employee2);
     Room room1 = new Room();
+    room1.setEmployees(employeesList);
     employee1.setRoom(room1);
     employee2.setRoom(room1);
     List<Employee> testList = room1.getEmployees();

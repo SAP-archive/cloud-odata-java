@@ -13,7 +13,7 @@ public class Employee {
   private static int counter = 1;
   private int employeeId;
   private String employeeName;
-  private int age;
+  private Integer age;
   private Manager manager;
   private Team team;
   private Room room;
@@ -51,7 +51,7 @@ public class Employee {
     return employeeName;
   }
 
-  public void setAge(final int age) {
+  public void setAge(final Integer age) {
     this.age = age;
   }
 
@@ -59,11 +59,7 @@ public class Employee {
     return age;
   }
 
-  public void setManager(Manager manager) {
-    if (this.manager != null)
-      this.manager.getEmployees().remove(this);
-    if (manager != null)
-      manager.getEmployees().add(this);
+  public void setManager(final Manager manager) {
     this.manager = manager;
   }
 
@@ -71,11 +67,7 @@ public class Employee {
     return manager;
   }
 
-  public void setTeam(Team team) {
-    if (this.team != null)
-      this.team.getEmployees().remove(this);
-    if (team != null)
-      team.getEmployees().add(this);
+  public void setTeam(final Team team) {
     this.team = team;
   }
 
@@ -83,11 +75,7 @@ public class Employee {
     return team;
   }
 
-  public void setRoom(Room room) {
-    if (this.room != null)
-      this.room.getEmployees().remove(this);
-    if (room != null)
-      room.getEmployees().add(this);
+  public void setRoom(final Room room) {
     this.room = room;
   }
 
