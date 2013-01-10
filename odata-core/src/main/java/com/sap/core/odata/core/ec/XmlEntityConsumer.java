@@ -1,9 +1,5 @@
 package com.sap.core.odata.core.ec;
 
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.StringReader;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -11,120 +7,123 @@ import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.sap.core.odata.api.ec.EntityConsumer;
 import com.sap.core.odata.api.ec.EntityConsumerException;
 import com.sap.core.odata.api.edm.EdmEntitySet;
 import com.sap.core.odata.api.edm.EdmProperty;
 import com.sap.core.odata.api.processor.ODataRequest;
+import com.sap.core.odata.core.ec.XmlPropertyConsumer.Property;
 
 public class XmlEntityConsumer extends EntityConsumer {
+
+  private static final Logger LOG = LoggerFactory.getLogger(XmlEntityConsumer.class);
+  /** Default used charset for writer and response content header */
+  private static final String DEFAULT_CHARSET = "utf-8";
 
   protected XmlEntityConsumer() throws EntityConsumerException {
     super();
   }
 
-  public Map<String, Object> readEntry(String input) {
-    
-    try {
-      return internalRead(input);
-    } catch (Exception e) {
-      e.printStackTrace();
-      return null;
-    }
-  }
-
-  private Map<String, Object> internalRead(String input) throws Exception {
-    XMLStreamReader xsr = createStaxReader(input);
-    Map<String, Object> tagName2tagText = new HashMap<String, Object>();
-    
-    //
-    int nextTagEventType = readTillTag(xsr, "properties");
-    //
-    String currentName = null;
-    while((nextTagEventType = xsr.next()) != XMLStreamReader.END_DOCUMENT) {
-      
-      switch (nextTagEventType) {
-        case XMLStreamReader.START_ELEMENT:
-          currentName = xsr.getName().getLocalPart();
-//          System.out.println(nextTagEventType + " Name: " + xsr.getName());
-          break;
-        case XMLStreamReader.CHARACTERS:
-          String tagtext = xsr.getText();
-//          System.out.println("Text: " + tagtext);
-          tagName2tagText.put(currentName, tagtext);
-          break;
-        default:
-          break;
-      }
-    }
-    
-    return tagName2tagText;
-  }
-
-  private int readTillTag(XMLStreamReader xmlStreamReader, String breakTagLocalName) throws XMLStreamException {
-    int nextTagEventType;
-    while((nextTagEventType = xmlStreamReader.next()) != XMLStreamReader.END_DOCUMENT) {
-      if(nextTagEventType == XMLStreamReader.START_ELEMENT) {
-        String localName = xmlStreamReader.getName().getLocalPart();
-        if(localName.equals(breakTagLocalName)) {
-          break;
-        }
-      }
-    }
-    return nextTagEventType;
-  }
-
-  private XMLStreamReader createStaxReader(String input) throws XMLStreamException {
-    XMLInputFactory factory = XMLInputFactory.newInstance();
-    factory.setProperty(XMLInputFactory.IS_VALIDATING, false);
-    factory.setProperty(XMLInputFactory.IS_NAMESPACE_AWARE, true);
-
-    XMLStreamReader streamReader = factory.createXMLStreamReader(new StringReader(input));
-    
-    return streamReader;
-  }
-
   @Override
   public Map<String, Object> readEntry(EdmEntitySet entitySet, ODataRequest request) throws EntityConsumerException {
+    XMLStreamReader reader = null;
+    
     try {
-      String input = getContent(request);
-      Map<String, Object> resultMap = internalRead(input);
+      XmlEntryConsumer xec = new XmlEntryConsumer();
+      reader = createStaxReader(request);
+      Map<String, Object> resultMap = xec.readEntry(reader, entitySet);
       return resultMap;
     } catch (Exception e) {
       throw new EntityConsumerException(EntityConsumerException.COMMON, e);
-    }
-  }
-
-  private String getContent(ODataRequest request) throws EntityConsumerException {
-    try {
-      InputStream inputStream = request.getContent();
-      StringBuilder content = new StringBuilder();
-      
-      String charset = "utf-8";
-      InputStreamReader isr = new InputStreamReader(inputStream, charset);
-
-      int sign;
-      while((sign = isr.read()) != -1) {
-        content.append((char) sign);
+    } finally {
+      if (reader != null) {
+        try {
+          reader.close();
+        } catch (XMLStreamException e) {
+          // don't throw in finally!
+          LOG.error(e.getLocalizedMessage(), e);
+        }
       }
-      return content.toString();
-    } catch (Exception e) {
-      throw new EntityConsumerException(EntityConsumerException.COMMON, e);
     }
-  }
-
-  @Override
-  public Map<String, Object> readLink(EdmEntitySet entitySet, ODataRequest request) throws EntityConsumerException {
-    return null;
   }
 
   @Override
   public Object readProperty(EdmProperty edmProperty, ODataRequest request) throws EntityConsumerException {
-    return null;
+    XMLStreamReader reader = null;
+
+    try {
+      XmlPropertyConsumer xec = new XmlPropertyConsumer();
+      reader = createStaxReader(request);
+      Property result = xec.readProperty(reader, edmProperty);
+      return result.value;
+    } catch (Exception e) {
+      throw new EntityConsumerException(EntityConsumerException.COMMON, e);
+    } finally {
+      if (reader != null) {
+        try {
+          reader.close();
+        } catch (XMLStreamException e) {
+          // don't throw in finally!
+          LOG.error(e.getLocalizedMessage(), e);
+        }
+      }
+    }
+  }
+  
+  @Override
+  public Map<String, Object> readLink(EdmEntitySet entitySet, ODataRequest request) throws EntityConsumerException {
+    XMLStreamReader reader = null;
+
+    try {
+      XmlLinkConsumer xlc = new XmlLinkConsumer();
+      reader = createStaxReader(request);
+      return xlc.readLink(reader, entitySet);
+    } catch (Exception e) {
+      throw new EntityConsumerException(EntityConsumerException.COMMON, e);
+    } finally {
+      if (reader != null) {
+        try {
+          reader.close();
+        } catch (XMLStreamException e) {
+          // don't throw in finally!
+          LOG.error(e.getLocalizedMessage(), e);
+        }
+      }
+    }
   }
 
   @Override
   public List<Map<String, Object>> readLinks(EdmEntitySet entitySet, ODataRequest request) throws EntityConsumerException {
-    return null;
+    XMLStreamReader reader = null;
+
+    try {
+      XmlLinkConsumer xlc = new XmlLinkConsumer();
+      reader = createStaxReader(request);
+      return xlc.readLinks(reader, entitySet);
+    } catch (Exception e) {
+      throw new EntityConsumerException(EntityConsumerException.COMMON, e);
+    } finally {
+      if (reader != null) {
+        try {
+          reader.close();
+        } catch (XMLStreamException e) {
+          // don't throw in finally!
+          LOG.error(e.getLocalizedMessage(), e);
+        }
+      }
+    }
+  }
+
+  private XMLStreamReader createStaxReader(ODataRequest request) throws XMLStreamException {
+    XMLInputFactory factory = XMLInputFactory.newInstance();
+    factory.setProperty(XMLInputFactory.IS_VALIDATING, false);
+    factory.setProperty(XMLInputFactory.IS_NAMESPACE_AWARE, true);
+
+    XMLStreamReader streamReader = factory.createXMLStreamReader(request.getContent(), DEFAULT_CHARSET);
+
+    return streamReader;
   }
 }

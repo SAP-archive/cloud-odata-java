@@ -1,15 +1,18 @@
 package com.sap.core.odata.core.ec;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 import java.util.Map;
 
 import org.junit.Test;
 
 import com.sap.core.odata.api.edm.EdmEntitySet;
+import com.sap.core.odata.api.edm.EdmProperty;
 import com.sap.core.odata.api.processor.ODataRequest;
 import com.sap.core.odata.core.ODataRequestImpl;
+import com.sap.core.odata.testutil.mock.MockFacade;
 
 public class XmlEntityConsumerTest {
 
@@ -47,10 +50,19 @@ public class XmlEntityConsumerTest {
   
   @Test
   public void testReadEntry() throws Exception {
-    XmlEntityConsumer xec = new XmlEntityConsumer();
-    
-    Map<String, Object> result = xec.readEntry(EMPLOYEE_1_XML);
+    // prepare
+    EdmEntitySet entitySet = MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Employees");
+    InputStream contentBody = new ByteArrayInputStream(EMPLOYEE_1_XML.getBytes("utf-8"));
+    String contentType = "application/xml";
+    ODataRequest request = ODataRequestImpl.create(contentBody, contentType).build();
 
+    
+    // execute
+    XmlEntityConsumer xec = new XmlEntityConsumer();
+    Map<String, Object> result = xec.readEntry(entitySet, request);
+
+    
+    // verify
     assertEquals(11, result.size());
 
     assertEquals("1", result.get("EmployeeId"));
@@ -58,9 +70,7 @@ public class XmlEntityConsumerTest {
     assertEquals("1", result.get("ManagerId"));
     assertEquals("1", result.get("RoomId"));
     assertEquals("1", result.get("TeamId"));
-//    assertEquals("52", result.get("Location"));
     assertEquals("Germany", result.get("Country"));
-//    assertEquals("52", result.get("City"));
     assertEquals("69124", result.get("PostalCode"));
     assertEquals("Heidelberg", result.get("CityName"));
     assertEquals("52", result.get("Age"));
@@ -72,9 +82,9 @@ public class XmlEntityConsumerTest {
   public void testReadEntryRequest() throws Exception {
     XmlEntityConsumer xec = new XmlEntityConsumer();
     
+    EdmEntitySet edmEntitySet = null;
     String contentType = "application/xml";
     ODataRequest request = ODataRequestImpl.create(new ByteArrayInputStream(EMPLOYEE_1_XML.getBytes("utf-8")), contentType).build();
-    EdmEntitySet edmEntitySet = null;
     Map<String, Object> result = xec.readEntry(edmEntitySet, request);
 
     assertEquals(11, result.size());
@@ -84,13 +94,27 @@ public class XmlEntityConsumerTest {
     assertEquals("1", result.get("ManagerId"));
     assertEquals("1", result.get("RoomId"));
     assertEquals("1", result.get("TeamId"));
-//    assertEquals("52", result.get("Location"));
     assertEquals("Germany", result.get("Country"));
-//    assertEquals("52", result.get("City"));
     assertEquals("69124", result.get("PostalCode"));
     assertEquals("Heidelberg", result.get("CityName"));
     assertEquals("52", result.get("Age"));
     assertEquals("1999-01-01T00:00:00", result.get("EntryDate"));
     assertEquals("/SAP/PUBLIC/BC/NWDEMO_MODEL/IMAGES/male_1_WinterW.jpg", result.get("ImageUrl"));
+  }
+  
+  @Test
+  public void testReadProperty() throws Exception {
+    XmlEntityConsumer xec = new XmlEntityConsumer();
+    
+    String contentType = "application/xml";
+    String xml = "<Age>67</Age>";
+    ODataRequest request = ODataRequestImpl.create(new ByteArrayInputStream(xml.getBytes("utf-8")), contentType).build();
+    
+    EdmEntitySet entitySet = MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Employees");
+    EdmProperty property = (EdmProperty) entitySet.getEntityType().getProperty("Age");
+    
+    Object value = xec.readProperty(property, request);
+    
+    assertEquals(Integer.valueOf(67), value);
   }
 }
