@@ -5,7 +5,8 @@ import com.sap.core.odata.api.processor.ODataRequest;
 import com.sap.core.odata.api.rt.RuntimeDelegate;
 
 /**
- * Abstract basic (content type independent) provider for writing output
+ * Abstract basic (content type independent) consumer for reading input (from {@link ODataRequest}).
+ * 
  * @author SAP AG
  */
 public abstract class BasicConsumer {
