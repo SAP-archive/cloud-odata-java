@@ -34,5 +34,5 @@ public interface EntitySet extends ProcessorFeature {
    * @return a {@link ODataResponse} object
    * @throws ODataException
    */
-  ODataResponse createEntity(PostUriInfo uriInfo, ODataRequest request) throws ODataException;
+  ODataResponse createEntity(PostUriInfo uriInfo, ODataRequest request, String contentType) throws ODataException;
 }

@@ -25,7 +25,7 @@ public interface EntityMedia extends ProcessorFeature {
    * @return an {@link ODataResponse} object
    * @throws ODataException
    */
-  ODataResponse updateEntityMedia(PutMergePatchUriInfo uriInfo, ODataRequest request) throws ODataException;
+  ODataResponse updateEntityMedia(PutMergePatchUriInfo uriInfo, ODataRequest request, String contentType) throws ODataException;
 
   /**
    * @param contentType

@@ -34,7 +34,7 @@ public interface Entity extends ProcessorFeature {
    * @return an {@link ODataResponse} object
    * @throws ODataException
    */
-  ODataResponse updateEntity(PutMergePatchUriInfo uriInfo, ODataRequest request) throws ODataException;
+  ODataResponse updateEntity(PutMergePatchUriInfo uriInfo, ODataRequest request, String contentType) throws ODataException;
 
   /**
    * @param uriInfo  a {@link DeleteUriInfo} object with information from the URI parser

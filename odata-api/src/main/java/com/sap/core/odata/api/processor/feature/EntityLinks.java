@@ -32,5 +32,5 @@ public interface EntityLinks extends ProcessorFeature {
    * @return a odata response object
    * @throws ODataException
    */
-  ODataResponse createEntityLink(PostUriInfo uriInfo, ODataRequest request) throws ODataException;
+  ODataResponse createEntityLink(PostUriInfo uriInfo, ODataRequest request, String contentType) throws ODataException;
 }

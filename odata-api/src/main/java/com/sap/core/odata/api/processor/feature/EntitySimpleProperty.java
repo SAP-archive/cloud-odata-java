@@ -25,5 +25,5 @@ public interface EntitySimpleProperty extends ProcessorFeature {
    * @return a {@link ODataResponse} object
    * @throws ODataException
    */
-  ODataResponse updateEntitySimpleProperty(PutMergePatchUriInfo uriInfo, ODataRequest request) throws ODataException;
+  ODataResponse updateEntitySimpleProperty(PutMergePatchUriInfo uriInfo, ODataRequest request, String contentType) throws ODataException;
 }

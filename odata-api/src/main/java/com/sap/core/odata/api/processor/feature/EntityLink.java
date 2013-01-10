@@ -35,7 +35,7 @@ public interface EntityLink extends ProcessorFeature {
    * @return a {@link ODataResponse} object
    * @throws ODataException
    */
-  ODataResponse updateEntityLink(PutMergePatchUriInfo uriInfo, ODataRequest request) throws ODataException;
+  ODataResponse updateEntityLink(PutMergePatchUriInfo uriInfo, ODataRequest request, String contentType) throws ODataException;
 
   /**
    * @param uriInfo

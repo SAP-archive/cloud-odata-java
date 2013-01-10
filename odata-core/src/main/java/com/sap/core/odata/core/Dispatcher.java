@@ -3,7 +3,6 @@ package com.sap.core.odata.core;
 import com.sap.core.odata.api.ODataService;
 import com.sap.core.odata.api.edm.EdmException;
 import com.sap.core.odata.api.edm.EdmProperty;
-import com.sap.core.odata.api.exception.ODataBadRequestException;
 import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.api.exception.ODataMethodNotAllowedException;
 import com.sap.core.odata.api.processor.ODataRequest;
@@ -23,10 +22,8 @@ import com.sap.core.odata.api.processor.feature.Metadata;
 import com.sap.core.odata.api.processor.feature.ProcessorFeature;
 import com.sap.core.odata.api.processor.feature.ServiceDocument;
 import com.sap.core.odata.api.uri.UriInfo;
-import com.sap.core.odata.api.uri.UriSyntaxException;
 import com.sap.core.odata.core.commons.ODataHttpMethod;
 import com.sap.core.odata.core.exception.ODataRuntimeException;
-import com.sap.core.odata.core.uri.SystemQueryOption;
 import com.sap.core.odata.core.uri.UriInfoImpl;
 
 /**
@@ -41,7 +38,7 @@ public class Dispatcher {
     this.service = service;
   }
 
-  public ODataResponse dispatch(final ODataHttpMethod method, final UriInfoImpl uriInfo, final String contentType) throws ODataException {
+  public ODataResponse dispatch(final ODataHttpMethod method, final UriInfoImpl uriInfo, final ODataRequest request, final String contentType) throws ODataException {
     switch (uriInfo.getUriType()) {
     case URI0:
       if (method == ODataHttpMethod.GET)
@@ -55,7 +52,18 @@ public class Dispatcher {
       case GET:
         return service.getEntitySetProcessor().readEntitySet(uriInfo, contentType);
       case POST:
-        return service.getEntitySetProcessor().createEntity(uriInfo, request);
+        if (contentType == null
+            && uriInfo.getFilter() == null
+            && uriInfo.getInlineCount() == null
+            && uriInfo.getOrderBy() == null
+            && uriInfo.getSkipToken() == null
+            && uriInfo.getSkip() == null
+            && uriInfo.getTop() == null
+            && uriInfo.getExpand().isEmpty()
+            && uriInfo.getSelect().isEmpty())
+          return service.getEntitySetProcessor().createEntity(uriInfo, request, contentType);
+        else
+          throw new ODataMethodNotAllowedException(ODataMethodNotAllowedException.DISPATCH);
       default:
         throw new ODataMethodNotAllowedException(ODataMethodNotAllowedException.DISPATCH);
       }
@@ -70,20 +78,17 @@ public class Dispatcher {
         if (contentType == null
             && uriInfo.getExpand().isEmpty()
             && uriInfo.getSelect().isEmpty())
-          return service.getEntityProcessor().updateEntity(uriInfo, request);
+          return service.getEntityProcessor().updateEntity(uriInfo, request, contentType);
         else
-          throw new ODataBadRequestException(ODataBadRequestException.COMMON);
+          throw new ODataMethodNotAllowedException(ODataMethodNotAllowedException.DISPATCH);
       case DELETE:
-        if (contentType != null)
-          throw new UriSyntaxException(UriSyntaxException.INCOMPATIBLESYSTEMQUERYOPTION.addContent(SystemQueryOption.$format));
-        else if (uriInfo.getFilter() != null)
-          throw new UriSyntaxException(UriSyntaxException.INCOMPATIBLESYSTEMQUERYOPTION.addContent(SystemQueryOption.$filter));
-        else if (!uriInfo.getExpand().isEmpty())
-          throw new UriSyntaxException(UriSyntaxException.INCOMPATIBLESYSTEMQUERYOPTION.addContent(SystemQueryOption.$expand));
-        else if (!uriInfo.getSelect().isEmpty())
-          throw new UriSyntaxException(UriSyntaxException.INCOMPATIBLESYSTEMQUERYOPTION.addContent(SystemQueryOption.$select));
-        else
+        if (contentType == null
+            && uriInfo.getFilter() == null
+            && uriInfo.getExpand().isEmpty()
+            && uriInfo.getSelect().isEmpty())
           return service.getEntityProcessor().deleteEntity(uriInfo, contentType);
+        else
+          throw new ODataMethodNotAllowedException(ODataMethodNotAllowedException.DISPATCH);
       default:
         throw new ODataMethodNotAllowedException(ODataMethodNotAllowedException.DISPATCH);
       }
@@ -95,7 +100,10 @@ public class Dispatcher {
       case PUT:
       case PATCH:
       case MERGE:
-        return service.getEntityComplexPropertyProcessor().updateEntityComplexProperty(uriInfo, request);
+        if (contentType == null)
+          return service.getEntityComplexPropertyProcessor().updateEntityComplexProperty(uriInfo, request, contentType);
+        else
+          throw new ODataMethodNotAllowedException(ODataMethodNotAllowedException.DISPATCH);
       default:
         throw new ODataMethodNotAllowedException(ODataMethodNotAllowedException.DISPATCH);
       }
@@ -112,9 +120,9 @@ public class Dispatcher {
       case PATCH:
       case MERGE:
         if (uriInfo.isValue())
-          return service.getEntitySimplePropertyValueProcessor().updateEntitySimplePropertyValue(uriInfo, request);
+          return service.getEntitySimplePropertyValueProcessor().updateEntitySimplePropertyValue(uriInfo, request, contentType);
         else
-          return service.getEntitySimplePropertyProcessor().updateEntitySimpleProperty(uriInfo, request);
+          return service.getEntitySimplePropertyProcessor().updateEntitySimpleProperty(uriInfo, request, contentType);
       case DELETE:
         if (uriInfo.isValue()
             && isPropertyNullableAndNotKey(uriInfo))
@@ -138,12 +146,12 @@ public class Dispatcher {
       case PUT:
       case PATCH:
       case MERGE:
-        return service.getEntityLinkProcessor().updateEntityLink(uriInfo, request);
+        return service.getEntityLinkProcessor().updateEntityLink(uriInfo, request, contentType);
       case DELETE:
         if (contentType == null)
           return service.getEntityLinkProcessor().deleteEntityLink(uriInfo, contentType);
         else
-          throw new UriSyntaxException(UriSyntaxException.INCOMPATIBLESYSTEMQUERYOPTION.addContent(SystemQueryOption.$format));
+          throw new ODataMethodNotAllowedException(ODataMethodNotAllowedException.DISPATCH);
       default:
         throw new ODataMethodNotAllowedException(ODataMethodNotAllowedException.DISPATCH);
       }
@@ -153,7 +161,7 @@ public class Dispatcher {
       case GET:
         return service.getEntityLinksProcessor().readEntityLinks(uriInfo, contentType);
       case POST:
-        return service.getEntityLinksProcessor().createEntityLink(uriInfo, request);
+        return service.getEntityLinksProcessor().createEntityLink(uriInfo, request, contentType);
       default:
         throw new ODataMethodNotAllowedException(ODataMethodNotAllowedException.DISPATCH);
       }
@@ -199,14 +207,13 @@ public class Dispatcher {
       case GET:
         return service.getEntityMediaProcessor().readEntityMedia(uriInfo, contentType);
       case PUT:
-        return service.getEntityMediaProcessor().updateEntityMedia(uriInfo, request);
+        return service.getEntityMediaProcessor().updateEntityMedia(uriInfo, request, contentType);
       case DELETE:
-        if (contentType != null)
-          throw new UriSyntaxException(UriSyntaxException.INCOMPATIBLESYSTEMQUERYOPTION.addContent(SystemQueryOption.$format));
-        else if (uriInfo.getFilter() != null)
-          throw new UriSyntaxException(UriSyntaxException.INCOMPATIBLESYSTEMQUERYOPTION.addContent(SystemQueryOption.$filter));
-        else
+        if (contentType == null
+            && uriInfo.getFilter() == null)
           return service.getEntityMediaProcessor().deleteEntityMedia(uriInfo, contentType);
+        else
+          throw new ODataMethodNotAllowedException(ODataMethodNotAllowedException.DISPATCH);
       default:
         throw new ODataMethodNotAllowedException(ODataMethodNotAllowedException.DISPATCH);
       }
@@ -257,11 +264,7 @@ public class Dispatcher {
       break;
     case URI4:
     case URI5:
-      if (uriInfo.isValue()) {
-        feature = EntitySimplePropertyValue.class;
-      } else {
-        feature = EntitySimpleProperty.class;
-      }
+      feature = uriInfo.isValue() ? EntitySimplePropertyValue.class : EntitySimpleProperty.class;
       break;
     case URI7A:
     case URI50A:
@@ -284,11 +287,7 @@ public class Dispatcher {
       feature = FunctionImport.class;
       break;
     case URI14:
-      if (uriInfo.isValue()) {
-        feature = FunctionImportValue.class;
-      } else {
-        feature = FunctionImport.class;
-      }
+      feature = uriInfo.isValue() ? FunctionImportValue.class : FunctionImport.class;
       break;
     case URI17:
       feature = EntityMedia.class;
