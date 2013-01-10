@@ -11,6 +11,10 @@ import org.custommonkey.xmlunit.XMLUnit;
 import org.junit.Before;
 import org.junit.Test;
 
+/**
+ * Tests employing the reference scenario reading the metadata document in XML format
+ * @author SAP AG
+ */
 public class ServiceMetadataTest extends AbstractRefTest {
 
   private static String payload;

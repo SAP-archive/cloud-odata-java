@@ -17,16 +17,15 @@ public class Team {
     this(null);
   }
 
-  public Team(String name) {
+  public Team(final String name) {
     id = counter++;
     employees = new ArrayList<Employee>();
     setName(name);
-
   }
 
-  public Team(String name, boolean isScrumTeam) {
+  public Team(final String name, final boolean isScrumTeam) {
     this(name);
-    this.setScrumTeam(isScrumTeam);
+    setScrumTeam(isScrumTeam);
   }
 
   public String getId() {
@@ -37,7 +36,7 @@ public class Team {
     return this.name;
   }
 
-  public void setName(String name) {
+  public void setName(final String name) {
     this.name = name;
   }
 
@@ -45,11 +44,11 @@ public class Team {
     return isScrumTeam;
   }
 
-  public void setScrumTeam(boolean isScrumTeam) {
+  public void setScrumTeam(final boolean isScrumTeam) {
     this.isScrumTeam = isScrumTeam;
   }
 
-  public void setEmployees(List<Employee> employees) {
+  public void setEmployees(final List<Employee> employees) {
     this.employees = employees;
   }
 
@@ -67,7 +66,7 @@ public class Team {
   }
 
   @Override
-  public boolean equals(Object obj) {
+  public boolean equals(final Object obj) {
     if (this == obj)
       return true;
     if (obj == null || getClass() != obj.getClass())

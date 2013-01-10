@@ -105,7 +105,7 @@ public class ServiceResolutionTest extends BaseTest {
     HttpGet get = new HttpGet(URI.create(this.server.getEndpoint().toString() + "/$metadata"));
     HttpResponse response = this.httpClient.execute(get);
 
-    assertEquals(200, response.getStatusLine().getStatusCode());
+    assertEquals(HttpStatusCodes.OK.getStatusCode(), response.getStatusLine().getStatusCode());
 
     ODataContext ctx = this.service.getProcessor().getContext();
     assertNotNull(ctx);
@@ -122,7 +122,7 @@ public class ServiceResolutionTest extends BaseTest {
     HttpGet get = new HttpGet(URI.create(this.server.getEndpoint().toString() + "/aaa/$metadata"));
     HttpResponse response = this.httpClient.execute(get);
 
-    assertEquals(200, response.getStatusLine().getStatusCode());
+    assertEquals(HttpStatusCodes.OK.getStatusCode(), response.getStatusLine().getStatusCode());
 
     ODataContext ctx = this.service.getProcessor().getContext();
     assertNotNull(ctx);
@@ -139,7 +139,7 @@ public class ServiceResolutionTest extends BaseTest {
     HttpGet get = new HttpGet(URI.create(this.server.getEndpoint().toString() + "/aaa/bbb/$metadata"));
     HttpResponse response = this.httpClient.execute(get);
 
-    assertEquals(200, response.getStatusLine().getStatusCode());
+    assertEquals(HttpStatusCodes.OK.getStatusCode(), response.getStatusLine().getStatusCode());
 
     ODataContext ctx = this.service.getProcessor().getContext();
     assertNotNull(ctx);
@@ -157,7 +157,7 @@ public class ServiceResolutionTest extends BaseTest {
     HttpGet get = new HttpGet(URI.create(this.server.getEndpoint().toString() + "/aaa/$metadata"));
     HttpResponse response = this.httpClient.execute(get);
 
-    assertEquals(400, response.getStatusLine().getStatusCode());
+    assertEquals(HttpStatusCodes.BAD_REQUEST.getStatusCode(), response.getStatusLine().getStatusCode());
   }
 
   @Test
@@ -168,7 +168,7 @@ public class ServiceResolutionTest extends BaseTest {
     HttpGet get = new HttpGet(URI.create(this.server.getEndpoint().toString() + "/aaa/"));
     HttpResponse response = this.httpClient.execute(get);
 
-    assertEquals(200, response.getStatusLine().getStatusCode());
+    assertEquals(HttpStatusCodes.OK.getStatusCode(), response.getStatusLine().getStatusCode());
 
     ODataContext ctx = this.service.getProcessor().getContext();
     assertNotNull(ctx);
@@ -185,7 +185,7 @@ public class ServiceResolutionTest extends BaseTest {
     HttpGet get = new HttpGet(URI.create(this.server.getEndpoint().toString() + "aaa;n=2/"));
     HttpResponse response = this.httpClient.execute(get);
 
-    assertEquals(200, response.getStatusLine().getStatusCode());
+    assertEquals(HttpStatusCodes.OK.getStatusCode(), response.getStatusLine().getStatusCode());
 
     ODataContext ctx = this.service.getProcessor().getContext();
     assertNotNull(ctx);
@@ -215,7 +215,7 @@ public class ServiceResolutionTest extends BaseTest {
 
     assertTrue(body.contains("metadata"));
     assertTrue(body.contains("matrix"));
-    assertEquals(404, response.getStatusLine().getStatusCode());
+    assertEquals(HttpStatusCodes.NOT_FOUND.getStatusCode(), response.getStatusLine().getStatusCode());
   }
 
   @Test
@@ -226,7 +226,7 @@ public class ServiceResolutionTest extends BaseTest {
     HttpGet get = new HttpGet(URI.create(this.server.getEndpoint().toString() + "aaa/bbb;n=2,3;m=1/ccc/"));
     HttpResponse response = this.httpClient.execute(get);
 
-    assertEquals(200, response.getStatusLine().getStatusCode());
+    assertEquals(HttpStatusCodes.OK.getStatusCode(), response.getStatusLine().getStatusCode());
 
     ODataContext ctx = this.service.getProcessor().getContext();
     assertNotNull(ctx);
@@ -243,7 +243,7 @@ public class ServiceResolutionTest extends BaseTest {
     HttpGet get = new HttpGet(uri);
     HttpResponse response = this.httpClient.execute(get);
 
-    assertEquals(200, response.getStatusLine().getStatusCode());
+    assertEquals(HttpStatusCodes.OK.getStatusCode(), response.getStatusLine().getStatusCode());
 
     ODataContext ctx = this.service.getProcessor().getContext();
     assertNotNull(ctx);
