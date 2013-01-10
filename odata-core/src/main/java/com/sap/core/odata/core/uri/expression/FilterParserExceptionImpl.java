@@ -49,11 +49,29 @@ public class FilterParserExceptionImpl extends FilterParserException
     return new FilterParserException(msgRef);
   }
 
+  static public FilterParserException createEXPRESSION_EXPECTED_AFTER_POS(Token token)
+  {
+    MessageReference msgRef = FilterParserException.EXPRESSION_EXPECTED_AFTER_POS.create();
+
+    msgRef.addContent(Integer.toString(token.getPosition()));
+
+    return new FilterParserException(msgRef);
+  }
+
   static public FilterParserException createEXPRESSION_EXPECTED_AT_POS(Token token)
   {
     MessageReference msgRef = FilterParserException.EXPRESSION_EXPECTED_AT_POS.create();
 
     msgRef.addContent(Integer.toString(token.getPosition()));
+
+    return new FilterParserException(msgRef);
+  }
+
+  static public FilterParserException createCOMMA_OR_CLOSING_PHARENTHESIS_EXPECTED_AFTER_POS(Token token)
+  {
+    MessageReference msgRef = FilterParserException.COMMA_OR_CLOSING_PHARENTHESIS_EXPECTED_AFTER_POS.create();
+
+    msgRef.addContent(Integer.toString(token.getPosition() + token.getUriLiteral().length()));
 
     return new FilterParserException(msgRef);
   }
@@ -68,11 +86,57 @@ public class FilterParserExceptionImpl extends FilterParserException
     return new FilterParserException(msgRef);
   }
 
-  public static FilterParserException createMETHOD_TO_FEW_PARAMETERS(MethodExpression methodExpression)
+  public static FilterParserException createMETHOD_WRONG_ARG_COUNT(String expression, MethodExpressionImpl methodExpression, Token token)
   {
-    MessageReference msgRef = FilterParserException.METHOD_TO_FEW_PARAMETERS.create();
+    MessageReference msgRef = null;
+    int minParam = methodExpression.getMethodInfo().getMinParameter();
+    int maxParam = methodExpression.getMethodInfo().getMaxParameter();
 
-    msgRef.addContent(methodExpression.getMethod().toUriLiteral());
+    if ((minParam == -1) && (maxParam == -1))
+    {
+      int i = 1;
+      //no exception thrown in this case
+    }
+    else if ((minParam != -1) && (maxParam == -1))
+    {
+      //Tested with TestParserExceptions.TestPMreadParameters CASE 7-1
+      msgRef = FilterParserException.METHOD_WRONG_ARG_X_OR_MORE.create();
+      msgRef.addContent(methodExpression.getMethod().toUriLiteral());
+      msgRef.addContent(token.getPosition());
+      msgRef.addContent(expression);
+      msgRef.addContent(minParam);
+    }
+    else if ((minParam == -1) && (maxParam != -1))
+    {
+      //Tested with TestParserExceptions.TestPMreadParameters CASE 8-2
+      msgRef = FilterParserException.METHOD_WRONG_ARG_X_OR_LESS.create();
+      msgRef.addContent(methodExpression.getMethod().toUriLiteral());
+      msgRef.addContent(token.getPosition());
+      msgRef.addContent(expression);
+      msgRef.addContent(maxParam);
+    }
+    else if ((minParam != -1) && (maxParam != -1))
+    {
+      if (minParam == maxParam)
+      {
+        //Tested with TestParserExceptions.TestPMreadParameters CASE 11-1
+        msgRef = FilterParserException.METHOD_WRONG_ARG_EXACT.create();
+        msgRef.addContent(methodExpression.getMethod().toUriLiteral());
+        msgRef.addContent(token.getPosition());
+        msgRef.addContent(expression);
+        msgRef.addContent(minParam);
+      }
+      else
+      {
+        //Tested with TestParserExceptions.TestPMreadParameters CASE 10-1
+        msgRef = FilterParserException.METHOD_WRONG_ARG_BETWEEN.create();
+        msgRef.addContent(methodExpression.getMethod().toUriLiteral());
+        msgRef.addContent(token.getPosition());
+        msgRef.addContent(expression);
+        msgRef.addContent(minParam);
+        msgRef.addContent(maxParam);
+      }
+    }
 
     return new FilterParserException(msgRef);
   }
@@ -136,16 +200,14 @@ public class FilterParserExceptionImpl extends FilterParserException
 
     return new FilterParserException(msgRef);
   }
-  
-  
-  
+
   public static FilterParserException createMISSING_CLOSING_PHARENTHESIS(int position, String expression, TokenizerExpectError e) {
     MessageReference msgRef = FilterParserException.MISSING_CLOSING_PHARENTHESIS.create();
 
     msgRef.addContent(position);
     msgRef.addContent(expression);
 
-    return new FilterParserException(msgRef,e);
+    return new FilterParserException(msgRef, e);
   }
 
 }

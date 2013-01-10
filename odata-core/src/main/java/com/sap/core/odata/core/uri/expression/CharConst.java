@@ -48,5 +48,14 @@ public class CharConst {
   static public String GC_FUNCTION_CEILING = "ceiling";
   static public String GC_SORT_ORDER_ASC = "asc";
   static public String GC_SORT_ORDER_DESC = "desc";
+  
+  static public String GC_FUNCTION_TEST1 = "testingMINMAX1";
+  static public String GC_FUNCTION_TEST2 = "testingMINMAX2";
+  static public String GC_FUNCTION_TEST3 = "testingMINMAX3";
+  static public String GC_FUNCTION_TEST4 = "testingMINMAX4";
+  static public String GC_FUNCTION_TEST5 = "testingMINMAX5";
+  static public String GC_FUNCTION_TEST6 = "testingMINMAX6";
+  static public String GC_FUNCTION_TEST7 = "testingMINMAX7";
+  
 
 }

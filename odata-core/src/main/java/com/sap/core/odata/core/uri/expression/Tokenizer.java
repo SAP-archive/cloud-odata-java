@@ -87,8 +87,8 @@ public class Tokenizer
         break;
 
       case ',':
+        tokens.appendToken(oldPosition+1, TokenKind.COMMA, curCharacter);
         curPosition = curPosition + 1;
-        tokens.appendToken(oldPosition, TokenKind.COMMA, curCharacter);
         break;
 
       case '=':
@@ -118,7 +118,7 @@ public class Tokenizer
           break;
 
         //check for function
-        boolean isFunction = checkForFunction(oldPosition, rem_expr);
+        boolean isFunction = checkForMethod(oldPosition, rem_expr);
         if (isFunction)
           break;
 
@@ -158,12 +158,12 @@ public class Tokenizer
       if (curCharacter == '-')
       {
         curPosition = curPosition + 1;
-        tokens.appendToken(oldPosition, TokenKind.SYMBOL, curCharacter);
+        tokens.appendToken(oldPosition+1, TokenKind.SYMBOL, curCharacter);
         return true;
       }
 
       curPosition = curPosition + token.length();
-      tokens.appendToken(oldPosition, TokenKind.LITERAL, token);
+      tokens.appendToken(oldPosition+1, TokenKind.LITERAL, token);
       return true;
     }
     return false;
@@ -200,7 +200,7 @@ public class Tokenizer
     }
   }
 
-  private boolean checkForFunction(int oldPosition, String rem_expr)
+  private boolean checkForMethod(int oldPosition, String rem_expr)
   {
     final Pattern FUNK = Pattern.compile("^(startswith|endswith|substring|substring|substringof|indexof|replace|tolower|toupper|trim|concat|length|year|mounth|day|hour|minute|second|round|ceiling|floor)( *)\\(");
     Matcher matcher = FUNK.matcher(rem_expr);
@@ -209,7 +209,7 @@ public class Tokenizer
     {
       token = matcher.group(1);
       curPosition = curPosition + token.length();
-      tokens.appendToken(oldPosition, TokenKind.LITERAL, token);
+      tokens.appendToken(oldPosition+1, TokenKind.LITERAL, token);
       return true;
     }
     return false;

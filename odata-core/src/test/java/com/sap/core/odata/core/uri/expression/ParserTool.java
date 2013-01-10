@@ -40,7 +40,8 @@ public class ParserTool
 
   private static final Logger log = LoggerFactory.getLogger(ParserTool.class);
 
-  private static boolean debug = true;
+  private static boolean debug = false;
+
   private String expression;
   private CommonExpression tree;
   private CommonExpression curNode;
@@ -53,7 +54,7 @@ public class ParserTool
     if (debug) ParserTool.log.debug(out);
   }
 
-  public ParserTool(String expression, boolean isOrder)
+  public ParserTool(String expression, boolean isOrder, boolean addTestfunctions)
   {
     dout("ParserTool - Testing: " + expression);
     this.expression = expression;
@@ -62,11 +63,13 @@ public class ParserTool
       if (!isOrder)
       {
         FilterParserImpl parser = new FilterParserImpl(null, null);
+        if (addTestfunctions) parser.addTestfunctions();
         this.tree = parser.parseFilterString(expression).getExpression();
       }
       else
       {
         OrderByParserImpl parser = new OrderByParserImpl(null, null);
+        if (addTestfunctions) parser.addTestfunctions();
         this.tree = parser.parseOrderByString(expression);
       }
     } catch (FilterParserException e) {
@@ -81,7 +84,7 @@ public class ParserTool
     this.curException = this.exception;
   }
 
-  public ParserTool(Edm edm, EdmEntityType resourceEntityType, String expression, boolean isOrder)
+  public ParserTool(String expression, boolean isOrder, boolean addTestfunctions, Edm edm, EdmEntityType resourceEntityType )
   {
     dout("ParserTool - Testing: " + expression);
     this.expression = expression;
@@ -90,11 +93,13 @@ public class ParserTool
       if (!isOrder)
       {
         FilterParserImpl parser = new FilterParserImpl(edm, resourceEntityType);
+        if (addTestfunctions) parser.addTestfunctions(); 
         this.tree = parser.parseFilterString(expression).getExpression();
       }
       else
       {
         OrderByParserImpl parser = new OrderByParserImpl(edm, resourceEntityType);
+        if (addTestfunctions) parser.addTestfunctions();
         this.tree = parser.parseOrderByString(expression);
       }
     } catch (FilterParserException e) {
@@ -308,6 +313,27 @@ public class ParserTool
     return this;
   }
 
+  
+  
+  public ParserTool printSerialized()
+  {
+    String actual = null;
+    ExpressionVisitor visitor = new VisitorTool();
+    try {
+      actual = tree.accept(visitor).toString();
+    } catch (ExceptionVisitExpression e) {
+      fail("Error in visitor:" + e.getLocalizedMessage());
+    } catch (ODataApplicationException e) {
+      fail("Error in visitor:" + e.getLocalizedMessage());
+    }
+
+    dout("Messge --> ");
+    dout("  " + actual);
+    dout("Messge <-- ");
+    return this;
+  }
+  
+  
   public ParserTool exPrintStack()
   {
     curException.printStackTrace();
@@ -428,6 +454,8 @@ public class ParserTool
     assertEquals(info, expected, actual);
     return this;
   }
+  
+  
 
   public ParserTool left() {
     switch (curNode.getKind())

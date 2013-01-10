@@ -58,6 +58,49 @@ public class FilterParserImpl implements FilterParser
     this.resourceEntityType = edmType;
   }
 
+  public void addTestfunctions()
+  {
+    ParameterSetCombination combination = null;
+    //create type helpers
+
+    EdmSimpleType string = EdmSimpleTypeFacadeImpl.getEdmSimpleType(EdmSimpleTypeKind.String);
+
+    //TESTING
+    combination = new ParameterSetCombination.PSCflex();
+    combination.add(new ParameterSet(string, string, string).setFurtherType(string));
+    availableMethods.put("testingMINMAX1", new InfoMethod(MethodOperator.CONCAT, "testingMINMAX1", -1, -1, combination));
+
+    //TESTING
+    combination = new ParameterSetCombination.PSCflex();
+    combination.add(new ParameterSet(string, string, string).setFurtherType(string));
+    availableMethods.put("testingMINMAX2", new InfoMethod(MethodOperator.CONCAT, "testingMINMAX2", 0, -1, combination));
+
+    //TESTING
+    combination = new ParameterSetCombination.PSCflex();
+    combination.add(new ParameterSet(string, string, string).setFurtherType(string));
+    availableMethods.put("testingMINMAX3", new InfoMethod(MethodOperator.CONCAT, "testingMINMAX3", 2, -1, combination));
+
+    //TESTING
+    combination = new ParameterSetCombination.PSCflex();
+    combination.add(new ParameterSet(string, string, string).setFurtherType(string));
+    availableMethods.put("testingMINMAX4", new InfoMethod(MethodOperator.CONCAT, "testingMINMAX4", -1, 0, combination));
+
+    //TESTING
+    combination = new ParameterSetCombination.PSCflex();
+    combination.add(new ParameterSet(string, string, string).setFurtherType(string));
+    availableMethods.put("testingMINMAX5", new InfoMethod(MethodOperator.CONCAT, "testingMINMAX5", -1, 2, combination));
+
+    //TESTING
+    combination = new ParameterSetCombination.PSCflex();
+    combination.add(new ParameterSet(string, string, string).setFurtherType(string));
+    availableMethods.put("testingMINMAX6", new InfoMethod(MethodOperator.CONCAT, "testingMINMAX6", 1, 2, combination));
+
+    //TESTING
+    combination = new ParameterSetCombination.PSCflex();
+    combination.add(new ParameterSet(string, string, string).setFurtherType(string));
+    availableMethods.put("testingMINMAX7", new InfoMethod(MethodOperator.CONCAT, "testingMINMAX7", 1, 1, combination));
+  }
+
   @Override
   public FilterExpression parseFilterString(String filterExpression) throws FilterParserException, FilterParserInternalError
   {
@@ -107,7 +150,6 @@ public class FilterParserImpl implements FilterParser
 
     ActualBinaryOperator operator = readBinaryOperator();
     ActualBinaryOperator nextOperator;
-
 
     while ((operator != null) && (operator.getOP().getPriority() >= priority))
     {
@@ -162,28 +204,19 @@ public class FilterParserImpl implements FilterParser
    */
   protected CommonExpression readParenthesis() throws FilterParserException, FilterParserInternalError
   {
-    Token openParenthesis;
-    //check for '('
-    try {
-      openParenthesis = tokenList.expectToken(TokenKind.OPENPAREN);
-    } catch (TokenizerExpectError e)
-    {
-      //Internal parsing error (even if there are no more tokens, -> then there should be a different exception)
-      //The existing of a '(' is verified BEFORE this method is called --> so it's a internal error
-      // Not tested, exception should not occur
-      throw FilterParserInternalError.createERROR_PARSING_PARENTHESIS(e);
-    }
+    // The existing of a '(' is verified BEFORE this method is called --> so it's a internal error
+    Token openParenthesis = tokenList.expectToken(TokenKind.OPENPAREN, true);
 
     CommonExpression firstExpression = readElement(null);
     CommonExpression parenthesisExpression = readElements(firstExpression, 0);
 
-    //check for ')'
+    // check for ')'
     try {
       tokenList.expectToken(TokenKind.CLOSEPAREN); //TokenizerMessage
     } catch (TokenizerExpectError e)
     {
-      //Internal parsing error, even if there are no more token (then there should be a different exception).
-      //TODO check if this could be an normal Exception
+      // Internal parsing error, even if there are no more token (then there should be a different exception).
+      // Tested with TestParserExceptions.TestPMreadParenthesis
       throw FilterParserExceptionImpl.createMISSING_CLOSING_PHARENTHESIS(openParenthesis.getPosition(), curExpression, e);
     }
     return parenthesisExpression;
@@ -202,32 +235,30 @@ public class FilterParserImpl implements FilterParser
    * @throws TokenizerExpectError 
    *   The next token did not match the expected token
    */
-  protected MethodExpression readParameters(InfoMethod methodInfo, MethodExpressionImpl methodExpression) throws FilterParserException, FilterParserInternalError
+  protected MethodExpression readParameters(InfoMethod methodInfo, MethodExpressionImpl methodExpression, Token methodToken) throws FilterParserException, FilterParserInternalError
   {
     CommonExpression expression;
     boolean expectAnotherExpression = false;
 
-    //check for '('
-    try {
-      tokenList.expectToken(TokenKind.OPENPAREN); //throws ExceptionTokenizerExpect
-    } catch (TokenizerExpectError e) {
-      //The existing of a '(' is verified BEFORE this method is called --> so it's a internal error
-      throw FilterParserInternalError.createERROR_PARSING_PARENTHESIS(e);
-    }
+    // The existing of a '(' is verified BEFORE this method is called --> so it's a internal error
+    Token openParenthesis = tokenList.expectToken(TokenKind.OPENPAREN, true); //throws FilterParserInternalError
 
     Token token = tokenList.lookToken();
+    if (token == null)
+    {
+      //Tested with TestParserExceptions.TestPMreadParameters CASE 1 e.g. "$filter=concat("
+      throw FilterParserExceptionImpl.createEXPRESSION_EXPECTED_AFTER_POS(openParenthesis);
+    }
+
     while (token.getKind() != TokenKind.CLOSEPAREN)
     {
       expression = readElement(null);
-      expression = readElements(expression, 0);
-      //TODO add recursion
-      //After a ',' inside the parenthesis which define the method parameters a expression is expected 
-      //E.g. $filter=startswith(Country,'UK',) --> is wrong
-      //E.g. $filter=startswith(Country,) --> is also wrong
+      if (expression != null) expression = readElements(expression, 0);
 
       if ((expression == null) && (expectAnotherExpression == true))
       {
-        throw FilterParserExceptionImpl.createEXPRESSION_EXPECTED_AT_POS(token);
+        //Tested with TestParserExceptions.TestPMreadParameters CASE 4 e.g. "$filter=concat(,"
+        throw FilterParserExceptionImpl.createEXPRESSION_EXPECTED_AFTER_POS(token);
       }
       else if (expression != null) //parameter list may be empty
       {
@@ -235,38 +266,49 @@ public class FilterParserImpl implements FilterParser
       }
 
       token = tokenList.lookToken();
+      if (token == null)
+      {
+        //Tested with TestParserExceptions.TestPMreadParameters CASE 2 e.g. "$filter=concat(123"
+        throw FilterParserExceptionImpl.createCOMMA_OR_CLOSING_PHARENTHESIS_EXPECTED_AFTER_POS(tokenList.lookPrevToken());
+      }
 
       if (token.getKind() == TokenKind.COMMA)
       {
+        expectAnotherExpression = true;
+        if (expression == null)
+        {
+          //Tested with TestParserExceptions.TestPMreadParameters CASE 3 e.g. "$filter=concat(,"
+          throw FilterParserExceptionImpl.createEXPRESSION_EXPECTED_AT_POS(token);
+        }
+
+        tokenList.expectToken(Character.toString(CharConst.GC_STR_COMMA), true);
+        /*
         //eat the ','
         try {
           tokenList.expectToken(Character.toString(CharConst.GC_STR_COMMA));
         } catch (TokenizerExpectError e)
         {
           throw FilterParserInternalError.createERROR_PARSING_PARENTHESIS(e);
-        }
+        }*/
       }
     }
 
-    //---check for ')'
-    try {
-      tokenList.expectToken(TokenKind.CLOSEPAREN);
-    } catch (TokenizerExpectError e)
-    {
-      //Internal parsing error, even if there are no more token (then there should be a different exception).
-      throw FilterParserInternalError.createERROR_PARSING_METHOD(e);
-    }
+    // because the while loop above only exits if a ')' has been found it is an  
+    // internal error if there is not ')'
+    tokenList.expectToken(TokenKind.CLOSEPAREN, true);
 
     //---check parameter count
     int count = methodExpression.getParameters().size();
-    if (count < methodInfo.getMinParameter())
+    if ((methodInfo.getMinParameter() > -1) && (count < methodInfo.getMinParameter()))
     {
-      throw FilterParserExceptionImpl.createMETHOD_TO_FEW_PARAMETERS(methodExpression);
+      //Tested with TestParserExceptions.TestPMreadParameters CASE 12
+      throw FilterParserExceptionImpl.createMETHOD_WRONG_ARG_COUNT(curExpression, methodExpression, methodToken);
     }
 
-    if ((methodInfo.getMaxParameter() > -1) && (count > methodInfo.getMinParameter()))
+    if ((methodInfo.getMaxParameter() > -1) && (count > methodInfo.getMaxParameter()))
     {
-      throw FilterParserExceptionImpl.createMETHOD_TO_MANY_PARAMETERS(methodExpression);
+      //Tested with TestParserExceptions.TestPMreadParameters CASE 15
+      throw FilterParserExceptionImpl.createMETHOD_WRONG_ARG_COUNT(curExpression, methodExpression, methodToken);
     }
 
     return methodExpression;
@@ -289,6 +331,8 @@ public class FilterParserImpl implements FilterParser
     Token token;
     Token lookToken;
     lookToken = tokenList.lookToken();
+    if (lookToken == null)
+      return null;
 
     switch (lookToken.getKind())
     {
@@ -365,7 +409,7 @@ public class FilterParserImpl implements FilterParser
   {
     MethodExpressionImpl method = new MethodExpressionImpl(methodOperator);
 
-    readParameters(methodOperator, method);
+    readParameters(methodOperator, method, token);
     validateMethodTypes(method); //throws ExpressionInvalidOperatorTypeException
 
     return method;
@@ -375,7 +419,7 @@ public class FilterParserImpl implements FilterParser
   {
     InfoBinaryOperator operator = null;
     Token token = tokenList.lookToken();
-    if (token == null) 
+    if (token == null)
       return null;
     if ((token.getKind() == TokenKind.SYMBOL) && (token.getUriLiteral().equals("/")))
     {
@@ -383,11 +427,11 @@ public class FilterParserImpl implements FilterParser
     }
     else if (token.getKind() == TokenKind.LITERAL)
     {
-      operator = availableBinaryOperators.get(token.getUriLiteral()); 
+      operator = availableBinaryOperators.get(token.getUriLiteral());
     }
-    
+
     if (operator == null)
-        return null;
+      return null;
     return new ActualBinaryOperator(operator, token);
   }
 
@@ -425,7 +469,6 @@ public class FilterParserImpl implements FilterParser
     availableBinaryOperators = new HashMap<String, InfoBinaryOperator>();
     availableMethods = new HashMap<String, InfoMethod>();
     availableUnaryOperators = new HashMap<String, InfoUnaryOperator>();
-    //List<ParameterSet> combination = null;
 
     //create type validators
     //InputTypeValidator typeValidatorPromotion = new InputTypeValidator.TypePromotionValidator();

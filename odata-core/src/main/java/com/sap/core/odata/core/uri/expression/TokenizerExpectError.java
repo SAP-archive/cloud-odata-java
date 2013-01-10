@@ -84,11 +84,12 @@ public class TokenizerExpectError extends ODataMessageException {
 
     return new TokenizerExpectError(msgRef);
   }
-  public static TokenizerExpectError createNO_TOKEN_AVAILABLE(TokenKind expectedTokenKind)
+  
+  public static TokenizerExpectError createNO_TOKEN_AVAILABLE(String expectedToken)
   {
     MessageReference msgRef = TokenizerExpectError.INVALID_TOKEN_AT.create();
 
-    msgRef.addContent(expectedTokenKind.toString());
+    msgRef.addContent(expectedToken);
 
     return new TokenizerExpectError(msgRef);
   }
