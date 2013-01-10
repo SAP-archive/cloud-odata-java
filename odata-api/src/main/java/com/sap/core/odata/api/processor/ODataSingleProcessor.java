@@ -132,7 +132,7 @@ public abstract class ODataSingleProcessor
    * @see EntitySimplePropertyValue
    */
   @Override
-  public ODataResponse updateEntitySimplePropertyValue(PutMergePatchUriInfo uriInfo, String contentType) throws ODataException {
+  public ODataResponse updateEntitySimplePropertyValue(PutMergePatchUriInfo uriInfo, ODataRequest request) throws ODataException {
     throw new ODataNotImplementedException();
   }
 
@@ -156,7 +156,7 @@ public abstract class ODataSingleProcessor
    * @see EntitySimpleProperty
    */
   @Override
-  public ODataResponse updateEntitySimpleProperty(PutMergePatchUriInfo uriInfo, String contentType) throws ODataException {
+  public ODataResponse updateEntitySimpleProperty(PutMergePatchUriInfo uriInfo, ODataRequest request) throws ODataException {
     throw new ODataNotImplementedException();
   }
 
@@ -172,7 +172,7 @@ public abstract class ODataSingleProcessor
    * @see EntityMedia
    */
   @Override
-  public ODataResponse updateEntityMedia(PutMergePatchUriInfo uriInfo, String contentType) throws ODataException {
+  public ODataResponse updateEntityMedia(PutMergePatchUriInfo uriInfo, ODataRequest request) throws ODataException {
     throw new ODataNotImplementedException();
   }
 
@@ -204,7 +204,7 @@ public abstract class ODataSingleProcessor
    * @see EntityLink
    */
   @Override
-  public ODataResponse createEntityLink(PostUriInfo uriInfo, String contentType) throws ODataException {
+  public ODataResponse createEntityLink(PostUriInfo uriInfo, ODataRequest request) throws ODataException {
     throw new ODataNotImplementedException();
   }
 
@@ -228,7 +228,7 @@ public abstract class ODataSingleProcessor
    * @see EntityLink
    */
   @Override
-  public ODataResponse updateEntityLink(PutMergePatchUriInfo uriInfo, String contentType) throws ODataException {
+  public ODataResponse updateEntityLink(PutMergePatchUriInfo uriInfo, ODataRequest request) throws ODataException {
     throw new ODataNotImplementedException();
   }
 
@@ -252,7 +252,7 @@ public abstract class ODataSingleProcessor
    * @see EntityComplexProperty
    */
   @Override
-  public ODataResponse updateEntityComplexProperty(PutMergePatchUriInfo uriInfo, String contentType) throws ODataException {
+  public ODataResponse updateEntityComplexProperty(PutMergePatchUriInfo uriInfo, ODataRequest request) throws ODataException {
     throw new ODataNotImplementedException();
   }
 
@@ -276,7 +276,7 @@ public abstract class ODataSingleProcessor
    * @see Entity
    */
   @Override
-  public ODataResponse createEntity(PostUriInfo uriInfo, String contentType) throws ODataException {
+  public ODataResponse createEntity(PostUriInfo uriInfo, ODataRequest request) throws ODataException {
     throw new ODataNotImplementedException();
   }
 
@@ -300,7 +300,7 @@ public abstract class ODataSingleProcessor
    * @see Entity
    */
   @Override
-  public ODataResponse updateEntity(PutMergePatchUriInfo uriInfo, String contentType) throws ODataException {
+  public ODataResponse updateEntity(PutMergePatchUriInfo uriInfo, ODataRequest request) throws ODataException {
     throw new ODataNotImplementedException();
   }
 

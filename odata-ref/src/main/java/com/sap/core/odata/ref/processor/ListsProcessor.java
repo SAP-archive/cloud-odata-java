@@ -15,6 +15,7 @@ import java.util.Map;
 import com.sap.core.odata.api.commons.HttpContentType;
 import com.sap.core.odata.api.commons.HttpStatusCodes;
 import com.sap.core.odata.api.commons.InlineCount;
+import com.sap.core.odata.api.ec.EntityConsumer;
 import com.sap.core.odata.api.edm.EdmEntitySet;
 import com.sap.core.odata.api.edm.EdmException;
 import com.sap.core.odata.api.edm.EdmFunctionImport;
@@ -35,6 +36,7 @@ import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.api.exception.ODataNotFoundException;
 import com.sap.core.odata.api.exception.ODataNotImplementedException;
 import com.sap.core.odata.api.processor.ODataContext;
+import com.sap.core.odata.api.processor.ODataRequest;
 import com.sap.core.odata.api.processor.ODataResponse;
 import com.sap.core.odata.api.processor.ODataSingleProcessor;
 import com.sap.core.odata.api.uri.KeyPredicate;
@@ -64,6 +66,7 @@ import com.sap.core.odata.api.uri.info.GetEntityUriInfo;
 import com.sap.core.odata.api.uri.info.GetFunctionImportUriInfo;
 import com.sap.core.odata.api.uri.info.GetMediaResourceUriInfo;
 import com.sap.core.odata.api.uri.info.GetSimplePropertyUriInfo;
+import com.sap.core.odata.api.uri.info.PostUriInfo;
 
 /**
  * Implementation of the centralized parts of OData processing,
@@ -81,6 +84,23 @@ public class ListsProcessor extends ODataSingleProcessor {
     this.dataSource = dataSource;
   }
 
+  @Override
+  public ODataResponse createEntity(PostUriInfo uriInfo, ODataRequest request) throws ODataException {
+    EntityConsumer ec = EntityConsumer.create(request.getContentHeader());
+    EdmEntitySet entitySet = uriInfo.getTargetEntitySet();
+    
+    Map<String, Object> entryMap = ec.readEntry(entitySet, request);
+    
+    String responseXml = 
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
+        "<entry xmlns=\"http://www.w3.org/2005/Atom\" xmlns:m=\"http://schemas.microsoft.com/ado/2007/08/dataservices/metadata\" xmlns:d=\"http://schemas.microsoft.com/ado/2007/08/dataservices\" xml:base=\"https://refodata.prod.jpaas.sapbydesign.com/com.sap.core.odata.ref.web/ReferenceScenario.svc/\">" + 
+        entryMap.toString() + 
+        "</entry>";
+    
+    return ODataResponse.status(HttpStatusCodes.OK).entity(responseXml).build();
+  }
+  
+  
   @Override
   public ODataResponse readEntitySet(final GetEntitySetUriInfo uriInfo, final String contentType) throws ODataException {
     ArrayList<Object> data = new ArrayList<Object>();

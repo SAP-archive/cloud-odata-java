@@ -57,7 +57,7 @@ public class Dispatcher {
       case GET:
         return service.getEntitySetProcessor().readEntitySet(uriInfo, contentType);
       case POST:
-        return service.getEntitySetProcessor().createEntity(uriInfo, contentType);
+        return service.getEntitySetProcessor().createEntity(uriInfo, request);
       default:
         throw new ODataMethodNotAllowedException(ODataMethodNotAllowedException.DISPATCH);
       }
@@ -72,7 +72,7 @@ public class Dispatcher {
         if (contentType == null
             && uriInfo.getExpand().isEmpty()
             && uriInfo.getSelect().isEmpty())
-          return service.getEntityProcessor().updateEntity(uriInfo, contentType);
+          return service.getEntityProcessor().updateEntity(uriInfo, request);
         else
           throw new ODataBadRequestException(ODataBadRequestException.COMMON);
       case DELETE:
@@ -97,7 +97,7 @@ public class Dispatcher {
       case PUT:
       case PATCH:
       case MERGE:
-        return service.getEntityComplexPropertyProcessor().updateEntityComplexProperty(uriInfo, contentType);
+        return service.getEntityComplexPropertyProcessor().updateEntityComplexProperty(uriInfo, request);
       default:
         throw new ODataMethodNotAllowedException(ODataMethodNotAllowedException.DISPATCH);
       }
@@ -114,9 +114,9 @@ public class Dispatcher {
       case PATCH:
       case MERGE:
         if (uriInfo.isValue())
-          return service.getEntitySimplePropertyValueProcessor().updateEntitySimplePropertyValue(uriInfo, contentType);
+          return service.getEntitySimplePropertyValueProcessor().updateEntitySimplePropertyValue(uriInfo, request);
         else
-          return service.getEntitySimplePropertyProcessor().updateEntitySimpleProperty(uriInfo, contentType);
+          return service.getEntitySimplePropertyProcessor().updateEntitySimpleProperty(uriInfo, request);
       case DELETE:
         if (uriInfo.isValue()
             && isPropertyNullableAndNotKey(uriInfo))
@@ -140,7 +140,7 @@ public class Dispatcher {
       case PUT:
       case PATCH:
       case MERGE:
-        return service.getEntityLinkProcessor().updateEntityLink(uriInfo, contentType);
+        return service.getEntityLinkProcessor().updateEntityLink(uriInfo, request);
       case DELETE:
         if (contentType == null)
           return service.getEntityLinkProcessor().deleteEntityLink(uriInfo, contentType);
@@ -155,7 +155,7 @@ public class Dispatcher {
       case GET:
         return service.getEntityLinksProcessor().readEntityLinks(uriInfo, contentType);
       case POST:
-        return service.getEntityLinksProcessor().createEntityLink(uriInfo, contentType);
+        return service.getEntityLinksProcessor().createEntityLink(uriInfo, request);
       default:
         throw new ODataMethodNotAllowedException(ODataMethodNotAllowedException.DISPATCH);
       }
@@ -201,7 +201,7 @@ public class Dispatcher {
       case GET:
         return service.getEntityMediaProcessor().readEntityMedia(uriInfo, contentType);
       case PUT:
-        return service.getEntityMediaProcessor().updateEntityMedia(uriInfo, contentType);
+        return service.getEntityMediaProcessor().updateEntityMedia(uriInfo, request);
       case DELETE:
         if (contentType != null)
           throw new UriSyntaxException(UriSyntaxException.INCOMPATIBLESYSTEMQUERYOPTION.addContent(SystemQueryOption.$format));

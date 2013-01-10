@@ -1,6 +1,7 @@
 package com.sap.core.odata.api.processor.feature;
 
 import com.sap.core.odata.api.exception.ODataException;
+import com.sap.core.odata.api.processor.ODataRequest;
 import com.sap.core.odata.api.processor.ODataResponse;
 import com.sap.core.odata.api.uri.info.GetEntitySetCountUriInfo;
 import com.sap.core.odata.api.uri.info.GetEntitySetUriInfo;
@@ -29,9 +30,9 @@ public interface EntitySet extends ProcessorFeature {
   ODataResponse countEntitySet(GetEntitySetCountUriInfo uriInfo, String contentType) throws ODataException;
 
   /**
-   * @param contentType 
+   * @param request 
    * @return a {@link ODataResponse} object
    * @throws ODataException
    */
-  ODataResponse createEntity(PostUriInfo uriInfo, String contentType) throws ODataException;
+  ODataResponse createEntity(PostUriInfo uriInfo, ODataRequest request) throws ODataException;
 }

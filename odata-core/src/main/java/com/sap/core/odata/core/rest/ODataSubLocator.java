@@ -162,7 +162,8 @@ public final class ODataSubLocator implements ODataLocator {
 
     /* tunneling */
     if (xmethod == null) {
-      response = Response.ok().entity("POST: status 200 ok").build();
+//      response = Response.ok().entity("POST: status 200 ok").build();
+      response = handlePost();
     } else if ("MERGE".equals(xmethod)) {
       response = this.handleMerge();
     } else if ("PATCH".equals(xmethod)) {
@@ -176,9 +177,33 @@ public final class ODataSubLocator implements ODataLocator {
     return response;
   }
 
+  public Response handlePost() throws ODataException {
+    List<PathSegment> pathSegments = this.context.getPathInfo().getODataSegments();
+    UriInfoImpl uriParserResult = (UriInfoImpl) this.uriParser.parse(pathSegments, this.queryParameters);
+
+    String contentType = doContentNegotiation(uriParserResult);
+    
+    ODataRequest odataRequest = ODataRequestImpl.create(contentBody, contentType).build();
+
+    ODataResponse odataResponse = dispatcher.dispatch(ODataHttpMethod.POST, uriParserResult, odataRequest);
+    Response response = this.convertResponse(odataResponse);
+
+    return response;
+  }
+
   @PUT
   public Response handlePut() throws ODataException {
-    return Response.ok().entity("PUT: status 200 ok").build();
+    List<PathSegment> pathSegments = this.context.getPathInfo().getODataSegments();
+    UriInfoImpl uriParserResult = (UriInfoImpl) this.uriParser.parse(pathSegments, this.queryParameters);
+
+    String contentType = doContentNegotiation(uriParserResult);
+    
+    ODataRequest odataRequest = ODataRequestImpl.create(contentBody, contentType).build();
+
+    ODataResponse odataResponse = dispatcher.dispatch(ODataHttpMethod.PUT, uriParserResult, odataRequest);
+    Response response = this.convertResponse(odataResponse);
+
+    return response;
   }
 
   @PATCH

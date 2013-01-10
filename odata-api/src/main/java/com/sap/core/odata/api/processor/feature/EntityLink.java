@@ -1,6 +1,7 @@
 package com.sap.core.odata.api.processor.feature;
 
 import com.sap.core.odata.api.exception.ODataException;
+import com.sap.core.odata.api.processor.ODataRequest;
 import com.sap.core.odata.api.processor.ODataResponse;
 import com.sap.core.odata.api.uri.info.DeleteUriInfo;
 import com.sap.core.odata.api.uri.info.GetEntityLinkCountUriInfo;
@@ -30,11 +31,11 @@ public interface EntityLink extends ProcessorFeature {
   ODataResponse existsEntityLink(GetEntityLinkCountUriInfo uriInfo, String contentType) throws ODataException;
 
   /**
-   * @param contentType 
+   * @param request 
    * @return a {@link ODataResponse} object
    * @throws ODataException
    */
-  ODataResponse updateEntityLink(PutMergePatchUriInfo uriInfo, String contentType) throws ODataException;
+  ODataResponse updateEntityLink(PutMergePatchUriInfo uriInfo, ODataRequest request) throws ODataException;
 
   /**
    * @param uriInfo
