@@ -7,6 +7,9 @@ public class EntityConsumerException extends ODataMessageException {
   private static final long serialVersionUID = 1L;
   
   public static final MessageReference COMMON = createMessageReference(EntityConsumerException.class, "COMMON");
+  public static final MessageReference INVALID_STATE = createMessageReference(EntityConsumerException.class, "INVALID_STATE");
+
+  public static final MessageReference INVALID_PROPERTY = createMessageReference(EntityConsumerException.class, "INVALID_PROPERTY");
 
   public EntityConsumerException(MessageReference messageReference) {
     super(messageReference);
