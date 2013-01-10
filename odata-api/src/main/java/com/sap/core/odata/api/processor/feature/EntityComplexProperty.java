@@ -24,5 +24,5 @@ public interface EntityComplexProperty extends ProcessorFeature {
    * @return a {@link ODataResponse} object
    * @throws ODataException
    */
-  ODataResponse updateEntityComplexProperty(PutMergePatchUriInfo uriInfo, ODataRequest request) throws ODataException;
+  ODataResponse updateEntityComplexProperty(PutMergePatchUriInfo uriInfo, ODataRequest request, String contentType) throws ODataException;
 }

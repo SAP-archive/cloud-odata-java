@@ -148,8 +148,8 @@ public class BasicHttpTest extends AbstractBasicTest {
 
     String payload = StringHelper.inputStreamToString(response.getEntity().getContent());
 
-    assertTrue(payload.contains(merge.getMethod()));
-    assertEquals(200, response.getStatusLine().getStatusCode());
+    assertTrue(payload.contains("error"));
+    assertEquals(HttpStatusCodes.NOT_FOUND.getStatusCode(), response.getStatusLine().getStatusCode());
   }
 
   @Test
@@ -159,8 +159,8 @@ public class BasicHttpTest extends AbstractBasicTest {
 
     String payload = StringHelper.inputStreamToString(response.getEntity().getContent());
 
-    assertTrue(payload.contains(get.getMethod()));
-    assertEquals(200, response.getStatusLine().getStatusCode());
+    assertTrue(payload.contains("error"));
+    assertEquals(HttpStatusCodes.NOT_FOUND.getStatusCode(), response.getStatusLine().getStatusCode());
   }
 
   @Test
@@ -171,8 +171,8 @@ public class BasicHttpTest extends AbstractBasicTest {
 
     String payload = StringHelper.inputStreamToString(response.getEntity().getContent());
 
-    assertTrue(payload.contains("MERGE"));
-    assertEquals(200, response.getStatusLine().getStatusCode());
+    assertTrue(payload.contains("error"));
+    assertEquals(HttpStatusCodes.NOT_FOUND.getStatusCode(), response.getStatusLine().getStatusCode());
   }
 
   @Test
@@ -183,8 +183,8 @@ public class BasicHttpTest extends AbstractBasicTest {
 
     String payload = StringHelper.inputStreamToString(response.getEntity().getContent());
 
-    assertTrue(payload.contains("PATCH"));
-    assertEquals(200, response.getStatusLine().getStatusCode());
+    assertTrue(payload.contains("error"));
+    assertEquals(HttpStatusCodes.NOT_FOUND.getStatusCode(), response.getStatusLine().getStatusCode());
   }
 
 }

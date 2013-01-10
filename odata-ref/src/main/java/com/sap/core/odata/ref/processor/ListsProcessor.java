@@ -277,10 +277,10 @@ public class ListsProcessor extends ODataSingleProcessor {
   }
 
   @Override
-  public ODataResponse createEntity(final PostUriInfo uriInfo, final ODataRequest request) throws ODataException {
+  public ODataResponse createEntity(final PostUriInfo uriInfo, final ODataRequest request, final String contentType) throws ODataException {
     final EdmEntitySet entitySet = uriInfo.getTargetEntitySet();
-    ODataContext context = getContext();
 
+    ODataContext context = getContext();
     final int timingHandle = context.startRuntimeMeasurement("EntityConsumer", "readEntry");
 
     final EntityConsumer consumer = EntityConsumer.create(request.getContentHeader());
