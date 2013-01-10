@@ -66,7 +66,7 @@ public class FilterExpressionImpl implements FilterExpression
   @Override
   public String getUriLiteral()
   {
-    return "";
+    return getExpressionString();
   }
 
 }

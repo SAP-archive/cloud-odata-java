@@ -61,6 +61,14 @@ public class TokenList implements Iterator<Token>
 
     return tokens.get(currentToken);
   }
+  
+  public Token lookPrevToken()
+  {
+    if (currentToken-1 <= 0)
+      return null;
+
+    return tokens.get(currentToken-1);
+  }
 
   public boolean hasTokens()
   {
@@ -77,21 +85,64 @@ public class TokenList implements Iterator<Token>
   public Token expectToken(TokenKind comma) throws TokenizerExpectError
   {
     Token actual = next();
-    if ( actual == null)
+    if (actual == null)
     {
-      throw TokenizerExpectError.createNO_TOKEN_AVAILABLE(comma);
+      throw TokenizerExpectError.createNO_TOKEN_AVAILABLE(comma.toString());
     }
-    
+
     if (comma != actual.getKind())
+    {
       throw TokenizerExpectError.createINVALID_TOKENKIND_AT(comma, actual);
+    }
     return actual;
   }
 
+  public Token expectToken(TokenKind comma, boolean throwFilterExpression) throws  FilterParserInternalError
+  {
+    Token actual = next();
+    if (actual == null)
+    {
+      throw FilterParserInternalError.createNO_TOKEN_AVAILABLE(comma.toString());
+    }
+
+    if (comma != actual.getKind())
+    {
+      if ( throwFilterExpression)
+        throw FilterParserInternalError.createINVALID_TOKENKIND_AT(comma, actual);
+    }
+    return actual;
+  }
+
+  
   public Token expectToken(String literal) throws TokenizerExpectError
   {
     Token actual = next();
+    if (actual == null)
+    {
+      throw TokenizerExpectError.createNO_TOKEN_AVAILABLE(literal);
+    }
+
     if (!literal.equals(actual.getUriLiteral()))
-      throw TokenizerExpectError.createINVALID_TOKEN_AT(literal, actual);
+    {
+        throw TokenizerExpectError.createINVALID_TOKEN_AT(literal, actual);
+    }
+    return actual;
+  }
+  
+  
+  public Token expectToken(String literal, boolean throwInternal) throws FilterParserInternalError
+  {
+    Token actual = next();
+    if (actual == null)
+    {
+      throw FilterParserInternalError.createNO_TOKEN_AVAILABLE(literal);
+    }
+
+    if (!literal.equals(actual.getUriLiteral()))
+    {
+      if (throwInternal)
+        throw FilterParserInternalError.createINVALID_TOKEN_AT(literal, actual);
+    }
     return actual;
   }
 

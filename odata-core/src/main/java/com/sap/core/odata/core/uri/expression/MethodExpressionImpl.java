@@ -41,6 +41,11 @@ public class MethodExpressionImpl implements MethodExpression {
   {
     return infoMethod.getMethod();
   }
+  
+  public InfoMethod getMethodInfo()
+  {
+    return infoMethod;
+  }
 
   @Override
   public List<CommonExpression> getParameters() {
@@ -52,9 +57,14 @@ public class MethodExpressionImpl implements MethodExpression {
     return actualParameters.size();
   }
 
-  public CommonExpression appendParameter(CommonExpression expression) {
+  /**
+   * @param expression
+   * @return "this" self reference for method chaining" 
+   */
+  public MethodExpressionImpl appendParameter(CommonExpression expression) 
+  {
     actualParameters.add(expression);
-    return null;
+    return this;
   }
 
   @Override

@@ -22,12 +22,17 @@ public class FilterParserException extends ODataBadRequestException
   //VON ABAP CX_DS_EXPR_SYNTAX_ERROR-TOKEN_INVALID "Invalid token detected at position &POSITION&"
   public static final MessageReference INVALID_TRAILING_TOKEN_DETECTED_AFTER_PARSING = createMessageReference(FilterParserException.class, "INVALID_TRAILING_TOKEN_DETECTED_AFTER_PARSING");
 
-  //NORTHWIND Expression expected at position 25.
+  
+  public static final MessageReference EXPRESSION_EXPECTED_AFTER_POS = createMessageReference(FilterParserException.class, "EXPRESSION_EXPECTED_AFTER_POS");
   public static final MessageReference EXPRESSION_EXPECTED_AT_POS = createMessageReference(FilterParserException.class, "EXPRESSION_EXPECTED_AT_POS");
-
+  public static final MessageReference COMMA_OR_CLOSING_PHARENTHESIS_EXPECTED_AFTER_POS = createMessageReference(FilterParserException.class, "COMMA_OR_CLOSING_PHARENTHESIS_EXPECTED_AFTER_POS");
   public static final MessageReference INVALID_TOKEN = createMessageReference(FilterParserException.class, "INVALID_TOKEN");
 
-  public static final MessageReference METHOD_TO_FEW_PARAMETERS = createMessageReference(FilterParserException.class, "METHOD_TO_FEW_PARAMETERS");
+  public static final MessageReference METHOD_WRONG_ARG_EXACT = createMessageReference(FilterParserException.class, "METHOD_WRONG_ARG_EXACT");
+  public static final MessageReference METHOD_WRONG_ARG_BETWEEN = createMessageReference(FilterParserException.class, "METHOD_WRONG_ARG_BETWEEN");
+  public static final MessageReference METHOD_WRONG_ARG_X_OR_MORE = createMessageReference(FilterParserException.class, "METHOD_WRONG_ARG_X_OR_MORE");
+  public static final MessageReference METHOD_WRONG_ARG_X_OR_LESS = createMessageReference(FilterParserException.class, "METHOD_WRONG_ARG_X_OR_LESS");
+  
 
   public static final MessageReference METHOD_TO_MANY_PARAMETERS = createMessageReference(FilterParserException.class, "METHOD_TO_MANY_PARAMETERS");
 
