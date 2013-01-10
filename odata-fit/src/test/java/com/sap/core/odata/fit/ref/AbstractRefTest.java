@@ -8,6 +8,8 @@ import org.apache.http.HttpHeaders;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.StringEntity;
 
 import com.sap.core.odata.api.commons.HttpStatusCodes;
 import com.sap.core.odata.api.edm.provider.EdmProvider;
@@ -146,5 +148,23 @@ public class AbstractRefTest extends AbstractFitTest {
 
   protected void deleteUriOk(final String uri) throws Exception {
     deleteUri(uri, HttpStatusCodes.NO_CONTENT);
+  }
+
+  protected HttpResponse postUri(final String uri, final String requestBody, final String requestContentType, final HttpStatusCodes expectedStatusCode) throws Exception {
+    HttpPost httpPost = new HttpPost(getEndpoint() + uri);
+    httpPost.setEntity(new StringEntity(requestBody));
+    httpPost.setHeader(HttpHeaders.CONTENT_TYPE, requestContentType);
+    final HttpResponse response = getHttpClient().execute(httpPost);
+
+    assertNotNull(response);
+    assertEquals(expectedStatusCode.getStatusCode(), response.getStatusLine().getStatusCode());
+
+    if (expectedStatusCode == HttpStatusCodes.CREATED)
+      assertNotNull(response.getFirstHeader(HttpHeaders.LOCATION));
+
+    assertNotNull(response.getEntity());
+    assertNotNull(response.getEntity().getContent());
+
+    return response;
   }
 }

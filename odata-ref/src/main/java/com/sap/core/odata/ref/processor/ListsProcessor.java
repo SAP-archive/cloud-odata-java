@@ -13,6 +13,7 @@ import java.util.Locale;
 import java.util.Map;
 
 import com.sap.core.odata.api.commons.HttpContentType;
+import com.sap.core.odata.api.commons.HttpHeaders;
 import com.sap.core.odata.api.commons.HttpStatusCodes;
 import com.sap.core.odata.api.commons.InlineCount;
 import com.sap.core.odata.api.ec.EntityConsumer;
@@ -135,7 +136,7 @@ public class ListsProcessor extends ODataSingleProcessor {
 
     ODataContext context = getContext();
     final EntityProviderProperties feedProperties = EntityProviderProperties
-        .baseUri(getContext().getPathInfo().getServiceRoot())
+        .baseUri(context.getPathInfo().getServiceRoot())
         .inlineCountType(inlineCountType)
         .inlineCount(count)
         .skipToken(nextSkipToken)
@@ -207,10 +208,10 @@ public class ListsProcessor extends ODataSingleProcessor {
       values.add(entryValues);
     }
 
-    final EntityProviderProperties entryProperties = EntityProviderProperties
-        .baseUri(getContext().getPathInfo().getServiceRoot()).inlineCount(count).build();
-
     ODataContext context = getContext();
+    final EntityProviderProperties entryProperties = EntityProviderProperties
+        .baseUri(context.getPathInfo().getServiceRoot()).inlineCount(count).build();
+
     final int timingHandle = context.startRuntimeMeasurement("EntityProvider", "writeLinks");
 
     final ODataResponse response = EntityProvider.create(contentType).writeLinks(entitySet, values, entryProperties);
@@ -240,10 +241,10 @@ public class ListsProcessor extends ODataSingleProcessor {
     final EdmEntitySet entitySet = uriInfo.getTargetEntitySet();
     final Map<String, Object> values = getStructuralTypeValueMap(data, entitySet.getEntityType());
 
-    final EntityProviderProperties entryProperties = EntityProviderProperties
-        .baseUri(getContext().getPathInfo().getServiceRoot()).build();
-
     ODataContext context = getContext();
+    final EntityProviderProperties entryProperties = EntityProviderProperties
+        .baseUri(context.getPathInfo().getServiceRoot()).build();
+
     final int timingHandle = context.startRuntimeMeasurement("EntityProvider", "writeEntry");
 
     final ODataResponse response = EntityProvider.create(contentType).writeEntry(entitySet, values, entryProperties);
@@ -281,17 +282,32 @@ public class ListsProcessor extends ODataSingleProcessor {
     final EdmEntitySet entitySet = uriInfo.getTargetEntitySet();
 
     ODataContext context = getContext();
-    final int timingHandle = context.startRuntimeMeasurement("EntityConsumer", "readEntry");
+    int timingHandle = context.startRuntimeMeasurement("EntityConsumer", "readEntry");
 
     final EntityConsumer consumer = EntityConsumer.create(request.getContentHeader());
-    final Map<String, Object> entryMap = consumer.readEntry(entitySet, request);
+    final Map<String, Object> values = consumer.readEntry(entitySet, request);
 
     context.stopRuntimeMeasurement(timingHandle);
 
     // TODO: create entity
+    dataSource.newDataObject(entitySet);
 
-    // TODO: return correct response, including Location header
-    return ODataResponse.status(HttpStatusCodes.CREATED).entity(entryMap.toString()).build();
+//    final EntityProviderProperties entryProperties = EntityProviderProperties
+//        .baseUri(context.getPathInfo().getServiceRoot()).build();
+
+    timingHandle = context.startRuntimeMeasurement("EntityProvider", "writeEntry");
+
+    // TODO: return correct response with new key values and the correct Location header
+    final ODataResponse response =
+        BasicProvider.create().writeText(values.toString());
+        // EntityProvider.create(contentType).writeEntry(entitySet, values, entryProperties);
+
+    context.stopRuntimeMeasurement(timingHandle);
+
+    return ODataResponse.fromResponse(response)
+        .status(HttpStatusCodes.CREATED)
+        .header(HttpHeaders.LOCATION, context.getPathInfo().getServiceRoot() + "")
+        .build();
   }
 
   @Override
@@ -315,7 +331,7 @@ public class ListsProcessor extends ODataSingleProcessor {
 
     ODataContext context = getContext();
     final EntityProviderProperties entryProperties = EntityProviderProperties
-        .baseUri(getContext().getPathInfo().getServiceRoot()).build();
+        .baseUri(context.getPathInfo().getServiceRoot()).build();
 
     final int timingHandle = context.startRuntimeMeasurement("EntityProvider", "writeLink");
 
@@ -511,7 +527,7 @@ public class ListsProcessor extends ODataSingleProcessor {
 
     ODataContext context = getContext();
     final EntityProviderProperties entryProperties = EntityProviderProperties
-        .baseUri(getContext().getPathInfo().getServiceRoot()).build();
+        .baseUri(context.getPathInfo().getServiceRoot()).build();
 
     final int timingHandle = context.startRuntimeMeasurement("EntityProvider", "writeFunctionImport");
 

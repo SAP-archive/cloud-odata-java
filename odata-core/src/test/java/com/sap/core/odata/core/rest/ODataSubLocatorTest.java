@@ -10,6 +10,9 @@ import org.junit.Test;
 import com.sap.core.odata.api.exception.ODataNotAcceptableException;
 import com.sap.core.odata.core.commons.ContentType;
 
+/**
+ * @author SAP AG
+ */
 public class ODataSubLocatorTest {
 
   @Test

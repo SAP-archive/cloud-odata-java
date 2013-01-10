@@ -82,4 +82,13 @@ public class ContentNegotiationTest extends AbstractRefTest {
     assertTrue(body.length() > 100);
   }
 
+  @Test
+  public void requestContentTypeDifferent() throws Exception {
+    final HttpResponse response = postUri("Rooms",
+        getBody(callUri("Rooms('1')")), HttpContentType.APPLICATION_XML,
+        HttpStatusCodes.CREATED);
+    // checkMediaType(response, HttpContentType.APPLICATION_ATOM_XML_ENTRY);
+    final String body = getBody(response);
+    assertTrue(body.length() > 10);
+  }
 }

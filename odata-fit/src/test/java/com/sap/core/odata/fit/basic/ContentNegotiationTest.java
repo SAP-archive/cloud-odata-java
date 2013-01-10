@@ -23,37 +23,40 @@ import com.sap.core.odata.api.processor.feature.CustomContentType;
 import com.sap.core.odata.api.processor.feature.ServiceDocument;
 import com.sap.core.odata.api.uri.info.GetServiceDocumentUriInfo;
 
+/**
+ * @author SAP AG
+ */
 public class ContentNegotiationTest extends AbstractBasicTest {
 
   ODataSingleProcessor processor = mock(ODataSingleProcessor.class);
 
   @Override
   ODataSingleProcessor createProcessor() throws ODataException {
-    ODataResponse value = ODataResponse.status(HttpStatusCodes.OK).contentHeader("cvs").build();
-    when(((ServiceDocument) processor).readServiceDocument(any(GetServiceDocumentUriInfo.class), eq("cvs"))).thenReturn(value);
-    when(((CustomContentType) processor).getCustomContentTypes(ServiceDocument.class)).thenReturn(Arrays.asList("cvs"));
+    ODataResponse value = ODataResponse.status(HttpStatusCodes.OK).contentHeader("csv").build();
+    when(((ServiceDocument) processor).readServiceDocument(any(GetServiceDocumentUriInfo.class), eq("csv"))).thenReturn(value);
+    when(((CustomContentType) processor).getCustomContentTypes(ServiceDocument.class)).thenReturn(Arrays.asList("csv"));
 
     return processor;
   }
 
   @Test
   public void testFormatCustom() throws Exception {
-    HttpGet get = new HttpGet(URI.create(this.getEndpoint().toString() + "?$format=cvs"));
+    HttpGet get = new HttpGet(URI.create(this.getEndpoint().toString() + "?$format=csv"));
 
     HttpResponse response = this.getHttpClient().execute(get);
 
-    assertEquals(200, response.getStatusLine().getStatusCode());
-    Header header = response.getFirstHeader(HttpHeaders.CONTENT_TYPE);
+    assertEquals(HttpStatusCodes.OK.getStatusCode(), response.getStatusLine().getStatusCode());
 
-    assertEquals("cvs", header.getValue());
+    Header header = response.getFirstHeader(HttpHeaders.CONTENT_TYPE);
+    assertEquals("csv", header.getValue());
   }
 
   @Test
   public void testFormatNotAccepted() throws Exception {
-    HttpGet get = new HttpGet(URI.create(this.getEndpoint().toString() + "?$format=cvsOrSomethingElse"));
+    HttpGet get = new HttpGet(URI.create(this.getEndpoint().toString() + "?$format=csvOrSomethingElse"));
 
     HttpResponse response = this.getHttpClient().execute(get);
 
-    assertEquals(406, response.getStatusLine().getStatusCode());
+    assertEquals(HttpStatusCodes.NOT_ACCEPTABLE.getStatusCode(), response.getStatusLine().getStatusCode());
   }
 }

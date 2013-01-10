@@ -21,6 +21,7 @@ import javax.ws.rs.OPTIONS;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.core.HttpHeaders;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Request;
 import javax.ws.rs.core.Response;
@@ -242,7 +243,7 @@ public final class ODataSubLocator implements ODataLocator {
     } catch (IOException e) {
       throw new ODataException("Error getting request content body reader.", e);
     }
-    final javax.ws.rs.core.MediaType requestMediaType = param.httpHeaders.getMediaType();
+    final MediaType requestMediaType = param.httpHeaders.getMediaType();
     if (requestMediaType != null)
       requestContentType = requestMediaType.toString();
 
@@ -254,13 +255,11 @@ public final class ODataSubLocator implements ODataLocator {
     this.dispatcher = new Dispatcher(this.service);
   }
 
-  private List<ContentType> convertMediaTypes(List<javax.ws.rs.core.MediaType> acceptableMediaTypes) {
+  private List<ContentType> convertMediaTypes(List<MediaType> acceptableMediaTypes) {
     List<ContentType> mediaTypes = new ArrayList<ContentType>();
 
-    for (javax.ws.rs.core.MediaType x : acceptableMediaTypes) {
-      ContentType mt = ContentType.create(x.getType(), x.getSubtype(), x.getParameters());
-      mediaTypes.add(mt);
-    }
+    for (MediaType x : acceptableMediaTypes)
+      mediaTypes.add(ContentType.create(x.getType(), x.getSubtype(), x.getParameters()));
 
     return mediaTypes;
   }

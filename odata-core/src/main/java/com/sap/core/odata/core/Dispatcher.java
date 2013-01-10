@@ -52,7 +52,7 @@ public class Dispatcher {
       case GET:
         return service.getEntitySetProcessor().readEntitySet(uriInfo, contentType);
       case POST:
-        if (contentType == null
+        if (uriInfo.getFormat() == null
             && uriInfo.getFilter() == null
             && uriInfo.getInlineCount() == null
             && uriInfo.getOrderBy() == null
@@ -75,14 +75,14 @@ public class Dispatcher {
       case PUT:
       case PATCH:
       case MERGE:
-        if (contentType == null
+        if (uriInfo.getFormat() == null
             && uriInfo.getExpand().isEmpty()
             && uriInfo.getSelect().isEmpty())
           return service.getEntityProcessor().updateEntity(uriInfo, request, contentType);
         else
           throw new ODataMethodNotAllowedException(ODataMethodNotAllowedException.DISPATCH);
       case DELETE:
-        if (contentType == null
+        if (uriInfo.getFormat() == null
             && uriInfo.getFilter() == null
             && uriInfo.getExpand().isEmpty()
             && uriInfo.getSelect().isEmpty())
@@ -100,7 +100,7 @@ public class Dispatcher {
       case PUT:
       case PATCH:
       case MERGE:
-        if (contentType == null)
+        if (uriInfo.getFormat() == null)
           return service.getEntityComplexPropertyProcessor().updateEntityComplexProperty(uriInfo, request, contentType);
         else
           throw new ODataMethodNotAllowedException(ODataMethodNotAllowedException.DISPATCH);
@@ -209,7 +209,7 @@ public class Dispatcher {
       case PUT:
         return service.getEntityMediaProcessor().updateEntityMedia(uriInfo, request, contentType);
       case DELETE:
-        if (contentType == null
+        if (uriInfo.getFormat() == null
             && uriInfo.getFilter() == null)
           return service.getEntityMediaProcessor().deleteEntityMedia(uriInfo, contentType);
         else
