@@ -7,7 +7,9 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -15,10 +17,15 @@ import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
 import com.sap.core.odata.api.ODataService;
+import com.sap.core.odata.api.commons.InlineCount;
 import com.sap.core.odata.api.edm.EdmEntitySet;
 import com.sap.core.odata.api.edm.EdmEntityType;
+import com.sap.core.odata.api.edm.EdmException;
+import com.sap.core.odata.api.edm.EdmFacets;
+import com.sap.core.odata.api.edm.EdmFunctionImport;
 import com.sap.core.odata.api.edm.EdmProperty;
 import com.sap.core.odata.api.exception.ODataException;
+import com.sap.core.odata.api.exception.ODataMethodNotAllowedException;
 import com.sap.core.odata.api.processor.ODataRequest;
 import com.sap.core.odata.api.processor.ODataResponse;
 import com.sap.core.odata.api.processor.feature.Batch;
@@ -34,7 +41,12 @@ import com.sap.core.odata.api.processor.feature.FunctionImport;
 import com.sap.core.odata.api.processor.feature.FunctionImportValue;
 import com.sap.core.odata.api.processor.feature.Metadata;
 import com.sap.core.odata.api.processor.feature.ServiceDocument;
+import com.sap.core.odata.api.uri.NavigationPropertySegment;
+import com.sap.core.odata.api.uri.SelectItem;
+import com.sap.core.odata.api.uri.expression.FilterExpression;
+import com.sap.core.odata.api.uri.expression.OrderByExpression;
 import com.sap.core.odata.core.commons.ContentType;
+import com.sap.core.odata.core.commons.ContentType.ODataFormat;
 import com.sap.core.odata.core.commons.ODataHttpMethod;
 import com.sap.core.odata.core.uri.UriInfoImpl;
 import com.sap.core.odata.core.uri.UriType;
@@ -135,26 +147,85 @@ public class DispatcherTest {
     return response;
   }
 
-  private void checkDispatch(final ODataHttpMethod method, final UriType uriType, final boolean isValue, final String expectedMethodName) throws ODataException {
-    Dispatcher dispatcher = new Dispatcher(service);
-
-    UriInfoImpl uriParserResult = mock(UriInfoImpl.class);
-    when(uriParserResult.getUriType()).thenReturn(uriType);
-    when(uriParserResult.isValue()).thenReturn(isValue);
-    when(uriParserResult.getPropertyPath()).thenReturn(Arrays.asList(mock(EdmProperty.class)));
+  private static UriInfoImpl mockUriInfo(final UriType uriType, final boolean isValue) throws EdmException {
+    UriInfoImpl uriInfo = mock(UriInfoImpl.class);
+    when(uriInfo.getUriType()).thenReturn(uriType);
+    when(uriInfo.isValue()).thenReturn(isValue);
+    when(uriInfo.getPropertyPath()).thenReturn(Arrays.asList(mock(EdmProperty.class)));
     EdmEntityType entityType = mock(EdmEntityType.class);
     when(entityType.getKeyProperties()).thenReturn(Arrays.asList(mock(EdmProperty.class)));
     EdmEntitySet entitySet = mock(EdmEntitySet.class);
     when(entitySet.getEntityType()).thenReturn(entityType);
-    when(uriParserResult.getTargetEntitySet()).thenReturn(entitySet);
-    when(uriParserResult.getSkip()).thenReturn(null);
-    when(uriParserResult.getTop()).thenReturn(null);
+    when(uriInfo.getTargetEntitySet()).thenReturn(entitySet);
+    when(uriInfo.getSkip()).thenReturn(null);
+    when(uriInfo.getTop()).thenReturn(null);
+
+    return uriInfo;
+  }
+
+  private UriInfoImpl mockOptions(UriInfoImpl uriInfo,
+      final boolean format,
+      final boolean filter, final boolean inlineCount, final boolean orderBy,
+      final boolean skipToken, final boolean skip, final boolean top,
+      final boolean expand, final boolean select) {
+    if (format)
+      when(uriInfo.getFormat()).thenReturn(ODataFormat.XML.toString());
+    if (filter)
+      when(uriInfo.getFilter()).thenReturn(mock(FilterExpression.class));
+    if (inlineCount)
+      when(uriInfo.getInlineCount()).thenReturn(InlineCount.ALLPAGES);
+    if (orderBy)
+      when(uriInfo.getOrderBy()).thenReturn(mock(OrderByExpression.class));
+    if (skipToken)
+      when(uriInfo.getSkipToken()).thenReturn("x");
+    if (skip)
+      when(uriInfo.getSkip()).thenReturn(0);
+    if (top)
+      when(uriInfo.getTop()).thenReturn(0);
+    if (expand) {
+      ArrayList<NavigationPropertySegment> segments = new ArrayList<NavigationPropertySegment>();
+      segments.add(mock(NavigationPropertySegment.class));
+      List <ArrayList<NavigationPropertySegment>> expandList = new ArrayList<ArrayList<NavigationPropertySegment>>();
+      expandList.add(segments);
+      when(uriInfo.getExpand()).thenReturn(expandList);
+    }
+    if (select)
+      when(uriInfo.getSelect()).thenReturn(Arrays.asList(mock(SelectItem.class)));
+
+    return uriInfo;
+  }
+
+  private UriInfoImpl mockFunctionImport(UriInfoImpl uriInfo, final ODataHttpMethod httpMethod) throws EdmException {
+    EdmFunctionImport functionImport = mock(EdmFunctionImport.class);
+    when(functionImport.getHttpMethod()).thenReturn(httpMethod == null ? null : httpMethod.toString());
+    when(uriInfo.getFunctionImport()).thenReturn(functionImport);
+
+    return uriInfo;
+  }
+
+  private UriInfoImpl mockProperty(UriInfoImpl uriInfo, final boolean key, final boolean nullable) throws EdmException {
+    EdmProperty property = uriInfo.getPropertyPath().get(0);
+    if (key)
+      uriInfo.getPropertyPath().set(0, uriInfo.getTargetEntitySet().getEntityType().getKeyProperties().get(0));
+    EdmFacets facets = mock(EdmFacets.class);
+    when(facets.isNullable()).thenReturn(nullable);
+    when(property.getFacets()).thenReturn(facets);
+
+    return uriInfo;
+  }
+
+  private void checkDispatch(final ODataHttpMethod method, final UriInfoImpl uriInfo, final String expectedMethodName) throws ODataException {
+    Dispatcher dispatcher = new Dispatcher(service);
 
     final String contentType = method == ODataHttpMethod.GET ? ContentType.APPLICATION_XML.toContentTypeString() : null;
     final ODataRequest request = ODataRequestImpl.create(null, null).build();
 
-    final ODataResponse response = dispatcher.dispatch(method, uriParserResult, request, contentType);
+    final ODataResponse response = dispatcher.dispatch(method, uriInfo, request, contentType);
     assertEquals(expectedMethodName, response.getEntity());
+  }
+
+  private void checkDispatch(final ODataHttpMethod method, final UriType uriType, final boolean isValue, final String expectedMethodName) throws ODataException {
+    checkDispatch(method, mockUriInfo(uriType, isValue), expectedMethodName);
   }
 
   private void checkDispatch(final ODataHttpMethod method, final UriType uriType, final String expectedMethodName) throws ODataException {
@@ -167,6 +238,44 @@ public class DispatcherTest {
       fail("Expected ODataException not thrown");
     } catch (ODataException e) {
       assertNotNull(e);
+    }
+  }
+
+  private void wrongOptions(final ODataHttpMethod method, final UriType uriType,
+      final boolean format,
+      final boolean filter, final boolean inlineCount, final boolean orderBy,
+      final boolean skipToken, final boolean skip, final boolean top,
+      final boolean expand, final boolean select) {
+    try {
+      checkDispatch(method, mockOptions(mockUriInfo(uriType, false),
+          format, filter, inlineCount, orderBy, skipToken, skip, top, expand, select), null);
+      fail("Expected ODataMethodNotAllowedException not thrown");
+    } catch (ODataMethodNotAllowedException e) {
+      assertNotNull(e);
+    } catch (ODataException e) {
+      fail("Unexpected ODataException thrown");
+    }
+  }
+
+  private void wrongFunctionHttpMethod(final ODataHttpMethod method, final UriType uriType, final ODataHttpMethod httpMethod) {
+    try {
+      checkDispatch(method, mockFunctionImport(mockUriInfo(uriType, false), httpMethod), null);
+      fail("Expected ODataMethodNotAllowedException not thrown");
+    } catch (ODataMethodNotAllowedException e) {
+      assertNotNull(e);
+    } catch (ODataException e) {
+      fail("Unexpected ODataException thrown");
+    }
+  }
+
+  private void wrongProperty(final ODataHttpMethod method, final UriType uriType, final boolean key, final boolean nullable) {
+    try {
+      checkDispatch(method, mockProperty(mockUriInfo(uriType, true), key, nullable), null);
+      fail("Expected ODataMethodNotAllowedException not thrown");
+    } catch (ODataMethodNotAllowedException e) {
+      assertNotNull(e);
+    } catch (ODataException e) {
+      fail("Unexpected ODataException thrown");
     }
   }
 
@@ -226,12 +335,17 @@ public class DispatcherTest {
 
     checkDispatch(ODataHttpMethod.POST, UriType.URI9, "executeBatch");
 
-    checkDispatch(ODataHttpMethod.GET, UriType.URI10, "executeFunctionImport");
-    checkDispatch(ODataHttpMethod.GET, UriType.URI11, "executeFunctionImport");
-    checkDispatch(ODataHttpMethod.GET, UriType.URI12, "executeFunctionImport");
-    checkDispatch(ODataHttpMethod.GET, UriType.URI13, "executeFunctionImport");
-    checkDispatch(ODataHttpMethod.GET, UriType.URI14, "executeFunctionImport");
-    checkDispatch(ODataHttpMethod.GET, UriType.URI14, true, "executeFunctionImportValue");
+    checkDispatch(ODataHttpMethod.GET, mockFunctionImport(mockUriInfo(UriType.URI10, false), null), "executeFunctionImport");
+    checkDispatch(ODataHttpMethod.GET, mockFunctionImport(mockUriInfo(UriType.URI10, false), ODataHttpMethod.GET), "executeFunctionImport");
+    checkDispatch(ODataHttpMethod.GET, mockFunctionImport(mockUriInfo(UriType.URI11, false), null), "executeFunctionImport");
+    checkDispatch(ODataHttpMethod.GET, mockFunctionImport(mockUriInfo(UriType.URI11, false), ODataHttpMethod.GET), "executeFunctionImport");
+    checkDispatch(ODataHttpMethod.GET, mockFunctionImport(mockUriInfo(UriType.URI12, false), null), "executeFunctionImport");
+    checkDispatch(ODataHttpMethod.GET, mockFunctionImport(mockUriInfo(UriType.URI12, false), ODataHttpMethod.GET), "executeFunctionImport");
+    checkDispatch(ODataHttpMethod.GET, mockFunctionImport(mockUriInfo(UriType.URI13, false), null), "executeFunctionImport");
+    checkDispatch(ODataHttpMethod.GET, mockFunctionImport(mockUriInfo(UriType.URI13, false), ODataHttpMethod.GET), "executeFunctionImport");
+    checkDispatch(ODataHttpMethod.GET, mockFunctionImport(mockUriInfo(UriType.URI14, false), null), "executeFunctionImport");
+    checkDispatch(ODataHttpMethod.GET, mockFunctionImport(mockUriInfo(UriType.URI14, false), ODataHttpMethod.GET), "executeFunctionImport");
+    checkDispatch(ODataHttpMethod.GET, mockFunctionImport(mockUriInfo(UriType.URI14, true), null), "executeFunctionImportValue");
 
     checkDispatch(ODataHttpMethod.GET, UriType.URI15, "countEntitySet");
 
@@ -329,5 +443,74 @@ public class DispatcherTest {
     wrongDispatch(ODataHttpMethod.DELETE, UriType.URI50B);
     wrongDispatch(ODataHttpMethod.PATCH, UriType.URI50B);
     wrongDispatch(ODataHttpMethod.MERGE, UriType.URI50B);
+  }
+
+  @Test
+  public void dispatchNotAllowedOptions() throws Exception {
+    wrongOptions(ODataHttpMethod.POST, UriType.URI1, true, false, false, false, false, false, false, false, false);
+    wrongOptions(ODataHttpMethod.POST, UriType.URI1, false, true, false, false, false, false, false, false, false);
+    wrongOptions(ODataHttpMethod.POST, UriType.URI1, false, false, true, false, false, false, false, false, false);
+    wrongOptions(ODataHttpMethod.POST, UriType.URI1, false, false, false, true, false, false, false, false, false);
+    wrongOptions(ODataHttpMethod.POST, UriType.URI1, false, false, false, false, true, false, false, false, false);
+    wrongOptions(ODataHttpMethod.POST, UriType.URI1, false, false, false, false, false, true, false, false, false);
+    wrongOptions(ODataHttpMethod.POST, UriType.URI1, false, false, false, false, false, false, true, false, false);
+    wrongOptions(ODataHttpMethod.POST, UriType.URI1, false, false, false, false, false, false, false, true, false);
+    wrongOptions(ODataHttpMethod.POST, UriType.URI1, false, false, false, false, false, false, false, false, true);
+
+    wrongOptions(ODataHttpMethod.PUT, UriType.URI2, true, false, false, false, false, false, false, false, false);
+    wrongOptions(ODataHttpMethod.PUT, UriType.URI2, false, false, false, false, false, false, false, true, false);
+    wrongOptions(ODataHttpMethod.PUT, UriType.URI2, false, false, false, false, false, false, false, false, true);
+    wrongOptions(ODataHttpMethod.DELETE, UriType.URI2, true, false, false, false, false, false, false, false, false);
+    wrongOptions(ODataHttpMethod.DELETE, UriType.URI2, false, true, false, false, false, false, false, false, false);
+    wrongOptions(ODataHttpMethod.DELETE, UriType.URI2, false, false, false, false, false, false, false, true, false);
+    wrongOptions(ODataHttpMethod.DELETE, UriType.URI2, false, false, false, false, false, false, false, false, true);
+
+    wrongOptions(ODataHttpMethod.PATCH, UriType.URI3, true, false, false, false, false, false, false, false, false);
+
+    wrongOptions(ODataHttpMethod.PUT, UriType.URI4, true, false, false, false, false, false, false, false, false);
+
+    wrongOptions(ODataHttpMethod.PUT, UriType.URI5, true, false, false, false, false, false, false, false, false);
+
+    wrongOptions(ODataHttpMethod.PUT, UriType.URI7A, true, false, false, false, false, false, false, false, false);
+    wrongOptions(ODataHttpMethod.PUT, UriType.URI7A, false, true, false, false, false, false, false, false, false);
+    wrongOptions(ODataHttpMethod.DELETE, UriType.URI7A, true, false, false, false, false, false, false, false, false);
+    wrongOptions(ODataHttpMethod.DELETE, UriType.URI7A, false, true, false, false, false, false, false, false, false);
+
+    wrongOptions(ODataHttpMethod.POST, UriType.URI7B, true, false, false, false, false, false, false, false, false);
+    wrongOptions(ODataHttpMethod.POST, UriType.URI7B, false, true, false, false, false, false, false, false, false);
+    wrongOptions(ODataHttpMethod.POST, UriType.URI7B, false, false, true, false, false, false, false, false, false);
+    wrongOptions(ODataHttpMethod.POST, UriType.URI7B, false, false, false, true, false, false, false, false, false);
+    wrongOptions(ODataHttpMethod.POST, UriType.URI7B, false, false, false, false, true, false, false, false, false);
+    wrongOptions(ODataHttpMethod.POST, UriType.URI7B, false, false, false, false, false, true, false, false, false);
+    wrongOptions(ODataHttpMethod.POST, UriType.URI7B, false, false, false, false, false, false, true, false, false);
+
+    wrongOptions(ODataHttpMethod.PUT, UriType.URI17, true, false, false, false, false, false, false, false, false);
+    wrongOptions(ODataHttpMethod.PUT, UriType.URI17, false, true, false, false, false, false, false, false, false);
+    wrongOptions(ODataHttpMethod.DELETE, UriType.URI17, true, false, false, false, false, false, false, false, false);
+    wrongOptions(ODataHttpMethod.DELETE, UriType.URI17, false, true, false, false, false, false, false, false, false);
+  }
+
+  @Test
+  public void dispatchFunctionImportWrongHttpMethod() throws Exception {
+    wrongFunctionHttpMethod(ODataHttpMethod.GET, UriType.URI10, ODataHttpMethod.PUT);
+    wrongFunctionHttpMethod(ODataHttpMethod.POST, UriType.URI11, ODataHttpMethod.GET);
+    wrongFunctionHttpMethod(ODataHttpMethod.PATCH, UriType.URI12, ODataHttpMethod.GET);
+    wrongFunctionHttpMethod(ODataHttpMethod.POST, UriType.URI13, ODataHttpMethod.GET);
+    wrongFunctionHttpMethod(ODataHttpMethod.GET, UriType.URI14, ODataHttpMethod.PUT);
+  }
+
+  @Test
+  public void dispatchWrongProperty() throws Exception {
+    wrongProperty(ODataHttpMethod.PUT, UriType.URI4, true, false);
+    wrongProperty(ODataHttpMethod.PATCH, UriType.URI4, true, false);
+    wrongProperty(ODataHttpMethod.DELETE, UriType.URI4, true, true);
+    wrongProperty(ODataHttpMethod.DELETE, UriType.URI4, true, false);
+    wrongProperty(ODataHttpMethod.DELETE, UriType.URI4, false, false);
+
+    wrongProperty(ODataHttpMethod.PUT, UriType.URI5, true, false);
+    wrongProperty(ODataHttpMethod.PATCH, UriType.URI5, true, false);
+    wrongProperty(ODataHttpMethod.DELETE, UriType.URI5, true, true);
+    wrongProperty(ODataHttpMethod.DELETE, UriType.URI5, true, false);
+    wrongProperty(ODataHttpMethod.DELETE, UriType.URI5, false, false);
   }
 }

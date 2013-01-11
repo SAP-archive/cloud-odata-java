@@ -1,6 +1,7 @@
 package com.sap.core.odata.core;
 
 import com.sap.core.odata.api.ODataService;
+import com.sap.core.odata.api.edm.EdmEntityType;
 import com.sap.core.odata.api.edm.EdmException;
 import com.sap.core.odata.api.edm.EdmProperty;
 import com.sap.core.odata.api.exception.ODataException;
@@ -119,13 +120,20 @@ public class Dispatcher {
       case PUT:
       case PATCH:
       case MERGE:
-        if (uriInfo.isValue())
-          return service.getEntitySimplePropertyValueProcessor().updateEntitySimplePropertyValue(uriInfo, request, contentType);
+        if (isPropertyNotKey(getEntityType(uriInfo), getProperty(uriInfo)))
+          if (uriInfo.isValue())
+            return service.getEntitySimplePropertyValueProcessor().updateEntitySimplePropertyValue(uriInfo, request, contentType);
+          else
+            if (uriInfo.getFormat() == null)
+              return service.getEntitySimplePropertyProcessor().updateEntitySimpleProperty(uriInfo, request, contentType);
+            else
+              throw new ODataMethodNotAllowedException(ODataMethodNotAllowedException.DISPATCH);
         else
-          return service.getEntitySimplePropertyProcessor().updateEntitySimpleProperty(uriInfo, request, contentType);
+          throw new ODataMethodNotAllowedException(ODataMethodNotAllowedException.DISPATCH);
       case DELETE:
+        final EdmProperty property = getProperty(uriInfo);
         if (uriInfo.isValue()
-            && isPropertyNullableAndNotKey(uriInfo))
+            && isPropertyNotKey(getEntityType(uriInfo), property) && isPropertyNullable(property))
           return service.getEntitySimplePropertyValueProcessor().deleteEntitySimplePropertyValue(uriInfo, contentType);
         else
           throw new ODataMethodNotAllowedException(ODataMethodNotAllowedException.DISPATCH);
@@ -146,9 +154,14 @@ public class Dispatcher {
       case PUT:
       case PATCH:
       case MERGE:
-        return service.getEntityLinkProcessor().updateEntityLink(uriInfo, request, contentType);
+        if (uriInfo.getFormat() == null
+            && uriInfo.getFilter() == null)
+          return service.getEntityLinkProcessor().updateEntityLink(uriInfo, request, contentType);
+        else
+          throw new ODataMethodNotAllowedException(ODataMethodNotAllowedException.DISPATCH);
       case DELETE:
-        if (contentType == null)
+        if (uriInfo.getFormat() == null
+            && uriInfo.getFilter() == null)
           return service.getEntityLinkProcessor().deleteEntityLink(uriInfo, contentType);
         else
           throw new ODataMethodNotAllowedException(ODataMethodNotAllowedException.DISPATCH);
@@ -161,7 +174,16 @@ public class Dispatcher {
       case GET:
         return service.getEntityLinksProcessor().readEntityLinks(uriInfo, contentType);
       case POST:
-        return service.getEntityLinksProcessor().createEntityLink(uriInfo, request, contentType);
+        if (uriInfo.getFormat() == null
+            && uriInfo.getFilter() == null
+            && uriInfo.getInlineCount() == null
+            && uriInfo.getOrderBy() == null
+            && uriInfo.getSkipToken() == null
+            && uriInfo.getSkip() == null
+            && uriInfo.getTop() == null)
+          return service.getEntityLinksProcessor().createEntityLink(uriInfo, request, contentType);
+        else
+          throw new ODataMethodNotAllowedException(ODataMethodNotAllowedException.DISPATCH);
       default:
         throw new ODataMethodNotAllowedException(ODataMethodNotAllowedException.DISPATCH);
       }
@@ -182,13 +204,21 @@ public class Dispatcher {
     case URI11:
     case URI12:
     case URI13:
-      return service.getFunctionImportProcessor().executeFunctionImport(uriInfo, contentType);
+      if (uriInfo.getFunctionImport().getHttpMethod() == null
+          || uriInfo.getFunctionImport().getHttpMethod().equals(method.toString()))
+        return service.getFunctionImportProcessor().executeFunctionImport(uriInfo, contentType);
+      else
+        throw new ODataMethodNotAllowedException(ODataMethodNotAllowedException.DISPATCH);
 
     case URI14:
-      if (uriInfo.isValue())
-        return service.getFunctionImportValueProcessor().executeFunctionImportValue(uriInfo, contentType);
+      if (uriInfo.getFunctionImport().getHttpMethod() == null
+          || uriInfo.getFunctionImport().getHttpMethod().equals(method.toString()))
+        if (uriInfo.isValue())
+          return service.getFunctionImportValueProcessor().executeFunctionImportValue(uriInfo, contentType);
+        else
+          return service.getFunctionImportProcessor().executeFunctionImport(uriInfo, contentType);
       else
-        return service.getFunctionImportProcessor().executeFunctionImport(uriInfo, contentType);
+        throw new ODataMethodNotAllowedException(ODataMethodNotAllowedException.DISPATCH);
 
     case URI15:
       if (method == ODataHttpMethod.GET)
@@ -207,7 +237,11 @@ public class Dispatcher {
       case GET:
         return service.getEntityMediaProcessor().readEntityMedia(uriInfo, contentType);
       case PUT:
-        return service.getEntityMediaProcessor().updateEntityMedia(uriInfo, request, contentType);
+        if (uriInfo.getFormat() == null
+            && uriInfo.getFilter() == null)
+          return service.getEntityMediaProcessor().updateEntityMedia(uriInfo, request, contentType);
+        else
+          throw new ODataMethodNotAllowedException(ODataMethodNotAllowedException.DISPATCH);
       case DELETE:
         if (uriInfo.getFormat() == null
             && uriInfo.getFilter() == null)
@@ -235,11 +269,20 @@ public class Dispatcher {
     }
   }
 
-  private boolean isPropertyNullableAndNotKey(final UriInfo uriInfo) throws EdmException {
-    final EdmProperty property = uriInfo.getPropertyPath().get(uriInfo.getPropertyPath().size() - 1);
+  private EdmProperty getProperty(final UriInfo uriInfo) {
+    return uriInfo.getPropertyPath().get(uriInfo.getPropertyPath().size() - 1);
+  }
 
-    return (property.getFacets() == null || property.getFacets().isNullable())
-        && !uriInfo.getTargetEntitySet().getEntityType().getKeyProperties().contains(property);
+  private EdmEntityType getEntityType(final UriInfo uriInfo) throws EdmException {
+    return uriInfo.getTargetEntitySet().getEntityType();
+  }
+
+  private boolean isPropertyNotKey(final EdmEntityType entityType, final EdmProperty property) throws EdmException {
+    return !entityType.getKeyProperties().contains(property);
+  }
+
+  private boolean isPropertyNullable(final EdmProperty property) throws EdmException {
+    return property.getFacets() == null || property.getFacets().isNullable();
   }
 
   public Class<? extends ProcessorFeature> mapUriTypeToProcessorFeature(final UriInfoImpl uriInfo) {
