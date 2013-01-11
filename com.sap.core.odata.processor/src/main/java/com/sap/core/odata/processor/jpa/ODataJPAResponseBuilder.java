@@ -14,6 +14,7 @@ import com.sap.core.odata.api.ep.EntityProviderProperties;
 import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.api.processor.ODataResponse;
 import com.sap.core.odata.api.uri.info.GetEntitySetUriInfo;
+import com.sap.core.odata.api.uri.info.GetEntityUriInfo;
 import com.sap.core.odata.processor.jpa.api.ODataJPAContext;
 import com.sap.core.odata.processor.jpa.exception.ODataJPARuntimeException;
 
@@ -21,7 +22,7 @@ public final class ODataJPAResponseBuilder {
 
 	public static ODataResponse build(List<Object> jpaEntities,
 			GetEntitySetUriInfo resultsView, String contentType,ODataJPAContext odataJPAContext) throws ODataJPARuntimeException {
-
+				
 		EdmEntityType edmEntityType = null;
 		ODataResponse odataResponse = null;
 
@@ -50,6 +51,45 @@ public final class ODataJPAResponseBuilder {
 			}
 		    
 			odataResponse = ODataResponse.fromResponse(EntityProvider.create(contentType).writeFeed(resultsView.getTargetEntitySet(), edmEntityList, feedProperties))
+			        .status(HttpStatusCodes.OK)
+			        .build();
+			
+			
+		} catch (EntityProviderException e) {
+			throw ODataJPARuntimeException.throwException(ODataJPARuntimeException.GENERAL.addContent(e.getMessage()),e);
+		} catch (EdmException e) {
+			throw ODataJPARuntimeException.throwException(ODataJPARuntimeException.GENERAL.addContent(e.getMessage()),e);
+		}
+
+		return odataResponse;
+	}
+
+	public static ODataResponse build(Object jpaEntity,
+			GetEntityUriInfo resultsView, String contentType,
+			ODataJPAContext oDataJPAContext) throws ODataJPARuntimeException {
+		
+		EdmEntityType edmEntityType = null;
+		ODataResponse odataResponse = null;
+
+		try {
+			
+			edmEntityType = resultsView.getTargetEntitySet().getEntityType();
+			Map<String, Object> edmPropertyValueMap = null;
+			
+			JPAResultParser jpaResultParser = JPAResultParser.create( );
+			edmPropertyValueMap = jpaResultParser.parse2EdmPropertyValueMap(jpaEntity,edmEntityType);
+
+			
+		    EntityProviderProperties feedProperties = null;
+			try {
+				feedProperties = EntityProviderProperties
+				        .baseUri(oDataJPAContext.getODataContext().getUriInfo().getServiceRoot())
+				        .build();
+			} catch (ODataException e) {
+				throw ODataJPARuntimeException.throwException(ODataJPARuntimeException.GENERAL.addContent(e.getMessage()),e);
+			}
+		    
+			odataResponse = ODataResponse.fromResponse(EntityProvider.create(contentType).writeEntry(resultsView.getTargetEntitySet(), edmPropertyValueMap, feedProperties))
 			        .status(HttpStatusCodes.OK)
 			        .build();
 			

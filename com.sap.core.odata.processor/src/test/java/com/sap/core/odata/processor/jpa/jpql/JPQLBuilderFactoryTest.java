@@ -28,7 +28,7 @@ public class JPQLBuilderFactoryTest {
 		
 		// Build JPQL Context
 		JPQLContext selectContext = JPQLContext.createBuilder(
-				JPQLContextType.SELECT, getEntitySetView,null).build();
+				JPQLContextType.SELECT, getEntitySetView).build();
 		JPQLStatementBuilder statementBuilder = JPQLBuilderFactory.getStatementBuilder(selectContext);
 		
 		assertTrue(statementBuilder instanceof JPQLSelectStatementBuilder);

@@ -30,7 +30,6 @@ import com.sap.core.odata.api.uri.expression.MethodExpression;
 import com.sap.core.odata.api.uri.expression.OrderByExpression;
 import com.sap.core.odata.api.uri.expression.PropertyExpression;
 import com.sap.core.odata.api.uri.info.GetEntitySetUriInfo;
-import com.sap.core.odata.processor.jpa.api.ODataJPAContext;
 import com.sap.core.odata.processor.jpa.exception.ODataJPAModelException;
 import com.sap.core.odata.processor.jpa.exception.ODataJPARuntimeException;
 import com.sap.core.odata.processor.jpa.jpql.api.JPQLContext.JPQLContextBuilder;
@@ -85,7 +84,7 @@ public class JPQLSelectStatementBuilderTest {
 		
 				JPQLSelectContextImpl jpqlSelectContextImpl = null;// new JPQLSelectContextImpl();
 				GetEntitySetUriInfo getEntitySetView = EasyMock.createMock(GetEntitySetUriInfo.class);
-				ODataJPAContext odataJPAContext = EasyMock.createMock(ODataJPAContext.class);
+				
 				EdmEntitySet edmEntitySet = EasyMock.createMock(EdmEntitySet.class);
 				EdmEntityType edmEntityType = EasyMock.createMock(EdmEntityType.class);
 //				OrderByExpression orderByExpression = EasyMock.createMock(OrderByExpression.class);
@@ -102,9 +101,8 @@ public class JPQLSelectStatementBuilderTest {
 				EasyMock.replay(edmEntitySet);
 				EasyMock.expect(edmEntityType.getName()).andStubReturn("SalesOrderHeader");
 				EasyMock.replay(edmEntityType);
-				EasyMock.replay(odataJPAContext);
 				
-				JPQLContextBuilder contextBuilder1 = JPQLSelectContextImpl.createBuilder(JPQLContextType.SELECT, getEntitySetView, odataJPAContext);
+				JPQLContextBuilder contextBuilder1 = JPQLSelectContextImpl.createBuilder(JPQLContextType.SELECT, getEntitySetView);
 				try {
 					jpqlSelectContextImpl = (JPQLSelectContextImpl) contextBuilder1.build();
 				} catch (ODataJPAModelException e) {

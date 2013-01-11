@@ -11,7 +11,7 @@ import com.sap.core.odata.processor.jpa.api.ODataJPAContext;
 import com.sap.core.odata.processor.jpa.util.MockData;
 import com.sap.core.odata.processor.jpa.util.MockEmf;
 
-public class JPAControllerTest {
+public class JPAAccessFactoryTest {
 
 	private ODataJPAContext odataJpaContext;
 	@Before
@@ -26,7 +26,7 @@ public class JPAControllerTest {
 	@Test
 	public void testGetJPAEdmBuilder() {
 		
-		JPAEdmBuilder builder = JPAController.getJPAEdmBuilder(odataJpaContext);
+		JPAEdmBuilder builder = JPAAccessFactory.getJPAEdmBuilder(odataJpaContext);
 		assertEquals(JPAEdmBuilderV2.class, builder.getClass());
 	}
 

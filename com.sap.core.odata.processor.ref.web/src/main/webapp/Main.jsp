@@ -16,7 +16,7 @@
 <title>Welcome to JPA implementation</title>
 </head>
 <body>
-    <h1>SAP ODataJPA library</h1>
+    <h1>SAP OData JPA library</h1>
     <hr />
 	<%
 		String version = "gen/version.html";
