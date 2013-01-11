@@ -27,12 +27,13 @@ public class JPATypeConvertorTest {
 	private EdmSimpleTypeKind edmSimpleKindTypeDate;
 	//private EdmSimpleTypeKind edmSimpleKindTypeCalendar;
 	private EdmSimpleTypeKind edmSimpleKindTypeUUID;
+	
 	@Test
 	public void testConvertToEdmSimpleType() {
 		String str = "entity";
 		byte[] byteArr = new byte[3];
 		Long longObj = new Long(0);
-		//Short shortObj = new Short((short) 0);
+		Short shortObj = new Short((short) 0);
 		Integer integerObj = new Integer(0);
 		Double doubleObj = new Double(0);
 		Float floatObj = new Float(0);
@@ -47,7 +48,7 @@ public class JPATypeConvertorTest {
 			edmSimpleKindTypeString = JPATypeConvertor.convertToEdmSimpleType(str.getClass());
 			edmSimpleKindTypeByteArr = JPATypeConvertor.convertToEdmSimpleType(byteArr.getClass());
 			edmSimpleKindTypeLong = JPATypeConvertor.convertToEdmSimpleType(longObj.getClass());
-			edmSimpleKindTypeShort = JPATypeConvertor.convertToEdmSimpleType(Short.class);
+			edmSimpleKindTypeShort = JPATypeConvertor.convertToEdmSimpleType(shortObj.getClass());
 			edmSimpleKindTypeInteger = JPATypeConvertor.convertToEdmSimpleType(integerObj.getClass());
 			edmSimpleKindTypeDouble = JPATypeConvertor.convertToEdmSimpleType(doubleObj.getClass());
 			edmSimpleKindTypeFloat = JPATypeConvertor.convertToEdmSimpleType(floatObj.getClass());
