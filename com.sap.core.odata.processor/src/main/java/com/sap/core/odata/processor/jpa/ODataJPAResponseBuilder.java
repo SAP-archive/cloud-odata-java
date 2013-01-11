@@ -83,7 +83,7 @@ public final class ODataJPAResponseBuilder {
 		    EntityProviderProperties feedProperties = null;
 			try {
 				feedProperties = EntityProviderProperties
-				        .baseUri(oDataJPAContext.getODataContext().getUriInfo().getServiceRoot())
+				        .baseUri(oDataJPAContext.getODataContext().getPathInfo().getServiceRoot())
 				        .build();
 			} catch (ODataException e) {
 				throw ODataJPARuntimeException.throwException(ODataJPARuntimeException.GENERAL.addContent(e.getMessage()),e);
