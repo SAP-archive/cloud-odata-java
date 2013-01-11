@@ -41,7 +41,7 @@ public final class ODataJPAResponseBuilder {
 			try {
 				 final Integer count = resultsView.getInlineCount() == InlineCount.ALLPAGES ? edmEntityList.size() : null;
 				feedProperties = EntityProviderProperties
-				        .baseUri(odataJPAContext.getODataContext().getUriInfo().getServiceRoot())
+				        .baseUri(odataJPAContext.getODataContext().getPathInfo().getServiceRoot())
 				        .inlineCount(count)
 				        .skipToken("")
 				        .build();
