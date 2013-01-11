@@ -1,6 +1,7 @@
 package com.sap.core.odata.fit.mapping;
 
-import static org.junit.Assert.*;
+import static junit.framework.Assert.assertEquals;
+import static org.custommonkey.xmlunit.XMLAssert.assertXpathEvaluatesTo;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -12,7 +13,6 @@ import java.util.Map;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import com.sap.core.odata.api.edm.Edm;
@@ -23,11 +23,7 @@ import com.sap.core.odata.testutil.helper.StringHelper;
 import com.sap.core.odata.testutil.helper.XMLUnitHelper;
 import com.sap.core.odata.testutil.server.TestServer;
 
-import static org.custommonkey.xmlunit.XMLAssert.assertXpathEvaluatesTo;
-import static org.custommonkey.xmlunit.XMLAssert.assertXpathExists;
-import static org.custommonkey.xmlunit.XMLAssert.*;
-
-public class TestMapping extends AbstractFitTest {
+public class MappingTest extends AbstractFitTest {
 
   public static void main(String[] args) {
     TestServer server = new TestServer();
