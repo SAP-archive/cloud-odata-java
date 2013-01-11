@@ -3,6 +3,9 @@ package com.sap.core.odata.processor.jpa.access;
 import java.util.HashMap;
 import java.util.List;
 
+//import org.slf4j.Logger;
+//import org.slf4j.LoggerFactory;
+
 import com.sap.core.odata.api.edm.EdmException;
 import com.sap.core.odata.api.edm.EdmLiteralKind;
 import com.sap.core.odata.api.edm.EdmSimpleType;
@@ -22,11 +25,27 @@ import com.sap.core.odata.api.uri.expression.UnaryExpression;
 import com.sap.core.odata.processor.jpa.exception.ODataJPARuntimeException;
 import com.sap.core.odata.processor.jpa.jpql.api.JPQLStatement;
 
+/**
+ * This class contains utility methods for parsing the filter expressions built by core library from user OData Query.
+ * 
+ * @author SAP AG
+ *
+ */
 public class ExpressionParsingUtility {
 	
 	public static final String SPACE = " ";
 	public static final String TABLE_ALIAS = "gwt1";
 	
+	//private static final Logger logger = LoggerFactory.getLogger(ExpressionParsingUtility.class);
+	
+	/**
+	 * This method returns the parsed where condition corresponding to the filter input in the user query.
+	 * 
+	 * @param whereExpression
+	 * 
+	 * @return Parsed where condition String
+	 * @throws ODataException
+	 */
 	public static String parseWhereExpression(final CommonExpression whereExpression) throws ODataException {
 	    switch (whereExpression.getKind()) {
 	    case UNARY:
@@ -78,44 +97,12 @@ public class ExpressionParsingUtility {
 		        //return Boolean.toString(!left.equals(right));
 		    	  return left + SPACE + JPQLStatement.Operator.NE + SPACE + right;
 		      case LT:
-		        /*if (binaryType == EdmSimpleTypeKind.String.getEdmSimpleTypeInstance()
-		            || binaryType == EdmSimpleTypeKind.DateTime.getEdmSimpleTypeInstance()
-		            || binaryType == EdmSimpleTypeKind.DateTimeOffset.getEdmSimpleTypeInstance()
-		            || binaryType == EdmSimpleTypeKind.Guid.getEdmSimpleTypeInstance()
-		            || binaryType == EdmSimpleTypeKind.Time.getEdmSimpleTypeInstance())
-		          return Boolean.toString(left.compareTo(right) < 0);
-		        else
-		          return Boolean.toString(Double.valueOf(left) < Double.valueOf(right));*/
 		    	  return left + SPACE + JPQLStatement.Operator.LT + SPACE + right;
 		      case LE:
-		        /*if (binaryType == EdmSimpleTypeKind.String.getEdmSimpleTypeInstance()
-		            || binaryType == EdmSimpleTypeKind.DateTime.getEdmSimpleTypeInstance()
-		            || binaryType == EdmSimpleTypeKind.DateTimeOffset.getEdmSimpleTypeInstance()
-		            || binaryType == EdmSimpleTypeKind.Guid.getEdmSimpleTypeInstance()
-		            || binaryType == EdmSimpleTypeKind.Time.getEdmSimpleTypeInstance())
-		          return Boolean.toString(left.compareTo(right) <= 0);
-		        else
-		          return Boolean.toString(Double.valueOf(left) <= Double.valueOf(right));*/
 		    	  return left + SPACE + JPQLStatement.Operator.LE + SPACE + right;
 		      case GT:
-		        /*if (binaryType == EdmSimpleTypeKind.String.getEdmSimpleTypeInstance()
-		            || binaryType == EdmSimpleTypeKind.DateTime.getEdmSimpleTypeInstance()
-		            || binaryType == EdmSimpleTypeKind.DateTimeOffset.getEdmSimpleTypeInstance()
-		            || binaryType == EdmSimpleTypeKind.Guid.getEdmSimpleTypeInstance()
-		            || binaryType == EdmSimpleTypeKind.Time.getEdmSimpleTypeInstance())
-		          return Boolean.toString(left.compareTo(right) > 0);
-		        else
-		          return Boolean.toString(Double.valueOf(left) > Double.valueOf(right));*/
 		    	  return left + SPACE + JPQLStatement.Operator.GT + SPACE + right;
 		      case GE:
-		        /*if (binaryType == EdmSimpleTypeKind.String.getEdmSimpleTypeInstance()
-		            || binaryType == EdmSimpleTypeKind.DateTime.getEdmSimpleTypeInstance()
-		            || binaryType == EdmSimpleTypeKind.DateTimeOffset.getEdmSimpleTypeInstance()
-		            || binaryType == EdmSimpleTypeKind.Guid.getEdmSimpleTypeInstance()
-		            || binaryType == EdmSimpleTypeKind.Time.getEdmSimpleTypeInstance())
-		          return Boolean.toString(left.compareTo(right) >= 0);
-		        else
-		          return Boolean.toString(Double.valueOf(left) >= Double.valueOf(right));*/
 		    	  return left + SPACE + JPQLStatement.Operator.GE + SPACE + right;
 		      case PROPERTY_ACCESS:
 		        throw new ODataNotImplementedException();
@@ -127,7 +114,9 @@ public class ExpressionParsingUtility {
 //	      	final EdmProperty property = (EdmProperty) ((PropertyExpression) expression).getEdmProperty();
 //	        final EdmSimpleType propertyType = (EdmSimpleType) property.getType();
 //	        return propertyType.valueToString(getPropertyValue(data, property), EdmLiteralKind.DEFAULT, property.getFacets());
-	    	return TABLE_ALIAS+"."+((PropertyExpression) whereExpression).getPropertyName();
+	    	String returnStr = TABLE_ALIAS+"."+((PropertyExpression) whereExpression).getPropertyName();
+	    	//logger.debug(" Returned {} for a property Expression", returnStr);
+	    	return returnStr;
 
 	    case MEMBER:
 	      /*final MemberExpression memberExpression = (MemberExpression) expression;
@@ -222,6 +211,13 @@ public class ExpressionParsingUtility {
 	    }
 	  }
 	
+	/**
+	 * This method parses the order by condition in the query.
+	 * 
+	 * @param orderByExpression
+	 * @return
+	 * @throws ODataJPARuntimeException
+	 */
 	public static HashMap<String, String> parseOrderByExpression(OrderByExpression orderByExpression) throws ODataJPARuntimeException{
 		HashMap<String, String> orderByMap = new HashMap<String, String>();
 		if(orderByExpression != null && orderByExpression.getOrders() != null ){
@@ -244,6 +240,13 @@ public class ExpressionParsingUtility {
 		return orderByMap;		
 	}
 	
+	/**
+	 * This method evaluates the expression based on the type instance. Used for adding escape characters where necessary.
+	 * 
+	 * @param value
+	 * @param edmSimpleType
+	 * @return the evaluated expression
+	 */
 	private static String evaluateComparingExpression(String value, EdmSimpleType edmSimpleType){
 		if (edmSimpleType == EdmSimpleTypeKind.String.getEdmSimpleTypeInstance()
 	            || edmSimpleType == EdmSimpleTypeKind.Guid.getEdmSimpleTypeInstance())
