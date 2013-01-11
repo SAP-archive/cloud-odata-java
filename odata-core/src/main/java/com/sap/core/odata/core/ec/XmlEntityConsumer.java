@@ -15,7 +15,6 @@ import com.sap.core.odata.api.ec.EntityConsumerException;
 import com.sap.core.odata.api.edm.EdmEntitySet;
 import com.sap.core.odata.api.edm.EdmProperty;
 import com.sap.core.odata.api.processor.ODataRequest;
-import com.sap.core.odata.core.ec.XmlPropertyConsumer.Property;
 
 public class XmlEntityConsumer extends EntityConsumer {
 
@@ -51,14 +50,14 @@ public class XmlEntityConsumer extends EntityConsumer {
   }
 
   @Override
-  public Object readProperty(EdmProperty edmProperty, ODataRequest request) throws EntityConsumerException {
+  public Map<String, Object> readProperty(EdmProperty edmProperty, ODataRequest request) throws EntityConsumerException {
     XMLStreamReader reader = null;
 
     try {
       XmlPropertyConsumer xec = new XmlPropertyConsumer();
       reader = createStaxReader(request);
-      Property result = xec.readProperty(reader, edmProperty);
-      return result.value;
+      Map<String, Object> result = xec.readProperty(reader, edmProperty);
+      return result;
     } catch (Exception e) {
       throw new EntityConsumerException(EntityConsumerException.COMMON, e);
     } finally {

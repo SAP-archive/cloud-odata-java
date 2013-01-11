@@ -34,13 +34,13 @@ public class XmlEntityConsumerTest {
         "<d:ManagerId>1</d:ManagerId>" + 
         "<d:RoomId>1</d:RoomId>" + 
         "<d:TeamId>1</d:TeamId>" + 
-          "<d:Location m:type=\"RefScenario.c_Location\">" + 
+        "<d:Location m:type=\"RefScenario.c_Location\">" + 
           "<d:Country>Germany</d:Country>" + 
           "<d:City m:type=\"RefScenario.c_City\">" + 
             "<d:PostalCode>69124</d:PostalCode>" + 
             "<d:CityName>Heidelberg</d:CityName>" + 
           "</d:City>" + 
-          "</d:Location>" + 
+        "</d:Location>" + 
         "<d:Age>52</d:Age>" + 
         "<d:EntryDate>1999-01-01T00:00:00</d:EntryDate>" + 
         "<d:ImageUrl>/SAP/PUBLIC/BC/NWDEMO_MODEL/IMAGES/male_1_WinterW.jpg</d:ImageUrl>" + 
@@ -112,9 +112,11 @@ public class XmlEntityConsumerTest {
     
     EdmEntitySet entitySet = MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Employees");
     EdmProperty property = (EdmProperty) entitySet.getEntityType().getProperty("Age");
-    
-    Object value = xec.readProperty(property, request);
-    
-    assertEquals(Integer.valueOf(67), value);
+
+    Map<String, Object> value = xec.readProperty(property, request);
+    assertEquals(Integer.valueOf(67), value.get("Age"));
+
+//    Object value = xec.readProperty(property, request);
+//    assertEquals(Integer.valueOf(67), value);
   }
 }

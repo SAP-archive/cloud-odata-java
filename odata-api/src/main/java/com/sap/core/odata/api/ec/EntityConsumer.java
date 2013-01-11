@@ -27,7 +27,7 @@ public abstract class EntityConsumer {
 
   public abstract Map<String, Object> readLink(EdmEntitySet entitySet, ODataRequest request) throws EntityConsumerException;
 
-  public abstract Object readProperty(EdmProperty edmProperty, ODataRequest request) throws EntityConsumerException;
+  public abstract Map<String, Object> readProperty(EdmProperty edmProperty, ODataRequest request) throws EntityConsumerException;
 
   public abstract List<Map<String, Object>> readLinks(EdmEntitySet entitySet, ODataRequest request) throws EntityConsumerException;
 }
