@@ -68,6 +68,7 @@ import com.sap.core.odata.api.uri.info.GetFunctionImportUriInfo;
 import com.sap.core.odata.api.uri.info.GetMediaResourceUriInfo;
 import com.sap.core.odata.api.uri.info.GetSimplePropertyUriInfo;
 import com.sap.core.odata.api.uri.info.PostUriInfo;
+import com.sap.core.odata.api.uri.info.PutMergePatchUriInfo;
 
 /**
  * Implementation of the centralized parts of OData processing,
@@ -460,6 +461,42 @@ public class ListsProcessor extends ODataSingleProcessor {
       setValue(data, getSetterMethodName(property.getMapping().getMimeType()), null);
 
     return ODataResponse.status(HttpStatusCodes.NO_CONTENT).build();
+  }
+
+  @Override
+  public ODataResponse updateEntityComplexProperty(final PutMergePatchUriInfo uriInfo, final ODataRequest request, final String contentType) throws ODataException {
+    Object data = retrieveData(
+        uriInfo.getStartEntitySet(),
+        uriInfo.getKeyPredicates(),
+        uriInfo.getFunctionImport(),
+        mapFunctionParameters(uriInfo.getFunctionImportParameters()),
+        uriInfo.getNavigationSegments());
+
+    // if (!appliesFilter(data, uriInfo.getFilter()))
+    //   throw new ODataNotFoundException(ODataNotFoundException.ENTITY);
+
+    final List<EdmProperty> propertyPath = uriInfo.getPropertyPath();
+    // data = getPropertyValue(data, propertyPath);
+
+    final EdmProperty property = propertyPath.get(propertyPath.size() - 1);
+
+    ODataContext context = getContext();
+    int timingHandle = context.startRuntimeMeasurement("EntityConsumer", "readProperty");
+
+    final EntityConsumer consumer = EntityConsumer.create(request.getContentHeader());
+    final Map<String, Object> values = consumer.readProperty(property, request);
+
+    context.stopRuntimeMeasurement(timingHandle);
+
+    final Object value = property.isSimple() ? values.get(property.getName()) : values;
+    setPropertyValue(data, propertyPath, value);
+
+    return ODataResponse.status(HttpStatusCodes.NO_CONTENT).build();
+  }
+
+  @Override
+  public ODataResponse updateEntitySimpleProperty(final PutMergePatchUriInfo uriInfo, final ODataRequest request, final String contentType) throws ODataException {
+    return updateEntityComplexProperty(uriInfo, request, contentType);
   }
 
   @Override
