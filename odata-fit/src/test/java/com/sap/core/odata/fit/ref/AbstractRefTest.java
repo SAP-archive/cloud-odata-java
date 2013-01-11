@@ -9,6 +9,7 @@ import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.methods.HttpPut;
 import org.apache.http.entity.StringEntity;
 
 import com.sap.core.odata.api.commons.HttpStatusCodes;
@@ -164,6 +165,27 @@ public class AbstractRefTest extends AbstractFitTest {
 
     assertNotNull(response.getEntity());
     assertNotNull(response.getEntity().getContent());
+
+    return response;
+  }
+
+  protected HttpResponse putUri(final String uri,
+      final String additionalHeader, final String additionalHeaderValue,
+      final String requestBody, final String requestContentType,
+      final HttpStatusCodes expectedStatusCode) throws Exception {
+    final HttpPut request = new HttpPut(getEndpoint() + uri);
+    request.setEntity(new StringEntity(requestBody));
+    request.setHeader(HttpHeaders.CONTENT_TYPE, requestContentType);
+    if (additionalHeader != null)
+      request.addHeader(additionalHeader, additionalHeaderValue);
+
+    final HttpResponse response = getHttpClient().execute(request);
+
+    assertNotNull(response);
+    assertEquals(expectedStatusCode.getStatusCode(), response.getStatusLine().getStatusCode());
+
+    if (expectedStatusCode == HttpStatusCodes.NO_CONTENT)
+      assertTrue(response.getEntity() == null || response.getEntity().getContent() == null);
 
     return response;
   }
