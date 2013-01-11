@@ -8,37 +8,32 @@ import javax.xml.stream.XMLStreamReader;
 
 import com.sap.core.odata.api.ec.EntityConsumerException;
 import com.sap.core.odata.api.edm.EdmEntitySet;
+import com.sap.core.odata.api.edm.EdmProperty;
 
 public class XmlEntryConsumer {
 
   public Map<String, Object> readEntry(XMLStreamReader reader, EdmEntitySet entitySet) throws EntityConsumerException {
     try {
-      Map<String, Object> resultMap = internalRead(reader);
+      Map<String, Object> resultMap = internalRead(reader, entitySet);
       return resultMap;
     } catch (Exception e) {
       throw new EntityConsumerException(EntityConsumerException.COMMON, e);
     }
   }
 
-  private Map<String, Object> internalRead(XMLStreamReader xsr) throws Exception {
+  private Map<String, Object> internalRead(XMLStreamReader reader, EdmEntitySet entitySet) throws Exception {
     Map<String, Object> tagName2tagText = new HashMap<String, Object>();
     
     //
-    int nextTagEventType = readTillTag(xsr, "properties");
+    int nextTagEventType = readTillTag(reader, "properties");
     //
-    String currentName = null;
-    while((nextTagEventType = xsr.next()) != XMLStreamReader.END_DOCUMENT) {
-      
-      switch (nextTagEventType) {
-        case XMLStreamReader.START_ELEMENT:
-          currentName = xsr.getName().getLocalPart();
-          break;
-        case XMLStreamReader.CHARACTERS:
-          String tagtext = xsr.getText();
-          tagName2tagText.put(currentName, tagtext);
-          break;
-        default:
-          break;
+    XmlPropertyConsumer xpc = new XmlPropertyConsumer();
+    while((nextTagEventType = reader.next()) != XMLStreamReader.END_DOCUMENT) {
+      if(nextTagEventType == XMLStreamReader.START_ELEMENT) {
+        String name = reader.getLocalName();
+        EdmProperty property = (EdmProperty) entitySet.getEntityType().getProperty(name);
+        Object value = xpc.readStartedElement(reader, property);
+        tagName2tagText.put(name, value);
       }
     }
     
@@ -58,5 +53,4 @@ public class XmlEntryConsumer {
     }
     return nextTagEventType;
   }
-
 }
