@@ -67,20 +67,20 @@ public class MapProvider extends EdmProvider {
     key = new Key();
     key.setKeys(Arrays.asList(propertyRef));
 
-    property1 = new SimpleProperty().setName(mapping[P1][EDM]).setType(EdmSimpleTypeKind.String).setMapping(new Mapping().setDataContainer(mapping[P1][BACKEND]));
-    property2 = new SimpleProperty().setName(mapping[P2][EDM]).setType(EdmSimpleTypeKind.String).setMapping(new Mapping().setDataContainer(mapping[P2][BACKEND]));
-    property3 = new SimpleProperty().setName(mapping[P3][EDM]).setType(EdmSimpleTypeKind.String).setMapping(new Mapping().setDataContainer(mapping[P3][BACKEND]));
+    property1 = new SimpleProperty().setName(mapping[P1][EDM]).setType(EdmSimpleTypeKind.String).setMapping(new Mapping().setObject(mapping[P1][BACKEND]));
+    property2 = new SimpleProperty().setName(mapping[P2][EDM]).setType(EdmSimpleTypeKind.String).setMapping(new Mapping().setObject(mapping[P2][BACKEND]));
+    property3 = new SimpleProperty().setName(mapping[P3][EDM]).setType(EdmSimpleTypeKind.String).setMapping(new Mapping().setObject(mapping[P3][BACKEND]));
 
     entityType = new EntityType();
     entityType.setName(mapping[ENTITYTYPE][EDM]);
     entityType.setKey(key);
     entityType.setProperties(Arrays.asList(property1, property2, property3));
-    entityType.setMapping(new Mapping().setDataContainer(mapping[ENTITYTYPE][BACKEND]));
+    entityType.setMapping(new Mapping().setObject(mapping[ENTITYTYPE][BACKEND]));
 
     entitySet = new EntitySet();
     entitySet.setName(mapping[ENTITYSET][EDM]);
     entitySet.setEntityType(new FullQualifiedName(NAMESPACE, mapping[ENTITYTYPE][EDM]));
-    entitySet.setMapping(new Mapping().setDataContainer(mapping[ENTITYSET][BACKEND]));
+    entitySet.setMapping(new Mapping().setObject(mapping[ENTITYSET][BACKEND]));
 
     entityContainer = new EntityContainer();
     entityContainer.setDefaultEntityContainer(true);

@@ -10,7 +10,7 @@ public class Mapping implements EdmMapping {
 
   private String value;
   private String mimeType;
-  private Object dataContainer;
+  private Object object;
 
   /* (non-Javadoc)
    * @see com.sap.core.odata.api.edm.EdmMapping#getValue()
@@ -32,8 +32,8 @@ public class Mapping implements EdmMapping {
    * @see com.sap.core.odata.api.edm.EdmMapping#getObject()
    */
   @Override
-  public Object getDataContainer() {
-    return dataContainer;
+  public Object getObject() {
+    return object;
   }
 
   /**
@@ -58,12 +58,12 @@ public class Mapping implements EdmMapping {
   }
 
   /**
-   * Sets the data container for this mapping.
-   * @param dataContainer
+   * Sets an object. This method can be used by a provider to set whatever it wants to associate with this
+   * @param object
    * @return {@link Mapping} for method chaining
    */
-  public Mapping setDataContainer(Object dataContainer) {
-    this.dataContainer = dataContainer;
+  public Mapping setObject(Object object) {
+    this.object = object;
     return this;
   }
 }
