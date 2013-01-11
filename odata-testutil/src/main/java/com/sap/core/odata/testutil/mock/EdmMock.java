@@ -93,7 +93,7 @@ class EdmMock {
     EdmEntityType employeeType = employeeEntitySet.getEntityType();
     when(employeeType.getKind()).thenReturn(EdmTypeKind.ENTITY);
     when(employeeType.hasStream()).thenReturn(true);
-    when(employeeType.getPropertyNames()).thenReturn(Arrays.asList("EmployeeId", "EmployeeName", "ImageUrl", "Age", "TeamId", "RoomId", "EntryDate", "Location"));
+    when(employeeType.getPropertyNames()).thenReturn(Arrays.asList("EmployeeId", "ManagerId", "EmployeeName", "ImageUrl", "Age", "TeamId", "RoomId", "EntryDate", "Location"));
     when(employeeType.getProperty("ne_Manager")).thenReturn(managerProperty);
     when(employeeType.getProperty("ne_Team")).thenReturn(teamNavigationProperty);
     when(employeeType.getProperty("ne_Room")).thenReturn(roomNavigationProperty);
@@ -107,6 +107,11 @@ class EdmMock {
     when(employeeIdProperty.getName()).thenReturn("EmployeeId");
     when(employeeType.getProperty("EmployeeId")).thenReturn(employeeIdProperty);
     when(employeeType.getKeyProperties()).thenReturn(Arrays.asList(employeeIdProperty));
+
+    EdmProperty managerIdProperty = mock(EdmProperty.class);
+    when(managerIdProperty.getType()).thenReturn(EdmSimpleTypeKind.String.getEdmSimpleTypeInstance());
+    when(managerIdProperty.getName()).thenReturn("ManagerId");
+    when(employeeType.getProperty("ManagerId")).thenReturn(managerIdProperty);
 
     EdmProperty employeeNameProperty = mock(EdmProperty.class);
     when(employeeNameProperty.getType()).thenReturn(EdmSimpleTypeKind.String.getEdmSimpleTypeInstance());

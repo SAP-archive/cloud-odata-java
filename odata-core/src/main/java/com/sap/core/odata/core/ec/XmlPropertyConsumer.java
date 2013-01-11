@@ -3,6 +3,7 @@ package com.sap.core.odata.core.ec;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
 import com.sap.core.odata.api.ec.EntityConsumerException;
@@ -17,59 +18,45 @@ public class XmlPropertyConsumer {
 
   public Map<String, Object> readProperty(XMLStreamReader reader, EdmProperty property) throws EntityConsumerException {
     try {
-      //
-      @SuppressWarnings("unchecked")
-      Map<String, Object> tmp = (Map<String, Object>) readStartedElement(reader, reader.next(), property);
-      return tmp;
+      Map<String, Object> result = new HashMap<String, Object>();
+      reader.next();
+      Object value = readStartedElement(reader, property);
+      result.put(property.getName(), value);
+      return result;
     } catch (Exception e) {
       throw new EntityConsumerException(EntityConsumerException.COMMON, e);      
     }
   }
 
 
-  private Object readStartedElement(XMLStreamReader reader, int eventType, EdmProperty rootProperty) throws EntityConsumerException {
-    try {
-      Map<String, Object> tmp = new HashMap<String, Object>();
-      Object resultValue = null;
-      //
-      while(eventType != XMLStreamReader.END_ELEMENT && eventType != XMLStreamReader.END_DOCUMENT) {
-        EdmProperty myProperty = null;
-        if(XMLStreamReader.START_ELEMENT == eventType) {
-          String name = reader.getLocalName();
-//          System.out.println("Start with PropName: " + rootProperty.getName() + "; Name: " + name); 
-          if(myProperty == null) {
-            myProperty = extractProperty(name, rootProperty);
-          }
-          int next = reader.next();
-//          String propName = myProperty.getName();
-//          System.out.println("...continue Name: " + name + " and exPropName: " + propName); 
-          Object value = readStartedElement(reader, next, myProperty);
-//          System.out.println("...finished name: " + name + " with value: " + value); 
-          tmp.put(name, value);
-          resultValue = tmp;
-        } else if(XMLStreamReader.CHARACTERS == eventType) {
-            Object value = convert(rootProperty, reader.getText());
-//            System.out.println("...finished ?? with value: " + value); 
-            resultValue = value;
-        } else {
-//          System.out.println("ET: " + eventType);
-          throw new EntityConsumerException(EntityConsumerException.INVALID_STATE);
-        }
-        
-        eventType = reader.next();
-      }
-      return resultValue;
-    } catch (Exception e) {
-      throw new EntityConsumerException(EntityConsumerException.COMMON, e);      
+  Object readStartedElement(XMLStreamReader reader, EdmProperty property) throws EntityConsumerException, XMLStreamException, EdmException {
+    //
+    int eventType = reader.getEventType();
+    if(eventType != XMLStreamReader.START_ELEMENT) {
+      throw new EntityConsumerException(EntityConsumerException.INVALID_STATE);
     }
+    
+    //
+    Map<String, Object> name2Value = new HashMap<String, Object>();
+    Object result = name2Value;
+
+    while(eventType != XMLStreamReader.END_ELEMENT && eventType != XMLStreamReader.END_DOCUMENT) {
+      eventType = reader.next();
+      if(XMLStreamReader.START_ELEMENT == eventType) {
+        String childName = reader.getLocalName();
+        EdmProperty childProperty = extractProperty(childName, property);
+        
+        Object value = readStartedElement(reader, childProperty);
+        name2Value.put(childName, value);
+      } else if(XMLStreamReader.CHARACTERS == eventType) {
+        result = convert(property, reader.getText());
+      }
+    }
+    
+    return result;
   }
 
   private EdmProperty extractProperty(String name, EdmProperty property) throws EdmException, EntityConsumerException {
-    if(name.equals(property.getName())) {
-//      System.out.println("Self call for " + name);
-      return property;
-    }
-    
     EdmType type = property.getType();
     if(type instanceof EdmSimpleType) {
       return property;

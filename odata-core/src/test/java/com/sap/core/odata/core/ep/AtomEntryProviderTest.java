@@ -116,7 +116,7 @@ public class AtomEntryProviderTest extends AbstractProviderTest {
     assertXpathExists("/a:entry/a:content[@type='abc']", xmlString);
     // verify properties
     assertXpathExists("/a:entry/m:properties", xmlString);
-    assertXpathEvaluatesTo("8", "count(/a:entry/m:properties/*)", xmlString);
+    assertXpathEvaluatesTo("9", "count(/a:entry/m:properties/*)", xmlString);
 
     // verify order of tags
     verifyTagOrdering(xmlString, "id", "title", "updated", "category",
@@ -140,7 +140,7 @@ public class AtomEntryProviderTest extends AbstractProviderTest {
     assertXpathExists("/a:entry/a:content", xmlString);
     // verify properties
     assertXpathExists("/a:entry/m:properties", xmlString);
-    assertXpathEvaluatesTo("8", "count(/a:entry/m:properties/*)", xmlString);
+    assertXpathEvaluatesTo("9", "count(/a:entry/m:properties/*)", xmlString);
 
     // verify order of tags
     List<String> expectedPropertyNamesFromEdm = employeeEntitySet.getEntityType().getPropertyNames();
@@ -167,7 +167,7 @@ public class AtomEntryProviderTest extends AbstractProviderTest {
     assertXpathExists("/a:entry/a:content", xmlString);
     // verify properties
     assertXpathExists("/a:entry/m:properties", xmlString);
-    assertXpathEvaluatesTo("7", "count(/a:entry/m:properties/*)", xmlString);
+    assertXpathEvaluatesTo("8", "count(/a:entry/m:properties/*)", xmlString);
     //
     assertXpathNotExists("/a:entry/m:properties/d:EntryDate", xmlString);
 

@@ -4,7 +4,9 @@ import static org.junit.Assert.assertEquals;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
+import java.util.Calendar;
 import java.util.Map;
+import java.util.TimeZone;
 
 import org.junit.Test;
 
@@ -48,6 +50,7 @@ public class XmlEntityConsumerTest {
     "</entry>";
   
   
+  @SuppressWarnings("unchecked")
   @Test
   public void testReadEntry() throws Exception {
     // prepare
@@ -63,42 +66,72 @@ public class XmlEntityConsumerTest {
 
     
     // verify
-    assertEquals(11, result.size());
+    System.out.println(result);
+    assertEquals(9, result.size());
 
     assertEquals("1", result.get("EmployeeId"));
     assertEquals("Walter Winter", result.get("EmployeeName"));
     assertEquals("1", result.get("ManagerId"));
     assertEquals("1", result.get("RoomId"));
     assertEquals("1", result.get("TeamId"));
-    assertEquals("Germany", result.get("Country"));
-    assertEquals("69124", result.get("PostalCode"));
-    assertEquals("Heidelberg", result.get("CityName"));
-    assertEquals("52", result.get("Age"));
-    assertEquals("1999-01-01T00:00:00", result.get("EntryDate"));
+    Map<String, Object> location = (Map<String, Object>) result.get("Location");
+    assertEquals(2, location.size());
+    assertEquals("Germany", location.get("Country"));
+    Map<String, Object> city = (Map<String, Object>) location.get("City");
+    assertEquals(2, city.size());
+    assertEquals("69124", city.get("PostalCode"));
+    assertEquals("Heidelberg", city.get("CityName"));
+    assertEquals(Integer.valueOf(52), result.get("Age"));
+//    System.out.println(((Calendar)result.get("EntryDate")).getTimeInMillis());
+//    //"1999-01-01T00:00:00"
+//    Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("GMT"));
+//    cal.set(1999, 0, 1, 0, 0, 0);
+//    cal.setTimeInMillis(915148800000l);
+//    System.out.println(cal);
+//    System.out.println(result.get("EntryDate"));
+    Calendar entryDate = (Calendar) result.get("EntryDate");
+    assertEquals(Long.valueOf(915148800000l), Long.valueOf(entryDate.getTimeInMillis()));
+    assertEquals(TimeZone.getTimeZone("GMT"), entryDate.getTimeZone());
     assertEquals("/SAP/PUBLIC/BC/NWDEMO_MODEL/IMAGES/male_1_WinterW.jpg", result.get("ImageUrl"));
   }
 
+  @SuppressWarnings("unchecked")
   @Test
   public void testReadEntryRequest() throws Exception {
     XmlEntityConsumer xec = new XmlEntityConsumer();
     
-    EdmEntitySet edmEntitySet = null;
+    EdmEntitySet entitySet = MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Employees");
     String contentType = "application/xml";
     ODataRequest request = ODataRequestImpl.create(new ByteArrayInputStream(EMPLOYEE_1_XML.getBytes("utf-8")), contentType).build();
-    Map<String, Object> result = xec.readEntry(edmEntitySet, request);
+    Map<String, Object> result = xec.readEntry(entitySet, request);
 
-    assertEquals(11, result.size());
+    // verify
+    System.out.println(result);
+    assertEquals(9, result.size());
 
     assertEquals("1", result.get("EmployeeId"));
     assertEquals("Walter Winter", result.get("EmployeeName"));
     assertEquals("1", result.get("ManagerId"));
     assertEquals("1", result.get("RoomId"));
     assertEquals("1", result.get("TeamId"));
-    assertEquals("Germany", result.get("Country"));
-    assertEquals("69124", result.get("PostalCode"));
-    assertEquals("Heidelberg", result.get("CityName"));
-    assertEquals("52", result.get("Age"));
-    assertEquals("1999-01-01T00:00:00", result.get("EntryDate"));
+    Map<String, Object> location = (Map<String, Object>) result.get("Location");
+    assertEquals(2, location.size());
+    assertEquals("Germany", location.get("Country"));
+    Map<String, Object> city = (Map<String, Object>) location.get("City");
+    assertEquals(2, city.size());
+    assertEquals("69124", city.get("PostalCode"));
+    assertEquals("Heidelberg", city.get("CityName"));
+    assertEquals(Integer.valueOf(52), result.get("Age"));
+//    System.out.println(((Calendar)result.get("EntryDate")).getTimeInMillis());
+//    //"1999-01-01T00:00:00"
+//    Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("GMT"));
+//    cal.set(1999, 0, 1, 0, 0, 0);
+//    cal.setTimeInMillis(915148800000l);
+//    System.out.println(cal);
+//    System.out.println(result.get("EntryDate"));
+    Calendar entryDate = (Calendar) result.get("EntryDate");
+    assertEquals(Long.valueOf(915148800000l), Long.valueOf(entryDate.getTimeInMillis()));
+    assertEquals(TimeZone.getTimeZone("GMT"), entryDate.getTimeZone());
     assertEquals("/SAP/PUBLIC/BC/NWDEMO_MODEL/IMAGES/male_1_WinterW.jpg", result.get("ImageUrl"));
   }
   
