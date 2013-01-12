@@ -1,7 +1,7 @@
-package com.sap.core.odata.processor.jpa.jpql.api;
+package com.sap.core.odata.processor.jpa.api.jpql;
 
+import com.sap.core.odata.processor.jpa.api.factory.ODataJPAFactory;
 import com.sap.core.odata.processor.jpa.exception.ODataJPARuntimeException;
-import com.sap.core.odata.processor.jpa.jpql.JPQLBuilderFactory;
 
 public class JPQLStatement {
 	
@@ -25,7 +25,7 @@ public class JPQLStatement {
 		protected JPQLStatementBuilder( ){ }
 		
 		private static final JPQLStatementBuilder create(JPQLContext context){
-			return JPQLBuilderFactory.getStatementBuilder(context);
+			return ODataJPAFactory.createFactory().getJPQLBuilderFactory().getStatementBuilder(context);
 		}
 		
 		protected final JPQLStatement createStatement(String statement)

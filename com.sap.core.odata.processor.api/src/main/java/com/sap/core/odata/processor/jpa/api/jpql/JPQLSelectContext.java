@@ -1,4 +1,4 @@
-package com.sap.core.odata.processor.jpa.jpql.api;
+package com.sap.core.odata.processor.jpa.api.jpql;
 
 import java.util.ArrayList;
 import java.util.HashMap;

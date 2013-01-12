@@ -1,8 +1,8 @@
-package com.sap.core.odata.processor.jpa.jpql.api;
+package com.sap.core.odata.processor.jpa.api.jpql;
 
+import com.sap.core.odata.processor.jpa.api.factory.ODataJPAFactory;
 import com.sap.core.odata.processor.jpa.exception.ODataJPAModelException;
 import com.sap.core.odata.processor.jpa.exception.ODataJPARuntimeException;
-import com.sap.core.odata.processor.jpa.jpql.JPQLBuilderFactory;
 
 public abstract class JPQLContext {
 	
@@ -33,7 +33,7 @@ public abstract class JPQLContext {
 		protected JPQLContextBuilder( ){ }
 		
 		private static JPQLContextBuilder create(JPQLContextType contextType,Object resultsView){
-			JPQLContextBuilder contextBuilder = JPQLBuilderFactory.getContextBuilder(contextType);
+			JPQLContextBuilder contextBuilder = ODataJPAFactory.createFactory().getJPQLBuilderFactory().getContextBuilder(contextType);
 			contextBuilder.setResultsView(resultsView);
 			return contextBuilder;
 		}

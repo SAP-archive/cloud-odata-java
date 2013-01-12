@@ -30,10 +30,10 @@ import com.sap.core.odata.api.uri.expression.MethodExpression;
 import com.sap.core.odata.api.uri.expression.OrderByExpression;
 import com.sap.core.odata.api.uri.expression.PropertyExpression;
 import com.sap.core.odata.api.uri.info.GetEntitySetUriInfo;
+import com.sap.core.odata.processor.jpa.api.jpql.JPQLContext.JPQLContextBuilder;
+import com.sap.core.odata.processor.jpa.api.jpql.JPQLContextType;
 import com.sap.core.odata.processor.jpa.exception.ODataJPAModelException;
 import com.sap.core.odata.processor.jpa.exception.ODataJPARuntimeException;
-import com.sap.core.odata.processor.jpa.jpql.api.JPQLContext.JPQLContextBuilder;
-import com.sap.core.odata.processor.jpa.jpql.api.JPQLContextType;
 
 public class JPQLSelectStatementBuilderTest {
 

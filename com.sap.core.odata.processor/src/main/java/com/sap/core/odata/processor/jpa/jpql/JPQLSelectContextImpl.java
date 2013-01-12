@@ -11,9 +11,9 @@ import com.sap.core.odata.api.uri.info.GetEntitySetUriInfo;
 import com.sap.core.odata.processor.jpa.access.ExpressionParsingUtility;
 import com.sap.core.odata.processor.jpa.exception.ODataJPAModelException;
 import com.sap.core.odata.processor.jpa.exception.ODataJPARuntimeException;
-import com.sap.core.odata.processor.jpa.jpql.api.JPQLContext;
-import com.sap.core.odata.processor.jpa.jpql.api.JPQLContextType;
-import com.sap.core.odata.processor.jpa.jpql.api.JPQLSelectContext;
+import com.sap.core.odata.processor.jpa.api.jpql.JPQLContext;
+import com.sap.core.odata.processor.jpa.api.jpql.JPQLContextType;
+import com.sap.core.odata.processor.jpa.api.jpql.JPQLSelectContext;
 
 public class JPQLSelectContextImpl extends JPQLSelectContext {
 
@@ -54,7 +54,7 @@ public class JPQLSelectContextImpl extends JPQLSelectContext {
 
 	public class JPQLSelectContextBuilder
 			extends
-			com.sap.core.odata.processor.jpa.jpql.api.JPQLContext.JPQLContextBuilder {
+			com.sap.core.odata.processor.jpa.api.jpql.JPQLContext.JPQLContextBuilder {
 
 		private GetEntitySetUriInfo entitySetView;
 

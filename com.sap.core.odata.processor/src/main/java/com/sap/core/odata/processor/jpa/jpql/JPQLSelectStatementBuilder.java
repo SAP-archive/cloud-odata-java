@@ -8,12 +8,14 @@ import org.slf4j.LoggerFactory;
 
 import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.processor.jpa.access.ExpressionParsingUtility;
+import com.sap.core.odata.processor.jpa.api.jpql.JPQLStatement;
+import com.sap.core.odata.processor.jpa.api.jpql.JPQLStatement.JPQLStatementBuilder;
 import com.sap.core.odata.processor.jpa.exception.ODataJPARuntimeException;
-import com.sap.core.odata.processor.jpa.jpql.api.JPQLContext;
-import com.sap.core.odata.processor.jpa.jpql.api.JPQLSelectContext;
-import com.sap.core.odata.processor.jpa.jpql.api.JPQLStatement;
+import com.sap.core.odata.processor.jpa.api.jpql.JPQLContext;
+import com.sap.core.odata.processor.jpa.api.jpql.JPQLSelectContext;
 
-public class JPQLSelectStatementBuilder extends com.sap.core.odata.processor.jpa.jpql.api.JPQLStatement.JPQLStatementBuilder{
+
+public class JPQLSelectStatementBuilder extends JPQLStatementBuilder{
 	
 	private final Logger LOGGER = LoggerFactory.getLogger(getClass());
 	

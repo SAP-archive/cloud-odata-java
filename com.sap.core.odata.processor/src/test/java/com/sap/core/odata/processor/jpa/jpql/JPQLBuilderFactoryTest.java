@@ -13,11 +13,12 @@ import com.sap.core.odata.api.edm.EdmException;
 import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.api.uri.expression.OrderByExpression;
 import com.sap.core.odata.api.uri.info.GetEntitySetUriInfo;
+import com.sap.core.odata.processor.jpa.api.jpql.JPQLContext;
+import com.sap.core.odata.processor.jpa.api.jpql.JPQLContext.JPQLContextBuilder;
+import com.sap.core.odata.processor.jpa.api.jpql.JPQLContextType;
+import com.sap.core.odata.processor.jpa.api.jpql.JPQLStatement.JPQLStatementBuilder;
+import com.sap.core.odata.processor.jpa.factory.ODataJPAFactoryImpl;
 import com.sap.core.odata.processor.jpa.jpql.JPQLSelectContextImpl.JPQLSelectContextBuilder;
-import com.sap.core.odata.processor.jpa.jpql.api.JPQLContext;
-import com.sap.core.odata.processor.jpa.jpql.api.JPQLContext.JPQLContextBuilder;
-import com.sap.core.odata.processor.jpa.jpql.api.JPQLContextType;
-import com.sap.core.odata.processor.jpa.jpql.api.JPQLStatement.JPQLStatementBuilder;
 
 public class JPQLBuilderFactoryTest {
 	
@@ -29,7 +30,7 @@ public class JPQLBuilderFactoryTest {
 		// Build JPQL Context
 		JPQLContext selectContext = JPQLContext.createBuilder(
 				JPQLContextType.SELECT, getEntitySetView).build();
-		JPQLStatementBuilder statementBuilder = JPQLBuilderFactory.getStatementBuilder(selectContext);
+		JPQLStatementBuilder statementBuilder = new ODataJPAFactoryImpl().getJPQLBuilderFactory().getStatementBuilder(selectContext);
 		
 		assertTrue(statementBuilder instanceof JPQLSelectStatementBuilder);
 				
@@ -40,7 +41,7 @@ public class JPQLBuilderFactoryTest {
 	public void testGetContextBuilderforDelete() throws ODataException{
 				
 		// Build JPQL ContextBuilder
-		JPQLContextBuilder  contextBuilder = JPQLBuilderFactory.getContextBuilder(JPQLContextType.DELETE);
+		JPQLContextBuilder  contextBuilder = new ODataJPAFactoryImpl().getJPQLBuilderFactory().getContextBuilder(JPQLContextType.DELETE);
 				
 		assertNull(contextBuilder);
 				
@@ -50,7 +51,7 @@ public class JPQLBuilderFactoryTest {
 	public void testGetContextBuilderforSelect() throws ODataException{
 				
 		// Build JPQL ContextBuilder
-		JPQLContextBuilder  contextBuilder = JPQLBuilderFactory.getContextBuilder(JPQLContextType.SELECT);
+		JPQLContextBuilder  contextBuilder = new ODataJPAFactoryImpl().getJPQLBuilderFactory().getContextBuilder(JPQLContextType.SELECT);
 				
 		assertNotNull(contextBuilder);
 		assertTrue(contextBuilder instanceof JPQLSelectContextBuilder);

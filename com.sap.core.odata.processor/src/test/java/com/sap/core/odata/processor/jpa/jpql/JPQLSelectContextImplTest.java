@@ -21,12 +21,12 @@ import com.sap.core.odata.api.uri.expression.OrderByExpression;
 import com.sap.core.odata.api.uri.expression.OrderExpression;
 import com.sap.core.odata.api.uri.expression.SortOrder;
 import com.sap.core.odata.api.uri.info.GetEntitySetUriInfo;
+import com.sap.core.odata.processor.jpa.api.jpql.JPQLContext;
+import com.sap.core.odata.processor.jpa.api.jpql.JPQLContextType;
+import com.sap.core.odata.processor.jpa.api.jpql.JPQLSelectContext;
 import com.sap.core.odata.processor.jpa.exception.ODataJPAModelException;
 import com.sap.core.odata.processor.jpa.exception.ODataJPARuntimeException;
 import com.sap.core.odata.processor.jpa.jpql.JPQLSelectContextImpl.JPQLSelectContextBuilder;
-import com.sap.core.odata.processor.jpa.jpql.api.JPQLContext;
-import com.sap.core.odata.processor.jpa.jpql.api.JPQLContextType;
-import com.sap.core.odata.processor.jpa.jpql.api.JPQLSelectContext;
 
 public class JPQLSelectContextImplTest {
 

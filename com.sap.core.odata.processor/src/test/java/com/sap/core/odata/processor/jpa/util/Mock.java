@@ -10,10 +10,9 @@ import com.sap.core.odata.api.edm.provider.EntityContainer;
 import com.sap.core.odata.api.edm.provider.EntitySet;
 import com.sap.core.odata.api.edm.provider.EntityType;
 import com.sap.core.odata.api.edm.provider.Schema;
-import com.sap.core.odata.processor.jpa.access.api.JPAEdmBuilder;
 import com.sap.core.odata.processor.jpa.api.ODataJPAContext;
+import com.sap.core.odata.processor.jpa.api.access.JPAEdmBuilder;
 import com.sap.core.odata.processor.jpa.exception.ODataJPAModelException;
-import com.sap.core.odata.processor.jpa.util.MockData;
 public class Mock {
 	
 	public static JPAEdmBuilder mockjpaEdmBuilder() throws ODataJPAModelException

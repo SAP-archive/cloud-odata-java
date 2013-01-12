@@ -15,9 +15,9 @@ import com.sap.core.odata.api.edm.provider.EntityType;
 import com.sap.core.odata.api.edm.provider.FunctionImport;
 import com.sap.core.odata.api.edm.provider.Schema;
 import com.sap.core.odata.api.exception.ODataException;
-import com.sap.core.odata.processor.jpa.access.JPAAccessFactory;
-import com.sap.core.odata.processor.jpa.access.api.JPAEdmBuilder;
 import com.sap.core.odata.processor.jpa.api.ODataJPAContext;
+import com.sap.core.odata.processor.jpa.api.access.JPAEdmBuilder;
+import com.sap.core.odata.processor.jpa.api.factory.ODataJPAFactory;
 import com.sap.core.odata.processor.jpa.exception.ODataJPAModelException;
 
 public class ODataJPAEdmProvider extends EdmProvider {
@@ -40,7 +40,7 @@ public class ODataJPAEdmProvider extends EdmProvider {
 		entityTypes = new HashMap<String, EntityType>();
 		entityContainerInfos = new HashMap<String, EntityContainerInfo>();
 		complexTypes = new HashMap<String, ComplexType>();
-		builder = JPAAccessFactory.getJPAEdmBuilder(oDataJPAContext);
+		builder = ODataJPAFactory.createFactory().getJPAAccessFactory().getJPAEdmBuilder(oDataJPAContext);
 	}
 
 	public ODataJPAContext getODataJPAContext() {

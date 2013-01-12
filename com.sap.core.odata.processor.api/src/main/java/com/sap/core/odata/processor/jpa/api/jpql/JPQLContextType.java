@@ -1,4 +1,4 @@
-package com.sap.core.odata.processor.jpa.jpql.api;
+package com.sap.core.odata.processor.jpa.api.jpql;
 
 public enum JPQLContextType {
 	SELECT,MODIFY,DELETE,SELECT_SINGLE

@@ -7,9 +7,9 @@ import com.sap.core.odata.api.processor.ODataResponse;
 import com.sap.core.odata.api.processor.ODataSingleProcessor;
 import com.sap.core.odata.api.uri.info.GetEntitySetUriInfo;
 import com.sap.core.odata.api.uri.info.GetEntityUriInfo;
-import com.sap.core.odata.processor.jpa.access.JPAAccessFactory;
-import com.sap.core.odata.processor.jpa.access.api.JPAProcessor;
 import com.sap.core.odata.processor.jpa.api.ODataJPAContext;
+import com.sap.core.odata.processor.jpa.api.access.JPAProcessor;
+import com.sap.core.odata.processor.jpa.api.factory.ODataJPAFactory;
 
 public class ODataJPAProcessor extends ODataSingleProcessor {
 
@@ -26,7 +26,7 @@ public class ODataJPAProcessor extends ODataSingleProcessor {
 	
 	public ODataJPAProcessor(ODataJPAContext oDataJPAContext){
 		this.oDataJPAContext = oDataJPAContext;
-		jpaProcessor = JPAAccessFactory.getJPAProcessor(this.oDataJPAContext);
+		jpaProcessor = ODataJPAFactory.createFactory().getJPAAccessFactory().getJPAProcessor(this.oDataJPAContext);
 	}
 	
 	public ODataJPAProcessor( ){

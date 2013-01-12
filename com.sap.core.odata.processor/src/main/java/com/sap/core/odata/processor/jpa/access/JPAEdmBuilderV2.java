@@ -26,7 +26,7 @@ import com.sap.core.odata.api.edm.provider.Property;
 import com.sap.core.odata.api.edm.provider.PropertyRef;
 import com.sap.core.odata.api.edm.provider.Schema;
 import com.sap.core.odata.api.edm.provider.SimpleProperty;
-import com.sap.core.odata.processor.jpa.access.api.JPAEdmBuilder;
+import com.sap.core.odata.processor.jpa.api.access.JPAEdmBuilder;
 import com.sap.core.odata.processor.jpa.exception.ODataJPAModelException;
 
 public class JPAEdmBuilderV2 implements JPAEdmBuilder {

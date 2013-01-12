@@ -28,8 +28,8 @@ import com.sap.core.odata.api.uri.expression.PropertyExpression;
 import com.sap.core.odata.api.uri.expression.SortOrder;
 import com.sap.core.odata.api.uri.expression.UnaryExpression;
 import com.sap.core.odata.api.uri.expression.UnaryOperator;
+import com.sap.core.odata.processor.jpa.api.jpql.JPQLStatement.Operator;
 import com.sap.core.odata.processor.jpa.exception.ODataJPARuntimeException;
-import com.sap.core.odata.processor.jpa.jpql.api.JPQLStatement.Operator;
 
 public class ExpressionParsingUtilityTest {
 

@@ -1,13 +1,14 @@
 package com.sap.core.odata.processor.jpa.access;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import org.easymock.EasyMock;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.sap.core.odata.processor.jpa.access.api.JPAEdmBuilder;
 import com.sap.core.odata.processor.jpa.api.ODataJPAContext;
+import com.sap.core.odata.processor.jpa.api.access.JPAEdmBuilder;
+import com.sap.core.odata.processor.jpa.factory.ODataJPAFactoryImpl;
 import com.sap.core.odata.processor.jpa.util.MockData;
 import com.sap.core.odata.processor.jpa.util.MockEmf;
 
@@ -26,7 +27,8 @@ public class JPAAccessFactoryTest {
 	@Test
 	public void testGetJPAEdmBuilder() {
 		
-		JPAEdmBuilder builder = JPAAccessFactory.getJPAEdmBuilder(odataJpaContext);
+		ODataJPAFactoryImpl factory = new ODataJPAFactoryImpl();
+		JPAEdmBuilder builder = factory.getJPAAccessFactory().getJPAEdmBuilder(odataJpaContext);
 		assertEquals(JPAEdmBuilderV2.class, builder.getClass());
 	}
 
