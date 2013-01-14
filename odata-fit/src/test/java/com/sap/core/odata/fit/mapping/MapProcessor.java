@@ -110,7 +110,7 @@ public class MapProcessor extends ODataSingleProcessor {
     
     String mappedPropertyName = (String) property.getMapping().getObject();
     Object value = record.get(mappedPropertyName);
-   
+
     ODataResponse response = bp.writePropertyValue(property, value);
     return response;
   }

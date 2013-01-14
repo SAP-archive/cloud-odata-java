@@ -40,21 +40,19 @@ public abstract class BaseTest {
     @Override
     protected void failed(Throwable e, Description description) {
       super.failed(e, description);
+      BaseTest.this.log.info("starting " + description.getDisplayName());
       BaseTest.this.log.error(description.getDisplayName(), e);
     }
 
     @Override
     protected void starting(Description description) {
       super.starting(description);
-      BaseTest.this.log.info("starting " + description.getDisplayName());
     }
 
     @Override
     protected void finished(Description description) {
       super.finished(description);
-      try {} finally {
-        reEnableLogging();
-      }
+      reEnableLogging();
     }
 
     @Override
@@ -62,8 +60,6 @@ public abstract class BaseTest {
       super.succeeded(description);
     }
 
-    
-    
   };
 
   /**

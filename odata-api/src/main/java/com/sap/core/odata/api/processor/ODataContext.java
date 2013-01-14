@@ -1,6 +1,7 @@
 package com.sap.core.odata.api.processor;
 
 import java.util.List;
+import java.util.Map;
 
 import com.sap.core.odata.api.ODataService;
 import com.sap.core.odata.api.exception.ODataException;
@@ -71,6 +72,19 @@ public interface ODataContext {
    * @return parameter value as {@link Object} for the given name
    */
   Object getParameter(String name);
+
+  /**
+   * Returns header value of HTTP request
+   * @param name name of a request header element (e.g. "Content-Type")
+   * @return null or a request header value if found
+   */
+  String getHttpRequestHeader(String name);
+
+  /**
+   * Returns all header values of HTTP request
+   * @return immutable map of request header values
+   */
+  Map<String,String> getHttpRequestHeaders();
 
   /**
    * Get information about enabled debug mode

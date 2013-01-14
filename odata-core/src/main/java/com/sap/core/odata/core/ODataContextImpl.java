@@ -1,6 +1,7 @@
 package com.sap.core.odata.core;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -21,6 +22,7 @@ public class ODataContextImpl implements ODataContext {
   private static final String RUNTIME_MEASUREMENTS = "~runtimeMeasurements";
 
   private Map<String, Object> parameterTable = new HashMap<String, Object>();
+  private Map<String, String> requestHeader = new HashMap<String, String>();
 
   @Override
   public void setParameter(String name, Object value) {
@@ -157,6 +159,20 @@ public class ODataContextImpl implements ODataContext {
     public String toString() {
       return className + "." + methodName + ": " + (timeStopped - timeStarted);
     }
+  }
+
+  public void setHttpRequestHeader(String name, String value) {
+    requestHeader.put(name, value);
+  }
+
+  @Override
+  public String getHttpRequestHeader(String name) {
+    return requestHeader.get(name);
+  }
+
+  @Override
+  public Map<String, String> getHttpRequestHeaders() {
+    return Collections.unmodifiableMap(requestHeader);
   }
 
 }

@@ -58,22 +58,14 @@ public class MappingTest extends AbstractFitTest {
   public void testServiceDocument() throws Exception {
     HttpGet get = new HttpGet(URI.create(this.getEndpoint().toString() + "/"));
     HttpResponse response = this.getHttpClient().execute(get);
-
-    String payload = StringHelper.inputStreamToString(response.getEntity().getContent());
-    System.out.println(payload);
     assertEquals(200, response.getStatusLine().getStatusCode());
-
   }
 
   @Test
   public void testMetadata() throws Exception {
     HttpGet get = new HttpGet(URI.create(this.getEndpoint().toString() + "/$metadata"));
     HttpResponse response = this.getHttpClient().execute(get);
-
-    String payload = StringHelper.inputStreamToString(response.getEntity().getContent());
-    System.out.println(payload);
     assertEquals(200, response.getStatusLine().getStatusCode());
-
   }
 
   @Test
