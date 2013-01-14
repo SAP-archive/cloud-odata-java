@@ -285,7 +285,7 @@ public class ListsProcessor extends ODataSingleProcessor {
     ODataContext context = getContext();
     int timingHandle = context.startRuntimeMeasurement("EntityConsumer", "readEntry");
 
-    final EntityConsumer consumer = EntityConsumer.create(request.getContentHeader());
+    final EntityConsumer consumer = EntityConsumer.create(request.getMediaType());
     final Map<String, Object> values = consumer.readEntry(entitySet, request);
 
     context.stopRuntimeMeasurement(timingHandle);
@@ -483,7 +483,7 @@ public class ListsProcessor extends ODataSingleProcessor {
     ODataContext context = getContext();
     int timingHandle = context.startRuntimeMeasurement("EntityConsumer", "readProperty");
 
-    final EntityConsumer consumer = EntityConsumer.create(request.getContentHeader());
+    final EntityConsumer consumer = EntityConsumer.create(request.getMediaType());
     final Map<String, Object> values = consumer.readProperty(property, request);
 
     context.stopRuntimeMeasurement(timingHandle);

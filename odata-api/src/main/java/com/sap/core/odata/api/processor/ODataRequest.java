@@ -14,9 +14,9 @@ public abstract class ODataRequest {
   public abstract String getHeader(String name);
   
   /**
-   * @return content header value or null if not set
+   * @return <code>media type</code> header value of request or null if not set
    */
-  public abstract String getContentHeader();
+  public abstract String getMediaType();
 
   /**
    * @return a set of all available header names

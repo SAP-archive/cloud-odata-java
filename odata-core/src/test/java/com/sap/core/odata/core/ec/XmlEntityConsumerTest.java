@@ -51,7 +51,22 @@ public class XmlEntityConsumerTest {
     "</entry>";
 
 //  private static final String ROOM_1_XML = "<?xml version='1.0' encoding='UTF-8'?><entry xmlns=\"http://www.w3.org/2005/Atom\" xmlns:m=\"http://schemas.microsoft.com/ado/2007/08/dataservices/metadata\" xmlns:d=\"http://schemas.microsoft.com/ado/2007/08/dataservices\" xml:base=\"http://localhost:19000/test/\" m:etag=\"W/&quot;1&quot;\"><id>http://localhost:19000/test/Rooms('1')</id><title type=\"text\">Room 1</title><updated>2013-01-11T13:50:50.541+01:00</updated><category term=\"RefScenario.Room\" scheme=\"http://schemas.microsoft.com/ado/2007/08/dataservices/scheme\"/><link href=\"Rooms('1')\" rel=\"edit\" title=\"Room\"/><link href=\"Rooms('1')/nr_Employees\" rel=\"http://schemas.microsoft.com/ado/2007/08/dataservices/related/nr_Employees\" type=\"application/atom+xml; type=feed\" title=\"nr_Employees\"/><link href=\"Rooms('1')/nr_Building\" rel=\"http://schemas.microsoft.com/ado/2007/08/dataservices/related/nr_Building\" type=\"application/atom+xml; type=entry\" title=\"nr_Building\"/><content type=\"application/xml\"><m:properties><d:Id>1</d:Id><d:Name>Room 1</d:Name><d:Seats>1</d:Seats><d:Version>1</d:Version></m:properties></content></entry>";
-  private static final String ROOM_1_XML = "<?xml version='1.0' encoding='UTF-8'?><entry xmlns=\"http://www.w3.org/2005/Atom\" xmlns:m=\"http://schemas.microsoft.com/ado/2007/08/dataservices/metadata\" xmlns:d=\"http://schemas.microsoft.com/ado/2007/08/dataservices\" xml:base=\"http://localhost:19000/test/\" m:etag=\"W/&quot;1&quot;\"><id>http://localhost:19000/test/Rooms('1')</id><title type=\"text\">Room 1</title><updated>2013-01-11T13:50:50.541+01:00</updated><category term=\"RefScenario.Room\" scheme=\"http://schemas.microsoft.com/ado/2007/08/dataservices/scheme\"/><link href=\"Rooms('1')\" rel=\"edit\" title=\"Room\"/><link href=\"Rooms('1')/nr_Employees\" rel=\"http://schemas.microsoft.com/ado/2007/08/dataservices/related/nr_Employees\" type=\"application/atom+xml; type=feed\" title=\"nr_Employees\"/><link href=\"Rooms('1')/nr_Building\" rel=\"http://schemas.microsoft.com/ado/2007/08/dataservices/related/nr_Building\" type=\"application/atom+xml; type=entry\" title=\"nr_Building\"/><content type=\"application/xml\"><m:properties><d:Id>1</d:Id></m:properties></content></entry>";
+  private static final String ROOM_1_XML = 
+      "<?xml version='1.0' encoding='UTF-8'?>" +
+      "<entry xmlns=\"http://www.w3.org/2005/Atom\" xmlns:m=\"http://schemas.microsoft.com/ado/2007/08/dataservices/metadata\" xmlns:d=\"http://schemas.microsoft.com/ado/2007/08/dataservices\" xml:base=\"http://localhost:19000/test/\" m:etag=\"W/&quot;1&quot;\">" +
+        "<id>http://localhost:19000/test/Rooms('1')</id>" +
+        "<title type=\"text\">Room 1</title>" +
+        "<updated>2013-01-11T13:50:50.541+01:00</updated>" +
+        "<category term=\"RefScenario.Room\" scheme=\"http://schemas.microsoft.com/ado/2007/08/dataservices/scheme\"/>" +
+        "<link href=\"Rooms('1')\" rel=\"edit\" title=\"Room\"/>" +
+        "<link href=\"Rooms('1')/nr_Employees\" rel=\"http://schemas.microsoft.com/ado/2007/08/dataservices/related/nr_Employees\" type=\"application/atom+xml; type=feed\" title=\"nr_Employees\"/>" +
+        "<link href=\"Rooms('1')/nr_Building\" rel=\"http://schemas.microsoft.com/ado/2007/08/dataservices/related/nr_Building\" type=\"application/atom+xml; type=entry\" title=\"nr_Building\"/>" +
+        "<content type=\"application/xml\">" +
+          "<m:properties>" +
+            "<d:Id>1</d:Id>" +
+          "</m:properties>" +
+        "</content>" +
+      "</entry>";
   
   @SuppressWarnings("unchecked")
   @Test
