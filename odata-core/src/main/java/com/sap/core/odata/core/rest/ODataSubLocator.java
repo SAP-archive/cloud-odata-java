@@ -68,8 +68,9 @@ public final class ODataSubLocator implements ODataLocator {
 
   private List<ContentType> acceptHeaderContentTypes;
 
-  private ServletInputStream contentBody;
-  private String requestContentType;
+  private ServletInputStream requestContent;
+  /** <code>media type</code> value from request (read from {@link HttpHeaders#getMediaType()}) */
+  private String requestMediaType;
 
   @GET
   public Response handleGet() throws ODataException {
@@ -179,7 +180,7 @@ public final class ODataSubLocator implements ODataLocator {
 
     final String contentType = doContentNegotiation(uriParserResult);
 
-    final ODataRequest odataRequest = ODataRequestImpl.create(contentBody, requestContentType).build();
+    final ODataRequest odataRequest = ODataRequestImpl.create(requestContent, requestMediaType).build();
 
     ODataResponse odataResponse = dispatcher.dispatch(ODataHttpMethod.POST, uriParserResult, odataRequest, contentType);
     Response response = convertResponse(odataResponse);
@@ -192,13 +193,11 @@ public final class ODataSubLocator implements ODataLocator {
     List<PathSegment> pathSegments = context.getPathInfo().getODataSegments();
     UriInfoImpl uriParserResult = (UriInfoImpl) uriParser.parse(pathSegments, queryParameters);
 
+    final ODataRequest odataRequest = ODataRequestImpl.create(requestContent, requestMediaType).build();
     final String contentType = doContentNegotiation(uriParserResult);
-
-    final ODataRequest odataRequest = ODataRequestImpl.create(contentBody, requestContentType).build();
-
+    
     ODataResponse odataResponse = dispatcher.dispatch(ODataHttpMethod.PUT, uriParserResult, odataRequest, contentType);
     Response response = convertResponse(odataResponse);
-
     return response;
   }
 
@@ -232,28 +231,46 @@ public final class ODataSubLocator implements ODataLocator {
   }
 
   public void initialize(InitParameter param) throws ODataException {
+    fillRequestHeader(param.httpHeaders);
+    context.setUriInfo(buildODataUriInfo(param));
+
+    queryParameters = convertToSinglevaluedMap(param.getUriInfo().getQueryParameters());
+
+    acceptHeaderContentTypes = convertMediaTypes(param.httpHeaders.getAcceptableMediaTypes());
+    requestContent = extractRequestContent(param);
+    requestMediaType = extractMediaType(param);
+    service = param.getServiceFactory().createService(context);
+    context.setService(service);
+    service.getProcessor().setContext(context);
+
+    uriParser = new UriParserImpl(service.getEntityDataModel());
+    dispatcher = new Dispatcher(service);
+  }
+
+  /**
+   * 
+   * @param param
+   * @return
+   */
+  private String extractMediaType(InitParameter param) {
+    final MediaType requestMediaType = param.httpHeaders.getMediaType();
+    if (requestMediaType != null) {
+      return requestMediaType.toString();
+    }
+    return null;
+  }
+
+  /**
+   * 
+   * @param param
+   * @return
+   * @throws ODataException
+   */
+  private ServletInputStream extractRequestContent(InitParameter param) throws ODataException {
     try {
-      fillRequestHeader(param.httpHeaders);
-      context.setUriInfo(buildODataUriInfo(param));
-
-      queryParameters = convertToSinglevaluedMap(param.getUriInfo().getQueryParameters());
-
-      acceptHeaderContentTypes = convertMediaTypes(param.httpHeaders.getAcceptableMediaTypes());
-      contentBody = param.getServletRequest().getInputStream();
-      //      contentBody = param.getServletRequest().getReader();
-      final MediaType requestMediaType = param.httpHeaders.getMediaType();
-      if (requestMediaType != null) {
-        requestContentType = requestMediaType.toString();
-      }
-
-      service = param.getServiceFactory().createService(context);
-      context.setService(service);
-      service.getProcessor().setContext(context);
-
-      uriParser = new UriParserImpl(service.getEntityDataModel());
-      dispatcher = new Dispatcher(service);
+      return param.getServletRequest().getInputStream();
     } catch (IOException e) {
-      throw new ODataException("Error getting request content body reader.", e);
+      throw new ODataException("Error getting request content as ServletInputStream.", e);
     }
   }
 

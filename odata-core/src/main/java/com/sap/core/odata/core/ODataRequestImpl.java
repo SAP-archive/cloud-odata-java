@@ -6,19 +6,24 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-import com.sap.core.odata.api.commons.HttpHeaders;
 import com.sap.core.odata.api.processor.ODataRequest;
 
 public class ODataRequestImpl extends ODataRequest {
 
+  private static final String MEDIA_TYPE = "MEDIA_TYPE";
   private final InputStream content;
   private final Map<String, String> headers;
   
-  private ODataRequestImpl(InputStream content, String contentType) {
+  /**
+   * 
+   * @param content
+   * @param mediaType <code>media type</code> value of content
+   */
+  private ODataRequestImpl(InputStream content, String mediaType) {
     this.content = content;
     this.headers = new HashMap<String, String>();
     
-    this.headers.put(HttpHeaders.CONTENT_TYPE, contentType);
+    this.headers.put(MEDIA_TYPE, mediaType);
   }
   
   @Override
@@ -27,8 +32,8 @@ public class ODataRequestImpl extends ODataRequest {
   }
 
   @Override
-  public String getContentHeader() {
-    return headers.get(HttpHeaders.CONTENT_TYPE);
+  public String getMediaType() {
+    return headers.get(MEDIA_TYPE);
   }
 
   @Override
@@ -41,15 +46,15 @@ public class ODataRequestImpl extends ODataRequest {
     return content;
   }
   
-  public static ODataRequestBuilder create(InputStream contentBody, String contentType) {
-    return new ODataRequestBuilder(contentBody, contentType);
+  public static ODataRequestBuilder create(InputStream contentBody, String mediaType) {
+    return new ODataRequestBuilder(contentBody, mediaType);
   }
 
   public static class ODataRequestBuilder {
     private final ODataRequestImpl request;
 
-    public ODataRequestBuilder(InputStream content, String contentType) {
-      request = new ODataRequestImpl(content, contentType);
+    public ODataRequestBuilder(InputStream content, String mediaType) {
+      request = new ODataRequestImpl(content, mediaType);
     }
     
     public ODataRequestBuilder addHeader(String name, String value) {
