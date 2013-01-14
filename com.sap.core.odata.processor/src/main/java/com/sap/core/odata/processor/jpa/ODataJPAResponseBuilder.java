@@ -4,6 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.sap.core.odata.api.commons.HttpStatusCodes;
 import com.sap.core.odata.api.commons.InlineCount;
 import com.sap.core.odata.api.edm.EdmEntityType;
@@ -19,6 +22,8 @@ import com.sap.core.odata.processor.jpa.api.ODataJPAContext;
 import com.sap.core.odata.processor.jpa.exception.ODataJPARuntimeException;
 
 public final class ODataJPAResponseBuilder {
+	
+	private static final Logger LOGGER = LoggerFactory.getLogger(ODataJPAResponseBuilder.class);
 
 	public static ODataResponse build(List<Object> jpaEntities,
 			GetEntitySetUriInfo resultsView, String contentType,ODataJPAContext odataJPAContext) throws ODataJPARuntimeException {
@@ -46,7 +51,8 @@ public final class ODataJPAResponseBuilder {
 				        .inlineCount(count)
 				        .skipToken("")
 				        .build();
-			} catch (ODataException e) {
+			} catch (ODataException e) { 
+				LOGGER.error(e.getMessage(), e);
 				throw ODataJPARuntimeException.throwException(ODataJPARuntimeException.GENERAL.addContent(e.getMessage()),e);
 			}
 		    
@@ -56,8 +62,10 @@ public final class ODataJPAResponseBuilder {
 			
 			
 		} catch (EntityProviderException e) {
+			LOGGER.error(e.getMessage(), e);
 			throw ODataJPARuntimeException.throwException(ODataJPARuntimeException.GENERAL.addContent(e.getMessage()),e);
 		} catch (EdmException e) {
+			LOGGER.error(e.getMessage(), e);
 			throw ODataJPARuntimeException.throwException(ODataJPARuntimeException.GENERAL.addContent(e.getMessage()),e);
 		}
 
@@ -86,6 +94,7 @@ public final class ODataJPAResponseBuilder {
 				        .baseUri(oDataJPAContext.getODataContext().getPathInfo().getServiceRoot())
 				        .build();
 			} catch (ODataException e) {
+				LOGGER.error(e.getMessage(), e);
 				throw ODataJPARuntimeException.throwException(ODataJPARuntimeException.GENERAL.addContent(e.getMessage()),e);
 			}
 		    
@@ -95,8 +104,10 @@ public final class ODataJPAResponseBuilder {
 			
 			
 		} catch (EntityProviderException e) {
+			LOGGER.error(e.getMessage(), e);
 			throw ODataJPARuntimeException.throwException(ODataJPARuntimeException.GENERAL.addContent(e.getMessage()),e);
 		} catch (EdmException e) {
+			LOGGER.error(e.getMessage(), e);
 			throw ODataJPARuntimeException.throwException(ODataJPARuntimeException.GENERAL.addContent(e.getMessage()),e);
 		}
 

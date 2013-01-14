@@ -1,5 +1,8 @@
 package com.sap.core.odata.processor.jpa;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.api.processor.ODataContext;
 import com.sap.core.odata.api.ODataService;
@@ -19,6 +22,7 @@ import com.sap.core.odata.processor.jpa.exception.ODataJPARuntimeException;
 public abstract class ODataJPAServiceFactory implements ODataServiceFactory {
 
 	private ODataJPAContext oDataJPAContext;
+	private static final Logger LOGGER = LoggerFactory.getLogger(ODataJPAServiceFactory.class);
 
 	public final ODataService createService(ODataContext ctx) throws ODataException {
 
@@ -41,6 +45,7 @@ public abstract class ODataJPAServiceFactory implements ODataServiceFactory {
 	private void validatePreConditions() throws ODataJPARuntimeException{
 
 		if ( oDataJPAContext.getEntityManagerFactory() == null ){
+			LOGGER.error("Entity Manager is not initialized."); 
 			throw ODataJPARuntimeException.throwException(ODataJPARuntimeException.ENTITY_MANAGER_NOT_INITIALIZED,null);
 		}
 

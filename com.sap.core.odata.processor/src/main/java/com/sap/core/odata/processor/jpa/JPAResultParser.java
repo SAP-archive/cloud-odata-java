@@ -3,6 +3,10 @@ package com.sap.core.odata.processor.jpa;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.HashMap;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.sap.core.odata.api.edm.EdmException;
 import com.sap.core.odata.api.edm.EdmMapping;
 import com.sap.core.odata.api.edm.EdmProperty;
@@ -12,6 +16,8 @@ import com.sap.core.odata.processor.jpa.exception.ODataJPARuntimeException;
 
 public final class JPAResultParser {
 
+	private static final Logger LOGGER = LoggerFactory.getLogger(JPAResultParser.class);
+	
 	/*
 	 * List of buffers used by the Parser
 	 */
@@ -32,10 +38,16 @@ public final class JPAResultParser {
 		return resultParser;
 	}
 
-	/*
+	
+	/**
 	 * The method returns a Hash Map of Properties and values for an EdmEntity Type
 	 * The method uses reflection on object jpaEntity to get the list of getters
 	 * method. Then uses the getters method to extract the value from JPAEntity.
+	 * 
+	 * @param jpaEntity
+	 * @param structuralType
+	 * @return a Hash Map of Properties and values for given EdmEntity Type
+	 * @throws ODataJPARuntimeException
 	 */
 	public final HashMap<String, Object> parse2EdmPropertyValueMap(Object jpaEntity,
 			EdmStructuralType structuralType) throws ODataJPARuntimeException {
@@ -67,18 +79,22 @@ public final class JPAResultParser {
 				edmEntity.put(key, propertyValue);
 				
 			} catch (EdmException e) {
+				LOGGER.error(e.getMessage(), e);
 				throw ODataJPARuntimeException.throwException(
 						ODataJPARuntimeException.RUNTIME_EXCEPTION.addContent(e
 								.getMessage()), e);
 			} catch (IllegalAccessException e) {
+				LOGGER.error(e.getMessage(), e);
 				throw ODataJPARuntimeException.throwException(
 						ODataJPARuntimeException.RUNTIME_EXCEPTION.addContent(e
 								.getMessage()), e);
 			} catch (IllegalArgumentException e) {
+				LOGGER.error(e.getMessage(), e);
 				throw ODataJPARuntimeException.throwException(
 						ODataJPARuntimeException.RUNTIME_EXCEPTION.addContent(e
 								.getMessage()), e);
 			} catch (InvocationTargetException e) {
+				LOGGER.error(e.getMessage(), e);
 				throw ODataJPARuntimeException.throwException(
 						ODataJPARuntimeException.RUNTIME_EXCEPTION.addContent(e
 								.getMessage()), e);
@@ -100,6 +116,7 @@ public final class JPAResultParser {
 			else
 				name = mapping.getInternalName();
 		} catch (EdmException e) {
+			LOGGER.error(e.getMessage(), e);
 			throw ODataJPARuntimeException.throwException(
 					ODataJPARuntimeException.RUNTIME_EXCEPTION.addContent(e
 							.getMessage()), e);
@@ -130,14 +147,17 @@ public final class JPAResultParser {
 								(Class<?>[]) null));
 			}
 		} catch (NoSuchMethodException e) {
+			LOGGER.error(e.getMessage(), e);
 			throw ODataJPARuntimeException.throwException(
 					ODataJPARuntimeException.RUNTIME_EXCEPTION.addContent(e
 							.getMessage()), e);
 		} catch (SecurityException e) {
+			LOGGER.error(e.getMessage(), e);
 			throw ODataJPARuntimeException.throwException(
 					ODataJPARuntimeException.RUNTIME_EXCEPTION.addContent(e
 							.getMessage()), e);
-		} catch (EdmException e) {
+		} catch (EdmException e) { 
+			LOGGER.error(e.getMessage(), e);
 			throw ODataJPARuntimeException.throwException(
 					ODataJPARuntimeException.RUNTIME_EXCEPTION.addContent(e
 							.getMessage()), e);
