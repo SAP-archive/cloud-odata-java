@@ -7,7 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.sap.core.odata.api.exception.ODataException;
-import com.sap.core.odata.processor.jpa.access.ExpressionParsingUtility;
+import com.sap.core.odata.processor.jpa.access.ODataExpressionParser;
 import com.sap.core.odata.processor.jpa.api.jpql.JPQLStatement;
 import com.sap.core.odata.processor.jpa.api.jpql.JPQLStatement.JPQLStatementBuilder;
 import com.sap.core.odata.processor.jpa.exception.ODataJPARuntimeException;
@@ -36,7 +36,7 @@ public class JPQLSelectStatementBuilder extends JPQLStatementBuilder{
 	private String createJPQLQuery() throws ODataJPARuntimeException {
 
 		StringBuilder jpqlQuery = new StringBuilder();
-		String tableAlias = ExpressionParsingUtility.TABLE_ALIAS;
+		String tableAlias = ODataExpressionParser.TABLE_ALIAS;
 		String fromClause = ((JPQLContext) context).getJPAEntityName() + " " + tableAlias;
 		String query = "SELECT %s FROM %s";
 		StringBuilder orderByBuilder = new StringBuilder();
@@ -45,7 +45,7 @@ public class JPQLSelectStatementBuilder extends JPQLStatementBuilder{
 		
 		try {
 			if(context.getWhereExpression()!=null)
-				jpqlQuery.append(" WHERE ").append(ExpressionParsingUtility.parseWhereExpression(context.getWhereExpression()));
+				jpqlQuery.append(" WHERE ").append(ODataExpressionParser.parseToJPAWhereExpression(context.getWhereExpression()));
 		} catch (ODataException e) {
 			LOGGER.error(e.getMessage(), e);
 			throw ODataJPARuntimeException.throwException(ODataJPARuntimeException.GENERAL.addContent(e.getMessage()),e);

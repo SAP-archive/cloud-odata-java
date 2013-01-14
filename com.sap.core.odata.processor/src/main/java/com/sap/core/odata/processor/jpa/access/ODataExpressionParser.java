@@ -1,0 +1,176 @@
+package com.sap.core.odata.processor.jpa.access;
+
+import java.util.HashMap;
+import java.util.List;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.sap.core.odata.api.edm.EdmException;
+import com.sap.core.odata.api.edm.EdmLiteralKind;
+import com.sap.core.odata.api.edm.EdmSimpleType;
+import com.sap.core.odata.api.edm.EdmSimpleTypeKind;
+import com.sap.core.odata.api.exception.ODataException;
+import com.sap.core.odata.api.exception.ODataNotImplementedException;
+import com.sap.core.odata.api.uri.expression.BinaryExpression;
+import com.sap.core.odata.api.uri.expression.CommonExpression;
+import com.sap.core.odata.api.uri.expression.FilterExpression;
+import com.sap.core.odata.api.uri.expression.LiteralExpression;
+import com.sap.core.odata.api.uri.expression.MemberExpression;
+import com.sap.core.odata.api.uri.expression.OrderByExpression;
+import com.sap.core.odata.api.uri.expression.OrderExpression;
+import com.sap.core.odata.api.uri.expression.PropertyExpression;
+import com.sap.core.odata.api.uri.expression.SortOrder;
+import com.sap.core.odata.api.uri.expression.UnaryExpression;
+import com.sap.core.odata.processor.jpa.api.jpql.JPQLStatement;
+import com.sap.core.odata.processor.jpa.exception.ODataJPARuntimeException;
+//import org.slf4j.Logger;
+//import org.slf4j.LoggerFactory;
+
+/**
+ * This class contains utility methods for parsing the filter expressions built by core library from user OData Query.
+ * 
+ * @author SAP AG
+ *
+ */
+public class ODataExpressionParser {
+	
+	public static final String SPACE = " ";
+	public static final String TABLE_ALIAS = "gwt1";
+	
+	private static final Logger LOGGER = LoggerFactory.getLogger(ODataExpressionParser.class);
+	
+	/**
+	 * This method returns the parsed where condition corresponding to the filter input in the user query.
+	 * 
+	 * @param whereExpression
+	 * 
+	 * @return Parsed where condition String
+	 * @throws ODataException
+	 */
+	public static String parseToJPAWhereExpression(final CommonExpression whereExpression) throws ODataException {
+	    switch (whereExpression.getKind()) {
+	    case UNARY:
+	      final UnaryExpression unaryExpression = (UnaryExpression) whereExpression;
+	      final String operand = parseToJPAWhereExpression(unaryExpression.getOperand());
+
+	      switch (unaryExpression.getOperator()) {
+	      case NOT:
+	          return JPQLStatement.Operator.NOT + "("+  operand +")";
+	      case MINUS:
+	        if (operand.startsWith("-"))
+	          return operand.substring(1);
+	        else
+	          return "-" + operand;
+	      default:
+	    	  LOGGER.error("Unary Expression other then - and ! not supported");
+	    	  throw new ODataNotImplementedException();
+	      }
+	      
+	    case FILTER:
+	    	return parseToJPAWhereExpression(((FilterExpression)whereExpression).getExpression());
+	    case BINARY:
+	      final BinaryExpression binaryExpression = (BinaryExpression) whereExpression;
+	      final String left = parseToJPAWhereExpression(binaryExpression.getLeftOperand());
+	      final String right = parseToJPAWhereExpression(binaryExpression.getRightOperand());
+
+	      switch (binaryExpression.getOperator()) {
+		      case AND:
+		    	  return left + SPACE + JPQLStatement.Operator.AND + SPACE + right;
+		      case OR:
+		          return left + SPACE + JPQLStatement.Operator.OR + SPACE + right;
+		      case EQ:
+		          return left + SPACE + JPQLStatement.Operator.EQ+ SPACE + right;
+		      case NE:
+		          return left + SPACE + JPQLStatement.Operator.NE + SPACE + right;
+		      case LT:
+		    	  return left + SPACE + JPQLStatement.Operator.LT + SPACE + right;
+		      case LE:
+		    	  return left + SPACE + JPQLStatement.Operator.LE + SPACE + right;
+		      case GT:
+		    	  return left + SPACE + JPQLStatement.Operator.GT + SPACE + right;
+		      case GE:
+		    	  return left + SPACE + JPQLStatement.Operator.GE + SPACE + right;
+		      case PROPERTY_ACCESS:
+		    	  LOGGER.error("Binary Expression of Propert Access type not supported");
+		    	  throw new ODataNotImplementedException();
+		      default:
+		    	  LOGGER.error("Binary Expression "+binaryExpression.getOperator().name()+" type not supported");
+		    	  throw new ODataNotImplementedException();
+	      }
+
+	    case PROPERTY:
+	    	String returnStr = TABLE_ALIAS+"."+((PropertyExpression) whereExpression).getPropertyName();
+	    	return returnStr;
+
+	    case MEMBER:
+	    	final MemberExpression memberExpression = (MemberExpression) whereExpression;
+	        final PropertyExpression propertyExpressionPath = (PropertyExpression) memberExpression.getPath();	        
+	    	return TABLE_ALIAS+"."+propertyExpressionPath.getUriLiteral()+"."+memberExpression.getProperty().getUriLiteral();
+
+	    case LITERAL:
+	    	final LiteralExpression literal = (LiteralExpression) whereExpression;
+		    final EdmSimpleType literalType = (EdmSimpleType) literal.getEdmType();
+		    String value = literalType.valueToString(literalType.valueOfString(literal.getUriLiteral(), EdmLiteralKind.URI, null), EdmLiteralKind.DEFAULT, null);
+		    return evaluateComparingExpression(value, literalType);
+
+	    
+	    default:
+	    	LOGGER.error("Where Expression "+whereExpression.getKind().name()+" type not supported");
+	    	throw new ODataNotImplementedException();
+	    }
+	  }
+	
+	/**
+	 * This method parses the order by condition in the query.
+	 * 
+	 * @param orderByExpression
+	 * @return
+	 * @throws ODataJPARuntimeException
+	 */
+	public static HashMap<String, String> parseToJPAOrderByExpression(OrderByExpression orderByExpression) throws ODataJPARuntimeException{
+		HashMap<String, String> orderByMap = new HashMap<String, String>();
+		if(orderByExpression != null && orderByExpression.getOrders() != null ){
+			List<OrderExpression> orderBys= orderByExpression.getOrders();
+			String orderByField = null;
+			String orderByDirection = null;
+			for(OrderExpression orderBy : orderBys){
+				
+				try {
+					orderByField = orderBy.getExpression().getEdmType().getName();
+					orderByDirection = (orderBy.getSortOrder() == SortOrder.asc)? "" : "DESC";
+					orderByMap.put(orderByField, orderByDirection);
+				} catch (EdmException e) {
+					LOGGER.error(e.getMessage(), e);
+					throw ODataJPARuntimeException.throwException(
+							ODataJPARuntimeException.RUNTIME_EXCEPTION.addContent(e
+									.getMessage()), e);
+				}				
+			}			
+		} 
+		return orderByMap;		
+	}
+	
+	/**
+	 * This method evaluates the expression based on the type instance. Used for adding escape characters where necessary.
+	 * 
+	 * @param value
+	 * @param edmSimpleType
+	 * @return the evaluated expression
+	 */
+	private static String evaluateComparingExpression(String value, EdmSimpleType edmSimpleType){
+		if (edmSimpleType == EdmSimpleTypeKind.String.getEdmSimpleTypeInstance()
+	            || edmSimpleType == EdmSimpleTypeKind.Guid.getEdmSimpleTypeInstance())
+		{
+			value = "\'"+value+"\'";
+		}else if(edmSimpleType == EdmSimpleTypeKind.DateTime.getEdmSimpleTypeInstance()
+	            || edmSimpleType == EdmSimpleTypeKind.DateTimeOffset.getEdmSimpleTypeInstance()	)
+		{
+			value = "{d \'"+value+"\'}";
+		}else if(edmSimpleType == EdmSimpleTypeKind.Time.getEdmSimpleTypeInstance()){
+			value = "{t \'"+value+"\'}";
+		}
+		return value;
+	}
+
+}

@@ -8,7 +8,7 @@ import com.sap.core.odata.api.edm.EdmException;
 import com.sap.core.odata.api.uri.SelectItem;
 import com.sap.core.odata.api.uri.expression.FilterExpression;
 import com.sap.core.odata.api.uri.info.GetEntitySetUriInfo;
-import com.sap.core.odata.processor.jpa.access.ExpressionParsingUtility;
+import com.sap.core.odata.processor.jpa.access.ODataExpressionParser;
 import com.sap.core.odata.processor.jpa.exception.ODataJPAModelException;
 import com.sap.core.odata.processor.jpa.exception.ODataJPARuntimeException;
 import com.sap.core.odata.processor.jpa.api.jpql.JPQLContext;
@@ -69,8 +69,8 @@ public class JPQLSelectContextImpl extends JPQLSelectContext {
 					JPQLSelectContextImpl.this.setJPAEntityName(entitySetView
 							.getTargetEntitySet().getEntityType().getName());
 					JPQLSelectContextImpl.this
-							.setOrderByCollection(ExpressionParsingUtility
-									.parseOrderByExpression(entitySetView
+							.setOrderByCollection(ODataExpressionParser
+									.parseToJPAOrderByExpression(entitySetView
 											.getOrderBy()));
 					JPQLSelectContextImpl.this.setWhereExpression(entitySetView.getFilter());
 

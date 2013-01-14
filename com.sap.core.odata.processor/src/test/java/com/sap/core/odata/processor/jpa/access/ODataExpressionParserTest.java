@@ -31,7 +31,7 @@ import com.sap.core.odata.api.uri.expression.UnaryOperator;
 import com.sap.core.odata.processor.jpa.api.jpql.JPQLStatement.Operator;
 import com.sap.core.odata.processor.jpa.exception.ODataJPARuntimeException;
 
-public class ExpressionParsingUtilityTest {
+public class ODataExpressionParserTest {
 
 	@Test
 	public void testParseWhereExpression() throws ODataException {
@@ -39,7 +39,7 @@ public class ExpressionParsingUtilityTest {
 		String parsedStr = "";
 		
 		// Simple Binary query - 
-		parsedStr = ExpressionParsingUtility.parseWhereExpression(getBinaryExpressionMockedObj(BinaryOperator.EQ, ExpressionKind.PROPERTY, "SalesOrder", "1234"));
+		parsedStr = ODataExpressionParser.parseToJPAWhereExpression(getBinaryExpressionMockedObj(BinaryOperator.EQ, ExpressionKind.PROPERTY, "SalesOrder", "1234"));
 		assertEquals(getAliasedProperty("SalesOrder")+ " = 1234", parsedStr);
 		
 		// complex query - 
@@ -48,7 +48,7 @@ public class ExpressionParsingUtilityTest {
 		CommonExpression exp1 = getBinaryExpressionMockedObj(BinaryOperator.GE, ExpressionKind.PROPERTY, "SalesOrder", "1234");
 		CommonExpression exp2 = getBinaryExpressionMockedObj(BinaryOperator.NE, ExpressionKind.PROPERTY, "SalesABC", "XYZ");
 
-		parsedStr = parsedStr.concat(ExpressionParsingUtility.parseWhereExpression(getBinaryExpression(exp1, BinaryOperator.AND, exp2)));
+		parsedStr = parsedStr.concat(ODataExpressionParser.parseToJPAWhereExpression(getBinaryExpression(exp1, BinaryOperator.AND, exp2)));
 		assertEquals(getAliasedProperty("SalesOrder")+ " >= 1234 AND "+getAliasedProperty("SalesABC")+ " <> XYZ", parsedStr);
 	}
 	
@@ -59,17 +59,17 @@ public class ExpressionParsingUtilityTest {
 		CommonExpression exp1 = getBinaryExpressionMockedObj(BinaryOperator.GE, ExpressionKind.PROPERTY, "SalesOrder", "1234");
 		CommonExpression exp2 = getBinaryExpressionMockedObj(BinaryOperator.NE, ExpressionKind.PROPERTY, "SalesABC", "XYZ");
 
-		parsedStr = ExpressionParsingUtility.parseWhereExpression(getBinaryExpression(exp1, BinaryOperator.AND, exp2));
+		parsedStr = ODataExpressionParser.parseToJPAWhereExpression(getBinaryExpression(exp1, BinaryOperator.AND, exp2));
 		assertEquals(getAliasedProperty("SalesOrder")+ " >= 1234 AND "+getAliasedProperty("SalesABC")+ " <> XYZ", parsedStr);
 		
-		parsedStr = ExpressionParsingUtility.parseWhereExpression(getBinaryExpression(exp1, BinaryOperator.OR, exp2));
+		parsedStr = ODataExpressionParser.parseToJPAWhereExpression(getBinaryExpression(exp1, BinaryOperator.OR, exp2));
 		assertEquals(getAliasedProperty("SalesOrder")+ " >= 1234 OR "+getAliasedProperty("SalesABC")+ " <> XYZ", parsedStr);
 	}
 	
 	@Test
 	public void testParseFilterExpression() throws ODataException {
 		assertEquals(getAliasedProperty("SalesOrder"), 
-				ExpressionParsingUtility.parseWhereExpression(getFilterExpressionMockedObj(ExpressionKind.PROPERTY, "SalesOrder")));
+				ODataExpressionParser.parseToJPAWhereExpression(getFilterExpressionMockedObj(ExpressionKind.PROPERTY, "SalesOrder")));
 	}
 	
 	@Test
@@ -81,20 +81,20 @@ public class ExpressionParsingUtilityTest {
 		CommonExpression exp1 = getBinaryExpressionMockedObj(BinaryOperator.LT, ExpressionKind.PROPERTY, "SalesOrder", "1234");
 		CommonExpression exp2 = getBinaryExpressionMockedObj(BinaryOperator.LE, ExpressionKind.PROPERTY, "SalesABC", "XYZ");
 		
-		parsedStr1 = ExpressionParsingUtility.parseWhereExpression((BinaryExpression) getBinaryExpression(exp1, BinaryOperator.AND, exp2));
+		parsedStr1 = ODataExpressionParser.parseToJPAWhereExpression((BinaryExpression) getBinaryExpression(exp1, BinaryOperator.AND, exp2));
 		assertEquals(getAliasedProperty("SalesOrder")+ " < 1234 AND "+getAliasedProperty("SalesABC")+ " <= XYZ", parsedStr1);
 		
 		CommonExpression exp3 = getBinaryExpressionMockedObj(BinaryOperator.GT, ExpressionKind.PROPERTY, "LineItems", "2345");
 		CommonExpression exp4 = getBinaryExpressionMockedObj(BinaryOperator.GE, ExpressionKind.PROPERTY, "SalesOrder", "Amazon");
 
-		parsedStr2 = ExpressionParsingUtility.parseWhereExpression(getBinaryExpression(exp3, BinaryOperator.AND, exp4));
+		parsedStr2 = ODataExpressionParser.parseToJPAWhereExpression(getBinaryExpression(exp3, BinaryOperator.AND, exp4));
 		
 		assertEquals(getAliasedProperty("LineItems")+ " > 2345 AND "+getAliasedProperty("SalesOrder")+ " >= Amazon", parsedStr2);
 	}
 	
 	@Test
 	public void testParseMemberExpression() throws ODataException {
-		assertEquals(getAliasedProperty("Address")+"."+ "city"+" = "+"\'City_3\'", ExpressionParsingUtility.parseWhereExpression(getBinaryExpression(getMemberExpressionMockedObj("Address", "city"), 
+		assertEquals(getAliasedProperty("Address")+"."+ "city"+" = "+"\'City_3\'", ODataExpressionParser.parseToJPAWhereExpression(getBinaryExpression(getMemberExpressionMockedObj("Address", "city"), 
 				BinaryOperator.EQ, getLiteralExpressionMockedObj("\'City_3\'"))));
 		
 	}
@@ -104,7 +104,7 @@ public class ExpressionParsingUtilityTest {
 		
 		UnaryExpression unaryExpression = getUnaryExpressionMockedObj(getPropertyExpressionMockedObj(ExpressionKind.PROPERTY, "deliveryStatus"), 
 				com.sap.core.odata.api.uri.expression.UnaryOperator.NOT);
-		assertEquals(Operator.NOT+"("+getAliasedProperty("deliveryStatus")+")", ExpressionParsingUtility.parseWhereExpression(unaryExpression));
+		assertEquals(Operator.NOT+"("+getAliasedProperty("deliveryStatus")+")", ODataExpressionParser.parseToJPAWhereExpression(unaryExpression));
 		
 	}
 	
@@ -140,7 +140,7 @@ public class ExpressionParsingUtilityTest {
 	@Test
 	public void testParseOrderByExpression() throws EdmException, ODataJPARuntimeException {
 		//fail("Not yet implemented");
-		HashMap<String, String> orderByMap = ExpressionParsingUtility.parseOrderByExpression(getOrderByExpressionMockedObj());
+		HashMap<String, String> orderByMap = ODataExpressionParser.parseToJPAOrderByExpression(getOrderByExpressionMockedObj());
 		
 		String orderByDirection = orderByMap.get("Name 0");
 		assertEquals("DESC", orderByDirection);
@@ -148,7 +148,7 @@ public class ExpressionParsingUtilityTest {
 	}
 
 	private String getAliasedProperty(String property){
-		return ExpressionParsingUtility.TABLE_ALIAS+"."+property;
+		return ODataExpressionParser.TABLE_ALIAS+"."+property;
 	}
 	
 	private LiteralExpression getLiteralExpressionMockedObj(String uriLiteral) throws EdmException{
