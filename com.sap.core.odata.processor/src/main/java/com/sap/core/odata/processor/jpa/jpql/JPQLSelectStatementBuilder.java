@@ -17,7 +17,7 @@ import com.sap.core.odata.processor.jpa.api.jpql.JPQLSelectContext;
 
 public class JPQLSelectStatementBuilder extends JPQLStatementBuilder{
 	
-	private final Logger LOGGER = LoggerFactory.getLogger(getClass());
+	private static final Logger LOGGER = LoggerFactory.getLogger(JPQLSelectStatementBuilder.class);
 	
 	JPQLStatement jpqlStatement;
 	private JPQLSelectContext context;

@@ -5,8 +5,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.UUID;
 
-//import org.slf4j.Logger;
-//import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.sap.core.odata.api.edm.EdmSimpleTypeKind;
 import com.sap.core.odata.processor.jpa.exception.ODataJPAModelException;
@@ -19,7 +19,7 @@ import com.sap.core.odata.processor.jpa.exception.ODataJPAModelException;
  */
 public class JPATypeConvertor {
 	
-	//private static final Logger logger = LoggerFactory.getLogger(JPATypeConvertor.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(JPATypeConvertor.class);
 	
 	/**
 	 * This utility method converts a given jpa Type to equivalent
@@ -90,7 +90,7 @@ public class JPATypeConvertor {
 			//logger.debug("Returned EdmSimpleTypeKind.Guid For JPAType - {}",jpaType.toString());
 			return EdmSimpleTypeKind.Guid;
 		}
-		//logger.error("Encountered {} for JPAType - {}",ODataJPAModelException.TYPE_NOT_SUPPORTED.addContent(jpaType.toString(),jpaType.toString()));
+		LOGGER.error("Encountered {} for JPAType - {}",ODataJPAModelException.TYPE_NOT_SUPPORTED.addContent(jpaType.toString(),jpaType.toString()));
 		throw ODataJPAModelException.throwException(ODataJPAModelException.TYPE_NOT_SUPPORTED.addContent(jpaType.toString()),null);
 	}
 }
