@@ -10,7 +10,7 @@ public class FilterParserException extends ODataBadRequestException
 {
   private static final long serialVersionUID = 1L;
 
-  /*TODO add error texts to resource file*/
+
 
   //VON ABAP "An exception occurred"
 
@@ -26,7 +26,7 @@ public class FilterParserException extends ODataBadRequestException
   public static final MessageReference EXPRESSION_EXPECTED_AFTER_POS = createMessageReference(FilterParserException.class, "EXPRESSION_EXPECTED_AFTER_POS");
   public static final MessageReference EXPRESSION_EXPECTED_AT_POS = createMessageReference(FilterParserException.class, "EXPRESSION_EXPECTED_AT_POS");
   public static final MessageReference COMMA_OR_CLOSING_PHARENTHESIS_EXPECTED_AFTER_POS = createMessageReference(FilterParserException.class, "COMMA_OR_CLOSING_PHARENTHESIS_EXPECTED_AFTER_POS");
-  public static final MessageReference INVALID_TOKEN = createMessageReference(FilterParserException.class, "INVALID_TOKEN");
+  //public static final MessageReference INVALID_TOKEN = createMessageReference(FilterParserException.class, "INVALID_TOKEN");
 
   public static final MessageReference METHOD_WRONG_ARG_EXACT = createMessageReference(FilterParserException.class, "METHOD_WRONG_ARG_EXACT");
   public static final MessageReference METHOD_WRONG_ARG_BETWEEN = createMessageReference(FilterParserException.class, "METHOD_WRONG_ARG_BETWEEN");
@@ -34,10 +34,11 @@ public class FilterParserException extends ODataBadRequestException
   public static final MessageReference METHOD_WRONG_ARG_X_OR_LESS = createMessageReference(FilterParserException.class, "METHOD_WRONG_ARG_X_OR_LESS");
   
 
-  public static final MessageReference METHOD_TO_MANY_PARAMETERS = createMessageReference(FilterParserException.class, "METHOD_TO_MANY_PARAMETERS");
+  //public static final MessageReference METHOD_TO_MANY_PARAMETERS = createMessageReference(FilterParserException.class, "METHOD_TO_MANY_PARAMETERS");
 
   public static final MessageReference LEFT_SIDE_NOT_STRUCTURAL_TYPE = createMessageReference(FilterParserException.class, "LEFT_SIDE_NOT_STRUCTURAL_TYPE");
-
+  public static final MessageReference LEFT_SIDE_NOT_A_PROPERTY = createMessageReference(FilterParserException.class, "LEFT_SIDE_NOT_A_PROPERTY");
+  
   public static final MessageReference PROPERTY_NAME_NOT_FOUND_IN_TYPE = createMessageReference(FilterParserException.class, "PROPERTY_NAME_NOT_FOUND_IN_TYPE");
 
   public static final MessageReference TOKEN_UNDETERMINATED_STRING = createMessageReference(FilterParserException.class, "TOKEN_UNDETERMINATED_STRING");

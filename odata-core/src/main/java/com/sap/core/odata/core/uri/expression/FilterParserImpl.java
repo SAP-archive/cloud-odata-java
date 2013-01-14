@@ -16,6 +16,7 @@ import com.sap.core.odata.api.edm.EdmTyped;
 import com.sap.core.odata.api.uri.expression.BinaryExpression;
 import com.sap.core.odata.api.uri.expression.BinaryOperator;
 import com.sap.core.odata.api.uri.expression.CommonExpression;
+import com.sap.core.odata.api.uri.expression.ExpressionKind;
 import com.sap.core.odata.api.uri.expression.FilterExpression;
 import com.sap.core.odata.api.uri.expression.FilterParser;
 import com.sap.core.odata.api.uri.expression.FilterParserException;
@@ -58,48 +59,7 @@ public class FilterParserImpl implements FilterParser
     this.resourceEntityType = edmType;
   }
 
-  public void addTestfunctions()
-  {
-    ParameterSetCombination combination = null;
-    //create type helpers
-
-    EdmSimpleType string = EdmSimpleTypeFacadeImpl.getEdmSimpleType(EdmSimpleTypeKind.String);
-
-    //TESTING
-    combination = new ParameterSetCombination.PSCflex();
-    combination.add(new ParameterSet(string, string, string).setFurtherType(string));
-    availableMethods.put("testingMINMAX1", new InfoMethod(MethodOperator.CONCAT, "testingMINMAX1", -1, -1, combination));
-
-    //TESTING
-    combination = new ParameterSetCombination.PSCflex();
-    combination.add(new ParameterSet(string, string, string).setFurtherType(string));
-    availableMethods.put("testingMINMAX2", new InfoMethod(MethodOperator.CONCAT, "testingMINMAX2", 0, -1, combination));
-
-    //TESTING
-    combination = new ParameterSetCombination.PSCflex();
-    combination.add(new ParameterSet(string, string, string).setFurtherType(string));
-    availableMethods.put("testingMINMAX3", new InfoMethod(MethodOperator.CONCAT, "testingMINMAX3", 2, -1, combination));
-
-    //TESTING
-    combination = new ParameterSetCombination.PSCflex();
-    combination.add(new ParameterSet(string, string, string).setFurtherType(string));
-    availableMethods.put("testingMINMAX4", new InfoMethod(MethodOperator.CONCAT, "testingMINMAX4", -1, 0, combination));
-
-    //TESTING
-    combination = new ParameterSetCombination.PSCflex();
-    combination.add(new ParameterSet(string, string, string).setFurtherType(string));
-    availableMethods.put("testingMINMAX5", new InfoMethod(MethodOperator.CONCAT, "testingMINMAX5", -1, 2, combination));
-
-    //TESTING
-    combination = new ParameterSetCombination.PSCflex();
-    combination.add(new ParameterSet(string, string, string).setFurtherType(string));
-    availableMethods.put("testingMINMAX6", new InfoMethod(MethodOperator.CONCAT, "testingMINMAX6", 1, 2, combination));
-
-    //TESTING
-    combination = new ParameterSetCombination.PSCflex();
-    combination.add(new ParameterSet(string, string, string).setFurtherType(string));
-    availableMethods.put("testingMINMAX7", new InfoMethod(MethodOperator.CONCAT, "testingMINMAX7", 1, 1, combination));
-  }
+  
 
   @Override
   public FilterExpression parseFilterString(String filterExpression) throws FilterParserException, FilterParserInternalError
@@ -154,7 +114,7 @@ public class FilterParserImpl implements FilterParser
     while ((operator != null) && (operator.getOP().getPriority() >= priority))
     {
       tokenList.next(); //eat the operator
-      rightNode = readElement(leftNode); //throws FilterParserException, FilterParserInternalError
+      rightNode = readElement(leftNode, operator); //throws FilterParserException, FilterParserInternalError
       nextOperator = readBinaryOperator();
 
       // It must be "while" because for example in "Filter=a or c eq d and e eq f"
@@ -282,14 +242,6 @@ public class FilterParserImpl implements FilterParser
         }
 
         tokenList.expectToken(Character.toString(CharConst.GC_STR_COMMA), true);
-        /*
-        //eat the ','
-        try {
-          tokenList.expectToken(Character.toString(CharConst.GC_STR_COMMA));
-        } catch (TokenizerExpectError e)
-        {
-          throw FilterParserInternalError.createERROR_PARSING_PARENTHESIS(e);
-        }*/
       }
     }
 
@@ -314,6 +266,11 @@ public class FilterParserImpl implements FilterParser
     return methodExpression;
   }
 
+  protected CommonExpression readElement(CommonExpression leftExpression) throws FilterParserException, FilterParserInternalError
+  {
+    return readElement(leftExpression, null);
+  }
+
   /**
    * Reads: Unary operators, Methods, Properties, ...
    * but not binary operators which are handelt in {@link #readElements(CommonExpression, int)}
@@ -325,7 +282,7 @@ public class FilterParserImpl implements FilterParser
    * @throws FilterParserInternalError 
    * @throws TokenizerMessage 
    */
-  protected CommonExpression readElement(CommonExpression leftExpression) throws FilterParserException, FilterParserInternalError
+  protected CommonExpression readElement(CommonExpression leftExpression, ActualBinaryOperator leftOperator) throws FilterParserException, FilterParserInternalError
   {
     CommonExpression node = null;
     Token token;
@@ -352,13 +309,7 @@ public class FilterParserImpl implements FilterParser
     }
 
     //---expect the look ahead token
-    try {
-      token = tokenList.expectToken(lookToken.getUriLiteral());
-    } catch (TokenizerExpectError e)
-    {
-      //Internal parsing error, even if there are no more token (then there should be a different exception).
-      throw FilterParserInternalError.createCOMMON(e);
-    }
+    token = tokenList.expectToken(lookToken.getUriLiteral(), true);
     lookToken = tokenList.lookToken();
 
     //-->Check if the token is a method 
@@ -382,26 +333,22 @@ public class FilterParserImpl implements FilterParser
     if (token.getKind() == TokenKind.LITERAL)
     {
       PropertyExpressionImpl property = new PropertyExpressionImpl(token.getUriLiteral(), token.getJavaLiteral());
-      validateEdmProperty(leftExpression, property);
+      validateEdmProperty(leftExpression, property, token, leftOperator);
       return property;
     }
 
+    // not Tested, should not occur 
     throw FilterParserInternalError.createCOMMON();
   }
 
   protected CommonExpression readUnaryoperator(Token lookToken, InfoUnaryOperator unaryOperator) throws FilterParserException, FilterParserInternalError
   {
-    //---read token
-    try {
-      tokenList.expectToken(lookToken.getUriLiteral());
-    } catch (TokenizerExpectError e) {
-
-      throw FilterParserInternalError.createERROR_PARSING_PARENTHESIS(e);
-    }
+    tokenList.expectToken(lookToken.getUriLiteral(), true);
 
     CommonExpression operand = readElement(null);
     UnaryExpression unaryExpression = new UnaryExpressionImpl(unaryOperator, operand);
     validateUnaryOperator(unaryExpression); //throws ExpressionInvalidOperatorTypeException
+
     return unaryExpression;
   }
 
@@ -432,6 +379,7 @@ public class FilterParserImpl implements FilterParser
 
     if (operator == null)
       return null;
+
     return new ActualBinaryOperator(operator, token);
   }
 
@@ -463,9 +411,214 @@ public class FilterParserImpl implements FilterParser
     return null;
   }
 
+
+
+  protected void validateEdmProperty(CommonExpression leftExpression, PropertyExpressionImpl property, Token propertyToken, ActualBinaryOperator actBinOp) throws FilterParserException, FilterParserInternalError {
+
+    // Exist if no edm provided
+    if ((this.edm == null) || (this.resourceEntityType == null))
+      return;
+
+    if (leftExpression == null)
+    {
+      //e.g. "$filter=city eq 'Hong Kong'" --> "city" is checked against the resource entity type of the last URL segment 
+      validateEdmPropertyOfEntityType(this.resourceEntityType, property, propertyToken);
+      return;
+    }
+    //e.g. "$filter='Hong Kong' eq address/city" --> city is "checked" against the type of the property "address".
+    //     "address" itself must be a (navigation)property of the resource entity type of the last URL segment AND
+    //     "address" must have a structural edm type
+    EdmType parentType = leftExpression.getEdmType(); //parentType point now to the type of property "address"
+
+    if ((actBinOp != null) && (actBinOp.operator.getOperator() != BinaryOperator.PROPERTY_ACCESS))
+    {
+      validateEdmPropertyOfEntityType(this.resourceEntityType, property, propertyToken);
+      return;
+    }
+    else
+    {
+      if ((leftExpression.getKind() != ExpressionKind.PROPERTY) && (leftExpression.getKind() != ExpressionKind.MEMBER))
+      {
+        if (actBinOp != null)
+          //Tested with TestParserExceptions.TestPMvalidateEdmProperty CASE 6
+          throw FilterParserExceptionImpl.createLEFT_SIDE_NOT_A_PROPERTY(actBinOp.token, curExpression);
+        else
+          // not Tested, should not occur 
+          throw FilterParserInternalError.createCOMMON();
+        
+      }
+    }
+
+    if (parentType instanceof EdmEntityType)
+    {
+      //e.g. "$filter='Hong Kong' eq navigationProp/city" --> "navigationProp" is a navigation property with a entity type
+      validateEdmPropertyOfEntityType((EdmEntityType) parentType, property, propertyToken);
+    }
+    else if (parentType instanceof EdmComplexType)
+    {
+      //e.g. "$filter='Hong Kong' eq address/city" --> "address" is a property with a complex type 
+      validateEdmPropertyOfComplexType((EdmComplexType) parentType, property, propertyToken);
+    }
+    else
+    {
+      //e.g. "$filter='Hong Kong' eq name/city" --> "name is of type String"
+    //Tested with TestParserExceptions.TestPMvalidateEdmProperty CASE 5
+      throw FilterParserExceptionImpl.createLEFT_SIDE_NOT_STRUCTURAL_TYPE(parentType, property, propertyToken, curExpression);
+    }
+
+    return;
+  }
+
+  protected void validateEdmPropertyOfComplexType(EdmComplexType parentType, PropertyExpressionImpl property, Token propertyToken) throws FilterParserException, FilterParserInternalError
+  {
+    try {
+      String propertyName = property.getUriLiteral();
+      EdmTyped edmProperty = parentType.getProperty(propertyName);
+
+      if (edmProperty != null)
+      {
+        property.setEdmProperty(edmProperty);
+        property.setEdmType(edmProperty.getType());
+      }
+      else
+      {
+        //Tested with TestParserExceptions.TestPMvalidateEdmProperty CASE 3
+        throw FilterParserExceptionImpl.createPROPERTY_NAME_NOT_FOUND_IN_TYPE(parentType, property, propertyToken, curExpression);
+      }
+
+    } catch (EdmException e) {
+      // not Tested, should not occur
+      throw FilterParserInternalError.createERROR_ACCESSING_EDM(e);
+    }
+  }
+
+  protected void validateEdmPropertyOfEntityType(EdmEntityType parentType, PropertyExpressionImpl property, Token propertyToken) throws FilterParserException, FilterParserInternalError
+  {
+    try {
+      String propertyName = property.getUriLiteral();
+      EdmTyped edmProperty = parentType.getProperty(propertyName);
+
+      if (edmProperty != null)
+      {
+        property.setEdmProperty(edmProperty);
+        property.setEdmType(edmProperty.getType());
+      }
+      else
+      {
+        //Tested with TestParserExceptions.TestPMvalidateEdmProperty CASE 1
+        throw FilterParserExceptionImpl.createPROPERTY_NAME_NOT_FOUND_IN_TYPE(parentType, property, propertyToken, curExpression);
+      }
+
+    } catch (EdmException e) {
+      // not Tested, should not occur
+      throw FilterParserInternalError.createERROR_ACCESSING_EDM(e);
+    }
+  }
+
+  protected void validateUnaryOperator(UnaryExpression unaryExpression) throws FilterParserInternalError
+  {
+    InfoUnaryOperator unOpt = availableUnaryOperators.get(unaryExpression.getOperator().toUriLiteral());
+
+    //List<ParameterSet> allowedParameterTypesCombinations = binOpt.getParameterSet();
+    List<EdmType> actualParameterTypes = new ArrayList<EdmType>();
+    actualParameterTypes.add(unaryExpression.getOperand().getEdmType());
+
+    EdmType edmType = unOpt.validateParameterSet(actualParameterTypes);
+    unaryExpression.setEdmType(edmType);
+
+  }
+
+  protected void validateBinaryOperator(BinaryExpression binaryExpression) throws FilterParserException, FilterParserInternalError
+  {
+    InfoBinaryOperator binOpt = availableBinaryOperators.get(binaryExpression.getOperator().toUriLiteral());
+
+    //List<ParameterSet> allowedParameterTypesCombinations = binOpt.getParameterSet();
+    List<EdmType> actualParameterTypes = new ArrayList<EdmType>();
+    EdmType operand = binaryExpression.getLeftOperand().getEdmType();
+    if (operand == null) return;
+    actualParameterTypes.add(operand);
+
+    operand = binaryExpression.getRightOperand().getEdmType();
+    if (operand == null) return;
+    actualParameterTypes.add(operand);
+
+    EdmType edmType = binOpt.validateParameterSet(actualParameterTypes);
+    if (edmType == null)
+    {
+      BinaryExpressionImpl binaryExpressionImpl = (BinaryExpressionImpl) binaryExpression;
+
+      // Tested with TestParserExceptions.TestPMvalidateBinaryOperator
+      throw FilterParserExceptionImpl.createINVALID_TYPES_FOR_BINARY_OPERATOR(
+          binaryExpressionImpl.getToken().getPosition(), curExpression,
+          binaryExpression.getOperator(),
+          binaryExpression.getLeftOperand().getEdmType(),
+          binaryExpression.getLeftOperand().getEdmType()
+          );
+
+    }
+
+    binaryExpression.setEdmType(edmType);
+  }
+
+  protected void validateMethodTypes(MethodExpression methodExpression) throws FilterParserInternalError
+  {
+    InfoMethod methOpt = availableMethods.get(methodExpression.getMethod().toUriLiteral());
+
+    List<EdmType> actualParameterTypes = new ArrayList<EdmType>();
+
+    for (CommonExpression parameter : methodExpression.getParameters())
+    {
+      actualParameterTypes.add(parameter.getEdmType());
+    }
+
+    EdmType edmType = methOpt.validateParameterSet(actualParameterTypes);
+    methodExpression.setEdmType(edmType);
+  }
+  public void addTestfunctions()
+  {
+    ParameterSetCombination combination = null;
+    //create type helpers
+
+    EdmSimpleType string = EdmSimpleTypeFacadeImpl.getEdmSimpleType(EdmSimpleTypeKind.String);
+
+    //TESTING
+    combination = new ParameterSetCombination.PSCflex();
+    combination.add(new ParameterSet(string, string, string).setFurtherType(string));
+    availableMethods.put("testingMINMAX1", new InfoMethod(MethodOperator.CONCAT, "testingMINMAX1", -1, -1, combination));
+
+    //TESTING
+    combination = new ParameterSetCombination.PSCflex();
+    combination.add(new ParameterSet(string, string, string).setFurtherType(string));
+    availableMethods.put("testingMINMAX2", new InfoMethod(MethodOperator.CONCAT, "testingMINMAX2", 0, -1, combination));
+
+    //TESTING
+    combination = new ParameterSetCombination.PSCflex();
+    combination.add(new ParameterSet(string, string, string).setFurtherType(string));
+    availableMethods.put("testingMINMAX3", new InfoMethod(MethodOperator.CONCAT, "testingMINMAX3", 2, -1, combination));
+
+    //TESTING
+    combination = new ParameterSetCombination.PSCflex();
+    combination.add(new ParameterSet(string, string, string).setFurtherType(string));
+    availableMethods.put("testingMINMAX4", new InfoMethod(MethodOperator.CONCAT, "testingMINMAX4", -1, 0, combination));
+
+    //TESTING
+    combination = new ParameterSetCombination.PSCflex();
+    combination.add(new ParameterSet(string, string, string).setFurtherType(string));
+    availableMethods.put("testingMINMAX5", new InfoMethod(MethodOperator.CONCAT, "testingMINMAX5", -1, 2, combination));
+
+    //TESTING
+    combination = new ParameterSetCombination.PSCflex();
+    combination.add(new ParameterSet(string, string, string).setFurtherType(string));
+    availableMethods.put("testingMINMAX6", new InfoMethod(MethodOperator.CONCAT, "testingMINMAX6", 1, 2, combination));
+
+    //TESTING
+    combination = new ParameterSetCombination.PSCflex();
+    combination.add(new ParameterSet(string, string, string).setFurtherType(string));
+    availableMethods.put("testingMINMAX7", new InfoMethod(MethodOperator.CONCAT, "testingMINMAX7", 1, 1, combination));
+  }
+  
   static void initAvialTables()
   {
-
     availableBinaryOperators = new HashMap<String, InfoBinaryOperator>();
     availableMethods = new HashMap<String, InfoMethod>();
     availableUnaryOperators = new HashMap<String, InfoUnaryOperator>();
@@ -716,154 +869,5 @@ public class FilterParserImpl implements FilterParser
     //not
     availableUnaryOperators.put(CharConst.GC_OPERATOR_NOT, new InfoUnaryOperator(UnaryOperator.NOT, "not", CharConst.GC_OPERATOR_NOT, combination));
 
-  }
-
-  protected void validateEdmProperty(CommonExpression leftExpression, PropertyExpressionImpl property) throws FilterParserException, FilterParserInternalError {
-
-    // Exist if no edm provided
-    if ((this.edm == null) || (this.resourceEntityType == null))
-      return;
-
-    if (leftExpression == null)
-    {
-      //e.g. "$filter='Hong Kong' eq city" --> "city" is checked against the resource entity type of the last URL segment 
-      validateEdmPropertyOfEntityType(property, this.resourceEntityType);
-      return;
-    }
-
-    //e.g. "$filter='Hong Kong' eq address/city" --> city is "checked" against the type of the property "address".
-    //     "address" itself must be a (navigation)property of the resource entity type of the last URL segment AND
-    //     "address" must have a structural edm type
-    EdmType parentType = leftExpression.getEdmType(); //parentType point now to the type of property "address"
-
-    if (parentType instanceof EdmEntityType)
-    {
-      //e.g. "$filter='Hong Kong' eq navigationProp/city" --> "navigationProp" is a navigation property with a entity type
-      validateEdmPropertyOfEntityType(property, (EdmEntityType) parentType);
-    }
-    else if (parentType instanceof EdmComplexType)
-    {
-      //e.g. "$filter='Hong Kong' eq address/city" --> "address" is a property with a complex type 
-      validateEdmPropertyOfComplexType(property, (EdmComplexType) parentType);
-    }
-    else
-    {
-      //e.g. "$filter='Hong Kong' eq name/city" --> "name is of type String" 
-      throw FilterParserExceptionImpl.createLEFT_SIDE_NOT_STRUCTURAL_TYPE();
-    }
-
-    return;
-  }
-
-  /*
-  private Object getSave(Object object, Class class1) throws FilterParserInternalError {
-    if (object.getClass() == class1)
-    {
-      return  object;
-    }
-    throw FilterParserInternalError.createERROR_ACCESSING_EDM();
-  }
-  */
-
-  protected void validateEdmPropertyOfComplexType(PropertyExpressionImpl property, EdmComplexType parentType) throws FilterParserException, FilterParserInternalError
-  {
-    try {
-      String propertyName = property.getUriLiteral();
-      EdmTyped edmProperty = parentType.getProperty(propertyName);
-
-      if (edmProperty != null)
-      {
-        property.setEdmProperty(edmProperty);
-        property.setEdmType(edmProperty.getType());
-      }
-      else
-      {
-        throw FilterParserExceptionImpl.createPROPERTY_NAME_NOT_FOUND_IN_TYPE(parentType, property);
-      }
-
-    } catch (EdmException e) {
-      throw FilterParserInternalError.createERROR_ACCESSING_EDM(e);
-    }
-  }
-
-  protected void validateEdmPropertyOfEntityType(PropertyExpressionImpl property, EdmEntityType parentType) throws FilterParserException, FilterParserInternalError
-  {
-    try {
-      String propertyName = property.getUriLiteral();
-      EdmTyped edmProperty = parentType.getProperty(propertyName);
-
-      if (edmProperty != null)
-      {
-        property.setEdmProperty(edmProperty);
-        property.setEdmType(edmProperty.getType());
-      }
-      else
-      {
-        throw FilterParserExceptionImpl.createPROPERTY_NAME_NOT_FOUND_IN_TYPE(parentType, property);
-      }
-
-    } catch (EdmException e) {
-      throw FilterParserInternalError.createERROR_ACCESSING_EDM(e);
-    }
-  }
-
-  protected void validateUnaryOperator(UnaryExpression unaryExpression) throws FilterParserInternalError
-  {
-    InfoUnaryOperator unOpt = availableUnaryOperators.get(unaryExpression.getOperator().toUriLiteral());
-
-    //List<ParameterSet> allowedParameterTypesCombinations = binOpt.getParameterSet();
-    List<EdmType> actualParameterTypes = new ArrayList<EdmType>();
-    actualParameterTypes.add(unaryExpression.getOperand().getEdmType());
-
-    EdmType edmType = unOpt.validateParameterSet(actualParameterTypes);
-    unaryExpression.setEdmType(edmType);
-
-  }
-
-  protected void validateBinaryOperator(BinaryExpression binaryExpression) throws FilterParserException, FilterParserInternalError
-  {
-    InfoBinaryOperator binOpt = availableBinaryOperators.get(binaryExpression.getOperator().toUriLiteral());
-
-    //List<ParameterSet> allowedParameterTypesCombinations = binOpt.getParameterSet();
-    List<EdmType> actualParameterTypes = new ArrayList<EdmType>();
-    EdmType operand = binaryExpression.getLeftOperand().getEdmType();
-    if (operand == null) return;
-    actualParameterTypes.add(operand);
-
-    operand = binaryExpression.getRightOperand().getEdmType();
-    if (operand == null) return;
-    actualParameterTypes.add(operand);
-
-    EdmType edmType = binOpt.validateParameterSet(actualParameterTypes);
-    if (edmType == null)
-    {
-      BinaryExpressionImpl binaryExpressionImpl = (BinaryExpressionImpl) binaryExpression;
-
-      // Tested with TestParserExceptions.TestPMvalidateBinaryOperator
-      throw FilterParserExceptionImpl.createINVALID_TYPES_FOR_BINARY_OPERATOR(
-          binaryExpressionImpl.getToken().getPosition(), curExpression,
-          binaryExpression.getOperator(),
-          binaryExpression.getLeftOperand().getEdmType(),
-          binaryExpression.getLeftOperand().getEdmType()
-          );
-
-    }
-
-    binaryExpression.setEdmType(edmType);
-  }
-
-  protected void validateMethodTypes(MethodExpression methodExpression) throws FilterParserInternalError
-  {
-    InfoMethod methOpt = availableMethods.get(methodExpression.getMethod().toUriLiteral());
-
-    List<EdmType> actualParameterTypes = new ArrayList<EdmType>();
-
-    for (CommonExpression parameter : methodExpression.getParameters())
-    {
-      actualParameterTypes.add(parameter.getEdmType());
-    }
-
-    EdmType edmType = methOpt.validateParameterSet(actualParameterTypes);
-    methodExpression.setEdmType(edmType);
   }
 }

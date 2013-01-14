@@ -2,9 +2,71 @@ package com.sap.core.odata.core.uri.expression;
 
 import org.junit.Test;
 
+import com.sap.core.odata.api.edm.EdmEntityType;
+import com.sap.core.odata.api.uri.expression.ExpressionKind;
 import com.sap.core.odata.api.uri.expression.FilterParserException;
 
 public class TestParserExceptions extends TestBase {
+
+  //TODO test Address\NotAProperty    used \ instead of /
+  @Test
+  public void TestPMvalidateEdmProperty()
+  {
+    EdmEntityType edmEtAllTypes = edmInfo.getTypeEtAllTypes();
+    
+    //OK
+    GetPTF(edm, edmEtAllTypes, "'text' eq String")
+        .aKind(ExpressionKind.BINARY)
+        .aSerialized("{'text' eq String}");
+
+    //CASE 1
+    //http://services.odata.org/Northwind/Northwind.svc/Products/?$filter=NotAProperty
+    //-->No property 'NotAProperty' exists in type 'ODataWeb.Northwind.Model.Product' at position 10.
+    GetPTF(edm, edmEtAllTypes, "NotAProperty")
+        .aExMsgText("No property \"NotAProperty\" exists in type \"TecRefScenario.EtAllTypes\" at position 1 in \"NotAProperty\".");
+    
+    //CASE 2
+    //http://services.odata.org/Northwind/Northwind.svc/Products/?$filter='text'%20eq%20NotAProperty
+    //-->No property 'NotAProperty' exists in type 'ODataWeb.Northwind.Model.Product' at position 10.
+    GetPTF(edm, edmEtAllTypes, "'text' eq NotAProperty")
+        .aExMsgText("No property \"NotAProperty\" exists in type \"TecRefScenario.EtAllTypes\" at position 11 in \"'text' eq NotAProperty\".");
+    
+    
+    //CASE 3
+    GetPTF(edm, edmEtAllTypes, "Complex/NotAProperty")
+        .aExMsgText("No property \"NotAProperty\" exists in type \"TecRefScenario.CtAllTypes\" at position 9 in \"Complex/NotAProperty\".");
+
+    
+
+    //CASE 4
+    GetPTF(edm, edmEtAllTypes, "'text' eq Complex/NotAProperty")
+        .aExMsgText("No property \"NotAProperty\" exists in type \"TecRefScenario.CtAllTypes\" at position 19 in \"'text' eq Complex/NotAProperty\".");
+  
+    
+    //CASE 5
+    GetPTF(edm, edmEtAllTypes, "String/NotAProperty")
+        .aExMsgText("No property \"NotAProperty\" exists in type \"Edm.String\" at position 8 in \"String/NotAProperty\".");
+     
+    
+    //CASE 6
+    //http://services.odata.org/Northwind/Northwind.svc/Products/?$filter='aText'/NotAProperty
+    //-->Exception Stack
+    GetPTF(edm, edmEtAllTypes, "'aText'/NotAProperty")
+        .printExMessage()
+        .aExMsgText("Leftside of method operator at position 8 is not a property in \"'aText'/NotAProperty\".");
+    
+    //http://services.odata.org/Northwind/Northwind.svc/Products/?$filter='Hong Kong' eq ProductName/city
+    //--> No property 'city' exists in type 'System.String' at position 27. 
+    //      GetPTF(edm, edmEtAllTypes, "'Hong Kong' eq DateTime/city")
+    //       .aExMsgText("No property \"city\" exists in type \"Edm.DateTime\" at position 16 in \"'Hong Kong' eq DateTime/city\".");
+    /*
+    //http://services.odata.org/Northwind/Northwind.svc/Products/?$filter='Hong Kong' eq ProductName/city
+    //--> No property 'city' exists in type 'System.String' at position 27. 
+    GetPTF(edm, edmEtAllTypes, "'Hong Kong' eq name/city")
+     .aExMsgText("No property \"city\" exists in type \"Edm.String\" at position 16 in \"'Hong Kong' eq name/city\".");
+    */
+  }
+
   @Test
   public void TestPMreadParameters()
   {

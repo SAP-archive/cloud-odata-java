@@ -17,7 +17,7 @@ public class TokenizerException extends ODataMessageException
   private static final long serialVersionUID = 77L;
 
   public static final MessageReference TYPEDECTECTION_FAILED_ON_STRING = createMessageReference(TokenizerException.class, "TYPEDECTECTION_FAILED_ON_STRING");
-  public static final MessageReference TYPEDECTECTION_FAILED_ON_EDMTYPE = createMessageReference(TokenizerException.class, "TYPEDECTECTION_FAILED_ON_EDMTYPE");
+  //public static final MessageReference TYPEDECTECTION_FAILED_ON_EDMTYPE = createMessageReference(TokenizerException.class, "TYPEDECTECTION_FAILED_ON_EDMTYPE");
   public static final MessageReference UNKNOWN_CHARACTER = createMessageReference(TokenizerException.class, "UNKNOWN_CHARACTER");
 
   private Token token;
@@ -64,6 +64,7 @@ public class TokenizerException extends ODataMessageException
     return new TokenizerException(msgRef).setToken(token);
   }
 
+  /*
   static public TokenizerException createTYPEDECTECTION_FAILED_ON_EDMTYPE(EdmLiteralException ex, int position, String uriLiteral)
   {
     MessageReference msgRef = TokenizerException.TYPEDECTECTION_FAILED_ON_EDMTYPE.create();
@@ -74,7 +75,7 @@ public class TokenizerException extends ODataMessageException
 
     return new TokenizerException(msgRef).setToken(token);
   }
-
+*/
   static public TokenizerException createUNKNOWN_CHARACTER(int position, String uriLiteral)
   {
     MessageReference msgRef = TokenizerException.UNKNOWN_CHARACTER.create();

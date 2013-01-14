@@ -7,7 +7,6 @@ import com.sap.core.odata.api.exception.MessageReference;
 import com.sap.core.odata.api.exception.ODataBadRequestException;
 import com.sap.core.odata.api.uri.expression.BinaryOperator;
 import com.sap.core.odata.api.uri.expression.FilterParserException;
-import com.sap.core.odata.api.uri.expression.MethodExpression;
 import com.sap.core.odata.api.uri.expression.PropertyExpression;
 
 /**
@@ -75,7 +74,7 @@ public class FilterParserExceptionImpl extends FilterParserException
 
     return new FilterParserException(msgRef);
   }
-
+/*
   static public FilterParserException createINVALID_TOKEN(Token token)
   {
     MessageReference msgRef = FilterParserException.INVALID_TOKEN.create();
@@ -85,7 +84,7 @@ public class FilterParserExceptionImpl extends FilterParserException
 
     return new FilterParserException(msgRef);
   }
-
+*/
   public static FilterParserException createMETHOD_WRONG_ARG_COUNT(String expression, MethodExpressionImpl methodExpression, Token token)
   {
     MessageReference msgRef = null;
@@ -94,7 +93,6 @@ public class FilterParserExceptionImpl extends FilterParserException
 
     if ((minParam == -1) && (maxParam == -1))
     {
-      int i = 1;
       //no exception thrown in this case
     }
     else if ((minParam != -1) && (maxParam == -1))
@@ -141,6 +139,7 @@ public class FilterParserExceptionImpl extends FilterParserException
     return new FilterParserException(msgRef);
   }
 
+  /*
   public static FilterParserException createMETHOD_TO_MANY_PARAMETERS(MethodExpression methodExpression)
   {
     MessageReference msgRef = FilterParserException.METHOD_TO_MANY_PARAMETERS.create();
@@ -149,21 +148,48 @@ public class FilterParserExceptionImpl extends FilterParserException
 
     return new FilterParserException(msgRef);
   }
-
-  public static FilterParserException createLEFT_SIDE_NOT_STRUCTURAL_TYPE()
+  */
+  public static FilterParserException createLEFT_SIDE_NOT_A_PROPERTY(  Token propertyToken, String expression) throws FilterParserInternalError
   {
-    MessageReference msgRef = FilterParserException.LEFT_SIDE_NOT_STRUCTURAL_TYPE.create();
+    MessageReference msgRef = FilterParserException.LEFT_SIDE_NOT_A_PROPERTY.create();
+    
+    //try {
+      //msgRef.addContent(property.getUriLiteral());
+      //msgRef.addContent(parentType.getNamespace() + "." + parentType.getName());
+      msgRef.addContent(propertyToken.getPosition());
+      msgRef.addContent(expression);
+    //} catch (EdmException e) {
+    //  throw FilterParserInternalError.createERROR_ACCESSING_EDM(e);
+    //}
 
     return new FilterParserException(msgRef);
   }
 
-  public static FilterParserException createPROPERTY_NAME_NOT_FOUND_IN_TYPE(EdmStructuralType parentType, PropertyExpression property) throws FilterParserInternalError
+  public static FilterParserException createLEFT_SIDE_NOT_STRUCTURAL_TYPE(EdmType parentType, PropertyExpressionImpl property, Token propertyToken, String expression) throws FilterParserInternalError
+  {
+    MessageReference msgRef = FilterParserException.LEFT_SIDE_NOT_STRUCTURAL_TYPE.create();
+    
+    try {
+      msgRef.addContent(property.getUriLiteral());
+      msgRef.addContent(parentType.getNamespace() + "." + parentType.getName());
+      msgRef.addContent(propertyToken.getPosition());
+      msgRef.addContent(expression);
+    } catch (EdmException e) {
+      throw FilterParserInternalError.createERROR_ACCESSING_EDM(e);
+    }
+
+    return new FilterParserException(msgRef);
+  }
+
+  public static FilterParserException createPROPERTY_NAME_NOT_FOUND_IN_TYPE(EdmStructuralType parentType, PropertyExpression property, Token token, String expression) throws FilterParserInternalError
   {
     MessageReference msgRef = FilterParserException.PROPERTY_NAME_NOT_FOUND_IN_TYPE.create();
 
     try {
-      msgRef.addContent(property.getPropertyName());
+      msgRef.addContent(property.getUriLiteral());
       msgRef.addContent(parentType.getNamespace() + "." + parentType.getName());
+      msgRef.addContent(token.getPosition());
+      msgRef.addContent(expression);
     } catch (EdmException e) {
       throw FilterParserInternalError.createERROR_ACCESSING_EDM(e);
     }
