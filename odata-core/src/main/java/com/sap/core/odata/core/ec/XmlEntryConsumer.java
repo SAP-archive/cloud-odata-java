@@ -8,6 +8,7 @@ import javax.xml.stream.XMLStreamReader;
 
 import com.sap.core.odata.api.ec.EntityConsumerException;
 import com.sap.core.odata.api.edm.EdmEntitySet;
+import com.sap.core.odata.api.edm.EdmException;
 import com.sap.core.odata.api.edm.EdmProperty;
 
 public class XmlEntryConsumer {
@@ -38,7 +39,7 @@ public class XmlEntryConsumer {
     return result;
   }
 
-  private Object handleStartedTag(XMLStreamReader reader, String tagName, EdmEntitySet entitySet) throws Exception {
+  private Object handleStartedTag(XMLStreamReader reader, String tagName, EdmEntitySet entitySet) throws EntityConsumerException, XMLStreamException, EdmException  {
     if("id".equals(tagName)) {
       return readId(reader);
     } else if("title".equals(tagName)) {
@@ -94,7 +95,7 @@ public class XmlEntryConsumer {
     }
   }
 
-  private Object readContent(XMLStreamReader reader, EdmEntitySet entitySet) throws Exception {
+  private Object readContent(XMLStreamReader reader, EdmEntitySet entitySet) throws EntityConsumerException, XMLStreamException, EdmException  {
     validateStartPosition(reader, "content");
     
     Map<String, String> attributes = readAttributes(reader);
@@ -172,7 +173,7 @@ public class XmlEntryConsumer {
     return value;
   }
 
-  private Map<String, Object> readProperties(XMLStreamReader reader, EdmEntitySet entitySet) throws Exception {
+  private Map<String, Object> readProperties(XMLStreamReader reader, EdmEntitySet entitySet) throws XMLStreamException, EdmException, EntityConsumerException {
     Map<String, Object> tagName2tagText = new HashMap<String, Object>();
     
     //
