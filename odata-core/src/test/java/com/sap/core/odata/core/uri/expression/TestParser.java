@@ -8,13 +8,11 @@ import java.util.List;
 
 import org.junit.Test;
 
-import com.sap.core.odata.api.edm.Edm;
 import com.sap.core.odata.api.edm.EdmComplexType;
 import com.sap.core.odata.api.edm.EdmEntityType;
 import com.sap.core.odata.api.edm.EdmException;
 import com.sap.core.odata.api.edm.EdmProperty;
 import com.sap.core.odata.api.edm.EdmSimpleType;
-import com.sap.core.odata.api.rt.RuntimeDelegate;
 import com.sap.core.odata.api.uri.expression.ExpressionKind;
 import com.sap.core.odata.api.uri.expression.FilterParserException;
 import com.sap.core.odata.api.uri.expression.SortOrder;
@@ -36,20 +34,9 @@ import com.sap.core.odata.core.edm.EdmString;
 import com.sap.core.odata.core.edm.EdmTime;
 import com.sap.core.odata.core.edm.Uint7;
 import com.sap.core.odata.core.edm.provider.EdmComplexPropertyImplProv;
-import com.sap.core.odata.testutil.mock.TecEdmInfo;
-import com.sap.core.odata.testutil.mock.TechnicalScenarioEdmProvider;
 
 public class TestParser extends TestBase
 {
-
-  Edm edm = null;
-  TecEdmInfo edmInfo = null;
-
-  public TestParser()
-  {
-    edm = RuntimeDelegate.createEdm(new TechnicalScenarioEdmProvider());
-    edmInfo = new TecEdmInfo(edm);
-  }
 
   @Test
   public void testQuick()
@@ -166,6 +153,9 @@ public class TestParser extends TestBase
 
       GetPTF(edm, edmEtAllTypes, "String").aEdmProperty(string).aEdmType(stringType);
 
+      GetPTF(edm, edmEtAllTypes, "'text' eq String")
+          .root().aKind(ExpressionKind.BINARY);
+
       GetPTF(edm, edmEtAllTypes, "Complex/String")
           .root().left().aEdmProperty(complex).aEdmType(complexType)
           .root().right().aEdmProperty(complexString).aEdmType(complexStringType)
@@ -179,6 +169,14 @@ public class TestParser extends TestBase
           .root().left().aEdmType(complexAddressType)
           .root().right().aKind(ExpressionKind.PROPERTY).aEdmProperty(complexAddressCity).aEdmType(complexAddressCityType)
           .root().aEdmType(complexAddressCityType);
+      
+      
+      EdmProperty boolean_ = (EdmProperty) edmEtAllTypes.getProperty("Boolean");
+      EdmSimpleType boolean_Type = (EdmSimpleType) boolean_.getType();
+      
+      GetPTF(edm, edmEtAllTypes, "not Boolean")
+      .aKind(ExpressionKind.UNARY)
+      .right().aEdmProperty(boolean_).aEdmType(boolean_Type);
 
     } catch (EdmException e) {
       fail("Error in testPropertiesWithEdm:" + e.getLocalizedMessage());
@@ -190,12 +188,12 @@ public class TestParser extends TestBase
   public void testSimpleMethod()
   {
     GetPTF("startswith('Test','Te')").aSerialized("{startswith('Test','Te')}");
-    //add test for concat
+    //TODO add test for concat
     GetPTF("startswith('Test','Te')").aSerialized("{startswith('Test','Te')}");
 
     GetPTF("startswith('Test', concat('A','B'))").aSerialized("{startswith('Test',{concat('A','B')})}");
 
-    //TODO enable 
+
     GetPTF("substring('Test', 1 add 2)").aSerialized("{substring('Test',{1 add 2})}");
   }
 

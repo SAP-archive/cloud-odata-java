@@ -97,7 +97,7 @@ public class Tokenizer
       case '.':
       case '*':
         curPosition = curPosition + 1;
-        tokens.appendToken(oldPosition, TokenKind.SYMBOL, curCharacter);
+        tokens.appendToken(oldPosition+1, TokenKind.SYMBOL, curCharacter);
         break;
 
       default:
