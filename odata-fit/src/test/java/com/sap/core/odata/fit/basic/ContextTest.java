@@ -9,6 +9,7 @@ import static org.mockito.Mockito.when;
 
 import java.io.IOException;
 import java.net.URI;
+import java.util.Map;
 
 import javax.ws.rs.core.Response.Status;
 
@@ -18,6 +19,7 @@ import org.apache.http.client.methods.HttpGet;
 import org.junit.Test;
 
 import com.sap.core.odata.api.ODataService;
+import com.sap.core.odata.api.commons.HttpHeaders;
 import com.sap.core.odata.api.commons.HttpStatusCodes;
 import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.api.processor.ODataContext;
@@ -78,4 +80,29 @@ public class ContextTest extends AbstractBasicTest {
     assertEquals(this.getEndpoint().toString(), ctx.getPathInfo().getServiceRoot().toASCIIString());
   }
 
+  @Test
+  public void checkRequestHeader() throws ClientProtocolException, IOException, ODataException {
+    HttpGet get = new HttpGet(URI.create(this.getEndpoint().toString() + "/$metadata"));
+    get.setHeader("ConTenT-laNguaGe", "de, en");
+    this.getHttpClient().execute(get);
+
+    ODataContext ctx = this.getService().getProcessor().getContext();
+    assertNotNull(ctx);
+
+    assertEquals("de, en", ctx.getHttpRequestHeader(HttpHeaders.CONTENT_LANGUAGE));
+    assertNull(ctx.getHttpRequestHeader("nonsens"));
+  }
+
+  @Test
+  public void checkRequestHeaders() throws ClientProtocolException, IOException, ODataException {
+    HttpGet get = new HttpGet(URI.create(this.getEndpoint().toString() + "/$metadata"));
+    get.setHeader("ConTenT-laNguaGe", "de, en");
+    this.getHttpClient().execute(get);
+
+    ODataContext ctx = this.getService().getProcessor().getContext();
+    assertNotNull(ctx);
+
+    Map<String, String> header = ctx.getHttpRequestHeaders();
+    assertEquals("de, en", header.get(HttpHeaders.CONTENT_LANGUAGE));
+  }
 }

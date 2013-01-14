@@ -73,13 +73,13 @@ public final class ODataSubLocator implements ODataLocator {
 
   @GET
   public Response handleGet() throws ODataException {
-    List<PathSegment> pathSegments = this.context.getPathInfo().getODataSegments();
-    UriInfoImpl uriParserResult = (UriInfoImpl) this.uriParser.parse(pathSegments, this.queryParameters);
+    List<PathSegment> pathSegments =  context.getPathInfo().getODataSegments();
+    UriInfoImpl uriParserResult = (UriInfoImpl)  uriParser.parse(pathSegments,  queryParameters);
 
     final String contentType = doContentNegotiation(uriParserResult);
 
     ODataResponse odataResponse = dispatcher.dispatch(ODataHttpMethod.GET, uriParserResult, null, contentType);
-    Response response = this.convertResponse(odataResponse);
+    Response response =  convertResponse(odataResponse);
 
     return response;
   }
@@ -161,11 +161,11 @@ public final class ODataSubLocator implements ODataLocator {
     if (xmethod == null) {
       response = handlePost();
     } else if ("MERGE".equals(xmethod)) {
-      response = this.handleMerge();
+      response =  handleMerge();
     } else if ("PATCH".equals(xmethod)) {
-      response = this.handlePatch();
+      response =  handlePatch();
     } else if ("DELETE".equals(xmethod)) {
-      response = this.handleDelete();
+      response =  handleDelete();
     } else {
       response = Response.status(Status.METHOD_NOT_ALLOWED).build();
     }
@@ -174,30 +174,30 @@ public final class ODataSubLocator implements ODataLocator {
   }
 
   public Response handlePost() throws ODataException {
-    List<PathSegment> pathSegments = this.context.getPathInfo().getODataSegments();
-    UriInfoImpl uriParserResult = (UriInfoImpl) this.uriParser.parse(pathSegments, this.queryParameters);
+    List<PathSegment> pathSegments = context.getPathInfo().getODataSegments();
+    UriInfoImpl uriParserResult = (UriInfoImpl) uriParser.parse(pathSegments, queryParameters);
 
     final String contentType = doContentNegotiation(uriParserResult);
 
     final ODataRequest odataRequest = ODataRequestImpl.create(contentBody, requestContentType).build();
 
     ODataResponse odataResponse = dispatcher.dispatch(ODataHttpMethod.POST, uriParserResult, odataRequest, contentType);
-    Response response = this.convertResponse(odataResponse);
+    Response response = convertResponse(odataResponse);
 
     return response;
   }
 
   @PUT
   public Response handlePut() throws ODataException {
-    List<PathSegment> pathSegments = this.context.getPathInfo().getODataSegments();
-    UriInfoImpl uriParserResult = (UriInfoImpl) this.uriParser.parse(pathSegments, this.queryParameters);
+    List<PathSegment> pathSegments = context.getPathInfo().getODataSegments();
+    UriInfoImpl uriParserResult = (UriInfoImpl) uriParser.parse(pathSegments, queryParameters);
 
     final String contentType = doContentNegotiation(uriParserResult);
-    
+
     final ODataRequest odataRequest = ODataRequestImpl.create(contentBody, requestContentType).build();
 
     ODataResponse odataResponse = dispatcher.dispatch(ODataHttpMethod.PUT, uriParserResult, odataRequest, contentType);
-    Response response = this.convertResponse(odataResponse);
+    Response response = convertResponse(odataResponse);
 
     return response;
   }
@@ -232,27 +232,29 @@ public final class ODataSubLocator implements ODataLocator {
   }
 
   public void initialize(InitParameter param) throws ODataException {
-    this.context.setUriInfo(this.buildODataUriInfo(param));
-
-    this.queryParameters = this.convertToSinglevaluedMap(param.getUriInfo().getQueryParameters());
-
-    acceptHeaderContentTypes = convertMediaTypes(param.httpHeaders.getAcceptableMediaTypes());
     try {
+      fillRequestHeader(param.httpHeaders);
+      context.setUriInfo(buildODataUriInfo(param));
+
+      queryParameters = convertToSinglevaluedMap(param.getUriInfo().getQueryParameters());
+
+      acceptHeaderContentTypes = convertMediaTypes(param.httpHeaders.getAcceptableMediaTypes());
       contentBody = param.getServletRequest().getInputStream();
-//      contentBody = param.getServletRequest().getReader();
+      //      contentBody = param.getServletRequest().getReader();
+      final MediaType requestMediaType = param.httpHeaders.getMediaType();
+      if (requestMediaType != null) {
+        requestContentType = requestMediaType.toString();
+      }
+
+      service = param.getServiceFactory().createService(context);
+      context.setService(service);
+      service.getProcessor().setContext(context);
+
+      uriParser = new UriParserImpl(service.getEntityDataModel());
+      dispatcher = new Dispatcher(service);
     } catch (IOException e) {
       throw new ODataException("Error getting request content body reader.", e);
     }
-    final MediaType requestMediaType = param.httpHeaders.getMediaType();
-    if (requestMediaType != null)
-      requestContentType = requestMediaType.toString();
-
-    this.service = param.getServiceFactory().createService(this.context);
-    this.context.setService(this.service);
-    this.service.getProcessor().setContext(this.context);
-
-    this.uriParser = new UriParserImpl(service.getEntityDataModel());
-    this.dispatcher = new Dispatcher(this.service);
   }
 
   private List<ContentType> convertMediaTypes(List<MediaType> acceptableMediaTypes) {
@@ -264,15 +266,24 @@ public final class ODataSubLocator implements ODataLocator {
     return mediaTypes;
   }
 
+  private void fillRequestHeader(HttpHeaders httpHeaders) {
+    MultivaluedMap<String, String> headers = httpHeaders.getRequestHeaders();
+
+    for (String key : headers.keySet()) {
+      String value = httpHeaders.getHeaderString(key);
+      context.setHttpRequestHeader(key, value);
+    }
+  }
+
   private PathInfo buildODataUriInfo(InitParameter param) throws ODataException {
     ODataUriInfoImpl odataUriInfo = new ODataUriInfoImpl();
 
-    this.splitPath(odataUriInfo, param);
+    splitPath(odataUriInfo, param);
 
     URI uri = buildBaseUri(param.getUriInfo(), odataUriInfo.getPrecedingSegments());
     odataUriInfo.setBaseUri(uri);
 
-    this.context.setUriInfo(odataUriInfo);
+    context.setUriInfo(odataUriInfo);
 
     return odataUriInfo;
   }
@@ -301,8 +312,8 @@ public final class ODataSubLocator implements ODataLocator {
       }
     }
 
-    odataUriInfo.setODataPathSegment(this.convertPathSegmentList(pathSegments));
-    odataUriInfo.setPrecedingPathSegment(this.convertPathSegmentList(precedingPathSegments));
+    odataUriInfo.setODataPathSegment(convertPathSegmentList(pathSegments));
+    odataUriInfo.setPrecedingPathSegment(convertPathSegmentList(precedingPathSegments));
   }
 
   private URI buildBaseUri(javax.ws.rs.core.UriInfo uriInfo, List<PathSegment> precedingPathSegments) throws ODataException {
@@ -420,11 +431,11 @@ public final class ODataSubLocator implements ODataLocator {
     public void setPathSplit(int pathSplit) {
       this.pathSplit = pathSplit;
     }
-    
+
     public void setServletRequest(HttpServletRequest servletRequest) {
       this.servletRequest = servletRequest;
     }
-    
+
     public HttpServletRequest getServletRequest() {
       return servletRequest;
     }
