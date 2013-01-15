@@ -8,10 +8,12 @@ import java.util.List;
 
 import org.junit.Test;
 
+import com.sap.core.odata.testutil.fit.BaseTest;
+
 /**
  * @author SAP AG
  */
-public class TeamTest  {
+public class TeamTest extends BaseTest {
 
   private static final String VALUE_NAME = "Team 1";
   private static final boolean SCRUM_TEAM_TRUE = true;

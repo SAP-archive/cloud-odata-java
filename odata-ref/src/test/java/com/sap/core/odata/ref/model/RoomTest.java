@@ -8,10 +8,12 @@ import java.util.List;
 
 import org.junit.Test;
 
+import com.sap.core.odata.testutil.fit.BaseTest;
+
 /**
  * @author SAP AG
  */
-public class RoomTest {
+public class RoomTest extends BaseTest {
 
   private static final int VALUE_VERSION_NR = 1;
   private static final int VALUE_4 = 4;

@@ -9,7 +9,10 @@ import java.util.Set;
 
 import org.junit.Test;
 
-public class DataContainerTest {
+import com.sap.core.odata.testutil.fit.BaseTest;
+
+public class DataContainerTest extends BaseTest {
+  
   private DataContainer dc = new DataContainer();
   private static final String NAME = "Other name for team";
 
