@@ -19,10 +19,8 @@ public class SalesOrderItem {
 		this.price = price;
 	}
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "SALESORDERITEM_ID")
-	private long liId;
+	@EmbeddedId
+	private SalesOrderItemKey salesOrderItemKey;
 
 	@Column(name = "PRODUCT_NAME")
 	private String productName;
@@ -32,19 +30,19 @@ public class SalesOrderItem {
 	
 	@Column(name = "PRICE")
 	private double price;
-	
-	@JoinColumn(name = "SALESORDERITEM_ITEM_ID", referencedColumnName = "SO_ID")
+		
+	@JoinColumn(name = "Sales_Order_Id", referencedColumnName = "SO_ID", nullable = false, insertable = false, updatable = false)
 	@ManyToOne
 	private SalesOrderHeader salesOrderHeader;
 
-	public long getLiId() {
-		return liId;
+	public SalesOrderItemKey getSalesOrderItemKey() {
+		return salesOrderItemKey;
 	}
 
-	public void setLiId(long liId) {
-		this.liId = liId;
+	public void setSalesOrderItemKey(SalesOrderItemKey salesOrderItemKey) {
+		this.salesOrderItemKey = salesOrderItemKey;
 	}
-	
+
 	public String getProductName() {
 		return productName;
 	}
