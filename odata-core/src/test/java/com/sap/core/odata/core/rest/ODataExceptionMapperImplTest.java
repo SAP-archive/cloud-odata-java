@@ -119,7 +119,7 @@ public class ODataExceptionMapperImplTest extends BaseTest {
   public void testODataApplicationException() throws Exception {
     // prepare
     String message = "expected exception message";
-    Exception exception = new ODataApplicationException(message);
+    Exception exception = new ODataApplicationException(message, Locale.ENGLISH);
 
     // execute
     Response response = exceptionMapper.toResponse(exception);
@@ -136,7 +136,7 @@ public class ODataExceptionMapperImplTest extends BaseTest {
   public void testODataApplicationExceptionWrapped() throws Exception {
     // prepare
     String message = "expected exception message";
-    Exception exception = new ODataException(new ODataApplicationException(message));
+    Exception exception = new ODataException(new ODataApplicationException(message, Locale.ENGLISH));
 
     // execute
     Response response = exceptionMapper.toResponse(exception);
@@ -154,7 +154,7 @@ public class ODataExceptionMapperImplTest extends BaseTest {
     // prepare
     String message = "expected exception message";
     HttpStatusCodes status = HttpStatusCodes.OK;
-    Exception exception = new ODataApplicationException(message, status);
+    Exception exception = new ODataApplicationException(message, Locale.ENGLISH, status);
 
     // execute
     Response response = exceptionMapper.toResponse(exception);
@@ -172,7 +172,7 @@ public class ODataExceptionMapperImplTest extends BaseTest {
     // prepare
     String message = "expected exception message";
     HttpStatusCodes status = HttpStatusCodes.OK;
-    Exception exception = new ODataException(new ODataApplicationException(message, status));
+    Exception exception = new ODataException(new ODataApplicationException(message, Locale.ENGLISH, status));
 
     // execute
     Response response = exceptionMapper.toResponse(exception);

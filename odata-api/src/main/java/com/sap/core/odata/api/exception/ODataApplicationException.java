@@ -1,8 +1,11 @@
 package com.sap.core.odata.api.exception;
 
+import java.util.Locale;
+
 import com.sap.core.odata.api.commons.HttpStatusCodes;
 
 /**
+ * This class represents a translated application exception.
  * @author SAP AG
  */
 public class ODataApplicationException extends ODataException {
@@ -10,46 +13,104 @@ public class ODataApplicationException extends ODataException {
   private static final long serialVersionUID = 1L;
   private String errorCode = ODataApplicationException.class.getName();;
   private HttpStatusCodes httpStatus = HttpStatusCodes.INTERNAL_SERVER_ERROR;
+  private Locale locale;
 
-  public ODataApplicationException(String message) {
+  /**
+   * Since this is a translated application exception locale must not be null.
+   * @param message
+   * @param locale
+   */
+  public ODataApplicationException(String message, Locale locale) {
     super(message);
+    this.locale = locale;
   }
 
-  public ODataApplicationException(String message, HttpStatusCodes status) {
-    super(message);
+  /**
+   * Since this is a translated application exception locale must not be null.
+   * @param message
+   * @param locale
+   * @param status
+   */
+  public ODataApplicationException(String message, Locale locale, HttpStatusCodes status) {
+    this(message, locale);
     this.httpStatus = status;
   }
 
-  public ODataApplicationException(String message, HttpStatusCodes status, String errorCode) {
-    this(message, status);
+  /**
+   * Since this is a translated application exception locale must not be null.
+   * @param message
+   * @param locale
+   * @param status
+   * @param errorCode
+   */
+  public ODataApplicationException(String message, Locale locale, HttpStatusCodes status, String errorCode) {
+    this(message, locale, status);
     this.errorCode = errorCode;
   }
 
-  public ODataApplicationException(String message, HttpStatusCodes status, String errorCode, Throwable e) {
+  /**   
+   * Since this is a translated application exception locale must not be null.
+   * @param message
+   * @param locale
+   * @param status
+   * @param errorCode
+   * @param e
+   */
+  public ODataApplicationException(String message, Locale locale, HttpStatusCodes status, String errorCode, Throwable e) {
     super(message, e);
     this.errorCode = errorCode;
     this.httpStatus = status;
+    this.locale = locale;
   }
 
-  public ODataApplicationException(Throwable e) {
-    super(e);
-  }
 
-  public ODataApplicationException(String message, Throwable e) {
+  /**
+   * Since this is a translated application exception locale must not be null.
+   * @param message
+   * @param locale
+   * @param e
+   */
+  public ODataApplicationException(String message, Locale locale, Throwable e) {
     super(message, e);
+    this.locale = locale;
   }
 
-  public ODataApplicationException(String message, HttpStatusCodes status, Throwable e) {
-    this(message, e);
+  /**
+   * Since this is a translated application exception locale must not be null.
+   * @param message
+   * @param locale
+   * @param status
+   * @param e
+   */
+  public ODataApplicationException(String message, Locale locale, HttpStatusCodes status, Throwable e) {
+    this(message, locale, e);
     this.httpStatus = status;
   }
 
-  public ODataApplicationException(String message, String errorCode, Throwable e) {
-    this(message, e);
+  /**
+   * Since this is a translated application exception locale must not be null.
+   * @param message
+   * @param locale
+   * @param errorCode
+   * @param e
+   */
+  public ODataApplicationException(String message, Locale locale, String errorCode, Throwable e) {
+    this(message, locale, e);
     this.errorCode = errorCode;
 
   }
+  
+  /**
+   * @return {@link Locale} the locale
+   */
+  public Locale getLocale(){
+    return locale;
+  }
 
+  /**
+   * Default HttpStatusCodes.INTERNAL_SERVER_ERROR
+   * @return {@link HttpStatusCodes} the status code 
+   */
   public HttpStatusCodes getHttpStatus() {
     return this.httpStatus;
   }
@@ -61,4 +122,6 @@ public class ODataApplicationException extends ODataException {
   public String getCode() {
     return this.errorCode;
   }
+  
+  
 }
