@@ -9,11 +9,13 @@ import java.util.Calendar;
 import java.util.Map;
 import java.util.TimeZone;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
 import com.sap.core.odata.api.edm.EdmEntitySet;
 import com.sap.core.odata.api.edm.EdmProperty;
+import com.sap.core.odata.api.ep.EntryMetadata;
+import com.sap.core.odata.api.ep.MediaMetadata;
+import com.sap.core.odata.api.ep.ReadEntryResult;
 import com.sap.core.odata.testutil.fit.BaseTest;
 import com.sap.core.odata.testutil.mock.MockFacade;
 
@@ -21,12 +23,13 @@ public class XmlEntityConsumerTest extends BaseTest {
 
   public static final String EMPLOYEE_1_XML = 
     "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
-    "<entry xmlns=\"http://www.w3.org/2005/Atom\" xmlns:m=\"http://schemas.microsoft.com/ado/2007/08/dataservices/metadata\" xmlns:d=\"http://schemas.microsoft.com/ado/2007/08/dataservices\" xml:base=\"https://refodata.prod.jpaas.sapbydesign.com/com.sap.core.odata.ref.web/ReferenceScenario.svc/\">" + 
+    "<entry xmlns=\"http://www.w3.org/2005/Atom\" xmlns:m=\"http://schemas.microsoft.com/ado/2007/08/dataservices/metadata\" xmlns:d=\"http://schemas.microsoft.com/ado/2007/08/dataservices\" xml:base=\"https://refodata.prod.jpaas.sapbydesign.com/com.sap.core.odata.ref.web/ReferenceScenario.svc/\"  m:etag=\"W/&quot;1&quot;\">" + 
       "<id>https://refodata.prod.jpaas.sapbydesign.com/com.sap.core.odata.ref.web/ReferenceScenario.svc/Employees('1')</id>" +
       "<title type=\"text\">Walter Winter</title>" + 
       "<updated>1999-01-01T00:00:00Z</updated>" + 
       "<category term=\"RefScenario.Employee\" scheme=\"http://schemas.microsoft.com/ado/2007/08/dataservices/scheme\"/>" + 
-      "<link href=\"Employees('1')\" rel=\"edit\" title=\"Employee\"/><link href=\"Employees('1')/$value\" rel=\"edit-media\" type=\"application/octet-stream\"/>" + 
+      "<link href=\"Employees('1')\" rel=\"edit\" title=\"Employee\"/>" +
+      "<link href=\"Employees('1')/$value\" rel=\"edit-media\" type=\"application/octet-stream\"/>" + 
       "<link href=\"Employees('1')/ne_Room\" rel=\"http://schemas.microsoft.com/ado/2007/08/dataservices/related/ne_Room\" type=\"application/atom+xml; type=entry\" title=\"ne_Room\"/>" + 
       "<link href=\"Employees('1')/ne_Manager\" rel=\"http://schemas.microsoft.com/ado/2007/08/dataservices/related/ne_Manager\" type=\"application/atom+xml; type=entry\" title=\"ne_Manager\"/>" + 
       "<link href=\"Employees('1')/ne_Team\" rel=\"http://schemas.microsoft.com/ado/2007/08/dataservices/related/ne_Team\" type=\"application/atom+xml; type=entry\" title=\"ne_Team\"/>" + 
@@ -68,7 +71,6 @@ public class XmlEntityConsumerTest extends BaseTest {
         "</content>" +
       "</entry>";
   
-  @SuppressWarnings("unchecked")
   @Test
   public void readEntryAtomProperties() throws Exception {
     // prepare
@@ -77,25 +79,39 @@ public class XmlEntityConsumerTest extends BaseTest {
     
     // execute
     XmlEntityConsumer xec = new XmlEntityConsumer();
-    Map<String, Object> result = xec.readEntry(entitySet, contentBody);
+    ReadEntryResult result = xec.readEntry(entitySet, contentBody);
 
     // verify
-    assertEquals("https://refodata.prod.jpaas.sapbydesign.com/com.sap.core.odata.ref.web/ReferenceScenario.svc/Employees('1')", result.get("id"));
-    assertEquals("Walter Winter", result.get("title"));
-    assertEquals("1999-01-01T00:00:00Z", result.get("updated"));
-    Map<String, Object> category = (Map<String, Object>) result.get("category");
-    assertEquals(2, category.size());
-    assertEquals("RefScenario.Employee", category.get("term"));
-    assertEquals("http://schemas.microsoft.com/ado/2007/08/dataservices/scheme", category.get("scheme"));
-    Map<String, Object> content = (Map<String, Object>) result.get("content");
-    assertEquals(2, content.size());
-    assertEquals("application/octet-stream", content.get("type"));
-    assertEquals("Employees('1')/$value", content.get("src"));
+    EntryMetadata metadata = result.getMetadata();
+    assertEquals("https://refodata.prod.jpaas.sapbydesign.com/com.sap.core.odata.ref.web/ReferenceScenario.svc/Employees('1')", metadata.getId());
+//    assertEquals("", metadata.getEtag());
+    assertEquals(null, metadata.getEtag());
+    Map<String, String> associationUris = metadata.getAssociationUris();
+    assertEquals(3, associationUris.size());
+    assertEquals("Employees('1')/ne_Room", associationUris.get("ne_Room"));
+    assertEquals("Employees('1')/ne_Manager", associationUris.get("ne_Manager"));
+    assertEquals("Employees('1')/ne_Team", associationUris.get("ne_Team"));
+
+    assertEquals(null, metadata.getUri());
+
+    MediaMetadata mm = result.getMediaMetadata();
+    assertEquals("Employees('1')/$value", mm.getSourceLink());
+    assertEquals(null, mm.getEtag());
+    assertEquals("application/octet-stream", mm.getContentType());
+    assertEquals("Employees('1')/$value", mm.getEditLink());
+    
+    Map<String, Object> data = result.getData();
+    assertEquals(9, data.size());
+    assertEquals("1", data.get("EmployeeId"));
+    assertEquals("Walter Winter", data.get("EmployeeName"));
+    assertEquals("1", data.get("ManagerId"));
+    assertEquals("1", data.get("RoomId"));
+    assertEquals("1", data.get("TeamId"));
   }
 
-  @SuppressWarnings("unchecked")
+  
+  
   @Test
-  @Ignore("Link currently not works")
   public void readEntryLinks() throws Exception {
     // prepare
     EdmEntitySet entitySet = MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Employees");
@@ -103,14 +119,14 @@ public class XmlEntityConsumerTest extends BaseTest {
     
     // execute
     XmlEntityConsumer xec = new XmlEntityConsumer();
-    Map<String, Object> result = xec.readEntry(entitySet, contentBody);
+    ReadEntryResult result = xec.readEntry(entitySet, contentBody);
 
     // verify
-    Map<String, Object> link = (Map<String, Object>) result.get("link");
-    assertEquals(3, link.size());
-    assertEquals("RefScenario.Employees('1')", link.get("href"));
-    assertEquals("Employee", link.get("title"));
-    assertEquals("edit", link.get("rel"));
+    Map<String, String> associationUris = result.getMetadata().getAssociationUris();
+    assertEquals(3, associationUris.size());
+    assertEquals("Employees('1')/ne_Room", associationUris.get("ne_Room"));
+    assertEquals("Employees('1')/ne_Manager", associationUris.get("ne_Manager"));
+    assertEquals("Employees('1')/ne_Team", associationUris.get("ne_Team"));
   }
 
   @SuppressWarnings("unchecked")
@@ -122,11 +138,11 @@ public class XmlEntityConsumerTest extends BaseTest {
     
     // execute
     XmlEntityConsumer xec = new XmlEntityConsumer();
-    Map<String, Object> result = xec.readEntry(entitySet, contentBody);
+    ReadEntryResult result = xec.readEntry(entitySet, contentBody);
 
     
     // verify
-    Map<String, Object> properties = (Map<String, Object>) result.get("properties");
+    Map<String, Object> properties = (Map<String, Object>) result.getData();
     assertEquals(9, properties.size());
 
     assertEquals("1", properties.get("EmployeeId"));
@@ -162,10 +178,10 @@ public class XmlEntityConsumerTest extends BaseTest {
     
     EdmEntitySet entitySet = MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Employees");
     InputStream content = new ByteArrayInputStream(EMPLOYEE_1_XML.getBytes("utf-8"));
-    Map<String, Object> result = xec.readEntry(entitySet, content);
+    ReadEntryResult result = xec.readEntry(entitySet, content);
 
     // verify
-    Map<String, Object> properties = (Map<String, Object>) result.get("properties");
+    Map<String, Object> properties = (Map<String, Object>) result.getData();
     assertEquals(9, properties.size());
 
     assertEquals("1", properties.get("EmployeeId"));
@@ -194,19 +210,26 @@ public class XmlEntityConsumerTest extends BaseTest {
     assertEquals("/SAP/PUBLIC/BC/NWDEMO_MODEL/IMAGES/male_1_WinterW.jpg", properties.get("ImageUrl"));
   }
 
-  @SuppressWarnings("unchecked")
   @Test
   public void testReadEntryRooms() throws Exception {
     XmlEntityConsumer xec = new XmlEntityConsumer();
     
     EdmEntitySet entitySet = MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Rooms");
     InputStream reqContent = new ByteArrayInputStream(ROOM_1_XML.getBytes("utf-8"));
-    Map<String, Object> result = xec.readEntry(entitySet, reqContent);
+    ReadEntryResult result = xec.readEntry(entitySet, reqContent);
 
     // verify
-    Map<String, Object> resultContent = (Map<String, Object>) result.get("content");
-    assertEquals(2, resultContent.size());
-    Map<String, Object> properties = (Map<String, Object>) resultContent.get("properties");
+    EntryMetadata entryMetadata = result.getMetadata();
+    assertEquals("http://localhost:19000/test/Rooms('1')", entryMetadata.getId());
+    assertEquals(null, entryMetadata.getUri());
+
+    MediaMetadata mediaMetadata = result.getMediaMetadata();
+    assertEquals("application/xml", mediaMetadata.getContentType());
+    assertEquals(null, mediaMetadata.getSourceLink());
+    assertEquals(null, mediaMetadata.getEditLink());
+    assertEquals(null, mediaMetadata.getEtag());
+    
+    Map<String, Object> properties = result.getData();
     assertEquals(1, properties.size());
     assertEquals("1", properties.get("Id"));
   }

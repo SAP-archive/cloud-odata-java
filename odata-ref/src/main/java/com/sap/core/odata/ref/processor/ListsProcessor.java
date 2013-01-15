@@ -32,8 +32,9 @@ import com.sap.core.odata.api.edm.EdmSimpleTypeKind;
 import com.sap.core.odata.api.edm.EdmStructuralType;
 import com.sap.core.odata.api.edm.EdmType;
 import com.sap.core.odata.api.edm.EdmTypeKind;
-import com.sap.core.odata.api.ep.EntityProviderProperties;
 import com.sap.core.odata.api.ep.EntityProvider;
+import com.sap.core.odata.api.ep.EntityProviderProperties;
+import com.sap.core.odata.api.ep.ReadEntryResult;
 import com.sap.core.odata.api.exception.ODataBadRequestException;
 import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.api.exception.ODataNotFoundException;
@@ -285,7 +286,7 @@ public class ListsProcessor extends ODataSingleProcessor {
     ODataContext context = getContext();
     int timingHandle = context.startRuntimeMeasurement("EntityConsumer", "readEntry");
 
-    Map<String, Object> values = EntityProvider.readEntry(requestContentType, entitySet, contentAsStream(content));
+    ReadEntryResult values = EntityProvider.readEntry(contentType, entitySet, contentAsStream(content));
 
     context.stopRuntimeMeasurement(timingHandle);
 
