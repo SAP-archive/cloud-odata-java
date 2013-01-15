@@ -1,11 +1,15 @@
 package com.sap.core.odata.processor.ref.util;
 
+import java.util.Date;
+
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 
 import com.sap.core.odata.processor.ref.jpa.Address;
+import com.sap.core.odata.processor.ref.jpa.Note;
 import com.sap.core.odata.processor.ref.jpa.SalesOrderItem;
 import com.sap.core.odata.processor.ref.jpa.SalesOrderHeader;
+import com.sap.core.odata.processor.ref.jpa.SalesOrderItemKey;
 
 public class DataGenerator {
 
@@ -29,9 +33,15 @@ public class DataGenerator {
 							: false);
 			for (int j = 0; j < DataGenerator.MAX_SALESORDERITEM_PER_SALESORDER; j++) {
 				SalesOrderItem salesOrderItem = new SalesOrderItem("SalesOrderItem_" + j,j,(double) ((j*200)/4));
+				salesOrderItem.setSalesOrderItemKey(new SalesOrderItemKey(j*100));
 				salesOrder.getSalesOrderItem().add(salesOrderItem);
 				this.entityManager.persist(salesOrderItem); 
 			}
+			
+			Note note = new Note("Created_By_" + i, new Date(), "Text_" + i);
+			salesOrder.setNote(note);
+			this.entityManager.persist(note);
+			
 			this.entityManager.persist(salesOrder);
 			
 			count++;

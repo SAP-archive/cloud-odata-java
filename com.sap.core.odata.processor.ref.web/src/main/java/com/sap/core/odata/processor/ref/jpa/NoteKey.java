@@ -3,17 +3,13 @@ package com.sap.core.odata.processor.ref.jpa;
 import java.io.Serializable;
 import java.util.Date;
 
-public class NotesKey implements Serializable {
-	
-	
-	/**
-	 * 
-	 */
-	public NotesKey() {
+public class NoteKey implements Serializable {
+		
+	public NoteKey() {
 		//No arg constructor
 	}
 	
-	public NotesKey(String createdBy, Date creationDate) {
+	public NoteKey(String createdBy, Date creationDate) {
 		super();
 		this.createdBy = createdBy;
 		this.creationDate = creationDate;
@@ -43,7 +39,7 @@ public class NotesKey implements Serializable {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		NotesKey other = (NotesKey) obj;
+		NoteKey other = (NoteKey) obj;
 		if (createdBy == null) {
 			if (other.createdBy != null)
 				return false;

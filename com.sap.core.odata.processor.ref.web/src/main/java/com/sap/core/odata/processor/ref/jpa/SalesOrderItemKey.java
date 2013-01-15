@@ -7,20 +7,15 @@ import javax.persistence.Embeddable;
 
 @Embeddable
 public class SalesOrderItemKey implements Serializable {
-	
-	
-	/**
-	 * 
-	 */
+		
 	private static final long serialVersionUID = 1L;
 
 	public SalesOrderItemKey() {
 		//No arguement constructor	
 	}
 	
-	public SalesOrderItemKey(long soId, long liId) {
+	public SalesOrderItemKey(long liId) {
 		super();
-		this.soId = soId;
 		this.liId = liId;
 	}
 

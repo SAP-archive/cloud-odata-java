@@ -5,15 +5,15 @@ import java.util.Date;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "T_NOTES")
-@IdClass(value = NotesKey.class)
-public class Notes {
+@Table(name = "T_NOTE")
+@IdClass(value = NoteKey.class)
+public class Note {
 	
-	public Notes() {
+	public Note() {
 		//No arg constructor
 	}	
 	
-	public Notes(String createdBy, Date creationDate, String text) {
+	public Note(String createdBy, Date creationDate, String text) {
 		super();
 		this.createdBy = createdBy;
 		this.creationDate = creationDate;
@@ -30,7 +30,7 @@ public class Notes {
 	@Column
 	private String text;
 	
-	@JoinColumn(name = "Sales_Order_Notes_Id", referencedColumnName = "SO_ID", nullable = false, insertable = false, updatable = false)
+	@JoinColumn(name = "Sales_Order_Note_Id", referencedColumnName = "SO_ID", nullable = false, insertable = false, updatable = false)
 	@OneToOne
 	private SalesOrderHeader salesOrderHeader;
 
@@ -63,7 +63,6 @@ public class Notes {
 	}
 
 	public void setSalesOrderHeader(SalesOrderHeader salesOrderHeader) {
-		this.salesOrderHeader = salesOrderHeader;
-		this.salesOrderHeader.getNotes();
+		this.salesOrderHeader = salesOrderHeader;		
 	}	
 }
