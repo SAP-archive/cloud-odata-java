@@ -64,6 +64,6 @@ public class Notes {
 
 	public void setSalesOrderHeader(SalesOrderHeader salesOrderHeader) {
 		this.salesOrderHeader = salesOrderHeader;
-		this.salesOrderHeader.getNotesKey();
+		this.salesOrderHeader.getNotes();
 	}	
 }

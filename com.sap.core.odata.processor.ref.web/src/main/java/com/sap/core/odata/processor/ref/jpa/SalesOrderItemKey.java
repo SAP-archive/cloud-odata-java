@@ -29,36 +29,32 @@ public class SalesOrderItemKey implements Serializable {
 	
 	@Column(name = "Sales_Order_Item_Id")
 	private long liId;
-	
-	@Override
-	public boolean equals(Object obj) 
-	{
-		if(!(obj instanceof SalesOrderItemKey))
-		{
-			SalesOrderItemKey salesOrderItemKey = (SalesOrderItemKey) obj;
-			
-			if(!(salesOrderItemKey.getSoId()==soId))
-			{
-				return false;
-			}
-			
-			if(!(salesOrderItemKey.getLiId()==liId))
-			{
-				return false;             
-			}
-			
-			return true;
-		}
 		
-		return false;
-	}	
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + (int) (liId ^ (liId >>> 32));
+		result = prime * result + (int) (soId ^ (soId >>> 32));
+		return result;
+	}
 
 	@Override
-	public int hashCode() 
-	{
-		return (int) (soId + liId);     
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		SalesOrderItemKey other = (SalesOrderItemKey) obj;
+		if (liId != other.liId)
+			return false;
+		if (soId != other.soId)
+			return false;
+		return true;
 	}
-	
+
 	public long getSoId() {
 		return soId;
 	}

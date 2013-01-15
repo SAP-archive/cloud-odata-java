@@ -60,7 +60,7 @@ public class SalesOrderHeader {
 	private final List<SalesOrderItem> salesOrderItem = new ArrayList<SalesOrderItem>();
 	
 	@OneToOne(mappedBy = "SalesOrderHeader", cascade = CascadeType.ALL)
-	private final NotesKey notesKey = new NotesKey();
+	private final Notes notes = new Notes();
 
 	public long getSoId() {
 		return soId;
@@ -130,7 +130,7 @@ public class SalesOrderHeader {
 		return this.salesOrderItem;
 	}
 	
-	public NotesKey getNotesKey() {
-		return notesKey;
+	public Notes getNotes() {
+		return notes;
 	}
 }
