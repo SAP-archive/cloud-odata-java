@@ -7,11 +7,11 @@ import java.util.List;
 import com.sap.core.odata.api.uri.PathInfo;
 import com.sap.core.odata.api.uri.PathSegment;
 
-public class ODataUriInfoImpl implements PathInfo {
+public class PathInfoImpl implements PathInfo {
 
   private List<PathSegment> precedingPathSegment = Collections.emptyList();
   private List<PathSegment> odataPathSegment = Collections.emptyList();
-  private URI baseUri;
+  private URI serviceRoot;
 
   public void setODataPathSegment(List<PathSegment> odataPathSegement) {
     this.odataPathSegment = odataPathSegement;
@@ -21,8 +21,8 @@ public class ODataUriInfoImpl implements PathInfo {
     this.precedingPathSegment = precedingPathSegement;
   }
 
-  public void setBaseUri(URI uri) {
-    this.baseUri = uri;
+  public void setServiceRoot(URI uri) {
+    this.serviceRoot = uri;
   }
 
   @Override
@@ -37,6 +37,6 @@ public class ODataUriInfoImpl implements PathInfo {
 
   @Override
   public URI getServiceRoot() {
-    return this.baseUri;
+    return this.serviceRoot;
   }
 }

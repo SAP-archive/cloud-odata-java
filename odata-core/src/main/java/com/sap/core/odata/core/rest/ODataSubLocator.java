@@ -43,7 +43,7 @@ import com.sap.core.odata.api.uri.PathSegment;
 import com.sap.core.odata.core.Dispatcher;
 import com.sap.core.odata.core.ODataContextImpl;
 import com.sap.core.odata.core.ODataPathSegmentImpl;
-import com.sap.core.odata.core.ODataUriInfoImpl;
+import com.sap.core.odata.core.PathInfoImpl;
 import com.sap.core.odata.core.commons.ContentType;
 import com.sap.core.odata.core.commons.ODataHttpMethod;
 import com.sap.core.odata.core.uri.UriInfoImpl;
@@ -272,19 +272,19 @@ public final class ODataSubLocator implements ODataLocator {
   }
 
   private PathInfo buildODataUriInfo(InitParameter param) throws ODataException {
-    ODataUriInfoImpl odataUriInfo = new ODataUriInfoImpl();
+    PathInfoImpl odataUriInfo = new PathInfoImpl();
 
     splitPath(odataUriInfo, param);
 
     URI uri = buildBaseUri(param.getUriInfo(), odataUriInfo.getPrecedingSegments());
-    odataUriInfo.setBaseUri(uri);
+    odataUriInfo.setServiceRoot(uri);
 
     context.setUriInfo(odataUriInfo);
 
     return odataUriInfo;
   }
 
-  private void splitPath(ODataUriInfoImpl odataUriInfo, InitParameter param) throws ODataException {
+  private void splitPath(PathInfoImpl odataUriInfo, InitParameter param) throws ODataException {
     List<javax.ws.rs.core.PathSegment> precedingPathSegments;
     List<javax.ws.rs.core.PathSegment> pathSegments;
 

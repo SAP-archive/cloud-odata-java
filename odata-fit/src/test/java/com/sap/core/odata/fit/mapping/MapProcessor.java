@@ -44,7 +44,7 @@ public class MapProcessor extends ODataSingleProcessor {
   
   @Override
   public ODataResponse readEntitySet(GetEntitySetUriInfo uriInfo, String contentType) throws ODataException {
-    EntityProviderProperties properties = EntityProviderProperties.baseUri(getContext().getPathInfo().getServiceRoot()).build();
+    EntityProviderProperties properties = EntityProviderProperties.serviceRoot(getContext().getPathInfo().getServiceRoot()).build();
 
     List<Map<String, Object>> values = new ArrayList<Map<String, Object>>();
 
@@ -67,7 +67,7 @@ public class MapProcessor extends ODataSingleProcessor {
 
    @Override
   public ODataResponse readEntity(GetEntityUriInfo uriInfo, String contentType) throws ODataException {
-    EntityProviderProperties properties = EntityProviderProperties.baseUri(getContext().getPathInfo().getServiceRoot()).build();
+    EntityProviderProperties properties = EntityProviderProperties.serviceRoot(getContext().getPathInfo().getServiceRoot()).build();
 
     // query
     String mappedKeyName = (String) uriInfo.getTargetEntitySet().getEntityType().getKeyProperties().get(0).getMapping().getObject();

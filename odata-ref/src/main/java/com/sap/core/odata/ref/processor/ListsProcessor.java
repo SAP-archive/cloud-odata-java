@@ -137,7 +137,7 @@ public class ListsProcessor extends ODataSingleProcessor {
 
     ODataContext context = getContext();
     final EntityProviderProperties feedProperties = EntityProviderProperties
-        .baseUri(context.getPathInfo().getServiceRoot())
+        .serviceRoot(context.getPathInfo().getServiceRoot())
         .inlineCountType(inlineCountType)
         .inlineCount(count)
         .skipToken(nextSkipToken)
@@ -214,7 +214,7 @@ public class ListsProcessor extends ODataSingleProcessor {
 
     ODataContext context = getContext();
     final EntityProviderProperties entryProperties = EntityProviderProperties
-        .baseUri(context.getPathInfo().getServiceRoot()).inlineCount(count).build();
+        .serviceRoot(context.getPathInfo().getServiceRoot()).inlineCount(count).build();
 
     final int timingHandle = context.startRuntimeMeasurement("EntityProvider", "writeLinks");
 
@@ -248,7 +248,7 @@ public class ListsProcessor extends ODataSingleProcessor {
 
     ODataContext context = getContext();
     final EntityProviderProperties entryProperties = EntityProviderProperties
-        .baseUri(context.getPathInfo().getServiceRoot()).build();
+        .serviceRoot(context.getPathInfo().getServiceRoot()).build();
 
     final int timingHandle = context.startRuntimeMeasurement("EntityProvider", "writeEntry");
 
@@ -352,7 +352,7 @@ public class ListsProcessor extends ODataSingleProcessor {
 
     ODataContext context = getContext();
     final EntityProviderProperties entryProperties = EntityProviderProperties
-        .baseUri(context.getPathInfo().getServiceRoot()).build();
+        .serviceRoot(context.getPathInfo().getServiceRoot()).build();
 
     final int timingHandle = context.startRuntimeMeasurement("EntityProvider", "writeLink");
 
@@ -584,7 +584,7 @@ public class ListsProcessor extends ODataSingleProcessor {
 
     ODataContext context = getContext();
     final EntityProviderProperties entryProperties = EntityProviderProperties
-        .baseUri(context.getPathInfo().getServiceRoot()).build();
+        .serviceRoot(context.getPathInfo().getServiceRoot()).build();
 
     final int timingHandle = context.startRuntimeMeasurement("EntityProvider", "writeFunctionImport");
 

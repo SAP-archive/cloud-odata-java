@@ -83,7 +83,7 @@ public class AtomEntryProducerTest extends AbstractProviderTest {
   @Test
   public void serializeAtomMediaResourceWithMimeType() throws IOException, XpathException, SAXException, XMLStreamException, FactoryConfigurationError, ODataException {
     AtomEntityProvider ser = createAtomEntityProvider();
-    EntityProviderProperties properties = EntityProviderProperties.baseUri(BASE_URI).mediaResourceMimeType("abc").build();
+    EntityProviderProperties properties = EntityProviderProperties.serviceRoot(BASE_URI).mediaResourceMimeType("abc").build();
     ODataResponse response = ser.writeEntry(MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Employees"), this.employeeData, properties);
     String xmlString = verifyResponse(response);
 
@@ -100,7 +100,7 @@ public class AtomEntryProducerTest extends AbstractProviderTest {
   @Test
   public void serializeEmployeeAndCheckOrderOfTags() throws IOException, XpathException, SAXException, XMLStreamException, FactoryConfigurationError, ODataException {
     AtomEntityProvider ser = createAtomEntityProvider();
-    EntityProviderProperties properties = EntityProviderProperties.baseUri(BASE_URI).mediaResourceMimeType("abc").build();
+    EntityProviderProperties properties = EntityProviderProperties.serviceRoot(BASE_URI).mediaResourceMimeType("abc").build();
     ODataResponse response = ser.writeEntry(MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Employees"), this.employeeData, properties);
     String xmlString = verifyResponse(response);
 
@@ -130,7 +130,7 @@ public class AtomEntryProducerTest extends AbstractProviderTest {
   @Test
   public void serializeEmployeeAndCheckOrderOfPropertyTags() throws IOException, XpathException, SAXException, XMLStreamException, FactoryConfigurationError, ODataException {
     AtomEntityProvider ser = createAtomEntityProvider();
-    EntityProviderProperties properties = EntityProviderProperties.baseUri(BASE_URI).mediaResourceMimeType("abc").build();
+    EntityProviderProperties properties = EntityProviderProperties.serviceRoot(BASE_URI).mediaResourceMimeType("abc").build();
     EdmEntitySet employeeEntitySet = MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Employees");
     ODataResponse response = ser.writeEntry(employeeEntitySet, this.employeeData, properties);
     String xmlString = verifyResponse(response);
@@ -151,7 +151,7 @@ public class AtomEntryProducerTest extends AbstractProviderTest {
   @Test
   public void serializeEmployeeAndCheckKeepInContentFalse() throws IOException, XpathException, SAXException, XMLStreamException, FactoryConfigurationError, ODataException {
     AtomEntityProvider ser = createAtomEntityProvider();
-    EntityProviderProperties properties = EntityProviderProperties.baseUri(BASE_URI).mediaResourceMimeType("abc").build();
+    EntityProviderProperties properties = EntityProviderProperties.serviceRoot(BASE_URI).mediaResourceMimeType("abc").build();
     EdmEntitySet employeeEntitySet = MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Employees");
 
     // set "keepInContent" to false for EntryDate
