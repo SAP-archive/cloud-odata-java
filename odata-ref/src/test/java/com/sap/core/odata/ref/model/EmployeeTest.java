@@ -12,10 +12,12 @@ import java.util.Calendar;
 
 import org.junit.Test;
 
+import com.sap.core.odata.testutil.fit.BaseTest;
+
 /**
  * @author SAP AG
  */
-public class EmployeeTest {
+public class EmployeeTest extends BaseTest {
 
   private static final int VALUE_AGE = 36;
   private static final String VALUE_NAME = "Alex Kaiser";
