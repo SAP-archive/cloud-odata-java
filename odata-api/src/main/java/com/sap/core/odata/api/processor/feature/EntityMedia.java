@@ -13,21 +13,29 @@ import com.sap.core.odata.api.uri.info.PutMergePatchUriInfo;
 public interface EntityMedia extends ProcessorFeature {
 
   /**
-   * @param contentType
+   * Reads the media resource of an entity.
+   * @param uriInfo information about the request URI
+   * @param contentType the content type of the response
    * @return an {@link ODataResponse} object
    * @throws ODataException
    */
   ODataResponse readEntityMedia(GetMediaResourceUriInfo uriInfo, String contentType) throws ODataException;
 
   /**
-   * @param request
+   * Updates the media resource of an entity.
+   * @param uriInfo information about the request URI
+   * @param content the content of the request
+   * @param requestContentType the content type of the request body
+   * @param contentType the content type of the response
    * @return an {@link ODataResponse} object
    * @throws ODataException
    */
-  ODataResponse updateEntityMedia(PutMergePatchUriInfo uriInfo, Object content, String contentType) throws ODataException;
+  ODataResponse updateEntityMedia(PutMergePatchUriInfo uriInfo, Object content, String requestContentType, String contentType) throws ODataException;
 
   /**
-   * @param contentType
+   * Deletes the media resource of an entity.
+   * @param uriInfo information about the request URI
+   * @param contentType the content type of the response
    * @return an {@link ODataResponse} object
    * @throws ODataException
    */

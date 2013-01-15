@@ -15,23 +15,31 @@ import com.sap.core.odata.api.uri.info.PostUriInfo;
 public interface EntitySet extends ProcessorFeature {
 
   /**
-   * @param contentType 
-   * @return a {@link ODataResponse} object
+   * Reads entities.
+   * @param uriInfo information about the request URI
+   * @param contentType the content type of the response
+   * @return an {@link ODataResponse} object
    * @throws ODataException
    */
   ODataResponse readEntitySet(GetEntitySetUriInfo uriInfo, String contentType) throws ODataException;
 
   /**
-   * @param contentType 
-   * @return a {@link ODataResponse} object
+   * Counts the number of requested entities.
+   * @param uriInfo information about the request URI
+   * @param contentType the content type of the response
+   * @return an {@link ODataResponse} object
    * @throws ODataException
    */
   ODataResponse countEntitySet(GetEntitySetCountUriInfo uriInfo, String contentType) throws ODataException;
 
   /**
-   * @param request 
-   * @return a {@link ODataResponse} object
+   * Creates an entity.
+   * @param uriInfo information about the request URI
+   * @param content the content of the request, containing the data of the new entity
+   * @param requestContentType the content type of the request body
+   * @param contentType the content type of the response
+   * @return an {@link ODataResponse} object
    * @throws ODataException
    */
-  ODataResponse createEntity(PostUriInfo uriInfo, Object content, String contentType) throws ODataException;
+  ODataResponse createEntity(PostUriInfo uriInfo, Object content, String requestContentType, String contentType) throws ODataException;
 }

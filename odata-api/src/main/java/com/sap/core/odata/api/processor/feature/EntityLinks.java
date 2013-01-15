@@ -13,23 +13,31 @@ import com.sap.core.odata.api.uri.info.PostUriInfo;
  */
 public interface EntityLinks extends ProcessorFeature {
   /**
-   * @param contentType 
-   * @return a odata response object
+   * Reads the URIs of the target entities of a navigation property.
+   * @param uriInfo information about the request URI
+   * @param contentType the content type of the response
+   * @return an OData response object
    * @throws ODataException
    */
   ODataResponse readEntityLinks(GetEntitySetLinksUriInfo uriInfo, String contentType) throws ODataException;
 
   /**
-   * @param contentType 
-   * @return a odata response object
+   * Counts the number of target entities of a navigation property.
+   * @param uriInfo information about the request URI
+   * @param contentType the content type of the response
+   * @return an OData response object
    * @throws ODataException
    */
   ODataResponse countEntityLinks(GetEntitySetLinksCountUriInfo uriInfo, String contentType) throws ODataException;
 
   /**
-   * @param request 
-   * @return a odata response object
+   * Creates a new link to a target entity of a navigation property.
+   * @param uriInfo information about the request URI
+   * @param content the content of the request, containing the link data
+   * @param requestContentType the content type of the request body
+   * @param contentType the content type of the response
+   * @return an OData response object
    * @throws ODataException
    */
-  ODataResponse createEntityLink(PostUriInfo uriInfo, Object content, String contentType) throws ODataException;
+  ODataResponse createEntityLink(PostUriInfo uriInfo, Object content, String requestContentType, String contentType) throws ODataException;
 }

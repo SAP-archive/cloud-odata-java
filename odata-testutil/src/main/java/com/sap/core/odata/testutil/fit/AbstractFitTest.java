@@ -11,6 +11,9 @@ import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.api.processor.ODataSingleProcessorService;
 import com.sap.core.odata.testutil.server.TestServer;
 
+/**
+ * @author SAP AG
+ */
 public abstract class AbstractFitTest extends BaseTest {
 
   private TestServer server = new TestServer();

@@ -14,21 +14,30 @@ import com.sap.core.odata.api.uri.info.PutMergePatchUriInfo;
 public interface EntitySimplePropertyValue extends ProcessorFeature {
 
   /**
-   * @param contentType 
+   * Reads the unformatted value of a simple property of an entity.
+   * @param contentType the content type of the response
    * @return a {@link ODataResponse} object
    * @throws ODataException
    */
   ODataResponse readEntitySimplePropertyValue(GetSimplePropertyUriInfo uriInfo, String contentType) throws ODataException;
 
   /**
+   * Updates a simple property of an entity with an unformatted value.
+   * @param uriInfo information about the request URI
+   * @param content the content of the request, containing the new value
+   * @param requestContentType the content type of the request body
+   *                           (important for a binary property)
+   * @param contentType the content type of the response
    * @param request 
    * @return a {@link ODataResponse} object
    * @throws ODataException
    */
-  ODataResponse updateEntitySimplePropertyValue(PutMergePatchUriInfo uriInfo, Object content, String contentType) throws ODataException;
+  ODataResponse updateEntitySimplePropertyValue(PutMergePatchUriInfo uriInfo, Object content, String requestContentType, String contentType) throws ODataException;
 
   /**
-   * @param contentType 
+   * Deletes the value of a simple property of an entity.
+   * @param uriInfo information about the request URI
+   * @param contentType the content type of the response
    * @return a {@link ODataResponse} object
    * @throws ODataException
    */
