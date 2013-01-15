@@ -28,12 +28,13 @@ import com.sap.core.odata.api.edm.provider.EntityContainerInfo;
 import com.sap.core.odata.api.edm.provider.EntitySet;
 import com.sap.core.odata.api.edm.provider.EntityType;
 import com.sap.core.odata.api.edm.provider.NavigationProperty;
+import com.sap.core.odata.testutil.fit.BaseTest;
 
 /**
  * @author SAP AG
  *
  */
-public class EdmEntitySetProvTest {
+public class EdmEntitySetProvTest extends BaseTest {
 
   private static EdmEntitySetImplProv edmEntitySetFoo;
   private static EdmEntitySetImplProv edmEnitiySetBar;

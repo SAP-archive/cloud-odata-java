@@ -50,12 +50,13 @@ import com.sap.core.odata.core.commons.ContentType.ODataFormat;
 import com.sap.core.odata.core.commons.ODataHttpMethod;
 import com.sap.core.odata.core.uri.UriInfoImpl;
 import com.sap.core.odata.core.uri.UriType;
+import com.sap.core.odata.testutil.fit.BaseTest;
 
 /**
  * Tests for request dispatching according to URI type and HTTP method
  * @author SAP AG
  */
-public class DispatcherTest {
+public class DispatcherTest extends BaseTest {
 
   private static ODataService service;
 

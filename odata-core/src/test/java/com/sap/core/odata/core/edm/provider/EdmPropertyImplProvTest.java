@@ -23,11 +23,13 @@ import com.sap.core.odata.api.edm.provider.Facets;
 import com.sap.core.odata.api.edm.provider.Mapping;
 import com.sap.core.odata.api.edm.provider.SimpleProperty;
 import com.sap.core.odata.core.edm.EdmSimpleTypeFacadeImpl;
+import com.sap.core.odata.testutil.fit.BaseTest;
 
 /**
  * @author SAP AG
  */
-public class EdmPropertyImplProvTest {
+public class EdmPropertyImplProvTest extends BaseTest {
+
   private static EdmProvider edmProvider;
   private static EdmPropertyImplProv propertySimpleProvider;
   private static EdmPropertyImplProv propertySimpleWithFacetsProvider;

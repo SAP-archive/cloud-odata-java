@@ -25,9 +25,10 @@ import com.sap.core.odata.api.exception.ODataServiceUnavailableException;
 import com.sap.core.odata.api.exception.ODataUnsupportedMediaTypeException;
 import com.sap.core.odata.api.uri.UriNotMatchingException;
 import com.sap.core.odata.api.uri.UriSyntaxException;
+import com.sap.core.odata.testutil.fit.BaseTest;
 import com.sap.core.odata.testutil.helper.ODataMessageTextVerifier;
 
-public class ODataExceptionTest {
+public class ODataExceptionTest extends BaseTest {
 
   @Test
   public void testNoCause() {

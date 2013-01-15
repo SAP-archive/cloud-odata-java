@@ -7,8 +7,9 @@ import org.junit.Test;
 
 import com.sap.core.odata.api.exception.ODataMessageException;
 import com.sap.core.odata.api.uri.UriNotMatchingException;
+import com.sap.core.odata.testutil.fit.BaseTest;
 
-public class MessageReferenceTest {
+public class MessageReferenceTest extends BaseTest {
 
   @Test
   public void testAddContent() {

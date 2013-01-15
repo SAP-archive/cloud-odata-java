@@ -4,7 +4,9 @@ import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
-public class UriUtilsTest {
+import com.sap.core.odata.testutil.fit.BaseTest;
+
+public class UriUtilsTest extends BaseTest {
 
   @Test
   public void uriWithSlashAndDot() throws Exception {

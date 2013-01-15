@@ -31,12 +31,13 @@ import com.sap.core.odata.api.uri.UriInfo;
 import com.sap.core.odata.api.uri.UriNotMatchingException;
 import com.sap.core.odata.api.uri.UriSyntaxException;
 import com.sap.core.odata.core.ODataPathSegmentImpl;
+import com.sap.core.odata.testutil.fit.BaseTest;
 import com.sap.core.odata.testutil.mock.MockFacade;
 
 /**
  * @author SAP AG
  */
-public class UriParserTest {
+public class UriParserTest extends BaseTest {
 
   static {
     DOMConfigurator.configureAndWatch("log4j.xml");

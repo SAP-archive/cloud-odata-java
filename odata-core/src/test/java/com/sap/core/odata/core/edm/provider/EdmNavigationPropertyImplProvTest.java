@@ -19,11 +19,12 @@ import com.sap.core.odata.api.edm.provider.AssociationEnd;
 import com.sap.core.odata.api.edm.provider.EdmProvider;
 import com.sap.core.odata.api.edm.provider.EntityType;
 import com.sap.core.odata.api.edm.provider.NavigationProperty;
+import com.sap.core.odata.testutil.fit.BaseTest;
 
 /**
  * @author SAP AG
  */
-public class EdmNavigationPropertyImplProvTest {
+public class EdmNavigationPropertyImplProvTest extends BaseTest {
 
   private static EdmProvider edmProvider;
   private static EdmNavigationPropertyImplProv navPropertyProvider;

@@ -14,9 +14,10 @@ import org.junit.Test;
 
 import com.sap.core.odata.api.edm.EdmEntitySet;
 import com.sap.core.odata.api.edm.EdmProperty;
+import com.sap.core.odata.testutil.fit.BaseTest;
 import com.sap.core.odata.testutil.mock.MockFacade;
 
-public class XmlPropertyConsumerTest {
+public class XmlPropertyConsumerTest extends BaseTest {
 
   @Test
   public void testReadIntegerProperty() throws Exception {

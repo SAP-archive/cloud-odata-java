@@ -12,6 +12,7 @@ import org.junit.Test;
 
 import com.sap.core.odata.api.commons.HttpContentType;
 import com.sap.core.odata.core.commons.ContentType.ODataFormat;
+import com.sap.core.odata.testutil.fit.BaseTest;
 
 // 14.1 Accept
 //
@@ -28,7 +29,7 @@ import com.sap.core.odata.core.commons.ContentType.ODataFormat;
 // accept-params = ";" "q" "=" qvalue *( accept-extension )
 // accept-extension = ";" token [ "=" ( token | quoted-string ) ]
 
-public class ContentTypeTest {
+public class ContentTypeTest extends BaseTest {
 
   @Test
   public void creationFromHttpContentTypeAtomXmlEntry() {

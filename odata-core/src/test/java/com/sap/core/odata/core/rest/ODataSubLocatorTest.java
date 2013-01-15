@@ -9,11 +9,12 @@ import org.junit.Test;
 
 import com.sap.core.odata.api.exception.ODataNotAcceptableException;
 import com.sap.core.odata.core.commons.ContentType;
+import com.sap.core.odata.testutil.fit.BaseTest;
 
 /**
  * @author SAP AG
  */
-public class ODataSubLocatorTest {
+public class ODataSubLocatorTest extends BaseTest {
 
   @Test
   public void testContentNegotiationEmptyRequest() throws Exception {

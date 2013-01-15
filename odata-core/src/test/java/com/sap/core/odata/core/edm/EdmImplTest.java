@@ -5,7 +5,7 @@ import static org.junit.Assert.assertNotSame;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import org.junit.BeforeClass;
+import org.junit.Before;
 import org.junit.Test;
 
 import com.sap.core.odata.api.edm.EdmAssociation;
@@ -15,21 +15,18 @@ import com.sap.core.odata.api.edm.EdmEntityType;
 import com.sap.core.odata.api.edm.EdmException;
 import com.sap.core.odata.api.edm.FullQualifiedName;
 import com.sap.core.odata.api.exception.ODataException;
+import com.sap.core.odata.testutil.fit.BaseTest;
 
 /**
  * @author SAP AG
  */
-public class EdmImplTest extends EdmImpl {
+public class EdmImplTest extends BaseTest {
 
-  private static EdmImplTest edm;
+  private ForEdmImplTest edm;
 
-  public EdmImplTest() {
-    super(null);
-  }
-
-  @BeforeClass
-  public static void getEdmImpl() throws EdmException {
-    edm = new EdmImplTest();
+  @Before
+  public void getEdmImpl() throws EdmException {
+    edm = new ForEdmImplTest();
   }
 
   @Test
@@ -58,34 +55,41 @@ public class EdmImplTest extends EdmImpl {
     assertNotSame(edm.getAssociation("foo", "bar"), edm.getAssociation("bar", "foo"));
   }
 
-  @Override
-  protected EdmEntityContainer createEntityContainer(String name) throws ODataException {
-    EdmEntityContainer edmEntityContainer = mock(EdmEntityContainer.class);
-    when(edmEntityContainer.getName()).thenReturn(name);
-    return edmEntityContainer;
-  }
+  private class ForEdmImplTest extends EdmImpl {
 
-  @Override
-  protected EdmEntityType createEntityType(FullQualifiedName fqName) throws ODataException {
-    EdmEntityType edmEntityType = mock(EdmEntityType.class);
-    when(edmEntityType.getNamespace()).thenReturn(fqName.getNamespace());
-    when(edmEntityType.getName()).thenReturn(fqName.getName());
-    return edmEntityType;
-  }
+    public ForEdmImplTest() {
+      super(null);
+    }
 
-  @Override
-  protected EdmComplexType createComplexType(FullQualifiedName fqName) throws ODataException {
-    EdmComplexType edmComplexType = mock(EdmComplexType.class);
-    when(edmComplexType.getNamespace()).thenReturn(fqName.getNamespace());
-    when(edmComplexType.getName()).thenReturn(fqName.getName());
-    return edmComplexType;
-  }
+    @Override
+    protected EdmEntityContainer createEntityContainer(String name) throws ODataException {
+      EdmEntityContainer edmEntityContainer = mock(EdmEntityContainer.class);
+      when(edmEntityContainer.getName()).thenReturn(name);
+      return edmEntityContainer;
+    }
 
-  @Override
-  protected EdmAssociation createAssociation(FullQualifiedName fqName) throws ODataException {
-    EdmAssociation edmAssociation = mock(EdmAssociation.class);
-    when(edmAssociation.getNamespace()).thenReturn(fqName.getNamespace());
-    when(edmAssociation.getName()).thenReturn(fqName.getName());
-    return edmAssociation;
+    @Override
+    protected EdmEntityType createEntityType(FullQualifiedName fqName) throws ODataException {
+      EdmEntityType edmEntityType = mock(EdmEntityType.class);
+      when(edmEntityType.getNamespace()).thenReturn(fqName.getNamespace());
+      when(edmEntityType.getName()).thenReturn(fqName.getName());
+      return edmEntityType;
+    }
+
+    @Override
+    protected EdmComplexType createComplexType(FullQualifiedName fqName) throws ODataException {
+      EdmComplexType edmComplexType = mock(EdmComplexType.class);
+      when(edmComplexType.getNamespace()).thenReturn(fqName.getNamespace());
+      when(edmComplexType.getName()).thenReturn(fqName.getName());
+      return edmComplexType;
+    }
+
+    @Override
+    protected EdmAssociation createAssociation(FullQualifiedName fqName) throws ODataException {
+      EdmAssociation edmAssociation = mock(EdmAssociation.class);
+      when(edmAssociation.getNamespace()).thenReturn(fqName.getNamespace());
+      when(edmAssociation.getName()).thenReturn(fqName.getName());
+      return edmAssociation;
+    }
   }
 }

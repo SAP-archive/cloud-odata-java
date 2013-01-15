@@ -9,8 +9,9 @@ import org.junit.Test;
 import com.sap.core.odata.api.exception.MessageReference;
 import com.sap.core.odata.api.exception.ODataMessageException;
 import com.sap.core.odata.core.exception.MessageService.Message;
+import com.sap.core.odata.testutil.fit.BaseTest;
 
-public class MessageServiceTest {
+public class MessageServiceTest extends BaseTest {
 
   private static final Locale DEFAULT_LANGUAGE = new Locale("test", "SAP");
 

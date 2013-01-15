@@ -25,11 +25,12 @@ import com.sap.core.odata.api.edm.EdmSimpleType;
 import com.sap.core.odata.api.edm.EdmSimpleTypeException;
 import com.sap.core.odata.api.edm.EdmSimpleTypeKind;
 import com.sap.core.odata.api.edm.EdmTypeKind;
+import com.sap.core.odata.testutil.fit.BaseTest;
 
 /**
  * @author SAP AG
  */
-public class EdmSimpleTypeTest {
+public class EdmSimpleTypeTest extends BaseTest {
 
   @Test
   public void testNameSpace() throws Exception {

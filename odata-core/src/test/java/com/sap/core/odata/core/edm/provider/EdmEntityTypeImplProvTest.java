@@ -25,11 +25,12 @@ import com.sap.core.odata.api.edm.provider.NavigationProperty;
 import com.sap.core.odata.api.edm.provider.Property;
 import com.sap.core.odata.api.edm.provider.PropertyRef;
 import com.sap.core.odata.api.edm.provider.SimpleProperty;
+import com.sap.core.odata.testutil.fit.BaseTest;
 
 /**
  * @author SAP AG
  */
-public class EdmEntityTypeImplProvTest {
+public class EdmEntityTypeImplProvTest extends BaseTest {
 
   private static EdmEntityTypeImplProv edmEntityType;
   private static EdmEntityTypeImplProv edmEntityTypeWithBaseType;

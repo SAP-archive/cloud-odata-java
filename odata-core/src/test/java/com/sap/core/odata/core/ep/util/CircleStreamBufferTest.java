@@ -13,11 +13,13 @@ import java.io.OutputStream;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.sap.core.odata.testutil.fit.BaseTest;
+
 /**
  * 
  * @author d046871
  */
-public class CircleStreamBufferTest {
+public class CircleStreamBufferTest extends BaseTest {
 
   private static final boolean LOG_ON = false;
 

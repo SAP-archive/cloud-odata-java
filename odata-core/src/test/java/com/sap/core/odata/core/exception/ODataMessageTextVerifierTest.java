@@ -7,6 +7,7 @@ import java.util.List;
 
 import org.junit.Test;
 
+import com.sap.core.odata.testutil.fit.BaseTest;
 import com.sap.core.odata.testutil.helper.ODataMessageTextVerifier;
 import com.sap.core.odata.testutil.mock.SampleClassForInvalidMessageReferences;
 
@@ -15,7 +16,7 @@ import com.sap.core.odata.testutil.mock.SampleClassForInvalidMessageReferences;
  * 
  * @Author SAP AG
  */
-public class ODataMessageTextVerifierTest {
+public class ODataMessageTextVerifierTest extends BaseTest {
 
   @Test
   public void TestExceptionText() {

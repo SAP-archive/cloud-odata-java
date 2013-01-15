@@ -14,8 +14,9 @@ import com.sap.core.odata.api.edm.EdmAnnotationAttribute;
 import com.sap.core.odata.api.edm.EdmAnnotationElement;
 import com.sap.core.odata.api.edm.provider.AnnotationAttribute;
 import com.sap.core.odata.api.edm.provider.AnnotationElement;
+import com.sap.core.odata.testutil.fit.BaseTest;
 
-public class EdmAnnotationsImplProvTest {
+public class EdmAnnotationsImplProvTest extends BaseTest {
 
   private static EdmAnnotationsImplProv annotationsProvider;
 

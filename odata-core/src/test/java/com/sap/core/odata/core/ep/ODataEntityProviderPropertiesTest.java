@@ -8,11 +8,12 @@ import java.net.URI;
 import org.junit.Test;
 
 import com.sap.core.odata.api.ep.EntityProviderProperties;
+import com.sap.core.odata.testutil.fit.BaseTest;
 
 /**
  * @author SAP AG
  */
-public class ODataEntityProviderPropertiesTest {
+public class ODataEntityProviderPropertiesTest extends BaseTest {
 
   @Test
   public void buildFeedProperties() throws Exception {

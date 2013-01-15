@@ -6,8 +6,9 @@ import org.junit.Test;
 
 import com.sap.core.odata.api.commons.HttpStatusCodes;
 import com.sap.core.odata.api.processor.ODataResponse;
+import com.sap.core.odata.testutil.fit.BaseTest;
 
-public class ODataResponseTest {
+public class ODataResponseTest extends BaseTest {
 
   @Test
   public void buildStatusResponseTest() {
