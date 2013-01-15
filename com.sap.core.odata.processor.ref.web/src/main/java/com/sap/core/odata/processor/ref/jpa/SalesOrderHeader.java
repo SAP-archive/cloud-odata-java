@@ -58,6 +58,9 @@ public class SalesOrderHeader {
 
 	@OneToMany(mappedBy = "SalesOrderHeader", cascade = CascadeType.ALL)
 	private final List<SalesOrderItem> salesOrderItem = new ArrayList<SalesOrderItem>();
+	
+	@OneToOne(mappedBy = "SalesOrderHeader", cascade = CascadeType.ALL)
+	private final NotesKey notesKey = new NotesKey();
 
 	public long getSoId() {
 		return soId;
@@ -125,5 +128,9 @@ public class SalesOrderHeader {
 
 	public List<SalesOrderItem> getSalesOrderItem() {
 		return this.salesOrderItem;
+	}
+	
+	public NotesKey getNotesKey() {
+		return notesKey;
 	}
 }
