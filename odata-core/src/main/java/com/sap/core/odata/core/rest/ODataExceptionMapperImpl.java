@@ -107,7 +107,7 @@ public class ODataExceptionMapperImpl implements ExceptionMapper<Exception> {
     final int status = extractStatus(exception);
     final String innerError = getInnerError(exception);
     final ContentType contentType = getContentType();
-    InputStream entity = ODataExceptionSerializer.serialize(exception.getCode(), exception.getMessage(), innerError, contentType, DEFAULT_RESPONSE_LOCALE);
+    InputStream entity = ODataExceptionSerializer.serialize(exception.getCode(), exception.getMessage(), innerError, contentType, exception.getLocale());
     return buildResponseInternal(entity, contentType, status);
   }
 
