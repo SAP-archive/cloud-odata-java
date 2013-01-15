@@ -24,8 +24,9 @@ import com.sap.core.odata.api.edm.provider.AssociationSetEnd;
 import com.sap.core.odata.api.edm.provider.EdmProvider;
 import com.sap.core.odata.api.edm.provider.EntityContainerInfo;
 import com.sap.core.odata.api.edm.provider.EntitySet;
+import com.sap.core.odata.testutil.fit.BaseTest;
 
-public class EdmAssociationSetImplProvTest {
+public class EdmAssociationSetImplProvTest extends BaseTest {
 
   private static EdmAssociationSet edmAssociationSet;
   private static EdmProvider edmProvider;

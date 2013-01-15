@@ -11,7 +11,7 @@ import org.junit.Test;
 /**
  * @author SAP AG
  */
-public class TeamTest {
+public class TeamTest  {
 
   private static final String VALUE_NAME = "Team 1";
   private static final boolean SCRUM_TEAM_TRUE = true;

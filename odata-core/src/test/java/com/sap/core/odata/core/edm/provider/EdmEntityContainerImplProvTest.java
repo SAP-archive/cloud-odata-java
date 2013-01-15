@@ -23,11 +23,12 @@ import com.sap.core.odata.api.edm.provider.EdmProvider;
 import com.sap.core.odata.api.edm.provider.EntityContainerInfo;
 import com.sap.core.odata.api.edm.provider.EntitySet;
 import com.sap.core.odata.api.edm.provider.FunctionImport;
+import com.sap.core.odata.testutil.fit.BaseTest;
 
 /**
  * @author SAP AG
  */
-public class EdmEntityContainerImplProvTest {
+public class EdmEntityContainerImplProvTest extends BaseTest {
 
   private static EdmEntityContainerImplProv edmEntityContainer;
 

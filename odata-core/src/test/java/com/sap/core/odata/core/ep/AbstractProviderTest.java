@@ -17,18 +17,19 @@ import org.slf4j.LoggerFactory;
 
 import com.sap.core.odata.api.edm.Edm;
 import com.sap.core.odata.api.edm.EdmException;
+import com.sap.core.odata.api.ep.EntityProvider.ProviderInterface;
 import com.sap.core.odata.api.ep.EntityProviderException;
 import com.sap.core.odata.api.ep.EntityProviderProperties;
-import com.sap.core.odata.api.ep.EntityProvider.ProviderInterface;
 import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.api.processor.ODataContext;
 import com.sap.core.odata.api.uri.PathInfo;
+import com.sap.core.odata.testutil.fit.BaseTest;
 import com.sap.core.odata.testutil.helper.XMLUnitHelper;
 
 /**
  * @author SAP AG
 */
-public abstract class AbstractProviderTest {
+public abstract class AbstractProviderTest extends BaseTest {
 
   protected final Logger log = LoggerFactory.getLogger(this.getClass());
 

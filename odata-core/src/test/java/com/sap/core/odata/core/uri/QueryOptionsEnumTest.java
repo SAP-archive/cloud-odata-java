@@ -5,7 +5,9 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
-public class QueryOptionsEnumTest {
+import com.sap.core.odata.testutil.fit.BaseTest;
+
+public class QueryOptionsEnumTest extends BaseTest {
 
   @Test
   public void uriType0() {

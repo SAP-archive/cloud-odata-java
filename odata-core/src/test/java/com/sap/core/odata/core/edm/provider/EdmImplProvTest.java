@@ -14,8 +14,9 @@ import com.sap.core.odata.api.edm.provider.ComplexType;
 import com.sap.core.odata.api.edm.provider.EdmProvider;
 import com.sap.core.odata.api.edm.provider.EntityContainerInfo;
 import com.sap.core.odata.api.edm.provider.EntityType;
+import com.sap.core.odata.testutil.fit.BaseTest;
 
-public class EdmImplProvTest {
+public class EdmImplProvTest extends BaseTest {
 
   private static EdmImplProv edm;
 

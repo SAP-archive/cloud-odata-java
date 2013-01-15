@@ -12,8 +12,9 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.sap.core.odata.api.uri.PathSegment;
+import com.sap.core.odata.testutil.fit.BaseTest;
 
-public class PathSegmentTest {
+public class PathSegmentTest extends BaseTest {
 
   PathSegment segment;
   PathSegment segmentNoMatrix;

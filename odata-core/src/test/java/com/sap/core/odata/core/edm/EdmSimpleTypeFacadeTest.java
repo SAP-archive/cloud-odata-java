@@ -14,11 +14,12 @@ import com.sap.core.odata.api.edm.EdmLiteralException;
 import com.sap.core.odata.api.edm.EdmSimpleType;
 import com.sap.core.odata.api.edm.EdmSimpleTypeKind;
 import com.sap.core.odata.api.uri.UriSyntaxException;
+import com.sap.core.odata.testutil.fit.BaseTest;
 
 /**
  * @author SAP AG
  */
-public class EdmSimpleTypeFacadeTest {
+public class EdmSimpleTypeFacadeTest extends BaseTest {
 
   public EdmSimpleType parse(final String literal) throws EdmLiteralException {
     EdmLiteral uriLiteral = EdmSimpleTypeKind.parseUriLiteral(literal);

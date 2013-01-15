@@ -16,11 +16,12 @@ import com.sap.core.odata.api.edm.EdmTypeKind;
 import com.sap.core.odata.api.edm.provider.Association;
 import com.sap.core.odata.api.edm.provider.AssociationEnd;
 import com.sap.core.odata.api.edm.provider.EdmProvider;
+import com.sap.core.odata.testutil.fit.BaseTest;
 
 /**
  * @author SAP AG
  */
-public class EdmAssociationImplProvTest {
+public class EdmAssociationImplProvTest extends BaseTest {
 
   private static EdmAssociationImplProv associationProv;
   private static EdmProvider edmProvider;

@@ -6,9 +6,10 @@ import java.util.Map;
 import org.junit.Test;
 
 import com.sap.core.odata.api.uri.UriParser;
+import com.sap.core.odata.testutil.fit.BaseTest;
 import com.sap.core.odata.testutil.mock.MockFacade;
 
-public class UriParserFacadeTest {
+public class UriParserFacadeTest extends BaseTest {
 
   @Test
   public void parseWithFacade() throws Exception {

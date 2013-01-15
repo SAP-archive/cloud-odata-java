@@ -27,11 +27,12 @@ import com.sap.core.odata.api.edm.provider.EntitySet;
 import com.sap.core.odata.api.edm.provider.FunctionImport;
 import com.sap.core.odata.api.edm.provider.FunctionImportParameter;
 import com.sap.core.odata.api.edm.provider.ReturnType;
+import com.sap.core.odata.testutil.fit.BaseTest;
 
 /**
  * @author SAP AG
  */
-public class EdmFunctionImportImplProvTest {
+public class EdmFunctionImportImplProvTest extends BaseTest {
 
   private static EdmFunctionImportImplProv edmFunctionImport;
   private static EdmFunctionImportImplProv edmFunctionImportWithoutParameters;

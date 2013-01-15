@@ -23,11 +23,12 @@ import com.sap.core.odata.api.edm.provider.ComplexType;
 import com.sap.core.odata.api.edm.provider.EdmProvider;
 import com.sap.core.odata.api.edm.provider.Property;
 import com.sap.core.odata.api.edm.provider.SimpleProperty;
+import com.sap.core.odata.testutil.fit.BaseTest;
 
 /**
  * @author SAP AG
  */
-public class EdmComplexTypeImplProvTest {
+public class EdmComplexTypeImplProvTest extends BaseTest {
   private static EdmComplexTypeImplProv edmComplexType;
   private static EdmComplexTypeImplProv edmComplexTypeWithBaseType;
   private static EdmProvider edmProvider;

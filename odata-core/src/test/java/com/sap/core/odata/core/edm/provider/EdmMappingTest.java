@@ -14,8 +14,9 @@ import com.sap.core.odata.api.edm.provider.EdmProvider;
 import com.sap.core.odata.api.edm.provider.Mapping;
 import com.sap.core.odata.api.edm.provider.NavigationProperty;
 import com.sap.core.odata.api.edm.provider.SimpleProperty;
+import com.sap.core.odata.testutil.fit.BaseTest;
 
-public class EdmMappingTest {
+public class EdmMappingTest extends BaseTest {
 
   private static EdmPropertyImplProv propertySimpleProvider;
   private static EdmNavigationPropertyImplProv navPropertyProvider;

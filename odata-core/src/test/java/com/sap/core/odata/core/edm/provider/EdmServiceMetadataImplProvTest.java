@@ -15,10 +15,11 @@ import org.junit.Test;
 
 import com.sap.core.odata.api.edm.EdmServiceMetadata;
 import com.sap.core.odata.api.edm.provider.EdmProvider;
+import com.sap.core.odata.testutil.fit.BaseTest;
 import com.sap.core.odata.testutil.helper.StringHelper;
 import com.sap.core.odata.testutil.mock.EdmProviderMock;
 
-public class EdmServiceMetadataImplProvTest {
+public class EdmServiceMetadataImplProvTest extends BaseTest {
 
   private static String metadata;
 

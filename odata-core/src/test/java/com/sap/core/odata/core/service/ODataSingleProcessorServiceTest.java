@@ -30,11 +30,12 @@ import com.sap.core.odata.api.processor.feature.FunctionImportValue;
 import com.sap.core.odata.api.processor.feature.Metadata;
 import com.sap.core.odata.api.processor.feature.ServiceDocument;
 import com.sap.core.odata.core.commons.ContentType;
+import com.sap.core.odata.testutil.fit.BaseTest;
 
 /**
  * @author SAP AG
  */
-public class ODataSingleProcessorServiceTest {
+public class ODataSingleProcessorServiceTest extends BaseTest{
 
   private ODataSingleProcessorService service;
   private ODataSingleProcessor processor;

@@ -13,9 +13,10 @@ import org.junit.Test;
 
 import com.sap.core.odata.api.edm.EdmEntitySet;
 import com.sap.core.odata.api.edm.EdmProperty;
+import com.sap.core.odata.testutil.fit.BaseTest;
 import com.sap.core.odata.testutil.mock.MockFacade;
 
-public class XmlEntityConsumerTest {
+public class XmlEntityConsumerTest extends BaseTest {
 
   public static final String EMPLOYEE_1_XML = 
     "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
