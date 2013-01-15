@@ -20,7 +20,7 @@ import com.sap.core.odata.testutil.mock.MockFacade;
 /**
  * @author SAP AG
  */
-public class XmlLinksEntityProviderTest extends AbstractProviderTest {
+public class XmlLinksEntityProducerTest extends AbstractProviderTest {
 
   @Test
   public void serializeRoomLinks() throws Exception {

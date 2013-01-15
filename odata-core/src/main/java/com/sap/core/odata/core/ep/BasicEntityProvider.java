@@ -27,12 +27,12 @@ import com.sap.core.odata.api.processor.ODataResponse;
 import com.sap.core.odata.api.processor.ODataResponse.ODataResponseBuilder;
 import com.sap.core.odata.core.commons.ContentType;
 import com.sap.core.odata.core.ep.consumer.XmlPropertyConsumer;
-import com.sap.core.odata.core.ep.producer.AtomServiceDocumentProvider;
+import com.sap.core.odata.core.ep.producer.AtomServiceDocumentProducer;
 import com.sap.core.odata.core.ep.util.CircleStreamBuffer;
 
-public class BasicProvider implements BasicProviderInterface {
+public class BasicEntityProvider implements BasicEntityProviderInterface {
 
-  private static final Logger LOG = LoggerFactory.getLogger(BasicProvider.class);
+  private static final Logger LOG = LoggerFactory.getLogger(BasicEntityProvider.class);
   /** Default used charset for writer and response content header */
   private static final String DEFAULT_CHARSET = "utf-8";
   
@@ -79,7 +79,7 @@ public class BasicProvider implements BasicProviderInterface {
       CircleStreamBuffer csb = new CircleStreamBuffer();
       OutputStream outputStream = csb.getOutputStream();
       writer = new OutputStreamWriter(outputStream, DEFAULT_CHARSET);
-      AtomServiceDocumentProvider.writeServiceDocument(edm, serviceRoot, writer);
+      AtomServiceDocumentProducer.writeServiceDocument(edm, serviceRoot, writer);
 
       ODataResponse response = ODataResponse.entity(csb.getInputStream())
           .contentHeader(createContentHeader(ContentType.APPLICATION_ATOM_SVC))

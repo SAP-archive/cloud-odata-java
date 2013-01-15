@@ -15,7 +15,12 @@ import com.sap.core.odata.api.edm.EdmEntitySet;
 import com.sap.core.odata.api.edm.EdmProperty;
 import com.sap.core.odata.api.ep.EntityProviderException;
 
-public class XmlEntityConsumer extends EntityConsumer {
+/**
+ * Xml entity (content type dependent) consumer for reading input (from <code>content</code>).
+ * 
+ * @author SAP AG
+ */
+public class XmlEntityConsumer {
 
   private static final Logger LOG = LoggerFactory.getLogger(XmlEntityConsumer.class);
   /** Default used charset for writer and response content header */
@@ -25,7 +30,6 @@ public class XmlEntityConsumer extends EntityConsumer {
     super();
   }
 
-  @Override
   public Map<String, Object> readEntry(EdmEntitySet entitySet, Object content) throws EntityProviderException {
     XMLStreamReader reader = null;
     
@@ -48,7 +52,6 @@ public class XmlEntityConsumer extends EntityConsumer {
     }
   }
 
-  @Override
   public Map<String, Object> readProperty(EdmProperty edmProperty, Object content) throws EntityProviderException {
     XMLStreamReader reader = null;
 
@@ -71,7 +74,6 @@ public class XmlEntityConsumer extends EntityConsumer {
     }
   }
   
-  @Override
   public Map<String, Object> readLink(EdmEntitySet entitySet, Object content) throws EntityProviderException {
     XMLStreamReader reader = null;
 
@@ -93,7 +95,6 @@ public class XmlEntityConsumer extends EntityConsumer {
     }
   }
 
-  @Override
   public List<Map<String, Object>> readLinks(EdmEntitySet entitySet, Object content) throws EntityProviderException {
     XMLStreamReader reader = null;
 

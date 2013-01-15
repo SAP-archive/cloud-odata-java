@@ -25,7 +25,7 @@ import com.sap.core.odata.api.edm.EdmEntitySet;
 import com.sap.core.odata.api.ep.EntityProviderProperties;
 import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.core.ep.aggregator.EntityInfoAggregator;
-import com.sap.core.odata.core.ep.producer.AtomEntryEntityProvider;
+import com.sap.core.odata.core.ep.producer.AtomEntryEntityProducer;
 import com.sap.core.odata.core.ep.util.CircleStreamBuffer;
 import com.sap.core.odata.testutil.helper.StringHelper;
 import com.sap.core.odata.testutil.mock.MockFacade;
@@ -38,7 +38,7 @@ public class PerformanceTest extends AbstractProviderTest {
 
   private static final long TIMES = 1000L;
 
-  private AtomEntryEntityProvider provider;
+  private AtomEntryEntityProducer provider;
   private EdmEntitySet edmEntitySet;
   private OutputStream outStream = null;
   private CircleStreamBuffer csb;
@@ -51,7 +51,7 @@ public class PerformanceTest extends AbstractProviderTest {
     super.before();
 
     EntityProviderProperties properties = EntityProviderProperties.baseUri(BASE_URI).build();
-    provider = new AtomEntryEntityProvider(properties);
+    provider = new AtomEntryEntityProducer(properties);
     edmEntitySet = MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Rooms");
 
     if (useCsb) {

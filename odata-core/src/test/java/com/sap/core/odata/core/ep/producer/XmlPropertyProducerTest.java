@@ -23,7 +23,7 @@ import com.sap.core.odata.testutil.mock.MockFacade;
 /**
  * @author SAP AG
  */
-public class XmlPropertySerializationTest extends AbstractProviderTest {
+public class XmlPropertyProducerTest extends AbstractProviderTest {
 
   @Test
   public void serializeEmployeeId() throws Exception {

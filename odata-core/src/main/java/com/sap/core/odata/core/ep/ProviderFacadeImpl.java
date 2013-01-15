@@ -18,8 +18,8 @@ import com.sap.core.odata.core.commons.ContentType;
 
 public class ProviderFacadeImpl implements ProviderInterface {
 
-  private static BasicProvider create() throws EntityProviderException {
-    return new BasicProvider();
+  private static BasicEntityProvider create() throws EntityProviderException {
+    return new BasicEntityProvider();
   }
 
   private static ContentTypeBasedEntityProvider create(String contentType) throws EntityProviderException {
@@ -34,7 +34,6 @@ public class ProviderFacadeImpl implements ProviderInterface {
       case ATOM:
       case XML:
         provider = new AtomEntityProvider();
-//        provider = new EntityProviderFacadeImpl();
         break;
       case JSON:
         throw new ODataNotImplementedException();

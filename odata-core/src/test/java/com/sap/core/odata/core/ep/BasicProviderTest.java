@@ -17,11 +17,11 @@ import com.sap.core.odata.testutil.mock.MockFacade;
 /**
  * @author SAP AG
  */
-public class AtomEntityProviderTest extends AbstractProviderTest {
+public class BasicProviderTest extends AbstractProviderTest {
 
   @Test
   public void writePropertyValue() throws Exception {
-    BasicProviderInterface s = new BasicProvider();
+    BasicEntityProviderInterface s = new BasicEntityProvider();
 
     EdmTyped edmTyped = MockFacade.getMockEdm().getEntityType("RefScenario", "Employee").getProperty("Age");
     EdmProperty edmProperty = (EdmProperty) edmTyped;
