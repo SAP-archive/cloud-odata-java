@@ -206,7 +206,7 @@ public class FeedTest extends AbstractRefTest {
     notFound("Rooms('1')/nr_Employees('1')?$filter=Age%20eq%2099");
     notFound("Employees('4')/ne_Room?$filter=Id%20eq%20%271%27");
 
-    // badRequest("Employees?$filter=(EmployeeId");
+    badRequest("Employees?$filter=(EmployeeId");
     // badRequest("Employees?$filter=(EmployeeId)");
     badRequest("Employees?$filter=loca/city/cityname%20eq%20%27Heidelberg%27");
     // badRequest("Employees?$filter=endswith(Location,'y')");
