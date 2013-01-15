@@ -36,7 +36,6 @@ import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.api.exception.ODataMethodNotAllowedException;
 import com.sap.core.odata.api.exception.ODataNotAcceptableException;
 import com.sap.core.odata.api.exception.ODataNotFoundException;
-import com.sap.core.odata.api.processor.ODataRequest;
 import com.sap.core.odata.api.processor.ODataResponse;
 import com.sap.core.odata.api.processor.feature.ProcessorFeature;
 import com.sap.core.odata.api.uri.PathInfo;
@@ -44,7 +43,6 @@ import com.sap.core.odata.api.uri.PathSegment;
 import com.sap.core.odata.core.Dispatcher;
 import com.sap.core.odata.core.ODataContextImpl;
 import com.sap.core.odata.core.ODataPathSegmentImpl;
-import com.sap.core.odata.core.ODataRequestImpl;
 import com.sap.core.odata.core.ODataUriInfoImpl;
 import com.sap.core.odata.core.commons.ContentType;
 import com.sap.core.odata.core.commons.ODataHttpMethod;
@@ -69,8 +67,6 @@ public final class ODataSubLocator implements ODataLocator {
   private List<ContentType> acceptHeaderContentTypes;
 
   private ServletInputStream requestContent;
-  /** <code>media type</code> value from request (read from {@link HttpHeaders#getMediaType()}) */
-  private String requestMediaType;
 
   @GET
   public Response handleGet() throws ODataException {
@@ -180,9 +176,7 @@ public final class ODataSubLocator implements ODataLocator {
 
     final String contentType = doContentNegotiation(uriParserResult);
 
-    final ODataRequest odataRequest = ODataRequestImpl.create(requestContent, requestMediaType).build();
-
-    ODataResponse odataResponse = dispatcher.dispatch(ODataHttpMethod.POST, uriParserResult, odataRequest, contentType);
+    ODataResponse odataResponse = dispatcher.dispatch(ODataHttpMethod.POST, uriParserResult, requestContent, contentType);
     Response response = convertResponse(odataResponse);
 
     return response;
@@ -193,10 +187,9 @@ public final class ODataSubLocator implements ODataLocator {
     List<PathSegment> pathSegments = context.getPathInfo().getODataSegments();
     UriInfoImpl uriParserResult = (UriInfoImpl) uriParser.parse(pathSegments, queryParameters);
 
-    final ODataRequest odataRequest = ODataRequestImpl.create(requestContent, requestMediaType).build();
     final String contentType = doContentNegotiation(uriParserResult);
     
-    ODataResponse odataResponse = dispatcher.dispatch(ODataHttpMethod.PUT, uriParserResult, odataRequest, contentType);
+    ODataResponse odataResponse = dispatcher.dispatch(ODataHttpMethod.PUT, uriParserResult, requestContent, contentType);
     Response response = convertResponse(odataResponse);
     return response;
   }
@@ -238,26 +231,12 @@ public final class ODataSubLocator implements ODataLocator {
 
     acceptHeaderContentTypes = convertMediaTypes(param.httpHeaders.getAcceptableMediaTypes());
     requestContent = extractRequestContent(param);
-    requestMediaType = extractMediaType(param);
     service = param.getServiceFactory().createService(context);
     context.setService(service);
     service.getProcessor().setContext(context);
 
     uriParser = new UriParserImpl(service.getEntityDataModel());
     dispatcher = new Dispatcher(service);
-  }
-
-  /**
-   * 
-   * @param param
-   * @return
-   */
-  private String extractMediaType(InitParameter param) {
-    final MediaType requestMediaType = param.httpHeaders.getMediaType();
-    if (requestMediaType != null) {
-      return requestMediaType.toString();
-    }
-    return null;
   }
 
   /**

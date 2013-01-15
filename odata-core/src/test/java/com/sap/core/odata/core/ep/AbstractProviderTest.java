@@ -17,13 +17,12 @@ import org.slf4j.LoggerFactory;
 
 import com.sap.core.odata.api.edm.Edm;
 import com.sap.core.odata.api.edm.EdmException;
-import com.sap.core.odata.api.ep.EntityProvider;
 import com.sap.core.odata.api.ep.EntityProviderException;
 import com.sap.core.odata.api.ep.EntityProviderProperties;
+import com.sap.core.odata.api.ep.EntityProvider.ProviderInterface;
 import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.api.processor.ODataContext;
 import com.sap.core.odata.api.uri.PathInfo;
-import com.sap.core.odata.core.commons.ContentType;
 import com.sap.core.odata.testutil.helper.XMLUnitHelper;
 
 /**
@@ -122,9 +121,11 @@ public abstract class AbstractProviderTest {
     return ctx;
   }
 
-  protected EntityProvider createAtomEntityProvider() throws ODataException, EdmException, EntityProviderException {
-    EntityProvider ser = EntityProvider.create(ContentType.APPLICATION_ATOM_XML.toContentTypeString());
-    return ser;
+  protected ProviderInterface createEntityProvider() throws ODataException, EdmException, EntityProviderException {
+    return new ProviderFacadeImpl();
   }
 
+  protected AtomEntityProvider createAtomEntityProvider() throws EntityProviderException {
+    return new AtomEntityProvider();
+  }
 }

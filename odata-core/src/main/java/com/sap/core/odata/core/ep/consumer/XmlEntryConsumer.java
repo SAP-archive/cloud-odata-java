@@ -1,4 +1,4 @@
-package com.sap.core.odata.core.ec;
+package com.sap.core.odata.core.ep.consumer;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -6,20 +6,20 @@ import java.util.Map;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
-import com.sap.core.odata.api.ec.EntityConsumerException;
 import com.sap.core.odata.api.edm.EdmEntitySet;
 import com.sap.core.odata.api.edm.EdmException;
 import com.sap.core.odata.api.edm.EdmProperty;
+import com.sap.core.odata.api.ep.EntityProviderException;
 
 public class XmlEntryConsumer {
 
-  public Map<String, Object> readEntry(XMLStreamReader reader, EdmEntitySet entitySet) throws EntityConsumerException {
+  public Map<String, Object> readEntry(XMLStreamReader reader, EdmEntitySet entitySet) throws EntityProviderException {
     try {
 //      Map<String, Object> resultMap = readProperties(reader, entitySet);
       Map<String, Object> resultMap = readNextTag(reader, entitySet);
       return resultMap;
     } catch (Exception e) {
-      throw new EntityConsumerException(EntityConsumerException.COMMON, e);
+      throw new EntityProviderException(EntityProviderException.COMMON, e);
     }
   }
   
@@ -39,7 +39,7 @@ public class XmlEntryConsumer {
     return result;
   }
 
-  private Object handleStartedTag(XMLStreamReader reader, String tagName, EdmEntitySet entitySet) throws EntityConsumerException, XMLStreamException, EdmException  {
+  private Object handleStartedTag(XMLStreamReader reader, String tagName, EdmEntitySet entitySet) throws EntityProviderException, XMLStreamException, EdmException  {
     if("id".equals(tagName)) {
       return readId(reader);
     } else if("title".equals(tagName)) {
@@ -59,7 +59,7 @@ public class XmlEntryConsumer {
     return null;
   }
 
-  private Object readLink(XMLStreamReader reader) throws EntityConsumerException, XMLStreamException {
+  private Object readLink(XMLStreamReader reader) throws EntityProviderException, XMLStreamException {
     validateStartPosition(reader, "link");
     Map<String, String> attributes = readAttributes(reader);
     readAndValidateEndPosition(reader, "link");
@@ -67,35 +67,35 @@ public class XmlEntryConsumer {
     return attributes;
   }
 
-  private void validateStartPosition(XMLStreamReader reader, String tagName) throws EntityConsumerException {
+  private void validateStartPosition(XMLStreamReader reader, String tagName) throws EntityProviderException {
     validatePosition(reader, tagName, XMLStreamReader.START_ELEMENT);
   }
 
-  private void validateEndPosition(XMLStreamReader reader, String tagName) throws EntityConsumerException {
+  private void validateEndPosition(XMLStreamReader reader, String tagName) throws EntityProviderException {
     validatePosition(reader, tagName, XMLStreamReader.END_ELEMENT);
   }
 
-  private void readAndValidateEndPosition(XMLStreamReader reader, String tagName) throws EntityConsumerException, XMLStreamException {
+  private void readAndValidateEndPosition(XMLStreamReader reader, String tagName) throws EntityProviderException, XMLStreamException {
     readAndValidatePosition(reader, tagName, XMLStreamReader.END_ELEMENT);
   }
 
-  private void readAndValidatePosition(XMLStreamReader reader, String tagName, int eventType) throws EntityConsumerException, XMLStreamException {
+  private void readAndValidatePosition(XMLStreamReader reader, String tagName, int eventType) throws EntityProviderException, XMLStreamException {
     if(eventType != reader.next() || !reader.getLocalName().equals(tagName)) {
       String msg = "Invalid position for expected name=" + tagName + " event='" + eventType +
       		"'; found name='" + reader.getLocalName() + "' event='" + reader.getEventType() + "'.";
-      throw new EntityConsumerException(EntityConsumerException.INVALID_STATE.addContent(msg));
+      throw new EntityProviderException(EntityProviderException.INVALID_STATE.addContent(msg));
     }
   }
   
-  private void validatePosition(XMLStreamReader reader, String tagName, int eventType) throws EntityConsumerException {
+  private void validatePosition(XMLStreamReader reader, String tagName, int eventType) throws EntityProviderException {
     if(eventType != reader.getEventType() || !reader.getLocalName().equals(tagName)) {
       String msg = "Invalid position for expected name=" + tagName + " event='" + eventType +
           "'; found name='" + reader.getLocalName() + "' event='" + reader.getEventType() + "'.";
-      throw new EntityConsumerException(EntityConsumerException.INVALID_STATE.addContent(msg));
+      throw new EntityProviderException(EntityProviderException.INVALID_STATE.addContent(msg));
     }
   }
 
-  private Object readContent(XMLStreamReader reader, EdmEntitySet entitySet) throws EntityConsumerException, XMLStreamException, EdmException  {
+  private Object readContent(XMLStreamReader reader, EdmEntitySet entitySet) throws EntityProviderException, XMLStreamException, EdmException  {
     validateStartPosition(reader, "content");
     
     Map<String, String> attributes = readAttributes(reader);
@@ -132,7 +132,7 @@ public class XmlEntryConsumer {
     return attributes;
   }
 
-  private Object readCategory(XMLStreamReader reader) throws EntityConsumerException, XMLStreamException {
+  private Object readCategory(XMLStreamReader reader) throws EntityProviderException, XMLStreamException {
     validateStartPosition(reader, "category");
     Map<String, String> attributes = readAttributes(reader);
     readAndValidateEndPosition(reader, "category");
@@ -140,7 +140,7 @@ public class XmlEntryConsumer {
     return attributes;
   }
 
-  private Object readUpdated(XMLStreamReader reader) throws EntityConsumerException, XMLStreamException {
+  private Object readUpdated(XMLStreamReader reader) throws EntityProviderException, XMLStreamException {
     validateStartPosition(reader, "updated");
     int eventType = reader.next();
     Object value = null;
@@ -151,7 +151,7 @@ public class XmlEntryConsumer {
     return value;
   }
 
-  private Object readTitle(XMLStreamReader reader) throws EntityConsumerException, XMLStreamException {
+  private Object readTitle(XMLStreamReader reader) throws EntityProviderException, XMLStreamException {
     validateStartPosition(reader, "title");
     int eventType = reader.next();
     Object value = null;
@@ -162,7 +162,7 @@ public class XmlEntryConsumer {
     return value;
   }
 
-  private Object readId(XMLStreamReader reader) throws EntityConsumerException, XMLStreamException {
+  private Object readId(XMLStreamReader reader) throws EntityProviderException, XMLStreamException {
     validateStartPosition(reader, "id");
     int eventType = reader.next();
     Object value = null;
@@ -173,7 +173,7 @@ public class XmlEntryConsumer {
     return value;
   }
 
-  private Map<String, Object> readProperties(XMLStreamReader reader, EdmEntitySet entitySet) throws XMLStreamException, EdmException, EntityConsumerException {
+  private Map<String, Object> readProperties(XMLStreamReader reader, EdmEntitySet entitySet) throws XMLStreamException, EdmException, EntityProviderException {
     Map<String, Object> tagName2tagText = new HashMap<String, Object>();
     
     //

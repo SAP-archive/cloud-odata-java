@@ -25,6 +25,7 @@ import com.sap.core.odata.api.edm.EdmEntitySet;
 import com.sap.core.odata.api.ep.EntityProviderProperties;
 import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.core.ep.aggregator.EntityInfoAggregator;
+import com.sap.core.odata.core.ep.producer.AtomEntryEntityProvider;
 import com.sap.core.odata.core.ep.util.CircleStreamBuffer;
 import com.sap.core.odata.testutil.helper.StringHelper;
 import com.sap.core.odata.testutil.mock.MockFacade;

@@ -1,4 +1,4 @@
-package com.sap.core.odata.core.ec;
+package com.sap.core.odata.core.ep.consumer;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -6,17 +6,17 @@ import java.util.Map;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
-import com.sap.core.odata.api.ec.EntityConsumerException;
 import com.sap.core.odata.api.edm.EdmComplexType;
 import com.sap.core.odata.api.edm.EdmException;
 import com.sap.core.odata.api.edm.EdmLiteralKind;
 import com.sap.core.odata.api.edm.EdmProperty;
 import com.sap.core.odata.api.edm.EdmSimpleType;
 import com.sap.core.odata.api.edm.EdmType;
+import com.sap.core.odata.api.ep.EntityProviderException;
 
 public class XmlPropertyConsumer {
 
-  public Map<String, Object> readProperty(XMLStreamReader reader, EdmProperty property) throws EntityConsumerException {
+  public Map<String, Object> readProperty(XMLStreamReader reader, EdmProperty property) throws EntityProviderException {
     try {
       Map<String, Object> result = new HashMap<String, Object>();
       reader.next();
@@ -24,16 +24,16 @@ public class XmlPropertyConsumer {
       result.put(property.getName(), value);
       return result;
     } catch (Exception e) {
-      throw new EntityConsumerException(EntityConsumerException.COMMON, e);      
+      throw new EntityProviderException(EntityProviderException.COMMON, e);      
     }
   }
 
 
-  Object readStartedElement(XMLStreamReader reader, EdmProperty property) throws EntityConsumerException, XMLStreamException, EdmException {
+  Object readStartedElement(XMLStreamReader reader, EdmProperty property) throws EntityProviderException, XMLStreamException, EdmException {
     //
     int eventType = reader.getEventType();
     if(eventType != XMLStreamReader.START_ELEMENT) {
-      throw new EntityConsumerException(EntityConsumerException.INVALID_STATE);
+      throw new EntityProviderException(EntityProviderException.INVALID_STATE);
     }
     
     //
@@ -56,7 +56,7 @@ public class XmlPropertyConsumer {
     return result;
   }
 
-  private EdmProperty extractProperty(String name, EdmProperty property) throws EdmException, EntityConsumerException {
+  private EdmProperty extractProperty(String name, EdmProperty property) throws EdmException, EntityProviderException {
     EdmType type = property.getType();
     if(type instanceof EdmSimpleType) {
       return property;
@@ -64,19 +64,19 @@ public class XmlPropertyConsumer {
       EdmComplexType complex = (EdmComplexType) type;
       EdmProperty result = (EdmProperty) complex.getProperty(name);
       if(result == null) {
-        throw new EntityConsumerException(EntityConsumerException.INVALID_PROPERTY.addContent(property.getName()));        
+        throw new EntityProviderException(EntityProviderException.INVALID_PROPERTY.addContent(property.getName()));        
       }
       return result;
     }
-    throw new EntityConsumerException(EntityConsumerException.INVALID_PROPERTY.addContent(property.getName()));
+    throw new EntityProviderException(EntityProviderException.INVALID_PROPERTY.addContent(property.getName()));
   }
 
-  private Object convert(EdmProperty property, String text) throws EdmException, EntityConsumerException {
+  private Object convert(EdmProperty property, String text) throws EdmException, EntityProviderException {
     EdmType type = property.getType();
     if(type instanceof EdmSimpleType) {
       EdmSimpleType est = (EdmSimpleType) type;
       return est.valueOfString(text, EdmLiteralKind.DEFAULT, property.getFacets());
     }
-    throw new EntityConsumerException(EntityConsumerException.INVALID_PROPERTY.addContent(property.getName()));
+    throw new EntityProviderException(EntityProviderException.INVALID_PROPERTY.addContent(property.getName()));
   }
 }

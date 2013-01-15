@@ -15,8 +15,16 @@ public class EntityProviderException extends ODataMessageException {
 
   public static final MessageReference UNSUPPORTED_PROPERTY_TYPE = createMessageReference(EntityProviderException.class, "UNSUPPORTED_PROPERTY_TYPE");
 
-  public static final MessageReference INLINECOUNT_INVALID = createMessageReference(EntityProviderException.class, "INLINECOUNT_INVALID");;
+  public static final MessageReference INLINECOUNT_INVALID = createMessageReference(EntityProviderException.class, "INLINECOUNT_INVALID");
 
+  
+  
+  // TODO: fix i18n for copied MR from EntityConsumerException
+  public static final MessageReference INVALID_STATE = createMessageReference(EntityProviderException.class, "INVALID_STATE");
+
+  public static final MessageReference INVALID_PROPERTY = createMessageReference(EntityProviderException.class, "INVALID_PROPERTY");
+
+  //
   public EntityProviderException(MessageReference messageReference) {
     super(messageReference);
   }

@@ -1,4 +1,4 @@
-package com.sap.core.odata.core.ep;
+package com.sap.core.odata.core.ep.producer;
 
 import java.io.Writer;
 import java.util.Collection;
@@ -14,6 +14,7 @@ import com.sap.core.odata.api.edm.provider.EntitySet;
 import com.sap.core.odata.api.edm.provider.Schema;
 import com.sap.core.odata.api.ep.EntityProviderException;
 import com.sap.core.odata.core.edm.provider.EdmImplProv;
+import com.sap.core.odata.core.ep.FormatXml;
 
 public class AtomServiceDocumentProvider {
 

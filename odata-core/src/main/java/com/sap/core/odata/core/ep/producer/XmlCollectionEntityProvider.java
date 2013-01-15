@@ -1,4 +1,4 @@
-package com.sap.core.odata.core.ep;
+package com.sap.core.odata.core.ep.producer;
 
 import java.util.List;
 
@@ -7,6 +7,7 @@ import javax.xml.stream.XMLStreamWriter;
 
 import com.sap.core.odata.api.edm.Edm;
 import com.sap.core.odata.api.ep.EntityProviderException;
+import com.sap.core.odata.core.ep.FormatXml;
 import com.sap.core.odata.core.ep.aggregator.EntityPropertyInfo;
 
 /**

@@ -1,4 +1,4 @@
-package com.sap.core.odata.core.ep;
+package com.sap.core.odata.core.ep.producer;
 
 import java.net.URI;
 import java.util.Date;
@@ -14,6 +14,7 @@ import com.sap.core.odata.api.edm.EdmLiteralKind;
 import com.sap.core.odata.api.ep.EntityProviderException;
 import com.sap.core.odata.api.ep.EntityProviderProperties;
 import com.sap.core.odata.core.edm.EdmDateTimeOffset;
+import com.sap.core.odata.core.ep.FormatXml;
 import com.sap.core.odata.core.ep.aggregator.EntityInfoAggregator;
 import com.sap.core.odata.core.ep.util.UriUtils;
 import com.sap.core.odata.core.uri.SystemQueryOption;

@@ -1,4 +1,4 @@
-package com.sap.core.odata.core.ep;
+package com.sap.core.odata.core.ep.producer;
 
 import java.net.URI;
 import java.util.Collection;
@@ -20,6 +20,7 @@ import com.sap.core.odata.api.ep.EntityProviderException;
 import com.sap.core.odata.api.ep.EntityProviderProperties;
 import com.sap.core.odata.core.commons.ContentType;
 import com.sap.core.odata.core.edm.EdmDateTimeOffset;
+import com.sap.core.odata.core.ep.FormatXml;
 import com.sap.core.odata.core.ep.aggregator.EntityInfoAggregator;
 import com.sap.core.odata.core.ep.aggregator.EntityPropertyInfo;
 import com.sap.core.odata.core.ep.aggregator.NavigationPropertyInfo;
@@ -33,7 +34,7 @@ public class AtomEntryEntityProvider {
   private String etag;
   private EntityProviderProperties properties;
 
-  AtomEntryEntityProvider(EntityProviderProperties properties) throws EntityProviderException {
+  public AtomEntryEntityProvider(EntityProviderProperties properties) throws EntityProviderException {
     this.properties = properties;
   }
 

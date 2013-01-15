@@ -1,30 +1,28 @@
-package com.sap.core.odata.core.ep;
+package com.sap.core.odata.core.ep.consumer;
 
-import com.sap.core.odata.api.ep.BasicProvider;
-import com.sap.core.odata.api.ep.EntityProvider;
 import com.sap.core.odata.api.ep.EntityProviderException;
 import com.sap.core.odata.api.exception.ODataNotAcceptableException;
 import com.sap.core.odata.api.exception.ODataNotImplementedException;
 import com.sap.core.odata.core.commons.ContentType;
 
-public class ProviderFactory {
+public class ConsumerFactory {
 
-  public static BasicProvider create() throws EntityProviderException {
-    return new BasicProviderImpl();
+  public static BasicConsumer createBasicConsumer() throws EntityProviderException {
+    return new BasicConsumerImpl();
   }
 
-  public static EntityProvider create(String contentType) throws EntityProviderException {
-    return create(ContentType.create(contentType));
+  public static EntityConsumer createEntityConsumer(String contentType) throws EntityProviderException {
+    return createEntityConsumer(ContentType.create(contentType));
   }
-
-  public static EntityProvider create(ContentType contentType) throws EntityProviderException {
+  
+  public static EntityConsumer createEntityConsumer(ContentType contentType) throws EntityProviderException {
     try {
-      EntityProvider provider;
+      EntityConsumer consumer;
 
       switch (contentType.getODataFormat()) {
       case ATOM:
       case XML:
-        provider = new AtomEntityProvider();
+        consumer = new XmlEntityConsumer();
         break;
       case JSON:
         throw new ODataNotImplementedException();
@@ -32,11 +30,12 @@ public class ProviderFactory {
         throw new ODataNotAcceptableException(ODataNotAcceptableException.NOT_SUPPORTED_CONTENT_TYPE.addContent(contentType));
       }
 
-      return provider;
+      return consumer;
     } catch (ODataNotImplementedException e) {
       throw new EntityProviderException(EntityProviderException.COMMON, e);
     } catch (ODataNotAcceptableException e) {
       throw new EntityProviderException(EntityProviderException.COMMON, e);
     }
   }
+
 }
