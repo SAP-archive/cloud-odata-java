@@ -121,17 +121,16 @@ public class XmlEntityConsumer {
     factory.setProperty(XMLInputFactory.IS_VALIDATING, false);
     factory.setProperty(XMLInputFactory.IS_NAMESPACE_AWARE, true);
 
-      if(content == null) {
-//        throw new EntityProviderException("Got not supported NULL object as content to de-serialize.");      
-        throw new EntityProviderException(EntityProviderException.COMMON);      
-      }
-      
-      if(content instanceof InputStream) {
-        XMLStreamReader streamReader = factory.createXMLStreamReader((InputStream) content, DEFAULT_CHARSET);
-        return streamReader;
-      }
-      throw new EntityProviderException(EntityProviderException.COMMON);      
-//      throw new ODataException("Found not supported content of class '" + content.getClass() + "' to de-serialize.");
-
+    if(content == null) {
+      throw new EntityProviderException(EntityProviderException.ILLEGAL_ARGUMENT
+          .addContent("Got not supported NULL object as content to de-serialize."));      
+    }
+    
+    if(content instanceof InputStream) {
+      XMLStreamReader streamReader = factory.createXMLStreamReader((InputStream) content, DEFAULT_CHARSET);
+      return streamReader;
+    }
+    throw new EntityProviderException(EntityProviderException.ILLEGAL_ARGUMENT
+        .addContent("Found not supported content of class '" + content.getClass() + "' to de-serialize."));      
   }
 }

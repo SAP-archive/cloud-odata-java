@@ -9,10 +9,6 @@ import java.io.UnsupportedEncodingException;
 import java.util.Collections;
 import java.util.Map;
 
-import javax.xml.stream.XMLInputFactory;
-import javax.xml.stream.XMLStreamException;
-import javax.xml.stream.XMLStreamReader;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -26,7 +22,7 @@ import com.sap.core.odata.api.ep.EntityProviderException;
 import com.sap.core.odata.api.processor.ODataResponse;
 import com.sap.core.odata.api.processor.ODataResponse.ODataResponseBuilder;
 import com.sap.core.odata.core.commons.ContentType;
-import com.sap.core.odata.core.ep.consumer.XmlPropertyConsumer;
+import com.sap.core.odata.core.ep.consumer.BasicConsumer;
 import com.sap.core.odata.core.ep.producer.AtomServiceDocumentProducer;
 import com.sap.core.odata.core.ep.util.CircleStreamBuffer;
 
@@ -38,37 +34,21 @@ public class BasicEntityProvider implements BasicEntityProviderInterface {
   
   @Override
   public Object readPropertyValue(EdmProperty edmProperty, InputStream content) throws EntityProviderException {
-    XMLStreamReader reader = null;
-    
-    try {
-      XmlPropertyConsumer xec = new XmlPropertyConsumer();
-      reader = createStaxReader(content);
-      Map<String, Object> result = xec.readProperty(reader, edmProperty);
-      return result;
-    } catch (Exception e) {
-      throw new EntityProviderException(EntityProviderException.COMMON, e);
-    } finally {
-      if (reader != null) {
-        try {
-          reader.close();
-        } catch (XMLStreamException e) {
-          // don't throw in finally!
-          LOG.error(e.getLocalizedMessage(), e);
-        }
-      }
-    }
+    BasicConsumer bc = new BasicConsumer();
+    return bc.readPropertyValue(edmProperty, content);
   }
 
   @Override
   public String readText(InputStream content) throws EntityProviderException {
-    return null;
+    BasicConsumer bc = new BasicConsumer();
+    return bc.readText(content);
   }
 
   @Override
   public byte[] readBinary(String mimeType, InputStream content) throws EntityProviderException {
-    return null;
+    BasicConsumer bc = new BasicConsumer();
+    return bc.readBinary(mimeType, content);
   }
-
 
 
   @Override
@@ -163,15 +143,5 @@ public class BasicEntityProvider implements BasicEntityProviderInterface {
 
   private String createContentHeader(ContentType mediaType) {
     return mediaType.toString() + "; charset=" + DEFAULT_CHARSET;
-  }
-
-  private XMLStreamReader createStaxReader(InputStream content) throws XMLStreamException {
-    XMLInputFactory factory = XMLInputFactory.newInstance();
-    factory.setProperty(XMLInputFactory.IS_VALIDATING, false);
-    factory.setProperty(XMLInputFactory.IS_NAMESPACE_AWARE, true);
-
-    XMLStreamReader streamReader = factory.createXMLStreamReader(content, DEFAULT_CHARSET);
-
-    return streamReader;
   }
 }
