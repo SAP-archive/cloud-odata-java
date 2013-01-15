@@ -67,16 +67,71 @@ public final class ODataSubLocator implements ODataLocator {
   private List<ContentType> acceptHeaderContentTypes;
 
   private ServletInputStream requestContent;
+  private String requestContentType;
 
   @GET
   public Response handleGet() throws ODataException {
-    List<PathSegment> pathSegments =  context.getPathInfo().getODataSegments();
-    UriInfoImpl uriParserResult = (UriInfoImpl)  uriParser.parse(pathSegments,  queryParameters);
+    return handleHttpMethod(ODataHttpMethod.GET);
+  }
 
-    final String contentType = doContentNegotiation(uriParserResult);
+  @PUT
+  public Response handlePut() throws ODataException {
+    return handleHttpMethod(ODataHttpMethod.PUT);
+  }
 
-    ODataResponse odataResponse = dispatcher.dispatch(ODataHttpMethod.GET, uriParserResult, null, contentType);
-    Response response =  convertResponse(odataResponse);
+  @PATCH
+  public Response handlePatch() throws ODataException {
+    return handleHttpMethod(ODataHttpMethod.PATCH);
+  }
+
+  @MERGE
+  public Response handleMerge() throws ODataException {
+    return handleHttpMethod(ODataHttpMethod.MERGE);
+  }
+
+  @DELETE
+  public Response handleDelete() throws ODataException {
+    return handleHttpMethod(ODataHttpMethod.DELETE);
+  }
+
+  @POST
+  public Response handlePost(@HeaderParam("X-HTTP-Method") String xmethod) throws ODataException {
+    Response response;
+
+    /* tunneling */
+    if (xmethod == null) {
+      response = handleHttpMethod(ODataHttpMethod.POST);
+    } else if ("MERGE".equals(xmethod)) {
+      response = handleMerge();
+    } else if ("PATCH".equals(xmethod)) {
+      response = handlePatch();
+    } else if ("DELETE".equals(xmethod)) {
+      response = handleDelete();
+    } else {
+      response = Response.status(Status.METHOD_NOT_ALLOWED).build();
+    }
+
+    return response;
+  }
+
+  @OPTIONS
+  public Response handleOptions() throws ODataException {
+    throw new ODataMethodNotAllowedException(ODataMethodNotAllowedException.COMMON);
+  }
+
+  @HEAD
+  public Response handleHead() throws ODataException {
+    throw new ODataMethodNotAllowedException(ODataMethodNotAllowedException.COMMON);
+  }
+
+  private Response handleHttpMethod(final ODataHttpMethod method) throws ODataException {
+    final List<PathSegment> pathSegments = context.getPathInfo().getODataSegments();
+    final UriInfoImpl uriInfo = (UriInfoImpl) uriParser.parse(pathSegments, queryParameters);
+
+    final String contentType = doContentNegotiation(uriInfo);
+
+    final ODataResponse odataResponse = dispatcher.dispatch(method, uriInfo, requestContent, requestContentType, contentType);
+    final Response response = convertResponse(odataResponse);
 
     return response;
   }
@@ -150,79 +205,6 @@ public final class ODataSubLocator implements ODataLocator {
     throw new ODataNotAcceptableException(ODataNotAcceptableException.NOT_SUPPORTED_CONTENT_TYPE.addContent(contentTypes.toString()));
   }
 
-  @POST
-  public Response handlePost(@HeaderParam("X-HTTP-Method") String xmethod) throws ODataException {
-    Response response;
-
-    /* tunneling */
-    if (xmethod == null) {
-      response = handlePost();
-    } else if ("MERGE".equals(xmethod)) {
-      response =  handleMerge();
-    } else if ("PATCH".equals(xmethod)) {
-      response =  handlePatch();
-    } else if ("DELETE".equals(xmethod)) {
-      response =  handleDelete();
-    } else {
-      response = Response.status(Status.METHOD_NOT_ALLOWED).build();
-    }
-
-    return response;
-  }
-
-  public Response handlePost() throws ODataException {
-    List<PathSegment> pathSegments = context.getPathInfo().getODataSegments();
-    UriInfoImpl uriParserResult = (UriInfoImpl) uriParser.parse(pathSegments, queryParameters);
-
-    final String contentType = doContentNegotiation(uriParserResult);
-
-    ODataResponse odataResponse = dispatcher.dispatch(ODataHttpMethod.POST, uriParserResult, requestContent, contentType);
-    Response response = convertResponse(odataResponse);
-
-    return response;
-  }
-
-  @PUT
-  public Response handlePut() throws ODataException {
-    List<PathSegment> pathSegments = context.getPathInfo().getODataSegments();
-    UriInfoImpl uriParserResult = (UriInfoImpl) uriParser.parse(pathSegments, queryParameters);
-
-    final String contentType = doContentNegotiation(uriParserResult);
-    
-    ODataResponse odataResponse = dispatcher.dispatch(ODataHttpMethod.PUT, uriParserResult, requestContent, contentType);
-    Response response = convertResponse(odataResponse);
-    return response;
-  }
-
-  @PATCH
-  public Response handlePatch() throws ODataException {
-    return handlePut();
-  }
-
-  @MERGE
-  public Response handleMerge() throws ODataException {
-    return handlePatch();
-  }
-
-  @DELETE
-  public Response handleDelete() throws ODataException {
-    final List<PathSegment> pathSegments = context.getPathInfo().getODataSegments();
-    final UriInfoImpl uriParserResult = (UriInfoImpl) uriParser.parse(pathSegments, queryParameters);
-
-    final ODataResponse odataResponse = dispatcher.dispatch(ODataHttpMethod.DELETE, uriParserResult, null, null);
-    return convertResponse(odataResponse);
-  }
-
-  @OPTIONS
-  public Response handleOptions() throws ODataException {
-    throw new ODataMethodNotAllowedException(ODataMethodNotAllowedException.COMMON);
-  }
-
-  @HEAD
-  public Response handleHead() throws ODataException {
-    throw new ODataMethodNotAllowedException(ODataMethodNotAllowedException.COMMON);
-  }
-
   public void initialize(InitParameter param) throws ODataException {
     fillRequestHeader(param.httpHeaders);
     context.setUriInfo(buildODataUriInfo(param));
@@ -231,12 +213,18 @@ public final class ODataSubLocator implements ODataLocator {
 
     acceptHeaderContentTypes = convertMediaTypes(param.httpHeaders.getAcceptableMediaTypes());
     requestContent = extractRequestContent(param);
+    requestContentType = extractRequestContentType(param);
     service = param.getServiceFactory().createService(context);
     context.setService(service);
     service.getProcessor().setContext(context);
 
     uriParser = new UriParserImpl(service.getEntityDataModel());
     dispatcher = new Dispatcher(service);
+  }
+
+  private String extractRequestContentType(InitParameter param) {
+    final MediaType requestMediaType = param.httpHeaders.getMediaType();
+    return requestMediaType == null ? null : requestMediaType.toString();
   }
 
   /**
@@ -272,19 +260,19 @@ public final class ODataSubLocator implements ODataLocator {
   }
 
   private PathInfo buildODataUriInfo(InitParameter param) throws ODataException {
-    PathInfoImpl odataUriInfo = new PathInfoImpl();
+    PathInfoImpl pathInfo = new PathInfoImpl();
 
-    splitPath(odataUriInfo, param);
+    splitPath(pathInfo, param);
 
-    URI uri = buildBaseUri(param.getUriInfo(), odataUriInfo.getPrecedingSegments());
-    odataUriInfo.setServiceRoot(uri);
+    URI uri = buildBaseUri(param.getUriInfo(), pathInfo.getPrecedingSegments());
+    pathInfo.setServiceRoot(uri);
 
-    context.setUriInfo(odataUriInfo);
+    context.setUriInfo(pathInfo);
 
-    return odataUriInfo;
+    return pathInfo;
   }
 
-  private void splitPath(PathInfoImpl odataUriInfo, InitParameter param) throws ODataException {
+  private void splitPath(PathInfoImpl pathInfo, InitParameter param) throws ODataException {
     List<javax.ws.rs.core.PathSegment> precedingPathSegments;
     List<javax.ws.rs.core.PathSegment> pathSegments;
 
@@ -308,8 +296,8 @@ public final class ODataSubLocator implements ODataLocator {
       }
     }
 
-    odataUriInfo.setODataPathSegment(convertPathSegmentList(pathSegments));
-    odataUriInfo.setPrecedingPathSegment(convertPathSegmentList(precedingPathSegments));
+    pathInfo.setODataPathSegment(convertPathSegmentList(pathSegments));
+    pathInfo.setPrecedingPathSegment(convertPathSegmentList(precedingPathSegments));
   }
 
   private URI buildBaseUri(javax.ws.rs.core.UriInfo uriInfo, List<PathSegment> precedingPathSegments) throws ODataException {

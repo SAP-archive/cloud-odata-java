@@ -132,7 +132,7 @@ public abstract class ODataSingleProcessor
    * @see EntitySimplePropertyValue
    */
   @Override
-  public ODataResponse updateEntitySimplePropertyValue(PutMergePatchUriInfo uriInfo, Object content, String contentType) throws ODataException {
+  public ODataResponse updateEntitySimplePropertyValue(PutMergePatchUriInfo uriInfo, Object content, String requestContentType, String contentType) throws ODataException {
     throw new ODataNotImplementedException();
   }
 
@@ -156,7 +156,7 @@ public abstract class ODataSingleProcessor
    * @see EntitySimpleProperty
    */
   @Override
-  public ODataResponse updateEntitySimpleProperty(PutMergePatchUriInfo uriInfo, Object content, String contentType) throws ODataException {
+  public ODataResponse updateEntitySimpleProperty(PutMergePatchUriInfo uriInfo, Object content, String requestContentType, String contentType) throws ODataException {
     throw new ODataNotImplementedException();
   }
 
@@ -172,7 +172,7 @@ public abstract class ODataSingleProcessor
    * @see EntityMedia
    */
   @Override
-  public ODataResponse updateEntityMedia(PutMergePatchUriInfo uriInfo, Object content, String contentType) throws ODataException {
+  public ODataResponse updateEntityMedia(PutMergePatchUriInfo uriInfo, Object content, String requestContentType, String contentType) throws ODataException {
     throw new ODataNotImplementedException();
   }
 
@@ -204,7 +204,7 @@ public abstract class ODataSingleProcessor
    * @see EntityLink
    */
   @Override
-  public ODataResponse createEntityLink(PostUriInfo uriInfo, Object content, String contentType) throws ODataException {
+  public ODataResponse createEntityLink(PostUriInfo uriInfo, Object content, String requestContentType, String contentType) throws ODataException {
     throw new ODataNotImplementedException();
   }
 
@@ -228,7 +228,7 @@ public abstract class ODataSingleProcessor
    * @see EntityLink
    */
   @Override
-  public ODataResponse updateEntityLink(PutMergePatchUriInfo uriInfo, Object content, String contentType) throws ODataException {
+  public ODataResponse updateEntityLink(PutMergePatchUriInfo uriInfo, Object content, String requestContentType, String contentType) throws ODataException {
     throw new ODataNotImplementedException();
   }
 
@@ -252,7 +252,7 @@ public abstract class ODataSingleProcessor
    * @see EntityComplexProperty
    */
   @Override
-  public ODataResponse updateEntityComplexProperty(PutMergePatchUriInfo uriInfo, Object content, String contentType) throws ODataException {
+  public ODataResponse updateEntityComplexProperty(PutMergePatchUriInfo uriInfo, Object content, String requestContentType, boolean merge, String contentType) throws ODataException {
     throw new ODataNotImplementedException();
   }
 
@@ -273,10 +273,10 @@ public abstract class ODataSingleProcessor
   }
 
   /**
-   * @see Entity
+   * @see EntitySet
    */
   @Override
-  public ODataResponse createEntity(PostUriInfo uriInfo, Object content, String contentType) throws ODataException {
+  public ODataResponse createEntity(PostUriInfo uriInfo, Object content, String requestContentType, String contentType) throws ODataException {
     throw new ODataNotImplementedException();
   }
 
@@ -300,7 +300,7 @@ public abstract class ODataSingleProcessor
    * @see Entity
    */
   @Override
-  public ODataResponse updateEntity(PutMergePatchUriInfo uriInfo, Object content, String contentType) throws ODataException {
+  public ODataResponse updateEntity(PutMergePatchUriInfo uriInfo, Object content, String requestContentType, boolean merge, String contentType) throws ODataException {
     throw new ODataNotImplementedException();
   }
 
