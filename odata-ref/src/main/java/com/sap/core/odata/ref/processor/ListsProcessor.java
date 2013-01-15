@@ -1029,7 +1029,15 @@ public class ListsProcessor extends ODataSingleProcessor {
       for (final Method method : Arrays.asList(data.getClass().getMethods()))
         if (method.getName().equals(methodName)) {
           found = true;
-          method.invoke(data, value);
+          // TODO: generalize type adaptation
+          Object typedValue;
+          Class<?> type = method.getParameterTypes()[0];
+          if (value != null && type == Integer.class && value.getClass() == Short.class)
+            typedValue = Integer.valueOf((Short) value);
+          else
+            typedValue = value;
+          method.invoke(data, typedValue);
+          break;
         }
       if (!found)
         throw new ODataNotFoundException(null);
