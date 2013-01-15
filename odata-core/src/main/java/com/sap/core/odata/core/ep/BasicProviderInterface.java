@@ -1,21 +1,23 @@
-package com.sap.core.odata.api.ep;
+package com.sap.core.odata.core.ep;
+
+import java.io.InputStream;
 
 import com.sap.core.odata.api.edm.Edm;
 import com.sap.core.odata.api.edm.EdmProperty;
+import com.sap.core.odata.api.ep.EntityProviderException;
 import com.sap.core.odata.api.processor.ODataResponse;
-import com.sap.core.odata.api.rt.RuntimeDelegate;
 
 /**
- * Abstract basic (content type independent) provider for writing output
+ * Interface for basic (content type independent) provider methods.
  * @author SAP AG
  */
-public abstract class BasicProvider {
+public interface BasicProviderInterface {
 
-  protected BasicProvider() throws EntityProviderException {}
+  public abstract Object readPropertyValue(EdmProperty edmProperty, InputStream content) throws EntityProviderException;
 
-  public static BasicProvider create() throws EntityProviderException {
-    return RuntimeDelegate.createBasicProvider();
-  }
+  public abstract String readText(InputStream content) throws EntityProviderException;
+
+  public abstract byte[] readBinary(String mimeType, InputStream content) throws EntityProviderException;
 
   /**
    * Write service document based on given {@link Edm} and <code>service root</code> as

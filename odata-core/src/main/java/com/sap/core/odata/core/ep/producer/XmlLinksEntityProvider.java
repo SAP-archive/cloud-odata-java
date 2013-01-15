@@ -1,4 +1,4 @@
-package com.sap.core.odata.core.ep;
+package com.sap.core.odata.core.ep.producer;
 
 import java.util.List;
 import java.util.Map;
@@ -9,6 +9,7 @@ import javax.xml.stream.XMLStreamWriter;
 import com.sap.core.odata.api.edm.Edm;
 import com.sap.core.odata.api.ep.EntityProviderException;
 import com.sap.core.odata.api.ep.EntityProviderProperties;
+import com.sap.core.odata.core.ep.FormatXml;
 import com.sap.core.odata.core.ep.aggregator.EntityInfoAggregator;
 
 /**
@@ -19,7 +20,7 @@ public class XmlLinksEntityProvider {
 
   private final EntityProviderProperties properties;
 
-  XmlLinksEntityProvider(final EntityProviderProperties properties) throws EntityProviderException {
+  public XmlLinksEntityProvider(final EntityProviderProperties properties) throws EntityProviderException {
     this.properties = properties;
   }
 

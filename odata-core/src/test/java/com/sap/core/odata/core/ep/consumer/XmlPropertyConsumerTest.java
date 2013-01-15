@@ -1,4 +1,4 @@
-package com.sap.core.odata.core.ec;
+package com.sap.core.odata.core.ep.consumer;
 
 import static org.junit.Assert.assertEquals;
 
@@ -72,6 +72,7 @@ public class XmlPropertyConsumerTest {
     assertEquals("Heidelberg", cityMap.get("CityName"));
   }
 
+  @SuppressWarnings("unchecked")
   @Test
   @Ignore
   public void testReadComplexPropertyWithNamespace() throws Exception {

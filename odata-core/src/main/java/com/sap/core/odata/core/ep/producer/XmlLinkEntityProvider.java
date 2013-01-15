@@ -1,4 +1,4 @@
-package com.sap.core.odata.core.ep;
+package com.sap.core.odata.core.ep.producer;
 
 import java.net.URISyntaxException;
 import java.util.List;
@@ -13,6 +13,7 @@ import com.sap.core.odata.api.edm.EdmSimpleType;
 import com.sap.core.odata.api.edm.EdmSimpleTypeException;
 import com.sap.core.odata.api.ep.EntityProviderException;
 import com.sap.core.odata.api.ep.EntityProviderProperties;
+import com.sap.core.odata.core.ep.FormatXml;
 import com.sap.core.odata.core.ep.aggregator.EntityInfoAggregator;
 import com.sap.core.odata.core.ep.aggregator.EntityPropertyInfo;
 import com.sap.core.odata.core.ep.util.UriUtils;
@@ -25,7 +26,7 @@ public class XmlLinkEntityProvider {
 
   private final EntityProviderProperties properties;
 
-  XmlLinkEntityProvider(final EntityProviderProperties properties) throws EntityProviderException {
+  public XmlLinkEntityProvider(final EntityProviderProperties properties) throws EntityProviderException {
     this.properties = properties;
   }
 

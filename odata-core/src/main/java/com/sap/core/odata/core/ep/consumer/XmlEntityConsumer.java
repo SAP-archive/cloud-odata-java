@@ -1,5 +1,6 @@
-package com.sap.core.odata.core.ec;
+package com.sap.core.odata.core.ep.consumer;
 
+import java.io.InputStream;
 import java.util.List;
 import java.util.Map;
 
@@ -10,11 +11,9 @@ import javax.xml.stream.XMLStreamReader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.sap.core.odata.api.ec.EntityConsumer;
-import com.sap.core.odata.api.ec.EntityConsumerException;
 import com.sap.core.odata.api.edm.EdmEntitySet;
 import com.sap.core.odata.api.edm.EdmProperty;
-import com.sap.core.odata.api.processor.ODataRequest;
+import com.sap.core.odata.api.ep.EntityProviderException;
 
 public class XmlEntityConsumer extends EntityConsumer {
 
@@ -22,21 +21,21 @@ public class XmlEntityConsumer extends EntityConsumer {
   /** Default used charset for writer and response content header */
   private static final String DEFAULT_CHARSET = "utf-8";
 
-  protected XmlEntityConsumer() throws EntityConsumerException {
+  public XmlEntityConsumer() throws EntityProviderException {
     super();
   }
 
   @Override
-  public Map<String, Object> readEntry(EdmEntitySet entitySet, ODataRequest request) throws EntityConsumerException {
+  public Map<String, Object> readEntry(EdmEntitySet entitySet, Object content) throws EntityProviderException {
     XMLStreamReader reader = null;
     
     try {
       XmlEntryConsumer xec = new XmlEntryConsumer();
-      reader = createStaxReader(request);
+      reader = createStaxReader(content);
       Map<String, Object> resultMap = xec.readEntry(reader, entitySet);
       return resultMap;
     } catch (Exception e) {
-      throw new EntityConsumerException(EntityConsumerException.COMMON, e);
+      throw new EntityProviderException(EntityProviderException.COMMON, e);
     } finally {
       if (reader != null) {
         try {
@@ -50,16 +49,16 @@ public class XmlEntityConsumer extends EntityConsumer {
   }
 
   @Override
-  public Map<String, Object> readProperty(EdmProperty edmProperty, ODataRequest request) throws EntityConsumerException {
+  public Map<String, Object> readProperty(EdmProperty edmProperty, Object content) throws EntityProviderException {
     XMLStreamReader reader = null;
 
     try {
       XmlPropertyConsumer xec = new XmlPropertyConsumer();
-      reader = createStaxReader(request);
+      reader = createStaxReader(content);
       Map<String, Object> result = xec.readProperty(reader, edmProperty);
       return result;
     } catch (Exception e) {
-      throw new EntityConsumerException(EntityConsumerException.COMMON, e);
+      throw new EntityProviderException(EntityProviderException.COMMON, e);
     } finally {
       if (reader != null) {
         try {
@@ -73,15 +72,15 @@ public class XmlEntityConsumer extends EntityConsumer {
   }
   
   @Override
-  public Map<String, Object> readLink(EdmEntitySet entitySet, ODataRequest request) throws EntityConsumerException {
+  public Map<String, Object> readLink(EdmEntitySet entitySet, Object content) throws EntityProviderException {
     XMLStreamReader reader = null;
 
     try {
       XmlLinkConsumer xlc = new XmlLinkConsumer();
-      reader = createStaxReader(request);
+      reader = createStaxReader(content);
       return xlc.readLink(reader, entitySet);
     } catch (Exception e) {
-      throw new EntityConsumerException(EntityConsumerException.COMMON, e);
+      throw new EntityProviderException(EntityProviderException.COMMON, e);
     } finally {
       if (reader != null) {
         try {
@@ -95,15 +94,15 @@ public class XmlEntityConsumer extends EntityConsumer {
   }
 
   @Override
-  public List<Map<String, Object>> readLinks(EdmEntitySet entitySet, ODataRequest request) throws EntityConsumerException {
+  public List<Map<String, Object>> readLinks(EdmEntitySet entitySet, Object content) throws EntityProviderException {
     XMLStreamReader reader = null;
 
     try {
       XmlLinkConsumer xlc = new XmlLinkConsumer();
-      reader = createStaxReader(request);
+      reader = createStaxReader(content);
       return xlc.readLinks(reader, entitySet);
     } catch (Exception e) {
-      throw new EntityConsumerException(EntityConsumerException.COMMON, e);
+      throw new EntityProviderException(EntityProviderException.COMMON, e);
     } finally {
       if (reader != null) {
         try {
@@ -116,13 +115,22 @@ public class XmlEntityConsumer extends EntityConsumer {
     }
   }
 
-  private XMLStreamReader createStaxReader(ODataRequest request) throws XMLStreamException {
+  private XMLStreamReader createStaxReader(Object content) throws XMLStreamException, EntityProviderException {
     XMLInputFactory factory = XMLInputFactory.newInstance();
     factory.setProperty(XMLInputFactory.IS_VALIDATING, false);
     factory.setProperty(XMLInputFactory.IS_NAMESPACE_AWARE, true);
 
-    XMLStreamReader streamReader = factory.createXMLStreamReader(request.getContent(), DEFAULT_CHARSET);
+      if(content == null) {
+//        throw new EntityProviderException("Got not supported NULL object as content to de-serialize.");      
+        throw new EntityProviderException(EntityProviderException.COMMON);      
+      }
+      
+      if(content instanceof InputStream) {
+        XMLStreamReader streamReader = factory.createXMLStreamReader((InputStream) content, DEFAULT_CHARSET);
+        return streamReader;
+      }
+      throw new EntityProviderException(EntityProviderException.COMMON);      
+//      throw new ODataException("Found not supported content of class '" + content.getClass() + "' to de-serialize.");
 
-    return streamReader;
   }
 }

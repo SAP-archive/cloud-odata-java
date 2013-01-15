@@ -1,7 +1,6 @@
 package com.sap.core.odata.api.processor.feature;
 
 import com.sap.core.odata.api.exception.ODataException;
-import com.sap.core.odata.api.processor.ODataRequest;
 import com.sap.core.odata.api.processor.ODataResponse;
 import com.sap.core.odata.api.uri.info.GetComplexPropertyUriInfo;
 import com.sap.core.odata.api.uri.info.PutMergePatchUriInfo;
@@ -24,5 +23,5 @@ public interface EntityComplexProperty extends ProcessorFeature {
    * @return a {@link ODataResponse} object
    * @throws ODataException
    */
-  ODataResponse updateEntityComplexProperty(PutMergePatchUriInfo uriInfo, ODataRequest request, String contentType) throws ODataException;
+  ODataResponse updateEntityComplexProperty(PutMergePatchUriInfo uriInfo, Object content, String contentType) throws ODataException;
 }

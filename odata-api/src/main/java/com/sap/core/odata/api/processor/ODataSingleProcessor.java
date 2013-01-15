@@ -6,7 +6,7 @@ import java.util.List;
 import com.sap.core.odata.api.commons.HttpStatusCodes;
 import com.sap.core.odata.api.edm.Edm;
 import com.sap.core.odata.api.edm.EdmServiceMetadata;
-import com.sap.core.odata.api.ep.BasicProvider;
+import com.sap.core.odata.api.ep.EntityProvider;
 import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.api.exception.ODataNotImplementedException;
 import com.sap.core.odata.api.processor.feature.Batch;
@@ -132,7 +132,7 @@ public abstract class ODataSingleProcessor
    * @see EntitySimplePropertyValue
    */
   @Override
-  public ODataResponse updateEntitySimplePropertyValue(PutMergePatchUriInfo uriInfo, ODataRequest request, String contentType) throws ODataException {
+  public ODataResponse updateEntitySimplePropertyValue(PutMergePatchUriInfo uriInfo, Object content, String contentType) throws ODataException {
     throw new ODataNotImplementedException();
   }
 
@@ -156,7 +156,7 @@ public abstract class ODataSingleProcessor
    * @see EntitySimpleProperty
    */
   @Override
-  public ODataResponse updateEntitySimpleProperty(PutMergePatchUriInfo uriInfo, ODataRequest request, String contentType) throws ODataException {
+  public ODataResponse updateEntitySimpleProperty(PutMergePatchUriInfo uriInfo, Object content, String contentType) throws ODataException {
     throw new ODataNotImplementedException();
   }
 
@@ -172,7 +172,7 @@ public abstract class ODataSingleProcessor
    * @see EntityMedia
    */
   @Override
-  public ODataResponse updateEntityMedia(PutMergePatchUriInfo uriInfo, ODataRequest request, String contentType) throws ODataException {
+  public ODataResponse updateEntityMedia(PutMergePatchUriInfo uriInfo, Object content, String contentType) throws ODataException {
     throw new ODataNotImplementedException();
   }
 
@@ -204,7 +204,7 @@ public abstract class ODataSingleProcessor
    * @see EntityLink
    */
   @Override
-  public ODataResponse createEntityLink(PostUriInfo uriInfo, ODataRequest request, String contentType) throws ODataException {
+  public ODataResponse createEntityLink(PostUriInfo uriInfo, Object content, String contentType) throws ODataException {
     throw new ODataNotImplementedException();
   }
 
@@ -228,7 +228,7 @@ public abstract class ODataSingleProcessor
    * @see EntityLink
    */
   @Override
-  public ODataResponse updateEntityLink(PutMergePatchUriInfo uriInfo, ODataRequest request, String contentType) throws ODataException {
+  public ODataResponse updateEntityLink(PutMergePatchUriInfo uriInfo, Object content, String contentType) throws ODataException {
     throw new ODataNotImplementedException();
   }
 
@@ -252,7 +252,7 @@ public abstract class ODataSingleProcessor
    * @see EntityComplexProperty
    */
   @Override
-  public ODataResponse updateEntityComplexProperty(PutMergePatchUriInfo uriInfo, ODataRequest request, String contentType) throws ODataException {
+  public ODataResponse updateEntityComplexProperty(PutMergePatchUriInfo uriInfo, Object content, String contentType) throws ODataException {
     throw new ODataNotImplementedException();
   }
 
@@ -276,7 +276,7 @@ public abstract class ODataSingleProcessor
    * @see Entity
    */
   @Override
-  public ODataResponse createEntity(PostUriInfo uriInfo, ODataRequest request, String contentType) throws ODataException {
+  public ODataResponse createEntity(PostUriInfo uriInfo, Object content, String contentType) throws ODataException {
     throw new ODataNotImplementedException();
   }
 
@@ -300,7 +300,7 @@ public abstract class ODataSingleProcessor
    * @see Entity
    */
   @Override
-  public ODataResponse updateEntity(PutMergePatchUriInfo uriInfo, ODataRequest request, String contentType) throws ODataException {
+  public ODataResponse updateEntity(PutMergePatchUriInfo uriInfo, Object content, String contentType) throws ODataException {
     throw new ODataNotImplementedException();
   }
 
@@ -317,10 +317,9 @@ public abstract class ODataSingleProcessor
    */
   @Override
   public ODataResponse readServiceDocument(GetServiceDocumentUriInfo uriInfo, String contentType) throws ODataException {
-    BasicProvider odataSerializer = BasicProvider.create();
     contentType += "; " + DEFAULT_SERVICE_CHARSET_PARAMETER;
 
-    ODataResponse response = ODataResponse.fromResponse(odataSerializer.writeServiceDocument(getContext().getService().getEntityDataModel(), getContext().getPathInfo().getServiceRoot().toASCIIString()))
+    ODataResponse response = ODataResponse.fromResponse(EntityProvider.writeServiceDocument(getContext().getService().getEntityDataModel(), getContext().getPathInfo().getServiceRoot().toASCIIString()))
         .header("Content-Type", contentType)
         .header("DataServiceVersion", Edm.DATA_SERVICE_VERSION_10).build();
     return response;

@@ -1,6 +1,7 @@
 package com.sap.core.odata.core.ep;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.List;
 import java.util.Map;
@@ -20,25 +21,31 @@ import com.sap.core.odata.api.edm.EdmMultiplicity;
 import com.sap.core.odata.api.edm.EdmProperty;
 import com.sap.core.odata.api.edm.EdmType;
 import com.sap.core.odata.api.edm.EdmTypeKind;
-import com.sap.core.odata.api.ep.EntityProvider;
 import com.sap.core.odata.api.ep.EntityProviderException;
 import com.sap.core.odata.api.ep.EntityProviderProperties;
 import com.sap.core.odata.api.processor.ODataResponse;
 import com.sap.core.odata.core.commons.ContentType;
 import com.sap.core.odata.core.ep.aggregator.EntityInfoAggregator;
 import com.sap.core.odata.core.ep.aggregator.EntityPropertyInfo;
+import com.sap.core.odata.core.ep.consumer.XmlEntityConsumer;
+import com.sap.core.odata.core.ep.producer.AtomEntryEntityProvider;
+import com.sap.core.odata.core.ep.producer.AtomFeedProvider;
+import com.sap.core.odata.core.ep.producer.XmlCollectionEntityProvider;
+import com.sap.core.odata.core.ep.producer.XmlLinkEntityProvider;
+import com.sap.core.odata.core.ep.producer.XmlLinksEntityProvider;
+import com.sap.core.odata.core.ep.producer.XmlPropertyEntityProvider;
 import com.sap.core.odata.core.ep.util.CircleStreamBuffer;
 
 /**
  * @author SAP AG
  */
-public class AtomEntityProvider extends EntityProvider {
+public class AtomEntityProvider implements ContentTypeBasedEntityProvider {
 
   private static final Logger LOG = LoggerFactory.getLogger(AtomEntityProvider.class);
   /** Default used charset for writer and response content header */
   private static final String DEFAULT_CHARSET = "utf-8";
 
-  AtomEntityProvider() throws EntityProviderException {
+  public AtomEntityProvider() throws EntityProviderException {
     super();
   }
 
@@ -274,5 +281,29 @@ public class AtomEntityProvider extends EntityProvider {
     } catch (EdmException e) {
       throw new EntityProviderException(EntityProviderException.COMMON, e);
     }
+  }
+
+  @Override
+  public Map<String, Object> readEntry(EdmEntitySet entitySet, InputStream content) throws EntityProviderException {
+    XmlEntityConsumer xec = new XmlEntityConsumer();
+    return xec.readEntry(entitySet, content);
+  }
+
+  @Override
+  public Map<String, Object> readProperty(EdmProperty edmProperty, InputStream content) throws EntityProviderException {
+    XmlEntityConsumer xec = new XmlEntityConsumer();
+    return xec.readProperty(edmProperty, content);
+  }
+  
+  @Override
+  public Map<String, Object> readLink(EdmEntitySet entitySet, InputStream content) throws EntityProviderException {
+    XmlEntityConsumer xec = new XmlEntityConsumer();
+    return xec.readLink(entitySet, content);
+  }
+
+  @Override
+  public List<Map<String, Object>> readLinks(EdmEntitySet entitySet, InputStream content) throws EntityProviderException {
+    XmlEntityConsumer xec = new XmlEntityConsumer();
+    return xec.readLinks(entitySet, content);
   }
 }

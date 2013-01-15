@@ -6,9 +6,8 @@ import java.util.List;
 import java.util.Map;
 
 import com.sap.core.odata.api.edm.EdmProperty;
-import com.sap.core.odata.api.ep.BasicProvider;
-import com.sap.core.odata.api.ep.EntityProvider;
 import com.sap.core.odata.api.ep.EntityProviderProperties;
+import com.sap.core.odata.api.ep.EntityProvider;
 import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.api.exception.ODataNotFoundException;
 import com.sap.core.odata.api.processor.ODataResponse;
@@ -45,7 +44,6 @@ public class MapProcessor extends ODataSingleProcessor {
   
   @Override
   public ODataResponse readEntitySet(GetEntitySetUriInfo uriInfo, String contentType) throws ODataException {
-    EntityProvider ep = EntityProvider.create(contentType);
     EntityProviderProperties properties = EntityProviderProperties.baseUri(getContext().getPathInfo().getServiceRoot()).build();
 
     List<Map<String, Object>> values = new ArrayList<Map<String, Object>>();
@@ -62,14 +60,13 @@ public class MapProcessor extends ODataSingleProcessor {
       values.add(data);
     }
     
-    ODataResponse response = ep.writeFeed(uriInfo.getTargetEntitySet(), values, properties);
+    ODataResponse response = EntityProvider.writeFeed(contentType, uriInfo.getTargetEntitySet(), values, properties);
 
     return response;
   }
 
    @Override
   public ODataResponse readEntity(GetEntityUriInfo uriInfo, String contentType) throws ODataException {
-    EntityProvider ep = EntityProvider.create(contentType);
     EntityProviderProperties properties = EntityProviderProperties.baseUri(getContext().getPathInfo().getServiceRoot()).build();
 
     // query
@@ -88,14 +85,12 @@ public class MapProcessor extends ODataSingleProcessor {
       data.put(pName, record.get(mappedPropertyName)); 
     }
 
-    ODataResponse response = ep.writeEntry(uriInfo.getTargetEntitySet(), data, properties);
+    ODataResponse response = EntityProvider.writeEntry(contentType, uriInfo.getTargetEntitySet(), data, properties);
     return response;
   }
 
   @Override
   public ODataResponse readEntitySimplePropertyValue(GetSimplePropertyUriInfo uriInfo, String contentType) throws ODataException {
-    BasicProvider bp = BasicProvider.create();
-
     final List<EdmProperty> propertyPath = uriInfo.getPropertyPath();
     final EdmProperty property = propertyPath.get(propertyPath.size() - 1);
 
@@ -111,7 +106,7 @@ public class MapProcessor extends ODataSingleProcessor {
     String mappedPropertyName = (String) property.getMapping().getObject();
     Object value = record.get(mappedPropertyName);
 
-    ODataResponse response = bp.writePropertyValue(property, value);
+    ODataResponse response = EntityProvider.writePropertyValue(property, value);
     return response;
   }
 
