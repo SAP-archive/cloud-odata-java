@@ -61,7 +61,7 @@ public final class EntityProvider {
      */
     ODataResponse writeBinary(String mimeType, byte[] data) throws EntityProviderException;
 
-    Map<String, Object> readEntry(String contentType, EdmEntitySet entitySet, InputStream content) throws EntityProviderException;
+    ReadEntryResult readEntry(String contentType, EdmEntitySet entitySet, InputStream content) throws EntityProviderException;
 
     Map<String, Object> readLink(String contentType, EdmEntitySet entitySet, InputStream content) throws EntityProviderException;
 
@@ -91,7 +91,7 @@ public final class EntityProvider {
     return createBasic().readPropertyValue(edmProperty, content);
   }
 
-  public static Map<String, Object> readEntry(String contentType, EdmEntitySet entitySet, InputStream content) throws EntityProviderException{
+  public static ReadEntryResult readEntry(String contentType, EdmEntitySet entitySet, InputStream content) throws EntityProviderException{
     return createBasic().readEntry(contentType, entitySet, content);
   };
 

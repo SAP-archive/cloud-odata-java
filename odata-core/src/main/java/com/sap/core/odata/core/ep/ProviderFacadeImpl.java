@@ -8,9 +8,10 @@ import com.sap.core.odata.api.edm.Edm;
 import com.sap.core.odata.api.edm.EdmEntitySet;
 import com.sap.core.odata.api.edm.EdmFunctionImport;
 import com.sap.core.odata.api.edm.EdmProperty;
+import com.sap.core.odata.api.ep.EntityProvider.ProviderInterface;
 import com.sap.core.odata.api.ep.EntityProviderException;
 import com.sap.core.odata.api.ep.EntityProviderProperties;
-import com.sap.core.odata.api.ep.EntityProvider.ProviderInterface;
+import com.sap.core.odata.api.ep.ReadEntryResult;
 import com.sap.core.odata.api.exception.ODataNotAcceptableException;
 import com.sap.core.odata.api.exception.ODataNotImplementedException;
 import com.sap.core.odata.api.processor.ODataResponse;
@@ -75,7 +76,7 @@ public class ProviderFacadeImpl implements ProviderInterface {
   }
 
   @Override
-  public Map<String, Object> readEntry(String contentType, EdmEntitySet entitySet, InputStream content) throws EntityProviderException {
+  public ReadEntryResult readEntry(String contentType, EdmEntitySet entitySet, InputStream content) throws EntityProviderException {
     return create(contentType).readEntry(entitySet, content);
   }
 
