@@ -47,7 +47,7 @@ public class AtomEntryEntityProducer {
         writer.writeDefaultNamespace(Edm.NAMESPACE_ATOM_2005);
         writer.writeNamespace(Edm.PREFIX_M, Edm.NAMESPACE_M_2007_08);
         writer.writeNamespace(Edm.PREFIX_D, Edm.NAMESPACE_D_2007_08);
-        writer.writeAttribute(Edm.PREFIX_XML, Edm.NAMESPACE_XML_1998, "base", properties.getBaseUri().toASCIIString());
+        writer.writeAttribute(Edm.PREFIX_XML, Edm.NAMESPACE_XML_1998, "base", properties.getServiceRoot().toASCIIString());
       }
 
       etag = createETag(eia, data);
@@ -350,8 +350,8 @@ public class AtomEntryEntityProducer {
       }
       id += eia.getEntitySetName() + "(" + entryKey + ")";
 
-      URI baseUri = properties.getBaseUri();
-      return UriUtils.encodeUri(baseUri, id);
+      URI serviceRoot = properties.getServiceRoot();
+      return UriUtils.encodeUri(serviceRoot, id);
     } catch (Exception e) {
       throw new EntityProviderException(EntityProviderException.COMMON, e);
     }

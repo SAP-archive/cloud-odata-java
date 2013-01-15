@@ -41,7 +41,7 @@ public abstract class AbstractProviderTest {
       throw new RuntimeException(e);
     }
   }
-  protected static final EntityProviderProperties DEFAULT_PROPERTIES = EntityProviderProperties.baseUri(BASE_URI).build();
+  protected static final EntityProviderProperties DEFAULT_PROPERTIES = EntityProviderProperties.serviceRoot(BASE_URI).build();
 
   protected Map<String, Object> employeeData;
 

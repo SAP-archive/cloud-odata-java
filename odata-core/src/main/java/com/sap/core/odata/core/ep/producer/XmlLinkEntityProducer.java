@@ -45,7 +45,7 @@ public class XmlLinkEntityProducer {
 
   private String createAbsoluteUri(final EntityInfoAggregator entityInfo, final Map<String, Object> data) throws EntityProviderException {
     try {
-      return UriUtils.encodeUri(properties.getBaseUri(),
+      return UriUtils.encodeUri(properties.getServiceRoot(),
           (entityInfo.isDefaultEntityContainer() ? "" : entityInfo.getEntityContainerName() + Edm.DELIMITER)
               + entityInfo.getEntitySetName()
               + "(" + createEntryKey(entityInfo, data) + ")");

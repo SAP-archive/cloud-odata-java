@@ -46,7 +46,7 @@ public class AtomFeedProducerTest extends AbstractProviderTest {
   public void testFeedNamespaces() throws Exception {
     AtomEntityProvider ser = createAtomEntityProvider();
     //EntityProviderProperties properties = EntityProviderProperties.baseUri(BASE_URI).mediaResourceMimeType("mediatype").inlineCountType(view.getInlineCount()).build();
-    EntityProviderProperties properties = EntityProviderProperties.baseUri(BASE_URI).mediaResourceMimeType("mediatype").build();
+    EntityProviderProperties properties = EntityProviderProperties.serviceRoot(BASE_URI).mediaResourceMimeType("mediatype").build();
     ODataResponse response = ser.writeFeed(view.getTargetEntitySet(), this.roomsData, properties);
     String xmlString = verifyResponse(response);
 
@@ -57,7 +57,7 @@ public class AtomFeedProducerTest extends AbstractProviderTest {
   @Test
   public void testSelfLink() throws Exception {
     AtomEntityProvider ser = createAtomEntityProvider();
-    EntityProviderProperties properties = EntityProviderProperties.baseUri(BASE_URI).mediaResourceMimeType("mediatype").build();
+    EntityProviderProperties properties = EntityProviderProperties.serviceRoot(BASE_URI).mediaResourceMimeType("mediatype").build();
     ODataResponse response = ser.writeFeed(view.getTargetEntitySet(), this.roomsData, properties);
     String xmlString = verifyResponse(response);
 
@@ -69,7 +69,7 @@ public class AtomFeedProducerTest extends AbstractProviderTest {
   @Test
   public void testFeedMandatoryParts() throws Exception {
     AtomEntityProvider ser = createAtomEntityProvider();
-    EntityProviderProperties properties = EntityProviderProperties.baseUri(BASE_URI).mediaResourceMimeType("mediatype").build();
+    EntityProviderProperties properties = EntityProviderProperties.serviceRoot(BASE_URI).mediaResourceMimeType("mediatype").build();
     ODataResponse response = ser.writeFeed(view.getTargetEntitySet(), this.roomsData, properties);
     String xmlString = verifyResponse(response);
 
@@ -97,7 +97,7 @@ public class AtomFeedProducerTest extends AbstractProviderTest {
     initializeRoomData(20);
 
     AtomEntityProvider ser = createAtomEntityProvider();
-    EntityProviderProperties properties = EntityProviderProperties.baseUri(BASE_URI)
+    EntityProviderProperties properties = EntityProviderProperties.serviceRoot(BASE_URI)
         .mediaResourceMimeType("mediatype")
         .inlineCount(Integer.valueOf(103))
         .inlineCountType(InlineCount.ALLPAGES)
@@ -114,7 +114,7 @@ public class AtomFeedProducerTest extends AbstractProviderTest {
     when(view.getInlineCount()).thenReturn(InlineCount.NONE);
 
     AtomEntityProvider ser = createAtomEntityProvider();
-    EntityProviderProperties properties = EntityProviderProperties.baseUri(BASE_URI).mediaResourceMimeType("mediatype").build();
+    EntityProviderProperties properties = EntityProviderProperties.serviceRoot(BASE_URI).mediaResourceMimeType("mediatype").build();
     ODataResponse response = ser.writeFeed(view.getTargetEntitySet(), this.roomsData, properties);
     String xmlString = verifyResponse(response);
 
@@ -126,7 +126,7 @@ public class AtomFeedProducerTest extends AbstractProviderTest {
     when(view.getInlineCount()).thenReturn(InlineCount.NONE);
 
     AtomEntityProvider ser = createAtomEntityProvider();
-    EntityProviderProperties properties = EntityProviderProperties.baseUri(BASE_URI)
+    EntityProviderProperties properties = EntityProviderProperties.serviceRoot(BASE_URI)
         .mediaResourceMimeType("mediatype")
         .skipToken("äbc")
         .build();
@@ -142,7 +142,7 @@ public class AtomFeedProducerTest extends AbstractProviderTest {
     when(view.getInlineCount()).thenReturn(InlineCount.NONE);
 
     AtomEntityProvider ser = createAtomEntityProvider();
-    EntityProviderProperties properties = EntityProviderProperties.baseUri(BASE_URI).mediaResourceMimeType("mediatype").build();
+    EntityProviderProperties properties = EntityProviderProperties.serviceRoot(BASE_URI).mediaResourceMimeType("mediatype").build();
     ODataResponse response = ser.writeFeed(view.getTargetEntitySet(), this.roomsData, properties);
     String xmlString = verifyResponse(response);
 
@@ -152,7 +152,7 @@ public class AtomFeedProducerTest extends AbstractProviderTest {
   @Test(expected = EntityProviderException.class)
   public void testInlineCountInvalid() throws Exception {
     AtomEntityProvider ser = createAtomEntityProvider();
-    EntityProviderProperties properties = EntityProviderProperties.baseUri(BASE_URI).mediaResourceMimeType("mediatype").inlineCountType(InlineCount.ALLPAGES).build();
+    EntityProviderProperties properties = EntityProviderProperties.serviceRoot(BASE_URI).mediaResourceMimeType("mediatype").inlineCountType(InlineCount.ALLPAGES).build();
     ser.writeFeed(view.getTargetEntitySet(), this.roomsData, properties);
   }
 
@@ -161,7 +161,7 @@ public class AtomFeedProducerTest extends AbstractProviderTest {
     initializeRoomData(103);
 
     AtomEntityProvider ser = createAtomEntityProvider();
-    EntityProviderProperties properties = EntityProviderProperties.baseUri(BASE_URI).mediaResourceMimeType("mediatype").build();
+    EntityProviderProperties properties = EntityProviderProperties.serviceRoot(BASE_URI).mediaResourceMimeType("mediatype").build();
     ODataResponse response = ser.writeFeed(view.getTargetEntitySet(), this.roomsData, properties);
     String xmlString = verifyResponse(response);
 

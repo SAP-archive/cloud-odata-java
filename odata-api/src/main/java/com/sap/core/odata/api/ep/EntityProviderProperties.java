@@ -9,7 +9,7 @@ import com.sap.core.odata.api.commons.InlineCount;
  */
 public class EntityProviderProperties {
 
-  private URI baseUri;
+  private URI serviceRoot;
   private String mediaResourceMimeType;
   private InlineCount inlineCountType;
   private Integer inlineCount;
@@ -18,10 +18,10 @@ public class EntityProviderProperties {
   private EntityProviderProperties() {}
 
   /**
-   * @return the base URI
+   * @return the service root
    */
-  public final URI getBaseUri() {
-    return baseUri;
+  public final URI getServiceRoot() {
+    return serviceRoot;
   }
 
   /**
@@ -52,8 +52,8 @@ public class EntityProviderProperties {
     return skipToken;
   }
 
-  public static ODataEntityProviderPropertiesBuilder baseUri(URI baseUri) {
-    return new ODataEntityProviderPropertiesBuilder().baseUri(baseUri);
+  public static ODataEntityProviderPropertiesBuilder serviceRoot(URI serviceRoot) {
+    return new ODataEntityProviderPropertiesBuilder().serviceRoot(serviceRoot);
   }
 
   public static class ODataEntityProviderPropertiesBuilder {
@@ -92,10 +92,10 @@ public class EntityProviderProperties {
     }
 
     /**
-     * @param baseUri
+     * @param serviceRoot
      */
-    private final ODataEntityProviderPropertiesBuilder baseUri(URI baseUri) {
-      properties.baseUri = baseUri;
+    private final ODataEntityProviderPropertiesBuilder serviceRoot(URI serviceRoot) {
+      properties.serviceRoot = serviceRoot;
       return this;
     }
 

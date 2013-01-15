@@ -46,7 +46,7 @@ public class XmlLinksEntityProducerTest extends AbstractProviderTest {
     initializeRoomData(1);
 
     final ODataResponse response = createAtomEntityProvider().writeLinks(entitySet, roomsData,
-        EntityProviderProperties.baseUri(BASE_URI).inlineCount(3).build());
+        EntityProviderProperties.serviceRoot(BASE_URI).inlineCount(3).build());
     assertNotNull(response);
     assertNotNull(response.getEntity());
 
