@@ -9,7 +9,9 @@ import java.util.List;
 
 import org.junit.Test;
 
-public class BuildingTest {
+import com.sap.core.odata.testutil.fit.BaseTest;
+
+public class BuildingTest extends BaseTest {
 
   private static final String VALUE_NAME = "bd01";
 

@@ -25,6 +25,12 @@
 			<version>${project.version}</version>
 			<scope>test</scope>
 		</dependency>
+		<dependency>
+			<groupId>com.sap.core.odata</groupId>
+			<artifactId>com.sap.core.odata.testutil</artifactId>
+			<version>${project.version}</version>
+			<scope>test</scope>
+		</dependency>
 	</dependencies>
 
 </project>

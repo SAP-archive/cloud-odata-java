@@ -28,11 +28,12 @@ import com.sap.core.odata.core.commons.ContentType;
 import com.sap.core.odata.ref.model.DataContainer;
 import com.sap.core.odata.ref.processor.ListsProcessor;
 import com.sap.core.odata.ref.processor.ScenarioDataSource;
+import com.sap.core.odata.testutil.fit.BaseTest;
 
 /**
  * @author SAP AG
  */
-public class EntitySetTest {
+public class EntitySetTest extends BaseTest {
 
   private static DataContainer dataContainer;
   private static ScenarioDataSource dataSource;

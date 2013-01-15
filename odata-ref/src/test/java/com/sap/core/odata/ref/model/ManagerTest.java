@@ -8,10 +8,12 @@ import java.util.List;
 
 import org.junit.Test;
 
+import com.sap.core.odata.testutil.fit.BaseTest;
+
 /**
  * @author SAP AG
  */
-public class ManagerTest {
+public class ManagerTest extends BaseTest {
 
   private static final String VALUE_NAME = "Peter Schulz";
   private static final String TEAM_NAME = "Team 1";
