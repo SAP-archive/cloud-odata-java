@@ -39,7 +39,7 @@ import com.sap.core.odata.testutil.helper.StringHelper;
 import com.sap.core.odata.testutil.helper.XMLUnitHelper;
 import com.sap.core.odata.testutil.mock.MockFacade;
 
-public class AtomEntryProviderTest extends AbstractProviderTest {
+public class AtomEntryProducerTest extends AbstractProviderTest {
 
   @Test
   public void serializeAtomMediaResource() throws IOException, XpathException, SAXException, XMLStreamException, FactoryConfigurationError, ODataException {

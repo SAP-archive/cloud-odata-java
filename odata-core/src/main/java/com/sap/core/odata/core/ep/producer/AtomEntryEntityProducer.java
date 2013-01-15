@@ -29,12 +29,12 @@ import com.sap.core.odata.core.ep.util.UriUtils;
 /**
  * @author SAP AG
  */
-public class AtomEntryEntityProvider {
+public class AtomEntryEntityProducer {
 
   private String etag;
   private EntityProviderProperties properties;
 
-  public AtomEntryEntityProvider(EntityProviderProperties properties) throws EntityProviderException {
+  public AtomEntryEntityProducer(EntityProviderProperties properties) throws EntityProviderException {
     this.properties = properties;
   }
 
@@ -94,7 +94,7 @@ public class AtomEntryEntityProvider {
       for (String tpName : noneSyndicationTargetPaths) {
         EntityPropertyInfo info = eia.getTargetPathInfo(tpName);
         if (!isKeepInContent(info)) {
-          XmlPropertyEntityProvider aps = new XmlPropertyEntityProvider();
+          XmlPropertyEntityProducer aps = new XmlPropertyEntityProducer();
           Object value = data.get(info.getName());
           aps.append(writer, info.getName(), info, value);
         }
@@ -398,7 +398,7 @@ public class AtomEntryEntityProvider {
 
         if (propertyInfo != null && isNotMappedViaCustomMapping(propertyInfo)) {
           Object value = data.get(propertyName);
-          XmlPropertyEntityProvider aps = new XmlPropertyEntityProvider();
+          XmlPropertyEntityProducer aps = new XmlPropertyEntityProducer();
           aps.append(writer, propertyInfo.getName(), propertyInfo, value);
         }
       }

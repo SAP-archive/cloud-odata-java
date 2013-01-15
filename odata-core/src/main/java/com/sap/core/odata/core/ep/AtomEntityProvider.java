@@ -28,12 +28,12 @@ import com.sap.core.odata.core.commons.ContentType;
 import com.sap.core.odata.core.ep.aggregator.EntityInfoAggregator;
 import com.sap.core.odata.core.ep.aggregator.EntityPropertyInfo;
 import com.sap.core.odata.core.ep.consumer.XmlEntityConsumer;
-import com.sap.core.odata.core.ep.producer.AtomEntryEntityProvider;
-import com.sap.core.odata.core.ep.producer.AtomFeedProvider;
-import com.sap.core.odata.core.ep.producer.XmlCollectionEntityProvider;
-import com.sap.core.odata.core.ep.producer.XmlLinkEntityProvider;
-import com.sap.core.odata.core.ep.producer.XmlLinksEntityProvider;
-import com.sap.core.odata.core.ep.producer.XmlPropertyEntityProvider;
+import com.sap.core.odata.core.ep.producer.AtomEntryEntityProducer;
+import com.sap.core.odata.core.ep.producer.AtomFeedProducer;
+import com.sap.core.odata.core.ep.producer.XmlCollectionEntityProducer;
+import com.sap.core.odata.core.ep.producer.XmlLinkEntityProducer;
+import com.sap.core.odata.core.ep.producer.XmlLinksEntityProducer;
+import com.sap.core.odata.core.ep.producer.XmlPropertyEntityProducer;
 import com.sap.core.odata.core.ep.util.CircleStreamBuffer;
 
 /**
@@ -59,7 +59,7 @@ public class AtomEntityProvider implements ContentTypeBasedEntityProvider {
       XMLStreamWriter writer = XMLOutputFactory.newInstance().createXMLStreamWriter(outStream, DEFAULT_CHARSET);
       writer.writeStartDocument();
 
-      AtomEntryEntityProvider as = new AtomEntryEntityProvider(properties);
+      AtomEntryEntityProducer as = new AtomEntryEntityProducer(properties);
       EntityInfoAggregator eia = EntityInfoAggregator.create(entitySet);
       as.append(writer, eia, data, true);
 
@@ -98,7 +98,7 @@ public class AtomEntityProvider implements ContentTypeBasedEntityProvider {
       XMLStreamWriter writer = XMLOutputFactory.newInstance().createXMLStreamWriter(outStream, DEFAULT_CHARSET);
       writer.writeStartDocument();
 
-      XmlPropertyEntityProvider ps = new XmlPropertyEntityProvider();
+      XmlPropertyEntityProducer ps = new XmlPropertyEntityProducer();
       ps.append(writer, propertyInfo, value);
 
       writer.flush();
@@ -131,7 +131,7 @@ public class AtomEntityProvider implements ContentTypeBasedEntityProvider {
       XMLStreamWriter writer = XMLOutputFactory.newInstance().createXMLStreamWriter(outStream, DEFAULT_CHARSET);
       writer.writeStartDocument();
 
-      AtomFeedProvider atomFeedProvider = new AtomFeedProvider(properties);
+      AtomFeedProducer atomFeedProvider = new AtomFeedProducer(properties);
       //EdmEntitySet entitySet = entitySetView.getTargetEntitySet();
       EntityInfoAggregator eia = EntityInfoAggregator.create(entitySet);
       atomFeedProvider.append(writer, eia, data);
@@ -169,7 +169,7 @@ public class AtomEntityProvider implements ContentTypeBasedEntityProvider {
       XMLStreamWriter writer = XMLOutputFactory.newInstance().createXMLStreamWriter(outStream, DEFAULT_CHARSET);
       writer.writeStartDocument();
 
-      XmlLinkEntityProvider entity = new XmlLinkEntityProvider(properties);
+      XmlLinkEntityProducer entity = new XmlLinkEntityProducer(properties);
       final EntityInfoAggregator entityInfo = EntityInfoAggregator.create(entitySet);
       entity.append(writer, entityInfo, data, true);
 
@@ -204,7 +204,7 @@ public class AtomEntityProvider implements ContentTypeBasedEntityProvider {
       XMLStreamWriter writer = XMLOutputFactory.newInstance().createXMLStreamWriter(outStream, DEFAULT_CHARSET);
       writer.writeStartDocument();
 
-      XmlLinksEntityProvider entity = new XmlLinksEntityProvider(properties);
+      XmlLinksEntityProducer entity = new XmlLinksEntityProducer(properties);
       final EntityInfoAggregator entityInfo = EntityInfoAggregator.create(entitySet);
       entity.append(writer, entityInfo, data);
 
@@ -239,7 +239,7 @@ public class AtomEntityProvider implements ContentTypeBasedEntityProvider {
       XMLStreamWriter writer = XMLOutputFactory.newInstance().createXMLStreamWriter(outStream, DEFAULT_CHARSET);
       writer.writeStartDocument();
 
-      XmlCollectionEntityProvider.append(writer, propertyInfo, data);
+      XmlCollectionEntityProducer.append(writer, propertyInfo, data);
 
       writer.flush();
       outStream.flush();

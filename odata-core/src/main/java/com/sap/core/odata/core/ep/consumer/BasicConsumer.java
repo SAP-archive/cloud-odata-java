@@ -3,18 +3,22 @@ package com.sap.core.odata.core.ep.consumer;
 import com.sap.core.odata.api.edm.EdmProperty;
 import com.sap.core.odata.api.ep.EntityProviderException;
 
-/**
- * Abstract basic (content type independent) consumer for reading input (from <code>content</code>).
- * 
- * @author SAP AG
- */
-public abstract class BasicConsumer {
+public class BasicConsumer {
 
-  protected BasicConsumer() throws EntityProviderException {}
+  protected BasicConsumer() throws EntityProviderException {
+    super();
+  }
 
-  public abstract Object readPropertyValue(EdmProperty edmProperty, Object content) throws EntityProviderException;
+  public Object readPropertyValue(EdmProperty edmProperty, Object content) throws EntityProviderException {
+    return null;
+  }
 
-  public abstract String readText(Object content) throws EntityProviderException;
+  public String readText(Object content) throws EntityProviderException {
+    return null;
+  }
 
-  public abstract byte[] readBinary(String mimeType, Object content) throws EntityProviderException;
+  public byte[] readBinary(String mimeType, Object content) throws EntityProviderException {
+    return null;
+  }
+
 }

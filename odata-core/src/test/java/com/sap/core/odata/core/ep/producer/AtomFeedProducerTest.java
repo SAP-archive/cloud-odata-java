@@ -26,7 +26,7 @@ import com.sap.core.odata.core.ep.AtomEntityProvider;
 import com.sap.core.odata.testutil.helper.StringHelper;
 import com.sap.core.odata.testutil.mock.MockFacade;
 
-public class AtomFeedProviderTest extends AbstractProviderTest {
+public class AtomFeedProducerTest extends AbstractProviderTest {
 
   private GetEntitySetUriInfo view;
 

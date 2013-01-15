@@ -16,7 +16,7 @@ import com.sap.core.odata.api.ep.EntityProviderException;
 import com.sap.core.odata.core.edm.provider.EdmImplProv;
 import com.sap.core.odata.core.ep.FormatXml;
 
-public class AtomServiceDocumentProvider {
+public class AtomServiceDocumentProducer {
 
   public static void writeServiceDocument(Edm edm, String serviceRoot, Writer writer) throws EntityProviderException {
 

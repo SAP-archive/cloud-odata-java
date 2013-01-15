@@ -11,7 +11,7 @@ import com.sap.core.odata.api.processor.ODataResponse;
  * Interface for basic (content type independent) provider methods.
  * @author SAP AG
  */
-public interface BasicProviderInterface {
+public interface BasicEntityProviderInterface {
 
   public abstract Object readPropertyValue(EdmProperty edmProperty, InputStream content) throws EntityProviderException;
 

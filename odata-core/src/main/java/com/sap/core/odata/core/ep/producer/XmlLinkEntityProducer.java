@@ -22,11 +22,11 @@ import com.sap.core.odata.core.ep.util.UriUtils;
  * Provider for writing a link
  * @author SAP AG
  */
-public class XmlLinkEntityProvider {
+public class XmlLinkEntityProducer {
 
   private final EntityProviderProperties properties;
 
-  public XmlLinkEntityProvider(final EntityProviderProperties properties) throws EntityProviderException {
+  public XmlLinkEntityProducer(final EntityProviderProperties properties) throws EntityProviderException {
     this.properties = properties;
   }
 

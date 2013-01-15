@@ -16,11 +16,11 @@ import com.sap.core.odata.core.ep.aggregator.EntityInfoAggregator;
  * Provider for writing a collection of links
  * @author SAP AG
  */
-public class XmlLinksEntityProvider {
+public class XmlLinksEntityProducer {
 
   private final EntityProviderProperties properties;
 
-  public XmlLinksEntityProvider(final EntityProviderProperties properties) throws EntityProviderException {
+  public XmlLinksEntityProducer(final EntityProviderProperties properties) throws EntityProviderException {
     this.properties = properties;
   }
 
@@ -34,7 +34,7 @@ public class XmlLinksEntityProvider {
         writer.writeCharacters(properties.getInlineCount().toString());
         writer.writeEndElement();
       }
-      XmlLinkEntityProvider provider = new XmlLinkEntityProvider(properties);
+      XmlLinkEntityProducer provider = new XmlLinkEntityProducer(properties);
       for (final Map<String, Object> entityData : data)
         provider.append(writer, entityInfo, entityData, false);
       writer.writeEndElement();

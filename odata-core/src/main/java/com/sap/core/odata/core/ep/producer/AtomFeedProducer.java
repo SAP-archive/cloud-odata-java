@@ -22,11 +22,11 @@ import com.sap.core.odata.core.uri.SystemQueryOption;
 /**
  * @author SAP AG
  */
-public class AtomFeedProvider {
+public class AtomFeedProducer {
 
   private EntityProviderProperties properties;
 
-  public AtomFeedProvider(EntityProviderProperties properties) {
+  public AtomFeedProducer(EntityProviderProperties properties) {
     this.properties = properties;
   }
 
@@ -72,7 +72,7 @@ public class AtomFeedProvider {
   }
 
   private void appendEntries(XMLStreamWriter writer, EntityInfoAggregator eia, List<Map<String, Object>> data) throws EntityProviderException {
-    AtomEntryEntityProvider entryProvider = new AtomEntryEntityProvider(properties);
+    AtomEntryEntityProducer entryProvider = new AtomEntryEntityProducer(properties);
     for (Map<String, Object> singleEntryData : data)
       entryProvider.append(writer, eia, singleEntryData, false);
   }
