@@ -15,10 +15,6 @@ public interface BasicEntityProviderInterface {
 
   public abstract Object readPropertyValue(EdmProperty edmProperty, InputStream content) throws EntityProviderException;
 
-  public abstract String readText(InputStream content) throws EntityProviderException;
-
-  public abstract byte[] readBinary(String mimeType, InputStream content) throws EntityProviderException;
-
   /**
    * Write service document based on given {@link Edm} and <code>service root</code> as
    * content type "<code>application/atomsvc+xml; charset=utf-8</code>".

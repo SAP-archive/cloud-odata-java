@@ -21,10 +21,6 @@ public final class EntityProvider {
 
     Object readPropertyValue(EdmProperty edmProperty, InputStream content) throws EntityProviderException;
 
-    String readText(InputStream content) throws EntityProviderException;
-
-    byte[] readBinary(String mimeType, InputStream content) throws EntityProviderException;
-
     /**
      * Write service document based on given {@link Edm} and <code>service root</code> as
      * content type "<code>application/atomsvc+xml; charset=utf-8</code>".
@@ -94,14 +90,6 @@ public final class EntityProvider {
   public static Object readPropertyValue(EdmProperty edmProperty, InputStream content) throws EntityProviderException {
     return createBasic().readPropertyValue(edmProperty, content);
   }
-
-  public static String readText(InputStream content) throws EntityProviderException{
-    return createBasic().readText(content);
-  };
-
-  public static byte[] readBinary(String mimeType, InputStream content) throws EntityProviderException{
-    return createBasic().readBinary(mimeType, content);
-  };
 
   public static Map<String, Object> readEntry(String contentType, EdmEntitySet entitySet, InputStream content) throws EntityProviderException{
     return createBasic().readEntry(contentType, entitySet, content);

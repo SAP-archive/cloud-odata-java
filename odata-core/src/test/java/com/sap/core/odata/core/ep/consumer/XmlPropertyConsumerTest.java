@@ -110,5 +110,4 @@ public class XmlPropertyConsumerTest extends BaseTest {
     
     return streamReader;
   }
-
 }
