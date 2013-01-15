@@ -74,6 +74,16 @@ public class XmlEntityConsumer {
     }
   }
   
+  public Object readPropertyValue(EdmProperty edmProperty, Object content) throws EntityProviderException {
+    try {
+      Map<String, Object> result = readProperty(edmProperty, content);
+      return result.get(edmProperty.getName());
+    } catch (Exception e) {
+      throw new EntityProviderException(EntityProviderException.COMMON, e);
+    }
+  }
+
+  
   public Map<String, Object> readLink(EdmEntitySet entitySet, Object content) throws EntityProviderException {
     XMLStreamReader reader = null;
 

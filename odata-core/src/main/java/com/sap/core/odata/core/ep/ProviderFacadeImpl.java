@@ -55,16 +55,6 @@ public class ProviderFacadeImpl implements ProviderInterface {
   }
 
   @Override
-  public String readText(InputStream content) throws EntityProviderException {
-    return create().readText(content);
-  }
-
-  @Override
-  public byte[] readBinary(String mimeType, InputStream content) throws EntityProviderException {
-    return create().readBinary(mimeType, content);
-  }
-
-  @Override
   public ODataResponse writeServiceDocument(Edm edm, String serviceRoot) throws EntityProviderException {
     return create().writeServiceDocument(edm, serviceRoot);
   }

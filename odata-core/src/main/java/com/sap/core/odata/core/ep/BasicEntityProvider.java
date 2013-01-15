@@ -22,7 +22,7 @@ import com.sap.core.odata.api.ep.EntityProviderException;
 import com.sap.core.odata.api.processor.ODataResponse;
 import com.sap.core.odata.api.processor.ODataResponse.ODataResponseBuilder;
 import com.sap.core.odata.core.commons.ContentType;
-import com.sap.core.odata.core.ep.consumer.BasicConsumer;
+import com.sap.core.odata.core.ep.consumer.XmlEntityConsumer;
 import com.sap.core.odata.core.ep.producer.AtomServiceDocumentProducer;
 import com.sap.core.odata.core.ep.util.CircleStreamBuffer;
 
@@ -34,22 +34,9 @@ public class BasicEntityProvider implements BasicEntityProviderInterface {
   
   @Override
   public Object readPropertyValue(EdmProperty edmProperty, InputStream content) throws EntityProviderException {
-    BasicConsumer bc = new BasicConsumer();
+    XmlEntityConsumer bc = new XmlEntityConsumer();
     return bc.readPropertyValue(edmProperty, content);
   }
-
-  @Override
-  public String readText(InputStream content) throws EntityProviderException {
-    BasicConsumer bc = new BasicConsumer();
-    return bc.readText(content);
-  }
-
-  @Override
-  public byte[] readBinary(String mimeType, InputStream content) throws EntityProviderException {
-    BasicConsumer bc = new BasicConsumer();
-    return bc.readBinary(mimeType, content);
-  }
-
 
   @Override
   public ODataResponse writeServiceDocument(Edm edm, String serviceRoot) throws EntityProviderException {

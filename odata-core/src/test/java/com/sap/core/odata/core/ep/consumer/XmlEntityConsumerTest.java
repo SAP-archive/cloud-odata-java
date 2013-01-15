@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
 import java.util.Calendar;
 import java.util.Map;
 import java.util.TimeZone;
@@ -214,7 +215,6 @@ public class XmlEntityConsumerTest extends BaseTest {
   public void testReadProperty() throws Exception {
     XmlEntityConsumer xec = new XmlEntityConsumer();
     
-    
     EdmEntitySet entitySet = MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Employees");
     EdmProperty property = (EdmProperty) entitySet.getEntityType().getProperty("Age");
 
@@ -226,5 +226,24 @@ public class XmlEntityConsumerTest extends BaseTest {
 
 //    Object value = xec.readProperty(property, request);
 //    assertEquals(Integer.valueOf(67), value);
+  }
+  
+  @Test
+  public void readStringPropertyValue() throws Exception {
+    XmlEntityConsumer xec = new XmlEntityConsumer();
+    
+    String xml = "<EmployeeName>Max Mustermann</EmployeeName>";
+    InputStream content = createContentAsStream(xml);
+    EdmEntitySet entitySet = MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Employees");
+    EdmProperty property = (EdmProperty) entitySet.getEntityType().getProperty("EmployeeName");
+    
+    Object result = xec.readPropertyValue(property, content);
+
+    assertEquals("Max Mustermann", result);
+  }
+  
+  private InputStream createContentAsStream(String xml) throws UnsupportedEncodingException {
+    InputStream content = new ByteArrayInputStream(xml.getBytes("utf-8"));
+    return content;
   }
 }
