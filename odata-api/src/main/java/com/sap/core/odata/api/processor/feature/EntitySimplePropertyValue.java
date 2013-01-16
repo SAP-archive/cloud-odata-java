@@ -1,5 +1,7 @@
 package com.sap.core.odata.api.processor.feature;
 
+import java.io.InputStream;
+
 import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.api.processor.ODataResponse;
 import com.sap.core.odata.api.uri.info.DeleteUriInfo;
@@ -15,8 +17,9 @@ public interface EntitySimplePropertyValue extends ProcessorFeature {
 
   /**
    * Reads the unformatted value of a simple property of an entity.
+   * @param uriInfo information about the request URI
    * @param contentType the content type of the response
-   * @return a {@link ODataResponse} object
+   * @return an {@link ODataResponse} object
    * @throws ODataException
    */
   ODataResponse readEntitySimplePropertyValue(GetSimplePropertyUriInfo uriInfo, String contentType) throws ODataException;
@@ -29,10 +32,10 @@ public interface EntitySimplePropertyValue extends ProcessorFeature {
    *                           (important for a binary property)
    * @param contentType the content type of the response
    * @param request 
-   * @return a {@link ODataResponse} object
+   * @return an {@link ODataResponse} object
    * @throws ODataException
    */
-  ODataResponse updateEntitySimplePropertyValue(PutMergePatchUriInfo uriInfo, Object content, String requestContentType, String contentType) throws ODataException;
+  ODataResponse updateEntitySimplePropertyValue(PutMergePatchUriInfo uriInfo, InputStream content, String requestContentType, String contentType) throws ODataException;
 
   /**
    * Deletes the value of a simple property of an entity.

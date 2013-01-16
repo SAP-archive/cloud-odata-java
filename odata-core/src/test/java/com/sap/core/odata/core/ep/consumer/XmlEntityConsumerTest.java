@@ -142,7 +142,7 @@ public class XmlEntityConsumerTest extends BaseTest {
 
     
     // verify
-    Map<String, Object> properties = (Map<String, Object>) result.getData();
+    Map<String, Object> properties = result.getData();
     assertEquals(9, properties.size());
 
     assertEquals("1", properties.get("EmployeeId"));
@@ -181,7 +181,7 @@ public class XmlEntityConsumerTest extends BaseTest {
     ReadEntryResult result = xec.readEntry(entitySet, content);
 
     // verify
-    Map<String, Object> properties = (Map<String, Object>) result.getData();
+    Map<String, Object> properties = result.getData();
     assertEquals(9, properties.size());
 
     assertEquals("1", properties.get("EmployeeId"));
