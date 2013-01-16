@@ -85,7 +85,7 @@ public class XmlEntityConsumer {
   }
 
   
-  public Map<String, Object> readLink(EdmEntitySet entitySet, Object content) throws EntityProviderException {
+  public String readLink(EdmEntitySet entitySet, Object content) throws EntityProviderException {
     XMLStreamReader reader = null;
 
     try {
@@ -106,7 +106,7 @@ public class XmlEntityConsumer {
     }
   }
 
-  public List<Map<String, Object>> readLinks(EdmEntitySet entitySet, Object content) throws EntityProviderException {
+  public List<String> readLinks(EdmEntitySet entitySet, Object content) throws EntityProviderException {
     XMLStreamReader reader = null;
 
     try {

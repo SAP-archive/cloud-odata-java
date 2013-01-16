@@ -81,7 +81,7 @@ public class ProviderFacadeImpl implements ProviderInterface {
   }
 
   @Override
-  public Map<String, Object> readLink(String contentType, EdmEntitySet entitySet, InputStream content) throws EntityProviderException {
+  public String readLink(String contentType, EdmEntitySet entitySet, InputStream content) throws EntityProviderException {
     return create(contentType).readLink(entitySet, content);
   }
 
@@ -91,7 +91,7 @@ public class ProviderFacadeImpl implements ProviderInterface {
   }
 
   @Override
-  public List<Map<String, Object>> readLinks(String contentType, EdmEntitySet entitySet, InputStream content) throws EntityProviderException {
+  public List<String> readLinks(String contentType, EdmEntitySet entitySet, InputStream content) throws EntityProviderException {
     return create(contentType).readLinks(entitySet, content);
   }
 
