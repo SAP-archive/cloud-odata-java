@@ -1,7 +1,7 @@
 package com.sap.core.odata.api;
 
 public enum ODataServiceVersion {
-  V20("2.0"), V30("3.0");
+  V10("1.0"), V20("2.0"), V30("3.0");
 
   final private String version;
 
@@ -25,6 +25,13 @@ public enum ODataServiceVersion {
     }
 
     throw new IllegalArgumentException(version);
+  }
+  
+  public boolean isBiggerThan(ODataServiceVersion version){
+    double me = Double.parseDouble(this.toString());
+    double other = Double.parseDouble(version.toString());
+    
+    return me > other;
   }
 
 }
