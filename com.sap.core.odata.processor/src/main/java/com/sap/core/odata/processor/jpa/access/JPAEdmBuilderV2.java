@@ -29,6 +29,13 @@ import com.sap.core.odata.api.edm.provider.SimpleProperty;
 import com.sap.core.odata.processor.jpa.api.access.JPAEdmBuilder;
 import com.sap.core.odata.processor.jpa.exception.ODataJPAModelException;
 
+/**
+ * This class creates parses a JPA Model using EntityManagerFactory instance and
+ * creates an OData model using JPAEntityManagerFactory APIs
+ * 
+ * @author SAP AG
+ * 
+ */
 public class JPAEdmBuilderV2 implements JPAEdmBuilder {
 
 	private String pUnitName;
@@ -46,6 +53,12 @@ public class JPAEdmBuilderV2 implements JPAEdmBuilder {
 	}
 
 	@Override
+	/**
+	 * This method returns a list of schema objects.Each schema object contains a list of entitytypes, entitycontainer, complextypes and associations
+	 * 
+	 * @return List of schema objects
+	 * @throws ODataJPAModelException
+	 */
 	public List<Schema> getSchemas() throws ODataJPAModelException {
 
 		// Create a Schema with Namespace.
@@ -166,7 +179,6 @@ public class JPAEdmBuilderV2 implements JPAEdmBuilder {
 			throws ODataJPAModelException {
 
 		flag = false;
-
 		if (this.complexTypes == null)
 			this.complexTypes = new ArrayList<ComplexType>();
 		// Get from buffer
@@ -186,11 +198,12 @@ public class JPAEdmBuilderV2 implements JPAEdmBuilder {
 				.getEmbeddables()) {
 			if (jpaEntityType.getJavaType().getName().equals(complexTypeName)) {
 				for (Attribute<?, ?> attribute : jpaEntityType.getAttributes()) {
-					/*if (attribute.isCollection()) {
-						
-					}*/ if (PersistentAttributeType.EMBEDDED.toString()
-							.equals(attribute.getPersistentAttributeType()
-									.toString())) {
+					/*
+					 * if (attribute.isCollection()) {
+					 * 
+					 * }
+					 */if (PersistentAttributeType.EMBEDDED.toString().equals(
+							attribute.getPersistentAttributeType().toString())) {
 						properties.add(createComplexProperty(attribute));
 					} else if (PersistentAttributeType.BASIC.toString().equals(
 							attribute.getPersistentAttributeType().toString())) {
@@ -199,7 +212,8 @@ public class JPAEdmBuilderV2 implements JPAEdmBuilder {
 				}
 
 				ComplexType complexType = new ComplexType();
-				complexType.setName(jpaEntityType.getJavaType().getSimpleName());
+				complexType
+						.setName(jpaEntityType.getJavaType().getSimpleName());
 				complexType.setProperties(properties);
 
 				if (flag == false) {
@@ -218,45 +232,93 @@ public class JPAEdmBuilderV2 implements JPAEdmBuilder {
 			Key entityKey) throws ODataJPAModelException {
 
 		List<Property> properties = new ArrayList<Property>();
+		ArrayList<String> keyNames = new ArrayList<String>();
 		for (Attribute<?, ?> jpaAttribute : jpaEntityType.getAttributes()) {
 			String attributeType = jpaAttribute.getPersistentAttributeType()
 					.toString();
+			// If the property is an complex type
 			if (PersistentAttributeType.EMBEDDED.toString().equals(
 					attributeType)) {
-
+				// If the complex property is a key attribute
 				if (jpaEntityType.getIdType().getJavaType()
 						.equals(jpaAttribute.getJavaType())) {
-					formKey(entityKey, jpaAttribute);
+
+					for (SimpleProperty property : normalizeKeyAttribute(jpaAttribute)) {
+						properties.add(property);
+						keyNames.add(property.getName());
+					}
+					
+
 				}
-
-				properties.add(createComplexProperty(jpaAttribute));
-
-			} else if (PersistentAttributeType.BASIC.toString().equals(
-					attributeType)) {
-
-				SingularAttribute<?, ?> attribute = (SingularAttribute<?, ?>) jpaAttribute;
-				if (attribute.isId()) {
-					formKey(entityKey, jpaAttribute);
+				// If the complex property is a non-key attribute
+				else {
+					properties.add(createComplexProperty(jpaAttribute));
 				}
-
-				properties.add(createSimpleProperty(jpaAttribute));
 
 			}
+			// If the property is an simple type
+			else if (PersistentAttributeType.BASIC.toString().equals(
+					attributeType)) {
+				SimpleProperty property = createSimpleProperty(jpaAttribute);
+				properties.add(property);
+				
+				// If the simple property is a key attribute
+				SingularAttribute<?, ?> attribute = (SingularAttribute<?, ?>) jpaAttribute;
+				if (attribute.isId()) {
+					
+					keyNames.add(attribute.getName());
+					
+				}
+
+			}
+		}
+		if(!keyNames.isEmpty())
+		{
+			formKey(entityKey,keyNames);
 		}
 		return properties;
 	}
 
-	private void formKey(Key entityKey, Attribute<?, ?> jpaAttribute) {
-		if (PersistentAttributeType.EMBEDDED.toString().equals(
-				jpaAttribute.getPersistentAttributeType().toString())) {
-
-			// TODO be implementated
-		} else {
-			List<PropertyRef> keyProperties = new ArrayList<PropertyRef>();
-			keyProperties
-					.add(new PropertyRef().setName(jpaAttribute.getName()));
-			entityKey.setKeys(keyProperties);
+	private List<SimpleProperty> normalizeKeyAttribute(
+			Attribute<?, ?> jpaAttribute) throws ODataJPAModelException {
+		List<SimpleProperty> properties = new ArrayList<SimpleProperty>();
+		for (javax.persistence.metamodel.EmbeddableType<?> jpaComplexEntityType : metaModel
+				.getEmbeddables()) {
+			if (jpaComplexEntityType.getJavaType().getName()
+					.equals(jpaAttribute.getJavaType().getName())) {
+				for (Attribute<?, ?> attribute : jpaComplexEntityType
+						.getAttributes()) {
+					if (attribute.getPersistentAttributeType().equals(
+							PersistentAttributeType.BASIC)) {
+						SimpleProperty simpleProperty = new SimpleProperty();
+						simpleProperty.setName(jpaAttribute.getName() + "."
+								+ attribute.getName());
+						EdmSimpleTypeKind simpleTypeKind = JPATypeConvertor
+								.convertToEdmSimpleType(attribute.getJavaType());
+						simpleProperty.setType(simpleTypeKind);
+						simpleProperty.setFacets(setFacets(attribute));
+						properties.add(simpleProperty);
+					} else if ((attribute.getPersistentAttributeType()
+							.equals(PersistentAttributeType.EMBEDDED)))
+						properties.addAll(normalizeKeyAttribute(attribute));
+				}
+				return properties;
+			}
 		}
+		return null;
+	}
+
+	// Method to populate the key of an entity.This method populates the import
+	// parameter entityKey.
+	private void formKey(Key entityKey, ArrayList<String> keyNames)
+			throws ODataJPAModelException {
+		List<PropertyRef> keyProperties = new ArrayList<PropertyRef>();
+		for (String keyName : keyNames) {
+			keyProperties.add(new PropertyRef().setName(keyName));
+		}
+
+		entityKey.setKeys(keyProperties);
+
 	}
 
 	private SimpleProperty createSimpleProperty(Attribute<?, ?> jpaAttribute)
@@ -314,18 +376,16 @@ public class JPAEdmBuilderV2 implements JPAEdmBuilder {
 					complexType.getName()));
 			return complexProperty;
 		}
+
 		return null;
 	}
 
-	/*public List<Association> getAssociations() {
-		for (javax.persistence.metamodel.EntityType<?> jpaEntityType : metaModel
-				.getEntities()) {
-			for (javax.persistence.metamodel.Attribute<?, ?> attribute : jpaEntityType
-					.getAttributes()) {
-				// attribute.getJavaType().get
-			}
-		}
-		return null;
-	}*/
+	/*
+	 * public List<Association> getAssociations() { for
+	 * (javax.persistence.metamodel.EntityType<?> jpaEntityType : metaModel
+	 * .getEntities()) { for (javax.persistence.metamodel.Attribute<?, ?>
+	 * attribute : jpaEntityType .getAttributes()) { //
+	 * attribute.getJavaType().get } } return null; }
+	 */
 
 }
