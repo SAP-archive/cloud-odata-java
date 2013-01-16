@@ -1,7 +1,5 @@
 package com.sap.core.odata.core.edm.provider;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStreamWriter;
@@ -20,6 +18,7 @@ import com.sap.core.odata.api.edm.provider.Property;
 import com.sap.core.odata.api.edm.provider.Schema;
 import com.sap.core.odata.api.ep.EntityProviderException;
 import com.sap.core.odata.api.exception.ODataException;
+import com.sap.core.odata.core.ep.util.CircleStreamBuffer;
 
 public class EdmServiceMetadataImplProv implements EdmServiceMetadata {
 
@@ -40,13 +39,13 @@ public class EdmServiceMetadataImplProv implements EdmServiceMetadata {
     }
 
     OutputStreamWriter writer = null;
-
+    CircleStreamBuffer csb = new CircleStreamBuffer();
+    
     try {
       DataServices metadata = new DataServices().setSchemas(schemas).setDataServiceVersion(getDataServiceVersion());
-      ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-      writer = new OutputStreamWriter(outputStream, "UTF-8");
+      writer = new OutputStreamWriter(csb.getOutputStream(), "UTF-8");
       EdmMetadata.writeMetadata(metadata, writer);
-      return new ByteArrayInputStream(outputStream.toByteArray());
+      return csb.getInputStream();
     } catch (UnsupportedEncodingException e) {
       throw new EntityProviderException(EntityProviderException.COMMON, e);
     } finally {
