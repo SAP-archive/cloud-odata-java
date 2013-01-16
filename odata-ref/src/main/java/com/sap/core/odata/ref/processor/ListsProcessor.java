@@ -297,7 +297,7 @@ public class ListsProcessor extends ODataSingleProcessor {
 
     // TODO: return correct response with new key values and the correct Location header
     final ODataResponse response =
-        EntityProvider.writeEntry(contentType, entitySet, values.getData(), entryProperties);
+        EntityProvider.writeEntry(contentType, entitySet, values.getProperties(), entryProperties);
 
     context.stopRuntimeMeasurement(timingHandle);
 
