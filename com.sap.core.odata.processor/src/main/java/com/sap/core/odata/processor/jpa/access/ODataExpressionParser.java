@@ -181,7 +181,7 @@ public class ODataExpressionParser {
 			}
 			
 			literal = evaluateComparingExpression(literal, edmSimpleType);
-			keyFilters.append(propertyName + SPACE + JPQLStatement.Operator.EQ+ SPACE + literal);
+			keyFilters.append(TABLE_ALIAS+"."+propertyName + SPACE + JPQLStatement.Operator.EQ+ SPACE + literal);
 		}
 		return keyFilters.toString();
 	}

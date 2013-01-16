@@ -47,7 +47,7 @@ public final class ODataJPAResponseBuilder {
 			try {
 				 final Integer count = resultsView.getInlineCount() == InlineCount.ALLPAGES ? edmEntityList.size() : null;
 				feedProperties = EntityProviderProperties
-				        .baseUri(odataJPAContext.getODataContext().getPathInfo().getServiceRoot())
+				        .serviceRoot(odataJPAContext.getODataContext().getPathInfo().getServiceRoot())
 				        .inlineCount(count)
 				        .skipToken("")
 				        .build();
@@ -91,7 +91,7 @@ public final class ODataJPAResponseBuilder {
 		    EntityProviderProperties feedProperties = null;
 			try {
 				feedProperties = EntityProviderProperties
-				        .baseUri(oDataJPAContext.getODataContext().getPathInfo().getServiceRoot())
+				        .serviceRoot(oDataJPAContext.getODataContext().getPathInfo().getServiceRoot())
 				        .build();
 			} catch (ODataException e) {
 				LOGGER.error(e.getMessage(), e);
