@@ -9,6 +9,7 @@ import org.junit.Before;
 
 import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.api.processor.ODataSingleProcessorService;
+import com.sap.core.odata.testutil.helper.TestutilException;
 import com.sap.core.odata.testutil.server.TestServer;
 
 /**
@@ -43,7 +44,7 @@ public abstract class AbstractFitTest extends BaseTest {
       FitStaticServiceFactory.setService(this.service);
       this.server.startServer(FitStaticServiceFactory.class);
     } catch (ODataException e) {
-      throw new RuntimeException(e);
+      throw new TestutilException(e);
     }
   }
 
