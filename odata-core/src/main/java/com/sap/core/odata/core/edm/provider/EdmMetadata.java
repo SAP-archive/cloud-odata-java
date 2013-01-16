@@ -215,10 +215,11 @@ public class EdmMetadata {
                 xmlStreamWriter.writeAttribute("Role", principal.getRole());
                 writeAnnotationAttributes(principal.getAnnotationAttributes(), xmlStreamWriter);
 
+                for(PropertyRef propertyRef : principal.getPropertyRefs()){
                 xmlStreamWriter.writeStartElement("PropertyRef");
-                xmlStreamWriter.writeAttribute("Name", principal.getPropertyRef().getName());
+                xmlStreamWriter.writeAttribute("Name", propertyRef.getName());
                 xmlStreamWriter.writeEndElement();
-
+                }
                 writeAnnotationElements(principal.getAnnotationElements(), xmlStreamWriter);
                 xmlStreamWriter.writeEndElement();
 
@@ -227,9 +228,11 @@ public class EdmMetadata {
                 xmlStreamWriter.writeAttribute("Role", dependent.getRole());
                 writeAnnotationAttributes(dependent.getAnnotationAttributes(), xmlStreamWriter);
 
+                for(PropertyRef propertyRef : dependent.getPropertyRefs()){
                 xmlStreamWriter.writeStartElement("PropertyRef");
-                xmlStreamWriter.writeAttribute("Name", dependent.getPropertyRef().getName());
+                xmlStreamWriter.writeAttribute("Name", propertyRef.getName());
                 xmlStreamWriter.writeEndElement();
+                }
                 writeAnnotationElements(dependent.getAnnotationElements(), xmlStreamWriter);
                 xmlStreamWriter.writeEndElement();
 

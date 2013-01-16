@@ -9,7 +9,7 @@ import java.util.List;
 public class ReferentialConstraintRole {
 
   private String role;
-  private PropertyRef propertyRef;
+  private List<PropertyRef> propertyRefs;
   private List<AnnotationAttribute> annotationAttributes;
   private List<AnnotationElement> annotationElements;
 
@@ -21,10 +21,10 @@ public class ReferentialConstraintRole {
   }
 
   /**
-   * @return {@link PropertyRef} which this {@link ReferentialConstraintRole} points to
+   * @return List<{@link PropertyRef}> for this {@link ReferentialConstraintRole}
    */
-  public PropertyRef getPropertyRef() {
-    return propertyRef;
+  public List<PropertyRef> getPropertyRefs() {
+    return propertyRefs;
   }
 
   /**
@@ -58,8 +58,8 @@ public class ReferentialConstraintRole {
    * @param propertyRef
    * @return {@link ReferentialConstraintRole} for method chaining
    */
-  public ReferentialConstraintRole setPropertyRef(PropertyRef propertyRef) {
-    this.propertyRef = propertyRef;
+  public ReferentialConstraintRole setPropertyRef(List<PropertyRef> propertyRef) {
+    this.propertyRefs = propertyRef;
     return this;
   }
 
