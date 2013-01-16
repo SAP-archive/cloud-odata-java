@@ -15,7 +15,7 @@ import com.sap.core.odata.testutil.fit.BaseTest;
  * @author SAP AG
  */
 public class ODataSubLocatorTest extends BaseTest {
-
+  
   @Test
   public void testContentNegotiationEmptyRequest() throws Exception {
     ODataSubLocator locator = new ODataSubLocator();

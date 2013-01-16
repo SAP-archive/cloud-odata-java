@@ -34,6 +34,7 @@ import javax.ws.rs.core.UriBuilder;
 
 import com.sap.core.odata.api.ODataService;
 import com.sap.core.odata.api.ODataServiceFactory;
+import com.sap.core.odata.api.ODataServiceVersion;
 import com.sap.core.odata.api.exception.ODataBadRequestException;
 import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.api.exception.ODataMethodNotAllowedException;
@@ -70,6 +71,7 @@ public final class ODataSubLocator implements ODataLocator {
   private List<ContentType> acceptHeaderContentTypes;
 
   private InputStream requestContent;
+
   private String requestContentType;
 
   @GET
@@ -128,12 +130,13 @@ public final class ODataSubLocator implements ODataLocator {
   }
 
   private Response handleHttpMethod(final ODataHttpMethod method) throws ODataException {
+    final ODataServiceVersion version = doDataServiceVersionNegotiation(context.getHttpRequestHeader("dataserviceversion"));
     final List<PathSegment> pathSegments = context.getPathInfo().getODataSegments();
     final UriInfoImpl uriInfo = (UriInfoImpl) uriParser.parse(pathSegments, queryParameters);
     final String contentType = doContentNegotiation(uriInfo);
 
     final ODataResponse odataResponse = dispatcher.dispatch(method, uriInfo, requestContent, requestContentType, contentType);
-    final Response response = convertResponse(odataResponse);
+    final Response response = convertResponse(odataResponse, version);
 
     return response;
   }
@@ -221,6 +224,26 @@ public final class ODataSubLocator implements ODataLocator {
 
     uriParser = new UriParserImpl(service.getEntityDataModel());
     dispatcher = new Dispatcher(service);
+  }
+
+  ODataServiceVersion doDataServiceVersionNegotiation(String version) throws ODataException {
+    ODataServiceVersion serviceVersion = ODataServiceVersion.V20;
+
+    if (service.getVersion() != null) {
+      serviceVersion = service.getVersion();
+    }
+
+    if (version != null) {
+      try {
+        ODataServiceVersion requestedVersion = ODataServiceVersion.fromString(version);
+        if (requestedVersion.isBiggerThan(serviceVersion))
+          throw new ODataBadRequestException(ODataBadRequestException.VERSIONERROR.addContent(requestedVersion.toString()));
+      } catch (IllegalArgumentException e) {
+        throw new ODataBadRequestException(ODataBadRequestException.PARSEVERSIONERROR.addContent(version));
+      }
+    }
+
+    return serviceVersion;
   }
 
   private String extractRequestContentType(InitParameter param) {
@@ -362,13 +385,16 @@ public final class ODataSubLocator implements ODataLocator {
     return single;
   }
 
-  private Response convertResponse(final ODataResponse odataResponse) {
+  private Response convertResponse(final ODataResponse odataResponse, final ODataServiceVersion version) {
     ResponseBuilder responseBuilder = Response.noContent()
         .status(odataResponse.getStatus().getStatusCode())
         .entity(odataResponse.getEntity());
 
     for (final String name : odataResponse.getHeaderNames())
       responseBuilder = responseBuilder.header(name, odataResponse.getHeader(name));
+
+    if (!odataResponse.getHeaderNames().contains("dataserviceversion"))
+      responseBuilder = responseBuilder.header("dataserviceversion", version.toString());
 
     String eTag = odataResponse.getETag();
     if (eTag != null)

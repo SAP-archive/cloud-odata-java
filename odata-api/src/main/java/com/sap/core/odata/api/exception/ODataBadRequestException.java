@@ -11,7 +11,9 @@ public class ODataBadRequestException extends ODataHttpException {
 
   public static final MessageReference COMMON = createMessageReference(ODataBadRequestException.class, "COMMON");
   public static final MessageReference URLTOSHORT = createMessageReference(ODataBadRequestException.class, "URLTOSHORT");
-
+  public static final MessageReference VERSIONERROR = createMessageReference(ODataBadRequestException.class, "VERSIONERROR");
+  public static final MessageReference PARSEVERSIONERROR = createMessageReference(ODataBadRequestException.class, "PARSEVERSIONERROR");
+  
   public ODataBadRequestException(MessageReference messageReference) {
     super(messageReference, HttpStatusCodes.BAD_REQUEST);
   }
