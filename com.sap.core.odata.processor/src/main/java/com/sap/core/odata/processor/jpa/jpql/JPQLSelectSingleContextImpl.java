@@ -45,7 +45,7 @@ public class JPQLSelectSingleContextImpl extends JPQLSelectSingleContext {
 		return this.selectedFields;
 	}
 	
-	public class JPQLSingleSelectContextBuilder
+	public class JPQLSelectSingleContextBuilder
 			extends
 			com.sap.core.odata.processor.jpa.api.jpql.JPQLContext.JPQLContextBuilder {
 
