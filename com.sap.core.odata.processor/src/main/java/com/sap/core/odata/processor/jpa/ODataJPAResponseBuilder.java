@@ -56,7 +56,7 @@ public final class ODataJPAResponseBuilder {
 				throw ODataJPARuntimeException.throwException(ODataJPARuntimeException.GENERAL.addContent(e.getMessage()),e);
 			}
 		    
-			odataResponse = ODataResponse.fromResponse(EntityProvider.create(contentType).writeFeed(resultsView.getTargetEntitySet(), edmEntityList, feedProperties))
+			odataResponse = ODataResponse.fromResponse(EntityProvider.writeFeed(contentType,resultsView.getTargetEntitySet(), edmEntityList, feedProperties))
 			        .status(HttpStatusCodes.OK)
 			        .build();
 			
@@ -98,7 +98,7 @@ public final class ODataJPAResponseBuilder {
 				throw ODataJPARuntimeException.throwException(ODataJPARuntimeException.GENERAL.addContent(e.getMessage()),e);
 			}
 		    
-			odataResponse = ODataResponse.fromResponse(EntityProvider.create(contentType).writeEntry(resultsView.getTargetEntitySet(), edmPropertyValueMap, feedProperties))
+			odataResponse = ODataResponse.fromResponse(EntityProvider.writeEntry(contentType,resultsView.getTargetEntitySet(), edmPropertyValueMap, feedProperties))
 			        .status(HttpStatusCodes.OK)
 			        .build();
 			

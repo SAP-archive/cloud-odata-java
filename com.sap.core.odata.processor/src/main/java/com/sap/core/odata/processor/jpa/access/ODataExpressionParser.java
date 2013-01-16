@@ -12,6 +12,7 @@ import com.sap.core.odata.api.edm.EdmSimpleType;
 import com.sap.core.odata.api.edm.EdmSimpleTypeKind;
 import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.api.exception.ODataNotImplementedException;
+import com.sap.core.odata.api.uri.KeyPredicate;
 import com.sap.core.odata.api.uri.expression.BinaryExpression;
 import com.sap.core.odata.api.uri.expression.CommonExpression;
 import com.sap.core.odata.api.uri.expression.FilterExpression;
@@ -149,6 +150,40 @@ public class ODataExpressionParser {
 			}			
 		} 
 		return orderByMap;		
+	}
+	
+	/**
+	 * This method evaluated the where expression for read of an entity based on the keys specified in the query.
+	 * 
+	 * @param keyPredicates
+	 * @return the evaluated where expression
+	 */
+	
+	public static String parseKeyPredicates(List<KeyPredicate> keyPredicates) throws ODataJPARuntimeException{
+		String literal = null;
+		String propertyName = null;
+		EdmSimpleType edmSimpleType = null;
+		StringBuilder keyFilters = new StringBuilder();
+		int i = 0;
+		for(KeyPredicate keyPredicate : keyPredicates){
+			if(i > 0){
+				keyFilters.append(SPACE + JPQLStatement.Operator.AND + SPACE);
+			}
+			i++;
+			literal = keyPredicate.getLiteral();
+			try {
+				propertyName = keyPredicate.getProperty().getName();
+				edmSimpleType = (EdmSimpleType)keyPredicate.getProperty().getType();
+			} catch (EdmException e) {
+				throw ODataJPARuntimeException.throwException(
+						ODataJPARuntimeException.RUNTIME_EXCEPTION.addContent(e
+								.getMessage()), e);
+			}
+			
+			literal = evaluateComparingExpression(literal, edmSimpleType);
+			keyFilters.append(propertyName + SPACE + JPQLStatement.Operator.EQ+ SPACE + literal);
+		}
+		return keyFilters.toString();
 	}
 	
 	/**

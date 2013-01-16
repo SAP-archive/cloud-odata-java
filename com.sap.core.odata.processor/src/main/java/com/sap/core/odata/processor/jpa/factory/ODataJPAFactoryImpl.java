@@ -19,6 +19,8 @@ import com.sap.core.odata.processor.jpa.api.jpql.JPQLContextType;
 import com.sap.core.odata.processor.jpa.api.jpql.JPQLStatement.JPQLStatementBuilder;
 import com.sap.core.odata.processor.jpa.edm.ODataJPAEdmProvider;
 import com.sap.core.odata.processor.jpa.jpql.JPQLSelectContextImpl;
+import com.sap.core.odata.processor.jpa.jpql.JPQLSelectSingleContextImpl;
+import com.sap.core.odata.processor.jpa.jpql.JPQLSelectSingleStatementBuilder;
 import com.sap.core.odata.processor.jpa.jpql.JPQLSelectStatementBuilder;
 
 
@@ -44,10 +46,14 @@ public class ODataJPAFactoryImpl extends ODataJPAFactory {
 		
 		@Override
 		public JPQLStatementBuilder getStatementBuilder(JPQLContext context) {
+			JPQLStatementBuilder builder = null;
 			switch (context.getType()) {
 			case SELECT:
-				JPQLStatementBuilder b = new JPQLSelectStatementBuilder(context);
-				return b;
+				builder = new JPQLSelectStatementBuilder(context);
+				return builder;
+			case SELECT_SINGLE:
+				builder = new JPQLSelectSingleStatementBuilder(context);
+				return builder;
 			default:
 				break;
 			}
@@ -57,18 +63,23 @@ public class ODataJPAFactoryImpl extends ODataJPAFactory {
 
 		@Override
 		public JPQLContextBuilder getContextBuilder(JPQLContextType contextType) {
-			JPQLContextBuilder contextBuilder = null;
+JPQLContextBuilder contextBuilder = null;
+			
 			switch (contextType) {
 			case SELECT:
-				JPQLSelectContextImpl context = new JPQLSelectContextImpl();
-				contextBuilder =  context.new JPQLSelectContextBuilder();
+				JPQLSelectContextImpl selectContext = new JPQLSelectContextImpl();
+				contextBuilder =  selectContext.new JPQLSelectContextBuilder();
+				break;
+			case SELECT_SINGLE:
+				JPQLSelectSingleContextImpl singleSelectContext = new JPQLSelectSingleContextImpl();
+				contextBuilder =  singleSelectContext.new JPQLSingleSelectContextBuilder();
 				break;
 			
 			default:
 				break;
 			}
 			
-			return contextBuilder;	
+			return contextBuilder;
 		}
 		
 		private static JPQLBuilderFactory create( ){

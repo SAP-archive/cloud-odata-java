@@ -47,9 +47,20 @@ public class JPAProcessorImpl implements JPAProcessor {
 	}
 
 	@Override
-	public Object process(GetEntityUriInfo uriParserResultView) {
-		// TODO Auto-generated method stub
-		return null;
+	public Object process(GetEntityUriInfo uriParserResultView) throws ODataJPAModelException, ODataJPARuntimeException {
+		// Build JPQL Context
+		JPQLContext singleSelectContext = JPQLContext.createBuilder(
+				JPQLContextType.SELECT_SINGLE, uriParserResultView)
+				.build();
+
+		// Build JPQL Statement
+		JPQLStatement selectStatement = JPQLStatement.createBuilder(
+				singleSelectContext).build();
+		
+		//Instantiate JPQL
+		Query query = em.createQuery(selectStatement.toString());
+		
+		return query.getResultList().get(0);
 	}
 
 }
