@@ -72,7 +72,7 @@ JPQLContextBuilder contextBuilder = null;
 				break;
 			case SELECT_SINGLE:
 				JPQLSelectSingleContextImpl singleSelectContext = new JPQLSelectSingleContextImpl();
-				contextBuilder =  singleSelectContext.new JPQLSingleSelectContextBuilder();
+				contextBuilder =  singleSelectContext.new JPQLSelectSingleContextBuilder();
 				break;
 			
 			default:
