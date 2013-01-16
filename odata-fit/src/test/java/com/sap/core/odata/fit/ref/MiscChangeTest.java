@@ -29,12 +29,12 @@ public class MiscChangeTest extends AbstractRefTest {
   public void deletePropertyValue() throws Exception {
     deleteUriOk("Employees('2')/Age/$value");
     deleteUriOk("Employees('2')/Location/City/PostalCode/$value");
-    deleteUriOk("Employees('2')/ne_Manager/Age/$value");
 
     deleteUri("Employees('2')/Age", HttpStatusCodes.METHOD_NOT_ALLOWED);
     deleteUri("Employees('2')/Foo/$value", HttpStatusCodes.NOT_FOUND);
     deleteUri("Employees('2')/EmployeeId/$value", HttpStatusCodes.METHOD_NOT_ALLOWED);
     deleteUri("Employees('2')/Location/City/$value", HttpStatusCodes.NOT_FOUND);
+    deleteUri("Employees('2')/ne_Manager/Age/$value", HttpStatusCodes.METHOD_NOT_ALLOWED);
   }
 
   @Test

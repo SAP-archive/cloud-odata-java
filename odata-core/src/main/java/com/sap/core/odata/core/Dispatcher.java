@@ -49,7 +49,6 @@ public class Dispatcher {
         throw new ODataMethodNotAllowedException(ODataMethodNotAllowedException.DISPATCH);
 
     case URI1:
-    case URI6B:
       switch (method) {
       case GET:
         return service.getEntitySetProcessor().readEntitySet(uriInfo, contentType);
@@ -106,13 +105,15 @@ public class Dispatcher {
       case GET:
         return service.getEntityComplexPropertyProcessor().readEntityComplexProperty(uriInfo, contentType);
       case PUT:
-        if (uriInfo.getFormat() == null)
+        if (uriInfo.getFormat() == null
+            && uriInfo.getNavigationSegments().isEmpty())
           return service.getEntityComplexPropertyProcessor().updateEntityComplexProperty(uriInfo, content, requestContentType, false, contentType);
         else
           throw new ODataMethodNotAllowedException(ODataMethodNotAllowedException.DISPATCH);
       case PATCH:
       case MERGE:
-        if (uriInfo.getFormat() == null)
+        if (uriInfo.getFormat() == null
+            && uriInfo.getNavigationSegments().isEmpty())
           return service.getEntityComplexPropertyProcessor().updateEntityComplexProperty(uriInfo, content, requestContentType, true, contentType);
         else
           throw new ODataMethodNotAllowedException(ODataMethodNotAllowedException.DISPATCH);
@@ -131,7 +132,8 @@ public class Dispatcher {
       case PUT:
       case PATCH:
       case MERGE:
-        if (isPropertyNotKey(getEntityType(uriInfo), getProperty(uriInfo)))
+        if (uriInfo.getNavigationSegments().isEmpty()
+            && isPropertyNotKey(getEntityType(uriInfo), getProperty(uriInfo)))
           if (uriInfo.isValue())
             return service.getEntitySimplePropertyValueProcessor().updateEntitySimplePropertyValue(uriInfo, content, requestContentType, contentType);
           else
@@ -144,6 +146,7 @@ public class Dispatcher {
       case DELETE:
         final EdmProperty property = getProperty(uriInfo);
         if (uriInfo.isValue()
+            && uriInfo.getNavigationSegments().isEmpty()
             && isPropertyNotKey(getEntityType(uriInfo), property) && isPropertyNullable(property))
           return service.getEntitySimplePropertyValueProcessor().deleteEntitySimplePropertyValue(uriInfo, contentType);
         else
@@ -155,6 +158,12 @@ public class Dispatcher {
     case URI6A:
       if (method == ODataHttpMethod.GET)
         return service.getEntityProcessor().readEntity(uriInfo, contentType);
+      else
+        throw new ODataMethodNotAllowedException(ODataMethodNotAllowedException.DISPATCH);
+
+    case URI6B:
+      if (method == ODataHttpMethod.GET)
+        return service.getEntitySetProcessor().readEntitySet(uriInfo, contentType);
       else
         throw new ODataMethodNotAllowedException(ODataMethodNotAllowedException.DISPATCH);
 
@@ -249,13 +258,15 @@ public class Dispatcher {
         return service.getEntityMediaProcessor().readEntityMedia(uriInfo, contentType);
       case PUT:
         if (uriInfo.getFormat() == null
-            && uriInfo.getFilter() == null)
+            && uriInfo.getFilter() == null
+            && uriInfo.getNavigationSegments().isEmpty())
           return service.getEntityMediaProcessor().updateEntityMedia(uriInfo, content, requestContentType, contentType);
         else
           throw new ODataMethodNotAllowedException(ODataMethodNotAllowedException.DISPATCH);
       case DELETE:
         if (uriInfo.getFormat() == null
-            && uriInfo.getFilter() == null)
+            && uriInfo.getFilter() == null
+            && uriInfo.getNavigationSegments().isEmpty())
           return service.getEntityMediaProcessor().deleteEntityMedia(uriInfo, contentType);
         else
           throw new ODataMethodNotAllowedException(ODataMethodNotAllowedException.DISPATCH);
