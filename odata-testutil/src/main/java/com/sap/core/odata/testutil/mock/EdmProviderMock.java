@@ -340,8 +340,8 @@ public class EdmProviderMock extends EdmProvider {
         return new Association().setName(ASSOCIATION_1_4.getName())
             .setEnd1(new AssociationEnd().setType(ENTITY_TYPE_1_5).setRole(ROLE_1_5).setMultiplicity(EdmMultiplicity.ONE))
             .setEnd2(new AssociationEnd().setType(ENTITY_TYPE_1_3).setRole(ROLE_1_3).setMultiplicity(EdmMultiplicity.MANY))
-            .setReferentialConstraint(new ReferentialConstraint().setPrincipal(new ReferentialConstraintRole().setRole("BuildingToRoom").setPropertyRef(propertyRefsPrincipal))
-                .setDependent(new ReferentialConstraintRole().setRole("RoomToBuilding").setPropertyRef(propertyRefsDependent)));
+            .setReferentialConstraint(new ReferentialConstraint().setPrincipal(new ReferentialConstraintRole().setRole("BuildingToRoom").setPropertyRefs(propertyRefsPrincipal))
+                .setDependent(new ReferentialConstraintRole().setRole("RoomToBuilding").setPropertyRefs(propertyRefsDependent)));
       }
     return null;
   }
