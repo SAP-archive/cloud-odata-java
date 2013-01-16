@@ -1,5 +1,7 @@
 package com.sap.core.odata.api.processor.feature;
 
+import java.io.InputStream;
+
 import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.api.processor.ODataResponse;
 import com.sap.core.odata.api.uri.info.DeleteUriInfo;
@@ -41,7 +43,7 @@ public interface Entity extends ProcessorFeature {
    * @return an {@link ODataResponse} object
    * @throws ODataException
    */
-  ODataResponse updateEntity(PutMergePatchUriInfo uriInfo, Object content, String requestContentType, boolean merge, String contentType) throws ODataException;
+  ODataResponse updateEntity(PutMergePatchUriInfo uriInfo, InputStream content, String requestContentType, boolean merge, String contentType) throws ODataException;
 
   /**
    * Deletes an entity.

@@ -1,8 +1,6 @@
 package com.sap.core.odata.ref.processor;
 
-import java.io.ByteArrayInputStream;
 import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -35,7 +33,6 @@ import com.sap.core.odata.api.edm.EdmTypeKind;
 import com.sap.core.odata.api.ep.EntityProvider;
 import com.sap.core.odata.api.ep.EntityProviderProperties;
 import com.sap.core.odata.api.ep.ReadEntryResult;
-import com.sap.core.odata.api.exception.ODataBadRequestException;
 import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.api.exception.ODataNotFoundException;
 import com.sap.core.odata.api.exception.ODataNotImplementedException;
@@ -280,27 +277,27 @@ public class ListsProcessor extends ODataSingleProcessor {
   }
 
   @Override
-  public ODataResponse createEntity(final PostUriInfo uriInfo, final Object content, final String requestContentType, final String contentType) throws ODataException {
+  public ODataResponse createEntity(final PostUriInfo uriInfo, final InputStream content, final String requestContentType, final String contentType) throws ODataException {
     final EdmEntitySet entitySet = uriInfo.getTargetEntitySet();
 
     ODataContext context = getContext();
     int timingHandle = context.startRuntimeMeasurement("EntityConsumer", "readEntry");
 
-    ReadEntryResult values = EntityProvider.readEntry(contentType, entitySet, contentAsStream(content));
+    final ReadEntryResult values = EntityProvider.readEntry(requestContentType, entitySet, content);
 
     context.stopRuntimeMeasurement(timingHandle);
 
     // TODO: create entity
     dataSource.newDataObject(entitySet);
 
-//    final EntityProviderProperties entryProperties = EntityProviderProperties
-//        .baseUri(context.getPathInfo().getServiceRoot()).build();
+    final EntityProviderProperties entryProperties = EntityProviderProperties
+        .serviceRoot(context.getPathInfo().getServiceRoot()).build();
 
     timingHandle = context.startRuntimeMeasurement("EntityProvider", "writeEntry");
 
     // TODO: return correct response with new key values and the correct Location header
-    final ODataResponse response = EntityProvider.writeText(values.toString());
-        // EntityProvider.create(contentType).writeEntry(entitySet, values, entryProperties);
+    final ODataResponse response =
+        EntityProvider.writeEntry(contentType, entitySet, values.getData(), entryProperties);
 
     context.stopRuntimeMeasurement(timingHandle);
 
@@ -464,7 +461,7 @@ public class ListsProcessor extends ODataSingleProcessor {
   }
 
   @Override
-  public ODataResponse updateEntityComplexProperty(final PutMergePatchUriInfo uriInfo, final Object content, final String requestContentType, final boolean merge, final String contentType) throws ODataException {
+  public ODataResponse updateEntityComplexProperty(final PutMergePatchUriInfo uriInfo, final InputStream content, final String requestContentType, final boolean merge, final String contentType) throws ODataException {
     Object data = retrieveData(
         uriInfo.getStartEntitySet(),
         uriInfo.getKeyPredicates(),
@@ -483,7 +480,7 @@ public class ListsProcessor extends ODataSingleProcessor {
     ODataContext context = getContext();
     int timingHandle = context.startRuntimeMeasurement("EntityConsumer", "readProperty");
 
-    final Map<String, Object> values = EntityProvider.readProperty(requestContentType, property, contentAsStream(content));
+    final Map<String, Object> values = EntityProvider.readProperty(requestContentType, property, content);
 
     context.stopRuntimeMeasurement(timingHandle);
 
@@ -500,7 +497,7 @@ public class ListsProcessor extends ODataSingleProcessor {
   }
 
   @Override
-  public ODataResponse updateEntitySimpleProperty(final PutMergePatchUriInfo uriInfo, Object content, final String requestContentType, final String contentType) throws ODataException {
+  public ODataResponse updateEntitySimpleProperty(final PutMergePatchUriInfo uriInfo, final InputStream content, final String requestContentType, final String contentType) throws ODataException {
     return updateEntityComplexProperty(uriInfo, content, requestContentType, false, contentType);
   }
 
@@ -1064,23 +1061,5 @@ public class ListsProcessor extends ODataSingleProcessor {
     } catch (InvocationTargetException e) {
       throw new ODataNotFoundException(null, e);
     }
-  }
-
-  private static InputStream contentAsStream(final Object content) throws ODataException {
-    if (content == null)
-      throw new ODataBadRequestException(ODataBadRequestException.COMMON);
-
-    InputStream inputStream;
-    if (content instanceof InputStream)
-      inputStream = (InputStream) content;
-    else if (content instanceof String)
-      try {
-        inputStream = new ByteArrayInputStream(((String) content).getBytes("UTF-8"));
-      } catch (UnsupportedEncodingException e) {
-        throw new ODataBadRequestException(ODataBadRequestException.COMMON, e);
-      }
-    else
-      throw new ODataBadRequestException(ODataBadRequestException.COMMON);
-    return inputStream;
   }
 }

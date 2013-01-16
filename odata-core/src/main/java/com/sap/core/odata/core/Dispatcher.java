@@ -1,5 +1,7 @@
 package com.sap.core.odata.core;
 
+import java.io.InputStream;
+
 import com.sap.core.odata.api.ODataService;
 import com.sap.core.odata.api.edm.EdmEntityType;
 import com.sap.core.odata.api.edm.EdmException;
@@ -38,7 +40,7 @@ public class Dispatcher {
     this.service = service;
   }
 
-  public ODataResponse dispatch(final ODataHttpMethod method, final UriInfoImpl uriInfo, final Object content, final String requestContentType, final String contentType) throws ODataException {
+  public ODataResponse dispatch(final ODataHttpMethod method, final UriInfoImpl uriInfo, final InputStream content, final String requestContentType, final String contentType) throws ODataException {
     switch (uriInfo.getUriType()) {
     case URI0:
       if (method == ODataHttpMethod.GET)
