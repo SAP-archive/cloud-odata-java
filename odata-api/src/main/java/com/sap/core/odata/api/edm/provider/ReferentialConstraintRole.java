@@ -54,11 +54,11 @@ public class ReferentialConstraintRole {
 
   /**
    * MANDATORY
-   * <p> Sets the {@link Property} of this {@link ReferentialConstraintRole} through a {@link PropertyRef}
+   * <p> Sets the {@link PropertyRef}s of this {@link ReferentialConstraintRole}
    * @param propertyRef
    * @return {@link ReferentialConstraintRole} for method chaining
    */
-  public ReferentialConstraintRole setPropertyRef(List<PropertyRef> propertyRef) {
+  public ReferentialConstraintRole setPropertyRefs(List<PropertyRef> propertyRef) {
     this.propertyRefs = propertyRef;
     return this;
   }
