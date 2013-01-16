@@ -21,11 +21,11 @@ public interface ContentTypeBasedEntityProvider {
 
   ReadEntryResult readEntry(EdmEntitySet entitySet, InputStream content) throws EntityProviderException;
 
-  Map<String, Object> readLink(EdmEntitySet entitySet, InputStream content) throws EntityProviderException;
+  String readLink(EdmEntitySet entitySet, InputStream content) throws EntityProviderException;
 
   Map<String, Object> readProperty(EdmProperty edmProperty, InputStream content) throws EntityProviderException;
 
-  List<Map<String, Object>> readLinks(EdmEntitySet entitySet, InputStream content) throws EntityProviderException;
+  List<String> readLinks(EdmEntitySet entitySet, InputStream content) throws EntityProviderException;
 
   ODataResponse writeFeed(EdmEntitySet entitySet, List<Map<String, Object>> data, EntityProviderProperties properties) throws EntityProviderException;
 

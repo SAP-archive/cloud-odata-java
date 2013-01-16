@@ -63,11 +63,11 @@ public final class EntityProvider {
 
     ReadEntryResult readEntry(String contentType, EdmEntitySet entitySet, InputStream content) throws EntityProviderException;
 
-    Map<String, Object> readLink(String contentType, EdmEntitySet entitySet, InputStream content) throws EntityProviderException;
+    String readLink(String contentType, EdmEntitySet entitySet, InputStream content) throws EntityProviderException;
 
     Map<String, Object> readProperty(String contentType, EdmProperty edmProperty, InputStream content) throws EntityProviderException;
 
-    List<Map<String, Object>> readLinks(String contentType, EdmEntitySet entitySet, InputStream content) throws EntityProviderException;
+    List<String> readLinks(String contentType, EdmEntitySet entitySet, InputStream content) throws EntityProviderException;
 
     ODataResponse writeFeed(String contentType, EdmEntitySet entitySet, List<Map<String, Object>> data, EntityProviderProperties properties) throws EntityProviderException;
 
@@ -95,7 +95,7 @@ public final class EntityProvider {
     return createBasic().readEntry(contentType, entitySet, content);
   };
 
-  public static Map<String, Object> readLink(String contentType, EdmEntitySet entitySet, InputStream content) throws EntityProviderException {
+  public static String readLink(String contentType, EdmEntitySet entitySet, InputStream content) throws EntityProviderException {
     return createBasic().readLink(contentType, entitySet, content);
   }
 
@@ -103,7 +103,7 @@ public final class EntityProvider {
     return createBasic().readProperty(contentType, edmProperty, content);
   };
 
-  public static List<Map<String, Object>> readLinks(String contentType, EdmEntitySet entitySet, InputStream content) throws EntityProviderException{
+  public static List<String> readLinks(String contentType, EdmEntitySet entitySet, InputStream content) throws EntityProviderException{
     return createBasic().readLinks(contentType, entitySet, content);
   };
 
