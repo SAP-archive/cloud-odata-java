@@ -42,6 +42,7 @@ import com.sap.core.odata.api.processor.feature.FunctionImportValue;
 import com.sap.core.odata.api.processor.feature.Metadata;
 import com.sap.core.odata.api.processor.feature.ServiceDocument;
 import com.sap.core.odata.api.uri.NavigationPropertySegment;
+import com.sap.core.odata.api.uri.NavigationSegment;
 import com.sap.core.odata.api.uri.SelectItem;
 import com.sap.core.odata.api.uri.expression.FilterExpression;
 import com.sap.core.odata.api.uri.expression.OrderByExpression;
@@ -215,6 +216,11 @@ public class DispatcherTest extends BaseTest {
     return uriInfo;
   }
 
+  private UriInfoImpl mockNavigationPath(UriInfoImpl uriInfo) {
+    when(uriInfo.getNavigationSegments()).thenReturn(Arrays.asList(mock(NavigationSegment.class)));
+    return uriInfo;
+  }
+
   private void checkDispatch(final ODataHttpMethod method, final UriInfoImpl uriInfo, final String expectedMethodName) throws ODataException {
     final String contentType = method == ODataHttpMethod.GET ? ContentType.APPLICATION_XML.toContentTypeString() : null;
     final Dispatcher dispatcher = new Dispatcher(service);
@@ -278,6 +284,17 @@ public class DispatcherTest extends BaseTest {
     }
   }
 
+  private void wrongNavigationPath(final ODataHttpMethod method, final UriType uriType) {
+    try {
+      checkDispatch(method, mockNavigationPath(mockUriInfo(uriType, true)), null);
+      fail("Expected ODataMethodNotAllowedException not thrown");
+    } catch (ODataMethodNotAllowedException e) {
+      assertNotNull(e);
+    } catch (ODataException e) {
+      fail("Unexpected ODataException thrown");
+    }
+  }
+
   @Test
   public void dispatch() throws Exception {
     checkDispatch(ODataHttpMethod.GET, UriType.URI0, "readServiceDocument");
@@ -319,7 +336,6 @@ public class DispatcherTest extends BaseTest {
     checkDispatch(ODataHttpMethod.GET, UriType.URI6A, "readEntity");
 
     checkDispatch(ODataHttpMethod.GET, UriType.URI6B, "readEntitySet");
-    checkDispatch(ODataHttpMethod.POST, UriType.URI6B, "createEntity");
 
     checkDispatch(ODataHttpMethod.GET, UriType.URI7A, "readEntityLink");
     checkDispatch(ODataHttpMethod.PUT, UriType.URI7A, "updateEntityLink");
@@ -392,6 +408,7 @@ public class DispatcherTest extends BaseTest {
     wrongDispatch(ODataHttpMethod.MERGE, UriType.URI6A);
 
     wrongDispatch(ODataHttpMethod.PUT, UriType.URI6B);
+    wrongDispatch(ODataHttpMethod.POST, UriType.URI6B);
     wrongDispatch(ODataHttpMethod.DELETE, UriType.URI6B);
     wrongDispatch(ODataHttpMethod.PATCH, UriType.URI6B);
     wrongDispatch(ODataHttpMethod.MERGE, UriType.URI6B);
@@ -515,5 +532,22 @@ public class DispatcherTest extends BaseTest {
     wrongProperty(ODataHttpMethod.DELETE, UriType.URI5, true, true);
     wrongProperty(ODataHttpMethod.DELETE, UriType.URI5, true, false);
     wrongProperty(ODataHttpMethod.DELETE, UriType.URI5, false, false);
+  }
+
+  @Test
+  public void dispatchWrongNavigationPath() throws Exception {
+    wrongNavigationPath(ODataHttpMethod.PUT, UriType.URI3);
+    wrongNavigationPath(ODataHttpMethod.PATCH, UriType.URI3);
+
+    wrongNavigationPath(ODataHttpMethod.PUT, UriType.URI4);
+    wrongNavigationPath(ODataHttpMethod.PATCH, UriType.URI4);
+    wrongNavigationPath(ODataHttpMethod.DELETE, UriType.URI4);
+
+    wrongNavigationPath(ODataHttpMethod.PUT, UriType.URI5);
+    wrongNavigationPath(ODataHttpMethod.PATCH, UriType.URI5);
+    wrongNavigationPath(ODataHttpMethod.DELETE, UriType.URI5);
+
+    wrongNavigationPath(ODataHttpMethod.PUT, UriType.URI17);
+    wrongNavigationPath(ODataHttpMethod.DELETE, UriType.URI17);
   }
 }
