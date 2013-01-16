@@ -26,6 +26,9 @@ public class XmlEntryConsumer {
   private static final String LINK_ATTRIBUTE_REL = "rel";
   private static final String LINK_ATTRIBUTE_HREF = "href";
   private static final String TAG_LINK = "link";
+  private static final String TAG_ENTRY = "entry";
+  private static final String ENTRY_ATTRIBUTE_ETAG = "etag";
+  private static final String LINK_ATTRIBUTE_ETAG = "etag";
 
   final ReadEntryResultImpl readEntryResult;
   final Map<String, Object> properties;
@@ -67,6 +70,8 @@ public class XmlEntryConsumer {
   private void handleStartedTag(XMLStreamReader reader, String tagName, EdmEntitySet entitySet) throws EntityProviderException, XMLStreamException, EdmException  {
     if(TAG_ID.equals(tagName)) {
       readId(reader);
+    } else if(TAG_ENTRY.equals(tagName)) {
+      readEntry(reader);
     } else if(TAG_LINK.equals(tagName)) {
       readLink(reader);
     } else if(TAG_CONTENT.equals(tagName)) {
@@ -74,6 +79,14 @@ public class XmlEntryConsumer {
     } else if(TAG_PROPERTIES.equals(tagName)) {
       readProperties(reader, entitySet);
     }
+  }
+
+  private void readEntry(XMLStreamReader reader) throws EntityProviderException, XMLStreamException {
+    validateStartPosition(reader, TAG_ENTRY);
+    Map<String, String> attributes = readAttributes(reader);
+    
+    String etag = attributes.get(ENTRY_ATTRIBUTE_ETAG);
+    entryMetadata.setEtag(etag);
   }
 
   /**
@@ -98,6 +111,8 @@ public class XmlEntryConsumer {
       entryMetadata.putAssociationUri(navigationPropertyName, uri);
     } else if(rel.equals(Edm.LINK_REL_EDIT_MEDIA)) {
       mediaMetadata.setEditLink(uri);
+      String etag = attributes.get(LINK_ATTRIBUTE_ETAG);
+      mediaMetadata.setEtag(etag);
     }
   }
 

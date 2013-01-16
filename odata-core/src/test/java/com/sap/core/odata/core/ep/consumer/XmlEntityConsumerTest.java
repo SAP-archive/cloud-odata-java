@@ -29,7 +29,7 @@ public class XmlEntityConsumerTest extends BaseTest {
       "<updated>1999-01-01T00:00:00Z</updated>" + 
       "<category term=\"RefScenario.Employee\" scheme=\"http://schemas.microsoft.com/ado/2007/08/dataservices/scheme\"/>" + 
       "<link href=\"Employees('1')\" rel=\"edit\" title=\"Employee\"/>" +
-      "<link href=\"Employees('1')/$value\" rel=\"edit-media\" type=\"application/octet-stream\"/>" + 
+      "<link href=\"Employees('1')/$value\" rel=\"edit-media\" type=\"application/octet-stream\" etag=\"mmEtag\"/>" + 
       "<link href=\"Employees('1')/ne_Room\" rel=\"http://schemas.microsoft.com/ado/2007/08/dataservices/related/ne_Room\" type=\"application/atom+xml; type=entry\" title=\"ne_Room\"/>" + 
       "<link href=\"Employees('1')/ne_Manager\" rel=\"http://schemas.microsoft.com/ado/2007/08/dataservices/related/ne_Manager\" type=\"application/atom+xml; type=entry\" title=\"ne_Manager\"/>" + 
       "<link href=\"Employees('1')/ne_Team\" rel=\"http://schemas.microsoft.com/ado/2007/08/dataservices/related/ne_Team\" type=\"application/atom+xml; type=entry\" title=\"ne_Team\"/>" + 
@@ -84,8 +84,7 @@ public class XmlEntityConsumerTest extends BaseTest {
     // verify
     EntryMetadata metadata = result.getMetadata();
     assertEquals("https://refodata.prod.jpaas.sapbydesign.com/com.sap.core.odata.ref.web/ReferenceScenario.svc/Employees('1')", metadata.getId());
-//    assertEquals("", metadata.getEtag());
-    assertEquals(null, metadata.getEtag());
+    assertEquals("W/\"1\"", metadata.getEtag());
     Map<String, String> associationUris = metadata.getAssociationUris();
     assertEquals(3, associationUris.size());
     assertEquals("Employees('1')/ne_Room", associationUris.get("ne_Room"));
@@ -96,7 +95,7 @@ public class XmlEntityConsumerTest extends BaseTest {
 
     MediaMetadata mm = result.getMediaMetadata();
     assertEquals("Employees('1')/$value", mm.getSourceLink());
-    assertEquals(null, mm.getEtag());
+    assertEquals("mmEtag", mm.getEtag());
     assertEquals("application/octet-stream", mm.getContentType());
     assertEquals("Employees('1')/$value", mm.getEditLink());
     
@@ -221,6 +220,7 @@ public class XmlEntityConsumerTest extends BaseTest {
     // verify
     EntryMetadata entryMetadata = result.getMetadata();
     assertEquals("http://localhost:19000/test/Rooms('1')", entryMetadata.getId());
+    assertEquals("W/\"1\"", entryMetadata.getEtag());
     assertEquals(null, entryMetadata.getUri());
 
     MediaMetadata mediaMetadata = result.getMediaMetadata();
