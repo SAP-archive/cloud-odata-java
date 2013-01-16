@@ -19,7 +19,7 @@ public class ReadEntryResultImpl implements ReadEntryResult {
   }
 
   @Override
-  public Map<String, Object> getData() {
+  public Map<String, Object> getProperties() {
     return data;
   }
 

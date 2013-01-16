@@ -1,6 +1,7 @@
 package com.sap.core.odata.core.ep.consumer;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
@@ -71,6 +72,28 @@ public class XmlEntityConsumerTest extends BaseTest {
         "</content>" +
       "</entry>";
   
+  private static final String PHOTO_XML = "<?xml version=\"1.0\" encoding=\"utf-8\"?>" +
+  		"<entry m:etag=\"W/&quot;1&quot;\" xml:base=\"http://localhost:19000/test\" " +
+  		    "xmlns=\"http://www.w3.org/2005/Atom\" " +
+  		    "xmlns:m=\"http://schemas.microsoft.com/ado/2007/08/dataservices/metadata\" " +
+  		    "xmlns:d=\"http://schemas.microsoft.com/ado/2007/08/dataservices\">" +
+  		  "<id>http://localhost:19000/test/Container2.Photos(Id=1,Type='image%2Fpng')</id>" +
+  		  "<title type=\"text\">Photo1</title><updated>2013-01-16T12:57:43Z</updated>" +
+  		  "<category term=\"RefScenario2.Photo\" scheme=\"http://schemas.microsoft.com/ado/2007/08/dataservices/scheme\"/>" +
+  		  "<link href=\"Container2.Photos(Id=1,Type='image%2Fpng')\" rel=\"edit\" title=\"Photo\"/>" +
+  		  "<link href=\"Container2.Photos(Id=1,Type='image%2Fpng')/$value\" rel=\"edit-media\" type=\"image/png\"/>" +
+        "<ру:Содержание xmlns:ру=\"http://localhost\">Образ</ру:Содержание>" +
+        "<ig:ignore xmlns:ig=\"http://localhost\">ignore</ig:ignore>" +
+  		  "<content type=\"image/png\" src=\"Container2.Photos(Id=1,Type='image%2Fpng')/$value\"/>" +
+  		  "<m:properties>" +
+  		    "<d:Id>1</d:Id>" +
+  		    "<d:Name>Photo1</d:Name>" +
+  		    "<d:Type>image/png</d:Type>" +
+//  		    "<d:ImageUrl/><d:Image m:MimeType=\"image/png\">iVBORw0KGgoAd9L4Da8A+nMQAAAABJRU5ErkJggg==</d:Image>" +
+//  		    "<d:BinaryData/>" +
+  		   "</m:properties>" +
+  		"</entry>";
+  
   @Test
   public void readEntryAtomProperties() throws Exception {
     // prepare
@@ -99,7 +122,7 @@ public class XmlEntityConsumerTest extends BaseTest {
     assertEquals("application/octet-stream", mm.getContentType());
     assertEquals("Employees('1')/$value", mm.getEditLink());
     
-    Map<String, Object> data = result.getData();
+    Map<String, Object> data = result.getProperties();
     assertEquals(9, data.size());
     assertEquals("1", data.get("EmployeeId"));
     assertEquals("Walter Winter", data.get("EmployeeName"));
@@ -141,7 +164,7 @@ public class XmlEntityConsumerTest extends BaseTest {
 
     
     // verify
-    Map<String, Object> properties = result.getData();
+    Map<String, Object> properties = result.getProperties();
     assertEquals(9, properties.size());
 
     assertEquals("1", properties.get("EmployeeId"));
@@ -180,7 +203,7 @@ public class XmlEntityConsumerTest extends BaseTest {
     ReadEntryResult result = xec.readEntry(entitySet, content);
 
     // verify
-    Map<String, Object> properties = result.getData();
+    Map<String, Object> properties = result.getProperties();
     assertEquals(9, properties.size());
 
     assertEquals("1", properties.get("EmployeeId"));
@@ -210,6 +233,25 @@ public class XmlEntityConsumerTest extends BaseTest {
   }
 
   @Test
+  public void readCustomizableFeedMappings() throws Exception {
+    XmlEntityConsumer xec = new XmlEntityConsumer();
+    
+    EdmEntitySet entitySet = MockFacade.getMockEdm().getEntityContainer("Container2").getEntitySet("Photos");
+    InputStream reqContent = new ByteArrayInputStream(PHOTO_XML.getBytes("utf-8"));
+    ReadEntryResult result = xec.readEntry(entitySet, reqContent);
+
+    // verify
+    EntryMetadata entryMetadata = result.getMetadata();
+    assertEquals("http://localhost:19000/test/Container2.Photos(Id=1,Type='image%2Fpng')", entryMetadata .getId());
+
+    Map<String, Object> data = result.getProperties();
+    assertEquals("Образ", data.get("Содержание"));
+    assertEquals("Photo1", data.get("Name"));
+    assertEquals("image/png", data.get("Type"));
+    assertNull(data.get("ignore"));
+  }
+
+  @Test
   public void testReadEntryRooms() throws Exception {
     XmlEntityConsumer xec = new XmlEntityConsumer();
     
@@ -229,7 +271,7 @@ public class XmlEntityConsumerTest extends BaseTest {
     assertEquals(null, mediaMetadata.getEditLink());
     assertEquals(null, mediaMetadata.getEtag());
     
-    Map<String, Object> properties = result.getData();
+    Map<String, Object> properties = result.getProperties();
     assertEquals(1, properties.size());
     assertEquals("1", properties.get("Id"));
   }
@@ -269,4 +311,6 @@ public class XmlEntityConsumerTest extends BaseTest {
     InputStream content = new ByteArrayInputStream(xml.getBytes("utf-8"));
     return content;
   }
+
+  
 }

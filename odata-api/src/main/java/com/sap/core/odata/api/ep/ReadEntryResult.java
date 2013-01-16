@@ -4,7 +4,7 @@ import java.util.Map;
 
 public interface ReadEntryResult {
 
-  public Map<String, Object> getData();
+  public Map<String, Object> getProperties();
 
   public MediaMetadata getMediaMetadata();
 

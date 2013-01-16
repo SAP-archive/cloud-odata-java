@@ -15,6 +15,7 @@ import com.sap.core.odata.api.edm.EdmEntitySet;
 import com.sap.core.odata.api.edm.EdmProperty;
 import com.sap.core.odata.api.ep.EntityProviderException;
 import com.sap.core.odata.api.ep.ReadEntryResult;
+import com.sap.core.odata.core.ep.aggregator.EntityInfoAggregator;
 
 /**
  * Xml entity (content type dependent) consumer for reading input (from <code>content</code>).
@@ -37,7 +38,9 @@ public class XmlEntityConsumer {
     try {
       XmlEntryConsumer xec = new XmlEntryConsumer();
       reader = createStaxReader(content);
-      ReadEntryResult result = xec.readEntry(reader, entitySet);
+      
+      EntityInfoAggregator eia = EntityInfoAggregator.create(entitySet);
+      ReadEntryResult result = xec.readEntry(reader, entitySet, eia);
       return result;
     } catch (Exception e) {
       throw new EntityProviderException(EntityProviderException.COMMON, e);
