@@ -1,20 +1,29 @@
 package com.sap.core.odata.processor.ref.util;
 
-import java.util.Date;
+//import java.util.Date;
+
+import java.util.Iterator;
+import java.util.ResourceBundle;
+import java.util.Set;
 
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 
-import com.sap.core.odata.processor.ref.jpa.Address;
-import com.sap.core.odata.processor.ref.jpa.Note;
+import org.eclipse.persistence.internal.jpa.EntityManagerImpl;
+import org.eclipse.persistence.queries.DataModifyQuery;
+import org.eclipse.persistence.queries.SQLCall;
+import org.eclipse.persistence.sessions.Session;
+
+//import com.sap.core.odata.processor.ref.jpa.Address;
+//import com.sap.core.odata.processor.ref.jpa.Note;
 import com.sap.core.odata.processor.ref.jpa.SalesOrderItem;
 import com.sap.core.odata.processor.ref.jpa.SalesOrderHeader;
-import com.sap.core.odata.processor.ref.jpa.SalesOrderItemKey;
+//import com.sap.core.odata.processor.ref.jpa.SalesOrderItemKey;
 
 public class DataGenerator {
 
-	private static final int MAX_SALESORDER = 10;
-	private static final int MAX_SALESORDERITEM_PER_SALESORDER = 3;
+	//private static final int MAX_SALESORDER = 10;
+	//private static final int MAX_SALESORDERITEM_PER_SALESORDER = 3;
 
 	private EntityManager entityManager;
 
@@ -24,7 +33,7 @@ public class DataGenerator {
 
 	public void generate() {
 		this.entityManager.getTransaction().begin();
-		int count = 0;
+		/*int count = 0;
 		for (int i = 0; i < DataGenerator.MAX_SALESORDER; i++) {
 			Address ba = new Address((short) i, "Street_" + i,
 					"City_" + i, "Country_" + i);
@@ -48,8 +57,36 @@ public class DataGenerator {
 			
 			if((i==7)&&(count==8))
 			{ i--;}
-		}
+		}*/
+		generatedDataFromFile();
 		this.entityManager.getTransaction().commit();
+	}
+	
+	private void generatedDataFromFile() {
+		try {
+			Session session = ((EntityManagerImpl) entityManager).getActiveSession();
+			ResourceBundle resourceBundle = ResourceBundle.getBundle("SQLStatements");
+			Set<String> keySet = resourceBundle.keySet();
+			//int i = 0;
+			for (Iterator<String> iterator = keySet.iterator(); iterator.hasNext();) {
+				this.entityManager.getTransaction().begin();
+				String currentSQL = (String) iterator.next();
+				String sqlQuery = resourceBundle.getString(currentSQL);
+				System.out.println("5 Currently executing Query - "+sqlQuery);
+				SQLCall sqlCall = new SQLCall(sqlQuery);
+//				if(i==0){
+//					// Create table
+//					org.eclipse.persistence.queries.
+//				}
+				
+				DataModifyQuery query = new DataModifyQuery();
+				query.setCall(sqlCall);
+				session.executeQuery(query);
+				this.entityManager.getTransaction().commit();
+			}
+		} catch (Exception e) {// Catch exception if any
+			System.err.println("Error: " + e.getMessage());
+		}
 	}
 
 	public void clean() {
