@@ -14,6 +14,7 @@ public class Note {
 	}	
 	
 	public Note(String createdBy, Date creationDate, String text) {
+		
 		super();
 		this.createdBy = createdBy;
 		this.creationDate = creationDate;
@@ -30,8 +31,8 @@ public class Note {
 	@Column
 	private String text;
 	
-	@JoinColumn(name = "Sales_Order_Note_Id", referencedColumnName = "SO_ID", nullable = false, insertable = false, updatable = false)
-	@OneToOne
+	@JoinColumn(name = "Sales_Order_Note_Id", referencedColumnName = "SO_ID")
+	@ManyToOne
 	private SalesOrderHeader salesOrderHeader;
 
 	public String getCreatedBy() {
@@ -59,10 +60,11 @@ public class Note {
 	}
 
 	public SalesOrderHeader getSalesOrderHeader() {
-		return salesOrderHeader;
+		return this.salesOrderHeader;
 	}
 
 	public void setSalesOrderHeader(SalesOrderHeader salesOrderHeader) {
-		this.salesOrderHeader = salesOrderHeader;		
-	}	
+		this.salesOrderHeader = salesOrderHeader;
+		this.salesOrderHeader.getNotes().add(this);
+	}
 }
