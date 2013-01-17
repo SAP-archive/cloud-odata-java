@@ -12,21 +12,18 @@ import javax.persistence.*;
 public class SalesOrderHeader {
 
 	public SalesOrderHeader() {
-		this.creationDate = new Date(System.currentTimeMillis());
-		//No arguement constructor
-	}
-		
+		//No arg constructor
+	}		
 
-	public SalesOrderHeader(int buyerId, String buyerName,
+	public SalesOrderHeader(Date creationDate,int buyerId, String buyerName,
 			Address buyerAddress, String currencyCode, double netAmount,
 			boolean deliveryStatus) {
-		
-		this();
+		super();
+		this.creationDate = creationDate;
 		this.buyerId = buyerId;
 		this.buyerName = buyerName;
 		this.buyerAddress = buyerAddress;
 		this.currencyCode = currencyCode;
-		this.netAmount = netAmount;
 		this.deliveryStatus = deliveryStatus;
 	}
 	
@@ -49,18 +46,21 @@ public class SalesOrderHeader {
 
 	@Column(name = "CURRENCY_CODE",length = 10)
 	private String currencyCode;
-
-	@Column(name = "NET_AMOUNT",precision = 5)
-	private double netAmount;
-
+	
 	@Column(name = "DELIVERY_STATUS")
 	private boolean deliveryStatus;
-
+	
+	@Transient
+	private double grossAmount;
+	
+	@Transient
+	private double netAmount;
+	
 	@OneToMany(mappedBy = "SalesOrderHeader", cascade = CascadeType.ALL)
 	private final List<SalesOrderItem> salesOrderItem = new ArrayList<SalesOrderItem>();
 	
-	@OneToOne(mappedBy = "SalesOrderHeader", cascade = CascadeType.ALL)
-	private Note note = new Note();
+	@OneToMany(mappedBy = "SalesOrderHeader", cascade = CascadeType.ALL)
+	private final List<Note> notes = new ArrayList<Note>();
 
 	public long getSoId() {
 		return soId;
@@ -109,6 +109,22 @@ public class SalesOrderHeader {
 	public void setCurrencyCode(String currencyCode) {
 		this.currencyCode = currencyCode;
 	}
+	
+	public boolean getDeliveryStatus() {
+		return deliveryStatus;
+	}
+
+	public void setDeliveryStatus(boolean deliveryStatus) {
+		this.deliveryStatus = deliveryStatus;
+	}
+	
+	public double getGrossAmount() {
+		return grossAmount;
+	}
+
+	public void setGrossAmount(double grossAmount) {
+		this.grossAmount = grossAmount;
+	}
 
 	public double getNetAmount() {
 		return netAmount;
@@ -118,23 +134,11 @@ public class SalesOrderHeader {
 		this.netAmount = netAmount;
 	}
 
-	public boolean getDeliveryStatus() {
-		return deliveryStatus;
-	}
-
-	public void setDeliveryStatus(boolean deliveryStatus) {
-		this.deliveryStatus = deliveryStatus;
-	}
-
 	public List<SalesOrderItem> getSalesOrderItem() {
 		return this.salesOrderItem;
-	}	
-	
-	public Note getNote() {
-		return note;
 	}
 	
-	public void setNote(Note note) {
-		this.note = note;
-	}	
+	public List<Note> getNotes() {
+		return notes;
+	}		
 }

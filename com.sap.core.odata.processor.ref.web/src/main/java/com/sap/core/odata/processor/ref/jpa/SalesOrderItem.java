@@ -7,64 +7,89 @@ import javax.persistence.*;
 public class SalesOrderItem {
 
 	public SalesOrderItem() {
-		super();
-		//No arg const.
-	}
+		//No arg constructor
+	}		
 
-	
-	public SalesOrderItem(String productName, int productId, double price) {
+	public SalesOrderItem(int quantity, double amount, double discount,
+			Material material) {
 		super();
-		this.productName = productName;
-		this.productId = productId;
-		this.price = price;
+		this.quantity = quantity;
+		this.amount = amount;
+		this.discount = discount;
+		this.material = material;
 	}
 
 	@EmbeddedId
 	private SalesOrderItemKey salesOrderItemKey;
 
-	@Column(name = "PRODUCT_NAME")
-	private String productName;
+	@Column
+	private int quantity;
 	
-	@Column(name = "PRODUCT_ID")
-	private int productId;
+	@Column
+	private double amount;
 	
-	@Column(name = "PRICE")
-	private double price;
+	@Column
+	private double discount;
+	
+	@Transient
+	private double netAmount;
+	
+	
+
+	@OneToOne
+	@JoinColumn(name = "Sales_Order_Item_Material_Id")
+	private Material material;
 		
-	@JoinColumn(name = "Sales_Order_Id", referencedColumnName = "SO_ID", nullable = false, insertable = false, updatable = false)
+	@JoinColumn(name = "Sales_Order_Id", referencedColumnName = "SO_ID")
 	@ManyToOne
 	private SalesOrderHeader salesOrderHeader;
-
+	
 	public SalesOrderItemKey getSalesOrderItemKey() {
 		return salesOrderItemKey;
 	}
 
 	public void setSalesOrderItemKey(SalesOrderItemKey salesOrderItemKey) {
 		this.salesOrderItemKey = salesOrderItemKey;
+	}	
+
+	public int getQuantity() {
+		return quantity;
 	}
 
-	public String getProductName() {
-		return productName;
+	public void setQuantity(int quantity) {
+		this.quantity = quantity;
 	}
 
-	public void setProductName(String productName) {
-		this.productName = productName;
+	public double getAmount() {
+		return amount;
+	}
+
+	public void setAmount(double amount) {
+		this.amount = amount;
+	}
+
+	public double getDiscount() {
+		return discount;
+	}
+
+	public void setDiscount(double discount) {
+		this.discount = discount;
 	}
 	
-	public int getProductId() {
-		return productId;
+	public double getNetAmount() {
+		return netAmount;
 	}
 
-	public void setProductId(int productId) {
-		this.productId = productId;
-	}
-	
-	public double getPrice() {
-		return price;
+	public void setNetAmount(double netAmount) {
+		this.netAmount = netAmount;
 	}
 
-	public void setPrice(double price) {
-		this.price = price;
+	public Material getMaterial() {
+		return material;
+	}
+
+	public void setMaterial(Material material) {
+		this.material = material;
 	}
 	
 	public SalesOrderHeader getSalesOrderHeader() {
@@ -75,5 +100,4 @@ public class SalesOrderItem {
 		this.salesOrderHeader = salesOrderHeader;
 		this.salesOrderHeader.getSalesOrderItem().add(this);
 	}
-
 }
