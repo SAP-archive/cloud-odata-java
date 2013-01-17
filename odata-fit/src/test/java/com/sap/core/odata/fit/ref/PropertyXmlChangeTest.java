@@ -6,6 +6,7 @@ import org.junit.Test;
 
 import com.sap.core.odata.api.commons.HttpContentType;
 import com.sap.core.odata.api.commons.HttpStatusCodes;
+import com.sap.core.odata.api.edm.Edm;
 import com.sap.core.odata.core.commons.ODataHttpMethod;
 
 /**
@@ -48,7 +49,7 @@ public class PropertyXmlChangeTest extends AbstractRefTest {
     putUri(url2, requestBody, HttpContentType.APPLICATION_XML, HttpStatusCodes.NO_CONTENT);
     assertTrue(getBody(callUri(url2)).contains("YYY"));
 
-    requestBody = "<City xmlns=\"" + XMLNS_D + "\"><PostalCode>00000</PostalCode></City>";
+    requestBody = "<City xmlns=\"" + Edm.NAMESPACE_D_2007_08 + "\"><PostalCode>00000</PostalCode></City>";
     callUri(ODataHttpMethod.PATCH, url2, null, null, requestBody, HttpContentType.APPLICATION_XML, HttpStatusCodes.NO_CONTENT);
     assertTrue(getBody(callUri(url2)).contains("YYY"));
   }

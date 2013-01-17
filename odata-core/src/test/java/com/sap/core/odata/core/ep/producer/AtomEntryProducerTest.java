@@ -11,7 +11,6 @@ import static org.mockito.Mockito.when;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
@@ -342,10 +341,9 @@ public class AtomEntryProducerTest extends AbstractProviderTest {
     AtomEntityProvider ser = createAtomEntityProvider();
     EdmEntitySet entitySet = MockFacade.getMockEdm().getEntityContainer("Container2").getEntitySet("Photos");
 
-    // hack to set field to NULL to test behavior (bug)
     EdmProperty customProperty = (EdmProperty) entitySet.getEntityType().getProperty("CustomProperty");
-    setFieldTo(customProperty.getCustomizableFeedMappings(), "fcKeepInContent", null);
-    //
+    when(customProperty.getCustomizableFeedMappings().isFcKeepInContent()).thenReturn(null);
+
     ODataResponse response = ser.writeEntry(entitySet, this.photoData, DEFAULT_PROPERTIES);
     String xmlString = verifyResponse(response);
 
@@ -371,16 +369,5 @@ public class AtomEntryProducerTest extends AbstractProviderTest {
 
   private void verifyTagOrdering(String xmlString, String... toCheckTags) {
     XMLUnitHelper.verifyTagOrdering(xmlString, toCheckTags);
-  }
-
-  private void setFieldTo(Object instance, String fieldName, Object fieldValue) throws SecurityException, NoSuchFieldException, IllegalArgumentException, IllegalAccessException  {
-    Class<?> clazz = instance.getClass();
-    Field field = clazz.getDeclaredField(fieldName);
-    boolean accessible = field.isAccessible();
-    field.setAccessible(true);
-    
-    field.set(instance, fieldValue);
-    
-    field.setAccessible(accessible);
   }
 }

@@ -1,11 +1,15 @@
 package com.sap.core.odata.core.ep;
 
+import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
+import java.nio.charset.Charset;
 import java.util.Collections;
 import java.util.Map;
 
@@ -22,7 +26,6 @@ import com.sap.core.odata.api.ep.EntityProviderException;
 import com.sap.core.odata.api.processor.ODataResponse;
 import com.sap.core.odata.api.processor.ODataResponse.ODataResponseBuilder;
 import com.sap.core.odata.core.commons.ContentType;
-import com.sap.core.odata.core.ep.consumer.XmlEntityConsumer;
 import com.sap.core.odata.core.ep.producer.AtomServiceDocumentProducer;
 import com.sap.core.odata.core.ep.util.CircleStreamBuffer;
 
@@ -30,12 +33,55 @@ public class BasicEntityProvider implements BasicEntityProviderInterface {
 
   private static final Logger LOG = LoggerFactory.getLogger(BasicEntityProvider.class);
   /** Default used charset for writer and response content header */
-  private static final String DEFAULT_CHARSET = "utf-8";
-  
+  private static final String DEFAULT_CHARSET = "UTF-8";
+
   @Override
-  public Object readPropertyValue(EdmProperty edmProperty, InputStream content) throws EntityProviderException {
-    XmlEntityConsumer bc = new XmlEntityConsumer();
-    return bc.readPropertyValue(edmProperty, content);
+  public byte[] readBinary(InputStream content) throws EntityProviderException {
+    ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+    byte[] value = new byte[Short.MAX_VALUE];
+    int count;
+    try {
+      while ((count = content.read(value)) > 0)
+        buffer.write(value, 0, count);
+      content.close();
+      buffer.flush();
+      return buffer.toByteArray();
+    } catch (IOException e) {
+      throw new EntityProviderException(EntityProviderException.COMMON, e);
+    }
+  }
+
+  private String readText(InputStream content) throws EntityProviderException {
+    BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(content, Charset.forName(DEFAULT_CHARSET)));
+    StringBuilder stringBuilder = new StringBuilder();
+    try {
+      String line = null;
+      while ((line = bufferedReader.readLine()) != null)
+        stringBuilder.append(line);
+      bufferedReader.close();
+    } catch (IOException e) {
+      throw new EntityProviderException(EntityProviderException.COMMON, e);
+    }
+    return stringBuilder.toString();
+  }
+
+  @Override
+  public Object readPropertyValue(final EdmProperty edmProperty, InputStream content) throws EntityProviderException {
+    EdmSimpleType type;
+    try {
+      type = (EdmSimpleType) edmProperty.getType();
+    } catch (EdmException e) {
+      throw new EntityProviderException(EntityProviderException.COMMON, e);
+    }
+
+    if (type == EdmSimpleTypeKind.Binary.getEdmSimpleTypeInstance())
+      return readBinary(content);
+    else
+      try {
+        return type.valueOfString(readText(content), EdmLiteralKind.DEFAULT, edmProperty.getFacets());
+      } catch (EdmException e) {
+        throw new EntityProviderException(EntityProviderException.COMMON, e);
+      }
   }
 
   @Override

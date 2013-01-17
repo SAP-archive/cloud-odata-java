@@ -502,6 +502,37 @@ public class ListsProcessor extends ODataSingleProcessor {
   }
 
   @Override
+  public ODataResponse updateEntitySimplePropertyValue(final PutMergePatchUriInfo uriInfo, final InputStream content, final String requestContentType, final String contentType) throws ODataException {
+    Object data = retrieveData(
+        uriInfo.getStartEntitySet(),
+        uriInfo.getKeyPredicates(),
+        uriInfo.getFunctionImport(),
+        mapFunctionParameters(uriInfo.getFunctionImportParameters()),
+        uriInfo.getNavigationSegments());
+
+    // if (!appliesFilter(data, uriInfo.getFilter()))
+    //   throw new ODataNotFoundException(ODataNotFoundException.ENTITY);
+
+    final List<EdmProperty> propertyPath = uriInfo.getPropertyPath();
+    final EdmProperty property = propertyPath.get(propertyPath.size() - 1);
+
+    data = getPropertyValue(data, propertyPath.subList(0, propertyPath.size() - 1));
+
+    ODataContext context = getContext();
+    int timingHandle = context.startRuntimeMeasurement("EntityConsumer", "readPropertyValue");
+
+    final Object value = EntityProvider.readPropertyValue(property, content);
+
+    context.stopRuntimeMeasurement(timingHandle);
+
+    setPropertyValue(data, property, value);
+    if (property.getMapping() != null && property.getMapping().getMimeType() != null)
+      setValue(data, getSetterMethodName(property.getMapping().getMimeType()), requestContentType);
+
+    return ODataResponse.status(HttpStatusCodes.NO_CONTENT).build();
+  }
+
+  @Override
   public ODataResponse readEntityMedia(final GetMediaResourceUriInfo uriInfo, final String contentType) throws ODataException {
     final Object data = retrieveData(
         uriInfo.getStartEntitySet(),
