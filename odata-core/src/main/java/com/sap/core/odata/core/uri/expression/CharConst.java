@@ -1,5 +1,5 @@
 package com.sap.core.odata.core.uri.expression;
-
+//TODO
 public class CharConst {
   static public char GC_STR_CLOSEPAREN = ')';
   static public char GC_STR_OPENPAREN = '(';

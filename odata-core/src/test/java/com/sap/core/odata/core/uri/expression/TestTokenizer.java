@@ -8,7 +8,7 @@ import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.codec.binary.Hex;
 import org.junit.Test;
 
-import com.sap.core.odata.api.uri.expression.FilterParserException;
+import com.sap.core.odata.api.uri.expression.ExpressionParserException;
 
 public class TestTokenizer {
 
@@ -91,7 +91,7 @@ public class TestTokenizer {
     } catch (TokenizerException e) {
 
       fail("Error in tokenize" + e.getLocalizedMessage());
-    } catch (FilterParserException e) {
+    } catch (ExpressionParserException e) {
       // TODO Auto-generated catch block
       e.printStackTrace();
     }
@@ -112,7 +112,7 @@ public class TestTokenizer {
       //      fail("Error in tokenize" + e.getLocalizedMessage());
     } catch (TokenizerException e) {
       fail("Error in tokenize" + e.getLocalizedMessage());
-    } catch (FilterParserException e) {
+    } catch (ExpressionParserException e) {
       // TODO Auto-generated catch block
       e.printStackTrace();
     }

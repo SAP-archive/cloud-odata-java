@@ -1,18 +1,18 @@
 package com.sap.core.odata.core.uri.expression;
 
+import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.Vector;
 
 import com.sap.core.odata.api.edm.EdmLiteral;
 
 public class TokenList implements Iterator<Token>
 {
-  private Vector<Token> tokens = null;
+  private ArrayList<Token> tokens = null;
   int currentToken = 0;
 
   public TokenList()
   {
-    this.tokens = new Vector<Token>();
+    this.tokens = new ArrayList<Token>();
   }
 
   /**
@@ -97,18 +97,18 @@ public class TokenList implements Iterator<Token>
     return actual;
   }
 
-  public Token expectToken(TokenKind comma, boolean throwFilterExpression) throws  FilterParserInternalError
+  public Token expectToken(TokenKind comma, boolean throwFilterExpression) throws  ExpressionParserInternalError
   {
     Token actual = next();
     if (actual == null)
     {
-      throw FilterParserInternalError.createNO_TOKEN_AVAILABLE(comma.toString());
+      throw ExpressionParserInternalError.createNO_TOKEN_AVAILABLE(comma.toString());
     }
 
     if (comma != actual.getKind())
     {
       if ( throwFilterExpression)
-        throw FilterParserInternalError.createINVALID_TOKENKIND_AT(comma, actual);
+        throw ExpressionParserInternalError.createINVALID_TOKENKIND_AT(comma, actual);
     }
     return actual;
   }
@@ -130,18 +130,18 @@ public class TokenList implements Iterator<Token>
   }
   
   
-  public Token expectToken(String literal, boolean throwInternal) throws FilterParserInternalError
+  public Token expectToken(String literal, boolean throwInternal) throws ExpressionParserInternalError
   {
     Token actual = next();
     if (actual == null)
     {
-      throw FilterParserInternalError.createNO_TOKEN_AVAILABLE(literal);
+      throw ExpressionParserInternalError.createNO_TOKEN_AVAILABLE(literal);
     }
 
     if (!literal.equals(actual.getUriLiteral()))
     {
       if (throwInternal)
-        throw FilterParserInternalError.createINVALID_TOKEN_AT(literal, actual);
+        throw ExpressionParserInternalError.createINVALID_TOKEN_AT(literal, actual);
     }
     return actual;
   }
@@ -173,7 +173,7 @@ public class TokenList implements Iterator<Token>
 
   public Token elementAt(int index) {
 
-    return tokens.elementAt(index);
+    return tokens.get(index);
   }
 
 }

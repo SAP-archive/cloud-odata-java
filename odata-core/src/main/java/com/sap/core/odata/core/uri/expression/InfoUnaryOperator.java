@@ -36,7 +36,7 @@ class InfoUnaryOperator
     return operator;
   }
 
-  public EdmType validateParameterSet(List<EdmType> actualParameterTypes) throws FilterParserInternalError {
+  public EdmType validateParameterSet(List<EdmType> actualParameterTypes) throws ExpressionParserInternalError {
     return combination.validate(actualParameterTypes);
   }
 

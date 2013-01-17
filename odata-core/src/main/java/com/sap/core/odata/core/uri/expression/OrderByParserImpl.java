@@ -3,37 +3,30 @@ package com.sap.core.odata.core.uri.expression;
 import com.sap.core.odata.api.edm.Edm;
 import com.sap.core.odata.api.edm.EdmEntityType;
 import com.sap.core.odata.api.uri.expression.CommonExpression;
-import com.sap.core.odata.api.uri.expression.FilterExpression;
-import com.sap.core.odata.api.uri.expression.FilterParserException;
+import com.sap.core.odata.api.uri.expression.ExpressionParserException;
 import com.sap.core.odata.api.uri.expression.OrderByExpression;
 import com.sap.core.odata.api.uri.expression.OrderByParser;
-import com.sap.core.odata.api.uri.expression.OrderByParserException;
 import com.sap.core.odata.api.uri.expression.SortOrder;
 
 public class OrderByParserImpl extends FilterParserImpl implements OrderByParser
 {
-  /*instance attributes*/
-
   public OrderByParserImpl(Edm edm, EdmEntityType edmType)
   {
     super(edm, edmType);
   }
 
   @Override
-  public OrderByExpression parseOrderByString(String orderByExpression) throws OrderByParserException, FilterParserInternalError
+  public OrderByExpression parseOrderByString(String orderByExpression) throws ExpressionParserException, ExpressionParserInternalError
   {
     OrderByExpressionImpl orderCollection = new OrderByExpressionImpl();
+    curExpression = orderByExpression;
 
     try
     {
       tokenList = new Tokenizer(orderByExpression).tokenize(); //throws TokenizerMessage
     } catch (TokenizerException tokenizerException)
     {
-      //throw FilterParserExceptionImpl.createERROR_IN_TOKENIZER(tokenizerException);
-      //TODO change name
-    } catch (Exception e) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
+      throw FilterParserExceptionImpl.createERROR_IN_TOKENIZER(tokenizerException);
     }
 
     boolean weiter = false;
@@ -45,11 +38,10 @@ public class OrderByParserImpl extends FilterParserImpl implements OrderByParser
       {
         CommonExpression nodeLeft = readElement(null);
         node = readElements(nodeLeft, 0);
-      } catch (FilterParserException expressionException)
+      } catch (ExpressionParserException expressionException)
       {
-        //TODO change name
-        FilterExpression fe = new FilterExpressionImpl(orderByExpression, null);
-        //throw expressionException.setFilterTree(fe);
+        expressionException.setFilterTree(orderCollection);
+        throw expressionException;
       }
 
       OrderExpressionImpl orderNode = new OrderExpressionImpl(node);
@@ -80,7 +72,8 @@ public class OrderByParserImpl extends FilterParserImpl implements OrderByParser
       }
       else
       {
-        //TODO add syntax error
+        // Tested with TestParserExceptions.TestOPMparseOrderByString CASE 1
+        throw FilterParserExceptionImpl.createINVALID_SORT_ORDER(token, curExpression);
       }
 
       orderCollection.addOrder(orderNode);
@@ -93,15 +86,17 @@ public class OrderByParserImpl extends FilterParserImpl implements OrderByParser
       }
       else if (token.getKind() == TokenKind.COMMA)
       {
+        Token oldToken = token;
         tokenList.next();
         token = tokenList.lookToken();
-        /*
-         * error xmlns="http://schemas.microsoft.com/ado/2007/08/dataservices/metadata">
-        <code/>
-        <message xml:lang="en-US">Expression expected at position 10.</message>
-        </error>
-         */
+
+        if (token == null)
+        {
+          // Tested with TestParserExceptions.TestOPMparseOrderByString CASE 2
+          throw FilterParserExceptionImpl.createEXPRESSION_EXPECTED_AFTER_POS(oldToken,curExpression);
+        }
       }
+
     }
     return orderCollection;
   }

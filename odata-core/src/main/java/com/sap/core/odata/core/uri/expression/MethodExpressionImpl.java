@@ -2,7 +2,6 @@ package com.sap.core.odata.core.uri.expression;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Vector;
 
 import com.sap.core.odata.api.edm.EdmType;
 import com.sap.core.odata.api.exception.ODataApplicationException;
@@ -80,7 +79,7 @@ public class MethodExpressionImpl implements MethodExpression {
   @Override
   public Object accept(ExpressionVisitor visitor) throws ExceptionVisitExpression, ODataApplicationException
   {
-    Vector<Object> retParameters = new Vector<Object>();
+    ArrayList<Object> retParameters = new ArrayList<Object>();
     for (CommonExpression parameter : actualParameters)
     {
       Object retParameter = parameter.accept(visitor);

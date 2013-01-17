@@ -21,9 +21,8 @@ import com.sap.core.odata.api.exception.ODataMessageException;
 import com.sap.core.odata.api.uri.expression.CommonExpression;
 import com.sap.core.odata.api.uri.expression.ExceptionVisitExpression;
 import com.sap.core.odata.api.uri.expression.ExpressionKind;
+import com.sap.core.odata.api.uri.expression.ExpressionParserException;
 import com.sap.core.odata.api.uri.expression.ExpressionVisitor;
-import com.sap.core.odata.api.uri.expression.FilterParserException;
-import com.sap.core.odata.api.uri.expression.OrderByParserException;
 import com.sap.core.odata.api.uri.expression.SortOrder;
 import com.sap.core.odata.core.exception.MessageService;
 import com.sap.core.odata.core.exception.MessageService.Message;
@@ -40,7 +39,7 @@ public class ParserTool
 
   private static final Logger log = LoggerFactory.getLogger(ParserTool.class);
 
-  private static boolean debug = false;
+  private static boolean debug = true;
 
   private String expression;
   private CommonExpression tree;
@@ -62,21 +61,18 @@ public class ParserTool
     try {
       if (!isOrder)
       {
-        FilterParserImpl parser = new FilterParserImpl(null, null);
+        TestFilterParserImpl parser = new TestFilterParserImpl(null, null);
         if (addTestfunctions) parser.addTestfunctions();
         this.tree = parser.parseFilterString(expression).getExpression();
       }
       else
       {
         OrderByParserImpl parser = new OrderByParserImpl(null, null);
-        if (addTestfunctions) parser.addTestfunctions();
         this.tree = parser.parseOrderByString(expression);
       }
-    } catch (FilterParserException e) {
+    } catch (ExpressionParserException e) {
       this.exception = e;
-    } catch (FilterParserInternalError e) {
-      this.exception = e;
-    } catch (OrderByParserException e) {
+    } catch (ExpressionParserInternalError e) {
       this.exception = e;
     }
 
@@ -84,7 +80,7 @@ public class ParserTool
     this.curException = this.exception;
   }
 
-  public ParserTool(String expression, boolean isOrder, boolean addTestfunctions, Edm edm, EdmEntityType resourceEntityType )
+  public ParserTool(String expression, boolean isOrder, boolean addTestfunctions, Edm edm, EdmEntityType resourceEntityType)
   {
     dout("ParserTool - Testing: " + expression);
     this.expression = expression;
@@ -92,21 +88,18 @@ public class ParserTool
     try {
       if (!isOrder)
       {
-        FilterParserImpl parser = new FilterParserImpl(edm, resourceEntityType);
-        if (addTestfunctions) parser.addTestfunctions(); 
+        TestFilterParserImpl parser = new TestFilterParserImpl(edm, resourceEntityType);
+        if (addTestfunctions) parser.addTestfunctions();
         this.tree = parser.parseFilterString(expression).getExpression();
       }
       else
       {
         OrderByParserImpl parser = new OrderByParserImpl(edm, resourceEntityType);
-        if (addTestfunctions) parser.addTestfunctions();
         this.tree = parser.parseOrderByString(expression);
       }
-    } catch (FilterParserException e) {
+    } catch (ExpressionParserException e) {
       this.curException = e;
-    } catch (FilterParserInternalError e) {
-      this.curException = e;
-    } catch (OrderByParserException e) {
+    } catch (ExpressionParserInternalError e) {
       this.curException = e;
     }
 
@@ -313,8 +306,6 @@ public class ParserTool
     return this;
   }
 
-  
-  
   public ParserTool printSerialized()
   {
     String actual = null;
@@ -332,8 +323,7 @@ public class ParserTool
     dout("Messge <-- ");
     return this;
   }
-  
-  
+
   public ParserTool exPrintStack()
   {
     curException.printStackTrace();
@@ -454,8 +444,6 @@ public class ParserTool
     assertEquals(info, expected, actual);
     return this;
   }
-  
-  
 
   public ParserTool left() {
     switch (curNode.getKind())

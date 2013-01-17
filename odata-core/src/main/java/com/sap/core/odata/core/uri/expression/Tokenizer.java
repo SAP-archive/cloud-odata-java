@@ -7,7 +7,7 @@ import com.sap.core.odata.api.edm.EdmLiteral;
 import com.sap.core.odata.api.edm.EdmLiteralException;
 import com.sap.core.odata.api.edm.EdmSimpleTypeFacade;
 import com.sap.core.odata.api.edm.EdmSimpleTypeKind;
-import com.sap.core.odata.api.uri.expression.FilterParserException;
+import com.sap.core.odata.api.uri.expression.ExpressionParserException;
 import com.sap.core.odata.core.edm.EdmSimpleTypeFacadeImpl;
 
 /**
@@ -50,7 +50,7 @@ public class Tokenizer
    * Tokenizes an expression as defined per OData specification 
    * @return Token list 
    */
-  public TokenList tokenize() throws TokenizerException, FilterParserException
+  public TokenList tokenize() throws TokenizerException, ExpressionParserException
   {
     curPosition = 0;
     int oldPosition;
@@ -243,7 +243,7 @@ public class Tokenizer
     return false;
   }
 
-  private boolean checkForPrefix(String rem_expr) throws FilterParserException, TokenizerException {
+  private boolean checkForPrefix(String rem_expr) throws ExpressionParserException, TokenizerException {
     final Pattern prefix = Pattern.compile("^(X|binary|guid|datetime|datetimeoffset|time)'");
     Matcher matcher = prefix.matcher(rem_expr);
     token = "";
@@ -264,10 +264,10 @@ public class Tokenizer
    * Read up to single ' and move pointer to the following char and tries a type detection
    * @param expression
    * @param curCharacter
-   * @throws FilterParserException
+   * @throws ExpressionParserException
    * @throws TokenizerException
    */
-  private void readLiteral(char curCharacter) throws FilterParserException, TokenizerException
+  private void readLiteral(char curCharacter) throws ExpressionParserException, TokenizerException
   {
     int oldPosition = curPosition;
     token += Character.toString(curCharacter);

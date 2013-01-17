@@ -11,11 +11,11 @@ import com.sap.core.odata.api.uri.expression.ExpressionVisitor;
 
 public class BinaryExpressionImpl implements BinaryExpression
 {
-  protected InfoBinaryOperator operatorInfo;
-  protected CommonExpression leftSide;
-  protected CommonExpression rightSide;
+  final protected InfoBinaryOperator operatorInfo;
+  final protected CommonExpression leftSide;
+  final protected CommonExpression rightSide;
+  final protected Token token;
   protected EdmType edmType;
-  protected Token token;
 
   public BinaryExpressionImpl(InfoBinaryOperator operatorInfo, CommonExpression leftSide, CommonExpression rightSide, Token token) {
     this.operatorInfo = operatorInfo;
