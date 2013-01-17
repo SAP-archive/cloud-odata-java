@@ -2,11 +2,8 @@ package com.sap.core.odata.core.ep.consumer;
 
 import static org.junit.Assert.assertEquals;
 
-import java.io.StringReader;
 import java.util.Map;
 
-import javax.xml.stream.XMLInputFactory;
-import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
 import org.junit.Ignore;
@@ -14,10 +11,9 @@ import org.junit.Test;
 
 import com.sap.core.odata.api.edm.EdmEntitySet;
 import com.sap.core.odata.api.edm.EdmProperty;
-import com.sap.core.odata.testutil.fit.BaseTest;
 import com.sap.core.odata.testutil.mock.MockFacade;
 
-public class XmlPropertyConsumerTest extends BaseTest {
+public class XmlPropertyConsumerTest extends AbstractConsumerTest {
 
   @Test
   public void testReadIntegerProperty() throws Exception {
@@ -99,15 +95,5 @@ public class XmlPropertyConsumerTest extends BaseTest {
     Map<String, Object> cityMap = (Map<String, Object>) locationMap.get("City");
     assertEquals("69124", cityMap.get("PostalCode"));
     assertEquals("Heidelberg", cityMap.get("CityName"));
-  }
-
-  private XMLStreamReader createReaderForTest(String input) throws XMLStreamException {
-    XMLInputFactory factory = XMLInputFactory.newInstance();
-    factory.setProperty(XMLInputFactory.IS_VALIDATING, false);
-    factory.setProperty(XMLInputFactory.IS_NAMESPACE_AWARE, false);
-
-    XMLStreamReader streamReader = factory.createXMLStreamReader(new StringReader(input));
-    
-    return streamReader;
   }
 }
