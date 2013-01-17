@@ -40,7 +40,7 @@ public class SalesOrderItem {
 	@JoinColumn(name = "Sales_Order_Item_Material_Id")
 	private Material material;
 		
-	@JoinColumn(name = "Sales_Order_Id", referencedColumnName = "SO_ID")
+	@JoinColumn(name = "Sales_Order_Id", referencedColumnName = "SO_ID", insertable= false, updatable=false)
 	@ManyToOne
 	private SalesOrderHeader salesOrderHeader;
 	
