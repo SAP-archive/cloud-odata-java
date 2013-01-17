@@ -25,6 +25,14 @@ public class JPQLSelectStatementBuilder extends JPQLStatementBuilder{
 	public JPQLSelectStatementBuilder(JPQLContext context) {
 		this.context = (JPQLSelectContext) context;
 	}
+	
+	/**
+	 * Builds the jpql statement for query of an entity
+	 * 
+	 * @return jpqlStatement
+	 * @throws ODataJPARuntimeException
+	 * 
+	 */
 
 	@Override
 	public JPQLStatement build() throws ODataJPARuntimeException {
@@ -32,6 +40,14 @@ public class JPQLSelectStatementBuilder extends JPQLStatementBuilder{
 		return this.jpqlStatement;
 		
 	}
+	
+	/**
+	 * Creates the jpql statement for query of an entity
+	 * 
+	 * @return jpqlStatement
+	 * @throws ODataJPARuntimeException
+	 * 
+	 */
 
 	private String createJPQLQuery() throws ODataJPARuntimeException {
 

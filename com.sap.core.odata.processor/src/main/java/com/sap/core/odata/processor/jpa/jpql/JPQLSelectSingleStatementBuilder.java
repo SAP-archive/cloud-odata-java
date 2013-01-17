@@ -21,6 +21,13 @@ public class JPQLSelectSingleStatementBuilder extends JPQLStatementBuilder{
 		this.context = (JPQLSelectSingleContext) context;
 	}
 
+	/**
+	 * Builds the jpql statement for read of an entity
+	 * 
+	 * @return jpqlStatement
+	 * @throws ODataJPARuntimeException
+	 * 
+	 */
 	@Override
 	public JPQLStatement build() throws ODataJPARuntimeException {
 		this.jpqlStatement = createStatement(createJPQLQuery());
@@ -28,6 +35,13 @@ public class JPQLSelectSingleStatementBuilder extends JPQLStatementBuilder{
 		
 	}
 
+	/**
+	 * Creates the jpql statement for read of an entity
+	 * 
+	 * @return jpqlStatement
+	 * @throws ODataJPARuntimeException
+	 * 
+	 */
 	private String createJPQLQuery() throws ODataJPARuntimeException {
 
 		StringBuilder jpqlQuery = new StringBuilder();

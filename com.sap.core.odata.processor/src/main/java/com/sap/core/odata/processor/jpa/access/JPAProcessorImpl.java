@@ -25,6 +25,13 @@ public class JPAProcessorImpl implements JPAProcessor {
 		em = oDataJPAContext.getEntityManagerFactory().createEntityManager();
 	}
 
+	/**
+	 * process the query request for an entity
+	 * 
+	 * @return result object list
+	 * @throws ODataJPAModelException,ODataJPARuntimeException
+	 * 
+	 */
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<Object> process(GetEntitySetUriInfo uriParserResultView) throws ODataJPAModelException, ODataJPARuntimeException {
@@ -45,6 +52,14 @@ public class JPAProcessorImpl implements JPAProcessor {
 
 		
 	}
+	
+	/**
+	 * process the read request for an entity
+	 * 
+	 * @return result object
+	 * @throws ODataJPAModelException,ODataJPARuntimeException
+	 * 
+	 */
 
 	@Override
 	public Object process(GetEntityUriInfo uriParserResultView) throws ODataJPAModelException, ODataJPARuntimeException {
