@@ -1,6 +1,7 @@
 package com.sap.core.odata.processor.jpa.access;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -12,9 +13,12 @@ import org.junit.Test;
 import com.sap.core.odata.api.edm.EdmException;
 import com.sap.core.odata.api.edm.EdmFacets;
 import com.sap.core.odata.api.edm.EdmLiteralKind;
+import com.sap.core.odata.api.edm.EdmProperty;
 import com.sap.core.odata.api.edm.EdmSimpleType;
+import com.sap.core.odata.api.edm.EdmSimpleTypeKind;
 import com.sap.core.odata.api.edm.EdmTypeKind;
 import com.sap.core.odata.api.exception.ODataException;
+import com.sap.core.odata.api.uri.KeyPredicate;
 import com.sap.core.odata.api.uri.expression.BinaryExpression;
 import com.sap.core.odata.api.uri.expression.BinaryOperator;
 import com.sap.core.odata.api.uri.expression.CommonExpression;
@@ -245,6 +249,45 @@ public class ODataExpressionParserTest {
 		
 		EasyMock.replay(orderExpression);
 		return orderExpression;
+	}
+	
+	@Test
+	public void testParseKeyPredicates(){
+		//Setting up the expected value
+		KeyPredicate keyPredicate1 = EasyMock
+				.createMock(KeyPredicate.class);
+		EdmProperty kpProperty1 = EasyMock
+				.createMock(EdmProperty.class);
+		EasyMock.expect(keyPredicate1.getLiteral()).andStubReturn("1");
+		KeyPredicate keyPredicate2 = EasyMock
+				.createMock(KeyPredicate.class);
+		EdmProperty kpProperty2 = EasyMock
+				.createMock(EdmProperty.class);
+		EasyMock.expect(keyPredicate2.getLiteral()).andStubReturn("abc");
+		try {
+			EasyMock.expect(kpProperty1.getName()).andStubReturn("field1");
+			EasyMock.expect(kpProperty1.getType()).andStubReturn(EdmSimpleTypeKind.Int32.getEdmSimpleTypeInstance());
+			EasyMock.expect(kpProperty2.getName()).andStubReturn("field2");
+			EasyMock.expect(kpProperty2.getType()).andStubReturn(EdmSimpleTypeKind.String.getEdmSimpleTypeInstance());			
+		} catch (EdmException e2) {
+			fail("this should not happen");
+		}
+		EasyMock.expect(keyPredicate1.getProperty()).andStubReturn(kpProperty1);
+		EasyMock.expect(keyPredicate2.getProperty()).andStubReturn(kpProperty2);
+		EasyMock.replay(kpProperty1,keyPredicate1,kpProperty2,keyPredicate2);
+		
+		ArrayList<KeyPredicate> keyPredicates = new ArrayList<KeyPredicate>();
+		keyPredicates.add(keyPredicate1);
+		keyPredicates.add(keyPredicate2);
+		String str = null;
+		
+		try {
+			str = ODataExpressionParser.parseKeyPredicates(keyPredicates);
+		} catch (ODataJPARuntimeException e) {
+			fail("this should not happen");
+		}
+		
+		assertEquals("gwt1.field1 = 1 AND gwt1.field2 = 'abc'", str);
 	}
 	
 

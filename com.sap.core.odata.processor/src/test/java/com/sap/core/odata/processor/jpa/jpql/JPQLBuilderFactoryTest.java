@@ -4,21 +4,27 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertNull;
 
+import java.util.ArrayList;
+
 import org.easymock.EasyMock;
 import org.junit.Test;
 
 import com.sap.core.odata.api.edm.EdmEntitySet;
 import com.sap.core.odata.api.edm.EdmEntityType;
 import com.sap.core.odata.api.edm.EdmException;
+import com.sap.core.odata.api.edm.EdmProperty;
 import com.sap.core.odata.api.exception.ODataException;
+import com.sap.core.odata.api.uri.KeyPredicate;
 import com.sap.core.odata.api.uri.expression.OrderByExpression;
 import com.sap.core.odata.api.uri.info.GetEntitySetUriInfo;
+import com.sap.core.odata.api.uri.info.GetEntityUriInfo;
 import com.sap.core.odata.processor.jpa.api.jpql.JPQLContext;
 import com.sap.core.odata.processor.jpa.api.jpql.JPQLContext.JPQLContextBuilder;
 import com.sap.core.odata.processor.jpa.api.jpql.JPQLContextType;
 import com.sap.core.odata.processor.jpa.api.jpql.JPQLStatement.JPQLStatementBuilder;
 import com.sap.core.odata.processor.jpa.factory.ODataJPAFactoryImpl;
 import com.sap.core.odata.processor.jpa.jpql.JPQLSelectContextImpl.JPQLSelectContextBuilder;
+import com.sap.core.odata.processor.jpa.jpql.JPQLSelectSingleContextImpl.JPQLSelectSingleContextBuilder;
 
 public class JPQLBuilderFactoryTest {
 	
@@ -33,6 +39,20 @@ public class JPQLBuilderFactoryTest {
 		JPQLStatementBuilder statementBuilder = new ODataJPAFactoryImpl().getJPQLBuilderFactory().getStatementBuilder(selectContext);
 		
 		assertTrue(statementBuilder instanceof JPQLSelectStatementBuilder);
+				
+	}
+	
+	@Test
+	public void testGetStatementBuilderFactoryforSelectSingle() throws ODataException{
+		
+		GetEntityUriInfo getEntityView = getEntityUriInfo();
+		
+		// Build JPQL Context
+		JPQLContext selectContext = JPQLContext.createBuilder(
+				JPQLContextType.SELECT_SINGLE, getEntityView).build();
+		JPQLStatementBuilder statementBuilder = new ODataJPAFactoryImpl().getJPQLBuilderFactory().getStatementBuilder(selectContext);
+		
+		assertTrue(statementBuilder instanceof JPQLSelectSingleStatementBuilder);
 				
 	}
 	
@@ -57,6 +77,17 @@ public class JPQLBuilderFactoryTest {
 		assertTrue(contextBuilder instanceof JPQLSelectContextBuilder);
 				
 	}
+	
+	@Test
+	public void testGetContextBuilderforSelectSingle() throws ODataException{
+				
+		// Build JPQL ContextBuilder
+		JPQLContextBuilder  contextBuilder = new ODataJPAFactoryImpl().getJPQLBuilderFactory().getContextBuilder(JPQLContextType.SELECT_SINGLE);
+				
+		assertNotNull(contextBuilder);
+		assertTrue(contextBuilder instanceof JPQLSelectSingleContextBuilder);
+				
+	}
 
 
 	private GetEntitySetUriInfo getUriInfo() throws EdmException {
@@ -73,5 +104,21 @@ public class JPQLBuilderFactoryTest {
 		EasyMock.replay(edmEntitySet);
 		return getEntitySetView;
 	}
+	
+	private GetEntityUriInfo getEntityUriInfo() throws EdmException {
+		GetEntityUriInfo getEntityView = EasyMock.createMock(GetEntityUriInfo.class);
+		EdmEntitySet edmEntitySet = EasyMock.createMock(EdmEntitySet.class);
+		EdmEntityType edmEntityType = EasyMock.createMock(EdmEntityType.class);
+		EasyMock.expect(edmEntityType.getKeyProperties()).andStubReturn(new ArrayList<EdmProperty>());
+		EasyMock.expect(edmEntityType.getName()).andStubReturn("");
+		EasyMock.expect(edmEntitySet.getEntityType()).andStubReturn(edmEntityType);
+		EasyMock.expect(getEntityView.getSelect()).andStubReturn(null);
+		EasyMock.expect(getEntityView.getTargetEntitySet()).andStubReturn(edmEntitySet);
+		EasyMock.replay(edmEntityType,edmEntitySet);
+		EasyMock.expect(getEntityView.getKeyPredicates()).andStubReturn(new ArrayList<KeyPredicate>());
+		EasyMock.replay(getEntityView);
+		return getEntityView;
+	}
+
 
 }
