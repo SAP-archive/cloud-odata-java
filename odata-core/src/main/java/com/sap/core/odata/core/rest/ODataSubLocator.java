@@ -239,7 +239,7 @@ public final class ODataSubLocator implements ODataLocator {
         if (requestedVersion.isBiggerThan(serviceVersion))
           throw new ODataBadRequestException(ODataBadRequestException.VERSIONERROR.addContent(requestedVersion.toString()));
       } catch (IllegalArgumentException e) {
-        throw new ODataBadRequestException(ODataBadRequestException.PARSEVERSIONERROR.addContent(version));
+        throw new ODataBadRequestException(ODataBadRequestException.PARSEVERSIONERROR.addContent(version), e);
       }
     }
 

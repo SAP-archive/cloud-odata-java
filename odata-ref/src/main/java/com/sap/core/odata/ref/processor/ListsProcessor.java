@@ -191,8 +191,7 @@ public class ListsProcessor extends ODataSingleProcessor {
         data,
         uriInfo.getFilter(),
         uriInfo.getInlineCount(),
-        // uriInfo.getOrderBy(),
-        null,
+        null,  // uriInfo.getOrderBy(),
         uriInfo.getSkipToken(),
         uriInfo.getSkip(),
         uriInfo.getTop());
@@ -277,7 +276,7 @@ public class ListsProcessor extends ODataSingleProcessor {
   }
 
   @Override
-  public ODataResponse createEntity(final PostUriInfo uriInfo, final InputStream content, final String requestContentType, final String contentType) throws ODataException {
+  public ODataResponse createEntity(final PostUriInfo uriInfo, InputStream content, final String requestContentType, final String contentType) throws ODataException {
     final EdmEntitySet entitySet = uriInfo.getTargetEntitySet();
 
     ODataContext context = getContext();
@@ -305,6 +304,11 @@ public class ListsProcessor extends ODataSingleProcessor {
         .status(HttpStatusCodes.CREATED)
         .header(HttpHeaders.LOCATION, context.getPathInfo().getServiceRoot() + "")
         .build();
+  }
+
+  @Override
+  public ODataResponse updateEntity(final PutMergePatchUriInfo uriInfo, InputStream content, final String requestContentType, final boolean merge, final String contentType) throws ODataException {
+    throw new ODataNotImplementedException();
   }
 
   @Override
@@ -372,6 +376,16 @@ public class ListsProcessor extends ODataSingleProcessor {
 
     dataSource.deleteRelation(entitySet, sourceData, navigationSegment.getEntitySet(), keys);
     return ODataResponse.status(HttpStatusCodes.NO_CONTENT).build();
+  }
+
+  @Override
+  public ODataResponse createEntityLink(final PostUriInfo uriInfo, InputStream content, final String requestContentType, final String contentType) throws ODataException {
+    throw new ODataNotImplementedException();
+  }
+
+  @Override
+  public ODataResponse updateEntityLink(final PutMergePatchUriInfo uriInfo, InputStream content, final String requestContentType, final String contentType) throws ODataException {
+    throw new ODataNotImplementedException();
   }
 
   @Override
@@ -461,7 +475,7 @@ public class ListsProcessor extends ODataSingleProcessor {
   }
 
   @Override
-  public ODataResponse updateEntityComplexProperty(final PutMergePatchUriInfo uriInfo, final InputStream content, final String requestContentType, final boolean merge, final String contentType) throws ODataException {
+  public ODataResponse updateEntityComplexProperty(final PutMergePatchUriInfo uriInfo, InputStream content, final String requestContentType, final boolean merge, final String contentType) throws ODataException {
     Object data = retrieveData(
         uriInfo.getStartEntitySet(),
         uriInfo.getKeyPredicates(),
@@ -469,8 +483,8 @@ public class ListsProcessor extends ODataSingleProcessor {
         mapFunctionParameters(uriInfo.getFunctionImportParameters()),
         uriInfo.getNavigationSegments());
 
-    // if (!appliesFilter(data, uriInfo.getFilter()))
-    //   throw new ODataNotFoundException(ODataNotFoundException.ENTITY);
+    if (!appliesFilter(data, uriInfo.getFilter()))
+      throw new ODataNotFoundException(ODataNotFoundException.ENTITY);
 
     final List<EdmProperty> propertyPath = uriInfo.getPropertyPath();
     final EdmProperty property = propertyPath.get(propertyPath.size() - 1);
@@ -497,12 +511,12 @@ public class ListsProcessor extends ODataSingleProcessor {
   }
 
   @Override
-  public ODataResponse updateEntitySimpleProperty(final PutMergePatchUriInfo uriInfo, final InputStream content, final String requestContentType, final String contentType) throws ODataException {
+  public ODataResponse updateEntitySimpleProperty(final PutMergePatchUriInfo uriInfo, InputStream content, final String requestContentType, final String contentType) throws ODataException {
     return updateEntityComplexProperty(uriInfo, content, requestContentType, false, contentType);
   }
 
   @Override
-  public ODataResponse updateEntitySimplePropertyValue(final PutMergePatchUriInfo uriInfo, final InputStream content, final String requestContentType, final String contentType) throws ODataException {
+  public ODataResponse updateEntitySimplePropertyValue(final PutMergePatchUriInfo uriInfo, InputStream content, final String requestContentType, final String contentType) throws ODataException {
     Object data = retrieveData(
         uriInfo.getStartEntitySet(),
         uriInfo.getKeyPredicates(),
@@ -510,8 +524,8 @@ public class ListsProcessor extends ODataSingleProcessor {
         mapFunctionParameters(uriInfo.getFunctionImportParameters()),
         uriInfo.getNavigationSegments());
 
-    // if (!appliesFilter(data, uriInfo.getFilter()))
-    //   throw new ODataNotFoundException(ODataNotFoundException.ENTITY);
+    if (!appliesFilter(data, uriInfo.getFilter()))
+      throw new ODataNotFoundException(ODataNotFoundException.ENTITY);
 
     final List<EdmProperty> propertyPath = uriInfo.getPropertyPath();
     final EdmProperty property = propertyPath.get(propertyPath.size() - 1);
@@ -569,6 +583,30 @@ public class ListsProcessor extends ODataSingleProcessor {
       throw new ODataNotFoundException(ODataNotFoundException.ENTITY);
 
     dataSource.writeBinaryData(uriInfo.getTargetEntitySet(), data, null, null);
+
+    return ODataResponse.status(HttpStatusCodes.NO_CONTENT).build();
+  }
+
+  @Override
+  public ODataResponse updateEntityMedia(final PutMergePatchUriInfo uriInfo, InputStream content, final String requestContentType, final String contentType) throws ODataException {
+    final Object data = retrieveData(
+        uriInfo.getStartEntitySet(),
+        uriInfo.getKeyPredicates(),
+        uriInfo.getFunctionImport(),
+        mapFunctionParameters(uriInfo.getFunctionImportParameters()),
+        uriInfo.getNavigationSegments());
+
+    if (!appliesFilter(data, uriInfo.getFilter()))
+      throw new ODataNotFoundException(ODataNotFoundException.ENTITY);
+
+    ODataContext context = getContext();
+    final int timingHandle = context.startRuntimeMeasurement("EntityProvider", "readBinary");
+
+    final byte[] value = EntityProvider.readBinary(content);
+
+    context.stopRuntimeMeasurement(timingHandle);
+
+    dataSource.writeBinaryData(uriInfo.getTargetEntitySet(), data, value, requestContentType);
 
     return ODataResponse.status(HttpStatusCodes.NO_CONTENT).build();
   }

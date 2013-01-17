@@ -19,8 +19,6 @@ public final class EntityProvider {
 
   public interface ProviderInterface {
 
-    Object readPropertyValue(EdmProperty edmProperty, InputStream content) throws EntityProviderException;
-
     /**
      * Write service document based on given {@link Edm} and <code>service root</code> as
      * content type "<code>application/atomsvc+xml; charset=utf-8</code>".
@@ -61,14 +59,6 @@ public final class EntityProvider {
      */
     ODataResponse writeBinary(String mimeType, byte[] data) throws EntityProviderException;
 
-    ReadEntryResult readEntry(String contentType, EdmEntitySet entitySet, InputStream content) throws EntityProviderException;
-
-    String readLink(String contentType, EdmEntitySet entitySet, InputStream content) throws EntityProviderException;
-
-    Map<String, Object> readProperty(String contentType, EdmProperty edmProperty, InputStream content) throws EntityProviderException;
-
-    List<String> readLinks(String contentType, EdmEntitySet entitySet, InputStream content) throws EntityProviderException;
-
     ODataResponse writeFeed(String contentType, EdmEntitySet entitySet, List<Map<String, Object>> data, EntityProviderProperties properties) throws EntityProviderException;
 
     ODataResponse writeEntry(String contentType, EdmEntitySet entitySet, Map<String, Object> data, EntityProviderProperties properties) throws EntityProviderException;
@@ -80,6 +70,19 @@ public final class EntityProvider {
     ODataResponse writeLinks(String contentType, EdmEntitySet entitySet, List<Map<String, Object>> data, EntityProviderProperties properties) throws EntityProviderException;
 
     ODataResponse writeFunctionImport(String contentType, EdmFunctionImport functionImport, Object data, EntityProviderProperties properties) throws EntityProviderException;
+
+    
+    ReadEntryResult readEntry(String contentType, EdmEntitySet entitySet, InputStream content) throws EntityProviderException;
+
+    Map<String, Object> readProperty(String contentType, EdmProperty edmProperty, InputStream content) throws EntityProviderException;
+
+    Object readPropertyValue(EdmProperty edmProperty, InputStream content) throws EntityProviderException;
+
+    List<String> readLinks(String contentType, EdmEntitySet entitySet, InputStream content) throws EntityProviderException;
+
+    String readLink(String contentType, EdmEntitySet entitySet, InputStream content) throws EntityProviderException;
+
+    byte[] readBinary(InputStream content) throws EntityProviderException;
   }
 
   
@@ -87,27 +90,6 @@ public final class EntityProvider {
     return RuntimeDelegate.createProviderFacade();
   }  
 
-  public static Object readPropertyValue(EdmProperty edmProperty, InputStream content) throws EntityProviderException {
-    return createBasic().readPropertyValue(edmProperty, content);
-  }
-
-  public static ReadEntryResult readEntry(String contentType, EdmEntitySet entitySet, InputStream content) throws EntityProviderException{
-    return createBasic().readEntry(contentType, entitySet, content);
-  };
-
-  public static String readLink(String contentType, EdmEntitySet entitySet, InputStream content) throws EntityProviderException {
-    return createBasic().readLink(contentType, entitySet, content);
-  }
-
-  public static Map<String, Object> readProperty(String contentType, EdmProperty edmProperty, InputStream content) throws EntityProviderException{
-    return createBasic().readProperty(contentType, edmProperty, content);
-  };
-
-  public static List<String> readLinks(String contentType, EdmEntitySet entitySet, InputStream content) throws EntityProviderException{
-    return createBasic().readLinks(contentType, entitySet, content);
-  };
-
-  
   /**
    * Write service document based on given {@link Edm} and <code>service root</code> as
    * content type "<code>application/atomsvc+xml; charset=utf-8</code>".
@@ -179,4 +161,28 @@ public final class EntityProvider {
   public static ODataResponse writeFunctionImport(String contentType, EdmFunctionImport functionImport, Object data, EntityProviderProperties properties) throws EntityProviderException{
     return createBasic().writeFunctionImport(contentType, functionImport, data, properties);
   };
+
+  public static ReadEntryResult readEntry(String contentType, EdmEntitySet entitySet, InputStream content) throws EntityProviderException{
+    return createBasic().readEntry(contentType, entitySet, content);
+  };
+
+  public static Map<String, Object> readProperty(String contentType, EdmProperty edmProperty, InputStream content) throws EntityProviderException{
+    return createBasic().readProperty(contentType, edmProperty, content);
+  };
+
+  public static Object readPropertyValue(EdmProperty edmProperty, InputStream content) throws EntityProviderException {
+    return createBasic().readPropertyValue(edmProperty, content);
+  }
+
+  public static List<String> readLinks(String contentType, EdmEntitySet entitySet, InputStream content) throws EntityProviderException{
+    return createBasic().readLinks(contentType, entitySet, content);
+  };
+
+  public static String readLink(String contentType, EdmEntitySet entitySet, InputStream content) throws EntityProviderException {
+    return createBasic().readLink(contentType, entitySet, content);
+  }
+
+  public static byte[] readBinary(InputStream content) throws EntityProviderException {
+    return createBasic().readBinary(content);
+  }
 }
