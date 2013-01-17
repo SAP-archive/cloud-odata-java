@@ -14,7 +14,7 @@ import com.sap.core.odata.api.edm.EdmException;
 import com.sap.core.odata.api.edm.EdmProperty;
 import com.sap.core.odata.api.edm.EdmSimpleType;
 import com.sap.core.odata.api.uri.expression.ExpressionKind;
-import com.sap.core.odata.api.uri.expression.FilterParserException;
+import com.sap.core.odata.api.uri.expression.ExpressionParserException;
 import com.sap.core.odata.api.uri.expression.SortOrder;
 import com.sap.core.odata.core.edm.Bit;
 import com.sap.core.odata.core.edm.EdmBinary;
@@ -47,6 +47,7 @@ public class TestParser extends TestBase
   @Test
   public void testOrderBy()
   {
+ 
     GetPTO("sven").aSerialized("{oc({o(sven, asc)})}");
     GetPTO("sven asc").aSerialized("{oc({o(sven, asc)})}");
     GetPTO("sven desc").aSerialized("{oc({o(sven, desc)})}");
@@ -416,26 +417,26 @@ public class TestParser extends TestBase
 
   }
 
-  FilterParserException GetException()
+  ExpressionParserException GetException()
   {
-    FilterParserException ex = new FilterParserException(FilterParserException.COMMON_ERROR);
+    ExpressionParserException ex = new ExpressionParserException(ExpressionParserException.COMMON_ERROR);
     List<StackTraceElement> stack = new ArrayList<StackTraceElement>(Arrays.asList(ex.getStackTrace()));
     stack.remove(0);
     ex.setStackTrace(stack.toArray(new StackTraceElement[stack.size()]));
     return ex;
   }
 
-  void LevelB() throws FilterParserException
+  void LevelB() throws ExpressionParserException
   {
-    FilterParserException ex = GetException();
+    ExpressionParserException ex = GetException();
     throw ex;
   }
 
-  void LevelA() throws FilterParserException
+  void LevelA() throws ExpressionParserException
   {
     try {
       LevelB();
-    } catch (FilterParserException e) {
+    } catch (ExpressionParserException e) {
       e.printStackTrace();
       throw e;
       //throw new ExceptionParseExpression(ExceptionParseExpression.COMMON);
@@ -447,7 +448,7 @@ public class TestParser extends TestBase
   {
     try {
       LevelA();
-    } catch (FilterParserException e) {
+    } catch (ExpressionParserException e) {
       e.printStackTrace();
     }
   }

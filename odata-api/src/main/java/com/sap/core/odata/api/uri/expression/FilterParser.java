@@ -14,10 +14,10 @@ public interface FilterParser
    *   The $filter expression string ( for example "city eq 'Sydney'" ) to be parsed
    * @return
    *   Expression tree which can be traversed with help of the interfaces {@link ExpressionVisitor} and {@link Visitable}
-   * @throws FilterParserException
+   * @throws ExpressionParserException
    *   Exception thrown due to errors while parsing the $filter expression string 
    * @throws ODataMessageException
    *   Used for extensibility   
    **/
-  abstract FilterExpression parseFilterString(String expression) throws FilterParserException, ODataMessageException;
+  FilterExpression parseFilterString(String expression) throws ExpressionParserException, ODataMessageException;
 }

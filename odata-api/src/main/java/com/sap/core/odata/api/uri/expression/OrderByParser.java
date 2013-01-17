@@ -19,5 +19,5 @@ public interface OrderByParser
    * @throws ODataMessageException
    *   Used for extensibility
    */
-  abstract OrderByExpression parseOrderByString(String orderByExpression) throws OrderByParserException, ODataMessageException;
+  abstract OrderByExpression parseOrderByString(String orderByExpression) throws ExpressionParserException, ODataMessageException;
 }

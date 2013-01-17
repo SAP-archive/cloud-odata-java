@@ -2,7 +2,6 @@ package com.sap.core.odata.core.uri.expression;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Vector;
 
 import com.sap.core.odata.api.edm.EdmType;
 import com.sap.core.odata.api.exception.ODataApplicationException;
@@ -65,7 +64,7 @@ public class OrderByExpressionImpl implements OrderByExpression {
   @Override
   public Object accept(ExpressionVisitor visitor) throws ExceptionVisitExpression, ODataApplicationException
   {
-    Vector<Object> retParameters = new Vector<Object>();
+    ArrayList<Object> retParameters = new ArrayList<Object>();
     for (OrderExpression order : orders)
     {
       Object retParameter = order.accept(visitor);

@@ -10,7 +10,9 @@ public interface ParameterSetCombination {
 
   void add(ParameterSet parameterSet);
 
-  EdmType validate(List<EdmType> actualParameterTypes) throws FilterParserInternalError;
+  EdmType validate(List<EdmType> actualParameterTypes) throws ExpressionParserInternalError;
+  
+  void addFirst(ParameterSet parameterSet);
 
   public static class PSCflex implements ParameterSetCombination
   {
@@ -20,9 +22,22 @@ public interface ParameterSetCombination {
     public void add(ParameterSet parameterSet) {
       combinations.add(parameterSet);
     }
+    
+
+    public void addFirst(ParameterSet parameterSet)
+    {
+      List<ParameterSet> oldCombinations = combinations;
+      combinations = new ArrayList<ParameterSet>();
+      combinations.add(parameterSet);
+      for (ParameterSet parameterSet1 :oldCombinations)
+      {
+        combinations.add(parameterSet1);
+      }
+      
+    }
 
     @Override
-    public EdmSimpleType validate(List<EdmType> actualParameterTypes) throws FilterParserInternalError
+    public EdmSimpleType validate(List<EdmType> actualParameterTypes) throws ExpressionParserInternalError
     {
       //first check for exact parameter combination
       for (ParameterSet parameterSet : combinations)
@@ -48,14 +63,25 @@ public interface ParameterSetCombination {
 
     @Override
     public void add(ParameterSet parameterSet) {
-      return;
+      throw new IllegalStateException (); 
     }
-
+    
     @Override
-    public EdmType validate(List<EdmType> actualParameterTypes) throws FilterParserInternalError {
+    public void addFirst(ParameterSet parameterSet) {
+      throw new IllegalStateException ();
+    }
+    
+    @Override
+    public EdmType validate(List<EdmType> actualParameterTypes) throws ExpressionParserInternalError {
       //TODO add check 
       return actualParameterTypes.get(actualParameterTypes.size() - 1);
     }
   }
+
+  
+
+   
+
+  
 
 }

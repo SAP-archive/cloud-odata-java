@@ -1,7 +1,7 @@
 package com.sap.core.odata.core.uri.expression;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Vector;
 
 import com.sap.core.odata.api.edm.EdmSimpleType;
 import com.sap.core.odata.api.edm.EdmType;
@@ -17,7 +17,7 @@ import com.sap.core.odata.api.edm.EdmType;
 class ParameterSet
 {
   private EdmSimpleType returnType = null;
-  public Vector<EdmSimpleType> types = new Vector<EdmSimpleType>();
+  public ArrayList<EdmSimpleType> types = new ArrayList<EdmSimpleType>();
   private EdmSimpleType furtherType = null;
 
   public ParameterSet(EdmSimpleType returnType, EdmSimpleType type1)
@@ -65,9 +65,9 @@ class ParameterSet
    * @param actualParameterTypes
    * @param allowPromotion
    * @return
-   * @throws FilterParserInternalError
+   * @throws ExpressionParserInternalError
    */
-  public boolean equals(List<EdmType> actualParameterTypes, boolean allowPromotion) throws FilterParserInternalError
+  public boolean equals(List<EdmType> actualParameterTypes, boolean allowPromotion) throws ExpressionParserInternalError
   {
     int actSize = actualParameterTypes.size();
     int paramSize = types.size();

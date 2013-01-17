@@ -9,7 +9,7 @@ import com.sap.core.odata.api.exception.ODataMessageException;
 /**
  * This exception is thrown if there is an error during tokenizing.<br>
  * <b>This exception in not in the public API</b>, but may be added as cause for
- * the {@link com.sap.core.odata.api.uri.expression.FilterParserException} exception.  
+ * the {@link com.sap.core.odata.api.uri.expression.ExpressionParserException} exception.  
  * @author SAP AG
  */
 public class TokenizerException extends ODataMessageException

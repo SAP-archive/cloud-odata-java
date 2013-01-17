@@ -35,12 +35,13 @@ import com.sap.core.odata.api.uri.UriInfo;
 import com.sap.core.odata.api.uri.UriNotMatchingException;
 import com.sap.core.odata.api.uri.UriParser;
 import com.sap.core.odata.api.uri.UriSyntaxException;
-import com.sap.core.odata.api.uri.expression.FilterParserException;
-import com.sap.core.odata.api.uri.expression.OrderByParserException;
+import com.sap.core.odata.api.uri.expression.ExpressionParserException;
+import com.sap.core.odata.api.uri.expression.FilterExpression;
+import com.sap.core.odata.api.uri.expression.OrderByExpression;
 import com.sap.core.odata.core.edm.EdmSimpleTypeFacadeImpl;
 import com.sap.core.odata.core.exception.ODataRuntimeException;
+import com.sap.core.odata.core.uri.expression.ExpressionParserInternalError;
 import com.sap.core.odata.core.uri.expression.FilterParserImpl;
-import com.sap.core.odata.core.uri.expression.FilterParserInternalError;
 import com.sap.core.odata.core.uri.expression.OrderByParserImpl;
 
 /**
@@ -516,9 +517,9 @@ public class UriParserImpl extends UriParser {
       if (uriResult.getTargetType() instanceof EdmEntityType) //TODO improve with correct error 
         uriResult.setFilter(new FilterParserImpl(edm, (EdmEntityType) uriResult.getTargetType()).parseFilterString(filter));
 
-    } catch (FilterParserException e) {
+    } catch (ExpressionParserException e) {
       throw new UriSyntaxException(UriSyntaxException.INVALIDFILTEREXPRESSION.addContent(filter), e);
-    } catch (FilterParserInternalError e) {
+    } catch (ExpressionParserInternalError e) {
       throw new UriSyntaxException(UriSyntaxException.INVALIDFILTEREXPRESSION.addContent(filter), e);
     }
   }
@@ -527,7 +528,7 @@ public class UriParserImpl extends UriParser {
     try {
       if (uriResult.getTargetType() instanceof EdmEntityType) //TODO improve with correct error
         uriResult.setOrderBy(new OrderByParserImpl(edm, (EdmEntityType) uriResult.getTargetType()).parseOrderByString(orderBy));
-    } catch (OrderByParserException e) {
+    } catch (ExpressionParserException e) {
       throw new UriSyntaxException(UriSyntaxException.INVALIDORDERBYEXPRESSION.addContent(orderBy), e);
     } catch (ODataMessageException e) {
       throw new UriSyntaxException(UriSyntaxException.INVALIDORDERBYEXPRESSION.addContent(orderBy), e);
@@ -724,5 +725,15 @@ public class UriParserImpl extends UriParser {
       copy.add(segment.getPath());
 
     return copy;
+  }
+
+  @Override
+  public FilterExpression parseFilterString(EdmEntityType edmType, String expression) throws ExpressionParserException, ODataMessageException {
+      return new FilterParserImpl(edm, edmType).parseFilterString(expression);
+  }
+
+  @Override
+  public OrderByExpression parseOrderByString(EdmEntityType edmType, String expression) throws ExpressionParserException, ODataMessageException {
+    return new OrderByParserImpl(edm, edmType).parseOrderByString(expression);
   }
 }

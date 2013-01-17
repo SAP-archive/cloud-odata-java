@@ -10,7 +10,7 @@ import com.sap.core.odata.api.exception.ODataMessageException;
  * in the {@link Tokenizer} or inside the {@link FilterParserImpl}.
  * <br><br>
  * <b>This exception in not in the public API</b>, but may be added as cause for
- * the {@link FilterParserInternalError} exception. 
+ * the {@link ExpressionParserInternalError} exception. 
  * @author SAP AG
   */
 public class TokenizerExpectError extends ODataMessageException {

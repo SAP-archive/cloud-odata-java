@@ -41,7 +41,7 @@ class InfoBinaryOperator
     return priority;
   }
 
-  public EdmType validateParameterSet(List<EdmType> actualParameterTypes) throws FilterParserInternalError {
+  public EdmType validateParameterSet(List<EdmType> actualParameterTypes) throws ExpressionParserInternalError {
     return combination.validate(actualParameterTypes);
   }
 

@@ -1,6 +1,7 @@
 package com.sap.core.odata.core.uri.expression;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -11,6 +12,7 @@ import com.sap.core.odata.api.edm.EdmEntityType;
 import com.sap.core.odata.api.edm.EdmException;
 import com.sap.core.odata.api.edm.EdmSimpleType;
 import com.sap.core.odata.api.edm.EdmSimpleTypeKind;
+import com.sap.core.odata.api.edm.EdmStructuralType;
 import com.sap.core.odata.api.edm.EdmType;
 import com.sap.core.odata.api.edm.EdmTyped;
 import com.sap.core.odata.api.uri.expression.BinaryExpression;
@@ -19,7 +21,7 @@ import com.sap.core.odata.api.uri.expression.CommonExpression;
 import com.sap.core.odata.api.uri.expression.ExpressionKind;
 import com.sap.core.odata.api.uri.expression.FilterExpression;
 import com.sap.core.odata.api.uri.expression.FilterParser;
-import com.sap.core.odata.api.uri.expression.FilterParserException;
+import com.sap.core.odata.api.uri.expression.ExpressionParserException;
 import com.sap.core.odata.api.uri.expression.LiteralExpression;
 import com.sap.core.odata.api.uri.expression.MethodExpression;
 import com.sap.core.odata.api.uri.expression.MethodOperator;
@@ -62,7 +64,7 @@ public class FilterParserImpl implements FilterParser
   
 
   @Override
-  public FilterExpression parseFilterString(String filterExpression) throws FilterParserException, FilterParserInternalError
+  public FilterExpression parseFilterString(String filterExpression) throws ExpressionParserException, ExpressionParserInternalError
   {
     CommonExpression node = null;
     curExpression = filterExpression;
@@ -84,11 +86,12 @@ public class FilterParserImpl implements FilterParser
     {
       CommonExpression nodeLeft = readElement(null);
       node = readElements(nodeLeft, 0);
-    } catch (FilterParserException filterParserException)
+    } catch (ExpressionParserException filterParserException)
     {
       // Add empty filterTree to Exception
       // Tested for original throw point
-      throw filterParserException.setFilterTree(new FilterExpressionImpl(filterExpression));
+      filterParserException.setFilterTree(new FilterExpressionImpl(filterExpression));
+      throw filterParserException;
     }
 
     // Post check
@@ -102,7 +105,7 @@ public class FilterParserImpl implements FilterParser
     return new FilterExpressionImpl(filterExpression, node);
   }
 
-  protected CommonExpression readElements(CommonExpression leftExpression, int priority) throws FilterParserException, FilterParserInternalError
+  protected CommonExpression readElements(CommonExpression leftExpression, int priority) throws ExpressionParserException, ExpressionParserInternalError
   {
     CommonExpression leftNode = leftExpression;
     CommonExpression rightNode;
@@ -139,11 +142,12 @@ public class FilterParserImpl implements FilterParser
       try
       {
         validateBinaryOperator(binaryNode);
-      } catch (FilterParserException expressionException)
+      } catch (ExpressionParserException expressionException)
       {
         // Extend the error information
         // Tested for original throw point
-        throw expressionException.setFilterTree(binaryNode);
+        expressionException.setFilterTree(binaryNode);
+        throw expressionException;
       }
 
       leftNode = binaryNode;
@@ -157,12 +161,12 @@ public class FilterParserImpl implements FilterParser
    * Reads the content between parenthesis. Its is expected that the current token is of kind {@link TokenKind#OPENPAREN}
    * because it MUST be check in the calling method ( when read the method name and the '(' is read).  
    * @return An expression which reflects the content within the parenthesis
-   * @throws FilterParserException
+   * @throws ExpressionParserException
    *   While reading the elements in the parenthesis an error occurred
    * @throws TokenizerMessage 
    *   The next token did not match the expected token
    */
-  protected CommonExpression readParenthesis() throws FilterParserException, FilterParserInternalError
+  protected CommonExpression readParenthesis() throws ExpressionParserException, ExpressionParserInternalError
   {
     // The existing of a '(' is verified BEFORE this method is called --> so it's a internal error
     Token openParenthesis = tokenList.expectToken(TokenKind.OPENPAREN, true);
@@ -190,12 +194,12 @@ public class FilterParserImpl implements FilterParser
    *   Method expression to which the read parameters are added 
    * @return
    *   The method expression input parameter 
-   * @throws FilterParserException
-   * @throws FilterParserInternalError 
+   * @throws ExpressionParserException
+   * @throws ExpressionParserInternalError 
    * @throws TokenizerExpectError 
    *   The next token did not match the expected token
    */
-  protected MethodExpression readParameters(InfoMethod methodInfo, MethodExpressionImpl methodExpression, Token methodToken) throws FilterParserException, FilterParserInternalError
+  protected MethodExpression readParameters(InfoMethod methodInfo, MethodExpressionImpl methodExpression, Token methodToken) throws ExpressionParserException, ExpressionParserInternalError
   {
     CommonExpression expression;
     boolean expectAnotherExpression = false;
@@ -207,7 +211,7 @@ public class FilterParserImpl implements FilterParser
     if (token == null)
     {
       //Tested with TestParserExceptions.TestPMreadParameters CASE 1 e.g. "$filter=concat("
-      throw FilterParserExceptionImpl.createEXPRESSION_EXPECTED_AFTER_POS(openParenthesis);
+      throw FilterParserExceptionImpl.createEXPRESSION_EXPECTED_AFTER_POS(openParenthesis, curExpression);
     }
 
     while (token.getKind() != TokenKind.CLOSEPAREN)
@@ -218,7 +222,7 @@ public class FilterParserImpl implements FilterParser
       if ((expression == null) && (expectAnotherExpression == true))
       {
         //Tested with TestParserExceptions.TestPMreadParameters CASE 4 e.g. "$filter=concat(,"
-        throw FilterParserExceptionImpl.createEXPRESSION_EXPECTED_AFTER_POS(token);
+        throw FilterParserExceptionImpl.createEXPRESSION_EXPECTED_AFTER_POS(token, curExpression);
       }
       else if (expression != null) //parameter list may be empty
       {
@@ -254,19 +258,19 @@ public class FilterParserImpl implements FilterParser
     if ((methodInfo.getMinParameter() > -1) && (count < methodInfo.getMinParameter()))
     {
       //Tested with TestParserExceptions.TestPMreadParameters CASE 12
-      throw FilterParserExceptionImpl.createMETHOD_WRONG_ARG_COUNT(curExpression, methodExpression, methodToken);
+      throw FilterParserExceptionImpl.createMETHOD_WRONG_ARG_COUNT( methodExpression, methodToken,curExpression);
     }
 
     if ((methodInfo.getMaxParameter() > -1) && (count > methodInfo.getMaxParameter()))
     {
       //Tested with TestParserExceptions.TestPMreadParameters CASE 15
-      throw FilterParserExceptionImpl.createMETHOD_WRONG_ARG_COUNT(curExpression, methodExpression, methodToken);
+      throw FilterParserExceptionImpl.createMETHOD_WRONG_ARG_COUNT( methodExpression, methodToken,curExpression);
     }
 
     return methodExpression;
   }
 
-  protected CommonExpression readElement(CommonExpression leftExpression) throws FilterParserException, FilterParserInternalError
+  protected CommonExpression readElement(CommonExpression leftExpression) throws ExpressionParserException, ExpressionParserInternalError
   {
     return readElement(leftExpression, null);
   }
@@ -278,11 +282,11 @@ public class FilterParserImpl implements FilterParser
    *   Used while parsing properties. In this case ( e.g. parsing "a/b") the property "a" ( as leftExpression of "/") is relevant 
    *   to verify whether the property "b" exists inside the edm
    * @return
-   * @throws FilterParserException
-   * @throws FilterParserInternalError 
+   * @throws ExpressionParserException
+   * @throws ExpressionParserInternalError 
    * @throws TokenizerMessage 
    */
-  protected CommonExpression readElement(CommonExpression leftExpression, ActualBinaryOperator leftOperator) throws FilterParserException, FilterParserInternalError
+  protected CommonExpression readElement(CommonExpression leftExpression, ActualBinaryOperator leftOperator) throws ExpressionParserException, ExpressionParserInternalError
   {
     CommonExpression node = null;
     Token token;
@@ -338,10 +342,10 @@ public class FilterParserImpl implements FilterParser
     }
 
     // not Tested, should not occur 
-    throw FilterParserInternalError.createCOMMON();
+    throw ExpressionParserInternalError.createCOMMON();
   }
 
-  protected CommonExpression readUnaryoperator(Token lookToken, InfoUnaryOperator unaryOperator) throws FilterParserException, FilterParserInternalError
+  protected CommonExpression readUnaryoperator(Token lookToken, InfoUnaryOperator unaryOperator) throws ExpressionParserException, ExpressionParserInternalError
   {
     tokenList.expectToken(lookToken.getUriLiteral(), true);
 
@@ -352,7 +356,7 @@ public class FilterParserImpl implements FilterParser
     return unaryExpression;
   }
 
-  protected CommonExpression readMethod(Token token, InfoMethod methodOperator) throws FilterParserException, FilterParserInternalError
+  protected CommonExpression readMethod(Token token, InfoMethod methodOperator) throws ExpressionParserException, ExpressionParserInternalError
   {
     MethodExpressionImpl method = new MethodExpressionImpl(methodOperator);
 
@@ -413,7 +417,7 @@ public class FilterParserImpl implements FilterParser
 
 
 
-  protected void validateEdmProperty(CommonExpression leftExpression, PropertyExpressionImpl property, Token propertyToken, ActualBinaryOperator actBinOp) throws FilterParserException, FilterParserInternalError {
+  protected void validateEdmProperty(CommonExpression leftExpression, PropertyExpressionImpl property, Token propertyToken, ActualBinaryOperator actBinOp) throws ExpressionParserException, ExpressionParserInternalError {
 
     // Exist if no edm provided
     if ((this.edm == null) || (this.resourceEntityType == null))
@@ -422,7 +426,7 @@ public class FilterParserImpl implements FilterParser
     if (leftExpression == null)
     {
       //e.g. "$filter=city eq 'Hong Kong'" --> "city" is checked against the resource entity type of the last URL segment 
-      validateEdmPropertyOfEntityType(this.resourceEntityType, property, propertyToken);
+      validateEdmPropertyOfStructuredType( this.resourceEntityType, property, propertyToken);
       return;
     }
     //e.g. "$filter='Hong Kong' eq address/city" --> city is "checked" against the type of the property "address".
@@ -432,7 +436,7 @@ public class FilterParserImpl implements FilterParser
 
     if ((actBinOp != null) && (actBinOp.operator.getOperator() != BinaryOperator.PROPERTY_ACCESS))
     {
-      validateEdmPropertyOfEntityType(this.resourceEntityType, property, propertyToken);
+      validateEdmPropertyOfStructuredType( this.resourceEntityType, property, propertyToken);
       return;
     }
     else
@@ -444,7 +448,7 @@ public class FilterParserImpl implements FilterParser
           throw FilterParserExceptionImpl.createLEFT_SIDE_NOT_A_PROPERTY(actBinOp.token, curExpression);
         else
           // not Tested, should not occur 
-          throw FilterParserInternalError.createCOMMON();
+          throw ExpressionParserInternalError.createCOMMON();
         
       }
     }
@@ -452,12 +456,12 @@ public class FilterParserImpl implements FilterParser
     if (parentType instanceof EdmEntityType)
     {
       //e.g. "$filter='Hong Kong' eq navigationProp/city" --> "navigationProp" is a navigation property with a entity type
-      validateEdmPropertyOfEntityType((EdmEntityType) parentType, property, propertyToken);
+      validateEdmPropertyOfStructuredType( (EdmStructuralType)parentType, property, propertyToken);
     }
     else if (parentType instanceof EdmComplexType)
     {
       //e.g. "$filter='Hong Kong' eq address/city" --> "address" is a property with a complex type 
-      validateEdmPropertyOfComplexType((EdmComplexType) parentType, property, propertyToken);
+      validateEdmPropertyOfStructuredType( (EdmStructuralType)parentType, property, propertyToken);
     }
     else
     {
@@ -468,8 +472,31 @@ public class FilterParserImpl implements FilterParser
 
     return;
   }
+  
+  protected void validateEdmPropertyOfStructuredType(EdmStructuralType parentType, PropertyExpressionImpl property, Token propertyToken) throws ExpressionParserException, ExpressionParserInternalError
+  {
+    try {
+      String propertyName = property.getUriLiteral();
+      EdmTyped edmProperty = parentType.getProperty(propertyName);
 
-  protected void validateEdmPropertyOfComplexType(EdmComplexType parentType, PropertyExpressionImpl property, Token propertyToken) throws FilterParserException, FilterParserInternalError
+      if (edmProperty != null)
+      {
+        property.setEdmProperty(edmProperty);
+        property.setEdmType(edmProperty.getType());
+      }
+      else
+      {
+        //Tested with TestParserExceptions.TestPMvalidateEdmProperty CASE 3
+        throw FilterParserExceptionImpl.createPROPERTY_NAME_NOT_FOUND_IN_TYPE(parentType, property, propertyToken, curExpression);
+      }
+
+    } catch (EdmException e) {
+      // not Tested, should not occur
+      throw ExpressionParserInternalError.createERROR_ACCESSING_EDM(e);
+    }
+  }
+/*
+  protected void validateEdmPropertyOfComplexType1(EdmComplexType parentType, PropertyExpressionImpl property, Token propertyToken) throws FilterParserException, FilterParserInternalError
   {
     try {
       String propertyName = property.getUriLiteral();
@@ -492,7 +519,7 @@ public class FilterParserImpl implements FilterParser
     }
   }
 
-  protected void validateEdmPropertyOfEntityType(EdmEntityType parentType, PropertyExpressionImpl property, Token propertyToken) throws FilterParserException, FilterParserInternalError
+  protected void validateEdmPropertyOfEntityType1(EdmEntityType parentType, PropertyExpressionImpl property, Token propertyToken) throws FilterParserException, FilterParserInternalError
   {
     try {
       String propertyName = property.getUriLiteral();
@@ -513,9 +540,9 @@ public class FilterParserImpl implements FilterParser
       // not Tested, should not occur
       throw FilterParserInternalError.createERROR_ACCESSING_EDM(e);
     }
-  }
+  }*/
 
-  protected void validateUnaryOperator(UnaryExpression unaryExpression) throws FilterParserInternalError
+  protected void validateUnaryOperator(UnaryExpression unaryExpression) throws ExpressionParserInternalError
   {
     InfoUnaryOperator unOpt = availableUnaryOperators.get(unaryExpression.getOperator().toUriLiteral());
 
@@ -528,7 +555,7 @@ public class FilterParserImpl implements FilterParser
 
   }
 
-  protected void validateBinaryOperator(BinaryExpression binaryExpression) throws FilterParserException, FilterParserInternalError
+  protected void validateBinaryOperator(BinaryExpression binaryExpression) throws ExpressionParserException, ExpressionParserInternalError
   {
     InfoBinaryOperator binOpt = availableBinaryOperators.get(binaryExpression.getOperator().toUriLiteral());
 
@@ -549,10 +576,10 @@ public class FilterParserImpl implements FilterParser
 
       // Tested with TestParserExceptions.TestPMvalidateBinaryOperator
       throw FilterParserExceptionImpl.createINVALID_TYPES_FOR_BINARY_OPERATOR(
-          binaryExpressionImpl.getToken().getPosition(), curExpression,
           binaryExpression.getOperator(),
           binaryExpression.getLeftOperand().getEdmType(),
-          binaryExpression.getLeftOperand().getEdmType()
+          binaryExpression.getRightOperand().getEdmType(),
+          binaryExpressionImpl.getToken(),curExpression
           );
 
     }
@@ -560,7 +587,7 @@ public class FilterParserImpl implements FilterParser
     binaryExpression.setEdmType(edmType);
   }
 
-  protected void validateMethodTypes(MethodExpression methodExpression) throws FilterParserInternalError
+  protected void validateMethodTypes(MethodExpression methodExpression) throws ExpressionParserInternalError
   {
     InfoMethod methOpt = availableMethods.get(methodExpression.getMethod().toUriLiteral());
 
@@ -574,54 +601,13 @@ public class FilterParserImpl implements FilterParser
     EdmType edmType = methOpt.validateParameterSet(actualParameterTypes);
     methodExpression.setEdmType(edmType);
   }
-  public void addTestfunctions()
-  {
-    ParameterSetCombination combination = null;
-    //create type helpers
 
-    EdmSimpleType string = EdmSimpleTypeFacadeImpl.getEdmSimpleType(EdmSimpleTypeKind.String);
-
-    //TESTING
-    combination = new ParameterSetCombination.PSCflex();
-    combination.add(new ParameterSet(string, string, string).setFurtherType(string));
-    availableMethods.put("testingMINMAX1", new InfoMethod(MethodOperator.CONCAT, "testingMINMAX1", -1, -1, combination));
-
-    //TESTING
-    combination = new ParameterSetCombination.PSCflex();
-    combination.add(new ParameterSet(string, string, string).setFurtherType(string));
-    availableMethods.put("testingMINMAX2", new InfoMethod(MethodOperator.CONCAT, "testingMINMAX2", 0, -1, combination));
-
-    //TESTING
-    combination = new ParameterSetCombination.PSCflex();
-    combination.add(new ParameterSet(string, string, string).setFurtherType(string));
-    availableMethods.put("testingMINMAX3", new InfoMethod(MethodOperator.CONCAT, "testingMINMAX3", 2, -1, combination));
-
-    //TESTING
-    combination = new ParameterSetCombination.PSCflex();
-    combination.add(new ParameterSet(string, string, string).setFurtherType(string));
-    availableMethods.put("testingMINMAX4", new InfoMethod(MethodOperator.CONCAT, "testingMINMAX4", -1, 0, combination));
-
-    //TESTING
-    combination = new ParameterSetCombination.PSCflex();
-    combination.add(new ParameterSet(string, string, string).setFurtherType(string));
-    availableMethods.put("testingMINMAX5", new InfoMethod(MethodOperator.CONCAT, "testingMINMAX5", -1, 2, combination));
-
-    //TESTING
-    combination = new ParameterSetCombination.PSCflex();
-    combination.add(new ParameterSet(string, string, string).setFurtherType(string));
-    availableMethods.put("testingMINMAX6", new InfoMethod(MethodOperator.CONCAT, "testingMINMAX6", 1, 2, combination));
-
-    //TESTING
-    combination = new ParameterSetCombination.PSCflex();
-    combination.add(new ParameterSet(string, string, string).setFurtherType(string));
-    availableMethods.put("testingMINMAX7", new InfoMethod(MethodOperator.CONCAT, "testingMINMAX7", 1, 1, combination));
-  }
   
   static void initAvialTables()
   {
-    availableBinaryOperators = new HashMap<String, InfoBinaryOperator>();
-    availableMethods = new HashMap<String, InfoMethod>();
-    availableUnaryOperators = new HashMap<String, InfoUnaryOperator>();
+    Map<String, InfoBinaryOperator> lAvailableBinaryOperators = new HashMap<String, InfoBinaryOperator>();
+    Map<String, InfoMethod> lAvailableMethods = new HashMap<String, InfoMethod>();
+    Map<String, InfoUnaryOperator> lAvailableUnaryOperators = new HashMap<String, InfoUnaryOperator>();
 
     //create type validators
     //InputTypeValidator typeValidatorPromotion = new InputTypeValidator.TypePromotionValidator();
@@ -644,7 +630,7 @@ public class FilterParserImpl implements FilterParser
     EdmSimpleType binary = EdmSimpleTypeFacadeImpl.getEdmSimpleType(EdmSimpleTypeKind.Binary);
 
     //---Memeber member access---
-    availableBinaryOperators.put("/",
+    lAvailableBinaryOperators.put("/",
         new InfoBinaryOperator(BinaryOperator.PROPERTY_ACCESS, "Primary", "/", 100, new ParameterSetCombination.PSCReturnTypeEqLastParameter()));//todo fix this
 
     //---Multiplicative---
@@ -659,11 +645,11 @@ public class FilterParserImpl implements FilterParser
 
     combination.add(new ParameterSet(decimal, decimal, decimal));
 
-    availableBinaryOperators.put(CharConst.GC_OPERATOR_MUL,
+    lAvailableBinaryOperators.put(CharConst.GC_OPERATOR_MUL,
         new InfoBinaryOperator(BinaryOperator.MUL, "Multiplicative", CharConst.GC_OPERATOR_MUL, 60, combination));
-    availableBinaryOperators.put(CharConst.GC_OPERATOR_DIV,
+    lAvailableBinaryOperators.put(CharConst.GC_OPERATOR_DIV,
         new InfoBinaryOperator(BinaryOperator.DIV, "Multiplicative", CharConst.GC_OPERATOR_DIV, 60, combination));
-    availableBinaryOperators.put(CharConst.GC_OPERATOR_MOD,
+    lAvailableBinaryOperators.put(CharConst.GC_OPERATOR_MOD,
         new InfoBinaryOperator(BinaryOperator.MODULO, "Multiplicative", CharConst.GC_OPERATOR_MOD, 60, combination));
 
     //---Additive---
@@ -677,9 +663,9 @@ public class FilterParserImpl implements FilterParser
     combination.add(new ParameterSet(double_, double_, double_));
     combination.add(new ParameterSet(decimal, decimal, decimal));
 
-    availableBinaryOperators.put(CharConst.GC_OPERATOR_ADD,
+    lAvailableBinaryOperators.put(CharConst.GC_OPERATOR_ADD,
         new InfoBinaryOperator(BinaryOperator.ADD, "Additive", CharConst.GC_OPERATOR_ADD, 50, combination));
-    availableBinaryOperators.put(CharConst.GC_OPERATOR_SUB,
+    lAvailableBinaryOperators.put(CharConst.GC_OPERATOR_SUB,
         new InfoBinaryOperator(BinaryOperator.SUB, "Additive", CharConst.GC_OPERATOR_SUB, 50, combination));
 
     //---Relational---
@@ -699,19 +685,19 @@ public class FilterParserImpl implements FilterParser
     combination.add(new ParameterSet(boolean_, decimal, decimal));
     combination.add(new ParameterSet(boolean_, binary, binary));
 
-    availableBinaryOperators.put(CharConst.GC_OPERATOR_LT,
+    lAvailableBinaryOperators.put(CharConst.GC_OPERATOR_LT,
         new InfoBinaryOperator(BinaryOperator.LT, "Relational", CharConst.GC_OPERATOR_LT, 40, combination));
-    availableBinaryOperators.put(CharConst.GC_OPERATOR_GT,
+    lAvailableBinaryOperators.put(CharConst.GC_OPERATOR_GT,
         new InfoBinaryOperator(BinaryOperator.GT, "Relational", CharConst.GC_OPERATOR_GT, 40, combination));
-    availableBinaryOperators.put(CharConst.GC_OPERATOR_GE,
+    lAvailableBinaryOperators.put(CharConst.GC_OPERATOR_GE,
         new InfoBinaryOperator(BinaryOperator.GE, "Relational", CharConst.GC_OPERATOR_GE, 40, combination));
-    availableBinaryOperators.put(CharConst.GC_OPERATOR_LE,
+    lAvailableBinaryOperators.put(CharConst.GC_OPERATOR_LE,
         new InfoBinaryOperator(BinaryOperator.LE, "Relational", CharConst.GC_OPERATOR_LE, 40, combination));
 
     //---Equality---
-    combination = new ParameterSetCombination.PSCflex();
-    combination.add(new ParameterSet(boolean_, boolean_, boolean_));
-    combination.add(new ParameterSet(boolean_, string, string));
+    //combination = new ParameterSetCombination.PSCflex();
+    combination.addFirst(new ParameterSet(boolean_, boolean_, boolean_));
+    /*combination.add(new ParameterSet(boolean_, string, string));
     combination.add(new ParameterSet(boolean_, time, time));
     combination.add(new ParameterSet(boolean_, datetime, datetime));
     combination.add(new ParameterSet(boolean_, datetimeoffset, datetimeoffset));
@@ -724,132 +710,132 @@ public class FilterParserImpl implements FilterParser
     combination.add(new ParameterSet(boolean_, single, single));
     combination.add(new ParameterSet(boolean_, double_, double_));
     combination.add(new ParameterSet(boolean_, decimal, decimal));
-    combination.add(new ParameterSet(boolean_, binary, binary));
+    combination.add(new ParameterSet(boolean_, binary, binary));*/
 
-    availableBinaryOperators.put(CharConst.GC_OPERATOR_EQ,
+    lAvailableBinaryOperators.put(CharConst.GC_OPERATOR_EQ,
         new InfoBinaryOperator(BinaryOperator.EQ, "Equality", CharConst.GC_OPERATOR_EQ, 30, combination));
-    availableBinaryOperators.put(CharConst.GC_OPERATOR_NE,
+    lAvailableBinaryOperators.put(CharConst.GC_OPERATOR_NE,
         new InfoBinaryOperator(BinaryOperator.NE, "Equality", CharConst.GC_OPERATOR_NE, 30, combination));
 
     //"---Conditinal AND---
     combination = new ParameterSetCombination.PSCflex();
     combination.add(new ParameterSet(boolean_, boolean_, boolean_));
 
-    availableBinaryOperators.put(CharConst.GC_OPERATOR_AND,
+    lAvailableBinaryOperators.put(CharConst.GC_OPERATOR_AND,
         new InfoBinaryOperator(BinaryOperator.AND, "Conditinal", CharConst.GC_OPERATOR_AND, 20, combination));
 
     //---Conditinal OR---
     combination = new ParameterSetCombination.PSCflex();
     combination.add(new ParameterSet(boolean_, boolean_, boolean_));
 
-    availableBinaryOperators.put(CharConst.GC_OPERATOR_OR,
+    lAvailableBinaryOperators.put(CharConst.GC_OPERATOR_OR,
         new InfoBinaryOperator(BinaryOperator.OR, "Conditinal", CharConst.GC_OPERATOR_OR, 10, combination));
 
     //endswith
     combination = new ParameterSetCombination.PSCflex();
     combination.add(new ParameterSet(boolean_, string, string));
-    availableMethods.put(CharConst.GC_FUNCTION_ENDSWITH,
+    lAvailableMethods.put(CharConst.GC_FUNCTION_ENDSWITH,
         new InfoMethod(MethodOperator.ENDSWITH, CharConst.GC_FUNCTION_ENDSWITH, 2, 2, combination));
 
     //indexof
     combination = new ParameterSetCombination.PSCflex();
     combination.add(new ParameterSet(int32, string, string));
-    availableMethods.put(CharConst.GC_FUNCTION_INDEXOF, new InfoMethod(MethodOperator.INDEXOF, CharConst.GC_FUNCTION_INDEXOF, 2, 2, combination));
+    lAvailableMethods.put(CharConst.GC_FUNCTION_INDEXOF, new InfoMethod(MethodOperator.INDEXOF, CharConst.GC_FUNCTION_INDEXOF, 2, 2, combination));
 
     //startswith
     combination = new ParameterSetCombination.PSCflex();
     combination.add(new ParameterSet(boolean_, string, string));
-    availableMethods.put(CharConst.GC_FUNCTION_STARTSWITH, new InfoMethod(MethodOperator.STARTSWITH, CharConst.GC_FUNCTION_STARTSWITH, 2, 2, combination));
+    lAvailableMethods.put(CharConst.GC_FUNCTION_STARTSWITH, new InfoMethod(MethodOperator.STARTSWITH, CharConst.GC_FUNCTION_STARTSWITH, 2, 2, combination));
 
     //tolower
     combination = new ParameterSetCombination.PSCflex();
     combination.add(new ParameterSet(string, string));
-    availableMethods.put(CharConst.GC_FUNCTION_TOLOWER, new InfoMethod(MethodOperator.TOLOWER, CharConst.GC_FUNCTION_TOLOWER, combination));
+    lAvailableMethods.put(CharConst.GC_FUNCTION_TOLOWER, new InfoMethod(MethodOperator.TOLOWER, CharConst.GC_FUNCTION_TOLOWER, combination));
 
     //toupper
     combination = new ParameterSetCombination.PSCflex();
     combination.add(new ParameterSet(string, string));
-    availableMethods.put(CharConst.GC_FUNCTION_TOUPPER, new InfoMethod(MethodOperator.TOUPPER, CharConst.GC_FUNCTION_TOUPPER, combination));
+    lAvailableMethods.put(CharConst.GC_FUNCTION_TOUPPER, new InfoMethod(MethodOperator.TOUPPER, CharConst.GC_FUNCTION_TOUPPER, combination));
 
     //trim
     combination = new ParameterSetCombination.PSCflex();
     combination.add(new ParameterSet(string, string));
-    availableMethods.put(CharConst.GC_FUNCTION_TRIM, new InfoMethod(MethodOperator.TRIM, CharConst.GC_FUNCTION_TRIM, combination));
+    lAvailableMethods.put(CharConst.GC_FUNCTION_TRIM, new InfoMethod(MethodOperator.TRIM, CharConst.GC_FUNCTION_TRIM, combination));
 
     //substring
     combination = new ParameterSetCombination.PSCflex();
     combination.add(new ParameterSet(string, string, int32));
     combination.add(new ParameterSet(string, string, int32, int32));
-    availableMethods.put(CharConst.GC_FUNCTION_SUBSTRING, new InfoMethod(MethodOperator.SUBSTRING, CharConst.GC_FUNCTION_SUBSTRING, 1, -1, combination));
+    lAvailableMethods.put(CharConst.GC_FUNCTION_SUBSTRING, new InfoMethod(MethodOperator.SUBSTRING, CharConst.GC_FUNCTION_SUBSTRING, 1, -1, combination));
 
     //substringof
     combination = new ParameterSetCombination.PSCflex();
     combination.add(new ParameterSet(boolean_, string, string));
-    availableMethods.put(CharConst.GC_FUNCTION_SUBSTRINGOF, new InfoMethod(MethodOperator.SUBSTRINGOF, CharConst.GC_FUNCTION_SUBSTRINGOF, 1, -1, combination));
+    lAvailableMethods.put(CharConst.GC_FUNCTION_SUBSTRINGOF, new InfoMethod(MethodOperator.SUBSTRINGOF, CharConst.GC_FUNCTION_SUBSTRINGOF, 1, -1, combination));
 
     //concat
     combination = new ParameterSetCombination.PSCflex();
     combination.add(new ParameterSet(string, string, string).setFurtherType(string));
-    availableMethods.put(CharConst.GC_FUNCTION_CONCAT, new InfoMethod(MethodOperator.CONCAT, CharConst.GC_FUNCTION_CONCAT, 2, -1, combination));
+    lAvailableMethods.put(CharConst.GC_FUNCTION_CONCAT, new InfoMethod(MethodOperator.CONCAT, CharConst.GC_FUNCTION_CONCAT, 2, -1, combination));
 
     //length
     combination = new ParameterSetCombination.PSCflex();
     combination.add(new ParameterSet(int32, string));
-    availableMethods.put(CharConst.GC_FUNCTION_LENGTH, new InfoMethod(MethodOperator.LENGTH, CharConst.GC_FUNCTION_LENGTH, combination));
+    lAvailableMethods.put(CharConst.GC_FUNCTION_LENGTH, new InfoMethod(MethodOperator.LENGTH, CharConst.GC_FUNCTION_LENGTH, combination));
 
     //year
     combination = new ParameterSetCombination.PSCflex();
     combination.add(new ParameterSet(int32, datetime));
-    availableMethods.put(CharConst.GC_FUNCTION_YEAR, new InfoMethod(MethodOperator.YEAR, CharConst.GC_FUNCTION_YEAR, combination));
+    lAvailableMethods.put(CharConst.GC_FUNCTION_YEAR, new InfoMethod(MethodOperator.YEAR, CharConst.GC_FUNCTION_YEAR, combination));
 
     //month
     combination = new ParameterSetCombination.PSCflex();
     combination.add(new ParameterSet(int32, datetime));
-    availableMethods.put(CharConst.GC_FUNCTION_MONTH, new InfoMethod(MethodOperator.MONTH, CharConst.GC_FUNCTION_MONTH, combination));
+    lAvailableMethods.put(CharConst.GC_FUNCTION_MONTH, new InfoMethod(MethodOperator.MONTH, CharConst.GC_FUNCTION_MONTH, combination));
 
     //day
     combination = new ParameterSetCombination.PSCflex();
     combination.add(new ParameterSet(int32, datetime));
-    availableMethods.put(CharConst.GC_FUNCTION_DAY, new InfoMethod(MethodOperator.DAY, CharConst.GC_FUNCTION_DAY, combination));
+    lAvailableMethods.put(CharConst.GC_FUNCTION_DAY, new InfoMethod(MethodOperator.DAY, CharConst.GC_FUNCTION_DAY, combination));
 
     //hour
     combination = new ParameterSetCombination.PSCflex();
     combination.add(new ParameterSet(int32, datetime));
     combination.add(new ParameterSet(int32, time));
     combination.add(new ParameterSet(int32, datetimeoffset));
-    availableMethods.put(CharConst.GC_FUNCTION_HOUR, new InfoMethod(MethodOperator.HOUR, CharConst.GC_FUNCTION_HOUR, combination));
+    lAvailableMethods.put(CharConst.GC_FUNCTION_HOUR, new InfoMethod(MethodOperator.HOUR, CharConst.GC_FUNCTION_HOUR, combination));
 
     //minute
     combination = new ParameterSetCombination.PSCflex();
     combination.add(new ParameterSet(int32, datetime));
     combination.add(new ParameterSet(int32, time));
     combination.add(new ParameterSet(int32, datetimeoffset));
-    availableMethods.put(CharConst.GC_FUNCTION_MINUTE, new InfoMethod(MethodOperator.MINUTE, CharConst.GC_FUNCTION_MINUTE, combination));
+    lAvailableMethods.put(CharConst.GC_FUNCTION_MINUTE, new InfoMethod(MethodOperator.MINUTE, CharConst.GC_FUNCTION_MINUTE, combination));
 
     //second
     combination = new ParameterSetCombination.PSCflex();
     combination.add(new ParameterSet(int32, datetime));
     combination.add(new ParameterSet(int32, time));
     combination.add(new ParameterSet(int32, datetimeoffset));
-    availableMethods.put(CharConst.GC_FUNCTION_SECOND, new InfoMethod(MethodOperator.SECOND, CharConst.GC_FUNCTION_SECOND, combination));
+    lAvailableMethods.put(CharConst.GC_FUNCTION_SECOND, new InfoMethod(MethodOperator.SECOND, CharConst.GC_FUNCTION_SECOND, combination));
 
     //round
     combination = new ParameterSetCombination.PSCflex();
     combination.add(new ParameterSet(decimal, decimal));
     combination.add(new ParameterSet(double_, double_));
-    availableMethods.put(CharConst.GC_FUNCTION_ROUND, new InfoMethod(MethodOperator.ROUND, CharConst.GC_FUNCTION_ROUND, combination));
+    lAvailableMethods.put(CharConst.GC_FUNCTION_ROUND, new InfoMethod(MethodOperator.ROUND, CharConst.GC_FUNCTION_ROUND, combination));
 
     //ceiling
     combination = new ParameterSetCombination.PSCflex();
     combination.add(new ParameterSet(decimal, decimal));
     combination.add(new ParameterSet(double_, double_));
-    availableMethods.put(CharConst.GC_FUNCTION_CEILING, new InfoMethod(MethodOperator.CEILING, CharConst.GC_FUNCTION_CEILING, combination));
+    lAvailableMethods.put(CharConst.GC_FUNCTION_CEILING, new InfoMethod(MethodOperator.CEILING, CharConst.GC_FUNCTION_CEILING, combination));
 
     //floor
     combination = new ParameterSetCombination.PSCflex();
     combination.add(new ParameterSet(decimal, decimal));
     combination.add(new ParameterSet(double_, double_));
-    availableMethods.put(CharConst.GC_FUNCTION_FLOOR, new InfoMethod(MethodOperator.FLOOR, CharConst.GC_FUNCTION_FLOOR, combination));
+    lAvailableMethods.put(CharConst.GC_FUNCTION_FLOOR, new InfoMethod(MethodOperator.FLOOR, CharConst.GC_FUNCTION_FLOOR, combination));
 
     //---unary---
 
@@ -865,9 +851,12 @@ public class FilterParserImpl implements FilterParser
     combination.add(new ParameterSet(decimal, decimal));
 
     //minus
-    availableUnaryOperators.put(CharConst.GC_OPERATOR_MINUS, new InfoUnaryOperator(UnaryOperator.MINUS, "minus", CharConst.GC_OPERATOR_MINUS, combination));
+    lAvailableUnaryOperators.put(CharConst.GC_OPERATOR_MINUS, new InfoUnaryOperator(UnaryOperator.MINUS, "minus", CharConst.GC_OPERATOR_MINUS, combination));
     //not
-    availableUnaryOperators.put(CharConst.GC_OPERATOR_NOT, new InfoUnaryOperator(UnaryOperator.NOT, "not", CharConst.GC_OPERATOR_NOT, combination));
-
+    lAvailableUnaryOperators.put(CharConst.GC_OPERATOR_NOT, new InfoUnaryOperator(UnaryOperator.NOT, "not", CharConst.GC_OPERATOR_NOT, combination));
+    
+    availableBinaryOperators = Collections.unmodifiableMap(lAvailableBinaryOperators);
+    availableMethods = Collections.unmodifiableMap(lAvailableMethods);
+    availableUnaryOperators = Collections.unmodifiableMap(lAvailableUnaryOperators);
   }
 }

@@ -2,7 +2,7 @@ package com.sap.core.odata.core.uri.expression;
 
 import org.junit.Test;
 
-import com.sap.core.odata.api.uri.expression.FilterParserException;
+import com.sap.core.odata.api.uri.expression.ExpressionParserException;
 import com.sap.core.odata.testutil.helper.ODataMessageTextVerifier;
 
 public class TestExceptionTexts extends TestBase
@@ -10,13 +10,13 @@ public class TestExceptionTexts extends TestBase
   @Test
   public void TestFilterParserExceptionMessages()
   {
-    ODataMessageTextVerifier.TestClass(FilterParserException.class);
+    ODataMessageTextVerifier.TestClass(ExpressionParserException.class);
   }
 
   @Test
   public void TestFilterParserInternalErrorMessages()
   {
-    ODataMessageTextVerifier.TestClass(FilterParserInternalError.class);
+    ODataMessageTextVerifier.TestClass(ExpressionParserInternalError.class);
   }
 
   @Test

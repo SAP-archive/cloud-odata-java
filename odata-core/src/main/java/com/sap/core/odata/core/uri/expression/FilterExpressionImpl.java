@@ -10,7 +10,7 @@ import com.sap.core.odata.api.uri.expression.FilterExpression;
 
 public class FilterExpressionImpl implements FilterExpression
 {
-  private String filterString;
+  private final String filterString;
   private EdmType edmType;
   private CommonExpression commonExpression;
 

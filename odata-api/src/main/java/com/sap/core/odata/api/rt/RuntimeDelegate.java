@@ -116,14 +116,6 @@ public abstract class RuntimeDelegate {
     return RuntimeDelegate.getInstance().getInternalEdmSimpleTypeByString(edmSimpleType);
   }
 
-  public static FilterParser getFilterParser(Edm edm, EdmEntityType edmType) {
-    return RuntimeDelegate.getInstance().getFilterParser(edm, edmType);
-  }
-
-  public static OrderByParser getOrderByParser(Edm edm, EdmEntityType edmType) {
-    return RuntimeDelegate.getInstance().getOrderByParser(edm, edmType);
-  }
-
   public static List<String> getSupportedContentTypes(List<String> customContentTypes, Class<? extends ProcessorFeature> processorFeature) throws ODataException {
     return RuntimeDelegate.getInstance().getSupportedContentTypes(customContentTypes, processorFeature);
   }
