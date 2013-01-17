@@ -18,7 +18,14 @@ public class XmlLinkConsumer {
   private static final String TAG_LINKS = "links";
 
   /**
-   * Reads single link in format <code> <uri>http://somelink</uri> </code>
+   * Reads single link with format:
+   * <code>
+   * <pre>
+   * {@code
+   *  <uri>http://somelink</uri>
+   * }
+   * </pre>
+   * </code>
    * 
    * @param reader
    * @param entitySet
@@ -71,14 +78,16 @@ public class XmlLinkConsumer {
   }
 
   /**
-   * Reads multiple links in format 
+   * Reads multiple links with format 
    * <code>
    * <pre>
+   * {@code
    * <links>
    *  <uri>http://somelink</uri>
    *  <uri>http://anotherLink</uri>
    *  <uri>http://somelink/yetAnotherLink</uri>
    * </links>
+   * }
    * </pre>
    * </code>
    * 
