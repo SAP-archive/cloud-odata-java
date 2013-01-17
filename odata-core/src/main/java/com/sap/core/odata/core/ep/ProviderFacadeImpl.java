@@ -17,6 +17,9 @@ import com.sap.core.odata.api.exception.ODataNotImplementedException;
 import com.sap.core.odata.api.processor.ODataResponse;
 import com.sap.core.odata.core.commons.ContentType;
 
+/**
+ * @author SAP AG
+ */
 public class ProviderFacadeImpl implements ProviderInterface {
 
   private static BasicEntityProvider create() throws EntityProviderException {
@@ -51,11 +54,6 @@ public class ProviderFacadeImpl implements ProviderInterface {
   }
 
   @Override
-  public Object readPropertyValue(EdmProperty edmProperty, InputStream content) throws EntityProviderException {
-    return create().readPropertyValue(edmProperty, content);
-  }
-
-  @Override
   public ODataResponse writeServiceDocument(Edm edm, String serviceRoot) throws EntityProviderException {
     return create().writeServiceDocument(edm, serviceRoot);
   }
@@ -73,26 +71,6 @@ public class ProviderFacadeImpl implements ProviderInterface {
   @Override
   public ODataResponse writeBinary(String mimeType, byte[] data) throws EntityProviderException {
     return create().writeBinary(mimeType, data);
-  }
-
-  @Override
-  public ReadEntryResult readEntry(String contentType, EdmEntitySet entitySet, InputStream content) throws EntityProviderException {
-    return create(contentType).readEntry(entitySet, content);
-  }
-
-  @Override
-  public String readLink(String contentType, EdmEntitySet entitySet, InputStream content) throws EntityProviderException {
-    return create(contentType).readLink(entitySet, content);
-  }
-
-  @Override
-  public Map<String, Object> readProperty(String contentType, EdmProperty edmProperty, InputStream content) throws EntityProviderException {
-    return create(contentType).readProperty(edmProperty, content);
-  }
-
-  @Override
-  public List<String> readLinks(String contentType, EdmEntitySet entitySet, InputStream content) throws EntityProviderException {
-    return create(contentType).readLinks(entitySet, content);
   }
 
   @Override
@@ -123,6 +101,36 @@ public class ProviderFacadeImpl implements ProviderInterface {
   @Override
   public ODataResponse writeFunctionImport(String contentType, EdmFunctionImport functionImport, Object data, EntityProviderProperties properties) throws EntityProviderException {
     return create(contentType).writeFunctionImport(functionImport, data, properties);
+  }
+
+  @Override
+  public ReadEntryResult readEntry(String contentType, EdmEntitySet entitySet, InputStream content) throws EntityProviderException {
+    return create(contentType).readEntry(entitySet, content);
+  }
+
+  @Override
+  public Map<String, Object> readProperty(String contentType, EdmProperty edmProperty, InputStream content) throws EntityProviderException {
+    return create(contentType).readProperty(edmProperty, content);
+  }
+
+  @Override
+  public Object readPropertyValue(EdmProperty edmProperty, InputStream content) throws EntityProviderException {
+    return create().readPropertyValue(edmProperty, content);
+  }
+
+  @Override
+  public List<String> readLinks(String contentType, EdmEntitySet entitySet, InputStream content) throws EntityProviderException {
+    return create(contentType).readLinks(entitySet, content);
+  }
+
+  @Override
+  public String readLink(String contentType, EdmEntitySet entitySet, InputStream content) throws EntityProviderException {
+    return create(contentType).readLink(entitySet, content);
+  }
+
+  @Override
+  public byte[] readBinary(InputStream content) throws EntityProviderException {
+    return create().readBinary(content);
   }
 
 }
