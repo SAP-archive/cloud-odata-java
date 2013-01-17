@@ -32,7 +32,7 @@ public class DataGenerator {
 	}
 
 	public void generate() {
-		this.entityManager.getTransaction().begin();
+		//this.entityManager.getTransaction().begin();
 		/*int count = 0;
 		for (int i = 0; i < DataGenerator.MAX_SALESORDER; i++) {
 			Address ba = new Address((short) i, "Street_" + i,
@@ -59,7 +59,7 @@ public class DataGenerator {
 			{ i--;}
 		}*/
 		generatedDataFromFile();
-		this.entityManager.getTransaction().commit();
+		//this.entityManager.getTransaction().commit();
 	}
 	
 	private void generatedDataFromFile() {
@@ -67,17 +67,12 @@ public class DataGenerator {
 			Session session = ((EntityManagerImpl) entityManager).getActiveSession();
 			ResourceBundle resourceBundle = ResourceBundle.getBundle("SQLStatements");
 			Set<String> keySet = resourceBundle.keySet();
-			//int i = 0;
 			for (Iterator<String> iterator = keySet.iterator(); iterator.hasNext();) {
 				this.entityManager.getTransaction().begin();
 				String currentSQL = (String) iterator.next();
 				String sqlQuery = resourceBundle.getString(currentSQL);
 				System.out.println("5 Currently executing Query - "+sqlQuery);
 				SQLCall sqlCall = new SQLCall(sqlQuery);
-//				if(i==0){
-//					// Create table
-//					org.eclipse.persistence.queries.
-//				}
 				
 				DataModifyQuery query = new DataModifyQuery();
 				query.setCall(sqlCall);
