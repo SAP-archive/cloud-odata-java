@@ -8,6 +8,9 @@ import com.sap.core.odata.api.edm.Edm;
 import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.api.uri.PathSegment;
 
+/**
+ * @author SAP AG
+ */
 public class MockFacade {
 
   public static Edm getMockEdm() throws ODataException {

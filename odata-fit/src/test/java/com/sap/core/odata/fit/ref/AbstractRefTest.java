@@ -39,8 +39,6 @@ public class AbstractRefTest extends AbstractFitTest {
   protected static final String IMAGE_GIF = "image/gif";
   protected static final String IMAGE_JPEG = "image/jpeg";
 
-  protected static final String XMLNS_D = "http://schemas.microsoft.com/ado/2007/08/dataservices";
-
   protected static final String EMPLOYEE_1_NAME = "Walter Winter";
   protected static final String EMPLOYEE_2_NAME = "Frederic Fall";
   protected static final String EMPLOYEE_3_NAME = "Jonathan Smith";

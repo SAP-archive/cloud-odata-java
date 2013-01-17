@@ -176,7 +176,8 @@ public class ScenarioEdmProvider extends EdmProvider {
         properties.add(new SimpleProperty().setName("TeamId").setType(EdmSimpleTypeKind.String)
             .setFacets(new Facets().setMaxLength(2))
             .setMapping(new Mapping().setInternalName("getTeam.getId")));
-        properties.add(new ComplexProperty().setName("Location").setType(COMPLEX_TYPE_1));
+        properties.add(new ComplexProperty().setName("Location").setType(COMPLEX_TYPE_1)
+            .setFacets(new Facets().setNullable(false)));
         properties.add(new SimpleProperty().setName("Age").setType(EdmSimpleTypeKind.Int16));
         properties.add(new SimpleProperty().setName("EntryDate").setType(EdmSimpleTypeKind.DateTime)
             .setFacets(new Facets().setNullable(true))
@@ -276,7 +277,7 @@ public class ScenarioEdmProvider extends EdmProvider {
             .setCustomizableFeedMappings(new CustomizableFeedMappings().setFcTargetPath(EdmTargetPath.SYNDICATION_AUTHORURI))
             .setMapping(new Mapping().setInternalName("getImageUri")));
         properties.add(new SimpleProperty().setName("Image").setType(EdmSimpleTypeKind.Binary)
-            .setMapping(new Mapping().setMimeType("getType")));
+            .setMapping(new Mapping().setMimeType("getImageType")));
         properties.add(new SimpleProperty().setName("BinaryData").setType(EdmSimpleTypeKind.Binary)
             .setFacets(new Facets().setNullable(true))
             .setMimeType("image/jpeg"));
@@ -332,11 +333,11 @@ public class ScenarioEdmProvider extends EdmProvider {
         return new Association().setName(ASSOCIATION_1_3.getName())
             .setEnd1(new AssociationEnd().setType(ENTITY_TYPE_1_1).setRole(ROLE_1_1).setMultiplicity(EdmMultiplicity.MANY))
             .setEnd2(new AssociationEnd().setType(ENTITY_TYPE_1_3).setRole(ROLE_1_3).setMultiplicity(EdmMultiplicity.ONE));
-      else if (ASSOCIATION_1_4.getName().equals(edmFQName.getName())) 
+      else if (ASSOCIATION_1_4.getName().equals(edmFQName.getName()))
         return new Association().setName(ASSOCIATION_1_4.getName())
             .setEnd1(new AssociationEnd().setType(ENTITY_TYPE_1_5).setRole(ROLE_1_5).setMultiplicity(EdmMultiplicity.ONE))
             .setEnd2(new AssociationEnd().setType(ENTITY_TYPE_1_3).setRole(ROLE_1_3).setMultiplicity(EdmMultiplicity.MANY));
-      
+
     return null;
   }
 

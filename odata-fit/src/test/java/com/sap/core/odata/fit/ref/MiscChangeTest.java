@@ -1,8 +1,13 @@
 package com.sap.core.odata.fit.ref;
 
+import static org.junit.Assert.assertEquals;
+
 import org.junit.Test;
 
+import com.sap.core.odata.api.commons.HttpContentType;
+import com.sap.core.odata.api.commons.HttpHeaders;
 import com.sap.core.odata.api.commons.HttpStatusCodes;
+import com.sap.core.odata.core.commons.ODataHttpMethod;
 
 /**
  * Tests employing the reference scenario that use neither XML nor JSON
@@ -16,8 +21,9 @@ public class MiscChangeTest extends AbstractRefTest {
     deleteUriOk("Employees('2')");
     deleteUriOk("Managers('3')");
     deleteUriOk("Teams('2')");
-    deleteUriOk("Rooms('1')"); // if_match "W/\"1\""
-    deleteUriOk("Container2.Photos(Id=1,Type='image%2Fpng')"); // if_match "W/\"1\""
+    callUri(ODataHttpMethod.DELETE, "Rooms('1')", HttpHeaders.IF_MATCH, "W/\"1\"", null, null, HttpStatusCodes.NO_CONTENT);
+    callUri(ODataHttpMethod.DELETE, "Container2.Photos(Id=1,Type='image%2Fpng')",
+        HttpHeaders.IF_MATCH, "W/\"1\"", null, null, HttpStatusCodes.NO_CONTENT);
 
     // deleteUri("Rooms('1')", HttpStatusCodes.PRECONDITION_REQUIRED);
     deleteUri("Managers()", HttpStatusCodes.METHOD_NOT_ALLOWED);
@@ -52,5 +58,27 @@ public class MiscChangeTest extends AbstractRefTest {
     deleteUriOk("Managers('1')/$value");
 
     deleteUri("Teams('2')/$value", HttpStatusCodes.BAD_REQUEST);
+  }
+
+  @Test
+  public void updatePropertyValue() throws Exception {
+    putUri("Employees('2')/Age/$value", "42", HttpContentType.TEXT_PLAIN, HttpStatusCodes.NO_CONTENT);
+
+    String url = "Container2.Photos(Id=3,Type='image%2Fjpeg')/Image/$value";
+    callUri(ODataHttpMethod.PUT, url, HttpHeaders.ETAG, "W/\"3\"", "4711", HttpContentType.APPLICATION_OCTET_STREAM, HttpStatusCodes.NO_CONTENT);
+    assertEquals("4711", getBody(callUri(url)));
+
+    url = "Container2.Photos(Id=4,Type='foo')/BinaryData/$value";
+    callUri(ODataHttpMethod.PUT, url, HttpHeaders.ETAG, "W/\"4\"", "4711", IMAGE_JPEG, HttpStatusCodes.NO_CONTENT);
+    assertEquals("4711", getBody(callUri(url)));
+
+    final String content = "2012-02-29T00:00:00";
+    url = "Employees('2')/EntryDate/$value";
+    putUri(url, content, HttpContentType.TEXT_PLAIN, HttpStatusCodes.NO_CONTENT);
+    assertEquals(content, getBody(callUri(url)));
+
+    putUri("Employees('2')/EmployeeId/$value", "42", HttpContentType.TEXT_PLAIN, HttpStatusCodes.METHOD_NOT_ALLOWED);
+    // putUri("Employees('2')/Age/$value", "42a", HttpContentType.TEXT_PLAIN, HttpStatusCodes.BAD_REQUEST);
+    // putUri(url, "2000-13-78T42:19:18z", HttpContentType.TEXT_PLAIN, HttpStatusCodes.BAD_REQUEST);
   }
 }
