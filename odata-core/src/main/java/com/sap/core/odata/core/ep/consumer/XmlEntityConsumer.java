@@ -40,7 +40,7 @@ public class XmlEntityConsumer {
       reader = createStaxReader(content);
       
       EntityInfoAggregator eia = EntityInfoAggregator.create(entitySet);
-      ReadEntryResult result = xec.readEntry(reader, entitySet, eia);
+      ReadEntryResult result = xec.readEntry(reader, eia);
       return result;
     } catch (Exception e) {
       throw new EntityProviderException(EntityProviderException.COMMON, e);

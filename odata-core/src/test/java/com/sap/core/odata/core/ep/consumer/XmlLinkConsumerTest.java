@@ -43,5 +43,4 @@ public class XmlLinkConsumerTest {
 
     assertEquals(0, links.size());
   }
-
 }

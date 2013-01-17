@@ -1,7 +1,6 @@
 package com.sap.core.odata.core.ep.consumer;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import javax.xml.namespace.NamespaceContext;
@@ -9,9 +8,7 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
 import com.sap.core.odata.api.edm.Edm;
-import com.sap.core.odata.api.edm.EdmEntitySet;
 import com.sap.core.odata.api.edm.EdmException;
-import com.sap.core.odata.api.edm.EdmProperty;
 import com.sap.core.odata.api.ep.EntityProviderException;
 import com.sap.core.odata.api.ep.ReadEntryResult;
 import com.sap.core.odata.core.ep.EntryMetadataImpl;
@@ -46,13 +43,13 @@ public class XmlEntryConsumer {
     readEntryResult = new ReadEntryResultImpl(properties, mediaMetadata, entryMetadata);
   }
 
-  public ReadEntryResult readEntry(XMLStreamReader reader, EdmEntitySet entitySet, EntityInfoAggregator eia) throws EntityProviderException {
+  public ReadEntryResult readEntry(XMLStreamReader reader, EntityInfoAggregator eia) throws EntityProviderException {
     try {
       int eventType;
       while ((eventType = reader.next()) != XMLStreamReader.END_DOCUMENT) {
         if (eventType == XMLStreamReader.START_ELEMENT) {
           String tagName = reader.getLocalName();
-          handleStartedTag(reader, tagName, entitySet, eia);
+          handleStartedTag(reader, tagName, eia);
         }
       }
 
@@ -66,13 +63,12 @@ public class XmlEntryConsumer {
    * 
    * @param reader
    * @param tagName
-   * @param entitySet
    * @param eia 
    * @throws EntityProviderException
    * @throws XMLStreamException
    * @throws EdmException
    */
-  private void handleStartedTag(XMLStreamReader reader, String tagName, EdmEntitySet entitySet, EntityInfoAggregator eia) throws EntityProviderException, XMLStreamException, EdmException {
+  private void handleStartedTag(XMLStreamReader reader, String tagName, EntityInfoAggregator eia) throws EntityProviderException, XMLStreamException, EdmException {
     if (TAG_ID.equals(tagName)) {
       readId(reader);
     } else if (TAG_ENTRY.equals(tagName)) {
@@ -80,15 +76,15 @@ public class XmlEntryConsumer {
     } else if (TAG_LINK.equals(tagName)) {
       readLink(reader);
     } else if (TAG_CONTENT.equals(tagName)) {
-      readContent(reader, entitySet);
+      readContent(reader, eia);
     } else if (TAG_PROPERTIES.equals(tagName)) {
-      readProperties(reader, entitySet);
+      readProperties(reader, eia);
     } else {
-      readCustomElement(reader, tagName, entitySet, eia);
+      readCustomElement(reader, tagName, eia);
     }
   }
 
-  private void readCustomElement(XMLStreamReader reader, String tagName, EdmEntitySet entitySet, EntityInfoAggregator eia) throws EdmException, EntityProviderException, XMLStreamException {
+  private void readCustomElement(XMLStreamReader reader, String tagName, EntityInfoAggregator eia) throws EdmException, EntityProviderException, XMLStreamException {
     EntityPropertyInfo targetPathInfo = eia.getTargetPathInfo(tagName);
     if (targetPathInfo != null) {
       String edmPrefix = targetPathInfo.getCustomMapping().getFcNsPrefix();
@@ -102,8 +98,7 @@ public class XmlEntryConsumer {
 
         if (edmNamespaceURI.equals(xmlNamespaceUri) && edmPrefix.equals(xmlPrefix)) {
           String name = reader.getLocalName();
-          EdmProperty property = (EdmProperty) entitySet.getEntityType().getProperty(name);
-          Object value = xpc.readStartedElement(reader, property);
+          Object value = xpc.readStartedElement(reader, eia.getPropertyInfo(name));
           properties.put(name, value);
         }
       }
@@ -146,7 +141,7 @@ public class XmlEntryConsumer {
     }
   }
 
-  private void readContent(XMLStreamReader reader, EdmEntitySet entitySet) throws EntityProviderException, XMLStreamException, EdmException {
+  private void readContent(XMLStreamReader reader, EntityInfoAggregator eia) throws EntityProviderException, XMLStreamException, EdmException {
     validateStartPosition(reader, TAG_CONTENT);
     Map<String, String> attributes = readAttributes(reader);
     int nextEventType = reader.nextTag();
@@ -154,7 +149,7 @@ public class XmlEntryConsumer {
     if (XMLStreamReader.END_ELEMENT == nextEventType) {
       validateEndPosition(reader, TAG_CONTENT);
     } else if (XMLStreamReader.START_ELEMENT == nextEventType && reader.getLocalName().equals(TAG_PROPERTIES)) {
-      readProperties(reader, entitySet);
+      readProperties(reader, eia);
     } else {
       throw new EntityProviderException(EntityProviderException.INVALID_STATE
           .addContent("Expected closing 'content' or starting 'properties' but found '" + reader.getLocalName() + "'."));
@@ -186,7 +181,7 @@ public class XmlEntryConsumer {
    * @throws EdmException
    * @throws EntityProviderException
    */
-  private void readProperties(XMLStreamReader reader, EdmEntitySet entitySet) throws XMLStreamException, EdmException, EntityProviderException {
+  private void readProperties(XMLStreamReader reader, EntityInfoAggregator entitySet) throws XMLStreamException, EdmException, EntityProviderException {
     //
     int nextTagEventType = reader.next();
 
@@ -195,7 +190,8 @@ public class XmlEntryConsumer {
     while (run) {
       if (nextTagEventType == XMLStreamReader.START_ELEMENT) {
         String name = reader.getLocalName();
-        EdmProperty property = (EdmProperty) entitySet.getEntityType().getProperty(name);
+        //        EdmProperty property = (EdmProperty) entitySet.getEntityType().getProperty(name);
+        EntityPropertyInfo property = entitySet.getPropertyInfo(name);
         Object value = xpc.readStartedElement(reader, property);
         properties.put(name, value);
       } else if (nextTagEventType == XMLStreamReader.END_ELEMENT) {

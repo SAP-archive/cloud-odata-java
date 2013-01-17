@@ -46,6 +46,15 @@ public class EntityComplexPropertyInfo extends EntityPropertyInfo {
   public List<EntityPropertyInfo> getPropertyInfos() {
     return Collections.unmodifiableList(entityPropertyInfo);
   }
+  
+  public EntityPropertyInfo getPropertyInfo(String name) {
+    for (EntityPropertyInfo info : entityPropertyInfo) {
+      if(info.getName().equals(name)) {
+        return info;
+      }
+    }
+    return null;
+  }
 
   @Override
   public String toString() {
