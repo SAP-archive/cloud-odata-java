@@ -5,6 +5,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+import static org.mockito.Mockito.when;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -603,6 +604,17 @@ public class UriParserTest extends BaseTest {
   }
 
   @Test
+  public void parseWrongFunctionImportParameters() throws Exception {
+    // override parameter type for testing literal parsing errors
+    when(edm.getDefaultEntityContainer().getFunctionImport("ManagerPhoto").getParameter("Id").getType())
+        .thenReturn(EdmSimpleTypeKind.Binary.getEdmSimpleTypeInstance());
+    parseWrongUri("ManagerPhoto?Id=X'Z'", UriSyntaxException.NOTEXT);    
+    when(edm.getDefaultEntityContainer().getFunctionImport("ManagerPhoto").getParameter("Id").getType())
+        .thenReturn(EdmSimpleTypeKind.Int32.getEdmSimpleTypeInstance());
+    parseWrongUri("ManagerPhoto?Id=12345678901234567890", UriSyntaxException.LITERALFORMAT);    
+  }
+
+  @Test
   public void parseSystemQueryOptions() throws Exception {
     UriInfoImpl result = parse("Employees?$format=json&$inlinecount=allpages&$skiptoken=abc&$skip=2&$top=1");
     assertEquals("Employees", result.getTargetEntitySet().getName());
@@ -678,6 +690,9 @@ public class UriParserTest extends BaseTest {
     parseWrongUri("Employees?$somethingwrong=adjaodjai", UriSyntaxException.INVALIDSYSTEMQUERYOPTION);
     parseWrongUri("Employees?$formatformat=xml", UriSyntaxException.INVALIDSYSTEMQUERYOPTION);
     parseWrongUri("Employees?$Format=atom", UriSyntaxException.INVALIDSYSTEMQUERYOPTION);
+    parseWrongUri("Employees?$filter=Age", UriSyntaxException.INVALIDFILTEREXPRESSION);
+    parseWrongUri("Employees?$filter=(Age", UriSyntaxException.INVALIDFILTEREXPRESSION);
+    parseWrongUri("Employees?$orderby=desc", UriSyntaxException.INVALIDORDERBYEXPRESSION);
   }
 
   @Test

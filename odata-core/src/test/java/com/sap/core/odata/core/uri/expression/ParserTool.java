@@ -465,6 +465,8 @@ public class ParserTool
     case UNARY:
       curNode = ((UnaryExpressionImpl) curNode).getOperand();
       break;
+    default:
+      break;
     }
     return this;
   }
@@ -488,6 +490,8 @@ public class ParserTool
       break;
     case UNARY:
       curNode = ((UnaryExpressionImpl) curNode).getOperand();
+      break;
+    default:
       break;
     }
     return this;
