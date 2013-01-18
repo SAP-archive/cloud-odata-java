@@ -1,4 +1,4 @@
-package com.sap.core.odata.core.ep;
+package com.sap.core.odata.core.ep.util;
 
 public class FormatJson {
 

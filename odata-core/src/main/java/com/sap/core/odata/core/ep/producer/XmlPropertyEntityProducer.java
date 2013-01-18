@@ -13,9 +13,9 @@ import com.sap.core.odata.api.edm.EdmFacets;
 import com.sap.core.odata.api.edm.EdmLiteralKind;
 import com.sap.core.odata.api.edm.EdmSimpleType;
 import com.sap.core.odata.api.ep.EntityProviderException;
-import com.sap.core.odata.core.ep.FormatXml;
 import com.sap.core.odata.core.ep.aggregator.EntityComplexPropertyInfo;
 import com.sap.core.odata.core.ep.aggregator.EntityPropertyInfo;
+import com.sap.core.odata.core.ep.util.FormatXml;
 
 /**
  * Internal EntityProvider for simple and complex EDM properties which are pre-analyzed as {@link EntityPropertyInfo}.

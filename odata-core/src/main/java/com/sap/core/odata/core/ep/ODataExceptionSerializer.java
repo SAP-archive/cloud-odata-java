@@ -19,6 +19,7 @@ import com.sap.core.odata.api.edm.Edm;
 import com.sap.core.odata.core.commons.ContentType;
 import com.sap.core.odata.core.commons.ContentType.ODataFormat;
 import com.sap.core.odata.core.ep.util.CircleStreamBuffer;
+import com.sap.core.odata.core.ep.util.FormatXml;
 
 /**
  * @author SAP AG

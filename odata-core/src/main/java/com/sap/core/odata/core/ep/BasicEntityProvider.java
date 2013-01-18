@@ -29,13 +29,24 @@ import com.sap.core.odata.core.commons.ContentType;
 import com.sap.core.odata.core.ep.producer.AtomServiceDocumentProducer;
 import com.sap.core.odata.core.ep.util.CircleStreamBuffer;
 
-public class BasicEntityProvider implements BasicEntityProviderInterface {
+/**
+ * Provider for all basic (content type independent) entity provider methods.
+ * 
+ * @author SAP AG
+ */
+public class BasicEntityProvider {
 
   private static final Logger LOG = LoggerFactory.getLogger(BasicEntityProvider.class);
   /** Default used charset for writer and response content header */
   private static final String DEFAULT_CHARSET = "UTF-8";
 
-  @Override
+
+  /**
+   * Reads binary data from an input stream.
+   * @param content the content input stream
+   * @return the binary data
+   * @throws EntityProviderException
+   */
   public byte[] readBinary(InputStream content) throws EntityProviderException {
     ByteArrayOutputStream buffer = new ByteArrayOutputStream();
     byte[] value = new byte[Short.MAX_VALUE];
@@ -51,6 +62,12 @@ public class BasicEntityProvider implements BasicEntityProviderInterface {
     }
   }
 
+  /**
+   * 
+   * @param content
+   * @return
+   * @throws EntityProviderException
+   */
   private String readText(InputStream content) throws EntityProviderException {
     BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(content, Charset.forName(DEFAULT_CHARSET)));
     StringBuilder stringBuilder = new StringBuilder();
@@ -65,7 +82,13 @@ public class BasicEntityProvider implements BasicEntityProviderInterface {
     return stringBuilder.toString();
   }
 
-  @Override
+  /**
+   * Reads an unformatted value of an EDM property as binary or as content type <code>text/plain</code>.
+   * @param edmProperty the EDM property
+   * @param content the content input stream
+   * @return the value as the proper system data type
+   * @throws EntityProviderException
+   */
   public Object readPropertyValue(final EdmProperty edmProperty, InputStream content) throws EntityProviderException {
     EdmSimpleType type;
     try {
@@ -84,7 +107,15 @@ public class BasicEntityProvider implements BasicEntityProviderInterface {
       }
   }
 
-  @Override
+  /**
+   * Write service document based on given {@link Edm} and <code>service root</code> as
+   * content type "<code>application/atomsvc+xml; charset=utf-8</code>".
+   * 
+   * @param edm the Entity Data Model
+   * @param serviceRoot the root URI of the service
+   * @return resulting {@link ODataResponse} with written service document
+   * @throws EntityProviderException
+   */
   public ODataResponse writeServiceDocument(Edm edm, String serviceRoot) throws EntityProviderException {
     OutputStreamWriter writer = null;
 
@@ -113,7 +144,13 @@ public class BasicEntityProvider implements BasicEntityProviderInterface {
     }
   }
 
-  @Override
+  /**
+   * Write property as binary or as content type <code>text/plain</code>.
+   * @param edmProperty the EDM property
+   * @param value its value
+   * @return resulting {@link ODataResponse} with written content
+   * @throws EntityProviderException
+   */
   public ODataResponse writePropertyValue(final EdmProperty edmProperty, Object value) throws EntityProviderException {
     try {
       Map<?, ?> mappedData;
@@ -147,7 +184,12 @@ public class BasicEntityProvider implements BasicEntityProviderInterface {
     }
   }
 
-  @Override
+  /**
+   * Write text value as content type <code>text/plain</code>.
+   * @param value the string that is written to {@link ODataResponse}
+   * @return resulting {@link ODataResponse} with written text content
+   * @throws EntityProviderException
+   */
   public ODataResponse writeText(final String value) throws EntityProviderException {
     ODataResponseBuilder builder = ODataResponse.newBuilder();
     if (value != null) {
@@ -163,7 +205,13 @@ public class BasicEntityProvider implements BasicEntityProviderInterface {
     return builder.build();
   }
 
-  @Override
+  /**
+   * Write binary content with content type header set to given <code>mime type</code> parameter.
+   * @param mimeType MIME type which is written and used as content type header information
+   * @param data data is written to {@link ODataResponse}
+   * @return resulting {@link ODataResponse} with written binary content
+   * @throws EntityProviderException
+   */
   public ODataResponse writeBinary(String mimeType, byte[] data) throws EntityProviderException {
     ODataResponseBuilder builder = ODataResponse.newBuilder();
     if (data != null) {
@@ -174,6 +222,11 @@ public class BasicEntityProvider implements BasicEntityProviderInterface {
     return builder.build();
   }
 
+  /**
+   * 
+   * @param mediaType
+   * @return
+   */
   private String createContentHeader(ContentType mediaType) {
     return mediaType.toString() + "; charset=" + DEFAULT_CHARSET;
   }

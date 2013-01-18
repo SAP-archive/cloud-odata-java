@@ -20,10 +20,10 @@ import com.sap.core.odata.api.ep.EntityProviderException;
 import com.sap.core.odata.api.ep.EntityProviderProperties;
 import com.sap.core.odata.core.commons.ContentType;
 import com.sap.core.odata.core.edm.EdmDateTimeOffset;
-import com.sap.core.odata.core.ep.FormatXml;
 import com.sap.core.odata.core.ep.aggregator.EntityInfoAggregator;
 import com.sap.core.odata.core.ep.aggregator.EntityPropertyInfo;
 import com.sap.core.odata.core.ep.aggregator.NavigationPropertyInfo;
+import com.sap.core.odata.core.ep.util.FormatXml;
 import com.sap.core.odata.core.ep.util.UriUtils;
 
 /**
