@@ -56,8 +56,11 @@ public class SalesOrderHeader {
 	@Column(name = "DELIVERY_STATUS")
 	private boolean deliveryStatus;
 
-	/*@OneToMany(mappedBy = "SalesOrderHeader", cascade = CascadeType.ALL)
-	private final List<SalesOrderItem> salesOrderItem = new ArrayList<SalesOrderItem>();*/
+	@OneToMany(mappedBy = "SalesOrderHeader", cascade = CascadeType.ALL)
+	private final List<SalesOrderItem> salesOrderItem = new ArrayList<SalesOrderItem>();
+	
+	@OneToOne(mappedBy = "SalesOrderHeader", cascade = CascadeType.ALL)
+	private Note note = new Note();
 
 	public long getSoId() {
 		return soId;
@@ -123,7 +126,15 @@ public class SalesOrderHeader {
 		this.deliveryStatus = deliveryStatus;
 	}
 
-	/*public List<SalesOrderItem> getSalesOrderItem() {
+	public List<SalesOrderItem> getSalesOrderItem() {
 		return this.salesOrderItem;
-	}*/
+	}	
+	
+	public Note getNote() {
+		return note;
+	}
+	
+	public void setNote(Note note) {
+		this.note = note;
+	}	
 }
