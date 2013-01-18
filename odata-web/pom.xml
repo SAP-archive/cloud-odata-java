@@ -23,6 +23,15 @@
 				<targetPath>../${project.build.finalName}/gen</targetPath>
 			</resource>
 		</resources>
+
+		<plugins>
+			<plugin>
+				<groupId>com.sap.research</groupId>
+				<artifactId>nwcloud-maven-plugin</artifactId>
+				<version>1.0.0.RELEASE</version>
+			</plugin>
+		</plugins>
+
 	</build>
 
 	<dependencies>
