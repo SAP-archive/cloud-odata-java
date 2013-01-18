@@ -9,17 +9,19 @@ import com.sap.core.odata.processor.jpa.exception.ODataJPARuntimeException;
 
 /**
  * Interface provides methods for processing OData Requests.
+ * @param <T>
  **/
 public interface JPAProcessor {
 	/**
 	 * Processes OData request for querying an Entity Set. The method returns
 	 * list of Objects of type representing JPA Entity Types.
+	 * @param <T>
 	 * 
 	 * @param requestView OData request for querying an entity set
 	 * 
 	 * @return list of objects representing JPA entity types
 	 **/
-	public List<Object> process(GetEntitySetUriInfo requestView)
+	public <T> List<T> process(GetEntitySetUriInfo requestView)
 			throws ODataJPAModelException, ODataJPARuntimeException;
 
 	/**
@@ -27,9 +29,10 @@ public interface JPAProcessor {
 	 * Object of type representing JPA Entity Type.
 	 * 
 	 * @param requestView OData request for reading an entity
+	 * @return 
 	 * 
 	 * @return object representing JPA entity type
 	 **/
-	public Object process(GetEntityUriInfo requestView)
+	public <T> Object process(GetEntityUriInfo requestView)
 			throws ODataJPAModelException, ODataJPARuntimeException;;
 }

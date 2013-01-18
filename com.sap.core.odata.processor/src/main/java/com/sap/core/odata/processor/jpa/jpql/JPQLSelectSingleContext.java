@@ -12,35 +12,31 @@ import com.sap.core.odata.api.uri.SelectItem;
 import com.sap.core.odata.api.uri.info.GetEntityUriInfo;
 import com.sap.core.odata.processor.jpa.api.jpql.JPQLContext;
 import com.sap.core.odata.processor.jpa.api.jpql.JPQLContextType;
-import com.sap.core.odata.processor.jpa.api.jpql.JPQLSelectSingleContext;
+import com.sap.core.odata.processor.jpa.api.jpql.JPQLSelectSingleContextView;
 import com.sap.core.odata.processor.jpa.exception.ODataJPAModelException;
 import com.sap.core.odata.processor.jpa.exception.ODataJPARuntimeException;
 
-public class JPQLSelectSingleContextImpl extends JPQLSelectSingleContext {
+public class JPQLSelectSingleContext extends JPQLContext implements JPQLSelectSingleContextView {
 	
-	private static final Logger LOGGER = LoggerFactory.getLogger(JPQLSelectSingleContextImpl.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(JPQLSelectSingleContext.class);
 	
 	private ArrayList<String> selectedFields;
 	private List<KeyPredicate> keyPredicates;
 	
-	@Override
 	protected void setKeyPredicates(List<KeyPredicate> keyPredicates) {
 		this.keyPredicates = keyPredicates;		
 	}
 
 
-	@Override
 	public List<KeyPredicate> getKeyPredicates() {
 		return this.keyPredicates;
 	}
 	
-	@Override
 	protected void setSelectedFields(ArrayList<String> selectedFields) {
 		this.selectedFields = selectedFields;		
 	}
 
 
-	@Override
 	public ArrayList<String> getSelectedFields() {
 		return this.selectedFields;
 	}
@@ -57,12 +53,12 @@ public class JPQLSelectSingleContextImpl extends JPQLSelectSingleContext {
 
 				try {
 
-					JPQLSelectSingleContextImpl.this.setType(JPQLContextType.SELECT_SINGLE);
+					JPQLSelectSingleContext.this.setType(JPQLContextType.SELECT_SINGLE);
 
-					JPQLSelectSingleContextImpl.this.setJPAEntityName(entityView
+					JPQLSelectSingleContext.this.setJPAEntityName(entityView
 							.getTargetEntitySet().getEntityType().getName());
 					
-					JPQLSelectSingleContextImpl.this.setKeyPredicates(entityView.getKeyPredicates());
+					JPQLSelectSingleContext.this.setKeyPredicates(entityView.getKeyPredicates());
 					
 					List<SelectItem> selectItemList = entityView.getSelect();
 					if (selectItemList != null) {
@@ -71,7 +67,7 @@ public class JPQLSelectSingleContextImpl extends JPQLSelectSingleContext {
 						for (SelectItem item : selectItemList) {
 							selectedFields.add(item. getProperty(). getName());
 						}
-						JPQLSelectSingleContextImpl.this.setSelectedFields(selectedFields);
+						JPQLSelectSingleContext.this.setSelectedFields(selectedFields);
 					}
 
 				} catch (EdmException e) {
@@ -83,7 +79,7 @@ public class JPQLSelectSingleContextImpl extends JPQLSelectSingleContext {
 
 			}
 
-			return JPQLSelectSingleContextImpl.this;
+			return JPQLSelectSingleContext.this;
 
 		}
 

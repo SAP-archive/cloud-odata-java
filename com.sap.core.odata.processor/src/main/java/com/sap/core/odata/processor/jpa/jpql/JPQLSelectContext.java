@@ -12,32 +12,31 @@ import com.sap.core.odata.api.uri.SelectItem;
 import com.sap.core.odata.api.uri.expression.FilterExpression;
 import com.sap.core.odata.api.uri.info.GetEntitySetUriInfo;
 import com.sap.core.odata.processor.jpa.access.ODataExpressionParser;
-import com.sap.core.odata.processor.jpa.exception.ODataJPAModelException;
-import com.sap.core.odata.processor.jpa.exception.ODataJPARuntimeException;
 import com.sap.core.odata.processor.jpa.api.jpql.JPQLContext;
 import com.sap.core.odata.processor.jpa.api.jpql.JPQLContextType;
-import com.sap.core.odata.processor.jpa.api.jpql.JPQLSelectContext;
+import com.sap.core.odata.processor.jpa.api.jpql.JPQLSelectContextView;
+import com.sap.core.odata.processor.jpa.exception.ODataJPAModelException;
+import com.sap.core.odata.processor.jpa.exception.ODataJPARuntimeException;
 
-public class JPQLSelectContextImpl extends JPQLSelectContext {
-	
-	private static final Logger LOGGER = LoggerFactory.getLogger(JPQLSelectContextImpl.class);
+public class JPQLSelectContext extends JPQLContext implements
+		JPQLSelectContextView {
+
+	private static final Logger LOGGER = LoggerFactory
+			.getLogger(JPQLSelectContext.class);
 
 	private ArrayList<String> selectedFields;
 	private HashMap<String, String> orderByCollection;
 	private FilterExpression whereCondition;
 
-	@Override
 	protected final void setSelectedFields(ArrayList<String> selectedFields) {
 		this.selectedFields = selectedFields;
 	}
 
-	@Override
 	protected final void setOrderByCollection(
 			HashMap<String, String> orderByCollection) {
 		this.orderByCollection = orderByCollection;
 	}
 
-	@Override
 	protected final void setWhereExpression(FilterExpression filterExpression) {
 		this.whereCondition = filterExpression;
 	}
@@ -64,46 +63,62 @@ public class JPQLSelectContextImpl extends JPQLSelectContext {
 		private GetEntitySetUriInfo entitySetView;
 
 		@Override
-		public JPQLContext build() throws ODataJPAModelException, ODataJPARuntimeException {
+		public JPQLContext build() throws ODataJPAModelException,
+				ODataJPARuntimeException {
 			if (entitySetView != null) {
 
 				try {
 
-					JPQLSelectContextImpl.this.setType(JPQLContextType.SELECT);
+					JPQLSelectContext.this.setType(JPQLContextType.SELECT);
 
-					JPQLSelectContextImpl.this.setJPAEntityName(entitySetView
+					JPQLSelectContext.this.setJPAEntityName(entitySetView
 							.getTargetEntitySet().getEntityType().getName());
-					JPQLSelectContextImpl.this
-							.setOrderByCollection(ODataExpressionParser
-									.parseToJPAOrderByExpression(entitySetView
-											.getOrderBy()));
-					JPQLSelectContextImpl.this.setWhereExpression(entitySetView.getFilter());
+
+					if (entitySetView.getOrderBy() != null) {
+
+						JPQLSelectContext.this
+						.setOrderByCollection(ODataExpressionParser
+						.parseToJPAOrderByExpression(entitySetView
+						.getOrderBy()));
+
+					} else if (entitySetView.getTop() != null
+							|| entitySetView.getSkip() != null) {
+
+						JPQLSelectContext.this
+						.setOrderByCollection(ODataExpressionParser
+						.parseKeyPredicatesToJPAOrderByExpression(entitySetView
+								.getKeyPredicates()));
+					}
+
+					JPQLSelectContext.this.setWhereExpression(entitySetView
+							.getFilter());
 
 					List<SelectItem> selectItemList = entitySetView.getSelect();
 					if (selectItemList != null) {
 						ArrayList<String> selectedFields = new ArrayList<String>(
 								selectItemList.size());
 						for (SelectItem item : selectItemList) {
-							selectedFields.add(item. getProperty(). getName());
+							selectedFields.add(item.getProperty().getName());
 						}
-						JPQLSelectContextImpl.this.setSelectedFields(selectedFields);
+						JPQLSelectContext.this
+								.setSelectedFields(selectedFields);
 					}
 
 				} catch (EdmException e) {
 					LOGGER.error(e.getMessage(), e);
 					throw ODataJPARuntimeException.throwException(
-							ODataJPARuntimeException.RUNTIME_EXCEPTION.addContent(e
-									.getMessage()), e);
+							ODataJPARuntimeException.RUNTIME_EXCEPTION
+									.addContent(e.getMessage()), e);
 				} catch (ODataJPARuntimeException e) {
 					LOGGER.error(e.getMessage(), e);
 					throw ODataJPARuntimeException.throwException(
-							ODataJPARuntimeException.RUNTIME_EXCEPTION.addContent(e
-									.getMessage()), e);
+							ODataJPARuntimeException.RUNTIME_EXCEPTION
+									.addContent(e.getMessage()), e);
 				}
 
 			}
 
-			return JPQLSelectContextImpl.this;
+			return JPQLSelectContext.this;
 
 		}
 

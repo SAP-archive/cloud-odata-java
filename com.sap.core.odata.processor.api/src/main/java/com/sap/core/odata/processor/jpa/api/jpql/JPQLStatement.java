@@ -7,7 +7,7 @@ public class JPQLStatement {
 	
 	protected String statement;
 	
-	public static JPQLStatementBuilder createBuilder(JPQLContext context){
+	public static JPQLStatementBuilder createBuilder(JPQLContextView context){
 		return JPQLStatementBuilder.create(context);
 	}
 	
@@ -24,7 +24,7 @@ public class JPQLStatement {
 		
 		protected JPQLStatementBuilder( ){ }
 		
-		private static final JPQLStatementBuilder create(JPQLContext context){
+		private static final JPQLStatementBuilder create(JPQLContextView context){
 			return ODataJPAFactory.createFactory().getJPQLBuilderFactory().getStatementBuilder(context);
 		}
 		

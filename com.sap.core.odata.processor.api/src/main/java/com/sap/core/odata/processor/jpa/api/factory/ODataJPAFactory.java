@@ -6,10 +6,6 @@ package com.sap.core.odata.processor.jpa.api.factory;
  * ------------------------------ DO NOT EXTEND THIS CLASS
  * ------------------------------
  * </p>
- * <p>
- * ------------------------------ FOR INTERNAL USAGE ONLY
- * ------------------------------
- * </p>
  * </b>
  * 
  * The class is an abstract factory for creating factory implementations. The

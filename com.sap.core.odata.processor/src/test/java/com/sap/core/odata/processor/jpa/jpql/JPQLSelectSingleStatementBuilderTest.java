@@ -5,7 +5,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import org.easymock.EasyMock;
@@ -15,23 +14,10 @@ import org.junit.Test;
 import com.sap.core.odata.api.edm.EdmEntitySet;
 import com.sap.core.odata.api.edm.EdmEntityType;
 import com.sap.core.odata.api.edm.EdmException;
-import com.sap.core.odata.api.edm.EdmFacets;
-import com.sap.core.odata.api.edm.EdmLiteralKind;
 import com.sap.core.odata.api.edm.EdmProperty;
 import com.sap.core.odata.api.edm.EdmSimpleType;
-import com.sap.core.odata.api.edm.EdmType;
-import com.sap.core.odata.api.edm.EdmTypeKind;
 import com.sap.core.odata.api.uri.KeyPredicate;
 import com.sap.core.odata.api.uri.SelectItem;
-import com.sap.core.odata.api.uri.expression.BinaryExpression;
-import com.sap.core.odata.api.uri.expression.BinaryOperator;
-import com.sap.core.odata.api.uri.expression.ExpressionKind;
-import com.sap.core.odata.api.uri.expression.FilterExpression;
-import com.sap.core.odata.api.uri.expression.LiteralExpression;
-import com.sap.core.odata.api.uri.expression.MethodExpression;
-import com.sap.core.odata.api.uri.expression.OrderByExpression;
-import com.sap.core.odata.api.uri.expression.PropertyExpression;
-import com.sap.core.odata.api.uri.info.GetEntitySetUriInfo;
 import com.sap.core.odata.api.uri.info.GetEntityUriInfo;
 import com.sap.core.odata.processor.jpa.api.jpql.JPQLContext;
 import com.sap.core.odata.processor.jpa.api.jpql.JPQLContext.JPQLContextBuilder;
@@ -51,10 +37,10 @@ public class JPQLSelectSingleStatementBuilderTest {
 				
 	}
 	
-	private JPQLSelectSingleContextImpl createSelectContext() throws ODataJPARuntimeException, EdmException{
+	private JPQLSelectSingleContext createSelectContext() throws ODataJPARuntimeException, EdmException{
 		//Object Instantiation
 		
-				JPQLSelectSingleContextImpl JPQLSelectSingleContextImpl = null;// new JPQLSelectSingleContextImpl();
+				JPQLSelectSingleContext JPQLSelectSingleContextImpl = null;// new JPQLSelectSingleContextImpl();
 				GetEntityUriInfo getEntityView = EasyMock.createMock(GetEntityUriInfo.class);
 				
 				EdmEntitySet edmEntitySet = EasyMock.createMock(EdmEntitySet.class);
@@ -94,7 +80,7 @@ public class JPQLSelectSingleStatementBuilderTest {
 				
 				JPQLContextBuilder contextBuilder1 = JPQLContext.createBuilder(JPQLContextType.SELECT_SINGLE, getEntityView);
 				try {
-					JPQLSelectSingleContextImpl = (JPQLSelectSingleContextImpl) contextBuilder1.build();
+					JPQLSelectSingleContextImpl = (JPQLSelectSingleContext) contextBuilder1.build();
 				} catch (ODataJPAModelException e) {
 					fail("Model Exception thrown");
 				}
@@ -110,7 +96,7 @@ public class JPQLSelectSingleStatementBuilderTest {
 	
 	@Test
 	public void testBuildSimpleQuery() throws EdmException, ODataJPARuntimeException {
-		JPQLSelectSingleContextImpl JPQLSelectSingleContextImpl = createSelectContext();
+		JPQLSelectSingleContext JPQLSelectSingleContextImpl = createSelectContext();
 		JPQLSelectSingleStatementBuilder = new JPQLSelectSingleStatementBuilder(JPQLSelectSingleContextImpl);
 		
 		assertEquals("SELECT gwt1 FROM SalesOrderHeader gwt1 WHERE gwt1.Field1 = 1",JPQLSelectSingleStatementBuilder.build().toString());

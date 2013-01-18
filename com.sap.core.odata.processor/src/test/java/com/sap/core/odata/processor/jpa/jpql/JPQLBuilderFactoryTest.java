@@ -23,8 +23,8 @@ import com.sap.core.odata.processor.jpa.api.jpql.JPQLContext.JPQLContextBuilder;
 import com.sap.core.odata.processor.jpa.api.jpql.JPQLContextType;
 import com.sap.core.odata.processor.jpa.api.jpql.JPQLStatement.JPQLStatementBuilder;
 import com.sap.core.odata.processor.jpa.factory.ODataJPAFactoryImpl;
-import com.sap.core.odata.processor.jpa.jpql.JPQLSelectContextImpl.JPQLSelectContextBuilder;
-import com.sap.core.odata.processor.jpa.jpql.JPQLSelectSingleContextImpl.JPQLSelectSingleContextBuilder;
+import com.sap.core.odata.processor.jpa.jpql.JPQLSelectContext.JPQLSelectContextBuilder;
+import com.sap.core.odata.processor.jpa.jpql.JPQLSelectSingleContext.JPQLSelectSingleContextBuilder;
 
 public class JPQLBuilderFactoryTest {
 	

@@ -10,6 +10,7 @@ import org.junit.Test;
 import com.sap.core.odata.api.edm.provider.EdmProvider;
 import com.sap.core.odata.api.processor.ODataContext;
 import com.sap.core.odata.api.processor.ODataProcessor;
+import com.sap.core.odata.processor.jpa.ODataJPAContextImpl;
 import com.sap.core.odata.processor.jpa.api.ODataJPAContext;
 import com.sap.core.odata.processor.jpa.edm.ODataJPAEdmProvider;
 import com.sap.core.odata.processor.jpa.util.MockData;

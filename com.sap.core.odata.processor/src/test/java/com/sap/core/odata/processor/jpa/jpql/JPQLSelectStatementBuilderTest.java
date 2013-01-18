@@ -30,8 +30,8 @@ import com.sap.core.odata.api.uri.expression.MethodExpression;
 import com.sap.core.odata.api.uri.expression.OrderByExpression;
 import com.sap.core.odata.api.uri.expression.PropertyExpression;
 import com.sap.core.odata.api.uri.info.GetEntitySetUriInfo;
-import com.sap.core.odata.processor.jpa.api.jpql.JPQLContext.JPQLContextBuilder;
 import com.sap.core.odata.processor.jpa.api.jpql.JPQLContextType;
+import com.sap.core.odata.processor.jpa.api.jpql.JPQLContext.JPQLContextBuilder;
 import com.sap.core.odata.processor.jpa.exception.ODataJPAModelException;
 import com.sap.core.odata.processor.jpa.exception.ODataJPARuntimeException;
 
@@ -79,10 +79,10 @@ public class JPQLSelectStatementBuilderTest {
 				
 	}
 	
-	private JPQLSelectContextImpl createSelectContext(OrderByExpression orderByExpression, FilterExpression filterExpression) throws ODataJPARuntimeException, EdmException{
+	private JPQLSelectContext createSelectContext(OrderByExpression orderByExpression, FilterExpression filterExpression) throws ODataJPARuntimeException, EdmException{
 		//Object Instantiation
 		
-				JPQLSelectContextImpl jpqlSelectContextImpl = null;// new JPQLSelectContextImpl();
+				JPQLSelectContext jpqlSelectContextImpl = null;// new JPQLSelectContextImpl();
 				GetEntitySetUriInfo getEntitySetView = EasyMock.createMock(GetEntitySetUriInfo.class);
 				
 				EdmEntitySet edmEntitySet = EasyMock.createMock(EdmEntitySet.class);
@@ -102,9 +102,9 @@ public class JPQLSelectStatementBuilderTest {
 				EasyMock.expect(edmEntityType.getName()).andStubReturn("SalesOrderHeader");
 				EasyMock.replay(edmEntityType);
 				
-				JPQLContextBuilder contextBuilder1 = JPQLSelectContextImpl.createBuilder(JPQLContextType.SELECT, getEntitySetView);
+				JPQLContextBuilder contextBuilder1 = JPQLSelectContext.createBuilder(JPQLContextType.SELECT, getEntitySetView);
 				try {
-					jpqlSelectContextImpl = (JPQLSelectContextImpl) contextBuilder1.build();
+					jpqlSelectContextImpl = (JPQLSelectContext) contextBuilder1.build();
 				} catch (ODataJPAModelException e) {
 					fail("Model Exception thrown");
 				}
@@ -121,7 +121,7 @@ public class JPQLSelectStatementBuilderTest {
 	@Test
 	public void testBuildSimpleQuery() throws EdmException, ODataJPARuntimeException {
 		OrderByExpression orderByExpression = EasyMock.createMock(OrderByExpression.class);
-		JPQLSelectContextImpl jpqlSelectContextImpl = createSelectContext(orderByExpression, null);
+		JPQLSelectContext jpqlSelectContextImpl = createSelectContext(orderByExpression, null);
 		jpqlSelectStatementBuilder = new JPQLSelectStatementBuilder(jpqlSelectContextImpl);
 		
 		assertEquals("SELECT gwt1 FROM SalesOrderHeader gwt1",jpqlSelectStatementBuilder.build().toString());
@@ -131,7 +131,7 @@ public class JPQLSelectStatementBuilderTest {
 	public void testBuildQueryWithOrderBy() throws EdmException, ODataJPARuntimeException {
 		OrderByExpression orderByExpression = EasyMock.createMock(OrderByExpression.class);
 		
-		JPQLSelectContextImpl jpqlSelectContextImpl = createSelectContext(orderByExpression, null);
+		JPQLSelectContext jpqlSelectContextImpl = createSelectContext(orderByExpression, null);
 		HashMap<String, String> orderByCollection = new HashMap<String, String>();
 		orderByCollection.put("soID", "ASC");
 		orderByCollection.put("buyerId", "DESC");
@@ -145,7 +145,7 @@ public class JPQLSelectStatementBuilderTest {
 	public void testBuildQueryWithFilter() throws EdmException, ODataJPARuntimeException {
 		OrderByExpression orderByExpression = EasyMock.createMock(OrderByExpression.class);
 		FilterExpression filterExpression = getFilterExpressionMockedObj();
-		JPQLSelectContextImpl jpqlSelectContextImpl = createSelectContext(orderByExpression, filterExpression);
+		JPQLSelectContext jpqlSelectContextImpl = createSelectContext(orderByExpression, filterExpression);
 		
 		jpqlSelectStatementBuilder = new JPQLSelectStatementBuilder(jpqlSelectContextImpl);
 		
@@ -156,7 +156,7 @@ public class JPQLSelectStatementBuilderTest {
 	public void testBuildQueryWithMethodExpression() throws EdmException, ODataJPARuntimeException {
 		OrderByExpression orderByExpression = EasyMock.createMock(OrderByExpression.class);
 		FilterExpression filterExpression = getFilterExpressionwithMethodMock();
-		JPQLSelectContextImpl jpqlSelectContextImpl = createSelectContext(orderByExpression, filterExpression);
+		JPQLSelectContext jpqlSelectContextImpl = createSelectContext(orderByExpression, filterExpression);
 		
 		jpqlSelectStatementBuilder = new JPQLSelectStatementBuilder(jpqlSelectContextImpl);
 		try

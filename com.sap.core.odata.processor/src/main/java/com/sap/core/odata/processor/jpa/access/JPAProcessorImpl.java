@@ -16,65 +16,54 @@ import com.sap.core.odata.processor.jpa.exception.ODataJPAModelException;
 import com.sap.core.odata.processor.jpa.exception.ODataJPARuntimeException;
 
 public class JPAProcessorImpl implements JPAProcessor {
-	
+
 	ODataJPAContext oDataJPAContext;
 	EntityManager em;
-	
+
 	public JPAProcessorImpl(ODataJPAContext oDataJPAContext) {
 		this.oDataJPAContext = oDataJPAContext;
 		em = oDataJPAContext.getEntityManagerFactory().createEntityManager();
 	}
 
-	/**
-	 * process the query request for an entity
-	 * 
-	 * @return result object list
-	 * @throws ODataJPAModelException,ODataJPARuntimeException
-	 * 
-	 */
 	@SuppressWarnings("unchecked")
 	@Override
-	public List<Object> process(GetEntitySetUriInfo uriParserResultView) throws ODataJPAModelException, ODataJPARuntimeException {
-		
+	public <T> List<T> process(GetEntitySetUriInfo uriParserResultView)
+			throws ODataJPAModelException, ODataJPARuntimeException {
+
 		// Build JPQL Context
 		JPQLContext selectContext = JPQLContext.createBuilder(
-				JPQLContextType.SELECT, uriParserResultView)
-				.build();
+				JPQLContextType.SELECT, uriParserResultView).build();
 
 		// Build JPQL Statement
 		JPQLStatement selectStatement = JPQLStatement.createBuilder(
 				selectContext).build();
-		
-		//Instantiate JPQL
+
+		// Instantiate JPQL
 		Query query = em.createQuery(selectStatement.toString());
-		
+		if (uriParserResultView.getSkip() != null)
+			query.setFirstResult(uriParserResultView.getSkip());
+
+		if (uriParserResultView.getTop() != null)
+			query.setMaxResults(uriParserResultView.getTop());
+
 		return query.getResultList();
 
-		
 	}
-	
-	/**
-	 * process the read request for an entity
-	 * 
-	 * @return result object
-	 * @throws ODataJPAModelException,ODataJPARuntimeException
-	 * 
-	 */
 
 	@Override
-	public Object process(GetEntityUriInfo uriParserResultView) throws ODataJPAModelException, ODataJPARuntimeException {
+	public Object process(GetEntityUriInfo uriParserResultView)
+			throws ODataJPAModelException, ODataJPARuntimeException {
 		// Build JPQL Context
 		JPQLContext singleSelectContext = JPQLContext.createBuilder(
-				JPQLContextType.SELECT_SINGLE, uriParserResultView)
-				.build();
+				JPQLContextType.SELECT_SINGLE, uriParserResultView).build();
 
 		// Build JPQL Statement
 		JPQLStatement selectStatement = JPQLStatement.createBuilder(
 				singleSelectContext).build();
-		
-		//Instantiate JPQL
+
+		// Instantiate JPQL
 		Query query = em.createQuery(selectStatement.toString());
-		
+
 		return query.getResultList().get(0);
 	}
 

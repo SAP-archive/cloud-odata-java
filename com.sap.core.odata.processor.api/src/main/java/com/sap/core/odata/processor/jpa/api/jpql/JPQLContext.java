@@ -4,7 +4,7 @@ import com.sap.core.odata.processor.jpa.api.factory.ODataJPAFactory;
 import com.sap.core.odata.processor.jpa.exception.ODataJPAModelException;
 import com.sap.core.odata.processor.jpa.exception.ODataJPARuntimeException;
 
-public abstract class JPQLContext {
+public abstract class JPQLContext implements JPQLContextView {
 	
 	protected String jpaEntityName;
 	protected JPQLContextType type;

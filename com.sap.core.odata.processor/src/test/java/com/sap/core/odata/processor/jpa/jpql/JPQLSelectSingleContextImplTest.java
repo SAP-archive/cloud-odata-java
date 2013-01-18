@@ -21,10 +21,10 @@ import com.sap.core.odata.api.uri.SelectItem;
 import com.sap.core.odata.api.uri.info.GetEntityUriInfo;
 import com.sap.core.odata.processor.jpa.api.jpql.JPQLContext;
 import com.sap.core.odata.processor.jpa.api.jpql.JPQLContextType;
-import com.sap.core.odata.processor.jpa.api.jpql.JPQLSelectSingleContext;
+import com.sap.core.odata.processor.jpa.jpql.JPQLSelectSingleContext;
 import com.sap.core.odata.processor.jpa.exception.ODataJPAModelException;
 import com.sap.core.odata.processor.jpa.exception.ODataJPARuntimeException;
-import com.sap.core.odata.processor.jpa.jpql.JPQLSelectSingleContextImpl.JPQLSelectSingleContextBuilder;
+import com.sap.core.odata.processor.jpa.jpql.JPQLSelectSingleContext.JPQLSelectSingleContextBuilder;
 
 public class JPQLSelectSingleContextImplTest {
 

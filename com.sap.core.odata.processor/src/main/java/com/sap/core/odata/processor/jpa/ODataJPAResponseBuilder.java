@@ -25,7 +25,7 @@ public final class ODataJPAResponseBuilder {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(ODataJPAResponseBuilder.class);
 
-	public static ODataResponse build(List<Object> jpaEntities,
+	public static <T> ODataResponse build(List<T> jpaEntities,
 			GetEntitySetUriInfo resultsView, String contentType,ODataJPAContext odataJPAContext) throws ODataJPARuntimeException {
 				
 		EdmEntityType edmEntityType = null;

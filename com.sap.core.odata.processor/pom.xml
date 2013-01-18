@@ -12,42 +12,23 @@
 
 	<artifactId>com.sap.core.odata.processor</artifactId>
 	<packaging>jar</packaging>
+	<name>OData4SAP Processors - Implementation</name>
 
-	<!-- <parent> <groupId>com.sap.core.odata</groupId> <artifactId>com.sap.core.odata.parent</artifactId> 
-		<version>0.0.0-SNAPSHOT</version> <relativePath>..</relativePath> </parent> -->
-	<build>
-		<pluginManagement>
-			<plugins>
-				<plugin>
-					<groupId>org.apache.maven.plugins</groupId>
-					<artifactId>maven-compiler-plugin</artifactId>
-					<version>2.3.2</version>
-				</plugin>
-				<plugin>
-					<groupId>org.apache.maven.plugins</groupId>
-					<artifactId>maven-jar-plugin</artifactId>
-					<version>2.3.2</version>
-				</plugin>
-				<plugin>
-					<groupId>org.apache.maven.plugins</groupId>
-					<artifactId>maven-source-plugin</artifactId>
-					<version>2.1.2</version>
-				</plugin>
-				<plugin>
-					<groupId>org.apache.maven.plugins</groupId>
-					<artifactId>maven-javadoc-plugin</artifactId>
-					<version>2.8.1</version>
-				</plugin>
-			</plugins>
-		</pluginManagement>
-	</build>
 	<dependencies>
+	
+		<!-- ########################## -->
+		<!-- Java Persistence API		-->
+		<!-- ########################## -->
 		<dependency>
 			<groupId>javax</groupId>
 			<artifactId>javax.persistence</artifactId>
 			<version>2.0.3.v201010191057</version>
+			<scope>provided</scope>
 		</dependency>
-		<!-- ODATA4SAP Support -->
+
+		<!-- ########################## -->
+		<!-- ODATA4SAP Support 			-->
+		<!-- ########################## -->
 		<dependency>
 			<groupId>com.sap.core.odata</groupId>
 			<artifactId>com.sap.core.odata.api</artifactId>
@@ -58,34 +39,27 @@
 			<groupId>com.sap.core.odata</groupId>
 			<artifactId>com.sap.core.odata.core</artifactId>
 			<version>0.1.0-SNAPSHOT</version>
+			<scope>provided</scope>
 		</dependency>
-		<!-- OData4SAP JPA API -->
+		
+		<!-- ########################## -->
+		<!-- OData4SAP JPA API 			-->
+		<!-- ########################## -->
 		<dependency>
 			<groupId>com.sap.core.odata</groupId>
 			<artifactId>com.sap.core.odata.processor.api</artifactId>
 			<version>0.0.0-SNAPSHOT</version>
+			<scope>provided</scope>
 		</dependency>
-		<!-- JPA Support -->
-		<dependency>
-			<groupId>org.eclipse.persistence</groupId>
-			<artifactId>eclipselink</artifactId>
-			<version>2.1.2</version>
-		</dependency>
-		<dependency>
-			<groupId>org.hsqldb</groupId>
-			<artifactId>hsqldb</artifactId>
-			<version>1.8.0.10</version>
-		</dependency>
-		<dependency>
-			<groupId>org.eclipse.persistence</groupId>
-			<artifactId>javax.persistence</artifactId>
-			<version>2.0.0</version>
-		</dependency>
-		<!-- For JUnits -->
+		
+		<!-- ########################## -->
+		<!-- For Testing 				-->
+		<!-- ########################## -->
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
 			<version>4.9</version>
+			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.easymock</groupId>
@@ -93,21 +67,15 @@
 			<version>2.4.0</version>
 			<scope>test</scope>
 		</dependency>
+		
+		<!-- ########################## -->
+		<!-- Supportability Tools 		-->
+		<!-- ########################## -->
 		<dependency>
-			<groupId>org.objenesis</groupId>
-			<artifactId>objenesis</artifactId>
-			<version>1.2</version>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+			<version>1.7.2</version>
 		</dependency>
-		<dependency>
-			<groupId>cglib</groupId>
-			<artifactId>cglib-nodep</artifactId>
-			<version>2.2.2</version>
-		</dependency>
-		<dependency>
-        <groupId>org.slf4j</groupId>
-        <artifactId>slf4j-api</artifactId>
-        <version>1.7.2</version>
-    </dependency>
 	</dependencies>
 
 	<distributionManagement>
@@ -118,5 +86,14 @@
 	</distributionManagement>
 
 
-	<name>OData Processors - JPA Processor</name>
+	
+	<url>https://projectportal.wdf.sap.corp/projects/com.sap.core.odata.processor</url>
+	<description>OData4SAP Processor Implementation contains 
+
+1) JPA Implementation</description>
+	<inceptionYear>December 2012</inceptionYear>
+	<organization>
+		<name>SAP AG</name>
+		<url>www.sap.com</url>
+	</organization>
 </project>

@@ -3,7 +3,7 @@ package com.sap.core.odata.processor.jpa.factory;
 import com.sap.core.odata.api.edm.provider.EdmProvider;
 import com.sap.core.odata.api.processor.ODataSingleProcessor;
 import com.sap.core.odata.processor.jpa.ODataJPAContextImpl;
-import com.sap.core.odata.processor.jpa.ODataJPAProcessor;
+import com.sap.core.odata.processor.jpa.ODataJPAProcessorDefault;
 import com.sap.core.odata.processor.jpa.access.JPAEdmBuilderV2;
 import com.sap.core.odata.processor.jpa.access.JPAProcessorImpl;
 import com.sap.core.odata.processor.jpa.api.ODataJPAContext;
@@ -14,12 +14,13 @@ import com.sap.core.odata.processor.jpa.api.factory.JPQLBuilderFactory;
 import com.sap.core.odata.processor.jpa.api.factory.ODataJPAAccessFactory;
 import com.sap.core.odata.processor.jpa.api.factory.ODataJPAFactory;
 import com.sap.core.odata.processor.jpa.api.jpql.JPQLContext;
-import com.sap.core.odata.processor.jpa.api.jpql.JPQLContext.JPQLContextBuilder;
 import com.sap.core.odata.processor.jpa.api.jpql.JPQLContextType;
+import com.sap.core.odata.processor.jpa.api.jpql.JPQLContextView;
+import com.sap.core.odata.processor.jpa.api.jpql.JPQLContext.JPQLContextBuilder;
 import com.sap.core.odata.processor.jpa.api.jpql.JPQLStatement.JPQLStatementBuilder;
 import com.sap.core.odata.processor.jpa.edm.ODataJPAEdmProvider;
-import com.sap.core.odata.processor.jpa.jpql.JPQLSelectContextImpl;
-import com.sap.core.odata.processor.jpa.jpql.JPQLSelectSingleContextImpl;
+import com.sap.core.odata.processor.jpa.jpql.JPQLSelectContext;
+import com.sap.core.odata.processor.jpa.jpql.JPQLSelectSingleContext;
 import com.sap.core.odata.processor.jpa.jpql.JPQLSelectSingleStatementBuilder;
 import com.sap.core.odata.processor.jpa.jpql.JPQLSelectStatementBuilder;
 
@@ -45,7 +46,7 @@ public class ODataJPAFactoryImpl extends ODataJPAFactory {
 		private JPQLBuilderFactoryImpl( ){}
 		
 		@Override
-		public JPQLStatementBuilder getStatementBuilder(JPQLContext context) {
+		public JPQLStatementBuilder getStatementBuilder(JPQLContextView context) {
 			JPQLStatementBuilder builder = null;
 			switch (context.getType()) {
 			case SELECT:
@@ -67,11 +68,11 @@ JPQLContextBuilder contextBuilder = null;
 			
 			switch (contextType) {
 			case SELECT:
-				JPQLSelectContextImpl selectContext = new JPQLSelectContextImpl();
+				JPQLSelectContext selectContext = new JPQLSelectContext();
 				contextBuilder =  selectContext.new JPQLSelectContextBuilder();
 				break;
 			case SELECT_SINGLE:
-				JPQLSelectSingleContextImpl singleSelectContext = new JPQLSelectSingleContextImpl();
+				JPQLSelectSingleContext singleSelectContext = new JPQLSelectSingleContext();
 				contextBuilder =  singleSelectContext.new JPQLSelectSingleContextBuilder();
 				break;
 			
@@ -99,7 +100,7 @@ JPQLContextBuilder contextBuilder = null;
 		@Override
 		public ODataSingleProcessor createODataProcessor(
 				ODataJPAContext oDataJPAContext) {
-			return new ODataJPAProcessor(oDataJPAContext);
+			return new ODataJPAProcessorDefault(oDataJPAContext);
 		}
 
 		@Override

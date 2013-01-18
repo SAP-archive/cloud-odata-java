@@ -33,7 +33,7 @@ public abstract class ODataJPAServiceFactory implements ODataServiceFactory {
 
 		// OData JPA Processor
 		oDataJPAContext.setODataContext(ctx);
-		ODataJPAProcessor odataJPAProcessor = new ODataJPAProcessor(oDataJPAContext);
+		ODataJPAProcessorDefault odataJPAProcessor = new ODataJPAProcessorDefault(oDataJPAContext);
 
 		// OData Entity Data Model Provider based on JPA
 		ODataJPAEdmProvider edmProvider = new ODataJPAEdmProvider(oDataJPAContext);

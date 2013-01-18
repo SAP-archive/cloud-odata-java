@@ -8,11 +8,12 @@ import org.slf4j.LoggerFactory;
 
 import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.processor.jpa.access.ODataExpressionParser;
+import com.sap.core.odata.processor.jpa.api.jpql.JPQLContext;
+import com.sap.core.odata.processor.jpa.api.jpql.JPQLContextView;
+import com.sap.core.odata.processor.jpa.api.jpql.JPQLSelectContextView;
 import com.sap.core.odata.processor.jpa.api.jpql.JPQLStatement;
 import com.sap.core.odata.processor.jpa.api.jpql.JPQLStatement.JPQLStatementBuilder;
 import com.sap.core.odata.processor.jpa.exception.ODataJPARuntimeException;
-import com.sap.core.odata.processor.jpa.api.jpql.JPQLContext;
-import com.sap.core.odata.processor.jpa.api.jpql.JPQLSelectContext;
 
 
 public class JPQLSelectStatementBuilder extends JPQLStatementBuilder{
@@ -20,19 +21,11 @@ public class JPQLSelectStatementBuilder extends JPQLStatementBuilder{
 	private static final Logger LOGGER = LoggerFactory.getLogger(JPQLSelectStatementBuilder.class);
 	
 	JPQLStatement jpqlStatement;
-	private JPQLSelectContext context;
+	private JPQLSelectContextView context;
 	
-	public JPQLSelectStatementBuilder(JPQLContext context) {
-		this.context = (JPQLSelectContext) context;
+	public JPQLSelectStatementBuilder(JPQLContextView context) {
+		this.context = (JPQLSelectContextView) context;
 	}
-	
-	/**
-	 * Builds the jpql statement for query of an entity
-	 * 
-	 * @return jpqlStatement
-	 * @throws ODataJPARuntimeException
-	 * 
-	 */
 
 	@Override
 	public JPQLStatement build() throws ODataJPARuntimeException {
@@ -40,14 +33,6 @@ public class JPQLSelectStatementBuilder extends JPQLStatementBuilder{
 		return this.jpqlStatement;
 		
 	}
-	
-	/**
-	 * Creates the jpql statement for query of an entity
-	 * 
-	 * @return jpqlStatement
-	 * @throws ODataJPARuntimeException
-	 * 
-	 */
 
 	private String createJPQLQuery() throws ODataJPARuntimeException {
 
