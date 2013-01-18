@@ -1,5 +1,16 @@
 package com.sap.core.odata.core.ep.consumer;
 
+import static com.sap.core.odata.core.ep.FormatXml.ATOM_CONTENT;
+import static com.sap.core.odata.core.ep.FormatXml.ATOM_ENTRY;
+import static com.sap.core.odata.core.ep.FormatXml.ATOM_HREF;
+import static com.sap.core.odata.core.ep.FormatXml.ATOM_ID;
+import static com.sap.core.odata.core.ep.FormatXml.ATOM_LINK;
+import static com.sap.core.odata.core.ep.FormatXml.ATOM_REL;
+import static com.sap.core.odata.core.ep.FormatXml.ATOM_SRC;
+import static com.sap.core.odata.core.ep.FormatXml.M_ETAG;
+import static com.sap.core.odata.core.ep.FormatXml.M_PROPERTIES;
+import static com.sap.core.odata.core.ep.FormatXml.M_TYPE;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -10,28 +21,19 @@ import javax.xml.stream.XMLStreamReader;
 import com.sap.core.odata.api.edm.Edm;
 import com.sap.core.odata.api.edm.EdmException;
 import com.sap.core.odata.api.ep.EntityProviderException;
-import com.sap.core.odata.api.ep.ReadEntryResult;
-import com.sap.core.odata.core.ep.EntryMetadataImpl;
-import com.sap.core.odata.core.ep.MediaMetadataImpl;
-import com.sap.core.odata.core.ep.ReadEntryResultImpl;
+import com.sap.core.odata.api.ep.entry.ODataEntry;
 import com.sap.core.odata.core.ep.aggregator.EntityInfoAggregator;
 import com.sap.core.odata.core.ep.aggregator.EntityPropertyInfo;
+import com.sap.core.odata.core.ep.entry.EntryMetadataImpl;
+import com.sap.core.odata.core.ep.entry.MediaMetadataImpl;
+import com.sap.core.odata.core.ep.entry.ODataEntryImpl;
 
+/**
+ * Atom/XML format reader/consumer for entries.
+ */
 public class XmlEntryConsumer {
 
-  private static final String CONTENT_ATTRIBUTE_SRC = "src";
-  private static final String CONTENT_ATTRIBUTE_TYPE = "type";
-  private static final String TAG_PROPERTIES = "properties";
-  private static final String TAG_CONTENT = "content";
-  private static final String TAG_ID = "id";
-  private static final String LINK_ATTRIBUTE_REL = "rel";
-  private static final String LINK_ATTRIBUTE_HREF = "href";
-  private static final String TAG_LINK = "link";
-  private static final String TAG_ENTRY = "entry";
-  private static final String ENTRY_ATTRIBUTE_ETAG = "etag";
-  private static final String LINK_ATTRIBUTE_ETAG = "etag";
-
-  final ReadEntryResultImpl readEntryResult;
+  final ODataEntryImpl readEntryResult;
   final Map<String, Object> properties;
   final MediaMetadataImpl mediaMetadata;
   final EntryMetadataImpl entryMetadata;
@@ -40,10 +42,10 @@ public class XmlEntryConsumer {
     properties = new HashMap<String, Object>();
     mediaMetadata = new MediaMetadataImpl();
     entryMetadata = new EntryMetadataImpl();
-    readEntryResult = new ReadEntryResultImpl(properties, mediaMetadata, entryMetadata);
+    readEntryResult = new ODataEntryImpl(properties, mediaMetadata, entryMetadata);
   }
 
-  public ReadEntryResult readEntry(XMLStreamReader reader, EntityInfoAggregator eia) throws EntityProviderException {
+  public ODataEntry readEntry(XMLStreamReader reader, EntityInfoAggregator eia) throws EntityProviderException {
     try {
       int eventType;
       while ((eventType = reader.next()) != XMLStreamReader.END_DOCUMENT) {
@@ -69,15 +71,15 @@ public class XmlEntryConsumer {
    * @throws EdmException
    */
   private void handleStartedTag(XMLStreamReader reader, String tagName, EntityInfoAggregator eia) throws EntityProviderException, XMLStreamException, EdmException {
-    if (TAG_ID.equals(tagName)) {
+    if (ATOM_ID.equals(tagName)) {
       readId(reader);
-    } else if (TAG_ENTRY.equals(tagName)) {
+    } else if (ATOM_ENTRY.equals(tagName)) {
       readEntry(reader);
-    } else if (TAG_LINK.equals(tagName)) {
+    } else if (ATOM_LINK.equals(tagName)) {
       readLink(reader);
-    } else if (TAG_CONTENT.equals(tagName)) {
+    } else if (ATOM_CONTENT.equals(tagName)) {
       readContent(reader, eia);
-    } else if (TAG_PROPERTIES.equals(tagName)) {
+    } else if (M_PROPERTIES.equals(tagName)) {
       readProperties(reader, eia);
     } else {
       readCustomElement(reader, tagName, eia);
@@ -107,10 +109,10 @@ public class XmlEntryConsumer {
   }
 
   private void readEntry(XMLStreamReader reader) throws EntityProviderException, XMLStreamException {
-    validateStartPosition(reader, TAG_ENTRY);
+    validateStartPosition(reader, ATOM_ENTRY);
     Map<String, String> attributes = readAttributes(reader);
 
-    String etag = attributes.get(ENTRY_ATTRIBUTE_ETAG);
+    String etag = attributes.get(M_ETAG);
     entryMetadata.setEtag(etag);
   }
 
@@ -121,54 +123,54 @@ public class XmlEntryConsumer {
    * @throws XMLStreamException
    */
   private void readLink(XMLStreamReader reader) throws EntityProviderException, XMLStreamException {
-    validateStartPosition(reader, TAG_LINK);
+    validateStartPosition(reader, ATOM_LINK);
     Map<String, String> attributes = readAttributes(reader);
-    readAndValidateEndPosition(reader, TAG_LINK);
+    readAndValidateEndPosition(reader, ATOM_LINK);
 
-    String uri = attributes.get(LINK_ATTRIBUTE_HREF);
-    String rel = attributes.get(LINK_ATTRIBUTE_REL);
+    String uri = attributes.get(ATOM_HREF);
+    String rel = attributes.get(ATOM_REL);
 
     if (rel == null || uri == null) {
       throw new EntityProviderException(EntityProviderException.MISSING_ATTRIBUTE.addContent(
-          "'" + LINK_ATTRIBUTE_HREF + "' and/or '" + LINK_ATTRIBUTE_REL + "' at tag '" + TAG_LINK + "'"));
+          "'" + ATOM_HREF + "' and/or '" + ATOM_REL + "' at tag '" + ATOM_LINK + "'"));
     } else if (rel.startsWith(Edm.NAMESPACE_REL_2007_08)) {
       String navigationPropertyName = rel.substring(Edm.NAMESPACE_REL_2007_08.length());
       entryMetadata.putAssociationUri(navigationPropertyName, uri);
     } else if (rel.equals(Edm.LINK_REL_EDIT_MEDIA)) {
       mediaMetadata.setEditLink(uri);
-      String etag = attributes.get(LINK_ATTRIBUTE_ETAG);
+      String etag = attributes.get(M_ETAG);
       mediaMetadata.setEtag(etag);
     }
   }
 
   private void readContent(XMLStreamReader reader, EntityInfoAggregator eia) throws EntityProviderException, XMLStreamException, EdmException {
-    validateStartPosition(reader, TAG_CONTENT);
+    validateStartPosition(reader, ATOM_CONTENT);
     Map<String, String> attributes = readAttributes(reader);
     int nextEventType = reader.nextTag();
 
     if (XMLStreamReader.END_ELEMENT == nextEventType) {
-      validateEndPosition(reader, TAG_CONTENT);
-    } else if (XMLStreamReader.START_ELEMENT == nextEventType && reader.getLocalName().equals(TAG_PROPERTIES)) {
+      validateEndPosition(reader, ATOM_CONTENT);
+    } else if (XMLStreamReader.START_ELEMENT == nextEventType && reader.getLocalName().equals(M_PROPERTIES)) {
       readProperties(reader, eia);
     } else {
       throw new EntityProviderException(EntityProviderException.INVALID_STATE
           .addContent("Expected closing 'content' or starting 'properties' but found '" + reader.getLocalName() + "'."));
     }
     //
-    String contentType = attributes.get(CONTENT_ATTRIBUTE_TYPE);
+    String contentType = attributes.get(M_TYPE);
     mediaMetadata.setContentType(contentType);
-    String sourceLink = attributes.get(CONTENT_ATTRIBUTE_SRC);
+    String sourceLink = attributes.get(ATOM_SRC);
     mediaMetadata.setSourceLink(sourceLink);
   }
 
   private void readId(XMLStreamReader reader) throws EntityProviderException, XMLStreamException {
-    validateStartPosition(reader, TAG_ID);
+    validateStartPosition(reader, ATOM_ID);
     int eventType = reader.next();
     String value = null;
     if (eventType == XMLStreamReader.CHARACTERS) {
       value = reader.getText();
     }
-    readAndValidateEndPosition(reader, TAG_ID);
+    readAndValidateEndPosition(reader, ATOM_ID);
 
     entryMetadata.setId(value);
   }
@@ -196,7 +198,7 @@ public class XmlEntryConsumer {
         properties.put(name, value);
       } else if (nextTagEventType == XMLStreamReader.END_ELEMENT) {
         String name = reader.getLocalName();
-        if (TAG_PROPERTIES.equals(name)) {
+        if (M_PROPERTIES.equals(name)) {
           run = false;
         }
       }

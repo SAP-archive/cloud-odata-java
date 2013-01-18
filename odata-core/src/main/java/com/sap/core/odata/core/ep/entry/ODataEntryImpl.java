@@ -1,18 +1,18 @@
-package com.sap.core.odata.core.ep;
+package com.sap.core.odata.core.ep.entry;
 
 import java.util.Map;
 
-import com.sap.core.odata.api.ep.EntryMetadata;
-import com.sap.core.odata.api.ep.MediaMetadata;
-import com.sap.core.odata.api.ep.ReadEntryResult;
+import com.sap.core.odata.api.ep.entry.EntryMetadata;
+import com.sap.core.odata.api.ep.entry.MediaMetadata;
+import com.sap.core.odata.api.ep.entry.ODataEntry;
 
-public class ReadEntryResultImpl implements ReadEntryResult {
+public class ODataEntryImpl implements ODataEntry {
 
   private Map<String, Object> data;
   private EntryMetadata entryMetadata;
   private MediaMetadata mediaMetadata;
   
-  public ReadEntryResultImpl(Map<String, Object> data, MediaMetadata mediaMetadata, EntryMetadata entryMetadata) {
+  public ODataEntryImpl(Map<String, Object> data, MediaMetadata mediaMetadata, EntryMetadata entryMetadata) {
     this.data = data;
     this.entryMetadata = entryMetadata;
     this.mediaMetadata = mediaMetadata;

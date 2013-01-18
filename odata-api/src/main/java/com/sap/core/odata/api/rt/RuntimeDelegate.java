@@ -8,7 +8,7 @@ import com.sap.core.odata.api.edm.EdmSimpleType;
 import com.sap.core.odata.api.edm.EdmSimpleTypeFacade;
 import com.sap.core.odata.api.edm.EdmSimpleTypeKind;
 import com.sap.core.odata.api.edm.provider.EdmProvider;
-import com.sap.core.odata.api.ep.EntityProvider.ProviderInterface;
+import com.sap.core.odata.api.ep.EntityProvider.EntityProviderInterface;
 import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.api.processor.ODataResponse.ODataResponseBuilder;
 import com.sap.core.odata.api.processor.feature.ProcessorFeature;
@@ -89,7 +89,7 @@ public abstract class RuntimeDelegate {
 
     protected abstract List<String> getSupportedContentTypes(List<String> customContentTypes, Class<? extends ProcessorFeature> processorFeature) throws ODataException;
 
-    protected abstract ProviderInterface createProviderFacade();
+    protected abstract EntityProviderInterface createEntityProvider();
   }
 
   public static EdmSimpleType getEdmSimpleType(EdmSimpleTypeKind edmSimpleType) {
@@ -129,7 +129,7 @@ public abstract class RuntimeDelegate {
     }
   }
 
-  public static ProviderInterface createProviderFacade() {
-    return RuntimeDelegate.getInstance().createProviderFacade();
+  public static EntityProviderInterface createEntityProvider() {
+    return RuntimeDelegate.getInstance().createEntityProvider();
   }
 }

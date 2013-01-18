@@ -10,7 +10,7 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 import com.sap.core.odata.api.edm.EdmEntitySet;
-import com.sap.core.odata.api.ep.ReadEntryResult;
+import com.sap.core.odata.api.ep.entry.ODataEntry;
 import com.sap.core.odata.core.commons.ContentType;
 import com.sap.core.odata.testutil.mock.MockFacade;
 
@@ -56,7 +56,7 @@ public class ProviderFacadeImplTest {
     InputStream content = new ByteArrayInputStream(EMPLOYEE_1_XML.getBytes("utf-8"));
     Object result = provider.readEntry(contentType, entitySet, content);
 
-    assertTrue(result instanceof ReadEntryResult);
+    assertTrue(result instanceof ODataEntry);
   }
 
   @Test

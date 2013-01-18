@@ -14,7 +14,7 @@ import org.slf4j.LoggerFactory;
 import com.sap.core.odata.api.edm.EdmEntitySet;
 import com.sap.core.odata.api.edm.EdmProperty;
 import com.sap.core.odata.api.ep.EntityProviderException;
-import com.sap.core.odata.api.ep.ReadEntryResult;
+import com.sap.core.odata.api.ep.entry.ODataEntry;
 import com.sap.core.odata.core.ep.aggregator.EntityInfoAggregator;
 
 /**
@@ -32,7 +32,7 @@ public class XmlEntityConsumer {
     super();
   }
 
-  public ReadEntryResult readEntry(EdmEntitySet entitySet, Object content) throws EntityProviderException {
+  public ODataEntry readEntry(EdmEntitySet entitySet, Object content) throws EntityProviderException {
     XMLStreamReader reader = null;
     
     try {
@@ -40,7 +40,7 @@ public class XmlEntityConsumer {
       reader = createStaxReader(content);
       
       EntityInfoAggregator eia = EntityInfoAggregator.create(entitySet);
-      ReadEntryResult result = xec.readEntry(reader, eia);
+      ODataEntry result = xec.readEntry(reader, eia);
       return result;
     } catch (Exception e) {
       throw new EntityProviderException(EntityProviderException.COMMON, e);

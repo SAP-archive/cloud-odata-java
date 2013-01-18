@@ -1,6 +1,6 @@
-package com.sap.core.odata.core.ep;
+package com.sap.core.odata.core.ep.entry;
 
-import com.sap.core.odata.api.ep.MediaMetadata;
+import com.sap.core.odata.api.ep.entry.MediaMetadata;
 
 public class MediaMetadataImpl implements MediaMetadata {
   

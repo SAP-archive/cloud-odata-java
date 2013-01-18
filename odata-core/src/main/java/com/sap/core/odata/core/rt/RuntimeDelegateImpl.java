@@ -10,7 +10,7 @@ import com.sap.core.odata.api.edm.EdmSimpleType;
 import com.sap.core.odata.api.edm.EdmSimpleTypeFacade;
 import com.sap.core.odata.api.edm.EdmSimpleTypeKind;
 import com.sap.core.odata.api.edm.provider.EdmProvider;
-import com.sap.core.odata.api.ep.EntityProvider.ProviderInterface;
+import com.sap.core.odata.api.ep.EntityProvider.EntityProviderInterface;
 import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.api.exception.ODataNotImplementedException;
 import com.sap.core.odata.api.processor.ODataResponse.ODataResponseBuilder;
@@ -77,7 +77,7 @@ public class RuntimeDelegateImpl extends RuntimeDelegateInstance {
 
 
   @Override
-  protected ProviderInterface createProviderFacade() {
+  protected EntityProviderInterface createEntityProvider() {
     return new ProviderFacadeImpl();
   }
 

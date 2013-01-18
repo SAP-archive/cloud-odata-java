@@ -8,10 +8,10 @@ import com.sap.core.odata.api.edm.Edm;
 import com.sap.core.odata.api.edm.EdmEntitySet;
 import com.sap.core.odata.api.edm.EdmFunctionImport;
 import com.sap.core.odata.api.edm.EdmProperty;
-import com.sap.core.odata.api.ep.EntityProvider.ProviderInterface;
+import com.sap.core.odata.api.ep.EntityProvider.EntityProviderInterface;
+import com.sap.core.odata.api.ep.entry.ODataEntry;
 import com.sap.core.odata.api.ep.EntityProviderException;
 import com.sap.core.odata.api.ep.EntityProviderProperties;
-import com.sap.core.odata.api.ep.ReadEntryResult;
 import com.sap.core.odata.api.exception.ODataNotAcceptableException;
 import com.sap.core.odata.api.exception.ODataNotImplementedException;
 import com.sap.core.odata.api.processor.ODataResponse;
@@ -20,7 +20,7 @@ import com.sap.core.odata.core.commons.ContentType;
 /**
  * @author SAP AG
  */
-public class ProviderFacadeImpl implements ProviderInterface {
+public class ProviderFacadeImpl implements EntityProviderInterface {
 
   private static BasicEntityProvider create() throws EntityProviderException {
     return new BasicEntityProvider();
@@ -104,7 +104,7 @@ public class ProviderFacadeImpl implements ProviderInterface {
   }
 
   @Override
-  public ReadEntryResult readEntry(String contentType, EdmEntitySet entitySet, InputStream content) throws EntityProviderException {
+  public ODataEntry readEntry(String contentType, EdmEntitySet entitySet, InputStream content) throws EntityProviderException {
     return create(contentType).readEntry(entitySet, content);
   }
 

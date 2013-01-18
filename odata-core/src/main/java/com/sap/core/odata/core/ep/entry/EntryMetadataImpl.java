@@ -1,10 +1,10 @@
-package com.sap.core.odata.core.ep;
+package com.sap.core.odata.core.ep.entry;
 
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.sap.core.odata.api.ep.EntryMetadata;
+import com.sap.core.odata.api.ep.entry.EntryMetadata;
 
 public class EntryMetadataImpl implements EntryMetadata {
   private String id;
