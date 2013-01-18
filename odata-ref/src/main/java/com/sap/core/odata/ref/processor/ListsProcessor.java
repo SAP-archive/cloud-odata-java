@@ -32,7 +32,7 @@ import com.sap.core.odata.api.edm.EdmType;
 import com.sap.core.odata.api.edm.EdmTypeKind;
 import com.sap.core.odata.api.ep.EntityProvider;
 import com.sap.core.odata.api.ep.EntityProviderProperties;
-import com.sap.core.odata.api.ep.ReadEntryResult;
+import com.sap.core.odata.api.ep.entry.ODataEntry;
 import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.api.exception.ODataNotFoundException;
 import com.sap.core.odata.api.exception.ODataNotImplementedException;
@@ -282,7 +282,7 @@ public class ListsProcessor extends ODataSingleProcessor {
     ODataContext context = getContext();
     int timingHandle = context.startRuntimeMeasurement("EntityConsumer", "readEntry");
 
-    final ReadEntryResult values = EntityProvider.readEntry(requestContentType, entitySet, content);
+    final ODataEntry values = EntityProvider.readEntry(requestContentType, entitySet, content);
 
     context.stopRuntimeMeasurement(timingHandle);
 

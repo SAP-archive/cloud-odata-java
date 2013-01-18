@@ -17,7 +17,7 @@ import org.slf4j.LoggerFactory;
 
 import com.sap.core.odata.api.edm.Edm;
 import com.sap.core.odata.api.edm.EdmException;
-import com.sap.core.odata.api.ep.EntityProvider.ProviderInterface;
+import com.sap.core.odata.api.ep.EntityProvider.EntityProviderInterface;
 import com.sap.core.odata.api.ep.EntityProviderException;
 import com.sap.core.odata.api.ep.EntityProviderProperties;
 import com.sap.core.odata.api.exception.ODataException;
@@ -122,7 +122,7 @@ public abstract class AbstractProviderTest extends BaseTest {
     return ctx;
   }
 
-  protected ProviderInterface createEntityProvider() throws ODataException, EdmException, EntityProviderException {
+  protected EntityProviderInterface createEntityProvider() throws ODataException, EdmException, EntityProviderException {
     return new ProviderFacadeImpl();
   }
 

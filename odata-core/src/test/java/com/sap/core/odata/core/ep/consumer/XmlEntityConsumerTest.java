@@ -14,9 +14,9 @@ import org.junit.Test;
 
 import com.sap.core.odata.api.edm.EdmEntitySet;
 import com.sap.core.odata.api.edm.EdmProperty;
-import com.sap.core.odata.api.ep.EntryMetadata;
-import com.sap.core.odata.api.ep.MediaMetadata;
-import com.sap.core.odata.api.ep.ReadEntryResult;
+import com.sap.core.odata.api.ep.entry.EntryMetadata;
+import com.sap.core.odata.api.ep.entry.MediaMetadata;
+import com.sap.core.odata.api.ep.entry.ODataEntry;
 import com.sap.core.odata.testutil.fit.BaseTest;
 import com.sap.core.odata.testutil.mock.MockFacade;
 
@@ -24,8 +24,8 @@ public class XmlEntityConsumerTest extends BaseTest {
 
   public static final String EMPLOYEE_1_XML = 
     "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
-    "<entry xmlns=\"http://www.w3.org/2005/Atom\" xmlns:m=\"http://schemas.microsoft.com/ado/2007/08/dataservices/metadata\" xmlns:d=\"http://schemas.microsoft.com/ado/2007/08/dataservices\" xml:base=\"https://refodata.prod.jpaas.sapbydesign.com/com.sap.core.odata.ref.web/ReferenceScenario.svc/\"  m:etag=\"W/&quot;1&quot;\">" + 
-      "<id>https://refodata.prod.jpaas.sapbydesign.com/com.sap.core.odata.ref.web/ReferenceScenario.svc/Employees('1')</id>" +
+    "<entry xmlns=\"http://www.w3.org/2005/Atom\" xmlns:m=\"http://schemas.microsoft.com/ado/2007/08/dataservices/metadata\" xmlns:d=\"http://schemas.microsoft.com/ado/2007/08/dataservices\" xml:base=\"http://localhost:19000/\"  m:etag=\"W/&quot;1&quot;\">" + 
+      "<id>http://localhost:19000/Employees('1')</id>" +
       "<title type=\"text\">Walter Winter</title>" + 
       "<updated>1999-01-01T00:00:00Z</updated>" + 
       "<category term=\"RefScenario.Employee\" scheme=\"http://schemas.microsoft.com/ado/2007/08/dataservices/scheme\"/>" + 
@@ -102,11 +102,11 @@ public class XmlEntityConsumerTest extends BaseTest {
     
     // execute
     XmlEntityConsumer xec = new XmlEntityConsumer();
-    ReadEntryResult result = xec.readEntry(entitySet, contentBody);
+    ODataEntry result = xec.readEntry(entitySet, contentBody);
 
     // verify
     EntryMetadata metadata = result.getMetadata();
-    assertEquals("https://refodata.prod.jpaas.sapbydesign.com/com.sap.core.odata.ref.web/ReferenceScenario.svc/Employees('1')", metadata.getId());
+    assertEquals("http://localhost:19000/Employees('1')", metadata.getId());
     assertEquals("W/\"1\"", metadata.getEtag());
     Map<String, String> associationUris = metadata.getAssociationUris();
     assertEquals(3, associationUris.size());
@@ -141,7 +141,7 @@ public class XmlEntityConsumerTest extends BaseTest {
     
     // execute
     XmlEntityConsumer xec = new XmlEntityConsumer();
-    ReadEntryResult result = xec.readEntry(entitySet, contentBody);
+    ODataEntry result = xec.readEntry(entitySet, contentBody);
 
     // verify
     Map<String, String> associationUris = result.getMetadata().getAssociationUris();
@@ -160,7 +160,7 @@ public class XmlEntityConsumerTest extends BaseTest {
     
     // execute
     XmlEntityConsumer xec = new XmlEntityConsumer();
-    ReadEntryResult result = xec.readEntry(entitySet, contentBody);
+    ODataEntry result = xec.readEntry(entitySet, contentBody);
 
     
     // verify
@@ -200,7 +200,7 @@ public class XmlEntityConsumerTest extends BaseTest {
     
     EdmEntitySet entitySet = MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Employees");
     InputStream content = new ByteArrayInputStream(EMPLOYEE_1_XML.getBytes("utf-8"));
-    ReadEntryResult result = xec.readEntry(entitySet, content);
+    ODataEntry result = xec.readEntry(entitySet, content);
 
     // verify
     Map<String, Object> properties = result.getProperties();
@@ -238,7 +238,7 @@ public class XmlEntityConsumerTest extends BaseTest {
     
     EdmEntitySet entitySet = MockFacade.getMockEdm().getEntityContainer("Container2").getEntitySet("Photos");
     InputStream reqContent = new ByteArrayInputStream(PHOTO_XML.getBytes("utf-8"));
-    ReadEntryResult result = xec.readEntry(entitySet, reqContent);
+    ODataEntry result = xec.readEntry(entitySet, reqContent);
 
     // verify
     EntryMetadata entryMetadata = result.getMetadata();
@@ -257,7 +257,7 @@ public class XmlEntityConsumerTest extends BaseTest {
     
     EdmEntitySet entitySet = MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Rooms");
     InputStream reqContent = new ByteArrayInputStream(ROOM_1_XML.getBytes("utf-8"));
-    ReadEntryResult result = xec.readEntry(entitySet, reqContent);
+    ODataEntry result = xec.readEntry(entitySet, reqContent);
 
     // verify
     EntryMetadata entryMetadata = result.getMetadata();
