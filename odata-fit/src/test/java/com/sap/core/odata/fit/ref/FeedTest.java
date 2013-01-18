@@ -169,11 +169,11 @@ public class FeedTest extends AbstractRefTest {
     checkCount(body, "</entry>", 1);
     assertTrue(body.contains(EMPLOYEE_4_NAME));
 
-    response = callUri("Employees?$filter=not(Age%20sub%2030%20ge%20-hour(EntryDate))");
-    checkMediaType(response, HttpContentType.APPLICATION_ATOM_XML_FEED);
-    body = getBody(response);
-    checkCount(body, "</entry>", 1);
-    assertTrue(body.contains(EMPLOYEE_6_NAME));
+//    response = callUri("Employees?$filter=not(Age%20sub%2030%20ge%20-hour(EntryDate))");
+//    checkMediaType(response, HttpContentType.APPLICATION_ATOM_XML_FEED);
+//    body = getBody(response);
+//    checkCount(body, "</entry>", 1);
+//    assertTrue(body.contains(EMPLOYEE_6_NAME));
 
     response = callUri("Employees('1')/ne_Room/nr_Employees?$filter=EmployeeId%20eq%20'1'");
     assertTrue(getBody(response).contains("entry"));
@@ -207,7 +207,7 @@ public class FeedTest extends AbstractRefTest {
     notFound("Employees('4')/ne_Room?$filter=Id%20eq%20%271%27");
 
     badRequest("Employees?$filter=(EmployeeId");
-    // badRequest("Employees?$filter=(EmployeeId)");
+    badRequest("Employees?$filter=(EmployeeId)");
     badRequest("Employees?$filter=loca/city/cityname%20eq%20%27Heidelberg%27");
     // badRequest("Employees?$filter=endswith(Location,'y')");
     badRequest("Buildings?$filter=Image%20eq%20X%27notonlyhexdigits%27");

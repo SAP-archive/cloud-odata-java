@@ -1,13 +1,17 @@
 /**
  * <h1>OData library API.</h1>
  *
- * While using this library a custom OData service can be implemented for providing metadata and offering CRUD operations 
- * on data sources following the OData V2.0 protocol specification. See <a href="http://odata.org">odata.org</a>. 
+ * While using this library a custom OData service can be implemented
+ * for providing metadata and offering CRUD operations on data sources
+ * following the OData V2.0 protocol specification.
+ * See <a href="http://odata.org/">odata.org</a>. 
  * <p>
- * Start using this library with a standard JEE web application. Additionally to this library a JAX-RS runtime library is
- * required which can for instance Jersey or CXF or any other implementation. This library is proofed and used with CXF.<p>
+ * Start using this library with a standard JEE web application.
+ * Additionally to this library a JAX-RS runtime library is required
+ * which can be, for instance, Jersey or CXF or any other implementation.
+ * This library is proofed and used with CXF.<p>
  * <p>
- * Define a JAX-RS servlet in web.xml and set following init parameter:
+ * Define a JAX-RS servlet in web.xml and set following init parameters:
  * 
  * <table border="1">
  *  <tr>
@@ -34,9 +38,11 @@
  *  </tr>
  * </table>
  * 
- * A {@link ODataService} consists of a {@link EdmProvider} for serving metadata and a processor for handling data. 
- * For convenience this library offers a {@link ODataSingleProcessorService} and a {@link ODataSingleProcessor} and it is 
- * recommended to use and subclass this classes for custom service implementation. 
+ * An OData service consists of a {@link EdmProvider} for serving metadata
+ * and a processor for handling data. 
+ * For convenience this library offers an {@link ODataSingleProcessorService}
+ * and an {@link ODataSingleProcessor} and it is recommended to use and subclass
+ * this classes for custom service implementation. 
  *
  * <pre>
  * {@code
@@ -57,4 +63,3 @@
  * </pre>
  */
 package com.sap.core.odata.api;
-

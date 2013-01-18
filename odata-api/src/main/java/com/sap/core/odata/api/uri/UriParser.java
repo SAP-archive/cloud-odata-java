@@ -23,23 +23,24 @@ public abstract class UriParser {
 
   /**
    * Parse path segments and query parameters for the given EDM
-   * @param edm
-   * @param pathSegments
-   * @param queryParameter
-   * @return {@link UriInfo} parsed uri result
-   * @throws UriSyntaxException
+   * @param edm Entity Data Model
+   * @param pathSegments list of path segments
+   * @param queryParameters query parameters
+   * @return {@link UriInfo} information about the parsed URI
+   * @throws ODataException
    */
-  public static UriInfo parse(Edm edm, List<PathSegment> pathSegments, Map<String, String> queryParameter) throws ODataException {
-    return RuntimeDelegate.getUriParser(edm).parse(pathSegments, queryParameter);
+  public static UriInfo parse(Edm edm, List<PathSegment> pathSegments, Map<String, String> queryParameters) throws ODataException {
+    return RuntimeDelegate.getUriParser(edm).parse(pathSegments, queryParameters);
   }
 
   /**
    * Parse path segments and query parameters.
-   * 
-   * @param pathSegments
-   * @param queryParameters
-   * @return {@link UriInfo} parsed uri result
+   * @param pathSegments list of path segments
+   * @param queryParameters query parameters
+   * @return {@link UriInfo} information about the parsed URI
    * @throws UriSyntaxException
+   * @throws UriNotMatchingException
+   * @throws EdmException
    */
   public abstract UriInfo parse(List<PathSegment> pathSegments, Map<String, String> queryParameters) throws UriSyntaxException, UriNotMatchingException, EdmException;
   
@@ -88,7 +89,7 @@ public abstract class UriParser {
    *   $orderby expression string to be parsed
    * @return
    *   Expression tree which can be traversed with help of the interfaces {@link ExpressionVisitor} and {@link Visitable}
-   * @throws OrderByParserException
+   * @throws ExpressionParserException
    *   Exception thrown due to errors while parsing the $orderby expression string 
    * @throws ODataMessageException
    *   Used for extensibility
@@ -106,7 +107,7 @@ public abstract class UriParser {
    *   $orderby expression string to be parsed
    * @return
    *   Expression tree which can be traversed with help of the interfaces {@link ExpressionVisitor} and {@link Visitable}
-   * @throws OrderByParserException
+   * @throws ExpressionParserException
    *   Exception thrown due to errors while parsing the $orderby expression string 
    * @throws ODataMessageException
    *   Used for extensibility

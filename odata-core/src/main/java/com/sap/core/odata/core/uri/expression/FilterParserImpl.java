@@ -303,6 +303,8 @@ public class FilterParserImpl implements FilterParser
     case CLOSEPAREN: // ')'  finishes a parenthesis (it is no extra token)" +
     case COMMA: //. " ','  is a separator for function parameters (it is no extra token)" +
       return null;
+    default:
+      // continue
     }
 
     //-->Check if the token is a unary operator

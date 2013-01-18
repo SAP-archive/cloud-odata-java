@@ -15,6 +15,7 @@ import org.apache.http.client.methods.HttpGet;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.sap.core.odata.api.commons.HttpStatusCodes;
 import com.sap.core.odata.api.edm.Edm;
 import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.api.processor.ODataSingleProcessorService;
@@ -23,6 +24,9 @@ import com.sap.core.odata.testutil.helper.StringHelper;
 import com.sap.core.odata.testutil.helper.XMLUnitHelper;
 import com.sap.core.odata.testutil.server.TestServer;
 
+/**
+ * @author SAP AG
+ */
 public class MappingTest extends AbstractFitTest {
 
   public static void main(String[] args) {
@@ -34,8 +38,7 @@ public class MappingTest extends AbstractFitTest {
     } catch (IOException e) {
       e.printStackTrace(System.err);
     } finally {
-      if (server != null)
-        server.stopServer();
+      server.stopServer();
     }
   }
 
@@ -58,21 +61,21 @@ public class MappingTest extends AbstractFitTest {
   public void testServiceDocument() throws Exception {
     HttpGet get = new HttpGet(URI.create(this.getEndpoint().toString() + "/"));
     HttpResponse response = this.getHttpClient().execute(get);
-    assertEquals(200, response.getStatusLine().getStatusCode());
+    assertEquals(HttpStatusCodes.OK.getStatusCode(), response.getStatusLine().getStatusCode());
   }
 
   @Test
   public void testMetadata() throws Exception {
     HttpGet get = new HttpGet(URI.create(this.getEndpoint().toString() + "/$metadata"));
     HttpResponse response = this.getHttpClient().execute(get);
-    assertEquals(200, response.getStatusLine().getStatusCode());
+    assertEquals(HttpStatusCodes.OK.getStatusCode(), response.getStatusLine().getStatusCode());
   }
 
   @Test
   public void testEntitySet() throws Exception {
     HttpGet get = new HttpGet(URI.create(this.getEndpoint().toString() + "/mappings"));
     HttpResponse response = this.getHttpClient().execute(get);
-    assertEquals(200, response.getStatusLine().getStatusCode());
+    assertEquals(HttpStatusCodes.OK.getStatusCode(), response.getStatusLine().getStatusCode());
 
     String payload = StringHelper.inputStreamToString(response.getEntity().getContent());
     for (int i = 1; i <= MapProcessor.RECORD_COUNT; i++) {
@@ -86,12 +89,12 @@ public class MappingTest extends AbstractFitTest {
   public void testEntity() throws Exception {
     HttpGet get = new HttpGet(URI.create(this.getEndpoint().toString() + "/mappings('V01.7')"));
     HttpResponse response = this.getHttpClient().execute(get);
-    assertEquals(200, response.getStatusLine().getStatusCode());
+    assertEquals(HttpStatusCodes.OK.getStatusCode(), response.getStatusLine().getStatusCode());
 
     String payload = StringHelper.inputStreamToString(response.getEntity().getContent());
-    assertXpathEvaluatesTo("V01.7" , "/a:entry/a:content/m:properties/d:p1", payload);
-    assertXpathEvaluatesTo("V02.7" , "/a:entry/a:content/m:properties/d:p2", payload);
-    assertXpathEvaluatesTo("V03.7" , "/a:entry/a:content/m:properties/d:p3", payload);
+    assertXpathEvaluatesTo("V01.7", "/a:entry/a:content/m:properties/d:p1", payload);
+    assertXpathEvaluatesTo("V02.7", "/a:entry/a:content/m:properties/d:p2", payload);
+    assertXpathEvaluatesTo("V03.7", "/a:entry/a:content/m:properties/d:p3", payload);
 
   }
 
@@ -101,8 +104,8 @@ public class MappingTest extends AbstractFitTest {
     HttpResponse response = this.getHttpClient().execute(get);
 
     String payload = StringHelper.inputStreamToString(response.getEntity().getContent());
-    assertEquals(200, response.getStatusLine().getStatusCode());
-    
+    assertEquals(HttpStatusCodes.OK.getStatusCode(), response.getStatusLine().getStatusCode());
+
     assertEquals("V02.7", payload);
   }
 }

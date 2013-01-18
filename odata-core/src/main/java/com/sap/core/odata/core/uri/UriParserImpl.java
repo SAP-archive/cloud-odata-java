@@ -22,6 +22,7 @@ import com.sap.core.odata.api.edm.EdmParameter;
 import com.sap.core.odata.api.edm.EdmProperty;
 import com.sap.core.odata.api.edm.EdmSimpleType;
 import com.sap.core.odata.api.edm.EdmSimpleTypeFacade;
+import com.sap.core.odata.api.edm.EdmSimpleTypeKind;
 import com.sap.core.odata.api.edm.EdmType;
 import com.sap.core.odata.api.edm.EdmTypeKind;
 import com.sap.core.odata.api.edm.EdmTyped;
@@ -40,7 +41,6 @@ import com.sap.core.odata.api.uri.expression.FilterExpression;
 import com.sap.core.odata.api.uri.expression.OrderByExpression;
 import com.sap.core.odata.core.edm.EdmSimpleTypeFacadeImpl;
 import com.sap.core.odata.core.exception.ODataRuntimeException;
-import com.sap.core.odata.core.uri.expression.ExpressionParserInternalError;
 import com.sap.core.odata.core.uri.expression.FilterParserImpl;
 import com.sap.core.odata.core.uri.expression.OrderByParserImpl;
 
@@ -513,26 +513,31 @@ public class UriParserImpl extends UriParser {
   }
 
   private void handleSystemQueryOptionFilter(final String filter) throws UriSyntaxException {
-    try {
-      if (uriResult.getTargetType() instanceof EdmEntityType) //TODO improve with correct error 
-        uriResult.setFilter(new FilterParserImpl(edm, (EdmEntityType) uriResult.getTargetType()).parseFilterString(filter));
-
-    } catch (ExpressionParserException e) {
-      throw new UriSyntaxException(UriSyntaxException.INVALIDFILTEREXPRESSION.addContent(filter), e);
-    } catch (ExpressionParserInternalError e) {
-      throw new UriSyntaxException(UriSyntaxException.INVALIDFILTEREXPRESSION.addContent(filter), e);
-    }
+    final EdmType targetType = uriResult.getTargetType();
+    if (targetType instanceof EdmEntityType)
+      try {
+        final FilterExpression filterExpression = parseFilterString((EdmEntityType) targetType, filter);
+        if (filterExpression.getExpression().getEdmType() == EdmSimpleTypeKind.Boolean.getEdmSimpleTypeInstance())
+          uriResult.setFilter(filterExpression);
+        else
+          throw new UriSyntaxException(UriSyntaxException.INVALIDFILTEREXPRESSION.addContent(filter));
+      } catch (ExpressionParserException e) {
+        throw new UriSyntaxException(UriSyntaxException.INVALIDFILTEREXPRESSION.addContent(filter), e);
+      } catch (ODataMessageException e) {
+        throw new UriSyntaxException(UriSyntaxException.INVALIDFILTEREXPRESSION.addContent(filter), e);
+      }
   }
 
-  private void handleSystemQueryOptionOrderBy(final String orderBy) throws UriSyntaxException, EdmException {
-    try {
-      if (uriResult.getTargetType() instanceof EdmEntityType) //TODO improve with correct error
-        uriResult.setOrderBy(new OrderByParserImpl(edm, (EdmEntityType) uriResult.getTargetType()).parseOrderByString(orderBy));
-    } catch (ExpressionParserException e) {
-      throw new UriSyntaxException(UriSyntaxException.INVALIDORDERBYEXPRESSION.addContent(orderBy), e);
-    } catch (ODataMessageException e) {
-      throw new UriSyntaxException(UriSyntaxException.INVALIDORDERBYEXPRESSION.addContent(orderBy), e);
-    }
+  private void handleSystemQueryOptionOrderBy(final String orderBy) throws UriSyntaxException {
+    final EdmType targetType = uriResult.getTargetType();
+    if (targetType instanceof EdmEntityType)
+      try {
+        uriResult.setOrderBy(parseOrderByString((EdmEntityType) targetType, orderBy));
+      } catch (ExpressionParserException e) {
+        throw new UriSyntaxException(UriSyntaxException.INVALIDORDERBYEXPRESSION.addContent(orderBy), e);
+      } catch (ODataMessageException e) {
+        throw new UriSyntaxException(UriSyntaxException.INVALIDORDERBYEXPRESSION.addContent(orderBy), e);
+      }
   }
 
   private void handleSystemQueryOptionInlineCount(final String inlineCount) throws UriSyntaxException {
@@ -714,8 +719,8 @@ public class UriParserImpl extends UriParser {
       return new UriSyntaxException(UriSyntaxException.NOTEXT.addContent(messageReference.getContent()), e);
     else if (key == EdmLiteralException.UNKNOWNLITERAL.getKey())
       return new UriSyntaxException(UriSyntaxException.UNKNOWNLITERAL.addContent(messageReference.getContent()), e);
-
-    return new UriSyntaxException(UriSyntaxException.COMMON, e);
+    else
+      return new UriSyntaxException(UriSyntaxException.COMMON, e);
   }
 
   private List<String> copyPathSegmentList(final List<PathSegment> source) {
@@ -728,12 +733,12 @@ public class UriParserImpl extends UriParser {
   }
 
   @Override
-  public FilterExpression parseFilterString(EdmEntityType edmType, String expression) throws ExpressionParserException, ODataMessageException {
-      return new FilterParserImpl(edm, edmType).parseFilterString(expression);
+  public FilterExpression parseFilterString(final EdmEntityType entityType, final String expression) throws ExpressionParserException, ODataMessageException {
+    return new FilterParserImpl(edm, entityType).parseFilterString(expression);
   }
 
   @Override
-  public OrderByExpression parseOrderByString(EdmEntityType edmType, String expression) throws ExpressionParserException, ODataMessageException {
-    return new OrderByParserImpl(edm, edmType).parseOrderByString(expression);
+  public OrderByExpression parseOrderByString(final EdmEntityType entityType, final String expression) throws ExpressionParserException, ODataMessageException {
+    return new OrderByParserImpl(edm, entityType).parseOrderByString(expression);
   }
 }
