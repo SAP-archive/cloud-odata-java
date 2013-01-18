@@ -1,10 +1,15 @@
 package com.sap.core.odata.processor.ref.jpa;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 
 @Entity
@@ -40,6 +45,9 @@ public class Material {
 	
 	@Column(name = "MEASUREMENT_UNIT")
 	private String measurementUnit;
+	
+	@ManyToMany
+	private List<Storage> storage = new ArrayList<Storage>();
 
 	public long getMaterialId() {
 		return materialId;
@@ -80,4 +88,16 @@ public class Material {
 	public void setMeasurementUnit(String measurementUnit) {
 		this.measurementUnit = measurementUnit;
 	}	
+	
+	public List<Storage> getStorage() {
+		return storage;
+	}
+
+	public void setStorage(List<Storage> storage) {
+		this.storage = storage;
+		Iterator<Storage> itr = storage.iterator();
+		while(itr.hasNext()) {
+			itr.next().getMaterial().add(this);
+		}
+	}
 }
