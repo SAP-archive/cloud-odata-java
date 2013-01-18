@@ -57,7 +57,14 @@ public abstract class ODataResponse {
   public abstract Set<String> getHeaderNames();
 
   /**
-   * @param status http stauts code
+   * Case insensitive check if the header is available in this ODataResponse
+   * @param header
+   * @return true/false
+   */
+  public abstract boolean containsHeader(String header);
+  
+  /**
+   * @param status http status code
    * @return a builder object
    */
   public static ODataResponseBuilder status(HttpStatusCodes status) {
@@ -143,5 +150,4 @@ public abstract class ODataResponse {
 
     protected abstract ODataResponseBuilder fromResponse(ODataResponse response);
   }
-
 }

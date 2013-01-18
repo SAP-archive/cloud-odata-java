@@ -49,6 +49,21 @@ public class ODataResponseImpl extends ODataResponse {
   public String getContentHeader() {
     return this.header.get(HttpHeaders.CONTENT_TYPE);
   }
+  
+  @Override
+  public boolean containsHeader(String header) {
+    
+    boolean contains = false;
+    
+    for (String containedHeader : this.header.keySet()) {
+      if(containedHeader.equalsIgnoreCase(header)){
+        contains = true;
+        break;
+      }
+      
+    }
+    return contains;
+  }
 
   public class ODataResponseBuilderImpl extends ODataResponseBuilder {
     private HttpStatusCodes status = HttpStatusCodes.OK;
@@ -124,5 +139,4 @@ public class ODataResponseImpl extends ODataResponse {
     }
 
   }
-
 }

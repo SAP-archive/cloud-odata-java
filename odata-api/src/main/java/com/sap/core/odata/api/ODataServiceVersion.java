@@ -1,37 +1,72 @@
 package com.sap.core.odata.api;
 
-public enum ODataServiceVersion {
-  V10("1.0"), V20("2.0"), V30("3.0");
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
-  final private String version;
+/**
+ * This class is a container for the supported ODataServiceVersions
+ * @author SAP AG
+ *
+ */
+public class ODataServiceVersion {
 
-  private ODataServiceVersion(String version) {
-    this.version = version;
-  }
+  private static final Pattern DATASERVICEVERSIONPATTERN = Pattern.compile("(\\p{Digit}+\\.\\p{Digit}+)(:?;.*)?");
 
-  @Override
-  public String toString() {
-    return this.version;
-  }
+  /**
+   * ODataServiceVersion 1.0
+   */
+  public static final String V10 = "1.0";
+  /**
+   * ODataServiceVersion 2.0
+   */
+  public static final String V20 = "2.0";
+  /**
+   * ODataServiceVersion 3.0
+   */
+  public static final String V30 = "3.0";
 
-  public static ODataServiceVersion fromString(String version)
+  public static boolean validateDataServiceVersion(String version)
   {
-    for (ODataServiceVersion it : ODataServiceVersion.values())
-    {
-      if (it.version.equals(version))
-      {
-        return it;
-      }
+    Matcher matcher = DATASERVICEVERSIONPATTERN.matcher(version);
+    if (!matcher.matches())
+      throw new IllegalArgumentException(version);
+
+    String possibleDataServiceVersion = matcher.group(1);
+
+    if (V10.equals(possibleDataServiceVersion)) {
+      return true;
+    } else if (V20.equals(possibleDataServiceVersion)) {
+      return true;
+    } else if (V30.equals(possibleDataServiceVersion)) {
+      return true;
     }
 
-    throw new IllegalArgumentException(version);
+    return false;
+  }
+
+  /**
+   * actual > comparedTo
+   * @param actual
+   * @param comparedTo
+   * @return
+   */
+  public static boolean isBiggerThan(String actual, String comparedTo) {
+    if (!validateDataServiceVersion(comparedTo) || !validateDataServiceVersion(actual))
+      throw new IllegalArgumentException("Illegal arguments: " + comparedTo + " and " + actual);
+
+    double me = Double.parseDouble(extractDataServiceVersionString(actual));
+    double other = Double.parseDouble(extractDataServiceVersionString(comparedTo));
+
+    return me > other;
   }
   
-  public boolean isBiggerThan(ODataServiceVersion version){
-    double me = Double.parseDouble(this.toString());
-    double other = Double.parseDouble(version.toString());
+  public static String extractDataServiceVersionString(String rawDataServiceVersion){
+    if(rawDataServiceVersion != null){
+      String[] pattern = rawDataServiceVersion.split(";");
+      return pattern[0];
+    }
     
-    return me > other;
+    return null;
   }
 
 }

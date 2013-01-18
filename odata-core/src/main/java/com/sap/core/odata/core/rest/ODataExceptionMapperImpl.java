@@ -22,7 +22,9 @@ import javax.ws.rs.ext.Provider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.sap.core.odata.api.ODataServiceVersion;
 import com.sap.core.odata.api.commons.HttpStatusCodes;
+import com.sap.core.odata.api.commons.ODataHttpHeaders;
 import com.sap.core.odata.api.exception.MessageReference;
 import com.sap.core.odata.api.exception.ODataApplicationException;
 import com.sap.core.odata.api.exception.ODataException;
@@ -121,7 +123,7 @@ public class ODataExceptionMapperImpl implements ExceptionMapper<Exception> {
   }
 
   private Response buildResponseInternal(InputStream entity, ContentType contentType, int status) {
-    ResponseBuilder responseBuilder = Response.status(status).entity(entity);
+    ResponseBuilder responseBuilder = Response.status(status).entity(entity).header(ODataHttpHeaders.DATASERVICEVERSION, ODataServiceVersion.V10);
 
     if (contentType.getODataFormat() == ODataFormat.JSON)
       return responseBuilder.type(MediaType.APPLICATION_JSON_TYPE).build();

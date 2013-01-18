@@ -35,6 +35,7 @@ import javax.ws.rs.core.UriBuilder;
 import com.sap.core.odata.api.ODataService;
 import com.sap.core.odata.api.ODataServiceFactory;
 import com.sap.core.odata.api.ODataServiceVersion;
+import com.sap.core.odata.api.commons.ODataHttpHeaders;
 import com.sap.core.odata.api.exception.ODataBadRequestException;
 import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.api.exception.ODataMethodNotAllowedException;
@@ -130,13 +131,14 @@ public final class ODataSubLocator implements ODataLocator {
   }
 
   private Response handleHttpMethod(final ODataHttpMethod method) throws ODataException {
-    final ODataServiceVersion version = doDataServiceVersionNegotiation(context.getHttpRequestHeader("dataserviceversion"));
+    final String serverDataServiceVersion = getServerDataServiceVersion();
+    validateDataServiceVersion(serverDataServiceVersion);
     final List<PathSegment> pathSegments = context.getPathInfo().getODataSegments();
     final UriInfoImpl uriInfo = (UriInfoImpl) uriParser.parse(pathSegments, queryParameters);
     final String contentType = doContentNegotiation(uriInfo);
 
     final ODataResponse odataResponse = dispatcher.dispatch(method, uriInfo, requestContent, requestContentType, contentType);
-    final Response response = convertResponse(odataResponse, version);
+    final Response response = convertResponse(odataResponse, serverDataServiceVersion);
 
     return response;
   }
@@ -226,24 +228,25 @@ public final class ODataSubLocator implements ODataLocator {
     dispatcher = new Dispatcher(service);
   }
 
-  ODataServiceVersion doDataServiceVersionNegotiation(String version) throws ODataException {
-    ODataServiceVersion serviceVersion = ODataServiceVersion.V20;
-
+  String getServerDataServiceVersion() throws ODataException {
+    String serverDataServiceVersion = ODataServiceVersion.V20;
     if (service.getVersion() != null) {
-      serviceVersion = service.getVersion();
+      serverDataServiceVersion = service.getVersion();
     }
+    return serverDataServiceVersion;
+  }
 
-    if (version != null) {
+  private void validateDataServiceVersion(String serverDataServiceVersion) throws ODataException {
+    String requestDataServiceVersion = context.getHttpRequestHeader("dataserviceversion");
+    if (requestDataServiceVersion != null) {
       try {
-        ODataServiceVersion requestedVersion = ODataServiceVersion.fromString(version);
-        if (requestedVersion.isBiggerThan(serviceVersion))
-          throw new ODataBadRequestException(ODataBadRequestException.VERSIONERROR.addContent(requestedVersion.toString()));
+        boolean isValid = ODataServiceVersion.validateDataServiceVersion(requestDataServiceVersion);
+        if (!isValid || ODataServiceVersion.isBiggerThan(requestDataServiceVersion, serverDataServiceVersion))
+          throw new ODataBadRequestException(ODataBadRequestException.VERSIONERROR.addContent(requestDataServiceVersion.toString()));
       } catch (IllegalArgumentException e) {
-        throw new ODataBadRequestException(ODataBadRequestException.PARSEVERSIONERROR.addContent(version), e);
+        throw new ODataBadRequestException(ODataBadRequestException.PARSEVERSIONERROR.addContent(requestDataServiceVersion), e);
       }
     }
-
-    return serviceVersion;
   }
 
   private String extractRequestContentType(InitParameter param) {
@@ -385,7 +388,7 @@ public final class ODataSubLocator implements ODataLocator {
     return single;
   }
 
-  private Response convertResponse(final ODataResponse odataResponse, final ODataServiceVersion version) {
+  private Response convertResponse(final ODataResponse odataResponse, final String version) {
     ResponseBuilder responseBuilder = Response.noContent()
         .status(odataResponse.getStatus().getStatusCode())
         .entity(odataResponse.getEntity());
@@ -393,8 +396,8 @@ public final class ODataSubLocator implements ODataLocator {
     for (final String name : odataResponse.getHeaderNames())
       responseBuilder = responseBuilder.header(name, odataResponse.getHeader(name));
 
-    if (!odataResponse.getHeaderNames().contains("dataserviceversion"))
-      responseBuilder = responseBuilder.header("dataserviceversion", version.toString());
+    if (!odataResponse.containsHeader(ODataHttpHeaders.DATASERVICEVERSION))
+      responseBuilder = responseBuilder.header(ODataHttpHeaders.DATASERVICEVERSION, version);
 
     String eTag = odataResponse.getETag();
     if (eTag != null)

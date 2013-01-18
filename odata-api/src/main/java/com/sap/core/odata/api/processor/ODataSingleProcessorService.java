@@ -51,7 +51,7 @@ public class ODataSingleProcessorService implements ODataService {
    * @see ODataService
    */
   @Override
-  public ODataServiceVersion getVersion() throws ODataException {
+  public String getVersion() throws ODataException {
     return ODataServiceVersion.V20;
   }
 
