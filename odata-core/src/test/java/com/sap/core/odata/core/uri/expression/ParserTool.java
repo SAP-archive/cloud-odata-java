@@ -39,7 +39,7 @@ public class ParserTool
 
   private static final Logger log = LoggerFactory.getLogger(ParserTool.class);
 
-  private static boolean debug = true;
+  private static boolean debug = false;
 
   private String expression;
   private CommonExpression tree;
