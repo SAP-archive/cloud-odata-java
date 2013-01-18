@@ -5,7 +5,6 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 @Entity
@@ -17,13 +16,12 @@ public class Material {
 	}
 	
 	public Material(String materialName, String typeCode, double price,
-			String measurementUnit, SalesOrderItem salesOrderItem) {
+			String measurementUnit) {
 		super();
 		this.materialName = materialName;
 		this.typeCode = typeCode;
 		this.price = price;
 		this.measurementUnit = measurementUnit;
-		this.salesOrderItem = salesOrderItem;
 	}
 	
 	@Id
@@ -43,9 +41,6 @@ public class Material {
 	@Column(name = "MEASUREMENT_UNIT")
 	private String measurementUnit;
 
-	@OneToOne
-	private SalesOrderItem salesOrderItem;
-	
 	public long getMaterialId() {
 		return materialId;
 	}
@@ -84,13 +79,5 @@ public class Material {
 
 	public void setMeasurementUnit(String measurementUnit) {
 		this.measurementUnit = measurementUnit;
-	}
-	
-	public SalesOrderItem getSalesOrderItem() {
-		return salesOrderItem;
-	}
-
-	public void setSalesOrderItem(SalesOrderItem salesOrderItem) {
-		this.salesOrderItem = salesOrderItem;
-	}
+	}	
 }

@@ -32,15 +32,12 @@ public class SalesOrderItem {
 	private double discount;
 	
 	@Transient
-	private double netAmount;
-	
-	
+	private double netAmount;	
 
-	@OneToOne
-	@JoinColumn(name = "Sales_Order_Item_Material_Id")
+	@ManyToOne
 	private Material material;
 		
-	@JoinColumn(name = "Sales_Order_Id", referencedColumnName = "SO_ID", insertable= false, updatable=false)
+	@JoinColumn(name = "Sales_Order_Id", referencedColumnName = "SO_ID",insertable = false,updatable = false)
 	@ManyToOne
 	private SalesOrderHeader salesOrderHeader;
 	

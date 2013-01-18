@@ -56,11 +56,11 @@ public class SalesOrderHeader {
 	@Transient
 	private double netAmount;
 	
-	@OneToMany(mappedBy = "SalesOrderHeader", cascade = CascadeType.ALL)
-	private final List<SalesOrderItem> salesOrderItem = new ArrayList<SalesOrderItem>();
+	@OneToMany(mappedBy = "salesOrderHeader", cascade = CascadeType.ALL)
+	private List<SalesOrderItem> salesOrderItem = new ArrayList<SalesOrderItem>();
 	
-	@OneToMany(mappedBy = "SalesOrderHeader", cascade = CascadeType.ALL)
-	private final List<Note> notes = new ArrayList<Note>();
+	@OneToMany(mappedBy = "salesOrderHeader", cascade = CascadeType.ALL)
+	private List<Note> notes = new ArrayList<Note>();
 
 	public long getSoId() {
 		return soId;
@@ -135,10 +135,18 @@ public class SalesOrderHeader {
 	}
 
 	public List<SalesOrderItem> getSalesOrderItem() {
-		return this.salesOrderItem;
+		return salesOrderItem;
 	}
-	
+
+	public void setSalesOrderItem(List<SalesOrderItem> salesOrderItem) {
+		this.salesOrderItem = salesOrderItem;
+	}
+
 	public List<Note> getNotes() {
 		return notes;
-	}		
+	}
+
+	public void setNotes(List<Note> notes) {
+		this.notes = notes;
+	}			
 }

@@ -31,7 +31,7 @@ public class Note {
 	@Column
 	private String text;
 	
-	@JoinColumn(name = "Sales_Order_Note_Id", referencedColumnName = "SO_ID")
+	@JoinColumn(name = "Sales_Order_Note_Id", referencedColumnName = "SO_ID",insertable = false,updatable = false)
 	@ManyToOne
 	private SalesOrderHeader salesOrderHeader;
 
