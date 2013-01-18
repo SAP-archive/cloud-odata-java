@@ -110,11 +110,11 @@ public class TestAbapCompatibility extends TestBase {
 
     //lo_simple_type = /iwcor/cl_ds_edm_simple_type=>time( ).
     //lcl_helper=>veri_type( iv_expression = `time'P1998Y02M01D'` io_expected_type = lo_simple_type ).
-    GetPTF("time'P1998Y02M01D'").aEdmType(EdmTime.getInstance());
+    GetPTF("time'PT19H02M01S'").aEdmType(EdmTime.getInstance());
 
     //lo_simple_type = /iwcor/cl_ds_edm_simple_type=>time( ).
     //lcl_helper=>veri_type( iv_expression = `time'P1998Y02M01DT23H14M33S'` io_expected_type = lo_simple_type ).
-    GetPTF("time'P1998Y02M01DT23H14M33S'").aEdmType(EdmTime.getInstance());
+    GetPTF("time'PT23H14M33S'").aEdmType(EdmTime.getInstance());
 
     //lo_simple_type = /iwcor/cl_ds_edm_simple_type=>double( ).
     //lcl_helper=>veri_type( iv_expression = `1.1D add 1` io_expected_type = lo_simple_type ).
@@ -128,11 +128,11 @@ public class TestAbapCompatibility extends TestBase {
 
     //lo_simple_type = /iwcor/cl_ds_edm_simple_type=>boolean( ).
     //lcl_helper=>veri_type( iv_expression = `time'P1998Y02M01D' eq time'P1998Y02M01D'` io_expected_type = lo_simple_type ).
-    GetPTF("time'P1998Y02M01D' eq time'P1998Y02M01D'").aEdmType(EdmBoolean.getInstance());
+    GetPTF("time'PT19H02M01S' eq time'PT19H02M01S'").aEdmType(EdmBoolean.getInstance());
 
     //lo_simple_type = /iwcor/cl_ds_edm_simple_type=>boolean( ).
     //lcl_helper=>veri_type( iv_expression = `time'P1998Y02M01D' lt time'P1998Y02M01D'` io_expected_type = lo_simple_type ).
-    GetPTF("time'P1998Y02M01D' lt time'P1998Y02M01D'").aEdmType(EdmBoolean.getInstance());
+    GetPTF("time'PT19H02M01S' lt time'PT19H02M01S'").aEdmType(EdmBoolean.getInstance());
 
     //lo_simple_type = /iwcor/cl_ds_edm_simple_type=>int32( ).
     // lcl_helper=>veri_type( iv_expression = `hour(datetime'2011-07-31T23:30:59')` io_expected_type = lo_simple_type ).
@@ -148,15 +148,15 @@ public class TestAbapCompatibility extends TestBase {
 
     //lo_simple_type = /iwcor/cl_ds_edm_simple_type=>int32( ).
     //lcl_helper=>veri_type( iv_expression = `hour(time'P1998Y02M01D')` io_expected_type = lo_simple_type ).
-    GetPTF("hour(time'P1998Y02M01D')").aEdmType(EdmInt32.getInstance());
+    GetPTF("hour(time'PT19H02M01S')").aEdmType(EdmInt32.getInstance());
 
     //lo_simple_type = /iwcor/cl_ds_edm_simple_type=>int32( ).
     //lcl_helper=>veri_type( iv_expression = `minute(time'P1998Y02M01D')` io_expected_type = lo_simple_type ).
-    GetPTF("minute(time'P1998Y02M01D')").aEdmType(EdmInt32.getInstance());
+    GetPTF("minute(time'PT19H02M01S')").aEdmType(EdmInt32.getInstance());
 
     //lo_simple_type = /iwcor/cl_ds_edm_simple_type=>int32( ).
     //lcl_helper=>veri_type( iv_expression = `second(time'P1998Y02M01D')` io_expected_type = lo_simple_type  ).
-    GetPTF("second(time'P1998Y02M01D')").aEdmType(EdmInt32.getInstance());
+    GetPTF("second(time'PT19H02M01S')").aEdmType(EdmInt32.getInstance());
 
     //lo_simple_type = /iwcor/cl_ds_edm_simple_type=>int32( ).
     //lcl_helper=>veri_type( iv_expression = `hour(datetimeoffset'2002-10-10T12:00:00-05:00')` io_expected_type = lo_simple_type ).

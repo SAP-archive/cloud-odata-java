@@ -677,34 +677,29 @@ public class UriParserImpl extends UriParser {
 
   private void handleOtherQueryParameters() throws UriSyntaxException, EdmException {
     final EdmFunctionImport functionImport = uriResult.getFunctionImport();
+    if (functionImport != null)
+      for (final String parameterName : functionImport.getParameterNames()) {
+        final EdmParameter parameter = functionImport.getParameter(parameterName);
+        final String value = otherQueryParameters.remove(parameterName);
 
-    if (functionImport == null) {
-      uriResult.setCustomQueryOptions(otherQueryParameters);
-      return;
-    }
+        if (value == null)
+          if (parameter.getFacets() == null || parameter.getFacets().isNullable())
+            continue;
+          else
+            throw new UriSyntaxException(UriSyntaxException.MISSINGPARAMETER);
 
-    for (final String parameterName : functionImport.getParameterNames()) {
-      final EdmParameter parameter = functionImport.getParameter(parameterName);
-      final String value = otherQueryParameters.remove(parameterName);
+        EdmLiteral uriLiteral;
+        try {
+          uriLiteral = simpleTypeFacade.parseUriLiteral(value);
+        } catch (EdmLiteralException e) {
+          throw convertEdmLiteralException(e);
+        }
 
-      if (value == null)
-        if (parameter.getFacets() == null || parameter.getFacets().isNullable())
-          continue;
-        else
-          throw new UriSyntaxException(UriSyntaxException.MISSINGPARAMETER);
+        if (!((EdmSimpleType) parameter.getType()).isCompatible(uriLiteral.getType()))
+          throw new UriSyntaxException(UriSyntaxException.INCOMPATIBLELITERAL);
 
-      EdmLiteral uriLiteral;
-      try {
-        uriLiteral = simpleTypeFacade.parseUriLiteral(value);
-      } catch (EdmLiteralException e) {
-        throw convertEdmLiteralException(e);
+        uriResult.addFunctionImportParameter(parameterName, uriLiteral);
       }
-
-      if (!((EdmSimpleType) parameter.getType()).isCompatible(uriLiteral.getType()))
-        throw new UriSyntaxException(UriSyntaxException.INCOMPATIBLELITERAL);
-
-      uriResult.addFunctionImportParameter(parameterName, uriLiteral);
-    }
 
     uriResult.setCustomQueryOptions(otherQueryParameters);
   }
