@@ -18,21 +18,6 @@
 <body>
     <h1>SAP OData JPA library</h1>
     <hr />
-	<%
-		String version = "gen/version.html";
-	%>
-	<%
-		try {
-	%>
-	<jsp:include page='<%=version%>' />
-	<%
-		} catch (Exception e) {
-	%>
-	<p>IDE Build</p>
-	<%
-		}
-	%>
-	<hr />
 	<h2>Reference Scenario</h2>
 	<ul>
 		<li><a href="SalesOrderProcessing.svc?_wadl" target="_blank">wadl</a></li>
