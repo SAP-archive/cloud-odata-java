@@ -116,8 +116,8 @@ public class FeedTest extends AbstractRefTest {
     checkCount(body, "</entry>", 1);
     assertTrue(body.contains("Room 1</d:Name>"));
 
-    // badRequest("Employees?$orderby=(id");
-    // badRequest("Employees?$orderby=id");
+    badRequest("Employees?$orderby=(id");
+    badRequest("Employees?$orderby=id");
   }
 
   @Test
@@ -169,11 +169,11 @@ public class FeedTest extends AbstractRefTest {
     checkCount(body, "</entry>", 1);
     assertTrue(body.contains(EMPLOYEE_4_NAME));
 
-//    response = callUri("Employees?$filter=not(Age%20sub%2030%20ge%20-hour(EntryDate))");
-//    checkMediaType(response, HttpContentType.APPLICATION_ATOM_XML_FEED);
-//    body = getBody(response);
-//    checkCount(body, "</entry>", 1);
-//    assertTrue(body.contains(EMPLOYEE_6_NAME));
+    response = callUri("Employees?$filter=not(Age%20sub%2030%20ge%20-hour(EntryDate))");
+    checkMediaType(response, HttpContentType.APPLICATION_ATOM_XML_FEED);
+    body = getBody(response);
+    checkCount(body, "</entry>", 1);
+    assertTrue(body.contains(EMPLOYEE_6_NAME));
 
     response = callUri("Employees('1')/ne_Room/nr_Employees?$filter=EmployeeId%20eq%20'1'");
     assertTrue(getBody(response).contains("entry"));

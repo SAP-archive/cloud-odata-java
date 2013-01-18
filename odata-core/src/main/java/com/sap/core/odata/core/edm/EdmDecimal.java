@@ -16,7 +16,7 @@ import com.sap.core.odata.api.edm.EdmSimpleTypeException;
  */
 public class EdmDecimal extends AbstractSimpleType {
 
-  private static final Pattern PATTERN = Pattern.compile("-?0*(\\p{Digit}+?)(\\.\\p{Digit}+?)?0*(M|m)?");
+  private static final Pattern PATTERN = Pattern.compile("(?:\\+|-)?0*(\\p{Digit}+?)(\\.\\p{Digit}+?)?0*(M|m)?");
   private static final EdmDecimal instance = new EdmDecimal();
 
   public static EdmDecimal getInstance() {

@@ -21,7 +21,7 @@ public class EdmSingle extends AbstractSimpleType {
   private static final int MAX_SCALE = 38;
 
   private static final Pattern PATTERN = Pattern.compile(
-      "-?\\p{Digit}{1,7}(?:\\.\\p{Digit}{1,7})?(?:(?:E|e)-?\\p{Digit}{1,2})?(F|f)?");
+      "(?:\\+|-)?\\p{Digit}{1,7}(?:\\.\\p{Digit}{1,7})?(?:(?:E|e)(?:\\+|-)?\\p{Digit}{1,2})?(F|f)?");
   private static final EdmSingle instance = new EdmSingle();
 
   public static EdmSingle getInstance() {

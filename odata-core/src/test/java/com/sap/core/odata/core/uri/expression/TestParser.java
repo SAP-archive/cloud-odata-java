@@ -364,11 +364,11 @@ public class TestParser extends TestBase
 
     GetPTF("123").aUriLiteral("123").aKind(ExpressionKind.LITERAL).aEdmType(Uint7Inst);
 
-    GetPTF("datetime'2009-12-26T21%3A23%3A38'").aUriLiteral("datetime'2009-12-26T21%3A23%3A38'").aKind(ExpressionKind.LITERAL).aEdmType(datetimeInst);
-    GetPTF("datetime'2009-12-26T21%3A23%3A38'").aUriLiteral("datetime'2009-12-26T21%3A23%3A38'").aKind(ExpressionKind.LITERAL).aEdmType(datetimeInst);
+    GetPTF("datetime'2009-12-26T21:23:38'").aUriLiteral("datetime'2009-12-26T21:23:38'").aKind(ExpressionKind.LITERAL).aEdmType(datetimeInst);
+    GetPTF("datetime'2009-12-26T21:23:38'").aUriLiteral("datetime'2009-12-26T21:23:38'").aKind(ExpressionKind.LITERAL).aEdmType(datetimeInst);
 
-    GetPTF("datetimeoffset'2009-12-26T21%3A23%3A38Z'").aUriLiteral("datetimeoffset'2009-12-26T21%3A23%3A38Z'").aKind(ExpressionKind.LITERAL).aEdmType(datetimeOffsetInst);
-    GetPTF("datetimeoffset'2002-10-10T12%3A00%3A00-05%3A00'").aUriLiteral("datetimeoffset'2002-10-10T12%3A00%3A00-05%3A00'").aKind(ExpressionKind.LITERAL).aEdmType(datetimeOffsetInst);
+    GetPTF("datetimeoffset'2009-12-26T21:23:38Z'").aUriLiteral("datetimeoffset'2009-12-26T21:23:38Z'").aKind(ExpressionKind.LITERAL).aEdmType(datetimeOffsetInst);
+    GetPTF("datetimeoffset'2002-10-10T12:00:00-05:00'").aUriLiteral("datetimeoffset'2002-10-10T12:00:00-05:00'").aKind(ExpressionKind.LITERAL).aEdmType(datetimeOffsetInst);
 
     GetPTF("4.5m").aUriLiteral("4.5m").aKind(ExpressionKind.LITERAL).aEdmType(decimalInst);
     GetPTF("4.5M").aUriLiteral("4.5M").aKind(ExpressionKind.LITERAL).aEdmType(decimalInst);
@@ -395,7 +395,7 @@ public class TestParser extends TestBase
     GetPTF("4.5f").aUriLiteral("4.5f").aKind(ExpressionKind.LITERAL).aEdmType(singleInst);
 
     GetPTF("'abc'").aUriLiteral("'abc'").aKind(ExpressionKind.LITERAL).aEdmType(stringInst);
-    GetPTF("time'P120D'").aUriLiteral("time'P120D'").aKind(ExpressionKind.LITERAL).aEdmType(timeInst);
+    GetPTF("time'PT120S'").aUriLiteral("time'PT120S'").aKind(ExpressionKind.LITERAL).aEdmType(timeInst);
 
     //The EdmSimpleTypeSamples contains a well formatted list of all possible 
     //UriLiterals for SimpleTypes, instances for their Type classes and their Values in java notation
