@@ -1,15 +1,15 @@
 package com.sap.core.odata.core.ep.consumer;
 
-import static com.sap.core.odata.core.ep.FormatXml.ATOM_CONTENT;
-import static com.sap.core.odata.core.ep.FormatXml.ATOM_ENTRY;
-import static com.sap.core.odata.core.ep.FormatXml.ATOM_HREF;
-import static com.sap.core.odata.core.ep.FormatXml.ATOM_ID;
-import static com.sap.core.odata.core.ep.FormatXml.ATOM_LINK;
-import static com.sap.core.odata.core.ep.FormatXml.ATOM_REL;
-import static com.sap.core.odata.core.ep.FormatXml.ATOM_SRC;
-import static com.sap.core.odata.core.ep.FormatXml.M_ETAG;
-import static com.sap.core.odata.core.ep.FormatXml.M_PROPERTIES;
-import static com.sap.core.odata.core.ep.FormatXml.M_TYPE;
+import static com.sap.core.odata.core.ep.util.FormatXml.ATOM_CONTENT;
+import static com.sap.core.odata.core.ep.util.FormatXml.ATOM_ENTRY;
+import static com.sap.core.odata.core.ep.util.FormatXml.ATOM_HREF;
+import static com.sap.core.odata.core.ep.util.FormatXml.ATOM_ID;
+import static com.sap.core.odata.core.ep.util.FormatXml.ATOM_LINK;
+import static com.sap.core.odata.core.ep.util.FormatXml.ATOM_REL;
+import static com.sap.core.odata.core.ep.util.FormatXml.ATOM_SRC;
+import static com.sap.core.odata.core.ep.util.FormatXml.M_ETAG;
+import static com.sap.core.odata.core.ep.util.FormatXml.M_PROPERTIES;
+import static com.sap.core.odata.core.ep.util.FormatXml.M_TYPE;
 
 import java.util.HashMap;
 import java.util.Map;

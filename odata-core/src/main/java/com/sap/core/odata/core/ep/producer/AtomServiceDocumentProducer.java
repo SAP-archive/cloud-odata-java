@@ -14,7 +14,7 @@ import com.sap.core.odata.api.edm.provider.EntitySet;
 import com.sap.core.odata.api.edm.provider.Schema;
 import com.sap.core.odata.api.ep.EntityProviderException;
 import com.sap.core.odata.core.edm.provider.EdmImplProv;
-import com.sap.core.odata.core.ep.FormatXml;
+import com.sap.core.odata.core.ep.util.FormatXml;
 
 public class AtomServiceDocumentProducer {
 

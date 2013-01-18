@@ -7,8 +7,8 @@ import javax.xml.stream.XMLStreamWriter;
 
 import com.sap.core.odata.api.edm.Edm;
 import com.sap.core.odata.api.ep.EntityProviderException;
-import com.sap.core.odata.core.ep.FormatXml;
 import com.sap.core.odata.core.ep.aggregator.EntityPropertyInfo;
+import com.sap.core.odata.core.ep.util.FormatXml;
 
 /**
  * Provider for writing a collection of simple-type or complex-type instances

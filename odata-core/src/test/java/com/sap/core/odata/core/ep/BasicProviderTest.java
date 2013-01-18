@@ -22,7 +22,7 @@ import com.sap.core.odata.testutil.mock.MockFacade;
  */
 public class BasicProviderTest extends AbstractProviderTest {
 
-  protected static BasicEntityProviderInterface provider = new BasicEntityProvider();
+  protected static BasicEntityProvider provider = new BasicEntityProvider();
 
   @Test
   public void writePropertyValue() throws Exception {
