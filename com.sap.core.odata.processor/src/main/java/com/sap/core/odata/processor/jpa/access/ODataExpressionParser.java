@@ -36,8 +36,9 @@ import com.sap.core.odata.processor.jpa.exception.ODataJPARuntimeException;
  */
 public class ODataExpressionParser {
 	
-	public static final String SPACE = " ";
-	public static final String TABLE_ALIAS = "gwt1";
+	public static final String SPACE = " ";	//$NON-NLS-1$
+	public static final String EMPTY = "";	//$NON-NLS-1$
+	public static final String TABLE_ALIAS = "gwt1";	//$NON-NLS-1$
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(ODataExpressionParser.class);
 	
@@ -57,12 +58,12 @@ public class ODataExpressionParser {
 
 	      switch (unaryExpression.getOperator()) {
 	      case NOT:
-	          return JPQLStatement.Operator.NOT + "("+  operand +")";
+	          return JPQLStatement.Operator.NOT + "("+  operand +")";	//$NON-NLS-1$ //$NON-NLS-2$
 	      case MINUS:
-	        if (operand.startsWith("-"))
+	        if (operand.startsWith("-"))	//$NON-NLS-1$
 	          return operand.substring(1);
 	        else
-	          return "-" + operand;
+	          return "-" + operand;	//$NON-NLS-1$
 	      default:
 	    	  LOGGER.error("Unary Expression other then - and ! not supported");
 	    	  throw new ODataNotImplementedException();
@@ -101,13 +102,13 @@ public class ODataExpressionParser {
 	      }
 
 	    case PROPERTY:
-	    	String returnStr = TABLE_ALIAS+"."+((PropertyExpression) whereExpression).getPropertyName();
+	    	String returnStr = TABLE_ALIAS+"."+((PropertyExpression) whereExpression).getPropertyName();	//$NON-NLS-1$
 	    	return returnStr;
 
 	    case MEMBER:
 	    	final MemberExpression memberExpression = (MemberExpression) whereExpression;
 	        final PropertyExpression propertyExpressionPath = (PropertyExpression) memberExpression.getPath();	        
-	    	return TABLE_ALIAS+"."+propertyExpressionPath.getUriLiteral()+"."+memberExpression.getProperty().getUriLiteral();
+	    	return TABLE_ALIAS+"."+propertyExpressionPath.getUriLiteral()+"."+memberExpression.getProperty().getUriLiteral();	//$NON-NLS-1$
 
 	    case LITERAL:
 	    	final LiteralExpression literal = (LiteralExpression) whereExpression;
@@ -139,7 +140,7 @@ public class ODataExpressionParser {
 				
 				try {
 					orderByField = orderBy.getExpression().getEdmType().getName();
-					orderByDirection = (orderBy.getSortOrder() == SortOrder.asc)? "" : "DESC";
+					orderByDirection = (orderBy.getSortOrder() == SortOrder.asc)? EMPTY : "DESC";	//$NON-NLS-1$
 					orderByMap.put(orderByField, orderByDirection);
 				} catch (EdmException e) {
 					LOGGER.error(e.getMessage(), e);
@@ -197,15 +198,31 @@ public class ODataExpressionParser {
 		if (edmSimpleType == EdmSimpleTypeKind.String.getEdmSimpleTypeInstance()
 	            || edmSimpleType == EdmSimpleTypeKind.Guid.getEdmSimpleTypeInstance())
 		{
-			value = "\'"+value+"\'";
+			value = "\'"+value+"\'";	//$NON-NLS-1$	//$NON-NLS-2$
 		}else if(edmSimpleType == EdmSimpleTypeKind.DateTime.getEdmSimpleTypeInstance()
 	            || edmSimpleType == EdmSimpleTypeKind.DateTimeOffset.getEdmSimpleTypeInstance()	)
 		{
-			value = "{d \'"+value+"\'}";
+			value = "{d \'"+value+"\'}";	//$NON-NLS-1$ 	//$NON-NLS-2$
 		}else if(edmSimpleType == EdmSimpleTypeKind.Time.getEdmSimpleTypeInstance()){
-			value = "{t \'"+value+"\'}";
+			value = "{t \'"+value+"\'}";	//$NON-NLS-1$	//$NON-NLS-1$
 		}
 		return value;
+	}
+
+	public static HashMap<String, String> parseKeyPredicatesToJPAOrderByExpression(List<KeyPredicate> keyPredicates) throws ODataJPARuntimeException {
+		HashMap<String, String> orderByMap = new HashMap<String, String>();
+		String propertyName = null;		
+		for(KeyPredicate keyPredicate : keyPredicates){
+			try {
+				propertyName = keyPredicate.getProperty().getName();				
+			} catch (EdmException e) {
+				throw ODataJPARuntimeException.throwException(
+						ODataJPARuntimeException.RUNTIME_EXCEPTION.addContent(e
+								.getMessage()), e);
+			}
+			orderByMap.put(propertyName, EMPTY);
+		}
+		return orderByMap;
 	}
 
 }
