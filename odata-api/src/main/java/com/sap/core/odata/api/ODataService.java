@@ -31,9 +31,9 @@ public interface ODataService {
   /**
    * @return implemented OData version of this service
    * @throws ODataException
-   * @see ODataServiceVersion
+   * @see {@link ODataServiceVersion}
    */
-  ODataServiceVersion getVersion() throws ODataException;
+  String getVersion() throws ODataException;
 
   /**
    * @return entity data model of this service 
