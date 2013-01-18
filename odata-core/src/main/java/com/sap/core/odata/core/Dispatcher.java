@@ -175,13 +175,15 @@ public class Dispatcher {
       case PATCH:
       case MERGE:
         if (uriInfo.getFormat() == null
-            && uriInfo.getFilter() == null)
+            && uriInfo.getFilter() == null
+            && uriInfo.getNavigationSegments().size() == 1)
           return service.getEntityLinkProcessor().updateEntityLink(uriInfo, content, requestContentType, contentType);
         else
           throw new ODataMethodNotAllowedException(ODataMethodNotAllowedException.DISPATCH);
       case DELETE:
         if (uriInfo.getFormat() == null
-            && uriInfo.getFilter() == null)
+            && uriInfo.getFilter() == null
+            && uriInfo.getNavigationSegments().size() == 1)
           return service.getEntityLinkProcessor().deleteEntityLink(uriInfo, contentType);
         else
           throw new ODataMethodNotAllowedException(ODataMethodNotAllowedException.DISPATCH);
@@ -200,7 +202,8 @@ public class Dispatcher {
             && uriInfo.getOrderBy() == null
             && uriInfo.getSkipToken() == null
             && uriInfo.getSkip() == null
-            && uriInfo.getTop() == null)
+            && uriInfo.getTop() == null
+            && uriInfo.getNavigationSegments().size() == 1)
           return service.getEntityLinksProcessor().createEntityLink(uriInfo, content, requestContentType, contentType);
         else
           throw new ODataMethodNotAllowedException(ODataMethodNotAllowedException.DISPATCH);

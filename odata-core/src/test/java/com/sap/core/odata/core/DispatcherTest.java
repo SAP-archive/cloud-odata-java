@@ -159,13 +159,15 @@ public class DispatcherTest extends BaseTest {
     EdmEntitySet entitySet = mock(EdmEntitySet.class);
     when(entitySet.getEntityType()).thenReturn(entityType);
     when(uriInfo.getTargetEntitySet()).thenReturn(entitySet);
+    if (uriType == UriType.URI7A || uriType == UriType.URI7B)
+      mockNavigationPath(uriInfo, true);
     when(uriInfo.getSkip()).thenReturn(null);
     when(uriInfo.getTop()).thenReturn(null);
 
     return uriInfo;
   }
 
-  private UriInfoImpl mockOptions(UriInfoImpl uriInfo,
+  private static UriInfoImpl mockOptions(UriInfoImpl uriInfo,
       final boolean format,
       final boolean filter, final boolean inlineCount, final boolean orderBy,
       final boolean skipToken, final boolean skip, final boolean top,
@@ -187,7 +189,7 @@ public class DispatcherTest extends BaseTest {
     if (expand) {
       ArrayList<NavigationPropertySegment> segments = new ArrayList<NavigationPropertySegment>();
       segments.add(mock(NavigationPropertySegment.class));
-      List <ArrayList<NavigationPropertySegment>> expandList = new ArrayList<ArrayList<NavigationPropertySegment>>();
+      List<ArrayList<NavigationPropertySegment>> expandList = new ArrayList<ArrayList<NavigationPropertySegment>>();
       expandList.add(segments);
       when(uriInfo.getExpand()).thenReturn(expandList);
     }
@@ -197,7 +199,7 @@ public class DispatcherTest extends BaseTest {
     return uriInfo;
   }
 
-  private UriInfoImpl mockFunctionImport(UriInfoImpl uriInfo, final ODataHttpMethod httpMethod) throws EdmException {
+  private static UriInfoImpl mockFunctionImport(UriInfoImpl uriInfo, final ODataHttpMethod httpMethod) throws EdmException {
     EdmFunctionImport functionImport = mock(EdmFunctionImport.class);
     when(functionImport.getHttpMethod()).thenReturn(httpMethod == null ? null : httpMethod.toString());
     when(uriInfo.getFunctionImport()).thenReturn(functionImport);
@@ -205,7 +207,7 @@ public class DispatcherTest extends BaseTest {
     return uriInfo;
   }
 
-  private UriInfoImpl mockProperty(UriInfoImpl uriInfo, final boolean key, final boolean nullable) throws EdmException {
+  private static UriInfoImpl mockProperty(UriInfoImpl uriInfo, final boolean key, final boolean nullable) throws EdmException {
     EdmProperty property = uriInfo.getPropertyPath().get(0);
     if (key)
       uriInfo.getPropertyPath().set(0, uriInfo.getTargetEntitySet().getEntityType().getKeyProperties().get(0));
@@ -216,12 +218,14 @@ public class DispatcherTest extends BaseTest {
     return uriInfo;
   }
 
-  private UriInfoImpl mockNavigationPath(UriInfoImpl uriInfo) {
-    when(uriInfo.getNavigationSegments()).thenReturn(Arrays.asList(mock(NavigationSegment.class)));
+  private static UriInfoImpl mockNavigationPath(UriInfoImpl uriInfo, final boolean oneSegment) {
+    when(uriInfo.getNavigationSegments()).thenReturn(
+        oneSegment ? Arrays.asList(mock(NavigationSegment.class)) :
+            Arrays.asList(mock(NavigationSegment.class), mock(NavigationSegment.class)));
     return uriInfo;
   }
 
-  private void checkDispatch(final ODataHttpMethod method, final UriInfoImpl uriInfo, final String expectedMethodName) throws ODataException {
+  private static void checkDispatch(final ODataHttpMethod method, final UriInfoImpl uriInfo, final String expectedMethodName) throws ODataException {
     final String contentType = method == ODataHttpMethod.GET ? ContentType.APPLICATION_XML.toContentTypeString() : null;
     final Dispatcher dispatcher = new Dispatcher(service);
 
@@ -229,15 +233,15 @@ public class DispatcherTest extends BaseTest {
     assertEquals(expectedMethodName, response.getEntity());
   }
 
-  private void checkDispatch(final ODataHttpMethod method, final UriType uriType, final boolean isValue, final String expectedMethodName) throws ODataException {
+  private static void checkDispatch(final ODataHttpMethod method, final UriType uriType, final boolean isValue, final String expectedMethodName) throws ODataException {
     checkDispatch(method, mockUriInfo(uriType, isValue), expectedMethodName);
   }
 
-  private void checkDispatch(final ODataHttpMethod method, final UriType uriType, final String expectedMethodName) throws ODataException {
+  private static void checkDispatch(final ODataHttpMethod method, final UriType uriType, final String expectedMethodName) throws ODataException {
     checkDispatch(method, uriType, false, expectedMethodName);
   }
 
-  private void wrongDispatch(final ODataHttpMethod method, final UriType uriType) {
+  private static void wrongDispatch(final ODataHttpMethod method, final UriType uriType) {
     try {
       checkDispatch(method, uriType, null);
       fail("Expected ODataException not thrown");
@@ -246,7 +250,7 @@ public class DispatcherTest extends BaseTest {
     }
   }
 
-  private void wrongOptions(final ODataHttpMethod method, final UriType uriType,
+  private static void wrongOptions(final ODataHttpMethod method, final UriType uriType,
       final boolean format,
       final boolean filter, final boolean inlineCount, final boolean orderBy,
       final boolean skipToken, final boolean skip, final boolean top,
@@ -262,7 +266,7 @@ public class DispatcherTest extends BaseTest {
     }
   }
 
-  private void wrongFunctionHttpMethod(final ODataHttpMethod method, final UriType uriType, final ODataHttpMethod httpMethod) {
+  private static void wrongFunctionHttpMethod(final ODataHttpMethod method, final UriType uriType, final ODataHttpMethod httpMethod) {
     try {
       checkDispatch(method, mockFunctionImport(mockUriInfo(uriType, false), httpMethod), null);
       fail("Expected ODataMethodNotAllowedException not thrown");
@@ -273,7 +277,7 @@ public class DispatcherTest extends BaseTest {
     }
   }
 
-  private void wrongProperty(final ODataHttpMethod method, final UriType uriType, final boolean key, final boolean nullable) {
+  private static void wrongProperty(final ODataHttpMethod method, final UriType uriType, final boolean key, final boolean nullable) {
     try {
       checkDispatch(method, mockProperty(mockUriInfo(uriType, true), key, nullable), null);
       fail("Expected ODataMethodNotAllowedException not thrown");
@@ -284,9 +288,11 @@ public class DispatcherTest extends BaseTest {
     }
   }
 
-  private void wrongNavigationPath(final ODataHttpMethod method, final UriType uriType) {
+  private static void wrongNavigationPath(final ODataHttpMethod method, final UriType uriType) {
     try {
-      checkDispatch(method, mockNavigationPath(mockUriInfo(uriType, true)), null);
+      UriInfoImpl uriInfo = mockUriInfo(uriType, true);
+      uriInfo = mockNavigationPath(uriInfo, uriType != UriType.URI7A && uriType != UriType.URI7B);
+      checkDispatch(method, uriInfo, null);
       fail("Expected ODataMethodNotAllowedException not thrown");
     } catch (ODataMethodNotAllowedException e) {
       assertNotNull(e);
@@ -546,6 +552,12 @@ public class DispatcherTest extends BaseTest {
     wrongNavigationPath(ODataHttpMethod.PUT, UriType.URI5);
     wrongNavigationPath(ODataHttpMethod.PATCH, UriType.URI5);
     wrongNavigationPath(ODataHttpMethod.DELETE, UriType.URI5);
+
+    wrongNavigationPath(ODataHttpMethod.PUT, UriType.URI7A);
+    wrongNavigationPath(ODataHttpMethod.PATCH, UriType.URI7A);
+    wrongNavigationPath(ODataHttpMethod.DELETE, UriType.URI7A);
+
+    wrongNavigationPath(ODataHttpMethod.POST, UriType.URI7B);
 
     wrongNavigationPath(ODataHttpMethod.PUT, UriType.URI17);
     wrongNavigationPath(ODataHttpMethod.DELETE, UriType.URI17);
