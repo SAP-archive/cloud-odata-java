@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.log4j.xml.DOMConfigurator;
-import org.junit.BeforeClass;
+import org.junit.Before;
 import org.junit.Test;
 
 import com.sap.core.odata.api.commons.InlineCount;
@@ -44,10 +44,10 @@ public class UriParserTest extends BaseTest {
     DOMConfigurator.configureAndWatch("log4j.xml");
   }
 
-  private static Edm edm;
+  private Edm edm;
 
-  @BeforeClass
-  public static void getEdm() throws ODataException, EdmException {
+  @Before
+  public void getEdm() throws ODataException, EdmException {
     edm = MockFacade.getMockEdm();
   }
 
