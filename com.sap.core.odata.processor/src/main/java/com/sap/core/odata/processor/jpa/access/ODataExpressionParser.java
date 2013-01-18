@@ -38,7 +38,8 @@ public class ODataExpressionParser {
 	
 	public static final String SPACE = " ";	//$NON-NLS-1$
 	public static final String EMPTY = "";	//$NON-NLS-1$
-	public static final String TABLE_ALIAS = "gwt1";	//$NON-NLS-1$
+//	public static final String TABLE_ALIAS = "gwt1";	//$NON-NLS-1$
+	private static final String DOT = ".";	//$NON-NLS-1$
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(ODataExpressionParser.class);
 	
@@ -50,11 +51,11 @@ public class ODataExpressionParser {
 	 * @return Parsed where condition String
 	 * @throws ODataException
 	 */
-	public static String parseToJPAWhereExpression(final CommonExpression whereExpression) throws ODataException {
+	public static String parseToJPAWhereExpression(final CommonExpression whereExpression, String tableAlias) throws ODataException {
 	    switch (whereExpression.getKind()) {
 	    case UNARY:
 	      final UnaryExpression unaryExpression = (UnaryExpression) whereExpression;
-	      final String operand = parseToJPAWhereExpression(unaryExpression.getOperand());
+	      final String operand = parseToJPAWhereExpression(unaryExpression.getOperand(), tableAlias);
 
 	      switch (unaryExpression.getOperator()) {
 	      case NOT:
@@ -70,11 +71,11 @@ public class ODataExpressionParser {
 	      }
 	      
 	    case FILTER:
-	    	return parseToJPAWhereExpression(((FilterExpression)whereExpression).getExpression());
+	    	return parseToJPAWhereExpression(((FilterExpression)whereExpression).getExpression(), tableAlias);
 	    case BINARY:
 	      final BinaryExpression binaryExpression = (BinaryExpression) whereExpression;
-	      final String left = parseToJPAWhereExpression(binaryExpression.getLeftOperand());
-	      final String right = parseToJPAWhereExpression(binaryExpression.getRightOperand());
+	      final String left = parseToJPAWhereExpression(binaryExpression.getLeftOperand(), tableAlias);
+	      final String right = parseToJPAWhereExpression(binaryExpression.getRightOperand(), tableAlias);
 
 	      switch (binaryExpression.getOperator()) {
 		      case AND:
@@ -102,13 +103,13 @@ public class ODataExpressionParser {
 	      }
 
 	    case PROPERTY:
-	    	String returnStr = TABLE_ALIAS+"."+((PropertyExpression) whereExpression).getPropertyName();	//$NON-NLS-1$
+	    	String returnStr = tableAlias+DOT+((PropertyExpression) whereExpression).getPropertyName();	
 	    	return returnStr;
 
 	    case MEMBER:
 	    	final MemberExpression memberExpression = (MemberExpression) whereExpression;
 	        final PropertyExpression propertyExpressionPath = (PropertyExpression) memberExpression.getPath();	        
-	    	return TABLE_ALIAS+"."+propertyExpressionPath.getUriLiteral()+"."+memberExpression.getProperty().getUriLiteral();	//$NON-NLS-1$
+	    	return tableAlias+DOT+propertyExpressionPath.getUriLiteral()+DOT+memberExpression.getProperty().getUriLiteral();	
 
 	    case LITERAL:
 	    	final LiteralExpression literal = (LiteralExpression) whereExpression;
@@ -130,7 +131,7 @@ public class ODataExpressionParser {
 	 * @return
 	 * @throws ODataJPARuntimeException
 	 */
-	public static HashMap<String, String> parseToJPAOrderByExpression(OrderByExpression orderByExpression) throws ODataJPARuntimeException{
+	public static HashMap<String, String> parseToJPAOrderByExpression(OrderByExpression orderByExpression, String tableAlias) throws ODataJPARuntimeException{
 		HashMap<String, String> orderByMap = new HashMap<String, String>();
 		if(orderByExpression != null && orderByExpression.getOrders() != null ){
 			List<OrderExpression> orderBys= orderByExpression.getOrders();
@@ -141,7 +142,7 @@ public class ODataExpressionParser {
 				try {
 					orderByField = orderBy.getExpression().getEdmType().getName();
 					orderByDirection = (orderBy.getSortOrder() == SortOrder.asc)? EMPTY : "DESC";	//$NON-NLS-1$
-					orderByMap.put(orderByField, orderByDirection);
+					orderByMap.put(tableAlias+DOT+orderByField, orderByDirection);
 				} catch (EdmException e) {
 					LOGGER.error(e.getMessage(), e);
 					throw ODataJPARuntimeException.throwException(
@@ -160,7 +161,7 @@ public class ODataExpressionParser {
 	 * @return the evaluated where expression
 	 */
 	
-	public static String parseKeyPredicates(List<KeyPredicate> keyPredicates) throws ODataJPARuntimeException{
+	public static String parseKeyPredicates(List<KeyPredicate> keyPredicates, String tableAlias) throws ODataJPARuntimeException{
 		String literal = null;
 		String propertyName = null;
 		EdmSimpleType edmSimpleType = null;
@@ -182,7 +183,7 @@ public class ODataExpressionParser {
 			}
 			
 			literal = evaluateComparingExpression(literal, edmSimpleType);
-			keyFilters.append(TABLE_ALIAS+"."+propertyName + SPACE + JPQLStatement.Operator.EQ+ SPACE + literal);
+			keyFilters.append(tableAlias+DOT+propertyName + SPACE + JPQLStatement.Operator.EQ+ SPACE + literal);
 		}
 		return keyFilters.toString();
 	}
@@ -204,12 +205,12 @@ public class ODataExpressionParser {
 		{
 			value = "{d \'"+value+"\'}";	//$NON-NLS-1$ 	//$NON-NLS-2$
 		}else if(edmSimpleType == EdmSimpleTypeKind.Time.getEdmSimpleTypeInstance()){
-			value = "{t \'"+value+"\'}";	//$NON-NLS-1$	//$NON-NLS-1$
+			value = "{t \'"+value+"\'}";	//$NON-NLS-1$	//$NON-NLS-2$
 		}
 		return value;
 	}
 
-	public static HashMap<String, String> parseKeyPredicatesToJPAOrderByExpression(List<KeyPredicate> keyPredicates) throws ODataJPARuntimeException {
+	public static HashMap<String, String> parseKeyPredicatesToJPAOrderByExpression(List<KeyPredicate> keyPredicates, String tableAlias) throws ODataJPARuntimeException {
 		HashMap<String, String> orderByMap = new HashMap<String, String>();
 		String propertyName = null;		
 		for(KeyPredicate keyPredicate : keyPredicates){
@@ -220,7 +221,7 @@ public class ODataExpressionParser {
 						ODataJPARuntimeException.RUNTIME_EXCEPTION.addContent(e
 								.getMessage()), e);
 			}
-			orderByMap.put(propertyName, EMPTY);
+			orderByMap.put(tableAlias+DOT+propertyName, EMPTY);
 		}
 		return orderByMap;
 	}
