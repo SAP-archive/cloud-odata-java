@@ -177,6 +177,7 @@ public class TestParser extends TestBase
       
       GetPTF(edm, edmEtAllTypes, "not Boolean")
       .aKind(ExpressionKind.UNARY)
+      .aEdmType(boolean_Type)
       .right().aEdmProperty(boolean_).aEdmType(boolean_Type);
 
     } catch (EdmException e) {

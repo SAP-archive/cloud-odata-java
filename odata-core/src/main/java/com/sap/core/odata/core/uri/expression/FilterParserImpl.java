@@ -854,7 +854,10 @@ public class FilterParserImpl implements FilterParser
 
     //minus
     lAvailableUnaryOperators.put(CharConst.GC_OPERATOR_MINUS, new InfoUnaryOperator(UnaryOperator.MINUS, "minus", CharConst.GC_OPERATOR_MINUS, combination));
+    
     //not
+    combination = new ParameterSetCombination.PSCflex();
+    combination.add(new ParameterSet(boolean_, boolean_));
     lAvailableUnaryOperators.put(CharConst.GC_OPERATOR_NOT, new InfoUnaryOperator(UnaryOperator.NOT, "not", CharConst.GC_OPERATOR_NOT, combination));
     
     availableBinaryOperators = Collections.unmodifiableMap(lAvailableBinaryOperators);
