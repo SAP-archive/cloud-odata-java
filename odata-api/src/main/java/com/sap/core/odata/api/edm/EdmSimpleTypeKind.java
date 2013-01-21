@@ -13,7 +13,7 @@ public enum EdmSimpleTypeKind {
   Double, Guid, Int16, Int32, Int64, SByte, Single, String, Time, Null;
 
   public FullQualifiedName getFullQualifiedName() {
-    return new FullQualifiedName(EdmSimpleType.EDM_NAMESPACE, this.toString());
+    return new FullQualifiedName(EdmSimpleType.EDM_NAMESPACE, toString());
   }
 
   public EdmSimpleType getEdmSimpleTypeInstance() {

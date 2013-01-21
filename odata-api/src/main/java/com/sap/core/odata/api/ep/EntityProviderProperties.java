@@ -57,7 +57,7 @@ public class EntityProviderProperties {
   }
 
   public static class ODataEntityProviderPropertiesBuilder {
-    private EntityProviderProperties properties = new EntityProviderProperties();
+    private final EntityProviderProperties properties = new EntityProviderProperties();
 
     /**
      * @param mediaResourceMimeType  the mediaResourceMimeType to set

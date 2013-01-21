@@ -32,7 +32,7 @@ public enum BinaryOperator
   private BinaryOperator(String syntax)
   {
     this.syntax = syntax;
-    this.stringRespresentation = syntax;
+    stringRespresentation = syntax;
   }
 
   private BinaryOperator(String syntax, String stringRespresentation)

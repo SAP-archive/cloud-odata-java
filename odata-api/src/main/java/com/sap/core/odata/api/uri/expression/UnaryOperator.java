@@ -18,7 +18,7 @@ public enum UnaryOperator
   private UnaryOperator(String syntax)
   {
     this.syntax = syntax;
-    this.stringRespresentation = syntax;
+    stringRespresentation = syntax;
   }
 
   private UnaryOperator(String syntax, String stringRespresentation)

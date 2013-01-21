@@ -34,8 +34,8 @@ import com.sap.core.odata.api.rt.RuntimeDelegate;
  */
 public class ODataSingleProcessorService implements ODataService {
 
-  private ODataSingleProcessor processor;
-  private Edm edm;
+  private final ODataSingleProcessor processor;
+  private final Edm edm;
 
   /**
    * Construct service
@@ -44,7 +44,7 @@ public class ODataSingleProcessorService implements ODataService {
    */
   public ODataSingleProcessorService(EdmProvider provider, ODataSingleProcessor processor) {
     this.processor = processor;
-    this.edm = RuntimeDelegate.createEdm(provider);
+    edm = RuntimeDelegate.createEdm(provider);
   }
 
   /**
@@ -60,7 +60,7 @@ public class ODataSingleProcessorService implements ODataService {
    */
   @Override
   public Edm getEntityDataModel() throws ODataException {
-    return this.edm;
+    return edm;
   }
 
   /**
@@ -68,7 +68,7 @@ public class ODataSingleProcessorService implements ODataService {
    */
   @Override
   public Metadata getMetadataProcessor() throws ODataException {
-    return this.processor;
+    return processor;
   }
 
   /**
@@ -76,7 +76,7 @@ public class ODataSingleProcessorService implements ODataService {
    */
   @Override
   public ServiceDocument getServiceDocumentProcessor() throws ODataException {
-    return this.processor;
+    return processor;
   }
 
   /**
@@ -84,7 +84,7 @@ public class ODataSingleProcessorService implements ODataService {
    */
   @Override
   public Entity getEntityProcessor() throws ODataException {
-    return this.processor;
+    return processor;
   }
 
   /**
@@ -92,7 +92,7 @@ public class ODataSingleProcessorService implements ODataService {
    */
   @Override
   public EntitySet getEntitySetProcessor() throws ODataException {
-    return this.processor;
+    return processor;
   }
 
   /**
@@ -100,7 +100,7 @@ public class ODataSingleProcessorService implements ODataService {
    */
   @Override
   public EntityComplexProperty getEntityComplexPropertyProcessor() throws ODataException {
-    return this.processor;
+    return processor;
   }
 
   /**
@@ -108,7 +108,7 @@ public class ODataSingleProcessorService implements ODataService {
    */
   @Override
   public EntityLink getEntityLinkProcessor() throws ODataException {
-    return this.processor;
+    return processor;
   }
 
   /**
@@ -116,7 +116,7 @@ public class ODataSingleProcessorService implements ODataService {
    */
   @Override
   public EntityLinks getEntityLinksProcessor() throws ODataException {
-    return this.processor;
+    return processor;
   }
 
   /**
@@ -124,7 +124,7 @@ public class ODataSingleProcessorService implements ODataService {
    */
   @Override
   public EntityMedia getEntityMediaProcessor() throws ODataException {
-    return this.processor;
+    return processor;
   }
 
   /**
@@ -132,7 +132,7 @@ public class ODataSingleProcessorService implements ODataService {
    */
   @Override
   public EntitySimpleProperty getEntitySimplePropertyProcessor() throws ODataException {
-    return this.processor;
+    return processor;
   }
 
   /**
@@ -140,7 +140,7 @@ public class ODataSingleProcessorService implements ODataService {
    */
   @Override
   public EntitySimplePropertyValue getEntitySimplePropertyValueProcessor() throws ODataException {
-    return this.processor;
+    return processor;
   }
 
   /**
@@ -148,7 +148,7 @@ public class ODataSingleProcessorService implements ODataService {
    */
   @Override
   public FunctionImport getFunctionImportProcessor() throws ODataException {
-    return this.processor;
+    return processor;
   }
 
   /**
@@ -156,7 +156,7 @@ public class ODataSingleProcessorService implements ODataService {
    */
   @Override
   public FunctionImportValue getFunctionImportValueProcessor() throws ODataException {
-    return this.processor;
+    return processor;
   }
 
   /**
@@ -164,7 +164,7 @@ public class ODataSingleProcessorService implements ODataService {
    */
   @Override
   public Batch getBatchProcessor() throws ODataException {
-    return this.processor;
+    return processor;
   }
 
   /**
@@ -172,7 +172,7 @@ public class ODataSingleProcessorService implements ODataService {
    */
   @Override
   public ODataProcessor getProcessor() throws ODataException {
-    return this.processor;
+    return processor;
   }
 
   @Override

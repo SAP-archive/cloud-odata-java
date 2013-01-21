@@ -52,7 +52,7 @@ public enum HttpStatusCodes {
   private final String info;
 
   HttpStatusCodes(final int statusCode, final String info) {
-    this.code = statusCode;
+    code = statusCode;
     this.info = info;
   }
 
@@ -63,7 +63,7 @@ public enum HttpStatusCodes {
    * @return the matching status enum object or null if no matching enum is defined
    */
   public static HttpStatusCodes fromStatusCode(final int statusCode) {
-    for (HttpStatusCodes s : HttpStatusCodes.values()) {
+    for (final HttpStatusCodes s : HttpStatusCodes.values()) {
       if (s.code == statusCode) {
         return s;
       }

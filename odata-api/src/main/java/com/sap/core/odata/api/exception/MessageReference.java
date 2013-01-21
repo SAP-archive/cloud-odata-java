@@ -41,7 +41,7 @@ public abstract class MessageReference {
 
   public MessageReference create()
   {
-    return new SingleMessageReference(this.key);
+    return new SingleMessageReference(key);
   }
 
   /**
@@ -56,12 +56,12 @@ public abstract class MessageReference {
    */
   public MessageReference addContent(Object... content) {
     if (this.content == null) {
-      return new SimpleMessageReference(this.key, content);
+      return new SimpleMessageReference(key, content);
     } else {
-      List<Object> mergedContent = new ArrayList<Object>(this.content.size() + content.length);
+      final List<Object> mergedContent = new ArrayList<Object>(this.content.size() + content.length);
       mergedContent.addAll(this.content);
       mergedContent.addAll(Arrays.asList(content));
-      return new SimpleMessageReference(this.key, mergedContent);
+      return new SimpleMessageReference(key, mergedContent);
     }
   }
 
@@ -70,10 +70,11 @@ public abstract class MessageReference {
    * Beware that returned list is immutable.
    */
   public List<?> getContent() {
-    if (content == null)
+    if (content == null) {
       return Collections.emptyList();
-    else
+    } else {
       return Collections.unmodifiableList(content);
+    }
   }
 
   /**
@@ -109,8 +110,9 @@ public abstract class MessageReference {
     @Override
     public MessageReference addContent(Object... content) {
 
-      if (this.content == null)
+      if (this.content == null) {
         this.content = new ArrayList<Object>();
+      }
 
       this.content.addAll(Arrays.asList(content));
       return this;

@@ -24,9 +24,10 @@ public enum EdmMultiplicity {
    * @return {@link EdmMultiplicity}
    */
   public static EdmMultiplicity fromLiteral(String literal) {
-    for (EdmMultiplicity edmMultiplicity : EdmMultiplicity.values()) {
-      if (edmMultiplicity.toString().equals(literal))
+    for (final EdmMultiplicity edmMultiplicity : EdmMultiplicity.values()) {
+      if (edmMultiplicity.toString().equals(literal)) {
         return edmMultiplicity;
+      }
     }
     throw new IllegalArgumentException("Invalid literal " + literal);
   }

@@ -80,13 +80,13 @@ public class ExpressionParserException extends ODataBadRequestException
   }
 
   public ExpressionParserException setCause(Throwable tokenizerException) {
-    this.initCause(tokenizerException);
+    initCause(tokenizerException);
     return this;
   }
 
   public static ExpressionParserException ErrorInTokenizer(String token, int position)
   {
-    MessageReference msgRef = ExpressionParserException.ERROR_IN_TOKENIZER.addContent(Integer.toString(position), token);
+    final MessageReference msgRef = ExpressionParserException.ERROR_IN_TOKENIZER.addContent(Integer.toString(position), token);
     return new ExpressionParserException(msgRef);
 
   }

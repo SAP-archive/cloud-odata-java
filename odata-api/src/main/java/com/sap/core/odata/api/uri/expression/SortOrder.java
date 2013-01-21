@@ -10,7 +10,7 @@ public enum SortOrder {
   private SortOrder(String syntax)
   {
     this.syntax = syntax;
-    this.stringRespresentation = syntax;
+    stringRespresentation = syntax;
   }
 
   private SortOrder(String syntax, String stringRespresentation)

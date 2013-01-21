@@ -87,6 +87,7 @@ public class EntityType extends ComplexType {
    * @param name
    * @return {@link EntityType} for method chaining
    */
+  @Override
   public EntityType setName(String name) {
     super.setName(name);
     return this;
@@ -96,6 +97,7 @@ public class EntityType extends ComplexType {
    * @param baseType
    * @return {@link EntityType} for method chaining
    */
+  @Override
   public EntityType setBaseType(FullQualifiedName baseType) {
     super.setBaseType(baseType);
     return this;
@@ -105,6 +107,7 @@ public class EntityType extends ComplexType {
    * @param isAbstract
    * @return {@link EntityType} for method chaining
    */
+  @Override
   public EntityType setAbstract(boolean isAbstract) {
     super.setAbstract(isAbstract);
     return this;
@@ -114,6 +117,7 @@ public class EntityType extends ComplexType {
    * @param properties
    * @return {@link EntityType} for method chaining
    */
+  @Override
   public EntityType setProperties(List<Property> properties) {
     super.setProperties(properties);
     return this;
@@ -123,6 +127,7 @@ public class EntityType extends ComplexType {
    * @param mapping
    * @return {@link EntityType} for method chaining
    */
+  @Override
   public EntityType setMapping(Mapping mapping) {
     super.setMapping(mapping);
     return this;
@@ -132,6 +137,7 @@ public class EntityType extends ComplexType {
    * @param documentation
    * @return {@link EntityType} for method chaining
    */
+  @Override
   public EntityType setDocumentation(Documentation documentation) {
     super.setDocumentation(documentation);
     return this;
@@ -142,6 +148,7 @@ public class EntityType extends ComplexType {
    * @param annotationAttributes
    * @return {@link EntityType} for method chaining
    */
+  @Override
   public EntityType setAnnotationAttributes(List<AnnotationAttribute> annotationAttributes) {
     super.setAnnotationAttributes(annotationAttributes);
     return this;
@@ -152,6 +159,7 @@ public class EntityType extends ComplexType {
    * @param annotationElements
    * @return {@link EntityType} for method chaining
    */
+  @Override
   public EntityType setAnnotationElements(List<AnnotationElement> annotationElements) {
     super.setAnnotationElements(annotationElements);
     return this;

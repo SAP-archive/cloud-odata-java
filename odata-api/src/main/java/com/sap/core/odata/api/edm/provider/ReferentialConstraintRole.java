@@ -59,7 +59,7 @@ public class ReferentialConstraintRole {
    * @return {@link ReferentialConstraintRole} for method chaining
    */
   public ReferentialConstraintRole setPropertyRefs(List<PropertyRef> propertyRef) {
-    this.propertyRefs = propertyRef;
+    propertyRefs = propertyRef;
     return this;
   }
 

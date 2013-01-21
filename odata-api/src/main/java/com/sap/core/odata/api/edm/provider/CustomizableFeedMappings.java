@@ -19,6 +19,7 @@ public class CustomizableFeedMappings implements EdmCustomizableFeedMappings {
   /* (non-Javadoc)
    * @see com.sap.core.odata.api.edm.EdmCustomizableFeedMappings#isFcKeepInContent()
    */
+  @Override
   public Boolean isFcKeepInContent() {
     return fcKeepInContent;
   }
@@ -26,6 +27,7 @@ public class CustomizableFeedMappings implements EdmCustomizableFeedMappings {
   /* (non-Javadoc)
    * @see com.sap.core.odata.api.edm.EdmCustomizableFeedMappings#getFcContentKind()
    */
+  @Override
   public EdmContentKind getFcContentKind() {
     return fcContentKind;
   }
@@ -33,6 +35,7 @@ public class CustomizableFeedMappings implements EdmCustomizableFeedMappings {
   /* (non-Javadoc)
    * @see com.sap.core.odata.api.edm.EdmCustomizableFeedMappings#getFcNsPrefix()
    */
+  @Override
   public String getFcNsPrefix() {
     return fcNsPrefix;
   }
@@ -40,6 +43,7 @@ public class CustomizableFeedMappings implements EdmCustomizableFeedMappings {
   /* (non-Javadoc)
    * @see com.sap.core.odata.api.edm.EdmCustomizableFeedMappings#getFcNsUri()
    */
+  @Override
   public String getFcNsUri() {
     return fcNsUri;
   }
@@ -47,6 +51,7 @@ public class CustomizableFeedMappings implements EdmCustomizableFeedMappings {
   /* (non-Javadoc)
    * @see com.sap.core.odata.api.edm.EdmCustomizableFeedMappings#getFcSourcePath()
    */
+  @Override
   public String getFcSourcePath() {
     return fcSourcePath;
   }
@@ -54,6 +59,7 @@ public class CustomizableFeedMappings implements EdmCustomizableFeedMappings {
   /* (non-Javadoc)
    * @see com.sap.core.odata.api.edm.EdmCustomizableFeedMappings#getFcTargetPath()
    */
+  @Override
   public String getFcTargetPath() {
     return fcTargetPath;
   }

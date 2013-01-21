@@ -24,38 +24,47 @@ public class Facets implements EdmFacets {
   String collation;
   EdmConcurrencyMode concurrencyMode;
 
+  @Override
   public Boolean isNullable() {
     return nullable;
   }
 
+  @Override
   public String getDefaultValue() {
     return defaultValue;
   }
 
+  @Override
   public Integer getMaxLength() {
     return maxLength;
   }
 
+  @Override
   public Boolean isFixedLength() {
     return fixedLength;
   }
 
+  @Override
   public Integer getPrecision() {
     return precision;
   }
 
+  @Override
   public Integer getScale() {
     return scale;
   }
 
+  @Override
   public Boolean isUnicode() {
     return unicode;
   }
 
+  @Override
   public String getCollation() {
     return collation;
   }
 
+  @Override
   public EdmConcurrencyMode getConcurrencyMode() {
     return concurrencyMode;
   }
@@ -152,25 +161,34 @@ public class Facets implements EdmFacets {
 
   @Override
   public String toString() {
-    List<String> values = new ArrayList<String>();
-    if (nullable != null)
+    final List<String> values = new ArrayList<String>();
+    if (nullable != null) {
       values.add("Nullable=" + nullable);
-    if (defaultValue != null)
+    }
+    if (defaultValue != null) {
       values.add("DefaultValue=" + defaultValue);
-    if (maxLength != null)
+    }
+    if (maxLength != null) {
       values.add("MaxLength=" + maxLength);
-    if (fixedLength != null)
+    }
+    if (fixedLength != null) {
       values.add("FixedLength=" + fixedLength);
-    if (precision != null)
+    }
+    if (precision != null) {
       values.add("Precision=" + precision);
-    if (scale != null)
+    }
+    if (scale != null) {
       values.add("Scale=" + scale);
-    if (unicode != null)
+    }
+    if (unicode != null) {
       values.add("Unicode=" + unicode);
-    if (collation != null)
+    }
+    if (collation != null) {
       values.add("Collation=" + collation);
-    if (concurrencyMode != null)
+    }
+    if (concurrencyMode != null) {
       values.add("ConcurrencyMode=" + concurrencyMode);
+    }
     return values.toString();
   }
 }
