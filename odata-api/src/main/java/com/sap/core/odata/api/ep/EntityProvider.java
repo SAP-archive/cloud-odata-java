@@ -127,7 +127,7 @@ public final class EntityProvider {
      * @throws EntityProviderException
      */
     ODataResponse writeFunctionImport(String contentType, EdmFunctionImport functionImport, Object data, EntityProviderProperties properties) throws EntityProviderException;
-    
+
     /**
      * 
      * @param contentType
@@ -193,7 +193,7 @@ public final class EntityProvider {
    */
   private static EntityProviderInterface createEntityProvider() {
     return RuntimeDelegate.createEntityProvider();
-  }  
+  }
 
   /**
    * Write service document based on given {@link Edm} and <code>service root</code> as
@@ -204,7 +204,7 @@ public final class EntityProvider {
    * @return
    * @throws EntityProviderException
    */
-  public static ODataResponse writeServiceDocument(Edm edm, String serviceRoot) throws EntityProviderException{
+  public static ODataResponse writeServiceDocument(Edm edm, String serviceRoot) throws EntityProviderException {
     return createEntityProvider().writeServiceDocument(edm, serviceRoot);
   }
 
@@ -216,7 +216,7 @@ public final class EntityProvider {
    * @return
    * @throws EntityProviderException
    */
-  public static ODataResponse writePropertyValue(EdmProperty edmProperty, Object value) throws EntityProviderException{
+  public static ODataResponse writePropertyValue(EdmProperty edmProperty, Object value) throws EntityProviderException {
     return createEntityProvider().writePropertyValue(edmProperty, value);
   }
 
@@ -227,7 +227,7 @@ public final class EntityProvider {
    * @return
    * @throws EntityProviderException
    */
-  public static ODataResponse writeText(String value) throws EntityProviderException{
+  public static ODataResponse writeText(String value) throws EntityProviderException {
     return createEntityProvider().writeText(value);
   }
 
@@ -239,39 +239,39 @@ public final class EntityProvider {
    * @return resulting {@link ODataResponse} with written binary content.
    * @throws EntityProviderException
    */
-  public static ODataResponse writeBinary(String mimeType, byte[] data) throws EntityProviderException{
+  public static ODataResponse writeBinary(String mimeType, byte[] data) throws EntityProviderException {
     return createEntityProvider().writeBinary(mimeType, data);
   }
 
-  public static ODataResponse writeFeed(String contentType, EdmEntitySet entitySet, List<Map<String, Object>> data, EntityProviderProperties properties) throws EntityProviderException{
+  public static ODataResponse writeFeed(String contentType, EdmEntitySet entitySet, List<Map<String, Object>> data, EntityProviderProperties properties) throws EntityProviderException {
     return createEntityProvider().writeFeed(contentType, entitySet, data, properties);
   }
 
-  public static ODataResponse writeEntry(String contentType, EdmEntitySet entitySet, Map<String, Object> data, EntityProviderProperties properties) throws EntityProviderException{
+  public static ODataResponse writeEntry(String contentType, EdmEntitySet entitySet, Map<String, Object> data, EntityProviderProperties properties) throws EntityProviderException {
     return createEntityProvider().writeEntry(contentType, entitySet, data, properties);
   }
 
-  public static ODataResponse writeProperty(String contentType, EdmProperty edmProperty, Object value) throws EntityProviderException{
+  public static ODataResponse writeProperty(String contentType, EdmProperty edmProperty, Object value) throws EntityProviderException {
     return createEntityProvider().writeProperty(contentType, edmProperty, value);
   }
 
-  public static ODataResponse writeLink(String contentType, EdmEntitySet entitySet, Map<String, Object> data, EntityProviderProperties properties) throws EntityProviderException{
+  public static ODataResponse writeLink(String contentType, EdmEntitySet entitySet, Map<String, Object> data, EntityProviderProperties properties) throws EntityProviderException {
     return createEntityProvider().writeLink(contentType, entitySet, data, properties);
   }
 
-  public static ODataResponse writeLinks(String contentType, EdmEntitySet entitySet, List<Map<String, Object>> data, EntityProviderProperties properties) throws EntityProviderException{
+  public static ODataResponse writeLinks(String contentType, EdmEntitySet entitySet, List<Map<String, Object>> data, EntityProviderProperties properties) throws EntityProviderException {
     return createEntityProvider().writeLinks(contentType, entitySet, data, properties);
   }
 
-  public static ODataResponse writeFunctionImport(String contentType, EdmFunctionImport functionImport, Object data, EntityProviderProperties properties) throws EntityProviderException{
+  public static ODataResponse writeFunctionImport(String contentType, EdmFunctionImport functionImport, Object data, EntityProviderProperties properties) throws EntityProviderException {
     return createEntityProvider().writeFunctionImport(contentType, functionImport, data, properties);
   }
 
-  public static ODataEntry readEntry(String contentType, EdmEntitySet entitySet, InputStream content) throws EntityProviderException{
+  public static ODataEntry readEntry(String contentType, EdmEntitySet entitySet, InputStream content) throws EntityProviderException {
     return createEntityProvider().readEntry(contentType, entitySet, content);
   }
 
-  public static Map<String, Object> readProperty(String contentType, EdmProperty edmProperty, InputStream content) throws EntityProviderException{
+  public static Map<String, Object> readProperty(String contentType, EdmProperty edmProperty, InputStream content) throws EntityProviderException {
     return createEntityProvider().readProperty(contentType, edmProperty, content);
   }
 
@@ -279,7 +279,7 @@ public final class EntityProvider {
     return createEntityProvider().readPropertyValue(edmProperty, content);
   }
 
-  public static List<String> readLinks(String contentType, EdmEntitySet entitySet, InputStream content) throws EntityProviderException{
+  public static List<String> readLinks(String contentType, EdmEntitySet entitySet, InputStream content) throws EntityProviderException {
     return createEntityProvider().readLinks(contentType, entitySet, content);
   }
 

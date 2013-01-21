@@ -13,7 +13,7 @@ public class ODataApplicationException extends ODataException {
   private static final long serialVersionUID = 1L;
   private String errorCode = ODataApplicationException.class.getName();;
   private HttpStatusCodes httpStatus = HttpStatusCodes.INTERNAL_SERVER_ERROR;
-  private Locale locale;
+  private final Locale locale;
 
   /**
    * Since this is a translated application exception locale must not be null.
@@ -33,7 +33,7 @@ public class ODataApplicationException extends ODataException {
    */
   public ODataApplicationException(String message, Locale locale, HttpStatusCodes status) {
     this(message, locale);
-    this.httpStatus = status;
+    httpStatus = status;
   }
 
   /**
@@ -59,10 +59,9 @@ public class ODataApplicationException extends ODataException {
   public ODataApplicationException(String message, Locale locale, HttpStatusCodes status, String errorCode, Throwable e) {
     super(message, e);
     this.errorCode = errorCode;
-    this.httpStatus = status;
+    httpStatus = status;
     this.locale = locale;
   }
-
 
   /**
    * Since this is a translated application exception locale must not be null.
@@ -84,7 +83,7 @@ public class ODataApplicationException extends ODataException {
    */
   public ODataApplicationException(String message, Locale locale, HttpStatusCodes status, Throwable e) {
     this(message, locale, e);
-    this.httpStatus = status;
+    httpStatus = status;
   }
 
   /**
@@ -99,11 +98,11 @@ public class ODataApplicationException extends ODataException {
     this.errorCode = errorCode;
 
   }
-  
+
   /**
    * @return {@link Locale} the locale
    */
-  public Locale getLocale(){
+  public Locale getLocale() {
     return locale;
   }
 
@@ -112,7 +111,7 @@ public class ODataApplicationException extends ODataException {
    * @return {@link HttpStatusCodes} the status code 
    */
   public HttpStatusCodes getHttpStatus() {
-    return this.httpStatus;
+    return httpStatus;
   }
 
   /**
@@ -120,8 +119,7 @@ public class ODataApplicationException extends ODataException {
    * @return <b>String</b>The error code displayed in the error message. Mandatory after OData specification.
    */
   public String getCode() {
-    return this.errorCode;
+    return errorCode;
   }
-  
-  
+
 }

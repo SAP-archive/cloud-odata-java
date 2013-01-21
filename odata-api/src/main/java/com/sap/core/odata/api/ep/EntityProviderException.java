@@ -15,7 +15,7 @@ public class EntityProviderException extends ODataMessageException {
   public static final MessageReference INVALID_STATE = createMessageReference(EntityProviderException.class, "INVALID_STATE");
   public static final MessageReference INVALID_PROPERTY = createMessageReference(EntityProviderException.class, "INVALID_PROPERTY");
   public static final MessageReference ILLEGAL_ARGUMENT = createMessageReference(EntityProviderException.class, "ILLEGAL_ARGUMENT");
-  
+
   public EntityProviderException(MessageReference messageReference) {
     super(messageReference);
   }

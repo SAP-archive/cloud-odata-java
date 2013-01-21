@@ -32,12 +32,12 @@ public abstract class RuntimeDelegate {
     RuntimeDelegateInstance delegate;
 
     try {
-      Class<?> clazz = Class.forName(RuntimeDelegate.IMPLEMENTATION);
+      final Class<?> clazz = Class.forName(RuntimeDelegate.IMPLEMENTATION);
 
-      Object object = clazz.newInstance();
+      final Object object = clazz.newInstance();
       delegate = (RuntimeDelegateInstance) object;
 
-    } catch (Exception e) {
+    } catch (final Exception e) {
       throw new RuntimeDelegateException(e);
     }
     return delegate;

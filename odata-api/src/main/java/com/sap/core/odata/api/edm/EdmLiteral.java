@@ -5,8 +5,8 @@ package com.sap.core.odata.api.edm;
  * @author SAP AG
  */
 public final class EdmLiteral {
-  private EdmSimpleType type;
-  private String literal;
+  private final EdmSimpleType type;
+  private final String literal;
 
   /**
    * @param type {@link EdmSimpleType} simple type

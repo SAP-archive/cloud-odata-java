@@ -94,7 +94,7 @@ public abstract class ODataSingleProcessor
    */
   @Override
   public ODataContext getContext() {
-    return this.context;
+    return context;
   }
 
   /**
@@ -320,7 +320,7 @@ public abstract class ODataSingleProcessor
   public ODataResponse readServiceDocument(GetServiceDocumentUriInfo uriInfo, String contentType) throws ODataException {
     contentType += "; " + DEFAULT_SERVICE_CHARSET_PARAMETER;
 
-    ODataResponse response = ODataResponse.fromResponse(EntityProvider.writeServiceDocument(getContext().getService().getEntityDataModel(), getContext().getPathInfo().getServiceRoot().toASCIIString()))
+    final ODataResponse response = ODataResponse.fromResponse(EntityProvider.writeServiceDocument(getContext().getService().getEntityDataModel(), getContext().getPathInfo().getServiceRoot().toASCIIString()))
         .header("Content-Type", contentType)
         .header("DataServiceVersion", Edm.DATA_SERVICE_VERSION_10).build();
     return response;
@@ -331,7 +331,7 @@ public abstract class ODataSingleProcessor
    */
   @Override
   public ODataResponse readMetadata(GetMetadataUriInfo uriInfo, String contentType) throws ODataException {
-    EdmServiceMetadata edmServiceMetadata = getContext().getService().getEntityDataModel().getServiceMetadata();
+    final EdmServiceMetadata edmServiceMetadata = getContext().getService().getEntityDataModel().getServiceMetadata();
 
     return ODataResponse
         .status(HttpStatusCodes.OK)

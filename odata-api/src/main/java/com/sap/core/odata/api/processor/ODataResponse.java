@@ -62,13 +62,13 @@ public abstract class ODataResponse {
    * @return true/false
    */
   public abstract boolean containsHeader(String header);
-  
+
   /**
    * @param status http status code
    * @return a builder object
    */
   public static ODataResponseBuilder status(HttpStatusCodes status) {
-    ODataResponseBuilder b = ODataResponseBuilder.newInstance();
+    final ODataResponseBuilder b = ODataResponseBuilder.newInstance();
     b.status(status);
     return b;
   }
@@ -78,7 +78,7 @@ public abstract class ODataResponse {
    * @return a new builder object
    */
   public static ODataResponseBuilder fromResponse(ODataResponse response) {
-    ODataResponseBuilder b = ODataResponseBuilder.newInstance();
+    final ODataResponseBuilder b = ODataResponseBuilder.newInstance();
     b.fromResponse(response);
     return b;
   }
@@ -88,7 +88,7 @@ public abstract class ODataResponse {
    * @return a builder object
    */
   public static ODataResponseBuilder entity(Object entity) {
-    ODataResponseBuilder b = ODataResponseBuilder.newInstance();
+    final ODataResponseBuilder b = ODataResponseBuilder.newInstance();
     b.entity(entity);
     return b;
   }
@@ -99,7 +99,7 @@ public abstract class ODataResponse {
    * @return a builder object
    */
   public static ODataResponseBuilder header(String name, String value) {
-    ODataResponseBuilder b = ODataResponseBuilder.newInstance();
+    final ODataResponseBuilder b = ODataResponseBuilder.newInstance();
     b.header(name, value);
     return b;
   }
@@ -109,7 +109,7 @@ public abstract class ODataResponse {
    * @return a builder object
    */
   public static ODataResponseBuilder contentHeader(String value) {
-    ODataResponseBuilder b = ODataResponseBuilder.newInstance();
+    final ODataResponseBuilder b = ODataResponseBuilder.newInstance();
     b.contentHeader(value);
     return b;
   }
@@ -130,7 +130,7 @@ public abstract class ODataResponse {
     protected ODataResponseBuilder() {}
 
     private static ODataResponseBuilder newInstance() {
-      ODataResponseBuilder b = RuntimeDelegate.createODataResponseBuilder();
+      final ODataResponseBuilder b = RuntimeDelegate.createODataResponseBuilder();
       return b;
     }
 

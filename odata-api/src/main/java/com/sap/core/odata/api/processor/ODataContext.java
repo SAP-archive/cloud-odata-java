@@ -84,7 +84,7 @@ public interface ODataContext {
    * Returns all header values of HTTP request
    * @return immutable map of request header values
    */
-  Map<String,String> getHttpRequestHeaders();
+  Map<String, String> getHttpRequestHeaders();
 
   /**
    * Get information about enabled debug mode

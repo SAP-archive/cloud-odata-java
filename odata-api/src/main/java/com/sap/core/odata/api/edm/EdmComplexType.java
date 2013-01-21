@@ -14,5 +14,6 @@ public interface EdmComplexType extends EdmStructuralType {
   /* (non-Javadoc)
    * @see com.sap.core.odata.api.edm.EdmStructuralType#getBaseType()
    */
+  @Override
   EdmComplexType getBaseType() throws EdmException;
 }

@@ -6,8 +6,8 @@ package com.sap.core.odata.api.edm;
  */
 public class FullQualifiedName {
 
-  private String namespace;
-  private String name;
+  private final String namespace;
+  private final String name;
 
   /**
    * @param namespace
@@ -39,10 +39,12 @@ public class FullQualifiedName {
 
   @Override
   public boolean equals(Object obj) {
-    if (this == obj)
+    if (this == obj) {
       return true;
-    if (obj == null || !(obj instanceof FullQualifiedName))
+    }
+    if ((obj == null) || !(obj instanceof FullQualifiedName)) {
       return false;
+    }
     final FullQualifiedName other = (FullQualifiedName) obj;
     return namespace.equals(other.getNamespace()) && name.equals(other.getName());
   }

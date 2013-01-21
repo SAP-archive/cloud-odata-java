@@ -21,6 +21,6 @@ public abstract class ODataHttpException extends ODataMessageException {
   }
 
   public HttpStatusCodes getHttpStatus() {
-    return this.httpStatus;
+    return httpStatus;
   }
 }

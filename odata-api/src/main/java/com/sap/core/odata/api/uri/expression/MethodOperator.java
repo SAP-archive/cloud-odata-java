@@ -34,7 +34,7 @@ public enum MethodOperator
   private MethodOperator(String syntax)
   {
     this.syntax = syntax;
-    this.stringRespresentation = syntax;
+    stringRespresentation = syntax;
   }
 
   private MethodOperator(String syntax, String stringRespresentation)

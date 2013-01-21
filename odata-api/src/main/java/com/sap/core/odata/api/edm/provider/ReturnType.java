@@ -33,7 +33,7 @@ public class ReturnType {
    * @return {@link ReturnType} for method chaining
    */
   public ReturnType setTypeName(FullQualifiedName qualifiedName) {
-    this.typeName = qualifiedName;
+    typeName = qualifiedName;
     return this;
   }
 
