@@ -6,6 +6,26 @@
 	<url>http://maven.apache.org</url>
 	<build>
 		<finalName>com.sap.core.odata.processor.ref.web</finalName>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-eclipse-plugin</artifactId>
+				<version>2.9</version>
+				<configuration>
+					<wtpversion>2.0</wtpversion>
+					<projectNameTemplate>[artifactId]-[version]</projectNameTemplate>
+				</configuration>
+			</plugin>
+			<plugin>
+			<groupId>org.apache.maven.plugins</groupId>
+			<artifactId>maven-compiler-plugin</artifactId>
+			<version>2.3.2</version>
+			<configuration>
+				<source>1.6</source>
+				<target>1.6</target>
+			</configuration>
+			</plugin>
+		</plugins>
 	</build>
 	<dependencies>
 		<!-- OData4SAP Support -->
