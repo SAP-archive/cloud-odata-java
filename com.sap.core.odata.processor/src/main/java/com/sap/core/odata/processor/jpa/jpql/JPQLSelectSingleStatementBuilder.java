@@ -1,8 +1,5 @@
 package com.sap.core.odata.processor.jpa.jpql;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.sap.core.odata.processor.jpa.access.data.ODataExpressionParser;
 import com.sap.core.odata.processor.jpa.api.jpql.JPQLContextView;
 import com.sap.core.odata.processor.jpa.api.jpql.JPQLSelectSingleContextView;
@@ -11,9 +8,6 @@ import com.sap.core.odata.processor.jpa.api.jpql.JPQLStatement.JPQLStatementBuil
 import com.sap.core.odata.processor.jpa.exception.ODataJPARuntimeException;
 
 public class JPQLSelectSingleStatementBuilder extends JPQLStatementBuilder {
-
-	private static final Logger LOGGER = LoggerFactory
-			.getLogger(JPQLSelectSingleStatementBuilder.class);
 
 	JPQLStatement jpqlStatement;
 	private JPQLSelectSingleContextView context;
@@ -51,8 +45,6 @@ public class JPQLSelectSingleStatementBuilder extends JPQLStatementBuilder {
 							context.getJPAEntityAlias())).append(
 					JPQLStatement.DELIMITER.SPACE);
 		}
-
-		LOGGER.info("JPQL Select Statement formed : " + jpqlQuery.toString());
 
 		return jpqlQuery.toString();
 

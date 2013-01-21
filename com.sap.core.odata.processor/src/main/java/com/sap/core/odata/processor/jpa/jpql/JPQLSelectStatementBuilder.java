@@ -3,8 +3,6 @@ package com.sap.core.odata.processor.jpa.jpql;
 import java.util.Iterator;
 import java.util.Map.Entry;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import com.sap.core.odata.processor.jpa.api.jpql.JPQLContextView;
 import com.sap.core.odata.processor.jpa.api.jpql.JPQLSelectContextView;
 import com.sap.core.odata.processor.jpa.api.jpql.JPQLStatement;
@@ -12,9 +10,6 @@ import com.sap.core.odata.processor.jpa.api.jpql.JPQLStatement.JPQLStatementBuil
 import com.sap.core.odata.processor.jpa.exception.ODataJPARuntimeException;
 
 public class JPQLSelectStatementBuilder extends JPQLStatementBuilder {
-
-	private static final Logger LOGGER = LoggerFactory
-			.getLogger(JPQLSelectStatementBuilder.class);
 
 	JPQLStatement jpqlStatement;
 	private JPQLSelectContextView context;
@@ -68,8 +63,6 @@ public class JPQLSelectStatementBuilder extends JPQLStatementBuilder {
 			jpqlQuery.append(JPQLStatement.KEYWORD.ORDERBY).append(JPQLStatement.DELIMITER.SPACE);
 			jpqlQuery.append(orderByBuilder);
 		}
-
-		LOGGER.info("JPQL Select Statement formed : " + jpqlQuery.toString());
 
 		return jpqlQuery.toString();
 

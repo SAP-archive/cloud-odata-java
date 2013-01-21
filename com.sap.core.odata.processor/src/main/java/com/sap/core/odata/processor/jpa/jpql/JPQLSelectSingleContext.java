@@ -45,7 +45,7 @@ public class JPQLSelectSingleContext extends JPQLContext implements JPQLSelectSi
 			extends
 			com.sap.core.odata.processor.jpa.api.jpql.JPQLContext.JPQLContextBuilder {
 
-		private GetEntityUriInfo entityView;
+		protected GetEntityUriInfo entityView;
 
 		@Override
 		public JPQLContext build() throws ODataJPAModelException, ODataJPARuntimeException {
