@@ -6,13 +6,20 @@ import com.sap.core.odata.processor.jpa.exception.ODataJPARuntimeException;
 
 public abstract class JPQLContext implements JPQLContextView {
 	
+	protected String jpaEntityAlias;
 	protected String jpaEntityName;
 	protected JPQLContextType type;
 	
 	protected final void setJPAEntityName(String jpaEntityName){
 		this.jpaEntityName = jpaEntityName;
 	}
+	protected final void setJPAEntityAlias(String jpaEntityAlias){
+		this.jpaEntityAlias = jpaEntityAlias;
+	}
 	
+	public final String getJPAEntityAlias( ){
+		return this.jpaEntityAlias;
+	}
 	protected final void setType(JPQLContextType type){
 		this.type = type;
 	}
@@ -30,6 +37,8 @@ public abstract class JPQLContext implements JPQLContextView {
 	
 	public static abstract class JPQLContextBuilder {
 		
+		protected int aliasCounter = 0;
+		
 		protected JPQLContextBuilder( ){ }
 		
 		private static JPQLContextBuilder create(JPQLContextType contextType,Object resultsView){
@@ -40,5 +49,13 @@ public abstract class JPQLContext implements JPQLContextView {
 		
 		public abstract JPQLContext build( ) throws ODataJPAModelException, ODataJPARuntimeException;
 		protected abstract void setResultsView(Object resultsView);
+		
+		protected void resetAliasCounter( ){
+			aliasCounter = 0;
+		}
+		
+		protected String generateJPAEntityAlias( ){
+			return new String("E" + ++aliasCounter);
+		}
 	}
 }

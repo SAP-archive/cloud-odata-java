@@ -4,14 +4,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.sap.core.odata.api.edm.EdmException;
+import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.api.uri.SelectItem;
-import com.sap.core.odata.api.uri.expression.FilterExpression;
 import com.sap.core.odata.api.uri.info.GetEntitySetUriInfo;
-import com.sap.core.odata.processor.jpa.access.ODataExpressionParser;
+import com.sap.core.odata.processor.jpa.access.data.ODataExpressionParser;
 import com.sap.core.odata.processor.jpa.api.jpql.JPQLContext;
 import com.sap.core.odata.processor.jpa.api.jpql.JPQLContextType;
 import com.sap.core.odata.processor.jpa.api.jpql.JPQLSelectContextView;
@@ -21,12 +18,10 @@ import com.sap.core.odata.processor.jpa.exception.ODataJPARuntimeException;
 public class JPQLSelectContext extends JPQLContext implements
 		JPQLSelectContextView {
 
-	private static final Logger LOGGER = LoggerFactory
-			.getLogger(JPQLSelectContext.class);
 
-	private ArrayList<String> selectedFields;
-	private HashMap<String, String> orderByCollection;
-	private FilterExpression whereCondition;
+	protected ArrayList<String> selectedFields;
+	protected HashMap<String, String> orderByCollection;
+	protected String whereCondition;
 
 	protected final void setSelectedFields(ArrayList<String> selectedFields) {
 		this.selectedFields = selectedFields;
@@ -37,7 +32,7 @@ public class JPQLSelectContext extends JPQLContext implements
 		this.orderByCollection = orderByCollection;
 	}
 
-	protected final void setWhereExpression(FilterExpression filterExpression) {
+	protected final void setWhereExpression(String filterExpression) {
 		this.whereCondition = filterExpression;
 	}
 
@@ -52,7 +47,7 @@ public class JPQLSelectContext extends JPQLContext implements
 	}
 
 	@Override
-	public FilterExpression getWhereExpression() {
+	public String getWhereExpression() {
 		return this.whereCondition;
 	}
 
@@ -60,7 +55,7 @@ public class JPQLSelectContext extends JPQLContext implements
 			extends
 			com.sap.core.odata.processor.jpa.api.jpql.JPQLContext.JPQLContextBuilder {
 
-		private GetEntitySetUriInfo entitySetView;
+		protected GetEntitySetUriInfo entitySetView;
 
 		@Override
 		public JPQLContext build() throws ODataJPAModelException,
@@ -73,47 +68,19 @@ public class JPQLSelectContext extends JPQLContext implements
 
 					JPQLSelectContext.this.setJPAEntityName(entitySetView
 							.getTargetEntitySet().getEntityType().getName());
+					
+					JPQLSelectContext.this.setJPAEntityAlias(generateJPAEntityAlias());
 
-					if (entitySetView.getOrderBy() != null) {
+					JPQLSelectContext.this
+							.setOrderByCollection(generateOrderByFileds());
 
-						JPQLSelectContext.this
-						.setOrderByCollection(ODataExpressionParser
-						.parseToJPAOrderByExpression(entitySetView
-						.getOrderBy()));
+					JPQLSelectContext.this
+							.setSelectedFields(generateSelectFields());
 
-					} else if (entitySetView.getTop() != null
-							|| entitySetView.getSkip() != null) {
-
-						JPQLSelectContext.this
-						.setOrderByCollection(ODataExpressionParser
-						.parseKeyPredicatesToJPAOrderByExpression(entitySetView
-								.getKeyPredicates()));
-					}
-
-					JPQLSelectContext.this.setWhereExpression(entitySetView
-							.getFilter());
-
-					List<SelectItem> selectItemList = entitySetView.getSelect();
-					if (selectItemList != null) {
-						ArrayList<String> selectedFields = new ArrayList<String>(
-								selectItemList.size());
-						for (SelectItem item : selectItemList) {
-							selectedFields.add(item.getProperty().getName());
-						}
-						JPQLSelectContext.this
-								.setSelectedFields(selectedFields);
-					}
-
-				} catch (EdmException e) {
-					LOGGER.error(e.getMessage(), e);
-					throw ODataJPARuntimeException.throwException(
-							ODataJPARuntimeException.RUNTIME_EXCEPTION
-									.addContent(e.getMessage()), e);
-				} catch (ODataJPARuntimeException e) {
-					LOGGER.error(e.getMessage(), e);
-					throw ODataJPARuntimeException.throwException(
-							ODataJPARuntimeException.RUNTIME_EXCEPTION
-									.addContent(e.getMessage()), e);
+					JPQLSelectContext.this
+							.setWhereExpression(generateWhereExpression());
+				} catch (ODataException e) {
+					throw ODataJPARuntimeException.throwException(ODataJPARuntimeException.GENERAL, e);
 				}
 
 			}
@@ -130,5 +97,52 @@ public class JPQLSelectContext extends JPQLContext implements
 
 		}
 
+		/*
+		 * Generate Select Clause Fields
+		 */
+		protected ArrayList<String> generateSelectFields() throws EdmException {
+
+			List<SelectItem> selectItemList = entitySetView.getSelect();
+
+			if (selectItemList != null) {
+				ArrayList<String> selectedFields = new ArrayList<String>(
+						selectItemList.size());
+				for (SelectItem item : selectItemList) {
+					selectedFields.add(item.getProperty().getName());
+				}
+
+				return selectedFields;
+			}
+			return null;
+		}
+
+		/*
+		 * Generate Order By Clause Fields
+		 */
+		protected HashMap<String, String> generateOrderByFileds()
+				throws ODataJPARuntimeException {
+
+			if (entitySetView.getOrderBy() != null) {
+
+				return ODataExpressionParser
+						.parseToJPAOrderByExpression(entitySetView.getOrderBy(),getJPAEntityAlias());
+
+			} else if (entitySetView.getTop() != null
+					|| entitySetView.getSkip() != null) {
+
+				return ODataExpressionParser
+						.parseKeyPredicatesToJPAOrderByExpression(entitySetView
+								.getKeyPredicates(),getJPAEntityAlias());
+			} else
+				return null;
+		}
+
+		/*
+		 * Generate Where Clause Expression
+		 */
+		protected String generateWhereExpression() throws ODataException {
+			return ODataExpressionParser
+					.parseToJPAWhereExpression(entitySetView.getFilter(),getJPAEntityAlias());
+		}
 	}
 }
