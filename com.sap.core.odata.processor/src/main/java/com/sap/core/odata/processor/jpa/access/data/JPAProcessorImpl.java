@@ -1,4 +1,4 @@
-package com.sap.core.odata.processor.jpa.access;
+package com.sap.core.odata.processor.jpa.access.data;
 
 import java.util.List;
 
