@@ -564,8 +564,8 @@ public class JPAEdmBuilderV2 implements JPAEdmBuilder {
 			}
 			propertyRefSourceList.add(propertyRefSource);
 			propertyRefTargetList.add(propertyRefTarget);
-			referencialConstraint.setPrincipal(new ReferentialConstraintRole().setPropertyRefs(propertyRefSourceList).setRole(association.getEnd1().getRole()));
-			referencialConstraint.setDependent(new ReferentialConstraintRole().setPropertyRefs(propertyRefTargetList).setRole(association.getEnd2().getRole()));
+			//referencialConstraint.setPrincipal(new ReferentialConstraintRole().setPropertyRefs(propertyRefSourceList).setRole(association.getEnd1().getRole()));
+			//referencialConstraint.setDependent(new ReferentialConstraintRole().setPropertyRefs(propertyRefTargetList).setRole(association.getEnd2().getRole()));
 			return referencialConstraint;
 		}
 		return null;

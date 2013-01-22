@@ -4,7 +4,7 @@ import java.util.Date;
 
 import javax.persistence.*;
 
-@Entity
+/*@Entity*/
 @Table(name = "T_NOTE")
 @IdClass(value = NoteKey.class)
 public class Note {
@@ -75,6 +75,6 @@ public class Note {
 
 	public void setSalesOrderHeader(SalesOrderHeader salesOrderHeader) {
 		this.salesOrderHeader = salesOrderHeader;
-		this.salesOrderHeader.getNotes().add(this);
+		//this.salesOrderHeader.getNotes().add(this);
 	}
 }

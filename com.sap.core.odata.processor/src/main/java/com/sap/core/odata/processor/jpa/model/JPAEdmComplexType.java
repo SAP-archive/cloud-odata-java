@@ -40,8 +40,8 @@ public class JPAEdmComplexType extends JPAEdmBaseViewImpl implements
 	}
 
 	@Override
-	public ComplexType searchComplexType(EmbeddableType<?> embeddableType) {
-		return searchMap.get(embeddableType.getJavaType().getName());
+	public ComplexType searchComplexType(String embeddableTypeName) {
+		return searchMap.get(embeddableTypeName);
 	}
 
 	@Override
@@ -114,7 +114,8 @@ public class JPAEdmComplexType extends JPAEdmBaseViewImpl implements
 
 			for (EmbeddableType<?> embeddableType : schemaView
 					.getJPAMetaModel().getEmbeddables()) {
-
+				
+				currentEmbeddableType = embeddableType;
 				String searchKey = embeddableType.getJavaType().getName();
 
 				if (searchMap.containsKey(searchKey))

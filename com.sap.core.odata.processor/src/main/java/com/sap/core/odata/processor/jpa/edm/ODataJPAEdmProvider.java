@@ -1,5 +1,6 @@
 package com.sap.core.odata.processor.jpa.edm;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -191,6 +192,7 @@ public class ODataJPAEdmProvider extends EdmProvider {
 	public List<Schema> getSchemas() throws ODataException {
 		if (schemas == null && jpaEdmModel != null){
 			jpaEdmModel.getBuilder().build();
+			schemas = new ArrayList<Schema>();
 			schemas.add(jpaEdmModel.getSchemaView().getEdmSchema());
 		}
 		if (jpaEdmModel == null){

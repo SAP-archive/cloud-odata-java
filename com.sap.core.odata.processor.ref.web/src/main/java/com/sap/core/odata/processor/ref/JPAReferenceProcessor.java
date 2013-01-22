@@ -20,7 +20,7 @@ public class JPAReferenceProcessor extends ODataJPAProcessor {
 		super(oDataJPAContext);
 	}
 
-	@Override
+	/*@Override
 	public ODataResponse readEntitySet(GetEntitySetUriInfo uriParserResultView,
 			String contentType) throws ODataException {
 
@@ -73,5 +73,5 @@ public class JPAReferenceProcessor extends ODataJPAProcessor {
 		}
 
 	}
-
+*/
 }

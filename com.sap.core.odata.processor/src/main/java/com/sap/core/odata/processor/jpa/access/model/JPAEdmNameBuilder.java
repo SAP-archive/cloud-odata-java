@@ -79,9 +79,12 @@ public class JPAEdmNameBuilder {
 		
 		JPAEdmMapping mapping = new JPAEdmMappingImpl();
 		
-		Column column = ((AnnotatedElement) jpaAttribute.getJavaMember()).getAnnotation(Column.class);
+		AnnotatedElement annotatedElement = (AnnotatedElement) jpaAttribute.getJavaMember();
+		if(annotatedElement != null){
+			Column column = annotatedElement.getAnnotation(Column.class);
 		if(column != null)
 			mapping.setColumnName(column.name());
+		}
 		((Mapping) mapping).setInternalName(jpaAttributeName);
 		view.getSimpleProperty().setMapping((Mapping) mapping);
 	}

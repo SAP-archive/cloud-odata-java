@@ -2,7 +2,7 @@ package com.sap.core.odata.processor.ref.jpa;
 
 import javax.persistence.*;
 
-@Entity
+/*@Entity*/
 @Table(name = "T_SALESORDERITEM")
 public class SalesOrderItem {
 
@@ -95,6 +95,6 @@ public class SalesOrderItem {
 
 	public void setSalesOrderHeader(SalesOrderHeader salesOrderHeader) {
 		this.salesOrderHeader = salesOrderHeader;
-		this.salesOrderHeader.getSalesOrderItem().add(this);
+		//this.salesOrderHeader.getSalesOrderItem().add(this);
 	}
 }

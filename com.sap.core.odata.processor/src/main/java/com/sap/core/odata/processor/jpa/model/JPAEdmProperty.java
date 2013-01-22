@@ -8,15 +8,11 @@ import java.util.Set;
 import javax.persistence.Column;
 import javax.persistence.metamodel.Attribute;
 import javax.persistence.metamodel.Attribute.PersistentAttributeType;
-import javax.persistence.metamodel.EmbeddableType;
 import javax.persistence.metamodel.SingularAttribute;
-
-import org.junit.experimental.theories.internal.Assignments;
 
 import com.sap.core.odata.api.edm.EdmFacets;
 import com.sap.core.odata.api.edm.EdmSimpleTypeKind;
 import com.sap.core.odata.api.edm.FullQualifiedName;
-import com.sap.core.odata.api.edm.provider.Association;
 import com.sap.core.odata.api.edm.provider.ComplexProperty;
 import com.sap.core.odata.api.edm.provider.ComplexType;
 import com.sap.core.odata.api.edm.provider.Facets;
@@ -184,11 +180,11 @@ public class JPAEdmProperty extends JPAEdmBaseViewImpl implements
 
 						keyViewBuilder.build();
 					}
-
+					
+					break;
 				case EMBEDDED:
 					ComplexType complexType = complexTypeView
-							.searchComplexType((EmbeddableType<?>) currentAttribute
-									.getDeclaringType());
+							.searchComplexType(currentAttribute.getJavaType().getName());
 
 					if (complexType == null) {
 						JPAEdmComplexTypeView complexTypeViewLocal = new JPAEdmComplexType(
@@ -242,7 +238,7 @@ public class JPAEdmProperty extends JPAEdmBaseViewImpl implements
 						refView.getBuilder().build( );
 						associationView.addJPAEdmRefConstraintView(refView);
 					}
-
+					break;
 				default:
 					break;
 				}

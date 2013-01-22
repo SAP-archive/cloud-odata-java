@@ -106,9 +106,9 @@ JPAEdmSchemaView {
 							.getConsistentEdmEntityTypes());
 			}
 
-			if (associationView.isConsistent())
+			/*if (associationView.isConsistent())
 				schema.setAssociations(associationView
-							.getConsistentEdmAssociationList());
+							.getConsistentEdmAssociationList());*/
 		}
 
 	}

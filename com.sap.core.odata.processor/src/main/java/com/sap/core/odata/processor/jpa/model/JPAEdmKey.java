@@ -3,8 +3,6 @@ package com.sap.core.odata.processor.jpa.model;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.persistence.metamodel.EmbeddableType;
-
 import com.sap.core.odata.api.edm.provider.ComplexProperty;
 import com.sap.core.odata.api.edm.provider.ComplexType;
 import com.sap.core.odata.api.edm.provider.Key;
@@ -53,7 +51,7 @@ public class JPAEdmKey extends JPAEdmBaseViewImpl implements JPAEdmKeyView {
 		public void build() throws ODataJPAModelException {
 
 			List<PropertyRef> propertyRefList = null;
-			if (key != null)
+			if (key == null)
 				key = new Key();
 
 			if (key.getKeys() == null) {
@@ -65,8 +63,8 @@ public class JPAEdmKey extends JPAEdmBaseViewImpl implements JPAEdmKeyView {
 
 			if (isBuildModeComplexType) {
 				ComplexType complexType = complexTypeView
-						.searchComplexType((EmbeddableType<?>) propertyView
-								.getJPAAttribute());
+						.searchComplexType(propertyView
+								.getJPAAttribute().getJavaType().getName());
 				normalizeComplexKey(complexType, propertyRefList);
 			} else {
 				PropertyRef propertyRef = new PropertyRef();

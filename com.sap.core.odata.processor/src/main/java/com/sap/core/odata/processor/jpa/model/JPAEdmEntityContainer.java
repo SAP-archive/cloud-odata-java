@@ -113,7 +113,7 @@ public class JPAEdmEntityContainer extends JPAEdmBaseViewImpl implements
 						.getConsistentEdmAssociationSetList());
 			else {
 				isConsistent = false;
-				return;
+				//return;
 			}
 			
 			
