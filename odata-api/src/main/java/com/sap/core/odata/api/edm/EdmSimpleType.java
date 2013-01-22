@@ -38,11 +38,12 @@ public interface EdmSimpleType extends EdmType {
    * @param value  the literal representation of value
    * @param literalKind  the kind of literal representation of value
    * @param facets  additional constraints for parsing (optional)
-   * @return system data type as Object
+   * @param returnType the class of the returned value (if null, the default is used)
+   * @return the value as an instance of the class the parameter <code>returnType</code> indicates
    * @see EdmLiteralKind
    * @see EdmFacets
    */
-  public Object valueOfString(String value, EdmLiteralKind literalKind, EdmFacets facets) throws EdmSimpleTypeException;
+  public Object valueOfString(String value, EdmLiteralKind literalKind, EdmFacets facets, Class<?> returnType) throws EdmSimpleTypeException;
 
   /**
    * <p>Converts system data type to literal representation of value.</p>

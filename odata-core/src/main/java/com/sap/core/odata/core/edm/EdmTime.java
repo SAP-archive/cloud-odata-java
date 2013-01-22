@@ -30,7 +30,7 @@ public class EdmTime extends AbstractSimpleType {
   }
 
   @Override
-  public Calendar valueOfString(final String value, final EdmLiteralKind literalKind, final EdmFacets facets) throws EdmSimpleTypeException {
+  public Object valueOfString(final String value, final EdmLiteralKind literalKind, final EdmFacets facets, final Class<?> returnType) throws EdmSimpleTypeException {
     if (value == null) {
       checkNullLiteralAllowed(facets);
       return null;
@@ -39,13 +39,23 @@ public class EdmTime extends AbstractSimpleType {
     if (literalKind == null)
       throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_KIND_MISSING);
 
+    Calendar valueCalendar;
     if (literalKind == EdmLiteralKind.URI)
       if (value.length() > 6 && value.startsWith("time'") && value.endsWith("'"))
-        return parseLiteral(value.substring(5, value.length() - 1), facets);
+        valueCalendar = parseLiteral(value.substring(5, value.length() - 1), facets);
       else
         throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_ILLEGAL_CONTENT.addContent(value));
     else
-      return parseLiteral(value, facets);
+      valueCalendar = parseLiteral(value, facets);
+
+    if (returnType == null || returnType == Calendar.class)
+      return valueCalendar;
+    else if (returnType == long.class || returnType == Long.class)
+      return valueCalendar.getTimeInMillis();
+    else if (returnType == Date.class)
+      return valueCalendar.getTime();
+    else
+      throw new EdmSimpleTypeException(EdmSimpleTypeException.VALUE_TYPE_NOT_SUPPORTED.addContent(returnType));
   }
 
   private Calendar parseLiteral(final String literal, final EdmFacets facets) throws EdmSimpleTypeException {

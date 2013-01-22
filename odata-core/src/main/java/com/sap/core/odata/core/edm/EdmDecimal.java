@@ -59,7 +59,7 @@ public class EdmDecimal extends AbstractSimpleType {
   }
 
   @Override
-  public BigDecimal valueOfString(final String value, final EdmLiteralKind literalKind, final EdmFacets facets) throws EdmSimpleTypeException {
+  public Number valueOfString(final String value, final EdmLiteralKind literalKind, final EdmFacets facets, final Class<?> returnType) throws EdmSimpleTypeException {
     if (literalKind == null)
       throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_KIND_MISSING);
 
@@ -78,12 +78,40 @@ public class EdmDecimal extends AbstractSimpleType {
     else
       valueBigDecimal = new BigDecimal(value);
 
-    if (facets == null
-        || (facets.getPrecision() == null || facets.getPrecision() >= valueBigDecimal.precision())
-        && (facets.getScale() == null || facets.getScale() >= valueBigDecimal.scale()))
-      return valueBigDecimal;
-    else
+    if (facets != null
+        && (facets.getPrecision() != null && facets.getPrecision() < valueBigDecimal.precision()
+        || facets.getScale() != null && facets.getScale() < valueBigDecimal.scale()))
       throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_FACETS_NOT_MATCHED.addContent(value, facets));
+
+    try {
+      if (returnType == null || returnType == BigDecimal.class)
+        return valueBigDecimal;
+      else if (returnType == BigInteger.class)
+        return valueBigDecimal.toBigIntegerExact();
+      else if (returnType == long.class || returnType == Long.class)
+        return valueBigDecimal.longValueExact();
+      else if (returnType == int.class || returnType == Integer.class)
+        return valueBigDecimal.intValueExact();
+      else if (returnType == short.class || returnType == Short.class)
+        return valueBigDecimal.shortValueExact();
+      else if (returnType == byte.class || returnType == Byte.class)
+        return valueBigDecimal.byteValueExact();
+      else if (returnType == double.class || returnType == Double.class)
+        if (Double.isInfinite(valueBigDecimal.doubleValue()))
+          throw new EdmSimpleTypeException(EdmSimpleTypeException.VALUE_TYPE_NOT_SUPPORTED.addContent(returnType));
+        else
+          return valueBigDecimal.doubleValue();
+      else if (returnType == float.class || returnType == Float.class)
+        if (Float.isInfinite(valueBigDecimal.floatValue()))
+          throw new EdmSimpleTypeException(EdmSimpleTypeException.VALUE_TYPE_NOT_SUPPORTED.addContent(returnType));
+        else
+          return valueBigDecimal.floatValue();
+      else
+        throw new EdmSimpleTypeException(EdmSimpleTypeException.VALUE_TYPE_NOT_SUPPORTED.addContent(returnType));
+
+    } catch (ArithmeticException e) {
+      throw new EdmSimpleTypeException(EdmSimpleTypeException.VALUE_TYPE_NOT_SUPPORTED.addContent(returnType), e);
+    }
   }
 
   @Override

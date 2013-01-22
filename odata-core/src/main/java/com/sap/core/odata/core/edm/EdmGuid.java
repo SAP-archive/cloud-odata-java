@@ -30,9 +30,12 @@ public class EdmGuid extends AbstractSimpleType {
   }
 
   @Override
-  public UUID valueOfString(final String value, final EdmLiteralKind literalKind, final EdmFacets facets) throws EdmSimpleTypeException {
+  public UUID valueOfString(final String value, final EdmLiteralKind literalKind, final EdmFacets facets, final Class<?> returnType) throws EdmSimpleTypeException {
     if (literalKind == null)
       throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_KIND_MISSING);
+
+    if (returnType != null && returnType != UUID.class)
+      throw new EdmSimpleTypeException(EdmSimpleTypeException.VALUE_TYPE_NOT_SUPPORTED.addContent(returnType));
 
     if (validate(value, literalKind, facets))
       if (value == null)

@@ -28,7 +28,7 @@ public class EdmDateTime extends AbstractSimpleType {
   }
 
   @Override
-  public Calendar valueOfString(final String value, final EdmLiteralKind literalKind, final EdmFacets facets) throws EdmSimpleTypeException {
+  public Object valueOfString(final String value, final EdmLiteralKind literalKind, final EdmFacets facets, final Class<?> returnType) throws EdmSimpleTypeException {
     if (value == null) {
       checkNullLiteralAllowed(facets);
       return null;
@@ -47,6 +47,13 @@ public class EdmDateTime extends AbstractSimpleType {
         } catch (NumberFormatException e) {
           throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_ILLEGAL_CONTENT.addContent(value), e);
         }
+        if (returnType == long.class || returnType == Long.class)
+          return millis;
+        else if (returnType == Date.class)
+          return new Date(millis);
+        else if (returnType != null && returnType != Calendar.class)
+          throw new EdmSimpleTypeException(EdmSimpleTypeException.VALUE_TYPE_NOT_SUPPORTED.addContent(returnType));
+
         Calendar dateTimeValue = Calendar.getInstance();
         dateTimeValue.clear();
         dateTimeValue.setTimeZone(TimeZone.getTimeZone("GMT"));
@@ -54,13 +61,23 @@ public class EdmDateTime extends AbstractSimpleType {
         return dateTimeValue;
       }
 
+    Calendar calendarValue;
     if (literalKind == EdmLiteralKind.URI)
       if (value.length() > 10 && value.startsWith("datetime'") && value.endsWith("'"))
-        return parseLiteral(value.substring(9, value.length() - 1).replace("%3A", ":"), facets);
+        calendarValue = parseLiteral(value.substring(9, value.length() - 1).replace("%3A", ":"), facets);
       else
         throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_ILLEGAL_CONTENT.addContent(value));
+    else
+      calendarValue = parseLiteral(value, facets);
 
-    return parseLiteral(value, facets);
+    if (returnType == null || returnType == Calendar.class)
+      return calendarValue;
+    else if (returnType == long.class || returnType == Long.class)
+      return calendarValue.getTimeInMillis();
+    else if (returnType == Date.class)
+      return calendarValue.getTime();
+    else
+      throw new EdmSimpleTypeException(EdmSimpleTypeException.VALUE_TYPE_NOT_SUPPORTED.addContent(returnType));
   }
 
   private Calendar parseLiteral(final String value, final EdmFacets facets) throws EdmSimpleTypeException {

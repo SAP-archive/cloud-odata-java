@@ -25,7 +25,7 @@ public class EdmSByte extends AbstractSimpleType {
   }
 
   @Override
-  public Byte valueOfString(final String value, final EdmLiteralKind literalKind, final EdmFacets facets) throws EdmSimpleTypeException {
+  public Number valueOfString(final String value, final EdmLiteralKind literalKind, final EdmFacets facets, final Class<?> returnType) throws EdmSimpleTypeException {
     if (value == null) {
       checkNullLiteralAllowed(facets);
       return null;
@@ -34,11 +34,23 @@ public class EdmSByte extends AbstractSimpleType {
     if (literalKind == null)
       throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_KIND_MISSING);
 
+    Byte valueByte;
     try {
-      return Byte.parseByte(value);
+      valueByte = Byte.parseByte(value);
     } catch (NumberFormatException e) {
       throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_ILLEGAL_CONTENT.addContent(value), e);
     }
+
+    if (returnType == null || returnType == byte.class || returnType == Byte.class)
+      return valueByte;
+    else if (returnType == short.class || returnType == Short.class)
+      return valueByte.shortValue();
+    else if (returnType == int.class || returnType == Integer.class)
+      return valueByte.intValue();
+    else if (returnType == long.class || returnType == Long.class)
+      return valueByte.longValue();
+    else
+      throw new EdmSimpleTypeException(EdmSimpleTypeException.VALUE_TYPE_NOT_SUPPORTED.addContent(returnType));
   }
 
   @Override

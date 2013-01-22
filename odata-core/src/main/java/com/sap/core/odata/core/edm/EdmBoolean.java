@@ -32,9 +32,12 @@ public class EdmBoolean extends AbstractSimpleType {
   }
 
   @Override
-  public Boolean valueOfString(final String value, final EdmLiteralKind literalKind, final EdmFacets facets) throws EdmSimpleTypeException {
+  public Boolean valueOfString(final String value, final EdmLiteralKind literalKind, final EdmFacets facets, final Class<?> returnType) throws EdmSimpleTypeException {
     if (literalKind == null)
       throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_KIND_MISSING);
+
+    if (returnType != null && returnType != boolean.class && returnType != Boolean.class)
+      throw new EdmSimpleTypeException(EdmSimpleTypeException.VALUE_TYPE_NOT_SUPPORTED.addContent(returnType));
 
     if (validate(value, literalKind, facets))
       if (value == null)

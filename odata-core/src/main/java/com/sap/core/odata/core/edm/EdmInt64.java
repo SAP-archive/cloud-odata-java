@@ -31,7 +31,7 @@ public class EdmInt64 extends AbstractSimpleType {
   }
 
   @Override
-  public Long valueOfString(final String value, final EdmLiteralKind literalKind, final EdmFacets facets) throws EdmSimpleTypeException {
+  public Number valueOfString(final String value, final EdmLiteralKind literalKind, final EdmFacets facets, final Class<?> returnType) throws EdmSimpleTypeException {
     if (value == null) {
       checkNullLiteralAllowed(facets);
       return null;
@@ -40,17 +40,40 @@ public class EdmInt64 extends AbstractSimpleType {
     if (literalKind == null)
       throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_KIND_MISSING);
 
+    Long valueLong;
     try {
       if (literalKind == EdmLiteralKind.URI)
         if (value.endsWith("L") || value.endsWith("l"))
-          return Long.parseLong(value.substring(0, value.length() - 1));
+          valueLong = Long.parseLong(value.substring(0, value.length() - 1));
         else
           throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_ILLEGAL_CONTENT.addContent(value));
       else
-        return Long.parseLong(value);
+        valueLong = Long.parseLong(value);
     } catch (NumberFormatException e) {
       throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_ILLEGAL_CONTENT.addContent(value), e);
     }
+
+    if (returnType == null || returnType == long.class || returnType == Long.class)
+      return valueLong;
+    else if (returnType == byte.class || returnType == Byte.class)
+      if (valueLong >= Byte.MIN_VALUE && valueLong <= Byte.MAX_VALUE)
+        return valueLong.byteValue();
+      else
+        throw new EdmSimpleTypeException(EdmSimpleTypeException.VALUE_TYPE_NOT_SUPPORTED.addContent(returnType));
+    else if (returnType == short.class || returnType == Short.class)
+      if (valueLong >= Short.MIN_VALUE && valueLong <= Short.MAX_VALUE)
+        return valueLong.byteValue();
+      else
+        throw new EdmSimpleTypeException(EdmSimpleTypeException.VALUE_TYPE_NOT_SUPPORTED.addContent(returnType));
+    else if (returnType == int.class || returnType == Integer.class)
+      if (valueLong >= Integer.MIN_VALUE && valueLong <= Integer.MAX_VALUE)
+        return valueLong.byteValue();
+      else
+        throw new EdmSimpleTypeException(EdmSimpleTypeException.VALUE_TYPE_NOT_SUPPORTED.addContent(returnType));
+    else if (returnType == BigInteger.class)
+      return BigInteger.valueOf(valueLong);
+    else
+      throw new EdmSimpleTypeException(EdmSimpleTypeException.VALUE_TYPE_NOT_SUPPORTED.addContent(returnType));
   }
 
   @Override

@@ -17,7 +17,7 @@ public class EdmString extends AbstractSimpleType {
   }
 
   @Override
-  public String valueOfString(final String value, final EdmLiteralKind literalKind, final EdmFacets facets) throws EdmSimpleTypeException {
+  public String valueOfString(final String value, final EdmLiteralKind literalKind, final EdmFacets facets, final Class<?> returnType) throws EdmSimpleTypeException {
     if (value == null) {
       checkNullLiteralAllowed(facets);
       return null;
@@ -25,6 +25,9 @@ public class EdmString extends AbstractSimpleType {
 
     if (literalKind == null)
       throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_KIND_MISSING);
+
+    if (returnType != null && returnType != String.class)
+      throw new EdmSimpleTypeException(EdmSimpleTypeException.VALUE_TYPE_NOT_SUPPORTED.addContent(returnType));
 
     String result;
     if (literalKind == EdmLiteralKind.URI)
