@@ -1,4 +1,4 @@
-package com.sap.core.odata.processor.jpa.access;
+package com.sap.core.odata.processor.jpa.access.model;
 
 import java.lang.reflect.AnnotatedElement;
 import java.util.ArrayList;
@@ -14,6 +14,7 @@ import javax.persistence.metamodel.Attribute;
 import javax.persistence.metamodel.Attribute.PersistentAttributeType;
 import javax.persistence.metamodel.Metamodel;
 import javax.persistence.metamodel.SingularAttribute;
+
 import com.sap.core.odata.api.edm.EdmFacets;
 import com.sap.core.odata.api.edm.EdmMultiplicity;
 import com.sap.core.odata.api.edm.EdmSimpleTypeKind;
@@ -72,7 +73,6 @@ public class JPAEdmBuilderV2 implements JPAEdmBuilder {
 		metaModel = this.emf.getMetamodel();
 	}
 
-	@Override
 	/**
 	 * This method returns a list of schema objects.Each schema object contains a list of entitytypes, entitycontainer, complextypes and associations
 	 * 
@@ -707,6 +707,12 @@ public class JPAEdmBuilderV2 implements JPAEdmBuilder {
 		}
 
 		return null;
+	}
+
+	@Override
+	public void build() throws ODataJPAModelException {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

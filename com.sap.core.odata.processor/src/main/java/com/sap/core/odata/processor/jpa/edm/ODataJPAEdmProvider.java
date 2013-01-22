@@ -3,9 +3,6 @@ package com.sap.core.odata.processor.jpa.edm;
 import java.util.HashMap;
 import java.util.List;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.sap.core.odata.api.edm.FullQualifiedName;
 import com.sap.core.odata.api.edm.provider.Association;
 import com.sap.core.odata.api.edm.provider.AssociationSet;
@@ -19,16 +16,14 @@ import com.sap.core.odata.api.edm.provider.FunctionImport;
 import com.sap.core.odata.api.edm.provider.Schema;
 import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.processor.jpa.api.ODataJPAContext;
-import com.sap.core.odata.processor.jpa.api.access.JPAEdmBuilder;
 import com.sap.core.odata.processor.jpa.api.factory.ODataJPAFactory;
+import com.sap.core.odata.processor.jpa.api.model.JPAEdmModelView;
 import com.sap.core.odata.processor.jpa.exception.ODataJPAModelException;
 
 public class ODataJPAEdmProvider extends EdmProvider {
 	
-	private static final Logger LOGGER = LoggerFactory.getLogger(ODataJPAEdmProvider.class);
-
 	private ODataJPAContext oDataJPAContext;
-	private JPAEdmBuilder builder;
+	private JPAEdmModelView jpaEdmModel;
 
 	private List<Schema> schemas;
 	private HashMap<String, EntityType> entityTypes;
@@ -45,7 +40,7 @@ public class ODataJPAEdmProvider extends EdmProvider {
 		entityTypes = new HashMap<String, EntityType>();
 		entityContainerInfos = new HashMap<String, EntityContainerInfo>();
 		complexTypes = new HashMap<String, ComplexType>();
-		builder = ODataJPAFactory.createFactory().getJPAAccessFactory().getJPAEdmBuilder(oDataJPAContext);
+		jpaEdmModel = ODataJPAFactory.createFactory().getJPAAccessFactory().getJPAEdmModelView(oDataJPAContext);
 	}
 
 	public ODataJPAContext getODataJPAContext() {
@@ -78,7 +73,6 @@ public class ODataJPAEdmProvider extends EdmProvider {
 				}
 			}
 		}
-		LOGGER.error("Invalid Entity Container : "+name);
 		throw ODataJPAModelException
 				.throwException(ODataJPAModelException.INVALID_ENTITYCONTAINER
 						.addContent(name), null);
@@ -107,7 +101,7 @@ public class ODataJPAEdmProvider extends EdmProvider {
 					}
 				}
 			}
-			LOGGER.error("Invalid Entity Type : "+edmFQName.toString());
+			
 			throw ODataJPAModelException.throwException(
 					ODataJPAModelException.INVALID_ENTITY_TYPE
 							.addContent(edmFQName.toString()), null);
@@ -136,7 +130,7 @@ public class ODataJPAEdmProvider extends EdmProvider {
 						}
 					}
 				}
-			LOGGER.error("Invalid Complex Type : "+edmFQName.toString());
+
 			throw ODataJPAModelException.throwException(
 					ODataJPAModelException.INVALID_COMPLEX_TYPE
 							.addContent(edmFQName.toString()), null);
@@ -147,7 +141,7 @@ public class ODataJPAEdmProvider extends EdmProvider {
 	@Override
 	public Association getAssociation(FullQualifiedName edmFQName)
 			throws ODataException {
-		LOGGER.error("Invalid Association : "+edmFQName.toString());
+		
 		throw ODataJPAModelException.throwException(
 				ODataJPAModelException.INVALID_ASSOCIATION.addContent(edmFQName
 						.toString()), null);
@@ -168,7 +162,7 @@ public class ODataJPAEdmProvider extends EdmProvider {
 			for (EntitySet es : container.getEntitySets())
 				if (name.equals(es.getName()))
 					return es;
-		LOGGER.error("Invalid Entity Set : "+name);
+
 		throw ODataJPAModelException
 				.throwException(ODataJPAModelException.INVALID_ENTITYSET
 						.addContent(name), null);
@@ -178,7 +172,7 @@ public class ODataJPAEdmProvider extends EdmProvider {
 	public AssociationSet getAssociationSet(String entityContainer,
 			FullQualifiedName association, String sourceEntitySetName,
 			String sourceEntitySetRole) throws ODataException {
-		LOGGER.error("Invalid Association Set : "+association.toString());
+
 		throw ODataJPAModelException.throwException(
 				ODataJPAModelException.INVALID_ENTITYSET.addContent(association
 						.toString()), null);
@@ -187,7 +181,7 @@ public class ODataJPAEdmProvider extends EdmProvider {
 	@Override
 	public FunctionImport getFunctionImport(String entityContainer, String name)
 			throws ODataException {
-		LOGGER.error("Invalid Entity Set : "+name);
+		
 		throw ODataJPAModelException
 				.throwException(ODataJPAModelException.INVALID_ENTITYSET
 						.addContent(name), null);
@@ -195,10 +189,12 @@ public class ODataJPAEdmProvider extends EdmProvider {
 
 	@Override
 	public List<Schema> getSchemas() throws ODataException {
-		if (schemas == null && builder != null)
-			schemas = builder.getSchemas();
-		if (builder == null){
-			LOGGER.error("Builder is NULL");
+		if (schemas == null && jpaEdmModel != null){
+			jpaEdmModel.getBuilder().build();
+			schemas.add(jpaEdmModel.getSchemaView().getEdmSchema());
+		}
+		if (jpaEdmModel == null){
+			
 			throw ODataJPAModelException.throwException(
 					ODataJPAModelException.BUILDER_NULL, null);
 		}

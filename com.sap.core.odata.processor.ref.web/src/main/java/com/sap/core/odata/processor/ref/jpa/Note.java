@@ -10,7 +10,6 @@ import javax.persistence.*;
 public class Note {
 	
 	public Note() {
-		//No arg constructor
 	}	
 	
 	public Note(String createdBy, Date creationDate, String text) {
@@ -28,10 +27,15 @@ public class Note {
 	@Temporal(TemporalType.DATE)
 	private Date creationDate;
 
+
+
 	@Column
 	private String text;
 	
-	@JoinColumn(name = "Sales_Order_Note_Id", referencedColumnName = "SO_ID",insertable = false,updatable = false)
+	@Column(name = "SO_ID")
+	private long soId;
+	
+	@JoinColumn(name = "SO_ID",referencedColumnName = "SO_ID",insertable = false,updatable = false)
 	@ManyToOne
 	private SalesOrderHeader salesOrderHeader;
 
@@ -58,7 +62,13 @@ public class Note {
 	public void setText(String text) {
 		this.text = text;
 	}
+	public long getSoId() {
+		return soId;
+	}
 
+	public void setSoId(long soId) {
+		this.soId = soId;
+	}
 	public SalesOrderHeader getSalesOrderHeader() {
 		return this.salesOrderHeader;
 	}
