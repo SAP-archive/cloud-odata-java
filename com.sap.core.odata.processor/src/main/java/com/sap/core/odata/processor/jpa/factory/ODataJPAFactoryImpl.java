@@ -4,10 +4,8 @@ import com.sap.core.odata.api.edm.provider.EdmProvider;
 import com.sap.core.odata.api.processor.ODataSingleProcessor;
 import com.sap.core.odata.processor.jpa.ODataJPAContextImpl;
 import com.sap.core.odata.processor.jpa.ODataJPAProcessorDefault;
-import com.sap.core.odata.processor.jpa.access.JPAEdmBuilderV2;
 import com.sap.core.odata.processor.jpa.access.data.JPAProcessorImpl;
 import com.sap.core.odata.processor.jpa.api.ODataJPAContext;
-import com.sap.core.odata.processor.jpa.api.access.JPAEdmBuilder;
 import com.sap.core.odata.processor.jpa.api.access.JPAProcessor;
 import com.sap.core.odata.processor.jpa.api.factory.JPAAccessFactory;
 import com.sap.core.odata.processor.jpa.api.factory.JPQLBuilderFactory;
@@ -17,11 +15,13 @@ import com.sap.core.odata.processor.jpa.api.jpql.JPQLContext.JPQLContextBuilder;
 import com.sap.core.odata.processor.jpa.api.jpql.JPQLContextType;
 import com.sap.core.odata.processor.jpa.api.jpql.JPQLContextView;
 import com.sap.core.odata.processor.jpa.api.jpql.JPQLStatement.JPQLStatementBuilder;
+import com.sap.core.odata.processor.jpa.api.model.JPAEdmModelView;
 import com.sap.core.odata.processor.jpa.edm.ODataJPAEdmProvider;
 import com.sap.core.odata.processor.jpa.jpql.JPQLSelectContext;
 import com.sap.core.odata.processor.jpa.jpql.JPQLSelectSingleContext;
 import com.sap.core.odata.processor.jpa.jpql.JPQLSelectSingleStatementBuilder;
 import com.sap.core.odata.processor.jpa.jpql.JPQLSelectStatementBuilder;
+import com.sap.core.odata.processor.jpa.model.JPAEdmModel;
 
 
 public class ODataJPAFactoryImpl extends ODataJPAFactory {
@@ -127,12 +127,11 @@ JPQLContextBuilder contextBuilder = null;
 		private JPAAccessFactoryImpl( ){}
 		
 		@Override
-		public JPAEdmBuilder getJPAEdmBuilder(ODataJPAContext oDataJPAContext) {
-			JPAEdmBuilder builder = null;
+		public JPAEdmModelView getJPAEdmModelView(ODataJPAContext oDataJPAContext) {
+			JPAEdmModelView view = null;
 
-			builder = new JPAEdmBuilderV2(oDataJPAContext.getPersistenceUnitName(),oDataJPAContext.getEntityManagerFactory());
-			return builder;
-
+			view = new JPAEdmModel(oDataJPAContext.getEntityManagerFactory().getMetamodel(),oDataJPAContext.getPersistenceUnitName());
+			return view;
 		}
 		
 		@Override
