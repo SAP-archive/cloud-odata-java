@@ -120,12 +120,12 @@ public class JPAEdmNameBuilder {
 	}
 
 	public static void build(JPAEdmComplexType view) {
-		// TODO Auto-generated method stub
+		view.getEdmComplexType().setName(view.getJPAEmbeddableType().getJavaType().getSimpleName());
 		
 	}
 
-	public static void build(JPAEdmComplexPropertyView view) {
-		// TODO Auto-generated method stub
+	public static void build(JPAEdmComplexPropertyView complexView,JPAEdmPropertyView propertyView) {
+		complexView.getEdmComplexProperty().setName(propertyView.getJPAAttribute().getName());
 		
 	}
 	

@@ -136,7 +136,7 @@ public class JPAEdmProperty extends JPAEdmBaseViewImpl implements
 
 			JPAEdmBuilder keyViewBuilder = null;
 
-			List<Property> properties = new ArrayList<Property>();
+			properties = new ArrayList<Property>();
 
 			Set<?> jpaAttributes = null;
 
@@ -198,7 +198,7 @@ public class JPAEdmProperty extends JPAEdmBaseViewImpl implements
 
 					currentComplexProperty = new ComplexProperty();
 					JPAEdmNameBuilder
-							.build((JPAEdmComplexPropertyView) JPAEdmProperty.this);
+							.build((JPAEdmComplexPropertyView) JPAEdmProperty.this,JPAEdmProperty.this);
 					currentComplexProperty.setType(new FullQualifiedName(
 							schemaView.getEdmSchema().getNamespace(),
 							complexType.getName()));

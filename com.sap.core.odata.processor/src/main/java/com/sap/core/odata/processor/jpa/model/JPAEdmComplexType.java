@@ -131,6 +131,7 @@ public class JPAEdmComplexType extends JPAEdmBaseViewImpl implements
 				JPAEdmNameBuilder.build(JPAEdmComplexType.this);
 
 				searchMap.put(searchKey, currentComplexType);
+				consistentComplextTypes.add(currentComplexType);
 
 			}
 
