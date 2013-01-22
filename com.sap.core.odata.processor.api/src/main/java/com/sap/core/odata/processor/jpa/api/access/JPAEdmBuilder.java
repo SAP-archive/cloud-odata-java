@@ -1,8 +1,8 @@
 package com.sap.core.odata.processor.jpa.api.access;
 
-import java.util.List;
-
-import com.sap.core.odata.api.edm.provider.Schema;
+import com.sap.core.odata.processor.jpa.api.model.JPAEdmEntityContainerView;
+import com.sap.core.odata.processor.jpa.api.model.JPAEdmEntitySetView;
+import com.sap.core.odata.processor.jpa.api.model.JPAEdmEntityTypeView;
 import com.sap.core.odata.processor.jpa.exception.ODataJPAModelException;
 
 /**
@@ -13,7 +13,19 @@ import com.sap.core.odata.processor.jpa.exception.ODataJPAModelException;
  */
 public interface JPAEdmBuilder {
 	/**
-	 * Method returns a list of {@link Schema} objects.
+	 * Method builds EDM Elements by transforming JPA MetaModel. The method processes EDM Views
+	 * like 
+	 * <li>{@link JPAEdmShcemaView}</li>
+	 * <li>{@link JPAEdmEntityContainerView}</li>
+	 * <li>{@link JPAEdmAssociationSetView}</li>
+	 * <li>{@link JPAEdmEntityTypeView}</li>
+	 * <li>{@link JPAEdmEntitySetView}</li>
+	 * <p>
+	 * <br>
+	 * 
+	 * The built EDM elements can be accessed using corresponding EDM Views.
+	 * </p>
+	 * <br>
 	 **/
-	public List<Schema> getSchemas() throws ODataJPAModelException;
+	public void build() throws ODataJPAModelException;
 }

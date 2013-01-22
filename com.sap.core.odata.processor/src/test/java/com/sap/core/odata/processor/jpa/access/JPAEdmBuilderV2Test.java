@@ -10,6 +10,7 @@ import static org.junit.Assert.*;
 import org.junit.*;
 
 import com.sap.core.odata.api.edm.provider.Schema;
+import com.sap.core.odata.processor.jpa.access.model.JPAEdmBuilderV2;
 import com.sap.core.odata.processor.jpa.exception.ODataJPAModelException;
 import com.sap.core.odata.processor.jpa.util.MockData;
 

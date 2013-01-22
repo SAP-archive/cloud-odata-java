@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><entities>
+	<entity>
+		<entity-name>com.sap.core.odata.processor.ref.jpa.SalesOrderHeader</entity-name>
+		<entity-width>120</entity-width>
+		<entity-height>306</entity-height>
+		<entity-X-Coordinate>50</entity-X-Coordinate>
+		<entity-Y-Coordinate>50</entity-Y-Coordinate>
+		<primary-collapsed>false</primary-collapsed>
+		<relation-collapsed>false</relation-collapsed>
+		<basic-collapsed>false</basic-collapsed>
+	</entity>
+
+	<entity>
+		<entity-name>com.sap.core.odata.processor.ref.jpa.Note</entity-name>
+		<entity-width>120</entity-width>
+		<entity-height>141</entity-height>
+		<entity-X-Coordinate>50</entity-X-Coordinate>
+		<entity-Y-Coordinate>450</entity-Y-Coordinate>
+		<primary-collapsed>true</primary-collapsed>
+		<relation-collapsed>false</relation-collapsed>
+		<basic-collapsed>false</basic-collapsed>
+	</entity>
+
+	<entity>
+		<entity-name>com.sap.core.odata.processor.ref.jpa.Material</entity-name>
+		<entity-width>120</entity-width>
+		<entity-height>168</entity-height>
+		<entity-X-Coordinate>320</entity-X-Coordinate>
+		<entity-Y-Coordinate>406</entity-Y-Coordinate>
+		<primary-collapsed>false</primary-collapsed>
+		<relation-collapsed>false</relation-collapsed>
+		<basic-collapsed>false</basic-collapsed>
+	</entity>
+
+	<entity>
+		<entity-name>com.sap.core.odata.processor.ref.jpa.SalesOrderItem</entity-name>
+		<entity-width>120</entity-width>
+		<entity-height>226</entity-height>
+		<entity-X-Coordinate>320</entity-X-Coordinate>
+		<entity-Y-Coordinate>47</entity-Y-Coordinate>
+		<primary-collapsed>false</primary-collapsed>
+		<relation-collapsed>false</relation-collapsed>
+		<basic-collapsed>false</basic-collapsed>
+	</entity>
+</entities>

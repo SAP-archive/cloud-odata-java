@@ -1,4 +1,3 @@
-<%@page import="com.sap.core.odata.processor.jpa.api.ODataJPAContext"%>
 <%@page import="java.util.List"%>
 <%@page import="javax.persistence.EntityManager"%>
 <%@page import="javax.persistence.EntityManagerFactory"%>

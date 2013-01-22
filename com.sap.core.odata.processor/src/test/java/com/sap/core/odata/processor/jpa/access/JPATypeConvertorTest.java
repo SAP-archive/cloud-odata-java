@@ -10,6 +10,7 @@ import java.util.UUID;
 import org.junit.Test;
 
 import com.sap.core.odata.api.edm.EdmSimpleTypeKind;
+import com.sap.core.odata.processor.jpa.access.model.JPATypeConvertor;
 import com.sap.core.odata.processor.jpa.exception.ODataJPAModelException;
 
 public class JPATypeConvertorTest {
