@@ -42,7 +42,7 @@ public class EdmDouble extends AbstractSimpleType {
   }
 
   @Override
-  public Double valueOfString(final String value, final EdmLiteralKind literalKind, final EdmFacets facets) throws EdmSimpleTypeException {
+  public Number valueOfString(final String value, final EdmLiteralKind literalKind, final EdmFacets facets, final Class<?> returnType) throws EdmSimpleTypeException {
     if (value == null) {
       checkNullLiteralAllowed(facets);
       return null;
@@ -51,33 +51,34 @@ public class EdmDouble extends AbstractSimpleType {
     if (literalKind == null)
       throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_KIND_MISSING);
 
-    final Matcher matcher = PATTERN.matcher(value);
-    if (!matcher.matches())
-      if (value.equals("-INF"))
-        return Double.NEGATIVE_INFINITY;
-      else if (value.equals("INF"))
-        return Double.POSITIVE_INFINITY;
-      else if (value.equals("NaN"))
-        return Double.NaN;
-      else
+    Double result = null;
+    if (value.equals("-INF"))
+      result = Double.NEGATIVE_INFINITY;
+    else if (value.equals("INF"))
+      result = Double.POSITIVE_INFINITY;
+    else if (value.equals("NaN"))
+      result = Double.NaN;
+
+    if (result == null) {
+      final Matcher matcher = PATTERN.matcher(value);
+      if (!matcher.matches()
+          || (literalKind == EdmLiteralKind.URI) == (matcher.group(1) == null))
         throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_ILLEGAL_CONTENT.addContent(value));
-    if ((literalKind == EdmLiteralKind.URI) == (matcher.group(1) == null))
-      throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_ILLEGAL_CONTENT.addContent(value));
 
-    // The number format is checked above, so we don't have to catch NumberFormatException.
-    Double result;
-    if (literalKind == EdmLiteralKind.URI)
-      result = Double.valueOf(value.substring(0, value.length() - 1));
-    else
-      result = Double.valueOf(value);
+      // The number format is checked above, so we don't have to catch NumberFormatException.
+      if (literalKind == EdmLiteralKind.URI)
+        result = Double.valueOf(value.substring(0, value.length() - 1));
+      else
+        result = Double.valueOf(value);
 
-    // Values outside the value range have been set to Infinity by Double.valueOf();
-    // "real" infinite values have been treated already above, so we can throw an exception
-    // if we see them here.
-    if (result.isInfinite())
-      throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_ILLEGAL_CONTENT.addContent(value));
-    else
-      return result;
+      // Values outside the value range have been set to Infinity by Double.valueOf();
+      // "real" infinite values have been treated already above, so we can throw an exception
+      // if we see them here.
+      if (result.isInfinite())
+        throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_ILLEGAL_CONTENT.addContent(value));
+    }
+
+    return result;
   }
 
   @Override

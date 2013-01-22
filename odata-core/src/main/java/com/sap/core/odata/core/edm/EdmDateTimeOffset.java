@@ -31,7 +31,7 @@ public class EdmDateTimeOffset extends AbstractSimpleType {
   }
 
   @Override
-  public Calendar valueOfString(final String value, final EdmLiteralKind literalKind, final EdmFacets facets) throws EdmSimpleTypeException {
+  public Object valueOfString(final String value, final EdmLiteralKind literalKind, final EdmFacets facets, final Class<?> returnType) throws EdmSimpleTypeException {
     if (value == null) {
       checkNullLiteralAllowed(facets);
       return null;
@@ -40,10 +40,18 @@ public class EdmDateTimeOffset extends AbstractSimpleType {
     if (literalKind == null)
       throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_KIND_MISSING);
 
+    if (literalKind == EdmLiteralKind.URI)
+      if (value.length() > 16 && value.startsWith("datetimeoffset'") && value.endsWith("'"))
+        return valueOfString(value.substring(15, value.length() - 1).replace("%3A", ":"), EdmLiteralKind.DEFAULT, facets, returnType);
+      else
+        throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_ILLEGAL_CONTENT.addContent(value));
+
+    Calendar dateTimeValue = null;
+
     if (literalKind == EdmLiteralKind.JSON) {
       final Matcher matcher = JSON_PATTERN.matcher(value);
       if (matcher.matches()) {
-        Calendar dateTimeValue = Calendar.getInstance(TimeZone.getTimeZone("GMT"));
+        dateTimeValue = Calendar.getInstance(TimeZone.getTimeZone("GMT"));
         dateTimeValue.clear();
         long millis;
         try {
@@ -54,49 +62,50 @@ public class EdmDateTimeOffset extends AbstractSimpleType {
         dateTimeValue.setTimeInMillis(millis);
         if (matcher.group(2) != null) {
           final int offsetInMinutes = Integer.parseInt(matcher.group(3));
-          if (offsetInMinutes == 0)
-            return dateTimeValue;
           if (offsetInMinutes >= 24 * 60)
             throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_ILLEGAL_CONTENT.addContent(value));
-          dateTimeValue.setTimeZone(TimeZone.getTimeZone(
-              "GMT" + matcher.group(2) + String.valueOf(offsetInMinutes / 60)
-                  + ":" + String.format("%02d", offsetInMinutes % 60)));
+          if (offsetInMinutes != 0) {
+            dateTimeValue.setTimeZone(TimeZone.getTimeZone(
+                "GMT" + matcher.group(2) + String.valueOf(offsetInMinutes / 60)
+                    + ":" + String.format("%02d", offsetInMinutes % 60)));
+            // Subtract the time-zone offset to counter the automatic adjustment above
+            // caused by the fact that the Calendar instance created above is in the
+            // "GMT" timezone.
+            dateTimeValue.add(Calendar.MILLISECOND, 0 - dateTimeValue.get(Calendar.ZONE_OFFSET));
+          }
+        }
+      }
+    }
+
+    if (dateTimeValue == null) {
+      final Matcher matcher = PATTERN.matcher(value);
+      if (!matcher.matches())
+        throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_ILLEGAL_CONTENT.addContent(value));
+
+      if (matcher.group(8) == null) {
+        return EdmDateTime.getInstance().valueOfString(value, EdmLiteralKind.DEFAULT, facets, returnType);
+      } else {
+        dateTimeValue = (Calendar) EdmDateTime.getInstance().valueOfString(value.substring(0, matcher.start(8)), EdmLiteralKind.DEFAULT, facets, null);
+        if (matcher.group(9) != null && !matcher.group(9).matches("[-+]0+:0+")) {
+          dateTimeValue.setTimeZone(TimeZone.getTimeZone("GMT" + matcher.group(9)));
+          if (dateTimeValue.get(Calendar.ZONE_OFFSET) == 0) // invalid offset
+            throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_ILLEGAL_CONTENT.addContent(value));
           // Subtract the time-zone offset to counter the automatic adjustment above
-          // caused by the fact that the Calendar instance created above is in the
-          // "GMT" timezone.
+          // caused by the fact that the Calendar instance returned from EdmDateTime
+          // is in the "GMT" timezone.
           dateTimeValue.add(Calendar.MILLISECOND, 0 - dateTimeValue.get(Calendar.ZONE_OFFSET));
         }
-        return dateTimeValue;
-      }
-
-    } else if (literalKind == EdmLiteralKind.URI) {
-      if (value.length() > 16 && value.startsWith("datetimeoffset'") && value.endsWith("'"))
-        return valueOfString(value.substring(15, value.length() - 1).replace("%3A", ":"), EdmLiteralKind.DEFAULT, facets);
-      else
-        throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_ILLEGAL_CONTENT.addContent(value));
-    }
-
-    final Matcher matcher = PATTERN.matcher(value);
-    if (!matcher.matches())
-      throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_ILLEGAL_CONTENT.addContent(value));
-
-    if (matcher.group(8) == null) {
-      return EdmDateTime.getInstance().valueOfString(value, EdmLiteralKind.DEFAULT, facets);
-    } else {
-      Calendar dateTimeValue = EdmDateTime.getInstance().valueOfString(value.substring(0, matcher.start(8)), EdmLiteralKind.DEFAULT, facets);
-      if (matcher.group(9) == null || matcher.group(9).matches("[-+]0+:0+")) {
-        return dateTimeValue;
-      } else {
-        dateTimeValue.setTimeZone(TimeZone.getTimeZone("GMT" + matcher.group(9)));
-        if (dateTimeValue.get(Calendar.ZONE_OFFSET) == 0) // invalid offset
-          throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_ILLEGAL_CONTENT.addContent(value));
-        // Subtract the time-zone offset to counter the automatic adjustment above
-        // caused by the fact that the Calendar instance returned from EdmDateTime
-        // is in the "GMT" timezone.
-        dateTimeValue.add(Calendar.MILLISECOND, 0 - dateTimeValue.get(Calendar.ZONE_OFFSET));
-        return dateTimeValue;
       }
     }
+
+    if (returnType == null || returnType == Calendar.class)
+      return dateTimeValue;
+    else if (returnType == long.class || returnType == Long.class)
+      return dateTimeValue.getTimeInMillis();
+    else if (returnType == Date.class)
+      return dateTimeValue.getTime();
+    else
+      throw new EdmSimpleTypeException(EdmSimpleTypeException.VALUE_TYPE_NOT_SUPPORTED.addContent(returnType));
   }
 
   @Override

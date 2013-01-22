@@ -23,8 +23,8 @@ public class Bit extends AbstractSimpleType {
   }
 
   @Override
-  public Byte valueOfString(final String value, final EdmLiteralKind literalKind, final EdmFacets facets) throws EdmSimpleTypeException {
-    return EdmSByte.getInstance().valueOfString(value, literalKind, facets);
+  public Number valueOfString(final String value, final EdmLiteralKind literalKind, final EdmFacets facets, final Class<?> returnType) throws EdmSimpleTypeException {
+    return EdmSByte.getInstance().valueOfString(value, literalKind, facets, returnType);
   }
 
   @Override

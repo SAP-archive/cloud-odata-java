@@ -70,8 +70,8 @@ public class XmlPropertyConsumer {
 
   private Object convert(EntityPropertyInfo property, String text) throws EdmException, EntityProviderException {
     if(!property.isComplex()) {
-      EdmSimpleType est = (EdmSimpleType) property.getType();
-      return est.valueOfString(text, EdmLiteralKind.DEFAULT, property.getFacets());
+      EdmSimpleType type = (EdmSimpleType) property.getType();
+      return type.valueOfString(text, EdmLiteralKind.DEFAULT, property.getFacets(), null);
     }
     throw new EntityProviderException(EntityProviderException.INVALID_PROPERTY.addContent(
         "Expected simple property but found complex for property with name '" + property.getName() + "'"));
