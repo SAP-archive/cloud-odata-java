@@ -3,9 +3,6 @@ package com.sap.core.odata.processor.jpa.access.data;
 import java.util.HashMap;
 import java.util.List;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.sap.core.odata.api.edm.EdmException;
 import com.sap.core.odata.api.edm.EdmLiteralKind;
 import com.sap.core.odata.api.edm.EdmSimpleType;
@@ -41,8 +38,6 @@ public class ODataExpressionParser {
 //	public static final String TABLE_ALIAS = "gwt1";	//$NON-NLS-1$
 	private static final String DOT = ".";	//$NON-NLS-1$
 	
-	private static final Logger LOGGER = LoggerFactory.getLogger(ODataExpressionParser.class);
-	
 	/**
 	 * This method returns the parsed where condition corresponding to the filter input in the user query.
 	 * 
@@ -66,7 +61,6 @@ public class ODataExpressionParser {
 	        else
 	          return "-" + operand;	//$NON-NLS-1$
 	      default:
-	    	  LOGGER.error("Unary Expression other then - and ! not supported");
 	    	  throw new ODataNotImplementedException();
 	      }
 	      
@@ -95,10 +89,8 @@ public class ODataExpressionParser {
 		      case GE:
 		    	  return left + SPACE + JPQLStatement.Operator.GE + SPACE + right;
 		      case PROPERTY_ACCESS:
-		    	  LOGGER.error("Binary Expression of Propert Access type not supported");
 		    	  throw new ODataNotImplementedException();
 		      default:
-		    	  LOGGER.error("Binary Expression "+binaryExpression.getOperator().name()+" type not supported");
 		    	  throw new ODataNotImplementedException();
 	      }
 
@@ -119,7 +111,6 @@ public class ODataExpressionParser {
 
 	    
 	    default:
-	    	LOGGER.error("Where Expression "+whereExpression.getKind().name()+" type not supported");
 	    	throw new ODataNotImplementedException();
 	    }
 	  }
@@ -144,7 +135,6 @@ public class ODataExpressionParser {
 					orderByDirection = (orderBy.getSortOrder() == SortOrder.asc)? EMPTY : "DESC";	//$NON-NLS-1$
 					orderByMap.put(tableAlias+DOT+orderByField, orderByDirection);
 				} catch (EdmException e) {
-					LOGGER.error(e.getMessage(), e);
 					throw ODataJPARuntimeException.throwException(
 							ODataJPARuntimeException.RUNTIME_EXCEPTION.addContent(e
 									.getMessage()), e);
