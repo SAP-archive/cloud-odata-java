@@ -673,7 +673,7 @@ public class ListsProcessor extends ODataSingleProcessor {
     for (final KeyPredicate key : keys) {
       final EdmProperty property = key.getProperty();
       final EdmSimpleType type = (EdmSimpleType) property.getType();
-      keyMap.put(property.getName(), type.valueOfString(key.getLiteral(), EdmLiteralKind.DEFAULT, property.getFacets(), null));
+      keyMap.put(property.getName(), type.valueOfString(key.getLiteral(), EdmLiteralKind.DEFAULT, property.getFacets(), type.getDefaultType()));
     }
     return keyMap;
   }
@@ -685,7 +685,8 @@ public class ListsProcessor extends ODataSingleProcessor {
       HashMap<String, Object> parameterMap = new HashMap<String, Object>();
       for (final String parameterName : functionImportParameters.keySet()) {
         final EdmLiteral literal = functionImportParameters.get(parameterName);
-        parameterMap.put(parameterName, literal.getType().valueOfString(literal.getLiteral(), EdmLiteralKind.DEFAULT, null, null));
+        final EdmSimpleType type = literal.getType();
+        parameterMap.put(parameterName, type.valueOfString(literal.getLiteral(), EdmLiteralKind.DEFAULT, null, type.getDefaultType()));
       }
       return parameterMap;
     }
@@ -944,7 +945,8 @@ public class ListsProcessor extends ODataSingleProcessor {
     case LITERAL:
       final LiteralExpression literal = (LiteralExpression) expression;
       final EdmSimpleType literalType = (EdmSimpleType) literal.getEdmType();
-      return literalType.valueToString(literalType.valueOfString(literal.getUriLiteral(), EdmLiteralKind.URI, null, null), EdmLiteralKind.DEFAULT, null);
+      return literalType.valueToString(literalType.valueOfString(literal.getUriLiteral(), EdmLiteralKind.URI, null, literalType.getDefaultType()),
+          EdmLiteralKind.DEFAULT, null);
 
     case METHOD:
       final MethodExpression methodExpression = (MethodExpression) expression;

@@ -1,5 +1,8 @@
 package com.sap.core.odata.api.ep.entry;
 
+/**
+ * @author SAP AG
+ */
 public interface MediaMetadata {
 
   public abstract String getEditLink();

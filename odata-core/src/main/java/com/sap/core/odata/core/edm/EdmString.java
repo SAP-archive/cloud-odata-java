@@ -17,7 +17,12 @@ public class EdmString extends AbstractSimpleType {
   }
 
   @Override
-  public String valueOfString(final String value, final EdmLiteralKind literalKind, final EdmFacets facets, final Class<?> returnType) throws EdmSimpleTypeException {
+  public Class<?> getDefaultType() {
+    return String.class;
+  }
+
+  @Override
+  public <T> T valueOfString(final String value, final EdmLiteralKind literalKind, final EdmFacets facets, final Class<T> returnType) throws EdmSimpleTypeException {
     if (value == null) {
       checkNullLiteralAllowed(facets);
       return null;
@@ -25,9 +30,6 @@ public class EdmString extends AbstractSimpleType {
 
     if (literalKind == null)
       throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_KIND_MISSING);
-
-    if (returnType != null && returnType != String.class)
-      throw new EdmSimpleTypeException(EdmSimpleTypeException.VALUE_TYPE_NOT_SUPPORTED.addContent(returnType));
 
     String result;
     if (literalKind == EdmLiteralKind.URI)
@@ -46,7 +48,10 @@ public class EdmString extends AbstractSimpleType {
         throw new EdmSimpleTypeException(EdmSimpleTypeException.VALUE_FACETS_NOT_MATCHED.addContent(value, facets));
     }
 
-    return result;
+    if (returnType == String.class)
+      return returnType.cast(result);
+    else
+      throw new EdmSimpleTypeException(EdmSimpleTypeException.VALUE_TYPE_NOT_SUPPORTED.addContent(returnType));
   }
 
   @Override
@@ -71,14 +76,13 @@ public class EdmString extends AbstractSimpleType {
       throw new EdmSimpleTypeException(EdmSimpleTypeException.VALUE_FACETS_NOT_MATCHED.addContent(value, facets));
 
     if (literalKind == EdmLiteralKind.URI)
-      return toUriLiteral(result);
-    else
-      return result;
+      result = toUriLiteral(result);
+
+    return result;
   }
 
   @Override
   public String toUriLiteral(final String literal) throws EdmSimpleTypeException {
     return "'" + literal.replace("'", "''") + "'";
   }
-
 }

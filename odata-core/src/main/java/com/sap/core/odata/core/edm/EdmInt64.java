@@ -31,7 +31,12 @@ public class EdmInt64 extends AbstractSimpleType {
   }
 
   @Override
-  public Number valueOfString(final String value, final EdmLiteralKind literalKind, final EdmFacets facets, final Class<?> returnType) throws EdmSimpleTypeException {
+  public Class<?> getDefaultType() {
+    return Long.class;
+  }
+
+  @Override
+  public <T> T valueOfString(final String value, final EdmLiteralKind literalKind, final EdmFacets facets, final Class<T> returnType) throws EdmSimpleTypeException {
     if (value == null) {
       checkNullLiteralAllowed(facets);
       return null;
@@ -53,25 +58,25 @@ public class EdmInt64 extends AbstractSimpleType {
       throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_ILLEGAL_CONTENT.addContent(value), e);
     }
 
-    if (returnType == null || returnType == long.class || returnType == Long.class)
-      return valueLong;
-    else if (returnType == byte.class || returnType == Byte.class)
+    if (returnType == Long.class)
+      return returnType.cast(valueLong);
+    else if (returnType == Byte.class)
       if (valueLong >= Byte.MIN_VALUE && valueLong <= Byte.MAX_VALUE)
-        return valueLong.byteValue();
+        return returnType.cast(valueLong.byteValue());
       else
         throw new EdmSimpleTypeException(EdmSimpleTypeException.VALUE_TYPE_NOT_SUPPORTED.addContent(returnType));
-    else if (returnType == short.class || returnType == Short.class)
+    else if (returnType == Short.class)
       if (valueLong >= Short.MIN_VALUE && valueLong <= Short.MAX_VALUE)
-        return valueLong.byteValue();
+        return returnType.cast(valueLong.byteValue());
       else
         throw new EdmSimpleTypeException(EdmSimpleTypeException.VALUE_TYPE_NOT_SUPPORTED.addContent(returnType));
-    else if (returnType == int.class || returnType == Integer.class)
+    else if (returnType == Integer.class)
       if (valueLong >= Integer.MIN_VALUE && valueLong <= Integer.MAX_VALUE)
-        return valueLong.byteValue();
+        return returnType.cast(valueLong.byteValue());
       else
         throw new EdmSimpleTypeException(EdmSimpleTypeException.VALUE_TYPE_NOT_SUPPORTED.addContent(returnType));
     else if (returnType == BigInteger.class)
-      return BigInteger.valueOf(valueLong);
+      return returnType.cast(BigInteger.valueOf(valueLong));
     else
       throw new EdmSimpleTypeException(EdmSimpleTypeException.VALUE_TYPE_NOT_SUPPORTED.addContent(returnType));
   }
@@ -84,26 +89,25 @@ public class EdmInt64 extends AbstractSimpleType {
     if (literalKind == null)
       throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_KIND_MISSING);
 
+    String result;
     if (value instanceof Byte || value instanceof Short || value instanceof Integer || value instanceof Long)
-      if (literalKind == EdmLiteralKind.URI)
-        return toUriLiteral(value.toString());
-      else
-        return value.toString();
+      result = value.toString();
     else if (value instanceof BigInteger)
       if (((BigInteger) value).bitLength() < Long.SIZE) // "<" because of the sign bit
-        if (literalKind == EdmLiteralKind.URI)
-          return toUriLiteral(value.toString());
-        else
-          return value.toString();
+        result = value.toString();
       else
         throw new EdmSimpleTypeException(EdmSimpleTypeException.VALUE_ILLEGAL_CONTENT.addContent(value));
     else
       throw new EdmSimpleTypeException(EdmSimpleTypeException.VALUE_TYPE_NOT_SUPPORTED.addContent(value.getClass()));
+
+    if (literalKind == EdmLiteralKind.URI)
+      result = toUriLiteral(result);
+
+    return result;
   }
 
   @Override
   public String toUriLiteral(final String literal) {
     return literal + "L";
   }
-
 }

@@ -23,6 +23,11 @@ public class EdmBoolean extends AbstractSimpleType {
   }
 
   @Override
+  public Class<?> getDefaultType() {
+    return Boolean.class;
+  }
+
+  @Override
   public boolean validate(final String value, final EdmLiteralKind literalKind, final EdmFacets facets) {
     if (value == null)
       return facets == null || facets.isNullable() == null || facets.isNullable();
@@ -32,18 +37,18 @@ public class EdmBoolean extends AbstractSimpleType {
   }
 
   @Override
-  public Boolean valueOfString(final String value, final EdmLiteralKind literalKind, final EdmFacets facets, final Class<?> returnType) throws EdmSimpleTypeException {
+  public <T> T valueOfString(final String value, final EdmLiteralKind literalKind, final EdmFacets facets, final Class<T> returnType) throws EdmSimpleTypeException {
     if (literalKind == null)
       throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_KIND_MISSING);
-
-    if (returnType != null && returnType != boolean.class && returnType != Boolean.class)
-      throw new EdmSimpleTypeException(EdmSimpleTypeException.VALUE_TYPE_NOT_SUPPORTED.addContent(returnType));
 
     if (validate(value, literalKind, facets))
       if (value == null)
         return null;
       else
-        return "true".equals(value) || "1".equals(value);
+        if (returnType == Boolean.class)
+          return returnType.cast(Boolean.valueOf("true".equals(value) || "1".equals(value)));
+        else
+          throw new EdmSimpleTypeException(EdmSimpleTypeException.VALUE_TYPE_NOT_SUPPORTED.addContent(returnType));
     else if (value == null)
       throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_NULL_NOT_ALLOWED);
     else
@@ -59,7 +64,7 @@ public class EdmBoolean extends AbstractSimpleType {
       throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_KIND_MISSING);
 
     if (value instanceof Boolean)
-      return (Boolean) value ? "true" : "false";
+      return Boolean.toString((Boolean) value);
     else
       throw new EdmSimpleTypeException(EdmSimpleTypeException.VALUE_TYPE_NOT_SUPPORTED.addContent(value.getClass()));
   }

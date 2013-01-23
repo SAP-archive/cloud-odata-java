@@ -50,21 +50,11 @@ public abstract class AbstractSimpleType implements EdmSimpleType {
   @Override
   public boolean validate(final String value, final EdmLiteralKind literalKind, final EdmFacets facets) {
     try {
-      valueOfString(value, literalKind, facets, null);
+      valueOfString(value, literalKind, facets, getDefaultType());
       return true;
     } catch (EdmSimpleTypeException e) {
       return false;
     }
-  }
-
-  @Override
-  public Object valueOfString(final String value, final EdmLiteralKind literalKind, final EdmFacets facets, final Class<?> returnType) throws EdmSimpleTypeException {
-    return null;
-  }
-
-  @Override
-  public String valueToString(final Object value, final EdmLiteralKind literalKind, final EdmFacets facets) throws EdmSimpleTypeException {
-    return null;
   }
 
   @Override
