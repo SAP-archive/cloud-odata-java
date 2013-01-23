@@ -31,7 +31,12 @@ public class EdmDateTimeOffset extends AbstractSimpleType {
   }
 
   @Override
-  public Object valueOfString(final String value, final EdmLiteralKind literalKind, final EdmFacets facets, final Class<?> returnType) throws EdmSimpleTypeException {
+  public Class<?> getDefaultType() {
+    return Calendar.class;
+  }
+
+  @Override
+  public <T> T valueOfString(final String value, final EdmLiteralKind literalKind, final EdmFacets facets, final Class<T> returnType) throws EdmSimpleTypeException {
     if (value == null) {
       checkNullLiteralAllowed(facets);
       return null;
@@ -85,7 +90,7 @@ public class EdmDateTimeOffset extends AbstractSimpleType {
       if (matcher.group(8) == null) {
         return EdmDateTime.getInstance().valueOfString(value, EdmLiteralKind.DEFAULT, facets, returnType);
       } else {
-        dateTimeValue = (Calendar) EdmDateTime.getInstance().valueOfString(value.substring(0, matcher.start(8)), EdmLiteralKind.DEFAULT, facets, null);
+        dateTimeValue = EdmDateTime.getInstance().valueOfString(value.substring(0, matcher.start(8)), EdmLiteralKind.DEFAULT, facets, Calendar.class);
         if (matcher.group(9) != null && !matcher.group(9).matches("[-+]0+:0+")) {
           dateTimeValue.setTimeZone(TimeZone.getTimeZone("GMT" + matcher.group(9)));
           if (dateTimeValue.get(Calendar.ZONE_OFFSET) == 0) // invalid offset
@@ -98,12 +103,12 @@ public class EdmDateTimeOffset extends AbstractSimpleType {
       }
     }
 
-    if (returnType == null || returnType == Calendar.class)
-      return dateTimeValue;
-    else if (returnType == long.class || returnType == Long.class)
-      return dateTimeValue.getTimeInMillis();
+    if (returnType == Calendar.class)
+      return returnType.cast(dateTimeValue);
+    else if (returnType == Long.class)
+      return returnType.cast(dateTimeValue.getTimeInMillis());
     else if (returnType == Date.class)
-      return dateTimeValue.getTime();
+      return returnType.cast(dateTimeValue.getTime());
     else
       throw new EdmSimpleTypeException(EdmSimpleTypeException.VALUE_TYPE_NOT_SUPPORTED.addContent(returnType));
   }
@@ -159,5 +164,4 @@ public class EdmDateTimeOffset extends AbstractSimpleType {
   public String toUriLiteral(final String literal) throws EdmSimpleTypeException {
     return "datetimeoffset'" + literal.replace(":", "%3A") + "'";
   }
-
 }

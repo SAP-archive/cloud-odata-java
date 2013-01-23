@@ -2,6 +2,9 @@ package com.sap.core.odata.api.ep.entry;
 
 import java.util.Map;
 
+/**
+ * @author SAP AG
+ */
 public interface EntryMetadata {
 
   public abstract String getUri();

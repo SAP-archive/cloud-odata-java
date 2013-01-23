@@ -23,6 +23,11 @@ public class EdmBinary extends AbstractSimpleType {
   }
 
   @Override
+  public Class<?> getDefaultType() {
+    return byte[].class;
+  }
+
+  @Override
   public boolean validate(final String value, final EdmLiteralKind literalKind, final EdmFacets facets) {
     if (value == null)
       return facets == null || facets.isNullable() == null || facets.isNullable();
@@ -41,35 +46,47 @@ public class EdmBinary extends AbstractSimpleType {
   }
 
   @Override
-  public byte[] valueOfString(final String value, final EdmLiteralKind literalKind, final EdmFacets facets, final Class<?> returnType) throws EdmSimpleTypeException {
+  public <T> T valueOfString(final String value, final EdmLiteralKind literalKind, final EdmFacets facets, final Class<T> returnType) throws EdmSimpleTypeException {
     if (literalKind == null)
       throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_KIND_MISSING);
 
-    if (returnType != null && returnType != byte[].class && returnType != Byte[].class)
-      throw new EdmSimpleTypeException(EdmSimpleTypeException.VALUE_TYPE_NOT_SUPPORTED.addContent(returnType));
-
+    byte[] result;
     if (validate(value, literalKind, facets))
       if (value == null)
         return null;
       else if (literalKind == EdmLiteralKind.URI)
         try {
-          return Hex.decodeHex(value.substring(value.startsWith("X") ? 2 : 7, value.length() - 1).toCharArray());
+          result = Hex.decodeHex(value.substring(value.startsWith("X") ? 2 : 7, value.length() - 1).toCharArray());
         } catch (DecoderException e) {
           throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_ILLEGAL_CONTENT.addContent(value), e);
         }
       else
-        return Base64.decodeBase64(value);
+        result = Base64.decodeBase64(value);
 
     else if (value == null)
       throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_NULL_NOT_ALLOWED);
     else
       throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_ILLEGAL_CONTENT.addContent(value));
+
+    if (returnType == byte[].class) {
+      return returnType.cast(result);
+    } else if (returnType == Byte[].class) {
+      Byte[] byteArray = new Byte[result.length];
+      for (int i = 0; i < result.length; i++)
+        byteArray[i] = result[i];
+      return returnType.cast(byteArray);
+    } else {
+      throw new EdmSimpleTypeException(EdmSimpleTypeException.VALUE_TYPE_NOT_SUPPORTED.addContent(returnType));
+    }
   }
 
   @Override
   public String valueToString(final Object value, final EdmLiteralKind literalKind, final EdmFacets facets) throws EdmSimpleTypeException {
     if (value == null)
       return getNullOrDefaultLiteral(facets);
+
+    if (literalKind == null)
+      throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_KIND_MISSING);
 
     byte[] byteArrayValue;
     if (value instanceof byte[]) {
@@ -86,9 +103,7 @@ public class EdmBinary extends AbstractSimpleType {
     if (facets != null && facets.getMaxLength() != null && byteArrayValue.length > facets.getMaxLength())
       throw new EdmSimpleTypeException(EdmSimpleTypeException.VALUE_FACETS_NOT_MATCHED.addContent(value, facets));
 
-    if (literalKind == null)
-      throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_KIND_MISSING);
-    else if (literalKind == EdmLiteralKind.URI)
+    if (literalKind == EdmLiteralKind.URI)
       return "binary'" + Hex.encodeHexString(byteArrayValue).toUpperCase(Locale.ROOT) + "'";
     else
       return Base64.encodeBase64String(byteArrayValue);
@@ -96,6 +111,6 @@ public class EdmBinary extends AbstractSimpleType {
 
   @Override
   public String toUriLiteral(final String literal) throws EdmSimpleTypeException {
-    return valueToString(valueOfString(literal, EdmLiteralKind.DEFAULT, null, null), EdmLiteralKind.URI, null);
+    return valueToString(valueOfString(literal, EdmLiteralKind.DEFAULT, null, byte[].class), EdmLiteralKind.URI, null);
   }
 }
