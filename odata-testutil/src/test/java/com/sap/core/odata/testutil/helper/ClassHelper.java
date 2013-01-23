@@ -40,8 +40,8 @@ public class ClassHelper {
    * @return
    */
   public static <T> List<T> getClassInstances(List<Class<T>> exClasses, Object... ctorParameters) {
-    List<Class<?>> ctorParameterClasses = new ArrayList<Class<?>>();
-    for (Object object : ctorParameters) {
+    final List<Class<?>> ctorParameterClasses = new ArrayList<Class<?>>();
+    for (final Object object : ctorParameters) {
       ctorParameterClasses.add(object.getClass());
     }
 
@@ -56,25 +56,25 @@ public class ClassHelper {
    */
   public static <T> List<T> getClassInstances(List<Class<T>> exClasses, Class<?>[] ctorParameterClasses, Object[] ctorParameters) {
 
-    List<T> toTestExceptions = new ArrayList<T>();
-    for (Class<T> clazz : exClasses) {
+    final List<T> toTestExceptions = new ArrayList<T>();
+    for (final Class<T> clazz : exClasses) {
       if (isNotAbstractOrInterface(clazz)) {
         Constructor<T> ctor;
         try {
           ctor = clazz.getConstructor(ctorParameterClasses);
-          T ex = ctor.newInstance(ctorParameters);
+          final T ex = ctor.newInstance(ctorParameters);
           toTestExceptions.add(ex);
-        } catch (SecurityException e) {
+        } catch (final SecurityException e) {
           continue;
-        } catch (NoSuchMethodException e) {
+        } catch (final NoSuchMethodException e) {
           continue;
-        } catch (IllegalArgumentException e) {
+        } catch (final IllegalArgumentException e) {
           continue;
-        } catch (InstantiationException e) {
+        } catch (final InstantiationException e) {
           continue;
-        } catch (IllegalAccessException e) {
+        } catch (final IllegalAccessException e) {
           continue;
-        } catch (InvocationTargetException e) {
+        } catch (final InvocationTargetException e) {
           continue;
         }
       }
@@ -96,14 +96,14 @@ public class ClassHelper {
    * @return
    */
   public static <T> List<Class<T>> getAssignableClasses(String packageName, Class<T> assignableToClass) {
-    List<Class<T>> foundClasses = new ArrayList<Class<T>>();
-    URL url = Thread.currentThread().getContextClassLoader().getResource(packageName.replace(".", "/"));
+    final List<Class<T>> foundClasses = new ArrayList<Class<T>>();
+    final URL url = Thread.currentThread().getContextClassLoader().getResource(packageName.replace(".", "/"));
 
-    File path = new File(url.getPath());
+    final File path = new File(url.getPath());
     if (path.exists()) {
-      File[] javaFiles = path.listFiles(JAVA_FILE_FILTER);
-      for (File file : javaFiles) {
-        Class<T> clazz = getClass(file, packageName, assignableToClass);
+      final File[] javaFiles = path.listFiles(JAVA_FILE_FILTER);
+      for (final File file : javaFiles) {
+        final Class<T> clazz = getClass(file, packageName, assignableToClass);
         if (clazz != null) {
           foundClasses.add(clazz);
         }
@@ -136,11 +136,11 @@ public class ClassHelper {
   @SuppressWarnings("unchecked")
   public static <T> Class<T> getClass(String className, Class<T> clazz) {
     try {
-      Class<?> clazzForName = Class.forName(className);
+      final Class<?> clazzForName = Class.forName(className);
       if (clazz.isAssignableFrom(clazzForName)) {
         return (Class<T>) clazzForName;
       }
-    } catch (ClassNotFoundException e) {
+    } catch (final ClassNotFoundException e) {
       return null;
     }
     return null;

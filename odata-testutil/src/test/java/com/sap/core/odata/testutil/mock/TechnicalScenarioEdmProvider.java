@@ -59,7 +59,7 @@ public class TechnicalScenarioEdmProvider extends EdmProvider {
 
   @Override
   public List<Schema> getSchemas() throws ODataMessageException {
-    Schema schema = new Schema();
+    final Schema schema = new Schema();
     schema.setNamespace(NAMESPACE_1);
 
     schema.setEntityTypes(Arrays.asList(
@@ -70,7 +70,7 @@ public class TechnicalScenarioEdmProvider extends EdmProvider {
 
     schema.setComplexTypes(Arrays.asList(getComplexType(CT_ALL_TYPES)));
 
-    EntityContainer entityContainer = new EntityContainer();
+    final EntityContainer entityContainer = new EntityContainer();
     entityContainer.setName(ENTITY_CONTAINER_1).setDefaultEntityContainer(true);
     entityContainer.setEntitySets(Arrays.asList(
         getEntitySet(ENTITY_CONTAINER_1, ES_KEY_IS_STRING),
@@ -90,12 +90,12 @@ public class TechnicalScenarioEdmProvider extends EdmProvider {
     {
       if (ET_KEY_IS_STRING.getName().equals(edmFQName.getName()))
       {
-        List<Property> properties = new ArrayList<Property>();
+        final List<Property> properties = new ArrayList<Property>();
         properties.add(new SimpleProperty().setName("KeyString")
             .setType(EdmSimpleTypeKind.String)
             .setFacets(new Facets().setNullable(false)));
 
-        List<NavigationProperty> navigationProperties = new ArrayList<NavigationProperty>();
+        final List<NavigationProperty> navigationProperties = new ArrayList<NavigationProperty>();
 
         navigationProperties.add(new NavigationProperty().setName("navProperty").setFromRole(ROLE_1).setToRole(ROLE_2).setRelationship(ASSOCIATION_ET1_ET2));
 
@@ -103,12 +103,12 @@ public class TechnicalScenarioEdmProvider extends EdmProvider {
       }
       else if (ET_KEY_IS_INTEGER.getName().equals(edmFQName.getName()))
       {
-        List<Property> properties = new ArrayList<Property>();
+        final List<Property> properties = new ArrayList<Property>();
         properties.add(new SimpleProperty().setName("KeyInteger")
             .setType(EdmSimpleTypeKind.String)
             .setFacets(new Facets().setNullable(false)));
 
-        List<NavigationProperty> navigationProperties = new ArrayList<NavigationProperty>();
+        final List<NavigationProperty> navigationProperties = new ArrayList<NavigationProperty>();
         navigationProperties.add(new NavigationProperty().setName("navProperty").setFromRole(ROLE_2).setToRole(ROLE_1).setRelationship(ASSOCIATION_ET1_ET2));
 
         return new EntityType().setName(ET_KEY_IS_INTEGER.getName()).setProperties(properties).setNavigationProperties(navigationProperties).setKey(createKey("KeyInteger"));
@@ -116,7 +116,7 @@ public class TechnicalScenarioEdmProvider extends EdmProvider {
       }
       else if (ET_COMPLEX_KEY.getName().equals(edmFQName.getName()))
       {
-        List<Property> properties = new ArrayList<Property>();
+        final List<Property> properties = new ArrayList<Property>();
         properties.add(new SimpleProperty().setName("KeyString")
             .setType(EdmSimpleTypeKind.String)
             .setFacets(new Facets().setNullable(false)));
@@ -128,7 +128,7 @@ public class TechnicalScenarioEdmProvider extends EdmProvider {
       }
       else if (ET_ALL_TYPES.getName().equals(edmFQName.getName()))
       {
-        List<Property> properties = new ArrayList<Property>();
+        final List<Property> properties = new ArrayList<Property>();
         properties.add(new SimpleProperty().setName("Boolean").setType(EdmSimpleTypeKind.Boolean));
         properties.add(new SimpleProperty().setName("Binary").setType(EdmSimpleTypeKind.Binary));
         properties.add(new SimpleProperty().setName("Byte").setType(EdmSimpleTypeKind.Byte));
@@ -149,7 +149,7 @@ public class TechnicalScenarioEdmProvider extends EdmProvider {
       }
       else if (ET_STRING_FACETS.getName().equals(edmFQName.getName()))
       {
-        List<Property> properties = new ArrayList<Property>();
+        final List<Property> properties = new ArrayList<Property>();
         //TODO: What here?
         //        properties.add(new SimpleProperty().setName("StringCollation").setType(EdmSimpleTypeKind.String)
         //            .setFacets(new Facets().setCollation(collation)));
@@ -182,15 +182,15 @@ public class TechnicalScenarioEdmProvider extends EdmProvider {
   @Override
   public ComplexType getComplexType(final FullQualifiedName edmFQName) throws ODataMessageException
   {
-    if (NAMESPACE_1.equals(edmFQName.getNamespace()))
+    if (NAMESPACE_1.equals(edmFQName.getNamespace())) {
       if (CT_ADDRESS.getName().equals(edmFQName.getName())) {
-        List<Property> properties = new ArrayList<Property>();
+        final List<Property> properties = new ArrayList<Property>();
         properties.add(new SimpleProperty().setName("Street").setType(EdmSimpleTypeKind.String));
         properties.add(new SimpleProperty().setName("City").setType(EdmSimpleTypeKind.String));
         return new ComplexType().setName(CT_ADDRESS.getName()).setAbstract(false).setProperties(properties);
       }
       else if (CT_ALL_TYPES.getName().equals(edmFQName.getName())) {
-        List<Property> properties = new ArrayList<Property>();
+        final List<Property> properties = new ArrayList<Property>();
         properties.add(new SimpleProperty().setName("Boolean").setType(EdmSimpleTypeKind.Boolean));
         properties.add(new SimpleProperty().setName("Binary").setType(EdmSimpleTypeKind.Binary));
         properties.add(new SimpleProperty().setName("Byte").setType(EdmSimpleTypeKind.Byte));
@@ -209,6 +209,7 @@ public class TechnicalScenarioEdmProvider extends EdmProvider {
         properties.add(new ComplexProperty().setName("Address").setType(CT_ADDRESS));
         return new ComplexType().setName(CT_ALL_TYPES.getName()).setAbstract(false).setProperties(properties);
       }
+    }
 
     return null;
   }
@@ -217,8 +218,8 @@ public class TechnicalScenarioEdmProvider extends EdmProvider {
   public Association getAssociation(final FullQualifiedName edmFQName) throws ODataMessageException {
     if (NAMESPACE_1.equals(edmFQName.getNamespace())) {
       if (ASSOCIATION_ET1_ET2.getName().equals(edmFQName.getName())) {
-        AssociationEnd end1 = new AssociationEnd().setMultiplicity(EdmMultiplicity.ONE).setRole(ROLE_1).setType(ET_KEY_IS_STRING);
-        AssociationEnd end2 = new AssociationEnd().setMultiplicity(EdmMultiplicity.ONE).setRole(ROLE_2).setType(ET_KEY_IS_INTEGER);
+        final AssociationEnd end1 = new AssociationEnd().setMultiplicity(EdmMultiplicity.ONE).setRole(ROLE_1).setType(ET_KEY_IS_STRING);
+        final AssociationEnd end2 = new AssociationEnd().setMultiplicity(EdmMultiplicity.ONE).setRole(ROLE_2).setType(ET_KEY_IS_INTEGER);
         return new Association().setName("Association").setEnd1(end1).setEnd2(end2);
       }
     }
@@ -228,8 +229,9 @@ public class TechnicalScenarioEdmProvider extends EdmProvider {
 
   @Override
   public EntityContainerInfo getEntityContainerInfo(final String name) throws ODataMessageException {
-    if (name == null || ENTITY_CONTAINER_1.equals(name))
+    if ((name == null) || ENTITY_CONTAINER_1.equals(name)) {
       return new EntityContainerInfo().setName(ENTITY_CONTAINER_1).setDefaultEntityContainer(true);
+    }
 
     return null;
   }
@@ -238,16 +240,17 @@ public class TechnicalScenarioEdmProvider extends EdmProvider {
   public EntitySet getEntitySet(final String entityContainer, final String name) throws ODataMessageException {
     if (ENTITY_CONTAINER_1.equals(entityContainer))
     {
-      if (ES_KEY_IS_STRING.equals(name))
+      if (ES_KEY_IS_STRING.equals(name)) {
         return new EntitySet().setName(name).setEntityType(ET_KEY_IS_STRING);
-      else if (ES_KEY_IS_INTEGER.equals(name))
+      } else if (ES_KEY_IS_INTEGER.equals(name)) {
         return new EntitySet().setName(name).setEntityType(ET_KEY_IS_INTEGER);
-      else if (ES_COMPLEX_KEY.equals(name))
+      } else if (ES_COMPLEX_KEY.equals(name)) {
         return new EntitySet().setName(name).setEntityType(ET_COMPLEX_KEY);
-      else if (ES_ALL_TYPES.equals(name))
+      } else if (ES_ALL_TYPES.equals(name)) {
         return new EntitySet().setName(name).setEntityType(ET_ALL_TYPES);
-      else if (ES_STRING_FACETS.equals(name))
+      } else if (ES_STRING_FACETS.equals(name)) {
         return new EntitySet().setName(name).setEntityType(ET_STRING_FACETS);
+      }
     }
 
     return null;
@@ -262,8 +265,8 @@ public class TechnicalScenarioEdmProvider extends EdmProvider {
   public AssociationSet getAssociationSet(final String entityContainer, final FullQualifiedName association, final String sourceEntitySetName, final String sourceEntitySetRole) throws ODataMessageException {
     if (ENTITY_CONTAINER_1.equals(entityContainer)) {
       if (ASSOCIATION_ET1_ET2.equals(association)) {
-        AssociationSetEnd end1 = new AssociationSetEnd().setRole(ROLE_1).setEntitySet(ES_KEY_IS_STRING);
-        AssociationSetEnd end2 = new AssociationSetEnd().setRole(ROLE_2).setEntitySet(ES_KEY_IS_INTEGER);
+        final AssociationSetEnd end1 = new AssociationSetEnd().setRole(ROLE_1).setEntitySet(ES_KEY_IS_STRING);
+        final AssociationSetEnd end2 = new AssociationSetEnd().setRole(ROLE_2).setEntitySet(ES_KEY_IS_INTEGER);
 
         return new AssociationSet().setName("AssociationSet").setEnd1(end1).setEnd2(end2);
       }
@@ -272,9 +275,10 @@ public class TechnicalScenarioEdmProvider extends EdmProvider {
   }
 
   private Key createKey(final String... keyNames) {
-    List<PropertyRef> keyProperties = new ArrayList<PropertyRef>();
-    for (final String keyName : keyNames)
+    final List<PropertyRef> keyProperties = new ArrayList<PropertyRef>();
+    for (final String keyName : keyNames) {
       keyProperties.add(new PropertyRef().setName(keyName));
+    }
     return new Key().setKeys(keyProperties);
   }
 

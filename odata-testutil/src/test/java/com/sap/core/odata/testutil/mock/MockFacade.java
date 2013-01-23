@@ -18,13 +18,13 @@ public class MockFacade {
   }
 
   public static List<String> getPathSegmentsAsStringMock() {
-    ArrayList<String> pathSegmentsMock = new ArrayList<String>();
+    final ArrayList<String> pathSegmentsMock = new ArrayList<String>();
     pathSegmentsMock.add("$metadata");
     return pathSegmentsMock;
   }
 
   public static List<PathSegment> getPathSegmentsAsODataPathSegmentMock() {
-    ArrayList<PathSegment> pathSegmentsMock = new ArrayList<PathSegment>();
+    final ArrayList<PathSegment> pathSegmentsMock = new ArrayList<PathSegment>();
     pathSegmentsMock.add(new PathSegment() {
 
       @Override

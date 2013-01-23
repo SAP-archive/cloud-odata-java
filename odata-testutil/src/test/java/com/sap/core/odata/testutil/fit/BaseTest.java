@@ -40,8 +40,8 @@ public abstract class BaseTest {
     @Override
     protected void failed(Throwable e, Description description) {
       super.failed(e, description);
-      BaseTest.this.log.info("starting " + description.getDisplayName());
-      BaseTest.this.log.error(description.getDisplayName(), e);
+      log.info("starting " + description.getDisplayName());
+      log.error(description.getDisplayName(), e);
     }
 
     @Override
@@ -74,7 +74,7 @@ public abstract class BaseTest {
   protected void disableLogging() {
     try {
       disableLogging(Class.forName(CLASSNAME_ODATA_EXCEPTION_MAPPER));
-    } catch (ClassNotFoundException e) {
+    } catch (final ClassNotFoundException e) {
       log.error("Expected class was not found for disabling of logging.");
     }
   }
@@ -87,8 +87,8 @@ public abstract class BaseTest {
    * @param classes
    */
   protected void disableLogging(Class<?>... classes) {
-    for (Class<?> clazz : classes) {
-      org.apache.log4j.Logger l = org.apache.log4j.Logger.getLogger(clazz);
+    for (final Class<?> clazz : classes) {
+      final org.apache.log4j.Logger l = org.apache.log4j.Logger.getLogger(clazz);
       if (l != null) {
         disabledLoggings.put(clazz, l.getEffectiveLevel());
         l.setLevel(Level.OFF);
@@ -97,8 +97,8 @@ public abstract class BaseTest {
   }
 
   protected void reEnableLogging() {
-    for (Entry<Class<?>, Level> entry : disabledLoggings.entrySet()) {
-      org.apache.log4j.Logger l = org.apache.log4j.Logger.getLogger(entry.getKey());
+    for (final Entry<Class<?>, Level> entry : disabledLoggings.entrySet()) {
+      final org.apache.log4j.Logger l = org.apache.log4j.Logger.getLogger(entry.getKey());
       l.setLevel(entry.getValue());
     }
     disabledLoggings.clear();

@@ -30,7 +30,7 @@ public class ODataMessageTextVerifier {
   private static final Locale locale = Locale.ROOT;
 
   public ResourceBundle resourceBundle = ResourceBundle.getBundle(BUNDLE_NAME, locale);
-  private List<Throwable> errorCollector;
+  private final List<Throwable> errorCollector;
 
   public ODataMessageTextVerifier() {
     errorCollector = new ArrayList<Throwable>();
@@ -40,7 +40,7 @@ public class ODataMessageTextVerifier {
     try {
       // System.out.println(text);
       fail(text);
-    } catch (AssertionError ae) {
+    } catch (final AssertionError ae) {
       errorCollector.add(ae);
     }
   }
@@ -49,19 +49,21 @@ public class ODataMessageTextVerifier {
     String value = null;
 
     try {
-      String key = msgRef.getKey();
+      final String key = msgRef.getKey();
       value = resourceBundle.getString(key);
       return value;
-    } catch (MissingResourceException ex) {
+    } catch (final MissingResourceException ex) {
       failCollector("Error-->Messagetext for key:\"" + msgRef.getKey() + "\" missing");
     }
     return null;
   }
 
   private void assertExistMessage(MessageReference msgRef) {
-    String text = getMessage(msgRef);
+    final String text = getMessage(msgRef);
     if (text == null)
+    {
       return; // checked in getMessage
+    }
 
     if (text.length() == 0) {
       failCollector("Error-->Messagetext for key:\"" + msgRef.getKey() + "\" empty");
@@ -69,10 +71,10 @@ public class ODataMessageTextVerifier {
   }
 
   public void CheckMessagesOfClass(Class<? extends Exception> exceptionClassToBeTested) {
-    Class<? extends Exception> testClass = exceptionClassToBeTested;
+    final Class<? extends Exception> testClass = exceptionClassToBeTested;
     // try {
 
-    for (Field field : testClass.getDeclaredFields()) {
+    for (final Field field : testClass.getDeclaredFields()) {
       // if field from type MessageReference
       if (field.getType().isAssignableFrom(MessageReference.class)) {
         // field should be final
@@ -81,10 +83,10 @@ public class ODataMessageTextVerifier {
         MessageReference msgRef = null;
         try {
           msgRef = (MessageReference) field.get(null);
-        } catch (IllegalArgumentException e) {
+        } catch (final IllegalArgumentException e) {
           failCollector("MsgRef Error--> Error: MsgRef " + field.getName() + " of class \"" + testClass.getSimpleName() + "\"");
           break;
-        } catch (IllegalAccessException e) {
+        } catch (final IllegalAccessException e) {
           failCollector("MsgRef Error--> Not public: MsgRef " + field.getName() + " of class \"" + testClass.getSimpleName() + "\"");
           break;
         }
@@ -104,9 +106,9 @@ public class ODataMessageTextVerifier {
   }
 
   static public void TestClass(Class<? extends Exception> exceptionClassToBeTested) {
-    ODataMessageTextVerifier tool = new ODataMessageTextVerifier();
+    final ODataMessageTextVerifier tool = new ODataMessageTextVerifier();
     tool.CheckMessagesOfClass(exceptionClassToBeTested);
-    for (Throwable throwable : tool.getErrorCollector()) {
+    for (final Throwable throwable : tool.getErrorCollector()) {
       fail(throwable.getMessage());
     }
   }
