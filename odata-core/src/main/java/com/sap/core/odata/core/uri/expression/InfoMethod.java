@@ -18,19 +18,27 @@ class InfoMethod
   public int maxParameter;
   ParameterSetCombination combination;
 
-  public InfoMethod(MethodOperator method, String syntax, ParameterSetCombination combination)
+  public InfoMethod(MethodOperator method, ParameterSetCombination combination)
   {
     this.method = method;
-    this.syntax = syntax;
+    this.syntax = method.toUriLiteral();
     this.minParameter = 1;
     this.maxParameter = 1;
     this.combination = combination;
   }
 
-  public InfoMethod(MethodOperator method, String syntax, int minParameters, int maxParameters, ParameterSetCombination combination)
+  public InfoMethod(MethodOperator method, int minParameters, int maxParameters, ParameterSetCombination combination)
   {
     this.method = method;
-    this.syntax = syntax;
+    this.syntax = method.toUriLiteral();
+    this.minParameter = minParameters;
+    this.maxParameter = maxParameters;
+    this.combination = combination;
+  }
+
+  public InfoMethod(MethodOperator method, String string, int minParameters, int maxParameters, ParameterSetCombination combination) {
+    this.method = method;
+    this.syntax = string;
     this.minParameter = minParameters;
     this.maxParameter = maxParameters;
     this.combination = combination;

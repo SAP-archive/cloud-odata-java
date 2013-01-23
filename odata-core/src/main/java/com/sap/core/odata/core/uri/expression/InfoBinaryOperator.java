@@ -17,10 +17,10 @@ class InfoBinaryOperator
   private int priority;
   ParameterSetCombination combination;
 
-  public InfoBinaryOperator(BinaryOperator operator, String category, String syntax, int priority, ParameterSetCombination combination) {
+  public InfoBinaryOperator(BinaryOperator operator, String category, int priority, ParameterSetCombination combination) {
     this.operator = operator;
     this.category = category;
-    this.syntax = syntax;
+    this.syntax = operator.toUriLiteral();
     this.priority = priority;
     this.combination = combination;
   }

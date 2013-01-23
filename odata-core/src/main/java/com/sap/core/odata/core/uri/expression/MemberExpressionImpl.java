@@ -52,14 +52,15 @@ public class MemberExpressionImpl implements BinaryExpression, MemberExpression
   }
 
   @Override
-  public ExpressionKind getKind() {
+  public ExpressionKind getKind()
+  {
     return ExpressionKind.MEMBER;
   }
 
   @Override
-  public String getUriLiteral() {
-
-    return CharConst.MEMBER_OPERATOR;
+  public String getUriLiteral() 
+  {
+    return BinaryOperator.PROPERTY_ACCESS.toUriLiteral();
   }
 
   @Override
