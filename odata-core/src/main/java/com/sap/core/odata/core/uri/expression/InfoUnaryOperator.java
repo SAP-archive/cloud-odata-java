@@ -16,11 +16,11 @@ class InfoUnaryOperator
   private String syntax;
   ParameterSetCombination combination;
 
-  public InfoUnaryOperator(UnaryOperator operator, String category, String syntax, ParameterSetCombination combination)
+  public InfoUnaryOperator(UnaryOperator operator, String category, ParameterSetCombination combination)
   {
     this.operator = operator;
     this.category = category;
-    this.syntax = syntax;
+    this.syntax = operator.toUriLiteral();
     this.combination = combination;
   }
 
