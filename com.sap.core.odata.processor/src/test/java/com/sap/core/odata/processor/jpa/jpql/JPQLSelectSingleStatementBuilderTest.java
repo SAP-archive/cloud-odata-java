@@ -99,7 +99,7 @@ public class JPQLSelectSingleStatementBuilderTest {
 		JPQLSelectSingleContext JPQLSelectSingleContextImpl = createSelectContext();
 		JPQLSelectSingleStatementBuilder = new JPQLSelectSingleStatementBuilder(JPQLSelectSingleContextImpl);
 		
-		assertEquals("SELECT gwt1 FROM SalesOrderHeader gwt1 WHERE gwt1.Field1 = 1",JPQLSelectSingleStatementBuilder.build().toString());
+		assertEquals("SELECT E1 FROM SalesOrderHeader E1 WHERE E1.Field1 = 1",JPQLSelectSingleStatementBuilder.build().toString());
 	}
 	
 	

@@ -133,20 +133,20 @@ public class JPQLSelectContextImplTest {
 
 		assertEquals(
 				true,
-				selectContext.getOrderByCollection().containsKey(
+				selectContext.getOrderByCollection().containsKey("E1."+
 						JPQLSelectContextImplTest.fields[0]));
 		assertEquals(
 				"",
-				selectContext.getOrderByCollection().get(
+				selectContext.getOrderByCollection().get("E1."+
 						JPQLSelectContextImplTest.fields[0]));
 
 		assertEquals(
 				true,
-				selectContext.getOrderByCollection().containsKey(
+				selectContext.getOrderByCollection().containsKey("E1."+
 						JPQLSelectContextImplTest.fields[1]));
 		assertEquals(
 				"DESC",
-				selectContext.getOrderByCollection().get(
+				selectContext.getOrderByCollection().get("E1."+
 						JPQLSelectContextImplTest.fields[1]));
 	}
 
