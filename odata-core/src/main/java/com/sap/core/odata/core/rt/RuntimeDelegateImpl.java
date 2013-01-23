@@ -124,6 +124,7 @@ public class RuntimeDelegateImpl extends RuntimeDelegateInstance {
       result.add(HttpContentType.APPLICATION_XML);
     } else if (processorFeature == ServiceDocument.class) {
       result.add(HttpContentType.APPLICATION_ATOM_SVC);
+      result.add(HttpContentType.APPLICATION_ATOM_XML);
       result.add(HttpContentType.APPLICATION_JSON);
       result.add(HttpContentType.APPLICATION_XML);
     } else {

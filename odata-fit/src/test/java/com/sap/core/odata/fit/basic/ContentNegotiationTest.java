@@ -22,6 +22,7 @@ import com.sap.core.odata.api.processor.ODataSingleProcessor;
 import com.sap.core.odata.api.processor.feature.CustomContentType;
 import com.sap.core.odata.api.processor.feature.ServiceDocument;
 import com.sap.core.odata.api.uri.info.GetServiceDocumentUriInfo;
+import com.sap.core.odata.testutil.helper.StringHelper;
 
 /**
  * @author SAP AG
@@ -32,11 +33,31 @@ public class ContentNegotiationTest extends AbstractBasicTest {
 
   @Override
   ODataSingleProcessor createProcessor() throws ODataException {
+    // service document 
+    String contentType = "application/atom+xml";
+    ODataResponse responseAtomXml = ODataResponse.status(HttpStatusCodes.OK).contentHeader(contentType).entity("Test passed.").build();
+    when(((ServiceDocument) processor).readServiceDocument(any(GetServiceDocumentUriInfo.class), eq(contentType))).thenReturn(responseAtomXml);
+
+    // csv
     ODataResponse value = ODataResponse.status(HttpStatusCodes.OK).contentHeader("csv").build();
     when(((ServiceDocument) processor).readServiceDocument(any(GetServiceDocumentUriInfo.class), eq("csv"))).thenReturn(value);
     when(((CustomContentType) processor).getCustomContentTypes(ServiceDocument.class)).thenReturn(Arrays.asList("csv"));
 
     return processor;
+  }
+
+  @Test
+  public void testAtomFormatForServiceDocument() throws Exception {
+    HttpGet get = new HttpGet(URI.create(this.getEndpoint().toString() + "?$format=atom"));
+
+    HttpResponse response = this.getHttpClient().execute(get);
+    
+    String responseEntity = StringHelper.httpEntityToString(response.getEntity());
+    assertEquals("Test passed.", responseEntity);
+    assertEquals(HttpStatusCodes.OK.getStatusCode(), response.getStatusLine().getStatusCode());
+
+    Header header = response.getFirstHeader(HttpHeaders.CONTENT_TYPE);
+    assertEquals("application/atom+xml", header.getValue());
   }
 
   @Test
