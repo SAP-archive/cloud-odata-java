@@ -105,15 +105,14 @@ public class JPAEdmEntityContainer extends JPAEdmBaseViewImpl implements
 				return;
 			}
 			
-			associationSetView = new JPAEdmAssociationSet(
-					JPAEdmEntityContainer.this);
+			associationSetView = new JPAEdmAssociationSet(schemaView);
 			associationSetView.getBuilder().build();
 			if (associationSetView.isConsistent())
 				currentEntityContainer.setAssociationSets(associationSetView
 						.getConsistentEdmAssociationSetList());
 			else {
 				isConsistent = false;
-				//return;
+				return;
 			}
 			
 			

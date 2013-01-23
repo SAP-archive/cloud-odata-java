@@ -232,7 +232,7 @@ public class JPAEdmProperty extends JPAEdmBaseViewImpl implements
 						associationView.addJPAEdmAssociationView(associationViewLocal);
 					}
 					
-					if(true)
+					if(false)
 					{
 						JPAEdmReferentialContraintView refView = new JPAEdmReferentialConstraint(associationView,JPAEdmProperty.this);
 						refView.getBuilder().build( );

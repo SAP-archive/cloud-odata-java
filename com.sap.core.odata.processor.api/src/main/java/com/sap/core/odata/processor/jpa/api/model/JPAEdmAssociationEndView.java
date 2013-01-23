@@ -7,5 +7,7 @@ public interface JPAEdmAssociationEndView extends JPAEdmBaseView {
 	AssociationEnd getAssociationEnd2( );
 
 	AssociationEnd getAssociationEnd1();
+
+	boolean compare(AssociationEnd end1, AssociationEnd end2);
 	
 }

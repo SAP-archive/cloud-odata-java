@@ -49,7 +49,8 @@ public class JPAEdmAssociationEnd extends JPAEdmBaseViewImpl implements
 			currentAssociationEnd1 = new AssociationEnd();
 			currentAssociationEnd2 = new AssociationEnd();
 
-			JPAEdmNameBuilder.build(JPAEdmAssociationEnd.this,entityTypeView,propertyView);
+			JPAEdmNameBuilder.build(JPAEdmAssociationEnd.this, entityTypeView,
+					propertyView);
 
 			currentAssociationEnd1.setRole(currentAssociationEnd1.getType()
 					.getName());
@@ -84,4 +85,23 @@ public class JPAEdmAssociationEnd extends JPAEdmBaseViewImpl implements
 		}
 	}
 
+	@Override
+	public boolean compare(AssociationEnd end1, AssociationEnd end2) {
+		if ((end1.getType().equals(currentAssociationEnd1.getType())
+				&& end2.getType().equals(currentAssociationEnd2.getType())
+				&& end1.getMultiplicity().equals(
+						currentAssociationEnd1.getMultiplicity()) && end2
+				.getMultiplicity().equals(
+						currentAssociationEnd2.getMultiplicity()))
+				|| (end1.getType().equals(currentAssociationEnd2.getType())
+						&& end2.getType().equals(
+								currentAssociationEnd1.getType())
+						&& end1.getMultiplicity().equals(
+								currentAssociationEnd2.getMultiplicity()) && end2
+						.getMultiplicity().equals(
+								currentAssociationEnd1.getMultiplicity())))
+			return true;
+
+		return false;
+	}
 }

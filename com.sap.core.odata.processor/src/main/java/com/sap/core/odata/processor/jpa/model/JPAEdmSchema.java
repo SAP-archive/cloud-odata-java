@@ -81,7 +81,9 @@ JPAEdmSchemaView {
 
 			schema = new Schema();
 			JPAEdmNameBuilder.build(JPAEdmSchema.this);
-
+			
+			associationView = new JPAEdmAssociation(JPAEdmSchema.this);
+			
 			complexTypeView = new JPAEdmComplexType(
 					JPAEdmSchema.this);
 			complexTypeView.getBuilder().build();
@@ -106,9 +108,9 @@ JPAEdmSchemaView {
 							.getConsistentEdmEntityTypes());
 			}
 
-			/*if (associationView.isConsistent())
+			if (associationView.isConsistent())
 				schema.setAssociations(associationView
-							.getConsistentEdmAssociationList());*/
+							.getConsistentEdmAssociationList());
 		}
 
 	}

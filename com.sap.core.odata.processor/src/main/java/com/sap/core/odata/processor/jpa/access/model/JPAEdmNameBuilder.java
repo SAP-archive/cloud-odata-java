@@ -6,9 +6,14 @@ import javax.persistence.Column;
 import javax.persistence.metamodel.Attribute;
 
 import com.sap.core.odata.api.edm.FullQualifiedName;
+import com.sap.core.odata.api.edm.provider.Association;
+import com.sap.core.odata.api.edm.provider.AssociationSet;
+import com.sap.core.odata.api.edm.provider.ComplexProperty;
 import com.sap.core.odata.api.edm.provider.EntityType;
 import com.sap.core.odata.api.edm.provider.Mapping;
 import com.sap.core.odata.processor.jpa.api.model.JPAEdmAssociationEndView;
+import com.sap.core.odata.processor.jpa.api.model.JPAEdmAssociationSetView;
+import com.sap.core.odata.processor.jpa.api.model.JPAEdmAssociationView;
 import com.sap.core.odata.processor.jpa.api.model.JPAEdmComplexPropertyView;
 import com.sap.core.odata.processor.jpa.api.model.JPAEdmEntityContainerView;
 import com.sap.core.odata.processor.jpa.api.model.JPAEdmEntitySetView;
@@ -23,15 +28,18 @@ import com.sap.core.odata.processor.jpa.model.JPAEdmMappingImpl;
 public class JPAEdmNameBuilder {
 	private static final String ENTITY_CONTAINER_SUFFIX = "Container";
 	private static final String ENTITY_SET_SUFFIX = "s";
+	private static final String ASSOCIATION_PREFIX = "Association";
+	private static final String ASSOCIATIONSET_SUFFIX = "Set";
 
 	/*
-	 * ************************************************************
+	 * ************************************************************************
 	 *					EDM EntityType Name - RULES 
-	 * ************************************************************
-	 * JPA Entity Type Name is set as EDM Entity Type Name.
-	 * ************************************************************
+	 * ************************************************************************
+	 * EDM Entity Type Name = JPA Entity Name
+	 * EDM Entity Type Internal Name = JPA Entity Name
+	 * ************************************************************************
 	 * 					EDM Entity Type Name - RULES 
-	 * ************************************************************
+	 * ************************************************************************
 	 */
 	public static void build(JPAEdmEntityTypeView view) {
 
@@ -43,13 +51,13 @@ public class JPAEdmNameBuilder {
 	}
 
 	/*
-	 * ************************************************************
+	 * ************************************************************************
 	 *					EDM Schema Name - RULES 
-	 * ************************************************************
+	 * ************************************************************************
 	 * Java Persistence Unit name is set as Schema's Namespace
-	 * ************************************************************
+	 * ************************************************************************
 	 * 					EDM Schema Name - RULES 
-	 * ************************************************************
+	 * ************************************************************************
 	 */
 	public static void build(JPAEdmSchemaView view)
 			throws ODataJPAModelException {
@@ -57,18 +65,18 @@ public class JPAEdmNameBuilder {
 	}
 
 	/*
-	 * ************************************************************
+	 * ************************************************************************
 	 *					EDM Property Name - RULES 
-	 * ************************************************************ 
+	 * ************************************************************************ 
 	 * OData Property Names are represented in Camel Case. 
 	 * The first character of JPA Attribute Name is converted to an 
 	 * UpperCase Character and set as OData Property Name. 
 	 * JPA Attribute Name is set as Internal Name for OData Property.
 	 * The Column name (annotated as @Column(name="x")) is set as
 	 * column name in the mapping object.
-	 * ************************************************************
+	 * ************************************************************************
 	 * 					EDM Property Name - RULES 
-	 * ************************************************************ 
+	 * ************************************************************************ 
 	 */
 	public static void build(JPAEdmPropertyView view) {
 		Attribute<?, ?> jpaAttribute = view.getJPAAttribute();
@@ -90,14 +98,13 @@ public class JPAEdmNameBuilder {
 	}
 	
 	/*
-	 * ************************************************************
+	 * ************************************************************************
  	 *				EDM EntityContainer Name - RULES 
-	 * ************************************************************
-	 * Java Persistence Unit name + Literal "Container" is appended
-	 * to Entity Container Name.
-	 * ************************************************************
+	 * ************************************************************************
+	 * Entity Container Name = EDM Namespace + Literal "Container"
+	 * ************************************************************************
 	 *				EDM EntityContainer Name - RULES 
-	 * ************************************************************
+	 * ************************************************************************
 	 */
 	public static void build(JPAEdmEntityContainerView view) {
 		view.getEdmEntityContainer().setName(
@@ -105,30 +112,65 @@ public class JPAEdmNameBuilder {
 	}
 	
 	/*
-	 * ************************************************************
+	 * ************************************************************************
  	 *					EDM EntitySet Name - RULES 
-	 * ************************************************************
-	 * JPA Entity Type Name + Literal "s" is appended to Entity Set
-	 * Name.
-	 * ************************************************************
+	 * ************************************************************************
+	 * Entity Set Name = JPA Entity Type Name + Literal "s" 
+	 * ************************************************************************
 	 *					EDM EntitySet Name - RULES 
-	 * ************************************************************
+	 * ************************************************************************
 	 */
 	public static void build(JPAEdmEntitySetView view) {
 		FullQualifiedName fQname = view.getEdmEntitySet().getEntityType();
 		view.getEdmEntitySet().setName(fQname.getName() + ENTITY_SET_SUFFIX);
 	}
-
+	
+	/*
+	 * ************************************************************************
+ 	 *					EDM Complex Type Name - RULES 
+	 * ************************************************************************
+	 * Complex Type Name = JPA Embeddable Type Simple Name.
+	 * ************************************************************************
+	 *					EDM Complex Type Name - RULES  
+	 * ************************************************************************
+	 */
 	public static void build(JPAEdmComplexType view) {
 		view.getEdmComplexType().setName(view.getJPAEmbeddableType().getJavaType().getSimpleName());
 		
 	}
-
+	
+	/*
+	 * ************************************************************************
+ 	 *					EDM Complex Property Name - RULES 
+	 * ************************************************************************
+	 * The first character of JPA complex attribute name is converted to 
+	 * uppercase. The modified JPA complex attribute name is assigned as EDM
+	 * complex property name.
+	 * The unmodified JPA complex attribute name is assigned as internal 
+	 * name.
+	 * ************************************************************************
+	 *					EDM Complex Property Name - RULES 
+	 * ************************************************************************
+	 */
 	public static void build(JPAEdmComplexPropertyView complexView,JPAEdmPropertyView propertyView) {
-		complexView.getEdmComplexProperty().setName(propertyView.getJPAAttribute().getName());
+		String name = propertyView.getJPAAttribute().getName();
+		String propertyName = Character.toUpperCase(name.charAt(0))
+				+ name.substring(1);
+		ComplexProperty complexProperty = complexView.getEdmComplexProperty();
+		complexProperty.setName(propertyName);
+		complexProperty.setMapping(((Mapping)new JPAEdmMappingImpl()).setInternalName(name));
 		
 	}
 	
+	/*
+	 * ************************************************************************
+ 	 *					EDM Association End Name - RULES 
+	 * ************************************************************************
+	 * Association End name = Namespace + Entity Type Name 
+	 * ************************************************************************
+	 *					EDM Association End Name - RULES  
+	 * ************************************************************************
+	 */
 	public static void build(JPAEdmAssociationEndView assocaitionEndView,
 			JPAEdmEntityTypeView entityTypeView, JPAEdmPropertyView propertyView) {
 		
@@ -146,6 +188,43 @@ public class JPAEdmNameBuilder {
 	
 	private static String buildNamespace(String name){
 		return name;
+	}
+
+	/*
+	 * ************************************************************************
+ 	 *					EDM Association Name - RULES 
+	 * ************************************************************************
+	 * Association name = Association + End1 Name + End2 Name 
+	 * ************************************************************************
+	 *					EDM Association Name - RULES  
+	 * ************************************************************************
+	 */
+	
+	public static void build(JPAEdmAssociationView view) {
+		Association association = view.getEdmAssociation();
+		
+		String end1Name = association.getEnd1().getType().getName();
+		String end2Name = association.getEnd2().getType().getName();
+		
+		association.setName(ASSOCIATION_PREFIX + end1Name + end2Name);
+		
+	}
+	
+	/*
+	 * ************************************************************************
+ 	 *					EDM Association Set Name - RULES 
+	 * ************************************************************************
+	 * Association Set name = Association Name + "Set" 
+	 * ************************************************************************
+	 *					EDM Association Set Name - RULES  
+	 * ************************************************************************
+	 */	
+	public static void build(JPAEdmAssociationSetView view) {
+		AssociationSet associationSet = view.getEdmAssociationSet();
+		
+		String name = view.getEdmAssociation().getName();
+		associationSet.setName(name + ASSOCIATIONSET_SUFFIX);
+		
 	}
 	
 }	
