@@ -5,9 +5,9 @@
 	<persistence-unit name="salesorderprocessing"
 		transaction-type="RESOURCE_LOCAL">
 		<provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
-		<class>com.sap.core.odata.processor.jpa.model.SalesOrderHeader</class>
-		<class>com.sap.core.odata.processor.jpa.model.SalesOrderItem</class>
-		<class>com.sap.core.odata.processor.jpa.model.Note</class>
+		<class>com.sap.core.odata.processor.jpa.ref.model.SalesOrderHeader</class>
+		<class>com.sap.core.odata.processor.jpa.ref.model.SalesOrderItem</class>
+		<class>com.sap.core.odata.processor.jpa.ref.model.Note</class>
 		<properties>
 			<property name="eclipselink.jdbc.driver" value="org.hsqldb.jdbcDriver" />
 			<property name="eclipselink.jdbc.url" value="jdbc:hsqldb:mem:com.sap.sample" />

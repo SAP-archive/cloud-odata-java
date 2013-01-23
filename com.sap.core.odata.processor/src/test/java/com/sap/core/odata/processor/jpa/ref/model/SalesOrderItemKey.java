@@ -1,4 +1,4 @@
-package com.sap.core.odata.processor.jpa.model;
+package com.sap.core.odata.processor.jpa.ref.model;
 
 import java.io.Serializable;
 
