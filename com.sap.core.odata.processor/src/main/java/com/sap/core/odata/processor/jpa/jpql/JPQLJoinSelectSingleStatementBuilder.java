@@ -36,7 +36,8 @@ public class JPQLJoinSelectSingleStatementBuilder extends JPQLStatementBuilder{
 
 		jpqlQuery.append(JPQLStatement.KEYWORD.SELECT).append(JPQLStatement.DELIMITER.SPACE);
 		jpqlQuery.append(tableAlias).append(JPQLStatement.DELIMITER.SPACE);
-		jpqlQuery.append(fromClause).append(JPQLStatement.DELIMITER.SPACE);
+		jpqlQuery.append(JPQLStatement.KEYWORD.FROM).append(JPQLStatement.DELIMITER.SPACE);
+		jpqlQuery.append(fromClause);
 		
 		if(context.getJPAOuterJoinClauses() != null && context.getJPAOuterJoinClauses().size() > 0){
 			int i = 0;
@@ -44,13 +45,14 @@ public class JPQLJoinSelectSingleStatementBuilder extends JPQLStatementBuilder{
 			joinWhereCondition = new StringBuilder();
 			List<JPAOuterJoinClause> joinClauseList = context.getJPAOuterJoinClauses();
 			for(JPAOuterJoinClause joinClause : joinClauseList){
+				jpqlQuery.append(JPQLStatement.DELIMITER.SPACE);
 				jpqlQuery.append(JPQLStatement.KEYWORD.JOIN).append(JPQLStatement.DELIMITER.SPACE);
 				if(entityRelationshipAlias == null){
 					entityRelationshipAlias = joinClause.getEntityAlias();
 				}
 				jpqlQuery.append(entityRelationshipAlias).append(JPQLStatement.DELIMITER.PERIOD).append(joinClause.getEntityRelationShip()).append(JPQLStatement.DELIMITER.SPACE);
 				entityRelationshipAlias = joinClause.getEntityRelationShipAlias();
-				jpqlQuery.append(joinClause.getEntityRelationShipAlias()).append(JPQLStatement.DELIMITER.SPACE);
+				jpqlQuery.append(joinClause.getEntityRelationShipAlias());
 				if(joinClause.getJoinCondition() != null){
 					if(i > 0){
 						joinWhereCondition.append(JPQLStatement.DELIMITER.SPACE + JPQLStatement.Operator.AND + JPQLStatement.DELIMITER.SPACE);
@@ -63,20 +65,20 @@ public class JPQLJoinSelectSingleStatementBuilder extends JPQLStatementBuilder{
 
 		
 		if (context.getKeyPredicates() != null || joinWhereCondition != null){
+			jpqlQuery.append(JPQLStatement.DELIMITER.SPACE);
 			jpqlQuery.append(JPQLStatement.KEYWORD.WHERE).append(JPQLStatement.DELIMITER.SPACE);
 			if(context.getKeyPredicates() != null){
 				jpqlQuery.append(
 						ODataExpressionParser.parseKeyPredicates(
 								context.getKeyPredicates(),
-								context.getJPAEntityAlias())).append(JPQLStatement.DELIMITER.SPACE);
+								context.getJPAEntityAlias()));
 				if(joinWhereCondition != null){
-					jpqlQuery.append(JPQLStatement.Operator.AND + JPQLStatement.DELIMITER.SPACE);
+					jpqlQuery.append(JPQLStatement.DELIMITER.SPACE + JPQLStatement.Operator.AND + JPQLStatement.DELIMITER.SPACE);
 				}
 			}
 			if(joinWhereCondition != null){
-				jpqlQuery.append(joinWhereCondition.toString()).append(JPQLStatement.DELIMITER.SPACE);
-			}
-			
+				jpqlQuery.append(joinWhereCondition.toString());
+			}			
 		}
 
 		return jpqlQuery.toString();

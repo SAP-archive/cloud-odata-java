@@ -33,17 +33,15 @@ public class JPQLSelectSingleStatementBuilder extends JPQLStatementBuilder {
 		jpqlQuery.append(JPQLStatement.KEYWORD.SELECT).append(
 				JPQLStatement.DELIMITER.SPACE);
 		jpqlQuery.append(tableAlias).append(JPQLStatement.DELIMITER.SPACE);
-		jpqlQuery.append(fromClause).append(JPQLStatement.DELIMITER.SPACE);
+		jpqlQuery.append(JPQLStatement.KEYWORD.FROM).append(JPQLStatement.DELIMITER.SPACE);
+		jpqlQuery.append(fromClause);
 
 		if (context.getKeyPredicates() != null
 				&& context.getKeyPredicates().size() > 0) {
-			jpqlQuery.append(JPQLStatement.KEYWORD.WHERE).append(
-					JPQLStatement.DELIMITER.SPACE);
-			jpqlQuery.append(
-					ODataExpressionParser.parseKeyPredicates(
-							context.getKeyPredicates(),
-							context.getJPAEntityAlias())).append(
-					JPQLStatement.DELIMITER.SPACE);
+			jpqlQuery.append(JPQLStatement.DELIMITER.SPACE);
+			jpqlQuery.append(JPQLStatement.KEYWORD.WHERE).append(JPQLStatement.DELIMITER.SPACE);
+			jpqlQuery.append(ODataExpressionParser.parseKeyPredicates(context.getKeyPredicates(),
+							context.getJPAEntityAlias()));
 		}
 
 		return jpqlQuery.toString();
