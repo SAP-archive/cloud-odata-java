@@ -27,15 +27,15 @@ import com.sap.core.odata.api.edm.EdmProperty;
 import com.sap.core.odata.api.edm.EdmSimpleType;
 import com.sap.core.odata.api.uri.KeyPredicate;
 import com.sap.core.odata.api.uri.NavigationSegment;
-import com.sap.core.odata.api.uri.info.GetEntitySetUriInfo;
+import com.sap.core.odata.api.uri.info.GetEntityUriInfo;
 import com.sap.core.odata.processor.jpa.api.access.JPAOuterJoinClause;
 import com.sap.core.odata.processor.jpa.exception.ODataJPAModelException;
 import com.sap.core.odata.processor.jpa.exception.ODataJPARuntimeException;
-import com.sap.core.odata.processor.jpa.jpql.JPQLJoinContext.JPQLJoinContextBuilder;
+import com.sap.core.odata.processor.jpa.jpql.JPQLJoinSelectSingleContext.JPQLJoinSelectSingleContextBuilder;
 
-public class JPQLJoinContextTest {
+public class JPQLJoinSelectSingleContextTest {
 	
-	GetEntitySetUriInfo entitySetUriInfo;
+	GetEntityUriInfo entityUriInfo;
 
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
@@ -47,7 +47,7 @@ public class JPQLJoinContextTest {
 
 	@Before
 	public void setUp() throws Exception {
-		entitySetUriInfo = EasyMock.createMock(GetEntitySetUriInfo.class);
+		entityUriInfo = EasyMock.createMock(GetEntityUriInfo.class);
 		EdmEntitySet edmEntitySet = EasyMock.createMock(EdmEntitySet.class);
 		EdmEntityType edmEntityType = EasyMock.createMock(EdmEntityType.class);
 		List<NavigationSegment> navigationSegments = new ArrayList<NavigationSegment>();
@@ -72,21 +72,17 @@ public class JPQLJoinContextTest {
 			}
 		};
 		navigationSegments.add(navigationSegment);
-		EasyMock.expect(entitySetUriInfo.getNavigationSegments()).andStubReturn(navigationSegments);
-		EasyMock.expect(entitySetUriInfo.getOrderBy()).andStubReturn(null);
-		EasyMock.expect(entitySetUriInfo.getTop()).andStubReturn(null);
-		EasyMock.expect(entitySetUriInfo.getSkip()).andStubReturn(null);
-		EasyMock.expect(entitySetUriInfo.getSelect()).andStubReturn(null);
-		EasyMock.expect(entitySetUriInfo.getFilter()).andStubReturn(null);
-		EasyMock.expect(entitySetUriInfo
+		EasyMock.expect(entityUriInfo.getNavigationSegments()).andStubReturn(navigationSegments);
+		EasyMock.expect(entityUriInfo.getSelect()).andStubReturn(null);
+		EasyMock.expect(entityUriInfo.getFilter()).andStubReturn(null);
+		EasyMock.expect(entityUriInfo.getKeyPredicates()).andStubReturn(createKeyPredicates());
+		EasyMock.expect(entityUriInfo
 							.getTargetEntitySet()).andStubReturn(edmEntitySet);
 		EasyMock.expect(edmEntitySet.getEntityType()).andStubReturn(edmEntityType);
 		EasyMock.expect(edmEntityType.getName()).andStubReturn("SOHeader");
-		EasyMock.replay(edmEntityType,edmEntitySet,entitySetUriInfo);
+		EasyMock.replay(edmEntityType,edmEntitySet,entityUriInfo);
 		
 	}
-
-	
 
 	@After
 	public void tearDown() throws Exception {
@@ -94,10 +90,10 @@ public class JPQLJoinContextTest {
 
 	@Test
 	public void testGetJPAOuterJoinClauses() {
-		JPQLJoinContext joinContext = new JPQLJoinContext();
-		JPQLJoinContextBuilder joinContextBuilder = joinContext.new JPQLJoinContextBuilder();
+		JPQLJoinSelectSingleContext joinContext = new JPQLJoinSelectSingleContext();
+		JPQLJoinSelectSingleContextBuilder joinContextBuilder = joinContext.new JPQLJoinSelectSingleContextBuilder();
 		try { 
-			joinContextBuilder.entitySetView = entitySetUriInfo;
+			joinContextBuilder.entityView = entityUriInfo;
 			joinContextBuilder.build();
 		} catch (ODataJPAModelException e) {
 			fail("Should not come here");
