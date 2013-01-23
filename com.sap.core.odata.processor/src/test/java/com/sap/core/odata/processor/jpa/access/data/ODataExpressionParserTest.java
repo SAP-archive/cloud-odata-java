@@ -170,8 +170,8 @@ public class ODataExpressionParserTest {
 		EdmSimpleType edmSimpleType = EasyMock.createMock(EdmSimpleType.class);
 		EasyMock.expect(edmSimpleType.getName()).andReturn(value);
 		EasyMock.expect(edmSimpleType.getKind()).andReturn(EdmTypeKind.SIMPLE).times(10);
-		EasyMock.expect(edmSimpleType.valueOfString(value, EdmLiteralKind.URI, getEdmFacetsMockedObj())).andReturn(value).times(10);
-		EasyMock.expect(edmSimpleType.valueOfString(value, EdmLiteralKind.URI, null)).andReturn(value).times(10);
+		EasyMock.expect(edmSimpleType.valueOfString(value, EdmLiteralKind.URI, getEdmFacetsMockedObj(),null)).andReturn(value).times(10);
+		EasyMock.expect(edmSimpleType.valueOfString(value, EdmLiteralKind.URI, null,null)).andReturn(value).times(10);
 		EasyMock.expect(edmSimpleType.valueToString(value, EdmLiteralKind.DEFAULT, getEdmFacetsMockedObj())).andReturn(value).times(10);
 		EasyMock.expect(edmSimpleType.valueToString(value, EdmLiteralKind.DEFAULT, null)).andReturn(value).times(10);
 		EasyMock.replay(edmSimpleType);
