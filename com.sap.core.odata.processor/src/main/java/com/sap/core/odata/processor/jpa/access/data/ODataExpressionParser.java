@@ -114,7 +114,7 @@ public class ODataExpressionParser {
 	    case LITERAL:
 	    	final LiteralExpression literal = (LiteralExpression) whereExpression;
 		    final EdmSimpleType literalType = (EdmSimpleType) literal.getEdmType();
-		    String value = literalType.valueToString(literalType.valueOfString(literal.getUriLiteral(), EdmLiteralKind.URI, null), EdmLiteralKind.DEFAULT, null);
+		    String value = literalType.valueToString(literalType.valueOfString(literal.getUriLiteral(), EdmLiteralKind.URI, null, null), EdmLiteralKind.DEFAULT, null);
 		    return evaluateComparingExpression(value, literalType);
 
 	    
