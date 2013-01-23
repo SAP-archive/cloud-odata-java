@@ -141,8 +141,11 @@ public class JPQLSelectContext extends JPQLContext implements
 		 * Generate Where Clause Expression
 		 */
 		protected String generateWhereExpression() throws ODataException {
+			if(entitySetView.getFilter() != null){ 
 			return ODataExpressionParser
 					.parseToJPAWhereExpression(entitySetView.getFilter(),getJPAEntityAlias());
+			}
+			return null;
 		}
 	}
 }
