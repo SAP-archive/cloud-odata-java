@@ -20,6 +20,11 @@ public class EdmGuid extends AbstractSimpleType {
   }
 
   @Override
+  public Class<?> getDefaultType() {
+    return UUID.class;
+  }
+
+  @Override
   public boolean validate(final String value, final EdmLiteralKind literalKind, final EdmFacets facets) {
     if (value == null)
       return facets == null || facets.isNullable() == null || facets.isNullable();
@@ -30,25 +35,27 @@ public class EdmGuid extends AbstractSimpleType {
   }
 
   @Override
-  public UUID valueOfString(final String value, final EdmLiteralKind literalKind, final EdmFacets facets, final Class<?> returnType) throws EdmSimpleTypeException {
+  public <T> T valueOfString(final String value, final EdmLiteralKind literalKind, final EdmFacets facets, final Class<T> returnType) throws EdmSimpleTypeException {
     if (literalKind == null)
       throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_KIND_MISSING);
 
-    if (returnType != null && returnType != UUID.class)
-      throw new EdmSimpleTypeException(EdmSimpleTypeException.VALUE_TYPE_NOT_SUPPORTED.addContent(returnType));
-
+    UUID result;
     if (validate(value, literalKind, facets))
       if (value == null)
         return null;
-      else if (literalKind == EdmLiteralKind.URI)
-        return UUID.fromString(value.substring(5, value.length() - 1));
       else
-        return UUID.fromString(value);
+        result = UUID.fromString(
+            literalKind == EdmLiteralKind.URI ? value.substring(5, value.length() - 1) : value);
 
     else if (value == null)
       throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_NULL_NOT_ALLOWED);
     else
       throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_ILLEGAL_CONTENT.addContent(value));
+
+    if (returnType == UUID.class)
+      return returnType.cast(result);
+    else
+      throw new EdmSimpleTypeException(EdmSimpleTypeException.VALUE_TYPE_NOT_SUPPORTED.addContent(returnType));
   }
 
   @Override
@@ -72,5 +79,4 @@ public class EdmGuid extends AbstractSimpleType {
   public String toUriLiteral(final String literal) {
     return "guid'" + literal + "'";
   }
-
 }

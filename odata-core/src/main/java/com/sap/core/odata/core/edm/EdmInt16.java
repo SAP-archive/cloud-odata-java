@@ -27,7 +27,12 @@ public class EdmInt16 extends AbstractSimpleType {
   }
 
   @Override
-  public Number valueOfString(final String value, final EdmLiteralKind literalKind, final EdmFacets facets, final Class<?> returnType) throws EdmSimpleTypeException {
+  public Class<?> getDefaultType() {
+    return Short.class;
+  }
+
+  @Override
+  public <T> T valueOfString(final String value, final EdmLiteralKind literalKind, final EdmFacets facets, final Class<T> returnType) throws EdmSimpleTypeException {
     if (value == null) {
       checkNullLiteralAllowed(facets);
       return null;
@@ -43,17 +48,17 @@ public class EdmInt16 extends AbstractSimpleType {
       throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_ILLEGAL_CONTENT.addContent(value), e);
     }
 
-    if (returnType == null || returnType == short.class || returnType == Short.class)
-      return valueShort;
-    else if (returnType == byte.class || returnType == Byte.class)
+    if (returnType == Short.class)
+      return returnType.cast(valueShort);
+    else if (returnType == Byte.class)
       if (valueShort >= Byte.MIN_VALUE && valueShort <= Byte.MAX_VALUE)
-        return valueShort.byteValue();
+        return returnType.cast(valueShort.byteValue());
       else
         throw new EdmSimpleTypeException(EdmSimpleTypeException.VALUE_TYPE_NOT_SUPPORTED.addContent(returnType));
-    else if (returnType == int.class || returnType == Integer.class)
-      return valueShort.intValue();
-    else if (returnType == long.class || returnType == Long.class)
-      return valueShort.longValue();
+    else if (returnType == Integer.class)
+      return returnType.cast(valueShort.intValue());
+    else if (returnType == Long.class)
+      return returnType.cast(valueShort.longValue());
     else
       throw new EdmSimpleTypeException(EdmSimpleTypeException.VALUE_TYPE_NOT_SUPPORTED.addContent(returnType));
   }
@@ -76,5 +81,4 @@ public class EdmInt16 extends AbstractSimpleType {
     else
       throw new EdmSimpleTypeException(EdmSimpleTypeException.VALUE_TYPE_NOT_SUPPORTED.addContent(value.getClass()));
   }
-
 }

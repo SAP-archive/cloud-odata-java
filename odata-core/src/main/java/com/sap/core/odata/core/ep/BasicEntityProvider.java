@@ -101,7 +101,7 @@ public class BasicEntityProvider {
       return readBinary(content);
     else
       try {
-        return type.valueOfString(readText(content), EdmLiteralKind.DEFAULT, edmProperty.getFacets(), null);
+        return type.valueOfString(readText(content), EdmLiteralKind.DEFAULT, edmProperty.getFacets(), type.getDefaultType());
       } catch (EdmException e) {
         throw new EntityProviderException(EntityProviderException.COMMON, e);
       }

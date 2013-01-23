@@ -38,6 +38,11 @@ public class EdmDecimal extends AbstractSimpleType {
   }
 
   @Override
+  public Class<?> getDefaultType() {
+    return BigDecimal.class;
+  }
+
+  @Override
   public boolean validate(final String value, final EdmLiteralKind literalKind, final EdmFacets facets) {
     if (value == null)
       return facets == null || facets.isNullable() == null || facets.isNullable();
@@ -59,7 +64,7 @@ public class EdmDecimal extends AbstractSimpleType {
   }
 
   @Override
-  public Number valueOfString(final String value, final EdmLiteralKind literalKind, final EdmFacets facets, final Class<?> returnType) throws EdmSimpleTypeException {
+  public <T> T valueOfString(final String value, final EdmLiteralKind literalKind, final EdmFacets facets, final Class<T> returnType) throws EdmSimpleTypeException {
     if (literalKind == null)
       throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_KIND_MISSING);
 
@@ -72,40 +77,32 @@ public class EdmDecimal extends AbstractSimpleType {
     if (value == null)
       return null;
 
-    BigDecimal valueBigDecimal;
-    if (literalKind == EdmLiteralKind.URI)
-      valueBigDecimal = new BigDecimal(value.substring(0, value.length() - 1));
-    else
-      valueBigDecimal = new BigDecimal(value);
-
-    if (facets != null
-        && (facets.getPrecision() != null && facets.getPrecision() < valueBigDecimal.precision()
-        || facets.getScale() != null && facets.getScale() < valueBigDecimal.scale()))
-      throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_FACETS_NOT_MATCHED.addContent(value, facets));
+    final BigDecimal valueBigDecimal = new BigDecimal(
+        literalKind == EdmLiteralKind.URI ? value.substring(0, value.length() - 1) : value);
 
     try {
-      if (returnType == null || returnType == BigDecimal.class)
-        return valueBigDecimal;
+      if (returnType == BigDecimal.class)
+        return returnType.cast(valueBigDecimal);
       else if (returnType == BigInteger.class)
-        return valueBigDecimal.toBigIntegerExact();
-      else if (returnType == long.class || returnType == Long.class)
-        return valueBigDecimal.longValueExact();
-      else if (returnType == int.class || returnType == Integer.class)
-        return valueBigDecimal.intValueExact();
-      else if (returnType == short.class || returnType == Short.class)
-        return valueBigDecimal.shortValueExact();
-      else if (returnType == byte.class || returnType == Byte.class)
-        return valueBigDecimal.byteValueExact();
-      else if (returnType == double.class || returnType == Double.class)
+        return returnType.cast(valueBigDecimal.toBigIntegerExact());
+      else if (returnType == Long.class)
+        return returnType.cast(valueBigDecimal.longValueExact());
+      else if (returnType == Integer.class)
+        return returnType.cast(valueBigDecimal.intValueExact());
+      else if (returnType == Short.class)
+        return returnType.cast(valueBigDecimal.shortValueExact());
+      else if (returnType == Byte.class)
+        return returnType.cast(valueBigDecimal.byteValueExact());
+      else if (returnType == Double.class)
         if (Double.isInfinite(valueBigDecimal.doubleValue()))
           throw new EdmSimpleTypeException(EdmSimpleTypeException.VALUE_TYPE_NOT_SUPPORTED.addContent(returnType));
         else
-          return valueBigDecimal.doubleValue();
-      else if (returnType == float.class || returnType == Float.class)
+          return returnType.cast(valueBigDecimal.doubleValue());
+      else if (returnType == Float.class)
         if (Float.isInfinite(valueBigDecimal.floatValue()))
           throw new EdmSimpleTypeException(EdmSimpleTypeException.VALUE_TYPE_NOT_SUPPORTED.addContent(returnType));
         else
-          return valueBigDecimal.floatValue();
+          return returnType.cast(valueBigDecimal.floatValue());
       else
         throw new EdmSimpleTypeException(EdmSimpleTypeException.VALUE_TYPE_NOT_SUPPORTED.addContent(returnType));
 
@@ -125,21 +122,30 @@ public class EdmDecimal extends AbstractSimpleType {
     String result;
     if (value instanceof Long || value instanceof Integer || value instanceof Short || value instanceof Byte || value instanceof BigInteger) {
       result = value.toString();
-      if (facets != null && facets.getPrecision() != null
-          && (facets.getPrecision() < result.length() - 1
-          || !result.startsWith("-") && facets.getPrecision() < result.length()))
+      final int digits = result.startsWith("-") ? result.length() - 1 : result.length();
+      if (facets != null && facets.getPrecision() != null && facets.getPrecision() < digits)
         throw new EdmSimpleTypeException(EdmSimpleTypeException.VALUE_FACETS_NOT_MATCHED.addContent(value, facets));
 
     } else if (value instanceof Double || value instanceof Float || value instanceof BigDecimal) {
       BigDecimal bigDecimalValue;
-      if (value instanceof Double)
-        bigDecimalValue = BigDecimal.valueOf((Double) value);
-      else if (value instanceof Float)
-        bigDecimalValue = BigDecimal.valueOf((Float) value);
-      else
-        bigDecimalValue = (BigDecimal) value;
+      try {
+        if (value instanceof Double)
+          bigDecimalValue = BigDecimal.valueOf((Double) value);
+        else if (value instanceof Float)
+          bigDecimalValue = BigDecimal.valueOf((Float) value);
+        else
+          bigDecimalValue = (BigDecimal) value;
+      } catch (NumberFormatException e) {
+        throw new EdmSimpleTypeException(EdmSimpleTypeException.VALUE_ILLEGAL_CONTENT.addContent(value));
+      }
+
+      int digits = bigDecimalValue.precision();
+      if (bigDecimalValue.scale() < 0)
+        digits -= bigDecimalValue.scale();
+      if (bigDecimalValue.scale() > bigDecimalValue.precision())
+        digits = bigDecimalValue.scale();
       if (facets == null
-          || (facets.getPrecision() == null || facets.getPrecision() >= bigDecimalValue.precision())
+          || (facets.getPrecision() == null || facets.getPrecision() >= digits)
           && (facets.getScale() == null || facets.getScale() >= bigDecimalValue.scale()))
         result = bigDecimalValue.toPlainString();
       else
@@ -150,14 +156,13 @@ public class EdmDecimal extends AbstractSimpleType {
     }
 
     if (literalKind == EdmLiteralKind.URI)
-      return toUriLiteral(result);
-    else
-      return result;
+      result = toUriLiteral(result);
+
+    return result;
   }
 
   @Override
   public String toUriLiteral(final String literal) throws EdmSimpleTypeException {
     return literal + "M";
   }
-
 }

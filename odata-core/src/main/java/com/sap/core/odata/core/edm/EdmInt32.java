@@ -28,7 +28,12 @@ public class EdmInt32 extends AbstractSimpleType {
   }
 
   @Override
-  public Number valueOfString(final String value, final EdmLiteralKind literalKind, final EdmFacets facets, final Class<?> returnType) throws EdmSimpleTypeException {
+  public Class<?> getDefaultType() {
+    return Integer.class;
+  }
+
+  @Override
+  public <T> T valueOfString(final String value, final EdmLiteralKind literalKind, final EdmFacets facets, final Class<T> returnType) throws EdmSimpleTypeException {
     if (value == null) {
       checkNullLiteralAllowed(facets);
       return null;
@@ -44,20 +49,20 @@ public class EdmInt32 extends AbstractSimpleType {
       throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_ILLEGAL_CONTENT.addContent(value), e);
     }
 
-    if (returnType == null || returnType == int.class || returnType == Integer.class)
-      return valueInteger;
-    else if (returnType == byte.class || returnType == Byte.class)
+    if (returnType == Integer.class)
+      return returnType.cast(valueInteger);
+    else if (returnType == Byte.class)
       if (valueInteger >= Byte.MIN_VALUE && valueInteger <= Byte.MAX_VALUE)
-        return valueInteger.byteValue();
+        return returnType.cast(valueInteger.byteValue());
       else
         throw new EdmSimpleTypeException(EdmSimpleTypeException.VALUE_TYPE_NOT_SUPPORTED.addContent(returnType));
-    else if (returnType == short.class || returnType == Short.class)
+    else if (returnType == Short.class)
       if (valueInteger >= Short.MIN_VALUE && valueInteger <= Short.MAX_VALUE)
-        return valueInteger.byteValue();
+        return returnType.cast(valueInteger.shortValue());
       else
         throw new EdmSimpleTypeException(EdmSimpleTypeException.VALUE_TYPE_NOT_SUPPORTED.addContent(returnType));
-    else if (returnType == long.class || returnType == Long.class)
-      return valueInteger.longValue();
+    else if (returnType == Long.class)
+      return returnType.cast(valueInteger.longValue());
     else
       throw new EdmSimpleTypeException(EdmSimpleTypeException.VALUE_TYPE_NOT_SUPPORTED.addContent(returnType));
   }
@@ -80,5 +85,4 @@ public class EdmInt32 extends AbstractSimpleType {
     else
       throw new EdmSimpleTypeException(EdmSimpleTypeException.VALUE_TYPE_NOT_SUPPORTED.addContent(value.getClass()));
   }
-
 }

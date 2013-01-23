@@ -30,7 +30,12 @@ public class EdmTime extends AbstractSimpleType {
   }
 
   @Override
-  public Object valueOfString(final String value, final EdmLiteralKind literalKind, final EdmFacets facets, final Class<?> returnType) throws EdmSimpleTypeException {
+  public Class<?> getDefaultType() {
+    return Calendar.class;
+  }
+
+  @Override
+  public <T> T valueOfString(final String value, final EdmLiteralKind literalKind, final EdmFacets facets, final Class<T> returnType) throws EdmSimpleTypeException {
     if (value == null) {
       checkNullLiteralAllowed(facets);
       return null;
@@ -48,12 +53,12 @@ public class EdmTime extends AbstractSimpleType {
     else
       valueCalendar = parseLiteral(value, facets);
 
-    if (returnType == null || returnType == Calendar.class)
-      return valueCalendar;
-    else if (returnType == long.class || returnType == Long.class)
-      return valueCalendar.getTimeInMillis();
+    if (returnType == Calendar.class)
+      return returnType.cast(valueCalendar);
+    else if (returnType == Long.class)
+      return returnType.cast(valueCalendar.getTimeInMillis());
     else if (returnType == Date.class)
-      return valueCalendar.getTime();
+      return returnType.cast(valueCalendar.getTime());
     else
       throw new EdmSimpleTypeException(EdmSimpleTypeException.VALUE_TYPE_NOT_SUPPORTED.addContent(returnType));
   }
@@ -138,14 +143,13 @@ public class EdmTime extends AbstractSimpleType {
     result += "S";
 
     if (literalKind == EdmLiteralKind.URI)
-      return toUriLiteral(result);
-    else
-      return result;
+      result = toUriLiteral(result);
+
+    return result;
   }
 
   @Override
   public String toUriLiteral(final String literal) {
     return "time'" + literal + "'";
   }
-
 }

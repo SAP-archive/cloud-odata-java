@@ -42,7 +42,12 @@ public class EdmDouble extends AbstractSimpleType {
   }
 
   @Override
-  public Number valueOfString(final String value, final EdmLiteralKind literalKind, final EdmFacets facets, final Class<?> returnType) throws EdmSimpleTypeException {
+  public Class<?> getDefaultType() {
+    return Double.class;
+  }
+
+  @Override
+  public <T> T valueOfString(final String value, final EdmLiteralKind literalKind, final EdmFacets facets, final Class<T> returnType) throws EdmSimpleTypeException {
     if (value == null) {
       checkNullLiteralAllowed(facets);
       return null;
@@ -66,19 +71,52 @@ public class EdmDouble extends AbstractSimpleType {
         throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_ILLEGAL_CONTENT.addContent(value));
 
       // The number format is checked above, so we don't have to catch NumberFormatException.
-      if (literalKind == EdmLiteralKind.URI)
-        result = Double.valueOf(value.substring(0, value.length() - 1));
-      else
-        result = Double.valueOf(value);
+      result = Double.valueOf(
+          literalKind == EdmLiteralKind.URI ? value.substring(0, value.length() - 1) : value);
 
       // Values outside the value range have been set to Infinity by Double.valueOf();
       // "real" infinite values have been treated already above, so we can throw an exception
       // if we see them here.
       if (result.isInfinite())
         throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_ILLEGAL_CONTENT.addContent(value));
-    }
 
-    return result;
+      if (returnType == Double.class)
+        return returnType.cast(result);
+      else if (returnType == Float.class)
+        return returnType.cast(result.floatValue());
+      else if (returnType == BigDecimal.class)
+        return returnType.cast(BigDecimal.valueOf(result));
+      else if (returnType == Long.class)
+        if (Math.floor(result) == result && result >= Long.MIN_VALUE && result <= Long.MAX_VALUE)
+          return returnType.cast(result.longValue());
+        else
+          throw new EdmSimpleTypeException(EdmSimpleTypeException.VALUE_TYPE_NOT_SUPPORTED.addContent(returnType));
+      else if (returnType == Integer.class)
+        if (Math.floor(result) == result && result >= Integer.MIN_VALUE && result <= Integer.MAX_VALUE)
+          return returnType.cast(result.intValue());
+        else
+          throw new EdmSimpleTypeException(EdmSimpleTypeException.VALUE_TYPE_NOT_SUPPORTED.addContent(returnType));
+      else if (returnType == Short.class)
+        if (Math.floor(result) == result && result >= Short.MIN_VALUE && result <= Short.MAX_VALUE)
+          return returnType.cast(result.shortValue());
+        else
+          throw new EdmSimpleTypeException(EdmSimpleTypeException.VALUE_TYPE_NOT_SUPPORTED.addContent(returnType));
+      else if (returnType == Byte.class)
+        if (Math.floor(result) == result && result >= Byte.MIN_VALUE && result <= Byte.MAX_VALUE)
+          return returnType.cast(result.byteValue());
+        else
+          throw new EdmSimpleTypeException(EdmSimpleTypeException.VALUE_TYPE_NOT_SUPPORTED.addContent(returnType));
+      else
+        throw new EdmSimpleTypeException(EdmSimpleTypeException.VALUE_TYPE_NOT_SUPPORTED.addContent(returnType));
+
+    } else {
+     if (returnType == Double.class)
+       return returnType.cast(result);
+     else if (returnType == Float.class)
+       return returnType.cast(result.floatValue());
+     else
+       throw new EdmSimpleTypeException(EdmSimpleTypeException.VALUE_TYPE_NOT_SUPPORTED.addContent(returnType));
+    }
   }
 
   @Override
@@ -116,14 +154,13 @@ public class EdmDouble extends AbstractSimpleType {
       throw new EdmSimpleTypeException(EdmSimpleTypeException.VALUE_TYPE_NOT_SUPPORTED.addContent(value.getClass()));
 
     if (literalKind == EdmLiteralKind.URI)
-      return toUriLiteral(result);
-    else
-      return result;
+      result = toUriLiteral(result);
+
+    return result;
   }
 
   @Override
   public String toUriLiteral(final String literal) {
     return literal + "D";
   }
-
 }

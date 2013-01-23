@@ -28,7 +28,12 @@ public class EdmDateTime extends AbstractSimpleType {
   }
 
   @Override
-  public Object valueOfString(final String value, final EdmLiteralKind literalKind, final EdmFacets facets, final Class<?> returnType) throws EdmSimpleTypeException {
+  public Class<?> getDefaultType() {
+    return Calendar.class;
+  }
+
+  @Override
+  public <T> T valueOfString(final String value, final EdmLiteralKind literalKind, final EdmFacets facets, final Class<T> returnType) throws EdmSimpleTypeException {
     if (value == null) {
       checkNullLiteralAllowed(facets);
       return null;
@@ -47,18 +52,18 @@ public class EdmDateTime extends AbstractSimpleType {
         } catch (NumberFormatException e) {
           throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_ILLEGAL_CONTENT.addContent(value), e);
         }
-        if (returnType == long.class || returnType == Long.class)
-          return millis;
+        if (returnType == Long.class)
+          return returnType.cast(millis);
         else if (returnType == Date.class)
-          return new Date(millis);
-        else if (returnType != null && returnType != Calendar.class)
+          return returnType.cast(new Date(millis));
+        else if (returnType == null || returnType != Calendar.class)
           throw new EdmSimpleTypeException(EdmSimpleTypeException.VALUE_TYPE_NOT_SUPPORTED.addContent(returnType));
 
         Calendar dateTimeValue = Calendar.getInstance();
         dateTimeValue.clear();
         dateTimeValue.setTimeZone(TimeZone.getTimeZone("GMT"));
         dateTimeValue.setTimeInMillis(millis);
-        return dateTimeValue;
+        return returnType.cast(dateTimeValue);
       }
 
     Calendar calendarValue;
@@ -70,12 +75,12 @@ public class EdmDateTime extends AbstractSimpleType {
     else
       calendarValue = parseLiteral(value, facets);
 
-    if (returnType == null || returnType == Calendar.class)
-      return calendarValue;
-    else if (returnType == long.class || returnType == Long.class)
-      return calendarValue.getTimeInMillis();
+    if (returnType == Calendar.class)
+      return returnType.cast(calendarValue);
+    else if (returnType == Long.class)
+      return returnType.cast(calendarValue.getTimeInMillis());
     else if (returnType == Date.class)
-      return calendarValue.getTime();
+      return returnType.cast(calendarValue.getTime());
     else
       throw new EdmSimpleTypeException(EdmSimpleTypeException.VALUE_TYPE_NOT_SUPPORTED.addContent(returnType));
   }
@@ -169,14 +174,13 @@ public class EdmDateTime extends AbstractSimpleType {
       result = result.substring(0, result.length() - 1);
 
     if (literalKind == EdmLiteralKind.URI)
-      return toUriLiteral(result);
-    else
-      return result;
+      result = toUriLiteral(result);
+
+    return result;
   }
 
   @Override
   public String toUriLiteral(final String literal) throws EdmSimpleTypeException {
     return "datetime'" + literal.replace(":", "%3A") + "'";
   }
-
 }
