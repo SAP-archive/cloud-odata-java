@@ -7,91 +7,86 @@ import javax.persistence.*;
 public class SalesOrderItem {
 
 	public SalesOrderItem() {
+		//No arg constructor
+	}		
+
+	public SalesOrderItem(int quantity, double amount, double discount,
+			Material material) {
 		super();
-		//No arg const.
+		this.quantity = quantity;
+		this.amount = amount;
+		this.discount = discount;
+		this.material = material;
 	}
 
-	
-	public SalesOrderItem(String productName, int productId, double price) {
-		super();
-		this.productName = productName;
-		this.productId = productId;
-		this.price = price;
-	}
+	@EmbeddedId
+	private SalesOrderItemKey salesOrderItemKey;
 
-	/*@EmbeddedId
-	private SalesOrderItemKey salesOrderItemKey;*/
-	@Id
-	@Column(name = "Sales_Order_Id",nullable = false)
-	private long soId;
+	@Column
+	private int quantity;
 	
-	@Id
-	@Column(name = "Sales_Order_Item_Id")
-	private long liId;
+	@Column
+	private double amount;
+	
+	@Column
+	private double discount;
+	
+	@Transient
+	private double netAmount;	
 
-	@Column(name = "PRODUCT_NAME")
-	private String productName;
-	
-	@Column(name = "PRODUCT_ID")
-	private int productId;
-	
-	@Column(name = "PRICE")
-	private double price;
+	@ManyToOne
+	private Material material;
 		
-	@JoinColumn(name = "Sales_Order_Id", referencedColumnName = "SO_ID", nullable = false, insertable = false, updatable = false)
+	@JoinColumn(name = "Sales_Order_Id", referencedColumnName = "SO_ID",insertable = false,updatable = false)
 	@ManyToOne
 	private SalesOrderHeader salesOrderHeader;
-
-	/*public SalesOrderItemKey getSalesOrderItemKey() {
+	
+	public SalesOrderItemKey getSalesOrderItemKey() {
 		return salesOrderItemKey;
 	}
 
 	public void setSalesOrderItemKey(SalesOrderItemKey salesOrderItemKey) {
 		this.salesOrderItemKey = salesOrderItemKey;
-	}*/
+	}	
 
-	public String getProductName() {
-		return productName;
+	public int getQuantity() {
+		return quantity;
 	}
 
-	public long getSoId() {
-		return soId;
+	public void setQuantity(int quantity) {
+		this.quantity = quantity;
 	}
 
-
-	public void setSoId(long soId) {
-		this.soId = soId;
+	public double getAmount() {
+		return amount;
 	}
 
-
-	public long getLiId() {
-		return liId;
+	public void setAmount(double amount) {
+		this.amount = amount;
 	}
 
-
-	public void setLiId(long liId) {
-		this.liId = liId;
+	public double getDiscount() {
+		return discount;
 	}
 
-
-	public void setProductName(String productName) {
-		this.productName = productName;
+	public void setDiscount(double discount) {
+		this.discount = discount;
 	}
 	
-	public int getProductId() {
-		return productId;
+	public double getNetAmount() {
+		return netAmount;
 	}
 
-	public void setProductId(int productId) {
-		this.productId = productId;
-	}
-	
-	public double getPrice() {
-		return price;
+	public void setNetAmount(double netAmount) {
+		this.netAmount = netAmount;
 	}
 
-	public void setPrice(double price) {
-		this.price = price;
+	public Material getMaterial() {
+		return material;
+	}
+
+	public void setMaterial(Material material) {
+		this.material = material;
 	}
 	
 	public SalesOrderHeader getSalesOrderHeader() {
@@ -100,7 +95,6 @@ public class SalesOrderItem {
 
 	public void setSalesOrderHeader(SalesOrderHeader salesOrderHeader) {
 		this.salesOrderHeader = salesOrderHeader;
-		this.salesOrderHeader.getSalesOrderItem().add(this);
+		//this.salesOrderHeader.getSalesOrderItem().add(this);
 	}
-
 }
