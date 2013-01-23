@@ -12,7 +12,7 @@ import com.sap.core.odata.api.edm.EdmException;
  */
 public class TecEdmInfo
 {
-  private Edm edm;
+  private final Edm edm;
 
   public TecEdmInfo(Edm edm)
   {
@@ -26,7 +26,7 @@ public class TecEdmInfo
           .getEntityContainer(TechnicalScenarioEdmProvider.ENTITY_CONTAINER_1)
           .getEntitySet(TechnicalScenarioEdmProvider.ES_ALL_TYPES)
           .getEntityType();
-    } catch (EdmException e) {
+    } catch (final EdmException e) {
       fail("Error in test setup" + e.getLocalizedMessage());
     }
     return null;

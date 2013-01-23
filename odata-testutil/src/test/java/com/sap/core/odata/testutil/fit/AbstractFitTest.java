@@ -17,14 +17,14 @@ import com.sap.core.odata.testutil.server.TestServer;
  */
 public abstract class AbstractFitTest extends BaseTest {
 
-  private TestServer server = new TestServer();
+  private final TestServer server = new TestServer();
 
   private ODataSingleProcessorService service;
 
-  private HttpClient httpClient = new DefaultHttpClient();
+  private final HttpClient httpClient = new DefaultHttpClient();
 
   protected URI getEndpoint() {
-    return this.server.getEndpoint();
+    return server.getEndpoint();
   }
 
   protected HttpClient getHttpClient() {
@@ -40,10 +40,10 @@ public abstract class AbstractFitTest extends BaseTest {
   @Before
   public void before() {
     try {
-      this.service = createService();
-      FitStaticServiceFactory.setService(this.service);
-      this.server.startServer(FitStaticServiceFactory.class);
-    } catch (ODataException e) {
+      service = createService();
+      FitStaticServiceFactory.setService(service);
+      server.startServer(FitStaticServiceFactory.class);
+    } catch (final ODataException e) {
       throw new TestutilException(e);
     }
   }
@@ -51,7 +51,7 @@ public abstract class AbstractFitTest extends BaseTest {
   @After
   public void after() {
     try {
-      this.server.stopServer();
+      server.stopServer();
     } finally {
       FitStaticServiceFactory.setService(null);
     }

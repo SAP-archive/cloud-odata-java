@@ -46,7 +46,7 @@ public class TestServer {
   }
 
   public URI getEndpoint() {
-    return URI.create(this.endpoint + "/");
+    return URI.create(endpoint + "/");
   }
 
   private Server server;
@@ -54,45 +54,45 @@ public class TestServer {
   public void startServer(Class<? extends ODataServiceFactory> factoryClass) {
     try {
       for (int port = PORT_MIN; port <= PORT_MAX; port += PORT_INC) {
-        CXFNonSpringJaxrsServlet odataServlet = new CXFNonSpringJaxrsServlet();
-        ServletHolder odataServletHolder = new ServletHolder(odataServlet);
+        final CXFNonSpringJaxrsServlet odataServlet = new CXFNonSpringJaxrsServlet();
+        final ServletHolder odataServletHolder = new ServletHolder(odataServlet);
         odataServletHolder.setInitParameter("javax.ws.rs.Application", "com.sap.core.odata.core.rest.app.ODataApplication");
         odataServletHolder.setInitParameter(ODataServiceFactory.FACTORY_LABEL, factoryClass.getCanonicalName());
 
-        if (this.pathSplit > 0) {
-          odataServletHolder.setInitParameter(ODataServiceFactory.PATH_SPLIT_LABEL, Integer.toString(this.pathSplit));
+        if (pathSplit > 0) {
+          odataServletHolder.setInitParameter(ODataServiceFactory.PATH_SPLIT_LABEL, Integer.toString(pathSplit));
         }
 
-        ServletContextHandler contextHandler = new ServletContextHandler(ServletContextHandler.SESSIONS);
+        final ServletContextHandler contextHandler = new ServletContextHandler(ServletContextHandler.SESSIONS);
         contextHandler.addServlet(odataServletHolder, PATH + "/*");
 
-        this.endpoint = new URI(SCHEME, null, HOST, port, PATH, null, null);
-        this.server = new Server(port);
-        this.server.setHandler(contextHandler);
+        endpoint = new URI(SCHEME, null, HOST, port, PATH, null, null);
+        server = new Server(port);
+        server.setHandler(contextHandler);
         try {
-          this.server.start();
+          server.start();
           break;
-        } catch (BindException e) {
+        } catch (final BindException e) {
           TestServer.log.info("port is busy... " + port);
         }
       }
 
-      if (!this.server.isStarted()) {
+      if (!server.isStarted()) {
         throw new BindException("no free port in range of [" + PORT_MIN + ".." + PORT_MAX + "]");
       }
-//      TestServer.log.info("server endpoint: " + this.endpoint);
+      //      TestServer.log.info("server endpoint: " + this.endpoint);
 
-    } catch (Exception e) {
+    } catch (final Exception e) {
       throw new ServerException(e);
     }
   }
 
   public void stopServer() {
     try {
-      if (this.server != null) {
-        this.server.stop();
+      if (server != null) {
+        server.stop();
       }
-    } catch (Exception e) {
+    } catch (final Exception e) {
       throw new ServerException(e);
     }
   }

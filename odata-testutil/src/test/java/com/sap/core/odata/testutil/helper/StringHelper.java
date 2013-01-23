@@ -11,8 +11,8 @@ import org.apache.http.HttpEntity;
 
 public class StringHelper {
   public static String inputStreamToString(InputStream in) throws IOException {
-    BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(in, Charset.forName("UTF-8")));
-    StringBuilder stringBuilder = new StringBuilder();
+    final BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(in, Charset.forName("UTF-8")));
+    final StringBuilder stringBuilder = new StringBuilder();
     String line = null;
 
     while ((line = bufferedReader.readLine()) != null) {
@@ -20,18 +20,19 @@ public class StringHelper {
     }
     bufferedReader.close();
 
-    String result = stringBuilder.toString();
+    final String result = stringBuilder.toString();
 
     return result;
   }
 
   public static String httpEntityToString(HttpEntity entity) throws UnsupportedEncodingException, IllegalStateException, IOException {
-    BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(entity.getContent(), "UTF-8"));
-    StringBuilder stringBuilder = new StringBuilder();
+    final BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(entity.getContent(), "UTF-8"));
+    final StringBuilder stringBuilder = new StringBuilder();
     String line = null;
 
-    while ((line = bufferedReader.readLine()) != null)
+    while ((line = bufferedReader.readLine()) != null) {
       stringBuilder.append(line);
+    }
 
     bufferedReader.close();
     return stringBuilder.toString();

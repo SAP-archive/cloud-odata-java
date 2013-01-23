@@ -18,9 +18,9 @@ public class XMLUnitHelper {
    * @param namespaces prefix - namespace mapping 
    */
   public static void registerXmlNs(Map<String, String> namespaces) {
-    NamespaceContext ctx = new SimpleNamespaceContext(namespaces);
+    final NamespaceContext ctx = new SimpleNamespaceContext(namespaces);
     XMLUnit.setXpathNamespaceContext(ctx);
-    XpathEngine engine = XMLUnit.newXpathEngine();
+    final XpathEngine engine = XMLUnit.newXpathEngine();
     engine.setNamespaceContext(ctx);
   }
 
@@ -33,12 +33,12 @@ public class XMLUnitHelper {
   public static void verifyTagOrdering(String xmlString, String... toCheckTags) {
     int lastTagPos = -1;
 
-    for (String tagName : toCheckTags) {
-      Pattern p = Pattern.compile(tagName);
-      Matcher m = p.matcher(xmlString);
+    for (final String tagName : toCheckTags) {
+      final Pattern p = Pattern.compile(tagName);
+      final Matcher m = p.matcher(xmlString);
 
       if (m.find()) {
-        int currentTagPos = m.start();
+        final int currentTagPos = m.start();
         Assert.assertTrue("Tag with name '" + tagName + "' is not in correct order. Expected order is '" + Arrays.toString(toCheckTags) + "'.",
             lastTagPos < currentTagPos);
         lastTagPos = currentTagPos;
