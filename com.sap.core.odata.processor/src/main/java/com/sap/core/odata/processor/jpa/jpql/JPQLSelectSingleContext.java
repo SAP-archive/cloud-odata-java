@@ -58,17 +58,11 @@ public class JPQLSelectSingleContext extends JPQLContext implements JPQLSelectSi
 					JPQLSelectSingleContext.this.setJPAEntityName(entityView
 							.getTargetEntitySet().getEntityType().getName());
 					
+					JPQLSelectSingleContext.this.setJPAEntityAlias(generateJPAEntityAlias());
+					
 					JPQLSelectSingleContext.this.setKeyPredicates(entityView.getKeyPredicates());
 					
-					List<SelectItem> selectItemList = entityView.getSelect();
-					if (selectItemList != null) {
-						ArrayList<String> selectedFields = new ArrayList<String>(
-								selectItemList.size());
-						for (SelectItem item : selectItemList) {
-							selectedFields.add(item. getProperty(). getName());
-						}
-						JPQLSelectSingleContext.this.setSelectedFields(selectedFields);
-					}
+					JPQLSelectSingleContext.this.setSelectedFields(generateSelectFields());
 
 				} catch (EdmException e) {
 					LOGGER.error(e.getMessage(), e);
@@ -90,6 +84,26 @@ public class JPQLSelectSingleContext extends JPQLContext implements JPQLSelectSi
 			}
 
 		}
+		
+		/*
+		 * Generate Select Clause Fields
+		 */
+		protected ArrayList<String> generateSelectFields() throws EdmException {
+
+			List<SelectItem> selectItemList = entityView.getSelect();
+
+			if (selectItemList != null) {
+				ArrayList<String> selectedFields = new ArrayList<String>(
+						selectItemList.size());
+				for (SelectItem item : selectItemList) {
+					selectedFields.add(item.getProperty().getName());
+				}
+
+				return selectedFields;
+			}
+			return null;
+		}
+
 
 	}
 
