@@ -1,9 +1,9 @@
 package com.sap.core.odata.processor.jpa.jpql;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import org.easymock.EasyMock;
@@ -19,7 +19,6 @@ import com.sap.core.odata.api.edm.EdmSimpleType;
 import com.sap.core.odata.api.uri.KeyPredicate;
 import com.sap.core.odata.processor.jpa.api.access.JPAOuterJoinClause;
 import com.sap.core.odata.processor.jpa.api.jpql.JPQLContextType;
-import com.sap.core.odata.processor.jpa.api.jpql.JPQLJoinContextView;
 import com.sap.core.odata.processor.jpa.api.jpql.JPQLJoinSelectSingleContextView;
 import com.sap.core.odata.processor.jpa.api.jpql.JPQLStatement;
 import com.sap.core.odata.processor.jpa.exception.ODataJPARuntimeException;
@@ -61,7 +60,7 @@ public class JPQLJoinSelectSingleStatementBuilderTest {
 		JPQLJoinSelectSingleStatementBuilder jpqlJoinSelectsingleStatementBuilder = new JPQLJoinSelectSingleStatementBuilder(context);
 		try {
 			JPQLStatement jpqlStatement = jpqlJoinSelectsingleStatementBuilder.build();
-			assertEquals("SELECT gt1 SOHeader gt1 JOIN soh.soItem soi JOIN soi.material mat WHERE gt1.soid = 1 AND soi.shId = soh.soId AND mat.id = 'abc' ", jpqlStatement.toString());
+			assertEquals("SELECT gt1 FROM SOHeader gt1 JOIN soh.soItem soi JOIN soi.material mat WHERE gt1.soid = 1 AND soi.shId = soh.soId AND mat.id = 'abc'", jpqlStatement.toString());
 		} catch (ODataJPARuntimeException e) {
 			fail("Should not have come here");
 		}

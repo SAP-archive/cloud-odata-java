@@ -34,11 +34,13 @@ public class JPQLSelectStatementBuilder extends JPQLStatementBuilder {
 
 		jpqlQuery.append(JPQLStatement.KEYWORD.SELECT).append(JPQLStatement.DELIMITER.SPACE);
 		jpqlQuery.append(tableAlias).append(JPQLStatement.DELIMITER.SPACE);
-		jpqlQuery.append(fromClause).append(JPQLStatement.DELIMITER.SPACE);
+		jpqlQuery.append(JPQLStatement.KEYWORD.FROM).append(JPQLStatement.DELIMITER.SPACE);
+		jpqlQuery.append(fromClause);
 
 		if (context.getWhereExpression() != null){
+			jpqlQuery.append(JPQLStatement.DELIMITER.SPACE);
 			jpqlQuery.append(JPQLStatement.KEYWORD.WHERE).append(JPQLStatement.DELIMITER.SPACE);
-			jpqlQuery.append(context.getWhereExpression()).append(JPQLStatement.DELIMITER.SPACE);
+			jpqlQuery.append(context.getWhereExpression());
 		}
 
 		if (context.getOrderByCollection() != null
@@ -52,14 +54,14 @@ public class JPQLSelectStatementBuilder extends JPQLStatementBuilder {
 			
 			while (orderItr.hasNext()) {
 				if (i != 0) {
-					orderByBuilder.append(JPQLStatement.DELIMITER.COMMA).append(JPQLStatement.DELIMITER.SPACE);
+					orderByBuilder.append(JPQLStatement.DELIMITER.SPACE).append(JPQLStatement.DELIMITER.COMMA).append(JPQLStatement.DELIMITER.SPACE);
 				}
 				Entry<String, String> entry = orderItr.next();
 				orderByBuilder.append(tableAlias).append(JPQLStatement.DELIMITER.PERIOD).append(entry.getKey()).append(JPQLStatement.DELIMITER.SPACE);
-				orderByBuilder.append(entry.getValue()).append(JPQLStatement.DELIMITER.SPACE);
+				orderByBuilder.append(entry.getValue());
 				i++;
 			}
-			
+			jpqlQuery.append(JPQLStatement.DELIMITER.SPACE);
 			jpqlQuery.append(JPQLStatement.KEYWORD.ORDERBY).append(JPQLStatement.DELIMITER.SPACE);
 			jpqlQuery.append(orderByBuilder);
 		}
