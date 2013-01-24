@@ -201,7 +201,7 @@ public class BasicEntityProvider {
       }
       builder.entity(stream);
     }
-    builder.contentHeader(ContentType.TEXT_PLAIN.toContentTypeString());
+    builder.contentHeader(ContentType.TEXT_PLAIN_CS_UTF_8.toContentTypeString());
     return builder.build();
   }
 

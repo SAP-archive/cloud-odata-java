@@ -51,6 +51,7 @@ import com.sap.core.odata.core.ODataPathSegmentImpl;
 import com.sap.core.odata.core.PathInfoImpl;
 import com.sap.core.odata.core.commons.ContentType;
 import com.sap.core.odata.core.commons.ODataHttpMethod;
+import com.sap.core.odata.core.commons.ContentType.ODataFormat;
 import com.sap.core.odata.core.uri.UriInfoImpl;
 import com.sap.core.odata.core.uri.UriParserImpl;
 
@@ -58,6 +59,8 @@ import com.sap.core.odata.core.uri.UriParserImpl;
  * @author SAP AG
  */
 public final class ODataSubLocator implements ODataLocator {
+
+  private static final String DEFAULT_CHARSET = "utf-8";
 
   private ODataService service;
 
@@ -144,39 +147,67 @@ public final class ODataSubLocator implements ODataLocator {
   }
 
   private String doContentNegotiation(final UriInfoImpl uriInfo) throws ODataException {
-    String format;
+    ContentType contentType;
     if (uriInfo.getFormat() == null) {
-      format = doContentNegotiationForAcceptHeader(uriInfo).toContentTypeString();
+      contentType = doContentNegotiationForAcceptHeader(uriInfo);
     } else {
-      format = doContentNegotiationForFormat(uriInfo);
+      contentType = doContentNegotiationForFormat(uriInfo);
     }
-    return format;
+    
+    if(contentType.getODataFormat() == ODataFormat.CUSTOM) {
+      return contentType.getType();
+    }
+    return contentType.toContentTypeString();
   }
 
-  private String doContentNegotiationForFormat(final UriInfoImpl uriInfo) throws ODataException {
-    String format = getFormat(uriInfo);
-    ContentType tmp = ContentType.create(format);
+  private ContentType doContentNegotiationForFormat(final UriInfoImpl uriInfo) throws ODataException {
+    ContentType formatContentType = mapFormat(uriInfo);
+    formatContentType = ensureCharsetIsSet(formatContentType);
+    
     Class<? extends ProcessorFeature> processorFeature = dispatcher.mapUriTypeToProcessorFeature(uriInfo);
     List<ContentType> supportedContentTypes = getSupportedContentTypes(processorFeature);
     for (ContentType contentType : supportedContentTypes) {
-      if (contentType.equals(tmp)) {
-        return format;
+      if (contentType.equals(formatContentType)) {
+        return formatContentType;
       }
     }
 
-    throw new ODataNotAcceptableException(ODataNotAcceptableException.NOT_SUPPORTED_CONTENT_TYPE.addContent(format));
+    throw new ODataNotAcceptableException(ODataNotAcceptableException.NOT_SUPPORTED_CONTENT_TYPE.addContent(uriInfo.getFormat()));
   }
 
-  private String getFormat(final UriInfoImpl uriInfo) {
+  private ContentType ensureCharsetIsSet(ContentType contentType) {
+    if(isContentTypeODataTextRelated(contentType)) {
+      if(!contentType.getParameters().containsKey(ContentType.PARAMETER_CHARSET)) {
+        contentType = ContentType.create(contentType, ContentType.PARAMETER_CHARSET, DEFAULT_CHARSET);
+      }
+    }
+    return contentType;
+  }
+
+  private boolean isContentTypeODataTextRelated(ContentType contentType) {
+    if(contentType == null) {
+      return false;
+    } else if(contentType.equals(ContentType.TEXT_PLAIN)) {
+      return true;
+    } else if(contentType.getODataFormat() == ODataFormat.XML 
+        || contentType.getODataFormat() == ODataFormat.ATOM
+        || contentType.getODataFormat() == ODataFormat.JSON) {
+      return true;
+    }
+    return false;
+  }
+
+  private ContentType mapFormat(final UriInfoImpl uriInfo) {
     String format = uriInfo.getFormat();
     if ("xml".equals(format)) {
-      format = ContentType.APPLICATION_XML.toContentTypeString();
+      return ContentType.APPLICATION_XML;
     } else if ("atom".equals(format)) {
-      format = ContentType.APPLICATION_ATOM_XML.toContentTypeString();
+      return ContentType.APPLICATION_ATOM_XML;
     } else if ("json".equals(format)) {
-      format = ContentType.APPLICATION_JSON.toContentTypeString();
+      return ContentType.APPLICATION_JSON;
     }
-    return format;
+    
+    return ContentType.create(format);
   }
 
   private ContentType doContentNegotiationForAcceptHeader(final UriInfoImpl uriInfo) throws ODataException {
@@ -193,22 +224,23 @@ public final class ODataSubLocator implements ODataLocator {
     return resultContentTypes;
   }
 
-  ContentType contentNegotiation(List<ContentType> contentTypes, List<ContentType> supportedContentTypes) throws ODataException {
+  ContentType contentNegotiation(List<ContentType> acceptedContentTypes, List<ContentType> supportedContentTypes) throws ODataException {
     Set<ContentType> setSupported = new HashSet<ContentType>(supportedContentTypes);
 
-    if (contentTypes.isEmpty()) {
+    if (acceptedContentTypes.isEmpty()) {
       if (!setSupported.isEmpty()) {
         return supportedContentTypes.get(0);
       }
     } else {
-      for (ContentType contentType : contentTypes) {
+      for (ContentType contentType : acceptedContentTypes) {
+        contentType = ensureCharsetIsSet(contentType);
         ContentType match = contentType.match(supportedContentTypes);
         if (match != null)
           return match;
       }
     }
 
-    throw new ODataNotAcceptableException(ODataNotAcceptableException.NOT_SUPPORTED_CONTENT_TYPE.addContent(contentTypes.toString()));
+    throw new ODataNotAcceptableException(ODataNotAcceptableException.NOT_SUPPORTED_CONTENT_TYPE.addContent(acceptedContentTypes.toString()));
   }
 
   public void initialize(InitParameter param) throws ODataException {

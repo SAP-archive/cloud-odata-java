@@ -37,6 +37,9 @@ import com.sap.core.odata.testutil.fit.BaseTest;
  */
 public class ODataSingleProcessorServiceTest extends BaseTest{
 
+  private static final String APPLICATION_XML = createConstant(ContentType.APPLICATION_XML);
+  private static final String APPLICATION_ATOM_SVC = createConstant(ContentType.APPLICATION_ATOM_SVC);
+  private static final String APPLICATION_JSON = createConstant(ContentType.APPLICATION_JSON);
   private ODataSingleProcessorService service;
   private ODataSingleProcessor processor;
   EdmProvider provider;
@@ -48,61 +51,71 @@ public class ODataSingleProcessorServiceTest extends BaseTest{
     service = new ODataSingleProcessorService(provider, processor);
   }
 
+  private static String createConstant(ContentType contentType) {
+    return appendCharset(contentType).toContentTypeString();
+  }
+
+  private static ContentType appendCharset(ContentType contentType) {
+    return ContentType.create(contentType, ContentType.PARAMETER_CHARSET, ContentType.CHARSET_UTF_8);
+  }
+
   @Test
   public void defaultSupportedContentTypesForEntitySet() throws Exception {
     List<String> types = service.getSupportedContentTypes(EntitySet.class);
-    assertTrue(types.contains(ContentType.APPLICATION_ATOM_XML.toContentTypeString()));
-    assertTrue(types.contains(ContentType.APPLICATION_ATOM_XML_FEED.toContentTypeString()));
-    assertTrue(types.contains(ContentType.APPLICATION_JSON.toContentTypeString()));
+    List<ContentType> convertedTypes = ContentType.convert(types);
+    assertTrue(convertedTypes.contains(appendCharset(ContentType.APPLICATION_ATOM_XML)));
+    assertTrue(convertedTypes.contains(appendCharset(ContentType.APPLICATION_ATOM_XML_FEED)));
+    assertTrue(convertedTypes.contains(appendCharset(ContentType.APPLICATION_JSON)));
   }
 
   @Test
   public void defaultSupportedContentTypesForEntity() throws Exception {
     List<String> types = service.getSupportedContentTypes(Entity.class);
-    assertTrue(types.contains(ContentType.APPLICATION_ATOM_XML.toContentTypeString()));
-    assertTrue(types.contains(ContentType.APPLICATION_ATOM_XML_ENTRY.toContentTypeString()));
-    assertTrue(types.contains(ContentType.APPLICATION_JSON.toContentTypeString()));
+    List<ContentType> convertedTypes = ContentType.convert(types);
+    assertTrue(convertedTypes.contains(appendCharset(ContentType.APPLICATION_ATOM_XML)));
+    assertTrue(convertedTypes.contains(appendCharset(ContentType.APPLICATION_ATOM_XML_ENTRY)));
+    assertTrue(convertedTypes.contains(appendCharset(ContentType.APPLICATION_JSON)));
   }
-
+  
   @Test
   public void defaultSupportedContentTypesForServiceDocument() throws Exception {
     List<String> types = service.getSupportedContentTypes(ServiceDocument.class);
-    assertTrue(types.contains(ContentType.APPLICATION_ATOM_SVC.toContentTypeString()));
-    assertTrue(types.contains(ContentType.APPLICATION_JSON.toContentTypeString()));
+    assertTrue(types.contains(APPLICATION_ATOM_SVC));
+    assertTrue(types.contains(APPLICATION_JSON));
   }
 
   @Test
   public void defaultSupportedContentTypesForMetadata() throws Exception {
     List<String> types = service.getSupportedContentTypes(Metadata.class);
-    assertTrue(types.contains(ContentType.APPLICATION_XML.toContentTypeString()));
+    assertTrue(types.contains(APPLICATION_XML));
   }
 
   @Test
   public void defaultSupportedContentTypesForFunctionImport() throws Exception {
     List<String> types = service.getSupportedContentTypes(FunctionImport.class);
-    assertTrue(types.contains(ContentType.APPLICATION_XML.toContentTypeString()));
-    assertTrue(types.contains(ContentType.APPLICATION_JSON.toContentTypeString()));
+    assertTrue(types.contains(APPLICATION_XML));
+    assertTrue(types.contains(APPLICATION_JSON));
   }
 
   @Test
   public void defaultSupportedContentTypesForEntityComplexProperty() throws Exception {
     List<String> types = service.getSupportedContentTypes(EntityComplexProperty.class);
-    assertTrue(types.contains(ContentType.APPLICATION_XML.toContentTypeString()));
-    assertTrue(types.contains(ContentType.APPLICATION_JSON.toContentTypeString()));
+    assertTrue(types.contains(APPLICATION_XML));
+    assertTrue(types.contains(APPLICATION_JSON));
   }
 
   @Test
   public void defaultSupportedContentTypesForEntitySimpleProperty() throws Exception {
     List<String> types = service.getSupportedContentTypes(EntitySimpleProperty.class);
-    assertTrue(types.contains(ContentType.APPLICATION_XML.toContentTypeString()));
-    assertTrue(types.contains(ContentType.APPLICATION_JSON.toContentTypeString()));
+    assertTrue(types.contains(APPLICATION_XML));
+    assertTrue(types.contains(APPLICATION_JSON));
   }
 
   @Test
   public void defaultSupportedContentTypesForEntityLinks() throws Exception {
     List<String> types = service.getSupportedContentTypes(EntityLinks.class);
-    assertTrue(types.contains(ContentType.APPLICATION_XML.toContentTypeString()));
-    assertTrue(types.contains(ContentType.APPLICATION_JSON.toContentTypeString()));
+    assertTrue(types.contains(APPLICATION_XML));
+    assertTrue(types.contains(APPLICATION_JSON));
   }
 
   @Test
@@ -110,8 +123,8 @@ public class ODataSingleProcessorServiceTest extends BaseTest{
     ContentType ctGif = ContentType.create("image", "gif");
 
     List<String> types = service.getSupportedContentTypes(EntityLink.class);
-    assertTrue(types.contains(ContentType.APPLICATION_XML.toContentTypeString()));
-    assertTrue(types.contains(ContentType.APPLICATION_JSON.toContentTypeString()));
+    assertTrue(types.contains(APPLICATION_XML));
+    assertTrue(types.contains(APPLICATION_JSON));
     assertFalse(types.contains(ctGif.toContentTypeString()));
   }
 

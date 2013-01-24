@@ -1,5 +1,6 @@
 package com.sap.core.odata.core.commons;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -27,17 +28,21 @@ public class ContentType {
 
   public static final String PARAMETER_CHARSET = "charset";
   public static final String PARAMETER_Q = "q";
+  public static final String CHARSET_UTF_8 = "utf-8";
 
   public static final ContentType WILDCARD = new ContentType(MEDIA_TYPE_WILDCARD, MEDIA_TYPE_WILDCARD);
 
   public static final ContentType APPLICATION_XML = new ContentType("application", "xml", ODataFormat.XML);
   public static final ContentType APPLICATION_ATOM_XML = new ContentType("application", "atom+xml", ODataFormat.ATOM);
   public static final ContentType APPLICATION_ATOM_XML_ENTRY = new ContentType("application", "atom+xml", ODataFormat.ATOM, parameterMap("type", "entry"));
+  public static final ContentType APPLICATION_ATOM_XML_ENTRY_CS_UTF_8 = ContentType.create(APPLICATION_ATOM_XML_ENTRY, PARAMETER_CHARSET, CHARSET_UTF_8);
   public static final ContentType APPLICATION_ATOM_XML_FEED = new ContentType("application", "atom+xml", ODataFormat.ATOM, parameterMap("type", "feed"));
+  public static final ContentType APPLICATION_ATOM_XML_FEED_CS_UTF_8 = ContentType.create(APPLICATION_ATOM_XML_FEED, PARAMETER_CHARSET, CHARSET_UTF_8);
   public static final ContentType APPLICATION_ATOM_SVC = new ContentType("application", "atomsvc+xml", ODataFormat.ATOM);
   public static final ContentType APPLICATION_JSON = new ContentType("application", "json", ODataFormat.JSON);
   public static final ContentType APPLICATION_OCTET_STREAM = new ContentType("application", "octet-stream");
   public static final ContentType TEXT_PLAIN = new ContentType("text", "plain");
+  public static final ContentType TEXT_PLAIN_CS_UTF_8 = ContentType.create(TEXT_PLAIN, PARAMETER_CHARSET, CHARSET_UTF_8);
   public static final ContentType MULTIPART_MIXED = new ContentType("multipart", "mixed");
 
   private String type;
@@ -376,5 +381,13 @@ public class ContentType {
    */
   public boolean isWildcard() {
     return (MEDIA_TYPE_WILDCARD.equals(type) && MEDIA_TYPE_WILDCARD.equals(subtype));
+  }
+
+  public static List<ContentType> convert(List<String> types) {
+    List<ContentType> results = new ArrayList<ContentType>();
+    for (String contentType : types) {
+      results.add(ContentType.create(contentType));
+    }
+    return results;
   }
 }

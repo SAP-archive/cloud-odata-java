@@ -158,7 +158,7 @@ public class AtomEntityProvider implements ContentTypeBasedEntityProvider {
   }
 
   private String createContentHeader(ContentType mediaType) {
-    return mediaType.toString() + "; charset=" + DEFAULT_CHARSET;
+    return mediaType.toContentTypeString() + "; charset=" + DEFAULT_CHARSET;
   }
 
   @Override

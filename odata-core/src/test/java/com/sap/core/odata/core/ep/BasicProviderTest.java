@@ -32,7 +32,7 @@ public class BasicProviderTest extends AbstractProviderTest {
     ODataResponse response = provider.writePropertyValue(edmProperty, this.employeeData.get("Age"));
     assertNotNull(response);
     assertNotNull(response.getEntity());
-    assertEquals(ContentType.TEXT_PLAIN.toString(), response.getContentHeader());
+    assertEquals(ContentType.TEXT_PLAIN_CS_UTF_8.toString(), response.getContentHeader());
     String value = StringHelper.inputStreamToString((InputStream) response.getEntity());
     assertEquals(this.employeeData.get("Age").toString(), value);
   }
@@ -56,10 +56,10 @@ public class BasicProviderTest extends AbstractProviderTest {
   @Test
   public void writeBinary() throws Exception {
     final byte[] bytes = new byte[]{49, 50, 51, 52, 65};
-    final ODataResponse response = provider.writeBinary(ContentType.TEXT_PLAIN.toString(), bytes);
+    final ODataResponse response = provider.writeBinary(ContentType.TEXT_PLAIN_CS_UTF_8.toString(), bytes);
     assertNotNull(response);
     assertNotNull(response.getEntity());
-    assertEquals(ContentType.TEXT_PLAIN.toString(), response.getContentHeader());
+    assertEquals(ContentType.TEXT_PLAIN_CS_UTF_8.toString(), response.getContentHeader());
     final String value = StringHelper.inputStreamToString((InputStream) response.getEntity());
     assertEquals("1234A", value);
   }
