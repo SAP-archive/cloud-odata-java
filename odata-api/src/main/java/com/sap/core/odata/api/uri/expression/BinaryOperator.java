@@ -26,18 +26,18 @@ public enum BinaryOperator
    */
   PROPERTY_ACCESS("/", "property access");
 
-  private String syntax;
+  private String uriSyntax;
   private String stringRespresentation;
 
-  private BinaryOperator(String syntax)
+  private BinaryOperator(String uriSyntax)
   {
-    this.syntax = syntax;
-    stringRespresentation = syntax;
+    this.uriSyntax = uriSyntax;
+    this.stringRespresentation = uriSyntax;
   }
 
   private BinaryOperator(String syntax, String stringRespresentation)
   {
-    this.syntax = syntax;
+    this.uriSyntax = syntax;
     this.stringRespresentation = stringRespresentation;
   }
 
@@ -55,6 +55,6 @@ public enum BinaryOperator
    */
   public String toUriLiteral()
   {
-    return syntax;
+    return uriSyntax;
   }
 }

@@ -1,7 +1,5 @@
 package com.sap.core.odata.api.uri.expression;
 
-/*X*/
-
 /**
  * Enumerations for supported unary operators of the OData expression parser
  * for OData version 2.0

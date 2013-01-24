@@ -47,7 +47,7 @@ public class TestParser extends TestBase
   @Test
   public void testOrderBy()
   {
- 
+
     GetPTO("sven").aSerialized("{oc({o(sven, asc)})}");
     GetPTO("sven asc").aSerialized("{oc({o(sven, asc)})}");
     GetPTO("sven desc").aSerialized("{oc({o(sven, desc)})}");
@@ -170,15 +170,14 @@ public class TestParser extends TestBase
           .root().left().aEdmType(complexAddressType)
           .root().right().aKind(ExpressionKind.PROPERTY).aEdmProperty(complexAddressCity).aEdmType(complexAddressCityType)
           .root().aEdmType(complexAddressCityType);
-      
-      
+
       EdmProperty boolean_ = (EdmProperty) edmEtAllTypes.getProperty("Boolean");
       EdmSimpleType boolean_Type = (EdmSimpleType) boolean_.getType();
-      
+
       GetPTF(edm, edmEtAllTypes, "not Boolean")
-      .aKind(ExpressionKind.UNARY)
-      .aEdmType(boolean_Type)
-      .right().aEdmProperty(boolean_).aEdmType(boolean_Type);
+          .aKind(ExpressionKind.UNARY)
+          .aEdmType(boolean_Type)
+          .right().aEdmProperty(boolean_).aEdmType(boolean_Type);
 
     } catch (EdmException e) {
       fail("Error in testPropertiesWithEdm:" + e.getLocalizedMessage());
@@ -195,8 +194,16 @@ public class TestParser extends TestBase
 
     GetPTF("startswith('Test', concat('A','B'))").aSerialized("{startswith('Test',{concat('A','B')})}");
 
-
     GetPTF("substring('Test', 1 add 2)").aSerialized("{substring('Test',{1 add 2})}");
+
+  }
+
+  @Test
+  public void testMethodVariableParameters()
+  {
+    GetPTF("concat('Test', 'A' )").aSerialized("{concat('Test','A')}");
+    GetPTF("concat('Test', 'A', 'B' )").aSerialized("{concat('Test','A','B')}");
+    GetPTF("concat('Test', 'A', 'B', 'C' )").aSerialized("{concat('Test','A','B','C')}");
   }
 
   @Test

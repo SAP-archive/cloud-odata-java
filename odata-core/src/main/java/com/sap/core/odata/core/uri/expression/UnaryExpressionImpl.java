@@ -17,7 +17,8 @@ public class UnaryExpressionImpl implements UnaryExpression
   private CommonExpression operand = null;
   private EdmType edmType = null;
 
-  public UnaryExpressionImpl(InfoUnaryOperator operatorInfo, CommonExpression operand) {
+  public UnaryExpressionImpl(InfoUnaryOperator operatorInfo, CommonExpression operand) 
+  {
     this.operatorInfo = operatorInfo;
     this.operand = operand;
     //this.edmType = operatorInfo.getReturnType(); //TODO check

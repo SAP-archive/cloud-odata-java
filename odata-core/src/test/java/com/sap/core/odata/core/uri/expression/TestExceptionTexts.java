@@ -2,6 +2,7 @@ package com.sap.core.odata.core.uri.expression;
 
 import org.junit.Test;
 
+import com.sap.core.odata.api.uri.expression.ExceptionVisitExpression;
 import com.sap.core.odata.api.uri.expression.ExpressionParserException;
 import com.sap.core.odata.testutil.helper.ODataMessageTextVerifier;
 
@@ -18,7 +19,13 @@ public class TestExceptionTexts extends TestBase
   {
     ODataMessageTextVerifier.TestClass(ExpressionParserInternalError.class);
   }
-
+  
+  @Test
+  public void TestExceptionVisitExpressionMessages()
+  {
+    ODataMessageTextVerifier.TestClass(ExceptionVisitExpression.class);
+  }
+    
   @Test
   public void TestExceptionTokenizerExpectMessages()
   {
@@ -30,5 +37,4 @@ public class TestExceptionTexts extends TestBase
   {
     ODataMessageTextVerifier.TestClass(TokenizerException.class);
   }
-
 }

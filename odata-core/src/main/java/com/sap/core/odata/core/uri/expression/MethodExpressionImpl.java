@@ -18,19 +18,22 @@ public class MethodExpressionImpl implements MethodExpression {
   private EdmType returnType;
   private List<CommonExpression> actualParameters;
 
-  public MethodExpressionImpl(InfoMethod infoMethod) {
+  public MethodExpressionImpl(InfoMethod infoMethod)
+  {
     this.infoMethod = infoMethod;
     this.returnType = infoMethod.getReturnType();
     this.actualParameters = new ArrayList<CommonExpression>();
   }
 
   @Override
-  public EdmType getEdmType() {
+  public EdmType getEdmType()
+  {
     return returnType;
   }
 
   @Override
-  public CommonExpression setEdmType(EdmType edmType) {
+  public CommonExpression setEdmType(EdmType edmType) 
+  {
     this.returnType = edmType;
     return this;
   }
@@ -47,18 +50,20 @@ public class MethodExpressionImpl implements MethodExpression {
   }
 
   @Override
-  public List<CommonExpression> getParameters() {
+  public List<CommonExpression> getParameters()
+  {
     return actualParameters;
   }
 
   @Override
-  public int getParameterCount() {
+  public int getParameterCount()
+  {
     return actualParameters.size();
   }
 
   /**
    * @param expression
-   * @return "this" self reference for method chaining" 
+   * @return A self reference for method chaining" 
    */
   public MethodExpressionImpl appendParameter(CommonExpression expression) 
   {
@@ -67,12 +72,14 @@ public class MethodExpressionImpl implements MethodExpression {
   }
 
   @Override
-  public ExpressionKind getKind() {
+  public ExpressionKind getKind() 
+  {
     return ExpressionKind.METHOD;
   }
 
   @Override
-  public String getUriLiteral() {
+  public String getUriLiteral()
+  {
     return infoMethod.getSyntax();
   }
 

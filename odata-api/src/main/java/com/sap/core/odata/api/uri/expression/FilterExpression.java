@@ -5,7 +5,7 @@ package com.sap.core.odata.api.uri.expression;
  * Used to define the <b>root</b> expression node in an $filter expression tree. 
  * 
  * @author SAP AG
- * @see OrderByParser
+ * @see FilterParser
  */
 public interface FilterExpression extends CommonExpression
 {
@@ -16,7 +16,7 @@ public interface FilterExpression extends CommonExpression
   String getExpressionString();
 
   /**
-   * @return Returns the expression node representing the first <i>operator</i>,<i>method</i> or <i>property</i> of the expression tree
+   * @return Returns the expression node representing the first <i>operator</i>,<i>method</i>,<i>literal</i> or <i>property</i> of the expression tree
    */
   CommonExpression getExpression();
 

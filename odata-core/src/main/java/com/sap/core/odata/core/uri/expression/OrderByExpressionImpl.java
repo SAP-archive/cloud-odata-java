@@ -23,41 +23,49 @@ public class OrderByExpressionImpl implements OrderByExpression {
   }
 
   @Override
-  public String getExpressionString() {
+  public String getExpressionString() 
+  {
     return orderbyString;
   }
 
   @Override
-  public List<OrderExpression> getOrders() {
+  public List<OrderExpression> getOrders() 
+  {
     return orders;
   }
 
   @Override
-  public int getOrdersCount() {
+  public int getOrdersCount() 
+  {
     return orders.size();
   }
 
-  public void addOrder(OrderExpression orderNode) {
+  public void addOrder(OrderExpression orderNode) 
+  {
     orders.add(orderNode);
   }
 
   @Override
-  public ExpressionKind getKind() {
+  public ExpressionKind getKind() 
+  {
     return ExpressionKind.ORDERBY;
   }
 
   @Override
-  public EdmType getEdmType() {
+  public EdmType getEdmType() 
+  {
     return null;
   }
 
   @Override
-  public CommonExpression setEdmType(EdmType edmType) {
+  public CommonExpression setEdmType(EdmType edmType) 
+  {
     return this;
   }
 
   @Override
-  public String getUriLiteral() {
+  public String getUriLiteral() 
+  {
     return "";
   }
 

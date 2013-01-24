@@ -20,12 +20,14 @@ public class OrderExpressionImpl implements OrderExpression {
   }
 
   @Override
-  public SortOrder getSortOrder() {
+  public SortOrder getSortOrder() 
+  {
     return orderType;
   }
 
   @Override
-  public CommonExpression getExpression() {
+  public CommonExpression getExpression() 
+  {
     return expression;
   }
 
@@ -35,28 +37,32 @@ public class OrderExpressionImpl implements OrderExpression {
   }
 
   @Override
-  public ExpressionKind getKind() {
+  public ExpressionKind getKind() 
+  {
     return ExpressionKind.ORDER;
   }
 
   @Override
-  public EdmType getEdmType() {
+  public EdmType getEdmType() 
+  {
     return null;
   }
 
   @Override
-  public CommonExpression setEdmType(EdmType edmType) {
+  public CommonExpression setEdmType(EdmType edmType) 
+  {
     return this;
   }
 
   @Override
-  public String getUriLiteral() {
+  public String getUriLiteral() 
+  {
     return "";
   }
 
   @Override
-  public Object accept(ExpressionVisitor visitor) throws ExceptionVisitExpression, ODataApplicationException {
-
+  public Object accept(ExpressionVisitor visitor) throws ExceptionVisitExpression, ODataApplicationException 
+  {
     Object obj = expression.accept(visitor);
     Object ret = visitor.visitOrder(this, obj, orderType);
     return ret;

@@ -24,19 +24,23 @@ class InfoUnaryOperator
     this.combination = combination;
   }
 
-  public String getCategory() {
+  public String getCategory()
+  {
     return category;
   }
 
-  public String getSyntax() {
+  public String getSyntax() 
+  {
     return syntax;
   }
 
-  public UnaryOperator getOperator() {
+  public UnaryOperator getOperator() 
+  {
     return operator;
   }
 
-  public EdmType validateParameterSet(List<EdmType> actualParameterTypes) throws ExpressionParserInternalError {
+  public EdmType validateParameterSet(List<EdmType> actualParameterTypes) throws ExpressionParserInternalError 
+  {
     return combination.validate(actualParameterTypes);
   }
 

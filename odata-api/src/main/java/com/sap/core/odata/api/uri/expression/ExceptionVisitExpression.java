@@ -1,6 +1,5 @@
 package com.sap.core.odata.api.uri.expression;
 
-/*TODO*/
 import com.sap.core.odata.api.exception.MessageReference;
 import com.sap.core.odata.api.exception.ODataMessageException;
 
@@ -10,21 +9,39 @@ import com.sap.core.odata.api.exception.ODataMessageException;
  */
 public class ExceptionVisitExpression extends ODataMessageException
 {
-  private static final long serialVersionUID = 77L;
+  private static final long serialVersionUID = 7701L;
 
-  public static final MessageReference COMMON = createMessageReference(ODataMessageException.class, "COMMON");
+  public static final MessageReference COMMON = createMessageReference(ExceptionVisitExpression.class, "COMMON");
 
   private CommonExpression filterTree;
 
-  public ExceptionVisitExpression() {
+  public ExceptionVisitExpression()
+  {
     super(COMMON);
   }
 
-  public ExceptionVisitExpression(MessageReference messageReference) {
+  /**
+   * Create {@link ExceptionVisitExpression} with given {@link MessageReference}.
+   * 
+   * @param messageReference
+   *   references the message text (and additional values) of this {@link ExceptionVisitExpression}
+   */
+  public ExceptionVisitExpression(MessageReference messageReference)
+  {
     super(messageReference);
   }
 
-  public ExceptionVisitExpression(MessageReference message, Throwable cause) {
+  /**
+   * Create {@link ExceptionVisitExpression} with given {@link MessageReference} and cause {@link Throwable} which caused
+   * this {@link ExceptionVisitExpression}.
+   * 
+   * @param messageReference
+   *   references the message text (and additional values) of this {@link ExceptionVisitExpression}
+   * @param cause
+   *   exception which caused this {@link ExceptionVisitExpression}
+   */
+  public ExceptionVisitExpression(MessageReference message, Throwable cause)
+  {
     super(message, cause);
   }
 
@@ -32,7 +49,8 @@ public class ExceptionVisitExpression extends ODataMessageException
    * Get erroneous filter for debug information
    * @return Erroneous filter tree 
    */
-  public CommonExpression getFilterTree() {
+  public CommonExpression getFilterTree()
+  {
     return filterTree;
   }
 
@@ -44,5 +62,4 @@ public class ExceptionVisitExpression extends ODataMessageException
   {
     this.filterTree = filterTree;
   }
-
 }

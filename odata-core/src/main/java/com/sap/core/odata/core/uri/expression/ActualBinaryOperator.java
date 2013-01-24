@@ -16,7 +16,7 @@ public class ActualBinaryOperator
 
   public Token getToken()
   {
-    return token;
+   return token;
   }
 
   public InfoBinaryOperator getOP()

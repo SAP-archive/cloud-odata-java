@@ -1,6 +1,5 @@
 package com.sap.core.odata.api.uri.expression;
 
-/*X*/
 /**
  * Enumerations for all supported methods of the ODATA expression parser 
  * for ODATA version 2.0 (with some restrictions). 

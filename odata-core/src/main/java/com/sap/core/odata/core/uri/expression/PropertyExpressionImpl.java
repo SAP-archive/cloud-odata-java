@@ -33,7 +33,8 @@ public class PropertyExpressionImpl implements PropertyExpression {
   }
 
   @Override
-  public CommonExpression setEdmType(EdmType edmType) {
+  public CommonExpression setEdmType(EdmType edmType) 
+  {
     this.edmType = edmType;
     return this;
   }
@@ -56,17 +57,20 @@ public class PropertyExpressionImpl implements PropertyExpression {
   }
 
   @Override
-  public EdmTyped getEdmProperty() {
+  public EdmTyped getEdmProperty() 
+  {
     return edmProperty;
   }
 
   @Override
-  public ExpressionKind getKind() {
+  public ExpressionKind getKind() 
+  {
     return ExpressionKind.PROPERTY;
   }
 
   @Override
-  public String getUriLiteral() {
+  public String getUriLiteral() 
+  {
     return uriLiteral;
   }
 
@@ -77,7 +81,8 @@ public class PropertyExpressionImpl implements PropertyExpression {
   }
 
   @Override
-  public Object accept(ExpressionVisitor visitor) {
+  public Object accept(ExpressionVisitor visitor) 
+  {
     Object ret = visitor.visitProperty(this, uriLiteral, edmProperty);
     return ret;
   }

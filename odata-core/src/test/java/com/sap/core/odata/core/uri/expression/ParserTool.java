@@ -251,7 +251,8 @@ public class ParserTool
     return this;
   }
 
-  public ParserTool aExKey(MessageReference expressionExpectedAtPos) {
+  public ParserTool aExKey(MessageReference expressionExpectedAtPos) 
+  {
     String expectedKey = expressionExpectedAtPos.getKey();
     ODataMessageException messageException;
 
@@ -281,7 +282,8 @@ public class ParserTool
     return this;
   }
 
-  public ParserTool printExMessage() {
+  public ParserTool printExMessage() 
+  {
     ODataMessageException messageException;
 
     if (curException == null)
@@ -445,7 +447,8 @@ public class ParserTool
     return this;
   }
 
-  public ParserTool left() {
+  public ParserTool left() 
+  {
     switch (curNode.getKind())
     {
     case BINARY:
@@ -471,7 +474,8 @@ public class ParserTool
     return this;
   }
 
-  public ParserTool right() {
+  public ParserTool right() 
+  {
     switch (curNode.getKind())
     {
     case BINARY:
@@ -544,7 +548,8 @@ public class ParserTool
     return this;
   }
 
-  public ParserTool root() {
+  public ParserTool root() 
+  {
     curNode = this.tree;
     return this;
   }
@@ -591,7 +596,8 @@ public class ParserTool
     }
   }
 
-  public ParserTool exRoot() {
+  public ParserTool exRoot() 
+  {
     curException = exception;
     return this;
   }

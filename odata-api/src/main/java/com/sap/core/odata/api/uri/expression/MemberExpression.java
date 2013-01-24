@@ -12,7 +12,8 @@ package com.sap.core.odata.api.uri.expression;
  * <br>
  * <p><b>For example:</b> The expression "address/city eq 'Heidelberg' will result in an expression tree
  * containing a member expression node for accessing property "city" which is part of the 
- * complex property "address" 
+ * complex property "address". Method {@link #getPath()} will return a reference to the "address" property,
+ * method {@link #getProperty()} will return a refence to the "city" property.
  * @author SAP AG
  */
 public interface MemberExpression extends CommonExpression

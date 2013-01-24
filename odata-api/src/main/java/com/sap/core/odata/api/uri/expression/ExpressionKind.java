@@ -1,61 +1,61 @@
 package com.sap.core.odata.api.uri.expression;
 
-/*1*/
 /**
  * Enumeration describing all possible node types inside an expression tree
  * @author SAP AG
  */
-public enum ExpressionKind {
+public enum ExpressionKind
+{
   /**
    * Used to mark the root node of a filter expression tree
    * @see FilterExpression  
    */
   FILTER,
   /**
-   * Literals like "1.1d" or "'This is a string'"
+   * Literal expressions like "1.1d" or "'This is a string'"
    * @see LiteralExpression 
    */
   LITERAL,
 
   /**
-   * Unary operators like "not" and "-"
+   * Unary operator expressions like "not" and "-"
    * @see UnaryExpression
    */
   UNARY,
 
   /**
-   * Binary operators like "eq" and "or" 
+   * Binary operator expressions like "eq" and "or" 
    * @see BinaryExpression
    */
   BINARY,
 
   /**
-   * Method operators like "substringof" and "concat" 
+   * Method operator expressions like "substringof" and "concat" 
    * @see MethodExpression
    */
   METHOD,
 
   /**
-   * Member access operator like "/" in "adress/street"
+   * Member access expressions like "/" in "adress/street"
    * @see MemberExpression 
    */
   MEMBER,
 
   /**
-   * Property like "age" 
+   * Property expressions like "age" 
    * @see PropertyExpression
    */
   PROPERTY,
 
   /**
-   * Order expression like "age desc" 
-   * @see PropertyExpression
+   * Order expressions like "age desc" 
+   * @see OrderExpression
    */
   ORDER,
 
   /**
    * Orderby expression like "age desc, name asc" 
-   * @see PropertyExpression
+   * @see OrderByExpression
    */
   ORDERBY;
 }
