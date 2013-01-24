@@ -149,8 +149,9 @@ public class AbstractRefTest extends AbstractFitTest {
 
   protected void checkMediaType(final HttpResponse response, final String expectedMediaType, final boolean withDefaultCharset) {
     String expected = expectedMediaType;
-    if (withDefaultCharset)
+    if (withDefaultCharset && !expectedMediaType.contains("charset=utf-8")) {
       expected += "; charset=utf-8";
+    }
 
     assertEquals("MediaType was not expected (charset expected=[" + withDefaultCharset + "]).",
         expected, response.getFirstHeader(HttpHeaders.CONTENT_TYPE).getValue());

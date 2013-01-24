@@ -318,7 +318,9 @@ public abstract class ODataSingleProcessor
    */
   @Override
   public ODataResponse readServiceDocument(GetServiceDocumentUriInfo uriInfo, String contentType) throws ODataException {
-    contentType += "; " + DEFAULT_SERVICE_CHARSET_PARAMETER;
+    if(contentType != null && !contentType.contains(PARAMETER_CHARSET)) {
+      contentType += "; " + DEFAULT_SERVICE_CHARSET_PARAMETER;
+    }
 
     final ODataResponse response = ODataResponse.fromResponse(EntityProvider.writeServiceDocument(getContext().getService().getEntityDataModel(), getContext().getPathInfo().getServiceRoot().toASCIIString()))
         .header("Content-Type", contentType)

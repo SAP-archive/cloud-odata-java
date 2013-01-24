@@ -34,7 +34,7 @@ public class ContentNegotiationTest extends AbstractBasicTest {
   @Override
   ODataSingleProcessor createProcessor() throws ODataException {
     // service document 
-    String contentType = "application/atom+xml";
+    String contentType = "application/atom+xml; charset=utf-8";
     ODataResponse responseAtomXml = ODataResponse.status(HttpStatusCodes.OK).contentHeader(contentType).entity("Test passed.").build();
     when(((ServiceDocument) processor).readServiceDocument(any(GetServiceDocumentUriInfo.class), eq(contentType))).thenReturn(responseAtomXml);
 
@@ -57,7 +57,7 @@ public class ContentNegotiationTest extends AbstractBasicTest {
     assertEquals(HttpStatusCodes.OK.getStatusCode(), response.getStatusLine().getStatusCode());
 
     Header header = response.getFirstHeader(HttpHeaders.CONTENT_TYPE);
-    assertEquals("application/atom+xml", header.getValue());
+    assertEquals("application/atom+xml; charset=utf-8", header.getValue());
   }
 
   @Test

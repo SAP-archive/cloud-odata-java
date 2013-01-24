@@ -37,11 +37,12 @@ public class ContentTypeTest extends BaseTest {
 
     assertEquals("application", mt.getType());
     assertEquals("atom+xml", mt.getSubtype());
-    assertEquals("application/atom+xml; type=entry", mt.toString());
+    assertEquals("application/atom+xml; charset=utf-8; type=entry", mt.toString());
     assertEquals(ODataFormat.ATOM, mt.getODataFormat());
-    assertEquals(1, mt.getParameters().size());
+    assertEquals(2, mt.getParameters().size());
     assertEquals("entry", mt.getParameters().get("type"));
-    assertEquals(ContentType.APPLICATION_ATOM_XML_ENTRY, mt);
+    assertEquals("utf-8", mt.getParameters().get("charset"));
+    assertEquals(ContentType.APPLICATION_ATOM_XML_ENTRY_CS_UTF_8, mt);
   }
 
   @Test
@@ -62,10 +63,10 @@ public class ContentTypeTest extends BaseTest {
 
     assertEquals("application", mt.getType());
     assertEquals("xml", mt.getSubtype());
-    assertEquals("application/xml", mt.toString());
+    assertEquals("application/xml; charset=utf-8", mt.toString());
     assertEquals(ODataFormat.XML, mt.getODataFormat());
-    assertEquals(0, mt.getParameters().size());
-    assertEquals(ContentType.APPLICATION_XML, mt);
+    assertEquals(1, mt.getParameters().size());
+    assertEquals(ContentType.create(ContentType.APPLICATION_XML, "charset", "utf-8"), mt);
   }
 
   @Test
@@ -74,10 +75,10 @@ public class ContentTypeTest extends BaseTest {
 
     assertEquals("application", mt.getType());
     assertEquals("json", mt.getSubtype());
-    assertEquals("application/json", mt.toString());
+    assertEquals("application/json; charset=utf-8", mt.toString());
     assertEquals(ODataFormat.JSON, mt.getODataFormat());
-    assertEquals(0, mt.getParameters().size());
-    assertEquals(ContentType.APPLICATION_JSON, mt);
+    assertEquals(1, mt.getParameters().size());
+    assertEquals(ContentType.create(ContentType.APPLICATION_JSON, "charset", "utf-8"), mt);
   }
 
   @Test
