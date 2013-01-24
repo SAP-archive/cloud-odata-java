@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import com.sap.core.odata.api.edm.EdmException;
+import com.sap.core.odata.api.edm.EdmProperty;
 import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.api.uri.SelectItem;
 import com.sap.core.odata.api.uri.info.GetEntitySetUriInfo;
@@ -108,7 +109,7 @@ public class JPQLSelectContext extends JPQLContext implements
 				ArrayList<String> selectedFields = new ArrayList<String>(
 						selectItemList.size());
 				for (SelectItem item : selectItemList) {
-					selectedFields.add(item.getProperty().getName());
+					selectedFields.add(((EdmProperty)item.getProperty()).getMapping().getInternalName());
 				}
 
 				return selectedFields;

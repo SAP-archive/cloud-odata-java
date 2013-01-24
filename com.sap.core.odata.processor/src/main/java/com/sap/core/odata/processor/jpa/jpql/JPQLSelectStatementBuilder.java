@@ -57,7 +57,7 @@ public class JPQLSelectStatementBuilder extends JPQLStatementBuilder {
 					orderByBuilder.append(JPQLStatement.DELIMITER.SPACE).append(JPQLStatement.DELIMITER.COMMA).append(JPQLStatement.DELIMITER.SPACE);
 				}
 				Entry<String, String> entry = orderItr.next();
-				orderByBuilder.append(tableAlias).append(JPQLStatement.DELIMITER.PERIOD).append(entry.getKey()).append(JPQLStatement.DELIMITER.SPACE);
+				orderByBuilder.append(entry.getKey()).append(JPQLStatement.DELIMITER.SPACE);
 				orderByBuilder.append(entry.getValue());
 				i++;
 			}

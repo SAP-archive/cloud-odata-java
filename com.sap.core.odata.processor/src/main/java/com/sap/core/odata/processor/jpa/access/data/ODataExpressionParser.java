@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.sap.core.odata.api.edm.EdmException;
 import com.sap.core.odata.api.edm.EdmLiteralKind;
+import com.sap.core.odata.api.edm.EdmProperty;
 import com.sap.core.odata.api.edm.EdmSimpleType;
 import com.sap.core.odata.api.edm.EdmSimpleTypeKind;
 import com.sap.core.odata.api.exception.ODataException;
@@ -12,6 +13,7 @@ import com.sap.core.odata.api.exception.ODataNotImplementedException;
 import com.sap.core.odata.api.uri.KeyPredicate;
 import com.sap.core.odata.api.uri.expression.BinaryExpression;
 import com.sap.core.odata.api.uri.expression.CommonExpression;
+import com.sap.core.odata.api.uri.expression.ExpressionKind;
 import com.sap.core.odata.api.uri.expression.FilterExpression;
 import com.sap.core.odata.api.uri.expression.LiteralExpression;
 import com.sap.core.odata.api.uri.expression.MemberExpression;
@@ -22,8 +24,6 @@ import com.sap.core.odata.api.uri.expression.SortOrder;
 import com.sap.core.odata.api.uri.expression.UnaryExpression;
 import com.sap.core.odata.processor.jpa.api.jpql.JPQLStatement;
 import com.sap.core.odata.processor.jpa.exception.ODataJPARuntimeException;
-//import org.slf4j.Logger;
-//import org.slf4j.LoggerFactory;
 
 /**
  * This class contains utility methods for parsing the filter expressions built by core library from user OData Query.
@@ -33,10 +33,7 @@ import com.sap.core.odata.processor.jpa.exception.ODataJPARuntimeException;
  */
 public class ODataExpressionParser {
 	
-	public static final String SPACE = " ";	//$NON-NLS-1$
 	public static final String EMPTY = "";	//$NON-NLS-1$
-//	public static final String TABLE_ALIAS = "gwt1";	//$NON-NLS-1$
-	private static final String DOT = ".";	//$NON-NLS-1$
 	
 	/**
 	 * This method returns the parsed where condition corresponding to the filter input in the user query.
@@ -73,21 +70,21 @@ public class ODataExpressionParser {
 
 	      switch (binaryExpression.getOperator()) {
 		      case AND:
-		    	  return left + SPACE + JPQLStatement.Operator.AND + SPACE + right;
+		    	  return left + JPQLStatement.DELIMITER.SPACE + JPQLStatement.Operator.AND + JPQLStatement.DELIMITER.SPACE + right;
 		      case OR:
-		          return left + SPACE + JPQLStatement.Operator.OR + SPACE + right;
+		          return left + JPQLStatement.DELIMITER.SPACE + JPQLStatement.Operator.OR + JPQLStatement.DELIMITER.SPACE + right;
 		      case EQ:
-		          return left + SPACE + JPQLStatement.Operator.EQ+ SPACE + right;
+		          return left + JPQLStatement.DELIMITER.SPACE + JPQLStatement.Operator.EQ+ JPQLStatement.DELIMITER.SPACE + right;
 		      case NE:
-		          return left + SPACE + JPQLStatement.Operator.NE + SPACE + right;
+		          return left + JPQLStatement.DELIMITER.SPACE + JPQLStatement.Operator.NE + JPQLStatement.DELIMITER.SPACE + right;
 		      case LT:
-		    	  return left + SPACE + JPQLStatement.Operator.LT + SPACE + right;
+		    	  return left + JPQLStatement.DELIMITER.SPACE + JPQLStatement.Operator.LT + JPQLStatement.DELIMITER.SPACE + right;
 		      case LE:
-		    	  return left + SPACE + JPQLStatement.Operator.LE + SPACE + right;
+		    	  return left + JPQLStatement.DELIMITER.SPACE + JPQLStatement.Operator.LE + JPQLStatement.DELIMITER.SPACE + right;
 		      case GT:
-		    	  return left + SPACE + JPQLStatement.Operator.GT + SPACE + right;
+		    	  return left + JPQLStatement.DELIMITER.SPACE + JPQLStatement.Operator.GT + JPQLStatement.DELIMITER.SPACE + right;
 		      case GE:
-		    	  return left + SPACE + JPQLStatement.Operator.GE + SPACE + right;
+		    	  return left + JPQLStatement.DELIMITER.SPACE + JPQLStatement.Operator.GE + JPQLStatement.DELIMITER.SPACE + right;
 		      case PROPERTY_ACCESS:
 		    	  throw new ODataNotImplementedException();
 		      default:
@@ -95,18 +92,30 @@ public class ODataExpressionParser {
 	      }
 
 	    case PROPERTY:
-	    	String returnStr = tableAlias+DOT+((PropertyExpression) whereExpression).getPropertyName();	
+	    	String returnStr = tableAlias+JPQLStatement.DELIMITER.PERIOD+((EdmProperty) ((PropertyExpression) whereExpression).getEdmProperty()).getMapping().getInternalName();	
 	    	return returnStr;
 
 	    case MEMBER:
-	    	final MemberExpression memberExpression = (MemberExpression) whereExpression;
-	        final PropertyExpression propertyExpressionPath = (PropertyExpression) memberExpression.getPath();	        
-	    	return tableAlias+DOT+propertyExpressionPath.getUriLiteral()+DOT+memberExpression.getProperty().getUriLiteral();	
+	        String memberExpStr = EMPTY;
+	        int i=0;
+	        MemberExpression member = null;
+	        CommonExpression tempExp = whereExpression;
+	        while (tempExp != null && tempExp.getKind() == ExpressionKind.MEMBER) {
+	          member = (MemberExpression) tempExp;
+	          if(i>0){
+	        	  memberExpStr = JPQLStatement.DELIMITER.PERIOD + memberExpStr;
+	          }
+	          i++;
+	          memberExpStr = ((EdmProperty) ((PropertyExpression) member.getProperty()).getEdmProperty()).getMapping().getInternalName() + memberExpStr;	          
+	          tempExp = member.getPath();
+	        }
+	        memberExpStr = ((EdmProperty) ((PropertyExpression) tempExp).getEdmProperty()).getMapping().getInternalName() + JPQLStatement.DELIMITER.PERIOD + memberExpStr;
+	        return tableAlias+JPQLStatement.DELIMITER.PERIOD+memberExpStr;
 
 	    case LITERAL:
 	    	final LiteralExpression literal = (LiteralExpression) whereExpression;
 		    final EdmSimpleType literalType = (EdmSimpleType) literal.getEdmType();
-		    String value = literalType.valueToString(literalType.valueOfString(literal.getUriLiteral(), EdmLiteralKind.URI, null, null), EdmLiteralKind.DEFAULT, null);
+		    String value = literalType.valueToString(literalType.valueOfString(literal.getUriLiteral(), EdmLiteralKind.URI, null, literalType.getDefaultType()), EdmLiteralKind.DEFAULT, null);
 		    return evaluateComparingExpression(value, literalType);
 
 	    
@@ -131,9 +140,9 @@ public class ODataExpressionParser {
 			for(OrderExpression orderBy : orderBys){
 				
 				try {
-					orderByField = orderBy.getExpression().getEdmType().getName();
+					orderByField =((EdmProperty) ((PropertyExpression) orderBy.getExpression()).getEdmProperty()).getMapping().getInternalName();
 					orderByDirection = (orderBy.getSortOrder() == SortOrder.asc)? EMPTY : "DESC";	//$NON-NLS-1$
-					orderByMap.put(tableAlias+DOT+orderByField, orderByDirection);
+					orderByMap.put(tableAlias+JPQLStatement.DELIMITER.PERIOD+orderByField, orderByDirection);
 				} catch (EdmException e) {
 					throw ODataJPARuntimeException.throwException(
 							ODataJPARuntimeException.RUNTIME_EXCEPTION.addContent(e
@@ -159,12 +168,12 @@ public class ODataExpressionParser {
 		int i = 0;
 		for(KeyPredicate keyPredicate : keyPredicates){
 			if(i > 0){
-				keyFilters.append(SPACE + JPQLStatement.Operator.AND + SPACE);
+				keyFilters.append(JPQLStatement.DELIMITER.SPACE + JPQLStatement.Operator.AND + JPQLStatement.DELIMITER.SPACE);
 			}
 			i++;
 			literal = keyPredicate.getLiteral();
 			try {
-				propertyName = keyPredicate.getProperty().getName();
+				propertyName = keyPredicate.getProperty().getMapping().getInternalName();
 				edmSimpleType = (EdmSimpleType)keyPredicate.getProperty().getType();
 			} catch (EdmException e) {
 				throw ODataJPARuntimeException.throwException(
@@ -173,7 +182,7 @@ public class ODataExpressionParser {
 			}
 			
 			literal = evaluateComparingExpression(literal, edmSimpleType);
-			keyFilters.append(tableAlias+DOT+propertyName + SPACE + JPQLStatement.Operator.EQ+ SPACE + literal);
+			keyFilters.append(tableAlias+JPQLStatement.DELIMITER.PERIOD+propertyName + JPQLStatement.DELIMITER.SPACE + JPQLStatement.Operator.EQ+ JPQLStatement.DELIMITER.SPACE + literal);
 		}
 		return keyFilters.toString();
 	}
@@ -205,13 +214,13 @@ public class ODataExpressionParser {
 		String propertyName = null;		
 		for(KeyPredicate keyPredicate : keyPredicates){
 			try {
-				propertyName = keyPredicate.getProperty().getName();				
+				propertyName = keyPredicate.getProperty().getMapping().getInternalName();				
 			} catch (EdmException e) {
 				throw ODataJPARuntimeException.throwException(
 						ODataJPARuntimeException.RUNTIME_EXCEPTION.addContent(e
 								.getMessage()), e);
 			}
-			orderByMap.put(tableAlias+DOT+propertyName, EMPTY);
+			orderByMap.put(tableAlias+JPQLStatement.DELIMITER.PERIOD+propertyName, EMPTY);
 		}
 		return orderByMap;
 	}
