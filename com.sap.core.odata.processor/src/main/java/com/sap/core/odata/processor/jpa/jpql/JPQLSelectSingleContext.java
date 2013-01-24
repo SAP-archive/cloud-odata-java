@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.sap.core.odata.api.edm.EdmException;
+import com.sap.core.odata.api.edm.EdmProperty;
 import com.sap.core.odata.api.uri.KeyPredicate;
 import com.sap.core.odata.api.uri.SelectItem;
 import com.sap.core.odata.api.uri.info.GetEntityUriInfo;
@@ -96,7 +97,7 @@ public class JPQLSelectSingleContext extends JPQLContext implements JPQLSelectSi
 				ArrayList<String> selectedFields = new ArrayList<String>(
 						selectItemList.size());
 				for (SelectItem item : selectItemList) {
-					selectedFields.add(item.getProperty().getName());
+					selectedFields.add(((EdmProperty)item.getProperty()).getMapping().getInternalName());
 				}
 
 				return selectedFields;
