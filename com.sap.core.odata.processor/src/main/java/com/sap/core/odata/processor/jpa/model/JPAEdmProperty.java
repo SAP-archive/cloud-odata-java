@@ -27,6 +27,7 @@ import com.sap.core.odata.processor.jpa.api.model.JPAEdmComplexPropertyView;
 import com.sap.core.odata.processor.jpa.api.model.JPAEdmComplexTypeView;
 import com.sap.core.odata.processor.jpa.api.model.JPAEdmEntityTypeView;
 import com.sap.core.odata.processor.jpa.api.model.JPAEdmKeyView;
+import com.sap.core.odata.processor.jpa.api.model.JPAEdmNavigationPropertyView;
 import com.sap.core.odata.processor.jpa.api.model.JPAEdmPropertyView;
 import com.sap.core.odata.processor.jpa.api.model.JPAEdmReferentialContraintView;
 import com.sap.core.odata.processor.jpa.api.model.JPAEdmSchemaView;
@@ -38,6 +39,7 @@ public class JPAEdmProperty extends JPAEdmBaseViewImpl implements
 	private JPAEdmSchemaView schemaView;
 	private JPAEdmEntityTypeView entityTypeView;
 	private JPAEdmComplexTypeView complexTypeView;
+	private JPAEdmNavigationPropertyView navigationPropertyView = null;
 
 	private JPAEdmKeyView keyView;
 	private List<Property> properties;
@@ -52,6 +54,7 @@ public class JPAEdmProperty extends JPAEdmBaseViewImpl implements
 		this.entityTypeView = this.schemaView.getJPAEdmEntityContainerView()
 				.getJPAEdmEntitySetView().getJPAEdmEntityTypeView();
 		this.complexTypeView = this.schemaView.getJPAEdmComplexTypeView();
+		navigationPropertyView = new JPAEdmNavigationProperty(schemaView);
 		isBuildModeComplexType = false;
 	}
 
@@ -91,6 +94,12 @@ public class JPAEdmProperty extends JPAEdmBaseViewImpl implements
 	@Override
 	public ComplexProperty getEdmComplexProperty() {
 		return currentComplexProperty;
+	}
+	
+	@Override
+	public JPAEdmNavigationPropertyView getJPAEdmNavigationPropertyView()
+	{
+		return navigationPropertyView;
 	}
 
 	private class JPAEdmPropertyBuilder implements JPAEdmBuilder {
@@ -235,12 +244,16 @@ public class JPAEdmProperty extends JPAEdmBaseViewImpl implements
 						associationView.addJPAEdmAssociationView(associationViewLocal);
 					}
 					
-					if(false)
+					JPAEdmReferentialContraintView refView = new JPAEdmReferentialConstraint(associationView,JPAEdmProperty.this);
+//					refView.getBuilder().build( );
+//					associationView.addJPAEdmRefConstraintView(refView);
+					if(navigationPropertyView == null)
 					{
-						JPAEdmReferentialContraintView refView = new JPAEdmReferentialConstraint(associationView,JPAEdmProperty.this);
-						refView.getBuilder().build( );
-						associationView.addJPAEdmRefConstraintView(refView);
+						navigationPropertyView = new JPAEdmNavigationProperty(schemaView);
 					}
+					JPAEdmNavigationPropertyView localNavigationPropertyView = new JPAEdmNavigationProperty(schemaView,associationView,JPAEdmProperty.this);
+					localNavigationPropertyView.getBuilder().build();
+					navigationPropertyView.addJPAEdmNavigationPropertyView(localNavigationPropertyView);
 					break;
 				default:
 					break;

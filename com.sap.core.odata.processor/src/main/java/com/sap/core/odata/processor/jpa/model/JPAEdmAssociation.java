@@ -48,17 +48,21 @@ public class JPAEdmAssociation extends JPAEdmBaseViewImpl implements
 	@Override
 	public Association searchAssociation(JPAEdmAssociationEndView view) {
 		for (Association association : consistentAssociatonList)
-			if (view.compare(association.getEnd1(),
-					association.getEnd2()))
+		{
+			if (view.compare(association.getEnd1(), association.getEnd2()))
+			{
+				currentAssociation = association;
 				return association;
+			}
+		}
 
 		return null;
 	}
 
 	@Override
 	public void addJPAEdmAssociationView(JPAEdmAssociationView associationView) {
-		consistentAssociatonList.add(associationView.getEdmAssociation());
-
+		currentAssociation = associationView.getEdmAssociation();
+		consistentAssociatonList.add(currentAssociation);
 	}
 
 	@Override
@@ -72,12 +76,14 @@ public class JPAEdmAssociation extends JPAEdmBaseViewImpl implements
 
 		@Override
 		public void build() throws ODataJPAModelException {
-			
+
 			if (searchAssociation(associationEndView) == null) {
 				currentAssociation = new Association();
-				currentAssociation.setEnd1(associationEndView.getAssociationEnd1());
-				currentAssociation.setEnd2(associationEndView.getAssociationEnd2());
-				
+				currentAssociation.setEnd1(associationEndView
+						.getAssociationEnd1());
+				currentAssociation.setEnd2(associationEndView
+						.getAssociationEnd2());
+
 				JPAEdmNameBuilder.build(JPAEdmAssociation.this);
 				consistentAssociatonList.add(currentAssociation);
 			}

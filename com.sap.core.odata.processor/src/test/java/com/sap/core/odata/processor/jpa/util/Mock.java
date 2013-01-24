@@ -18,8 +18,8 @@ public class Mock {
 	public static JPAEdmBuilder mockjpaEdmBuilder() throws ODataJPAModelException
 	{
 		JPAEdmBuilder builder = EasyMock.createMock(JPAEdmBuilder.class);
-		EasyMock.expect(builder.getSchemas()).andReturn(mockSchemas()).times(10);
-		EasyMock.replay(builder);
+		/*EasyMock.expect(builder.getSchemas()).andReturn(mockSchemas()).times(10);
+		EasyMock.replay(builder);*/
 		return builder;
 		
 	}

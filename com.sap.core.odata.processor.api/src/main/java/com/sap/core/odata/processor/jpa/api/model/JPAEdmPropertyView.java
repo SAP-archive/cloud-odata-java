@@ -17,4 +17,6 @@ public interface JPAEdmPropertyView extends JPAEdmBaseView {
 	
 	Attribute<?, ?> getJPAAttribute( );
 
+	JPAEdmNavigationPropertyView getJPAEdmNavigationPropertyView();
+
 }
