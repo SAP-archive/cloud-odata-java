@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.sap.core.odata.api.edm.FullQualifiedName;
 import com.sap.core.odata.api.edm.provider.ComplexType;
+import com.sap.core.odata.api.edm.provider.Property;
 
 public interface JPAEdmComplexTypeView extends JPAEdmBaseView {
 	public ComplexType getEdmComplexType();
@@ -17,5 +18,7 @@ public interface JPAEdmComplexTypeView extends JPAEdmBaseView {
 	public void addCompleTypeView(JPAEdmComplexTypeView view);
 
 	public ComplexType searchComplexType(FullQualifiedName type);
+	
+	public List<Property> expandEdmComplexType(ComplexType complexType,List<Property> expandedPropertyList);
 
 }

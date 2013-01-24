@@ -7,7 +7,10 @@ import java.util.List;
 import javax.persistence.metamodel.EmbeddableType;
 
 import com.sap.core.odata.api.edm.FullQualifiedName;
+import com.sap.core.odata.api.edm.provider.ComplexProperty;
 import com.sap.core.odata.api.edm.provider.ComplexType;
+import com.sap.core.odata.api.edm.provider.Property;
+import com.sap.core.odata.api.edm.provider.SimpleProperty;
 import com.sap.core.odata.processor.jpa.access.model.JPAEdmNameBuilder;
 import com.sap.core.odata.processor.jpa.api.access.JPAEdmBuilder;
 import com.sap.core.odata.processor.jpa.api.model.JPAEdmComplexTypeView;
@@ -57,12 +60,16 @@ public class JPAEdmComplexType extends JPAEdmBaseViewImpl implements
 	@Override
 	public ComplexType searchComplexType(FullQualifiedName type) {
 		String name = type.getName();
+		return searchComplexTypeByName(name);
+
+	}
+	
+	private ComplexType searchComplexTypeByName(String name){
 		for (ComplexType complexType : consistentComplextTypes)
 			if (complexType.getName().equals(name))
 				return complexType;
 
 		return null;
-
 	}
 	
 	@Override
@@ -73,6 +80,23 @@ public class JPAEdmComplexType extends JPAEdmBaseViewImpl implements
 			consistentComplextTypes.add(view.getEdmComplexType());
 			searchMap.put(searchKey, view.getEdmComplexType());
 		}
+	}
+	
+	@Override
+	public void expandEdmComplexType(ComplexType complexType,List<Property> expandedList){
+		
+		if(expandedList == null) expandedList = new ArrayList<Property>();
+		for(Property property : complexType.getProperties())
+		{
+			try{
+			SimpleProperty simpleProperty = (SimpleProperty) property;
+			expandedList.add(simpleProperty);
+			}catch (ClassCastException e){
+				ComplexProperty complexProperty = (ComplexProperty) property;
+				expandEdmComplexType(searchComplexTypeByName(property.getName()),expandedList);
+			}
+		}
+		
 	}
 
 	private class JPAEdmComplexTypeBuilder implements JPAEdmBuilder {

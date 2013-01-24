@@ -44,7 +44,7 @@ public class JPAEdmProperty extends JPAEdmBaseViewImpl implements
 	private SimpleProperty currentSimpleProperty = null;
 	private ComplexProperty currentComplexProperty = null;
 	private Attribute<?, ?> currentAttribute;
-	private boolean isBuildModeComplexType = false;
+	private boolean isBuildModeComplexType;
 
 	public JPAEdmProperty(JPAEdmSchemaView view) {
 		super(view);
@@ -52,6 +52,7 @@ public class JPAEdmProperty extends JPAEdmBaseViewImpl implements
 		this.entityTypeView = this.schemaView.getJPAEdmEntityContainerView()
 				.getJPAEdmEntitySetView().getJPAEdmEntityTypeView();
 		this.complexTypeView = this.schemaView.getJPAEdmComplexTypeView();
+		isBuildModeComplexType = false;
 	}
 
 	public JPAEdmProperty(JPAEdmSchemaView schemaView,
@@ -196,17 +197,7 @@ public class JPAEdmProperty extends JPAEdmBaseViewImpl implements
 
 					}
 
-					currentComplexProperty = new ComplexProperty();
-					JPAEdmNameBuilder
-							.build((JPAEdmComplexPropertyView) JPAEdmProperty.this,JPAEdmProperty.this);
-					currentComplexProperty.setType(new FullQualifiedName(
-							schemaView.getEdmSchema().getNamespace(),
-							complexType.getName()));
-					currentComplexProperty
-							.setFacets(setFacets(currentAttribute));
-					properties.add(currentComplexProperty);
-
-					if (!isBuildModeComplexType
+					if (isBuildModeComplexType == false
 							&& entityTypeView.getJPAEntityType().getIdType()
 									.getJavaType()
 									.equals(currentAttribute.getJavaType())) {
@@ -214,6 +205,18 @@ public class JPAEdmProperty extends JPAEdmBaseViewImpl implements
 						if (keyView == null)
 							keyView = new JPAEdmKey(complexTypeView,
 									JPAEdmProperty.this);
+						keyView.getBuilder().build();
+					}
+					else{
+						currentComplexProperty = new ComplexProperty();
+						JPAEdmNameBuilder
+								.build((JPAEdmComplexPropertyView) JPAEdmProperty.this,JPAEdmProperty.this);
+						currentComplexProperty.setType(new FullQualifiedName(
+								schemaView.getEdmSchema().getNamespace(),
+								complexType.getName()));
+						currentComplexProperty
+								.setFacets(setFacets(currentAttribute));
+						properties.add(currentComplexProperty);
 					}
 
 					break;
