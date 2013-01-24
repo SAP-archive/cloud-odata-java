@@ -58,24 +58,24 @@ public class EdmInt64 extends AbstractSimpleType {
       throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_ILLEGAL_CONTENT.addContent(value), e);
     }
 
-    if (returnType == Long.class)
+    if (returnType.isAssignableFrom(Long.class))
       return returnType.cast(valueLong);
-    else if (returnType == Byte.class)
+    else if (returnType.isAssignableFrom(Byte.class))
       if (valueLong >= Byte.MIN_VALUE && valueLong <= Byte.MAX_VALUE)
         return returnType.cast(valueLong.byteValue());
       else
-        throw new EdmSimpleTypeException(EdmSimpleTypeException.VALUE_TYPE_NOT_SUPPORTED.addContent(returnType));
-    else if (returnType == Short.class)
+        throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_UNCONVERTIBLE_TO_VALUE_TYPE.addContent(value, returnType));
+    else if (returnType.isAssignableFrom(Short.class))
       if (valueLong >= Short.MIN_VALUE && valueLong <= Short.MAX_VALUE)
-        return returnType.cast(valueLong.byteValue());
+        return returnType.cast(valueLong.shortValue());
       else
-        throw new EdmSimpleTypeException(EdmSimpleTypeException.VALUE_TYPE_NOT_SUPPORTED.addContent(returnType));
-    else if (returnType == Integer.class)
+        throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_UNCONVERTIBLE_TO_VALUE_TYPE.addContent(value, returnType));
+    else if (returnType.isAssignableFrom(Integer.class))
       if (valueLong >= Integer.MIN_VALUE && valueLong <= Integer.MAX_VALUE)
-        return returnType.cast(valueLong.byteValue());
+        return returnType.cast(valueLong.intValue());
       else
-        throw new EdmSimpleTypeException(EdmSimpleTypeException.VALUE_TYPE_NOT_SUPPORTED.addContent(returnType));
-    else if (returnType == BigInteger.class)
+        throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_UNCONVERTIBLE_TO_VALUE_TYPE.addContent(value, returnType));
+    else if (returnType.isAssignableFrom(BigInteger.class))
       return returnType.cast(BigInteger.valueOf(valueLong));
     else
       throw new EdmSimpleTypeException(EdmSimpleTypeException.VALUE_TYPE_NOT_SUPPORTED.addContent(returnType));

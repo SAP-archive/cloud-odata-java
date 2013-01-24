@@ -28,7 +28,12 @@ public class EdmGuid extends AbstractSimpleType {
   public boolean validate(final String value, final EdmLiteralKind literalKind, final EdmFacets facets) {
     if (value == null)
       return facets == null || facets.isNullable() == null || facets.isNullable();
-    else if (literalKind == EdmLiteralKind.URI)
+    else
+      return validateLiteral(value, literalKind);
+  }
+
+  private boolean validateLiteral(final String value, final EdmLiteralKind literalKind) {
+    if (literalKind == EdmLiteralKind.URI)
       return value.matches(toUriLiteral(PATTERN));
     else
       return value.matches(PATTERN);
@@ -36,23 +41,22 @@ public class EdmGuid extends AbstractSimpleType {
 
   @Override
   public <T> T valueOfString(final String value, final EdmLiteralKind literalKind, final EdmFacets facets, final Class<T> returnType) throws EdmSimpleTypeException {
+    if (value == null) {
+      checkNullLiteralAllowed(facets);
+      return null;
+    }
+
     if (literalKind == null)
       throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_KIND_MISSING);
 
     UUID result;
-    if (validate(value, literalKind, facets))
-      if (value == null)
-        return null;
-      else
-        result = UUID.fromString(
-            literalKind == EdmLiteralKind.URI ? value.substring(5, value.length() - 1) : value);
-
-    else if (value == null)
-      throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_NULL_NOT_ALLOWED);
+    if (validateLiteral(value, literalKind))
+      result = UUID.fromString(
+          literalKind == EdmLiteralKind.URI ? value.substring(5, value.length() - 1) : value);
     else
       throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_ILLEGAL_CONTENT.addContent(value));
 
-    if (returnType == UUID.class)
+    if (returnType.isAssignableFrom(UUID.class))
       return returnType.cast(result);
     else
       throw new EdmSimpleTypeException(EdmSimpleTypeException.VALUE_TYPE_NOT_SUPPORTED.addContent(returnType));

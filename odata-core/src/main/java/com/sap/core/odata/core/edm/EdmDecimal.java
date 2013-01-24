@@ -50,64 +50,74 @@ public class EdmDecimal extends AbstractSimpleType {
     if (literalKind == null)
       return false;
 
+    return validateLiteral(value, literalKind) && validatePrecisionAndScale(value, facets);
+  }
+
+  private static boolean validateLiteral(final String value, final EdmLiteralKind literalKind) {
+    final Matcher matcher = PATTERN.matcher(value);
+    return matcher.matches()
+        && (literalKind == EdmLiteralKind.URI) != (matcher.group(3) == null);
+  }
+
+  private static final boolean validatePrecisionAndScale(final String value, final EdmFacets facets) {
+    if (facets == null || facets.getPrecision() == null && facets.getScale() == null)
+      return true;
+
     final Matcher matcher = PATTERN.matcher(value);
     if (!matcher.matches())
       return false;
-    if ((literalKind == EdmLiteralKind.URI) == (matcher.group(3) == null))
-      return false;
-
     final int significantIntegerDigits = matcher.group(1).equals("0") ? 0 : matcher.group(1).length();
     final int decimals = matcher.group(2) == null ? 0 : matcher.group(2).length() - 1;
-    return facets == null
-        || (facets.getPrecision() == null || facets.getPrecision() >= significantIntegerDigits + decimals)
+    return (facets.getPrecision() == null || facets.getPrecision() >= significantIntegerDigits + decimals)
         && (facets.getScale() == null || facets.getScale() >= decimals);
   }
 
   @Override
   public <T> T valueOfString(final String value, final EdmLiteralKind literalKind, final EdmFacets facets, final Class<T> returnType) throws EdmSimpleTypeException {
+    if (value == null) {
+      checkNullLiteralAllowed(facets);
+      return null;
+    }
+
     if (literalKind == null)
       throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_KIND_MISSING);
 
-    if (!validate(value, literalKind, facets))
-      if (value == null)
-        throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_NULL_NOT_ALLOWED);
-      else
-        throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_ILLEGAL_CONTENT.addContent(value));
-
-    if (value == null)
-      return null;
+    if (!validateLiteral(value, literalKind))
+      throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_ILLEGAL_CONTENT.addContent(value));
+    if (!validatePrecisionAndScale(value, facets))
+      throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_FACETS_NOT_MATCHED.addContent(value, facets));
 
     final BigDecimal valueBigDecimal = new BigDecimal(
         literalKind == EdmLiteralKind.URI ? value.substring(0, value.length() - 1) : value);
 
     try {
-      if (returnType == BigDecimal.class)
+      if (returnType.isAssignableFrom(BigDecimal.class))
         return returnType.cast(valueBigDecimal);
-      else if (returnType == BigInteger.class)
+      else if (returnType.isAssignableFrom(BigInteger.class))
         return returnType.cast(valueBigDecimal.toBigIntegerExact());
-      else if (returnType == Long.class)
+      else if (returnType.isAssignableFrom(Long.class))
         return returnType.cast(valueBigDecimal.longValueExact());
-      else if (returnType == Integer.class)
+      else if (returnType.isAssignableFrom(Integer.class))
         return returnType.cast(valueBigDecimal.intValueExact());
-      else if (returnType == Short.class)
+      else if (returnType.isAssignableFrom(Short.class))
         return returnType.cast(valueBigDecimal.shortValueExact());
-      else if (returnType == Byte.class)
+      else if (returnType.isAssignableFrom(Byte.class))
         return returnType.cast(valueBigDecimal.byteValueExact());
-      else if (returnType == Double.class)
+      else if (returnType.isAssignableFrom(Double.class))
         if (Double.isInfinite(valueBigDecimal.doubleValue()))
-          throw new EdmSimpleTypeException(EdmSimpleTypeException.VALUE_TYPE_NOT_SUPPORTED.addContent(returnType));
+          throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_UNCONVERTIBLE_TO_VALUE_TYPE.addContent(value, returnType));
         else
           return returnType.cast(valueBigDecimal.doubleValue());
-      else if (returnType == Float.class)
+      else if (returnType.isAssignableFrom(Float.class))
         if (Float.isInfinite(valueBigDecimal.floatValue()))
-          throw new EdmSimpleTypeException(EdmSimpleTypeException.VALUE_TYPE_NOT_SUPPORTED.addContent(returnType));
+          throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_UNCONVERTIBLE_TO_VALUE_TYPE.addContent(value, returnType));
         else
           return returnType.cast(valueBigDecimal.floatValue());
       else
         throw new EdmSimpleTypeException(EdmSimpleTypeException.VALUE_TYPE_NOT_SUPPORTED.addContent(returnType));
 
     } catch (ArithmeticException e) {
-      throw new EdmSimpleTypeException(EdmSimpleTypeException.VALUE_TYPE_NOT_SUPPORTED.addContent(returnType), e);
+      throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_UNCONVERTIBLE_TO_VALUE_TYPE.addContent(value, returnType));
     }
   }
 

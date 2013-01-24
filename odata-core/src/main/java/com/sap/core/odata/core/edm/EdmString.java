@@ -43,12 +43,12 @@ public class EdmString extends AbstractSimpleType {
     if (facets != null) {
       if (facets.isUnicode() != null && !facets.isUnicode())
         if (!result.matches("\\p{ASCII}*"))
-          throw new EdmSimpleTypeException(EdmSimpleTypeException.VALUE_FACETS_NOT_MATCHED.addContent(value, facets));
+          throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_FACETS_NOT_MATCHED.addContent(value, facets));
       if (facets.getMaxLength() != null && facets.getMaxLength() < result.length())
-        throw new EdmSimpleTypeException(EdmSimpleTypeException.VALUE_FACETS_NOT_MATCHED.addContent(value, facets));
+        throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_FACETS_NOT_MATCHED.addContent(value, facets));
     }
 
-    if (returnType == String.class)
+    if (returnType.isAssignableFrom(String.class))
       return returnType.cast(result);
     else
       throw new EdmSimpleTypeException(EdmSimpleTypeException.VALUE_TYPE_NOT_SUPPORTED.addContent(returnType));
