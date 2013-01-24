@@ -46,13 +46,13 @@ public class EdmSByte extends AbstractSimpleType {
       throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_ILLEGAL_CONTENT.addContent(value), e);
     }
 
-    if (returnType == Byte.class)
+    if (returnType.isAssignableFrom(Byte.class))
       return returnType.cast(valueByte);
-    else if (returnType == Short.class)
+    else if (returnType.isAssignableFrom(Short.class))
       return returnType.cast(valueByte.shortValue());
-    else if (returnType == Integer.class)
+    else if (returnType.isAssignableFrom(Integer.class))
       return returnType.cast(valueByte.intValue());
-    else if (returnType == Long.class)
+    else if (returnType.isAssignableFrom(Long.class))
       return returnType.cast(valueByte.longValue());
     else
       throw new EdmSimpleTypeException(EdmSimpleTypeException.VALUE_TYPE_NOT_SUPPORTED.addContent(returnType));

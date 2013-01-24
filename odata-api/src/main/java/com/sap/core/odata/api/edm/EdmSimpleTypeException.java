@@ -2,6 +2,9 @@ package com.sap.core.odata.api.edm;
 
 import com.sap.core.odata.api.exception.MessageReference;
 
+/**
+ * @author SAP AG
+ */
 public class EdmSimpleTypeException extends EdmException {
 
   private static final long serialVersionUID = 1L;
@@ -14,6 +17,7 @@ public class EdmSimpleTypeException extends EdmException {
   public static final MessageReference LITERAL_NULL_NOT_ALLOWED = createMessageReference(EdmSimpleTypeException.class, "LITERAL_NULL_NOT_ALLOWED");
   public static final MessageReference LITERAL_ILLEGAL_CONTENT = createMessageReference(EdmSimpleTypeException.class, "LITERAL_ILLEGAL_CONTENT");
   public static final MessageReference LITERAL_FACETS_NOT_MATCHED = createMessageReference(EdmSimpleTypeException.class, "LITERAL_FACETS_NOT_MATCHED");
+  public static final MessageReference LITERAL_UNCONVERTIBLE_TO_VALUE_TYPE = createMessageReference(EdmSimpleTypeException.class, "LITERAL_UNCONVERTIBLE_TO_VALUE_TYPE");
 
   public static final MessageReference VALUE_TYPE_NOT_SUPPORTED = createMessageReference(EdmSimpleTypeException.class, "VALUE_TYPE_NOT_SUPPORTED");
   public static final MessageReference VALUE_NULL_NOT_ALLOWED = createMessageReference(EdmSimpleTypeException.class, "VALUE_NULL_NOT_ALLOWED");

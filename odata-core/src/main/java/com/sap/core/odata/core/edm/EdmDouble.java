@@ -57,14 +57,15 @@ public class EdmDouble extends AbstractSimpleType {
       throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_KIND_MISSING);
 
     Double result = null;
-    if (value.equals("-INF"))
+    // Handle special values first.
+    if (value.equals("-INF")) {
       result = Double.NEGATIVE_INFINITY;
-    else if (value.equals("INF"))
+    } else if (value.equals("INF")) {
       result = Double.POSITIVE_INFINITY;
-    else if (value.equals("NaN"))
+    } else if (value.equals("NaN")) {
       result = Double.NaN;
-
-    if (result == null) {
+    } else {
+      // Now only "normal" numbers remain.
       final Matcher matcher = PATTERN.matcher(value);
       if (!matcher.matches()
           || (literalKind == EdmLiteralKind.URI) == (matcher.group(1) == null))
@@ -79,44 +80,45 @@ public class EdmDouble extends AbstractSimpleType {
       // if we see them here.
       if (result.isInfinite())
         throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_ILLEGAL_CONTENT.addContent(value));
+    }
 
-      if (returnType == Double.class)
-        return returnType.cast(result);
-      else if (returnType == Float.class)
+    if (returnType.isAssignableFrom(Double.class))
+      return returnType.cast(result);
+    else if (returnType.isAssignableFrom(Float.class))
+      if (Double.valueOf(result.floatValue()) == result)
         return returnType.cast(result.floatValue());
-      else if (returnType == BigDecimal.class)
+      else
+        throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_UNCONVERTIBLE_TO_VALUE_TYPE.addContent(value, returnType));
+    else if (returnType.isAssignableFrom(BigDecimal.class))
+      if (result.isInfinite() || result.isNaN())
+        throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_UNCONVERTIBLE_TO_VALUE_TYPE.addContent(value, returnType));
+      else
         return returnType.cast(BigDecimal.valueOf(result));
-      else if (returnType == Long.class)
-        if (Math.floor(result) == result && result >= Long.MIN_VALUE && result <= Long.MAX_VALUE)
+    else if (returnType.isAssignableFrom(Long.class) || returnType.isAssignableFrom(Integer.class)
+        || returnType.isAssignableFrom(Short.class) || returnType.isAssignableFrom(Byte.class))
+      if (result.isInfinite() || result.isNaN() || Math.floor(result) != result)
+        throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_UNCONVERTIBLE_TO_VALUE_TYPE.addContent(value, returnType));
+      else if (returnType.isAssignableFrom(Long.class))
+        if (result >= Long.MIN_VALUE && result <= Long.MAX_VALUE)
           return returnType.cast(result.longValue());
         else
-          throw new EdmSimpleTypeException(EdmSimpleTypeException.VALUE_TYPE_NOT_SUPPORTED.addContent(returnType));
-      else if (returnType == Integer.class)
-        if (Math.floor(result) == result && result >= Integer.MIN_VALUE && result <= Integer.MAX_VALUE)
+          throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_UNCONVERTIBLE_TO_VALUE_TYPE.addContent(value, returnType));
+      else if (returnType.isAssignableFrom(Integer.class))
+        if (result >= Integer.MIN_VALUE && result <= Integer.MAX_VALUE)
           return returnType.cast(result.intValue());
         else
-          throw new EdmSimpleTypeException(EdmSimpleTypeException.VALUE_TYPE_NOT_SUPPORTED.addContent(returnType));
-      else if (returnType == Short.class)
-        if (Math.floor(result) == result && result >= Short.MIN_VALUE && result <= Short.MAX_VALUE)
+          throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_UNCONVERTIBLE_TO_VALUE_TYPE.addContent(value, returnType));
+      else if (returnType.isAssignableFrom(Short.class))
+        if (result >= Short.MIN_VALUE && result <= Short.MAX_VALUE)
           return returnType.cast(result.shortValue());
         else
-          throw new EdmSimpleTypeException(EdmSimpleTypeException.VALUE_TYPE_NOT_SUPPORTED.addContent(returnType));
-      else if (returnType == Byte.class)
-        if (Math.floor(result) == result && result >= Byte.MIN_VALUE && result <= Byte.MAX_VALUE)
-          return returnType.cast(result.byteValue());
-        else
-          throw new EdmSimpleTypeException(EdmSimpleTypeException.VALUE_TYPE_NOT_SUPPORTED.addContent(returnType));
+          throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_UNCONVERTIBLE_TO_VALUE_TYPE.addContent(value, returnType));
+      else if (result >= Byte.MIN_VALUE && result <= Byte.MAX_VALUE)
+        return returnType.cast(result.byteValue());
       else
-        throw new EdmSimpleTypeException(EdmSimpleTypeException.VALUE_TYPE_NOT_SUPPORTED.addContent(returnType));
-
-    } else {
-     if (returnType == Double.class)
-       return returnType.cast(result);
-     else if (returnType == Float.class)
-       return returnType.cast(result.floatValue());
-     else
-       throw new EdmSimpleTypeException(EdmSimpleTypeException.VALUE_TYPE_NOT_SUPPORTED.addContent(returnType));
-    }
+        throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_UNCONVERTIBLE_TO_VALUE_TYPE.addContent(value, returnType));
+    else
+      throw new EdmSimpleTypeException(EdmSimpleTypeException.VALUE_TYPE_NOT_SUPPORTED.addContent(returnType));
   }
 
   @Override

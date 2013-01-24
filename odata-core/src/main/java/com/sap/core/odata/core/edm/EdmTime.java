@@ -53,11 +53,11 @@ public class EdmTime extends AbstractSimpleType {
     else
       valueCalendar = parseLiteral(value, facets);
 
-    if (returnType == Calendar.class)
+    if (returnType.isAssignableFrom(Calendar.class))
       return returnType.cast(valueCalendar);
-    else if (returnType == Long.class)
+    else if (returnType.isAssignableFrom(Long.class))
       return returnType.cast(valueCalendar.getTimeInMillis());
-    else if (returnType == Date.class)
+    else if (returnType.isAssignableFrom(Date.class))
       return returnType.cast(valueCalendar.getTime());
     else
       throw new EdmSimpleTypeException(EdmSimpleTypeException.VALUE_TYPE_NOT_SUPPORTED.addContent(returnType));

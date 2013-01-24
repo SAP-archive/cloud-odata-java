@@ -52,11 +52,11 @@ public class EdmDateTime extends AbstractSimpleType {
         } catch (NumberFormatException e) {
           throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_ILLEGAL_CONTENT.addContent(value), e);
         }
-        if (returnType == Long.class)
+        if (returnType.isAssignableFrom(Long.class))
           return returnType.cast(millis);
-        else if (returnType == Date.class)
+        else if (returnType.isAssignableFrom(Date.class))
           return returnType.cast(new Date(millis));
-        else if (returnType == null || returnType != Calendar.class)
+        else if (!returnType.isAssignableFrom(Calendar.class))
           throw new EdmSimpleTypeException(EdmSimpleTypeException.VALUE_TYPE_NOT_SUPPORTED.addContent(returnType));
 
         Calendar dateTimeValue = Calendar.getInstance();
@@ -75,11 +75,11 @@ public class EdmDateTime extends AbstractSimpleType {
     else
       calendarValue = parseLiteral(value, facets);
 
-    if (returnType == Calendar.class)
+    if (returnType.isAssignableFrom(Calendar.class))
       return returnType.cast(calendarValue);
-    else if (returnType == Long.class)
+    else if (returnType.isAssignableFrom(Long.class))
       return returnType.cast(calendarValue.getTimeInMillis());
-    else if (returnType == Date.class)
+    else if (returnType.isAssignableFrom(Date.class))
       return returnType.cast(calendarValue.getTime());
     else
       throw new EdmSimpleTypeException(EdmSimpleTypeException.VALUE_TYPE_NOT_SUPPORTED.addContent(returnType));

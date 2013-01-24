@@ -32,25 +32,29 @@ public class EdmBoolean extends AbstractSimpleType {
     if (value == null)
       return facets == null || facets.isNullable() == null || facets.isNullable();
     else
-      return "true".equals(value) || "1".equals(value)
-          || "false".equals(value) || "0".equals(value);
+      return validateLiteral(value);
+  }
+
+  private static boolean validateLiteral(final String value) {
+    return "true".equals(value) || "1".equals(value)
+        || "false".equals(value) || "0".equals(value);
   }
 
   @Override
   public <T> T valueOfString(final String value, final EdmLiteralKind literalKind, final EdmFacets facets, final Class<T> returnType) throws EdmSimpleTypeException {
+    if (value == null) {
+      checkNullLiteralAllowed(facets);
+      return null;
+    }
+
     if (literalKind == null)
       throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_KIND_MISSING);
 
-    if (validate(value, literalKind, facets))
-      if (value == null)
-        return null;
+    if (validateLiteral(value))
+      if (returnType.isAssignableFrom( Boolean.class))
+        return returnType.cast(Boolean.valueOf("true".equals(value) || "1".equals(value)));
       else
-        if (returnType == Boolean.class)
-          return returnType.cast(Boolean.valueOf("true".equals(value) || "1".equals(value)));
-        else
-          throw new EdmSimpleTypeException(EdmSimpleTypeException.VALUE_TYPE_NOT_SUPPORTED.addContent(returnType));
-    else if (value == null)
-      throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_NULL_NOT_ALLOWED);
+        throw new EdmSimpleTypeException(EdmSimpleTypeException.VALUE_TYPE_NOT_SUPPORTED.addContent(returnType));
     else
       throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_ILLEGAL_CONTENT.addContent(value));
   }

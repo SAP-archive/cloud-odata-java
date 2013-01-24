@@ -49,19 +49,19 @@ public class EdmInt32 extends AbstractSimpleType {
       throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_ILLEGAL_CONTENT.addContent(value), e);
     }
 
-    if (returnType == Integer.class)
+    if (returnType.isAssignableFrom(Integer.class))
       return returnType.cast(valueInteger);
-    else if (returnType == Byte.class)
+    else if (returnType.isAssignableFrom(Byte.class))
       if (valueInteger >= Byte.MIN_VALUE && valueInteger <= Byte.MAX_VALUE)
         return returnType.cast(valueInteger.byteValue());
       else
-        throw new EdmSimpleTypeException(EdmSimpleTypeException.VALUE_TYPE_NOT_SUPPORTED.addContent(returnType));
-    else if (returnType == Short.class)
+        throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_UNCONVERTIBLE_TO_VALUE_TYPE.addContent(value, returnType));
+    else if (returnType.isAssignableFrom(Short.class))
       if (valueInteger >= Short.MIN_VALUE && valueInteger <= Short.MAX_VALUE)
         return returnType.cast(valueInteger.shortValue());
       else
-        throw new EdmSimpleTypeException(EdmSimpleTypeException.VALUE_TYPE_NOT_SUPPORTED.addContent(returnType));
-    else if (returnType == Long.class)
+        throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_UNCONVERTIBLE_TO_VALUE_TYPE.addContent(value, returnType));
+    else if (returnType.isAssignableFrom(Long.class))
       return returnType.cast(valueInteger.longValue());
     else
       throw new EdmSimpleTypeException(EdmSimpleTypeException.VALUE_TYPE_NOT_SUPPORTED.addContent(returnType));

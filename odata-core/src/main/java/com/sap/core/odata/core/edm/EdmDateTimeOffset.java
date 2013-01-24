@@ -103,11 +103,11 @@ public class EdmDateTimeOffset extends AbstractSimpleType {
       }
     }
 
-    if (returnType == Calendar.class)
+    if (returnType.isAssignableFrom(Calendar.class))
       return returnType.cast(dateTimeValue);
-    else if (returnType == Long.class)
+    else if (returnType.isAssignableFrom(Long.class))
       return returnType.cast(dateTimeValue.getTimeInMillis());
-    else if (returnType == Date.class)
+    else if (returnType.isAssignableFrom(Date.class))
       return returnType.cast(dateTimeValue.getTime());
     else
       throw new EdmSimpleTypeException(EdmSimpleTypeException.VALUE_TYPE_NOT_SUPPORTED.addContent(returnType));
