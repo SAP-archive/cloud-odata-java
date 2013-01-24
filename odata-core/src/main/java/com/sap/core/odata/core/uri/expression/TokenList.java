@@ -152,12 +152,14 @@ public class TokenList implements Iterator<Token>
   }
 
   @Override
-  public boolean hasNext() {
+  public boolean hasNext() 
+  {
     return (currentToken < tokens.size());
   }
 
   @Override
-  public Token next() {
+  public Token next() 
+  {
     if (currentToken >= tokens.size())
       return null;
 
@@ -167,11 +169,13 @@ public class TokenList implements Iterator<Token>
   }
 
   @Override
-  public void remove() {
+  public void remove() 
+  {
     // TODO Auto-generated method stub
   }
 
-  public Token elementAt(int index) {
+  public Token elementAt(int index) 
+  {
 
     return tokens.get(index);
   }

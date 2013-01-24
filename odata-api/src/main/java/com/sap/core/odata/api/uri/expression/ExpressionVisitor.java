@@ -15,6 +15,19 @@ import com.sap.core.odata.api.edm.EdmTyped;
 public interface ExpressionVisitor
 {
   /**
+   * Visits a filter expression
+   * @param filterExpression
+   *   The visited filter expression node
+   * @param expressionString
+   *   The $filter expression string used to build the filter expression tree   
+   * @param expression
+   *   The expression node representing the first <i>operator</i>,<i>method</i>,<i>literal</i> or <i>property</i> of the expression tree
+   * @return
+   *   The overall result of evaluating the whole filter expression tree    
+   */
+  Object visitFilterExpression(FilterExpression filterExpression, String expressionString, Object expression);
+  
+  /**
    * Visits a binary expression
    * @param binaryExpression
    *   The visited binary expression node
@@ -30,19 +43,6 @@ public interface ExpressionVisitor
   Object visitBinary(BinaryExpression binaryExpression, BinaryOperator operator, Object leftSide, Object rightSide);
 
   /**
-   * Visits a filter expression
-   * @param filterExpression
-   *   The visited filter expression node
-   * @param expressionString
-   *   The $filter expression string used to build the filter expression tree   
-   * @param expression
-   *   The expression node representing the first <i>operator</i>,<i>method</i> or <i>property</i> of the expression tree
-   * @return
-   *   The overall result of evaluating the expression tree    
-   */
-  Object visitFilterExpression(FilterExpression filterExpression, String expressionString, Object expression);
-
-  /**
    * Visits a orderby expression
    * @param orderByExpression
    *   The visited orderby expression node
@@ -51,7 +51,7 @@ public interface ExpressionVisitor
    * @param orders
    *   The result of visiting the orders of the orderby expression
    * @return
-   *   The overall result of evaluating the expression tree ( which may be a single value or a structured value )  
+   *   The overall result of evaluating the orderby expression tree  
    */
   Object visitOrderByExpression(OrderByExpression orderByExpression, String expressionString, List<Object> orders);
 
@@ -64,7 +64,7 @@ public interface ExpressionVisitor
    * @param sortOrder
    *   The sort order
    * @return
-   *   The overall result of evaluating the expression tree ( which may be a single value or a structured value )  
+   *   The overall result of evaluating the order
    */
   Object visitOrder(OrderExpression orderExpression, Object filterResult, SortOrder sortOrder);
 
@@ -93,28 +93,28 @@ public interface ExpressionVisitor
   Object visitMethod(MethodExpression methodExpression, MethodOperator method, List<Object> parameters);
 
   /**
-   * Visits a member expression
+   * Visits a member expression (e.g. <path property>/<member property>)
    * @param memberExpression
    *   The visited member expression node
    * @param path
-   *   The result of visiting the path expression node (the left side of the property operator)
+   *   The result of visiting the path property expression node (the left side of the property operator)
    * @param property
-   *   The result of visiting the property expression node
+   *   The result of visiting the member property expression node
    * @return
-  *   Returns the <b>value</b> of the corresponding property ( which may be a single value or a structured value 
+  *    Returns the <b>value</b> of the corresponding property (which may be a single EDM value or a structured EDM value) 
    */
   Object visitMember(MemberExpression memberExpression, Object path, Object property);
 
   /** 
   * Visits a property expression
   * @param propertyExpression
-  *   The visited binary expression node
+  *   The visited property expression node
   * @param uriLiteral
   *   The URI literal of the property
   * @param edmProperty
   *   The EDM property matching the property name used in the expression String 
   * @return
-  *   Returns the <b>value</b> of the corresponding property ( which may be a single value or a structured value
+  *   Returns the <b>value</b> of the corresponding property ( which may be a single EDM value or a structured EDM value)
   */
   Object visitProperty(PropertyExpression propertyExpression, String uriLiteral, EdmTyped edmProperty);
 

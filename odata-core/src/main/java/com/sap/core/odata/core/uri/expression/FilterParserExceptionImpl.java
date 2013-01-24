@@ -219,4 +219,17 @@ public class FilterParserExceptionImpl extends ExpressionParserException
     return new ExpressionParserException(msgRef);
   }
 
+  
+  /**
+   * Create a ExpressionParserException indication an error while tokenizing an expression
+   * @param token Erroneous token
+   * @param position Position of the erroneous token inside the tokenizer
+   * @return
+   */
+  public static ExpressionParserException ErrorInTokenizer(String token, int position)
+  {
+    final MessageReference msgRef = ExpressionParserException.ERROR_IN_TOKENIZER.addContent(Integer.toString(position), token);
+    return new ExpressionParserException(msgRef);
+  }
+
 }

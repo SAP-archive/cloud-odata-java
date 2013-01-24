@@ -74,12 +74,14 @@ public class MemberExpressionImpl implements BinaryExpression, MemberExpression
   }
 
   @Override
-  public CommonExpression getLeftOperand() {
+  public CommonExpression getLeftOperand() 
+  {
     return path;
   }
 
   @Override
-  public CommonExpression getRightOperand() {
+  public CommonExpression getRightOperand()
+  {
     return property;
   }
 

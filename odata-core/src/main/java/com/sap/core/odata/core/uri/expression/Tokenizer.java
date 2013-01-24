@@ -136,7 +136,8 @@ public class Tokenizer
     return tokens;
   }
 
-  private boolean checkForLiteral(int oldPosition, char curCharacter, String rem_expr) {
+  private boolean checkForLiteral(int oldPosition, char curCharacter, String rem_expr) 
+  {
     //Pattern OTHER_LIT = Pattern.compile("^([[A-Za-z0-9]._~%!$&*+;:@-]+)");
     final Pattern OTHER_LIT = Pattern.compile("(?:\\p{L}|\\p{Digit}|[-._~%!$&*+;:@])+");
     final Matcher matcher = OTHER_LIT.matcher(rem_expr);
@@ -169,7 +170,8 @@ public class Tokenizer
     return false;
   }
 
-  private boolean checkForBoolean(int oldPosition, String rem_expr) {
+  private boolean checkForBoolean(int oldPosition, String rem_expr) 
+  {
     if (rem_expr.equals("true") || rem_expr.equals("false"))
     {
       curPosition = curPosition + rem_expr.length();
@@ -180,7 +182,8 @@ public class Tokenizer
     return false;
   }
 
-  private void eatWhiteSpaces(int oldPosition, char curCharacter) {
+  private void eatWhiteSpaces(int oldPosition, char curCharacter) 
+  {
     int lv_token_len;
     String expression_sub;
     while ((curCharacter == ' ') && (curPosition < expressionLength))
@@ -215,7 +218,8 @@ public class Tokenizer
     return false;
   }
 
-  private boolean checkForMath(int oldPosition, String rem_expr) {
+  private boolean checkForMath(int oldPosition, String rem_expr) 
+  {
     final Pattern AND_SUB1 = Pattern.compile("^(add|sub|mul|div|mod|not) ");
     Matcher matcher1 = AND_SUB1.matcher(rem_expr);
 
@@ -229,7 +233,8 @@ public class Tokenizer
     return false;
   }
 
-  private boolean checkForBinary(int oldPosition, String rem_expr) {
+  private boolean checkForBinary(int oldPosition, String rem_expr) 
+  {
     final Pattern AND_SUB = Pattern.compile("^(and|or|eq|ne|lt|gt|le|ge) ");
     Matcher matcher1 = AND_SUB.matcher(rem_expr);
 
@@ -243,7 +248,8 @@ public class Tokenizer
     return false;
   }
 
-  private boolean checkForPrefix(String rem_expr) throws ExpressionParserException, TokenizerException {
+  private boolean checkForPrefix(String rem_expr) throws ExpressionParserException, TokenizerException 
+  {
     final Pattern prefix = Pattern.compile("^(X|binary|guid|datetime|datetimeoffset|time)'");
     Matcher matcher = prefix.matcher(rem_expr);
     token = "";

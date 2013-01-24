@@ -17,7 +17,7 @@ public class TokenizerExpectError extends ODataMessageException {
 
   private static final long serialVersionUID = 1L;
 
-  public static final int ParseStringToken = 1;
+  public static final int parseStringpoken = 1;
 
   //Invalid token detected at position &POSITION&
   public static final MessageReference NO_TOKEN_AVAILABLE = createMessageReference(TokenizerExpectError.class, "NO_TOKEN_AVAILABLE");
@@ -28,27 +28,33 @@ public class TokenizerExpectError extends ODataMessageException {
   private Exception previous;
   private int position;
 
-  public String getToken() {
+  public String getToken() 
+  {
     return token;
   }
 
-  public void setToken(String token) {
+  public void setToken(String token) 
+  {
     this.token = token;
   }
 
-  public Exception getPrevious() {
+  public Exception getPrevious() 
+  {
     return previous;
   }
 
-  public void setPrevious(Exception previous) {
+  public void setPrevious(Exception previous) 
+  {
     this.previous = previous;
   }
 
-  public int getPosition() {
+  public int getPosition() 
+  {
     return position;
   }
 
-  public void setPosition(int position) {
+  public void setPosition(int position) 
+  {
     this.position = position;
   }
 

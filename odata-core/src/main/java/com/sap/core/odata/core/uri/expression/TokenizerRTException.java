@@ -1,8 +1,8 @@
 package com.sap.core.odata.core.uri.expression;
 
 /**
- * @author d039346
- * Internal error. If used(thrown) the thrower 
+ * Internal error. If used(thrown) the thrower
+ * @author SAP AG 
  */
 public class TokenizerRTException extends Exception {
 
@@ -14,7 +14,8 @@ public class TokenizerRTException extends Exception {
   /**
    * 
    */
-  public TokenizerRTException() {
+  public TokenizerRTException() 
+  {
     super();
   }
 
