@@ -93,7 +93,7 @@ public class JPAEdmComplexType extends JPAEdmBaseViewImpl implements
 			expandedList.add(simpleProperty);
 			}catch (ClassCastException e){
 				ComplexProperty complexProperty = (ComplexProperty) property;
-				expandEdmComplexType(searchComplexTypeByName(property.getName()),expandedList);
+				expandEdmComplexType(searchComplexTypeByName(complexProperty.getName()),expandedList);
 			}
 		}
 		

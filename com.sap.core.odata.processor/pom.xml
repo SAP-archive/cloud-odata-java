@@ -12,7 +12,7 @@
 
 	<artifactId>com.sap.core.odata.processor</artifactId>
 	<packaging>jar</packaging>
-	<name>OData4SAP Processors - Implementation</name>
+	<name>OData Processors - Implementation</name>
 
 	<dependencies>
 	
@@ -88,7 +88,7 @@
 
 	
 	<url>https://projectportal.wdf.sap.corp/projects/com.sap.core.odata.processor</url>
-	<description>OData4SAP Processor Implementation contains 
+	<description>OData Processor Implementation contains 
 
 1) JPA Implementation</description>
 	<inceptionYear>December 2012</inceptionYear>
