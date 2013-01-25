@@ -11,23 +11,22 @@ import com.sap.core.odata.api.edm.Edm;
 import com.sap.core.odata.api.edm.provider.EdmProvider;
 import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.api.exception.ODataNotImplementedException;
+import com.sap.core.odata.api.processor.BatchProcessor;
+import com.sap.core.odata.api.processor.EntityComplexPropertyProcessor;
+import com.sap.core.odata.api.processor.EntityLinkProcessor;
+import com.sap.core.odata.api.processor.EntityLinksProcessor;
+import com.sap.core.odata.api.processor.EntityMediaProcessor;
+import com.sap.core.odata.api.processor.EntityProcessor;
+import com.sap.core.odata.api.processor.EntitySetProcessor;
+import com.sap.core.odata.api.processor.EntitySimplePropertyProcessor;
+import com.sap.core.odata.api.processor.EntitySimplePropertyValueProcessor;
+import com.sap.core.odata.api.processor.FunctionImportProcessor;
+import com.sap.core.odata.api.processor.FunctionImportValueProcessor;
+import com.sap.core.odata.api.processor.MetadataProcessor;
 import com.sap.core.odata.api.processor.ODataProcessor;
 import com.sap.core.odata.api.processor.ODataSingleProcessor;
-import com.sap.core.odata.api.processor.feature.Batch;
+import com.sap.core.odata.api.processor.ServiceDocumentProcessor;
 import com.sap.core.odata.api.processor.feature.CustomContentType;
-import com.sap.core.odata.api.processor.feature.Entity;
-import com.sap.core.odata.api.processor.feature.EntityComplexProperty;
-import com.sap.core.odata.api.processor.feature.EntityLink;
-import com.sap.core.odata.api.processor.feature.EntityLinks;
-import com.sap.core.odata.api.processor.feature.EntityMedia;
-import com.sap.core.odata.api.processor.feature.EntitySet;
-import com.sap.core.odata.api.processor.feature.EntitySimpleProperty;
-import com.sap.core.odata.api.processor.feature.EntitySimplePropertyValue;
-import com.sap.core.odata.api.processor.feature.FunctionImport;
-import com.sap.core.odata.api.processor.feature.FunctionImportValue;
-import com.sap.core.odata.api.processor.feature.Metadata;
-import com.sap.core.odata.api.processor.feature.ProcessorFeature;
-import com.sap.core.odata.api.processor.feature.ServiceDocument;
 import com.sap.core.odata.api.rt.RuntimeDelegate;
 
 /**
@@ -73,7 +72,7 @@ public class ODataSingleProcessorService implements ODataService {
    * @see ODataService
    */
   @Override
-  public Metadata getMetadataProcessor() throws ODataException {
+  public MetadataProcessor getMetadataProcessor() throws ODataException {
     return processor;
   }
 
@@ -81,7 +80,7 @@ public class ODataSingleProcessorService implements ODataService {
    * @see ODataService
    */
   @Override
-  public ServiceDocument getServiceDocumentProcessor() throws ODataException {
+  public ServiceDocumentProcessor getServiceDocumentProcessor() throws ODataException {
     return processor;
   }
 
@@ -89,7 +88,7 @@ public class ODataSingleProcessorService implements ODataService {
    * @see ODataService
    */
   @Override
-  public Entity getEntityProcessor() throws ODataException {
+  public EntityProcessor getEntityProcessor() throws ODataException {
     return processor;
   }
 
@@ -97,7 +96,7 @@ public class ODataSingleProcessorService implements ODataService {
    * @see ODataService
    */
   @Override
-  public EntitySet getEntitySetProcessor() throws ODataException {
+  public EntitySetProcessor getEntitySetProcessor() throws ODataException {
     return processor;
   }
 
@@ -105,7 +104,7 @@ public class ODataSingleProcessorService implements ODataService {
    * @see ODataService
    */
   @Override
-  public EntityComplexProperty getEntityComplexPropertyProcessor() throws ODataException {
+  public EntityComplexPropertyProcessor getEntityComplexPropertyProcessor() throws ODataException {
     return processor;
   }
 
@@ -113,7 +112,7 @@ public class ODataSingleProcessorService implements ODataService {
    * @see ODataService
    */
   @Override
-  public EntityLink getEntityLinkProcessor() throws ODataException {
+  public EntityLinkProcessor getEntityLinkProcessor() throws ODataException {
     return processor;
   }
 
@@ -121,7 +120,7 @@ public class ODataSingleProcessorService implements ODataService {
    * @see ODataService
    */
   @Override
-  public EntityLinks getEntityLinksProcessor() throws ODataException {
+  public EntityLinksProcessor getEntityLinksProcessor() throws ODataException {
     return processor;
   }
 
@@ -129,7 +128,7 @@ public class ODataSingleProcessorService implements ODataService {
    * @see ODataService
    */
   @Override
-  public EntityMedia getEntityMediaProcessor() throws ODataException {
+  public EntityMediaProcessor getEntityMediaProcessor() throws ODataException {
     return processor;
   }
 
@@ -137,7 +136,7 @@ public class ODataSingleProcessorService implements ODataService {
    * @see ODataService
    */
   @Override
-  public EntitySimpleProperty getEntitySimplePropertyProcessor() throws ODataException {
+  public EntitySimplePropertyProcessor getEntitySimplePropertyProcessor() throws ODataException {
     return processor;
   }
 
@@ -145,7 +144,7 @@ public class ODataSingleProcessorService implements ODataService {
    * @see ODataService
    */
   @Override
-  public EntitySimplePropertyValue getEntitySimplePropertyValueProcessor() throws ODataException {
+  public EntitySimplePropertyValueProcessor getEntitySimplePropertyValueProcessor() throws ODataException {
     return processor;
   }
 
@@ -153,7 +152,7 @@ public class ODataSingleProcessorService implements ODataService {
    * @see ODataService
    */
   @Override
-  public FunctionImport getFunctionImportProcessor() throws ODataException {
+  public FunctionImportProcessor getFunctionImportProcessor() throws ODataException {
     return processor;
   }
 
@@ -161,7 +160,7 @@ public class ODataSingleProcessorService implements ODataService {
    * @see ODataService
    */
   @Override
-  public FunctionImportValue getFunctionImportValueProcessor() throws ODataException {
+  public FunctionImportValueProcessor getFunctionImportValueProcessor() throws ODataException {
     return processor;
   }
 
@@ -169,7 +168,7 @@ public class ODataSingleProcessorService implements ODataService {
    * @see ODataService
    */
   @Override
-  public Batch getBatchProcessor() throws ODataException {
+  public BatchProcessor getBatchProcessor() throws ODataException {
     return processor;
   }
 
@@ -182,39 +181,39 @@ public class ODataSingleProcessorService implements ODataService {
   }
 
   @Override
-  public List<String> getSupportedContentTypes(Class<? extends ProcessorFeature> processorFeature) throws ODataException {
+  public List<String> getSupportedContentTypes(Class<? extends ODataProcessor> processorFeature) throws ODataException {
     List<String> result = new ArrayList<String>();
 
     if(processor instanceof CustomContentType) {
       result.addAll(((CustomContentType)processor).getCustomContentTypes(processorFeature));
     }
 
-    if (processorFeature == Batch.class) {
+    if (processorFeature == BatchProcessor.class) {
       result.add(HttpContentType.MULTIPART_MIXED);
-    } else if (processorFeature == Entity.class) {
+    } else if (processorFeature == EntityProcessor.class) {
       result.add(HttpContentType.APPLICATION_ATOM_XML_ENTRY);
       result.add(HttpContentType.APPLICATION_ATOM_XML);
       result.add(HttpContentType.APPLICATION_JSON);
       result.add(HttpContentType.APPLICATION_XML);
-    } else if (processorFeature == FunctionImport.class
-        || processorFeature == EntityLink.class
-        || processorFeature == EntityLinks.class
-        || processorFeature == EntitySimpleProperty.class
-        || processorFeature == EntityComplexProperty.class) {
+    } else if (processorFeature == FunctionImportProcessor.class
+        || processorFeature == EntityLinkProcessor.class
+        || processorFeature == EntityLinksProcessor.class
+        || processorFeature == EntitySimplePropertyProcessor.class
+        || processorFeature == EntityComplexPropertyProcessor.class) {
       result.add(HttpContentType.APPLICATION_XML);
       result.add(HttpContentType.APPLICATION_JSON);
-    } else if (processorFeature == EntityMedia.class
-        || processorFeature == EntitySimplePropertyValue.class
-        || processorFeature == FunctionImportValue.class) {
+    } else if (processorFeature == EntityMediaProcessor.class
+        || processorFeature == EntitySimplePropertyValueProcessor.class
+        || processorFeature == FunctionImportValueProcessor.class) {
       result.add(HttpContentType.WILDCARD);
-    } else if (processorFeature == EntitySet.class) {
+    } else if (processorFeature == EntitySetProcessor.class) {
       result.add(HttpContentType.APPLICATION_ATOM_XML_FEED);
       result.add(HttpContentType.APPLICATION_ATOM_XML);
       result.add(HttpContentType.APPLICATION_JSON);
       result.add(HttpContentType.APPLICATION_XML);
-    } else if (processorFeature == Metadata.class) {
+    } else if (processorFeature == MetadataProcessor.class) {
       result.add(HttpContentType.APPLICATION_XML);
-    } else if (processorFeature == ServiceDocument.class) {
+    } else if (processorFeature == ServiceDocumentProcessor.class) {
       result.add(HttpContentType.APPLICATION_ATOM_SVC);
       result.add(HttpContentType.APPLICATION_ATOM_XML);
       result.add(HttpContentType.APPLICATION_JSON);

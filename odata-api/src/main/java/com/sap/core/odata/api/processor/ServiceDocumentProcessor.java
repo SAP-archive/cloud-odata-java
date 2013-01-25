@@ -1,7 +1,6 @@
-package com.sap.core.odata.api.processor.feature;
+package com.sap.core.odata.api.processor;
 
 import com.sap.core.odata.api.exception.ODataException;
-import com.sap.core.odata.api.processor.ODataResponse;
 import com.sap.core.odata.api.uri.info.GetServiceDocumentUriInfo;
 
 /**
@@ -9,7 +8,7 @@ import com.sap.core.odata.api.uri.info.GetServiceDocumentUriInfo;
  * 
  * @author SAP AG
  */
-public interface ServiceDocument extends ProcessorFeature {
+public interface ServiceDocumentProcessor extends ODataProcessor {
 
   /**
    * @param contentType 

@@ -1,9 +1,8 @@
-package com.sap.core.odata.api.processor.feature;
+package com.sap.core.odata.api.processor;
 
 import java.io.InputStream;
 
 import com.sap.core.odata.api.exception.ODataException;
-import com.sap.core.odata.api.processor.ODataResponse;
 import com.sap.core.odata.api.uri.info.GetComplexPropertyUriInfo;
 import com.sap.core.odata.api.uri.info.PutMergePatchUriInfo;
 
@@ -12,7 +11,7 @@ import com.sap.core.odata.api.uri.info.PutMergePatchUriInfo;
  * 
  * @author SAP AG
  */
-public interface EntityComplexProperty extends ProcessorFeature {
+public interface EntityComplexPropertyProcessor extends ODataProcessor {
   /**
    * Reads a complex property of an entity.
    * @param uriInfo information about the request URI

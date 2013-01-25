@@ -27,20 +27,20 @@ import com.sap.core.odata.api.edm.EdmFunctionImport;
 import com.sap.core.odata.api.edm.EdmProperty;
 import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.api.exception.ODataMethodNotAllowedException;
+import com.sap.core.odata.api.processor.BatchProcessor;
+import com.sap.core.odata.api.processor.EntityComplexPropertyProcessor;
+import com.sap.core.odata.api.processor.EntityLinkProcessor;
+import com.sap.core.odata.api.processor.EntityLinksProcessor;
+import com.sap.core.odata.api.processor.EntityMediaProcessor;
+import com.sap.core.odata.api.processor.EntityProcessor;
+import com.sap.core.odata.api.processor.EntitySetProcessor;
+import com.sap.core.odata.api.processor.EntitySimplePropertyProcessor;
+import com.sap.core.odata.api.processor.EntitySimplePropertyValueProcessor;
+import com.sap.core.odata.api.processor.FunctionImportProcessor;
+import com.sap.core.odata.api.processor.FunctionImportValueProcessor;
+import com.sap.core.odata.api.processor.MetadataProcessor;
 import com.sap.core.odata.api.processor.ODataResponse;
-import com.sap.core.odata.api.processor.feature.Batch;
-import com.sap.core.odata.api.processor.feature.Entity;
-import com.sap.core.odata.api.processor.feature.EntityComplexProperty;
-import com.sap.core.odata.api.processor.feature.EntityLink;
-import com.sap.core.odata.api.processor.feature.EntityLinks;
-import com.sap.core.odata.api.processor.feature.EntityMedia;
-import com.sap.core.odata.api.processor.feature.EntitySet;
-import com.sap.core.odata.api.processor.feature.EntitySimpleProperty;
-import com.sap.core.odata.api.processor.feature.EntitySimplePropertyValue;
-import com.sap.core.odata.api.processor.feature.FunctionImport;
-import com.sap.core.odata.api.processor.feature.FunctionImportValue;
-import com.sap.core.odata.api.processor.feature.Metadata;
-import com.sap.core.odata.api.processor.feature.ServiceDocument;
+import com.sap.core.odata.api.processor.ServiceDocumentProcessor;
 import com.sap.core.odata.api.uri.NavigationPropertySegment;
 import com.sap.core.odata.api.uri.NavigationSegment;
 import com.sap.core.odata.api.uri.SelectItem;
@@ -63,57 +63,57 @@ public class DispatcherTest extends BaseTest {
 
   @BeforeClass
   public static void createMockProcessor() throws ODataException {
-    ServiceDocument serviceDocument = mock(ServiceDocument.class);
+    ServiceDocumentProcessor serviceDocument = mock(ServiceDocumentProcessor.class);
     when(serviceDocument.readServiceDocument(any(UriInfoImpl.class), any(String.class))).thenAnswer(getAnswer());
 
-    EntitySet entitySet = mock(EntitySet.class);
+    EntitySetProcessor entitySet = mock(EntitySetProcessor.class);
     when(entitySet.readEntitySet(any(UriInfoImpl.class), any(String.class))).thenAnswer(getAnswer());
     when(entitySet.countEntitySet(any(UriInfoImpl.class), any(String.class))).thenAnswer(getAnswer());
     when(entitySet.createEntity(any(UriInfoImpl.class), any(InputStream.class), any(String.class), any(String.class))).thenAnswer(getAnswer());
 
-    Entity entity = mock(Entity.class);
+    EntityProcessor entity = mock(EntityProcessor.class);
     when(entity.readEntity(any(UriInfoImpl.class), any(String.class))).thenAnswer(getAnswer());
     when(entity.existsEntity(any(UriInfoImpl.class), any(String.class))).thenAnswer(getAnswer());
     when(entity.deleteEntity(any(UriInfoImpl.class), any(String.class))).thenAnswer(getAnswer());
     when(entity.updateEntity(any(UriInfoImpl.class), any(InputStream.class), any(String.class), any(Boolean.class), any(String.class))).thenAnswer(getAnswer());
 
-    EntityComplexProperty entityComplexProperty = mock(EntityComplexProperty.class);
+    EntityComplexPropertyProcessor entityComplexProperty = mock(EntityComplexPropertyProcessor.class);
     when(entityComplexProperty.readEntityComplexProperty(any(UriInfoImpl.class), any(String.class))).thenAnswer(getAnswer());
     when(entityComplexProperty.updateEntityComplexProperty(any(UriInfoImpl.class), any(InputStream.class), any(String.class), any(Boolean.class), any(String.class))).thenAnswer(getAnswer());
 
-    EntitySimpleProperty entitySimpleProperty = mock(EntitySimpleProperty.class);
+    EntitySimplePropertyProcessor entitySimpleProperty = mock(EntitySimplePropertyProcessor.class);
     when(entitySimpleProperty.readEntitySimpleProperty(any(UriInfoImpl.class), any(String.class))).thenAnswer(getAnswer());
     when(entitySimpleProperty.updateEntitySimpleProperty(any(UriInfoImpl.class), any(InputStream.class), any(String.class), any(String.class))).thenAnswer(getAnswer());
 
-    EntitySimplePropertyValue entitySimplePropertyValue = mock(EntitySimplePropertyValue.class);
+    EntitySimplePropertyValueProcessor entitySimplePropertyValue = mock(EntitySimplePropertyValueProcessor.class);
     when(entitySimplePropertyValue.readEntitySimplePropertyValue(any(UriInfoImpl.class), any(String.class))).thenAnswer(getAnswer());
     when(entitySimplePropertyValue.deleteEntitySimplePropertyValue(any(UriInfoImpl.class), any(String.class))).thenAnswer(getAnswer());
     when(entitySimplePropertyValue.updateEntitySimplePropertyValue(any(UriInfoImpl.class), any(InputStream.class), any(String.class), any(String.class))).thenAnswer(getAnswer());
 
-    EntityLink entityLink = mock(EntityLink.class);
+    EntityLinkProcessor entityLink = mock(EntityLinkProcessor.class);
     when(entityLink.readEntityLink(any(UriInfoImpl.class), any(String.class))).thenAnswer(getAnswer());
     when(entityLink.existsEntityLink(any(UriInfoImpl.class), any(String.class))).thenAnswer(getAnswer());
     when(entityLink.deleteEntityLink(any(UriInfoImpl.class), any(String.class))).thenAnswer(getAnswer());
     when(entityLink.updateEntityLink(any(UriInfoImpl.class), any(InputStream.class), any(String.class), any(String.class))).thenAnswer(getAnswer());
 
-    EntityLinks entityLinks = mock(EntityLinks.class);
+    EntityLinksProcessor entityLinks = mock(EntityLinksProcessor.class);
     when(entityLinks.readEntityLinks(any(UriInfoImpl.class), any(String.class))).thenAnswer(getAnswer());
     when(entityLinks.countEntityLinks(any(UriInfoImpl.class), any(String.class))).thenAnswer(getAnswer());
     when(entityLinks.createEntityLink(any(UriInfoImpl.class), any(InputStream.class), any(String.class), any(String.class))).thenAnswer(getAnswer());
 
-    Metadata metadata = mock(Metadata.class);
+    MetadataProcessor metadata = mock(MetadataProcessor.class);
     when(metadata.readMetadata(any(UriInfoImpl.class), any(String.class))).thenAnswer(getAnswer());
 
-    Batch batch = mock(Batch.class);
+    BatchProcessor batch = mock(BatchProcessor.class);
     when(batch.executeBatch(any(String.class))).thenAnswer(getAnswer());
 
-    FunctionImport functionImport = mock(FunctionImport.class);
+    FunctionImportProcessor functionImport = mock(FunctionImportProcessor.class);
     when(functionImport.executeFunctionImport(any(UriInfoImpl.class), any(String.class))).thenAnswer(getAnswer());
 
-    FunctionImportValue functionImportValue = mock(FunctionImportValue.class);
+    FunctionImportValueProcessor functionImportValue = mock(FunctionImportValueProcessor.class);
     when(functionImportValue.executeFunctionImportValue(any(UriInfoImpl.class), any(String.class))).thenAnswer(getAnswer());
 
-    EntityMedia entityMedia = mock(EntityMedia.class);
+    EntityMediaProcessor entityMedia = mock(EntityMediaProcessor.class);
     when(entityMedia.readEntityMedia(any(UriInfoImpl.class), any(String.class))).thenAnswer(getAnswer());
     when(entityMedia.deleteEntityMedia(any(UriInfoImpl.class), any(String.class))).thenAnswer(getAnswer());
     when(entityMedia.updateEntityMedia(any(UriInfoImpl.class), any(InputStream.class), any(String.class), any(String.class))).thenAnswer(getAnswer());

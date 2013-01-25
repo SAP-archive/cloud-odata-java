@@ -1,9 +1,8 @@
-package com.sap.core.odata.api.processor.feature;
+package com.sap.core.odata.api.processor;
 
 import java.io.InputStream;
 
 import com.sap.core.odata.api.exception.ODataException;
-import com.sap.core.odata.api.processor.ODataResponse;
 import com.sap.core.odata.api.uri.info.DeleteUriInfo;
 import com.sap.core.odata.api.uri.info.GetMediaResourceUriInfo;
 import com.sap.core.odata.api.uri.info.PutMergePatchUriInfo;
@@ -12,7 +11,7 @@ import com.sap.core.odata.api.uri.info.PutMergePatchUriInfo;
  * Execute an OData entity media request
  * @author SAP AG
  */
-public interface EntityMedia extends ProcessorFeature {
+public interface EntityMediaProcessor extends ODataProcessor {
 
   /**
    * Reads the media resource of an entity.

@@ -1,7 +1,6 @@
-package com.sap.core.odata.api.processor.feature;
+package com.sap.core.odata.api.processor;
 
 import com.sap.core.odata.api.exception.ODataException;
-import com.sap.core.odata.api.processor.ODataResponse;
 
 /**
  * Execute a OData batch request. 
@@ -9,7 +8,7 @@ import com.sap.core.odata.api.processor.ODataResponse;
  * @author SAP AG
  *
  */
-public interface Batch extends ProcessorFeature {
+public interface BatchProcessor extends ODataProcessor {
 
   /**
    * @param contentType 
