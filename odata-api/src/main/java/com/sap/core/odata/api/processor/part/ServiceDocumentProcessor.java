@@ -1,6 +1,8 @@
-package com.sap.core.odata.api.processor;
+package com.sap.core.odata.api.processor.part;
 
 import com.sap.core.odata.api.exception.ODataException;
+import com.sap.core.odata.api.processor.ODataProcessor;
+import com.sap.core.odata.api.processor.ODataResponse;
 import com.sap.core.odata.api.uri.info.GetServiceDocumentUriInfo;
 
 /**
