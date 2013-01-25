@@ -4,6 +4,7 @@ import java.io.InputStream;
 import java.util.List;
 import java.util.Map;
 
+import com.sap.core.odata.api.edm.Edm;
 import com.sap.core.odata.api.edm.EdmEntitySet;
 import com.sap.core.odata.api.edm.EdmFunctionImport;
 import com.sap.core.odata.api.edm.EdmProperty;
@@ -27,6 +28,8 @@ public interface ContentTypeBasedEntityProvider {
 
   List<String> readLinks(EdmEntitySet entitySet, InputStream content) throws EntityProviderException;
 
+  ODataResponse writeServiceDocument(Edm edm, String serviceRoot) throws EntityProviderException;
+  
   ODataResponse writeFeed(EdmEntitySet entitySet, List<Map<String, Object>> data, EntityProviderProperties properties) throws EntityProviderException;
 
   ODataResponse writeEntry(EdmEntitySet entitySet, Map<String, Object> data, EntityProviderProperties properties) throws EntityProviderException;

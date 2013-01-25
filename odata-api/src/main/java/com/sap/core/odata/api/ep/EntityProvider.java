@@ -25,14 +25,15 @@ public final class EntityProvider {
 
     /**
      * Write service document based on given {@link Edm} and <code>service root</code> as
-     * content type "<code>application/atomsvc+xml; charset=utf-8</code>".
+     * given content type.
      * 
+     * @param contentType
      * @param edm
      * @param serviceRoot
      * @return
      * @throws EntityProviderException
      */
-    ODataResponse writeServiceDocument(Edm edm, String serviceRoot) throws EntityProviderException;
+    ODataResponse writeServiceDocument(String contentType, Edm edm, String serviceRoot) throws EntityProviderException;
 
     /**
      * Write property as content type <code>application/octet-stream</code> or <code>text/plain</code>.
@@ -184,7 +185,7 @@ public final class EntityProvider {
      * @throws EntityProviderException
      */
     byte[] readBinary(InputStream content) throws EntityProviderException;
-  }
+ }
 
   /**
    * Create an instance for the {@link EntityProviderInterface} over the {@link RuntimeDelegate}.
@@ -197,15 +198,15 @@ public final class EntityProvider {
 
   /**
    * Write service document based on given {@link Edm} and <code>service root</code> as
-   * content type "<code>application/atomsvc+xml; charset=utf-8</code>".
+   * given content type.
    * 
    * @param edm
    * @param serviceRoot
    * @return
    * @throws EntityProviderException
    */
-  public static ODataResponse writeServiceDocument(Edm edm, String serviceRoot) throws EntityProviderException {
-    return createEntityProvider().writeServiceDocument(edm, serviceRoot);
+  public static ODataResponse writeServiceDocument(String contentType, Edm edm, String serviceRoot) throws EntityProviderException {
+    return createEntityProvider().writeServiceDocument(contentType, edm, serviceRoot);
   }
 
   /**

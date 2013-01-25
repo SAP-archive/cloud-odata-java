@@ -84,7 +84,7 @@ public class ListsProcessor extends ODataSingleProcessor {
   public ListsProcessor(ListsDataSource dataSource) {
     this.dataSource = dataSource;
   }
-
+  
   @Override
   public ODataResponse readEntitySet(final GetEntitySetUriInfo uriInfo, final String contentType) throws ODataException {
     ArrayList<Object> data = new ArrayList<Object>();

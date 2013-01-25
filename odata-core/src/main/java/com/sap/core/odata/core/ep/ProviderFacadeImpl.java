@@ -13,7 +13,6 @@ import com.sap.core.odata.api.ep.EntityProviderException;
 import com.sap.core.odata.api.ep.EntityProviderProperties;
 import com.sap.core.odata.api.ep.entry.ODataEntry;
 import com.sap.core.odata.api.exception.ODataNotAcceptableException;
-import com.sap.core.odata.api.exception.ODataNotImplementedException;
 import com.sap.core.odata.api.processor.ODataResponse;
 import com.sap.core.odata.core.commons.ContentType;
 
@@ -40,22 +39,22 @@ public class ProviderFacadeImpl implements EntityProviderInterface {
         provider = new AtomEntityProvider();
         break;
       case JSON:
-        throw new ODataNotImplementedException();
+        // mibo_130125: currently JSON is a not supported content type
+        // -> 'throw NOT_SUPPORTED_CONTENT_TYPE' as 'ODataNotAcceptableException'
+        throw new ODataNotAcceptableException(ODataNotAcceptableException.NOT_SUPPORTED_CONTENT_TYPE.addContent(contentType));
       default:
         throw new ODataNotAcceptableException(ODataNotAcceptableException.NOT_SUPPORTED_CONTENT_TYPE.addContent(contentType));
       }
 
       return provider;
-    } catch (ODataNotImplementedException e) {
-      throw new EntityProviderException(EntityProviderException.COMMON, e);
     } catch (ODataNotAcceptableException e) {
       throw new EntityProviderException(EntityProviderException.COMMON, e);
     }
   }
 
   @Override
-  public ODataResponse writeServiceDocument(Edm edm, String serviceRoot) throws EntityProviderException {
-    return create().writeServiceDocument(edm, serviceRoot);
+  public ODataResponse writeServiceDocument(String contentType, Edm edm, String serviceRoot) throws EntityProviderException {
+    return create(contentType).writeServiceDocument(edm, serviceRoot);
   }
 
   @Override

@@ -106,6 +106,10 @@ public class AbstractRefTest extends AbstractFitTest {
     return callUri(ODataHttpMethod.GET, uri, additionalHeader, additionalHeaderValue, null, null, expectedStatusCode);
   }
 
+  protected HttpResponse callUri(final String uri, final String additionalHeader, final String additionalHeaderValue) throws Exception {
+    return callUri(ODataHttpMethod.GET, uri, additionalHeader, additionalHeaderValue, null, null, HttpStatusCodes.OK);
+  }
+
   protected HttpResponse callUri(final String uri, final HttpStatusCodes expectedStatusCode) throws Exception {
     return callUri(uri, null, null, expectedStatusCode);
   }
