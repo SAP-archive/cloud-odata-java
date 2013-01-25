@@ -85,7 +85,7 @@ public class EdmDouble extends AbstractSimpleType {
     if (returnType.isAssignableFrom(Double.class))
       return returnType.cast(result);
     else if (returnType.isAssignableFrom(Float.class))
-      if (Double.valueOf(result.floatValue()) == result)
+      if (Double.valueOf(result.floatValue()).equals(result))
         return returnType.cast(result.floatValue());
       else
         throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_UNCONVERTIBLE_TO_VALUE_TYPE.addContent(value, returnType));

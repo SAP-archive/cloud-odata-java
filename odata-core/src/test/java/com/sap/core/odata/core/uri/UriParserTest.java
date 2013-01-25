@@ -608,7 +608,7 @@ public class UriParserTest extends BaseTest {
     // override parameter type for testing literal parsing errors
     when(edm.getDefaultEntityContainer().getFunctionImport("ManagerPhoto").getParameter("Id").getType())
         .thenReturn(EdmSimpleTypeKind.Binary.getEdmSimpleTypeInstance());
-    parseWrongUri("ManagerPhoto?Id=X'Z'", UriSyntaxException.NOTEXT);    
+    parseWrongUri("ManagerPhoto?Id=X'Z'", UriSyntaxException.LITERALFORMAT);    
     when(edm.getDefaultEntityContainer().getFunctionImport("ManagerPhoto").getParameter("Id").getType())
         .thenReturn(EdmSimpleTypeKind.Int32.getEdmSimpleTypeInstance());
     parseWrongUri("ManagerPhoto?Id=12345678901234567890", UriSyntaxException.LITERALFORMAT);    

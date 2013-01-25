@@ -20,6 +20,7 @@ import com.sap.core.odata.api.commons.HttpStatusCodes;
 import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.api.exception.ODataNotAcceptableException;
 import com.sap.core.odata.api.processor.ODataResponse;
+import com.sap.core.odata.api.uri.PathSegment;
 import com.sap.core.odata.api.uri.UriParser;
 import com.sap.core.odata.core.Dispatcher;
 import com.sap.core.odata.core.ODataContextImpl;
@@ -151,10 +152,10 @@ public class ODataSubLocatorTest extends BaseTest {
   @Ignore
   public void testContentNegotiationDefaultCharset_OLD() throws Exception {
     ODataSubLocator locator = new ODataSubLocator();
-    
+
     UriParser parser = mockUriParser(locator);
     UriInfoImpl uriInfo = new UriInfoImpl();
-    Mockito.when(parser.parse(Mockito.anyList(), Mockito.anyMap())).thenReturn(uriInfo);
+    Mockito.when(parser.parse(Mockito.anyListOf(PathSegment.class), Mockito.anyMapOf(String.class, String.class))).thenReturn(uriInfo);
     ODataService service = mockODataService(locator);
     ODataContextImpl context = mockODataContext(locator);
     Mockito.when(context.getPathInfo()).thenReturn(new PathInfoImpl());
@@ -170,8 +171,7 @@ public class ODataSubLocatorTest extends BaseTest {
     setField(locator, "acceptHeaderContentTypes", acceptedContentTypes);
     List<String> supportedContentTypes = Arrays.asList("application/xml; charset=utf-8");
     Mockito.when(service.getSupportedContentTypes(Mockito.any(Class.class))).thenReturn(supportedContentTypes);
-    
-    
+
     // test
     Response response = locator.handleGet();
     String contentType = response.getHeaderString(HttpHeaders.CONTENT_TYPE);
