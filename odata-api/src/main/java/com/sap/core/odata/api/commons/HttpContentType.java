@@ -7,14 +7,14 @@ package com.sap.core.odata.api.commons;
  */
 public interface HttpContentType {
 
-  String APPLICATION_XML = "application/xml; charset=utf-8";
-  String APPLICATION_ATOM_XML = "application/atom+xml; charset=utf-8";
-  String APPLICATION_ATOM_XML_ENTRY = "application/atom+xml; type=entry; charset=utf-8";
-  String APPLICATION_ATOM_XML_FEED = "application/atom+xml; type=feed; charset=utf-8";
-  String APPLICATION_ATOM_SVC = "application/atomsvc+xml; charset=utf-8";
-  String APPLICATION_JSON = "application/json; charset=utf-8";
+  String APPLICATION_XML_UTF8 = "application/xml; charset=utf-8";
+  String APPLICATION_ATOM_XML_UTF8 = "application/atom+xml; charset=utf-8";
+  String APPLICATION_ATOM_XML_ENTRY_UTF8 = "application/atom+xml; type=entry; charset=utf-8";
+  String APPLICATION_ATOM_XML_FEED_UTF8 = "application/atom+xml; type=feed; charset=utf-8";
+  String APPLICATION_ATOM_SVC_UTF8 = "application/atomsvc+xml; charset=utf-8";
+  String APPLICATION_JSON_UTF8 = "application/json; charset=utf-8";
+  String TEXT_PLAIN_UTF8 = "text/plain; charset=utf-8";
   String APPLICATION_OCTET_STREAM = "application/octet-stream";
-  String TEXT_PLAIN = "text/plain; charset=utf-8";
   String MULTIPART_MIXED = "multipart/mixed";
   String WILDCARD = "*/*";
 }

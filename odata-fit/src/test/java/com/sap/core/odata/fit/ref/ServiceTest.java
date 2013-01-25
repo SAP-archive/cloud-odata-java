@@ -16,7 +16,7 @@ public class ServiceTest extends AbstractRefTest {
   @Test
   public void serviceDocument() throws Exception {
     final HttpResponse response = callUri("/");
-    checkMediaType(response, HttpContentType.APPLICATION_ATOM_SVC);
+    checkMediaType(response, HttpContentType.APPLICATION_ATOM_SVC_UTF8);
     assertTrue(getBody(response).contains("Employees"));
 
     notFound("invalid.svc");
@@ -25,7 +25,7 @@ public class ServiceTest extends AbstractRefTest {
   @Test
   public void metadataDocument() throws Exception {
     final HttpResponse response = callUri("$metadata");
-    checkMediaType(response, HttpContentType.APPLICATION_XML, false);
+    checkMediaType(response, HttpContentType.APPLICATION_XML_UTF8, false);
     final String payload = getBody(response);
     assertTrue(payload.contains("c_Location"));
     assertTrue(payload.contains("c_City"));

@@ -33,7 +33,7 @@ public class ContentTypeTest extends BaseTest {
 
   @Test
   public void creationFromHttpContentTypeAtomXmlEntry() {
-    ContentType mt = ContentType.create(HttpContentType.APPLICATION_ATOM_XML_ENTRY);
+    ContentType mt = ContentType.create(HttpContentType.APPLICATION_ATOM_XML_ENTRY_UTF8);
 
     assertEquals("application", mt.getType());
     assertEquals("atom+xml", mt.getSubtype());
@@ -59,7 +59,7 @@ public class ContentTypeTest extends BaseTest {
 
   @Test
   public void creationFromHttpContentTypeApplicationXml() {
-    ContentType mt = ContentType.create(HttpContentType.APPLICATION_XML);
+    ContentType mt = ContentType.create(HttpContentType.APPLICATION_XML_UTF8);
 
     assertEquals("application", mt.getType());
     assertEquals("xml", mt.getSubtype());
@@ -71,7 +71,7 @@ public class ContentTypeTest extends BaseTest {
 
   @Test
   public void creationFromHttpContentTypeApplicationJson() {
-    ContentType mt = ContentType.create(HttpContentType.APPLICATION_JSON);
+    ContentType mt = ContentType.create(HttpContentType.APPLICATION_JSON_UTF8);
 
     assertEquals("application", mt.getType());
     assertEquals("json", mt.getSubtype());
