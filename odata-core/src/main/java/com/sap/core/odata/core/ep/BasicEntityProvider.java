@@ -126,7 +126,7 @@ public class BasicEntityProvider {
       AtomServiceDocumentProducer.writeServiceDocument(edm, serviceRoot, writer);
 
       ODataResponse response = ODataResponse.entity(csb.getInputStream())
-          .contentHeader(createContentHeader(ContentType.APPLICATION_ATOM_SVC))
+          .contentHeader(ContentType.APPLICATION_ATOM_SVC_CS_UTF_8.toContentTypeString())
           .build();
 
       return response;
@@ -220,14 +220,5 @@ public class BasicEntityProvider {
     }
     builder.contentHeader(mimeType);
     return builder.build();
-  }
-
-  /**
-   * 
-   * @param mediaType
-   * @return
-   */
-  private String createContentHeader(ContentType mediaType) {
-    return mediaType.toString() + "; charset=" + DEFAULT_CHARSET;
   }
 }
