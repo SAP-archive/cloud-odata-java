@@ -18,26 +18,26 @@ public class ContentNegotiationTest extends AbstractRefTest {
   @Test
   public void formatOverwriteAcceptHeader() throws Exception {
     final HttpResponse response = callUri("?$format=xml", HttpHeaders.ACCEPT, IMAGE_GIF, HttpStatusCodes.OK);
-    checkMediaType(response, HttpContentType.APPLICATION_XML);
+    checkMediaType(response, HttpContentType.APPLICATION_XML_UTF8);
   }
 
   @Test
   public void formatXml() throws Exception {
     final HttpResponse response = callUri("?$format=xml");
-    checkMediaType(response, HttpContentType.APPLICATION_XML);
+    checkMediaType(response, HttpContentType.APPLICATION_XML_UTF8);
   }
 
   @Test
   @Ignore("JSON is currently not supported")
   public void formatJson() throws Exception {
     final HttpResponse response = callUri("?$format=json");
-    checkMediaType(response, HttpContentType.APPLICATION_JSON);
+    checkMediaType(response, HttpContentType.APPLICATION_JSON_UTF8);
   }
 
   @Test
   public void formatAtom() throws Exception {
     final HttpResponse response = callUri("Rooms('1')?$format=atom");
-    checkMediaType(response, HttpContentType.APPLICATION_ATOM_XML_ENTRY);
+    checkMediaType(response, HttpContentType.APPLICATION_ATOM_XML_ENTRY_UTF8);
   }
 
   @Test
@@ -48,7 +48,7 @@ public class ContentNegotiationTest extends AbstractRefTest {
   @Test
   public void contentTypeMetadata() throws Exception {
     final HttpResponse response = callUri("$metadata");
-    checkMediaType(response, HttpContentType.APPLICATION_XML, false);
+    checkMediaType(response, HttpContentType.APPLICATION_XML_UTF8, false);
   }
 
   @Test
@@ -61,13 +61,13 @@ public class ContentNegotiationTest extends AbstractRefTest {
     final HttpResponse response = callUri("$metadata",
         HttpHeaders.ACCEPT, "text/html, application/xhtml+xml, application/xml;q=0.9, */*;q=0.8",
         HttpStatusCodes.OK);
-    checkMediaType(response, HttpContentType.APPLICATION_XML, false);
+    checkMediaType(response, HttpContentType.APPLICATION_XML_UTF8, false);
   }
 
   @Test
   public void contentTypeServiceDocumentWoAcceptHeader() throws Exception {
     final HttpResponse response = callUri("");
-    checkMediaType(response, HttpContentType.APPLICATION_ATOM_SVC);
+    checkMediaType(response, HttpContentType.APPLICATION_ATOM_SVC_UTF8);
     final String body = getBody(response);
     assertTrue(body.length() > 100);
   }
@@ -77,7 +77,7 @@ public class ContentNegotiationTest extends AbstractRefTest {
     final HttpResponse response = callUri("",
         HttpHeaders.ACCEPT, "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
         HttpStatusCodes.OK);
-    checkMediaType(response, HttpContentType.APPLICATION_XML);
+    checkMediaType(response, HttpContentType.APPLICATION_XML_UTF8);
     final String body = getBody(response);
     assertTrue(body.length() > 100);
   }
@@ -85,7 +85,7 @@ public class ContentNegotiationTest extends AbstractRefTest {
   @Test
   public void requestContentTypeDifferent() throws Exception {
     final HttpResponse response = postUri("Rooms",
-        getBody(callUri("Rooms('1')")), HttpContentType.APPLICATION_XML,
+        getBody(callUri("Rooms('1')")), HttpContentType.APPLICATION_XML_UTF8,
         HttpStatusCodes.CREATED);
     // checkMediaType(response, HttpContentType.APPLICATION_ATOM_XML_ENTRY);
     final String body = getBody(response);

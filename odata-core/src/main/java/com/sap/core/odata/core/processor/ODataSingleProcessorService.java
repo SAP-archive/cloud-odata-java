@@ -191,33 +191,33 @@ public class ODataSingleProcessorService implements ODataService {
     if (processorFeature == BatchProcessor.class) {
       result.add(HttpContentType.MULTIPART_MIXED);
     } else if (processorFeature == EntityProcessor.class) {
-      result.add(HttpContentType.APPLICATION_ATOM_XML_ENTRY);
-      result.add(HttpContentType.APPLICATION_ATOM_XML);
-      result.add(HttpContentType.APPLICATION_JSON);
-      result.add(HttpContentType.APPLICATION_XML);
+      result.add(HttpContentType.APPLICATION_ATOM_XML_ENTRY_UTF8);
+      result.add(HttpContentType.APPLICATION_ATOM_XML_UTF8);
+      result.add(HttpContentType.APPLICATION_JSON_UTF8);
+      result.add(HttpContentType.APPLICATION_XML_UTF8);
     } else if (processorFeature == FunctionImportProcessor.class
         || processorFeature == EntityLinkProcessor.class
         || processorFeature == EntityLinksProcessor.class
         || processorFeature == EntitySimplePropertyProcessor.class
         || processorFeature == EntityComplexPropertyProcessor.class) {
-      result.add(HttpContentType.APPLICATION_XML);
-      result.add(HttpContentType.APPLICATION_JSON);
+      result.add(HttpContentType.APPLICATION_XML_UTF8);
+      result.add(HttpContentType.APPLICATION_JSON_UTF8);
     } else if (processorFeature == EntityMediaProcessor.class
         || processorFeature == EntitySimplePropertyValueProcessor.class
         || processorFeature == FunctionImportValueProcessor.class) {
       result.add(HttpContentType.WILDCARD);
     } else if (processorFeature == EntitySetProcessor.class) {
-      result.add(HttpContentType.APPLICATION_ATOM_XML_FEED);
-      result.add(HttpContentType.APPLICATION_ATOM_XML);
-      result.add(HttpContentType.APPLICATION_JSON);
-      result.add(HttpContentType.APPLICATION_XML);
+      result.add(HttpContentType.APPLICATION_ATOM_XML_FEED_UTF8);
+      result.add(HttpContentType.APPLICATION_ATOM_XML_UTF8);
+      result.add(HttpContentType.APPLICATION_JSON_UTF8);
+      result.add(HttpContentType.APPLICATION_XML_UTF8);
     } else if (processorFeature == MetadataProcessor.class) {
-      result.add(HttpContentType.APPLICATION_XML);
+      result.add(HttpContentType.APPLICATION_XML_UTF8);
     } else if (processorFeature == ServiceDocumentProcessor.class) {
-      result.add(HttpContentType.APPLICATION_ATOM_SVC);
-      result.add(HttpContentType.APPLICATION_ATOM_XML);
-      result.add(HttpContentType.APPLICATION_JSON);
-      result.add(HttpContentType.APPLICATION_XML);
+      result.add(HttpContentType.APPLICATION_ATOM_SVC_UTF8);
+      result.add(HttpContentType.APPLICATION_ATOM_XML_UTF8);
+      result.add(HttpContentType.APPLICATION_JSON_UTF8);
+      result.add(HttpContentType.APPLICATION_XML_UTF8);
     } else {
       throw new ODataNotImplementedException();
     }
