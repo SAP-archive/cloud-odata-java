@@ -10,6 +10,7 @@ import com.sap.core.odata.api.edm.EdmServiceMetadata;
 import com.sap.core.odata.api.ep.EntityProvider;
 import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.api.exception.ODataNotImplementedException;
+import com.sap.core.odata.api.processor.ODataResponse.ODataResponseBuilder;
 import com.sap.core.odata.api.processor.feature.CustomContentType;
 import com.sap.core.odata.api.processor.part.BatchProcessor;
 import com.sap.core.odata.api.processor.part.EntityComplexPropertyProcessor;
@@ -69,10 +70,6 @@ public abstract class ODataSingleProcessor implements
     BatchProcessor,
     CustomContentType
 {
-
-  private static final String PARAMETER_CHARSET = "charset";
-  private static final String DEFAULT_SERVICE_CHARSET = "utf-8";
-  private static final String DEFAULT_SERVICE_CHARSET_PARAMETER = PARAMETER_CHARSET + "=" + DEFAULT_SERVICE_CHARSET;
 
   /**
    * A request context object usually injected by the OData library.
@@ -316,14 +313,32 @@ public abstract class ODataSingleProcessor implements
    */
   @Override
   public ODataResponse readServiceDocument(GetServiceDocumentUriInfo uriInfo, String contentType) throws ODataException {
-    if(contentType != null && !contentType.contains(PARAMETER_CHARSET)) {
-      contentType += "; " + DEFAULT_SERVICE_CHARSET_PARAMETER;
+    Edm entityDataModel = getContext().getService().getEntityDataModel();
+    String serviceRoot = getContext().getPathInfo().getServiceRoot().toASCIIString();
+    
+    ODataResponse response = EntityProvider.writeServiceDocument(contentType, entityDataModel, serviceRoot);
+    ODataResponseBuilder odataResponseBuilder = ODataResponse.fromResponse(response)
+        .header("DataServiceVersion", Edm.DATA_SERVICE_VERSION_10);
+    if(needResponseContentTypeReplacement(contentType, response.getContentHeader())) {
+      odataResponseBuilder.contentHeader(contentType);
     }
+    return odataResponseBuilder.build();
+  }
 
-    final ODataResponse response = ODataResponse.fromResponse(EntityProvider.writeServiceDocument(getContext().getService().getEntityDataModel(), getContext().getPathInfo().getServiceRoot().toASCIIString()))
-        .header("Content-Type", contentType)
-        .header("DataServiceVersion", Edm.DATA_SERVICE_VERSION_10).build();
-    return response;
+  /**
+   * Check if response content type needs to be replaced by request content type.
+   * 
+   * @param requestContentType
+   * @param responseContentType
+   * @return
+   */
+  private boolean needResponseContentTypeReplacement(String requestContentType, String responseContentType) {
+    if(requestContentType.equals(responseContentType)) {
+      return false;
+    } else if(responseContentType.contains("atomsvc") && requestContentType.contains("atom")) {
+      return false;
+    }
+    return true;
   }
 
   /**

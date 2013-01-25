@@ -6,17 +6,11 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
 import java.util.Collections;
 import java.util.Map;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.sap.core.odata.api.edm.Edm;
 import com.sap.core.odata.api.edm.EdmException;
 import com.sap.core.odata.api.edm.EdmLiteralKind;
 import com.sap.core.odata.api.edm.EdmProperty;
@@ -26,8 +20,6 @@ import com.sap.core.odata.api.ep.EntityProviderException;
 import com.sap.core.odata.api.processor.ODataResponse;
 import com.sap.core.odata.api.processor.ODataResponse.ODataResponseBuilder;
 import com.sap.core.odata.core.commons.ContentType;
-import com.sap.core.odata.core.ep.producer.AtomServiceDocumentProducer;
-import com.sap.core.odata.core.ep.util.CircleStreamBuffer;
 
 /**
  * Provider for all basic (content type independent) entity provider methods.
@@ -36,7 +28,6 @@ import com.sap.core.odata.core.ep.util.CircleStreamBuffer;
  */
 public class BasicEntityProvider {
 
-  private static final Logger LOG = LoggerFactory.getLogger(BasicEntityProvider.class);
   /** Default used charset for writer and response content header */
   private static final String DEFAULT_CHARSET = "UTF-8";
 
@@ -105,43 +96,6 @@ public class BasicEntityProvider {
       } catch (EdmException e) {
         throw new EntityProviderException(EntityProviderException.COMMON, e);
       }
-  }
-
-  /**
-   * Write service document based on given {@link Edm} and <code>service root</code> as
-   * content type "<code>application/atomsvc+xml; charset=utf-8</code>".
-   * 
-   * @param edm the Entity Data Model
-   * @param serviceRoot the root URI of the service
-   * @return resulting {@link ODataResponse} with written service document
-   * @throws EntityProviderException
-   */
-  public ODataResponse writeServiceDocument(Edm edm, String serviceRoot) throws EntityProviderException {
-    OutputStreamWriter writer = null;
-
-    try {
-      CircleStreamBuffer csb = new CircleStreamBuffer();
-      OutputStream outputStream = csb.getOutputStream();
-      writer = new OutputStreamWriter(outputStream, DEFAULT_CHARSET);
-      AtomServiceDocumentProducer.writeServiceDocument(edm, serviceRoot, writer);
-
-      ODataResponse response = ODataResponse.entity(csb.getInputStream())
-          .contentHeader(ContentType.APPLICATION_ATOM_SVC_CS_UTF_8.toContentTypeString())
-          .build();
-
-      return response;
-    } catch (UnsupportedEncodingException e) {
-      throw new EntityProviderException(EntityProviderException.COMMON, e);
-    } finally {
-      if (writer != null) {
-        try {
-          writer.close();
-        } catch (IOException e) {
-          // don't throw in finally!
-          LOG.error(e.getLocalizedMessage(), e);
-        }
-      }
-    }
   }
 
   /**

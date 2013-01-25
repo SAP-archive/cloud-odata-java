@@ -3,6 +3,8 @@ package com.sap.core.odata.core.ep;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.UnsupportedEncodingException;
 import java.util.List;
 import java.util.Map;
 
@@ -14,6 +16,7 @@ import javax.xml.stream.XMLStreamWriter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.sap.core.odata.api.edm.Edm;
 import com.sap.core.odata.api.edm.EdmEntitySet;
 import com.sap.core.odata.api.edm.EdmException;
 import com.sap.core.odata.api.edm.EdmFunctionImport;
@@ -31,6 +34,7 @@ import com.sap.core.odata.core.ep.aggregator.EntityPropertyInfo;
 import com.sap.core.odata.core.ep.consumer.XmlEntityConsumer;
 import com.sap.core.odata.core.ep.producer.AtomEntryEntityProducer;
 import com.sap.core.odata.core.ep.producer.AtomFeedProducer;
+import com.sap.core.odata.core.ep.producer.AtomServiceDocumentProducer;
 import com.sap.core.odata.core.ep.producer.XmlCollectionEntityProducer;
 import com.sap.core.odata.core.ep.producer.XmlLinkEntityProducer;
 import com.sap.core.odata.core.ep.producer.XmlLinksEntityProducer;
@@ -50,6 +54,44 @@ public class AtomEntityProvider implements ContentTypeBasedEntityProvider {
     super();
   }
 
+  /**
+   * Write service document based on given {@link Edm} and <code>service root</code> as
+   * content type "<code>application/atomsvc+xml; charset=utf-8</code>".
+   * 
+   * @param edm the Entity Data Model
+   * @param serviceRoot the root URI of the service
+   * @return resulting {@link ODataResponse} with written service document
+   * @throws EntityProviderException
+   */
+  public ODataResponse writeServiceDocument(Edm edm, String serviceRoot) throws EntityProviderException {
+    OutputStreamWriter writer = null;
+
+    try {
+      CircleStreamBuffer csb = new CircleStreamBuffer();
+      OutputStream outputStream = csb.getOutputStream();
+      writer = new OutputStreamWriter(outputStream, DEFAULT_CHARSET);
+      AtomServiceDocumentProducer.writeServiceDocument(edm, serviceRoot, writer);
+
+      ODataResponse response = ODataResponse.entity(csb.getInputStream())
+          .contentHeader(ContentType.APPLICATION_ATOM_SVC_CS_UTF_8.toContentTypeString())
+          .build();
+
+      return response;
+    } catch (UnsupportedEncodingException e) {
+      throw new EntityProviderException(EntityProviderException.COMMON, e);
+    } finally {
+      if (writer != null) {
+        try {
+          writer.close();
+        } catch (IOException e) {
+          // don't throw in finally!
+          LOG.error(e.getLocalizedMessage(), e);
+        }
+      }
+    }
+  }
+
+  
   @Override
   public ODataResponse writeEntry(EdmEntitySet entitySet, Map<String, Object> data, EntityProviderProperties properties) throws EntityProviderException {
     OutputStream outStream = null;
