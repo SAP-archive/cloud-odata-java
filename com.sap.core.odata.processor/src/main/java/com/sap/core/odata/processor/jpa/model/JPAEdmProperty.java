@@ -215,6 +215,7 @@ public class JPAEdmProperty extends JPAEdmBaseViewImpl implements
 							keyView = new JPAEdmKey(complexTypeView,
 									JPAEdmProperty.this);
 						keyView.getBuilder().build();
+						complexTypeView.expandEdmComplexType(complexType, properties);
 					}
 					else{
 						currentComplexProperty = new ComplexProperty();
