@@ -15,10 +15,10 @@ import org.apache.http.client.methods.HttpGet;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.sap.core.odata.api.ODataService;
 import com.sap.core.odata.api.commons.HttpStatusCodes;
 import com.sap.core.odata.api.edm.Edm;
 import com.sap.core.odata.api.exception.ODataException;
-import com.sap.core.odata.api.processor.ODataSingleProcessorService;
 import com.sap.core.odata.testutil.fit.AbstractFitTest;
 import com.sap.core.odata.testutil.helper.StringHelper;
 import com.sap.core.odata.testutil.helper.XMLUnitHelper;
@@ -53,7 +53,7 @@ public class MappingTest extends AbstractFitTest {
   }
 
   @Override
-  protected ODataSingleProcessorService createService() throws ODataException {
+  protected ODataService createService() throws ODataException {
     return MapFactory.create();
   }
 

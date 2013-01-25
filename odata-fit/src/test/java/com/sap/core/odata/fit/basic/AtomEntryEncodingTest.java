@@ -11,11 +11,12 @@ import org.apache.http.client.methods.HttpGet;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.sap.core.odata.api.ODataService;
 import com.sap.core.odata.api.edm.Edm;
 import com.sap.core.odata.api.edm.provider.EdmProvider;
 import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.api.processor.ODataSingleProcessor;
-import com.sap.core.odata.api.processor.ODataSingleProcessorService;
+import com.sap.core.odata.core.processor.ODataSingleProcessorService;
 import com.sap.core.odata.ref.edm.ScenarioEdmProvider;
 import com.sap.core.odata.ref.model.DataContainer;
 import com.sap.core.odata.ref.processor.ListsProcessor;
@@ -27,7 +28,7 @@ import com.sap.core.odata.testutil.helper.XMLUnitHelper;
 public class AtomEntryEncodingTest extends AbstractFitTest {
 
   @Override
-  protected ODataSingleProcessorService createService() throws ODataException {
+  protected ODataService createService() throws ODataException {
     DataContainer dataContainer = new DataContainer();
     dataContainer.reset();
     ODataSingleProcessor processor = new ListsProcessor(new ScenarioDataSource(dataContainer));
