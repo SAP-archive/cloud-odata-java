@@ -117,7 +117,7 @@ public class EdmDecimal extends AbstractSimpleType {
         throw new EdmSimpleTypeException(EdmSimpleTypeException.VALUE_TYPE_NOT_SUPPORTED.addContent(returnType));
 
     } catch (ArithmeticException e) {
-      throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_UNCONVERTIBLE_TO_VALUE_TYPE.addContent(value, returnType));
+      throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_UNCONVERTIBLE_TO_VALUE_TYPE.addContent(value, returnType), e);
     }
   }
 
@@ -146,7 +146,7 @@ public class EdmDecimal extends AbstractSimpleType {
         else
           bigDecimalValue = (BigDecimal) value;
       } catch (NumberFormatException e) {
-        throw new EdmSimpleTypeException(EdmSimpleTypeException.VALUE_ILLEGAL_CONTENT.addContent(value));
+        throw new EdmSimpleTypeException(EdmSimpleTypeException.VALUE_ILLEGAL_CONTENT.addContent(value), e);
       }
 
       int digits = bigDecimalValue.precision();
