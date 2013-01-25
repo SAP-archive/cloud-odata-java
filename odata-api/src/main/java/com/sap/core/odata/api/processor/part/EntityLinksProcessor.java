@@ -1,8 +1,10 @@
-package com.sap.core.odata.api.processor;
+package com.sap.core.odata.api.processor.part;
 
 import java.io.InputStream;
 
 import com.sap.core.odata.api.exception.ODataException;
+import com.sap.core.odata.api.processor.ODataProcessor;
+import com.sap.core.odata.api.processor.ODataResponse;
 import com.sap.core.odata.api.uri.info.GetEntitySetLinksCountUriInfo;
 import com.sap.core.odata.api.uri.info.GetEntitySetLinksUriInfo;
 import com.sap.core.odata.api.uri.info.PostUriInfo;
