@@ -2,6 +2,7 @@ package com.sap.core.odata.api.rt;
 
 import java.util.List;
 
+import com.sap.core.odata.api.ODataService;
 import com.sap.core.odata.api.edm.Edm;
 import com.sap.core.odata.api.edm.EdmEntityType;
 import com.sap.core.odata.api.edm.EdmSimpleType;
@@ -11,6 +12,7 @@ import com.sap.core.odata.api.edm.provider.EdmProvider;
 import com.sap.core.odata.api.ep.EntityProvider.EntityProviderInterface;
 import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.api.processor.ODataResponse.ODataResponseBuilder;
+import com.sap.core.odata.api.processor.ODataSingleProcessor;
 import com.sap.core.odata.api.processor.feature.ProcessorFeature;
 import com.sap.core.odata.api.uri.UriParser;
 import com.sap.core.odata.api.uri.expression.FilterParser;
@@ -87,9 +89,9 @@ public abstract class RuntimeDelegate {
 
     protected abstract OrderByParser getOrderByParser(Edm edm, EdmEntityType edmType);
 
-    protected abstract List<String> getSupportedContentTypes(List<String> customContentTypes, Class<? extends ProcessorFeature> processorFeature) throws ODataException;
-
     protected abstract EntityProviderInterface createEntityProvider();
+
+    protected abstract ODataService createODataSingleProcessorService(EdmProvider provider, ODataSingleProcessor processor);
   }
 
   public static EdmSimpleType getEdmSimpleType(EdmSimpleTypeKind edmSimpleType) {
@@ -116,10 +118,15 @@ public abstract class RuntimeDelegate {
     return RuntimeDelegate.getInstance().getInternalEdmSimpleTypeByString(edmSimpleType);
   }
 
-  public static List<String> getSupportedContentTypes(List<String> customContentTypes, Class<? extends ProcessorFeature> processorFeature) throws ODataException {
-    return RuntimeDelegate.getInstance().getSupportedContentTypes(customContentTypes, processorFeature);
+  public static EntityProviderInterface createEntityProvider() {
+    return RuntimeDelegate.getInstance().createEntityProvider();
   }
-
+  
+  public static ODataService createODataSingleProcessorService(EdmProvider provider, ODataSingleProcessor processor) {
+    return RuntimeDelegate.getInstance().createODataSingleProcessorService(provider, processor);
+  }
+  
+  
   private static class RuntimeDelegateException extends RuntimeException {
 
     private static final long serialVersionUID = 1L;
@@ -129,7 +136,4 @@ public abstract class RuntimeDelegate {
     }
   }
 
-  public static EntityProviderInterface createEntityProvider() {
-    return RuntimeDelegate.getInstance().createEntityProvider();
-  }
 }

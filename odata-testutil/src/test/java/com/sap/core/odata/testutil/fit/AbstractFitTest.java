@@ -7,8 +7,8 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.junit.After;
 import org.junit.Before;
 
+import com.sap.core.odata.api.ODataService;
 import com.sap.core.odata.api.exception.ODataException;
-import com.sap.core.odata.api.processor.ODataSingleProcessorService;
 import com.sap.core.odata.testutil.helper.TestutilException;
 import com.sap.core.odata.testutil.server.TestServer;
 
@@ -19,7 +19,7 @@ public abstract class AbstractFitTest extends BaseTest {
 
   private final TestServer server = new TestServer();
 
-  private ODataSingleProcessorService service;
+  private ODataService service;
 
   private final HttpClient httpClient = new DefaultHttpClient();
 
@@ -31,11 +31,11 @@ public abstract class AbstractFitTest extends BaseTest {
     return httpClient;
   }
 
-  protected ODataSingleProcessorService getService() {
+  protected ODataService getService() {
     return service;
   }
 
-  protected abstract ODataSingleProcessorService createService() throws ODataException;
+  protected abstract ODataService createService() throws ODataException;
 
   @Before
   public void before() {

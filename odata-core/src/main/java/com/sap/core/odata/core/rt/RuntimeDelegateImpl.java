@@ -3,6 +3,7 @@ package com.sap.core.odata.core.rt;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.sap.core.odata.api.ODataService;
 import com.sap.core.odata.api.commons.HttpContentType;
 import com.sap.core.odata.api.edm.Edm;
 import com.sap.core.odata.api.edm.EdmEntityType;
@@ -14,6 +15,7 @@ import com.sap.core.odata.api.ep.EntityProvider.EntityProviderInterface;
 import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.api.exception.ODataNotImplementedException;
 import com.sap.core.odata.api.processor.ODataResponse.ODataResponseBuilder;
+import com.sap.core.odata.api.processor.ODataSingleProcessor;
 import com.sap.core.odata.api.processor.feature.Batch;
 import com.sap.core.odata.api.processor.feature.Entity;
 import com.sap.core.odata.api.processor.feature.EntityComplexProperty;
@@ -36,6 +38,7 @@ import com.sap.core.odata.core.ODataResponseImpl;
 import com.sap.core.odata.core.edm.EdmSimpleTypeFacadeImpl;
 import com.sap.core.odata.core.edm.provider.EdmImplProv;
 import com.sap.core.odata.core.ep.ProviderFacadeImpl;
+import com.sap.core.odata.core.processor.ODataSingleProcessorService;
 import com.sap.core.odata.core.uri.UriParserImpl;
 import com.sap.core.odata.core.uri.expression.FilterParserImpl;
 import com.sap.core.odata.core.uri.expression.OrderByParserImpl;
@@ -92,45 +95,7 @@ public class RuntimeDelegateImpl extends RuntimeDelegateInstance {
   }
   
   @Override
-  protected List<String> getSupportedContentTypes(List<String> customContentTypes, Class<? extends ProcessorFeature> processorFeature) throws ODataException {
-    List<String> result = new ArrayList<String>();
-
-    result.addAll(customContentTypes);
-
-    if (processorFeature == Batch.class) {
-      result.add(HttpContentType.MULTIPART_MIXED);
-    } else if (processorFeature == Entity.class) {
-      result.add(HttpContentType.APPLICATION_ATOM_XML_ENTRY);
-      result.add(HttpContentType.APPLICATION_ATOM_XML);
-      result.add(HttpContentType.APPLICATION_JSON);
-      result.add(HttpContentType.APPLICATION_XML);
-    } else if (processorFeature == FunctionImport.class
-        || processorFeature == EntityLink.class
-        || processorFeature == EntityLinks.class
-        || processorFeature == EntitySimpleProperty.class
-        || processorFeature == EntityComplexProperty.class) {
-      result.add(HttpContentType.APPLICATION_XML);
-      result.add(HttpContentType.APPLICATION_JSON);
-    } else if (processorFeature == EntityMedia.class
-        || processorFeature == EntitySimplePropertyValue.class
-        || processorFeature == FunctionImportValue.class) {
-      result.add(HttpContentType.WILDCARD);
-    } else if (processorFeature == EntitySet.class) {
-      result.add(HttpContentType.APPLICATION_ATOM_XML_FEED);
-      result.add(HttpContentType.APPLICATION_ATOM_XML);
-      result.add(HttpContentType.APPLICATION_JSON);
-      result.add(HttpContentType.APPLICATION_XML);
-    } else if (processorFeature == Metadata.class) {
-      result.add(HttpContentType.APPLICATION_XML);
-    } else if (processorFeature == ServiceDocument.class) {
-      result.add(HttpContentType.APPLICATION_ATOM_SVC);
-      result.add(HttpContentType.APPLICATION_ATOM_XML);
-      result.add(HttpContentType.APPLICATION_JSON);
-      result.add(HttpContentType.APPLICATION_XML);
-    } else {
-      throw new ODataNotImplementedException();
-    }
-
-    return result;
+  protected ODataService createODataSingleProcessorService(EdmProvider provider, ODataSingleProcessor processor) {
+    return new ODataSingleProcessorService(provider, processor);
   }
 }

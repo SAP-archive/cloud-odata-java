@@ -4,13 +4,12 @@ import com.sap.core.odata.api.ODataService;
 import com.sap.core.odata.api.ODataServiceFactory;
 import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.api.processor.ODataContext;
-import com.sap.core.odata.api.processor.ODataSingleProcessorService;
 
-public class FitStaticServiceFactory implements ODataServiceFactory {
+public class FitStaticServiceFactory extends ODataServiceFactory {
 
-  private static ODataSingleProcessorService service;
+  private static ODataService service;
 
-  public static void setService(ODataSingleProcessorService service) {
+  public static void setService(ODataService service) {
     FitStaticServiceFactory.service = service;
   }
 

@@ -1,4 +1,4 @@
-package com.sap.core.odata.core.service;
+package com.sap.core.odata.core.processor;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -14,7 +14,6 @@ import org.junit.Test;
 
 import com.sap.core.odata.api.edm.provider.EdmProvider;
 import com.sap.core.odata.api.processor.ODataSingleProcessor;
-import com.sap.core.odata.api.processor.ODataSingleProcessorService;
 import com.sap.core.odata.api.processor.feature.Batch;
 import com.sap.core.odata.api.processor.feature.CustomContentType;
 import com.sap.core.odata.api.processor.feature.Entity;
@@ -30,6 +29,7 @@ import com.sap.core.odata.api.processor.feature.FunctionImportValue;
 import com.sap.core.odata.api.processor.feature.Metadata;
 import com.sap.core.odata.api.processor.feature.ServiceDocument;
 import com.sap.core.odata.core.commons.ContentType;
+import com.sap.core.odata.core.processor.ODataSingleProcessorService;
 import com.sap.core.odata.testutil.fit.BaseTest;
 
 /**

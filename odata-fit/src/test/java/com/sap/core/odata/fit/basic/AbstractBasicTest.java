@@ -8,11 +8,12 @@ import static org.mockito.Mockito.when;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
+import com.sap.core.odata.api.ODataService;
 import com.sap.core.odata.api.edm.provider.EdmProvider;
 import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.api.processor.ODataContext;
 import com.sap.core.odata.api.processor.ODataSingleProcessor;
-import com.sap.core.odata.api.processor.ODataSingleProcessorService;
+import com.sap.core.odata.core.processor.ODataSingleProcessorService;
 import com.sap.core.odata.testutil.fit.AbstractFitTest;
 
 public abstract class AbstractBasicTest extends AbstractFitTest {
@@ -20,7 +21,7 @@ public abstract class AbstractBasicTest extends AbstractFitTest {
   private ODataContext context;
 
   @Override
-  protected ODataSingleProcessorService createService() throws ODataException {
+  protected ODataService createService() throws ODataException {
     EdmProvider provider = createEdmProvider();
     ODataSingleProcessor processor = this.createProcessor();
 
