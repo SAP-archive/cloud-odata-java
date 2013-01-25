@@ -51,7 +51,7 @@ public class EdmBoolean extends AbstractSimpleType {
       throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_KIND_MISSING);
 
     if (validateLiteral(value))
-      if (returnType.isAssignableFrom( Boolean.class))
+      if (returnType.isAssignableFrom(Boolean.class))
         return returnType.cast(Boolean.valueOf("true".equals(value) || "1".equals(value)));
       else
         throw new EdmSimpleTypeException(EdmSimpleTypeException.VALUE_TYPE_NOT_SUPPORTED.addContent(returnType));

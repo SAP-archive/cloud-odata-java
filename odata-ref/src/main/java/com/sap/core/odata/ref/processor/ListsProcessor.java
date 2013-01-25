@@ -68,6 +68,7 @@ import com.sap.core.odata.api.uri.info.GetMediaResourceUriInfo;
 import com.sap.core.odata.api.uri.info.GetSimplePropertyUriInfo;
 import com.sap.core.odata.api.uri.info.PostUriInfo;
 import com.sap.core.odata.api.uri.info.PutMergePatchUriInfo;
+import com.sap.core.odata.ref.processor.ListsDataSource.BinaryData;
 
 /**
  * Implementation of the centralized parts of OData processing,
@@ -84,7 +85,7 @@ public class ListsProcessor extends ODataSingleProcessor {
   public ListsProcessor(ListsDataSource dataSource) {
     this.dataSource = dataSource;
   }
-  
+
   @Override
   public ODataResponse readEntitySet(final GetEntitySetUriInfo uriInfo, final String contentType) throws ODataException {
     ArrayList<Object> data = new ArrayList<Object>();
@@ -559,13 +560,11 @@ public class ListsProcessor extends ODataSingleProcessor {
       throw new ODataNotFoundException(ODataNotFoundException.ENTITY);
 
     final EdmEntitySet entitySet = uriInfo.getTargetEntitySet();
-    StringBuilder mimeTypeBuilder = new StringBuilder();
-    final byte[] binaryData = dataSource.readBinaryData(entitySet, data, mimeTypeBuilder);
+    final BinaryData binaryData = dataSource.readBinaryData(entitySet, data);
+    final String mimeType = binaryData.getMimeType() == null ?
+        HttpContentType.APPLICATION_OCTET_STREAM : binaryData.getMimeType();
 
-    final String mimeType = mimeTypeBuilder.toString().isEmpty() ?
-        HttpContentType.APPLICATION_OCTET_STREAM : mimeTypeBuilder.toString();
-
-    return ODataResponse.fromResponse(EntityProvider.writeBinary(mimeType, binaryData))
+    return ODataResponse.fromResponse(EntityProvider.writeBinary(mimeType, binaryData.getData()))
         .status(HttpStatusCodes.OK)
         .build();
   }
@@ -582,7 +581,7 @@ public class ListsProcessor extends ODataSingleProcessor {
     if (data == null)
       throw new ODataNotFoundException(ODataNotFoundException.ENTITY);
 
-    dataSource.writeBinaryData(uriInfo.getTargetEntitySet(), data, null, null);
+    dataSource.writeBinaryData(uriInfo.getTargetEntitySet(), data, new BinaryData(null, null));
 
     return ODataResponse.status(HttpStatusCodes.NO_CONTENT).build();
   }
@@ -606,7 +605,7 @@ public class ListsProcessor extends ODataSingleProcessor {
 
     context.stopRuntimeMeasurement(timingHandle);
 
-    dataSource.writeBinaryData(uriInfo.getTargetEntitySet(), data, value, requestContentType);
+    dataSource.writeBinaryData(uriInfo.getTargetEntitySet(), data, new BinaryData(value, requestContentType));
 
     return ODataResponse.status(HttpStatusCodes.NO_CONTENT).build();
   }

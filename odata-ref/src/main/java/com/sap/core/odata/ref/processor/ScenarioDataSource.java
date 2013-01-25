@@ -264,36 +264,34 @@ public class ScenarioDataSource implements ListsDataSource {
   }
 
   @Override
-  public byte[] readBinaryData(final EdmEntitySet entitySet, final Object mediaLinkEntryData, StringBuilder mimeType) throws ODataNotImplementedException, ODataNotFoundException, EdmException, ODataApplicationException {
+  public BinaryData readBinaryData(final EdmEntitySet entitySet, final Object mediaLinkEntryData) throws ODataNotImplementedException, ODataNotFoundException, EdmException, ODataApplicationException {
     if (mediaLinkEntryData == null)
       throw new ODataNotFoundException(null);
 
     if ("Employees".equals(entitySet.getName()) || "Managers".equals(entitySet.getName())) {
       final Employee employee = (Employee) mediaLinkEntryData;
-      mimeType.append(employee.getImageType());
-      return employee.getImage();
+      return new BinaryData(employee.getImage(), employee.getImageType());
     } else if ("Photos".equals(entitySet.getName())) {
       final Photo photo = (Photo) mediaLinkEntryData;
-      mimeType.append(photo.getImageType());
-      return photo.getImage();
+      return new BinaryData(photo.getImage(), photo.getImageType());
     } else {
       throw new ODataNotImplementedException();
     }
   }
 
   @Override
-  public void writeBinaryData(final EdmEntitySet entitySet, final Object mediaLinkEntryData, final byte[] binaryData, final String mimeType) throws ODataNotImplementedException, ODataNotFoundException, EdmException, ODataApplicationException {
+  public void writeBinaryData(final EdmEntitySet entitySet, final Object mediaLinkEntryData, final BinaryData binaryData) throws ODataNotImplementedException, ODataNotFoundException, EdmException, ODataApplicationException {
     if (mediaLinkEntryData == null)
       throw new ODataNotFoundException(null);
 
     if ("Employees".equals(entitySet.getName()) || "Managers".equals(entitySet.getName())) {
       final Employee employee = (Employee) mediaLinkEntryData;
-      employee.setImage(binaryData);
-      employee.setImageType(mimeType);
+      employee.setImage(binaryData.getData());
+      employee.setImageType(binaryData.getMimeType());
     } else if ("Photos".equals(entitySet.getName())) {
       final Photo photo = (Photo) mediaLinkEntryData;
-      photo.setImage(binaryData);
-      photo.setImageType(mimeType);
+      photo.setImage(binaryData.getData());
+      photo.setImageType(binaryData.getMimeType());
     } else {
       throw new ODataNotImplementedException();
     }

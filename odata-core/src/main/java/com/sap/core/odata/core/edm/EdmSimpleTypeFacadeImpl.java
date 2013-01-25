@@ -1,16 +1,10 @@
 package com.sap.core.odata.core.edm;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import org.apache.commons.codec.DecoderException;
-import org.apache.commons.codec.binary.Base64;
-import org.apache.commons.codec.binary.Hex;
-
 import com.sap.core.odata.api.edm.EdmLiteral;
 import com.sap.core.odata.api.edm.EdmLiteralException;
 import com.sap.core.odata.api.edm.EdmLiteralKind;
 import com.sap.core.odata.api.edm.EdmSimpleType;
+import com.sap.core.odata.api.edm.EdmSimpleTypeException;
 import com.sap.core.odata.api.edm.EdmSimpleTypeFacade;
 import com.sap.core.odata.api.edm.EdmSimpleTypeKind;
 import com.sap.core.odata.core.exception.ODataRuntimeException;
@@ -20,11 +14,6 @@ import com.sap.core.odata.core.exception.ODataRuntimeException;
  */
 public class EdmSimpleTypeFacadeImpl implements EdmSimpleTypeFacade {
 
-  private static final Pattern UINT7_PATTERN = Pattern.compile("\\p{Digit}{1,2}|(?:1(?:0|1)\\p{Digit})|(?:12[0-7])");
-  private static final Pattern WHOLE_NUMBER_PATTERN = Pattern.compile("(-?\\p{Digit}+)([lL])?");
-  private static final Pattern DECIMAL_NUMBER_PATTERN = Pattern.compile("(-?\\p{Digit}+(?:\\.\\p{Digit}*(?:[eE][-+]?\\p{Digit}+)?)?)([mMdDfF])");
-  private static final Pattern STRING_VALUE_PATTERN = Pattern.compile("(X|binary|datetime|datetimeoffset|guid|time)?'(.*)'");
-
   @Override
   public EdmLiteral parseUriLiteral(final String uriLiteral) throws EdmLiteralException {
     if ("true".equals(uriLiteral) || "false".equals(uriLiteral))
@@ -33,90 +22,70 @@ public class EdmSimpleTypeFacadeImpl implements EdmSimpleTypeFacade {
     if ("null".equals(uriLiteral))
       return new EdmLiteral(getEdmSimpleType(EdmSimpleTypeKind.Null), uriLiteral);
 
-    if (uriLiteral.length() >= 2)
-      if (uriLiteral.startsWith("'") && uriLiteral.endsWith("'"))
-        return new EdmLiteral(getEdmSimpleType(EdmSimpleTypeKind.String), uriLiteral.substring(1, uriLiteral.length() - 1).replace("''", "'"));
-
-    // Handle the internal number data types separately to allow the use of EdmSimpleTypeKind below.
-    if ("0".equals(uriLiteral) || "1".equals(uriLiteral))
-      return new EdmLiteral(getInternalEdmSimpleTypeByString("Bit"), uriLiteral);
-
-    if (UINT7_PATTERN.matcher(uriLiteral).matches())
-      return new EdmLiteral(getInternalEdmSimpleTypeByString("Uint7"), uriLiteral);
-
-    String resultValue;
-    EdmSimpleTypeKind resultTypeKind = null;
-
-    final Matcher wholeNumberMatcher = WHOLE_NUMBER_PATTERN.matcher(uriLiteral);
-    if (wholeNumberMatcher.matches()) {
-      resultValue = wholeNumberMatcher.group(1);
-      final String suffix = wholeNumberMatcher.group(2);
-
+    if (uriLiteral.length() >= 2
+        && uriLiteral.startsWith("'") && uriLiteral.endsWith("'"))
       try {
-        final long l = Long.parseLong(resultValue);
-        if ("L".equalsIgnoreCase(suffix))
-          resultTypeKind = EdmSimpleTypeKind.Int64;
-        else if (l >= Byte.MIN_VALUE && l <= Byte.MAX_VALUE)
-          resultTypeKind = EdmSimpleTypeKind.SByte;
-        else if (l > Byte.MAX_VALUE && l <= 255)
-          resultTypeKind = EdmSimpleTypeKind.Byte;
-        else if (l >= Short.MIN_VALUE && l <= Short.MAX_VALUE)
-          resultTypeKind = EdmSimpleTypeKind.Int16;
-        else if (l >= Integer.MIN_VALUE && l <= Integer.MAX_VALUE)
-          resultTypeKind = EdmSimpleTypeKind.Int32;
-        else
-          throw new EdmLiteralException(EdmLiteralException.LITERALFORMAT.addContent(uriLiteral));
-      } catch (NumberFormatException e) {
+        final EdmSimpleType type = getEdmSimpleType(EdmSimpleTypeKind.String);
+        return new EdmLiteral(type, type.valueOfString(uriLiteral, EdmLiteralKind.URI, null, String.class));
+      } catch (EdmSimpleTypeException e) {
         throw new EdmLiteralException(EdmLiteralException.LITERALFORMAT.addContent(uriLiteral), e);
       }
 
-    } else {
-      final Matcher decimalNumberMatcher = DECIMAL_NUMBER_PATTERN.matcher(uriLiteral);
-      if (decimalNumberMatcher.matches()) {
-        resultValue = decimalNumberMatcher.group(1);
-        final String suffix = decimalNumberMatcher.group(2);
-
-        if ("M".equalsIgnoreCase(suffix))
-          resultTypeKind = EdmSimpleTypeKind.Decimal;
-        else if ("D".equalsIgnoreCase(suffix))
-          resultTypeKind = EdmSimpleTypeKind.Double;
-        else if ("F".equalsIgnoreCase(suffix))
-          resultTypeKind = EdmSimpleTypeKind.Single;
-
-      } else {
-        final Matcher stringValueMatcher = STRING_VALUE_PATTERN.matcher(uriLiteral);
-        if (stringValueMatcher.matches()) {
-          final String prefix = stringValueMatcher.group(1);
-          resultValue = stringValueMatcher.group(2);
-
-          if ("X".equals(prefix) || "binary".equals(prefix)) {
-            byte[] b;
-            try {
-              b = Hex.decodeHex(resultValue.toCharArray());
-            } catch (DecoderException e) {
-              throw new EdmLiteralException(EdmLiteralException.NOTEXT.addContent(e.getClass().getName()), e);
-            }
-            resultTypeKind = EdmSimpleTypeKind.Binary;
-            resultValue = Base64.encodeBase64String(b);
-          }
-          if ("datetime".equals(prefix))
-            resultTypeKind = EdmSimpleTypeKind.DateTime;
-          else if ("datetimeoffset".equals(prefix))
-            resultTypeKind = EdmSimpleTypeKind.DateTimeOffset;
-          else if ("guid".equals(prefix))
-            resultTypeKind = EdmSimpleTypeKind.Guid;
-          else if ("time".equals(prefix))
-            resultTypeKind = EdmSimpleTypeKind.Time;
-        } else {
-          throw new EdmLiteralException(EdmLiteralException.UNKNOWNLITERAL.addContent(uriLiteral));
-        }
+    if (uriLiteral.matches("-?\\p{Digit}+"))
+      try {
+        final int i = getEdmSimpleType(EdmSimpleTypeKind.Int32).valueOfString(uriLiteral, EdmLiteralKind.URI, null, Integer.class);
+        if (i == 0 || i == 1)
+          return new EdmLiteral(getInternalEdmSimpleTypeByString("Bit"), uriLiteral);
+        if (i >= 0 && i <= Byte.MAX_VALUE)
+          return new EdmLiteral(getInternalEdmSimpleTypeByString("Uint7"), uriLiteral);
+        if (i >= Byte.MIN_VALUE && i < 0)
+          return new EdmLiteral(getEdmSimpleType(EdmSimpleTypeKind.SByte), uriLiteral);
+        else if (i > Byte.MAX_VALUE && i <= 255)
+          return new EdmLiteral(getEdmSimpleType(EdmSimpleTypeKind.Byte), uriLiteral);
+        else if (i >= Short.MIN_VALUE && i <= Short.MAX_VALUE)
+          return new EdmLiteral(getEdmSimpleType(EdmSimpleTypeKind.Int16), uriLiteral);
+        else
+          return new EdmLiteral(getEdmSimpleType(EdmSimpleTypeKind.Int32), uriLiteral);
+      } catch (EdmSimpleTypeException e) {
+        throw new EdmLiteralException(EdmLiteralException.LITERALFORMAT.addContent(uriLiteral), e);
       }
-    }
-    final EdmSimpleType type = getEdmSimpleType(resultTypeKind);
-    if (type.validate(resultValue, EdmLiteralKind.DEFAULT, null))
-      return new EdmLiteral(type, resultValue);
+
+    if (uriLiteral.endsWith("L") || uriLiteral.endsWith("l"))
+      return createEdmLiteral(EdmSimpleTypeKind.Int64, uriLiteral, 0, 1);
+    if (uriLiteral.endsWith("M") || uriLiteral.endsWith("m"))
+      return createEdmLiteral(EdmSimpleTypeKind.Decimal, uriLiteral, 0, 1);
+    if (uriLiteral.endsWith("D") || uriLiteral.endsWith("d"))
+      return createEdmLiteral(EdmSimpleTypeKind.Double, uriLiteral, 0, 1);
+    if (uriLiteral.endsWith("F") || uriLiteral.endsWith("f"))
+      return createEdmLiteral(EdmSimpleTypeKind.Single, uriLiteral, 0, 1);
+
+    if (uriLiteral.startsWith("datetime'"))
+      return createEdmLiteral(EdmSimpleTypeKind.DateTime, uriLiteral, 9, 1);
+    if (uriLiteral.startsWith("datetimeoffset'"))
+      return createEdmLiteral(EdmSimpleTypeKind.DateTimeOffset, uriLiteral, 15, 1);
+    if (uriLiteral.startsWith("guid'"))
+      return createEdmLiteral(EdmSimpleTypeKind.Guid, uriLiteral, 5, 1);
+    if (uriLiteral.startsWith("time'"))
+      return createEdmLiteral(EdmSimpleTypeKind.Time, uriLiteral, 5, 1);
+
+    if (uriLiteral.startsWith("X'") || uriLiteral.startsWith("binary'"))
+      try {
+        final EdmSimpleType type = getEdmSimpleType(EdmSimpleTypeKind.Binary);
+        final byte[] value = type.valueOfString(uriLiteral, EdmLiteralKind.URI, null, byte[].class);
+        return new EdmLiteral(type, type.valueToString(value, EdmLiteralKind.DEFAULT, null));
+      } catch (EdmSimpleTypeException e) {
+        throw new EdmLiteralException(EdmLiteralException.LITERALFORMAT.addContent(uriLiteral), e);
+      }
+
+    throw new EdmLiteralException(EdmLiteralException.UNKNOWNLITERAL.addContent(uriLiteral));
+  }
+
+  private static EdmLiteral createEdmLiteral(final EdmSimpleTypeKind typeKind, final String literal, final int prefixLength, final int suffixLength) throws EdmLiteralException {
+    final EdmSimpleType type = getEdmSimpleType(typeKind);
+    if (type.validate(literal, EdmLiteralKind.URI, null))
+      return new EdmLiteral(type, literal.substring(prefixLength, literal.length() - suffixLength));
     else
-      throw new EdmLiteralException(EdmLiteralException.LITERALFORMAT.addContent(uriLiteral));
+      throw new EdmLiteralException(EdmLiteralException.LITERALFORMAT.addContent(literal));
   }
 
   public static EdmSimpleType getEdmSimpleType(final EdmSimpleTypeKind typeKind) {

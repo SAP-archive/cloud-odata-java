@@ -368,6 +368,29 @@ public class EdmSimpleTypeTest extends BaseTest {
   }
 
   @Test
+  public void defaultType() throws Exception {
+    assertEquals(Byte.class, Bit.getInstance().getDefaultType());
+    assertEquals(Byte.class, Uint7.getInstance().getDefaultType());
+    assertNull(EdmNull.getInstance().getDefaultType());
+
+    assertEquals(byte[].class, EdmSimpleTypeKind.Binary.getEdmSimpleTypeInstance().getDefaultType());
+    assertEquals(Boolean.class, EdmSimpleTypeKind.Boolean.getEdmSimpleTypeInstance().getDefaultType());
+    assertEquals(Short.class, EdmSimpleTypeKind.Byte.getEdmSimpleTypeInstance().getDefaultType());
+    assertEquals(Calendar.class, EdmSimpleTypeKind.DateTime.getEdmSimpleTypeInstance().getDefaultType());
+    assertEquals(Calendar.class, EdmSimpleTypeKind.DateTimeOffset.getEdmSimpleTypeInstance().getDefaultType());
+    assertEquals(BigDecimal.class, EdmSimpleTypeKind.Decimal.getEdmSimpleTypeInstance().getDefaultType());
+    assertEquals(Double.class, EdmSimpleTypeKind.Double.getEdmSimpleTypeInstance().getDefaultType());
+    assertEquals(UUID.class, EdmSimpleTypeKind.Guid.getEdmSimpleTypeInstance().getDefaultType());
+    assertEquals(Short.class, EdmSimpleTypeKind.Int16.getEdmSimpleTypeInstance().getDefaultType());
+    assertEquals(Integer.class, EdmSimpleTypeKind.Int32.getEdmSimpleTypeInstance().getDefaultType());
+    assertEquals(Long.class, EdmSimpleTypeKind.Int64.getEdmSimpleTypeInstance().getDefaultType());
+    assertEquals(Byte.class, EdmSimpleTypeKind.SByte.getEdmSimpleTypeInstance().getDefaultType());
+    assertEquals(Float.class, EdmSimpleTypeKind.Single.getEdmSimpleTypeInstance().getDefaultType());
+    assertEquals(String.class, EdmSimpleTypeKind.String.getEdmSimpleTypeInstance().getDefaultType());
+    assertEquals(Calendar.class, EdmSimpleTypeKind.Time.getEdmSimpleTypeInstance().getDefaultType());
+  }
+
+  @Test
   public void valueToStringBinary() throws Exception {
     final byte[] binary = new byte[] { (byte) 0xAA, (byte) 0xBB, (byte) 0xCC, (byte) 0xDD, (byte) 0xEE, (byte) 0xFF };
     final EdmSimpleType instance = EdmSimpleTypeKind.Binary.getEdmSimpleTypeInstance();
@@ -750,6 +773,26 @@ public class EdmSimpleTypeTest extends BaseTest {
     }
   }
 
+  private void expectTypeErrorInValueOfString(final EdmSimpleType instance, final String value, final EdmLiteralKind literalKind) {
+    try {
+      instance.valueOfString(value, literalKind, null, Class.class);
+      fail("Expected exception not thrown");
+    } catch (EdmSimpleTypeException e) {
+      assertNotNull(e.getMessageReference());
+      assertEquals(EdmSimpleTypeException.VALUE_TYPE_NOT_SUPPORTED.getKey(), e.getMessageReference().getKey());
+    }
+  }
+
+  private void expectUnconvertibleErrorInValueOfString(final EdmSimpleType instance, final String value, final Class<?> type) {
+    try {
+      instance.valueOfString(value, EdmLiteralKind.DEFAULT, null, type);
+      fail("Expected exception not thrown");
+    } catch (EdmSimpleTypeException e) {
+      assertNotNull(e.getMessageReference());
+      assertEquals(EdmSimpleTypeException.LITERAL_UNCONVERTIBLE_TO_VALUE_TYPE.getKey(), e.getMessageReference().getKey());
+    }
+  }
+
   @Test
   public void checkValueOfNull() throws Exception {
     for (EdmSimpleTypeKind kind : EdmSimpleTypeKind.values()) {
@@ -771,7 +814,7 @@ public class EdmSimpleTypeTest extends BaseTest {
     final EdmSimpleType instance = EdmSimpleTypeKind.Binary.getEdmSimpleTypeInstance();
 
     assertTrue(Arrays.equals(binary, instance.valueOfString("qrvM3e7/", EdmLiteralKind.DEFAULT, null, byte[].class)));
-    assertTrue(Arrays.equals(binary, instance.valueOfString("qrvM3e7/", EdmLiteralKind.JSON, null, byte[].class)));
+    assertTrue(Arrays.equals(new Byte[]{binary[0], binary[1], binary[2]}, instance.valueOfString("qrvM", EdmLiteralKind.JSON, null, Byte[].class)));
     assertTrue(Arrays.equals(binary, instance.valueOfString("binary'AABBCCDDEEFF'", EdmLiteralKind.URI, null, byte[].class)));
 
     assertTrue(Arrays.equals(binary, instance.valueOfString("qrvM3e7/", EdmLiteralKind.DEFAULT, getMaxLengthFacets(6), byte[].class)));
@@ -790,6 +833,8 @@ public class EdmSimpleTypeTest extends BaseTest {
     expectErrorInValueOfString(instance, "@", EdmLiteralKind.JSON, null, EdmSimpleTypeException.LITERAL_ILLEGAL_CONTENT);
     expectErrorInValueOfString(instance, "binary'ZZ'", EdmLiteralKind.URI, null, EdmSimpleTypeException.LITERAL_ILLEGAL_CONTENT);
     expectErrorInValueOfString(instance, "Y'AA'", EdmLiteralKind.URI, null, EdmSimpleTypeException.LITERAL_ILLEGAL_CONTENT);
+
+    expectTypeErrorInValueOfString(instance, "qrvM3e7/", EdmLiteralKind.DEFAULT);
   }
 
   @Test
@@ -804,20 +849,26 @@ public class EdmSimpleTypeTest extends BaseTest {
     expectErrorInValueOfString(instance, "True", EdmLiteralKind.DEFAULT, null, EdmSimpleTypeException.LITERAL_ILLEGAL_CONTENT);
     expectErrorInValueOfString(instance, "-1", EdmLiteralKind.JSON, null, EdmSimpleTypeException.LITERAL_ILLEGAL_CONTENT);
     expectErrorInValueOfString(instance, "FALSE", EdmLiteralKind.URI, null, EdmSimpleTypeException.LITERAL_ILLEGAL_CONTENT);
+
+    expectTypeErrorInValueOfString(instance, "1", EdmLiteralKind.DEFAULT);
   }
 
   @Test
   public void valueOfStringByte() throws Exception {
     final EdmSimpleType instance = EdmSimpleTypeKind.Byte.getEdmSimpleTypeInstance();
 
-    assertEquals(Byte.valueOf((byte) 1), instance.valueOfString("1", EdmLiteralKind.DEFAULT, null, Byte.class));
-    assertEquals(Byte.valueOf((byte) 2), instance.valueOfString("2", EdmLiteralKind.JSON, null, Byte.class));
+    assertEquals(Short.valueOf((short) 1), instance.valueOfString("1", EdmLiteralKind.DEFAULT, null, Short.class));
+    assertEquals(Integer.valueOf(2), instance.valueOfString("2", EdmLiteralKind.JSON, null, Integer.class));
     assertEquals(Byte.valueOf((byte) 127), instance.valueOfString("127", EdmLiteralKind.URI, null, Byte.class));
     assertEquals(Short.valueOf((short) 255), instance.valueOfString("255", EdmLiteralKind.URI, null, Short.class));
+    assertEquals(Long.valueOf(0), instance.valueOfString("0", EdmLiteralKind.DEFAULT, null, Long.class));
 
     expectErrorInValueOfString(instance, "256", EdmLiteralKind.DEFAULT, null, EdmSimpleTypeException.LITERAL_ILLEGAL_CONTENT);
     expectErrorInValueOfString(instance, "-1", EdmLiteralKind.JSON, null, EdmSimpleTypeException.LITERAL_ILLEGAL_CONTENT);
     expectErrorInValueOfString(instance, "1.0", EdmLiteralKind.URI, null, EdmSimpleTypeException.LITERAL_ILLEGAL_CONTENT);
+
+    expectTypeErrorInValueOfString(instance, "1", EdmLiteralKind.DEFAULT);
+    expectUnconvertibleErrorInValueOfString(instance, "128", Byte.class);
   }
 
   @Test
@@ -829,13 +880,15 @@ public class EdmSimpleTypeTest extends BaseTest {
     dateTime.setTimeZone(TimeZone.getTimeZone("GMT"));
     dateTime.set(2012, 1, 29, 23, 32, 3);
     assertEquals(dateTime, instance.valueOfString("2012-02-29T23:32:03", EdmLiteralKind.DEFAULT, null, Calendar.class));
-    assertEquals(dateTime, instance.valueOfString("2012-02-29T23:32:03", EdmLiteralKind.JSON, null, Calendar.class));
+    assertEquals(Long.valueOf(dateTime.getTimeInMillis()), instance.valueOfString("2012-02-29T23:32:03", EdmLiteralKind.JSON, null, Long.class));
     assertEquals(dateTime, instance.valueOfString("\\/Date(1330558323000)\\/", EdmLiteralKind.JSON, null, Calendar.class));
-    assertEquals(dateTime, instance.valueOfString("datetime'2012-02-29T23%3A32%3A03'", EdmLiteralKind.URI, null, Calendar.class));
+    assertEquals(Long.valueOf(dateTime.getTimeInMillis()), instance.valueOfString("\\/Date(1330558323000)\\/", EdmLiteralKind.JSON, null, Long.class));
+    assertEquals(dateTime.getTime(), instance.valueOfString("\\/Date(1330558323000)\\/", EdmLiteralKind.JSON, null, Date.class));
+    assertEquals(dateTime.getTime(), instance.valueOfString("datetime'2012-02-29T23%3A32%3A03'", EdmLiteralKind.URI, null, Date.class));
 
     dateTime.add(Calendar.MILLISECOND, 1);
-    assertEquals(dateTime, instance.valueOfString("2012-02-29T23:32:03.001", EdmLiteralKind.DEFAULT, null, Calendar.class));
-    assertEquals(dateTime, instance.valueOfString("\\/Date(1330558323001)\\/", EdmLiteralKind.JSON, null, Calendar.class));
+    assertEquals(Long.valueOf(dateTime.getTimeInMillis()), instance.valueOfString("2012-02-29T23:32:03.001", EdmLiteralKind.DEFAULT, null, Long.class));
+    assertEquals(dateTime.getTime(), instance.valueOfString("\\/Date(1330558323001)\\/", EdmLiteralKind.JSON, null, Date.class));
     assertEquals(dateTime, instance.valueOfString("datetime'2012-02-29T23%3A32%3A03.001'", EdmLiteralKind.URI, null, Calendar.class));
 
     dateTime.add(Calendar.MILLISECOND, 9);
@@ -866,6 +919,9 @@ public class EdmSimpleTypeTest extends BaseTest {
     expectErrorInValueOfString(instance, "date'2012-02-29T23%3A32%3A02'", EdmLiteralKind.URI, null, EdmSimpleTypeException.LITERAL_ILLEGAL_CONTENT);
     expectErrorInValueOfString(instance, "datetime'2012-02-29T23%3A32%3A02", EdmLiteralKind.URI, null, EdmSimpleTypeException.LITERAL_ILLEGAL_CONTENT);
     expectErrorInValueOfString(instance, "datetime'", EdmLiteralKind.URI, null, EdmSimpleTypeException.LITERAL_ILLEGAL_CONTENT);
+
+    expectTypeErrorInValueOfString(instance, "2012-02-29T23:32", EdmLiteralKind.DEFAULT);
+    expectTypeErrorInValueOfString(instance, "\\/Date(1)\\/", EdmLiteralKind.JSON);
   }
 
   @Test
@@ -877,7 +933,7 @@ public class EdmSimpleTypeTest extends BaseTest {
     dateTime.setTimeZone(TimeZone.getTimeZone("GMT"));
     dateTime.set(2012, 1, 29, 1, 2, 3);
     assertEquals(dateTime, instance.valueOfString("2012-02-29T01:02:03Z", EdmLiteralKind.DEFAULT, null, Calendar.class));
-    assertEquals(dateTime, instance.valueOfString("2012-02-29T01:02:03+00:00", EdmLiteralKind.DEFAULT, null, Calendar.class));
+    assertEquals(Long.valueOf(dateTime.getTimeInMillis()), instance.valueOfString("2012-02-29T01:02:03+00:00", EdmLiteralKind.DEFAULT, null, Long.class));
     assertEquals(dateTime, instance.valueOfString("2012-02-29T01:02:03", EdmLiteralKind.DEFAULT, null, Calendar.class));
     assertEquals(dateTime, instance.valueOfString("\\/Date(1330477323000)\\/", EdmLiteralKind.JSON, null, Calendar.class));
     assertEquals(dateTime, instance.valueOfString("\\/Date(1330477323000-0000)\\/", EdmLiteralKind.JSON, null, Calendar.class));
@@ -886,7 +942,7 @@ public class EdmSimpleTypeTest extends BaseTest {
     dateTime.clear();
     dateTime.setTimeZone(TimeZone.getTimeZone("GMT-01:30"));
     dateTime.set(2012, 1, 29, 1, 2, 3);
-    assertEquals(dateTime, instance.valueOfString("2012-02-29T01:02:03-01:30", EdmLiteralKind.DEFAULT, null, Calendar.class));
+    assertEquals(dateTime.getTime(), instance.valueOfString("2012-02-29T01:02:03-01:30", EdmLiteralKind.DEFAULT, null, Date.class));
     assertEquals(dateTime, instance.valueOfString("\\/Date(1330477323000-0090)\\/", EdmLiteralKind.JSON, null, Calendar.class));
     assertEquals(dateTime, instance.valueOfString("datetimeoffset'2012-02-29T01%3A02%3A03-01%3A30'", EdmLiteralKind.URI, null, Calendar.class));
 
@@ -911,6 +967,8 @@ public class EdmSimpleTypeTest extends BaseTest {
     expectErrorInValueOfString(instance, "\\/Date(1234567890Z)\\/", EdmLiteralKind.JSON, null, EdmSimpleTypeException.LITERAL_ILLEGAL_CONTENT);
     expectErrorInValueOfString(instance, "datetimeoffset'", EdmLiteralKind.URI, null, EdmSimpleTypeException.LITERAL_ILLEGAL_CONTENT);
     expectErrorInValueOfString(instance, "datetimeoffset''Z", EdmLiteralKind.URI, null, EdmSimpleTypeException.LITERAL_ILLEGAL_CONTENT);
+
+    expectTypeErrorInValueOfString(instance, "2012-02-29T01:02:03Z", EdmLiteralKind.DEFAULT);
   }
 
   @Test
@@ -918,15 +976,15 @@ public class EdmSimpleTypeTest extends BaseTest {
     final EdmSimpleType instance = EdmSimpleTypeKind.Decimal.getEdmSimpleTypeInstance();
 
     assertEquals(BigDecimal.ONE, instance.valueOfString("1", EdmLiteralKind.DEFAULT, null, BigDecimal.class));
-    assertEquals(new BigDecimal(-2), instance.valueOfString("-2", EdmLiteralKind.JSON, null, BigDecimal.class));
+    assertEquals(Byte.valueOf((byte) -2), instance.valueOfString("-2", EdmLiteralKind.JSON, null, Byte.class));
     assertEquals(new BigDecimal("-12345678901234567890"), instance.valueOfString("-12345678901234567890M", EdmLiteralKind.URI, null, BigDecimal.class));
-    assertEquals(BigDecimal.ZERO, instance.valueOfString("0M", EdmLiteralKind.URI, null, BigDecimal.class));
+    assertEquals(Short.valueOf((short) 0), instance.valueOfString("0M", EdmLiteralKind.URI, null, Short.class));
 
-    assertEquals(new BigDecimal(-32768), instance.valueOfString("-32768", EdmLiteralKind.DEFAULT, getPrecisionScaleFacets(42, null), BigDecimal.class));
-    assertEquals(new BigDecimal(-32768), instance.valueOfString("-32768", EdmLiteralKind.DEFAULT, getPrecisionScaleFacets(5, null), BigDecimal.class));
-    assertEquals(new BigDecimal(32768), instance.valueOfString("32768", EdmLiteralKind.DEFAULT, getPrecisionScaleFacets(5, null), BigDecimal.class));
-    assertEquals(new BigDecimal(0.5), instance.valueOfString("0.5", EdmLiteralKind.DEFAULT, getPrecisionScaleFacets(1, null), BigDecimal.class));
-    assertEquals(new BigDecimal(0.5), instance.valueOfString("0.5", EdmLiteralKind.DEFAULT, getPrecisionScaleFacets(null, 1), BigDecimal.class));
+    assertEquals(Integer.valueOf(-32768), instance.valueOfString("-32768", EdmLiteralKind.DEFAULT, getPrecisionScaleFacets(42, null), Integer.class));
+    assertEquals(Long.valueOf(-32768), instance.valueOfString("-32768", EdmLiteralKind.DEFAULT, getPrecisionScaleFacets(5, null), Long.class));
+    assertEquals(BigInteger.valueOf(32768), instance.valueOfString("32768", EdmLiteralKind.DEFAULT, getPrecisionScaleFacets(5, null), BigInteger.class));
+    assertEquals(Double.valueOf(0.5), instance.valueOfString("0.5", EdmLiteralKind.DEFAULT, getPrecisionScaleFacets(1, null), Double.class));
+    assertEquals(Float.valueOf(0.5F), instance.valueOfString("0.5", EdmLiteralKind.DEFAULT, getPrecisionScaleFacets(null, 1), Float.class));
     assertEquals(new BigDecimal("12.3"), instance.valueOfString("12.3", EdmLiteralKind.DEFAULT, getPrecisionScaleFacets(3, 1), BigDecimal.class));
 
     expectErrorInValueOfString(instance, "-1234", EdmLiteralKind.DEFAULT, getPrecisionScaleFacets(2, null), EdmSimpleTypeException.LITERAL_FACETS_NOT_MATCHED);
@@ -946,6 +1004,19 @@ public class EdmSimpleTypeTest extends BaseTest {
     expectErrorInValueOfString(instance, "1.0D", EdmLiteralKind.URI, null, EdmSimpleTypeException.LITERAL_ILLEGAL_CONTENT);
     expectErrorInValueOfString(instance, "0F", EdmLiteralKind.URI, null, EdmSimpleTypeException.LITERAL_ILLEGAL_CONTENT);
     expectErrorInValueOfString(instance, "0x42", EdmLiteralKind.DEFAULT, null, EdmSimpleTypeException.LITERAL_ILLEGAL_CONTENT);
+    expectErrorInValueOfString(instance, "123456789012345678901234567890", EdmLiteralKind.DEFAULT, null, EdmSimpleTypeException.LITERAL_ILLEGAL_CONTENT);
+
+    expectTypeErrorInValueOfString(instance, "1", EdmLiteralKind.DEFAULT);
+    expectUnconvertibleErrorInValueOfString(instance, "-129", Byte.class);
+    expectUnconvertibleErrorInValueOfString(instance, "128", Byte.class);
+    expectUnconvertibleErrorInValueOfString(instance, "-32769", Short.class);
+    expectUnconvertibleErrorInValueOfString(instance, "32768", Short.class);
+    expectUnconvertibleErrorInValueOfString(instance, "-2147483649", Integer.class);
+    expectUnconvertibleErrorInValueOfString(instance, "2147483648", Integer.class);
+    expectUnconvertibleErrorInValueOfString(instance, "-9223372036854775809", Long.class);
+    expectUnconvertibleErrorInValueOfString(instance, "9223372036854775808", Long.class);
+    expectUnconvertibleErrorInValueOfString(instance, "12345678901234.0625", Double.class);
+    expectUnconvertibleErrorInValueOfString(instance, "1234567.0625", Float.class);
   }
 
   @Test
@@ -953,9 +1024,14 @@ public class EdmSimpleTypeTest extends BaseTest {
     final EdmSimpleType instance = EdmSimpleTypeKind.Double.getEdmSimpleTypeInstance();
 
     assertEquals(Double.valueOf(1.42), instance.valueOfString("1.42", EdmLiteralKind.DEFAULT, null, Double.class));
-    assertEquals(Double.valueOf(-42.42), instance.valueOfString("-42.42", EdmLiteralKind.JSON, null, Double.class));
+    assertEquals(Float.valueOf(-42.25F), instance.valueOfString("-42.25", EdmLiteralKind.JSON, null, Float.class));
     assertEquals(Double.valueOf(42.0), instance.valueOfString("42D", EdmLiteralKind.URI, null, Double.class));
     assertEquals(Double.valueOf(42E42), instance.valueOfString("42E42d", EdmLiteralKind.URI, null, Double.class));
+    assertEquals(BigDecimal.valueOf(100, 1), instance.valueOfString("10D", EdmLiteralKind.URI, null, BigDecimal.class));
+    assertEquals(Byte.valueOf((byte) 0), instance.valueOfString("0", EdmLiteralKind.JSON, null, Byte.class));
+    assertEquals(Short.valueOf((short) 1), instance.valueOfString("1.00", EdmLiteralKind.DEFAULT, null, Short.class));
+    assertEquals(Integer.valueOf(42), instance.valueOfString("4.2E1", EdmLiteralKind.DEFAULT, null, Integer.class));
+    assertEquals(Long.valueOf(1234567890), instance.valueOfString("1234567890E-00", EdmLiteralKind.DEFAULT, null, Long.class));
 
     assertEquals(Double.valueOf(Double.NaN), instance.valueOfString("NaN", EdmLiteralKind.DEFAULT, null, Double.class));
     assertEquals(Double.valueOf(Double.NEGATIVE_INFINITY), instance.valueOfString("-INF", EdmLiteralKind.JSON, null, Double.class));
@@ -967,6 +1043,25 @@ public class EdmSimpleTypeTest extends BaseTest {
     expectErrorInValueOfString(instance, "42F", EdmLiteralKind.DEFAULT, null, EdmSimpleTypeException.LITERAL_ILLEGAL_CONTENT);
     expectErrorInValueOfString(instance, "42", EdmLiteralKind.URI, null, EdmSimpleTypeException.LITERAL_ILLEGAL_CONTENT);
     expectErrorInValueOfString(instance, "0x42P42", EdmLiteralKind.DEFAULT, null, EdmSimpleTypeException.LITERAL_ILLEGAL_CONTENT);
+
+    expectTypeErrorInValueOfString(instance, "1.42", EdmLiteralKind.DEFAULT);
+    expectUnconvertibleErrorInValueOfString(instance, "INF", BigDecimal.class);
+    expectUnconvertibleErrorInValueOfString(instance, "NaN", BigDecimal.class);
+    expectUnconvertibleErrorInValueOfString(instance, "1234567.0625", Float.class);
+    expectUnconvertibleErrorInValueOfString(instance, "-INF", Integer.class);
+    expectUnconvertibleErrorInValueOfString(instance, "NaN", Integer.class);
+    expectUnconvertibleErrorInValueOfString(instance, "5E-1", Byte.class);
+    expectUnconvertibleErrorInValueOfString(instance, "5E-1", Short.class);
+    expectUnconvertibleErrorInValueOfString(instance, "5E-1", Integer.class);
+    expectUnconvertibleErrorInValueOfString(instance, "5E-1", Long.class);
+    expectUnconvertibleErrorInValueOfString(instance, "-129", Byte.class);
+    expectUnconvertibleErrorInValueOfString(instance, "128", Byte.class);
+    expectUnconvertibleErrorInValueOfString(instance, "-32769", Short.class);
+    expectUnconvertibleErrorInValueOfString(instance, "32768", Short.class);
+    expectUnconvertibleErrorInValueOfString(instance, "-2147483649", Integer.class);
+    expectUnconvertibleErrorInValueOfString(instance, "2147483648", Integer.class);
+    expectUnconvertibleErrorInValueOfString(instance, "-922337203685477.75E4", Long.class);
+    expectUnconvertibleErrorInValueOfString(instance, "922337203685477.75E4", Long.class);
   }
 
   @Test
@@ -980,6 +1075,8 @@ public class EdmSimpleTypeTest extends BaseTest {
 
     expectErrorInValueOfString(instance, "AABBCCDDAABBCCDDEEFFAABBCCDDEEFF", EdmLiteralKind.DEFAULT, null, EdmSimpleTypeException.LITERAL_ILLEGAL_CONTENT);
     expectErrorInValueOfString(instance, "uid'AABBCCDD-aabb-ccdd-eeff-AABBCCDDEEFF'", EdmLiteralKind.URI, null, EdmSimpleTypeException.LITERAL_ILLEGAL_CONTENT);
+
+    expectTypeErrorInValueOfString(instance, uuid.toString(), EdmLiteralKind.DEFAULT);
   }
 
   @Test
@@ -990,9 +1087,15 @@ public class EdmSimpleTypeTest extends BaseTest {
     assertEquals(Short.valueOf((short) 2), instance.valueOfString("2", EdmLiteralKind.JSON, null, Short.class));
     assertEquals(Short.valueOf((short) -32768), instance.valueOfString("-32768", EdmLiteralKind.URI, null, Short.class));
     assertEquals(Short.valueOf((short) 32767), instance.valueOfString("32767", EdmLiteralKind.URI, null, Short.class));
+    assertEquals(Integer.valueOf(0), instance.valueOfString("0", EdmLiteralKind.DEFAULT, null, Integer.class));
+    assertEquals(Long.valueOf(-1), instance.valueOfString("-1", EdmLiteralKind.DEFAULT, null, Long.class));
 
     expectErrorInValueOfString(instance, "32768", EdmLiteralKind.DEFAULT, null, EdmSimpleTypeException.LITERAL_ILLEGAL_CONTENT);
     expectErrorInValueOfString(instance, "1.0", EdmLiteralKind.DEFAULT, null, EdmSimpleTypeException.LITERAL_ILLEGAL_CONTENT);
+
+    expectTypeErrorInValueOfString(instance, "1", EdmLiteralKind.DEFAULT);
+    expectUnconvertibleErrorInValueOfString(instance, "-129", Byte.class);
+    expectUnconvertibleErrorInValueOfString(instance, "128", Byte.class);
   }
 
   @Test
@@ -1006,6 +1109,12 @@ public class EdmSimpleTypeTest extends BaseTest {
 
     expectErrorInValueOfString(instance, "-2147483649", EdmLiteralKind.DEFAULT, null, EdmSimpleTypeException.LITERAL_ILLEGAL_CONTENT);
     expectErrorInValueOfString(instance, "1.0", EdmLiteralKind.DEFAULT, null, EdmSimpleTypeException.LITERAL_ILLEGAL_CONTENT);
+
+    expectTypeErrorInValueOfString(instance, "1", EdmLiteralKind.DEFAULT);
+    expectUnconvertibleErrorInValueOfString(instance, "-129", Byte.class);
+    expectUnconvertibleErrorInValueOfString(instance, "128", Byte.class);
+    expectUnconvertibleErrorInValueOfString(instance, "-32769", Short.class);
+    expectUnconvertibleErrorInValueOfString(instance, "32768", Short.class);
   }
 
   @Test
@@ -1015,13 +1124,23 @@ public class EdmSimpleTypeTest extends BaseTest {
     assertEquals(Short.valueOf((short) 1), instance.valueOfString("1", EdmLiteralKind.DEFAULT, null, Short.class));
     assertEquals(Integer.valueOf(2), instance.valueOfString("2", EdmLiteralKind.JSON, null, Integer.class));
     assertEquals(Long.valueOf(-1234567890123456789L), instance.valueOfString("-1234567890123456789L", EdmLiteralKind.URI, null, Long.class));
+    assertEquals(BigInteger.ONE, instance.valueOfString("1", EdmLiteralKind.DEFAULT, null, BigInteger.class));
     assertEquals(Long.valueOf(0), instance.valueOfString("0l", EdmLiteralKind.URI, null, Long.class));
+    assertEquals(Byte.valueOf((byte) 0), instance.valueOfString("0L", EdmLiteralKind.URI, null, Byte.class));
 
     expectErrorInValueOfString(instance, "-12345678901234567890", EdmLiteralKind.DEFAULT, null, EdmSimpleTypeException.LITERAL_ILLEGAL_CONTENT);
     expectErrorInValueOfString(instance, "1.0", EdmLiteralKind.DEFAULT, null, EdmSimpleTypeException.LITERAL_ILLEGAL_CONTENT);
     expectErrorInValueOfString(instance, "1.0L", EdmLiteralKind.URI, null, EdmSimpleTypeException.LITERAL_ILLEGAL_CONTENT);
     expectErrorInValueOfString(instance, "0M", EdmLiteralKind.URI, null, EdmSimpleTypeException.LITERAL_ILLEGAL_CONTENT);
     expectErrorInValueOfString(instance, "0x42", EdmLiteralKind.DEFAULT, null, EdmSimpleTypeException.LITERAL_ILLEGAL_CONTENT);
+
+    expectTypeErrorInValueOfString(instance, "1", EdmLiteralKind.DEFAULT);
+    expectUnconvertibleErrorInValueOfString(instance, "-129", Byte.class);
+    expectUnconvertibleErrorInValueOfString(instance, "128", Byte.class);
+    expectUnconvertibleErrorInValueOfString(instance, "-32769", Short.class);
+    expectUnconvertibleErrorInValueOfString(instance, "32768", Short.class);
+    expectUnconvertibleErrorInValueOfString(instance, "-2147483649", Integer.class);
+    expectUnconvertibleErrorInValueOfString(instance, "2147483648", Integer.class);
   }
 
   @Test
@@ -1032,20 +1151,29 @@ public class EdmSimpleTypeTest extends BaseTest {
     assertEquals(Short.valueOf((short) -2), instance.valueOfString("-2", EdmLiteralKind.JSON, null, Short.class));
     assertEquals(Byte.valueOf((byte) 127), instance.valueOfString("127", EdmLiteralKind.URI, null, Byte.class));
     assertEquals(Byte.valueOf((byte) -128), instance.valueOfString("-128", EdmLiteralKind.URI, null, Byte.class));
+    assertEquals(Integer.valueOf(0), instance.valueOfString("0", EdmLiteralKind.DEFAULT, null, Integer.class));
+    assertEquals(Long.valueOf(0), instance.valueOfString("0", EdmLiteralKind.DEFAULT, null, Long.class));
 
     expectErrorInValueOfString(instance, "128", EdmLiteralKind.DEFAULT, null, EdmSimpleTypeException.LITERAL_ILLEGAL_CONTENT);
     expectErrorInValueOfString(instance, "-129", EdmLiteralKind.JSON, null, EdmSimpleTypeException.LITERAL_ILLEGAL_CONTENT);
     expectErrorInValueOfString(instance, "1.0", EdmLiteralKind.URI, null, EdmSimpleTypeException.LITERAL_ILLEGAL_CONTENT);
+
+    expectTypeErrorInValueOfString(instance, "1", EdmLiteralKind.DEFAULT);
   }
 
   @Test
   public void valueOfStringSingle() throws Exception {
     final EdmSimpleType instance = EdmSimpleTypeKind.Single.getEdmSimpleTypeInstance();
 
-    assertEquals(Float.valueOf(1.42f), instance.valueOfString("1.42", EdmLiteralKind.DEFAULT, null, Float.class));
-    assertEquals(Float.valueOf(-42.42f), instance.valueOfString("-42.42", EdmLiteralKind.JSON, null, Float.class));
-    assertEquals(Float.valueOf(42.0f), instance.valueOfString("42F", EdmLiteralKind.URI, null, Float.class));
-    assertEquals(Float.valueOf(2.2E38f), instance.valueOfString("22E37f", EdmLiteralKind.URI, null, Float.class));
+    assertEquals(Float.valueOf(1.42F), instance.valueOfString("1.42", EdmLiteralKind.DEFAULT, null, Float.class));
+    assertEquals(Double.valueOf(-42.25), instance.valueOfString("-42.25", EdmLiteralKind.JSON, null, Double.class));
+    assertEquals(Float.valueOf(42.0F), instance.valueOfString("42F", EdmLiteralKind.URI, null, Float.class));
+    assertEquals(Float.valueOf(2.2E38F), instance.valueOfString("22E37f", EdmLiteralKind.URI, null, Float.class));
+    assertEquals(BigDecimal.valueOf(100, 1), instance.valueOfString("10F", EdmLiteralKind.URI, null, BigDecimal.class));
+    assertEquals(Byte.valueOf((byte) 0), instance.valueOfString("0", EdmLiteralKind.JSON, null, Byte.class));
+    assertEquals(Short.valueOf((short) 1), instance.valueOfString("1.00", EdmLiteralKind.DEFAULT, null, Short.class));
+    assertEquals(Integer.valueOf(42), instance.valueOfString("4.2E1", EdmLiteralKind.DEFAULT, null, Integer.class));
+    assertEquals(Long.valueOf(12345678), instance.valueOfString("12345.678E+03", EdmLiteralKind.DEFAULT, null, Long.class));
 
     assertEquals(Float.valueOf(Float.NaN), instance.valueOfString("NaN", EdmLiteralKind.DEFAULT, null, Float.class));
     assertEquals(Float.valueOf(Float.NEGATIVE_INFINITY), instance.valueOfString("-INF", EdmLiteralKind.JSON, null, Float.class));
@@ -1057,6 +1185,24 @@ public class EdmSimpleTypeTest extends BaseTest {
     expectErrorInValueOfString(instance, "42D", EdmLiteralKind.DEFAULT, null, EdmSimpleTypeException.LITERAL_ILLEGAL_CONTENT);
     expectErrorInValueOfString(instance, "42", EdmLiteralKind.URI, null, EdmSimpleTypeException.LITERAL_ILLEGAL_CONTENT);
     expectErrorInValueOfString(instance, "0x42P4", EdmLiteralKind.DEFAULT, null, EdmSimpleTypeException.LITERAL_ILLEGAL_CONTENT);
+
+    expectTypeErrorInValueOfString(instance, "1.42", EdmLiteralKind.DEFAULT);
+    expectUnconvertibleErrorInValueOfString(instance, "INF", BigDecimal.class);
+    expectUnconvertibleErrorInValueOfString(instance, "NaN", BigDecimal.class);
+    expectUnconvertibleErrorInValueOfString(instance, "-INF", Integer.class);
+    expectUnconvertibleErrorInValueOfString(instance, "NaN", Integer.class);
+    expectUnconvertibleErrorInValueOfString(instance, "5E-1", Byte.class);
+    expectUnconvertibleErrorInValueOfString(instance, "5E-1", Short.class);
+    expectUnconvertibleErrorInValueOfString(instance, "5E-1", Integer.class);
+    expectUnconvertibleErrorInValueOfString(instance, "5E-1", Long.class);
+    expectUnconvertibleErrorInValueOfString(instance, "-129", Byte.class);
+    expectUnconvertibleErrorInValueOfString(instance, "128", Byte.class);
+    expectUnconvertibleErrorInValueOfString(instance, "-32769", Short.class);
+    expectUnconvertibleErrorInValueOfString(instance, "32768", Short.class);
+    expectUnconvertibleErrorInValueOfString(instance, "-2147483.875E3", Integer.class);
+    expectUnconvertibleErrorInValueOfString(instance, "2147483.875E3", Integer.class);
+    expectUnconvertibleErrorInValueOfString(instance, "-1E19", Long.class);
+    expectUnconvertibleErrorInValueOfString(instance, "1E19", Long.class);
   }
 
   @Test
@@ -1078,6 +1224,8 @@ public class EdmSimpleTypeTest extends BaseTest {
     expectErrorInValueOfString(instance, "'", EdmLiteralKind.URI, null, EdmSimpleTypeException.LITERAL_ILLEGAL_CONTENT);
     expectErrorInValueOfString(instance, "'text", EdmLiteralKind.URI, null, EdmSimpleTypeException.LITERAL_ILLEGAL_CONTENT);
     expectErrorInValueOfString(instance, "text'", EdmLiteralKind.URI, null, EdmSimpleTypeException.LITERAL_ILLEGAL_CONTENT);
+
+    expectTypeErrorInValueOfString(instance, "text", EdmLiteralKind.DEFAULT);
   }
 
   @Test
@@ -1090,8 +1238,8 @@ public class EdmSimpleTypeTest extends BaseTest {
     dateTime.set(Calendar.MINUTE, 32);
     dateTime.set(Calendar.SECOND, 3);
     assertEquals(dateTime, instance.valueOfString("PT23H32M3S", EdmLiteralKind.DEFAULT, null, Calendar.class));
-    assertEquals(dateTime, instance.valueOfString("PT84723S", EdmLiteralKind.DEFAULT, null, Calendar.class));
-    assertEquals(dateTime, instance.valueOfString("PT23H32M3S", EdmLiteralKind.JSON, null, Calendar.class));
+    assertEquals(Long.valueOf(dateTime.getTimeInMillis()), instance.valueOfString("PT84723S", EdmLiteralKind.DEFAULT, null, Long.class));
+    assertEquals(dateTime.getTime(), instance.valueOfString("PT23H32M3S", EdmLiteralKind.JSON, null, Date.class));
     assertEquals(dateTime, instance.valueOfString("time'PT23H32M3S'", EdmLiteralKind.URI, null, Calendar.class));
 
     dateTime.add(Calendar.MILLISECOND, 1);
@@ -1129,6 +1277,8 @@ public class EdmSimpleTypeTest extends BaseTest {
     expectErrorInValueOfString(instance, "datetime'PT23H32M2S'", EdmLiteralKind.URI, null, EdmSimpleTypeException.LITERAL_ILLEGAL_CONTENT);
     expectErrorInValueOfString(instance, "time'", EdmLiteralKind.URI, null, EdmSimpleTypeException.LITERAL_ILLEGAL_CONTENT);
     expectErrorInValueOfString(instance, "time''PT", EdmLiteralKind.URI, null, EdmSimpleTypeException.LITERAL_ILLEGAL_CONTENT);
+
+    expectTypeErrorInValueOfString(instance, "PT0S", EdmLiteralKind.DEFAULT);
   }
 
   @Test
@@ -1138,11 +1288,18 @@ public class EdmSimpleTypeTest extends BaseTest {
         continue;
       final EdmSimpleType instance = kind.getEdmSimpleTypeInstance();
       assertTrue(instance.validate(null, null, null));
+      assertTrue(instance.validate(null, null, getNullableFacets(null)));
       assertTrue(instance.validate(null, null, getNullableFacets(true)));
       assertFalse(instance.validate(null, null, getNullableFacets(false)));
       assertFalse(instance.validate("", null, null));
       assertFalse(instance.validate("ä", EdmLiteralKind.DEFAULT, getUnicodeFacets(false)));
       assertFalse(instance.validate("ä", EdmLiteralKind.URI, null));
     }
+
+    assertTrue(EdmSimpleTypeKind.Binary.getEdmSimpleTypeInstance().validate("abcd", EdmLiteralKind.DEFAULT, getMaxLengthFacets(3)));
+    assertFalse(EdmSimpleTypeKind.Binary.getEdmSimpleTypeInstance().validate("abcd", EdmLiteralKind.DEFAULT, getMaxLengthFacets(2)));
+
+    assertTrue(EdmSimpleTypeKind.Decimal.getEdmSimpleTypeInstance().validate("1.2", EdmLiteralKind.DEFAULT, getPrecisionScaleFacets(null, null)));
+    assertFalse(EdmSimpleTypeKind.Decimal.getEdmSimpleTypeInstance().validate("1.2", EdmLiteralKind.DEFAULT, getPrecisionScaleFacets(null, 0)));
   }
 }

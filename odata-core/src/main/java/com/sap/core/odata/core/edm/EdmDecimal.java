@@ -16,7 +16,7 @@ import com.sap.core.odata.api.edm.EdmSimpleTypeException;
  */
 public class EdmDecimal extends AbstractSimpleType {
 
-  private static final Pattern PATTERN = Pattern.compile("(?:\\+|-)?0*(\\p{Digit}+?)(\\.\\p{Digit}+?)?0*(M|m)?");
+  private static final Pattern PATTERN = Pattern.compile("(?:\\+|-)?(?:0*(\\p{Digit}{1,29}?))(?:\\.(\\p{Digit}{1,29}?)0*)?(M|m)?");
   private static final EdmDecimal instance = new EdmDecimal();
 
   public static EdmDecimal getInstance() {
@@ -64,10 +64,9 @@ public class EdmDecimal extends AbstractSimpleType {
       return true;
 
     final Matcher matcher = PATTERN.matcher(value);
-    if (!matcher.matches())
-      return false;
+    matcher.matches();
     final int significantIntegerDigits = matcher.group(1).equals("0") ? 0 : matcher.group(1).length();
-    final int decimals = matcher.group(2) == null ? 0 : matcher.group(2).length() - 1;
+    final int decimals = matcher.group(2) == null ? 0 : matcher.group(2).length();
     return (facets.getPrecision() == null || facets.getPrecision() >= significantIntegerDigits + decimals)
         && (facets.getScale() == null || facets.getScale() >= decimals);
   }
@@ -90,35 +89,36 @@ public class EdmDecimal extends AbstractSimpleType {
     final BigDecimal valueBigDecimal = new BigDecimal(
         literalKind == EdmLiteralKind.URI ? value.substring(0, value.length() - 1) : value);
 
-    try {
-      if (returnType.isAssignableFrom(BigDecimal.class))
-        return returnType.cast(valueBigDecimal);
-      else if (returnType.isAssignableFrom(BigInteger.class))
-        return returnType.cast(valueBigDecimal.toBigIntegerExact());
-      else if (returnType.isAssignableFrom(Long.class))
-        return returnType.cast(valueBigDecimal.longValueExact());
-      else if (returnType.isAssignableFrom(Integer.class))
-        return returnType.cast(valueBigDecimal.intValueExact());
-      else if (returnType.isAssignableFrom(Short.class))
-        return returnType.cast(valueBigDecimal.shortValueExact());
-      else if (returnType.isAssignableFrom(Byte.class))
-        return returnType.cast(valueBigDecimal.byteValueExact());
-      else if (returnType.isAssignableFrom(Double.class))
-        if (Double.isInfinite(valueBigDecimal.doubleValue()))
-          throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_UNCONVERTIBLE_TO_VALUE_TYPE.addContent(value, returnType));
-        else
-          return returnType.cast(valueBigDecimal.doubleValue());
-      else if (returnType.isAssignableFrom(Float.class))
-        if (Float.isInfinite(valueBigDecimal.floatValue()))
-          throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_UNCONVERTIBLE_TO_VALUE_TYPE.addContent(value, returnType));
-        else
-          return returnType.cast(valueBigDecimal.floatValue());
+    if (returnType.isAssignableFrom(BigDecimal.class))
+      return returnType.cast(valueBigDecimal);
+    else if (returnType.isAssignableFrom(Double.class))
+      if (BigDecimal.valueOf(valueBigDecimal.doubleValue()).compareTo(valueBigDecimal) == 0)
+        return returnType.cast(valueBigDecimal.doubleValue());
       else
-        throw new EdmSimpleTypeException(EdmSimpleTypeException.VALUE_TYPE_NOT_SUPPORTED.addContent(returnType));
+        throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_UNCONVERTIBLE_TO_VALUE_TYPE.addContent(value, returnType));
+    else if (returnType.isAssignableFrom(Float.class))
+      if (BigDecimal.valueOf(valueBigDecimal.floatValue()).equals(valueBigDecimal))
+        return returnType.cast(valueBigDecimal.floatValue());
+      else
+        throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_UNCONVERTIBLE_TO_VALUE_TYPE.addContent(value, returnType));
+    else
+      try {
+        if (returnType.isAssignableFrom(BigInteger.class))
+          return returnType.cast(valueBigDecimal.toBigIntegerExact());
+        else if (returnType.isAssignableFrom(Long.class))
+          return returnType.cast(valueBigDecimal.longValueExact());
+        else if (returnType.isAssignableFrom(Integer.class))
+          return returnType.cast(valueBigDecimal.intValueExact());
+        else if (returnType.isAssignableFrom(Short.class))
+          return returnType.cast(valueBigDecimal.shortValueExact());
+        else if (returnType.isAssignableFrom(Byte.class))
+          return returnType.cast(valueBigDecimal.byteValueExact());
+        else
+          throw new EdmSimpleTypeException(EdmSimpleTypeException.VALUE_TYPE_NOT_SUPPORTED.addContent(returnType));
 
-    } catch (ArithmeticException e) {
-      throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_UNCONVERTIBLE_TO_VALUE_TYPE.addContent(value, returnType), e);
-    }
+      } catch (ArithmeticException e) {
+        throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_UNCONVERTIBLE_TO_VALUE_TYPE.addContent(value, returnType), e);
+      }
   }
 
   @Override

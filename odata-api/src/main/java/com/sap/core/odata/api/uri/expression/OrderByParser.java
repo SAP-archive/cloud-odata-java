@@ -14,7 +14,7 @@ public interface OrderByParser
    *   The $orderby expression string ( for example "name asc" ) to be parsed
    * @return
    *    The $orderby expression tree
-   * @throws OrderByParserException
+   * @throws ExpressionParserException
    *   Exception thrown due to errors while parsing the $orderby expression string 
    * @throws ODataMessageException
    *   Used for extensibility

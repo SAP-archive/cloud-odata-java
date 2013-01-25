@@ -35,7 +35,7 @@ public class ExceptionVisitExpression extends ODataMessageException
    * Create {@link ExceptionVisitExpression} with given {@link MessageReference} and cause {@link Throwable} which caused
    * this {@link ExceptionVisitExpression}.
    * 
-   * @param messageReference
+   * @param message
    *   references the message text (and additional values) of this {@link ExceptionVisitExpression}
    * @param cause
    *   exception which caused this {@link ExceptionVisitExpression}
