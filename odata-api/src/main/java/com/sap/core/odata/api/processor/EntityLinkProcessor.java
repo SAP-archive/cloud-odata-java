@@ -1,9 +1,8 @@
-package com.sap.core.odata.api.processor.feature;
+package com.sap.core.odata.api.processor;
 
 import java.io.InputStream;
 
 import com.sap.core.odata.api.exception.ODataException;
-import com.sap.core.odata.api.processor.ODataResponse;
 import com.sap.core.odata.api.uri.info.DeleteUriInfo;
 import com.sap.core.odata.api.uri.info.GetEntityLinkCountUriInfo;
 import com.sap.core.odata.api.uri.info.GetEntityLinkUriInfo;
@@ -14,7 +13,7 @@ import com.sap.core.odata.api.uri.info.PutMergePatchUriInfo;
  * 
  * @author SAP AG
  */
-public interface EntityLink extends ProcessorFeature {
+public interface EntityLinkProcessor extends ODataProcessor {
   /**
    * Reads the URI of the target entity of a navigation property.
    * @param uriInfo information about the request URI

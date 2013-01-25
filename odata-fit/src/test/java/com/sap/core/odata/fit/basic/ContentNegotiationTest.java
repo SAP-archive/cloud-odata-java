@@ -19,8 +19,8 @@ import com.sap.core.odata.api.commons.HttpStatusCodes;
 import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.api.processor.ODataResponse;
 import com.sap.core.odata.api.processor.ODataSingleProcessor;
+import com.sap.core.odata.api.processor.ServiceDocumentProcessor;
 import com.sap.core.odata.api.processor.feature.CustomContentType;
-import com.sap.core.odata.api.processor.feature.ServiceDocument;
 import com.sap.core.odata.api.uri.info.GetServiceDocumentUriInfo;
 import com.sap.core.odata.testutil.helper.StringHelper;
 
@@ -36,12 +36,12 @@ public class ContentNegotiationTest extends AbstractBasicTest {
     // service document 
     String contentType = "application/atom+xml; charset=utf-8";
     ODataResponse responseAtomXml = ODataResponse.status(HttpStatusCodes.OK).contentHeader(contentType).entity("Test passed.").build();
-    when(((ServiceDocument) processor).readServiceDocument(any(GetServiceDocumentUriInfo.class), eq(contentType))).thenReturn(responseAtomXml);
+    when(((ServiceDocumentProcessor) processor).readServiceDocument(any(GetServiceDocumentUriInfo.class), eq(contentType))).thenReturn(responseAtomXml);
 
     // csv
     ODataResponse value = ODataResponse.status(HttpStatusCodes.OK).contentHeader("csv").build();
-    when(((ServiceDocument) processor).readServiceDocument(any(GetServiceDocumentUriInfo.class), eq("csv"))).thenReturn(value);
-    when(((CustomContentType) processor).getCustomContentTypes(ServiceDocument.class)).thenReturn(Arrays.asList("csv"));
+    when(((ServiceDocumentProcessor) processor).readServiceDocument(any(GetServiceDocumentUriInfo.class), eq("csv"))).thenReturn(value);
+    when(((CustomContentType) processor).getCustomContentTypes(ServiceDocumentProcessor.class)).thenReturn(Arrays.asList("csv"));
 
     return processor;
   }

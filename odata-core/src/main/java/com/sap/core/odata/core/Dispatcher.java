@@ -8,21 +8,21 @@ import com.sap.core.odata.api.edm.EdmException;
 import com.sap.core.odata.api.edm.EdmProperty;
 import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.api.exception.ODataMethodNotAllowedException;
+import com.sap.core.odata.api.processor.BatchProcessor;
+import com.sap.core.odata.api.processor.EntityComplexPropertyProcessor;
+import com.sap.core.odata.api.processor.EntityLinkProcessor;
+import com.sap.core.odata.api.processor.EntityLinksProcessor;
+import com.sap.core.odata.api.processor.EntityMediaProcessor;
+import com.sap.core.odata.api.processor.EntityProcessor;
+import com.sap.core.odata.api.processor.EntitySetProcessor;
+import com.sap.core.odata.api.processor.EntitySimplePropertyProcessor;
+import com.sap.core.odata.api.processor.EntitySimplePropertyValueProcessor;
+import com.sap.core.odata.api.processor.FunctionImportProcessor;
+import com.sap.core.odata.api.processor.FunctionImportValueProcessor;
+import com.sap.core.odata.api.processor.MetadataProcessor;
+import com.sap.core.odata.api.processor.ODataProcessor;
 import com.sap.core.odata.api.processor.ODataResponse;
-import com.sap.core.odata.api.processor.feature.Batch;
-import com.sap.core.odata.api.processor.feature.Entity;
-import com.sap.core.odata.api.processor.feature.EntityComplexProperty;
-import com.sap.core.odata.api.processor.feature.EntityLink;
-import com.sap.core.odata.api.processor.feature.EntityLinks;
-import com.sap.core.odata.api.processor.feature.EntityMedia;
-import com.sap.core.odata.api.processor.feature.EntitySet;
-import com.sap.core.odata.api.processor.feature.EntitySimpleProperty;
-import com.sap.core.odata.api.processor.feature.EntitySimplePropertyValue;
-import com.sap.core.odata.api.processor.feature.FunctionImport;
-import com.sap.core.odata.api.processor.feature.FunctionImportValue;
-import com.sap.core.odata.api.processor.feature.Metadata;
-import com.sap.core.odata.api.processor.feature.ProcessorFeature;
-import com.sap.core.odata.api.processor.feature.ServiceDocument;
+import com.sap.core.odata.api.processor.ServiceDocumentProcessor;
 import com.sap.core.odata.api.uri.UriInfo;
 import com.sap.core.odata.core.commons.ODataHttpMethod;
 import com.sap.core.odata.core.exception.ODataRuntimeException;
@@ -310,55 +310,55 @@ public class Dispatcher {
     return property.getFacets() == null || property.getFacets().isNullable();
   }
 
-  public Class<? extends ProcessorFeature> mapUriTypeToProcessorFeature(final UriInfoImpl uriInfo) {
-    Class<? extends ProcessorFeature> feature;
+  public Class<? extends ODataProcessor> mapUriTypeToProcessorFeature(final UriInfoImpl uriInfo) {
+    Class<? extends ODataProcessor> feature;
 
     switch (uriInfo.getUriType()) {
     case URI0:
-      feature = ServiceDocument.class;
+      feature = ServiceDocumentProcessor.class;
       break;
     case URI1:
     case URI6B:
     case URI15:
-      feature = EntitySet.class;
+      feature = EntitySetProcessor.class;
       break;
     case URI2:
     case URI6A:
     case URI16:
-      feature = Entity.class;
+      feature = EntityProcessor.class;
       break;
     case URI3:
-      feature = EntityComplexProperty.class;
+      feature = EntityComplexPropertyProcessor.class;
       break;
     case URI4:
     case URI5:
-      feature = uriInfo.isValue() ? EntitySimplePropertyValue.class : EntitySimpleProperty.class;
+      feature = uriInfo.isValue() ? EntitySimplePropertyValueProcessor.class : EntitySimplePropertyProcessor.class;
       break;
     case URI7A:
     case URI50A:
-      feature = EntityLink.class;
+      feature = EntityLinkProcessor.class;
       break;
     case URI7B:
     case URI50B:
-      feature = EntityLinks.class;
+      feature = EntityLinksProcessor.class;
       break;
     case URI8:
-      feature = Metadata.class;
+      feature = MetadataProcessor.class;
       break;
     case URI9:
-      feature = Batch.class;
+      feature = BatchProcessor.class;
       break;
     case URI10:
     case URI11:
     case URI12:
     case URI13:
-      feature = FunctionImport.class;
+      feature = FunctionImportProcessor.class;
       break;
     case URI14:
-      feature = uriInfo.isValue() ? FunctionImportValue.class : FunctionImport.class;
+      feature = uriInfo.isValue() ? FunctionImportValueProcessor.class : FunctionImportProcessor.class;
       break;
     case URI17:
-      feature = EntityMedia.class;
+      feature = EntityMediaProcessor.class;
       break;
     default:
       throw new ODataRuntimeException("Unknown or not implemented URI type: " + uriInfo.getUriType());

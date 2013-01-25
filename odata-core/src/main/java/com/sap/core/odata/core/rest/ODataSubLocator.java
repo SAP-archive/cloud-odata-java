@@ -41,8 +41,8 @@ import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.api.exception.ODataMethodNotAllowedException;
 import com.sap.core.odata.api.exception.ODataNotAcceptableException;
 import com.sap.core.odata.api.exception.ODataNotFoundException;
+import com.sap.core.odata.api.processor.ODataProcessor;
 import com.sap.core.odata.api.processor.ODataResponse;
-import com.sap.core.odata.api.processor.feature.ProcessorFeature;
 import com.sap.core.odata.api.uri.PathInfo;
 import com.sap.core.odata.api.uri.PathSegment;
 import com.sap.core.odata.core.Dispatcher;
@@ -50,8 +50,8 @@ import com.sap.core.odata.core.ODataContextImpl;
 import com.sap.core.odata.core.ODataPathSegmentImpl;
 import com.sap.core.odata.core.PathInfoImpl;
 import com.sap.core.odata.core.commons.ContentType;
-import com.sap.core.odata.core.commons.ODataHttpMethod;
 import com.sap.core.odata.core.commons.ContentType.ODataFormat;
+import com.sap.core.odata.core.commons.ODataHttpMethod;
 import com.sap.core.odata.core.uri.UriInfoImpl;
 import com.sap.core.odata.core.uri.UriParserImpl;
 
@@ -164,7 +164,7 @@ public final class ODataSubLocator implements ODataLocator {
     ContentType formatContentType = mapFormat(uriInfo);
     formatContentType = ensureCharsetIsSet(formatContentType);
     
-    Class<? extends ProcessorFeature> processorFeature = dispatcher.mapUriTypeToProcessorFeature(uriInfo);
+    Class<? extends ODataProcessor> processorFeature = dispatcher.mapUriTypeToProcessorFeature(uriInfo);
     List<ContentType> supportedContentTypes = getSupportedContentTypes(processorFeature);
     for (ContentType contentType : supportedContentTypes) {
       if (contentType.equals(formatContentType)) {
@@ -211,12 +211,12 @@ public final class ODataSubLocator implements ODataLocator {
   }
 
   private ContentType doContentNegotiationForAcceptHeader(final UriInfoImpl uriInfo) throws ODataException {
-    Class<? extends ProcessorFeature> processorFeature = dispatcher.mapUriTypeToProcessorFeature(uriInfo);
+    Class<? extends ODataProcessor> processorFeature = dispatcher.mapUriTypeToProcessorFeature(uriInfo);
     List<ContentType> supportedContentTypes = getSupportedContentTypes(processorFeature);
     return contentNegotiation(acceptHeaderContentTypes, supportedContentTypes);
   }
 
-  private List<ContentType> getSupportedContentTypes(Class<? extends ProcessorFeature> processorFeature) throws ODataException {
+  private List<ContentType> getSupportedContentTypes(Class<? extends ODataProcessor> processorFeature) throws ODataException {
     List<ContentType> resultContentTypes = new ArrayList<ContentType>();
     for (String contentType : service.getSupportedContentTypes(processorFeature))
       resultContentTypes.add(ContentType.create(contentType));

@@ -1,9 +1,8 @@
-package com.sap.core.odata.api.processor.feature;
+package com.sap.core.odata.api.processor;
 
 import java.io.InputStream;
 
 import com.sap.core.odata.api.exception.ODataException;
-import com.sap.core.odata.api.processor.ODataResponse;
 import com.sap.core.odata.api.uri.info.GetEntitySetCountUriInfo;
 import com.sap.core.odata.api.uri.info.GetEntitySetUriInfo;
 import com.sap.core.odata.api.uri.info.PostUriInfo;
@@ -14,7 +13,7 @@ import com.sap.core.odata.api.uri.info.PostUriInfo;
  * @author SAP AG
  *
  */
-public interface EntitySet extends ProcessorFeature {
+public interface EntitySetProcessor extends ODataProcessor {
 
   /**
    * Reads entities.

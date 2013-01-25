@@ -4,21 +4,20 @@ import java.util.List;
 
 import com.sap.core.odata.api.edm.Edm;
 import com.sap.core.odata.api.exception.ODataException;
+import com.sap.core.odata.api.processor.BatchProcessor;
+import com.sap.core.odata.api.processor.EntityComplexPropertyProcessor;
+import com.sap.core.odata.api.processor.EntityLinkProcessor;
+import com.sap.core.odata.api.processor.EntityLinksProcessor;
+import com.sap.core.odata.api.processor.EntityMediaProcessor;
+import com.sap.core.odata.api.processor.EntityProcessor;
+import com.sap.core.odata.api.processor.EntitySetProcessor;
+import com.sap.core.odata.api.processor.EntitySimplePropertyProcessor;
+import com.sap.core.odata.api.processor.EntitySimplePropertyValueProcessor;
+import com.sap.core.odata.api.processor.FunctionImportProcessor;
+import com.sap.core.odata.api.processor.FunctionImportValueProcessor;
+import com.sap.core.odata.api.processor.MetadataProcessor;
 import com.sap.core.odata.api.processor.ODataProcessor;
-import com.sap.core.odata.api.processor.feature.Batch;
-import com.sap.core.odata.api.processor.feature.Entity;
-import com.sap.core.odata.api.processor.feature.EntityComplexProperty;
-import com.sap.core.odata.api.processor.feature.EntityLink;
-import com.sap.core.odata.api.processor.feature.EntityLinks;
-import com.sap.core.odata.api.processor.feature.EntityMedia;
-import com.sap.core.odata.api.processor.feature.EntitySet;
-import com.sap.core.odata.api.processor.feature.EntitySimpleProperty;
-import com.sap.core.odata.api.processor.feature.EntitySimplePropertyValue;
-import com.sap.core.odata.api.processor.feature.FunctionImport;
-import com.sap.core.odata.api.processor.feature.FunctionImportValue;
-import com.sap.core.odata.api.processor.feature.Metadata;
-import com.sap.core.odata.api.processor.feature.ProcessorFeature;
-import com.sap.core.odata.api.processor.feature.ServiceDocument;
+import com.sap.core.odata.api.processor.ServiceDocumentProcessor;
 
 /**
  * Root interface for a custom OData service.
@@ -45,93 +44,93 @@ public interface ODataService {
   /**
    * @return a processor which handles this request 
    * @throws ODataException
-   * @see Metadata
+   * @see MetadataProcessor
    */
-  Metadata getMetadataProcessor() throws ODataException;
+  MetadataProcessor getMetadataProcessor() throws ODataException;
 
   /**
    * @return a processor which handles this request 
    * @throws ODataException
-   * @see ServiceDocument
+   * @see ServiceDocumentProcessor
    */
-  ServiceDocument getServiceDocumentProcessor() throws ODataException;
+  ServiceDocumentProcessor getServiceDocumentProcessor() throws ODataException;
 
   /**
    * @return a processor which handles this request 
    * @throws ODataException
-   * @see Entity
+   * @see EntityProcessor
    */
-  Entity getEntityProcessor() throws ODataException;
+  EntityProcessor getEntityProcessor() throws ODataException;
 
   /**
    * @return a processor which handles this request 
    * @throws ODataException
-   * @see EntitySet
+   * @see EntitySetProcessor
    */
-  EntitySet getEntitySetProcessor() throws ODataException;
+  EntitySetProcessor getEntitySetProcessor() throws ODataException;
 
   /**
    * @return a processor which handles this request 
    * @throws ODataException
-   * @see EntityComplexProperty
+   * @see EntityComplexPropertyProcessor
    */
-  EntityComplexProperty getEntityComplexPropertyProcessor() throws ODataException;
+  EntityComplexPropertyProcessor getEntityComplexPropertyProcessor() throws ODataException;
 
   /**
    * @return a processor which handles this request 
    * @throws ODataException
-   * @see EntityLink
+   * @see EntityLinkProcessor
    */
-  EntityLink getEntityLinkProcessor() throws ODataException;
+  EntityLinkProcessor getEntityLinkProcessor() throws ODataException;
 
   /**
    * @return a processor which handles this request 
    * @throws ODataException
-   * @see EntityLinks
+   * @see EntityLinksProcessor
    */
-  EntityLinks getEntityLinksProcessor() throws ODataException;
+  EntityLinksProcessor getEntityLinksProcessor() throws ODataException;
 
   /**
    * @return a processor which handles this request 
    * @throws ODataException
-   * @see EntityMedia
+   * @see EntityMediaProcessor
    */
-  EntityMedia getEntityMediaProcessor() throws ODataException;
+  EntityMediaProcessor getEntityMediaProcessor() throws ODataException;
 
   /**
    * @return a processor which handles this request 
    * @throws ODataException
-   * @see EntitySimpleProperty
+   * @see EntitySimplePropertyProcessor
    */
-  EntitySimpleProperty getEntitySimplePropertyProcessor() throws ODataException;
+  EntitySimplePropertyProcessor getEntitySimplePropertyProcessor() throws ODataException;
 
   /**
    * @return a processor which handles this request 
    * @throws ODataException
-   * @see EntitySimplePropertyValue
+   * @see EntitySimplePropertyValueProcessor
    */
-  EntitySimplePropertyValue getEntitySimplePropertyValueProcessor() throws ODataException;
+  EntitySimplePropertyValueProcessor getEntitySimplePropertyValueProcessor() throws ODataException;
 
   /**
    * @return a processor which handles this request 
    * @throws ODataException
-   * @see FunctionImport
+   * @see FunctionImportProcessor
    */
-  FunctionImport getFunctionImportProcessor() throws ODataException;
+  FunctionImportProcessor getFunctionImportProcessor() throws ODataException;
 
   /**
    * @return a processor which handles this request 
    * @throws ODataException
-   * @see FunctionImportValue
+   * @see FunctionImportValueProcessor
    */
-  FunctionImportValue getFunctionImportValueProcessor() throws ODataException;
+  FunctionImportValueProcessor getFunctionImportValueProcessor() throws ODataException;
 
   /**
    * @return a processor which handles this request 
    * @throws ODataException
-   * @see Batch
+   * @see BatchProcessor
    */
-  Batch getBatchProcessor() throws ODataException;
+  BatchProcessor getBatchProcessor() throws ODataException;
 
   /**
    * @return root processor interface 
@@ -145,5 +144,5 @@ public interface ODataService {
    * @return ordered list of all <code>content types</code> this service supports
    * @throws ODataException
    */
-  List<String> getSupportedContentTypes(Class<? extends ProcessorFeature> processorFeature) throws ODataException;
+  List<String> getSupportedContentTypes(Class<? extends ODataProcessor> processorFeature) throws ODataException;
 }

@@ -1,7 +1,6 @@
-package com.sap.core.odata.api.processor.feature;
+package com.sap.core.odata.api.processor;
 
 import com.sap.core.odata.api.exception.ODataException;
-import com.sap.core.odata.api.processor.ODataResponse;
 import com.sap.core.odata.api.uri.info.GetMetadataUriInfo;
 
 /**
@@ -9,7 +8,7 @@ import com.sap.core.odata.api.uri.info.GetMetadataUriInfo;
  * 
  * @author SAP AG
  */
-public interface Metadata extends ProcessorFeature {
+public interface MetadataProcessor extends ODataProcessor {
 
   /**
    * @param contentType 

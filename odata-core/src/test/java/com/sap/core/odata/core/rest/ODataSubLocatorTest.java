@@ -17,14 +17,10 @@ import org.mockito.Mockito;
 import com.sap.core.odata.api.ODataService;
 import com.sap.core.odata.api.commons.HttpHeaders;
 import com.sap.core.odata.api.commons.HttpStatusCodes;
-import com.sap.core.odata.api.edm.EdmException;
 import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.api.exception.ODataNotAcceptableException;
 import com.sap.core.odata.api.processor.ODataResponse;
-import com.sap.core.odata.api.uri.UriInfo;
-import com.sap.core.odata.api.uri.UriNotMatchingException;
 import com.sap.core.odata.api.uri.UriParser;
-import com.sap.core.odata.api.uri.UriSyntaxException;
 import com.sap.core.odata.core.Dispatcher;
 import com.sap.core.odata.core.ODataContextImpl;
 import com.sap.core.odata.core.PathInfoImpl;
@@ -33,7 +29,6 @@ import com.sap.core.odata.core.commons.ODataHttpMethod;
 import com.sap.core.odata.core.uri.UriInfoImpl;
 import com.sap.core.odata.core.uri.UriParserImpl;
 import com.sap.core.odata.testutil.fit.BaseTest;
-import com.sap.core.odata.testutil.helper.ClassHelper;
 
 /**
  * @author SAP AG

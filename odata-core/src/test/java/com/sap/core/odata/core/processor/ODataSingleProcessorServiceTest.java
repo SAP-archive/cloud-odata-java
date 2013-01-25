@@ -13,23 +13,22 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.sap.core.odata.api.edm.provider.EdmProvider;
+import com.sap.core.odata.api.processor.BatchProcessor;
+import com.sap.core.odata.api.processor.EntityComplexPropertyProcessor;
+import com.sap.core.odata.api.processor.EntityLinkProcessor;
+import com.sap.core.odata.api.processor.EntityLinksProcessor;
+import com.sap.core.odata.api.processor.EntityMediaProcessor;
+import com.sap.core.odata.api.processor.EntityProcessor;
+import com.sap.core.odata.api.processor.EntitySetProcessor;
+import com.sap.core.odata.api.processor.EntitySimplePropertyProcessor;
+import com.sap.core.odata.api.processor.EntitySimplePropertyValueProcessor;
+import com.sap.core.odata.api.processor.FunctionImportProcessor;
+import com.sap.core.odata.api.processor.FunctionImportValueProcessor;
+import com.sap.core.odata.api.processor.MetadataProcessor;
 import com.sap.core.odata.api.processor.ODataSingleProcessor;
-import com.sap.core.odata.api.processor.feature.Batch;
+import com.sap.core.odata.api.processor.ServiceDocumentProcessor;
 import com.sap.core.odata.api.processor.feature.CustomContentType;
-import com.sap.core.odata.api.processor.feature.Entity;
-import com.sap.core.odata.api.processor.feature.EntityComplexProperty;
-import com.sap.core.odata.api.processor.feature.EntityLink;
-import com.sap.core.odata.api.processor.feature.EntityLinks;
-import com.sap.core.odata.api.processor.feature.EntityMedia;
-import com.sap.core.odata.api.processor.feature.EntitySet;
-import com.sap.core.odata.api.processor.feature.EntitySimpleProperty;
-import com.sap.core.odata.api.processor.feature.EntitySimplePropertyValue;
-import com.sap.core.odata.api.processor.feature.FunctionImport;
-import com.sap.core.odata.api.processor.feature.FunctionImportValue;
-import com.sap.core.odata.api.processor.feature.Metadata;
-import com.sap.core.odata.api.processor.feature.ServiceDocument;
 import com.sap.core.odata.core.commons.ContentType;
-import com.sap.core.odata.core.processor.ODataSingleProcessorService;
 import com.sap.core.odata.testutil.fit.BaseTest;
 
 /**
@@ -61,7 +60,7 @@ public class ODataSingleProcessorServiceTest extends BaseTest{
 
   @Test
   public void defaultSupportedContentTypesForEntitySet() throws Exception {
-    List<String> types = service.getSupportedContentTypes(EntitySet.class);
+    List<String> types = service.getSupportedContentTypes(EntitySetProcessor.class);
     List<ContentType> convertedTypes = ContentType.convert(types);
     assertTrue(convertedTypes.contains(appendCharset(ContentType.APPLICATION_ATOM_XML)));
     assertTrue(convertedTypes.contains(appendCharset(ContentType.APPLICATION_ATOM_XML_FEED)));
@@ -70,7 +69,7 @@ public class ODataSingleProcessorServiceTest extends BaseTest{
 
   @Test
   public void defaultSupportedContentTypesForEntity() throws Exception {
-    List<String> types = service.getSupportedContentTypes(Entity.class);
+    List<String> types = service.getSupportedContentTypes(EntityProcessor.class);
     List<ContentType> convertedTypes = ContentType.convert(types);
     assertTrue(convertedTypes.contains(appendCharset(ContentType.APPLICATION_ATOM_XML)));
     assertTrue(convertedTypes.contains(appendCharset(ContentType.APPLICATION_ATOM_XML_ENTRY)));
@@ -79,41 +78,41 @@ public class ODataSingleProcessorServiceTest extends BaseTest{
   
   @Test
   public void defaultSupportedContentTypesForServiceDocument() throws Exception {
-    List<String> types = service.getSupportedContentTypes(ServiceDocument.class);
+    List<String> types = service.getSupportedContentTypes(ServiceDocumentProcessor.class);
     assertTrue(types.contains(APPLICATION_ATOM_SVC));
     assertTrue(types.contains(APPLICATION_JSON));
   }
 
   @Test
   public void defaultSupportedContentTypesForMetadata() throws Exception {
-    List<String> types = service.getSupportedContentTypes(Metadata.class);
+    List<String> types = service.getSupportedContentTypes(MetadataProcessor.class);
     assertTrue(types.contains(APPLICATION_XML));
   }
 
   @Test
   public void defaultSupportedContentTypesForFunctionImport() throws Exception {
-    List<String> types = service.getSupportedContentTypes(FunctionImport.class);
+    List<String> types = service.getSupportedContentTypes(FunctionImportProcessor.class);
     assertTrue(types.contains(APPLICATION_XML));
     assertTrue(types.contains(APPLICATION_JSON));
   }
 
   @Test
   public void defaultSupportedContentTypesForEntityComplexProperty() throws Exception {
-    List<String> types = service.getSupportedContentTypes(EntityComplexProperty.class);
+    List<String> types = service.getSupportedContentTypes(EntityComplexPropertyProcessor.class);
     assertTrue(types.contains(APPLICATION_XML));
     assertTrue(types.contains(APPLICATION_JSON));
   }
 
   @Test
   public void defaultSupportedContentTypesForEntitySimpleProperty() throws Exception {
-    List<String> types = service.getSupportedContentTypes(EntitySimpleProperty.class);
+    List<String> types = service.getSupportedContentTypes(EntitySimplePropertyProcessor.class);
     assertTrue(types.contains(APPLICATION_XML));
     assertTrue(types.contains(APPLICATION_JSON));
   }
 
   @Test
   public void defaultSupportedContentTypesForEntityLinks() throws Exception {
-    List<String> types = service.getSupportedContentTypes(EntityLinks.class);
+    List<String> types = service.getSupportedContentTypes(EntityLinksProcessor.class);
     assertTrue(types.contains(APPLICATION_XML));
     assertTrue(types.contains(APPLICATION_JSON));
   }
@@ -122,7 +121,7 @@ public class ODataSingleProcessorServiceTest extends BaseTest{
   public void defaultSupportedContentTypesForEntityLink() throws Exception {
     ContentType ctGif = ContentType.create("image", "gif");
 
-    List<String> types = service.getSupportedContentTypes(EntityLink.class);
+    List<String> types = service.getSupportedContentTypes(EntityLinkProcessor.class);
     assertTrue(types.contains(APPLICATION_XML));
     assertTrue(types.contains(APPLICATION_JSON));
     assertFalse(types.contains(ctGif.toContentTypeString()));
@@ -131,33 +130,33 @@ public class ODataSingleProcessorServiceTest extends BaseTest{
   @Test
   public void defaultSupportedContentTypesAndGifForEntityLink() throws Exception {
     String ctGif = ContentType.create("image", "gif").toContentTypeString();
-    when(((CustomContentType) processor).getCustomContentTypes(EntityLink.class)).thenReturn(Arrays.asList(ctGif));
+    when(((CustomContentType) processor).getCustomContentTypes(EntityLinkProcessor.class)).thenReturn(Arrays.asList(ctGif));
 
-    List<String> types = service.getSupportedContentTypes(EntityLink.class);
+    List<String> types = service.getSupportedContentTypes(EntityLinkProcessor.class);
     assertTrue(types.contains(ctGif));
   }
 
   @Test
   public void defaultSupportedContentTypesForEntityMedia() throws Exception {
-    List<String> types = service.getSupportedContentTypes(EntityMedia.class);
+    List<String> types = service.getSupportedContentTypes(EntityMediaProcessor.class);
     assertTrue(types.contains(ContentType.WILDCARD.toContentTypeString()));
   }
 
   @Test
   public void defaultSupportedContentTypesForSimplePropertyValue() throws Exception {
-    List<String> types = service.getSupportedContentTypes(EntitySimplePropertyValue.class);
+    List<String> types = service.getSupportedContentTypes(EntitySimplePropertyValueProcessor.class);
     assertTrue(types.contains(ContentType.WILDCARD.toContentTypeString()));
   }
 
   @Test
   public void defaultSupportedContentTypesForFunctionImportValue() throws Exception {
-    List<String> types = service.getSupportedContentTypes(FunctionImportValue.class);
+    List<String> types = service.getSupportedContentTypes(FunctionImportValueProcessor.class);
     assertTrue(types.contains(ContentType.WILDCARD.toContentTypeString()));
   }
 
   @Test
   public void defaultSupportedContentTypesForBatch() throws Exception {
-    List<String> types = service.getSupportedContentTypes(Batch.class);
+    List<String> types = service.getSupportedContentTypes(BatchProcessor.class);
     assertTrue(types.contains(ContentType.MULTIPART_MIXED.toContentTypeString()));
   }
 }

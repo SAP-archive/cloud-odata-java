@@ -1,9 +1,8 @@
-package com.sap.core.odata.api.processor.feature;
+package com.sap.core.odata.api.processor;
 
 import java.io.InputStream;
 
 import com.sap.core.odata.api.exception.ODataException;
-import com.sap.core.odata.api.processor.ODataResponse;
 import com.sap.core.odata.api.uri.info.GetSimplePropertyUriInfo;
 import com.sap.core.odata.api.uri.info.PutMergePatchUriInfo;
 
@@ -12,7 +11,7 @@ import com.sap.core.odata.api.uri.info.PutMergePatchUriInfo;
  * 
  * @author SAP AG
  */
-public interface EntitySimpleProperty extends ProcessorFeature {
+public interface EntitySimplePropertyProcessor extends ODataProcessor {
 
   /**
    * Reads a simple property of an entity.
