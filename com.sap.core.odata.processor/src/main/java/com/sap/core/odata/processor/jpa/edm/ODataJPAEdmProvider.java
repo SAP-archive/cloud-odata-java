@@ -36,12 +36,14 @@ public class ODataJPAEdmProvider extends EdmProvider {
 		entityTypes = new HashMap<String, EntityType>();
 		entityContainerInfos = new HashMap<String, EntityContainerInfo>();
 		complexTypes = new HashMap<String, ComplexType>();
+		associations = new HashMap<String, Association>();
 	}
 
 	public ODataJPAEdmProvider(ODataJPAContext oDataJPAContext) {
 		entityTypes = new HashMap<String, EntityType>();
 		entityContainerInfos = new HashMap<String, EntityContainerInfo>();
 		complexTypes = new HashMap<String, ComplexType>();
+		associations = new HashMap<String, Association>();
 		jpaEdmModel = ODataJPAFactory.createFactory().getJPAAccessFactory().getJPAEdmModelView(oDataJPAContext);
 	}
 
