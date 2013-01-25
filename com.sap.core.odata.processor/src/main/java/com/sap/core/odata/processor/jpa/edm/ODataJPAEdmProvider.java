@@ -30,6 +30,7 @@ public class ODataJPAEdmProvider extends EdmProvider {
 	private HashMap<String, EntityType> entityTypes;
 	private HashMap<String, EntityContainerInfo> entityContainerInfos;
 	private HashMap<String, ComplexType> complexTypes;
+	private HashMap<String, Association> associations;
 
 	public ODataJPAEdmProvider() {
 		entityTypes = new HashMap<String, EntityType>();
@@ -142,10 +143,29 @@ public class ODataJPAEdmProvider extends EdmProvider {
 	@Override
 	public Association getAssociation(FullQualifiedName edmFQName)
 			throws ODataException {
-		
+		if (edmFQName != null) {
+			if (edmFQName != null
+					&& associations.containsKey(edmFQName.toString()))
+				return associations.get(edmFQName.toString());
+			else if (schemas == null)
+				getSchemas();
+
+			if (edmFQName != null)
+				for (Schema schema : schemas) {
+					if (schema.getNamespace().equals(edmFQName.getNamespace())) {
+						for (Association association : schema.getAssociations()) {
+							if (association.getName().equals(edmFQName.getName())) {
+								associations.put(edmFQName.toString(), association);
+								return association;
+							}
+						}
+					}
+				}
 		throw ODataJPAModelException.throwException(
 				ODataJPAModelException.INVALID_ASSOCIATION.addContent(edmFQName
 						.toString()), null);
+		}
+		return null;
 	}
 
 	@Override
@@ -173,7 +193,21 @@ public class ODataJPAEdmProvider extends EdmProvider {
 	public AssociationSet getAssociationSet(String entityContainer,
 			FullQualifiedName association, String sourceEntitySetName,
 			String sourceEntitySetRole) throws ODataException {
+		
+		EntityContainer container = null;
+		if (!entityContainerInfos.containsKey(entityContainer))
+			container = (EntityContainer) getEntityContainerInfo(entityContainer);
+		else
+			container = (EntityContainer) entityContainerInfos
+					.get(entityContainer);
 
+		if (container != null && association != null)
+			for (AssociationSet as : container.getAssociationSets())
+				if (association.equals(as.getAssociation()) 
+						&& sourceEntitySetName.equalsIgnoreCase(as.getEnd1().getEntitySet())
+						&& sourceEntitySetRole.equalsIgnoreCase(as.getEnd1().getRole()))
+					return as;
+		
 		throw ODataJPAModelException.throwException(
 				ODataJPAModelException.INVALID_ENTITYSET.addContent(association
 						.toString()), null);
