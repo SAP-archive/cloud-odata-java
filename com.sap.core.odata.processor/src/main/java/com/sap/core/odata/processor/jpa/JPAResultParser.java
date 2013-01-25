@@ -4,9 +4,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.sap.core.odata.api.edm.EdmException;
 import com.sap.core.odata.api.edm.EdmMapping;
 import com.sap.core.odata.api.edm.EdmProperty;
@@ -16,8 +13,6 @@ import com.sap.core.odata.processor.jpa.exception.ODataJPARuntimeException;
 
 public final class JPAResultParser {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(JPAResultParser.class);
-	
 	/*
 	 * List of buffers used by the Parser
 	 */
@@ -79,22 +74,18 @@ public final class JPAResultParser {
 				edmEntity.put(key, propertyValue);
 				
 			} catch (EdmException e) {
-				LOGGER.error(e.getMessage(), e);
 				throw ODataJPARuntimeException.throwException(
 						ODataJPARuntimeException.RUNTIME_EXCEPTION.addContent(e
 								.getMessage()), e);
 			} catch (IllegalAccessException e) {
-				LOGGER.error(e.getMessage(), e);
 				throw ODataJPARuntimeException.throwException(
 						ODataJPARuntimeException.RUNTIME_EXCEPTION.addContent(e
 								.getMessage()), e);
 			} catch (IllegalArgumentException e) {
-				LOGGER.error(e.getMessage(), e);
 				throw ODataJPARuntimeException.throwException(
 						ODataJPARuntimeException.RUNTIME_EXCEPTION.addContent(e
 								.getMessage()), e);
 			} catch (InvocationTargetException e) {
-				LOGGER.error(e.getMessage(), e);
 				throw ODataJPARuntimeException.throwException(
 						ODataJPARuntimeException.RUNTIME_EXCEPTION.addContent(e
 								.getMessage()), e);
@@ -116,7 +107,6 @@ public final class JPAResultParser {
 			else
 				name = mapping.getInternalName();
 		} catch (EdmException e) {
-			LOGGER.error(e.getMessage(), e);
 			throw ODataJPARuntimeException.throwException(
 					ODataJPARuntimeException.RUNTIME_EXCEPTION.addContent(e
 							.getMessage()), e);
@@ -147,17 +137,14 @@ public final class JPAResultParser {
 								(Class<?>[]) null));
 			}
 		} catch (NoSuchMethodException e) {
-			LOGGER.error(e.getMessage(), e);
 			throw ODataJPARuntimeException.throwException(
 					ODataJPARuntimeException.RUNTIME_EXCEPTION.addContent(e
 							.getMessage()), e);
 		} catch (SecurityException e) {
-			LOGGER.error(e.getMessage(), e);
 			throw ODataJPARuntimeException.throwException(
 					ODataJPARuntimeException.RUNTIME_EXCEPTION.addContent(e
 							.getMessage()), e);
 		} catch (EdmException e) { 
-			LOGGER.error(e.getMessage(), e);
 			throw ODataJPARuntimeException.throwException(
 					ODataJPARuntimeException.RUNTIME_EXCEPTION.addContent(e
 							.getMessage()), e);

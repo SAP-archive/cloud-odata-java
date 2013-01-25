@@ -3,9 +3,6 @@ package com.sap.core.odata.processor.jpa.jpql;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.sap.core.odata.api.edm.EdmException;
 import com.sap.core.odata.api.edm.EdmProperty;
 import com.sap.core.odata.api.uri.KeyPredicate;
@@ -18,8 +15,6 @@ import com.sap.core.odata.processor.jpa.exception.ODataJPAModelException;
 import com.sap.core.odata.processor.jpa.exception.ODataJPARuntimeException;
 
 public class JPQLSelectSingleContext extends JPQLContext implements JPQLSelectSingleContextView {
-	
-	private static final Logger LOGGER = LoggerFactory.getLogger(JPQLSelectSingleContext.class);
 	
 	private ArrayList<String> selectedFields;
 	private List<KeyPredicate> keyPredicates;
@@ -66,7 +61,6 @@ public class JPQLSelectSingleContext extends JPQLContext implements JPQLSelectSi
 					JPQLSelectSingleContext.this.setSelectedFields(generateSelectFields());
 
 				} catch (EdmException e) {
-					LOGGER.error(e.getMessage(), e);
 					throw ODataJPARuntimeException.throwException(
 							ODataJPARuntimeException.RUNTIME_EXCEPTION.addContent(e
 									.getMessage()), e);
