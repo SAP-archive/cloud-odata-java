@@ -39,6 +39,7 @@ public class ContentType {
   public static final ContentType APPLICATION_ATOM_XML_FEED = new ContentType("application", "atom+xml", ODataFormat.ATOM, parameterMap("type", "feed"));
   public static final ContentType APPLICATION_ATOM_XML_FEED_CS_UTF_8 = ContentType.create(APPLICATION_ATOM_XML_FEED, PARAMETER_CHARSET, CHARSET_UTF_8);
   public static final ContentType APPLICATION_ATOM_SVC = new ContentType("application", "atomsvc+xml", ODataFormat.ATOM);
+  public static final ContentType APPLICATION_ATOM_SVC_CS_UTF_8 = ContentType.create(APPLICATION_ATOM_SVC, PARAMETER_CHARSET, CHARSET_UTF_8);
   public static final ContentType APPLICATION_JSON = new ContentType("application", "json", ODataFormat.JSON);
   public static final ContentType APPLICATION_OCTET_STREAM = new ContentType("application", "octet-stream");
   public static final ContentType TEXT_PLAIN = new ContentType("text", "plain");

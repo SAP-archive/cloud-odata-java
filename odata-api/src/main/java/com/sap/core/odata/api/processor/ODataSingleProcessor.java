@@ -335,7 +335,7 @@ public abstract class ODataSingleProcessor implements
 
     return ODataResponse
         .status(HttpStatusCodes.OK)
-        .header("Content-Type", contentType.toString())
+        .header("Content-Type", contentType)
         .header("DataServiceVersion", edmServiceMetadata.getDataServiceVersion())
         .entity(edmServiceMetadata.getMetadata())
         .build();
