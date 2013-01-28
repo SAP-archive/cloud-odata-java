@@ -16,6 +16,7 @@ import com.sap.core.odata.api.edm.provider.EntityContainer;
 import com.sap.core.odata.api.edm.provider.EntitySet;
 import com.sap.core.odata.api.edm.provider.EntityType;
 import com.sap.core.odata.api.edm.provider.Key;
+import com.sap.core.odata.api.edm.provider.NavigationProperty;
 import com.sap.core.odata.api.edm.provider.Property;
 import com.sap.core.odata.api.edm.provider.Schema;
 import com.sap.core.odata.api.edm.provider.SimpleProperty;
@@ -308,6 +309,31 @@ JPAEdmSchemaView
 
 	@Override
 	public AssociationEnd getAssociationEnd2() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public JPAEdmNavigationPropertyView getJPAEdmNavigationPropertyView() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void addJPAEdmNavigationPropertyView(
+			JPAEdmNavigationPropertyView view) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public List<NavigationProperty> getConsistentEdmNavigationProperties() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public NavigationProperty getEdmNavigationProperty() {
 		// TODO Auto-generated method stub
 		return null;
 	}

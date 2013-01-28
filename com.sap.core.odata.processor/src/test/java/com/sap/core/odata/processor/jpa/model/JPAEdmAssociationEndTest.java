@@ -109,7 +109,7 @@ public class JPAEdmAssociationEndTest extends JPAEdmTestModelView{
 
 	@Override
 	public String getpUnitName() {
-		return "salesorderprocessing";
+		return PUNIT_NAME;
 	}
 	
 	@Override
