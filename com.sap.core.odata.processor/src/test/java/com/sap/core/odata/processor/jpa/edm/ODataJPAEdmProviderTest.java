@@ -7,8 +7,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import javax.persistence.metamodel.EntityType;
-
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -68,7 +66,7 @@ public class ODataJPAEdmProviderTest {
 		comp.setName(MockData.COMPLEX_TYPE_NAME);
 		compTypes.put(MockData.NAME_SPACE+"."+MockData.COMPLEX_TYPE_NAME, comp);
 		ODataJPAEdmProvider jpaEdmProv = new ODataJPAEdmProvider();
-		Class claz = jpaEdmProv.getClass();
+		Class<?> claz = jpaEdmProv.getClass();
 		Field f = claz.getDeclaredField("complexTypes");
 		f.setAccessible(true);
 		f.set(jpaEdmProv, compTypes);
@@ -102,7 +100,7 @@ public class ODataJPAEdmProviderTest {
 		entityContainer.setName(MockData.ENTITY_CONTAINER_NAME);
 		entityContainerInfos.put(MockData.ENTITY_CONTAINER_NAME, entityContainer);
 		ODataJPAEdmProvider jpaEdmProv = new ODataJPAEdmProvider();
-		Class claz = jpaEdmProv.getClass();
+		Class<?> claz = jpaEdmProv.getClass();
 		Field f = claz.getDeclaredField("entityContainerInfos");
 		f.setAccessible(true);
 		f.set(jpaEdmProv, entityContainerInfos);
@@ -136,7 +134,7 @@ public class ODataJPAEdmProviderTest {
 		entity.setName(MockData.ENTITY_NAME_1);
 		entityTypes.put(MockData.NAME_SPACE+"."+MockData.ENTITY_NAME_1, entity);
 		ODataJPAEdmProvider jpaEdmProv = new ODataJPAEdmProvider();
-		Class claz = jpaEdmProv.getClass();
+		Class<?> claz = jpaEdmProv.getClass();
 		Field f = claz.getDeclaredField("entityTypes");
 		f.setAccessible(true);
 		f.set(jpaEdmProv, entityTypes);
