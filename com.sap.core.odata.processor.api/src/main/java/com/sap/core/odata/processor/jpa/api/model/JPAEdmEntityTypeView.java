@@ -11,4 +11,6 @@ public interface JPAEdmEntityTypeView extends JPAEdmBaseView {
 
 	public List<EntityType> getConsistentEdmEntityTypes();
 
+	public EntityType searchEdmEntityType(String jpaEntityTypeName);
+
 }

@@ -10,5 +10,6 @@ public interface JPAEdmAssociationView extends JPAEdmBaseView {
 	public List<Association> getConsistentEdmAssociationList( );
 	public void addJPAEdmAssociationView(JPAEdmAssociationView associationView);
 	public Association searchAssociation(JPAEdmAssociationEndView view);
-	public void addJPAEdmRefConstraintView(JPAEdmReferentialContraintView refView);
+	public void addJPAEdmRefConstraintView(JPAEdmReferentialConstraintView refView);
+	JPAEdmReferentialConstraintView getJPAEdmReferentialConstraintView();
 }

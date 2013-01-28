@@ -1,6 +1,7 @@
 package com.sap.core.odata.processor.jpa.model;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 
@@ -22,9 +23,12 @@ public class JPAEdmEntityType extends JPAEdmBaseViewImpl implements
 	private javax.persistence.metamodel.EntityType<?> currentJPAEntityType = null;
 	private List<EntityType> consistentEntityTypes = null;
 
+	private HashMap<String, EntityType> consistentEntityTypeMap;
+
 	public JPAEdmEntityType(JPAEdmSchemaView view) {
 		super(view);
 		this.schemaView = view;
+		consistentEntityTypeMap = new HashMap<String, EntityType>();
 	}
 
 	@Override
@@ -47,6 +51,11 @@ public class JPAEdmEntityType extends JPAEdmBaseViewImpl implements
 		return consistentEntityTypes;
 	}
 
+	@Override
+	public EntityType searchEdmEntityType(String jpaEntityTypeName) {
+		return consistentEntityTypeMap.get(jpaEntityTypeName);
+	}
+
 	private class JPAEdmEntityTypeBuilder implements JPAEdmBuilder {
 
 		@Override
@@ -59,6 +68,7 @@ public class JPAEdmEntityType extends JPAEdmBaseViewImpl implements
 				return;
 			else if (consistentEntityTypes == null) {
 				consistentEntityTypes = new ArrayList<EntityType>();
+
 			}
 
 			for (javax.persistence.metamodel.EntityType<?> jpaEntityType : jpaEntityTypes) {
@@ -71,21 +81,28 @@ public class JPAEdmEntityType extends JPAEdmBaseViewImpl implements
 
 				currentEdmEntityType.setProperties(propertyView
 						.getPropertyList());
-				if(propertyView.getJPAEdmNavigationPropertyView() != null)
-				{
-					JPAEdmNavigationPropertyView navPropView = propertyView.getJPAEdmNavigationPropertyView();
-					if(navPropView.getConsistentEdmNavigationProperties() != null && !navPropView.getConsistentEdmNavigationProperties().isEmpty())
-					{
-						currentEdmEntityType.setNavigationProperties(navPropView.getConsistentEdmNavigationProperties());
+				if (propertyView.getJPAEdmNavigationPropertyView() != null) {
+					JPAEdmNavigationPropertyView navPropView = propertyView
+							.getJPAEdmNavigationPropertyView();
+					if (navPropView.getConsistentEdmNavigationProperties() != null
+							&& !navPropView
+									.getConsistentEdmNavigationProperties()
+									.isEmpty()) {
+						currentEdmEntityType
+								.setNavigationProperties(navPropView
+										.getConsistentEdmNavigationProperties());
 					}
 				}
 				JPAEdmKeyView keyView = propertyView.getJPAEdmKeyView();
 				currentEdmEntityType.setKey(keyView.getEdmKey());
 
 				consistentEntityTypes.add(currentEdmEntityType);
+				consistentEntityTypeMap.put(currentJPAEntityType.getName(),
+						currentEdmEntityType);
 			}
 
 		}
 
 	}
+
 }

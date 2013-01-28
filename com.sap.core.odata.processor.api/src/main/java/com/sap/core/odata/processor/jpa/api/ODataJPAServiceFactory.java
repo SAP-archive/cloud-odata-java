@@ -6,7 +6,6 @@ import com.sap.core.odata.api.edm.provider.EdmProvider;
 import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.api.processor.ODataContext;
 import com.sap.core.odata.api.processor.ODataSingleProcessor;
-import com.sap.core.odata.api.processor.ODataSingleProcessorService;
 import com.sap.core.odata.processor.jpa.api.factory.ODataJPAAccessFactory;
 import com.sap.core.odata.processor.jpa.api.factory.ODataJPAFactory;
 import com.sap.core.odata.processor.jpa.exception.ODataJPARuntimeException;
@@ -52,7 +51,7 @@ import com.sap.core.odata.processor.jpa.exception.ODataJPARuntimeException;
  * </pre>
  */
 
-public abstract class ODataJPAServiceFactory implements ODataServiceFactory {
+public abstract class ODataJPAServiceFactory extends ODataServiceFactory {
 
 	private ODataJPAContext oDataJPAContext;
 
@@ -60,8 +59,7 @@ public abstract class ODataJPAServiceFactory implements ODataServiceFactory {
 	 * Creates an OData Service based on the values set in
 	 * {@link ODataJPAContext} and {@link ODataContext}.
 	 */
-	public final ODataService createService(ODataContext ctx)
-			throws ODataException {
+	public final ODataService createService(ODataContext ctx) throws ODataException {
 
 		// Initialize OData JPA Context
 		oDataJPAContext = initializeJPAContext();
@@ -81,7 +79,7 @@ public abstract class ODataJPAServiceFactory implements ODataServiceFactory {
 		EdmProvider edmProvider = accessFactory
 				.createJPAEdmProvider(oDataJPAContext);
 
-		return new ODataSingleProcessorService(edmProvider, odataJPAProcessor);
+		return createODataSingleProcessorService(edmProvider, odataJPAProcessor);
 	}
 
 	private void validatePreConditions() throws ODataJPARuntimeException {

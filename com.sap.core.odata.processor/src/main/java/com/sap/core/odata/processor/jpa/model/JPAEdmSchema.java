@@ -107,7 +107,7 @@ JPAEdmSchemaView {
 					schema.setEntityTypes(entityTypeView
 							.getConsistentEdmEntityTypes());
 			}
-
+			
 			if (associationView.isConsistent())
 				schema.setAssociations(associationView
 							.getConsistentEdmAssociationList());

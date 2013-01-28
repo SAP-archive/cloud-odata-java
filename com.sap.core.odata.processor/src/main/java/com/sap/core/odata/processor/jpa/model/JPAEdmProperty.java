@@ -29,7 +29,7 @@ import com.sap.core.odata.processor.jpa.api.model.JPAEdmEntityTypeView;
 import com.sap.core.odata.processor.jpa.api.model.JPAEdmKeyView;
 import com.sap.core.odata.processor.jpa.api.model.JPAEdmNavigationPropertyView;
 import com.sap.core.odata.processor.jpa.api.model.JPAEdmPropertyView;
-import com.sap.core.odata.processor.jpa.api.model.JPAEdmReferentialContraintView;
+import com.sap.core.odata.processor.jpa.api.model.JPAEdmReferentialConstraintView;
 import com.sap.core.odata.processor.jpa.api.model.JPAEdmSchemaView;
 import com.sap.core.odata.processor.jpa.exception.ODataJPAModelException;
 
@@ -215,7 +215,7 @@ public class JPAEdmProperty extends JPAEdmBaseViewImpl implements
 							keyView = new JPAEdmKey(complexTypeView,
 									JPAEdmProperty.this);
 						keyView.getBuilder().build();
-						complexTypeView.expandEdmComplexType(complexType, properties);
+						complexTypeView.expandEdmComplexType(complexType,properties);
 					}
 					else{
 						currentComplexProperty = new ComplexProperty();
@@ -240,19 +240,23 @@ public class JPAEdmProperty extends JPAEdmBaseViewImpl implements
 					
 					JPAEdmAssociationView associationView = schemaView.getJPAEdmAssociationView();
 					if(associationView.searchAssociation(associationEndView) == null){
-						JPAEdmAssociationView associationViewLocal = new JPAEdmAssociation(associationEndView);
+						JPAEdmAssociationView associationViewLocal = new JPAEdmAssociation(associationEndView,entityTypeView,JPAEdmProperty.this);
 						associationViewLocal.getBuilder().build();
 						associationView.addJPAEdmAssociationView(associationViewLocal);
 					}
 					
-					JPAEdmReferentialContraintView refView = new JPAEdmReferentialConstraint(associationView,JPAEdmProperty.this);
-//					refView.getBuilder().build( );
-//					associationView.addJPAEdmRefConstraintView(refView);
+					JPAEdmReferentialConstraintView refConstraintView = new JPAEdmReferentialConstraint(
+							associationView, entityTypeView,JPAEdmProperty.this);
+					refConstraintView.getBuilder().build();
+					
+					if(refConstraintView.isExists())
+						associationView.addJPAEdmRefConstraintView(refConstraintView);
+					
 					if(navigationPropertyView == null)
 					{
 						navigationPropertyView = new JPAEdmNavigationProperty(schemaView);
 					}
-					JPAEdmNavigationPropertyView localNavigationPropertyView = new JPAEdmNavigationProperty(schemaView,associationView,JPAEdmProperty.this);
+					JPAEdmNavigationPropertyView localNavigationPropertyView = new JPAEdmNavigationProperty(associationView,JPAEdmProperty.this);
 					localNavigationPropertyView.getBuilder().build();
 					navigationPropertyView.addJPAEdmNavigationPropertyView(localNavigationPropertyView);
 					break;

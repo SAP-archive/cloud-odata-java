@@ -105,6 +105,9 @@ public class JPAEdmEntityContainer extends JPAEdmBaseViewImpl implements
 				return;
 			}
 			
+			if(!schemaView.getJPAEdmAssociationView().isConsistent())
+				schemaView.getJPAEdmAssociationView().getBuilder().build();
+			
 			associationSetView = new JPAEdmAssociationSet(schemaView);
 			associationSetView.getBuilder().build();
 			if (associationSetView.isConsistent())
