@@ -26,8 +26,10 @@ import com.sap.core.odata.processor.jpa.util.MockData;
 
 public class JPAEdmKeyTest extends JPAEdmTestModelView {
 
+	@SuppressWarnings("hiding")
 	private class JPAAttributeA<Object, ComplexTypeA> extends
 			JPAAttributeMock<Object, ComplexTypeA> {
+		@SuppressWarnings("unchecked")
 		@Override
 		public Class<ComplexTypeA> getJavaType() {
 			return (Class<ComplexTypeA>) JPAEdmMockData.ComplexType.ComplexTypeA.class;

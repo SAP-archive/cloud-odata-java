@@ -18,6 +18,7 @@ import com.sap.core.odata.api.edm.provider.EntityType;
 import com.sap.core.odata.api.edm.provider.Key;
 import com.sap.core.odata.api.edm.provider.NavigationProperty;
 import com.sap.core.odata.api.edm.provider.Property;
+import com.sap.core.odata.api.edm.provider.ReferentialConstraint;
 import com.sap.core.odata.api.edm.provider.Schema;
 import com.sap.core.odata.api.edm.provider.SimpleProperty;
 import com.sap.core.odata.processor.jpa.api.access.JPAEdmBuilder;
@@ -34,7 +35,7 @@ import com.sap.core.odata.processor.jpa.api.model.JPAEdmKeyView;
 import com.sap.core.odata.processor.jpa.api.model.JPAEdmModelView;
 import com.sap.core.odata.processor.jpa.api.model.JPAEdmNavigationPropertyView;
 import com.sap.core.odata.processor.jpa.api.model.JPAEdmPropertyView;
-import com.sap.core.odata.processor.jpa.api.model.JPAEdmReferentialContraintView;
+import com.sap.core.odata.processor.jpa.api.model.JPAEdmReferentialConstraintView;
 import com.sap.core.odata.processor.jpa.api.model.JPAEdmSchemaView;
 
 public abstract class JPAEdmTestModelView implements
@@ -51,9 +52,39 @@ JPAEdmKeyView,
 JPAEdmModelView,
 JPAEdmNavigationPropertyView,
 JPAEdmPropertyView,
-JPAEdmReferentialContraintView,
+JPAEdmReferentialConstraintView,
 JPAEdmSchemaView
 {
+
+	@Override
+	public ReferentialConstraint getEdmReferentialConstraint() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String getRelationShipName() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public boolean isExists() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public EntityType searchEdmEntityType(String arg0) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public JPAEdmReferentialConstraintView getJPAEdmReferentialConstraintView() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
 	@Override
 	public Schema getEdmSchema() {
@@ -260,7 +291,7 @@ JPAEdmSchemaView
 	}
 
 	@Override
-	public void addJPAEdmRefConstraintView(JPAEdmReferentialContraintView arg0) {
+	public void addJPAEdmRefConstraintView(JPAEdmReferentialConstraintView arg0) {
 		// TODO Auto-generated method stub
 		
 	}
