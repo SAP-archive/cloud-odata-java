@@ -25,6 +25,10 @@ public class JPAEdmNavigationProperty extends JPAEdmBaseViewImpl implements
 		super(associationView);
 		this.associationView = associationView;
 		this.propertyView = propertyView;
+		if(consistentNavigationProperties == null)
+		{
+			consistentNavigationProperties = new ArrayList<NavigationProperty>();
+		}
 	}
 
 	public JPAEdmNavigationProperty(JPAEdmSchemaView schemaView) {
@@ -46,6 +50,7 @@ public class JPAEdmNavigationProperty extends JPAEdmBaseViewImpl implements
 			currentNavigationProperty = new NavigationProperty();
 			JPAEdmNameBuilder.build(associationView, propertyView,
 					JPAEdmNavigationProperty.this);
+			consistentNavigationProperties.add(currentNavigationProperty);
 		}
 
 	}
