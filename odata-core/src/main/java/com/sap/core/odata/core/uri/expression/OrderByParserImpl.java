@@ -67,8 +67,8 @@ public class OrderByParserImpl extends FilterParserImpl implements OrderByParser
       else if (token.getKind() == TokenKind.COMMA)
       {
         orderNode.setSortOrder(SortOrder.asc);
-        tokenList.next();
-        token = tokenList.lookToken();
+        //tokenList.next();
+        //token = tokenList.lookToken();
       }
       else
       {
@@ -96,6 +96,11 @@ public class OrderByParserImpl extends FilterParserImpl implements OrderByParser
           throw FilterParserExceptionImpl.createEXPRESSION_EXPECTED_AFTER_POS(oldToken,curExpression);
         }
       }
+      else //e.g. in case $orderby=String asc a
+      {
+        throw FilterParserExceptionImpl.createCOMMA_OR_END_EXPECTED_AT_POS(token,curExpression);
+      }
+
 
     }
     return orderCollection;

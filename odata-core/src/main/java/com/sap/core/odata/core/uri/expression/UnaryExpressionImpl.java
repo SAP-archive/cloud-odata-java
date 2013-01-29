@@ -21,7 +21,6 @@ public class UnaryExpressionImpl implements UnaryExpression
   {
     this.operatorInfo = operatorInfo;
     this.operand = operand;
-    //this.edmType = operatorInfo.getReturnType(); //TODO check
   }
 
   @Override

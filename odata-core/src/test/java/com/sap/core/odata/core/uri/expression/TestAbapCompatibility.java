@@ -211,36 +211,11 @@ public class TestAbapCompatibility extends TestBase {
     //lcl_helper=>veri_orderby( iv_expression = `concat(   'Start_'  ,   starttime   ) desc`
     //                          iv_expected = `{oc({o({concat(Start_,starttime)} desc)})}` ).
     GetPTO("concat(   'Start_'  ,   starttime   ) desc").aSerialized("{oc({o({concat('Start_',starttime)}, desc)})}");
-    /*TODO exception test
-      lcl_helper=>veri_orderby_ex(
-        iv_expression      = `a b`
-        iv_expected_textid = /iwcor/cx_ds_expr_syntax_error=>sortorder_invalid
-        iv_expected_msg    = 'Invalid sortorder ''b'' detected' ).
-
-      lcl_helper=>veri_orderby_ex(
-        iv_expression      = `a,b c`
-        iv_expected_textid = /iwcor/cx_ds_expr_syntax_error=>sortorder_invalid
-        iv_expected_msg    = 'Invalid sortorder ''c'' detected' ).
-
-      lcl_helper=>veri_orderby_ex(
-        iv_expression      = `a b,c desc`
-        iv_expected_textid = /iwcor/cx_ds_expr_syntax_error=>sortorder_invalid
-        iv_expected_msg    = 'Invalid sortorder ''b'' detected' ).
-
-      lcl_helper=>veri_orderby_ex(
-        iv_expression      = `a asc,b c`
-        iv_expected_textid = /iwcor/cx_ds_expr_syntax_error=>sortorder_invalid
-        iv_expected_msg    = 'Invalid sortorder ''c'' detected' ).
-        */
+    
 
   }
 
-  @Test
-  public void abapTestFilterParserWithEdm() //copy of ABAP method test_filter_parser_with_edm
-  {
-    //TODO copy from ABAP
-  }
-
+  
   @Test
   public void abapTestFilterParser() //copy of ABAP method test_filter_parser
   {
@@ -256,12 +231,7 @@ public class TestAbapCompatibility extends TestBase {
     //lcl_helper=>veri_expression( iv_expression = 'ABC eq W / X eq TEST' iv_expected = '{{ABC eq {W/X}} eq TEST}' ).
     GetPTF("ABC eq W / X eq TEST").aSerialized("{{ABC eq {W/X}} eq TEST}");
 
-    //TODO exception test
-    //lcl_helper=>veri_expression_ex(
-    //  iv_expression = '( A mul B )/X eq TEST'
-    //  iv_expected_textid = /iwcor/cx_ds_expr_parser_error=>member_access_wrong_left_hand
-    //  iv_expected_msg    = 'Left hand expression of memberaccess operator invalid'  ).
-    //  GetPTF("( A mul B )/X eq TEST").aSerialized("");
+
 
     //lcl_helper=>veri_expression( iv_expression = 'W/X/Y/Z' iv_expected = '{{{W/X}/Y}/Z}' ).
     GetPTF("W/X/Y/Z").aSerialized("{{{W/X}/Y}/Z}");

@@ -52,6 +52,10 @@ public class ParserTool
   {
     if (debug) ParserTool.log.debug(out);
   }
+  public static void out(String out)
+  {
+    ParserTool.log.debug(out);
+  }
 
   public ParserTool(String expression, boolean isOrder, boolean addTestfunctions)
   {
@@ -301,9 +305,9 @@ public class ParserTool
     }
 
     Message ms = MessageService.getMessage(DEFAULT_LANGUAGE, messageException.getMessageReference());
-    dout("Messge --> ");
-    dout("  " + ms.getText());
-    dout("Messge <-- ");
+    out("Messge --> ");
+    out("  " + ms.getText());
+    out("Messge <-- ");
 
     return this;
   }
@@ -320,9 +324,9 @@ public class ParserTool
       fail("Error in visitor:" + e.getLocalizedMessage());
     }
 
-    dout("Messge --> ");
-    dout("  " + actual);
-    dout("Messge <-- ");
+    out("Messge --> ");
+    out("  " + actual);
+    out("Messge <-- ");
     return this;
   }
 

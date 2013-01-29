@@ -1,6 +1,5 @@
 package com.sap.core.odata.core.uri.expression;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
 import org.apache.commons.codec.DecoderException;
@@ -8,132 +7,91 @@ import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.codec.binary.Hex;
 import org.junit.Test;
 
-import com.sap.core.odata.api.uri.expression.ExpressionParserException;
+public class TestTokenizer
+{
 
-public class TestTokenizer {
-
-  protected class TokenTool
+  @Test
+  public void tokenizeWhiteSpaces() throws Exception
   {
-    protected Token token;
-    protected TokenList tokens = null;
+    //space
+    getTTW(" ")
+        .at(0)
+        .aKind(TokenKind.WHITESPACE)
+        .aUriLiteral(" ")
+        .aPosition(0);
 
-    /**
-     * Set the token to be check to the token at position <code>index</code>
-     * 
-     * @param index Index of the token to be checked
-     * @return Returns <code>this</code>
-     * @throws AssertionError
-     */
-    public TokenTool at(int index)
-    {
-      token = tokens.elementAt(index);
-      return this;
-    }
+    getTTW("   ")
+        .at(0)
+        .aKind(TokenKind.WHITESPACE)
+        .aUriLiteral("   ")
+        .aPosition(0);
 
-    /**
-     * Checks that the Type of the token matches the <code>kind</code>
-     *      
-     * @param kind Kind to be compared with the token type
-     * @return Returns <code>this</code>
-     * @throws AssertionError 
-     */
-    public TokenTool aKind(TokenKind kind)
-    {
-      assertEquals(token.getKind(), kind);
-      return this;
-    }
+    getTTW("A   ")
+        .at(1)
+        .aKind(TokenKind.WHITESPACE)
+        .aUriLiteral("   ")
+        .aPosition(1);
 
-    /**
-     * Checks that the EDM Type of the token matches the <code>edmType</code>
-     * 
-     * @param edmType EDM Type to be compared with the token type
-     * @return Returns <code>this</code>
-     * @throws AssertionError
-     */
-    public TokenTool aEdmType(int edmType)
-    {
-      assertEquals(token.getEdmType(), edmType);
-      return this;
-    }
+    getTTW("   B")
+        .at(0)
+        .aKind(TokenKind.WHITESPACE)
+        .aUriLiteral("   ")
+        .aPosition(0);
 
-    /**
-     * Checks that the Value of the token matches the <code>stringValue</code>
-     * 
-     * @param stringValue Value to be compared with the token value 
-     * @return Returns <code>this</code>
-     * @throws AssertionError
-     */
-    public TokenTool aUriLiteral(String stringValue)
-    {
-      assertEquals(token.getUriLiteral(), stringValue);
-      return this;
-    }
+    getTTW("A   B")
+        .at(1)
+        .aKind(TokenKind.WHITESPACE)
+        .aUriLiteral("   ")
+        .aPosition(1)
+        .at(2)
+        .aKind(TokenKind.LITERAL)
+        .aUriLiteral("B")
+        .aPosition(4);
 
-    TokenTool(TokenList tokens2)
-    {
-      this.tokens = tokens2;
-      this.at(0);
-    }
-  }
-
-  /**
-   * Create TokenTool ( and Token list) without respecting whitespaces
-   * @param expression Expression to be tokenized
-   */
-  public TokenTool GetTT(String expression)
-  {
-    Tokenizer tokenizer = new Tokenizer(expression);
-    try {
-      TokenList tokens = tokenizer.tokenize();//please 
-      return new TokenTool(tokens);
-      //    } catch (TokenizerRTException e) {
-      //      fail("Error in tokenize" + e.getLocalizedMessage());
-    } catch (TokenizerException e) {
-
-      fail("Error in tokenize" + e.getLocalizedMessage());
-    } catch (ExpressionParserException e) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
-    }
-    return null;
-  }
-
-  /**
-   * Create TokenTool ( and Token list) without respecting whitespaces
-   * @param expression Expression to be tokenized
-   */
-  public TokenTool GetTTW(String expression)
-  {
-    Tokenizer tokenizer = new Tokenizer(expression).setFlagWhiteSpace(true);
-    try {
-      TokenList tokens = tokenizer.tokenize();
-      return new TokenTool(tokens);
-      //    } catch (TokenizerRuntimeException e) {
-      //      fail("Error in tokenize" + e.getLocalizedMessage());
-    } catch (TokenizerException e) {
-      fail("Error in tokenize" + e.getLocalizedMessage());
-    } catch (ExpressionParserException e) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
-    }
-    return null;
+    getTTW("A   B   C")
+        .at(3)
+        .aKind(TokenKind.WHITESPACE)
+        .aUriLiteral("   ")
+        .aPosition(5);
   }
 
   @Test
   public void tokenizeSymbols() throws Exception
-  {/*
-    //space
-    GetTTW(" ").aKind(TokenKind.WHITESPACE).aUriLiteral(" ");
+  {
 
     //parentheses
-    GetTT("(").aKind(TokenKind.OPENPAREN).aUriLiteral("(");
-    GetTT(")").aKind(TokenKind.CLOSEPAREN).aUriLiteral(")");
+    getTT("(").aKind(TokenKind.OPENPAREN).aUriLiteral("(");
+    getTT("abc(")
+        .at(1)
+        .aKind(TokenKind.OPENPAREN).aUriLiteral("(")
+        .aPosition(3);
+
+    getTT(")").aKind(TokenKind.CLOSEPAREN).aUriLiteral(")");
+    getTT("abc)")
+        .at(1)
+        .aKind(TokenKind.CLOSEPAREN).aUriLiteral(")")
+        .aPosition(3);
 
     //symbol
-    GetTT(",").aKind(TokenKind.SYMBOL).aUriLiteral(",");
+    getTT(",").aKind(TokenKind.COMMA).aUriLiteral(",");
+    getTT("abc,")
+        .at(1)
+        .aKind(TokenKind.COMMA).aUriLiteral(",")
+        .aPosition(3);
 
     //minus
-    GetTT("-").aKind(TokenKind.SYMBOL).aUriLiteral("-");*/
+    getTT("-").aKind(TokenKind.SYMBOL).aUriLiteral("-");
+    getTT("abc -")
+        .at(1)
+        .aKind(TokenKind.SYMBOL).aUriLiteral("-")
+        .aPosition(4);
+
+    //minus after literal belongs to literal
+    getTT("abc-")
+        .at(0)
+        .aKind(TokenKind.LITERAL).aUriLiteral("abc-")
+        .aPosition(0);
+
   }
 
   public static String HexToBase64(String hex)
@@ -152,83 +110,103 @@ public class TestTokenizer {
 
   @Test
   public void tokenizeTypes() throws Exception
-  {/*
-    //return;
-    GetTT("a").aKind(TokenKind.LITERAL).aUriLiteral("a");
+  {
+    getTT("a").aKind(TokenKind.LITERAL).aUriLiteral("a").aPosition(0);
+    getTT("abc a").at(1).aKind(TokenKind.LITERAL).aUriLiteral("a").aPosition(4);
 
     //string
-    GetTT("'a'").aKind(TokenKind.SIMPLE_TYPE).aUriLiteral("a");
+    getTT("'a'").aKind(TokenKind.SIMPLE_TYPE).aUriLiteral("'a'").aPosition(0);
+    getTT("abc 'a'").at(1).aKind(TokenKind.SIMPLE_TYPE).aUriLiteral("'a'").aPosition(4);
 
     //"prefixed type
-    GetTT("X'00'").aKind(TokenKind.SIMPLE_TYPE).aUriLiteral(HexToBase64("00"));
+    getTT("X'00'").aKind(TokenKind.SIMPLE_TYPE).aUriLiteral("X'00'").aPosition(0);
+    getTT("abc X'00'").at(1).aKind(TokenKind.SIMPLE_TYPE).aUriLiteral("X'00'").aPosition(4);
 
     //simple types
-    GetTT("null").aKind(TokenKind.SIMPLE_TYPE).aUriLiteral("null");
-    GetTT("128").aKind(TokenKind.SIMPLE_TYPE).aUriLiteral("128");
+    getTT("null").aKind(TokenKind.SIMPLE_TYPE).aUriLiteral("null").aPosition(0);
+    getTT("abc null").at(1).aKind(TokenKind.SIMPLE_TYPE).aUriLiteral("null").aPosition(4);
+
+    getTT("128").aKind(TokenKind.SIMPLE_TYPE).aUriLiteral("128").aPosition(0);
+    getTT("abc 128").at(1).aKind(TokenKind.SIMPLE_TYPE).aUriLiteral("128").aPosition(4);
 
     //do special types
-    GetTT("datetime'2011-01-12T00:00:00'").aKind(TokenKind.SIMPLE_TYPE).aUriLiteral("2011-01-12T00:00:00");*/
+    getTT("datetime'2011-01-12T00:00:00'").aKind(TokenKind.SIMPLE_TYPE).aUriLiteral("datetime'2011-01-12T00:00:00'").aPosition(0);
+    getTT("abc datetime'2011-01-12T00:00:00'").at(1).aKind(TokenKind.SIMPLE_TYPE).aUriLiteral("datetime'2011-01-12T00:00:00'").aPosition(4);
   }
 
   @Test
   public void tokenizeOperators() throws Exception
-  {/*
-    //return;
-    GetTT("a eq b").at(1).aKind(TokenKind.LITERAL).aUriLiteral("eq");
-    GetTT("a eqotto b").at(1).aKind(TokenKind.LITERAL).aUriLiteral("eqotto");*/
+  {
+    getTT("a eq b").at(1).aKind(TokenKind.LITERAL).aUriLiteral("eq");
+    getTT("a eqotto b").at(1).aKind(TokenKind.LITERAL).aUriLiteral("eqotto");
   }
 
-  //@Test
-  public void tokenizeOther1() throws Exception
+  @Test
+  public void testExceptions() throws Exception
   {
-    //return;
-    /*
-    METHOD test_erroneous_tokens.
-    \"check for string literal without trailing '
-    expect_bad_request_exception(  "'a"
-                                  iv_textid = /iwcor/cx_ds_expr_syntax_error=>token_invalid ).
+    //http://services.odata.org/Northwind/Northwind.svc/Products(1)/Supplier?$filter='a
+    //-->Unterminated string literal at position 2 in ''a'.
+    getTT("'a")
+        .aExMsgText("Unterminated string literal at position 1 in \"'a\".");
 
-    *    \"check for illegal binary value
-    *    expect_bad_request_exception(  "X'g'"
-    *                                  iv_textid = /IWCOR/cx_DS_expr_syntax_error=>token_invalid ).
+    //http://services.odata.org/Northwind/Northwind.svc/Products(1)/Supplier?$filter=X'g'
+    //-->Unrecognized 'Edm.Binary' literal 'X'g'' in '0'.
+    getTT("X'g'")
+        .aExMsgText("Type detection error for string like token 'X'g'' at position '1'.");
 
-    \"check for illegal special character
-    expect_bad_request_exception(  "\"
-                                  iv_textid = /iwcor/cx_ds_expr_syntax_error=>token_invalid ).
-    ENDMETHOD.                    \"test_erroneous_tokens*/
+    //http://services.odata.org/Northwind/Northwind.svc/Products(1)/Supplier?$filter=\
+    //-->Syntax error '\' at position 0.
+    getTT("\\")
+    .aExMsgText("Unknown character '\\' at position '0' detected in \"\\\".");
+
+
   }
 
   @Test
   public void tokenizeFunction() throws Exception
-  {/*
-    //return;
-    GetTT("substringof('10')")
+  {
+    getTT("substringof('10')")
         .at(0).aKind(TokenKind.LITERAL).aUriLiteral("substringof")
-        .at(2).aKind(TokenKind.SIMPLE_TYPE).aUriLiteral("10");
+        .at(2).aKind(TokenKind.SIMPLE_TYPE).aUriLiteral("'10'");
 
-    GetTT("substringof  (  '10'  )  ")
+    getTT("substringof  (  '10'  )  ")
         .at(0).aKind(TokenKind.LITERAL).aUriLiteral("substringof")
-        .at(2).aKind(TokenKind.SIMPLE_TYPE).aUriLiteral("10");*/
-
+        .at(2).aKind(TokenKind.SIMPLE_TYPE).aUriLiteral("'10'");
   }
 
-  //@Test
-  public void tokenizeOther() throws Exception
-  {/*
-    //return;
-    //other literal
-    GetTT("a 1")
+  @Test
+  public void testEx1111ceptions() throws Exception
+  {
+    getTT("a 1")
         .at(0).aKind(TokenKind.LITERAL).aUriLiteral("a")
         .at(1).aKind(TokenKind.SIMPLE_TYPE).aUriLiteral("1");
 
-    GetTT("a eq b").at(0).aKind(TokenKind.LITERAL).aUriLiteral("a")
+    getTT("a eq b").at(0).aKind(TokenKind.LITERAL).aUriLiteral("a")
         .at(1).aKind(TokenKind.LITERAL).aUriLiteral("eq")
-        .at(2).aKind(TokenKind.SIMPLE_TYPE).aUriLiteral("b");
+        .at(2).aKind(TokenKind.LITERAL).aUriLiteral("b");
 
-    GetTT("start_date eq datetime'2011-01-12T00:00:00' and end_date eq datetime'2011-12-31T00:00:00'")
+    getTT("start_date eq datetime'2011-01-12T00:00:00' and end_date eq datetime'2011-12-31T00:00:00'")
         .at(2).aUriLiteral("datetime'2011-01-12T00:00:00'");
 
-    GetTT("'a%b'").at(0).aKind(TokenKind.SIMPLE_TYPE).aUriLiteral("'a%b'");*/
+    getTT("'a%b'").at(0).aKind(TokenKind.SIMPLE_TYPE).aUriLiteral("'a%b'");
 
+  }
+
+  /**
+   * Create TokenTool ( and Token list) without respecting whitespaces
+   * @param expression Expression to be tokenized
+   */
+  public TokenTool getTT(String expression)
+  {
+    return new TokenTool(expression, false);
+  }
+
+  /**
+   * Create TokenTool ( and Token list) without respecting whitespaces
+   * @param expression Expression to be tokenized
+   */
+  public TokenTool getTTW(String expression)
+  {
+    return new TokenTool(expression, true);
   }
 }
