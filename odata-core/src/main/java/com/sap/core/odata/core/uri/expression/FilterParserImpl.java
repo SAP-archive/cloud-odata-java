@@ -152,6 +152,21 @@ public class FilterParserImpl implements FilterParser
       operator = readBinaryOperator();
     }
 
+    //Add special handling for expressions like $filter=notsupportedfunction('a')
+    //If this special handling is not in place the error text would be 
+    //-->Invalid token "(" detected after parsing at position 21 in "notsupportedfunction('a')".
+    //with this special handling we ensure that the error text would be
+
+    Token token = tokenList.lookToken();
+    if (token != null)
+    {
+      if ((leftNode.getKind() == ExpressionKind.PROPERTY) && (tokenList.lookToken().getKind() == TokenKind.OPENPAREN))
+      {
+        // Tested with TestParserExceptions.testAdditionalStuff CASE 2
+        throw FilterParserExceptionImpl.createINVALID_METHOD_CALL(leftNode, tokenList.lookPrevToken(), curExpression);
+      }
+    }
+
     return leftNode;
   }
 
@@ -201,6 +216,7 @@ public class FilterParserImpl implements FilterParser
   {
     CommonExpression expression;
     boolean expectAnotherExpression = false;
+    boolean readComma = true;
 
     // The existing of a '(' is verified BEFORE this method is called --> so it's a internal error
     Token openParenthesis = tokenList.expectToken(TokenKind.OPENPAREN, true); //throws FilterParserInternalError
@@ -214,6 +230,11 @@ public class FilterParserImpl implements FilterParser
 
     while (token.getKind() != TokenKind.CLOSEPAREN)
     {
+      if (readComma == false)
+      {
+        //Tested with TestParserExceptions.TestPMreadParameters CASE 12 e.g. "$filter=concat('a' 'b')"
+        throw FilterParserExceptionImpl.createCOMMA_OR_CLOSING_PHARENTHESIS_EXPECTED_AFTER_POS(tokenList.lookPrevToken(), curExpression);
+      }
       expression = readElement(null);
       if (expression != null) expression = readElements(expression, 0);
 
@@ -244,6 +265,11 @@ public class FilterParserImpl implements FilterParser
         }
 
         tokenList.expectToken(",", true);
+        readComma = true;
+      }
+      else
+      {
+        readComma = false;
       }
     }
 
@@ -788,25 +814,25 @@ public class FilterParserImpl implements FilterParser
     combination = new ParameterSetCombination.PSCflex();
     combination.add(new ParameterSet(int32, string));
     lAvailableMethods.put(MethodOperator.LENGTH.toUriLiteral(),
-        new InfoMethod(MethodOperator.LENGTH,  combination));
+        new InfoMethod(MethodOperator.LENGTH, combination));
 
     //year
     combination = new ParameterSetCombination.PSCflex();
     combination.add(new ParameterSet(int32, datetime));
     lAvailableMethods.put(MethodOperator.YEAR.toUriLiteral(),
-        new InfoMethod(MethodOperator.YEAR,  combination));
+        new InfoMethod(MethodOperator.YEAR, combination));
 
     //month
     combination = new ParameterSetCombination.PSCflex();
     combination.add(new ParameterSet(int32, datetime));
     lAvailableMethods.put(MethodOperator.MONTH.toUriLiteral(),
-        new InfoMethod(MethodOperator.MONTH,  combination));
+        new InfoMethod(MethodOperator.MONTH, combination));
 
     //day
     combination = new ParameterSetCombination.PSCflex();
     combination.add(new ParameterSet(int32, datetime));
     lAvailableMethods.put(MethodOperator.DAY.toUriLiteral(),
-        new InfoMethod(MethodOperator.DAY,  combination));
+        new InfoMethod(MethodOperator.DAY, combination));
 
     //hour
     combination = new ParameterSetCombination.PSCflex();
@@ -814,7 +840,7 @@ public class FilterParserImpl implements FilterParser
     combination.add(new ParameterSet(int32, time));
     combination.add(new ParameterSet(int32, datetimeoffset));
     lAvailableMethods.put(MethodOperator.HOUR.toUriLiteral(),
-        new InfoMethod(MethodOperator.HOUR,  combination));
+        new InfoMethod(MethodOperator.HOUR, combination));
 
     //minute
     combination = new ParameterSetCombination.PSCflex();
@@ -822,7 +848,7 @@ public class FilterParserImpl implements FilterParser
     combination.add(new ParameterSet(int32, time));
     combination.add(new ParameterSet(int32, datetimeoffset));
     lAvailableMethods.put(MethodOperator.MINUTE.toUriLiteral(),
-        new InfoMethod(MethodOperator.MINUTE,  combination));
+        new InfoMethod(MethodOperator.MINUTE, combination));
 
     //second
     combination = new ParameterSetCombination.PSCflex();
@@ -830,28 +856,28 @@ public class FilterParserImpl implements FilterParser
     combination.add(new ParameterSet(int32, time));
     combination.add(new ParameterSet(int32, datetimeoffset));
     lAvailableMethods.put(MethodOperator.SECOND.toUriLiteral(),
-        new InfoMethod(MethodOperator.SECOND,  combination));
+        new InfoMethod(MethodOperator.SECOND, combination));
 
     //round
     combination = new ParameterSetCombination.PSCflex();
     combination.add(new ParameterSet(decimal, decimal));
     combination.add(new ParameterSet(double_, double_));
     lAvailableMethods.put(MethodOperator.ROUND.toUriLiteral(),
-        new InfoMethod(MethodOperator.ROUND,  combination));
+        new InfoMethod(MethodOperator.ROUND, combination));
 
     //ceiling
     combination = new ParameterSetCombination.PSCflex();
     combination.add(new ParameterSet(decimal, decimal));
     combination.add(new ParameterSet(double_, double_));
     lAvailableMethods.put(MethodOperator.CEILING.toUriLiteral(),
-        new InfoMethod(MethodOperator.CEILING,  combination));
+        new InfoMethod(MethodOperator.CEILING, combination));
 
     //floor
     combination = new ParameterSetCombination.PSCflex();
     combination.add(new ParameterSet(decimal, decimal));
     combination.add(new ParameterSet(double_, double_));
     lAvailableMethods.put(MethodOperator.FLOOR.toUriLiteral(),
-        new InfoMethod(MethodOperator.FLOOR,  combination));
+        new InfoMethod(MethodOperator.FLOOR, combination));
 
     //---unary---
 
@@ -867,13 +893,13 @@ public class FilterParserImpl implements FilterParser
     combination.add(new ParameterSet(decimal, decimal));
 
     //minus
-    lAvailableUnaryOperators.put(UnaryOperator.MINUS.toUriLiteral(), 
+    lAvailableUnaryOperators.put(UnaryOperator.MINUS.toUriLiteral(),
         new InfoUnaryOperator(UnaryOperator.MINUS, "minus", combination));
 
     //not
     combination = new ParameterSetCombination.PSCflex();
     combination.add(new ParameterSet(boolean_, boolean_));
-    lAvailableUnaryOperators.put(UnaryOperator.NOT.toUriLiteral(), 
+    lAvailableUnaryOperators.put(UnaryOperator.NOT.toUriLiteral(),
         new InfoUnaryOperator(UnaryOperator.NOT, "not", combination));
 
     availableBinaryOperators = Collections.unmodifiableMap(lAvailableBinaryOperators);

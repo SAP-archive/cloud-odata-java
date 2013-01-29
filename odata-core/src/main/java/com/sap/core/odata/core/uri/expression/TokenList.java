@@ -64,7 +64,7 @@ public class TokenList implements Iterator<Token>
   
   public Token lookPrevToken()
   {
-    if (currentToken-1 <= 0)
+    if (currentToken-1 < 0)
       return null;
 
     return tokens.get(currentToken-1);

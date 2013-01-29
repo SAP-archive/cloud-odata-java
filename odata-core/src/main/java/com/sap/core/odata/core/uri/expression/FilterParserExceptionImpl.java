@@ -6,6 +6,7 @@ import com.sap.core.odata.api.edm.EdmType;
 import com.sap.core.odata.api.exception.MessageReference;
 import com.sap.core.odata.api.exception.ODataBadRequestException;
 import com.sap.core.odata.api.uri.expression.BinaryOperator;
+import com.sap.core.odata.api.uri.expression.CommonExpression;
 import com.sap.core.odata.api.uri.expression.ExpressionParserException;
 import com.sap.core.odata.api.uri.expression.PropertyExpression;
 
@@ -241,6 +242,17 @@ public class FilterParserExceptionImpl extends ExpressionParserException
   {
     final MessageReference msgRef = ExpressionParserException.ERROR_IN_TOKENIZER.addContent(Integer.toString(position + 1), token);
     return new ExpressionParserException(msgRef);
+  }
+
+  public static ExpressionParserException createINVALID_METHOD_CALL(CommonExpression leftNode, Token prevToken, String expression) {
+    final MessageReference msgRef = ExpressionParserException.INVALID_METHOD_CALL.create();
+
+    msgRef.addContent(leftNode.getUriLiteral());
+    msgRef.addContent(prevToken.getPosition() + 1);
+    msgRef.addContent(expression);
+
+    return new ExpressionParserException(msgRef);
+
   }
 
 }

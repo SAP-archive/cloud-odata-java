@@ -157,9 +157,7 @@ public class TestTokenizer
     //http://services.odata.org/Northwind/Northwind.svc/Products(1)/Supplier?$filter=\
     //-->Syntax error '\' at position 0.
     getTT("\\")
-    .aExMsgText("Unknown character '\\' at position '0' detected in \"\\\".");
-
-
+        .aExMsgText("Unknown character '\\' at position '0' detected in \"\\\".");
   }
 
   @Test

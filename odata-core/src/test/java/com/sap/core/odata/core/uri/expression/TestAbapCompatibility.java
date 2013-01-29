@@ -14,6 +14,7 @@ import com.sap.core.odata.core.edm.EdmGuid;
 import com.sap.core.odata.core.edm.EdmInt16;
 import com.sap.core.odata.core.edm.EdmInt32;
 import com.sap.core.odata.core.edm.EdmInt64;
+import com.sap.core.odata.core.edm.EdmNull;
 import com.sap.core.odata.core.edm.EdmSByte;
 import com.sap.core.odata.core.edm.EdmSingle;
 import com.sap.core.odata.core.edm.EdmString;
@@ -80,6 +81,7 @@ public class TestAbapCompatibility extends TestBase {
     //lcl_helper=>veri_type( iv_expression = `guid'12345678-1234-1234-1234-123456789012'` io_expected_type = lo_simple_type ).
     GetPTF("guid'12345678-1234-1234-1234-123456789012'").aEdmType(EdmGuid.getInstance());
 
+    //-->FLOAT not available on OData library for JAVA
     //lo_simple_type = /iwcor/cl_ds_edm_simple_type=>float( ).
     //lcl_helper=>veri_type( iv_expression = `1.1F` io_expected_type = lo_simple_type ).
     //GetPTF("1.1F").aEdmType(EdmFloat.getInstance());
@@ -125,6 +127,7 @@ public class TestAbapCompatibility extends TestBase {
     GetPTF("1 add 1.1D").aEdmType(EdmDouble.getInstance());
 
     //"lcl_helper=>veri_type( iv_expression = `null` io_expected_type = /IWCOR/cl_DS_edm_simple_type=>null( ) ).
+    GetPTF("null").aEdmType(EdmNull.getInstance());
 
     //lo_simple_type = /iwcor/cl_ds_edm_simple_type=>boolean( ).
     //lcl_helper=>veri_type( iv_expression = `time'P1998Y02M01D' eq time'P1998Y02M01D'` io_expected_type = lo_simple_type ).
@@ -193,17 +196,17 @@ public class TestAbapCompatibility extends TestBase {
     //lcl_helper=>veri_orderby( iv_expression = 'a DESC'  iv_expected = '{oc({o(a desc)})}' ).
     //-->GetPTO("a DESC").aSerialized("{oc({o(a, desc)})}");
 
-    //see comment of class 
+    //see comment of class (case sensitive)
     ////lcl_helper=>veri_orderby( iv_expression = 'a DESC,b DESC'
     ////                          iv_expected = '{oc({o(a desc)},{o(b desc)})}' ).
     //GetPTO("a DESC,b DESC").aSerialized("{oc({o(a, desc)},{o(b, desc)})}");
 
-    //see comment of class
+    //see comment of class (case sensitive)
     ////lcl_helper=>veri_orderby( iv_expression = 'a ASC, b DESC'
     ////                          iv_expected = '{oc({o(a asc)},{o(b desc)})}' ).
     //GetPTO("a ASC, b DESC").aSerialized("{oc({o(a, asc)},{o(b, desc)})}");
 
-    //see comment of class
+    //see comment of class (case sensitive)
     ////lcl_helper=>veri_orderby( iv_expression = '2 mul 6 eq 12 DESC'
     ////                          iv_expected = '{oc({o({{2 mul 6} eq 12} desc)})}' ).
     //GetPTO("2 mul 6 eq 12 DESC").aSerialized("{oc({o({{2 mul 6} eq 12}, desc)})}");
@@ -211,11 +214,9 @@ public class TestAbapCompatibility extends TestBase {
     //lcl_helper=>veri_orderby( iv_expression = `concat(   'Start_'  ,   starttime   ) desc`
     //                          iv_expected = `{oc({o({concat(Start_,starttime)} desc)})}` ).
     GetPTO("concat(   'Start_'  ,   starttime   ) desc").aSerialized("{oc({o({concat('Start_',starttime)}, desc)})}");
-    
 
   }
 
-  
   @Test
   public void abapTestFilterParser() //copy of ABAP method test_filter_parser
   {
@@ -230,8 +231,6 @@ public class TestAbapCompatibility extends TestBase {
 
     //lcl_helper=>veri_expression( iv_expression = 'ABC eq W / X eq TEST' iv_expected = '{{ABC eq {W/X}} eq TEST}' ).
     GetPTF("ABC eq W / X eq TEST").aSerialized("{{ABC eq {W/X}} eq TEST}");
-
-
 
     //lcl_helper=>veri_expression( iv_expression = 'W/X/Y/Z' iv_expected = '{{{W/X}/Y}/Z}' ).
     GetPTF("W/X/Y/Z").aSerialized("{{{W/X}/Y}/Z}");
@@ -350,37 +349,48 @@ public class TestAbapCompatibility extends TestBase {
     //lcl_helper=>veri_expression( iv_expression = 'a eq 1.1E+02D' iv_expected = '{a eq 1.1E+02}' ).
     GetPTF("a eq 1.1E+02D").aSerialized("{a eq 1.1E+02D}");
 
-    /*TODO exception test
-    lcl_helper=>veri_expression_ex(
-    iv_expression = `concat('a' 'b')`
-    iv_expected_textid = /iwcor/cx_ds_expr_syntax_error=>function_invalid_parameter
-    iv_expected_msg    = 'Invalid parameter for function ''concat'''  ).
-    GetPTF("a eq 1.1E+02D")
-    
-    lcl_helper=>veri_expression_ex(
-    iv_expression = `concat('125')`
-    iv_expected_textid = /iwcor/cx_ds_expr_syntax_error=>function_to_few_parameter
-    iv_expected_msg    = 'Too few parameters for function ''concat'''  ).
+    //lcl_helper=>veri_expression_ex(
+    //iv_expression = `concat('a' 'b')`
+    //iv_expected_textid = /iwcor/cx_ds_expr_syntax_error=>function_invalid_parameter
+    //iv_expected_msg    = 'Invalid parameter for function ''concat'''  ).
+    GetPTF("concat('a' 'b')")
+        .aExMsgText("\")\" or \",\" expected after position 10 in \"concat('a' 'b')\".");
+
+    //lcl_helper=>veri_expression_ex(
+    //iv_expression = `concat('125')`
+    //iv_expected_textid = /iwcor/cx_ds_expr_syntax_error=>function_to_few_parameter
+    //iv_expected_msg    = 'Too few parameters for function ''concat'''  ).
     GetPTF("concat('125')")
-    
-    lcl_helper=>veri_expression_ex(
-    iv_expression = `indexof('a','b','c')`
-    iv_expected_textid = /iwcor/cx_ds_expr_syntax_error=>function_to_many_parameter
-    iv_expected_msg    = 'Too many parameters for function ''indexof'''  ).
+        .aExMsgText("No applicable method found for \"concat\" at position 1 in \"concat('125')\" with the specified arguments. Method \"concat\" requires 2 or more arguments.");
+
+    //lcl_helper=>veri_expression_ex(
+    //iv_expression = `indexof('a','b','c')`
+    //iv_expected_textid = /iwcor/cx_ds_expr_syntax_error=>function_to_many_parameter
+    //iv_expected_msg    = 'Too many parameters for function ''indexof'''  ).
     GetPTF("indexof('a','b','c')")
+        .aExMsgText("No applicable method found for \"indexof\" at position 1 in \"indexof('a','b','c')\" with the specified arguments. Method \"indexof\" requires exact 2 argument(s).");
+
+    //lcl_helper=>veri_expression_ex(
+    //iv_expression = `replace('aBa','B','CCC')`
+    //iv_expected_textid = /iwcor/cx_ds_expr_syntax_error=>function_invalid
+    //iv_expected_msg    = `Invalid function 'replace' detected`  ).
+    //-->see test method abapMethodRleplaceNotAllowed()
+  }
+
+  @Test
+  public void abapMethodRleplaceNotAllowed() //copy of ABAP method test_filter_parser
+  {
+    //Filter method is NOT allowed
+    //lcl_helper=>veri_expression_ex(
+    //iv_expression = `replace('aBa','B','CCC')`
+    //iv_expected_textid = /iwcor/cx_ds_expr_syntax_error=>function_invalid
+    //iv_expected_msg    = `Invalid function 'replace' detected`  ).
     
-    "verify the replace method is diabled
-    *    lcl_helper=>veri_expression(
-    *      iv_expression = `replace('aBa','B','CCC')`
-    *      iv_expected = `{replace(aBa,B,CCC)}`).
-
-
-    lcl_helper=>veri_expression_ex(
-    iv_expression = `replace('aBa','B','CCC')`
-    iv_expected_textid = /iwcor/cx_ds_expr_syntax_error=>function_invalid
-    iv_expected_msg    = `Invalid function 'replace' detected`  ).
+    //http://services.odata.org/Northwind/Northwind.svc/Products/?$filter=replace('aBa','B','CCC')
+    //-->Unknown function 'replace' at position 0.
     GetPTF("replace('aBa','B','CCC')")
-    */
+        .aExMsgText("Unknown function \"replace\" at position 1 in \"replace('aBa','B','CCC')\".");
+
   }
 
 }
