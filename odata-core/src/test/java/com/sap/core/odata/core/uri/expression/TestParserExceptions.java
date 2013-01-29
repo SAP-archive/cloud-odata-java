@@ -1,17 +1,10 @@
 package com.sap.core.odata.core.uri.expression;
 
-import static org.junit.Assert.fail;
-
 import org.junit.Test;
 
-import com.sap.core.odata.api.edm.EdmComplexType;
 import com.sap.core.odata.api.edm.EdmEntityType;
-import com.sap.core.odata.api.edm.EdmException;
-import com.sap.core.odata.api.edm.EdmProperty;
-import com.sap.core.odata.api.edm.EdmSimpleType;
 import com.sap.core.odata.api.uri.expression.ExpressionKind;
 import com.sap.core.odata.api.uri.expression.ExpressionParserException;
-import com.sap.core.odata.core.edm.provider.EdmComplexPropertyImplProv;
 
 public class TestParserExceptions extends TestBase {
 
@@ -106,16 +99,18 @@ public class TestParserExceptions extends TestBase {
     GetPTF(edm, edmEtAllTypes, "'aText'/NotAProperty")
         .aExMsgText("Leftside of method operator at position 8 is not a property in \"'aText'/NotAProperty\".");
 
+    //CASE 7
     //http://services.odata.org/Northwind/Northwind.svc/Products/?$filter='Hong Kong' eq ProductName/city
     //--> No property 'city' exists in type 'System.String' at position 27. 
-    //      GetPTF(edm, edmEtAllTypes, "'Hong Kong' eq DateTime/city")
-    //       .aExMsgText("No property \"city\" exists in type \"Edm.DateTime\" at position 16 in \"'Hong Kong' eq DateTime/city\".");
-    /*
+    GetPTF(edm, edmEtAllTypes, "'Hong Kong' eq DateTime/city")
+        .aExMsgText("No property \"city\" exists in type \"Edm.DateTime\" at position 25 in \"'Hong Kong' eq DateTime/city\".");
+    
+    //CASE 8
     //http://services.odata.org/Northwind/Northwind.svc/Products/?$filter='Hong Kong' eq ProductName/city
     //--> No property 'city' exists in type 'System.String' at position 27. 
-    GetPTF(edm, edmEtAllTypes, "'Hong Kong' eq name/city")
-     .aExMsgText("No property \"city\" exists in type \"Edm.String\" at position 16 in \"'Hong Kong' eq name/city\".");
-    */
+    GetPTF(edm, edmEtAllTypes, "'Hong Kong' eq String/city")
+     .aExMsgText("No property \"city\" exists in type \"Edm.String\" at position 23 in \"'Hong Kong' eq String/city\".");
+    
   }
 
   @Test
@@ -249,6 +244,11 @@ public class TestParserExceptions extends TestBase {
     GetPTF("testingMINMAX7('A','B','C')").aExType(ExpressionParserException.class)
         .aExMsgText("No applicable method found for \"concat\" at position 1 in \"testingMINMAX7('A','B','C')\" with the specified arguments. Method \"concat\" requires exact 1 argument(s).");
 
+    //CASE 12
+    //http://services.odata.org/Northwind/Northwind.svc/Products(1)/Supplier?$filter=concat('a' 'b')
+    //-->')' or ',' expected at position 11.
+    GetPTF("concat('a' 'b')")
+        .aExMsgText("\")\" or \",\" expected after position 10 in \"concat('a' 'b')\".");
   }
 
   @Test
@@ -317,7 +317,7 @@ public class TestParserExceptions extends TestBase {
   }
 
   @Test
-  public void testAddinalStuff() /*PM = Parsermethod*/
+  public void testAdditionalStuff() /*PM = Parsermethod*/
   {
 
     GetPTF("( A mul B )/X eq TEST")
@@ -326,13 +326,21 @@ public class TestParserExceptions extends TestBase {
     GetPTF("( 1 mul 2 )/X eq TEST")
         .aSerialized("{{{1 mul 2}/X} eq TEST}");
 
-    //lcl_helper=>veri_expression_ex(
-    //  iv_expression = '( A mul B )/X eq TEST'
-    //  iv_expected_textid = /iwcor/cx_ds_expr_parser_error=>member_access_wrong_left_hand
-    //  iv_expected_msg    = 'Left hand expression of memberaccess operator invalid'  ).
+    //CASE 1
     EdmEntityType edmEtAllTypes = edmInfo.getTypeEtAllTypes();
     GetPTF(edm, edmEtAllTypes, "( 1 mul 2 )/X eq TEST")
         .aExMsgText("Leftside of method operator at position 12 is not a property in \"( 1 mul 2 )/X eq TEST\".");
 
+    //CASE 2
+    //http://services.odata.org/Northwind/Northwind.svc/Products/?$filter=notsupportedfunction('a')
+    //-->Unknown function 'notsupportedfunction' at position 0.
+    GetPTF("notsupportedfunction('a')")
+        .aExMsgText("Unknown function \"notsupportedfunction\" at position 1 in \"notsupportedfunction('a')\".");
+
+    //CASE 3 
+    //http://services.odata.org/Northwind/Northwind.svc/Products/?$filter=notsupportedfunction('a')
+    //-->Unknown function 'notsupportedfunction' at position 0.
+    GetPTF("notsupportedfunction    ('a')")
+        .aExMsgText("Unknown function \"notsupportedfunction\" at position 1 in \"notsupportedfunction    ('a')\".");
   }
 }
