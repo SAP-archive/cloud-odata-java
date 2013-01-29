@@ -264,14 +264,14 @@ public class EdmSimpleTypeTest extends BaseTest {
 
   @Test
   public void toUriLiteralDateTime() throws Exception {
-    assertEquals("datetime'2009-12-26T21%3A23%3A38'", EdmSimpleTypeKind.DateTime.getEdmSimpleTypeInstance().toUriLiteral("2009-12-26T21:23:38"));
-    assertEquals("datetime'2009-12-26T21%3A23%3A38Z'", EdmSimpleTypeKind.DateTime.getEdmSimpleTypeInstance().toUriLiteral("2009-12-26T21:23:38Z"));
+    assertEquals("datetime'2009-12-26T21:23:38'", EdmSimpleTypeKind.DateTime.getEdmSimpleTypeInstance().toUriLiteral("2009-12-26T21:23:38"));
+    assertEquals("datetime'2009-12-26T21:23:38Z'", EdmSimpleTypeKind.DateTime.getEdmSimpleTypeInstance().toUriLiteral("2009-12-26T21:23:38Z"));
   }
 
   @Test
   public void toUriLiteralDateTimeOffset() throws Exception {
-    assertEquals("datetimeoffset'2009-12-26T21%3A23%3A38Z'", EdmSimpleTypeKind.DateTimeOffset.getEdmSimpleTypeInstance().toUriLiteral("2009-12-26T21:23:38Z"));
-    assertEquals("datetimeoffset'2002-10-10T12%3A00%3A00-05%3A00'", EdmSimpleTypeKind.DateTimeOffset.getEdmSimpleTypeInstance().toUriLiteral("2002-10-10T12:00:00-05:00"));
+    assertEquals("datetimeoffset'2009-12-26T21:23:38Z'", EdmSimpleTypeKind.DateTimeOffset.getEdmSimpleTypeInstance().toUriLiteral("2009-12-26T21:23:38Z"));
+    assertEquals("datetimeoffset'2002-10-10T12:00:00-05:00'", EdmSimpleTypeKind.DateTimeOffset.getEdmSimpleTypeInstance().toUriLiteral("2002-10-10T12:00:00-05:00"));
   }
 
   @Test
@@ -455,17 +455,17 @@ public class EdmSimpleTypeTest extends BaseTest {
     dateTime.set(2012, 2, 1, 11, 2, 3);
     assertEquals("2012-02-29T23:32:03", instance.valueToString(dateTime, EdmLiteralKind.DEFAULT, null));
     assertEquals("\\/Date(1330558323000)\\/", instance.valueToString(dateTime, EdmLiteralKind.JSON, null));
-    assertEquals("datetime'2012-02-29T23%3A32%3A03'", instance.valueToString(dateTime, EdmLiteralKind.URI, null));
+    assertEquals("datetime'2012-02-29T23:32:03'", instance.valueToString(dateTime, EdmLiteralKind.URI, null));
 
     dateTime.add(Calendar.MILLISECOND, 1);
     assertEquals("2012-02-29T23:32:03.001", instance.valueToString(dateTime, EdmLiteralKind.DEFAULT, null));
     assertEquals("\\/Date(1330558323001)\\/", instance.valueToString(dateTime, EdmLiteralKind.JSON, null));
-    assertEquals("datetime'2012-02-29T23%3A32%3A03.001'", instance.valueToString(dateTime, EdmLiteralKind.URI, null));
+    assertEquals("datetime'2012-02-29T23:32:03.001'", instance.valueToString(dateTime, EdmLiteralKind.URI, null));
 
     final Long millis = 1330558323007L;
     assertEquals("2012-02-29T23:32:03.007", instance.valueToString(millis, EdmLiteralKind.DEFAULT, null));
     assertEquals("\\/Date(" + millis + ")\\/", instance.valueToString(millis, EdmLiteralKind.JSON, null));
-    assertEquals("datetime'2012-02-29T23%3A32%3A03.007'", instance.valueToString(millis, EdmLiteralKind.URI, null));
+    assertEquals("datetime'2012-02-29T23:32:03.007'", instance.valueToString(millis, EdmLiteralKind.URI, null));
 
     assertEquals("2012-02-29T23:32:03.007", instance.valueToString(new Date(millis), EdmLiteralKind.DEFAULT, null));
 
@@ -497,22 +497,22 @@ public class EdmSimpleTypeTest extends BaseTest {
     dateTime.set(2012, 1, 29, 1, 2, 3);
     assertEquals("2012-02-29T01:02:03Z", instance.valueToString(dateTime, EdmLiteralKind.DEFAULT, null));
     assertEquals("\\/Date(1330477323000)\\/", instance.valueToString(dateTime, EdmLiteralKind.JSON, null));
-    assertEquals("datetimeoffset'2012-02-29T01%3A02%3A03Z'", instance.valueToString(dateTime, EdmLiteralKind.URI, null));
+    assertEquals("datetimeoffset'2012-02-29T01:02:03Z'", instance.valueToString(dateTime, EdmLiteralKind.URI, null));
 
     dateTime.setTimeZone(TimeZone.getTimeZone("GMT-1:30"));
     assertEquals("2012-02-29T01:02:03-01:30", instance.valueToString(dateTime, EdmLiteralKind.DEFAULT, null));
     assertEquals("\\/Date(1330477323000-0090)\\/", instance.valueToString(dateTime, EdmLiteralKind.JSON, null));
-    assertEquals("datetimeoffset'2012-02-29T01%3A02%3A03-01%3A30'", instance.valueToString(dateTime, EdmLiteralKind.URI, null));
+    assertEquals("datetimeoffset'2012-02-29T01:02:03-01:30'", instance.valueToString(dateTime, EdmLiteralKind.URI, null));
 
     dateTime.setTimeZone(TimeZone.getTimeZone("GMT+11:00"));
     assertEquals("2012-02-29T01:02:03+11:00", instance.valueToString(dateTime, EdmLiteralKind.DEFAULT, null));
     assertEquals("\\/Date(1330477323000+0660)\\/", instance.valueToString(dateTime, EdmLiteralKind.JSON, null));
-    assertEquals("datetimeoffset'2012-02-29T01%3A02%3A03+11%3A00'", instance.valueToString(dateTime, EdmLiteralKind.URI, null));
+    assertEquals("datetimeoffset'2012-02-29T01:02:03+11:00'", instance.valueToString(dateTime, EdmLiteralKind.URI, null));
 
     final Long millis = 1330558323007L;
     assertEquals("2012-02-29T23:32:03.007Z", instance.valueToString(millis, EdmLiteralKind.DEFAULT, null));
     assertEquals("\\/Date(" + millis + ")\\/", instance.valueToString(millis, EdmLiteralKind.JSON, null));
-    assertEquals("datetimeoffset'2012-02-29T23%3A32%3A03.007Z'", instance.valueToString(millis, EdmLiteralKind.URI, null));
+    assertEquals("datetimeoffset'2012-02-29T23:32:03.007Z'", instance.valueToString(millis, EdmLiteralKind.URI, null));
 
     final Date date = new Date(millis);
     final String time = date.toString().substring(11, 19);
@@ -884,12 +884,12 @@ public class EdmSimpleTypeTest extends BaseTest {
     assertEquals(dateTime, instance.valueOfString("\\/Date(1330558323000)\\/", EdmLiteralKind.JSON, null, Calendar.class));
     assertEquals(Long.valueOf(dateTime.getTimeInMillis()), instance.valueOfString("\\/Date(1330558323000)\\/", EdmLiteralKind.JSON, null, Long.class));
     assertEquals(dateTime.getTime(), instance.valueOfString("\\/Date(1330558323000)\\/", EdmLiteralKind.JSON, null, Date.class));
-    assertEquals(dateTime.getTime(), instance.valueOfString("datetime'2012-02-29T23%3A32%3A03'", EdmLiteralKind.URI, null, Date.class));
+    assertEquals(dateTime.getTime(), instance.valueOfString("datetime'2012-02-29T23:32:03'", EdmLiteralKind.URI, null, Date.class));
 
     dateTime.add(Calendar.MILLISECOND, 1);
     assertEquals(Long.valueOf(dateTime.getTimeInMillis()), instance.valueOfString("2012-02-29T23:32:03.001", EdmLiteralKind.DEFAULT, null, Long.class));
     assertEquals(dateTime.getTime(), instance.valueOfString("\\/Date(1330558323001)\\/", EdmLiteralKind.JSON, null, Date.class));
-    assertEquals(dateTime, instance.valueOfString("datetime'2012-02-29T23%3A32%3A03.001'", EdmLiteralKind.URI, null, Calendar.class));
+    assertEquals(dateTime, instance.valueOfString("datetime'2012-02-29T23:32:03.001'", EdmLiteralKind.URI, null, Calendar.class));
 
     dateTime.add(Calendar.MILLISECOND, 9);
     assertEquals(dateTime, instance.valueOfString("2012-02-29T23:32:03.01", EdmLiteralKind.DEFAULT, getPrecisionScaleFacets(2, null), Calendar.class));
@@ -915,9 +915,9 @@ public class EdmSimpleTypeTest extends BaseTest {
     expectErrorInValueOfString(instance, "/Date(1)/", EdmLiteralKind.JSON, null, EdmSimpleTypeException.LITERAL_ILLEGAL_CONTENT);
     expectErrorInValueOfString(instance, "\\/Date(12345678901234567890)\\/", EdmLiteralKind.JSON, null, EdmSimpleTypeException.LITERAL_ILLEGAL_CONTENT);
     expectErrorInValueOfString(instance, "\\/Date(1330558323000+0060)\\/", EdmLiteralKind.JSON, null, EdmSimpleTypeException.LITERAL_ILLEGAL_CONTENT);
-    expectErrorInValueOfString(instance, "datetime'2012-02-29T23%3A32%3A02+01%3A00'", EdmLiteralKind.URI, null, EdmSimpleTypeException.LITERAL_ILLEGAL_CONTENT);
-    expectErrorInValueOfString(instance, "date'2012-02-29T23%3A32%3A02'", EdmLiteralKind.URI, null, EdmSimpleTypeException.LITERAL_ILLEGAL_CONTENT);
-    expectErrorInValueOfString(instance, "datetime'2012-02-29T23%3A32%3A02", EdmLiteralKind.URI, null, EdmSimpleTypeException.LITERAL_ILLEGAL_CONTENT);
+    expectErrorInValueOfString(instance, "datetime'2012-02-29T23:32:02+01:00'", EdmLiteralKind.URI, null, EdmSimpleTypeException.LITERAL_ILLEGAL_CONTENT);
+    expectErrorInValueOfString(instance, "date'2012-02-29T23:32:02'", EdmLiteralKind.URI, null, EdmSimpleTypeException.LITERAL_ILLEGAL_CONTENT);
+    expectErrorInValueOfString(instance, "datetime'2012-02-29T23:32:02", EdmLiteralKind.URI, null, EdmSimpleTypeException.LITERAL_ILLEGAL_CONTENT);
     expectErrorInValueOfString(instance, "datetime'", EdmLiteralKind.URI, null, EdmSimpleTypeException.LITERAL_ILLEGAL_CONTENT);
 
     expectTypeErrorInValueOfString(instance, "2012-02-29T23:32", EdmLiteralKind.DEFAULT);
@@ -937,29 +937,29 @@ public class EdmSimpleTypeTest extends BaseTest {
     assertEquals(dateTime, instance.valueOfString("2012-02-29T01:02:03", EdmLiteralKind.DEFAULT, null, Calendar.class));
     assertEquals(dateTime, instance.valueOfString("\\/Date(1330477323000)\\/", EdmLiteralKind.JSON, null, Calendar.class));
     assertEquals(dateTime, instance.valueOfString("\\/Date(1330477323000-0000)\\/", EdmLiteralKind.JSON, null, Calendar.class));
-    assertEquals(dateTime, instance.valueOfString("datetimeoffset'2012-02-29T01%3A02%3A03Z'", EdmLiteralKind.URI, null, Calendar.class));
+    assertEquals(dateTime, instance.valueOfString("datetimeoffset'2012-02-29T01:02:03Z'", EdmLiteralKind.URI, null, Calendar.class));
 
     dateTime.clear();
     dateTime.setTimeZone(TimeZone.getTimeZone("GMT-01:30"));
     dateTime.set(2012, 1, 29, 1, 2, 3);
     assertEquals(dateTime.getTime(), instance.valueOfString("2012-02-29T01:02:03-01:30", EdmLiteralKind.DEFAULT, null, Date.class));
     assertEquals(dateTime, instance.valueOfString("\\/Date(1330477323000-0090)\\/", EdmLiteralKind.JSON, null, Calendar.class));
-    assertEquals(dateTime, instance.valueOfString("datetimeoffset'2012-02-29T01%3A02%3A03-01%3A30'", EdmLiteralKind.URI, null, Calendar.class));
+    assertEquals(dateTime, instance.valueOfString("datetimeoffset'2012-02-29T01:02:03-01:30'", EdmLiteralKind.URI, null, Calendar.class));
 
     dateTime.clear();
     dateTime.setTimeZone(TimeZone.getTimeZone("GMT+11:00"));
     dateTime.set(2012, 1, 29, 1, 2, 3);
     assertEquals(dateTime, instance.valueOfString("2012-02-29T01:02:03+11:00", EdmLiteralKind.DEFAULT, null, Calendar.class));
     assertEquals(dateTime, instance.valueOfString("\\/Date(1330477323000+0660)\\/", EdmLiteralKind.JSON, null, Calendar.class));
-    assertEquals(dateTime, instance.valueOfString("datetimeoffset'2012-02-29T01%3A02%3A03+11%3A00'", EdmLiteralKind.URI, null, Calendar.class));
+    assertEquals(dateTime, instance.valueOfString("datetimeoffset'2012-02-29T01:02:03+11:00'", EdmLiteralKind.URI, null, Calendar.class));
 
     dateTime.add(Calendar.MILLISECOND, 7);
     assertEquals(dateTime, instance.valueOfString("2012-02-29T01:02:03.007+11:00", EdmLiteralKind.DEFAULT, null, Calendar.class));
     assertEquals(dateTime, instance.valueOfString("\\/Date(1330477323007+0660)\\/", EdmLiteralKind.JSON, null, Calendar.class));
-    assertEquals(dateTime, instance.valueOfString("datetimeoffset'2012-02-29T01%3A02%3A03.007+11%3A00'", EdmLiteralKind.URI, null, Calendar.class));
+    assertEquals(dateTime, instance.valueOfString("datetimeoffset'2012-02-29T01:02:03.007+11:00'", EdmLiteralKind.URI, null, Calendar.class));
 
     expectErrorInValueOfString(instance, "2012-02-29T23:32:02.9Z", EdmLiteralKind.DEFAULT, getPrecisionScaleFacets(0, null), EdmSimpleTypeException.LITERAL_FACETS_NOT_MATCHED);
-    expectErrorInValueOfString(instance, "datetime'2012-02-29T23%3A32%3A02'", EdmLiteralKind.URI, null, EdmSimpleTypeException.LITERAL_ILLEGAL_CONTENT);
+    expectErrorInValueOfString(instance, "datetime'2012-02-29T23:32:02'", EdmLiteralKind.URI, null, EdmSimpleTypeException.LITERAL_ILLEGAL_CONTENT);
     expectErrorInValueOfString(instance, "2012-02-29T23:32:02X", EdmLiteralKind.DEFAULT, null, EdmSimpleTypeException.LITERAL_ILLEGAL_CONTENT);
     expectErrorInValueOfString(instance, "2012-02-29T23:32:02+24:00", EdmLiteralKind.DEFAULT, null, EdmSimpleTypeException.LITERAL_ILLEGAL_CONTENT);
     expectErrorInValueOfString(instance, "\\/Date(12345678901234567890)\\/", EdmLiteralKind.JSON, null, EdmSimpleTypeException.LITERAL_ILLEGAL_CONTENT);
@@ -1027,7 +1027,7 @@ public class EdmSimpleTypeTest extends BaseTest {
     assertEquals(Float.valueOf(-42.25F), instance.valueOfString("-42.25", EdmLiteralKind.JSON, null, Float.class));
     assertEquals(Double.valueOf(42.0), instance.valueOfString("42D", EdmLiteralKind.URI, null, Double.class));
     assertEquals(Double.valueOf(42E42), instance.valueOfString("42E42d", EdmLiteralKind.URI, null, Double.class));
-    assertEquals(BigDecimal.valueOf(100, 1), instance.valueOfString("10D", EdmLiteralKind.URI, null, BigDecimal.class));
+    assertEquals(BigDecimal.TEN, instance.valueOfString("10D", EdmLiteralKind.URI, null, BigDecimal.class));
     assertEquals(Byte.valueOf((byte) 0), instance.valueOfString("0", EdmLiteralKind.JSON, null, Byte.class));
     assertEquals(Short.valueOf((short) 1), instance.valueOfString("1.00", EdmLiteralKind.DEFAULT, null, Short.class));
     assertEquals(Integer.valueOf(42), instance.valueOfString("4.2E1", EdmLiteralKind.DEFAULT, null, Integer.class));
@@ -1166,10 +1166,10 @@ public class EdmSimpleTypeTest extends BaseTest {
     final EdmSimpleType instance = EdmSimpleTypeKind.Single.getEdmSimpleTypeInstance();
 
     assertEquals(Float.valueOf(1.42F), instance.valueOfString("1.42", EdmLiteralKind.DEFAULT, null, Float.class));
-    assertEquals(Double.valueOf(-42.25), instance.valueOfString("-42.25", EdmLiteralKind.JSON, null, Double.class));
+    assertEquals(Double.valueOf(-42.42), instance.valueOfString("-42.42", EdmLiteralKind.JSON, null, Double.class));
     assertEquals(Float.valueOf(42.0F), instance.valueOfString("42F", EdmLiteralKind.URI, null, Float.class));
     assertEquals(Float.valueOf(2.2E38F), instance.valueOfString("22E37f", EdmLiteralKind.URI, null, Float.class));
-    assertEquals(BigDecimal.valueOf(100, 1), instance.valueOfString("10F", EdmLiteralKind.URI, null, BigDecimal.class));
+    assertEquals(BigDecimal.TEN, instance.valueOfString("10F", EdmLiteralKind.URI, null, BigDecimal.class));
     assertEquals(Byte.valueOf((byte) 0), instance.valueOfString("0", EdmLiteralKind.JSON, null, Byte.class));
     assertEquals(Short.valueOf((short) 1), instance.valueOfString("1.00", EdmLiteralKind.DEFAULT, null, Short.class));
     assertEquals(Integer.valueOf(42), instance.valueOfString("4.2E1", EdmLiteralKind.DEFAULT, null, Integer.class));
@@ -1178,6 +1178,8 @@ public class EdmSimpleTypeTest extends BaseTest {
     assertEquals(Float.valueOf(Float.NaN), instance.valueOfString("NaN", EdmLiteralKind.DEFAULT, null, Float.class));
     assertEquals(Float.valueOf(Float.NEGATIVE_INFINITY), instance.valueOfString("-INF", EdmLiteralKind.JSON, null, Float.class));
     assertEquals(Float.valueOf(Float.POSITIVE_INFINITY), instance.valueOfString("INF", EdmLiteralKind.URI, null, Float.class));
+    assertEquals(Double.valueOf(Float.NaN), instance.valueOfString("NaN", EdmLiteralKind.DEFAULT, null, Double.class));
+    assertEquals(Double.valueOf(Float.NEGATIVE_INFINITY), instance.valueOfString("-INF", EdmLiteralKind.JSON, null, Double.class));
 
     expectErrorInValueOfString(instance, "42E42", EdmLiteralKind.DEFAULT, null, EdmSimpleTypeException.LITERAL_ILLEGAL_CONTENT);
     expectErrorInValueOfString(instance, "42.42.42", EdmLiteralKind.DEFAULT, null, EdmSimpleTypeException.LITERAL_ILLEGAL_CONTENT);

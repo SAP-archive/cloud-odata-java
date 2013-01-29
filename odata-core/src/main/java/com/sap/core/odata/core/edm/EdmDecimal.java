@@ -97,7 +97,7 @@ public class EdmDecimal extends AbstractSimpleType {
       else
         throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_UNCONVERTIBLE_TO_VALUE_TYPE.addContent(value, returnType));
     else if (returnType.isAssignableFrom(Float.class))
-      if (BigDecimal.valueOf(valueBigDecimal.floatValue()).equals(valueBigDecimal))
+      if (BigDecimal.valueOf(valueBigDecimal.floatValue()).compareTo(valueBigDecimal) == 0)
         return returnType.cast(valueBigDecimal.floatValue());
       else
         throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_UNCONVERTIBLE_TO_VALUE_TYPE.addContent(value, returnType));

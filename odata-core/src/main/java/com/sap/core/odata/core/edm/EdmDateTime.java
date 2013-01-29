@@ -69,7 +69,7 @@ public class EdmDateTime extends AbstractSimpleType {
     Calendar calendarValue;
     if (literalKind == EdmLiteralKind.URI)
       if (value.length() > 10 && value.startsWith("datetime'") && value.endsWith("'"))
-        calendarValue = parseLiteral(value.substring(9, value.length() - 1).replace("%3A", ":"), facets);
+        calendarValue = parseLiteral(value.substring(9, value.length() - 1), facets);
       else
         throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_ILLEGAL_CONTENT.addContent(value));
     else
@@ -181,6 +181,6 @@ public class EdmDateTime extends AbstractSimpleType {
 
   @Override
   public String toUriLiteral(final String literal) throws EdmSimpleTypeException {
-    return "datetime'" + literal.replace(":", "%3A") + "'";
+    return "datetime'" + literal + "'";
   }
 }

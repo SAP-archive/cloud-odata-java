@@ -18,6 +18,7 @@ import com.sap.core.odata.api.commons.HttpHeaders;
 import com.sap.core.odata.api.commons.HttpStatusCodes;
 import com.sap.core.odata.api.commons.InlineCount;
 import com.sap.core.odata.api.edm.EdmEntitySet;
+import com.sap.core.odata.api.edm.EdmEntityType;
 import com.sap.core.odata.api.edm.EdmException;
 import com.sap.core.odata.api.edm.EdmFunctionImport;
 import com.sap.core.odata.api.edm.EdmLiteral;
@@ -31,8 +32,10 @@ import com.sap.core.odata.api.edm.EdmStructuralType;
 import com.sap.core.odata.api.edm.EdmType;
 import com.sap.core.odata.api.edm.EdmTypeKind;
 import com.sap.core.odata.api.ep.EntityProvider;
+import com.sap.core.odata.api.ep.EntityProviderException;
 import com.sap.core.odata.api.ep.EntityProviderProperties;
 import com.sap.core.odata.api.ep.entry.ODataEntry;
+import com.sap.core.odata.api.exception.ODataBadRequestException;
 import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.api.exception.ODataNotFoundException;
 import com.sap.core.odata.api.exception.ODataNotImplementedException;
@@ -279,25 +282,36 @@ public class ListsProcessor extends ODataSingleProcessor {
   @Override
   public ODataResponse createEntity(final PostUriInfo uriInfo, InputStream content, final String requestContentType, final String contentType) throws ODataException {
     final EdmEntitySet entitySet = uriInfo.getTargetEntitySet();
+    final EdmEntityType entityType = entitySet.getEntityType();
 
     ODataContext context = getContext();
     int timingHandle = context.startRuntimeMeasurement("EntityConsumer", "readEntry");
 
-    final ODataEntry values = EntityProvider.readEntry(requestContentType, entitySet, content);
+    ODataEntry entryValues;
+    try {
+      entryValues = EntityProvider.readEntry(requestContentType, entitySet, content);
+    } catch (EntityProviderException e) {
+      throw new ODataBadRequestException(ODataBadRequestException.BODY, e);
+    }
 
     context.stopRuntimeMeasurement(timingHandle);
 
+    Object data = dataSource.newDataObject(entitySet);
+    Map<String, Object> values = entryValues.getProperties();
+    for (final String keyPropertyName : entityType.getKeyPropertyNames())
+      values.remove(keyPropertyName);
+    setStructuralTypeValuesFromMap(data, entityType, values, true);
     // TODO: create entity
-    dataSource.newDataObject(entitySet);
+
+    final Map<String, Object> newValues = getStructuralTypeValueMap(data, entityType);
 
     final EntityProviderProperties entryProperties = EntityProviderProperties
         .serviceRoot(context.getPathInfo().getServiceRoot()).build();
 
     timingHandle = context.startRuntimeMeasurement("EntityProvider", "writeEntry");
 
-    // TODO: return correct response with new key values and the correct Location header
     final ODataResponse response =
-        EntityProvider.writeEntry(contentType, entitySet, values.getProperties(), entryProperties);
+        EntityProvider.writeEntry(contentType, entitySet, newValues, entryProperties);
 
     context.stopRuntimeMeasurement(timingHandle);
 
@@ -495,7 +509,12 @@ public class ListsProcessor extends ODataSingleProcessor {
     ODataContext context = getContext();
     int timingHandle = context.startRuntimeMeasurement("EntityConsumer", "readProperty");
 
-    final Map<String, Object> values = EntityProvider.readProperty(requestContentType, property, content);
+    Map<String, Object> values;
+    try {
+      values = EntityProvider.readProperty(requestContentType, property, content);
+    } catch (EntityProviderException e) {
+      throw new ODataBadRequestException(ODataBadRequestException.BODY, e);
+    }
 
     context.stopRuntimeMeasurement(timingHandle);
 
@@ -536,7 +555,12 @@ public class ListsProcessor extends ODataSingleProcessor {
     ODataContext context = getContext();
     int timingHandle = context.startRuntimeMeasurement("EntityConsumer", "readPropertyValue");
 
-    final Object value = EntityProvider.readPropertyValue(property, content);
+    Object value;
+    try {
+      value = EntityProvider.readPropertyValue(property, content);
+    } catch (EntityProviderException e) {
+      throw new ODataBadRequestException(ODataBadRequestException.BODY, e);
+    }
 
     context.stopRuntimeMeasurement(timingHandle);
 
