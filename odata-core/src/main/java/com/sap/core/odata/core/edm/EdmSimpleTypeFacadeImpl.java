@@ -16,11 +16,11 @@ public class EdmSimpleTypeFacadeImpl implements EdmSimpleTypeFacade {
 
   @Override
   public EdmLiteral parseUriLiteral(final String uriLiteral) throws EdmLiteralException {
+    if (uriLiteral == null || "null".equals(uriLiteral))
+      return new EdmLiteral(getEdmSimpleType(EdmSimpleTypeKind.Null), uriLiteral);
+
     if ("true".equals(uriLiteral) || "false".equals(uriLiteral))
       return new EdmLiteral(getEdmSimpleType(EdmSimpleTypeKind.Boolean), uriLiteral);
-
-    if ("null".equals(uriLiteral))
-      return new EdmLiteral(getEdmSimpleType(EdmSimpleTypeKind.Null), uriLiteral);
 
     if (uriLiteral.length() >= 2
         && uriLiteral.startsWith("'") && uriLiteral.endsWith("'"))
@@ -56,6 +56,8 @@ public class EdmSimpleTypeFacadeImpl implements EdmSimpleTypeFacade {
       return createEdmLiteral(EdmSimpleTypeKind.Decimal, uriLiteral, 0, 1);
     if (uriLiteral.endsWith("D") || uriLiteral.endsWith("d"))
       return createEdmLiteral(EdmSimpleTypeKind.Double, uriLiteral, 0, 1);
+    if (uriLiteral.equals("-INF") || uriLiteral.equals("INF") || uriLiteral.equals("NaN"))
+      return new EdmLiteral(getEdmSimpleType(EdmSimpleTypeKind.Single), uriLiteral);
     if (uriLiteral.endsWith("F") || uriLiteral.endsWith("f"))
       return createEdmLiteral(EdmSimpleTypeKind.Single, uriLiteral, 0, 1);
 

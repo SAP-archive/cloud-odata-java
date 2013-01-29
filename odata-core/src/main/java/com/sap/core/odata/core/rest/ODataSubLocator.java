@@ -358,7 +358,7 @@ public final class ODataSubLocator implements ODataLocator {
       pathSegments = param.getPathSegments();
     } else {
       if (param.getPathSegments().size() < param.getPathSplit()) {
-        throw new ODataBadRequestException(ODataBadRequestException.URLTOSHORT);
+        throw new ODataBadRequestException(ODataBadRequestException.URLTOOSHORT);
       }
 
       precedingPathSegments = param.getPathSegments().subList(0, param.getPathSplit());
