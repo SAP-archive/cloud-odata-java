@@ -10,6 +10,7 @@ import com.sap.core.odata.api.edm.FullQualifiedName;
 import com.sap.core.odata.api.edm.provider.Association;
 import com.sap.core.odata.api.edm.provider.AssociationEnd;
 import com.sap.core.odata.processor.jpa.exception.ODataJPAModelException;
+import com.sap.core.odata.processor.jpa.model.mock.JPAAttributeMock;
 
 public class JPAEdmNavigationPropertyTest extends JPAEdmTestModelView {
 

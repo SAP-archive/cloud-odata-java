@@ -20,6 +20,9 @@ import com.sap.core.odata.api.edm.provider.ComplexType;
 import com.sap.core.odata.api.edm.provider.Property;
 import com.sap.core.odata.api.edm.provider.SimpleProperty;
 import com.sap.core.odata.processor.jpa.exception.ODataJPAModelException;
+import com.sap.core.odata.processor.jpa.model.mock.JPAEmbeddableMock;
+import com.sap.core.odata.processor.jpa.model.mock.JPAMetaModelMock;
+import com.sap.core.odata.processor.jpa.model.mock.JPASingularAttributeMock;
 import com.sap.core.odata.processor.jpa.testdata.JPAEdmMockData.SimpleType;
 
 public class JPAEdmComplexTypeTest extends JPAEdmTestModelView {

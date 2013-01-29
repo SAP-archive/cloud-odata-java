@@ -12,6 +12,7 @@ import com.sap.core.odata.api.edm.provider.AssociationEnd;
 import com.sap.core.odata.api.edm.provider.EntityType;
 import com.sap.core.odata.processor.jpa.api.access.JPAEdmBuilder;
 import com.sap.core.odata.processor.jpa.exception.ODataJPAModelException;
+import com.sap.core.odata.processor.jpa.model.mock.JPAAttributeMock;
 import com.sap.core.odata.processor.jpa.testdata.JPAEdmMockData.SimpleType;
 import com.sap.core.odata.processor.jpa.testdata.JPAEdmMockData.SimpleType.SimpleTypeA;
 

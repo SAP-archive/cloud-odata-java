@@ -1,4 +1,4 @@
-package com.sap.core.odata.processor.jpa.model;
+package com.sap.core.odata.processor.jpa.model.mock;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;

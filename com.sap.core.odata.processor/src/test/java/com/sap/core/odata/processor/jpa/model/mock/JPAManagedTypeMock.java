@@ -1,17 +1,29 @@
-package com.sap.core.odata.processor.jpa.model;
+package com.sap.core.odata.processor.jpa.model.mock;
 
 import java.util.Set;
 
 import javax.persistence.metamodel.Attribute;
 import javax.persistence.metamodel.CollectionAttribute;
-import javax.persistence.metamodel.EmbeddableType;
 import javax.persistence.metamodel.ListAttribute;
+import javax.persistence.metamodel.ManagedType;
 import javax.persistence.metamodel.MapAttribute;
 import javax.persistence.metamodel.PluralAttribute;
 import javax.persistence.metamodel.SetAttribute;
 import javax.persistence.metamodel.SingularAttribute;
 
-public class JPAEmbeddableMock<X> implements EmbeddableType<X> {
+public class JPAManagedTypeMock<X> implements ManagedType<X> {
+
+	@Override
+	public Class<X> getJavaType() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public javax.persistence.metamodel.Type.PersistenceType getPersistenceType() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
 	@Override
 	public Attribute<? super X, ?> getAttribute(String arg0) {
@@ -183,18 +195,6 @@ public class JPAEmbeddableMock<X> implements EmbeddableType<X> {
 
 	@Override
 	public Set<SingularAttribute<? super X, ?>> getSingularAttributes() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public Class<X> getJavaType() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public javax.persistence.metamodel.Type.PersistenceType getPersistenceType() {
 		// TODO Auto-generated method stub
 		return null;
 	}
