@@ -32,7 +32,7 @@ public class FilterParserExceptionImpl extends ExpressionParserException
     MessageReference msgRef = ExpressionParserException.ERROR_IN_TOKENIZER.create();
 
     msgRef.addContent(token.getUriLiteral());
-    msgRef.addContent(Integer.toString(token.getPosition()));
+    msgRef.addContent(Integer.toString(token.getPosition() + 1));
 
     return new ExpressionParserException(msgRef, exceptionTokenizer);
   }
@@ -42,7 +42,7 @@ public class FilterParserExceptionImpl extends ExpressionParserException
     MessageReference msgRef = ExpressionParserException.INVALID_TRAILING_TOKEN_DETECTED_AFTER_PARSING.create();
 
     msgRef.addContent(token.getUriLiteral());
-    msgRef.addContent(Integer.toString(token.getPosition()));
+    msgRef.addContent(Integer.toString(token.getPosition() + 1));
     msgRef.addContent(expression);
 
     return new ExpressionParserException(msgRef);
@@ -52,26 +52,38 @@ public class FilterParserExceptionImpl extends ExpressionParserException
   {
     MessageReference msgRef = ExpressionParserException.EXPRESSION_EXPECTED_AFTER_POS.create();
 
-    msgRef.addContent(Integer.toString(token.getPosition()));
+    msgRef.addContent(Integer.toString(token.getPosition() + 1));
     msgRef.addContent(expression);
 
     return new ExpressionParserException(msgRef);
   }
 
-  static public ExpressionParserException createEXPRESSION_EXPECTED_AT_POS(Token token)
+  static public ExpressionParserException createCOMMA_OR_END_EXPECTED_AT_POS(Token token, String expression)
   {
-    MessageReference msgRef = ExpressionParserException.EXPRESSION_EXPECTED_AT_POS.create();
+    MessageReference msgRef = ExpressionParserException.COMMA_OR_END_EXPECTED_AT_POS.create();
 
-    msgRef.addContent(Integer.toString(token.getPosition()));
+    msgRef.addContent(Integer.toString(token.getPosition() + 1));
+    msgRef.addContent(expression);
 
     return new ExpressionParserException(msgRef);
   }
 
-  static public ExpressionParserException createCOMMA_OR_CLOSING_PHARENTHESIS_EXPECTED_AFTER_POS(Token token)
+  static public ExpressionParserException createEXPRESSION_EXPECTED_AT_POS(Token token, String expression)
+  {
+    MessageReference msgRef = ExpressionParserException.EXPRESSION_EXPECTED_AT_POS.create();
+
+    msgRef.addContent(Integer.toString(token.getPosition() + 1));
+    msgRef.addContent(expression);
+
+    return new ExpressionParserException(msgRef);
+  }
+
+  static public ExpressionParserException createCOMMA_OR_CLOSING_PHARENTHESIS_EXPECTED_AFTER_POS(Token token, String expression)
   {
     MessageReference msgRef = ExpressionParserException.COMMA_OR_CLOSING_PHARENTHESIS_EXPECTED_AFTER_POS.create();
 
     msgRef.addContent(Integer.toString(token.getPosition() + token.getUriLiteral().length()));
+    msgRef.addContent(expression);
 
     return new ExpressionParserException(msgRef);
   }
@@ -91,7 +103,7 @@ public class FilterParserExceptionImpl extends ExpressionParserException
       //Tested with TestParserExceptions.TestPMreadParameters CASE 7-1
       msgRef = ExpressionParserException.METHOD_WRONG_ARG_X_OR_MORE.create();
       msgRef.addContent(methodExpression.getMethod().toUriLiteral());
-      msgRef.addContent(token.getPosition());
+      msgRef.addContent(token.getPosition() + 1);
       msgRef.addContent(expression);
       msgRef.addContent(minParam);
     }
@@ -100,7 +112,7 @@ public class FilterParserExceptionImpl extends ExpressionParserException
       //Tested with TestParserExceptions.TestPMreadParameters CASE 8-2
       msgRef = ExpressionParserException.METHOD_WRONG_ARG_X_OR_LESS.create();
       msgRef.addContent(methodExpression.getMethod().toUriLiteral());
-      msgRef.addContent(token.getPosition());
+      msgRef.addContent(token.getPosition() + 1);
       msgRef.addContent(expression);
       msgRef.addContent(maxParam);
     }
@@ -111,7 +123,7 @@ public class FilterParserExceptionImpl extends ExpressionParserException
         //Tested with TestParserExceptions.TestPMreadParameters CASE 11-1
         msgRef = ExpressionParserException.METHOD_WRONG_ARG_EXACT.create();
         msgRef.addContent(methodExpression.getMethod().toUriLiteral());
-        msgRef.addContent(token.getPosition());
+        msgRef.addContent(token.getPosition() + 1);
         msgRef.addContent(expression);
         msgRef.addContent(minParam);
       }
@@ -120,7 +132,7 @@ public class FilterParserExceptionImpl extends ExpressionParserException
         //Tested with TestParserExceptions.TestPMreadParameters CASE 10-1
         msgRef = ExpressionParserException.METHOD_WRONG_ARG_BETWEEN.create();
         msgRef.addContent(methodExpression.getMethod().toUriLiteral());
-        msgRef.addContent(token.getPosition());
+        msgRef.addContent(token.getPosition() + 1);
         msgRef.addContent(expression);
         msgRef.addContent(minParam);
         msgRef.addContent(maxParam);
@@ -134,7 +146,7 @@ public class FilterParserExceptionImpl extends ExpressionParserException
   {
     MessageReference msgRef = ExpressionParserException.LEFT_SIDE_NOT_A_PROPERTY.create();
 
-    msgRef.addContent(token.getPosition());
+    msgRef.addContent(token.getPosition() + 1);
     msgRef.addContent(expression);
 
     return new ExpressionParserException(msgRef);
@@ -147,7 +159,7 @@ public class FilterParserExceptionImpl extends ExpressionParserException
     try {
       msgRef.addContent(property.getUriLiteral());
       msgRef.addContent(parentType.getNamespace() + "." + parentType.getName());
-      msgRef.addContent(token.getPosition());
+      msgRef.addContent(token.getPosition() + 1);
       msgRef.addContent(expression);
     } catch (EdmException e) {
       throw ExpressionParserInternalError.createERROR_ACCESSING_EDM(e);
@@ -163,7 +175,7 @@ public class FilterParserExceptionImpl extends ExpressionParserException
     try {
       msgRef.addContent(property.getUriLiteral());
       msgRef.addContent(parentType.getNamespace() + "." + parentType.getName());
-      msgRef.addContent(token.getPosition());
+      msgRef.addContent(token.getPosition() + 1);
       msgRef.addContent(expression);
     } catch (EdmException e) {
       throw ExpressionParserInternalError.createERROR_ACCESSING_EDM(e);
@@ -175,13 +187,13 @@ public class FilterParserExceptionImpl extends ExpressionParserException
   public static ExpressionParserException createTOKEN_UNDETERMINATED_STRING(int position, String expression) {
     MessageReference msgRef = ExpressionParserException.TOKEN_UNDETERMINATED_STRING.create();
 
-    msgRef.addContent(position);
+    msgRef.addContent(position + 1);
     msgRef.addContent(expression);
 
     return new ExpressionParserException(msgRef);
   }
 
-  public static ExpressionParserException createINVALID_TYPES_FOR_BINARY_OPERATOR(  BinaryOperator op, EdmType left, EdmType right, Token token, String expression) {
+  public static ExpressionParserException createINVALID_TYPES_FOR_BINARY_OPERATOR(BinaryOperator op, EdmType left, EdmType right, Token token, String expression) {
     MessageReference msgRef = ExpressionParserException.INVALID_TYPES_FOR_BINARY_OPERATOR.create();
 
     msgRef.addContent(op.toUriLiteral());
@@ -196,7 +208,7 @@ public class FilterParserExceptionImpl extends ExpressionParserException
     } catch (EdmException e) {
       msgRef.addContent("");
     }
-    msgRef.addContent(token.getPosition());
+    msgRef.addContent(token.getPosition() + 1);
     msgRef.addContent(expression);
 
     return new ExpressionParserException(msgRef);
@@ -205,7 +217,7 @@ public class FilterParserExceptionImpl extends ExpressionParserException
   public static ExpressionParserException createMISSING_CLOSING_PHARENTHESIS(int position, String expression, TokenizerExpectError e) {
     MessageReference msgRef = ExpressionParserException.MISSING_CLOSING_PHARENTHESIS.create();
 
-    msgRef.addContent(position);
+    msgRef.addContent(position + 1);
     msgRef.addContent(expression);
 
     return new ExpressionParserException(msgRef, e);
@@ -213,13 +225,12 @@ public class FilterParserExceptionImpl extends ExpressionParserException
 
   public static ExpressionParserException createINVALID_SORT_ORDER(Token token, String expression) {
     MessageReference msgRef = ExpressionParserException.INVALID_SORT_ORDER.create();
-    msgRef.addContent(token.getPosition());
+    msgRef.addContent(token.getPosition() + 1);
     msgRef.addContent(expression);
 
     return new ExpressionParserException(msgRef);
   }
 
-  
   /**
    * Create a ExpressionParserException indication an error while tokenizing an expression
    * @param token Erroneous token
@@ -228,7 +239,7 @@ public class FilterParserExceptionImpl extends ExpressionParserException
    */
   public static ExpressionParserException ErrorInTokenizer(String token, int position)
   {
-    final MessageReference msgRef = ExpressionParserException.ERROR_IN_TOKENIZER.addContent(Integer.toString(position), token);
+    final MessageReference msgRef = ExpressionParserException.ERROR_IN_TOKENIZER.addContent(Integer.toString(position + 1), token);
     return new ExpressionParserException(msgRef);
   }
 

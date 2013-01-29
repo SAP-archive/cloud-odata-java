@@ -1,35 +1,73 @@
 package com.sap.core.odata.core.uri.expression;
 
+import static org.junit.Assert.fail;
+
 import org.junit.Test;
 
+import com.sap.core.odata.api.edm.EdmComplexType;
 import com.sap.core.odata.api.edm.EdmEntityType;
+import com.sap.core.odata.api.edm.EdmException;
+import com.sap.core.odata.api.edm.EdmProperty;
+import com.sap.core.odata.api.edm.EdmSimpleType;
 import com.sap.core.odata.api.uri.expression.ExpressionKind;
 import com.sap.core.odata.api.uri.expression.ExpressionParserException;
+import com.sap.core.odata.core.edm.provider.EdmComplexPropertyImplProv;
 
 public class TestParserExceptions extends TestBase {
 
   //TODO test Address\NotAProperty    used \ instead of /
 
   @Test
-  public void TestOPMparseOrderByString()
+  public void testOPMparseOrderByString()
   {
     EdmEntityType edmEtAllTypes = edmInfo.getTypeEtAllTypes();
-    
+
     //CASE 1
     //http://services.odata.org/Northwind/Northwind.svc/Products/?$orderby=UnitPrice%20ascc
     //-->Syntax error at position 10.
     GetPTO(edm, edmEtAllTypes, "String ascc")
         .aExMsgText("Invalid sort order in OData orderby parser at position 8 in \"String ascc\".");
-    
+
     //CASE 2
     //http://services.odata.org/Northwind/Northwind.svc/Products/?$orderby=UnitPrice%20asc,
     //-->Expression expected at position 12.
     GetPTO(edm, edmEtAllTypes, "String asc,")
-    .aExMsgText("Expression expected after position 11 in \"String asc,\".");
+        .aExMsgText("Expression expected after position 11 in \"String asc,\".");
+
+    //CASE 3
+    //http://services.odata.org/Northwind/Northwind.svc/Products/?$orderby=UnitPrice%20asc%20d
+    //-->Syntax error at position 14.
+    GetPTO(edm, edmEtAllTypes, "String asc a")
+        .aExMsgText("Comma or end of expression expected at position 12 in \"String asc a\".");
+
+    //CASE 4
+    //http://services.odata.org/Northwind/Northwind.svc/Products/?$orderby=UnitPrice b
+    //-->Syntax error at position 10.
+    GetPTO(edm, edmEtAllTypes, "String b")
+        .aExMsgText("Invalid sort order in OData orderby parser at position 8 in \"String b\".");
+
+    //CASE 5
+    //http://services.odata.org/Northwind/Northwind.svc/Products/?$orderby=UnitPrice, UnitPrice b
+    //-->Syntax error at position 21.
+    GetPTO(edm, edmEtAllTypes, "String, String b")
+        .aExMsgText("Invalid sort order in OData orderby parser at position 16 in \"String, String b\".");
+
+    //CASE 6
+    //http://services.odata.org/Northwind/Northwind.svc/Products/?$orderby=UnitPrice a, UnitPrice desc
+    //-->Syntax error at position 10.
+    GetPTO(edm, edmEtAllTypes, "String a, String desc")
+        .aExMsgText("Invalid sort order in OData orderby parser at position 8 in \"String a, String desc\".");
+
+    //CASE 7
+    //http://services.odata.org/Northwind/Northwind.svc/Products/?$orderby=UnitPrice asc, UnitPrice b
+    //-->Syntax error at position 25.
+    GetPTO(edm, edmEtAllTypes, "String asc, String b")
+        .aExMsgText("Invalid sort order in OData orderby parser at position 20 in \"String asc, String b\".");
+
   }
 
   @Test
-  public void TestPMvalidateEdmProperty()
+  public void testPMvalidateEdmProperty()
   {
     EdmEntityType edmEtAllTypes = edmInfo.getTypeEtAllTypes();
 
@@ -66,7 +104,6 @@ public class TestParserExceptions extends TestBase {
     //http://services.odata.org/Northwind/Northwind.svc/Products/?$filter='aText'/NotAProperty
     //-->Exception Stack
     GetPTF(edm, edmEtAllTypes, "'aText'/NotAProperty")
-        .printExMessage()
         .aExMsgText("Leftside of method operator at position 8 is not a property in \"'aText'/NotAProperty\".");
 
     //http://services.odata.org/Northwind/Northwind.svc/Products/?$filter='Hong Kong' eq ProductName/city
@@ -82,11 +119,8 @@ public class TestParserExceptions extends TestBase {
   }
 
   @Test
-  public void TestPMreadParameters()
+  public void testPMreadParameters()
   {
-
-    //TODO add tests for
-
     //OK
     GetPTF("concat('A','B')").aSerialized("{concat('A','B')}");
 
@@ -140,14 +174,14 @@ public class TestParserExceptions extends TestBase {
     //http://services.odata.org/Northwind/Northwind.svc/Products(1)/Supplier?$filter=concat(123
     //-->')' or ',' expected at position 10.
     GetPTF("concat(123").aExType(ExpressionParserException.class)
-        .aExMsgText("\")\" or \",\" expected after position 10.");
+        .aExMsgText("\")\" or \",\" expected after position 10 in \"concat(123\".");
     //.aExMsgText("Missing closing parenthesis \")\" for opening parenthesis \"(\" at position 7 in \"concat(\".");
 
     //CASE 3 
     //http://services.odata.org/Northwind/Northwind.svc/Products(1)/Supplier?$filter=concat(,
     //Expression expected at position 7.
     GetPTF("concat(,").aExType(ExpressionParserException.class)
-        .aExMsgText("Expression expected at position 8.");
+        .aExMsgText("Expression expected at position 8 in \"concat(,\".");
 
     //CASE 4
     //http://services.odata.org/Northwind/Northwind.svc/Products(1)/Supplier?$filter=concat(123,
@@ -218,7 +252,7 @@ public class TestParserExceptions extends TestBase {
   }
 
   @Test
-  public void TestPMreadParenthesis()
+  public void testPMreadParenthesis()
   {
     //http://services.odata.org/Northwind/Northwind.svc/Products(1)/Supplier?$filter=(123
     //-->')' or operator expected at position 4.
@@ -233,18 +267,17 @@ public class TestParserExceptions extends TestBase {
   }
 
   @Test
-  public void TestPMvalidateBinaryOperator() /*PM = Parsermethod*/
+  public void testPMvalidateBinaryOperator() /*PM = Parsermethod*/
   {
     //http://services.odata.org/Northwind/Northwind.svc/Products(1)/Supplier?$filter=123 add 'abc'
     //-->Operator 'add' incompatible with operand types 'System.Int32' and 'System.String' at position 4.
     GetPTF("123 add 'abc'").aExType(ExpressionParserException.class)
         .aExKey(ExpressionParserException.INVALID_TYPES_FOR_BINARY_OPERATOR)
-        //TODO String
         .aExMsgText("Operator \"add\" incompatible with operand types \"System.Uint7\" and \"Edm.String\" at position 5 in \"123 add 'abc'\".");
   }
 
   @Test
-  public void TestPMparseFilterString() /*PM = Parsermethod*/
+  public void testPMparseFilterString() /*PM = Parsermethod*/
   {
     //http://services.odata.org/Northwind/Northwind.svc/Products(1)/Supplier?$filter='123
     //-->Unterminated string literal at position 4 in ''123'.
@@ -268,18 +301,38 @@ public class TestParserExceptions extends TestBase {
     //-->Expression of type 'System.Boolean' expected at position 0.
     GetPTF("123 456").aExType(ExpressionParserException.class)
         .aExKey(ExpressionParserException.INVALID_TRAILING_TOKEN_DETECTED_AFTER_PARSING)
-        .aExMsgText("Invalid token \"456\" detected after parsing at position 4 in \"123 456\".");
+        .aExMsgText("Invalid token \"456\" detected after parsing at position 5 in \"123 456\".");
 
     //http://services.odata.org/Northwind/Northwind.svc/Products(1)/Supplier?$filter=123%20456
     //-->Expression of type 'System.Boolean' expected at position 0.
     GetPTF("123 456 789").aExType(ExpressionParserException.class)
         .aExKey(ExpressionParserException.INVALID_TRAILING_TOKEN_DETECTED_AFTER_PARSING)
-        .aExMsgText("Invalid token \"456\" detected after parsing at position 4 in \"123 456 789\".");
+        .aExMsgText("Invalid token \"456\" detected after parsing at position 5 in \"123 456 789\".");
 
     //http://services.odata.org/Northwind/Northwind.svc/Products(1)/Supplier?$filter=abc%20abc
     //-->No property 'abc' exists in type 'ODataWeb.Northwind.Model.Supplier' at position 0.
     GetPTF("abc abc").aExType(ExpressionParserException.class)
         .aExKey(ExpressionParserException.INVALID_TRAILING_TOKEN_DETECTED_AFTER_PARSING)
         .aExMsgText("Invalid token \"abc\" detected after parsing at position 5 in \"abc abc\".");
+  }
+
+  @Test
+  public void testAddinalStuff() /*PM = Parsermethod*/
+  {
+
+    GetPTF("( A mul B )/X eq TEST")
+        .aSerialized("{{{A mul B}/X} eq TEST}");
+
+    GetPTF("( 1 mul 2 )/X eq TEST")
+        .aSerialized("{{{1 mul 2}/X} eq TEST}");
+
+    //lcl_helper=>veri_expression_ex(
+    //  iv_expression = '( A mul B )/X eq TEST'
+    //  iv_expected_textid = /iwcor/cx_ds_expr_parser_error=>member_access_wrong_left_hand
+    //  iv_expected_msg    = 'Left hand expression of memberaccess operator invalid'  ).
+    EdmEntityType edmEtAllTypes = edmInfo.getTypeEtAllTypes();
+    GetPTF(edm, edmEtAllTypes, "( 1 mul 2 )/X eq TEST")
+        .aExMsgText("Leftside of method operator at position 12 is not a property in \"( 1 mul 2 )/X eq TEST\".");
+
   }
 }

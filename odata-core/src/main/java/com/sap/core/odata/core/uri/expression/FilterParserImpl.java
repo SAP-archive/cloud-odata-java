@@ -231,7 +231,7 @@ public class FilterParserImpl implements FilterParser
       if (token == null)
       {
         //Tested with TestParserExceptions.TestPMreadParameters CASE 2 e.g. "$filter=concat(123"
-        throw FilterParserExceptionImpl.createCOMMA_OR_CLOSING_PHARENTHESIS_EXPECTED_AFTER_POS(tokenList.lookPrevToken());
+        throw FilterParserExceptionImpl.createCOMMA_OR_CLOSING_PHARENTHESIS_EXPECTED_AFTER_POS(tokenList.lookPrevToken(), curExpression);
       }
 
       if (token.getKind() == TokenKind.COMMA)
@@ -240,7 +240,7 @@ public class FilterParserImpl implements FilterParser
         if (expression == null)
         {
           //Tested with TestParserExceptions.TestPMreadParameters CASE 3 e.g. "$filter=concat(,"
-          throw FilterParserExceptionImpl.createEXPRESSION_EXPECTED_AT_POS(token);
+          throw FilterParserExceptionImpl.createEXPRESSION_EXPECTED_AT_POS(token, curExpression);
         }
 
         tokenList.expectToken(",", true);

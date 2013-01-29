@@ -189,13 +189,12 @@ public class TestParser extends TestBase
   public void testSimpleMethod()
   {
     GetPTF("startswith('Test','Te')").aSerialized("{startswith('Test','Te')}");
-    //TODO add test for concat
+
     GetPTF("startswith('Test','Te')").aSerialized("{startswith('Test','Te')}");
 
     GetPTF("startswith('Test', concat('A','B'))").aSerialized("{startswith('Test',{concat('A','B')})}");
 
     GetPTF("substring('Test', 1 add 2)").aSerialized("{substring('Test',{1 add 2})}");
-
   }
 
   @Test
@@ -244,7 +243,6 @@ public class TestParser extends TestBase
     GetPTF("1d div 2d add 3d div 4d").aSerialized("{{1d div 2d} add {3d div 4d}}");
     GetPTF("1d div 2d div 3d add 4d").aSerialized("{{{1d div 2d} div 3d} add 4d}");
     GetPTF("1d div 2d div 3d div 4d").aSerialized("{{{1d div 2d} div 3d} div 4d}");
-    //XXX maybe add generator for more deepness
   }
 
   @Test

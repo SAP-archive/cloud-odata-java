@@ -1,7 +1,5 @@
 package com.sap.core.odata.core.uri.expression;
 
-/*TODO cleanup the messages*/
-
 import com.sap.core.odata.api.edm.EdmLiteralException;
 import com.sap.core.odata.api.exception.MessageReference;
 import com.sap.core.odata.api.exception.ODataMessageException;
@@ -17,7 +15,6 @@ public class TokenizerException extends ODataMessageException
   private static final long serialVersionUID = 77L;
 
   public static final MessageReference TYPEDECTECTION_FAILED_ON_STRING = createMessageReference(TokenizerException.class, "TYPEDECTECTION_FAILED_ON_STRING");
-  //public static final MessageReference TYPEDECTECTION_FAILED_ON_EDMTYPE = createMessageReference(TokenizerException.class, "TYPEDECTECTION_FAILED_ON_EDMTYPE");
   public static final MessageReference UNKNOWN_CHARACTER = createMessageReference(TokenizerException.class, "UNKNOWN_CHARACTER");
 
   private Token token;
@@ -75,13 +72,14 @@ public class TokenizerException extends ODataMessageException
 
     return new TokenizerException(msgRef).setToken(token);
   }
-*/
-  static public TokenizerException createUNKNOWN_CHARACTER(int position, String uriLiteral)
+  */
+  static public TokenizerException createUNKNOWN_CHARACTER(int position, String uriLiteral, String expression)
   {
     MessageReference msgRef = TokenizerException.UNKNOWN_CHARACTER.create();
 
     msgRef.addContent(uriLiteral);
     msgRef.addContent(position);
+    msgRef.addContent(expression);
     Token token = new Token(TokenKind.UNKNOWN, position, uriLiteral);
 
     return new TokenizerException(msgRef).setToken(token);

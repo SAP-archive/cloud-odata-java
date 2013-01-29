@@ -171,7 +171,7 @@ public class TokenList implements Iterator<Token>
   @Override
   public void remove() 
   {
-    // TODO Auto-generated method stub
+    throw new IllegalArgumentException("Method not allowed");
   }
 
   public Token elementAt(int index) 

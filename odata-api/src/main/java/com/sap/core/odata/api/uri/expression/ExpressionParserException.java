@@ -20,6 +20,7 @@ public class ExpressionParserException extends ODataBadRequestException
 
   //parsing
   public static final MessageReference EXPRESSION_EXPECTED_AFTER_POS = createMessageReference(ExpressionParserException.class, "EXPRESSION_EXPECTED_AFTER_POS");
+  public static final MessageReference COMMA_OR_END_EXPECTED_AT_POS = createMessageReference(ExpressionParserException.class, "COMMA_OR_END_EXPECTED_AT_POS");
   public static final MessageReference EXPRESSION_EXPECTED_AT_POS = createMessageReference(ExpressionParserException.class, "EXPRESSION_EXPECTED_AT_POS");
   public static final MessageReference MISSING_CLOSING_PHARENTHESIS = createMessageReference(ExpressionParserException.class, "MISSING_CLOSING_PHARENTHESIS");
   public static final MessageReference COMMA_OR_CLOSING_PHARENTHESIS_EXPECTED_AFTER_POS = createMessageReference(ExpressionParserException.class, "COMMA_OR_CLOSING_PHARENTHESIS_EXPECTED_AFTER_POS");

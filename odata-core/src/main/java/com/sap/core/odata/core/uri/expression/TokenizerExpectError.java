@@ -63,11 +63,6 @@ public class TokenizerExpectError extends ODataMessageException {
     super(messageReference);
   }
 
-  public static Object unexpectedToken(int currentToken, String string, Token actual) {
-    // TODO Auto-generated method stub
-    return null;
-  }
-
   public static TokenizerExpectError createINVALID_TOKEN_AT(String expectedToken, Token actualToken)
   {
     MessageReference msgRef = TokenizerExpectError.INVALID_TOKEN_AT.create();
