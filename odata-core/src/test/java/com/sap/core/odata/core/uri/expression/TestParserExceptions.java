@@ -104,18 +104,19 @@ public class TestParserExceptions extends TestBase {
     //--> No property 'city' exists in type 'System.String' at position 27. 
     GetPTF(edm, edmEtAllTypes, "'Hong Kong' eq DateTime/city")
         .aExMsgText("No property \"city\" exists in type \"Edm.DateTime\" at position 25 in \"'Hong Kong' eq DateTime/city\".");
-    
+
     //CASE 8
     //http://services.odata.org/Northwind/Northwind.svc/Products/?$filter='Hong Kong' eq ProductName/city
     //--> No property 'city' exists in type 'System.String' at position 27. 
     GetPTF(edm, edmEtAllTypes, "'Hong Kong' eq String/city")
-     .aExMsgText("No property \"city\" exists in type \"Edm.String\" at position 23 in \"'Hong Kong' eq String/city\".");
-    
+        .aExMsgText("No property \"city\" exists in type \"Edm.String\" at position 23 in \"'Hong Kong' eq String/city\".");
+
   }
 
   @Test
   public void testPMreadParameters()
   {
+
     //OK
     GetPTF("concat('A','B')").aSerialized("{concat('A','B')}");
 
@@ -249,6 +250,7 @@ public class TestParserExceptions extends TestBase {
     //-->')' or ',' expected at position 11.
     GetPTF("concat('a' 'b')")
         .aExMsgText("\")\" or \",\" expected after position 10 in \"concat('a' 'b')\".");
+
   }
 
   @Test
@@ -274,6 +276,17 @@ public class TestParserExceptions extends TestBase {
     GetPTF("123 add 'abc'").aExType(ExpressionParserException.class)
         .aExKey(ExpressionParserException.INVALID_TYPES_FOR_BINARY_OPERATOR)
         .aExMsgText("Operator \"add\" incompatible with operand types \"System.Uint7\" and \"Edm.String\" at position 5 in \"123 add 'abc'\".");
+  }
+
+  @Test
+  public void testPMvalidateMethodTypes() /*PM = Parsermethod*/
+  {
+    //CASE 1
+    //http://services.odata.org/Northwind/Northwind.svc/Products/?$filter=year(327686)
+    //-->No applicable function found for 'year' at position 0 with the specified arguments. The functions considered are: year(System.DateTime).
+    String aInt32 = "327686";
+    GetPTF("year(" + aInt32 + ")")
+        .aExMsgText("No applicable method found for \"year\" at position 1 in \"year(327686)\" for the specified argument types.");
   }
 
   @Test
@@ -317,7 +330,7 @@ public class TestParserExceptions extends TestBase {
   }
 
   @Test
-  public void testAdditionalStuff() /*PM = Parsermethod*/
+  public void testAdditionalStuff()
   {
 
     GetPTF("( A mul B )/X eq TEST")
@@ -342,5 +355,7 @@ public class TestParserExceptions extends TestBase {
     //-->Unknown function 'notsupportedfunction' at position 0.
     GetPTF("notsupportedfunction    ('a')")
         .aExMsgText("Unknown function \"notsupportedfunction\" at position 1 in \"notsupportedfunction    ('a')\".");
+
   }
+
 }

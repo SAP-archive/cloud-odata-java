@@ -64,7 +64,7 @@ class InfoMethod
     return maxParameter;
   }
 
-  public EdmType validateParameterSet(List<EdmType> actualParameterTypes) throws ExpressionParserInternalError
+  public ParameterSet validateParameterSet(List<EdmType> actualParameterTypes) throws ExpressionParserInternalError
   {
     return combination.validate(actualParameterTypes);
   }
