@@ -19,6 +19,6 @@ public interface JPAEdmComplexTypeView extends JPAEdmBaseView {
 
 	public ComplexType searchComplexType(FullQualifiedName type);
 	
-	public void expandEdmComplexType(ComplexType complexType,List<Property> expandedPropertyList);
+	public void expandEdmComplexType(ComplexType complexType,List<Property> expandedPropertyList,String embeddablePropertyName);
 
 }

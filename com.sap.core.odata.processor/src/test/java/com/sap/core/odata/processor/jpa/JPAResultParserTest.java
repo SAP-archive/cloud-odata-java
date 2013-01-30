@@ -95,7 +95,7 @@ public class JPAResultParserTest {
 			resultParser.parse2EdmPropertyValueMap(jpaEntity, structuralType);
 		} catch (ODataJPARuntimeException e) {
 			fail("JUnit failed with exception "
-					+ ODataJPARuntimeException.RUNTIME_EXCEPTION);
+					+ ODataJPARuntimeException.GENERAL);
 		}
 
 	}

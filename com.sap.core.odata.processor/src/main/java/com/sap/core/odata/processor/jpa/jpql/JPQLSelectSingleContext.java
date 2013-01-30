@@ -62,7 +62,7 @@ public class JPQLSelectSingleContext extends JPQLContext implements JPQLSelectSi
 
 				} catch (EdmException e) {
 					throw ODataJPARuntimeException.throwException(
-							ODataJPARuntimeException.RUNTIME_EXCEPTION.addContent(e
+							ODataJPARuntimeException.GENERAL.addContent(e
 									.getMessage()), e);
 				}
 

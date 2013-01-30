@@ -9,8 +9,9 @@ import com.sap.core.odata.api.edm.EdmMapping;
 import com.sap.core.odata.api.edm.EdmNavigationProperty;
 import com.sap.core.odata.api.uri.NavigationSegment;
 import com.sap.core.odata.processor.jpa.access.data.ODataExpressionParser;
-import com.sap.core.odata.processor.jpa.api.access.JPAOuterJoinClause;
+import com.sap.core.odata.processor.jpa.api.access.JPAJoinClause;
 import com.sap.core.odata.processor.jpa.api.jpql.JPQLContext;
+import com.sap.core.odata.processor.jpa.api.jpql.JPQLContextType;
 import com.sap.core.odata.processor.jpa.api.jpql.JPQLJoinSelectSingleContextView;
 import com.sap.core.odata.processor.jpa.exception.ODataJPAModelException;
 import com.sap.core.odata.processor.jpa.exception.ODataJPARuntimeException;
@@ -18,10 +19,10 @@ import com.sap.core.odata.processor.jpa.exception.ODataJPARuntimeException;
 public class JPQLJoinSelectSingleContext extends JPQLSelectSingleContext implements
 		JPQLJoinSelectSingleContextView {
 
-	private List<JPAOuterJoinClause> jpaOuterJoinClauses = null;
+	private List<JPAJoinClause> jpaOuterJoinClauses = null;
 
 	protected void setJPAOuterJoinClause(
-			List<JPAOuterJoinClause> jpaOuterJoinClauses) {
+			List<JPAJoinClause> jpaOuterJoinClauses) {
 		this.jpaOuterJoinClauses = jpaOuterJoinClauses;
 	}
 
@@ -34,6 +35,7 @@ public class JPQLJoinSelectSingleContext extends JPQLSelectSingleContext impleme
 				ODataJPARuntimeException {
 			try {
 				super.build();
+				JPQLJoinSelectSingleContext.this.setType(JPQLContextType.JOIN_SINGLE);
 				JPQLJoinSelectSingleContext.this.setJPAOuterJoinClause(generateJoinClauses());
 			} catch (EdmException e) {
 				throw ODataJPARuntimeException.throwException(ODataJPARuntimeException.GENERAL, e);
@@ -42,11 +44,11 @@ public class JPQLJoinSelectSingleContext extends JPQLSelectSingleContext impleme
 			return JPQLJoinSelectSingleContext.this;
 		}
 
-		protected List<JPAOuterJoinClause> generateJoinClauses()
+		protected List<JPAJoinClause> generateJoinClauses()
 				throws ODataJPARuntimeException, EdmException {
 
-			List<JPAOuterJoinClause> jpaOuterJoinClauses = new ArrayList<JPAOuterJoinClause>();
-			JPAOuterJoinClause jpaOuterJoinClause = null;
+			List<JPAJoinClause> jpaOuterJoinClauses = new ArrayList<JPAJoinClause>();
+			JPAJoinClause jpaOuterJoinClause = null;
 
 			for (NavigationSegment navigationSegment : entityView
 					.getNavigationSegments()) {
@@ -58,12 +60,12 @@ public class JPQLJoinSelectSingleContext extends JPQLSelectSingleContext impleme
 						.parseKeyPredicates(navigationSegment
 								.getKeyPredicates(),getJPAEntityAlias());
 
-				jpaOuterJoinClause = new JPAOuterJoinClause(
+				jpaOuterJoinClause = new JPAJoinClause(
 						getFromEntityName(navigationProperty),
 						getJPAEntityAlias(),
 						getRelationShipName(navigationProperty),
 						generateRelationShipAlias(), joinCondition,
-						JPAOuterJoinClause.JOIN.LEFT);
+						JPAJoinClause.JOIN.LEFT);
 
 				jpaOuterJoinClauses.add(jpaOuterJoinClause);
 
@@ -112,7 +114,7 @@ public class JPQLJoinSelectSingleContext extends JPQLSelectSingleContext impleme
 	}
 
 	@Override
-	public List<JPAOuterJoinClause> getJPAOuterJoinClauses() {
+	public List<JPAJoinClause> getJPAOuterJoinClauses() {
 		return this.jpaOuterJoinClauses;
 	}
 

@@ -9,6 +9,7 @@ import javax.persistence.metamodel.EmbeddableType;
 import com.sap.core.odata.api.edm.FullQualifiedName;
 import com.sap.core.odata.api.edm.provider.ComplexProperty;
 import com.sap.core.odata.api.edm.provider.ComplexType;
+import com.sap.core.odata.api.edm.provider.Mapping;
 import com.sap.core.odata.api.edm.provider.Property;
 import com.sap.core.odata.api.edm.provider.SimpleProperty;
 import com.sap.core.odata.processor.jpa.access.model.JPAEdmNameBuilder;
@@ -83,17 +84,20 @@ public class JPAEdmComplexType extends JPAEdmBaseViewImpl implements
 	}
 	
 	@Override
-	public void expandEdmComplexType(ComplexType complexType,List<Property> expandedList){
+	public void expandEdmComplexType(ComplexType complexType,List<Property> expandedList,String embeddablePropertyName){
 		
 		if(expandedList == null) expandedList = new ArrayList<Property>();
 		for(Property property : complexType.getProperties())
 		{
 			try{
 			SimpleProperty simpleProperty = (SimpleProperty) property;
+			Mapping mapping = simpleProperty.getMapping();
+			mapping.setInternalName(embeddablePropertyName + "." + mapping.getInternalName());
 			expandedList.add(simpleProperty);
 			}catch (ClassCastException e){
 				ComplexProperty complexProperty = (ComplexProperty) property;
-				expandEdmComplexType(searchComplexTypeByName(complexProperty.getName()),expandedList);
+				String name = complexProperty.getMapping().getInternalName();
+				expandEdmComplexType(searchComplexTypeByName(complexProperty.getName()),expandedList,name);
 			}
 		}
 		

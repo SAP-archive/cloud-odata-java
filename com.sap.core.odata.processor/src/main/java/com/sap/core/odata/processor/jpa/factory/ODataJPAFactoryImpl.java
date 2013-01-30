@@ -17,6 +17,10 @@ import com.sap.core.odata.processor.jpa.api.jpql.JPQLContextView;
 import com.sap.core.odata.processor.jpa.api.jpql.JPQLStatement.JPQLStatementBuilder;
 import com.sap.core.odata.processor.jpa.api.model.JPAEdmModelView;
 import com.sap.core.odata.processor.jpa.edm.ODataJPAEdmProvider;
+import com.sap.core.odata.processor.jpa.jpql.JPQLJoinContext;
+import com.sap.core.odata.processor.jpa.jpql.JPQLJoinSelectSingleContext;
+import com.sap.core.odata.processor.jpa.jpql.JPQLJoinSelectSingleStatementBuilder;
+import com.sap.core.odata.processor.jpa.jpql.JPQLJoinStatementBuilder;
 import com.sap.core.odata.processor.jpa.jpql.JPQLSelectContext;
 import com.sap.core.odata.processor.jpa.jpql.JPQLSelectSingleContext;
 import com.sap.core.odata.processor.jpa.jpql.JPQLSelectSingleStatementBuilder;
@@ -50,15 +54,20 @@ public class ODataJPAFactoryImpl extends ODataJPAFactory {
 			switch (context.getType()) {
 			case SELECT:
 				builder = new JPQLSelectStatementBuilder(context);
-				return builder;
+				break;
 			case SELECT_SINGLE:
 				builder = new JPQLSelectSingleStatementBuilder(context);
-				return builder;
+				break;
+			case JOIN:
+				builder = new JPQLJoinStatementBuilder(context);
+				break;
+			case JOIN_SINGLE:
+				builder = new JPQLJoinSelectSingleStatementBuilder(context);
 			default:
 				break;
 			}
 			
-			return null;
+			return builder;
 		}
 
 		@Override
@@ -74,7 +83,14 @@ JPQLContextBuilder contextBuilder = null;
 				JPQLSelectSingleContext singleSelectContext = new JPQLSelectSingleContext();
 				contextBuilder =  singleSelectContext.new JPQLSelectSingleContextBuilder();
 				break;
-			
+			case JOIN:
+				JPQLJoinContext joinContext = new JPQLJoinContext();
+				contextBuilder = joinContext.new JPQLJoinContextBuilder();
+				break;
+			case JOIN_SINGLE:
+				JPQLJoinSelectSingleContext joinSingleContext = new JPQLJoinSelectSingleContext();
+				contextBuilder = joinSingleContext.new JPQLJoinSelectSingleContextBuilder();
+				break;
 			default:
 				break;
 			}

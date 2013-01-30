@@ -3,7 +3,7 @@ package com.sap.core.odata.processor.jpa.jpql;
 import java.util.List;
 
 import com.sap.core.odata.processor.jpa.access.data.ODataExpressionParser;
-import com.sap.core.odata.processor.jpa.api.access.JPAOuterJoinClause;
+import com.sap.core.odata.processor.jpa.api.access.JPAJoinClause;
 import com.sap.core.odata.processor.jpa.api.jpql.JPQLContextView;
 import com.sap.core.odata.processor.jpa.api.jpql.JPQLJoinSelectSingleContextView;
 import com.sap.core.odata.processor.jpa.api.jpql.JPQLStatement;
@@ -43,8 +43,8 @@ public class JPQLJoinSelectSingleStatementBuilder extends JPQLStatementBuilder{
 			int i = 0;
 			String entityRelationshipAlias = null;
 			joinWhereCondition = new StringBuilder();
-			List<JPAOuterJoinClause> joinClauseList = context.getJPAOuterJoinClauses();
-			for(JPAOuterJoinClause joinClause : joinClauseList){
+			List<JPAJoinClause> joinClauseList = context.getJPAOuterJoinClauses();
+			for(JPAJoinClause joinClause : joinClauseList){
 				jpqlQuery.append(JPQLStatement.DELIMITER.SPACE);
 				jpqlQuery.append(JPQLStatement.KEYWORD.JOIN).append(JPQLStatement.DELIMITER.SPACE);
 				if(entityRelationshipAlias == null){

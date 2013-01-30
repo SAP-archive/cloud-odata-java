@@ -145,7 +145,7 @@ public class ODataExpressionParser {
 					orderByMap.put(tableAlias+JPQLStatement.DELIMITER.PERIOD+orderByField, orderByDirection);
 				} catch (EdmException e) {
 					throw ODataJPARuntimeException.throwException(
-							ODataJPARuntimeException.RUNTIME_EXCEPTION.addContent(e
+							ODataJPARuntimeException.GENERAL.addContent(e
 									.getMessage()), e);
 				}				
 			}			
@@ -177,14 +177,17 @@ public class ODataExpressionParser {
 				edmSimpleType = (EdmSimpleType)keyPredicate.getProperty().getType();
 			} catch (EdmException e) {
 				throw ODataJPARuntimeException.throwException(
-						ODataJPARuntimeException.RUNTIME_EXCEPTION.addContent(e
+						ODataJPARuntimeException.GENERAL.addContent(e
 								.getMessage()), e);
 			}
 			
 			literal = evaluateComparingExpression(literal, edmSimpleType);
 			keyFilters.append(tableAlias+JPQLStatement.DELIMITER.PERIOD+propertyName + JPQLStatement.DELIMITER.SPACE + JPQLStatement.Operator.EQ+ JPQLStatement.DELIMITER.SPACE + literal);
 		}
-		return keyFilters.toString();
+		if(keyFilters.length()>0)
+			return keyFilters.toString();
+		else
+			return null;
 	}
 	
 	/**
@@ -217,7 +220,7 @@ public class ODataExpressionParser {
 				propertyName = keyPredicate.getProperty().getMapping().getInternalName();				
 			} catch (EdmException e) {
 				throw ODataJPARuntimeException.throwException(
-						ODataJPARuntimeException.RUNTIME_EXCEPTION.addContent(e
+						ODataJPARuntimeException.GENERAL.addContent(e
 								.getMessage()), e);
 			}
 			orderByMap.put(tableAlias+JPQLStatement.DELIMITER.PERIOD+propertyName, EMPTY);

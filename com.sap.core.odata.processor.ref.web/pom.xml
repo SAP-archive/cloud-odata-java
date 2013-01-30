@@ -6,6 +6,12 @@
 	<url>http://maven.apache.org</url>
 	<build>
 		<finalName>com.sap.core.odata.processor.ref.web</finalName>
+		<resources>
+			<resource>
+				<directory>src/main/resources/img</directory>
+				<targetPath>../${project.build.finalName}/WEB-INF/img</targetPath>
+			</resource>
+		</resources>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>

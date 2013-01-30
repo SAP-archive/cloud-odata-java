@@ -5,6 +5,7 @@ import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 
+import com.sap.core.odata.api.edm.EdmException;
 import com.sap.core.odata.api.uri.info.GetEntitySetUriInfo;
 import com.sap.core.odata.api.uri.info.GetEntityUriInfo;
 import com.sap.core.odata.processor.jpa.api.ODataJPAContext;
@@ -30,16 +31,29 @@ public class JPAProcessorImpl implements JPAProcessor {
 	public <T> List<T> process(GetEntitySetUriInfo uriParserResultView)
 			throws ODataJPAModelException, ODataJPARuntimeException {
 
+		JPQLContextType contextType = null;
+		try {
+			if (!uriParserResultView.getStartEntitySet().getName()
+					.equals(uriParserResultView.getTargetEntitySet().getName()))
+				contextType = JPQLContextType.JOIN;
+			else
+				contextType = JPQLContextType.SELECT;
+
+		} catch (EdmException e) {
+			ODataJPARuntimeException.throwException(
+					ODataJPARuntimeException.GENERAL, e);
+		}
+
 		// Build JPQL Context
-		JPQLContext selectContext = JPQLContext.createBuilder(
-				JPQLContextType.SELECT, uriParserResultView).build();
+		JPQLContext jpqlContext = JPQLContext.createBuilder(contextType,
+				uriParserResultView).build();
 
 		// Build JPQL Statement
-		JPQLStatement selectStatement = JPQLStatement.createBuilder(
-				selectContext).build();
+		JPQLStatement jpqlStatement = JPQLStatement.createBuilder(jpqlContext)
+				.build();
 
 		// Instantiate JPQL
-		Query query = em.createQuery(selectStatement.toString());
+		Query query = em.createQuery(jpqlStatement.toString());
 		if (uriParserResultView.getSkip() != null)
 			query.setFirstResult(uriParserResultView.getSkip());
 

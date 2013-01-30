@@ -14,7 +14,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import com.sap.core.odata.processor.jpa.api.access.JPAOuterJoinClause;
+import com.sap.core.odata.processor.jpa.api.access.JPAJoinClause;
 import com.sap.core.odata.processor.jpa.api.jpql.JPQLContextType;
 import com.sap.core.odata.processor.jpa.api.jpql.JPQLJoinContextView;
 import com.sap.core.odata.processor.jpa.api.jpql.JPQLStatement;
@@ -42,12 +42,12 @@ public class JPQLJoinStatementBuilderTest {
 		orderByMap.put("buyerId", "asc");
 		orderByMap.put("city", "desc");
 		EasyMock.expect(context.getOrderByCollection()).andStubReturn(orderByMap);
-		List<JPAOuterJoinClause> joinClauseList = new ArrayList<JPAOuterJoinClause>();
-		JPAOuterJoinClause jpaOuterJoinClause = new JPAOuterJoinClause("SOHeader", "soh", "soItem", "soi", "soi.shId = soh.soId", JPAOuterJoinClause.JOIN.LEFT);
+		List<JPAJoinClause> joinClauseList = new ArrayList<JPAJoinClause>();
+		JPAJoinClause jpaOuterJoinClause = new JPAJoinClause("SOHeader", "soh", "soItem", "soi", "soi.shId = soh.soId", JPAJoinClause.JOIN.LEFT);
 		joinClauseList.add(jpaOuterJoinClause);
-		jpaOuterJoinClause = new JPAOuterJoinClause("SOItem", "si", "material", "mat", "mat.id = 'abc'", JPAOuterJoinClause.JOIN.LEFT);
+		jpaOuterJoinClause = new JPAJoinClause("SOItem", "si", "material", "mat", "mat.id = 'abc'", JPAJoinClause.JOIN.LEFT);
 		joinClauseList.add(jpaOuterJoinClause);
-		EasyMock.expect(context.getJPAOuterJoinClauses()).andStubReturn(joinClauseList);
+		EasyMock.expect(context.getJPAJoinClauses()).andStubReturn(joinClauseList);
 		EasyMock.replay(context);		
 	}
 
@@ -60,7 +60,7 @@ public class JPQLJoinStatementBuilderTest {
 		JPQLJoinStatementBuilder jpqlJoinStatementBuilder = new JPQLJoinStatementBuilder(context);
 		try {
 			JPQLStatement jpqlStatement = jpqlJoinStatementBuilder.build();
-			assertEquals("SELECT gt1 FROM SOHeader gt1 JOIN soh.soItem soi JOIN soi.material mat WHERE gt1.buyerId = 2 AND gt1.createdBy = 'Peter' AND soi.shId = soh.soId  AND mat.id = 'abc'  ORDER BY gt1.buyerId asc , gt1.city desc ", jpqlStatement.toString());
+			assertEquals("SELECT mat FROM SOHeader gt1 JOIN soh.soItem soi JOIN soi.material mat WHERE gt1.buyerId = 2 AND gt1.createdBy = 'Peter' AND soi.shId = soh.soId  AND mat.id = 'abc'  ORDER BY gt1.buyerId asc , gt1.city desc ", jpqlStatement.toString());
 		} catch (ODataJPARuntimeException e) {
 			fail("Should not have come here");
 		}

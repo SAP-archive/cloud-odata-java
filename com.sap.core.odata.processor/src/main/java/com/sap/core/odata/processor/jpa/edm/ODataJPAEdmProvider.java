@@ -7,6 +7,7 @@ import java.util.List;
 import com.sap.core.odata.api.edm.FullQualifiedName;
 import com.sap.core.odata.api.edm.provider.Association;
 import com.sap.core.odata.api.edm.provider.AssociationSet;
+import com.sap.core.odata.api.edm.provider.AssociationSetEnd;
 import com.sap.core.odata.api.edm.provider.ComplexType;
 import com.sap.core.odata.api.edm.provider.EdmProvider;
 import com.sap.core.odata.api.edm.provider.EntityContainer;
@@ -22,7 +23,7 @@ import com.sap.core.odata.processor.jpa.api.model.JPAEdmModelView;
 import com.sap.core.odata.processor.jpa.exception.ODataJPAModelException;
 
 public class ODataJPAEdmProvider extends EdmProvider {
-	
+
 	private ODataJPAContext oDataJPAContext;
 	private JPAEdmModelView jpaEdmModel;
 
@@ -44,7 +45,8 @@ public class ODataJPAEdmProvider extends EdmProvider {
 		entityContainerInfos = new HashMap<String, EntityContainerInfo>();
 		complexTypes = new HashMap<String, ComplexType>();
 		associations = new HashMap<String, Association>();
-		jpaEdmModel = ODataJPAFactory.createFactory().getJPAAccessFactory().getJPAEdmModelView(oDataJPAContext);
+		jpaEdmModel = ODataJPAFactory.createFactory().getJPAAccessFactory()
+				.getJPAEdmModelView(oDataJPAContext);
 	}
 
 	public ODataJPAContext getODataJPAContext() {
@@ -105,7 +107,7 @@ public class ODataJPAEdmProvider extends EdmProvider {
 					}
 				}
 			}
-			
+
 			throw ODataJPAModelException.throwException(
 					ODataJPAModelException.INVALID_ENTITY_TYPE
 							.addContent(edmFQName.toString()), null);
@@ -156,16 +158,18 @@ public class ODataJPAEdmProvider extends EdmProvider {
 				for (Schema schema : schemas) {
 					if (schema.getNamespace().equals(edmFQName.getNamespace())) {
 						for (Association association : schema.getAssociations()) {
-							if (association.getName().equals(edmFQName.getName())) {
-								associations.put(edmFQName.toString(), association);
+							if (association.getName().equals(
+									edmFQName.getName())) {
+								associations.put(edmFQName.toString(),
+										association);
 								return association;
 							}
 						}
 					}
 				}
-		throw ODataJPAModelException.throwException(
-				ODataJPAModelException.INVALID_ASSOCIATION.addContent(edmFQName
-						.toString()), null);
+			throw ODataJPAModelException.throwException(
+					ODataJPAModelException.INVALID_ASSOCIATION
+							.addContent(edmFQName.toString()), null);
 		}
 		return null;
 	}
@@ -195,7 +199,7 @@ public class ODataJPAEdmProvider extends EdmProvider {
 	public AssociationSet getAssociationSet(String entityContainer,
 			FullQualifiedName association, String sourceEntitySetName,
 			String sourceEntitySetRole) throws ODataException {
-		
+
 		EntityContainer container = null;
 		if (!entityContainerInfos.containsKey(entityContainer))
 			container = (EntityContainer) getEntityContainerInfo(entityContainer);
@@ -203,22 +207,32 @@ public class ODataJPAEdmProvider extends EdmProvider {
 			container = (EntityContainer) entityContainerInfos
 					.get(entityContainer);
 
-		if (container != null && association != null)
-			for (AssociationSet as : container.getAssociationSets())
-				if (association.equals(as.getAssociation()) 
-						&& sourceEntitySetName.equalsIgnoreCase(as.getEnd1().getEntitySet())
-						&& sourceEntitySetRole.equalsIgnoreCase(as.getEnd1().getRole()))
-					return as;
-		
+		if (container != null && association != null) {
+			for (AssociationSet as : container.getAssociationSets()) {
+				if (association.equals(as.getAssociation())) {
+					AssociationSetEnd end = as.getEnd1();
+					if (sourceEntitySetName.equals(end.getEntitySet())
+							&& sourceEntitySetRole.equals(end.getRole())) {
+						return as;
+					} else {
+						end = as.getEnd2();
+						if (sourceEntitySetName.equals(end.getEntitySet())
+								&& sourceEntitySetRole.equals(end.getRole())) {
+							return as;
+						}
+					}
+				}
+			}
+		}
 		throw ODataJPAModelException.throwException(
-				ODataJPAModelException.INVALID_ENTITYSET.addContent(association
-						.toString()), null);
+				ODataJPAModelException.INVALID_ASSOCIATION_SET
+						.addContent(association.toString()), null);
 	}
 
 	@Override
 	public FunctionImport getFunctionImport(String entityContainer, String name)
 			throws ODataException {
-		
+
 		throw ODataJPAModelException
 				.throwException(ODataJPAModelException.INVALID_ENTITYSET
 						.addContent(name), null);
@@ -226,17 +240,17 @@ public class ODataJPAEdmProvider extends EdmProvider {
 
 	@Override
 	public List<Schema> getSchemas() throws ODataException {
-		if (schemas == null && jpaEdmModel != null){
+		if (schemas == null && jpaEdmModel != null) {
 			jpaEdmModel.getBuilder().build();
 			schemas = new ArrayList<Schema>();
 			schemas.add(jpaEdmModel.getSchemaView().getEdmSchema());
 		}
-		if (jpaEdmModel == null){
-			
+		if (jpaEdmModel == null) {
+
 			throw ODataJPAModelException.throwException(
 					ODataJPAModelException.BUILDER_NULL, null);
 		}
-			
+
 		return schemas;
 
 	}

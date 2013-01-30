@@ -28,7 +28,7 @@ import com.sap.core.odata.api.edm.EdmSimpleType;
 import com.sap.core.odata.api.uri.KeyPredicate;
 import com.sap.core.odata.api.uri.NavigationSegment;
 import com.sap.core.odata.api.uri.info.GetEntitySetUriInfo;
-import com.sap.core.odata.processor.jpa.api.access.JPAOuterJoinClause;
+import com.sap.core.odata.processor.jpa.api.access.JPAJoinClause;
 import com.sap.core.odata.processor.jpa.exception.ODataJPAModelException;
 import com.sap.core.odata.processor.jpa.exception.ODataJPARuntimeException;
 import com.sap.core.odata.processor.jpa.jpql.JPQLJoinContext.JPQLJoinContextBuilder;
@@ -104,7 +104,7 @@ public class JPQLJoinContextTest {
 		} catch (ODataJPARuntimeException e) {
 			fail("Should not come here");
 		}
-		List<JPAOuterJoinClause> joinClauses = joinContext.getJPAOuterJoinClauses();
+		List<JPAJoinClause> joinClauses = joinContext.getJPAJoinClauses();
 		assertNotNull(joinClauses);
 		assertTrue(joinClauses.size() > 0);
 		assertEquals(joinClauses.get(0).getEntityAlias(), "E1");

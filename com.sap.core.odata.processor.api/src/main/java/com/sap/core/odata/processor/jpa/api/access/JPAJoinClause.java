@@ -1,9 +1,9 @@
 package com.sap.core.odata.processor.jpa.api.access;
 
-public class JPAOuterJoinClause {
+public class JPAJoinClause {
 
 	public enum JOIN {
-		LEFT, RIGHT
+		LEFT, FETCH, INNER
 	}
 
 	private String entityName;
@@ -29,7 +29,7 @@ public class JPAOuterJoinClause {
 		return entityRelationShipAlias;
 	}
 
-	public JPAOuterJoinClause(String entityName, String entityAlias,
+	public JPAJoinClause(String entityName, String entityAlias,
 			String entityRelationShip, String entityRelationShipAlias,
 			String joinCondition, JOIN joinType) {
 

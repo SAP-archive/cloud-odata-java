@@ -241,24 +241,29 @@ public class JPAEdmNameBuilder {
 		NavigationProperty navProp = jpaEdmNavigationProperty
 				.getEdmNavigationProperty();
 		String namespace = buildNamespace(associationView.getpUnitName());
+		
+		Association association = associationView.getEdmAssociation();
 		navProp.setRelationship(new FullQualifiedName(namespace,
-				associationView.getEdmAssociation().getName()));
-		FullQualifiedName associationEndTypeOne = associationView
-				.getEdmAssociation().getEnd1().getType();
+				association.getName()));
+
+		FullQualifiedName associationEndTypeOne = association.getEnd1().getType();
+		
 		if (propertyView.getJPAAttribute().getJavaType().getSimpleName()
 				.equals(associationEndTypeOne.getName())) {
-			navProp.setFromRole(associationView.getEdmAssociation().getEnd2()
+			navProp.setFromRole(association.getEnd2()
 					.getRole());
-			navProp.setToRole(associationView.getEdmAssociation().getEnd1()
+			navProp.setToRole(association.getEnd1()
 					.getRole());
 		} else {
 
-			navProp.setToRole(associationView.getEdmAssociation().getEnd2()
+			navProp.setToRole(association.getEnd2()
 					.getRole());
-			navProp.setFromRole(associationView.getEdmAssociation().getEnd1()
+			navProp.setFromRole(association.getEnd1()
 					.getRole());
 		}
-		navProp.setName(propertyView.getJPAAttribute().getJavaType()
+		Attribute<?, ?> jpaAttribute = propertyView.getJPAAttribute();
+		navProp.setMapping(new Mapping().setInternalName(jpaAttribute.getName()));
+		navProp.setName(jpaAttribute.getJavaType()
 				.getSimpleName().concat(NAVIGATION_NAME));
 
 	}
