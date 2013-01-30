@@ -27,13 +27,14 @@ public class FilterParserExceptionImpl extends ExpressionParserException
     return new ExpressionParserException(ODataBadRequestException.COMMON);
   }
 
-  static public ExpressionParserException createERROR_IN_TOKENIZER(TokenizerException exceptionTokenizer)
+  static public ExpressionParserException createERROR_IN_TOKENIZER(TokenizerException exceptionTokenizer, String expression)
   {
     Token token = exceptionTokenizer.getToken();
     MessageReference msgRef = ExpressionParserException.ERROR_IN_TOKENIZER.create();
 
     msgRef.addContent(token.getUriLiteral());
     msgRef.addContent(Integer.toString(token.getPosition() + 1));
+    msgRef.addContent(expression);
 
     return new ExpressionParserException(msgRef, exceptionTokenizer);
   }
@@ -242,18 +243,6 @@ public class FilterParserExceptionImpl extends ExpressionParserException
     msgRef.addContent(token.getPosition() + 1);
     msgRef.addContent(expression);
 
-    return new ExpressionParserException(msgRef);
-  }
-
-  /**
-   * Create a ExpressionParserException indication an error while tokenizing an expression
-   * @param token Erroneous token
-   * @param position Position of the erroneous token inside the tokenizer
-   * @return
-   */
-  public static ExpressionParserException ErrorInTokenizer(String token, int position)
-  {
-    final MessageReference msgRef = ExpressionParserException.ERROR_IN_TOKENIZER.addContent(Integer.toString(position + 1), token);
     return new ExpressionParserException(msgRef);
   }
 

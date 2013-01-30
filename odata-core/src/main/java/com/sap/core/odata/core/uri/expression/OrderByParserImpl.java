@@ -18,7 +18,7 @@ public class OrderByParserImpl extends FilterParserImpl implements OrderByParser
   @Override
   public OrderByExpression parseOrderByString(String orderByExpression) throws ExpressionParserException, ExpressionParserInternalError
   {
-    OrderByExpressionImpl orderCollection = new OrderByExpressionImpl();
+    OrderByExpressionImpl orderCollection = new OrderByExpressionImpl(curExpression);
     curExpression = orderByExpression;
 
     try
@@ -26,7 +26,7 @@ public class OrderByParserImpl extends FilterParserImpl implements OrderByParser
       tokenList = new Tokenizer(orderByExpression).tokenize(); //throws TokenizerMessage
     } catch (TokenizerException tokenizerException)
     {
-      throw FilterParserExceptionImpl.createERROR_IN_TOKENIZER(tokenizerException);
+      throw FilterParserExceptionImpl.createERROR_IN_TOKENIZER(tokenizerException,curExpression);
     }
 
     boolean weiter = false;

@@ -8,8 +8,6 @@ import com.sap.core.odata.api.uri.expression.ExpressionParserException;
 
 public class TestParserExceptions extends TestBase {
 
-  //TODO test Address\NotAProperty    used \ instead of /
-
   @Test
   public void testOPMparseOrderByString()
   {
@@ -356,6 +354,21 @@ public class TestParserExceptions extends TestBase {
     GetPTF("notsupportedfunction    ('a')")
         .aExMsgText("Unknown function \"notsupportedfunction\" at position 1 in \"notsupportedfunction    ('a')\".");
 
-  }
+    //CASE 4
+    //Use \ instead of /
+    GetPTF("Address\\NotAProperty")
+        .aExMsgText("Error while tokenizing a ODATA expression on token \"\\\" at position 8 in \"Address\\NotAProperty\".");
 
+    //CASE 5
+    GetPTF("-(-(- 2d)))")
+        .aExMsgText("Invalid token \")\" detected after parsing at position 11 in \"-(-(- 2d)))\".");
+
+    //CASE 6
+    GetPTF("a b")
+        .aExMsgText("Invalid token \"b\" detected after parsing at position 3 in \"a b\".");
+
+    //CASE 7 
+    GetPTF("a eq b b")
+        .aExMsgText("Invalid token \"b\" detected after parsing at position 8 in \"a eq b b\".");
+  }
 }

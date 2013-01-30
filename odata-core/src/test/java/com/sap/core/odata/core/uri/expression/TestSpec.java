@@ -72,122 +72,123 @@ public class TestSpec extends TestBase
   final EdmTime timeInst = EdmTime.getInstance();
 
   @Test
-  public void testAdd()
+  public void testMinimumSpecReq()
   {
 
     //ADD
-    GetPTF(aDecimal + " add " + aDecimal).aEdmType(decimalInst);
-    GetPTF(aDouble + " add " + aDouble).aEdmType(doubleInst);
-    GetPTF(aSingle + " add " + aSingle).aEdmType(singleInst);
-    GetPTF(aInt64 + " add " + aInt64).aEdmType(int64Inst);
-    GetPTF(aInt32 + " add " + aInt32).aEdmType(int32Inst);
+    GetPTF(aDecimal + " add " + aDecimal).aEdmType(decimalInst).aSerialized("{" + aDecimal + " add " + aDecimal + "}");
+    GetPTF(aDouble + " add " + aDouble).aEdmType(doubleInst).aSerialized("{" + aDouble + " add " + aDouble + "}");
+    ;
+    GetPTF(aSingle + " add " + aSingle).aEdmType(singleInst).aSerialized("{" + aSingle + " add " + aSingle + "}");
+    GetPTF(aInt64 + " add " + aInt64).aEdmType(int64Inst).aSerialized("{" + aInt64 + " add " + aInt64 + "}");
+    GetPTF(aInt32 + " add " + aInt32).aEdmType(int32Inst).aSerialized("{" + aInt32 + " add " + aInt32 + "}");
 
     //ADD
-    GetPTF(aDecimal + " sub " + aDecimal).aEdmType(decimalInst);
-    GetPTF(aDouble + " sub " + aDouble).aEdmType(doubleInst);
-    GetPTF(aSingle + " sub " + aSingle).aEdmType(singleInst);
-    GetPTF(aInt64 + " sub " + aInt64).aEdmType(int64Inst);
-    GetPTF(aInt32 + " sub " + aInt32).aEdmType(int32Inst);
+    GetPTF(aDecimal + " sub " + aDecimal).aEdmType(decimalInst).aSerialized("{" + aDecimal + " sub " + aDecimal + "}");
+    GetPTF(aDouble + " sub " + aDouble).aEdmType(doubleInst).aSerialized("{" + aDouble + " sub " + aDouble + "}");
+    GetPTF(aSingle + " sub " + aSingle).aEdmType(singleInst).aSerialized("{" + aSingle + " sub " + aSingle + "}");
+    GetPTF(aInt64 + " sub " + aInt64).aEdmType(int64Inst).aSerialized("{" + aInt64 + " sub " + aInt64 + "}");
+    GetPTF(aInt32 + " sub " + aInt32).aEdmType(int32Inst).aSerialized("{" + aInt32 + " sub " + aInt32 + "}");
 
     //MUL
-    GetPTF(aDecimal + " mul " + aDecimal).aEdmType(decimalInst);
-    GetPTF(aDouble + " mul " + aDouble).aEdmType(doubleInst);
-    GetPTF(aSingle + " mul " + aSingle).aEdmType(singleInst);
-    GetPTF(aInt64 + " mul " + aInt64).aEdmType(int64Inst);
-    GetPTF(aInt32 + " mul " + aInt32).aEdmType(int32Inst);
+    GetPTF(aDecimal + " mul " + aDecimal).aEdmType(decimalInst).aSerialized("{" + aDecimal + " mul " + aDecimal + "}");
+    GetPTF(aDouble + " mul " + aDouble).aEdmType(doubleInst).aSerialized("{" + aDouble + " mul " + aDouble + "}");
+    GetPTF(aSingle + " mul " + aSingle).aEdmType(singleInst).aSerialized("{" + aSingle + " mul " + aSingle + "}");
+    GetPTF(aInt64 + " mul " + aInt64).aEdmType(int64Inst).aSerialized("{" + aInt64 + " mul " + aInt64 + "}");
+    GetPTF(aInt32 + " mul " + aInt32).aEdmType(int32Inst).aSerialized("{" + aInt32 + " mul " + aInt32 + "}");
 
     //DIV
-    GetPTF(aDecimal + " div " + aDecimal).aEdmType(decimalInst);
-    GetPTF(aDouble + " div " + aDouble).aEdmType(doubleInst);
-    GetPTF(aSingle + " div " + aSingle).aEdmType(singleInst);
-    GetPTF(aInt64 + " div " + aInt64).aEdmType(int64Inst);
-    GetPTF(aInt32 + " div " + aInt32).aEdmType(int32Inst);
+    GetPTF(aDecimal + " div " + aDecimal).aEdmType(decimalInst).aSerialized("{" + aDecimal + " div " + aDecimal + "}");
+    GetPTF(aDouble + " div " + aDouble).aEdmType(doubleInst).aSerialized("{" + aDouble + " div " + aDouble + "}");
+    GetPTF(aSingle + " div " + aSingle).aEdmType(singleInst).aSerialized("{" + aSingle + " div " + aSingle + "}");
+    GetPTF(aInt64 + " div " + aInt64).aEdmType(int64Inst).aSerialized("{" + aInt64 + " div " + aInt64 + "}");
+    GetPTF(aInt32 + " div " + aInt32).aEdmType(int32Inst).aSerialized("{" + aInt32 + " div " + aInt32 + "}");
 
     //MOD
-    GetPTF(aDecimal + " mod " + aDecimal).aEdmType(decimalInst);
-    GetPTF(aDouble + " mod " + aDouble).aEdmType(doubleInst);
-    GetPTF(aSingle + " mod " + aSingle).aEdmType(singleInst);
-    GetPTF(aInt64 + " mod " + aInt64).aEdmType(int64Inst);
-    GetPTF(aInt32 + " mod " + aInt32).aEdmType(int32Inst);
+    GetPTF(aDecimal + " mod " + aDecimal).aEdmType(decimalInst).aSerialized("{" + aDecimal + " mod " + aDecimal + "}");
+    GetPTF(aDouble + " mod " + aDouble).aEdmType(doubleInst).aSerialized("{" + aDouble + " mod " + aDouble + "}");
+    GetPTF(aSingle + " mod " + aSingle).aEdmType(singleInst).aSerialized("{" + aSingle + " mod " + aSingle + "}");
+    GetPTF(aInt64 + " mod " + aInt64).aEdmType(int64Inst).aSerialized("{" + aInt64 + " mod " + aInt64 + "}");
+    GetPTF(aInt32 + " mod " + aInt32).aEdmType(int32Inst).aSerialized("{" + aInt32 + " mod " + aInt32 + "}");
 
     //NEGATE
-    GetPTF(" - " + aDecimal).aEdmType(decimalInst);
-    GetPTF(" - " + aDouble).aEdmType(doubleInst);
-    GetPTF(" - " + aSingle).aEdmType(singleInst);
-    GetPTF(" - " + aInt64).aEdmType(int64Inst);
-    GetPTF(" - " + aInt32).aEdmType(int32Inst);
+    GetPTF(" - " + aDecimal).aEdmType(decimalInst).aSerialized("{- " + aDecimal + "}");
+    GetPTF(" - " + aDouble).aEdmType(doubleInst).aSerialized("{- " + aDouble + "}");
+    GetPTF(" - " + aSingle).aEdmType(singleInst).aSerialized("{- " + aSingle + "}");
+    GetPTF(" - " + aInt64).aEdmType(int64Inst).aSerialized("{- " + aInt64 + "}");
+    GetPTF(" - " + aInt32).aEdmType(int32Inst).aSerialized("{- " + aInt32 + "}");
 
     //AND
-    GetPTF(aBoolean + " and " + aBoolean).aEdmType(boolInst);
+    GetPTF(aBoolean + " and " + aBoolean).aEdmType(boolInst).aSerialized("{" + aBoolean + " and " + aBoolean + "}");
 
     //OR
-    GetPTF(aBoolean + " or " + aBoolean).aEdmType(boolInst);
+    GetPTF(aBoolean + " or " + aBoolean).aEdmType(boolInst).aSerialized("{" + aBoolean + " or " + aBoolean + "}");
 
     //EQ
-    GetPTF(aDecimal + " eq " + aDecimal).aEdmType(boolInst);
-    GetPTF(aDouble + " eq " + aDouble).aEdmType(boolInst);
-    GetPTF(aSingle + " eq " + aSingle).aEdmType(boolInst);
-    GetPTF(aInt64 + " eq " + aInt64).aEdmType(boolInst);
-    GetPTF(aInt32 + " eq " + aInt32).aEdmType(boolInst);
-    GetPTF(aString + " eq " + aString).aEdmType(boolInst);
-    GetPTF(aDatetime + " eq " + aDatetime).aEdmType(boolInst);
-    GetPTF(aGuid + " eq " + aGuid).aEdmType(boolInst);
-    GetPTF(aGuid + " eq " + aGuid).aEdmType(boolInst);
+    GetPTF(aDecimal + " eq " + aDecimal).aEdmType(boolInst).aSerialized("{" + aDecimal + " eq " + aDecimal + "}");
+    GetPTF(aDouble + " eq " + aDouble).aEdmType(boolInst).aSerialized("{" + aDouble + " eq " + aDouble + "}");
+    GetPTF(aSingle + " eq " + aSingle).aEdmType(boolInst).aSerialized("{" + aSingle + " eq " + aSingle + "}");
+    GetPTF(aInt64 + " eq " + aInt64).aEdmType(boolInst).aSerialized("{" + aInt64 + " eq " + aInt64 + "}");
+    GetPTF(aInt32 + " eq " + aInt32).aEdmType(boolInst).aSerialized("{" + aInt32 + " eq " + aInt32 + "}");
+    GetPTF(aString + " eq " + aString).aEdmType(boolInst).aSerialized("{" + aString + " eq " + aString + "}");
+    GetPTF(aDatetime + " eq " + aDatetime).aEdmType(boolInst).aSerialized("{" + aDatetime + " eq " + aDatetime + "}");
+    GetPTF(aGuid + " eq " + aGuid).aEdmType(boolInst).aSerialized("{" + aGuid + " eq " + aGuid + "}");
+    GetPTF(aBinary + " eq " + aBinary).aEdmType(boolInst).aSerialized("{" + aBinary + " eq " + aBinary + "}");
 
     //NE
-    GetPTF(aDecimal + " ne " + aDecimal).aEdmType(boolInst);
-    GetPTF(aDouble + " ne " + aDouble).aEdmType(boolInst);
-    GetPTF(aSingle + " ne " + aSingle).aEdmType(boolInst);
-    GetPTF(aInt64 + " ne " + aInt64).aEdmType(boolInst);
-    GetPTF(aInt32 + " ne " + aInt32).aEdmType(boolInst);
-    GetPTF(aString + " ne " + aString).aEdmType(boolInst);
-    GetPTF(aDatetime + " ne " + aDatetime).aEdmType(boolInst);
-    GetPTF(aGuid + " ne " + aGuid).aEdmType(boolInst);
-    GetPTF(aGuid + " ne " + aGuid).aEdmType(boolInst);
+    GetPTF(aDecimal + " ne " + aDecimal).aEdmType(boolInst).aSerialized("{" + aDecimal + " ne " + aDecimal + "}");
+    GetPTF(aDouble + " ne " + aDouble).aEdmType(boolInst).aSerialized("{" + aDouble + " ne " + aDouble + "}");
+    GetPTF(aSingle + " ne " + aSingle).aEdmType(boolInst).aSerialized("{" + aSingle + " ne " + aSingle + "}");
+    GetPTF(aInt64 + " ne " + aInt64).aEdmType(boolInst).aSerialized("{" + aInt64 + " ne " + aInt64 + "}");
+    GetPTF(aInt32 + " ne " + aInt32).aEdmType(boolInst).aSerialized("{" + aInt32 + " ne " + aInt32 + "}");
+    GetPTF(aString + " ne " + aString).aEdmType(boolInst).aSerialized("{" + aString + " ne " + aString + "}");
+    GetPTF(aDatetime + " ne " + aDatetime).aEdmType(boolInst).aSerialized("{" + aDatetime + " ne " + aDatetime + "}");
+    GetPTF(aGuid + " ne " + aGuid).aEdmType(boolInst).aSerialized("{" + aGuid + " ne " + aGuid + "}");
+    GetPTF(aBinary + " ne " + aBinary).aEdmType(boolInst).aSerialized("{" + aBinary + " ne " + aBinary + "}");
 
     //LT
-    GetPTF(aDecimal + " lt " + aDecimal).aEdmType(boolInst);
-    GetPTF(aDouble + " lt " + aDouble).aEdmType(boolInst);
-    GetPTF(aSingle + " lt " + aSingle).aEdmType(boolInst);
-    GetPTF(aInt64 + " lt " + aInt64).aEdmType(boolInst);
-    GetPTF(aInt32 + " lt " + aInt32).aEdmType(boolInst);
-    GetPTF(aString + " lt " + aString).aEdmType(boolInst);
-    GetPTF(aDatetime + " lt " + aDatetime).aEdmType(boolInst);
-    GetPTF(aGuid + " lt " + aGuid).aEdmType(boolInst);
-    GetPTF(aGuid + " lt " + aGuid).aEdmType(boolInst);
+    GetPTF(aDecimal + " lt " + aDecimal).aEdmType(boolInst).aSerialized("{" + aDecimal + " lt " + aDecimal + "}");
+    GetPTF(aDouble + " lt " + aDouble).aEdmType(boolInst).aSerialized("{" + aDouble + " lt " + aDouble + "}");
+    GetPTF(aSingle + " lt " + aSingle).aEdmType(boolInst).aSerialized("{" + aSingle + " lt " + aSingle + "}");
+    GetPTF(aInt64 + " lt " + aInt64).aEdmType(boolInst).aSerialized("{" + aInt64 + " lt " + aInt64 + "}");
+    GetPTF(aInt32 + " lt " + aInt32).aEdmType(boolInst).aSerialized("{" + aInt32 + " lt " + aInt32 + "}");
+    GetPTF(aString + " lt " + aString).aEdmType(boolInst).aSerialized("{" + aString + " lt " + aString + "}");
+    GetPTF(aDatetime + " lt " + aDatetime).aEdmType(boolInst).aSerialized("{" + aDatetime + " lt " + aDatetime + "}");
+    GetPTF(aGuid + " lt " + aGuid).aEdmType(boolInst).aSerialized("{" + aGuid + " lt " + aGuid + "}");
+    GetPTF(aBinary + " lt " + aBinary).aEdmType(boolInst).aSerialized("{" + aBinary + " lt " + aBinary + "}");
 
     //LE
-    GetPTF(aDecimal + " le " + aDecimal).aEdmType(boolInst);
-    GetPTF(aDouble + " le " + aDouble).aEdmType(boolInst);
-    GetPTF(aSingle + " le " + aSingle).aEdmType(boolInst);
-    GetPTF(aInt64 + " le " + aInt64).aEdmType(boolInst);
-    GetPTF(aInt32 + " le " + aInt32).aEdmType(boolInst);
-    GetPTF(aString + " le " + aString).aEdmType(boolInst);
-    GetPTF(aDatetime + " le " + aDatetime).aEdmType(boolInst);
-    GetPTF(aGuid + " le " + aGuid).aEdmType(boolInst);
-    GetPTF(aGuid + " le " + aGuid).aEdmType(boolInst);
+    GetPTF(aDecimal + " le " + aDecimal).aEdmType(boolInst).aSerialized("{" + aDecimal + " le " + aDecimal + "}");
+    GetPTF(aDouble + " le " + aDouble).aEdmType(boolInst).aSerialized("{" + aDouble + " le " + aDouble + "}");
+    GetPTF(aSingle + " le " + aSingle).aEdmType(boolInst).aSerialized("{" + aSingle + " le " + aSingle + "}");
+    GetPTF(aInt64 + " le " + aInt64).aEdmType(boolInst).aSerialized("{" + aInt64 + " le " + aInt64 + "}");
+    GetPTF(aInt32 + " le " + aInt32).aEdmType(boolInst).aSerialized("{" + aInt32 + " le " + aInt32 + "}");
+    GetPTF(aString + " le " + aString).aEdmType(boolInst).aSerialized("{" + aString + " le " + aString + "}");
+    GetPTF(aDatetime + " le " + aDatetime).aEdmType(boolInst).aSerialized("{" + aDatetime + " le " + aDatetime + "}");
+    GetPTF(aGuid + " le " + aGuid).aEdmType(boolInst).aSerialized("{" + aGuid + " le " + aGuid + "}");
+    GetPTF(aBinary + " le " + aBinary).aEdmType(boolInst).aSerialized("{" + aBinary + " le " + aBinary + "}");
 
     //GT
-    GetPTF(aDecimal + " gt " + aDecimal).aEdmType(boolInst);
-    GetPTF(aDouble + " gt " + aDouble).aEdmType(boolInst);
-    GetPTF(aSingle + " gt " + aSingle).aEdmType(boolInst);
-    GetPTF(aInt64 + " gt " + aInt64).aEdmType(boolInst);
-    GetPTF(aInt32 + " gt " + aInt32).aEdmType(boolInst);
-    GetPTF(aString + " gt " + aString).aEdmType(boolInst);
-    GetPTF(aDatetime + " gt " + aDatetime).aEdmType(boolInst);
-    GetPTF(aGuid + " gt " + aGuid).aEdmType(boolInst);
-    GetPTF(aGuid + " gt " + aGuid).aEdmType(boolInst);
+    GetPTF(aDecimal + " gt " + aDecimal).aEdmType(boolInst).aSerialized("{" + aDecimal + " gt " + aDecimal + "}");
+    GetPTF(aDouble + " gt " + aDouble).aEdmType(boolInst).aSerialized("{" + aDouble + " gt " + aDouble + "}");
+    GetPTF(aSingle + " gt " + aSingle).aEdmType(boolInst).aSerialized("{" + aSingle + " gt " + aSingle + "}");
+    GetPTF(aInt64 + " gt " + aInt64).aEdmType(boolInst).aSerialized("{" + aInt64 + " gt " + aInt64 + "}");
+    GetPTF(aInt32 + " gt " + aInt32).aEdmType(boolInst).aSerialized("{" + aInt32 + " gt " + aInt32 + "}");
+    GetPTF(aString + " gt " + aString).aEdmType(boolInst).aSerialized("{" + aString + " gt " + aString + "}");
+    GetPTF(aDatetime + " gt " + aDatetime).aEdmType(boolInst).aSerialized("{" + aDatetime + " gt " + aDatetime + "}");
+    GetPTF(aGuid + " gt " + aGuid).aEdmType(boolInst).aSerialized("{" + aGuid + " gt " + aGuid + "}");
+    GetPTF(aBinary + " gt " + aBinary).aEdmType(boolInst).aSerialized("{" + aBinary + " gt " + aBinary + "}");
 
     //GE
-    GetPTF(aDecimal + " ge " + aDecimal).aEdmType(boolInst);
-    GetPTF(aDouble + " ge " + aDouble).aEdmType(boolInst);
-    GetPTF(aSingle + " ge " + aSingle).aEdmType(boolInst);
-    GetPTF(aInt64 + " ge " + aInt64).aEdmType(boolInst);
-    GetPTF(aInt32 + " ge " + aInt32).aEdmType(boolInst);
-    GetPTF(aString + " ge " + aString).aEdmType(boolInst);
-    GetPTF(aDatetime + " ge " + aDatetime).aEdmType(boolInst);
-    GetPTF(aGuid + " ge " + aGuid).aEdmType(boolInst);
-    GetPTF(aGuid + " ge " + aGuid).aEdmType(boolInst);
+    GetPTF(aDecimal + " ge " + aDecimal).aEdmType(boolInst).aSerialized("{" + aDecimal + " ge " + aDecimal + "}");
+    GetPTF(aDouble + " ge " + aDouble).aEdmType(boolInst).aSerialized("{" + aDouble + " ge " + aDouble + "}");
+    GetPTF(aSingle + " ge " + aSingle).aEdmType(boolInst).aSerialized("{" + aSingle + " ge " + aSingle + "}");
+    GetPTF(aInt64 + " ge " + aInt64).aEdmType(boolInst).aSerialized("{" + aInt64 + " ge " + aInt64 + "}");
+    GetPTF(aInt32 + " ge " + aInt32).aEdmType(boolInst).aSerialized("{" + aInt32 + " ge " + aInt32 + "}");
+    GetPTF(aString + " ge " + aString).aEdmType(boolInst).aSerialized("{" + aString + " ge " + aString + "}");
+    GetPTF(aDatetime + " ge " + aDatetime).aEdmType(boolInst).aSerialized("{" + aDatetime + " ge " + aDatetime + "}");
+    GetPTF(aGuid + " ge " + aGuid).aEdmType(boolInst).aSerialized("{" + aGuid + " ge " + aGuid + "}");
+    GetPTF(aBinary + " ge " + aBinary).aEdmType(boolInst).aSerialized("{" + aBinary + " ge " + aBinary + "}");
 
     //NOT
     GetPTF(" not " + aBoolean).aEdmType(boolInst);

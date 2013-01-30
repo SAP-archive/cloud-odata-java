@@ -77,7 +77,7 @@ public class FilterParserImpl implements FilterParser
     } catch (TokenizerException tokenizerException)
     {
       // Tested with TestParserExceptions.TestPMparseFilterString
-      throw FilterParserExceptionImpl.createERROR_IN_TOKENIZER(tokenizerException);
+      throw FilterParserExceptionImpl.createERROR_IN_TOKENIZER(tokenizerException, curExpression);
     }
 
     try

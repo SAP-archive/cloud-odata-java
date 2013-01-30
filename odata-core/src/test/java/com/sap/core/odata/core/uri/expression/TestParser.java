@@ -105,13 +105,11 @@ public class TestParser extends TestBase
     //SByte <--> Uint7 
     GetPTF("-10 add 100").aEdmType(EdmSByte.getInstance());
 
-    //TODO extend Matrix
     GetPTF("1000").aEdmType(EdmInt16.getInstance());
     GetPTF("1000 add 1000").aEdmType(EdmInt16.getInstance());
 
     GetPTF("concat('a','b')").aEdmType(EdmString.getInstance());
     GetPTF("concat('a','b','c')").aEdmType(EdmString.getInstance());
-    //TODO extend Matrix
   }
 
   @Test
@@ -415,13 +413,7 @@ public class TestParser extends TestBase
 
   }
 
-  void Errors()
-  {
-    //GetPTF("-(-(- 2d)))").aSerialized("{-{-{- 2d}}}");
-    //TODO verify if is an internal error or an user error. E.g. Test "a eq b b" or " a b"
-    //     should lead to createINVALID_TRAILING_TOKEN_DETECTED_AFTER_PARSING
-
-  }
+  
 
   ExpressionParserException GetException()
   {
