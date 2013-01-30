@@ -52,6 +52,7 @@ public class ParserTool
   {
     if (debug) ParserTool.log.debug(out);
   }
+
   public static void out(String out)
   {
     ParserTool.log.debug(out);
@@ -65,7 +66,7 @@ public class ParserTool
     try {
       if (!isOrder)
       {
-        TestFilterParserImpl parser = new TestFilterParserImpl(null, null);
+        FilterParserImplTool parser = new FilterParserImplTool(null, null);
         if (addTestfunctions) parser.addTestfunctions();
         this.tree = parser.parseFilterString(expression).getExpression();
       }
@@ -92,7 +93,7 @@ public class ParserTool
     try {
       if (!isOrder)
       {
-        TestFilterParserImpl parser = new TestFilterParserImpl(edm, resourceEntityType);
+        FilterParserImplTool parser = new FilterParserImplTool(edm, resourceEntityType);
         if (addTestfunctions) parser.addTestfunctions();
         this.tree = parser.parseFilterString(expression).getExpression();
       }
@@ -255,7 +256,7 @@ public class ParserTool
     return this;
   }
 
-  public ParserTool aExKey(MessageReference expressionExpectedAtPos) 
+  public ParserTool aExKey(MessageReference expressionExpectedAtPos)
   {
     String expectedKey = expressionExpectedAtPos.getKey();
     ODataMessageException messageException;
@@ -286,10 +287,9 @@ public class ParserTool
     return this;
   }
 
-  public ParserTool printExMessage() 
+  public ParserTool printExMessage()
   {
     ODataMessageException messageException;
-
     if (curException == null)
     {
       fail("Error in aExMsgPrint: Expected exception");
@@ -310,6 +310,15 @@ public class ParserTool
     out("Messge <-- ");
 
     return this;
+  }
+
+  public String getExceptionText(Exception exception)
+  {
+    ODataMessageException messageException = (ODataMessageException) curException;
+    Message ms = MessageService.getMessage(DEFAULT_LANGUAGE, messageException.getMessageReference());
+
+    return ms.getText();
+
   }
 
   public ParserTool printSerialized()
@@ -348,11 +357,28 @@ public class ParserTool
     return this;
   }
 
+  private void checkNoException(String infoMethod)
+  {
+    if (exception != null)
+    {
+      fail("Error in " + infoMethod + ": exception '" + getExceptionText(exception) + "' occured!");
+    }
+  }
+
   public ParserTool aEdmType(EdmType type)
   {
+    checkNoException("aEdmType");
     String info = "GetEdmType(" + expression + ")-->";
+
     try {
+      if (curNode.getEdmType() == null)
+      {
+        dout("  " + info + "Expected: " + type.getName() + " Actual: " + "null");
+        fail("Error in aEdmType: type of curNode is null");
+      }
+
       dout("  " + info + "Expected: " + type.getName() + " Actual: " + curNode.getEdmType().getName());
+
     } catch (EdmException e) {
       fail("Error in aEdmType:" + e.getLocalizedMessage());
     }
@@ -381,7 +407,7 @@ public class ParserTool
 
   public ParserTool aExpr()
   {
-    String info = "GetSortOrder(" + expression + ")-->";
+    String info = "GetExpr(" + expression + ")-->";
 
     if ((curNode.getKind() != ExpressionKind.ORDER) && (curNode.getKind() != ExpressionKind.FILTER))
     {
@@ -434,6 +460,8 @@ public class ParserTool
 
   public ParserTool aSerialized(String expected)
   {
+    checkNoException("aSerialized");
+    
     String actual = null;
     ExpressionVisitor visitor = new VisitorTool();
     try {
@@ -451,7 +479,7 @@ public class ParserTool
     return this;
   }
 
-  public ParserTool left() 
+  public ParserTool left()
   {
     switch (curNode.getKind())
     {
@@ -478,7 +506,7 @@ public class ParserTool
     return this;
   }
 
-  public ParserTool right() 
+  public ParserTool right()
   {
     switch (curNode.getKind())
     {
@@ -552,7 +580,7 @@ public class ParserTool
     return this;
   }
 
-  public ParserTool root() 
+  public ParserTool root()
   {
     curNode = this.tree;
     return this;
@@ -600,7 +628,7 @@ public class ParserTool
     }
   }
 
-  public ParserTool exRoot() 
+  public ParserTool exRoot()
   {
     curException = exception;
     return this;

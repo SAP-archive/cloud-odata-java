@@ -139,7 +139,7 @@ public class FilterParserImpl implements FilterParser
 
       try
       {
-        validateBinaryOperator(binaryNode);
+        validateBinaryOperatorTypes(binaryNode);
       } catch (ExpressionParserException expressionException)
       {
         // Extend the error information
@@ -377,7 +377,7 @@ public class FilterParserImpl implements FilterParser
 
     CommonExpression operand = readElement(null);
     UnaryExpression unaryExpression = new UnaryExpressionImpl(unaryOperator, operand);
-    validateUnaryOperator(unaryExpression); //throws ExpressionInvalidOperatorTypeException
+    validateUnaryOperatorTypes(unaryExpression); //throws ExpressionInvalidOperatorTypeException
 
     return unaryExpression;
   }
@@ -387,7 +387,7 @@ public class FilterParserImpl implements FilterParser
     MethodExpressionImpl method = new MethodExpressionImpl(methodOperator);
 
     readParameters(methodOperator, method, token);
-    validateMethodTypes(method); //throws ExpressionInvalidOperatorTypeException
+    validateMethodTypes(method, token); //throws ExpressionInvalidOperatorTypeException
 
     return method;
   }
@@ -567,35 +567,40 @@ public class FilterParserImpl implements FilterParser
       }
     }*/
 
-  protected void validateUnaryOperator(UnaryExpression unaryExpression) throws ExpressionParserInternalError
+  protected void validateUnaryOperatorTypes(UnaryExpression unaryExpression) throws ExpressionParserInternalError
   {
     InfoUnaryOperator unOpt = availableUnaryOperators.get(unaryExpression.getOperator().toUriLiteral());
-
-    //List<ParameterSet> allowedParameterTypesCombinations = binOpt.getParameterSet();
+    EdmType operandType = unaryExpression.getOperand().getEdmType();
+    
+    if ((operandType == null) && (edm == null)) return;
+    
     List<EdmType> actualParameterTypes = new ArrayList<EdmType>();
-    actualParameterTypes.add(unaryExpression.getOperand().getEdmType());
+    actualParameterTypes.add(operandType);
 
-    EdmType edmType = unOpt.validateParameterSet(actualParameterTypes);
-    unaryExpression.setEdmType(edmType);
-
+    ParameterSet parameterSet = unOpt.validateParameterSet(actualParameterTypes);
+    if (parameterSet != null)
+    {
+      unaryExpression.setEdmType(parameterSet.getReturnType());
+    }
   }
 
-  protected void validateBinaryOperator(BinaryExpression binaryExpression) throws ExpressionParserException, ExpressionParserInternalError
+  protected void validateBinaryOperatorTypes(BinaryExpression binaryExpression) throws ExpressionParserException, ExpressionParserInternalError
   {
     InfoBinaryOperator binOpt = availableBinaryOperators.get(binaryExpression.getOperator().toUriLiteral());
 
-    //List<ParameterSet> allowedParameterTypesCombinations = binOpt.getParameterSet();
     List<EdmType> actualParameterTypes = new ArrayList<EdmType>();
     EdmType operand = binaryExpression.getLeftOperand().getEdmType();
-    if (operand == null) return;
+    
+    if ((operand == null) && (edm == null)) return;
     actualParameterTypes.add(operand);
 
     operand = binaryExpression.getRightOperand().getEdmType();
-    if (operand == null) return;
+    
+    if ((operand == null) && (edm == null)) return;
     actualParameterTypes.add(operand);
 
-    EdmType edmType = binOpt.validateParameterSet(actualParameterTypes);
-    if (edmType == null)
+    ParameterSet parameterSet = binOpt.validateParameterSet(actualParameterTypes);
+    if (parameterSet == null)
     {
       BinaryExpressionImpl binaryExpressionImpl = (BinaryExpressionImpl) binaryExpression;
 
@@ -606,25 +611,42 @@ public class FilterParserImpl implements FilterParser
           binaryExpression.getRightOperand().getEdmType(),
           binaryExpressionImpl.getToken(), curExpression
           );
-
     }
-
-    binaryExpression.setEdmType(edmType);
+    binaryExpression.setEdmType(parameterSet.getReturnType());
   }
 
-  protected void validateMethodTypes(MethodExpression methodExpression) throws ExpressionParserInternalError
+  protected void validateMethodTypes(MethodExpression methodExpression, Token methodToken) throws ExpressionParserException, ExpressionParserInternalError
   {
-    InfoMethod methOpt = availableMethods.get(methodExpression.getMethod().toUriLiteral());
+    InfoMethod methOpt = availableMethods.get(methodExpression.getUriLiteral());
 
     List<EdmType> actualParameterTypes = new ArrayList<EdmType>();
 
+    //If there are no parameter then don't perform a type check
+    if (methodExpression.getParameters().size() == 0)
+    {
+      return;
+    }
+
     for (CommonExpression parameter : methodExpression.getParameters())
     {
+      //If there is not at parsing time its not possible to determine the type of eg myPropertyName.
+      //Since this should not cause validation errors null type node arguments are leading to bypass
+      //the validation
+      if ((parameter.getEdmType() == null)  && (edm == null))
+      {
+        return;
+      }
       actualParameterTypes.add(parameter.getEdmType());
     }
 
-    EdmType edmType = methOpt.validateParameterSet(actualParameterTypes);
-    methodExpression.setEdmType(edmType);
+    ParameterSet parameterSet = methOpt.validateParameterSet(actualParameterTypes);
+    //If there is not returntype then the input parameter 
+    if (parameterSet == null)
+    {
+      // Tested with TestParserExceptions.testPMvalidateMethodTypes CASE 1
+      throw FilterParserExceptionImpl.createMETHOD_WRONG_INPUT_TYPE((MethodExpressionImpl) methodExpression, methodToken, curExpression);
+    }
+    methodExpression.setEdmType(parameterSet.getReturnType());
   }
 
   static void initAvialTables()

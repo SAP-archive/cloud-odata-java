@@ -143,6 +143,19 @@ public class FilterParserExceptionImpl extends ExpressionParserException
     return new ExpressionParserException(msgRef);
   }
 
+  public static ExpressionParserException createMETHOD_WRONG_INPUT_TYPE(MethodExpressionImpl methodExpression, Token token, String expression)
+  {
+    MessageReference msgRef = null;
+
+    //Tested with TestParserExceptions.TestPMreadParameters CASE 7-1
+    msgRef = ExpressionParserException.METHOD_WRONG_INPUT_TYPE.create();
+    msgRef.addContent(methodExpression.getMethod().toUriLiteral());
+    msgRef.addContent(token.getPosition() + 1);
+    msgRef.addContent(expression);
+
+    return new ExpressionParserException(msgRef);
+  }
+
   public static ExpressionParserException createLEFT_SIDE_NOT_A_PROPERTY(Token token, String expression) throws ExpressionParserInternalError
   {
     MessageReference msgRef = ExpressionParserException.LEFT_SIDE_NOT_A_PROPERTY.create();

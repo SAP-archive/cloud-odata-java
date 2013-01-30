@@ -2,17 +2,16 @@ package com.sap.core.odata.core.uri.expression;
 
 import java.util.List;
 
-import com.sap.core.odata.api.edm.EdmSimpleType;
 import com.sap.core.odata.api.edm.EdmType;
 
 public interface InputTypeValidator {
 
-  public EdmSimpleType validateParameterSet(List<ParameterSet> allowedParameterTypes, List<EdmType> actualParameterTypes) throws ExpressionParserInternalError;
+  public EdmType validateParameterSet(List<ParameterSet> allowedParameterTypes, List<EdmType> actualParameterTypes) throws ExpressionParserInternalError;
 
   public static class TypePromotionValidator implements InputTypeValidator {
 
     @Override
-    public EdmSimpleType validateParameterSet(List<ParameterSet> allowedParameterTypes, List<EdmType> actualParameterTypes) throws ExpressionParserInternalError
+    public EdmType validateParameterSet(List<ParameterSet> allowedParameterTypes, List<EdmType> actualParameterTypes) throws ExpressionParserInternalError
     {
       //first check for exact parameter combination
       for (ParameterSet parameterSet : allowedParameterTypes)

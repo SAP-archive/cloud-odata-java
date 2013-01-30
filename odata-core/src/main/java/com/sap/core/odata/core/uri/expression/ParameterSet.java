@@ -16,11 +16,11 @@ import com.sap.core.odata.api.edm.EdmType;
  */
 class ParameterSet
 {
-  private EdmSimpleType returnType = null;
+  private EdmType returnType = null;
   public ArrayList<EdmSimpleType> types = new ArrayList<EdmSimpleType>();
   private EdmSimpleType furtherType = null;
 
-  public ParameterSet(EdmSimpleType returnType, EdmSimpleType type1)
+  public ParameterSet(EdmType returnType, EdmSimpleType type1)
   {
     this.returnType = returnType;
     types.add(type1);
@@ -41,7 +41,7 @@ class ParameterSet
     types.add(type3);
   }
 
-  public EdmSimpleType getReturnType()
+  public EdmType getReturnType()
   {
     return returnType;
   }
