@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Map;
 
 import com.sap.core.odata.api.edm.EdmAnnotatable;
-import com.sap.core.odata.api.edm.EdmAnnotations;
 import com.sap.core.odata.api.edm.EdmException;
 import com.sap.core.odata.api.edm.EdmMapping;
 import com.sap.core.odata.api.edm.EdmStructuralType;
@@ -110,12 +109,6 @@ public abstract class EdmStructuralTypeImplProv extends EdmNamedImplProv impleme
   @Override
   public EdmMapping getMapping() throws EdmException {
     return structuralType.getMapping();
-  }
-
-  @Override
-  public EdmAnnotations getAnnotations() throws EdmException {
-    // TODO Auto-generated method stub
-    return null;
   }
 
   protected EdmTyped getPropertyInternal(String name) throws EdmException {
