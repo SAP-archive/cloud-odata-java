@@ -17,8 +17,9 @@ public class OrderByExpressionImpl implements OrderByExpression {
 
   List<OrderExpression> orders;
 
-  public OrderByExpressionImpl()
+  public OrderByExpressionImpl(String orderbyString)
   {
+    this.orderbyString = orderbyString;
     this.orders = new ArrayList<OrderExpression>();
   }
 
