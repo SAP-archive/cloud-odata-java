@@ -13,7 +13,7 @@ import javax.persistence.metamodel.SetAttribute;
 import javax.persistence.metamodel.SingularAttribute;
 import javax.persistence.metamodel.Type;
 
-public abstract class JPAEntityMock<X> implements EntityType<X> {
+public abstract class JPAEntityTypeMock<X> implements EntityType<X> {
 
 	@Override
 	public <Y> SingularAttribute<X, Y> getDeclaredId(Class<Y> arg0) {
