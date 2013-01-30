@@ -70,7 +70,7 @@ public class JPAEdmEntitySetTest extends JPAEdmTestModelView{
 		
 		//objJPAEdmEntitySet.isConsistent = false;
 		objJPAEdmEntitySet.clean();
-		assertFalse(objJPAEdmEntitySet.isConsistent()); // Failing as of now as not implemented. - TODO
+		assertFalse(objJPAEdmEntitySet.isConsistent()); // Failing as of now as functionality not implemented. - TODO
 	}
 
 	@Override
@@ -185,51 +185,9 @@ public class JPAEdmEntitySetTest extends JPAEdmTestModelView{
 		}
 		
 		private class JPAEdmEntityType extends JPAEntityTypeMock<String>{
-			Set<Attribute<? super String, ?>> attributeSet = new HashSet<Attribute<? super String,?>>();
-			
-			@SuppressWarnings({ "unchecked", "rawtypes" })
-			private void setValuesToSet()
-			{
-				attributeSet.add((Attribute< ? super String,String>)new JPAEdmAttribute(java.lang.String.class, "SOID"));
-				attributeSet.add((Attribute< ? super String,String>)new JPAEdmAttribute(java.lang.String.class, "SONAME"));
-			}
-			
 			@Override
 			public String getName() {
 				return "SalesOrderHeader";
-			}
-
-			@Override
-			public Set<Attribute<? super String, ?>> getAttributes() {
-				setValuesToSet();
-				return attributeSet;
-			}
-			
-			@SuppressWarnings("hiding")
-			private class JPAEdmAttribute<Object,String> extends JPASingularAttributeMock<Object, String>
-			{
-
-				@Override
-				public PersistentAttributeType getPersistentAttributeType() {
-					return PersistentAttributeType.BASIC;
-				}
-
-				Class<String> clazz;
-				java.lang.String attributeName;
-				public JPAEdmAttribute(Class<String> javaType,java.lang.String name) {
-					 this.clazz = javaType;
-					 this.attributeName = name;
-				}
-				
-				@Override
-				public Class<String> getJavaType() {
-					return clazz;
-				}
-
-				@Override
-				public java.lang.String getName() {
-					return this.attributeName;
-				}
 			}
 		}
 	}
