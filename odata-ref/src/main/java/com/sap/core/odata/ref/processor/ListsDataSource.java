@@ -82,7 +82,8 @@ public interface ListsDataSource {
   /**
    * <p>Creates and returns a new instance of the requested data-object type.</p>
    * <p>This instance must not be part of the corresponding list and should
-   * have empty content.</p>
+   * have empty content, apart from the key properties. However, intermediate
+   * objects to access complex properties must not be <code>null</code>.</p>
    * @param entitySet  the {@link EdmEntitySet} the object must correspond to
    * @return the new data object
    */
@@ -104,6 +105,15 @@ public interface ListsDataSource {
    * @param keys  the entity key as map of key names to key values
    */
   void deleteData(EdmEntitySet entitySet, Map<String, Object> keys) throws ODataNotImplementedException, ODataNotFoundException, EdmException, ODataApplicationException;
+
+  /**
+   * <p>Inserts an instance into the entity list of the specified entity set.</p>
+   * <p>If {@link #newDataObject} has not set the key properties already, this
+   * method must set them before inserting the instance into the list.</p>
+   * @param entitySet  the {@link EdmEntitySet} the object must correspond to
+   * @param data  the data object of the new entity
+   */
+  void createData(EdmEntitySet entitySet, Object data) throws ODataNotImplementedException, EdmException, ODataApplicationException;
 
   /**
    * Deletes the relation from the specified source data to a target entity

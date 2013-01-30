@@ -53,7 +53,7 @@ public class SimplePropertyTest extends AbstractRefTest {
     assertNotNull(getBody(response));
 
     notFound("Employees('2')/Foo");
-    // notFound("Employees('2')/Age()");
+    badRequest("Employees('2')/Age()");
   }
 
   @Test

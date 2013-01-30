@@ -33,7 +33,7 @@ public class Employee {
     setAge(age);
   }
 
-  public Employee(final String name, final int age, Room room, Team team) {
+  public Employee(final String name, final int age, final Room room, final Team team) {
     this(name, age);
     setRoom(room);
     setTeam(team);
@@ -130,11 +130,10 @@ public class Employee {
   private byte[] loadImage(final String imageUrl) {
     try {
       InputStream in = Employee.class.getResourceAsStream(imageUrl);
-      // InputStream in = new BufferedInputStream(new FileInputStream(imageUrl));
       ByteArrayOutputStream stream = new ByteArrayOutputStream();
-      int c = 0;
-      while ((c = in.read()) != -1)
-        stream.write((char) c);
+      int b = 0;
+      while ((b = in.read()) != -1)
+        stream.write(b);
 
       return stream.toByteArray();
     } catch (IOException e) {
@@ -165,12 +164,15 @@ public class Employee {
   public String toString() {
     return "{\"EmployeeId\":\"" + employeeId + "\","
         + "\"EmployeeName\":\"" + employeeName + "\","
-        + "\"ManagerId\":\"" + manager.getId() + "\","
-        + "\"RoomId\":\"" + room.getId() + "\","
-        + "\"TeamId\":\"" + team.getId() + "\","
-        + "\"Location\":{\"City\":{\"PostalCode\":\"" + location.getCity().getPostalCode() + "\","
-        + "\"CityName\":\"" + location.getCity().getCityName() + "\"},"
-        + "\"Country\":\"" + location.getCountry() + "\"},"
+        + "\"ManagerId\":" + (manager == null ? "null" : "\"" + manager.getId() + "\"") + ","
+        + "\"RoomId\":" + (room == null ? "null" : "\"" + room.getId() + "\"") + ","
+        + "\"TeamId\":" + (team == null ? "null" : "\"" + team.getId() + "\"") + ","
+        + "\"Location\":"
+        + (location == null ? "null" :
+            "{\"City\":" + (location.getCity() == null ? "null" :
+                "{\"PostalCode\":\"" + location.getCity().getPostalCode() + "\","
+                    + "\"CityName\":\"" + location.getCity().getCityName() + "\"}") + ","
+                + "\"Country\":\"" + location.getCountry() + "\"}") + ","
         + "\"Age\":" + age + ","
         + "\"EntryDate\":" + (entryDate == null ? "null" : "\"" + DateFormat.getInstance().format(entryDate.getTime()) + "\"") + ","
         + "\"ImageUrl\":\"" + imageUrl + "\"}";

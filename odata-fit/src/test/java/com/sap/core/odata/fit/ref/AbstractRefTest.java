@@ -20,7 +20,6 @@ import org.apache.http.entity.StringEntity;
 import com.sap.core.odata.api.commons.HttpStatusCodes;
 import com.sap.core.odata.api.edm.provider.EdmProvider;
 import com.sap.core.odata.api.processor.ODataSingleProcessor;
-import com.sap.core.odata.core.commons.ContentType;
 import com.sap.core.odata.core.commons.ODataHttpMethod;
 import com.sap.core.odata.core.processor.ODataSingleProcessorService;
 import com.sap.core.odata.ref.edm.ScenarioEdmProvider;
@@ -51,6 +50,7 @@ public class AbstractRefTest extends AbstractFitTest {
   protected static final String EMPLOYEE_3_AGE = "56";
   protected static final String EMPLOYEE_6_AGE = "29";
 
+  protected static final String CITY_1_NAME = "Heidelberg";
   protected static final String CITY_2_NAME = "Walldorf";
 
   protected static final String BUILDING_3_NAME = "Building 3";
@@ -139,23 +139,14 @@ public class AbstractRefTest extends AbstractFitTest {
     return StringHelper.inputStreamToString(response.getEntity().getContent());
   }
 
-  protected void checkMediaType(final HttpResponse response, final ContentType expectedMediaType) {
-    checkMediaType(response, expectedMediaType, true);
-  }
-
   protected void checkMediaType(final HttpResponse response, final String expectedMediaType) {
     checkMediaType(response, expectedMediaType, true);
   }
 
-  protected void checkMediaType(final HttpResponse response, final ContentType expectedMediaType, final boolean withDefaultCharset) {
-    checkMediaType(response, expectedMediaType.toString(), withDefaultCharset);
-  }
-
   protected void checkMediaType(final HttpResponse response, final String expectedMediaType, final boolean withDefaultCharset) {
     String expected = expectedMediaType;
-    if (withDefaultCharset && !expectedMediaType.contains("charset=utf-8")) {
+    if (withDefaultCharset && !expectedMediaType.contains("charset=utf-8"))
       expected += "; charset=utf-8";
-    }
 
     assertEquals("MediaType was not expected (charset expected=[" + withDefaultCharset + "]).",
         expected, response.getFirstHeader(HttpHeaders.CONTENT_TYPE).getValue());
