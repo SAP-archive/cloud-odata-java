@@ -1,15 +1,69 @@
 package com.sap.core.odata.core.commons;
 
-public class EncoderUtil {
+import java.util.HashMap;
+import java.util.Map;
+
+public class Encoder {
 
   /*
-   *  RFC 2396
-   *  reserved      "?/[]@"
-   *  punct         ",;:$&+="
-   *  unreserved    "_-!.~'()*"
+   * encoding rules:
+   * 
+   *  http://www.ietf.org/rfc/rfc3986.txt
+   *
+   *  private final static String RFC3986_UNRESERVED = "-._~"; // + ALPHA + DIGIT
+   *  private final static String RFC3986_GEN_DELIMS = ":/?#[]@"; 
+   *  private final static String RFC3986_SUB_DELIMS = "!$&'()*+,;="; 
+   *  private final static String RFC3986_RESERVED = RFC3986_GEN_DELIMS + RFC3986_SUB_DELIMS; 
    */
-  private final static String UNSAFE = " #$%&+,/:;=?@[]<>";
-  private final static String UNRESERVED = "_-!.~'()*";
+
+  private Encoder(String unsafe, String unreserved, Map<Character, String> map) {
+    this.unsafe = unsafe;
+    this.unreserved = unreserved;
+    this.map = map;
+  }
+
+  public static String encodePart(String value) {
+    Encoder encoder = new Encoder(UNSAFE, UNRESERVED, null);
+    return encoder.encodeInternal(value);
+  }
+
+  /**
+   * @deprecated not sure if this is really required
+   * @param value
+   * @return
+   */
+  public static String encodePathPart(String value) {
+    Encoder encoder = new Encoder(UNSAFE, UNRESERVED, null);
+    return encoder.encodeInternal(value);
+  }
+
+  /**
+   * @deprecated not sure if this is really required
+   * @param value
+   * @return
+   */
+  public static String encodeQueryPart(String value) {
+    Map<Character, String> map = new HashMap<Character, String>();
+    map.put(' ', "+");
+    Encoder encoder = new Encoder(UNSAFE_NOSPACE, UNRESERVED, map);
+    return encoder.encodeInternal(value);
+  }
+
+  private final static String RFC3986_UNRESERVED = "-._~"; // + ALPHA + DIGIT
+  private final static String RFC3986_GEN_DELIMS = ":/?#[]@";
+  private final static String RFC3986_SUB_DELIMS = "!$&'()*+,;=";
+  private final static String RFC3986_RESERVED = RFC3986_GEN_DELIMS + RFC3986_SUB_DELIMS;
+
+  /*
+   * this is due to compatibility reasons for URI decoding behavior which is RFC2396 (deprecated by RFC3986)
+   */
+  private final static String UNSAFE_NOSPACE = RFC3986_RESERVED + "<>%";
+  private final static String UNSAFE = UNSAFE_NOSPACE + " ";
+  private final static String UNRESERVED = RFC3986_UNRESERVED;
+
+  private String unsafe;
+  private String unreserved;
+  private Map<Character, String> map;
 
   final static String[] hex = {
       "%00", "%01", "%02", "%03", "%04", "%05", "%06", "%07",
@@ -46,12 +100,14 @@ public class EncoderUtil {
       "%f8", "%f9", "%fa", "%fb", "%fc", "%fd", "%fe", "%ff"
   };
 
-  public static String encode(String input) {
+  private String encodeInternal(String input) {
     StringBuilder resultStr = new StringBuilder();
 
     for (int ch : input.toCharArray()) {
       if (isUnsafe(ch)) { // case unsafe
         resultStr.append(hex[ch]);
+      } else if (map != null && map.containsKey((char) ch)) { // case mapping
+        resultStr.append(map.get((char) ch));
       } else if (isUnreserved(ch)) { // case unreserved
         resultStr.append((char) ch);
       } else if ('A' <= ch && ch <= 'Z') { // case A..Z
@@ -75,12 +131,12 @@ public class EncoderUtil {
     return resultStr.toString();
   }
 
-  private static boolean isUnsafe(int ch) {
-    return UNSAFE.indexOf(ch) >= 0;
+  private boolean isUnsafe(int ch) {
+    return unsafe.indexOf(ch) >= 0;
   }
 
-  private static boolean isUnreserved(int ch) {
-    return UNRESERVED.indexOf(ch) >= 0;
+  private boolean isUnreserved(int ch) {
+    return unreserved.indexOf(ch) >= 0;
   }
 
 }
