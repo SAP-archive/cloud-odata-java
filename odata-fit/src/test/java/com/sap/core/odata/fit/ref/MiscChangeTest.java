@@ -8,7 +8,6 @@ import org.junit.Test;
 import com.sap.core.odata.api.commons.HttpContentType;
 import com.sap.core.odata.api.commons.HttpHeaders;
 import com.sap.core.odata.api.commons.HttpStatusCodes;
-import com.sap.core.odata.core.commons.ContentType;
 import com.sap.core.odata.core.commons.ODataHttpMethod;
 
 /**
@@ -67,7 +66,7 @@ public class MiscChangeTest extends AbstractRefTest {
     final String url = "Managers('1')/$value";
     putUri(url, "00", HttpContentType.APPLICATION_OCTET_STREAM, HttpStatusCodes.NO_CONTENT);
     final HttpResponse response = callUri(url);
-    checkMediaType(response, ContentType.APPLICATION_OCTET_STREAM, false);
+    checkMediaType(response, HttpContentType.APPLICATION_OCTET_STREAM, false);
     assertEquals("00", getBody(response));
   }
 

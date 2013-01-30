@@ -18,7 +18,7 @@ public class Manager extends Employee {
     super(name, age);
   }
 
-  public Manager(final String name, final int age, Room room, Team team) {
+  public Manager(final String name, final int age, final Room room, final Team team) {
     super(name, age, room, team);
   }
 

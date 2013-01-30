@@ -273,9 +273,8 @@ public class Tokenizer
   }
   /**
    * Read up to single ' and move pointer to the following char and tries a type detection
-   * @param expression
    * @param curCharacter
-   * @return 
+   * @param token
    * @throws ExpressionParserException
    * @throws TokenizerException
    */

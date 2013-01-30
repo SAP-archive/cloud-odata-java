@@ -10,6 +10,7 @@ import java.util.regex.Pattern;
 import com.sap.core.odata.api.commons.InlineCount;
 import com.sap.core.odata.api.edm.Edm;
 import com.sap.core.odata.api.edm.EdmComplexType;
+import com.sap.core.odata.api.edm.EdmEntityContainer;
 import com.sap.core.odata.api.edm.EdmEntitySet;
 import com.sap.core.odata.api.edm.EdmEntityType;
 import com.sap.core.odata.api.edm.EdmException;
@@ -137,25 +138,22 @@ public class UriParserImpl extends UriParser {
     final String keyPredicate = matcher.group(3);
     final String emptyParentheses = matcher.group(4);
 
-    uriResult.setEntityContainer(entityContainerName == null ? edm.getDefaultEntityContainer() : edm.getEntityContainer(entityContainerName));
-    if (uriResult.getEntityContainer() == null)
+    final EdmEntityContainer entityContainer =
+        entityContainerName == null ? edm.getDefaultEntityContainer() : edm.getEntityContainer(entityContainerName);
+    if (entityContainer == null)
       throw new UriNotMatchingException(UriNotMatchingException.CONTAINERNOTFOUND.addContent(entityContainerName));
+    uriResult.setEntityContainer(entityContainer);
 
-    EdmEntitySet entitySet = null;
-
-    entitySet = uriResult.getEntityContainer().getEntitySet(segmentName);
+    final EdmEntitySet entitySet = entityContainer.getEntitySet(segmentName);
     if (entitySet != null) {
       uriResult.setStartEntitySet(entitySet);
       handleEntitySet(entitySet, keyPredicate);
     } else {
-      EdmFunctionImport functionImport = null;
-      functionImport = uriResult.getEntityContainer().getFunctionImport(segmentName);
-      if (functionImport != null) {
-        uriResult.setFunctionImport(functionImport);
-        handleFunctionImport(functionImport, emptyParentheses, keyPredicate);
-      } else {
+      final EdmFunctionImport functionImport = entityContainer.getFunctionImport(segmentName);
+      if (functionImport == null)
         throw new UriNotMatchingException(UriNotMatchingException.NOTFOUND.addContent(segmentName));
-      }
+      uriResult.setFunctionImport(functionImport);
+      handleFunctionImport(functionImport, emptyParentheses, keyPredicate);
     }
   }
 
@@ -234,8 +232,8 @@ public class UriParserImpl extends UriParser {
         throw new UriSyntaxException(UriSyntaxException.INVALIDSEGMENT.addContent(currentPathSegment));
       if (uriResult.isLinks())
         throw new UriSyntaxException(UriSyntaxException.NONAVIGATIONPROPERTY.addContent(property));
-      else
-        handlePropertyPath((EdmProperty) property);
+
+      handlePropertyPath((EdmProperty) property);
       break;
 
     case ENTITY: // navigation properties point to entities
@@ -284,14 +282,15 @@ public class UriParserImpl extends UriParser {
 
   private void addNavigationSegment(final String keyPredicateName, final EdmNavigationProperty navigationProperty) throws UriSyntaxException, EdmException {
     final EdmEntitySet targetEntitySet = uriResult.getTargetEntitySet().getRelatedEntitySet(navigationProperty);
+    final EdmEntityType targetEntityType = targetEntitySet.getEntityType();
     uriResult.setTargetEntitySet(targetEntitySet);
-    uriResult.setTargetType(targetEntitySet.getEntityType());
+    uriResult.setTargetType(targetEntityType);
 
     NavigationSegmentImpl navigationSegment = new NavigationSegmentImpl();
     navigationSegment.setEntitySet(targetEntitySet);
     navigationSegment.setNavigationProperty(navigationProperty);
     if (keyPredicateName != null)
-      navigationSegment.setKeyPredicates(parseKey(keyPredicateName, targetEntitySet.getEntityType()));
+      navigationSegment.setKeyPredicates(parseKey(keyPredicateName, targetEntityType));
     uriResult.addNavigationSegment(navigationSegment);
   }
 
@@ -387,11 +386,7 @@ public class UriParserImpl extends UriParser {
         throw new UriSyntaxException(UriSyntaxException.DUPLICATEKEYNAMES.addContent(keyPredicate));
       parsedKeyProperties.add(keyProperty);
 
-      final EdmLiteral uriLiteral = simpleTypeFacade.parseUriLiteral(value);
-
-      if (!((EdmSimpleType) keyProperty.getType()).isCompatible(uriLiteral.getType()))
-        throw new UriSyntaxException(UriSyntaxException.INCOMPATIBLELITERAL.addContent(keyProperty, uriLiteral));
-
+      final EdmLiteral uriLiteral = parseLiteral(value, (EdmSimpleType) keyProperty.getType());
       keyPredicates.add(new KeyPredicateImpl(uriLiteral.getLiteral(), keyProperty));
     }
 
@@ -688,23 +683,28 @@ public class UriParserImpl extends UriParser {
           else
             throw new UriSyntaxException(UriSyntaxException.MISSINGPARAMETER);
 
-        EdmLiteral uriLiteral;
-        try {
-          uriLiteral = simpleTypeFacade.parseUriLiteral(value);
-        } catch (EdmLiteralException e) {
-          throw convertEdmLiteralException(e);
-        }
-
-        if (!((EdmSimpleType) parameter.getType()).isCompatible(uriLiteral.getType()))
-          throw new UriSyntaxException(UriSyntaxException.INCOMPATIBLELITERAL);
-
+        EdmLiteral uriLiteral = parseLiteral(value, (EdmSimpleType) parameter.getType());
         uriResult.addFunctionImportParameter(parameterName, uriLiteral);
       }
 
     uriResult.setCustomQueryOptions(otherQueryParameters);
   }
 
-  private UriSyntaxException convertEdmLiteralException(final EdmLiteralException e) {
+  private EdmLiteral parseLiteral(final String value, final EdmSimpleType expectedType) throws UriSyntaxException {
+    EdmLiteral literal;
+    try {
+      literal = simpleTypeFacade.parseUriLiteral(value);
+    } catch (EdmLiteralException e) {
+      throw convertEdmLiteralException(e);
+    }
+
+    if (expectedType.isCompatible(literal.getType()))
+      return literal;
+    else
+      throw new UriSyntaxException(UriSyntaxException.INCOMPATIBLELITERAL.addContent(value, expectedType));
+  }
+
+  private static UriSyntaxException convertEdmLiteralException(final EdmLiteralException e) {
     final MessageReference messageReference = e.getMessageReference();
     final String key = messageReference.getKey();
 
@@ -718,7 +718,7 @@ public class UriParserImpl extends UriParser {
       return new UriSyntaxException(UriSyntaxException.COMMON, e);
   }
 
-  private List<String> copyPathSegmentList(final List<PathSegment> source) {
+  private static List<String> copyPathSegmentList(final List<PathSegment> source) {
     List<String> copy = new ArrayList<String>();
 
     for (final PathSegment segment : source)

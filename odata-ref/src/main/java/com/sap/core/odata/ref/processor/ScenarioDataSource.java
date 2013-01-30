@@ -299,20 +299,25 @@ public class ScenarioDataSource implements ListsDataSource {
 
   @Override
   public Object newDataObject(final EdmEntitySet entitySet) throws ODataNotImplementedException, EdmException {
-    if ("Employees".equals(entitySet.getName()))
-      return new Employee();
-    else if ("Teams".equals(entitySet.getName()))
+    if ("Employees".equals(entitySet.getName())) {
+      Employee employee = new Employee();
+      employee.setLocation(new Location(null, null, null));
+      return employee;
+    } else if ("Teams".equals(entitySet.getName())) {
       return new Team();
-    else if ("Rooms".equals(entitySet.getName()))
+    } else if ("Rooms".equals(entitySet.getName())) {
       return new Room();
-    else if ("Managers".equals(entitySet.getName()))
-      return new Manager();
-    else if ("Buildings".equals(entitySet.getName()))
+    } else if ("Managers".equals(entitySet.getName())) {
+      Manager manager = new Manager();
+      manager.setLocation(new Location(null, null, null));
+      return manager;
+    } else if ("Buildings".equals(entitySet.getName())) {
       return new Building();
-    else if ("Photos".equals(entitySet.getName()))
+    } else if ("Photos".equals(entitySet.getName())) {
       return new Photo();
-    else
+    } else {
       throw new ODataNotImplementedException();
+    }
   }
 
   @Override
@@ -357,6 +362,24 @@ public class ScenarioDataSource implements ListsDataSource {
     } else {
       throw new ODataNotImplementedException();
     }
+  }
+
+  @Override
+  public void createData(final EdmEntitySet entitySet, final Object data) throws ODataNotImplementedException, EdmException, ODataApplicationException {
+    if ("Employees".equals(entitySet.getName()))
+      dataContainer.getEmployeeSet().add((Employee) data);
+    else if ("Teams".equals(entitySet.getName()))
+      dataContainer.getTeamSet().add((Team) data);
+    else if ("Rooms".equals(entitySet.getName()))
+      dataContainer.getRoomSet().add((Room) data);
+    else if ("Managers".equals(entitySet.getName()))
+      dataContainer.getManagerSet().add((Manager) data);
+    else if ("Buildings".equals(entitySet.getName()))
+      dataContainer.getBuildingSet().add((Building) data);
+    else if ("Photos".equals(entitySet.getName()))
+      dataContainer.getPhotoSet().add((Photo) data);
+    else
+      throw new ODataNotImplementedException();
   }
 
   @Override
