@@ -54,6 +54,7 @@ public class Dispatcher {
         throw new ODataMethodNotAllowedException(ODataMethodNotAllowedException.DISPATCH);
 
     case URI1:
+    case URI6B:
       switch (method) {
       case GET:
         return service.getEntitySetProcessor().readEntitySet(uriInfo, contentType);
@@ -66,7 +67,8 @@ public class Dispatcher {
             && uriInfo.getSkip() == null
             && uriInfo.getTop() == null
             && uriInfo.getExpand().isEmpty()
-            && uriInfo.getSelect().isEmpty())
+            && uriInfo.getSelect().isEmpty()
+            && uriInfo.getNavigationSegments().size() <= 1)
           return service.getEntitySetProcessor().createEntity(uriInfo, content, requestContentType, contentType);
         else
           throw new ODataMethodNotAllowedException(ODataMethodNotAllowedException.DISPATCH);
@@ -163,12 +165,6 @@ public class Dispatcher {
     case URI6A:
       if (method == ODataHttpMethod.GET)
         return service.getEntityProcessor().readEntity(uriInfo, contentType);
-      else
-        throw new ODataMethodNotAllowedException(ODataMethodNotAllowedException.DISPATCH);
-
-    case URI6B:
-      if (method == ODataHttpMethod.GET)
-        return service.getEntitySetProcessor().readEntitySet(uriInfo, contentType);
       else
         throw new ODataMethodNotAllowedException(ODataMethodNotAllowedException.DISPATCH);
 

@@ -159,7 +159,8 @@ public class DispatcherTest extends BaseTest {
     EdmEntitySet entitySet = mock(EdmEntitySet.class);
     when(entitySet.getEntityType()).thenReturn(entityType);
     when(uriInfo.getTargetEntitySet()).thenReturn(entitySet);
-    if (uriType == UriType.URI7A || uriType == UriType.URI7B)
+    if (uriType == UriType.URI6A || uriType == UriType.URI6B
+        || uriType == UriType.URI7A || uriType == UriType.URI7B)
       mockNavigationPath(uriInfo, true);
     when(uriInfo.getSkip()).thenReturn(null);
     when(uriInfo.getTop()).thenReturn(null);
@@ -291,7 +292,9 @@ public class DispatcherTest extends BaseTest {
   private static void wrongNavigationPath(final ODataHttpMethod method, final UriType uriType) {
     try {
       UriInfoImpl uriInfo = mockUriInfo(uriType, true);
-      uriInfo = mockNavigationPath(uriInfo, uriType != UriType.URI7A && uriType != UriType.URI7B);
+      uriInfo = mockNavigationPath(uriInfo,
+          uriType != UriType.URI6A && uriType != UriType.URI6B
+          && uriType != UriType.URI7A && uriType != UriType.URI7B);
       checkDispatch(method, uriInfo, null);
       fail("Expected ODataMethodNotAllowedException not thrown");
     } catch (ODataMethodNotAllowedException e) {
@@ -342,6 +345,7 @@ public class DispatcherTest extends BaseTest {
     checkDispatch(ODataHttpMethod.GET, UriType.URI6A, "readEntity");
 
     checkDispatch(ODataHttpMethod.GET, UriType.URI6B, "readEntitySet");
+    checkDispatch(ODataHttpMethod.POST, UriType.URI6B, "createEntity");
 
     checkDispatch(ODataHttpMethod.GET, UriType.URI7A, "readEntityLink");
     checkDispatch(ODataHttpMethod.PUT, UriType.URI7A, "updateEntityLink");
@@ -414,7 +418,6 @@ public class DispatcherTest extends BaseTest {
     wrongDispatch(ODataHttpMethod.MERGE, UriType.URI6A);
 
     wrongDispatch(ODataHttpMethod.PUT, UriType.URI6B);
-    wrongDispatch(ODataHttpMethod.POST, UriType.URI6B);
     wrongDispatch(ODataHttpMethod.DELETE, UriType.URI6B);
     wrongDispatch(ODataHttpMethod.PATCH, UriType.URI6B);
     wrongDispatch(ODataHttpMethod.MERGE, UriType.URI6B);
@@ -497,6 +500,16 @@ public class DispatcherTest extends BaseTest {
 
     wrongOptions(ODataHttpMethod.PUT, UriType.URI5, true, false, false, false, false, false, false, false, false);
 
+    wrongOptions(ODataHttpMethod.POST, UriType.URI6B, true, false, false, false, false, false, false, false, false);
+    wrongOptions(ODataHttpMethod.POST, UriType.URI6B, false, true, false, false, false, false, false, false, false);
+    wrongOptions(ODataHttpMethod.POST, UriType.URI6B, false, false, true, false, false, false, false, false, false);
+    wrongOptions(ODataHttpMethod.POST, UriType.URI6B, false, false, false, true, false, false, false, false, false);
+    wrongOptions(ODataHttpMethod.POST, UriType.URI6B, false, false, false, false, true, false, false, false, false);
+    wrongOptions(ODataHttpMethod.POST, UriType.URI6B, false, false, false, false, false, true, false, false, false);
+    wrongOptions(ODataHttpMethod.POST, UriType.URI6B, false, false, false, false, false, false, true, false, false);
+    wrongOptions(ODataHttpMethod.POST, UriType.URI6B, false, false, false, false, false, false, false, true, false);
+    wrongOptions(ODataHttpMethod.POST, UriType.URI6B, false, false, false, false, false, false, false, false, true);
+
     wrongOptions(ODataHttpMethod.PUT, UriType.URI7A, true, false, false, false, false, false, false, false, false);
     wrongOptions(ODataHttpMethod.PUT, UriType.URI7A, false, true, false, false, false, false, false, false, false);
     wrongOptions(ODataHttpMethod.DELETE, UriType.URI7A, true, false, false, false, false, false, false, false, false);
@@ -557,6 +570,8 @@ public class DispatcherTest extends BaseTest {
     wrongNavigationPath(ODataHttpMethod.PUT, UriType.URI7A);
     wrongNavigationPath(ODataHttpMethod.PATCH, UriType.URI7A);
     wrongNavigationPath(ODataHttpMethod.DELETE, UriType.URI7A);
+
+    wrongNavigationPath(ODataHttpMethod.POST, UriType.URI6B);
 
     wrongNavigationPath(ODataHttpMethod.POST, UriType.URI7B);
 
