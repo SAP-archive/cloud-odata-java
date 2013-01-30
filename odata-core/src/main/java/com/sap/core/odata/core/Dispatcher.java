@@ -41,6 +41,11 @@ public class Dispatcher {
   }
 
   public ODataResponse dispatch(final ODataHttpMethod method, final UriInfoImpl uriInfo, final InputStream content, final String requestContentType, final String contentType) throws ODataException {
+    if (uriInfo.getFunctionImport() != null
+        && uriInfo.getFunctionImport().getHttpMethod() != null
+        && !uriInfo.getFunctionImport().getHttpMethod().equals(method.toString()))
+      throw new ODataMethodNotAllowedException(ODataMethodNotAllowedException.DISPATCH);
+
     switch (uriInfo.getUriType()) {
     case URI0:
       if (method == ODataHttpMethod.GET)
@@ -227,21 +232,13 @@ public class Dispatcher {
     case URI11:
     case URI12:
     case URI13:
-      if (uriInfo.getFunctionImport().getHttpMethod() == null
-          || uriInfo.getFunctionImport().getHttpMethod().equals(method.toString()))
-        return service.getFunctionImportProcessor().executeFunctionImport(uriInfo, contentType);
-      else
-        throw new ODataMethodNotAllowedException(ODataMethodNotAllowedException.DISPATCH);
+      return service.getFunctionImportProcessor().executeFunctionImport(uriInfo, contentType);
 
     case URI14:
-      if (uriInfo.getFunctionImport().getHttpMethod() == null
-          || uriInfo.getFunctionImport().getHttpMethod().equals(method.toString()))
-        if (uriInfo.isValue())
-          return service.getFunctionImportValueProcessor().executeFunctionImportValue(uriInfo, contentType);
-        else
-          return service.getFunctionImportProcessor().executeFunctionImport(uriInfo, contentType);
+      if (uriInfo.isValue())
+        return service.getFunctionImportValueProcessor().executeFunctionImportValue(uriInfo, contentType);
       else
-        throw new ODataMethodNotAllowedException(ODataMethodNotAllowedException.DISPATCH);
+        return service.getFunctionImportProcessor().executeFunctionImport(uriInfo, contentType);
 
     case URI15:
       if (method == ODataHttpMethod.GET)

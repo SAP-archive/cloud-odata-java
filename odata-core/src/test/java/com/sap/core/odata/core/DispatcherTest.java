@@ -518,6 +518,7 @@ public class DispatcherTest extends BaseTest {
 
   @Test
   public void dispatchFunctionImportWrongHttpMethod() throws Exception {
+    wrongFunctionHttpMethod(ODataHttpMethod.POST, UriType.URI1, ODataHttpMethod.GET);
     wrongFunctionHttpMethod(ODataHttpMethod.GET, UriType.URI10, ODataHttpMethod.PUT);
     wrongFunctionHttpMethod(ODataHttpMethod.POST, UriType.URI11, ODataHttpMethod.GET);
     wrongFunctionHttpMethod(ODataHttpMethod.PATCH, UriType.URI12, ODataHttpMethod.GET);
