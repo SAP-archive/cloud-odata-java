@@ -31,6 +31,7 @@ public class ExpressionParserException extends ODataBadRequestException
   public static final MessageReference METHOD_WRONG_ARG_BETWEEN = createMessageReference(ExpressionParserException.class, "METHOD_WRONG_ARG_BETWEEN");
   public static final MessageReference METHOD_WRONG_ARG_X_OR_MORE = createMessageReference(ExpressionParserException.class, "METHOD_WRONG_ARG_X_OR_MORE");
   public static final MessageReference METHOD_WRONG_ARG_X_OR_LESS = createMessageReference(ExpressionParserException.class, "METHOD_WRONG_ARG_X_OR_LESS");
+  public static final MessageReference METHOD_WRONG_INPUT_TYPE = createMessageReference(ExpressionParserException.class, "METHOD_WRONG_INPUT_TYPE");
 
   //validation exceptions texts - member
   public static final MessageReference LEFT_SIDE_NOT_STRUCTURAL_TYPE = createMessageReference(ExpressionParserException.class, "LEFT_SIDE_NOT_STRUCTURAL_TYPE");
