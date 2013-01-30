@@ -6,6 +6,7 @@ import com.sap.core.odata.api.ODataService;
 import com.sap.core.odata.api.edm.EdmEntityType;
 import com.sap.core.odata.api.edm.EdmException;
 import com.sap.core.odata.api.edm.EdmProperty;
+import com.sap.core.odata.api.exception.ODataBadRequestException;
 import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.api.exception.ODataMethodNotAllowedException;
 import com.sap.core.odata.api.processor.ODataProcessor;
@@ -163,10 +164,17 @@ public class Dispatcher {
       }
 
     case URI6A:
-      if (method == ODataHttpMethod.GET)
+      switch (method) {
+      case GET:
         return service.getEntityProcessor().readEntity(uriInfo, contentType);
-      else
+      case PUT:
+      case PATCH:
+      case MERGE:
+      case DELETE:
+        throw new ODataBadRequestException(ODataBadRequestException.NOTSUPPORTED);
+      default:
         throw new ODataMethodNotAllowedException(ODataMethodNotAllowedException.DISPATCH);
+      }
 
     case URI7A:
       switch (method) {

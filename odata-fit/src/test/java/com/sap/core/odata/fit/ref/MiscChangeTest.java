@@ -29,7 +29,7 @@ public class MiscChangeTest extends AbstractRefTest {
     // deleteUri("Rooms('1')", HttpStatusCodes.PRECONDITION_REQUIRED);
     deleteUri("Managers()", HttpStatusCodes.METHOD_NOT_ALLOWED);
     deleteUri("Managers('5')", HttpStatusCodes.NOT_FOUND);
-    deleteUri("Employees('2')/ne_Manager", HttpStatusCodes.METHOD_NOT_ALLOWED);
+    deleteUri("Employees('2')/ne_Manager", HttpStatusCodes.BAD_REQUEST);
   }
 
   @Test

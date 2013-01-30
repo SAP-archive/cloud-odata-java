@@ -10,6 +10,7 @@ public class ODataBadRequestException extends ODataHttpException {
   private static final long serialVersionUID = 1L;
 
   public static final MessageReference COMMON = createMessageReference(ODataBadRequestException.class, "COMMON");
+  public static final MessageReference NOTSUPPORTED = createMessageReference(ODataBadRequestException.class, "NOTSUPPORTED");
   public static final MessageReference URLTOOSHORT = createMessageReference(ODataBadRequestException.class, "URLTOOSHORT");
   public static final MessageReference VERSIONERROR = createMessageReference(ODataBadRequestException.class, "VERSIONERROR");
   public static final MessageReference PARSEVERSIONERROR = createMessageReference(ODataBadRequestException.class, "PARSEVERSIONERROR");
