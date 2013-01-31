@@ -45,13 +45,13 @@ public class XmlPropertyConsumer {
 
     while(eventType != XMLStreamReader.END_ELEMENT && eventType != XMLStreamReader.END_DOCUMENT) {
       eventType = reader.next();
-      if(XMLStreamReader.START_ELEMENT == eventType) {
+      if(XMLStreamReader.START_ELEMENT == eventType && propertyInfo.isComplex()) {
         String childName = reader.getLocalName();
         EntityPropertyInfo childProperty = getChildProperty(childName, propertyInfo);
         
         Object value = readStartedElement(reader, childProperty);
         name2Value.put(childName, value);
-      } else if(XMLStreamReader.CHARACTERS == eventType) {
+      } else if(XMLStreamReader.CHARACTERS == eventType && !propertyInfo.isComplex()) {
         result = convert(propertyInfo, reader.getText());
       }
     }
