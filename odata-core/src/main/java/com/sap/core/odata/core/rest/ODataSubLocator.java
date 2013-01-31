@@ -269,7 +269,7 @@ public final class ODataSubLocator implements ODataLocator {
   }
 
   private void validateDataServiceVersion(String serverDataServiceVersion) throws ODataException {
-    String requestDataServiceVersion = context.getHttpRequestHeader("dataserviceversion");
+    String requestDataServiceVersion = context.getHttpRequestHeader(ODataHttpHeaders.DATASERVICEVERSION);
     if (requestDataServiceVersion != null) {
       try {
         boolean isValid = ODataServiceVersion.validateDataServiceVersion(requestDataServiceVersion);

@@ -167,7 +167,10 @@ public class ODataContextImpl implements ODataContext {
 
   @Override
   public String getHttpRequestHeader(String name) {
-    return requestHeader.get(name);
+    for (final String headerName : requestHeader.keySet())
+      if (headerName.equalsIgnoreCase(name))
+        return requestHeader.get(headerName);
+    return null;
   }
 
   @Override
