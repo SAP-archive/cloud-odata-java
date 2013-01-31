@@ -22,6 +22,7 @@ import com.sap.core.odata.core.ep.util.CircleStreamBuffer;
 import com.sap.core.odata.core.ep.util.FormatXml;
 
 /**
+ * Serializes an error message according to the OData standard
  * @author SAP AG
  */
 public class ODataExceptionSerializer {
@@ -61,7 +62,8 @@ public class ODataExceptionSerializer {
       xmlStreamWriter.writeCharacters(errorCode);
       xmlStreamWriter.writeEndElement();
       xmlStreamWriter.writeStartElement(FormatXml.M_MESSAGE);
-      xmlStreamWriter.writeAttribute(Edm.PREFIX_XML, Edm.NAMESPACE_XML_1998, FormatXml.XML_LANG, getLang(locale));
+      if (locale != null)
+        xmlStreamWriter.writeAttribute(Edm.PREFIX_XML, Edm.NAMESPACE_XML_1998, FormatXml.XML_LANG, getLang(locale));
       if (message != null)
         xmlStreamWriter.writeCharacters(message);
       xmlStreamWriter.writeEndElement();

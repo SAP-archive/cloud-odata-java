@@ -2,11 +2,11 @@ package com.sap.core.odata.api.exception;
 
 import com.sap.core.odata.api.commons.HttpStatusCodes;
 
+/**
+ * @author SAP AG
+ */
 public class ODataNotAcceptableException extends ODataHttpException {
 
-  /**
-   * 
-   */
   private static final long serialVersionUID = 1L;
 
   public static final MessageReference COMMON = createMessageReference(ODataNotAcceptableException.class, "COMMON");

@@ -9,6 +9,9 @@ import com.sap.core.odata.api.exception.ODataMessageException;
 import com.sap.core.odata.api.uri.UriNotMatchingException;
 import com.sap.core.odata.testutil.fit.BaseTest;
 
+/**
+ * @author SAP AG
+ */
 public class MessageReferenceTest extends BaseTest {
 
   @Test
@@ -20,7 +23,7 @@ public class MessageReferenceTest extends BaseTest {
   }
 
   @Test
-  public void testAddContentMoreThenOnce() {
+  public void testAddContentMoreThanOnce() {
     String content = "content";
     ODataMessageException e = new UriNotMatchingException(UriNotMatchingException.ENTITYNOTFOUND.addContent(content));
     assertEquals(1, e.getMessageReference().getContent().size());
