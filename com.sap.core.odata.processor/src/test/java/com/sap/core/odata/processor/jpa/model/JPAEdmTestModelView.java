@@ -183,12 +183,6 @@ JPAEdmSchemaView
 	}
 
 	@Override
-	public void expandEdmComplexType(ComplexType arg0, List<Property> arg1) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
 	public List<ComplexType> getConsistentEdmComplexTypes() {
 		// TODO Auto-generated method stub
 		return null;
@@ -367,6 +361,13 @@ JPAEdmSchemaView
 	public NavigationProperty getEdmNavigationProperty() {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	public void expandEdmComplexType(ComplexType complexType,
+			List<Property> expandedPropertyList, String embeddablePropertyName) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

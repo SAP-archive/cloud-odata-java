@@ -1,6 +1,9 @@
 package com.sap.core.odata.processor.jpa.model;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -8,7 +11,6 @@ import java.util.List;
 import java.util.Set;
 
 import javax.persistence.metamodel.Attribute;
-import javax.persistence.metamodel.Attribute.PersistentAttributeType;
 import javax.persistence.metamodel.EmbeddableType;
 import javax.persistence.metamodel.Metamodel;
 
@@ -23,7 +25,6 @@ import com.sap.core.odata.processor.jpa.exception.ODataJPAModelException;
 import com.sap.core.odata.processor.jpa.model.mock.JPAEmbeddableMock;
 import com.sap.core.odata.processor.jpa.model.mock.JPAMetaModelMock;
 import com.sap.core.odata.processor.jpa.model.mock.JPASingularAttributeMock;
-import com.sap.core.odata.processor.jpa.testdata.JPAEdmMockData.SimpleType;
 
 public class JPAEdmComplexTypeTest extends JPAEdmTestModelView {
 	
@@ -102,7 +103,7 @@ public class JPAEdmComplexTypeTest extends JPAEdmTestModelView {
 		List<Property> expandedList = null;
 		try
 		{
-			objComplexType.expandEdmComplexType(complexType, expandedList);
+			objComplexType.expandEdmComplexType(complexType, expandedList,"SalesOrderItemKey");
 		}
 		catch(ClassCastException e)
 		{
@@ -136,10 +137,12 @@ public class JPAEdmComplexTypeTest extends JPAEdmTestModelView {
 		
 	}
 	
+	@SuppressWarnings("hiding")
 	private class JPAEdmEmbeddable<String> extends JPAEmbeddableMock<String>
 	{
  
 		Set<Attribute<? super String, ?>> attributeSet = new HashSet<Attribute<? super String,?>>();
+		@SuppressWarnings({ "unchecked", "rawtypes" })
 		private void setValuesToSet()
 		{
 			attributeSet.add((Attribute< ? super String,String>)new JPAEdmAttribute(java.lang.String.class, "SOID"));
@@ -150,6 +153,7 @@ public class JPAEdmComplexTypeTest extends JPAEdmTestModelView {
 			setValuesToSet();
 			return attributeSet;
 		}
+		@SuppressWarnings("unchecked")
 		@Override
 		public Class<String> getJavaType() {
 			return (Class<String>)java.lang.String.class;
@@ -158,6 +162,7 @@ public class JPAEdmComplexTypeTest extends JPAEdmTestModelView {
 		
 	}
 	
+	@SuppressWarnings("hiding")
 	private class JPAEdmAttribute<Object,String> extends JPASingularAttributeMock<Object, String>
 	{
 
