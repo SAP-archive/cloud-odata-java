@@ -209,7 +209,7 @@ public class FeedTest extends AbstractRefTest {
     badRequest("Employees?$filter=(EmployeeId");
     badRequest("Employees?$filter=(EmployeeId)");
     badRequest("Employees?$filter=loca/city/cityname%20eq%20%27Heidelberg%27");
-    // badRequest("Employees?$filter=endswith(Location,'y')");
+    badRequest("Employees?$filter=endswith(Location,'y')");
     badRequest("Buildings?$filter=Image%20eq%20X%27notonlyhexdigits%27");
   }
 }

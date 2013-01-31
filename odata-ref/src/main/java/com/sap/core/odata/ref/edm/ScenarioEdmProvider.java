@@ -181,7 +181,8 @@ public class ScenarioEdmProvider extends EdmProvider {
         properties.add(new SimpleProperty().setName("Age").setType(EdmSimpleTypeKind.Int16));
         properties.add(new SimpleProperty().setName("EntryDate").setType(EdmSimpleTypeKind.DateTime)
             .setFacets(new Facets().setNullable(true))
-            .setCustomizableFeedMappings(new CustomizableFeedMappings().setFcTargetPath(EdmTargetPath.SYNDICATION_UPDATED)));
+            .setCustomizableFeedMappings(new CustomizableFeedMappings()
+                .setFcTargetPath(EdmTargetPath.SYNDICATION_UPDATED)));
         properties.add(new SimpleProperty().setName("ImageUrl").setType(EdmSimpleTypeKind.String)
             .setMapping(new Mapping().setInternalName("getImageUri")));
         List<NavigationProperty> navigationProperties = new ArrayList<NavigationProperty>();
@@ -203,7 +204,8 @@ public class ScenarioEdmProvider extends EdmProvider {
         properties.add(new SimpleProperty().setName("Id").setType(EdmSimpleTypeKind.String)
             .setFacets(new Facets().setNullable(false).setDefaultValue("1")));
         properties.add(new SimpleProperty().setName("Name").setType(EdmSimpleTypeKind.String)
-            .setCustomizableFeedMappings(new CustomizableFeedMappings().setFcTargetPath(EdmTargetPath.SYNDICATION_TITLE)));
+            .setCustomizableFeedMappings(new CustomizableFeedMappings()
+                .setFcTargetPath(EdmTargetPath.SYNDICATION_TITLE)));
         return new EntityType().setName(ENTITY_TYPE_1_BASE.getName())
             .setAbstract(true)
             .setProperties(properties)
@@ -270,11 +272,13 @@ public class ScenarioEdmProvider extends EdmProvider {
         properties.add(new SimpleProperty().setName("Id").setType(EdmSimpleTypeKind.Int32)
             .setFacets(new Facets().setNullable(false).setConcurrencyMode(EdmConcurrencyMode.Fixed)));
         properties.add(new SimpleProperty().setName("Name").setType(EdmSimpleTypeKind.String)
-            .setCustomizableFeedMappings(new CustomizableFeedMappings().setFcTargetPath(EdmTargetPath.SYNDICATION_TITLE)));
+            .setCustomizableFeedMappings(new CustomizableFeedMappings()
+                .setFcTargetPath(EdmTargetPath.SYNDICATION_TITLE)));
         properties.add(new SimpleProperty().setName("Type").setType(EdmSimpleTypeKind.String)
             .setFacets(new Facets().setNullable(false)));
         properties.add(new SimpleProperty().setName("ImageUrl").setType(EdmSimpleTypeKind.String)
-            .setCustomizableFeedMappings(new CustomizableFeedMappings().setFcTargetPath(EdmTargetPath.SYNDICATION_AUTHORURI))
+            .setCustomizableFeedMappings(new CustomizableFeedMappings()
+                .setFcTargetPath(EdmTargetPath.SYNDICATION_AUTHORURI))
             .setMapping(new Mapping().setInternalName("getImageUri")));
         properties.add(new SimpleProperty().setName("Image").setType(EdmSimpleTypeKind.Binary)
             .setMapping(new Mapping().setMimeType("getImageType")));

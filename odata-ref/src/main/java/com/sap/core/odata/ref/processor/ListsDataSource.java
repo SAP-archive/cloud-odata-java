@@ -82,8 +82,9 @@ public interface ListsDataSource {
   /**
    * <p>Creates and returns a new instance of the requested data-object type.</p>
    * <p>This instance must not be part of the corresponding list and should
-   * have empty content, apart from the key properties. However, intermediate
-   * objects to access complex properties must not be <code>null</code>.</p>
+   * have empty content, apart from the key and other mandatory properties.
+   * However, intermediate objects to access complex properties must not be
+   * <code>null</code>.</p>
    * @param entitySet  the {@link EdmEntitySet} the object must correspond to
    * @return the new data object
    */
@@ -108,8 +109,9 @@ public interface ListsDataSource {
 
   /**
    * <p>Inserts an instance into the entity list of the specified entity set.</p>
-   * <p>If {@link #newDataObject} has not set the key properties already, this
-   * method must set them before inserting the instance into the list.</p>
+   * <p>If {@link #newDataObject} has not set the key and other mandatory
+   * properties already, this method must set them before inserting the
+   * instance into the list.</p>
    * @param entitySet  the {@link EdmEntitySet} the object must correspond to
    * @param data  the data object of the new entity
    */
@@ -125,6 +127,16 @@ public interface ListsDataSource {
    *                    (optional)
    */
   void deleteRelation(EdmEntitySet sourceEntitySet, Object sourceData, EdmEntitySet targetEntitySet, Map<String, Object> targetKeys) throws ODataNotImplementedException, ODataNotFoundException, EdmException, ODataApplicationException;
+
+  /**
+   * Writes a relation from the specified source data to a target entity
+   * specified by entity set and key.
+   * @param sourceEntitySet  the {@link EdmEntitySet} of the source entity
+   * @param sourceData  the data object of the source entity
+   * @param targetEntitySet  the {@link EdmEntitySet} of the relation target
+   * @param targetKeys  the key of the target entity as map of key names to key values
+   */
+  void writeRelation(EdmEntitySet sourceEntitySet, Object sourceData, EdmEntitySet targetEntitySet, Map<String, Object> targetKeys) throws ODataNotImplementedException, ODataNotFoundException, EdmException, ODataApplicationException;
 
   public class BinaryData {
     private final byte[] data;

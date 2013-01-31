@@ -68,8 +68,7 @@ public class ContentNegotiationTest extends AbstractRefTest {
   public void contentTypeServiceDocumentWoAcceptHeader() throws Exception {
     final HttpResponse response = callUri("");
     checkMediaType(response, HttpContentType.APPLICATION_ATOM_SVC_UTF8);
-    final String body = getBody(response);
-    assertTrue(body.length() > 100);
+    assertTrue(getBody(response).length() > 100);
   }
 
   @Test
@@ -78,17 +77,16 @@ public class ContentNegotiationTest extends AbstractRefTest {
         HttpHeaders.ACCEPT, "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
         HttpStatusCodes.OK);
     checkMediaType(response, HttpContentType.APPLICATION_XML_UTF8);
-    final String body = getBody(response);
-    assertTrue(body.length() > 100);
+    assertTrue(getBody(response).length() > 100);
   }
 
   @Test
   public void requestContentTypeDifferent() throws Exception {
     final HttpResponse response = postUri("Rooms",
-        getBody(callUri("Rooms('1')")), HttpContentType.APPLICATION_XML_UTF8,
+        getBody(callUri("Rooms('1')")).replaceAll("<link.+?/>", ""),
+        HttpContentType.APPLICATION_XML_UTF8,
         HttpStatusCodes.CREATED);
-    // checkMediaType(response, HttpContentType.APPLICATION_ATOM_XML_ENTRY);
-    final String body = getBody(response);
-    assertTrue(body.length() > 10);
+    checkMediaType(response, HttpContentType.APPLICATION_ATOM_XML_ENTRY_UTF8);
+    assertTrue(getBody(response).length() > 100);
   }
 }
