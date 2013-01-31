@@ -41,7 +41,7 @@ public class XmlPropertyConsumer {
     
     //
     Map<String, Object> name2Value = new HashMap<String, Object>();
-    Object result = name2Value;
+    Object result = null;
 
     while(eventType != XMLStreamReader.END_ELEMENT && eventType != XMLStreamReader.END_DOCUMENT) {
       eventType = reader.next();
@@ -56,7 +56,13 @@ public class XmlPropertyConsumer {
       }
     }
     
-    return result;
+    // if reading finished check which result must be returned
+    if(result != null) {
+      return result;
+    } else if(!name2Value.isEmpty()) {
+      return name2Value;
+    }
+    return null;
   }
 
   private EntityPropertyInfo getChildProperty(String childPropertyName, EntityPropertyInfo property) throws EdmException, EntityProviderException {
