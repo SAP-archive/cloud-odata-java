@@ -52,7 +52,7 @@ public class JPQLJoinSelectContext extends JPQLSelectContext implements
 						.setOrderByCollection(generateOrderByFileds());
 
 				JPQLJoinSelectContext.this
-						.setSelectedFields(generateSelectFields());
+						.setSelectExpression(generateSelectExpression());
 
 				JPQLJoinSelectContext.this
 						.setWhereExpression(generateWhereExpression());

@@ -42,7 +42,7 @@ public class JPQLJoinSelectSingleStatementBuilderTest {
 		EasyMock.expect(context.getJPAEntityName()).andStubReturn("SOHeader");
 		EasyMock.expect(context.getType()).andStubReturn(JPQLContextType.SELECT);
 		EasyMock.expect(context.getKeyPredicates()).andStubReturn(createKeyPredicates());
-		EasyMock.expect(context.getSelectedFields()).andStubReturn(null);
+		EasyMock.expect(context.getSelectExpression()).andStubReturn("gt1");
 		List<JPAJoinClause> joinClauseList = new ArrayList<JPAJoinClause>();
 		JPAJoinClause jpaOuterJoinClause = new JPAJoinClause("SOHeader", "soh", "soItem", "soi", "soi.shId = soh.soId", JPAJoinClause.JOIN.LEFT);
 		joinClauseList.add(jpaOuterJoinClause);
@@ -61,7 +61,7 @@ public class JPQLJoinSelectSingleStatementBuilderTest {
 		JPQLJoinSelectSingleStatementBuilder jpqlJoinSelectsingleStatementBuilder = new JPQLJoinSelectSingleStatementBuilder(context);
 		try {
 			JPQLStatement jpqlStatement = jpqlJoinSelectsingleStatementBuilder.build();
-			assertEquals("SELECT gt1 FROM SOHeader gt1 JOIN soh.soItem soi JOIN soi.material mat WHERE gt1.soid = 1 AND soi.shId = soh.soId AND mat.id = 'abc'", jpqlStatement.toString());
+			assertEquals("SELECT gt1 FROM SOHeader soh JOIN soh.soItem soi JOIN soi.material mat WHERE soi.shId = soh.soId AND mat.id = 'abc'", jpqlStatement.toString());
 		} catch (ODataJPARuntimeException e) {
 			fail("Should not have come here");
 		}

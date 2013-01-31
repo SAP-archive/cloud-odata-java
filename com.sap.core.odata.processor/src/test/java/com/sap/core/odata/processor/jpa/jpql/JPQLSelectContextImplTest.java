@@ -2,6 +2,7 @@ package com.sap.core.odata.processor.jpa.jpql;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
@@ -139,8 +140,8 @@ public class JPQLSelectContextImplTest {
 
 	@Test
 	public void testGetSelectedFields() {
-		assertEquals(fields[0], selectContext.getSelectedFields().get(0));
-		assertEquals(fields[1], selectContext.getSelectedFields().get(1));
+		assertTrue(selectContext.getSelectExpression().contains(fields[0]));
+		assertTrue(selectContext.getSelectExpression().contains(fields[1]));
 	}
 
 	@Test
@@ -192,13 +193,13 @@ public class JPQLSelectContextImplTest {
 		JPQLSelectContextBuilder builder = (JPQLSelectContextBuilder) JPQLContext.createBuilder(
 				JPQLContextType.SELECT, null);
 		try {
-			selectContext = (JPQLSelectContext) builder.build();
-			assertNull(selectContext.getJPAEntityAlias());
-			assertNull(selectContext.getJPAEntityName());
-			assertNull(selectContext.getOrderByCollection());
-			assertNull(selectContext.getSelectedFields());
-			assertNull(selectContext.getType());
-			assertNull(selectContext.getWhereExpression());
+			JPQLSelectContext selectContext1 = (JPQLSelectContext) builder.build();
+			assertNull(selectContext1.getJPAEntityAlias());
+			assertNull(selectContext1.getJPAEntityName());
+			assertNull(selectContext1.getOrderByCollection());
+			assertNull(selectContext1.getSelectExpression());
+			assertNull(selectContext1.getType());
+			assertNull(selectContext1.getWhereExpression());
 		} catch (ODataJPAModelException e) {
 			fail("Exception not Expected");
 		} catch (ODataJPARuntimeException e) {

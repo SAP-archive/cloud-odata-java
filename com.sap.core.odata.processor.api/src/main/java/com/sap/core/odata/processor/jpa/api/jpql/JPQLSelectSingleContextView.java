@@ -1,11 +1,10 @@
 package com.sap.core.odata.processor.jpa.api.jpql;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import com.sap.core.odata.api.uri.KeyPredicate;
 
 public interface JPQLSelectSingleContextView extends JPQLContextView {
-	public ArrayList<String> getSelectedFields();
+	public String getSelectExpression();
 	public List<KeyPredicate> getKeyPredicates();
 }

@@ -55,14 +55,14 @@ public class JPQLJoinSelectSingleStatementBuilder extends JPQLStatementBuilder{
 					JPQLStatement.DELIMITER.PERIOD);
 			jpqlQuery.append(joinClause.getEntityRelationShip()).append(
 					JPQLStatement.DELIMITER.SPACE);
-			jpqlQuery.append(joinClause.getEntityRelationShipAlias()).append(
-					JPQLStatement.DELIMITER.SPACE);
+			jpqlQuery.append(joinClause.getEntityRelationShipAlias());/*.append(
+					JPQLStatement.DELIMITER.SPACE);*/
 
 			joinWhereCondition = new StringBuilder();
 			String joinCondition = joinClause.getJoinCondition();
 			if (joinCondition != null)
-				joinWhereCondition.append(joinCondition).append(
-						JPQLStatement.DELIMITER.SPACE);
+				joinWhereCondition.append(joinCondition)/*.append(
+						JPQLStatement.DELIMITER.SPACE)*/;
 
 			int i = 1;
 			int limit = joinClauseList.size();
@@ -76,8 +76,8 @@ public class JPQLJoinSelectSingleStatementBuilder extends JPQLStatementBuilder{
 						JPQLStatement.DELIMITER.PERIOD);
 				jpqlQuery.append(joinClause.getEntityRelationShip()).append(
 						JPQLStatement.DELIMITER.SPACE);
-				jpqlQuery.append(joinClause.getEntityRelationShipAlias()).append(
-						JPQLStatement.DELIMITER.SPACE);
+				jpqlQuery.append(joinClause.getEntityRelationShipAlias())/*.append(
+						JPQLStatement.DELIMITER.SPACE)*/;
 
 				relationShipAlias = joinClause.getEntityRelationShipAlias();
 				i++;
@@ -88,8 +88,8 @@ public class JPQLJoinSelectSingleStatementBuilder extends JPQLStatementBuilder{
 							+ JPQLStatement.Operator.AND
 							+ JPQLStatement.DELIMITER.SPACE);
 
-					joinWhereCondition.append(joinCondition).append(
-							JPQLStatement.DELIMITER.SPACE);
+					joinWhereCondition.append(joinCondition)/*.append(
+							JPQLStatement.DELIMITER.SPACE)*/;
 				}
 
 			}

@@ -60,7 +60,7 @@ public class JPQLJoinStatementBuilderTest {
 		JPQLJoinStatementBuilder jpqlJoinStatementBuilder = new JPQLJoinStatementBuilder(context);
 		try {
 			JPQLStatement jpqlStatement = jpqlJoinStatementBuilder.build();
-			assertEquals("SELECT mat FROM SOHeader soh JOIN soh.soItem soi JOIN soi.material mat WHERE soh.buyerId = 2 AND soh.createdBy = 'Peter' AND soi.shId = soh.soId  AND mat.id = 'abc' ORDER BY mat.buyerId asc , mat.city desc ", jpqlStatement.toString());
+			assertEquals("SELECT mat FROM SOHeader soh JOIN soh.soItem soi JOIN soi.material mat WHERE soh.buyerId = 2 AND soh.createdBy = 'Peter' AND soi.shId = soh.soId  AND mat.id = 'abc' ORDER BY mat.buyerId asc , mat.city desc", jpqlStatement.toString());
 		} catch (ODataJPARuntimeException e) {
 			fail("Should not have come here");
 		}

@@ -127,7 +127,7 @@ public class JPQLJoinStatementBuilder extends JPQLStatementBuilder {
 
 			while (orderItr.hasNext()) {
 				if (i != 0) {
-					orderByBuilder.append(JPQLStatement.DELIMITER.COMMA)
+					orderByBuilder.append(JPQLStatement.DELIMITER.SPACE).append(JPQLStatement.DELIMITER.COMMA)
 							.append(JPQLStatement.DELIMITER.SPACE);
 				}
 				Entry<String, String> entry = orderItr.next();
@@ -135,8 +135,8 @@ public class JPQLJoinStatementBuilder extends JPQLStatementBuilder {
 						.append(JPQLStatement.DELIMITER.PERIOD)
 						.append(entry.getKey())
 						.append(JPQLStatement.DELIMITER.SPACE);
-				orderByBuilder.append(entry.getValue()).append(
-						JPQLStatement.DELIMITER.SPACE);
+				orderByBuilder.append(entry.getValue())/*.append(
+						JPQLStatement.DELIMITER.SPACE)*/;
 				i++;
 			}
 			jpqlQuery.append(JPQLStatement.KEYWORD.ORDERBY).append(

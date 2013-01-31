@@ -53,7 +53,7 @@ public class JPQLJoinSelectSingleContext extends JPQLSelectSingleContext
 						.getKeyPredicates());
 
 				JPQLJoinSelectSingleContext.this
-						.setSelectedFields(generateSelectFields());
+						.setSelectExpression(generateSelectExpression());
 
 			} catch (EdmException e) {
 				throw ODataJPARuntimeException.throwException(

@@ -20,13 +20,11 @@ public class JPQLSelectContext extends JPQLContext implements
 		JPQLSelectContextView {
 
 
-	protected ArrayList<String> selectedFields;
+	protected String selectExpression;
 	protected HashMap<String, String> orderByCollection;
 	protected String whereCondition;
 
-	protected final void setSelectedFields(ArrayList<String> selectedFields) {
-		this.selectedFields = selectedFields;
-	}
+	
 
 	protected final void setOrderByCollection(
 			HashMap<String, String> orderByCollection) {
@@ -36,12 +34,16 @@ public class JPQLSelectContext extends JPQLContext implements
 	protected final void setWhereExpression(String filterExpression) {
 		this.whereCondition = filterExpression;
 	}
-
-	@Override
-	public ArrayList<String> getSelectedFields() {
-		return this.selectedFields;
+	
+	protected final void setSelectExpression(String selectExpression) {
+		this.selectExpression = selectExpression;
 	}
 
+	@Override
+	public String getSelectExpression() {
+		return selectExpression;
+	}
+	
 	@Override
 	public HashMap<String, String> getOrderByCollection() {
 		return this.orderByCollection;
@@ -76,7 +78,7 @@ public class JPQLSelectContext extends JPQLContext implements
 							.setOrderByCollection(generateOrderByFileds());
 
 					JPQLSelectContext.this
-							.setSelectedFields(generateSelectFields());
+							.setSelectExpression(generateSelectExpression());
 
 					JPQLSelectContext.this
 							.setWhereExpression(generateWhereExpression());
@@ -97,11 +99,18 @@ public class JPQLSelectContext extends JPQLContext implements
 			}
 
 		}
+		
+		/*
+		 * Generate Select Clause 
+		 */
+		protected String generateSelectExpression() throws EdmException {
+			return ODataExpressionParser.parseToJPASelectExpression(getJPAEntityAlias(), generateSelectFields());			
+		}
 
 		/*
-		 * Generate Select Clause Fields
+		 * Generate Select Array Fields
 		 */
-		protected ArrayList<String> generateSelectFields() throws EdmException {
+		private ArrayList<String> generateSelectFields() throws EdmException {
 
 			List<SelectItem> selectItemList = entitySetView.getSelect();
 
@@ -149,4 +158,6 @@ public class JPQLSelectContext extends JPQLContext implements
 			return null;
 		}
 	}
+
+	
 }

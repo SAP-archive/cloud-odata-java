@@ -8,6 +8,7 @@ import com.sap.core.odata.api.edm.EdmProperty;
 import com.sap.core.odata.api.uri.KeyPredicate;
 import com.sap.core.odata.api.uri.SelectItem;
 import com.sap.core.odata.api.uri.info.GetEntityUriInfo;
+import com.sap.core.odata.processor.jpa.access.data.ODataExpressionParser;
 import com.sap.core.odata.processor.jpa.api.exception.ODataJPAModelException;
 import com.sap.core.odata.processor.jpa.api.exception.ODataJPARuntimeException;
 import com.sap.core.odata.processor.jpa.api.jpql.JPQLContext;
@@ -16,7 +17,7 @@ import com.sap.core.odata.processor.jpa.api.jpql.JPQLSelectSingleContextView;
 
 public class JPQLSelectSingleContext extends JPQLContext implements JPQLSelectSingleContextView {
 	
-	private ArrayList<String> selectedFields;
+	private String selectExpression;
 	private List<KeyPredicate> keyPredicates;
 	
 	protected void setKeyPredicates(List<KeyPredicate> keyPredicates) {
@@ -28,13 +29,13 @@ public class JPQLSelectSingleContext extends JPQLContext implements JPQLSelectSi
 		return this.keyPredicates;
 	}
 	
-	protected void setSelectedFields(ArrayList<String> selectedFields) {
-		this.selectedFields = selectedFields;		
+	protected final void setSelectExpression(String selectExpression) {
+		this.selectExpression = selectExpression;
 	}
 
-
-	public ArrayList<String> getSelectedFields() {
-		return this.selectedFields;
+	@Override
+	public String getSelectExpression() {
+		return selectExpression;
 	}
 	
 	public class JPQLSelectSingleContextBuilder
@@ -58,7 +59,7 @@ public class JPQLSelectSingleContext extends JPQLContext implements JPQLSelectSi
 					
 					JPQLSelectSingleContext.this.setKeyPredicates(entityView.getKeyPredicates());
 					
-					JPQLSelectSingleContext.this.setSelectedFields(generateSelectFields());
+					JPQLSelectSingleContext.this.setSelectExpression(generateSelectExpression());
 
 				} catch (EdmException e) {
 					throw ODataJPARuntimeException.throwException(
@@ -81,9 +82,16 @@ public class JPQLSelectSingleContext extends JPQLContext implements JPQLSelectSi
 		}
 		
 		/*
+		 * Generate Select Clause 
+		 */
+		protected String generateSelectExpression() throws EdmException {
+			return ODataExpressionParser.parseToJPASelectExpression(getJPAEntityAlias(), generateSelectFields());			
+		}
+		
+		/*
 		 * Generate Select Clause Fields
 		 */
-		protected ArrayList<String> generateSelectFields() throws EdmException {
+		private ArrayList<String> generateSelectFields() throws EdmException {
 
 			List<SelectItem> selectItemList = entityView.getSelect();
 
@@ -98,12 +106,5 @@ public class JPQLSelectSingleContext extends JPQLContext implements JPQLSelectSi
 			}
 			return null;
 		}
-
-
-	}
-
-	
-
-
-	
+	}	
 }

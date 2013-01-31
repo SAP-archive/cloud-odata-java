@@ -78,6 +78,7 @@ public class JPQLJoinContextTest {
 		EasyMock.expect(entitySetUriInfo.getSkip()).andStubReturn(null);
 		EasyMock.expect(entitySetUriInfo.getSelect()).andStubReturn(null);
 		EasyMock.expect(entitySetUriInfo.getFilter()).andStubReturn(null);
+		EasyMock.expect(entitySetUriInfo.getKeyPredicates()).andStubReturn(keyPredicates);
 		EasyMock.expect(entitySetUriInfo
 							.getTargetEntitySet()).andStubReturn(edmEntitySet);
 		EasyMock.expect(edmEntitySet.getEntityType()).andStubReturn(edmEntityType);
