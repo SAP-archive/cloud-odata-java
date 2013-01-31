@@ -59,13 +59,17 @@ public class ODataExceptionSerializer {
       xmlStreamWriter.writeStartElement(FormatXml.M_ERROR);
       xmlStreamWriter.writeDefaultNamespace(Edm.NAMESPACE_M_2007_08);
       xmlStreamWriter.writeStartElement(FormatXml.M_CODE);
-      xmlStreamWriter.writeCharacters(errorCode);
+      if (errorCode != null) {
+        xmlStreamWriter.writeCharacters(errorCode);
+      }
       xmlStreamWriter.writeEndElement();
       xmlStreamWriter.writeStartElement(FormatXml.M_MESSAGE);
-      if (locale != null)
+      if (locale != null) {
         xmlStreamWriter.writeAttribute(Edm.PREFIX_XML, Edm.NAMESPACE_XML_1998, FormatXml.XML_LANG, getLang(locale));
-      if (message != null)
+      }
+      if (message != null) {
         xmlStreamWriter.writeCharacters(message);
+      }
       xmlStreamWriter.writeEndElement();
       if (innerError != null) {
         xmlStreamWriter.writeStartElement(FormatXml.M_INNER_ERROR);
