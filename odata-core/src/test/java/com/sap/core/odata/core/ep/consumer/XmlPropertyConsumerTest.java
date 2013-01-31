@@ -69,6 +69,35 @@ public class XmlPropertyConsumerTest extends AbstractConsumerTest {
     assertEquals("Heidelberg", cityMap.get("CityName"));
   }
 
+  @Test
+  @SuppressWarnings("unchecked")
+  public void testReadComplexPropertyWithLineBreaks() throws Exception {
+    XmlPropertyConsumer xpc = new XmlPropertyConsumer();
+    
+    String xml = 
+        "<Location m:type=\"RefScenario.c_Location\">" + 
+            "    " + 
+            "<Country>Germany</Country>" + 
+            "<City m:type=\"RefScenario.c_City\">" + 
+              "<PostalCode>69124</PostalCode>" + 
+              "\n" + 
+              "<CityName>Heidelberg</CityName>" + 
+            "</City>" + 
+          "</Location>" +
+          "\n        \n ";
+    XMLStreamReader reader = createReaderForTest(xml);
+    EdmEntitySet entitySet = MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Employees");
+    EdmProperty property = (EdmProperty) entitySet.getEntityType().getProperty("Location");
+    
+    Map<String, Object> resultMap = xpc.readProperty(reader, property);
+    
+    Map<String, Object> locationMap = (Map<String, Object>) resultMap.get("Location");
+    assertEquals("Germany", locationMap.get("Country"));
+    Map<String, Object> cityMap = (Map<String, Object>) locationMap.get("City");
+    assertEquals("69124", cityMap.get("PostalCode"));
+    assertEquals("Heidelberg", cityMap.get("CityName"));
+  }
+
   @SuppressWarnings("unchecked")
   @Test
   @Ignore
