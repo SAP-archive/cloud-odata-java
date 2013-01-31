@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.sap.core.odata.api.edm.EdmSimpleType;
 import com.sap.core.odata.api.edm.EdmType;
+import com.sap.core.odata.api.edm.EdmTypeKind;
 
 /**
  * Parameter set is a vector of 1 or more EDM types, it is used to store the possible 
@@ -104,7 +105,11 @@ class ParameterSet
 
         //Its allowed to promoted the actual parameter!!!
 
-        //The type simply don't match
+        //Promotion only allowed for simple types
+        if (actType.getKind() != EdmTypeKind.SIMPLE)
+          return false;
+              
+        //The type simply don't match          
         if (!paramType.isCompatible((EdmSimpleType) actType))
           return false;
       }
