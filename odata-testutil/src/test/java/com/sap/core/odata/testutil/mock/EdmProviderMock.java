@@ -9,6 +9,7 @@ import com.sap.core.odata.api.edm.EdmMultiplicity;
 import com.sap.core.odata.api.edm.EdmSimpleTypeKind;
 import com.sap.core.odata.api.edm.EdmTargetPath;
 import com.sap.core.odata.api.edm.FullQualifiedName;
+import com.sap.core.odata.api.edm.provider.AnnotationAttribute;
 import com.sap.core.odata.api.edm.provider.Association;
 import com.sap.core.odata.api.edm.provider.AssociationEnd;
 import com.sap.core.odata.api.edm.provider.AssociationSet;
@@ -161,12 +162,16 @@ public class EdmProviderMock extends EdmProvider {
     if (NAMESPACE_1.equals(edmFQName.getNamespace())) {
       if (ENTITY_TYPE_1_1.getName().equals(edmFQName.getName())) {
         final List<Property> properties = new ArrayList<Property>();
+        ArrayList<AnnotationAttribute> annoList = new ArrayList<AnnotationAttribute>();
+        annoList.add(new AnnotationAttribute().setName("annoName").setNamespace("http://annoNamespace").setPrefix("annoPrefix").setText("annoText"));
         properties.add(new SimpleProperty().setName("EmployeeId").setType(EdmSimpleTypeKind.String)
             .setFacets(new Facets().setNullable(false))
-            .setMapping(new Mapping().setInternalName("getId")));
+            .setMapping(new Mapping().setInternalName("getId")).setAnnotationAttributes(annoList));
+        ArrayList<AnnotationAttribute> annoList2 = new ArrayList<AnnotationAttribute>();
+        annoList2.add(new AnnotationAttribute().setName("annoName").setNamespace("http://annoNamespace").setPrefix("annoPrefix").setText("annoText"));
         properties.add(new SimpleProperty().setName("EmployeeName").setType(EdmSimpleTypeKind.String)
             .setCustomizableFeedMappings(new CustomizableFeedMappings()
-                .setFcTargetPath(EdmTargetPath.SYNDICATION_TITLE)));
+                .setFcTargetPath(EdmTargetPath.SYNDICATION_TITLE)).setAnnotationAttributes(annoList2));
         properties.add(new SimpleProperty().setName("ManagerId").setType(EdmSimpleTypeKind.String)
             .setMapping(new Mapping().setInternalName("getManager.getId")));
         properties.add(new SimpleProperty().setName("RoomId").setType(EdmSimpleTypeKind.String)

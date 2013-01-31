@@ -516,6 +516,7 @@ public class EdmMetadata {
     if (annotationAttributes != null) {
       for (AnnotationAttribute annotationAttribute : annotationAttributes) {
         xmlStreamWriter.writeAttribute(annotationAttribute.getPrefix(), annotationAttribute.getNamespace(), annotationAttribute.getName(), annotationAttribute.getText());
+        xmlStreamWriter.writeNamespace(annotationAttribute.getPrefix(), annotationAttribute.getNamespace());
       }
     }
   }
@@ -524,6 +525,7 @@ public class EdmMetadata {
     if (annotationElements != null) {
       for (AnnotationElement annotationElement : annotationElements) {
         xmlStreamWriter.writeStartElement(annotationElement.getPrefix(), annotationElement.getName(), annotationElement.getNamespace());
+        xmlStreamWriter.writeNamespace(annotationElement.getPrefix(), annotationElement.getNamespace());
         xmlStreamWriter.writeCharacters(annotationElement.getXmlData());
         xmlStreamWriter.writeEndElement();
       }

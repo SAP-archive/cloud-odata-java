@@ -33,6 +33,7 @@ public class EdmServiceMetadataImplProvTest extends BaseTest {
     prefixMap.put("edmx", "http://schemas.microsoft.com/ado/2007/06/edmx");
     prefixMap.put("m", "http://schemas.microsoft.com/ado/2007/08/dataservices/metadata");
     prefixMap.put("a", "http://schemas.microsoft.com/ado/2008/09/edm");
+    prefixMap.put("annoPrefix", "http://annoNamespace");
 
     NamespaceContext ctx = new SimpleNamespaceContext(prefixMap);
     XMLUnit.setXpathNamespaceContext(ctx);
@@ -67,6 +68,11 @@ public class EdmServiceMetadataImplProvTest extends BaseTest {
     assertXpathExists("/edmx:Edmx/edmx:DataServices/a:Schema/a:EntityType/a:Property[@Name and @Type]", metadata);
     assertXpathExists("/edmx:Edmx/edmx:DataServices/a:Schema/a:EntityType/a:Property[@Name and @Type and @Nullable and @m:FC_TargetPath]", metadata);
     assertXpathExists("/edmx:Edmx/edmx:DataServices/a:Schema/a:EntityType/a:NavigationProperty[@Name and @Relationship and @FromRole and @ToRole]", metadata);
+  }
+  @Test
+  public void testAnnotations() throws Exception {
+    assertXpathExists("/edmx:Edmx/edmx:DataServices/a:Schema/a:EntityType/a:Property[@Name and @Type and @Nullable and @annoPrefix:annoName]", metadata);
+    assertXpathExists("/edmx:Edmx/edmx:DataServices/a:Schema/a:EntityType/a:Property[@Name and @Type and @m:FC_TargetPath and @annoPrefix:annoName]", metadata);
   }
 
   @Test
