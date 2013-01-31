@@ -29,8 +29,8 @@ import com.sap.core.odata.api.uri.KeyPredicate;
 import com.sap.core.odata.api.uri.NavigationSegment;
 import com.sap.core.odata.api.uri.info.GetEntityUriInfo;
 import com.sap.core.odata.processor.jpa.api.access.JPAJoinClause;
-import com.sap.core.odata.processor.jpa.exception.ODataJPAModelException;
-import com.sap.core.odata.processor.jpa.exception.ODataJPARuntimeException;
+import com.sap.core.odata.processor.jpa.api.exception.ODataJPAModelException;
+import com.sap.core.odata.processor.jpa.api.exception.ODataJPARuntimeException;
 import com.sap.core.odata.processor.jpa.jpql.JPQLJoinSelectSingleContext.JPQLJoinSelectSingleContextBuilder;
 
 public class JPQLJoinSelectSingleContextTest {
@@ -100,7 +100,7 @@ public class JPQLJoinSelectSingleContextTest {
 		} catch (ODataJPARuntimeException e) {
 			fail("Should not come here");
 		}
-		List<JPAJoinClause> joinClauses = joinContext.getJPAOuterJoinClauses();
+		List<JPAJoinClause> joinClauses = joinContext.getJPAJoinClauses();
 		assertNotNull(joinClauses);
 		assertTrue(joinClauses.size() > 0);
 		assertEquals(joinClauses.get(0).getEntityAlias(), "E1");

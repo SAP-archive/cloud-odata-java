@@ -1,6 +1,7 @@
 package com.sap.core.odata.processor.jpa.jpql;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
@@ -22,10 +23,10 @@ import com.sap.core.odata.api.uri.expression.OrderExpression;
 import com.sap.core.odata.api.uri.expression.PropertyExpression;
 import com.sap.core.odata.api.uri.expression.SortOrder;
 import com.sap.core.odata.api.uri.info.GetEntitySetUriInfo;
+import com.sap.core.odata.processor.jpa.api.exception.ODataJPAModelException;
+import com.sap.core.odata.processor.jpa.api.exception.ODataJPARuntimeException;
 import com.sap.core.odata.processor.jpa.api.jpql.JPQLContext;
 import com.sap.core.odata.processor.jpa.api.jpql.JPQLContextType;
-import com.sap.core.odata.processor.jpa.exception.ODataJPAModelException;
-import com.sap.core.odata.processor.jpa.exception.ODataJPARuntimeException;
 import com.sap.core.odata.processor.jpa.jpql.JPQLSelectContext.JPQLSelectContextBuilder;
 
 public class JPQLSelectContextImplTest {
@@ -184,6 +185,25 @@ public class JPQLSelectContextImplTest {
 	public void testCreateBuilder() {
 		assertEquals(JPQLSelectContextBuilder.class.toString(), builder
 				.getClass().toString());
+	}
+	
+	@Test
+	public void testEntitySetAsNull(){
+		JPQLSelectContextBuilder builder = (JPQLSelectContextBuilder) JPQLContext.createBuilder(
+				JPQLContextType.SELECT, null);
+		try {
+			selectContext = (JPQLSelectContext) builder.build();
+			assertNull(selectContext.getJPAEntityAlias());
+			assertNull(selectContext.getJPAEntityName());
+			assertNull(selectContext.getOrderByCollection());
+			assertNull(selectContext.getSelectedFields());
+			assertNull(selectContext.getType());
+			assertNull(selectContext.getWhereExpression());
+		} catch (ODataJPAModelException e) {
+			fail("Exception not Expected");
+		} catch (ODataJPARuntimeException e) {
+			fail("Runtime Exception thrown");
+		}
 	}
 
 }

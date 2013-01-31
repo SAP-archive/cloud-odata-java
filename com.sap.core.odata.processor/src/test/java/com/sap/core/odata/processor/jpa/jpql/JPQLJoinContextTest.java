@@ -29,9 +29,9 @@ import com.sap.core.odata.api.uri.KeyPredicate;
 import com.sap.core.odata.api.uri.NavigationSegment;
 import com.sap.core.odata.api.uri.info.GetEntitySetUriInfo;
 import com.sap.core.odata.processor.jpa.api.access.JPAJoinClause;
-import com.sap.core.odata.processor.jpa.exception.ODataJPAModelException;
-import com.sap.core.odata.processor.jpa.exception.ODataJPARuntimeException;
-import com.sap.core.odata.processor.jpa.jpql.JPQLJoinContext.JPQLJoinContextBuilder;
+import com.sap.core.odata.processor.jpa.api.exception.ODataJPAModelException;
+import com.sap.core.odata.processor.jpa.api.exception.ODataJPARuntimeException;
+import com.sap.core.odata.processor.jpa.jpql.JPQLJoinSelectContext.JPQLJoinContextBuilder;
 
 public class JPQLJoinContextTest {
 	
@@ -94,7 +94,7 @@ public class JPQLJoinContextTest {
 
 	@Test
 	public void testGetJPAOuterJoinClauses() {
-		JPQLJoinContext joinContext = new JPQLJoinContext();
+		JPQLJoinSelectContext joinContext = new JPQLJoinSelectContext();
 		JPQLJoinContextBuilder joinContextBuilder = joinContext.new JPQLJoinContextBuilder();
 		try { 
 			joinContextBuilder.entitySetView = entitySetUriInfo;

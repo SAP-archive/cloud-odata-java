@@ -19,10 +19,10 @@ import com.sap.core.odata.api.edm.EdmProperty;
 import com.sap.core.odata.api.edm.EdmSimpleType;
 import com.sap.core.odata.api.uri.KeyPredicate;
 import com.sap.core.odata.processor.jpa.api.access.JPAJoinClause;
+import com.sap.core.odata.processor.jpa.api.exception.ODataJPARuntimeException;
 import com.sap.core.odata.processor.jpa.api.jpql.JPQLContextType;
 import com.sap.core.odata.processor.jpa.api.jpql.JPQLJoinSelectSingleContextView;
 import com.sap.core.odata.processor.jpa.api.jpql.JPQLStatement;
-import com.sap.core.odata.processor.jpa.exception.ODataJPARuntimeException;
 
 public class JPQLJoinSelectSingleStatementBuilderTest {
 	JPQLJoinSelectSingleContextView context = null;
@@ -48,7 +48,7 @@ public class JPQLJoinSelectSingleStatementBuilderTest {
 		joinClauseList.add(jpaOuterJoinClause);
 		jpaOuterJoinClause = new JPAJoinClause("SOItem", "si", "material", "mat", "mat.id = 'abc'", JPAJoinClause.JOIN.LEFT);
 		joinClauseList.add(jpaOuterJoinClause);
-		EasyMock.expect(context.getJPAOuterJoinClauses()).andStubReturn(joinClauseList);
+		EasyMock.expect(context.getJPAJoinClauses()).andStubReturn(joinClauseList);
 		EasyMock.replay(context);		
 	}
 
