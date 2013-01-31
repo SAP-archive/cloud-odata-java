@@ -44,6 +44,20 @@ public class XmlPropertyConsumerTest extends AbstractConsumerTest {
   }
 
   @Test
+  public void testReadStringNullProperty() throws Exception {
+    XmlPropertyConsumer xpc = new XmlPropertyConsumer();
+    
+    String xml = "<EntryDate m:null=\"true\"/>";
+    XMLStreamReader reader = createReaderForTest(xml);
+    EdmEntitySet entitySet = MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Employees");
+    EdmProperty property = (EdmProperty) entitySet.getEntityType().getProperty("EntryDate");
+    
+    Map<String, Object> resultMap = xpc.readProperty(reader, property);
+
+    assertEquals(null, resultMap.get("EntryDate"));
+  }
+
+  @Test
   @SuppressWarnings("unchecked")
   public void testReadComplexProperty() throws Exception {
     XmlPropertyConsumer xpc = new XmlPropertyConsumer();
