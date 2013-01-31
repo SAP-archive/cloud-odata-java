@@ -58,12 +58,13 @@ public class EntryXmlChangeTest extends AbstractRefTest {
         + "        rel=\"" + Edm.NAMESPACE_REL_2007_08 + "nr_Employees\"" + "\n"
         + "        type=\"" + HttpContentType.APPLICATION_ATOM_XML_FEED_UTF8 + "\"/>" + "\n"
         + "</entry>";
-    // response = postUri("Rooms", requestBody, HttpContentType.APPLICATION_ATOM_XML_ENTRY_UTF8, HttpStatusCodes.CREATED);
-    // checkMediaType(response, HttpContentType.APPLICATION_ATOM_XML_ENTRY_UTF8);
-    // assertNotNull(response.getFirstHeader(HttpHeaders.LOCATION));
+    response = postUri("Rooms", requestBody, HttpContentType.APPLICATION_ATOM_XML_ENTRY_UTF8, HttpStatusCodes.CREATED);
+    checkMediaType(response, HttpContentType.APPLICATION_ATOM_XML_ENTRY_UTF8);
+    assertNotNull(response.getFirstHeader(HttpHeaders.LOCATION));
     // assertEquals(getEndpoint() + "Rooms('104')", response.getFirstHeader(HttpHeaders.LOCATION).getValue());
+    assertTrue(getBody(response).contains("Seats>4<"));
     // checkUri("Rooms('104')/nr_Employees('4')");
-    // checkUri("Rooms('104')/nr_Employees('5')");
+    checkUri("Rooms('104')/nr_Employees('5')");
   }
 
   @Test
@@ -94,8 +95,8 @@ public class EntryXmlChangeTest extends AbstractRefTest {
         + "    <d:EntryDate m:null=\"true\"/>" + "\n"
         + "  </m:properties>" + "\n"
         + "</entry>";
-    // callUri(ODataHttpMethod.PATCH, "Employees('2')", null, null, requestBody, HttpContentType.APPLICATION_ATOM_XML_ENTRY_UTF8, HttpStatusCodes.NO_CONTENT);
-    // assertTrue(getBody(callUri("Employees('2')")).contains(CITY_1_NAME));
+    callUri(ODataHttpMethod.PATCH, "Employees('2')", null, null, requestBody, HttpContentType.APPLICATION_ATOM_XML_ENTRY_UTF8, HttpStatusCodes.NO_CONTENT);
+    assertTrue(getBody(callUri("Employees('2')")).contains(CITY_1_NAME));
 
     requestBody = "<entry xmlns=\"" + Edm.NAMESPACE_ATOM_2005 + "\">" + "\n"
         + "  <content xmlns:d=\"" + Edm.NAMESPACE_D_2007_08 + "\"" + "\n"

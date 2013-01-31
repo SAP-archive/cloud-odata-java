@@ -17,6 +17,7 @@ import com.sap.core.odata.api.commons.HttpContentType;
 import com.sap.core.odata.api.commons.HttpHeaders;
 import com.sap.core.odata.api.commons.HttpStatusCodes;
 import com.sap.core.odata.api.commons.InlineCount;
+import com.sap.core.odata.api.edm.Edm;
 import com.sap.core.odata.api.edm.EdmEntitySet;
 import com.sap.core.odata.api.edm.EdmEntityType;
 import com.sap.core.odata.api.edm.EdmException;
@@ -24,6 +25,7 @@ import com.sap.core.odata.api.edm.EdmFunctionImport;
 import com.sap.core.odata.api.edm.EdmLiteral;
 import com.sap.core.odata.api.edm.EdmLiteralKind;
 import com.sap.core.odata.api.edm.EdmMultiplicity;
+import com.sap.core.odata.api.edm.EdmNavigationProperty;
 import com.sap.core.odata.api.edm.EdmProperty;
 import com.sap.core.odata.api.edm.EdmSimpleType;
 import com.sap.core.odata.api.edm.EdmSimpleTypeException;
@@ -44,6 +46,9 @@ import com.sap.core.odata.api.processor.ODataResponse;
 import com.sap.core.odata.api.processor.ODataSingleProcessor;
 import com.sap.core.odata.api.uri.KeyPredicate;
 import com.sap.core.odata.api.uri.NavigationSegment;
+import com.sap.core.odata.api.uri.PathSegment;
+import com.sap.core.odata.api.uri.UriInfo;
+import com.sap.core.odata.api.uri.UriParser;
 import com.sap.core.odata.api.uri.expression.BinaryExpression;
 import com.sap.core.odata.api.uri.expression.CommonExpression;
 import com.sap.core.odata.api.uri.expression.ExpressionKind;
@@ -195,7 +200,7 @@ public class ListsProcessor extends ODataSingleProcessor {
         data,
         uriInfo.getFilter(),
         uriInfo.getInlineCount(),
-        null,  // uriInfo.getOrderBy(),
+        null, // uriInfo.getOrderBy(),
         uriInfo.getSkipToken(),
         uriInfo.getSkip(),
         uriInfo.getTop());
@@ -281,8 +286,9 @@ public class ListsProcessor extends ODataSingleProcessor {
     setStructuralTypeValuesFromMap(data, entityType, entryValues.getProperties(), true);
     dataSource.createData(entitySet, data);
 
-    Map<String, Object> values = getStructuralTypeValueMap(data, entityType);
+    linkEntity(entitySet, data, entryValues.getMetadata().getAssociationUris());
 
+    Map<String, Object> values = getStructuralTypeValueMap(data, entityType);
     final ODataResponse response = writeEntry(entitySet, values, contentType);
 
     // TODO: set correct Location header
@@ -677,36 +683,8 @@ public class ListsProcessor extends ODataSingleProcessor {
       response = EntityProvider.writeText(value == null ? "" : value);
     }
     return ODataResponse.fromResponse(response)
-          .status(HttpStatusCodes.OK)
-          .build();
-  }
-
-  private ODataResponse writeEntry(final EdmEntitySet entitySet, final Map<String, Object> values, final String contentType) throws ODataException, EntityProviderException {
-    ODataContext context = getContext();
-    final EntityProviderProperties entryProperties = EntityProviderProperties
-        .serviceRoot(context.getPathInfo().getServiceRoot()).build();
-
-    final int timingHandle = context.startRuntimeMeasurement("EntityProvider", "writeEntry");
-
-    final ODataResponse response = EntityProvider.writeEntry(contentType, entitySet, values, entryProperties);
-
-    context.stopRuntimeMeasurement(timingHandle);
-    return response;
-  }
-
-  private ODataEntry parseEntry(final EdmEntitySet entitySet, InputStream content, final String requestContentType) throws ODataBadRequestException {
-    ODataContext context = getContext();
-    final int timingHandle = context.startRuntimeMeasurement("EntityConsumer", "readEntry");
-
-    ODataEntry entryValues;
-    try {
-      entryValues = EntityProvider.readEntry(requestContentType, entitySet, content);
-    } catch (EntityProviderException e) {
-      throw new ODataBadRequestException(ODataBadRequestException.BODY, e);
-    }
-
-    context.stopRuntimeMeasurement(timingHandle);
-    return entryValues;
+        .status(HttpStatusCodes.OK)
+        .build();
   }
 
   private static HashMap<String, Object> mapKey(final List<KeyPredicate> keys) throws EdmException {
@@ -762,6 +740,70 @@ public class ListsProcessor extends ODataSingleProcessor {
     context.stopRuntimeMeasurement(timingHandle);
 
     return data;
+  }
+
+  private ODataResponse writeEntry(final EdmEntitySet entitySet, final Map<String, Object> values, final String contentType) throws ODataException, EntityProviderException {
+    ODataContext context = getContext();
+    final EntityProviderProperties entryProperties = EntityProviderProperties
+        .serviceRoot(context.getPathInfo().getServiceRoot()).build();
+
+    final int timingHandle = context.startRuntimeMeasurement("EntityProvider", "writeEntry");
+
+    final ODataResponse response = EntityProvider.writeEntry(contentType, entitySet, values, entryProperties);
+
+    context.stopRuntimeMeasurement(timingHandle);
+
+    return response;
+  }
+
+  private ODataEntry parseEntry(final EdmEntitySet entitySet, InputStream content, final String requestContentType) throws ODataBadRequestException {
+    ODataContext context = getContext();
+    final int timingHandle = context.startRuntimeMeasurement("EntityConsumer", "readEntry");
+
+    ODataEntry entryValues;
+    try {
+      entryValues = EntityProvider.readEntry(requestContentType, entitySet, content);
+    } catch (EntityProviderException e) {
+      throw new ODataBadRequestException(ODataBadRequestException.BODY, e);
+    }
+
+    context.stopRuntimeMeasurement(timingHandle);
+
+    return entryValues;
+  }
+
+  private void linkEntity(final EdmEntitySet entitySet, Object data, final Map<String, String> links) throws ODataException {
+    final Edm edm = getContext().getService().getEntityDataModel();
+    final EdmEntityType entityType = entitySet.getEntityType();
+
+    for (final String navigationPropertyName : links.keySet()) {
+      final String uriString = links.get(navigationPropertyName);
+      final PathSegment pathSegment = new PathSegment() {
+        @Override
+        public String getPath() {
+          return uriString;
+        }
+        @Override
+        public Map<String, List<String>> getMatrixParameters() {
+          return null;
+        }
+      };
+      UriInfo uri;
+      try {
+        uri = UriParser.parse(edm, Arrays.asList(pathSegment), Collections.<String, String> emptyMap());
+      } catch (ODataException e) {
+        throw new ODataBadRequestException(ODataBadRequestException.BODY, e);
+      }
+      final EdmNavigationProperty navigationProperty = (EdmNavigationProperty) entityType.getProperty(navigationPropertyName);
+      final EdmEntitySet targetEntitySet = entitySet.getRelatedEntitySet(navigationProperty);
+      if (uri.getTargetEntitySet() == null
+          || uri.getTargetEntitySet() != targetEntitySet
+          || !uri.getNavigationSegments().isEmpty()
+          || uri.getKeyPredicates().isEmpty())
+        throw new ODataBadRequestException(ODataBadRequestException.BODY);
+
+      dataSource.writeRelation(entitySet, data, targetEntitySet, mapKey(uri.getKeyPredicates()));
+    }
   }
 
   private <T> Integer applySystemQueryOptions(final EdmEntitySet entitySet, List<T> data, final FilterExpression filter, final InlineCount inlineCount, final OrderByExpression orderBy, final String skipToken, final Integer skip, final Integer top) throws ODataException {
@@ -975,7 +1017,7 @@ public class ListsProcessor extends ODataSingleProcessor {
       final EdmSimpleType memberType = (EdmSimpleType) memberExpression.getEdmType();
       List<EdmProperty> propertyPath = new ArrayList<EdmProperty>();
       CommonExpression currentExpression = memberExpression;
-      while (currentExpression != null && currentExpression.getKind() == ExpressionKind.MEMBER) {
+      while (currentExpression.getKind() == ExpressionKind.MEMBER) {
         final MemberExpression currentMember = (MemberExpression) currentExpression;
         propertyPath.add(0, (EdmProperty) ((PropertyExpression) currentMember.getProperty()).getEdmProperty());
         currentExpression = currentMember.getPath();
