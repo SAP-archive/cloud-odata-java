@@ -69,7 +69,7 @@ public class JPQLJoinStatementBuilder extends JPQLStatementBuilder {
 			int i = 1;
 			int limit = joinClauseList.size();
 			while (i < limit) {
-				jpqlQuery.append(JPQLStatement.DELIMITER.SPACE);
+//				jpqlQuery.append(JPQLStatement.DELIMITER.SPACE);
 				jpqlQuery.append(JPQLStatement.KEYWORD.JOIN).append(
 						JPQLStatement.DELIMITER.SPACE);
 
@@ -101,7 +101,7 @@ public class JPQLJoinStatementBuilder extends JPQLStatementBuilder {
 		}
 		String whereExpression = context.getWhereExpression();
 		if ( whereExpression != null || joinWhereCondition.length() > 0) {
-			jpqlQuery.append(JPQLStatement.DELIMITER.SPACE);
+//			jpqlQuery.append(JPQLStatement.DELIMITER.SPACE);
 			jpqlQuery.append(JPQLStatement.KEYWORD.WHERE).append(
 					JPQLStatement.DELIMITER.SPACE);
 			if (whereExpression != null) {
@@ -141,7 +141,7 @@ public class JPQLJoinStatementBuilder extends JPQLStatementBuilder {
 						JPQLStatement.DELIMITER.SPACE);
 				i++;
 			}
-			jpqlQuery.append(JPQLStatement.DELIMITER.SPACE);
+//			jpqlQuery.append(JPQLStatement.DELIMITER.SPACE);
 			jpqlQuery.append(JPQLStatement.KEYWORD.ORDERBY).append(
 					JPQLStatement.DELIMITER.SPACE);
 			jpqlQuery.append(orderByBuilder);

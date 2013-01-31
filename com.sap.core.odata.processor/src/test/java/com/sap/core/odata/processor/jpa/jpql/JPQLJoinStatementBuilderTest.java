@@ -34,10 +34,10 @@ public class JPQLJoinStatementBuilderTest {
 	@Before
 	public void setUp() throws Exception {
 		context = EasyMock.createMock(JPQLJoinContextView.class);
-		EasyMock.expect(context.getJPAEntityAlias()).andStubReturn("gt1");
+		EasyMock.expect(context.getJPAEntityAlias()).andStubReturn("mat");
 		EasyMock.expect(context.getJPAEntityName()).andStubReturn("SOHeader");
 		EasyMock.expect(context.getType()).andStubReturn(JPQLContextType.SELECT);
-		EasyMock.expect(context.getWhereExpression()).andStubReturn("gt1.buyerId = 2 AND gt1.createdBy = 'Peter'");
+		EasyMock.expect(context.getWhereExpression()).andStubReturn("soh.buyerId = 2 AND soh.createdBy = 'Peter'");
 		HashMap<String, String> orderByMap = new HashMap<String, String>();
 		orderByMap.put("buyerId", "asc");
 		orderByMap.put("city", "desc");
@@ -60,7 +60,7 @@ public class JPQLJoinStatementBuilderTest {
 		JPQLJoinStatementBuilder jpqlJoinStatementBuilder = new JPQLJoinStatementBuilder(context);
 		try {
 			JPQLStatement jpqlStatement = jpqlJoinStatementBuilder.build();
-			assertEquals("SELECT mat FROM SOHeader gt1 JOIN soh.soItem soi JOIN soi.material mat WHERE gt1.buyerId = 2 AND gt1.createdBy = 'Peter' AND soi.shId = soh.soId  AND mat.id = 'abc'  ORDER BY gt1.buyerId asc , gt1.city desc ", jpqlStatement.toString());
+			assertEquals("SELECT mat FROM SOHeader soh JOIN soh.soItem soi JOIN soi.material mat WHERE soh.buyerId = 2 AND soh.createdBy = 'Peter' AND soi.shId = soh.soId  AND mat.id = 'abc' ORDER BY mat.buyerId asc , mat.city desc ", jpqlStatement.toString());
 		} catch (ODataJPARuntimeException e) {
 			fail("Should not have come here");
 		}

@@ -13,15 +13,14 @@ import org.junit.Test;
 import com.sap.core.odata.api.edm.EdmEntitySet;
 import com.sap.core.odata.api.edm.EdmEntityType;
 import com.sap.core.odata.api.edm.EdmException;
+import com.sap.core.odata.api.edm.EdmMapping;
 import com.sap.core.odata.api.edm.EdmProperty;
 import com.sap.core.odata.api.edm.EdmType;
-import com.sap.core.odata.api.edm.EdmTyped;
 import com.sap.core.odata.api.uri.KeyPredicate;
 import com.sap.core.odata.api.uri.SelectItem;
 import com.sap.core.odata.api.uri.info.GetEntityUriInfo;
 import com.sap.core.odata.processor.jpa.api.jpql.JPQLContext;
 import com.sap.core.odata.processor.jpa.api.jpql.JPQLContextType;
-import com.sap.core.odata.processor.jpa.jpql.JPQLSelectSingleContext;
 import com.sap.core.odata.processor.jpa.exception.ODataJPAModelException;
 import com.sap.core.odata.processor.jpa.exception.ODataJPARuntimeException;
 import com.sap.core.odata.processor.jpa.jpql.JPQLSelectSingleContext.JPQLSelectSingleContextBuilder;
@@ -84,13 +83,15 @@ public class JPQLSelectSingleContextImplTest {
 			
 			List<SelectItem> selectItemList = new ArrayList<SelectItem>(2);
 			do {
-				EdmTyped edmTyped = EasyMock.createMock(EdmTyped.class);
-				EasyMock.expect(edmTyped.getName()).andReturn(fields[i]);
-				EasyMock.replay(edmTyped);
+				EdmMapping edmMapping = EasyMock.createMock(EdmMapping.class);
+				EasyMock.expect(edmMapping.getInternalName()).andStubReturn(fields[i]);
+				EdmProperty edmProperty = EasyMock.createMock(EdmProperty.class);
+				EasyMock.expect(edmProperty.getMapping()).andReturn(edmMapping);
+				EasyMock.replay(edmMapping, edmProperty);
 
 				SelectItem selectItem = EasyMock.createMock(SelectItem.class);
 				EasyMock.expect(selectItem.getProperty()).andStubReturn(
-						edmTyped);
+						edmProperty);
 				EasyMock.replay(selectItem);
 
 				selectItemList.add(selectItem);

@@ -137,12 +137,15 @@ public class JPQLJoinSelectSingleContextTest {
 		KeyPredicate keyPredicate = EasyMock.createMock(KeyPredicate.class);
 		EasyMock.expect(keyPredicate.getLiteral()).andStubReturn("1");
 		EdmProperty edmProperty = EasyMock.createMock(EdmProperty.class);
+		EdmMapping edmMapping = EasyMock.createMock(EdmMapping.class);
+		EasyMock.expect(edmMapping.getInternalName()).andStubReturn("soid");
+		EasyMock.expect(edmProperty.getMapping()).andStubReturn(edmMapping );
 		EasyMock.expect(edmProperty.getName()).andStubReturn("soid");
 		EdmSimpleType edmType = EasyMock.createMock(EdmSimpleType.class);
 		EasyMock.expect(edmProperty.getType()).andStubReturn(edmType );
 		EasyMock.expect(keyPredicate.getProperty()).andStubReturn(edmProperty );
 		
-		EasyMock.replay(edmType, edmProperty, keyPredicate);
+		EasyMock.replay(edmType, edmMapping, edmProperty, keyPredicate);
 		List<KeyPredicate> keyPredicates = new ArrayList<KeyPredicate>();
 		keyPredicates.add(keyPredicate);
 		return keyPredicates;

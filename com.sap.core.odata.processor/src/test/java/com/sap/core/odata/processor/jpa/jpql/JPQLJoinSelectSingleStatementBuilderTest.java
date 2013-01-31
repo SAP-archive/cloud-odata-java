@@ -14,6 +14,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.sap.core.odata.api.edm.EdmException;
+import com.sap.core.odata.api.edm.EdmMapping;
 import com.sap.core.odata.api.edm.EdmProperty;
 import com.sap.core.odata.api.edm.EdmSimpleType;
 import com.sap.core.odata.api.uri.KeyPredicate;
@@ -71,12 +72,14 @@ public class JPQLJoinSelectSingleStatementBuilderTest {
 		KeyPredicate keyPredicate = EasyMock.createMock(KeyPredicate.class);
 		EasyMock.expect(keyPredicate.getLiteral()).andStubReturn("1");
 		EdmProperty edmProperty = EasyMock.createMock(EdmProperty.class);
-		EasyMock.expect(edmProperty.getName()).andStubReturn("soid");
+		EdmMapping edmMapping = EasyMock.createMock(EdmMapping.class);
+		EasyMock.expect(edmMapping.getInternalName()).andStubReturn("soid");
+		EasyMock.expect(edmProperty.getMapping()).andStubReturn(edmMapping );
 		EdmSimpleType edmType = EasyMock.createMock(EdmSimpleType.class);
 		EasyMock.expect(edmProperty.getType()).andStubReturn(edmType );
 		EasyMock.expect(keyPredicate.getProperty()).andStubReturn(edmProperty );
 		
-		EasyMock.replay(edmType, edmProperty, keyPredicate);
+		EasyMock.replay(edmType,edmMapping, edmProperty, keyPredicate);
 		List<KeyPredicate> keyPredicates = new ArrayList<KeyPredicate>();
 		keyPredicates.add(keyPredicate);
 		return keyPredicates;

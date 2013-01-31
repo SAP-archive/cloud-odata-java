@@ -13,17 +13,17 @@ import org.junit.Test;
 import com.sap.core.odata.api.edm.EdmEntitySet;
 import com.sap.core.odata.api.edm.EdmEntityType;
 import com.sap.core.odata.api.edm.EdmException;
+import com.sap.core.odata.api.edm.EdmMapping;
+import com.sap.core.odata.api.edm.EdmProperty;
 import com.sap.core.odata.api.edm.EdmType;
-import com.sap.core.odata.api.edm.EdmTyped;
 import com.sap.core.odata.api.uri.SelectItem;
-import com.sap.core.odata.api.uri.expression.CommonExpression;
 import com.sap.core.odata.api.uri.expression.OrderByExpression;
 import com.sap.core.odata.api.uri.expression.OrderExpression;
+import com.sap.core.odata.api.uri.expression.PropertyExpression;
 import com.sap.core.odata.api.uri.expression.SortOrder;
 import com.sap.core.odata.api.uri.info.GetEntitySetUriInfo;
 import com.sap.core.odata.processor.jpa.api.jpql.JPQLContext;
 import com.sap.core.odata.processor.jpa.api.jpql.JPQLContextType;
-import com.sap.core.odata.processor.jpa.jpql.JPQLSelectContext;
 import com.sap.core.odata.processor.jpa.exception.ODataJPAModelException;
 import com.sap.core.odata.processor.jpa.exception.ODataJPARuntimeException;
 import com.sap.core.odata.processor.jpa.jpql.JPQLSelectContext.JPQLSelectContextBuilder;
@@ -57,16 +57,28 @@ public class JPQLSelectContextImplTest {
 				fail("Exception not Expected");
 			}
 
-			CommonExpression commonExpression = EasyMock
-					.createMock(CommonExpression.class);
+			PropertyExpression commonExpression = EasyMock
+					.createMock(PropertyExpression.class);
 			EasyMock.expect(commonExpression.getEdmType()).andStubReturn(
 					edmType);
-			EasyMock.replay(commonExpression);
-
+			
+			
+			EdmProperty edmTyped = EasyMock
+					.createMock(EdmProperty.class);
+			EdmMapping edmMapping = EasyMock.createMock(EdmMapping.class);
+			EasyMock.expect(edmMapping.getInternalName()).andStubReturn(fields[i]);
+			try {
+				EasyMock.expect(edmTyped.getMapping()).andStubReturn(edmMapping);
+			} catch (EdmException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			EasyMock.expect(commonExpression.getEdmProperty()).andStubReturn(edmTyped);
 			OrderExpression order = EasyMock.createMock(OrderExpression.class);
 			EasyMock.expect(order.getExpression()).andStubReturn(
 					commonExpression);
 			EasyMock.expect(order.getSortOrder()).andStubReturn(orderType[i]);
+			EasyMock.replay(edmMapping, edmTyped, commonExpression);
 			EasyMock.replay(order);
 
 			orderList.add(order);
@@ -82,13 +94,15 @@ public class JPQLSelectContextImplTest {
 			i = 0;
 			List<SelectItem> selectItemList = new ArrayList<SelectItem>(2);
 			do {
-				EdmTyped edmTyped = EasyMock.createMock(EdmTyped.class);
-				EasyMock.expect(edmTyped.getName()).andReturn(fields[i]);
-				EasyMock.replay(edmTyped);
+				EdmMapping edmMapping = EasyMock.createMock(EdmMapping.class);
+				EasyMock.expect(edmMapping.getInternalName()).andStubReturn(fields[i]);
+				EdmProperty edmProperty = EasyMock.createMock(EdmProperty.class);
+				EasyMock.expect(edmProperty.getMapping()).andReturn(edmMapping);
+				EasyMock.replay(edmMapping, edmProperty);
 
 				SelectItem selectItem = EasyMock.createMock(SelectItem.class);
 				EasyMock.expect(selectItem.getProperty()).andStubReturn(
-						edmTyped);
+						edmProperty);
 				EasyMock.replay(selectItem);
 
 				selectItemList.add(selectItem);

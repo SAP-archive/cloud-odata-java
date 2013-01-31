@@ -14,6 +14,7 @@ import org.junit.Test;
 import com.sap.core.odata.api.edm.EdmEntitySet;
 import com.sap.core.odata.api.edm.EdmEntityType;
 import com.sap.core.odata.api.edm.EdmException;
+import com.sap.core.odata.api.edm.EdmMapping;
 import com.sap.core.odata.api.edm.EdmProperty;
 import com.sap.core.odata.api.edm.EdmSimpleType;
 import com.sap.core.odata.api.uri.KeyPredicate;
@@ -45,7 +46,6 @@ public class JPQLSelectSingleStatementBuilderTest {
 				
 				EdmEntitySet edmEntitySet = EasyMock.createMock(EdmEntitySet.class);
 				EdmEntityType edmEntityType = EasyMock.createMock(EdmEntityType.class);
-//				OrderByExpression orderByExpression = EasyMock.createMock(OrderByExpression.class);
 				List<SelectItem> selectItemList = null;
 
 				//Setting up the expected value
@@ -55,16 +55,20 @@ public class JPQLSelectSingleStatementBuilderTest {
 						.createMock(EdmProperty.class);
 				EdmSimpleType edmType = EasyMock
 						.createMock(EdmSimpleType.class);
+				EdmMapping edmMapping = EasyMock.createMock(EdmMapping.class);
+				EasyMock.expect(edmMapping.getInternalName()).andStubReturn("Field1");
 				EasyMock.expect(keyPredicate.getLiteral()).andStubReturn("1");
 				try {
 					EasyMock.expect(kpProperty.getName()).andStubReturn("Field1");
 					EasyMock.expect(kpProperty.getType()).andStubReturn(edmType);
 					
+					EasyMock.expect(kpProperty.getMapping()).andStubReturn(edmMapping);
+					
 				} catch (EdmException e2) {
 					fail("this should not happen");
 				}
 				EasyMock.expect(keyPredicate.getProperty()).andStubReturn(kpProperty);
-				EasyMock.replay(edmType,kpProperty,keyPredicate);
+				EasyMock.replay(edmMapping,edmType,kpProperty,keyPredicate);
 				EasyMock.expect(getEntityView.getTargetEntitySet()).andStubReturn(edmEntitySet);
 				EasyMock.expect(getEntityView.getSelect()).andStubReturn(selectItemList);
 				
