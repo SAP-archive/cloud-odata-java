@@ -13,6 +13,9 @@ import com.sap.core.odata.api.edm.EdmServiceMetadata;
 import com.sap.core.odata.api.edm.FullQualifiedName;
 import com.sap.core.odata.api.exception.ODataException;
 
+/**
+ * @author SAP AG
+ */
 public abstract class EdmImpl implements Edm {
 
   private Map<String, EdmEntityContainer> edmEntityContainers;

@@ -4,6 +4,9 @@ import com.sap.core.odata.api.edm.EdmException;
 import com.sap.core.odata.api.edm.EdmType;
 import com.sap.core.odata.api.edm.provider.ComplexProperty;
 
+/**
+ * @author SAP AG
+ */
 public class EdmComplexPropertyImplProv extends EdmPropertyImplProv {
 
   private ComplexProperty property;
@@ -15,12 +18,10 @@ public class EdmComplexPropertyImplProv extends EdmPropertyImplProv {
 
   @Override
   public EdmType getType() throws EdmException {
-    if (edmType == null) {
+    if (edmType == null)
       edmType = edm.getComplexType(property.getType().getNamespace(), property.getType().getName());
-      if (edmType == null) {
-        throw new EdmException(EdmException.COMMON);
-      }
-    }
+    if (edmType == null)
+      throw new EdmException(EdmException.PROVIDERPROBLEM);
     return edmType;
   }
 

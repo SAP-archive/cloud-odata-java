@@ -113,13 +113,17 @@ public class ODataExceptionMapperImpl implements ExceptionMapper<Exception> {
     return buildResponseInternal(entity, contentType, status);
   }
 
-  private Response buildResponseForHttpException(ODataHttpException msgException) {
-    final int status = extractStatus(msgException);
-    final Message localizedMessage = extractEntity(msgException.getMessageReference());
-    final String innerError = getInnerError(msgException);
+  private Response buildResponseForHttpException(ODataHttpException httpException) {
+    final MessageReference messageReference = httpException.getMessageReference();
+    final Message localizedMessage = messageReference == null ? null : extractEntity(messageReference);
     final ContentType contentType = getContentType();
-    InputStream entity = ODataExceptionSerializer.serialize(buildErrorCode(msgException), localizedMessage.getText(), innerError, contentType, localizedMessage.getLocale());
-    return buildResponseInternal(entity, contentType, status);
+    InputStream entity = ODataExceptionSerializer.serialize(
+        buildErrorCode(httpException),
+        localizedMessage == null ? null : localizedMessage.getText(),
+        getInnerError(httpException),
+        contentType,
+        localizedMessage == null ? null : localizedMessage.getLocale());
+    return buildResponseInternal(entity, contentType, extractStatus(httpException));
   }
 
   private Response buildResponseInternal(InputStream entity, ContentType contentType, int status) {
@@ -176,16 +180,12 @@ public class ODataExceptionMapperImpl implements ExceptionMapper<Exception> {
     return ContentType.APPLICATION_XML;
   }
 
-  private String buildErrorCode(Exception e) {
-    String errorCode;
-
-    if (e instanceof ODataMessageException) {
-      ODataMessageException msgException = (ODataMessageException) e;
-      errorCode = msgException.getMessageReference().getKey();
-    } else {
-      errorCode = e.getClass().getName();
-    }
-    return errorCode;
+  private static String buildErrorCode(Exception e) {
+    if (e instanceof ODataMessageException
+        && ((ODataMessageException) e).getMessageReference() != null)
+      return ((ODataMessageException) e).getMessageReference().getKey();
+    else
+      return e.getClass().getName();
   }
 
   private String getInnerError(final Exception exception) {
