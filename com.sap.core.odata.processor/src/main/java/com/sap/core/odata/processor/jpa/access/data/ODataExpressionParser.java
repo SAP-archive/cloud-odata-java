@@ -135,6 +135,10 @@ public class ODataExpressionParser {
 	 */	
 	public static String parseToJPASelectExpression(String tableAlias,ArrayList<String> selectedFields) {
 		
+		if((selectedFields==null)||(selectedFields.size()==0)) {
+			return tableAlias;
+		}
+		
 		String selectClause = EMPTY;
 		Iterator<String> itr = selectedFields.iterator();
 		int count = 0;

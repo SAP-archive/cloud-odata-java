@@ -291,5 +291,18 @@ public class ODataExpressionParserTest {
 		assertEquals("gwt1.field1 = 1 AND gwt1.field2 = 'abc'", str);
 	}
 	
-
+	@Test	
+	public void testParseToJPASelectExpression() {
+		
+		ArrayList<String> selectedFields = new ArrayList<String>();
+		selectedFields.add("BuyerAddress");
+		selectedFields.add("BuyerName");
+		selectedFields.add("BuyerId");
+		
+		assertEquals("gwt1.BuyerAddress, gwt1.BuyerName, gwt1.BuyerId", ODataExpressionParser.parseToJPASelectExpression(TABLE_ALIAS, selectedFields));
+		assertEquals("gwt1", ODataExpressionParser.parseToJPASelectExpression(TABLE_ALIAS, null));
+		
+		selectedFields.clear();
+		assertEquals("gwt1", ODataExpressionParser.parseToJPASelectExpression(TABLE_ALIAS, selectedFields));		
+	}
 }
