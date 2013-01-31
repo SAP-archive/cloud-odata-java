@@ -1,6 +1,8 @@
 package com.sap.core.odata.processor.jpa.access.data;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 
 import com.sap.core.odata.api.edm.EdmException;
@@ -123,6 +125,30 @@ public class ODataExpressionParser {
 	    	throw new ODataNotImplementedException();
 	    }
 	  }
+	
+	/**
+	 * This method parses the select clause
+	 * 
+	 * @param tableAlias
+	 * @param selectedFields
+	 * @return
+	 */	
+	public static String parseToJPASelectExpression(String tableAlias,ArrayList<String> selectedFields) {
+		
+		String selectClause = EMPTY;
+		Iterator<String> itr = selectedFields.iterator();
+		int count = 0;
+		
+		while(itr.hasNext()) {
+			selectClause = selectClause + tableAlias + JPQLStatement.DELIMITER.PERIOD + itr.next();
+			count++;			
+			
+			if(count<selectedFields.size()) {
+				selectClause = selectClause + JPQLStatement.DELIMITER.COMMA + JPQLStatement.DELIMITER.SPACE;
+			}			
+		}		
+		return selectClause;		
+	}
 	
 	/**
 	 * This method parses the order by condition in the query.
