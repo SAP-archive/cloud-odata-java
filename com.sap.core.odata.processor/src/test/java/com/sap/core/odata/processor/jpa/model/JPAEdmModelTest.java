@@ -1,13 +1,13 @@
 package com.sap.core.odata.processor.jpa.model;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.sap.core.odata.api.edm.provider.Schema;
+import com.sap.core.odata.processor.jpa.api.exception.ODataJPAModelException;
 import com.sap.core.odata.processor.jpa.api.model.JPAEdmSchemaView;
-import com.sap.core.odata.processor.jpa.exception.ODataJPAModelException;
 
 public class JPAEdmModelTest {
 	

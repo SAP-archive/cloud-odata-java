@@ -1,15 +1,19 @@
 package com.sap.core.odata.processor.jpa.model;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import javax.persistence.metamodel.Attribute;
+
 import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.sap.core.odata.api.edm.FullQualifiedName;
 import com.sap.core.odata.api.edm.provider.Association;
 import com.sap.core.odata.api.edm.provider.AssociationEnd;
-import com.sap.core.odata.processor.jpa.exception.ODataJPAModelException;
+import com.sap.core.odata.processor.jpa.api.exception.ODataJPAModelException;
 import com.sap.core.odata.processor.jpa.model.mock.JPAAttributeMock;
 
 public class JPAEdmNavigationPropertyTest extends JPAEdmTestModelView {
@@ -18,11 +22,15 @@ public class JPAEdmNavigationPropertyTest extends JPAEdmTestModelView {
 	private static JPAEdmNavigationPropertyTest navPropView;
 	
 	@BeforeClass
-	public static void setup() throws ODataJPAModelException{
+	public static void setup() {
 		JPAEdmNavigationPropertyTest localView = new JPAEdmNavigationPropertyTest();
 		navPropView	= new JPAEdmNavigationPropertyTest();
 		objNavigationProperty = new JPAEdmNavigationProperty(localView,localView);
-		objNavigationProperty.getBuilder().build();
+		try {
+			objNavigationProperty.getBuilder().build();
+		} catch (ODataJPAModelException e) {
+			fail("ODataJPAModelException not expected");
+		}
 	}
 	
 	@Override

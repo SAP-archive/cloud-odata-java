@@ -1,17 +1,19 @@
 package com.sap.core.odata.processor.jpa.access;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
 import java.util.List;
 
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
-import static org.junit.Assert.*;
-import org.junit.*;
+
+import org.junit.BeforeClass;
+import org.junit.Test;
 
 import com.sap.core.odata.api.edm.provider.Schema;
 import com.sap.core.odata.processor.jpa.access.model.JPAEdmBuilderV2;
-import com.sap.core.odata.processor.jpa.exception.ODataJPAModelException;
+import com.sap.core.odata.processor.jpa.api.exception.ODataJPAModelException;
 import com.sap.core.odata.processor.jpa.util.MockData;
 
 public class JPAEdmBuilderV2Test {

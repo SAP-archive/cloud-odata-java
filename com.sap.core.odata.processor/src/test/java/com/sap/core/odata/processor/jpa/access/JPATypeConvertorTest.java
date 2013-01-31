@@ -1,6 +1,7 @@
 package com.sap.core.odata.processor.jpa.access;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 import java.math.BigDecimal;
 import java.util.Calendar;
@@ -11,7 +12,7 @@ import org.junit.Test;
 
 import com.sap.core.odata.api.edm.EdmSimpleTypeKind;
 import com.sap.core.odata.processor.jpa.access.model.JPATypeConvertor;
-import com.sap.core.odata.processor.jpa.exception.ODataJPAModelException;
+import com.sap.core.odata.processor.jpa.api.exception.ODataJPAModelException;
 
 public class JPATypeConvertorTest {
 

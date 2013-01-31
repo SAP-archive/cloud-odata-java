@@ -18,11 +18,11 @@ import org.junit.Test;
 
 import com.sap.core.odata.api.edm.provider.Schema;
 import com.sap.core.odata.processor.jpa.api.access.JPAEdmBuilder;
+import com.sap.core.odata.processor.jpa.api.exception.ODataJPAModelException;
 import com.sap.core.odata.processor.jpa.api.model.JPAEdmAssociationView;
 import com.sap.core.odata.processor.jpa.api.model.JPAEdmEntityContainerView;
 import com.sap.core.odata.processor.jpa.api.model.JPAEdmEntitySetView;
 import com.sap.core.odata.processor.jpa.api.model.JPAEdmEntityTypeView;
-import com.sap.core.odata.processor.jpa.exception.ODataJPAModelException;
 import com.sap.core.odata.processor.jpa.model.mock.JPAEmbeddableTypeMock;
 import com.sap.core.odata.processor.jpa.model.mock.JPAEntityTypeMock;
 import com.sap.core.odata.processor.jpa.model.mock.JPAMetaModelMock;

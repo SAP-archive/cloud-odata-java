@@ -25,8 +25,8 @@ import com.sap.core.odata.api.edm.provider.AssociationEnd;
 import com.sap.core.odata.api.edm.provider.EntityType;
 import com.sap.core.odata.api.edm.provider.Mapping;
 import com.sap.core.odata.api.edm.provider.Property;
+import com.sap.core.odata.processor.jpa.api.exception.ODataJPAModelException;
 import com.sap.core.odata.processor.jpa.api.model.JPAEdmReferentialConstraintRoleView.RoleType;
-import com.sap.core.odata.processor.jpa.exception.ODataJPAModelException;
 import com.sap.core.odata.processor.jpa.model.mock.JPAAttributeMock;
 import com.sap.core.odata.processor.jpa.model.mock.JPAJavaMemberMock;
 import com.sap.core.odata.processor.jpa.model.mock.JPAManagedTypeMock;
@@ -77,8 +77,12 @@ public class JPAEdmReferentialConstraintRoleTest  extends JPAEdmTestModelView{
 	}
 
 	@Test
-	public void testGetEdmReferentialConstraintRole() throws ODataJPAModelException {
-		objJPAEdmReferentialConstraintRole.getBuilder().build();
+	public void testGetEdmReferentialConstraintRole() {
+		try {
+			objJPAEdmReferentialConstraintRole.getBuilder().build();
+		} catch (ODataJPAModelException e) {
+			fail("ODataJPAModelException not expected");
+		}
 		assertNotNull(objJPAEdmReferentialConstraintRole.getEdmReferentialConstraintRole());
 	}
 

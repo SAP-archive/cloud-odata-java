@@ -21,7 +21,7 @@ import com.sap.core.odata.api.edm.FullQualifiedName;
 import com.sap.core.odata.api.edm.provider.ComplexType;
 import com.sap.core.odata.api.edm.provider.Property;
 import com.sap.core.odata.api.edm.provider.SimpleProperty;
-import com.sap.core.odata.processor.jpa.exception.ODataJPAModelException;
+import com.sap.core.odata.processor.jpa.api.exception.ODataJPAModelException;
 import com.sap.core.odata.processor.jpa.model.mock.JPAEmbeddableMock;
 import com.sap.core.odata.processor.jpa.model.mock.JPAMetaModelMock;
 import com.sap.core.odata.processor.jpa.model.mock.JPASingularAttributeMock;
