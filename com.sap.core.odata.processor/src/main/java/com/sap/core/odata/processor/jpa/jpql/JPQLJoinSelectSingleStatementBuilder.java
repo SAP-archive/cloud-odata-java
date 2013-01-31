@@ -29,11 +29,11 @@ public class JPQLJoinSelectSingleStatementBuilder extends JPQLStatementBuilder{
 
 		StringBuilder jpqlQuery = new StringBuilder();
 		StringBuilder joinWhereCondition = null;
-		String tableAlias = context.getJPAEntityAlias();
+		//String tableAlias = context.getJPAEntityAlias();
 
 		jpqlQuery.append(JPQLStatement.KEYWORD.SELECT).append(
 				JPQLStatement.DELIMITER.SPACE);
-		jpqlQuery.append(tableAlias).append(JPQLStatement.DELIMITER.SPACE);
+		jpqlQuery.append(context.getSelectExpression()).append(JPQLStatement.DELIMITER.SPACE);
 		jpqlQuery.append(JPQLStatement.KEYWORD.FROM).append(
 				JPQLStatement.DELIMITER.SPACE);
 

@@ -33,7 +33,7 @@ public class JPQLSelectStatementBuilder extends JPQLStatementBuilder {
 		
 
 		jpqlQuery.append(JPQLStatement.KEYWORD.SELECT).append(JPQLStatement.DELIMITER.SPACE);
-		jpqlQuery.append(tableAlias).append(JPQLStatement.DELIMITER.SPACE);
+		jpqlQuery.append(context.getSelectExpression()).append(JPQLStatement.DELIMITER.SPACE);
 		jpqlQuery.append(JPQLStatement.KEYWORD.FROM).append(JPQLStatement.DELIMITER.SPACE);
 		jpqlQuery.append(fromClause);
 
