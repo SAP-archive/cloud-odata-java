@@ -4,7 +4,9 @@ import java.io.InputStream;
 import java.util.Collections;
 import java.util.List;
 
+import com.sap.core.odata.api.commons.HttpHeaders;
 import com.sap.core.odata.api.commons.HttpStatusCodes;
+import com.sap.core.odata.api.commons.ODataHttpHeaders;
 import com.sap.core.odata.api.edm.Edm;
 import com.sap.core.odata.api.edm.EdmServiceMetadata;
 import com.sap.core.odata.api.ep.EntityProvider;
@@ -315,30 +317,14 @@ public abstract class ODataSingleProcessor implements
   public ODataResponse readServiceDocument(GetServiceDocumentUriInfo uriInfo, String contentType) throws ODataException {
     Edm entityDataModel = getContext().getService().getEntityDataModel();
     String serviceRoot = getContext().getPathInfo().getServiceRoot().toASCIIString();
-    
+
     ODataResponse response = EntityProvider.writeServiceDocument(contentType, entityDataModel, serviceRoot);
     ODataResponseBuilder odataResponseBuilder = ODataResponse.fromResponse(response)
-        .header("DataServiceVersion", Edm.DATA_SERVICE_VERSION_10);
-    if(needResponseContentTypeReplacement(contentType, response.getContentHeader())) {
+        .header(ODataHttpHeaders.DATASERVICEVERSION, Edm.DATA_SERVICE_VERSION_10);
+    if (!(contentType.equals(response.getContentHeader())
+        || contentType.contains("atom") && response.getContentHeader().contains("atomsvc")))
       odataResponseBuilder.contentHeader(contentType);
-    }
     return odataResponseBuilder.build();
-  }
-
-  /**
-   * Check if response content type needs to be replaced by request content type.
-   * 
-   * @param requestContentType
-   * @param responseContentType
-   * @return
-   */
-  private boolean needResponseContentTypeReplacement(String requestContentType, String responseContentType) {
-    if(requestContentType.equals(responseContentType)) {
-      return false;
-    } else if(responseContentType.contains("atomsvc") && requestContentType.contains("atom")) {
-      return false;
-    }
-    return true;
   }
 
   /**
@@ -350,8 +336,8 @@ public abstract class ODataSingleProcessor implements
 
     return ODataResponse
         .status(HttpStatusCodes.OK)
-        .header("Content-Type", contentType)
-        .header("DataServiceVersion", edmServiceMetadata.getDataServiceVersion())
+        .header(HttpHeaders.CONTENT_TYPE, contentType)
+        .header(ODataHttpHeaders.DATASERVICEVERSION, edmServiceMetadata.getDataServiceVersion())
         .entity(edmServiceMetadata.getMetadata())
         .build();
   }
