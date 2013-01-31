@@ -6,10 +6,10 @@ import com.sap.core.odata.api.edm.EdmMultiplicity;
 import com.sap.core.odata.api.edm.provider.AssociationEnd;
 import com.sap.core.odata.processor.jpa.access.model.JPAEdmNameBuilder;
 import com.sap.core.odata.processor.jpa.api.access.JPAEdmBuilder;
+import com.sap.core.odata.processor.jpa.api.exception.ODataJPAModelException;
 import com.sap.core.odata.processor.jpa.api.model.JPAEdmAssociationEndView;
 import com.sap.core.odata.processor.jpa.api.model.JPAEdmEntityTypeView;
 import com.sap.core.odata.processor.jpa.api.model.JPAEdmPropertyView;
-import com.sap.core.odata.processor.jpa.exception.ODataJPAModelException;
 
 public class JPAEdmAssociationEnd extends JPAEdmBaseViewImpl implements
 		JPAEdmAssociationEndView {

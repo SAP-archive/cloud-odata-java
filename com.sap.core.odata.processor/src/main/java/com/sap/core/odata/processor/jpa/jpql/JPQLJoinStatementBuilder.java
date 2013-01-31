@@ -9,7 +9,7 @@ import com.sap.core.odata.processor.jpa.api.jpql.JPQLContextView;
 import com.sap.core.odata.processor.jpa.api.jpql.JPQLJoinContextView;
 import com.sap.core.odata.processor.jpa.api.jpql.JPQLStatement;
 import com.sap.core.odata.processor.jpa.api.jpql.JPQLStatement.JPQLStatementBuilder;
-import com.sap.core.odata.processor.jpa.exception.ODataJPARuntimeException;
+import com.sap.core.odata.processor.jpa.api.exception.ODataJPARuntimeException;
 
 public class JPQLJoinStatementBuilder extends JPQLStatementBuilder {
 
@@ -69,7 +69,6 @@ public class JPQLJoinStatementBuilder extends JPQLStatementBuilder {
 			int i = 1;
 			int limit = joinClauseList.size();
 			while (i < limit) {
-//				jpqlQuery.append(JPQLStatement.DELIMITER.SPACE);
 				jpqlQuery.append(JPQLStatement.KEYWORD.JOIN).append(
 						JPQLStatement.DELIMITER.SPACE);
 
@@ -101,7 +100,6 @@ public class JPQLJoinStatementBuilder extends JPQLStatementBuilder {
 		}
 		String whereExpression = context.getWhereExpression();
 		if ( whereExpression != null || joinWhereCondition.length() > 0) {
-//			jpqlQuery.append(JPQLStatement.DELIMITER.SPACE);
 			jpqlQuery.append(JPQLStatement.KEYWORD.WHERE).append(
 					JPQLStatement.DELIMITER.SPACE);
 			if (whereExpression != null) {
@@ -141,7 +139,6 @@ public class JPQLJoinStatementBuilder extends JPQLStatementBuilder {
 						JPQLStatement.DELIMITER.SPACE);
 				i++;
 			}
-//			jpqlQuery.append(JPQLStatement.DELIMITER.SPACE);
 			jpqlQuery.append(JPQLStatement.KEYWORD.ORDERBY).append(
 					JPQLStatement.DELIMITER.SPACE);
 			jpqlQuery.append(orderByBuilder);

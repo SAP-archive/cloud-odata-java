@@ -15,12 +15,12 @@ import com.sap.core.odata.api.edm.provider.Property;
 import com.sap.core.odata.api.edm.provider.PropertyRef;
 import com.sap.core.odata.api.edm.provider.ReferentialConstraintRole;
 import com.sap.core.odata.processor.jpa.api.access.JPAEdmBuilder;
+import com.sap.core.odata.processor.jpa.api.exception.ODataJPAModelException;
 import com.sap.core.odata.processor.jpa.api.model.JPAEdmAssociationView;
 import com.sap.core.odata.processor.jpa.api.model.JPAEdmEntityTypeView;
 import com.sap.core.odata.processor.jpa.api.model.JPAEdmMapping;
 import com.sap.core.odata.processor.jpa.api.model.JPAEdmPropertyView;
 import com.sap.core.odata.processor.jpa.api.model.JPAEdmReferentialConstraintRoleView;
-import com.sap.core.odata.processor.jpa.exception.ODataJPAModelException;
 
 public class JPAEdmReferentialConstraintRole extends JPAEdmBaseViewImpl
 		implements JPAEdmReferentialConstraintRoleView {

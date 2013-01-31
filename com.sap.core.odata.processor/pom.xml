@@ -12,7 +12,7 @@
 
 	<artifactId>com.sap.core.odata.processor</artifactId>
 	<packaging>jar</packaging>
-	<name>OData Processors - Implementation</name>
+	<name>OData Processors - JPA Processor Implementation</name>
 
 	<dependencies>
 	

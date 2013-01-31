@@ -8,11 +8,11 @@ import com.sap.core.odata.api.edm.EdmProperty;
 import com.sap.core.odata.api.uri.KeyPredicate;
 import com.sap.core.odata.api.uri.SelectItem;
 import com.sap.core.odata.api.uri.info.GetEntityUriInfo;
+import com.sap.core.odata.processor.jpa.api.exception.ODataJPAModelException;
+import com.sap.core.odata.processor.jpa.api.exception.ODataJPARuntimeException;
 import com.sap.core.odata.processor.jpa.api.jpql.JPQLContext;
 import com.sap.core.odata.processor.jpa.api.jpql.JPQLContextType;
 import com.sap.core.odata.processor.jpa.api.jpql.JPQLSelectSingleContextView;
-import com.sap.core.odata.processor.jpa.exception.ODataJPAModelException;
-import com.sap.core.odata.processor.jpa.exception.ODataJPARuntimeException;
 
 public class JPQLSelectSingleContext extends JPQLContext implements JPQLSelectSingleContextView {
 	

@@ -1,9 +1,9 @@
 package com.sap.core.odata.processor.jpa.api.access;
 
+import com.sap.core.odata.processor.jpa.api.exception.ODataJPAModelException;
 import com.sap.core.odata.processor.jpa.api.model.JPAEdmEntityContainerView;
 import com.sap.core.odata.processor.jpa.api.model.JPAEdmEntitySetView;
 import com.sap.core.odata.processor.jpa.api.model.JPAEdmEntityTypeView;
-import com.sap.core.odata.processor.jpa.exception.ODataJPAModelException;
 
 /**
  * Interface provides methods for building an Entity Data Model from a JPA Model

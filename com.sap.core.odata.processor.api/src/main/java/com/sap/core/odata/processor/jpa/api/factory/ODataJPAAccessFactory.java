@@ -1,8 +1,11 @@
 package com.sap.core.odata.processor.jpa.api.factory;
 
+import java.util.Locale;
+
 import com.sap.core.odata.api.edm.provider.EdmProvider;
 import com.sap.core.odata.api.processor.ODataSingleProcessor;
 import com.sap.core.odata.processor.jpa.api.ODataJPAContext;
+import com.sap.core.odata.processor.jpa.api.exception.ODataJPAMessageService;
 
 /**
  * Factory Interface for creating following instances
@@ -44,4 +47,6 @@ public interface ODataJPAAccessFactory {
 	 * @return
 	 */
 	public ODataJPAContext createODataJPAContext();
+	
+	public ODataJPAMessageService getODataJPAMessageService(Locale locale);
 }

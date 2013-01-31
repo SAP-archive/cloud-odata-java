@@ -3,11 +3,11 @@ package com.sap.core.odata.processor.jpa.jpql;
 import java.util.Iterator;
 import java.util.Map.Entry;
 
+import com.sap.core.odata.processor.jpa.api.exception.ODataJPARuntimeException;
 import com.sap.core.odata.processor.jpa.api.jpql.JPQLContextView;
 import com.sap.core.odata.processor.jpa.api.jpql.JPQLSelectContextView;
 import com.sap.core.odata.processor.jpa.api.jpql.JPQLStatement;
 import com.sap.core.odata.processor.jpa.api.jpql.JPQLStatement.JPQLStatementBuilder;
-import com.sap.core.odata.processor.jpa.exception.ODataJPARuntimeException;
 
 public class JPQLSelectStatementBuilder extends JPQLStatementBuilder {
 

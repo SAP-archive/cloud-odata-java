@@ -10,23 +10,23 @@ import com.sap.core.odata.api.edm.EdmNavigationProperty;
 import com.sap.core.odata.api.uri.NavigationSegment;
 import com.sap.core.odata.processor.jpa.access.data.ODataExpressionParser;
 import com.sap.core.odata.processor.jpa.api.access.JPAJoinClause;
+import com.sap.core.odata.processor.jpa.api.exception.ODataJPAModelException;
+import com.sap.core.odata.processor.jpa.api.exception.ODataJPARuntimeException;
 import com.sap.core.odata.processor.jpa.api.jpql.JPQLContext;
 import com.sap.core.odata.processor.jpa.api.jpql.JPQLContextType;
 import com.sap.core.odata.processor.jpa.api.jpql.JPQLJoinSelectSingleContextView;
-import com.sap.core.odata.processor.jpa.exception.ODataJPAModelException;
-import com.sap.core.odata.processor.jpa.exception.ODataJPARuntimeException;
 
-public class JPQLJoinSelectSingleContext extends JPQLSelectSingleContext implements
-		JPQLJoinSelectSingleContextView {
+public class JPQLJoinSelectSingleContext extends JPQLSelectSingleContext
+		implements JPQLJoinSelectSingleContextView {
 
-	private List<JPAJoinClause> jpaOuterJoinClauses = null;
+	private List<JPAJoinClause> jpaJoinClauses = null;
 
-	protected void setJPAOuterJoinClause(
-			List<JPAJoinClause> jpaOuterJoinClauses) {
-		this.jpaOuterJoinClauses = jpaOuterJoinClauses;
+	protected void setJPAJoinClause(List<JPAJoinClause> jpaJoinClauses) {
+		this.jpaJoinClauses = jpaJoinClauses;
 	}
 
-	public class JPQLJoinSelectSingleContextBuilder extends JPQLSelectSingleContextBuilder {
+	public class JPQLJoinSelectSingleContextBuilder extends
+			JPQLSelectSingleContextBuilder {
 
 		protected int relationShipAliasCounter = 0;
 
@@ -34,44 +34,77 @@ public class JPQLJoinSelectSingleContext extends JPQLSelectSingleContext impleme
 		public JPQLContext build() throws ODataJPAModelException,
 				ODataJPARuntimeException {
 			try {
-				super.build();
-				JPQLJoinSelectSingleContext.this.setType(JPQLContextType.JOIN_SINGLE);
-				JPQLJoinSelectSingleContext.this.setJPAOuterJoinClause(generateJoinClauses());
+				JPQLJoinSelectSingleContext.this
+						.setType(JPQLContextType.JOIN_SINGLE);
+				JPQLJoinSelectSingleContext.this
+						.setJPAJoinClause(generateJoinClauses());
+
+				if (!jpaJoinClauses.isEmpty()) {
+					JPAJoinClause joinClause = jpaJoinClauses
+							.get(jpaJoinClauses.size() - 1);
+					JPQLJoinSelectSingleContext.this
+							.setJPAEntityName(joinClause.getEntityName());
+					JPQLJoinSelectSingleContext.this
+							.setJPAEntityAlias(joinClause
+									.getEntityRelationShipAlias());
+				}
+
+				JPQLJoinSelectSingleContext.this.setKeyPredicates(entityView
+						.getKeyPredicates());
+
+				JPQLJoinSelectSingleContext.this
+						.setSelectedFields(generateSelectFields());
+
 			} catch (EdmException e) {
-				throw ODataJPARuntimeException.throwException(ODataJPARuntimeException.GENERAL, e);
+				throw ODataJPARuntimeException.throwException(
+						ODataJPARuntimeException.GENERAL, e);
 			}
-			
+
 			return JPQLJoinSelectSingleContext.this;
 		}
 
 		protected List<JPAJoinClause> generateJoinClauses()
 				throws ODataJPARuntimeException, EdmException {
 
-			List<JPAJoinClause> jpaOuterJoinClauses = new ArrayList<JPAJoinClause>();
-			JPAJoinClause jpaOuterJoinClause = null;
+			List<JPAJoinClause> jpaJoinClauses = new ArrayList<JPAJoinClause>();
+			JPAJoinClause jpaJoinClause = null;
 
+			boolean firstPass = true;
 			for (NavigationSegment navigationSegment : entityView
 					.getNavigationSegments()) {
 
 				EdmNavigationProperty navigationProperty = navigationSegment
 						.getNavigationProperty();
 
-				String joinCondition = ODataExpressionParser
-						.parseKeyPredicates(navigationSegment
-								.getKeyPredicates(),getJPAEntityAlias());
+				String joinCondition = null;
+				String relationShipAlias = generateRelationShipAlias();
+				String entityAlias = generateJPAEntityAlias();
 
-				jpaOuterJoinClause = new JPAJoinClause(
+				if (!firstPass) {
+
+					joinCondition = ODataExpressionParser.parseKeyPredicates(
+							navigationSegment.getKeyPredicates(),
+							relationShipAlias);
+				} else {
+
+					joinCondition = ODataExpressionParser.parseKeyPredicates(
+							entityView.getKeyPredicates(),
+							entityAlias);
+					firstPass = false;
+				}
+
+				jpaJoinClause = new JPAJoinClause(
 						getFromEntityName(navigationProperty),
-						getJPAEntityAlias(),
+						entityAlias,
 						getRelationShipName(navigationProperty),
-						generateRelationShipAlias(), joinCondition,
-						JPAJoinClause.JOIN.LEFT);
+						relationShipAlias, joinCondition,
+						JPAJoinClause.JOIN.INNER);
 
-				jpaOuterJoinClauses.add(jpaOuterJoinClause);
+				jpaJoinClauses.add(jpaJoinClause);
 
 			}
-			
-			return jpaOuterJoinClauses;
+
+			return jpaJoinClauses;
 		}
 
 		private String getFromEntityName(
@@ -114,8 +147,8 @@ public class JPQLJoinSelectSingleContext extends JPQLSelectSingleContext impleme
 	}
 
 	@Override
-	public List<JPAJoinClause> getJPAOuterJoinClauses() {
-		return this.jpaOuterJoinClauses;
+	public List<JPAJoinClause> getJPAJoinClauses() {
+		return this.jpaJoinClauses;
 	}
 
 }

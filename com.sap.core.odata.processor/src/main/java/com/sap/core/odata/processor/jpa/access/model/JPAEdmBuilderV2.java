@@ -39,7 +39,7 @@ import com.sap.core.odata.api.edm.provider.ReferentialConstraintRole;
 import com.sap.core.odata.api.edm.provider.Schema;
 import com.sap.core.odata.api.edm.provider.SimpleProperty;
 import com.sap.core.odata.processor.jpa.api.access.JPAEdmBuilder;
-import com.sap.core.odata.processor.jpa.exception.ODataJPAModelException;
+import com.sap.core.odata.processor.jpa.api.exception.ODataJPAModelException;
 
 /**
  * This class creates parses a JPA Model using EntityManagerFactory instance and

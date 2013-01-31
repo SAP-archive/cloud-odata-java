@@ -6,9 +6,9 @@ import com.sap.core.odata.api.edm.provider.EdmProvider;
 import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.api.processor.ODataContext;
 import com.sap.core.odata.api.processor.ODataSingleProcessor;
+import com.sap.core.odata.processor.jpa.api.exception.ODataJPARuntimeException;
 import com.sap.core.odata.processor.jpa.api.factory.ODataJPAAccessFactory;
 import com.sap.core.odata.processor.jpa.api.factory.ODataJPAFactory;
-import com.sap.core.odata.processor.jpa.exception.ODataJPARuntimeException;
 
 /**
  * <p>

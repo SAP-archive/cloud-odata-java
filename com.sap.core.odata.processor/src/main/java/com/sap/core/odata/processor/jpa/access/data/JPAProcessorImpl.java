@@ -10,11 +10,11 @@ import com.sap.core.odata.api.uri.info.GetEntitySetUriInfo;
 import com.sap.core.odata.api.uri.info.GetEntityUriInfo;
 import com.sap.core.odata.processor.jpa.api.ODataJPAContext;
 import com.sap.core.odata.processor.jpa.api.access.JPAProcessor;
+import com.sap.core.odata.processor.jpa.api.exception.ODataJPAModelException;
+import com.sap.core.odata.processor.jpa.api.exception.ODataJPARuntimeException;
 import com.sap.core.odata.processor.jpa.api.jpql.JPQLContext;
 import com.sap.core.odata.processor.jpa.api.jpql.JPQLContextType;
 import com.sap.core.odata.processor.jpa.api.jpql.JPQLStatement;
-import com.sap.core.odata.processor.jpa.exception.ODataJPAModelException;
-import com.sap.core.odata.processor.jpa.exception.ODataJPARuntimeException;
 
 public class JPAProcessorImpl implements JPAProcessor {
 
@@ -67,9 +67,23 @@ public class JPAProcessorImpl implements JPAProcessor {
 	@Override
 	public Object process(GetEntityUriInfo uriParserResultView)
 			throws ODataJPAModelException, ODataJPARuntimeException {
+
+		JPQLContextType contextType = null;		
+		try {
+			if (!uriParserResultView.getStartEntitySet().getName()
+					.equals(uriParserResultView.getTargetEntitySet().getName()))
+				contextType = JPQLContextType.JOIN_SINGLE;
+			else
+				contextType = JPQLContextType.SELECT_SINGLE;
+
+		} catch (EdmException e) {
+			ODataJPARuntimeException.throwException(
+					ODataJPARuntimeException.GENERAL, e);
+		}
+		
 		// Build JPQL Context
 		JPQLContext singleSelectContext = JPQLContext.createBuilder(
-				JPQLContextType.SELECT_SINGLE, uriParserResultView).build();
+				contextType, uriParserResultView).build();
 
 		// Build JPQL Statement
 		JPQLStatement selectStatement = JPQLStatement.createBuilder(
@@ -77,7 +91,10 @@ public class JPAProcessorImpl implements JPAProcessor {
 
 		// Instantiate JPQL
 		Query query = em.createQuery(selectStatement.toString());
-
+		
+		if(query.getResultList().isEmpty())
+			return null;
+		
 		return query.getResultList().get(0);
 	}
 

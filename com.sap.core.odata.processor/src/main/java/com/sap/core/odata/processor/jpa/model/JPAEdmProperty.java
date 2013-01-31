@@ -21,6 +21,7 @@ import com.sap.core.odata.api.edm.provider.SimpleProperty;
 import com.sap.core.odata.processor.jpa.access.model.JPAEdmNameBuilder;
 import com.sap.core.odata.processor.jpa.access.model.JPATypeConvertor;
 import com.sap.core.odata.processor.jpa.api.access.JPAEdmBuilder;
+import com.sap.core.odata.processor.jpa.api.exception.ODataJPAModelException;
 import com.sap.core.odata.processor.jpa.api.model.JPAEdmAssociationEndView;
 import com.sap.core.odata.processor.jpa.api.model.JPAEdmAssociationView;
 import com.sap.core.odata.processor.jpa.api.model.JPAEdmComplexPropertyView;
@@ -31,7 +32,6 @@ import com.sap.core.odata.processor.jpa.api.model.JPAEdmNavigationPropertyView;
 import com.sap.core.odata.processor.jpa.api.model.JPAEdmPropertyView;
 import com.sap.core.odata.processor.jpa.api.model.JPAEdmReferentialConstraintView;
 import com.sap.core.odata.processor.jpa.api.model.JPAEdmSchemaView;
-import com.sap.core.odata.processor.jpa.exception.ODataJPAModelException;
 
 public class JPAEdmProperty extends JPAEdmBaseViewImpl implements
 		JPAEdmPropertyView, JPAEdmComplexPropertyView {

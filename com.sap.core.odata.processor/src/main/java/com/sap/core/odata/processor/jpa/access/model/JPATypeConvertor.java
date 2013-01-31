@@ -6,7 +6,7 @@ import java.util.Date;
 import java.util.UUID;
 
 import com.sap.core.odata.api.edm.EdmSimpleTypeKind;
-import com.sap.core.odata.processor.jpa.exception.ODataJPAModelException;
+import com.sap.core.odata.processor.jpa.api.exception.ODataJPAModelException;
 
 /**
  * This class holds utility methods for Type conversions between JPA and OData Types.

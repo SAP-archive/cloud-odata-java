@@ -1,7 +1,7 @@
 package com.sap.core.odata.processor.jpa.api.jpql;
 
+import com.sap.core.odata.processor.jpa.api.exception.ODataJPARuntimeException;
 import com.sap.core.odata.processor.jpa.api.factory.ODataJPAFactory;
-import com.sap.core.odata.processor.jpa.exception.ODataJPARuntimeException;
 
 public class JPQLStatement {
 

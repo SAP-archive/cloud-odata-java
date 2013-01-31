@@ -1,8 +1,8 @@
 package com.sap.core.odata.processor.jpa.api.jpql;
 
+import com.sap.core.odata.processor.jpa.api.exception.ODataJPAModelException;
+import com.sap.core.odata.processor.jpa.api.exception.ODataJPARuntimeException;
 import com.sap.core.odata.processor.jpa.api.factory.ODataJPAFactory;
-import com.sap.core.odata.processor.jpa.exception.ODataJPAModelException;
-import com.sap.core.odata.processor.jpa.exception.ODataJPARuntimeException;
 
 public abstract class JPQLContext implements JPQLContextView {
 	

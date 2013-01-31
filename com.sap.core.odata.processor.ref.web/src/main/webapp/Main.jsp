@@ -29,7 +29,7 @@ body {
 	<hr />
 	<table width="100%">
 		<tr>
-			<td width="90%"><h2>Reference Scenario</h2> [<a href="./img/model.jpg">Persistence Model</a>]</td>
+			<td width="90%"><h2>Reference Scenario</h2> [<a href="./image/model.jpg" target=_blank>Persistence Model</a>]</td>
 			<td width="10%">
 				<table cellspacing="0" cellpadding="0">
 					<tr align="center">
@@ -112,12 +112,29 @@ body {
 	</ul>
 
 	<h4>System Query Options</h4>
-	<ul>
-		<li><a href="SalesOrderProcessing.svc/SalesOrderHeaders"
-			target="_blank">Simple Query</a></li>
-		<li><a
+	<table width=80% border="1" cellpadding="3" cellspacing="0">
+
+		<tr>
+			<th>OData Request</th>
+			<th>JPQL Statement</th>
+		</tr>
+
+		<tr>
+			<td width=40%><font size="3"><a
+				href="SalesOrderProcessing.svc/SalesOrderHeaders" target="_blank">Simple
+					Query</a></font></td>
+			<td width=60%><code>SELECT E1 FROM SalesOrderHeader E1</code></td>
+		</tr>
+		<tr>
+			<td width=40%><a
 			href="SalesOrderProcessing.svc/SalesOrderHeaders?$filter=SoId eq 1"
-			target="_blank">Query for Sales Order Id 1</a></li>
+			target="_blank">Query for Sales Order Id 1</a></td>
+			<td width=60%><code>SELECT E1 FROM SalesOrderHeader E1 WHERE E1.soId = 1</code></td>
+		</tr>
+		
+
+	</table>
+	<ul>
 		<li><a
 			href="SalesOrderProcessing.svc/SalesOrderHeaders?$filter=BuyerId eq 2"
 			target="_blank">Query for Buyer Id 2</a></li>

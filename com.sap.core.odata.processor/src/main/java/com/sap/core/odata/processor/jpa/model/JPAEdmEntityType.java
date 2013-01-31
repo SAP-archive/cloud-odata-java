@@ -8,12 +8,12 @@ import java.util.Set;
 import com.sap.core.odata.api.edm.provider.EntityType;
 import com.sap.core.odata.processor.jpa.access.model.JPAEdmNameBuilder;
 import com.sap.core.odata.processor.jpa.api.access.JPAEdmBuilder;
+import com.sap.core.odata.processor.jpa.api.exception.ODataJPAModelException;
 import com.sap.core.odata.processor.jpa.api.model.JPAEdmEntityTypeView;
 import com.sap.core.odata.processor.jpa.api.model.JPAEdmKeyView;
 import com.sap.core.odata.processor.jpa.api.model.JPAEdmNavigationPropertyView;
 import com.sap.core.odata.processor.jpa.api.model.JPAEdmPropertyView;
 import com.sap.core.odata.processor.jpa.api.model.JPAEdmSchemaView;
-import com.sap.core.odata.processor.jpa.exception.ODataJPAModelException;
 
 public class JPAEdmEntityType extends JPAEdmBaseViewImpl implements
 		JPAEdmEntityTypeView {

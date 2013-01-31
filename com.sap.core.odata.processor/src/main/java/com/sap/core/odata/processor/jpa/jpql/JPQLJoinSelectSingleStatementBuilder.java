@@ -2,13 +2,12 @@ package com.sap.core.odata.processor.jpa.jpql;
 
 import java.util.List;
 
-import com.sap.core.odata.processor.jpa.access.data.ODataExpressionParser;
 import com.sap.core.odata.processor.jpa.api.access.JPAJoinClause;
+import com.sap.core.odata.processor.jpa.api.exception.ODataJPARuntimeException;
 import com.sap.core.odata.processor.jpa.api.jpql.JPQLContextView;
 import com.sap.core.odata.processor.jpa.api.jpql.JPQLJoinSelectSingleContextView;
 import com.sap.core.odata.processor.jpa.api.jpql.JPQLStatement;
 import com.sap.core.odata.processor.jpa.api.jpql.JPQLStatement.JPQLStatementBuilder;
-import com.sap.core.odata.processor.jpa.exception.ODataJPARuntimeException;
 
 public class JPQLJoinSelectSingleStatementBuilder extends JPQLStatementBuilder{
 
@@ -31,56 +30,81 @@ public class JPQLJoinSelectSingleStatementBuilder extends JPQLStatementBuilder{
 		StringBuilder jpqlQuery = new StringBuilder();
 		StringBuilder joinWhereCondition = null;
 		String tableAlias = context.getJPAEntityAlias();
-		String fromClause = context.getJPAEntityName() + JPQLStatement.DELIMITER.SPACE + tableAlias;
-		
 
-		jpqlQuery.append(JPQLStatement.KEYWORD.SELECT).append(JPQLStatement.DELIMITER.SPACE);
+		jpqlQuery.append(JPQLStatement.KEYWORD.SELECT).append(
+				JPQLStatement.DELIMITER.SPACE);
 		jpqlQuery.append(tableAlias).append(JPQLStatement.DELIMITER.SPACE);
-		jpqlQuery.append(JPQLStatement.KEYWORD.FROM).append(JPQLStatement.DELIMITER.SPACE);
-		jpqlQuery.append(fromClause);
-		
-		if(context.getJPAOuterJoinClauses() != null && context.getJPAOuterJoinClauses().size() > 0){
-			int i = 0;
-			String entityRelationshipAlias = null;
-			joinWhereCondition = new StringBuilder();
-			List<JPAJoinClause> joinClauseList = context.getJPAOuterJoinClauses();
-			for(JPAJoinClause joinClause : joinClauseList){
-				jpqlQuery.append(JPQLStatement.DELIMITER.SPACE);
-				jpqlQuery.append(JPQLStatement.KEYWORD.JOIN).append(JPQLStatement.DELIMITER.SPACE);
-				if(entityRelationshipAlias == null){
-					entityRelationshipAlias = joinClause.getEntityAlias();
-				}
-				jpqlQuery.append(entityRelationshipAlias).append(JPQLStatement.DELIMITER.PERIOD).append(joinClause.getEntityRelationShip()).append(JPQLStatement.DELIMITER.SPACE);
-				entityRelationshipAlias = joinClause.getEntityRelationShipAlias();
-				jpqlQuery.append(joinClause.getEntityRelationShipAlias());
-				if(joinClause.getJoinCondition() != null){
-					if(i > 0){
-						joinWhereCondition.append(JPQLStatement.DELIMITER.SPACE + JPQLStatement.Operator.AND + JPQLStatement.DELIMITER.SPACE);
-					}
-					i++;
-					joinWhereCondition.append(joinClause.getJoinCondition());
-				}
-			}
-		}
+		jpqlQuery.append(JPQLStatement.KEYWORD.FROM).append(
+				JPQLStatement.DELIMITER.SPACE);
 
+		if (context.getJPAJoinClauses() != null
+				&& context.getJPAJoinClauses().size() > 0) {
+			List<JPAJoinClause> joinClauseList = context.getJPAJoinClauses();
+			JPAJoinClause joinClause = joinClauseList.get(0);
+			String relationShipAlias = null;
+
+			jpqlQuery.append(joinClause.getEntityName()).append(
+					JPQLStatement.DELIMITER.SPACE);
+			jpqlQuery.append(joinClause.getEntityAlias()).append(
+					JPQLStatement.DELIMITER.SPACE);
+			jpqlQuery.append(JPQLStatement.KEYWORD.JOIN).append(
+					JPQLStatement.DELIMITER.SPACE);
+
+			relationShipAlias = joinClause.getEntityRelationShipAlias();
+			jpqlQuery.append(joinClause.getEntityAlias()).append(
+					JPQLStatement.DELIMITER.PERIOD);
+			jpqlQuery.append(joinClause.getEntityRelationShip()).append(
+					JPQLStatement.DELIMITER.SPACE);
+			jpqlQuery.append(joinClause.getEntityRelationShipAlias()).append(
+					JPQLStatement.DELIMITER.SPACE);
+
+			joinWhereCondition = new StringBuilder();
+			String joinCondition = joinClause.getJoinCondition();
+			if (joinCondition != null)
+				joinWhereCondition.append(joinCondition).append(
+						JPQLStatement.DELIMITER.SPACE);
+
+			int i = 1;
+			int limit = joinClauseList.size();
+			while (i < limit) {
+				jpqlQuery.append(JPQLStatement.DELIMITER.SPACE);
+				jpqlQuery.append(JPQLStatement.KEYWORD.JOIN).append(
+						JPQLStatement.DELIMITER.SPACE);
+
+				joinClause = joinClauseList.get(i);
+				jpqlQuery.append(relationShipAlias).append(
+						JPQLStatement.DELIMITER.PERIOD);
+				jpqlQuery.append(joinClause.getEntityRelationShip()).append(
+						JPQLStatement.DELIMITER.SPACE);
+				jpqlQuery.append(joinClause.getEntityRelationShipAlias()).append(
+						JPQLStatement.DELIMITER.SPACE);
+
+				relationShipAlias = joinClause.getEntityRelationShipAlias();
+				i++;
+
+				joinCondition = joinClause.getJoinCondition();
+				if (joinCondition != null) {
+					joinWhereCondition.append(JPQLStatement.DELIMITER.SPACE
+							+ JPQLStatement.Operator.AND
+							+ JPQLStatement.DELIMITER.SPACE);
+
+					joinWhereCondition.append(joinCondition).append(
+							JPQLStatement.DELIMITER.SPACE);
+				}
+
+			}
+		} else {
+			throw ODataJPARuntimeException.throwException(
+					ODataJPARuntimeException.JOIN_CLAUSE_EXPECTED, null);
+		}
 		
-		if (context.getKeyPredicates() != null || joinWhereCondition != null){
+		if (joinWhereCondition.length() > 0){
 			jpqlQuery.append(JPQLStatement.DELIMITER.SPACE);
 			jpqlQuery.append(JPQLStatement.KEYWORD.WHERE).append(JPQLStatement.DELIMITER.SPACE);
-			if(context.getKeyPredicates() != null){
-				jpqlQuery.append(
-						ODataExpressionParser.parseKeyPredicates(
-								context.getKeyPredicates(),
-								context.getJPAEntityAlias()));
-				if(joinWhereCondition != null){
-					jpqlQuery.append(JPQLStatement.DELIMITER.SPACE + JPQLStatement.Operator.AND + JPQLStatement.DELIMITER.SPACE);
-				}
-			}
-			if(joinWhereCondition != null){
-				jpqlQuery.append(joinWhereCondition.toString());
-			}			
+			jpqlQuery.append(joinWhereCondition.toString());
 		}
 
+		
 		return jpqlQuery.toString();
 
 	}

@@ -18,9 +18,9 @@ import com.sap.core.odata.api.edm.provider.FunctionImport;
 import com.sap.core.odata.api.edm.provider.Schema;
 import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.processor.jpa.api.ODataJPAContext;
+import com.sap.core.odata.processor.jpa.api.exception.ODataJPAModelException;
 import com.sap.core.odata.processor.jpa.api.factory.ODataJPAFactory;
 import com.sap.core.odata.processor.jpa.api.model.JPAEdmModelView;
-import com.sap.core.odata.processor.jpa.exception.ODataJPAModelException;
 
 public class ODataJPAEdmProvider extends EdmProvider {
 

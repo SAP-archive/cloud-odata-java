@@ -1,6 +1,7 @@
-package com.sap.core.odata.processor.jpa.exception;
+package com.sap.core.odata.processor.jpa.api.exception;
 
 import com.sap.core.odata.api.exception.MessageReference;
+import com.sap.core.odata.processor.jpa.api.factory.ODataJPAFactory;
 
 public class ODataJPAModelException extends ODataJPAException {
 
@@ -24,14 +25,19 @@ public class ODataJPAModelException extends ODataJPAException {
 	public static final MessageReference TYPE_NOT_SUPPORTED = createMessageReference(
 			ODataJPAModelException.class, "TYPE_NOT_SUPPORTED");
 
-	private ODataJPAModelException(String localizedMessage, Throwable e){
-		super(localizedMessage,e);
+	private ODataJPAModelException(String localizedMessage, Throwable e) {
+		super(localizedMessage, e);
 	}
 
-
-	public static ODataJPAModelException throwException(MessageReference messageReference, Throwable e){
-		String message = MessageService.getLocalizedMessage(DEFAULT_LOCALE, messageReference);
-		return new ODataJPAModelException(message,e);
+	public static ODataJPAModelException throwException(
+			MessageReference messageReference, Throwable e) {
+		
+		ODataJPAMessageService messageService = ODataJPAFactory.createFactory()
+				.getODataJPAAccessFactory().getODataJPAMessageService(DEFAULT_LOCALE);
+		
+		String message = messageService.getLocalizedMessage(messageReference);
+		
+		return new ODataJPAModelException(message, e);
 	}
 
 	/**
