@@ -223,7 +223,7 @@ public class EdmMetadata {
                 writeAnnotationElements(principal.getAnnotationElements(), xmlStreamWriter);
                 xmlStreamWriter.writeEndElement();
 
-                ReferentialConstraintRole dependent = referentialConstraint.getPrincipal();
+                ReferentialConstraintRole dependent = referentialConstraint.getDependent();
                 xmlStreamWriter.writeStartElement("Dependent");
                 xmlStreamWriter.writeAttribute("Role", dependent.getRole());
                 writeAnnotationAttributes(dependent.getAnnotationAttributes(), xmlStreamWriter);
