@@ -29,7 +29,7 @@ public class EntityContainerInfo {
   }
 
   /**
-   * @return<b>boolean</b> if this container is the default container
+   * @return <b>boolean</b> if this container is the default container
    */
   public boolean isDefaultEntityContainer() {
     return isDefaultEntityContainer;

@@ -370,9 +370,16 @@ public class TestParserExceptions extends TestBase {
     //CASE 7 
     GetPTF("a eq b b")
         .aExMsgText("Invalid token \"b\" detected after parsing at position 8 in \"a eq b b\".");
-    
+
     //CASE 8
     GetPTF(edm, edmEtAllTypes, "year(Complex)")
         .aExMsgText("No applicable method found for \"year\" at position 1 in \"year(Complex)\" for the specified argument types.");
+
+    //CASE 9
+    //http://services.odata.org/Northwind/Northwind.svc/Products(1)/Supplier?$filter=1%20add%202
+    //-->Expression of type 'System.Boolean' expected at position 0.
+    GetPTF_onlyBinary( "1 add 2")
+        .aExMsgText("Expression of type \"Edm.Boolean\" expected at position 1 in \"1 add 2\" (actual type is \"Edm.SByte\").");
+
   }
 }

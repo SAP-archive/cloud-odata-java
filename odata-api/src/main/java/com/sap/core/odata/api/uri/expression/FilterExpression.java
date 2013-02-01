@@ -1,12 +1,13 @@
 package com.sap.core.odata.api.uri.expression;
 
+import com.sap.core.odata.api.uri.UriParser;
+
 
 /**
- * Represents a $filter expression in the expression tree returned by {@link FilterParser#parseFilterString(String)}
+ * Represents a $filter expression in the expression tree returned by {@link UriParser#parseFilterString(com.sap.core.odata.api.edm.EdmEntityType, String)}
  * Used to define the <b>root</b> expression node in an $filter expression tree. 
  * 
  * @author SAP AG
- * @see FilterParser
  */
 public interface FilterExpression extends CommonExpression
 {

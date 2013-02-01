@@ -2,10 +2,12 @@ package com.sap.core.odata.api.uri.expression;
 
 import java.util.List;
 
+import com.sap.core.odata.api.uri.UriParser;
+
 /**
  * Represents a method expression in the expression tree returned by the methods:
- * <li>{@link FilterParser#parseFilterString(String)}</li>
- * <li>{@link OrderByParser#parseOrderByString(String)}</li> 
+ * <li>{@link UriParser#parseFilterString(com.sap.core.odata.api.edm.EdmEntityType, String) }</li>
+ * <li>{@link UriParser#parseOrderByString(com.sap.core.odata.api.edm.EdmEntityType, String) }</li> 
  * <br>
  * <br>
  * <p>A method expression node is inserted in the expression tree for any valid
@@ -13,8 +15,6 @@ import java.util.List;
  * <br>
  * <br>
  * @author SAP AG
- * @see FilterParser
- * @see OrderByParser
  */
 public interface MethodExpression extends CommonExpression
 {

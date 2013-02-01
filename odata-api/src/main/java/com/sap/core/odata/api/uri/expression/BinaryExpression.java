@@ -5,16 +5,14 @@ import com.sap.core.odata.api.uri.UriParser;
 
 /**
  * Represents a binary expression node in the expression tree returned by the methods 
- * <li>{@link UriParser#parseFilterString(String)}</li>
- * <li>{@link OrderByParser#parseOrderByString(String)}</li>
+ * <li>{@link UriParser#parseFilterString(com.sap.core.odata.api.edm.EdmEntityType, String)}</li>
+ * <li>{@link UriParser#parseOrderByString(com.sap.core.odata.api.edm.EdmEntityType, String)}</li>
  * <br> 
  * <br>
  * A binary expression node is inserted in the expression tree for any valid
  * ODATA binary operator in {@link BinaryOperator} (e.g. for "and", "div", "eg", ... )
  * <br>
  * @author SAP AG
- * @see FilterParser
- * @see OrderByParser
  */
 public interface BinaryExpression extends CommonExpression
 {

@@ -1,6 +1,5 @@
 package com.sap.core.odata.core.uri.expression;
 
-import com.sap.core.odata.api.edm.Edm;
 import com.sap.core.odata.api.edm.EdmEntityType;
 import com.sap.core.odata.api.uri.expression.CommonExpression;
 import com.sap.core.odata.api.uri.expression.ExpressionParserException;
@@ -9,10 +8,11 @@ import com.sap.core.odata.api.uri.expression.SortOrder;
 
 public class OrderByParserImpl extends FilterParserImpl implements OrderByParser
 {
-  public OrderByParserImpl(Edm edm, EdmEntityType edmType)
+  public OrderByParserImpl(EdmEntityType resourceEntityType)
   {
-    super(edm, edmType);
+    super(resourceEntityType);
   }
+
 
   @Override
   public OrderByExpression parseOrderByString(String orderByExpression) throws ExpressionParserException, ExpressionParserInternalError
@@ -25,7 +25,7 @@ public class OrderByParserImpl extends FilterParserImpl implements OrderByParser
       tokenList = new Tokenizer(orderByExpression).tokenize(); //throws TokenizerMessage
     } catch (TokenizerException tokenizerException)
     {
-      throw FilterParserExceptionImpl.createERROR_IN_TOKENIZER(tokenizerException,curExpression);
+      throw FilterParserExceptionImpl.createERROR_IN_TOKENIZER(tokenizerException, curExpression);
     }
 
     boolean weiter = false;
@@ -92,14 +92,13 @@ public class OrderByParserImpl extends FilterParserImpl implements OrderByParser
         if (token == null)
         {
           // Tested with TestParserExceptions.TestOPMparseOrderByString CASE 2
-          throw FilterParserExceptionImpl.createEXPRESSION_EXPECTED_AFTER_POS(oldToken,curExpression);
+          throw FilterParserExceptionImpl.createEXPRESSION_EXPECTED_AFTER_POS(oldToken, curExpression);
         }
       }
       else //e.g. in case $orderby=String asc a
       {
-        throw FilterParserExceptionImpl.createCOMMA_OR_END_EXPECTED_AT_POS(token,curExpression);
+        throw FilterParserExceptionImpl.createCOMMA_OR_END_EXPECTED_AT_POS(token, curExpression);
       }
-
 
     }
     return orderCollection;

@@ -106,12 +106,13 @@ public class XmlPropertyEntityProducer {
   }
 
   /**
-   * 
+   * Return full qualified name of an type of an given PropertyInfo
    * @param propertyInfo
-   * @return
+   * @return Full qualified name
    * @throws EdmException
    */
   private String getFqnTypeName(EntityComplexPropertyInfo propertyInfo) throws EdmException {
+    //TODA what means Fqn
     return propertyInfo.getType().getNamespace() + Edm.DELIMITER + propertyInfo.getType().getName();
   }
 
@@ -121,7 +122,7 @@ public class XmlPropertyEntityProducer {
    * 
    * @param value
    * @param name
-   * @return
+   * @return name or result (see above)
    */
   private Object extractChildValue(Object value, String name) {
     if (value instanceof Map) {

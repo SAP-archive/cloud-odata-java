@@ -17,7 +17,7 @@ public interface Visitable {
    * expression used as node in an expression tree. The implementations should  
    * behave as follows:
    * <li>Call accept on all sub nodes and store the returned Objects
-   * <li>Call the appropriate method on the {@line ExpressionVisitor} instance and provide the stored objects to that instance 
+   * <li>Call the appropriate method on the {@link ExpressionVisitor} instance and provide the stored objects to that instance 
    * <li>Return the object which should be passed to the processing algorithm of the parent expression node
    * <br>
    * <br>

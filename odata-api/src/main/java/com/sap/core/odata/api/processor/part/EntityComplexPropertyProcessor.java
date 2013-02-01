@@ -31,7 +31,6 @@ public interface EntityComplexPropertyProcessor extends ODataProcessor {
    * @param merge if <code>true</code>, properties not present in the data are left unchanged;
    *              if <code>false</code>, they are reset
    * @param contentType the content type of the response
-   * @param request 
    * @return a {@link ODataResponse} object
    * @throws ODataException
    */

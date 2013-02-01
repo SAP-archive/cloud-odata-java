@@ -1,9 +1,11 @@
 package com.sap.core.odata.api.uri.expression;
 
+import com.sap.core.odata.api.uri.UriParser;
+
 
 /**
  * Represents a order expression in the expression tree returned by the method 
- * <li>{@link OrderByParser#parseOrderByString(String)}</li> 
+ * <li>{@link UriParser#parseOrderByString(com.sap.core.odata.api.edm.EdmEntityType, String) }</li> 
  * <br>
  * <br>
  * <p>A order expression node is inserted in the expression tree for any valid
@@ -12,7 +14,6 @@ package com.sap.core.odata.api.uri.expression;
  * <br>
  * <br>
  * @author SAP AG
- * @see OrderByParser
  */
 public interface OrderExpression extends CommonExpression
 {

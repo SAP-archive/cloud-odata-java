@@ -25,7 +25,7 @@ public class ExpressionParserException extends ODataBadRequestException
   public static final MessageReference MISSING_CLOSING_PHARENTHESIS = createMessageReference(ExpressionParserException.class, "MISSING_CLOSING_PHARENTHESIS");
   public static final MessageReference COMMA_OR_CLOSING_PHARENTHESIS_EXPECTED_AFTER_POS = createMessageReference(ExpressionParserException.class, "COMMA_OR_CLOSING_PHARENTHESIS_EXPECTED_AFTER_POS");
   public static final MessageReference INVALID_METHOD_CALL = createMessageReference(ExpressionParserException.class, "INVALID_METHOD_CALL");
-  
+  public static final MessageReference TYPE_EXPECTED_AT = createMessageReference(ExpressionParserException.class, "TYPE_EXPECTED_AT");
   //validation exceptions texts - method
   public static final MessageReference METHOD_WRONG_ARG_EXACT = createMessageReference(ExpressionParserException.class, "METHOD_WRONG_ARG_EXACT");
   public static final MessageReference METHOD_WRONG_ARG_BETWEEN = createMessageReference(ExpressionParserException.class, "METHOD_WRONG_ARG_BETWEEN");

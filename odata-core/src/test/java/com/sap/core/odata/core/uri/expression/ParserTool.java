@@ -58,7 +58,7 @@ public class ParserTool
     ParserTool.log.debug(out);
   }
 
-  public ParserTool(String expression, boolean isOrder, boolean addTestfunctions)
+  public ParserTool(String expression, boolean isOrder, boolean addTestfunctions, boolean allowOnlyBinary)
   {
     dout("ParserTool - Testing: " + expression);
     this.expression = expression;
@@ -68,11 +68,11 @@ public class ParserTool
       {
         FilterParserImplTool parser = new FilterParserImplTool(null, null);
         if (addTestfunctions) parser.addTestfunctions();
-        this.tree = parser.parseFilterString(expression).getExpression();
+        this.tree = parser.parseFilterString(expression,allowOnlyBinary).getExpression();
       }
       else
       {
-        OrderByParserImpl parser = new OrderByParserImpl(null, null);
+        OrderByParserImpl parser = new OrderByParserImpl(null);
         this.tree = parser.parseOrderByString(expression);
       }
     } catch (ExpressionParserException e) {
@@ -85,7 +85,7 @@ public class ParserTool
     this.curException = this.exception;
   }
 
-  public ParserTool(String expression, boolean isOrder, boolean addTestfunctions, Edm edm, EdmEntityType resourceEntityType)
+  public ParserTool(String expression, boolean isOrder, boolean addTestfunctions,  boolean allowOnlyBinary,Edm edm, EdmEntityType resourceEntityType)
   {
     dout("ParserTool - Testing: " + expression);
     this.expression = expression;
@@ -95,11 +95,11 @@ public class ParserTool
       {
         FilterParserImplTool parser = new FilterParserImplTool(edm, resourceEntityType);
         if (addTestfunctions) parser.addTestfunctions();
-        this.tree = parser.parseFilterString(expression).getExpression();
+        this.tree = parser.parseFilterString(expression,allowOnlyBinary).getExpression();
       }
       else
       {
-        OrderByParserImpl parser = new OrderByParserImpl(edm, resourceEntityType);
+        OrderByParserImpl parser = new OrderByParserImpl( resourceEntityType);
         this.tree = parser.parseOrderByString(expression);
       }
     } catch (ExpressionParserException e) {

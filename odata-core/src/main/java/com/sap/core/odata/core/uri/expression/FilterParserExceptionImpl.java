@@ -238,7 +238,8 @@ public class FilterParserExceptionImpl extends ExpressionParserException
     return new ExpressionParserException(msgRef, e);
   }
 
-  public static ExpressionParserException createINVALID_SORT_ORDER(Token token, String expression) {
+  public static ExpressionParserException createINVALID_SORT_ORDER(Token token, String expression)
+  {
     MessageReference msgRef = ExpressionParserException.INVALID_SORT_ORDER.create();
     msgRef.addContent(token.getPosition() + 1);
     msgRef.addContent(expression);
@@ -246,7 +247,8 @@ public class FilterParserExceptionImpl extends ExpressionParserException
     return new ExpressionParserException(msgRef);
   }
 
-  public static ExpressionParserException createINVALID_METHOD_CALL(CommonExpression leftNode, Token prevToken, String expression) {
+  public static ExpressionParserException createINVALID_METHOD_CALL(CommonExpression leftNode, Token prevToken, String expression)
+  {
     final MessageReference msgRef = ExpressionParserException.INVALID_METHOD_CALL.create();
 
     msgRef.addContent(leftNode.getUriLiteral());
@@ -257,4 +259,33 @@ public class FilterParserExceptionImpl extends ExpressionParserException
 
   }
 
+  public static ExpressionParserException createTYPE_EXPECTED_AT(EdmType expectedType, EdmType actualType, int position, String expression)
+  {
+    final MessageReference msgRef = ExpressionParserException.TYPE_EXPECTED_AT.create();
+
+    try {
+      msgRef.addContent(expectedType.getNamespace() + '.' + expectedType.getName());
+    } catch (EdmException e) {
+      msgRef.addContent("");
+    }
+
+    msgRef.addContent(position);
+    msgRef.addContent(expression);
+
+    if (actualType != null)
+    {
+      try {
+        msgRef.addContent(actualType.getNamespace() + '.' + actualType.getName());
+      } catch (EdmException e) {
+        msgRef.addContent("");
+      }
+    }
+    else
+    {
+      msgRef.addContent("null");
+    }
+
+    return new ExpressionParserException(msgRef);
+
+  }
 }
