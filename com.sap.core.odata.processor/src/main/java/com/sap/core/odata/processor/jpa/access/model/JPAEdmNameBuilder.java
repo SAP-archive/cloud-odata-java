@@ -267,5 +267,4 @@ public class JPAEdmNameBuilder {
 				.getSimpleName().concat(NAVIGATION_NAME));
 
 	}
-
 }

@@ -166,5 +166,4 @@ public class JPAEdmComplexType extends JPAEdmBaseViewImpl implements
 		}
 
 	}
-
 }

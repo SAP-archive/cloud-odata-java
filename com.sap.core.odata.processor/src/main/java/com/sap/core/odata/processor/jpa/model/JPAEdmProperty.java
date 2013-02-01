@@ -294,5 +294,4 @@ public class JPAEdmProperty extends JPAEdmBaseViewImpl implements
 			return facets;
 		}
 	}
-
 }

@@ -119,9 +119,4 @@ JPAEdmSchemaView {
 	public final JPAEdmAssociationView getJPAEdmAssociationView() {
 		return this.associationView;
 	}
-
-
-
-
-
 }
