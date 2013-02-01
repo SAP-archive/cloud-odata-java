@@ -26,7 +26,7 @@ public class SimplePropertyTest extends AbstractRefTest {
     assertTrue(getBody(response).contains(EMPLOYEE_2_AGE));
 
     response = callUri("Container2.Photos(Id=3,Type='image%2Fjpeg')/Image/$value");
-    checkMediaType(response, IMAGE_JPEG, false);
+    checkMediaType(response, IMAGE_JPEG);
     assertNotNull(getBody(response));
 
     response = callUri("Container2.Photos(Id=3,Type='image%2Fjpeg')/Image");
@@ -45,7 +45,7 @@ public class SimplePropertyTest extends AbstractRefTest {
     assertTrue(getBody(response).contains("5</"));
 
     response = callUri("Container2.Photos(Id=3,Type='image%2Fjpeg')/BinaryData/$value");
-    checkMediaType(response, IMAGE_JPEG, false);
+    checkMediaType(response, IMAGE_JPEG);
     assertNotNull(getBody(response));
 
     response = callUri("Container2.Photos(Id=3,Type='image%2Fjpeg')/BinaryData");

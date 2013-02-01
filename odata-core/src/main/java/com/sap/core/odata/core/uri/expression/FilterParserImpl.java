@@ -40,7 +40,7 @@ public class FilterParserImpl implements FilterParser
 
   static
   {
-    initAvialTables();
+    initAvailTables();
   }
 
   /*instance attributes*/
@@ -50,7 +50,6 @@ public class FilterParserImpl implements FilterParser
 
   /**
    * Creates a new FilterParser implementation
-   * @param edm EntityDataModel   
    * @param resourceEntityType EntityType of the resource on which the filter is applied
    */
   public FilterParserImpl(EdmEntityType resourceEntityType)
@@ -657,7 +656,7 @@ public class FilterParserImpl implements FilterParser
     methodExpression.setEdmType(parameterSet.getReturnType());
   }
 
-  static void initAvialTables()
+  static void initAvailTables()
   {
     Map<String, InfoBinaryOperator> lAvailableBinaryOperators = new HashMap<String, InfoBinaryOperator>();
     Map<String, InfoMethod> lAvailableMethods = new HashMap<String, InfoMethod>();

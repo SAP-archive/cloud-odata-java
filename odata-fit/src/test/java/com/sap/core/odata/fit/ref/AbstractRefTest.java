@@ -20,7 +20,6 @@ import org.apache.http.entity.StringEntity;
 import com.sap.core.odata.api.commons.HttpStatusCodes;
 import com.sap.core.odata.api.edm.provider.EdmProvider;
 import com.sap.core.odata.api.processor.ODataSingleProcessor;
-import com.sap.core.odata.core.commons.ContentType;
 import com.sap.core.odata.core.commons.ODataHttpMethod;
 import com.sap.core.odata.core.processor.ODataSingleProcessorService;
 import com.sap.core.odata.ref.edm.ScenarioEdmProvider;
@@ -133,33 +132,6 @@ public class AbstractRefTest extends AbstractFitTest {
     assertNotNull(getBody(response));
   }
 
-  protected String getBody(final HttpResponse response) throws Exception {
-    assertNotNull(response);
-    assertNotNull(response.getEntity());
-    assertNotNull(response.getEntity().getContent());
-    return StringHelper.inputStreamToString(response.getEntity().getContent());
-  }
-
-  protected void checkMediaType(final HttpResponse response, final String expectedMediaType) {
-    checkMediaType(response, expectedMediaType, true);
-  }
-
-  protected void checkMediaType(final HttpResponse response, final String expectedMediaType, final boolean withDefaultCharset) {
-    ContentType expected = ContentType.create(expectedMediaType);
-    if (withDefaultCharset && !expectedMediaType.contains("charset=utf-8")) {
-      expected = ContentType.create(expected, ContentType.PARAMETER_CHARSET, ContentType.CHARSET_UTF_8);
-    }
-    assertEquals("MediaType was not expected (charset expected=[" + withDefaultCharset + "]).",
-        expected.toContentTypeString(), response.getFirstHeader(HttpHeaders.CONTENT_TYPE).getValue());
-  }
-
-  protected void checkEtag(final HttpResponse response, final String expectedEtag) {
-    assertNotNull(response.getFirstHeader(HttpHeaders.ETAG));
-    final String entityTag = response.getFirstHeader(HttpHeaders.ETAG).getValue();
-    assertNotNull(entityTag);
-    assertEquals(expectedEtag, entityTag);
-  }
-
   protected void deleteUri(final String uri, final HttpStatusCodes expectedStatusCode) throws Exception, AssertionError {
     final HttpResponse response = callUri(ODataHttpMethod.DELETE, uri, null, null, null, null, expectedStatusCode);
     if (expectedStatusCode != HttpStatusCodes.NO_CONTENT)
@@ -180,5 +152,23 @@ public class AbstractRefTest extends AbstractFitTest {
     final HttpResponse response = callUri(ODataHttpMethod.PUT, uri, null, null, requestBody, requestContentType, expectedStatusCode);
     if (expectedStatusCode != HttpStatusCodes.NO_CONTENT)
       response.getEntity().getContent().close();
+  }
+
+  protected String getBody(final HttpResponse response) throws Exception {
+    assertNotNull(response);
+    assertNotNull(response.getEntity());
+    assertNotNull(response.getEntity().getContent());
+    return StringHelper.inputStreamToString(response.getEntity().getContent());
+  }
+
+  protected void checkMediaType(final HttpResponse response, final String expectedMediaType) {
+    assertEquals(expectedMediaType, response.getFirstHeader(HttpHeaders.CONTENT_TYPE).getValue());
+  }
+
+  protected void checkEtag(final HttpResponse response, final String expectedEtag) {
+    assertNotNull(response.getFirstHeader(HttpHeaders.ETAG));
+    final String entityTag = response.getFirstHeader(HttpHeaders.ETAG).getValue();
+    assertNotNull(entityTag);
+    assertEquals(expectedEtag, entityTag);
   }
 }

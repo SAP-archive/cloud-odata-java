@@ -66,7 +66,7 @@ public class MiscChangeTest extends AbstractRefTest {
     final String url = "Managers('1')/$value";
     putUri(url, "00", HttpContentType.APPLICATION_OCTET_STREAM, HttpStatusCodes.NO_CONTENT);
     final HttpResponse response = callUri(url);
-    checkMediaType(response, HttpContentType.APPLICATION_OCTET_STREAM, false);
+    checkMediaType(response, HttpContentType.APPLICATION_OCTET_STREAM);
     assertEquals("00", getBody(response));
   }
 
