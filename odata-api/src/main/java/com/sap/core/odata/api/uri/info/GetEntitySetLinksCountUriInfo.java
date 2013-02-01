@@ -82,7 +82,7 @@ public interface GetEntitySetLinksCountUriInfo {
   public Map<String, EdmLiteral> getFunctionImportParameters();
 
   /**
-   * @return Map of {@literal<String, String>} custom query options or EmptyMap
+   * @return Map of {@literal <String, String>} custom query options or EmptyMap
    */
   public Map<String, String> getCustomQueryOptions();
 }

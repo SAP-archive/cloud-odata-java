@@ -32,7 +32,6 @@ public interface EntitySimplePropertyValueProcessor extends ODataProcessor {
    * @param requestContentType the content type of the request body
    *                           (important for a binary property)
    * @param contentType the content type of the response
-   * @param request 
    * @return an {@link ODataResponse} object
    * @throws ODataException
    */

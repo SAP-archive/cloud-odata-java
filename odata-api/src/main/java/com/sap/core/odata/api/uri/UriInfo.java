@@ -166,7 +166,7 @@ public interface UriInfo extends GetServiceDocumentUriInfo, GetEntitySetUriInfo,
   public Map<String, EdmLiteral> getFunctionImportParameters();
 
   /**
-   * @return Map of {@literal<String, String>} custom query options or EmptyMap
+   * @return Map of {@literal <String, String>} custom query options or EmptyMap
    */
   @Override
   public Map<String, String> getCustomQueryOptions();

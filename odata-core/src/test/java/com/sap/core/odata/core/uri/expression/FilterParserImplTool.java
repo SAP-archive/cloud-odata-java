@@ -10,9 +10,9 @@ import com.sap.core.odata.api.uri.expression.MethodOperator;
 
 public class FilterParserImplTool extends FilterParserImpl {
 
-  public FilterParserImplTool(Edm edm, EdmEntityType edmType) 
+  public FilterParserImplTool(Edm edm, EdmEntityType resourceEntityType) 
   {
-    super(edm, edmType);
+    super(resourceEntityType);
   }
   
   public void addTestfunctions()

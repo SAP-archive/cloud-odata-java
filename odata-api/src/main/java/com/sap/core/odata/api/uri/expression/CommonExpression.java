@@ -1,19 +1,18 @@
 package com.sap.core.odata.api.uri.expression;
 
 import com.sap.core.odata.api.edm.EdmType;
+import com.sap.core.odata.api.uri.UriParser;
 
 /**
  * Parent class of all classes used to build the expression tree returned by 
- * <li>{@link FilterParser#parseFilterString(String)}</li>
- * <li>{@link OrderByParser#parseOrderByString(String)}</li> 
+ * <li>{@link UriParser#parseFilterString(com.sap.core.odata.api.edm.EdmEntityType, String)}</li>
+ * <li>{@link UriParser#parseOrderByString(com.sap.core.odata.api.edm.EdmEntityType, String)}</li>
  * <br>
  * <br>
  * <p>This interface defines the default methods for all expression tree nodes 
  * <br>
  * <br>
  * @author SAP AG
- * @see FilterParser
- * @see OrderByParser
  */
 public interface CommonExpression extends Visitable
 {

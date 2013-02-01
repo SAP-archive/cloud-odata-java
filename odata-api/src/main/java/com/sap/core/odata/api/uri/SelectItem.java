@@ -12,7 +12,7 @@ public interface SelectItem {
 
   /**
    * true if select=*
-   * @return 
+   * @return true if select=*
    */
   public boolean isStar();
 

@@ -6,7 +6,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.sap.core.odata.api.edm.Edm;
 import com.sap.core.odata.api.edm.EdmComplexType;
 import com.sap.core.odata.api.edm.EdmEntityType;
 import com.sap.core.odata.api.edm.EdmException;
@@ -26,6 +25,7 @@ import com.sap.core.odata.api.uri.expression.MethodExpression;
 import com.sap.core.odata.api.uri.expression.MethodOperator;
 import com.sap.core.odata.api.uri.expression.UnaryExpression;
 import com.sap.core.odata.api.uri.expression.UnaryOperator;
+import com.sap.core.odata.core.edm.EdmBoolean;
 import com.sap.core.odata.core.edm.EdmSimpleTypeFacadeImpl;
 
 /**
@@ -44,7 +44,6 @@ public class FilterParserImpl implements FilterParser
   }
 
   /*instance attributes*/
-  protected Edm edm = null;
   protected EdmEntityType resourceEntityType = null;
   protected TokenList tokenList = null;
   protected String curExpression;
@@ -52,16 +51,20 @@ public class FilterParserImpl implements FilterParser
   /**
    * Creates a new FilterParser implementation
    * @param edm EntityDataModel   
-   * @param edmType EntityType of the resource on which the filter is applied
+   * @param resourceEntityType EntityType of the resource on which the filter is applied
    */
-  public FilterParserImpl(Edm edm, EdmEntityType edmType)
+  public FilterParserImpl(EdmEntityType resourceEntityType)
   {
-    this.edm = edm;
-    this.resourceEntityType = edmType;
+    this.resourceEntityType = resourceEntityType;
   }
 
   @Override
   public FilterExpression parseFilterString(String filterExpression) throws ExpressionParserException, ExpressionParserInternalError
+  {
+    return parseFilterString(filterExpression, false);
+  }
+
+  public FilterExpression parseFilterString(String filterExpression, boolean allowOnlyBinary) throws ExpressionParserException, ExpressionParserInternalError
   {
     CommonExpression node = null;
     curExpression = filterExpression;
@@ -99,6 +102,12 @@ public class FilterParserImpl implements FilterParser
     }
 
     // Create and return filterExpression node
+    if ((allowOnlyBinary == true) && (node.getEdmType() != null) && (node.getEdmType() != EdmSimpleTypeKind.Boolean.getEdmSimpleTypeInstance()))
+    {
+      // Tested with TestParserExceptions.testAdditionalStuff CASE 9
+      throw FilterParserExceptionImpl.createTYPE_EXPECTED_AT(EdmBoolean.getInstance(), node.getEdmType(), 1, curExpression);
+    }
+
     return new FilterExpressionImpl(filterExpression, node);
   }
 
@@ -443,7 +452,7 @@ public class FilterParserImpl implements FilterParser
   protected void validateEdmProperty(CommonExpression leftExpression, PropertyExpressionImpl property, Token propertyToken, ActualBinaryOperator actBinOp) throws ExpressionParserException, ExpressionParserInternalError {
 
     // Exist if no edm provided
-    if ((this.edm == null) || (this.resourceEntityType == null))
+    if (this.resourceEntityType == null)
       return;
 
     if (leftExpression == null)
@@ -570,9 +579,9 @@ public class FilterParserImpl implements FilterParser
   {
     InfoUnaryOperator unOpt = availableUnaryOperators.get(unaryExpression.getOperator().toUriLiteral());
     EdmType operandType = unaryExpression.getOperand().getEdmType();
-    
-    if ((operandType == null) && (edm == null)) return;
-    
+
+    if ((operandType == null) && (resourceEntityType == null)) return;
+
     List<EdmType> actualParameterTypes = new ArrayList<EdmType>();
     actualParameterTypes.add(operandType);
 
@@ -589,13 +598,13 @@ public class FilterParserImpl implements FilterParser
 
     List<EdmType> actualParameterTypes = new ArrayList<EdmType>();
     EdmType operand = binaryExpression.getLeftOperand().getEdmType();
-    
-    if ((operand == null) && (edm == null)) return;
+
+    if ((operand == null) && (resourceEntityType == null)) return;
     actualParameterTypes.add(operand);
 
     operand = binaryExpression.getRightOperand().getEdmType();
-    
-    if ((operand == null) && (edm == null)) return;
+
+    if ((operand == null) && (resourceEntityType == null)) return;
     actualParameterTypes.add(operand);
 
     ParameterSet parameterSet = binOpt.validateParameterSet(actualParameterTypes);
@@ -631,7 +640,7 @@ public class FilterParserImpl implements FilterParser
       //If there is not at parsing time its not possible to determine the type of eg myPropertyName.
       //Since this should not cause validation errors null type node arguments are leading to bypass
       //the validation
-      if ((parameter.getEdmType() == null)  && (edm == null))
+      if ((parameter.getEdmType() == null) && (resourceEntityType == null))
       {
         return;
       }

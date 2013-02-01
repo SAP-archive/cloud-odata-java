@@ -729,11 +729,11 @@ public class UriParserImpl extends UriParser {
 
   @Override
   public FilterExpression parseFilterString(final EdmEntityType entityType, final String expression) throws ExpressionParserException, ODataMessageException {
-    return new FilterParserImpl(edm, entityType).parseFilterString(expression);
+    return new FilterParserImpl( entityType).parseFilterString(expression);
   }
 
   @Override
   public OrderByExpression parseOrderByString(final EdmEntityType entityType, final String expression) throws ExpressionParserException, ODataMessageException {
-    return new OrderByParserImpl(edm, entityType).parseOrderByString(expression);
+    return new OrderByParserImpl( entityType).parseOrderByString(expression);
   }
 }
