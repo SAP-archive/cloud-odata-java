@@ -1,6 +1,7 @@
 package com.sap.core.odata.processor.jpa.jpql;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
@@ -9,7 +10,6 @@ import java.util.List;
 import org.easymock.EasyMock;
 import org.junit.After;
 import org.junit.AfterClass;
-import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -35,21 +35,25 @@ public class JPQLJoinSelectSingleStatementBuilderTest {
 	public static void tearDownAfterClass() throws Exception {
 	}
 
-	@Before
-	public void setUp() throws Exception {
+	
+	public void setUp(List<JPAJoinClause> joinClauseList) throws Exception {
 		context = EasyMock.createMock(JPQLJoinSelectSingleContextView.class);
 		EasyMock.expect(context.getJPAEntityAlias()).andStubReturn("gt1");
 		EasyMock.expect(context.getJPAEntityName()).andStubReturn("SOHeader");
 		EasyMock.expect(context.getType()).andStubReturn(JPQLContextType.SELECT);
 		EasyMock.expect(context.getKeyPredicates()).andStubReturn(createKeyPredicates());
 		EasyMock.expect(context.getSelectExpression()).andStubReturn("gt1");
+		EasyMock.expect(context.getJPAJoinClauses()).andStubReturn(joinClauseList);
+		EasyMock.replay(context);		
+	}
+
+	private List<JPAJoinClause> getJoinClauseList() {
 		List<JPAJoinClause> joinClauseList = new ArrayList<JPAJoinClause>();
 		JPAJoinClause jpaOuterJoinClause = new JPAJoinClause("SOHeader", "soh", "soItem", "soi", "soi.shId = soh.soId", JPAJoinClause.JOIN.LEFT);
 		joinClauseList.add(jpaOuterJoinClause);
 		jpaOuterJoinClause = new JPAJoinClause("SOItem", "si", "material", "mat", "mat.id = 'abc'", JPAJoinClause.JOIN.LEFT);
 		joinClauseList.add(jpaOuterJoinClause);
-		EasyMock.expect(context.getJPAJoinClauses()).andStubReturn(joinClauseList);
-		EasyMock.replay(context);		
+		return joinClauseList;
 	}
 
 	@After
@@ -57,7 +61,8 @@ public class JPQLJoinSelectSingleStatementBuilderTest {
 	}
 
 	@Test
-	public void testBuild() {
+	public void testBuild() throws Exception {
+		setUp(getJoinClauseList());
 		JPQLJoinSelectSingleStatementBuilder jpqlJoinSelectsingleStatementBuilder = new JPQLJoinSelectSingleStatementBuilder(context);
 		try {
 			JPQLStatement jpqlStatement = jpqlJoinSelectsingleStatementBuilder.build();
@@ -83,6 +88,31 @@ public class JPQLJoinSelectSingleStatementBuilderTest {
 		List<KeyPredicate> keyPredicates = new ArrayList<KeyPredicate>();
 		keyPredicates.add(keyPredicate);
 		return keyPredicates;
+	}
+	
+	@Test
+	public void testJoinClauseAsNull() throws Exception{
+		setUp(null);
+		JPQLJoinSelectSingleStatementBuilder jpqlJoinSelectsingleStatementBuilder = new JPQLJoinSelectSingleStatementBuilder(context);
+		try {
+			jpqlJoinSelectsingleStatementBuilder.build();
+			fail("Should not have come here");
+		} catch (ODataJPARuntimeException e) {
+			assertTrue(true);
+		}
+	}
+	
+	@Test
+	public void testJoinClauseListAsEmpty() throws Exception{
+		List<JPAJoinClause> joinClauseList = new ArrayList<JPAJoinClause>();
+		setUp(joinClauseList);
+		JPQLJoinSelectSingleStatementBuilder jpqlJoinSelectsingleStatementBuilder = new JPQLJoinSelectSingleStatementBuilder(context);
+		try {
+			jpqlJoinSelectsingleStatementBuilder.build();
+			fail("Should not have come here");
+		} catch (ODataJPARuntimeException e) {
+			assertTrue(true);
+		}
 	}
 
 }
