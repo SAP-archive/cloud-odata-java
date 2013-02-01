@@ -185,7 +185,7 @@ public final class EntityProvider {
      * @throws EntityProviderException
      */
     byte[] readBinary(InputStream content) throws EntityProviderException;
- }
+  }
 
   /**
    * Create an instance for the {@link EntityProviderInterface} over the {@link RuntimeDelegate}.

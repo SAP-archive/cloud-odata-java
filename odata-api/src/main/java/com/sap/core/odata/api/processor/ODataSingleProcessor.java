@@ -56,7 +56,7 @@ import com.sap.core.odata.api.uri.info.PutMergePatchUriInfo;
  * 
  * @author SAP AG
  */
-public abstract class ODataSingleProcessor implements 
+public abstract class ODataSingleProcessor implements
     MetadataProcessor,
     ServiceDocumentProcessor,
     EntityProcessor,
@@ -315,15 +315,16 @@ public abstract class ODataSingleProcessor implements
    */
   @Override
   public ODataResponse readServiceDocument(GetServiceDocumentUriInfo uriInfo, String contentType) throws ODataException {
-    Edm entityDataModel = getContext().getService().getEntityDataModel();
-    String serviceRoot = getContext().getPathInfo().getServiceRoot().toASCIIString();
+    final Edm entityDataModel = getContext().getService().getEntityDataModel();
+    final String serviceRoot = getContext().getPathInfo().getServiceRoot().toASCIIString();
 
-    ODataResponse response = EntityProvider.writeServiceDocument(contentType, entityDataModel, serviceRoot);
-    ODataResponseBuilder odataResponseBuilder = ODataResponse.fromResponse(response)
+    final ODataResponse response = EntityProvider.writeServiceDocument(contentType, entityDataModel, serviceRoot);
+    final ODataResponseBuilder odataResponseBuilder = ODataResponse.fromResponse(response)
         .header(ODataHttpHeaders.DATASERVICEVERSION, Edm.DATA_SERVICE_VERSION_10);
     if (!(contentType.equals(response.getContentHeader())
-        || contentType.contains("atom") && response.getContentHeader().contains("atomsvc")))
+    || (contentType.contains("atom") && response.getContentHeader().contains("atomsvc")))) {
       odataResponseBuilder.contentHeader(contentType);
+    }
     return odataResponseBuilder.build();
   }
 

@@ -26,7 +26,7 @@ public interface ExpressionVisitor
    *   The overall result of evaluating the whole filter expression tree    
    */
   Object visitFilterExpression(FilterExpression filterExpression, String expressionString, Object expression);
-  
+
   /**
    * Visits a binary expression
    * @param binaryExpression

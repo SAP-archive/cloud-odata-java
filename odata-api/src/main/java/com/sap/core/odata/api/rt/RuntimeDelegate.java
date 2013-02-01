@@ -110,12 +110,11 @@ public abstract class RuntimeDelegate {
   public static EntityProviderInterface createEntityProvider() {
     return RuntimeDelegate.getInstance().createEntityProvider();
   }
-  
+
   public static ODataService createODataSingleProcessorService(EdmProvider provider, ODataSingleProcessor processor) {
     return RuntimeDelegate.getInstance().createODataSingleProcessorService(provider, processor);
   }
-  
-  
+
   private static class RuntimeDelegateException extends RuntimeException {
 
     private static final long serialVersionUID = 1L;

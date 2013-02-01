@@ -134,7 +134,7 @@ public class AtomFeedProducerTest extends AbstractProviderTest {
     String xmlString = verifyResponse(response);
 
     assertXpathExists("/a:feed/a:link[@rel='next']", xmlString);
-    assertXpathEvaluatesTo("Rooms?$skiptoken=%C3%A4bc", "/a:feed/a:link[@rel='next']/@href", xmlString);
+    assertXpathEvaluatesTo("Rooms?$skiptoken=%c3%a4bc", "/a:feed/a:link[@rel='next']/@href", xmlString);
   }
 
   @Test

@@ -13,10 +13,10 @@ import com.sap.core.odata.api.edm.EdmFacets;
 import com.sap.core.odata.api.edm.EdmLiteralKind;
 import com.sap.core.odata.api.ep.EntityProviderException;
 import com.sap.core.odata.api.ep.EntityProviderProperties;
+import com.sap.core.odata.core.commons.Encoder;
 import com.sap.core.odata.core.edm.EdmDateTimeOffset;
 import com.sap.core.odata.core.ep.aggregator.EntityInfoAggregator;
 import com.sap.core.odata.core.ep.util.FormatXml;
-import com.sap.core.odata.core.ep.util.UriUtils;
 import com.sap.core.odata.core.uri.SystemQueryOption;
 
 /**
@@ -108,9 +108,9 @@ public class AtomFeedProducer {
 
   private String createNextLink(EntityInfoAggregator eia, String nextSkiptoken) throws EntityProviderException {
     try {
-      String query = SystemQueryOption.$skiptoken + "=" + nextSkiptoken;
+      String query = SystemQueryOption.$skiptoken + "=" + Encoder.encodeQueryPart(nextSkiptoken);
       String path = createSelfLink(eia);
-      return UriUtils.encodeUri(path, query);
+      return path + "?" + query;
     } catch (Exception e) {
       throw new EntityProviderException(EntityProviderException.COMMON, e);
     }
@@ -120,10 +120,12 @@ public class AtomFeedProducer {
     try {
       StringBuilder sb = new StringBuilder();
       if (!eia.isDefaultEntityContainer()) {
-        sb.append(eia.getEntityContainerName()).append(Edm.DELIMITER);
+        String entityContainerName = Encoder.encodePathPart(eia.getEntityContainerName());
+        sb.append(entityContainerName).append(Edm.DELIMITER);
       }
-      sb.append(eia.getEntitySetName());
-      return UriUtils.encodeUriPath(sb.toString());
+      String entitySetName = Encoder.encodePathPart(eia.getEntitySetName());
+      sb.append(entitySetName);
+      return sb.toString();
     } catch (Exception e) {
       throw new EntityProviderException(EntityProviderException.COMMON, e);
     }
@@ -163,12 +165,14 @@ public class AtomFeedProducer {
       String id = "";
 
       if (!eia.isDefaultEntityContainer()) {
-        id += eia.getEntityContainerName() + ".";
+        String entityContainerName = Encoder.encodeQueryPart(eia.getEntityContainerName());
+        id += entityContainerName + ".";
       }
-      id += eia.getEntitySetName();
+      String entitySetName = Encoder.encodeQueryPart(eia.getEntitySetName());
+      id += entitySetName;
 
       URI serviceRoot = properties.getServiceRoot();
-      return UriUtils.encodeUri(serviceRoot, id);
+      return serviceRoot + id;
     } catch (Exception e) {
       throw new EntityProviderException(EntityProviderException.COMMON, e);
     }

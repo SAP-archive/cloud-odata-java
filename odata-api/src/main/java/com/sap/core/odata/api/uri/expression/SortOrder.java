@@ -4,14 +4,14 @@ package com.sap.core.odata.api.uri.expression;
  * Enumeration describing all possible sort orders used in an $orderby expression 
  * @author SAP AG
  */
-public enum SortOrder 
+public enum SortOrder
 {
-  
+
   /**
    * Sort order ascending 
    */
   asc("asc"),
-  
+
   /**
    * Sort order descending 
    */

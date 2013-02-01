@@ -32,12 +32,12 @@ public enum BinaryOperator
   private BinaryOperator(String uriSyntax)
   {
     this.uriSyntax = uriSyntax;
-    this.stringRespresentation = uriSyntax;
+    stringRespresentation = uriSyntax;
   }
 
   private BinaryOperator(String syntax, String stringRespresentation)
   {
-    this.uriSyntax = syntax;
+    uriSyntax = syntax;
     this.stringRespresentation = stringRespresentation;
   }
 
