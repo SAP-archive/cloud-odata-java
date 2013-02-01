@@ -19,12 +19,12 @@ import com.sap.core.odata.api.edm.EdmType;
 import com.sap.core.odata.api.ep.EntityProviderException;
 import com.sap.core.odata.api.ep.EntityProviderProperties;
 import com.sap.core.odata.core.commons.ContentType;
+import com.sap.core.odata.core.commons.Encoder;
 import com.sap.core.odata.core.edm.EdmDateTimeOffset;
 import com.sap.core.odata.core.ep.aggregator.EntityInfoAggregator;
 import com.sap.core.odata.core.ep.aggregator.EntityPropertyInfo;
 import com.sap.core.odata.core.ep.aggregator.NavigationPropertyInfo;
 import com.sap.core.odata.core.ep.util.FormatXml;
-import com.sap.core.odata.core.ep.util.UriUtils;
 
 /**
  * @author SAP AG
@@ -219,10 +219,13 @@ public class AtomEntryEntityProducer {
     try {
       StringBuilder sb = new StringBuilder();
       if (!eia.isDefaultEntityContainer()) {
-        sb.append(eia.getEntityContainerName()).append(Edm.DELIMITER);
+        String encodedEntityContainerName = eia.getEntityContainerName();
+        sb.append(encodedEntityContainerName).append(Edm.DELIMITER);
       }
-      sb.append(eia.getEntitySetName()).append("(").append(this.createEntryKey(eia, data)).append(")").append((extension == null ? "" : "/" + extension));
-      return UriUtils.encodeUriPath(sb.toString());
+      String encodedEntitySetName = Encoder.encodePathPart(eia.getEntitySetName());
+
+      sb.append(encodedEntitySetName).append("(").append(this.createEntryKey(eia, data, true)).append(")").append((extension == null ? "" : "/" + extension));
+      return sb.toString();
     } catch (Exception e) {
       throw new EntityProviderException(EntityProviderException.COMMON, e);
     }
@@ -231,7 +234,7 @@ public class AtomEntryEntityProducer {
   private void appendAtomMandatoryParts(XMLStreamWriter writer, EntityInfoAggregator eia, Map<String, Object> data) throws EntityProviderException {
     try {
       writer.writeStartElement(FormatXml.ATOM_ID);
-      String entryKey = this.createEntryKey(eia, data);
+      String entryKey = this.createEntryKey(eia, data, false);
       writer.writeCharacters(createAtomId(eia, entryKey));
       writer.writeEndElement();
 
@@ -348,16 +351,18 @@ public class AtomEntryEntityProducer {
       if (!eia.isDefaultEntityContainer()) {
         id += eia.getEntityContainerName() + Edm.DELIMITER;
       }
-      id += eia.getEntitySetName() + "(" + entryKey + ")";
+      String encodedEntitySetName = Encoder.encodePathPart(eia.getEntitySetName());
+      String encodedEntryKey = Encoder.encodePathPart(entryKey);
+      id += encodedEntitySetName + "(" + encodedEntryKey + ")";
 
-      URI serviceRoot = properties.getServiceRoot();
-      return UriUtils.encodeUri(serviceRoot, id);
+      String uri = properties.getServiceRoot().toASCIIString() + id;
+      return uri;
     } catch (Exception e) {
       throw new EntityProviderException(EntityProviderException.COMMON, e);
     }
   }
 
-  private String createEntryKey(EntityInfoAggregator eia, Map<String, Object> data) throws EntityProviderException {
+  private String createEntryKey(EntityInfoAggregator eia, Map<String, Object> data, boolean encode) throws EntityProviderException {
     try {
       List<EntityPropertyInfo> kp = eia.getKeyPropertyInfos();
       String keys = "";
@@ -366,6 +371,9 @@ public class AtomEntryEntityProducer {
         EdmSimpleType st = (EdmSimpleType) kp.get(0).getType();
         Object value = data.get(kp.get(0).getName());
         keys = st.valueToString(value, EdmLiteralKind.URI, kp.get(0).getFacets());
+        if (encode) {
+          keys = Encoder.encodePathPart(keys);
+        }
       } else {
         int size = kp.size();
         for (int i = 0; i < size; i++) {
@@ -373,8 +381,13 @@ public class AtomEntryEntityProducer {
           Object value = data.get(keyp.getName());
 
           EdmSimpleType st = (EdmSimpleType) keyp.getType();
-          keys = keys + keyp.getName() + "=";
           String strValue = st.valueToString(value, EdmLiteralKind.URI, kp.get(i).getFacets());
+          String name = keyp.getName();
+          if (encode) {
+            name = Encoder.encodePathPart(name);
+            strValue = Encoder.encodePathPart(strValue);
+          }
+          keys = keys + name + "=";
           keys = keys + strValue;
           if (i < size - 1) {
             keys = keys + ",";

@@ -22,31 +22,21 @@ public class Encoder {
     this.map = map;
   }
 
-  public static String encodePart(String value) {
-    Encoder encoder = new Encoder(UNSAFE, UNRESERVED, null);
-    return encoder.encodeInternal(value);
-  }
-
-  /**
-   * @deprecated not sure if this is really required
-   * @param value
-   * @return
-   */
   public static String encodePathPart(String value) {
     Encoder encoder = new Encoder(UNSAFE, UNRESERVED, null);
     return encoder.encodeInternal(value);
   }
 
-  /**
-   * @deprecated not sure if this is really required
-   * @param value
-   * @return
-   */
   public static String encodeQueryPart(String value) {
-    Map<Character, String> map = new HashMap<Character, String>();
-    map.put(' ', "+");
-    Encoder encoder = new Encoder(UNSAFE_NOSPACE, UNRESERVED, map);
-    return encoder.encodeInternal(value);
+
+    return encodePathPart(value);
+
+    // TODO SKL This needs evaluation! RFC3986
+
+    //    Map<Character, String> map = new HashMap<Character, String>();
+    //    map.put(' ', "+");
+    //    Encoder encoder = new Encoder(UNSAFE_NOSPACE, UNRESERVED, map);
+    //    return encoder.encodeInternal(value);
   }
 
   private final static String RFC3986_UNRESERVED = "-._~"; // + ALPHA + DIGIT
@@ -57,7 +47,7 @@ public class Encoder {
   /*
    * this is due to compatibility reasons for URI decoding behavior which is RFC2396 (deprecated by RFC3986)
    */
-  private final static String UNSAFE_NOSPACE = RFC3986_RESERVED + "<>%";
+  private final static String UNSAFE_NOSPACE = RFC3986_GEN_DELIMS + "<>%";
   private final static String UNSAFE = UNSAFE_NOSPACE + " ";
   private final static String UNRESERVED = RFC3986_UNRESERVED;
 

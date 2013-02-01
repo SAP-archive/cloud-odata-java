@@ -259,8 +259,8 @@ public class AtomEntryProducerTest extends AbstractProviderTest {
     assertXpathExists("/a:entry", xmlString);
     assertXpathEvaluatesTo(BASE_URI.toASCIIString(), "/a:entry/@xml:base", xmlString);
     assertXpathExists("/a:entry/a:id", xmlString);
-    assertXpathEvaluatesTo(BASE_URI.toASCIIString() + "Container2.Photos(Id=1,Type='%3C%20%C3%96%20%3E')", "/a:entry/a:id/text()", xmlString);
-    assertXpathEvaluatesTo("Container2.Photos(Id=1,Type='%3C%20%C3%96%20%3E')", "/a:entry/a:link/@href", xmlString);
+    assertXpathEvaluatesTo(BASE_URI.toASCIIString() + "Container2.Photos(Id=1,Type='%3c%20%c3%96%20%3e')", "/a:entry/a:id/text()", xmlString);
+    assertXpathEvaluatesTo("Container2.Photos(Id=1,Type='%3c%20%c3%96%20%3e')", "/a:entry/a:link/@href", xmlString);
   }
 
   @Test

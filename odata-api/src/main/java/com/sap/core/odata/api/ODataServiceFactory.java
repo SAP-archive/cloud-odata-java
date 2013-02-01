@@ -30,7 +30,7 @@ public abstract class ODataServiceFactory {
    * @throws ODataException in case of error
    */
   public abstract ODataService createService(ODataContext ctx) throws ODataException;
-  
+
   public ODataService createODataSingleProcessorService(EdmProvider provider, ODataSingleProcessor processor) {
     return RuntimeDelegate.createODataSingleProcessorService(provider, processor);
   }
