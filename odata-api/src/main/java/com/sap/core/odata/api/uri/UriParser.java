@@ -46,6 +46,20 @@ public abstract class UriParser {
 
   /**
    * Parses a $filter expression string and create an expression tree
+   * <p>
+   * The current expression parser supports expressions as defined in the OData specification 2.0 with the following restrictions
+   *   - the methods "cast", "isof" and "replace" are not supported
+   *   
+   * The expression parser can be used with providing an Entity Data Model (EDM) an without providing it.
+   *  <p>When a EDM is provided the expression parser will be as strict as possible. That means:
+   *  <li>All properties used in the expression must be defined inside the EDM</li>
+   *  <li>The types of EDM properties will be checked against the lists of allowed type per method, binary- and unary operator</li>
+   *  </p>
+   *  <p>If no EDM is provided the expression parser performs a lax validation
+   *  <li>The properties used in the expression are not looked up inside the EDM and the type of the expression node representing the 
+   *      property will be "null"</li>
+   *  <li>Expression node with EDM-types which are "null" are not considered during the parameter type validation, to the return type of the parent expression node will
+   *  also become "null"</li>
    * @param edm
    *   Edm model of the accessed OData service 
    * @param edmType
@@ -66,6 +80,20 @@ public abstract class UriParser {
 
   /**
    * Parses a $filter expression string and create an expression tree
+   * <p>
+   * The current expression parser supports expressions as defined in the OData specification 2.0 with the following restrictions
+   *   - the methods "cast", "isof" and "replace" are not supported
+   *   
+   * The expression parser can be used with providing an Entity Data Model (EDM) an without providing it.
+   *  <p>When a EDM is provided the expression parser will be as strict as possible. That means:
+   *  <li>All properties used in the expression must be defined inside the EDM</li>
+   *  <li>The types of EDM properties will be checked against the lists of allowed type per method, binary- and unary operator</li>
+   *  </p>
+   *  <p>If no EDM is provided the expression parser performs a lax validation
+   *  <li>The properties used in the expression are not looked up inside the EDM and the type of the expression node representing the 
+   *      property will be "null"</li>
+   *  <li>Expression node with EDM-types which are "null" are not considered during the parameter type validation, to the return type of the parent expression node will
+   *  also become "null"</li>
    * @param edmType
    *   Edm type of the OData entity/complex type/.. addressed by the URL.
    * @param expression

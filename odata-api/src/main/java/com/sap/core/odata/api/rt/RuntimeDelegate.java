@@ -2,7 +2,6 @@ package com.sap.core.odata.api.rt;
 
 import com.sap.core.odata.api.ODataService;
 import com.sap.core.odata.api.edm.Edm;
-import com.sap.core.odata.api.edm.EdmEntityType;
 import com.sap.core.odata.api.edm.EdmSimpleType;
 import com.sap.core.odata.api.edm.EdmSimpleTypeFacade;
 import com.sap.core.odata.api.edm.EdmSimpleTypeKind;
@@ -11,8 +10,6 @@ import com.sap.core.odata.api.ep.EntityProvider.EntityProviderInterface;
 import com.sap.core.odata.api.processor.ODataResponse.ODataResponseBuilder;
 import com.sap.core.odata.api.processor.ODataSingleProcessor;
 import com.sap.core.odata.api.uri.UriParser;
-import com.sap.core.odata.api.uri.expression.FilterParser;
-import com.sap.core.odata.api.uri.expression.OrderByParser;
 
 /**
  * Abstract class to get OData core implementations of API interfaces
@@ -80,10 +77,6 @@ public abstract class RuntimeDelegate {
      * @return {@link Edm} implementation object
      */
     protected abstract Edm createEdm(EdmProvider provider);
-
-    protected abstract FilterParser getFilterParser(Edm edm, EdmEntityType edmType);
-
-    protected abstract OrderByParser getOrderByParser(Edm edm, EdmEntityType edmType);
 
     protected abstract EntityProviderInterface createEntityProvider();
 
