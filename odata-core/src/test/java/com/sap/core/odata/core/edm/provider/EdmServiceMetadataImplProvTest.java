@@ -17,7 +17,7 @@ import com.sap.core.odata.api.edm.EdmServiceMetadata;
 import com.sap.core.odata.api.edm.provider.EdmProvider;
 import com.sap.core.odata.testutil.fit.BaseTest;
 import com.sap.core.odata.testutil.helper.StringHelper;
-import com.sap.core.odata.testutil.mock.EdmProviderMock;
+import com.sap.core.odata.testutil.mock.EdmTestProvider;
 
 public class EdmServiceMetadataImplProvTest extends BaseTest {
 
@@ -25,7 +25,7 @@ public class EdmServiceMetadataImplProvTest extends BaseTest {
 
   @BeforeClass
   public static void setup() throws Exception {
-    EdmImplProv edmImplProv = new EdmImplProv(new EdmProviderMock());
+    EdmImplProv edmImplProv = new EdmImplProv(new EdmTestProvider());
     EdmServiceMetadata serviceMetadata = edmImplProv.getServiceMetadata();
     metadata = StringHelper.inputStreamToString(serviceMetadata.getMetadata());
     Map<String, String> prefixMap = new HashMap<String, String>();
@@ -50,6 +50,7 @@ public class EdmServiceMetadataImplProvTest extends BaseTest {
 
   @Test
   public void testSchemaStructure() throws Exception {
+    System.out.println(metadata);
     assertXpathExists("/edmx:Edmx", metadata);
     assertXpathExists("/edmx:Edmx/edmx:DataServices", metadata);
     assertXpathExists("/edmx:Edmx/edmx:DataServices/a:Schema", metadata);

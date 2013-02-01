@@ -37,7 +37,7 @@ import com.sap.core.odata.api.edm.provider.Schema;
 import com.sap.core.odata.api.edm.provider.SimpleProperty;
 import com.sap.core.odata.api.exception.ODataException;
 
-public class EdmProviderMock extends EdmProvider {
+public class EdmTestProvider extends EdmProvider {
 
   public static final String NAMESPACE_1 = "RefScenario";
   public static final String NAMESPACE_2 = "RefScenario2";
@@ -164,6 +164,7 @@ public class EdmProviderMock extends EdmProvider {
         final List<Property> properties = new ArrayList<Property>();
         ArrayList<AnnotationAttribute> annoList = new ArrayList<AnnotationAttribute>();
         annoList.add(new AnnotationAttribute().setName("annoName").setNamespace("http://annoNamespace").setPrefix("annoPrefix").setText("annoText"));
+        annoList.add(new AnnotationAttribute().setName("annoName2").setNamespace("http://annoNamespace").setPrefix("annoPrefix").setText("annoText2"));
         properties.add(new SimpleProperty().setName("EmployeeId").setType(EdmSimpleTypeKind.String)
             .setFacets(new Facets().setNullable(false))
             .setMapping(new Mapping().setInternalName("getId")).setAnnotationAttributes(annoList));

@@ -1,6 +1,7 @@
 package com.sap.core.odata.core.edm.provider;
 
 import java.io.Writer;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Locale;
 
@@ -215,10 +216,10 @@ public class EdmMetadata {
                 xmlStreamWriter.writeAttribute("Role", principal.getRole());
                 writeAnnotationAttributes(principal.getAnnotationAttributes(), xmlStreamWriter);
 
-                for(PropertyRef propertyRef : principal.getPropertyRefs()){
-                xmlStreamWriter.writeStartElement("PropertyRef");
-                xmlStreamWriter.writeAttribute("Name", propertyRef.getName());
-                xmlStreamWriter.writeEndElement();
+                for (PropertyRef propertyRef : principal.getPropertyRefs()) {
+                  xmlStreamWriter.writeStartElement("PropertyRef");
+                  xmlStreamWriter.writeAttribute("Name", propertyRef.getName());
+                  xmlStreamWriter.writeEndElement();
                 }
                 writeAnnotationElements(principal.getAnnotationElements(), xmlStreamWriter);
                 xmlStreamWriter.writeEndElement();
@@ -228,10 +229,10 @@ public class EdmMetadata {
                 xmlStreamWriter.writeAttribute("Role", dependent.getRole());
                 writeAnnotationAttributes(dependent.getAnnotationAttributes(), xmlStreamWriter);
 
-                for(PropertyRef propertyRef : dependent.getPropertyRefs()){
-                xmlStreamWriter.writeStartElement("PropertyRef");
-                xmlStreamWriter.writeAttribute("Name", propertyRef.getName());
-                xmlStreamWriter.writeEndElement();
+                for (PropertyRef propertyRef : dependent.getPropertyRefs()) {
+                  xmlStreamWriter.writeStartElement("PropertyRef");
+                  xmlStreamWriter.writeAttribute("Name", propertyRef.getName());
+                  xmlStreamWriter.writeEndElement();
                 }
                 writeAnnotationElements(dependent.getAnnotationElements(), xmlStreamWriter);
                 xmlStreamWriter.writeEndElement();
@@ -514,18 +515,26 @@ public class EdmMetadata {
 
   private static void writeAnnotationAttributes(Collection<AnnotationAttribute> annotationAttributes, XMLStreamWriter xmlStreamWriter) throws XMLStreamException {
     if (annotationAttributes != null) {
+      ArrayList<String> setNamespaces = new ArrayList<String>();
       for (AnnotationAttribute annotationAttribute : annotationAttributes) {
         xmlStreamWriter.writeAttribute(annotationAttribute.getPrefix(), annotationAttribute.getNamespace(), annotationAttribute.getName(), annotationAttribute.getText());
-        xmlStreamWriter.writeNamespace(annotationAttribute.getPrefix(), annotationAttribute.getNamespace());
+        if (!setNamespaces.contains(annotationAttribute.getNamespace())) {
+          xmlStreamWriter.writeNamespace(annotationAttribute.getPrefix(), annotationAttribute.getNamespace());
+          setNamespaces.add(annotationAttribute.getNamespace());
+        }
       }
     }
   }
 
   private static void writeAnnotationElements(Collection<AnnotationElement> annotationElements, XMLStreamWriter xmlStreamWriter) throws XMLStreamException {
     if (annotationElements != null) {
+      ArrayList<String> setNamespaces = new ArrayList<String>();
       for (AnnotationElement annotationElement : annotationElements) {
         xmlStreamWriter.writeStartElement(annotationElement.getPrefix(), annotationElement.getName(), annotationElement.getNamespace());
-        xmlStreamWriter.writeNamespace(annotationElement.getPrefix(), annotationElement.getNamespace());
+        if (!setNamespaces.contains(annotationElement.getNamespace())) {
+          xmlStreamWriter.writeNamespace(annotationElement.getPrefix(), annotationElement.getNamespace());
+          setNamespaces.add(annotationElement.getNamespace());
+        }
         xmlStreamWriter.writeCharacters(annotationElement.getXmlData());
         xmlStreamWriter.writeEndElement();
       }
