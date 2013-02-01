@@ -20,7 +20,7 @@ import com.sap.core.odata.processor.jpa.api.model.JPAEdmModelView;
 import com.sap.core.odata.processor.jpa.api.model.JPAEdmSchemaView;
 
 public class JPAEdmSchema extends JPAEdmBaseViewImpl implements
-JPAEdmSchemaView {
+		JPAEdmSchemaView {
 
 	private Schema schema;
 	private JPAEdmComplexTypeView complexTypeView;
@@ -149,27 +149,30 @@ JPAEdmSchemaView {
 					.getJPAEdmEntitySetView().getJPAEdmEntityTypeView()
 					.getConsistentEdmEntityTypes();
 			List<NavigationProperty> navigationProperties;
-			for (EntityType entityType : entityTypes) {
+			if (entityTypes != null && !entityTypes.isEmpty()) {
+				for (EntityType entityType : entityTypes) {
 
-				List<NavigationProperty> consistentNavigationProperties = null;
-				navigationProperties = entityType.getNavigationProperties();
-				if (navigationProperties != null) {
-					consistentNavigationProperties = new ArrayList<NavigationProperty>();
-					for (NavigationProperty navigationProperty : navigationProperties) {
-						if (existingAssociationList.contains(navigationProperty
-								.getRelationship().getName())) {
-							consistentNavigationProperties
-									.add(navigationProperty);
+					List<NavigationProperty> consistentNavigationProperties = null;
+					navigationProperties = entityType.getNavigationProperties();
+					if (navigationProperties != null) {
+						consistentNavigationProperties = new ArrayList<NavigationProperty>();
+						for (NavigationProperty navigationProperty : navigationProperties) {
+							if (existingAssociationList
+									.contains(navigationProperty
+											.getRelationship().getName())) {
+								consistentNavigationProperties
+										.add(navigationProperty);
+							}
 						}
+						if (consistentNavigationProperties.isEmpty())
+							entityType.setNavigationProperties(null);
+						else
+							entityType
+									.setNavigationProperties(consistentNavigationProperties);
 					}
-					if(consistentNavigationProperties.isEmpty())
-						entityType.setNavigationProperties(null);
-					else
-						entityType.setNavigationProperties(consistentNavigationProperties);
-				}
-				
-			}
 
+				}
+			}
 		}
 
 	}
