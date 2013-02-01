@@ -24,7 +24,6 @@ import com.sap.core.odata.processor.jpa.api.model.JPAEdmReferentialConstraintRol
 
 public class JPAEdmReferentialConstraintRole extends JPAEdmBaseViewImpl
 		implements JPAEdmReferentialConstraintRoleView {
-
 	/*
 	 * Static Buffer
 	 */
@@ -164,6 +163,11 @@ public class JPAEdmReferentialConstraintRole extends JPAEdmBaseViewImpl
 						}
 					}
 					currentRole.setPropertyRefs(propertyRefs);
+					if(propertyRefs.isEmpty())
+					{
+						isConsistent = false;
+						return;
+					}
 					AssociationEnd end = association.getEnd1();
 					if (end.getType().getName().equals(edmEntityType.getName())) {
 						currentRole.setRole(end.getRole());
@@ -222,5 +226,4 @@ public class JPAEdmReferentialConstraintRole extends JPAEdmBaseViewImpl
 			roleExists = true;
 		}
 	}
-
 }
