@@ -16,14 +16,14 @@ public class ComplexPropertyTest extends AbstractRefTest {
   @Test
   public void complexProperty() throws Exception {
     HttpResponse response = callUri("Employees('2')/Location/City/CityName/$value");
-    checkMediaType(response, HttpContentType.TEXT_PLAIN_UTF8, false);
+    checkMediaType(response, HttpContentType.TEXT_PLAIN_UTF8);
     assertEquals(CITY_2_NAME, getBody(response));
 
     response = callUri("Employees('2')/Location");
     checkMediaType(response, HttpContentType.APPLICATION_XML_UTF8);
     assertTrue(getBody(response).contains("PostalCode"));
 
-    // notFound("Employees('2')/Location()");
+    badRequest("Employees('2')/Location()");
     notFound("Employees('2')/Location/City/$value");
   }
 }

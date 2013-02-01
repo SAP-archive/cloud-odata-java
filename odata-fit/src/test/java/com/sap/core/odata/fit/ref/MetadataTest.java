@@ -1,6 +1,7 @@
 package com.sap.core.odata.fit.ref;
 
 import static org.custommonkey.xmlunit.XMLAssert.assertXpathExists;
+import static org.junit.Assert.assertTrue;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -11,11 +12,14 @@ import org.custommonkey.xmlunit.XMLUnit;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.sap.core.odata.api.commons.HttpContentType;
+import com.sap.core.odata.api.edm.Edm;
+
 /**
  * Tests employing the reference scenario reading the metadata document in XML format
  * @author SAP AG
  */
-public class ServiceMetadataTest extends AbstractRefTest {
+public class MetadataTest extends AbstractRefTest {
 
   private static String payload;
 
@@ -25,11 +29,24 @@ public class ServiceMetadataTest extends AbstractRefTest {
     payload = getBody(response);
 
     Map<String, String> prefixMap = new HashMap<String, String>();
-    prefixMap.put(null, "http://schemas.microsoft.com/ado/2008/09/edm");
-    prefixMap.put("edmx", "http://schemas.microsoft.com/ado/2007/06/edmx");
-    prefixMap.put("m", "http://schemas.microsoft.com/ado/2007/08/dataservices/metadata");
-    prefixMap.put("a", "http://schemas.microsoft.com/ado/2008/09/edm");
+    prefixMap.put(null, Edm.NAMESPACE_EDM_2008_09);
+    prefixMap.put("edmx", Edm.NAMESPACE_EDMX_2007_06);
+    prefixMap.put("m", Edm.NAMESPACE_M_2007_08);
+    prefixMap.put("a", Edm.NAMESPACE_EDM_2008_09);
     XMLUnit.setXpathNamespaceContext(new SimpleNamespaceContext(prefixMap));
+  }
+
+  @Test
+  public void metadataDocument() throws Exception {
+    final HttpResponse response = callUri("$metadata");
+    checkMediaType(response, HttpContentType.APPLICATION_XML_UTF8);
+    final String payload = getBody(response);
+    assertTrue(payload.contains("c_Location"));
+    assertTrue(payload.contains("c_City"));
+    assertTrue(payload.contains("Container1"));
+
+    notFound("$invalid");
+    badRequest("$metadata?$format=json");
   }
 
   @Test
