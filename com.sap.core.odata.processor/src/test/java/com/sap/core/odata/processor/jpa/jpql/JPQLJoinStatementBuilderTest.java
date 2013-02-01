@@ -37,6 +37,7 @@ public class JPQLJoinStatementBuilderTest {
 		EasyMock.expect(context.getJPAEntityAlias()).andStubReturn("mat");
 		EasyMock.expect(context.getJPAEntityName()).andStubReturn("SOHeader");
 		EasyMock.expect(context.getType()).andStubReturn(JPQLContextType.SELECT);
+		EasyMock.expect(context.getSelectExpression()).andStubReturn("mat");
 		EasyMock.expect(context.getWhereExpression()).andStubReturn("soh.buyerId = 2 AND soh.createdBy = 'Peter'");
 		HashMap<String, String> orderByMap = new HashMap<String, String>();
 		orderByMap.put("buyerId", "asc");
