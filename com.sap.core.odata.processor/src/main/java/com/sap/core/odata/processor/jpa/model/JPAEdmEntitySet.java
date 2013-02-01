@@ -64,7 +64,7 @@ public class JPAEdmEntitySet extends JPAEdmBaseViewImpl implements
 			entityTypeView = new JPAEdmEntityType(schemaView);
 			entityTypeView.getBuilder().build();
 
-			if (entityTypeView.isConsistent()) {
+			if (entityTypeView.isConsistent() && entityTypeView.getConsistentEdmEntityTypes() != null ) {
 
 				String nameSpace = schemaView.getEdmSchema().getNamespace();
 				for (EntityType entityType : entityTypeView
