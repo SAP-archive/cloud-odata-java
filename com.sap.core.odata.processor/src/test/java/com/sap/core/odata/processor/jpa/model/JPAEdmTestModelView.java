@@ -370,4 +370,16 @@ JPAEdmSchemaView
 		
 	}
 
+	@Override
+	public List<String> getNonKeyComplexTypeList() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void addNonKeyComplexName(String complexTypeName) {
+		// TODO Auto-generated method stub
+		
+	}
+
 }
