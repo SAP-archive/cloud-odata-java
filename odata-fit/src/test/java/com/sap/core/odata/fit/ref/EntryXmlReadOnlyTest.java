@@ -69,6 +69,6 @@ public class EntryXmlReadOnlyTest extends AbstractRefTest {
     checkMediaType(response, HttpContentType.APPLICATION_ATOM_XML_ENTRY_UTF8);
     assertTrue(getBody(response).contains(EMPLOYEE_6_NAME));
 
-    // notFound("Employees('2')/ne_Manager()");
+    badRequest("Employees('2')/ne_Manager()");
   }
 }

@@ -18,7 +18,7 @@ public class SimplePropertyTest extends AbstractRefTest {
   @Test
   public void simpleProperty() throws Exception {
     HttpResponse response = callUri("Employees('2')/Age/$value");
-    checkMediaType(response, HttpContentType.TEXT_PLAIN_UTF8, false);
+    checkMediaType(response, HttpContentType.TEXT_PLAIN_UTF8);
     assertEquals(EMPLOYEE_2_AGE, getBody(response));
 
     response = callUri("Employees('2')/Age");
@@ -26,7 +26,7 @@ public class SimplePropertyTest extends AbstractRefTest {
     assertTrue(getBody(response).contains(EMPLOYEE_2_AGE));
 
     response = callUri("Container2.Photos(Id=3,Type='image%2Fjpeg')/Image/$value");
-    checkMediaType(response, IMAGE_JPEG, false);
+    checkMediaType(response, IMAGE_JPEG);
     assertNotNull(getBody(response));
 
     response = callUri("Container2.Photos(Id=3,Type='image%2Fjpeg')/Image");
@@ -35,7 +35,7 @@ public class SimplePropertyTest extends AbstractRefTest {
     // assertTrue(getBody(response).contains("<d:Image m:MimeType=\"image/jpeg\""));
 
     response = callUri("Rooms('2')/Seats/$value");
-    checkMediaType(response, HttpContentType.TEXT_PLAIN_UTF8, false);
+    checkMediaType(response, HttpContentType.TEXT_PLAIN_UTF8);
     // checkEtag(response, "W/\"2\"");
     assertEquals("5", getBody(response));
 
@@ -45,7 +45,7 @@ public class SimplePropertyTest extends AbstractRefTest {
     assertTrue(getBody(response).contains("5</"));
 
     response = callUri("Container2.Photos(Id=3,Type='image%2Fjpeg')/BinaryData/$value");
-    checkMediaType(response, IMAGE_JPEG, false);
+    checkMediaType(response, IMAGE_JPEG);
     assertNotNull(getBody(response));
 
     response = callUri("Container2.Photos(Id=3,Type='image%2Fjpeg')/BinaryData");

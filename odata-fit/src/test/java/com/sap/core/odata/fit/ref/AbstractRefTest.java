@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import java.io.IOException;
 import java.net.URI;
 
 import org.apache.http.HttpEntityEnclosingRequest;
@@ -69,7 +70,7 @@ public class AbstractRefTest extends AbstractFitTest {
       final ODataHttpMethod httpMethod, final String uri,
       final String additionalHeader, final String additionalHeaderValue,
       final String requestBody, final String requestContentType,
-      final HttpStatusCodes expectedStatusCode) throws Exception {
+      final HttpStatusCodes expectedStatusCode) throws Exception, AssertionError {
 
     HttpRequestBase request =
         httpMethod == ODataHttpMethod.GET ? new HttpGet() :
@@ -102,82 +103,73 @@ public class AbstractRefTest extends AbstractFitTest {
     return response;
   }
 
-  protected HttpResponse callUri(final String uri, final String additionalHeader, final String additionalHeaderValue, final HttpStatusCodes expectedStatusCode) throws Exception {
+  protected HttpResponse callUri(final String uri, final String additionalHeader, final String additionalHeaderValue, final HttpStatusCodes expectedStatusCode) throws Exception, AssertionError {
     return callUri(ODataHttpMethod.GET, uri, additionalHeader, additionalHeaderValue, null, null, expectedStatusCode);
   }
 
-  protected HttpResponse callUri(final String uri, final String additionalHeader, final String additionalHeaderValue) throws Exception {
+  protected HttpResponse callUri(final String uri, final String additionalHeader, final String additionalHeaderValue) throws Exception, AssertionError {
     return callUri(ODataHttpMethod.GET, uri, additionalHeader, additionalHeaderValue, null, null, HttpStatusCodes.OK);
   }
 
-  protected HttpResponse callUri(final String uri, final HttpStatusCodes expectedStatusCode) throws Exception {
+  protected HttpResponse callUri(final String uri, final HttpStatusCodes expectedStatusCode) throws Exception, AssertionError {
     return callUri(uri, null, null, expectedStatusCode);
   }
 
-  protected HttpResponse callUri(final String uri) throws Exception {
+  protected HttpResponse callUri(final String uri) throws Exception, AssertionError {
     return callUri(uri, HttpStatusCodes.OK);
   }
 
-  protected void checkUri(final String uri) throws Exception {
+  protected void checkUri(final String uri) throws Exception, AssertionError {
     assertNotNull(getBody(callUri(uri)));
   }
 
-  protected void badRequest(final String uri) throws Exception {
+  protected void badRequest(final String uri) throws Exception, AssertionError {
     final HttpResponse response = callUri(uri, HttpStatusCodes.BAD_REQUEST);
     assertNotNull(getBody(response));
   }
 
-  protected void notFound(final String uri) throws Exception {
+  protected void notFound(final String uri) throws Exception, AssertionError {
     final HttpResponse response = callUri(uri, HttpStatusCodes.NOT_FOUND);
     assertNotNull(getBody(response));
   }
 
-  protected String getBody(final HttpResponse response) throws Exception {
+  protected void deleteUri(final String uri, final HttpStatusCodes expectedStatusCode) throws Exception, AssertionError {
+    final HttpResponse response = callUri(ODataHttpMethod.DELETE, uri, null, null, null, null, expectedStatusCode);
+    if (expectedStatusCode != HttpStatusCodes.NO_CONTENT)
+      response.getEntity().getContent().close();
+  }
+
+  protected void deleteUriOk(final String uri) throws Exception, AssertionError {
+    deleteUri(uri, HttpStatusCodes.NO_CONTENT);
+  }
+
+  protected HttpResponse postUri(final String uri, final String requestBody, final String requestContentType, final HttpStatusCodes expectedStatusCode) throws Exception, AssertionError {
+    return callUri(ODataHttpMethod.POST, uri, null, null, requestBody, requestContentType, expectedStatusCode);
+  }
+
+  protected void putUri(final String uri,
+      final String requestBody, final String requestContentType,
+      final HttpStatusCodes expectedStatusCode) throws Exception, AssertionError {
+    final HttpResponse response = callUri(ODataHttpMethod.PUT, uri, null, null, requestBody, requestContentType, expectedStatusCode);
+    if (expectedStatusCode != HttpStatusCodes.NO_CONTENT)
+      response.getEntity().getContent().close();
+  }
+
+  protected String getBody(final HttpResponse response) throws AssertionError, IOException {
     assertNotNull(response);
     assertNotNull(response.getEntity());
     assertNotNull(response.getEntity().getContent());
     return StringHelper.inputStreamToString(response.getEntity().getContent());
   }
 
-  protected void checkMediaType(final HttpResponse response, final String expectedMediaType) {
-    checkMediaType(response, expectedMediaType, true);
+  protected void checkMediaType(final HttpResponse response, final String expectedMediaType) throws AssertionError {
+    assertEquals(expectedMediaType, response.getFirstHeader(HttpHeaders.CONTENT_TYPE).getValue());
   }
 
-  protected void checkMediaType(final HttpResponse response, final String expectedMediaType, final boolean withDefaultCharset) {
-    String expected = expectedMediaType;
-    if (withDefaultCharset && !expectedMediaType.contains("charset=utf-8"))
-      expected += "; charset=utf-8";
-
-    assertEquals("MediaType was not expected (charset expected=[" + withDefaultCharset + "]).",
-        expected, response.getFirstHeader(HttpHeaders.CONTENT_TYPE).getValue());
-  }
-
-  protected void checkEtag(final HttpResponse response, final String expectedEtag) {
+  protected void checkEtag(final HttpResponse response, final String expectedEtag) throws AssertionError {
     assertNotNull(response.getFirstHeader(HttpHeaders.ETAG));
     final String entityTag = response.getFirstHeader(HttpHeaders.ETAG).getValue();
     assertNotNull(entityTag);
     assertEquals(expectedEtag, entityTag);
-  }
-
-  protected void deleteUri(final String uri, final HttpStatusCodes expectedStatusCode) throws Exception {
-    final HttpResponse response = callUri(ODataHttpMethod.DELETE, uri, null, null, null, null, expectedStatusCode);
-    if (expectedStatusCode != HttpStatusCodes.NO_CONTENT)
-      response.getEntity().getContent().close();
-  }
-
-  protected void deleteUriOk(final String uri) throws Exception {
-    deleteUri(uri, HttpStatusCodes.NO_CONTENT);
-  }
-
-  protected HttpResponse postUri(final String uri, final String requestBody, final String requestContentType, final HttpStatusCodes expectedStatusCode) throws Exception {
-    return callUri(ODataHttpMethod.POST, uri, null, null, requestBody, requestContentType, expectedStatusCode);
-  }
-
-  protected void putUri(final String uri,
-      final String requestBody, final String requestContentType,
-      final HttpStatusCodes expectedStatusCode) throws Exception {
-    final HttpResponse response = callUri(ODataHttpMethod.PUT, uri, null, null, requestBody, requestContentType, expectedStatusCode);
-    if (expectedStatusCode != HttpStatusCodes.NO_CONTENT)
-      response.getEntity().getContent().close();
   }
 }

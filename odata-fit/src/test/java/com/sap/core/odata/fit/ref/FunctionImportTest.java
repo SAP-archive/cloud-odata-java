@@ -23,7 +23,7 @@ public class FunctionImportTest extends AbstractRefTest {
     HttpResponse response;
 
     response = callUri("EmployeeSearch('1')/ne_Room/Id/$value?q='alter'");
-    checkMediaType(response, HttpContentType.TEXT_PLAIN_UTF8, false);
+    checkMediaType(response, HttpContentType.TEXT_PLAIN_UTF8);
     // checkEtag(response, "W/\"1\"");
     assertEquals("1", getBody(response));
 
@@ -57,14 +57,14 @@ public class FunctionImportTest extends AbstractRefTest {
     assertTrue(getBody(response).contains(EMPLOYEE_3_NAME));
 
     response = callUri("OldestEmployee?$format=xml");
-    // checkMediaType(response, ContentType.APPLICATION_XML, false);
+    // checkMediaType(response, HttpContentType.APPLICATION_XML_UTF8);
     assertTrue(getBody(response).contains(EMPLOYEE_3_NAME));
 
     badRequest("AllLocations/$count");
     badRequest("AllUsedRoomIds/$value");
     badRequest("MaximalAge()");
     badRequest("MostCommonLocation/City/CityName");
-    // notFound("ManagerPhoto");
+    badRequest("ManagerPhoto");
     badRequest("OldestEmployee()");
     notFound("ManagerPhoto?Id='2'");
   }

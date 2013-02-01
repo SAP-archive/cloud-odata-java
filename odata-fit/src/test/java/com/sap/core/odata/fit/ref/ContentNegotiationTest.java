@@ -48,7 +48,7 @@ public class ContentNegotiationTest extends AbstractRefTest {
   @Test
   public void contentTypeMetadata() throws Exception {
     final HttpResponse response = callUri("$metadata");
-    checkMediaType(response, HttpContentType.APPLICATION_XML_UTF8, false);
+    checkMediaType(response, HttpContentType.APPLICATION_XML_UTF8);
   }
 
   @Test
@@ -61,7 +61,7 @@ public class ContentNegotiationTest extends AbstractRefTest {
     final HttpResponse response = callUri("$metadata",
         HttpHeaders.ACCEPT, "text/html, application/xhtml+xml, application/xml;q=0.9, */*;q=0.8",
         HttpStatusCodes.OK);
-    checkMediaType(response, HttpContentType.APPLICATION_XML_UTF8, false);
+    checkMediaType(response, HttpContentType.APPLICATION_XML_UTF8);
   }
 
   @Test
@@ -84,7 +84,7 @@ public class ContentNegotiationTest extends AbstractRefTest {
   public void requestContentTypeDifferent() throws Exception {
     final HttpResponse response = postUri("Rooms",
         getBody(callUri("Rooms('1')")).replaceAll("<link.+?/>", ""),
-        HttpContentType.APPLICATION_XML_UTF8,
+        HttpContentType.APPLICATION_XML,
         HttpStatusCodes.CREATED);
     checkMediaType(response, HttpContentType.APPLICATION_ATOM_XML_ENTRY_UTF8);
     assertTrue(getBody(response).length() > 100);

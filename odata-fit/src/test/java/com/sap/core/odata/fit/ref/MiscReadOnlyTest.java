@@ -56,17 +56,17 @@ public class MiscReadOnlyTest extends AbstractRefTest {
   @Test
   public void mediaResource() throws Exception {
     HttpResponse response = callUri("Employees('3')/$value");
-    checkMediaType(response, IMAGE_JPEG, false);
+    checkMediaType(response, IMAGE_JPEG);
     assertNull(response.getFirstHeader(HttpHeaders.ETAG));
     assertNotNull(getBody(response));
 
     response = callUri("Managers('1')/$value");
-    checkMediaType(response, IMAGE_JPEG, false);
+    checkMediaType(response, IMAGE_JPEG);
     assertNull(response.getFirstHeader(HttpHeaders.ETAG));
     final String expected = getBody(response);
 
     response = callUri("Employees('2')/ne_Manager/$value");
-    checkMediaType(response, IMAGE_JPEG, false);
+    checkMediaType(response, IMAGE_JPEG);
     assertNull(response.getFirstHeader(HttpHeaders.ETAG));
     assertEquals(expected, getBody(response));
 

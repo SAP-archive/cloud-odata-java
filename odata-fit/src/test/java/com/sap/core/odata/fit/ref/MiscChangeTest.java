@@ -66,13 +66,13 @@ public class MiscChangeTest extends AbstractRefTest {
     final String url = "Managers('1')/$value";
     putUri(url, "00", HttpContentType.APPLICATION_OCTET_STREAM, HttpStatusCodes.NO_CONTENT);
     final HttpResponse response = callUri(url);
-    checkMediaType(response, HttpContentType.APPLICATION_OCTET_STREAM, false);
+    checkMediaType(response, HttpContentType.APPLICATION_OCTET_STREAM);
     assertEquals("00", getBody(response));
   }
 
   @Test
   public void updatePropertyValue() throws Exception {
-    putUri("Employees('2')/Age/$value", "42", HttpContentType.TEXT_PLAIN_UTF8, HttpStatusCodes.NO_CONTENT);
+    putUri("Employees('2')/Age/$value", "42", HttpContentType.TEXT_PLAIN, HttpStatusCodes.NO_CONTENT);
 
     String url = "Container2.Photos(Id=3,Type='image%2Fjpeg')/Image/$value";
     callUri(ODataHttpMethod.PUT, url, HttpHeaders.ETAG, "W/\"3\"", "4711", HttpContentType.APPLICATION_OCTET_STREAM, HttpStatusCodes.NO_CONTENT);
@@ -84,11 +84,11 @@ public class MiscChangeTest extends AbstractRefTest {
 
     final String content = "2012-02-29T00:00:00";
     url = "Employees('2')/EntryDate/$value";
-    putUri(url, content, HttpContentType.TEXT_PLAIN_UTF8, HttpStatusCodes.NO_CONTENT);
+    putUri(url, content, HttpContentType.TEXT_PLAIN, HttpStatusCodes.NO_CONTENT);
     assertEquals(content, getBody(callUri(url)));
 
-    putUri("Employees('2')/EmployeeId/$value", "42", HttpContentType.TEXT_PLAIN_UTF8, HttpStatusCodes.METHOD_NOT_ALLOWED);
-    // putUri("Employees('2')/Age/$value", "42a", HttpContentType.TEXT_PLAIN_UTF8, HttpStatusCodes.BAD_REQUEST);
-    // putUri(url, "2000-13-78T42:19:18z", HttpContentType.TEXT_PLAIN_UTF8, HttpStatusCodes.BAD_REQUEST);
+    putUri("Employees('2')/EmployeeId/$value", "42", HttpContentType.TEXT_PLAIN, HttpStatusCodes.METHOD_NOT_ALLOWED);
+    // putUri("Employees('2')/Age/$value", "42a", HttpContentType.TEXT_PLAIN, HttpStatusCodes.BAD_REQUEST);
+    // putUri(url, "2000-13-78T42:19:18z", HttpContentType.TEXT_PLAIN, HttpStatusCodes.BAD_REQUEST);
   }
 }
