@@ -222,10 +222,10 @@ public class JPAResultParserTest {
 					"getGetterName", EdmProperty.class);
 			getGetterName.setAccessible(true);
 
-			String name = (String) getGetterName.invoke(resultParser,
+			getGetterName.invoke(resultParser,
 					edmProperty);
 
-			assertNull(name);
+			fail("Exception expected");
 
 		} catch (EdmException e) {
 			fail("Exception " + e.getMessage() + " not expected");
@@ -234,7 +234,7 @@ public class JPAResultParserTest {
 		} catch (IllegalArgumentException e) {
 			fail("Exception " + e.getMessage() + " not expected");
 		} catch (InvocationTargetException e) {
-			fail("Exception " + e.getMessage() + " not expected");
+			assertTrue(true);
 		} catch (NoSuchMethodException e) {
 			fail("Exception " + e.getMessage() + " not expected");
 		} catch (SecurityException e) {

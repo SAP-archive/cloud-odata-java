@@ -1,8 +1,8 @@
 package com.sap.core.odata.processor.jpa.jpql;
 
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,7 +23,6 @@ import com.sap.core.odata.api.edm.EdmEntitySet;
 import com.sap.core.odata.api.edm.EdmEntityType;
 import com.sap.core.odata.api.edm.EdmException;
 import com.sap.core.odata.api.edm.EdmProperty;
-import com.sap.core.odata.api.edm.provider.EdmProvider;
 import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.api.uri.KeyPredicate;
 import com.sap.core.odata.api.uri.NavigationSegment;
@@ -211,6 +210,7 @@ public class JPQLBuilderFactoryTest {
 				return null;
 			}
 			
+			@SuppressWarnings("rawtypes")
 			@Override
 			public EntityManager createEntityManager(Map arg0) {
 				// TODO Auto-generated method stub
@@ -282,6 +282,7 @@ public class JPQLBuilderFactoryTest {
 				return null;
 			}
 			
+			@SuppressWarnings("rawtypes")
 			@Override
 			public EntityManager createEntityManager(Map arg0) {
 				// TODO Auto-generated method stub
