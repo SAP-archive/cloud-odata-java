@@ -101,10 +101,10 @@ public interface EdmSimpleType extends EdmType {
   public String valueToString(Object value, EdmLiteralKind literalKind, EdmFacets facets) throws EdmSimpleTypeException;
 
   /**
-   * Converts literal representation to URI literal representation.
+   * Converts default literal representation to URI literal representation.
    *
    * @param literal  the literal in default representation
-   * @return URI literal representation as URI-encoded String
+   * @return URI literal representation as String
    */
   public String toUriLiteral(String literal) throws EdmSimpleTypeException;
 }
