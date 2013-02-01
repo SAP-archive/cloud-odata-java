@@ -5,6 +5,16 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertNull;
 
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+
+import javax.persistence.Cache;
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.PersistenceUnitUtil;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.metamodel.Metamodel;
 
 import org.easymock.EasyMock;
 import org.junit.Test;
@@ -13,11 +23,16 @@ import com.sap.core.odata.api.edm.EdmEntitySet;
 import com.sap.core.odata.api.edm.EdmEntityType;
 import com.sap.core.odata.api.edm.EdmException;
 import com.sap.core.odata.api.edm.EdmProperty;
+import com.sap.core.odata.api.edm.provider.EdmProvider;
 import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.api.uri.KeyPredicate;
+import com.sap.core.odata.api.uri.NavigationSegment;
 import com.sap.core.odata.api.uri.expression.OrderByExpression;
 import com.sap.core.odata.api.uri.info.GetEntitySetUriInfo;
 import com.sap.core.odata.api.uri.info.GetEntityUriInfo;
+import com.sap.core.odata.processor.jpa.ODataJPAContextImpl;
+import com.sap.core.odata.processor.jpa.api.factory.JPAAccessFactory;
+import com.sap.core.odata.processor.jpa.api.factory.ODataJPAAccessFactory;
 import com.sap.core.odata.processor.jpa.api.jpql.JPQLContext;
 import com.sap.core.odata.processor.jpa.api.jpql.JPQLContext.JPQLContextBuilder;
 import com.sap.core.odata.processor.jpa.api.jpql.JPQLContextType;
@@ -53,6 +68,34 @@ public class JPQLBuilderFactoryTest {
 		JPQLStatementBuilder statementBuilder = new ODataJPAFactoryImpl().getJPQLBuilderFactory().getStatementBuilder(selectContext);
 		
 		assertTrue(statementBuilder instanceof JPQLSelectSingleStatementBuilder);
+				
+	}
+	
+	@Test
+	public void testGetStatementBuilderFactoryforJoinSelect() throws ODataException{
+		
+		GetEntitySetUriInfo getEntitySetView = getUriInfo();
+		
+		// Build JPQL Context
+		JPQLContext selectContext = JPQLContext.createBuilder(
+				JPQLContextType.JOIN, getEntitySetView).build();
+		JPQLStatementBuilder statementBuilder = new ODataJPAFactoryImpl().getJPQLBuilderFactory().getStatementBuilder(selectContext);
+		
+		assertTrue(statementBuilder instanceof JPQLJoinStatementBuilder);
+				
+	}
+	
+	@Test
+	public void testGetStatementBuilderFactoryforJoinSelectSingle() throws ODataException{
+		
+		GetEntityUriInfo getEntityView = getEntityUriInfo();
+		
+		// Build JPQL Context
+		JPQLContext selectContext = JPQLContext.createBuilder(
+				JPQLContextType.JOIN_SINGLE, getEntityView).build();
+		JPQLStatementBuilder statementBuilder = new ODataJPAFactoryImpl().getJPQLBuilderFactory().getStatementBuilder(selectContext);
+		
+		assertTrue(statementBuilder instanceof JPQLJoinSelectSingleStatementBuilder);
 				
 	}
 	
@@ -99,6 +142,8 @@ public class JPQLBuilderFactoryTest {
 		EasyMock.expect(getEntitySetView.getOrderBy()).andStubReturn(orderByExpression);
 		EasyMock.expect(getEntitySetView.getSelect()).andStubReturn(null);
 		EasyMock.expect(getEntitySetView.getFilter()).andStubReturn(null);
+		List<NavigationSegment> navigationSegments = new ArrayList<NavigationSegment>();
+		EasyMock.expect(getEntitySetView.getNavigationSegments()).andStubReturn(navigationSegments);
 		EasyMock.replay(getEntitySetView);
 		EasyMock.expect(edmEntitySet.getEntityType()).andStubReturn(edmEntityType);
 		EasyMock.replay(edmEntitySet);
@@ -116,9 +161,153 @@ public class JPQLBuilderFactoryTest {
 		EasyMock.expect(getEntityView.getTargetEntitySet()).andStubReturn(edmEntitySet);
 		EasyMock.replay(edmEntityType,edmEntitySet);
 		EasyMock.expect(getEntityView.getKeyPredicates()).andStubReturn(new ArrayList<KeyPredicate>());
+		List<NavigationSegment> navigationSegments = new ArrayList<NavigationSegment>();
+		EasyMock.expect(getEntityView.getNavigationSegments()).andStubReturn(navigationSegments);
 		EasyMock.replay(getEntityView);
 		return getEntityView;
 	}
 
+	@Test
+	public void testJPAAccessFactory(){
+		ODataJPAFactoryImpl  oDataJPAFactoryImpl = new ODataJPAFactoryImpl();
+		JPAAccessFactory jpaAccessFactory = oDataJPAFactoryImpl.getJPAAccessFactory();
+		ODataJPAContextImpl oDataJPAContextImpl = new ODataJPAContextImpl();
+		
+		EntityManagerFactory emf = new EntityManagerFactory() {
+			
+			@Override
+			public boolean isOpen() {
+				// TODO Auto-generated method stub
+				return false;
+			}
+			
+			@Override
+			public Map<String, Object> getProperties() {
+				// TODO Auto-generated method stub
+				return null;
+			}
+			
+			@Override
+			public PersistenceUnitUtil getPersistenceUnitUtil() {
+				// TODO Auto-generated method stub
+				return null;
+			}
+			
+			@Override
+			public Metamodel getMetamodel() {
+				// TODO Auto-generated method stub
+				return null;
+			}
+			
+			@Override
+			public CriteriaBuilder getCriteriaBuilder() {
+				// TODO Auto-generated method stub
+				return null;
+			}
+			
+			@Override
+			public Cache getCache() {
+				// TODO Auto-generated method stub
+				return null;
+			}
+			
+			@Override
+			public EntityManager createEntityManager(Map arg0) {
+				// TODO Auto-generated method stub
+				return null;
+			}
+			
+			@Override
+			public EntityManager createEntityManager() {
+				// TODO Auto-generated method stub
+				return null;
+			}
+			
+			@Override
+			public void close() {
+				// TODO Auto-generated method stub
+				
+			}
+		};
+		oDataJPAContextImpl.setEntityManagerFactory(emf );
+		oDataJPAContextImpl.setPersistenceUnitName("pUnit");
+		
+		assertNotNull(jpaAccessFactory.getJPAProcessor(oDataJPAContextImpl));
+		assertNotNull(jpaAccessFactory.getJPAEdmModelView(oDataJPAContextImpl));
+		
+	}
 
+	@Test
+	public void testOdataJpaAccessFactory(){
+
+		ODataJPAFactoryImpl  oDataJPAFactoryImpl = new ODataJPAFactoryImpl();
+		ODataJPAAccessFactory jpaAccessFactory = oDataJPAFactoryImpl.getODataJPAAccessFactory();
+		ODataJPAContextImpl oDataJPAContextImpl = new ODataJPAContextImpl();
+		
+		EntityManagerFactory emf = new EntityManagerFactory() {
+			
+			@Override
+			public boolean isOpen() {
+				// TODO Auto-generated method stub
+				return false;
+			}
+			
+			@Override
+			public Map<String, Object> getProperties() {
+				// TODO Auto-generated method stub
+				return null;
+			}
+			
+			@Override
+			public PersistenceUnitUtil getPersistenceUnitUtil() {
+				// TODO Auto-generated method stub
+				return null;
+			}
+			
+			@Override
+			public Metamodel getMetamodel() {
+				// TODO Auto-generated method stub
+				return null;
+			}
+			
+			@Override
+			public CriteriaBuilder getCriteriaBuilder() {
+				// TODO Auto-generated method stub
+				return null;
+			}
+			
+			@Override
+			public Cache getCache() {
+				// TODO Auto-generated method stub
+				return null;
+			}
+			
+			@Override
+			public EntityManager createEntityManager(Map arg0) {
+				// TODO Auto-generated method stub
+				return null;
+			}
+			
+			@Override
+			public EntityManager createEntityManager() {
+				// TODO Auto-generated method stub
+				return null;
+			}
+			
+			@Override
+			public void close() {
+				// TODO Auto-generated method stub
+				
+			}
+		};
+		oDataJPAContextImpl.setEntityManagerFactory(emf );
+		oDataJPAContextImpl.setPersistenceUnitName("pUnit");
+		
+		assertNotNull(jpaAccessFactory.getODataJPAMessageService(new Locale("en")));
+		assertNotNull(jpaAccessFactory.createODataJPAContext());
+		assertNotNull(jpaAccessFactory.createJPAEdmProvider(oDataJPAContextImpl));
+		assertNotNull(jpaAccessFactory.createODataProcessor(oDataJPAContextImpl));
+		
+	
+	}
 }

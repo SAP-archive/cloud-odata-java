@@ -11,7 +11,6 @@ import java.util.List;
 import org.easymock.EasyMock;
 import org.junit.After;
 import org.junit.AfterClass;
-import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -45,14 +44,14 @@ public class JPQLJoinSelectSingleContextTest {
 	public static void tearDownAfterClass() throws Exception {
 	}
 
-	@Before
-	public void setUp() throws Exception {
+	public void setUp(boolean toThrowException) throws Exception {
 		entityUriInfo = EasyMock.createMock(GetEntityUriInfo.class);
 		EdmEntitySet edmEntitySet = EasyMock.createMock(EdmEntitySet.class);
 		EdmEntityType edmEntityType = EasyMock.createMock(EdmEntityType.class);
 		List<NavigationSegment> navigationSegments = new ArrayList<NavigationSegment>();
-		final EdmNavigationProperty navigationProperty = createNavigationProperty();
-		final List<KeyPredicate> keyPredicates = createKeyPredicates();
+		final EdmNavigationProperty navigationProperty = createNavigationProperty("a");
+		final EdmNavigationProperty navigationProperty1 = createNavigationProperty("b");
+		final List<KeyPredicate> keyPredicates = createKeyPredicates(toThrowException);
 		NavigationSegment navigationSegment = new NavigationSegment() {
 			
 			@Override
@@ -71,11 +70,30 @@ public class JPQLJoinSelectSingleContextTest {
 				return null;
 			}
 		};
+		NavigationSegment navigationSegment1 = new NavigationSegment() {
+			
+			@Override
+			public EdmNavigationProperty getNavigationProperty() {
+				return navigationProperty1;
+			}
+			
+			@Override
+			public List<KeyPredicate> getKeyPredicates() {
+				return keyPredicates;
+			}
+			
+			@Override
+			public EdmEntitySet getEntitySet() {
+				// TODO Auto-generated method stub
+				return null;
+			}
+		};
 		navigationSegments.add(navigationSegment);
+		navigationSegments.add(navigationSegment1);
 		EasyMock.expect(entityUriInfo.getNavigationSegments()).andStubReturn(navigationSegments);
 		EasyMock.expect(entityUriInfo.getSelect()).andStubReturn(null);
 		EasyMock.expect(entityUriInfo.getFilter()).andStubReturn(null);
-		EasyMock.expect(entityUriInfo.getKeyPredicates()).andStubReturn(createKeyPredicates());
+		EasyMock.expect(entityUriInfo.getKeyPredicates()).andStubReturn(createKeyPredicates(toThrowException));
 		EasyMock.expect(entityUriInfo
 							.getTargetEntitySet()).andStubReturn(edmEntitySet);
 		EasyMock.expect(edmEntitySet.getEntityType()).andStubReturn(edmEntityType);
@@ -89,7 +107,9 @@ public class JPQLJoinSelectSingleContextTest {
 	}
 
 	@Test
-	public void testGetJPAOuterJoinClauses() {
+	public void testGetJPAOuterJoinClauses() throws Exception {
+		setUp(false);
+		
 		JPQLJoinSelectSingleContext joinContext = new JPQLJoinSelectSingleContext();
 		JPQLJoinSelectSingleContextBuilder joinContextBuilder = joinContext.new JPQLJoinSelectSingleContextBuilder();
 		try { 
@@ -104,36 +124,52 @@ public class JPQLJoinSelectSingleContextTest {
 		assertNotNull(joinClauses);
 		assertTrue(joinClauses.size() > 0);
 		assertEquals(joinClauses.get(0).getEntityAlias(), "E1");
-		assertEquals(joinClauses.get(0).getEntityName(), "sItem");
-		assertEquals(joinClauses.get(0).getEntityRelationShip(), "s_Item");
+		assertEquals(joinClauses.get(0).getEntityName(), "sItema");
+		assertEquals(joinClauses.get(0).getEntityRelationShip(), "s_Itema");
 		assertEquals(joinClauses.get(0).getEntityRelationShipAlias(), "R1");
 	}
 	
-	private EdmNavigationProperty createNavigationProperty() throws EdmException{
+	@Test
+	public void testExceptionThrown() throws Exception{
+		setUp(true);		
+		JPQLJoinSelectSingleContext joinContext = new JPQLJoinSelectSingleContext();
+		JPQLJoinSelectSingleContextBuilder joinContextBuilder = joinContext.new JPQLJoinSelectSingleContextBuilder();
+		try { 
+			joinContextBuilder.entityView = entityUriInfo;
+			joinContextBuilder.build();
+			fail("Should not come here");
+		} catch (ODataJPAModelException e) {
+			fail("Should not come here");
+		} catch (ODataJPARuntimeException e) {
+			assertTrue(true);
+		}
+	}
+	
+	private EdmNavigationProperty createNavigationProperty(String z) throws EdmException{
 		EdmNavigationProperty navigationProperty = EasyMock.createMock(EdmNavigationProperty.class);
 		EdmAssociation association = EasyMock.createMock(EdmAssociation.class);
 		EdmAssociationEnd associationEnd = EasyMock.createMock(EdmAssociationEnd.class);
-		EasyMock.expect(navigationProperty.getFromRole()).andStubReturn("roleA");
-		EasyMock.expect(navigationProperty.getToRole()).andStubReturn("roleB");
-		EasyMock.expect(navigationProperty.getName()).andStubReturn("navP");
-		EasyMock.expect(navigationProperty.getName()).andStubReturn("navP");
+		EasyMock.expect(navigationProperty.getFromRole()).andStubReturn("roleA"+z);
+		EasyMock.expect(navigationProperty.getToRole()).andStubReturn("roleB"+z);
+		EasyMock.expect(navigationProperty.getName()).andStubReturn("navP"+z);
+		EasyMock.expect(navigationProperty.getName()).andStubReturn("navP"+z);
 		EasyMock.expect(navigationProperty.getMultiplicity()).andStubReturn(EdmMultiplicity.ONE);
 		EdmEntityType edmEntityType = EasyMock.createMock(EdmEntityType.class);
 		EdmMapping edmMapping = EasyMock.createMock(EdmMapping.class);
-		EasyMock.expect(edmMapping.getInternalName()).andStubReturn("sItem");
+		EasyMock.expect(edmMapping.getInternalName()).andStubReturn("sItem"+z);
 		EasyMock.expect(edmEntityType.getMapping()).andStubReturn(edmMapping );
-		EasyMock.expect(edmEntityType.getName()).andStubReturn("soItem");
+		EasyMock.expect(edmEntityType.getName()).andStubReturn("soItem"+z);
 		EasyMock.expect(associationEnd.getEntityType()).andStubReturn(edmEntityType );
-		EasyMock.expect(association.getEnd("roleA")).andStubReturn(associationEnd);
+		EasyMock.expect(association.getEnd("roleA"+z)).andStubReturn(associationEnd);
 		EasyMock.expect(navigationProperty.getRelationship()).andStubReturn(association);
 		EdmMapping edmMapping1 = EasyMock.createMock(EdmMapping.class);
-		EasyMock.expect(edmMapping1.getInternalName()).andStubReturn("s_Item");
+		EasyMock.expect(edmMapping1.getInternalName()).andStubReturn("s_Item"+z);
 		EasyMock.expect(navigationProperty.getMapping()).andStubReturn(edmMapping1 );
 		EasyMock.replay(edmMapping, edmMapping1, edmEntityType, associationEnd, association, navigationProperty);
 		return navigationProperty;
 	}
 	
-	private List<KeyPredicate> createKeyPredicates() throws EdmException {
+	private List<KeyPredicate> createKeyPredicates(boolean toThrowException) throws EdmException {
 		KeyPredicate keyPredicate = EasyMock.createMock(KeyPredicate.class);
 		EasyMock.expect(keyPredicate.getLiteral()).andStubReturn("1");
 		EdmProperty edmProperty = EasyMock.createMock(EdmProperty.class);
@@ -142,7 +178,8 @@ public class JPQLJoinSelectSingleContextTest {
 		EasyMock.expect(edmProperty.getMapping()).andStubReturn(edmMapping );
 		EasyMock.expect(edmProperty.getName()).andStubReturn("soid");
 		EdmSimpleType edmType = EasyMock.createMock(EdmSimpleType.class);
-		EasyMock.expect(edmProperty.getType()).andStubReturn(edmType );
+		if(toThrowException) EasyMock.expect(edmProperty.getType()).andStubThrow(new EdmException(null));
+		else EasyMock.expect(edmProperty.getType()).andStubReturn(edmType );
 		EasyMock.expect(keyPredicate.getProperty()).andStubReturn(edmProperty );
 		
 		EasyMock.replay(edmType, edmMapping, edmProperty, keyPredicate);
