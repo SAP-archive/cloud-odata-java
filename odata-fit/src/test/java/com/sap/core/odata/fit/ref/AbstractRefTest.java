@@ -4,7 +4,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-import java.io.IOException;
 import java.net.URI;
 
 import org.apache.http.HttpEntityEnclosingRequest;
@@ -21,6 +20,7 @@ import org.apache.http.entity.StringEntity;
 import com.sap.core.odata.api.commons.HttpStatusCodes;
 import com.sap.core.odata.api.edm.provider.EdmProvider;
 import com.sap.core.odata.api.processor.ODataSingleProcessor;
+import com.sap.core.odata.core.commons.ContentType;
 import com.sap.core.odata.core.commons.ODataHttpMethod;
 import com.sap.core.odata.core.processor.ODataSingleProcessorService;
 import com.sap.core.odata.ref.edm.ScenarioEdmProvider;
@@ -70,7 +70,7 @@ public class AbstractRefTest extends AbstractFitTest {
       final ODataHttpMethod httpMethod, final String uri,
       final String additionalHeader, final String additionalHeaderValue,
       final String requestBody, final String requestContentType,
-      final HttpStatusCodes expectedStatusCode) throws Exception, AssertionError {
+      final HttpStatusCodes expectedStatusCode) throws Exception {
 
     HttpRequestBase request =
         httpMethod == ODataHttpMethod.GET ? new HttpGet() :
@@ -103,34 +103,61 @@ public class AbstractRefTest extends AbstractFitTest {
     return response;
   }
 
-  protected HttpResponse callUri(final String uri, final String additionalHeader, final String additionalHeaderValue, final HttpStatusCodes expectedStatusCode) throws Exception, AssertionError {
+  protected HttpResponse callUri(final String uri, final String additionalHeader, final String additionalHeaderValue, final HttpStatusCodes expectedStatusCode) throws Exception {
     return callUri(ODataHttpMethod.GET, uri, additionalHeader, additionalHeaderValue, null, null, expectedStatusCode);
   }
 
-  protected HttpResponse callUri(final String uri, final String additionalHeader, final String additionalHeaderValue) throws Exception, AssertionError {
+  protected HttpResponse callUri(final String uri, final String additionalHeader, final String additionalHeaderValue) throws Exception {
     return callUri(ODataHttpMethod.GET, uri, additionalHeader, additionalHeaderValue, null, null, HttpStatusCodes.OK);
   }
 
-  protected HttpResponse callUri(final String uri, final HttpStatusCodes expectedStatusCode) throws Exception, AssertionError {
+  protected HttpResponse callUri(final String uri, final HttpStatusCodes expectedStatusCode) throws Exception {
     return callUri(uri, null, null, expectedStatusCode);
   }
 
-  protected HttpResponse callUri(final String uri) throws Exception, AssertionError {
+  protected HttpResponse callUri(final String uri) throws Exception {
     return callUri(uri, HttpStatusCodes.OK);
   }
 
-  protected void checkUri(final String uri) throws Exception, AssertionError {
+  protected void checkUri(final String uri) throws Exception {
     assertNotNull(getBody(callUri(uri)));
   }
 
-  protected void badRequest(final String uri) throws Exception, AssertionError {
+  protected void badRequest(final String uri) throws Exception {
     final HttpResponse response = callUri(uri, HttpStatusCodes.BAD_REQUEST);
     assertNotNull(getBody(response));
   }
 
-  protected void notFound(final String uri) throws Exception, AssertionError {
+  protected void notFound(final String uri) throws Exception {
     final HttpResponse response = callUri(uri, HttpStatusCodes.NOT_FOUND);
     assertNotNull(getBody(response));
+  }
+
+  protected String getBody(final HttpResponse response) throws Exception {
+    assertNotNull(response);
+    assertNotNull(response.getEntity());
+    assertNotNull(response.getEntity().getContent());
+    return StringHelper.inputStreamToString(response.getEntity().getContent());
+  }
+
+  protected void checkMediaType(final HttpResponse response, final String expectedMediaType) {
+    checkMediaType(response, expectedMediaType, true);
+  }
+
+  protected void checkMediaType(final HttpResponse response, final String expectedMediaType, final boolean withDefaultCharset) {
+    ContentType expected = ContentType.create(expectedMediaType);
+    if (withDefaultCharset && !expectedMediaType.contains("charset=utf-8")) {
+      expected = ContentType.create(expected, ContentType.PARAMETER_CHARSET, ContentType.CHARSET_UTF_8);
+    }
+    assertEquals("MediaType was not expected (charset expected=[" + withDefaultCharset + "]).",
+        expected.toContentTypeString(), response.getFirstHeader(HttpHeaders.CONTENT_TYPE).getValue());
+  }
+
+  protected void checkEtag(final HttpResponse response, final String expectedEtag) {
+    assertNotNull(response.getFirstHeader(HttpHeaders.ETAG));
+    final String entityTag = response.getFirstHeader(HttpHeaders.ETAG).getValue();
+    assertNotNull(entityTag);
+    assertEquals(expectedEtag, entityTag);
   }
 
   protected void deleteUri(final String uri, final HttpStatusCodes expectedStatusCode) throws Exception, AssertionError {
@@ -139,37 +166,19 @@ public class AbstractRefTest extends AbstractFitTest {
       response.getEntity().getContent().close();
   }
 
-  protected void deleteUriOk(final String uri) throws Exception, AssertionError {
+  protected void deleteUriOk(final String uri) throws Exception {
     deleteUri(uri, HttpStatusCodes.NO_CONTENT);
   }
 
-  protected HttpResponse postUri(final String uri, final String requestBody, final String requestContentType, final HttpStatusCodes expectedStatusCode) throws Exception, AssertionError {
+  protected HttpResponse postUri(final String uri, final String requestBody, final String requestContentType, final HttpStatusCodes expectedStatusCode) throws Exception {
     return callUri(ODataHttpMethod.POST, uri, null, null, requestBody, requestContentType, expectedStatusCode);
   }
 
   protected void putUri(final String uri,
       final String requestBody, final String requestContentType,
-      final HttpStatusCodes expectedStatusCode) throws Exception, AssertionError {
+      final HttpStatusCodes expectedStatusCode) throws Exception {
     final HttpResponse response = callUri(ODataHttpMethod.PUT, uri, null, null, requestBody, requestContentType, expectedStatusCode);
     if (expectedStatusCode != HttpStatusCodes.NO_CONTENT)
       response.getEntity().getContent().close();
-  }
-
-  protected String getBody(final HttpResponse response) throws AssertionError, IOException {
-    assertNotNull(response);
-    assertNotNull(response.getEntity());
-    assertNotNull(response.getEntity().getContent());
-    return StringHelper.inputStreamToString(response.getEntity().getContent());
-  }
-
-  protected void checkMediaType(final HttpResponse response, final String expectedMediaType) throws AssertionError {
-    assertEquals(expectedMediaType, response.getFirstHeader(HttpHeaders.CONTENT_TYPE).getValue());
-  }
-
-  protected void checkEtag(final HttpResponse response, final String expectedEtag) throws AssertionError {
-    assertNotNull(response.getFirstHeader(HttpHeaders.ETAG));
-    final String entityTag = response.getFirstHeader(HttpHeaders.ETAG).getValue();
-    assertNotNull(entityTag);
-    assertEquals(expectedEtag, entityTag);
   }
 }

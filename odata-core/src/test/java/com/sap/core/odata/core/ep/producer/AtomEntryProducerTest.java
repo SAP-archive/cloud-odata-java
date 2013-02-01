@@ -74,7 +74,7 @@ public class AtomEntryProducerTest extends AbstractProviderTest {
   private String verifyResponse(ODataResponse response) throws IOException {
     assertNotNull(response);
     assertNotNull(response.getEntity());
-    assertEquals(ContentType.APPLICATION_ATOM_XML_ENTRY.toString() + "; charset=utf-8", response.getContentHeader());
+    assertEquals(ContentType.APPLICATION_ATOM_XML_ENTRY_CS_UTF_8.toContentTypeString(), response.getContentHeader());
     String xmlString = StringHelper.inputStreamToString((InputStream) response.getEntity());
     return xmlString;
   }
@@ -295,7 +295,7 @@ public class AtomEntryProducerTest extends AbstractProviderTest {
 
     assertNotNull(response);
     assertNotNull(response.getEntity());
-    assertEquals(ContentType.APPLICATION_ATOM_XML_ENTRY.toString() + "; charset=utf-8", response.getContentHeader());
+    assertEquals(ContentType.APPLICATION_ATOM_XML_ENTRY_CS_UTF_8.toContentTypeString(), response.getContentHeader());
     assertEquals("W/\"<\">\"", response.getETag());
 
     String xmlString = StringHelper.inputStreamToString((InputStream) response.getEntity());

@@ -98,7 +98,7 @@ public class FunctionImportTest extends AbstractProviderTest {
     final ODataResponse response = createAtomEntityProvider().writeFunctionImport(functionImport, employeeData, DEFAULT_PROPERTIES);
     assertNotNull(response);
     assertNotNull(response.getEntity());
-    assertEquals(ContentType.APPLICATION_ATOM_XML_ENTRY.toString() + "; charset=utf-8", response.getContentHeader());
+    assertEquals(ContentType.APPLICATION_ATOM_XML_ENTRY_CS_UTF_8.toContentTypeString(), response.getContentHeader());
 
     final String xml = StringHelper.inputStreamToString((InputStream) response.getEntity());
     assertNotNull(xml);

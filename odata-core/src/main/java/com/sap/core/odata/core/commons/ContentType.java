@@ -33,6 +33,7 @@ public class ContentType {
   public static final ContentType WILDCARD = new ContentType(MEDIA_TYPE_WILDCARD, MEDIA_TYPE_WILDCARD);
 
   public static final ContentType APPLICATION_XML = new ContentType("application", "xml", ODataFormat.XML);
+  public static final ContentType APPLICATION_XML_CS_UTF_8 = ContentType.create(APPLICATION_XML, PARAMETER_CHARSET, CHARSET_UTF_8);
   public static final ContentType APPLICATION_ATOM_XML = new ContentType("application", "atom+xml", ODataFormat.ATOM);
   public static final ContentType APPLICATION_ATOM_XML_ENTRY = new ContentType("application", "atom+xml", ODataFormat.ATOM, parameterMap("type", "entry"));
   public static final ContentType APPLICATION_ATOM_XML_ENTRY_CS_UTF_8 = ContentType.create(APPLICATION_ATOM_XML_ENTRY, PARAMETER_CHARSET, CHARSET_UTF_8);
