@@ -1,6 +1,5 @@
 package com.sap.core.odata.core.ep.producer;
 
-import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Map;
 

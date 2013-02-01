@@ -1,5 +1,6 @@
 package com.sap.core.odata.fit.ref;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
@@ -20,19 +21,17 @@ public class EntryXmlChangeTest extends AbstractRefTest {
 
   @Test
   public void create() throws Exception {
-    // Create an entry for a type that has a media resource;
-    // the content element is in a different place in the XML structure
-    // than for non-media-resource types.
-    String requestBody = getBody(callUri("Employees('1')"))
+    // Create an entry for a type that has no media resource.
+    String requestBody = getBody(callUri("Teams('1')"))
         .replace("'1'", "'9'")
-        .replace("EmployeeId>1", "EmployeeId>9")
-        .replace(EMPLOYEE_1_NAME, "Mister X")
+        .replace("Id>1", "Id>9")
+        .replace("Team 1", "Team X")
         .replaceAll("<link.+?/>", "");
-    HttpResponse response = postUri("Employees()", requestBody, HttpContentType.APPLICATION_ATOM_XML_ENTRY, HttpStatusCodes.CREATED);
-    checkMediaType(response, HttpContentType.APPLICATION_ATOM_XML_ENTRY_UTF8);
+    HttpResponse response = postUri("Teams()", requestBody, HttpContentType.APPLICATION_ATOM_XML_ENTRY, HttpStatusCodes.CREATED);
+    checkMediaType(response, HttpContentType.APPLICATION_ATOM_XML_UTF8 + "; type=entry");
     assertNotNull(response.getFirstHeader(HttpHeaders.LOCATION));
-    // assertEquals(getEndpoint() + "Employees('7')", response.getFirstHeader(HttpHeaders.LOCATION).getValue());
-    assertTrue(getBody(response).contains("Mister X"));
+    // assertEquals(getEndpoint() + "Teams('4')", response.getFirstHeader(HttpHeaders.LOCATION).getValue());
+    assertTrue(getBody(response).contains("Team X"));
 
     // Create an entry for a type that has no media resource.
     // Add navigation to Employee('4') and Employee('5').
@@ -59,12 +58,26 @@ public class EntryXmlChangeTest extends AbstractRefTest {
         + "        type=\"" + HttpContentType.APPLICATION_ATOM_XML_FEED_UTF8 + "\"/>" + "\n"
         + "</entry>";
     response = postUri("Rooms", requestBody, HttpContentType.APPLICATION_ATOM_XML_ENTRY, HttpStatusCodes.CREATED);
-    checkMediaType(response, HttpContentType.APPLICATION_ATOM_XML_ENTRY_UTF8);
+    checkMediaType(response, HttpContentType.APPLICATION_ATOM_XML_UTF8 + "; type=entry");
     assertNotNull(response.getFirstHeader(HttpHeaders.LOCATION));
     // assertEquals(getEndpoint() + "Rooms('104')", response.getFirstHeader(HttpHeaders.LOCATION).getValue());
     assertTrue(getBody(response).contains("Seats>4<"));
     // checkUri("Rooms('104')/nr_Employees('4')");
     checkUri("Rooms('104')/nr_Employees('5')");
+  }
+
+  @Test
+  public void createMediaResource() throws Exception {
+    HttpResponse response = postUri("Employees()", "plain text", HttpContentType.TEXT_PLAIN, HttpStatusCodes.CREATED);
+    checkMediaType(response, HttpContentType.APPLICATION_ATOM_XML_UTF8 + "; type=entry");
+    assertNotNull(response.getFirstHeader(HttpHeaders.LOCATION));
+    // assertEquals(getEndpoint() + "Employees('7')", response.getFirstHeader(HttpHeaders.LOCATION).getValue());
+    assertTrue(getBody(response).contains("EmployeeId>7<"));
+    response = callUri("Employees('7')/$value");
+    checkMediaType(response, HttpContentType.TEXT_PLAIN);
+    assertEquals("plain text", getBody(response));
+
+    // postUri("Teams('1')/nt_Employees", "X", HttpContentType.TEXT_PLAIN, HttpStatusCodes.NOT_IMPLEMENTED);
   }
 
   @Test

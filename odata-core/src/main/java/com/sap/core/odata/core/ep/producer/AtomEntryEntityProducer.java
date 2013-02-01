@@ -1,6 +1,5 @@
 package com.sap.core.odata.core.ep.producer;
 
-import java.net.URI;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;

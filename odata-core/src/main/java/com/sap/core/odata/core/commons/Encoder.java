@@ -1,8 +1,10 @@
 package com.sap.core.odata.core.commons;
 
-import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * @author SAP AG
+ */
 public class Encoder {
 
   /*

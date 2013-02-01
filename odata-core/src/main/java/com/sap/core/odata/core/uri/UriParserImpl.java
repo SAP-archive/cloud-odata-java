@@ -23,7 +23,6 @@ import com.sap.core.odata.api.edm.EdmParameter;
 import com.sap.core.odata.api.edm.EdmProperty;
 import com.sap.core.odata.api.edm.EdmSimpleType;
 import com.sap.core.odata.api.edm.EdmSimpleTypeFacade;
-import com.sap.core.odata.api.edm.EdmSimpleTypeKind;
 import com.sap.core.odata.api.edm.EdmType;
 import com.sap.core.odata.api.edm.EdmTypeKind;
 import com.sap.core.odata.api.edm.EdmTyped;
@@ -511,11 +510,7 @@ public class UriParserImpl extends UriParser {
     final EdmType targetType = uriResult.getTargetType();
     if (targetType instanceof EdmEntityType)
       try {
-        final FilterExpression filterExpression = parseFilterString((EdmEntityType) targetType, filter);
-        if (filterExpression.getExpression().getEdmType() == EdmSimpleTypeKind.Boolean.getEdmSimpleTypeInstance())
-          uriResult.setFilter(filterExpression);
-        else
-          throw new UriSyntaxException(UriSyntaxException.INVALIDFILTEREXPRESSION.addContent(filter));
+        uriResult.setFilter(new FilterParserImpl((EdmEntityType) targetType).parseFilterString(filter, true));
       } catch (ExpressionParserException e) {
         throw new UriSyntaxException(UriSyntaxException.INVALIDFILTEREXPRESSION.addContent(filter), e);
       } catch (ODataMessageException e) {
@@ -729,11 +724,11 @@ public class UriParserImpl extends UriParser {
 
   @Override
   public FilterExpression parseFilterString(final EdmEntityType entityType, final String expression) throws ExpressionParserException, ODataMessageException {
-    return new FilterParserImpl( entityType).parseFilterString(expression);
+    return new FilterParserImpl(entityType).parseFilterString(expression);
   }
 
   @Override
   public OrderByExpression parseOrderByString(final EdmEntityType entityType, final String expression) throws ExpressionParserException, ODataMessageException {
-    return new OrderByParserImpl( entityType).parseOrderByString(expression);
+    return new OrderByParserImpl(entityType).parseOrderByString(expression);
   }
 }

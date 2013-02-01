@@ -280,13 +280,25 @@ public class ListsProcessor extends ODataSingleProcessor {
     final EdmEntitySet entitySet = uriInfo.getTargetEntitySet();
     final EdmEntityType entityType = entitySet.getEntityType();
 
-    final ODataEntry entryValues = parseEntry(entitySet, content, requestContentType);
+    if (!uriInfo.getNavigationSegments().isEmpty())
+      throw new ODataNotImplementedException();
 
     Object data = dataSource.newDataObject(entitySet);
-    setStructuralTypeValuesFromMap(data, entityType, entryValues.getProperties(), true);
-    dataSource.createData(entitySet, data);
 
-    linkEntity(entitySet, data, entryValues.getMetadata().getAssociationUris());
+    if (entityType.hasStream()) {
+      dataSource.createData(entitySet, data);
+      dataSource.writeBinaryData(entitySet, data,
+          new BinaryData(EntityProvider.readBinary(content), requestContentType));
+
+    } else {
+      final ODataEntry entryValues = parseEntry(entitySet, content, requestContentType);
+
+      setStructuralTypeValuesFromMap(data, entityType, entryValues.getProperties(), true);
+
+      dataSource.createData(entitySet, data);
+
+      linkEntity(entitySet, data, entryValues.getMetadata().getAssociationUris());
+    }
 
     Map<String, Object> values = getStructuralTypeValueMap(data, entityType);
     final ODataResponse response = writeEntry(entitySet, values, contentType);
@@ -792,7 +804,8 @@ public class ListsProcessor extends ODataSingleProcessor {
       try {
         uri = UriParser.parse(edm, Arrays.asList(pathSegment), Collections.<String, String> emptyMap());
       } catch (ODataException e) {
-        throw new ODataBadRequestException(ODataBadRequestException.BODY, e);
+        // We don't understand the link target.  This could also be seen as an error.
+        continue;
       }
       final EdmNavigationProperty navigationProperty = (EdmNavigationProperty) entityType.getProperty(navigationPropertyName);
       final EdmEntitySet targetEntitySet = entitySet.getRelatedEntitySet(navigationProperty);

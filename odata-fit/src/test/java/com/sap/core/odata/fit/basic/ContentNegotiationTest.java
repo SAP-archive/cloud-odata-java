@@ -10,6 +10,8 @@ import org.apache.http.client.methods.HttpGet;
 import org.junit.Test;
 
 import com.sap.core.odata.api.ODataService;
+import com.sap.core.odata.api.commons.HttpContentType;
+import com.sap.core.odata.api.commons.HttpHeaders;
 import com.sap.core.odata.api.edm.provider.EdmProvider;
 import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.api.processor.ODataSingleProcessor;
@@ -27,6 +29,7 @@ import com.sap.core.odata.testutil.helper.StringHelper;
  */
 public class ContentNegotiationTest extends AbstractFitTest {
 
+  // TODO: Don't use reference scenario in basic tests.
   @Override
   protected ODataService createService() throws ODataException {
     DataContainer dataContainer = new DataContainer();
@@ -38,51 +41,39 @@ public class ContentNegotiationTest extends AbstractFitTest {
 
   @Test
   public void acceptHeaderAppAtomXml() throws Exception {
-    HttpGet get = new HttpGet(URI.create(this.getEndpoint().toString() + "Rooms('1')"));
-    get.setHeader("Accept", "application/atom+xml");
+    HttpGet get = new HttpGet(URI.create(getEndpoint() + "Rooms('1')"));
+    get.setHeader(HttpHeaders.ACCEPT, HttpContentType.APPLICATION_ATOM_XML);
     HttpResponse response = this.getHttpClient().execute(get);
 
-    String xml = StringHelper.inputStreamToString(response.getEntity().getContent());
-  
-    String contentType = response.getFirstHeader("Content-Type").getValue();
-    final String expectedContentType = "application/atom+xml; type=entry; charset=utf-8";
-    ContentType ct = ContentType.create(contentType);
-    assertEquals(ContentType.create(expectedContentType), ct);
-    
-    assertNotNull(xml);
+    String contentType = response.getFirstHeader(HttpHeaders.CONTENT_TYPE).getValue();
+    assertEquals(ContentType.create(HttpContentType.APPLICATION_ATOM_XML_ENTRY_UTF8), ContentType.create(contentType));
+
+    assertNotNull(StringHelper.inputStreamToString(response.getEntity().getContent()));
   }
 
   @Test
   public void acceptHeaderAppXml() throws Exception {
-    HttpGet get = new HttpGet(URI.create(this.getEndpoint().toString() + "Rooms('1')"));
-    get.setHeader("Accept", "application/xml");
+    HttpGet get = new HttpGet(URI.create(getEndpoint() + "Rooms('1')"));
+    get.setHeader(HttpHeaders.ACCEPT, HttpContentType.APPLICATION_XML);
     HttpResponse response = this.getHttpClient().execute(get);
 
-    String xml = StringHelper.inputStreamToString(response.getEntity().getContent());
-  
-    String contentType = response.getFirstHeader("Content-Type").getValue();
-    final String expectedContentType = "application/xml; charset=utf-8";
-    assertEquals(expectedContentType, contentType);
-    ContentType ct = ContentType.create(contentType);
-    assertEquals(ContentType.create(expectedContentType), ct);
-    
-    assertNotNull(xml);
+    String contentType = response.getFirstHeader(HttpHeaders.CONTENT_TYPE).getValue();
+    assertEquals(HttpContentType.APPLICATION_XML_UTF8, contentType);
+    assertEquals(ContentType.create(HttpContentType.APPLICATION_XML_UTF8), ContentType.create(contentType));
+
+    assertNotNull(StringHelper.inputStreamToString(response.getEntity().getContent()));
   }
 
   @Test
   public void acceptHeaderAppXmlCharsetUtf8() throws Exception {
-    HttpGet get = new HttpGet(URI.create(this.getEndpoint().toString() + "Rooms('1')"));
-    get.setHeader("Accept", "application/xml; charset=utf-8");
+    HttpGet get = new HttpGet(URI.create(getEndpoint() + "Rooms('1')"));
+    get.setHeader(HttpHeaders.ACCEPT, HttpContentType.APPLICATION_XML_UTF8);
     HttpResponse response = this.getHttpClient().execute(get);
 
-    String xml = StringHelper.inputStreamToString(response.getEntity().getContent());
-  
-    String contentType = response.getFirstHeader("Content-Type").getValue();
-    final String expectedContentType = "application/xml; charset=utf-8";
-    assertEquals(expectedContentType, contentType);
-    ContentType ct = ContentType.create(contentType);
-    assertEquals(ContentType.create(expectedContentType), ct);
-    
-    assertNotNull(xml);
+    String contentType = response.getFirstHeader(HttpHeaders.CONTENT_TYPE).getValue();
+    assertEquals(HttpContentType.APPLICATION_XML_UTF8, contentType);
+    assertEquals(ContentType.create(HttpContentType.APPLICATION_XML_UTF8), ContentType.create(contentType));
+
+    assertNotNull(StringHelper.inputStreamToString(response.getEntity().getContent()));
   }
 }
