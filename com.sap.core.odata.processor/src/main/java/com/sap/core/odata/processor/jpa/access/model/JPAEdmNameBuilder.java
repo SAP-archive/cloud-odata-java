@@ -1,9 +1,11 @@
 package com.sap.core.odata.processor.jpa.access.model;
 
 import java.lang.reflect.AnnotatedElement;
+import java.lang.reflect.Field;
 
 import javax.persistence.Column;
 import javax.persistence.metamodel.Attribute;
+import javax.persistence.metamodel.ManagedType;
 
 import com.sap.core.odata.api.edm.FullQualifiedName;
 import com.sap.core.odata.api.edm.provider.Association;
@@ -81,7 +83,7 @@ public class JPAEdmNameBuilder {
 	 * EDM Property Name - RULES
 	 * ************************************************************************
 	 */
-	public static void build(JPAEdmPropertyView view) {
+	public static void build(JPAEdmPropertyView view)  {
 		Attribute<?, ?> jpaAttribute = view.getJPAAttribute();
 		String jpaAttributeName = jpaAttribute.getName();
 		String propertyName = Character.toUpperCase(jpaAttributeName.charAt(0))
@@ -89,13 +91,31 @@ public class JPAEdmNameBuilder {
 		view.getSimpleProperty().setName(propertyName);
 
 		JPAEdmMapping mapping = new JPAEdmMappingImpl();
-
+		
 		AnnotatedElement annotatedElement = (AnnotatedElement) jpaAttribute
 				.getJavaMember();
 		if (annotatedElement != null) {
 			Column column = annotatedElement.getAnnotation(Column.class);
 			if (column != null)
 				mapping.setColumnName(column.name());
+		}
+		else
+		{
+			ManagedType<?> mananagedType = jpaAttribute.getDeclaringType();
+			Class<?> clazz = mananagedType.getJavaType();
+			try {
+				Field field = clazz.getDeclaredField(jpaAttributeName);
+				Column column = field.getAnnotation(Column.class);
+				if(column != null)
+				{
+					mapping.setColumnName(column.name());
+				}
+			} catch (SecurityException e) {
+				
+			} catch (NoSuchFieldException e) {
+				
+			}
+			
 		}
 		((Mapping) mapping).setInternalName(jpaAttributeName);
 		view.getSimpleProperty().setMapping((Mapping) mapping);
@@ -212,8 +232,16 @@ public class JPAEdmNameBuilder {
 		String end1Name = association.getEnd1().getType().getName();
 		String end2Name = association.getEnd2().getType().getName();
 
-		association.setName(ASSOCIATION_PREFIX + end1Name + UNDERSCORE
-				+ end2Name);
+		if(end1Name.compareToIgnoreCase(end2Name) > 0)
+		{
+			association.setName(ASSOCIATION_PREFIX + end2Name + UNDERSCORE
+					+ end1Name);
+		}
+		else
+		{
+			association.setName(ASSOCIATION_PREFIX + end1Name + UNDERSCORE
+					+ end2Name);
+		}
 
 	}
 

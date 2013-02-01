@@ -16,6 +16,7 @@ import com.sap.core.odata.processor.jpa.access.model.JPAEdmNameBuilder;
 import com.sap.core.odata.processor.jpa.api.access.JPAEdmBuilder;
 import com.sap.core.odata.processor.jpa.api.exception.ODataJPAModelException;
 import com.sap.core.odata.processor.jpa.api.model.JPAEdmComplexTypeView;
+import com.sap.core.odata.processor.jpa.api.model.JPAEdmMapping;
 import com.sap.core.odata.processor.jpa.api.model.JPAEdmPropertyView;
 import com.sap.core.odata.processor.jpa.api.model.JPAEdmSchemaView;
 
@@ -90,10 +91,25 @@ public class JPAEdmComplexType extends JPAEdmBaseViewImpl implements
 		for(Property property : complexType.getProperties())
 		{
 			try{
-			SimpleProperty simpleProperty = (SimpleProperty) property;
-			Mapping mapping = simpleProperty.getMapping();
-			mapping.setInternalName(embeddablePropertyName + "." + mapping.getInternalName());
-			expandedList.add(simpleProperty);
+			SimpleProperty newSimpleProperty = new SimpleProperty();	
+			SimpleProperty oldSimpleProperty = (SimpleProperty) property;
+			newSimpleProperty.setAnnotationAttributes(oldSimpleProperty.getAnnotationAttributes());
+			newSimpleProperty.setAnnotationElements(oldSimpleProperty.getAnnotationElements());
+			newSimpleProperty.setCustomizableFeedMappings(oldSimpleProperty.getCustomizableFeedMappings());
+			newSimpleProperty.setDocumentation(oldSimpleProperty.getDocumentation());
+			newSimpleProperty.setFacets(oldSimpleProperty.getFacets());
+			newSimpleProperty.setMimeType(oldSimpleProperty.getMimeType());
+			newSimpleProperty.setName(oldSimpleProperty.getName());
+			newSimpleProperty.setType(oldSimpleProperty.getType());
+			JPAEdmMappingImpl newMapping = new JPAEdmMappingImpl();
+			Mapping mapping = oldSimpleProperty.getMapping();
+			JPAEdmMapping oldMapping = (JPAEdmMapping)mapping;
+			newMapping.setColumnName(oldMapping.getColumnName());
+			newMapping.setInternalName(embeddablePropertyName + "." + mapping.getInternalName());
+			newMapping.setMimeType(mapping.getMimeType());
+			newMapping.setObject(mapping.getObject());
+			newSimpleProperty.setMapping(newMapping);
+			expandedList.add(newSimpleProperty);
 			}catch (ClassCastException e){
 				ComplexProperty complexProperty = (ComplexProperty) property;
 				String name = complexProperty.getMapping().getInternalName();

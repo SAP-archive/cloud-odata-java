@@ -36,6 +36,7 @@ import com.sap.core.odata.processor.jpa.api.model.JPAEdmSchemaView;
 public class JPAEdmProperty extends JPAEdmBaseViewImpl implements
 		JPAEdmPropertyView, JPAEdmComplexPropertyView {
 
+
 	private JPAEdmSchemaView schemaView;
 	private JPAEdmEntityTypeView entityTypeView;
 	private JPAEdmComplexTypeView complexTypeView;
@@ -227,6 +228,11 @@ public class JPAEdmProperty extends JPAEdmBaseViewImpl implements
 						currentComplexProperty
 								.setFacets(setFacets(currentAttribute));
 						properties.add(currentComplexProperty);
+						List<String> nonKeyComplexTypes = schemaView.getNonKeyComplexTypeList();
+						if(!nonKeyComplexTypes.contains(currentComplexProperty.getType().getName()))
+						{
+							schemaView.addNonKeyComplexName(currentComplexProperty.getType().getName());
+						}
 					}
 
 					break;
