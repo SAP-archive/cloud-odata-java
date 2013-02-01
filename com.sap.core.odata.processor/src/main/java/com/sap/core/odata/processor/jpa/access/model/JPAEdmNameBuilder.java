@@ -83,7 +83,7 @@ public class JPAEdmNameBuilder {
 	 * EDM Property Name - RULES
 	 * ************************************************************************
 	 */
-	public static void build(JPAEdmPropertyView view)  {
+	public static void build(JPAEdmPropertyView view) {
 		Attribute<?, ?> jpaAttribute = view.getJPAAttribute();
 		String jpaAttributeName = jpaAttribute.getName();
 		String propertyName = Character.toUpperCase(jpaAttributeName.charAt(0))
@@ -91,31 +91,30 @@ public class JPAEdmNameBuilder {
 		view.getSimpleProperty().setName(propertyName);
 
 		JPAEdmMapping mapping = new JPAEdmMappingImpl();
-		
+
 		AnnotatedElement annotatedElement = (AnnotatedElement) jpaAttribute
 				.getJavaMember();
 		if (annotatedElement != null) {
 			Column column = annotatedElement.getAnnotation(Column.class);
 			if (column != null)
 				mapping.setColumnName(column.name());
-		}
-		else
-		{
-			ManagedType<?> mananagedType = jpaAttribute.getDeclaringType();
-			Class<?> clazz = mananagedType.getJavaType();
-			try {
-				Field field = clazz.getDeclaredField(jpaAttributeName);
-				Column column = field.getAnnotation(Column.class);
-				if(column != null)
-				{
-					mapping.setColumnName(column.name());
+		} else {
+			ManagedType<?> managedType = jpaAttribute.getDeclaringType();
+			if (managedType != null) {
+				Class<?> clazz = managedType.getJavaType();
+				try {
+					Field field = clazz.getDeclaredField(jpaAttributeName);
+					Column column = field.getAnnotation(Column.class);
+					if (column != null) {
+						mapping.setColumnName(column.name());
+					}
+				} catch (SecurityException e) {
+
+				} catch (NoSuchFieldException e) {
+
 				}
-			} catch (SecurityException e) {
-				
-			} catch (NoSuchFieldException e) {
-				
 			}
-			
+
 		}
 		((Mapping) mapping).setInternalName(jpaAttributeName);
 		view.getSimpleProperty().setMapping((Mapping) mapping);
@@ -232,13 +231,10 @@ public class JPAEdmNameBuilder {
 		String end1Name = association.getEnd1().getType().getName();
 		String end2Name = association.getEnd2().getType().getName();
 
-		if(end1Name.compareToIgnoreCase(end2Name) > 0)
-		{
+		if (end1Name.compareToIgnoreCase(end2Name) > 0) {
 			association.setName(ASSOCIATION_PREFIX + end2Name + UNDERSCORE
 					+ end1Name);
-		}
-		else
-		{
+		} else {
 			association.setName(ASSOCIATION_PREFIX + end1Name + UNDERSCORE
 					+ end2Name);
 		}
@@ -269,30 +265,27 @@ public class JPAEdmNameBuilder {
 		NavigationProperty navProp = jpaEdmNavigationProperty
 				.getEdmNavigationProperty();
 		String namespace = buildNamespace(associationView.getpUnitName());
-		
-		Association association = associationView.getEdmAssociation();
-		navProp.setRelationship(new FullQualifiedName(namespace,
-				association.getName()));
 
-		FullQualifiedName associationEndTypeOne = association.getEnd1().getType();
-		
+		Association association = associationView.getEdmAssociation();
+		navProp.setRelationship(new FullQualifiedName(namespace, association
+				.getName()));
+
+		FullQualifiedName associationEndTypeOne = association.getEnd1()
+				.getType();
+
 		if (propertyView.getJPAAttribute().getJavaType().getSimpleName()
 				.equals(associationEndTypeOne.getName())) {
-			navProp.setFromRole(association.getEnd2()
-					.getRole());
-			navProp.setToRole(association.getEnd1()
-					.getRole());
+			navProp.setFromRole(association.getEnd2().getRole());
+			navProp.setToRole(association.getEnd1().getRole());
 		} else {
 
-			navProp.setToRole(association.getEnd2()
-					.getRole());
-			navProp.setFromRole(association.getEnd1()
-					.getRole());
+			navProp.setToRole(association.getEnd2().getRole());
+			navProp.setFromRole(association.getEnd1().getRole());
 		}
 		Attribute<?, ?> jpaAttribute = propertyView.getJPAAttribute();
 		navProp.setMapping(new Mapping().setInternalName(jpaAttribute.getName()));
-		navProp.setName(jpaAttribute.getJavaType()
-				.getSimpleName().concat(NAVIGATION_NAME));
+		navProp.setName(jpaAttribute.getJavaType().getSimpleName()
+				.concat(NAVIGATION_NAME));
 
 	}
 }
