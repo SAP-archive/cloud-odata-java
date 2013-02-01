@@ -371,7 +371,7 @@ public class TestParserExceptions extends TestBase {
     GetPTF("a eq b b")
         .aExMsgText("Invalid token \"b\" detected after parsing at position 8 in \"a eq b b\".");
     
-    //CASE 1
+    //CASE 8
     GetPTF(edm, edmEtAllTypes, "year(Complex)")
         .aExMsgText("No applicable method found for \"year\" at position 1 in \"year(Complex)\" for the specified argument types.");
   }

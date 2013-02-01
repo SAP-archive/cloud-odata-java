@@ -5,7 +5,6 @@ import com.sap.core.odata.api.edm.EdmEntityType;
 import com.sap.core.odata.api.uri.expression.CommonExpression;
 import com.sap.core.odata.api.uri.expression.ExpressionParserException;
 import com.sap.core.odata.api.uri.expression.OrderByExpression;
-import com.sap.core.odata.api.uri.expression.OrderByParser;
 import com.sap.core.odata.api.uri.expression.SortOrder;
 
 public class OrderByParserImpl extends FilterParserImpl implements OrderByParser

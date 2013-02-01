@@ -107,7 +107,7 @@ class ParameterSet
 
         //Promotion only allowed for simple types
         if (actType.getKind() != EdmTypeKind.SIMPLE)
-          return false;
+          return false; //Tested with TestParserExceptions.testAdditionalStuff CASE 8
               
         //The type simply don't match          
         if (!paramType.isCompatible((EdmSimpleType) actType))

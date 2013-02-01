@@ -1,5 +1,6 @@
 package com.sap.core.odata.api.uri.expression;
 
+
 /**
  * Represents a $filter expression in the expression tree returned by {@link FilterParser#parseFilterString(String)}
  * Used to define the <b>root</b> expression node in an $filter expression tree. 

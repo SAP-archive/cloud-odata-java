@@ -1,6 +1,10 @@
-package com.sap.core.odata.api.uri.expression;
+package com.sap.core.odata.core.uri.expression;
 
 import com.sap.core.odata.api.exception.ODataMessageException;
+import com.sap.core.odata.api.uri.expression.ExpressionParserException;
+import com.sap.core.odata.api.uri.expression.ExpressionVisitor;
+import com.sap.core.odata.api.uri.expression.FilterExpression;
+import com.sap.core.odata.api.uri.expression.Visitable;
 
 /**
  * Interface which defines a method for parsing a $filter expression to allow different parser implementations
