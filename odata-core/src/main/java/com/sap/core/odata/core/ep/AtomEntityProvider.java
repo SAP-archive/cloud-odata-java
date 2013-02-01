@@ -29,6 +29,7 @@ import com.sap.core.odata.api.ep.EntityProviderProperties;
 import com.sap.core.odata.api.ep.entry.ODataEntry;
 import com.sap.core.odata.api.processor.ODataResponse;
 import com.sap.core.odata.core.commons.ContentType;
+import com.sap.core.odata.core.commons.ContentType.ODataFormat;
 import com.sap.core.odata.core.ep.aggregator.EntityInfoAggregator;
 import com.sap.core.odata.core.ep.aggregator.EntityPropertyInfo;
 import com.sap.core.odata.core.ep.consumer.XmlEntityConsumer;
@@ -48,10 +49,27 @@ public class AtomEntityProvider implements ContentTypeBasedEntityProvider {
 
   private static final Logger LOG = LoggerFactory.getLogger(AtomEntityProvider.class);
   /** Default used charset for writer and response content header */
-  private static final String DEFAULT_CHARSET = "utf-8";
+//  private static final String DEFAULT_CHARSET = "utf-8";
+  private static final String DEFAULT_CHARSET = ContentType.CHARSET_UTF_8;
+  private final ODataFormat odataFormat;
 
   public AtomEntityProvider() throws EntityProviderException {
-    super();
+    this(ODataFormat.ATOM);
+  }
+
+  public AtomEntityProvider(ContentType contentType) throws EntityProviderException {
+    this(contentType.getODataFormat());
+  }
+
+  public AtomEntityProvider(ODataFormat odataFormat) throws EntityProviderException {
+    switch (odataFormat) {
+      case ATOM: 
+      case XML: 
+        this.odataFormat = odataFormat;
+        break;
+      default:
+        throw new EntityProviderException(EntityProviderException.ILLEGAL_ARGUMENT.addContent("Got unsupported ODataFormat '" + odataFormat + "'."));
+    }
   }
 
   /**
@@ -110,7 +128,7 @@ public class AtomEntityProvider implements ContentTypeBasedEntityProvider {
       outStream.flush();
       outStream.close();
 
-      ODataResponse response = ODataResponse.entity(csb.getInputStream()).contentHeader(createContentHeader(ContentType.APPLICATION_ATOM_XML_ENTRY)).eTag(as.getETag()).build();
+      ODataResponse response = ODataResponse.entity(csb.getInputStream()).contentHeader(getContentHeader(ContentType.APPLICATION_ATOM_XML_ENTRY)).eTag(as.getETag()).build();
       return response;
     } catch (Exception e) {
       throw new EntityProviderException(EntityProviderException.COMMON, e);
@@ -148,7 +166,7 @@ public class AtomEntityProvider implements ContentTypeBasedEntityProvider {
       outStream.flush();
       outStream.close();
 
-      ODataResponse response = ODataResponse.entity(csb.getInputStream()).contentHeader(createContentHeader(ContentType.APPLICATION_XML)).build();
+      ODataResponse response = ODataResponse.entity(csb.getInputStream()).contentHeader(getContentHeader(ContentType.APPLICATION_XML)).build();
       return response;
     } catch (Exception e) {
       throw new EntityProviderException(EntityProviderException.COMMON, e);
@@ -183,7 +201,7 @@ public class AtomEntityProvider implements ContentTypeBasedEntityProvider {
       outStream.flush();
       outStream.close();
 
-      ODataResponse response = ODataResponse.entity(csb.getInputStream()).contentHeader(createContentHeader(ContentType.APPLICATION_ATOM_XML_FEED)).build();
+      ODataResponse response = ODataResponse.entity(csb.getInputStream()).contentHeader(getContentHeader(ContentType.APPLICATION_ATOM_XML_FEED)).build();
       return response;
     } catch (Exception e) {
       throw new EntityProviderException(EntityProviderException.COMMON, e);
@@ -199,8 +217,11 @@ public class AtomEntityProvider implements ContentTypeBasedEntityProvider {
     }
   }
 
-  private String createContentHeader(ContentType mediaType) {
-    return mediaType.toContentTypeString() + "; charset=" + DEFAULT_CHARSET;
+  private String getContentHeader(ContentType mediaType) {
+    if(odataFormat == ODataFormat.XML) {
+      return ContentType.APPLICATION_XML_CS_UTF_8.toContentTypeString();
+    }
+    return ContentType.create(mediaType, ContentType.PARAMETER_CHARSET, DEFAULT_CHARSET).toContentTypeString();
   }
 
   @Override
@@ -235,7 +256,7 @@ public class AtomEntityProvider implements ContentTypeBasedEntityProvider {
       }
     }
 
-    return ODataResponse.entity(buffer.getInputStream()).contentHeader(createContentHeader(ContentType.APPLICATION_XML)).build();
+    return ODataResponse.entity(buffer.getInputStream()).contentHeader(getContentHeader(ContentType.APPLICATION_XML)).build();
   }
 
   @Override
@@ -270,7 +291,7 @@ public class AtomEntityProvider implements ContentTypeBasedEntityProvider {
       }
     }
 
-    return ODataResponse.entity(buffer.getInputStream()).contentHeader(createContentHeader(ContentType.APPLICATION_XML)).build();
+    return ODataResponse.entity(buffer.getInputStream()).contentHeader(getContentHeader(ContentType.APPLICATION_XML)).build();
   }
 
   private ODataResponse writeCollection(final EntityPropertyInfo propertyInfo, final List<?> data) throws EntityProviderException {
@@ -288,7 +309,7 @@ public class AtomEntityProvider implements ContentTypeBasedEntityProvider {
       outStream.flush();
       outStream.close();
 
-      return ODataResponse.entity(buffer.getInputStream()).contentHeader(createContentHeader(ContentType.APPLICATION_XML)).build();
+      return ODataResponse.entity(buffer.getInputStream()).contentHeader(getContentHeader(ContentType.APPLICATION_XML)).build();
     } catch (Exception e) {
       throw new EntityProviderException(EntityProviderException.COMMON, e);
     } finally {

@@ -87,7 +87,7 @@ public class AtomFeedProducerTest extends AbstractProviderTest {
   private String verifyResponse(ODataResponse response) throws IOException {
     assertNotNull(response);
     assertNotNull(response.getEntity());
-    assertEquals(ContentType.APPLICATION_ATOM_XML_FEED.toString() + "; charset=utf-8", response.getContentHeader());
+    assertEquals(ContentType.APPLICATION_ATOM_XML_FEED_CS_UTF_8.toContentTypeString(), response.getContentHeader());
     String xmlString = StringHelper.inputStreamToString((InputStream) response.getEntity());
     return xmlString;
   }

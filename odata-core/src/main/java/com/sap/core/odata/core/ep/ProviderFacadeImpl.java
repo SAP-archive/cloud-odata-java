@@ -36,7 +36,7 @@ public class ProviderFacadeImpl implements EntityProviderInterface {
       switch (contentType.getODataFormat()) {
       case ATOM:
       case XML:
-        provider = new AtomEntityProvider();
+        provider = new AtomEntityProvider(contentType.getODataFormat());
         break;
       case JSON:
         // mibo_130125: currently JSON is a not supported content type

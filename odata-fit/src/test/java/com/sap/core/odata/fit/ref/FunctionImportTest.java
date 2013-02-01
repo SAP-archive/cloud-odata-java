@@ -52,8 +52,8 @@ public class FunctionImportTest extends AbstractRefTest {
     assertNull(response.getFirstHeader(HttpHeaders.ETAG));
     assertNotNull(getBody(response));
 
-    response = callUri("OldestEmployee");
-    checkMediaType(response, HttpContentType.APPLICATION_ATOM_XML_ENTRY_UTF8);
+    response = callUri("OldestEmployee", "Accept", "application/xml");
+    checkMediaType(response, HttpContentType.APPLICATION_XML_UTF8);
     assertTrue(getBody(response).contains(EMPLOYEE_3_NAME));
 
     response = callUri("OldestEmployee?$format=xml");
