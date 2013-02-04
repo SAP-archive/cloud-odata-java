@@ -81,7 +81,7 @@ public class JPAEdmComplexTypeTest extends JPAEdmTestModelView {
 
 	@Test
 	public void testSearchComplexTypeString() {
-		assertNotNull(objComplexType.searchComplexType("java.lang.String"));
+		assertNotNull(objComplexType.searchEdmComplexType("java.lang.String"));
 		
 	}
 
@@ -98,19 +98,19 @@ public class JPAEdmComplexTypeTest extends JPAEdmTestModelView {
 
 	@Test
 	public void testSearchComplexTypeFullQualifiedName() {
-		assertNotNull(objComplexType.searchComplexType(new FullQualifiedName("salesorderprocessing", "String")));
+		assertNotNull(objComplexType.searchEdmComplexType(new FullQualifiedName("salesorderprocessing", "String")));
 		
 	}
 	@Test
 	public void testSearchComplexTypeFullQualifiedNameNegative()
 	{
-		assertNull(objComplexType.searchComplexType(new FullQualifiedName("salesorderprocessing", "lang.String")));
+		assertNull(objComplexType.searchEdmComplexType(new FullQualifiedName("salesorderprocessing", "lang.String")));
 	}
 
 	@Test
 	public void testAddCompleTypeView() {
 		
-		objComplexType.addCompleTypeView(localView);
+		objComplexType.addJPAEdmCompleTypeView(localView);
 		
 	}
 
@@ -119,10 +119,10 @@ public class JPAEdmComplexTypeTest extends JPAEdmTestModelView {
 		ComplexType complexType = new ComplexType();
 		List<Property> properties = new ArrayList<Property>();
 		JPAEdmMapping mapping1 = new JPAEdmMappingImpl();
-		mapping1.setColumnName("LINEITEMID");
+		mapping1.setJPAColumnName("LINEITEMID");
 		((Mapping)mapping1).setInternalName("LineItemKey.LiId");
 		JPAEdmMapping mapping2 = new JPAEdmMappingImpl();
-		mapping2.setColumnName("LINEITEMNAME");
+		mapping2.setJPAColumnName("LINEITEMNAME");
 		((Mapping)mapping2).setInternalName("LineItemKey.LiName");
 		properties.add(new SimpleProperty().setName("LIID").setMapping((Mapping) mapping1));
 		properties.add(new SimpleProperty().setName("LINAME").setMapping((Mapping) mapping2));

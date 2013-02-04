@@ -58,8 +58,8 @@ public class JPAEdmPropertyTest extends JPAEdmTestModelView {
 
 	@Test
 	public void testGetPropertyList() {
-		assertNotNull(objJPAEdmProperty.getPropertyList());
-		assertTrue(objJPAEdmProperty.getPropertyList().size() > 0);
+		assertNotNull(objJPAEdmProperty.getEdmPropertyList());
+		assertTrue(objJPAEdmProperty.getEdmPropertyList().size() > 0);
 	}
 
 	@Test
@@ -69,7 +69,7 @@ public class JPAEdmPropertyTest extends JPAEdmTestModelView {
 
 	@Test
 	public void testGetSimpleProperty() {
-		assertNotNull(objJPAEdmProperty.getSimpleProperty());
+		assertNotNull(objJPAEdmProperty.getEdmSimpleProperty());
 	}
 
 	@Test

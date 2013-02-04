@@ -58,7 +58,7 @@ public class JPAEdmReferentialConstraint extends JPAEdmBaseViewImpl implements
 	}
 	
 	@Override
-	public String getRelationShipName() {
+	public String getEdmRelationShipName() {
 		return relationShipName;
 	}
 

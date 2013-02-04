@@ -123,7 +123,7 @@ public class JPAEdmReferentialConstraintRoleTest  extends JPAEdmTestModelView{
 		EntityType entityType = new EntityType();
 		
 		JPAEdmMappingImpl mapping = new JPAEdmMappingImpl();
-		mapping.setColumnName("SOID");
+		mapping.setJPAColumnName("SOID");
 		
 		List<Property> propList = new ArrayList<Property>();
 		

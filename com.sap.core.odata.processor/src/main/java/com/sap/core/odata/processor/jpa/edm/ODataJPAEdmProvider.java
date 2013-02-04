@@ -243,7 +243,7 @@ public class ODataJPAEdmProvider extends EdmProvider {
 		if (schemas == null && jpaEdmModel != null) {
 			jpaEdmModel.getBuilder().build();
 			schemas = new ArrayList<Schema>();
-			schemas.add(jpaEdmModel.getSchemaView().getEdmSchema());
+			schemas.add(jpaEdmModel.getEdmSchemaView().getEdmSchema());
 		}
 		if (jpaEdmModel == null) {
 

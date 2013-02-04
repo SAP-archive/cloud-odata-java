@@ -75,7 +75,7 @@ JPAEdmSchemaView
 	}
 
 	@Override
-	public String getRelationShipName() {
+	public String getEdmRelationShipName() {
 		
 		return null;
 	}
@@ -135,19 +135,19 @@ JPAEdmSchemaView
 	}
 
 	@Override
-	public List<Property> getPropertyList() {
+	public List<Property> getEdmPropertyList() {
 		
 		return null;
 	}
 
 	@Override
-	public SimpleProperty getSimpleProperty() {
+	public SimpleProperty getEdmSimpleProperty() {
 		
 		return null;
 	}
 
 	@Override
-	public JPAEdmSchemaView getSchemaView() {
+	public JPAEdmSchemaView getEdmSchemaView() {
 		
 		return null;
 	}
@@ -177,7 +177,7 @@ JPAEdmSchemaView
 	}
 
 	@Override
-	public List<EntitySet> getConsistentEntitySetList() {
+	public List<EntitySet> getConsistentEdmEntitySetList() {
 		
 		return null;
 	}
@@ -219,7 +219,7 @@ JPAEdmSchemaView
 	}
 
 	@Override
-	public void addCompleTypeView(JPAEdmComplexTypeView arg0) {
+	public void addJPAEdmCompleTypeView(JPAEdmComplexTypeView arg0) {
 		
 		
 	}
@@ -249,13 +249,13 @@ JPAEdmSchemaView
 	}
 
 	@Override
-	public ComplexType searchComplexType(String arg0) {
+	public ComplexType searchEdmComplexType(String arg0) {
 		
 		return null;
 	}
 
 	@Override
-	public ComplexType searchComplexType(FullQualifiedName arg0) {
+	public ComplexType searchEdmComplexType(FullQualifiedName arg0) {
 		
 		return null;
 	}
@@ -345,13 +345,13 @@ JPAEdmSchemaView
 	}
 
 	@Override
-	public AssociationEnd getAssociationEnd1() {
+	public AssociationEnd getEdmAssociationEnd1() {
 		
 		return null;
 	}
 
 	@Override
-	public AssociationEnd getAssociationEnd2() {
+	public AssociationEnd getEdmAssociationEnd2() {
 		
 		return null;
 	}

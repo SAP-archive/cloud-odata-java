@@ -9,11 +9,11 @@ import com.sap.core.odata.api.edm.provider.SimpleProperty;
 
 public interface JPAEdmPropertyView extends JPAEdmBaseView {
 
-	SimpleProperty getSimpleProperty();
+	SimpleProperty getEdmSimpleProperty();
 
 	JPAEdmKeyView getJPAEdmKeyView( );
 
-	List<Property> getPropertyList();
+	List<Property> getEdmPropertyList();
 	
 	Attribute<?, ?> getJPAAttribute( );
 

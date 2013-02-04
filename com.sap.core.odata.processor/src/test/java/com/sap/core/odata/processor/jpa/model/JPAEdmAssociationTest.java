@@ -34,7 +34,7 @@ public class JPAEdmAssociationTest extends JPAEdmTestModelView {
 	}
 
 	@Override
-	public AssociationEnd getAssociationEnd1() {
+	public AssociationEnd getEdmAssociationEnd1() {
 		AssociationEnd associationEnd = new AssociationEnd();
 		associationEnd.setType(new FullQualifiedName("salesorderprocessing", "SalesOrderHeader"));
 		associationEnd.setRole("SalesOrderHeader");
@@ -43,7 +43,7 @@ public class JPAEdmAssociationTest extends JPAEdmTestModelView {
 	}
 
 	@Override
-	public AssociationEnd getAssociationEnd2() {
+	public AssociationEnd getEdmAssociationEnd2() {
 		AssociationEnd associationEnd = new AssociationEnd();
 		associationEnd.setType(new FullQualifiedName("salesorderprocessing", "String"));
 		associationEnd.setRole("String");
@@ -95,7 +95,7 @@ public class JPAEdmAssociationTest extends JPAEdmTestModelView {
 
 	
 	@Override
-	public String getRelationShipName() {
+	public String getEdmRelationShipName() {
 		return "Association_SalesOrderHeader_String";
 	}
 
@@ -159,7 +159,7 @@ public class JPAEdmAssociationTest extends JPAEdmTestModelView {
 		class LocalJPAAssociationView extends JPAEdmTestModelView
 		{
 			@Override
-			public AssociationEnd getAssociationEnd1() {
+			public AssociationEnd getEdmAssociationEnd1() {
 				AssociationEnd associationEnd = new AssociationEnd();
 				associationEnd.setType(new FullQualifiedName("salesorderprocessing", "SalesOrderHeader"));
 				associationEnd.setRole("SalesOrderHeader");
@@ -168,7 +168,7 @@ public class JPAEdmAssociationTest extends JPAEdmTestModelView {
 			}
 
 			@Override
-			public AssociationEnd getAssociationEnd2() {
+			public AssociationEnd getEdmAssociationEnd2() {
 				AssociationEnd associationEnd = new AssociationEnd();
 				associationEnd.setType(new FullQualifiedName("salesorderprocessing", "SalesOrderItem"));
 				associationEnd.setRole("SalesOrderItem");

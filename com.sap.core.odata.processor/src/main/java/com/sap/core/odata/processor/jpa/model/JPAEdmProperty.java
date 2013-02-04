@@ -73,7 +73,7 @@ public class JPAEdmProperty extends JPAEdmBaseViewImpl implements
 	}
 
 	@Override
-	public List<Property> getPropertyList() {
+	public List<Property> getEdmPropertyList() {
 		return properties;
 	}
 
@@ -83,7 +83,7 @@ public class JPAEdmProperty extends JPAEdmBaseViewImpl implements
 	}
 
 	@Override
-	public SimpleProperty getSimpleProperty() {
+	public SimpleProperty getEdmSimpleProperty() {
 		return currentSimpleProperty;
 	}
 
@@ -195,7 +195,7 @@ public class JPAEdmProperty extends JPAEdmBaseViewImpl implements
 					break;
 				case EMBEDDED:
 					ComplexType complexType = complexTypeView
-							.searchComplexType(currentAttribute.getJavaType().getName());
+							.searchEdmComplexType(currentAttribute.getJavaType().getName());
 
 					if (complexType == null) {
 						JPAEdmComplexTypeView complexTypeViewLocal = new JPAEdmComplexType(
@@ -203,7 +203,7 @@ public class JPAEdmProperty extends JPAEdmBaseViewImpl implements
 
 						complexTypeViewLocal.getBuilder().build();
 						complexType = complexTypeViewLocal.getEdmComplexType();
-						complexTypeView.addCompleTypeView(complexTypeViewLocal);
+						complexTypeView.addJPAEdmCompleTypeView(complexTypeViewLocal);
 
 					}
 

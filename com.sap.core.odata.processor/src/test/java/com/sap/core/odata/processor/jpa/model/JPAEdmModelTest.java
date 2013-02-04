@@ -25,7 +25,7 @@ public class JPAEdmModelTest {
 	@Test
 	public void testGetSchemaView() throws ODataJPAModelException {
 		jpaEdmModel.getBuilder().build();
-		JPAEdmSchemaView schemaView = jpaEdmModel.getSchemaView();
+		JPAEdmSchemaView schemaView = jpaEdmModel.getEdmSchemaView();
 		Schema schema = schemaView.getEdmSchema();
 		assertEquals(schema.getNamespace(), model.getPersistentUnitName());
 		

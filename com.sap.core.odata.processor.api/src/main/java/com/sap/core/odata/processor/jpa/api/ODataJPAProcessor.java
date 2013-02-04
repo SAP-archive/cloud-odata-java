@@ -4,6 +4,14 @@ import com.sap.core.odata.api.processor.ODataSingleProcessor;
 import com.sap.core.odata.processor.jpa.api.access.JPAProcessor;
 import com.sap.core.odata.processor.jpa.api.factory.ODataJPAFactory;
 
+/**
+ * Extend this class and implement an OData JPA processor if the default behavior
+ * is not required.
+ * 
+ * @author SAP AG
+ * 
+ *
+ */
 public abstract class ODataJPAProcessor extends ODataSingleProcessor {
 
 	protected ODataJPAContext oDataJPAContext;

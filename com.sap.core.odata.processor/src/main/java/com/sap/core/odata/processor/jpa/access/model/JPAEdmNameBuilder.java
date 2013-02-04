@@ -88,7 +88,7 @@ public class JPAEdmNameBuilder {
 		String jpaAttributeName = jpaAttribute.getName();
 		String propertyName = Character.toUpperCase(jpaAttributeName.charAt(0))
 				+ jpaAttributeName.substring(1);
-		view.getSimpleProperty().setName(propertyName);
+		view.getEdmSimpleProperty().setName(propertyName);
 
 		JPAEdmMapping mapping = new JPAEdmMappingImpl();
 
@@ -97,7 +97,7 @@ public class JPAEdmNameBuilder {
 		if (annotatedElement != null) {
 			Column column = annotatedElement.getAnnotation(Column.class);
 			if (column != null)
-				mapping.setColumnName(column.name());
+				mapping.setJPAColumnName(column.name());
 		} else {
 			ManagedType<?> managedType = jpaAttribute.getDeclaringType();
 			if (managedType != null) {
@@ -106,7 +106,7 @@ public class JPAEdmNameBuilder {
 					Field field = clazz.getDeclaredField(jpaAttributeName);
 					Column column = field.getAnnotation(Column.class);
 					if (column != null) {
-						mapping.setColumnName(column.name());
+						mapping.setJPAColumnName(column.name());
 					}
 				} catch (SecurityException e) {
 
@@ -117,7 +117,7 @@ public class JPAEdmNameBuilder {
 
 		}
 		((Mapping) mapping).setInternalName(jpaAttributeName);
-		view.getSimpleProperty().setMapping((Mapping) mapping);
+		view.getEdmSimpleProperty().setMapping((Mapping) mapping);
 	}
 
 	/*
@@ -203,11 +203,11 @@ public class JPAEdmNameBuilder {
 
 		String name = entityTypeView.getEdmEntityType().getName();
 		FullQualifiedName fQName = new FullQualifiedName(namespace, name);
-		assocaitionEndView.getAssociationEnd1().setType(fQName);
+		assocaitionEndView.getEdmAssociationEnd1().setType(fQName);
 
 		name = propertyView.getJPAAttribute().getJavaType().getSimpleName();
 		fQName = new FullQualifiedName(namespace, name);
-		assocaitionEndView.getAssociationEnd2().setType(fQName);
+		assocaitionEndView.getEdmAssociationEnd2().setType(fQName);
 
 	}
 

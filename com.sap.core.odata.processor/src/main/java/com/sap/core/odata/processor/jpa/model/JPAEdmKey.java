@@ -63,12 +63,12 @@ public class JPAEdmKey extends JPAEdmBaseViewImpl implements JPAEdmKeyView {
 
 			if (isBuildModeComplexType) {
 				ComplexType complexType = complexTypeView
-						.searchComplexType(propertyView
+						.searchEdmComplexType(propertyView
 								.getJPAAttribute().getJavaType().getName());
 				normalizeComplexKey(complexType, propertyRefList);
 			} else {
 				PropertyRef propertyRef = new PropertyRef();
-				propertyRef.setName(propertyView.getSimpleProperty().getName());
+				propertyRef.setName(propertyView.getEdmSimpleProperty().getName());
 				propertyRefList.add(propertyRef);
 			}
 
@@ -86,7 +86,7 @@ public class JPAEdmKey extends JPAEdmBaseViewImpl implements JPAEdmKeyView {
 
 				} catch (ClassCastException e) {
 					ComplexProperty complexProperty = (ComplexProperty) property;
-					normalizeComplexKey(complexTypeView.searchComplexType(complexProperty.getType()), propertyRefList);
+					normalizeComplexKey(complexTypeView.searchEdmComplexType(complexProperty.getType()), propertyRefList);
 				}
 
 			}
