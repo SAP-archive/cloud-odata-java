@@ -51,6 +51,7 @@ public class JPAEdmEntitySet extends JPAEdmBaseViewImpl implements
 		this.currentEntitySet = null;
 		this.consistentEntitySetList = null;
 		this.entityTypeView = null;
+		this.isConsistent = false;
 	}
 
 	private class JPAEdmEntitySetBuilder implements JPAEdmBuilder {

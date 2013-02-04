@@ -19,9 +19,11 @@ import org.junit.Test;
 
 import com.sap.core.odata.api.edm.FullQualifiedName;
 import com.sap.core.odata.api.edm.provider.ComplexType;
+import com.sap.core.odata.api.edm.provider.Mapping;
 import com.sap.core.odata.api.edm.provider.Property;
 import com.sap.core.odata.api.edm.provider.SimpleProperty;
 import com.sap.core.odata.processor.jpa.api.exception.ODataJPAModelException;
+import com.sap.core.odata.processor.jpa.api.model.JPAEdmMapping;
 import com.sap.core.odata.processor.jpa.model.mock.JPAEmbeddableMock;
 import com.sap.core.odata.processor.jpa.model.mock.JPAMetaModelMock;
 import com.sap.core.odata.processor.jpa.model.mock.JPASingularAttributeMock;
@@ -29,12 +31,29 @@ import com.sap.core.odata.processor.jpa.model.mock.JPASingularAttributeMock;
 public class JPAEdmComplexTypeTest extends JPAEdmTestModelView {
 	
 	private static JPAEdmComplexType objComplexType = null;
-	
+	private static JPAEdmComplexTypeTest localView = null;
 	@BeforeClass
 	public static void setup() throws ODataJPAModelException{
-		JPAEdmComplexTypeTest localView = new JPAEdmComplexTypeTest();
+		localView = new JPAEdmComplexTypeTest();
 		objComplexType = new JPAEdmComplexType(localView);
 		objComplexType.getBuilder().build();
+	}
+
+	@Override
+	public EmbeddableType<?> getJPAEmbeddableType() {
+		@SuppressWarnings("hiding")
+		class JPAComplexAttribute<Long> extends JPAEmbeddableMock<Long>
+		{
+
+			@SuppressWarnings("unchecked")
+			@Override
+			public Class<Long> getJavaType() {
+				
+				return (Class<Long>)java.lang.Long.class;
+			}
+			
+		}
+		return new JPAComplexAttribute();
 	}
 
 	@Override
@@ -91,14 +110,22 @@ public class JPAEdmComplexTypeTest extends JPAEdmTestModelView {
 	@Test
 	public void testAddCompleTypeView() {
 		
+		objComplexType.addCompleTypeView(localView);
+		
 	}
 
 	@Test
 	public void testExpandEdmComplexType() {
 		ComplexType complexType = new ComplexType();
 		List<Property> properties = new ArrayList<Property>();
-		properties.add(new SimpleProperty().setName("LIID"));
-		properties.add(new SimpleProperty().setName("LINAME"));
+		JPAEdmMapping mapping1 = new JPAEdmMappingImpl();
+		mapping1.setColumnName("LINEITEMID");
+		((Mapping)mapping1).setInternalName("LineItemKey.LiId");
+		JPAEdmMapping mapping2 = new JPAEdmMappingImpl();
+		mapping2.setColumnName("LINEITEMNAME");
+		((Mapping)mapping2).setInternalName("LineItemKey.LiName");
+		properties.add(new SimpleProperty().setName("LIID").setMapping((Mapping) mapping1));
+		properties.add(new SimpleProperty().setName("LINAME").setMapping((Mapping) mapping2));
 		complexType.setProperties(properties );
 		List<Property> expandedList = null;
 		try
@@ -196,5 +223,4 @@ public class JPAEdmComplexTypeTest extends JPAEdmTestModelView {
 		
 		
 	}
-
 }
