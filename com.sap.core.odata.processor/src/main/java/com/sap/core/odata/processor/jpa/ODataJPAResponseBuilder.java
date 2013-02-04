@@ -84,7 +84,7 @@ public final class ODataJPAResponseBuilder {
 		if (jpaEntity == null)
 			throw ODataJPARuntimeException.throwException(
 					ODataJPARuntimeException.RESOURCE_NOT_FOUND,
-					new ODataNotFoundException(ODataNotFoundException.ENTITY));
+					null);
 
 		EdmEntityType edmEntityType = null;
 		ODataResponse odataResponse = null;

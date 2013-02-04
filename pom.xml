@@ -18,6 +18,7 @@
 	<modules>
 		<module>com.sap.core.odata.processor.api</module>
 		<module>com.sap.core.odata.processor</module>
+		<module>com.sap.core.odata.processor.fit</module>
 		<module>com.sap.core.odata.processor.ref.web</module>
 	</modules>
 	<build>
