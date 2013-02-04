@@ -141,7 +141,10 @@ public class JPQLSelectSingleContextImplTest {
 		try {
 			/*JPQLSelectContext selectContext1 = (JPQLSelectContext)*/ builder1.build();
 			fail("Should not come here");
-		} catch (ODataJPAModelException | ODataJPARuntimeException e) {
+		} catch (ODataJPAModelException e) {
+			assertTrue(true);
+		}
+		catch (ODataJPARuntimeException e){
 			assertTrue(true);
 		}
 	}
@@ -152,7 +155,10 @@ public class JPQLSelectSingleContextImplTest {
 		try {
 			selectContext = (JPQLSelectSingleContext) builder.build();
 			assertEquals("E2", selectContext.getSelectExpression());
-		} catch (ODataJPAModelException | ODataJPARuntimeException e) {
+		} catch (ODataJPAModelException e) {
+			fail();
+		}
+		catch (ODataJPARuntimeException  e) {
 			fail();
 		}
 	}

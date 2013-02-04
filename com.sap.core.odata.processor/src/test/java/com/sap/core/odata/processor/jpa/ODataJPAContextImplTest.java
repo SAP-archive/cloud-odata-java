@@ -1,6 +1,6 @@
 package com.sap.core.odata.processor.jpa;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import javax.persistence.EntityManagerFactory;
 
@@ -10,8 +10,6 @@ import org.junit.Test;
 import com.sap.core.odata.api.edm.provider.EdmProvider;
 import com.sap.core.odata.api.processor.ODataContext;
 import com.sap.core.odata.api.processor.ODataProcessor;
-import com.sap.core.odata.processor.jpa.ODataJPAContextImpl;
-import com.sap.core.odata.processor.jpa.api.ODataJPAContext;
 import com.sap.core.odata.processor.jpa.edm.ODataJPAEdmProvider;
 import com.sap.core.odata.processor.jpa.util.MockData;
 

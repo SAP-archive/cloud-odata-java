@@ -28,7 +28,10 @@ public class JPAEdmAssociationEnd extends JPAEdmBaseViewImpl implements
 
 	@Override
 	public JPAEdmBuilder getBuilder() {
-		return new JPAEdmAssociationEndBuilder();
+		if (this.builder == null)
+			this.builder = new JPAEdmAssociationEndBuilder();
+		
+		return builder;
 	}
 
 	@Override

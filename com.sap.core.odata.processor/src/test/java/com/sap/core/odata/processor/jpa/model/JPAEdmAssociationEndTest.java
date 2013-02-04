@@ -48,7 +48,15 @@ public class JPAEdmAssociationEndTest extends JPAEdmTestModelView {
 		assertNotNull(builder);
 
 	}
-
+	
+	@Test
+	public void testGetBuilderIdempotent(){
+		JPAEdmBuilder builder1 = objJPAEdmAssociationEnd.getBuilder();
+		JPAEdmBuilder builder2 = objJPAEdmAssociationEnd.getBuilder();
+		
+		assertEquals(builder1.hashCode(), builder2.hashCode());
+	}
+	
 	@Test
 	public void testGetAssociationEnd1() {
 		AssociationEnd associationEnd = objJPAEdmAssociationEnd
