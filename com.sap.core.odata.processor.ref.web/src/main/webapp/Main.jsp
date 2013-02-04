@@ -33,22 +33,24 @@
 <style type="text/css">
 body {
 	font-family: "Arial";
+	font-size: small;
 }
 </style>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>Welcome to JPA implementation</title>
 </head>
 <body>
-	<table width=100% cellpadding="3" cellspacing="3" bgcolor="#F0F0F0">
+	<table width=100% cellpadding="3" cellspacing="3" bgcolor="#A6A6A6">
 		<tr height="100%">
-			<td height="100%" width="100%"><big>SAP OData JPA library</big></td>
+			<td height="100%" width="100%"><h2>SAP OData JPA library</h2></td>
 		</tr>
 	</table>
-	<hr />
+	<hr>
 	<table width="100%">
 		<tr>
-			<td width="70%">SalesOrderProcessing - Reference Scenario <small>[<a
-					href="./image/model.jpg" target=_blank>Java Persistence Model</a>]
+			<td width="70%"><font size=small><b>SalesOrderProcessing - Reference
+					Scenario</b></font><small> [<a href="./image/model.jpg" target=_blank>Java
+						Persistence Model</a>]
 			</small></td>
 			<td width="30%">
 				<table cellspacing="1" cellpadding="1">
@@ -132,7 +134,7 @@ body {
 			<td width="98%"><b>Service Document and Metadata</b></td>
 		</tr>
 	</table>
-	<br>
+
 
 	<div id="s1" style="display: none">
 		<ul>
@@ -155,7 +157,7 @@ body {
 			<td width="98%"><b>System Query Options</b></td>
 		</tr>
 	</table>
-	<br>
+
 	<div id="s2" style="display: none">
 		<table width=100% border="1" cellpadding="3" cellspacing="0">
 
@@ -165,14 +167,14 @@ body {
 				<th align="left">JPQL Statement</th>
 			</tr>
 
-			<tr style="font-size: 12pts">
+			<tr>
 				<td width=20%>Query all Sales Orders</td>
 				<td width=40%><a
 					href="SalesOrderProcessing.svc/SalesOrderHeaders" target="_blank">SalesOrderProcessing.svc/SalesOrderHeaders
 				</a></td>
 				<td width=40%><code>SELECT E1 FROM SalesOrderHeader E1</code></td>
 			</tr>
-			<tr style="font-size: 12pts">
+			<tr>
 				<td width=20%>Query for Sales Order with So ID = 1</td>
 				<td width=40%><a
 					href="SalesOrderProcessing.svc/SalesOrderHeaders?$filter=SoId eq 1"
@@ -181,7 +183,7 @@ body {
 				<td width=40%><code>SELECT E1 FROM SalesOrderHeader E1
 						WHERE E1.soId = 1</code></td>
 			</tr>
-			<tr style="font-size: 12pts">
+			<tr>
 				<td>Query for Sales Order with Buyer Name = buyerName_3</td>
 				<td><a
 					href="SalesOrderProcessing.svc/SalesOrderHeaders?$filter=BuyerName eq 'buyerName_3'"
@@ -190,7 +192,7 @@ body {
 				<td width=60%><code>SELECT E1 FROM SalesOrderHeader E1
 						WHERE E1.buyerName = 'buyerName_3'</code></td>
 			</tr>
-			<tr style="font-size: 12pts">
+			<tr>
 				<td>Query for undelivered Sales Orders</td>
 				<td><a
 					href="SalesOrderProcessing.svc/SalesOrderHeaders?$filter=DeliveryStatus eq false"
@@ -199,7 +201,7 @@ body {
 				<td width=60%><code>SELECT E1 FROM SalesOrderHeader E1
 						WHERE E1.deliveryStatus = 'false'</code></td>
 			</tr>
-			<tr style="font-size: 12pts">
+			<tr>
 				<td>Query for Sales Order created today</td>
 				<td><a
 					href="SalesOrderProcessing.svc/SalesOrderHeaders?$filter=CreationDate eq SYSDATE"
@@ -208,7 +210,7 @@ body {
 				<td width=60%><code>SELECT E1 FROM SalesOrderHeader E1
 						WHERE E1.creationDate = d'xx'</code></td>
 			</tr>
-			<tr style="font-size: 12pts">
+			<tr>
 				<td>Query for Sales Order with Buyer Address House number = 7</td>
 				<td><a
 					href="SalesOrderProcessing.svc/SalesOrderHeaders?$filter=BuyerAddress/HouseNumber eq 7"
@@ -216,7 +218,7 @@ body {
 						eq 7 </a></td>
 				<td width=60%><code> </code></td>
 			</tr>
-			<tr style="font-size: 12pts">
+			<tr>
 				<td>Query for SalesOrders with buyer id less than 5 and Buyer
 					Country = Test_Country_3</td>
 				<td><a
@@ -227,7 +229,7 @@ body {
 						WHERE E1.buyerId &lt; 5 and E1.buyerAddress.Country =
 						'Test_Country_3'</code></td>
 			</tr>
-			<tr style="font-size: 12pts">
+			<tr>
 				<td>Query for SalesOrders with buyer id less than 5 or Sales
 					Order Id greater than 5</td>
 				<td><a
@@ -237,7 +239,7 @@ body {
 				<td width=60%><code>SELECT E1 FROM SalesOrderHeader E1
 						WHERE E1.buyerId &lt; 5 or E1.soId &gt; 5 </code></td>
 			</tr>
-			<tr style="font-size: 12pts">
+			<tr>
 				<td>Query for SalesOrders in the descending order of Buyer Id</td>
 				<td><a
 					href="SalesOrderProcessing.svc/SalesOrderHeaders?$orderby=BuyerId desc"
@@ -246,7 +248,7 @@ body {
 				<td width=60%><code>SELECT E1 FROM SalesOrderHeader E1
 						ORDERBY E1.buyerId desc </code></td>
 			</tr>
-			<tr style="font-size: 12pts">
+			<tr>
 				<td>Query for SalesOrders in the ascending order of Sales Order
 					Id</td>
 				<td><a
@@ -256,14 +258,14 @@ body {
 				<td width=60%><code>SELECT E1 FROM SalesOrderHeader E1
 						ORDERBY E1.soId </code></td>
 			</tr>
-			<tr style="font-size: 12pts">
+			<tr>
 				<td>Query for top 3 SalesOrders</td>
 				<td><a href="SalesOrderProcessing.svc/SalesOrderHeaders?$top=3"
 					target="_blank">SalesOrderProcessing.svc/SalesOrderHeaders?$top=3</a></td>
 				<td width=60%><code>SELECT E1 FROM SalesOrderHeader E1
 						ORDERBY E1.soId </code></td>
 			</tr>
-			<tr style="font-size: 12pts">
+			<tr>
 				<td>Query for SalesOrders and Skip top 3</td>
 				<td><a
 					href="SalesOrderProcessing.svc/SalesOrderHeaders?$skip=2"
@@ -271,7 +273,7 @@ body {
 				<td width=60%><code>SELECT E1 FROM SalesOrderHeader E1
 						ORDERBY E1.soId </code></td>
 			</tr>
-			<tr style="font-size: 12pts">
+			<tr>
 				<td>Query for SalesOrders and count Number of Sales Orders
 					Inline</td>
 				<td><a
@@ -279,43 +281,71 @@ body {
 					target="_blank">SalesOrderProcessing.svc/SalesOrderHeaders?$inlinecount=allpages</a></td>
 				<td width=60%><code>SELECT E1 FROM SalesOrderHeader E1</code></td>
 			</tr>
-			<tr style="font-size: 12pts">
-				<td>Query for SalesOrders and fetch only Buyer Id and Buyer Country</td>
+			<tr>
+				<td>Query for SalesOrders and fetch only Buyer Id and Buyer
+					Country</td>
 				<td><a
 					href="SalesOrderProcessing.svc/SalesOrderHeaders?$select=BuyerId,BuyerAddress/Country"
 					target="_blank">SalesOrderProcessing.svc/SalesOrderHeaders?$select=BuyerId,BuyerAddress/Country</a></td>
-				<td width=60%><code>SELECT E1.buyerId, E1.buyerAddress.country FROM SalesOrderHeader E1</code></td>
-			</tr>		
-			<tr style="font-size: 12pts">
+				<td width=60%><code>SELECT E1.buyerId,
+						E1.buyerAddress.country FROM SalesOrderHeader E1</code></td>
+			</tr>
+			<tr>
 				<td>Mixed Query Example</td>
 				<td><a
 					href="SalesOrderProcessing.svc/SalesOrderHeaders?$skip=2&$top=2&$orderby=SoId"
 					target="_blank">SalesOrderProcessing.svc/SalesOrderHeaders?$skip=2&amp;$top=2&amp;$orderby=SoId</a></td>
-				<td width=60%><code>SELECT E1 FROM SalesOrderHeader E1 ORDERBY E1.soId asc</code></td>
-			</tr>	
+				<td width=60%><code>SELECT E1 FROM SalesOrderHeader E1
+						ORDERBY E1.soId asc</code></td>
+			</tr>
 		</table>
 	</div>
 
-	<h4>Read Operation</h4>
-	<ul>
-		<li><a href="SalesOrderProcessing.svc/SalesOrderHeaders(1L)"
-			target="_blank">Read operation</a></li>
-		<li><a
-			href="SalesOrderProcessing.svc/SalesOrderHeaders(3L)?$select=BuyerName,CurrencyCode"
-			target="_blank">Read operation with Select system query option</a></li>
-	</ul>
+	<table width=100% cellspacing="1">
+		<tr>
+			<td width="2%">
+				<div id="s3e" onClick="toggle('s3','s3e');"
+					style="cursor: hand; cursor: pointer; color: blue; width: 100%;">
+					[ <b>:.</b> ]
+				</div>
+			</td>
+			<td width="98%"><b>Read Operations</b></td>
+		</tr>
+	</table>
 
-	<h4>Exception handling</h4>
-	<ul>
-		<li><a href="SalesOrderProcessing.svc/SalesOrderHeaderss"
-			target="_blank">Exception Handling:Case 1</a></li>
-		<li><a
-			href="SalesOrderProcessing.svc/SalesOrderHeaders?$filter=BuyerAddress/City eq 'Test'"
-			target="_blank">Exception Handling:Case 2</a></li>
-		<li><a href="SalesOrderProcessing.svc/SalesOrderHeaders?$skip=12"
-			target="_blank">Exception Handling:Case 3</a></li>
-	</ul>
+	<div id="s3" style="display: none">
+		<ul>
+			<li><a href="SalesOrderProcessing.svc/SalesOrderHeaders(1L)"
+				target="_blank">Read operation</a></li>
+			<li><a
+				href="SalesOrderProcessing.svc/SalesOrderHeaders(3L)?$select=BuyerName,CurrencyCode"
+				target="_blank">Read operation with Select system query option</a></li>
+		</ul>
+	</div>
 
+	<table width=100% cellspacing="1">
+		<tr>
+			<td width="2%">
+				<div id="s4e" onClick="toggle('s4','s4e');"
+					style="cursor: hand; cursor: pointer; color: blue; width: 100%;">
+					[ <b>:.</b> ]
+				</div>
+			</td>
+			<td width="98%"><b>Exception handling</b></td>
+		</tr>
+	</table>
+	<div id="s4" style="display: none">
+		<ul>
+			<li><a href="SalesOrderProcessing.svc/SalesOrderHeaderss"
+				target="_blank">Exception Handling:Case 1</a></li>
+			<li><a
+				href="SalesOrderProcessing.svc/SalesOrderHeaders?$filter=BuyerAddress/City eq 'Test'"
+				target="_blank">Exception Handling:Case 2</a></li>
+			<li><a
+				href="SalesOrderProcessing.svc/SalesOrderHeaders?$skip=12"
+				target="_blank">Exception Handling:Case 3</a></li>
+		</ul>
+	</div>
 	<hr>
 
 </body>
