@@ -221,7 +221,7 @@ public class AtomEntryEntityProducer {
         String encodedEntityContainerName = eia.getEntityContainerName();
         sb.append(encodedEntityContainerName).append(Edm.DELIMITER);
       }
-      String encodedEntitySetName = Encoder.encodePathPart(eia.getEntitySetName());
+      String encodedEntitySetName = Encoder.encode(eia.getEntitySetName());
 
       sb.append(encodedEntitySetName).append("(").append(this.createEntryKey(eia, data, true)).append(")").append((extension == null ? "" : "/" + extension));
       return sb.toString();
@@ -350,8 +350,8 @@ public class AtomEntryEntityProducer {
       if (!eia.isDefaultEntityContainer()) {
         id += eia.getEntityContainerName() + Edm.DELIMITER;
       }
-      String encodedEntitySetName = Encoder.encodePathPart(eia.getEntitySetName());
-      String encodedEntryKey = Encoder.encodePathPart(entryKey);
+      String encodedEntitySetName = Encoder.encode(eia.getEntitySetName());
+      String encodedEntryKey = Encoder.encode(entryKey);
       id += encodedEntitySetName + "(" + encodedEntryKey + ")";
 
       String uri = properties.getServiceRoot().toASCIIString() + id;
@@ -371,7 +371,7 @@ public class AtomEntryEntityProducer {
         Object value = data.get(kp.get(0).getName());
         keys = st.valueToString(value, EdmLiteralKind.URI, kp.get(0).getFacets());
         if (encode) {
-          keys = Encoder.encodePathPart(keys);
+          keys = Encoder.encode(keys);
         }
       } else {
         int size = kp.size();
@@ -383,8 +383,8 @@ public class AtomEntryEntityProducer {
           String strValue = st.valueToString(value, EdmLiteralKind.URI, kp.get(i).getFacets());
           String name = keyp.getName();
           if (encode) {
-            name = Encoder.encodePathPart(name);
-            strValue = Encoder.encodePathPart(strValue);
+            name = Encoder.encode(name);
+            strValue = Encoder.encode(strValue);
           }
           keys = keys + name + "=";
           keys = keys + strValue;
