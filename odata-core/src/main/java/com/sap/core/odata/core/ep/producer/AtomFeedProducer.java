@@ -108,7 +108,7 @@ public class AtomFeedProducer {
 
   private String createNextLink(EntityInfoAggregator eia, String nextSkiptoken) throws EntityProviderException {
     try {
-      String query = SystemQueryOption.$skiptoken + "=" + Encoder.encodeQueryPart(nextSkiptoken);
+      String query = SystemQueryOption.$skiptoken + "=" + Encoder.encode(nextSkiptoken);
       String path = createSelfLink(eia);
       return path + "?" + query;
     } catch (Exception e) {
@@ -120,10 +120,10 @@ public class AtomFeedProducer {
     try {
       StringBuilder sb = new StringBuilder();
       if (!eia.isDefaultEntityContainer()) {
-        String entityContainerName = Encoder.encodePathPart(eia.getEntityContainerName());
+        String entityContainerName = Encoder.encode(eia.getEntityContainerName());
         sb.append(entityContainerName).append(Edm.DELIMITER);
       }
-      String entitySetName = Encoder.encodePathPart(eia.getEntitySetName());
+      String entitySetName = Encoder.encode(eia.getEntitySetName());
       sb.append(entitySetName);
       return sb.toString();
     } catch (Exception e) {
@@ -165,10 +165,10 @@ public class AtomFeedProducer {
       String id = "";
 
       if (!eia.isDefaultEntityContainer()) {
-        String entityContainerName = Encoder.encodeQueryPart(eia.getEntityContainerName());
+        String entityContainerName = Encoder.encode(eia.getEntityContainerName());
         id += entityContainerName + ".";
       }
-      String entitySetName = Encoder.encodeQueryPart(eia.getEntitySetName());
+      String entitySetName = Encoder.encode(eia.getEntitySetName());
       id += entitySetName;
 
       URI serviceRoot = properties.getServiceRoot();

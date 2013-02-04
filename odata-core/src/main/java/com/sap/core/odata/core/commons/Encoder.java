@@ -16,6 +16,7 @@ public class Encoder {
    *  private final static String RFC3986_GEN_DELIMS = ":/?#[]@"; 
    *  private final static String RFC3986_SUB_DELIMS = "!$&'()*+,;="; 
    *  private final static String RFC3986_RESERVED = RFC3986_GEN_DELIMS + RFC3986_SUB_DELIMS; 
+   *  
    */
 
   private Encoder(String unsafe, String unreserved, Map<Character, String> map) {
@@ -24,26 +25,15 @@ public class Encoder {
     this.map = map;
   }
 
-  public static String encodePathPart(String value) {
+  public static String encode(String value) {
     Encoder encoder = new Encoder(UNSAFE, UNRESERVED, null);
     return encoder.encodeInternal(value);
-  }
-
-  public static String encodeQueryPart(String value) {
-
-    return encodePathPart(value);
-
-    // TODO SKL This needs evaluation! RFC3986
-
-    //    Map<Character, String> map = new HashMap<Character, String>();
-    //    map.put(' ', "+");
-    //    Encoder encoder = new Encoder(UNSAFE_NOSPACE, UNRESERVED, map);
-    //    return encoder.encodeInternal(value);
   }
 
   private final static String RFC3986_UNRESERVED = "-._~"; // + ALPHA + DIGIT
   private final static String RFC3986_GEN_DELIMS = ":/?#[]@";
   private final static String RFC3986_SUB_DELIMS = "!$&'()*+,;=";
+  @SuppressWarnings("unused")
   private final static String RFC3986_RESERVED = RFC3986_GEN_DELIMS + RFC3986_SUB_DELIMS;
 
   /*

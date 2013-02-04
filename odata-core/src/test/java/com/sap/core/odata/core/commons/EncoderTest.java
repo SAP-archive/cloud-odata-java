@@ -19,42 +19,42 @@ public class EncoderTest extends BaseTest {
   @Test
   public void testAsciiCharacters() {
     String s = "azAZ019";
-    assertEquals(s, Encoder.encodePathPart(s));
-    assertEquals(s, Encoder.encodePathPart(s));
+    assertEquals(s, Encoder.encode(s));
+    assertEquals(s, Encoder.encode(s));
   }
 
   @Test
   public void testRfc3986Unreserved() {
-    assertEquals(RFC3986_UNRESERVED, Encoder.encodePathPart(RFC3986_UNRESERVED));
+    assertEquals(RFC3986_UNRESERVED, Encoder.encode(RFC3986_UNRESERVED));
   }
 
   @Test
   public void testRfc3986GenDelims() {
-    assertEquals("%3a%2f%3f%23%5b%5d%40".toLowerCase(), Encoder.encodePathPart(RFC3986_GEN_DELIMS));
+    assertEquals("%3a%2f%3f%23%5b%5d%40".toLowerCase(), Encoder.encode(RFC3986_GEN_DELIMS));
   }
 
   @Test
   public void testRfc3986SubDelims() {
-    assertEquals(RFC3986_SUB_DELIMS, Encoder.encodePathPart(RFC3986_SUB_DELIMS));
+    assertEquals(RFC3986_SUB_DELIMS, Encoder.encode(RFC3986_SUB_DELIMS));
   }
 
   @Test
   public void testRfc3986Reserved() {
-    assertEquals("%3a%2f%3f%23%5b%5d%40!$&'()*+,;=".toLowerCase(), Encoder.encodePathPart(RFC3986_RESERVED));
+    assertEquals("%3a%2f%3f%23%5b%5d%40!$&'()*+,;=".toLowerCase(), Encoder.encode(RFC3986_RESERVED));
   }
 
   @Test
   public void testUnicodeCharacters() {
     String s = "€";
-    assertEquals("%E2%82%AC".toLowerCase(), Encoder.encodePathPart(s));
+    assertEquals("%E2%82%AC".toLowerCase(), Encoder.encode(s));
   }
 
   @Test
   public void uriDecoding() throws URISyntaxException {
     String decodedValue = RFC3986_UNRESERVED + RFC3986_RESERVED + "0..1..a..z..A..Z..@..→⦿◎❯❵₪€¥$£₧♤♡☁☂☔⚾☯®©℗😃";
 
-    String encodedPath = Encoder.encodePathPart(decodedValue) + "/" + Encoder.encodePathPart(decodedValue);
-    String encodedQuery = Encoder.encodePathPart(decodedValue);
+    String encodedPath = Encoder.encode(decodedValue) + "/" + Encoder.encode(decodedValue);
+    String encodedQuery = Encoder.encode(decodedValue);
     URI uri = new URI("http://host:80/" + encodedPath + "?" + encodedQuery + "=" + encodedQuery);
 
     assertEquals(uri.getPath(), "/" + decodedValue + "/" + decodedValue);
