@@ -204,9 +204,9 @@ body {
 			<tr>
 				<td>Query for Sales Order created today</td>
 				<td><a
-					href="SalesOrderProcessing.svc/SalesOrderHeaders?$filter=CreationDate eq SYSDATE"
+					href="SalesOrderProcessing.svc/SalesOrderHeaders?$filter=CreationDate eq datetime'2013-01-01T00:00:00'"
 					target="_blank">SalesOrderProcessing.svc/SalesOrderHeaders?$filter=CreationDate
-						eq SYSDATE</a></td>
+						eq datetime'2013-01-01T00:00:00'</a></td>
 				<td width=60%><code style="font-size: small">SELECT E1 FROM SalesOrderHeader E1
 						WHERE E1.creationDate = d'xx'</code></td>
 			</tr>
