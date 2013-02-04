@@ -52,7 +52,7 @@ public class JPAEdmEntitySetTest extends JPAEdmTestModelView{
 	
 	@Test
 	public void testGetConsistentEntitySetList() {
-		assertTrue(objJPAEdmEntitySet.getConsistentEntitySetList().size() > 0);
+		assertTrue(objJPAEdmEntitySet.getConsistentEdmEntitySetList().size() > 0);
 	}
 
 	@Test

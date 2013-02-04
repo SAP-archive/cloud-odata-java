@@ -110,9 +110,9 @@ public class JPAEdmAssociation extends JPAEdmBaseViewImpl implements
 					&& searchAssociation(associationEndView) == null) {
 				currentAssociation = new Association();
 				currentAssociation.setEnd1(associationEndView
-						.getAssociationEnd1());
+						.getEdmAssociationEnd1());
 				currentAssociation.setEnd2(associationEndView
-						.getAssociationEnd2());
+						.getEdmAssociationEnd2());
 
 				JPAEdmNameBuilder.build(JPAEdmAssociation.this);
 
@@ -132,13 +132,13 @@ public class JPAEdmAssociation extends JPAEdmBaseViewImpl implements
 					}
 					if (view.isConsistent()) {
 						currentAssociation = associationMap.get(view
-								.getRelationShipName());
+								.getEdmRelationShipName());
 						currentAssociation.setReferentialConstraint(view
 								.getEdmReferentialConstraint());
 						consistentAssociatonList.add(currentAssociation);
 						inconsistentRefConstraintViewList.remove(index);
 					} else {
-						associationMap.remove(view.getRelationShipName());
+						associationMap.remove(view.getEdmRelationShipName());
 						index++;
 					}
 				}

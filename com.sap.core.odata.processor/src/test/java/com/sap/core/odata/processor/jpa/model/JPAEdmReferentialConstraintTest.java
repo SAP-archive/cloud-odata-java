@@ -70,7 +70,7 @@ public class JPAEdmReferentialConstraintTest extends JPAEdmTestModelView {
 
 	@Test
 	public void testGetRelationShipName() {
-		assertEquals("Assoc_SalesOrderHeader_SalesOrderItem", objJPAEdmReferentialConstraint.getRelationShipName());
+		assertEquals("Assoc_SalesOrderHeader_SalesOrderItem", objJPAEdmReferentialConstraint.getEdmRelationShipName());
 	}
 	
 	

@@ -35,12 +35,12 @@ public class JPAEdmAssociationEnd extends JPAEdmBaseViewImpl implements
 	}
 
 	@Override
-	public AssociationEnd getAssociationEnd1() {
+	public AssociationEnd getEdmAssociationEnd1() {
 		return this.currentAssociationEnd1;
 	}
 
 	@Override
-	public AssociationEnd getAssociationEnd2() {
+	public AssociationEnd getEdmAssociationEnd2() {
 		return currentAssociationEnd2;
 	}
 

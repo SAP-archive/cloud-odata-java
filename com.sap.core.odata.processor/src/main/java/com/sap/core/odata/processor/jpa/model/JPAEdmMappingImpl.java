@@ -7,13 +7,13 @@ public class JPAEdmMappingImpl extends Mapping implements JPAEdmMapping{
 	
 	private String columnName = null;
 	@Override
-	public void setColumnName(String name) {
+	public void setJPAColumnName(String name) {
 		this.columnName = name;
 		
 	}
 
 	@Override
-	public String getColumnName() {
+	public String getJPAColumnName() {
 		return this.columnName;
 	}
 	

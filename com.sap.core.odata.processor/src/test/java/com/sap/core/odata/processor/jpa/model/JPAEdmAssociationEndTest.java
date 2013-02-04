@@ -60,14 +60,14 @@ public class JPAEdmAssociationEndTest extends JPAEdmTestModelView {
 	@Test
 	public void testGetAssociationEnd1() {
 		AssociationEnd associationEnd = objJPAEdmAssociationEnd
-				.getAssociationEnd1();
+				.getEdmAssociationEnd1();
 		assertEquals(associationEnd.getType().getName(), "SOID");
 	}
 
 	@Test
 	public void testGetAssociationEnd2() {
 		AssociationEnd associationEnd = objJPAEdmAssociationEnd
-				.getAssociationEnd2();
+				.getEdmAssociationEnd2();
 		assertEquals(associationEnd.getType().getName(), "String");
 	}
 
@@ -82,8 +82,8 @@ public class JPAEdmAssociationEndTest extends JPAEdmTestModelView {
 	@Test
 	public void testBuildAssociationEnd() 
 	{
-		assertEquals("SOID",objJPAEdmAssociationEnd.getAssociationEnd1().getType().getName());
-		assertEquals(new FullQualifiedName("salesorderprocessing", "SOID"), objJPAEdmAssociationEnd.getAssociationEnd1().getType());
+		assertEquals("SOID",objJPAEdmAssociationEnd.getEdmAssociationEnd1().getType().getName());
+		assertEquals(new FullQualifiedName("salesorderprocessing", "SOID"), objJPAEdmAssociationEnd.getEdmAssociationEnd1().getType());
 		assertTrue(objJPAEdmAssociationEnd.isConsistent());
 		
 	}

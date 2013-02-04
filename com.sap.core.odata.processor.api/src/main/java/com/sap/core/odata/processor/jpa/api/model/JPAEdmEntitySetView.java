@@ -8,7 +8,7 @@ public interface JPAEdmEntitySetView extends JPAEdmBaseView {
 
 	public EntitySet getEdmEntitySet();
 	
-	public List<EntitySet> getConsistentEntitySetList();
+	public List<EntitySet> getConsistentEdmEntitySetList();
 
 	public JPAEdmEntityTypeView getJPAEdmEntityTypeView();
 

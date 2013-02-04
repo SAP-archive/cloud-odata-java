@@ -13,11 +13,11 @@ public interface JPAEdmComplexTypeView extends JPAEdmBaseView {
 
 	public List<ComplexType> getConsistentEdmComplexTypes();
 
-	public ComplexType searchComplexType(String embeddableTypeName);
+	public ComplexType searchEdmComplexType(String embeddableTypeName);
 
-	public void addCompleTypeView(JPAEdmComplexTypeView view);
+	public void addJPAEdmCompleTypeView(JPAEdmComplexTypeView view);
 
-	public ComplexType searchComplexType(FullQualifiedName type);
+	public ComplexType searchEdmComplexType(FullQualifiedName type);
 	
 	public void expandEdmComplexType(ComplexType complexType,List<Property> expandedPropertyList,String embeddablePropertyName);
 

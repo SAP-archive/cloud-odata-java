@@ -93,19 +93,19 @@ JPAEdmSchemaView
 	}
 
 	@Override
-	public List<Property> getPropertyList() {
+	public List<Property> getEdmPropertyList() {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public SimpleProperty getSimpleProperty() {
+	public SimpleProperty getEdmSimpleProperty() {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public JPAEdmSchemaView getSchemaView() {
+	public JPAEdmSchemaView getEdmSchemaView() {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -135,7 +135,7 @@ JPAEdmSchemaView
 	}
 
 	@Override
-	public List<EntitySet> getConsistentEntitySetList() {
+	public List<EntitySet> getConsistentEdmEntitySetList() {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -177,7 +177,7 @@ JPAEdmSchemaView
 	}
 
 	@Override
-	public void addCompleTypeView(JPAEdmComplexTypeView arg0) {
+	public void addJPAEdmCompleTypeView(JPAEdmComplexTypeView arg0) {
 		// TODO Auto-generated method stub
 		
 	}
@@ -201,13 +201,13 @@ JPAEdmSchemaView
 	}
 
 	@Override
-	public ComplexType searchComplexType(String arg0) {
+	public ComplexType searchEdmComplexType(String arg0) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public ComplexType searchComplexType(FullQualifiedName arg0) {
+	public ComplexType searchEdmComplexType(FullQualifiedName arg0) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -267,7 +267,7 @@ JPAEdmSchemaView
 	}
 
 	@Override
-	public String getRelationShipName() {
+	public String getEdmRelationShipName() {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -327,13 +327,13 @@ JPAEdmSchemaView
 	}
 
 	@Override
-	public AssociationEnd getAssociationEnd1() {
+	public AssociationEnd getEdmAssociationEnd1() {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public AssociationEnd getAssociationEnd2() {
+	public AssociationEnd getEdmAssociationEnd2() {
 		// TODO Auto-generated method stub
 		return null;
 	}

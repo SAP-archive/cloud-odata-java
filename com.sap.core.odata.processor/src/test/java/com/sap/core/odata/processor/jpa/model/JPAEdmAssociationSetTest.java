@@ -108,7 +108,7 @@ public class JPAEdmAssociationSetTest extends JPAEdmTestModelView {
 	}
 
 	@Override
-	public List<EntitySet> getConsistentEntitySetList() {
+	public List<EntitySet> getConsistentEdmEntitySetList() {
 		return getEntitySetListLocal();
 	}
 	

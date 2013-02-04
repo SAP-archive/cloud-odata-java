@@ -80,7 +80,7 @@ public class JPAEdmEntityType extends JPAEdmBaseViewImpl implements
 				propertyView.getBuilder().build();
 
 				currentEdmEntityType.setProperties(propertyView
-						.getPropertyList());
+						.getEdmPropertyList());
 				if (propertyView.getJPAEdmNavigationPropertyView() != null) {
 					JPAEdmNavigationPropertyView navPropView = propertyView
 							.getJPAEdmNavigationPropertyView();

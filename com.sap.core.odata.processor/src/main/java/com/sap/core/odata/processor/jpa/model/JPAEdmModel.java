@@ -15,7 +15,7 @@ public class JPAEdmModel extends JPAEdmBaseViewImpl implements JPAEdmModelView {
 	}
 
 	@Override
-	public JPAEdmSchemaView getSchemaView( ){
+	public JPAEdmSchemaView getEdmSchemaView( ){
 		return schemaView;
 	}
 	

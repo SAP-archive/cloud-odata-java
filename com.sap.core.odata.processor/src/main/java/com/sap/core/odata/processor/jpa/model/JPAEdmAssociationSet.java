@@ -64,7 +64,7 @@ public class JPAEdmAssociationSet extends JPAEdmBaseViewImpl implements
 					.getJPAEdmEntityContainerView().getJPAEdmEntitySetView();
 
 			List<EntitySet> entitySetList = entitySetView
-					.getConsistentEntitySetList();
+					.getConsistentEdmEntitySetList();
 			if (associationView.isConsistent()) {
 				for (Association association : associationView
 						.getConsistentEdmAssociationList()) {

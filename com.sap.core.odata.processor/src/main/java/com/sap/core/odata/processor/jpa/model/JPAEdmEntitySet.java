@@ -37,7 +37,7 @@ public class JPAEdmEntitySet extends JPAEdmBaseViewImpl implements
 	}
 
 	@Override
-	public List<EntitySet> getConsistentEntitySetList() {
+	public List<EntitySet> getConsistentEdmEntitySetList() {
 		return consistentEntitySetList;
 	}
 

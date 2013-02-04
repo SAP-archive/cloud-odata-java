@@ -45,7 +45,7 @@ public class JPAEdmComplexType extends JPAEdmBaseViewImpl implements
 	}
 
 	@Override
-	public ComplexType searchComplexType(String embeddableTypeName) {
+	public ComplexType searchEdmComplexType(String embeddableTypeName) {
 		return searchMap.get(embeddableTypeName);
 	}
 
@@ -60,7 +60,7 @@ public class JPAEdmComplexType extends JPAEdmBaseViewImpl implements
 	}
 	
 	@Override
-	public ComplexType searchComplexType(FullQualifiedName type) {
+	public ComplexType searchEdmComplexType(FullQualifiedName type) {
 		String name = type.getName();
 		return searchComplexTypeByName(name);
 
@@ -75,7 +75,7 @@ public class JPAEdmComplexType extends JPAEdmBaseViewImpl implements
 	}
 	
 	@Override
-	public void addCompleTypeView(JPAEdmComplexTypeView view) {
+	public void addJPAEdmCompleTypeView(JPAEdmComplexTypeView view) {
 		String searchKey = view.getJPAEmbeddableType().getJavaType().getName();
 
 		if (!searchMap.containsKey(searchKey)) {
@@ -104,7 +104,7 @@ public class JPAEdmComplexType extends JPAEdmBaseViewImpl implements
 			JPAEdmMappingImpl newMapping = new JPAEdmMappingImpl();
 			Mapping mapping = oldSimpleProperty.getMapping();
 			JPAEdmMapping oldMapping = (JPAEdmMapping)mapping;
-			newMapping.setColumnName(oldMapping.getColumnName());
+			newMapping.setJPAColumnName(oldMapping.getJPAColumnName());
 			newMapping.setInternalName(embeddablePropertyName + "." + mapping.getInternalName());
 			newMapping.setMimeType(mapping.getMimeType());
 			newMapping.setObject(mapping.getObject());
@@ -171,7 +171,7 @@ public class JPAEdmComplexType extends JPAEdmBaseViewImpl implements
 
 				currentComplexType = new ComplexType();
 				currentComplexType
-						.setProperties(propertyView.getPropertyList());
+						.setProperties(propertyView.getEdmPropertyList());
 				JPAEdmNameBuilder.build(JPAEdmComplexType.this);
 
 				searchMap.put(searchKey, currentComplexType);

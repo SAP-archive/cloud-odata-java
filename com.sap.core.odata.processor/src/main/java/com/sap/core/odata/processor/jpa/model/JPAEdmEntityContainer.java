@@ -99,7 +99,7 @@ public class JPAEdmEntityContainer extends JPAEdmBaseViewImpl implements
 			entitySetView.getBuilder().build();
 			if (entitySetView.isConsistent())
 				currentEntityContainer.setEntitySets(entitySetView
-						.getConsistentEntitySetList());
+						.getConsistentEdmEntitySetList());
 			else {
 				isConsistent = false;
 				return;

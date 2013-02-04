@@ -154,7 +154,7 @@ public class JPAEdmReferentialConstraintRole extends JPAEdmBaseViewImpl
 					for (String columnName : jpaColumnNames) {
 						for (Property property : edmEntityType.getProperties()) {
 							if (columnName.equals(((JPAEdmMapping) property
-									.getMapping()).getColumnName())) {
+									.getMapping()).getJPAColumnName())) {
 								PropertyRef propertyRef = new PropertyRef();
 								propertyRef.setName(property.getName());
 								propertyRefs.add(propertyRef);

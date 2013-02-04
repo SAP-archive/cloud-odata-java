@@ -71,12 +71,12 @@ public class JPAEdmKeyTest extends JPAEdmTestModelView {
 	}
 
 	@Override
-	public ComplexType searchComplexType(FullQualifiedName arg0) {
-		return searchComplexType(arg0.getName());
+	public ComplexType searchEdmComplexType(FullQualifiedName arg0) {
+		return searchEdmComplexType(arg0.getName());
 	}
 
 	@Override
-	public ComplexType searchComplexType(String arg0) {
+	public ComplexType searchEdmComplexType(String arg0) {
 		if (arg0.equals(JPAEdmMockData.ComplexType.ComplexTypeA.class.getName()))
 			return buildComplexTypeA();
 		else if (arg0.equals(JPAEdmMockData.ComplexType.ComplexTypeB.class
