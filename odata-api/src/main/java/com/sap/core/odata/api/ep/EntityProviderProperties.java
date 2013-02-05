@@ -1,6 +1,7 @@
 package com.sap.core.odata.api.ep;
 
 import java.net.URI;
+import java.util.Map;
 
 import com.sap.core.odata.api.commons.InlineCount;
 
@@ -14,6 +15,7 @@ public class EntityProviderProperties {
   private InlineCount inlineCountType;
   private Integer inlineCount;
   private String skipToken;
+  private Map<String, String> nextLinkQueryOptions;
 
   private EntityProviderProperties() {}
 
@@ -52,6 +54,13 @@ public class EntityProviderProperties {
     return skipToken;
   }
 
+  /**
+   * @return query options for extending next link
+   */
+  public final Map<String, String> getNextLinkQueryOptions() {
+    return nextLinkQueryOptions;
+  }
+  
   public static ODataEntityProviderPropertiesBuilder serviceRoot(URI serviceRoot) {
     return new ODataEntityProviderPropertiesBuilder().serviceRoot(serviceRoot);
   }
@@ -101,6 +110,11 @@ public class EntityProviderProperties {
 
     public final EntityProviderProperties build() {
       return properties;
+    }
+
+    public ODataEntityProviderPropertiesBuilder nextLinkQueryOptions(Map<String, String> query) {
+      properties.nextLinkQueryOptions = query;
+      return this;
     }
   }
 }
