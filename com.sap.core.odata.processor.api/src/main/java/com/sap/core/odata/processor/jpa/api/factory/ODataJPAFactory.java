@@ -23,7 +23,7 @@ package com.sap.core.odata.processor.jpa.api.factory;
  */
 public abstract class ODataJPAFactory {
 
-	private static final String IMPLEMENTATION = "com.sap.core.odata.processor.jpa.factory.ODataJPAFactoryImpl";
+	private static final String IMPLEMENTATION = "com.sap.core.odata.processor.core.jpa.factory.ODataJPAFactoryImpl";
 	private static ODataJPAFactory factoryImpl;
 
 	/**

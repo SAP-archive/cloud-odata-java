@@ -388,7 +388,7 @@ public class JPAResultParserTest {
 
 		} catch (NoSuchMethodException e) {
 			assertEquals(
-					"com.sap.core.odata.processor.jpa.JPAResultParser.getGetterName1(com.sap.core.odata.api.edm.EdmProperty)",
+					"com.sap.core.odata.processor.core.jpa.JPAResultParser.getGetterName1(com.sap.core.odata.api.edm.EdmProperty)",
 					e.getMessage());
 		} catch (SecurityException e) {
 			fail("Exception " + e.getMessage() + " not expected");

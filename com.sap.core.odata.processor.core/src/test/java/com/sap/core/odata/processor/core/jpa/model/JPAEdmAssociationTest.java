@@ -1,8 +1,8 @@
 package com.sap.core.odata.processor.core.jpa.model;
 
-import static org.junit.Assert.*;
-
-import java.lang.reflect.Field;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import javax.persistence.metamodel.Attribute;
 
@@ -14,12 +14,8 @@ import com.sap.core.odata.api.edm.FullQualifiedName;
 import com.sap.core.odata.api.edm.provider.Association;
 import com.sap.core.odata.api.edm.provider.AssociationEnd;
 import com.sap.core.odata.api.edm.provider.EntityType;
-import com.sap.core.odata.processor.core.jpa.model.JPAEdmAssociation;
-import com.sap.core.odata.processor.core.jpa.model.JPAEdmAssociationEnd;
-import com.sap.core.odata.processor.core.jpa.model.JPAEdmReferentialConstraint;
 import com.sap.core.odata.processor.core.jpa.model.mock.JPAAttributeMock;
 import com.sap.core.odata.processor.core.jpa.testdata.JPAEdmMockData.SimpleType;
-import com.sap.core.odata.processor.core.jpa.testdata.JPAEdmMockData.SimpleType.SimpleTypeA;
 import com.sap.core.odata.processor.jpa.api.exception.ODataJPAModelException;
 import com.sap.core.odata.processor.jpa.api.model.JPAEdmReferentialConstraintView;
 
