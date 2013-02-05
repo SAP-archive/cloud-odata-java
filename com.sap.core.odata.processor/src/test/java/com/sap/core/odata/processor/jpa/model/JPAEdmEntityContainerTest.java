@@ -74,7 +74,13 @@ public class JPAEdmEntityContainerTest extends JPAEdmTestModelView {
 		assertNotNull(objJPAEdmEntityContainer.getEdmAssociationSetView());
 	}
 	
-	
+	@Test
+	public void testGetBuilderIdempotent(){
+		JPAEdmBuilder builder1 = objJPAEdmEntityContainer.getBuilder();
+		JPAEdmBuilder builder2 = objJPAEdmEntityContainer.getBuilder();
+		
+		assertEquals(builder1.hashCode(), builder2.hashCode());
+	}
 	
 	@Override
 	public Metamodel getJPAMetaModel() {

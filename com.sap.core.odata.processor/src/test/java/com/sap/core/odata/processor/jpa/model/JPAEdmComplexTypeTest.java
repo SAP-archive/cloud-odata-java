@@ -22,6 +22,7 @@ import com.sap.core.odata.api.edm.provider.ComplexType;
 import com.sap.core.odata.api.edm.provider.Mapping;
 import com.sap.core.odata.api.edm.provider.Property;
 import com.sap.core.odata.api.edm.provider.SimpleProperty;
+import com.sap.core.odata.processor.jpa.api.access.JPAEdmBuilder;
 import com.sap.core.odata.processor.jpa.api.exception.ODataJPAModelException;
 import com.sap.core.odata.processor.jpa.api.model.JPAEdmMapping;
 import com.sap.core.odata.processor.jpa.model.mock.JPAEmbeddableMock;
@@ -105,6 +106,14 @@ public class JPAEdmComplexTypeTest extends JPAEdmTestModelView {
 	public void testSearchComplexTypeFullQualifiedNameNegative()
 	{
 		assertNull(objComplexType.searchEdmComplexType(new FullQualifiedName("salesorderprocessing", "lang.String")));
+	}
+	
+	@Test
+	public void testGetBuilderIdempotent(){
+		JPAEdmBuilder builder1 = objComplexType.getBuilder();
+		JPAEdmBuilder builder2 = objComplexType.getBuilder();
+		
+		assertEquals(builder1.hashCode(), builder2.hashCode());
 	}
 
 	@Test
