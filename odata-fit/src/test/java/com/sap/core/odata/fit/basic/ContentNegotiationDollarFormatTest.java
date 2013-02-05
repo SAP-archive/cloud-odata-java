@@ -6,13 +6,11 @@ import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import java.net.URI;
 import java.util.Arrays;
 
 import org.apache.http.Header;
 import org.apache.http.HttpHeaders;
 import org.apache.http.HttpResponse;
-import org.apache.http.client.methods.HttpGet;
 import org.junit.Test;
 
 import com.sap.core.odata.api.commons.HttpStatusCodes;
@@ -48,10 +46,8 @@ public class ContentNegotiationDollarFormatTest extends AbstractBasicTest {
 
   @Test
   public void testAtomFormatForServiceDocument() throws Exception {
-    HttpGet get = new HttpGet(URI.create(this.getEndpoint().toString() + "?$format=atom"));
+    HttpResponse response = executeGetRequest("?$format=atom");
 
-    HttpResponse response = this.getHttpClient().execute(get);
-    
     String responseEntity = StringHelper.httpEntityToString(response.getEntity());
     assertEquals("Test passed.", responseEntity);
     assertEquals(HttpStatusCodes.OK.getStatusCode(), response.getStatusLine().getStatusCode());
@@ -62,9 +58,7 @@ public class ContentNegotiationDollarFormatTest extends AbstractBasicTest {
 
   @Test
   public void testFormatCustom() throws Exception {
-    HttpGet get = new HttpGet(URI.create(this.getEndpoint().toString() + "?$format=csv"));
-
-    HttpResponse response = this.getHttpClient().execute(get);
+    HttpResponse response = executeGetRequest("?$format=csv");
 
     assertEquals(HttpStatusCodes.OK.getStatusCode(), response.getStatusLine().getStatusCode());
 
@@ -74,9 +68,7 @@ public class ContentNegotiationDollarFormatTest extends AbstractBasicTest {
 
   @Test
   public void testFormatNotAccepted() throws Exception {
-    HttpGet get = new HttpGet(URI.create(this.getEndpoint().toString() + "?$format=csvOrSomethingElse"));
-
-    HttpResponse response = this.getHttpClient().execute(get);
+    HttpResponse response = executeGetRequest("?$format=csvOrSomethingElse");
 
     assertEquals(HttpStatusCodes.NOT_ACCEPTABLE.getStatusCode(), response.getStatusLine().getStatusCode());
   }

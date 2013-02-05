@@ -25,6 +25,9 @@ import com.sap.core.odata.testutil.fit.AbstractFitTest;
 import com.sap.core.odata.testutil.helper.StringHelper;
 import com.sap.core.odata.testutil.helper.XMLUnitHelper;
 
+/**
+ * @author SAP AG
+ */
 public class AtomEntryEncodingTest extends AbstractFitTest {
 
   @Override

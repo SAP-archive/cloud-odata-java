@@ -5,6 +5,12 @@ import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import java.io.IOException;
+import java.net.URI;
+
+import org.apache.http.HttpResponse;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.methods.HttpGet;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
@@ -16,6 +22,9 @@ import com.sap.core.odata.api.processor.ODataSingleProcessor;
 import com.sap.core.odata.core.processor.ODataSingleProcessorService;
 import com.sap.core.odata.testutil.fit.AbstractFitTest;
 
+/**
+ * @author SAP AG
+ */
 public abstract class AbstractBasicTest extends AbstractFitTest {
 
   private ODataContext context;
@@ -51,4 +60,9 @@ public abstract class AbstractBasicTest extends AbstractFitTest {
   }
 
   abstract ODataSingleProcessor createProcessor() throws ODataException;
+
+  protected HttpResponse executeGetRequest(String request) throws ClientProtocolException, IOException {
+    HttpGet get = new HttpGet(URI.create(getEndpoint().toString() + request));
+    return getHttpClient().execute(get);
+  }
 }

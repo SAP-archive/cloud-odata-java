@@ -6,13 +6,12 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import java.io.IOException;
-import java.net.URI;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.methods.HttpGet;
 import org.junit.Test;
 
+import com.sap.core.odata.api.commons.HttpStatusCodes;
 import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.api.processor.ODataSingleProcessor;
 import com.sap.core.odata.api.processor.part.ServiceDocumentProcessor;
@@ -37,8 +36,7 @@ public class ErrorResponseTest extends AbstractBasicTest {
   public void test500RuntimeError() throws ClientProtocolException, IOException, ODataException {
     disableLogging();
 
-    HttpGet get = new HttpGet(URI.create(this.getEndpoint().toString()));
-    HttpResponse response = this.getHttpClient().execute(get);
-    assertEquals(500, response.getStatusLine().getStatusCode());
+    HttpResponse response = executeGetRequest("");
+    assertEquals(HttpStatusCodes.INTERNAL_SERVER_ERROR.getStatusCode(), response.getStatusLine().getStatusCode());
   }
 }

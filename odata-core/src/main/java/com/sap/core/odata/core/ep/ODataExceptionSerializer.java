@@ -22,13 +22,28 @@ import com.sap.core.odata.core.ep.util.CircleStreamBuffer;
 import com.sap.core.odata.core.ep.util.FormatXml;
 
 /**
- * Serializes an error message according to the OData standard
+ * Serializes an error message according to the OData standard.
  * @author SAP AG
  */
 public class ODataExceptionSerializer {
 
   private final static Logger LOG = LoggerFactory.getLogger(ODataExceptionSerializer.class);
 
+  /**
+   * <p>Serializes an error message according to the OData standard.</p>
+   * <p>In case an error occurs, it is logged.
+   * An exception is not thrown because this method is used in exception handling.</p> 
+   * @param errorCode   a String that serves as a substatus to the HTTP response code
+   * @param message     a human-readable message describing the error
+   * @param innerError  debugging information to assist the person responsible for a
+   *                    service implementation in determining the cause of an error
+   *                    (should only be used in development environments and
+   *                     should not be present in a response from a production data
+   *                     service to guard against information disclosure security concerns)
+   * @param contentType the content type the error message should correspond to
+   * @param locale      the {@link Locale} that should be used to format the error message
+   * @return            an {@link InputStream} containing the serialized error message
+   */
   public static InputStream serialize(String errorCode, String message, String innerError, ContentType contentType, Locale locale) {
     if (contentType.getODataFormat() == ODataFormat.JSON)
       return serializeJson(errorCode, message, innerError, locale);
@@ -46,11 +61,11 @@ public class ODataExceptionSerializer {
     }
   }
 
-  private static InputStream serializeXml(String errorCode, String message, String innerError, Locale locale) {
+  private static InputStream serializeXml(final String errorCode, final String message, final String innerError, final Locale locale) {
     InputStream outputMessage = null;
     try {
-      CircleStreamBuffer csb = new CircleStreamBuffer();
-      OutputStream outputStream = csb.getOutputStream();
+      CircleStreamBuffer buffer = new CircleStreamBuffer();
+      OutputStream outputStream = buffer.getOutputStream();
       OutputStreamWriter writer = new OutputStreamWriter(outputStream, "UTF-8");
       XMLStreamWriter xmlStreamWriter = XMLOutputFactory
           .newInstance().createXMLStreamWriter(writer);
@@ -59,17 +74,14 @@ public class ODataExceptionSerializer {
       xmlStreamWriter.writeStartElement(FormatXml.M_ERROR);
       xmlStreamWriter.writeDefaultNamespace(Edm.NAMESPACE_M_2007_08);
       xmlStreamWriter.writeStartElement(FormatXml.M_CODE);
-      if (errorCode != null) {
+      if (errorCode != null)
         xmlStreamWriter.writeCharacters(errorCode);
-      }
       xmlStreamWriter.writeEndElement();
       xmlStreamWriter.writeStartElement(FormatXml.M_MESSAGE);
-      if (locale != null) {
-        xmlStreamWriter.writeAttribute(Edm.PREFIX_XML, Edm.NAMESPACE_XML_1998, FormatXml.XML_LANG, getLang(locale));
-      }
-      if (message != null) {
+      if (locale != null)
+        xmlStreamWriter.writeAttribute(Edm.PREFIX_XML, Edm.NAMESPACE_XML_1998, FormatXml.XML_LANG, getLocale(locale));
+      if (message != null)
         xmlStreamWriter.writeCharacters(message);
-      }
       xmlStreamWriter.writeEndElement();
       if (innerError != null) {
         xmlStreamWriter.writeStartElement(FormatXml.M_INNER_ERROR);
@@ -83,7 +95,7 @@ public class ODataExceptionSerializer {
       writer.flush();
       xmlStreamWriter.flush();
 
-      outputMessage = csb.getInputStream();
+      outputMessage = buffer.getInputStream();
     } catch (XMLStreamException e) {
       LOG.error("Fatal Error when serializing an Exception", e);
     } catch (IOException e) {
@@ -95,7 +107,7 @@ public class ODataExceptionSerializer {
   /**
    * Gets language and country as defined in RFC 4646 based on {@link Locale}.
    */
-  private static String getLang(Locale locale) {
+  private static String getLocale(final Locale locale) {
     if (locale.getCountry().isEmpty())
       return locale.getLanguage();
     else

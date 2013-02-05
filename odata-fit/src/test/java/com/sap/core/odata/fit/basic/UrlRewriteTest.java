@@ -49,63 +49,63 @@ public class UrlRewriteTest extends AbstractBasicTest {
   public void testGetServiceDocumentRedirect() throws Exception {
     HttpRequestBase httpMethod = createRedirectRequest(HttpGet.class);
     HttpResponse response = this.getHttpClient().execute(httpMethod);
-    assertEquals(307, response.getStatusLine().getStatusCode());
+    assertEquals(HttpStatusCodes.TEMPORARY_REDIRECT.getStatusCode(), response.getStatusLine().getStatusCode());
   }
 
   @Test
   public void testPutServiceDocumentRedirect() throws Exception {
     HttpRequestBase httpMethod = createRedirectRequest(HttpPut.class);
     HttpResponse response = this.getHttpClient().execute(httpMethod);
-    assertEquals(307, response.getStatusLine().getStatusCode());
+    assertEquals(HttpStatusCodes.TEMPORARY_REDIRECT.getStatusCode(), response.getStatusLine().getStatusCode());
   }
 
   @Test
   public void testPostServiceDocumentRedirect() throws Exception {
     HttpRequestBase httpMethod = createRedirectRequest(HttpPost.class);
     HttpResponse response = this.getHttpClient().execute(httpMethod);
-    assertEquals(307, response.getStatusLine().getStatusCode());
+    assertEquals(HttpStatusCodes.TEMPORARY_REDIRECT.getStatusCode(), response.getStatusLine().getStatusCode());
   }
 
   @Test
   public void testDeleteServiceDocumentRedirect() throws Exception {
     HttpRequestBase httpMethod = createRedirectRequest(HttpDelete.class);
     HttpResponse response = this.getHttpClient().execute(httpMethod);
-    assertEquals(307, response.getStatusLine().getStatusCode());
+    assertEquals(HttpStatusCodes.TEMPORARY_REDIRECT.getStatusCode(), response.getStatusLine().getStatusCode());
   }
 
   @Test
   public void testOptionsServiceDocumentRedirect() throws Exception {
     HttpRequestBase httpMethod = createRedirectRequest(HttpOptions.class);
     HttpResponse response = this.getHttpClient().execute(httpMethod);
-    assertEquals(307, response.getStatusLine().getStatusCode());
+    assertEquals(HttpStatusCodes.TEMPORARY_REDIRECT.getStatusCode(), response.getStatusLine().getStatusCode());
   }
 
   @Test
   public void testHeadServiceDocumentRedirect() throws Exception {
     HttpRequestBase httpMethod = createRedirectRequest(HttpHead.class);
     HttpResponse response = this.getHttpClient().execute(httpMethod);
-    assertEquals(307, response.getStatusLine().getStatusCode());
+    assertEquals(HttpStatusCodes.TEMPORARY_REDIRECT.getStatusCode(), response.getStatusLine().getStatusCode());
   }
 
   @Test
   public void testMergeServiceDocumentRedirect() throws Exception {
     HttpRequestBase httpMethod = createRedirectRequest(HttpMerge.class);
     HttpResponse response = this.getHttpClient().execute(httpMethod);
-    assertEquals(307, response.getStatusLine().getStatusCode());
+    assertEquals(HttpStatusCodes.TEMPORARY_REDIRECT.getStatusCode(), response.getStatusLine().getStatusCode());
   }
 
   @Test
   public void testPatchServiceDocumentRedirect() throws Exception {
     HttpRequestBase httpMethod = createRedirectRequest(HttpPatch.class);
     HttpResponse response = this.getHttpClient().execute(httpMethod);
-    assertEquals(307, response.getStatusLine().getStatusCode());
+    assertEquals(HttpStatusCodes.TEMPORARY_REDIRECT.getStatusCode(), response.getStatusLine().getStatusCode());
   }
 
   @Test
   public void testSomethingUnsupportedServiceDocumentRedirect() throws Exception {
     HttpRequestBase httpMethod = createRedirectRequest(HttpSomethingUnsupported.class);
     HttpResponse response = this.getHttpClient().execute(httpMethod);
-    assertEquals(405, response.getStatusLine().getStatusCode());
+    assertEquals(HttpStatusCodes.METHOD_NOT_ALLOWED.getStatusCode(), response.getStatusLine().getStatusCode());
   }
 
   private HttpRequestBase createRedirectRequest(Class<? extends HttpRequestBase> clazz) throws Exception {
@@ -132,8 +132,7 @@ public class UrlRewriteTest extends AbstractBasicTest {
 
     String payload = StringHelper.inputStreamToString(response.getEntity().getContent());
     assertEquals("service document", payload);
-    assertEquals(200, response.getStatusLine().getStatusCode());
-
+    assertEquals(HttpStatusCodes.OK.getStatusCode(), response.getStatusLine().getStatusCode());
   }
 
   @Test
@@ -147,8 +146,7 @@ public class UrlRewriteTest extends AbstractBasicTest {
 
     String payload = StringHelper.inputStreamToString(response.getEntity().getContent());
     assertEquals("metadata", payload);
-    assertEquals(200, response.getStatusLine().getStatusCode());
-
+    assertEquals(HttpStatusCodes.OK.getStatusCode(), response.getStatusLine().getStatusCode());
   }
 
 }

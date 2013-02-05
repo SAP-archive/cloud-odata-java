@@ -46,24 +46,22 @@ public class ContextTest extends AbstractBasicTest {
   @Test
   public void checkContextExists() throws ClientProtocolException, IOException, ODataException {
     assertNull(this.getService().getProcessor().getContext());
-    HttpGet get = new HttpGet(URI.create(this.getEndpoint().toString() + "$metadata"));
-    HttpResponse response = this.getHttpClient().execute(get);
+    HttpResponse response = executeGetRequest("$metadata");
 
-    ODataContext ctx = this.getService().getProcessor().getContext();
-    assertNotNull(ctx);
+    ODataContext context = this.getService().getProcessor().getContext();
+    assertNotNull(context);
 
-    ODataService service = ctx.getService();
+    ODataService service = context.getService();
     assertNotNull(service);
 
     assertEquals(Status.OK.getStatusCode(), response.getStatusLine().getStatusCode());
 
-    assertEquals("$metadata", ctx.getPathInfo().getODataSegments().get(0).getPath());
+    assertEquals("$metadata", context.getPathInfo().getODataSegments().get(0).getPath());
   }
 
   @Test
   public void checkBaseUriForServiceDocument() throws ClientProtocolException, IOException, ODataException {
-    HttpGet get = new HttpGet(URI.create(this.getEndpoint().toString()));
-    this.getHttpClient().execute(get);
+    executeGetRequest("");
 
     ODataContext ctx = this.getService().getProcessor().getContext();
     assertNotNull(ctx);
@@ -72,8 +70,7 @@ public class ContextTest extends AbstractBasicTest {
 
   @Test
   public void checkBaseUriForMetadata() throws ClientProtocolException, IOException, ODataException {
-    HttpGet get = new HttpGet(URI.create(this.getEndpoint().toString() + "/$metadata"));
-    this.getHttpClient().execute(get);
+    executeGetRequest("$metadata");
 
     ODataContext ctx = this.getService().getProcessor().getContext();
     assertNotNull(ctx);
