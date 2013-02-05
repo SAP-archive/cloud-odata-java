@@ -1,5 +1,6 @@
 package com.sap.core.odata.processor.jpa.access.data;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -57,9 +58,15 @@ public class JPAProcessorImpl implements JPAProcessor {
 		if (uriParserResultView.getSkip() != null)
 			query.setFirstResult(uriParserResultView.getSkip());
 
-		if (uriParserResultView.getTop() != null)
-			query.setMaxResults(uriParserResultView.getTop());
-
+		if (uriParserResultView.getTop() != null){
+			if(uriParserResultView.getTop() == 0){
+				List<T> resultList = new ArrayList<T>();
+				return resultList;
+			}else{
+				query.setMaxResults(uriParserResultView.getTop());
+			}
+		}
+			
 		return query.getResultList();
 
 	}
