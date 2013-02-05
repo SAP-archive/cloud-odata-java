@@ -8,6 +8,7 @@ import com.sap.core.odata.api.edm.Edm;
 import com.sap.core.odata.api.edm.EdmEntitySet;
 import com.sap.core.odata.api.edm.EdmFunctionImport;
 import com.sap.core.odata.api.edm.EdmProperty;
+import com.sap.core.odata.api.edm.provider.Schema;
 import com.sap.core.odata.api.ep.EntityProvider.EntityProviderInterface;
 import com.sap.core.odata.api.ep.EntityProviderException;
 import com.sap.core.odata.api.ep.EntityProviderProperties;
@@ -130,6 +131,11 @@ public class ProviderFacadeImpl implements EntityProviderInterface {
   @Override
   public byte[] readBinary(InputStream content) throws EntityProviderException {
     return create().readBinary(content);
+  }
+
+  @Override
+  public ODataResponse writeMetadata(List<Schema> schemas, Map<String, String> predefinedNamespaces) throws EntityProviderException {
+    return create().writeMetadata(schemas, predefinedNamespaces);
   }
 
 }

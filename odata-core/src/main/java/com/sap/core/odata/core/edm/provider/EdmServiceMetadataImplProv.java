@@ -9,7 +9,7 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.sap.core.odata.api.edm.Edm;
+import com.sap.core.odata.api.ODataServiceVersion;
 import com.sap.core.odata.api.edm.EdmServiceMetadata;
 import com.sap.core.odata.api.edm.provider.DataServices;
 import com.sap.core.odata.api.edm.provider.EdmProvider;
@@ -18,6 +18,7 @@ import com.sap.core.odata.api.edm.provider.Property;
 import com.sap.core.odata.api.edm.provider.Schema;
 import com.sap.core.odata.api.ep.EntityProviderException;
 import com.sap.core.odata.api.exception.ODataException;
+import com.sap.core.odata.core.ep.producer.XmlMetadataProducer;
 import com.sap.core.odata.core.ep.util.CircleStreamBuffer;
 
 public class EdmServiceMetadataImplProv implements EdmServiceMetadata {
@@ -44,7 +45,7 @@ public class EdmServiceMetadataImplProv implements EdmServiceMetadata {
     try {
       DataServices metadata = new DataServices().setSchemas(schemas).setDataServiceVersion(getDataServiceVersion());
       writer = new OutputStreamWriter(csb.getOutputStream(), "UTF-8");
-      EdmMetadata.writeMetadata(metadata, writer);
+      XmlMetadataProducer.writeMetadata(metadata, writer, null);
       return csb.getInputStream();
     } catch (UnsupportedEncodingException e) {
       throw new EntityProviderException(EntityProviderException.COMMON, e);
@@ -67,7 +68,7 @@ public class EdmServiceMetadataImplProv implements EdmServiceMetadata {
     }
 
     if (dataServiceVersion == null) {
-      dataServiceVersion = Edm.DATA_SERVICE_VERSION_10;
+      dataServiceVersion = ODataServiceVersion.V10;
 
       if (schemas != null) {
         for (Schema schema : schemas) {
@@ -80,7 +81,7 @@ public class EdmServiceMetadataImplProv implements EdmServiceMetadata {
                   if (property.getCustomizableFeedMappings() != null) {
                     if (property.getCustomizableFeedMappings().getFcKeepInContent() != null) {
                       if (!property.getCustomizableFeedMappings().getFcKeepInContent()) {
-                        dataServiceVersion = Edm.DATA_SERVICE_VERSION_20;
+                        dataServiceVersion = ODataServiceVersion.V20;
                         return dataServiceVersion;
                       }
                     }
@@ -89,7 +90,7 @@ public class EdmServiceMetadataImplProv implements EdmServiceMetadata {
                 if (entityType.getCustomizableFeedMappings() != null) {
                   if (entityType.getCustomizableFeedMappings().getFcKeepInContent() != null) {
                     if (entityType.getCustomizableFeedMappings().getFcKeepInContent()) {
-                      dataServiceVersion = Edm.DATA_SERVICE_VERSION_20;
+                      dataServiceVersion = ODataServiceVersion.V20;
                       return dataServiceVersion;
                     }
                   }

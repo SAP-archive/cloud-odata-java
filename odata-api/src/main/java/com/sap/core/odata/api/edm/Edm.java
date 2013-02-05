@@ -30,8 +30,6 @@ public interface Edm {
   public static final String LINK_REL_EDIT_MEDIA = "edit-media";
   public static final String LINK_REL_EDIT = "edit";
   public static final String LINK_REL_NEXT = "next";
-  public static final String DATA_SERVICE_VERSION_10 = "1.0";
-  public static final String DATA_SERVICE_VERSION_20 = "2.0";
   public static final String DELIMITER = ".";
 
   /**

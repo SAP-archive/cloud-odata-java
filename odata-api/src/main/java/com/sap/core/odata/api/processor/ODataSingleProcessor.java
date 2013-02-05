@@ -4,6 +4,7 @@ import java.io.InputStream;
 import java.util.Collections;
 import java.util.List;
 
+import com.sap.core.odata.api.ODataServiceVersion;
 import com.sap.core.odata.api.commons.HttpHeaders;
 import com.sap.core.odata.api.commons.HttpStatusCodes;
 import com.sap.core.odata.api.commons.ODataHttpHeaders;
@@ -320,7 +321,7 @@ public abstract class ODataSingleProcessor implements
 
     final ODataResponse response = EntityProvider.writeServiceDocument(contentType, entityDataModel, serviceRoot);
     final ODataResponseBuilder odataResponseBuilder = ODataResponse.fromResponse(response)
-        .header(ODataHttpHeaders.DATASERVICEVERSION, Edm.DATA_SERVICE_VERSION_10);
+        .header(ODataHttpHeaders.DATASERVICEVERSION, ODataServiceVersion.V10);
     if (!(contentType.equals(response.getContentHeader())
     || (contentType.contains("atom") && response.getContentHeader().contains("atomsvc")))) {
       odataResponseBuilder.contentHeader(contentType);

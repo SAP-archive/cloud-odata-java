@@ -50,7 +50,6 @@ public class EdmServiceMetadataImplProvTest extends BaseTest {
 
   @Test
   public void testSchemaStructure() throws Exception {
-    System.out.println(metadata);
     assertXpathExists("/edmx:Edmx", metadata);
     assertXpathExists("/edmx:Edmx/edmx:DataServices", metadata);
     assertXpathExists("/edmx:Edmx/edmx:DataServices/a:Schema", metadata);

@@ -173,8 +173,10 @@ public class EdmTestProvider extends EdmProvider {
         properties.add(new SimpleProperty().setName("EmployeeName").setType(EdmSimpleTypeKind.String)
             .setCustomizableFeedMappings(new CustomizableFeedMappings()
                 .setFcTargetPath(EdmTargetPath.SYNDICATION_TITLE)).setAnnotationAttributes(annoList2));
+        ArrayList<AnnotationAttribute> annoList3 = new ArrayList<AnnotationAttribute>();
+        annoList3.add(new AnnotationAttribute().setName("annoName").setNamespace("http://annoNamespaceNew").setPrefix("annoPrefix").setText("annoTextNew"));
         properties.add(new SimpleProperty().setName("ManagerId").setType(EdmSimpleTypeKind.String)
-            .setMapping(new Mapping().setInternalName("getManager.getId")));
+            .setMapping(new Mapping().setInternalName("getManager.getId")).setAnnotationAttributes(annoList3));
         properties.add(new SimpleProperty().setName("RoomId").setType(EdmSimpleTypeKind.String)
             .setMapping(new Mapping().setInternalName("getRoom.getId")));
         properties.add(new SimpleProperty().setName("TeamId").setType(EdmSimpleTypeKind.String)
