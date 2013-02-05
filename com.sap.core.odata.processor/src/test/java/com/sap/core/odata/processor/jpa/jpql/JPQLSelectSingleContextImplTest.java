@@ -142,7 +142,7 @@ public class JPQLSelectSingleContextImplTest {
 			/*JPQLSelectContext selectContext1 = (JPQLSelectContext)*/ builder1.build();
 			fail("Should not come here");
 		} catch (ODataJPAModelException e) {
-			assertTrue(true);
+			fail();
 		}
 		catch (ODataJPARuntimeException e){
 			assertTrue(true);
