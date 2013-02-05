@@ -11,6 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.sap.core.odata.api.ODataServiceFactory;
+import com.sap.core.odata.testutil.helper.ProcessLocker;
 
 /**
  * @author SAP AG
@@ -49,43 +50,36 @@ public class TestServer {
 
   public void startServer(Class<? extends ODataServiceFactory> factoryClass) {
     try {
-      if (ProcessLocker.crossProcessLockAcquire(this.getClass(), 10000)) {
-        for (int port = PORT_MIN; port <= PORT_MAX; port += PORT_INC) {
-          final CXFNonSpringJaxrsServlet odataServlet = new CXFNonSpringJaxrsServlet();
-          final ServletHolder odataServletHolder = new ServletHolder(odataServlet);
-          odataServletHolder.setInitParameter("javax.ws.rs.Application", "com.sap.core.odata.core.rest.app.ODataApplication");
-          odataServletHolder.setInitParameter(ODataServiceFactory.FACTORY_LABEL, factoryClass.getCanonicalName());
+      for (int port = PORT_MIN; port <= PORT_MAX; port += PORT_INC) {
+        final CXFNonSpringJaxrsServlet odataServlet = new CXFNonSpringJaxrsServlet();
+        final ServletHolder odataServletHolder = new ServletHolder(odataServlet);
+        odataServletHolder.setInitParameter("javax.ws.rs.Application", "com.sap.core.odata.core.rest.app.ODataApplication");
+        odataServletHolder.setInitParameter(ODataServiceFactory.FACTORY_LABEL, factoryClass.getCanonicalName());
 
-          if (pathSplit > 0) {
-            odataServletHolder.setInitParameter(ODataServiceFactory.PATH_SPLIT_LABEL, Integer.toString(pathSplit));
-          }
-
-          final ServletContextHandler contextHandler = new ServletContextHandler(ServletContextHandler.SESSIONS);
-          contextHandler.addServlet(odataServletHolder, PATH + "/*");
-
-          endpoint = new URI(SCHEME, null, HOST, port, PATH, null, null);
-          server = new Server(port);
-          server.setHandler(contextHandler);
-          try {
-            server.start();
-            break;
-          } catch (final BindException e) {
-            TestServer.log.info("port is busy... " + port);
-          }
+        if (pathSplit > 0) {
+          odataServletHolder.setInitParameter(ODataServiceFactory.PATH_SPLIT_LABEL, Integer.toString(pathSplit));
         }
 
-        if (!server.isStarted()) {
-          throw new BindException("no free port in range of [" + PORT_MIN + ".." + PORT_MAX + "]");
+        final ServletContextHandler contextHandler = new ServletContextHandler(ServletContextHandler.SESSIONS);
+        contextHandler.addServlet(odataServletHolder, PATH + "/*");
+
+        endpoint = new URI(SCHEME, null, HOST, port, PATH, null, null);
+        server = new Server(port);
+        server.setHandler(contextHandler);
+        try {
+          server.start();
+          break;
+        } catch (final BindException e) {
+          TestServer.log.info("port is busy... " + port);
         }
       }
-      else {
-        throw new RuntimeException("Server couldn't start due to a process lock issue (timeout occured).");
+
+      if (!server.isStarted()) {
+        throw new BindException("no free port in range of [" + PORT_MIN + ".." + PORT_MAX + "]");
       }
 
     } catch (final Exception e) {
       throw new ServerException(e);
-    } finally {
-      ProcessLocker.crossProcessLockRelease();
     }
   }
 

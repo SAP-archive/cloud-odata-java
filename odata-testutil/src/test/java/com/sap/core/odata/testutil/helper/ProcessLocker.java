@@ -1,10 +1,11 @@
-package com.sap.core.odata.testutil.server;
+package com.sap.core.odata.testutil.helper;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.nio.channels.FileChannel;
 import java.nio.channels.FileLock;
+import java.util.concurrent.TimeoutException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,7 +22,7 @@ public class ProcessLocker {
 
   //Acquire - Returns success ( true/false )
   @SuppressWarnings("resource")
-  public static boolean crossProcessLockAcquire(final Class<?> c, final long waitMS) {
+  public static void crossProcessLockAcquire(final Class<?> c, final long waitMS) {
     RandomAccessFile randomAccessFile = null;
     if (fileLock == null && c != null && waitMS > 0) {
       try {
@@ -38,9 +39,11 @@ public class ProcessLocker {
         }
       } catch (Exception e) {
         throw new RuntimeException(e);
-      } 
+      }
     }
-    return fileLock == null ? false : true;
+    if (fileLock == null) {
+      throw new RuntimeException("timeout after " + waitMS);
+    }
   }
 
   // Release
