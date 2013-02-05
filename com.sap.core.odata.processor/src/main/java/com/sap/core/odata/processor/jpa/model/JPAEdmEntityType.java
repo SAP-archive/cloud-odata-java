@@ -33,7 +33,10 @@ public class JPAEdmEntityType extends JPAEdmBaseViewImpl implements
 
 	@Override
 	public JPAEdmBuilder getBuilder() {
-		return new JPAEdmEntityTypeBuilder();
+		if (this.builder == null)
+			this.builder = new JPAEdmEntityTypeBuilder();
+		
+		return builder;
 	}
 
 	@Override

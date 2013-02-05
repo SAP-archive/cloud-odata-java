@@ -31,7 +31,10 @@ public class JPAEdmAssociationSet extends JPAEdmBaseViewImpl implements
 
 	@Override
 	public JPAEdmBuilder getBuilder() {
-		return new JPAEdmAssociationSetBuilder();
+		if (this.builder == null)
+			this.builder = new JPAEdmAssociationSetBuilder();
+		
+		return builder;
 	}
 
 	@Override

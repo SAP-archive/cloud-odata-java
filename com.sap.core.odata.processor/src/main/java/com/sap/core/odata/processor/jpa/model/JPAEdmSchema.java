@@ -62,7 +62,10 @@ public class JPAEdmSchema extends JPAEdmBaseViewImpl implements
 
 	@Override
 	public JPAEdmBuilder getBuilder() {
-		return new JPAEdmSchemaBuilder();
+		if (this.builder == null)
+			this.builder = new JPAEdmSchemaBuilder();
+		
+		return builder;
 	}
 
 	@Override

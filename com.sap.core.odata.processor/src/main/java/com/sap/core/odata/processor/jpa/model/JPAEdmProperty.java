@@ -69,7 +69,10 @@ public class JPAEdmProperty extends JPAEdmBaseViewImpl implements
 
 	@Override
 	public JPAEdmBuilder getBuilder() {
-		return new JPAEdmPropertyBuilder();
+		if (this.builder == null)
+			this.builder = new JPAEdmPropertyBuilder();
+		
+		return builder;
 	}
 
 	@Override

@@ -28,7 +28,10 @@ public class JPAEdmEntitySet extends JPAEdmBaseViewImpl implements
 
 	@Override
 	public JPAEdmBuilder getBuilder() {
-		return new JPAEdmEntitySetBuilder();
+		if (this.builder == null)
+			this.builder = new JPAEdmEntitySetBuilder();
+		
+		return builder;
 	}
 
 	@Override
