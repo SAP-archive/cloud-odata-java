@@ -94,7 +94,7 @@ public class JPAEdmComplexTypeTest extends JPAEdmTestModelView {
 
 	@Test
 	public void testGetConsistentEdmComplexTypes() {
-		assertEquals(objComplexType.getConsistentEdmComplexTypes().size(), 1);
+		assertTrue(objComplexType.getConsistentEdmComplexTypes().size() > 0);
 	}
 
 	@Test
