@@ -84,16 +84,11 @@
 					</configuration>
 				</plugin>
 				<plugin>
-<<<<<<< HEAD
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-eclipse-plugin</artifactId>
 					<version>2.9</version>
-=======
-			        	<groupId>org.apache.maven.plugins</groupId>
-			        	<artifactId>maven-eclipse-plugin</artifactId>
-			        	<version>2.9</version>
-			      	</plugin>
-			      	<plugin>
+				</plugin>
+				<plugin>
 					<groupId>org.sonatype.maven.plugin</groupId>
 					<artifactId>emma-maven-plugin</artifactId>
 					<configuration>
@@ -101,16 +96,16 @@
 							<filter>-com.sap.core.odata.processor.fit*</filter>
 							<filter>-com.sap.core.odata.processor.ref.web*</filter>
 						</filters>
-						</configuration>
-						<executions>
-							<execution>
-								<phase>process-test-classes</phase>
-								<goals>
-									<goal>instrument</goal>
-								</goals>
-							</execution>
-						</executions>
->>>>>>> branch 'master' of ssh://i042713@git.wdf.sap.corp:29418/ProcLib/com.sap.core.odata.processor.git
+					</configuration>
+					<executions>
+						<execution>
+							<phase>process-test-classes</phase>
+							<goals>
+								<goal>instrument</goal>
+							</goals>
+						</execution>
+					</executions>
+
 				</plugin>
 			</plugins>
 		</pluginManagement>
