@@ -2,13 +2,16 @@ package com.sap.core.odata.processor.jpa;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 
 import com.sap.core.odata.api.edm.EdmException;
 import com.sap.core.odata.api.edm.EdmMapping;
 import com.sap.core.odata.api.edm.EdmProperty;
 import com.sap.core.odata.api.edm.EdmStructuralType;
 import com.sap.core.odata.api.edm.EdmTypeKind;
+import com.sap.core.odata.api.uri.SelectItem;
 import com.sap.core.odata.processor.jpa.api.exception.ODataJPARuntimeException;
 
 public final class JPAResultParser {
@@ -33,6 +36,49 @@ public final class JPAResultParser {
 		if (resultParser == null)
 			resultParser = new JPAResultParser();
 		return resultParser;
+	}
+	
+	/**
+	 * The method returns a Hash Map of Properties and values for selected 
+	 * properties of an EdmEntity Type 
+	 * 
+	 * @param jpaEntity
+	 * @param selectedItems
+	 * @return a Hash Map of Properties and values for given selected properties of an EdmEntity Type
+	 * @throws ODataJPARuntimeException
+	 */
+	
+	public final HashMap<String, Object> parse2EdmPropertyValueMap(
+			Object jpaEntity, List<SelectItem> selectedItems) throws ODataJPARuntimeException
+			 {
+		HashMap<String, Object> edmEntity = new HashMap<String, Object>();
+		List<Object> propertyValues = Arrays.asList((Object[]) jpaEntity); 
+		for(int i = 0; i< selectedItems.size(); i++){
+			String key = null;
+			Object propertyValue = null;
+			EdmProperty property = null;
+			SelectItem selectItem = selectedItems.get(i);
+			try {
+				property = (EdmProperty) selectItem.getProperty();
+				key = property.getName();
+				propertyValue = propertyValues.get(i);
+				if (property.getType().getKind().equals(EdmTypeKind.COMPLEX)) {
+					try {
+						propertyValue = parse2EdmPropertyValueMap(propertyValue,
+								(EdmStructuralType) property.getType());
+					} catch (ODataJPARuntimeException e) {
+						throw e;
+					}
+				}
+				edmEntity.put(key, propertyValue);
+			} catch (EdmException e) {
+				throw ODataJPARuntimeException
+				.throwException(ODataJPARuntimeException.GENERAL
+						.addContent(e.getMessage()), e);
+			}
+		}
+		
+		return edmEntity;
 	}
 
 	/**

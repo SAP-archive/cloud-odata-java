@@ -13,6 +13,7 @@ import com.sap.core.odata.api.ep.EntityProviderException;
 import com.sap.core.odata.api.ep.EntityProviderProperties;
 import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.api.processor.ODataResponse;
+import com.sap.core.odata.api.uri.SelectItem;
 import com.sap.core.odata.api.uri.info.GetEntitySetUriInfo;
 import com.sap.core.odata.api.uri.info.GetEntityUriInfo;
 import com.sap.core.odata.processor.jpa.api.ODataJPAContext;
@@ -29,26 +30,35 @@ public final class ODataJPAResponseBuilder {
 
 		try {
 			edmEntityType = resultsView.getTargetEntitySet().getEntityType();
-
 			List<Map<String, Object>> edmEntityList = new ArrayList<Map<String, Object>>();
 			Map<String, Object> edmPropertyValueMap = null;
-
 			JPAResultParser jpaResultParser = JPAResultParser.create();
-			for (Object jpaEntity : jpaEntities) {
-				edmPropertyValueMap = jpaResultParser
-						.parse2EdmPropertyValueMap(jpaEntity, edmEntityType);
-				edmEntityList.add(edmPropertyValueMap);
+
+			final List<SelectItem> selectedItems = resultsView.getSelect();
+			if (selectedItems != null && selectedItems.size() > 0) {
+				for (Object jpaEntity : jpaEntities) {
+					edmPropertyValueMap = jpaResultParser
+							.parse2EdmPropertyValueMap(jpaEntity, selectedItems);
+					edmEntityList.add(edmPropertyValueMap);
+				}
+			} else {
+				for (Object jpaEntity : jpaEntities) {
+					edmPropertyValueMap = jpaResultParser
+							.parse2EdmPropertyValueMap(jpaEntity, edmEntityType);
+					edmEntityList.add(edmPropertyValueMap);
+				}
 			}
 
 			EntityProviderProperties feedProperties = null;
-			;
+
 			try {
 				final Integer count = resultsView.getInlineCount() == InlineCount.ALLPAGES ? edmEntityList
 						.size() : null;
 				feedProperties = EntityProviderProperties
 						.serviceRoot(
 								odataJPAContext.getODataContext().getPathInfo()
-										.getServiceRoot()).inlineCount(count).inlineCountType(resultsView.getInlineCount())
+										.getServiceRoot()).inlineCount(count)
+						.inlineCountType(resultsView.getInlineCount())
 						.skipToken("").build();
 			} catch (ODataException e) {
 				throw ODataJPARuntimeException.throwException(
@@ -82,8 +92,7 @@ public final class ODataJPAResponseBuilder {
 
 		if (jpaEntity == null)
 			throw ODataJPARuntimeException.throwException(
-					ODataJPARuntimeException.RESOURCE_NOT_FOUND,
-					null);
+					ODataJPARuntimeException.RESOURCE_NOT_FOUND, null);
 
 		EdmEntityType edmEntityType = null;
 		ODataResponse odataResponse = null;
