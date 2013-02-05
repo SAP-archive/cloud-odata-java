@@ -9,6 +9,7 @@ import org.junit.Before;
 
 import com.sap.core.odata.api.ODataService;
 import com.sap.core.odata.api.exception.ODataException;
+import com.sap.core.odata.testutil.helper.ProcessLocker;
 import com.sap.core.odata.testutil.helper.TestutilException;
 import com.sap.core.odata.testutil.server.TestServer;
 
@@ -40,11 +41,13 @@ public abstract class AbstractFitTest extends BaseTest {
   @Before
   public void before() {
     try {
+      ProcessLocker.crossProcessLockAcquire(AbstractFitTest.class, 600000);
       service = createService();
       FitStaticServiceFactory.setService(service);
       server.startServer(FitStaticServiceFactory.class);
     } catch (final ODataException e) {
       throw new TestutilException(e);
+    } finally {
     }
   }
 
@@ -54,6 +57,7 @@ public abstract class AbstractFitTest extends BaseTest {
       server.stopServer();
     } finally {
       FitStaticServiceFactory.setService(null);
+      ProcessLocker.crossProcessLockRelease();
     }
   }
 }
