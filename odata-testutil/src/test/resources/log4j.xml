@@ -10,7 +10,7 @@
 	</appender>
 
 	<logger name="com.sap.core.odata" additivity="false">
-		<level value="debug" />
+		<level value="all" />
 		<appender-ref ref="console" />
 	</logger>
 
