@@ -80,7 +80,7 @@ public abstract class AbstractProviderTest extends BaseTest {
     this.photoData = new HashMap<String, Object>();
     photoData.put("Id", Integer.valueOf(1));
     photoData.put("Name", "Mona Lisa");
-    photoData.put("Type", "JPG");
+    photoData.put("Type", "image/png");
     photoData.put("ImageUrl", "http://www.mopo.de/image/view/2012/6/4/16548086,13385561,medRes,maxh,234,maxw,234,Parodia_Mona_Lisa_Lego_Hamburger_Morgenpost.jpg");
     photoData.put("Image", new byte[] {1, 2, 3, 4});
     photoData.put("BinaryData", new byte[] {-1, -2, -3, -4});
