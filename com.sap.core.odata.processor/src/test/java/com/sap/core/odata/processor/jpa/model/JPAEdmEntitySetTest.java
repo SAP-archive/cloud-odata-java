@@ -69,9 +69,8 @@ public class JPAEdmEntitySetTest extends JPAEdmTestModelView{
 		objJPAEdmEntitySet.getJPAEdmEntityTypeView().clean();
 		assertFalse(objJPAEdmEntitySet.getJPAEdmEntityTypeView().isConsistent());
 		
-		//objJPAEdmEntitySet.isConsistent = false;
 		objJPAEdmEntitySet.clean();
-		assertFalse(objJPAEdmEntitySet.isConsistent()); // Failing as of now as functionality not implemented. - TODO
+		assertFalse(objJPAEdmEntitySet.isConsistent());
 	}
 	
 	@Test
