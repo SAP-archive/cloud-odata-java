@@ -6,20 +6,30 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 
+import com.sap.core.odata.api.ODataServiceVersion;
+import com.sap.core.odata.api.commons.ODataHttpHeaders;
 import com.sap.core.odata.api.edm.EdmException;
 import com.sap.core.odata.api.edm.EdmLiteralKind;
 import com.sap.core.odata.api.edm.EdmProperty;
 import com.sap.core.odata.api.edm.EdmSimpleType;
 import com.sap.core.odata.api.edm.EdmSimpleTypeKind;
+import com.sap.core.odata.api.edm.provider.DataServices;
+import com.sap.core.odata.api.edm.provider.EntityType;
+import com.sap.core.odata.api.edm.provider.Property;
+import com.sap.core.odata.api.edm.provider.Schema;
 import com.sap.core.odata.api.ep.EntityProviderException;
 import com.sap.core.odata.api.processor.ODataResponse;
 import com.sap.core.odata.api.processor.ODataResponse.ODataResponseBuilder;
 import com.sap.core.odata.core.commons.ContentType;
+import com.sap.core.odata.core.ep.producer.XmlMetadataProducer;
+import com.sap.core.odata.core.ep.util.CircleStreamBuffer;
 
 /**
  * Provider for all basic (content type independent) entity provider methods.
@@ -30,7 +40,6 @@ public class BasicEntityProvider {
 
   /** Default used charset for writer and response content header */
   private static final String DEFAULT_CHARSET = "UTF-8";
-
 
   /**
    * Reads binary data from an input stream.
@@ -174,5 +183,77 @@ public class BasicEntityProvider {
     }
     builder.contentHeader(mimeType);
     return builder.build();
+  }
+
+  /**
+   * Writes the metadata in XML format. Predefined namespaces is of type Map{@literal <}prefix,namespace{@literal >} and may be null or an empty Map.
+   * @param schemas
+   * @param predefinedNamespaces
+   * @return
+   * @throws EntityProviderException
+   */
+  public ODataResponse writeMetadata(List<Schema> schemas, Map<String, String> predefinedNamespaces) throws EntityProviderException {
+    ODataResponseBuilder builder = ODataResponse.newBuilder();
+    String dataServiceVersion = ODataServiceVersion.V10;
+    if (schemas != null) {
+      dataServiceVersion = calculateDataServiceVersion(schemas);
+    }
+      DataServices metadata = new DataServices().setSchemas(schemas).setDataServiceVersion(dataServiceVersion);
+      OutputStreamWriter writer = null;
+      CircleStreamBuffer csb = new CircleStreamBuffer();
+      try {
+        writer = new OutputStreamWriter(csb.getOutputStream(), "UTF-8");
+      } catch (UnsupportedEncodingException e) {
+        throw new EntityProviderException(EntityProviderException.COMMON, e);
+      }
+      XmlMetadataProducer.writeMetadata(metadata, writer, predefinedNamespaces);
+      builder.entity(csb.getInputStream());
+    
+    builder.contentHeader(ContentType.APPLICATION_XML.toContentTypeString());
+    builder.header(ODataHttpHeaders.DATASERVICEVERSION, dataServiceVersion);
+    return builder.build();
+  }
+
+  /**
+   * Calculates the necessary data service version for the metadata serialization
+   * @param schemas
+   * @return
+   */
+  private String calculateDataServiceVersion(List<Schema> schemas) {
+
+    String dataServiceVersion = ODataServiceVersion.V10;
+
+    if (schemas != null) {
+      for (Schema schema : schemas) {
+        List<EntityType> entityTypes = schema.getEntityTypes();
+        if (entityTypes != null) {
+          for (EntityType entityType : entityTypes) {
+            List<Property> properties = entityType.getProperties();
+            if (properties != null) {
+              for (Property property : properties) {
+                if (property.getCustomizableFeedMappings() != null) {
+                  if (property.getCustomizableFeedMappings().getFcKeepInContent() != null) {
+                    if (!property.getCustomizableFeedMappings().getFcKeepInContent()) {
+                      dataServiceVersion = ODataServiceVersion.V20;
+                      return dataServiceVersion;
+                    }
+                  }
+                }
+              }
+              if (entityType.getCustomizableFeedMappings() != null) {
+                if (entityType.getCustomizableFeedMappings().getFcKeepInContent() != null) {
+                  if (entityType.getCustomizableFeedMappings().getFcKeepInContent()) {
+                    dataServiceVersion = ODataServiceVersion.V20;
+                    return dataServiceVersion;
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+
+    return dataServiceVersion;
   }
 }

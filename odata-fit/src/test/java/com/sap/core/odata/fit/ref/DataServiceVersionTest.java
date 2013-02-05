@@ -7,9 +7,9 @@ import org.apache.http.Header;
 import org.apache.http.HttpResponse;
 import org.junit.Test;
 
+import com.sap.core.odata.api.ODataServiceVersion;
 import com.sap.core.odata.api.commons.HttpStatusCodes;
 import com.sap.core.odata.api.commons.ODataHttpHeaders;
-import com.sap.core.odata.api.edm.Edm;
 
 /**
  * @author SAP AG
@@ -27,78 +27,78 @@ public class DataServiceVersionTest extends AbstractRefTest {
     HttpResponse response = callUri("Employees");
     Header header = response.getFirstHeader("dataserviceversion");
     assertNotNull(header);
-    assertEquals(Edm.DATA_SERVICE_VERSION_20, header.getValue());
+    assertEquals(ODataServiceVersion.V20, header.getValue());
 
-    checkVersion(response, Edm.DATA_SERVICE_VERSION_20);
+    checkVersion(response, ODataServiceVersion.V20);
   }
 
   @Test
   public void testDataServiceVersionWithSemicolon() throws Exception {
     HttpResponse response = callUri("Employees", ODataHttpHeaders.DATASERVICEVERSION, "2.0;hallo", HttpStatusCodes.OK);
-    checkVersion(response, Edm.DATA_SERVICE_VERSION_20);
+    checkVersion(response, ODataServiceVersion.V20);
   }
 
   @Test
   public void testDataServiceVersionNotSetOnEntitySet() throws Exception {
-    checkVersion(callUri("Employees"), Edm.DATA_SERVICE_VERSION_20);
+    checkVersion(callUri("Employees"), ODataServiceVersion.V20);
   }
 
   @Test
   public void testDataServiceVersionSetOnEntitySet() throws Exception {
     HttpResponse response = callUri("Employees", ODataHttpHeaders.DATASERVICEVERSION, "2.0");
-    checkVersion(response, Edm.DATA_SERVICE_VERSION_20);
+    checkVersion(response, ODataServiceVersion.V20);
     getBody(response);
 
     response = callUri("Employees", ODataHttpHeaders.DATASERVICEVERSION, "1.0");
-    checkVersion(response, Edm.DATA_SERVICE_VERSION_20);
+    checkVersion(response, ODataServiceVersion.V20);
   }
 
   @Test
   public void testDataServiceVersionSetOnEntitySetFail() throws Exception {
     HttpResponse response = callUri("Employees", ODataHttpHeaders.DATASERVICEVERSION, "3.0", HttpStatusCodes.BAD_REQUEST);
-    checkVersion(response, Edm.DATA_SERVICE_VERSION_10);
+    checkVersion(response, ODataServiceVersion.V10);
     getBody(response);
     response = callUri("$metadata", ODataHttpHeaders.DATASERVICEVERSION, "3.0", HttpStatusCodes.BAD_REQUEST);
-    checkVersion(response, Edm.DATA_SERVICE_VERSION_10);
+    checkVersion(response, ODataServiceVersion.V10);
     getBody(response);
     response = callUri("Employees", ODataHttpHeaders.DATASERVICEVERSION, "4.0", HttpStatusCodes.BAD_REQUEST);
-    checkVersion(response, Edm.DATA_SERVICE_VERSION_10);
+    checkVersion(response, ODataServiceVersion.V10);
     getBody(response);
     response = callUri("$metadata", ODataHttpHeaders.DATASERVICEVERSION, "somethingwrong", HttpStatusCodes.BAD_REQUEST);
-    checkVersion(response, Edm.DATA_SERVICE_VERSION_10);
+    checkVersion(response, ODataServiceVersion.V10);
     getBody(response);
     response = callUri("$metadata", ODataHttpHeaders.DATASERVICEVERSION, "3.2", HttpStatusCodes.BAD_REQUEST);
-    checkVersion(response, Edm.DATA_SERVICE_VERSION_10);
+    checkVersion(response, ODataServiceVersion.V10);
   }
 
   @Test
   public void testDataServiceVersionNotSetOnMetadata() throws Exception {
-    checkVersion(callUri("$metadata"), Edm.DATA_SERVICE_VERSION_20);
+    checkVersion(callUri("$metadata"), ODataServiceVersion.V20);
   }
 
   @Test
   public void testDataServiceVersionSetOnMetadata() throws Exception {
     HttpResponse response = callUri("$metadata", ODataHttpHeaders.DATASERVICEVERSION, "1.0");
-    checkVersion(response, Edm.DATA_SERVICE_VERSION_20);
+    checkVersion(response, ODataServiceVersion.V20);
     getBody(response);
 
     response = callUri("$metadata", ODataHttpHeaders.DATASERVICEVERSION, "2.0");
-    checkVersion(response, Edm.DATA_SERVICE_VERSION_20);
+    checkVersion(response, ODataServiceVersion.V20);
     getBody(response);
   }
 
   @Test
   public void testDataServiceVersionNotSetOnServiceDocument() throws Exception {
-    checkVersion(callUri(""), Edm.DATA_SERVICE_VERSION_10);
+    checkVersion(callUri(""), ODataServiceVersion.V10);
   }
 
   @Test
   public void testDataServiceVersionSetOnServiceDocument() throws Exception {
     HttpResponse response = callUri("", ODataHttpHeaders.DATASERVICEVERSION, "1.0");
-    checkVersion(response, Edm.DATA_SERVICE_VERSION_10);
+    checkVersion(response, ODataServiceVersion.V10);
     getBody(response);
 
     response = callUri("", ODataHttpHeaders.DATASERVICEVERSION, "2.0");
-    checkVersion(response, Edm.DATA_SERVICE_VERSION_10);
+    checkVersion(response, ODataServiceVersion.V10);
   }
 }
