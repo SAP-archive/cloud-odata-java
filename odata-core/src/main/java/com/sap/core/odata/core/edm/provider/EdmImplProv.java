@@ -8,12 +8,13 @@ import com.sap.core.odata.api.edm.FullQualifiedName;
 import com.sap.core.odata.api.edm.provider.Association;
 import com.sap.core.odata.api.edm.provider.ComplexType;
 import com.sap.core.odata.api.edm.provider.EdmProvider;
+import com.sap.core.odata.api.edm.provider.EdmProviderAccessor;
 import com.sap.core.odata.api.edm.provider.EntityContainerInfo;
 import com.sap.core.odata.api.edm.provider.EntityType;
 import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.core.edm.EdmImpl;
 
-public class EdmImplProv extends EdmImpl {
+public class EdmImplProv extends EdmImpl implements EdmProviderAccessor {
 
   protected EdmProvider edmProvider;
 
@@ -59,6 +60,7 @@ public class EdmImplProv extends EdmImpl {
     return new EdmAssociationImplProv(this, association, fqName.getNamespace());
   }
 
+  @Override
   public EdmProvider getEdmProvider() {
     return edmProvider;
   }
