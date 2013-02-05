@@ -43,7 +43,7 @@ public class BasicProviderTest extends AbstractProviderTest {
     ODataResponse response = provider.writeMetadata(null, predefinedNamespaces);
     assertNotNull(response);
     assertNotNull(response.getEntity());
-    assertEquals(ContentType.APPLICATION_XML.toString(), response.getContentHeader());
+    assertEquals(ContentType.APPLICATION_XML_CS_UTF_8.toString(), response.getContentHeader());
     String metadata = StringHelper.inputStreamToString((InputStream) response.getEntity());
     assertTrue(metadata.contains("xmlns:sap=\"http://sap\""));
     assertTrue(metadata.contains("xmlns:annoPrefix=\"http://annoNamespace\""));
@@ -63,7 +63,7 @@ public class BasicProviderTest extends AbstractProviderTest {
     ODataResponse response = provider.writeMetadata(testProvider.getSchemas(), predefinedNamespaces);
     assertNotNull(response);
     assertNotNull(response.getEntity());
-    assertEquals(ContentType.APPLICATION_XML.toString(), response.getContentHeader());
+    assertEquals(ContentType.APPLICATION_XML_CS_UTF_8.toString(), response.getContentHeader());
     String metadata = StringHelper.inputStreamToString((InputStream) response.getEntity());
     
     Map<String, String> prefixMap = new HashMap<String, String>();
@@ -93,7 +93,7 @@ public class BasicProviderTest extends AbstractProviderTest {
     ODataResponse response = provider.writeMetadata(testProvider.getSchemas(), null);
     assertNotNull(response);
     assertNotNull(response.getEntity());
-    assertEquals(ContentType.APPLICATION_XML.toString(), response.getContentHeader());
+    assertEquals(ContentType.APPLICATION_XML_CS_UTF_8.toString(), response.getContentHeader());
     String metadata = StringHelper.inputStreamToString((InputStream) response.getEntity());
     
     Map<String, String> prefixMap = new HashMap<String, String>();

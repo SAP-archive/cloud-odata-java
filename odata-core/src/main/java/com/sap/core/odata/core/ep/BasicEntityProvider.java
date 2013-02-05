@@ -209,7 +209,7 @@ public class BasicEntityProvider {
       XmlMetadataProducer.writeMetadata(metadata, writer, predefinedNamespaces);
       builder.entity(csb.getInputStream());
     
-    builder.contentHeader(ContentType.APPLICATION_XML.toContentTypeString());
+    builder.contentHeader(ContentType.APPLICATION_XML_CS_UTF_8.toContentTypeString());
     builder.header(ODataHttpHeaders.DATASERVICEVERSION, dataServiceVersion);
     return builder.build();
   }
