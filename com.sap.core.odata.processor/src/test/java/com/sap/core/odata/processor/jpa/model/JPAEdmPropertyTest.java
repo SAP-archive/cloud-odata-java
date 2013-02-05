@@ -1,5 +1,6 @@
 package com.sap.core.odata.processor.jpa.model;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -54,6 +55,14 @@ public class JPAEdmPropertyTest extends JPAEdmTestModelView {
 		} catch (ODataJPAModelException e) {
 			fail("ODataJPAModelException not expected");
 		}
+	}
+	
+	@Test
+	public void testGetBuilderIdempotent(){
+		JPAEdmBuilder builder1 = objJPAEdmProperty.getBuilder();
+		JPAEdmBuilder builder2 = objJPAEdmProperty.getBuilder();
+		
+		assertEquals(builder1.hashCode(), builder2.hashCode());
 	}
 
 	@Test

@@ -2,6 +2,7 @@ package com.sap.core.odata.processor.jpa.model;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,6 +17,7 @@ import com.sap.core.odata.api.edm.provider.AssociationSet;
 import com.sap.core.odata.api.edm.provider.AssociationSetEnd;
 import com.sap.core.odata.api.edm.provider.EntitySet;
 import com.sap.core.odata.api.edm.provider.Schema;
+import com.sap.core.odata.processor.jpa.api.access.JPAEdmBuilder;
 import com.sap.core.odata.processor.jpa.api.exception.ODataJPAModelException;
 import com.sap.core.odata.processor.jpa.api.model.JPAEdmAssociationView;
 import com.sap.core.odata.processor.jpa.api.model.JPAEdmEntityContainerView;
@@ -62,6 +64,14 @@ public class JPAEdmAssociationSetTest extends JPAEdmTestModelView {
 	@Test
 	public void testIsConsistent() {
 		assertTrue(objJPAEdmAssociationSet.isConsistent());
+	}
+	
+	@Test
+	public void testGetBuilderIdempotent(){
+		JPAEdmBuilder builder1 = objJPAEdmAssociationSet.getBuilder();
+		JPAEdmBuilder builder2 = objJPAEdmAssociationSet.getBuilder();
+		
+		assertEquals(builder1.hashCode(), builder2.hashCode());
 	}
 
 	@Override

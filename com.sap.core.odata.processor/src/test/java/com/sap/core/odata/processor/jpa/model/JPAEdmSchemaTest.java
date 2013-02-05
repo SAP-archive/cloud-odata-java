@@ -1,5 +1,6 @@
 package com.sap.core.odata.processor.jpa.model;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
@@ -10,6 +11,7 @@ import javax.persistence.metamodel.Metamodel;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.sap.core.odata.processor.jpa.api.access.JPAEdmBuilder;
 import com.sap.core.odata.processor.jpa.model.mock.JPAMetaModelMock;
 
 public class JPAEdmSchemaTest extends JPAEdmTestModelView {
@@ -49,6 +51,14 @@ public class JPAEdmSchemaTest extends JPAEdmTestModelView {
 	@Test
 	public void testGetBuilder() {
 		assertNotNull(objJPAEdmSchema.getBuilder());
+	}
+	
+	@Test
+	public void testGetBuilderIdempotent(){
+		JPAEdmBuilder builder1 = objJPAEdmSchema.getBuilder();
+		JPAEdmBuilder builder2 = objJPAEdmSchema.getBuilder();
+		
+		assertEquals(builder1.hashCode(), builder2.hashCode());
 	}
 
 	@Test

@@ -19,6 +19,7 @@ import org.junit.Test;
 import com.sap.core.odata.api.edm.FullQualifiedName;
 import com.sap.core.odata.api.edm.provider.Association;
 import com.sap.core.odata.api.edm.provider.AssociationEnd;
+import com.sap.core.odata.processor.jpa.api.access.JPAEdmBuilder;
 import com.sap.core.odata.processor.jpa.api.exception.ODataJPAModelException;
 import com.sap.core.odata.processor.jpa.model.mock.JPAAttributeMock;
 import com.sap.core.odata.processor.jpa.model.mock.JPAJavaMemberMock;
@@ -46,6 +47,14 @@ public class JPAEdmReferentialConstraintTest extends JPAEdmTestModelView {
 	@Test
 	public void testGetBuilder() {
 		assertNotNull(objJPAEdmReferentialConstraint.getBuilder());
+	}
+	
+	@Test
+	public void testGetBuilderIdempotent(){
+		JPAEdmBuilder builder1 = objJPAEdmReferentialConstraint.getBuilder();
+		JPAEdmBuilder builder2 = objJPAEdmReferentialConstraint.getBuilder();
+		
+		assertEquals(builder1.hashCode(), builder2.hashCode());
 	}
 
 	@Test

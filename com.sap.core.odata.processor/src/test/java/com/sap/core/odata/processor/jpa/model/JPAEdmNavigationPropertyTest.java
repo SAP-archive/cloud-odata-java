@@ -13,6 +13,7 @@ import org.junit.Test;
 import com.sap.core.odata.api.edm.FullQualifiedName;
 import com.sap.core.odata.api.edm.provider.Association;
 import com.sap.core.odata.api.edm.provider.AssociationEnd;
+import com.sap.core.odata.processor.jpa.api.access.JPAEdmBuilder;
 import com.sap.core.odata.processor.jpa.api.exception.ODataJPAModelException;
 import com.sap.core.odata.processor.jpa.model.mock.JPAAttributeMock;
 
@@ -63,6 +64,14 @@ public class JPAEdmNavigationPropertyTest extends JPAEdmTestModelView {
 	public void testGetBuilder() {
 		assertNotNull(objNavigationProperty.getBuilder());
 		
+	}
+	
+	@Test
+	public void testGetBuilderIdempotent(){
+		JPAEdmBuilder builder1 = objNavigationProperty.getBuilder();
+		JPAEdmBuilder builder2 = objNavigationProperty.getBuilder();
+		
+		assertEquals(builder1.hashCode(), builder2.hashCode());
 	}
 
 	@Test

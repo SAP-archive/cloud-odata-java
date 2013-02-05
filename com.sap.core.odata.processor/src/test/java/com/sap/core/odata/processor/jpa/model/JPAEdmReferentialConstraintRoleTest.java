@@ -25,6 +25,7 @@ import com.sap.core.odata.api.edm.provider.AssociationEnd;
 import com.sap.core.odata.api.edm.provider.EntityType;
 import com.sap.core.odata.api.edm.provider.Mapping;
 import com.sap.core.odata.api.edm.provider.Property;
+import com.sap.core.odata.processor.jpa.api.access.JPAEdmBuilder;
 import com.sap.core.odata.processor.jpa.api.exception.ODataJPAModelException;
 import com.sap.core.odata.processor.jpa.api.model.JPAEdmReferentialConstraintRoleView.RoleType;
 import com.sap.core.odata.processor.jpa.model.mock.JPAAttributeMock;
@@ -54,6 +55,14 @@ public class JPAEdmReferentialConstraintRoleTest  extends JPAEdmTestModelView{
 	@Test
 	public void testGetBuilder() {
 		assertNotNull(objJPAEdmReferentialConstraintRole.getBuilder());
+	}
+	
+	@Test
+	public void testGetBuilderIdempotent(){
+		JPAEdmBuilder builder1 = objJPAEdmReferentialConstraintRole.getBuilder();
+		JPAEdmBuilder builder2 = objJPAEdmReferentialConstraintRole.getBuilder();
+		
+		assertEquals(builder1.hashCode(), builder2.hashCode());
 	}
 
 	@Test

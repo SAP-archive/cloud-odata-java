@@ -8,6 +8,7 @@ import java.util.List;
 
 import javax.persistence.metamodel.Attribute;
 
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.sap.core.odata.api.edm.EdmSimpleTypeKind;
@@ -17,6 +18,7 @@ import com.sap.core.odata.api.edm.provider.ComplexType;
 import com.sap.core.odata.api.edm.provider.Key;
 import com.sap.core.odata.api.edm.provider.Property;
 import com.sap.core.odata.api.edm.provider.SimpleProperty;
+import com.sap.core.odata.processor.jpa.api.access.JPAEdmBuilder;
 import com.sap.core.odata.processor.jpa.api.exception.ODataJPAModelException;
 import com.sap.core.odata.processor.jpa.api.model.JPAEdmKeyView;
 import com.sap.core.odata.processor.jpa.model.mock.JPAAttributeMock;
@@ -27,6 +29,15 @@ import com.sap.core.odata.processor.jpa.util.MockData;
 
 public class JPAEdmKeyTest extends JPAEdmTestModelView {
 
+	private static JPAEdmKeyView keyView;
+	private static JPAEdmKeyTest objJpaEdmKeyTest;
+	
+	@BeforeClass
+	public static void setup(){
+		objJpaEdmKeyTest = new JPAEdmKeyTest();
+		keyView = new JPAEdmKey(objJpaEdmKeyTest, objJpaEdmKeyTest);
+	}
+	
 	@SuppressWarnings("hiding")
 	private class JPAAttributeA<Object, ComplexTypeA> extends
 			JPAAttributeMock<Object, ComplexTypeA> {
@@ -39,8 +50,6 @@ public class JPAEdmKeyTest extends JPAEdmTestModelView {
 
 	@Test
 	public void testBuildComplexKey() {
-		JPAEdmKeyView keyView = new JPAEdmKey(this, this);
-
 		try {
 			keyView.getBuilder().build();
 		} catch (ODataJPAModelException e) {
@@ -62,6 +71,14 @@ public class JPAEdmKeyTest extends JPAEdmTestModelView {
 				JPAEdmMockData.ComplexType.ComplexTypeB.Property.PROPERTY_E,
 				key.getKeys().get(3).getName());
 		
+	}
+	
+	@Test
+	public void testGetBuilderIdempotent(){
+		JPAEdmBuilder builder1 = keyView.getBuilder();
+		JPAEdmBuilder builder2 = keyView.getBuilder();
+		
+		assertEquals(builder1.hashCode(), builder2.hashCode());
 	}
 
 	@Override

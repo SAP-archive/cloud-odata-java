@@ -16,6 +16,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.sap.core.odata.api.edm.provider.Schema;
+import com.sap.core.odata.processor.jpa.api.access.JPAEdmBuilder;
 import com.sap.core.odata.processor.jpa.api.exception.ODataJPAModelException;
 import com.sap.core.odata.processor.jpa.api.model.JPAEdmEntityContainerView;
 import com.sap.core.odata.processor.jpa.api.model.JPAEdmEntitySetView;
@@ -71,6 +72,14 @@ public class JPAEdmEntitySetTest extends JPAEdmTestModelView{
 		//objJPAEdmEntitySet.isConsistent = false;
 		objJPAEdmEntitySet.clean();
 		assertFalse(objJPAEdmEntitySet.isConsistent()); // Failing as of now as functionality not implemented. - TODO
+	}
+	
+	@Test
+	public void testGetBuilderIdempotent(){
+		JPAEdmBuilder builder1 = objJPAEdmEntitySet.getBuilder();
+		JPAEdmBuilder builder2 = objJPAEdmEntitySet.getBuilder();
+		
+		assertEquals(builder1.hashCode(), builder2.hashCode());
 	}
 
 	@Override
