@@ -52,7 +52,13 @@ public final class JPAResultParser {
 			Object jpaEntity, List<SelectItem> selectedItems) throws ODataJPARuntimeException
 			 {
 		HashMap<String, Object> edmEntity = new HashMap<String, Object>();
-		List<Object> propertyValues = Arrays.asList((Object[]) jpaEntity); 
+		List<Object> propertyValues = null;
+		if(jpaEntity instanceof Object[]){
+			propertyValues = Arrays.asList((Object[]) jpaEntity); 
+		}
+		else{
+			propertyValues = Arrays.asList(jpaEntity);
+		}
 		for(int i = 0; i< selectedItems.size(); i++){
 			String key = null;
 			Object propertyValue = null;
