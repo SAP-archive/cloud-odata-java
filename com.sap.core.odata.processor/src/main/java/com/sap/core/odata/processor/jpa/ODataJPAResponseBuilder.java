@@ -12,7 +12,6 @@ import com.sap.core.odata.api.ep.EntityProvider;
 import com.sap.core.odata.api.ep.EntityProviderException;
 import com.sap.core.odata.api.ep.EntityProviderProperties;
 import com.sap.core.odata.api.exception.ODataException;
-import com.sap.core.odata.api.exception.ODataNotFoundException;
 import com.sap.core.odata.api.processor.ODataResponse;
 import com.sap.core.odata.api.uri.info.GetEntitySetUriInfo;
 import com.sap.core.odata.api.uri.info.GetEntityUriInfo;
@@ -49,7 +48,7 @@ public final class ODataJPAResponseBuilder {
 				feedProperties = EntityProviderProperties
 						.serviceRoot(
 								odataJPAContext.getODataContext().getPathInfo()
-										.getServiceRoot()).inlineCount(count)
+										.getServiceRoot()).inlineCount(count).inlineCountType(resultsView.getInlineCount())
 						.skipToken("").build();
 			} catch (ODataException e) {
 				throw ODataJPARuntimeException.throwException(
