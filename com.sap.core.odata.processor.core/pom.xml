@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>com.sap.core.odata</groupId>
+		<artifactId>com.sap.core.odata.processor.parent</artifactId>
+		<version>0.0.0-SNAPSHOT</version>
+		<relativePath>..</relativePath>
+	</parent>
+
+	<artifactId>com.sap.core.odata.processor.core</artifactId>
+	<packaging>jar</packaging>
+	<name>OData Processors - JPA Processor Implementation</name>
+
+	<dependencies>
+	
+		<!-- ########################## -->
+		<!-- Java Persistence API		-->
+		<!-- ########################## -->
+		<dependency>
+			<groupId>javax</groupId>
+			<artifactId>javax.persistence</artifactId>
+			<version>2.0.3.v201010191057</version>
+			<scope>provided</scope>
+		</dependency>
+
+		<!-- ########################## -->
+		<!-- ODATA4SAP Support 			-->
+		<!-- ########################## -->
+		<dependency>
+			<groupId>com.sap.core.odata</groupId>
+			<artifactId>com.sap.core.odata.api</artifactId>
+			<version>0.1.0-SNAPSHOT</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.sap.core.odata</groupId>
+			<artifactId>com.sap.core.odata.core</artifactId>
+			<version>0.1.0-SNAPSHOT</version>
+			<scope>provided</scope>
+		</dependency>
+		
+		<!-- ########################## -->
+		<!-- OData4SAP JPA API 			-->
+		<!-- ########################## -->
+		<dependency>
+			<groupId>com.sap.core.odata</groupId>
+			<artifactId>com.sap.core.odata.processor.api</artifactId>
+			<version>0.0.0-SNAPSHOT</version>
+			<scope>provided</scope>
+		</dependency>
+		
+		<!-- ########################## -->
+		<!-- For Testing 				-->
+		<!-- ########################## -->
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.9</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.easymock</groupId>
+			<artifactId>org.easymock</artifactId>
+			<version>2.4.0</version>
+			<scope>test</scope>
+		</dependency>
+		
+		<!-- ########################## -->
+		<!-- Supportability Tools 		-->
+		<!-- ########################## -->
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+			<version>1.7.2</version>
+		</dependency>
+	</dependencies>
+
+	<distributionManagement>
+		<snapshotRepository>
+			<id>snapshot.repository</id>
+			<url>http://nexus:8081/nexus/content/repositories/deploy.snapshots/</url>
+		</snapshotRepository>
+	</distributionManagement>
+
+
+	
+	<url>https://projectportal.wdf.sap.corp/projects/com.sap.core.odata.processor</url>
+	<description>OData Processor Implementation contains 
+
+1) JPA Implementation</description>
+	<inceptionYear>December 2012</inceptionYear>
+	<organization>
+		<name>SAP AG</name>
+		<url>www.sap.com</url>
+	</organization>
+</project>

@@ -1,4 +1,4 @@
-package com.sap.core.odata.processor.jpa.access.data;
+package com.sap.core.odata.processor.core.jpa.access.data;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
@@ -34,6 +34,7 @@ import com.sap.core.odata.api.uri.expression.PropertyExpression;
 import com.sap.core.odata.api.uri.expression.SortOrder;
 import com.sap.core.odata.api.uri.expression.UnaryExpression;
 import com.sap.core.odata.api.uri.expression.UnaryOperator;
+import com.sap.core.odata.processor.core.jpa.access.data.ODataExpressionParser;
 import com.sap.core.odata.processor.jpa.api.exception.ODataJPARuntimeException;
 import com.sap.core.odata.processor.jpa.api.jpql.JPQLStatement.Operator;
 
@@ -144,27 +145,7 @@ public class ODataExpressionParserTest {
 										BinaryOperator.EQ,
 										getLiteralExpressionMockedObj("\'City_3\'")),
 								TABLE_ALIAS));
-		assertEquals(
-				getAliasedProperty("Address") + "." + "city" + "." + "area" + " = " + "\'BTM\'",
-				ODataExpressionParser
-					.parseToJPAWhereExpression(
-							getBinaryExpression(
-									getMultipleMemberExpressionMockedObj("Address","city","area"),
-									BinaryOperator.EQ,
-									getLiteralExpressionMockedObj("\'BTM\'")),
-							TABLE_ALIAS));
-	}
-	
-	private CommonExpression getMultipleMemberExpressionMockedObj(String string1,String string2, String string3) throws EdmException {
-		
-		MemberExpression memberExpression = EasyMock.createMock(MemberExpression.class);
-		
-		EasyMock.expect(memberExpression.getPath()).andReturn(getMemberExpressionMockedObj(string1, string2)).times(10);
-		EasyMock.expect(memberExpression.getProperty()).andReturn(getPropertyExpressionMockedObj(ExpressionKind.PROPERTY,string3)).times(10);
-		EasyMock.expect(memberExpression.getKind()).andReturn(ExpressionKind.MEMBER).times(10);
-		EasyMock.replay(memberExpression);
-		
-		return memberExpression;
+
 	}
 
 	@Test
@@ -200,10 +181,13 @@ public class ODataExpressionParserTest {
 			throws EdmException {
 		MemberExpression memberExpression = EasyMock
 				.createMock(MemberExpression.class);
+		// EasyMock.expect(memberExpression.getPath()).andReturn(getPropertyExpressionPath(pathUriLiteral)).times(10);
+		// EasyMock.expect(memberExpression.getPath()).andReturn(getLiteralExpressionMockedObj(pathUriLiteral)).times(10);
 		EasyMock.expect(memberExpression.getPath())
 				.andReturn(
 						getPropertyExpressionMockedObj(ExpressionKind.PROPERTY,
 								pathUriLiteral)).times(10);
+		// EasyMock.expect(memberExpression.getProperty()).andReturn(getPropertyExpressionPath(propertyUriLiteral)).times(10);
 		EasyMock.expect(memberExpression.getProperty())
 				.andReturn(
 						getPropertyExpressionMockedObj(ExpressionKind.PROPERTY,
@@ -215,22 +199,28 @@ public class ODataExpressionParserTest {
 		return memberExpression;
 	}
 
-//	private CommonExpression getPropertyExpressionPath(String uriLiteral) {
-//		PropertyExpression propertyExpression = EasyMock
-//				.createMock(PropertyExpression.class);
-//		EasyMock.expect(propertyExpression.getUriLiteral())
-//				.andReturn(uriLiteral).times(10);
-//
-//		EasyMock.replay(propertyExpression);
-//		return propertyExpression;
-//	}
+	private CommonExpression getPropertyExpressionPath(String uriLiteral) {
+		PropertyExpression propertyExpression = EasyMock
+				.createMock(PropertyExpression.class);
+		EasyMock.expect(propertyExpression.getUriLiteral())
+				.andReturn(uriLiteral).times(10);
+
+		EasyMock.replay(propertyExpression);
+		return propertyExpression;
+	}
 
 	@Test
-	public void testParseOrderByExpression() throws EdmException,ODataJPARuntimeException {
-		
-		 /*HashMap<String, String> orderByMap = ODataExpressionParser.parseToJPAOrderByExpression(getOrderByExpressionMockedObj(), TABLE_ALIAS);
-		 String orderByDirection = orderByMap.get(TABLE_ALIAS+"."+"Name 0");
-		 assertEquals("DESC", orderByDirection);	*/	
+	public void testParseOrderByExpression() throws EdmException,
+			ODataJPARuntimeException {
+		// fail("Not yet implemented");
+		/*
+		 * HashMap<String, String> orderByMap =
+		 * ODataExpressionParser.parseToJPAOrderByExpression
+		 * (getOrderByExpressionMockedObj(), TABLE_ALIAS);
+		 * 
+		 * String orderByDirection = orderByMap.get(TABLE_ALIAS+"."+"Name 0");
+		 * assertEquals("DESC", orderByDirection);
+		 */
 
 	}
 
@@ -398,11 +388,11 @@ public class ODataExpressionParserTest {
 		EasyMock.expect(orderExpression.getEdmType())
 				.andReturn(getEdmSimpleTypeMockedObj("Name " + index))
 				.times(10);
-		EasyMock.expect(orderExpression.getEdmType().getName()).andReturn("Name "+index).times(10);
+		// EasyMock.expect(orderExpression.getEdmType().getName()).andReturn("Name "+index).times(10);
 		EasyMock.expect(orderExpression.getExpression())
 				.andReturn(getLiteralExpressionMockedObj("Name " + index))
 				.times(10);
-		EasyMock.expect(orderExpression.getExpression().getEdmType().getName()).andReturn("Name "+index);
+		// EasyMock.expect(orderExpression.getExpression().getEdmType().getName()).andReturn("Name "+index);
 
 		EasyMock.replay(orderExpression);
 		return orderExpression;

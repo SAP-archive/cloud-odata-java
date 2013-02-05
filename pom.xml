@@ -14,13 +14,42 @@
 	<version>0.0.0-SNAPSHOT</version>
 	<name>OData Processors - Parent</name>
 	<packaging>pom</packaging>
-	
+
 	<modules>
 		<module>com.sap.core.odata.processor.api</module>
-		<module>com.sap.core.odata.processor</module>
+		<module>com.sap.core.odata.processor.core</module>
 		<module>com.sap.core.odata.processor.fit</module>
 		<module>com.sap.core.odata.processor.ref.web</module>
 	</modules>
+
+	<developers>
+		<developer>
+			<id>chandan.v.a</id>
+			<name>Chandan V A</name>
+			<email>chandan.v.a@sap.com</email>
+		</developer>
+		<developer>
+			<id>chitresh.chauhan</id>
+			<name>Chitresh Chauhan</name>
+			<email>chitresh.chauhan@sap.com</email>
+		</developer>
+		<developer>
+			<id>anirban.roy</id>
+			<name>Anirban Roy</name>
+			<email>anirban.roy@sap.com</email>
+		</developer>
+		<developer>
+			<id>apoorva.kumar</id>
+			<name>Apoorva Kumar</name>
+			<email>apoorva.kumar@sap.com</email>
+		</developer>
+		<developer>
+			<id>santosh.kumar</id>
+			<name>Santosh Kumar</name>
+			<email>santosh.kumar04@sap.com</email>
+		</developer>
+	</developers>
+
 	<build>
 		<pluginManagement>
 			<plugins>
@@ -42,17 +71,51 @@
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-javadoc-plugin</artifactId>
-					<version>2.8.1</version>
+					<configuration>
+						<excludePackageNames>com.sap.core.odata.processor.core.*:com.sap.core.odata.processor.fit.*:com.sap.core.odata.processor.ref.*</excludePackageNames>
+						<tags>
+							<tag>
+								<name>DoNotImplement</name>
+								<placement>a</placement>
+								<head>Do not implement this interface due to compatibility
+									reasons.</head>
+							</tag>
+						</tags>
+					</configuration>
 				</plugin>
 				<plugin>
-			        <groupId>org.apache.maven.plugins</groupId>
-			        <artifactId>maven-eclipse-plugin</artifactId>
-			        <version>2.9</version>
-			      </plugin>
+<<<<<<< HEAD
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-eclipse-plugin</artifactId>
+					<version>2.9</version>
+=======
+			        	<groupId>org.apache.maven.plugins</groupId>
+			        	<artifactId>maven-eclipse-plugin</artifactId>
+			        	<version>2.9</version>
+			      	</plugin>
+			      	<plugin>
+					<groupId>org.sonatype.maven.plugin</groupId>
+					<artifactId>emma-maven-plugin</artifactId>
+					<configuration>
+						<filters>
+							<filter>-com.sap.core.odata.processor.fit*</filter>
+							<filter>-com.sap.core.odata.processor.ref.web*</filter>
+						</filters>
+						</configuration>
+						<executions>
+							<execution>
+								<phase>process-test-classes</phase>
+								<goals>
+									<goal>instrument</goal>
+								</goals>
+							</execution>
+						</executions>
+>>>>>>> branch 'master' of ssh://i042713@git.wdf.sap.corp:29418/ProcLib/com.sap.core.odata.processor.git
+				</plugin>
 			</plugins>
 		</pluginManagement>
 	</build>
-	
+
 	<distributionManagement>
 		<snapshotRepository>
 			<id>snapshot.repository</id>
