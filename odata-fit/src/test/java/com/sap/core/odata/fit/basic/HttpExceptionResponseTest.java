@@ -6,16 +6,12 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import java.io.IOException;
-import java.net.URI;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
 import org.apache.http.HttpResponse;
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.methods.HttpGet;
 import org.custommonkey.xmlunit.NamespaceContext;
 import org.custommonkey.xmlunit.SimpleNamespaceContext;
 import org.custommonkey.xmlunit.XMLUnit;
@@ -25,6 +21,8 @@ import org.hamcrest.Matcher;
 import org.junit.Test;
 import org.mockito.Matchers;
 
+import com.sap.core.odata.api.commons.HttpStatusCodes;
+import com.sap.core.odata.api.edm.Edm;
 import com.sap.core.odata.api.edm.provider.EdmProvider;
 import com.sap.core.odata.api.exception.MessageReference;
 import com.sap.core.odata.api.exception.ODataException;
@@ -64,11 +62,11 @@ public class HttpExceptionResponseTest extends AbstractBasicTest {
     when(processor.readEntity(any(GetEntityUriInfo.class), any(String.class))).thenThrow(new ODataNotFoundException(ODataNotFoundException.ENTITY));
 
     HttpResponse response = executeGetRequest("Managers('199')");
-    assertEquals(404, response.getStatusLine().getStatusCode());
+    assertEquals(HttpStatusCodes.NOT_FOUND.getStatusCode(), response.getStatusLine().getStatusCode());
 
     String content = StringHelper.inputStreamToString(response.getEntity().getContent());
     Map<String, String> prefixMap = new HashMap<String, String>();
-    prefixMap.put("a", "http://schemas.microsoft.com/ado/2007/08/dataservices/metadata");
+    prefixMap.put("a", Edm.NAMESPACE_M_2007_08);
     NamespaceContext ctx = new SimpleNamespaceContext(prefixMap);
     XMLUnit.setXpathNamespaceContext(ctx);
     assertXpathValuesEqual("\"" + ODataNotFoundException.ENTITY.getKey() + "\"", "/a:error/a:code", content);
@@ -87,23 +85,20 @@ public class HttpExceptionResponseTest extends AbstractBasicTest {
       Matcher<GetEntityUriInfo> match = new EntityKeyMatcher(key);
       when(processor.readEntity(Matchers.argThat(match), any(String.class))).thenThrow(oDataException);
 
-      String uri = getEndpoint().toString() + "Managers('" + key + "')";
-      HttpGet get = new HttpGet(URI.create(uri));
-      HttpResponse response = getHttpClient().execute(get);
+      HttpResponse response = executeGetRequest("Managers('" + key + "')");
 
       assertEquals("Expected status code does not match for exception type '" + oDataException.getClass().getSimpleName() + "'.",
           oDataException.getHttpStatus().getStatusCode(), response.getStatusLine().getStatusCode());
 
       String content = StringHelper.inputStreamToString(response.getEntity().getContent());
       Map<String, String> prefixMap = new HashMap<String, String>();
-      prefixMap.put("a", "http://schemas.microsoft.com/ado/2007/08/dataservices/metadata");
+      prefixMap.put("a", Edm.NAMESPACE_M_2007_08);
       NamespaceContext ctx = new SimpleNamespaceContext(prefixMap);
       XMLUnit.setXpathNamespaceContext(ctx);
       assertXpathValuesEqual("\"com.sap.core.odata.api.exception.ODataHttpException.SIMPLE FOR TEST\"", "/a:error/a:code", content);
 
       //TODO: How to check for the right text here?
       //assertXpathValuesEqual("\"" + MessageService.getMessage(Locale.ENGLISH, ODataNotFoundException.ENTITY).getText() + "\"", "/a:error/a:message", content);
-      get.releaseConnection();
     }
 
   }
@@ -148,18 +143,5 @@ public class HttpExceptionResponseTest extends AbstractBasicTest {
       //      description.appendText("");
     }
 
-  }
-
-  /**
-   * 
-   * @param request
-   * @return
-   * @throws ClientProtocolException
-   * @throws IOException
-   */
-  private HttpResponse executeGetRequest(String request) throws ClientProtocolException, IOException {
-    String uri = getEndpoint().toString() + request;
-    HttpGet get = new HttpGet(URI.create(uri));
-    return getHttpClient().execute(get);
   }
 }

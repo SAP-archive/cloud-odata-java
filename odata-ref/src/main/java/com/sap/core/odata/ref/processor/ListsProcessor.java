@@ -389,7 +389,7 @@ public class ListsProcessor extends ODataSingleProcessor {
     else
       entitySet = previousSegments.get(previousSegments.size() - 1).getEntitySet();
     final NavigationSegment navigationSegment = navigationSegments.get(navigationSegments.size() - 1);
-    final HashMap<String, Object> keys = mapKey(navigationSegment.getKeyPredicates());
+    final Map<String, Object> keys = mapKey(navigationSegment.getKeyPredicates());
     final Object targetData = dataSource.readRelatedData(
         entitySet, sourceData, navigationSegment.getEntitySet(), keys);
 
@@ -403,7 +403,37 @@ public class ListsProcessor extends ODataSingleProcessor {
 
   @Override
   public ODataResponse createEntityLink(final PostUriInfo uriInfo, InputStream content, final String requestContentType, final String contentType) throws ODataException {
-    throw new ODataNotImplementedException();
+    final List<NavigationSegment> navigationSegments = uriInfo.getNavigationSegments();
+    final List<NavigationSegment> previousSegments = navigationSegments.subList(0, navigationSegments.size() - 1);
+
+    final Object sourceData = retrieveData(
+        uriInfo.getStartEntitySet(),
+        uriInfo.getKeyPredicates(),
+        uriInfo.getFunctionImport(),
+        mapFunctionParameters(uriInfo.getFunctionImportParameters()),
+        previousSegments);
+
+    EdmEntitySet entitySet;
+    if (previousSegments.isEmpty())
+      entitySet = uriInfo.getStartEntitySet();
+    else
+      entitySet = previousSegments.get(previousSegments.size() - 1).getEntitySet();
+    final EdmEntitySet targetEntitySet = uriInfo.getTargetEntitySet();
+
+    ODataContext context = getContext();
+    final int timingHandle = context.startRuntimeMeasurement("EntityProvider", "readLink");
+
+    final String uriString = EntityProvider.readLink(requestContentType, targetEntitySet, content);
+
+    context.stopRuntimeMeasurement(timingHandle);
+
+    final Map<String, Object> targetKeys = parseLink(targetEntitySet, uriString);
+    if (targetKeys == null)
+      throw new ODataBadRequestException(ODataBadRequestException.BODY);
+
+    dataSource.writeRelation(entitySet, sourceData, targetEntitySet, targetKeys);
+
+    return ODataResponse.status(HttpStatusCodes.NO_CONTENT).build();
   }
 
   @Override
@@ -699,7 +729,7 @@ public class ListsProcessor extends ODataSingleProcessor {
         .build();
   }
 
-  private static HashMap<String, Object> mapKey(final List<KeyPredicate> keys) throws EdmException {
+  private static Map<String, Object> mapKey(final List<KeyPredicate> keys) throws EdmException {
     HashMap<String, Object> keyMap = new HashMap<String, Object>();
     for (final KeyPredicate key : keys) {
       final EdmProperty property = key.getProperty();
@@ -725,7 +755,7 @@ public class ListsProcessor extends ODataSingleProcessor {
 
   private Object retrieveData(final EdmEntitySet startEntitySet, final List<KeyPredicate> keyPredicates, final EdmFunctionImport functionImport, final Map<String, Object> functionImportParameters, final List<NavigationSegment> navigationSegments) throws ODataException {
     Object data;
-    final HashMap<String, Object> keys = mapKey(keyPredicates);
+    final Map<String, Object> keys = mapKey(keyPredicates);
 
     ODataContext context = getContext();
     final int timingHandle = context.startRuntimeMeasurement(getClass().getSimpleName(), "retrieveData");
@@ -784,38 +814,54 @@ public class ListsProcessor extends ODataSingleProcessor {
     return entryValues;
   }
 
-  private void linkEntity(final EdmEntitySet entitySet, Object data, final Map<String, String> links) throws ODataException {
-    final Edm edm = getContext().getService().getEntityDataModel();
-    final EdmEntityType entityType = entitySet.getEntityType();
+  private Map<String, Object> parseLink(final EdmEntitySet targetEntitySet, final String uriString) throws ODataException {
+    final String serviceRoot = getContext().getPathInfo().getServiceRoot().toString();
+    final String path = uriString.startsWith(serviceRoot.toString()) ?
+        uriString.substring(serviceRoot.length()) : uriString;
+    final PathSegment pathSegment = new PathSegment() {
+      @Override
+      public String getPath() {
+        return path;
+      }
+      @Override
+      public Map<String, List<String>> getMatrixParameters() {
+        return null;
+      }
+    };
 
+    final Edm edm = getContext().getService().getEntityDataModel();
+    ODataContext context = getContext();
+    final int timingHandle = context.startRuntimeMeasurement("UriParser", "parse");
+
+    UriInfo uri = null;
+    try {
+      uri = UriParser.parse(edm, Arrays.asList(pathSegment), Collections.<String, String> emptyMap());
+    } catch (ODataException e) {
+      // We don't understand the link target.  This could also be seen as an error.
+    }
+
+    context.stopRuntimeMeasurement(timingHandle);
+
+    if (uri == null)
+      return null;
+    else if (uri.getTargetEntitySet() == null
+        || uri.getTargetEntitySet() != targetEntitySet
+        || !uri.getNavigationSegments().isEmpty()
+        || uri.getKeyPredicates().isEmpty())
+      throw new ODataBadRequestException(ODataBadRequestException.BODY);
+    else
+      return mapKey(uri.getKeyPredicates());
+  }
+
+  private void linkEntity(final EdmEntitySet entitySet, Object data, final Map<String, String> links) throws ODataException {
+    final EdmEntityType entityType = entitySet.getEntityType();
     for (final String navigationPropertyName : links.keySet()) {
       final String uriString = links.get(navigationPropertyName);
-      final PathSegment pathSegment = new PathSegment() {
-        @Override
-        public String getPath() {
-          return uriString;
-        }
-        @Override
-        public Map<String, List<String>> getMatrixParameters() {
-          return null;
-        }
-      };
-      UriInfo uri;
-      try {
-        uri = UriParser.parse(edm, Arrays.asList(pathSegment), Collections.<String, String> emptyMap());
-      } catch (ODataException e) {
-        // We don't understand the link target.  This could also be seen as an error.
-        continue;
-      }
       final EdmNavigationProperty navigationProperty = (EdmNavigationProperty) entityType.getProperty(navigationPropertyName);
       final EdmEntitySet targetEntitySet = entitySet.getRelatedEntitySet(navigationProperty);
-      if (uri.getTargetEntitySet() == null
-          || uri.getTargetEntitySet() != targetEntitySet
-          || !uri.getNavigationSegments().isEmpty()
-          || uri.getKeyPredicates().isEmpty())
-        throw new ODataBadRequestException(ODataBadRequestException.BODY);
-
-      dataSource.writeRelation(entitySet, data, targetEntitySet, mapKey(uri.getKeyPredicates()));
+      final Map<String, Object> key = parseLink(targetEntitySet, uriString);
+      if (key != null)
+        dataSource.writeRelation(entitySet, data, targetEntitySet, key);
     }
   }
 

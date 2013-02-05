@@ -5,6 +5,7 @@ import java.util.Collection;
 
 import javax.xml.stream.FactoryConfigurationError;
 import javax.xml.stream.XMLOutputFactory;
+import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 
 import com.sap.core.odata.api.edm.Edm;
@@ -13,9 +14,14 @@ import com.sap.core.odata.api.edm.provider.EntityContainer;
 import com.sap.core.odata.api.edm.provider.EntitySet;
 import com.sap.core.odata.api.edm.provider.Schema;
 import com.sap.core.odata.api.ep.EntityProviderException;
+import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.core.edm.provider.EdmImplProv;
 import com.sap.core.odata.core.ep.util.FormatXml;
 
+/**
+ * Writes the  OData service document in XML.
+ * @author SAP AG
+ */
 public class AtomServiceDocumentProducer {
 
   public static void writeServiceDocument(Edm edm, String serviceRoot, Writer writer) throws EntityProviderException {
@@ -69,9 +75,11 @@ public class AtomServiceDocumentProducer {
       xmlStreamWriter.writeEndDocument();
 
       xmlStreamWriter.flush();
-    } catch (Exception e) {
-      throw new EntityProviderException(EntityProviderException.COMMON, e);
     } catch (FactoryConfigurationError e) {
+      throw new EntityProviderException(EntityProviderException.COMMON, e);
+    } catch (XMLStreamException e) {
+      throw new EntityProviderException(EntityProviderException.COMMON, e);
+    } catch (ODataException e) {
       throw new EntityProviderException(EntityProviderException.COMMON, e);
     }
   }

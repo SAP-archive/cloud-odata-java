@@ -13,7 +13,6 @@ import java.net.URI;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpDelete;
-import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPatch;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpPut;
@@ -46,32 +45,29 @@ public class BasicHttpTest extends AbstractBasicTest {
 
   @Test
   public void testGetServiceDocument() throws ODataException, MalformedURLException, IOException {
-    HttpGet get = new HttpGet(URI.create(this.getEndpoint().toString() + "/"));
-    HttpResponse response = this.getHttpClient().execute(get);
+    HttpResponse response = executeGetRequest("/");
 
     String payload = StringHelper.inputStreamToString(response.getEntity().getContent());
     assertEquals("service document", payload);
-    assertEquals(200, response.getStatusLine().getStatusCode());
+    assertEquals(HttpStatusCodes.OK.getStatusCode(), response.getStatusLine().getStatusCode());
   }
 
   @Test
   public void testGetServiceDocumentWithRedirect() throws ODataException, MalformedURLException, IOException {
-    HttpGet get = new HttpGet(URI.create(this.getEndpoint().toString()));
-    HttpResponse response = this.getHttpClient().execute(get);
+    HttpResponse response = executeGetRequest("");
 
     String payload = StringHelper.inputStreamToString(response.getEntity().getContent());
     assertEquals("service document", payload);
-    assertEquals(200, response.getStatusLine().getStatusCode());
+    assertEquals(HttpStatusCodes.OK.getStatusCode(), response.getStatusLine().getStatusCode());
   }
 
   @Test
   public void testGet() throws ODataException, MalformedURLException, IOException {
-    HttpGet get = new HttpGet(URI.create(this.getEndpoint().toString() + "/$metadata"));
-    HttpResponse response = this.getHttpClient().execute(get);
+    HttpResponse response = executeGetRequest("$metadata");
 
     String payload = StringHelper.inputStreamToString(response.getEntity().getContent());
     assertEquals("metadata", payload);
-    assertEquals(200, response.getStatusLine().getStatusCode());
+    assertEquals(HttpStatusCodes.OK.getStatusCode(), response.getStatusLine().getStatusCode());
   }
 
   @Test
@@ -81,7 +77,7 @@ public class BasicHttpTest extends AbstractBasicTest {
 
 //    String payload = StringHelper.inputStreamToString(response.getEntity().getContent());
 //    assertTrue(payload.contains(put.getMethod()));
-    assertEquals(404, response.getStatusLine().getStatusCode());
+    assertEquals(HttpStatusCodes.NOT_FOUND.getStatusCode(), response.getStatusLine().getStatusCode());
   }
   
   @Test
