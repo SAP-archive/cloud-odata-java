@@ -16,14 +16,12 @@ import com.sap.core.odata.api.edm.provider.EntitySet;
 import com.sap.core.odata.api.edm.provider.EntityType;
 import com.sap.core.odata.api.edm.provider.Key;
 import com.sap.core.odata.api.edm.provider.Mapping;
-import com.sap.core.odata.api.edm.provider.NavigationProperty;
 import com.sap.core.odata.api.edm.provider.Property;
 import com.sap.core.odata.api.edm.provider.PropertyRef;
 import com.sap.core.odata.api.edm.provider.Schema;
 import com.sap.core.odata.api.edm.provider.SimpleProperty;
 import com.sap.core.odata.processor.core.jpa.model.JPAEdmMappingImpl;
 import com.sap.core.odata.processor.jpa.api.model.JPAEdmMapping;
-import com.sun.org.apache.bcel.internal.generic.AASTORE;
 
 public class MockEdmSchema {
 	

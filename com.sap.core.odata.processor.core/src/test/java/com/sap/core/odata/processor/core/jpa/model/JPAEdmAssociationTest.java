@@ -125,6 +125,7 @@ public class JPAEdmAssociationTest extends JPAEdmTestModelView {
 				entityType.setName("SalesOrderHeader");
 				return entityType;
 			}
+			@SuppressWarnings("hiding")
 			class AttributeMock<Object, String> extends JPAAttributeMock<Object, String> {
 
 				@SuppressWarnings("unchecked")

@@ -14,7 +14,6 @@ import com.sap.core.odata.api.edm.FullQualifiedName;
 import com.sap.core.odata.api.edm.provider.Association;
 import com.sap.core.odata.api.edm.provider.AssociationSet;
 import com.sap.core.odata.api.edm.provider.ComplexType;
-import com.sap.core.odata.api.edm.provider.EntityContainer;
 import com.sap.core.odata.api.edm.provider.EntityContainerInfo;
 import com.sap.core.odata.api.edm.provider.Schema;
 import com.sap.core.odata.api.exception.ODataException;
@@ -52,6 +51,7 @@ public class ODataJPAEdmProviderTest {
 		try
 		{
 			ODataJPAEdmProvider edmProv = new ODataJPAEdmProvider(MockODataJPAContext.mockODataJPAContext());
+			edmProv.getClass();
 		}
 		catch(Exception e)
 		{

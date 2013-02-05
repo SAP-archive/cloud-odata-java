@@ -42,6 +42,7 @@ public class JPAEdmComplexTypeTest extends JPAEdmTestModelView {
 		objComplexType.getBuilder().build();
 	}
 
+	@SuppressWarnings("rawtypes")
 	@Override
 	public EmbeddableType<?> getJPAEmbeddableType() {
 		@SuppressWarnings("hiding")

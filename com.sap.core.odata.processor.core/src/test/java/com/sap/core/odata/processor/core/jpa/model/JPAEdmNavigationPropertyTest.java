@@ -104,6 +104,7 @@ public class JPAEdmNavigationPropertyTest extends JPAEdmTestModelView {
 		assertEquals(objNavigationProperty.getEdmNavigationProperty().getToRole(), "SalesOrderHeader");
 		
 	}
+	@SuppressWarnings("hiding")
 	private class AttributeMock<Object, String> extends JPAAttributeMock<Object, String> {
 
 		@SuppressWarnings("unchecked")
