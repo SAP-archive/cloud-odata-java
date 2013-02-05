@@ -71,7 +71,7 @@ public class JPAEdmComplexType extends JPAEdmBaseViewImpl implements
 	
 	private ComplexType searchComplexTypeByName(String name){
 		for (ComplexType complexType : consistentComplextTypes)
-			if (complexType.getName().equals(name))
+			if (null != complexType && null != complexType.getName() && complexType.getName().equals(name))
 				return complexType;
 
 		return null;
