@@ -34,7 +34,7 @@ public class SalesOrderItem {
 	@Transient
 	private double netAmount;	
 	
-	@JoinColumn(name = "Sales_Order_Item_Id", referencedColumnName = "MATERIAL_ID")
+	@JoinColumn(name = "Sales_Order_Item_Id", referencedColumnName = "MATERIAL_ID",insertable = false,updatable = false)
 	@ManyToOne
 	private Material material;
 		
