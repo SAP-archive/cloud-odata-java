@@ -4,6 +4,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 import org.easymock.EasyMock;
 import org.junit.Test;
@@ -26,7 +28,10 @@ import com.sap.core.odata.api.uri.expression.ExpressionKind;
 import com.sap.core.odata.api.uri.expression.FilterExpression;
 import com.sap.core.odata.api.uri.expression.LiteralExpression;
 import com.sap.core.odata.api.uri.expression.MemberExpression;
+import com.sap.core.odata.api.uri.expression.OrderByExpression;
+import com.sap.core.odata.api.uri.expression.OrderExpression;
 import com.sap.core.odata.api.uri.expression.PropertyExpression;
+import com.sap.core.odata.api.uri.expression.SortOrder;
 import com.sap.core.odata.api.uri.expression.UnaryExpression;
 import com.sap.core.odata.api.uri.expression.UnaryOperator;
 import com.sap.core.odata.processor.jpa.api.exception.ODataJPARuntimeException;
@@ -139,7 +144,27 @@ public class ODataExpressionParserTest {
 										BinaryOperator.EQ,
 										getLiteralExpressionMockedObj("\'City_3\'")),
 								TABLE_ALIAS));
-
+		assertEquals(
+				getAliasedProperty("Address") + "." + "city" + "." + "area" + " = " + "\'BTM\'",
+				ODataExpressionParser
+					.parseToJPAWhereExpression(
+							getBinaryExpression(
+									getMultipleMemberExpressionMockedObj("Address","city","area"),
+									BinaryOperator.EQ,
+									getLiteralExpressionMockedObj("\'BTM\'")),
+							TABLE_ALIAS));
+	}
+	
+	private CommonExpression getMultipleMemberExpressionMockedObj(String string1,String string2, String string3) throws EdmException {
+		
+		MemberExpression memberExpression = EasyMock.createMock(MemberExpression.class);
+		
+		EasyMock.expect(memberExpression.getPath()).andReturn(getMemberExpressionMockedObj(string1, string2)).times(10);
+		EasyMock.expect(memberExpression.getProperty()).andReturn(getPropertyExpressionMockedObj(ExpressionKind.PROPERTY,string3)).times(10);
+		EasyMock.expect(memberExpression.getKind()).andReturn(ExpressionKind.MEMBER).times(10);
+		EasyMock.replay(memberExpression);
+		
+		return memberExpression;
 	}
 
 	@Test
@@ -175,13 +200,10 @@ public class ODataExpressionParserTest {
 			throws EdmException {
 		MemberExpression memberExpression = EasyMock
 				.createMock(MemberExpression.class);
-		// EasyMock.expect(memberExpression.getPath()).andReturn(getPropertyExpressionPath(pathUriLiteral)).times(10);
-		// EasyMock.expect(memberExpression.getPath()).andReturn(getLiteralExpressionMockedObj(pathUriLiteral)).times(10);
 		EasyMock.expect(memberExpression.getPath())
 				.andReturn(
 						getPropertyExpressionMockedObj(ExpressionKind.PROPERTY,
 								pathUriLiteral)).times(10);
-		// EasyMock.expect(memberExpression.getProperty()).andReturn(getPropertyExpressionPath(propertyUriLiteral)).times(10);
 		EasyMock.expect(memberExpression.getProperty())
 				.andReturn(
 						getPropertyExpressionMockedObj(ExpressionKind.PROPERTY,
@@ -193,7 +215,24 @@ public class ODataExpressionParserTest {
 		return memberExpression;
 	}
 
-	
+//	private CommonExpression getPropertyExpressionPath(String uriLiteral) {
+//		PropertyExpression propertyExpression = EasyMock
+//				.createMock(PropertyExpression.class);
+//		EasyMock.expect(propertyExpression.getUriLiteral())
+//				.andReturn(uriLiteral).times(10);
+//
+//		EasyMock.replay(propertyExpression);
+//		return propertyExpression;
+//	}
+
+	@Test
+	public void testParseOrderByExpression() throws EdmException,ODataJPARuntimeException {
+		
+		 /*HashMap<String, String> orderByMap = ODataExpressionParser.parseToJPAOrderByExpression(getOrderByExpressionMockedObj(), TABLE_ALIAS);
+		 String orderByDirection = orderByMap.get(TABLE_ALIAS+"."+"Name 0");
+		 assertEquals("DESC", orderByDirection);	*/
+
+	}
 
 	private String getAliasedProperty(String property) {
 		return TABLE_ALIAS + "." + property;
@@ -330,6 +369,43 @@ public class ODataExpressionParserTest {
 
 		EasyMock.replay(binaryExpression);
 		return binaryExpression;
+	}
+
+	private OrderByExpression getOrderByExpressionMockedObj()
+			throws EdmException {
+		OrderByExpression orderByExpression = EasyMock
+				.createMock(OrderByExpression.class);
+		EasyMock.expect(orderByExpression.getOrders())
+				.andReturn(getOrdersMockedObj()).times(10);
+		EasyMock.replay(orderByExpression);
+		return orderByExpression;
+	}
+
+	private List<OrderExpression> getOrdersMockedObj() throws EdmException {
+		List<OrderExpression> orderBys = new ArrayList<OrderExpression>();
+		for (int i = 0; i < 1; i++) {
+			orderBys.add(getOrderExpressionMockedObj(i));
+		}
+		return orderBys;
+	}
+
+	private OrderExpression getOrderExpressionMockedObj(int index)
+			throws EdmException {
+		OrderExpression orderExpression = EasyMock
+				.createMock(OrderExpression.class);
+		EasyMock.expect(orderExpression.getSortOrder())
+				.andReturn(SortOrder.desc).times(10);
+		EasyMock.expect(orderExpression.getEdmType())
+				.andReturn(getEdmSimpleTypeMockedObj("Name " + index))
+				.times(10);
+		EasyMock.expect(orderExpression.getEdmType().getName()).andReturn("Name "+index).times(10);
+		EasyMock.expect(orderExpression.getExpression())
+				.andReturn(getLiteralExpressionMockedObj("Name " + index))
+				.times(10);
+		EasyMock.expect(orderExpression.getExpression().getEdmType().getName()).andReturn("Name "+index);
+
+		EasyMock.replay(orderExpression);
+		return orderExpression;
 	}
 
 	@Test
