@@ -29,7 +29,10 @@ public class JPAEdmEntityContainer extends JPAEdmBaseViewImpl implements
 
 	@Override
 	public JPAEdmBuilder getBuilder() {
-		return new JPAEdmEntityContainerBuilder();
+		if (this.builder == null)
+			this.builder = new JPAEdmEntityContainerBuilder();
+		
+		return builder;
 	}
 
 	@Override

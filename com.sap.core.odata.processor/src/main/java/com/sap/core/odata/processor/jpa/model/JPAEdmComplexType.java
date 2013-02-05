@@ -36,7 +36,10 @@ public class JPAEdmComplexType extends JPAEdmBaseViewImpl implements
 
 	@Override
 	public JPAEdmBuilder getBuilder() {
-		return new JPAEdmComplexTypeBuilder();
+		if (this.builder == null)
+			this.builder = new JPAEdmComplexTypeBuilder();
+		
+		return builder;
 	}
 
 	@Override

@@ -39,7 +39,10 @@ public class JPAEdmNavigationProperty extends JPAEdmBaseViewImpl implements
 
 	@Override
 	public JPAEdmBuilder getBuilder() {
-		return new JPAEdmNavigationPropertyBuilder();
+		if (this.builder == null)
+			this.builder = new JPAEdmNavigationPropertyBuilder();
+		
+		return builder;
 	}
 
 	private class JPAEdmNavigationPropertyBuilder implements JPAEdmBuilder {

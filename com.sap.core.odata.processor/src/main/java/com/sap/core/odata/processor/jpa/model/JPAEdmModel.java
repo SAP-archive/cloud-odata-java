@@ -21,7 +21,10 @@ public class JPAEdmModel extends JPAEdmBaseViewImpl implements JPAEdmModelView {
 	
 	@Override
 	public JPAEdmBuilder getBuilder( ){
-		return new JPAEdmModelBuilder( );
+		if (this.builder == null)
+			this.builder = new JPAEdmModelBuilder();
+		
+		return builder;
 	}
 	
 

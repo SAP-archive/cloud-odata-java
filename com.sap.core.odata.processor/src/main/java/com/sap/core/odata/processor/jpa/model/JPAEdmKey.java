@@ -37,7 +37,10 @@ public class JPAEdmKey extends JPAEdmBaseViewImpl implements JPAEdmKeyView {
 
 	@Override
 	public JPAEdmBuilder getBuilder() {
-		return new JPAEdmKeyBuider();
+		if (this.builder == null)
+			this.builder = new JPAEdmKeyBuider();
+		
+		return builder;
 	}
 
 	@Override
