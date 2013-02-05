@@ -3,6 +3,7 @@ package com.sap.core.odata.processor.core.jpa.model;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import javax.persistence.metamodel.Attribute;
 
@@ -17,25 +18,28 @@ import com.sap.core.odata.api.edm.provider.EntityType;
 import com.sap.core.odata.processor.core.jpa.model.mock.JPAAttributeMock;
 import com.sap.core.odata.processor.core.jpa.testdata.JPAEdmMockData.SimpleType;
 import com.sap.core.odata.processor.jpa.api.exception.ODataJPAModelException;
+import com.sap.core.odata.processor.jpa.api.exception.ODataJPARuntimeException;
 import com.sap.core.odata.processor.jpa.api.model.JPAEdmReferentialConstraintView;
 
 public class JPAEdmAssociationTest extends JPAEdmTestModelView {
 
-
 	private static JPAEdmAssociation objAssociation = null;
 	private static String ASSOCIATION_NAME = "Association_SalesOrderHeader_String";
 	private static JPAEdmAssociationTest localView = null;
+
 	@BeforeClass
-	public static void setup() throws ODataJPAModelException{
+	public static void setup() throws ODataJPAModelException,
+			ODataJPARuntimeException {
 		localView = new JPAEdmAssociationTest();
-		objAssociation = new JPAEdmAssociation(localView,localView,localView);
+		objAssociation = new JPAEdmAssociation(localView, localView, localView);
 		objAssociation.getBuilder().build();
 	}
 
 	@Override
 	public AssociationEnd getEdmAssociationEnd1() {
 		AssociationEnd associationEnd = new AssociationEnd();
-		associationEnd.setType(new FullQualifiedName("salesorderprocessing", "SalesOrderHeader"));
+		associationEnd.setType(new FullQualifiedName("salesorderprocessing",
+				"SalesOrderHeader"));
 		associationEnd.setRole("SalesOrderHeader");
 		associationEnd.setMultiplicity(EdmMultiplicity.ONE);
 		return associationEnd;
@@ -44,7 +48,8 @@ public class JPAEdmAssociationTest extends JPAEdmTestModelView {
 	@Override
 	public AssociationEnd getEdmAssociationEnd2() {
 		AssociationEnd associationEnd = new AssociationEnd();
-		associationEnd.setType(new FullQualifiedName("salesorderprocessing", "String"));
+		associationEnd.setType(new FullQualifiedName("salesorderprocessing",
+				"String"));
 		associationEnd.setRole("String");
 		associationEnd.setMultiplicity(EdmMultiplicity.MANY);
 		return associationEnd;
@@ -53,59 +58,65 @@ public class JPAEdmAssociationTest extends JPAEdmTestModelView {
 	@Override
 	public Association getEdmAssociation() {
 		Association association = new Association();
-		association.setEnd1(new AssociationEnd().setType(new FullQualifiedName("salesorderprocessing", "SalesOrderHeader")));
-		association.setEnd2(new AssociationEnd().setType(new FullQualifiedName("salesorderprocessing","String")));
-		
+		association.setEnd1(new AssociationEnd().setType(new FullQualifiedName(
+				"salesorderprocessing", "SalesOrderHeader")));
+		association.setEnd2(new AssociationEnd().setType(new FullQualifiedName(
+				"salesorderprocessing", "String")));
+
 		return association;
 	}
+
 	@Override
 	public boolean isExists() {
 		return true;
 	}
+
 	@Override
 	public JPAEdmReferentialConstraintView getJPAEdmReferentialConstraintView() {
-		JPAEdmReferentialConstraint refConstraintView = new JPAEdmReferentialConstraint(localView, localView, localView);
+		JPAEdmReferentialConstraint refConstraintView = new JPAEdmReferentialConstraint(
+				localView, localView, localView);
 		return refConstraintView;
 	}
 
-
 	@Test
-	public void testGetBuilder() throws ODataJPAModelException, SecurityException, NoSuchFieldException, IllegalArgumentException, IllegalAccessException, ClassNotFoundException {
-		/*JPAEdmReferentialConstraint refConstraintView = new JPAEdmReferentialConstraint(localView, localView, localView);
-		Class<?> clazz = Class.forName("com.sap.core.odata.processor.jpa.model.JPAEdmReferentialConstraint");
-		Field f = clazz.getField("exists");
-		f.setAccessible(true);
-		f.set(refConstraintView, true);
-		objAssociation.addJPAEdmRefConstraintView(refConstraintView);
-		objAssociation.getBuilder().build();*/
+	public void testGetBuilder() throws ODataJPAModelException,
+			SecurityException, NoSuchFieldException, IllegalArgumentException,
+			IllegalAccessException, ClassNotFoundException {
+		/*
+		 * JPAEdmReferentialConstraint refConstraintView = new
+		 * JPAEdmReferentialConstraint(localView, localView, localView);
+		 * Class<?> clazz = Class.forName(
+		 * "com.sap.core.odata.processor.jpa.model.JPAEdmReferentialConstraint"
+		 * ); Field f = clazz.getField("exists"); f.setAccessible(true);
+		 * f.set(refConstraintView, true);
+		 * objAssociation.addJPAEdmRefConstraintView(refConstraintView);
+		 * objAssociation.getBuilder().build();
+		 */
 		assertNotNull(objAssociation.getBuilder());
 	}
 
 	@Test
 	public void testGetEdmAssociation() {
 		assertNotNull(objAssociation.getEdmAssociation());
-		assertEquals(objAssociation.getEdmAssociation().getName(), ASSOCIATION_NAME);
+		assertEquals(objAssociation.getEdmAssociation().getName(),
+				ASSOCIATION_NAME);
 	}
 
 	@Test
 	public void testGetConsistentEdmAssociationList() {
-		assertTrue(objAssociation.getConsistentEdmAssociationList().size()>0);
+		assertTrue(objAssociation.getConsistentEdmAssociationList().size() > 0);
 	}
 
-	
 	@Override
 	public String getEdmRelationShipName() {
 		return "Association_SalesOrderHeader_String";
 	}
 
-	
-
 	@Test
 	public void testSearchAssociation1() throws ODataJPAModelException {
-		class TestAssociationEndView extends JPAEdmTestModelView
-		{
-			private Attribute<?,?> getJPAAttributeLocal() {
-				AttributeMock<Object, String> attr = new AttributeMock<Object,String>();
+		class TestAssociationEndView extends JPAEdmTestModelView {
+			private Attribute<?, ?> getJPAAttributeLocal() {
+				AttributeMock<Object, String> attr = new AttributeMock<Object, String>();
 				return attr;
 			}
 
@@ -125,8 +136,10 @@ public class JPAEdmAssociationTest extends JPAEdmTestModelView {
 				entityType.setName("SalesOrderHeader");
 				return entityType;
 			}
+
 			@SuppressWarnings("hiding")
-			class AttributeMock<Object, String> extends JPAAttributeMock<Object, String> {
+			class AttributeMock<Object, String> extends
+					JPAAttributeMock<Object, String> {
 
 				@SuppressWarnings("unchecked")
 				@Override
@@ -136,32 +149,34 @@ public class JPAEdmAssociationTest extends JPAEdmTestModelView {
 
 				@Override
 				public PersistentAttributeType getPersistentAttributeType() {
-					
-						return PersistentAttributeType.ONE_TO_MANY;
-					
-				
+
+					return PersistentAttributeType.ONE_TO_MANY;
+
 				}
 
-				
 			}
 		}
 		TestAssociationEndView objJPAEdmAssociationEndTest = new TestAssociationEndView();
-		JPAEdmAssociationEnd objJPAEdmAssociationEnd = new JPAEdmAssociationEnd(objJPAEdmAssociationEndTest,objJPAEdmAssociationEndTest);
-		objJPAEdmAssociationEnd.getBuilder().build();
+		JPAEdmAssociationEnd objJPAEdmAssociationEnd = new JPAEdmAssociationEnd(
+				objJPAEdmAssociationEndTest, objJPAEdmAssociationEndTest);
+		try {
+			objJPAEdmAssociationEnd.getBuilder().build();
+		} catch (ODataJPARuntimeException e) {
+			fail("Not expected");
+		}
 		assertNotNull(objAssociation.searchAssociation(objJPAEdmAssociationEnd));
-		
+
 	}
-	
 
 	@Test
 	public void testAddJPAEdmAssociationView() throws ODataJPAModelException {
-		
-		class LocalJPAAssociationView extends JPAEdmTestModelView
-		{
+
+		class LocalJPAAssociationView extends JPAEdmTestModelView {
 			@Override
 			public AssociationEnd getEdmAssociationEnd1() {
 				AssociationEnd associationEnd = new AssociationEnd();
-				associationEnd.setType(new FullQualifiedName("salesorderprocessing", "SalesOrderHeader"));
+				associationEnd.setType(new FullQualifiedName(
+						"salesorderprocessing", "SalesOrderHeader"));
 				associationEnd.setRole("SalesOrderHeader");
 				associationEnd.setMultiplicity(EdmMultiplicity.ONE);
 				return associationEnd;
@@ -170,7 +185,8 @@ public class JPAEdmAssociationTest extends JPAEdmTestModelView {
 			@Override
 			public AssociationEnd getEdmAssociationEnd2() {
 				AssociationEnd associationEnd = new AssociationEnd();
-				associationEnd.setType(new FullQualifiedName("salesorderprocessing", "SalesOrderItem"));
+				associationEnd.setType(new FullQualifiedName(
+						"salesorderprocessing", "SalesOrderItem"));
 				associationEnd.setRole("SalesOrderItem");
 				associationEnd.setMultiplicity(EdmMultiplicity.MANY);
 				return associationEnd;
@@ -179,28 +195,35 @@ public class JPAEdmAssociationTest extends JPAEdmTestModelView {
 			@Override
 			public Association getEdmAssociation() {
 				Association association = new Association();
-				association.setEnd1(new AssociationEnd().setType(new FullQualifiedName("salesorderprocessing", "SalesOrderHeader")));
-				association.setEnd2(new AssociationEnd().setType(new FullQualifiedName("salesorderprocessing","SalesOrderItem")));
-				
+				association.setEnd1(new AssociationEnd()
+						.setType(new FullQualifiedName("salesorderprocessing",
+								"SalesOrderHeader")));
+				association.setEnd2(new AssociationEnd()
+						.setType(new FullQualifiedName("salesorderprocessing",
+								"SalesOrderItem")));
+
 				return association;
 			}
 		}
 		LocalJPAAssociationView assocViewObj = new LocalJPAAssociationView();
-		JPAEdmAssociation objLocalAssociation = new JPAEdmAssociation(assocViewObj,assocViewObj,assocViewObj);
-		objLocalAssociation.getBuilder().build();
+		JPAEdmAssociation objLocalAssociation = new JPAEdmAssociation(
+				assocViewObj, assocViewObj, assocViewObj);
+		try {
+			objLocalAssociation.getBuilder().build();
+		} catch (ODataJPARuntimeException e) {
+			fail("Not expected");
+		}
 		objAssociation.addJPAEdmAssociationView(objLocalAssociation);
-		
-		
+
 	}
 
-	
 	@Test
 	public void testAddJPAEdmRefConstraintView() {
-		
+
 	}
 
 	@Test
 	public void testGetJPAEdmReferentialConstraintView() {
-		
+
 	}
 }

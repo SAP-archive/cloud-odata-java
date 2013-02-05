@@ -31,7 +31,7 @@ public class JPQLSelectSingleContextImplTest {
 	private static String entityTypeName = "MockEntity";
 	private static String[] fields = { "Field1", "Field2" };
 	private static List<KeyPredicate> keyPredicates;
-	
+
 	private static JPQLSelectSingleContextBuilder builder;
 	private static JPQLSelectSingleContext selectContext;
 
@@ -41,36 +41,36 @@ public class JPQLSelectSingleContextImplTest {
 		keyPredicates = new ArrayList<KeyPredicate>();
 		GetEntityUriInfo resultsView = EasyMock
 				.createMock(GetEntityUriInfo.class);
-		
+
 		EdmEntitySet entitySet = EasyMock.createMock(EdmEntitySet.class);
 		EdmEntityType entityType = EasyMock.createMock(EdmEntityType.class);
 
-		KeyPredicate keyPredicate = EasyMock
-				.createMock(KeyPredicate.class);
-		EdmProperty kpProperty = EasyMock
-				.createMock(EdmProperty.class);
-		EdmType edmType = EasyMock
-				.createMock(EdmType.class);
+		KeyPredicate keyPredicate = EasyMock.createMock(KeyPredicate.class);
+		EdmProperty kpProperty = EasyMock.createMock(EdmProperty.class);
+		EdmType edmType = EasyMock.createMock(EdmType.class);
 		EasyMock.expect(keyPredicate.getLiteral()).andStubReturn("1");
 		try {
 			EasyMock.expect(kpProperty.getName()).andStubReturn("Field1");
 			EasyMock.expect(kpProperty.getType()).andStubReturn(edmType);
-			
+
 		} catch (EdmException e2) {
 			fail("this should not happen");
 		}
 		EasyMock.expect(keyPredicate.getProperty()).andStubReturn(kpProperty);
-		EasyMock.replay(edmType,kpProperty,keyPredicate);
+		EasyMock.replay(edmType, kpProperty, keyPredicate);
 		keyPredicates.add(keyPredicate);
 		int i = 0;
 		try {
-			
+
 			List<SelectItem> selectItemList = new ArrayList<SelectItem>(2);
 			do {
 				EdmMapping edmMapping = EasyMock.createMock(EdmMapping.class);
-				EasyMock.expect(edmMapping.getInternalName()).andStubReturn(fields[i]);
-				EdmProperty edmProperty = EasyMock.createMock(EdmProperty.class);
-				EasyMock.expect(edmProperty.getMapping()).andStubReturn(edmMapping);
+				EasyMock.expect(edmMapping.getInternalName()).andStubReturn(
+						fields[i]);
+				EdmProperty edmProperty = EasyMock
+						.createMock(EdmProperty.class);
+				EasyMock.expect(edmProperty.getMapping()).andStubReturn(
+						edmMapping);
 				EasyMock.replay(edmMapping, edmProperty);
 
 				SelectItem selectItem = EasyMock.createMock(SelectItem.class);
@@ -81,17 +81,19 @@ public class JPQLSelectSingleContextImplTest {
 				selectItemList.add(selectItem);
 
 			} while (++i < 2);
-			
+
 			EasyMock.expect(entityType.getName()).andStubReturn(entityTypeName);
 			EasyMock.replay(entityType);
 			EasyMock.expect(entitySet.getEntityType())
 					.andStubReturn(entityType);
 			EasyMock.replay(entitySet);
-			
+
 			EasyMock.expect(resultsView.getTargetEntitySet()).andStubReturn(
 					entitySet);
-			if (isSelectNull) selectItemList = null;
-			EasyMock.expect(resultsView.getSelect()).andStubReturn(selectItemList);
+			if (isSelectNull)
+				selectItemList = null;
+			EasyMock.expect(resultsView.getSelect()).andStubReturn(
+					selectItemList);
 			ArrayList<KeyPredicate> arrayList = new ArrayList<KeyPredicate>();
 			arrayList.add(keyPredicate);
 			EasyMock.expect(resultsView.getKeyPredicates()).andStubReturn(
@@ -101,9 +103,10 @@ public class JPQLSelectSingleContextImplTest {
 		} catch (EdmException e1) {
 			fail("Exception not Expected");
 		}
-		builder = (JPQLSelectSingleContextBuilder) JPQLContext.createBuilder(
-				JPQLContextType.SELECT_SINGLE, resultsView);
 		try {
+			builder = (JPQLSelectSingleContextBuilder) JPQLContext
+					.createBuilder(JPQLContextType.SELECT_SINGLE, resultsView);
+
 			selectContext = (JPQLSelectSingleContext) builder.build();
 		} catch (ODataJPAModelException e) {
 			fail("Exception not Expected");
@@ -111,55 +114,54 @@ public class JPQLSelectSingleContextImplTest {
 			fail("Runtime Exception thrown");
 		}
 	}
-	
+
 	@Test
 	public void testEntityNameThrowingException() {
-//		buildSelectContext(false, false, false);
+		// buildSelectContext(false, false, false);
 		GetEntityUriInfo resultsView = EasyMock
 				.createMock(GetEntityUriInfo.class);
 
 		EdmEntitySet entitySet = EasyMock.createMock(EdmEntitySet.class);
 		EdmEntityType entityType = EasyMock.createMock(EdmEntityType.class);
-	
+
 		try {
-			EasyMock.expect(entityType.getName()).andStubThrow(new EdmException(null));
-			EasyMock.expect(entitySet.getEntityType())
-			.andStubThrow(new EdmException(null));
+			EasyMock.expect(entityType.getName()).andStubThrow(
+					new EdmException(null));
+			EasyMock.expect(entitySet.getEntityType()).andStubThrow(
+					new EdmException(null));
 		} catch (EdmException e1) {
-//			throw new ODataException();
+			// throw new ODataException();
 		}
-			
+
 		EasyMock.replay(entityType);
 		EasyMock.replay(entitySet);
-		
+
 		EasyMock.expect(resultsView.getTargetEntitySet()).andStubReturn(
 				entitySet);
 		EasyMock.expect(resultsView.getSelect()).andStubReturn(null);
 		EasyMock.expect(resultsView.getFilter()).andStubReturn(null);
 		EasyMock.replay(resultsView);
-		JPQLSelectSingleContextBuilder builder1 = (JPQLSelectSingleContextBuilder) JPQLContext.createBuilder(
-				JPQLContextType.SELECT_SINGLE, resultsView);
 		try {
-			/*JPQLSelectContext selectContext1 = (JPQLSelectContext)*/ builder1.build();
+			JPQLSelectSingleContextBuilder builder1 = (JPQLSelectSingleContextBuilder) JPQLContext
+					.createBuilder(JPQLContextType.SELECT_SINGLE, resultsView);
+			builder1.build();
 			fail("Should not come here");
 		} catch (ODataJPAModelException e) {
 			fail();
-		}
-		catch (ODataJPARuntimeException e){
+		} catch (ODataJPARuntimeException e) {
 			assertTrue(true);
 		}
 	}
-	
+
 	@Test
-	public void testSlectedFieldsAsNull(){
+	public void testSlectedFieldsAsNull() {
 		buildContextBuilder(true);
 		try {
 			selectContext = (JPQLSelectSingleContext) builder.build();
 			assertEquals("E2", selectContext.getSelectExpression());
 		} catch (ODataJPAModelException e) {
 			fail();
-		}
-		catch (ODataJPARuntimeException  e) {
+		} catch (ODataJPARuntimeException e) {
 			fail();
 		}
 	}
@@ -170,14 +172,15 @@ public class JPQLSelectSingleContextImplTest {
 		assertTrue(selectContext.getSelectExpression().contains(fields[0]));
 		assertTrue(selectContext.getSelectExpression().contains(fields[1]));
 	}
-	
+
 	@Test
-	public void getKeyPredicates(){
+	public void getKeyPredicates() {
 		buildContextBuilder(false);
-		assertEquals(keyPredicates.size(), selectContext.getKeyPredicates().size());
+		assertEquals(keyPredicates.size(), selectContext.getKeyPredicates()
+				.size());
 		assertEquals(keyPredicates, selectContext.getKeyPredicates());
 	}
-	
+
 	@Test
 	public void testGetJPAEntityName() {
 		buildContextBuilder(false);

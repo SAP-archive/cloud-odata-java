@@ -31,7 +31,7 @@ public abstract class JPQLContext implements JPQLContextView {
 		return this.type;
 	}
 	
-	public final static JPQLContextBuilder createBuilder(JPQLContextType contextType, Object resultsView){
+	public final static JPQLContextBuilder createBuilder(JPQLContextType contextType, Object resultsView) throws ODataJPARuntimeException{
 		return JPQLContextBuilder.create(contextType,resultsView);
 	}
 	
@@ -41,7 +41,7 @@ public abstract class JPQLContext implements JPQLContextView {
 		
 		protected JPQLContextBuilder( ){ }
 		
-		private static JPQLContextBuilder create(JPQLContextType contextType,Object resultsView){
+		private static JPQLContextBuilder create(JPQLContextType contextType,Object resultsView) throws ODataJPARuntimeException{
 			JPQLContextBuilder contextBuilder = ODataJPAFactory.createFactory().getJPQLBuilderFactory().getContextBuilder(contextType);
 			contextBuilder.setResultsView(resultsView);
 			return contextBuilder;

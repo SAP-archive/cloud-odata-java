@@ -25,6 +25,7 @@ import com.sap.core.odata.processor.core.jpa.model.mock.JPAMetaModelMock;
 import com.sap.core.odata.processor.core.jpa.model.mock.JPASingularAttributeMock;
 import com.sap.core.odata.processor.jpa.api.access.JPAEdmBuilder;
 import com.sap.core.odata.processor.jpa.api.exception.ODataJPAModelException;
+import com.sap.core.odata.processor.jpa.api.exception.ODataJPARuntimeException;
 import com.sap.core.odata.processor.jpa.api.model.JPAEdmAssociationView;
 import com.sap.core.odata.processor.jpa.api.model.JPAEdmEntityContainerView;
 import com.sap.core.odata.processor.jpa.api.model.JPAEdmEntitySetView;
@@ -34,35 +35,37 @@ public class JPAEdmPropertyTest extends JPAEdmTestModelView {
 
 	private JPAEdmPropertyTest objJPAEdmPropertyTest;
 	private JPAEdmProperty objJPAEdmProperty;
-	
-	
+
 	@Before
 	public void setUp() throws Exception {
 		objJPAEdmPropertyTest = new JPAEdmPropertyTest();
 		objJPAEdmProperty = new JPAEdmProperty(objJPAEdmPropertyTest);
 		objJPAEdmProperty.getBuilder().build();
-		
+
 	}
 
 	@Test
 	public void testGetBuilder() {
 		assertNotNull(objJPAEdmProperty.getBuilder());
-		
+
 		// builder for complex type
 		objJPAEdmPropertyTest = new JPAEdmPropertyTest();
-		objJPAEdmProperty = new JPAEdmProperty(objJPAEdmPropertyTest,objJPAEdmPropertyTest);
+		objJPAEdmProperty = new JPAEdmProperty(objJPAEdmPropertyTest,
+				objJPAEdmPropertyTest);
 		try {
 			objJPAEdmProperty.getBuilder().build();
 		} catch (ODataJPAModelException e) {
 			fail("ODataJPAModelException not expected");
+		} catch (ODataJPARuntimeException e) {
+			fail("ODataJPARuntimeException not expected");
 		}
 	}
-	
+
 	@Test
-	public void testGetBuilderIdempotent(){
+	public void testGetBuilderIdempotent() {
 		JPAEdmBuilder builder1 = objJPAEdmProperty.getBuilder();
 		JPAEdmBuilder builder2 = objJPAEdmProperty.getBuilder();
-		
+
 		assertEquals(builder1.hashCode(), builder2.hashCode());
 	}
 
@@ -89,7 +92,7 @@ public class JPAEdmPropertyTest extends JPAEdmTestModelView {
 
 	@Test
 	public void testGetEdmComplexProperty() {
-		//assertNotNull(objJPAEdmProperty.getEdmComplexProperty());
+		// assertNotNull(objJPAEdmProperty.getEdmComplexProperty());
 	}
 
 	@Test
@@ -107,21 +110,17 @@ public class JPAEdmPropertyTest extends JPAEdmTestModelView {
 		objJPAEdmProperty.clean();
 		assertFalse(objJPAEdmProperty.isConsistent());
 	}
-	
-	
-	
+
 	@Override
 	public Metamodel getJPAMetaModel() {
 		return new JPAEdmMetaModel();
 	}
-	
-	
-	
+
 	@Override
 	public JPAEdmEntitySetView getJPAEdmEntitySetView() {
 		return this;
 	}
-	
+
 	@Override
 	public JPAEdmEntityContainerView getJPAEdmEntityContainerView() {
 		return this;
@@ -131,12 +130,12 @@ public class JPAEdmPropertyTest extends JPAEdmTestModelView {
 	public EntityType<?> getJPAEntityType() {
 		return new JPAEdmEntityType<String>();
 	}
-	
+
 	@Override
-	public JPAEdmEntityTypeView getJPAEdmEntityTypeView(){
+	public JPAEdmEntityTypeView getJPAEdmEntityTypeView() {
 		return this;
 	}
-	
+
 	@Override
 	public Schema getEdmSchema() {
 		Schema schema = new Schema();
@@ -148,13 +147,12 @@ public class JPAEdmPropertyTest extends JPAEdmTestModelView {
 	public String getpUnitName() {
 		return "salesorderprocessing";
 	}
-	
+
 	@Override
 	public JPAEdmAssociationView getJPAEdmAssociationView() {
 		return this;
 	}
-	
-	
+
 	@Override
 	public EmbeddableType<?> getJPAEmbeddableType() {
 		return new JPAEdmEmbeddable<java.lang.String>();
@@ -163,21 +161,18 @@ public class JPAEdmPropertyTest extends JPAEdmTestModelView {
 	@Override
 	public JPAEdmBuilder getBuilder() {
 		return new JPAEdmBuilder() {
-			
+
 			@Override
 			public void build() throws ODataJPAModelException {
-				//Nothing to do?
+				// Nothing to do?
 			}
 		};
 	}
 
-
-
-	private class JPAEdmMetaModel extends JPAMetaModelMock
-	{
+	private class JPAEdmMetaModel extends JPAMetaModelMock {
 		Set<EntityType<?>> entities;
 
-		public JPAEdmMetaModel(){
+		public JPAEdmMetaModel() {
 			entities = new HashSet<EntityType<?>>();
 		}
 
@@ -186,35 +181,37 @@ public class JPAEdmPropertyTest extends JPAEdmTestModelView {
 			entities.add(new JPAEdmEntityType());
 			return entities;
 		}
-		
-		private class JPAEdmEntityType extends JPAEntityTypeMock<String>{
+
+		private class JPAEdmEntityType extends JPAEntityTypeMock<String> {
 			@Override
 			public String getName() {
 				return "SalesOrderHeader";
 			}
 		}
 	}
-	
+
 	@SuppressWarnings("hiding")
-	private class JPAEdmEntityType<String> extends JPAEntityTypeMock<String>{
-		Set<Attribute<? super String, ?>> attributeSet = new HashSet<Attribute<? super String,?>>();
-		
+	private class JPAEdmEntityType<String> extends JPAEntityTypeMock<String> {
+		Set<Attribute<? super String, ?>> attributeSet = new HashSet<Attribute<? super String, ?>>();
+
 		@SuppressWarnings({ "unchecked", "rawtypes" })
-		private void setValuesToSet()
-		{
-			attributeSet.add((Attribute< ? super String,String>)new JPAEdmAttribute(java.lang.String.class, "SOID"));
-			attributeSet.add((Attribute< ? super String,String>)new JPAEdmAttribute(java.lang.String.class, "SONAME"));
+		private void setValuesToSet() {
+			attributeSet
+					.add((Attribute<? super String, String>) new JPAEdmAttribute(
+							java.lang.String.class, "SOID"));
+			attributeSet
+					.add((Attribute<? super String, String>) new JPAEdmAttribute(
+							java.lang.String.class, "SONAME"));
 		}
-		
 
 		@Override
 		public Set<Attribute<? super String, ?>> getAttributes() {
 			setValuesToSet();
 			return attributeSet;
 		}
-		
-		private class JPAEdmAttribute<Object,String> extends JPASingularAttributeMock<Object, String>
-		{
+
+		private class JPAEdmAttribute<Object, String> extends
+				JPASingularAttributeMock<Object, String> {
 
 			@Override
 			public PersistentAttributeType getPersistentAttributeType() {
@@ -223,12 +220,13 @@ public class JPAEdmPropertyTest extends JPAEdmTestModelView {
 
 			Class<String> clazz;
 			java.lang.String attributeName;
-			public JPAEdmAttribute(Class<String> javaType,java.lang.String name) {
-				 this.clazz = javaType;
-				 this.attributeName = name;
-				
+
+			public JPAEdmAttribute(Class<String> javaType, java.lang.String name) {
+				this.clazz = javaType;
+				this.attributeName = name;
+
 			}
-			
+
 			@Override
 			public Class<String> getJavaType() {
 				return clazz;
@@ -245,33 +243,37 @@ public class JPAEdmPropertyTest extends JPAEdmTestModelView {
 			}
 		}
 	}
-	
-	@SuppressWarnings("hiding")
-	private class JPAEdmEmbeddable<String> extends JPAEmbeddableTypeMock<String>{
 
-		
-		Set<Attribute<? super String, ?>> attributeSet = new HashSet<Attribute<? super String,?>>();
-		
+	@SuppressWarnings("hiding")
+	private class JPAEdmEmbeddable<String> extends
+			JPAEmbeddableTypeMock<String> {
+
+		Set<Attribute<? super String, ?>> attributeSet = new HashSet<Attribute<? super String, ?>>();
+
 		@SuppressWarnings({ "unchecked", "rawtypes" })
-		private void setValuesToSet()
-		{
-			attributeSet.add((Attribute< ? super String,String>)new JPAEdmAttribute(java.lang.String.class, "SOID"));
-			attributeSet.add((Attribute< ? super String,String>)new JPAEdmAttribute(java.lang.String.class, "SONAME"));
+		private void setValuesToSet() {
+			attributeSet
+					.add((Attribute<? super String, String>) new JPAEdmAttribute(
+							java.lang.String.class, "SOID"));
+			attributeSet
+					.add((Attribute<? super String, String>) new JPAEdmAttribute(
+							java.lang.String.class, "SONAME"));
 		}
-		
-		/*@Override
-		public Attribute<? super Object, ?> getAttribute(java.lang.String arg0) {
-			return super.getAttribute(arg0);
-		}*/
+
+		/*
+		 * @Override public Attribute<? super Object, ?>
+		 * getAttribute(java.lang.String arg0) { return
+		 * super.getAttribute(arg0); }
+		 */
 
 		@Override
 		public Set<Attribute<? super String, ?>> getAttributes() {
 			setValuesToSet();
 			return attributeSet;
 		}
-		
-		private class JPAEdmAttribute<Object,String> extends JPASingularAttributeMock<Object, String>
-		{
+
+		private class JPAEdmAttribute<Object, String> extends
+				JPASingularAttributeMock<Object, String> {
 
 			@Override
 			public PersistentAttributeType getPersistentAttributeType() {
@@ -280,12 +282,13 @@ public class JPAEdmPropertyTest extends JPAEdmTestModelView {
 
 			Class<String> clazz;
 			java.lang.String attributeName;
-			public JPAEdmAttribute(Class<String> javaType,java.lang.String name) {
-				 this.clazz = javaType;
-				 this.attributeName = name;
-				
+
+			public JPAEdmAttribute(Class<String> javaType, java.lang.String name) {
+				this.clazz = javaType;
+				this.attributeName = name;
+
 			}
-			
+
 			@Override
 			public Class<String> getJavaType() {
 				return clazz;
@@ -301,7 +304,7 @@ public class JPAEdmPropertyTest extends JPAEdmTestModelView {
 				return true;
 			}
 		}
-		
+
 	}
 
 }

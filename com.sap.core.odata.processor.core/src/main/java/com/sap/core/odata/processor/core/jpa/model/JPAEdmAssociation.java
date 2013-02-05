@@ -9,6 +9,7 @@ import com.sap.core.odata.api.edm.provider.Association;
 import com.sap.core.odata.processor.core.jpa.access.model.JPAEdmNameBuilder;
 import com.sap.core.odata.processor.jpa.api.access.JPAEdmBuilder;
 import com.sap.core.odata.processor.jpa.api.exception.ODataJPAModelException;
+import com.sap.core.odata.processor.jpa.api.exception.ODataJPARuntimeException;
 import com.sap.core.odata.processor.jpa.api.model.JPAEdmAssociationEndView;
 import com.sap.core.odata.processor.jpa.api.model.JPAEdmAssociationView;
 import com.sap.core.odata.processor.jpa.api.model.JPAEdmEntityTypeView;
@@ -104,7 +105,7 @@ public class JPAEdmAssociation extends JPAEdmBaseViewImpl implements
 	private class JPAEdmAssociationBuilder implements JPAEdmBuilder {
 
 		@Override
-		public void build() throws ODataJPAModelException {
+		public void build() throws ODataJPAModelException, ODataJPARuntimeException {
 
 			if (associationEndView != null
 					&& searchAssociation(associationEndView) == null) {

@@ -7,6 +7,7 @@ import java.util.UUID;
 
 import com.sap.core.odata.api.edm.EdmSimpleTypeKind;
 import com.sap.core.odata.processor.jpa.api.exception.ODataJPAModelException;
+import com.sap.core.odata.processor.jpa.api.exception.ODataJPARuntimeException;
 
 /**
  * This class holds utility methods for Type conversions between JPA and OData Types.
@@ -26,10 +27,11 @@ public class JPATypeConvertor {
 	 *            The JPA Type input.
 	 * @return The corresponding EdmSimpleTypeKind.
 	 * @throws ODataJPAModelException
+	 * @throws ODataJPARuntimeException 
 	 * 
 	 * @see EdmSimpleTypeKind
 	 */
-	public static EdmSimpleTypeKind convertToEdmSimpleType(Class<?> jpaType) throws ODataJPAModelException{
+	public static EdmSimpleTypeKind convertToEdmSimpleType(Class<?> jpaType) throws ODataJPAModelException, ODataJPARuntimeException{
 		if (jpaType.equals(String.class)){
 			return EdmSimpleTypeKind.String;
 		}

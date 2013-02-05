@@ -13,6 +13,7 @@ import org.junit.Test;
 import com.sap.core.odata.api.edm.EdmSimpleTypeKind;
 import com.sap.core.odata.processor.core.jpa.access.model.JPATypeConvertor;
 import com.sap.core.odata.processor.jpa.api.exception.ODataJPAModelException;
+import com.sap.core.odata.processor.jpa.api.exception.ODataJPARuntimeException;
 
 public class JPATypeConvertorTest {
 
@@ -27,9 +28,9 @@ public class JPATypeConvertorTest {
 	private EdmSimpleTypeKind edmSimpleKindTypeByte;
 	private EdmSimpleTypeKind edmSimpleKindTypeBoolean;
 	private EdmSimpleTypeKind edmSimpleKindTypeDate;
-	//private EdmSimpleTypeKind edmSimpleKindTypeCalendar;
+	// private EdmSimpleTypeKind edmSimpleKindTypeCalendar;
 	private EdmSimpleTypeKind edmSimpleKindTypeUUID;
-	
+
 	@Test
 	public void testConvertToEdmSimpleType() {
 		String str = "entity";
@@ -43,25 +44,42 @@ public class JPATypeConvertorTest {
 		Byte byteObj = new Byte((byte) 0);
 		Boolean booleanObj = Boolean.TRUE;
 		Date dateObj = Calendar.getInstance().getTime();
-		//Calendar cal = Calendar.getInstance();
+		// Calendar cal = Calendar.getInstance();
 		UUID uUID = new UUID(0, 0);
-		
+
 		try {
-			edmSimpleKindTypeString = JPATypeConvertor.convertToEdmSimpleType(str.getClass());
-			edmSimpleKindTypeByteArr = JPATypeConvertor.convertToEdmSimpleType(byteArr.getClass());
-			edmSimpleKindTypeLong = JPATypeConvertor.convertToEdmSimpleType(longObj.getClass());
-			edmSimpleKindTypeShort = JPATypeConvertor.convertToEdmSimpleType(shortObj.getClass());
-			edmSimpleKindTypeInteger = JPATypeConvertor.convertToEdmSimpleType(integerObj.getClass());
-			edmSimpleKindTypeDouble = JPATypeConvertor.convertToEdmSimpleType(doubleObj.getClass());
-			edmSimpleKindTypeFloat = JPATypeConvertor.convertToEdmSimpleType(floatObj.getClass());
-			edmSimpleKindTypeBigDecimal = JPATypeConvertor.convertToEdmSimpleType(bigDecimalObj.getClass());
-			edmSimpleKindTypeByte = JPATypeConvertor.convertToEdmSimpleType(byteObj.getClass());
-			edmSimpleKindTypeBoolean = JPATypeConvertor.convertToEdmSimpleType(booleanObj.getClass());
-			edmSimpleKindTypeDate = JPATypeConvertor.convertToEdmSimpleType(dateObj.getClass());
-			//edmSimpleKindTypeCalendar = JPATypeConvertor.convertToEdmSimpleType(cal.getClass());
-			edmSimpleKindTypeUUID = JPATypeConvertor.convertToEdmSimpleType(uUID.getClass());
+			edmSimpleKindTypeString = JPATypeConvertor
+					.convertToEdmSimpleType(str.getClass());
+			edmSimpleKindTypeByteArr = JPATypeConvertor
+					.convertToEdmSimpleType(byteArr.getClass());
+			edmSimpleKindTypeLong = JPATypeConvertor
+					.convertToEdmSimpleType(longObj.getClass());
+			edmSimpleKindTypeShort = JPATypeConvertor
+					.convertToEdmSimpleType(shortObj.getClass());
+			edmSimpleKindTypeInteger = JPATypeConvertor
+					.convertToEdmSimpleType(integerObj.getClass());
+			edmSimpleKindTypeDouble = JPATypeConvertor
+					.convertToEdmSimpleType(doubleObj.getClass());
+			edmSimpleKindTypeFloat = JPATypeConvertor
+					.convertToEdmSimpleType(floatObj.getClass());
+			edmSimpleKindTypeBigDecimal = JPATypeConvertor
+					.convertToEdmSimpleType(bigDecimalObj.getClass());
+			edmSimpleKindTypeByte = JPATypeConvertor
+					.convertToEdmSimpleType(byteObj.getClass());
+			edmSimpleKindTypeBoolean = JPATypeConvertor
+					.convertToEdmSimpleType(booleanObj.getClass());
+			edmSimpleKindTypeDate = JPATypeConvertor
+					.convertToEdmSimpleType(dateObj.getClass());
+			// edmSimpleKindTypeCalendar =
+			// JPATypeConvertor.convertToEdmSimpleType(cal.getClass());
+			edmSimpleKindTypeUUID = JPATypeConvertor
+					.convertToEdmSimpleType(uUID.getClass());
 		} catch (ODataJPAModelException e) {
 			fail("ODATA Model Exception raised");
+		}
+
+		catch (ODataJPARuntimeException e) {
+			fail("ODATA Runtime Exception raised");
 		}
 		assertEquals(EdmSimpleTypeKind.String, edmSimpleKindTypeString);
 		assertEquals(EdmSimpleTypeKind.Binary, edmSimpleKindTypeByteArr);
@@ -74,7 +92,7 @@ public class JPATypeConvertorTest {
 		assertEquals(EdmSimpleTypeKind.Byte, edmSimpleKindTypeByte);
 		assertEquals(EdmSimpleTypeKind.Boolean, edmSimpleKindTypeBoolean);
 		assertEquals(EdmSimpleTypeKind.DateTime, edmSimpleKindTypeDate);
-		//assertEquals(EdmSimpleTypeKind.DateTime, edmSimpleKindTypeCalendar);
+		// assertEquals(EdmSimpleTypeKind.DateTime, edmSimpleKindTypeCalendar);
 		assertEquals(EdmSimpleTypeKind.Guid, edmSimpleKindTypeUUID);
 	}
 

@@ -9,6 +9,7 @@ import com.sap.core.odata.api.edm.provider.EntityType;
 import com.sap.core.odata.processor.core.jpa.access.model.JPAEdmNameBuilder;
 import com.sap.core.odata.processor.jpa.api.access.JPAEdmBuilder;
 import com.sap.core.odata.processor.jpa.api.exception.ODataJPAModelException;
+import com.sap.core.odata.processor.jpa.api.exception.ODataJPARuntimeException;
 import com.sap.core.odata.processor.jpa.api.model.JPAEdmEntitySetView;
 import com.sap.core.odata.processor.jpa.api.model.JPAEdmEntityTypeView;
 import com.sap.core.odata.processor.jpa.api.model.JPAEdmSchemaView;
@@ -60,7 +61,7 @@ public class JPAEdmEntitySet extends JPAEdmBaseViewImpl implements
 	private class JPAEdmEntitySetBuilder implements JPAEdmBuilder {
 
 		@Override
-		public void build() throws ODataJPAModelException {
+		public void build() throws ODataJPAModelException, ODataJPARuntimeException {
 
 			if (consistentEntitySetList == null)
 				consistentEntitySetList = new ArrayList<EntitySet>();

@@ -6,6 +6,7 @@ import com.sap.core.odata.api.edm.provider.EdmProvider;
 import com.sap.core.odata.api.processor.ODataSingleProcessor;
 import com.sap.core.odata.processor.jpa.api.ODataJPAContext;
 import com.sap.core.odata.processor.jpa.api.exception.ODataJPAMessageService;
+import com.sap.core.odata.processor.jpa.api.exception.ODataJPARuntimeException;
 
 /**
  * Factory Interface for creating following instances
@@ -30,7 +31,7 @@ public interface ODataJPAAccessFactory {
 	 * @return An implementation of OData JPA Processor.
 	 */
 	public ODataSingleProcessor createODataProcessor(
-			ODataJPAContext oDataJPAContext);
+			ODataJPAContext oDataJPAContext) throws ODataJPARuntimeException;
 
 	/**
 	 * 
@@ -40,13 +41,13 @@ public interface ODataJPAAccessFactory {
 	 * @return An implementation of JPA EdmProvider. EdmProvider handles
 	 *         metadata.
 	 */
-	public EdmProvider createJPAEdmProvider(ODataJPAContext oDataJPAContext);
+	public EdmProvider createJPAEdmProvider(ODataJPAContext oDataJPAContext) throws ODataJPARuntimeException;
 
 	/**
 	 * 
 	 * @return
 	 */
-	public ODataJPAContext createODataJPAContext();
+	public ODataJPAContext createODataJPAContext() throws ODataJPARuntimeException;
 	
-	public ODataJPAMessageService getODataJPAMessageService(Locale locale);
+	public ODataJPAMessageService getODataJPAMessageService(Locale locale) throws ODataJPARuntimeException;
 }

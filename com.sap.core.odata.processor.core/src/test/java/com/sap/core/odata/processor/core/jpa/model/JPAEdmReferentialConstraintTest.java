@@ -25,23 +25,26 @@ import com.sap.core.odata.processor.core.jpa.model.mock.JPAJavaMemberMock;
 import com.sap.core.odata.processor.core.jpa.model.mock.JPAManagedTypeMock;
 import com.sap.core.odata.processor.jpa.api.access.JPAEdmBuilder;
 import com.sap.core.odata.processor.jpa.api.exception.ODataJPAModelException;
+import com.sap.core.odata.processor.jpa.api.exception.ODataJPARuntimeException;
 
 public class JPAEdmReferentialConstraintTest extends JPAEdmTestModelView {
 
-	
 	private static JPAEdmReferentialConstraint objJPAEdmReferentialConstraint = null;
 	private static JPAEdmReferentialConstraintTest objJPAEdmReferentialConstraintTest = null;
-	
-	
+
 	@Before
 	public void setUp() {
 		objJPAEdmReferentialConstraintTest = new JPAEdmReferentialConstraintTest();
-		objJPAEdmReferentialConstraint = new JPAEdmReferentialConstraint(objJPAEdmReferentialConstraintTest, 
-				objJPAEdmReferentialConstraintTest, objJPAEdmReferentialConstraintTest);
+		objJPAEdmReferentialConstraint = new JPAEdmReferentialConstraint(
+				objJPAEdmReferentialConstraintTest,
+				objJPAEdmReferentialConstraintTest,
+				objJPAEdmReferentialConstraintTest);
 		try {
 			objJPAEdmReferentialConstraint.getBuilder().build();
 		} catch (ODataJPAModelException e) {
 			fail("ODataJPAModelException not expected");
+		} catch (ODataJPARuntimeException e) {
+			fail("ODataJPARuntimeException not expected");
 		}
 	}
 
@@ -49,52 +52,61 @@ public class JPAEdmReferentialConstraintTest extends JPAEdmTestModelView {
 	public void testGetBuilder() {
 		assertNotNull(objJPAEdmReferentialConstraint.getBuilder());
 	}
-	
+
 	@Test
-	public void testGetBuilderIdempotent(){
+	public void testGetBuilderIdempotent() {
 		JPAEdmBuilder builder1 = objJPAEdmReferentialConstraint.getBuilder();
 		JPAEdmBuilder builder2 = objJPAEdmReferentialConstraint.getBuilder();
-		
+
 		assertEquals(builder1.hashCode(), builder2.hashCode());
 	}
 
 	@Test
 	public void testGetEdmReferentialConstraint() {
-		assertNotNull(objJPAEdmReferentialConstraint.getEdmReferentialConstraint());
+		assertNotNull(objJPAEdmReferentialConstraint
+				.getEdmReferentialConstraint());
 	}
 
-	
 	@Test
 	public void testIsExistsTrue() {
 		objJPAEdmReferentialConstraintTest = new JPAEdmReferentialConstraintTest();
-		objJPAEdmReferentialConstraint = new JPAEdmReferentialConstraint(objJPAEdmReferentialConstraintTest, 
-				objJPAEdmReferentialConstraintTest, objJPAEdmReferentialConstraintTest);
+		objJPAEdmReferentialConstraint = new JPAEdmReferentialConstraint(
+				objJPAEdmReferentialConstraintTest,
+				objJPAEdmReferentialConstraintTest,
+				objJPAEdmReferentialConstraintTest);
 		try {
 			objJPAEdmReferentialConstraint.getBuilder().build();
 			objJPAEdmReferentialConstraint.getBuilder().build();
 		} catch (ODataJPAModelException e) {
 			fail("ODataJPAModelException not expected");
+		}catch (ODataJPARuntimeException e) {
+			fail("ODataJPARuntimeException not expected");
 		}
 		assertTrue(objJPAEdmReferentialConstraint.isExists());
 	}
 
 	@Test
 	public void testGetRelationShipName() {
-		assertEquals("Assoc_SalesOrderHeader_SalesOrderItem", objJPAEdmReferentialConstraint.getEdmRelationShipName());
+		assertEquals("Assoc_SalesOrderHeader_SalesOrderItem",
+				objJPAEdmReferentialConstraint.getEdmRelationShipName());
 	}
-	
-	
+
 	@Override
 	public Association getEdmAssociation() {
 		Association association = new Association();
 		association.setName("Assoc_SalesOrderHeader_SalesOrderItem");
-		association.setEnd1(new AssociationEnd().setType(new FullQualifiedName("salesorderprocessing", "String")).setRole("SalesOrderHeader"));
-		association.setEnd2(new AssociationEnd().setType(new FullQualifiedName("salesorderprocessing", "SalesOrderItem")).setRole("SalesOrderItem"));
+		association.setEnd1(new AssociationEnd().setType(
+				new FullQualifiedName("salesorderprocessing", "String"))
+				.setRole("SalesOrderHeader"));
+		association.setEnd2(new AssociationEnd()
+				.setType(
+						new FullQualifiedName("salesorderprocessing",
+								"SalesOrderItem")).setRole("SalesOrderItem"));
 		return association;
 	}
-	
-	private Attribute<?,?> getJPAAttributeLocal() {
-		AttributeMock<Object, String> attr = new AttributeMock<Object,String>();
+
+	private Attribute<?, ?> getJPAAttributeLocal() {
+		AttributeMock<Object, String> attr = new AttributeMock<Object, String>();
 		return attr;
 	}
 
@@ -102,10 +114,10 @@ public class JPAEdmReferentialConstraintTest extends JPAEdmTestModelView {
 	public Attribute<?, ?> getJPAAttribute() {
 		return getJPAAttributeLocal();
 	}
-	
-	
+
 	@SuppressWarnings("hiding")
-	private class AttributeMock<Object, String> extends JPAAttributeMock<Object, String> {
+	private class AttributeMock<Object, String> extends
+			JPAAttributeMock<Object, String> {
 
 		@Override
 		public Member getJavaMember() {
@@ -129,9 +141,9 @@ public class JPAEdmReferentialConstraintTest extends JPAEdmTestModelView {
 			return managedTypeMock;
 		}
 	}
-	
+
 	@SuppressWarnings("hiding")
-	private class ManagedTypeMock<String> extends JPAManagedTypeMock<String>{
+	private class ManagedTypeMock<String> extends JPAManagedTypeMock<String> {
 
 		@SuppressWarnings("unchecked")
 		@Override
@@ -139,15 +151,16 @@ public class JPAEdmReferentialConstraintTest extends JPAEdmTestModelView {
 			return (Class<String>) java.lang.String.class;
 		}
 	}
-	
-	private class JavaMemberMock extends JPAJavaMemberMock{
+
+	private class JavaMemberMock extends JPAJavaMemberMock {
 		@SuppressWarnings("unchecked")
 		@Override
 		public <T extends Annotation> T getAnnotation(Class<T> annotationClass) {
 			JoinColumn joinColumn = EasyMock.createMock(JoinColumn.class);
-			EasyMock.expect(joinColumn.referencedColumnName()).andReturn("SOID");
+			EasyMock.expect(joinColumn.referencedColumnName())
+					.andReturn("SOID");
 			EasyMock.expect(joinColumn.name()).andReturn("SOID");
-			
+
 			EasyMock.replay(joinColumn);
 			return (T) joinColumn;
 		}

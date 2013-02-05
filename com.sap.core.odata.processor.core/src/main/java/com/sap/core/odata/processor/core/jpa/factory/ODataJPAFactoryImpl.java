@@ -21,6 +21,7 @@ import com.sap.core.odata.processor.core.jpa.model.JPAEdmModel;
 import com.sap.core.odata.processor.jpa.api.ODataJPAContext;
 import com.sap.core.odata.processor.jpa.api.access.JPAProcessor;
 import com.sap.core.odata.processor.jpa.api.exception.ODataJPAMessageService;
+import com.sap.core.odata.processor.jpa.api.exception.ODataJPARuntimeException;
 import com.sap.core.odata.processor.jpa.api.factory.JPAAccessFactory;
 import com.sap.core.odata.processor.jpa.api.factory.JPQLBuilderFactory;
 import com.sap.core.odata.processor.jpa.api.factory.ODataJPAAccessFactory;
@@ -118,12 +119,12 @@ JPQLContextBuilder contextBuilder = null;
 		
 		@Override
 		public ODataSingleProcessor createODataProcessor(
-				ODataJPAContext oDataJPAContext) {
+				ODataJPAContext oDataJPAContext) throws ODataJPARuntimeException {
 			return new ODataJPAProcessorDefault(oDataJPAContext);
 		}
 
 		@Override
-		public EdmProvider createJPAEdmProvider(ODataJPAContext oDataJPAContext) {
+		public EdmProvider createJPAEdmProvider(ODataJPAContext oDataJPAContext) throws ODataJPARuntimeException {
 			return new ODataJPAEdmProvider(oDataJPAContext);
 		}
 

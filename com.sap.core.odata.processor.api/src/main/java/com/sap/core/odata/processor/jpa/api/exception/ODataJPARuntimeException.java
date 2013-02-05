@@ -21,7 +21,7 @@ public class ODataJPARuntimeException extends ODataJPAException {
 	}
 
 	public static ODataJPARuntimeException throwException(
-			MessageReference messageReference, Throwable e) {
+			MessageReference messageReference, Throwable e) throws ODataJPARuntimeException {
 		ODataJPAMessageService messageService = ODataJPAFactory.createFactory()
 				.getODataJPAAccessFactory()
 				.getODataJPAMessageService(DEFAULT_LOCALE);

@@ -3,6 +3,7 @@ package com.sap.core.odata.processor.core.jpa.model;
 import com.sap.core.odata.api.edm.provider.ReferentialConstraint;
 import com.sap.core.odata.processor.jpa.api.access.JPAEdmBuilder;
 import com.sap.core.odata.processor.jpa.api.exception.ODataJPAModelException;
+import com.sap.core.odata.processor.jpa.api.exception.ODataJPARuntimeException;
 import com.sap.core.odata.processor.jpa.api.model.JPAEdmAssociationView;
 import com.sap.core.odata.processor.jpa.api.model.JPAEdmEntityTypeView;
 import com.sap.core.odata.processor.jpa.api.model.JPAEdmPropertyView;
@@ -77,7 +78,7 @@ public class JPAEdmReferentialConstraint extends JPAEdmBaseViewImpl implements
 		 * consistent.
 		 */
 		@Override
-		public void build() throws ODataJPAModelException {
+		public void build() throws ODataJPAModelException, ODataJPARuntimeException {
 
 			if (firstBuild)
 				firstBuild();
@@ -111,7 +112,7 @@ public class JPAEdmReferentialConstraint extends JPAEdmBaseViewImpl implements
 
 		}
 
-		private void firstBuild() throws ODataJPAModelException {
+		private void firstBuild() throws ODataJPAModelException, ODataJPARuntimeException {
 			firstBuild = false;
 			if (principalRoleView == null && dependentRoleView == null) {
 

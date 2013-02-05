@@ -15,6 +15,7 @@ import com.sap.core.odata.api.edm.provider.SimpleProperty;
 import com.sap.core.odata.processor.core.jpa.access.model.JPAEdmNameBuilder;
 import com.sap.core.odata.processor.jpa.api.access.JPAEdmBuilder;
 import com.sap.core.odata.processor.jpa.api.exception.ODataJPAModelException;
+import com.sap.core.odata.processor.jpa.api.exception.ODataJPARuntimeException;
 import com.sap.core.odata.processor.jpa.api.model.JPAEdmComplexTypeView;
 import com.sap.core.odata.processor.jpa.api.model.JPAEdmMapping;
 import com.sap.core.odata.processor.jpa.api.model.JPAEdmPropertyView;
@@ -151,7 +152,7 @@ public class JPAEdmComplexType extends JPAEdmBaseViewImpl implements
 		 *
 		 */
 		@Override
-		public void build() throws ODataJPAModelException {
+		public void build() throws ODataJPAModelException, ODataJPARuntimeException {
 
 			if (consistentComplextTypes == null)
 				consistentComplextTypes = new ArrayList<ComplexType>();

@@ -12,21 +12,24 @@ import com.sap.core.odata.processor.jpa.api.factory.ODataJPAFactory;
 
 /**
  * <p>
- * Extend this class and create own instance of {@link ODataService}. The
- * factory class instantiates instances of type {@link EdmProvider} and
- * {@link ODataSingleProcessor}.
+ * Extend this factory class and create own instance of {@link ODataService}
+ * that transforms Java Persistence Models into an OData Service. The factory
+ * class instantiates instances of type {@link EdmProvider} and
+ * {@link ODataSingleProcessor}. The OData JPA Processor library provides a
+ * default implementation for EdmProvider and OData Single Processor.
  * </p>
  * <p>
- * Implement this interface to create own instance of {@link ODataService}.
- * Usually the factory implementation is passed as servlet init parameter to a
+ * The factory implementation is passed as servlet init parameter to a
  * JAX-RS runtime which will instantiate a {@link ODataService} implementation
  * using this factory.
  * </p>
  * 
  * <p>
- * Implement the abstract method initializeJPAContext. Fill
- * {@link ODataJPAContext} with context values
+ * <b>Mandatory:</b> Implement the abstract method initializeJPAContext. Fill
+ * {@link ODataJPAContext} with context values.
  * </p>
+ * 
+ * <b>Sample Configuration:</b>
  * 
  * <pre>
  * {@code
@@ -59,7 +62,8 @@ public abstract class ODataJPAServiceFactory extends ODataServiceFactory {
 	 * Creates an OData Service based on the values set in
 	 * {@link ODataJPAContext} and {@link ODataContext}.
 	 */
-	public final ODataService createService(ODataContext ctx) throws ODataException {
+	public final ODataService createService(ODataContext ctx)
+			throws ODataException {
 
 		// Initialize OData JPA Context
 		oDataJPAContext = initializeJPAContext();
@@ -112,16 +116,18 @@ public abstract class ODataJPAServiceFactory extends ODataServiceFactory {
 	 * oDataJPAContext.setPersistenceUnitName(PUNIT_NAME);
 	 * <br> return oDataJPAContext;</blockquote>
 	 * }</blockquote>
-	 * } </code> <br>
-	 * 
+	 * } </code> 
+	 * <p>
 	 * @return an instance of type {@link ODataJPAContext}
+	 * @throws ODataJPARuntimeException 
 	 */
-	public abstract ODataJPAContext initializeJPAContext();
+	public abstract ODataJPAContext initializeJPAContext() throws ODataJPARuntimeException;
 
 	/**
 	 * @return an instance of type {@link ODataJPAContext}
+	 * @throws ODataJPARuntimeException 
 	 */
-	public final ODataJPAContext getODataJPAContext() {
+	public final ODataJPAContext getODataJPAContext() throws ODataJPARuntimeException {
 		if (oDataJPAContext == null) {
 			oDataJPAContext = ODataJPAFactory.createFactory()
 					.getODataJPAAccessFactory().createODataJPAContext();

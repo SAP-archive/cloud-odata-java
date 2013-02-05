@@ -20,6 +20,7 @@ import com.sap.core.odata.processor.core.jpa.testdata.JPAEdmMockData.SimpleType;
 import com.sap.core.odata.processor.core.jpa.testdata.JPAEdmMockData.SimpleType.SimpleTypeA;
 import com.sap.core.odata.processor.jpa.api.access.JPAEdmBuilder;
 import com.sap.core.odata.processor.jpa.api.exception.ODataJPAModelException;
+import com.sap.core.odata.processor.jpa.api.exception.ODataJPARuntimeException;
 
 public class JPAEdmAssociationEndTest extends JPAEdmTestModelView {
 
@@ -36,7 +37,7 @@ public class JPAEdmAssociationEndTest extends JPAEdmTestModelView {
 	
 
 	@BeforeClass
-	public static void setup() throws ODataJPAModelException{
+	public static void setup() throws ODataJPAModelException, ODataJPARuntimeException{
 		objJPAEdmAssociationEndTest = new JPAEdmAssociationEndTest();
 		objJPAEdmAssociationEnd = new JPAEdmAssociationEnd(
 				objJPAEdmAssociationEndTest, objJPAEdmAssociationEndTest);

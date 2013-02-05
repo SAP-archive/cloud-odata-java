@@ -26,6 +26,7 @@ import com.sap.core.odata.processor.core.jpa.testdata.JPAEdmMockData.ComplexType
 import com.sap.core.odata.processor.core.jpa.util.MockData;
 import com.sap.core.odata.processor.jpa.api.access.JPAEdmBuilder;
 import com.sap.core.odata.processor.jpa.api.exception.ODataJPAModelException;
+import com.sap.core.odata.processor.jpa.api.exception.ODataJPARuntimeException;
 import com.sap.core.odata.processor.jpa.api.model.JPAEdmKeyView;
 
 public class JPAEdmKeyTest extends JPAEdmTestModelView {
@@ -54,6 +55,9 @@ public class JPAEdmKeyTest extends JPAEdmTestModelView {
 		try {
 			keyView.getBuilder().build();
 		} catch (ODataJPAModelException e) {
+			fail("Exception Not Expected");
+		}
+		catch (ODataJPARuntimeException e) {
 			fail("Exception Not Expected");
 		}
 

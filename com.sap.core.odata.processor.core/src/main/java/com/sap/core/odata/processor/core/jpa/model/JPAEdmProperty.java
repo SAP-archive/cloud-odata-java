@@ -22,6 +22,7 @@ import com.sap.core.odata.processor.core.jpa.access.model.JPAEdmNameBuilder;
 import com.sap.core.odata.processor.core.jpa.access.model.JPATypeConvertor;
 import com.sap.core.odata.processor.jpa.api.access.JPAEdmBuilder;
 import com.sap.core.odata.processor.jpa.api.exception.ODataJPAModelException;
+import com.sap.core.odata.processor.jpa.api.exception.ODataJPARuntimeException;
 import com.sap.core.odata.processor.jpa.api.model.JPAEdmAssociationEndView;
 import com.sap.core.odata.processor.jpa.api.model.JPAEdmAssociationView;
 import com.sap.core.odata.processor.jpa.api.model.JPAEdmComplexPropertyView;
@@ -146,7 +147,7 @@ public class JPAEdmProperty extends JPAEdmBaseViewImpl implements
 		 *
 		 */
 		@Override
-		public void build() throws ODataJPAModelException {
+		public void build() throws ODataJPAModelException, ODataJPARuntimeException {
 
 			JPAEdmBuilder keyViewBuilder = null;
 
@@ -277,7 +278,7 @@ public class JPAEdmProperty extends JPAEdmBaseViewImpl implements
 		}
 		
 		private EdmFacets setFacets(Attribute<?, ?> jpaAttribute)
-				throws ODataJPAModelException {
+				throws ODataJPAModelException, ODataJPARuntimeException {
 
 			Facets facets = new Facets();
 			if (jpaAttribute.getJavaMember() instanceof AnnotatedElement) {

@@ -7,6 +7,7 @@ import org.junit.Test;
 
 import com.sap.core.odata.api.edm.provider.Schema;
 import com.sap.core.odata.processor.jpa.api.exception.ODataJPAModelException;
+import com.sap.core.odata.processor.jpa.api.exception.ODataJPARuntimeException;
 import com.sap.core.odata.processor.jpa.api.model.JPAEdmSchemaView;
 import com.sap.core.odata.processor.jpa.model.JPAEdmModel;
 
@@ -24,7 +25,7 @@ public class JPAEdmModelTest {
 	}
 
 	@Test
-	public void testGetSchemaView() throws ODataJPAModelException {
+	public void testGetSchemaView() throws ODataJPAModelException, ODataJPARuntimeException {
 		jpaEdmModel.getBuilder().build();
 		JPAEdmSchemaView schemaView = jpaEdmModel.getEdmSchemaView();
 		Schema schema = schemaView.getEdmSchema();

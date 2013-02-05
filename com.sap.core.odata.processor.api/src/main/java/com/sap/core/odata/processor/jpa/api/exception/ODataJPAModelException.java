@@ -30,7 +30,7 @@ public class ODataJPAModelException extends ODataJPAException {
 	}
 
 	public static ODataJPAModelException throwException(
-			MessageReference messageReference, Throwable e) {
+			MessageReference messageReference, Throwable e) throws ODataJPARuntimeException {
 		
 		ODataJPAMessageService messageService = ODataJPAFactory.createFactory()
 				.getODataJPAAccessFactory().getODataJPAMessageService(DEFAULT_LOCALE);

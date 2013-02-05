@@ -11,6 +11,7 @@ import com.sap.core.odata.api.edm.provider.Schema;
 import com.sap.core.odata.processor.core.jpa.access.model.JPAEdmNameBuilder;
 import com.sap.core.odata.processor.jpa.api.access.JPAEdmBuilder;
 import com.sap.core.odata.processor.jpa.api.exception.ODataJPAModelException;
+import com.sap.core.odata.processor.jpa.api.exception.ODataJPARuntimeException;
 import com.sap.core.odata.processor.jpa.api.model.JPAEdmAssociationView;
 import com.sap.core.odata.processor.jpa.api.model.JPAEdmComplexTypeView;
 import com.sap.core.odata.processor.jpa.api.model.JPAEdmEntityContainerView;
@@ -96,7 +97,7 @@ public class JPAEdmSchema extends JPAEdmBaseViewImpl implements
 		 * ************************************************************
 		 */
 		@Override
-		public void build() throws ODataJPAModelException {
+		public void build() throws ODataJPAModelException, ODataJPARuntimeException {
 
 			schema = new Schema();
 			JPAEdmNameBuilder.build(JPAEdmSchema.this);
