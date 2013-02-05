@@ -51,7 +51,7 @@ public class EncoderTest extends BaseTest {
 
   @Test
   public void uriDecoding() throws URISyntaxException {
-    String decodedValue = RFC3986_UNRESERVED + RFC3986_RESERVED + "0..1..a..z..A..Z..@..→⦿◎❯❵₪€¥$£₧♤♡☁☂☔⚾☯®©℗😃";
+    String decodedValue = RFC3986_UNRESERVED + RFC3986_RESERVED + "0..1..a..z..A..Z..@";
 
     String encodedPath = Encoder.encode(decodedValue) + "/" + Encoder.encode(decodedValue);
     String encodedQuery = Encoder.encode(decodedValue);
