@@ -105,7 +105,6 @@ public class BasicProviderTest extends AbstractProviderTest {
 
     NamespaceContext ctx = new SimpleNamespaceContext(prefixMap);
     XMLUnit.setXpathNamespaceContext(ctx);
-    System.out.println(metadata);
     assertXpathExists("/edmx:Edmx/edmx:DataServices/a:Schema/a:EntityType/a:Property[@Name and @Type and @Nullable and @annoPrefix:annoName]", metadata);
     assertXpathExists("/edmx:Edmx/edmx:DataServices/a:Schema/a:EntityType/a:Property[@Name and @Type and @m:FC_TargetPath and @annoPrefix:annoName]", metadata);
   }
