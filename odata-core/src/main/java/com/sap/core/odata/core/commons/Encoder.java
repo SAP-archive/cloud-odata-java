@@ -39,7 +39,7 @@ public class Encoder {
   /*
    * this is due to compatibility reasons for URI decoding behavior which is RFC2396 (deprecated by RFC3986)
    */
-  private final static String UNSAFE_NOSPACE = RFC3986_GEN_DELIMS + "<>%";
+  private final static String UNSAFE_NOSPACE = RFC3986_GEN_DELIMS + "<>%&";
   private final static String UNSAFE = UNSAFE_NOSPACE + " ";
   private final static String UNRESERVED = RFC3986_UNRESERVED;
 

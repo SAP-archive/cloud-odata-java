@@ -35,12 +35,12 @@ public class EncoderTest extends BaseTest {
 
   @Test
   public void testRfc3986SubDelims() {
-    assertEquals(RFC3986_SUB_DELIMS, Encoder.encode(RFC3986_SUB_DELIMS));
+    assertEquals("!$%26'()*+,;=".toLowerCase(), Encoder.encode(RFC3986_SUB_DELIMS));
   }
 
   @Test
   public void testRfc3986Reserved() {
-    assertEquals("%3a%2f%3f%23%5b%5d%40!$&'()*+,;=".toLowerCase(), Encoder.encode(RFC3986_RESERVED));
+    assertEquals("%3a%2f%3f%23%5b%5d%40!$%26'()*+,;=".toLowerCase(), Encoder.encode(RFC3986_RESERVED));
   }
 
   @Test

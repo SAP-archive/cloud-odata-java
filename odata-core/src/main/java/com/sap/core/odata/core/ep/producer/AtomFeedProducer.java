@@ -49,7 +49,7 @@ public class AtomFeedProducer {
       appendEntries(writer, eia, data);
 
       if (properties.getSkipToken() != null) {
-        appendNextLink(writer, eia, properties.getSkipToken());
+        appendNextLink(writer, eia, properties.getSkipToken(), properties.getNextLinkQueryOptions());
       }
 
       writer.writeEndElement();
@@ -58,9 +58,9 @@ public class AtomFeedProducer {
     }
   }
 
-  private void appendNextLink(XMLStreamWriter writer, EntityInfoAggregator eia, String nextSkiptoken) throws EntityProviderException {
+  private void appendNextLink(XMLStreamWriter writer, EntityInfoAggregator eia, String nextSkiptoken, Map<String, String> queryOptions) throws EntityProviderException {
     try {
-      String nextLink = createNextLink(eia, nextSkiptoken);
+      String nextLink = createNextLink(eia, nextSkiptoken, queryOptions);
 
       writer.writeStartElement(FormatXml.ATOM_LINK);
       writer.writeAttribute(FormatXml.ATOM_HREF, nextLink);
@@ -106,9 +106,19 @@ public class AtomFeedProducer {
     }
   }
 
-  private String createNextLink(EntityInfoAggregator eia, String nextSkiptoken) throws EntityProviderException {
+  private String createNextLink(EntityInfoAggregator eia, String nextSkiptoken, Map<String, String> queryOptions) throws EntityProviderException {
     try {
       String query = SystemQueryOption.$skiptoken + "=" + Encoder.encode(nextSkiptoken);
+      
+      if (queryOptions != null) {
+        for(String key : queryOptions.keySet()) {
+          query += "&";
+          query += Encoder.encode(key);
+          query += "=";
+          query += Encoder.encode(queryOptions.get(key));
+        }
+      }
+      
       String path = createSelfLink(eia);
       return path + "?" + query;
     } catch (Exception e) {
