@@ -24,7 +24,7 @@
 		<dependency>
 			<groupId>com.sap.core.odata</groupId>
 			<artifactId>com.sap.core.odata.api</artifactId>
-			<version>0.1.0-SNAPSHOT</version>
+			<version>${version.odataforsap}</version>
 			<scope>provided</scope>
 		</dependency>
 		<!-- JPA Support -->
