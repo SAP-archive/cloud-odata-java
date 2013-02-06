@@ -105,22 +105,25 @@ public final class ODataSubLocator implements ODataLocator {
   }
 
   @POST
-  public Response handlePost(@HeaderParam("X-HTTP-Method") String xmethod) throws ODataException {
+  public Response handlePost(@HeaderParam("X-HTTP-Method") String xHttpMethod) throws ODataException {
     Response response;
 
-    /* tunneling */
-    if (xmethod == null) {
+    if (xHttpMethod == null) {
       response = handleHttpMethod(ODataHttpMethod.POST);
-    } else if ("MERGE".equals(xmethod)) {
-      response = handleMerge();
-    } else if ("PATCH".equals(xmethod)) {
-      response = handlePatch();
-    } else if ("DELETE".equals(xmethod)) {
-      response = handleDelete();
     } else {
-      response = Response.status(Status.METHOD_NOT_ALLOWED).build();
+      /* tunneling */
+      if ("MERGE".equals(xHttpMethod)) {
+        response = handleMerge();
+      } else if ("PATCH".equals(xHttpMethod)) {
+        response = handlePatch();
+      } else if ("DELETE".equals(xHttpMethod)) {
+        response = handleDelete();
+      } else if ("PUT".equals(xHttpMethod)) {
+        response = handlePut();
+      } else {
+        throw new ODataMethodNotAllowedException(ODataMethodNotAllowedException.TUNNELING);
+      }
     }
-
     return response;
   }
 
@@ -154,8 +157,8 @@ public final class ODataSubLocator implements ODataLocator {
     } else {
       contentType = doContentNegotiationForFormat(uriInfo);
     }
-    
-    if(contentType.getODataFormat() == ODataFormat.CUSTOM) {
+
+    if (contentType.getODataFormat() == ODataFormat.CUSTOM) {
       return contentType.getType();
     }
     return contentType.toContentTypeString();
@@ -164,7 +167,7 @@ public final class ODataSubLocator implements ODataLocator {
   private ContentType doContentNegotiationForFormat(final UriInfoImpl uriInfo) throws ODataException {
     ContentType formatContentType = mapFormat(uriInfo);
     formatContentType = ensureCharsetIsSet(formatContentType);
-    
+
     Class<? extends ODataProcessor> processorFeature = dispatcher.mapUriTypeToProcessorFeature(uriInfo);
     List<ContentType> supportedContentTypes = getSupportedContentTypes(processorFeature);
     for (ContentType contentType : supportedContentTypes) {
@@ -177,8 +180,8 @@ public final class ODataSubLocator implements ODataLocator {
   }
 
   private ContentType ensureCharsetIsSet(ContentType contentType) {
-    if(isContentTypeODataTextRelated(contentType)) {
-      if(!contentType.getParameters().containsKey(ContentType.PARAMETER_CHARSET)) {
+    if (isContentTypeODataTextRelated(contentType)) {
+      if (!contentType.getParameters().containsKey(ContentType.PARAMETER_CHARSET)) {
         contentType = ContentType.create(contentType, ContentType.PARAMETER_CHARSET, DEFAULT_CHARSET);
       }
     }
@@ -186,11 +189,11 @@ public final class ODataSubLocator implements ODataLocator {
   }
 
   private boolean isContentTypeODataTextRelated(ContentType contentType) {
-    if(contentType == null) {
+    if (contentType == null) {
       return false;
-    } else if(contentType.equals(ContentType.TEXT_PLAIN)) {
+    } else if (contentType.equals(ContentType.TEXT_PLAIN)) {
       return true;
-    } else if(contentType.getODataFormat() == ODataFormat.XML 
+    } else if (contentType.getODataFormat() == ODataFormat.XML
         || contentType.getODataFormat() == ODataFormat.ATOM
         || contentType.getODataFormat() == ODataFormat.JSON) {
       return true;
@@ -211,7 +214,7 @@ public final class ODataSubLocator implements ODataLocator {
     } else if ("json".equals(format)) {
       return ContentType.APPLICATION_JSON;
     }
-    
+
     return ContentType.create(format);
   }
 
