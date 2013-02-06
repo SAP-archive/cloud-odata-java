@@ -9,6 +9,9 @@ import org.junit.Test;
 
 import com.sap.core.odata.testutil.fit.BaseTest;
 
+/**
+ * @author SAP AG
+ */
 public class EncoderTest extends BaseTest {
 
   private final static String RFC3986_UNRESERVED = "-._~"; // + ALPHA + DIGIT
@@ -21,6 +24,14 @@ public class EncoderTest extends BaseTest {
     String s = "azAZ019";
     assertEquals(s, Encoder.encode(s));
     assertEquals(s, Encoder.encode(s));
+
+    s = "\"`{}|";
+    assertEquals(s, Encoder.encode(s));
+  }
+
+  @Test
+  public void unsafe() {
+    assertEquals("%3c%3e%25%26", Encoder.encode("<>%&"));
   }
 
   @Test
@@ -30,28 +41,36 @@ public class EncoderTest extends BaseTest {
 
   @Test
   public void testRfc3986GenDelims() {
-    assertEquals("%3a%2f%3f%23%5b%5d%40".toLowerCase(), Encoder.encode(RFC3986_GEN_DELIMS));
+    assertEquals("%3a%2f%3f%23%5b%5d%40", Encoder.encode(RFC3986_GEN_DELIMS));
   }
 
   @Test
   public void testRfc3986SubDelims() {
-    assertEquals("!$%26'()*+,;=".toLowerCase(), Encoder.encode(RFC3986_SUB_DELIMS));
+    assertEquals("!$%26'()*+,;=", Encoder.encode(RFC3986_SUB_DELIMS));
   }
 
   @Test
   public void testRfc3986Reserved() {
-    assertEquals("%3a%2f%3f%23%5b%5d%40!$%26'()*+,;=".toLowerCase(), Encoder.encode(RFC3986_RESERVED));
+    assertEquals("%3a%2f%3f%23%5b%5d%40!$%26'()*+,;=", Encoder.encode(RFC3986_RESERVED));
   }
 
   @Test
   public void testUnicodeCharacters() {
-    String s = "€";
-    assertEquals("%E2%82%AC".toLowerCase(), Encoder.encode(s));
+    assertEquals("%e2%82%ac", Encoder.encode("€"));
+    assertEquals("%ef%b7%bc", Encoder.encode("\uFDFC")); // RIAL SIGN
+  }
+
+  @Test
+  public void charactersOutsideBmp() {
+    // Java stores Unicode characters outside the BMP in two surrogate characters.
+    final String s = String.valueOf(Character.toChars(0x1F603));
+    assertEquals("%f0%9f%98%83", Encoder.encode(s));
   }
 
   @Test
   public void uriDecoding() throws URISyntaxException {
-    String decodedValue = RFC3986_UNRESERVED + RFC3986_RESERVED + "0..1..a..z..A..Z..@\u2323";
+    String decodedValue = RFC3986_UNRESERVED + RFC3986_RESERVED + "0..1..a..z..A..Z..@"
+        + "\u2323\uFDFC" + String.valueOf(Character.toChars(0x1F603));
 
     String encodedPath = Encoder.encode(decodedValue) + "/" + Encoder.encode(decodedValue);
     String encodedQuery = Encoder.encode(decodedValue);
