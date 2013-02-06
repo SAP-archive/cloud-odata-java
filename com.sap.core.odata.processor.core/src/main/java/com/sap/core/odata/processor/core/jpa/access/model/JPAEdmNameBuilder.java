@@ -32,7 +32,6 @@ import com.sap.core.odata.processor.jpa.api.model.JPAEdmSchemaView;
 public class JPAEdmNameBuilder {
 	private static final String ENTITY_CONTAINER_SUFFIX = "Container";
 	private static final String ENTITY_SET_SUFFIX = "s";
-	private static final String ASSOCIATION_PREFIX = "Association_";
 	private static final String ASSOCIATIONSET_SUFFIX = "Set";
 	private static final String NAVIGATION_NAME = "Details";
 	private static final String UNDERSCORE = "_";

@@ -24,7 +24,7 @@ import com.sap.core.odata.processor.jpa.api.model.JPAEdmReferentialConstraintVie
 public class JPAEdmAssociationTest extends JPAEdmTestModelView {
 
 	private static JPAEdmAssociation objAssociation = null;
-	private static String ASSOCIATION_NAME = "Association_SalesOrderHeader_String";
+	private static String ASSOCIATION_NAME = "SalesOrderHeader_String";
 	private static JPAEdmAssociationTest localView = null;
 
 	@BeforeClass

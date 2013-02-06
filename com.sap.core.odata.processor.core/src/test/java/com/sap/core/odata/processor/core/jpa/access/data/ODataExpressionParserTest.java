@@ -4,8 +4,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 
 import org.easymock.EasyMock;
 import org.junit.Test;
@@ -28,10 +26,7 @@ import com.sap.core.odata.api.uri.expression.ExpressionKind;
 import com.sap.core.odata.api.uri.expression.FilterExpression;
 import com.sap.core.odata.api.uri.expression.LiteralExpression;
 import com.sap.core.odata.api.uri.expression.MemberExpression;
-import com.sap.core.odata.api.uri.expression.OrderByExpression;
-import com.sap.core.odata.api.uri.expression.OrderExpression;
 import com.sap.core.odata.api.uri.expression.PropertyExpression;
-import com.sap.core.odata.api.uri.expression.SortOrder;
 import com.sap.core.odata.api.uri.expression.UnaryExpression;
 import com.sap.core.odata.api.uri.expression.UnaryOperator;
 import com.sap.core.odata.processor.jpa.api.exception.ODataJPARuntimeException;
@@ -371,7 +366,7 @@ public class ODataExpressionParserTest {
 		return binaryExpression;
 	}
 
-	private OrderByExpression getOrderByExpressionMockedObj()
+	/*private OrderByExpression getOrderByExpressionMockedObj()
 			throws EdmException {
 		OrderByExpression orderByExpression = EasyMock
 				.createMock(OrderByExpression.class);
@@ -379,17 +374,17 @@ public class ODataExpressionParserTest {
 				.andReturn(getOrdersMockedObj()).times(10);
 		EasyMock.replay(orderByExpression);
 		return orderByExpression;
-	}
+	}*/
 
-	private List<OrderExpression> getOrdersMockedObj() throws EdmException {
+	/*private List<OrderExpression> getOrdersMockedObj() throws EdmException {
 		List<OrderExpression> orderBys = new ArrayList<OrderExpression>();
 		for (int i = 0; i < 1; i++) {
 			orderBys.add(getOrderExpressionMockedObj(i));
 		}
 		return orderBys;
-	}
+	}*/
 
-	private OrderExpression getOrderExpressionMockedObj(int index)
+	/*private OrderExpression getOrderExpressionMockedObj(int index)
 			throws EdmException {
 		OrderExpression orderExpression = EasyMock
 				.createMock(OrderExpression.class);
@@ -407,7 +402,7 @@ public class ODataExpressionParserTest {
 		EasyMock.replay(orderExpression);
 		return orderExpression;
 	}
-
+*/
 	@Test
 	public void testParseKeyPredicates() throws EdmException {
 		// Setting up the expected value
