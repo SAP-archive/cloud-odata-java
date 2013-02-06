@@ -53,7 +53,7 @@ public class HttpExceptionResponseTest extends AbstractBasicTest {
 
   @Override
   EdmProvider createEdmProvider() {
-    EdmProvider provider = new ScenarioEdmProvider();
+    final EdmProvider provider = new ScenarioEdmProvider();
     return provider;
   }
 
@@ -61,13 +61,13 @@ public class HttpExceptionResponseTest extends AbstractBasicTest {
   public void test404HttpNotFound() throws Exception {
     when(processor.readEntity(any(GetEntityUriInfo.class), any(String.class))).thenThrow(new ODataNotFoundException(ODataNotFoundException.ENTITY));
 
-    HttpResponse response = executeGetRequest("Managers('199')");
+    final HttpResponse response = executeGetRequest("Managers('199')");
     assertEquals(HttpStatusCodes.NOT_FOUND.getStatusCode(), response.getStatusLine().getStatusCode());
 
-    String content = StringHelper.inputStreamToString(response.getEntity().getContent());
-    Map<String, String> prefixMap = new HashMap<String, String>();
+    final String content = StringHelper.inputStreamToString(response.getEntity().getContent());
+    final Map<String, String> prefixMap = new HashMap<String, String>();
     prefixMap.put("a", Edm.NAMESPACE_M_2007_08);
-    NamespaceContext ctx = new SimpleNamespaceContext(prefixMap);
+    final NamespaceContext ctx = new SimpleNamespaceContext(prefixMap);
     XMLUnit.setXpathNamespaceContext(ctx);
     assertXpathValuesEqual("\"" + ODataNotFoundException.ENTITY.getKey() + "\"", "/a:error/a:code", content);
     assertXpathValuesEqual("\"" + MessageService.getMessage(Locale.ENGLISH, ODataNotFoundException.ENTITY).getText() + "\"", "/a:error/a:message", content);
@@ -77,23 +77,23 @@ public class HttpExceptionResponseTest extends AbstractBasicTest {
   public void testGenericHttpExceptions() throws Exception {
     disableLogging();
 
-    List<ODataHttpException> toTestExceptions = getHttpExceptionsForTest();
+    final List<ODataHttpException> toTestExceptions = getHttpExceptionsForTest();
 
     int firstKey = 1;
-    for (ODataHttpException oDataException : toTestExceptions) {
-      String key = String.valueOf(firstKey++);
-      Matcher<GetEntityUriInfo> match = new EntityKeyMatcher(key);
+    for (final ODataHttpException oDataException : toTestExceptions) {
+      final String key = String.valueOf(firstKey++);
+      final Matcher<GetEntityUriInfo> match = new EntityKeyMatcher(key);
       when(processor.readEntity(Matchers.argThat(match), any(String.class))).thenThrow(oDataException);
 
-      HttpResponse response = executeGetRequest("Managers('" + key + "')");
+      final HttpResponse response = executeGetRequest("Managers('" + key + "')");
 
       assertEquals("Expected status code does not match for exception type '" + oDataException.getClass().getSimpleName() + "'.",
           oDataException.getHttpStatus().getStatusCode(), response.getStatusLine().getStatusCode());
 
-      String content = StringHelper.inputStreamToString(response.getEntity().getContent());
-      Map<String, String> prefixMap = new HashMap<String, String>();
+      final String content = StringHelper.inputStreamToString(response.getEntity().getContent());
+      final Map<String, String> prefixMap = new HashMap<String, String>();
       prefixMap.put("a", Edm.NAMESPACE_M_2007_08);
-      NamespaceContext ctx = new SimpleNamespaceContext(prefixMap);
+      final NamespaceContext ctx = new SimpleNamespaceContext(prefixMap);
       XMLUnit.setXpathNamespaceContext(ctx);
       assertXpathValuesEqual("\"com.sap.core.odata.api.exception.ODataHttpException.SIMPLE FOR TEST\"", "/a:error/a:code", content);
 
@@ -104,9 +104,9 @@ public class HttpExceptionResponseTest extends AbstractBasicTest {
   }
 
   private List<ODataHttpException> getHttpExceptionsForTest() throws Exception {
-    List<Class<ODataHttpException>> exClasses = ClassHelper.getAssignableClasses("com.sap.core.odata.api.exception", ODataHttpException.class);
+    final List<Class<ODataHttpException>> exClasses = ClassHelper.getAssignableClasses("com.sap.core.odata.api.exception", ODataHttpException.class);
 
-    MessageReference mr = MessageReference.create(ODataHttpException.class, "SIMPLE FOR TEST");
+    final MessageReference mr = MessageReference.create(ODataHttpException.class, "SIMPLE FOR TEST");
     return ClassHelper.getClassInstances(exClasses, new Class<?>[] { MessageReference.class }, new Object[] { mr });
   }
 
@@ -127,9 +127,9 @@ public class HttpExceptionResponseTest extends AbstractBasicTest {
     @Override
     public boolean matches(Object item) {
       if (item instanceof UriInfoImpl) {
-        UriInfoImpl upr = (UriInfoImpl) item;
-        List<KeyPredicate> keyPredicates = upr.getKeyPredicates();
-        for (KeyPredicate keyPredicate : keyPredicates) {
+        final UriInfoImpl upr = (UriInfoImpl) item;
+        final List<KeyPredicate> keyPredicates = upr.getKeyPredicates();
+        for (final KeyPredicate keyPredicate : keyPredicates) {
           if (keyLiteral.equals(keyPredicate.getLiteral())) {
             return true;
           }

@@ -13,45 +13,45 @@ import org.apache.http.HttpRequest;
 
 public class TestPath implements Comparable<TestPath> {
 
-  private String path;
+  private final String path;
   private final Map<String, String> headers;
-  
+
   public TestPath(String path) {
     super();
     this.path = path;
-    this.headers = new HashMap<String, String>();
+    headers = new HashMap<String, String>();
   }
-  
+
   public static TestPath create(String path) {
     return new TestPath(path);
   }
-  
+
   public String getPath() {
     return path;
   }
-  
+
   public TestPath setAcceptHeader(String value) {
     addHeader(HttpHeaders.ACCEPT, value);
     return this;
   }
-  
+
   public TestPath addHeader(String name, String value) {
     headers.put(name, value);
     return this;
   }
-  
+
   public Map<String, String> getHeaders() {
     return Collections.unmodifiableMap(headers);
   }
-  
+
   public void applyHeaders(HttpRequest request) {
-    Set<Entry<String, String>> entries = headers.entrySet();
-    
-    for (Entry<String, String> entry : entries) {
+    final Set<Entry<String, String>> entries = headers.entrySet();
+
+    for (final Entry<String, String> entry : entries) {
       request.addHeader(entry.getKey(), entry.getValue());
     }
   }
-  
+
   public String getId() {
     return String.valueOf(hashCode());
   }
@@ -71,8 +71,8 @@ public class TestPath implements Comparable<TestPath> {
   public int hashCode() {
     final int prime = 31;
     int result = 1;
-    result = prime * result + ((headers == null) ? 0 : headers.hashCode());
-    result = prime * result + ((path == null) ? 0 : path.hashCode());
+    result = (prime * result) + ((headers == null) ? 0 : headers.hashCode());
+    result = (prime * result) + ((path == null) ? 0 : path.hashCode());
     return result;
   }
 
@@ -81,48 +81,55 @@ public class TestPath implements Comparable<TestPath> {
    */
   @Override
   public boolean equals(Object obj) {
-    if (this == obj)
+    if (this == obj) {
       return true;
-    if (obj == null)
+    }
+    if (obj == null) {
       return false;
-    if (getClass() != obj.getClass())
+    }
+    if (getClass() != obj.getClass()) {
       return false;
-    TestPath other = (TestPath) obj;
+    }
+    final TestPath other = (TestPath) obj;
     if (headers == null) {
-      if (other.headers != null)
+      if (other.headers != null) {
         return false;
-    } else if (!headers.equals(other.headers))
+      }
+    } else if (!headers.equals(other.headers)) {
       return false;
+    }
     if (path == null) {
-      if (other.path != null)
+      if (other.path != null) {
         return false;
-    } else if (!path.equals(other.path))
+      }
+    } else if (!path.equals(other.path)) {
       return false;
+    }
     return true;
   }
 
   //
   public static List<TestPath> createTestPaths(List<String> paths, String header, List<String> headerValues) {
-    List<TestPath> testPaths = new ArrayList<TestPath>();
-    
-    for (String path : paths) {
-      for (String value : headerValues) {
-        TestPath tp = new TestPath(path);
-        if(value != null && value.length() > 0) {
+    final List<TestPath> testPaths = new ArrayList<TestPath>();
+
+    for (final String path : paths) {
+      for (final String value : headerValues) {
+        final TestPath tp = new TestPath(path);
+        if ((value != null) && (value.length() > 0)) {
           tp.setAcceptHeader(value);
         }
         testPaths.add(tp);
       }
     }
-    
+
     return testPaths;
   }
 
   @Override
   public int compareTo(TestPath o) {
-    if(path == null) {
+    if (path == null) {
       return -1;
-    } else if(o == null || o.path == null) {
+    } else if ((o == null) || (o.path == null)) {
       return 1;
     }
     return path.compareTo(o.path);

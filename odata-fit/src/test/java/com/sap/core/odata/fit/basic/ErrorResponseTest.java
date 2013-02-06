@@ -25,7 +25,7 @@ public class ErrorResponseTest extends AbstractBasicTest {
 
   @Override
   protected ODataSingleProcessor createProcessor() throws ODataException {
-    ODataSingleProcessor processor = mock(ODataSingleProcessor.class);
+    final ODataSingleProcessor processor = mock(ODataSingleProcessor.class);
 
     when(((ServiceDocumentProcessor) processor).readServiceDocument(any(GetServiceDocumentUriInfo.class), any(String.class))).thenThrow(new ODataRuntimeException("unit testing"));
 
@@ -36,7 +36,7 @@ public class ErrorResponseTest extends AbstractBasicTest {
   public void test500RuntimeError() throws ClientProtocolException, IOException, ODataException {
     disableLogging();
 
-    HttpResponse response = executeGetRequest("");
+    final HttpResponse response = executeGetRequest("");
     assertEquals(HttpStatusCodes.INTERNAL_SERVER_ERROR.getStatusCode(), response.getStatusLine().getStatusCode());
   }
 }

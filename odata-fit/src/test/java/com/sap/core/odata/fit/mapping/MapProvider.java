@@ -26,13 +26,12 @@ public class MapProvider extends EdmProvider {
   private static int P3 = 2;
   private static int ENTITYTYPE = 3;
   private static int ENTITYSET = 4;
-  private static String  MAPPING_CONTAINER = "mappingContainer";
- 
+  private static String MAPPING_CONTAINER = "mappingContainer";
+
   private static int EDM = 0;
   private static int BACKEND = 1;
 
-  
-  private String[][] mapping = {
+  private final String[][] mapping = {
       { "p1", "P01" },
       { "p2", "P02" },
       { "p3", "P03" },
@@ -101,7 +100,7 @@ public class MapProvider extends EdmProvider {
     if (!NAMESPACE.equals(edmFQName.getNamespace()) || !mapping[ENTITYTYPE][EDM].equals(edmFQName.getName())) {
       throw new ODataException("not found: " + edmFQName);
     }
-    
+
     return entityType;
   }
 
@@ -110,7 +109,7 @@ public class MapProvider extends EdmProvider {
     if (!MAPPING_CONTAINER.equals(entityContainer) || !mapping[ENTITYSET][EDM].equals(name)) {
       throw new ODataException("not found: " + entityContainer + ", " + name);
     }
-    
+
     return entitySet;
   }
 
@@ -118,7 +117,7 @@ public class MapProvider extends EdmProvider {
   public EntityContainerInfo getEntityContainerInfo(String name) throws ODataException {
     EntityContainerInfo entityContainerInfo = null;
 
-    if (MAPPING_CONTAINER.equals(name) || name == null) {
+    if (MAPPING_CONTAINER.equals(name) || (name == null)) {
       entityContainerInfo = new EntityContainerInfo().setName(MAPPING_CONTAINER).setDefaultEntityContainer(true);
     }
 

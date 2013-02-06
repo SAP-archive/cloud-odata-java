@@ -37,7 +37,7 @@ public class BasicHttpTest extends AbstractBasicTest {
 
   @Override
   protected ODataSingleProcessor createProcessor() throws ODataException {
-    ODataSingleProcessor processor = mock(ODataSingleProcessor.class);
+    final ODataSingleProcessor processor = mock(ODataSingleProcessor.class);
     when(((MetadataProcessor) processor).readMetadata(any(GetMetadataUriInfo.class), any(String.class))).thenReturn(ODataResponse.entity("metadata").status(HttpStatusCodes.OK).build());
     when(((ServiceDocumentProcessor) processor).readServiceDocument(any(GetServiceDocumentUriInfo.class), any(String.class))).thenReturn(ODataResponse.entity("service document").status(HttpStatusCodes.OK).build());
     return processor;
@@ -45,82 +45,81 @@ public class BasicHttpTest extends AbstractBasicTest {
 
   @Test
   public void testGetServiceDocument() throws ODataException, MalformedURLException, IOException {
-    HttpResponse response = executeGetRequest("/");
+    final HttpResponse response = executeGetRequest("/");
 
-    String payload = StringHelper.inputStreamToString(response.getEntity().getContent());
+    final String payload = StringHelper.inputStreamToString(response.getEntity().getContent());
     assertEquals("service document", payload);
     assertEquals(HttpStatusCodes.OK.getStatusCode(), response.getStatusLine().getStatusCode());
   }
 
   @Test
   public void testGetServiceDocumentWithRedirect() throws ODataException, MalformedURLException, IOException {
-    HttpResponse response = executeGetRequest("");
+    final HttpResponse response = executeGetRequest("");
 
-    String payload = StringHelper.inputStreamToString(response.getEntity().getContent());
+    final String payload = StringHelper.inputStreamToString(response.getEntity().getContent());
     assertEquals("service document", payload);
     assertEquals(HttpStatusCodes.OK.getStatusCode(), response.getStatusLine().getStatusCode());
   }
 
   @Test
   public void testGet() throws ODataException, MalformedURLException, IOException {
-    HttpResponse response = executeGetRequest("$metadata");
+    final HttpResponse response = executeGetRequest("$metadata");
 
-    String payload = StringHelper.inputStreamToString(response.getEntity().getContent());
+    final String payload = StringHelper.inputStreamToString(response.getEntity().getContent());
     assertEquals("metadata", payload);
     assertEquals(HttpStatusCodes.OK.getStatusCode(), response.getStatusLine().getStatusCode());
   }
 
   @Test
   public void testPut() throws MalformedURLException, IOException {
-    HttpPut put = new HttpPut(URI.create(this.getEndpoint().toString() + "/aaa/bbb/ccc"));
-    HttpResponse response = this.getHttpClient().execute(put);
+    final HttpPut put = new HttpPut(URI.create(getEndpoint().toString() + "/aaa/bbb/ccc"));
+    final HttpResponse response = getHttpClient().execute(put);
 
-//    String payload = StringHelper.inputStreamToString(response.getEntity().getContent());
-//    assertTrue(payload.contains(put.getMethod()));
+    //    String payload = StringHelper.inputStreamToString(response.getEntity().getContent());
+    //    assertTrue(payload.contains(put.getMethod()));
     assertEquals(HttpStatusCodes.NOT_FOUND.getStatusCode(), response.getStatusLine().getStatusCode());
   }
-  
+
   @Test
   public void testPutWithContent() throws MalformedURLException, IOException {
-    HttpPut put = new HttpPut(URI.create(this.getEndpoint().toString()));
-    String xml = 
+    final HttpPut put = new HttpPut(URI.create(getEndpoint().toString()));
+    final String xml =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
-        "<entry xmlns=\"http://www.w3.org/2005/Atom\" xmlns:m=\"http://schemas.microsoft.com/ado/2007/08/dataservices/metadata\" xmlns:d=\"http://schemas.microsoft.com/ado/2007/08/dataservices\" xml:base=\"https://refodata.prod.jpaas.sapbydesign.com/com.sap.core.odata.ref.web/ReferenceScenario.svc/\">" + 
-        "</entry>";
-    HttpEntity entity = new StringEntity(xml);
+            "<entry xmlns=\"http://www.w3.org/2005/Atom\" xmlns:m=\"http://schemas.microsoft.com/ado/2007/08/dataservices/metadata\" xmlns:d=\"http://schemas.microsoft.com/ado/2007/08/dataservices\" xml:base=\"https://refodata.prod.jpaas.sapbydesign.com/com.sap.core.odata.ref.web/ReferenceScenario.svc/\">" +
+            "</entry>";
+    final HttpEntity entity = new StringEntity(xml);
     put.setEntity(entity);
-    HttpResponse response = this.getHttpClient().execute(put);
+    final HttpResponse response = getHttpClient().execute(put);
 
-    String payload = StringHelper.inputStreamToString(response.getEntity().getContent());
+    final String payload = StringHelper.inputStreamToString(response.getEntity().getContent());
 
     assertTrue(payload.contains("error"));
     assertEquals(HttpStatusCodes.METHOD_NOT_ALLOWED.getStatusCode(), response.getStatusLine().getStatusCode());
   }
-
 
   @Test
   public void testPostMethodNotAllowedWithContent() throws MalformedURLException, IOException {
-    HttpPost post = new HttpPost(URI.create(this.getEndpoint().toString()));
-    String xml = 
+    final HttpPost post = new HttpPost(URI.create(getEndpoint().toString()));
+    final String xml =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
-        "<entry xmlns=\"http://www.w3.org/2005/Atom\" xmlns:m=\"http://schemas.microsoft.com/ado/2007/08/dataservices/metadata\" xmlns:d=\"http://schemas.microsoft.com/ado/2007/08/dataservices\" xml:base=\"https://refodata.prod.jpaas.sapbydesign.com/com.sap.core.odata.ref.web/ReferenceScenario.svc/\">" + 
-        "</entry>";
-    HttpEntity entity = new StringEntity(xml);
+            "<entry xmlns=\"http://www.w3.org/2005/Atom\" xmlns:m=\"http://schemas.microsoft.com/ado/2007/08/dataservices/metadata\" xmlns:d=\"http://schemas.microsoft.com/ado/2007/08/dataservices\" xml:base=\"https://refodata.prod.jpaas.sapbydesign.com/com.sap.core.odata.ref.web/ReferenceScenario.svc/\">" +
+            "</entry>";
+    final HttpEntity entity = new StringEntity(xml);
     post.setEntity(entity);
-    HttpResponse response = this.getHttpClient().execute(post);
+    final HttpResponse response = getHttpClient().execute(post);
 
-    String payload = StringHelper.inputStreamToString(response.getEntity().getContent());
+    final String payload = StringHelper.inputStreamToString(response.getEntity().getContent());
 
     assertTrue(payload.contains("error"));
     assertEquals(HttpStatusCodes.METHOD_NOT_ALLOWED.getStatusCode(), response.getStatusLine().getStatusCode());
   }
-  
+
   @Test
   public void testPostNotFound() throws MalformedURLException, IOException {
-    HttpPost post = new HttpPost(URI.create(this.getEndpoint().toString() + "/aaa/bbb/ccc"));
-    HttpResponse response = this.getHttpClient().execute(post);
+    final HttpPost post = new HttpPost(URI.create(getEndpoint().toString() + "/aaa/bbb/ccc"));
+    final HttpResponse response = getHttpClient().execute(post);
 
-    String payload = StringHelper.inputStreamToString(response.getEntity().getContent());
+    final String payload = StringHelper.inputStreamToString(response.getEntity().getContent());
 
     assertTrue(payload.contains("error"));
     assertEquals(HttpStatusCodes.NOT_FOUND.getStatusCode(), response.getStatusLine().getStatusCode());
@@ -128,10 +127,10 @@ public class BasicHttpTest extends AbstractBasicTest {
 
   @Test
   public void testDelete() throws MalformedURLException, IOException {
-    HttpDelete delete = new HttpDelete(URI.create(this.getEndpoint().toString() + "/aaa/bbb/ccc"));
-    HttpResponse response = this.getHttpClient().execute(delete);
+    final HttpDelete delete = new HttpDelete(URI.create(getEndpoint().toString() + "/aaa/bbb/ccc"));
+    final HttpResponse response = getHttpClient().execute(delete);
 
-    String payload = StringHelper.inputStreamToString(response.getEntity().getContent());
+    final String payload = StringHelper.inputStreamToString(response.getEntity().getContent());
 
     assertTrue(payload.contains("error"));
     assertEquals(HttpStatusCodes.NOT_FOUND.getStatusCode(), response.getStatusLine().getStatusCode());
@@ -139,10 +138,10 @@ public class BasicHttpTest extends AbstractBasicTest {
 
   @Test
   public void testMerge() throws MalformedURLException, IOException {
-    HttpMerge merge = new HttpMerge(URI.create(this.getEndpoint().toString() + "/aaa/bbb/ccc"));
-    HttpResponse response = this.getHttpClient().execute(merge);
+    final HttpMerge merge = new HttpMerge(URI.create(getEndpoint().toString() + "/aaa/bbb/ccc"));
+    final HttpResponse response = getHttpClient().execute(merge);
 
-    String payload = StringHelper.inputStreamToString(response.getEntity().getContent());
+    final String payload = StringHelper.inputStreamToString(response.getEntity().getContent());
 
     assertTrue(payload.contains("error"));
     assertEquals(HttpStatusCodes.NOT_FOUND.getStatusCode(), response.getStatusLine().getStatusCode());
@@ -150,10 +149,10 @@ public class BasicHttpTest extends AbstractBasicTest {
 
   @Test
   public void testPatch() throws MalformedURLException, IOException {
-    HttpPatch get = new HttpPatch(URI.create(this.getEndpoint().toString() + "/aaa/bbb/ccc"));
-    HttpResponse response = this.getHttpClient().execute(get);
+    final HttpPatch get = new HttpPatch(URI.create(getEndpoint().toString() + "/aaa/bbb/ccc"));
+    final HttpResponse response = getHttpClient().execute(get);
 
-    String payload = StringHelper.inputStreamToString(response.getEntity().getContent());
+    final String payload = StringHelper.inputStreamToString(response.getEntity().getContent());
 
     assertTrue(payload.contains("error"));
     assertEquals(HttpStatusCodes.NOT_FOUND.getStatusCode(), response.getStatusLine().getStatusCode());
@@ -161,11 +160,11 @@ public class BasicHttpTest extends AbstractBasicTest {
 
   @Test
   public void testMergeTunneledByPost() throws MalformedURLException, IOException {
-    HttpPost post = new HttpPost(URI.create(this.getEndpoint().toString() + "/aaa/bbb/ccc"));
+    final HttpPost post = new HttpPost(URI.create(getEndpoint().toString() + "/aaa/bbb/ccc"));
     post.setHeader("X-HTTP-Method", "MERGE");
-    HttpResponse response = this.getHttpClient().execute(post);
+    final HttpResponse response = getHttpClient().execute(post);
 
-    String payload = StringHelper.inputStreamToString(response.getEntity().getContent());
+    final String payload = StringHelper.inputStreamToString(response.getEntity().getContent());
 
     assertTrue(payload.contains("error"));
     assertEquals(HttpStatusCodes.NOT_FOUND.getStatusCode(), response.getStatusLine().getStatusCode());
@@ -173,11 +172,11 @@ public class BasicHttpTest extends AbstractBasicTest {
 
   @Test
   public void testPatchTunneledByPost() throws MalformedURLException, IOException {
-    HttpPost post = new HttpPost(URI.create(this.getEndpoint().toString() + "/aaa/bbb/ccc"));
+    final HttpPost post = new HttpPost(URI.create(getEndpoint().toString() + "/aaa/bbb/ccc"));
     post.setHeader("X-HTTP-Method", "PATCH");
-    HttpResponse response = this.getHttpClient().execute(post);
+    final HttpResponse response = getHttpClient().execute(post);
 
-    String payload = StringHelper.inputStreamToString(response.getEntity().getContent());
+    final String payload = StringHelper.inputStreamToString(response.getEntity().getContent());
 
     assertTrue(payload.contains("error"));
     assertEquals(HttpStatusCodes.NOT_FOUND.getStatusCode(), response.getStatusLine().getStatusCode());

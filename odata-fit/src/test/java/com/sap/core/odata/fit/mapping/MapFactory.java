@@ -9,8 +9,8 @@ public class MapFactory extends ODataServiceFactory {
 
   @Override
   public ODataService createService(ODataContext ctx) throws ODataException {
-    MapProvider provider = new MapProvider();
-    MapProcessor processor = new MapProcessor();
+    final MapProvider provider = new MapProvider();
+    final MapProcessor processor = new MapProcessor();
 
     return createODataSingleProcessorService(provider, processor);
   }

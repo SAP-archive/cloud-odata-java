@@ -32,20 +32,20 @@ public class ContentNegotiationTest extends AbstractFitTest {
   // TODO: Don't use reference scenario in basic tests.
   @Override
   protected ODataService createService() throws ODataException {
-    DataContainer dataContainer = new DataContainer();
+    final DataContainer dataContainer = new DataContainer();
     dataContainer.reset();
-    ODataSingleProcessor processor = new ListsProcessor(new ScenarioDataSource(dataContainer));
-    EdmProvider provider = new ScenarioEdmProvider();
+    final ODataSingleProcessor processor = new ListsProcessor(new ScenarioDataSource(dataContainer));
+    final EdmProvider provider = new ScenarioEdmProvider();
     return new ODataSingleProcessorService(provider, processor) {};
   }
 
   @Test
   public void acceptHeaderAppAtomXml() throws Exception {
-    HttpGet get = new HttpGet(URI.create(getEndpoint() + "Rooms('1')"));
+    final HttpGet get = new HttpGet(URI.create(getEndpoint() + "Rooms('1')"));
     get.setHeader(HttpHeaders.ACCEPT, HttpContentType.APPLICATION_ATOM_XML);
-    HttpResponse response = this.getHttpClient().execute(get);
+    final HttpResponse response = getHttpClient().execute(get);
 
-    String contentType = response.getFirstHeader(HttpHeaders.CONTENT_TYPE).getValue();
+    final String contentType = response.getFirstHeader(HttpHeaders.CONTENT_TYPE).getValue();
     assertEquals(ContentType.create(HttpContentType.APPLICATION_ATOM_XML_ENTRY_UTF8), ContentType.create(contentType));
 
     assertNotNull(StringHelper.inputStreamToString(response.getEntity().getContent()));
@@ -53,11 +53,11 @@ public class ContentNegotiationTest extends AbstractFitTest {
 
   @Test
   public void acceptHeaderAppXml() throws Exception {
-    HttpGet get = new HttpGet(URI.create(getEndpoint() + "Rooms('1')"));
+    final HttpGet get = new HttpGet(URI.create(getEndpoint() + "Rooms('1')"));
     get.setHeader(HttpHeaders.ACCEPT, HttpContentType.APPLICATION_XML);
-    HttpResponse response = this.getHttpClient().execute(get);
+    final HttpResponse response = getHttpClient().execute(get);
 
-    String contentType = response.getFirstHeader(HttpHeaders.CONTENT_TYPE).getValue();
+    final String contentType = response.getFirstHeader(HttpHeaders.CONTENT_TYPE).getValue();
     assertEquals(HttpContentType.APPLICATION_XML_UTF8, contentType);
     assertEquals(ContentType.create(HttpContentType.APPLICATION_XML_UTF8), ContentType.create(contentType));
 
@@ -66,11 +66,11 @@ public class ContentNegotiationTest extends AbstractFitTest {
 
   @Test
   public void acceptHeaderAppXmlCharsetUtf8() throws Exception {
-    HttpGet get = new HttpGet(URI.create(getEndpoint() + "Rooms('1')"));
+    final HttpGet get = new HttpGet(URI.create(getEndpoint() + "Rooms('1')"));
     get.setHeader(HttpHeaders.ACCEPT, HttpContentType.APPLICATION_XML_UTF8);
-    HttpResponse response = this.getHttpClient().execute(get);
+    final HttpResponse response = getHttpClient().execute(get);
 
-    String contentType = response.getFirstHeader(HttpHeaders.CONTENT_TYPE).getValue();
+    final String contentType = response.getFirstHeader(HttpHeaders.CONTENT_TYPE).getValue();
     assertEquals(HttpContentType.APPLICATION_XML_UTF8, contentType);
     assertEquals(ContentType.create(HttpContentType.APPLICATION_XML_UTF8), ContentType.create(contentType));
 

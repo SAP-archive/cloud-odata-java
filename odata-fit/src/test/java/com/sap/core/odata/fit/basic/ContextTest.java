@@ -37,7 +37,7 @@ public class ContextTest extends AbstractBasicTest {
 
   @Override
   protected ODataSingleProcessor createProcessor() throws ODataException {
-    ODataSingleProcessor processor = mock(ODataSingleProcessor.class);
+    final ODataSingleProcessor processor = mock(ODataSingleProcessor.class);
     when(((MetadataProcessor) processor).readMetadata(any(GetMetadataUriInfo.class), any(String.class))).thenReturn(ODataResponse.entity("metadata").status(HttpStatusCodes.OK).build());
     when(((ServiceDocumentProcessor) processor).readServiceDocument(any(GetServiceDocumentUriInfo.class), any(String.class))).thenReturn(ODataResponse.entity("service document").status(HttpStatusCodes.OK).build());
     return processor;
@@ -45,13 +45,13 @@ public class ContextTest extends AbstractBasicTest {
 
   @Test
   public void checkContextExists() throws ClientProtocolException, IOException, ODataException {
-    assertNull(this.getService().getProcessor().getContext());
-    HttpResponse response = executeGetRequest("$metadata");
+    assertNull(getService().getProcessor().getContext());
+    final HttpResponse response = executeGetRequest("$metadata");
 
-    ODataContext context = this.getService().getProcessor().getContext();
+    final ODataContext context = getService().getProcessor().getContext();
     assertNotNull(context);
 
-    ODataService service = context.getService();
+    final ODataService service = context.getService();
     assertNotNull(service);
 
     assertEquals(Status.OK.getStatusCode(), response.getStatusLine().getStatusCode());
@@ -63,27 +63,27 @@ public class ContextTest extends AbstractBasicTest {
   public void checkBaseUriForServiceDocument() throws ClientProtocolException, IOException, ODataException {
     executeGetRequest("");
 
-    ODataContext ctx = this.getService().getProcessor().getContext();
+    final ODataContext ctx = getService().getProcessor().getContext();
     assertNotNull(ctx);
-    assertEquals(this.getEndpoint().toString(), ctx.getPathInfo().getServiceRoot().toASCIIString());
+    assertEquals(getEndpoint().toString(), ctx.getPathInfo().getServiceRoot().toASCIIString());
   }
 
   @Test
   public void checkBaseUriForMetadata() throws ClientProtocolException, IOException, ODataException {
     executeGetRequest("$metadata");
 
-    ODataContext ctx = this.getService().getProcessor().getContext();
+    final ODataContext ctx = getService().getProcessor().getContext();
     assertNotNull(ctx);
-    assertEquals(this.getEndpoint().toString(), ctx.getPathInfo().getServiceRoot().toASCIIString());
+    assertEquals(getEndpoint().toString(), ctx.getPathInfo().getServiceRoot().toASCIIString());
   }
 
   @Test
   public void checkRequestHeader() throws ClientProtocolException, IOException, ODataException {
-    HttpGet get = new HttpGet(URI.create(this.getEndpoint().toString() + "/$metadata"));
+    final HttpGet get = new HttpGet(URI.create(getEndpoint().toString() + "/$metadata"));
     get.setHeader("ConTenT-laNguaGe", "de, en");
-    this.getHttpClient().execute(get);
+    getHttpClient().execute(get);
 
-    ODataContext ctx = this.getService().getProcessor().getContext();
+    final ODataContext ctx = getService().getProcessor().getContext();
     assertNotNull(ctx);
 
     assertEquals("de, en", ctx.getHttpRequestHeader(HttpHeaders.CONTENT_LANGUAGE));
@@ -92,14 +92,14 @@ public class ContextTest extends AbstractBasicTest {
 
   @Test
   public void checkRequestHeaders() throws ClientProtocolException, IOException, ODataException {
-    HttpGet get = new HttpGet(URI.create(this.getEndpoint().toString() + "/$metadata"));
+    final HttpGet get = new HttpGet(URI.create(getEndpoint().toString() + "/$metadata"));
     get.setHeader("ConTenT-laNguaGe", "de, en");
-    this.getHttpClient().execute(get);
+    getHttpClient().execute(get);
 
-    ODataContext ctx = this.getService().getProcessor().getContext();
+    final ODataContext ctx = getService().getProcessor().getContext();
     assertNotNull(ctx);
 
-    Map<String, String> header = ctx.getHttpRequestHeaders();
+    final Map<String, String> header = ctx.getHttpRequestHeaders();
     assertEquals("de, en", header.get(HttpHeaders.CONTENT_LANGUAGE));
   }
 }

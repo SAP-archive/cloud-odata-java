@@ -52,7 +52,6 @@ public class EntityProviderProperties {
     return nextLink;
   }
 
-
   public static ODataEntityProviderPropertiesBuilder serviceRoot(URI serviceRoot) {
     return new ODataEntityProviderPropertiesBuilder().serviceRoot(serviceRoot);
   }
