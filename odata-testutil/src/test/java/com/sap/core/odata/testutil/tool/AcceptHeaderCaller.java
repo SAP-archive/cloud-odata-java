@@ -18,16 +18,16 @@ public class AcceptHeaderCaller {
   private static final Logger LOG = LoggerFactory.getLogger(AcceptHeaderCaller.class);
   
   private DefaultHttpClient httpClient;
-  private final URI baseUri;
   private final CallerConfig config;
   
-  public AcceptHeaderCaller(CallerConfig config) {
-    this.baseUri = config.getBaseUri();
+  AcceptHeaderCaller(CallerConfig config) {
     this.config = config;
-
-    init();
   }
 
+  public static AcceptHeaderCaller create(CallerConfig config) {
+    return new AcceptHeaderCaller(config);
+  }
+  
   private void init() {
     httpClient = new DefaultHttpClient();
     if (config.isProxySet()) {
@@ -35,6 +35,7 @@ public class AcceptHeaderCaller {
     }
     
     if(config.isBasicAuthCredentialsSet()) {
+      URI baseUri = config.getBaseUri();
       httpClient.getCredentialsProvider().setCredentials(
           new AuthScope(baseUri.getHost(), baseUri.getPort()),
           new UsernamePasswordCredentials("anzeiger", "display"));//config.getBasicAuthCredentials()));
@@ -60,9 +61,10 @@ public class AcceptHeaderCaller {
   }
   
   public void call() {
+    init();
 
     for (TestPath path: config.getTestPaths()) {
-      call(baseUri, path);
+      call(config.getBaseUri(), path);
     }
   }
   
