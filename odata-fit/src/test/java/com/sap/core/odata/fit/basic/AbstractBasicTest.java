@@ -31,8 +31,8 @@ public abstract class AbstractBasicTest extends AbstractFitTest {
 
   @Override
   protected ODataService createService() throws ODataException {
-    EdmProvider provider = createEdmProvider();
-    ODataSingleProcessor processor = this.createProcessor();
+    final EdmProvider provider = createEdmProvider();
+    final ODataSingleProcessor processor = createProcessor();
 
     // science fiction (return context after setContext)
     // see http://www.planetgeek.ch/2010/07/20/mockito-answer-vs-return/
@@ -40,7 +40,7 @@ public abstract class AbstractBasicTest extends AbstractFitTest {
     doAnswer(new Answer<Object>() {
       @Override
       public Object answer(InvocationOnMock invocation) throws Throwable {
-        AbstractBasicTest.this.context = (ODataContext) invocation.getArguments()[0];
+        context = (ODataContext) invocation.getArguments()[0];
         return null;
       }
     }).when(processor).setContext(any(ODataContext.class));
@@ -48,7 +48,7 @@ public abstract class AbstractBasicTest extends AbstractFitTest {
     when(processor.getContext()).thenAnswer(new Answer<ODataContext>() {
       @Override
       public ODataContext answer(InvocationOnMock invocation) throws Throwable {
-        return AbstractBasicTest.this.context;
+        return context;
       }
     });
 
@@ -62,7 +62,7 @@ public abstract class AbstractBasicTest extends AbstractFitTest {
   abstract ODataSingleProcessor createProcessor() throws ODataException;
 
   protected HttpResponse executeGetRequest(String request) throws ClientProtocolException, IOException {
-    HttpGet get = new HttpGet(URI.create(getEndpoint().toString() + request));
+    final HttpGet get = new HttpGet(URI.create(getEndpoint().toString() + request));
     return getHttpClient().execute(get);
   }
 }

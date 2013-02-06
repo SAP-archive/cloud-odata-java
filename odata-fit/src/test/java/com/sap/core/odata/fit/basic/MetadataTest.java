@@ -26,17 +26,17 @@ public class MetadataTest extends AbstractBasicTest {
 
   @Override
   protected ODataSingleProcessor createProcessor() throws ODataException {
-    ODataSingleProcessor processor = mock(ODataSingleProcessor.class);
+    final ODataSingleProcessor processor = mock(ODataSingleProcessor.class);
     when(((MetadataProcessor) processor).readMetadata(any(GetMetadataUriInfo.class), any(String.class))).thenReturn(ODataResponse.entity("metadata").status(HttpStatusCodes.OK).build());
     return processor;
   }
 
   @Test
   public void readMetadata() throws ClientProtocolException, IOException, ODataException {
-    HttpResponse response = executeGetRequest("$metadata");
+    final HttpResponse response = executeGetRequest("$metadata");
     assertEquals(HttpStatusCodes.OK.getStatusCode(), response.getStatusLine().getStatusCode());
 
-    String payload = StringHelper.inputStreamToString(response.getEntity().getContent());
+    final String payload = StringHelper.inputStreamToString(response.getEntity().getContent());
     assertEquals("metadata", payload);
   }
 

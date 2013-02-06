@@ -39,7 +39,7 @@ public class UrlRewriteTest extends AbstractBasicTest {
 
   @Override
   ODataSingleProcessor createProcessor() throws ODataException {
-    ODataSingleProcessor processor = mock(ODataSingleProcessor.class);
+    final ODataSingleProcessor processor = mock(ODataSingleProcessor.class);
     when(((MetadataProcessor) processor).readMetadata(any(GetMetadataUriInfo.class), any(String.class))).thenReturn(ODataResponse.entity("metadata").status(HttpStatusCodes.OK).build());
     when(((ServiceDocumentProcessor) processor).readServiceDocument(any(GetServiceDocumentUriInfo.class), any(String.class))).thenReturn(ODataResponse.entity("service document").status(HttpStatusCodes.OK).build());
     return processor;
@@ -47,75 +47,75 @@ public class UrlRewriteTest extends AbstractBasicTest {
 
   @Test
   public void testGetServiceDocumentRedirect() throws Exception {
-    HttpRequestBase httpMethod = createRedirectRequest(HttpGet.class);
-    HttpResponse response = this.getHttpClient().execute(httpMethod);
+    final HttpRequestBase httpMethod = createRedirectRequest(HttpGet.class);
+    final HttpResponse response = getHttpClient().execute(httpMethod);
     assertEquals(HttpStatusCodes.TEMPORARY_REDIRECT.getStatusCode(), response.getStatusLine().getStatusCode());
   }
 
   @Test
   public void testPutServiceDocumentRedirect() throws Exception {
-    HttpRequestBase httpMethod = createRedirectRequest(HttpPut.class);
-    HttpResponse response = this.getHttpClient().execute(httpMethod);
+    final HttpRequestBase httpMethod = createRedirectRequest(HttpPut.class);
+    final HttpResponse response = getHttpClient().execute(httpMethod);
     assertEquals(HttpStatusCodes.TEMPORARY_REDIRECT.getStatusCode(), response.getStatusLine().getStatusCode());
   }
 
   @Test
   public void testPostServiceDocumentRedirect() throws Exception {
-    HttpRequestBase httpMethod = createRedirectRequest(HttpPost.class);
-    HttpResponse response = this.getHttpClient().execute(httpMethod);
+    final HttpRequestBase httpMethod = createRedirectRequest(HttpPost.class);
+    final HttpResponse response = getHttpClient().execute(httpMethod);
     assertEquals(HttpStatusCodes.TEMPORARY_REDIRECT.getStatusCode(), response.getStatusLine().getStatusCode());
   }
 
   @Test
   public void testDeleteServiceDocumentRedirect() throws Exception {
-    HttpRequestBase httpMethod = createRedirectRequest(HttpDelete.class);
-    HttpResponse response = this.getHttpClient().execute(httpMethod);
+    final HttpRequestBase httpMethod = createRedirectRequest(HttpDelete.class);
+    final HttpResponse response = getHttpClient().execute(httpMethod);
     assertEquals(HttpStatusCodes.TEMPORARY_REDIRECT.getStatusCode(), response.getStatusLine().getStatusCode());
   }
 
   @Test
   public void testOptionsServiceDocumentRedirect() throws Exception {
-    HttpRequestBase httpMethod = createRedirectRequest(HttpOptions.class);
-    HttpResponse response = this.getHttpClient().execute(httpMethod);
+    final HttpRequestBase httpMethod = createRedirectRequest(HttpOptions.class);
+    final HttpResponse response = getHttpClient().execute(httpMethod);
     assertEquals(HttpStatusCodes.TEMPORARY_REDIRECT.getStatusCode(), response.getStatusLine().getStatusCode());
   }
 
   @Test
   public void testHeadServiceDocumentRedirect() throws Exception {
-    HttpRequestBase httpMethod = createRedirectRequest(HttpHead.class);
-    HttpResponse response = this.getHttpClient().execute(httpMethod);
+    final HttpRequestBase httpMethod = createRedirectRequest(HttpHead.class);
+    final HttpResponse response = getHttpClient().execute(httpMethod);
     assertEquals(HttpStatusCodes.TEMPORARY_REDIRECT.getStatusCode(), response.getStatusLine().getStatusCode());
   }
 
   @Test
   public void testMergeServiceDocumentRedirect() throws Exception {
-    HttpRequestBase httpMethod = createRedirectRequest(HttpMerge.class);
-    HttpResponse response = this.getHttpClient().execute(httpMethod);
+    final HttpRequestBase httpMethod = createRedirectRequest(HttpMerge.class);
+    final HttpResponse response = getHttpClient().execute(httpMethod);
     assertEquals(HttpStatusCodes.TEMPORARY_REDIRECT.getStatusCode(), response.getStatusLine().getStatusCode());
   }
 
   @Test
   public void testPatchServiceDocumentRedirect() throws Exception {
-    HttpRequestBase httpMethod = createRedirectRequest(HttpPatch.class);
-    HttpResponse response = this.getHttpClient().execute(httpMethod);
+    final HttpRequestBase httpMethod = createRedirectRequest(HttpPatch.class);
+    final HttpResponse response = getHttpClient().execute(httpMethod);
     assertEquals(HttpStatusCodes.TEMPORARY_REDIRECT.getStatusCode(), response.getStatusLine().getStatusCode());
   }
 
   @Test
   public void testSomethingUnsupportedServiceDocumentRedirect() throws Exception {
-    HttpRequestBase httpMethod = createRedirectRequest(HttpSomethingUnsupported.class);
-    HttpResponse response = this.getHttpClient().execute(httpMethod);
+    final HttpRequestBase httpMethod = createRedirectRequest(HttpSomethingUnsupported.class);
+    final HttpResponse response = getHttpClient().execute(httpMethod);
     assertEquals(HttpStatusCodes.METHOD_NOT_ALLOWED.getStatusCode(), response.getStatusLine().getStatusCode());
   }
 
   private HttpRequestBase createRedirectRequest(Class<? extends HttpRequestBase> clazz) throws Exception {
-    String endpoint = this.getEndpoint().toASCIIString();
+    String endpoint = getEndpoint().toASCIIString();
     endpoint = endpoint.substring(0, endpoint.length() - 1);
 
-    HttpRequestBase httpMethod = clazz.newInstance();
+    final HttpRequestBase httpMethod = clazz.newInstance();
     httpMethod.setURI(URI.create(endpoint));
 
-    HttpParams params = new BasicHttpParams();
+    final HttpParams params = new BasicHttpParams();
     params.setParameter("http.protocol.handle-redirects", false);
     httpMethod.setParams(params);
     return httpMethod;
@@ -123,28 +123,28 @@ public class UrlRewriteTest extends AbstractBasicTest {
 
   @Test
   public void testGetServiceDocumentWithSlash() throws Exception {
-    HttpGet get = new HttpGet(URI.create(this.getEndpoint().toString()));
-    HttpParams params = new BasicHttpParams();
+    final HttpGet get = new HttpGet(URI.create(getEndpoint().toString()));
+    final HttpParams params = new BasicHttpParams();
     params.setParameter("http.protocol.handle-redirects", false);
     get.setParams(params);
 
-    HttpResponse response = this.getHttpClient().execute(get);
+    final HttpResponse response = getHttpClient().execute(get);
 
-    String payload = StringHelper.inputStreamToString(response.getEntity().getContent());
+    final String payload = StringHelper.inputStreamToString(response.getEntity().getContent());
     assertEquals("service document", payload);
     assertEquals(HttpStatusCodes.OK.getStatusCode(), response.getStatusLine().getStatusCode());
   }
 
   @Test
   public void testGetMetadata() throws Exception {
-    HttpGet get = new HttpGet(URI.create(this.getEndpoint().toString() + "$metadata"));
-    HttpParams params = new BasicHttpParams();
+    final HttpGet get = new HttpGet(URI.create(getEndpoint().toString() + "$metadata"));
+    final HttpParams params = new BasicHttpParams();
     params.setParameter("http.protocol.handle-redirects", false);
     get.setParams(params);
 
-    HttpResponse response = this.getHttpClient().execute(get);
+    final HttpResponse response = getHttpClient().execute(get);
 
-    String payload = StringHelper.inputStreamToString(response.getEntity().getContent());
+    final String payload = StringHelper.inputStreamToString(response.getEntity().getContent());
     assertEquals("metadata", payload);
     assertEquals(HttpStatusCodes.OK.getStatusCode(), response.getStatusLine().getStatusCode());
   }

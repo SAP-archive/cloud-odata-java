@@ -24,7 +24,6 @@ public final class EntityProvider {
    */
   public interface EntityProviderInterface {
 
-
     /**
      * Write metadata document in XML format for the given schemas and the provided predefined namespaces at the EDMX element. PredefinedNamespaces is of type Map{@literal<}prefix,namespace{@literal>} and may be null or an empty Map.
      * @param schemas
@@ -33,9 +32,7 @@ public final class EntityProvider {
      * @throws EntityProviderException
      */
     ODataResponse writeMetadata(List<Schema> schemas, Map<String, String> predefinedNamespaces) throws EntityProviderException;
-    
-    
-    
+
     /**
      * Write service document based on given {@link Edm} and <code>service root</code> as
      * given content type.
@@ -216,10 +213,10 @@ public final class EntityProvider {
    * @return
    * @throws EntityProviderException
    */
-  public static ODataResponse writeMetadata(List<Schema> schemas, Map<String, String> predefinedNamespaces) throws EntityProviderException{
+  public static ODataResponse writeMetadata(List<Schema> schemas, Map<String, String> predefinedNamespaces) throws EntityProviderException {
     return createEntityProvider().writeMetadata(schemas, predefinedNamespaces);
   }
-  
+
   /**
    * Write service document based on given {@link Edm} and <code>service root</code> as
    * given content type.

@@ -32,18 +32,19 @@ public class AtomEntryEncodingTest extends AbstractFitTest {
 
   @Override
   protected ODataService createService() throws ODataException {
-    DataContainer dataContainer = new DataContainer();
+    final DataContainer dataContainer = new DataContainer();
     dataContainer.reset();
-    ODataSingleProcessor processor = new ListsProcessor(new ScenarioDataSource(dataContainer));
-    EdmProvider provider = new ScenarioEdmProvider();
+    final ODataSingleProcessor processor = new ListsProcessor(new ScenarioDataSource(dataContainer));
+    final EdmProvider provider = new ScenarioEdmProvider();
     return new ODataSingleProcessorService(provider, processor) {};
   }
 
+  @Override
   @Before
   public void before() {
     super.before();
 
-    Map<String, String> ns = new HashMap<String, String>();
+    final Map<String, String> ns = new HashMap<String, String>();
     ns.put("d", Edm.NAMESPACE_D_2007_08);
     ns.put("m", Edm.NAMESPACE_M_2007_08);
     ns.put("a", Edm.NAMESPACE_ATOM_2005);
@@ -52,10 +53,10 @@ public class AtomEntryEncodingTest extends AbstractFitTest {
 
   @Test
   public void testETagEncoding() throws Exception {
-    HttpGet get = new HttpGet(URI.create(this.getEndpoint().toString() + "Rooms('1')"));
-    HttpResponse response = this.getHttpClient().execute(get);
+    final HttpGet get = new HttpGet(URI.create(getEndpoint().toString() + "Rooms('1')"));
+    final HttpResponse response = getHttpClient().execute(get);
 
-    String xml = StringHelper.inputStreamToString(response.getEntity().getContent());
+    final String xml = StringHelper.inputStreamToString(response.getEntity().getContent());
 
     assertXpathEvaluatesTo("W/\"1\"", "/a:entry/@m:etag", xml);
   }

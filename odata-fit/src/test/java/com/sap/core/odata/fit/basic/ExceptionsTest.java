@@ -29,12 +29,12 @@ public class ExceptionsTest extends AbstractBasicTest {
 
   @Test
   public void exceptionBasicTest() throws Exception {
-    HttpResponse response = executeGetRequest("NoContainer.NoEntitySet()");
+    final HttpResponse response = executeGetRequest("NoContainer.NoEntitySet()");
     assertEquals(HttpStatusCodes.NOT_FOUND.getStatusCode(), response.getStatusLine().getStatusCode());
 
     final String payload = StringHelper.inputStreamToString(response.getEntity().getContent());
 
-    Map<String, String> prefixMap = new HashMap<String, String>();
+    final Map<String, String> prefixMap = new HashMap<String, String>();
     prefixMap.put("a", Edm.NAMESPACE_M_2007_08);
     XMLUnit.setXpathNamespaceContext(new SimpleNamespaceContext(prefixMap));
 

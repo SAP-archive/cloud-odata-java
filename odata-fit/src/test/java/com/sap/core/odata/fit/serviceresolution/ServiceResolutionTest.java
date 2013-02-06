@@ -45,19 +45,19 @@ import com.sap.core.odata.testutil.server.TestServer;
  */
 public class ServiceResolutionTest extends BaseTest {
 
-  private HttpClient httpClient = new DefaultHttpClient();
-  private TestServer server = new TestServer();
+  private final HttpClient httpClient = new DefaultHttpClient();
+  private final TestServer server = new TestServer();
   private ODataContext context;
   private ODataSingleProcessorService service;
 
   @Before
   public void before() {
     try {
-      ODataSingleProcessor processor = mock(ODataSingleProcessor.class);
-      EdmProvider provider = mock(EdmProvider.class);
+      final ODataSingleProcessor processor = mock(ODataSingleProcessor.class);
+      final EdmProvider provider = mock(EdmProvider.class);
 
-      this.service = new ODataSingleProcessorService(provider, processor) {};
-      FitStaticServiceFactory.setService(this.service);
+      service = new ODataSingleProcessorService(provider, processor) {};
+      FitStaticServiceFactory.setService(service);
 
       // science fiction (return context after setContext)
       // see http://www.planetgeek.ch/2010/07/20/mockito-answer-vs-return/
@@ -65,7 +65,7 @@ public class ServiceResolutionTest extends BaseTest {
       doAnswer(new Answer<Object>() {
         @Override
         public Object answer(InvocationOnMock invocation) throws Throwable {
-          ServiceResolutionTest.this.context = (ODataContext) invocation.getArguments()[0];
+          context = (ODataContext) invocation.getArguments()[0];
           return null;
         }
       }).when(processor).setContext(any(ODataContext.class));
@@ -73,13 +73,13 @@ public class ServiceResolutionTest extends BaseTest {
       when(processor.getContext()).thenAnswer(new Answer<ODataContext>() {
         @Override
         public ODataContext answer(InvocationOnMock invocation) throws Throwable {
-          return ServiceResolutionTest.this.context;
+          return context;
         }
       });
 
       when(((MetadataProcessor) processor).readMetadata(any(GetMetadataUriInfo.class), any(String.class))).thenReturn(ODataResponse.entity("metadata").status(HttpStatusCodes.OK).build());
       when(((ServiceDocumentProcessor) processor).readServiceDocument(any(GetServiceDocumentUriInfo.class), any(String.class))).thenReturn(ODataResponse.entity("servicedocument").status(HttpStatusCodes.OK).build());
-    } catch (ODataException e) {
+    } catch (final ODataException e) {
       throw new RuntimeException(e);
     }
   }
@@ -87,8 +87,8 @@ public class ServiceResolutionTest extends BaseTest {
   @After
   public void after() {
     try {
-      if (this.server != null) {
-        this.server.stopServer();
+      if (server != null) {
+        server.stopServer();
       }
     } finally {
       FitStaticServiceFactory.setService(null);
@@ -97,15 +97,15 @@ public class ServiceResolutionTest extends BaseTest {
 
   @Test
   public void testSplit0() throws ClientProtocolException, IOException, ODataException {
-    this.server.setPathSplit(0);
-    this.server.startServer(FitStaticServiceFactory.class);
+    server.setPathSplit(0);
+    server.startServer(FitStaticServiceFactory.class);
 
-    HttpGet get = new HttpGet(URI.create(this.server.getEndpoint().toString() + "/$metadata"));
-    HttpResponse response = this.httpClient.execute(get);
+    final HttpGet get = new HttpGet(URI.create(server.getEndpoint().toString() + "/$metadata"));
+    final HttpResponse response = httpClient.execute(get);
 
     assertEquals(HttpStatusCodes.OK.getStatusCode(), response.getStatusLine().getStatusCode());
 
-    ODataContext ctx = this.service.getProcessor().getContext();
+    final ODataContext ctx = service.getProcessor().getContext();
     assertNotNull(ctx);
 
     assertTrue(ctx.getPathInfo().getPrecedingSegments().isEmpty());
@@ -114,15 +114,15 @@ public class ServiceResolutionTest extends BaseTest {
 
   @Test
   public void testSplit1() throws ClientProtocolException, IOException, ODataException {
-    this.server.setPathSplit(1);
-    this.server.startServer(FitStaticServiceFactory.class);
+    server.setPathSplit(1);
+    server.startServer(FitStaticServiceFactory.class);
 
-    HttpGet get = new HttpGet(URI.create(this.server.getEndpoint().toString() + "/aaa/$metadata"));
-    HttpResponse response = this.httpClient.execute(get);
+    final HttpGet get = new HttpGet(URI.create(server.getEndpoint().toString() + "/aaa/$metadata"));
+    final HttpResponse response = httpClient.execute(get);
 
     assertEquals(HttpStatusCodes.OK.getStatusCode(), response.getStatusLine().getStatusCode());
 
-    ODataContext ctx = this.service.getProcessor().getContext();
+    final ODataContext ctx = service.getProcessor().getContext();
     assertNotNull(ctx);
 
     assertEquals("aaa", ctx.getPathInfo().getPrecedingSegments().get(0).getPath());
@@ -131,15 +131,15 @@ public class ServiceResolutionTest extends BaseTest {
 
   @Test
   public void testSplit2() throws ClientProtocolException, IOException, ODataException {
-    this.server.setPathSplit(2);
-    this.server.startServer(FitStaticServiceFactory.class);
+    server.setPathSplit(2);
+    server.startServer(FitStaticServiceFactory.class);
 
-    HttpGet get = new HttpGet(URI.create(this.server.getEndpoint().toString() + "/aaa/bbb/$metadata"));
-    HttpResponse response = this.httpClient.execute(get);
+    final HttpGet get = new HttpGet(URI.create(server.getEndpoint().toString() + "/aaa/bbb/$metadata"));
+    final HttpResponse response = httpClient.execute(get);
 
     assertEquals(HttpStatusCodes.OK.getStatusCode(), response.getStatusLine().getStatusCode());
 
-    ODataContext ctx = this.service.getProcessor().getContext();
+    final ODataContext ctx = service.getProcessor().getContext();
     assertNotNull(ctx);
 
     assertEquals("aaa", ctx.getPathInfo().getPrecedingSegments().get(0).getPath());
@@ -149,26 +149,26 @@ public class ServiceResolutionTest extends BaseTest {
 
   @Test
   public void testSplitUrlToShort() throws ClientProtocolException, IOException, ODataException {
-    this.server.setPathSplit(3);
-    this.server.startServer(FitStaticServiceFactory.class);
+    server.setPathSplit(3);
+    server.startServer(FitStaticServiceFactory.class);
 
-    HttpGet get = new HttpGet(URI.create(this.server.getEndpoint().toString() + "/aaa/$metadata"));
-    HttpResponse response = this.httpClient.execute(get);
+    final HttpGet get = new HttpGet(URI.create(server.getEndpoint().toString() + "/aaa/$metadata"));
+    final HttpResponse response = httpClient.execute(get);
 
     assertEquals(HttpStatusCodes.BAD_REQUEST.getStatusCode(), response.getStatusLine().getStatusCode());
   }
 
   @Test
   public void testSplitUrlServiceDocument() throws ClientProtocolException, IOException, ODataException {
-    this.server.setPathSplit(1);
-    this.server.startServer(FitStaticServiceFactory.class);
+    server.setPathSplit(1);
+    server.startServer(FitStaticServiceFactory.class);
 
-    HttpGet get = new HttpGet(URI.create(this.server.getEndpoint().toString() + "/aaa/"));
-    HttpResponse response = this.httpClient.execute(get);
+    final HttpGet get = new HttpGet(URI.create(server.getEndpoint().toString() + "/aaa/"));
+    final HttpResponse response = httpClient.execute(get);
 
     assertEquals(HttpStatusCodes.OK.getStatusCode(), response.getStatusLine().getStatusCode());
 
-    ODataContext ctx = this.service.getProcessor().getContext();
+    final ODataContext ctx = service.getProcessor().getContext();
     assertNotNull(ctx);
 
     assertEquals("", ctx.getPathInfo().getODataSegments().get(0).getPath());
@@ -177,15 +177,15 @@ public class ServiceResolutionTest extends BaseTest {
 
   @Test
   public void testMatrixParameterInNonODataPath() throws ClientProtocolException, IOException, ODataException {
-    this.server.setPathSplit(1);
-    this.server.startServer(FitStaticServiceFactory.class);
+    server.setPathSplit(1);
+    server.startServer(FitStaticServiceFactory.class);
 
-    HttpGet get = new HttpGet(URI.create(this.server.getEndpoint().toString() + "aaa;n=2/"));
-    HttpResponse response = this.httpClient.execute(get);
+    final HttpGet get = new HttpGet(URI.create(server.getEndpoint().toString() + "aaa;n=2/"));
+    final HttpResponse response = httpClient.execute(get);
 
     assertEquals(HttpStatusCodes.OK.getStatusCode(), response.getStatusLine().getStatusCode());
 
-    ODataContext ctx = this.service.getProcessor().getContext();
+    final ODataContext ctx = service.getProcessor().getContext();
     assertNotNull(ctx);
 
     assertEquals("", ctx.getPathInfo().getODataSegments().get(0).getPath());
@@ -202,14 +202,14 @@ public class ServiceResolutionTest extends BaseTest {
 
   @Test
   public void testNoMatrixParameterInODataPath() throws ClientProtocolException, IOException, ODataException {
-    this.server.setPathSplit(0);
-    this.server.startServer(FitStaticServiceFactory.class);
+    server.setPathSplit(0);
+    server.startServer(FitStaticServiceFactory.class);
 
-    HttpGet get = new HttpGet(URI.create(this.server.getEndpoint().toString() + "$metadata;matrix"));
-    HttpResponse response = this.httpClient.execute(get);
+    final HttpGet get = new HttpGet(URI.create(server.getEndpoint().toString() + "$metadata;matrix"));
+    final HttpResponse response = httpClient.execute(get);
 
-    InputStream stream = response.getEntity().getContent();
-    String body = StringHelper.inputStreamToString(stream);
+    final InputStream stream = response.getEntity().getContent();
+    final String body = StringHelper.inputStreamToString(stream);
 
     assertTrue(body.contains("metadata"));
     assertTrue(body.contains("matrix"));
@@ -218,34 +218,34 @@ public class ServiceResolutionTest extends BaseTest {
 
   @Test
   public void testBaseUriWithMatrixParameter() throws ClientProtocolException, IOException, ODataException, URISyntaxException {
-    this.server.setPathSplit(3);
-    this.server.startServer(FitStaticServiceFactory.class);
+    server.setPathSplit(3);
+    server.startServer(FitStaticServiceFactory.class);
 
-    HttpGet get = new HttpGet(URI.create(this.server.getEndpoint().toString() + "aaa/bbb;n=2,3;m=1/ccc/"));
-    HttpResponse response = this.httpClient.execute(get);
+    final HttpGet get = new HttpGet(URI.create(server.getEndpoint().toString() + "aaa/bbb;n=2,3;m=1/ccc/"));
+    final HttpResponse response = httpClient.execute(get);
 
     assertEquals(HttpStatusCodes.OK.getStatusCode(), response.getStatusLine().getStatusCode());
 
-    ODataContext ctx = this.service.getProcessor().getContext();
+    final ODataContext ctx = service.getProcessor().getContext();
     assertNotNull(ctx);
-    assertEquals(this.server.getEndpoint() + "aaa/bbb;n=2,3;m=1/ccc/", ctx.getPathInfo().getServiceRoot().toASCIIString());
+    assertEquals(server.getEndpoint() + "aaa/bbb;n=2,3;m=1/ccc/", ctx.getPathInfo().getServiceRoot().toASCIIString());
   }
 
   @Test
   public void testBaseUriWithEncoding() throws ClientProtocolException, IOException, ODataException, URISyntaxException {
-    this.server.setPathSplit(3);
-    this.server.startServer(FitStaticServiceFactory.class);
+    server.setPathSplit(3);
+    server.startServer(FitStaticServiceFactory.class);
 
-    URI uri = new URI(this.server.getEndpoint().getScheme(), null, this.server.getEndpoint().getHost(), this.server.getEndpoint().getPort(), this.server.getEndpoint().getPath() + "/aaa/äдержb;n=2,3;m=1/c c/", null, null);
+    final URI uri = new URI(server.getEndpoint().getScheme(), null, server.getEndpoint().getHost(), server.getEndpoint().getPort(), server.getEndpoint().getPath() + "/aaa/äдержb;n=2,3;m=1/c c/", null, null);
 
-    HttpGet get = new HttpGet(uri);
-    HttpResponse response = this.httpClient.execute(get);
+    final HttpGet get = new HttpGet(uri);
+    final HttpResponse response = httpClient.execute(get);
 
     assertEquals(HttpStatusCodes.OK.getStatusCode(), response.getStatusLine().getStatusCode());
 
-    ODataContext ctx = this.service.getProcessor().getContext();
+    final ODataContext ctx = service.getProcessor().getContext();
     assertNotNull(ctx);
-    assertEquals(this.server.getEndpoint() + "aaa/%C3%A4%D0%B4%D0%B5%D1%80%D0%B6b;n=2,3;m=1/c%20c/", ctx.getPathInfo().getServiceRoot().toASCIIString());
+    assertEquals(server.getEndpoint() + "aaa/%C3%A4%D0%B4%D0%B5%D1%80%D0%B6b;n=2,3;m=1/c%20c/", ctx.getPathInfo().getServiceRoot().toASCIIString());
   }
 
 }

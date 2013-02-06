@@ -2,7 +2,6 @@ package com.sap.core.odata.api.uri.expression;
 
 import com.sap.core.odata.api.uri.UriParser;
 
-
 /**
  * Represents a binary expression node in the expression tree returned by the methods 
  * <li>{@link UriParser#parseFilterString(com.sap.core.odata.api.edm.EdmEntityType, String)}</li>

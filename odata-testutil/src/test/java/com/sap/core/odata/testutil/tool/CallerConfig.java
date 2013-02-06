@@ -12,7 +12,7 @@ public class CallerConfig {
   private CallerResultHandler responseHandler;
   private String proxy = null;
   private String basicAuthCredentials;
-  
+
   //
   private List<TestPath> testPaths;
 
@@ -23,13 +23,13 @@ public class CallerConfig {
   }
 
   public CallerConfig(String baseUrl) throws URISyntaxException {
-    this.baseUri = new URI(baseUrl);
+    baseUri = new URI(baseUrl);
   }
 
   public static CallerConfig create(String baseUrl) throws URISyntaxException {
     return new CallerConfig(baseUrl);
   }
-  
+
   public CallerConfig setProxy(String proxy) {
     this.proxy = proxy;
     return this;
@@ -38,11 +38,11 @@ public class CallerConfig {
   public String getProxy() {
     return proxy;
   }
-  
+
   public boolean isProxySet() {
     return proxy != null;
   }
-  
+
   /**
    * @return the baseUrl
    */
@@ -54,11 +54,11 @@ public class CallerConfig {
     this.responseHandler = responseHandler;
     return this;
   }
-  
+
   public CallerResultHandler getResponseHandler() {
     return responseHandler;
   }
-  
+
   public CallerConfig addTestPath(TestPath path) {
     testPaths.add(path);
     return this;
@@ -78,7 +78,7 @@ public class CallerConfig {
   public String getBasicAuthCredentials() {
     return basicAuthCredentials;
   }
-  
+
   public CallerConfig setBasicAuthCredentials(String basicAuthCredentials) {
     this.basicAuthCredentials = basicAuthCredentials;
     return this;

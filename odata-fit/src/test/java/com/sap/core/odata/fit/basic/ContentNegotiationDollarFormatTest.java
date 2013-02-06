@@ -32,12 +32,12 @@ public class ContentNegotiationDollarFormatTest extends AbstractBasicTest {
   @Override
   ODataSingleProcessor createProcessor() throws ODataException {
     // service document 
-    String contentType = "application/atom+xml; charset=utf-8";
-    ODataResponse responseAtomXml = ODataResponse.status(HttpStatusCodes.OK).contentHeader(contentType).entity("Test passed.").build();
+    final String contentType = "application/atom+xml; charset=utf-8";
+    final ODataResponse responseAtomXml = ODataResponse.status(HttpStatusCodes.OK).contentHeader(contentType).entity("Test passed.").build();
     when(((ServiceDocumentProcessor) processor).readServiceDocument(any(GetServiceDocumentUriInfo.class), eq(contentType))).thenReturn(responseAtomXml);
 
     // csv
-    ODataResponse value = ODataResponse.status(HttpStatusCodes.OK).contentHeader("csv").build();
+    final ODataResponse value = ODataResponse.status(HttpStatusCodes.OK).contentHeader("csv").build();
     when(((ServiceDocumentProcessor) processor).readServiceDocument(any(GetServiceDocumentUriInfo.class), eq("csv"))).thenReturn(value);
     when(((CustomContentType) processor).getCustomContentTypes(ServiceDocumentProcessor.class)).thenReturn(Arrays.asList("csv"));
 
@@ -46,29 +46,29 @@ public class ContentNegotiationDollarFormatTest extends AbstractBasicTest {
 
   @Test
   public void testAtomFormatForServiceDocument() throws Exception {
-    HttpResponse response = executeGetRequest("?$format=atom");
+    final HttpResponse response = executeGetRequest("?$format=atom");
 
-    String responseEntity = StringHelper.httpEntityToString(response.getEntity());
+    final String responseEntity = StringHelper.httpEntityToString(response.getEntity());
     assertEquals("Test passed.", responseEntity);
     assertEquals(HttpStatusCodes.OK.getStatusCode(), response.getStatusLine().getStatusCode());
 
-    Header header = response.getFirstHeader(HttpHeaders.CONTENT_TYPE);
+    final Header header = response.getFirstHeader(HttpHeaders.CONTENT_TYPE);
     assertEquals("application/atom+xml; charset=utf-8", header.getValue());
   }
 
   @Test
   public void testFormatCustom() throws Exception {
-    HttpResponse response = executeGetRequest("?$format=csv");
+    final HttpResponse response = executeGetRequest("?$format=csv");
 
     assertEquals(HttpStatusCodes.OK.getStatusCode(), response.getStatusLine().getStatusCode());
 
-    Header header = response.getFirstHeader(HttpHeaders.CONTENT_TYPE);
+    final Header header = response.getFirstHeader(HttpHeaders.CONTENT_TYPE);
     assertEquals("csv", header.getValue());
   }
 
   @Test
   public void testFormatNotAccepted() throws Exception {
-    HttpResponse response = executeGetRequest("?$format=csvOrSomethingElse");
+    final HttpResponse response = executeGetRequest("?$format=csvOrSomethingElse");
 
     assertEquals(HttpStatusCodes.NOT_ACCEPTABLE.getStatusCode(), response.getStatusLine().getStatusCode());
   }

@@ -22,12 +22,12 @@ public class ProcessLocker {
   //Acquire
   public static void crossProcessLockAcquire(final Class<?> c, final long waitMS) {
     RandomAccessFile randomAccessFile = null;
-    if (fileLock == null && c != null && waitMS > 0) {
+    if ((fileLock == null) && (c != null) && (waitMS > 0)) {
       try {
-        long dropDeadTime = System.currentTimeMillis() + waitMS;
-        File file = new File(lockTempDir, c.getName() + ".lock");
+        final long dropDeadTime = System.currentTimeMillis() + waitMS;
+        final File file = new File(lockTempDir, c.getName() + ".lock");
         randomAccessFile = new RandomAccessFile(file, "rw");
-        FileChannel fileChannel = randomAccessFile.getChannel();
+        final FileChannel fileChannel = randomAccessFile.getChannel();
         while (System.currentTimeMillis() < dropDeadTime) {
           fileLock = fileChannel.tryLock();
           if (fileLock != null) {
@@ -35,7 +35,7 @@ public class ProcessLocker {
           }
           Thread.sleep(250); // 4 attempts/sec
         }
-      } catch (Exception e) {
+      } catch (final Exception e) {
         throw new RuntimeException(e);
       }
     }
@@ -50,7 +50,7 @@ public class ProcessLocker {
       try {
         fileLock.release();
         fileLock = null;
-      } catch (IOException e) {
+      } catch (final IOException e) {
         throw new RuntimeException(e);
       }
     }
@@ -64,6 +64,7 @@ public class ProcessLocker {
 
   static {
     Runtime.getRuntime().addShutdownHook(new Thread() {
+      @Override
       public void run() {
         crossProcessLockRelease();
       }

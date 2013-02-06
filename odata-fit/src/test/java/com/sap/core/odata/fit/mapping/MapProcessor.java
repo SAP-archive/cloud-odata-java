@@ -19,7 +19,7 @@ import com.sap.core.odata.api.uri.info.GetSimplePropertyUriInfo;
 public class MapProcessor extends ODataSingleProcessor {
 
   public static final int RECORD_COUNT = 10;
-  private ArrayList<HashMap<String, String>> records = new ArrayList<HashMap<String, String>>();
+  private final ArrayList<HashMap<String, String>> records = new ArrayList<HashMap<String, String>>();
 
   {
     HashMap<String, String> record;
@@ -34,58 +34,58 @@ public class MapProcessor extends ODataSingleProcessor {
   }
 
   private int indexOf(String key, String value) {
-    for(int i = 0; i< RECORD_COUNT; i++) {
+    for (int i = 0; i < RECORD_COUNT; i++) {
       if (records.get(i).containsKey(key) && records.get(i).containsValue(value)) {
         return i;
       }
     }
     return -1;
   }
-  
+
   @Override
   public ODataResponse readEntitySet(GetEntitySetUriInfo uriInfo, String contentType) throws ODataException {
-    EntityProviderProperties properties = EntityProviderProperties.serviceRoot(getContext().getPathInfo().getServiceRoot()).build();
+    final EntityProviderProperties properties = EntityProviderProperties.serviceRoot(getContext().getPathInfo().getServiceRoot()).build();
 
-    List<Map<String, Object>> values = new ArrayList<Map<String, Object>>();
+    final List<Map<String, Object>> values = new ArrayList<Map<String, Object>>();
 
-    for (HashMap<String, String> record : records) {
-      HashMap<String, Object> data = new HashMap<String, Object>();
-      
-      for (String pName: uriInfo.getTargetEntitySet().getEntityType().getPropertyNames()) {
-        EdmProperty property = (EdmProperty) uriInfo.getTargetEntitySet().getEntityType().getProperty(pName);
-        String mappedPropertyName = (String) property.getMapping().getObject();
-        data.put(pName, record.get(mappedPropertyName)); 
+    for (final HashMap<String, String> record : records) {
+      final HashMap<String, Object> data = new HashMap<String, Object>();
+
+      for (final String pName : uriInfo.getTargetEntitySet().getEntityType().getPropertyNames()) {
+        final EdmProperty property = (EdmProperty) uriInfo.getTargetEntitySet().getEntityType().getProperty(pName);
+        final String mappedPropertyName = (String) property.getMapping().getObject();
+        data.put(pName, record.get(mappedPropertyName));
       }
-      
+
       values.add(data);
     }
-    
-    ODataResponse response = EntityProvider.writeFeed(contentType, uriInfo.getTargetEntitySet(), values, properties);
+
+    final ODataResponse response = EntityProvider.writeFeed(contentType, uriInfo.getTargetEntitySet(), values, properties);
 
     return response;
   }
 
-   @Override
+  @Override
   public ODataResponse readEntity(GetEntityUriInfo uriInfo, String contentType) throws ODataException {
-    EntityProviderProperties properties = EntityProviderProperties.serviceRoot(getContext().getPathInfo().getServiceRoot()).build();
+    final EntityProviderProperties properties = EntityProviderProperties.serviceRoot(getContext().getPathInfo().getServiceRoot()).build();
 
     // query
-    String mappedKeyName = (String) uriInfo.getTargetEntitySet().getEntityType().getKeyProperties().get(0).getMapping().getObject();
-    String keyValue = uriInfo.getKeyPredicates().get(0).getLiteral();
-    int index = indexOf(mappedKeyName, keyValue);
-    if (index < 0 || index > records.size()) {
+    final String mappedKeyName = (String) uriInfo.getTargetEntitySet().getEntityType().getKeyProperties().get(0).getMapping().getObject();
+    final String keyValue = uriInfo.getKeyPredicates().get(0).getLiteral();
+    final int index = indexOf(mappedKeyName, keyValue);
+    if ((index < 0) || (index > records.size())) {
       throw new ODataNotFoundException(ODataNotFoundException.ENTITY.addContent(keyValue));
     }
-    HashMap<String, String> record = records.get(index); 
-    
-    HashMap<String, Object> data = new HashMap<String, Object>();
-    for (String pName: uriInfo.getTargetEntitySet().getEntityType().getPropertyNames()) {
-      EdmProperty property = (EdmProperty) uriInfo.getTargetEntitySet().getEntityType().getProperty(pName);
-      String mappedPropertyName = (String) property.getMapping().getObject();
-      data.put(pName, record.get(mappedPropertyName)); 
+    final HashMap<String, String> record = records.get(index);
+
+    final HashMap<String, Object> data = new HashMap<String, Object>();
+    for (final String pName : uriInfo.getTargetEntitySet().getEntityType().getPropertyNames()) {
+      final EdmProperty property = (EdmProperty) uriInfo.getTargetEntitySet().getEntityType().getProperty(pName);
+      final String mappedPropertyName = (String) property.getMapping().getObject();
+      data.put(pName, record.get(mappedPropertyName));
     }
 
-    ODataResponse response = EntityProvider.writeEntry(contentType, uriInfo.getTargetEntitySet(), data, properties);
+    final ODataResponse response = EntityProvider.writeEntry(contentType, uriInfo.getTargetEntitySet(), data, properties);
     return response;
   }
 
@@ -94,21 +94,20 @@ public class MapProcessor extends ODataSingleProcessor {
     final List<EdmProperty> propertyPath = uriInfo.getPropertyPath();
     final EdmProperty property = propertyPath.get(propertyPath.size() - 1);
 
-    String mappedKeyName = (String) uriInfo.getTargetEntitySet().getEntityType().getKeyProperties().get(0).getMapping().getObject();
-    String keyValue = uriInfo.getKeyPredicates().get(0).getLiteral();
+    final String mappedKeyName = (String) uriInfo.getTargetEntitySet().getEntityType().getKeyProperties().get(0).getMapping().getObject();
+    final String keyValue = uriInfo.getKeyPredicates().get(0).getLiteral();
 
-    int index = indexOf(mappedKeyName, keyValue);
-    if (index < 0 || index > records.size()) {
+    final int index = indexOf(mappedKeyName, keyValue);
+    if ((index < 0) || (index > records.size())) {
       throw new ODataNotFoundException(ODataNotFoundException.ENTITY.addContent(keyValue));
     }
-    HashMap<String, String> record = records.get(index); 
-    
-    String mappedPropertyName = (String) property.getMapping().getObject();
-    Object value = record.get(mappedPropertyName);
+    final HashMap<String, String> record = records.get(index);
 
-    ODataResponse response = EntityProvider.writePropertyValue(property, value);
+    final String mappedPropertyName = (String) property.getMapping().getObject();
+    final Object value = record.get(mappedPropertyName);
+
+    final ODataResponse response = EntityProvider.writePropertyValue(property, value);
     return response;
   }
 
-   
 }
