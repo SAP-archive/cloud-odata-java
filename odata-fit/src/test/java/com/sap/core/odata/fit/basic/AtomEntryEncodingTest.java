@@ -30,6 +30,7 @@ import com.sap.core.odata.testutil.helper.XMLUnitHelper;
  */
 public class AtomEntryEncodingTest extends AbstractFitTest {
 
+  // TODO: Don't use reference scenario in basic tests.
   @Override
   protected ODataService createService() throws ODataException {
     final DataContainer dataContainer = new DataContainer();

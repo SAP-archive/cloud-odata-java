@@ -93,8 +93,7 @@ public class HttpExceptionResponseTest extends AbstractBasicTest {
       final String content = StringHelper.inputStreamToString(response.getEntity().getContent());
       final Map<String, String> prefixMap = new HashMap<String, String>();
       prefixMap.put("a", Edm.NAMESPACE_M_2007_08);
-      final NamespaceContext ctx = new SimpleNamespaceContext(prefixMap);
-      XMLUnit.setXpathNamespaceContext(ctx);
+      XMLUnit.setXpathNamespaceContext(new SimpleNamespaceContext(prefixMap));
       assertXpathValuesEqual("\"com.sap.core.odata.api.exception.ODataHttpException.SIMPLE FOR TEST\"", "/a:error/a:code", content);
 
       //TODO: How to check for the right text here?
