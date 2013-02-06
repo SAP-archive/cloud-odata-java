@@ -48,8 +48,8 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
 		<!-- required for correct Sonar coverage data reporting (list of artifactIds) -->
-    <projectsToInstrument>com.sap.core.odata.api,com.sap.core.odata.core,com.sap.core.odata.ref</projectsToInstrument>
-	
+		<projectsToInstrument>com.sap.core.odata.api,com.sap.core.odata.core,com.sap.core.odata.ref</projectsToInstrument>
+
 		<jax.ws.rs.version>2.0-m10</jax.ws.rs.version>
 		<!-- <jsr311.version>1.1.1</jsr311.version> -->
 		<joda.version>2.1</joda.version>
@@ -99,7 +99,7 @@
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-source-plugin</artifactId>
-					<version>2.1.2</version>
+					<version>2.2.1</version>
 				</plugin>
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
@@ -170,16 +170,37 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-javadoc-plugin</artifactId>
-				<configuration>
-					<excludePackageNames>com.sap.core.odata.core.*:com.sap.core.odata.core:com.sap.core.odata.ref.*:com.sap.core.odata.ref:com.sap.core.odata.testutil.*:com.sap.core.odata.testutil</excludePackageNames>
-					<tags>
-						<tag>
-							<name>DoNotImplement</name>
-							<placement>a</placement>
-							<head>Do not implement this interface due to compatibility reasons.</head>
-						</tag>
-					</tags>
-				</configuration>
+				<executions>
+					<execution>
+						<id>javadoc-jar</id>
+						<phase>package</phase>
+						<goals>
+							<goal>jar</goal>
+						</goals>
+						<configuration>
+							<tags>
+								<tag>
+									<name>DoNotImplement</name>
+									<placement>a</placement>
+									<head>Do not implement this interface.</head>
+								</tag>
+							</tags>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-source-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>attach-sources</id>
+						<phase>verify</phase>
+						<goals>
+							<goal>jar-no-fork</goal>
+						</goals>
+					</execution>
+				</executions>
 			</plugin>
 		</plugins>
 	</build>
