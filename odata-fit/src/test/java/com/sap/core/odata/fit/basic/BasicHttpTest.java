@@ -20,6 +20,7 @@ import org.apache.http.entity.StringEntity;
 import org.junit.Test;
 
 import com.sap.core.odata.api.commons.HttpStatusCodes;
+import com.sap.core.odata.api.edm.Edm;
 import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.api.processor.ODataResponse;
 import com.sap.core.odata.api.processor.ODataSingleProcessor;
@@ -85,7 +86,10 @@ public class BasicHttpTest extends AbstractBasicTest {
     final HttpPut put = new HttpPut(URI.create(getEndpoint().toString()));
     final String xml =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
-            "<entry xmlns=\"http://www.w3.org/2005/Atom\" xmlns:m=\"http://schemas.microsoft.com/ado/2007/08/dataservices/metadata\" xmlns:d=\"http://schemas.microsoft.com/ado/2007/08/dataservices\" xml:base=\"https://refodata.prod.jpaas.sapbydesign.com/com.sap.core.odata.ref.web/ReferenceScenario.svc/\">" +
+            "<entry xmlns=\"" + Edm.NAMESPACE_ATOM_2005 + "\"" +
+            " xmlns:m=\"" + Edm.NAMESPACE_M_2007_08 + "\"" +
+            " xmlns:d=\"" + Edm.NAMESPACE_D_2007_08 + "\"" +
+            " xml:base=\"https://server.at.some.domain.com/path.to.some.service/ReferenceScenario.svc/\">" +
             "</entry>";
     final HttpEntity entity = new StringEntity(xml);
     put.setEntity(entity);
@@ -102,7 +106,10 @@ public class BasicHttpTest extends AbstractBasicTest {
     final HttpPost post = new HttpPost(URI.create(getEndpoint().toString()));
     final String xml =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
-            "<entry xmlns=\"http://www.w3.org/2005/Atom\" xmlns:m=\"http://schemas.microsoft.com/ado/2007/08/dataservices/metadata\" xmlns:d=\"http://schemas.microsoft.com/ado/2007/08/dataservices\" xml:base=\"https://refodata.prod.jpaas.sapbydesign.com/com.sap.core.odata.ref.web/ReferenceScenario.svc/\">" +
+            "<entry xmlns=\"" + Edm.NAMESPACE_ATOM_2005 + "\"" +
+            " xmlns:m=\"" + Edm.NAMESPACE_M_2007_08 + "\"" +
+            " xmlns:d=\"" + Edm.NAMESPACE_D_2007_08 + "\"" +
+            " xml:base=\"https://server.at.some.domain.com/path.to.some.service/ReferenceScenario.svc/\">" +
             "</entry>";
     final HttpEntity entity = new StringEntity(xml);
     post.setEntity(entity);

@@ -11,6 +11,9 @@ import com.sap.core.odata.api.exception.ODataMessageException;
 import com.sap.core.odata.core.exception.MessageService.Message;
 import com.sap.core.odata.testutil.fit.BaseTest;
 
+/**
+ * @author SAP AG
+ */
 public class MessageServiceTest extends BaseTest {
 
   private static final Locale DEFAULT_LANGUAGE = new Locale("test", "SAP");

@@ -13,6 +13,9 @@ import java.util.ResourceBundle;
 
 import com.sap.core.odata.api.exception.MessageReference;
 
+/**
+ * @author SAP AG
+ */
 public class MessageService {
   private static final String BUNDLE_NAME = "i18n"; //$NON-NLS-1$
 

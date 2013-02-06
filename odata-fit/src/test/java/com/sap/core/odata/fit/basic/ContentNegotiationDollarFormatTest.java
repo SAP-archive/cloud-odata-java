@@ -13,6 +13,7 @@ import org.apache.http.HttpHeaders;
 import org.apache.http.HttpResponse;
 import org.junit.Test;
 
+import com.sap.core.odata.api.commons.HttpContentType;
 import com.sap.core.odata.api.commons.HttpStatusCodes;
 import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.api.processor.ODataResponse;
@@ -32,7 +33,7 @@ public class ContentNegotiationDollarFormatTest extends AbstractBasicTest {
   @Override
   ODataSingleProcessor createProcessor() throws ODataException {
     // service document 
-    final String contentType = "application/atom+xml; charset=utf-8";
+    final String contentType = HttpContentType.APPLICATION_ATOM_XML_UTF8;
     final ODataResponse responseAtomXml = ODataResponse.status(HttpStatusCodes.OK).contentHeader(contentType).entity("Test passed.").build();
     when(((ServiceDocumentProcessor) processor).readServiceDocument(any(GetServiceDocumentUriInfo.class), eq(contentType))).thenReturn(responseAtomXml);
 
@@ -53,7 +54,7 @@ public class ContentNegotiationDollarFormatTest extends AbstractBasicTest {
     assertEquals(HttpStatusCodes.OK.getStatusCode(), response.getStatusLine().getStatusCode());
 
     final Header header = response.getFirstHeader(HttpHeaders.CONTENT_TYPE);
-    assertEquals("application/atom+xml; charset=utf-8", header.getValue());
+    assertEquals(HttpContentType.APPLICATION_ATOM_XML_UTF8, header.getValue());
   }
 
   @Test
