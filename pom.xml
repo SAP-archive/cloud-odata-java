@@ -79,13 +79,12 @@
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-javadoc-plugin</artifactId>
 					<configuration>
-						<excludePackageNames>com.sap.core.odata.processor.core.*:com.sap.core.odata.processor.fit.*:com.sap.core.odata.processor.ref.*</excludePackageNames>
+						<excludePackageNames>com.sap.core.odata.processor.core.*:com.sap.core.odata.processor.fit.*:com.sap.core.odata.processor.ref.*:com.sap.core.odata.processor.ref</excludePackageNames>
 						<tags>
 							<tag>
 								<name>DoNotImplement</name>
 								<placement>a</placement>
-								<head>Do not implement this interface due to compatibility
-									reasons.</head>
+								<head>Do not implement this interface due to compatibility reasons.</head>
 							</tag>
 						</tags>
 					</configuration>
