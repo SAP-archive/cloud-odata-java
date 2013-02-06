@@ -13,7 +13,6 @@ import com.sap.core.odata.api.uri.NavigationSegment;
 
 /**
  * @author SAP AG
- *
  */
 public interface GetEntityLinkUriInfo {
   /**

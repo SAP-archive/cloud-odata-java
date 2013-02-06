@@ -25,6 +25,7 @@ import com.sap.core.odata.api.edm.EdmException;
 import com.sap.core.odata.api.edm.EdmFacets;
 import com.sap.core.odata.api.edm.EdmFunctionImport;
 import com.sap.core.odata.api.edm.EdmProperty;
+import com.sap.core.odata.api.exception.ODataBadRequestException;
 import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.api.exception.ODataMethodNotAllowedException;
 import com.sap.core.odata.api.processor.ODataResponse;
@@ -296,8 +297,8 @@ public class DispatcherTest extends BaseTest {
           uriType != UriType.URI6A && uriType != UriType.URI6B
           && uriType != UriType.URI7A && uriType != UriType.URI7B);
       checkDispatch(method, uriInfo, null);
-      fail("Expected ODataMethodNotAllowedException not thrown");
-    } catch (ODataMethodNotAllowedException e) {
+      fail("Expected ODataBadRequestException not thrown");
+    } catch (ODataBadRequestException e) {
       assertNotNull(e);
     } catch (ODataException e) {
       fail("Unexpected ODataException thrown");

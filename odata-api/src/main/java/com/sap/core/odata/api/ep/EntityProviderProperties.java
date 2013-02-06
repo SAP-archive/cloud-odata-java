@@ -1,7 +1,6 @@
 package com.sap.core.odata.api.ep;
 
 import java.net.URI;
-import java.util.Map;
 
 import com.sap.core.odata.api.commons.InlineCount;
 
@@ -99,7 +98,6 @@ public class EntityProviderProperties {
 
     /**
      * @param nextLink Next link to render feeds with server side paging. Should usually contain a skiptoken.
-     * @return
      */
     public ODataEntityProviderPropertiesBuilder nextLink(String nextLink) {
       properties.nextLink = nextLink;

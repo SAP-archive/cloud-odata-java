@@ -12,6 +12,9 @@ import com.sap.core.odata.api.edm.EdmType;
 import com.sap.core.odata.api.uri.KeyPredicate;
 import com.sap.core.odata.api.uri.NavigationSegment;
 
+/**
+ * @author SAP AG
+ */
 public interface PostUriInfo {
   /**
    * @return {@link EdmEntityContainer} the target entity container
