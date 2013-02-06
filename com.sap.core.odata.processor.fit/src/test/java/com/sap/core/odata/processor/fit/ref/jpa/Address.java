@@ -1,4 +1,4 @@
-package com.sap.core.odata.processor.ref.jpa;
+package com.sap.core.odata.processor.fit.ref.jpa;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;

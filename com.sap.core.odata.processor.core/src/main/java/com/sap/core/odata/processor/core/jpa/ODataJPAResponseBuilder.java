@@ -58,8 +58,7 @@ public final class ODataJPAResponseBuilder {
 						.serviceRoot(
 								odataJPAContext.getODataContext().getPathInfo()
 										.getServiceRoot()).inlineCount(count)
-						.inlineCountType(resultsView.getInlineCount())
-						.skipToken("").build();
+						.inlineCountType(resultsView.getInlineCount()).build();
 			} catch (ODataException e) {
 				throw ODataJPARuntimeException.throwException(
 						ODataJPARuntimeException.GENERAL.addContent(e

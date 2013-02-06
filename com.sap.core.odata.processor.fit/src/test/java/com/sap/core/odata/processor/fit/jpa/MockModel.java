@@ -1,4 +1,4 @@
-package com.sap.core.odata.processor.jpa;
+package com.sap.core.odata.processor.fit.jpa;
 
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;

@@ -1,4 +1,4 @@
-package com.sap.core.odata.processor.jpa;
+package com.sap.core.odata.processor.fit.jpa;
 
 import static org.junit.Assert.assertEquals;
 
