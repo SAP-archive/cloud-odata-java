@@ -4,6 +4,19 @@ import java.util.Locale;
 
 import com.sap.core.odata.api.edm.provider.EdmProvider;
 import com.sap.core.odata.api.processor.ODataSingleProcessor;
+import com.sap.core.odata.processor.api.ODataJPAContext;
+import com.sap.core.odata.processor.api.access.JPAProcessor;
+import com.sap.core.odata.processor.api.exception.ODataJPAMessageService;
+import com.sap.core.odata.processor.api.exception.ODataJPARuntimeException;
+import com.sap.core.odata.processor.api.factory.JPAAccessFactory;
+import com.sap.core.odata.processor.api.factory.JPQLBuilderFactory;
+import com.sap.core.odata.processor.api.factory.ODataJPAAccessFactory;
+import com.sap.core.odata.processor.api.factory.ODataJPAFactory;
+import com.sap.core.odata.processor.api.jpql.JPQLContextType;
+import com.sap.core.odata.processor.api.jpql.JPQLContextView;
+import com.sap.core.odata.processor.api.jpql.JPQLContext.JPQLContextBuilder;
+import com.sap.core.odata.processor.api.jpql.JPQLStatement.JPQLStatementBuilder;
+import com.sap.core.odata.processor.api.model.JPAEdmModelView;
 import com.sap.core.odata.processor.core.jpa.ODataJPAContextImpl;
 import com.sap.core.odata.processor.core.jpa.ODataJPAProcessorDefault;
 import com.sap.core.odata.processor.core.jpa.access.data.JPAProcessorImpl;
@@ -18,19 +31,6 @@ import com.sap.core.odata.processor.core.jpa.jpql.JPQLSelectSingleContext;
 import com.sap.core.odata.processor.core.jpa.jpql.JPQLSelectSingleStatementBuilder;
 import com.sap.core.odata.processor.core.jpa.jpql.JPQLSelectStatementBuilder;
 import com.sap.core.odata.processor.core.jpa.model.JPAEdmModel;
-import com.sap.core.odata.processor.jpa.api.ODataJPAContext;
-import com.sap.core.odata.processor.jpa.api.access.JPAProcessor;
-import com.sap.core.odata.processor.jpa.api.exception.ODataJPAMessageService;
-import com.sap.core.odata.processor.jpa.api.exception.ODataJPARuntimeException;
-import com.sap.core.odata.processor.jpa.api.factory.JPAAccessFactory;
-import com.sap.core.odata.processor.jpa.api.factory.JPQLBuilderFactory;
-import com.sap.core.odata.processor.jpa.api.factory.ODataJPAAccessFactory;
-import com.sap.core.odata.processor.jpa.api.factory.ODataJPAFactory;
-import com.sap.core.odata.processor.jpa.api.jpql.JPQLContext.JPQLContextBuilder;
-import com.sap.core.odata.processor.jpa.api.jpql.JPQLContextType;
-import com.sap.core.odata.processor.jpa.api.jpql.JPQLContextView;
-import com.sap.core.odata.processor.jpa.api.jpql.JPQLStatement.JPQLStatementBuilder;
-import com.sap.core.odata.processor.jpa.api.model.JPAEdmModelView;
 
 
 public class ODataJPAFactoryImpl extends ODataJPAFactory {

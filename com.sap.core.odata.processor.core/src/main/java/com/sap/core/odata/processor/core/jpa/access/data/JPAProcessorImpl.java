@@ -9,13 +9,13 @@ import javax.persistence.Query;
 import com.sap.core.odata.api.edm.EdmException;
 import com.sap.core.odata.api.uri.info.GetEntitySetUriInfo;
 import com.sap.core.odata.api.uri.info.GetEntityUriInfo;
-import com.sap.core.odata.processor.jpa.api.ODataJPAContext;
-import com.sap.core.odata.processor.jpa.api.access.JPAProcessor;
-import com.sap.core.odata.processor.jpa.api.exception.ODataJPAModelException;
-import com.sap.core.odata.processor.jpa.api.exception.ODataJPARuntimeException;
-import com.sap.core.odata.processor.jpa.api.jpql.JPQLContext;
-import com.sap.core.odata.processor.jpa.api.jpql.JPQLContextType;
-import com.sap.core.odata.processor.jpa.api.jpql.JPQLStatement;
+import com.sap.core.odata.processor.api.ODataJPAContext;
+import com.sap.core.odata.processor.api.access.JPAProcessor;
+import com.sap.core.odata.processor.api.exception.ODataJPAModelException;
+import com.sap.core.odata.processor.api.exception.ODataJPARuntimeException;
+import com.sap.core.odata.processor.api.jpql.JPQLContext;
+import com.sap.core.odata.processor.api.jpql.JPQLContextType;
+import com.sap.core.odata.processor.api.jpql.JPQLStatement;
 
 public class JPAProcessorImpl implements JPAProcessor {
 

@@ -4,12 +4,12 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map.Entry;
 
-import com.sap.core.odata.processor.jpa.api.access.JPAJoinClause;
-import com.sap.core.odata.processor.jpa.api.jpql.JPQLContextView;
-import com.sap.core.odata.processor.jpa.api.jpql.JPQLJoinContextView;
-import com.sap.core.odata.processor.jpa.api.jpql.JPQLStatement;
-import com.sap.core.odata.processor.jpa.api.jpql.JPQLStatement.JPQLStatementBuilder;
-import com.sap.core.odata.processor.jpa.api.exception.ODataJPARuntimeException;
+import com.sap.core.odata.processor.api.access.JPAJoinClause;
+import com.sap.core.odata.processor.api.exception.ODataJPARuntimeException;
+import com.sap.core.odata.processor.api.jpql.JPQLContextView;
+import com.sap.core.odata.processor.api.jpql.JPQLJoinContextView;
+import com.sap.core.odata.processor.api.jpql.JPQLStatement;
+import com.sap.core.odata.processor.api.jpql.JPQLStatement.JPQLStatementBuilder;
 
 public class JPQLJoinStatementBuilder extends JPQLStatementBuilder {
 

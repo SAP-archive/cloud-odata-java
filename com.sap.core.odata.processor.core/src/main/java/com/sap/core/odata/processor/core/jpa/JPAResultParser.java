@@ -12,7 +12,7 @@ import com.sap.core.odata.api.edm.EdmProperty;
 import com.sap.core.odata.api.edm.EdmStructuralType;
 import com.sap.core.odata.api.edm.EdmTypeKind;
 import com.sap.core.odata.api.uri.SelectItem;
-import com.sap.core.odata.processor.jpa.api.exception.ODataJPARuntimeException;
+import com.sap.core.odata.processor.api.exception.ODataJPARuntimeException;
 
 public final class JPAResultParser {
 

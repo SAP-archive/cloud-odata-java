@@ -21,8 +21,8 @@ import com.sap.core.odata.api.edm.EdmType;
 import com.sap.core.odata.api.edm.EdmTypeKind;
 import com.sap.core.odata.api.exception.MessageReference;
 import com.sap.core.odata.api.exception.ODataException;
+import com.sap.core.odata.processor.api.exception.ODataJPARuntimeException;
 import com.sap.core.odata.processor.core.jpa.JPAResultParser;
-import com.sap.core.odata.processor.jpa.api.exception.ODataJPARuntimeException;
 
 public class JPAResultParserTest {
 

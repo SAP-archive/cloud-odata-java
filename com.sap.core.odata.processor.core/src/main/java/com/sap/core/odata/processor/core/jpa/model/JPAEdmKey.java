@@ -9,11 +9,11 @@ import com.sap.core.odata.api.edm.provider.Key;
 import com.sap.core.odata.api.edm.provider.Property;
 import com.sap.core.odata.api.edm.provider.PropertyRef;
 import com.sap.core.odata.api.edm.provider.SimpleProperty;
-import com.sap.core.odata.processor.jpa.api.access.JPAEdmBuilder;
-import com.sap.core.odata.processor.jpa.api.exception.ODataJPAModelException;
-import com.sap.core.odata.processor.jpa.api.model.JPAEdmComplexTypeView;
-import com.sap.core.odata.processor.jpa.api.model.JPAEdmKeyView;
-import com.sap.core.odata.processor.jpa.api.model.JPAEdmPropertyView;
+import com.sap.core.odata.processor.api.access.JPAEdmBuilder;
+import com.sap.core.odata.processor.api.exception.ODataJPAModelException;
+import com.sap.core.odata.processor.api.model.JPAEdmComplexTypeView;
+import com.sap.core.odata.processor.api.model.JPAEdmKeyView;
+import com.sap.core.odata.processor.api.model.JPAEdmPropertyView;
 
 public class JPAEdmKey extends JPAEdmBaseViewImpl implements JPAEdmKeyView {
 

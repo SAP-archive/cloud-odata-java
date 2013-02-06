@@ -10,7 +10,7 @@ import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
 import com.sap.core.odata.api.exception.MessageReference;
-import com.sap.core.odata.processor.jpa.api.exception.ODataJPAMessageService;
+import com.sap.core.odata.processor.api.exception.ODataJPAMessageService;
 
 public class ODataJPAMessageServiceDefault implements ODataJPAMessageService {
 

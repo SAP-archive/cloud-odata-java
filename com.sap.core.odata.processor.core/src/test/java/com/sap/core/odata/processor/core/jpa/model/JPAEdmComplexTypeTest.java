@@ -23,15 +23,15 @@ import com.sap.core.odata.api.edm.provider.ComplexType;
 import com.sap.core.odata.api.edm.provider.Mapping;
 import com.sap.core.odata.api.edm.provider.Property;
 import com.sap.core.odata.api.edm.provider.SimpleProperty;
+import com.sap.core.odata.processor.api.access.JPAEdmBuilder;
+import com.sap.core.odata.processor.api.exception.ODataJPAModelException;
+import com.sap.core.odata.processor.api.exception.ODataJPARuntimeException;
+import com.sap.core.odata.processor.api.model.JPAEdmMapping;
 import com.sap.core.odata.processor.core.jpa.model.JPAEdmComplexType;
 import com.sap.core.odata.processor.core.jpa.model.JPAEdmMappingImpl;
 import com.sap.core.odata.processor.core.jpa.model.mock.JPAEmbeddableMock;
 import com.sap.core.odata.processor.core.jpa.model.mock.JPAMetaModelMock;
 import com.sap.core.odata.processor.core.jpa.model.mock.JPASingularAttributeMock;
-import com.sap.core.odata.processor.jpa.api.access.JPAEdmBuilder;
-import com.sap.core.odata.processor.jpa.api.exception.ODataJPAModelException;
-import com.sap.core.odata.processor.jpa.api.exception.ODataJPARuntimeException;
-import com.sap.core.odata.processor.jpa.api.model.JPAEdmMapping;
 
 public class JPAEdmComplexTypeTest extends JPAEdmTestModelView {
 	

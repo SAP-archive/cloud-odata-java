@@ -9,10 +9,10 @@ import javax.persistence.metamodel.Metamodel;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.sap.core.odata.processor.api.access.JPAEdmBuilder;
 import com.sap.core.odata.processor.core.jpa.model.JPAEdmBaseViewImpl;
 import com.sap.core.odata.processor.core.jpa.model.mock.JPAMetaModelMock;
 import com.sap.core.odata.processor.core.jpa.testdata.JPAEdmTestModelView;
-import com.sap.core.odata.processor.jpa.api.access.JPAEdmBuilder;
 
 public class JPAEdmBaseViewImplTest extends JPAEdmTestModelView{
 	

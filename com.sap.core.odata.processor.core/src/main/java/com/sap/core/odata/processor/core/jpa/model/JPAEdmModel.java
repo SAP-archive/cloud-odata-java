@@ -2,11 +2,11 @@ package com.sap.core.odata.processor.core.jpa.model;
 
 import javax.persistence.metamodel.Metamodel;
 
-import com.sap.core.odata.processor.jpa.api.access.JPAEdmBuilder;
-import com.sap.core.odata.processor.jpa.api.exception.ODataJPAModelException;
-import com.sap.core.odata.processor.jpa.api.exception.ODataJPARuntimeException;
-import com.sap.core.odata.processor.jpa.api.model.JPAEdmModelView;
-import com.sap.core.odata.processor.jpa.api.model.JPAEdmSchemaView;
+import com.sap.core.odata.processor.api.access.JPAEdmBuilder;
+import com.sap.core.odata.processor.api.exception.ODataJPAModelException;
+import com.sap.core.odata.processor.api.exception.ODataJPARuntimeException;
+import com.sap.core.odata.processor.api.model.JPAEdmModelView;
+import com.sap.core.odata.processor.api.model.JPAEdmSchemaView;
 
 public class JPAEdmModel extends JPAEdmBaseViewImpl implements JPAEdmModelView {
 

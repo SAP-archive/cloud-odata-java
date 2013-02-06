@@ -8,12 +8,12 @@ import com.sap.core.odata.api.edm.EdmProperty;
 import com.sap.core.odata.api.uri.KeyPredicate;
 import com.sap.core.odata.api.uri.SelectItem;
 import com.sap.core.odata.api.uri.info.GetEntityUriInfo;
+import com.sap.core.odata.processor.api.exception.ODataJPAModelException;
+import com.sap.core.odata.processor.api.exception.ODataJPARuntimeException;
+import com.sap.core.odata.processor.api.jpql.JPQLContext;
+import com.sap.core.odata.processor.api.jpql.JPQLContextType;
+import com.sap.core.odata.processor.api.jpql.JPQLSelectSingleContextView;
 import com.sap.core.odata.processor.core.jpa.access.data.ODataExpressionParser;
-import com.sap.core.odata.processor.jpa.api.exception.ODataJPAModelException;
-import com.sap.core.odata.processor.jpa.api.exception.ODataJPARuntimeException;
-import com.sap.core.odata.processor.jpa.api.jpql.JPQLContext;
-import com.sap.core.odata.processor.jpa.api.jpql.JPQLContextType;
-import com.sap.core.odata.processor.jpa.api.jpql.JPQLSelectSingleContextView;
 
 public class JPQLSelectSingleContext extends JPQLContext implements JPQLSelectSingleContextView {
 	
@@ -40,7 +40,7 @@ public class JPQLSelectSingleContext extends JPQLContext implements JPQLSelectSi
 	
 	public class JPQLSelectSingleContextBuilder
 			extends
-			com.sap.core.odata.processor.jpa.api.jpql.JPQLContext.JPQLContextBuilder {
+			com.sap.core.odata.processor.api.jpql.JPQLContext.JPQLContextBuilder {
 
 		protected GetEntityUriInfo entityView;
 

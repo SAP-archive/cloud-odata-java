@@ -28,11 +28,11 @@ import com.sap.core.odata.api.edm.EdmSimpleType;
 import com.sap.core.odata.api.uri.KeyPredicate;
 import com.sap.core.odata.api.uri.NavigationSegment;
 import com.sap.core.odata.api.uri.info.GetEntitySetUriInfo;
+import com.sap.core.odata.processor.api.access.JPAJoinClause;
+import com.sap.core.odata.processor.api.exception.ODataJPAModelException;
+import com.sap.core.odata.processor.api.exception.ODataJPARuntimeException;
 import com.sap.core.odata.processor.core.jpa.jpql.JPQLJoinSelectContext;
 import com.sap.core.odata.processor.core.jpa.jpql.JPQLJoinSelectContext.JPQLJoinContextBuilder;
-import com.sap.core.odata.processor.jpa.api.access.JPAJoinClause;
-import com.sap.core.odata.processor.jpa.api.exception.ODataJPAModelException;
-import com.sap.core.odata.processor.jpa.api.exception.ODataJPARuntimeException;
 
 public class JPQLJoinContextTest {
 	

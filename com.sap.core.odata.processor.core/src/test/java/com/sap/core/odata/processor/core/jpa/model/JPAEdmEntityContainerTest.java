@@ -16,16 +16,16 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.sap.core.odata.api.edm.provider.Schema;
+import com.sap.core.odata.processor.api.access.JPAEdmBuilder;
+import com.sap.core.odata.processor.api.exception.ODataJPAModelException;
+import com.sap.core.odata.processor.api.model.JPAEdmAssociationView;
+import com.sap.core.odata.processor.api.model.JPAEdmEntityContainerView;
+import com.sap.core.odata.processor.api.model.JPAEdmEntitySetView;
+import com.sap.core.odata.processor.api.model.JPAEdmEntityTypeView;
 import com.sap.core.odata.processor.core.jpa.model.JPAEdmEntityContainer;
 import com.sap.core.odata.processor.core.jpa.model.mock.JPAEntityTypeMock;
 import com.sap.core.odata.processor.core.jpa.model.mock.JPAMetaModelMock;
 import com.sap.core.odata.processor.core.jpa.model.mock.JPASingularAttributeMock;
-import com.sap.core.odata.processor.jpa.api.access.JPAEdmBuilder;
-import com.sap.core.odata.processor.jpa.api.exception.ODataJPAModelException;
-import com.sap.core.odata.processor.jpa.api.model.JPAEdmAssociationView;
-import com.sap.core.odata.processor.jpa.api.model.JPAEdmEntityContainerView;
-import com.sap.core.odata.processor.jpa.api.model.JPAEdmEntitySetView;
-import com.sap.core.odata.processor.jpa.api.model.JPAEdmEntityTypeView;
 
 public class JPAEdmEntityContainerTest extends JPAEdmTestModelView {
 	

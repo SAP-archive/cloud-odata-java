@@ -8,17 +8,17 @@ import com.sap.core.odata.api.edm.provider.ComplexType;
 import com.sap.core.odata.api.edm.provider.EntityType;
 import com.sap.core.odata.api.edm.provider.NavigationProperty;
 import com.sap.core.odata.api.edm.provider.Schema;
+import com.sap.core.odata.processor.api.access.JPAEdmBuilder;
+import com.sap.core.odata.processor.api.exception.ODataJPAModelException;
+import com.sap.core.odata.processor.api.exception.ODataJPARuntimeException;
+import com.sap.core.odata.processor.api.model.JPAEdmAssociationView;
+import com.sap.core.odata.processor.api.model.JPAEdmComplexTypeView;
+import com.sap.core.odata.processor.api.model.JPAEdmEntityContainerView;
+import com.sap.core.odata.processor.api.model.JPAEdmEntitySetView;
+import com.sap.core.odata.processor.api.model.JPAEdmEntityTypeView;
+import com.sap.core.odata.processor.api.model.JPAEdmModelView;
+import com.sap.core.odata.processor.api.model.JPAEdmSchemaView;
 import com.sap.core.odata.processor.core.jpa.access.model.JPAEdmNameBuilder;
-import com.sap.core.odata.processor.jpa.api.access.JPAEdmBuilder;
-import com.sap.core.odata.processor.jpa.api.exception.ODataJPAModelException;
-import com.sap.core.odata.processor.jpa.api.exception.ODataJPARuntimeException;
-import com.sap.core.odata.processor.jpa.api.model.JPAEdmAssociationView;
-import com.sap.core.odata.processor.jpa.api.model.JPAEdmComplexTypeView;
-import com.sap.core.odata.processor.jpa.api.model.JPAEdmEntityContainerView;
-import com.sap.core.odata.processor.jpa.api.model.JPAEdmEntitySetView;
-import com.sap.core.odata.processor.jpa.api.model.JPAEdmEntityTypeView;
-import com.sap.core.odata.processor.jpa.api.model.JPAEdmModelView;
-import com.sap.core.odata.processor.jpa.api.model.JPAEdmSchemaView;
 
 public class JPAEdmSchema extends JPAEdmBaseViewImpl implements
 		JPAEdmSchemaView {

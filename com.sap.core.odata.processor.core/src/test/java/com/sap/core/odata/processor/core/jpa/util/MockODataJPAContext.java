@@ -5,7 +5,7 @@ import javax.persistence.metamodel.Metamodel;
 
 import org.easymock.EasyMock;
 
-import com.sap.core.odata.processor.jpa.api.ODataJPAContext;
+import com.sap.core.odata.processor.api.ODataJPAContext;
 
 public class MockODataJPAContext {
 	

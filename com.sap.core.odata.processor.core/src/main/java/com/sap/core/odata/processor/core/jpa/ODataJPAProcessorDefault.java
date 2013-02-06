@@ -6,9 +6,9 @@ import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.api.processor.ODataResponse;
 import com.sap.core.odata.api.uri.info.GetEntitySetUriInfo;
 import com.sap.core.odata.api.uri.info.GetEntityUriInfo;
-import com.sap.core.odata.processor.jpa.api.ODataJPAContext;
-import com.sap.core.odata.processor.jpa.api.ODataJPAProcessor;
-import com.sap.core.odata.processor.jpa.api.exception.ODataJPARuntimeException;
+import com.sap.core.odata.processor.api.ODataJPAContext;
+import com.sap.core.odata.processor.api.ODataJPAProcessor;
+import com.sap.core.odata.processor.api.exception.ODataJPARuntimeException;
 
 public class ODataJPAProcessorDefault extends ODataJPAProcessor {
 

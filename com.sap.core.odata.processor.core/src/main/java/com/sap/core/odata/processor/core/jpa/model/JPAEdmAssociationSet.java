@@ -8,13 +8,13 @@ import com.sap.core.odata.api.edm.provider.Association;
 import com.sap.core.odata.api.edm.provider.AssociationSet;
 import com.sap.core.odata.api.edm.provider.AssociationSetEnd;
 import com.sap.core.odata.api.edm.provider.EntitySet;
+import com.sap.core.odata.processor.api.access.JPAEdmBuilder;
+import com.sap.core.odata.processor.api.exception.ODataJPAModelException;
+import com.sap.core.odata.processor.api.model.JPAEdmAssociationSetView;
+import com.sap.core.odata.processor.api.model.JPAEdmAssociationView;
+import com.sap.core.odata.processor.api.model.JPAEdmEntitySetView;
+import com.sap.core.odata.processor.api.model.JPAEdmSchemaView;
 import com.sap.core.odata.processor.core.jpa.access.model.JPAEdmNameBuilder;
-import com.sap.core.odata.processor.jpa.api.access.JPAEdmBuilder;
-import com.sap.core.odata.processor.jpa.api.exception.ODataJPAModelException;
-import com.sap.core.odata.processor.jpa.api.model.JPAEdmAssociationSetView;
-import com.sap.core.odata.processor.jpa.api.model.JPAEdmAssociationView;
-import com.sap.core.odata.processor.jpa.api.model.JPAEdmEntitySetView;
-import com.sap.core.odata.processor.jpa.api.model.JPAEdmSchemaView;
 
 public class JPAEdmAssociationSet extends JPAEdmBaseViewImpl implements
 		JPAEdmAssociationSetView {

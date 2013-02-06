@@ -14,13 +14,13 @@ import com.sap.core.odata.api.edm.provider.EntityType;
 import com.sap.core.odata.api.edm.provider.Property;
 import com.sap.core.odata.api.edm.provider.PropertyRef;
 import com.sap.core.odata.api.edm.provider.ReferentialConstraintRole;
-import com.sap.core.odata.processor.jpa.api.access.JPAEdmBuilder;
-import com.sap.core.odata.processor.jpa.api.exception.ODataJPAModelException;
-import com.sap.core.odata.processor.jpa.api.model.JPAEdmAssociationView;
-import com.sap.core.odata.processor.jpa.api.model.JPAEdmEntityTypeView;
-import com.sap.core.odata.processor.jpa.api.model.JPAEdmMapping;
-import com.sap.core.odata.processor.jpa.api.model.JPAEdmPropertyView;
-import com.sap.core.odata.processor.jpa.api.model.JPAEdmReferentialConstraintRoleView;
+import com.sap.core.odata.processor.api.access.JPAEdmBuilder;
+import com.sap.core.odata.processor.api.exception.ODataJPAModelException;
+import com.sap.core.odata.processor.api.model.JPAEdmAssociationView;
+import com.sap.core.odata.processor.api.model.JPAEdmEntityTypeView;
+import com.sap.core.odata.processor.api.model.JPAEdmMapping;
+import com.sap.core.odata.processor.api.model.JPAEdmPropertyView;
+import com.sap.core.odata.processor.api.model.JPAEdmReferentialConstraintRoleView;
 
 public class JPAEdmReferentialConstraintRole extends JPAEdmBaseViewImpl
 		implements JPAEdmReferentialConstraintRoleView {

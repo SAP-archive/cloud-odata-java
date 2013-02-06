@@ -4,13 +4,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.sap.core.odata.api.edm.provider.NavigationProperty;
+import com.sap.core.odata.processor.api.access.JPAEdmBuilder;
+import com.sap.core.odata.processor.api.exception.ODataJPAModelException;
+import com.sap.core.odata.processor.api.model.JPAEdmAssociationView;
+import com.sap.core.odata.processor.api.model.JPAEdmNavigationPropertyView;
+import com.sap.core.odata.processor.api.model.JPAEdmPropertyView;
+import com.sap.core.odata.processor.api.model.JPAEdmSchemaView;
 import com.sap.core.odata.processor.core.jpa.access.model.JPAEdmNameBuilder;
-import com.sap.core.odata.processor.jpa.api.access.JPAEdmBuilder;
-import com.sap.core.odata.processor.jpa.api.exception.ODataJPAModelException;
-import com.sap.core.odata.processor.jpa.api.model.JPAEdmAssociationView;
-import com.sap.core.odata.processor.jpa.api.model.JPAEdmNavigationPropertyView;
-import com.sap.core.odata.processor.jpa.api.model.JPAEdmPropertyView;
-import com.sap.core.odata.processor.jpa.api.model.JPAEdmSchemaView;
 
 public class JPAEdmNavigationProperty extends JPAEdmBaseViewImpl implements
 		JPAEdmNavigationPropertyView {

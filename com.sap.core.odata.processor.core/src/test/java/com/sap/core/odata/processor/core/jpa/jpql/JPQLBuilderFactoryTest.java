@@ -30,6 +30,13 @@ import com.sap.core.odata.api.uri.NavigationSegment;
 import com.sap.core.odata.api.uri.expression.OrderByExpression;
 import com.sap.core.odata.api.uri.info.GetEntitySetUriInfo;
 import com.sap.core.odata.api.uri.info.GetEntityUriInfo;
+import com.sap.core.odata.processor.api.exception.ODataJPARuntimeException;
+import com.sap.core.odata.processor.api.factory.JPAAccessFactory;
+import com.sap.core.odata.processor.api.factory.ODataJPAAccessFactory;
+import com.sap.core.odata.processor.api.jpql.JPQLContext;
+import com.sap.core.odata.processor.api.jpql.JPQLContextType;
+import com.sap.core.odata.processor.api.jpql.JPQLContext.JPQLContextBuilder;
+import com.sap.core.odata.processor.api.jpql.JPQLStatement.JPQLStatementBuilder;
 import com.sap.core.odata.processor.core.jpa.ODataJPAContextImpl;
 import com.sap.core.odata.processor.core.jpa.factory.ODataJPAFactoryImpl;
 import com.sap.core.odata.processor.core.jpa.jpql.JPQLJoinSelectSingleStatementBuilder;
@@ -38,13 +45,6 @@ import com.sap.core.odata.processor.core.jpa.jpql.JPQLSelectSingleStatementBuild
 import com.sap.core.odata.processor.core.jpa.jpql.JPQLSelectStatementBuilder;
 import com.sap.core.odata.processor.core.jpa.jpql.JPQLSelectContext.JPQLSelectContextBuilder;
 import com.sap.core.odata.processor.core.jpa.jpql.JPQLSelectSingleContext.JPQLSelectSingleContextBuilder;
-import com.sap.core.odata.processor.jpa.api.exception.ODataJPARuntimeException;
-import com.sap.core.odata.processor.jpa.api.factory.JPAAccessFactory;
-import com.sap.core.odata.processor.jpa.api.factory.ODataJPAAccessFactory;
-import com.sap.core.odata.processor.jpa.api.jpql.JPQLContext;
-import com.sap.core.odata.processor.jpa.api.jpql.JPQLContext.JPQLContextBuilder;
-import com.sap.core.odata.processor.jpa.api.jpql.JPQLContextType;
-import com.sap.core.odata.processor.jpa.api.jpql.JPQLStatement.JPQLStatementBuilder;
 
 public class JPQLBuilderFactoryTest {
 

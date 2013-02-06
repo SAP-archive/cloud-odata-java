@@ -18,16 +18,16 @@ import com.sap.core.odata.api.edm.provider.ComplexType;
 import com.sap.core.odata.api.edm.provider.Key;
 import com.sap.core.odata.api.edm.provider.Property;
 import com.sap.core.odata.api.edm.provider.SimpleProperty;
+import com.sap.core.odata.processor.api.access.JPAEdmBuilder;
+import com.sap.core.odata.processor.api.exception.ODataJPAModelException;
+import com.sap.core.odata.processor.api.exception.ODataJPARuntimeException;
+import com.sap.core.odata.processor.api.model.JPAEdmKeyView;
 import com.sap.core.odata.processor.core.jpa.model.JPAEdmKey;
 import com.sap.core.odata.processor.core.jpa.model.mock.JPAAttributeMock;
 import com.sap.core.odata.processor.core.jpa.testdata.JPAEdmMockData;
 import com.sap.core.odata.processor.core.jpa.testdata.JPAEdmTestModelView;
 import com.sap.core.odata.processor.core.jpa.testdata.JPAEdmMockData.ComplexType.ComplexTypeA;
 import com.sap.core.odata.processor.core.jpa.util.MockData;
-import com.sap.core.odata.processor.jpa.api.access.JPAEdmBuilder;
-import com.sap.core.odata.processor.jpa.api.exception.ODataJPAModelException;
-import com.sap.core.odata.processor.jpa.api.exception.ODataJPARuntimeException;
-import com.sap.core.odata.processor.jpa.api.model.JPAEdmKeyView;
 
 public class JPAEdmKeyTest extends JPAEdmTestModelView {
 
