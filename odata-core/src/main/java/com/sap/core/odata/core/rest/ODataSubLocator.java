@@ -29,7 +29,6 @@ import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Request;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
-import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriBuilder;
 
 import com.sap.core.odata.api.ODataService;
@@ -189,16 +188,11 @@ public final class ODataSubLocator implements ODataLocator {
   }
 
   private boolean isContentTypeODataTextRelated(ContentType contentType) {
-    if (contentType == null) {
-      return false;
-    } else if (contentType.equals(ContentType.TEXT_PLAIN)) {
-      return true;
-    } else if (contentType.getODataFormat() == ODataFormat.XML
-        || contentType.getODataFormat() == ODataFormat.ATOM
-        || contentType.getODataFormat() == ODataFormat.JSON) {
-      return true;
-    }
-    return false;
+    return contentType != null
+        && (contentType.equals(ContentType.TEXT_PLAIN)
+            || contentType.getODataFormat() == ODataFormat.XML
+            || contentType.getODataFormat() == ODataFormat.ATOM
+            || contentType.getODataFormat() == ODataFormat.JSON);
   }
 
   private ContentType mapFormat(final UriInfoImpl uriInfo) {
@@ -206,7 +200,7 @@ public final class ODataSubLocator implements ODataLocator {
     if ("xml".equals(format)) {
       return ContentType.APPLICATION_XML;
     } else if ("atom".equals(format)) {
-      if(uriInfo.getUriType() == UriType.URI0) {
+      if (uriInfo.getUriType() == UriType.URI0) {
         // special handling for serviceDocument uris (UriType.URI0)
         return ContentType.APPLICATION_ATOM_SVC;
       }

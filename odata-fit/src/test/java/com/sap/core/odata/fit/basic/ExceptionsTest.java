@@ -34,7 +34,7 @@ public class ExceptionsTest extends AbstractBasicTest {
 
     final String payload = StringHelper.inputStreamToString(response.getEntity().getContent());
 
-    final Map<String, String> prefixMap = new HashMap<String, String>();
+    Map<String, String> prefixMap = new HashMap<String, String>();
     prefixMap.put("a", Edm.NAMESPACE_M_2007_08);
     XMLUnit.setXpathNamespaceContext(new SimpleNamespaceContext(prefixMap));
 

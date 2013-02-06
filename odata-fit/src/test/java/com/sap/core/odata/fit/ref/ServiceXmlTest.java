@@ -64,13 +64,15 @@ public class ServiceXmlTest extends AbstractRefTest {
   @Test
   public void serviceDocumentAcceptHeaderAtom() throws Exception {
     final HttpResponse response = callUri("", HttpHeaders.ACCEPT, HttpContentType.APPLICATION_ATOM_XML, HttpStatusCodes.NOT_ACCEPTABLE);
-    assertXmlErrorResponse(response);
+    checkMediaType(response, HttpContentType.APPLICATION_XML);
+    validateXmlError(getBody(response));
   }
 
   @Test
   public void serviceDocumentAcceptHeaderUtf8Atom() throws Exception {
     final HttpResponse response = callUri("", HttpHeaders.ACCEPT, HttpContentType.APPLICATION_ATOM_XML_UTF8, HttpStatusCodes.NOT_ACCEPTABLE);
-    assertXmlErrorResponse(response);
+    checkMediaType(response, HttpContentType.APPLICATION_XML);
+    validateXmlError(getBody(response));
   }
 
   @Test
@@ -108,5 +110,15 @@ public class ServiceXmlTest extends AbstractRefTest {
     assertXpathExists("/a:service/a:workspace/a:collection[@href=\"Buildings\"]/atom:title", payload);
     assertXpathExists("/a:service/a:workspace/a:collection[@href=\"Container2.Photos\"]", payload);
     assertXpathExists("/a:service/a:workspace/a:collection[@href=\"Container2.Photos\"]/atom:title", payload);
+  }
+
+  private void validateXmlError(final String payload) throws XpathException, IOException, SAXException {
+    Map<String, String> prefixMap = new HashMap<String, String>();
+    prefixMap.put("a", Edm.NAMESPACE_M_2007_08);
+    XMLUnit.setXpathNamespaceContext(new SimpleNamespaceContext(prefixMap));
+
+    assertXpathExists("a:error", payload);
+    assertXpathExists("/a:error/a:code", payload);
+    assertXpathExists("/a:error/a:message[@xml:lang=\"en\"]", payload);
   }
 }
