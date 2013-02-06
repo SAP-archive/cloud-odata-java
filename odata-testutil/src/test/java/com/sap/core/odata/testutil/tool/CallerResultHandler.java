@@ -22,6 +22,8 @@ import org.slf4j.LoggerFactory;
 
 public class CallerResultHandler {
 
+  private static final String RESPONSE_STATUS_CODE = "RESPONSE_STATUS_CODE";
+
   private static final String REQUEST_METHOD = "REQUEST_METHOD";
 
   private static final Logger LOG = LoggerFactory.getLogger(CallerResultHandler.class);
@@ -76,7 +78,7 @@ public class CallerResultHandler {
     tr.addRequestHeaders(request.getAllHeaders());
     tr.addResponseHeaders(response.getAllHeaders());
     tr.addSomeValue(REQUEST_METHOD, request.getRequestLine().getMethod());
-    tr.addSomeValue("RESPONSE_STATUS_CODE", String.valueOf(response.getStatusLine().getStatusCode()));
+    tr.addSomeValue(RESPONSE_STATUS_CODE, String.valueOf(response.getStatusLine().getStatusCode()));
 
     //    String key = testPath.getId();
     Set<TestResult> results = testPath2TestResult.get(testPath);
@@ -91,13 +93,6 @@ public class CallerResultHandler {
     final StringBuilder b = new StringBuilder();
 
     b.append(createJiraHeader());
-    // validate results
-    //    Set<Entry<TestPath, Set<TestResult>>> entries = testPath2TestResult.entrySet();
-    //    for (Entry<TestPath, Set<TestResult>> entry: entries) {
-    //      String line = createLineForJiraTable(entry.getValue());
-    //      b.append(line);
-    //    }
-    //
     final List<TestPath> testPaths = new ArrayList<TestPath>(testPath2TestResult.keySet());
     Collections.sort(testPaths);
     for (final TestPath testPath : testPaths) {
@@ -154,7 +149,7 @@ public class CallerResultHandler {
         acceptHeaderUnwritten = false;
       }
       append(b, result.getResponseHeader(HttpHeaders.CONTENT_TYPE));
-      append(b, result.getSomeValue("RESPONSE_STATUS_CODE"));
+      append(b, result.getSomeValue(RESPONSE_STATUS_CODE));
     }
 
     b.append("\n");
