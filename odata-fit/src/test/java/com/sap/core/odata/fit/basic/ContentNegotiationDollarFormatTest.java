@@ -33,7 +33,7 @@ public class ContentNegotiationDollarFormatTest extends AbstractBasicTest {
   @Override
   ODataSingleProcessor createProcessor() throws ODataException {
     // service document 
-    final String contentType = HttpContentType.APPLICATION_ATOM_XML_UTF8;
+    final String contentType = "application/atomsvc+xml; charset=utf-8";
     final ODataResponse responseAtomXml = ODataResponse.status(HttpStatusCodes.OK).contentHeader(contentType).entity("Test passed.").build();
     when(((ServiceDocumentProcessor) processor).readServiceDocument(any(GetServiceDocumentUriInfo.class), eq(contentType))).thenReturn(responseAtomXml);
 
@@ -54,7 +54,7 @@ public class ContentNegotiationDollarFormatTest extends AbstractBasicTest {
     assertEquals(HttpStatusCodes.OK.getStatusCode(), response.getStatusLine().getStatusCode());
 
     final Header header = response.getFirstHeader(HttpHeaders.CONTENT_TYPE);
-    assertEquals(HttpContentType.APPLICATION_ATOM_XML_UTF8, header.getValue());
+    assertEquals("application/atomsvc+xml; charset=utf-8", header.getValue());
   }
 
   @Test

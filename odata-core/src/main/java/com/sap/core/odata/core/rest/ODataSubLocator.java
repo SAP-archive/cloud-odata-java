@@ -54,6 +54,7 @@ import com.sap.core.odata.core.commons.ContentType.ODataFormat;
 import com.sap.core.odata.core.commons.ODataHttpMethod;
 import com.sap.core.odata.core.uri.UriInfoImpl;
 import com.sap.core.odata.core.uri.UriParserImpl;
+import com.sap.core.odata.core.uri.UriType;
 
 /**
  * @author SAP AG
@@ -202,6 +203,10 @@ public final class ODataSubLocator implements ODataLocator {
     if ("xml".equals(format)) {
       return ContentType.APPLICATION_XML;
     } else if ("atom".equals(format)) {
+      if(uriInfo.getUriType() == UriType.URI0) {
+        // special handling for serviceDocument uris (UriType.URI0)
+        return ContentType.APPLICATION_ATOM_SVC;
+      }
       return ContentType.APPLICATION_ATOM_XML;
     } else if ("json".equals(format)) {
       return ContentType.APPLICATION_JSON;

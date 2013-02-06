@@ -10,7 +10,6 @@ import java.util.List;
 
 import javax.ws.rs.core.Response;
 
-import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.Mockito;
 
@@ -20,7 +19,6 @@ import com.sap.core.odata.api.commons.HttpStatusCodes;
 import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.api.exception.ODataNotAcceptableException;
 import com.sap.core.odata.api.processor.ODataResponse;
-import com.sap.core.odata.api.uri.PathSegment;
 import com.sap.core.odata.api.uri.UriParser;
 import com.sap.core.odata.core.Dispatcher;
 import com.sap.core.odata.core.ODataContextImpl;
@@ -144,39 +142,6 @@ public class ODataSubLocatorTest extends BaseTest {
     ContentType contentType = locator.contentNegotiation(contentTypes, supportedContentTypes);
 
     assertEquals("sub2/222", contentType.toContentTypeString());
-  }
-
-  
-  
-  @Test
-  @Ignore
-  public void testContentNegotiationDefaultCharset_OLD() throws Exception {
-    ODataSubLocator locator = new ODataSubLocator();
-
-    UriParser parser = mockUriParser(locator);
-    UriInfoImpl uriInfo = new UriInfoImpl();
-    Mockito.when(parser.parse(Mockito.anyListOf(PathSegment.class), Mockito.anyMapOf(String.class, String.class))).thenReturn(uriInfo);
-    ODataService service = mockODataService(locator);
-    ODataContextImpl context = mockODataContext(locator);
-    Mockito.when(context.getPathInfo()).thenReturn(new PathInfoImpl());
-    Dispatcher dispatcher = mockDispatcher(locator);
-    String contentHeader = "application/xml; charset=utf-8";
-    ODataResponse odataResponse = ODataResponse.status(HttpStatusCodes.OK).contentHeader(contentHeader).build();
-    Mockito.when(dispatcher.dispatch(Mockito.any(ODataHttpMethod.class), 
-        Mockito.any(UriInfoImpl.class), 
-        Mockito.any(InputStream.class), 
-        Mockito.anyString(), 
-        Mockito.refEq(contentHeader))).thenReturn(odataResponse);
-    List<ContentType> acceptedContentTypes = contentTypes("application/xml");
-    setField(locator, "acceptHeaderContentTypes", acceptedContentTypes);
-    List<String> supportedContentTypes = Arrays.asList("application/xml; charset=utf-8");
-    Mockito.when(service.getSupportedContentTypes(Mockito.any(Class.class))).thenReturn(supportedContentTypes);
-
-    // test
-    Response response = locator.handleGet();
-    String contentType = response.getHeaderString(HttpHeaders.CONTENT_TYPE);
-    
-    assertEquals("application/xml; charset=utf-8", contentType);
   }
 
   @Test

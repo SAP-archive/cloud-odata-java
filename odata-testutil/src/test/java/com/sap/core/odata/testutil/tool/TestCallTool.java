@@ -12,9 +12,19 @@ public class TestCallTool {
    */
   public static void main(String[] args) throws Exception {
 
-    final List<String> paths = Arrays.asList("/",
+    final List<String> paths = Arrays.asList(
+        "/",
+        "?$format=xml",
+        "?$format=atom",
+        "?$format=json",
         "/Employees", // "/Managers", "/Rooms",
+        "/Employees?$format=xml", // "/Managers", "/Rooms",
+        "/Employees?$format=atom", // "/Managers", "/Rooms",
+        "/Employees?$format=json", // "/Managers", "/Rooms",
         "/Employees('1')",
+        "/Employees('1')?$format=xml",
+        "/Employees('1')?$format=atom",
+        "/Employees('1')?$format=json",
         "/Employees('1')/$value",
         "/Employees('1')/Age/$value",
         "/Employees('1')/Location",

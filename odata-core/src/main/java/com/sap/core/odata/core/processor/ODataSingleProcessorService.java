@@ -215,7 +215,6 @@ public class ODataSingleProcessorService implements ODataService {
       result.add(HttpContentType.APPLICATION_XML_UTF8);
     } else if (processorFeature == ServiceDocumentProcessor.class) {
       result.add(HttpContentType.APPLICATION_ATOM_SVC_UTF8);
-      result.add(HttpContentType.APPLICATION_ATOM_XML_UTF8);
       result.add(HttpContentType.APPLICATION_JSON_UTF8);
       result.add(HttpContentType.APPLICATION_XML_UTF8);
     } else {
