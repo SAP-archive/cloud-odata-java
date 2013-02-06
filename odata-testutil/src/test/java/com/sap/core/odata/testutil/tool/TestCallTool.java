@@ -43,15 +43,15 @@ public class TestCallTool {
 
     String localBaseUrl = "http://localhost:8080/com.sap.core.odata.ref.web/ReferenceScenario.svc";
     CallerConfig localConfig = new CallerConfig(localBaseUrl, handler, testPaths);
+    AcceptHeaderCaller.create(localConfig).call();
 
 //    String nwcBaseUrl = "https://refodata.prod.jpaas.sapbydesign.com/com.sap.core.odata.ref.web/ReferenceScenario.svc";
 //    CallerConfig nwcConfig = new CallerConfig(nwcBaseUrl, handler, testPaths).setProxy("proxy:8080");
+//    AcceptHeaderCaller.create(nwcConfig).call();
 
 //    String gmdUrl = "http://ldcigmd.wdf.sap.corp:50055/sap/bc/odata";
 //    CallerConfig gmdConfig = new CallerConfig(gmdUrl, handler, testPaths).setBasicAuthCredentials("user:pwd");
-
-    AcceptHeaderCaller ahc = new AcceptHeaderCaller(localConfig);
-    ahc.call();
+//    AcceptHeaderCaller.create(gmdConfig).call();
 
     String result = handler.getResult();
     System.out.println(result);
