@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.nio.channels.FileChannel;
 import java.nio.channels.FileLock;
-import java.util.concurrent.TimeoutException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,8 +19,7 @@ public class ProcessLocker {
   @SuppressWarnings("unused")
   private static final Logger log = LoggerFactory.getLogger(ProcessLocker.class);
 
-  //Acquire - Returns success ( true/false )
-  @SuppressWarnings("resource")
+  //Acquire
   public static void crossProcessLockAcquire(final Class<?> c, final long waitMS) {
     RandomAccessFile randomAccessFile = null;
     if (fileLock == null && c != null && waitMS > 0) {

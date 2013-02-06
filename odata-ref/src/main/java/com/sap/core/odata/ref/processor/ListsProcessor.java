@@ -148,7 +148,7 @@ public class ListsProcessor extends ODataSingleProcessor {
         .serviceRoot(context.getPathInfo().getServiceRoot())
         .inlineCountType(inlineCountType)
         .inlineCount(count)
-        .nextLink(nextSkipToken)  // TODO link required
+        .nextLink(nextSkipToken) // TODO: construct next link
         .build();
 
     final int timingHandle = context.startRuntimeMeasurement("EntityProvider", "writeFeed");
@@ -390,6 +390,7 @@ public class ListsProcessor extends ODataSingleProcessor {
       entitySet = previousSegments.get(previousSegments.size() - 1).getEntitySet();
     final NavigationSegment navigationSegment = navigationSegments.get(navigationSegments.size() - 1);
     final Map<String, Object> keys = mapKey(navigationSegment.getKeyPredicates());
+
     final Object targetData = dataSource.readRelatedData(
         entitySet, sourceData, navigationSegment.getEntitySet(), keys);
 
@@ -398,6 +399,7 @@ public class ListsProcessor extends ODataSingleProcessor {
       throw new ODataNotFoundException(ODataNotFoundException.ENTITY);
 
     dataSource.deleteRelation(entitySet, sourceData, navigationSegment.getEntitySet(), keys);
+
     return ODataResponse.status(HttpStatusCodes.NO_CONTENT).build();
   }
 
@@ -420,16 +422,7 @@ public class ListsProcessor extends ODataSingleProcessor {
       entitySet = previousSegments.get(previousSegments.size() - 1).getEntitySet();
     final EdmEntitySet targetEntitySet = uriInfo.getTargetEntitySet();
 
-    ODataContext context = getContext();
-    final int timingHandle = context.startRuntimeMeasurement("EntityProvider", "readLink");
-
-    final String uriString = EntityProvider.readLink(requestContentType, targetEntitySet, content);
-
-    context.stopRuntimeMeasurement(timingHandle);
-
-    final Map<String, Object> targetKeys = parseLink(targetEntitySet, uriString);
-    if (targetKeys == null)
-      throw new ODataBadRequestException(ODataBadRequestException.BODY);
+    final Map<String, Object> targetKeys = parseLink(targetEntitySet, content, requestContentType);
 
     dataSource.writeRelation(entitySet, sourceData, targetEntitySet, targetKeys);
 
@@ -438,7 +431,37 @@ public class ListsProcessor extends ODataSingleProcessor {
 
   @Override
   public ODataResponse updateEntityLink(final PutMergePatchUriInfo uriInfo, InputStream content, final String requestContentType, final String contentType) throws ODataException {
-    throw new ODataNotImplementedException();
+    final List<NavigationSegment> navigationSegments = uriInfo.getNavigationSegments();
+    final List<NavigationSegment> previousSegments = navigationSegments.subList(0, navigationSegments.size() - 1);
+
+    final Object sourceData = retrieveData(
+        uriInfo.getStartEntitySet(),
+        uriInfo.getKeyPredicates(),
+        uriInfo.getFunctionImport(),
+        mapFunctionParameters(uriInfo.getFunctionImportParameters()),
+        previousSegments);
+
+    EdmEntitySet entitySet;
+    if (previousSegments.isEmpty())
+      entitySet = uriInfo.getStartEntitySet();
+    else
+      entitySet = previousSegments.get(previousSegments.size() - 1).getEntitySet();
+    final NavigationSegment navigationSegment = navigationSegments.get(navigationSegments.size() - 1);
+    final Map<String, Object> keys = mapKey(navigationSegment.getKeyPredicates());
+    final EdmEntitySet targetEntitySet = uriInfo.getTargetEntitySet();
+
+    final Object targetData = dataSource.readRelatedData(entitySet, sourceData, targetEntitySet, keys);
+
+    if (!appliesFilter(targetData, uriInfo.getFilter()))
+      throw new ODataNotFoundException(ODataNotFoundException.ENTITY);
+
+    dataSource.deleteRelation(entitySet, sourceData, targetEntitySet, keys);
+
+    final Map<String, Object> newKeys = parseLink(targetEntitySet, content, requestContentType);
+
+    dataSource.writeRelation(entitySet, sourceData, targetEntitySet, newKeys);
+
+    return ODataResponse.status(HttpStatusCodes.NO_CONTENT).build();
   }
 
   @Override
@@ -814,7 +837,21 @@ public class ListsProcessor extends ODataSingleProcessor {
     return entryValues;
   }
 
-  private Map<String, Object> parseLink(final EdmEntitySet targetEntitySet, final String uriString) throws ODataException {
+  private Map<String, Object> parseLink(final EdmEntitySet entitySet, InputStream content, final String contentType) throws ODataException {
+    ODataContext context = getContext();
+    final int timingHandle = context.startRuntimeMeasurement("EntityProvider", "readLink");
+
+    final String uriString = EntityProvider.readLink(contentType, entitySet, content);
+
+    context.stopRuntimeMeasurement(timingHandle);
+
+    final Map<String, Object> targetKeys = parseLinkUri(entitySet, uriString);
+    if (targetKeys == null)
+      throw new ODataBadRequestException(ODataBadRequestException.BODY);
+    return targetKeys;
+  }
+
+  private Map<String, Object> parseLinkUri(final EdmEntitySet targetEntitySet, final String uriString) throws ODataException {
     final String serviceRoot = getContext().getPathInfo().getServiceRoot().toString();
     final String path = uriString.startsWith(serviceRoot.toString()) ?
         uriString.substring(serviceRoot.length()) : uriString;
@@ -859,7 +896,7 @@ public class ListsProcessor extends ODataSingleProcessor {
       final String uriString = links.get(navigationPropertyName);
       final EdmNavigationProperty navigationProperty = (EdmNavigationProperty) entityType.getProperty(navigationPropertyName);
       final EdmEntitySet targetEntitySet = entitySet.getRelatedEntitySet(navigationProperty);
-      final Map<String, Object> key = parseLink(targetEntitySet, uriString);
+      final Map<String, Object> key = parseLinkUri(targetEntitySet, uriString);
       if (key != null)
         dataSource.writeRelation(entitySet, data, targetEntitySet, key);
     }

@@ -335,7 +335,7 @@ public abstract class ODataSingleProcessor implements
   @Override
   public ODataResponse readMetadata(GetMetadataUriInfo uriInfo, String contentType) throws ODataException {
     final EdmServiceMetadata edmServiceMetadata = getContext().getService().getEntityDataModel().getServiceMetadata();
-   
+
     return ODataResponse
         .status(HttpStatusCodes.OK)
         .header(HttpHeaders.CONTENT_TYPE, contentType)

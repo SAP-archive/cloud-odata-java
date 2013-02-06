@@ -10,8 +10,6 @@ import static org.mockito.Mockito.when;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.HashMap;
-import java.util.Map;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -28,6 +26,9 @@ import com.sap.core.odata.core.ep.AtomEntityProvider;
 import com.sap.core.odata.testutil.helper.StringHelper;
 import com.sap.core.odata.testutil.mock.MockFacade;
 
+/**
+ * @author SAP AG
+ */
 public class AtomFeedProducerTest extends AbstractProviderTest {
 
   private GetEntitySetUriInfo view;

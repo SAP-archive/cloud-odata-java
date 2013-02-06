@@ -41,7 +41,7 @@ public class MiscChangeTest extends AbstractRefTest {
     deleteUri("Employees('2')/Foo/$value", HttpStatusCodes.NOT_FOUND);
     deleteUri("Employees('2')/EmployeeId/$value", HttpStatusCodes.METHOD_NOT_ALLOWED);
     deleteUri("Employees('2')/Location/City/$value", HttpStatusCodes.NOT_FOUND);
-    deleteUri("Employees('2')/ne_Manager/Age/$value", HttpStatusCodes.METHOD_NOT_ALLOWED);
+    deleteUri("Employees('2')/ne_Manager/Age/$value", HttpStatusCodes.BAD_REQUEST);
   }
 
   @Test
@@ -51,7 +51,7 @@ public class MiscChangeTest extends AbstractRefTest {
 
     deleteUri("Managers('3')/$links/nm_Employees()", HttpStatusCodes.METHOD_NOT_ALLOWED);
     deleteUri("Managers('3')/$links/nm_Employees('1')", HttpStatusCodes.NOT_FOUND);
-    deleteUri("Employees('2')/ne_Team/$links/nt_Employees('1')", HttpStatusCodes.METHOD_NOT_ALLOWED);
+    deleteUri("Employees('2')/ne_Team/$links/nt_Employees('1')", HttpStatusCodes.BAD_REQUEST);
   }
 
   @Test

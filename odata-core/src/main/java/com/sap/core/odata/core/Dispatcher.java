@@ -68,9 +68,11 @@ public class Dispatcher {
             && uriInfo.getSkip() == null
             && uriInfo.getTop() == null
             && uriInfo.getExpand().isEmpty()
-            && uriInfo.getSelect().isEmpty()
-            && uriInfo.getNavigationSegments().size() <= 1)
-          return service.getEntitySetProcessor().createEntity(uriInfo, content, requestContentType, contentType);
+            && uriInfo.getSelect().isEmpty())
+          if (uriInfo.getNavigationSegments().size() <= 1)
+            return service.getEntitySetProcessor().createEntity(uriInfo, content, requestContentType, contentType);
+          else
+            throw new ODataBadRequestException(ODataBadRequestException.NOTSUPPORTED);
         else
           throw new ODataMethodNotAllowedException(ODataMethodNotAllowedException.DISPATCH);
       default:
@@ -82,25 +84,17 @@ public class Dispatcher {
       case GET:
         return service.getEntityProcessor().readEntity(uriInfo, contentType);
       case PUT:
-        if (uriInfo.getFormat() == null
-            && uriInfo.getExpand().isEmpty()
-            && uriInfo.getSelect().isEmpty())
-          return service.getEntityProcessor().updateEntity(uriInfo, content, requestContentType, false, contentType);
-        else
-          throw new ODataMethodNotAllowedException(ODataMethodNotAllowedException.DISPATCH);
       case PATCH:
       case MERGE:
+        final boolean merge = !(method == ODataHttpMethod.PUT);
         if (uriInfo.getFormat() == null
-            && uriInfo.getExpand().isEmpty()
-            && uriInfo.getSelect().isEmpty())
-          return service.getEntityProcessor().updateEntity(uriInfo, content, requestContentType, true, contentType);
+            && uriInfo.getExpand().isEmpty() && uriInfo.getSelect().isEmpty())
+          return service.getEntityProcessor().updateEntity(uriInfo, content, requestContentType, merge, contentType);
         else
           throw new ODataMethodNotAllowedException(ODataMethodNotAllowedException.DISPATCH);
       case DELETE:
-        if (uriInfo.getFormat() == null
-            && uriInfo.getFilter() == null
-            && uriInfo.getExpand().isEmpty()
-            && uriInfo.getSelect().isEmpty())
+        if (uriInfo.getFormat() == null && uriInfo.getFilter() == null
+            && uriInfo.getExpand().isEmpty() && uriInfo.getSelect().isEmpty())
           return service.getEntityProcessor().deleteEntity(uriInfo, contentType);
         else
           throw new ODataMethodNotAllowedException(ODataMethodNotAllowedException.DISPATCH);
@@ -113,16 +107,14 @@ public class Dispatcher {
       case GET:
         return service.getEntityComplexPropertyProcessor().readEntityComplexProperty(uriInfo, contentType);
       case PUT:
-        if (uriInfo.getFormat() == null
-            && uriInfo.getNavigationSegments().isEmpty())
-          return service.getEntityComplexPropertyProcessor().updateEntityComplexProperty(uriInfo, content, requestContentType, false, contentType);
-        else
-          throw new ODataMethodNotAllowedException(ODataMethodNotAllowedException.DISPATCH);
       case PATCH:
       case MERGE:
-        if (uriInfo.getFormat() == null
-            && uriInfo.getNavigationSegments().isEmpty())
-          return service.getEntityComplexPropertyProcessor().updateEntityComplexProperty(uriInfo, content, requestContentType, true, contentType);
+        final boolean merge = !(method == ODataHttpMethod.PUT);
+        if (uriInfo.getFormat() == null)
+          if (uriInfo.getNavigationSegments().isEmpty())
+            return service.getEntityComplexPropertyProcessor().updateEntityComplexProperty(uriInfo, content, requestContentType, merge, contentType);
+          else
+            throw new ODataBadRequestException(ODataBadRequestException.NOTSUPPORTED);
         else
           throw new ODataMethodNotAllowedException(ODataMethodNotAllowedException.DISPATCH);
       default:
@@ -140,23 +132,27 @@ public class Dispatcher {
       case PUT:
       case PATCH:
       case MERGE:
-        if (uriInfo.getNavigationSegments().isEmpty()
-            && isPropertyNotKey(getEntityType(uriInfo), getProperty(uriInfo)))
-          if (uriInfo.isValue())
-            return service.getEntitySimplePropertyValueProcessor().updateEntitySimplePropertyValue(uriInfo, content, requestContentType, contentType);
-          else
-            if (uriInfo.getFormat() == null)
-              return service.getEntitySimplePropertyProcessor().updateEntitySimpleProperty(uriInfo, content, requestContentType, contentType);
+        if (isPropertyNotKey(getEntityType(uriInfo), getProperty(uriInfo)))
+          if (uriInfo.getNavigationSegments().isEmpty())
+            if (uriInfo.isValue())
+              return service.getEntitySimplePropertyValueProcessor().updateEntitySimplePropertyValue(uriInfo, content, requestContentType, contentType);
             else
-              throw new ODataMethodNotAllowedException(ODataMethodNotAllowedException.DISPATCH);
+              if (uriInfo.getFormat() == null)
+                return service.getEntitySimplePropertyProcessor().updateEntitySimpleProperty(uriInfo, content, requestContentType, contentType);
+              else
+                throw new ODataMethodNotAllowedException(ODataMethodNotAllowedException.DISPATCH);
+          else
+            throw new ODataBadRequestException(ODataBadRequestException.NOTSUPPORTED);
         else
           throw new ODataMethodNotAllowedException(ODataMethodNotAllowedException.DISPATCH);
       case DELETE:
         final EdmProperty property = getProperty(uriInfo);
         if (uriInfo.isValue()
-            && uriInfo.getNavigationSegments().isEmpty()
             && isPropertyNotKey(getEntityType(uriInfo), property) && isPropertyNullable(property))
-          return service.getEntitySimplePropertyValueProcessor().deleteEntitySimplePropertyValue(uriInfo, contentType);
+          if (uriInfo.getNavigationSegments().isEmpty())
+            return service.getEntitySimplePropertyValueProcessor().deleteEntitySimplePropertyValue(uriInfo, contentType);
+          else
+            throw new ODataBadRequestException(ODataBadRequestException.NOTSUPPORTED);
         else
           throw new ODataMethodNotAllowedException(ODataMethodNotAllowedException.DISPATCH);
       default:
@@ -183,17 +179,19 @@ public class Dispatcher {
       case PUT:
       case PATCH:
       case MERGE:
-        if (uriInfo.getFormat() == null
-            && uriInfo.getFilter() == null
-            && uriInfo.getNavigationSegments().size() == 1)
-          return service.getEntityLinkProcessor().updateEntityLink(uriInfo, content, requestContentType, contentType);
+        if (uriInfo.getFormat() == null && uriInfo.getFilter() == null)
+          if (uriInfo.getNavigationSegments().size() == 1)
+            return service.getEntityLinkProcessor().updateEntityLink(uriInfo, content, requestContentType, contentType);
+          else
+            throw new ODataBadRequestException(ODataBadRequestException.NOTSUPPORTED);
         else
           throw new ODataMethodNotAllowedException(ODataMethodNotAllowedException.DISPATCH);
       case DELETE:
-        if (uriInfo.getFormat() == null
-            && uriInfo.getFilter() == null
-            && uriInfo.getNavigationSegments().size() == 1)
-          return service.getEntityLinkProcessor().deleteEntityLink(uriInfo, contentType);
+        if (uriInfo.getFormat() == null && uriInfo.getFilter() == null)
+          if (uriInfo.getNavigationSegments().size() == 1)
+            return service.getEntityLinkProcessor().deleteEntityLink(uriInfo, contentType);
+          else
+            throw new ODataBadRequestException(ODataBadRequestException.NOTSUPPORTED);
         else
           throw new ODataMethodNotAllowedException(ODataMethodNotAllowedException.DISPATCH);
       default:
@@ -211,9 +209,11 @@ public class Dispatcher {
             && uriInfo.getOrderBy() == null
             && uriInfo.getSkipToken() == null
             && uriInfo.getSkip() == null
-            && uriInfo.getTop() == null
-            && uriInfo.getNavigationSegments().size() == 1)
-          return service.getEntityLinksProcessor().createEntityLink(uriInfo, content, requestContentType, contentType);
+            && uriInfo.getTop() == null)
+          if (uriInfo.getNavigationSegments().size() == 1)
+            return service.getEntityLinksProcessor().createEntityLink(uriInfo, content, requestContentType, contentType);
+          else
+            throw new ODataBadRequestException(ODataBadRequestException.NOTSUPPORTED);
         else
           throw new ODataMethodNotAllowedException(ODataMethodNotAllowedException.DISPATCH);
       default:
@@ -261,17 +261,19 @@ public class Dispatcher {
       case GET:
         return service.getEntityMediaProcessor().readEntityMedia(uriInfo, contentType);
       case PUT:
-        if (uriInfo.getFormat() == null
-            && uriInfo.getFilter() == null
-            && uriInfo.getNavigationSegments().isEmpty())
-          return service.getEntityMediaProcessor().updateEntityMedia(uriInfo, content, requestContentType, contentType);
+        if (uriInfo.getFormat() == null && uriInfo.getFilter() == null)
+          if (uriInfo.getNavigationSegments().isEmpty())
+            return service.getEntityMediaProcessor().updateEntityMedia(uriInfo, content, requestContentType, contentType);
+          else
+            throw new ODataBadRequestException(ODataBadRequestException.NOTSUPPORTED);
         else
           throw new ODataMethodNotAllowedException(ODataMethodNotAllowedException.DISPATCH);
       case DELETE:
-        if (uriInfo.getFormat() == null
-            && uriInfo.getFilter() == null
-            && uriInfo.getNavigationSegments().isEmpty())
-          return service.getEntityMediaProcessor().deleteEntityMedia(uriInfo, contentType);
+        if (uriInfo.getFormat() == null && uriInfo.getFilter() == null)
+          if (uriInfo.getNavigationSegments().isEmpty())
+            return service.getEntityMediaProcessor().deleteEntityMedia(uriInfo, contentType);
+          else
+            throw new ODataBadRequestException(ODataBadRequestException.NOTSUPPORTED);
         else
           throw new ODataMethodNotAllowedException(ODataMethodNotAllowedException.DISPATCH);
       default:
