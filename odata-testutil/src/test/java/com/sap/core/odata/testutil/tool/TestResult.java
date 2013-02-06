@@ -2,6 +2,7 @@ package com.sap.core.odata.testutil.tool;
 
 import java.net.URI;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 import org.apache.http.Header;
@@ -37,19 +38,19 @@ public class TestResult implements Comparable<TestResult> {
   }
 
   public String getRequestHeader(String name) {
-    return reqHeaders.get(name);
+    return reqHeaders.get(normalizeHeaderName(name));
   }
 
   public String getResponseHeader(String name) {
-    return resHeaders.get(name);
+    return resHeaders.get(normalizeHeaderName(name));
   }
 
   public void addRequestHeader(String name, String value) {
-    reqHeaders.put(name, value);
+    reqHeaders.put(normalizeHeaderName(name), value);
   }
 
   public void addResponseHeader(String name, String value) {
-    resHeaders.put(name, value);
+    resHeaders.put(normalizeHeaderName(name), value);
   }
 
   public void addRequestHeaders(Header[] allHeaders) {
@@ -62,6 +63,13 @@ public class TestResult implements Comparable<TestResult> {
     for (final Header header : allHeaders) {
       addResponseHeader(header.getName(), header.getValue());
     }
+  }
+  
+  private String normalizeHeaderName(String name) {
+    if(name == null) {
+      throw new IllegalArgumentException("NULL header names are not allowed.");
+    }
+    return name.toLowerCase(Locale.ENGLISH);
   }
 
   /* (non-Javadoc)
