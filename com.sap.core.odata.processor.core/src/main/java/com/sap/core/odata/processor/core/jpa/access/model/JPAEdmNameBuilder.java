@@ -232,10 +232,10 @@ public class JPAEdmNameBuilder {
 		String end2Name = association.getEnd2().getType().getName();
 
 		if (end1Name.compareToIgnoreCase(end2Name) > 0) {
-			association.setName(ASSOCIATION_PREFIX + end2Name + UNDERSCORE
+			association.setName(end2Name + UNDERSCORE
 					+ end1Name);
 		} else {
-			association.setName(ASSOCIATION_PREFIX + end1Name + UNDERSCORE
+			association.setName(end1Name + UNDERSCORE
 					+ end2Name);
 		}
 
