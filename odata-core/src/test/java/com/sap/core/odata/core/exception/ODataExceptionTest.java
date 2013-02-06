@@ -36,22 +36,19 @@ public class ODataExceptionTest extends BaseTest {
   @Test
   public void testNoCause() {
     ODataException exception = new ODataException("Some message.");
-
-    Assert.assertEquals(false, exception.isCausedByHttpException());
+    Assert.assertFalse(exception.isCausedByHttpException());
   }
 
   @Test
   public void testNPECause() {
     ODataException exception = new ODataException("Some message.", new NullPointerException());
-
-    Assert.assertEquals(false, exception.isCausedByHttpException());
+    Assert.assertFalse(exception.isCausedByHttpException());
   }
 
   @Test
   public void testODataContextedCause() {
     ODataException exception = new ODataException("Some message.", new ODataNotFoundException(ODataNotFoundException.ENTITY));
-
-    Assert.assertEquals(true, exception.isCausedByHttpException());
+    Assert.assertTrue(exception.isCausedByHttpException());
   }
 
   @Test
@@ -59,8 +56,7 @@ public class ODataExceptionTest extends BaseTest {
     ODataException exception = new ODataException("Some message.",
         new IllegalArgumentException(
             new ODataNotFoundException(ODataNotFoundException.ENTITY)));
-
-    Assert.assertEquals(true, exception.isCausedByHttpException());
+    Assert.assertTrue(exception.isCausedByHttpException());
   }
 
   //The following tests verify whether all fields of type {@link MessageReference} of 
@@ -117,13 +113,11 @@ public class ODataExceptionTest extends BaseTest {
   }
 
   @Test
-  @Ignore("TODO: Add the message texts belonging to the exception class and remove this line")
   public void TestMessagesOfODataConflictException() {
     ODataMessageTextVerifier.TestClass(ODataConflictException.class);
   }
 
   @Test
-  @Ignore("TODO: Add the message texts belonging to the exception class and remove this line")
   public void TestMessagesOfODataForbiddenException() {
     ODataMessageTextVerifier.TestClass(ODataForbiddenException.class);
   }
@@ -144,19 +138,16 @@ public class ODataExceptionTest extends BaseTest {
   }
 
   @Test
-  @Ignore("TODO: Add the message texts belonging to the exception class and remove this line")
   public void TestMessagesOfODataPreconditionFailedException() {
     ODataMessageTextVerifier.TestClass(ODataPreconditionFailedException.class);
   }
 
   @Test
-  @Ignore("TODO: Add the message texts belonging to the exception class and remove this line")
   public void TestMessagesOfODataPreconditionRequiredException() {
     ODataMessageTextVerifier.TestClass(ODataPreconditionRequiredException.class);
   }
 
   @Test
-  @Ignore("TODO: Add the message texts belonging to the exception class and remove this line")
   public void TestMessagesOfODataServiceUnavailableException() {
     ODataMessageTextVerifier.TestClass(ODataServiceUnavailableException.class);
   }

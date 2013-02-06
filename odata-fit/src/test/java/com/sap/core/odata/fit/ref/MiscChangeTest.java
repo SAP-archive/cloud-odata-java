@@ -88,7 +88,7 @@ public class MiscChangeTest extends AbstractRefTest {
     assertEquals(content, getBody(callUri(url)));
 
     putUri("Employees('2')/EmployeeId/$value", "42", HttpContentType.TEXT_PLAIN, HttpStatusCodes.METHOD_NOT_ALLOWED);
-    // putUri("Employees('2')/Age/$value", "42a", HttpContentType.TEXT_PLAIN, HttpStatusCodes.BAD_REQUEST);
-    // putUri(url, "2000-13-78T42:19:18z", HttpContentType.TEXT_PLAIN, HttpStatusCodes.BAD_REQUEST);
+    putUri("Employees('2')/Age/$value", "42a", HttpContentType.TEXT_PLAIN, HttpStatusCodes.BAD_REQUEST);
+    putUri(url, "2000-13-78T42:19:18z", HttpContentType.TEXT_PLAIN, HttpStatusCodes.BAD_REQUEST);
   }
 }

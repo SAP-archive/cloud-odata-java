@@ -77,7 +77,7 @@ public class EntryXmlChangeTest extends AbstractRefTest {
     checkMediaType(response, HttpContentType.TEXT_PLAIN);
     assertEquals("plain text", getBody(response));
 
-    // postUri("Teams('1')/nt_Employees", "X", HttpContentType.TEXT_PLAIN, HttpStatusCodes.NOT_IMPLEMENTED);
+    postUri("Teams('1')/nt_Employees", "X", HttpContentType.TEXT_PLAIN, HttpStatusCodes.NOT_IMPLEMENTED);
   }
 
   @Test
