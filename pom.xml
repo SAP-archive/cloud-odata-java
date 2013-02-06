@@ -21,7 +21,7 @@
 		<module>com.sap.core.odata.processor.fit</module>
 		<module>com.sap.core.odata.processor.ref.web</module>
 	</modules>
-
+	
 	<developers>
 		<developer>
 			<id>chandan.v.a</id>
@@ -49,7 +49,14 @@
 			<email>santosh.kumar04@sap.com</email>
 		</developer>
 	</developers>
-
+	
+	<properties>
+		<version.odataforsap>0.2.0-SNAPSHOT</version.odataforsap>
+		<version.odataforsap.processor>${project.version}</version.odataforsap.processor>
+		<version.eclipselink>2.1.2</version.eclipselink>
+		<version.javax.persistence>2.0.0</version.javax.persistence>
+		<version.hsqldb>1.8.0.10</version.hsqldb>
+	</properties>
 	<build>
 		<pluginManagement>
 			<plugins>

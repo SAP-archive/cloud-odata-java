@@ -42,7 +42,8 @@ body {
 <body>
 	<table width=100% cellpadding="3" cellspacing="3" bgcolor="#A6A6A6">
 		<tr height="100%">
-			<td height="100%" width="100%"><h2>SAP OData JPA library</h2></td>
+			<td height="100%" width="80%"><h2>SAP OData JPA Processor library</h2></td>
+			<td width="20%" align="right"><img src="./image/SAPLogo.png"></td>
 		</tr>
 	</table>
 	<hr>
