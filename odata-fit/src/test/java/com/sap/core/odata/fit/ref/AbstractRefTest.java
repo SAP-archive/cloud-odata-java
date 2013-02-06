@@ -17,6 +17,7 @@ import org.apache.http.client.methods.HttpPut;
 import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.entity.StringEntity;
 
+import com.sap.core.odata.api.commons.HttpContentType;
 import com.sap.core.odata.api.commons.HttpStatusCodes;
 import com.sap.core.odata.api.edm.provider.EdmProvider;
 import com.sap.core.odata.api.processor.ODataSingleProcessor;
@@ -171,4 +172,18 @@ public class AbstractRefTest extends AbstractFitTest {
     assertNotNull(entityTag);
     assertEquals(expectedEtag, entityTag);
   }
+  
+  /**
+   * Assert that response contains an <code>XML</code> error message.
+   * 
+   * @param response
+   * @throws Exception
+   */
+  protected void assertXmlErrorResponse(final HttpResponse response) throws Exception {
+    checkMediaType(response, HttpContentType.APPLICATION_XML);
+    String body = getBody(response);
+    assertTrue(body.length() > 100);
+    assertTrue(body.contains("error"));
+  }
+
 }

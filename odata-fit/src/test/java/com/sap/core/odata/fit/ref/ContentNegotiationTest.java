@@ -72,6 +72,28 @@ public class ContentNegotiationTest extends AbstractRefTest {
   }
 
   @Test
+  public void contentTypeServiceDocumentAtomXmlNotAccept() throws Exception {
+    final HttpResponse response = callUri("", HttpHeaders.ACCEPT, HttpContentType.APPLICATION_ATOM_XML, HttpStatusCodes.NOT_ACCEPTABLE);
+    assertXmlErrorResponse(response);
+  }
+
+  @Test
+  public void contentTypeServiceDocumentXml() throws Exception {
+    final HttpResponse response = callUri("", HttpHeaders.ACCEPT, HttpContentType.APPLICATION_XML, HttpStatusCodes.OK);
+    checkMediaType(response, HttpContentType.APPLICATION_XML_UTF8);
+    assertTrue(getBody(response).length() > 100);
+  }
+
+
+  @Test
+  public void contentTypeServiceDocumentAtomSvcXml() throws Exception {
+    final HttpResponse response = callUri("", HttpHeaders.ACCEPT, HttpContentType.APPLICATION_ATOM_SVC, HttpStatusCodes.OK);
+    checkMediaType(response, HttpContentType.APPLICATION_ATOM_SVC_UTF8);
+    assertTrue(getBody(response).length() > 100);
+  }
+
+  
+  @Test
   public void contentTypeServiceDocumentAcceptHeaders() throws Exception {
     final HttpResponse response = callUri("",
         HttpHeaders.ACCEPT, "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",

@@ -322,11 +322,24 @@ public abstract class ODataSingleProcessor implements
     final ODataResponse response = EntityProvider.writeServiceDocument(contentType, entityDataModel, serviceRoot);
     final ODataResponseBuilder odataResponseBuilder = ODataResponse.fromResponse(response)
         .header(ODataHttpHeaders.DATASERVICEVERSION, ODataServiceVersion.V10);
-    if (!(contentType.equals(response.getContentHeader())
-    || (contentType.contains("atom") && response.getContentHeader().contains("atomsvc")))) {
+    if (isContentTypeUpdateNecessary(contentType, response)) {
       odataResponseBuilder.contentHeader(contentType);
     }
     return odataResponseBuilder.build();
+  }
+
+  /**
+   * Simple check whether the content type for the {@link ODataResponse} needs adapted or not (based on requested content type).
+   * 
+   * @param contentType
+   * @param response
+   * @return
+   */
+  private boolean isContentTypeUpdateNecessary(String contentType, final ODataResponse response) {
+    boolean contentTypeAlreadySet = contentType.equals(response.getContentHeader());
+    boolean requestedAtomAndRespondAtomSvc = contentType.contains("atom") && response.getContentHeader().contains("atomsvc");
+
+    return !(contentTypeAlreadySet || requestedAtomAndRespondAtomSvc);
   }
 
   /**

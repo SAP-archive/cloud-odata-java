@@ -16,6 +16,7 @@ import org.xml.sax.SAXException;
 
 import com.sap.core.odata.api.commons.HttpContentType;
 import com.sap.core.odata.api.commons.HttpHeaders;
+import com.sap.core.odata.api.commons.HttpStatusCodes;
 import com.sap.core.odata.api.edm.Edm;
 
 /**
@@ -62,16 +63,14 @@ public class ServiceXmlTest extends AbstractRefTest {
 
   @Test
   public void serviceDocumentAcceptHeaderAtom() throws Exception {
-    HttpResponse response = callUri("", HttpHeaders.ACCEPT, HttpContentType.APPLICATION_ATOM_XML);
-    checkMediaType(response, HttpContentType.APPLICATION_ATOM_SVC_UTF8);
-    validateXmlServiceDocument(getBody(response));
+    final HttpResponse response = callUri("", HttpHeaders.ACCEPT, HttpContentType.APPLICATION_ATOM_XML, HttpStatusCodes.NOT_ACCEPTABLE);
+    assertXmlErrorResponse(response);
   }
 
   @Test
   public void serviceDocumentAcceptHeaderUtf8Atom() throws Exception {
-    HttpResponse response = callUri("", HttpHeaders.ACCEPT, HttpContentType.APPLICATION_ATOM_XML_UTF8);
-    checkMediaType(response, HttpContentType.APPLICATION_ATOM_SVC_UTF8);
-    validateXmlServiceDocument(getBody(response));
+    final HttpResponse response = callUri("", HttpHeaders.ACCEPT, HttpContentType.APPLICATION_ATOM_XML_UTF8, HttpStatusCodes.NOT_ACCEPTABLE);
+    assertXmlErrorResponse(response);
   }
 
   @Test
