@@ -11,7 +11,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.sap.core.odata.api.ODataServiceFactory;
-import com.sap.core.odata.testutil.helper.ProcessLocker;
 
 /**
  * @author SAP AG
