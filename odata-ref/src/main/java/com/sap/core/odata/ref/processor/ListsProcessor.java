@@ -148,7 +148,7 @@ public class ListsProcessor extends ODataSingleProcessor {
         .serviceRoot(context.getPathInfo().getServiceRoot())
         .inlineCountType(inlineCountType)
         .inlineCount(count)
-        .skipToken(nextSkipToken)
+        .nextLink(nextSkipToken)  // TODO link required
         .build();
 
     final int timingHandle = context.startRuntimeMeasurement("EntityProvider", "writeFeed");

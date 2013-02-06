@@ -130,47 +130,16 @@ public class AtomFeedProducerTest extends AbstractProviderTest {
     AtomEntityProvider ser = createAtomEntityProvider();
     EntityProviderProperties properties = EntityProviderProperties.serviceRoot(BASE_URI)
         .mediaResourceMimeType("mediatype")
-        .skipToken("äbc")
+        .nextLink("http://thisisanextlink")
         .build();
     ODataResponse response = ser.writeFeed(view.getTargetEntitySet(), this.roomsData, properties);
     String xmlString = verifyResponse(response);
 
     assertXpathExists("/a:feed/a:link[@rel='next']", xmlString);
-    assertXpathEvaluatesTo("Rooms?$skiptoken=%c3%a4bc", "/a:feed/a:link[@rel='next']/@href", xmlString);
+    assertXpathEvaluatesTo("http://thisisanextlink", "/a:feed/a:link[@rel='next']/@href", xmlString);
   }
   
-  @Test
-  public void testNextLinkWithQueryOptions() throws Exception {
-    when(view.getInlineCount()).thenReturn(InlineCount.NONE);
 
-    Map<String, String> query = new HashMap<String, String>();
-    query.put("$%", "11&a=a11");
-    query.put("abc", "123");
-    
-    AtomEntityProvider ser = createAtomEntityProvider();
-    EntityProviderProperties properties = EntityProviderProperties.serviceRoot(BASE_URI)
-        .mediaResourceMimeType("mediatype")
-        .skipToken("äbc")
-        .nextLinkQueryOptions(query)
-        .build();
-    ODataResponse response = ser.writeFeed(view.getTargetEntitySet(), this.roomsData, properties);
-    String xmlString = verifyResponse(response);
-
-    assertXpathExists("/a:feed/a:link[@rel='next']", xmlString);
-    assertXpathEvaluatesTo("Rooms?$skiptoken=%c3%a4bc&$%25=11%26a=a11&abc=123", "/a:feed/a:link[@rel='next']/@href", xmlString);
-  }
-
-  @Test
-  public void testNoNextLink() throws Exception {
-    when(view.getInlineCount()).thenReturn(InlineCount.NONE);
-
-    AtomEntityProvider ser = createAtomEntityProvider();
-    EntityProviderProperties properties = EntityProviderProperties.serviceRoot(BASE_URI).mediaResourceMimeType("mediatype").build();
-    ODataResponse response = ser.writeFeed(view.getTargetEntitySet(), this.roomsData, properties);
-    String xmlString = verifyResponse(response);
-
-    assertXpathNotExists("/a:feed/a:link[@rel='next']", xmlString);
-  }
 
   @Test(expected = EntityProviderException.class)
   public void testInlineCountInvalid() throws Exception {

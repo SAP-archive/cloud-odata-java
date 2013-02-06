@@ -22,13 +22,13 @@ public class ODataEntityProviderPropertiesTest extends BaseTest {
     EntityProviderProperties properties = EntityProviderProperties.serviceRoot(serviceRoot)
         .mediaResourceMimeType(mediaResourceMimeType)
         .inlineCount(-1)
-        .skipToken("UUID=A823K34WER3@#$20")
+        .nextLink("http://localhost")
         .build();
 
     assertEquals("Wrong base uri.", "http://localhost:80/", properties.getServiceRoot().toASCIIString());
     assertEquals("Wrong mime type.", "text/html", properties.getMediaResourceMimeType());
     assertEquals("Wrong inline count.", Integer.valueOf(-1), properties.getInlineCount());
-    assertEquals("Wrong skiptoken", "UUID=A823K34WER3@#$20", properties.getSkipToken());
+    assertEquals("Wrong nextLink", "http://localhost", properties.getNextLink());
   }
 
   @Test
@@ -39,6 +39,6 @@ public class ODataEntityProviderPropertiesTest extends BaseTest {
     assertEquals("http://localhost:80/", properties.getServiceRoot().toASCIIString());
     assertNull(properties.getInlineCount());
     assertNull(properties.getMediaResourceMimeType());
-    assertNull(properties.getSkipToken());
+    assertNull(properties.getNextLink());
   }
 }

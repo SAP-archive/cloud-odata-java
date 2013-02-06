@@ -14,8 +14,7 @@ public class EntityProviderProperties {
   private String mediaResourceMimeType;
   private InlineCount inlineCountType;
   private Integer inlineCount;
-  private String skipToken;
-  private Map<String, String> nextLinkQueryOptions;
+  public String nextLink;
 
   private EntityProviderProperties() {}
 
@@ -48,19 +47,13 @@ public class EntityProviderProperties {
   }
 
   /**
-   * @return the skip token for the "next" link
+   * @return a next link used for server side paging of feeds 
    */
-  public final String getSkipToken() {
-    return skipToken;
+  public final String getNextLink() {
+    return nextLink;
   }
 
-  /**
-   * @return query options for extending next link
-   */
-  public final Map<String, String> getNextLinkQueryOptions() {
-    return nextLinkQueryOptions;
-  }
-  
+
   public static ODataEntityProviderPropertiesBuilder serviceRoot(URI serviceRoot) {
     return new ODataEntityProviderPropertiesBuilder().serviceRoot(serviceRoot);
   }
@@ -93,14 +86,6 @@ public class EntityProviderProperties {
     }
 
     /**
-     * @param skipToken  the skipToken to set
-     */
-    public final ODataEntityProviderPropertiesBuilder skipToken(String skipToken) {
-      properties.skipToken = skipToken;
-      return this;
-    }
-
-    /**
      * @param serviceRoot
      */
     private final ODataEntityProviderPropertiesBuilder serviceRoot(URI serviceRoot) {
@@ -112,8 +97,12 @@ public class EntityProviderProperties {
       return properties;
     }
 
-    public ODataEntityProviderPropertiesBuilder nextLinkQueryOptions(Map<String, String> query) {
-      properties.nextLinkQueryOptions = query;
+    /**
+     * @param nextLink Next link to render feeds with server side paging. Should usually contain a skiptoken.
+     * @return
+     */
+    public ODataEntityProviderPropertiesBuilder nextLink(String nextLink) {
+      properties.nextLink = nextLink;
       return this;
     }
   }

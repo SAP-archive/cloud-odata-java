@@ -48,8 +48,8 @@ public class AtomFeedProducer {
 
       appendEntries(writer, eia, data);
 
-      if (properties.getSkipToken() != null) {
-        appendNextLink(writer, eia, properties.getSkipToken(), properties.getNextLinkQueryOptions());
+      if (properties.getNextLink() != null) {
+        appendNextLink(writer, eia, properties.getNextLink());
       }
 
       writer.writeEndElement();
@@ -58,10 +58,8 @@ public class AtomFeedProducer {
     }
   }
 
-  private void appendNextLink(XMLStreamWriter writer, EntityInfoAggregator eia, String nextSkiptoken, Map<String, String> queryOptions) throws EntityProviderException {
+  private void appendNextLink(XMLStreamWriter writer, EntityInfoAggregator eia, String nextLink) throws EntityProviderException {
     try {
-      String nextLink = createNextLink(eia, nextSkiptoken, queryOptions);
-
       writer.writeStartElement(FormatXml.ATOM_LINK);
       writer.writeAttribute(FormatXml.ATOM_HREF, nextLink);
       writer.writeAttribute(FormatXml.ATOM_REL, "next");
