@@ -15,6 +15,7 @@ public class ODataBadRequestException extends ODataHttpException {
   public static final MessageReference VERSIONERROR = createMessageReference(ODataBadRequestException.class, "VERSIONERROR");
   public static final MessageReference PARSEVERSIONERROR = createMessageReference(ODataBadRequestException.class, "PARSEVERSIONERROR");
   public static final MessageReference BODY = createMessageReference(ODataBadRequestException.class, "BODY");
+  public static final MessageReference AMBIGIOUS_XMETHOD = createMessageReference(ODataBadRequestException.class, "AMBIGIOUS_XMETHOD");
 
   public ODataBadRequestException(MessageReference messageReference) {
     super(messageReference, HttpStatusCodes.BAD_REQUEST);

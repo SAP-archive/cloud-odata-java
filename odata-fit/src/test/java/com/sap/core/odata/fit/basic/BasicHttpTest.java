@@ -12,6 +12,7 @@ import java.net.URI;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
+import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpPatch;
 import org.apache.http.client.methods.HttpPost;
@@ -166,9 +167,23 @@ public class BasicHttpTest extends AbstractBasicTest {
   }
 
   @Test
-  public void testMergeTunneledByPost() throws MalformedURLException, IOException {
+  public void testTunneledByPost() throws MalformedURLException, IOException {
+    tunnelPost("X-HTTP-Method", "MERGE");
+    tunnelPost("X-HTTP-Method", "PATCH");
+    tunnelPost("X-HTTP-Method", "DELETE");
+    tunnelPost("X-HTTP-Method", "PUT");
+ 
+    tunnelPost("X-HTTP-Method-Override", "MERGE");
+    tunnelPost("X-HTTP-Method-Override", "PATCH");
+    tunnelPost("X-HTTP-Method-Override", "DELETE");
+    tunnelPost("X-HTTP-Method-Override", "PUT");
+    tunnelPost("X-HTTP-Method-Override", "GET");
+    tunnelPost("X-HTTP-Method-Override", "POST");
+  }
+
+  private void tunnelPost(String header, String method) throws IOException, ClientProtocolException {
     final HttpPost post = new HttpPost(URI.create(getEndpoint().toString() + "/aaa/bbb/ccc"));
-    post.setHeader("X-HTTP-Method", "MERGE");
+    post.setHeader(header, method);
     final HttpResponse response = getHttpClient().execute(post);
 
     final String payload = StringHelper.inputStreamToString(response.getEntity().getContent());
@@ -178,15 +193,39 @@ public class BasicHttpTest extends AbstractBasicTest {
   }
 
   @Test
-  public void testPatchTunneledByPost() throws MalformedURLException, IOException {
+  public void testTunneledBadRequest() throws MalformedURLException, IOException {
     final HttpPost post = new HttpPost(URI.create(getEndpoint().toString() + "/aaa/bbb/ccc"));
-    post.setHeader("X-HTTP-Method", "PATCH");
+    post.setHeader("X-HTTP-Method", "MERGE");
+    post.setHeader("X-HTTP-Method-Override", "PATCH");
     final HttpResponse response = getHttpClient().execute(post);
 
     final String payload = StringHelper.inputStreamToString(response.getEntity().getContent());
 
     assertTrue(payload.contains("error"));
-    assertEquals(HttpStatusCodes.NOT_FOUND.getStatusCode(), response.getStatusLine().getStatusCode());
+    assertEquals(HttpStatusCodes.BAD_REQUEST.getStatusCode(), response.getStatusLine().getStatusCode());
+  }
+  
+  @Test
+  public void testTunneledMethodNotAllowed() throws MalformedURLException, IOException {
+    final HttpPost post = new HttpPost(URI.create(getEndpoint().toString() + "/aaa/bbb/ccc"));
+    post.setHeader("X-HTTP-Method", "xxx");
+    final HttpResponse response = getHttpClient().execute(post);
+
+    final String payload = StringHelper.inputStreamToString(response.getEntity().getContent());
+
+    assertTrue(payload.contains("error"));
+    assertEquals(HttpStatusCodes.METHOD_NOT_ALLOWED.getStatusCode(), response.getStatusLine().getStatusCode());
+  }
+  @Test
+  public void testTunneledMethodNotAllowedOverride() throws MalformedURLException, IOException {
+    final HttpPost post = new HttpPost(URI.create(getEndpoint().toString() + "/aaa/bbb/ccc"));
+    post.setHeader("X-HTTP-Method-Override", "xxx");
+    final HttpResponse response = getHttpClient().execute(post);
+
+    final String payload = StringHelper.inputStreamToString(response.getEntity().getContent());
+
+    assertTrue(payload.contains("error"));
+    assertEquals(HttpStatusCodes.METHOD_NOT_ALLOWED.getStatusCode(), response.getStatusLine().getStatusCode());
   }
 
 }

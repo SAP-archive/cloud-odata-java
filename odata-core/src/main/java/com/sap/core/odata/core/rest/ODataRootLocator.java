@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.http.HttpServletRequest;
+import javax.ws.rs.HeaderParam;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.core.Context;
@@ -13,6 +14,7 @@ import javax.ws.rs.core.Request;
 import javax.ws.rs.core.UriInfo;
 
 import com.sap.core.odata.api.ODataServiceFactory;
+import com.sap.core.odata.api.exception.ODataBadRequestException;
 import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.core.exception.ODataRuntimeException;
 import com.sap.core.odata.core.rest.ODataSubLocator.InitParameter;
@@ -52,7 +54,23 @@ public class ODataRootLocator {
    * @throws InstantiationException 
    */
   @Path("/{pathSegments: .*}")
-  public ODataLocator handleRequest(@PathParam("pathSegments") List<PathSegment> pathSegments) throws ODataException, ClassNotFoundException, InstantiationException, IllegalAccessException {
+  public ODataLocator handleRequest(@PathParam("pathSegments") List<PathSegment> pathSegments,
+      @HeaderParam("X-HTTP-Method") String xHttpMethod, 
+      @HeaderParam("X-HTTP-Method-Override") String xHttpMethodOverride
+      ) throws ODataException, ClassNotFoundException, InstantiationException, IllegalAccessException {
+    
+    if (xHttpMethod != null && xHttpMethodOverride != null) {
+      
+      /*
+       * X-HTTP-Method-Override : implemented by CXF
+       * X-HTTP-Method          : implemented in ODataSubLocator:handlePost
+       */
+      
+      if (!xHttpMethod.equalsIgnoreCase(xHttpMethodOverride)) {
+        throw new ODataBadRequestException(ODataBadRequestException.AMBIGIOUS_XMETHOD);
+      }
+    }
+    
     ODataSubLocator odataLocator = new ODataSubLocator();
 
     if (servletRequest.getPathInfo() == null) {
