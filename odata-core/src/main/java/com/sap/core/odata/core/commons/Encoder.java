@@ -1,22 +1,25 @@
 package com.sap.core.odata.core.commons;
 
+import java.io.UnsupportedEncodingException;
 import java.util.Map;
 
 /**
+ * Encodes a Java String (in its internal UTF-16 encoding) into its
+ * percent-encoded UTF-8 representation according to RFC 3986
+ * (with consideration of its predecessor RFC 2396).
  * @author SAP AG
  */
 public class Encoder {
 
   /*
    * encoding rules:
-   * 
+   *
    *  http://www.ietf.org/rfc/rfc3986.txt
    *
    *  private final static String RFC3986_UNRESERVED = "-._~"; // + ALPHA + DIGIT
-   *  private final static String RFC3986_GEN_DELIMS = ":/?#[]@"; 
-   *  private final static String RFC3986_SUB_DELIMS = "!$&'()*+,;="; 
-   *  private final static String RFC3986_RESERVED = RFC3986_GEN_DELIMS + RFC3986_SUB_DELIMS; 
-   *  
+   *  private final static String RFC3986_GEN_DELIMS = ":/?#[]@";
+   *  private final static String RFC3986_SUB_DELIMS = "!$&'()*+,;=";
+   *  private final static String RFC3986_RESERVED = RFC3986_GEN_DELIMS + RFC3986_SUB_DELIMS;
    */
 
   private Encoder(String unsafe, String unreserved, Map<Character, String> map) {
@@ -25,6 +28,13 @@ public class Encoder {
     this.map = map;
   }
 
+  /**
+   * Encodes a Java String (in its internal UTF-16 encoding) into its
+   * percent-encoded UTF-8 representation according to RFC 3986
+   * (with consideration of its predecessor RFC 2396).
+   * @param value the Java String
+   * @return the encoded String
+   */
   public static String encode(String value) {
     Encoder encoder = new Encoder(UNSAFE, UNRESERVED, null);
     return encoder.encodeInternal(value);
@@ -47,7 +57,7 @@ public class Encoder {
   private String unreserved;
   private Map<Character, String> map;
 
-  final static String[] hex = {
+  private final static String[] hex = {
       "%00", "%01", "%02", "%03", "%04", "%05", "%06", "%07",
       "%08", "%09", "%0a", "%0b", "%0c", "%0d", "%0e", "%0f",
       "%10", "%11", "%12", "%13", "%14", "%15", "%16", "%17",
@@ -82,43 +92,52 @@ public class Encoder {
       "%f8", "%f9", "%fa", "%fb", "%fc", "%fd", "%fe", "%ff"
   };
 
+  /**
+   * <p>Returns the percent-encoded UTF-8 representation of a String.</p>
+   * <p>In order to avoid producing percent-encoded CESU-8 (as described in
+   * the Unicode Consortium's <a href="http://www.unicode.org/reports/tr26/">
+   * Technical Report #26</a>), this is done in two steps:
+   * <ol>
+   * <li>Re-encode the characters from their Java-internal UTF-16 representations
+   * into their UTF-8 representations.</li>
+   * <li>Percent-encode each of the bytes in the UTF-8 representation.
+   * This is possible on byte level because all characters that do not have
+   * a <code>%xx</code> representation are represented in one byte in UTF-8.</li>
+   * </ol></p>
+   * @param input input String
+   * @return encoded representation
+   */
   private String encodeInternal(String input) {
     StringBuilder resultStr = new StringBuilder();
 
-    for (int ch : input.toCharArray()) {
-      if (isUnsafe(ch)) { // case unsafe
-        resultStr.append(hex[ch]);
-      } else if (map != null && map.containsKey((char) ch)) { // case mapping
-        resultStr.append(map.get((char) ch));
-      } else if (isUnreserved(ch)) { // case unreserved
-        resultStr.append((char) ch);
-      } else if ('A' <= ch && ch <= 'Z') { // case A..Z
-        resultStr.append((char) ch);
-      } else if ('a' <= ch && ch <= 'z') { // case a..z
-        resultStr.append((char) ch);
-      } else if ('0' <= ch && ch <= '9') { // case 0..9
-        resultStr.append((char) ch);
-      } else if (ch <= 0x007F) { // case other ASCII
-        resultStr.append((char) ch);
-      } else if (ch <= 0x07FF) { // case non ASCII <= 0x07FF
-        resultStr.append(hex[0xc0 | (ch >> 6)]);
-        resultStr.append(hex[0x80 | (ch & 0x3F)]);
-      } else { // case 0x7FF < ch <= 0xFFFF
-        resultStr.append(hex[0xe0 | (ch >> 12)]);
-        resultStr.append(hex[0x80 | ((ch >> 6) & 0x3F)]);
-        resultStr.append(hex[0x80 | (ch & 0x3F)]);
+    try {
+      for (byte utf8Byte : input.getBytes("UTF-8")) {
+        if (isUnsafe(utf8Byte)) { // case unsafe
+          resultStr.append(hex[utf8Byte]);
+        } else if (map != null && map.containsKey((char) utf8Byte)) { // case mapping
+          resultStr.append(map.get((char) utf8Byte));
+        } else if (isUnreserved(utf8Byte)) { // case unreserved
+          resultStr.append((char) utf8Byte);
+        } else if ('A' <= utf8Byte && utf8Byte <= 'Z' // case A..Z
+            || 'a' <= utf8Byte && utf8Byte <= 'z' // case a..z
+            || '0' <= utf8Byte && utf8Byte <= '9' // case 0..9
+            || 0 <= utf8Byte) { // case other ASCII
+          resultStr.append((char) utf8Byte);
+        } else { // UTF-8 continuation byte
+          resultStr.append(hex[256 + utf8Byte]); // index adjusted for the usage of signed bytes
+        }
       }
+    } catch (UnsupportedEncodingException e) { // should never happen; UTF-8 is always there
+      return null;
     }
-
     return resultStr.toString();
   }
 
-  private boolean isUnsafe(int ch) {
+  private boolean isUnsafe(byte ch) {
     return unsafe.indexOf(ch) >= 0;
   }
 
-  private boolean isUnreserved(int ch) {
+  private boolean isUnreserved(byte ch) {
     return unreserved.indexOf(ch) >= 0;
   }
-
 }
