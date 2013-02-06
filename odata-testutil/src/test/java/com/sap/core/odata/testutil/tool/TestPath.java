@@ -11,7 +11,7 @@ import java.util.Set;
 import org.apache.http.HttpHeaders;
 import org.apache.http.HttpRequest;
 
-public class TestPath {
+public class TestPath implements Comparable<TestPath> {
 
   private String path;
   private final Map<String, String> headers;
@@ -51,6 +51,10 @@ public class TestPath {
       request.addHeader(entry.getKey(), entry.getValue());
     }
   }
+  
+  public String getId() {
+    return String.valueOf(hashCode());
+  }
 
   /* (non-Javadoc)
    * @see java.lang.Object#toString()
@@ -58,6 +62,43 @@ public class TestPath {
   @Override
   public String toString() {
     return "TestPath [path=" + path + ", headers=" + headers + "]";
+  }
+
+  /* (non-Javadoc)
+   * @see java.lang.Object#hashCode()
+   */
+  @Override
+  public int hashCode() {
+    final int prime = 31;
+    int result = 1;
+    result = prime * result + ((headers == null) ? 0 : headers.hashCode());
+    result = prime * result + ((path == null) ? 0 : path.hashCode());
+    return result;
+  }
+
+  /* (non-Javadoc)
+   * @see java.lang.Object#equals(java.lang.Object)
+   */
+  @Override
+  public boolean equals(Object obj) {
+    if (this == obj)
+      return true;
+    if (obj == null)
+      return false;
+    if (getClass() != obj.getClass())
+      return false;
+    TestPath other = (TestPath) obj;
+    if (headers == null) {
+      if (other.headers != null)
+        return false;
+    } else if (!headers.equals(other.headers))
+      return false;
+    if (path == null) {
+      if (other.path != null)
+        return false;
+    } else if (!path.equals(other.path))
+      return false;
+    return true;
   }
 
   //
@@ -77,4 +118,13 @@ public class TestPath {
     return testPaths;
   }
 
+  @Override
+  public int compareTo(TestPath o) {
+    if(path == null) {
+      return -1;
+    } else if(o == null || o.path == null) {
+      return 1;
+    }
+    return path.compareTo(o.path);
+  }
 }
