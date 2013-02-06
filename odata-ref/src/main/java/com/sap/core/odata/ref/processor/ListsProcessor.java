@@ -18,6 +18,7 @@ import com.sap.core.odata.api.commons.HttpHeaders;
 import com.sap.core.odata.api.commons.HttpStatusCodes;
 import com.sap.core.odata.api.commons.InlineCount;
 import com.sap.core.odata.api.edm.Edm;
+import com.sap.core.odata.api.edm.EdmEntityContainer;
 import com.sap.core.odata.api.edm.EdmEntitySet;
 import com.sap.core.odata.api.edm.EdmEntityType;
 import com.sap.core.odata.api.edm.EdmException;
@@ -120,11 +121,11 @@ public class ListsProcessor extends ODataSingleProcessor {
     // if there are further entities.
     // Almost all system query options in the current request must be carried
     // over to the URI for the "next" link, with the exception of $skiptoken
-    // and $skip; this is missing currently.
-    String nextSkipToken = null;
+    // and $skip; currently, this is done only for $inlinecount. If one of
+    // the not supported system query options is present, paging does not take place.
+    String nextLink = null;
     if (data.size() > SERVER_PAGING_SIZE
         && uriInfo.getFilter() == null
-        && inlineCountType == null
         && uriInfo.getOrderBy() == null
         && uriInfo.getTop() == null
         && uriInfo.getExpand().isEmpty()
@@ -134,7 +135,12 @@ public class ListsProcessor extends ODataSingleProcessor {
           && uriInfo.getSkip() == null
           && uriInfo.getTop() == null) // applySystemQueryOptions did not sort
         sortInDefaultOrder(entitySet, data);
-      nextSkipToken = getSkipToken(entitySet, data.get(SERVER_PAGING_SIZE));
+      final EdmEntityContainer entityContainer = entitySet.getEntityContainer();
+      // TODO: Percent-encode "next" link
+      nextLink = (entityContainer.isDefaultEntityContainer() ? "" : entityContainer.getName() + Edm.DELIMITER)
+          + entitySet.getName()
+          + "?$skiptoken=" + getSkipToken(entitySet, data.get(SERVER_PAGING_SIZE))
+          + (inlineCountType == null ? "" : "&$inlinecount=" + inlineCountType.toString().toLowerCase(Locale.ROOT));
       while (data.size() > SERVER_PAGING_SIZE)
         data.remove(SERVER_PAGING_SIZE);
     }
@@ -148,7 +154,7 @@ public class ListsProcessor extends ODataSingleProcessor {
         .serviceRoot(context.getPathInfo().getServiceRoot())
         .inlineCountType(inlineCountType)
         .inlineCount(count)
-        .nextLink(nextSkipToken) // TODO: construct next link
+        .nextLink(nextLink)
         .build();
 
     final int timingHandle = context.startRuntimeMeasurement("EntityProvider", "writeFeed");

@@ -67,7 +67,7 @@ public class ODataRootLocator {
        */
       
       if (!xHttpMethod.equalsIgnoreCase(xHttpMethodOverride)) {
-        throw new ODataBadRequestException(ODataBadRequestException.AMBIGIOUS_XMETHOD);
+        throw new ODataBadRequestException(ODataBadRequestException.AMBIGUOUS_XMETHOD);
       }
     }
     

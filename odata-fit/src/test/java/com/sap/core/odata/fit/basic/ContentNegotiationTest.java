@@ -32,7 +32,7 @@ public class ContentNegotiationTest extends AbstractFitTest {
   // TODO: Don't use reference scenario in basic tests.
   @Override
   protected ODataService createService() throws ODataException {
-    final DataContainer dataContainer = new DataContainer();
+    DataContainer dataContainer = new DataContainer();
     dataContainer.reset();
     final ODataSingleProcessor processor = new ListsProcessor(new ScenarioDataSource(dataContainer));
     final EdmProvider provider = new ScenarioEdmProvider();
@@ -41,7 +41,7 @@ public class ContentNegotiationTest extends AbstractFitTest {
 
   @Test
   public void acceptHeaderAppAtomXml() throws Exception {
-    final HttpGet get = new HttpGet(URI.create(getEndpoint() + "Rooms('1')"));
+    HttpGet get = new HttpGet(URI.create(getEndpoint() + "Rooms('1')"));
     get.setHeader(HttpHeaders.ACCEPT, HttpContentType.APPLICATION_ATOM_XML);
     final HttpResponse response = getHttpClient().execute(get);
 
@@ -53,7 +53,7 @@ public class ContentNegotiationTest extends AbstractFitTest {
 
   @Test
   public void acceptHeaderAppXml() throws Exception {
-    final HttpGet get = new HttpGet(URI.create(getEndpoint() + "Rooms('1')"));
+    HttpGet get = new HttpGet(URI.create(getEndpoint() + "Rooms('1')"));
     get.setHeader(HttpHeaders.ACCEPT, HttpContentType.APPLICATION_XML);
     final HttpResponse response = getHttpClient().execute(get);
 
@@ -66,7 +66,7 @@ public class ContentNegotiationTest extends AbstractFitTest {
 
   @Test
   public void acceptHeaderAppXmlCharsetUtf8() throws Exception {
-    final HttpGet get = new HttpGet(URI.create(getEndpoint() + "Rooms('1')"));
+    HttpGet get = new HttpGet(URI.create(getEndpoint() + "Rooms('1')"));
     get.setHeader(HttpHeaders.ACCEPT, HttpContentType.APPLICATION_XML_UTF8);
     final HttpResponse response = getHttpClient().execute(get);
 
