@@ -42,8 +42,7 @@ body {
 <body>
 	<table width=100% cellpadding="3" cellspacing="3" bgcolor="#A6A6A6">
 		<tr height="100%">
-			<td height="100%" width="80%"><h2>SAP OData JPA Processor library</h2></td>
-			<td width="20%" align="right"><img src="./image/SAPLogo.png"></td>
+			<td height="100%" width="100%"><h2>SAP OData JPA library</h2></td>
 		</tr>
 	</table>
 	<hr>
@@ -203,6 +202,15 @@ body {
 						WHERE E1.deliveryStatus = 'false'</code></td>
 			</tr>
 			<tr>
+				<td>Query for Sales Order creation date</td>
+				<td><a
+					href="SalesOrderProcessing.svc/SalesOrderHeaders?$filter=CreationDate eq datetime'2013-01-01T00:00:00'"
+					target="_blank">SalesOrderProcessing.svc/SalesOrderHeaders?$filter=CreationDate
+						eq datetime'2013-01-01T00:00:00'</a></td>
+				<td width=60%><code style="font-size: small">SELECT E1 FROM SalesOrderHeader E1
+						WHERE E1.creationDate = d'xx'</code></td>
+			</tr>
+			<tr>
 				<td>Query for Sales Order with Buyer Address House number = 7</td>
 				<td><a
 					href="SalesOrderProcessing.svc/SalesOrderHeaders?$filter=BuyerAddress/HouseNumber eq 7"
@@ -274,15 +282,6 @@ body {
 				<td width=60%><code style="font-size: small">SELECT E1 FROM SalesOrderHeader E1</code></td>
 			</tr>
 			<tr>
-				<td>Query for SalesOrders and fetch only Buyer Id and Buyer
-					Country</td>
-				<td><a
-					href="SalesOrderProcessing.svc/SalesOrderHeaders?$select=BuyerId,BuyerAddress/Country"
-					target="_blank">SalesOrderProcessing.svc/SalesOrderHeaders?$select=BuyerId,BuyerAddress/Country</a></td>
-				<td width=60%><code style="font-size: small">SELECT E1.buyerId,
-						E1.buyerAddress.country FROM SalesOrderHeader E1</code></td>
-			</tr>
-			<tr>
 				<td>Mixed Query Example</td>
 				<td><a
 					href="SalesOrderProcessing.svc/SalesOrderHeaders?$skip=2&$top=2&$orderby=SoId"
@@ -315,20 +314,34 @@ body {
 			</tr>
 			
 			<tr>
-				<td width=20%>Read operation</td>
+				<td width=20%>Read operation on SalesOrderHeader</td>
 				<td width=40%><a
 					href="SalesOrderProcessing.svc/SalesOrderHeaders(1L)" target="_blank">SalesOrderProcessing.svc/SalesOrderHeaders(1L)
 				</a></td>
 				<td width=40%><code style="font-size: small">SELECT E1 FROM SalesOrderHeader E1</code></td>
 			</tr>
-			
 			<tr>
-				<td width=20%>Read operation with Select system query option</td>
+				<td width=20%>Read operation on SalesOrderItem</td>
 				<td width=40%><a
-					href="SalesOrderProcessing.svc/SalesOrderHeaders(3L)?$select=BuyerName,CurrencyCode" target="_blank">SalesOrderProcessing.svc/SalesOrderHeaders(3L)?$select=BuyerName,CurrencyCode
+					href="SalesOrderProcessing.svc/SalesOrderItems(SoId=1L,LiId=111L)" target="_blank">SalesOrderProcessing.svc/SalesOrderItems(SoId=1L,LiId=111L)
 				</a></td>
 				<td width=40%><code style="font-size: small">SELECT E1 FROM SalesOrderHeader E1</code></td>
 			</tr>
+			<tr>
+				<td width=20%>Read operation on Material</td>
+				<td width=40%><a
+					href="SalesOrderProcessing.svc/Materials(111L)" target="_blank">SalesOrderProcessing.svc/Materials(111L)
+				</a></td>
+				<td width=40%><code style="font-size: small">SELECT E1 FROM SalesOrderHeader E1</code></td>
+			</tr>
+			<tr>
+				<td width=20%>Read operation on Storage</td>
+				<td width=40%><a
+					href="SalesOrderProcessing.svc/Storages(MaterialId=111L,StoreName='Test_Store_1')" target="_blank">SalesOrderProcessing.svc/Storages(MaterialId=111L,StoreName='Test_Store_1')
+				</a></td>
+				<td width=40%><code style="font-size: small">SELECT E1 FROM SalesOrderHeader E1</code></td>
+			</tr>
+			
 		</table>
 	</div>
 	
@@ -388,7 +401,7 @@ body {
 			<tr>
 				<td width=20%>Storage-Material (ManyToMany)</td>
 				<td width=40%><a
-					href="SalesOrderProcessing.svc/Storages(MaterialId=111,StoreName='Test_Store_1')/MaterialDetails" target="_blank">SalesOrderProcessing.svc/Storages(MaterialId=111,StoreName='Test_Store_1')/MaterialDetails
+					href="SalesOrderProcessing.svc/Storages(MaterialId=111L,StoreName='Test_Store_1')/MaterialDetails" target="_blank">SalesOrderProcessing.svc/Storages(MaterialId=111L,StoreName='Test_Store_1')/MaterialDetails
 				</a></td>
 				<td width=40%><code style="font-size: small">SELECT E1 FROM SalesOrderHeader E1</code></td>
 			</tr>
