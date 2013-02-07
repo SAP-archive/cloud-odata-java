@@ -34,7 +34,7 @@ public class MyParserTool
     }
 
     final String info = "GetSerialized(" + expression + ")-->";
-    System.out.println("  " + info + "Expected: " + expected + " Actual: " + actual);
+//    System.out.println("  " + info + "Expected: " + expected + " Actual: " + actual);
 
     assertEquals(info, expected, actual);
     return this;
