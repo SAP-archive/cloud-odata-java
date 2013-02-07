@@ -65,7 +65,7 @@ public class BasicEntityProvider {
   /**
    * 
    * @param content
-   * @return
+   * @return text as string from <code>InputStream</code>
    * @throws EntityProviderException
    */
   private String readText(InputStream content) throws EntityProviderException {
@@ -189,7 +189,7 @@ public class BasicEntityProvider {
    * Writes the metadata in XML format. Predefined namespaces is of type Map{@literal <}prefix,namespace{@literal >} and may be null or an empty Map.
    * @param schemas
    * @param predefinedNamespaces
-   * @return
+   * @return resulting {@link ODataResponse} with written metadata content
    * @throws EntityProviderException
    */
   public ODataResponse writeMetadata(List<Schema> schemas, Map<String, String> predefinedNamespaces) throws EntityProviderException {

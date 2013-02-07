@@ -50,7 +50,7 @@ public class MessageService {
     /**
      * Get language as defined in RFC 4646 based on {@link Locale}.
      * 
-     * @return
+     * @return the language label
      */
     public String getLang() {
       Locale locale = getLocale();
@@ -118,7 +118,7 @@ public class MessageService {
    * 
    * @param key
    * @param replacements
-   * @return
+   * @return the message
    */
   private Message getMessage(String key, Object... replacements) {
     String value = null;

@@ -27,7 +27,7 @@ public interface OrderByParser
 {
   /**
    * Parses a $orderby expression string and creates an $orderby expression tree
-   * @param expression
+   * @param orderByExpression
    *   The $orderby expression string ( for example "name asc" ) to be parsed
    * @return
    *    The $orderby expression tree
