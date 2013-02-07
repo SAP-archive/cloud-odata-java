@@ -207,8 +207,7 @@ body {
 					href="SalesOrderProcessing.svc/SalesOrderHeaders?$filter=CreationDate eq datetime'2013-01-01T00:00:00'"
 					target="_blank">SalesOrderProcessing.svc/SalesOrderHeaders?$filter=CreationDate
 						eq datetime'2013-01-01T00:00:00'</a></td>
-				<td width=60%><code style="font-size: small">SELECT E1 FROM SalesOrderHeader E1
-						WHERE E1.creationDate = d'xx'</code></td>
+				<td width=60%><code style="font-size: small">SELECT E1 FROM SalesOrderHeader E1 WHERE E1.creationDate = {d '2013-01-01'}</code></td>
 			</tr>
 			<tr>
 				<td>Query for Sales Order with Buyer Address House number = 7</td>
@@ -216,7 +215,7 @@ body {
 					href="SalesOrderProcessing.svc/SalesOrderHeaders?$filter=BuyerAddress/HouseNumber eq 7"
 					target="_blank">SalesOrderProcessing.svc/SalesOrderHeaders?$filter=BuyerAddress/HouseNumber
 						eq 7 </a></td>
-				<td width=60%><code style="font-size: small"> </code></td>
+				<td width=60%><code style="font-size: small">SELECT E1 FROM SalesOrderHeader E1 WHERE E1.buyerAddress.houseNumber = 7</code></td>
 			</tr>
 			<tr>
 				<td>Query for SalesOrders with buyer id less than 5 and Buyer
@@ -262,16 +261,14 @@ body {
 				<td>Query for top 3 SalesOrders</td>
 				<td><a href="SalesOrderProcessing.svc/SalesOrderHeaders?$top=3"
 					target="_blank">SalesOrderProcessing.svc/SalesOrderHeaders?$top=3</a></td>
-				<td width=60%><code style="font-size: small">SELECT E1 FROM SalesOrderHeader E1
-						ORDERBY E1.soId </code></td>
+				<td width=60%><code style="font-size: small">SELECT E1 FROM SalesOrderHeader E1</code></td>
 			</tr>
 			<tr>
 				<td>Query for SalesOrders and Skip top 3</td>
 				<td><a
 					href="SalesOrderProcessing.svc/SalesOrderHeaders?$skip=2"
 					target="_blank">SalesOrderProcessing.svc/SalesOrderHeaders?$skip=2</a></td>
-				<td width=60%><code style="font-size: small">SELECT E1 FROM SalesOrderHeader E1
-						ORDERBY E1.soId </code></td>
+				<td width=60%><code style="font-size: small">SELECT E1 FROM SalesOrderHeader E1</code></td>
 			</tr>
 			<tr>
 				<td>Query for SalesOrders and count Number of Sales Orders
@@ -318,28 +315,28 @@ body {
 				<td width=40%><a
 					href="SalesOrderProcessing.svc/SalesOrderHeaders(1L)" target="_blank">SalesOrderProcessing.svc/SalesOrderHeaders(1L)
 				</a></td>
-				<td width=40%><code style="font-size: small">SELECT E1 FROM SalesOrderHeader E1</code></td>
+				<td width=40%><code style="font-size: small">SELECT E1 FROM SalesOrderHeader E1 WHERE E1.soId = 1</code></td>
 			</tr>
 			<tr>
 				<td width=20%>Read operation on SalesOrderItem</td>
 				<td width=40%><a
 					href="SalesOrderProcessing.svc/SalesOrderItems(SoId=1L,LiId=111L)" target="_blank">SalesOrderProcessing.svc/SalesOrderItems(SoId=1L,LiId=111L)
 				</a></td>
-				<td width=40%><code style="font-size: small">SELECT E1 FROM SalesOrderHeader E1</code></td>
+				<td width=40%><code style="font-size: small">SELECT E1 FROM SalesOrderItem E1 WHERE E1.salesOrderItemKey.soId = 1 AND E1.salesOrderItemKey.liId = 111</code></td>
 			</tr>
 			<tr>
 				<td width=20%>Read operation on Material</td>
 				<td width=40%><a
 					href="SalesOrderProcessing.svc/Materials(111L)" target="_blank">SalesOrderProcessing.svc/Materials(111L)
 				</a></td>
-				<td width=40%><code style="font-size: small">SELECT E1 FROM SalesOrderHeader E1</code></td>
+				<td width=40%><code style="font-size: small">SELECT E1 FROM Material E1 WHERE E1.materialId = 111</code></td>
 			</tr>
 			<tr>
 				<td width=20%>Read operation on Storage</td>
 				<td width=40%><a
 					href="SalesOrderProcessing.svc/Storages(MaterialId=111L,StoreName='Test_Store_1')" target="_blank">SalesOrderProcessing.svc/Storages(MaterialId=111L,StoreName='Test_Store_1')
 				</a></td>
-				<td width=40%><code style="font-size: small">SELECT E1 FROM SalesOrderHeader E1</code></td>
+				<td width=40%><code style="font-size: small">SELECT E1 FROM Storage E1 WHERE E1.storageKey.materialId = 111 AND E1.storageKey.storeName = 'Test_Store_1'</code></td>
 			</tr>
 			
 		</table>
@@ -371,7 +368,7 @@ body {
 				<td width=40%><a
 					href="SalesOrderProcessing.svc/SalesOrderHeaders(1L)/SalesOrderItemDetails" target="_blank">SalesOrderProcessing.svc/SalesOrderHeaders(1L)/SalesOrderItemDetails
 				</a></td>
-				<td width=40%><code style="font-size: small">SELECT E1 FROM SalesOrderHeader E1</code></td>
+				<td width=40%><code style="font-size: small">SELECT R1 FROM SalesOrderHeader E1 JOIN E1.salesOrderItem R1 WHERE E1.soId = 1</code></td>
 			</tr>
 			
 			<tr>
@@ -379,7 +376,7 @@ body {
 				<td width=40%><a
 					href="SalesOrderProcessing.svc/SalesOrderItems(SoId=1L,LiId=111L)/SalesOrderHeaderDetails" target="_blank">SalesOrderProcessing.svc/SalesOrderItems(SoId=1L,LiId=111L)/SalesOrderHeaderDetails
 				</a></td>
-				<td width=40%><code style="font-size: small">SELECT E1 FROM SalesOrderHeader E1</code></td>
+				<td width=40%><code style="font-size: small">SELECT R1 FROM SalesOrderItem E1 JOIN E1.salesOrderHeader R1 WHERE E1.salesOrderItemKey.soId = 1 AND E1.salesOrderItemKey.liId = 111</code></td>
 			</tr>
 			
 			<tr>
@@ -387,7 +384,7 @@ body {
 				<td width=40%><a
 					href="SalesOrderProcessing.svc/SalesOrderItems(SoId=1L,LiId=111L)/MaterialDetails" target="_blank">SalesOrderProcessing.svc/SalesOrderItems(SoId=1L,LiId=111L)/MaterialDetails
 				</a></td>
-				<td width=40%><code style="font-size: small">SELECT E1 FROM SalesOrderHeader E1</code></td>
+				<td width=40%><code style="font-size: small">SELECT R1 FROM SalesOrderItem E1 JOIN E1.material R1 WHERE E1.salesOrderItemKey.soId = 1 AND E1.salesOrderItemKey.liId = 111</code></td>
 			</tr>
 			
 			<tr>
@@ -395,7 +392,7 @@ body {
 				<td width=40%><a
 					href="SalesOrderProcessing.svc/Materials(111L)/StorageDetails" target="_blank">SalesOrderProcessing.svc/Materials(111L)/StorageDetails
 				</a></td>
-				<td width=40%><code style="font-size: small">SELECT E1 FROM SalesOrderHeader E1</code></td>
+				<td width=40%><code style="font-size: small">SELECT R1 FROM Material E1 JOIN E1.storage R1 WHERE E1.materialId = 111</code></td>
 			</tr>
 			
 			<tr>
@@ -403,7 +400,7 @@ body {
 				<td width=40%><a
 					href="SalesOrderProcessing.svc/Storages(MaterialId=111L,StoreName='Test_Store_1')/MaterialDetails" target="_blank">SalesOrderProcessing.svc/Storages(MaterialId=111L,StoreName='Test_Store_1')/MaterialDetails
 				</a></td>
-				<td width=40%><code style="font-size: small">SELECT E1 FROM SalesOrderHeader E1</code></td>
+				<td width=40%><code style="font-size: small">SELECT R1 FROM Storage E1 JOIN E1.material R1 WHERE E1.storageKey.materialId = 111 AND E1.storageKey.storeName = 'Test_Store_1'</code></td>
 			</tr>
 			
 			<tr>
