@@ -35,8 +35,6 @@ public class AtomFeedProducerTest extends AbstractProviderTest {
 
   @Before
   public void before() throws Exception {
-    super.before();
-
     initializeRoomData(1);
 
     view = mock(GetEntitySetUriInfo.class);

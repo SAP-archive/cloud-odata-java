@@ -136,7 +136,7 @@ public class ListsProcessor extends ODataSingleProcessor {
           && uriInfo.getTop() == null) // applySystemQueryOptions did not sort
         sortInDefaultOrder(entitySet, data);
       final EdmEntityContainer entityContainer = entitySet.getEntityContainer();
-      // TODO: Percent-encode "next" link
+      // TODO: Percent-encode "next" link and add navigation path
       nextLink = (entityContainer.isDefaultEntityContainer() ? "" : entityContainer.getName() + Edm.DELIMITER)
           + entitySet.getName()
           + "?$skiptoken=" + getSkipToken(entitySet, data.get(SERVER_PAGING_SIZE))
