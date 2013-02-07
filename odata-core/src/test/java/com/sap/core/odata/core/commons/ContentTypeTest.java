@@ -482,4 +482,12 @@ public class ContentTypeTest extends BaseTest {
     assertEquals(-1, t1.compareWildcardCounts(t2));
     assertEquals(1, t2.compareWildcardCounts(t1));
   }
+
+  @Test
+  public void testNonEqualCharset() {
+    ContentType t1 = ContentType.create("aaa/bbb;charset=c1");
+    ContentType t2 = ContentType.create("aaa/bbb;charset=c2");
+
+    assertFalse(t1.equals(t2));
+  }
 }
