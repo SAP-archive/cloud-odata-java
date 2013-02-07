@@ -3,6 +3,13 @@ package com.sap.core.odata.processor.api.jpa.exception;
 import com.sap.core.odata.api.exception.MessageReference;
 import com.sap.core.odata.processor.api.jpa.factory.ODataJPAFactory;
 
+/**
+ * The exception is thrown for any unexpected errors raising while
+ * accessing/transforming Java Persistence Models.
+ * 
+ * @author SAP AG
+ * 
+ */
 public class ODataJPAModelException extends ODataJPAException {
 
 	public static final MessageReference INVALID_ENTITY_TYPE = createMessageReference(
@@ -28,21 +35,26 @@ public class ODataJPAModelException extends ODataJPAException {
 	private ODataJPAModelException(String localizedMessage, Throwable e) {
 		super(localizedMessage, e);
 	}
-
+	
+	/**
+	 * The method creates an ODataJPAModelException Object
+	 * @param messageReference is a <b>mandatory</b> parameter 
+	 * @param e
+	 * @return
+	 * @throws ODataJPARuntimeException
+	 */
 	public static ODataJPAModelException throwException(
-			MessageReference messageReference, Throwable e) throws ODataJPARuntimeException {
-		
+			MessageReference messageReference, Throwable e)
+			throws ODataJPARuntimeException {
+
 		ODataJPAMessageService messageService = ODataJPAFactory.createFactory()
-				.getODataJPAAccessFactory().getODataJPAMessageService(DEFAULT_LOCALE);
-		
+				.getODataJPAAccessFactory()
+				.getODataJPAMessageService(DEFAULT_LOCALE);
+
 		String message = messageService.getLocalizedMessage(messageReference);
-		
+
 		return new ODataJPAModelException(message, e);
 	}
-
-	/**
-	 * 
-	 */
 
 	private static final long serialVersionUID = 7940106375606950703L;
 

@@ -6,7 +6,7 @@ import com.sap.core.odata.processor.api.jpa.access.JPAEdmBuilder;
 
 /**
  * <p>
- * A Base View on Java Persistence Model and Entity Data Model Association.
+ * A base view on Java Persistence Model and Entity Data Model.
  * </p>
  * <p>
  * The implementation of the view acts as a base container for containers of

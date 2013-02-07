@@ -7,7 +7,7 @@ import com.sap.core.odata.api.edm.provider.AssociationSet;
 
 /**
  * <p>
- * A View on Java Persistence Entity Relationship and Entity Data Model
+ * A view on Java Persistence Entity Relationship and Entity Data Model
  * Association Set.
  * </p>
  * <p>
@@ -19,7 +19,7 @@ import com.sap.core.odata.api.edm.provider.AssociationSet;
  * @author SAP AG
  *         <p>
  * @DoNotImplement
- * 
+ * @see JPAEdmAssociationView
  */
 public interface JPAEdmAssociationSetView extends JPAEdmBaseView {
 
@@ -36,7 +36,7 @@ public interface JPAEdmAssociationSetView extends JPAEdmBaseView {
 	/**
 	 * The method returns an association set that is currently being processed.
 	 * 
-	 * @return an {@link AssociationSet}
+	 * @return an instance of type {@link AssociationSet}
 	 */
 	AssociationSet getEdmAssociationSet();
 
@@ -44,7 +44,7 @@ public interface JPAEdmAssociationSetView extends JPAEdmBaseView {
 	 * The method returns an association from which the association set is
 	 * currently being processed.
 	 * 
-	 * @return an {@link Association}
+	 * @return an instance of type {@link Association}
 	 */
 	Association getEdmAssociation();
 

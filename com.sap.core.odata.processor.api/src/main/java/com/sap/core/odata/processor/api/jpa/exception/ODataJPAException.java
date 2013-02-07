@@ -17,7 +17,7 @@ public abstract class ODataJPAException extends ODataException {
 	protected ODataJPAException(String localizedMessage, Throwable e) {
 		super(localizedMessage, e);
 	}
-
+	
 	protected static MessageReference createMessageReference(
 			Class<? extends ODataJPAException> clazz, String messageReferenceKey) {
 		return MessageReference.create(clazz, messageReferenceKey);

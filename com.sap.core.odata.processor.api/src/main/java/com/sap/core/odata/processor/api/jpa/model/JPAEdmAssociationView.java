@@ -25,6 +25,9 @@ import com.sap.core.odata.api.edm.provider.Association;
  * @author SAP AG
  *         <p>
  * @DoNotImplement
+ * @see 
+ * {@link JPAEdmAssociationSetView}, 
+ * {@link JPAEdmReferentialConstraintView}
  * 
  */
 public interface JPAEdmAssociationView extends JPAEdmBaseView {

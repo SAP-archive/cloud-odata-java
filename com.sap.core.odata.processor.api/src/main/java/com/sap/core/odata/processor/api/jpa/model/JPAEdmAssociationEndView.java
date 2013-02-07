@@ -1,13 +1,10 @@
 package com.sap.core.odata.processor.api.jpa.model;
 
-import com.sap.core.odata.api.edm.EdmMultiplicity;
-import com.sap.core.odata.api.edm.FullQualifiedName;
-import com.sap.core.odata.api.edm.provider.Association;
 import com.sap.core.odata.api.edm.provider.AssociationEnd;
 
 /**
  * <p>
- * A View on Java Persistence Entity Relationship and Entity Data Model
+ * A view on Java Persistence Entity Relationship and Entity Data Model
  * Association End.
  * </p>
  * <p>
@@ -19,24 +16,25 @@ import com.sap.core.odata.api.edm.provider.AssociationEnd;
  * @author SAP AG
  *         <p>
  * @DoNotImplement
+ * @see JPAEdmAssociationView
  * 
  */
 public interface JPAEdmAssociationEndView extends JPAEdmBaseView {
 
 	/**
-	 * 
+	 * The method gets the one of the association ends present in the container. 
 	 * @return one of the {@link AssociationEnd} for an {@link Association}
 	 */
 	AssociationEnd getEdmAssociationEnd2();
 
 	/**
-	 * 
+	 * The method gets the other association end present in the container.
 	 * @return one of the {@link AssociationEnd} for an {@link Association}
 	 */
 	AssociationEnd getEdmAssociationEnd1();
 
 	/**
-	 * Method compares two ends {<b>end1, end2</b>} of an {@link AssociationEnd}
+	 * The method compares two ends {<b>end1, end2</b>} of an {@link AssociationEnd}
 	 * against its two ends.
 	 * 
 	 * The Method compares the following properties in each end for equality <i>
