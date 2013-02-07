@@ -28,6 +28,20 @@
 			</plugin>
 		</plugins>
 	</build>
+	
+		<profiles>
+		<profile>
+			<id>coverage</id>
+			<activation>
+				<property>
+					<name>ldi.parent.emma-coverage</name>
+				</property>
+			</activation>
+			<properties>
+				<coverage.report.excludeFromCoverageDataCreation>true</coverage.report.excludeFromCoverageDataCreation>
+			</properties>
+		</profile>
+	</profiles>
 
 	<dependencies>
 		<dependency>
