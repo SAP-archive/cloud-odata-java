@@ -11,7 +11,7 @@ import com.sap.core.odata.api.uri.PathInfo;
  * Compilation of generic context objects. 
   *
  * @author SAP AG
- * @DoNotImplement
+ * @com.sap.core.odata.DoNotImplement
  */
 public interface ODataContext {
 

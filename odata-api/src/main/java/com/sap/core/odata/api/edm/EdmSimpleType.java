@@ -36,7 +36,7 @@ package com.sap.core.odata.api.edm;
  * <code>Time</code> can have a <code>Precision</code> facet.
  * <code>Decimal</code> can have the facets <code>Precision</code> and <code>Scale</code>.</p> 
  *
- * @DoNotImplement
+ * @com.sap.core.odata.DoNotImplement
  * @author SAP AG
  */
 public interface EdmSimpleType extends EdmType {

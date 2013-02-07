@@ -188,9 +188,9 @@
 						<configuration>
 							<tags>
 								<tag>
-									<name>DoNotImplement</name>
+									<name>com.sap.core.odata.DoNotImplement</name>
 									<placement>a</placement>
-									<head>Do not implement this interface.</head>
+									<head>Do not implement this interface or class to avoid incompatibility issues.</head>
 								</tag>
 							</tags>
 							<additionalJOptions>
