@@ -3,7 +3,6 @@ package com.sap.core.odata.fit.ref;
 import static org.custommonkey.xmlunit.XMLAssert.assertXpathEvaluatesTo;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 
 import org.apache.http.HttpResponse;
 import org.junit.Test;
@@ -73,7 +72,7 @@ public class EntryXmlChangeTest extends AbstractRefXmlTest {
     checkMediaType(response, HttpContentType.APPLICATION_ATOM_XML_UTF8 + "; type=entry");
     assertNotNull(response.getFirstHeader(HttpHeaders.LOCATION));
     // assertEquals(getEndpoint() + "Employees('7')", response.getFirstHeader(HttpHeaders.LOCATION).getValue());
-    assertTrue(getBody(response).contains("EmployeeId>7<"));
+    assertXpathEvaluatesTo("7", "/atom:entry/m:properties/d:EmployeeId", getBody(response));
     response = callUri("Employees('7')/$value");
     checkMediaType(response, HttpContentType.TEXT_PLAIN);
     assertEquals("plain text", getBody(response));

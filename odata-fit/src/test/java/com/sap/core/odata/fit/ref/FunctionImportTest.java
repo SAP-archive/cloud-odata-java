@@ -1,6 +1,7 @@
 package com.sap.core.odata.fit.ref;
 
 import static org.custommonkey.xmlunit.XMLAssert.assertXpathEvaluatesTo;
+import static org.custommonkey.xmlunit.XMLAssert.assertXpathExists;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -31,11 +32,11 @@ public class FunctionImportTest extends AbstractRefXmlTest {
 
     response = callUri("AllLocations");
     checkMediaType(response, HttpContentType.APPLICATION_XML_UTF8);
-    assertXpathEvaluatesTo(CITY_2_NAME, "/d:AllLocations/d:element[1]/d:City/d:CityName", getBody(response));
+    assertXpathExists("/d:AllLocations/d:element/d:City[d:CityName=\"" + CITY_2_NAME + "\"]", getBody(response));
 
     response = callUri("AllUsedRoomIds");
     checkMediaType(response, HttpContentType.APPLICATION_XML_UTF8);
-    assertXpathEvaluatesTo("3", "/d:AllUsedRoomIds/d:element[3]", getBody(response));
+    assertXpathExists("/d:AllUsedRoomIds[d:element=\"3\"]", getBody(response));
 
     response = callUri("MaximalAge");
     checkMediaType(response, HttpContentType.APPLICATION_XML_UTF8);
