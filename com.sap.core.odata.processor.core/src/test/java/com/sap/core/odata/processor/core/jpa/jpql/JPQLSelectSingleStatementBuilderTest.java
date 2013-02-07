@@ -20,11 +20,11 @@ import com.sap.core.odata.api.edm.EdmSimpleType;
 import com.sap.core.odata.api.uri.KeyPredicate;
 import com.sap.core.odata.api.uri.SelectItem;
 import com.sap.core.odata.api.uri.info.GetEntityUriInfo;
-import com.sap.core.odata.processor.api.exception.ODataJPAModelException;
-import com.sap.core.odata.processor.api.exception.ODataJPARuntimeException;
-import com.sap.core.odata.processor.api.jpql.JPQLContext;
-import com.sap.core.odata.processor.api.jpql.JPQLContextType;
-import com.sap.core.odata.processor.api.jpql.JPQLContext.JPQLContextBuilder;
+import com.sap.core.odata.processor.api.jpa.exception.ODataJPAModelException;
+import com.sap.core.odata.processor.api.jpa.exception.ODataJPARuntimeException;
+import com.sap.core.odata.processor.api.jpa.jpql.JPQLContext;
+import com.sap.core.odata.processor.api.jpa.jpql.JPQLContextType;
+import com.sap.core.odata.processor.api.jpa.jpql.JPQLContext.JPQLContextBuilder;
 import com.sap.core.odata.processor.core.jpa.jpql.JPQLSelectSingleContext;
 import com.sap.core.odata.processor.core.jpa.jpql.JPQLSelectSingleStatementBuilder;
 

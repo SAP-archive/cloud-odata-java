@@ -18,11 +18,11 @@ import com.sap.core.odata.api.edm.EdmMapping;
 import com.sap.core.odata.api.edm.EdmProperty;
 import com.sap.core.odata.api.edm.EdmSimpleType;
 import com.sap.core.odata.api.uri.KeyPredicate;
-import com.sap.core.odata.processor.api.access.JPAJoinClause;
-import com.sap.core.odata.processor.api.exception.ODataJPARuntimeException;
-import com.sap.core.odata.processor.api.jpql.JPQLContextType;
-import com.sap.core.odata.processor.api.jpql.JPQLJoinSelectSingleContextView;
-import com.sap.core.odata.processor.api.jpql.JPQLStatement;
+import com.sap.core.odata.processor.api.jpa.access.JPAJoinClause;
+import com.sap.core.odata.processor.api.jpa.exception.ODataJPARuntimeException;
+import com.sap.core.odata.processor.api.jpa.jpql.JPQLContextType;
+import com.sap.core.odata.processor.api.jpa.jpql.JPQLJoinSelectSingleContextView;
+import com.sap.core.odata.processor.api.jpa.jpql.JPQLStatement;
 import com.sap.core.odata.processor.core.jpa.jpql.JPQLJoinSelectSingleStatementBuilder;
 
 public class JPQLJoinSelectSingleStatementBuilderTest {

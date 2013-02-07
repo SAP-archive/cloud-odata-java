@@ -29,8 +29,8 @@ import com.sap.core.odata.api.uri.expression.MemberExpression;
 import com.sap.core.odata.api.uri.expression.PropertyExpression;
 import com.sap.core.odata.api.uri.expression.UnaryExpression;
 import com.sap.core.odata.api.uri.expression.UnaryOperator;
-import com.sap.core.odata.processor.api.exception.ODataJPARuntimeException;
-import com.sap.core.odata.processor.api.jpql.JPQLStatement.Operator;
+import com.sap.core.odata.processor.api.jpa.exception.ODataJPARuntimeException;
+import com.sap.core.odata.processor.api.jpa.jpql.JPQLStatement.Operator;
 
 public class ODataExpressionParserTest {
 	private static final String TABLE_ALIAS = "gwt1"; //$NON-NLS-1$

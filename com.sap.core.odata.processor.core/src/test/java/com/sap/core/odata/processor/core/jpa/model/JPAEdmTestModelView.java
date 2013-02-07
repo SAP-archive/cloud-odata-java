@@ -21,22 +21,22 @@ import com.sap.core.odata.api.edm.provider.Property;
 import com.sap.core.odata.api.edm.provider.ReferentialConstraint;
 import com.sap.core.odata.api.edm.provider.Schema;
 import com.sap.core.odata.api.edm.provider.SimpleProperty;
-import com.sap.core.odata.processor.api.access.JPAEdmBuilder;
-import com.sap.core.odata.processor.api.model.JPAEdmAssociationEndView;
-import com.sap.core.odata.processor.api.model.JPAEdmAssociationSetView;
-import com.sap.core.odata.processor.api.model.JPAEdmAssociationView;
-import com.sap.core.odata.processor.api.model.JPAEdmBaseView;
-import com.sap.core.odata.processor.api.model.JPAEdmComplexPropertyView;
-import com.sap.core.odata.processor.api.model.JPAEdmComplexTypeView;
-import com.sap.core.odata.processor.api.model.JPAEdmEntityContainerView;
-import com.sap.core.odata.processor.api.model.JPAEdmEntitySetView;
-import com.sap.core.odata.processor.api.model.JPAEdmEntityTypeView;
-import com.sap.core.odata.processor.api.model.JPAEdmKeyView;
-import com.sap.core.odata.processor.api.model.JPAEdmModelView;
-import com.sap.core.odata.processor.api.model.JPAEdmNavigationPropertyView;
-import com.sap.core.odata.processor.api.model.JPAEdmPropertyView;
-import com.sap.core.odata.processor.api.model.JPAEdmReferentialConstraintView;
-import com.sap.core.odata.processor.api.model.JPAEdmSchemaView;
+import com.sap.core.odata.processor.api.jpa.access.JPAEdmBuilder;
+import com.sap.core.odata.processor.api.jpa.model.JPAEdmAssociationEndView;
+import com.sap.core.odata.processor.api.jpa.model.JPAEdmAssociationSetView;
+import com.sap.core.odata.processor.api.jpa.model.JPAEdmAssociationView;
+import com.sap.core.odata.processor.api.jpa.model.JPAEdmBaseView;
+import com.sap.core.odata.processor.api.jpa.model.JPAEdmComplexPropertyView;
+import com.sap.core.odata.processor.api.jpa.model.JPAEdmComplexTypeView;
+import com.sap.core.odata.processor.api.jpa.model.JPAEdmEntityContainerView;
+import com.sap.core.odata.processor.api.jpa.model.JPAEdmEntitySetView;
+import com.sap.core.odata.processor.api.jpa.model.JPAEdmEntityTypeView;
+import com.sap.core.odata.processor.api.jpa.model.JPAEdmKeyView;
+import com.sap.core.odata.processor.api.jpa.model.JPAEdmModelView;
+import com.sap.core.odata.processor.api.jpa.model.JPAEdmNavigationPropertyView;
+import com.sap.core.odata.processor.api.jpa.model.JPAEdmPropertyView;
+import com.sap.core.odata.processor.api.jpa.model.JPAEdmReferentialConstraintView;
+import com.sap.core.odata.processor.api.jpa.model.JPAEdmSchemaView;
 
 public class JPAEdmTestModelView implements
 JPAEdmAssociationEndView,

@@ -6,12 +6,12 @@ import java.util.List;
 import com.sap.core.odata.api.edm.FullQualifiedName;
 import com.sap.core.odata.api.edm.provider.EntitySet;
 import com.sap.core.odata.api.edm.provider.EntityType;
-import com.sap.core.odata.processor.api.access.JPAEdmBuilder;
-import com.sap.core.odata.processor.api.exception.ODataJPAModelException;
-import com.sap.core.odata.processor.api.exception.ODataJPARuntimeException;
-import com.sap.core.odata.processor.api.model.JPAEdmEntitySetView;
-import com.sap.core.odata.processor.api.model.JPAEdmEntityTypeView;
-import com.sap.core.odata.processor.api.model.JPAEdmSchemaView;
+import com.sap.core.odata.processor.api.jpa.access.JPAEdmBuilder;
+import com.sap.core.odata.processor.api.jpa.exception.ODataJPAModelException;
+import com.sap.core.odata.processor.api.jpa.exception.ODataJPARuntimeException;
+import com.sap.core.odata.processor.api.jpa.model.JPAEdmEntitySetView;
+import com.sap.core.odata.processor.api.jpa.model.JPAEdmEntityTypeView;
+import com.sap.core.odata.processor.api.jpa.model.JPAEdmSchemaView;
 import com.sap.core.odata.processor.core.jpa.access.model.JPAEdmNameBuilder;
 
 public class JPAEdmEntitySet extends JPAEdmBaseViewImpl implements

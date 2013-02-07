@@ -10,13 +10,14 @@ import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
 import com.sap.core.odata.api.exception.MessageReference;
-import com.sap.core.odata.processor.api.exception.ODataJPAMessageService;
+import com.sap.core.odata.processor.api.jpa.exception.ODataJPAMessageService;
 
 public class ODataJPAMessageServiceDefault implements ODataJPAMessageService {
 
 	private static final String BUNDLE_NAME = "jpaprocessor_msg"; //$NON-NLS-1$
 	private static final Map<Locale, ODataJPAMessageService> LOCALE_2_MESSAGE_SERVICE = new HashMap<Locale, ODataJPAMessageService>();
-	
+	private static final ResourceBundle defaultResourceBundle = ResourceBundle
+			.getBundle(BUNDLE_NAME);
 	private final ResourceBundle resourceBundle;
 	private final Locale lanLocale;
 
@@ -30,7 +31,11 @@ public class ODataJPAMessageServiceDefault implements ODataJPAMessageService {
 		try {
 			value = getMessage(key);
 			StringBuilder builder = new StringBuilder();
-			Formatter f = new Formatter(builder, lanLocale);
+			Formatter f = null;
+			if (lanLocale == null)
+				f = new Formatter();
+			else
+				f = new Formatter(builder, lanLocale);
 			f.format(value, contentAsArray);
 			f.close();
 			return builder.toString();
@@ -44,16 +49,27 @@ public class ODataJPAMessageServiceDefault implements ODataJPAMessageService {
 		}
 	}
 
-	private ODataJPAMessageServiceDefault(Locale locale) {
-		resourceBundle = ResourceBundle.getBundle(BUNDLE_NAME, locale);
+	private ODataJPAMessageServiceDefault(ResourceBundle resourceBundle,
+			Locale locale) {
+		this.resourceBundle = resourceBundle;
 		lanLocale = locale;
 	}
 
 	public static ODataJPAMessageService getInstance(Locale locale) {
-		ODataJPAMessageService messagesInstance = LOCALE_2_MESSAGE_SERVICE.get(locale);
+		ODataJPAMessageService messagesInstance = LOCALE_2_MESSAGE_SERVICE
+				.get(locale);
 		if (messagesInstance == null) {
-			messagesInstance = new ODataJPAMessageServiceDefault(locale);
-			LOCALE_2_MESSAGE_SERVICE.put(locale, messagesInstance);
+			ResourceBundle resourceBundle = ResourceBundle.getBundle(
+					BUNDLE_NAME, locale);
+			if (resourceBundle != null) {
+				messagesInstance = new ODataJPAMessageServiceDefault(
+						resourceBundle, locale);
+				LOCALE_2_MESSAGE_SERVICE.put(locale, messagesInstance);
+			} else if (defaultResourceBundle != null) {
+				messagesInstance = new ODataJPAMessageServiceDefault(
+						defaultResourceBundle, null);
+			}
+
 		}
 		return messagesInstance;
 	}

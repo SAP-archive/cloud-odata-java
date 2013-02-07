@@ -4,11 +4,11 @@ import javax.persistence.metamodel.Attribute.PersistentAttributeType;
 
 import com.sap.core.odata.api.edm.EdmMultiplicity;
 import com.sap.core.odata.api.edm.provider.AssociationEnd;
-import com.sap.core.odata.processor.api.access.JPAEdmBuilder;
-import com.sap.core.odata.processor.api.exception.ODataJPAModelException;
-import com.sap.core.odata.processor.api.model.JPAEdmAssociationEndView;
-import com.sap.core.odata.processor.api.model.JPAEdmEntityTypeView;
-import com.sap.core.odata.processor.api.model.JPAEdmPropertyView;
+import com.sap.core.odata.processor.api.jpa.access.JPAEdmBuilder;
+import com.sap.core.odata.processor.api.jpa.exception.ODataJPAModelException;
+import com.sap.core.odata.processor.api.jpa.model.JPAEdmAssociationEndView;
+import com.sap.core.odata.processor.api.jpa.model.JPAEdmEntityTypeView;
+import com.sap.core.odata.processor.api.jpa.model.JPAEdmPropertyView;
 import com.sap.core.odata.processor.core.jpa.access.model.JPAEdmNameBuilder;
 
 public class JPAEdmAssociationEnd extends JPAEdmBaseViewImpl implements

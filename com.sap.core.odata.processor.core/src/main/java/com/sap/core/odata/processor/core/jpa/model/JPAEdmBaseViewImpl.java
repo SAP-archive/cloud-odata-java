@@ -2,9 +2,9 @@ package com.sap.core.odata.processor.core.jpa.model;
 
 import javax.persistence.metamodel.Metamodel;
 
-import com.sap.core.odata.processor.api.ODataJPAContext;
-import com.sap.core.odata.processor.api.access.JPAEdmBuilder;
-import com.sap.core.odata.processor.api.model.JPAEdmBaseView;
+import com.sap.core.odata.processor.api.jpa.ODataJPAContext;
+import com.sap.core.odata.processor.api.jpa.access.JPAEdmBuilder;
+import com.sap.core.odata.processor.api.jpa.model.JPAEdmBaseView;
 
 public abstract class JPAEdmBaseViewImpl implements JPAEdmBaseView {
 	

@@ -11,8 +11,8 @@ import java.util.UUID;
 import org.junit.Test;
 
 import com.sap.core.odata.api.edm.EdmSimpleTypeKind;
-import com.sap.core.odata.processor.api.exception.ODataJPAModelException;
-import com.sap.core.odata.processor.api.exception.ODataJPARuntimeException;
+import com.sap.core.odata.processor.api.jpa.exception.ODataJPAModelException;
+import com.sap.core.odata.processor.api.jpa.exception.ODataJPARuntimeException;
 import com.sap.core.odata.processor.core.jpa.access.model.JPATypeConvertor;
 
 public class JPATypeConvertorTest {

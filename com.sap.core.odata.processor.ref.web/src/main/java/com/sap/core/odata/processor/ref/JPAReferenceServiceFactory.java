@@ -3,9 +3,9 @@ package com.sap.core.odata.processor.ref;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
-import com.sap.core.odata.processor.api.ODataJPAContext;
-import com.sap.core.odata.processor.api.ODataJPAServiceFactory;
-import com.sap.core.odata.processor.api.exception.ODataJPARuntimeException;
+import com.sap.core.odata.processor.api.jpa.ODataJPAContext;
+import com.sap.core.odata.processor.api.jpa.ODataJPAServiceFactory;
+import com.sap.core.odata.processor.api.jpa.exception.ODataJPARuntimeException;
 
 public class JPAReferenceServiceFactory extends ODataJPAServiceFactory{
 	

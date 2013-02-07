@@ -2,12 +2,12 @@ package com.sap.core.odata.processor.core.jpa.jpql;
 
 import java.util.List;
 
-import com.sap.core.odata.processor.api.access.JPAJoinClause;
-import com.sap.core.odata.processor.api.exception.ODataJPARuntimeException;
-import com.sap.core.odata.processor.api.jpql.JPQLContextView;
-import com.sap.core.odata.processor.api.jpql.JPQLJoinSelectSingleContextView;
-import com.sap.core.odata.processor.api.jpql.JPQLStatement;
-import com.sap.core.odata.processor.api.jpql.JPQLStatement.JPQLStatementBuilder;
+import com.sap.core.odata.processor.api.jpa.access.JPAJoinClause;
+import com.sap.core.odata.processor.api.jpa.exception.ODataJPARuntimeException;
+import com.sap.core.odata.processor.api.jpa.jpql.JPQLContextView;
+import com.sap.core.odata.processor.api.jpa.jpql.JPQLJoinSelectSingleContextView;
+import com.sap.core.odata.processor.api.jpa.jpql.JPQLStatement;
+import com.sap.core.odata.processor.api.jpa.jpql.JPQLStatement.JPQLStatementBuilder;
 
 public class JPQLJoinSelectSingleStatementBuilder extends JPQLStatementBuilder{
 

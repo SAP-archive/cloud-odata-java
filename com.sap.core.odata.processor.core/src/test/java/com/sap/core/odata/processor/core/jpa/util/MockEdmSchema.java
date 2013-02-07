@@ -20,7 +20,7 @@ import com.sap.core.odata.api.edm.provider.Property;
 import com.sap.core.odata.api.edm.provider.PropertyRef;
 import com.sap.core.odata.api.edm.provider.Schema;
 import com.sap.core.odata.api.edm.provider.SimpleProperty;
-import com.sap.core.odata.processor.api.model.JPAEdmMapping;
+import com.sap.core.odata.processor.api.jpa.model.JPAEdmMapping;
 import com.sap.core.odata.processor.core.jpa.model.JPAEdmMappingImpl;
 
 public class MockEdmSchema {

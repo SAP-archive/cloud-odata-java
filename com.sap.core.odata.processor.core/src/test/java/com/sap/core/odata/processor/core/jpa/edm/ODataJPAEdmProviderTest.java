@@ -17,7 +17,7 @@ import com.sap.core.odata.api.edm.provider.ComplexType;
 import com.sap.core.odata.api.edm.provider.EntityContainerInfo;
 import com.sap.core.odata.api.edm.provider.Schema;
 import com.sap.core.odata.api.exception.ODataException;
-import com.sap.core.odata.processor.api.exception.ODataJPAModelException;
+import com.sap.core.odata.processor.api.jpa.exception.ODataJPAModelException;
 import com.sap.core.odata.processor.core.jpa.edm.ODataJPAEdmProvider;
 import com.sap.core.odata.processor.core.jpa.model.JPAEdmModel;
 import com.sap.core.odata.processor.core.jpa.util.MockEdmSchema;

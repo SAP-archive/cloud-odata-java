@@ -5,7 +5,7 @@ import javax.persistence.EntityManagerFactory;
 import com.sap.core.odata.api.edm.provider.EdmProvider;
 import com.sap.core.odata.api.processor.ODataContext;
 import com.sap.core.odata.api.processor.ODataProcessor;
-import com.sap.core.odata.processor.api.ODataJPAContext;
+import com.sap.core.odata.processor.api.jpa.ODataJPAContext;
 
 public class ODataJPAContextImpl implements ODataJPAContext {
 	

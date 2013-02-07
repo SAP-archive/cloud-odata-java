@@ -6,15 +6,15 @@ import java.util.LinkedList;
 import java.util.List;
 
 import com.sap.core.odata.api.edm.provider.Association;
-import com.sap.core.odata.processor.api.access.JPAEdmBuilder;
-import com.sap.core.odata.processor.api.exception.ODataJPAModelException;
-import com.sap.core.odata.processor.api.exception.ODataJPARuntimeException;
-import com.sap.core.odata.processor.api.model.JPAEdmAssociationEndView;
-import com.sap.core.odata.processor.api.model.JPAEdmAssociationView;
-import com.sap.core.odata.processor.api.model.JPAEdmEntityTypeView;
-import com.sap.core.odata.processor.api.model.JPAEdmPropertyView;
-import com.sap.core.odata.processor.api.model.JPAEdmReferentialConstraintView;
-import com.sap.core.odata.processor.api.model.JPAEdmSchemaView;
+import com.sap.core.odata.processor.api.jpa.access.JPAEdmBuilder;
+import com.sap.core.odata.processor.api.jpa.exception.ODataJPAModelException;
+import com.sap.core.odata.processor.api.jpa.exception.ODataJPARuntimeException;
+import com.sap.core.odata.processor.api.jpa.model.JPAEdmAssociationEndView;
+import com.sap.core.odata.processor.api.jpa.model.JPAEdmAssociationView;
+import com.sap.core.odata.processor.api.jpa.model.JPAEdmEntityTypeView;
+import com.sap.core.odata.processor.api.jpa.model.JPAEdmPropertyView;
+import com.sap.core.odata.processor.api.jpa.model.JPAEdmReferentialConstraintView;
+import com.sap.core.odata.processor.api.jpa.model.JPAEdmSchemaView;
 import com.sap.core.odata.processor.core.jpa.access.model.JPAEdmNameBuilder;
 
 public class JPAEdmAssociation extends JPAEdmBaseViewImpl implements

@@ -9,12 +9,12 @@ import com.sap.core.odata.api.edm.EdmMapping;
 import com.sap.core.odata.api.edm.EdmNavigationProperty;
 import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.api.uri.NavigationSegment;
-import com.sap.core.odata.processor.api.access.JPAJoinClause;
-import com.sap.core.odata.processor.api.exception.ODataJPAModelException;
-import com.sap.core.odata.processor.api.exception.ODataJPARuntimeException;
-import com.sap.core.odata.processor.api.jpql.JPQLContext;
-import com.sap.core.odata.processor.api.jpql.JPQLContextType;
-import com.sap.core.odata.processor.api.jpql.JPQLJoinContextView;
+import com.sap.core.odata.processor.api.jpa.access.JPAJoinClause;
+import com.sap.core.odata.processor.api.jpa.exception.ODataJPAModelException;
+import com.sap.core.odata.processor.api.jpa.exception.ODataJPARuntimeException;
+import com.sap.core.odata.processor.api.jpa.jpql.JPQLContext;
+import com.sap.core.odata.processor.api.jpa.jpql.JPQLContextType;
+import com.sap.core.odata.processor.api.jpa.jpql.JPQLJoinContextView;
 import com.sap.core.odata.processor.core.jpa.access.data.ODataExpressionParser;
 
 public class JPQLJoinSelectContext extends JPQLSelectContext implements

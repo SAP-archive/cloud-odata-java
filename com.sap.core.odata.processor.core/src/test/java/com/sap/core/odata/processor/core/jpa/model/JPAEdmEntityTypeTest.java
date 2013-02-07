@@ -14,10 +14,10 @@ import javax.persistence.metamodel.Metamodel;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.sap.core.odata.processor.api.access.JPAEdmBuilder;
-import com.sap.core.odata.processor.api.model.JPAEdmEntityContainerView;
-import com.sap.core.odata.processor.api.model.JPAEdmEntitySetView;
-import com.sap.core.odata.processor.api.model.JPAEdmEntityTypeView;
+import com.sap.core.odata.processor.api.jpa.access.JPAEdmBuilder;
+import com.sap.core.odata.processor.api.jpa.model.JPAEdmEntityContainerView;
+import com.sap.core.odata.processor.api.jpa.model.JPAEdmEntitySetView;
+import com.sap.core.odata.processor.api.jpa.model.JPAEdmEntityTypeView;
 import com.sap.core.odata.processor.core.jpa.model.JPAEdmEntityType;
 import com.sap.core.odata.processor.core.jpa.model.mock.JPAEntityTypeMock;
 import com.sap.core.odata.processor.core.jpa.model.mock.JPAMetaModelMock;

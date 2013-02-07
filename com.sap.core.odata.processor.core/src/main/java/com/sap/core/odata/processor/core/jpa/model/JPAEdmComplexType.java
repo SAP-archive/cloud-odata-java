@@ -12,13 +12,13 @@ import com.sap.core.odata.api.edm.provider.ComplexType;
 import com.sap.core.odata.api.edm.provider.Mapping;
 import com.sap.core.odata.api.edm.provider.Property;
 import com.sap.core.odata.api.edm.provider.SimpleProperty;
-import com.sap.core.odata.processor.api.access.JPAEdmBuilder;
-import com.sap.core.odata.processor.api.exception.ODataJPAModelException;
-import com.sap.core.odata.processor.api.exception.ODataJPARuntimeException;
-import com.sap.core.odata.processor.api.model.JPAEdmComplexTypeView;
-import com.sap.core.odata.processor.api.model.JPAEdmMapping;
-import com.sap.core.odata.processor.api.model.JPAEdmPropertyView;
-import com.sap.core.odata.processor.api.model.JPAEdmSchemaView;
+import com.sap.core.odata.processor.api.jpa.access.JPAEdmBuilder;
+import com.sap.core.odata.processor.api.jpa.exception.ODataJPAModelException;
+import com.sap.core.odata.processor.api.jpa.exception.ODataJPARuntimeException;
+import com.sap.core.odata.processor.api.jpa.model.JPAEdmComplexTypeView;
+import com.sap.core.odata.processor.api.jpa.model.JPAEdmMapping;
+import com.sap.core.odata.processor.api.jpa.model.JPAEdmPropertyView;
+import com.sap.core.odata.processor.api.jpa.model.JPAEdmSchemaView;
 import com.sap.core.odata.processor.core.jpa.access.model.JPAEdmNameBuilder;
 
 public class JPAEdmComplexType extends JPAEdmBaseViewImpl implements
