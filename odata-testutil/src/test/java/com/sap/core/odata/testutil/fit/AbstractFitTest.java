@@ -47,7 +47,7 @@ public abstract class AbstractFitTest extends BaseTest {
       server.startServer(FitStaticServiceFactory.class);
     } catch (final ODataException e) {
       throw new TestutilException(e);
-    } finally {}
+    } 
   }
 
   @After

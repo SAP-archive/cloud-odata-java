@@ -42,7 +42,6 @@ public class ODataRootLocator {
   private ServletConfig servletConfig;
   @Context
   private HttpServletRequest servletRequest;
-  
 
   /**
    * Default root behavior which will delegate all paths to a ODataLocator.
@@ -55,42 +54,42 @@ public class ODataRootLocator {
    */
   @Path("/{pathSegments: .*}")
   public ODataLocator handleRequest(@PathParam("pathSegments") List<PathSegment> pathSegments,
-      @HeaderParam("X-HTTP-Method") String xHttpMethod, 
+      @HeaderParam("X-HTTP-Method") String xHttpMethod,
       @HeaderParam("X-HTTP-Method-Override") String xHttpMethodOverride
       ) throws ODataException, ClassNotFoundException, InstantiationException, IllegalAccessException {
-    
-    if (xHttpMethod != null && xHttpMethodOverride != null) {
-      
+
+    if ((xHttpMethod != null) && (xHttpMethodOverride != null)) {
+
       /*
        * X-HTTP-Method-Override : implemented by CXF
        * X-HTTP-Method          : implemented in ODataSubLocator:handlePost
        */
-      
+
       if (!xHttpMethod.equalsIgnoreCase(xHttpMethodOverride)) {
         throw new ODataBadRequestException(ODataBadRequestException.AMBIGUOUS_XMETHOD);
       }
     }
-    
-    ODataSubLocator odataLocator = new ODataSubLocator();
+
+    final ODataSubLocator odataLocator = new ODataSubLocator();
 
     if (servletRequest.getPathInfo() == null) {
       return handleRedirect();
     }
 
-    String factoryClassName = this.servletConfig.getInitParameter(ODataServiceFactory.FACTORY_LABEL);
+    final String factoryClassName = servletConfig.getInitParameter(ODataServiceFactory.FACTORY_LABEL);
     if (factoryClassName == null) {
       throw new ODataRuntimeException("servlet config missing: com.sap.core.odata.processor.factory");
     }
-    Class<?> factoryClass = Class.forName(factoryClassName);
-    ODataServiceFactory serviceFactory = (ODataServiceFactory) factoryClass.newInstance();
+    final Class<?> factoryClass = Class.forName(factoryClassName);
+    final ODataServiceFactory serviceFactory = (ODataServiceFactory) factoryClass.newInstance();
 
     int pathSplit = 0;
-    String pathSplitAsString = this.servletConfig.getInitParameter(ODataServiceFactory.PATH_SPLIT_LABEL);
+    final String pathSplitAsString = servletConfig.getInitParameter(ODataServiceFactory.PATH_SPLIT_LABEL);
     if (pathSplitAsString != null) {
       pathSplit = Integer.parseInt(pathSplitAsString);
     }
 
-    InitParameter param = odataLocator.new InitParameter();
+    final InitParameter param = odataLocator.new InitParameter();
     param.setServiceFactory(serviceFactory);
     param.setPathSegments(pathSegments);
     param.setHttpHeaders(httpHeaders);

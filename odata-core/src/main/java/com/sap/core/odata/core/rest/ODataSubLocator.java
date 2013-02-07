@@ -37,6 +37,7 @@ import com.sap.core.odata.api.ODataServiceVersion;
 import com.sap.core.odata.api.commons.ODataHttpHeaders;
 import com.sap.core.odata.api.exception.ODataBadRequestException;
 import com.sap.core.odata.api.exception.ODataException;
+import com.sap.core.odata.api.exception.ODataMessageException;
 import com.sap.core.odata.api.exception.ODataMethodNotAllowedException;
 import com.sap.core.odata.api.exception.ODataNotAcceptableException;
 import com.sap.core.odata.api.exception.ODataNotFoundException;
@@ -68,7 +69,7 @@ public final class ODataSubLocator implements ODataLocator {
 
   private UriParserImpl uriParser;
 
-  private ODataContextImpl context = new ODataContextImpl();
+  private final ODataContextImpl context = new ODataContextImpl();
 
   private Map<String, String> queryParameters;
 
@@ -128,12 +129,12 @@ public final class ODataSubLocator implements ODataLocator {
 
   @OPTIONS
   public Response handleOptions() throws ODataException {
-    throw new ODataMethodNotAllowedException(ODataMethodNotAllowedException.COMMON);
+    throw new ODataMethodNotAllowedException(ODataMessageException.COMMON);
   }
 
   @HEAD
   public Response handleHead() throws ODataException {
-    throw new ODataMethodNotAllowedException(ODataMethodNotAllowedException.COMMON);
+    throw new ODataMethodNotAllowedException(ODataMessageException.COMMON);
   }
 
   private Response handleHttpMethod(final ODataHttpMethod method) throws ODataException {
@@ -167,9 +168,9 @@ public final class ODataSubLocator implements ODataLocator {
     ContentType formatContentType = mapFormat(uriInfo);
     formatContentType = ensureCharsetIsSet(formatContentType);
 
-    Class<? extends ODataProcessor> processorFeature = dispatcher.mapUriTypeToProcessorFeature(uriInfo);
-    List<ContentType> supportedContentTypes = getSupportedContentTypes(processorFeature);
-    for (ContentType contentType : supportedContentTypes) {
+    final Class<? extends ODataProcessor> processorFeature = dispatcher.mapUriTypeToProcessorFeature(uriInfo);
+    final List<ContentType> supportedContentTypes = getSupportedContentTypes(processorFeature);
+    for (final ContentType contentType : supportedContentTypes) {
       if (contentType.equals(formatContentType)) {
         return formatContentType;
       }
@@ -196,7 +197,7 @@ public final class ODataSubLocator implements ODataLocator {
   }
 
   private ContentType mapFormat(final UriInfoImpl uriInfo) {
-    String format = uriInfo.getFormat();
+    final String format = uriInfo.getFormat();
     if ("xml".equals(format)) {
       return ContentType.APPLICATION_XML;
     } else if ("atom".equals(format)) {
@@ -213,21 +214,22 @@ public final class ODataSubLocator implements ODataLocator {
   }
 
   private ContentType doContentNegotiationForAcceptHeader(final UriInfoImpl uriInfo) throws ODataException {
-    Class<? extends ODataProcessor> processorFeature = dispatcher.mapUriTypeToProcessorFeature(uriInfo);
-    List<ContentType> supportedContentTypes = getSupportedContentTypes(processorFeature);
+    final Class<? extends ODataProcessor> processorFeature = dispatcher.mapUriTypeToProcessorFeature(uriInfo);
+    final List<ContentType> supportedContentTypes = getSupportedContentTypes(processorFeature);
     return contentNegotiation(acceptHeaderContentTypes, supportedContentTypes);
   }
 
   private List<ContentType> getSupportedContentTypes(Class<? extends ODataProcessor> processorFeature) throws ODataException {
-    List<ContentType> resultContentTypes = new ArrayList<ContentType>();
-    for (String contentType : service.getSupportedContentTypes(processorFeature))
+    final List<ContentType> resultContentTypes = new ArrayList<ContentType>();
+    for (final String contentType : service.getSupportedContentTypes(processorFeature)) {
       resultContentTypes.add(ContentType.create(contentType));
+    }
 
     return resultContentTypes;
   }
 
   ContentType contentNegotiation(List<ContentType> acceptedContentTypes, List<ContentType> supportedContentTypes) throws ODataException {
-    Set<ContentType> setSupported = new HashSet<ContentType>(supportedContentTypes);
+    final Set<ContentType> setSupported = new HashSet<ContentType>(supportedContentTypes);
 
     if (acceptedContentTypes.isEmpty()) {
       if (!setSupported.isEmpty()) {
@@ -236,9 +238,10 @@ public final class ODataSubLocator implements ODataLocator {
     } else {
       for (ContentType contentType : acceptedContentTypes) {
         contentType = ensureCharsetIsSet(contentType);
-        ContentType match = contentType.match(supportedContentTypes);
-        if (match != null)
+        final ContentType match = contentType.match(supportedContentTypes);
+        if (match != null) {
           return match;
+        }
       }
     }
 
@@ -271,13 +274,14 @@ public final class ODataSubLocator implements ODataLocator {
   }
 
   private void validateDataServiceVersion(String serverDataServiceVersion) throws ODataException {
-    String requestDataServiceVersion = context.getHttpRequestHeader(ODataHttpHeaders.DATASERVICEVERSION);
+    final String requestDataServiceVersion = context.getHttpRequestHeader(ODataHttpHeaders.DATASERVICEVERSION);
     if (requestDataServiceVersion != null) {
       try {
-        boolean isValid = ODataServiceVersion.validateDataServiceVersion(requestDataServiceVersion);
-        if (!isValid || ODataServiceVersion.isBiggerThan(requestDataServiceVersion, serverDataServiceVersion))
+        final boolean isValid = ODataServiceVersion.validateDataServiceVersion(requestDataServiceVersion);
+        if (!isValid || ODataServiceVersion.isBiggerThan(requestDataServiceVersion, serverDataServiceVersion)) {
           throw new ODataBadRequestException(ODataBadRequestException.VERSIONERROR.addContent(requestDataServiceVersion.toString()));
-      } catch (IllegalArgumentException e) {
+        }
+      } catch (final IllegalArgumentException e) {
         throw new ODataBadRequestException(ODataBadRequestException.PARSEVERSIONERROR.addContent(requestDataServiceVersion), e);
       }
     }
@@ -297,53 +301,56 @@ public final class ODataSubLocator implements ODataLocator {
   private ServletInputStream extractRequestContent(final InitParameter param) throws ODataException {
     try {
       return param.getServletRequest().getInputStream();
-    } catch (IOException e) {
+    } catch (final IOException e) {
       throw new ODataException("Error getting request content as ServletInputStream.", e);
     }
   }
 
   private static <T> InputStream contentAsStream(final T content) throws ODataException {
-    if (content == null)
+    if (content == null) {
       throw new ODataBadRequestException(ODataBadRequestException.COMMON);
+    }
 
     InputStream inputStream;
-    if (content instanceof InputStream)
+    if (content instanceof InputStream) {
       inputStream = (InputStream) content;
-    else if (content instanceof String)
+    } else if (content instanceof String) {
       try {
         inputStream = new ByteArrayInputStream(((String) content).getBytes("UTF-8"));
-      } catch (UnsupportedEncodingException e) {
+      } catch (final UnsupportedEncodingException e) {
         throw new ODataBadRequestException(ODataBadRequestException.COMMON, e);
       }
-    else
+    } else {
       throw new ODataBadRequestException(ODataBadRequestException.COMMON);
+    }
     return inputStream;
   }
 
   private List<ContentType> convertMediaTypes(List<MediaType> acceptableMediaTypes) {
-    List<ContentType> mediaTypes = new ArrayList<ContentType>();
+    final List<ContentType> mediaTypes = new ArrayList<ContentType>();
 
-    for (MediaType x : acceptableMediaTypes)
+    for (final MediaType x : acceptableMediaTypes) {
       mediaTypes.add(ContentType.create(x.getType(), x.getSubtype(), x.getParameters()));
+    }
 
     return mediaTypes;
   }
 
   private void fillRequestHeader(HttpHeaders httpHeaders) {
-    MultivaluedMap<String, String> headers = httpHeaders.getRequestHeaders();
+    final MultivaluedMap<String, String> headers = httpHeaders.getRequestHeaders();
 
-    for (String key : headers.keySet()) {
-      String value = httpHeaders.getHeaderString(key);
+    for (final String key : headers.keySet()) {
+      final String value = httpHeaders.getHeaderString(key);
       context.setHttpRequestHeader(key, value);
     }
   }
 
   private PathInfo buildODataUriInfo(InitParameter param) throws ODataException {
-    PathInfoImpl pathInfo = new PathInfoImpl();
+    final PathInfoImpl pathInfo = new PathInfoImpl();
 
     splitPath(pathInfo, param);
 
-    URI uri = buildBaseUri(param.getUriInfo(), pathInfo.getPrecedingSegments());
+    final URI uri = buildBaseUri(param.getUriInfo(), pathInfo.getPrecedingSegments());
     pathInfo.setServiceRoot(uri);
 
     context.setUriInfo(pathInfo);
@@ -364,13 +371,13 @@ public final class ODataSubLocator implements ODataLocator {
       }
 
       precedingPathSegments = param.getPathSegments().subList(0, param.getPathSplit());
-      int pathSegmentCount = param.getPathSegments().size();
+      final int pathSegmentCount = param.getPathSegments().size();
       pathSegments = param.getPathSegments().subList(param.getPathSplit(), pathSegmentCount);
     }
 
     // post condition: we do not allow matrix parameters in OData path segments
-    for (javax.ws.rs.core.PathSegment ps : pathSegments) {
-      if (ps.getMatrixParameters() != null && !ps.getMatrixParameters().isEmpty()) {
+    for (final javax.ws.rs.core.PathSegment ps : pathSegments) {
+      if ((ps.getMatrixParameters() != null) && !ps.getMatrixParameters().isEmpty()) {
         throw new ODataNotFoundException(ODataNotFoundException.MATRIX.addContent(ps.getMatrixParameters().keySet(), ps.getPath()));
       }
     }
@@ -382,10 +389,10 @@ public final class ODataSubLocator implements ODataLocator {
   private URI buildBaseUri(javax.ws.rs.core.UriInfo uriInfo, List<PathSegment> precedingPathSegments) throws ODataException {
     try {
       UriBuilder uriBuilder = uriInfo.getBaseUriBuilder();
-      for (PathSegment ps : precedingPathSegments) {
+      for (final PathSegment ps : precedingPathSegments) {
         uriBuilder = uriBuilder.path(ps.getPath());
-        for (String key : ps.getMatrixParameters().keySet()) {
-          Object[] v = ps.getMatrixParameters().get(key).toArray();
+        for (final String key : ps.getMatrixParameters().keySet()) {
+          final Object[] v = ps.getMatrixParameters().get(key).toArray();
           uriBuilder = uriBuilder.matrixParam(key, v);
         }
       }
@@ -396,26 +403,26 @@ public final class ODataSubLocator implements ODataLocator {
       }
 
       return new URI(uriString);
-    } catch (URISyntaxException e) {
+    } catch (final URISyntaxException e) {
       throw new ODataException(e);
     }
   }
 
   public List<PathSegment> convertPathSegmentList(List<javax.ws.rs.core.PathSegment> pathSegments) {
-    ArrayList<PathSegment> converted = new ArrayList<PathSegment>();
+    final ArrayList<PathSegment> converted = new ArrayList<PathSegment>();
 
-    for (javax.ws.rs.core.PathSegment pathSegment : pathSegments) {
-      PathSegment segment = new ODataPathSegmentImpl(pathSegment.getPath(), pathSegment.getMatrixParameters());
+    for (final javax.ws.rs.core.PathSegment pathSegment : pathSegments) {
+      final PathSegment segment = new ODataPathSegmentImpl(pathSegment.getPath(), pathSegment.getMatrixParameters());
       converted.add(segment);
     }
     return converted;
   }
 
   private Map<String, String> convertToSinglevaluedMap(MultivaluedMap<String, String> multi) {
-    Map<String, String> single = new HashMap<String, String>();
+    final Map<String, String> single = new HashMap<String, String>();
 
-    for (String key : multi.keySet()) {
-      String value = multi.getFirst(key);
+    for (final String key : multi.keySet()) {
+      final String value = multi.getFirst(key);
       single.put(key, value);
     }
 
@@ -427,15 +434,18 @@ public final class ODataSubLocator implements ODataLocator {
         .status(odataResponse.getStatus().getStatusCode())
         .entity(odataResponse.getEntity());
 
-    for (final String name : odataResponse.getHeaderNames())
+    for (final String name : odataResponse.getHeaderNames()) {
       responseBuilder = responseBuilder.header(name, odataResponse.getHeader(name));
+    }
 
-    if (!odataResponse.containsHeader(ODataHttpHeaders.DATASERVICEVERSION))
+    if (!odataResponse.containsHeader(ODataHttpHeaders.DATASERVICEVERSION)) {
       responseBuilder = responseBuilder.header(ODataHttpHeaders.DATASERVICEVERSION, version);
+    }
 
-    String eTag = odataResponse.getETag();
-    if (eTag != null)
+    final String eTag = odataResponse.getETag();
+    if (eTag != null) {
       responseBuilder.header(HttpHeaders.ETAG, eTag);
+    }
 
     return responseBuilder.build();
   }
