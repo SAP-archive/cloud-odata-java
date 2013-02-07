@@ -25,7 +25,9 @@ public final class EntityProvider {
   public interface EntityProviderInterface {
 
     /**
-     * Write metadata document in XML format for the given schemas and the provided predefined namespaces at the EDMX element. PredefinedNamespaces is of type Map{@literal<}prefix,namespace{@literal>} and may be null or an empty Map.
+     * Write metadata document in XML format for the given schemas and the provided 
+     * predefined namespaces at the EDMX element. PredefinedNamespaces is of 
+     * type Map{@literal <}prefix,namespace{@literal >} and may be null or an empty Map.
      * @param schemas
      * @param predefinedNamespaces
      * @return resulting {@link ODataResponse} with written metadata content.
@@ -207,7 +209,9 @@ public final class EntityProvider {
   }
 
   /**
-   * Write metadata document in XML format for the given schemas and the provided predefined namespaces at the EDMX element. PredefinedNamespaces is of type Map{@literal<}prefix,namespace{@literal>} and may be null or an empty Map.
+   * Write metadata document in XML format for the given schemas and the provided predefined 
+   * namespaces at the EDMX element. PredefinedNamespaces is of type 
+   * Map{@literal <}prefix,namespace{@literal >} and may be null or an empty Map.
    * @param schemas
    * @param predefinedNamespaces
    * @return resulting {@link ODataResponse} with written metadata content.

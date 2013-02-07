@@ -312,7 +312,7 @@ public class FilterParserImpl implements FilterParser
    * @param leftExpression 
    *   Used while parsing properties. In this case ( e.g. parsing "a/b") the property "a" ( as leftExpression of "/") is relevant 
    *   to verify whether the property "b" exists inside the edm
-   * @return
+   * @return a CommonExpression
    * @throws ExpressionParserException
    * @throws ExpressionParserInternalError 
    * @throws TokenizerMessage 

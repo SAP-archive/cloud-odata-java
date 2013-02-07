@@ -30,7 +30,7 @@ public interface ODataService {
   /**
    * @return implemented OData version of this service
    * @throws ODataException
-   * @see {@link ODataServiceVersion}
+   * @see ODataServiceVersion
    */
   String getVersion() throws ODataException;
 

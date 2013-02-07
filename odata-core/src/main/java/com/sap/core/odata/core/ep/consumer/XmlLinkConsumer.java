@@ -29,7 +29,7 @@ public class XmlLinkConsumer {
    * 
    * @param reader
    * @param entitySet
-   * @return
+   * @return link as string object
    * @throws EntityProviderException
    */
   public String readLink(XMLStreamReader reader, EdmEntitySet entitySet) throws EntityProviderException {
@@ -93,7 +93,7 @@ public class XmlLinkConsumer {
    * 
    * @param reader
    * @param entitySet
-   * @return
+   * @return list of string based links
    * @throws EntityProviderException
    */
   public List<String> readLinks(XMLStreamReader reader, EdmEntitySet entitySet) throws EntityProviderException {

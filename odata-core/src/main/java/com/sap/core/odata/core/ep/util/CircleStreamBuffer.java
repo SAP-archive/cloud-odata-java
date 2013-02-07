@@ -43,7 +43,7 @@ public class CircleStreamBuffer {
   /**
    * Get {@link InputStream} for data read access.
    * 
-   * @return
+   * @return the stream
    */
   public InputStream getInputStream() {
     return inStream;
@@ -52,7 +52,7 @@ public class CircleStreamBuffer {
   /**
    * Get {@link OutputStream} for write data.
    * 
-   * @return
+   * @return the stream
    */
   public OutputStream getOutputStream() {
     return outStream;
@@ -194,7 +194,7 @@ public class CircleStreamBuffer {
   /**
    * 
    * @param requestedCapacity
-   * @return
+   * @return the buffer
    */
   private ByteBuffer allocateBuffer(int requestedCapacity) {
     if (requestedCapacity < currentAllocateCapacity) {

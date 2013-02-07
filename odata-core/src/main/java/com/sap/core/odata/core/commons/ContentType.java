@@ -87,7 +87,7 @@ public class ContentType {
    * Creates a content type from type and subtype
    * @param type
    * @param subtype
-   * @return
+   * @return a new <code>ContentType</code> object
    */
   public static ContentType create(String type, String subtype) {
     return new ContentType(type, subtype, mapToODataFormat(subtype), null);
@@ -98,7 +98,7 @@ public class ContentType {
    * @param type
    * @param subtype
    * @param parameters
-   * @return
+   * @return a new <code>ContentType</code> object
    */
   public static ContentType create(String type, String subtype, Map<String, String> parameters) {
     return new ContentType(type, subtype, mapToODataFormat(subtype), parameters);
@@ -109,7 +109,7 @@ public class ContentType {
    * @param contentType
    * @param parameterKey
    * @param parameterValue
-   * @return
+   * @return a new <code>ContentType</code> object
    */
   public static ContentType create(ContentType contentType, String parameterKey, String parameterValue) {
     ContentType ct = new ContentType(contentType.type, contentType.subtype, contentType.odataFormat, contentType.parameters);
@@ -123,7 +123,7 @@ public class ContentType {
    * Supported format is <code>HTTP Accept HEADER</code> format as defined in <code>RFC 2616 chapter 14.1</code>
    * 
    * @param format
-   * @return
+   * @return a new <code>ContentType</code> object
    */
   public static ContentType create(String format) {
     if (format == null)
@@ -165,7 +165,7 @@ public class ContentType {
   /**
    * 
    * @param content
-   * @return
+   * @return a new <code>ContentType</code> object
    */
   private static Map<String, String> parameterMap(String... content) {
     Map<String, String> map = new HashMap<String, String>();
@@ -228,7 +228,7 @@ public class ContentType {
    * {@link ContentType}s are equal 
    * <ul>
    * <li>if <code>type</code>, <code>subtype</code> and all <code>parameters</code> have the same value.</li>
-   * <li>if <code>type</code> and/or <code>subtype</code> is set to {@value #MEDIA_TYPE_WILDCARD} (in such a case the <code>parameters</code> are ignored).</li>
+   * <li>if <code>type</code> and/or <code>subtype</code> is set to "*" (in such a case the <code>parameters</code> are ignored).</li>
    * </ul>
    * 
    * @return <code>true</code> if both instances are equal (see definition above), otherwise <code>false</code>.
@@ -299,7 +299,7 @@ public class ContentType {
   /**
    * Get {@link ContentType} as string as defined in RFC 2616 (http://www.ietf.org/rfc/rfc2616.txt - chapter 14.17: Content-Type)
    * 
-   * @return
+   * @return string representation of <code>ContentType</code> object
    */
   public String toContentTypeString() {
     StringBuilder sb = new StringBuilder();
@@ -325,7 +325,7 @@ public class ContentType {
   /**
    * Find best match between this {@link ContentType} and the {@link ContentType} in the list.
    * If a match (this {@link ContentType} is equal to a {@link ContentType} in list) is found either this or the {@link ContentType}
-   * from the list is returned based on which {@link ContentType} has less {@value #WILDCARD} characters set 
+   * from the list is returned based on which {@link ContentType} has less "**" characters set 
    * (checked with {@link #compareWildcardCounts(ContentType)}.
    * If no match (none {@link ContentType} in list is equal to this {@link ContentType}) is found <code>NULL</code> is returned.
    * 
@@ -373,7 +373,7 @@ public class ContentType {
 
   /**
    * 
-   * @return <code>true</code> if both <code>type</code> and <code>subtype</code> of this instance are a {@value #MEDIA_TYPE_WILDCARD}.
+   * @return <code>true</code> if both <code>type</code> and <code>subtype</code> of this instance are a "*".
    */
   public boolean isWildcard() {
     return (MEDIA_TYPE_WILDCARD.equals(type) && MEDIA_TYPE_WILDCARD.equals(subtype));
