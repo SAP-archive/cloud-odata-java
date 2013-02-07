@@ -37,6 +37,8 @@ import com.sap.core.odata.core.exception.MessageService;
 import com.sap.core.odata.core.exception.MessageService.Message;
 
 /**
+ * Creates an error response acccording to the format defined by the OData standard
+ * if an exception occurs.
  * @author SAP AG
  */
 @Provider
@@ -80,7 +82,7 @@ public class ODataExceptionMapperImpl implements ExceptionMapper<Exception> {
   }
 
   private boolean isInternalServerError(final Response response) {
-    return response.getStatus() >= Status.INTERNAL_SERVER_ERROR.getStatusCode();
+    return response.getStatus() == Status.INTERNAL_SERVER_ERROR.getStatusCode();
   }
 
   private Exception extractException(Exception exception) {
