@@ -1,22 +1,22 @@
 package com.sap.core.odata.fit.ref;
 
+import static org.custommonkey.xmlunit.XMLAssert.assertXpathEvaluatesTo;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
 
-import org.apache.http.HttpHeaders;
 import org.apache.http.HttpResponse;
 import org.junit.Test;
 
 import com.sap.core.odata.api.commons.HttpContentType;
+import com.sap.core.odata.api.commons.HttpHeaders;
 
 /**
  * Tests employing the reference scenario reading function-import output in XML format
  * @author SAP AG
  */
-public class FunctionImportTest extends AbstractRefTest {
+public class FunctionImportTest extends AbstractRefXmlTest {
 
   @Test
   public void testFunctionImports() throws Exception {
@@ -31,19 +31,19 @@ public class FunctionImportTest extends AbstractRefTest {
 
     response = callUri("AllLocations");
     checkMediaType(response, HttpContentType.APPLICATION_XML_UTF8);
-    assertTrue(getBody(response).contains(CITY_2_NAME));
+    assertXpathEvaluatesTo(CITY_2_NAME, "/d:AllLocations/d:element[1]/d:City/d:CityName", getBody(response));
 
     response = callUri("AllUsedRoomIds");
     checkMediaType(response, HttpContentType.APPLICATION_XML_UTF8);
-    assertTrue(getBody(response).contains("3"));
+    assertXpathEvaluatesTo("3", "/d:AllUsedRoomIds/d:element[3]", getBody(response));
 
     response = callUri("MaximalAge");
     checkMediaType(response, HttpContentType.APPLICATION_XML_UTF8);
-    assertTrue(getBody(response).contains(EMPLOYEE_3_AGE));
+    assertXpathEvaluatesTo(EMPLOYEE_3_AGE, "/d:MaximalAge", getBody(response));
 
     response = callUri("MostCommonLocation");
     checkMediaType(response, HttpContentType.APPLICATION_XML_UTF8);
-    assertTrue(getBody(response).contains(CITY_2_NAME));
+    assertXpathEvaluatesTo(CITY_2_NAME, "/d:MostCommonLocation/d:City/d:CityName", getBody(response));
 
     checkUri("ManagerPhoto?Id='1'");
 
@@ -52,13 +52,13 @@ public class FunctionImportTest extends AbstractRefTest {
     assertNull(response.getFirstHeader(HttpHeaders.ETAG));
     assertNotNull(getBody(response));
 
-    response = callUri("OldestEmployee", "Accept", "application/xml");
+    response = callUri("OldestEmployee", HttpHeaders.ACCEPT, HttpContentType.APPLICATION_XML);
     checkMediaType(response, HttpContentType.APPLICATION_XML_UTF8);
-    assertTrue(getBody(response).contains(EMPLOYEE_3_NAME));
+    assertXpathEvaluatesTo(EMPLOYEE_3_NAME, "/atom:entry/m:properties/d:EmployeeName", getBody(response));
 
     response = callUri("OldestEmployee?$format=xml");
-    // checkMediaType(response, HttpContentType.APPLICATION_XML_UTF8);
-    assertTrue(getBody(response).contains(EMPLOYEE_3_NAME));
+    checkMediaType(response, HttpContentType.APPLICATION_XML_UTF8);
+    assertXpathEvaluatesTo(EMPLOYEE_3_NAME, "/atom:entry/m:properties/d:EmployeeName", getBody(response));
 
     badRequest("AllLocations/$count");
     badRequest("AllUsedRoomIds/$value");

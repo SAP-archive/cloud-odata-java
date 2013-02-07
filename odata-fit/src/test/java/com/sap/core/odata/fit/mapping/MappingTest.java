@@ -12,6 +12,8 @@ import java.util.Map;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpGet;
+import org.custommonkey.xmlunit.SimpleNamespaceContext;
+import org.custommonkey.xmlunit.XMLUnit;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -21,7 +23,6 @@ import com.sap.core.odata.api.edm.Edm;
 import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.testutil.fit.AbstractFitTest;
 import com.sap.core.odata.testutil.helper.StringHelper;
-import com.sap.core.odata.testutil.helper.XMLUnitHelper;
 import com.sap.core.odata.testutil.server.TestServer;
 
 /**
@@ -46,11 +47,11 @@ public class MappingTest extends AbstractFitTest {
   @Before
   public void before() {
     super.before();
-    final Map<String, String> ns = new HashMap<String, String>();
-    ns.put("d", Edm.NAMESPACE_D_2007_08);
-    ns.put("m", Edm.NAMESPACE_M_2007_08);
-    ns.put("a", Edm.NAMESPACE_ATOM_2005);
-    XMLUnitHelper.registerXmlNs(ns);
+    Map<String, String> prefixMap = new HashMap<String, String>();
+    prefixMap.put("a", Edm.NAMESPACE_ATOM_2005);
+    prefixMap.put("d", Edm.NAMESPACE_D_2007_08);
+    prefixMap.put("m", Edm.NAMESPACE_M_2007_08);
+    XMLUnit.setXpathNamespaceContext(new SimpleNamespaceContext(prefixMap));
   }
 
   @Override
@@ -96,17 +97,15 @@ public class MappingTest extends AbstractFitTest {
     assertXpathEvaluatesTo("V01.7", "/a:entry/a:content/m:properties/d:p1", payload);
     assertXpathEvaluatesTo("V02.7", "/a:entry/a:content/m:properties/d:p2", payload);
     assertXpathEvaluatesTo("V03.7", "/a:entry/a:content/m:properties/d:p3", payload);
-
   }
 
   @Test
   public void testPropertyValue() throws Exception {
     final HttpGet get = new HttpGet(URI.create(getEndpoint().toString() + "/mappings('V01.7')/p2/$value"));
     final HttpResponse response = getHttpClient().execute(get);
-
-    final String payload = StringHelper.inputStreamToString(response.getEntity().getContent());
     assertEquals(HttpStatusCodes.OK.getStatusCode(), response.getStatusLine().getStatusCode());
 
+    final String payload = StringHelper.inputStreamToString(response.getEntity().getContent());
     assertEquals("V02.7", payload);
   }
 }

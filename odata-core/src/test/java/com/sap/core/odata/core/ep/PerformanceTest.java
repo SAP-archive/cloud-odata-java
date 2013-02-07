@@ -48,8 +48,6 @@ public class PerformanceTest extends AbstractProviderTest {
 
   @Before
   public void before() throws Exception {
-    super.before();
-
     EntityProviderProperties properties = EntityProviderProperties.serviceRoot(BASE_URI).build();
     provider = new AtomEntryEntityProducer(properties);
     edmEntitySet = MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Rooms");

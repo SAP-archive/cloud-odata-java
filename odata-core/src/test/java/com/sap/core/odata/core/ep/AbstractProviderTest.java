@@ -11,6 +11,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.TimeZone;
 
+import org.custommonkey.xmlunit.SimpleNamespaceContext;
+import org.custommonkey.xmlunit.XMLUnit;
 import org.junit.Before;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,7 +26,6 @@ import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.api.processor.ODataContext;
 import com.sap.core.odata.api.uri.PathInfo;
 import com.sap.core.odata.testutil.fit.BaseTest;
-import com.sap.core.odata.testutil.helper.XMLUnitHelper;
 
 /**
  * @author SAP AG
@@ -106,12 +107,12 @@ public abstract class AbstractProviderTest extends BaseTest {
   }
 
   @Before
-  public void before() throws Exception {
-    Map<String, String> ns = new HashMap<String, String>();
-    ns.put("d", Edm.NAMESPACE_D_2007_08);
-    ns.put("m", Edm.NAMESPACE_M_2007_08);
-    ns.put("a", Edm.NAMESPACE_ATOM_2005);
-    XMLUnitHelper.registerXmlNs(ns);
+  public void setXmlNamespacePrefixes() throws Exception {
+    Map<String, String> prefixMap = new HashMap<String, String>();
+    prefixMap.put("a", Edm.NAMESPACE_ATOM_2005);
+    prefixMap.put("d", Edm.NAMESPACE_D_2007_08);
+    prefixMap.put("m", Edm.NAMESPACE_M_2007_08);
+    XMLUnit.setXpathNamespaceContext(new SimpleNamespaceContext(prefixMap));
   }
 
   protected ODataContext createContextMock() throws ODataException {

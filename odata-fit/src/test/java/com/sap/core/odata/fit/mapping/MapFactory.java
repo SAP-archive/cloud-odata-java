@@ -5,6 +5,9 @@ import com.sap.core.odata.api.ODataServiceFactory;
 import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.api.processor.ODataContext;
 
+/**
+ * @author SAP AG
+ */
 public class MapFactory extends ODataServiceFactory {
 
   @Override

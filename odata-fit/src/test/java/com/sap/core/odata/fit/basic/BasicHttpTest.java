@@ -7,12 +7,10 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.net.URI;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
-import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpPatch;
 import org.apache.http.client.methods.HttpPost;
@@ -29,6 +27,7 @@ import com.sap.core.odata.api.processor.part.MetadataProcessor;
 import com.sap.core.odata.api.processor.part.ServiceDocumentProcessor;
 import com.sap.core.odata.api.uri.info.GetMetadataUriInfo;
 import com.sap.core.odata.api.uri.info.GetServiceDocumentUriInfo;
+import com.sap.core.odata.core.commons.ODataHttpMethod;
 import com.sap.core.odata.testutil.helper.HttpMerge;
 import com.sap.core.odata.testutil.helper.StringHelper;
 
@@ -40,50 +39,49 @@ public class BasicHttpTest extends AbstractBasicTest {
   @Override
   protected ODataSingleProcessor createProcessor() throws ODataException {
     final ODataSingleProcessor processor = mock(ODataSingleProcessor.class);
-    when(((MetadataProcessor) processor).readMetadata(any(GetMetadataUriInfo.class), any(String.class))).thenReturn(ODataResponse.entity("metadata").status(HttpStatusCodes.OK).build());
-    when(((ServiceDocumentProcessor) processor).readServiceDocument(any(GetServiceDocumentUriInfo.class), any(String.class))).thenReturn(ODataResponse.entity("service document").status(HttpStatusCodes.OK).build());
+    when(((MetadataProcessor) processor).readMetadata(any(GetMetadataUriInfo.class), any(String.class)))
+        .thenReturn(ODataResponse.entity("metadata").status(HttpStatusCodes.OK).build());
+    when(((ServiceDocumentProcessor) processor).readServiceDocument(any(GetServiceDocumentUriInfo.class), any(String.class)))
+        .thenReturn(ODataResponse.entity("service document").status(HttpStatusCodes.OK).build());
     return processor;
   }
 
   @Test
-  public void testGetServiceDocument() throws ODataException, MalformedURLException, IOException {
+  public void testGetServiceDocument() throws ODataException, IOException {
     final HttpResponse response = executeGetRequest("/");
 
-    final String payload = StringHelper.inputStreamToString(response.getEntity().getContent());
-    assertEquals("service document", payload);
     assertEquals(HttpStatusCodes.OK.getStatusCode(), response.getStatusLine().getStatusCode());
+    assertEquals("service document", StringHelper.inputStreamToString(response.getEntity().getContent()));
   }
 
   @Test
-  public void testGetServiceDocumentWithRedirect() throws ODataException, MalformedURLException, IOException {
+  public void testGetServiceDocumentWithRedirect() throws ODataException, IOException {
     final HttpResponse response = executeGetRequest("");
 
-    final String payload = StringHelper.inputStreamToString(response.getEntity().getContent());
-    assertEquals("service document", payload);
     assertEquals(HttpStatusCodes.OK.getStatusCode(), response.getStatusLine().getStatusCode());
+    assertEquals("service document", StringHelper.inputStreamToString(response.getEntity().getContent()));
   }
 
   @Test
-  public void testGet() throws ODataException, MalformedURLException, IOException {
+  public void testGet() throws ODataException, IOException {
     final HttpResponse response = executeGetRequest("$metadata");
 
-    final String payload = StringHelper.inputStreamToString(response.getEntity().getContent());
-    assertEquals("metadata", payload);
     assertEquals(HttpStatusCodes.OK.getStatusCode(), response.getStatusLine().getStatusCode());
+    assertEquals("metadata", StringHelper.inputStreamToString(response.getEntity().getContent()));
   }
 
   @Test
-  public void testPut() throws MalformedURLException, IOException {
-    final HttpPut put = new HttpPut(URI.create(getEndpoint().toString() + "/aaa/bbb/ccc"));
+  public void testPut() throws IOException {
+    final HttpPut put = new HttpPut(URI.create(getEndpoint().toString() + "aaa/bbb/ccc"));
     final HttpResponse response = getHttpClient().execute(put);
 
-    //    String payload = StringHelper.inputStreamToString(response.getEntity().getContent());
-    //    assertTrue(payload.contains(put.getMethod()));
     assertEquals(HttpStatusCodes.NOT_FOUND.getStatusCode(), response.getStatusLine().getStatusCode());
+    final String payload = StringHelper.inputStreamToString(response.getEntity().getContent());
+    assertTrue(payload.contains("error"));
   }
 
   @Test
-  public void testPutWithContent() throws MalformedURLException, IOException {
+  public void testPutWithContent() throws IOException {
     final HttpPut put = new HttpPut(URI.create(getEndpoint().toString()));
     final String xml =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
@@ -96,14 +94,13 @@ public class BasicHttpTest extends AbstractBasicTest {
     put.setEntity(entity);
     final HttpResponse response = getHttpClient().execute(put);
 
-    final String payload = StringHelper.inputStreamToString(response.getEntity().getContent());
-
-    assertTrue(payload.contains("error"));
     assertEquals(HttpStatusCodes.METHOD_NOT_ALLOWED.getStatusCode(), response.getStatusLine().getStatusCode());
+    final String payload = StringHelper.inputStreamToString(response.getEntity().getContent());
+    assertTrue(payload.contains("error"));
   }
 
   @Test
-  public void testPostMethodNotAllowedWithContent() throws MalformedURLException, IOException {
+  public void testPostMethodNotAllowedWithContent() throws IOException {
     final HttpPost post = new HttpPost(URI.create(getEndpoint().toString()));
     final String xml =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
@@ -116,85 +113,83 @@ public class BasicHttpTest extends AbstractBasicTest {
     post.setEntity(entity);
     final HttpResponse response = getHttpClient().execute(post);
 
-    final String payload = StringHelper.inputStreamToString(response.getEntity().getContent());
-
-    assertTrue(payload.contains("error"));
     assertEquals(HttpStatusCodes.METHOD_NOT_ALLOWED.getStatusCode(), response.getStatusLine().getStatusCode());
+    final String payload = StringHelper.inputStreamToString(response.getEntity().getContent());
+    assertTrue(payload.contains("error"));
   }
 
   @Test
-  public void testPostNotFound() throws MalformedURLException, IOException {
-    final HttpPost post = new HttpPost(URI.create(getEndpoint().toString() + "/aaa/bbb/ccc"));
+  public void testPostNotFound() throws IOException {
+    final HttpPost post = new HttpPost(URI.create(getEndpoint().toString() + "aaa/bbb/ccc"));
     final HttpResponse response = getHttpClient().execute(post);
 
-    final String payload = StringHelper.inputStreamToString(response.getEntity().getContent());
-
-    assertTrue(payload.contains("error"));
     assertEquals(HttpStatusCodes.NOT_FOUND.getStatusCode(), response.getStatusLine().getStatusCode());
+    final String payload = StringHelper.inputStreamToString(response.getEntity().getContent());
+    assertTrue(payload.contains("error"));
   }
 
   @Test
-  public void testDelete() throws MalformedURLException, IOException {
-    final HttpDelete delete = new HttpDelete(URI.create(getEndpoint().toString() + "/aaa/bbb/ccc"));
+  public void testDelete() throws IOException {
+    final HttpDelete delete = new HttpDelete(URI.create(getEndpoint().toString() + "aaa/bbb/ccc"));
     final HttpResponse response = getHttpClient().execute(delete);
 
-    final String payload = StringHelper.inputStreamToString(response.getEntity().getContent());
-
-    assertTrue(payload.contains("error"));
     assertEquals(HttpStatusCodes.NOT_FOUND.getStatusCode(), response.getStatusLine().getStatusCode());
+    final String payload = StringHelper.inputStreamToString(response.getEntity().getContent());
+    assertTrue(payload.contains("error"));
   }
 
   @Test
-  public void testMerge() throws MalformedURLException, IOException {
-    final HttpMerge merge = new HttpMerge(URI.create(getEndpoint().toString() + "/aaa/bbb/ccc"));
+  public void testMerge() throws IOException {
+    final HttpMerge merge = new HttpMerge(URI.create(getEndpoint().toString() + "aaa/bbb/ccc"));
     final HttpResponse response = getHttpClient().execute(merge);
 
-    final String payload = StringHelper.inputStreamToString(response.getEntity().getContent());
-
-    assertTrue(payload.contains("error"));
     assertEquals(HttpStatusCodes.NOT_FOUND.getStatusCode(), response.getStatusLine().getStatusCode());
+    final String payload = StringHelper.inputStreamToString(response.getEntity().getContent());
+    assertTrue(payload.contains("error"));
   }
 
   @Test
-  public void testPatch() throws MalformedURLException, IOException {
-    final HttpPatch get = new HttpPatch(URI.create(getEndpoint().toString() + "/aaa/bbb/ccc"));
+  public void testPatch() throws IOException {
+    final HttpPatch get = new HttpPatch(URI.create(getEndpoint().toString() + "aaa/bbb/ccc"));
     final HttpResponse response = getHttpClient().execute(get);
 
-    final String payload = StringHelper.inputStreamToString(response.getEntity().getContent());
-
-    assertTrue(payload.contains("error"));
     assertEquals(HttpStatusCodes.NOT_FOUND.getStatusCode(), response.getStatusLine().getStatusCode());
+    final String payload = StringHelper.inputStreamToString(response.getEntity().getContent());
+    assertTrue(payload.contains("error"));
   }
 
   @Test
-  public void testTunneledByPost() throws MalformedURLException, IOException {
-    tunnelPost("X-HTTP-Method", "MERGE");
-    tunnelPost("X-HTTP-Method", "PATCH");
-    tunnelPost("X-HTTP-Method", "DELETE");
-    tunnelPost("X-HTTP-Method", "PUT");
- 
-    tunnelPost("X-HTTP-Method-Override", "MERGE");
-    tunnelPost("X-HTTP-Method-Override", "PATCH");
-    tunnelPost("X-HTTP-Method-Override", "DELETE");
-    tunnelPost("X-HTTP-Method-Override", "PUT");
-    tunnelPost("X-HTTP-Method-Override", "GET");
-    tunnelPost("X-HTTP-Method-Override", "POST");
+  public void testTunneledByPost() throws IOException {
+    tunnelPost("X-HTTP-Method", ODataHttpMethod.MERGE);
+    tunnelPost("X-HTTP-Method", ODataHttpMethod.PATCH);
+    tunnelPost("X-HTTP-Method", ODataHttpMethod.DELETE);
+    tunnelPost("X-HTTP-Method", ODataHttpMethod.PUT);
+
+    tunnelPost("X-HTTP-Method-Override", ODataHttpMethod.MERGE);
+    tunnelPost("X-HTTP-Method-Override", ODataHttpMethod.PATCH);
+    tunnelPost("X-HTTP-Method-Override", ODataHttpMethod.DELETE);
+    tunnelPost("X-HTTP-Method-Override", ODataHttpMethod.PUT);
+    tunnelPost("X-HTTP-Method-Override", ODataHttpMethod.GET);
+    tunnelPost("X-HTTP-Method-Override", ODataHttpMethod.POST);
   }
 
-  private void tunnelPost(String header, String method) throws IOException, ClientProtocolException {
-    final HttpPost post = new HttpPost(URI.create(getEndpoint().toString() + "/aaa/bbb/ccc"));
+  private void tunnelPost(final String header, final ODataHttpMethod method) throws IOException {
+    tunnelPost(header, method.toString(), HttpStatusCodes.NOT_FOUND);
+  }
+
+  private void tunnelPost(final String header, final String method, final HttpStatusCodes expectedStatus) throws IOException {
+    HttpPost post = new HttpPost(URI.create(getEndpoint().toString() + "aaa/bbb/ccc"));
     post.setHeader(header, method);
     final HttpResponse response = getHttpClient().execute(post);
 
+    assertEquals(expectedStatus.getStatusCode(), response.getStatusLine().getStatusCode());
     final String payload = StringHelper.inputStreamToString(response.getEntity().getContent());
-
     assertTrue(payload.contains("error"));
-    assertEquals(HttpStatusCodes.NOT_FOUND.getStatusCode(), response.getStatusLine().getStatusCode());
   }
 
   @Test
-  public void testTunneledBadRequest() throws MalformedURLException, IOException {
-    final HttpPost post = new HttpPost(URI.create(getEndpoint().toString() + "/aaa/bbb/ccc"));
+  public void testTunneledBadRequest() throws IOException {
+    final HttpPost post = new HttpPost(URI.create(getEndpoint().toString() + "aaa/bbb/ccc"));
     post.setHeader("X-HTTP-Method", "MERGE");
     post.setHeader("X-HTTP-Method-Override", "PATCH");
     final HttpResponse response = getHttpClient().execute(post);
@@ -204,28 +199,15 @@ public class BasicHttpTest extends AbstractBasicTest {
     assertTrue(payload.contains("error"));
     assertEquals(HttpStatusCodes.BAD_REQUEST.getStatusCode(), response.getStatusLine().getStatusCode());
   }
-  
+
   @Test
-  public void testTunneledMethodNotAllowed() throws MalformedURLException, IOException {
-    final HttpPost post = new HttpPost(URI.create(getEndpoint().toString() + "/aaa/bbb/ccc"));
-    post.setHeader("X-HTTP-Method", "xxx");
-    final HttpResponse response = getHttpClient().execute(post);
-
-    final String payload = StringHelper.inputStreamToString(response.getEntity().getContent());
-
-    assertTrue(payload.contains("error"));
-    assertEquals(HttpStatusCodes.METHOD_NOT_ALLOWED.getStatusCode(), response.getStatusLine().getStatusCode());
+  public void testTunneledMethodNotAllowed() throws IOException {
+    tunnelPost("X-HTTP-Method", "xxx", HttpStatusCodes.METHOD_NOT_ALLOWED);
   }
+
   @Test
-  public void testTunneledMethodNotAllowedOverride() throws MalformedURLException, IOException {
-    final HttpPost post = new HttpPost(URI.create(getEndpoint().toString() + "/aaa/bbb/ccc"));
-    post.setHeader("X-HTTP-Method-Override", "xxx");
-    final HttpResponse response = getHttpClient().execute(post);
-
-    final String payload = StringHelper.inputStreamToString(response.getEntity().getContent());
-
-    assertTrue(payload.contains("error"));
-    assertEquals(HttpStatusCodes.METHOD_NOT_ALLOWED.getStatusCode(), response.getStatusLine().getStatusCode());
+  public void testTunneledMethodNotAllowedOverride() throws IOException {
+    tunnelPost("X-HTTP-Method-Override", "xxx", HttpStatusCodes.METHOD_NOT_ALLOWED);
   }
 
 }
