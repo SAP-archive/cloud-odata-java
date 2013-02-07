@@ -332,11 +332,11 @@ body {
 				<td width=40%><code style="font-size: small">SELECT E1 FROM Material E1 WHERE E1.materialId = 111</code></td>
 			</tr>
 			<tr>
-				<td width=20%>Read operation on Storage</td>
+				<td width=20%>Read operation on Store</td>
 				<td width=40%><a
-					href="SalesOrderProcessing.svc/Storages(MaterialId=111L,StoreName='Test_Store_1')" target="_blank">SalesOrderProcessing.svc/Storages(MaterialId=111L,StoreName='Test_Store_1')
+					href="SalesOrderProcessing.svc/Stores(131L)" target="_blank">SalesOrderProcessing.svc/Stores(131L)
 				</a></td>
-				<td width=40%><code style="font-size: small">SELECT E1 FROM Storage E1 WHERE E1.storageKey.materialId = 111 AND E1.storageKey.storeName = 'Test_Store_1'</code></td>
+				<td width=40%><code style="font-size: small">SELECT E1 FROM Material E1 WHERE E1.storeId = 131</code></td>
 			</tr>
 			
 		</table>
@@ -388,19 +388,19 @@ body {
 			</tr>
 			
 			<tr>
-				<td width=20%>Material-Storage (ManyToMany)</td>
+				<td width=20%>Material-Store (ManyToMany)</td>
 				<td width=40%><a
-					href="SalesOrderProcessing.svc/Materials(111L)/StorageDetails" target="_blank">SalesOrderProcessing.svc/Materials(111L)/StorageDetails
+					href="SalesOrderProcessing.svc/Materials(111L)/StoreDetails" target="_blank">SalesOrderProcessing.svc/Materials(111L)/StoreDetails
 				</a></td>
-				<td width=40%><code style="font-size: small">SELECT R1 FROM Material E1 JOIN E1.storage R1 WHERE E1.materialId = 111</code></td>
+				<td width=40%><code style="font-size: small">SELECT R1 FROM Material E1 JOIN E1.store R1 WHERE E1.materialId = 111</code></td>
 			</tr>
 			
 			<tr>
 				<td width=20%>Storage-Material (ManyToMany)</td>
 				<td width=40%><a
-					href="SalesOrderProcessing.svc/Storages(MaterialId=111L,StoreName='Test_Store_1')/MaterialDetails" target="_blank">SalesOrderProcessing.svc/Storages(MaterialId=111L,StoreName='Test_Store_1')/MaterialDetails
+					href="SalesOrderProcessing.svc/Stores(131L)/MaterialDetails" target="_blank">SalesOrderProcessing.svc/Stores(131L)/MaterialDetails
 				</a></td>
-				<td width=40%><code style="font-size: small">SELECT R1 FROM Storage E1 JOIN E1.material R1 WHERE E1.storageKey.materialId = 111 AND E1.storageKey.storeName = 'Test_Store_1'</code></td>
+				<td width=40%><code style="font-size: small">SELECT R1 FROM Store E1 JOIN E1.material R1 WHERE E1.storeId = 131</code></td>
 			</tr>
 			
 			<tr>
