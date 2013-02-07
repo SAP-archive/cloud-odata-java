@@ -235,6 +235,7 @@ public class ODataExpressionParser {
 		}else if(edmSimpleType == EdmSimpleTypeKind.DateTime.getEdmSimpleTypeInstance()
 	            || edmSimpleType == EdmSimpleTypeKind.DateTimeOffset.getEdmSimpleTypeInstance()	)
 		{
+			value = value.substring(0, value.indexOf('T'));
 			value = "{d \'"+value+"\'}";	//$NON-NLS-1$ 	//$NON-NLS-2$
 		}else if(edmSimpleType == EdmSimpleTypeKind.Time.getEdmSimpleTypeInstance()){
 			value = "{t \'"+value+"\'}";	//$NON-NLS-1$	//$NON-NLS-2$
