@@ -3,6 +3,7 @@ package com.sap.core.odata.processor.ref.jpa;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.TimeZone;
 
 import javax.persistence.*;
 
@@ -82,11 +83,15 @@ public class SalesOrderHeader {
 	}
 
 	public Date getCreationDate() {
-		return creationDate;
+		long dbTime = creationDate.getTime();
+		Date originalDate = new Date(dbTime + TimeZone.getDefault().getOffset(dbTime));
+		return originalDate;
 	}
 
 	public void setCreationDate(Date creationDate) {
-		this.creationDate = creationDate;
+		long originalTime = creationDate.getTime();
+		Date newDate = new Date(originalTime - TimeZone.getDefault().getOffset(originalTime));
+		this.creationDate = newDate;
 	}
 
 	public int getBuyerId() {
