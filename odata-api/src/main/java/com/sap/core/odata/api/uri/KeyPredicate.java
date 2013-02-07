@@ -6,7 +6,7 @@ import com.sap.core.odata.api.edm.EdmProperty;
 
 /**
  * Key predicate, consisting of a simple-type property and its value as String literal
- * @DoNotImplement
+ * @com.sap.core.odata.DoNotImplement
  * @author SAP AG
  */
 public interface KeyPredicate {
