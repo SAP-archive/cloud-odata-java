@@ -1,7 +1,6 @@
 package com.sap.core.odata.processor.ref.jpa;
 
 import javax.persistence.Column;
-import javax.persistence.Embedded;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
@@ -26,8 +25,6 @@ public class Test {
 	@Column(name = "SALES_ORDER_HEADER_ID")
 	private long soId;
 	
-	@Embedded
-	private StorageKey materialDetails;
 	
 	@JoinColumn(name = "Sales_Order_Header", referencedColumnName = "SO_ID",insertable = false,updatable = false)
 	@ManyToOne
@@ -57,13 +54,6 @@ public class Test {
 		this.amount = amount;
 	}
 
-	public StorageKey getMaterialDetails() {
-		return materialDetails;
-	}
-
-	public void setMaterialDetails(StorageKey materialDetails) {
-		this.materialDetails = materialDetails;
-	}
 	public long getSoId() {
 		return soId;
 	}

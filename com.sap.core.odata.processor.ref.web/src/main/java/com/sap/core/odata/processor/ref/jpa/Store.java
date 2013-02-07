@@ -31,9 +31,8 @@ public class Store {
 	@Embedded
 	private Address storeAddress;
 	
-	@JoinColumn(name = "STORE_NAME", referencedColumnName = "STORE_NAME",insertable = false,updatable = false)
-	@ManyToMany(mappedBy = "Store",cascade = CascadeType.ALL)
-	private List<Storage> storage = new ArrayList<Storage>();
+	@ManyToMany(mappedBy = "stores")
+	private List<Material> materials = new ArrayList<Material>();
 
 	public long getStoreId() {
 		return storeId;
@@ -59,15 +58,15 @@ public class Store {
 		this.storeAddress = storeAddress;
 	}
 
-	public List<Storage> getStorage() {
-		return storage;
+	public List<Material> getMaterials() {
+		return materials;
 	}
 
-	public void setStorage(List<Storage> storage) {
-		this.storage = storage;
-		Iterator<Storage> itr = storage.iterator();
+	public void setMaterials(List<Material> materials) {
+		this.materials = materials;
+		Iterator<Material> itr = materials.iterator();
 		while(itr.hasNext()) {
-			itr.next().getStore().add(this);
+			itr.next().getStores().add(this);
 		}
 	}	
 }

@@ -47,7 +47,7 @@ public class Material {
 	private String measurementUnit;
 	
 	@ManyToMany
-	private List<Storage> storage = new ArrayList<Storage>();
+	private List<Store> stores = new ArrayList<Store>();
 
 	public long getMaterialId() {
 		return materialId;
@@ -89,15 +89,15 @@ public class Material {
 		this.measurementUnit = measurementUnit;
 	}	
 	
-	public List<Storage> getStorage() {
-		return storage;
+	public List<Store> getStores() {
+		return stores;
 	}
 
-	public void setStorage(List<Storage> storage) {
-		this.storage = storage;
-		Iterator<Storage> itr = storage.iterator();
+	public void setStores(List<Store> stores) {
+		this.stores = stores;
+		Iterator<Store> itr = stores.iterator();
 		while(itr.hasNext()) {
-			itr.next().getMaterial().add(this);
+			itr.next().getMaterials().add(this);
 		}
 	}
 }

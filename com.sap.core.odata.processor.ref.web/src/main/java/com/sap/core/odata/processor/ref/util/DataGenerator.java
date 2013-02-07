@@ -1,16 +1,23 @@
 package com.sap.core.odata.processor.ref.util;
 
 
+import java.util.Arrays;
 import java.util.Iterator;
+import java.util.List;
 import java.util.ResourceBundle;
 import java.util.Set;
 
 import javax.persistence.EntityManager;
+import javax.persistence.Query;
 
 import org.eclipse.persistence.internal.jpa.EntityManagerImpl;
 import org.eclipse.persistence.queries.DataModifyQuery;
 import org.eclipse.persistence.queries.SQLCall;
 import org.eclipse.persistence.sessions.Session;
+
+import com.sap.core.odata.processor.ref.jpa.Material;
+import com.sap.core.odata.processor.ref.jpa.Store;
+import com.sap.core.odata.processor.ref.jpa.Student;
 
 /**
  * This is a utility class for generating and cleaning data. The generated data would be used by the application.
@@ -69,11 +76,34 @@ public class DataGenerator {
 					session.executeQuery(query);
 				}
 			}
+			setMaterialInStore();
 			this.entityManager.getTransaction().commit();
 		}
 			
 	}
 	
+
+	@SuppressWarnings("unchecked")
+	private void setMaterialInStore() {
+		Query query = this.entityManager.createQuery("SELECT e FROM Material e");
+	    List<Material> materials = (List<Material>) query.getResultList();
+	    
+	    query = this.entityManager.createQuery("SELECT e FROM Store e");
+	    List<Store> stores = (List<Store>) query.getResultList();
+	    
+	    int storeSize = stores.size();
+	    int i = 0;
+	    for(Material material : materials){
+	    	List<Store> storesA = Arrays.asList(stores.get(i), stores.get(i+1));
+			material.setStores(storesA );
+			i++;
+			if(i > storeSize-2){
+				i=0;
+			}
+			this.entityManager.persist(material);
+	    }
+		this.entityManager.flush();
+	}
 
 	private String[] getSQLInsertFileNames() {
 		ResourceBundle resourceBundle = ResourceBundle.getBundle(SQL_INSERT_CONFIG);// File names from properties
