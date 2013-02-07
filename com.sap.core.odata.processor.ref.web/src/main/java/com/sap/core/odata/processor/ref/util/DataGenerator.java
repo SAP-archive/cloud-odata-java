@@ -17,7 +17,6 @@ import org.eclipse.persistence.sessions.Session;
 
 import com.sap.core.odata.processor.ref.jpa.Material;
 import com.sap.core.odata.processor.ref.jpa.Store;
-import com.sap.core.odata.processor.ref.jpa.Student;
 
 /**
  * This is a utility class for generating and cleaning data. The generated data would be used by the application.
