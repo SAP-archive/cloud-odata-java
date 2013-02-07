@@ -1,5 +1,6 @@
 package com.sap.core.odata.fit.ref;
 
+import static org.custommonkey.xmlunit.XMLAssert.assertXpathEvaluatesTo;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -17,7 +18,7 @@ import com.sap.core.odata.core.commons.ODataHttpMethod;
  * Tests employing the reference scenario changing entities in XML format
  * @author SAP AG
  */
-public class EntryXmlChangeTest extends AbstractRefTest {
+public class EntryXmlChangeTest extends AbstractRefXmlTest {
 
   @Test
   public void create() throws Exception {
@@ -31,7 +32,7 @@ public class EntryXmlChangeTest extends AbstractRefTest {
     checkMediaType(response, HttpContentType.APPLICATION_ATOM_XML_UTF8 + "; type=entry");
     assertNotNull(response.getFirstHeader(HttpHeaders.LOCATION));
     // assertEquals(getEndpoint() + "Teams('4')", response.getFirstHeader(HttpHeaders.LOCATION).getValue());
-    assertTrue(getBody(response).contains("Team X"));
+    assertXpathEvaluatesTo("Team X", "/atom:entry/atom:content/m:properties/d:Name", getBody(response));
 
     // Create an entry for a type that has no media resource.
     // Add navigation to Employee('4') and Employee('5').
@@ -61,7 +62,7 @@ public class EntryXmlChangeTest extends AbstractRefTest {
     checkMediaType(response, HttpContentType.APPLICATION_ATOM_XML_UTF8 + "; type=entry");
     assertNotNull(response.getFirstHeader(HttpHeaders.LOCATION));
     // assertEquals(getEndpoint() + "Rooms('104')", response.getFirstHeader(HttpHeaders.LOCATION).getValue());
-    assertTrue(getBody(response).contains("Seats>4<"));
+    assertXpathEvaluatesTo("4", "/atom:entry/atom:content/m:properties/d:Seats", getBody(response));
     // checkUri("Rooms('104')/nr_Employees('4')");
     checkUri("Rooms('104')/nr_Employees('5')");
   }
@@ -88,7 +89,7 @@ public class EntryXmlChangeTest extends AbstractRefTest {
         .replace(EMPLOYEE_1_NAME, "Mister X")
         .replaceAll("<link.+?/>", "");
     putUri("Employees('2')", requestBody, HttpContentType.APPLICATION_ATOM_XML_ENTRY, HttpStatusCodes.NO_CONTENT);
-    assertTrue(getBody(callUri("Employees('2')")).contains("Mister X"));
+    assertXpathEvaluatesTo("Mister X", "/atom:entry/m:properties/d:EmployeeName", getBody(callUri("Employees('2')")));
   }
 
   @Test
@@ -109,7 +110,7 @@ public class EntryXmlChangeTest extends AbstractRefTest {
         + "  </m:properties>" + "\n"
         + "</entry>";
     callUri(ODataHttpMethod.PATCH, "Employees('2')", null, null, requestBody, HttpContentType.APPLICATION_ATOM_XML_ENTRY, HttpStatusCodes.NO_CONTENT);
-    assertTrue(getBody(callUri("Employees('2')")).contains(CITY_1_NAME));
+    assertXpathEvaluatesTo(CITY_1_NAME, "/atom:entry/m:properties/d:Location/d:City/d:CityName", getBody(callUri("Employees('2')")));
 
     requestBody = "<entry xmlns=\"" + Edm.NAMESPACE_ATOM_2005 + "\">" + "\n"
         + "  <content xmlns:d=\"" + Edm.NAMESPACE_D_2007_08 + "\"" + "\n"
@@ -119,6 +120,6 @@ public class EntryXmlChangeTest extends AbstractRefTest {
         + "  </content>" + "\n"
         + "</entry>";
     callUri(ODataHttpMethod.MERGE, "Rooms('3')", HttpHeaders.IF_MATCH, "W/\"3\"", requestBody, HttpContentType.APPLICATION_ATOM_XML_ENTRY, HttpStatusCodes.NO_CONTENT);
-    assertTrue(getBody(callUri("Rooms('3')")).contains("Room X"));
+    assertXpathEvaluatesTo("Room X", "/atom:entry/atom:content/m:properties/d:Name", getBody(callUri("Rooms('3')")));
   }
 }
