@@ -15,9 +15,9 @@ import com.sap.core.odata.api.edm.FullQualifiedName;
 import com.sap.core.odata.api.edm.provider.Association;
 import com.sap.core.odata.api.edm.provider.AssociationEnd;
 import com.sap.core.odata.api.edm.provider.EntityType;
-import com.sap.core.odata.processor.api.exception.ODataJPAModelException;
-import com.sap.core.odata.processor.api.exception.ODataJPARuntimeException;
-import com.sap.core.odata.processor.api.model.JPAEdmReferentialConstraintView;
+import com.sap.core.odata.processor.api.jpa.exception.ODataJPAModelException;
+import com.sap.core.odata.processor.api.jpa.exception.ODataJPARuntimeException;
+import com.sap.core.odata.processor.api.jpa.model.JPAEdmReferentialConstraintView;
 import com.sap.core.odata.processor.core.jpa.model.mock.JPAAttributeMock;
 import com.sap.core.odata.processor.core.jpa.testdata.JPAEdmMockData.SimpleType;
 

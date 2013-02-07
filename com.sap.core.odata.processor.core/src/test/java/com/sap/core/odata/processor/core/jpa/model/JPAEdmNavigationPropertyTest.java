@@ -13,10 +13,9 @@ import org.junit.Test;
 import com.sap.core.odata.api.edm.FullQualifiedName;
 import com.sap.core.odata.api.edm.provider.Association;
 import com.sap.core.odata.api.edm.provider.AssociationEnd;
-import com.sap.core.odata.processor.api.access.JPAEdmBuilder;
-import com.sap.core.odata.processor.api.exception.ODataJPAModelException;
-import com.sap.core.odata.processor.api.exception.ODataJPARuntimeException;
-import com.sap.core.odata.processor.core.jpa.model.JPAEdmNavigationProperty;
+import com.sap.core.odata.processor.api.jpa.access.JPAEdmBuilder;
+import com.sap.core.odata.processor.api.jpa.exception.ODataJPAModelException;
+import com.sap.core.odata.processor.api.jpa.exception.ODataJPARuntimeException;
 import com.sap.core.odata.processor.core.jpa.model.mock.JPAAttributeMock;
 
 public class JPAEdmNavigationPropertyTest extends JPAEdmTestModelView {
