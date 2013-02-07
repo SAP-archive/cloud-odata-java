@@ -9,7 +9,7 @@ import com.sap.core.odata.api.edm.provider.Schema;
 import com.sap.core.odata.processor.api.jpa.exception.ODataJPAModelException;
 import com.sap.core.odata.processor.api.jpa.exception.ODataJPARuntimeException;
 import com.sap.core.odata.processor.api.jpa.model.JPAEdmSchemaView;
-import com.sap.core.odata.processor.jpa.model.JPAEdmModel;
+import com.sap.core.odata.processor.core.jpa.model.JPAEdmModel;
 
 public class JPAEdmModelTest {
 	
