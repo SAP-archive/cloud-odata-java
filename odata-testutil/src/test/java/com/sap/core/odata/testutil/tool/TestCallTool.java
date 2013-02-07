@@ -13,26 +13,32 @@ public class TestCallTool {
   public static void main(String[] args) throws Exception {
 
     final List<String> paths = Arrays.asList(
-        "/",
-        "?$format=xml",
+        "/",                                  // URI0
+        "?$format=xml",                       
         "?$format=atom",
         "?$format=json",
-        "/Employees", // "/Managers", "/Rooms",
-        "/Employees?$format=xml", // "/Managers", "/Rooms",
-        "/Employees?$format=atom", // "/Managers", "/Rooms",
-        "/Employees?$format=json", // "/Managers", "/Rooms",
-        "/Employees('1')",
+        "/Employees",                         // URI1
+          // "/Managers", "/Rooms",
+        "/Employees?$format=xml", 
+        "/Employees?$format=atom", // 
+        "/Employees?$format=json", // 
+        "/Employees('1')",                    // URI2
         "/Employees('1')?$format=xml",
         "/Employees('1')?$format=atom",
         "/Employees('1')?$format=json",
-        "/Employees('1')/$value",
-        "/Employees('1')/Age/$value",
-        "/Employees('1')/Location",
-        "/$metadata"
+        "/Employees('1')/Location",           // URI3
+        "/Employees('1')/Location/Country",   // URI4
+        "/Employees('1')/Age",                // URI5
+        "/Employees('1')/ne_Room",            // URI6
+        "/Employees('1')/$links/ne_Room",     // URI7
+        "/$metadata",                         // URI8
+        "/Employees('1')/$value",             // URI17 (not supported?)
+        "/Employees('1')/Age/$value"
         );
 
     final String header = HttpHeaders.ACCEPT;
-    final List<String> headerValues = Arrays.asList("",
+    final List<String> headerValues = Arrays.asList(
+        "", // for request with none 'Accept-Header' set
         "text/plain",
         "application/xml",
         "application/json",
