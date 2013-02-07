@@ -193,6 +193,9 @@
 									<head>Do not implement this interface.</head>
 								</tag>
 							</tags>
+							<additionalJOptions>
+								<additionalJOption>-quiet</additionalJOption>
+							</additionalJOptions>
 						</configuration>
 					</execution>
 				</executions>
