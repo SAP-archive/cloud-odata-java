@@ -15,5 +15,17 @@ public class ODataMethodNotAllowedException extends ODataHttpException {
   public ODataMethodNotAllowedException(MessageReference context) {
     super(context, HttpStatusCodes.METHOD_NOT_ALLOWED);
   }
+  
+  public ODataMethodNotAllowedException(MessageReference context, Throwable cause) {
+    super(context, HttpStatusCodes.METHOD_NOT_ALLOWED);
+  }
+  
+  public ODataMethodNotAllowedException(MessageReference context, String errorCode) {
+    super(context, HttpStatusCodes.METHOD_NOT_ALLOWED, errorCode);
+  }
+  
+  public ODataMethodNotAllowedException(MessageReference context, Throwable cause, String errorCode) {
+    super(context, HttpStatusCodes.METHOD_NOT_ALLOWED, errorCode);
+  }
 
 }

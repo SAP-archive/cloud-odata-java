@@ -14,4 +14,17 @@ public class ODataServiceUnavailableException extends ODataHttpException {
   public ODataServiceUnavailableException(MessageReference context) {
     super(context, HttpStatusCodes.SERVICE_UNAVAILABLE);
   }
+  
+  public ODataServiceUnavailableException(MessageReference context, Throwable cause) {
+    super(context, cause, HttpStatusCodes.SERVICE_UNAVAILABLE);
+  }
+  
+  public ODataServiceUnavailableException(MessageReference context, String errorCode) {
+    super(context, HttpStatusCodes.SERVICE_UNAVAILABLE, errorCode);
+  }
+  
+  public ODataServiceUnavailableException(MessageReference context, Throwable cause, String errorCode) {
+    super(context, cause, HttpStatusCodes.SERVICE_UNAVAILABLE, errorCode);
+  }
+  
 }

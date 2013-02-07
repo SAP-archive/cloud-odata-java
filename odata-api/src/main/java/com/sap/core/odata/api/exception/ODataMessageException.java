@@ -12,6 +12,9 @@ public abstract class ODataMessageException extends ODataException {
 
   /** Message reference for exception which is used for internationalization */
   protected final MessageReference messageReference;
+  /** OData error code*/
+  private String errorCode;
+
 
   /**   */
   private static final long serialVersionUID = 42L;
@@ -26,7 +29,7 @@ public abstract class ODataMessageException extends ODataException {
    *        references the message text (and additional values) of this {@link ODataHttpException}
    */
   public ODataMessageException(MessageReference messageReference) {
-    this(messageReference, null);
+    this.messageReference = messageReference;
   }
 
   /**
@@ -36,11 +39,32 @@ public abstract class ODataMessageException extends ODataException {
    * @param messageReference
    *        references the message text (and additional values) of this {@link ODataHttpException}
    * @param cause
-   *        exception which caused this {@link ODataHttpException}
+   *        exception which caused this {@link ODataMessageException}
    */
   public ODataMessageException(MessageReference messageReference, Throwable cause) {
     super(cause);
     this.messageReference = messageReference;
+  }
+  
+  /**
+   * Create {@link ODataHttpException} with given {@link MessageReference}, cause {@link Throwable} and error code
+   * @param messageReference
+   * @param cause
+   * @param errorCode
+   */
+  public ODataMessageException(MessageReference messageReference, Throwable cause, String errorCode) {
+    this(messageReference, cause);
+    this.errorCode = errorCode;
+  }
+  
+  /**
+   * Create {@link ODataHttpException} with given {@link MessageReference} and error code
+   * @param messageReference
+   * @param errorCode
+   */
+  public ODataMessageException(MessageReference messageReference, String errorCode) {
+    this(messageReference);
+    this.errorCode = errorCode;
   }
 
   /**
@@ -63,5 +87,14 @@ public abstract class ODataMessageException extends ODataException {
    */
   public MessageReference getMessageReference() {
     return messageReference;
+  }
+  
+  
+  /**
+   * Get the error code for this {@link ODataMessageException}. Default is null.
+   * @return the error code
+   */
+  public String getErrorCode() {
+    return errorCode;
   }
 }

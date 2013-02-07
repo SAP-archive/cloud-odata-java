@@ -31,4 +31,12 @@ public class EdmSimpleTypeException extends EdmException {
   public EdmSimpleTypeException(MessageReference messageReference, Throwable cause) {
     super(messageReference, cause);
   }
+  
+  public EdmSimpleTypeException(MessageReference messageReference, String errorCode) {
+    super(messageReference, errorCode);
+  }
+
+  public EdmSimpleTypeException(MessageReference messageReference, Throwable cause, String errorCode) {
+    super(messageReference, cause, errorCode);
+  }
 }

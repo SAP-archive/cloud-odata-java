@@ -9,6 +9,10 @@ public class SampleClassForInvalidMessageReferences extends ODataMessageExceptio
   public SampleClassForInvalidMessageReferences(MessageReference messageReference) {
     super(messageReference);
   }
+  
+  public SampleClassForInvalidMessageReferences(MessageReference messageReference, String errorCode) {
+    super(messageReference, errorCode);
+  }
 
   public static final MessageReference EXIST = createMessageReference(SampleClassForInvalidMessageReferences.class, "EXIST");
   public static final MessageReference DOES_NOT_EXIST = createMessageReference(SampleClassForInvalidMessageReferences.class, "DOES_NOT_EXIST");

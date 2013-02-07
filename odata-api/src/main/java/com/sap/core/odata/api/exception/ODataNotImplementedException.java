@@ -14,6 +14,10 @@ public class ODataNotImplementedException extends ODataHttpException {
   public ODataNotImplementedException(MessageReference context) {
     super(context, HttpStatusCodes.NOT_IMPLEMENTED);
   }
+  
+  public ODataNotImplementedException(MessageReference context, String errorCode) {
+    super(context, HttpStatusCodes.NOT_IMPLEMENTED, errorCode);
+  }
 
   public ODataNotImplementedException() {
     this(COMMON);
