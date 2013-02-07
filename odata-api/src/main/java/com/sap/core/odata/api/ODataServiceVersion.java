@@ -49,7 +49,7 @@ public class ODataServiceVersion {
    * actual > comparedTo
    * @param actual
    * @param comparedTo
-   * @return
+   * @return true if actual is bigger than comaredTo
    */
   public static boolean isBiggerThan(String actual, String comparedTo) {
     if (!validateDataServiceVersion(comparedTo) || !validateDataServiceVersion(actual)) {
