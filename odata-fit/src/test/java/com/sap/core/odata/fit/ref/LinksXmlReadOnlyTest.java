@@ -1,6 +1,7 @@
 package com.sap.core.odata.fit.ref;
 
 import static org.custommonkey.xmlunit.XMLAssert.assertXpathEvaluatesTo;
+import static org.custommonkey.xmlunit.XMLAssert.assertXpathExists;
 import static org.junit.Assert.assertFalse;
 
 import org.apache.http.HttpResponse;
@@ -42,8 +43,8 @@ public final class LinksXmlReadOnlyTest extends AbstractRefXmlTest {
     checkMediaType(response, HttpContentType.APPLICATION_XML_UTF8);
     final String body = getBody(response);
     assertXpathEvaluatesTo("2", "count(/d:links/d:uri)", body);
-    assertXpathEvaluatesTo(getEndpoint() + "Employees('4')", "/d:links/d:uri[1]", body);
-    assertXpathEvaluatesTo(getEndpoint() + "Employees('5')", "/d:links/d:uri[2]", body);
+    assertXpathExists("/d:links[d:uri = \"" + getEndpoint() + "Employees('4')" + "\"]", body);
+    assertXpathExists("/d:links[d:uri = \"" + getEndpoint() + "Employees('5')" + "\"]", body);
     assertFalse(body.contains("6"));
   }
 }
