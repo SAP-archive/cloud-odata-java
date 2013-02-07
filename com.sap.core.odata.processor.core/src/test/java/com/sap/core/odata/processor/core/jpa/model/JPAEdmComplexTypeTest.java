@@ -123,9 +123,19 @@ public class JPAEdmComplexTypeTest extends JPAEdmTestModelView {
 
 	@Test
 	public void testAddCompleTypeView() {
+		localView = new JPAEdmComplexTypeTest();
+		objComplexType = new JPAEdmComplexType(localView);
+		try {
+			objComplexType.getBuilder().build();
+		} catch (ODataJPAModelException e) {
+			fail("ODataJPAModelException not expected");
+		} catch (ODataJPARuntimeException e) {
+			fail("ODataJPARuntimeException not expected");
+		}
 		
 		objComplexType.addJPAEdmCompleTypeView(localView);
-		
+		assertTrue(objComplexType.getConsistentEdmComplexTypes()
+				.size() > 1);
 	}
 
 	@Test

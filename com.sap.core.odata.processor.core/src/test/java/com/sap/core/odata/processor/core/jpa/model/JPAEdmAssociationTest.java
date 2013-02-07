@@ -220,6 +220,19 @@ public class JPAEdmAssociationTest extends JPAEdmTestModelView {
 	@Test
 	public void testAddJPAEdmRefConstraintView() {
 
+		localView = new JPAEdmAssociationTest();
+		objAssociation = new JPAEdmAssociation(localView, localView, localView);
+		try {
+			objAssociation.getBuilder().build();
+		} catch (ODataJPAModelException e) {
+			fail("ODataJPAModelException not expected");
+		} catch (ODataJPARuntimeException e) {
+			fail("ODataJPARuntimeException not expected");
+		}
+		
+		objAssociation.addJPAEdmRefConstraintView(localView);
+		assertTrue(objAssociation.getConsistentEdmAssociationList()
+				.size() > 0);
 	}
 
 	@Test
