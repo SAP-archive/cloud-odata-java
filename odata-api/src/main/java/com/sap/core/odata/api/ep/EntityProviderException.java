@@ -23,4 +23,12 @@ public class EntityProviderException extends ODataMessageException {
   public EntityProviderException(MessageReference messageReference, Throwable cause) {
     super(messageReference, cause);
   }
+  
+  public EntityProviderException(MessageReference messageReference, String errorCode) {
+    super(messageReference, errorCode);
+  }
+
+  public EntityProviderException(MessageReference messageReference, Throwable cause, String errorCode) {
+    super(messageReference, cause, errorCode);
+  }
 }

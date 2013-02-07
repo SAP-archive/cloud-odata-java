@@ -22,4 +22,12 @@ public class EdmLiteralException extends EdmException {
   public EdmLiteralException(MessageReference messageReference, Throwable cause) {
     super(messageReference, cause);
   }
+  
+  public EdmLiteralException(MessageReference MessageReference, String errorCode) {
+    super(MessageReference, errorCode);
+  }
+
+  public EdmLiteralException(MessageReference messageReference, Throwable cause, String errorCode) {
+    super(messageReference, cause, errorCode);
+  }
 }

@@ -37,7 +37,7 @@ import com.sap.core.odata.core.exception.MessageService;
 import com.sap.core.odata.core.exception.MessageService.Message;
 
 /**
- * Creates an error response acccording to the format defined by the OData standard
+ * Creates an error response according to the format defined by the OData standard
  * if an exception occurs.
  * @author SAP AG
  */
@@ -63,6 +63,8 @@ public class ODataExceptionMapperImpl implements ExceptionMapper<Exception> {
       response = buildResponseForApplicationException((ODataApplicationException) toHandleException);
     } else if (toHandleException instanceof ODataHttpException) {
       response = buildResponseForHttpException((ODataHttpException) toHandleException);
+    } else if (toHandleException instanceof ODataMessageException) {
+      response = buildResponseForMessageException((ODataMessageException) toHandleException);
     } else if (toHandleException instanceof WebApplicationException) {
       response = buildResponseForWebApplicationException((WebApplicationException) toHandleException);
     } else {
@@ -76,8 +78,20 @@ public class ODataExceptionMapperImpl implements ExceptionMapper<Exception> {
     return response;
   }
 
+  private Response buildResponseForMessageException(ODataMessageException messageException) {
+    MessageReference messageReference = messageException.getMessageReference();
+    Message localizedMessage = messageReference == null ? null : extractEntity(messageReference);
+    ContentType contentType = getContentType();
+    InputStream entity = ODataExceptionSerializer.serialize(
+        messageException.getErrorCode(),
+        localizedMessage == null ? null : localizedMessage.getText()
+        , getInnerError(messageException), getContentType(),
+        localizedMessage == null ? null : localizedMessage.getLocale());
+    return buildResponseInternal(entity, contentType, HttpStatusCodes.INTERNAL_SERVER_ERROR.getStatusCode());
+  }
+
   private Response buildResponseForWebApplicationException(WebApplicationException webApplicationException) {
-    InputStream entity = ODataExceptionSerializer.serialize(buildErrorCode(webApplicationException), webApplicationException.getMessage(), getInnerError(webApplicationException), getContentType(), DEFAULT_RESPONSE_LOCALE);
+    InputStream entity = ODataExceptionSerializer.serialize(null, webApplicationException.getMessage(), getInnerError(webApplicationException), getContentType(), DEFAULT_RESPONSE_LOCALE);
     return buildResponseInternal(entity, getContentType(), webApplicationException.getResponse().getStatus());
   }
 
@@ -103,7 +117,7 @@ public class ODataExceptionMapperImpl implements ExceptionMapper<Exception> {
   private Response buildResponseForException(Exception exception) {
     final String innerError = getInnerError(exception);
     final ContentType contentType = getContentType();
-    InputStream entity = ODataExceptionSerializer.serialize(buildErrorCode(exception), exception.getMessage(), innerError, contentType, DEFAULT_RESPONSE_LOCALE);
+    InputStream entity = ODataExceptionSerializer.serialize(null, exception.getMessage(), innerError, contentType, DEFAULT_RESPONSE_LOCALE);
     return buildResponseInternal(entity, contentType, Status.INTERNAL_SERVER_ERROR.getStatusCode());
   }
 
@@ -120,7 +134,7 @@ public class ODataExceptionMapperImpl implements ExceptionMapper<Exception> {
     final Message localizedMessage = messageReference == null ? null : extractEntity(messageReference);
     final ContentType contentType = getContentType();
     InputStream entity = ODataExceptionSerializer.serialize(
-        buildErrorCode(httpException),
+        httpException.getErrorCode(),
         localizedMessage == null ? null : localizedMessage.getText(),
         getInnerError(httpException),
         contentType,
@@ -180,14 +194,6 @@ public class ODataExceptionMapperImpl implements ExceptionMapper<Exception> {
       }
     }
     return ContentType.APPLICATION_XML;
-  }
-
-  private static String buildErrorCode(Exception e) {
-    if (e instanceof ODataMessageException
-        && ((ODataMessageException) e).getMessageReference() != null)
-      return ((ODataMessageException) e).getMessageReference().getKey();
-    else
-      return e.getClass().getName();
   }
 
   private String getInnerError(final Exception exception) {

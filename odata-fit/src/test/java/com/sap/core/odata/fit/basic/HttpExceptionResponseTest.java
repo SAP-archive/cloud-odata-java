@@ -1,5 +1,6 @@
 package com.sap.core.odata.fit.basic;
 
+import static org.custommonkey.xmlunit.XMLAssert.assertXpathExists;
 import static org.custommonkey.xmlunit.XMLAssert.assertXpathValuesEqual;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
@@ -69,7 +70,7 @@ public class HttpExceptionResponseTest extends AbstractBasicTest {
     prefixMap.put("a", Edm.NAMESPACE_M_2007_08);
     final NamespaceContext ctx = new SimpleNamespaceContext(prefixMap);
     XMLUnit.setXpathNamespaceContext(ctx);
-    assertXpathValuesEqual("\"" + ODataNotFoundException.ENTITY.getKey() + "\"", "/a:error/a:code", content);
+    assertXpathExists("/a:error/a:code", content);
     assertXpathValuesEqual("\"" + MessageService.getMessage(Locale.ENGLISH, ODataNotFoundException.ENTITY).getText() + "\"", "/a:error/a:message", content);
   }
 
@@ -93,8 +94,9 @@ public class HttpExceptionResponseTest extends AbstractBasicTest {
       final String content = StringHelper.inputStreamToString(response.getEntity().getContent());
       final Map<String, String> prefixMap = new HashMap<String, String>();
       prefixMap.put("a", Edm.NAMESPACE_M_2007_08);
-      XMLUnit.setXpathNamespaceContext(new SimpleNamespaceContext(prefixMap));
-      assertXpathValuesEqual("\"com.sap.core.odata.api.exception.ODataHttpException.SIMPLE FOR TEST\"", "/a:error/a:code", content);
+      NamespaceContext ctx = new SimpleNamespaceContext(prefixMap);
+      XMLUnit.setXpathNamespaceContext(ctx);
+      assertXpathExists("/a:error/a:code", content);
 
       //TODO: How to check for the right text here?
       //assertXpathValuesEqual("\"" + MessageService.getMessage(Locale.ENGLISH, ODataNotFoundException.ENTITY).getText() + "\"", "/a:error/a:message", content);

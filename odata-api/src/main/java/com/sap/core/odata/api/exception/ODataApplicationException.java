@@ -11,7 +11,7 @@ import com.sap.core.odata.api.commons.HttpStatusCodes;
 public class ODataApplicationException extends ODataException {
 
   private static final long serialVersionUID = 1L;
-  private String errorCode = ODataApplicationException.class.getName();;
+  private String errorCode;
   private HttpStatusCodes httpStatus = HttpStatusCodes.INTERNAL_SERVER_ERROR;
   private final Locale locale;
 
@@ -115,7 +115,7 @@ public class ODataApplicationException extends ODataException {
   }
 
   /**
-   * Default code is "ODataApplicationException.class"
+   * Default code is null
    * @return <b>String</b>The error code displayed in the error message. Mandatory after OData specification.
    */
   public String getCode() {
