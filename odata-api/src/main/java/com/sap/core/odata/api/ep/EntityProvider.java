@@ -28,7 +28,7 @@ public final class EntityProvider {
      * Write metadata document in XML format for the given schemas and the provided predefined namespaces at the EDMX element. PredefinedNamespaces is of type Map{@literal<}prefix,namespace{@literal>} and may be null or an empty Map.
      * @param schemas
      * @param predefinedNamespaces
-     * @return
+     * @return resulting {@link ODataResponse} with written metadata content.
      * @throws EntityProviderException
      */
     ODataResponse writeMetadata(List<Schema> schemas, Map<String, String> predefinedNamespaces) throws EntityProviderException;
@@ -40,7 +40,7 @@ public final class EntityProvider {
      * @param contentType
      * @param edm
      * @param serviceRoot
-     * @return
+     * @return resulting {@link ODataResponse} with written service document content.
      * @throws EntityProviderException
      */
     ODataResponse writeServiceDocument(String contentType, Edm edm, String serviceRoot) throws EntityProviderException;
@@ -50,7 +50,7 @@ public final class EntityProvider {
      * 
      * @param edmProperty
      * @param value
-     * @return
+     * @return resulting {@link ODataResponse} with written property value content.
      * @throws EntityProviderException
      */
     ODataResponse writePropertyValue(EdmProperty edmProperty, Object value) throws EntityProviderException;
@@ -59,7 +59,7 @@ public final class EntityProvider {
      * Write text value as content type <code>text/plain</code>.
      * 
      * @param value
-     * @return
+     * @return resulting {@link ODataResponse} with written text/plain content.
      * @throws EntityProviderException
      */
     ODataResponse writeText(String value) throws EntityProviderException;
@@ -69,7 +69,7 @@ public final class EntityProvider {
      * 
      * @param mimeType mime type which is written and used as content type header information.
      * @param data which is written to {@link ODataResponse}.
-     * @return resulting {@link ODataResponse} with written binary content.
+     * @return response object resulting {@link ODataResponse} with written binary content.
      * @throws EntityProviderException
      */
     ODataResponse writeBinary(String mimeType, byte[] data) throws EntityProviderException;
@@ -80,7 +80,7 @@ public final class EntityProvider {
      * @param entitySet
      * @param data
      * @param properties
-     * @return
+     * @return resulting {@link ODataResponse} with written feed content.
      * @throws EntityProviderException
      */
     ODataResponse writeFeed(String contentType, EdmEntitySet entitySet, List<Map<String, Object>> data, EntityProviderProperties properties) throws EntityProviderException;
@@ -91,7 +91,7 @@ public final class EntityProvider {
      * @param entitySet
      * @param data
      * @param properties
-     * @return
+     * @return resulting {@link ODataResponse} with written entry content.
      * @throws EntityProviderException
      */
     ODataResponse writeEntry(String contentType, EdmEntitySet entitySet, Map<String, Object> data, EntityProviderProperties properties) throws EntityProviderException;
@@ -101,7 +101,7 @@ public final class EntityProvider {
      * @param contentType
      * @param edmProperty
      * @param value
-     * @return
+     * @return resulting {@link ODataResponse} with written property content.
      * @throws EntityProviderException
      */
     ODataResponse writeProperty(String contentType, EdmProperty edmProperty, Object value) throws EntityProviderException;
@@ -112,7 +112,7 @@ public final class EntityProvider {
      * @param entitySet
      * @param data
      * @param properties
-     * @return
+     * @return resulting {@link ODataResponse} with written link content.
      * @throws EntityProviderException
      */
     ODataResponse writeLink(String contentType, EdmEntitySet entitySet, Map<String, Object> data, EntityProviderProperties properties) throws EntityProviderException;
@@ -123,7 +123,7 @@ public final class EntityProvider {
      * @param entitySet
      * @param data
      * @param properties
-     * @return
+     * @return resulting {@link ODataResponse} with written links content.
      * @throws EntityProviderException
      */
     ODataResponse writeLinks(String contentType, EdmEntitySet entitySet, List<Map<String, Object>> data, EntityProviderProperties properties) throws EntityProviderException;
@@ -134,7 +134,7 @@ public final class EntityProvider {
      * @param functionImport
      * @param data
      * @param properties
-     * @return
+     * @return resulting {@link ODataResponse} with written function import result content.
      * @throws EntityProviderException
      */
     ODataResponse writeFunctionImport(String contentType, EdmFunctionImport functionImport, Object data, EntityProviderProperties properties) throws EntityProviderException;
@@ -144,7 +144,7 @@ public final class EntityProvider {
      * @param contentType
      * @param entitySet
      * @param content
-     * @return
+     * @return entry as {@link ODataEntry}
      * @throws EntityProviderException
      */
     ODataEntry readEntry(String contentType, EdmEntitySet entitySet, InputStream content) throws EntityProviderException;
@@ -154,7 +154,7 @@ public final class EntityProvider {
      * @param contentType
      * @param edmProperty
      * @param content
-     * @return
+     * @return property as name and value in a map
      * @throws EntityProviderException
      */
     Map<String, Object> readProperty(String contentType, EdmProperty edmProperty, InputStream content) throws EntityProviderException;
@@ -163,7 +163,7 @@ public final class EntityProvider {
      * 
      * @param edmProperty
      * @param content
-     * @return
+     * @return property value as object
      * @throws EntityProviderException
      */
     Object readPropertyValue(EdmProperty edmProperty, InputStream content) throws EntityProviderException;
@@ -173,7 +173,7 @@ public final class EntityProvider {
      * @param contentType
      * @param entitySet
      * @param content
-     * @return
+     * @return links as list of strings
      * @throws EntityProviderException
      */
     List<String> readLinks(String contentType, EdmEntitySet entitySet, InputStream content) throws EntityProviderException;
@@ -183,7 +183,7 @@ public final class EntityProvider {
      * @param contentType
      * @param entitySet
      * @param content
-     * @return
+     * @return link as string
      * @throws EntityProviderException
      */
     String readLink(String contentType, EdmEntitySet entitySet, InputStream content) throws EntityProviderException;
@@ -191,7 +191,7 @@ public final class EntityProvider {
     /**
      * 
      * @param content
-     * @return
+     * @return binary data as bytes
      * @throws EntityProviderException
      */
     byte[] readBinary(InputStream content) throws EntityProviderException;
@@ -210,7 +210,7 @@ public final class EntityProvider {
    * Write metadata document in XML format for the given schemas and the provided predefined namespaces at the EDMX element. PredefinedNamespaces is of type Map{@literal<}prefix,namespace{@literal>} and may be null or an empty Map.
    * @param schemas
    * @param predefinedNamespaces
-   * @return
+   * @return resulting {@link ODataResponse} with written metadata content.
    * @throws EntityProviderException
    */
   public static ODataResponse writeMetadata(List<Schema> schemas, Map<String, String> predefinedNamespaces) throws EntityProviderException {
@@ -223,7 +223,7 @@ public final class EntityProvider {
    * 
    * @param edm
    * @param serviceRoot
-   * @return
+   * @return resulting {@link ODataResponse} with written service document content.
    * @throws EntityProviderException
    */
   public static ODataResponse writeServiceDocument(String contentType, Edm edm, String serviceRoot) throws EntityProviderException {
@@ -235,7 +235,7 @@ public final class EntityProvider {
    * 
    * @param edmProperty
    * @param value
-   * @return
+   * @return resulting {@link ODataResponse} with written property value content.
    * @throws EntityProviderException
    */
   public static ODataResponse writePropertyValue(EdmProperty edmProperty, Object value) throws EntityProviderException {
@@ -246,7 +246,7 @@ public final class EntityProvider {
    * Write text value as content type <code>text/plain</code>.
    * 
    * @param value
-   * @return
+   * @return resulting {@link ODataResponse} with written text/plain content.
    * @throws EntityProviderException
    */
   public static ODataResponse writeText(String value) throws EntityProviderException {

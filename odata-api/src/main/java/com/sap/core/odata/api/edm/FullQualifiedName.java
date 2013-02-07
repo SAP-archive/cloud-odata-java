@@ -19,14 +19,14 @@ public class FullQualifiedName {
   }
 
   /**
-   * @return
+   * @return namespace
    */
   public String getNamespace() {
     return namespace;
   }
 
   /**
-   * @return
+   * @return name
    */
   public String getName() {
     return name;
