@@ -70,11 +70,11 @@ public abstract class RuntimeDelegate {
 
   /**
    * Returns a simple type object for given type kind.
-   * @param edmSimpleTypeKind 
+   * @param edmSimpleTypeKind type kind
    * @return an implementation object
    */
-  public static EdmSimpleType getEdmSimpleType(EdmSimpleTypeKind edmSimpleType) {
-    return RuntimeDelegate.getInstance().getEdmSimpleType(edmSimpleType);
+  public static EdmSimpleType getEdmSimpleType(EdmSimpleTypeKind edmSimpleTypeKind) {
+    return RuntimeDelegate.getInstance().getEdmSimpleType(edmSimpleTypeKind);
   }
 
   /**
