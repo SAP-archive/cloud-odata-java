@@ -12,7 +12,10 @@ import com.sap.core.odata.api.processor.ODataSingleProcessor;
 import com.sap.core.odata.api.uri.UriParser;
 
 /**
- * Abstract class to get OData core implementations of API interfaces
+ * Provides access to core implementation classes for interfaces. This class is used 
+ * by internal abstract API implementations and it is not intended to be used by others. 
+ * 
+ * @com.sap.core.odata.DoNotImplement
  * @author SAP AG
  */
 public abstract class RuntimeDelegate {
@@ -20,8 +23,10 @@ public abstract class RuntimeDelegate {
   private static final String IMPLEMENTATION = "com.sap.core.odata.core.rt.RuntimeDelegateImpl";
 
   /**
-   * Get a RuntimeDelegate Instance through reflection
-   * @return {@link RuntimeDelegate} object
+   * Create a runtime delegate instance from the core library. The core 
+   * library (com.sap.core.odata.core.jar) needs to be included into the classpath
+   * of the using application.
+   * @return an implementation object
    */
   private static RuntimeDelegateInstance getInstance() {
     RuntimeDelegateInstance delegate;
@@ -29,6 +34,10 @@ public abstract class RuntimeDelegate {
     try {
       final Class<?> clazz = Class.forName(RuntimeDelegate.IMPLEMENTATION);
 
+      /*
+       * We explicitly do not use the singleton pattern to keep the server state free
+       * and avoid class loading issues also during hot deployment. 
+       */
       final Object object = clazz.newInstance();
       delegate = (RuntimeDelegateInstance) object;
 
@@ -38,83 +47,112 @@ public abstract class RuntimeDelegate {
     return delegate;
   }
 
+  /**
+   * An implementation is available in the core library.
+   * @com.sap.core.odata.DoNotImplement
+   */
   public static abstract class RuntimeDelegateInstance {
+
     /**
-     * Get a OData response builder
-     * @return {@link ODataResponseBuilder} object
+     * Returns a builder for creating response objects with variable parameter sets.
+     * @return an implementation object
      */
     protected abstract ODataResponseBuilder createODataResponseBuilder();
 
     /**
-     * Gets an {@link EdmSimpleType} implementation for a given {@link EdmSimpleTypeKind}
-     * @param edmSimpleTypeKind
-     * @return {@link EdmSimpleType}
+     * Returns a simple type object for given type kind.
+     * @param edmSimpleTypeKind 
+     * @return an implementation object
      */
     protected abstract EdmSimpleType getEdmSimpleType(EdmSimpleTypeKind edmSimpleTypeKind);
 
     /**
-     * Get a UriParser object
-     * @return {@link UriParser} object
+     * Returns an parser which can parse OData uris based on metadata.
+     * @param edm metadata of the implemented service
+     * @return an implementation object
      */
     protected abstract UriParser getUriParser(Edm edm);
 
     /**
-     * Gets an {@link EdmSimpleType} implementation for a given simple-type name.
-     * @param edmSimpleType  name of the simple type
-     * @return {@link EdmSimpleType}
-     */
-    protected abstract EdmSimpleType getInternalEdmSimpleTypeByString(String edmSimpleType);
-
-    /**
-     * Gets an implementation of the EDM simple-type facade.
-     * @return {@link EdmSimpleTypeFacade}
+     * Returns an implementation of the EDM simple-type facade.
+     * @return an implementation object
      */
     protected abstract EdmSimpleTypeFacade getSimpleTypeFacade();
 
     /**
-     * Creates an entity data model.
-     * @param provider A {@link EdmProvider} instance
-     * @return {@link Edm} implementation object
+     * Creates and returns an entity data model.
+     * @param provider a provider implemented by the OData service
+     * @return an implementation object
      */
     protected abstract Edm createEdm(EdmProvider provider);
 
+    /**
+     * Creates and returns a HTTP entity provider. 
+     * @return an implementation object
+     */
     protected abstract EntityProviderInterface createEntityProvider();
 
+    /**
+     * Creates and returns a single processor service. 
+     * @param provider a provider implementation for the metadata of the OData service
+     * @param processor a single data processor implementation of the OData service
+     * @return a implementation object
+     */
     protected abstract ODataService createODataSingleProcessorService(EdmProvider provider, ODataSingleProcessor processor);
   }
 
+  /**
+   * @see RuntimeDelegateInstance#getEdmSimpleType
+   */
   public static EdmSimpleType getEdmSimpleType(EdmSimpleTypeKind edmSimpleType) {
     return RuntimeDelegate.getInstance().getEdmSimpleType(edmSimpleType);
   }
 
+  /**
+   * @see RuntimeDelegateInstance#getSimpleTypeFacade
+   */
   public static EdmSimpleTypeFacade getSimpleTypeFacade() {
     return RuntimeDelegate.getInstance().getSimpleTypeFacade();
   }
 
+  /**
+   * @see RuntimeDelegateInstance#createODataResponseBuilder
+   */
   public static ODataResponseBuilder createODataResponseBuilder() {
     return RuntimeDelegate.getInstance().createODataResponseBuilder();
   }
 
+  /**
+   * @see RuntimeDelegateInstance#createEdm
+   */
   public static Edm createEdm(EdmProvider provider) {
     return RuntimeDelegate.getInstance().createEdm(provider);
   }
 
+  /**
+   * @see RuntimeDelegateInstance#getUriParser
+   */
   public static UriParser getUriParser(Edm edm) {
     return RuntimeDelegate.getInstance().getUriParser(edm);
   }
 
-  public static EdmSimpleType getInternalEdmSimpleTypeByString(String edmSimpleType) {
-    return RuntimeDelegate.getInstance().getInternalEdmSimpleTypeByString(edmSimpleType);
-  }
-
+  /**
+   * @see RuntimeDelegateInstance#createEntityProvider
+   */
   public static EntityProviderInterface createEntityProvider() {
     return RuntimeDelegate.getInstance().createEntityProvider();
   }
 
+  /**
+   * @see RuntimeDelegateInstance#createODataSingleProcessorService
+   */
   public static ODataService createODataSingleProcessorService(EdmProvider provider, ODataSingleProcessor processor) {
     return RuntimeDelegate.getInstance().createODataSingleProcessorService(provider, processor);
   }
 
+  /**
+   * Is thrown in the runtime delegate implementation. Usually a serious class loading problem.
+   */
   private static class RuntimeDelegateException extends RuntimeException {
 
     private static final long serialVersionUID = 1L;
