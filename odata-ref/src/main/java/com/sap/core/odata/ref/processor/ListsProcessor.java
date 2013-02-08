@@ -483,11 +483,15 @@ public class ListsProcessor extends ODataSingleProcessor {
     //   throw new ODataNotFoundException(ODataNotFoundException.ENTITY);
 
     final List<EdmProperty> propertyPath = uriInfo.getPropertyPath();
-    data = getPropertyValue(data, propertyPath);
-
     final EdmProperty property = propertyPath.get(propertyPath.size() - 1);
-    final Object value = property.isSimple() ?
-        data : getStructuralTypeValueMap(data, (EdmStructuralType) property.getType());
+    Object value;
+    if (property.isSimple())
+      if (property.getMapping() == null || property.getMapping().getMimeType() == null)
+        value = getPropertyValue(data, propertyPath);
+      else
+        value = getSimpleTypeValueMap(data, propertyPath);
+    else
+      value = getStructuralTypeValueMap(getPropertyValue(data, propertyPath), (EdmStructuralType) property.getType());
 
     ODataContext context = getContext();
     final int timingHandle = context.startRuntimeMeasurement("EntityProvider", "writeProperty");
@@ -518,15 +522,8 @@ public class ListsProcessor extends ODataSingleProcessor {
 
     final List<EdmProperty> propertyPath = uriInfo.getPropertyPath();
     final EdmProperty property = propertyPath.get(propertyPath.size() - 1);
-    Object value = getPropertyValue(data, propertyPath);
-
-    if (property.getMapping() != null && property.getMapping().getMimeType() != null) {
-      Map<String, Object> valueWithMimeType = new HashMap<String, Object>();
-      valueWithMimeType.put(property.getName(), value);
-      final String mimeTypeMappingName = property.getMapping().getMimeType();
-      valueWithMimeType.put(mimeTypeMappingName, getValue(data, mimeTypeMappingName));
-      value = valueWithMimeType;
-    }
+    final Object value = property.getMapping() == null || property.getMapping().getMimeType() == null ?
+        getPropertyValue(data, propertyPath) : getSimpleTypeValueMap(data, propertyPath);
 
     return ODataResponse.fromResponse(EntityProvider.writePropertyValue(property, value))
         .status(HttpStatusCodes.OK)
@@ -1218,7 +1215,7 @@ public class ListsProcessor extends ODataSingleProcessor {
   }
 
   private static String getGetterMethodName(final EdmProperty property) throws EdmException {
-    final String prefix = property.getType().getKind() == EdmTypeKind.SIMPLE && property.getType() == EdmSimpleTypeKind.Boolean.getEdmSimpleTypeInstance() ? "is" : "get";
+    final String prefix = property.isSimple() && property.getType() == EdmSimpleTypeKind.Boolean.getEdmSimpleTypeInstance() ? "is" : "get";
     final String defaultMethodName = prefix + property.getName();
     return property.getMapping() == null || property.getMapping().getInternalName() == null ?
         defaultMethodName : property.getMapping().getInternalName();
@@ -1229,6 +1226,15 @@ public class ListsProcessor extends ODataSingleProcessor {
       return null;
     else
       return getterMethodName.replaceFirst("^is", "set").replaceFirst("^get", "set");
+  }
+
+  private static <T> Map<String, Object> getSimpleTypeValueMap(final T data, final List<EdmProperty> propertyPath) throws ODataException {
+    final EdmProperty property = propertyPath.get(propertyPath.size() - 1);
+    Map<String, Object> valueWithMimeType = new HashMap<String, Object>();
+    valueWithMimeType.put(property.getName(), getPropertyValue(data, propertyPath));
+    final String mimeTypeMappingName = property.getMapping().getMimeType();
+    valueWithMimeType.put(mimeTypeMappingName, getValue(data, mimeTypeMappingName));
+    return valueWithMimeType;
   }
 
   private <T> Map<String, Object> getStructuralTypeValueMap(final T data, final EdmStructuralType type) throws ODataException {
@@ -1242,7 +1248,11 @@ public class ListsProcessor extends ODataSingleProcessor {
       final Object value = getPropertyValue(data, property);
 
       if (property.isSimple())
-        valueMap.put(propertyName, value);
+        if (property.getMapping() == null || property.getMapping().getMimeType() == null)
+          valueMap.put(propertyName, value);
+        else
+          // TODO: enable MIME type mapping outside the current subtree
+          valueMap.put(propertyName, getSimpleTypeValueMap(data, Arrays.asList(property)));
       else
         valueMap.put(propertyName, getStructuralTypeValueMap(value, (EdmStructuralType) property.getType()));
     }

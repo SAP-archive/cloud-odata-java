@@ -19,7 +19,7 @@ public class EntityComplexPropertyInfo extends EntityPropertyInfo {
   protected List<EntityPropertyInfo> entityPropertyInfo;
 
   EntityComplexPropertyInfo(final String name, final EdmType type, final EdmFacets facets, final EdmCustomizableFeedMappings customizableFeedMapping, final List<EntityPropertyInfo> childEntityInfos) {
-    super(name, type, facets, customizableFeedMapping);
+    super(name, type, facets, customizableFeedMapping, null, null);
     entityPropertyInfo = childEntityInfos;
   }
 

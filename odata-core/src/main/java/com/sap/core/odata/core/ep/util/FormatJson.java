@@ -1,5 +1,9 @@
 package com.sap.core.odata.core.ep.util;
 
+/**
+ * String constants for formatting and parsing of JSON.
+ * @author SAP AG
+ */
 public class FormatJson {
 
   public static final String D = "d";
