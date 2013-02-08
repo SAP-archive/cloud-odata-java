@@ -6,8 +6,9 @@ import com.sap.core.odata.api.exception.MessageReference;
 import com.sap.core.odata.api.exception.ODataException;
 
 /**
- * @author SAP AG
- * 
+ * This class provides functionality to create messages for exceptions.
+ * @author AG
+ *
  */
 public abstract class ODataJPAException extends ODataException {
 

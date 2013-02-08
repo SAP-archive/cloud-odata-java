@@ -11,17 +11,17 @@ import com.sap.core.odata.api.edm.provider.SimpleProperty;
  * A view on Java Persistence Entity Attributes and EDM properties. Java
  * Persistence Attributes of type
  * <ol>
- * <li>embedded id - are converted into EDM keys</li>
- * <li>id - are converted into EDM keys</li>
+ * <li>embedded ID - are converted into EDM keys</li>
+ * <li>ID - are converted into EDM keys</li>
  * <li>attributes - are converted into EDM properties</li>
- * <li>emeddable type - are converted into EDM complex properties</li>
+ * <li>embeddable type - are converted into EDM complex properties</li>
  * <li>relationships - are converted into Associations/Navigation properties</li>
  * </ol>
  * <p>
  * The implementation of the view provides access to EDM properties. The view
  * acts as a container for consistent list of EDM properties of an EDM entity
  * type. EDM property is consistent only if there exists at least one property
- * in the entity type and there is at least on key property.
+ * in the entity type and there is at least one key property.
  * 
  * @author SAP AG
  *         <p>

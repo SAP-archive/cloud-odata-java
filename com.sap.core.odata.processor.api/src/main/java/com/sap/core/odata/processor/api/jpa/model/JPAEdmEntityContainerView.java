@@ -4,6 +4,11 @@ import java.util.List;
 
 import com.sap.core.odata.api.edm.provider.EntityContainer;
 
+/**
+ * This class provides view to the implementation class which has functionality to get EDM Entity Containers, EDM Entity Set, EDM Association Set.
+ * @author AG
+ *
+ */
 public interface JPAEdmEntityContainerView extends JPAEdmBaseView {
 
 	public EntityContainer getEdmEntityContainer();

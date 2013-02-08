@@ -5,7 +5,7 @@ import com.sap.core.odata.processor.api.jpa.access.JPAProcessor;
 import com.sap.core.odata.processor.api.jpa.model.JPAEdmModelView;
 
 /**
- * The factory int
+ * This factory provides EDM Provider and OData JPA Processor.
  * @author AG
  *
  */

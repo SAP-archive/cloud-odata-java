@@ -4,16 +4,11 @@ package com.sap.core.odata.processor.api.jpa.access;
  * A container for Java Persistence Join Clause that can be used for building
  * JPQL statements. The container has two main elements <b>
  * <ol>
- * <li>Java Persistence Entity</li>
- * <li>Java Persistence Entity Relationship</li>
+ * <li>Java Persistence Entity - </li> is the source entity participating in the join. <br>
+ * <li>Java Persistence Entity Relationship - </li> is the entity relationship of 
+ * the source entity participating in the join.
  * </ol>
  * </b>
- * 
- * <p>
- * <b>Java Persistence Entity - </b> is the source entity participating in the
- * join. <br>
- * <b>Java Persistence Entity Relationship - </b> is the entity relationship of
- * the source entity participating in the join.
  * 
  * @author SAP AG
  * 
