@@ -1,4 +1,4 @@
-package com.sap.core.odata.fit.basic;
+package com.sap.core.odata.fit.ref;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -42,9 +42,28 @@ import com.sap.core.odata.testutil.helper.StringHelper;
 /**
  * @author SAP AG
  */
-public class ContentNegotiationTest extends AbstractFitTest {
+public class ContentNegotiationAcceptHeaderTest extends AbstractFitTest {
+  
+  final static List<String> ACCEPT_HEADER_VALUES = Arrays.asList(
+      "", // for request with none 'Accept-Header' set
+      "text/plain",
+      "text/plain; charset=utf-8",
+      "application/json",
+      "application/json; charset=utf-8",
+      "application/xml",
+      "application/xml; charset=utf-8",
+      "application/atom+xml",
+      "application/atom+xml; charset=utf-8",
+      "application/atomsvc+xml",
+      "application/atomsvc+xml; charset=utf-8"
+      );
+  private final static List<String> QUERY_OPTIONS = Arrays.asList(
+      "",
+      "?$format=xml",
+      "?$format=atom",
+      "?$format=json"
+      );
 
-  // TODO: Don't use reference scenario in basic tests.
   @Override
   protected ODataService createService() throws ODataException {
     DataContainer dataContainer = new DataContainer();
@@ -92,31 +111,10 @@ public class ContentNegotiationTest extends AbstractFitTest {
     assertNotNull(StringHelper.inputStreamToString(response.getEntity().getContent()));
   }
 
-  
-  final static List<String> ACCEPT_HEADER_VALUES = Arrays.asList(
-      "", // for request with none 'Accept-Header' set
-      "text/plain",
-      "text/plain; charset=utf-8",
-      "application/json",
-      "application/json; charset=utf-8",
-      "application/xml",
-      "application/xml; charset=utf-8",
-      "application/atom+xml",
-      "application/atom+xml; charset=utf-8",
-      "application/atomsvc+xml",
-      "application/atomsvc+xml; charset=utf-8"
-      );
-  private final static List<String> QUERY_OPTIONS = Arrays.asList(
-      "",
-      "?$format=xml",
-      "?$format=atom",
-      "?$format=json"
-      );
-
   @Test
   public void testURI_0_ServiceDocument() throws Exception {
     // create test set
-    TestSet testSet = new TestSet(UriType.URI0, "/");
+    FitTestSet testSet = new FitTestSet(UriType.URI0, "/");
 
     // set specific response 'Content-Type's for '$format'
     testSet.setTestParam(Arrays.asList("?$format=xml"), ACCEPT_HEADER_VALUES, 200, "application/xml; charset=utf-8");
@@ -148,7 +146,7 @@ public class ContentNegotiationTest extends AbstractFitTest {
   @Test
   public void testURI_1_EntitySet() throws Exception {
     // create test set
-    TestSet testSet = new TestSet(UriType.URI1, "/Employees");
+    FitTestSet testSet = new FitTestSet(UriType.URI1, "/Employees");
 
     // set specific response 'Content-Type's for '$format'
     testSet.setTestParam(Arrays.asList("?$format=xml"), ACCEPT_HEADER_VALUES, 200, "application/xml; charset=utf-8");
@@ -181,7 +179,7 @@ public class ContentNegotiationTest extends AbstractFitTest {
   @Test
   public void testURI_2_Entity() throws Exception {
     // create test set
-    TestSet testSet = new TestSet(UriType.URI2, "/Employees('1')");
+    FitTestSet testSet = new FitTestSet(UriType.URI2, "/Employees('1')");
 
     // set specific response 'Content-Type's for '$format'
     testSet.setTestParam(Arrays.asList("?$format=xml"), ACCEPT_HEADER_VALUES, 200, "application/xml; charset=utf-8");
@@ -214,7 +212,7 @@ public class ContentNegotiationTest extends AbstractFitTest {
   @Test
   public void testURI_3_EntityComplexProperty() throws Exception {
     // create test set
-    TestSet testSet = new TestSet(UriType.URI3, "/Employees('1')/Location");
+    FitTestSet testSet = new FitTestSet(UriType.URI3, "/Employees('1')/Location");
 
     // set specific response 'Content-Type's for '$format'
     testSet.setTestParam(Arrays.asList("?$format=xml"), ACCEPT_HEADER_VALUES, 200, "application/xml; charset=utf-8");
@@ -250,7 +248,7 @@ public class ContentNegotiationTest extends AbstractFitTest {
   @Test
   public void testURI_4_EntityComplexPropertySimpleProperty() throws Exception {
     // create test set
-    TestSet testSet = new TestSet(UriType.URI4, "/Employees('1')/Location/Country");
+    FitTestSet testSet = new FitTestSet(UriType.URI4, "/Employees('1')/Location/Country");
 
     // set specific response 'Content-Type's for '$format'
     testSet.setTestParam(Arrays.asList("?$format=xml"), ACCEPT_HEADER_VALUES, 200, "application/xml; charset=utf-8");
@@ -285,7 +283,7 @@ public class ContentNegotiationTest extends AbstractFitTest {
   @Test
   public void testURI_5_EntitySimpleProperty() throws Exception {
     // create test set
-    TestSet testSet = new TestSet(UriType.URI4, "/Employees('1')/Age");
+    FitTestSet testSet = new FitTestSet(UriType.URI4, "/Employees('1')/Age");
 
     // set specific response 'Content-Type's for '$format'
     testSet.setTestParam(Arrays.asList("?$format=xml"), ACCEPT_HEADER_VALUES, 200, "application/xml; charset=utf-8");
@@ -320,7 +318,7 @@ public class ContentNegotiationTest extends AbstractFitTest {
   @Test
   public void testURI_6A_EntityNavigationProperty() throws Exception {
     // create test set
-    TestSet testSet = new TestSet(UriType.URI6A, "/Employees('1')/ne_Room");
+    FitTestSet testSet = new FitTestSet(UriType.URI6A, "/Employees('1')/ne_Room");
 
     // set specific response 'Content-Type's for '$format'
     testSet.setTestParam(Arrays.asList("?$format=xml"), ACCEPT_HEADER_VALUES, 200, "application/xml; charset=utf-8");
@@ -353,7 +351,7 @@ public class ContentNegotiationTest extends AbstractFitTest {
   @Test
   public void testURI_7_EntityNavigationProperty() throws Exception {
     // create test set
-    TestSet testSet = new TestSet(UriType.URI7A, "/Employees('1')/$links/ne_Room");
+    FitTestSet testSet = new FitTestSet(UriType.URI7A, "/Employees('1')/$links/ne_Room");
 
     // set specific response 'Content-Type's for '$format'
     testSet.setTestParam(Arrays.asList("?$format=xml"), ACCEPT_HEADER_VALUES, 200, "application/xml; charset=utf-8");
@@ -386,7 +384,7 @@ public class ContentNegotiationTest extends AbstractFitTest {
   @Test
   public void testURI_8_Metadata() throws Exception {
     // create test set
-    TestSet testSet = new TestSet(UriType.URI8, "/$metadata");
+    FitTestSet testSet = new FitTestSet(UriType.URI8, "/$metadata");
 
     // set specific response 'Content-Type's for '$format'
     testSet.setTestParam(Arrays.asList(""), Arrays.asList("", "application/xml", "application/xml; charset=utf-8"), 
@@ -422,7 +420,7 @@ public class ContentNegotiationTest extends AbstractFitTest {
   @Ignore("Currently ignored because of a BUG")
   public void testURI_17_EntityMediaResourceDollarValue() throws Exception {
     // create test set
-    TestSet testSet = new TestSet(UriType.URI17, "/Employees('1')/$value", 200, "image/jpeg");
+    FitTestSet testSet = new FitTestSet(UriType.URI17, "/Employees('1')/$value", 200, "image/jpeg");
     
     // every combination of $format and $value is a 'BAD REQUEST'
     testSet.setTestParam(Arrays.asList("?$format=json", "?$format=xml", "?$format=atom"), ACCEPT_HEADER_VALUES, 400, "application/xml");
@@ -440,7 +438,7 @@ public class ContentNegotiationTest extends AbstractFitTest {
   @Test
   public void testURI_17_EntitySimpleTypeDollarValue() throws Exception {
     // create test set
-    TestSet testSet = new TestSet(UriType.URI17, "/Employees('1')/Age/$value", 200, "text/plain; charset=utf-8");
+    FitTestSet testSet = new FitTestSet(UriType.URI17, "/Employees('1')/Age/$value", 200, "text/plain; charset=utf-8");
     
     // every combination of $format and $value is a 'BAD REQUEST'
     testSet.setTestParam(Arrays.asList("?$format=json", "?$format=xml", "?$format=atom"), ACCEPT_HEADER_VALUES, 400, "application/xml");
@@ -455,13 +453,19 @@ public class ContentNegotiationTest extends AbstractFitTest {
     testSet.execute(getEndpoint());
   }
   
-  private static class TestSet {
-    private final Set<TestParam> testParameters = new HashSet<ContentNegotiationTest.TestParam>();
+  
+  
+  /**
+   * A set of {@link FitTest} which can be executed against a service endpoint.
+   * 
+   */
+  private static class FitTestSet {
+    private final Set<FitTest> testParameters = new HashSet<ContentNegotiationAcceptHeaderTest.FitTest>();
     
     private final UriType uriType;
     private final String path;
     
-    public TestSet(UriType uriType, String path) {
+    public FitTestSet(UriType uriType, String path) {
       super();
       this.uriType = uriType;
       this.path = path;
@@ -469,7 +473,7 @@ public class ContentNegotiationTest extends AbstractFitTest {
       populate(HttpStatusCodes.OK.getStatusCode());
     }
 
-    public TestSet(UriType uriType, String path, int defaultStatusCode, String defaultContentType) {
+    public FitTestSet(UriType uriType, String path, int defaultStatusCode, String defaultContentType) {
       super();
       this.uriType = uriType;
       this.path = path;
@@ -478,31 +482,31 @@ public class ContentNegotiationTest extends AbstractFitTest {
     }
 
     private void populate(int defaultStatusCode) {
-      testParameters.addAll(TestParam.create(uriType, path, QUERY_OPTIONS, ACCEPT_HEADER_VALUES, defaultStatusCode));
+      testParameters.addAll(FitTest.create(uriType, path, QUERY_OPTIONS, ACCEPT_HEADER_VALUES, defaultStatusCode));
     }
 
     private void populate(int defaultStatusCode, String defaultContentType) {
-      testParameters.addAll(TestParam.create(uriType, path, QUERY_OPTIONS, ACCEPT_HEADER_VALUES, defaultStatusCode, defaultContentType));
+      testParameters.addAll(FitTest.create(uriType, path, QUERY_OPTIONS, ACCEPT_HEADER_VALUES, defaultStatusCode, defaultContentType));
     }
 
     public void setTestParam(List<String> queryOptions, List<String> acceptHeader, int expectedStatusCode, String expectedContentType) {
-      List<TestParam> tp = TestParam.create(uriType, path, queryOptions, acceptHeader, expectedStatusCode, expectedContentType);
+      List<FitTest> tp = FitTest.create(uriType, path, queryOptions, acceptHeader, expectedStatusCode, expectedContentType);
       replaceTestParameters(tp);
     }
 
-    private void replaceTestParameters(List<TestParam> tp) {
+    private void replaceTestParameters(List<FitTest> tp) {
       testParameters.removeAll(tp);
       testParameters.addAll(tp);
     }
 
     
     public void execute(URI serviceEndpoint) throws Exception {
-      Map<TestParam, AssertionError> test2Failure = new HashMap<ContentNegotiationTest.TestParam, AssertionError>();
-      List<TestParam> successTests = new ArrayList<ContentNegotiationTest.TestParam>();
+      Map<FitTest, AssertionError> test2Failure = new HashMap<ContentNegotiationAcceptHeaderTest.FitTest, AssertionError>();
+      List<FitTest> successTests = new ArrayList<ContentNegotiationAcceptHeaderTest.FitTest>();
       
-      for (TestParam testParam : testParameters) {
+      for (FitTest testParam : testParameters) {
         try {
-          testParam.test(serviceEndpoint);
+          testParam.execute(serviceEndpoint);
           successTests.add(testParam);
         } catch(AssertionError e) {
           test2Failure.put(testParam, e);
@@ -515,9 +519,9 @@ public class ContentNegotiationTest extends AbstractFitTest {
 //      System.out.println("#########################################");
 
       if(!test2Failure.isEmpty()) {
-        Set<Entry<TestParam, AssertionError>> failedTests = test2Failure.entrySet();
+        Set<Entry<FitTest, AssertionError>> failedTests = test2Failure.entrySet();
         List<AssertionError> errors = new ArrayList<AssertionError>();
-        for (Entry<TestParam, AssertionError> entry : failedTests) {
+        for (Entry<FitTest, AssertionError> entry : failedTests) {
           errors.add(entry.getValue());
         }
         Assert.fail("Found '" + test2Failure.size() + "' test failures. See [\n" + errors + "]");
@@ -525,7 +529,11 @@ public class ContentNegotiationTest extends AbstractFitTest {
     }
   }
   
-  private static class TestParam {
+  
+  /**
+   * Combination of test parameters and expected test result which can be tested/executed against a service endpoint.
+   */
+  private static class FitTest {
     private UriType uriType;
     private String path;
     private String queryOptions;
@@ -537,7 +545,7 @@ public class ContentNegotiationTest extends AbstractFitTest {
     private String expectedContentType;
     private boolean isContentExpected;
     
-    public TestParam(UriType uriType, String path, String queryOptions, String acceptHeader, int expectedStatusCode, String expectedContentType, boolean isContentExpected) {
+    public FitTest(UriType uriType, String path, String queryOptions, String acceptHeader, int expectedStatusCode, String expectedContentType, boolean isContentExpected) {
       super();
       this.uriType = uriType;
       this.path = path;
@@ -582,7 +590,7 @@ public class ContentNegotiationTest extends AbstractFitTest {
         return false;
       if (getClass() != obj.getClass())
         return false;
-      TestParam other = (TestParam) obj;
+      FitTest other = (FitTest) obj;
       if (acceptHeader == null) {
         if (other.acceptHeader != null)
           return false;
@@ -601,7 +609,7 @@ public class ContentNegotiationTest extends AbstractFitTest {
       return true;
     }
 
-    public void test(URI serviceEndpoint) throws Exception {
+    public void execute(URI serviceEndpoint) throws Exception {
       HttpGet get = null;
       
       try {
@@ -635,16 +643,16 @@ public class ContentNegotiationTest extends AbstractFitTest {
       }
     }
 
-    public static TestParam create(UriType uriType, String path, String queryOption, String acceptHeader, int expectedStatusCode, String expectedContentType, boolean isContentExpected) {
-      return new TestParam(uriType, path, queryOption, acceptHeader, expectedStatusCode, expectedContentType, isContentExpected);
+    public static FitTest create(UriType uriType, String path, String queryOption, String acceptHeader, int expectedStatusCode, String expectedContentType, boolean isContentExpected) {
+      return new FitTest(uriType, path, queryOption, acceptHeader, expectedStatusCode, expectedContentType, isContentExpected);
     }
     
-    private static List<TestParam> create(UriType uriType, String path, List<String> queryOptions, List<String> acceptHeaders, int expectedStatusCode) {
+    private static List<FitTest> create(UriType uriType, String path, List<String> queryOptions, List<String> acceptHeaders, int expectedStatusCode) {
       Map<String, ContentType> acceptHeader2ContentType  = Collections.emptyMap();
       return create(uriType, path, queryOptions, acceptHeaders, acceptHeader2ContentType, expectedStatusCode);
     }
     
-    private static List<TestParam> create(UriType uriType, String path, List<String> queryOptions, List<String> acceptHeaders, int expectedStatusCode, String expectedContentType) {
+    private static List<FitTest> create(UriType uriType, String path, List<String> queryOptions, List<String> acceptHeaders, int expectedStatusCode, String expectedContentType) {
       Map<String, ContentType> acc2Ct = new HashMap<String, ContentType>();
       for (String acceptHeader : acceptHeaders) {
         acc2Ct.put(acceptHeader, ContentType.create(expectedContentType));
@@ -653,10 +661,10 @@ public class ContentNegotiationTest extends AbstractFitTest {
       return create(uriType, path, queryOptions, acceptHeaders, acc2Ct, expectedStatusCode);
     }
     
-    private static List<TestParam> create(UriType uriType, String path, List<String> queryOptions, List<String> acceptHeaders, 
+    private static List<FitTest> create(UriType uriType, String path, List<String> queryOptions, List<String> acceptHeaders, 
         Map<String, ContentType> acceptHeader2ContentType, int expectedStatusCode) {
 
-      List<TestParam> testParameters = new ArrayList<ContentNegotiationTest.TestParam>();
+      List<FitTest> testParameters = new ArrayList<ContentNegotiationAcceptHeaderTest.FitTest>();
       boolean isContentExpected = false;
       
       for (String queryOption: queryOptions) {
@@ -665,7 +673,7 @@ public class ContentNegotiationTest extends AbstractFitTest {
           if(expectedContentType == null) {
             expectedContentType = ContentType.create(ContentType.create(acceptHeader), ContentType.PARAMETER_CHARSET, ContentType.CHARSET_UTF_8);
           }
-          TestParam tp = TestParam.create(uriType, path, queryOption, acceptHeader, 
+          FitTest tp = FitTest.create(uriType, path, queryOption, acceptHeader, 
               expectedStatusCode, expectedContentType.toContentTypeString(), isContentExpected);
           testParameters.add(tp);
         }
@@ -673,6 +681,5 @@ public class ContentNegotiationTest extends AbstractFitTest {
 
       return testParameters;
     }
-
   }
 }
