@@ -6,9 +6,11 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * A {@link MessageReference} references to the used message for an {@link ODataHttpException} and is used to support
- * internationalization and translation of exception messages for all {@link ODataHttpException} and sub classes.
- * Theses classes all contains a {@link MessageReference} object which can be mapped to a related key and message in the resource bundles.
+ * A {@link MessageReference} references to the used message for an
+ * {@link ODataMessageException} and its sub classes. It supports
+ * internationalization and translation of exception messages.
+ * Theses classes all contains a {@link MessageReference} object which
+ * can be mapped to a related key and message text in the resource bundles.
  * @author SAP AG
  */
 public abstract class MessageReference {
@@ -26,21 +28,20 @@ public abstract class MessageReference {
   }
 
   /**
-   * Create a {@link MessageReference} for given <code>class</code> and <code>key</code>.
-   * These combination of <code>class</code> and <code>key</code> has to be provided by a resource bundle.
-   * 
-   * @param clazz
-   *        {@link ODataHttpException} for which this {@link MessageReference} should be used.
-   * @param key
-   *        Unique key (in context of {@link ODataHttpException}) for reference to message in resource bundle
+   * Creates a {@link MessageReference} for given <code>class</code> and <code>key</code>.
+   * This combination of <code>class</code> and <code>key</code> has to be provided
+   * by a resource bundle.
+   * @param clazz {@link ODataMessageException} for which this {@link MessageReference}
+   *              should be used
+   * @param key   unique key (in context of {@link ODataMessageException}) for reference
+   *              to message text in resource bundle
    * @return created {@link MessageReference}
    */
   public static MessageReference create(Class<? extends ODataException> clazz, String key) {
     return new SimpleMessageReference(clazz.getName() + "." + key);
   }
 
-  public MessageReference create()
-  {
+  public MessageReference create() {
     return new SingleMessageReference(key);
   }
 
@@ -52,7 +53,7 @@ public abstract class MessageReference {
   }
 
   /**
-   * Add given content to message reference.
+   * Adds given content to message reference.
    */
   public MessageReference addContent(Object... content) {
     if (this.content == null) {
@@ -66,7 +67,7 @@ public abstract class MessageReference {
   }
 
   /**
-   * Receive content for this {@link MessageReference}.
+   * Receives content for this {@link MessageReference}.
    * Beware that returned list is immutable.
    */
   public List<?> getContent() {

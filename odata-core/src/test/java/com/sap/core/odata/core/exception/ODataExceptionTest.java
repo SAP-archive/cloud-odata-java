@@ -2,7 +2,6 @@ package com.sap.core.odata.core.exception;
 
 import junit.framework.Assert;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
 import com.sap.core.odata.api.edm.EdmException;
@@ -72,7 +71,6 @@ public class ODataExceptionTest extends BaseTest {
   }
 
   @Test
-  @Ignore("TODO: Add the message texts belonging to the exception class and remove this line")
   public void TestMessagesOfODataMessageException() {
     ODataMessageTextVerifier.TestClass(ODataMessageException.class);
   }
