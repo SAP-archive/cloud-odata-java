@@ -33,7 +33,7 @@ public class EntryXmlReadOnlyTest extends AbstractRefXmlTest {
     response = callUri("Rooms('1')");
     checkMediaType(response, HttpContentType.APPLICATION_ATOM_XML_UTF8 + "; type=entry");
     checkEtag(response, "W/\"1\"");
-    final String body = getBody(response);
+    String body = getBody(response);
     assertXpathEvaluatesTo("W/\"1\"", "/atom:entry/@m:etag", body);
     assertXpathEvaluatesTo("1", "/atom:entry/atom:content/m:properties/d:Id", body);
 
@@ -45,7 +45,9 @@ public class EntryXmlReadOnlyTest extends AbstractRefXmlTest {
 
     response = callUri("Container2.Photos(Id=1,Type='image%2Fpng')");
     checkMediaType(response, HttpContentType.APPLICATION_ATOM_XML_UTF8 + "; type=entry");
-    assertXpathEvaluatesTo("image/png", "/atom:entry/m:properties/d:Type", getBody(response));
+    body = getBody(response);
+    assertXpathEvaluatesTo("image/png", "/atom:entry/m:properties/d:Type", body);
+    assertXpathEvaluatesTo(IMAGE_JPEG, "/atom:entry/m:properties/d:Image/@m:MimeType", body);
 
     response = callUri("Container2.Photos(Id=4,Type='foo')");
     checkMediaType(response, HttpContentType.APPLICATION_ATOM_XML_UTF8 + "; type=entry");

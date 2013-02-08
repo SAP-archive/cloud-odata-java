@@ -9,6 +9,7 @@ import java.io.InputStream;
 
 import org.junit.Test;
 
+import com.sap.core.odata.api.commons.HttpContentType;
 import com.sap.core.odata.api.edm.EdmEntityType;
 import com.sap.core.odata.api.edm.EdmProperty;
 import com.sap.core.odata.api.edm.EdmTyped;
@@ -78,7 +79,36 @@ public class XmlPropertyProducerTest extends AbstractProviderTest {
     assertXpathExists("/d:ImageUrl", xml);
     assertXpathExists("/d:ImageUrl/@m:null", xml);
     assertXpathEvaluatesTo("true", "/d:ImageUrl/@m:null", xml);
+  }
 
+  @Test
+  public void serializeImage() throws Exception {
+    final EdmProperty property = (EdmProperty) MockFacade.getMockEdm().getEntityType("RefScenario2", "Photo").getProperty("Image");
+    ODataResponse response = createAtomEntityProvider().writeProperty(property, photoData.get("Image"));
+    assertNotNull(response);
+    assertNotNull(response.getEntity());
+    assertEquals(HttpContentType.APPLICATION_XML_UTF8, response.getContentHeader());
+
+    final String xml = StringHelper.inputStreamToString((InputStream) response.getEntity());
+    assertNotNull(xml);
+    assertXpathExists("/d:Image", xml);
+    assertXpathExists("/d:Image/@m:MimeType", xml);
+    assertXpathEvaluatesTo("image/png", "/d:Image/@m:MimeType", xml);
+  }
+
+  @Test
+  public void serializeBinaryData() throws Exception {
+    final EdmProperty property = (EdmProperty) MockFacade.getMockEdm().getEntityType("RefScenario2", "Photo").getProperty("BinaryData");
+    ODataResponse response = createAtomEntityProvider().writeProperty(property, photoData.get("BinaryData"));
+    assertNotNull(response);
+    assertNotNull(response.getEntity());
+    assertEquals(HttpContentType.APPLICATION_XML_UTF8, response.getContentHeader());
+
+    final String xml = StringHelper.inputStreamToString((InputStream) response.getEntity());
+    assertNotNull(xml);
+    assertXpathExists("/d:BinaryData", xml);
+    assertXpathExists("/d:BinaryData/@m:MimeType", xml);
+    assertXpathEvaluatesTo("image/jpeg", "/d:BinaryData/@m:MimeType", xml);
   }
 
   @Test

@@ -333,7 +333,7 @@ public class EntityInfoAggregator {
 
     } else if (type.getKind() == EdmTypeKind.SIMPLE) {
 
-      epi = new EntityPropertyInfo(functionImport.getName(), type, null, null);
+      epi = new EntityPropertyInfo(functionImport.getName(), type, null, null, null, null);
     } else {
       throw new EntityProviderException(EntityProviderException.UNSUPPORTED_PROPERTY_TYPE.addContent(type.getKind()));
     }

@@ -31,8 +31,7 @@ public class SimplePropertyTest extends AbstractRefXmlTest {
 
     response = callUri("Container2.Photos(Id=3,Type='image%2Fjpeg')/Image");
     checkMediaType(response, HttpContentType.APPLICATION_XML_UTF8);
-    assertNotNull(getBody(response));
-    // assertXpathEvaluatesTo(IMAGE_JPEG, "/atom:entry/m:properties/d:Image/@m:MimeType", getBody(response));
+    assertXpathEvaluatesTo(IMAGE_JPEG, "/d:Image/@m:MimeType", getBody(response));
 
     response = callUri("Rooms('2')/Seats/$value");
     checkMediaType(response, HttpContentType.TEXT_PLAIN_UTF8);
@@ -50,7 +49,7 @@ public class SimplePropertyTest extends AbstractRefXmlTest {
 
     response = callUri("Container2.Photos(Id=3,Type='image%2Fjpeg')/BinaryData");
     checkMediaType(response, HttpContentType.APPLICATION_XML_UTF8);
-    assertNotNull(getBody(response));
+    assertXpathEvaluatesTo(IMAGE_JPEG, "/d:BinaryData/@m:MimeType", getBody(response));
 
     notFound("Employees('2')/Foo");
     badRequest("Employees('2')/Age()");

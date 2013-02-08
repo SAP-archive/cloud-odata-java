@@ -49,7 +49,6 @@ public class AtomEntityProvider implements ContentTypeBasedEntityProvider {
 
   private static final Logger LOG = LoggerFactory.getLogger(AtomEntityProvider.class);
   /** Default used charset for writer and response content header */
-//  private static final String DEFAULT_CHARSET = "utf-8";
   private static final String DEFAULT_CHARSET = ContentType.CHARSET_UTF_8;
   private final ODataFormat odataFormat;
 
@@ -109,7 +108,6 @@ public class AtomEntityProvider implements ContentTypeBasedEntityProvider {
     }
   }
 
-  
   @Override
   public ODataResponse writeEntry(EdmEntitySet entitySet, Map<String, Object> data, EntityProviderProperties properties) throws EntityProviderException {
     OutputStream outStream = null;

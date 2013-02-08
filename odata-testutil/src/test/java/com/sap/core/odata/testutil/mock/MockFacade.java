@@ -9,6 +9,7 @@ import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.api.uri.PathSegment;
 
 /**
+ * Mocked Entity Data Model, more or less aligned to the Reference Scenario.
  * @author SAP AG
  */
 public class MockFacade {
