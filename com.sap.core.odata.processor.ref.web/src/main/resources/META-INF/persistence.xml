@@ -9,7 +9,6 @@
 		<class>com.sap.core.odata.processor.ref.jpa.SalesOrderItem</class>
 		<class>com.sap.core.odata.processor.ref.jpa.Note</class>
 		<class>com.sap.core.odata.processor.ref.jpa.Material</class>
-		<class>com.sap.core.odata.processor.ref.jpa.Storage</class>
 		<class>com.sap.core.odata.processor.ref.jpa.Store</class>
 		<class>com.sap.core.odata.processor.ref.jpa.Test</class>
 		<properties>

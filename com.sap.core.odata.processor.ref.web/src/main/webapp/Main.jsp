@@ -49,7 +49,7 @@ body {
 	<table width="100%">
 		<tr>
 			<td width="70%"><font size=small><b>SalesOrderProcessing - Reference
-					Scenario</b></font><small> [<a href="./image/model.jpg" target=_blank>Java
+					Scenario</b></font><small> [<a href="./image/model.png" target=_blank>Java
 						Persistence Model</a>]
 			</small></td>
 			<td width="30%">
@@ -401,43 +401,9 @@ body {
 					href="SalesOrderProcessing.svc/Stores(131L)/MaterialDetails" target="_blank">SalesOrderProcessing.svc/Stores(131L)/MaterialDetails
 				</a></td>
 				<td width=40%><code style="font-size: small">SELECT R1 FROM Store E1 JOIN E1.material R1 WHERE E1.storeId = 131</code></td>
-			</tr>
-			
-			<tr>
-				<td width=20%>SalesOrderHeader-SalesOrderItem-Material-Storage (Complete Navigation)</td>
-				<td width=40%><a
-					href="SalesOrderProcessing.svc/SalesOrderHeaders(1L)/SalesOrderItemDetails(SoId=1L,LiId=111L)/MaterialDetails(111L)/StorageDetails" target="_blank">SalesOrderProcessing.svc/SalesOrderHeaders(1L)/SalesOrderItemDetails(SoId=1L,LiId=111L)/MaterialDetails(111L)/StorageDetails
-				</a></td>
-				<td width=40%><code style="font-size: small">SELECT E1 FROM SalesOrderHeader E1</code></td>
-			</tr>
+			</tr>			
 		</table>
-	</div>
-	
-
-	<table width=100% cellspacing="1">
-		<tr>
-			<td width="2%">
-				<div id="s5e" onClick="toggle('s5','s5e');"
-					style="cursor: hand; cursor: pointer; color: blue; width: 100%;">
-					[ <b>:.</b> ]
-				</div>
-			</td>
-			<td width="98%"><b>Exception handling</b></td>
-		</tr>
-	</table>
-	<div id="s5" style="display: none">
-		<ul>
-			<li><a href="SalesOrderProcessing.svc/SalesOrderHeaderss"
-				target="_blank">Exception Handling:Case 1</a></li>
-			<li><a
-				href="SalesOrderProcessing.svc/SalesOrderHeaders?$filter=BuyerAddress/City eq 'Test'"
-				target="_blank">Exception Handling:Case 2</a></li>
-			<li><a
-				href="SalesOrderProcessing.svc/SalesOrderHeaders?$skip=12"
-				target="_blank">Exception Handling:Case 3</a></li>
-		</ul>
-	</div>
+	</div>	
 	<hr>
-
 </body>
 </html>
