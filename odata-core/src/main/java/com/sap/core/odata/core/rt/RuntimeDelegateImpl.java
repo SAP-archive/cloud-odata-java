@@ -39,11 +39,6 @@ public class RuntimeDelegateImpl extends RuntimeDelegateInstance {
   }
 
   @Override
-  protected EdmSimpleType getInternalEdmSimpleTypeByString(String edmSimpleType) {
-    return EdmSimpleTypeFacadeImpl.getInternalEdmSimpleTypeByString(edmSimpleType);
-  }
-
-  @Override
   protected EdmSimpleTypeFacade getSimpleTypeFacade() {
     return new EdmSimpleTypeFacadeImpl();
   }
