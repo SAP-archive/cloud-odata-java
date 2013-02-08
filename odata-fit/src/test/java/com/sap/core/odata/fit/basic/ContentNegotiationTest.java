@@ -19,11 +19,13 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import com.sap.core.odata.api.ODataService;
 import com.sap.core.odata.api.commons.HttpContentType;
 import com.sap.core.odata.api.commons.HttpHeaders;
+import com.sap.core.odata.api.commons.HttpStatusCodes;
 import com.sap.core.odata.api.edm.provider.EdmProvider;
 import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.api.processor.ODataSingleProcessor;
@@ -143,10 +145,315 @@ public class ContentNegotiationTest extends AbstractFitTest {
     testSet.execute(getEndpoint());
   }
   
+  @Test
+  public void testURI_1_EntitySet() throws Exception {
+    // create test set
+    TestSet testSet = new TestSet(UriType.URI1, "/Employees");
+
+    // set specific response 'Content-Type's for '$format'
+    testSet.setTestParam(Arrays.asList("?$format=xml"), ACCEPT_HEADER_VALUES, 200, "application/xml; charset=utf-8");
+    testSet.setTestParam(Arrays.asList("?$format=atom"), ACCEPT_HEADER_VALUES, 200, "application/atom+xml; type=feed; charset=utf-8");
+    testSet.setTestParam(Arrays.asList(""), Arrays.asList("", "application/atom+xml", "application/atom+xml; charset=utf-8"), 
+        200, "application/atom+xml; type=feed; charset=utf-8");
+
+    // set all 'NOT ACCEPTED' requests
+    final List<String> notAcceptedHeaderValues = Arrays.asList(
+        "text/plain",
+        "text/plain; charset=utf-8",
+        "application/atomsvc+xml",
+        "application/atomsvc+xml; charset=utf-8"
+        );
+    testSet.setTestParam(Arrays.asList(""), notAcceptedHeaderValues, 406, "application/xml");
+
+    //
+    final List<String> notAcceptedJsonHeaderValues = Arrays.asList(
+        "application/json",
+        "application/json; charset=utf-8"
+        );
+    // TODO: check which behavior is currently wanted
+    testSet.setTestParam(Arrays.asList("?$format=json"), ACCEPT_HEADER_VALUES, 406, "application/xml");
+    testSet.setTestParam(Arrays.asList("", "?$format=json"), notAcceptedJsonHeaderValues, 406, "application/json");
+    
+    // execute all defined tests
+    testSet.execute(getEndpoint());
+  }
   
-  
-  
-  
+  @Test
+  public void testURI_2_Entity() throws Exception {
+    // create test set
+    TestSet testSet = new TestSet(UriType.URI2, "/Employees('1')");
+
+    // set specific response 'Content-Type's for '$format'
+    testSet.setTestParam(Arrays.asList("?$format=xml"), ACCEPT_HEADER_VALUES, 200, "application/xml; charset=utf-8");
+    testSet.setTestParam(Arrays.asList("?$format=atom"), ACCEPT_HEADER_VALUES, 200, "application/atom+xml; type=entry; charset=utf-8");
+    testSet.setTestParam(Arrays.asList(""), Arrays.asList("", "application/atom+xml", "application/atom+xml; charset=utf-8"), 
+        200, "application/atom+xml; type=entry; charset=utf-8");
+
+    // set all 'NOT ACCEPTED' requests
+    final List<String> notAcceptedHeaderValues = Arrays.asList(
+        "text/plain",
+        "text/plain; charset=utf-8",
+        "application/atomsvc+xml",
+        "application/atomsvc+xml; charset=utf-8"
+        );
+    testSet.setTestParam(Arrays.asList(""), notAcceptedHeaderValues, 406, "application/xml");
+
+    //
+    final List<String> notAcceptedJsonHeaderValues = Arrays.asList(
+        "application/json",
+        "application/json; charset=utf-8"
+        );
+    // TODO: check which behavior is currently wanted
+    testSet.setTestParam(Arrays.asList("?$format=json"), ACCEPT_HEADER_VALUES, 406, "application/xml");
+    testSet.setTestParam(Arrays.asList("", "?$format=json"), notAcceptedJsonHeaderValues, 406, "application/json");
+    
+    // execute all defined tests
+    testSet.execute(getEndpoint());
+  }
+
+  @Test
+  public void testURI_3_EntityComplexProperty() throws Exception {
+    // create test set
+    TestSet testSet = new TestSet(UriType.URI3, "/Employees('1')/Location");
+
+    // set specific response 'Content-Type's for '$format'
+    testSet.setTestParam(Arrays.asList("?$format=xml"), ACCEPT_HEADER_VALUES, 200, "application/xml; charset=utf-8");
+    testSet.setTestParam(Arrays.asList(""), Arrays.asList(""), 200, "application/xml; charset=utf-8");
+
+    // set all 'NOT ACCEPTED' requests
+    final List<String> notAcceptedHeaderValues = Arrays.asList(
+        "text/plain",
+        "text/plain; charset=utf-8",
+        "application/atom+xml",
+        "application/atom+xml; charset=utf-8",
+        "application/atomsvc+xml",
+        "application/atomsvc+xml; charset=utf-8"
+        );
+    testSet.setTestParam(Arrays.asList(""), notAcceptedHeaderValues, 406, "application/xml");
+    // '$format=atom' it not allowed
+    testSet.setTestParam(Arrays.asList("?$format=atom"), ACCEPT_HEADER_VALUES, 406, "application/xml");
+
+    // JSON is not supported
+    final List<String> notAcceptedJsonHeaderValues = Arrays.asList(
+        "application/json",
+        "application/json; charset=utf-8"
+        );
+    // TODO: check which behavior is currently wanted
+    testSet.setTestParam(Arrays.asList("?$format=json"), ACCEPT_HEADER_VALUES, 406, "application/xml");
+    testSet.setTestParam(Arrays.asList("", "?$format=json", "?$format=atom"), notAcceptedJsonHeaderValues, 406, "application/json");
+    
+    // execute all defined tests
+    testSet.execute(getEndpoint());
+  }
+
+
+  @Test
+  public void testURI_4_EntityComplexPropertySimpleProperty() throws Exception {
+    // create test set
+    TestSet testSet = new TestSet(UriType.URI4, "/Employees('1')/Location/Country");
+
+    // set specific response 'Content-Type's for '$format'
+    testSet.setTestParam(Arrays.asList("?$format=xml"), ACCEPT_HEADER_VALUES, 200, "application/xml; charset=utf-8");
+    testSet.setTestParam(Arrays.asList(""), Arrays.asList(""), 200, "application/xml; charset=utf-8");
+
+    // set all 'NOT ACCEPTED' requests
+    final List<String> notAcceptedHeaderValues = Arrays.asList(
+        "text/plain",
+        "text/plain; charset=utf-8",
+        "application/atom+xml",
+        "application/atom+xml; charset=utf-8",
+        "application/atomsvc+xml",
+        "application/atomsvc+xml; charset=utf-8"
+        );
+    testSet.setTestParam(Arrays.asList(""), notAcceptedHeaderValues, 406, "application/xml");
+    // '$format=atom' it not allowed
+    testSet.setTestParam(Arrays.asList("?$format=atom"), ACCEPT_HEADER_VALUES, 406, "application/xml");
+
+    // JSON is not supported
+    final List<String> notAcceptedJsonHeaderValues = Arrays.asList(
+        "application/json",
+        "application/json; charset=utf-8"
+        );
+    // TODO: check which behavior is currently wanted
+    testSet.setTestParam(Arrays.asList("?$format=json"), ACCEPT_HEADER_VALUES, 406, "application/xml");
+    testSet.setTestParam(Arrays.asList("", "?$format=json", "?$format=atom"), notAcceptedJsonHeaderValues, 406, "application/json");
+    
+    // execute all defined tests
+    testSet.execute(getEndpoint());
+  }
+
+  @Test
+  public void testURI_5_EntitySimpleProperty() throws Exception {
+    // create test set
+    TestSet testSet = new TestSet(UriType.URI4, "/Employees('1')/Age");
+
+    // set specific response 'Content-Type's for '$format'
+    testSet.setTestParam(Arrays.asList("?$format=xml"), ACCEPT_HEADER_VALUES, 200, "application/xml; charset=utf-8");
+    testSet.setTestParam(Arrays.asList(""), Arrays.asList(""), 200, "application/xml; charset=utf-8");
+
+    // set all 'NOT ACCEPTED' requests
+    final List<String> notAcceptedHeaderValues = Arrays.asList(
+        "text/plain",
+        "text/plain; charset=utf-8",
+        "application/atom+xml",
+        "application/atom+xml; charset=utf-8",
+        "application/atomsvc+xml",
+        "application/atomsvc+xml; charset=utf-8"
+        );
+    testSet.setTestParam(Arrays.asList(""), notAcceptedHeaderValues, 406, "application/xml");
+    // '$format=atom' it not allowed
+    testSet.setTestParam(Arrays.asList("?$format=atom"), ACCEPT_HEADER_VALUES, 406, "application/xml");
+
+    // JSON is not supported
+    final List<String> notAcceptedJsonHeaderValues = Arrays.asList(
+        "application/json",
+        "application/json; charset=utf-8"
+        );
+    // TODO: check which behavior is currently wanted
+    testSet.setTestParam(Arrays.asList("?$format=json"), ACCEPT_HEADER_VALUES, 406, "application/xml");
+    testSet.setTestParam(Arrays.asList("", "?$format=json", "?$format=atom"), notAcceptedJsonHeaderValues, 406, "application/json");
+    
+    // execute all defined tests
+    testSet.execute(getEndpoint());
+  }
+
+  @Test
+  public void testURI_6A_EntityNavigationProperty() throws Exception {
+    // create test set
+    TestSet testSet = new TestSet(UriType.URI6A, "/Employees('1')/ne_Room");
+
+    // set specific response 'Content-Type's for '$format'
+    testSet.setTestParam(Arrays.asList("?$format=xml"), ACCEPT_HEADER_VALUES, 200, "application/xml; charset=utf-8");
+    testSet.setTestParam(Arrays.asList("?$format=atom"), ACCEPT_HEADER_VALUES, 200, "application/atom+xml; type=entry; charset=utf-8");
+    testSet.setTestParam(Arrays.asList(""), Arrays.asList("", "application/atom+xml", "application/atom+xml; charset=utf-8"), 
+        200, "application/atom+xml; type=entry; charset=utf-8");
+
+    // set all 'NOT ACCEPTED' requests
+    final List<String> notAcceptedHeaderValues = Arrays.asList(
+        "text/plain",
+        "text/plain; charset=utf-8",
+        "application/atomsvc+xml",
+        "application/atomsvc+xml; charset=utf-8"
+        );
+    testSet.setTestParam(Arrays.asList(""), notAcceptedHeaderValues, 406, "application/xml");
+
+    //
+    final List<String> notAcceptedJsonHeaderValues = Arrays.asList(
+        "application/json",
+        "application/json; charset=utf-8"
+        );
+    // TODO: check which behavior is currently wanted
+    testSet.setTestParam(Arrays.asList("?$format=json"), ACCEPT_HEADER_VALUES, 406, "application/xml");
+    testSet.setTestParam(Arrays.asList("", "?$format=json"), notAcceptedJsonHeaderValues, 406, "application/json");
+    
+    // execute all defined tests
+    testSet.execute(getEndpoint());
+  }
+
+  @Test
+  public void testURI_7_EntityNavigationProperty() throws Exception {
+    // create test set
+    TestSet testSet = new TestSet(UriType.URI7A, "/Employees('1')/$links/ne_Room");
+
+    // set specific response 'Content-Type's for '$format'
+    testSet.setTestParam(Arrays.asList("?$format=xml"), ACCEPT_HEADER_VALUES, 200, "application/xml; charset=utf-8");
+    testSet.setTestParam(Arrays.asList(""), Arrays.asList(""), 200, "application/xml; charset=utf-8");
+
+    // set all 'NOT ACCEPTED' requests
+    final List<String> notAcceptedHeaderValues = Arrays.asList(
+        "text/plain",
+        "text/plain; charset=utf-8",
+        "application/atom+xml",
+        "application/atom+xml; charset=utf-8",
+        "application/atomsvc+xml",
+        "application/atomsvc+xml; charset=utf-8"
+        );
+    testSet.setTestParam(Arrays.asList(""), notAcceptedHeaderValues, 406, "application/xml");
+
+    //
+    final List<String> notAcceptedJsonHeaderValues = Arrays.asList(
+        "application/json",
+        "application/json; charset=utf-8"
+        );
+    // TODO: check which behavior is currently wanted
+    testSet.setTestParam(Arrays.asList("?$format=json", "?$format=atom"), ACCEPT_HEADER_VALUES, 406, "application/xml");
+    testSet.setTestParam(Arrays.asList("", "?$format=json", "?$format=atom"), notAcceptedJsonHeaderValues, 406, "application/json");
+    
+    // execute all defined tests
+    testSet.execute(getEndpoint());
+  }
+
+  @Test
+  public void testURI_8_Metadata() throws Exception {
+    // create test set
+    TestSet testSet = new TestSet(UriType.URI8, "/$metadata");
+
+    // set specific response 'Content-Type's for '$format'
+    testSet.setTestParam(Arrays.asList(""), Arrays.asList("", "application/xml", "application/xml; charset=utf-8"), 
+        200, "application/xml; charset=utf-8");
+
+    // set all 'NOT ACCEPTED' requests
+    final List<String> notAcceptedHeaderValues = Arrays.asList(
+        "text/plain",
+        "text/plain; charset=utf-8",
+        "application/atom+xml",
+        "application/atom+xml; charset=utf-8",
+        "application/atomsvc+xml",
+        "application/atomsvc+xml; charset=utf-8"
+        );
+    testSet.setTestParam(Arrays.asList(""), notAcceptedHeaderValues, 406, "application/xml");
+
+    // every combination of $format and $metadata is a 'BAD REQUEST'
+    testSet.setTestParam(Arrays.asList("?$format=json", "?$format=xml", "?$format=atom"), ACCEPT_HEADER_VALUES, 400, "application/xml");
+    //
+    final List<String> jsonAcceptHeaders = Arrays.asList(
+        "application/json",
+        "application/json; charset=utf-8"
+        );
+    // TODO: check which behavior is currently wanted
+    testSet.setTestParam(Arrays.asList("?$format=json", "?$format=xml", "?$format=atom"), jsonAcceptHeaders, 400, "application/json");
+    testSet.setTestParam(Arrays.asList(""), jsonAcceptHeaders, 406, "application/json");
+    
+    // execute all defined tests
+    testSet.execute(getEndpoint());
+  }
+
+  @Test
+  @Ignore("Currently ignored because of a BUG")
+  public void testURI_17_EntityMediaResourceDollarValue() throws Exception {
+    // create test set
+    TestSet testSet = new TestSet(UriType.URI17, "/Employees('1')/$value", 200, "image/jpeg");
+    
+    // every combination of $format and $value is a 'BAD REQUEST'
+    testSet.setTestParam(Arrays.asList("?$format=json", "?$format=xml", "?$format=atom"), ACCEPT_HEADER_VALUES, 400, "application/xml");
+    //
+    final List<String> jsonAcceptHeaders = Arrays.asList(
+        "application/json",
+        "application/json; charset=utf-8"
+        );
+    // TODO: check which behavior is currently wanted
+    testSet.setTestParam(Arrays.asList("?$format=json", "?$format=xml", "?$format=atom"), jsonAcceptHeaders, 400, "application/json");
+
+    testSet.execute(getEndpoint());
+  }
+
+  @Test
+  public void testURI_17_EntitySimpleTypeDollarValue() throws Exception {
+    // create test set
+    TestSet testSet = new TestSet(UriType.URI17, "/Employees('1')/Age/$value", 200, "text/plain; charset=utf-8");
+    
+    // every combination of $format and $value is a 'BAD REQUEST'
+    testSet.setTestParam(Arrays.asList("?$format=json", "?$format=xml", "?$format=atom"), ACCEPT_HEADER_VALUES, 400, "application/xml");
+    //
+    final List<String> jsonAcceptHeaders = Arrays.asList(
+        "application/json",
+        "application/json; charset=utf-8"
+        );
+    // TODO: check which behavior is currently wanted
+    testSet.setTestParam(Arrays.asList("?$format=json", "?$format=xml", "?$format=atom"), jsonAcceptHeaders, 400, "application/json");
+
+    testSet.execute(getEndpoint());
+  }
   
   private static class TestSet {
     private final Set<TestParam> testParameters = new HashSet<ContentNegotiationTest.TestParam>();
@@ -159,27 +466,24 @@ public class ContentNegotiationTest extends AbstractFitTest {
       this.uriType = uriType;
       this.path = path;
       
-      populate();
+      populate(HttpStatusCodes.OK.getStatusCode());
     }
 
-    private void populate() {
-      testParameters.addAll(TestParam.createAccepted(uriType, path, QUERY_OPTIONS, ACCEPT_HEADER_VALUES));
+    public TestSet(UriType uriType, String path, int defaultStatusCode, String defaultContentType) {
+      super();
+      this.uriType = uriType;
+      this.path = path;
+      
+      populate(defaultStatusCode, defaultContentType);
     }
-   
-//    public void setTestParam(String queryOptions, String acceptHeader, int expectedStatusCode, String expectedContentType, boolean isContentExpected) {
-//      TestParam tp = TestParam.create(uriType, expectedContentType, queryOptions, acceptHeader, expectedStatusCode, expectedContentType, isContentExpected);
-//      replaceTestParameter(tp);
-//    }
-//
-//    public void setTestParam(List<String> queryOptions, List<String> acceptHeader, int expectedStatusCode) {
-//      List<TestParam> tp = TestParam.create(uriType, path, queryOptions, acceptHeader, expectedStatusCode);
-//      replaceTestParameters(tp);
-//    }
-    
-//    private void replaceTestParameter(TestParam tp) {
-//      testParameters.remove(tp);
-//      testParameters.add(tp);
-//    }
+
+    private void populate(int defaultStatusCode) {
+      testParameters.addAll(TestParam.create(uriType, path, QUERY_OPTIONS, ACCEPT_HEADER_VALUES, defaultStatusCode));
+    }
+
+    private void populate(int defaultStatusCode, String defaultContentType) {
+      testParameters.addAll(TestParam.create(uriType, path, QUERY_OPTIONS, ACCEPT_HEADER_VALUES, defaultStatusCode, defaultContentType));
+    }
 
     public void setTestParam(List<String> queryOptions, List<String> acceptHeader, int expectedStatusCode, String expectedContentType) {
       List<TestParam> tp = TestParam.create(uriType, path, queryOptions, acceptHeader, expectedStatusCode, expectedContentType);
@@ -315,13 +619,10 @@ public class ContentNegotiationTest extends AbstractFitTest {
         HttpClient httpClient = new DefaultHttpClient();
         final HttpResponse response = httpClient.execute(get);
         
-//        System.out.println("Test: " + testParameter);
-    
         int resultStatusCode = response.getStatusLine().getStatusCode();
         assertEquals("Unexpected status code for " + toString(), expectedStatusCode, resultStatusCode);
     
         final String contentType = response.getFirstHeader(HttpHeaders.CONTENT_TYPE).getValue();
-        assertEquals("Unexpected content type for " + toString(), expectedContentType, contentType);
         assertEquals("Unexpected content type for " + toString(), ContentType.create(expectedContentType), ContentType.create(contentType));
     
         if(isContentExpected) {
@@ -338,16 +639,6 @@ public class ContentNegotiationTest extends AbstractFitTest {
       return new TestParam(uriType, path, queryOption, acceptHeader, expectedStatusCode, expectedContentType, isContentExpected);
     }
     
-    public static List<TestParam> createAccepted(UriType uriType, String path, List<String> queryOptions, List<String> acceptHeaders) {
-      int expectedStatusCode = 200;
-      return create(uriType, path, queryOptions, acceptHeaders, expectedStatusCode);
-    }
-
-//    public static List<TestParam> createNotAccepted(UriType uriType, String path, List<String> queryOptions, List<String> acceptHeaders) {
-//      int expectedStatusCode = 406;
-//      return create(uriType, path, queryOptions, acceptHeaders, expectedStatusCode, "application/xml");
-//    }
-
     private static List<TestParam> create(UriType uriType, String path, List<String> queryOptions, List<String> acceptHeaders, int expectedStatusCode) {
       Map<String, ContentType> acceptHeader2ContentType  = Collections.emptyMap();
       return create(uriType, path, queryOptions, acceptHeaders, acceptHeader2ContentType, expectedStatusCode);
