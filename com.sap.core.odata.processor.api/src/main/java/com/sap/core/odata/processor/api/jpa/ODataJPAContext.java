@@ -7,7 +7,7 @@ import com.sap.core.odata.api.processor.ODataContext;
 import com.sap.core.odata.api.processor.ODataProcessor;
 
 /**
- * Compilation of context objects required for OData JPA Runtime
+ * This class does the compilation of context objects required for OData JPA Runtime.
  * 
  * @author SAP AG <br>
  * @DoNotImplement

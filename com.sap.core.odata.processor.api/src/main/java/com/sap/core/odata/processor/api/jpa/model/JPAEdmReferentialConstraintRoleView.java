@@ -25,7 +25,10 @@ import com.sap.core.odata.api.edm.provider.ReferentialConstraintRole;
  * 
  */
 public interface JPAEdmReferentialConstraintRoleView extends JPAEdmBaseView {
-
+	/**
+	 * This provides values for Role Types.
+	 * 
+	 */
 	public enum RoleType {
 		PRINCIPAL, DEPENDENT
 	}

@@ -2,7 +2,11 @@ package com.sap.core.odata.processor.api.jpa.exception;
 
 import com.sap.core.odata.api.exception.MessageReference;
 import com.sap.core.odata.processor.api.jpa.factory.ODataJPAFactory;
-
+/**
+ * This class provides exceptions to be thrown during runtime.
+ * @author AG
+ *
+ */
 public class ODataJPARuntimeException extends ODataJPAException {
 
 	public static final MessageReference ENTITY_MANAGER_NOT_INITIALIZED = createMessageReference(
