@@ -1,5 +1,6 @@
 package com.sap.core.odata.processor.core.jpa;
 
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
 
 import java.net.URI;
@@ -41,7 +42,7 @@ public class ODataJPAResponseBuilderTest extends JPAEdmTestModelView{
 	@Test
 	public void testBuildListOfTGetEntitySetUriInfoStringODataJPAContext() {
 		try {
-			ODataJPAResponseBuilder.build(getJPAEntities(), getResultsView(), "application/xml", getODataJPAContext());
+			assertNotNull(ODataJPAResponseBuilder.build(getJPAEntities(), getResultsView(), "application/xml", getODataJPAContext()));
 		} catch (ODataJPARuntimeException e) {
 			fail("ODataJPARuntimeException not expected");
 		}
@@ -52,14 +53,14 @@ public class ODataJPAResponseBuilderTest extends JPAEdmTestModelView{
 		try {
 			EntityType entity = new EntityType();
 			entity.setName("SalesOrderHeader");
-			ODataJPAResponseBuilder.build(entity, getLocalGetURIInfo(), "xml", getODataJPAContext());
+			assertNotNull(ODataJPAResponseBuilder.build(entity, getLocalGetURIInfo(), "xml", getODataJPAContext()));
 		} catch (ODataJPARuntimeException e) {
 			//Nothing to do, Expected.
 		}
 		
 		
 		try {// Bad content type
-			ODataJPAResponseBuilder.build(getJPAEntities(), getResultsView(), "xml", getODataJPAContext());
+			assertNotNull(ODataJPAResponseBuilder.build(getJPAEntities(), getResultsView(), "xml", getODataJPAContext()));
 		} catch (ODataJPARuntimeException e) {
 			//Nothing to do, Expected.
 		}
@@ -70,11 +71,11 @@ public class ODataJPAResponseBuilderTest extends JPAEdmTestModelView{
 		try {
 			EntityType entity = new EntityType();
 			entity.setName("SalesOrderHeader");
-			ODataJPAResponseBuilder.build(entity, getLocalGetURIInfo(), "application/xml", getODataJPAContext());
+			assertNotNull(ODataJPAResponseBuilder.build(entity, getLocalGetURIInfo(), "application/xml", getODataJPAContext()));
 		} catch (ODataJPARuntimeException e) {
 			e.printStackTrace();
 			fail("ODataJPARuntimeException not expected");
-		}
+		} 
 	}
 
 	@Test
