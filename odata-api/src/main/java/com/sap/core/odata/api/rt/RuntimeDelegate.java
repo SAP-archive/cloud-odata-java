@@ -53,106 +53,82 @@ public abstract class RuntimeDelegate {
    */
   public static abstract class RuntimeDelegateInstance {
 
-    /**
-     * Returns a builder for creating response objects with variable parameter sets.
-     * @return an implementation object
-     */
     protected abstract ODataResponseBuilder createODataResponseBuilder();
 
-    /**
-     * Returns a simple type object for given type kind.
-     * @param edmSimpleTypeKind 
-     * @return an implementation object
-     */
     protected abstract EdmSimpleType getEdmSimpleType(EdmSimpleTypeKind edmSimpleTypeKind);
 
-    /**
-     * Returns an parser which can parse OData uris based on metadata.
-     * @param edm metadata of the implemented service
-     * @return an implementation object
-     */
     protected abstract UriParser getUriParser(Edm edm);
 
-    /**
-     * Returns an implementation of the EDM simple-type facade.
-     * @return an implementation object
-     */
     protected abstract EdmSimpleTypeFacade getSimpleTypeFacade();
 
-    /**
-     * Creates and returns an entity data model.
-     * @param provider a provider implemented by the OData service
-     * @return an implementation object
-     */
     protected abstract Edm createEdm(EdmProvider provider);
 
-    /**
-     * Creates and returns a HTTP entity provider. 
-     * @return an implementation object
-     */
     protected abstract EntityProviderInterface createEntityProvider();
 
-    /**
-     * Creates and returns a single processor service. 
-     * @param provider a provider implementation for the metadata of the OData service
-     * @param processor a single data processor implementation of the OData service
-     * @return a implementation object
-     */
     protected abstract ODataService createODataSingleProcessorService(EdmProvider provider, ODataSingleProcessor processor);
   }
 
   /**
-   * @see RuntimeDelegateInstance#getEdmSimpleType
+   * Returns a simple type object for given type kind.
+   * @param edmSimpleTypeKind 
+   * @return an implementation object
    */
   public static EdmSimpleType getEdmSimpleType(EdmSimpleTypeKind edmSimpleType) {
     return RuntimeDelegate.getInstance().getEdmSimpleType(edmSimpleType);
   }
 
   /**
-   * @see RuntimeDelegateInstance#getSimpleTypeFacade
+   * Returns an implementation of the EDM simple-type facade.
+   * @return an implementation object
    */
   public static EdmSimpleTypeFacade getSimpleTypeFacade() {
     return RuntimeDelegate.getInstance().getSimpleTypeFacade();
   }
 
   /**
-   * @see RuntimeDelegateInstance#createODataResponseBuilder
+   * Returns a builder for creating response objects with variable parameter sets.
+   * @return an implementation object
    */
   public static ODataResponseBuilder createODataResponseBuilder() {
     return RuntimeDelegate.getInstance().createODataResponseBuilder();
   }
 
   /**
-   * @see RuntimeDelegateInstance#createEdm
+   * Creates and returns an entity data model.
+   * @param provider a provider implemented by the OData service
+   * @return an implementation object
    */
   public static Edm createEdm(EdmProvider provider) {
     return RuntimeDelegate.getInstance().createEdm(provider);
   }
 
   /**
-   * @see RuntimeDelegateInstance#getUriParser
+   * Returns an parser which can parse OData uris based on metadata.
+   * @param edm metadata of the implemented service
+   * @return an implementation object
    */
   public static UriParser getUriParser(Edm edm) {
     return RuntimeDelegate.getInstance().getUriParser(edm);
   }
 
   /**
-   * @see RuntimeDelegateInstance#createEntityProvider
+   * Creates and returns a http entity provider. 
+   * @return an implementation object
    */
   public static EntityProviderInterface createEntityProvider() {
     return RuntimeDelegate.getInstance().createEntityProvider();
   }
 
   /**
-   * @see RuntimeDelegateInstance#createODataSingleProcessorService
+   * Creates and returns a single processor service. 
+   * @param provider a provider implementation for the metadata of the OData service
+   * @param processor a single data processor implementation of the OData service
+   * @return a implementation object
    */
   public static ODataService createODataSingleProcessorService(EdmProvider provider, ODataSingleProcessor processor) {
     return RuntimeDelegate.getInstance().createODataSingleProcessorService(provider, processor);
   }
 
-  /**
-   * Is thrown in the runtime delegate implementation. Usually a serious class loading problem.
-   */
   private static class RuntimeDelegateException extends RuntimeException {
 
     private static final long serialVersionUID = 1L;
