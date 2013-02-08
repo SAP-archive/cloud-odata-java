@@ -191,12 +191,12 @@ public class ODataExceptionMapperImpl implements ExceptionMapper<Exception> {
       if (convertedContentType.isWildcard() 
           || ContentType.APPLICATION_XML.equals(convertedContentType) || ContentType.APPLICATION_XML_CS_UTF_8.equals(convertedContentType)
           || ContentType.APPLICATION_ATOM_XML.equals(convertedContentType) || ContentType.APPLICATION_ATOM_XML_CS_UTF_8.equals(convertedContentType)) {
-        return ContentType.APPLICATION_XML;
+        return ContentType.APPLICATION_XML_CS_UTF_8;
       } else if (ContentType.APPLICATION_JSON.equals(convertedContentType) || ContentType.APPLICATION_JSON_CS_UTF_8.equals(convertedContentType)) {
-        return ContentType.APPLICATION_JSON;
+        return ContentType.APPLICATION_JSON_CS_UTF_8;
       }
     }
-    return ContentType.APPLICATION_XML;
+    return ContentType.APPLICATION_XML_CS_UTF_8;
   }
 
   private String getInnerError(final Exception exception) {
