@@ -19,8 +19,10 @@ import com.sap.core.odata.api.edm.EdmProperty;
 import com.sap.core.odata.api.edm.EdmStructuralType;
 import com.sap.core.odata.api.edm.EdmType;
 import com.sap.core.odata.api.edm.EdmTypeKind;
+import com.sap.core.odata.api.edm.EdmTyped;
 import com.sap.core.odata.api.exception.MessageReference;
 import com.sap.core.odata.api.exception.ODataException;
+import com.sap.core.odata.api.uri.SelectItem;
 import com.sap.core.odata.processor.api.jpa.exception.ODataJPARuntimeException;
 import com.sap.core.odata.processor.core.jpa.JPAResultParser;
 
@@ -395,6 +397,18 @@ public class JPAResultParserTest {
 
 		}
 	}
+	
+	@Test
+	public void testParse2EdmPropertyValueMap() {
+		JPAResultParser resultParser = JPAResultParser.create();
+		Object jpaEntity = new demoItem("abc", 10);
+		try {
+			resultParser.parse2EdmPropertyValueMap(jpaEntity, getSelectItemList()); 
+		} catch (ODataJPARuntimeException e) {
+			fail("JUnit failed with exception "
+					+ ODataJPARuntimeException.GENERAL);
+		}
+	}
 
 	@Test
 	public void testGetGetterEdmException() {
@@ -464,5 +478,46 @@ public class JPAResultParserTest {
 			this.value = value;
 		}
 
+	}
+	
+	private List<SelectItem> getSelectItemList() {
+		List<SelectItem> selectItems = new ArrayList<SelectItem>();
+		selectItems.add(getSelectItem());
+		return selectItems;
+	}
+
+	private SelectItem getSelectItem() {
+		SelectItem selectItem = EasyMock.createMock(SelectItem.class);
+		EasyMock.expect(selectItem.getProperty()).andReturn(getEdmProperty()).times(10);
+		EasyMock.replay(selectItem);
+		return selectItem;
+	}
+
+	private EdmTyped getEdmProperty() {
+		EdmProperty edmTyped = EasyMock.createMock(EdmProperty.class);
+		
+		EdmMapping edmMapping = EasyMock.createMock(EdmMapping.class);
+		EasyMock.expect(edmMapping.getInternalName()).andReturn(
+				"Field1").times(10);
+		EasyMock.replay(edmMapping);
+		
+		EdmType edmType = EasyMock.createMock(EdmType.class);
+		
+		try {
+			EasyMock.expect(edmType.getKind()).andReturn(EdmTypeKind.SIMPLE).times(10);
+			EasyMock.expect(edmType.getName()).andReturn("identifier").times(10);
+			EasyMock.expect(edmTyped.getName()).andReturn("SalesOrderHeader").times(10);
+			EasyMock.expect(edmTyped.getMapping())
+					.andReturn(edmMapping).times(10);
+			
+			EasyMock.expect(edmTyped.getType()).andReturn(edmType).times(10);
+			EasyMock.expect(edmTyped.getMapping()).andReturn(edmMapping).times(10);
+			
+		} catch (EdmException e) {
+			fail("EdmException not expected");
+		}
+		EasyMock.replay(edmType);
+		EasyMock.replay(edmTyped);
+		return edmTyped;
 	}
 }
