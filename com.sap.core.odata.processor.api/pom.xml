@@ -44,19 +44,6 @@
 			<version>2.0.0</version>
 		</dependency>
 	</dependencies>
-	<profiles>
-		<profile>
-			<id>coverage</id>
-			<activation>
-				<property>
-					<name>ldi.parent.emma-coverage</name>
-				</property>
-			</activation>
-			<properties>
-				<coverage.report.excludeFromCoverageDataCreation>true</coverage.report.excludeFromCoverageDataCreation>
-			</properties>
-		</profile>
-	</profiles>
-
+	
 	<name>OData Processors - JPA Processor API</name>
 </project>

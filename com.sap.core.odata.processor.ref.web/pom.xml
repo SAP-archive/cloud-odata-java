@@ -96,7 +96,21 @@
 			<version>${version.odataforsap.processor}</version>
 		</dependency>
 	</dependencies>
-
+	
+	<profiles>
+		<profile>
+			<id>coverage</id>
+			<activation>
+				<property>
+					<name>ldi.parent.emma-coverage</name>
+				</property>
+			</activation>
+			<properties>
+				<coverage.report.excludeFromCoverageDataCreation>true</coverage.report.excludeFromCoverageDataCreation>
+			</properties>
+		</profile>
+	</profiles>
+	
 	<name>OData Processors - JPA Reference Scenario</name>
 	<parent>
 		<groupId>com.sap.core.odata</groupId>
