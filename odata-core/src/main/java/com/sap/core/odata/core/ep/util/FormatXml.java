@@ -1,6 +1,7 @@
 package com.sap.core.odata.core.ep.util;
 
 /**
+ * String constants for formatting and parsing of XML.
  * @author SAP AG
  */
 public class FormatXml {

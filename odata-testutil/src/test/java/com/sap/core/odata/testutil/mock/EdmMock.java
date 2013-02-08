@@ -15,6 +15,7 @@ import com.sap.core.odata.api.edm.EdmEntityType;
 import com.sap.core.odata.api.edm.EdmException;
 import com.sap.core.odata.api.edm.EdmFacets;
 import com.sap.core.odata.api.edm.EdmFunctionImport;
+import com.sap.core.odata.api.edm.EdmMapping;
 import com.sap.core.odata.api.edm.EdmMultiplicity;
 import com.sap.core.odata.api.edm.EdmNavigationProperty;
 import com.sap.core.odata.api.edm.EdmParameter;
@@ -189,7 +190,14 @@ class EdmMock {
 
     final EdmProperty photoNameProperty = createProperty("Name", EdmSimpleTypeKind.String);
     final EdmProperty photoTypeProperty = createProperty("Type", EdmSimpleTypeKind.String);
-    final EdmProperty photoImageProperty = createProperty("Image", EdmSimpleTypeKind.Binary);
+
+    EdmMapping imageMapping = mock(EdmMapping.class);
+    when(imageMapping.getMimeType()).thenReturn("getImageType");
+    EdmProperty photoImageProperty = createProperty("Image", EdmSimpleTypeKind.Binary);
+    when(photoImageProperty.getMapping()).thenReturn(imageMapping);
+
+    EdmProperty binaryDataProperty = createProperty("BinaryData", EdmSimpleTypeKind.Binary);
+    when(binaryDataProperty.getMimeType()).thenReturn("image/jpeg");
 
     final EdmProperty photoRussianProperty = createProperty("Содержание", EdmSimpleTypeKind.String);
     final EdmFacets photoRussianFacets = mock(EdmFacets.class);
@@ -215,13 +223,14 @@ class EdmMock {
     final EdmEntityType photoEntityType = mock(EdmEntityType.class);
     when(photoEntityType.getName()).thenReturn("Photo");
     when(photoEntityType.getNamespace()).thenReturn("RefScenario2");
-    when(photoEntityType.getPropertyNames()).thenReturn(Arrays.asList("Id", "Name", "Type", "Image", "Содержание", "CustomProperty"));
+    when(photoEntityType.getPropertyNames()).thenReturn(Arrays.asList("Id", "Name", "Type", "Image", "BinaryData", "Содержание", "CustomProperty"));
     when(photoEntityType.getKeyPropertyNames()).thenReturn(Arrays.asList("Id", "Type"));
     when(photoEntityType.getKeyProperties()).thenReturn(Arrays.asList(photoIdProperty, photoTypeProperty));
     when(photoEntityType.getProperty("Id")).thenReturn(photoIdProperty);
     when(photoEntityType.getProperty("Name")).thenReturn(photoNameProperty);
     when(photoEntityType.getProperty("Type")).thenReturn(photoTypeProperty);
     when(photoEntityType.getProperty("Image")).thenReturn(photoImageProperty);
+    when(photoEntityType.getProperty("BinaryData")).thenReturn(binaryDataProperty);
     when(photoEntityType.getProperty(photoRussianProperty.getName())).thenReturn(photoRussianProperty);
     when(photoEntityType.getProperty(customProperty.getName())).thenReturn(customProperty);
     final EdmEntitySet photoEntitySet = mock(EdmEntitySet.class);

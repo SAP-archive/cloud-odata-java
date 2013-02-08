@@ -9,11 +9,11 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
 import com.sap.core.odata.api.ODataServiceVersion;
+import com.sap.core.odata.api.commons.HttpContentType;
 import com.sap.core.odata.api.commons.ODataHttpHeaders;
 import com.sap.core.odata.api.edm.EdmException;
 import com.sap.core.odata.api.edm.EdmLiteralKind;
@@ -116,24 +116,22 @@ public class BasicEntityProvider {
    */
   public ODataResponse writePropertyValue(final EdmProperty edmProperty, Object value) throws EntityProviderException {
     try {
-      Map<?, ?> mappedData;
-      if (value instanceof Map) {
-        mappedData = (Map<?, ?>) value;
-        value = mappedData.get(edmProperty.getName());
-      } else {
-        mappedData = Collections.emptyMap();
-      }
-
       final EdmSimpleType type = (EdmSimpleType) edmProperty.getType();
 
       if (type == EdmSimpleTypeKind.Binary.getEdmSimpleTypeInstance()) {
-        String contentType = ContentType.APPLICATION_OCTET_STREAM.toContentTypeString();
+        String contentType = HttpContentType.APPLICATION_OCTET_STREAM;
         if (edmProperty.getMimeType() != null) {
           contentType = edmProperty.getMimeType();
         } else {
           if (edmProperty.getMapping() != null && edmProperty.getMapping().getMimeType() != null) {
             String mimeTypeMapping = edmProperty.getMapping().getMimeType();
-            contentType = (String) mappedData.get(mimeTypeMapping);
+            if (value instanceof Map) {
+              final Map<?, ?> mappedData = (Map<?, ?>) value;
+              value = mappedData.get(edmProperty.getName());
+              contentType = (String) mappedData.get(mimeTypeMapping);
+            } else {
+              throw new EntityProviderException(EntityProviderException.COMMON);
+            }
           }
         }
         return writeBinary(contentType, (byte[]) value);

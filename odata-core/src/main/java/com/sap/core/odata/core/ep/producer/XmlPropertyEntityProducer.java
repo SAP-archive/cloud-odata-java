@@ -9,7 +9,6 @@ import javax.xml.stream.XMLStreamWriter;
 import com.sap.core.odata.api.edm.Edm;
 import com.sap.core.odata.api.edm.EdmCustomizableFeedMappings;
 import com.sap.core.odata.api.edm.EdmException;
-import com.sap.core.odata.api.edm.EdmFacets;
 import com.sap.core.odata.api.edm.EdmLiteralKind;
 import com.sap.core.odata.api.edm.EdmSimpleType;
 import com.sap.core.odata.api.ep.EntityProviderException;
@@ -133,19 +132,28 @@ public class XmlPropertyEntityProducer {
   }
 
   /**
-   * 
-   * @param writer
-   * @param prop
-   * @param value
+   * Appends a simple-property value to the XML stream.
+   * @param writer the XML stream writer
+   * @param prop property informations
+   * @param value the value of the property
    * @throws XMLStreamException
    * @throws EdmException
    */
   private void appendProperty(XMLStreamWriter writer, EntityPropertyInfo prop, Object value) throws XMLStreamException, EdmException {
-    EdmLiteralKind literalKind = EdmLiteralKind.DEFAULT;
-    EdmFacets facets = prop.getFacets();
-    EdmSimpleType st = (EdmSimpleType) prop.getType();
-    String valueAsString = st.valueToString(value, literalKind, facets);
+    Object contentValue = value;
+    String mimeType = null;
+    if (prop.getMimeType() != null) {
+      mimeType = prop.getMimeType();
+    } else if (prop.getMapping() != null && prop.getMapping().getMimeType() != null) {
+        mimeType = (String) extractChildValue(value, prop.getMapping().getMimeType());
+        contentValue = extractChildValue(value, prop.getName());
+    }
 
+    if (mimeType != null)
+      writer.writeAttribute(Edm.NAMESPACE_M_2007_08, FormatXml.M_MIME_TYPE, mimeType);
+
+    final EdmSimpleType type = (EdmSimpleType) prop.getType();
+    final String valueAsString = type.valueToString(contentValue, EdmLiteralKind.DEFAULT, prop.getFacets());
     if (valueAsString == null) {
       writer.writeAttribute(Edm.NAMESPACE_M_2007_08, FormatXml.ATOM_NULL, FormatXml.ATOM_VALUE_TRUE);
     } else {
