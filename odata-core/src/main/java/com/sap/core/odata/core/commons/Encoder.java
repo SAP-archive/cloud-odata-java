@@ -5,32 +5,17 @@ import java.util.Map;
 
 /**
  * Encodes a Java String (in its internal UTF-16 encoding) into its
- * percent-encoded UTF-8 representation according to RFC 3986
+ * percent-encoded UTF-8 representation according to
+ * <a href="http://www.ietf.org/rfc/rfc3986.txt">RFC 3986</a>
  * (with consideration of its predecessor RFC 2396).
  * @author SAP AG
  */
 public class Encoder {
 
-  /*
-   * encoding rules:
-   *
-   *  http://www.ietf.org/rfc/rfc3986.txt
-   *
-   *  private final static String RFC3986_UNRESERVED = "-._~"; // + ALPHA + DIGIT
-   *  private final static String RFC3986_GEN_DELIMS = ":/?#[]@";
-   *  private final static String RFC3986_SUB_DELIMS = "!$&'()*+,;=";
-   *  private final static String RFC3986_RESERVED = RFC3986_GEN_DELIMS + RFC3986_SUB_DELIMS;
-   */
-
-  private Encoder(String unsafe, String unreserved, Map<Character, String> map) {
-    this.unsafe = unsafe;
-    this.unreserved = unreserved;
-    this.map = map;
-  }
-
   /**
    * Encodes a Java String (in its internal UTF-16 encoding) into its
-   * percent-encoded UTF-8 representation according to RFC 3986
+   * percent-encoded UTF-8 representation according to
+   * <a href="http://www.ietf.org/rfc/rfc3986.txt">RFC 3986</a>
    * (with consideration of its predecessor RFC 2396).
    * @param value the Java String
    * @return the encoded String
@@ -40,6 +25,16 @@ public class Encoder {
     return encoder.encodeInternal(value);
   }
 
+  private final String unsafe;
+  private final String unreserved;
+  private final Map<Character, String> map;
+
+  private Encoder(String unsafe, String unreserved, Map<Character, String> map) {
+    this.unsafe = unsafe;
+    this.unreserved = unreserved;
+    this.map = map;
+  }
+
   private final static String RFC3986_UNRESERVED = "-._~"; // + ALPHA + DIGIT
   private final static String RFC3986_GEN_DELIMS = ":/?#[]@";
   private final static String RFC3986_SUB_DELIMS = "!$&'()*+,;=";
@@ -47,15 +42,12 @@ public class Encoder {
   private final static String RFC3986_RESERVED = RFC3986_GEN_DELIMS + RFC3986_SUB_DELIMS;
 
   /*
-   * this is due to compatibility reasons for URI decoding behavior which is RFC2396 (deprecated by RFC3986)
+   * this is due to compatibility reasons for java.net.URI decoding behavior
+   * which follows RFC2396 (deprecated by RFC3986)
    */
   private final static String UNSAFE_NOSPACE = RFC3986_GEN_DELIMS + "<>%&";
   private final static String UNSAFE = UNSAFE_NOSPACE + " ";
   private final static String UNRESERVED = RFC3986_UNRESERVED;
-
-  private String unsafe;
-  private String unreserved;
-  private Map<Character, String> map;
 
   private final static String[] hex = {
       "%00", "%01", "%02", "%03", "%04", "%05", "%06", "%07",
@@ -118,12 +110,12 @@ public class Encoder {
           resultStr.append(map.get((char) utf8Byte));
         } else if (isUnreserved(utf8Byte)) { // case unreserved
           resultStr.append((char) utf8Byte);
-        } else if ('A' <= utf8Byte && utf8Byte <= 'Z' // case A..Z
-            || 'a' <= utf8Byte && utf8Byte <= 'z' // case a..z
-            || '0' <= utf8Byte && utf8Byte <= '9' // case 0..9
-            || 0 <= utf8Byte) { // case other ASCII
-          resultStr.append((char) utf8Byte);
-        } else { // UTF-8 continuation byte
+        } else if (utf8Byte >= 0) { // case other ASCII
+          if (utf8Byte < ' ') // case ASCII control character
+            resultStr.append(hex[utf8Byte]);
+          else
+            resultStr.append((char) utf8Byte);
+        } else { // case UTF-8 continuation byte
           resultStr.append(hex[256 + utf8Byte]); // index adjusted for the usage of signed bytes
         }
       }
@@ -133,11 +125,14 @@ public class Encoder {
     return resultStr.toString();
   }
 
-  private boolean isUnsafe(byte ch) {
-    return unsafe.indexOf(ch) >= 0;
+  private boolean isUnsafe(final byte utf8Byte) {
+    return unsafe.indexOf(utf8Byte) >= 0;
   }
 
-  private boolean isUnreserved(byte ch) {
-    return unreserved.indexOf(ch) >= 0;
+  private boolean isUnreserved(final byte utf8Byte) {
+    return unreserved.indexOf(utf8Byte) >= 0
+        || 'A' <= utf8Byte && utf8Byte <= 'Z' // case A..Z
+        || 'a' <= utf8Byte && utf8Byte <= 'z' // case a..z
+        || '0' <= utf8Byte && utf8Byte <= '9'; // case 0..9
   }
 }

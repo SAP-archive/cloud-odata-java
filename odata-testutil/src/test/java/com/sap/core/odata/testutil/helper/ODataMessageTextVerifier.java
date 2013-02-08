@@ -1,6 +1,6 @@
 package com.sap.core.odata.testutil.helper;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.lang.reflect.Field;
@@ -46,13 +46,11 @@ public class ODataMessageTextVerifier {
   }
 
   private String getMessage(MessageReference msgRef) {
-    String value = null;
-
     try {
       final String key = msgRef.getKey();
-      value = resourceBundle.getString(key);
+      final String value = resourceBundle.getString(key);
       return value;
-    } catch (final MissingResourceException ex) {
+    } catch (final MissingResourceException e) {
       failCollector("Error-->Messagetext for key:\"" + msgRef.getKey() + "\" missing");
     }
     return null;
@@ -72,13 +70,17 @@ public class ODataMessageTextVerifier {
 
   public void CheckMessagesOfClass(Class<? extends Exception> exceptionClassToBeTested) {
     final Class<? extends Exception> testClass = exceptionClassToBeTested;
-    // try {
 
     for (final Field field : testClass.getDeclaredFields()) {
       // if field from type MessageReference
       if (field.getType().isAssignableFrom(MessageReference.class)) {
+        final int modifiers = field.getModifiers();
+        if (!Modifier.isStatic(modifiers))
+          continue;
+        // field should be public
+        assertTrue("MsgRef Error--> Error: field should be public.", Modifier.isPublic(modifiers));
         // field should be final
-        assertEquals("MsgRef Error--> Error: field should be final. ", true, Modifier.isFinal(field.getModifiers()));
+        assertTrue("MsgRef Error--> Error: field should be final.", Modifier.isFinal(modifiers));
 
         MessageReference msgRef = null;
         try {

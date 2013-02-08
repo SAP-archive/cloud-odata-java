@@ -20,13 +20,18 @@ public class EncoderTest extends BaseTest {
   private final static String RFC3986_RESERVED = RFC3986_GEN_DELIMS + RFC3986_SUB_DELIMS;
 
   @Test
-  public void testAsciiCharacters() {
+  public void asciiCharacters() {
     String s = "azAZ019";
     assertEquals(s, Encoder.encode(s));
     assertEquals(s, Encoder.encode(s));
 
-    s = "\"`{}|";
+    s = "\"\\`{}|";
     assertEquals(s, Encoder.encode(s));
+  }
+
+  @Test
+  public void asciiControl() {
+    assertEquals("%08%09%0a%0d", Encoder.encode("\b\t\n\r"));
   }
 
   @Test
@@ -35,34 +40,35 @@ public class EncoderTest extends BaseTest {
   }
 
   @Test
-  public void testRfc3986Unreserved() {
+  public void rfc3986Unreserved() {
     assertEquals(RFC3986_UNRESERVED, Encoder.encode(RFC3986_UNRESERVED));
   }
 
   @Test
-  public void testRfc3986GenDelims() {
+  public void rfc3986GenDelims() {
     assertEquals("%3a%2f%3f%23%5b%5d%40", Encoder.encode(RFC3986_GEN_DELIMS));
   }
 
   @Test
-  public void testRfc3986SubDelims() {
+  public void rfc3986SubDelims() {
     assertEquals("!$%26'()*+,;=", Encoder.encode(RFC3986_SUB_DELIMS));
   }
 
   @Test
-  public void testRfc3986Reserved() {
+  public void rfc3986Reserved() {
     assertEquals("%3a%2f%3f%23%5b%5d%40!$%26'()*+,;=", Encoder.encode(RFC3986_RESERVED));
   }
 
   @Test
-  public void testUnicodeCharacters() {
+  public void unicodeCharacters() {
     assertEquals("%e2%82%ac", Encoder.encode("€"));
     assertEquals("%ef%b7%bc", Encoder.encode("\uFDFC")); // RIAL SIGN
   }
 
   @Test
   public void charactersOutsideBmp() {
-    // Java stores Unicode characters outside the BMP in two surrogate characters.
+    // Unicode characters outside the Basic Multilingual Plane are stored
+    // in a Java String in two surrogate characters.
     final String s = String.valueOf(Character.toChars(0x1F603));
     assertEquals("%f0%9f%98%83", Encoder.encode(s));
   }
