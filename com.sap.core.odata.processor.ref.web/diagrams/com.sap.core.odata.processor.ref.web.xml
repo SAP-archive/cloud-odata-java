@@ -1,43 +1,56 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?><entities>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<entities>
+	
 	<entity>
-		<entity-name>com.sap.core.odata.processor.ref.jpa.SalesOrderHeader</entity-name>
+		<entity-name>org.persistence.Store</entity-name>
 		<entity-width>120</entity-width>
-		<entity-height>306</entity-height>
-		<entity-X-Coordinate>50</entity-X-Coordinate>
-		<entity-Y-Coordinate>50</entity-Y-Coordinate>
+		<entity-height>166</entity-height>
+		<entity-X-Coordinate>790</entity-X-Coordinate>
+		<entity-Y-Coordinate>560</entity-Y-Coordinate>
 		<primary-collapsed>false</primary-collapsed>
 		<relation-collapsed>false</relation-collapsed>
 		<basic-collapsed>false</basic-collapsed>
 	</entity>
 
 	<entity>
-		<entity-name>com.sap.core.odata.processor.ref.jpa.Note</entity-name>
+		<entity-name>org.persistence.Note</entity-name>
 		<entity-width>120</entity-width>
-		<entity-height>141</entity-height>
-		<entity-X-Coordinate>50</entity-X-Coordinate>
-		<entity-Y-Coordinate>450</entity-Y-Coordinate>
-		<primary-collapsed>true</primary-collapsed>
-		<relation-collapsed>false</relation-collapsed>
-		<basic-collapsed>false</basic-collapsed>
-	</entity>
-
-	<entity>
-		<entity-name>com.sap.core.odata.processor.ref.jpa.Material</entity-name>
-		<entity-width>120</entity-width>
-		<entity-height>168</entity-height>
-		<entity-X-Coordinate>320</entity-X-Coordinate>
-		<entity-Y-Coordinate>406</entity-Y-Coordinate>
+		<entity-height>166</entity-height>
+		<entity-X-Coordinate>402</entity-X-Coordinate>
+		<entity-Y-Coordinate>500</entity-Y-Coordinate>
 		<primary-collapsed>false</primary-collapsed>
 		<relation-collapsed>false</relation-collapsed>
 		<basic-collapsed>false</basic-collapsed>
 	</entity>
 
 	<entity>
-		<entity-name>com.sap.core.odata.processor.ref.jpa.SalesOrderItem</entity-name>
+		<entity-name>org.persistence.SalesOrderItem</entity-name>
 		<entity-width>120</entity-width>
 		<entity-height>226</entity-height>
-		<entity-X-Coordinate>320</entity-X-Coordinate>
-		<entity-Y-Coordinate>47</entity-Y-Coordinate>
+		<entity-X-Coordinate>389</entity-X-Coordinate>
+		<entity-Y-Coordinate>55</entity-Y-Coordinate>
+		<primary-collapsed>false</primary-collapsed>
+		<relation-collapsed>false</relation-collapsed>
+		<basic-collapsed>false</basic-collapsed>
+	</entity>
+
+	<entity>
+		<entity-name>org.persistence.SalesOrderHeader</entity-name>
+		<entity-width>120</entity-width>
+		<entity-height>306</entity-height>
+		<entity-X-Coordinate>70</entity-X-Coordinate>
+		<entity-Y-Coordinate>203</entity-Y-Coordinate>
+		<primary-collapsed>false</primary-collapsed>
+		<relation-collapsed>false</relation-collapsed>
+		<basic-collapsed>false</basic-collapsed>
+	</entity>
+
+	<entity>
+		<entity-name>org.persistence.Material</entity-name>
+		<entity-width>120</entity-width>
+		<entity-height>206</entity-height>
+		<entity-X-Coordinate>770</entity-X-Coordinate>
+		<entity-Y-Coordinate>84</entity-Y-Coordinate>
 		<primary-collapsed>false</primary-collapsed>
 		<relation-collapsed>false</relation-collapsed>
 		<basic-collapsed>false</basic-collapsed>
