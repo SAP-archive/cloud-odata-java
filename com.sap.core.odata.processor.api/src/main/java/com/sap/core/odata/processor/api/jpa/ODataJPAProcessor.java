@@ -2,6 +2,7 @@ package com.sap.core.odata.processor.api.jpa;
 
 import com.sap.core.odata.api.processor.ODataSingleProcessor;
 import com.sap.core.odata.processor.api.jpa.access.JPAProcessor;
+import com.sap.core.odata.processor.api.jpa.exception.ODataJPAException;
 import com.sap.core.odata.processor.api.jpa.exception.ODataJPARuntimeException;
 import com.sap.core.odata.processor.api.jpa.factory.JPAAccessFactory;
 import com.sap.core.odata.processor.api.jpa.factory.ODataJPAFactory;
@@ -15,14 +16,15 @@ import com.sap.core.odata.processor.api.jpa.factory.ODataJPAFactory;
  * 
  */
 public abstract class ODataJPAProcessor extends ODataSingleProcessor {
-
+	
 	/**
 	 * An instance of {@link ODataJPAContext} object
 	 */
 	protected ODataJPAContext oDataJPAContext;
 
 	/**
-	 * An instance of {@link JPAProcessor}. The instance is created using {@link JPAAccessFactory}.
+	 * An instance of {@link JPAProcessor}. The instance is created using
+	 * {@link JPAAccessFactory}.
 	 */
 	protected JPAProcessor jpaProcessor;
 
@@ -39,12 +41,11 @@ public abstract class ODataJPAProcessor extends ODataSingleProcessor {
 	 * 
 	 * @param oDataJPAContext
 	 *            non null OData JPA Context object
-	 * @throws ODataJPARuntimeException 
+	 * @throws ODataJPARuntimeException
 	 */
-	public ODataJPAProcessor(ODataJPAContext oDataJPAContext) throws ODataJPARuntimeException {
-		if(oDataJPAContext == null)
-		{
-			ODataJPARuntimeException.throwException(ODataJPARuntimeException.RUNTIME_EXCEPTION, null);
+	public ODataJPAProcessor(ODataJPAContext oDataJPAContext) {
+		if (oDataJPAContext == null) {
+			throw new IllegalArgumentException(ODataJPAException.ODATA_JPACTX_NULL);
 		}
 		this.oDataJPAContext = oDataJPAContext;
 		jpaProcessor = ODataJPAFactory.createFactory().getJPAAccessFactory()

@@ -7,14 +7,13 @@ import com.sap.core.odata.api.processor.ODataSingleProcessor;
 import com.sap.core.odata.processor.api.jpa.ODataJPAContext;
 import com.sap.core.odata.processor.api.jpa.access.JPAProcessor;
 import com.sap.core.odata.processor.api.jpa.exception.ODataJPAMessageService;
-import com.sap.core.odata.processor.api.jpa.exception.ODataJPARuntimeException;
 import com.sap.core.odata.processor.api.jpa.factory.JPAAccessFactory;
 import com.sap.core.odata.processor.api.jpa.factory.JPQLBuilderFactory;
 import com.sap.core.odata.processor.api.jpa.factory.ODataJPAAccessFactory;
 import com.sap.core.odata.processor.api.jpa.factory.ODataJPAFactory;
+import com.sap.core.odata.processor.api.jpa.jpql.JPQLContext.JPQLContextBuilder;
 import com.sap.core.odata.processor.api.jpa.jpql.JPQLContextType;
 import com.sap.core.odata.processor.api.jpa.jpql.JPQLContextView;
-import com.sap.core.odata.processor.api.jpa.jpql.JPQLContext.JPQLContextBuilder;
 import com.sap.core.odata.processor.api.jpa.jpql.JPQLStatement.JPQLStatementBuilder;
 import com.sap.core.odata.processor.api.jpa.model.JPAEdmModelView;
 import com.sap.core.odata.processor.core.jpa.ODataJPAContextImpl;
@@ -119,12 +118,12 @@ JPQLContextBuilder contextBuilder = null;
 		
 		@Override
 		public ODataSingleProcessor createODataProcessor(
-				ODataJPAContext oDataJPAContext) throws ODataJPARuntimeException {
+				ODataJPAContext oDataJPAContext){
 			return new ODataJPAProcessorDefault(oDataJPAContext);
 		}
 
 		@Override
-		public EdmProvider createJPAEdmProvider(ODataJPAContext oDataJPAContext) throws ODataJPARuntimeException {
+		public EdmProvider createJPAEdmProvider(ODataJPAContext oDataJPAContext){
 			return new ODataJPAEdmProvider(oDataJPAContext);
 		}
 

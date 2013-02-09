@@ -8,12 +8,15 @@ import com.sap.core.odata.api.uri.info.GetEntitySetUriInfo;
 import com.sap.core.odata.api.uri.info.GetEntityUriInfo;
 import com.sap.core.odata.processor.api.jpa.ODataJPAContext;
 import com.sap.core.odata.processor.api.jpa.ODataJPAProcessor;
-import com.sap.core.odata.processor.api.jpa.exception.ODataJPARuntimeException;
+import com.sap.core.odata.processor.api.jpa.exception.ODataJPAException;
 
 public class ODataJPAProcessorDefault extends ODataJPAProcessor {
 
-	public ODataJPAProcessorDefault(ODataJPAContext oDataJPAContext) throws ODataJPARuntimeException {
+	public ODataJPAProcessorDefault(ODataJPAContext oDataJPAContext){
 		super(oDataJPAContext);
+		if(oDataJPAContext == null){
+			throw new IllegalArgumentException(ODataJPAException.ODATA_JPACTX_NULL);
+		}
 	}
 
 	@Override

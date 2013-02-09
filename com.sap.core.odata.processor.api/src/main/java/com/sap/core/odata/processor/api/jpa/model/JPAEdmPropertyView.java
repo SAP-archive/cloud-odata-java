@@ -18,10 +18,11 @@ import com.sap.core.odata.api.edm.provider.SimpleProperty;
  * <li>relationships - are converted into Associations/Navigation properties</li>
  * </ol>
  * <p>
- * The implementation of the view provides access to EDM properties. The view
- * acts as a container for consistent list of EDM properties of an EDM entity
- * type. EDM property is consistent only if there exists at least one property
- * in the entity type and there is at least one key property.
+ * The implementation of the view provides access to EDM properties for a given
+ * JPA EDM entity type. The view acts as a container for consistent list of EDM
+ * properties of an EDM entity type. EDM property is consistent only if there
+ * exists at least one property in the entity type and there is at least one key
+ * property.
  * 
  * @author SAP AG
  *         <p>

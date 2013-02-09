@@ -84,7 +84,7 @@ public interface JPAEdmAssociationView extends JPAEdmBaseView {
 	
 	/**
 	 * The method returns the referential constraint view that is currently being processed.
-	 * @return {@link JPAEdmReferentialConstraintView}
+	 * @return an instance of type {@link JPAEdmReferentialConstraintView}
 	 */
 	public JPAEdmReferentialConstraintView getJPAEdmReferentialConstraintView();
 }

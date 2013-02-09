@@ -1,7 +1,5 @@
 package com.sap.core.odata.processor.api.jpa.factory;
 
-import com.sap.core.odata.processor.api.jpa.exception.ODataJPARuntimeException;
-
 /**
  * The class is an abstract factory for creating default ODataJPAFactory. The
  * class's actual implementation is responsible for creating other factory
@@ -33,8 +31,7 @@ public abstract class ODataJPAFactory {
 	 * 
 	 * @return instance of type {@link ODataJPAFactory}.
 	 */
-	public static ODataJPAFactory createFactory()
-			throws ODataJPARuntimeException {
+	public static ODataJPAFactory createFactory() {
 
 		if (factoryImpl != null)
 			return factoryImpl;
@@ -46,8 +43,7 @@ public abstract class ODataJPAFactory {
 				factoryImpl = (ODataJPAFactory) object;
 
 			} catch (Exception e) {
-				ODataJPARuntimeException.throwException(
-						ODataJPARuntimeException.GENERAL, e);
+				throw new RuntimeException(e);
 			}
 
 			return factoryImpl;
@@ -64,10 +60,10 @@ public abstract class ODataJPAFactory {
 	public JPQLBuilderFactory getJPQLBuilderFactory() {
 		return null;
 	};
-	
+
 	/**
-	 * The method returns a null reference to JPA Access Factory. Override
-	 * this method to return an implementation of JPAAccessFactory if default
+	 * The method returns a null reference to JPA Access Factory. Override this
+	 * method to return an implementation of JPAAccessFactory if default
 	 * implementation from library is not required.
 	 * 
 	 * @return instance of type {@link JPAAccessFactory}
@@ -75,11 +71,11 @@ public abstract class ODataJPAFactory {
 	public JPAAccessFactory getJPAAccessFactory() {
 		return null;
 	};
-	
+
 	/**
 	 * The method returns a null reference to OData JPA Access Factory. Override
-	 * this method to return an implementation of ODataJPAAccessFactory if default
-	 * implementation from library is not required.
+	 * this method to return an implementation of ODataJPAAccessFactory if
+	 * default implementation from library is not required.
 	 * 
 	 * @return instance of type {@link ODataJPAAccessFactory}
 	 */

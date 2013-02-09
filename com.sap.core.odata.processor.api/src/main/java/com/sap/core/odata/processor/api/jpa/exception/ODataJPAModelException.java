@@ -35,24 +35,28 @@ public class ODataJPAModelException extends ODataJPAException {
 	private ODataJPAModelException(String localizedMessage, Throwable e) {
 		super(localizedMessage, e);
 	}
-	
+
 	/**
-	 * The method creates an ODataJPAModelException Object
-	 * @param messageReference is a <b>mandatory</b> parameter 
+	 * The method creates an exception object of type ODataJPAModelException
+	 * with localized error texts.
+	 * 
+	 * @param messageReference
+	 *            is a <b>mandatory</b> parameter referring to a literal that
+	 *            could be translated to localized error texts.
 	 * @param e
-	 * @return
+	 *            is an optional parameter representing the previous exception
+	 *            in the call stack
+	 * @return an instance of ODataJPAModelException which can be then raised.
 	 * @throws ODataJPARuntimeException
 	 */
 	public static ODataJPAModelException throwException(
-			MessageReference messageReference, Throwable e)
-			throws ODataJPARuntimeException {
+			MessageReference messageReference, Throwable e) {
 
-		ODataJPAMessageService messageService = ODataJPAFactory.createFactory()
+		ODataJPAMessageService messageService;
+		messageService = ODataJPAFactory.createFactory()
 				.getODataJPAAccessFactory()
 				.getODataJPAMessageService(DEFAULT_LOCALE);
-
 		String message = messageService.getLocalizedMessage(messageReference);
-
 		return new ODataJPAModelException(message, e);
 	}
 

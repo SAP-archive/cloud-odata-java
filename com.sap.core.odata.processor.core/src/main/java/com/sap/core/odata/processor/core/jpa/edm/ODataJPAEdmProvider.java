@@ -18,8 +18,8 @@ import com.sap.core.odata.api.edm.provider.FunctionImport;
 import com.sap.core.odata.api.edm.provider.Schema;
 import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.processor.api.jpa.ODataJPAContext;
+import com.sap.core.odata.processor.api.jpa.exception.ODataJPAException;
 import com.sap.core.odata.processor.api.jpa.exception.ODataJPAModelException;
-import com.sap.core.odata.processor.api.jpa.exception.ODataJPARuntimeException;
 import com.sap.core.odata.processor.api.jpa.factory.ODataJPAFactory;
 import com.sap.core.odata.processor.api.jpa.model.JPAEdmModelView;
 
@@ -41,7 +41,10 @@ public class ODataJPAEdmProvider extends EdmProvider {
 		associations = new HashMap<String, Association>();
 	}
 
-	public ODataJPAEdmProvider(ODataJPAContext oDataJPAContext) throws ODataJPARuntimeException {
+	public ODataJPAEdmProvider(ODataJPAContext oDataJPAContext) {
+		if (oDataJPAContext == null)
+			throw new IllegalArgumentException(
+					ODataJPAException.ODATA_JPACTX_NULL);
 		entityTypes = new HashMap<String, EntityType>();
 		entityContainerInfos = new HashMap<String, EntityContainerInfo>();
 		complexTypes = new HashMap<String, ComplexType>();

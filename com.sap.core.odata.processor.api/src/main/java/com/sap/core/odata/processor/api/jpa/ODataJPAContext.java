@@ -5,12 +5,23 @@ import javax.persistence.EntityManagerFactory;
 import com.sap.core.odata.api.edm.provider.EdmProvider;
 import com.sap.core.odata.api.processor.ODataContext;
 import com.sap.core.odata.api.processor.ODataProcessor;
+import com.sap.core.odata.processor.api.jpa.factory.ODataJPAAccessFactory;
+import com.sap.core.odata.processor.api.jpa.factory.ODataJPAFactory;
 
 /**
- * This class does the compilation of context objects required for OData JPA Runtime.
+ * This class does the compilation of context objects required for OData JPA
+ * Runtime. The context object should be properly initialized with values else
+ * the behavior of processor and EDM provider can result in exception.
+ * 
+ * Following are the mandatory parameter to be set into the context object
+ * <ol>
+ * <li>Persistence Unit Name</li>
+ * <li>An instance of Java Persistence Entity Manager Factory</li>
+ * </ol>
  * 
  * @author SAP AG <br>
  * @DoNotImplement
+ * @see {@link ODataJPAFactory}, {@link ODataJPAAccessFactory}
  * 
  */
 public interface ODataJPAContext {
@@ -73,7 +84,7 @@ public interface ODataJPAContext {
 	public EntityManagerFactory getEntityManagerFactory();
 
 	/**
-	 * The methos sets the Java Persistence Entity Manager factory into the
+	 * The method sets the Java Persistence Entity Manager factory into the
 	 * context.
 	 * 
 	 * @param emf
@@ -93,7 +104,7 @@ public interface ODataJPAContext {
 	 * The method sets OData context into the context.
 	 * 
 	 * @param ctx
-	 *            is of the OData context of type {@link ODataContext}
+	 *            is an OData context of type {@link ODataContext}
 	 */
 	public void setODataContext(ODataContext ctx);
 

@@ -19,21 +19,21 @@ public interface JPAEdmBuilder {
 	 * processes EDM JPA Containers which could be accessed using the following
 	 * views,
 	 * <ul>
-	 * <li> {@link JPAEdmAssociationSetView }</li>
-	 * <li> {@link JPAEdmAssociationView }</li>
-	 * <li> {@link JPAEdmBaseView }</li>
-	 * <li> {@link JPAEdmComplexPropertyView }</li>
-	 * <li> {@link JPAEdmComplexTypeView }</li>
-	 * <li> {@link JPAEdmEntityContainerView }</li>
-	 * <li> {@link JPAEdmEntitySetView }</li>
-	 * <li> {@link JPAEdmEntityTypeView }</li>
-	 * <li> {@link JPAEdmKeyView }</li>
-	 * <li> {@link JPAEdmModelView }</li>
-	 * <li> {@link JPAEdmNavigationPropertyView }</li>
-	 * <li> {@link JPAEdmPropertyView }</li>
-	 * <li> {@link JPAEdmReferentialConstraintRoleView }</li>
-	 * <li> {@link JPAEdmReferentialConstraintView }</li>
-	 * <li> {@link JPAEdmSchemaView }</li>
+	 * <li> {@link JPAEdmAssociationSetView}</li>
+	 * <li> {@link JPAEdmAssociationView}</li>
+	 * <li> {@link JPAEdmBaseView}</li>
+	 * <li> {@link JPAEdmComplexPropertyView}</li>
+	 * <li> {@link JPAEdmComplexTypeView}</li>
+	 * <li> {@link JPAEdmEntityContainerView}</li>
+	 * <li> {@link JPAEdmEntitySetView}</li>
+	 * <li> {@link JPAEdmEntityTypeView}</li>
+	 * <li> {@link JPAEdmKeyView}</li>
+	 * <li> {@link JPAEdmModelView}</li>
+	 * <li> {@link JPAEdmNavigationPropertyView}</li>
+	 * <li> {@link JPAEdmPropertyView}</li>
+	 * <li> {@link JPAEdmReferentialConstraintRoleView}</li>
+	 * <li> {@link JPAEdmReferentialConstraintView}</li>
+	 * <li> {@link JPAEdmSchemaView}</li>
 	 * </ul>
 	 * @throws ODataJPARuntimeException 
 	 **/

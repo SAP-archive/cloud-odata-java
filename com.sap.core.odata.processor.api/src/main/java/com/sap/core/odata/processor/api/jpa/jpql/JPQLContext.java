@@ -2,6 +2,7 @@ package com.sap.core.odata.processor.api.jpa.jpql;
 
 import com.sap.core.odata.processor.api.jpa.exception.ODataJPAModelException;
 import com.sap.core.odata.processor.api.jpa.exception.ODataJPARuntimeException;
+import com.sap.core.odata.processor.api.jpa.factory.JPQLBuilderFactory;
 import com.sap.core.odata.processor.api.jpa.factory.ODataJPAFactory;
 
 /**
@@ -15,7 +16,7 @@ import com.sap.core.odata.processor.api.jpa.factory.ODataJPAFactory;
  * A default implementation is provided by the library.
  * 
  * @author SAP AG
- * @see {@link JPQLStatement}, {@link JPQLContextType}
+ * @see {@link JPQLStatement}, {@link JPQLContextType}, {@link JPQLBuilderFactory}
  * 
  */
 public abstract class JPQLContext implements JPQLContextView {
@@ -134,6 +135,9 @@ public abstract class JPQLContext implements JPQLContextView {
 				Object resultsView) throws ODataJPARuntimeException {
 			JPQLContextBuilder contextBuilder = ODataJPAFactory.createFactory()
 					.getJPQLBuilderFactory().getContextBuilder(contextType);
+			if(contextBuilder == null){
+				throw ODataJPARuntimeException.throwException(ODataJPARuntimeException.ERROR_JPQLCTXBLDR_CREATE, null);
+			}
 			contextBuilder.setResultsView(resultsView);
 			return contextBuilder;
 		}

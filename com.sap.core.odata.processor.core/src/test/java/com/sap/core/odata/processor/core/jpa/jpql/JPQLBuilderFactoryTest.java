@@ -3,7 +3,6 @@ package com.sap.core.odata.processor.core.jpa.jpql;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,19 +29,14 @@ import com.sap.core.odata.api.uri.NavigationSegment;
 import com.sap.core.odata.api.uri.expression.OrderByExpression;
 import com.sap.core.odata.api.uri.info.GetEntitySetUriInfo;
 import com.sap.core.odata.api.uri.info.GetEntityUriInfo;
-import com.sap.core.odata.processor.api.jpa.exception.ODataJPARuntimeException;
 import com.sap.core.odata.processor.api.jpa.factory.JPAAccessFactory;
 import com.sap.core.odata.processor.api.jpa.factory.ODataJPAAccessFactory;
 import com.sap.core.odata.processor.api.jpa.jpql.JPQLContext;
-import com.sap.core.odata.processor.api.jpa.jpql.JPQLContextType;
 import com.sap.core.odata.processor.api.jpa.jpql.JPQLContext.JPQLContextBuilder;
+import com.sap.core.odata.processor.api.jpa.jpql.JPQLContextType;
 import com.sap.core.odata.processor.api.jpa.jpql.JPQLStatement.JPQLStatementBuilder;
 import com.sap.core.odata.processor.core.jpa.ODataJPAContextImpl;
 import com.sap.core.odata.processor.core.jpa.factory.ODataJPAFactoryImpl;
-import com.sap.core.odata.processor.core.jpa.jpql.JPQLJoinSelectSingleStatementBuilder;
-import com.sap.core.odata.processor.core.jpa.jpql.JPQLJoinStatementBuilder;
-import com.sap.core.odata.processor.core.jpa.jpql.JPQLSelectSingleStatementBuilder;
-import com.sap.core.odata.processor.core.jpa.jpql.JPQLSelectStatementBuilder;
 import com.sap.core.odata.processor.core.jpa.jpql.JPQLSelectContext.JPQLSelectContextBuilder;
 import com.sap.core.odata.processor.core.jpa.jpql.JPQLSelectSingleContext.JPQLSelectSingleContextBuilder;
 
@@ -335,17 +329,13 @@ public class JPQLBuilderFactoryTest {
 		oDataJPAContextImpl.setEntityManagerFactory(emf);
 		oDataJPAContextImpl.setPersistenceUnitName("pUnit");
 
-		try {
-			assertNotNull(jpaAccessFactory
-					.getODataJPAMessageService(new Locale("en")));
-			assertNotNull(jpaAccessFactory.createODataJPAContext());
-			assertNotNull(jpaAccessFactory
-					.createJPAEdmProvider(oDataJPAContextImpl));
-			assertNotNull(jpaAccessFactory
-					.createODataProcessor(oDataJPAContextImpl));
-		} catch (ODataJPARuntimeException e) {
-			fail("Not expected");
-		}
+		assertNotNull(jpaAccessFactory.getODataJPAMessageService(new Locale(
+				"en")));
+		assertNotNull(jpaAccessFactory.createODataJPAContext());
+		assertNotNull(jpaAccessFactory
+				.createJPAEdmProvider(oDataJPAContextImpl));
+		assertNotNull(jpaAccessFactory
+				.createODataProcessor(oDataJPAContextImpl));
 
 	}
 }

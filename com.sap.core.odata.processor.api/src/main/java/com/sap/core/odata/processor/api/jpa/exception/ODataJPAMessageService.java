@@ -11,7 +11,8 @@ import com.sap.core.odata.api.exception.MessageReference;
  * the message texts.
  * 
  * @author SAP AG
- * 
+ * @see {@link ODataJPAException}, {@link ODataJPARuntimeException},
+ *      {@link ODataJPAModelException}, {@link MessageReference}
  */
 public interface ODataJPAMessageService {
 	/**
