@@ -76,8 +76,7 @@ public class ComplexType {
   }
 
   /**
-   * MANDATORY
-   * <p>Sets the name
+   * Sets the name
    * @param name
    * @return {@link ComplexType} for method chaining
    */
@@ -107,8 +106,7 @@ public class ComplexType {
   }
 
   /**
-   * MANDATORY
-   * <p>Sets the {@link Property}s
+   * Sets the {@link Property}s
    * @param properties
    * @return {@link ComplexType} for method chaining
    */

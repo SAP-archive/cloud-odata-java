@@ -50,8 +50,7 @@ public class AssociationSetEnd {
   }
 
   /**
-   * MANDATORY
-   * <p>Sets the role of this {@link AssociationSetEnd}
+   * Sets the role of this {@link AssociationSetEnd}
    * @param role
    * @return {@link AssociationSetEnd} for method chaining
    */
@@ -61,8 +60,7 @@ public class AssociationSetEnd {
   }
 
   /**
-   * MANDATORY
-   * <p>Sets the target entity set of this {@link AssociationSetEnd}
+   * Sets the target entity set of this {@link AssociationSetEnd}
    * @param entitySet
    * @return {@link AssociationSetEnd} for method chaining
    */

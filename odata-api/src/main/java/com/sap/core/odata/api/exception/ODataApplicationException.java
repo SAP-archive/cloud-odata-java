@@ -116,7 +116,7 @@ public class ODataApplicationException extends ODataException {
 
   /**
    * Default code is null
-   * @return <b>String</b>The error code displayed in the error message. Mandatory after OData specification.
+   * @return <b>String</b>The error code displayed in the error message.
    */
   public String getCode() {
     return errorCode;

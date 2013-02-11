@@ -15,8 +15,7 @@ public class Using {
   private List<AnnotationElement> annotationElements;
 
   /**
-   * MANDATORY
-   * <p>Sets the namespace for this {@link Using}
+   * Sets the namespace for this {@link Using}
    * @param namespace
    * @return {@link Using} for method chaining
    */
@@ -26,8 +25,7 @@ public class Using {
   }
 
   /**
-   * MANDATORY
-   * <p>Sets the alias for this {@link Using}
+   * Sets the alias for this {@link Using}
    * @param alias
    * @return {@link Using} for method chaining
    */

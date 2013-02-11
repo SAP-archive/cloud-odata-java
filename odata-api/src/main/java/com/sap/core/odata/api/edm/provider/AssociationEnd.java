@@ -69,8 +69,7 @@ public class AssociationEnd {
   }
 
   /**
-   * MANDATORY
-   * <p>Sets the {@link FullQualifiedName} for this {@link AssociationEnd}
+   * Sets the {@link FullQualifiedName} for this {@link AssociationEnd}
    * @param type
    * @return {@link AssociationEnd} for method chaining
    */
@@ -80,8 +79,7 @@ public class AssociationEnd {
   }
 
   /**
-   * MANDATORY
-   * <p>Sets the role for this {@link AssociationEnd}
+   * Sets the role for this {@link AssociationEnd}
    * @param role
    * @return {@link AssociationEnd} for method chaining
    */
@@ -91,8 +89,7 @@ public class AssociationEnd {
   }
 
   /**
-   * MANDATORY
-   * <p>Sets the {@link EdmMultiplicity} for this {@link AssociationEnd}
+   * Sets the {@link EdmMultiplicity} for this {@link AssociationEnd}
    * @param multiplicity
    * @return {@link AssociationEnd} for method chaining
    */

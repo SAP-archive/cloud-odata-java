@@ -82,8 +82,7 @@ public class FunctionImport {
   }
 
   /**
-   * MANDATORY
-   * <p>Sets the name of this {@link FunctionImport}
+   * Sets the name of this {@link FunctionImport}
    * @param name
    * @return {@link FunctionImport} for method chaining
    */
@@ -93,8 +92,7 @@ public class FunctionImport {
   }
 
   /**
-   * MANDATORY
-   * <p>Sets the {@link ReturnType} of this {@link FunctionImport}
+   * Sets the {@link ReturnType} of this {@link FunctionImport}
    * @param returnType
    * @return {@link FunctionImport} for method chaining
    */
@@ -104,8 +102,7 @@ public class FunctionImport {
   }
 
   /**
-   * MANDATORY
-   * <p>Sets the {@link EntitySet} of this {@link FunctionImport}
+   * Sets the {@link EntitySet} of this {@link FunctionImport}
    * @param entitySet
    * @return {@link FunctionImport} for method chaining
    */
@@ -115,8 +112,7 @@ public class FunctionImport {
   }
 
   /**
-   * MANDATORY
-   * <p>Sets the HTTP method of this {@link FunctionImport}
+   * Sets the HTTP method of this {@link FunctionImport}
    * @param httpMethod
    * @return {@link FunctionImport} for method chaining
    */
@@ -126,8 +122,7 @@ public class FunctionImport {
   }
 
   /**
-   * MANDATORY
-   * <p>Sets the {@link FunctionImportParameter}s of this {@link FunctionImport}
+   * Sets the {@link FunctionImportParameter}s of this {@link FunctionImport}
    * @param parameters
    * @return {@link FunctionImport} for method chaining
    */

@@ -1,6 +1,7 @@
 package com.sap.core.odata.api.exception;
 
 /**
+ * <p>DO NOT EXTEND THIS EXCEPTION</p>
  * <p>Base exception class for all exceptions in the <code>OData</code> library.</p>
  * <p>This class extends {@link ODataException} with a message that will be displayed
  * to a possible client and therefore needs support for internationalization.</p>

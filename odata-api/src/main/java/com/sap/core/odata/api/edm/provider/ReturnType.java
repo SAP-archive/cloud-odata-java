@@ -27,8 +27,7 @@ public class ReturnType {
   }
 
   /**
-   * MANDATORY
-   * <p>Sets the type  of this {@link ReturnType} via the types {@link FullQualifiedName}
+   * Sets the type  of this {@link ReturnType} via the types {@link FullQualifiedName}
    * @param qualifiedName
    * @return {@link ReturnType} for method chaining
    */
@@ -38,8 +37,7 @@ public class ReturnType {
   }
 
   /**
-   * MANDATORY
-   * <p>Sets the {@link EdmMultiplicity} of this {@link ReturnType}
+   * Sets the {@link EdmMultiplicity} of this {@link ReturnType}
    * @param multiplicity
    * @return {@link ReturnType} for method chaining
    */

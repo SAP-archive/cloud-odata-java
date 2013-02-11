@@ -35,8 +35,7 @@ public class PropertyRef {
   }
 
   /**
-   * MANDATORY
-   * <p>Sets the name of the {@link Property} this {@link PropertyRef} is pointing to
+   * Sets the name of the {@link Property} this {@link PropertyRef} is pointing to
    * @param name
    * @return {@link PropertyRef} for method chaining
    */

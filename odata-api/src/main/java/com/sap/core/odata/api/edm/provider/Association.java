@@ -66,8 +66,7 @@ public class Association {
   }
 
   /**
-   * MANDATORY
-   * <p>Sets the name for this {@link Association}
+   * Sets the name for this {@link Association}
    * @param name
    * @return {@link Association} for method chaining
    */
@@ -77,8 +76,7 @@ public class Association {
   }
 
   /**
-   * MANDATORY
-   * <p>Sets the first {@link AssociationEnd} for this {@link Association}
+   * Sets the first {@link AssociationEnd} for this {@link Association}
    * @param end1
    * @return {@link Association} for method chaining
    */
@@ -88,8 +86,7 @@ public class Association {
   }
 
   /**
-   * MANDATORY
-   * <p>Sets the second {@link AssociationEnd} for this {@link Association}
+   * Sets the second {@link AssociationEnd} for this {@link Association}
    * @param end2
    * @return {@link Association} for method chaining
    */

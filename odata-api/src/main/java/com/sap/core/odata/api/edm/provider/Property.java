@@ -76,8 +76,7 @@ public abstract class Property {
   }
 
   /**
-   * MANDATORY
-   * <p>Sets the name for this {@link Property}
+   * Sets the name for this {@link Property}
    * @param name
    * @return {@link Property} for method chaining
    */

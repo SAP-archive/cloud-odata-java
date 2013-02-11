@@ -21,8 +21,7 @@ public class ComplexProperty extends Property {
   }
 
   /**
-   * MANDATORY
-   * <p>Sets the {@link FullQualifiedName} for this {@link Property}
+   * Sets the {@link FullQualifiedName} for this {@link Property}
    * @param type
    * @return {@link Property} for method chaining
    */
