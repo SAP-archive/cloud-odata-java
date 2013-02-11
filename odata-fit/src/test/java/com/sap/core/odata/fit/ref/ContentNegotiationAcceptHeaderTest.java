@@ -349,7 +349,7 @@ public class ContentNegotiationAcceptHeaderTest extends AbstractFitTest {
   }
 
   @Test
-  public void testURI_7_EntityNavigationProperty() throws Exception {
+  public void testURI_7A_EntityNavigationProperty() throws Exception {
     // create test set
     FitTestSet testSet = new FitTestSet(UriType.URI7A, "/Employees('1')/$links/ne_Room");
 
