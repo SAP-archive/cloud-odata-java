@@ -16,15 +16,17 @@ import com.sap.core.odata.api.edm.provider.EntityType;
  * @author SAP AG
  *         <p>
  * @DoNotImplement
- * @see {@link JPAEdmPropertyView}, {@link JPAEdmKeyView},
- *      {@link JPAEdmNavigationPropertyView}
+ * @see com.sap.core.odata.processor.api.jpa.model.JPAEdmPropertyView
+ * @see com.sap.core.odata.processor.api.jpa.model.JPAEdmKeyView
+ * @see com.sap.core.odata.processor.api.jpa.model.JPAEdmNavigationPropertyView
  * 
  */
 public interface JPAEdmEntityTypeView extends JPAEdmBaseView {
 	/**
 	 * The method returns an EDM entity currently being processed.
 	 * 
-	 * @return an instance of type {@link EntityType}
+	 * @return an instance of type
+	 *         {@link com.sap.core.odata.api.edm.provider.EntityType}
 	 */
 	public EntityType getEdmEntityType();
 
@@ -33,7 +35,7 @@ public interface JPAEdmEntityTypeView extends JPAEdmBaseView {
 	 * processed.
 	 * 
 	 * @return an instance of type
-	 *         {@link javax.persistence.metamodel.EntityType<?>}
+	 *         {@link javax.persistence.metamodel.EntityType}
 	 */
 	public javax.persistence.metamodel.EntityType<?> getJPAEntityType();
 
@@ -41,7 +43,7 @@ public interface JPAEdmEntityTypeView extends JPAEdmBaseView {
 	 * The method returns a consistent list of EDM entity types for a given java
 	 * persistence meta model.
 	 * 
-	 * @return a list of {@link EntityType}
+	 * @return a list of {@link com.sap.core.odata.api.edm.provider.EntityType}
 	 */
 	public List<EntityType> getConsistentEdmEntityTypes();
 

@@ -11,13 +11,15 @@ import com.sap.core.odata.api.exception.MessageReference;
  * the message texts.
  * 
  * @author SAP AG
- * @see {@link ODataJPAException}, {@link ODataJPARuntimeException},
- *      {@link ODataJPAModelException}, {@link MessageReference}
+ * @see com.sap.core.odata.processor.api.jpa.exception.ODataJPAException
+ * @see com.sap.core.odata.processor.api.jpa.exception.ODataJPARuntimeException
+ * @see com.sap.core.odata.processor.api.jpa.exception.ODataJPAModelException
+ * @see com.sap.core.odata.api.exception.MessageReference
  */
 public interface ODataJPAMessageService {
 	/**
 	 * The method returns a language dependent message texts for the given
-	 * {@link MessageReference}.
+	 * {@link com.sap.core.odata.api.exception.MessageReference}.
 	 * 
 	 * @param context
 	 *            is a Message Reference

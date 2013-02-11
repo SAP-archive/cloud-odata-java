@@ -19,7 +19,7 @@ import com.sap.core.odata.api.edm.provider.AssociationSet;
  * @author SAP AG
  *         <p>
  * @DoNotImplement
- * @see JPAEdmAssociationView
+ * @see com.sap.core.odata.processor.api.jpa.model.JPAEdmAssociationView
  */
 public interface JPAEdmAssociationSetView extends JPAEdmBaseView {
 
@@ -28,7 +28,7 @@ public interface JPAEdmAssociationSetView extends JPAEdmBaseView {
 	 * set is set to be consistent only if all its mandatory properties can be
 	 * completely built from a Java Persistence Relationship.
 	 * 
-	 * @return a consistent list of {@link AssociationSet}
+	 * @return a consistent list of {@link com.sap.core.odata.api.edm.provider.AssociationSet}
 	 * 
 	 */
 	List<AssociationSet> getConsistentEdmAssociationSetList();
@@ -36,7 +36,7 @@ public interface JPAEdmAssociationSetView extends JPAEdmBaseView {
 	/**
 	 * The method returns an association set that is currently being processed.
 	 * 
-	 * @return an instance of type {@link AssociationSet}
+	 * @return an instance of type {@link com.sap.core.odata.api.edm.provider.AssociationSet}
 	 */
 	AssociationSet getEdmAssociationSet();
 
@@ -44,7 +44,7 @@ public interface JPAEdmAssociationSetView extends JPAEdmBaseView {
 	 * The method returns an association from which the association set is
 	 * currently being processed.
 	 * 
-	 * @return an instance of type {@link Association}
+	 * @return an instance of type {@link com.sap.core.odata.api.edm.provider.Association}
 	 */
 	Association getEdmAssociation();
 

@@ -5,8 +5,6 @@ import javax.persistence.EntityManagerFactory;
 import com.sap.core.odata.api.edm.provider.EdmProvider;
 import com.sap.core.odata.api.processor.ODataContext;
 import com.sap.core.odata.api.processor.ODataProcessor;
-import com.sap.core.odata.processor.api.jpa.factory.ODataJPAAccessFactory;
-import com.sap.core.odata.processor.api.jpa.factory.ODataJPAFactory;
 
 /**
  * This class does the compilation of context objects required for OData JPA
@@ -21,7 +19,8 @@ import com.sap.core.odata.processor.api.jpa.factory.ODataJPAFactory;
  * 
  * @author SAP AG <br>
  * @DoNotImplement
- * @see {@link ODataJPAFactory}, {@link ODataJPAAccessFactory}
+ * @see com.sap.core.odata.processor.api.jpa.factory.ODataJPAFactory
+ * @see com.sap.core.odata.processor.api.jpa.factory.ODataJPAAccessFactory
  * 
  */
 public interface ODataJPAContext {
@@ -53,7 +52,8 @@ public interface ODataJPAContext {
 	 * The method sets the OData Processor for JPA into the context.
 	 * 
 	 * @param processor
-	 *            is the specific implementation of {@link ODataJPAProcessor}
+	 *            is the specific implementation of
+	 *            {@link com.sap.core.odata.processor.api.jpa.ODataJPAProcessor}
 	 *            for processing OData service requests.
 	 */
 	public void setODataProcessor(ODataProcessor processor);
@@ -69,8 +69,9 @@ public interface ODataJPAContext {
 	 * The method sets EDM provider into the context
 	 * 
 	 * @param edmProvider
-	 *            is the specific implementation of {@link EdmProvider} for
-	 *            transforming Java persistence models to Entity Data Model
+	 *            is the specific implementation of
+	 *            {@link com.sap.core.odata.api.edm.provider.EdmProvider}
+	 *            for transforming Java persistence models to Entity Data Model
 	 * 
 	 */
 	public void setEdmProvider(EdmProvider edmProvider);
@@ -88,7 +89,7 @@ public interface ODataJPAContext {
 	 * context.
 	 * 
 	 * @param emf
-	 *            is of type {@link EntityManagerFactory}
+	 *            is of type {@link javax.persistence.EntityManagerFactory}
 	 * 
 	 */
 	public void setEntityManagerFactory(EntityManagerFactory emf);
@@ -104,7 +105,8 @@ public interface ODataJPAContext {
 	 * The method sets OData context into the context.
 	 * 
 	 * @param ctx
-	 *            is an OData context of type {@link ODataContext}
+	 *            is an OData context of type
+	 *            {@link com.sap.core.odata.api.processor.ODataContext}
 	 */
 	public void setODataContext(ODataContext ctx);
 

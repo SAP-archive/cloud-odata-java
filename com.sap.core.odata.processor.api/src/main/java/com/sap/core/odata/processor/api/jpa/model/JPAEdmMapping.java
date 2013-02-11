@@ -5,7 +5,7 @@ package com.sap.core.odata.processor.api.jpa.model;
  * JPA EDM mapping instance can be associated with any EDM simple, EDM complex
  * property to denote the properties Java persistence column name.
  * 
- * @author AG
+ * @author SAP AG
  * 
  */
 public interface JPAEdmMapping {

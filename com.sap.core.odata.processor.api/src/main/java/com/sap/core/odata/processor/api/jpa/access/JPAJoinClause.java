@@ -4,8 +4,9 @@ package com.sap.core.odata.processor.api.jpa.access;
  * A container for Java Persistence Join Clause that can be used for building
  * JPQL statements. The container has two main elements <b>
  * <ol>
- * <li>Java Persistence Entity - </li> is the source entity participating in the join. <br>
- * <li>Java Persistence Entity Relationship - </li> is the entity relationship of 
+ * <li>Java Persistence Entity -</li> is the source entity participating in the
+ * join. <br>
+ * <li>Java Persistence Entity Relationship -</li> is the entity relationship of
  * the source entity participating in the join.
  * </ol>
  * </b>
@@ -41,7 +42,7 @@ public class JPAJoinClause {
 	/**
 	 * The method returns Java Persistence Entity participating in the join.
 	 * 
-	 * @return
+	 * @return an entity name
 	 */
 	public String getEntityName() {
 		return entityName;
@@ -51,7 +52,7 @@ public class JPAJoinClause {
 	 * The method returns Java Persistence Entity alias name participating in
 	 * the join.
 	 * 
-	 * @return
+	 * @return a entity alias name
 	 */
 	public String getEntityAlias() {
 		return entityAlias;
@@ -61,7 +62,7 @@ public class JPAJoinClause {
 	 * The method returns Java Persistence Entity Relationship name
 	 * participating in the join.
 	 * 
-	 * @return
+	 * @return entity alias relationship
 	 */
 	public String getEntityRelationShip() {
 		return entityRelationShip;
@@ -71,7 +72,7 @@ public class JPAJoinClause {
 	 * The method returns Java Persistence Entity Relationship Alias name
 	 * participating in the join.
 	 * 
-	 * @return
+	 * @return entity entity relationship alias
 	 */
 	public String getEntityRelationShipAlias() {
 		return entityRelationShipAlias;
@@ -93,7 +94,9 @@ public class JPAJoinClause {
 	 * @param joinCondition
 	 *            is the condition on which the joins should occur
 	 * @param joinType
-	 *            is the type of join ({@link JPAJoinClause.JOIN} to execute
+	 *            is the type of join
+	 *            {@link com.sap.core.odata.processor.api.jpa.access.JPAJoinClause.JOIN}
+	 *            to execute
 	 */
 	public JPAJoinClause(String entityName, String entityAlias,
 			String entityRelationShip, String entityRelationShipAlias,
@@ -111,17 +114,18 @@ public class JPAJoinClause {
 	 * The method returns a join condition that can be used for building JPQL
 	 * join statements.
 	 * 
-	 * @return
+	 * @return a join condition
 	 */
 	public String getJoinCondition() {
 		return joinCondition;
 	}
 
 	/**
-	 * The method returns the type of {@link JPAJoinClause.JOIN} that can be
-	 * used for building JPQL join statements.
+	 * The method returns the type of
+	 * {@link com.sap.core.odata.processor.api.jpa.access.JPAJoinClause.JOIN}
+	 * that can be used for building JPQL join statements.
 	 * 
-	 * @return
+	 * @return join type
 	 */
 	public JOIN getJoinType() {
 		return joinType;

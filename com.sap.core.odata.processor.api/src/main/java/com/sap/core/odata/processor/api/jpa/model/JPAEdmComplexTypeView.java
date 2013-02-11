@@ -24,7 +24,7 @@ import com.sap.core.odata.api.edm.provider.Property;
  * @author SAP AG
  *         <p>
  * @DoNotImplement
- * @see {@link JPAEdmComplexPropertyView}
+ * @see com.sap.core.odata.processor.api.jpa.model.JPAEdmComplexPropertyView
  * 
  */
 public interface JPAEdmComplexTypeView extends JPAEdmBaseView {
@@ -32,7 +32,8 @@ public interface JPAEdmComplexTypeView extends JPAEdmBaseView {
 	/**
 	 * The method returns an EDM complex type that is currently being processed.
 	 * 
-	 * @return an instance of type {@link ComplexType}
+	 * @return an instance of type
+	 *         {@link com.sap.core.odata.api.edm.provider.ComplexType}
 	 */
 	public ComplexType getEdmComplexType();
 
@@ -41,14 +42,14 @@ public interface JPAEdmComplexTypeView extends JPAEdmBaseView {
 	 * processed.
 	 * 
 	 * @return an instance of type
-	 *         {@link javax.persistence.metamodel.EmbeddableType<?>}
+	 *         {@link javax.persistence.metamodel.EmbeddableType}
 	 */
 	public javax.persistence.metamodel.EmbeddableType<?> getJPAEmbeddableType();
 
 	/**
 	 * The method returns a consistent list of EDM complex types.
 	 * 
-	 * @return a list of {@link ComplexType}
+	 * @return a list of {@link com.sap.core.odata.api.edm.provider.ComplexType}
 	 */
 	public List<ComplexType> getConsistentEdmComplexTypes();
 
@@ -66,7 +67,8 @@ public interface JPAEdmComplexTypeView extends JPAEdmBaseView {
 	 * The method add a JPA EDM complex type view to the container.
 	 * 
 	 * @param view
-	 *            is an instance of type {@link JPAEdmComplexTypeView}
+	 *            is an instance of type
+	 *            {@link com.sap.core.odata.processor.api.jpa.model.JPAEdmComplexTypeView}
 	 */
 	public void addJPAEdmCompleTypeView(JPAEdmComplexTypeView view);
 

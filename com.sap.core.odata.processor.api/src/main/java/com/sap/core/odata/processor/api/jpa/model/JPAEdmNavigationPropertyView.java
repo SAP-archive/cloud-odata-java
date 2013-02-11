@@ -22,7 +22,7 @@ import com.sap.core.odata.api.edm.provider.NavigationProperty;
  * 
  * @author SAP AG
  * @DoNotImplement
- * @see JPAEdmAssociationView
+ * @see com.sap.core.odata.processor.api.jpa.model.JPAEdmAssociationView
  * 
  */
 public interface JPAEdmNavigationPropertyView extends JPAEdmBaseView {
@@ -30,7 +30,8 @@ public interface JPAEdmNavigationPropertyView extends JPAEdmBaseView {
 	 * The method adds a navigation property view to its container.
 	 * 
 	 * @param view
-	 *            is an instance of type {@link JPAEdmNavigationPropertyView}
+	 *            is an instance of type
+	 *            {@link com.sap.core.odata.processor.api.jpa.model.JPAEdmNavigationPropertyView}
 	 */
 	void addJPAEdmNavigationPropertyView(JPAEdmNavigationPropertyView view);
 
@@ -47,7 +48,8 @@ public interface JPAEdmNavigationPropertyView extends JPAEdmBaseView {
 	 * The method returns the navigation property that is currently being
 	 * processed.
 	 * 
-	 * @return an instance of type {@link NavigationProperty}
+	 * @return an instance of type
+	 *         {@link com.sap.core.odata.api.edm.provider.NavigationProperty}
 	 */
 	NavigationProperty getEdmNavigationProperty();
 

@@ -12,7 +12,7 @@ import com.sap.core.odata.api.uri.KeyPredicate;
  * request views.
  * 
  * @author SAP AG
- * @see JPQLStatement
+ * @see com.sap.core.odata.processor.api.jpa.jpql.JPQLStatement
  * 
  */
 public interface JPQLSelectSingleContextView extends JPQLContextView {

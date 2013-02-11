@@ -1,6 +1,5 @@
 package com.sap.core.odata.processor.api.jpa.factory;
 
-import com.sap.core.odata.processor.api.jpa.jpql.JPQLContext;
 import com.sap.core.odata.processor.api.jpa.jpql.JPQLContext.JPQLContextBuilder;
 import com.sap.core.odata.processor.api.jpa.jpql.JPQLContextType;
 import com.sap.core.odata.processor.api.jpa.jpql.JPQLContextView;
@@ -11,21 +10,27 @@ import com.sap.core.odata.processor.api.jpa.jpql.JPQLStatement.JPQLStatementBuil
  * 
  * <p>
  * <ul>
- * <li>JPQL statement builders of type {@link JPQLStatementBuilder}</li>
- * <li>JPQL context builder of type {@link JPQLContextBuilder}</li>
+ * <li>JPQL statement builders of type
+ * {@link com.sap.core.odata.processor.api.jpa.jpql.JPQLStatement.JPQLStatementBuilder}
+ * </li>
+ * <li>JPQL context builder of type
+ * {@link com.sap.core.odata.processor.api.jpa.jpql.JPQLContext.JPQLContextBuilder}
+ * </li>
  * </ul>
  * </p>
  * 
  * @author SAP AG
- * @see ODataJPAFactory
+ * @see com.sap.core.odata.processor.api.jpa.factory.ODataJPAFactory
  */
 public interface JPQLBuilderFactory {
 	/**
 	 * The method returns JPQL statement builder for building JPQL statements.
 	 * 
 	 * @param context
-	 *            is {@link JPQLContext} that determines the type of JPQL
-	 *            statement builder. The parameter cannot be null.
+	 *            is
+	 *            {@link com.sap.core.odata.processor.api.jpa.jpql.JPQLContext}
+	 *            that determines the type of JPQL statement builder. The
+	 *            parameter cannot be null.
 	 * @return an instance of JPQLStatementBuilder
 	 */
 	public JPQLStatementBuilder getStatementBuilder(JPQLContextView context);
@@ -35,8 +40,10 @@ public interface JPQLBuilderFactory {
 	 * object.
 	 * 
 	 * @param contextType
-	 *            is {@link JPQLContextType} that determines the type of JPQL
-	 *            context builder. The parameter cannot be null. 
+	 *            is
+	 *            {@link com.sap.core.odata.processor.api.jpa.jpql.JPQLContextType}
+	 *            that determines the type of JPQL context builder. The
+	 *            parameter cannot be null.
 	 * @return an instance of JPQLContextBuilder
 	 */
 	public JPQLContextBuilder getContextBuilder(JPQLContextType contextType);
