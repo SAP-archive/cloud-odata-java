@@ -20,14 +20,14 @@ public class TeamTest extends BaseTest {
 
   @Test
   public void testId() {
-    Team team1 = new Team();
+    Team team1 = new Team(1);
     String testId = team1.getId();
     assertNotNull(testId);
   }
 
   @Test
   public void testName() {
-    Team team1 = new Team();
+    Team team1 = new Team(1);
     team1.setName(VALUE_NAME);
     String testName = team1.getName();
     assertEquals(testName, VALUE_NAME);
@@ -35,7 +35,7 @@ public class TeamTest extends BaseTest {
 
   @Test
   public void testIsScrumTeam() {
-    Team team1 = new Team();
+    Team team1 = new Team(1);
     team1.setScrumTeam(SCRUM_TEAM_TRUE);
     boolean testValue = team1.isScrumTeam();
     assertEquals(testValue, SCRUM_TEAM_TRUE);
@@ -43,9 +43,9 @@ public class TeamTest extends BaseTest {
 
   @Test
   public void testEmployees() {
-    Team team1 = new Team(VALUE_NAME);
-    Employee employee1 = new Employee();
-    Employee employee2 = new Employee();
+    Team team1 = new Team(1, VALUE_NAME);
+    Employee employee1 = new Employee(1);
+    Employee employee2 = new Employee(2);
     List<Employee> testList = Arrays.asList(employee1, employee2);
     team1.setEmployees(testList);
     for (Employee emp : testList)

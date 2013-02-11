@@ -21,14 +21,14 @@ public class RoomTest extends BaseTest {
 
   @Test
   public void testId() {
-    Room room1 = new Room(NAME, VALUE_4);
+    Room room1 = new Room(1, NAME, VALUE_4);
     String roomId = room1.getId();
     assertNotNull(roomId);
   }
 
   @Test
   public void testSeats() {
-    Room room1 = new Room();
+    Room room1 = new Room(1);
     room1.setSeats(VALUE_4);
     int numberOfSeats = room1.getSeats();
     assertEquals(VALUE_4, numberOfSeats);
@@ -36,7 +36,7 @@ public class RoomTest extends BaseTest {
 
   @Test
   public void testVersion() {
-    Room room1 = new Room();
+    Room room1 = new Room(1);
     room1.setVersion(VALUE_VERSION_NR);
     int roomVersion = room1.getVersion();
     assertEquals(roomVersion, VALUE_VERSION_NR);
@@ -44,8 +44,8 @@ public class RoomTest extends BaseTest {
 
   @Test
   public void testBuilding() {
-    Room room1 = new Room();
-    Building build1 = new Building();
+    Room room1 = new Room(1);
+    Building build1 = new Building(1);
     build1.getRooms().add(room1);
     room1.setBuilding(build1);
     Building testBuild = room1.getBuilding();
@@ -56,10 +56,10 @@ public class RoomTest extends BaseTest {
 
   @Test
   public void testEmployees() {
-    Employee employee1 = new Employee();
-    Employee employee2 = new Employee();
+    Employee employee1 = new Employee(1);
+    Employee employee2 = new Employee(2);
     List<Employee> employeesList = Arrays.asList(employee1, employee2);
-    Room room1 = new Room();
+    Room room1 = new Room(1);
     room1.setEmployees(employeesList);
     employee1.setRoom(room1);
     employee2.setRoom(room1);

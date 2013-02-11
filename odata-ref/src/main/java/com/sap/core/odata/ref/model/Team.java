@@ -7,24 +7,23 @@ import java.util.List;
 * @author SAP AG
 */
 public class Team {
-  private static int counter = 1;
-  private int id;
+  private final int id;
   private String name;
   private Boolean isScrumTeam;
   private List<Employee> employees;
 
-  public Team() {
-    this(null);
+  public Team(int id) {
+    this(id, null);
   }
 
-  public Team(final String name) {
-    id = counter++;
+  public Team(int id, final String name) {
+    this.id = id;
     employees = new ArrayList<Employee>();
     setName(name);
   }
 
-  public Team(final String name, final boolean isScrumTeam) {
-    this(name);
+  public Team(int id, final String name, final boolean isScrumTeam) {
+    this(id, name);
     setScrumTeam(isScrumTeam);
   }
 
@@ -54,10 +53,6 @@ public class Team {
 
   public List<Employee> getEmployees() {
     return employees;
-  }
-
-  public static void reset() {
-    counter = 1;
   }
 
   @Override

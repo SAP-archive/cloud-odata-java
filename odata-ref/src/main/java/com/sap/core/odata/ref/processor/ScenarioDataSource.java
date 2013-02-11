@@ -308,29 +308,29 @@ public class ScenarioDataSource implements ListsDataSource {
   @Override
   public Object newDataObject(final EdmEntitySet entitySet) throws ODataNotImplementedException, EdmException {
     if (ENTITYSET_1_1.equals(entitySet.getName())) {
-      Employee employee = new Employee();
+      Employee employee = dataContainer.createEmployee();
       employee.setEmployeeName("Employee " + employee.getId());
       employee.setLocation(new Location(null, null, null));
       return employee;
     } else if (ENTITYSET_1_2.equals(entitySet.getName())) {
-      Team team = new Team();
+      Team team = dataContainer.createTeam();
       team.setName("Team " + team.getId());
       return team;
     } else if (ENTITYSET_1_3.equals(entitySet.getName())) {
-      Room room = new Room();
+      Room room = dataContainer.createRoom();
       room.setName("Room " + room.getId());
       return room;
     } else if (ENTITYSET_1_4.equals(entitySet.getName())) {
-      Manager manager = new Manager();
+      Manager manager = dataContainer.createManager();
       manager.setEmployeeName("Employee " + manager.getId());
       manager.setLocation(new Location(null, null, null));
       return manager;
     } else if (ENTITYSET_1_5.equals(entitySet.getName())) {
-      Building building = new Building();
+      Building building = dataContainer.createBuilding();
       building.setName("Building " + building.getId());
       return building;
     } else if (ENTITYSET_2_1.equals(entitySet.getName())) {
-      Photo photo = new Photo();
+      Photo photo = dataContainer.createPhoto();
       photo.setType(HttpContentType.APPLICATION_OCTET_STREAM);
       return photo;
     } else {

@@ -18,7 +18,9 @@ import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.junit.AfterClass;
 import org.junit.Assert;
+import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -37,12 +39,17 @@ import com.sap.core.odata.ref.model.DataContainer;
 import com.sap.core.odata.ref.processor.ListsProcessor;
 import com.sap.core.odata.ref.processor.ScenarioDataSource;
 import com.sap.core.odata.testutil.fit.AbstractFitTest;
+import com.sap.core.odata.testutil.fit.BaseTest;
+import com.sap.core.odata.testutil.fit.FitStaticServiceFactory;
+import com.sap.core.odata.testutil.helper.ProcessLocker;
 import com.sap.core.odata.testutil.helper.StringHelper;
+import com.sap.core.odata.testutil.helper.TestutilException;
+import com.sap.core.odata.testutil.server.TestServer;
 
 /**
  * @author SAP AG
  */
-public class ContentNegotiationAcceptHeaderTest extends AbstractFitTest {
+public class ContentNegotiationAcceptHeaderTest extends BaseTest {
   
   final static List<String> ACCEPT_HEADER_VALUES = Arrays.asList(
       "", // for request with none 'Accept-Header' set
@@ -64,8 +71,7 @@ public class ContentNegotiationAcceptHeaderTest extends AbstractFitTest {
       "?$format=json"
       );
 
-  @Override
-  protected ODataService createService() throws ODataException {
+  private static ODataService createService() throws ODataException {
     DataContainer dataContainer = new DataContainer();
     dataContainer.reset();
     final ODataSingleProcessor processor = new ListsProcessor(new ScenarioDataSource(dataContainer));
@@ -73,11 +79,48 @@ public class ContentNegotiationAcceptHeaderTest extends AbstractFitTest {
     return new ODataSingleProcessorService(provider, processor) {};
   }
 
+  private final static TestServer server = new TestServer();
+//  private static ODataService service;
+
+  private final HttpClient httpClient = new DefaultHttpClient();
+
+  private URI getEndpoint() {
+    return server.getEndpoint();
+  }
+
+  @BeforeClass
+  public static void before() {
+    try {
+//      ProcessLocker.crossProcessLockAcquire(ContentNegotiationAcceptHeaderTest.class, 60 * 1000);
+      ODataService service = createService();
+      server.startServer(service);
+    } catch (final ODataException e) {
+      throw new TestutilException(e);
+    } 
+  }
+
+  @AfterClass
+  public static void after() {
+    try {
+      server.stopServer();
+    } finally {
+//      FitStaticServiceFactory.setService(null);
+//      ProcessLocker.crossProcessLockRelease();
+    }
+  }
+
+  
+  //
+  //
+  //
+  //
+  //
+  
   @Test
   public void acceptHeaderAppAtomXml() throws Exception {
     HttpGet get = new HttpGet(URI.create(getEndpoint() + "Rooms('1')"));
     get.setHeader(HttpHeaders.ACCEPT, HttpContentType.APPLICATION_ATOM_XML);
-    final HttpResponse response = getHttpClient().execute(get);
+    final HttpResponse response = httpClient.execute(get);
 
     final String contentType = response.getFirstHeader(HttpHeaders.CONTENT_TYPE).getValue();
     assertEquals(ContentType.create(HttpContentType.APPLICATION_ATOM_XML_ENTRY_UTF8), ContentType.create(contentType));
@@ -89,7 +132,7 @@ public class ContentNegotiationAcceptHeaderTest extends AbstractFitTest {
   public void acceptHeaderAppXml() throws Exception {
     HttpGet get = new HttpGet(URI.create(getEndpoint() + "Rooms('1')"));
     get.setHeader(HttpHeaders.ACCEPT, HttpContentType.APPLICATION_XML);
-    final HttpResponse response = getHttpClient().execute(get);
+    final HttpResponse response = httpClient.execute(get);
 
     final String contentType = response.getFirstHeader(HttpHeaders.CONTENT_TYPE).getValue();
     assertEquals(HttpContentType.APPLICATION_XML_UTF8, contentType);
@@ -102,7 +145,7 @@ public class ContentNegotiationAcceptHeaderTest extends AbstractFitTest {
   public void acceptHeaderAppXmlCharsetUtf8() throws Exception {
     HttpGet get = new HttpGet(URI.create(getEndpoint() + "Rooms('1')"));
     get.setHeader(HttpHeaders.ACCEPT, HttpContentType.APPLICATION_XML_UTF8);
-    final HttpResponse response = getHttpClient().execute(get);
+    final HttpResponse response = httpClient.execute(get);
 
     final String contentType = response.getFirstHeader(HttpHeaders.CONTENT_TYPE).getValue();
     assertEquals(HttpContentType.APPLICATION_XML_UTF8, contentType);

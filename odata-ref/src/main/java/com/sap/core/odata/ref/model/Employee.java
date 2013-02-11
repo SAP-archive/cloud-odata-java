@@ -10,7 +10,6 @@ import java.util.Calendar;
  * @author SAP AG
  */
 public class Employee {
-  private static int counter = 1;
   private int employeeId;
   private String employeeName;
   private Integer age;
@@ -23,18 +22,18 @@ public class Employee {
   private Calendar entryDate;
   private Location location;
 
-  public Employee() {
-    this(null, 0);
+  public Employee(int employeeId) {
+    this(employeeId, null, 0);
   }
 
-  public Employee(final String name, final int age) {
-    employeeId = counter++;
+  public Employee(int employeeId, final String name, final int age) {
+    this.employeeId = employeeId;
     setEmployeeName(name);
     setAge(age);
   }
 
-  public Employee(final String name, final int age, final Room room, final Team team) {
-    this(name, age);
+  public Employee(int employeeId, final String name, final int age, final Room room, final Team team) {
+    this(employeeId, name, age);
     setRoom(room);
     setTeam(team);
   }
@@ -139,10 +138,6 @@ public class Employee {
     } catch (IOException e) {
       throw new ModelException(e);
     }
-  }
-
-  public static void reset() {
-    counter = 1;
   }
 
   @Override
