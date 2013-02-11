@@ -16,7 +16,7 @@ public class JPAEdmModelTest {
 	private static JPAEdmModel jpaEdmModel;
 	private static MockModel model;
 	
-	@BeforeClass
+	/*@BeforeClass
 	  public static void setup() throws Exception {
 		 
 		model = new MockModel();
@@ -32,7 +32,7 @@ public class JPAEdmModelTest {
 		assertEquals(schema.getNamespace(), model.getPersistentUnitName());
 		
 	}
-
+*/
 	
 
 }
