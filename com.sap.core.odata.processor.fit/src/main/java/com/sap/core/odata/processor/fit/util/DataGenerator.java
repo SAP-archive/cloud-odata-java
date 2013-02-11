@@ -53,6 +53,12 @@ public class DataGenerator {
 	 * those files in the order provided in the file.
 	 */
 	public void generate() {
+		// First insert sales order headers
+		generateSalesOrders();
+		
+		
+		
+		// Go for others
 		String[] resourceSQLPropFileNames = getSQLInsertFileNames();
 		if(resourceSQLPropFileNames.length > 0 ){ //If configuration is proper with at least one file
 			Session session = ((EntityManagerImpl) entityManager).getActiveSession();
@@ -83,6 +89,67 @@ public class DataGenerator {
 	}
 	
 
+	private void generateSalesOrders() {
+		String soId;
+		
+		String creationDate;
+
+		String buyerId;
+
+		String buyerName;
+
+		String houseNumber;
+
+		String streetName;
+
+		String city;
+
+		String country;
+
+		String currencyCode;
+		
+		String deliveryStatus;
+		
+		//String grossAmount;
+		
+		//String netAmount;
+		
+		
+		Session session = ((EntityManagerImpl) entityManager).getActiveSession();
+		this.entityManager.getTransaction().begin();
+		for(int i=1; i<=500; i++)
+		{
+			soId = String.valueOf(i);
+			buyerId = String.valueOf(i);
+			buyerName = getEscapedString("buyerName_"+String.valueOf(i));
+			currencyCode =  getEscapedString("Code_"+String.valueOf(i));
+			deliveryStatus = (i%2 == 0)?("true"):("false");
+			creationDate =  getEscapedString("2013-01-01 00:00:00");
+			houseNumber	= String.valueOf(i);
+			streetName	= getEscapedString("Test_Street_Name_"+String.valueOf(i));
+			city = getEscapedString("Test_City_"+String.valueOf(i));
+			country = getEscapedString("Test_Country_"+String.valueOf(i));
+			String sqlQuery = "insert into T_SALESORDERHEADER (SO_ID, BUYER_ID, BUYER_NAME, CURRENCY_CODE, DELIVERY_STATUS, creationDate, HOUSE_NUMBER, STREET_NAME, CITY, COUNTRY) values("
+						+soId+","+ buyerId+","+buyerName+","+currencyCode+","+deliveryStatus+","+creationDate+","+houseNumber+","+streetName+","+
+					city+","+country+");";
+			
+			System.out.println("Executing Query - "+sqlQuery);
+			SQLCall sqlCall = new SQLCall(sqlQuery);
+			
+			DataModifyQuery query = new DataModifyQuery();
+			query.setCall(sqlCall);
+			session.executeQuery(query);
+		}
+		
+		
+		this.entityManager.getTransaction().commit();
+		
+	}
+
+	
+	private String getEscapedString(String str){
+		return "\'"+str+"\'";
+	}
 	@SuppressWarnings("unchecked")
 	private void setMaterialInStore() {
 		Query query = this.entityManager.createQuery("SELECT e FROM Material e");
