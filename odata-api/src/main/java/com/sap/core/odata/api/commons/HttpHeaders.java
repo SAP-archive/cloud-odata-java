@@ -1,5 +1,10 @@
 package com.sap.core.odata.api.commons;
 
+/**
+ * HTTP header constants
+ * @author SAP AG
+ *
+ */
 public interface HttpHeaders {
 
   /**

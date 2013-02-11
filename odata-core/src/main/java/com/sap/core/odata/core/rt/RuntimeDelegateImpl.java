@@ -29,6 +29,7 @@ public class RuntimeDelegateImpl extends RuntimeDelegateInstance {
     return r.new ODataResponseBuilderImpl();
   }
 
+  @Override
   protected EdmSimpleType getEdmSimpleType(EdmSimpleTypeKind edmSimpleType) {
     return EdmSimpleTypeFacadeImpl.getEdmSimpleType(edmSimpleType);
   }

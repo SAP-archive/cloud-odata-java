@@ -1,6 +1,7 @@
 package com.sap.core.odata.api.commons;
 
 /**
+ * HTTP header constants as used in the OData protocol
  * @author SAP AG
  */
 public class ODataHttpHeaders {
