@@ -3,6 +3,7 @@ package com.sap.core.odata.processor.core.jpa.model;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -17,24 +18,30 @@ import javax.persistence.metamodel.Metamodel;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.sap.core.odata.api.edm.provider.Schema;
+import com.sap.core.odata.api.edm.FullQualifiedName;
+import com.sap.core.odata.api.edm.provider.Association;
+import com.sap.core.odata.api.edm.provider.AssociationEnd;
 import com.sap.core.odata.processor.api.jpa.access.JPAEdmBuilder;
 import com.sap.core.odata.processor.api.jpa.exception.ODataJPAModelException;
 import com.sap.core.odata.processor.api.jpa.exception.ODataJPARuntimeException;
 import com.sap.core.odata.processor.api.jpa.model.JPAEdmAssociationView;
+import com.sap.core.odata.processor.api.jpa.model.JPAEdmComplexTypeView;
 import com.sap.core.odata.processor.api.jpa.model.JPAEdmEntityContainerView;
 import com.sap.core.odata.processor.api.jpa.model.JPAEdmEntitySetView;
 import com.sap.core.odata.processor.api.jpa.model.JPAEdmEntityTypeView;
-import com.sap.core.odata.processor.core.jpa.model.JPAEdmProperty;
 import com.sap.core.odata.processor.core.jpa.model.mock.JPAEmbeddableTypeMock;
 import com.sap.core.odata.processor.core.jpa.model.mock.JPAEntityTypeMock;
 import com.sap.core.odata.processor.core.jpa.model.mock.JPAMetaModelMock;
 import com.sap.core.odata.processor.core.jpa.model.mock.JPASingularAttributeMock;
+import com.sap.core.odata.processor.core.jpa.testdata.JPAEdmMockData.ComplexType;
+import com.sap.core.odata.processor.core.jpa.testdata.JPAEdmMockData.SimpleType;
 
 public class JPAEdmPropertyTest extends JPAEdmTestModelView {
 
 	private JPAEdmPropertyTest objJPAEdmPropertyTest;
 	private JPAEdmProperty objJPAEdmProperty;
+	
+	private static int ATTRIBUTE_TYPE = 1; 
 
 	@Before
 	public void setUp() throws Exception {
@@ -92,7 +99,7 @@ public class JPAEdmPropertyTest extends JPAEdmTestModelView {
 
 	@Test
 	public void testGetEdmComplexProperty() {
-		// assertNotNull(objJPAEdmProperty.getEdmComplexProperty());
+		assertNull(objJPAEdmProperty.getEdmComplexProperty());
 	}
 
 	@Test
@@ -109,6 +116,32 @@ public class JPAEdmPropertyTest extends JPAEdmTestModelView {
 	public void testClean() {
 		objJPAEdmProperty.clean();
 		assertFalse(objJPAEdmProperty.isConsistent());
+	}
+	
+	@Test
+	public void testBuildManyToOne() {
+		ATTRIBUTE_TYPE = 3;
+		objJPAEdmPropertyTest = new JPAEdmPropertyTest();
+		objJPAEdmProperty = new JPAEdmProperty(objJPAEdmPropertyTest);
+		try {
+			objJPAEdmProperty.getBuilder().build();
+		} catch (ODataJPAModelException e) {
+			fail("ODataJPAModelException not expected");
+		} catch (ODataJPARuntimeException e) {
+			fail("ODataJPARuntimeException not expected");
+		}
+		
+		ATTRIBUTE_TYPE = 1;
+		objJPAEdmPropertyTest = new JPAEdmPropertyTest();
+		objJPAEdmProperty = new JPAEdmProperty(objJPAEdmPropertyTest);
+		try {
+			objJPAEdmProperty.getBuilder().build();
+		} catch (ODataJPAModelException e) {
+			fail("ODataJPAModelException not expected");
+		} catch (ODataJPARuntimeException e) {
+			fail("ODataJPARuntimeException not expected");
+		}
+		
 	}
 
 	@Override
@@ -135,12 +168,28 @@ public class JPAEdmPropertyTest extends JPAEdmTestModelView {
 	public JPAEdmEntityTypeView getJPAEdmEntityTypeView() {
 		return this;
 	}
+	
 
 	@Override
-	public Schema getEdmSchema() {
-		Schema schema = new Schema();
-		schema.setNamespace("salesordereprocessing");
-		return schema;
+	public com.sap.core.odata.api.edm.provider.EntityType getEdmEntityType() {
+		/*EntityType entityType = new EntityType();
+		entityType.setName("SalesOrderHeader");
+		return entityType;*/
+		com.sap.core.odata.api.edm.provider.EntityType entityType = new com.sap.core.odata.api.edm.provider.EntityType();
+		entityType.setName("SalesOrderHeader");
+		
+		return entityType;
+	}
+	
+	@Override
+	public Association getEdmAssociation() {
+		Association association = new Association();
+		association.setEnd1(new AssociationEnd().setType(new FullQualifiedName(
+				"salesorderprocessing", "SalesOrderHeader")));
+		association.setEnd2(new AssociationEnd().setType(new FullQualifiedName(
+				"salesorderprocessing", "String")));
+
+		return association;
 	}
 
 	@Override
@@ -157,29 +206,32 @@ public class JPAEdmPropertyTest extends JPAEdmTestModelView {
 	public EmbeddableType<?> getJPAEmbeddableType() {
 		return new JPAEdmEmbeddable<java.lang.String>();
 	}
-
+	
 	@Override
-	public JPAEdmBuilder getBuilder() {
-		return new JPAEdmBuilder() {
-
-			@Override
-			public void build() throws ODataJPAModelException {
-				// Nothing to do?
-			}
-		};
+	public JPAEdmComplexTypeView getJPAEdmComplexTypeView() {
+		return this;
 	}
+
 
 	private class JPAEdmMetaModel extends JPAMetaModelMock {
 		Set<EntityType<?>> entities;
+		Set<EmbeddableType<?>> embeddableSet;
 
 		public JPAEdmMetaModel() {
 			entities = new HashSet<EntityType<?>>();
+			embeddableSet = new HashSet<EmbeddableType<?>>();
 		}
 
 		@Override
 		public Set<EntityType<?>> getEntities() {
 			entities.add(new JPAEdmEntityType());
 			return entities;
+		}
+
+		@Override
+		public Set<EmbeddableType<?>> getEmbeddables() {
+			embeddableSet.add(new JPAEdmEmbeddable<String>());
+			return embeddableSet;
 		}
 
 		private class JPAEdmEntityType extends JPAEntityTypeMock<String> {
@@ -215,7 +267,12 @@ public class JPAEdmPropertyTest extends JPAEdmTestModelView {
 
 			@Override
 			public PersistentAttributeType getPersistentAttributeType() {
-				return PersistentAttributeType.BASIC;
+				if(ATTRIBUTE_TYPE == 1)
+					return PersistentAttributeType.BASIC;
+				else if(ATTRIBUTE_TYPE == 2)
+					return PersistentAttributeType.EMBEDDED;
+				else
+					return PersistentAttributeType.MANY_TO_ONE;
 			}
 
 			Class<String> clazz;
@@ -271,13 +328,29 @@ public class JPAEdmPropertyTest extends JPAEdmTestModelView {
 			setValuesToSet();
 			return attributeSet;
 		}
+		
+		@SuppressWarnings("unchecked")
+		@Override
+		public Class<String> getJavaType() {
+			Class<?> clazz = null;
+			if(ATTRIBUTE_TYPE == 1)
+				clazz = (Class<java.lang.String>) SimpleType.SimpleTypeA.clazz;
+			else
+				clazz = (Class<?>) ComplexType.ComplexTypeA.clazz;
+			return (Class<String>) clazz;
+		}
 
 		private class JPAEdmAttribute<Object, String> extends
 				JPASingularAttributeMock<Object, String> {
 
 			@Override
 			public PersistentAttributeType getPersistentAttributeType() {
-				return PersistentAttributeType.BASIC;
+				if(ATTRIBUTE_TYPE == 1)
+					return PersistentAttributeType.BASIC;
+				else if(ATTRIBUTE_TYPE == 2)
+					return PersistentAttributeType.EMBEDDED;
+				else
+					return PersistentAttributeType.MANY_TO_ONE;
 			}
 
 			Class<String> clazz;
