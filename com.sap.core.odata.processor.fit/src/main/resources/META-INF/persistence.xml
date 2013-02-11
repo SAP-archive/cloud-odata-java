@@ -5,13 +5,13 @@
 	<persistence-unit name="salesorderprocessing"
 		transaction-type="RESOURCE_LOCAL">
 		<provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
-		<class>com.sap.core.odata.processor.ref.jpa.SalesOrderHeader</class>
-		<class>com.sap.core.odata.processor.ref.jpa.SalesOrderItem</class>
-		<class>com.sap.core.odata.processor.ref.jpa.Note</class>
-		<class>com.sap.core.odata.processor.ref.jpa.Material</class>
-		<class>com.sap.core.odata.processor.ref.jpa.Storage</class>
-		<class>com.sap.core.odata.processor.ref.jpa.Store</class>
-		<class>com.sap.core.odata.processor.ref.jpa.Test</class>
+		<class>com.sap.core.odata.processor.fit.jpa.SalesOrderHeader</class>
+		<class>com.sap.core.odata.processor.fit.jpa.SalesOrderItem</class>
+		<class>com.sap.core.odata.processor.fit.jpa.Note</class>
+		<class>com.sap.core.odata.processor.fit.jpa.Material</class>
+		<class>com.sap.core.odata.processor.fit.jpa.Storage</class>
+		<class>com.sap.core.odata.processor.fit.jpa.Store</class>
+		<class>com.sap.core.odata.processor.fit.jpa.Test</class>
 		<properties>
 			<property name="eclipselink.jdbc.driver" value="org.hsqldb.jdbcDriver" />
 			<property name="eclipselink.jdbc.url" value="jdbc:hsqldb:mem:com.sap.sample" />
