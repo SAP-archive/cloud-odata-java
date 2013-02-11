@@ -1,4 +1,4 @@
-package com.sap.core.odata.testutil.tool;
+package com.sap.core.odata.testutil.tool.core;
 
 import java.io.File;
 import java.io.FileWriter;
