@@ -1,12 +1,10 @@
 package com.sap.core.odata.api.edm;
 
 /**
+ * @com.sap.core.odata.DoNotImplement
  * A CSDL EntityContainer element
  * 
- * EdmEntityContainer holds the information of EntitySets, FunctionImports and AssociationSets contained
- * <p>IMPORTANT
- * Do not implement this interface. This interface is intended for usage only.
- * 
+ * <p>EdmEntityContainer hold the information of EntitySets, FunctionImports and AssociationSets contained
  * @author SAP AG
  */
 public interface EdmEntityContainer extends EdmNamed {

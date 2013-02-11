@@ -1,34 +1,27 @@
 package com.sap.core.odata.api.edm;
 
 /**
+ * @com.sap.core.odata.DoNotImplement
  * A CSDL AssociationEnd element
  * 
- * EdmAssociationEnd defines one side of the relationship of two entity types.
- * <p>IMPORTANT
- * Do not implement this interface. This interface is intended for usage only.
- * 
+ * <p>EdmAssociationEnd defines one side of the relationship of two entity types.
  * @author SAP AG
  */
 public interface EdmAssociationEnd {
 
   /**
-   * Get the role name
-   * 
-   * @return String
+   * @return the role of this {@link EdmAssociationEnd} as a String.
    */
   String getRole();
 
   /**
-   * Get the entity type
-   * 
-   * @return {@link EdmEntityType}
+   * @return {@link EdmEntityType} this association end points to.
    * @throws EdmException
    */
   EdmEntityType getEntityType() throws EdmException;
 
   /**
-   * Get the multiplicity
-   * 
+   * See {@link EdmMultiplicity} for more information about possible multiplicities.
    * @return {@link EdmMultiplicity}
    */
   EdmMultiplicity getMultiplicity();

@@ -3,17 +3,15 @@ package com.sap.core.odata.api.edm;
 import java.util.List;
 
 /**
- * EdmStructuralType is the base for a complex type or an entity type
- * <p>IMPORTANT
- * Do not implement this interface. This interface is intended for usage only.
- * 
+ * @com.sap.core.odata.DoNotImplement
+ * EdmStructuralType is the base for a complex type or an entity type.
+ * <p>Complex types and entity types are described in the Conceptual Schema Definition of the OData protocol.
  * @author SAP AG
  */
 public interface EdmStructuralType extends EdmMappable, EdmType {
 
   /**
    * Get property by name
-   * 
    * @param name
    * @return simple or complex property as {@link EdmTyped}
    * @throws EdmException
@@ -29,7 +27,7 @@ public interface EdmStructuralType extends EdmMappable, EdmType {
   List<String> getPropertyNames() throws EdmException;
 
   /**
-   * Get the base type
+   * Base types are described in the OData protocol specification.
    * 
    * @return {@link EdmStructuralType}
    * @throws EdmException

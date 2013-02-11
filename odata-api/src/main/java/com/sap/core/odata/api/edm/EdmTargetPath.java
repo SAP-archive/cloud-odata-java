@@ -1,8 +1,8 @@
 package com.sap.core.odata.api.edm;
 
 /**
- * EdmTargetPath specifies the possible default targets for an edm property which is mapped to an atom element.
- * 
+ * @com.sap.core.odata.DoNotImplement
+ * EdmTargetPath specifies the possible default targets for an EDM property which is mapped to an atom element.
  * @author SAP AG
  */
 public class EdmTargetPath {

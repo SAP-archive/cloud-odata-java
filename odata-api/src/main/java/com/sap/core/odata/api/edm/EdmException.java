@@ -4,6 +4,8 @@ import com.sap.core.odata.api.exception.MessageReference;
 import com.sap.core.odata.api.exception.ODataMessageException;
 
 /**
+ * @com.sap.core.odata.DoNotImplement
+ * An exception for problems regarding the Entity Data Model.
  * @author SAP AG
  */
 public class EdmException extends ODataMessageException {

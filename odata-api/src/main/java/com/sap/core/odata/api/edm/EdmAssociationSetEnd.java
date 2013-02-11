@@ -1,12 +1,10 @@
 package com.sap.core.odata.api.edm;
 
 /**
+ * @com.sap.core.odata.DoNotImplement
  * A CSDL AssociationSetEnd element
  * 
- * EdmAssociationSetEnd defines one side of the relationship of two entity sets.
- * <p>IMPORTANT
- * Do not implement this interface. This interface is intended for usage only.
- * 
+ * <p>EdmAssociationSetEnd defines one side of the relationship of two entity sets.
  * @author SAP AG
  */
 public interface EdmAssociationSetEnd {

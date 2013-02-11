@@ -1,10 +1,9 @@
 package com.sap.core.odata.api.edm;
 
 /**
- * EdmMultiplicity indicates the number of entity type instances association end can relate to.
- * 
- * The number can by "0..1", "1" which means exactly one or "*" which means many. 
- * 
+ * @com.sap.core.odata.DoNotImplement
+ * EdmMultiplicity indicates the number of entity type instances association end can relate to. 
+ * <p>he number can by "0..1", "1" which means exactly one or "*" which means many. 
  * @author SAP AG
  */
 public enum EdmMultiplicity {

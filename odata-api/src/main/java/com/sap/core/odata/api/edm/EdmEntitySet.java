@@ -1,12 +1,9 @@
 package com.sap.core.odata.api.edm;
 
 /**
+ * @com.sap.core.odata.DoNotImplement
  * A CSDL EntitySet element
- * 
- * EdmEntitySet is the container for entity type instances
- * <p>IMPORTANT
- * Do not implement this interface. This interface is intended for usage only.
- * 
+ * <p>EdmEntitySet is the container for entity type instances as described in the OData protocol. 
  * @author SAP AG
  */
 public interface EdmEntitySet extends EdmMappable, EdmNamed {

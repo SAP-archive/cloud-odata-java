@@ -1,12 +1,10 @@
 package com.sap.core.odata.api.edm;
 
 /**
+ * @com.sap.core.odata.DoNotImplement
  * A CSDL ComplexType element
  * 
- * EdmComplexType holds a set of related information like {@link EdmSimpleType} properties and EdmComplexType properties.
- * <p>IMPORTANT
- * Do not implement this interface. This interface is intended for usage only.
- * 
+ * <p>EdmComplexType holds a set of related information like {@link EdmSimpleType} properties and EdmComplexType properties.
  * @author SAP AG
  */
 public interface EdmComplexType extends EdmStructuralType {

@@ -3,8 +3,8 @@ package com.sap.core.odata.api.edm;
 import com.sap.core.odata.api.exception.MessageReference;
 
 /**
- * Exception for violation of the OData URI construction rules,
- * resulting in a 400 Bad Request response
+ * @com.sap.core.odata.DoNotImplement
+ * Exception for violation of the OData URI construction rules, resulting in a 400 Bad Request response
  * @author SAP AG
  */
 public class EdmLiteralException extends EdmException {

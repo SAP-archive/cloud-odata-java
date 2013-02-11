@@ -1,10 +1,8 @@
 package com.sap.core.odata.api.edm;
 
 /**
+ * @com.sap.core.odata.DoNotImplement
  * Customizable Feed property mappings for the AtomPub Format as defined in the OData specification.
- * <p>IMPORTANT
- * Do not implement this interface. This interface is intended for usage only.
- * 
  * @author SAP AG
  */
 public interface EdmCustomizableFeedMappings {

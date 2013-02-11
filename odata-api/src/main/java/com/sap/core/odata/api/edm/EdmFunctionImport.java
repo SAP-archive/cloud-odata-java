@@ -3,6 +3,7 @@ package com.sap.core.odata.api.edm;
 import java.util.Collection;
 
 /**
+ * @com.sap.core.odata.DoNotImplement
  * A CSDL FunctionImport element
  * 
  * EdmFunctionImport can be used model functions which have input parameters, an associated HTTP Method
@@ -11,16 +12,12 @@ import java.util.Collection;
  * <li>{@link EdmSimpleType} or a collection of simple types
  * <li>{@link EdmEntityType} or a collection of entity types
  * <li>{@link EdmEntitySet}
- * <p>IMPORTANT
- * Do not implement this interface. This interface is intended for usage only.
- * 
  * @author SAP AG
  */
 public interface EdmFunctionImport extends EdmMappable, EdmNamed {
 
   /**
    * Get the parameter by name
-   * 
    * @param name
    * @return {@link EdmParameter}
    * @throws EdmException
@@ -29,7 +26,6 @@ public interface EdmFunctionImport extends EdmMappable, EdmNamed {
 
   /**
    * Get all parameter names
-   * 
    * @return collection of parameter names of type Collection<String>
    * @throws EdmException
    */
@@ -37,7 +33,6 @@ public interface EdmFunctionImport extends EdmMappable, EdmNamed {
 
   /**
    * Get the edm entity set
-   * 
    * @return {@link EdmEntitySet}
    * @throws EdmException
    */
@@ -45,15 +40,12 @@ public interface EdmFunctionImport extends EdmMappable, EdmNamed {
 
   /**
    * Get the HTTP Method
-   * 
    * @return HTTP Method as String
    * @throws EdmException
    */
   String getHttpMethod() throws EdmException;
 
   /**
-   * Get the return type
-   * 
    * @return {@link EdmTyped}
    * @throws EdmException
    */
@@ -61,7 +53,6 @@ public interface EdmFunctionImport extends EdmMappable, EdmNamed {
 
   /**
    * Get the entity container the function import is contained in
-   * 
    * @return {@link EdmEntityContainer}
    * @throws EdmException
    */

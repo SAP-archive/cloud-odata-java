@@ -5,7 +5,8 @@ import java.io.InputStream;
 import com.sap.core.odata.api.exception.ODataException;
 
 /**
- * Objects of this class provide the service metadata
+ * @com.sap.core.odata.DoNotImplement
+ * This interface gives access to the metadata of a service as well as the calculated Data Service Version.
  * @author SAP AG
  *
  */

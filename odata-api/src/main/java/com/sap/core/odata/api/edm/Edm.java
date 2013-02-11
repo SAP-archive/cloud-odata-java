@@ -1,10 +1,9 @@
 package com.sap.core.odata.api.edm;
 
 /**
+ * @com.sap.core.odata.DoNotImplement
  * Entity Data Model (EDM)
- * <p>IMPORTANT
- * Do not implement this interface. This interface is intended for usage only.
- * 
+ * <p>Interface representing a Entity Data Model as described in the Conceptual Schema Definition.
  * @author SAP AG
  */
 public interface Edm {
@@ -34,7 +33,7 @@ public interface Edm {
 
   /**
    * Get entity container by name
-   * 
+   * <p>See {@link EdmEntityContainer} for more information.
    * @param name
    * @return {@link EdmEntityContainer}
    * @throws EdmException
@@ -43,7 +42,7 @@ public interface Edm {
 
   /**
    * Get entity type by full qualified name
-   * 
+   * <p>See {@link EdmEntityType} for more information.
    * @param namespace
    * @param name
    * @return {@link EdmEntityType}
@@ -53,7 +52,7 @@ public interface Edm {
 
   /**
    * Get complex type by full qualified name
-   * 
+   * <p>See {@link EdmComplexType} for more information.
    * @param namespace
    * @param name
    * @return {@link EdmComplexType}
@@ -63,7 +62,7 @@ public interface Edm {
 
   /**
    * Get association by full qualified name
-   * 
+   * <p>See {@link EdmAssociation} for more information.
    * @param namespace
    * @param name
    * @return {@link EdmAssociation}
@@ -73,14 +72,14 @@ public interface Edm {
 
   /**
    * Get service metadata
-   * 
+   * <p>See {@link EdmServiceMetadata} for more information.
    * @return {@link EdmServiceMetadata}
    */
   EdmServiceMetadata getServiceMetadata();
 
   /**
    * Get default entity container
-   * 
+   * <p>See {@link EdmEntityContainer} for more information.
    * @return {@link EdmEntityContainer}
    * @throws EdmException
    */

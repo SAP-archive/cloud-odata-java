@@ -1,17 +1,13 @@
 package com.sap.core.odata.api.edm;
 
 /**
+ * @com.sap.core.odata.DoNotImplement
  * EdmName is the base interface for nearly all CSDL constructs.
- * <p>IMPORTANT
- * Do not implement this interface. This interface is intended for usage only.
- * 
  * @author SAP AG
  */
 public interface EdmNamed {
 
-  /**
-   * Get the name
-   * 
+  /** 
    * @return name as String
    * @throws EdmException
    */

@@ -1,6 +1,7 @@
 package com.sap.core.odata.api.edm;
 
 /**
+ * @com.sap.core.odata.DoNotImplement
  * <p>EdmSimpleType is a primitive type as defined in the Entity Data Model (EDM).</p>
  * <p>There are methods to convert EDM simple types from and to Java objects, respectively.
  * The following Java types are supported:
@@ -35,8 +36,6 @@ package com.sap.core.odata.api.edm;
  * The EDM simple types <code>DateTime</code>, <code>DateTimeOffset</code>, and
  * <code>Time</code> can have a <code>Precision</code> facet.
  * <code>Decimal</code> can have the facets <code>Precision</code> and <code>Scale</code>.</p> 
- *
- * @com.sap.core.odata.DoNotImplement
  * @author SAP AG
  */
 public interface EdmSimpleType extends EdmType {
