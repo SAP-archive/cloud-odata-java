@@ -68,8 +68,7 @@ public class AssociationSet {
   }
 
   /**
-   * MANDATORY
-   * <p>Sets the name for this {@link AssociationSet}
+   * Sets the name for this {@link AssociationSet}
    * @param name
    * @return {@link AssociationSet} for method chaining
    */
@@ -79,8 +78,7 @@ public class AssociationSet {
   }
 
   /**
-   * MANDATORY
-   * <p>Sets the {@link FullQualifiedName} association for this {@link AssociationSet}
+   * Sets the {@link FullQualifiedName} association for this {@link AssociationSet}
    * @param association
    * @return {@link AssociationSet} for method chaining
    */
@@ -90,8 +88,7 @@ public class AssociationSet {
   }
 
   /**
-   * MANDATORY
-   * <p>Sets the first {@link AssociationSetEnd} for this {@link AssociationSet}
+   * Sets the first {@link AssociationSetEnd} for this {@link AssociationSet}
    * @param end1
    * @return {@link AssociationSet} for method chaining
    */
@@ -101,8 +98,7 @@ public class AssociationSet {
   }
 
   /**
-   * MANDATORY
-   * <p>Sets the second {@link AssociationSetEnd} for this {@link AssociationSet}
+   * Sets the second {@link AssociationSetEnd} for this {@link AssociationSet}
    * @param end2
    * @return {@link AssociationSet} for method chaining
    */

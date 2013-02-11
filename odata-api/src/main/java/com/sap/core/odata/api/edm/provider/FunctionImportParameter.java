@@ -77,8 +77,7 @@ public class FunctionImportParameter {
   }
 
   /**
-   * MANDATORY
-   * <p>Sets the name of this {@link FunctionImportParameter}
+   * Sets the name of this {@link FunctionImportParameter}
    * @param name
    * @return {@link FunctionImportParameter} for method chaining
    */
@@ -98,8 +97,7 @@ public class FunctionImportParameter {
   }
 
   /**
-   * MANDATORY
-   * <p>Sets the {@link EdmSimpleTypeKind} of this {@link FunctionImportParameter}
+   * Sets the {@link EdmSimpleTypeKind} of this {@link FunctionImportParameter}
    * @param type
    * @return {@link FunctionImportParameter} for method chaining
    */
@@ -109,8 +107,7 @@ public class FunctionImportParameter {
   }
 
   /**
-   * MANDATORY
-   * <p>Sets the {@link EdmFacets} of this {@link FunctionImportParameter}
+   * Sets the {@link EdmFacets} of this {@link FunctionImportParameter}
    * @param facets
    * @return {@link FunctionImportParameter} for method chaining
    */

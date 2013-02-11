@@ -60,8 +60,7 @@ public class EntitySet {
   }
 
   /**
-   * MANDATORY
-   * <p>Sets the name of this {@link EntitySet}
+   * Sets the name of this {@link EntitySet}
    * @param name
    * @return {@link EntitySet} for method chaining
    */
@@ -71,8 +70,7 @@ public class EntitySet {
   }
 
   /**
-   * MANDATORY
-   * <p>Sets the {@link FullQualifiedName} of the {@link EntityType} of this {@link EntitySet}
+   * Sets the {@link FullQualifiedName} of the {@link EntityType} of this {@link EntitySet}
    * @param entityType
    * @return {@link EntitySet} for method chaining
    */

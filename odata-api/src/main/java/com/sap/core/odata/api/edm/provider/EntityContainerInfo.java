@@ -22,7 +22,7 @@ public class EntityContainerInfo {
   }
 
   /**
-   * @return <b>String</b> name of the container which this container extends
+   * @return <b>String</b> name of the container which is extended by this container
    */
   public String getExtendz() {
     return extendz;

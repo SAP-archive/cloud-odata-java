@@ -19,8 +19,7 @@ public class Schema {
   private List<AnnotationElement> annotationElements;
 
   /**
-   * MANDATORY
-   * <p>Sets the namespace for this {@link Schema}
+   * Sets the namespace for this {@link Schema}
    * @param namespace
    * @return {@link Schema} for method chaining
    */
@@ -50,8 +49,7 @@ public class Schema {
   }
 
   /**
-   * MANDATORY
-   * <p>Sets the {@link EntityType}s for this {@link Schema}
+   * Sets the {@link EntityType}s for this {@link Schema}
    * @param entityTypes
    * @return {@link Schema} for method chaining
    */
@@ -61,8 +59,7 @@ public class Schema {
   }
 
   /**
-   * MANDATORY
-   * <p>Sets the {@link ComplexType}s for this {@link Schema}
+   * Sets the {@link ComplexType}s for this {@link Schema}
    * @param complexTypes
    * @return {@link Schema} for method chaining
    */
@@ -72,8 +69,7 @@ public class Schema {
   }
 
   /**
-   * MANDATORY
-   * <p>Sets the {@link Association}s for this {@link Schema}
+   * Sets the {@link Association}s for this {@link Schema}
    * @param associations
    * @return {@link Schema} for method chaining
    */
@@ -83,8 +79,7 @@ public class Schema {
   }
 
   /**
-   * MANDATORY
-   * <p>Sets the {@link EntityContainer}s for this {@link Schema}
+   * Sets the {@link EntityContainer}s for this {@link Schema}
    * @param entityContainers
    * @return {@link Schema} for method chaining
    */

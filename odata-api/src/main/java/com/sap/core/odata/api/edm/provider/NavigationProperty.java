@@ -76,8 +76,7 @@ public class NavigationProperty {
   }
 
   /**
-   * MANDATORY
-   * <p>Sets the name of this {@link NavigationProperty}
+   * Sets the name of this {@link NavigationProperty}
    * @param name
    * @return {@link NavigationProperty} for method chaining
    */
@@ -87,8 +86,7 @@ public class NavigationProperty {
   }
 
   /**
-   * MANDATORY
-   * <p>Sets the {@link FullQualifiedName} for the relationship of this {@link NavigationProperty}
+   * Sets the {@link FullQualifiedName} for the relationship of this {@link NavigationProperty}
    * @param relationship
    * @return {@link NavigationProperty} for method chaining
    */
@@ -98,8 +96,7 @@ public class NavigationProperty {
   }
 
   /**
-   * MANDATORY
-   * <p>Sets the role this {@link NavigationProperty} is comming from
+   * Sets the role this {@link NavigationProperty} is comming from
    * @param fromRole
    * @return {@link NavigationProperty} for method chaining
    */
@@ -109,8 +106,7 @@ public class NavigationProperty {
   }
 
   /**
-   * MANDATORY
-   * <p>Sets the role this {@link NavigationProperty} is going to
+   * Sets the role this {@link NavigationProperty} is going to
    * @param toRole
    * @return {@link NavigationProperty} for method chaining
    */

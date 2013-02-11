@@ -50,8 +50,7 @@ public class ReferentialConstraint {
   }
 
   /**
-   * MANDATORY
-   * <p>Sets the principal {@link ReferentialConstraintRole} for this {@link ReferentialConstraint}
+   * Sets the principal {@link ReferentialConstraintRole} for this {@link ReferentialConstraint}
    * @param principal
    * @return {@link ReferentialConstraint} for method chaining
    */
@@ -61,8 +60,7 @@ public class ReferentialConstraint {
   }
 
   /**
-   * MANDATORY
-   * <p>Sets the dependent {@link ReferentialConstraintRole} for this {@link ReferentialConstraint}
+   * Sets the dependent {@link ReferentialConstraintRole} for this {@link ReferentialConstraint}
    * @param dependent
    * @return {@link ReferentialConstraint} for method chaining
    */

@@ -3,7 +3,7 @@ package com.sap.core.odata.api.edm.provider;
 import java.util.List;
 
 /**
- * Objects of this class represent a Key for an entity type
+ * Objects of this class represent a key for an entity type
  * @author SAP AG
  */
 public class Key {
@@ -34,8 +34,7 @@ public class Key {
   }
 
   /**
-   * MANDATORY
-   * <p>Sets the {@link Property}s by their {@link PropertyRef} for this {@link Key}
+   * Sets the {@link Property}s by their {@link PropertyRef} for this {@link Key}
    * @param keys
    * @return {@link Key} for method chaining
    */

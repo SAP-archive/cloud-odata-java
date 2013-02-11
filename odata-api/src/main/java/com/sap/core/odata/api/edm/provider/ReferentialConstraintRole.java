@@ -42,8 +42,7 @@ public class ReferentialConstraintRole {
   }
 
   /**
-   * MANDATORY
-   * <p> Sets the role of this {@link ReferentialConstraintRole}
+   * Sets the role of this {@link ReferentialConstraintRole}
    * @param role
    * @return {@link ReferentialConstraintRole} for method chaining
    */
@@ -53,8 +52,7 @@ public class ReferentialConstraintRole {
   }
 
   /**
-   * MANDATORY
-   * <p> Sets the {@link PropertyRef}s of this {@link ReferentialConstraintRole}
+   * Sets the {@link PropertyRef}s of this {@link ReferentialConstraintRole}
    * @param propertyRef
    * @return {@link ReferentialConstraintRole} for method chaining
    */

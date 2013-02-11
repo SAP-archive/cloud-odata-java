@@ -37,8 +37,7 @@ public class Mapping implements EdmMapping {
   }
 
   /**
-   * MANDATORY
-   * <p>Sets the value for this {@link Mapping}
+   * Sets the value for this {@link Mapping}
    * @param value
    * @return {@link Mapping} for method chaining
    */
