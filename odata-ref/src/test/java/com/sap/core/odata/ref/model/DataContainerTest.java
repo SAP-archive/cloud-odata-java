@@ -41,7 +41,7 @@ public class DataContainerTest extends BaseTest {
     dc.init();
     Set<Team> datenSet = dc.getTeamSet();
     int initSetSize = datenSet.size();
-    Team team3 = new Team("Testteam 4", false);
+    Team team3 = new Team(4, "Testteam 4", false);
     datenSet.add(team3);
     assertNotSame(initSetSize, datenSet.size());
 

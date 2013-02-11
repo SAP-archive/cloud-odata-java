@@ -57,7 +57,7 @@ public class ServiceResolutionTest extends BaseTest {
       final EdmProvider provider = mock(EdmProvider.class);
 
       service = new ODataSingleProcessorService(provider, processor) {};
-      FitStaticServiceFactory.setService(service);
+//      FitStaticServiceFactory.setService(service);
 
       // science fiction (return context after setContext)
       // see http://www.planetgeek.ch/2010/07/20/mockito-answer-vs-return/
@@ -84,6 +84,11 @@ public class ServiceResolutionTest extends BaseTest {
     }
   }
 
+  
+  private void startServer() {
+    server.startServer(service);
+  }
+
   @After
   public void after() {
     try {
@@ -91,14 +96,14 @@ public class ServiceResolutionTest extends BaseTest {
         server.stopServer();
       }
     } finally {
-      FitStaticServiceFactory.setService(null);
+//      FitStaticServiceFactory.setService(null);
     }
   }
 
   @Test
   public void testSplit0() throws ClientProtocolException, IOException, ODataException {
     server.setPathSplit(0);
-    server.startServer(FitStaticServiceFactory.class);
+    startServer();
 
     final HttpGet get = new HttpGet(URI.create(server.getEndpoint().toString() + "/$metadata"));
     final HttpResponse response = httpClient.execute(get);
@@ -115,7 +120,7 @@ public class ServiceResolutionTest extends BaseTest {
   @Test
   public void testSplit1() throws ClientProtocolException, IOException, ODataException {
     server.setPathSplit(1);
-    server.startServer(FitStaticServiceFactory.class);
+    startServer();
 
     final HttpGet get = new HttpGet(URI.create(server.getEndpoint().toString() + "/aaa/$metadata"));
     final HttpResponse response = httpClient.execute(get);
@@ -132,7 +137,7 @@ public class ServiceResolutionTest extends BaseTest {
   @Test
   public void testSplit2() throws ClientProtocolException, IOException, ODataException {
     server.setPathSplit(2);
-    server.startServer(FitStaticServiceFactory.class);
+    startServer();
 
     final HttpGet get = new HttpGet(URI.create(server.getEndpoint().toString() + "/aaa/bbb/$metadata"));
     final HttpResponse response = httpClient.execute(get);
@@ -150,7 +155,7 @@ public class ServiceResolutionTest extends BaseTest {
   @Test
   public void testSplitUrlToShort() throws ClientProtocolException, IOException, ODataException {
     server.setPathSplit(3);
-    server.startServer(FitStaticServiceFactory.class);
+    startServer();
 
     final HttpGet get = new HttpGet(URI.create(server.getEndpoint().toString() + "/aaa/$metadata"));
     final HttpResponse response = httpClient.execute(get);
@@ -161,7 +166,7 @@ public class ServiceResolutionTest extends BaseTest {
   @Test
   public void testSplitUrlServiceDocument() throws ClientProtocolException, IOException, ODataException {
     server.setPathSplit(1);
-    server.startServer(FitStaticServiceFactory.class);
+    startServer();
 
     final HttpGet get = new HttpGet(URI.create(server.getEndpoint().toString() + "/aaa/"));
     final HttpResponse response = httpClient.execute(get);
@@ -178,7 +183,7 @@ public class ServiceResolutionTest extends BaseTest {
   @Test
   public void testMatrixParameterInNonODataPath() throws ClientProtocolException, IOException, ODataException {
     server.setPathSplit(1);
-    server.startServer(FitStaticServiceFactory.class);
+    startServer();
 
     final HttpGet get = new HttpGet(URI.create(server.getEndpoint().toString() + "aaa;n=2/"));
     final HttpResponse response = httpClient.execute(get);
@@ -203,7 +208,7 @@ public class ServiceResolutionTest extends BaseTest {
   @Test
   public void testNoMatrixParameterInODataPath() throws ClientProtocolException, IOException, ODataException {
     server.setPathSplit(0);
-    server.startServer(FitStaticServiceFactory.class);
+    startServer();
 
     final HttpGet get = new HttpGet(URI.create(server.getEndpoint().toString() + "$metadata;matrix"));
     final HttpResponse response = httpClient.execute(get);
@@ -219,7 +224,7 @@ public class ServiceResolutionTest extends BaseTest {
   @Test
   public void testBaseUriWithMatrixParameter() throws ClientProtocolException, IOException, ODataException, URISyntaxException {
     server.setPathSplit(3);
-    server.startServer(FitStaticServiceFactory.class);
+    startServer();
 
     final HttpGet get = new HttpGet(URI.create(server.getEndpoint().toString() + "aaa/bbb;n=2,3;m=1/ccc/"));
     final HttpResponse response = httpClient.execute(get);
@@ -234,7 +239,7 @@ public class ServiceResolutionTest extends BaseTest {
   @Test
   public void testBaseUriWithEncoding() throws ClientProtocolException, IOException, ODataException, URISyntaxException {
     server.setPathSplit(3);
-    server.startServer(FitStaticServiceFactory.class);
+    startServer();
 
     final URI uri = new URI(server.getEndpoint().getScheme(), null, server.getEndpoint().getHost(), server.getEndpoint().getPort(), server.getEndpoint().getPath() + "/aaa/äдержb;n=2,3;m=1/c c/", null, null);
 

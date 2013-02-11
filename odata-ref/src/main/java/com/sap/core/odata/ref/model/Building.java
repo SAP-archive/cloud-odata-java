@@ -8,18 +8,17 @@ import java.util.List;
  * @author SAP AG
  */
 public class Building {
-  private static int counter = 1;
-  private int id;
+  private final int id;
   private String name;
   private byte[] image;
   private List<Room> rooms = new ArrayList<Room>();
 
-  public Building() {
-    this(null);
+  public Building(int id) {
+    this(id, null);
   }
 
-  public Building(final String name) {
-    id = counter++;
+  public Building(int id, final String name) {
+    this.id = id;
     setName(name);
   }
 
@@ -52,10 +51,6 @@ public class Building {
 
   public void setRooms(final List<Room> listOfRooms) {
     this.rooms = listOfRooms;
-  }
-
-  public static void reset() {
-    counter = 1;
   }
 
   @Override

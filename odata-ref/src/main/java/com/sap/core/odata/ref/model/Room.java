@@ -7,25 +7,24 @@ import java.util.List;
 * @author SAP AG
 */
 public class Room {
-  private static int counter = 1;
-  private int id;
+  private final int id;
   private String name;
   private Integer seats;
   private Integer version;
   private Building building;
   private List<Employee> employees = new ArrayList<Employee>();
 
-  public Room() {
-    this(null);
+  public Room(int id) {
+    this(id, null);
   }
 
-  public Room(final String name) {
-    id = counter++;
+  public Room(int id, final String name) {
+    this.id = id;
     setName(name);
   }
 
-  public Room(final String name, final int seats) {
-    this(name);
+  public Room(int id, final String name, final int seats) {
+    this(id, name);
     setSeats(seats);
   }
 
@@ -71,10 +70,6 @@ public class Room {
 
   public List<Employee> getEmployees() {
     return employees;
-  }
-
-  public static void reset() {
-    counter = 1;
   }
 
   @Override

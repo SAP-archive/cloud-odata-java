@@ -10,16 +10,16 @@ public class Manager extends Employee {
 
   private List<Employee> employees = new ArrayList<Employee>();
 
-  public Manager() {
-    this(null, 0);
+  public Manager(int id) {
+    this(id, null, 0);
   }
 
-  public Manager(final String name, final int age) {
-    super(name, age);
+  public Manager(int id, final String name, final int age) {
+    super(id, name, age);
   }
 
-  public Manager(final String name, final int age, final Room room, final Team team) {
-    super(name, age, room, team);
+  public Manager(int id, final String name, final int age, final Room room, final Team team) {
+    super(id, name, age, room, team);
   }
 
   public void setEmployees(final List<Employee> employees) {

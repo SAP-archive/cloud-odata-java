@@ -19,14 +19,14 @@ public class BuildingTest extends BaseTest {
 
   @Test
   public void testId() {
-    Building build1 = new Building();
+    Building build1 = new Building(1);
     String buildId = build1.getId();
     assertNotNull(buildId);
   }
 
   @Test
   public void testName() {
-    Building build1 = new Building();
+    Building build1 = new Building(1);
     // instanceCounter++;
     build1.setName(VALUE_NAME);
     String buildName = build1.getName();
@@ -35,7 +35,7 @@ public class BuildingTest extends BaseTest {
 
   @Test
   public void testImage() {
-    Building build1 = new Building();
+    Building build1 = new Building(1);
     final byte[] byteArray = VALUE_IMAGE.getBytes();
     build1.setImage(byteArray);
     byte[] testArray = build1.getImage();
@@ -46,10 +46,10 @@ public class BuildingTest extends BaseTest {
   @Test
   public void testRooms() {
     List<Room> list = new ArrayList<Room>();
-    list.add(new Room());
-    list.add(new Room());
-    list.add(new Room());
-    Building building1 = new Building();
+    list.add(new Room(1));
+    list.add(new Room(2));
+    list.add(new Room(3));
+    Building building1 = new Building(1);
     building1.setRooms(list);
     List<Room> testList = building1.getRooms();
     assertEquals(list, testList);

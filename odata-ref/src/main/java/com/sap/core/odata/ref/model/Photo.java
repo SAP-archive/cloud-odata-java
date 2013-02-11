@@ -6,11 +6,10 @@ import java.io.InputStream;
 import java.util.Arrays;
 
 public class Photo {
-  private static int counter = 1;
   private static final String RESOURCE = "/darth.jpg";
   private static byte[] defaultImage;
 
-  private int id;
+  private final int id;
   private String name;
   private String type = "image/jpeg";
   private String imageUrl = "http://localhost" + RESOURCE;
@@ -19,12 +18,12 @@ public class Photo {
   private byte[] binaryData;
   private String content;
 
-  public Photo() {
-    this(null);
+  public Photo(int id) {
+    this(id, null);
   }
 
-  public Photo(final String name) {
-    id = counter++;
+  public Photo(int id, final String name) {
+    this.id = id;
     setName(name);
   }
 
@@ -103,10 +102,6 @@ public class Photo {
 
   public String getContent() {
     return content;
-  }
-
-  public static void reset() {
-    counter = 1;
   }
 
   @Override

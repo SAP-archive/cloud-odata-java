@@ -1,16 +1,18 @@
 package com.sap.core.odata.testutil.server;
 
 import java.net.BindException;
+import java.net.InetSocketAddress;
+import java.net.ServerSocket;
 import java.net.URI;
 
 import org.apache.cxf.jaxrs.servlet.CXFNonSpringJaxrsServlet;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
+import com.sap.core.odata.api.ODataService;
 import com.sap.core.odata.api.ODataServiceFactory;
+import com.sap.core.odata.testutil.fit.FitStaticServiceFactory;
 
 /**
  * @author SAP AG
@@ -19,7 +21,7 @@ public class TestServer {
 
   public TestServer() {}
 
-  private static final Logger log = LoggerFactory.getLogger(TestServer.class);
+//  private static final Logger log = LoggerFactory.getLogger(TestServer.class);
 
   private static final int PORT_MIN = 19000;
   private static final int PORT_MAX = 19200;
@@ -62,14 +64,20 @@ public class TestServer {
         final ServletContextHandler contextHandler = new ServletContextHandler(ServletContextHandler.SESSIONS);
         contextHandler.addServlet(odataServletHolder, PATH + "/*");
 
-        endpoint = new URI(SCHEME, null, HOST, port, PATH, null, null);
-        server = new Server(port);
-        server.setHandler(contextHandler);
+        InetSocketAddress isa = new InetSocketAddress(HOST, port);
         try {
-          server.start();
-          break;
+          ServerSocket ss = new ServerSocket(port);
+          if(ss.isBound()) {
+//            log.info("Created socket {}", ss.isBound());
+            server = new Server(isa);
+            server.setHandler(contextHandler);
+            server.start();
+            endpoint = new URI(SCHEME, null, HOST, isa.getPort(), PATH, null, null);
+//          log.info("Started server at endpoint {}", endpoint.toASCIIString());
+            break;
+          }
         } catch (final BindException e) {
-          TestServer.log.info("port is busy... " + port);
+//          log.info("port is busy... " + isa.getPort() + " [{}]", e.getMessage());
         }
       }
 
@@ -82,10 +90,24 @@ public class TestServer {
     }
   }
 
+  public void startServer(ODataService service) {
+    startServer(FitStaticServiceFactory.class);
+
+    if(server != null && server.isStarted()) {
+      FitStaticServiceFactory.bindService(this, service);
+    }
+  }
+  
   public void stopServer() {
     try {
       if (server != null) {
+        FitStaticServiceFactory.unbindService(this);
         server.stop();
+//        if(endpoint == null) {
+//          log.info("Stopped server");
+//        } else {
+//          log.info("Stopped server at endpoint {}", endpoint.toASCIIString());
+//        }
       }
     } catch (final Exception e) {
       throw new ServerException(e);

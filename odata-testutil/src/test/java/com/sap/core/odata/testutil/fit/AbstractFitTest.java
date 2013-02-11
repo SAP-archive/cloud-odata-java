@@ -18,7 +18,7 @@ import com.sap.core.odata.testutil.server.TestServer;
  */
 public abstract class AbstractFitTest extends BaseTest {
 
-  private final TestServer server = new TestServer();
+  private TestServer server = new TestServer();
 
   private ODataService service;
 
@@ -41,10 +41,11 @@ public abstract class AbstractFitTest extends BaseTest {
   @Before
   public void before() {
     try {
-      ProcessLocker.crossProcessLockAcquire(AbstractFitTest.class, 600000);
+//      ProcessLocker.crossProcessLockAcquire(AbstractFitTest.class, 600000);
       service = createService();
-      FitStaticServiceFactory.setService(service);
-      server.startServer(FitStaticServiceFactory.class);
+//      FitStaticServiceFactory.setService(service);
+//      server.startServer(FitStaticServiceFactory.class);
+      server.startServer(service);
     } catch (final ODataException e) {
       throw new TestutilException(e);
     } 
@@ -54,9 +55,12 @@ public abstract class AbstractFitTest extends BaseTest {
   public void after() {
     try {
       server.stopServer();
+    } catch (final Exception e) {
+      throw new TestutilException(e);
     } finally {
-      FitStaticServiceFactory.setService(null);
-      ProcessLocker.crossProcessLockRelease();
+      server = null;
+//      FitStaticServiceFactory.setService(null);
+//      ProcessLocker.crossProcessLockRelease();
     }
   }
 }
