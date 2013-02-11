@@ -3,14 +3,11 @@ package com.sap.core.odata.api.edm;
 import java.util.List;
 
 /**
+ * @com.sap.core.odata.DoNotImplement
  * A CSDL EntityType element
- * 
- * EdmEntityType holds a set of related information like {@link EdmSimpleType} properties and {@link EdmComplexType} properties
+ * <p>EdmEntityType holds a set of related information like {@link EdmSimpleType} properties and {@link EdmComplexType} properties
  * and in addition to a complex type {@link EdmComplexType} it provided information about key properties, customizable feed mappings
  * and navigation properties {@link EdmNavigationProperty} 
- * <p>IMPORTANT
- * Do not implement this interface. This interface is intended for usage only.
- * 
  * @author SAP AG
  */
 public interface EdmEntityType extends EdmStructuralType {

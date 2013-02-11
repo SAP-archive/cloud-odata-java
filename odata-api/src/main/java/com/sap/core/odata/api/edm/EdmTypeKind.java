@@ -1,8 +1,8 @@
 package com.sap.core.odata.api.edm;
 
 /**
- * EdmTypeKind specifies the type of an edm element.
- * 
+ * @com.sap.core.odata.DoNotImplement
+ * EdmTypeKind specifies the type of an EDM element.
  * @author SAP AG
  */
 public enum EdmTypeKind {

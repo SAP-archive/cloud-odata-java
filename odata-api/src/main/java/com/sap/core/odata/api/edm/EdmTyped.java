@@ -1,16 +1,14 @@
 package com.sap.core.odata.api.edm;
 
 /**
- * EdmTyped indicates if an edm element is of a special type and holds the multiplicity of that type.
- * <p>IMPORTANT
- * Do not implement this interface. This interface is intended for usage only.
- * 
+ * @com.sap.core.odata.DoNotImplement
+ * EdmTyped indicates if an EDM element is of a special type and holds the multiplicity of that type.
  * @author SAP AG
  */
 public interface EdmTyped extends EdmNamed {
 
   /**
-   * Get the type
+   * See {@link EdmType} for more information about possible types.
    * 
    * @return {@link EdmType}
    * @throws EdmException
@@ -18,7 +16,7 @@ public interface EdmTyped extends EdmNamed {
   EdmType getType() throws EdmException;
 
   /**
-   * Get the multiplicity
+   * See {@link EdmMultiplicity} for more information about possible multiplicities.
    * 
    * @return {@link EdmMultiplicity}
    * @throws EdmException

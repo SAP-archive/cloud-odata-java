@@ -1,12 +1,10 @@
 package com.sap.core.odata.api.edm;
 
 /**
+ * @com.sap.core.odata.DoNotImplement
  * A CSDL AssociationSet element
  * 
- * EdmAssociationSet defines the relationship of two entity sets.
- * <p>IMPORTANT
- * Do not implement this interface. This interface is intended for usage only.
- * 
+ * <p>EdmAssociationSet defines the relationship of two entity sets.
  * @author SAP AG
  */
 public interface EdmAssociationSet extends EdmNamed {

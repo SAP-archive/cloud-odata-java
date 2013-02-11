@@ -1,19 +1,16 @@
 package com.sap.core.odata.api.edm;
 
 /**
+ * @com.sap.core.odata.DoNotImplement
  * A CSDL Association element
  * 
- * EdmAssociation defines the relationship of two entity types.
- * <p>IMPORTANT
- * Do not implement this interface. This interface is intended for usage only.
- * 
+ * <p>EdmAssociation defines the relationship of two entity types. 
  * @author SAP AG
  */
 public interface EdmAssociation extends EdmType {
 
   /**
-   * Get the association end by role
-   * 
+   * Get the {@link EdmAssociationEnd} by role
    * @param role
    * @return {@link EdmAssociationEnd}
    * @throws EdmException

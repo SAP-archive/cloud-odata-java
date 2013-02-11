@@ -1,8 +1,8 @@
 package com.sap.core.odata.api.edm;
 
 /**
- * EdmLiteralKind indicates the format of an edm literal.
- * 
+ * @com.sap.core.odata.DoNotImplement
+ * EdmLiteralKind indicates the format of an EDM literal.
  * @author SAP AG
  */
 public enum EdmLiteralKind {

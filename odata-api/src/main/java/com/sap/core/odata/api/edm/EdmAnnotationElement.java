@@ -1,12 +1,9 @@
 package com.sap.core.odata.api.edm;
 
 /**
+ * @com.sap.core.odata.DoNotImplement
  * A CSDL AnnotationElement element
- * 
- * EdmAnnotationElement is a custom XML element which can be applied to a CSDL element.
- * <p>IMPORTANT
- * Do not implement this interface. This interface is intended for usage only.
- * 
+ * <p>EdmAnnotationElement is a custom XML element which can be applied to a CSDL element. 
  * @author SAP AG
  */
 public interface EdmAnnotationElement {

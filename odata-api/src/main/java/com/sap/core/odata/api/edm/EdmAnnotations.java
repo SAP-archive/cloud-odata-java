@@ -3,10 +3,8 @@ package com.sap.core.odata.api.edm;
 import java.util.List;
 
 /**
+ * @com.sap.core.odata.DoNotImplement
  * EdmAnnotations holds all annotation attributes and elements for a specific CSDL element.
- * <p>IMPORTANT
- * Do not implement this interface. This interface is intended for usage only.
- * 
  * @author SAP AG
  */
 public interface EdmAnnotations {

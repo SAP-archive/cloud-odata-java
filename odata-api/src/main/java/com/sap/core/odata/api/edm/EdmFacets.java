@@ -1,10 +1,9 @@
 package com.sap.core.odata.api.edm;
 
 /**
+ * @com.sap.core.odata.DoNotImplement
  * <p>A Facet is an element defined in CSDL that provides information
  * that specializes the usage of a type.</p>
- * <p>IMPORTANT
- * Do not implement this interface. This interface is intended for usage only.</p>
  * @author SAP AG
  */
 public interface EdmFacets {

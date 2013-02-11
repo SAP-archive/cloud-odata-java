@@ -3,6 +3,8 @@ package com.sap.core.odata.api.edm;
 import com.sap.core.odata.api.exception.MessageReference;
 
 /**
+ * @com.sap.core.odata.DoNotImplement
+ * Exception for parsing errors with {@link EdmSimpleType}s
  * @author SAP AG
  */
 public class EdmSimpleTypeException extends EdmException {

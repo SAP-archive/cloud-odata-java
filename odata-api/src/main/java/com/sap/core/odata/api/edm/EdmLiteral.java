@@ -1,6 +1,7 @@
 package com.sap.core.odata.api.edm;
 
 /**
+ * @com.sap.core.odata.DoNotImplement
  * <p>Representation of a simple-typed literal</p>
  * <p>The literal is in default representation. The URI representation differs
  * from the default representation mainly in the additional presence of type

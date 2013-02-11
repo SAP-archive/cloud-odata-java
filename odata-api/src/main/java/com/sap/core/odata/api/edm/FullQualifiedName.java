@@ -1,8 +1,9 @@
 package com.sap.core.odata.api.edm;
 
 /**
+ * @com.sap.core.odata.DoNotImplement
+ * A full qualified name of any element in the EDM consists of a name and a namespace.
  * @author SAP AG
- *
  */
 public class FullQualifiedName {
 
