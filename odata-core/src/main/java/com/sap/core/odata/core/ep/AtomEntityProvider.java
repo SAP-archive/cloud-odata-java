@@ -80,6 +80,7 @@ public class AtomEntityProvider implements ContentTypeBasedEntityProvider {
    * @return resulting {@link ODataResponse} with written service document
    * @throws EntityProviderException
    */
+  @Override
   public ODataResponse writeServiceDocument(Edm edm, String serviceRoot) throws EntityProviderException {
     OutputStreamWriter writer = null;
 
