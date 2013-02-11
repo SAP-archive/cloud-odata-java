@@ -16,7 +16,8 @@ import com.sap.core.odata.api.edm.provider.EntityContainer;
  * 
  * @author SAP AG
  * @DoNotImplement
- * @see {@link JPAEdmEntitySetView}, {@link JPAEdmAssociationSetView}
+ * @see com.sap.core.odata.processor.api.jpa.model.JPAEdmEntitySetView
+ * @see com.sap.core.odata.processor.api.jpa.model.JPAEdmAssociationSetView
  * 
  */
 public interface JPAEdmEntityContainerView extends JPAEdmBaseView {
@@ -24,7 +25,8 @@ public interface JPAEdmEntityContainerView extends JPAEdmBaseView {
 	 * The method returns the EDM entity container that is currently being
 	 * processed.
 	 * 
-	 * @return an instance of type {@link EntityContainer}
+	 * @return an instance of type
+	 *         {@link com.sap.core.odata.api.edm.provider.EntityContainer}
 	 */
 	public EntityContainer getEdmEntityContainer();
 
@@ -39,7 +41,8 @@ public interface JPAEdmEntityContainerView extends JPAEdmBaseView {
 	 * The method returns the JPA EDM entity set view that is currently being
 	 * processed.
 	 * 
-	 * @return an instance of type {@link JPAEdmEntitySetView}
+	 * @return an instance of type
+	 *         {@link com.sap.core.odata.processor.api.jpa.model.JPAEdmEntitySetView}
 	 */
 	public JPAEdmEntitySetView getJPAEdmEntitySetView();
 
@@ -47,7 +50,8 @@ public interface JPAEdmEntityContainerView extends JPAEdmBaseView {
 	 * The method returns the JPA EDM association set view that is currently
 	 * being processed.
 	 * 
-	 * @return an instance of type {@link JPAEdmAssociationSetView}
+	 * @return an instance of type
+	 *         {@link com.sap.core.odata.processor.api.jpa.model.JPAEdmAssociationSetView}
 	 */
 	public JPAEdmAssociationSetView getEdmAssociationSetView();
 }

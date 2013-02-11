@@ -53,10 +53,6 @@ public class ODataJPARuntimeException extends ODataJPAException {
 		return new ODataJPARuntimeException(message, e);
 	}
 
-	/**
-	 * 
-	 */
-
 	private static final long serialVersionUID = -5230976355642443012L;
 
 }

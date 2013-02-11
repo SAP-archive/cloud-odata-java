@@ -15,13 +15,14 @@ import com.sap.core.odata.api.edm.provider.ComplexProperty;
  * </p>
  * 
  * @author SAP AG
- * @see JPAEdmComplexTypeView
+ * @see com.sap.core.odata.processor.api.jpa.model.JPAEdmComplexTypeView
  */
 public interface JPAEdmComplexPropertyView extends JPAEdmBaseView {
 	/**
 	 * The method returns a complex property for a complex type.
 	 * 
-	 * @return an instance of {@link ComplexProperty}
+	 * @return an instance of
+	 *         {@link com.sap.core.odata.api.edm.provider.ComplexProperty}
 	 */
 	ComplexProperty getEdmComplexProperty();
 }

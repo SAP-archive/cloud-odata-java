@@ -9,12 +9,9 @@ import com.sap.core.odata.processor.api.jpa.exception.ODataJPARuntimeException;
 
 /**
  * The interface provides methods for processing OData Requests.
- * 
- * @param <T>
- *            Template parameter representing Java Persistence Entity Type.
- *            <p>
- *            <b>Note:-</b> Default parameter is Object.
- **/
+ *
+ * @author SAP AG
+*/
 public interface JPAProcessor {
 	/**
 	 * Processes OData request for querying an Entity Set. The method returns

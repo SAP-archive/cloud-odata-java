@@ -19,7 +19,7 @@ import com.sap.core.odata.api.edm.provider.Key;
  * @author SAP AG
  *         <p>
  * @DoNotImplement
- * @see {@link JPAEdmPropertyView}
+ * @see com.sap.core.odata.processor.api.jpa.model.JPAEdmPropertyView
  * 
  */
 public interface JPAEdmKeyView extends JPAEdmBaseView {
@@ -27,7 +27,8 @@ public interface JPAEdmKeyView extends JPAEdmBaseView {
 	 * The method returns an instance of EDM key for the given JPA EDM Entity
 	 * type.
 	 * 
-	 * @return an instance of type {@link Key}
+	 * @return an instance of type
+	 *         {@link com.sap.core.odata.api.edm.provider.Key}
 	 */
 	public Key getEdmKey();
 }

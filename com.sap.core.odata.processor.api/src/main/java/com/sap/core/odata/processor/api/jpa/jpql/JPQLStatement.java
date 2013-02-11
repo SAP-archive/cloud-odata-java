@@ -1,16 +1,19 @@
 package com.sap.core.odata.processor.api.jpa.jpql;
 
 import com.sap.core.odata.processor.api.jpa.exception.ODataJPARuntimeException;
-import com.sap.core.odata.processor.api.jpa.factory.JPQLBuilderFactory;
 import com.sap.core.odata.processor.api.jpa.factory.ODataJPAFactory;
 
 /**
  * The class represents a JPQL Statement. The JPQL statement is built using a
- * builder namely {@link JPQLStatementBuilder}. Based upon the JPQL Context
- * types ({@link JPQLContextType} different kinds of JPQL statements are built.
+ * builder namely
+ * {@link com.sap.core.odata.processor.api.jpa.jpql.JPQLStatement.JPQLStatementBuilder}
+ * . Based upon the JPQL Context types (
+ * {@link com.sap.core.odata.processor.api.jpa.jpql.JPQLContextType} different
+ * kinds of JPQL statements are built.
  * 
  * @author SAP AG
- * @see {@link JPQLBuilderFactory}, {@link JPQLContextView}
+ * @see com.sap.core.odata.processor.api.jpa.factory.JPQLBuilderFactory
+ * @see com.sap.core.odata.processor.api.jpa.jpql.JPQLContextView
  */
 public class JPQLStatement {
 
@@ -22,9 +25,11 @@ public class JPQLStatement {
 	 * upon the JPQL Context.
 	 * 
 	 * @param context
-	 *            a non null value of {@link JPQLContextView}. The context is
-	 *            expected to be set to be built with no errors.
-	 * @return
+	 *            a non null value of
+	 *            {@link com.sap.core.odata.processor.api.jpa.jpql.JPQLContextView}
+	 *            . The context is expected to be set to be built with no
+	 *            errors.
+	 * @return an instance of JPQL statement builder
 	 * @throws ODataJPARuntimeException
 	 */
 	public static JPQLStatementBuilder createBuilder(JPQLContextView context)
@@ -79,7 +84,8 @@ public class JPQLStatement {
 		 * The abstract method is implemented by specific statement builder for
 		 * building JPQL Statement.
 		 * 
-		 * @return an instance of {@link JPQLStatement}
+		 * @return an instance of
+		 *         {@link com.sap.core.odata.processor.api.jpa.jpql.JPQLStatement}
 		 * @throws ODataJPARuntimeException
 		 *             in case there are errors building the statements
 		 */

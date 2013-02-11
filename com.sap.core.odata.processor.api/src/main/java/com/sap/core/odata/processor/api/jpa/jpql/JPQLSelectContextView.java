@@ -9,7 +9,7 @@ import java.util.HashMap;
  * views. The clauses thus built can be used for building JPQL Statements.
  * 
  * @author SAP AG
- * @see JPQLStatement
+ * @see com.sap.core.odata.processor.api.jpa.jpql.JPQLStatement
  * 
  */
 public interface JPQLSelectContextView extends JPQLContextView {

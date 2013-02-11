@@ -21,8 +21,10 @@ public interface JPAAccessFactory {
 	 * EDM models from Java persistence models.
 	 * 
 	 * @param oDataJPAContext
-	 *            a non null instance of {@link ODataJPAContext}
-	 * @return an instance of type {@link JPAEdmModelView}
+	 *            a non null instance of
+	 *            {@link com.sap.core.odata.processor.api.jpa.ODataJPAContext}
+	 * @return an instance of type
+	 *         {@link com.sap.core.odata.processor.api.jpa.model.JPAEdmModelView}
 	 */
 	public JPAEdmModelView getJPAEdmModelView(ODataJPAContext oDataJPAContext);
 
@@ -32,8 +34,10 @@ public interface JPAAccessFactory {
 	 * processing JPQL statements.
 	 * 
 	 * @param oDataJPAContext
-	 *            a non null instance of {@link ODataJPAContext}
-	 * @return an instance of type {@link JPAProcessor}
+	 *            a non null instance of
+	 *            {@link com.sap.core.odata.processor.api.jpa.ODataJPAContext}
+	 * @return an instance of type
+	 *         {@link com.sap.core.odata.processor.api.jpa.access.JPAProcessor}
 	 */
 	public JPAProcessor getJPAProcessor(ODataJPAContext oDataJPAContext);
 }

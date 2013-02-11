@@ -12,21 +12,24 @@ import com.sap.core.odata.processor.api.jpa.factory.ODataJPAFactory;
 
 /**
  * <p>
- * Extend this factory class and create own instance of {@link ODataService}
- * that transforms Java Persistence Models into an OData Service. The factory
- * class instantiates instances of type {@link EdmProvider} and
- * {@link ODataSingleProcessor}. The OData JPA Processor library provides a
- * default implementation for EdmProvider and OData Single Processor.
+ * Extend this factory class and create own instance of
+ * {@link com.sap.core.odata.api.ODataService} that transforms Java Persistence
+ * Models into an OData Service. The factory class instantiates instances of
+ * type {@link com.sap.core.odata.api.edm.provider.EdmProvider} and
+ * {@link com.sap.core.odata.api.processor.ODataSingleProcessor}. The OData
+ * JPA Processor library provides a default implementation for EdmProvider and
+ * OData Single Processor.
  * </p>
  * <p>
- * The factory implementation is passed as servlet init parameter to a
- * JAX-RS runtime which will instantiate a {@link ODataService} implementation
- * using this factory.
+ * The factory implementation is passed as servlet init parameter to a JAX-RS
+ * runtime which will instantiate a {@link com.sap.core.odata.api.ODataService}
+ * implementation using this factory.
  * </p>
  * 
  * <p>
  * <b>Mandatory:</b> Implement the abstract method initializeJPAContext. Fill
- * {@link ODataJPAContext} with context values.
+ * {@link com.sap.core.odata.processor.api.jpa.ODataJPAContext} with context
+ * values.
  * </p>
  * 
  * <b>Sample Configuration:</b>
@@ -60,7 +63,8 @@ public abstract class ODataJPAServiceFactory extends ODataServiceFactory {
 
 	/**
 	 * Creates an OData Service based on the values set in
-	 * {@link ODataJPAContext} and {@link ODataContext}.
+	 * {@link com.sap.core.odata.processor.api.jpa.ODataJPAContext} and
+	 * {@link com.sap.core.odata.api.processor.ODataContext}.
 	 */
 	public final ODataService createService(ODataContext ctx)
 			throws ODataException {
@@ -98,9 +102,10 @@ public abstract class ODataJPAServiceFactory extends ODataServiceFactory {
 
 	/**
 	 * Implement this method and initialize OData JPA Context. It is mandatory
-	 * to set an instance of type {@link EntitManagerFactory} into the context.
-	 * An exception of type {@link ODataJPARuntimeException} is thrown if
-	 * EntityManagerFactory is not initialized. <br>
+	 * to set an instance of type {@link javax.persistence.EntityManagerFactory}
+	 * into the context. An exception of type
+	 * {@link com.sap.core.odata.processor.api.jpa.exception.ODataJPARuntimeException}
+	 * is thrown if EntityManagerFactory is not initialized. <br>
 	 * <br>
 	 * <b>Sample Code:</b> <code>
 	 * 	<p>public class JPAReferenceServiceFactory extends ODataJPAServiceFactory{</p>
@@ -116,18 +121,22 @@ public abstract class ODataJPAServiceFactory extends ODataServiceFactory {
 	 * oDataJPAContext.setPersistenceUnitName(PUNIT_NAME);
 	 * <br> return oDataJPAContext;</blockquote>
 	 * }</blockquote>
-	 * } </code> 
+	 * } </code>
 	 * <p>
-	 * @return an instance of type {@link ODataJPAContext}
-	 * @throws ODataJPARuntimeException 
+	 * 
+	 * @return an instance of type
+	 *         {@link com.sap.core.odata.processor.api.jpa.ODataJPAContext}
+	 * @throws ODataJPARuntimeException
 	 */
-	public abstract ODataJPAContext initializeJPAContext() throws ODataJPARuntimeException;
+	public abstract ODataJPAContext initializeJPAContext()
+			throws ODataJPARuntimeException;
 
 	/**
 	 * @return an instance of type {@link ODataJPAContext}
-	 * @throws ODataJPARuntimeException 
+	 * @throws ODataJPARuntimeException
 	 */
-	public final ODataJPAContext getODataJPAContext() throws ODataJPARuntimeException {
+	public final ODataJPAContext getODataJPAContext()
+			throws ODataJPARuntimeException {
 		if (oDataJPAContext == null) {
 			oDataJPAContext = ODataJPAFactory.createFactory()
 					.getODataJPAAccessFactory().createODataJPAContext();

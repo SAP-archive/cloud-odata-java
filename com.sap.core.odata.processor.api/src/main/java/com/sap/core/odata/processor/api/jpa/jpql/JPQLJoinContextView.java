@@ -12,7 +12,7 @@ import com.sap.core.odata.processor.api.jpa.access.JPAJoinClause;
  * OData read entity set with navigation request.
  * 
  * @author SAP AG
- * @see JPQLSelectContextView
+ * @see com.sap.core.odata.processor.api.jpa.jpql.JPQLSelectContextView
  * 
  */
 public interface JPQLJoinContextView extends JPQLSelectContextView {
@@ -20,7 +20,8 @@ public interface JPQLJoinContextView extends JPQLSelectContextView {
 	 * The method returns a list of JPA Join Clauses. The returned list of
 	 * values can be used for building JPQL Statements with Join clauses.
 	 * 
-	 * @return a list of {@link JPAJoinClause}
+	 * @return a list of
+	 *         {@link com.sap.core.odata.processor.api.jpa.access.JPAJoinClause}
 	 */
 	public List<JPAJoinClause> getJPAJoinClauses();
 }

@@ -16,8 +16,9 @@ import com.sap.core.odata.api.edm.provider.ReferentialConstraint;
  * </p>
  * 
  * @author SAP AG<br>
- * @DoNotImplement<br>
- * @see JPAEdmReferentialConstraintRoleView
+ * @DoNotImplement
+ * <br>
+ * @see com.sap.core.odata.processor.api.jpa.model.JPAEdmReferentialConstraintRoleView
  * 
  */
 public interface JPAEdmReferentialConstraintView extends JPAEdmBaseView {
@@ -26,7 +27,8 @@ public interface JPAEdmReferentialConstraintView extends JPAEdmBaseView {
 	 * The method returns EDM referential constraint created from Java
 	 * persistence Entity Join Columns.
 	 * 
-	 * @return an instance of type {@link ReferentialConstraint}
+	 * @return an instance of type
+	 *         {@link com.sap.core.odata.api.edm.provider.ReferentialConstraint}
 	 */
 	public ReferentialConstraint getEdmReferentialConstraint();
 

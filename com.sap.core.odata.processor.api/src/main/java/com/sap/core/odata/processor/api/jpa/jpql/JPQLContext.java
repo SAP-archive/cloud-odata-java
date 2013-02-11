@@ -2,21 +2,22 @@ package com.sap.core.odata.processor.api.jpa.jpql;
 
 import com.sap.core.odata.processor.api.jpa.exception.ODataJPAModelException;
 import com.sap.core.odata.processor.api.jpa.exception.ODataJPARuntimeException;
-import com.sap.core.odata.processor.api.jpa.factory.JPQLBuilderFactory;
 import com.sap.core.odata.processor.api.jpa.factory.ODataJPAFactory;
 
 /**
  * The abstract class is a compilation of objects required for building
- * {@link JPQLStatement}. Extend this class to implement specific
- * implementations of JPQL context types (Select, Insert, Delete, Modify, Join).
- * A JPQL Context is constructed from an OData request. Depending on OData CRUD
- * operation performed on an Entity, a corresponding JPQL context object is
- * built. The JPQL context object thus built can be used for constructing JPQL
- * statements. <br>
+ * {@link com.sap.core.odata.processor.api.jpa.jpql.JPQLStatement}. Extend this
+ * class to implement specific implementations of JPQL context types (Select,
+ * Insert, Delete, Modify, Join). A JPQL Context is constructed from an OData
+ * request. Depending on OData CRUD operation performed on an Entity, a
+ * corresponding JPQL context object is built. The JPQL context object thus
+ * built can be used for constructing JPQL statements. <br>
  * A default implementation is provided by the library.
  * 
  * @author SAP AG
- * @see {@link JPQLStatement}, {@link JPQLContextType}, {@link JPQLBuilderFactory}
+ * @see com.sap.core.odata.processor.api.jpa.jpql.JPQLStatement
+ * @see com.sap.core.odata.processor.api.jpa.jpql.JPQLContextType
+ * @see com.sap.core.odata.processor.api.jpa.factory.JPQLBuilderFactory
  * 
  */
 public abstract class JPQLContext implements JPQLContextView {
@@ -86,15 +87,17 @@ public abstract class JPQLContext implements JPQLContextView {
 	}
 
 	/**
-	 * the method returns an instance of type {@link JPQLContextBuilder} based
-	 * on the JPQLContextType. The context builder can be used for building
-	 * different JPQL contexts.
+	 * the method returns an instance of type
+	 * {@link com.sap.core.odata.processor.api.jpa.jpql.JPQLContext.JPQLContextBuilder}
+	 * based on the JPQLContextType. The context builder can be used for
+	 * building different JPQL contexts.
 	 * 
 	 * @param contextType
 	 *            is the JPQLContextType
 	 * @param resultsView
 	 *            is the OData request view
-	 * @return an instance of type {@link JPQLContextBuilder}
+	 * @return an instance of type
+	 *         {@link com.sap.core.odata.processor.api.jpa.jpql.JPQLContext.JPQLContextBuilder}
 	 * @throws ODataJPARuntimeException
 	 */
 	public final static JPQLContextBuilder createBuilder(
@@ -128,15 +131,19 @@ public abstract class JPQLContext implements JPQLContextView {
 		 *            indicates the type of JPQLContextBuilder to instantiate.
 		 * @param resultsView
 		 *            is the OData request view
-		 * @return an instance of type {@link JPQLContextBuilder}
+		 * @return an instance of type
+		 *         {@link com.sap.core.odata.processor.api.jpa.jpql.JPQLContext.JPQLContextBuilder}
 		 * @throws ODataJPARuntimeException
 		 */
 		private static JPQLContextBuilder create(JPQLContextType contextType,
 				Object resultsView) throws ODataJPARuntimeException {
 			JPQLContextBuilder contextBuilder = ODataJPAFactory.createFactory()
 					.getJPQLBuilderFactory().getContextBuilder(contextType);
-			if(contextBuilder == null){
-				throw ODataJPARuntimeException.throwException(ODataJPARuntimeException.ERROR_JPQLCTXBLDR_CREATE, null);
+			if (contextBuilder == null) {
+				throw ODataJPARuntimeException
+						.throwException(
+								ODataJPARuntimeException.ERROR_JPQLCTXBLDR_CREATE,
+								null);
 			}
 			contextBuilder.setResultsView(resultsView);
 			return contextBuilder;
@@ -147,7 +154,8 @@ public abstract class JPQLContext implements JPQLContextView {
 		 * to build JPQL Contexts. The build method makes use of information set
 		 * into the context to built JPQL Context Types.
 		 * 
-		 * @return an instance of {@link JPQLContext}
+		 * @return an instance of
+		 *         {@link com.sap.core.odata.processor.api.jpa.jpql.JPQLContext}
 		 * @throws ODataJPAModelException
 		 * @throws ODataJPARuntimeException
 		 */

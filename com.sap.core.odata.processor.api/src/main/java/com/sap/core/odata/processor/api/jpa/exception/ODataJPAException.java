@@ -10,7 +10,7 @@ import com.sap.core.odata.api.exception.ODataException;
  * provides non localized error texts that can be used for raising OData JPA
  * exceptions with non localized error texts.
  * 
- * @author AG
+ * @author SAP AG
  * 
  */
 public abstract class ODataJPAException extends ODataException {
@@ -25,15 +25,17 @@ public abstract class ODataJPAException extends ODataException {
 	}
 
 	/**
-	 * The method creates a Reference to Message Object {@link MessageReference}
-	 * . The message text key is derived out of parameters
-	 * clazz.messageReferenceKey.
+	 * The method creates a Reference to Message Object
+	 * {@link com.sap.core.odata.api.exception.MessageReference} . The message
+	 * text key is derived out of parameters clazz.messageReferenceKey.
 	 * 
 	 * @param clazz
-	 *            is name of the class extending {@link ODataJPAException}
+	 *            is name of the class extending
+	 *            {@link com.sap.core.odata.processor.api.jpa.exception.ODataJPAException}
 	 * @param messageReferenceKey
 	 *            is the key of the message
-	 * @return an instance of type {@link MessageReference}
+	 * @return an instance of type
+	 *         {@link com.sap.core.odata.api.exception.MessageReference}
 	 */
 	protected static MessageReference createMessageReference(
 			Class<? extends ODataJPAException> clazz, String messageReferenceKey) {
