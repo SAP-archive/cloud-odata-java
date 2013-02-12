@@ -36,7 +36,6 @@ import com.sap.core.odata.api.uri.info.GetMetadataUriInfo;
 import com.sap.core.odata.api.uri.info.GetServiceDocumentUriInfo;
 import com.sap.core.odata.core.processor.ODataSingleProcessorService;
 import com.sap.core.odata.testutil.fit.BaseTest;
-import com.sap.core.odata.testutil.fit.FitStaticServiceFactory;
 import com.sap.core.odata.testutil.helper.StringHelper;
 import com.sap.core.odata.testutil.server.TestServer;
 
@@ -91,12 +90,8 @@ public class ServiceResolutionTest extends BaseTest {
 
   @After
   public void after() {
-    try {
-      if (server != null) {
-        server.stopServer();
-      }
-    } finally {
-//      FitStaticServiceFactory.setService(null);
+    if (server != null) {
+      server.stopServer();
     }
   }
 

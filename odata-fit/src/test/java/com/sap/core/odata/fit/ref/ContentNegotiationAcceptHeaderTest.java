@@ -13,13 +13,16 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.log4j.Logger;
 import org.junit.AfterClass;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -38,10 +41,7 @@ import com.sap.core.odata.ref.edm.ScenarioEdmProvider;
 import com.sap.core.odata.ref.model.DataContainer;
 import com.sap.core.odata.ref.processor.ListsProcessor;
 import com.sap.core.odata.ref.processor.ScenarioDataSource;
-import com.sap.core.odata.testutil.fit.AbstractFitTest;
 import com.sap.core.odata.testutil.fit.BaseTest;
-import com.sap.core.odata.testutil.fit.FitStaticServiceFactory;
-import com.sap.core.odata.testutil.helper.ProcessLocker;
 import com.sap.core.odata.testutil.helper.StringHelper;
 import com.sap.core.odata.testutil.helper.TestutilException;
 import com.sap.core.odata.testutil.server.TestServer;
@@ -50,6 +50,8 @@ import com.sap.core.odata.testutil.server.TestServer;
  * @author SAP AG
  */
 public class ContentNegotiationAcceptHeaderTest extends BaseTest {
+  
+  private static final Logger LOG = Logger.getLogger(ContentNegotiationAcceptHeaderTest.class);
   
   final static List<String> ACCEPT_HEADER_VALUES = Arrays.asList(
       "", // for request with none 'Accept-Header' set
@@ -73,14 +75,13 @@ public class ContentNegotiationAcceptHeaderTest extends BaseTest {
 
   private static ODataService createService() throws ODataException {
     DataContainer dataContainer = new DataContainer();
-    dataContainer.reset();
+    dataContainer.init();
     final ODataSingleProcessor processor = new ListsProcessor(new ScenarioDataSource(dataContainer));
     final EdmProvider provider = new ScenarioEdmProvider();
     return new ODataSingleProcessorService(provider, processor) {};
   }
 
   private final static TestServer server = new TestServer();
-//  private static ODataService service;
 
   private final HttpClient httpClient = new DefaultHttpClient();
 
@@ -89,9 +90,8 @@ public class ContentNegotiationAcceptHeaderTest extends BaseTest {
   }
 
   @BeforeClass
-  public static void before() {
+  public static void beforeClass() {
     try {
-//      ProcessLocker.crossProcessLockAcquire(ContentNegotiationAcceptHeaderTest.class, 60 * 1000);
       ODataService service = createService();
       server.startServer(service);
     } catch (final ODataException e) {
@@ -100,13 +100,13 @@ public class ContentNegotiationAcceptHeaderTest extends BaseTest {
   }
 
   @AfterClass
-  public static void after() {
-    try {
-      server.stopServer();
-    } finally {
-//      FitStaticServiceFactory.setService(null);
-//      ProcessLocker.crossProcessLockRelease();
-    }
+  public static void afterClass() {
+    server.stopServer();
+  }
+  
+  @Before
+  public void before() throws InterruptedException {
+    TimeUnit.MILLISECONDS.sleep(250);
   }
 
   
@@ -668,7 +668,9 @@ public class ContentNegotiationAcceptHeaderTest extends BaseTest {
           get.setHeader(HttpHeaders.ACCEPT, acceptHeader);
         }
         HttpClient httpClient = new DefaultHttpClient();
+        LOG.trace("Execute test for [" + requestLine + "]");
         final HttpResponse response = httpClient.execute(get);
+        LOG.trace("Got response for request [" + requestLine + "]");
         
         int resultStatusCode = response.getStatusLine().getStatusCode();
         assertEquals("Unexpected status code for " + toString(), expectedStatusCode, resultStatusCode);
@@ -682,6 +684,7 @@ public class ContentNegotiationAcceptHeaderTest extends BaseTest {
       } finally {
         if(get != null) {
           get.releaseConnection();
+          LOG.trace("Released connection [" + requestLine + "]");
         }
       }
     }
