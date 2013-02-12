@@ -1,5 +1,5 @@
 /**
- * <h3>OData Java Persistence Processor library API</h3>
+ * <h3>OData JPA Processor API Library</h3>
  * The library provides a way for the developers to create an OData Service from a Java Persistence Model.
  * The library supports Java Persistence 2.0 and is dependent on OData library.
  * 

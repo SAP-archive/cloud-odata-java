@@ -1,5 +1,5 @@
 /**
- * <h3>OData JPA Processor Library - Factory</h3>
+ * <h3>OData JPA Processor API Library - Factory</h3>
  * The library provides different types of factories for creating instances for
  * <ul>
  * <li>Accessing Java Persistence Model/Data</li>

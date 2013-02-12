@@ -1,5 +1,5 @@
 /**
- * <h3>OData JPA Processor Library - Exceptions</h3>
+ * <h3>OData JPA Processor API Library - Exceptions</h3>
  * There are two main types of exceptions thrown from the library
  * <ol><li>Model Exception</li>
  * <li>Runtime Exception</li></ol>
