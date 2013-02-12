@@ -5,7 +5,9 @@ import java.util.Locale;
 import com.sap.core.odata.api.commons.HttpStatusCodes;
 
 /**
- * This class represents a translated application exception.
+ * This class represents a translated application exception. Use this exception class to display custom exception messages. 
+ * <br>If a HTTP status is given this exception will result in the set status code like an HTTP exception. 
+ * <br>A set status code can be used to show a substatus to a HTTP status as described in the OData protocol specification. 
  * @author SAP AG
  */
 public class ODataApplicationException extends ODataException {
@@ -26,7 +28,8 @@ public class ODataApplicationException extends ODataException {
   }
 
   /**
-   * Since this is a translated application exception locale must not be null.
+   * Since this is a translated application exception locale must not be null. 
+   * <br>The status code given will be  displayed at the client.
    * @param message
    * @param locale
    * @param status
@@ -38,6 +41,8 @@ public class ODataApplicationException extends ODataException {
 
   /**
    * Since this is a translated application exception locale must not be null.
+   * <br>The status code given will be displayed at the client.
+   * <br>The error code may be used as a substatus for the HTTP status code as described in the OData protocol specification.
    * @param message
    * @param locale
    * @param status
@@ -49,7 +54,9 @@ public class ODataApplicationException extends ODataException {
   }
 
   /**   
-   * Since this is a translated application exception locale must not be null.
+   * Since this is a translated application exception locale must not be null.  
+   * <br>The status code given will be displayed at the client.
+   * <br>The error code may be used as a substatus for the HTTP status code as described in the OData protocol specification.
    * @param message
    * @param locale
    * @param status
@@ -76,6 +83,7 @@ public class ODataApplicationException extends ODataException {
 
   /**
    * Since this is a translated application exception locale must not be null.
+   * <br>The status code given will be displayed at the client.
    * @param message
    * @param locale
    * @param status
@@ -88,6 +96,7 @@ public class ODataApplicationException extends ODataException {
 
   /**
    * Since this is a translated application exception locale must not be null.
+   * <br>The error code may be used as a substatus for the HTTP status code as described in the OData protocol specification.
    * @param message
    * @param locale
    * @param errorCode

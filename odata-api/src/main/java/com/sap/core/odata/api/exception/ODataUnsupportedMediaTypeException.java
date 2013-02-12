@@ -3,6 +3,7 @@ package com.sap.core.odata.api.exception;
 import com.sap.core.odata.api.commons.HttpStatusCodes;
 
 /**
+ * Exceptions of this class will result in a HTTP status 415 unsupported media type
  * @author SAP AG
  */
 public class ODataUnsupportedMediaTypeException extends ODataHttpException {

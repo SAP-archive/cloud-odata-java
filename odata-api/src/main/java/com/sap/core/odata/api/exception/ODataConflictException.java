@@ -3,6 +3,7 @@ package com.sap.core.odata.api.exception;
 import com.sap.core.odata.api.commons.HttpStatusCodes;
 
 /**
+ * Exceptions of this class will result in a HTTP status 409 Conflict
  * @author SAP AG
  */
 public class ODataConflictException extends ODataHttpException {
