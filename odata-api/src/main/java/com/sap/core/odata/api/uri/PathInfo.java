@@ -5,25 +5,26 @@ import java.util.List;
 
 /**
  * Object to keep OData URI information. 
- * 
+ * @com.sap.core.odata.DoNotImplement
  * @author SAP AG
  */
 public interface PathInfo {
 
   /**
-   * Returns preceding path segments  
-   * @return list of path segments
+   * Gets preceding path segments.
+   * @return List of path segments
    */
   List<PathSegment> getPrecedingSegments();
 
   /**
-   * Returns OData path segments as immutable list  
-   * @return list of path segments
+   * Gets OData path segments as immutable list.
+   * @return List of path segments
    */
   List<PathSegment> getODataSegments();
 
   /**
-   * @return absolute base uri of the request
+   * Gets the root URI of this service.
+   * @return absolute base URI of the request
    */
   URI getServiceRoot();
 

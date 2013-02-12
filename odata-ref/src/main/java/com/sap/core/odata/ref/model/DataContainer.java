@@ -6,6 +6,7 @@ import java.util.Set;
 import java.util.TimeZone;
 
 /**
+ * Container and initialization code for the data objects of the reference scenario.
  * @author SAP AG
  */
 public class DataContainer {
@@ -18,11 +19,11 @@ public class DataContainer {
   private Set<Manager> managerSet = new HashSet<Manager>();
   private Set<Building> buildingSet = new HashSet<Building>();
   private Set<Photo> photoSet = new HashSet<Photo>();
-  private int employeeId = 1;
-  private int teamId = 1;
-  private int roomId = 1;
-  private int buildingId = 1;
-  private int photoId = 1;
+  private int employeeId = 0;
+  private int teamId = 0;
+  private int roomId = 0;
+  private int buildingId = 0;
+  private int photoId = 0;
 
   public void init() {
     // ------------- Teams ---------------
@@ -204,33 +205,27 @@ public class DataContainer {
   }
 
   public Employee createEmployee() {
-    final String name = "Employee " + employeeId;
-    return new Employee(employeeId++, name);
+    return new Employee(++employeeId, "Employee " + employeeId);
   }
 
   public Team createTeam() {
-    final String name = "Team " + teamId;
-    return new Team(teamId++, name);
+    return new Team(++teamId, "Team " + teamId);
   }
 
   public Room createRoom() {
-    final String name = "Room " + roomId;
-    return new Room(roomId++, name);
+    return new Room(++roomId, "Room " + roomId);
   }
 
   public Manager createManager() {
-    final String name = "Employee " + employeeId;
-    return new Manager(employeeId++, name);
+    return new Manager(++employeeId, "Employee " + employeeId);
   }
 
   public Building createBuilding() {
-    final String name = "Building " + buildingId;
-    return new Building(buildingId++, name);
+    return new Building(++buildingId, "Building " + buildingId);
   }
 
   public Photo createPhoto(final String type) {
-    final String name = "Photo " + photoId;
-    return new Photo(photoId++, name, type);
+    return new Photo(++photoId, "Photo " + photoId, type);
   }
 
   public Set<Employee> getEmployeeSet() {
@@ -265,11 +260,11 @@ public class DataContainer {
     buildingSet.clear();
     photoSet.clear();
 
-    employeeId = 1;
-    teamId = 1;
-    roomId = 1;
-    buildingId = 1;
-    photoId = 1;
+    employeeId = 0;
+    teamId = 0;
+    roomId = 0;
+    buildingId = 0;
+    photoId = 0;
 
     init();
   }

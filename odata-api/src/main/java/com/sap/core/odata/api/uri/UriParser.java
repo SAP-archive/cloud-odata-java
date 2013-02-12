@@ -16,13 +16,13 @@ import com.sap.core.odata.api.uri.expression.OrderByExpression;
 import com.sap.core.odata.api.uri.expression.Visitable;
 
 /**
- * Class to wrap UriParser functionality 
+ * Wrapper for UriParser functionality.
  * @author SAP AG
  */
 public abstract class UriParser {
 
   /**
-   * Parse path segments and query parameters for the given EDM
+   * Parses path segments and query parameters for the given EDM.
    * @param edm Entity Data Model
    * @param pathSegments list of path segments
    * @param queryParameters query parameters
@@ -34,7 +34,7 @@ public abstract class UriParser {
   }
 
   /**
-   * Parse path segments and query parameters.
+   * Parses path segments and query parameters.
    * @param pathSegments list of path segments
    * @param queryParameters query parameters
    * @return {@link UriInfo} information about the parsed URI
@@ -45,33 +45,36 @@ public abstract class UriParser {
   public abstract UriInfo parse(List<PathSegment> pathSegments, Map<String, String> queryParameters) throws UriSyntaxException, UriNotMatchingException, EdmException;
 
   /**
-   * Parses a $filter expression string and create an expression tree
-   * <p>
-   * The current expression parser supports expressions as defined in the OData specification 2.0 with the following restrictions
-   *   - the methods "cast", "isof" and "replace" are not supported
-   *   
-   * The expression parser can be used with providing an Entity Data Model (EDM) an without providing it.
-   *  <p>When a EDM is provided the expression parser will be as strict as possible. That means:
-   *  <li>All properties used in the expression must be defined inside the EDM</li>
-   *  <li>The types of EDM properties will be checked against the lists of allowed type per method, binary- and unary operator</li>
-   *  </p>
-   *  <p>If no EDM is provided the expression parser performs a lax validation
-   *  <li>The properties used in the expression are not looked up inside the EDM and the type of the expression node representing the 
-   *      property will be "null"</li>
-   *  <li>Expression node with EDM-types which are "null" are not considered during the parameter type validation, to the return type of the parent expression node will
-   *  also become "null"</li>
-   * @param edm
-   *   Edm model of the accessed OData service 
-   * @param edmType
-   *   Edm type of the OData entity/complex type/.. addressed by the URL.
-   * @param expression
-   *   $filter expression string to be parsed
-   * @return
-   *   Expression tree which can be traversed with help of the interfaces {@link ExpressionVisitor} and {@link Visitable}
-   * @throws ExpressionParserException
-   *   Exception thrown due to errors while parsing the $filter expression string 
-   * @throws ODataMessageException
-   *   Used for extensibility
+   * Parses a $filter expression string and create an expression tree.
+   * <p>The current expression parser supports expressions as defined in the
+   * OData specification 2.0 with the following restrictions:
+   * <ul>
+   *   <li>the methods "cast", "isof" and "replace" are not supported</li>
+   * </ul></p>
+   *
+   * <p>The expression parser can be used with providing an Entity Data Model (EDM)
+   * and without providing it. When an EDM is provided the expression parser will be
+   * as strict as possible. That means:
+   * <ul>
+   *   <li>All properties used in the expression must be defined inside the EDM,</li>
+   *   <li>the types of EDM properties will be checked against the lists of allowed
+   *       types per method and per binary or unary operator, respectively</li>
+   * </ul>
+   * If no EDM is provided the expression parser performs a lax validation:
+   * <ul>
+   *   <li>The properties used in the expression are not looked up inside the EDM
+   *       and the type of the expression node representing the property will be "null",</li>
+   *   <li>expression nodes with EDM type "null" are not considered during the parameter
+   *       type validation, so the return type of the parent expression node will
+   *       also become "null".</li>
+   * </ul>
+   * @param edm        entity data model of the accessed OData service 
+   * @param edmType    EDM type of the OData entity/complex type/... addressed by the URL
+   * @param expression $filter expression string to be parsed
+   * @return           expression tree which can be traversed with help of the interfaces
+   *                   {@link ExpressionVisitor} and {@link Visitable}
+   * @throws ExpressionParserException thrown due to errors while parsing the $filter expression string
+   * @throws ODataMessageException     for extensibility
    */
   public static FilterExpression parseFilter(Edm edm, EdmEntityType edmType, String expression) throws ExpressionParserException, ODataMessageException
   {
@@ -79,48 +82,47 @@ public abstract class UriParser {
   }
 
   /**
-   * Parses a $filter expression string and create an expression tree
-   * <p>
-   * The current expression parser supports expressions as defined in the OData specification 2.0 with the following restrictions
-   *   - the methods "cast", "isof" and "replace" are not supported
-   *   
-   * The expression parser can be used with providing an Entity Data Model (EDM) an without providing it.
-   *  <p>When a EDM is provided the expression parser will be as strict as possible. That means:
-   *  <li>All properties used in the expression must be defined inside the EDM</li>
-   *  <li>The types of EDM properties will be checked against the lists of allowed type per method, binary- and unary operator</li>
-   *  </p>
-   *  <p>If no EDM is provided the expression parser performs a lax validation
-   *  <li>The properties used in the expression are not looked up inside the EDM and the type of the expression node representing the 
-   *      property will be "null"</li>
-   *  <li>Expression node with EDM-types which are "null" are not considered during the parameter type validation, to the return type of the parent expression node will
-   *  also become "null"</li>
-   * @param edmType
-   *   Edm type of the OData entity/complex type/.. addressed by the URL.
-   * @param expression
-   *   $filter expression string to be parsed
-   * @return
-   *   Expression tree which can be traversed with help of the interfaces {@link ExpressionVisitor} and {@link Visitable}
-   * @throws ExpressionParserException
-   *   Exception thrown due to errors while parsing the $filter expression string 
-   * @throws ODataMessageException
-   *   Used for extensibility
+   * Parses a $filter expression string and create an expression tree.
+   * <p>The current expression parser supports expressions as defined in the
+   * OData specification 2.0 with the following restrictions:
+   * <ul>
+   *   <li>the methods "cast", "isof" and "replace" are not supported</li>
+   * </ul></p>
+   *
+   * <p>The expression parser can be used with providing an Entity Data Model (EDM)
+   * and without providing it. When an EDM is provided the expression parser will be
+   * as strict as possible. That means:
+   * <ul>
+   *   <li>All properties used in the expression must be defined inside the EDM,</li>
+   *   <li>the types of EDM properties will be checked against the lists of allowed
+   *       types per method and per binary or unary operator, respectively</li>
+   * </ul>
+   * If no EDM is provided the expression parser performs a lax validation:
+   * <ul>
+   *   <li>The properties used in the expression are not looked up inside the EDM
+   *       and the type of the expression node representing the property will be "null",</li>
+   *   <li>expression nodes with EDM type "null" are not considered during the parameter
+   *       type validation, so the return type of the parent expression node will
+   *       also become "null".</li>
+   * </ul>
+   * @param edmType    EDM type of the OData entity/complex type/... addressed by the URL
+   * @param expression $filter expression string to be parsed
+   * @return           expression tree which can be traversed with help of the interfaces
+   *                   {@link ExpressionVisitor} and {@link Visitable}
+   * @throws ExpressionParserException thrown due to errors while parsing the $filter expression string
+   * @throws ODataMessageException     for extensibility
    */
   public abstract FilterExpression parseFilterString(EdmEntityType edmType, String expression) throws ExpressionParserException, ODataMessageException;
 
   /**
-   * Parses a $orderby expression string and create an expression tree for easy consume
-   * @param edm
-   *   EDM model of the accessed OData service 
-   * @param edmType
-   *   EDM type of the OData entity/complex type/.. addressed by the URL.
-   * @param expression
-   *   $orderby expression string to be parsed
-   * @return
-   *   Expression tree which can be traversed with help of the interfaces {@link ExpressionVisitor} and {@link Visitable}
-   * @throws ExpressionParserException
-   *   Exception thrown due to errors while parsing the $orderby expression string 
-   * @throws ODataMessageException
-   *   Used for extensibility
+   * Parses a $orderby expression string and creates an expression tree.
+   * @param edm        EDM model of the accessed OData service 
+   * @param edmType    EDM type of the OData entity/complex type/... addressed by the URL
+   * @param expression $orderby expression string to be parsed
+   * @return           expression tree which can be traversed with help of the interfaces
+   *                   {@link ExpressionVisitor} and {@link Visitable}
+   * @throws ExpressionParserException thrown due to errors while parsing the $orderby expression string
+   * @throws ODataMessageException     used for extensibility
    */
   public static OrderByExpression parseOrderBy(Edm edm, EdmEntityType edmType, String expression) throws ExpressionParserException, ODataMessageException
   {
@@ -128,17 +130,13 @@ public abstract class UriParser {
   }
 
   /**
-   * Parses a $orderby expression string and create an expression tree for easy consume
-   * @param edmType
-   *   EDM type of the OData entity/complex type/.. addressed by the URL.
-   * @param expression
-   *   $orderby expression string to be parsed
-   * @return
-   *   Expression tree which can be traversed with help of the interfaces {@link ExpressionVisitor} and {@link Visitable}
-   * @throws ExpressionParserException
-   *   Exception thrown due to errors while parsing the $orderby expression string 
-   * @throws ODataMessageException
-   *   Used for extensibility
+   * Parses a $orderby expression string and creates an expression tree.
+   * @param edmType    EDM type of the OData entity/complex type/... addressed by the URL
+   * @param expression $orderby expression string to be parsed
+   * @return           expression tree which can be traversed with help of the interfaces
+   *                   {@link ExpressionVisitor} and {@link Visitable}
+   * @throws ExpressionParserException thrown due to errors while parsing the $orderby expression string
+   * @throws ODataMessageException     used for extensibility
    */
   public abstract OrderByExpression parseOrderByString(EdmEntityType edmType, String expression) throws ExpressionParserException, ODataMessageException;
 }
