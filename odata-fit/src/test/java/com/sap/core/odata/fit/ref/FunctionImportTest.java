@@ -49,7 +49,7 @@ public class FunctionImportTest extends AbstractRefXmlTest {
     checkUri("ManagerPhoto?Id='1'");
 
     response = callUri("ManagerPhoto/$value?Id='1'");
-    // checkMediaType(response, IMAGE_JPEG);
+    checkMediaType(response, IMAGE_JPEG);
     assertNull(response.getFirstHeader(HttpHeaders.ETAG));
     assertNotNull(getBody(response));
 

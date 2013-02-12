@@ -709,9 +709,12 @@ public class ListsProcessor extends ODataSingleProcessor {
         null);
 
     Object value;
-    if (type.getKind() == EdmTypeKind.SIMPLE)
-      value = data;
-    else if (functionImport.getReturnType().getMultiplicity() == EdmMultiplicity.MANY) {
+    if (type.getKind() == EdmTypeKind.SIMPLE) {
+      if (type == EdmSimpleTypeKind.Binary.getEdmSimpleTypeInstance())
+        value = ((BinaryData) data).getData();
+      else
+        value = data;
+    } else if (functionImport.getReturnType().getMultiplicity() == EdmMultiplicity.MANY) {
       List<Map<String, Object>> values = new ArrayList<Map<String, Object>>();
       for (final Object typeData : (List<?>) data)
         values.add(getStructuralTypeValueMap(typeData, (EdmStructuralType) type));
@@ -745,7 +748,7 @@ public class ListsProcessor extends ODataSingleProcessor {
 
     ODataResponse response;
     if (type == EdmSimpleTypeKind.Binary.getEdmSimpleTypeInstance()) {
-      response = EntityProvider.writeBinary(HttpContentType.APPLICATION_OCTET_STREAM, (byte[]) data);
+      response = EntityProvider.writeBinary(((BinaryData) data).getMimeType(), ((BinaryData) data).getData());
     } else {
       final String value = type.valueToString(data, EdmLiteralKind.DEFAULT, null);
       response = EntityProvider.writeText(value == null ? "" : value);

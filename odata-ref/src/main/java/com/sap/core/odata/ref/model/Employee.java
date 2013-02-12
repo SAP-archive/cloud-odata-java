@@ -22,20 +22,9 @@ public class Employee {
   private Calendar entryDate;
   private Location location;
 
-  public Employee(int employeeId) {
-    this(employeeId, null, 0);
-  }
-
-  public Employee(int employeeId, final String name, final int age) {
+  public Employee(final int employeeId, final String name) {
     this.employeeId = employeeId;
     setEmployeeName(name);
-    setAge(age);
-  }
-
-  public Employee(int employeeId, final String name, final int age, final Room room, final Team team) {
-    this(employeeId, name, age);
-    setRoom(room);
-    setTeam(team);
   }
 
   public String getId() {
@@ -106,16 +95,12 @@ public class Employee {
     return entryDate;
   }
 
-  public String getImageType() {
-    return imageType;
-  }
-
   public void setImageType(final String imageType) {
     this.imageType = imageType;
   }
 
-  public byte[] getImage() {
-    return image.clone();
+  public String getImageType() {
+    return imageType;
   }
 
   public void setImage(final byte[] image) {
@@ -126,7 +111,7 @@ public class Employee {
     image = loadImage(imageUrl);
   }
 
-  private byte[] loadImage(final String imageUrl) {
+  private static byte[] loadImage(final String imageUrl) {
     try {
       InputStream in = Employee.class.getResourceAsStream(imageUrl);
       ByteArrayOutputStream stream = new ByteArrayOutputStream();
@@ -138,6 +123,10 @@ public class Employee {
     } catch (IOException e) {
       throw new ModelException(e);
     }
+  }
+
+  public byte[] getImage() {
+    return image.clone();
   }
 
   @Override

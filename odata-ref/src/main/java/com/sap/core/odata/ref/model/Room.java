@@ -14,18 +14,9 @@ public class Room {
   private Building building;
   private List<Employee> employees = new ArrayList<Employee>();
 
-  public Room(int id) {
-    this(id, null);
-  }
-
-  public Room(int id, final String name) {
+  public Room(final int id, final String name) {
     this.id = id;
     setName(name);
-  }
-
-  public Room(int id, final String name, final int seats) {
-    this(id, name);
-    setSeats(seats);
   }
 
   public String getId() {
@@ -33,7 +24,7 @@ public class Room {
   }
 
   public String getName() {
-    return this.name;
+    return name;
   }
 
   public void setName(final String name) {

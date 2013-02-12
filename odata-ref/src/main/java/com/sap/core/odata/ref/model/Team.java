@@ -10,21 +10,11 @@ public class Team {
   private final int id;
   private String name;
   private Boolean isScrumTeam;
-  private List<Employee> employees;
+  private List<Employee> employees = new ArrayList<Employee>();
 
-  public Team(int id) {
-    this(id, null);
-  }
-
-  public Team(int id, final String name) {
+  public Team(final int id, final String name) {
     this.id = id;
-    employees = new ArrayList<Employee>();
     setName(name);
-  }
-
-  public Team(int id, final String name, final boolean isScrumTeam) {
-    this(id, name);
-    setScrumTeam(isScrumTeam);
   }
 
   public String getId() {

@@ -20,24 +20,21 @@ public class ManagerTest extends BaseTest {
 
   @Test
   public void testId() {
-    Manager manager = new Manager(1);
-    String testMngId = manager.getId();
-    assertNotNull(testMngId);
+    Manager manager = new Manager(1, null);
+    assertNotNull(manager.getId());
   }
 
   @Test
   public void testManagerName() {
-    Manager manager = new Manager(1);
-    manager.setEmployeeName(VALUE_NAME);
-    String testName = manager.getEmployeeName();
-    assertEquals(VALUE_NAME, testName);
+    Manager manager = new Manager(1, VALUE_NAME);
+    assertEquals(VALUE_NAME, manager.getEmployeeName());
   }
 
   @Test
   public void testManager() {
-    Manager manager = new Manager(1, "Walter Winter", 52);
-    Employee employee = new Employee(2, "Peter Burke", 39);
-    Manager manager2 = new Manager(3, "Jonathan Smith", 56);
+    Manager manager = new Manager(1, "Walter Winter");
+    Employee employee = new Employee(2, "Peter Burke");
+    Manager manager2 = new Manager(3, "Jonathan Smith");
     List<Employee> list = Arrays.asList(manager2, employee, manager);
     manager.setEmployees(list);
     for (Employee emp : list)
@@ -48,8 +45,8 @@ public class ManagerTest extends BaseTest {
 
   @Test
   public void testRoom() {
-    Employee manager = new Manager(1);
-    Room room = new Room(1);
+    Employee manager = new Manager(1, null);
+    Room room = new Room(1, null);
     room.setEmployees(Arrays.asList(manager));
     manager.setRoom(room);
     assertEquals(room, manager.getRoom());
@@ -58,7 +55,7 @@ public class ManagerTest extends BaseTest {
 
   @Test
   public void testTeam() {
-    Employee manager = new Manager(1);
+    Employee manager = new Manager(1, null);
     List<Employee> list = Arrays.asList(manager);
     Team team = new Team(1, TEAM_NAME);
     team.setEmployees(list);
@@ -69,9 +66,9 @@ public class ManagerTest extends BaseTest {
 
   @Test
   public void testEmployees() {
-    Manager manager = new Manager(1);
-    Employee employee1 = new Employee(2);
-    Employee employee2 = new Employee(3);
+    Manager manager = new Manager(1, null);
+    Employee employee1 = new Employee(2, null);
+    Employee employee2 = new Employee(3, null);
     List<Employee> employeesList = Arrays.asList(employee1, employee2);
     manager.setEmployees(employeesList);
     for (Employee emp : employeesList)
