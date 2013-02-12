@@ -20,6 +20,7 @@ public class DataContainer {
   private Set<Manager> managerSet = new HashSet<Manager>();
   private Set<Building> buildingSet = new HashSet<Building>();
   private Set<Photo> photoSet;
+  
   private int photoId = 1;
   private int teamId = 1;
   private int buildingId = 1;

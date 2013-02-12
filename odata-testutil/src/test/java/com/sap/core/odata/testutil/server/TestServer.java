@@ -6,6 +6,7 @@ import java.net.ServerSocket;
 import java.net.URI;
 
 import org.apache.cxf.jaxrs.servlet.CXFNonSpringJaxrsServlet;
+import org.apache.log4j.Logger;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
@@ -18,23 +19,33 @@ import com.sap.core.odata.testutil.fit.FitStaticServiceFactory;
  * @author SAP AG
  */
 public class TestServer {
-
-  public TestServer() {}
-
-//  private static final Logger log = LoggerFactory.getLogger(TestServer.class);
+  private static final Logger log = Logger.getLogger(TestServer.class);
 
   private static final int PORT_MIN = 19000;
   private static final int PORT_MAX = 19200;
   private static final int PORT_INC = 1;
 
-  private static final String SCHEME = "http";
-  private static final String HOST = "localhost";
-  private static final String PATH = "/test";
+  private static final String DEFAULT_SCHEME = "http";
+  private static final String DEFAULT_HOST = "localhost";
+  private static final String DEFAULT_PATH = "/test";
 
   private URI endpoint; //= URI.create("http://localhost:19080/test"); // no slash at the end !!!
-
+  private final String path;
+  
   private int pathSplit = 0;
 
+  public TestServer() {
+    this(DEFAULT_PATH);
+  }
+  
+  public TestServer(String path) {
+    if(path.startsWith("/")) {
+      this.path = path;
+    } else {
+      this.path = "/" + path;
+    }
+  }
+  
   public int getPathSplit() {
     return pathSplit;
   }
@@ -62,22 +73,22 @@ public class TestServer {
         }
 
         final ServletContextHandler contextHandler = new ServletContextHandler(ServletContextHandler.SESSIONS);
-        contextHandler.addServlet(odataServletHolder, PATH + "/*");
+        contextHandler.addServlet(odataServletHolder, path + "/*");
 
-        InetSocketAddress isa = new InetSocketAddress(HOST, port);
+        InetSocketAddress isa = new InetSocketAddress(DEFAULT_HOST, port);
         try {
           ServerSocket ss = new ServerSocket(port);
           if(ss.isBound()) {
-//            log.info("Created socket {}", ss.isBound());
+//            log.trace("Created socket " + ss.isBound());
             server = new Server(isa);
             server.setHandler(contextHandler);
             server.start();
-            endpoint = new URI(SCHEME, null, HOST, isa.getPort(), PATH, null, null);
-//          log.info("Started server at endpoint {}", endpoint.toASCIIString());
+            endpoint = new URI(DEFAULT_SCHEME, null, DEFAULT_HOST, isa.getPort(), path, null, null);
+            log.trace("Started server at endpoint " + endpoint.toASCIIString());
             break;
           }
         } catch (final BindException e) {
-//          log.info("port is busy... " + isa.getPort() + " [{}]", e.getMessage());
+//          log.trace("port is busy... " + isa.getPort() + " [" + e.getMessage() + "]");
         }
       }
 
@@ -103,11 +114,7 @@ public class TestServer {
       if (server != null) {
         FitStaticServiceFactory.unbindService(this);
         server.stop();
-//        if(endpoint == null) {
-//          log.info("Stopped server");
-//        } else {
-//          log.info("Stopped server at endpoint {}", endpoint.toASCIIString());
-//        }
+        log.trace("Stopped server at endpoint " + getEndpoint().toASCIIString());
       }
     } catch (final Exception e) {
       throw new ServerException(e);

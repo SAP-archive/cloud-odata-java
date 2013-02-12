@@ -16,6 +16,7 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpPut;
 import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.entity.StringEntity;
+import org.apache.log4j.Logger;
 
 import com.sap.core.odata.api.commons.HttpStatusCodes;
 import com.sap.core.odata.api.edm.provider.EdmProvider;
@@ -34,6 +35,8 @@ import com.sap.core.odata.testutil.helper.StringHelper;
  * @author SAP AG
  */
 public class AbstractRefTest extends AbstractFitTest {
+  
+  private static final Logger LOG = Logger.getLogger(AbstractRefTest.class);
 
   protected static final String IMAGE_GIF = "image/gif";
   protected static final String IMAGE_JPEG = "image/jpeg";
@@ -84,6 +87,8 @@ public class AbstractRefTest extends AbstractFitTest {
       request.setHeader(HttpHeaders.CONTENT_TYPE, requestContentType);
     }
 
+    LOG.trace("Request url [" + request.getRequestLine() + "] for " + this.getClass().getSimpleName());
+    
     final HttpResponse response = getHttpClient().execute(request);
 
     assertNotNull(response);
