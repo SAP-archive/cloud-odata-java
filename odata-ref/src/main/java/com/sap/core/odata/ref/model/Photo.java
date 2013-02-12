@@ -5,6 +5,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
 
+/**
+ * @author SAP AG
+ */
 public class Photo {
   private static final String RESOURCE = "/darth.jpg";
   private static byte[] defaultImage;
@@ -18,13 +21,10 @@ public class Photo {
   private byte[] binaryData;
   private String content;
 
-  public Photo(int id) {
-    this(id, null);
-  }
-
-  public Photo(int id, final String name) {
+  public Photo(final int id, final String name, final String type) {
     this.id = id;
     setName(name);
+    setType(type);
   }
 
   static {

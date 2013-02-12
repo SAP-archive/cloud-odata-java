@@ -11,6 +11,9 @@ import org.junit.Test;
 
 import com.sap.core.odata.testutil.fit.BaseTest;
 
+/**
+ * @author SAP AG
+ */
 public class DataContainerTest extends BaseTest {
   
   private DataContainer dc = new DataContainer();
@@ -41,7 +44,7 @@ public class DataContainerTest extends BaseTest {
     dc.init();
     Set<Team> datenSet = dc.getTeamSet();
     int initSetSize = datenSet.size();
-    Team team3 = new Team(4, "Testteam 4", false);
+    Team team3 = new Team(4, "Testteam 4");
     datenSet.add(team3);
     assertNotSame(initSetSize, datenSet.size());
 

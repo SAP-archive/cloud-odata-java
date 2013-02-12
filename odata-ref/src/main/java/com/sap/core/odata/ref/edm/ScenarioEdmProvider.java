@@ -380,14 +380,13 @@ public class ScenarioEdmProvider extends EdmProvider {
   public FunctionImport getFunctionImport(final String entityContainer, final String name) throws ODataException {
     if (ENTITY_CONTAINER_1.equals(entityContainer))
       if (FUNCTION_IMPORT_1.equals(name)) {
-        List<FunctionImportParameter> parameters = new ArrayList<FunctionImportParameter>();
-        parameters.add(new FunctionImportParameter().setName("q").setType(EdmSimpleTypeKind.String)
-            .setFacets(new Facets().setNullable(true)));
         return new FunctionImport().setName(name)
             .setReturnType(new ReturnType().setTypeName(ENTITY_TYPE_1_1).setMultiplicity(EdmMultiplicity.MANY))
             .setEntitySet(ENTITY_SET_1_1)
             .setHttpMethod("GET")
-            .setParameters(parameters);
+            .setParameters(Arrays.asList(
+                new FunctionImportParameter().setName("q").setType(EdmSimpleTypeKind.String)
+                    .setFacets(new Facets().setNullable(true))));
 
       } else if (FUNCTION_IMPORT_2.equals(name)) {
         return new FunctionImport().setName(name)
@@ -410,20 +409,18 @@ public class ScenarioEdmProvider extends EdmProvider {
             .setHttpMethod("GET");
 
       } else if (FUNCTION_IMPORT_6.equals(name)) {
-        List<FunctionImportParameter> parameters = new ArrayList<FunctionImportParameter>();
-        parameters.add(new FunctionImportParameter().setName("Id").setType(EdmSimpleTypeKind.String)
-            .setFacets(new Facets().setNullable(false)));
         return new FunctionImport().setName(name)
             .setReturnType(new ReturnType().setTypeName(EdmSimpleTypeKind.Binary.getFullQualifiedName()).setMultiplicity(EdmMultiplicity.ONE))
             .setHttpMethod("GET")
-            .setParameters(parameters);
+            .setParameters(Arrays.asList(
+                new FunctionImportParameter().setName("Id").setType(EdmSimpleTypeKind.String)
+                    .setFacets(new Facets().setNullable(false))));
 
       } else if (FUNCTION_IMPORT_7.equals(name)) {
         return new FunctionImport().setName(name)
-            .setReturnType(new ReturnType().setTypeName(new FullQualifiedName(NAMESPACE_1, "Employee")).setMultiplicity(EdmMultiplicity.ZERO_TO_ONE))
+            .setReturnType(new ReturnType().setTypeName(ENTITY_TYPE_1_1).setMultiplicity(EdmMultiplicity.ZERO_TO_ONE))
             .setEntitySet(ENTITY_SET_1_1)
             .setHttpMethod("GET");
-
       }
 
     return null;
