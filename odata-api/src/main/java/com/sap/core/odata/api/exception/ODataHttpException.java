@@ -3,7 +3,7 @@ package com.sap.core.odata.api.exception;
 import com.sap.core.odata.api.commons.HttpStatusCodes;
 
 /**
- * {@link ODataMessageException} with HTTP status code.
+ * {@link ODataMessageException} with a HTTP status code.
  * @author SAP AG
  */
 public abstract class ODataHttpException extends ODataMessageException {

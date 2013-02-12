@@ -3,6 +3,7 @@ package com.sap.core.odata.api.exception;
 import com.sap.core.odata.api.commons.HttpStatusCodes;
 
 /**
+ * Exceptions of this class will result in a HTTP status 400 bad request
  * @author SAP AG
  */
 public class ODataBadRequestException extends ODataHttpException {

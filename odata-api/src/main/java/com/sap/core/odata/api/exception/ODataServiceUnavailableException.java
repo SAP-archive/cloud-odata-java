@@ -3,6 +3,7 @@ package com.sap.core.odata.api.exception;
 import com.sap.core.odata.api.commons.HttpStatusCodes;
 
 /**
+ * Exceptions of this class will result in a HTTP status 503 service unavailable
  * @author SAP AG
  */
 public class ODataServiceUnavailableException extends ODataHttpException {

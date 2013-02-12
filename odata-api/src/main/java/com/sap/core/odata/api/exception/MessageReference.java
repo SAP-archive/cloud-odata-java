@@ -6,10 +6,11 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * A {@link MessageReference} references to the used message for an
+ * APPLICATION DEVELOPERS: Please use {@link ODataApplicationException} to throw custom exceptions. This class is used inside the library only. 
+ * <p>A {@link MessageReference} references to the used message for an
  * {@link ODataMessageException} and its sub classes. It supports
  * internationalization and translation of exception messages.
- * Theses classes all contains a {@link MessageReference} object which
+ * <br>Theses classes  contain a {@link MessageReference} object which
  * can be mapped to a related key and message text in the resource bundles.
  * @author SAP AG
  */

@@ -1,8 +1,7 @@
 package com.sap.core.odata.api.exception;
 
 /**
- * Common checked exception for the <code>OData</code> library
- * and base exception for all <code>OData</code>-related exceptions.
+ * Base exception for all <code>OData</code>-related exceptions.
  * @author SAP AG
  */
 public class ODataException extends Exception {
