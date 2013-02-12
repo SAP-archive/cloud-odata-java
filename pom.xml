@@ -87,6 +87,12 @@
 								<head>Do not implement this interface due to compatibility reasons.</head>
 							</tag>
 						</tags>
+						<doctitle>
+							OData JPA Processor API Library
+						</doctitle>
+						<windowtitle>
+							OData JPA Processor API Library
+						</windowtitle>
 					</configuration>
 				</plugin>
 				<plugin>
