@@ -5,7 +5,7 @@ import com.sap.core.odata.api.exception.ODataBadRequestException;
 
 /**
  * Exception for violation of the OData URI construction rules,
- * resulting in a 400 Bad Request response
+ * resulting in a 400 Bad Request response.
  * @author SAP AG
  */
 public class UriSyntaxException extends ODataBadRequestException {
