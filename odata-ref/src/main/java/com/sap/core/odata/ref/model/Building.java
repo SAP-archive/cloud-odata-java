@@ -13,11 +13,7 @@ public class Building {
   private byte[] image;
   private List<Room> rooms = new ArrayList<Room>();
 
-  public Building(int id) {
-    this(id, null);
-  }
-
-  public Building(int id, final String name) {
+  public Building(final int id, final String name) {
     this.id = id;
     setName(name);
   }

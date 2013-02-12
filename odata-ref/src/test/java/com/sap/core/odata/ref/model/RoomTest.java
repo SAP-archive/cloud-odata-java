@@ -21,52 +21,45 @@ public class RoomTest extends BaseTest {
 
   @Test
   public void testId() {
-    Room room1 = new Room(1, NAME, VALUE_4);
-    String roomId = room1.getId();
-    assertNotNull(roomId);
+    Room room1 = new Room(1, NAME);
+    assertNotNull(room1.getId());
   }
 
   @Test
   public void testSeats() {
-    Room room1 = new Room(1);
+    Room room1 = new Room(1, null);
     room1.setSeats(VALUE_4);
-    int numberOfSeats = room1.getSeats();
-    assertEquals(VALUE_4, numberOfSeats);
+    assertEquals(VALUE_4, room1.getSeats());
   }
 
   @Test
   public void testVersion() {
-    Room room1 = new Room(1);
+    Room room1 = new Room(1, null);
     room1.setVersion(VALUE_VERSION_NR);
-    int roomVersion = room1.getVersion();
-    assertEquals(roomVersion, VALUE_VERSION_NR);
+    assertEquals(VALUE_VERSION_NR, room1.getVersion());
   }
 
   @Test
   public void testBuilding() {
-    Room room1 = new Room(1);
-    Building build1 = new Building(1);
+    Room room1 = new Room(1, null);
+    Building build1 = new Building(1, null);
     build1.getRooms().add(room1);
     room1.setBuilding(build1);
-    Building testBuild = room1.getBuilding();
-    assertEquals(build1, testBuild);
-    Room testRoom = build1.getRooms().get(0);
-    assertEquals(room1, testRoom);
+    assertEquals(build1, room1.getBuilding());
+    assertEquals(room1, build1.getRooms().get(0));
   }
 
   @Test
   public void testEmployees() {
-    Employee employee1 = new Employee(1);
-    Employee employee2 = new Employee(2);
+    Employee employee1 = new Employee(1, null);
+    Employee employee2 = new Employee(2, null);
     List<Employee> employeesList = Arrays.asList(employee1, employee2);
-    Room room1 = new Room(1);
+    Room room1 = new Room(1, null);
     room1.setEmployees(employeesList);
     employee1.setRoom(room1);
     employee2.setRoom(room1);
-    List<Employee> testList = room1.getEmployees();
-    assertEquals(testList, employeesList);
-    Room testRoom = employee1.getRoom();
-    assertEquals(room1, testRoom);
+    assertEquals(employeesList, room1.getEmployees());
+    assertEquals(room1, employee1.getRoom());
   }
 
 }

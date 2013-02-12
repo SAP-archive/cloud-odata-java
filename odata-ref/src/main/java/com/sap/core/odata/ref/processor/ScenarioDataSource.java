@@ -208,7 +208,7 @@ public class ScenarioDataSource implements ListsDataSource {
         throw new ODataNotFoundException(ODataNotFoundException.ENTITY);
       for (final Manager manager : dataContainer.getManagerSet())
         if (manager.getId().equals(parameters.get("Id")))
-          return manager.getImage();
+          return new BinaryData(manager.getImage(), manager.getImageType());
       throw new ODataNotFoundException(ODataNotFoundException.ENTITY);
 
     } else if (function.getName().equals("OldestEmployee")) {
@@ -309,30 +309,22 @@ public class ScenarioDataSource implements ListsDataSource {
   public Object newDataObject(final EdmEntitySet entitySet) throws ODataNotImplementedException, EdmException {
     if (ENTITYSET_1_1.equals(entitySet.getName())) {
       Employee employee = dataContainer.createEmployee();
-      employee.setEmployeeName("Employee " + employee.getId());
+      employee.setAge(0);
       employee.setLocation(new Location(null, null, null));
       return employee;
     } else if (ENTITYSET_1_2.equals(entitySet.getName())) {
-      Team team = dataContainer.createTeam();
-      team.setName("Team " + team.getId());
-      return team;
+      return dataContainer.createTeam();
     } else if (ENTITYSET_1_3.equals(entitySet.getName())) {
-      Room room = dataContainer.createRoom();
-      room.setName("Room " + room.getId());
-      return room;
+      return dataContainer.createRoom();
     } else if (ENTITYSET_1_4.equals(entitySet.getName())) {
       Manager manager = dataContainer.createManager();
-      manager.setEmployeeName("Employee " + manager.getId());
+      manager.setAge(0);
       manager.setLocation(new Location(null, null, null));
       return manager;
     } else if (ENTITYSET_1_5.equals(entitySet.getName())) {
-      Building building = dataContainer.createBuilding();
-      building.setName("Building " + building.getId());
-      return building;
+      return dataContainer.createBuilding();
     } else if (ENTITYSET_2_1.equals(entitySet.getName())) {
-      Photo photo = dataContainer.createPhoto();
-      photo.setType(HttpContentType.APPLICATION_OCTET_STREAM);
-      return photo;
+      return dataContainer.createPhoto(HttpContentType.APPLICATION_OCTET_STREAM);
     } else {
       throw new ODataNotImplementedException();
     }

@@ -11,31 +11,29 @@ import org.junit.Test;
 
 import com.sap.core.odata.testutil.fit.BaseTest;
 
+/**
+ * @author SAP AG
+ */
 public class BuildingTest extends BaseTest {
 
   private static final String VALUE_NAME = "bd01";
-
   private static final String VALUE_IMAGE = "String for convert";
 
   @Test
   public void testId() {
-    Building build1 = new Building(1);
-    String buildId = build1.getId();
-    assertNotNull(buildId);
+    Building build1 = new Building(1, null);
+    assertNotNull(build1.getId());
   }
 
   @Test
   public void testName() {
-    Building build1 = new Building(1);
-    // instanceCounter++;
-    build1.setName(VALUE_NAME);
-    String buildName = build1.getName();
-    assertEquals(VALUE_NAME, buildName);
+    Building build1 = new Building(1, VALUE_NAME);
+    assertEquals(VALUE_NAME, build1.getName());
   }
 
   @Test
   public void testImage() {
-    Building build1 = new Building(1);
+    Building build1 = new Building(1, null);
     final byte[] byteArray = VALUE_IMAGE.getBytes();
     build1.setImage(byteArray);
     byte[] testArray = build1.getImage();
@@ -46,13 +44,12 @@ public class BuildingTest extends BaseTest {
   @Test
   public void testRooms() {
     List<Room> list = new ArrayList<Room>();
-    list.add(new Room(1));
-    list.add(new Room(2));
-    list.add(new Room(3));
-    Building building1 = new Building(1);
+    list.add(new Room(1, null));
+    list.add(new Room(2, null));
+    list.add(new Room(3, null));
+    Building building1 = new Building(1, null);
     building1.setRooms(list);
-    List<Room> testList = building1.getRooms();
-    assertEquals(list, testList);
+    assertEquals(list, building1.getRooms());
   }
 
 }

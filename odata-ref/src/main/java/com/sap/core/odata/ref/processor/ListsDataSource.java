@@ -52,7 +52,9 @@ public interface ListsDataSource {
    * @param keys  the key of the returned entity set, as map of key names to key values,
    *              if the return type of the function import is a collection of entities
    *              (optional)
-   * @return the requested data object, either a list or a single object
+   * @return the requested data object, either a list or a single object;
+   *         if the function import's return type is of type <code>Binary</code>,
+   *         the returned object(s) must be of type {@link BinaryData}
    */
   Object readData(EdmFunctionImport function, Map<String, Object> parameters, Map<String, Object> keys) throws ODataNotImplementedException, ODataNotFoundException, EdmException, ODataApplicationException;
 
@@ -138,6 +140,9 @@ public interface ListsDataSource {
    */
   void writeRelation(EdmEntitySet sourceEntitySet, Object sourceData, EdmEntitySet targetEntitySet, Map<String, Object> targetKeys) throws ODataNotImplementedException, ODataNotFoundException, EdmException, ODataApplicationException;
 
+  /**
+   * Container to store binary data (as byte array) and the associated MIME type.
+   */
   public class BinaryData {
     private final byte[] data;
     private final String mimeType;
