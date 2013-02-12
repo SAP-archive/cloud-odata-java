@@ -22,7 +22,6 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.log4j.Logger;
 import org.junit.AfterClass;
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -52,8 +51,10 @@ import com.sap.core.odata.testutil.server.TestServer;
 public class ContentNegotiationAcceptHeaderTest extends BaseTest {
   
   private static final Logger LOG = Logger.getLogger(ContentNegotiationAcceptHeaderTest.class);
-  
-  final static List<String> ACCEPT_HEADER_VALUES = Arrays.asList(
+
+  private static final int MILLISECONDS_BETWEEN_GET_REQUESTS = 10;
+
+  private final static List<String> ACCEPT_HEADER_VALUES = Arrays.asList(
       "", // for request with none 'Accept-Header' set
       "text/plain",
       "text/plain; charset=utf-8",
@@ -103,12 +104,6 @@ public class ContentNegotiationAcceptHeaderTest extends BaseTest {
   public static void afterClass() {
     server.stopServer();
   }
-  
-  @Before
-  public void before() throws InterruptedException {
-    TimeUnit.MILLISECONDS.sleep(250);
-  }
-
   
   //
   //
@@ -683,6 +678,7 @@ public class ContentNegotiationAcceptHeaderTest extends BaseTest {
         }
       } finally {
         if(get != null) {
+          TimeUnit.MILLISECONDS.sleep(MILLISECONDS_BETWEEN_GET_REQUESTS);
           get.releaseConnection();
           LOG.trace("Released connection [" + requestLine + "]");
         }
