@@ -14,7 +14,6 @@ import java.util.Locale;
 import java.util.Map;
 
 import com.sap.core.odata.api.commons.HttpContentType;
-import com.sap.core.odata.api.commons.HttpHeaders;
 import com.sap.core.odata.api.commons.HttpStatusCodes;
 import com.sap.core.odata.api.commons.InlineCount;
 import com.sap.core.odata.api.edm.Edm;
@@ -37,6 +36,7 @@ import com.sap.core.odata.api.edm.EdmTypeKind;
 import com.sap.core.odata.api.ep.EntityProvider;
 import com.sap.core.odata.api.ep.EntityProviderException;
 import com.sap.core.odata.api.ep.EntityProviderProperties;
+import com.sap.core.odata.api.ep.EntityProviderProperties.ODataEntityProviderPropertiesBuilder;
 import com.sap.core.odata.api.ep.entry.ODataEntry;
 import com.sap.core.odata.api.exception.ODataBadRequestException;
 import com.sap.core.odata.api.exception.ODataException;
@@ -253,7 +253,7 @@ public class ListsProcessor extends ODataSingleProcessor {
 
     final EdmEntitySet entitySet = uriInfo.getTargetEntitySet();
     final Map<String, Object> values = getStructuralTypeValueMap(data, entitySet.getEntityType());
-    final ODataResponse response = writeEntry(entitySet, values, contentType);
+    final ODataResponse response = writeEntry(entitySet, values, contentType, false);
 
     return ODataResponse.fromResponse(response).status(HttpStatusCodes.OK).build();
   }
@@ -307,16 +307,9 @@ public class ListsProcessor extends ODataSingleProcessor {
     }
 
     Map<String, Object> values = getStructuralTypeValueMap(data, entityType);
-    final ODataResponse response = writeEntry(entitySet, values, contentType);
+    final ODataResponse response = writeEntry(entitySet, values, contentType, true);
 
-    // TODO: set correct Location header
-    final ODataContext context = getContext();
-    final String location = context.getPathInfo().getServiceRoot() + "";
-
-    return ODataResponse.fromResponse(response)
-        .status(HttpStatusCodes.CREATED)
-        .header(HttpHeaders.LOCATION, location)
-        .build();
+    return ODataResponse.fromResponse(response).status(HttpStatusCodes.CREATED).build();
   }
 
   @Override
@@ -813,14 +806,16 @@ public class ListsProcessor extends ODataSingleProcessor {
     return data;
   }
 
-  private ODataResponse writeEntry(final EdmEntitySet entitySet, final Map<String, Object> values, final String contentType) throws ODataException, EntityProviderException {
+  private ODataResponse writeEntry(final EdmEntitySet entitySet, final Map<String, Object> values, final String contentType, final boolean hasLocationHeader) throws ODataException, EntityProviderException {
     ODataContext context = getContext();
-    final EntityProviderProperties entryProperties = EntityProviderProperties
-        .serviceRoot(context.getPathInfo().getServiceRoot()).build();
+    ODataEntityProviderPropertiesBuilder entryProperties = EntityProviderProperties
+        .serviceRoot(context.getPathInfo().getServiceRoot());
+    if (hasLocationHeader)
+      entryProperties = entryProperties.hasLocationHeader();
 
     final int timingHandle = context.startRuntimeMeasurement("EntityProvider", "writeEntry");
 
-    final ODataResponse response = EntityProvider.writeEntry(contentType, entitySet, values, entryProperties);
+    final ODataResponse response = EntityProvider.writeEntry(contentType, entitySet, values, entryProperties.build());
 
     context.stopRuntimeMeasurement(timingHandle);
 

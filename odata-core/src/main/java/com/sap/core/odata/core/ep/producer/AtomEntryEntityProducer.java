@@ -31,6 +31,7 @@ import com.sap.core.odata.core.ep.util.FormatXml;
 public class AtomEntryEntityProducer {
 
   private String etag;
+  private String location;
   private EntityProviderProperties properties;
 
   public AtomEntryEntityProducer(EntityProviderProperties properties) throws EntityProviderException {
@@ -233,8 +234,8 @@ public class AtomEntryEntityProducer {
   private void appendAtomMandatoryParts(XMLStreamWriter writer, EntityInfoAggregator eia, Map<String, Object> data) throws EntityProviderException {
     try {
       writer.writeStartElement(FormatXml.ATOM_ID);
-      String entryKey = this.createEntryKey(eia, data, false);
-      writer.writeCharacters(createAtomId(eia, entryKey));
+      location = createAtomId(eia, createEntryKey(eia, data, false));
+      writer.writeCharacters(location);
       writer.writeEndElement();
 
       writer.writeStartElement(FormatXml.ATOM_TITLE);
@@ -431,5 +432,9 @@ public class AtomEntryEntityProducer {
 
   public String getETag() {
     return etag;
+  }
+
+  public String getLocation() {
+    return location;
   }
 }

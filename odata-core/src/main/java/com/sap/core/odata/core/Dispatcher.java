@@ -82,11 +82,10 @@ public class Dispatcher {
             && uriInfo.getExpand().isEmpty()
             && uriInfo.getSelect().isEmpty())
           if (uriInfo.getNavigationSegments().size() <= 1)
-            if(isValidRequestContentType(requestContentType)) {
+            if (isValidRequestContentType(requestContentType))
               return service.getEntitySetProcessor().createEntity(uriInfo, content, requestContentType, contentType);
-            } else {
-              throw new ODataUnsupportedMediaTypeException(ODataUnsupportedMediaTypeException.NOT_SUPPORTED.addContent(requestContentType));              
-            }
+            else
+              throw new ODataUnsupportedMediaTypeException(ODataUnsupportedMediaTypeException.NOT_SUPPORTED.addContent(requestContentType));
           else
             throw new ODataBadRequestException(ODataBadRequestException.NOTSUPPORTED);
         else
@@ -103,15 +102,13 @@ public class Dispatcher {
       case PATCH:
       case MERGE:
         final boolean merge = !(method == ODataHttpMethod.PUT);
-        if (isValidRequestContentType(requestContentType)) {
-          if (uriInfo.getFormat() == null && uriInfo.getExpand().isEmpty() && uriInfo.getSelect().isEmpty()) {
+        if (isValidRequestContentType(requestContentType))
+          if (uriInfo.getFormat() == null && uriInfo.getExpand().isEmpty() && uriInfo.getSelect().isEmpty())
             return service.getEntityProcessor().updateEntity(uriInfo, content, requestContentType, merge, contentType);
-          } else {
+          else
             throw new ODataMethodNotAllowedException(ODataMethodNotAllowedException.DISPATCH);
-          }
-        } else {
+        else
           throw new ODataUnsupportedMediaTypeException(ODataUnsupportedMediaTypeException.NOT_SUPPORTED.addContent(requestContentType));
-        }
       case DELETE:
         if (uriInfo.getFormat() == null && uriInfo.getFilter() == null
             && uriInfo.getExpand().isEmpty() && uriInfo.getSelect().isEmpty())
@@ -318,9 +315,9 @@ public class Dispatcher {
   }
 
   private boolean isValidRequestContentType(final String requestContentType) {
-    if(requestContentType == null) {
+    if (requestContentType == null)
       return false;
-    }
+
     return ContentType.create(requestContentType).hasMatch(ALLOWED_REQUEST_CONTENT_TYPES);
   }
 
