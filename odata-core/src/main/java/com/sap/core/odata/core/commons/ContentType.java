@@ -337,7 +337,7 @@ public class ContentType {
    * (checked with {@link #compareWildcardCounts(ContentType)}.
    * If no match (none {@link ContentType} in list is equal to this {@link ContentType}) is found <code>NULL</code> is returned.
    * 
-   * @param toMatchContentTypes
+   * @param toMatchContentTypes list of {@link ContentType}s which are matches against this {@link ContentType}
    * @return best matched content type in list or <code>NULL</code> if none content type match to this content type instance
    */
   public ContentType match(List<ContentType> toMatchContentTypes) {
@@ -352,6 +352,19 @@ public class ContentType {
     }
     return null;
   }
+  
+  /**
+   * Check if a valid match for this {@link ContentType} exists in given list.
+   * For more detail what a valid match is see {@link #match(List)}.
+   * 
+   * @param toMatchContentTypes list of {@link ContentType}s which are matches against this {@link ContentType}
+   * @return <code>true</code> if a matching content type was found in given list 
+   *          or <code>false</code> if none matching content type match was found
+   */
+  public boolean hasMatch(List<ContentType> toMatchContentTypes) {
+    return match(toMatchContentTypes) != null;
+  }
+
 
   /**
    * Compare wildcards counts/weights of both {@link ContentType}.
