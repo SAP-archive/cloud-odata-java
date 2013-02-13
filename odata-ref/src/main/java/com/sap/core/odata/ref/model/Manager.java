@@ -14,10 +14,6 @@ public class Manager extends Employee {
     super(id, name);
   }
 
-  public void setEmployees(final List<Employee> employees) {
-    this.employees = employees;
-  }
-
   public List<Employee> getEmployees() {
     return employees;
   }

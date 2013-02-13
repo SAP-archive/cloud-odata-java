@@ -55,10 +55,6 @@ public class Room {
     return building;
   }
 
-  public void setEmployees(final List<Employee> employeesList) {
-    this.employees = employeesList;
-  }
-
   public List<Employee> getEmployees() {
     return employees;
   }
@@ -70,12 +66,8 @@ public class Room {
 
   @Override
   public boolean equals(final Object obj) {
-    if (this == obj)
-      return true;
-    if (obj == null || getClass() != obj.getClass())
-      return false;
-
-    return id == ((Room) obj).id;
+    return this == obj
+        || obj != null && getClass() == obj.getClass() && id == ((Room) obj).id;
   }
 
   @Override

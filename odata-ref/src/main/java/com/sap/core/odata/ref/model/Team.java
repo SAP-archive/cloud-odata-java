@@ -37,10 +37,6 @@ public class Team {
     this.isScrumTeam = isScrumTeam;
   }
 
-  public void setEmployees(final List<Employee> employees) {
-    this.employees = employees;
-  }
-
   public List<Employee> getEmployees() {
     return employees;
   }
@@ -52,12 +48,8 @@ public class Team {
 
   @Override
   public boolean equals(final Object obj) {
-    if (this == obj)
-      return true;
-    if (obj == null || getClass() != obj.getClass())
-      return false;
-
-    return id == ((Team) obj).id;
+    return this == obj
+        || obj != null && getClass() == obj.getClass() && id == ((Team) obj).id;
   }
 
   @Override

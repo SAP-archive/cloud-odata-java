@@ -7,7 +7,6 @@ import static org.junit.Assert.assertNotNull;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Arrays;
 import java.util.Calendar;
 
 import org.junit.Test;
@@ -56,7 +55,7 @@ public class EmployeeTest extends BaseTest {
   public void testManager() {
     Employee employee1 = new Employee(1, null);
     Manager manager1 = new Manager(2, null);
-    manager1.setEmployees(Arrays.asList(employee1));
+    manager1.getEmployees().add(employee1);
     employee1.setManager(manager1);
     assertEquals(manager1, employee1.getManager());
     assertEquals(employee1, manager1.getEmployees().get(0));
@@ -66,7 +65,7 @@ public class EmployeeTest extends BaseTest {
   public void testTeam() {
     Employee employee1 = new Employee(1, null);
     final Team team1 = new Team(1, null);
-    team1.setEmployees(Arrays.asList(employee1));
+    team1.getEmployees().add(employee1);
     employee1.setTeam(team1);
     assertEquals(team1, employee1.getTeam());
     assertEquals(employee1, team1.getEmployees().get(0));
@@ -76,7 +75,7 @@ public class EmployeeTest extends BaseTest {
   public void testRoom() {
     Employee employee1 = new Employee(1, null);
     Room room1 = new Room(1, null);
-    room1.setEmployees(Arrays.asList(employee1));
+    room1.getEmployees().add(employee1);
     employee1.setRoom(room1);
     assertEquals(room1, employee1.getRoom());
     assertEquals(employee1, room1.getEmployees().get(0));

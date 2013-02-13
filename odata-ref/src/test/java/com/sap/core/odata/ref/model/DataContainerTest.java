@@ -1,11 +1,11 @@
 package com.sap.core.odata.ref.model;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotSame;
-import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
-import java.util.Set;
+import java.util.List;
 
 import org.junit.Test;
 
@@ -16,22 +16,22 @@ import com.sap.core.odata.testutil.fit.BaseTest;
  */
 public class DataContainerTest extends BaseTest {
   
-  private DataContainer dc = new DataContainer();
+  private DataContainer dataContainer = new DataContainer();
   private static final String NAME = "Other name for team";
 
   @Test
   public void testReset() {
-    dc.init();
-    Set<Team> datenSet = dc.getTeamSet();
-    for (Team team : datenSet) {
+    dataContainer.init();
+    List<Team> data = dataContainer.getTeams();
+    for (Team team : data) {
       if (team.getId().equals("2")) {
         team.setName(NAME);
         assertEquals(team.getName(), NAME);
       }
     }
-    dc.reset();
-    datenSet = dc.getTeamSet();
-    for (Team team2 : datenSet) {
+    dataContainer.reset();
+    data = dataContainer.getTeams();
+    for (Team team2 : data) {
       if (team2.getId() == "2") {
         assertEquals(team2.getName(), "Team 2");
         assertNotSame(team2.getName(), NAME);
@@ -41,35 +41,27 @@ public class DataContainerTest extends BaseTest {
 
   @Test
   public void testReset2() {
-    dc.init();
-    Set<Team> datenSet = dc.getTeamSet();
-    int initSetSize = datenSet.size();
+    dataContainer.init();
+    List<Team> data = dataContainer.getTeams();
+    int initSize = data.size();
     Team team3 = new Team(4, "Testteam 4");
-    datenSet.add(team3);
-    assertNotSame(initSetSize, datenSet.size());
+    data.add(team3);
+    assertTrue(initSize != data.size());
 
-    dc.reset();
-    datenSet = dc.getTeamSet();
-    assertSame(initSetSize, datenSet.size());
+    dataContainer.reset();
+    data = dataContainer.getTeams();
+    assertEquals(initSize, data.size());
   }
 
   @Test
   public void testInit() {
-    dc.init();
-    Set<?> set = dc.getEmployeeSet();
-    assertTrue(!set.isEmpty());
-
-    set = dc.getPhotoSet();
-    assertTrue(!set.isEmpty());
-
-    set = dc.getBuildingSet();
-    assertTrue(!set.isEmpty());
-
-    set = dc.getRoomSet();
-    assertTrue(!set.isEmpty());
-
-    set = dc.getTeamSet();
-    assertTrue(!set.isEmpty());
+    dataContainer.init();
+    assertFalse(dataContainer.getEmployees().isEmpty());
+    assertFalse(dataContainer.getTeams().isEmpty());
+    assertFalse(dataContainer.getRooms().isEmpty());
+    assertFalse(dataContainer.getManagers().isEmpty());
+    assertFalse(dataContainer.getBuildings().isEmpty());
+    assertFalse(dataContainer.getPhotos().isEmpty());
   }
 
 }

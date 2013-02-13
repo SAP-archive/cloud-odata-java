@@ -45,10 +45,6 @@ public class Building {
     return rooms;
   }
 
-  public void setRooms(final List<Room> listOfRooms) {
-    this.rooms = listOfRooms;
-  }
-
   @Override
   public int hashCode() {
     return id;
@@ -56,12 +52,8 @@ public class Building {
 
   @Override
   public boolean equals(final Object obj) {
-    if (this == obj)
-      return true;
-    if (obj == null || getClass() != obj.getClass())
-      return false;
-
-    return (id == ((Building) obj).id);
+    return this == obj
+        || obj != null && getClass() == obj.getClass() && id == ((Building) obj).id;
   }
 
   @Override

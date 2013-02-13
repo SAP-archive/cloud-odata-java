@@ -43,7 +43,7 @@ public class TeamTest extends BaseTest {
     Employee employee1 = new Employee(1, null);
     Employee employee2 = new Employee(2, null);
     List<Employee> testList = Arrays.asList(employee1, employee2);
-    team1.setEmployees(testList);
+    team1.getEmployees().addAll(testList);
     for (Employee emp : testList)
       emp.setTeam(team1);
     assertEquals(testList, team1.getEmployees());

@@ -111,12 +111,8 @@ public class Photo {
 
   @Override
   public boolean equals(final Object obj) {
-    if (this == obj)
-      return true;
-    if (obj == null || getClass() != obj.getClass())
-      return false;
-
-    return id == ((Photo) obj).id;
+    return this == obj
+        || obj != null && getClass() == obj.getClass() && id == ((Photo) obj).id;
   }
 
   @Override
@@ -126,6 +122,8 @@ public class Photo {
         + "\"Type\":\"" + type + "\","
         + "\"ImageUrl\":\"" + imageUrl + "\","
         + "\"Image\":\"" + Arrays.toString(image) + "\","
+        + "\"ImageType\":\"" + imageType + "\","
+        + "\"Content:\"" + content + "\","
         + "\"BinaryData\":\"" + Arrays.toString(binaryData) + "\"}";
   }
 }

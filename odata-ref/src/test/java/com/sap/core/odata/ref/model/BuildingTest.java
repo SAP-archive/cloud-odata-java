@@ -4,7 +4,7 @@ import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.junit.Test;
@@ -43,12 +43,11 @@ public class BuildingTest extends BaseTest {
 
   @Test
   public void testRooms() {
-    List<Room> list = new ArrayList<Room>();
-    list.add(new Room(1, null));
-    list.add(new Room(2, null));
-    list.add(new Room(3, null));
+    List<Room> list = Arrays.asList(new Room(1, null), new Room(2, null), new Room(3, null));
     Building building1 = new Building(1, null);
-    building1.setRooms(list);
+    building1.getRooms().add(list.get(0));
+    building1.getRooms().add(list.get(1));
+    building1.getRooms().add(list.get(2));
     assertEquals(list, building1.getRooms());
   }
 
