@@ -4,7 +4,9 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.junit.Ignore;
@@ -489,5 +491,72 @@ public class ContentTypeTest extends BaseTest {
     ContentType t2 = ContentType.create("aaa/bbb;charset=c2");
 
     assertFalse(t1.equals(t2));
+  }
+  
+  @Test
+  public void testMatchSimple() {
+    ContentType m1 = ContentType.create("aaa/bbb;x=z;a=b");
+    ContentType m2 = ContentType.create("aaa/ccc");
+    ContentType m3 = ContentType.create("foo/me");
+    List<ContentType> toMatchContentTypes = new ArrayList<ContentType>();
+    toMatchContentTypes.add(m1);
+    toMatchContentTypes.add(m2);
+    toMatchContentTypes.add(m3);
+
+    ContentType check = ContentType.create("foo/me");
+
+    ContentType match = check.match(toMatchContentTypes);
+    
+    assertEquals(ContentType.create("foo/me"), match);
+    assertEquals("foo/me", match.toContentTypeString());
+  }
+
+  @Test
+  public void testMatchNoMatch() {
+    ContentType m1 = ContentType.create("aaa/bbb;x=z;a=b");
+    ContentType m2 = ContentType.create("aaa/ccc");
+    ContentType m3 = ContentType.create("foo/me");
+    List<ContentType> toMatchContentTypes = new ArrayList<ContentType>();
+    toMatchContentTypes.add(m1);
+    toMatchContentTypes.add(m2);
+    toMatchContentTypes.add(m3);
+
+    ContentType check = ContentType.create("for/me");
+
+    ContentType match = check.match(toMatchContentTypes);
+
+    assertTrue(match == null);
+  }
+
+  @Test
+  public void testHasMatchSimple() {
+    ContentType m1 = ContentType.create("aaa/bbb;x=z;a=b");
+    ContentType m2 = ContentType.create("aaa/ccc");
+    ContentType m3 = ContentType.create("foo/me");
+    List<ContentType> toMatchContentTypes = new ArrayList<ContentType>();
+    toMatchContentTypes.add(m1);
+    toMatchContentTypes.add(m2);
+    toMatchContentTypes.add(m3);
+
+    ContentType check = ContentType.create("foo/me");
+
+    boolean match = check.hasMatch(toMatchContentTypes);
+    assertTrue(match);
+  }
+
+  @Test
+  public void testHasMatchNoMatch() {
+    ContentType m1 = ContentType.create("aaa/bbb;x=z;a=b");
+    ContentType m2 = ContentType.create("aaa/ccc");
+    ContentType m3 = ContentType.create("foo/me");
+    List<ContentType> toMatchContentTypes = new ArrayList<ContentType>();
+    toMatchContentTypes.add(m1);
+    toMatchContentTypes.add(m2);
+    toMatchContentTypes.add(m3);
+
+    ContentType check = ContentType.create("for/me");
+
+    boolean match = check.hasMatch(toMatchContentTypes);
+    assertFalse(match);
   }
 }

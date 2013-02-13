@@ -1,6 +1,8 @@
 package com.sap.core.odata.core;
 
 import java.io.InputStream;
+import java.util.Arrays;
+import java.util.List;
 
 import com.sap.core.odata.api.ODataService;
 import com.sap.core.odata.api.edm.EdmEntityType;
@@ -9,6 +11,7 @@ import com.sap.core.odata.api.edm.EdmProperty;
 import com.sap.core.odata.api.exception.ODataBadRequestException;
 import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.api.exception.ODataMethodNotAllowedException;
+import com.sap.core.odata.api.exception.ODataUnsupportedMediaTypeException;
 import com.sap.core.odata.api.processor.ODataProcessor;
 import com.sap.core.odata.api.processor.ODataResponse;
 import com.sap.core.odata.api.processor.part.BatchProcessor;
@@ -25,6 +28,7 @@ import com.sap.core.odata.api.processor.part.FunctionImportValueProcessor;
 import com.sap.core.odata.api.processor.part.MetadataProcessor;
 import com.sap.core.odata.api.processor.part.ServiceDocumentProcessor;
 import com.sap.core.odata.api.uri.UriInfo;
+import com.sap.core.odata.core.commons.ContentType;
 import com.sap.core.odata.core.commons.ODataHttpMethod;
 import com.sap.core.odata.core.exception.ODataRuntimeException;
 import com.sap.core.odata.core.uri.UriInfoImpl;
@@ -35,6 +39,14 @@ import com.sap.core.odata.core.uri.UriInfoImpl;
  */
 public class Dispatcher {
 
+  private static final List<ContentType> ALLOWED_REQUEST_CONTENT_TYPES = Arrays.asList(
+      ContentType.TEXT_PLAIN, ContentType.TEXT_PLAIN_CS_UTF_8,
+      ContentType.APPLICATION_XML, ContentType.APPLICATION_XML_CS_UTF_8,
+      ContentType.APPLICATION_ATOM_XML, ContentType.APPLICATION_ATOM_XML_CS_UTF_8,
+      ContentType.APPLICATION_ATOM_XML_ENTRY, ContentType.APPLICATION_ATOM_XML_ENTRY_CS_UTF_8
+//      ContentType.APPLICATION_JSON,
+//      ContentType.APPLICATION_JSON_CS_UTF_8
+      );
   private final ODataService service;
 
   public Dispatcher(ODataService service) {
@@ -70,7 +82,11 @@ public class Dispatcher {
             && uriInfo.getExpand().isEmpty()
             && uriInfo.getSelect().isEmpty())
           if (uriInfo.getNavigationSegments().size() <= 1)
-            return service.getEntitySetProcessor().createEntity(uriInfo, content, requestContentType, contentType);
+            if(isValidRequestContentType(requestContentType)) {
+              return service.getEntitySetProcessor().createEntity(uriInfo, content, requestContentType, contentType);
+            } else {
+              throw new ODataUnsupportedMediaTypeException(ODataUnsupportedMediaTypeException.NOT_SUPPORTED.addContent(requestContentType));              
+            }
           else
             throw new ODataBadRequestException(ODataBadRequestException.NOTSUPPORTED);
         else
@@ -87,11 +103,15 @@ public class Dispatcher {
       case PATCH:
       case MERGE:
         final boolean merge = !(method == ODataHttpMethod.PUT);
-        if (uriInfo.getFormat() == null
-            && uriInfo.getExpand().isEmpty() && uriInfo.getSelect().isEmpty())
-          return service.getEntityProcessor().updateEntity(uriInfo, content, requestContentType, merge, contentType);
-        else
-          throw new ODataMethodNotAllowedException(ODataMethodNotAllowedException.DISPATCH);
+        if (isValidRequestContentType(requestContentType)) {
+          if (uriInfo.getFormat() == null && uriInfo.getExpand().isEmpty() && uriInfo.getSelect().isEmpty()) {
+            return service.getEntityProcessor().updateEntity(uriInfo, content, requestContentType, merge, contentType);
+          } else {
+            throw new ODataMethodNotAllowedException(ODataMethodNotAllowedException.DISPATCH);
+          }
+        } else {
+          throw new ODataUnsupportedMediaTypeException(ODataUnsupportedMediaTypeException.NOT_SUPPORTED.addContent(requestContentType));
+        }
       case DELETE:
         if (uriInfo.getFormat() == null && uriInfo.getFilter() == null
             && uriInfo.getExpand().isEmpty() && uriInfo.getSelect().isEmpty())
@@ -295,6 +315,13 @@ public class Dispatcher {
     default:
       throw new ODataRuntimeException("Unknown or not implemented URI type: " + uriInfo.getUriType());
     }
+  }
+
+  private boolean isValidRequestContentType(final String requestContentType) {
+    if(requestContentType == null) {
+      return false;
+    }
+    return ContentType.create(requestContentType).hasMatch(ALLOWED_REQUEST_CONTENT_TYPES);
   }
 
   private EdmProperty getProperty(final UriInfo uriInfo) {
