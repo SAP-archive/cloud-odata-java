@@ -55,7 +55,7 @@ public class RoomTest extends BaseTest {
     Employee employee2 = new Employee(2, null);
     List<Employee> employeesList = Arrays.asList(employee1, employee2);
     Room room1 = new Room(1, null);
-    room1.setEmployees(employeesList);
+    room1.getEmployees().addAll(employeesList);
     employee1.setRoom(room1);
     employee2.setRoom(room1);
     assertEquals(employeesList, room1.getEmployees());

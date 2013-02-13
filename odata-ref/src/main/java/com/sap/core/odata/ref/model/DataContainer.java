@@ -1,8 +1,8 @@
 package com.sap.core.odata.ref.model;
 
+import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.List;
 import java.util.TimeZone;
 
 /**
@@ -13,12 +13,12 @@ public class DataContainer {
 
   private static final String IMAGE_JPEG = "image/jpeg";
 
-  private Set<Employee> employeeSet = new HashSet<Employee>();
-  private Set<Team> teamSet = new HashSet<Team>();
-  private Set<Room> roomSet = new HashSet<Room>();
-  private Set<Manager> managerSet = new HashSet<Manager>();
-  private Set<Building> buildingSet = new HashSet<Building>();
-  private Set<Photo> photoSet = new HashSet<Photo>();
+  private List<Employee> employees = new ArrayList<Employee>();
+  private List<Team> teams = new ArrayList<Team>();
+  private List<Room> rooms = new ArrayList<Room>();
+  private List<Manager> managers = new ArrayList<Manager>();
+  private List<Building> buildings = new ArrayList<Building>();
+  private List<Photo> photos = new ArrayList<Photo>();
   private int employeeId = 0;
   private int teamId = 0;
   private int roomId = 0;
@@ -29,25 +29,25 @@ public class DataContainer {
     // ------------- Teams ---------------
     Team team1 = createTeam();
     team1.setScrumTeam(false);
-    teamSet.add(team1);
+    teams.add(team1);
 
     Team team2 = createTeam();
     team2.setScrumTeam(true);
-    teamSet.add(team2);
+    teams.add(team2);
 
     Team team3 = createTeam();
     team3.setScrumTeam(false);
-    teamSet.add(team3);
+    teams.add(team3);
 
     // ------------- Buildings ---------------
     Building building1 = createBuilding();
-    buildingSet.add(building1);
+    buildings.add(building1);
 
     Building building2 = createBuilding();
-    buildingSet.add(building2);
+    buildings.add(building2);
 
     Building building3 = createBuilding();
-    buildingSet.add(building3);
+    buildings.add(building3);
 
     // ------------- Rooms ---------------
     Room room1 = createRoom();
@@ -55,21 +55,21 @@ public class DataContainer {
     room1.setBuilding(building1);
     building1.getRooms().add(room1);
     room1.setVersion(1);
-    roomSet.add(room1);
+    rooms.add(room1);
 
     Room room2 = createRoom();
     room2.setSeats(5);
     room2.setBuilding(building2);
     building2.getRooms().add(room2);
     room2.setVersion(2);
-    roomSet.add(room2);
+    rooms.add(room2);
 
     Room room3 = createRoom();
     room3.setSeats(4);
     room3.setBuilding(building2);
     building2.getRooms().add(room3);
     room3.setVersion(3);
-    roomSet.add(room3);
+    rooms.add(room3);
 
     for (int i = 4; i <= 103; i++) {
       Room roomN = createRoom();
@@ -77,7 +77,7 @@ public class DataContainer {
       roomN.setBuilding(building3);
       building3.getRooms().add(roomN);
       roomN.setVersion(1);
-      roomSet.add(roomN);
+      rooms.add(roomN);
     }
 
     // ------------- Employees and Managers ------------
@@ -95,8 +95,8 @@ public class DataContainer {
     emp1.setImageUri("Employees('1')/$value");
     emp1.setImage("/male_1_WinterW.jpg");
     emp1.setImageType(IMAGE_JPEG);
-    employeeSet.add(emp1);
-    managerSet.add(emp1);
+    employees.add(emp1);
+    managers.add(emp1);
 
     Employee emp2 = createEmployee();
     emp2.setEmployeeName("Frederic Fall");
@@ -112,7 +112,7 @@ public class DataContainer {
     emp2.setImageUri("Employees('2')/$value");
     emp2.setImage("/male_2_FallF.jpg");
     emp2.setImageType(IMAGE_JPEG);
-    employeeSet.add(emp2);
+    employees.add(emp2);
 
     Manager emp3 = createManager();
     emp3.setEmployeeName("Jonathan Smith");
@@ -128,8 +128,8 @@ public class DataContainer {
     emp3.setImageUri("Employees('3')/$value");
     emp3.setImage("/male_3_SmithJo.jpg");
     emp3.setImageType(IMAGE_JPEG);
-    employeeSet.add(emp3);
-    managerSet.add(emp3);
+    employees.add(emp3);
+    managers.add(emp3);
 
     Employee emp4 = createEmployee();
     emp4.setEmployeeName("Peter Burke");
@@ -145,7 +145,7 @@ public class DataContainer {
     emp4.setImageUri("Employees('4')/$value");
     emp4.setImage("/male_4_BurkeP.jpg");
     emp4.setImageType(IMAGE_JPEG);
-    employeeSet.add(emp4);
+    employees.add(emp4);
 
     Employee emp5 = createEmployee();
     emp5.setEmployeeName("John Field");
@@ -161,7 +161,7 @@ public class DataContainer {
     emp5.setImageUri("Employees('5')/$value");
     emp5.setImage("/male_5_FieldJ.jpg");
     emp5.setImageType(IMAGE_JPEG);
-    employeeSet.add(emp5);
+    employees.add(emp5);
 
     Employee emp6 = createEmployee();
     emp6.setEmployeeName("Susan Bay");
@@ -177,22 +177,22 @@ public class DataContainer {
     emp6.setImageUri("Employees('6')/$value");
     emp6.setImage("/female_6_BaySu.jpg");
     emp6.setImageType(IMAGE_JPEG);
-    employeeSet.add(emp6);
+    employees.add(emp6);
 
     // ------------- Photos ---------------
     Photo photo1 = createPhoto("image/png");
     photo1.setContent("Образ");
-    photoSet.add(photo1);
+    photos.add(photo1);
 
     Photo photo2 = createPhoto("image/bmp");
-    photoSet.add(photo2);
+    photos.add(photo2);
 
     Photo photo3 = createPhoto(IMAGE_JPEG);
-    photoSet.add(photo3);
+    photos.add(photo3);
 
     Photo photo4 = createPhoto("foo");
     photo4.setContent("Продукт");
-    photoSet.add(photo4);
+    photos.add(photo4);
   }
 
   private Calendar generateDate(final int year, final int month, final int day) {
@@ -228,37 +228,37 @@ public class DataContainer {
     return new Photo(++photoId, "Photo " + photoId, type);
   }
 
-  public Set<Employee> getEmployeeSet() {
-    return employeeSet;
+  public List<Employee> getEmployees() {
+    return employees;
   }
 
-  public Set<Team> getTeamSet() {
-    return teamSet;
+  public List<Team> getTeams() {
+    return teams;
   }
 
-  public Set<Room> getRoomSet() {
-    return roomSet;
+  public List<Room> getRooms() {
+    return rooms;
   }
 
-  public Set<Manager> getManagerSet() {
-    return managerSet;
+  public List<Manager> getManagers() {
+    return managers;
   }
 
-  public Set<Building> getBuildingSet() {
-    return buildingSet;
+  public List<Building> getBuildings() {
+    return buildings;
   }
 
-  public Set<Photo> getPhotoSet() {
-    return photoSet;
+  public List<Photo> getPhotos() {
+    return photos;
   }
 
   public void reset() {
-    employeeSet.clear();
-    teamSet.clear();
-    roomSet.clear();
-    managerSet.clear();
-    buildingSet.clear();
-    photoSet.clear();
+    employees.clear();
+    teams.clear();
+    rooms.clear();
+    managers.clear();
+    buildings.clear();
+    photos.clear();
 
     employeeId = 0;
     teamId = 0;
