@@ -14,6 +14,9 @@ import com.sap.core.odata.api.ep.entry.ODataEntry;
 import com.sap.core.odata.core.commons.ContentType;
 import com.sap.core.odata.testutil.mock.MockFacade;
 
+/**
+ * @author SAP AG
+ */
 public class ProviderFacadeImplTest {
 
   public static final String EMPLOYEE_1_XML = 

@@ -2,7 +2,6 @@ package com.sap.core.odata.fit.ref;
 
 import static org.custommonkey.xmlunit.XMLAssert.assertXpathEvaluatesTo;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 
 import org.apache.http.HttpResponse;
 import org.junit.Test;
@@ -29,8 +28,7 @@ public class EntryXmlChangeTest extends AbstractRefXmlTest {
         .replaceAll("<link.+?/>", "");
     HttpResponse response = postUri("Teams()", requestBody, HttpContentType.APPLICATION_ATOM_XML_ENTRY, HttpStatusCodes.CREATED);
     checkMediaType(response, HttpContentType.APPLICATION_ATOM_XML_UTF8 + "; type=entry");
-    assertNotNull(response.getFirstHeader(HttpHeaders.LOCATION));
-    // assertEquals(getEndpoint() + "Teams('4')", response.getFirstHeader(HttpHeaders.LOCATION).getValue());
+    assertEquals(getEndpoint() + "Teams('4')", response.getFirstHeader(HttpHeaders.LOCATION).getValue());
     assertXpathEvaluatesTo("Team X", "/atom:entry/atom:content/m:properties/d:Name", getBody(response));
 
     // Create an entry for a type that has no media resource.
@@ -59,8 +57,7 @@ public class EntryXmlChangeTest extends AbstractRefXmlTest {
         + "</entry>";
     response = postUri("Rooms", requestBody, HttpContentType.APPLICATION_ATOM_XML_ENTRY, HttpStatusCodes.CREATED);
     checkMediaType(response, HttpContentType.APPLICATION_ATOM_XML_UTF8 + "; type=entry");
-    assertNotNull(response.getFirstHeader(HttpHeaders.LOCATION));
-    // assertEquals(getEndpoint() + "Rooms('104')", response.getFirstHeader(HttpHeaders.LOCATION).getValue());
+    assertEquals(getEndpoint() + "Rooms('104')", response.getFirstHeader(HttpHeaders.LOCATION).getValue());
     assertXpathEvaluatesTo("4", "/atom:entry/atom:content/m:properties/d:Seats", getBody(response));
     // checkUri("Rooms('104')/nr_Employees('4')");
     checkUri("Rooms('104')/nr_Employees('5')");
@@ -70,8 +67,7 @@ public class EntryXmlChangeTest extends AbstractRefXmlTest {
   public void createMediaResource() throws Exception {
     HttpResponse response = postUri("Employees()", "plain text", HttpContentType.TEXT_PLAIN, HttpStatusCodes.CREATED);
     checkMediaType(response, HttpContentType.APPLICATION_ATOM_XML_UTF8 + "; type=entry");
-    assertNotNull(response.getFirstHeader(HttpHeaders.LOCATION));
-    // assertEquals(getEndpoint() + "Employees('7')", response.getFirstHeader(HttpHeaders.LOCATION).getValue());
+    assertEquals(getEndpoint() + "Employees('7')", response.getFirstHeader(HttpHeaders.LOCATION).getValue());
     assertXpathEvaluatesTo("7", "/atom:entry/m:properties/d:EmployeeId", getBody(response));
     response = callUri("Employees('7')/$value");
     checkMediaType(response, HttpContentType.TEXT_PLAIN);

@@ -2,9 +2,11 @@ package com.sap.core.odata.api.ep;
 
 import java.net.URI;
 
+import com.sap.core.odata.api.commons.HttpHeaders;
 import com.sap.core.odata.api.commons.InlineCount;
 
 /**
+ * Options for (de-)serialization.
  * @author SAP AG
  */
 public class EntityProviderProperties {
@@ -13,11 +15,13 @@ public class EntityProviderProperties {
   private String mediaResourceMimeType;
   private InlineCount inlineCountType;
   private Integer inlineCount;
-  public String nextLink;
+  private String nextLink;
+  private boolean hasLocationHeader;
 
   private EntityProviderProperties() {}
 
   /**
+   * Gets the service root.
    * @return the service root
    */
   public final URI getServiceRoot() {
@@ -25,6 +29,7 @@ public class EntityProviderProperties {
   }
 
   /**
+   * Gets the MIME type of the media resource.
    * @return the MIME type of the media resource
    */
   public final String getMediaResourceMimeType() {
@@ -32,6 +37,7 @@ public class EntityProviderProperties {
   }
 
   /**
+  * Gets the type of the inlinecount request from the system query option.
   * @return the type of the inlinecount request from the system query option
   */
   public final InlineCount getInlineCountType() {
@@ -39,17 +45,28 @@ public class EntityProviderProperties {
   }
 
   /**
+  * Gets the inlinecount.
    * @return the inlinecount as Integer
+   * @see #getInlineCountType
    */
   public final Integer getInlineCount() {
     return inlineCount;
   }
 
   /**
-   * @return a next link used for server side paging of feeds 
+   * Gets the next link used for server-side paging of feeds.
+   * @return the next link
    */
   public final String getNextLink() {
     return nextLink;
+  }
+
+  /**
+   * Gets the option whether the response should have a Location HTTP header
+   * with the canonical URI of the entity.
+   */
+  public final boolean hasLocationHeader() {
+    return hasLocationHeader;
   }
 
   public static ODataEntityProviderPropertiesBuilder serviceRoot(URI serviceRoot) {
@@ -91,10 +108,6 @@ public class EntityProviderProperties {
       return this;
     }
 
-    public final EntityProviderProperties build() {
-      return properties;
-    }
-
     /**
      * @param nextLink Next link to render feeds with server side paging. Should usually contain a skiptoken.
      */
@@ -102,5 +115,19 @@ public class EntityProviderProperties {
       properties.nextLink = nextLink;
       return this;
     }
+
+    /**
+     * Requests that the response will have a Location HTTP header with the canonical URI of the entity.
+     * @see HttpHeaders#LOCATION
+     */
+    public ODataEntityProviderPropertiesBuilder hasLocationHeader() {
+      properties.hasLocationHeader = true;
+      return this;
+    }
+
+    public final EntityProviderProperties build() {
+      return properties;
+    }
+
   }
 }

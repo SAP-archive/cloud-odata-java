@@ -16,6 +16,7 @@ import javax.xml.stream.XMLStreamWriter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.sap.core.odata.api.commons.HttpHeaders;
 import com.sap.core.odata.api.edm.Edm;
 import com.sap.core.odata.api.edm.EdmEntitySet;
 import com.sap.core.odata.api.edm.EdmException;
@@ -28,6 +29,7 @@ import com.sap.core.odata.api.ep.EntityProviderException;
 import com.sap.core.odata.api.ep.EntityProviderProperties;
 import com.sap.core.odata.api.ep.entry.ODataEntry;
 import com.sap.core.odata.api.processor.ODataResponse;
+import com.sap.core.odata.api.processor.ODataResponse.ODataResponseBuilder;
 import com.sap.core.odata.core.commons.ContentType;
 import com.sap.core.odata.core.commons.ContentType.ODataFormat;
 import com.sap.core.odata.core.ep.aggregator.EntityInfoAggregator;
@@ -127,8 +129,12 @@ public class AtomEntityProvider implements ContentTypeBasedEntityProvider {
       outStream.flush();
       outStream.close();
 
-      ODataResponse response = ODataResponse.entity(csb.getInputStream()).contentHeader(getContentHeader(ContentType.APPLICATION_ATOM_XML_ENTRY)).eTag(as.getETag()).build();
-      return response;
+      ODataResponseBuilder response = ODataResponse.entity(csb.getInputStream())
+          .contentHeader(getContentHeader(ContentType.APPLICATION_ATOM_XML_ENTRY))
+          .eTag(as.getETag());
+      if (properties.hasLocationHeader())
+        response.header(HttpHeaders.LOCATION, as.getLocation());
+      return response.build();
     } catch (Exception e) {
       throw new EntityProviderException(EntityProviderException.COMMON, e);
     } finally {

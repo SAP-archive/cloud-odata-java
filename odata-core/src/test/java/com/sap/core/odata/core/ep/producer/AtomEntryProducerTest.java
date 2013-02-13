@@ -22,6 +22,7 @@ import org.custommonkey.xmlunit.exceptions.XpathException;
 import org.junit.Test;
 import org.xml.sax.SAXException;
 
+import com.sap.core.odata.api.commons.HttpHeaders;
 import com.sap.core.odata.api.edm.Edm;
 import com.sap.core.odata.api.edm.EdmCustomizableFeedMappings;
 import com.sap.core.odata.api.edm.EdmEntitySet;
@@ -38,6 +39,9 @@ import com.sap.core.odata.testutil.helper.StringHelper;
 import com.sap.core.odata.testutil.helper.XMLUnitHelper;
 import com.sap.core.odata.testutil.mock.MockFacade;
 
+/**
+ * @author SAP AG
+ */
 public class AtomEntryProducerTest extends AbstractProviderTest {
 
   @Test
@@ -179,8 +183,9 @@ public class AtomEntryProducerTest extends AbstractProviderTest {
 
   @Test
   public void serializeAtomEntry() throws IOException, XpathException, SAXException, XMLStreamException, FactoryConfigurationError, ODataException {
+    final EntityProviderProperties properties = EntityProviderProperties.serviceRoot(BASE_URI).hasLocationHeader().build();
     AtomEntityProvider ser = createAtomEntityProvider();
-    ODataResponse response = ser.writeEntry(MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Rooms"), this.roomData, DEFAULT_PROPERTIES);
+    ODataResponse response = ser.writeEntry(MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Rooms"), this.roomData, properties);
     String xmlString = verifyResponse(response);
 
     assertXpathExists("/a:entry", xmlString);
@@ -190,6 +195,8 @@ public class AtomEntryProducerTest extends AbstractProviderTest {
     assertXpathEvaluatesTo(ContentType.APPLICATION_XML.toString(), "/a:entry/a:content/@type", xmlString);
 
     assertXpathExists("/a:entry/a:content/m:properties", xmlString);
+
+    assertEquals(BASE_URI + "Rooms('1')", response.getHeader(HttpHeaders.LOCATION));
   }
 
   @Test
@@ -285,6 +292,7 @@ public class AtomEntryProducerTest extends AbstractProviderTest {
     assertXpathExists("/a:entry", xmlString);
     assertXpathExists("/a:entry/@m:etag", xmlString);
     assertXpathEvaluatesTo("W/\"1\"", "/a:entry/@m:etag", xmlString);
+    assertEquals("W/\"1\"", response.getETag());
   }
 
   @Test
