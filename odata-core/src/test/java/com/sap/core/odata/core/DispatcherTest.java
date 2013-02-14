@@ -49,6 +49,7 @@ import com.sap.core.odata.api.uri.NavigationSegment;
 import com.sap.core.odata.api.uri.SelectItem;
 import com.sap.core.odata.api.uri.expression.FilterExpression;
 import com.sap.core.odata.api.uri.expression.OrderByExpression;
+import com.sap.core.odata.core.commons.ContentType;
 import com.sap.core.odata.core.commons.ContentType.ODataFormat;
 import com.sap.core.odata.core.commons.ODataHttpMethod;
 import com.sap.core.odata.core.uri.UriInfoImpl;
@@ -236,6 +237,10 @@ public class DispatcherTest extends BaseTest {
     assertEquals(expectedMethodName, response.getEntity());
   }
 
+  private static void checkDispatch(final ODataHttpMethod method, final UriType uriType, final boolean isValue, ContentType requestContentType, final String expectedMethodName) throws ODataException {
+    checkDispatch(method, mockUriInfo(uriType, isValue), requestContentType.toContentTypeString(), expectedMethodName);
+  }
+
   private static void checkDispatch(final ODataHttpMethod method, final UriType uriType, final boolean isValue, final String expectedMethodName) throws ODataException {
     checkDispatch(method, mockUriInfo(uriType, isValue), expectedMethodName);
   }
@@ -262,9 +267,18 @@ public class DispatcherTest extends BaseTest {
     }
   }
 
-  private static void wrongRequestContentType(final ODataHttpMethod method, final UriType uriType, final String requestContentType) {
+  private static void wrongRequestContentType(final ODataHttpMethod method, final UriType uriType, ContentType requestContentType) throws EdmException, ODataException {
+    boolean isValue = false;
+    wrongRequestContentType(method, uriType, isValue, requestContentType);
+  }
+
+  private static void wrongRequestContentType(final ODataHttpMethod method, final UriType uriType, boolean isValue, ContentType requestContentType) throws EdmException, ODataException {
+    wrongRequestContentType(method, uriType, isValue, requestContentType.toContentTypeString());
+  }
+
+  private static void wrongRequestContentType(final ODataHttpMethod method, final UriType uriType, boolean isValue, String requestContentType) throws EdmException, ODataException {
     try {
-      checkDispatch(method, mockUriInfo(uriType, false), requestContentType, null);
+      checkDispatch(method, mockUriInfo(uriType, isValue), requestContentType, null);
       fail("Expected ODataException not thrown");
     } catch (ODataUnsupportedMediaTypeException e) {
       assertNotNull(e);
@@ -349,20 +363,26 @@ public class DispatcherTest extends BaseTest {
     checkDispatch(ODataHttpMethod.PATCH, UriType.URI4, "updateEntitySimpleProperty");
     checkDispatch(ODataHttpMethod.MERGE, UriType.URI4, "updateEntitySimpleProperty");
     checkDispatch(ODataHttpMethod.GET, UriType.URI4, true, "readEntitySimplePropertyValue");
-    checkDispatch(ODataHttpMethod.PUT, UriType.URI4, true, "updateEntitySimplePropertyValue");
-    checkDispatch(ODataHttpMethod.DELETE, UriType.URI4, true, "deleteEntitySimplePropertyValue");
-    checkDispatch(ODataHttpMethod.PATCH, UriType.URI4, true, "updateEntitySimplePropertyValue");
-    checkDispatch(ODataHttpMethod.MERGE, UriType.URI4, true, "updateEntitySimplePropertyValue");
+    // for $value only 'text/plain' is allowed
+    checkDispatch(ODataHttpMethod.PUT, UriType.URI4, true, ContentType.TEXT_PLAIN, "updateEntitySimplePropertyValue");
+    checkDispatch(ODataHttpMethod.DELETE, UriType.URI4, true, ContentType.TEXT_PLAIN, "deleteEntitySimplePropertyValue");
+    checkDispatch(ODataHttpMethod.PATCH, UriType.URI4, true, ContentType.TEXT_PLAIN, "updateEntitySimplePropertyValue");
+    checkDispatch(ODataHttpMethod.MERGE, UriType.URI4, true, ContentType.TEXT_PLAIN, "updateEntitySimplePropertyValue");
+    checkDispatch(ODataHttpMethod.PUT, UriType.URI4, true, ContentType.TEXT_PLAIN_CS_UTF_8, "updateEntitySimplePropertyValue");
+    checkDispatch(ODataHttpMethod.DELETE, UriType.URI4, true, ContentType.TEXT_PLAIN_CS_UTF_8, "deleteEntitySimplePropertyValue");
+    checkDispatch(ODataHttpMethod.PATCH, UriType.URI4, true, ContentType.TEXT_PLAIN_CS_UTF_8, "updateEntitySimplePropertyValue");
+    checkDispatch(ODataHttpMethod.MERGE, UriType.URI4, true, ContentType.TEXT_PLAIN_CS_UTF_8, "updateEntitySimplePropertyValue");
 
     checkDispatch(ODataHttpMethod.GET, UriType.URI5, "readEntitySimpleProperty");
     checkDispatch(ODataHttpMethod.PUT, UriType.URI5, "updateEntitySimpleProperty");
     checkDispatch(ODataHttpMethod.PATCH, UriType.URI5, "updateEntitySimpleProperty");
     checkDispatch(ODataHttpMethod.MERGE, UriType.URI5, "updateEntitySimpleProperty");
     checkDispatch(ODataHttpMethod.GET, UriType.URI5, true, "readEntitySimplePropertyValue");
-    checkDispatch(ODataHttpMethod.PUT, UriType.URI5, true, "updateEntitySimplePropertyValue");
-    checkDispatch(ODataHttpMethod.DELETE, UriType.URI5, true, "deleteEntitySimplePropertyValue");
-    checkDispatch(ODataHttpMethod.PATCH, UriType.URI5, true, "updateEntitySimplePropertyValue");
-    checkDispatch(ODataHttpMethod.MERGE, UriType.URI5, true, "updateEntitySimplePropertyValue");
+    // for $value only 'text/plain' is allowed    
+    checkDispatch(ODataHttpMethod.PUT, UriType.URI5, true, ContentType.TEXT_PLAIN, "updateEntitySimplePropertyValue");
+    checkDispatch(ODataHttpMethod.DELETE, UriType.URI5, true, ContentType.TEXT_PLAIN, "deleteEntitySimplePropertyValue");
+    checkDispatch(ODataHttpMethod.PATCH, UriType.URI5, true, ContentType.TEXT_PLAIN, "updateEntitySimplePropertyValue");
+    checkDispatch(ODataHttpMethod.MERGE, UriType.URI5, true, ContentType.TEXT_PLAIN, "updateEntitySimplePropertyValue");
 
     checkDispatch(ODataHttpMethod.GET, UriType.URI6A, "readEntity");
 
@@ -603,10 +623,16 @@ public class DispatcherTest extends BaseTest {
 
   @Test
   public void dispatchWrongRequestContentType() throws Exception {
-    wrongRequestContentType(ODataHttpMethod.POST, UriType.URI1, HttpContentType.APPLICATION_ATOM_SVC);
-    wrongRequestContentType(ODataHttpMethod.POST, UriType.URI1, HttpContentType.APPLICATION_ATOM_SVC_UTF8);
+    wrongRequestContentType(ODataHttpMethod.POST, UriType.URI1, ContentType.APPLICATION_ATOM_SVC);
+    wrongRequestContentType(ODataHttpMethod.POST, UriType.URI1, ContentType.APPLICATION_ATOM_SVC_CS_UTF_8);
 
-    wrongRequestContentType(ODataHttpMethod.PUT, UriType.URI2, HttpContentType.APPLICATION_ATOM_SVC);
-    wrongRequestContentType(ODataHttpMethod.PUT, UriType.URI2, HttpContentType.APPLICATION_ATOM_SVC_UTF8);
+    wrongRequestContentType(ODataHttpMethod.PUT, UriType.URI2, ContentType.APPLICATION_ATOM_SVC);
+    wrongRequestContentType(ODataHttpMethod.PUT, UriType.URI2, ContentType.APPLICATION_ATOM_SVC_CS_UTF_8);
+    wrongRequestContentType(ODataHttpMethod.PUT, UriType.URI2, ContentType.APPLICATION_ATOM_SVC);
+    wrongRequestContentType(ODataHttpMethod.PUT, UriType.URI2, ContentType.APPLICATION_ATOM_SVC_CS_UTF_8);
+    
+    // URI5
+    wrongRequestContentType(ODataHttpMethod.PUT, UriType.URI5, true, ContentType.APPLICATION_ATOM_SVC);
+    wrongRequestContentType(ODataHttpMethod.PUT, UriType.URI5, true, ContentType.APPLICATION_ATOM_SVC_CS_UTF_8);
   }
 }

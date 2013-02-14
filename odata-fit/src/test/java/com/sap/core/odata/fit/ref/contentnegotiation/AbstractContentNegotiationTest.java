@@ -17,8 +17,10 @@ import java.util.concurrent.TimeUnit;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpEntityEnclosingRequestBase;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.methods.HttpPut;
 import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
@@ -467,6 +469,7 @@ public abstract class AbstractContentNegotiationTest extends BaseTest {
           request.releaseConnection();
           LOG.debug("Released connection [" + requestLine + "]");
         }
+        TimeUnit.MILLISECONDS.sleep(10);
       }
     }
 
@@ -584,18 +587,25 @@ public abstract class AbstractContentNegotiationTest extends BaseTest {
       this.requestUrl = requestUrl;
       URI uri = URI.create(requestUrl);
       HttpRequestBase request;
+      // first try read (GET)
       if("GET".equals(type)) {
         request = new HttpGet(uri);
-      } else if("POST".equals(type)) {
-        HttpPost post = new HttpPost(uri);
-        // FIXME: Change hard coded content type
+      } else { //then try write
+        HttpEntityEnclosingRequestBase writeRequest;
+        if("POST".equals(type)) {
+          writeRequest = new HttpPost(uri);
+        } else if("PUT".equals(type)) {
+          writeRequest = new HttpPut(uri);
+        } else {
+          throw new IllegalArgumentException("Unsupported HttpMethod of type '" + type + "'.");
+        }
+        // common write parts
         HttpEntity entity = createEntity();
-        post.setEntity(entity);
-        request = post;
-      } else {
-        throw new IllegalArgumentException("Unsupported HttpMethod of type '" + type + "'.");
+        writeRequest.setEntity(entity);
+        request = writeRequest;
       }
-
+      
+      // common request parts
       Set<Entry<String, String>> entries = headers.entrySet();
       
       for (Entry<String, String> entry : entries) {

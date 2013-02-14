@@ -1,6 +1,7 @@
 package com.sap.core.odata.core.commons;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -406,5 +407,23 @@ public class ContentType {
       results.add(ContentType.create(contentType));
     }
     return results;
+  }
+
+  /**
+   * Check if a valid match for given content type formated string (<code>toMatch</code>) exists in given list.
+   * Therefore the given content type formated string (<code>toMatch</code>) is converted into a {@link ContentType}
+   * with a simple {@link #create(String)} call (during which an exception can occur).
+   * 
+   * For more detail in general see {@link #hasMatch(List)} and for what a valid match is see {@link #match(List)}.
+   * 
+   * @param toMatch content type formated string (<code>toMatch</code>) for which is checked if a match exists in given list
+   * @param matchExamples list of {@link ContentType}s which are matches against content type formated string (<code>toMatch</code>)
+   * @return <code>true</code> if a matching content type was found in given list 
+   *          or <code>false</code> if none matching content type match was found
+   */
+  public static boolean match(String toMatch, ContentType ... matchExamples) {
+    ContentType toMatchContentType = ContentType.create(toMatch);
+
+    return toMatchContentType.hasMatch(Arrays.asList(matchExamples));
   }
 }
