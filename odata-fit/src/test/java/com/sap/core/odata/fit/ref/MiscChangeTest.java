@@ -65,10 +65,13 @@ public class MiscChangeTest extends AbstractRefTest {
   public void updateMediaResource() throws Exception {
     final String url = "Managers('1')/$value";
     putUri(url, "00", HttpContentType.APPLICATION_OCTET_STREAM, HttpStatusCodes.NO_CONTENT);
-    final HttpResponse response = callUri(url);
+    HttpResponse response = callUri(url);
     checkMediaType(response, HttpContentType.APPLICATION_OCTET_STREAM);
     assertEquals("00", getBody(response));
-  }
+
+    response = callUri(ODataHttpMethod.PUT, "Container2.Photos(Id=2,Type='image%2Fbmp')/$value", null, null, "00", IMAGE_GIF, HttpStatusCodes.NO_CONTENT);
+    checkEtag(response, "W/\"2\"");
+}
 
   @Test
   public void updatePropertyValue() throws Exception {
@@ -79,7 +82,8 @@ public class MiscChangeTest extends AbstractRefTest {
     assertEquals("4711", getBody(callUri(url)));
 
     url = "Container2.Photos(Id=4,Type='foo')/BinaryData/$value";
-    callUri(ODataHttpMethod.PUT, url, HttpHeaders.ETAG, "W/\"4\"", "4711", IMAGE_JPEG, HttpStatusCodes.NO_CONTENT);
+    HttpResponse response = callUri(ODataHttpMethod.PUT, url, HttpHeaders.ETAG, "W/\"4\"", "4711", IMAGE_JPEG, HttpStatusCodes.NO_CONTENT);
+    checkEtag(response, "W/\"4\"");
     assertEquals("4711", getBody(callUri(url)));
 
     final String content = "2012-02-29T00:00:00";

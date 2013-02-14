@@ -2,6 +2,7 @@ package com.sap.core.odata.fit.ref;
 
 import static org.custommonkey.xmlunit.XMLAssert.assertXpathEvaluatesTo;
 
+import org.apache.http.HttpResponse;
 import org.junit.Test;
 
 import com.sap.core.odata.api.commons.HttpContentType;
@@ -32,9 +33,14 @@ public class PropertyXmlChangeTest extends AbstractRefXmlTest {
     putUri(url3, requestBody, HttpContentType.APPLICATION_XML, HttpStatusCodes.NO_CONTENT);
     assertXpathEvaluatesTo("XXX", "/d:CityName", getBody(callUri(url3)));
 
-    final String url4 = "Employees('2')/EmployeeId";
-    requestBody = getBody(callUri(url4));
-    putUri(url4, requestBody, HttpContentType.APPLICATION_XML, HttpStatusCodes.METHOD_NOT_ALLOWED);
+    final String url4 = "Rooms('42')/Seats";
+    requestBody = "<Seats xmlns=\"" + Edm.NAMESPACE_D_2007_08 + "\">42</Seats>";
+    HttpResponse response = callUri(ODataHttpMethod.PUT, url4, null, null, requestBody, HttpContentType.APPLICATION_XML_UTF8, HttpStatusCodes.NO_CONTENT);
+    checkEtag(response, "W/\"1\"");
+
+    final String url5 = "Employees('2')/EmployeeId";
+    requestBody = getBody(callUri(url5));
+    putUri(url5, requestBody, HttpContentType.APPLICATION_XML, HttpStatusCodes.METHOD_NOT_ALLOWED);
   }
 
   @Test

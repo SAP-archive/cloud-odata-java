@@ -17,6 +17,7 @@ import com.sap.core.odata.api.commons.HttpContentType;
 import com.sap.core.odata.api.commons.HttpStatusCodes;
 import com.sap.core.odata.api.commons.InlineCount;
 import com.sap.core.odata.api.edm.Edm;
+import com.sap.core.odata.api.edm.EdmConcurrencyMode;
 import com.sap.core.odata.api.edm.EdmEntityContainer;
 import com.sap.core.odata.api.edm.EdmEntitySet;
 import com.sap.core.odata.api.edm.EdmEntityType;
@@ -309,7 +310,10 @@ public class ListsProcessor extends ODataSingleProcessor {
     Map<String, Object> values = getStructuralTypeValueMap(data, entityType);
     final ODataResponse response = writeEntry(entitySet, values, contentType, true);
 
-    return ODataResponse.fromResponse(response).status(HttpStatusCodes.CREATED).build();
+    return ODataResponse.fromResponse(response)
+        .status(HttpStatusCodes.CREATED)
+        .eTag(constructETag(entitySet, data))
+        .build();
   }
 
   @Override
@@ -330,7 +334,10 @@ public class ListsProcessor extends ODataSingleProcessor {
     final EdmEntityType entityType = entitySet.getEntityType();
     setStructuralTypeValuesFromMap(data, entityType, entryValues.getProperties(), merge);
 
-    return ODataResponse.status(HttpStatusCodes.NO_CONTENT).build();
+    return ODataResponse
+        .status(HttpStatusCodes.NO_CONTENT)
+        .eTag(constructETag(entitySet, data))
+        .build();
   }
 
   @Override
@@ -473,7 +480,8 @@ public class ListsProcessor extends ODataSingleProcessor {
         uriInfo.getNavigationSegments());
 
     // if (!appliesFilter(data, uriInfo.getFilter()))
-    //   throw new ODataNotFoundException(ODataNotFoundException.ENTITY);
+    if (data == null)
+      throw new ODataNotFoundException(ODataNotFoundException.ENTITY);
 
     final List<EdmProperty> propertyPath = uriInfo.getPropertyPath();
     final EdmProperty property = propertyPath.get(propertyPath.size() - 1);
@@ -493,7 +501,10 @@ public class ListsProcessor extends ODataSingleProcessor {
 
     context.stopRuntimeMeasurement(timingHandle);
 
-    return ODataResponse.fromResponse(response).status(HttpStatusCodes.OK).build();
+    return ODataResponse.fromResponse(response)
+        .status(HttpStatusCodes.OK)
+        .eTag(constructETag(uriInfo.getTargetEntitySet(), data))
+        .build();
   }
 
   @Override
@@ -511,7 +522,8 @@ public class ListsProcessor extends ODataSingleProcessor {
         uriInfo.getNavigationSegments());
 
     // if (!appliesFilter(data, uriInfo.getFilter()))
-    //   throw new ODataNotFoundException(ODataNotFoundException.ENTITY);
+    if (data == null)
+      throw new ODataNotFoundException(ODataNotFoundException.ENTITY);
 
     final List<EdmProperty> propertyPath = uriInfo.getPropertyPath();
     final EdmProperty property = propertyPath.get(propertyPath.size() - 1);
@@ -520,6 +532,7 @@ public class ListsProcessor extends ODataSingleProcessor {
 
     return ODataResponse.fromResponse(EntityProvider.writePropertyValue(property, value))
         .status(HttpStatusCodes.OK)
+        .eTag(constructETag(uriInfo.getTargetEntitySet(), data))
         .build();
   }
 
@@ -584,7 +597,10 @@ public class ListsProcessor extends ODataSingleProcessor {
       setStructuralTypeValuesFromMap(getPropertyValue(data, property), (EdmStructuralType) property.getType(), propertyValue, merge);
     }
 
-    return ODataResponse.status(HttpStatusCodes.NO_CONTENT).build();
+    return ODataResponse
+        .status(HttpStatusCodes.NO_CONTENT)
+        .eTag(constructETag(uriInfo.getTargetEntitySet(), data))
+        .build();
   }
 
   @Override
@@ -625,7 +641,10 @@ public class ListsProcessor extends ODataSingleProcessor {
     if (property.getMapping() != null && property.getMapping().getMimeType() != null)
       setValue(data, getSetterMethodName(property.getMapping().getMimeType()), requestContentType);
 
-    return ODataResponse.status(HttpStatusCodes.NO_CONTENT).build();
+    return ODataResponse
+        .status(HttpStatusCodes.NO_CONTENT)
+        .eTag(constructETag(uriInfo.getTargetEntitySet(), data))
+        .build();
   }
 
   @Override
@@ -647,6 +666,7 @@ public class ListsProcessor extends ODataSingleProcessor {
 
     return ODataResponse.fromResponse(EntityProvider.writeBinary(mimeType, binaryData.getData()))
         .status(HttpStatusCodes.OK)
+        .eTag(constructETag(entitySet, data))
         .build();
   }
 
@@ -686,9 +706,13 @@ public class ListsProcessor extends ODataSingleProcessor {
 
     context.stopRuntimeMeasurement(timingHandle);
 
-    dataSource.writeBinaryData(uriInfo.getTargetEntitySet(), data, new BinaryData(value, requestContentType));
+    final EdmEntitySet entitySet = uriInfo.getTargetEntitySet();
+    dataSource.writeBinaryData(entitySet, data, new BinaryData(value, requestContentType));
 
-    return ODataResponse.status(HttpStatusCodes.NO_CONTENT).build();
+    return ODataResponse
+        .status(HttpStatusCodes.NO_CONTENT)
+        .eTag(constructETag(entitySet, data))
+        .build();
   }
 
   @Override
@@ -700,6 +724,9 @@ public class ListsProcessor extends ODataSingleProcessor {
         functionImport,
         mapFunctionParameters(uriInfo.getFunctionImportParameters()),
         null);
+
+    if (data == null)
+      throw new ODataNotFoundException(ODataNotFoundException.COMMON);
 
     Object value;
     if (type.getKind() == EdmTypeKind.SIMPLE) {
@@ -738,6 +765,9 @@ public class ListsProcessor extends ODataSingleProcessor {
         functionImport,
         mapFunctionParameters(uriInfo.getFunctionImportParameters()),
         null);
+
+    if (data == null)
+      throw new ODataNotFoundException(ODataNotFoundException.COMMON);
 
     ODataResponse response;
     if (type == EdmSimpleTypeKind.Binary.getEdmSimpleTypeInstance()) {
@@ -804,6 +834,25 @@ public class ListsProcessor extends ODataSingleProcessor {
     context.stopRuntimeMeasurement(timingHandle);
 
     return data;
+  }
+
+  private <T> String constructETag(final EdmEntitySet entitySet, final T data) throws ODataException {
+    final EdmEntityType entityType = entitySet.getEntityType();
+    String eTag = null;
+    for (final String propertyName : entityType.getPropertyNames()) {
+      final EdmProperty property = (EdmProperty) entityType.getProperty(propertyName);
+      if (property.getFacets() != null && property.getFacets().getConcurrencyMode() == EdmConcurrencyMode.Fixed) {
+        final EdmSimpleType type = (EdmSimpleType) property.getType();
+        final String component = type.valueToString(getPropertyValue(data, property), EdmLiteralKind.DEFAULT, property.getFacets());
+        if (eTag == null)
+          eTag = component;
+        else
+          eTag += Edm.DELIMITER + component;
+      }
+    }
+    if (eTag != null)
+      eTag = "W/\"" + eTag + "\"";
+    return eTag;
   }
 
   private ODataResponse writeEntry(final EdmEntitySet entitySet, final Map<String, Object> values, final String contentType, final boolean hasLocationHeader) throws ODataException, EntityProviderException {
@@ -1291,15 +1340,15 @@ public class ListsProcessor extends ODataSingleProcessor {
         try {
           dataObject = dataObject.getClass().getMethod(method).invoke(dataObject);
         } catch (SecurityException e) {
-          throw new ODataNotFoundException(null, e);
+          throw new ODataNotFoundException(ODataNotFoundException.COMMON, e);
         } catch (NoSuchMethodException e) {
-          throw new ODataNotFoundException(null, e);
+          throw new ODataNotFoundException(ODataNotFoundException.COMMON, e);
         } catch (IllegalArgumentException e) {
-          throw new ODataNotFoundException(null, e);
+          throw new ODataNotFoundException(ODataNotFoundException.COMMON, e);
         } catch (IllegalAccessException e) {
-          throw new ODataNotFoundException(null, e);
+          throw new ODataNotFoundException(ODataNotFoundException.COMMON, e);
         } catch (InvocationTargetException e) {
-          throw new ODataNotFoundException(null, e);
+          throw new ODataNotFoundException(ODataNotFoundException.COMMON, e);
         }
 
     return dataObject;

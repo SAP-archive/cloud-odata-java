@@ -38,8 +38,8 @@ public class AbstractRefTest extends AbstractFitTest {
   
   private static final Logger LOG = Logger.getLogger(AbstractRefTest.class);
 
-  protected static final String IMAGE_GIF = "image/gif";
   protected static final String IMAGE_JPEG = "image/jpeg";
+  protected static final String IMAGE_GIF = "image/gif";
 
   protected static final String EMPLOYEE_1_NAME = "Walter Winter";
   protected static final String EMPLOYEE_2_NAME = "Frederic Fall";
