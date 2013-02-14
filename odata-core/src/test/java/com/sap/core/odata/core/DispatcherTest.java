@@ -8,9 +8,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import java.io.InputStream;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -19,17 +17,12 @@ import org.mockito.stubbing.Answer;
 
 import com.sap.core.odata.api.ODataService;
 import com.sap.core.odata.api.commons.HttpContentType;
-import com.sap.core.odata.api.commons.InlineCount;
 import com.sap.core.odata.api.edm.EdmEntitySet;
 import com.sap.core.odata.api.edm.EdmEntityType;
 import com.sap.core.odata.api.edm.EdmException;
-import com.sap.core.odata.api.edm.EdmFacets;
 import com.sap.core.odata.api.edm.EdmFunctionImport;
 import com.sap.core.odata.api.edm.EdmProperty;
-import com.sap.core.odata.api.exception.ODataBadRequestException;
 import com.sap.core.odata.api.exception.ODataException;
-import com.sap.core.odata.api.exception.ODataMethodNotAllowedException;
-import com.sap.core.odata.api.exception.ODataUnsupportedMediaTypeException;
 import com.sap.core.odata.api.processor.ODataResponse;
 import com.sap.core.odata.api.processor.part.BatchProcessor;
 import com.sap.core.odata.api.processor.part.EntityComplexPropertyProcessor;
@@ -44,13 +37,7 @@ import com.sap.core.odata.api.processor.part.FunctionImportProcessor;
 import com.sap.core.odata.api.processor.part.FunctionImportValueProcessor;
 import com.sap.core.odata.api.processor.part.MetadataProcessor;
 import com.sap.core.odata.api.processor.part.ServiceDocumentProcessor;
-import com.sap.core.odata.api.uri.NavigationPropertySegment;
 import com.sap.core.odata.api.uri.NavigationSegment;
-import com.sap.core.odata.api.uri.SelectItem;
-import com.sap.core.odata.api.uri.expression.FilterExpression;
-import com.sap.core.odata.api.uri.expression.OrderByExpression;
-import com.sap.core.odata.core.commons.ContentType;
-import com.sap.core.odata.core.commons.ContentType.ODataFormat;
 import com.sap.core.odata.core.commons.ODataHttpMethod;
 import com.sap.core.odata.core.uri.UriInfoImpl;
 import com.sap.core.odata.core.uri.UriType;
@@ -171,35 +158,10 @@ public class DispatcherTest extends BaseTest {
     return uriInfo;
   }
 
-  private static UriInfoImpl mockOptions(UriInfoImpl uriInfo,
-      final boolean format,
-      final boolean filter, final boolean inlineCount, final boolean orderBy,
-      final boolean skipToken, final boolean skip, final boolean top,
-      final boolean expand, final boolean select) {
-    if (format)
-      when(uriInfo.getFormat()).thenReturn(ODataFormat.XML.toString());
-    if (filter)
-      when(uriInfo.getFilter()).thenReturn(mock(FilterExpression.class));
-    if (inlineCount)
-      when(uriInfo.getInlineCount()).thenReturn(InlineCount.ALLPAGES);
-    if (orderBy)
-      when(uriInfo.getOrderBy()).thenReturn(mock(OrderByExpression.class));
-    if (skipToken)
-      when(uriInfo.getSkipToken()).thenReturn("x");
-    if (skip)
-      when(uriInfo.getSkip()).thenReturn(0);
-    if (top)
-      when(uriInfo.getTop()).thenReturn(0);
-    if (expand) {
-      ArrayList<NavigationPropertySegment> segments = new ArrayList<NavigationPropertySegment>();
-      segments.add(mock(NavigationPropertySegment.class));
-      List<ArrayList<NavigationPropertySegment>> expandList = new ArrayList<ArrayList<NavigationPropertySegment>>();
-      expandList.add(segments);
-      when(uriInfo.getExpand()).thenReturn(expandList);
-    }
-    if (select)
-      when(uriInfo.getSelect()).thenReturn(Arrays.asList(mock(SelectItem.class)));
-
+  private static UriInfoImpl mockNavigationPath(UriInfoImpl uriInfo, final boolean oneSegment) {
+    when(uriInfo.getNavigationSegments()).thenReturn(
+        oneSegment ? Arrays.asList(mock(NavigationSegment.class)) :
+            Arrays.asList(mock(NavigationSegment.class), mock(NavigationSegment.class)));
     return uriInfo;
   }
 
@@ -211,47 +173,16 @@ public class DispatcherTest extends BaseTest {
     return uriInfo;
   }
 
-  private static UriInfoImpl mockProperty(UriInfoImpl uriInfo, final boolean key, final boolean nullable) throws EdmException {
-    EdmProperty property = uriInfo.getPropertyPath().get(0);
-    if (key)
-      uriInfo.getPropertyPath().set(0, uriInfo.getTargetEntitySet().getEntityType().getKeyProperties().get(0));
-    EdmFacets facets = mock(EdmFacets.class);
-    when(facets.isNullable()).thenReturn(nullable);
-    when(property.getFacets()).thenReturn(facets);
-
-    return uriInfo;
-  }
-
-  private static UriInfoImpl mockNavigationPath(UriInfoImpl uriInfo, final boolean oneSegment) {
-    when(uriInfo.getNavigationSegments()).thenReturn(
-        oneSegment ? Arrays.asList(mock(NavigationSegment.class)) :
-            Arrays.asList(mock(NavigationSegment.class), mock(NavigationSegment.class)));
-    return uriInfo;
-  }
-
-  private static void checkDispatch(final ODataHttpMethod method, final UriInfoImpl uriInfo, String requestContentType, final String expectedMethodName) throws ODataException {
+  private static void checkDispatch(final ODataHttpMethod method, final UriInfoImpl uriInfo, final String expectedMethodName) throws ODataException {
     final String contentType = method == ODataHttpMethod.GET ? HttpContentType.APPLICATION_XML : null;
 
     final Dispatcher dispatcher = new Dispatcher(service);
-    final ODataResponse response = dispatcher.dispatch(method, uriInfo, null, requestContentType, contentType);
+    final ODataResponse response = dispatcher.dispatch(method, uriInfo, null, null, contentType);
     assertEquals(expectedMethodName, response.getEntity());
-  }
-
-  private static void checkDispatch(final ODataHttpMethod method, final UriType uriType, final boolean isValue, ContentType requestContentType, final String expectedMethodName) throws ODataException {
-    checkDispatch(method, mockUriInfo(uriType, isValue), requestContentType.toContentTypeString(), expectedMethodName);
   }
 
   private static void checkDispatch(final ODataHttpMethod method, final UriType uriType, final boolean isValue, final String expectedMethodName) throws ODataException {
     checkDispatch(method, mockUriInfo(uriType, isValue), expectedMethodName);
-  }
-
-  private static void checkDispatch(final ODataHttpMethod method, final UriInfoImpl uriInfo, final String expectedMethodName) throws ODataException {
-    String requestContentType = null;
-    if (method == ODataHttpMethod.POST || method == ODataHttpMethod.PUT
-        || method == ODataHttpMethod.PATCH || method == ODataHttpMethod.MERGE)
-        requestContentType = HttpContentType.APPLICATION_XML;
-
-    checkDispatch(method, uriInfo, requestContentType, expectedMethodName);
   }
 
   private static void checkDispatch(final ODataHttpMethod method, final UriType uriType, final String expectedMethodName) throws ODataException {
@@ -264,79 +195,6 @@ public class DispatcherTest extends BaseTest {
       fail("Expected ODataException not thrown");
     } catch (ODataException e) {
       assertNotNull(e);
-    }
-  }
-
-  private static void wrongRequestContentType(final ODataHttpMethod method, final UriType uriType, ContentType requestContentType) throws EdmException, ODataException {
-    boolean isValue = false;
-    wrongRequestContentType(method, uriType, isValue, requestContentType);
-  }
-
-  private static void wrongRequestContentType(final ODataHttpMethod method, final UriType uriType, boolean isValue, ContentType requestContentType) throws EdmException, ODataException {
-    wrongRequestContentType(method, uriType, isValue, requestContentType.toContentTypeString());
-  }
-
-  private static void wrongRequestContentType(final ODataHttpMethod method, final UriType uriType, boolean isValue, String requestContentType) throws EdmException, ODataException {
-    try {
-      checkDispatch(method, mockUriInfo(uriType, isValue), requestContentType, null);
-      fail("Expected ODataException not thrown");
-    } catch (ODataUnsupportedMediaTypeException e) {
-      assertNotNull(e);
-    } catch (ODataException e) {
-      fail("Unexpected ODataException thrown");
-    }
-  }
-
-  private static void wrongOptions(final ODataHttpMethod method, final UriType uriType,
-      final boolean format,
-      final boolean filter, final boolean inlineCount, final boolean orderBy,
-      final boolean skipToken, final boolean skip, final boolean top,
-      final boolean expand, final boolean select) {
-    try {
-      checkDispatch(method, mockOptions(mockUriInfo(uriType, false),
-          format, filter, inlineCount, orderBy, skipToken, skip, top, expand, select), null);
-      fail("Expected ODataMethodNotAllowedException not thrown");
-    } catch (ODataMethodNotAllowedException e) {
-      assertNotNull(e);
-    } catch (ODataException e) {
-      fail("Unexpected ODataException thrown");
-    }
-  }
-
-  private static void wrongFunctionHttpMethod(final ODataHttpMethod method, final UriType uriType, final ODataHttpMethod httpMethod) {
-    try {
-      checkDispatch(method, mockFunctionImport(mockUriInfo(uriType, false), httpMethod), null);
-      fail("Expected ODataMethodNotAllowedException not thrown");
-    } catch (ODataMethodNotAllowedException e) {
-      assertNotNull(e);
-    } catch (ODataException e) {
-      fail("Unexpected ODataException thrown");
-    }
-  }
-
-  private static void wrongProperty(final ODataHttpMethod method, final UriType uriType, final boolean key, final boolean nullable) {
-    try {
-      checkDispatch(method, mockProperty(mockUriInfo(uriType, true), key, nullable), null);
-      fail("Expected ODataMethodNotAllowedException not thrown");
-    } catch (ODataMethodNotAllowedException e) {
-      assertNotNull(e);
-    } catch (ODataException e) {
-      fail("Unexpected ODataException thrown");
-    }
-  }
-
-  private static void wrongNavigationPath(final ODataHttpMethod method, final UriType uriType) {
-    try {
-      UriInfoImpl uriInfo = mockUriInfo(uriType, true);
-      uriInfo = mockNavigationPath(uriInfo,
-          uriType != UriType.URI6A && uriType != UriType.URI6B
-          && uriType != UriType.URI7A && uriType != UriType.URI7B);
-      checkDispatch(method, uriInfo, null);
-      fail("Expected ODataBadRequestException not thrown");
-    } catch (ODataBadRequestException e) {
-      assertNotNull(e);
-    } catch (ODataException e) {
-      fail("Unexpected ODataException thrown");
     }
   }
 
@@ -363,26 +221,20 @@ public class DispatcherTest extends BaseTest {
     checkDispatch(ODataHttpMethod.PATCH, UriType.URI4, "updateEntitySimpleProperty");
     checkDispatch(ODataHttpMethod.MERGE, UriType.URI4, "updateEntitySimpleProperty");
     checkDispatch(ODataHttpMethod.GET, UriType.URI4, true, "readEntitySimplePropertyValue");
-    // for $value only 'text/plain' is allowed
-    checkDispatch(ODataHttpMethod.PUT, UriType.URI4, true, ContentType.TEXT_PLAIN, "updateEntitySimplePropertyValue");
-    checkDispatch(ODataHttpMethod.DELETE, UriType.URI4, true, ContentType.TEXT_PLAIN, "deleteEntitySimplePropertyValue");
-    checkDispatch(ODataHttpMethod.PATCH, UriType.URI4, true, ContentType.TEXT_PLAIN, "updateEntitySimplePropertyValue");
-    checkDispatch(ODataHttpMethod.MERGE, UriType.URI4, true, ContentType.TEXT_PLAIN, "updateEntitySimplePropertyValue");
-    checkDispatch(ODataHttpMethod.PUT, UriType.URI4, true, ContentType.TEXT_PLAIN_CS_UTF_8, "updateEntitySimplePropertyValue");
-    checkDispatch(ODataHttpMethod.DELETE, UriType.URI4, true, ContentType.TEXT_PLAIN_CS_UTF_8, "deleteEntitySimplePropertyValue");
-    checkDispatch(ODataHttpMethod.PATCH, UriType.URI4, true, ContentType.TEXT_PLAIN_CS_UTF_8, "updateEntitySimplePropertyValue");
-    checkDispatch(ODataHttpMethod.MERGE, UriType.URI4, true, ContentType.TEXT_PLAIN_CS_UTF_8, "updateEntitySimplePropertyValue");
+    checkDispatch(ODataHttpMethod.PUT, UriType.URI4, true, "updateEntitySimplePropertyValue");
+    checkDispatch(ODataHttpMethod.DELETE, UriType.URI4, true, "deleteEntitySimplePropertyValue");
+    checkDispatch(ODataHttpMethod.PATCH, UriType.URI4, true, "updateEntitySimplePropertyValue");
+    checkDispatch(ODataHttpMethod.MERGE, UriType.URI4, true, "updateEntitySimplePropertyValue");
 
     checkDispatch(ODataHttpMethod.GET, UriType.URI5, "readEntitySimpleProperty");
     checkDispatch(ODataHttpMethod.PUT, UriType.URI5, "updateEntitySimpleProperty");
     checkDispatch(ODataHttpMethod.PATCH, UriType.URI5, "updateEntitySimpleProperty");
     checkDispatch(ODataHttpMethod.MERGE, UriType.URI5, "updateEntitySimpleProperty");
     checkDispatch(ODataHttpMethod.GET, UriType.URI5, true, "readEntitySimplePropertyValue");
-    // for $value only 'text/plain' is allowed    
-    checkDispatch(ODataHttpMethod.PUT, UriType.URI5, true, ContentType.TEXT_PLAIN, "updateEntitySimplePropertyValue");
-    checkDispatch(ODataHttpMethod.DELETE, UriType.URI5, true, ContentType.TEXT_PLAIN, "deleteEntitySimplePropertyValue");
-    checkDispatch(ODataHttpMethod.PATCH, UriType.URI5, true, ContentType.TEXT_PLAIN, "updateEntitySimplePropertyValue");
-    checkDispatch(ODataHttpMethod.MERGE, UriType.URI5, true, ContentType.TEXT_PLAIN, "updateEntitySimplePropertyValue");
+    checkDispatch(ODataHttpMethod.PUT, UriType.URI5, true, "updateEntitySimplePropertyValue");
+    checkDispatch(ODataHttpMethod.DELETE, UriType.URI5, true, "deleteEntitySimplePropertyValue");
+    checkDispatch(ODataHttpMethod.PATCH, UriType.URI5, true, "updateEntitySimplePropertyValue");
+    checkDispatch(ODataHttpMethod.MERGE, UriType.URI5, true, "updateEntitySimplePropertyValue");
 
     checkDispatch(ODataHttpMethod.GET, UriType.URI6A, "readEntity");
 
@@ -510,129 +362,5 @@ public class DispatcherTest extends BaseTest {
     wrongDispatch(ODataHttpMethod.DELETE, UriType.URI50B);
     wrongDispatch(ODataHttpMethod.PATCH, UriType.URI50B);
     wrongDispatch(ODataHttpMethod.MERGE, UriType.URI50B);
-  }
-
-  @Test
-  public void dispatchNotAllowedOptions() throws Exception {
-    wrongOptions(ODataHttpMethod.POST, UriType.URI1, true, false, false, false, false, false, false, false, false);
-    wrongOptions(ODataHttpMethod.POST, UriType.URI1, false, true, false, false, false, false, false, false, false);
-    wrongOptions(ODataHttpMethod.POST, UriType.URI1, false, false, true, false, false, false, false, false, false);
-    wrongOptions(ODataHttpMethod.POST, UriType.URI1, false, false, false, true, false, false, false, false, false);
-    wrongOptions(ODataHttpMethod.POST, UriType.URI1, false, false, false, false, true, false, false, false, false);
-    wrongOptions(ODataHttpMethod.POST, UriType.URI1, false, false, false, false, false, true, false, false, false);
-    wrongOptions(ODataHttpMethod.POST, UriType.URI1, false, false, false, false, false, false, true, false, false);
-    wrongOptions(ODataHttpMethod.POST, UriType.URI1, false, false, false, false, false, false, false, true, false);
-    wrongOptions(ODataHttpMethod.POST, UriType.URI1, false, false, false, false, false, false, false, false, true);
-
-    wrongOptions(ODataHttpMethod.PUT, UriType.URI2, true, false, false, false, false, false, false, false, false);
-    wrongOptions(ODataHttpMethod.PUT, UriType.URI2, false, false, false, false, false, false, false, true, false);
-    wrongOptions(ODataHttpMethod.PUT, UriType.URI2, false, false, false, false, false, false, false, false, true);
-    wrongOptions(ODataHttpMethod.PATCH, UriType.URI2, true, false, false, false, false, false, false, false, false);
-    wrongOptions(ODataHttpMethod.PATCH, UriType.URI2, false, false, false, false, false, false, false, true, false);
-    wrongOptions(ODataHttpMethod.PATCH, UriType.URI2, false, false, false, false, false, false, false, false, true);
-    wrongOptions(ODataHttpMethod.DELETE, UriType.URI2, true, false, false, false, false, false, false, false, false);
-    wrongOptions(ODataHttpMethod.DELETE, UriType.URI2, false, true, false, false, false, false, false, false, false);
-    wrongOptions(ODataHttpMethod.DELETE, UriType.URI2, false, false, false, false, false, false, false, true, false);
-    wrongOptions(ODataHttpMethod.DELETE, UriType.URI2, false, false, false, false, false, false, false, false, true);
-
-    wrongOptions(ODataHttpMethod.PUT, UriType.URI3, true, false, false, false, false, false, false, false, false);
-    wrongOptions(ODataHttpMethod.PATCH, UriType.URI3, true, false, false, false, false, false, false, false, false);
-
-    wrongOptions(ODataHttpMethod.PUT, UriType.URI4, true, false, false, false, false, false, false, false, false);
-
-    wrongOptions(ODataHttpMethod.PUT, UriType.URI5, true, false, false, false, false, false, false, false, false);
-
-    wrongOptions(ODataHttpMethod.POST, UriType.URI6B, true, false, false, false, false, false, false, false, false);
-    wrongOptions(ODataHttpMethod.POST, UriType.URI6B, false, true, false, false, false, false, false, false, false);
-    wrongOptions(ODataHttpMethod.POST, UriType.URI6B, false, false, true, false, false, false, false, false, false);
-    wrongOptions(ODataHttpMethod.POST, UriType.URI6B, false, false, false, true, false, false, false, false, false);
-    wrongOptions(ODataHttpMethod.POST, UriType.URI6B, false, false, false, false, true, false, false, false, false);
-    wrongOptions(ODataHttpMethod.POST, UriType.URI6B, false, false, false, false, false, true, false, false, false);
-    wrongOptions(ODataHttpMethod.POST, UriType.URI6B, false, false, false, false, false, false, true, false, false);
-    wrongOptions(ODataHttpMethod.POST, UriType.URI6B, false, false, false, false, false, false, false, true, false);
-    wrongOptions(ODataHttpMethod.POST, UriType.URI6B, false, false, false, false, false, false, false, false, true);
-
-    wrongOptions(ODataHttpMethod.PUT, UriType.URI7A, true, false, false, false, false, false, false, false, false);
-    wrongOptions(ODataHttpMethod.PUT, UriType.URI7A, false, true, false, false, false, false, false, false, false);
-    wrongOptions(ODataHttpMethod.DELETE, UriType.URI7A, true, false, false, false, false, false, false, false, false);
-    wrongOptions(ODataHttpMethod.DELETE, UriType.URI7A, false, true, false, false, false, false, false, false, false);
-
-    wrongOptions(ODataHttpMethod.POST, UriType.URI7B, true, false, false, false, false, false, false, false, false);
-    wrongOptions(ODataHttpMethod.POST, UriType.URI7B, false, true, false, false, false, false, false, false, false);
-    wrongOptions(ODataHttpMethod.POST, UriType.URI7B, false, false, true, false, false, false, false, false, false);
-    wrongOptions(ODataHttpMethod.POST, UriType.URI7B, false, false, false, true, false, false, false, false, false);
-    wrongOptions(ODataHttpMethod.POST, UriType.URI7B, false, false, false, false, true, false, false, false, false);
-    wrongOptions(ODataHttpMethod.POST, UriType.URI7B, false, false, false, false, false, true, false, false, false);
-    wrongOptions(ODataHttpMethod.POST, UriType.URI7B, false, false, false, false, false, false, true, false, false);
-
-    wrongOptions(ODataHttpMethod.PUT, UriType.URI17, true, false, false, false, false, false, false, false, false);
-    wrongOptions(ODataHttpMethod.PUT, UriType.URI17, false, true, false, false, false, false, false, false, false);
-    wrongOptions(ODataHttpMethod.DELETE, UriType.URI17, true, false, false, false, false, false, false, false, false);
-    wrongOptions(ODataHttpMethod.DELETE, UriType.URI17, false, true, false, false, false, false, false, false, false);
-  }
-
-  @Test
-  public void dispatchFunctionImportWrongHttpMethod() throws Exception {
-    wrongFunctionHttpMethod(ODataHttpMethod.POST, UriType.URI1, ODataHttpMethod.GET);
-    wrongFunctionHttpMethod(ODataHttpMethod.GET, UriType.URI10, ODataHttpMethod.PUT);
-    wrongFunctionHttpMethod(ODataHttpMethod.POST, UriType.URI11, ODataHttpMethod.GET);
-    wrongFunctionHttpMethod(ODataHttpMethod.PATCH, UriType.URI12, ODataHttpMethod.GET);
-    wrongFunctionHttpMethod(ODataHttpMethod.POST, UriType.URI13, ODataHttpMethod.GET);
-    wrongFunctionHttpMethod(ODataHttpMethod.GET, UriType.URI14, ODataHttpMethod.PUT);
-  }
-
-  @Test
-  public void dispatchWrongProperty() throws Exception {
-    wrongProperty(ODataHttpMethod.PUT, UriType.URI4, true, false);
-    wrongProperty(ODataHttpMethod.PATCH, UriType.URI4, true, false);
-    wrongProperty(ODataHttpMethod.DELETE, UriType.URI4, true, true);
-    wrongProperty(ODataHttpMethod.DELETE, UriType.URI4, true, false);
-    wrongProperty(ODataHttpMethod.DELETE, UriType.URI4, false, false);
-
-    wrongProperty(ODataHttpMethod.PUT, UriType.URI5, true, false);
-    wrongProperty(ODataHttpMethod.PATCH, UriType.URI5, true, false);
-    wrongProperty(ODataHttpMethod.DELETE, UriType.URI5, true, true);
-    wrongProperty(ODataHttpMethod.DELETE, UriType.URI5, true, false);
-    wrongProperty(ODataHttpMethod.DELETE, UriType.URI5, false, false);
-  }
-
-  @Test
-  public void dispatchWrongNavigationPath() throws Exception {
-    wrongNavigationPath(ODataHttpMethod.PUT, UriType.URI3);
-    wrongNavigationPath(ODataHttpMethod.PATCH, UriType.URI3);
-
-    wrongNavigationPath(ODataHttpMethod.PUT, UriType.URI4);
-    wrongNavigationPath(ODataHttpMethod.PATCH, UriType.URI4);
-    wrongNavigationPath(ODataHttpMethod.DELETE, UriType.URI4);
-
-    wrongNavigationPath(ODataHttpMethod.PUT, UriType.URI5);
-    wrongNavigationPath(ODataHttpMethod.PATCH, UriType.URI5);
-    wrongNavigationPath(ODataHttpMethod.DELETE, UriType.URI5);
-
-    wrongNavigationPath(ODataHttpMethod.PUT, UriType.URI7A);
-    wrongNavigationPath(ODataHttpMethod.PATCH, UriType.URI7A);
-    wrongNavigationPath(ODataHttpMethod.DELETE, UriType.URI7A);
-
-    wrongNavigationPath(ODataHttpMethod.POST, UriType.URI6B);
-
-    wrongNavigationPath(ODataHttpMethod.POST, UriType.URI7B);
-
-    wrongNavigationPath(ODataHttpMethod.PUT, UriType.URI17);
-    wrongNavigationPath(ODataHttpMethod.DELETE, UriType.URI17);
-  }
-
-  @Test
-  public void dispatchWrongRequestContentType() throws Exception {
-    wrongRequestContentType(ODataHttpMethod.POST, UriType.URI1, ContentType.APPLICATION_ATOM_SVC);
-    wrongRequestContentType(ODataHttpMethod.POST, UriType.URI1, ContentType.APPLICATION_ATOM_SVC_CS_UTF_8);
-
-    wrongRequestContentType(ODataHttpMethod.PUT, UriType.URI2, ContentType.APPLICATION_ATOM_SVC);
-    wrongRequestContentType(ODataHttpMethod.PUT, UriType.URI2, ContentType.APPLICATION_ATOM_SVC_CS_UTF_8);
-    wrongRequestContentType(ODataHttpMethod.PUT, UriType.URI2, ContentType.APPLICATION_ATOM_SVC);
-    wrongRequestContentType(ODataHttpMethod.PUT, UriType.URI2, ContentType.APPLICATION_ATOM_SVC_CS_UTF_8);
-    
-    // URI5
-    wrongRequestContentType(ODataHttpMethod.PUT, UriType.URI5, true, ContentType.APPLICATION_ATOM_SVC);
-    wrongRequestContentType(ODataHttpMethod.PUT, UriType.URI5, true, ContentType.APPLICATION_ATOM_SVC_CS_UTF_8);
   }
 }
