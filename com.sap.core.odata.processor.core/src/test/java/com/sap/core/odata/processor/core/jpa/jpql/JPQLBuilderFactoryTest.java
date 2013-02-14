@@ -3,6 +3,7 @@ package com.sap.core.odata.processor.core.jpa.jpql;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,7 +23,9 @@ import org.junit.Test;
 import com.sap.core.odata.api.edm.EdmEntitySet;
 import com.sap.core.odata.api.edm.EdmEntityType;
 import com.sap.core.odata.api.edm.EdmException;
+import com.sap.core.odata.api.edm.EdmMapping;
 import com.sap.core.odata.api.edm.EdmProperty;
+import com.sap.core.odata.api.edm.EdmSimpleType;
 import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.api.uri.KeyPredicate;
 import com.sap.core.odata.api.uri.NavigationSegment;
@@ -152,6 +155,13 @@ public class JPQLBuilderFactoryTest {
 				.createMock(OrderByExpression.class);
 		EasyMock.expect(getEntitySetView.getTargetEntitySet()).andStubReturn(
 				edmEntitySet);
+		EdmEntitySet startEdmEntitySet = EasyMock.createMock(EdmEntitySet.class);
+		EdmEntityType startEdmEntityType = EasyMock.createMock(EdmEntityType.class);
+		EasyMock.expect(startEdmEntityType.getName()).andStubReturn("SOHeader");
+		EasyMock.expect(startEdmEntitySet.getEntityType()).andStubReturn(startEdmEntityType);
+		EasyMock.expect(getEntitySetView.getStartEntitySet()).andStubReturn(
+				startEdmEntitySet);
+		EasyMock.replay(startEdmEntityType, startEdmEntitySet);
 		EasyMock.expect(getEntitySetView.getOrderBy()).andStubReturn(
 				orderByExpression);
 		EasyMock.expect(getEntitySetView.getSelect()).andStubReturn(null);
@@ -159,6 +169,29 @@ public class JPQLBuilderFactoryTest {
 		List<NavigationSegment> navigationSegments = new ArrayList<NavigationSegment>();
 		EasyMock.expect(getEntitySetView.getNavigationSegments())
 				.andStubReturn(navigationSegments);
+		KeyPredicate keyPredicate = EasyMock
+				.createMock(KeyPredicate.class);
+		EdmProperty kpProperty = EasyMock
+				.createMock(EdmProperty.class);
+		EdmSimpleType edmType = EasyMock
+				.createMock(EdmSimpleType.class);
+		EdmMapping edmMapping = EasyMock.createMock(EdmMapping.class);
+		EasyMock.expect(edmMapping.getInternalName()).andStubReturn("Field1");
+		EasyMock.expect(keyPredicate.getLiteral()).andStubReturn("1");
+		try {
+			EasyMock.expect(kpProperty.getName()).andStubReturn("Field1");
+			EasyMock.expect(kpProperty.getType()).andStubReturn(edmType);
+			
+			EasyMock.expect(kpProperty.getMapping()).andStubReturn(edmMapping);
+			
+		} catch (EdmException e2) {
+			fail("this should not happen");
+		}
+		EasyMock.expect(keyPredicate.getProperty()).andStubReturn(kpProperty);
+		EasyMock.replay(edmMapping,edmType,kpProperty,keyPredicate);
+		List<KeyPredicate> keyPredicates  = new ArrayList<KeyPredicate>();
+		keyPredicates.add(keyPredicate);
+		EasyMock.expect(getEntitySetView.getKeyPredicates()).andStubReturn(keyPredicates);
 		EasyMock.replay(getEntitySetView);
 		EasyMock.expect(edmEntitySet.getEntityType()).andStubReturn(
 				edmEntityType);
@@ -179,6 +212,13 @@ public class JPQLBuilderFactoryTest {
 		EasyMock.expect(getEntityView.getSelect()).andStubReturn(null);
 		EasyMock.expect(getEntityView.getTargetEntitySet()).andStubReturn(
 				edmEntitySet);
+		EdmEntitySet startEdmEntitySet = EasyMock.createMock(EdmEntitySet.class);
+		EdmEntityType startEdmEntityType = EasyMock.createMock(EdmEntityType.class);
+		EasyMock.expect(startEdmEntityType.getName()).andStubReturn("SOHeader");
+		EasyMock.expect(startEdmEntitySet.getEntityType()).andStubReturn(startEdmEntityType);
+		EasyMock.expect(getEntityView.getStartEntitySet()).andStubReturn(
+				startEdmEntitySet);
+		EasyMock.replay(startEdmEntityType, startEdmEntitySet);
 		EasyMock.replay(edmEntityType, edmEntitySet);
 		EasyMock.expect(getEntityView.getKeyPredicates()).andStubReturn(
 				new ArrayList<KeyPredicate>());

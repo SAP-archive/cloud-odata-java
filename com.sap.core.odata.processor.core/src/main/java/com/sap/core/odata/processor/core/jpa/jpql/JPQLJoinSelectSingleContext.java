@@ -66,45 +66,47 @@ public class JPQLJoinSelectSingleContext extends JPQLSelectSingleContext
 		protected List<JPAJoinClause> generateJoinClauses()
 				throws ODataJPARuntimeException, EdmException {
 
-			List<JPAJoinClause> jpaJoinClauses = new ArrayList<JPAJoinClause>();
-			JPAJoinClause jpaJoinClause = null;
+			List<JPAJoinClause> jpaOuterJoinClauses = new ArrayList<JPAJoinClause>();
+			JPAJoinClause jpaOuterJoinClause = null;
+			String joinCondition = null;
+			String entityAlias = generateJPAEntityAlias();
+			joinCondition = ODataExpressionParser.parseKeyPredicates(
+					entityView.getKeyPredicates(),
+					entityAlias);
+			
+			jpaOuterJoinClause = new JPAJoinClause(
+					entityView.getStartEntitySet().getEntityType().getName(),
+					entityAlias,
+					null,
+					null, joinCondition,
+					JPAJoinClause.JOIN.INNER);
 
-			boolean firstPass = true;
+			jpaOuterJoinClauses.add(jpaOuterJoinClause);
+			
 			for (NavigationSegment navigationSegment : entityView
 					.getNavigationSegments()) {
 
 				EdmNavigationProperty navigationProperty = navigationSegment
 						.getNavigationProperty();
 
-				String joinCondition = null;
 				String relationShipAlias = generateRelationShipAlias();
-				String entityAlias = generateJPAEntityAlias();
 
-				if (!firstPass) {
-
-					joinCondition = ODataExpressionParser.parseKeyPredicates(
+				joinCondition = ODataExpressionParser.parseKeyPredicates(
 							navigationSegment.getKeyPredicates(),
 							relationShipAlias);
-				} else {
 
-					joinCondition = ODataExpressionParser.parseKeyPredicates(
-							entityView.getKeyPredicates(),
-							entityAlias);
-					firstPass = false;
-				}
-
-				jpaJoinClause = new JPAJoinClause(
+				jpaOuterJoinClause = new JPAJoinClause(
 						getFromEntityName(navigationProperty),
 						entityAlias,
 						getRelationShipName(navigationProperty),
 						relationShipAlias, joinCondition,
 						JPAJoinClause.JOIN.INNER);
 
-				jpaJoinClauses.add(jpaJoinClause);
+				jpaOuterJoinClauses.add(jpaOuterJoinClause);
 
 			}
 
-			return jpaJoinClauses;
+			return jpaOuterJoinClauses;
 		}
 
 		private String getFromEntityName(

@@ -70,32 +70,34 @@ public class JPQLJoinSelectContext extends JPQLSelectContext implements
 
 			List<JPAJoinClause> jpaOuterJoinClauses = new ArrayList<JPAJoinClause>();
 			JPAJoinClause jpaOuterJoinClause = null;
+			String joinCondition = null;
+			String entityAlias = generateJPAEntityAlias();
+			joinCondition = ODataExpressionParser.parseKeyPredicates(
+					entitySetView.getKeyPredicates(),
+					entityAlias);
+			
+			jpaOuterJoinClause = new JPAJoinClause(
+					entitySetView.getStartEntitySet().getEntityType().getName(),
+					entityAlias,
+					null,
+					null, joinCondition,
+					JPAJoinClause.JOIN.INNER);
 
-			boolean firstPass = true;
+			jpaOuterJoinClauses.add(jpaOuterJoinClause);
+			
 			for (NavigationSegment navigationSegment : entitySetView
 					.getNavigationSegments()) {
 
 				EdmNavigationProperty navigationProperty = navigationSegment
 						.getNavigationProperty();
 
-				String joinCondition = null;
 				String relationShipAlias = generateRelationShipAlias();
-				String entityAlias = generateJPAEntityAlias();
 
-				if (!firstPass) {
-
-					joinCondition = ODataExpressionParser.parseKeyPredicates(
+				joinCondition = ODataExpressionParser.parseKeyPredicates(
 							navigationSegment.getKeyPredicates(),
 							relationShipAlias);
-				} else {
 
-					joinCondition = ODataExpressionParser.parseKeyPredicates(
-							entitySetView.getKeyPredicates(),
-							entityAlias);
-					firstPass = false;
-				}
-
-				jpaOuterJoinClause = new JPAJoinClause(
+					jpaOuterJoinClause = new JPAJoinClause(
 						getFromEntityName(navigationProperty),
 						entityAlias,
 						getRelationShipName(navigationProperty),

@@ -38,7 +38,7 @@ public class JPQLJoinStatementBuilderTest {
 		EasyMock.expect(context.getJPAEntityName()).andStubReturn("SOHeader");
 		EasyMock.expect(context.getType()).andStubReturn(JPQLContextType.SELECT);
 		EasyMock.expect(context.getSelectExpression()).andStubReturn("mat");
-		EasyMock.expect(context.getWhereExpression()).andStubReturn("soh.buyerId = 2 AND soh.createdBy = 'Peter'");
+		EasyMock.expect(context.getWhereExpression()).andStubReturn("soh.buyerId = 2");
 		HashMap<String, String> orderByMap = new HashMap<String, String>();
 		orderByMap.put("buyerId", "asc");
 		orderByMap.put("city", "desc");
@@ -49,7 +49,9 @@ public class JPQLJoinStatementBuilderTest {
 
 	private List<JPAJoinClause> getJoinClauseList() {
 		List<JPAJoinClause> joinClauseList = new ArrayList<JPAJoinClause>();
-		JPAJoinClause jpaOuterJoinClause = new JPAJoinClause("SOHeader", "soh", "soItem", "soi", "soi.shId = soh.soId", JPAJoinClause.JOIN.LEFT);
+		JPAJoinClause jpaOuterJoinClause = new JPAJoinClause("SOHeader", "soh", null, null, "soh.createdBy = 'Peter'", JPAJoinClause.JOIN.LEFT);
+		joinClauseList.add(jpaOuterJoinClause);
+		jpaOuterJoinClause = new JPAJoinClause("SOHeader", "soh", "soItem", "soi", "soi.shId = soh.soId", JPAJoinClause.JOIN.LEFT);
 		joinClauseList.add(jpaOuterJoinClause);
 		jpaOuterJoinClause = new JPAJoinClause("SOItem", "si", "material", "mat", "mat.id = 'abc'", JPAJoinClause.JOIN.LEFT);
 		joinClauseList.add(jpaOuterJoinClause);
@@ -66,7 +68,7 @@ public class JPQLJoinStatementBuilderTest {
 		JPQLJoinStatementBuilder jpqlJoinStatementBuilder = new JPQLJoinStatementBuilder(context);
 		try {
 			JPQLStatement jpqlStatement = jpqlJoinStatementBuilder.build();
-			assertEquals("SELECT mat FROM SOHeader soh JOIN soh.soItem soi JOIN soi.material mat WHERE soh.buyerId = 2 AND soh.createdBy = 'Peter' AND soi.shId = soh.soId  AND mat.id = 'abc' ORDER BY mat.buyerId asc , mat.city desc", jpqlStatement.toString());
+			assertEquals("SELECT mat FROM SOHeader soh JOIN soh.soItem soi JOIN soi.material mat WHERE soh.buyerId = 2 AND soh.createdBy = 'Peter' AND soi.shId = soh.soId AND mat.id = 'abc' ORDER BY mat.buyerId asc , mat.city desc", jpqlStatement.toString());
 		} catch (ODataJPARuntimeException e) {
 			fail("Should not have come here");
 		}
