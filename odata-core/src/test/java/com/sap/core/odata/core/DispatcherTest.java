@@ -18,6 +18,7 @@ import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
 import com.sap.core.odata.api.ODataService;
+import com.sap.core.odata.api.commons.HttpContentType;
 import com.sap.core.odata.api.commons.InlineCount;
 import com.sap.core.odata.api.edm.EdmEntitySet;
 import com.sap.core.odata.api.edm.EdmEntityType;
@@ -48,7 +49,6 @@ import com.sap.core.odata.api.uri.NavigationSegment;
 import com.sap.core.odata.api.uri.SelectItem;
 import com.sap.core.odata.api.uri.expression.FilterExpression;
 import com.sap.core.odata.api.uri.expression.OrderByExpression;
-import com.sap.core.odata.core.commons.ContentType;
 import com.sap.core.odata.core.commons.ContentType.ODataFormat;
 import com.sap.core.odata.core.commons.ODataHttpMethod;
 import com.sap.core.odata.core.uri.UriInfoImpl;
@@ -229,11 +229,10 @@ public class DispatcherTest extends BaseTest {
   }
 
   private static void checkDispatch(final ODataHttpMethod method, final UriInfoImpl uriInfo, String requestContentType, final String expectedMethodName) throws ODataException {
-    final String contentType = method == ODataHttpMethod.GET ? ContentType.APPLICATION_XML.toContentTypeString() : null;
-    InputStream content = null;
+    final String contentType = method == ODataHttpMethod.GET ? HttpContentType.APPLICATION_XML : null;
 
     final Dispatcher dispatcher = new Dispatcher(service);
-    final ODataResponse response = dispatcher.dispatch(method, uriInfo, content, requestContentType, contentType);
+    final ODataResponse response = dispatcher.dispatch(method, uriInfo, null, requestContentType, contentType);
     assertEquals(expectedMethodName, response.getEntity());
   }
 
@@ -241,23 +240,15 @@ public class DispatcherTest extends BaseTest {
     checkDispatch(method, mockUriInfo(uriType, isValue), expectedMethodName);
   }
 
-  private static void checkDispatch(ODataHttpMethod method, UriInfoImpl uriInfo, String expectedMethodName) throws ODataException {
+  private static void checkDispatch(final ODataHttpMethod method, final UriInfoImpl uriInfo, final String expectedMethodName) throws ODataException {
     String requestContentType = null;
-    if (ODataHttpMethod.POST == method
-        || ODataHttpMethod.PUT == method
-        || ODataHttpMethod.PATCH == method
-        || ODataHttpMethod.MERGE == method) {
-        requestContentType = ContentType.APPLICATION_XML.toContentTypeString();
-    }
+    if (method == ODataHttpMethod.POST || method == ODataHttpMethod.PUT
+        || method == ODataHttpMethod.PATCH || method == ODataHttpMethod.MERGE)
+        requestContentType = HttpContentType.APPLICATION_XML;
+
     checkDispatch(method, uriInfo, requestContentType, expectedMethodName);
   }
 
-  private static void checkDispatch(final ODataHttpMethod method, final UriType uriType, final String expectedMethodName, final ContentType ... requestContentType) throws ODataException {
-    for (ContentType contentType : requestContentType) {
-      checkDispatch(method, mockUriInfo(uriType, false), contentType.toContentTypeString(), expectedMethodName);
-    }
-  }
-  
   private static void checkDispatch(final ODataHttpMethod method, final UriType uriType, final String expectedMethodName) throws ODataException {
     checkDispatch(method, uriType, false, expectedMethodName);
   }
@@ -271,17 +262,14 @@ public class DispatcherTest extends BaseTest {
     }
   }
 
-  private static void wrongDispatch(final ODataHttpMethod method, final UriType uriType, ContentType requestContentType) throws EdmException, ODataException {
-    wrongRequestContentType(method, uriType, requestContentType.toContentTypeString());
-  }
-  
-  private static void wrongRequestContentType(final ODataHttpMethod method, final UriType uriType, String requestContentType) throws EdmException, ODataException {
+  private static void wrongRequestContentType(final ODataHttpMethod method, final UriType uriType, final String requestContentType) {
     try {
-      boolean isValue = false;
-      checkDispatch(method, mockUriInfo(uriType, isValue), requestContentType, null);
+      checkDispatch(method, mockUriInfo(uriType, false), requestContentType, null);
       fail("Expected ODataException not thrown");
     } catch (ODataUnsupportedMediaTypeException e) {
       assertNotNull(e);
+    } catch (ODataException e) {
+      fail("Unexpected ODataException thrown");
     }
   }
 
@@ -344,10 +332,6 @@ public class DispatcherTest extends BaseTest {
 
     checkDispatch(ODataHttpMethod.GET, UriType.URI1, "readEntitySet");
     checkDispatch(ODataHttpMethod.POST, UriType.URI1, "createEntity");
-    checkDispatch(ODataHttpMethod.POST, UriType.URI1, "createEntity", 
-        ContentType.APPLICATION_XML, ContentType.APPLICATION_XML_CS_UTF_8,
-        ContentType.APPLICATION_ATOM_XML_CS_UTF_8, ContentType.APPLICATION_ATOM_XML_CS_UTF_8
-        );
 
     checkDispatch(ODataHttpMethod.GET, UriType.URI2, "readEntity");
     checkDispatch(ODataHttpMethod.PUT, UriType.URI2, "updateEntity");
@@ -619,10 +603,10 @@ public class DispatcherTest extends BaseTest {
 
   @Test
   public void dispatchWrongRequestContentType() throws Exception {
-    wrongDispatch(ODataHttpMethod.POST, UriType.URI1, ContentType.APPLICATION_ATOM_SVC);
-    wrongDispatch(ODataHttpMethod.POST, UriType.URI1, ContentType.APPLICATION_ATOM_SVC_CS_UTF_8);
+    wrongRequestContentType(ODataHttpMethod.POST, UriType.URI1, HttpContentType.APPLICATION_ATOM_SVC);
+    wrongRequestContentType(ODataHttpMethod.POST, UriType.URI1, HttpContentType.APPLICATION_ATOM_SVC_UTF8);
 
-    wrongDispatch(ODataHttpMethod.PUT, UriType.URI2, ContentType.APPLICATION_ATOM_SVC);
-    wrongDispatch(ODataHttpMethod.PUT, UriType.URI2, ContentType.APPLICATION_ATOM_SVC_CS_UTF_8);
+    wrongRequestContentType(ODataHttpMethod.PUT, UriType.URI2, HttpContentType.APPLICATION_ATOM_SVC);
+    wrongRequestContentType(ODataHttpMethod.PUT, UriType.URI2, HttpContentType.APPLICATION_ATOM_SVC_UTF8);
   }
 }

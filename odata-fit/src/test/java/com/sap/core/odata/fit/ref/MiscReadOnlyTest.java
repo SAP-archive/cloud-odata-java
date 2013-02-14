@@ -70,6 +70,11 @@ public class MiscReadOnlyTest extends AbstractRefTest {
     assertNull(response.getFirstHeader(HttpHeaders.ETAG));
     assertEquals(expected, getBody(response));
 
+    response = callUri("Container2.Photos(Id=1,Type='image%2Fpng')/$value");
+    checkMediaType(response, IMAGE_JPEG);
+    checkEtag(response, "W/\"1\"");
+    assertNotNull(getBody(response));
+
     notFound("Employees('99')/$value");
     badRequest("Teams('3')/$value");
   }
