@@ -7,6 +7,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -35,16 +36,21 @@ import com.sap.core.odata.api.ODataService;
 import com.sap.core.odata.api.ODataServiceFactory;
 import com.sap.core.odata.api.ODataServiceVersion;
 import com.sap.core.odata.api.commons.ODataHttpHeaders;
+import com.sap.core.odata.api.edm.EdmEntityType;
+import com.sap.core.odata.api.edm.EdmException;
+import com.sap.core.odata.api.edm.EdmProperty;
 import com.sap.core.odata.api.exception.ODataBadRequestException;
 import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.api.exception.ODataMessageException;
 import com.sap.core.odata.api.exception.ODataMethodNotAllowedException;
 import com.sap.core.odata.api.exception.ODataNotAcceptableException;
 import com.sap.core.odata.api.exception.ODataNotFoundException;
+import com.sap.core.odata.api.exception.ODataUnsupportedMediaTypeException;
 import com.sap.core.odata.api.processor.ODataProcessor;
 import com.sap.core.odata.api.processor.ODataResponse;
 import com.sap.core.odata.api.uri.PathInfo;
 import com.sap.core.odata.api.uri.PathSegment;
+import com.sap.core.odata.api.uri.UriInfo;
 import com.sap.core.odata.core.Dispatcher;
 import com.sap.core.odata.core.ODataContextImpl;
 import com.sap.core.odata.core.ODataPathSegmentImpl;
@@ -76,7 +82,6 @@ public final class ODataSubLocator implements ODataLocator {
   private List<ContentType> acceptHeaderContentTypes;
 
   private InputStream requestContent;
-
   private String requestContentType;
 
   @GET
@@ -142,12 +147,192 @@ public final class ODataSubLocator implements ODataLocator {
     validateDataServiceVersion(serverDataServiceVersion);
     final List<PathSegment> pathSegments = context.getPathInfo().getODataSegments();
     final UriInfoImpl uriInfo = (UriInfoImpl) uriParser.parse(pathSegments, queryParameters);
+
+    checkFunctionImport(method, uriInfo);
+    if (method != ODataHttpMethod.GET) {
+      checkNotGetSystemQueryOptions(method, uriInfo);
+      checkNumberOfNavigationSegments(uriInfo);
+      checkProperty(method, uriInfo);
+
+      if (method == ODataHttpMethod.POST || method == ODataHttpMethod.PUT
+          || method == ODataHttpMethod.PATCH || method == ODataHttpMethod.MERGE)
+        checkRequestContentType(uriInfo, requestContentType);
+    }
+
     final String contentType = doContentNegotiation(uriInfo);
 
     final ODataResponse odataResponse = dispatcher.dispatch(method, uriInfo, requestContent, requestContentType, contentType);
     final Response response = convertResponse(odataResponse, serverDataServiceVersion);
 
     return response;
+  }
+
+  private void checkFunctionImport(final ODataHttpMethod method, final UriInfoImpl uriInfo) throws ODataException {
+    if (uriInfo.getFunctionImport() != null
+        && uriInfo.getFunctionImport().getHttpMethod() != null
+        && !uriInfo.getFunctionImport().getHttpMethod().equals(method.toString()))
+      throw new ODataMethodNotAllowedException(ODataMethodNotAllowedException.DISPATCH);
+  }
+
+  private void checkNotGetSystemQueryOptions(final ODataHttpMethod method, final UriInfoImpl uriInfo) throws ODataException {
+    switch (uriInfo.getUriType()) {
+    case URI1:
+    case URI6B:
+      if (uriInfo.getFormat() != null
+          || uriInfo.getFilter() != null
+          || uriInfo.getInlineCount() != null
+          || uriInfo.getOrderBy() != null
+          || uriInfo.getSkipToken() != null
+          || uriInfo.getSkip() != null
+          || uriInfo.getTop() != null
+          || !uriInfo.getExpand().isEmpty()
+          || !uriInfo.getSelect().isEmpty())
+        throw new ODataMethodNotAllowedException(ODataMethodNotAllowedException.DISPATCH);
+      break;
+
+    case URI2:
+      if (uriInfo.getFormat() != null
+          || !uriInfo.getExpand().isEmpty() || !uriInfo.getSelect().isEmpty())
+        throw new ODataMethodNotAllowedException(ODataMethodNotAllowedException.DISPATCH);
+      if (method == ODataHttpMethod.DELETE)
+        if (uriInfo.getFilter() != null)
+          throw new ODataMethodNotAllowedException(ODataMethodNotAllowedException.DISPATCH);
+      break;
+
+    case URI3:
+      if (uriInfo.getFormat() != null)
+        throw new ODataMethodNotAllowedException(ODataMethodNotAllowedException.DISPATCH);
+      break;
+
+    case URI4:
+    case URI5:
+      if (method == ODataHttpMethod.PUT || method == ODataHttpMethod.PATCH || method == ODataHttpMethod.MERGE)
+        if (!uriInfo.isValue() && uriInfo.getFormat() != null)
+          throw new ODataMethodNotAllowedException(ODataMethodNotAllowedException.DISPATCH);
+      break;
+
+    case URI7A:
+      if (uriInfo.getFormat() != null || uriInfo.getFilter() != null)
+        throw new ODataMethodNotAllowedException(ODataMethodNotAllowedException.DISPATCH);
+      break;
+
+    case URI7B:
+      if (uriInfo.getFormat() != null
+          || uriInfo.getFilter() != null
+          || uriInfo.getInlineCount() != null
+          || uriInfo.getOrderBy() != null
+          || uriInfo.getSkipToken() != null
+          || uriInfo.getSkip() != null
+          || uriInfo.getTop() != null)
+        throw new ODataMethodNotAllowedException(ODataMethodNotAllowedException.DISPATCH);
+      break;
+
+    case URI17:
+      if (uriInfo.getFormat() != null || uriInfo.getFilter() != null)
+        throw new ODataMethodNotAllowedException(ODataMethodNotAllowedException.DISPATCH);
+      break;
+
+    default:
+      break;
+    }
+  }
+
+  private void checkNumberOfNavigationSegments(final UriInfoImpl uriInfo) throws ODataException {
+    switch (uriInfo.getUriType()) {
+    case URI1:
+    case URI6B:
+    case URI7A:
+    case URI7B:
+      if (uriInfo.getNavigationSegments().size() > 1)
+        throw new ODataBadRequestException(ODataBadRequestException.NOTSUPPORTED);
+      break;
+
+    case URI3:
+    case URI4:
+    case URI5:
+    case URI17:
+      if (!uriInfo.getNavigationSegments().isEmpty())
+        throw new ODataBadRequestException(ODataBadRequestException.NOTSUPPORTED);
+      break;
+
+    default:
+      break;
+    }
+  }
+
+  private void checkProperty(final ODataHttpMethod method, final UriInfoImpl uriInfo) throws ODataException {
+    switch (uriInfo.getUriType()) {
+    case URI4:
+    case URI5:
+      if (isPropertyKey(uriInfo))
+        throw new ODataMethodNotAllowedException(ODataMethodNotAllowedException.DISPATCH);
+      if (method == ODataHttpMethod.DELETE)
+        if (!isPropertyNullable(getProperty(uriInfo)))
+          throw new ODataMethodNotAllowedException(ODataMethodNotAllowedException.DISPATCH);
+      break;
+
+    default:
+      break;
+    }
+  }
+
+  private EdmProperty getProperty(final UriInfo uriInfo) {
+    return uriInfo.getPropertyPath().get(uriInfo.getPropertyPath().size() - 1);
+  }
+
+  private boolean isPropertyKey(final UriInfo uriInfo) throws EdmException {
+    final EdmEntityType entityType = uriInfo.getTargetEntitySet().getEntityType();
+    return entityType.getKeyProperties().contains(getProperty(uriInfo));
+  }
+
+  private boolean isPropertyNullable(final EdmProperty property) throws EdmException {
+    return property.getFacets() == null || property.getFacets().isNullable();
+  }
+
+  private void checkRequestContentType(final UriInfoImpl uriInfo, final String contentType) throws ODataException {
+    switch (uriInfo.getUriType()) {
+    case URI1:
+    case URI6B:
+    case URI2:
+      if (!isValidRequestContentType(contentType))
+        throw new ODataUnsupportedMediaTypeException(ODataUnsupportedMediaTypeException.NOT_SUPPORTED.addContent(contentType));
+
+    case URI4:
+    case URI5:
+      if (uriInfo.isValue())
+        if (!isValidRequestContentTypeForProperty(getProperty(uriInfo), contentType))
+          throw new ODataUnsupportedMediaTypeException(ODataUnsupportedMediaTypeException.NOT_SUPPORTED.addContent(contentType));
+
+    default:
+      break;
+    }
+  }
+
+  private static final List<ContentType> ALLOWED_REQUEST_CONTENT_TYPES = Arrays.asList(
+      ContentType.TEXT_PLAIN, ContentType.TEXT_PLAIN_CS_UTF_8,
+      ContentType.APPLICATION_XML, ContentType.APPLICATION_XML_CS_UTF_8,
+      ContentType.APPLICATION_ATOM_XML, ContentType.APPLICATION_ATOM_XML_CS_UTF_8,
+      ContentType.APPLICATION_ATOM_XML_ENTRY, ContentType.APPLICATION_ATOM_XML_ENTRY_CS_UTF_8
+      // currently not supported, but should be in further versions
+      // commented out here to ensure an correct '415 unsupported media type' response
+      //      ContentType.APPLICATION_JSON, ContentType.APPLICATION_JSON_CS_UTF_8
+      );
+
+  private boolean isValidRequestContentType(final String requestContentType) {
+    if (requestContentType == null)
+      return false;
+
+    return ContentType.create(requestContentType).hasMatch(ALLOWED_REQUEST_CONTENT_TYPES);
+  }
+
+  private boolean isValidRequestContentTypeForProperty(final EdmProperty property, String requestContentType) throws EdmException {
+    ContentType requested = ContentType.create(requestContentType);
+    String mimeType = property.getMimeType();
+    if (mimeType != null) {
+      return requested.equals(ContentType.create(mimeType));
+    } else {
+      return requested.hasMatch(Arrays.asList(ContentType.TEXT_PLAIN, ContentType.TEXT_PLAIN_CS_UTF_8, ContentType.APPLICATION_OCTET_STREAM));
+    }
   }
 
   private String doContentNegotiation(final UriInfoImpl uriInfo) throws ODataException {
