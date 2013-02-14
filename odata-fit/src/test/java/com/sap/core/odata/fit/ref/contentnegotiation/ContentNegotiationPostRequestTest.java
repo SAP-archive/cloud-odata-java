@@ -3,6 +3,7 @@ package com.sap.core.odata.fit.ref.contentnegotiation;
 import java.util.Arrays;
 import java.util.List;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import com.sap.core.odata.core.uri.UriType;
@@ -126,4 +127,33 @@ public class ContentNegotiationPostRequestTest extends AbstractContentNegotiatio
     // execute all defined tests
     testSet.execute(getEndpoint());
   }
+  
+  @Test
+  @Ignore("Some test failure")
+  public void testURI_5_EntitySet() throws Exception {
+    // create test set
+    FitTestSet testSet = FitTestSet.create(UriType.URI1, "/Employees('1')/EmployeeName/$value")
+        .httpMethod("PUT")
+        .queryOptions(Arrays.asList(""))
+        .acceptHeader(Arrays.asList("", "application/xml"))
+        .content("Jon Doe")
+        .requestContentTypes(Arrays.asList("text/plain; charset=utf-8", "text/plain"))
+        .expectedStatusCode(201)
+        .init();
+
+    // set all 'NOT ACCEPTED' requests
+    final List<String> unsupportedRequestContentTypes = Arrays.asList(
+        "application/xml",
+        "application/xml; charset=utf-8",
+        "application/json",
+        "application/json; charset=utf-8",
+        "application/atomsvc+xml",
+        "application/atomsvc+xml; charset=utf-8"
+        );
+    testSet.modifyRequestContentTypes(unsupportedRequestContentTypes, 415, "application/xml");
+
+    // execute all defined tests
+    testSet.execute(getEndpoint());
+  }
+
 }

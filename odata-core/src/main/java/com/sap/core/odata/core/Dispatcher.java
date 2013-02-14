@@ -44,8 +44,9 @@ public class Dispatcher {
       ContentType.APPLICATION_XML, ContentType.APPLICATION_XML_CS_UTF_8,
       ContentType.APPLICATION_ATOM_XML, ContentType.APPLICATION_ATOM_XML_CS_UTF_8,
       ContentType.APPLICATION_ATOM_XML_ENTRY, ContentType.APPLICATION_ATOM_XML_ENTRY_CS_UTF_8
-//      ContentType.APPLICATION_JSON,
-//      ContentType.APPLICATION_JSON_CS_UTF_8
+      // XXX: mibo: currently (130214) not supported, but should be in further versions
+      //      commented out here to ensure an correct '415 unsupported media type' response
+//      ContentType.APPLICATION_JSON, ContentType.APPLICATION_JSON_CS_UTF_8
       );
   private final ODataService service;
 
@@ -152,7 +153,10 @@ public class Dispatcher {
         if (isPropertyNotKey(getEntityType(uriInfo), getProperty(uriInfo)))
           if (uriInfo.getNavigationSegments().isEmpty())
             if (uriInfo.isValue())
-              return service.getEntitySimplePropertyValueProcessor().updateEntitySimplePropertyValue(uriInfo, content, requestContentType, contentType);
+              if (isValidRequestContentTypeForProperty(getProperty(uriInfo), requestContentType))
+                return service.getEntitySimplePropertyValueProcessor().updateEntitySimplePropertyValue(uriInfo, content, requestContentType, contentType);
+              else
+                throw new ODataUnsupportedMediaTypeException(ODataUnsupportedMediaTypeException.NOT_SUPPORTED.addContent(requestContentType));
             else
               if (uriInfo.getFormat() == null)
                 return service.getEntitySimplePropertyProcessor().updateEntitySimpleProperty(uriInfo, content, requestContentType, contentType);
@@ -335,6 +339,16 @@ public class Dispatcher {
 
   private boolean isPropertyNullable(final EdmProperty property) throws EdmException {
     return property.getFacets() == null || property.getFacets().isNullable();
+  }
+
+  private boolean isValidRequestContentTypeForProperty(final EdmProperty property, String requestContentType) throws EdmException {
+    ContentType requested = ContentType.create(requestContentType);
+    String mimeType = property.getMimeType();
+    if(mimeType != null) {
+      return requested.equals(ContentType.create(mimeType));
+    } else {
+      return requested.hasMatch(Arrays.asList(ContentType.TEXT_PLAIN, ContentType.TEXT_PLAIN_CS_UTF_8, ContentType.APPLICATION_OCTET_STREAM));
+    }
   }
 
   public Class<? extends ODataProcessor> mapUriTypeToProcessorFeature(final UriInfoImpl uriInfo) {
