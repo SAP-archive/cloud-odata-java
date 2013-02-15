@@ -114,15 +114,15 @@ public class ContentNegotiationPostRequestTest extends AbstractContentNegotiatio
 
     // set all 'NOT ACCEPTED' requests
     final List<String> unsupportedRequestContentTypes = Arrays.asList(
-//        "text/plain",
+        "text/plain",
         "text/plain; charset=utf-8",
-        "application/json",
-        "application/json; charset=utf-8",
+//        "application/json",
+//        "application/json; charset=utf-8",
         "application/atomsvc+xml",
         "application/atomsvc+xml; charset=utf-8"
         );
     testSet.modifyRequestContentTypes(unsupportedRequestContentTypes, 415, "application/xml");
-    testSet.modifyRequestContentTypes(Arrays.asList("text/plain"), 400, "application/xml");
+    testSet.modifyRequestContentTypes(Arrays.asList("application/json", "application/json; charset=utf-8"), 400, "application/xml");
 
     // execute all defined tests
     testSet.execute(getEndpoint());

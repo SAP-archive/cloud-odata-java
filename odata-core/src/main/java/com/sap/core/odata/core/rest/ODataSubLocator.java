@@ -294,7 +294,18 @@ public final class ODataSubLocator implements ODataLocator {
     case URI1:
     case URI6B:
     case URI2:
-      if (!isValidRequestContentType(contentType))
+      final Class<? extends ODataProcessor> processorFeature = dispatcher.mapUriTypeToProcessorFeature(uriInfo);
+      final List<ContentType> supportedContentTypes = getSupportedContentTypes(processorFeature);
+      if(UriType.URI1.equals(uriInfo.getUriType())) {
+        supportedContentTypes.add(ContentType.APPLICATION_ATOM_XML_ENTRY_CS_UTF_8);
+      }
+      if(uriInfo.isValue()) {
+        supportedContentTypes.add(ContentType.TEXT_PLAIN);
+      }
+      if(uriInfo.getTargetEntitySet().getEntityType().hasStream()) {
+        supportedContentTypes.addAll(Arrays.asList(ContentType.TEXT_PLAIN, ContentType.TEXT_PLAIN_CS_UTF_8, ContentType.APPLICATION_OCTET_STREAM));
+      }
+      if (!isValidRequestContentType(contentType, supportedContentTypes))
         throw new ODataUnsupportedMediaTypeException(ODataUnsupportedMediaTypeException.NOT_SUPPORTED.addContent(contentType));
 
     case URI4:
@@ -308,25 +319,16 @@ public final class ODataSubLocator implements ODataLocator {
     }
   }
 
-  private static final List<ContentType> ALLOWED_REQUEST_CONTENT_TYPES = Arrays.asList(
-      ContentType.TEXT_PLAIN, ContentType.TEXT_PLAIN_CS_UTF_8,
-      ContentType.APPLICATION_XML, ContentType.APPLICATION_XML_CS_UTF_8,
-      ContentType.APPLICATION_ATOM_XML, ContentType.APPLICATION_ATOM_XML_CS_UTF_8,
-      ContentType.APPLICATION_ATOM_XML_ENTRY, ContentType.APPLICATION_ATOM_XML_ENTRY_CS_UTF_8
-      // currently not supported, but should be in further versions
-      // commented out here to ensure an correct '415 unsupported media type' response
-      //      ContentType.APPLICATION_JSON, ContentType.APPLICATION_JSON_CS_UTF_8
-      );
-
-  private boolean isValidRequestContentType(final String requestContentType) {
+  private boolean isValidRequestContentType(final String requestContentType, List<ContentType> allowedContentTypes) {
     if (requestContentType == null)
       return false;
 
-    return ContentType.create(requestContentType).hasMatch(ALLOWED_REQUEST_CONTENT_TYPES);
+    ContentType requested = ensureCharsetIsSet(ContentType.create(requestContentType));
+    return requested.hasMatch(allowedContentTypes);
   }
 
   private boolean isValidRequestContentTypeForProperty(final EdmProperty property, String requestContentType) throws EdmException {
-    ContentType requested = ContentType.create(requestContentType);
+    ContentType requested = ensureCharsetIsSet(ContentType.create(requestContentType));
     String mimeType = property.getMimeType();
     if (mimeType != null) {
       return requested.equals(ContentType.create(mimeType));
@@ -367,7 +369,7 @@ public final class ODataSubLocator implements ODataLocator {
   private ContentType ensureCharsetIsSet(ContentType contentType) {
     if (isContentTypeODataTextRelated(contentType)) {
       if (!contentType.getParameters().containsKey(ContentType.PARAMETER_CHARSET)) {
-        contentType = ContentType.create(contentType, ContentType.PARAMETER_CHARSET, DEFAULT_CHARSET);
+        return ContentType.create(contentType, ContentType.PARAMETER_CHARSET, DEFAULT_CHARSET);
       }
     }
     return contentType;

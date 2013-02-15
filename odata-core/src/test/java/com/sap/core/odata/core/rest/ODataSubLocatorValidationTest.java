@@ -41,13 +41,25 @@ import com.sap.core.odata.api.exception.ODataMethodNotAllowedException;
 import com.sap.core.odata.api.exception.ODataUnsupportedMediaTypeException;
 import com.sap.core.odata.api.processor.ODataContext;
 import com.sap.core.odata.api.processor.ODataProcessor;
+import com.sap.core.odata.api.processor.part.BatchProcessor;
+import com.sap.core.odata.api.processor.part.EntityComplexPropertyProcessor;
+import com.sap.core.odata.api.processor.part.EntityLinkProcessor;
+import com.sap.core.odata.api.processor.part.EntityLinksProcessor;
+import com.sap.core.odata.api.processor.part.EntityMediaProcessor;
+import com.sap.core.odata.api.processor.part.EntityProcessor;
+import com.sap.core.odata.api.processor.part.EntitySetProcessor;
+import com.sap.core.odata.api.processor.part.EntitySimplePropertyProcessor;
+import com.sap.core.odata.api.processor.part.EntitySimplePropertyValueProcessor;
+import com.sap.core.odata.api.processor.part.FunctionImportProcessor;
+import com.sap.core.odata.api.processor.part.FunctionImportValueProcessor;
+import com.sap.core.odata.api.processor.part.MetadataProcessor;
+import com.sap.core.odata.api.processor.part.ServiceDocumentProcessor;
 import com.sap.core.odata.api.uri.NavigationPropertySegment;
 import com.sap.core.odata.api.uri.NavigationSegment;
 import com.sap.core.odata.api.uri.SelectItem;
 import com.sap.core.odata.api.uri.UriParser;
 import com.sap.core.odata.api.uri.expression.FilterExpression;
 import com.sap.core.odata.api.uri.expression.OrderByExpression;
-import com.sap.core.odata.core.Dispatcher;
 import com.sap.core.odata.core.DispatcherTest;
 import com.sap.core.odata.core.commons.ContentType;
 import com.sap.core.odata.core.commons.ContentType.ODataFormat;
@@ -166,11 +178,8 @@ public class ODataSubLocatorValidationTest extends BaseTest {
     param.setServletRequest(servletRequest);
 
     ODataServiceFactory serviceFactory = mock(ODataServiceFactory.class);
-    ODataService service = DispatcherTest.getMockService();
-    final Class<? extends ODataProcessor> feature = new Dispatcher(service).mapUriTypeToProcessorFeature(uriInfo);
-    when(service.getSupportedContentTypes(feature)).thenReturn(Arrays.asList(ContentType.WILDCARD.toString()));
-    when(service.getProcessor()).thenReturn(mock(ODataProcessor.class));
-    when(serviceFactory.createService(Mockito.any(ODataContext.class))).thenReturn(service);
+    mockODataService(serviceFactory);
+
     param.setServiceFactory(serviceFactory);
 
     locator.initialize(param);
@@ -180,6 +189,58 @@ public class ODataSubLocatorValidationTest extends BaseTest {
     setField(locator, "uriParser", parser);
   }
 
+  private void mockODataService(ODataServiceFactory serviceFactory) throws ODataException {
+    ODataService service = DispatcherTest.getMockService();
+    when(service.getProcessor()).thenReturn(mock(ODataProcessor.class));
+    when(serviceFactory.createService(Mockito.any(ODataContext.class))).thenReturn(service);
+    
+    Mockito.when(service.getSupportedContentTypes(BatchProcessor.class)).thenReturn(
+        Arrays.asList(HttpContentType.MULTIPART_MIXED));
+
+    Mockito.when(service.getSupportedContentTypes(EntityProcessor.class)).thenReturn(Arrays.asList(
+        HttpContentType.APPLICATION_ATOM_XML_ENTRY_UTF8,
+        HttpContentType.APPLICATION_ATOM_XML_UTF8,
+        HttpContentType.APPLICATION_JSON_UTF8,
+        HttpContentType.APPLICATION_XML_UTF8));
+
+    Mockito.when(service.getSupportedContentTypes(FunctionImportProcessor.class)).thenReturn(Arrays.asList(
+        HttpContentType.APPLICATION_JSON_UTF8,
+        HttpContentType.APPLICATION_XML_UTF8));
+    Mockito.when(service.getSupportedContentTypes(EntityLinkProcessor.class)).thenReturn(Arrays.asList(
+        HttpContentType.APPLICATION_JSON_UTF8,
+        HttpContentType.APPLICATION_XML_UTF8));
+    Mockito.when(service.getSupportedContentTypes(EntityLinksProcessor.class)).thenReturn(Arrays.asList(
+        HttpContentType.APPLICATION_JSON_UTF8,
+        HttpContentType.APPLICATION_XML_UTF8));
+    Mockito.when(service.getSupportedContentTypes(EntitySimplePropertyProcessor.class)).thenReturn(Arrays.asList(
+        HttpContentType.APPLICATION_JSON_UTF8,
+        HttpContentType.APPLICATION_XML_UTF8));
+    Mockito.when(service.getSupportedContentTypes(EntityComplexPropertyProcessor.class)).thenReturn(Arrays.asList(
+        HttpContentType.APPLICATION_JSON_UTF8,
+        HttpContentType.APPLICATION_XML_UTF8));
+
+    Mockito.when(service.getSupportedContentTypes(EntityMediaProcessor.class)).thenReturn(Arrays.asList(
+        HttpContentType.WILDCARD));
+    Mockito.when(service.getSupportedContentTypes(EntitySimplePropertyValueProcessor.class)).thenReturn(Arrays.asList(
+        HttpContentType.WILDCARD));
+    Mockito.when(service.getSupportedContentTypes(FunctionImportValueProcessor.class)).thenReturn(Arrays.asList(
+        HttpContentType.WILDCARD));
+
+    Mockito.when(service.getSupportedContentTypes(EntitySetProcessor.class)).thenReturn(Arrays.asList(
+        HttpContentType.APPLICATION_ATOM_XML_FEED_UTF8,
+        HttpContentType.APPLICATION_ATOM_XML_UTF8,
+        HttpContentType.APPLICATION_JSON_UTF8,
+        HttpContentType.APPLICATION_XML_UTF8));
+
+    Mockito.when(service.getSupportedContentTypes(MetadataProcessor.class)).thenReturn(Arrays.asList(
+        HttpContentType.APPLICATION_XML_UTF8));
+
+    Mockito.when(service.getSupportedContentTypes(ServiceDocumentProcessor.class)).thenReturn(Arrays.asList(
+        HttpContentType.APPLICATION_ATOM_SVC_UTF8,
+        HttpContentType.APPLICATION_JSON_UTF8,
+        HttpContentType.APPLICATION_XML_UTF8));
+  }
+  
   private static void setField(Object instance, final String fieldname, final Object value) throws SecurityException,
       NoSuchFieldException, IllegalArgumentException, IllegalAccessException {
     Field field = instance.getClass().getDeclaredField(fieldname);
