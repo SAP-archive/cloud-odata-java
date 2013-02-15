@@ -39,9 +39,9 @@ public class TestCallTool {
     
     final List<String> paths = Arrays.asList(
         "/",                                  // URI0 et seq.
-        "?$format=xml",                       
-        "?$format=atom",
-        "?$format=json",
+        "/?$format=xml",                       
+        "/?$format=atom",
+        "/?$format=json",
         "/Employees",                         // URI1 et seq.
           // "/Managers", "/Rooms",
         "/Employees?$format=xml", 
