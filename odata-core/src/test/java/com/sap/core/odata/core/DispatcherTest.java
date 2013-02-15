@@ -4,11 +4,12 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyBoolean;
+import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import java.io.InputStream;
-import java.util.Arrays;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -16,13 +17,12 @@ import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
 import com.sap.core.odata.api.ODataService;
-import com.sap.core.odata.api.commons.HttpContentType;
-import com.sap.core.odata.api.edm.EdmEntitySet;
-import com.sap.core.odata.api.edm.EdmEntityType;
 import com.sap.core.odata.api.edm.EdmException;
 import com.sap.core.odata.api.edm.EdmFunctionImport;
-import com.sap.core.odata.api.edm.EdmProperty;
+import com.sap.core.odata.api.exception.ODataBadRequestException;
 import com.sap.core.odata.api.exception.ODataException;
+import com.sap.core.odata.api.exception.ODataMethodNotAllowedException;
+import com.sap.core.odata.api.processor.ODataProcessor;
 import com.sap.core.odata.api.processor.ODataResponse;
 import com.sap.core.odata.api.processor.part.BatchProcessor;
 import com.sap.core.odata.api.processor.part.EntityComplexPropertyProcessor;
@@ -37,7 +37,6 @@ import com.sap.core.odata.api.processor.part.FunctionImportProcessor;
 import com.sap.core.odata.api.processor.part.FunctionImportValueProcessor;
 import com.sap.core.odata.api.processor.part.MetadataProcessor;
 import com.sap.core.odata.api.processor.part.ServiceDocumentProcessor;
-import com.sap.core.odata.api.uri.NavigationSegment;
 import com.sap.core.odata.core.commons.ODataHttpMethod;
 import com.sap.core.odata.core.uri.UriInfoImpl;
 import com.sap.core.odata.core.uri.UriType;
@@ -54,59 +53,59 @@ public class DispatcherTest extends BaseTest {
   @BeforeClass
   public static void createMockProcessor() throws ODataException {
     ServiceDocumentProcessor serviceDocument = mock(ServiceDocumentProcessor.class);
-    when(serviceDocument.readServiceDocument(any(UriInfoImpl.class), any(String.class))).thenAnswer(getAnswer());
+    when(serviceDocument.readServiceDocument(any(UriInfoImpl.class), anyString())).thenAnswer(getAnswer());
 
     EntitySetProcessor entitySet = mock(EntitySetProcessor.class);
-    when(entitySet.readEntitySet(any(UriInfoImpl.class), any(String.class))).thenAnswer(getAnswer());
-    when(entitySet.countEntitySet(any(UriInfoImpl.class), any(String.class))).thenAnswer(getAnswer());
-    when(entitySet.createEntity(any(UriInfoImpl.class), any(InputStream.class), any(String.class), any(String.class))).thenAnswer(getAnswer());
+    when(entitySet.readEntitySet(any(UriInfoImpl.class), anyString())).thenAnswer(getAnswer());
+    when(entitySet.countEntitySet(any(UriInfoImpl.class), anyString())).thenAnswer(getAnswer());
+    when(entitySet.createEntity(any(UriInfoImpl.class), any(InputStream.class), anyString(), anyString())).thenAnswer(getAnswer());
 
     EntityProcessor entity = mock(EntityProcessor.class);
-    when(entity.readEntity(any(UriInfoImpl.class), any(String.class))).thenAnswer(getAnswer());
-    when(entity.existsEntity(any(UriInfoImpl.class), any(String.class))).thenAnswer(getAnswer());
-    when(entity.deleteEntity(any(UriInfoImpl.class), any(String.class))).thenAnswer(getAnswer());
-    when(entity.updateEntity(any(UriInfoImpl.class), any(InputStream.class), any(String.class), any(Boolean.class), any(String.class))).thenAnswer(getAnswer());
+    when(entity.readEntity(any(UriInfoImpl.class), anyString())).thenAnswer(getAnswer());
+    when(entity.existsEntity(any(UriInfoImpl.class), anyString())).thenAnswer(getAnswer());
+    when(entity.deleteEntity(any(UriInfoImpl.class), anyString())).thenAnswer(getAnswer());
+    when(entity.updateEntity(any(UriInfoImpl.class), any(InputStream.class), anyString(), anyBoolean(), anyString())).thenAnswer(getAnswer());
 
     EntityComplexPropertyProcessor entityComplexProperty = mock(EntityComplexPropertyProcessor.class);
-    when(entityComplexProperty.readEntityComplexProperty(any(UriInfoImpl.class), any(String.class))).thenAnswer(getAnswer());
-    when(entityComplexProperty.updateEntityComplexProperty(any(UriInfoImpl.class), any(InputStream.class), any(String.class), any(Boolean.class), any(String.class))).thenAnswer(getAnswer());
+    when(entityComplexProperty.readEntityComplexProperty(any(UriInfoImpl.class), anyString())).thenAnswer(getAnswer());
+    when(entityComplexProperty.updateEntityComplexProperty(any(UriInfoImpl.class), any(InputStream.class), anyString(), anyBoolean(), anyString())).thenAnswer(getAnswer());
 
     EntitySimplePropertyProcessor entitySimpleProperty = mock(EntitySimplePropertyProcessor.class);
-    when(entitySimpleProperty.readEntitySimpleProperty(any(UriInfoImpl.class), any(String.class))).thenAnswer(getAnswer());
-    when(entitySimpleProperty.updateEntitySimpleProperty(any(UriInfoImpl.class), any(InputStream.class), any(String.class), any(String.class))).thenAnswer(getAnswer());
+    when(entitySimpleProperty.readEntitySimpleProperty(any(UriInfoImpl.class), anyString())).thenAnswer(getAnswer());
+    when(entitySimpleProperty.updateEntitySimpleProperty(any(UriInfoImpl.class), any(InputStream.class), anyString(), anyString())).thenAnswer(getAnswer());
 
     EntitySimplePropertyValueProcessor entitySimplePropertyValue = mock(EntitySimplePropertyValueProcessor.class);
-    when(entitySimplePropertyValue.readEntitySimplePropertyValue(any(UriInfoImpl.class), any(String.class))).thenAnswer(getAnswer());
-    when(entitySimplePropertyValue.deleteEntitySimplePropertyValue(any(UriInfoImpl.class), any(String.class))).thenAnswer(getAnswer());
-    when(entitySimplePropertyValue.updateEntitySimplePropertyValue(any(UriInfoImpl.class), any(InputStream.class), any(String.class), any(String.class))).thenAnswer(getAnswer());
+    when(entitySimplePropertyValue.readEntitySimplePropertyValue(any(UriInfoImpl.class), anyString())).thenAnswer(getAnswer());
+    when(entitySimplePropertyValue.deleteEntitySimplePropertyValue(any(UriInfoImpl.class), anyString())).thenAnswer(getAnswer());
+    when(entitySimplePropertyValue.updateEntitySimplePropertyValue(any(UriInfoImpl.class), any(InputStream.class), anyString(), anyString())).thenAnswer(getAnswer());
 
     EntityLinkProcessor entityLink = mock(EntityLinkProcessor.class);
-    when(entityLink.readEntityLink(any(UriInfoImpl.class), any(String.class))).thenAnswer(getAnswer());
-    when(entityLink.existsEntityLink(any(UriInfoImpl.class), any(String.class))).thenAnswer(getAnswer());
-    when(entityLink.deleteEntityLink(any(UriInfoImpl.class), any(String.class))).thenAnswer(getAnswer());
-    when(entityLink.updateEntityLink(any(UriInfoImpl.class), any(InputStream.class), any(String.class), any(String.class))).thenAnswer(getAnswer());
+    when(entityLink.readEntityLink(any(UriInfoImpl.class), anyString())).thenAnswer(getAnswer());
+    when(entityLink.existsEntityLink(any(UriInfoImpl.class), anyString())).thenAnswer(getAnswer());
+    when(entityLink.deleteEntityLink(any(UriInfoImpl.class), anyString())).thenAnswer(getAnswer());
+    when(entityLink.updateEntityLink(any(UriInfoImpl.class), any(InputStream.class), anyString(), anyString())).thenAnswer(getAnswer());
 
     EntityLinksProcessor entityLinks = mock(EntityLinksProcessor.class);
-    when(entityLinks.readEntityLinks(any(UriInfoImpl.class), any(String.class))).thenAnswer(getAnswer());
-    when(entityLinks.countEntityLinks(any(UriInfoImpl.class), any(String.class))).thenAnswer(getAnswer());
-    when(entityLinks.createEntityLink(any(UriInfoImpl.class), any(InputStream.class), any(String.class), any(String.class))).thenAnswer(getAnswer());
+    when(entityLinks.readEntityLinks(any(UriInfoImpl.class), anyString())).thenAnswer(getAnswer());
+    when(entityLinks.countEntityLinks(any(UriInfoImpl.class), anyString())).thenAnswer(getAnswer());
+    when(entityLinks.createEntityLink(any(UriInfoImpl.class), any(InputStream.class), anyString(), anyString())).thenAnswer(getAnswer());
 
     MetadataProcessor metadata = mock(MetadataProcessor.class);
-    when(metadata.readMetadata(any(UriInfoImpl.class), any(String.class))).thenAnswer(getAnswer());
+    when(metadata.readMetadata(any(UriInfoImpl.class), anyString())).thenAnswer(getAnswer());
 
     BatchProcessor batch = mock(BatchProcessor.class);
-    when(batch.executeBatch(any(String.class))).thenAnswer(getAnswer());
+    when(batch.executeBatch(anyString())).thenAnswer(getAnswer());
 
     FunctionImportProcessor functionImport = mock(FunctionImportProcessor.class);
-    when(functionImport.executeFunctionImport(any(UriInfoImpl.class), any(String.class))).thenAnswer(getAnswer());
+    when(functionImport.executeFunctionImport(any(UriInfoImpl.class), anyString())).thenAnswer(getAnswer());
 
     FunctionImportValueProcessor functionImportValue = mock(FunctionImportValueProcessor.class);
-    when(functionImportValue.executeFunctionImportValue(any(UriInfoImpl.class), any(String.class))).thenAnswer(getAnswer());
+    when(functionImportValue.executeFunctionImportValue(any(UriInfoImpl.class), anyString())).thenAnswer(getAnswer());
 
     EntityMediaProcessor entityMedia = mock(EntityMediaProcessor.class);
-    when(entityMedia.readEntityMedia(any(UriInfoImpl.class), any(String.class))).thenAnswer(getAnswer());
-    when(entityMedia.deleteEntityMedia(any(UriInfoImpl.class), any(String.class))).thenAnswer(getAnswer());
-    when(entityMedia.updateEntityMedia(any(UriInfoImpl.class), any(InputStream.class), any(String.class), any(String.class))).thenAnswer(getAnswer());
+    when(entityMedia.readEntityMedia(any(UriInfoImpl.class), anyString())).thenAnswer(getAnswer());
+    when(entityMedia.deleteEntityMedia(any(UriInfoImpl.class), anyString())).thenAnswer(getAnswer());
+    when(entityMedia.updateEntityMedia(any(UriInfoImpl.class), any(InputStream.class), anyString(), anyString())).thenAnswer(getAnswer());
 
     service = mock(ODataService.class);
     when(service.getServiceDocumentProcessor()).thenReturn(serviceDocument);
@@ -143,46 +142,16 @@ public class DispatcherTest extends BaseTest {
     UriInfoImpl uriInfo = mock(UriInfoImpl.class);
     when(uriInfo.getUriType()).thenReturn(uriType);
     when(uriInfo.isValue()).thenReturn(isValue);
-    when(uriInfo.getPropertyPath()).thenReturn(Arrays.asList(mock(EdmProperty.class)));
-    EdmEntityType entityType = mock(EdmEntityType.class);
-    when(entityType.getKeyProperties()).thenReturn(Arrays.asList(mock(EdmProperty.class)));
-    EdmEntitySet entitySet = mock(EdmEntitySet.class);
-    when(entitySet.getEntityType()).thenReturn(entityType);
-    when(uriInfo.getTargetEntitySet()).thenReturn(entitySet);
-    if (uriType == UriType.URI6A || uriType == UriType.URI6B
-        || uriType == UriType.URI7A || uriType == UriType.URI7B)
-      mockNavigationPath(uriInfo, true);
-    when(uriInfo.getSkip()).thenReturn(null);
-    when(uriInfo.getTop()).thenReturn(null);
-
-    return uriInfo;
-  }
-
-  private static UriInfoImpl mockNavigationPath(UriInfoImpl uriInfo, final boolean oneSegment) {
-    when(uriInfo.getNavigationSegments()).thenReturn(
-        oneSegment ? Arrays.asList(mock(NavigationSegment.class)) :
-            Arrays.asList(mock(NavigationSegment.class), mock(NavigationSegment.class)));
-    return uriInfo;
-  }
-
-  private static UriInfoImpl mockFunctionImport(UriInfoImpl uriInfo, final ODataHttpMethod httpMethod) throws EdmException {
     EdmFunctionImport functionImport = mock(EdmFunctionImport.class);
-    when(functionImport.getHttpMethod()).thenReturn(httpMethod == null ? null : httpMethod.toString());
     when(uriInfo.getFunctionImport()).thenReturn(functionImport);
 
     return uriInfo;
   }
 
-  private static void checkDispatch(final ODataHttpMethod method, final UriInfoImpl uriInfo, final String expectedMethodName) throws ODataException {
-    final String contentType = method == ODataHttpMethod.GET ? HttpContentType.APPLICATION_XML : null;
-
-    final Dispatcher dispatcher = new Dispatcher(service);
-    final ODataResponse response = dispatcher.dispatch(method, uriInfo, null, null, contentType);
-    assertEquals(expectedMethodName, response.getEntity());
-  }
-
   private static void checkDispatch(final ODataHttpMethod method, final UriType uriType, final boolean isValue, final String expectedMethodName) throws ODataException {
-    checkDispatch(method, mockUriInfo(uriType, isValue), expectedMethodName);
+    final ODataResponse response = new Dispatcher(service)
+        .dispatch(method, mockUriInfo(uriType, isValue), null, null, null);
+    assertEquals(expectedMethodName, response.getEntity());
   }
 
   private static void checkDispatch(final ODataHttpMethod method, final UriType uriType, final String expectedMethodName) throws ODataException {
@@ -193,8 +162,21 @@ public class DispatcherTest extends BaseTest {
     try {
       checkDispatch(method, uriType, null);
       fail("Expected ODataException not thrown");
-    } catch (ODataException e) {
+    } catch (ODataMethodNotAllowedException e) {
       assertNotNull(e);
+    } catch (ODataException e) {
+      fail("Expected ODataMethodNotAllowedException not thrown");
+    }
+  }
+
+  private static void notSupportedDispatch(final ODataHttpMethod method, final UriType uriType) {
+    try {
+      checkDispatch(method, uriType, null);
+      fail("Expected ODataException not thrown");
+    } catch (ODataBadRequestException e) {
+      assertNotNull(e);
+    } catch (ODataException e) {
+      fail("Expected ODataBadRequestException not thrown");
     }
   }
 
@@ -254,17 +236,12 @@ public class DispatcherTest extends BaseTest {
 
     checkDispatch(ODataHttpMethod.POST, UriType.URI9, "executeBatch");
 
-    checkDispatch(ODataHttpMethod.GET, mockFunctionImport(mockUriInfo(UriType.URI10, false), null), "executeFunctionImport");
-    checkDispatch(ODataHttpMethod.GET, mockFunctionImport(mockUriInfo(UriType.URI10, false), ODataHttpMethod.GET), "executeFunctionImport");
-    checkDispatch(ODataHttpMethod.GET, mockFunctionImport(mockUriInfo(UriType.URI11, false), null), "executeFunctionImport");
-    checkDispatch(ODataHttpMethod.GET, mockFunctionImport(mockUriInfo(UriType.URI11, false), ODataHttpMethod.GET), "executeFunctionImport");
-    checkDispatch(ODataHttpMethod.GET, mockFunctionImport(mockUriInfo(UriType.URI12, false), null), "executeFunctionImport");
-    checkDispatch(ODataHttpMethod.GET, mockFunctionImport(mockUriInfo(UriType.URI12, false), ODataHttpMethod.GET), "executeFunctionImport");
-    checkDispatch(ODataHttpMethod.GET, mockFunctionImport(mockUriInfo(UriType.URI13, false), null), "executeFunctionImport");
-    checkDispatch(ODataHttpMethod.GET, mockFunctionImport(mockUriInfo(UriType.URI13, false), ODataHttpMethod.GET), "executeFunctionImport");
-    checkDispatch(ODataHttpMethod.GET, mockFunctionImport(mockUriInfo(UriType.URI14, false), null), "executeFunctionImport");
-    checkDispatch(ODataHttpMethod.GET, mockFunctionImport(mockUriInfo(UriType.URI14, false), ODataHttpMethod.GET), "executeFunctionImport");
-    checkDispatch(ODataHttpMethod.GET, mockFunctionImport(mockUriInfo(UriType.URI14, true), null), "executeFunctionImportValue");
+    checkDispatch(ODataHttpMethod.GET, UriType.URI10, "executeFunctionImport");
+    checkDispatch(ODataHttpMethod.GET, UriType.URI11, "executeFunctionImport");
+    checkDispatch(ODataHttpMethod.GET, UriType.URI12, "executeFunctionImport");
+    checkDispatch(ODataHttpMethod.GET, UriType.URI13, "executeFunctionImport");
+    checkDispatch(ODataHttpMethod.GET, UriType.URI14, "executeFunctionImport");
+    checkDispatch(ODataHttpMethod.GET, UriType.URI14, true, "executeFunctionImportValue");
 
     checkDispatch(ODataHttpMethod.GET, UriType.URI15, "countEntitySet");
 
@@ -305,11 +282,7 @@ public class DispatcherTest extends BaseTest {
     wrongDispatch(ODataHttpMethod.POST, UriType.URI5);
     wrongDispatch(ODataHttpMethod.DELETE, UriType.URI5);
 
-    wrongDispatch(ODataHttpMethod.PUT, UriType.URI6A);
     wrongDispatch(ODataHttpMethod.POST, UriType.URI6A);
-    wrongDispatch(ODataHttpMethod.DELETE, UriType.URI6A);
-    wrongDispatch(ODataHttpMethod.PATCH, UriType.URI6A);
-    wrongDispatch(ODataHttpMethod.MERGE, UriType.URI6A);
 
     wrongDispatch(ODataHttpMethod.PUT, UriType.URI6B);
     wrongDispatch(ODataHttpMethod.DELETE, UriType.URI6B);
@@ -362,5 +335,46 @@ public class DispatcherTest extends BaseTest {
     wrongDispatch(ODataHttpMethod.DELETE, UriType.URI50B);
     wrongDispatch(ODataHttpMethod.PATCH, UriType.URI50B);
     wrongDispatch(ODataHttpMethod.MERGE, UriType.URI50B);
+  }
+
+  @Test
+  public void dispatchNotSupportedCombinations() throws Exception {
+    notSupportedDispatch(ODataHttpMethod.PUT, UriType.URI6A);
+    notSupportedDispatch(ODataHttpMethod.DELETE, UriType.URI6A);
+    notSupportedDispatch(ODataHttpMethod.PATCH, UriType.URI6A);
+    notSupportedDispatch(ODataHttpMethod.MERGE, UriType.URI6A);
+  }
+
+  private static void checkFeature(final UriType uriType, final boolean isValue, final Class<? extends ODataProcessor> feature) throws ODataException {
+    assertEquals(feature, new Dispatcher(service).mapUriTypeToProcessorFeature(mockUriInfo(uriType, isValue)));
+  }
+
+  @Test
+  public void processorFeature() throws Exception {
+    checkFeature(UriType.URI0, false, ServiceDocumentProcessor.class);
+    checkFeature(UriType.URI1, false, EntitySetProcessor.class);
+    checkFeature(UriType.URI2, false, EntityProcessor.class);
+    checkFeature(UriType.URI3, false, EntityComplexPropertyProcessor.class);
+    checkFeature(UriType.URI4, false, EntitySimplePropertyProcessor.class);
+    checkFeature(UriType.URI4, true, EntitySimplePropertyValueProcessor.class);
+    checkFeature(UriType.URI5, false, EntitySimplePropertyProcessor.class);
+    checkFeature(UriType.URI5, true, EntitySimplePropertyValueProcessor.class);
+    checkFeature(UriType.URI6A, false, EntityProcessor.class);
+    checkFeature(UriType.URI6B, false, EntitySetProcessor.class);
+    checkFeature(UriType.URI7A, false, EntityLinkProcessor.class);
+    checkFeature(UriType.URI7B, false, EntityLinksProcessor.class);
+    checkFeature(UriType.URI8, false, MetadataProcessor.class);
+    checkFeature(UriType.URI9, false, BatchProcessor.class);
+    checkFeature(UriType.URI10, false, FunctionImportProcessor.class);
+    checkFeature(UriType.URI11, false, FunctionImportProcessor.class);
+    checkFeature(UriType.URI12, false, FunctionImportProcessor.class);
+    checkFeature(UriType.URI13, false, FunctionImportProcessor.class);
+    checkFeature(UriType.URI14, false, FunctionImportProcessor.class);
+    checkFeature(UriType.URI14, true, FunctionImportValueProcessor.class);
+    checkFeature(UriType.URI15, false, EntitySetProcessor.class);
+    checkFeature(UriType.URI16, false, EntityProcessor.class);
+    checkFeature(UriType.URI17, false, EntityMediaProcessor.class);
+    checkFeature(UriType.URI50A, false, EntityLinkProcessor.class);
+    checkFeature(UriType.URI50B, false, EntityLinksProcessor.class);
   }
 }
