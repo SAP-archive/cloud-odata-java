@@ -1,0 +1,5 @@
+<FindBugsFilter>
+	<Match>
+		<Package name="com.sap.core.odata.core.uri.expression.antlr" />
+	</Match>
+</FindBugsFilter>

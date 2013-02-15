@@ -16,6 +16,13 @@
 	<build>
 		<plugins>
 			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>findbugs-maven-plugin</artifactId>
+				<configuration>
+					<excludeFilterFile>findbugsfilter.xml</excludeFilterFile>
+				</configuration>
+			</plugin>
+			<plugin>
 				<groupId>org.antlr</groupId>
 				<artifactId>antlr3-maven-plugin</artifactId>
 				<executions>
@@ -28,8 +35,8 @@
 			</plugin>
 		</plugins>
 	</build>
-	
-		<profiles>
+
+	<profiles>
 		<profile>
 			<id>coverage</id>
 			<activation>
