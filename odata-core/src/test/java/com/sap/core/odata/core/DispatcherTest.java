@@ -11,12 +11,12 @@ import static org.mockito.Mockito.when;
 
 import java.io.InputStream;
 
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
 import com.sap.core.odata.api.ODataService;
+import com.sap.core.odata.api.commons.HttpStatusCodes;
 import com.sap.core.odata.api.edm.EdmException;
 import com.sap.core.odata.api.edm.EdmFunctionImport;
 import com.sap.core.odata.api.exception.ODataBadRequestException;
@@ -48,10 +48,7 @@ import com.sap.core.odata.testutil.fit.BaseTest;
  */
 public class DispatcherTest extends BaseTest {
 
-  private static ODataService service;
-
-  @BeforeClass
-  public static void createMockProcessor() throws ODataException {
+  public static ODataService getMockService() throws ODataException {
     ServiceDocumentProcessor serviceDocument = mock(ServiceDocumentProcessor.class);
     when(serviceDocument.readServiceDocument(any(UriInfoImpl.class), anyString())).thenAnswer(getAnswer());
 
@@ -107,7 +104,7 @@ public class DispatcherTest extends BaseTest {
     when(entityMedia.deleteEntityMedia(any(UriInfoImpl.class), anyString())).thenAnswer(getAnswer());
     when(entityMedia.updateEntityMedia(any(UriInfoImpl.class), any(InputStream.class), anyString(), anyString())).thenAnswer(getAnswer());
 
-    service = mock(ODataService.class);
+    ODataService service = mock(ODataService.class);
     when(service.getServiceDocumentProcessor()).thenReturn(serviceDocument);
     when(service.getEntitySetProcessor()).thenReturn(entitySet);
     when(service.getEntityProcessor()).thenReturn(entity);
@@ -121,6 +118,8 @@ public class DispatcherTest extends BaseTest {
     when(service.getFunctionImportProcessor()).thenReturn(functionImport);
     when(service.getFunctionImportValueProcessor()).thenReturn(functionImportValue);
     when(service.getEntityMediaProcessor()).thenReturn(entityMedia);
+
+    return service;
   }
 
   private static Answer<ODataResponse> getAnswer() {
@@ -133,6 +132,7 @@ public class DispatcherTest extends BaseTest {
 
   private static ODataResponse mockResponse(final String value) {
     ODataResponse response = mock(ODataResponse.class);
+    when(response.getStatus()).thenReturn(HttpStatusCodes.PAYMENT_REQUIRED);
     when(response.getEntity()).thenReturn(value);
 
     return response;
@@ -149,7 +149,7 @@ public class DispatcherTest extends BaseTest {
   }
 
   private static void checkDispatch(final ODataHttpMethod method, final UriType uriType, final boolean isValue, final String expectedMethodName) throws ODataException {
-    final ODataResponse response = new Dispatcher(service)
+    final ODataResponse response = new Dispatcher(getMockService())
         .dispatch(method, mockUriInfo(uriType, isValue), null, null, null);
     assertEquals(expectedMethodName, response.getEntity());
   }
@@ -346,7 +346,7 @@ public class DispatcherTest extends BaseTest {
   }
 
   private static void checkFeature(final UriType uriType, final boolean isValue, final Class<? extends ODataProcessor> feature) throws ODataException {
-    assertEquals(feature, new Dispatcher(service).mapUriTypeToProcessorFeature(mockUriInfo(uriType, isValue)));
+    assertEquals(feature, new Dispatcher(getMockService()).mapUriTypeToProcessorFeature(mockUriInfo(uriType, isValue)));
   }
 
   @Test

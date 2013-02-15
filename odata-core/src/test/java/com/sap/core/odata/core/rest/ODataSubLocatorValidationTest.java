@@ -5,18 +5,29 @@ import static org.junit.Assert.fail;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import java.io.InputStream;
 import java.lang.reflect.Field;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
+
+import javax.servlet.ServletInputStream;
+import javax.servlet.http.HttpServletRequest;
+import javax.ws.rs.core.HttpHeaders;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.MultivaluedHashMap;
+import javax.ws.rs.core.MultivaluedMap;
+import javax.ws.rs.core.PathSegment;
+import javax.ws.rs.core.UriBuilder;
+import javax.ws.rs.core.UriInfo;
 
 import org.junit.Test;
 import org.mockito.Mockito;
 
 import com.sap.core.odata.api.ODataService;
+import com.sap.core.odata.api.ODataServiceFactory;
 import com.sap.core.odata.api.commons.HttpContentType;
-import com.sap.core.odata.api.commons.HttpStatusCodes;
 import com.sap.core.odata.api.commons.InlineCount;
 import com.sap.core.odata.api.edm.EdmEntitySet;
 import com.sap.core.odata.api.edm.EdmEntityType;
@@ -28,7 +39,8 @@ import com.sap.core.odata.api.exception.ODataBadRequestException;
 import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.api.exception.ODataMethodNotAllowedException;
 import com.sap.core.odata.api.exception.ODataUnsupportedMediaTypeException;
-import com.sap.core.odata.api.processor.ODataResponse;
+import com.sap.core.odata.api.processor.ODataContext;
+import com.sap.core.odata.api.processor.ODataProcessor;
 import com.sap.core.odata.api.uri.NavigationPropertySegment;
 import com.sap.core.odata.api.uri.NavigationSegment;
 import com.sap.core.odata.api.uri.SelectItem;
@@ -36,11 +48,11 @@ import com.sap.core.odata.api.uri.UriParser;
 import com.sap.core.odata.api.uri.expression.FilterExpression;
 import com.sap.core.odata.api.uri.expression.OrderByExpression;
 import com.sap.core.odata.core.Dispatcher;
-import com.sap.core.odata.core.ODataContextImpl;
-import com.sap.core.odata.core.PathInfoImpl;
+import com.sap.core.odata.core.DispatcherTest;
 import com.sap.core.odata.core.commons.ContentType;
 import com.sap.core.odata.core.commons.ContentType.ODataFormat;
 import com.sap.core.odata.core.commons.ODataHttpMethod;
+import com.sap.core.odata.core.rest.ODataSubLocator.InitParameter;
 import com.sap.core.odata.core.uri.UriInfoImpl;
 import com.sap.core.odata.core.uri.UriParserImpl;
 import com.sap.core.odata.core.uri.UriType;
@@ -128,35 +140,44 @@ public class ODataSubLocatorValidationTest extends BaseTest {
     return uriInfo;
   }
 
-  @SuppressWarnings("unchecked")
-  private void mockSubLocatorInputForUriInfoTests(ODataSubLocator locator, final ODataHttpMethod method, final UriInfoImpl uriInfo, final String requestContentType) throws Exception {
-    UriParser parser = Mockito.mock(UriParserImpl.class);
+  private void mockSubLocatorInputForUriInfoTests(ODataSubLocator locator, final UriInfoImpl uriInfo, final String requestContentType) throws Exception {
+    InitParameter param = locator.new InitParameter();
+
+    HttpHeaders httpHeaders = mock(HttpHeaders.class);
+    final MultivaluedMap<String, String> map = new MultivaluedHashMap<String, String>();
+    when(httpHeaders.getRequestHeaders()).thenReturn(map);
+    MediaType mediaType = mock(MediaType.class);
+    when(mediaType.toString()).thenReturn(requestContentType);
+    when(httpHeaders.getMediaType()).thenReturn(mediaType);
+    param.setHttpHeaders(httpHeaders);
+
+    param.setPathSplit(0);
+    param.setPathSegments(Collections.<PathSegment> emptyList());
+
+    UriInfo initUriInfo = mock(UriInfo.class);
+    UriBuilder uriBuilder = mock(UriBuilder.class);
+    when(uriBuilder.build()).thenReturn(URI.create(""));
+    when(initUriInfo.getBaseUriBuilder()).thenReturn(uriBuilder);
+    when(initUriInfo.getQueryParameters()).thenReturn(map);
+    param.setUriInfo(initUriInfo);
+
+    HttpServletRequest servletRequest = mock(HttpServletRequest.class);
+    when(servletRequest.getInputStream()).thenReturn(mock(ServletInputStream.class));
+    param.setServletRequest(servletRequest);
+
+    ODataServiceFactory serviceFactory = mock(ODataServiceFactory.class);
+    ODataService service = DispatcherTest.getMockService();
+    final Class<? extends ODataProcessor> feature = new Dispatcher(service).mapUriTypeToProcessorFeature(uriInfo);
+    when(service.getSupportedContentTypes(feature)).thenReturn(Arrays.asList(ContentType.WILDCARD.toString()));
+    when(service.getProcessor()).thenReturn(mock(ODataProcessor.class));
+    when(serviceFactory.createService(Mockito.any(ODataContext.class))).thenReturn(service);
+    param.setServiceFactory(serviceFactory);
+
+    locator.initialize(param);
+
+    UriParser parser = mock(UriParserImpl.class);
+    when(parser.parse(Mockito.anyListOf(com.sap.core.odata.api.uri.PathSegment.class), Mockito.anyMapOf(String.class, String.class))).thenReturn(uriInfo);
     setField(locator, "uriParser", parser);
-    Mockito.when(parser.parse(Mockito.anyList(), Mockito.anyMap())).thenReturn(uriInfo);
-
-    setField(locator, "requestContentType", requestContentType);
-
-    ODataService service = Mockito.mock(ODataService.class);
-    setField(locator, "service", service);
-    Mockito.when(service.getSupportedContentTypes(Mockito.any(Class.class))).thenReturn(Arrays.asList(ContentType.WILDCARD.toString()));
-
-    ODataContextImpl context = Mockito.mock(ODataContextImpl.class);
-    setField(locator, "context", context);
-    Mockito.when(context.getPathInfo()).thenReturn(new PathInfoImpl());
-
-    setField(locator, "acceptHeaderContentTypes", Arrays.asList(ContentType.WILDCARD));
-
-    ODataResponse odataResponse = Mockito.mock(ODataResponse.class);
-    Mockito.when(odataResponse.getStatus()).thenReturn(HttpStatusCodes.PAYMENT_REQUIRED);
-    Mockito.when(odataResponse.getEntity()).thenReturn("");
-
-    Dispatcher dispatcher = Mockito.mock(Dispatcher.class);
-    setField(locator, "dispatcher", dispatcher);
-    Mockito.when(dispatcher.dispatch(Mockito.refEq(method),
-        Mockito.any(UriInfoImpl.class),
-        Mockito.any(InputStream.class),
-        Mockito.anyString(),
-        Mockito.anyString())).thenReturn(odataResponse);
   }
 
   private static void setField(Object instance, final String fieldname, final Object value) throws SecurityException,
@@ -170,7 +191,7 @@ public class ODataSubLocatorValidationTest extends BaseTest {
 
   private void checkUriInfo(final ODataHttpMethod method, final UriInfoImpl uriInfo, final String requestContentType) throws Exception {
     ODataSubLocator locator = new ODataSubLocator();
-    mockSubLocatorInputForUriInfoTests(locator, method, uriInfo, requestContentType);
+    mockSubLocatorInputForUriInfoTests(locator, uriInfo, requestContentType);
     switch (method) {
     case GET:
       locator.handleGet();
