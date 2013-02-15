@@ -434,12 +434,12 @@ public final class ODataSubLocator implements ODataLocator {
   }
 
   public void initialize(InitParameter param) throws ODataException {
-    fillRequestHeader(param.httpHeaders);
+    fillRequestHeader(param.getHttpHeaders());
     context.setUriInfo(buildODataUriInfo(param));
 
     queryParameters = convertToSinglevaluedMap(param.getUriInfo().getQueryParameters());
 
-    acceptHeaderContentTypes = convertMediaTypes(param.httpHeaders.getAcceptableMediaTypes());
+    acceptHeaderContentTypes = convertMediaTypes(param.getHttpHeaders().getAcceptableMediaTypes());
     requestContent = contentAsStream(extractRequestContent(param));
     requestContentType = extractRequestContentType(param);
     service = param.getServiceFactory().createService(context);
@@ -473,7 +473,7 @@ public final class ODataSubLocator implements ODataLocator {
   }
 
   private String extractRequestContentType(InitParameter param) {
-    final MediaType requestMediaType = param.httpHeaders.getMediaType();
+    final MediaType requestMediaType = param.getHttpHeaders().getMediaType();
     return requestMediaType == null ? null : requestMediaType.toString();
   }
 
