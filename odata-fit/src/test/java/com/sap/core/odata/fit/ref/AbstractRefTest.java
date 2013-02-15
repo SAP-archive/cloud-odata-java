@@ -18,6 +18,7 @@ import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.entity.StringEntity;
 import org.apache.log4j.Logger;
 
+import com.sap.core.odata.api.commons.HttpContentType;
 import com.sap.core.odata.api.commons.HttpStatusCodes;
 import com.sap.core.odata.api.edm.provider.EdmProvider;
 import com.sap.core.odata.api.processor.ODataSingleProcessor;
@@ -148,7 +149,8 @@ public class AbstractRefTest extends AbstractFitTest {
   }
 
   protected HttpResponse postUri(final String uri, final String requestBody, final String requestContentType, final HttpStatusCodes expectedStatusCode) throws Exception {
-    return callUri(ODataHttpMethod.POST, uri, null, null, requestBody, requestContentType, expectedStatusCode);
+//    return callUri(ODataHttpMethod.POST, uri, null, null, requestBody, requestContentType, expectedStatusCode);
+    return callUri(ODataHttpMethod.POST, uri, HttpHeaders.ACCEPT, HttpContentType.WILDCARD, requestBody, requestContentType, expectedStatusCode);
   }
 
   protected void putUri(final String uri,
