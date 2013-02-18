@@ -44,14 +44,14 @@ public class ODataExceptionSerializer {
    * @param locale      the {@link Locale} that should be used to format the error message
    * @return            an {@link InputStream} containing the serialized error message
    */
-  public static InputStream serialize(String errorCode, String message, String innerError, ContentType contentType, Locale locale) {
+  public static InputStream serialize(String errorCode, String message, ContentType contentType, Locale locale) {
     if (contentType.getODataFormat() == ODataFormat.JSON)
-      return serializeJson(errorCode, message, innerError, locale);
+      return serializeJson(errorCode, message, locale);
     else
-      return serializeXml(errorCode, message, innerError, locale);
+      return serializeXml(errorCode, message, locale);
   }
 
-  private static InputStream serializeJson(String errorCode, String message, String innerError, Locale locale) {
+  private static InputStream serializeJson(String errorCode, String message, Locale locale) {
     String notsupported = "not supported error format JSON; " + errorCode + ", " + message;
     try {
       return new ByteArrayInputStream(notsupported.getBytes("UTF-8"));
@@ -61,7 +61,7 @@ public class ODataExceptionSerializer {
     }
   }
 
-  private static InputStream serializeXml(final String errorCode, final String message, final String innerError, final Locale locale) {
+  private static InputStream serializeXml(final String errorCode, final String message, final Locale locale) {
     InputStream outputMessage = null;
     try {
       CircleStreamBuffer buffer = new CircleStreamBuffer();
@@ -83,11 +83,6 @@ public class ODataExceptionSerializer {
       if (message != null)
         xmlStreamWriter.writeCharacters(message);
       xmlStreamWriter.writeEndElement();
-      if (innerError != null) {
-        xmlStreamWriter.writeStartElement(FormatXml.M_INNER_ERROR);
-        xmlStreamWriter.writeCharacters(innerError);
-        xmlStreamWriter.writeEndElement();
-      }
       xmlStreamWriter.writeEndElement();
       xmlStreamWriter.writeEndDocument();
 

@@ -35,92 +35,89 @@ public class ODataExceptionSerializerTest extends BaseTest {
 
   @Test
   public void testXMLSerializationWithoutInnerError() throws Exception {
-    testSerializeXML("ErrorCode", "Message", null, ContentType.APPLICATION_XML, Locale.GERMAN);
-    testSerializeXML("ErrorCode", "Message", null, ContentType.APPLICATION_XML, Locale.ENGLISH);
-    testSerializeXML("ErrorCode", "Message", null, ContentType.APPLICATION_XML, Locale.CANADA);
-    testSerializeXML("ErrorCode", "Message", null, ContentType.APPLICATION_XML, Locale.FRANCE);
-    testSerializeXML("ErrorCode", "Message", null, ContentType.APPLICATION_XML, Locale.CHINA);
-    
-    testSerializeXML("ErrorCode", "Message", null, ContentType.APPLICATION_ATOM_XML, Locale.GERMAN);
-    testSerializeXML("ErrorCode", "Message", null, ContentType.APPLICATION_ATOM_XML, Locale.ENGLISH);
-    testSerializeXML("ErrorCode", "Message", null, ContentType.APPLICATION_ATOM_XML, Locale.CANADA);
-    testSerializeXML("ErrorCode", "Message", null, ContentType.APPLICATION_ATOM_XML, Locale.FRANCE);
-    testSerializeXML("ErrorCode", "Message", null, ContentType.APPLICATION_ATOM_XML, Locale.CHINA);
+    testSerializeXML("ErrorCode", "Message", ContentType.APPLICATION_XML, Locale.GERMAN);
+    testSerializeXML("ErrorCode", "Message", ContentType.APPLICATION_XML, Locale.ENGLISH);
+    testSerializeXML("ErrorCode", "Message", ContentType.APPLICATION_XML, Locale.CANADA);
+    testSerializeXML("ErrorCode", "Message", ContentType.APPLICATION_XML, Locale.FRANCE);
+    testSerializeXML("ErrorCode", "Message", ContentType.APPLICATION_XML, Locale.CHINA);
+
+    testSerializeXML("ErrorCode", "Message", ContentType.APPLICATION_ATOM_XML, Locale.GERMAN);
+    testSerializeXML("ErrorCode", "Message", ContentType.APPLICATION_ATOM_XML, Locale.ENGLISH);
+    testSerializeXML("ErrorCode", "Message", ContentType.APPLICATION_ATOM_XML, Locale.CANADA);
+    testSerializeXML("ErrorCode", "Message", ContentType.APPLICATION_ATOM_XML, Locale.FRANCE);
+    testSerializeXML("ErrorCode", "Message", ContentType.APPLICATION_ATOM_XML, Locale.CHINA);
   }
-  
-//  @Test
-//  public void testXMLSerializationWithoutLocale() throws Exception {
-//    testSerializeXML("ErrorCode", "Message", null, ContentType.APPLICATION_XML, null);
-//  }
-  
+
+  //  @Test
+  //  public void testXMLSerializationWithoutLocale() throws Exception {
+  //    testSerializeXML("ErrorCode", "Message", null, ContentType.APPLICATION_XML, null);
+  //  }
+
   @Test
   public void testXMLSerializationWithoutMessage() throws Exception {
-    testSerializeXML("ErrorCode", null, null, ContentType.APPLICATION_XML, Locale.GERMAN);
+    testSerializeXML("ErrorCode", null, ContentType.APPLICATION_XML, Locale.GERMAN);
   }
-  
+
   @Test
   public void testXMLSerializationWithoutAll() throws Exception {
-    testSerializeXML(null, null, null, ContentType.APPLICATION_XML, Locale.GERMAN);
+    testSerializeXML(null, null, ContentType.APPLICATION_XML, Locale.GERMAN);
   }
-  
+
   @Test
   public void testXMLSerializationWithInnerError() throws Exception {
-    testSerializeXML("ErrorCode", "Message", "InnerError", ContentType.APPLICATION_XML, Locale.GERMAN);
-    testSerializeXML("ErrorCode", "Message", "InnerError", ContentType.APPLICATION_XML, Locale.ENGLISH);
-    testSerializeXML("ErrorCode", "Message", "InnerError", ContentType.APPLICATION_XML, Locale.CANADA);
-    testSerializeXML("ErrorCode", "Message", "InnerError", ContentType.APPLICATION_XML, Locale.FRANCE);
-    testSerializeXML("ErrorCode", "Message", "InnerError", ContentType.APPLICATION_XML, Locale.CHINA);
-    
-    testSerializeXML("ErrorCode", "Message", "InnerError", ContentType.APPLICATION_ATOM_XML, Locale.GERMAN);
-    testSerializeXML("ErrorCode", "Message", "InnerError", ContentType.APPLICATION_ATOM_XML, Locale.ENGLISH);
-    testSerializeXML("ErrorCode", "Message", "InnerError", ContentType.APPLICATION_ATOM_XML, Locale.CANADA);
-    testSerializeXML("ErrorCode", "Message", "InnerError", ContentType.APPLICATION_ATOM_XML, Locale.FRANCE);
-    testSerializeXML("ErrorCode", "Message", "InnerError", ContentType.APPLICATION_ATOM_XML, Locale.CHINA);
+    testSerializeXML("ErrorCode", "Message", ContentType.APPLICATION_XML, Locale.GERMAN);
+    testSerializeXML("ErrorCode", "Message", ContentType.APPLICATION_XML, Locale.ENGLISH);
+    testSerializeXML("ErrorCode", "Message", ContentType.APPLICATION_XML, Locale.CANADA);
+    testSerializeXML("ErrorCode", "Message", ContentType.APPLICATION_XML, Locale.FRANCE);
+    testSerializeXML("ErrorCode", "Message", ContentType.APPLICATION_XML, Locale.CHINA);
+
+    testSerializeXML("ErrorCode", "Message", ContentType.APPLICATION_ATOM_XML, Locale.GERMAN);
+    testSerializeXML("ErrorCode", "Message", ContentType.APPLICATION_ATOM_XML, Locale.ENGLISH);
+    testSerializeXML("ErrorCode", "Message", ContentType.APPLICATION_ATOM_XML, Locale.CANADA);
+    testSerializeXML("ErrorCode", "Message", ContentType.APPLICATION_ATOM_XML, Locale.FRANCE);
+    testSerializeXML("ErrorCode", "Message", ContentType.APPLICATION_ATOM_XML, Locale.CHINA);
   }
-  
+
   @Test
   public void testJsonSerializationWithoutInnerError() throws Exception {
-    testSerializeJSON("ErrorCode", "Message", null, ContentType.APPLICATION_JSON, Locale.GERMAN);
+    testSerializeJSON("ErrorCode", "Message", ContentType.APPLICATION_JSON, Locale.GERMAN);
   }
-  
+
   @Test
   public void testJsonSerializationWithInnerError() throws Exception {
-    testSerializeJSON("ErrorCode", "Message", null, ContentType.APPLICATION_JSON, Locale.GERMAN);
-  }
-  
-  //HelperMethod
-  private void testSerializeJSON(String errorCode, String message, String innerError, ContentType contentType, Locale locale) throws Exception {
-    InputStream inputStream = ODataExceptionSerializer.serialize(errorCode, message, innerError, contentType, locale);
-    String jsonErrorMessage = StringHelper.inputStreamToString(inputStream);
-    assertEquals( "not supported error format JSON; " + errorCode + ", " + message, jsonErrorMessage);
+    testSerializeJSON("ErrorCode", "Message", ContentType.APPLICATION_JSON, Locale.GERMAN);
   }
 
   //HelperMethod
-  private void testSerializeXML(String errorCode, String message, String innerError, ContentType contentType, Locale locale) throws Exception {
-    InputStream inputStream = ODataExceptionSerializer.serialize(errorCode, message, innerError, contentType, locale);
+  private void testSerializeJSON(String errorCode, String message, ContentType contentType, Locale locale) throws Exception {
+    InputStream inputStream = ODataExceptionSerializer.serialize(errorCode, message, contentType, locale);
+    String jsonErrorMessage = StringHelper.inputStreamToString(inputStream);
+    assertEquals("not supported error format JSON; " + errorCode + ", " + message, jsonErrorMessage);
+  }
+
+  //HelperMethod
+  private void testSerializeXML(String errorCode, String message, ContentType contentType, Locale locale) throws Exception {
+    InputStream inputStream = ODataExceptionSerializer.serialize(errorCode, message, contentType, locale);
     String xmlErrorMessage = StringHelper.inputStreamToString(inputStream);
-    if(errorCode != null){
+    if (errorCode != null) {
       assertXpathEvaluatesTo(errorCode, "/a:error/a:code", xmlErrorMessage);
-    }else {
+    } else {
       assertXpathExists("/a:error/a:code", xmlErrorMessage);
-    }    
-    if(message != null){
+    }
+    if (message != null) {
       assertXpathEvaluatesTo(message, "/a:error/a:message", xmlErrorMessage);
       assertXpathExists("/a:error/a:message[@xml:lang=\"" + getLang(locale) + "\"]", xmlErrorMessage);
-    }else{
-      assertXpathExists("/a:error/a:message", xmlErrorMessage);
-    } 
-    if (innerError != null) {
-      assertXpathEvaluatesTo(innerError, "/a:error/a:innererror", xmlErrorMessage);
     } else {
-      assertXpathNotExists("/a:error/a:innererror", xmlErrorMessage);
+      assertXpathExists("/a:error/a:message", xmlErrorMessage);
     }
+
+    assertXpathNotExists("/a:error/a:innererror", xmlErrorMessage);
 
   }
 
   //HelperMethod
   private String getLang(Locale locale) {
-    if(locale == null){
+    if (locale == null) {
       return "";
     }
     if (locale.getCountry().isEmpty())
