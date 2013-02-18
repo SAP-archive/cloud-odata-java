@@ -1,8 +1,6 @@
 package com.sap.core.odata.core.rest;
 
-import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
-import java.io.PrintWriter;
 import java.text.ParseException;
 import java.util.Arrays;
 import java.util.List;
@@ -84,14 +82,14 @@ public class ODataExceptionMapperImpl implements ExceptionMapper<Exception> {
     ContentType contentType = getContentType();
     InputStream entity = ODataExceptionSerializer.serialize(
         messageException.getErrorCode(),
-        localizedMessage == null ? null : localizedMessage.getText()
-        , getInnerError(messageException), getContentType(),
+        localizedMessage == null ? null : localizedMessage.getText(), 
+        contentType,
         localizedMessage == null ? null : localizedMessage.getLocale());
     return buildResponseInternal(entity, contentType, HttpStatusCodes.INTERNAL_SERVER_ERROR.getStatusCode());
   }
 
   private Response buildResponseForWebApplicationException(WebApplicationException webApplicationException) {
-    InputStream entity = ODataExceptionSerializer.serialize(null, webApplicationException.getMessage(), getInnerError(webApplicationException), getContentType(), DEFAULT_RESPONSE_LOCALE);
+    InputStream entity = ODataExceptionSerializer.serialize(null, webApplicationException.getMessage(), getContentType(), DEFAULT_RESPONSE_LOCALE);
     return buildResponseInternal(entity, getContentType(), webApplicationException.getResponse().getStatus());
   }
 
@@ -115,17 +113,17 @@ public class ODataExceptionMapperImpl implements ExceptionMapper<Exception> {
   }
 
   private Response buildResponseForException(Exception exception) {
-    final String innerError = getInnerError(exception);
+    //final String innerError = getInnerError(exception);
     final ContentType contentType = getContentType();
-    InputStream entity = ODataExceptionSerializer.serialize(null, exception.getMessage(), innerError, contentType, DEFAULT_RESPONSE_LOCALE);
+    InputStream entity = ODataExceptionSerializer.serialize(null, exception.getMessage(), contentType, DEFAULT_RESPONSE_LOCALE);
     return buildResponseInternal(entity, contentType, Status.INTERNAL_SERVER_ERROR.getStatusCode());
   }
 
   private Response buildResponseForApplicationException(ODataApplicationException exception) {
     final int status = extractStatus(exception);
-    final String innerError = getInnerError(exception);
+//    final String innerError = getInnerError(exception);
     final ContentType contentType = getContentType();
-    InputStream entity = ODataExceptionSerializer.serialize(exception.getCode(), exception.getMessage(), innerError, contentType, exception.getLocale());
+    InputStream entity = ODataExceptionSerializer.serialize(exception.getCode(), exception.getMessage(), contentType, exception.getLocale());
     return buildResponseInternal(entity, contentType, status);
   }
 
@@ -136,7 +134,6 @@ public class ODataExceptionMapperImpl implements ExceptionMapper<Exception> {
     InputStream entity = ODataExceptionSerializer.serialize(
         httpException.getErrorCode(),
         localizedMessage == null ? null : localizedMessage.getText(),
-        getInnerError(httpException),
         contentType,
         localizedMessage == null ? null : localizedMessage.getLocale());
     return buildResponseInternal(entity, contentType, extractStatus(httpException));
@@ -198,17 +195,4 @@ public class ODataExceptionMapperImpl implements ExceptionMapper<Exception> {
     }
     return ContentType.APPLICATION_XML_CS_UTF_8;
   }
-
-  private String getInnerError(final Exception exception) {
-    if (uriInfo.getQueryParameters().containsKey("odata.debug")) {
-      ByteArrayOutputStream stream = new ByteArrayOutputStream();
-      PrintWriter writer = new PrintWriter(stream);
-      exception.printStackTrace(writer);
-      writer.close();
-      return stream.toString();
-    } else {
-      return null;
-    }
-  }
-
 }

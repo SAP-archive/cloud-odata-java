@@ -279,16 +279,6 @@ public class ODataExceptionMapperImplTest extends BaseTest {
     assertXpathExists("/a:error/a:code", errorMessage);
     assertXpathEvaluatesTo(exceptionMessage, "/a:error/a:message", errorMessage);
   }
-
-  @Test
-  public void innerError() throws Exception {
-    exceptionMapper.uriInfo.getQueryParameters().add("odata.debug", "true");
-    final Exception exception = new UriSyntaxException(UriSyntaxException.INVALIDKEYPREDICATE.addContent("a"), new NumberFormatException());
-    final Response response = exceptionMapper.toResponse(exception);
-    assertNotNull(response);
-    final String errorMessage = StringHelper.inputStreamToString((InputStream) response.getEntity());
-    assertXpathExists("/a:error/a:innererror/text()", errorMessage);
-  }
   
   @Test
   public void testErrorCodeForApplicationException() throws Exception {
