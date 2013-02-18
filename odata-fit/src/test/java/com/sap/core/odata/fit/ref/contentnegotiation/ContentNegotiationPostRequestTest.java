@@ -11,6 +11,7 @@ import com.sap.core.odata.core.uri.UriType;
 /**
  * 
  */
+@Ignore
 public class ContentNegotiationPostRequestTest extends AbstractContentNegotiationTest {
 
   public static final String EMPLOYEE_1_XML = 

@@ -55,7 +55,7 @@
 		<joda.version>2.1</joda.version>
 		<cxf.version>2.7.0</cxf.version>
 		<jetty.version>7.5.4.v20111024</jetty.version>
-		<httpclient.version>4.2.1</httpclient.version>
+		<httpclient.version>4.2.3</httpclient.version>
 		<slf4j.version>1.7.1</slf4j.version>
 		<commonscodec.version>1.5</commonscodec.version>
 		<commonslang.version>3.1</commonslang.version>
