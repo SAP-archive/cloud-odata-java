@@ -11,14 +11,13 @@
 
 	<groupId>com.sap.core.odata</groupId>
 	<artifactId>com.sap.core.odata.processor.parent</artifactId>
-	<version>0.0.0-SNAPSHOT</version>
+	<version>0.1.0</version>
 	<name>OData Processors - Parent</name>
 	<packaging>pom</packaging>
 
 	<modules>
 		<module>com.sap.core.odata.processor.api</module>
 		<module>com.sap.core.odata.processor.core</module>
-		<module>com.sap.core.odata.processor.fit</module>
 		<module>com.sap.core.odata.processor.ref.web</module>
 	</modules>
 	
@@ -54,7 +53,7 @@
 		<version.odataforsap>0.2.0-SNAPSHOT</version.odataforsap>
 		<version.odataforsap.processor>${project.version}</version.odataforsap.processor>
 		<version.eclipselink>2.1.2</version.eclipselink>
-		<version.javax.persistence>2.0.0</version.javax.persistence>
+		<version.javax.persistence>2.0.3</version.javax.persistence>
 		<version.hsqldb>1.8.0.10</version.hsqldb>
 	</properties>
 	<build>
@@ -128,8 +127,33 @@
 			<id>snapshot.repository</id>
 			<url>http://nexus:8081/nexus/content/repositories/deploy.snapshots/</url>
 		</snapshotRepository>
+		 <repository>
+            <id>nexus.deploy.milestones</id>
+            <url>http://nexus.wdf.sap.corp:8081/nexus/content/repositories/deploy.milestones/</url>
+		</repository>
+
 	</distributionManagement>
+	
+	<organization>
+        <name>SAP AG</name>
+        <url>www.sap.com</url>
+	</organization>
 
-
-
+	<!--**************************************************************************
+	    * POM SECTION: Profile Settings
+		**************************************************************************
+	-->
+	<profiles>           
+		<profile>
+			<id>release.build</id>
+				<activation>
+				<property>
+						<name>ldi.releaseBuild</name>
+					 </property>
+				</activation>
+				<properties>
+					<maven.test.skip>true</maven.test.skip>
+				</properties>
+		</profile>
+	</profiles>
 </project>
