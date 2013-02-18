@@ -25,10 +25,9 @@ import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.log4j.Logger;
-import org.junit.AfterClass;
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.BeforeClass;
 
 import com.sap.core.odata.api.ODataService;
 import com.sap.core.odata.api.commons.HttpHeaders;
@@ -43,7 +42,7 @@ import com.sap.core.odata.ref.edm.ScenarioEdmProvider;
 import com.sap.core.odata.ref.model.DataContainer;
 import com.sap.core.odata.ref.processor.ListsProcessor;
 import com.sap.core.odata.ref.processor.ScenarioDataSource;
-import com.sap.core.odata.testutil.fit.BaseTest;
+import com.sap.core.odata.testutil.fit.AbstractFitTest;
 import com.sap.core.odata.testutil.helper.StringHelper;
 import com.sap.core.odata.testutil.helper.TestutilException;
 import com.sap.core.odata.testutil.server.TestServer;
@@ -51,7 +50,7 @@ import com.sap.core.odata.testutil.server.TestServer;
 /**
  * @author SAP AG
  */
-public abstract class AbstractContentNegotiationTest extends BaseTest {
+public abstract class AbstractContentNegotiationTest extends AbstractFitTest {
   
   private static final Logger LOG = Logger.getLogger(AbstractContentNegotiationTest.class);
   
@@ -86,47 +85,13 @@ public abstract class AbstractContentNegotiationTest extends BaseTest {
       "application/atom+xml; charset=utf-8"
       );
 
-  protected static ODataService createService() throws ODataException {
+  protected ODataService createService() throws ODataException {
     DataContainer dataContainer = new DataContainer();
     dataContainer.init();
     final ODataSingleProcessor processor = new ListsProcessor(new ScenarioDataSource(dataContainer));
     final EdmProvider provider = new ScenarioEdmProvider();
     return new ODataSingleProcessorService(provider, processor) {};
   }
-
-  protected final static TestServer server = new TestServer();
-
-
-  protected URI getEndpoint() {
-    return server.getEndpoint();
-  }
-
-  @BeforeClass
-  public static void beforeClass() {
-    try {
-      ODataService service = createService();
-      server.startServer(service);
-    } catch (final ODataException e) {
-      throw new TestutilException(e);
-    } 
-  }
-
-  @AfterClass
-  public static void afterClass() {
-    server.stopServer();
-  }
-  
-  @Before
-  public void before() throws InterruptedException {
-    TimeUnit.MILLISECONDS.sleep(250);
-  }
-
-  
-  //
-  //
-  //
-  //
-  //
 
   protected static class FitTestSetBuilder {
     private final FitTestSet testSet;
@@ -449,6 +414,7 @@ public abstract class AbstractContentNegotiationTest extends BaseTest {
         
         requestLine = request.getRequestLine().toString();
         HttpClient httpClient = new DefaultHttpClient();
+        
         LOG.debug("Execute test for [" + requestLine + "]");
         final HttpResponse response = httpClient.execute(request);
         LOG.debug("Got response for request [" + requestLine + "]");
@@ -464,12 +430,12 @@ public abstract class AbstractContentNegotiationTest extends BaseTest {
         }
         LOG.trace("Test passed [" + toString() + "]");
       } finally {
-        TimeUnit.MILLISECONDS.sleep(10);
+//        TimeUnit.MILLISECONDS.sleep(10);
         if(request != null) {
           request.releaseConnection();
           LOG.debug("Released connection [" + requestLine + "]");
         }
-        TimeUnit.MILLISECONDS.sleep(10);
+//        TimeUnit.MILLISECONDS.sleep(10);
       }
     }
 

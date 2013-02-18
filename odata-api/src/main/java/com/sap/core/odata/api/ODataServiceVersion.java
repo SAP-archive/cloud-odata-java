@@ -25,6 +25,11 @@ public class ODataServiceVersion {
    */
   public static final String V30 = "3.0";
 
+  /**
+   * Validates format and range of a data service version string
+   * @param version version string
+   * @return true for a valid version
+   */
   public static boolean validateDataServiceVersion(String version)
   {
     final Matcher matcher = DATASERVICEVERSIONPATTERN.matcher(version);
@@ -62,7 +67,7 @@ public class ODataServiceVersion {
     return me > other;
   }
 
-  public static String extractDataServiceVersionString(String rawDataServiceVersion) {
+  private static String extractDataServiceVersionString(String rawDataServiceVersion) {
     if (rawDataServiceVersion != null) {
       final String[] pattern = rawDataServiceVersion.split(";");
       return pattern[0];
