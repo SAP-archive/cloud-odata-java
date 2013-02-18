@@ -31,6 +31,12 @@ public abstract class ODataServiceFactory {
    */
   public abstract ODataService createService(ODataContext ctx) throws ODataException;
 
+  /**
+   * Create a default service instance based on </code>ODataSingleProcessor<code>.
+   * @param provider A custom <code>EdmProvider</code> implementation.
+   * @param processor A custom processor implementation derived from <code>ODataSingleProcessor</code> .
+   * @return A new default <code>ODataSingleProcessorService</code> instance.
+   */
   public ODataService createODataSingleProcessorService(EdmProvider provider, ODataSingleProcessor processor) {
     return RuntimeDelegate.createODataSingleProcessorService(provider, processor);
   }
