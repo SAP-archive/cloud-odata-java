@@ -35,11 +35,6 @@ public class ODataExceptionSerializer {
    * An exception is not thrown because this method is used in exception handling.</p> 
    * @param errorCode   a String that serves as a substatus to the HTTP response code
    * @param message     a human-readable message describing the error
-   * @param innerError  debugging information to assist the person responsible for a
-   *                    service implementation in determining the cause of an error
-   *                    (should only be used in development environments and
-   *                     should not be present in a response from a production data
-   *                     service to guard against information disclosure security concerns)
    * @param contentType the content type the error message should correspond to
    * @param locale      the {@link Locale} that should be used to format the error message
    * @return            an {@link InputStream} containing the serialized error message
