@@ -1,10 +1,22 @@
 /**
  * Exception Classes used in the OData library as well as the implementing application
- * <p>APPLICATION DEVELOPERS: Please use {@link com.sap.core.odata.api.exception.ODataApplicationException} for custom exceptions. 
- * <br>Language handling: Application exceptions contain a message and the corresponding locale to the message text. Both have to be set via the constructor. If an exception is serialized the application will always use the locale at the exception to determine the language. 
- * <br>Error code handling:If set an error code will be shown in the response to a client.
- * <br>Internationalization: The library uses messaged exceptions to determine the language of the exception message text. It can be influenced via the accept-language header.
- * <p>Exception Hierarchy
+ * <p>APPLICATION DEVELOPERS: Please use {@link com.sap.core.odata.api.exception.ODataApplicationException} for custom exceptions.
+ * 
+ * <p><b>Exception handling:</b>
+ * <br>Inside the OData library an ExceptionMapper exists which can transform any exception into an OData error format. 
+ * The ExceptionMapper behaves after the following algorithm:
+ * <br>1. The cause of the exception will be determined by looking into the stack trace.
+ * <br>1.1. If the cause is an ODataApplicationException meaning that somewhere in the stack an ODataApplicationException is found the 
+ * ExceptionMapper will take the following information from the ApplicationException and transform it into an OData error: 
+ * message text, Locale, Inner Error and Error Code. There will be no altering of information for the ODataApplicationException.
+ * <br>1.2. If no ODataApplicationException is found in the stack the cause can be three different types of exceptions: ODataHttpException, ODataMessageException or an uncaught RuntimeException.
+ * <br>The ExceptionMapper will process them in the following order: 1. ODataHttpException, 2. ODataMessageException, 3 Other Exceptions.
+ * <br>1.2.1. ODataHttpExceptions will be transformed as follows: If an error code is set it will be displayed. The HTTP status code will be derived from the ODataHttpException. The message text and its language depend on the AcceptLanguageHeaders. 
+ * The first supported language which is found in the Headers will result in the language of the message and the response. 
+ * <br>1.2.1. ODataMessageException will be transformed as follows: If an error code is set it will be displayed. The HTTP status code will be 500.
+ * The message text and its language depend on the AcceptLanguageHeaders. The first supported language which is found in the Headers will result in the language of the message and the response. 
+ * <br>1.2.1 Runtime Exceptions will be transformed as follows: No error code will be set. HTTP status will be 500. Message text will be taken from the exception and the language for the response will be English as default. 
+ * <p><b>Exception Hierarchy</b>
  * <br> {@link com.sap.core.odata.api.exception.ODataException}
  * <br> *{@link com.sap.core.odata.api.exception.ODataApplicationException}
  * <br> *{@link com.sap.core.odata.api.exception.ODataMessageException}
