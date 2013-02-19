@@ -1,20 +1,29 @@
 package com.sap.core.odata.core.ep.entry;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import com.sap.core.odata.api.ep.entry.EntryMetadata;
 
+/**
+ * @author SAP AG
+ */
 public class EntryMetadataImpl implements EntryMetadata {
   private String id;
   private String etag;
   private String uri;
-  private Map<String, String> associationUris = new HashMap<String, String>();
-  
+  private Map<String, List<String>> associationUris = new HashMap<String, List<String>>();
+
   @Override
   public String getId() {
     return id;
+  }
+
+  public void setId(String id) {
+    this.id = id;
   }
 
   @Override
@@ -22,9 +31,8 @@ public class EntryMetadataImpl implements EntryMetadata {
     return etag;
   }
 
-  @Override
-  public Map<String, String> getAssociationUris() {
-    return Collections.unmodifiableMap(associationUris);
+  public void setEtag(String etag) {
+    this.etag = etag;
   }
 
   @Override
@@ -35,16 +43,21 @@ public class EntryMetadataImpl implements EntryMetadata {
   public void setUri(String uri) {
     this.uri = uri;
   }
-  
-  public void setId(String id) {
-    this.id = id;
-  }
-  
-  public void setEtag(String etag) {
-    this.etag = etag;
+
+  @Override
+  public List<String> getAssociationUris(final String navigationPropertyName) {
+    final List<String> uris = associationUris.get(navigationPropertyName);
+    if (uris == null)
+      return Collections.emptyList();
+    else
+      return Collections.unmodifiableList(uris);
   }
 
-  public void putAssociationUri(String navigationPropertyName, String uri) {
-    associationUris.put(navigationPropertyName, uri);
+  public void putAssociationUri(final String navigationPropertyName, final String uri) {
+    List<String> uris = associationUris.get(navigationPropertyName);
+    if (uris == null)
+      uris = new ArrayList<String>();
+    uris.add(uri);
+    associationUris.put(navigationPropertyName, uris);
   }
 }
