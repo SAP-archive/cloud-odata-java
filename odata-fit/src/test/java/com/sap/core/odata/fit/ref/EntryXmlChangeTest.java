@@ -62,7 +62,7 @@ public class EntryXmlChangeTest extends AbstractRefXmlTest {
     assertEquals(getEndpoint() + "Rooms('104')", response.getFirstHeader(HttpHeaders.LOCATION).getValue());
     checkEtag(response, "W/\"2\"");
     assertXpathEvaluatesTo("4", "/atom:entry/atom:content/m:properties/d:Seats", getBody(response));
-    // checkUri("Rooms('104')/nr_Employees('4')");
+    checkUri("Rooms('104')/nr_Employees('4')");
     checkUri("Rooms('104')/nr_Employees('5')");
   }
 

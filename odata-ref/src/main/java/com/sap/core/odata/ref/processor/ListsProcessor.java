@@ -38,6 +38,7 @@ import com.sap.core.odata.api.ep.EntityProvider;
 import com.sap.core.odata.api.ep.EntityProviderException;
 import com.sap.core.odata.api.ep.EntityProviderProperties;
 import com.sap.core.odata.api.ep.EntityProviderProperties.ODataEntityProviderPropertiesBuilder;
+import com.sap.core.odata.api.ep.entry.EntryMetadata;
 import com.sap.core.odata.api.ep.entry.ODataEntry;
 import com.sap.core.odata.api.exception.ODataBadRequestException;
 import com.sap.core.odata.api.exception.ODataException;
@@ -304,7 +305,7 @@ public class ListsProcessor extends ODataSingleProcessor {
 
       dataSource.createData(entitySet, data);
 
-      linkEntity(entitySet, data, entryValues.getMetadata().getAssociationUris());
+      linkEntity(entitySet, data, entryValues.getMetadata());
     }
 
     Map<String, Object> values = getStructuralTypeValueMap(data, entityType);
@@ -940,15 +941,16 @@ public class ListsProcessor extends ODataSingleProcessor {
       return mapKey(uri.getKeyPredicates());
   }
 
-  private void linkEntity(final EdmEntitySet entitySet, Object data, final Map<String, String> links) throws ODataException {
+  private void linkEntity(final EdmEntitySet entitySet, Object data, final EntryMetadata entryMetadata) throws ODataException {
     final EdmEntityType entityType = entitySet.getEntityType();
-    for (final String navigationPropertyName : links.keySet()) {
-      final String uriString = links.get(navigationPropertyName);
+    for (final String navigationPropertyName : entityType.getNavigationPropertyNames()) {
       final EdmNavigationProperty navigationProperty = (EdmNavigationProperty) entityType.getProperty(navigationPropertyName);
       final EdmEntitySet targetEntitySet = entitySet.getRelatedEntitySet(navigationProperty);
-      final Map<String, Object> key = parseLinkUri(targetEntitySet, uriString);
-      if (key != null)
-        dataSource.writeRelation(entitySet, data, targetEntitySet, key);
+      for (final String uriString : entryMetadata.getAssociationUris(navigationPropertyName)) {
+        final Map<String, Object> key = parseLinkUri(targetEntitySet, uriString);
+        if (key != null)
+          dataSource.writeRelation(entitySet, data, targetEntitySet, key);
+      }
     }
   }
 
