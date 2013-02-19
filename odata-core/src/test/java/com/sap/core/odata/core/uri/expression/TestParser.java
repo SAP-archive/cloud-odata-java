@@ -150,17 +150,17 @@ public class TestParser extends TestBase
       EdmProperty complexAddressCity = (EdmProperty) complexAddressType.getProperty("City");
       EdmSimpleType complexAddressCityType = (EdmSimpleType) complexAddressCity.getType();
 
-      GetPTF(edm, edmEtAllTypes, "String").aEdmProperty(string).aEdmType(stringType);
+      GetPTF(edmEtAllTypes, "String").aEdmProperty(string).aEdmType(stringType);
 
-      GetPTF(edm, edmEtAllTypes, "'text' eq String")
+      GetPTF(edmEtAllTypes, "'text' eq String")
           .root().aKind(ExpressionKind.BINARY);
 
-      GetPTF(edm, edmEtAllTypes, "Complex/String")
+      GetPTF(edmEtAllTypes, "Complex/String")
           .root().left().aEdmProperty(complex).aEdmType(complexType)
           .root().right().aEdmProperty(complexString).aEdmType(complexStringType)
           .root().aKind(ExpressionKind.MEMBER).aEdmType(complexStringType);
 
-      GetPTF(edm, edmEtAllTypes, "Complex/Address/City")
+      GetPTF(edmEtAllTypes, "Complex/Address/City")
           .root().aKind(ExpressionKind.MEMBER)
           .root().left().aKind(ExpressionKind.MEMBER)
           .root().left().left().aKind(ExpressionKind.PROPERTY).aEdmProperty(complex).aEdmType(complexType)
@@ -172,7 +172,7 @@ public class TestParser extends TestBase
       EdmProperty boolean_ = (EdmProperty) edmEtAllTypes.getProperty("Boolean");
       EdmSimpleType boolean_Type = (EdmSimpleType) boolean_.getType();
 
-      GetPTF(edm, edmEtAllTypes, "not Boolean")
+      GetPTF(edmEtAllTypes, "not Boolean")
           .aKind(ExpressionKind.UNARY)
           .aEdmType(boolean_Type)
           .right().aEdmProperty(boolean_).aEdmType(boolean_Type);

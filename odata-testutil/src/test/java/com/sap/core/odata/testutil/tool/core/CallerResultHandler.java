@@ -20,10 +20,12 @@ import org.apache.http.HttpResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * @author SAP AG
+ */
 public class CallerResultHandler {
 
   private static final String RESPONSE_STATUS_CODE = "RESPONSE_STATUS_CODE";
-
   private static final String REQUEST_METHOD = "REQUEST_METHOD";
 
   private static final Logger LOG = LoggerFactory.getLogger(CallerResultHandler.class);
@@ -198,6 +200,7 @@ public class CallerResultHandler {
 
   public void handle(TestPath testPath, HttpRequest request, Exception e) {
     errorLines.append("\n--- START   ---")
+        .append(testPath.toString())
         .append("--- Request ---")
         .append("\tURI: " + request.getRequestLine().getUri())
         .append("\tAcceptHeader: " + request.getFirstHeader(HttpHeaders.ACCEPT))

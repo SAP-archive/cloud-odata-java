@@ -5,6 +5,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 
 import com.sap.core.odata.api.edm.Edm;
@@ -13,6 +14,7 @@ import com.sap.core.odata.api.edm.EdmFacets;
 import com.sap.core.odata.api.edm.EdmLiteralKind;
 import com.sap.core.odata.api.edm.EdmMultiplicity;
 import com.sap.core.odata.api.edm.EdmSimpleType;
+import com.sap.core.odata.api.edm.EdmSimpleTypeException;
 import com.sap.core.odata.api.edm.EdmTargetPath;
 import com.sap.core.odata.api.edm.EdmType;
 import com.sap.core.odata.api.ep.EntityProviderException;
@@ -26,21 +28,21 @@ import com.sap.core.odata.core.ep.aggregator.NavigationPropertyInfo;
 import com.sap.core.odata.core.ep.util.FormatXml;
 
 /**
+ * Serializes an ATOM entry.
  * @author SAP AG
  */
 public class AtomEntryEntityProducer {
 
   private String etag;
   private String location;
-  private EntityProviderProperties properties;
+  private final EntityProviderProperties properties;
 
-  public AtomEntryEntityProducer(EntityProviderProperties properties) throws EntityProviderException {
+  public AtomEntryEntityProducer(final EntityProviderProperties properties) throws EntityProviderException {
     this.properties = properties;
   }
 
   public void append(XMLStreamWriter writer, EntityInfoAggregator eia, Map<String, Object> data, boolean isRootElement) throws EntityProviderException {
     try {
-
       writer.writeStartElement(FormatXml.ATOM_ENTRY);
 
       if (isRootElement) {
@@ -83,24 +85,20 @@ public class AtomEntryEntityProducer {
       writer.writeEndElement();
 
       writer.flush();
-    } catch (Exception e) {
+    } catch (XMLStreamException e) {
       throw new EntityProviderException(EntityProviderException.COMMON, e);
     }
   }
 
   private void appendCustomProperties(XMLStreamWriter writer, EntityInfoAggregator eia, Map<String, Object> data) throws EntityProviderException {
-    try {
-      List<String> noneSyndicationTargetPaths = eia.getNoneSyndicationTargetPathNames();
-      for (String tpName : noneSyndicationTargetPaths) {
-        EntityPropertyInfo info = eia.getTargetPathInfo(tpName);
-        if (!isKeepInContent(info)) {
-          XmlPropertyEntityProducer aps = new XmlPropertyEntityProducer();
-          Object value = data.get(info.getName());
-          aps.append(writer, info.getName(), info, value);
-        }
+    List<String> noneSyndicationTargetPaths = eia.getNoneSyndicationTargetPathNames();
+    for (String tpName : noneSyndicationTargetPaths) {
+      EntityPropertyInfo info = eia.getTargetPathInfo(tpName);
+      if (!isKeepInContent(info)) {
+        XmlPropertyEntityProducer aps = new XmlPropertyEntityProducer();
+        final String name = info.getName();
+        aps.append(writer, name, info, data.get(name));
       }
-    } catch (Exception e) {
-      throw new EntityProviderException(EntityProviderException.COMMON, e);
     }
   }
 
@@ -131,20 +129,16 @@ public class AtomEntryEntityProducer {
       }
 
       return etag;
-    } catch (Exception e) {
+    } catch (EdmSimpleTypeException e) {
       throw new EntityProviderException(EntityProviderException.COMMON, e);
     }
   }
 
   private void appendAtomNavigationLinks(XMLStreamWriter writer, EntityInfoAggregator eia, Map<String, Object> data) throws EntityProviderException {
-    try {
-      for (NavigationPropertyInfo info : eia.getNavigationPropertyInfos()) {
-        boolean isFeed = (info.getMultiplicity() == EdmMultiplicity.MANY);
-        String self = this.createSelfLink(eia, data, info.getName());
-        appendAtomNavigationLink(writer, self, info.getName(), isFeed);
-      }
-    } catch (Exception e) {
-      throw new EntityProviderException(EntityProviderException.COMMON, e);
+    for (NavigationPropertyInfo info : eia.getNavigationPropertyInfos()) {
+      boolean isFeed = (info.getMultiplicity() == EdmMultiplicity.MANY);
+      String self = this.createSelfLink(eia, data, info.getName());
+      appendAtomNavigationLink(writer, self, info.getName(), isFeed);
     }
   }
 
@@ -161,7 +155,7 @@ public class AtomEntryEntityProducer {
       writer.writeAttribute(FormatXml.ATOM_TITLE, propertyName);
 
       writer.writeEndElement();
-    } catch (Exception e) {
+    } catch (XMLStreamException e) {
       throw new EntityProviderException(EntityProviderException.COMMON, e);
     }
   }
@@ -175,7 +169,7 @@ public class AtomEntryEntityProducer {
       writer.writeAttribute(FormatXml.ATOM_REL, "edit");
       writer.writeAttribute(FormatXml.ATOM_TITLE, eia.getEntityTypeName());
       writer.writeEndElement();
-    } catch (Exception e) {
+    } catch (XMLStreamException e) {
       throw new EntityProviderException(EntityProviderException.COMMON, e);
     }
   }
@@ -193,7 +187,7 @@ public class AtomEntryEntityProducer {
       writer.writeAttribute(FormatXml.ATOM_REL, "edit-media");
       writer.writeAttribute(FormatXml.ATOM_TYPE, mediaResourceMimeType);
       writer.writeEndElement();
-    } catch (Exception e) {
+    } catch (XMLStreamException e) {
       throw new EntityProviderException(EntityProviderException.COMMON, e);
     }
   }
@@ -210,25 +204,21 @@ public class AtomEntryEntityProducer {
       writer.writeAttribute(FormatXml.ATOM_TYPE, mediaResourceMimeType);
       writer.writeAttribute(FormatXml.ATOM_SRC, self);
       writer.writeEndElement();
-    } catch (Exception e) {
+    } catch (XMLStreamException e) {
       throw new EntityProviderException(EntityProviderException.COMMON, e);
     }
   }
 
   private String createSelfLink(EntityInfoAggregator eia, Map<String, Object> data, String extension) throws EntityProviderException {
-    try {
-      StringBuilder sb = new StringBuilder();
-      if (!eia.isDefaultEntityContainer()) {
-        String encodedEntityContainerName = eia.getEntityContainerName();
-        sb.append(encodedEntityContainerName).append(Edm.DELIMITER);
-      }
-      String encodedEntitySetName = Encoder.encode(eia.getEntitySetName());
-
-      sb.append(encodedEntitySetName).append("(").append(this.createEntryKey(eia, data, true)).append(")").append((extension == null ? "" : "/" + extension));
-      return sb.toString();
-    } catch (Exception e) {
-      throw new EntityProviderException(EntityProviderException.COMMON, e);
+    StringBuilder sb = new StringBuilder();
+    if (!eia.isDefaultEntityContainer()) {
+      String encodedEntityContainerName = eia.getEntityContainerName();
+      sb.append(encodedEntityContainerName).append(Edm.DELIMITER);
     }
+    String encodedEntitySetName = Encoder.encode(eia.getEntitySetName());
+
+    sb.append(encodedEntitySetName).append("(").append(this.createEntryKey(eia, data, true)).append(")").append((extension == null ? "" : "/" + extension));
+    return sb.toString();
   }
 
   private void appendAtomMandatoryParts(XMLStreamWriter writer, EntityInfoAggregator eia, Map<String, Object> data) throws EntityProviderException {
@@ -268,7 +258,9 @@ public class AtomEntryEntityProducer {
       writer.writeCharacters(EdmDateTimeOffset.getInstance().valueToString(updateDate, EdmLiteralKind.DEFAULT, updateFacets));
 
       writer.writeEndElement();
-    } catch (Exception e) {
+    } catch (XMLStreamException e) {
+      throw new EntityProviderException(EntityProviderException.COMMON, e);
+    } catch (EdmSimpleTypeException e) {
       throw new EntityProviderException(EntityProviderException.COMMON, e);
     }
   }
@@ -282,7 +274,7 @@ public class AtomEntryEntityProducer {
         return type.valueToString(value, EdmLiteralKind.DEFAULT, info.getFacets());
       }
       return null;
-    } catch (Exception e) {
+    } catch (EdmSimpleTypeException e) {
       throw new EntityProviderException(EntityProviderException.COMMON, e);
     }
   }
@@ -324,7 +316,7 @@ public class AtomEntryEntityProducer {
       writer.writeAttribute(FormatXml.ATOM_CATEGORY_TERM, term);
       writer.writeAttribute(FormatXml.ATOM_CATEGORY_SCHEME, Edm.NAMESPACE_SCHEME_2007_08);
       writer.writeEndElement();
-    } catch (Exception e) {
+    } catch (XMLStreamException e) {
       throw new EntityProviderException(EntityProviderException.COMMON, e);
     }
   }
@@ -339,27 +331,23 @@ public class AtomEntryEntityProducer {
         writer.writeCharacters(value);
         writer.writeEndElement();
       }
-    } catch (Exception e) {
+    } catch (XMLStreamException e) {
       throw new EntityProviderException(EntityProviderException.COMMON, e);
     }
   }
 
   private String createAtomId(EntityInfoAggregator eia, String entryKey) throws EntityProviderException {
-    try {
-      String id = "";
+    String id = "";
 
-      if (!eia.isDefaultEntityContainer()) {
-        id += eia.getEntityContainerName() + Edm.DELIMITER;
-      }
-      String encodedEntitySetName = Encoder.encode(eia.getEntitySetName());
-      String encodedEntryKey = Encoder.encode(entryKey);
-      id += encodedEntitySetName + "(" + encodedEntryKey + ")";
-
-      String uri = properties.getServiceRoot().toASCIIString() + id;
-      return uri;
-    } catch (Exception e) {
-      throw new EntityProviderException(EntityProviderException.COMMON, e);
+    if (!eia.isDefaultEntityContainer()) {
+      id += eia.getEntityContainerName() + Edm.DELIMITER;
     }
+    String encodedEntitySetName = Encoder.encode(eia.getEntitySetName());
+    String encodedEntryKey = Encoder.encode(entryKey);
+    id += encodedEntitySetName + "(" + encodedEntryKey + ")";
+
+    String uri = properties.getServiceRoot().toASCIIString() + id;
+    return uri;
   }
 
   private String createEntryKey(EntityInfoAggregator eia, Map<String, Object> data, boolean encode) throws EntityProviderException {
@@ -395,7 +383,7 @@ public class AtomEntryEntityProducer {
         }
       }
       return keys;
-    } catch (Exception e) {
+    } catch (EdmSimpleTypeException e) {
       throw new EntityProviderException(EntityProviderException.COMMON, e);
     }
   }
@@ -417,7 +405,7 @@ public class AtomEntryEntityProducer {
       }
 
       writer.writeEndElement();
-    } catch (Exception e) {
+    } catch (XMLStreamException e) {
       throw new EntityProviderException(EntityProviderException.COMMON, e);
     }
   }

@@ -105,13 +105,10 @@ public class XmlPropertyEntityProducer {
   }
 
   /**
-   * Return full qualified name of an type of an given PropertyInfo
-   * @param propertyInfo
+   * Returns full qualified name of a type of a given PropertyInfo.
    * @return Full qualified name
-   * @throws EdmException
    */
-  private String getFqnTypeName(EntityComplexPropertyInfo propertyInfo) throws EdmException {
-    //TODA what means Fqn
+  private String getFqnTypeName(final EntityComplexPropertyInfo propertyInfo) throws EdmException {
     return propertyInfo.getType().getNamespace() + Edm.DELIMITER + propertyInfo.getType().getName();
   }
 

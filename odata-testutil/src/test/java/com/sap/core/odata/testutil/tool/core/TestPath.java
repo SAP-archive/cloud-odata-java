@@ -11,6 +11,9 @@ import java.util.Set;
 import org.apache.http.HttpHeaders;
 import org.apache.http.HttpRequest;
 
+/**
+ * @author SAP AG
+ */
 public class TestPath implements Comparable<TestPath> {
 
   private final String path;
@@ -56,17 +59,11 @@ public class TestPath implements Comparable<TestPath> {
     return String.valueOf(hashCode());
   }
 
-  /* (non-Javadoc)
-   * @see java.lang.Object#toString()
-   */
   @Override
   public String toString() {
     return "TestPath [path=" + path + ", headers=" + headers + "]";
   }
 
-  /* (non-Javadoc)
-   * @see java.lang.Object#hashCode()
-   */
   @Override
   public int hashCode() {
     final int prime = 31;
@@ -76,9 +73,6 @@ public class TestPath implements Comparable<TestPath> {
     return result;
   }
 
-  /* (non-Javadoc)
-   * @see java.lang.Object#equals(java.lang.Object)
-   */
   @Override
   public boolean equals(Object obj) {
     if (this == obj) {
@@ -108,17 +102,16 @@ public class TestPath implements Comparable<TestPath> {
     return true;
   }
 
-  //
-  public static List<TestPath> createTestPaths(List<String> paths, String header, List<String> headerValues) {
+  public static List<TestPath> createTestPaths(List<String> paths, List<String> headerValues) {
     final List<TestPath> testPaths = new ArrayList<TestPath>();
 
     for (final String path : paths) {
       for (final String value : headerValues) {
-        final TestPath tp = new TestPath(path);
+        final TestPath testPath = new TestPath(path);
         if ((value != null) && (value.length() > 0)) {
-          tp.setAcceptHeader(value);
+          testPath.setAcceptHeader(value);
         }
-        testPaths.add(tp);
+        testPaths.add(testPath);
       }
     }
 

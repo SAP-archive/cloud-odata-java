@@ -6,7 +6,6 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
-import org.apache.http.HttpHeaders;
 import org.apache.log4j.Appender;
 import org.apache.log4j.FileAppender;
 import org.apache.log4j.Layout;
@@ -23,6 +22,7 @@ import com.sap.core.odata.testutil.tool.core.TestPath;
  * Simple tool to define and process calls against an OData service and collect the result of these calls.
  * Currently this is only used and configured to do ContentNegotiation test calls for different URI-Types and collect/print the
  * result in JIRA compatible markup syntax.
+ * @author SAP AG
  */
 public class TestCallTool {
 
@@ -61,7 +61,6 @@ public class TestCallTool {
         "/Employees('1')/Age/$value"          // no specific URI-Type (variation of URI17 ?)
         );
 
-    final String header = HttpHeaders.ACCEPT;
     final List<String> headerValues = Arrays.asList(
         "", // for request with none 'Accept-Header' set
         "text/plain",
@@ -75,10 +74,10 @@ public class TestCallTool {
         "application/atom+xml; charset=utf-8",
         "application/atomsvc+xml; charset=utf-8"
         );
-    final List<TestPath> testPaths = TestPath.createTestPaths(paths, header, headerValues);
+    final List<TestPath> testPaths = TestPath.createTestPaths(paths, headerValues);
     // for a reduced test set
 //    List<TestPath> testPaths = TestPath.createTestPaths(Arrays.asList("/", "/Employees"), 
-//        header, Arrays.asList("", "application/xml"));
+//        Arrays.asList("", "application/xml"));
 
     final CallerResultHandler handler = new CallerResultHandler();
 

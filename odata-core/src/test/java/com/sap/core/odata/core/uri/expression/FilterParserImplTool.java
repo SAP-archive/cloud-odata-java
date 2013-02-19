@@ -4,13 +4,15 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.sap.core.odata.api.edm.Edm;
 import com.sap.core.odata.api.edm.EdmEntityType;
 import com.sap.core.odata.api.uri.expression.MethodOperator;
 
+/**
+ * @author SAP AG
+ */
 public class FilterParserImplTool extends FilterParserImpl {
 
-  public FilterParserImplTool(Edm edm, EdmEntityType resourceEntityType) 
+  public FilterParserImplTool(EdmEntityType resourceEntityType) 
   {
     super(resourceEntityType);
   }
