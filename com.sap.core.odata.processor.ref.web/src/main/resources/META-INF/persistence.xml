@@ -10,7 +10,6 @@
 		<class>com.sap.core.odata.processor.ref.jpa.Note</class>
 		<class>com.sap.core.odata.processor.ref.jpa.Material</class>
 		<class>com.sap.core.odata.processor.ref.jpa.Store</class>
-		<class>com.sap.core.odata.processor.ref.jpa.Test</class>
 		<properties>
 			<property name="eclipselink.jdbc.driver" value="org.hsqldb.jdbcDriver" />
 			<property name="eclipselink.jdbc.url" value="jdbc:hsqldb:mem:com.sap.sample" />

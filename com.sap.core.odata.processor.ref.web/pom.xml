@@ -4,6 +4,13 @@
 	<artifactId>com.sap.core.odata.processor.ref.web</artifactId>
 	<packaging>war</packaging>
 	<url>http://maven.apache.org</url>
+	<name>OData Processors - JPA Reference Scenario</name>
+	<parent>
+		<groupId>com.sap.core.odata</groupId>
+		<artifactId>com.sap.core.odata.processor.parent</artifactId>
+		<version>0.0.0-SNAPSHOT</version>
+		<relativePath>..</relativePath>
+	</parent>
 	<build>
 		<finalName>com.sap.core.odata.processor.ref.web</finalName>
 		<resources>
@@ -110,12 +117,4 @@
 			</properties>
 		</profile>
 	</profiles>
-	
-	<name>OData Processors - JPA Reference Scenario</name>
-	<parent>
-		<groupId>com.sap.core.odata</groupId>
-		<artifactId>com.sap.core.odata.processor.parent</artifactId>
-		<version>0.1.0</version>
-		<relativePath>..</relativePath>
-	</parent>
 </project>
