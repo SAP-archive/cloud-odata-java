@@ -6,6 +6,7 @@ import java.lang.reflect.Field;
 import javax.persistence.Column;
 import javax.persistence.metamodel.Attribute;
 import javax.persistence.metamodel.ManagedType;
+import javax.persistence.metamodel.PluralAttribute;
 
 import com.sap.core.odata.api.edm.FullQualifiedName;
 import com.sap.core.odata.api.edm.provider.Association;
@@ -28,6 +29,7 @@ import com.sap.core.odata.processor.api.jpa.model.JPAEdmSchemaView;
 import com.sap.core.odata.processor.core.jpa.model.JPAEdmComplexType;
 import com.sap.core.odata.processor.core.jpa.model.JPAEdmMappingImpl;
 import com.sap.core.odata.processor.core.jpa.model.JPAEdmNavigationProperty;
+
 
 public class JPAEdmNameBuilder {
 	private static final String ENTITY_CONTAINER_SUFFIX = "Container";
@@ -203,8 +205,16 @@ public class JPAEdmNameBuilder {
 		String name = entityTypeView.getEdmEntityType().getName();
 		FullQualifiedName fQName = new FullQualifiedName(namespace, name);
 		assocaitionEndView.getEdmAssociationEnd1().setType(fQName);
-
-		name = propertyView.getJPAAttribute().getJavaType().getSimpleName();
+		try
+		{
+			PluralAttribute<?, ?, ?> jpattr = (PluralAttribute<?, ?, ?>)propertyView.getJPAAttribute();
+			name = jpattr.getElementType().getJavaType().getSimpleName();
+		}
+		catch(Exception e)
+		{
+			name = propertyView.getJPAAttribute().getJavaType().getSimpleName();
+		}
+		
 		fQName = new FullQualifiedName(namespace, name);
 		assocaitionEndView.getEdmAssociationEnd2().setType(fQName);
 
@@ -272,19 +282,39 @@ public class JPAEdmNameBuilder {
 		FullQualifiedName associationEndTypeOne = association.getEnd1()
 				.getType();
 
-		if (propertyView.getJPAAttribute().getJavaType().getSimpleName()
-				.equals(associationEndTypeOne.getName())) {
-			navProp.setFromRole(association.getEnd2().getRole());
-			navProp.setToRole(association.getEnd1().getRole());
-		} else {
-
-			navProp.setToRole(association.getEnd2().getRole());
-			navProp.setFromRole(association.getEnd1().getRole());
-		}
+		
 		Attribute<?, ?> jpaAttribute = propertyView.getJPAAttribute();
 		navProp.setMapping(new Mapping().setInternalName(jpaAttribute.getName()));
-		navProp.setName(jpaAttribute.getJavaType().getSimpleName()
-				.concat(NAVIGATION_NAME));
+		try
+		{
+			PluralAttribute<?, ?, ?> jpattr = (PluralAttribute<?, ?, ?>)propertyView.getJPAAttribute();
+			navProp.setName(jpattr.getElementType().getJavaType().getSimpleName()
+					.concat(NAVIGATION_NAME));
+			if (jpattr.getElementType().getJavaType().getSimpleName()
+					.equals(associationEndTypeOne.getName())) {
+				navProp.setFromRole(association.getEnd2().getRole());
+				navProp.setToRole(association.getEnd1().getRole());
+			} else {
+
+				navProp.setToRole(association.getEnd2().getRole());
+				navProp.setFromRole(association.getEnd1().getRole());
+			}
+		}
+		catch(Exception e)
+		{
+			navProp.setName(jpaAttribute.getJavaType().getSimpleName()
+					.concat(NAVIGATION_NAME));
+			if (propertyView.getJPAAttribute().getJavaType().getSimpleName()
+					.equals(associationEndTypeOne.getName())) {
+				navProp.setFromRole(association.getEnd2().getRole());
+				navProp.setToRole(association.getEnd1().getRole());
+			} else {
+
+				navProp.setToRole(association.getEnd2().getRole());
+				navProp.setFromRole(association.getEnd1().getRole());
+			}
+		}
+		
 
 	}
 }
