@@ -6,6 +6,9 @@ import com.sap.core.odata.api.edm.EdmEntityType;
 import com.sap.core.odata.api.uri.expression.ExpressionKind;
 import com.sap.core.odata.api.uri.expression.ExpressionParserException;
 
+/**
+ * @author SAP AG
+ */
 public class TestParserExceptions extends TestBase {
 
   @Test
@@ -16,43 +19,43 @@ public class TestParserExceptions extends TestBase {
     //CASE 1
     //http://services.odata.org/Northwind/Northwind.svc/Products/?$orderby=UnitPrice%20ascc
     //-->Syntax error at position 10.
-    GetPTO(edm, edmEtAllTypes, "String ascc")
+    GetPTO(edmEtAllTypes, "String ascc")
         .aExMsgText("Invalid sort order in OData orderby parser at position 8 in \"String ascc\".");
 
     //CASE 2
     //http://services.odata.org/Northwind/Northwind.svc/Products/?$orderby=UnitPrice%20asc,
     //-->Expression expected at position 12.
-    GetPTO(edm, edmEtAllTypes, "String asc,")
+    GetPTO(edmEtAllTypes, "String asc,")
         .aExMsgText("Expression expected after position 11 in \"String asc,\".");
 
     //CASE 3
     //http://services.odata.org/Northwind/Northwind.svc/Products/?$orderby=UnitPrice%20asc%20d
     //-->Syntax error at position 14.
-    GetPTO(edm, edmEtAllTypes, "String asc a")
+    GetPTO(edmEtAllTypes, "String asc a")
         .aExMsgText("Comma or end of expression expected at position 12 in \"String asc a\".");
 
     //CASE 4
     //http://services.odata.org/Northwind/Northwind.svc/Products/?$orderby=UnitPrice b
     //-->Syntax error at position 10.
-    GetPTO(edm, edmEtAllTypes, "String b")
+    GetPTO(edmEtAllTypes, "String b")
         .aExMsgText("Invalid sort order in OData orderby parser at position 8 in \"String b\".");
 
     //CASE 5
     //http://services.odata.org/Northwind/Northwind.svc/Products/?$orderby=UnitPrice, UnitPrice b
     //-->Syntax error at position 21.
-    GetPTO(edm, edmEtAllTypes, "String, String b")
+    GetPTO(edmEtAllTypes, "String, String b")
         .aExMsgText("Invalid sort order in OData orderby parser at position 16 in \"String, String b\".");
 
     //CASE 6
     //http://services.odata.org/Northwind/Northwind.svc/Products/?$orderby=UnitPrice a, UnitPrice desc
     //-->Syntax error at position 10.
-    GetPTO(edm, edmEtAllTypes, "String a, String desc")
+    GetPTO(edmEtAllTypes, "String a, String desc")
         .aExMsgText("Invalid sort order in OData orderby parser at position 8 in \"String a, String desc\".");
 
     //CASE 7
     //http://services.odata.org/Northwind/Northwind.svc/Products/?$orderby=UnitPrice asc, UnitPrice b
     //-->Syntax error at position 25.
-    GetPTO(edm, edmEtAllTypes, "String asc, String b")
+    GetPTO(edmEtAllTypes, "String asc, String b")
         .aExMsgText("Invalid sort order in OData orderby parser at position 20 in \"String asc, String b\".");
 
   }
@@ -63,50 +66,50 @@ public class TestParserExceptions extends TestBase {
     EdmEntityType edmEtAllTypes = edmInfo.getTypeEtAllTypes();
 
     //OK
-    GetPTF(edm, edmEtAllTypes, "'text' eq String")
+    GetPTF(edmEtAllTypes, "'text' eq String")
         .aKind(ExpressionKind.BINARY)
         .aSerialized("{'text' eq String}");
 
     //CASE 1
     //http://services.odata.org/Northwind/Northwind.svc/Products/?$filter=NotAProperty
     //-->No property 'NotAProperty' exists in type 'ODataWeb.Northwind.Model.Product' at position 10.
-    GetPTF(edm, edmEtAllTypes, "NotAProperty")
+    GetPTF(edmEtAllTypes, "NotAProperty")
         .aExMsgText("No property \"NotAProperty\" exists in type \"TecRefScenario.EtAllTypes\" at position 1 in \"NotAProperty\".");
 
     //CASE 2
     //http://services.odata.org/Northwind/Northwind.svc/Products/?$filter='text'%20eq%20NotAProperty
     //-->No property 'NotAProperty' exists in type 'ODataWeb.Northwind.Model.Product' at position 10.
-    GetPTF(edm, edmEtAllTypes, "'text' eq NotAProperty")
+    GetPTF(edmEtAllTypes, "'text' eq NotAProperty")
         .aExMsgText("No property \"NotAProperty\" exists in type \"TecRefScenario.EtAllTypes\" at position 11 in \"'text' eq NotAProperty\".");
 
     //CASE 3
-    GetPTF(edm, edmEtAllTypes, "Complex/NotAProperty")
+    GetPTF(edmEtAllTypes, "Complex/NotAProperty")
         .aExMsgText("No property \"NotAProperty\" exists in type \"TecRefScenario.CtAllTypes\" at position 9 in \"Complex/NotAProperty\".");
 
     //CASE 4
-    GetPTF(edm, edmEtAllTypes, "'text' eq Complex/NotAProperty")
+    GetPTF(edmEtAllTypes, "'text' eq Complex/NotAProperty")
         .aExMsgText("No property \"NotAProperty\" exists in type \"TecRefScenario.CtAllTypes\" at position 19 in \"'text' eq Complex/NotAProperty\".");
 
     //CASE 5
-    GetPTF(edm, edmEtAllTypes, "String/NotAProperty")
+    GetPTF(edmEtAllTypes, "String/NotAProperty")
         .aExMsgText("No property \"NotAProperty\" exists in type \"Edm.String\" at position 8 in \"String/NotAProperty\".");
 
     //CASE 6
     //http://services.odata.org/Northwind/Northwind.svc/Products/?$filter='aText'/NotAProperty
     //-->Exception Stack
-    GetPTF(edm, edmEtAllTypes, "'aText'/NotAProperty")
+    GetPTF(edmEtAllTypes, "'aText'/NotAProperty")
         .aExMsgText("Leftside of method operator at position 8 is not a property in \"'aText'/NotAProperty\".");
 
     //CASE 7
     //http://services.odata.org/Northwind/Northwind.svc/Products/?$filter='Hong Kong' eq ProductName/city
     //--> No property 'city' exists in type 'System.String' at position 27. 
-    GetPTF(edm, edmEtAllTypes, "'Hong Kong' eq DateTime/city")
+    GetPTF(edmEtAllTypes, "'Hong Kong' eq DateTime/city")
         .aExMsgText("No property \"city\" exists in type \"Edm.DateTime\" at position 25 in \"'Hong Kong' eq DateTime/city\".");
 
     //CASE 8
     //http://services.odata.org/Northwind/Northwind.svc/Products/?$filter='Hong Kong' eq ProductName/city
     //--> No property 'city' exists in type 'System.String' at position 27. 
-    GetPTF(edm, edmEtAllTypes, "'Hong Kong' eq String/city")
+    GetPTF(edmEtAllTypes, "'Hong Kong' eq String/city")
         .aExMsgText("No property \"city\" exists in type \"Edm.String\" at position 23 in \"'Hong Kong' eq String/city\".");
 
   }
@@ -339,7 +342,7 @@ public class TestParserExceptions extends TestBase {
 
     //CASE 1
     EdmEntityType edmEtAllTypes = edmInfo.getTypeEtAllTypes();
-    GetPTF(edm, edmEtAllTypes, "( 1 mul 2 )/X eq TEST")
+    GetPTF(edmEtAllTypes, "( 1 mul 2 )/X eq TEST")
         .aExMsgText("Leftside of method operator at position 12 is not a property in \"( 1 mul 2 )/X eq TEST\".");
 
     //CASE 2
@@ -372,7 +375,7 @@ public class TestParserExceptions extends TestBase {
         .aExMsgText("Invalid token \"b\" detected after parsing at position 8 in \"a eq b b\".");
 
     //CASE 8
-    GetPTF(edm, edmEtAllTypes, "year(Complex)")
+    GetPTF(edmEtAllTypes, "year(Complex)")
         .aExMsgText("No applicable method found for \"year\" at position 1 in \"year(Complex)\" for the specified argument types.");
 
     //CASE 9

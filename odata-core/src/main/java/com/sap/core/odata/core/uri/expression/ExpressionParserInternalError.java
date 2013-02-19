@@ -5,6 +5,10 @@ import com.sap.core.odata.api.exception.MessageReference;
 import com.sap.core.odata.api.exception.ODataMessageException;
 import com.sap.core.odata.api.uri.expression.CommonExpression;
 
+/**
+ * Internal error in the expression parser.
+ * @author SAP AG
+ */
 public class ExpressionParserInternalError extends ODataMessageException {
 
   static final long serialVersionUID = 77L;
@@ -38,7 +42,7 @@ public class ExpressionParserInternalError extends ODataMessageException {
   }
 
   public ExpressionParserInternalError setExpression(CommonExpression parenthesisExpression) {
-
+    this.parenthesisExpression = parenthesisExpression;
     return this;
   }
 
@@ -113,7 +117,5 @@ public class ExpressionParserInternalError extends ODataMessageException {
 
     return new ExpressionParserInternalError(msgRef);
   }
-
-
 
 }

@@ -5,12 +5,14 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 
 import com.sap.core.odata.api.commons.InlineCount;
 import com.sap.core.odata.api.edm.Edm;
 import com.sap.core.odata.api.edm.EdmFacets;
 import com.sap.core.odata.api.edm.EdmLiteralKind;
+import com.sap.core.odata.api.edm.EdmSimpleTypeException;
 import com.sap.core.odata.api.ep.EntityProviderException;
 import com.sap.core.odata.api.ep.EntityProviderProperties;
 import com.sap.core.odata.core.commons.Encoder;
@@ -20,13 +22,14 @@ import com.sap.core.odata.core.ep.util.FormatXml;
 import com.sap.core.odata.core.uri.SystemQueryOption;
 
 /**
+ * Serializes an ATOM feed.
  * @author SAP AG
  */
 public class AtomFeedProducer {
 
-  private EntityProviderProperties properties;
+  private final EntityProviderProperties properties;
 
-  public AtomFeedProducer(EntityProviderProperties properties) {
+  public AtomFeedProducer(final EntityProviderProperties properties) {
     this.properties = properties;
   }
 
@@ -49,22 +52,22 @@ public class AtomFeedProducer {
       appendEntries(writer, eia, data);
 
       if (properties.getNextLink() != null) {
-        appendNextLink(writer, eia, properties.getNextLink());
+        appendNextLink(writer, properties.getNextLink());
       }
 
       writer.writeEndElement();
-    } catch (Exception e) {
+    } catch (XMLStreamException e) {
       throw new EntityProviderException(EntityProviderException.COMMON, e);
     }
   }
 
-  private void appendNextLink(XMLStreamWriter writer, EntityInfoAggregator eia, String nextLink) throws EntityProviderException {
+  private void appendNextLink(XMLStreamWriter writer, String nextLink) throws EntityProviderException {
     try {
       writer.writeStartElement(FormatXml.ATOM_LINK);
       writer.writeAttribute(FormatXml.ATOM_HREF, nextLink);
       writer.writeAttribute(FormatXml.ATOM_REL, "next");
       writer.writeEndElement();
-    } catch (Exception e) {
+    } catch (XMLStreamException e) {
       throw new EntityProviderException(EntityProviderException.COMMON, e);
     }
   }
@@ -76,67 +79,56 @@ public class AtomFeedProducer {
   }
 
   private void appendInlineCount(XMLStreamWriter writer, int inlinecount) throws EntityProviderException {
-
     if (inlinecount < 0) {
       throw new EntityProviderException(EntityProviderException.INLINECOUNT_INVALID);
     }
-
     try {
       writer.writeStartElement(Edm.NAMESPACE_M_2007_08, FormatXml.M_COUNT);
       writer.writeCharacters(String.valueOf(inlinecount));
       writer.writeEndElement();
-    } catch (Exception e) {
+    } catch (XMLStreamException e) {
       throw new EntityProviderException(EntityProviderException.COMMON, e);
     }
   }
 
   private void appendAtomSelfLink(XMLStreamWriter writer, EntityInfoAggregator eia) throws EntityProviderException {
+    String selfLink = createSelfLink(eia);
     try {
-      String selfLink = createSelfLink(eia);
-
       writer.writeStartElement(FormatXml.ATOM_LINK);
       writer.writeAttribute(FormatXml.ATOM_HREF, selfLink);
       writer.writeAttribute(FormatXml.ATOM_REL, "self");
       writer.writeAttribute(FormatXml.ATOM_TITLE, eia.getEntitySetName());
       writer.writeEndElement();
-    } catch (Exception e) {
+    } catch (XMLStreamException e) {
       throw new EntityProviderException(EntityProviderException.COMMON, e);
     }
   }
 
   private String createNextLink(EntityInfoAggregator eia, String nextSkiptoken, Map<String, String> queryOptions) throws EntityProviderException {
-    try {
-      String query = SystemQueryOption.$skiptoken + "=" + Encoder.encode(nextSkiptoken);
-      
-      if (queryOptions != null) {
-        for(String key : queryOptions.keySet()) {
-          query += "&";
-          query += Encoder.encode(key);
-          query += "=";
-          query += Encoder.encode(queryOptions.get(key));
-        }
+    String query = SystemQueryOption.$skiptoken + "=" + Encoder.encode(nextSkiptoken);
+
+    if (queryOptions != null) {
+      for (String key : queryOptions.keySet()) {
+        query += "&";
+        query += Encoder.encode(key);
+        query += "=";
+        query += Encoder.encode(queryOptions.get(key));
       }
-      
-      String path = createSelfLink(eia);
-      return path + "?" + query;
-    } catch (Exception e) {
-      throw new EntityProviderException(EntityProviderException.COMMON, e);
     }
+
+    String path = createSelfLink(eia);
+    return path + "?" + query;
   }
 
   private String createSelfLink(EntityInfoAggregator eia) throws EntityProviderException {
-    try {
-      StringBuilder sb = new StringBuilder();
-      if (!eia.isDefaultEntityContainer()) {
-        String entityContainerName = Encoder.encode(eia.getEntityContainerName());
-        sb.append(entityContainerName).append(Edm.DELIMITER);
-      }
-      String entitySetName = Encoder.encode(eia.getEntitySetName());
-      sb.append(entitySetName);
-      return sb.toString();
-    } catch (Exception e) {
-      throw new EntityProviderException(EntityProviderException.COMMON, e);
+    StringBuilder sb = new StringBuilder();
+    if (!eia.isDefaultEntityContainer()) {
+      String entityContainerName = Encoder.encode(eia.getEntityContainerName());
+      sb.append(entityContainerName).append(Edm.DELIMITER);
     }
+    String entitySetName = Encoder.encode(eia.getEntitySetName());
+    sb.append(entitySetName);
+    return sb.toString();
   }
 
   private void appendAtomMandatoryParts(XMLStreamWriter writer, EntityInfoAggregator eia) throws EntityProviderException {
@@ -163,26 +155,24 @@ public class AtomFeedProducer {
       writer.writeEndElement();
       writer.writeEndElement();
 
-    } catch (Exception e) {
+    } catch (XMLStreamException e) {
+      throw new EntityProviderException(EntityProviderException.COMMON, e);
+    } catch (EdmSimpleTypeException e) {
       throw new EntityProviderException(EntityProviderException.COMMON, e);
     }
   }
 
   private String createAtomId(EntityInfoAggregator eia) throws EntityProviderException {
-    try {
-      String id = "";
+    String id = "";
 
-      if (!eia.isDefaultEntityContainer()) {
-        String entityContainerName = Encoder.encode(eia.getEntityContainerName());
-        id += entityContainerName + ".";
-      }
-      String entitySetName = Encoder.encode(eia.getEntitySetName());
-      id += entitySetName;
-
-      URI serviceRoot = properties.getServiceRoot();
-      return serviceRoot + id;
-    } catch (Exception e) {
-      throw new EntityProviderException(EntityProviderException.COMMON, e);
+    if (!eia.isDefaultEntityContainer()) {
+      String entityContainerName = Encoder.encode(eia.getEntityContainerName());
+      id += entityContainerName + ".";
     }
+    String entitySetName = Encoder.encode(eia.getEntitySetName());
+    id += entitySetName;
+
+    URI serviceRoot = properties.getServiceRoot();
+    return serviceRoot + id;
   }
 }

@@ -58,7 +58,7 @@ public class TokenizerException extends ODataMessageException
     msgRef.addContent(position);
     Token token = new Token(TokenKind.UNKNOWN, position, uriLiteral);
 
-    return new TokenizerException(msgRef).setToken(token);
+    return new TokenizerException(msgRef, ex).setToken(token);
   }
 
   /*

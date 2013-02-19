@@ -10,7 +10,6 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.sap.core.odata.api.edm.Edm;
 import com.sap.core.odata.api.edm.EdmEntityType;
 import com.sap.core.odata.api.edm.EdmException;
 import com.sap.core.odata.api.edm.EdmProperty;
@@ -45,7 +44,6 @@ public class ParserTool
   private CommonExpression tree;
   private CommonExpression curNode;
   private Exception curException;
-  private Exception exception;
   private static final Locale DEFAULT_LANGUAGE = new Locale("test", "SAP");
 
   public static void dout(String out)
@@ -66,7 +64,7 @@ public class ParserTool
     try {
       if (!isOrder)
       {
-        FilterParserImplTool parser = new FilterParserImplTool(null, null);
+        FilterParserImplTool parser = new FilterParserImplTool(null);
         if (addTestfunctions) parser.addTestfunctions();
         this.tree = parser.parseFilterString(expression,allowOnlyBinary).getExpression();
       }
@@ -76,16 +74,15 @@ public class ParserTool
         this.tree = parser.parseOrderByString(expression);
       }
     } catch (ExpressionParserException e) {
-      this.exception = e;
+      this.curException = e;
     } catch (ExpressionParserInternalError e) {
-      this.exception = e;
+      this.curException = e;
     }
 
     this.curNode = this.tree;
-    this.curException = this.exception;
   }
 
-  public ParserTool(String expression, boolean isOrder, boolean addTestfunctions,  boolean allowOnlyBinary,Edm edm, EdmEntityType resourceEntityType)
+  public ParserTool(String expression, boolean isOrder, boolean addTestfunctions,  boolean allowOnlyBinary, EdmEntityType resourceEntityType)
   {
     dout("ParserTool - Testing: " + expression);
     this.expression = expression;
@@ -93,7 +90,7 @@ public class ParserTool
     try {
       if (!isOrder)
       {
-        FilterParserImplTool parser = new FilterParserImplTool(edm, resourceEntityType);
+        FilterParserImplTool parser = new FilterParserImplTool(resourceEntityType);
         if (addTestfunctions) parser.addTestfunctions();
         this.tree = parser.parseFilterString(expression,allowOnlyBinary).getExpression();
       }
@@ -312,7 +309,7 @@ public class ParserTool
     return this;
   }
 
-  public String getExceptionText(Exception exception)
+  public String getExceptionText()
   {
     ODataMessageException messageException = (ODataMessageException) curException;
     Message ms = MessageService.getMessage(DEFAULT_LANGUAGE, messageException.getMessageReference());
@@ -357,11 +354,9 @@ public class ParserTool
     return this;
   }
 
-  private void checkNoException(String infoMethod)
-  {
-    if (exception != null)
-    {
-      fail("Error in " + infoMethod + ": exception '" + getExceptionText(exception) + "' occured!");
+  private void checkNoException(String infoMethod) {
+    if (curException != null) {
+      fail("Error in " + infoMethod + ": exception '" + getExceptionText() + "' occured!");
     }
   }
 
@@ -628,9 +623,7 @@ public class ParserTool
     }
   }
 
-  public ParserTool exRoot()
-  {
-    curException = exception;
+  public ParserTool exRoot() {
     return this;
   }
 

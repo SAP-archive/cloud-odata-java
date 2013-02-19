@@ -6,11 +6,16 @@ import com.sap.core.odata.api.rt.RuntimeDelegate;
 import com.sap.core.odata.testutil.mock.TecEdmInfo;
 import com.sap.core.odata.testutil.mock.TechnicalScenarioEdmProvider;
 
+/**
+ * @author SAP AG
+ */
 public class TestBase {
   
+  protected TecEdmInfo edmInfo = null;
+
   public TestBase()
   {
-    edm = RuntimeDelegate.createEdm(new TechnicalScenarioEdmProvider());
+    final Edm edm = RuntimeDelegate.createEdm(new TechnicalScenarioEdmProvider());
     edmInfo = new TecEdmInfo(edm);
   }
 
@@ -28,9 +33,9 @@ public class TestBase {
   {
     return new ParserTool(expression, false, true,false);
   }
-  static public ParserTool GetPTF(Edm edm, EdmEntityType resourceEntityType, String expression) 
+  static public ParserTool GetPTF(EdmEntityType resourceEntityType, String expression) 
   {
-    return new ParserTool(expression, false, true, false,edm, resourceEntityType);
+    return new ParserTool(expression, false, true, false, resourceEntityType);
   }
 
   static public ParserTool GetPTO(String expression)
@@ -38,9 +43,9 @@ public class TestBase {
     return new ParserTool(expression, true, true,false);
   }
 
-  static public ParserTool GetPTO(Edm edm, EdmEntityType resourceEntityType, String expression) 
+  static public ParserTool GetPTO(EdmEntityType resourceEntityType, String expression) 
   {
-    return new ParserTool(expression, true, true,false, edm, resourceEntityType);
+    return new ParserTool(expression, true, true,false, resourceEntityType);
   }
 
   static public ParserTool GetPTF_noTEST(String expression)
@@ -48,9 +53,9 @@ public class TestBase {
     return new ParserTool(expression, false, false,false);
   }
 
-  static public ParserTool GetPTF_noTEST(Edm edm, EdmEntityType resourceEntityType, String expression) 
+  static public ParserTool GetPTF_noTEST(EdmEntityType resourceEntityType, String expression) 
   {
-    return new ParserTool(expression, false, false, true,edm, resourceEntityType);
+    return new ParserTool(expression, false, false, true, resourceEntityType);
   }
 
   static public ParserTool GetPTO_noTEST(String expression)
@@ -58,12 +63,9 @@ public class TestBase {
     return new ParserTool(expression, true, false,true);
   }
 
-  static public ParserTool GetPTO_noTEST(Edm edm, EdmEntityType resourceEntityType, String expression) 
+  static public ParserTool GetPTO_noTEST(EdmEntityType resourceEntityType, String expression) 
   {
-    return new ParserTool(expression, true, false,true, edm, resourceEntityType);
+    return new ParserTool(expression, true, false,true, resourceEntityType);
   }
-
-  protected Edm edm = null;
-  protected TecEdmInfo edmInfo = null;
 
 }
