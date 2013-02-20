@@ -7,20 +7,18 @@ import com.sap.core.odata.api.edm.EdmEntityType;
 import com.sap.core.odata.api.edm.EdmException;
 
 /**
- * Provider for the entity data model used in the reference scenario
+ * Helper for the entity data model used as technical reference scenario.
  * @author SAP AG
  */
 public class TecEdmInfo
 {
   private final Edm edm;
 
-  public TecEdmInfo(Edm edm)
-  {
+  public TecEdmInfo(Edm edm) {
     this.edm = edm;
   }
 
-  public EdmEntityType getTypeEtAllTypes()
-  {
+  public EdmEntityType getTypeEtAllTypes() {
     try {
       return edm
           .getEntityContainer(TechnicalScenarioEdmProvider.ENTITY_CONTAINER_1)

@@ -18,26 +18,20 @@ public class MockFacade {
     return EdmMock.createMockEdm();
   }
 
-  public static List<String> getPathSegmentsAsStringMock() {
-    final ArrayList<String> pathSegmentsMock = new ArrayList<String>();
-    pathSegmentsMock.add("$metadata");
-    return pathSegmentsMock;
-  }
-
-  public static List<PathSegment> getPathSegmentsAsODataPathSegmentMock() {
+  public static List<PathSegment> getPathSegmentsAsODataPathSegmentMock(final List<String> segments) {
     final ArrayList<PathSegment> pathSegmentsMock = new ArrayList<PathSegment>();
-    pathSegmentsMock.add(new PathSegment() {
+    for (final String segment : segments)
+      pathSegmentsMock.add(new PathSegment() {
+        @Override
+        public String getPath() {
+          return segment;
+        }
 
-      @Override
-      public String getPath() {
-        return "$metadata";
-      }
-
-      @Override
-      public Map<String, List<String>> getMatrixParameters() {
-        return null;
-      }
-    });
+        @Override
+        public Map<String, List<String>> getMatrixParameters() {
+          return null;
+        }
+      });
     return pathSegmentsMock;
   }
 }

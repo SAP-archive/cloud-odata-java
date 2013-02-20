@@ -1,11 +1,11 @@
 package com.sap.core.odata.core.rest;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import java.lang.reflect.Field;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -22,18 +22,16 @@ import javax.ws.rs.core.PathSegment;
 import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.UriInfo;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
 
 import com.sap.core.odata.api.ODataService;
 import com.sap.core.odata.api.ODataServiceFactory;
 import com.sap.core.odata.api.commons.HttpContentType;
-import com.sap.core.odata.api.commons.InlineCount;
-import com.sap.core.odata.api.edm.EdmEntitySet;
-import com.sap.core.odata.api.edm.EdmEntityType;
+import com.sap.core.odata.api.edm.Edm;
 import com.sap.core.odata.api.edm.EdmException;
 import com.sap.core.odata.api.edm.EdmFacets;
-import com.sap.core.odata.api.edm.EdmFunctionImport;
 import com.sap.core.odata.api.edm.EdmProperty;
 import com.sap.core.odata.api.exception.ODataBadRequestException;
 import com.sap.core.odata.api.exception.ODataException;
@@ -54,12 +52,6 @@ import com.sap.core.odata.api.processor.part.FunctionImportProcessor;
 import com.sap.core.odata.api.processor.part.FunctionImportValueProcessor;
 import com.sap.core.odata.api.processor.part.MetadataProcessor;
 import com.sap.core.odata.api.processor.part.ServiceDocumentProcessor;
-import com.sap.core.odata.api.uri.NavigationPropertySegment;
-import com.sap.core.odata.api.uri.NavigationSegment;
-import com.sap.core.odata.api.uri.SelectItem;
-import com.sap.core.odata.api.uri.UriParser;
-import com.sap.core.odata.api.uri.expression.FilterExpression;
-import com.sap.core.odata.api.uri.expression.OrderByExpression;
 import com.sap.core.odata.core.DispatcherTest;
 import com.sap.core.odata.core.commons.ContentType;
 import com.sap.core.odata.core.commons.ContentType.ODataFormat;
@@ -69,90 +61,146 @@ import com.sap.core.odata.core.uri.UriInfoImpl;
 import com.sap.core.odata.core.uri.UriParserImpl;
 import com.sap.core.odata.core.uri.UriType;
 import com.sap.core.odata.testutil.fit.BaseTest;
+import com.sap.core.odata.testutil.mock.MockFacade;
 
 /**
+ * Tests for the validation of URI path, query options, and request-body content type.
  * @author SAP AG
  */
 public class ODataSubLocatorValidationTest extends BaseTest {
 
-  private UriInfoImpl mockUriInfo(final UriType uriType, final boolean isValue) throws EdmException {
-    UriInfoImpl uriInfo = mock(UriInfoImpl.class);
-    when(uriInfo.getUriType()).thenReturn(uriType);
-    when(uriInfo.isValue()).thenReturn(isValue);
-    when(uriInfo.getPropertyPath()).thenReturn(Arrays.asList(mock(EdmProperty.class)));
-    EdmEntityType entityType = mock(EdmEntityType.class);
-    when(entityType.getKeyProperties()).thenReturn(Arrays.asList(mock(EdmProperty.class)));
-    EdmEntitySet entitySet = mock(EdmEntitySet.class);
-    when(entitySet.getEntityType()).thenReturn(entityType);
-    when(uriInfo.getTargetEntitySet()).thenReturn(entitySet);
-    if (uriType == UriType.URI6A || uriType == UriType.URI6B
-        || uriType == UriType.URI7A || uriType == UriType.URI7B)
-      mockNavigationPath(uriInfo, true);
-    when(uriInfo.getSkip()).thenReturn(null);
-    when(uriInfo.getTop()).thenReturn(null);
+  private Edm edm = null;
 
-    return uriInfo;
+  @Before
+  public void setEdm() throws ODataException {
+    edm = MockFacade.getMockEdm();
   }
 
-  private UriInfoImpl mockFunctionImport(UriInfoImpl uriInfo, final ODataHttpMethod httpMethod) throws EdmException {
-    EdmFunctionImport functionImport = mock(EdmFunctionImport.class);
-    when(functionImport.getHttpMethod()).thenReturn(httpMethod == null ? null : httpMethod.toString());
-    when(uriInfo.getFunctionImport()).thenReturn(functionImport);
-
-    return uriInfo;
+  private PathSegment mockPathSegment(final String segment) {
+    PathSegment pathSegment = mock(PathSegment.class);
+    when(pathSegment.getPath()).thenReturn(segment);
+    return pathSegment;
   }
 
-  private UriInfoImpl mockNavigationPath(UriInfoImpl uriInfo, final boolean oneSegment) {
-    when(uriInfo.getNavigationSegments()).thenReturn(
-        oneSegment ? Arrays.asList(mock(NavigationSegment.class)) :
-            Arrays.asList(mock(NavigationSegment.class), mock(NavigationSegment.class)));
-    return uriInfo;
+  private List<PathSegment> mockPathSegments(final UriType uriType, final boolean moreNavigation, final boolean isValue) {
+    List<String> segments = new ArrayList<String>();
+
+    if (uriType == UriType.URI1 || uriType == UriType.URI15) {
+      if (moreNavigation) {
+        segments.add("Managers('1')");
+        segments.add("nm_Employees");
+      } else {
+        segments.add("Employees");
+      }
+    } else if (uriType == UriType.URI2 || uriType == UriType.URI3
+        || uriType == UriType.URI4 || uriType == UriType.URI5
+        || uriType == UriType.URI16 || uriType == UriType.URI17) {
+      if (moreNavigation) {
+        segments.add("Managers('1')");
+        segments.add("nm_Employees('1')");
+      } else {
+        segments.add("Employees('1')");
+      }
+    } else if (uriType == UriType.URI6A || uriType == UriType.URI7A || uriType == UriType.URI50A) {
+      segments.add("Managers('1')");
+      if (moreNavigation) {
+        segments.add("nm_Employees('1')");
+        segments.add("ne_Manager");
+      }
+      if (uriType == UriType.URI7A || uriType == UriType.URI50A)
+        segments.add("$links");
+      segments.add("nm_Employees('1')");
+    } else if (uriType == UriType.URI6B || uriType == UriType.URI7B || uriType == UriType.URI50B) {
+      segments.add("Managers('1')");
+      if (moreNavigation) {
+        segments.add("nm_Employees('1')");
+        segments.add("ne_Manager");
+      }
+      if (uriType == UriType.URI7B || uriType == UriType.URI50B)
+        segments.add("$links");
+      segments.add("nm_Employees");
+    } else if (uriType == UriType.URI8) {
+      segments.add("$metadata");
+    } else if (uriType == UriType.URI9) {
+      segments.add("$batch");
+    } else if (uriType == UriType.URI10) {
+      segments.add("OldestEmployee");
+    } else if (uriType == UriType.URI11) {
+      segments.add("AllLocations");
+    } else if (uriType == UriType.URI12) {
+      segments.add("MostCommonLocation");
+    } else if (uriType == UriType.URI13) {
+      segments.add("AllUsedRoomIds");
+    } else if (uriType == UriType.URI14) {
+      segments.add("MaximalAge");
+    }
+
+    if (uriType == UriType.URI3 || uriType == UriType.URI4)
+      segments.add("Location");
+    if (uriType == UriType.URI4)
+      segments.add("Country");
+    else if (uriType == UriType.URI5)
+      segments.add("EmployeeName");
+
+    if (uriType == UriType.URI15 || uriType == UriType.URI16
+        || uriType == UriType.URI50A || uriType == UriType.URI50B)
+      segments.add("$count");
+
+    if (uriType == UriType.URI17 || isValue)
+      segments.add("$value");
+
+    // self-test
+    try {
+      final UriInfoImpl uriInfo = (UriInfoImpl) UriParserImpl.parse(edm,
+          MockFacade.getPathSegmentsAsODataPathSegmentMock(segments),
+          Collections.<String, String> emptyMap());
+      assertEquals(uriType, uriInfo.getUriType());
+      assertEquals(uriType == UriType.URI17 || isValue, uriInfo.isValue());
+    } catch (final ODataException e) {
+      fail();
+    }
+
+    List<PathSegment> pathSegments = new ArrayList<PathSegment>();
+    for (final String segment : segments)
+      pathSegments.add(mockPathSegment(segment));
+    return pathSegments;
   }
 
-  private UriInfoImpl mockOptions(UriInfoImpl uriInfo,
+  private MultivaluedMap<String, String> mockOptions(
       final boolean format,
       final boolean filter, final boolean inlineCount, final boolean orderBy,
       final boolean skipToken, final boolean skip, final boolean top,
       final boolean expand, final boolean select) {
+
+    MultivaluedMap<String, String> map = new MultivaluedHashMap<String, String>();
+
     if (format)
-      when(uriInfo.getFormat()).thenReturn(ODataFormat.XML.toString());
+      map.add("$format", ODataFormat.XML.toString());
     if (filter)
-      when(uriInfo.getFilter()).thenReturn(mock(FilterExpression.class));
+      map.add("$filter", "true");
     if (inlineCount)
-      when(uriInfo.getInlineCount()).thenReturn(InlineCount.ALLPAGES);
+      map.add("$inlinecount", "none");
     if (orderBy)
-      when(uriInfo.getOrderBy()).thenReturn(mock(OrderByExpression.class));
+      map.add("$orderby", "Age");
     if (skipToken)
-      when(uriInfo.getSkipToken()).thenReturn("x");
+      map.add("$skiptoken", "x");
     if (skip)
-      when(uriInfo.getSkip()).thenReturn(0);
+      map.add("$skip", "0");
     if (top)
-      when(uriInfo.getTop()).thenReturn(0);
-    if (expand) {
-      ArrayList<NavigationPropertySegment> segments = new ArrayList<NavigationPropertySegment>();
-      segments.add(mock(NavigationPropertySegment.class));
-      List<ArrayList<NavigationPropertySegment>> expandList = new ArrayList<ArrayList<NavigationPropertySegment>>();
-      expandList.add(segments);
-      when(uriInfo.getExpand()).thenReturn(expandList);
-    }
+      map.add("$top", "0");
+    if (expand)
+      map.add("$expand", "ne_Team");
     if (select)
-      when(uriInfo.getSelect()).thenReturn(Arrays.asList(mock(SelectItem.class)));
+      map.add("$select", "Age");
 
-    return uriInfo;
+    return map;
   }
 
-  private static UriInfoImpl mockProperty(UriInfoImpl uriInfo, final boolean key, final boolean nullable) throws EdmException {
-    EdmProperty property = uriInfo.getPropertyPath().get(0);
-    if (key)
-      uriInfo.getPropertyPath().set(0, uriInfo.getTargetEntitySet().getEntityType().getKeyProperties().get(0));
-    EdmFacets facets = mock(EdmFacets.class);
-    when(facets.isNullable()).thenReturn(nullable);
-    when(property.getFacets()).thenReturn(facets);
+  private void mockSubLocatorInputForUriInfoTests(ODataSubLocator locator,
+      final List<PathSegment> pathSegments,
+      final MultivaluedMap<String, String> queryParameters,
+      final String requestContentType) throws Exception {
 
-    return uriInfo;
-  }
-
-  private void mockSubLocatorInputForUriInfoTests(ODataSubLocator locator, final UriInfoImpl uriInfo, final String requestContentType) throws Exception {
     InitParameter param = locator.new InitParameter();
 
     HttpHeaders httpHeaders = mock(HttpHeaders.class);
@@ -164,13 +212,16 @@ public class ODataSubLocatorValidationTest extends BaseTest {
     param.setHttpHeaders(httpHeaders);
 
     param.setPathSplit(0);
-    param.setPathSegments(Collections.<PathSegment> emptyList());
+    param.setPathSegments(pathSegments);
 
     UriInfo initUriInfo = mock(UriInfo.class);
     UriBuilder uriBuilder = mock(UriBuilder.class);
     when(uriBuilder.build()).thenReturn(URI.create(""));
     when(initUriInfo.getBaseUriBuilder()).thenReturn(uriBuilder);
-    when(initUriInfo.getQueryParameters()).thenReturn(map);
+    if (queryParameters == null)
+      when(initUriInfo.getQueryParameters()).thenReturn(map);
+    else
+      when(initUriInfo.getQueryParameters()).thenReturn(queryParameters);
     param.setUriInfo(initUriInfo);
 
     HttpServletRequest servletRequest = mock(HttpServletRequest.class);
@@ -183,14 +234,11 @@ public class ODataSubLocatorValidationTest extends BaseTest {
     param.setServiceFactory(serviceFactory);
 
     locator.initialize(param);
-
-    UriParser parser = mock(UriParserImpl.class);
-    when(parser.parse(Mockito.anyListOf(com.sap.core.odata.api.uri.PathSegment.class), Mockito.anyMapOf(String.class, String.class))).thenReturn(uriInfo);
-    setField(locator, "uriParser", parser);
   }
 
   private void mockODataService(ODataServiceFactory serviceFactory) throws ODataException {
     ODataService service = DispatcherTest.getMockService();
+    when(service.getEntityDataModel()).thenReturn(edm);
     when(service.getProcessor()).thenReturn(mock(ODataProcessor.class));
     when(serviceFactory.createService(Mockito.any(ODataContext.class))).thenReturn(service);
     
@@ -241,18 +289,13 @@ public class ODataSubLocatorValidationTest extends BaseTest {
         HttpContentType.APPLICATION_XML_UTF8));
   }
   
-  private static void setField(Object instance, final String fieldname, final Object value) throws SecurityException,
-      NoSuchFieldException, IllegalArgumentException, IllegalAccessException {
-    Field field = instance.getClass().getDeclaredField(fieldname);
-    final boolean access = field.isAccessible();
-    field.setAccessible(true);
-    field.set(instance, value);
-    field.setAccessible(access);
-  }
+  private void checkRequest(final ODataHttpMethod method,
+      final List<PathSegment> pathSegments,
+      final MultivaluedMap<String, String> queryParameters,
+      final String requestContentType) throws Exception {
 
-  private void checkUriInfo(final ODataHttpMethod method, final UriInfoImpl uriInfo, final String requestContentType) throws Exception {
     ODataSubLocator locator = new ODataSubLocator();
-    mockSubLocatorInputForUriInfoTests(locator, uriInfo, requestContentType);
+    mockSubLocatorInputForUriInfoTests(locator, pathSegments, queryParameters, requestContentType);
     switch (method) {
     case GET:
       locator.handleGet();
@@ -277,8 +320,21 @@ public class ODataSubLocatorValidationTest extends BaseTest {
     }
   }
 
-  private void checkUriInfo(final ODataHttpMethod method, final UriType uriType, final boolean isValue, final String requestContentType) throws Exception {
-    checkUriInfo(method, mockUriInfo(uriType, isValue), requestContentType);
+  private void checkValueContentType(final ODataHttpMethod method, final UriType uriType, final String requestContentType) throws Exception {
+    checkRequest(method, mockPathSegments(uriType, false, true), null, requestContentType);
+  }
+
+  private void wrongRequest(final ODataHttpMethod method,
+    final List<PathSegment> pathSegments,
+    final MultivaluedMap<String, String> queryParameters) {
+    try {
+      checkRequest(method, pathSegments, queryParameters, null);
+      fail("Expected ODataMethodNotAllowedException not thrown");
+    } catch (ODataMethodNotAllowedException e) {
+      assertNotNull(e);
+    } catch (Exception e) {
+      fail("Unexpected Exception thrown");
+    }
   }
 
   private void wrongOptions(final ODataHttpMethod method, final UriType uriType,
@@ -286,46 +342,49 @@ public class ODataSubLocatorValidationTest extends BaseTest {
       final boolean filter, final boolean inlineCount, final boolean orderBy,
       final boolean skipToken, final boolean skip, final boolean top,
       final boolean expand, final boolean select) {
-    try {
-      checkUriInfo(method, mockOptions(mockUriInfo(uriType, false),
-          format, filter, inlineCount, orderBy, skipToken, skip, top, expand, select), null);
-      fail("Expected ODataMethodNotAllowedException not thrown");
-    } catch (ODataMethodNotAllowedException e) {
-      assertNotNull(e);
-    } catch (Exception e) {
-      fail("Unexpected Exception thrown");
-    }
+    wrongRequest(method,
+        mockPathSegments(uriType, false, false),
+        mockOptions(format, filter, inlineCount, orderBy, skipToken, skip, top, expand, select));
   }
 
-  private void wrongFunctionHttpMethod(final ODataHttpMethod method, final UriType uriType, final ODataHttpMethod httpMethod) {
-    try {
-      checkUriInfo(method, mockFunctionImport(mockUriInfo(uriType, false), httpMethod), null);
-      fail("Expected ODataMethodNotAllowedException not thrown");
-    } catch (ODataMethodNotAllowedException e) {
-      assertNotNull(e);
-    } catch (Exception e) {
-      fail("Unexpected Exception thrown");
-    }
+  private void wrongFunctionHttpMethod(final ODataHttpMethod method, final UriType uriType) {
+    if (uriType == UriType.URI1)
+      wrongRequest(method, Arrays.asList(mockPathSegment("EmployeeSearch")), null);
+    else
+      wrongRequest(method, mockPathSegments(uriType, false, false), null);
   }
 
-  private void wrongProperty(final ODataHttpMethod method, final UriType uriType, final boolean key, final boolean nullable) {
+  private void wrongProperty(final ODataHttpMethod method, final boolean ofComplex, final boolean key, final boolean nullable) {
+    EdmProperty property = null;
     try {
-      checkUriInfo(method, mockProperty(mockUriInfo(uriType, true), key, nullable), null);
-      fail("Expected ODataMethodNotAllowedException not thrown");
-    } catch (ODataMethodNotAllowedException e) {
-      assertNotNull(e);
-    } catch (Exception e) {
-      fail("Unexpected Exception thrown");
+      if (ofComplex)
+        property = (EdmProperty) edm.getEntityType("RefScenario", "Employee").getProperty("Age");
+      else
+        property = (EdmProperty) edm.getComplexType("RefScenario", "c_Location").getProperty("Country");
+      EdmFacets facets = mock(EdmFacets.class);
+      when(facets.isNullable()).thenReturn(nullable);
+      when(property.getFacets()).thenReturn(facets);
+    } catch (final EdmException e) {
+      fail();
     }
+    List<PathSegment> pathSegments = new ArrayList<PathSegment>();
+    pathSegments.add(mockPathSegment("Employees('1')"));
+    if (ofComplex)
+      pathSegments.add(mockPathSegment("Location"));
+    if (ofComplex)
+      pathSegments.add(mockPathSegment("Country"));
+    else
+      if (key)
+        pathSegments.add(mockPathSegment("EmployeeId"));
+      else
+        pathSegments.add(mockPathSegment("Age"));
+
+    wrongRequest(method, pathSegments, null);
   }
 
   private void wrongNavigationPath(final ODataHttpMethod method, final UriType uriType) {
     try {
-      UriInfoImpl uriInfo = mockUriInfo(uriType, true);
-      uriInfo = mockNavigationPath(uriInfo,
-          uriType != UriType.URI6A && uriType != UriType.URI6B
-              && uriType != UriType.URI7A && uriType != UriType.URI7B);
-      checkUriInfo(method, uriInfo, null);
+      checkRequest(method, mockPathSegments(uriType, true, false), null, null);
       fail("Expected ODataBadRequestException not thrown");
     } catch (ODataBadRequestException e) {
       assertNotNull(e);
@@ -344,7 +403,7 @@ public class ODataSubLocatorValidationTest extends BaseTest {
 
   private void wrongRequestContentType(final ODataHttpMethod method, final UriType uriType, boolean isValue, String requestContentType) throws EdmException, ODataException {
     try {
-      checkUriInfo(method, mockUriInfo(uriType, isValue), requestContentType);
+      checkRequest(method, mockPathSegments(uriType, false, isValue), null, requestContentType);
       fail("Expected ODataException not thrown");
     } catch (ODataUnsupportedMediaTypeException e) {
       assertNotNull(e);
@@ -355,19 +414,19 @@ public class ODataSubLocatorValidationTest extends BaseTest {
 
   @Test
   public void requestContentType() throws Exception {
-    checkUriInfo(ODataHttpMethod.PUT, UriType.URI4, true, HttpContentType.TEXT_PLAIN);
-    checkUriInfo(ODataHttpMethod.DELETE, UriType.URI4, true, HttpContentType.TEXT_PLAIN);
-    checkUriInfo(ODataHttpMethod.PATCH, UriType.URI4, true, HttpContentType.TEXT_PLAIN);
-    checkUriInfo(ODataHttpMethod.MERGE, UriType.URI4, true, HttpContentType.TEXT_PLAIN);
-    checkUriInfo(ODataHttpMethod.PUT, UriType.URI4, true, HttpContentType.TEXT_PLAIN_UTF8);
-    checkUriInfo(ODataHttpMethod.DELETE, UriType.URI4, true, HttpContentType.TEXT_PLAIN_UTF8);
-    checkUriInfo(ODataHttpMethod.PATCH, UriType.URI4, true, HttpContentType.TEXT_PLAIN_UTF8);
-    checkUriInfo(ODataHttpMethod.MERGE, UriType.URI4, true, HttpContentType.TEXT_PLAIN_UTF8);
+    checkValueContentType(ODataHttpMethod.PUT, UriType.URI4, HttpContentType.TEXT_PLAIN);
+    checkValueContentType(ODataHttpMethod.DELETE, UriType.URI4, HttpContentType.TEXT_PLAIN);
+    checkValueContentType(ODataHttpMethod.PATCH, UriType.URI4, HttpContentType.TEXT_PLAIN);
+    checkValueContentType(ODataHttpMethod.MERGE, UriType.URI4, HttpContentType.TEXT_PLAIN);
+    checkValueContentType(ODataHttpMethod.PUT, UriType.URI4, HttpContentType.TEXT_PLAIN_UTF8);
+    checkValueContentType(ODataHttpMethod.DELETE, UriType.URI4, HttpContentType.TEXT_PLAIN_UTF8);
+    checkValueContentType(ODataHttpMethod.PATCH, UriType.URI4, HttpContentType.TEXT_PLAIN_UTF8);
+    checkValueContentType(ODataHttpMethod.MERGE, UriType.URI4, HttpContentType.TEXT_PLAIN_UTF8);
 
-    checkUriInfo(ODataHttpMethod.PUT, UriType.URI5, true, HttpContentType.TEXT_PLAIN);
-    checkUriInfo(ODataHttpMethod.DELETE, UriType.URI5, true, HttpContentType.TEXT_PLAIN);
-    checkUriInfo(ODataHttpMethod.PATCH, UriType.URI5, true, HttpContentType.TEXT_PLAIN);
-    checkUriInfo(ODataHttpMethod.MERGE, UriType.URI5, true, HttpContentType.TEXT_PLAIN);
+    checkValueContentType(ODataHttpMethod.PUT, UriType.URI5, HttpContentType.TEXT_PLAIN);
+    checkValueContentType(ODataHttpMethod.DELETE, UriType.URI5, HttpContentType.TEXT_PLAIN);
+    checkValueContentType(ODataHttpMethod.PATCH, UriType.URI5, HttpContentType.TEXT_PLAIN);
+    checkValueContentType(ODataHttpMethod.MERGE, UriType.URI5, HttpContentType.TEXT_PLAIN);
   }
 
   @Test
@@ -418,12 +477,10 @@ public class ODataSubLocatorValidationTest extends BaseTest {
     wrongOptions(ODataHttpMethod.POST, UriType.URI7B, true, false, false, false, false, false, false, false, false);
     wrongOptions(ODataHttpMethod.POST, UriType.URI7B, false, true, false, false, false, false, false, false, false);
     wrongOptions(ODataHttpMethod.POST, UriType.URI7B, false, false, true, false, false, false, false, false, false);
-    wrongOptions(ODataHttpMethod.POST, UriType.URI7B, false, false, false, true, false, false, false, false, false);
     wrongOptions(ODataHttpMethod.POST, UriType.URI7B, false, false, false, false, true, false, false, false, false);
     wrongOptions(ODataHttpMethod.POST, UriType.URI7B, false, false, false, false, false, true, false, false, false);
     wrongOptions(ODataHttpMethod.POST, UriType.URI7B, false, false, false, false, false, false, true, false, false);
 
-    wrongOptions(ODataHttpMethod.PUT, UriType.URI17, true, false, false, false, false, false, false, false, false);
     wrongOptions(ODataHttpMethod.PUT, UriType.URI17, false, true, false, false, false, false, false, false, false);
     wrongOptions(ODataHttpMethod.DELETE, UriType.URI17, true, false, false, false, false, false, false, false, false);
     wrongOptions(ODataHttpMethod.DELETE, UriType.URI17, false, true, false, false, false, false, false, false, false);
@@ -431,27 +488,23 @@ public class ODataSubLocatorValidationTest extends BaseTest {
 
   @Test
   public void functionImportWrongHttpMethod() throws Exception {
-    wrongFunctionHttpMethod(ODataHttpMethod.POST, UriType.URI1, ODataHttpMethod.GET);
-    wrongFunctionHttpMethod(ODataHttpMethod.GET, UriType.URI10, ODataHttpMethod.PUT);
-    wrongFunctionHttpMethod(ODataHttpMethod.POST, UriType.URI11, ODataHttpMethod.GET);
-    wrongFunctionHttpMethod(ODataHttpMethod.PATCH, UriType.URI12, ODataHttpMethod.GET);
-    wrongFunctionHttpMethod(ODataHttpMethod.POST, UriType.URI13, ODataHttpMethod.GET);
-    wrongFunctionHttpMethod(ODataHttpMethod.GET, UriType.URI14, ODataHttpMethod.PUT);
+    wrongFunctionHttpMethod(ODataHttpMethod.POST, UriType.URI1);
+    wrongFunctionHttpMethod(ODataHttpMethod.PUT, UriType.URI10);
+    wrongFunctionHttpMethod(ODataHttpMethod.POST, UriType.URI11);
+    wrongFunctionHttpMethod(ODataHttpMethod.PATCH, UriType.URI12);
+    wrongFunctionHttpMethod(ODataHttpMethod.POST, UriType.URI13);
+    wrongFunctionHttpMethod(ODataHttpMethod.PUT, UriType.URI14);
   }
 
   @Test
   public void wrongProperty() throws Exception {
-    wrongProperty(ODataHttpMethod.PUT, UriType.URI4, true, false);
-    wrongProperty(ODataHttpMethod.PATCH, UriType.URI4, true, false);
-    wrongProperty(ODataHttpMethod.DELETE, UriType.URI4, true, true);
-    wrongProperty(ODataHttpMethod.DELETE, UriType.URI4, true, false);
-    wrongProperty(ODataHttpMethod.DELETE, UriType.URI4, false, false);
+    wrongProperty(ODataHttpMethod.DELETE, true, false, false);
 
-    wrongProperty(ODataHttpMethod.PUT, UriType.URI5, true, false);
-    wrongProperty(ODataHttpMethod.PATCH, UriType.URI5, true, false);
-    wrongProperty(ODataHttpMethod.DELETE, UriType.URI5, true, true);
-    wrongProperty(ODataHttpMethod.DELETE, UriType.URI5, true, false);
-    wrongProperty(ODataHttpMethod.DELETE, UriType.URI5, false, false);
+    wrongProperty(ODataHttpMethod.PUT, false, true, false);
+    wrongProperty(ODataHttpMethod.PATCH, false, true, false);
+    wrongProperty(ODataHttpMethod.DELETE, false, true, true);
+    wrongProperty(ODataHttpMethod.DELETE, false, true, false);
+    wrongProperty(ODataHttpMethod.DELETE, false, false, false);
   }
 
   @Test

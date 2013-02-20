@@ -436,7 +436,6 @@ public final class ODataSubLocator implements ODataLocator {
   }
 
   public void initialize(InitParameter param) throws ODataException {
-    
     fillRequestHeader(param.getHttpHeaders());
     context.setUriInfo(buildODataUriInfo(param));
 

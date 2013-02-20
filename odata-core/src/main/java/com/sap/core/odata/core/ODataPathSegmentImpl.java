@@ -7,6 +7,9 @@ import java.util.Map;
 
 import com.sap.core.odata.api.uri.PathSegment;
 
+/**
+ * @author SAP AG
+ */
 public class ODataPathSegmentImpl implements PathSegment {
 
   private String path;
