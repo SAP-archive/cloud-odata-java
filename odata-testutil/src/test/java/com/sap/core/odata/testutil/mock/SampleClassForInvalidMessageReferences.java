@@ -3,13 +3,14 @@ package com.sap.core.odata.testutil.mock;
 import com.sap.core.odata.api.exception.MessageReference;
 import com.sap.core.odata.api.exception.ODataMessageException;
 
-@SuppressWarnings("serial")
 public class SampleClassForInvalidMessageReferences extends ODataMessageException
 {
+  private static final long serialVersionUID = 1L;
+
   public SampleClassForInvalidMessageReferences(MessageReference messageReference) {
     super(messageReference);
   }
-  
+
   public SampleClassForInvalidMessageReferences(MessageReference messageReference, String errorCode) {
     super(messageReference, errorCode);
   }

@@ -30,8 +30,7 @@ public class ODataServiceVersion {
    * @param version version string
    * @return true for a valid version
    */
-  public static boolean validateDataServiceVersion(String version)
-  {
+  public static boolean validateDataServiceVersion(String version) {
     final Matcher matcher = DATASERVICEVERSIONPATTERN.matcher(version);
     if (!matcher.matches()) {
       throw new IllegalArgumentException(version);

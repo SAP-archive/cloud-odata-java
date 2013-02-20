@@ -22,7 +22,7 @@ public class EdmException extends ODataMessageException {
   public EdmException(MessageReference messageReference, Throwable cause) {
     super(messageReference, cause);
   }
-  
+
   public EdmException(MessageReference messageReference, String errorCode) {
     super(messageReference, errorCode);
   }

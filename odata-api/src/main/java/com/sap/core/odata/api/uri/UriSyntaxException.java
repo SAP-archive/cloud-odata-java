@@ -45,7 +45,7 @@ public class UriSyntaxException extends ODataBadRequestException {
   public UriSyntaxException(MessageReference messageReference, Throwable cause) {
     super(messageReference, cause);
   }
-  
+
   public UriSyntaxException(MessageReference MessageReference, String errorCode) {
     super(MessageReference, errorCode);
   }

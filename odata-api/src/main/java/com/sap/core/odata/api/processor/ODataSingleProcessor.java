@@ -57,22 +57,7 @@ import com.sap.core.odata.api.uri.info.PutMergePatchUriInfo;
  * 
  * @author SAP AG
  */
-public abstract class ODataSingleProcessor implements
-    MetadataProcessor,
-    ServiceDocumentProcessor,
-    EntityProcessor,
-    EntitySetProcessor,
-    EntityComplexPropertyProcessor,
-    EntityLinkProcessor,
-    EntityLinksProcessor,
-    EntityMediaProcessor,
-    EntitySimplePropertyProcessor,
-    EntitySimplePropertyValueProcessor,
-    FunctionImportProcessor,
-    FunctionImportValueProcessor,
-    BatchProcessor,
-    CustomContentType
-{
+public abstract class ODataSingleProcessor implements MetadataProcessor, ServiceDocumentProcessor, EntityProcessor, EntitySetProcessor, EntityComplexPropertyProcessor, EntityLinkProcessor, EntityLinksProcessor, EntityMediaProcessor, EntitySimplePropertyProcessor, EntitySimplePropertyValueProcessor, FunctionImportProcessor, FunctionImportValueProcessor, BatchProcessor, CustomContentType {
 
   /**
    * A request context object usually injected by the OData library.
@@ -320,8 +305,7 @@ public abstract class ODataSingleProcessor implements
     final String serviceRoot = getContext().getPathInfo().getServiceRoot().toASCIIString();
 
     final ODataResponse response = EntityProvider.writeServiceDocument(contentType, entityDataModel, serviceRoot);
-    final ODataResponseBuilder odataResponseBuilder = ODataResponse.fromResponse(response)
-        .header(ODataHttpHeaders.DATASERVICEVERSION, ODataServiceVersion.V10);
+    final ODataResponseBuilder odataResponseBuilder = ODataResponse.fromResponse(response).header(ODataHttpHeaders.DATASERVICEVERSION, ODataServiceVersion.V10);
     if (isContentTypeUpdateNecessary(contentType, response)) {
       odataResponseBuilder.contentHeader(contentType);
     }
@@ -349,12 +333,7 @@ public abstract class ODataSingleProcessor implements
   public ODataResponse readMetadata(GetMetadataUriInfo uriInfo, String contentType) throws ODataException {
     final EdmServiceMetadata edmServiceMetadata = getContext().getService().getEntityDataModel().getServiceMetadata();
 
-    return ODataResponse
-        .status(HttpStatusCodes.OK)
-        .header(HttpHeaders.CONTENT_TYPE, contentType)
-        .header(ODataHttpHeaders.DATASERVICEVERSION, edmServiceMetadata.getDataServiceVersion())
-        .entity(edmServiceMetadata.getMetadata())
-        .build();
+    return ODataResponse.status(HttpStatusCodes.OK).header(HttpHeaders.CONTENT_TYPE, contentType).header(ODataHttpHeaders.DATASERVICEVERSION, edmServiceMetadata.getDataServiceVersion()).entity(edmServiceMetadata.getMetadata()).build();
   }
 
   /**

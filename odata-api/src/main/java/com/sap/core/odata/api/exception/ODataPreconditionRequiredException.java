@@ -15,15 +15,15 @@ public class ODataPreconditionRequiredException extends ODataHttpException {
   public ODataPreconditionRequiredException(MessageReference context) {
     super(context, HttpStatusCodes.PRECONDITION_REQUIRED);
   }
-  
+
   public ODataPreconditionRequiredException(MessageReference context, Throwable cause) {
     super(context, cause, HttpStatusCodes.PRECONDITION_REQUIRED);
   }
-  
+
   public ODataPreconditionRequiredException(MessageReference context, String errorCode) {
     super(context, HttpStatusCodes.PRECONDITION_REQUIRED, errorCode);
   }
-  
+
   public ODataPreconditionRequiredException(MessageReference context, Throwable cause, String errorCode) {
     super(context, cause, HttpStatusCodes.PRECONDITION_REQUIRED, errorCode);
   }

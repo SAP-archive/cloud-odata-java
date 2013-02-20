@@ -37,9 +37,7 @@ import com.sap.core.odata.api.uri.info.PutMergePatchUriInfo;
  * @author SAP AG
  * @see UriParser
  */
-public interface UriInfo extends GetServiceDocumentUriInfo, GetEntitySetUriInfo, GetEntityUriInfo, GetComplexPropertyUriInfo, GetSimplePropertyUriInfo,
-    GetEntityLinkUriInfo, GetEntitySetLinksUriInfo, GetMetadataUriInfo, GetFunctionImportUriInfo, GetEntitySetCountUriInfo, GetEntityCountUriInfo, GetMediaResourceUriInfo,
-    GetEntityLinkCountUriInfo, GetEntitySetLinksCountUriInfo, PutMergePatchUriInfo, PostUriInfo, DeleteUriInfo {
+public interface UriInfo extends GetServiceDocumentUriInfo, GetEntitySetUriInfo, GetEntityUriInfo, GetComplexPropertyUriInfo, GetSimplePropertyUriInfo, GetEntityLinkUriInfo, GetEntitySetLinksUriInfo, GetMetadataUriInfo, GetFunctionImportUriInfo, GetEntitySetCountUriInfo, GetEntityCountUriInfo, GetMediaResourceUriInfo, GetEntityLinkCountUriInfo, GetEntitySetLinksCountUriInfo, PutMergePatchUriInfo, PostUriInfo, DeleteUriInfo {
 
   /**
    * Gets the target entity container.

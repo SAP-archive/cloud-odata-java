@@ -18,8 +18,7 @@ import com.sap.core.odata.api.uri.UriParser;
  * method {@link #getProperty()} will return a refence to the "city" property.
  * @author SAP AG
  */
-public interface MemberExpression extends CommonExpression
-{
+public interface MemberExpression extends CommonExpression {
   /**
    * @return 
    *   Returns the CommonExpression forming the path (the left side of '/') of the method operator.

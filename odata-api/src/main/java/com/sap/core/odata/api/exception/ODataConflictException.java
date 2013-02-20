@@ -15,17 +15,17 @@ public class ODataConflictException extends ODataHttpException {
   public ODataConflictException(MessageReference context) {
     super(context, HttpStatusCodes.CONFLICT);
   }
-  
+
   public ODataConflictException(MessageReference context, Throwable cause) {
     super(context, cause, HttpStatusCodes.CONFLICT);
   }
-  
+
   public ODataConflictException(MessageReference context, String errorCode) {
     super(context, HttpStatusCodes.CONFLICT, errorCode);
   }
-  
+
   public ODataConflictException(MessageReference context, Throwable cause, String errorCode) {
     super(context, cause, HttpStatusCodes.CONFLICT, errorCode);
   }
-  
+
 }

@@ -16,15 +16,15 @@ public class ODataNotAcceptableException extends ODataHttpException {
   public ODataNotAcceptableException(MessageReference context) {
     super(context, HttpStatusCodes.NOT_ACCEPTABLE);
   }
-  
+
   public ODataNotAcceptableException(MessageReference context, Throwable cause) {
     super(context, cause, HttpStatusCodes.NOT_ACCEPTABLE);
   }
-  
+
   public ODataNotAcceptableException(MessageReference context, String errorCode) {
     super(context, HttpStatusCodes.NOT_ACCEPTABLE, errorCode);
   }
-  
+
   public ODataNotAcceptableException(MessageReference context, Throwable cause, String errorCode) {
     super(context, cause, HttpStatusCodes.NOT_ACCEPTABLE, errorCode);
   }

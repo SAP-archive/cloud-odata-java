@@ -76,8 +76,7 @@ public abstract class UriParser {
    * @throws ExpressionParserException thrown due to errors while parsing the $filter expression string
    * @throws ODataMessageException     for extensibility
    */
-  public static FilterExpression parseFilter(Edm edm, EdmEntityType edmType, String expression) throws ExpressionParserException, ODataMessageException
-  {
+  public static FilterExpression parseFilter(Edm edm, EdmEntityType edmType, String expression) throws ExpressionParserException, ODataMessageException {
     return RuntimeDelegate.getUriParser(edm).parseFilterString(edmType, expression);
   }
 
@@ -124,8 +123,7 @@ public abstract class UriParser {
    * @throws ExpressionParserException thrown due to errors while parsing the $orderby expression string
    * @throws ODataMessageException     used for extensibility
    */
-  public static OrderByExpression parseOrderBy(Edm edm, EdmEntityType edmType, String expression) throws ExpressionParserException, ODataMessageException
-  {
+  public static OrderByExpression parseOrderBy(Edm edm, EdmEntityType edmType, String expression) throws ExpressionParserException, ODataMessageException {
     return RuntimeDelegate.getUriParser(edm).parseOrderByString(edmType, expression);
   }
 

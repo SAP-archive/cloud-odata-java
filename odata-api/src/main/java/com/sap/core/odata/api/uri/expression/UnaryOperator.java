@@ -5,22 +5,18 @@ package com.sap.core.odata.api.uri.expression;
  * for OData version 2.0
  * @author SAP AG 
  */
-public enum UnaryOperator
-{
-  MINUS("-", "negation"),
-  NOT("not");
+public enum UnaryOperator {
+  MINUS("-", "negation"), NOT("not");
 
   private String syntax;
   private String stringRespresentation;
 
-  private UnaryOperator(String syntax)
-  {
+  private UnaryOperator(String syntax) {
     this.syntax = syntax;
     stringRespresentation = syntax;
   }
 
-  private UnaryOperator(String syntax, String stringRespresentation)
-  {
+  private UnaryOperator(String syntax, String stringRespresentation) {
     this.syntax = syntax;
     this.stringRespresentation = stringRespresentation;
   }
@@ -29,16 +25,14 @@ public enum UnaryOperator
    * @return Methods name for usage in in text
    */
   @Override
-  public String toString()
-  {
+  public String toString() {
     return stringRespresentation;
   }
 
   /**
    * @return Syntax of the unary operator as used in the URL. 
    */
-  public String toUriLiteral()
-  {
+  public String toUriLiteral() {
     return syntax;
   }
 }

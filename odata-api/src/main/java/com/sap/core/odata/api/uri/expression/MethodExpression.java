@@ -16,8 +16,7 @@ import com.sap.core.odata.api.uri.UriParser;
  * <br>
  * @author SAP AG
  */
-public interface MethodExpression extends CommonExpression
-{
+public interface MethodExpression extends CommonExpression {
 
   /**
    * @return Returns the method object that represents the used method 

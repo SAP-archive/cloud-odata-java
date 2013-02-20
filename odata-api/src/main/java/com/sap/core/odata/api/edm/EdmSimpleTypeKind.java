@@ -9,8 +9,7 @@ import com.sap.core.odata.api.rt.RuntimeDelegate;
  */
 public enum EdmSimpleTypeKind {
 
-  Binary, Boolean, Byte, DateTime, DateTimeOffset, Decimal,
-  Double, Guid, Int16, Int32, Int64, SByte, Single, String, Time, Null;
+  Binary, Boolean, Byte, DateTime, DateTimeOffset, Decimal, Double, Guid, Int16, Int32, Int64, SByte, Single, String, Time, Null;
 
   /**
    * Returns the {@link FullQualifiedName} for this SimpleTypeKind.
@@ -27,7 +26,7 @@ public enum EdmSimpleTypeKind {
   public EdmSimpleType getEdmSimpleTypeInstance() {
     return RuntimeDelegate.getEdmSimpleType(this);
   }
- 
+
   /**
    * <p>Parses a URI literal and determines its EDM simple type on the way.</p>
    * <p>If the literal is <code>null</code> or consists of the literal string
