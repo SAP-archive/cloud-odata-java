@@ -21,7 +21,7 @@ public class ODataBadRequestException extends ODataHttpException {
   public ODataBadRequestException(MessageReference messageReference) {
     super(messageReference, HttpStatusCodes.BAD_REQUEST);
   }
-  
+
   public ODataBadRequestException(MessageReference messageReference, String errorCode) {
     super(messageReference, HttpStatusCodes.BAD_REQUEST, errorCode);
   }
@@ -29,7 +29,7 @@ public class ODataBadRequestException extends ODataHttpException {
   public ODataBadRequestException(MessageReference messageReference, Throwable cause) {
     super(messageReference, cause, HttpStatusCodes.BAD_REQUEST);
   }
-  
+
   public ODataBadRequestException(MessageReference messageReference, Throwable cause, String errorCode) {
     super(messageReference, cause, HttpStatusCodes.BAD_REQUEST, errorCode);
   }

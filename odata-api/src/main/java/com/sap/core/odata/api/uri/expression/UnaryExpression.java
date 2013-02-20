@@ -14,8 +14,7 @@ import com.sap.core.odata.api.uri.UriParser;
  * <br>
  * @author SAP AG
  */
-public interface UnaryExpression extends CommonExpression
-{
+public interface UnaryExpression extends CommonExpression {
 
   /**
    * @return Returns the operator object that represents the used operator

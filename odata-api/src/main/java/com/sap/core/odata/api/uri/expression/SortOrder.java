@@ -4,8 +4,7 @@ package com.sap.core.odata.api.uri.expression;
  * Enumeration describing all possible sort orders used in an $orderby expression 
  * @author SAP AG
  */
-public enum SortOrder
-{
+public enum SortOrder {
 
   /**
    * Sort order ascending 
@@ -20,14 +19,12 @@ public enum SortOrder
   private String syntax;
   private String stringRespresentation;
 
-  private SortOrder(String syntax)
-  {
+  private SortOrder(String syntax) {
     this.syntax = syntax;
     stringRespresentation = syntax;
   }
 
-  private SortOrder(String syntax, String stringRespresentation)
-  {
+  private SortOrder(String syntax, String stringRespresentation) {
     this.syntax = syntax;
     this.stringRespresentation = stringRespresentation;
   }
@@ -36,16 +33,14 @@ public enum SortOrder
    * @return Operators name for usage in in text
    */
   @Override
-  public String toString()
-  {
+  public String toString() {
     return stringRespresentation;
   }
 
   /**
    * @return URI literal of the unary operator as used in the URL. 
    */
-  public String toUriLiteral()
-  {
+  public String toUriLiteral() {
     return syntax;
   }
 }

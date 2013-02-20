@@ -12,8 +12,7 @@ import com.sap.core.odata.api.edm.EdmTyped;
  * will be called.
  * @author SAP AG
  */
-public interface ExpressionVisitor
-{
+public interface ExpressionVisitor {
   /**
    * Visits a filter expression
    * @param filterExpression

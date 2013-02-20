@@ -16,8 +16,7 @@ import com.sap.core.odata.api.uri.UriParser;
  * <br>
  * @author SAP AG
  */
-public interface PropertyExpression extends CommonExpression
-{
+public interface PropertyExpression extends CommonExpression {
   /**
    * @return the property name as used in the EDM
    */

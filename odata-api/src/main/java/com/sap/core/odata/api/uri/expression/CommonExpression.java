@@ -14,8 +14,7 @@ import com.sap.core.odata.api.uri.UriParser;
  * <br>
  * @author SAP AG
  */
-public interface CommonExpression extends Visitable
-{
+public interface CommonExpression extends Visitable {
   /**
    * @return Kind of this expression
    * @see ExpressionKind

@@ -18,7 +18,6 @@ import com.sap.core.odata.api.uri.UriParser;
  * <br>
  * @author SAP AG
  */
-public interface LiteralExpression extends CommonExpression
-{
+public interface LiteralExpression extends CommonExpression {
 
 }

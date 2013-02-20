@@ -16,16 +16,15 @@ public class ODataUnsupportedMediaTypeException extends ODataHttpException {
   public ODataUnsupportedMediaTypeException(MessageReference context) {
     super(context, HttpStatusCodes.UNSUPPORTED_MEDIA_TYPE);
   }
-  
+
   public ODataUnsupportedMediaTypeException(MessageReference context, Throwable cause) {
     super(context, cause, HttpStatusCodes.UNSUPPORTED_MEDIA_TYPE);
   }
-  
 
   public ODataUnsupportedMediaTypeException(MessageReference context, String errorCode) {
     super(context, HttpStatusCodes.UNSUPPORTED_MEDIA_TYPE, errorCode);
   }
-  
+
   public ODataUnsupportedMediaTypeException(MessageReference context, Throwable cause, String errorCode) {
     super(context, cause, HttpStatusCodes.UNSUPPORTED_MEDIA_TYPE, errorCode);
   }

@@ -14,8 +14,7 @@ import com.sap.core.odata.api.uri.UriParser;
  * <br>
  * @author SAP AG
  */
-public interface OrderExpression extends CommonExpression
-{
+public interface OrderExpression extends CommonExpression {
 
   /**
    * @return Returns the sort order (ascending or descending) of the order expression  

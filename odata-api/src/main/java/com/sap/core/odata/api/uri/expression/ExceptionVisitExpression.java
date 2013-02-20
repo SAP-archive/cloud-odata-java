@@ -7,16 +7,14 @@ import com.sap.core.odata.api.exception.ODataMessageException;
  * Exception thrown while traversing/visiting a filter expression tree
  * @author SAP AG
  */
-public class ExceptionVisitExpression extends ODataMessageException
-{
+public class ExceptionVisitExpression extends ODataMessageException {
   private static final long serialVersionUID = 7701L;
 
   public static final MessageReference COMMON = createMessageReference(ExceptionVisitExpression.class, "COMMON");
 
   private CommonExpression filterTree;
 
-  public ExceptionVisitExpression()
-  {
+  public ExceptionVisitExpression() {
     super(COMMON);
   }
 
@@ -26,8 +24,7 @@ public class ExceptionVisitExpression extends ODataMessageException
    * @param messageReference
    *   references the message text (and additional values) of this {@link ExceptionVisitExpression}
    */
-  public ExceptionVisitExpression(MessageReference messageReference)
-  {
+  public ExceptionVisitExpression(MessageReference messageReference) {
     super(messageReference);
   }
 
@@ -40,8 +37,7 @@ public class ExceptionVisitExpression extends ODataMessageException
    * @param cause
    *   exception which caused this {@link ExceptionVisitExpression}
    */
-  public ExceptionVisitExpression(MessageReference message, Throwable cause)
-  {
+  public ExceptionVisitExpression(MessageReference message, Throwable cause) {
     super(message, cause);
   }
 
@@ -49,8 +45,7 @@ public class ExceptionVisitExpression extends ODataMessageException
    * Get erroneous filter for debug information
    * @return Erroneous filter tree 
    */
-  public CommonExpression getFilterTree()
-  {
+  public CommonExpression getFilterTree() {
     return filterTree;
   }
 
@@ -58,8 +53,7 @@ public class ExceptionVisitExpression extends ODataMessageException
    * Sets erroneous filter tree for debug information.
    * @param filterTree Erroneous filter tree
    */
-  public void setFilterTree(CommonExpression filterTree)
-  {
+  public void setFilterTree(CommonExpression filterTree) {
     this.filterTree = filterTree;
   }
 }

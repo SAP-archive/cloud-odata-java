@@ -13,8 +13,7 @@ import com.sap.core.odata.api.uri.UriParser;
  * <br>
  * @author SAP AG
  */
-public interface BinaryExpression extends CommonExpression
-{
+public interface BinaryExpression extends CommonExpression {
   /**
     * @return Operator object that represents the used operator
     * @see BinaryOperator

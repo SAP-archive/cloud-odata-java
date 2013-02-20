@@ -15,15 +15,15 @@ public class ODataPreconditionFailedException extends ODataHttpException {
   public ODataPreconditionFailedException(MessageReference context) {
     super(context, HttpStatusCodes.PRECONDITION_FAILED);
   }
-  
+
   public ODataPreconditionFailedException(MessageReference context, Throwable cause) {
     super(context, cause, HttpStatusCodes.PRECONDITION_FAILED);
   }
-  
+
   public ODataPreconditionFailedException(MessageReference context, String errorCode) {
     super(context, HttpStatusCodes.PRECONDITION_FAILED, errorCode);
   }
-  
+
   public ODataPreconditionFailedException(MessageReference context, Throwable cause, String errorCode) {
     super(context, cause, HttpStatusCodes.PRECONDITION_FAILED, errorCode);
   }

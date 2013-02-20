@@ -16,7 +16,7 @@ public class ODataNotFoundException extends ODataHttpException {
   public ODataNotFoundException(MessageReference messageReference) {
     super(messageReference, HttpStatusCodes.NOT_FOUND);
   }
-  
+
   public ODataNotFoundException(MessageReference messageReference, String errorCode) {
     super(messageReference, HttpStatusCodes.NOT_FOUND, errorCode);
   }
@@ -24,7 +24,7 @@ public class ODataNotFoundException extends ODataHttpException {
   public ODataNotFoundException(MessageReference messageReference, Throwable cause) {
     super(messageReference, cause, HttpStatusCodes.NOT_FOUND);
   }
-  
+
   public ODataNotFoundException(MessageReference messageReference, Throwable cause, String errorCode) {
     super(messageReference, cause, HttpStatusCodes.NOT_FOUND, errorCode);
   }

@@ -11,8 +11,7 @@ import com.sap.core.odata.api.uri.UriParser;
  * 
  * @author SAP AG
  */
-public interface OrderByExpression extends CommonExpression
-{
+public interface OrderByExpression extends CommonExpression {
   /**
    * @return Returns the $filter expression string used to build the expression tree
    */

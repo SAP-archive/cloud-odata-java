@@ -13,7 +13,7 @@ import com.sap.core.odata.api.processor.ODataProcessor;
  * @author SAP AG
  */
 public interface CustomContentType extends ODataProcessorFeature {
-  
+
   /**
    * The OData library will consider these additional content types during negotiation of http content type header.
    * @param processorFeature
