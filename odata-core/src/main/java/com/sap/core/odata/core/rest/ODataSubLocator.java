@@ -154,9 +154,9 @@ public final class ODataSubLocator implements ODataLocator {
       checkNumberOfNavigationSegments(uriInfo);
       checkProperty(method, uriInfo);
 
-      if ((method == ODataHttpMethod.POST) || (method == ODataHttpMethod.PUT) || (method == ODataHttpMethod.PATCH) || (method == ODataHttpMethod.MERGE)) {
+      if (method == ODataHttpMethod.POST || method == ODataHttpMethod.PUT
+          || method == ODataHttpMethod.PATCH || method == ODataHttpMethod.MERGE)
         checkRequestContentType(uriInfo, requestContentType);
-      }
     }
 
     final String contentType = doContentNegotiation(uriInfo);
@@ -168,62 +168,69 @@ public final class ODataSubLocator implements ODataLocator {
   }
 
   private void checkFunctionImport(final ODataHttpMethod method, final UriInfoImpl uriInfo) throws ODataException {
-    if ((uriInfo.getFunctionImport() != null) && (uriInfo.getFunctionImport().getHttpMethod() != null) && !uriInfo.getFunctionImport().getHttpMethod().equals(method.toString())) {
+    if (uriInfo.getFunctionImport() != null
+        && uriInfo.getFunctionImport().getHttpMethod() != null
+        && !uriInfo.getFunctionImport().getHttpMethod().equals(method.toString()))
       throw new ODataMethodNotAllowedException(ODataMethodNotAllowedException.DISPATCH);
-    }
   }
 
   private void checkNotGetSystemQueryOptions(final ODataHttpMethod method, final UriInfoImpl uriInfo) throws ODataException {
     switch (uriInfo.getUriType()) {
     case URI1:
     case URI6B:
-      if ((uriInfo.getFormat() != null) || (uriInfo.getFilter() != null) || (uriInfo.getInlineCount() != null) || (uriInfo.getOrderBy() != null) || (uriInfo.getSkipToken() != null) || (uriInfo.getSkip() != null) || (uriInfo.getTop() != null) || !uriInfo.getExpand().isEmpty() || !uriInfo.getSelect().isEmpty()) {
+      if (uriInfo.getFormat() != null
+          || uriInfo.getFilter() != null
+          || uriInfo.getInlineCount() != null
+          || uriInfo.getOrderBy() != null
+          || uriInfo.getSkipToken() != null
+          || uriInfo.getSkip() != null
+          || uriInfo.getTop() != null
+          || !uriInfo.getExpand().isEmpty()
+          || !uriInfo.getSelect().isEmpty())
         throw new ODataMethodNotAllowedException(ODataMethodNotAllowedException.DISPATCH);
-      }
       break;
 
     case URI2:
-      if ((uriInfo.getFormat() != null) || !uriInfo.getExpand().isEmpty() || !uriInfo.getSelect().isEmpty()) {
+      if (uriInfo.getFormat() != null
+          || !uriInfo.getExpand().isEmpty()
+          || !uriInfo.getSelect().isEmpty())
         throw new ODataMethodNotAllowedException(ODataMethodNotAllowedException.DISPATCH);
-      }
-      if (method == ODataHttpMethod.DELETE) {
-        if (uriInfo.getFilter() != null) {
+      if (method == ODataHttpMethod.DELETE)
+        if (uriInfo.getFilter() != null)
           throw new ODataMethodNotAllowedException(ODataMethodNotAllowedException.DISPATCH);
-        }
-      }
       break;
 
     case URI3:
-      if (uriInfo.getFormat() != null) {
+      if (uriInfo.getFormat() != null)
         throw new ODataMethodNotAllowedException(ODataMethodNotAllowedException.DISPATCH);
-      }
       break;
 
     case URI4:
     case URI5:
-      if ((method == ODataHttpMethod.PUT) || (method == ODataHttpMethod.PATCH) || (method == ODataHttpMethod.MERGE)) {
-        if (!uriInfo.isValue() && (uriInfo.getFormat() != null)) {
+      if (method == ODataHttpMethod.PUT || method == ODataHttpMethod.PATCH || method == ODataHttpMethod.MERGE)
+        if (!uriInfo.isValue() && uriInfo.getFormat() != null)
           throw new ODataMethodNotAllowedException(ODataMethodNotAllowedException.DISPATCH);
-        }
-      }
       break;
 
     case URI7A:
-      if ((uriInfo.getFormat() != null) || (uriInfo.getFilter() != null)) {
+      if (uriInfo.getFormat() != null || uriInfo.getFilter() != null)
         throw new ODataMethodNotAllowedException(ODataMethodNotAllowedException.DISPATCH);
-      }
       break;
 
     case URI7B:
-      if ((uriInfo.getFormat() != null) || (uriInfo.getFilter() != null) || (uriInfo.getInlineCount() != null) || (uriInfo.getOrderBy() != null) || (uriInfo.getSkipToken() != null) || (uriInfo.getSkip() != null) || (uriInfo.getTop() != null)) {
+      if (uriInfo.getFormat() != null
+          || uriInfo.getFilter() != null
+          || uriInfo.getInlineCount() != null
+          || uriInfo.getOrderBy() != null
+          || uriInfo.getSkipToken() != null
+          || uriInfo.getSkip() != null
+          || uriInfo.getTop() != null)
         throw new ODataMethodNotAllowedException(ODataMethodNotAllowedException.DISPATCH);
-      }
       break;
 
     case URI17:
-      if ((uriInfo.getFormat() != null) || (uriInfo.getFilter() != null)) {
+      if (uriInfo.getFormat() != null || uriInfo.getFilter() != null)
         throw new ODataMethodNotAllowedException(ODataMethodNotAllowedException.DISPATCH);
-      }
       break;
 
     default:
@@ -237,18 +244,16 @@ public final class ODataSubLocator implements ODataLocator {
     case URI6B:
     case URI7A:
     case URI7B:
-      if (uriInfo.getNavigationSegments().size() > 1) {
+      if (uriInfo.getNavigationSegments().size() > 1)
         throw new ODataBadRequestException(ODataBadRequestException.NOTSUPPORTED);
-      }
       break;
 
     case URI3:
     case URI4:
     case URI5:
     case URI17:
-      if (!uriInfo.getNavigationSegments().isEmpty()) {
+      if (!uriInfo.getNavigationSegments().isEmpty())
         throw new ODataBadRequestException(ODataBadRequestException.NOTSUPPORTED);
-      }
       break;
 
     default:
@@ -260,14 +265,11 @@ public final class ODataSubLocator implements ODataLocator {
     switch (uriInfo.getUriType()) {
     case URI4:
     case URI5:
-      if (isPropertyKey(uriInfo)) {
+      if (isPropertyKey(uriInfo))
         throw new ODataMethodNotAllowedException(ODataMethodNotAllowedException.DISPATCH);
-      }
-      if (method == ODataHttpMethod.DELETE) {
-        if (!isPropertyNullable(getProperty(uriInfo))) {
+      if (method == ODataHttpMethod.DELETE)
+        if (!isPropertyNullable(getProperty(uriInfo)))
           throw new ODataMethodNotAllowedException(ODataMethodNotAllowedException.DISPATCH);
-        }
-      }
       break;
 
     default:
@@ -285,7 +287,7 @@ public final class ODataSubLocator implements ODataLocator {
   }
 
   private boolean isPropertyNullable(final EdmProperty property) throws EdmException {
-    return (property.getFacets() == null) || property.getFacets().isNullable();
+    return property.getFacets() == null || property.getFacets().isNullable();
   }
 
   private void checkRequestContentType(final UriInfoImpl uriInfo, final String contentType) throws ODataException {

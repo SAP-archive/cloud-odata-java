@@ -8,8 +8,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import javax.ws.rs.core.Response;
-
 import org.junit.Test;
 import org.mockito.Mockito;
 
@@ -33,225 +31,150 @@ import com.sap.core.odata.testutil.fit.BaseTest;
  * @author SAP AG
  */
 public class ODataSubLocatorTest extends BaseTest {
-  
-  @Test
-  public void testContentNegotiationEmptyRequest() throws Exception {
-    ODataSubLocator locator = new ODataSubLocator();
 
-    List<ContentType> contentTypes = contentTypes();
-    List<ContentType> supportedContentTypes = contentTypes("sup/111", "sup/222");
-    ContentType contentType = locator.contentNegotiation(contentTypes, supportedContentTypes);
-
-    assertEquals("sup/111", contentType.toContentTypeString());
+  private void negotiateContentType(final List<ContentType> contentTypes, final List<ContentType> supportedTypes, final String expected) throws ODataException {
+    final ContentType contentType = new ODataSubLocator().contentNegotiation(contentTypes, supportedTypes);
+    assertEquals(expected, contentType.toContentTypeString());
   }
 
   @Test
-  public void testContentNegotiationConcreteRequest() throws Exception {
-    ODataSubLocator locator = new ODataSubLocator();
+  public void contentNegotiationEmptyRequest() throws Exception {
+    negotiateContentType(
+        contentTypes(),
+        contentTypes("sup/111", "sup/222"),
+        "sup/111");
+  }
 
-    List<ContentType> contentTypes = contentTypes("sup/222");
-    List<ContentType> supportedContentTypes = contentTypes("sup/111", "sup/222");
-    ContentType contentType = locator.contentNegotiation(contentTypes, supportedContentTypes);
-
-    assertEquals("sup/222", contentType.toContentTypeString());
+  @Test
+  public void contentNegotiationConcreteRequest() throws Exception {
+    negotiateContentType(
+        contentTypes("sup/222"),
+        contentTypes("sup/111", "sup/222"),
+        "sup/222");
   }
 
   @Test(expected = ODataNotAcceptableException.class)
-  public void testContentNegotiationNotSupported() throws Exception {
-    ODataSubLocator locator = new ODataSubLocator();
-
-    List<ContentType> contentTypes = contentTypes("image/gif");
-    List<ContentType> supportedContentTypes = contentTypes("sup/111", "sup/222");
-    ContentType contentType = locator.contentNegotiation(contentTypes, supportedContentTypes);
-
-    assertEquals("sup/222", contentType.toContentTypeString());
+  public void contentNegotiationNotSupported() throws Exception {
+    negotiateContentType(contentTypes("image/gif"), contentTypes("sup/111", "sup/222"), null);
   }
 
   @Test
-  public void testContentNegotiationSupportedWildcard() throws Exception {
-    ODataSubLocator locator = new ODataSubLocator();
-
-    List<ContentType> contentTypes = contentTypes("image/gif");
-    List<ContentType> supportedContentTypes = contentTypes("sup/111", "sup/222", "*/*");
-    ContentType contentType = locator.contentNegotiation(contentTypes, supportedContentTypes);
-
-    assertEquals("image/gif", contentType.toContentTypeString());
+  public void contentNegotiationSupportedWildcard() throws Exception {
+    negotiateContentType(
+        contentTypes("image/gif"),
+        contentTypes("sup/111", "sup/222", "*/*"),
+        "image/gif");
   }
 
   @Test
-  public void testContentNegotiationSupportedSubWildcard() throws Exception {
-    ODataSubLocator locator = new ODataSubLocator();
-
-    List<ContentType> contentTypes = contentTypes("image/gif");
-    List<ContentType> supportedContentTypes = contentTypes("sup/111", "sup/222", "image/*");
-    ContentType contentType = locator.contentNegotiation(contentTypes, supportedContentTypes);
-
-    assertEquals("image/gif", contentType.toContentTypeString());
+  public void contentNegotiationSupportedSubWildcard() throws Exception {
+    negotiateContentType(
+        contentTypes("image/gif"),
+        contentTypes("sup/111", "sup/222", "image/*"),
+        "image/gif");
   }
 
   @Test
-  public void testContentNegotiationRequestWildcard() throws Exception {
-    ODataSubLocator locator = new ODataSubLocator();
-
-    List<ContentType> contentTypes = contentTypes("*/*");
-    List<ContentType> supportedContentTypes = contentTypes("sup/111", "sup/222");
-    ContentType contentType = locator.contentNegotiation(contentTypes, supportedContentTypes);
-
-    assertEquals("sup/111", contentType.toContentTypeString());
+  public void contentNegotiationRequestWildcard() throws Exception {
+    negotiateContentType(
+        contentTypes("*/*"),
+        contentTypes("sup/111", "sup/222"),
+        "sup/111");
   }
 
   @Test
-  public void testContentNegotiationRequestSubWildcard() throws Exception {
-    ODataSubLocator locator = new ODataSubLocator();
-
-    List<ContentType> contentTypes = contentTypes("sup/*", "*/*");
-    List<ContentType> supportedContentTypes = contentTypes("bla/111", "sup/222");
-    ContentType contentType = locator.contentNegotiation(contentTypes, supportedContentTypes);
-
-    assertEquals("sup/222", contentType.toContentTypeString());
+  public void contentNegotiationRequestSubWildcard() throws Exception {
+    negotiateContentType(
+        contentTypes("sup/*", "*/*"),
+        contentTypes("bla/111", "sup/222"),
+        "sup/222");
   }
 
   @Test
-  public void testContentNegotiationRequestSubtypeWildcard() throws Exception {
-    ODataSubLocator locator = new ODataSubLocator();
-
-    List<ContentType> contentTypes = contentTypes("sup2/*");
-    List<ContentType> supportedContentTypes = contentTypes("sup1/111", "sup2/222", "sup2/333");
-    ContentType contentType = locator.contentNegotiation(contentTypes, supportedContentTypes);
-
-    assertEquals("sup2/222", contentType.toContentTypeString());
+  public void contentNegotiationRequestSubtypeWildcard() throws Exception {
+    negotiateContentType(
+        contentTypes("sup2/*"),
+        contentTypes("sup1/111", "sup2/222", "sup2/333"),
+        "sup2/222");
   }
 
   @Test
-  public void testContentNegotiationRequestResponseWildcard() throws Exception {
-    ODataSubLocator locator = new ODataSubLocator();
-
-    List<ContentType> contentTypes = contentTypes("*/*");
-    List<ContentType> supportedContentTypes = contentTypes("*/*");
-    ContentType contentType = locator.contentNegotiation(contentTypes, supportedContentTypes);
-
-    assertEquals("*/*", contentType.toContentTypeString());
+  public void contentNegotiationRequestResponseWildcard() throws Exception {
+    negotiateContentType(contentTypes("*/*"), contentTypes("*/*"), "*/*");
   }
 
   @Test
-  public void testContentNegotiationManyRequests() throws Exception {
-    ODataSubLocator locator = new ODataSubLocator();
-
-    List<ContentType> contentTypes = contentTypes("bla/111", "bla/blub", "sub2/222");
-    List<ContentType> supportedContentTypes = contentTypes("sub1/666", "sub2/222", "sub3/333");
-    ContentType contentType = locator.contentNegotiation(contentTypes, supportedContentTypes);
-
-    assertEquals("sub2/222", contentType.toContentTypeString());
-  }
-
-  @Test
-  public void testContentNegotiationDefaultCharset() throws Exception {
-    ODataSubLocator locator = new ODataSubLocator();
-
-    boolean asDollarFormat = true;
-    String reqContentType = "application/xml";
-    String supportedContentTypes = "application/xml; charset=utf-8";
-    mockSubLocatorForContentNegotiation(locator, asDollarFormat, reqContentType, supportedContentTypes);
-    
-    // test
-    Response response = locator.handleGet();
-    String contentType = response.getHeaderString(HttpHeaders.CONTENT_TYPE);
-    
-    assertEquals("application/xml; charset=utf-8", contentType);
-  }
-
-  @Test
-  public void testContentNegotiationDefaultCharsetAsDollarFormat() throws Exception {
-    ODataSubLocator locator = new ODataSubLocator();
-
-    boolean asDollarFormat = true;
-    String reqContentType = "application/xml";
-    String supportedContentTypes = "application/xml; charset=utf-8";
-    mockSubLocatorForContentNegotiation(locator, asDollarFormat, reqContentType, supportedContentTypes);
-    
-    // test
-    Response response = locator.handleGet();
-    String contentType = response.getHeaderString(HttpHeaders.CONTENT_TYPE);
-    
-    assertEquals("application/xml; charset=utf-8", contentType);
-  }
-
-
-  @Test
-  public void testContentNegotiationSupportedCharset() throws Exception {
-    // prepare
-    ODataSubLocator locator = new ODataSubLocator();
-    boolean asDollarFormat = false;
-    String reqContentType = "application/xml; charset=utf-8";
-    String supportedContentTypes = "application/xml; charset=utf-8";
-    mockSubLocatorForContentNegotiation(locator, asDollarFormat, reqContentType, supportedContentTypes);
-    
-    // test
-    Response response = locator.handleGet();
-    
-    // verify
-    String contentType = response.getHeaderString(HttpHeaders.CONTENT_TYPE);
-    assertEquals("application/xml; charset=utf-8", contentType);
-  }
-
-  @Test
-  public void testContentNegotiationSupportedCharsetAsDollarFormat() throws Exception {
-    // prepare
-    ODataSubLocator locator = new ODataSubLocator();
-    boolean asDollarFormat = true;
-    String reqContentType = "application/xml; charset=utf-8";
-    String supportedContentTypes = "application/xml; charset=utf-8";
-    mockSubLocatorForContentNegotiation(locator, asDollarFormat, reqContentType, supportedContentTypes);
-    
-    // test
-    Response response = locator.handleGet();
-    
-    // verify
-    String contentType = response.getHeaderString(HttpHeaders.CONTENT_TYPE);
-    assertEquals("application/xml; charset=utf-8", contentType);
+  public void contentNegotiationManyRequests() throws Exception {
+    negotiateContentType(
+        contentTypes("bla/111", "bla/blub", "sub2/222"),
+        contentTypes("sub1/666", "sub2/222", "sub3/333"),
+        "sub2/222");
   }
 
   @Test(expected = ODataNotAcceptableException.class)
-  public void testContentNegotiationCharsetNotSupported() throws Exception {
-    ODataSubLocator locator = new ODataSubLocator();
-
-    List<ContentType> contentTypes = contentTypes("text/plain; charset=iso-8859-1");
-    List<ContentType> supportedContentTypes = contentTypes("sup/111", "sup/222");
-    ContentType contentType = locator.contentNegotiation(contentTypes, supportedContentTypes);
-
-    assertEquals("sup/222", contentType.toContentTypeString());
+  public void contentNegotiationCharsetNotSupported() throws Exception {
+    negotiateContentType(
+        contentTypes("text/plain; charset=iso-8859-1"),
+        contentTypes("sup/111", "sup/222"),
+        "sup/222");
   }
 
-  
-  @SuppressWarnings("unchecked")
-  private void mockSubLocatorForContentNegotiation(ODataSubLocator locator, boolean asFormat, String reqContentType, String ... supportedContentTypes) 
-        throws SecurityException, IllegalArgumentException, NoSuchFieldException, IllegalAccessException, ODataException {
-    
+  private void negotiateContentTypeCharset(final String requestType, final String supportedType, final boolean asFormat)
+      throws SecurityException, IllegalArgumentException, NoSuchFieldException, IllegalAccessException, ODataException {
+    ODataSubLocator locator = new ODataSubLocator();
+    mockSubLocatorForContentNegotiation(locator, asFormat, requestType, supportedType);
+
+    assertEquals(supportedType, locator.handleGet().getHeaderString(HttpHeaders.CONTENT_TYPE));
+  }
+
+  @Test
+  public void contentNegotiationDefaultCharset() throws Exception {
+    negotiateContentTypeCharset("application/xml", "application/xml; charset=utf-8", false);
+  }
+
+  @Test
+  public void contentNegotiationDefaultCharsetAsDollarFormat() throws Exception {
+    negotiateContentTypeCharset("application/xml", "application/xml; charset=utf-8", true);
+  }
+
+  @Test
+  public void contentNegotiationSupportedCharset() throws Exception {
+    negotiateContentTypeCharset("application/xml; charset=utf-8", "application/xml; charset=utf-8", false);
+  }
+
+  @Test
+  public void contentNegotiationSupportedCharsetAsDollarFormat() throws Exception {
+    negotiateContentTypeCharset("application/xml; charset=utf-8", "application/xml; charset=utf-8", true);
+  }
+
+  private void mockSubLocatorForContentNegotiation(ODataSubLocator locator, boolean asFormat, String reqContentType, String... supportedContentTypes)
+      throws SecurityException, IllegalArgumentException, NoSuchFieldException, IllegalAccessException, ODataException {
+
     UriParser parser = mockUriParser(locator);
-    
+
     UriInfoImpl uriInfo = new UriInfoImpl();
-    if(asFormat) {
+    if (asFormat) {
       uriInfo.setFormat(reqContentType);
     } else {
       List<ContentType> acceptedContentTypes = contentTypes(reqContentType);
       setField(locator, "acceptHeaderContentTypes", acceptedContentTypes);
     }
-    
-    Mockito.when(parser.parse(Mockito.anyList(), Mockito.anyMap())).thenReturn(uriInfo);
+
+    Mockito.when(parser.parse(Mockito.anyListOf(com.sap.core.odata.api.uri.PathSegment.class), Mockito.anyMapOf(String.class, String.class))).thenReturn(uriInfo);
     ODataService service = mockODataService(locator);
     ODataContextImpl context = mockODataContext(locator);
     Mockito.when(context.getPathInfo()).thenReturn(new PathInfoImpl());
     Dispatcher dispatcher = mockDispatcher(locator);
     String contentHeader = "application/xml; charset=utf-8";
     ODataResponse odataResponse = ODataResponse.status(HttpStatusCodes.OK).contentHeader(contentHeader).build();
-    Mockito.when(dispatcher.dispatch(Mockito.any(ODataHttpMethod.class), 
-        Mockito.any(UriInfoImpl.class), 
-        Mockito.any(InputStream.class), 
-        Mockito.anyString(), 
+    Mockito.when(dispatcher.dispatch(Mockito.any(ODataHttpMethod.class),
+        Mockito.any(UriInfoImpl.class),
+        Mockito.any(InputStream.class),
+        Mockito.anyString(),
         Mockito.refEq(contentHeader))).thenReturn(odataResponse);
-    Mockito.when(service.getSupportedContentTypes(Mockito.any(Class.class))).thenReturn(Arrays.asList(supportedContentTypes));
+    Mockito.when(service.getSupportedContentTypes(null)).thenReturn(Arrays.asList(supportedContentTypes));
   }
-  
+
   private Dispatcher mockDispatcher(ODataSubLocator locator) throws SecurityException, IllegalArgumentException, NoSuchFieldException, IllegalAccessException {
     Dispatcher dispatcher = Mockito.mock(Dispatcher.class);
     setField(locator, "dispatcher", dispatcher);
@@ -275,18 +198,18 @@ public class ODataSubLocatorTest extends BaseTest {
     setField(locator, "uriParser", parser);
     return parser;
   }
-  
-  private static void setField(Object instance, String fieldname, Object value) throws SecurityException, 
+
+  private static void setField(Object instance, String fieldname, Object value) throws SecurityException,
       NoSuchFieldException, IllegalArgumentException, IllegalAccessException {
     Field field = instance.getClass().getDeclaredField(fieldname);
     boolean access = field.isAccessible();
     field.setAccessible(true);
-    
+
     field.set(instance, value);
-    
+
     field.setAccessible(access);
   }
- 
+
   private List<ContentType> contentTypes(String... contentType) {
     List<ContentType> ctList = new ArrayList<ContentType>();
     for (String ct : contentType) {
