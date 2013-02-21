@@ -5,6 +5,7 @@ import com.sap.core.odata.api.edm.EdmAnnotations;
 import com.sap.core.odata.api.edm.EdmAssociation;
 import com.sap.core.odata.api.edm.EdmAssociationEnd;
 import com.sap.core.odata.api.edm.EdmException;
+import com.sap.core.odata.api.edm.EdmMultiplicity;
 import com.sap.core.odata.api.edm.EdmTypeKind;
 import com.sap.core.odata.api.edm.provider.Association;
 import com.sap.core.odata.api.edm.provider.AssociationEnd;
@@ -45,6 +46,16 @@ public class EdmAssociationImplProv extends EdmNamedImplProv implements EdmAssoc
   @Override
   public EdmAnnotations getAnnotations() throws EdmException {
     return new EdmAnnotationsImplProv(association.getAnnotationAttributes(), association.getAnnotationElements());
+  }
+
+  public EdmMultiplicity getEndMultiplicity(String role) {
+    if (association.getEnd1().getRole().equals(role))
+      return association.getEnd1().getMultiplicity();
+
+    if (association.getEnd2().getRole().equals(role))
+      return association.getEnd2().getMultiplicity();
+    
+    return null;
   }
 
 }
