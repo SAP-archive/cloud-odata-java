@@ -317,7 +317,7 @@ public abstract class ODataSingleProcessor implements MetadataProcessor, Service
    * 
    * @param contentType
    * @param response
-   * @return
+   * @return true if an update is necessary
    */
   private boolean isContentTypeUpdateNecessary(String contentType, final ODataResponse response) {
     boolean contentTypeAlreadySet = contentType.equals(response.getContentHeader());
