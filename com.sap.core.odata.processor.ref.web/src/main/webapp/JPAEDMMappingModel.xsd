@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema attributeFormDefault="unqualified"
+	elementFormDefault="qualified" xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	targetNamespace="http://www.sap.com/odata/core/processor/jpa"
+	xmlns:tns="http://www.sap.com/odata/core/processor/jpa">
+
+	<xs:element name="JPAEDMMappingModel">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">
+				Java Persistence (JPA) -
+				Entity Data Model (EDM) Mapping schema. The schema defines a mapping
+				model to describe EDM names for entity types, entity sets, entity
+				properties, entity navigation properties. By default the names of
+				Java Persistence entity types, entity attributes and entity
+				relationships are transformed into their corresponding EDM names. To
+				override the default names the mapping model is defined. Note:-
+				Define the mapping model for only those default names that needs to
+				be overriden.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="PersistenceUnit" type="tns:JPAPersistenceUnitMapType"
+					maxOccurs="unbounded" minOccurs="1" />
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
+	<xs:complexType name="JPAAttributeMapType">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">
+				The default name for EDM
+				property is derived from JPA attribute name. This can be overriden
+				using
+				JPAAttributeMapType.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="JPAAttribute" maxOccurs="unbounded"
+				minOccurs="0">
+				<xs:complexType>
+					<xs:simpleContent>
+						<xs:extension base="xs:string">
+							<xs:attribute type="xs:string" name="name" use="required" />
+						</xs:extension>
+					</xs:simpleContent>
+				</xs:complexType>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+
+	<xs:complexType name="JPARelationshipMapType">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">
+				The default name for EDM
+				navigation property is derived from JPA relationship name.
+				This can
+				be overriden using JPARelationshipMapType.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="JPARelationship" maxOccurs="unbounded"
+				minOccurs="0">
+				<xs:complexType>
+					<xs:simpleContent>
+						<xs:extension base="xs:string">
+							<xs:attribute type="xs:string" name="name" use="required" />
+						</xs:extension>
+					</xs:simpleContent>
+				</xs:complexType>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+
+	<xs:complexType name="JPAEntityTypeMapType">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">
+				The default name for EDM
+				entity type is derived from JPA entity type name. This can be
+				overriden using JPAEntityTypeMapType.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element type="xs:string" name="EDMEntityType"
+				maxOccurs="1" minOccurs="0" />
+			<xs:element type="xs:string" name="EDMEntitySet"
+				maxOccurs="1" minOccurs="0" />
+			<xs:element name="JPAAttributes" type="tns:JPAAttributeMapType" />
+			<xs:element name="JPARelationships" type="tns:JPARelationshipMapType" />
+		</xs:sequence>
+		<xs:attribute type="xs:string" name="name" use="required" />
+	</xs:complexType>
+
+	<xs:complexType name="JPAEntityTypesMapType">
+		<xs:sequence>
+			<xs:element name="JPAEntityType" type="tns:JPAEntityTypeMapType"
+				maxOccurs="unbounded" minOccurs="0" />
+		</xs:sequence>
+	</xs:complexType>
+
+
+	<xs:complexType name="JPAPersistenceUnitMapType">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">
+				By default Java
+				Persistence Unit name is taken as EDM schema name. This can be
+				overriden using JPAPersistenceUnitMapType.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element type="xs:string" name="EDMSchemaNamespace"
+				maxOccurs="1" minOccurs="0" />
+			<xs:element name="JPAEntityTypes" type="tns:JPAEntityTypesMapType" />
+		</xs:sequence>
+		<xs:attribute type="xs:string" name="name" use="required" />
+	</xs:complexType>
+
+
+</xs:schema>

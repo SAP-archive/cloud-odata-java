@@ -70,8 +70,8 @@ public interface ODataJPAContext {
 	 * 
 	 * @param edmProvider
 	 *            is the specific implementation of
-	 *            {@link com.sap.core.odata.api.edm.provider.EdmProvider}
-	 *            for transforming Java persistence models to Entity Data Model
+	 *            {@link com.sap.core.odata.api.edm.provider.EdmProvider} for
+	 *            transforming Java persistence models to Entity Data Model
 	 * 
 	 */
 	public void setEdmProvider(EdmProvider edmProvider);
@@ -109,5 +109,21 @@ public interface ODataJPAContext {
 	 *            {@link com.sap.core.odata.api.processor.ODataContext}
 	 */
 	public void setODataContext(ODataContext ctx);
+
+	/**
+	 * The method sets the JPA EDM mapping model name into the context. JPA EDM
+	 * mapping model is an XML document based on JPAEDMMappingModel.xsd
+	 * 
+	 * @param name
+	 *            is the name of JPA EDM mapping model
+	 */
+	public void setJPAEdmNameMappingModel(String name);
+
+	/**
+	 * The method gets the JPA EDM mapping model name from the context.
+	 * 
+	 * @return name of JPA EDM mapping model
+	 */
+	public String getJPAEdmNameMappingModel();
 
 }

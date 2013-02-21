@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<JPAEDMMappingModel xmlns="http://www.sap.com/odata/core/processor/jpa"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.sap.com/odata/core/processor/jpa JPAEDMMappingModel.xsd ">
+	<PersistenceUnit name="salesorderprocessing">
+		<EDMSchemaNamespace>SalesOrderProcessing</EDMSchemaNamespace>
+		<JPAEntityTypes>
+			<JPAEntityType name="SalesOrderHeader">
+				<EDMEntityType>SalesOrder</EDMEntityType>
+				<EDMEntitySet>SalesOrders</EDMEntitySet>
+				<JPAAttributes>
+					<JPAAttribute  name="soId"></JPAAttribute>
+					<JPAAttribute name="netAmount">NetAmount</JPAAttribute>
+				</JPAAttributes>
+				<JPARelationships>
+					<JPARelationship name="salesOrderItems">SalesOrderItemDetails
+					</JPARelationship>
+					<JPARelationship name="notes">NoteDetails</JPARelationship>
+				</JPARelationships>
+			</JPAEntityType>
+			<JPAEntityType name="SalesOrderItem">
+				<EDMEntityType>SalesOrderItem</EDMEntityType>
+				<EDMEntitySet>SalesOrderItems</EDMEntitySet>
+				<JPAAttributes>
+					<JPAAttribute name="liId">ID</JPAAttribute>
+					<JPAAttribute name="soId">SalesOrderID</JPAAttribute>
+				</JPAAttributes>
+				<JPARelationships>
+					<JPARelationship name="salesOrderHeader">SalesOrderHeaderDetails
+					</JPARelationship>
+					<JPARelationship name="materials">MaterialDetails
+					</JPARelationship>
+				</JPARelationships>
+			</JPAEntityType>
+		</JPAEntityTypes>
+	</PersistenceUnit>
+</JPAEDMMappingModel>
