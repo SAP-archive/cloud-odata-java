@@ -359,9 +359,9 @@ public class XmlMetadataProducer {
             }
           }
 
-          xmlStreamWriter.writeEndElement();
-
           writeAnnotationElements(schema.getAnnotationElements(), predefinedNamespaces, xmlStreamWriter);
+
+          xmlStreamWriter.writeEndElement();
         }
       }
 
@@ -539,13 +539,24 @@ public class XmlMetadataProducer {
       ArrayList<String> setNamespaces = new ArrayList<String>();
       for (AnnotationElement annotationElement : annotationElements) {
         xmlStreamWriter.writeStartElement(annotationElement.getPrefix(), annotationElement.getName(), annotationElement.getNamespace());
+
         if (!setNamespaces.contains(annotationElement.getNamespace()) && !predefinedNamespaces.containsValue(annotationElement.getNamespace())) {
           if (annotationElement.getNamespace() != null) {
             xmlStreamWriter.writeNamespace(annotationElement.getPrefix(), annotationElement.getNamespace());
             setNamespaces.add(annotationElement.getNamespace());
           }
         }
-        xmlStreamWriter.writeCharacters(annotationElement.getXmlData());
+
+        writeAnnotationAttributes(annotationElement.getAttributes(), predefinedNamespaces, xmlStreamWriter);
+
+        if (annotationElement.getChildElements() != null) {
+          writeAnnotationElements(annotationElement.getChildElements(), predefinedNamespaces, xmlStreamWriter);
+        } else {
+          if (annotationElement.getText() != null) {
+            xmlStreamWriter.writeCharacters(annotationElement.getText());
+          }
+        }
+
         xmlStreamWriter.writeEndElement();
       }
     }

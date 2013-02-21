@@ -59,7 +59,9 @@ public class BasicProviderTest extends AbstractProviderTest {
     predefinedNamespaces.put("sap", "http://sap");
     predefinedNamespaces.put("annoPrefix2", "http://annoNamespace");
     predefinedNamespaces.put("annoPrefix", "http://annoNamespace");
-
+    predefinedNamespaces.put("prefix", "namespace");
+    predefinedNamespaces.put("pre", "namespaceForAnno");
+    
     ODataResponse response = provider.writeMetadata(testProvider.getSchemas(), predefinedNamespaces);
     assertNotNull(response);
     assertNotNull(response.getEntity());
@@ -72,23 +74,27 @@ public class BasicProviderTest extends AbstractProviderTest {
     prefixMap.put("m", "http://schemas.microsoft.com/ado/2007/08/dataservices/metadata");
     prefixMap.put("a", "http://schemas.microsoft.com/ado/2008/09/edm");
     prefixMap.put("annoPrefix", "http://annoNamespace");
-
+    prefixMap.put("prefix", "namespace");
+    prefixMap.put("b", "RefScenario");
+    prefixMap.put("pre", "namespaceForAnno");
+    
     NamespaceContext ctx = new SimpleNamespaceContext(prefixMap);
     XMLUnit.setXpathNamespaceContext(ctx);
-    
     assertXpathExists("/edmx:Edmx/edmx:DataServices/a:Schema/a:EntityType/a:Property[@Name and @Type and @Nullable and @annoPrefix:annoName]", metadata);
     assertXpathExists("/edmx:Edmx/edmx:DataServices/a:Schema/a:EntityType/a:Property[@Name and @Type and @m:FC_TargetPath and @annoPrefix:annoName]", metadata);
+    assertXpathExists("/edmx:Edmx/edmx:DataServices/a:Schema/a:EntityType/a:Property[@Name=\"EmployeeName\"]", metadata);
+    assertXpathExists("/edmx:Edmx/edmx:DataServices/a:Schema/a:EntityType/a:Property[@Name=\"EmployeeName\"]/a:propertyAnnoElement", metadata);
+    assertXpathExists("/edmx:Edmx/edmx:DataServices/a:Schema/a:EntityType/a:Property[@Name=\"EmployeeName\"]/a:propertyAnnoElement2", metadata);
+    
+    assertXpathExists("/edmx:Edmx/edmx:DataServices/a:Schema/a:schemaElementTest1", metadata);
+    assertXpathExists("/edmx:Edmx/edmx:DataServices/a:Schema/a:schemaElementTest1/b:schemaElementTest2", metadata);
+    assertXpathExists("/edmx:Edmx/edmx:DataServices/a:Schema/a:schemaElementTest1/prefix:schemaElementTest3", metadata);
+    assertXpathExists("/edmx:Edmx/edmx:DataServices/a:Schema/a:schemaElementTest1/a:schemaElementTest4[@rel=\"self\" and @pre:href=\"http://google.com\"]", metadata);
   }
   
   @Test
   public void writeMetadata3() throws Exception {
     EdmProvider testProvider = new EdmTestProvider();
-
-    Map<String, String> predefinedNamespaces = new HashMap<String, String>();
-    predefinedNamespaces.put("annoPrefix", "http://annoNamespace");
-    predefinedNamespaces.put("sap", "http://sap");
-    predefinedNamespaces.put("annoPrefix2", "http://annoNamespace");
-    predefinedNamespaces.put("annoPrefix", "http://annoNamespace");
 
     ODataResponse response = provider.writeMetadata(testProvider.getSchemas(), null);
     assertNotNull(response);
@@ -102,11 +108,22 @@ public class BasicProviderTest extends AbstractProviderTest {
     prefixMap.put("m", "http://schemas.microsoft.com/ado/2007/08/dataservices/metadata");
     prefixMap.put("a", "http://schemas.microsoft.com/ado/2008/09/edm");
     prefixMap.put("annoPrefix", "http://annoNamespace");
+    prefixMap.put("prefix", "namespace");
+    prefixMap.put("b", "RefScenario");
+    prefixMap.put("pre", "namespaceForAnno");
 
     NamespaceContext ctx = new SimpleNamespaceContext(prefixMap);
     XMLUnit.setXpathNamespaceContext(ctx);
     assertXpathExists("/edmx:Edmx/edmx:DataServices/a:Schema/a:EntityType/a:Property[@Name and @Type and @Nullable and @annoPrefix:annoName]", metadata);
     assertXpathExists("/edmx:Edmx/edmx:DataServices/a:Schema/a:EntityType/a:Property[@Name and @Type and @m:FC_TargetPath and @annoPrefix:annoName]", metadata);
+    assertXpathExists("/edmx:Edmx/edmx:DataServices/a:Schema/a:EntityType/a:Property[@Name=\"EmployeeName\"]", metadata);
+    assertXpathExists("/edmx:Edmx/edmx:DataServices/a:Schema/a:EntityType/a:Property[@Name=\"EmployeeName\"]/a:propertyAnnoElement", metadata);
+    assertXpathExists("/edmx:Edmx/edmx:DataServices/a:Schema/a:EntityType/a:Property[@Name=\"EmployeeName\"]/a:propertyAnnoElement2", metadata);
+    
+    assertXpathExists("/edmx:Edmx/edmx:DataServices/a:Schema/a:schemaElementTest1", metadata);
+    assertXpathExists("/edmx:Edmx/edmx:DataServices/a:Schema/a:schemaElementTest1/b:schemaElementTest2", metadata);
+    assertXpathExists("/edmx:Edmx/edmx:DataServices/a:Schema/a:schemaElementTest1/prefix:schemaElementTest3", metadata);
+    assertXpathExists("/edmx:Edmx/edmx:DataServices/a:Schema/a:schemaElementTest1/a:schemaElementTest4[@rel=\"self\" and @pre:href=\"http://google.com\"]", metadata);
   }
   
   @Test

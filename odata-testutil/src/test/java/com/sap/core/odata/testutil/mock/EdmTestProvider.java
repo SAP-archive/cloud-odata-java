@@ -10,6 +10,7 @@ import com.sap.core.odata.api.edm.EdmSimpleTypeKind;
 import com.sap.core.odata.api.edm.EdmTargetPath;
 import com.sap.core.odata.api.edm.FullQualifiedName;
 import com.sap.core.odata.api.edm.provider.AnnotationAttribute;
+import com.sap.core.odata.api.edm.provider.AnnotationElement;
 import com.sap.core.odata.api.edm.provider.Association;
 import com.sap.core.odata.api.edm.provider.AssociationEnd;
 import com.sap.core.odata.api.edm.provider.AssociationSet;
@@ -140,6 +141,18 @@ public class EdmTestProvider extends EdmProvider {
 
     schema.setEntityContainers(Arrays.asList(entityContainer));
 
+    List<AnnotationElement> childElements = new ArrayList<AnnotationElement>();
+    childElements.add(new AnnotationElement().setName("schemaElementTest2").setText("text2").setNamespace(NAMESPACE_1));
+    childElements.add(new AnnotationElement().setName("schemaElementTest3").setText("text3").setPrefix("prefix").setNamespace("namespace"));
+    List<AnnotationAttribute> elementAttributes = new ArrayList<AnnotationAttribute>();
+    elementAttributes.add(new AnnotationAttribute().setName("rel").setText("self"));
+    elementAttributes.add(new AnnotationAttribute().setName("href").setText("http://google.com").setPrefix("pre").setNamespace("namespaceForAnno"));
+    childElements.add(new AnnotationElement().setName("schemaElementTest4").setText("text4").setAttributes(elementAttributes));
+
+    List<AnnotationElement> schemaElements = new ArrayList<AnnotationElement>();
+    schemaElements.add(new AnnotationElement().setName("schemaElementTest1").setText("text1").setChildElements(childElements));
+
+    schema.setAnnotationElements(schemaElements);
     schemas.add(schema);
 
     schema = new Schema();
@@ -170,9 +183,15 @@ public class EdmTestProvider extends EdmProvider {
             .setMapping(new Mapping().setInternalName("getId")).setAnnotationAttributes(annoList));
         final ArrayList<AnnotationAttribute> annoList2 = new ArrayList<AnnotationAttribute>();
         annoList2.add(new AnnotationAttribute().setName("annoName").setNamespace("http://annoNamespace").setPrefix("annoPrefix").setText("annoText"));
-        properties.add(new SimpleProperty().setName("EmployeeName").setType(EdmSimpleTypeKind.String)
+
+        List<AnnotationElement> annoElementsForSimpleProp = new ArrayList<AnnotationElement>();
+        annoElementsForSimpleProp.add(new AnnotationElement().setName("propertyAnnoElement").setText("text"));
+        annoElementsForSimpleProp.add(new AnnotationElement().setName("propertyAnnoElement2"));
+        SimpleProperty simpleProp = new SimpleProperty().setName("EmployeeName").setType(EdmSimpleTypeKind.String)
             .setCustomizableFeedMappings(new CustomizableFeedMappings()
-                .setFcTargetPath(EdmTargetPath.SYNDICATION_TITLE)).setAnnotationAttributes(annoList2));
+                .setFcTargetPath(EdmTargetPath.SYNDICATION_TITLE)).setAnnotationAttributes(annoList2).setAnnotationElements(annoElementsForSimpleProp);
+
+        properties.add(simpleProp);
         final ArrayList<AnnotationAttribute> annoList3 = new ArrayList<AnnotationAttribute>();
         annoList3.add(new AnnotationAttribute().setName("annoName").setNamespace("http://annoNamespaceNew").setPrefix("annoPrefix").setText("annoTextNew"));
         properties.add(new SimpleProperty().setName("ManagerId").setType(EdmSimpleTypeKind.String)
