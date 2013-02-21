@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import com.sap.core.odata.api.ODataService;
@@ -21,8 +22,10 @@ public class ODataContextImpl implements ODataContext {
   private static final String PATH_INFO = "~pathInfo";
   private static final String RUNTIME_MEASUREMENTS = "~runtimeMeasurements";
 
-  private Map<String, Object> parameterTable = new HashMap<String, Object>();
-  private Map<String, String> requestHeader = new HashMap<String, String>();
+  private final Map<String, Object> parameterTable = new HashMap<String, Object>();
+  private final Map<String, String> requestHeader = new HashMap<String, String>();
+
+  private List<Locale> acceptableLanguages;
 
   @Override
   public void setParameter(String name, Object value) {
@@ -73,7 +76,7 @@ public class ODataContextImpl implements ODataContext {
   @Override
   public int startRuntimeMeasurement(String className, String methodName) {
     if (isInDebugMode()) {
-      RuntimeMeasurement measurement = new RuntimeMeasurementImpl();
+      final RuntimeMeasurement measurement = new RuntimeMeasurementImpl();
       measurement.setTimeStarted(System.nanoTime());
       measurement.setClassName(className);
       measurement.setMethodName(methodName);
@@ -96,10 +99,11 @@ public class ODataContextImpl implements ODataContext {
   public void stopRuntimeMeasurement(int handle) {
     if (isInDebugMode()) {
       @SuppressWarnings("unchecked")
-      List<RuntimeMeasurement> runtimeMeasurements = (List<RuntimeMeasurement>) getParameter(RUNTIME_MEASUREMENTS);
+      final List<RuntimeMeasurement> runtimeMeasurements = (List<RuntimeMeasurement>) getParameter(RUNTIME_MEASUREMENTS);
 
-      if (runtimeMeasurements != null && handle >= 0 && handle < runtimeMeasurements.size())
+      if ((runtimeMeasurements != null) && (handle >= 0) && (handle < runtimeMeasurements.size())) {
         runtimeMeasurements.get(handle).setTimeStopped(System.nanoTime());
+      }
     }
   }
 
@@ -122,7 +126,7 @@ public class ODataContextImpl implements ODataContext {
 
     @Override
     public void setTimeStarted(long time_start) {
-      this.timeStarted = time_start;
+      timeStarted = time_start;
     }
 
     @Override
@@ -132,7 +136,7 @@ public class ODataContextImpl implements ODataContext {
 
     @Override
     public void setTimeStopped(long time_stop) {
-      this.timeStopped = time_stop;
+      timeStopped = time_stop;
     }
 
     @Override
@@ -167,15 +171,31 @@ public class ODataContextImpl implements ODataContext {
 
   @Override
   public String getHttpRequestHeader(String name) {
-    for (final String headerName : requestHeader.keySet())
-      if (headerName.equalsIgnoreCase(name))
+    for (final String headerName : requestHeader.keySet()) {
+      if (headerName.equalsIgnoreCase(name)) {
         return requestHeader.get(headerName);
+      }
+    }
     return null;
   }
 
   @Override
   public Map<String, String> getHttpRequestHeaders() {
     return Collections.unmodifiableMap(requestHeader);
+  }
+
+  @Override
+  public List<Locale> getAcceptableLanguages() {
+    return Collections.unmodifiableList(acceptableLanguages);
+  }
+
+  public void setAcceptableLanguages(List<Locale> acceptableLanguages) {
+    this.acceptableLanguages = acceptableLanguages;
+
+    if (this.acceptableLanguages.isEmpty()) {
+      final Locale wildcard = new Locale("*");
+      this.acceptableLanguages.add(wildcard);
+    }
   }
 
 }

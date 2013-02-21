@@ -78,6 +78,30 @@ public class ContextTest extends AbstractBasicTest {
   }
 
   @Test
+  public void checkAcceptuablesLanguage() throws ODataException, ClientProtocolException, IOException {
+    final HttpGet get = new HttpGet(URI.create(getEndpoint().toString() + "/$metadata"));
+    get.setHeader("Accept-Language", "de, en");
+
+    getHttpClient().execute(get);
+
+    final ODataContext ctx = getService().getProcessor().getContext();
+    assertNotNull(ctx);
+
+    assertEquals("[de, en]", ctx.getAcceptableLanguages().toString());
+  }
+
+  @Test
+  public void checkAcceptuablesLanguagesNoHeader() throws ODataException, ClientProtocolException, IOException {
+    final HttpGet get = new HttpGet(URI.create(getEndpoint().toString() + "/$metadata"));
+    getHttpClient().execute(get);
+
+    final ODataContext ctx = getService().getProcessor().getContext();
+    assertNotNull(ctx);
+
+    assertEquals("[*]", ctx.getAcceptableLanguages().toString());
+  }
+
+  @Test
   public void checkRequestHeader() throws ClientProtocolException, IOException, ODataException {
     final HttpGet get = new HttpGet(URI.create(getEndpoint().toString() + "/$metadata"));
     get.setHeader("ConTenT-laNguaGe", "de, en");
