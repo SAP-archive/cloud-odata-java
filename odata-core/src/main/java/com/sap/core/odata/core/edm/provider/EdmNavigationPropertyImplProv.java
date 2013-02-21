@@ -27,7 +27,7 @@ public class EdmNavigationPropertyImplProv extends EdmTypedImplProv implements E
 
   @Override
   public EdmMultiplicity getMultiplicity() throws EdmException {
-    return getRelationship().getEnd(navigationProperty.getToRole()).getMultiplicity();
+    return ((EdmAssociationImplProv) getRelationship()).getEndMultiplicity(navigationProperty.getToRole());
   }
 
   @Override
