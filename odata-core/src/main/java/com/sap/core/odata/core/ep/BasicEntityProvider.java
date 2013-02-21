@@ -216,7 +216,7 @@ public class BasicEntityProvider {
   /**
    * Calculates the necessary data service version for the metadata serialization
    * @param schemas
-   * @return
+   * @return DataServiceversion as String
    */
   private String calculateDataServiceVersion(List<Schema> schemas) {
 

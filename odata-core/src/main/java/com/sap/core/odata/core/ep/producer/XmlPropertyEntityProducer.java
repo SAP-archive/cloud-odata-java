@@ -176,7 +176,7 @@ public class XmlPropertyEntityProducer {
   /**
    * 
    * @param prop
-   * @return
+   * @return true if property has a custom namespace
    */
   private boolean hasCustomNamespace(EntityPropertyInfo prop) {
     if (prop.getCustomMapping() != null) {

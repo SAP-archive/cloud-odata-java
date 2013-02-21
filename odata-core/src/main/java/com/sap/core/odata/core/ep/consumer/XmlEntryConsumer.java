@@ -210,7 +210,7 @@ public class XmlEntryConsumer {
    * Read all attributes for current element to map (key=AttributeName; value=AttributeValue).
    * 
    * @param reader
-   * @return
+   * @return all the attributes for the current element
    */
   private Map<String, String> readAttributes(XMLStreamReader reader) {
     int attributesCount = reader.getAttributeCount();
