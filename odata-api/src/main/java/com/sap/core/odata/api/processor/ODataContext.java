@@ -1,6 +1,7 @@
 package com.sap.core.odata.api.processor;
 
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import com.sap.core.odata.api.ODataService;
@@ -99,6 +100,15 @@ public interface ODataContext {
    * @param debugMode as boolean
    */
   void setDebugMode(boolean debugMode);
+
+  /**
+   * Get a list of languages that are acceptable for the response.
+   * If no acceptable languages are specified, a read-only list containing 
+   * a single wildcard java.util.Locale instance (with language field set to "*") is returned.
+   * 
+   * @return a read-only list of acceptable languages sorted according to their q-value, with highest preference first.
+   */
+  List<Locale> getAcceptableLanguages();
 
   public interface RuntimeMeasurement {
     void setMethodName(String methodName);
