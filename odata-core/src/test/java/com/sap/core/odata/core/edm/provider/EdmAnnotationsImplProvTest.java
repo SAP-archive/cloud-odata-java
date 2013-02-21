@@ -28,7 +28,7 @@ public class EdmAnnotationsImplProvTest extends BaseTest {
     annotationAttributes.add(attribute);
 
     List<AnnotationElement> annotationElements = new ArrayList<AnnotationElement>();
-    AnnotationElement element = new AnnotationElement().setName("elementName").setNamespace("namespace").setPrefix("prefix").setXmlData("xmlData");
+    AnnotationElement element = new AnnotationElement().setName("elementName").setNamespace("namespace").setPrefix("prefix").setText("xmlData");
     annotationElements.add(element);
 
     annotationsProvider = new EdmAnnotationsImplProv(annotationAttributes, annotationElements);
@@ -76,7 +76,7 @@ public class EdmAnnotationsImplProvTest extends BaseTest {
       assertEquals("elementName", element.getName());
       assertEquals("namespace", element.getNamespace());
       assertEquals("prefix", element.getPrefix());
-      assertEquals("xmlData", element.getXmlData());
+      assertEquals("xmlData", element.getText());
     }
   }
 
@@ -86,7 +86,7 @@ public class EdmAnnotationsImplProvTest extends BaseTest {
     assertEquals("elementName", element.getName());
     assertEquals("namespace", element.getNamespace());
     assertEquals("prefix", element.getPrefix());
-    assertEquals("xmlData", element.getXmlData());
+    assertEquals("xmlData", element.getText());
   }
 
   @Test

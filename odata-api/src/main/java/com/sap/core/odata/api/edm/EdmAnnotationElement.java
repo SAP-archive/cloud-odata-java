@@ -1,5 +1,10 @@
 package com.sap.core.odata.api.edm;
 
+import java.util.List;
+
+import com.sap.core.odata.api.edm.provider.AnnotationAttribute;
+import com.sap.core.odata.api.edm.provider.AnnotationElement;
+
 /**
  * @com.sap.core.odata.DoNotImplement
  * A CSDL AnnotationElement element
@@ -34,5 +39,21 @@ public interface EdmAnnotationElement {
    * 
    * @return String
    */
-  String getXmlData();
+  String getText();
+  
+  /**
+   * Get the child elements of the custom element
+   * 
+   * @return child elements of this {@link EdmAnnotationElement}
+   */
+  List<AnnotationElement> getChildElements();
+  
+  
+  /**
+   * Get the attributes of this custom element
+   * 
+   * @return the attributes of this {@link EdmAnnotationElement}
+   */
+  List<AnnotationAttribute> getAttributes();
+  
 }

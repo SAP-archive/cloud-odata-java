@@ -1,5 +1,7 @@
 package com.sap.core.odata.api.edm.provider;
 
+import java.util.List;
+
 import com.sap.core.odata.api.edm.EdmAnnotationElement;
 
 /**
@@ -11,7 +13,9 @@ public class AnnotationElement implements EdmAnnotationElement {
   private String namespace;
   private String prefix;
   private String name;
-  private String xmlData;
+  private String text;
+  private List<AnnotationElement> childElements;
+  private List<AnnotationAttribute> attributes;
 
   /* (non-Javadoc)
    * @see com.sap.core.odata.api.edm.EdmAnnotationElement#getNamespace()
@@ -41,8 +45,45 @@ public class AnnotationElement implements EdmAnnotationElement {
    * @see com.sap.core.odata.api.edm.EdmAnnotationElement#getXmlData()
    */
   @Override
-  public String getXmlData() {
-    return xmlData;
+  public String getText() {
+    return text;
+  }
+
+  /* (non-Javadoc)
+   * @see com.sap.core.odata.api.edm.EdmAnnotationElement#getChildElements()
+   */
+  @Override
+  public List<AnnotationElement> getChildElements() {
+    return childElements;
+  }
+
+  /* (non-Javadoc)
+   * @see com.sap.core.odata.api.edm.EdmAnnotationElement#getAttributes()
+   */
+  @Override
+  public List<AnnotationAttribute> getAttributes() {
+    return attributes;
+  }
+
+
+  /**
+   * Sets the attributes for this {@link AnnotationElement}
+   * @param attributes
+   * @return {@link AnnotationElement} for method chaining
+   */
+  public AnnotationElement setAttributes(List<AnnotationAttribute> attributes) {
+    this.attributes = attributes;
+    return this;
+  }
+
+  /**
+   * Sets the child elements for this {@link AnnotationElement}. Do not set child elements and characterData for one element.
+   * @param childElements
+   * @return {@link AnnotationElement} for method chaining
+   */
+  public AnnotationElement setChildElements(List<AnnotationElement> childElements) {
+    this.childElements = childElements;
+    return this;
   }
 
   /**
@@ -76,12 +117,12 @@ public class AnnotationElement implements EdmAnnotationElement {
   }
 
   /**
-   * Sets the xmlData for this {@link AnnotationElement}
-   * @param xmlData
+   * Sets the text for this {@link AnnotationElement} which will be displayed inside the tags. Must NOT be set if child elements are set!
+   * @param text
    * @return {@link AnnotationElement} for method chaining
    */
-  public AnnotationElement setXmlData(String xmlData) {
-    this.xmlData = xmlData;
+  public AnnotationElement setText(String text) {
+    this.text = text;
     return this;
   }
 
