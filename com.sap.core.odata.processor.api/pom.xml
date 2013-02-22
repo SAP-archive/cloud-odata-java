@@ -14,10 +14,12 @@
 	<packaging>jar</packaging>
 
 	<dependencies>
+		<!-- JPA Support -->
 		<dependency>
 			<groupId>org.eclipse.persistence</groupId>
 			<artifactId>javax.persistence</artifactId>
 			<version>${version.javax.persistence}</version>
+			<scope>provided</scope>
 		</dependency>
 
 		<!-- ODATA4SAP Support -->
@@ -27,12 +29,7 @@
 			<version>${version.odataforsap}</version>
 			<scope>provided</scope>
 		</dependency>
-		<!-- JPA Support -->
-		<dependency>
-			<groupId>org.eclipse.persistence</groupId>
-			<artifactId>javax.persistence</artifactId>
-			<version>2.0.0</version>
-		</dependency>
+
 	</dependencies>
 	
 	<name>OData Processors - JPA Processor API</name>
