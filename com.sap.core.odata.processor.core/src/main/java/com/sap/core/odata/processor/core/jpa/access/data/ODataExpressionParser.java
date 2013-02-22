@@ -212,6 +212,12 @@ public class ODataExpressionParser {
 			}
 			
 			literal = evaluateComparingExpression(literal, edmSimpleType);
+			
+			if(edmSimpleType == EdmSimpleTypeKind.DateTime.getEdmSimpleTypeInstance()
+	            || edmSimpleType == EdmSimpleTypeKind.DateTimeOffset.getEdmSimpleTypeInstance()) {
+				literal = literal.substring(literal.indexOf('\''), literal.indexOf('}'));
+			}
+				
 			keyFilters.append(tableAlias+JPQLStatement.DELIMITER.PERIOD+propertyName + JPQLStatement.DELIMITER.SPACE + JPQLStatement.Operator.EQ+ JPQLStatement.DELIMITER.SPACE + literal);
 		}
 		if(keyFilters.length()>0)
