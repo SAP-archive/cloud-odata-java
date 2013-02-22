@@ -39,6 +39,7 @@ import com.sap.core.odata.api.uri.UriSyntaxException;
 import com.sap.core.odata.api.uri.expression.ExpressionParserException;
 import com.sap.core.odata.api.uri.expression.FilterExpression;
 import com.sap.core.odata.api.uri.expression.OrderByExpression;
+import com.sap.core.odata.core.commons.Decoder;
 import com.sap.core.odata.core.edm.EdmSimpleTypeFacadeImpl;
 import com.sap.core.odata.core.exception.ODataRuntimeException;
 import com.sap.core.odata.core.uri.expression.FilterParserImpl;
@@ -70,8 +71,9 @@ public class UriParserImpl extends UriParser {
   /**
    * Parse the URI part after an OData service root,
    * already splitted into path segments and query parameters.
-   * @param pathSegments  the {@link PathSegment}s of the resource path, already unescaped
-   * @param queryParameters  the query parameters, already unescaped
+   * @param pathSegments    the {@link PathSegment}s of the resource path,
+   *                        potentially percent-encoded
+   * @param queryParameters the query parameters, already percent-decoded
    * @return a {@link UriInfoImpl} instance containing the parsed information
    */
   @Override
@@ -132,8 +134,8 @@ public class UriParserImpl extends UriParser {
     if (!matcher.matches())
       throw new UriNotMatchingException(UriNotMatchingException.MATCHPROBLEM.addContent(currentPathSegment));
 
-    final String entityContainerName = matcher.group(1);
-    final String segmentName = matcher.group(2);
+    final String entityContainerName = percentDecode(matcher.group(1));
+    final String segmentName = percentDecode(matcher.group(2));
     final String keyPredicate = matcher.group(3);
     final String emptyParentheses = matcher.group(4);
 
@@ -216,7 +218,7 @@ public class UriParserImpl extends UriParser {
     if (!matcher.matches())
       throw new UriNotMatchingException(UriNotMatchingException.MATCHPROBLEM.addContent(currentPathSegment));
 
-    final String navigationPropertyName = matcher.group(1);
+    final String navigationPropertyName = percentDecode(matcher.group(1));
     final String keyPredicateName = matcher.group(2);
     final String emptyParentheses = matcher.group(3);
 
@@ -310,7 +312,7 @@ public class UriParserImpl extends UriParser {
       uriResult.setTargetType(type);
     } else {
 
-      currentPathSegment = pathSegments.remove(0);
+      currentPathSegment = percentDecode(pathSegments.remove(0));
       switch (type.getKind()) {
       case SIMPLE:
         if ("$value".equals(currentPathSegment)) {
@@ -364,8 +366,8 @@ public class UriParserImpl extends UriParser {
       if (!matcher.matches())
         throw new UriSyntaxException(UriSyntaxException.INVALIDKEYPREDICATE.addContent(keyPredicate));
 
-      String name = matcher.group(1);
-      final String value = matcher.group(2);
+      String name = percentDecode(matcher.group(1));
+      final String value = percentDecode(matcher.group(2));
 
       if (name == null)
         if (keyProperties.size() == 1)
@@ -435,7 +437,8 @@ public class UriParserImpl extends UriParser {
   }
 
   private void distributeQueryParameters(final Map<String, String> queryParameters) throws UriSyntaxException {
-    for (String queryOptionString : queryParameters.keySet())
+    for (final String queryOptionString : queryParameters.keySet()) {
+      final String value = queryParameters.get(queryOptionString);
       if (queryOptionString.startsWith("$")) {
         SystemQueryOption queryOption;
         try {
@@ -443,14 +446,14 @@ public class UriParserImpl extends UriParser {
         } catch (IllegalArgumentException e) {
           throw new UriSyntaxException(UriSyntaxException.INVALIDSYSTEMQUERYOPTION.addContent(queryOptionString), e);
         }
-        final String value = queryParameters.get(queryOptionString);
         if ("".equals(value))
           throw new UriSyntaxException(UriSyntaxException.INVALIDNULLVALUE.addContent(queryOptionString));
         else
           systemQueryOptions.put(queryOption, value);
       } else {
-        otherQueryParameters.put(queryOptionString, queryParameters.get(queryOptionString));
+        otherQueryParameters.put(queryOptionString, value);
       }
+    }
   }
 
   private void checkSystemQueryOptionsCompatibility() throws UriSyntaxException {
@@ -720,6 +723,14 @@ public class UriParserImpl extends UriParser {
       copy.add(segment.getPath());
 
     return copy;
+  }
+
+  private static String percentDecode(final String value) throws UriSyntaxException {
+    try {
+      return Decoder.decode(value);
+    } catch (RuntimeException e) {
+      throw new UriSyntaxException(UriSyntaxException.URISYNTAX, e);
+    }
   }
 
   @Override

@@ -10,7 +10,9 @@ import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.core.Response;
 
-
+/**
+ * @author SAP AG
+ */
 public class ODataRedirectLocator implements ODataLocator {
 
   @GET

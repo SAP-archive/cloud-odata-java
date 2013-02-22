@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.http.HttpServletRequest;
+import javax.ws.rs.Encoded;
 import javax.ws.rs.HeaderParam;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -45,7 +46,9 @@ public class ODataRootLocator {
 
   /**
    * Default root behavior which will delegate all paths to a ODataLocator.
-   * @param pathSegments all segments have to be OData
+   * @param pathSegments        URI path segments - all segments have to be OData
+   * @param xHttpMethod         HTTP Header X-HTTP-Method for tunneling through POST
+   * @param xHttpMethodOverride HTTP Header X-HTTP-Method-Override for tunneling through POST
    * @return a locator handling OData protocol
    * @throws ODataException 
    * @throws ClassNotFoundException 
@@ -53,9 +56,13 @@ public class ODataRootLocator {
    * @throws InstantiationException 
    */
   @Path("/{pathSegments: .*}")
-  public ODataLocator handleRequest(@PathParam("pathSegments") List<PathSegment> pathSegments, @HeaderParam("X-HTTP-Method") String xHttpMethod, @HeaderParam("X-HTTP-Method-Override") String xHttpMethodOverride) throws ODataException, ClassNotFoundException, InstantiationException, IllegalAccessException {
+  public ODataLocator handleRequest(
+      @Encoded @PathParam("pathSegments") List<PathSegment> pathSegments,
+      @HeaderParam("X-HTTP-Method") String xHttpMethod,
+      @HeaderParam("X-HTTP-Method-Override") String xHttpMethodOverride)
+          throws ODataException, ClassNotFoundException, InstantiationException, IllegalAccessException {
 
-    if ((xHttpMethod != null) && (xHttpMethodOverride != null)) {
+    if (xHttpMethod != null && xHttpMethodOverride != null) {
 
       /*
        * X-HTTP-Method-Override : implemented by CXF

@@ -57,6 +57,7 @@ import com.sap.core.odata.core.ODataPathSegmentImpl;
 import com.sap.core.odata.core.PathInfoImpl;
 import com.sap.core.odata.core.commons.ContentType;
 import com.sap.core.odata.core.commons.ContentType.ODataFormat;
+import com.sap.core.odata.core.commons.Decoder;
 import com.sap.core.odata.core.commons.ODataHttpMethod;
 import com.sap.core.odata.core.uri.UriInfoImpl;
 import com.sap.core.odata.core.uri.UriParserImpl;
@@ -601,7 +602,7 @@ public final class ODataSubLocator implements ODataLocator {
     final ArrayList<PathSegment> converted = new ArrayList<PathSegment>();
 
     for (final javax.ws.rs.core.PathSegment pathSegment : pathSegments) {
-      final PathSegment segment = new ODataPathSegmentImpl(pathSegment.getPath(), pathSegment.getMatrixParameters());
+      final PathSegment segment = new ODataPathSegmentImpl(Decoder.decode(pathSegment.getPath()), pathSegment.getMatrixParameters());
       converted.add(segment);
     }
     return converted;
