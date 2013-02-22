@@ -45,6 +45,6 @@ public final class LinksXmlReadOnlyTest extends AbstractRefXmlTest {
     assertXpathEvaluatesTo("2", "count(/d:links/d:uri)", body);
     assertXpathExists("/d:links[d:uri = \"" + getEndpoint() + "Employees('4')" + "\"]", body);
     assertXpathExists("/d:links[d:uri = \"" + getEndpoint() + "Employees('5')" + "\"]", body);
-    assertFalse(body.contains("6"));
+    assertFalse(body.contains("'6'"));
   }
 }

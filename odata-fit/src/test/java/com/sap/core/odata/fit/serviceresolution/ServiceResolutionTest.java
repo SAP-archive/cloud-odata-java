@@ -221,14 +221,15 @@ public class ServiceResolutionTest extends BaseTest {
     server.setPathSplit(3);
     startServer();
 
-    final HttpGet get = new HttpGet(URI.create(server.getEndpoint().toString() + "aaa/bbb;n=2,3;m=1/ccc/"));
+    final String endpoint = server.getEndpoint().toString();
+    final HttpGet get = new HttpGet(URI.create(endpoint + "aaa/bbb;n=2,3;m=1/ccc/"));
     final HttpResponse response = httpClient.execute(get);
 
     assertEquals(HttpStatusCodes.OK.getStatusCode(), response.getStatusLine().getStatusCode());
 
     final ODataContext ctx = service.getProcessor().getContext();
     assertNotNull(ctx);
-    assertEquals(server.getEndpoint() + "aaa/bbb;n=2,3;m=1/ccc/", ctx.getPathInfo().getServiceRoot().toASCIIString());
+    assertEquals(endpoint + "aaa/bbb;n=2,3;m=1/ccc/", ctx.getPathInfo().getServiceRoot().toASCIIString());
   }
 
   @Test
@@ -236,16 +237,16 @@ public class ServiceResolutionTest extends BaseTest {
     server.setPathSplit(3);
     startServer();
 
-    final URI uri = new URI(server.getEndpoint().getScheme(), null, server.getEndpoint().getHost(), server.getEndpoint().getPort(), server.getEndpoint().getPath() + "/aaa/äдержb;n=2,3;m=1/c c/", null, null);
+    final URI uri = new URI(server.getEndpoint().getScheme(), null, server.getEndpoint().getHost(), server.getEndpoint().getPort(), server.getEndpoint().getPath() + "/aaa/äдержb;n=2, 3;m=1/c c/", null, null);
 
     final HttpGet get = new HttpGet(uri);
     final HttpResponse response = httpClient.execute(get);
 
     assertEquals(HttpStatusCodes.OK.getStatusCode(), response.getStatusLine().getStatusCode());
 
-    final ODataContext ctx = service.getProcessor().getContext();
-    assertNotNull(ctx);
-    assertEquals(server.getEndpoint() + "aaa/%C3%A4%D0%B4%D0%B5%D1%80%D0%B6b;n=2,3;m=1/c%20c/", ctx.getPathInfo().getServiceRoot().toASCIIString());
+    final ODataContext context = service.getProcessor().getContext();
+    assertNotNull(context);
+    assertEquals(server.getEndpoint() + "aaa/%C3%A4%D0%B4%D0%B5%D1%80%D0%B6b;n=2,%203;m=1/c%20c/", context.getPathInfo().getServiceRoot().toASCIIString());
   }
 
 }
