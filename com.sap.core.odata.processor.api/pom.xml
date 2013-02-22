@@ -6,7 +6,7 @@
 	<parent>
 		<groupId>com.sap.core.odata</groupId>
 		<artifactId>com.sap.core.odata.processor.parent</artifactId>
-		<version>0.0.0-SNAPSHOT</version>
+		<version>0.2.0-SNAPSHOT</version>
 		<relativePath>..</relativePath>
 	</parent>
 
@@ -14,10 +14,12 @@
 	<packaging>jar</packaging>
 
 	<dependencies>
+		<!-- JPA Support -->
 		<dependency>
-			<groupId>javax</groupId>
+			<groupId>org.eclipse.persistence</groupId>
 			<artifactId>javax.persistence</artifactId>
-			<version>2.0.3.v201010191057</version>
+			<version>${version.javax.persistence}</version>
+			<scope>provided</scope>
 		</dependency>
 
 		<!-- ODATA4SAP Support -->
@@ -27,22 +29,7 @@
 			<version>${version.odataforsap}</version>
 			<scope>provided</scope>
 		</dependency>
-		<!-- JPA Support -->
-		<dependency>
-			<groupId>org.eclipse.persistence</groupId>
-			<artifactId>eclipselink</artifactId>
-			<version>2.1.2</version>
-		</dependency>
-		<dependency>
-			<groupId>org.hsqldb</groupId>
-			<artifactId>hsqldb</artifactId>
-			<version>1.8.0.10</version>
-		</dependency>
-		<dependency>
-			<groupId>org.eclipse.persistence</groupId>
-			<artifactId>javax.persistence</artifactId>
-			<version>2.0.0</version>
-		</dependency>
+
 	</dependencies>
 	
 	<name>OData Processors - JPA Processor API</name>

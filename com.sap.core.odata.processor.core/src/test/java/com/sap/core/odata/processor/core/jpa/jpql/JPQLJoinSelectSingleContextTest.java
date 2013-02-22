@@ -97,6 +97,13 @@ public class JPQLJoinSelectSingleContextTest {
 		EasyMock.expect(entityUriInfo.getKeyPredicates()).andStubReturn(createKeyPredicates(toThrowException));
 		EasyMock.expect(entityUriInfo
 							.getTargetEntitySet()).andStubReturn(edmEntitySet);
+		EdmEntitySet startEdmEntitySet = EasyMock.createMock(EdmEntitySet.class);
+		EdmEntityType startEdmEntityType = EasyMock.createMock(EdmEntityType.class);
+		EasyMock.expect(startEdmEntityType.getName()).andStubReturn("SOHeader");
+		EasyMock.expect(startEdmEntitySet.getEntityType()).andStubReturn(startEdmEntityType);
+		EasyMock.expect(entityUriInfo.getStartEntitySet()).andStubReturn(
+				startEdmEntitySet);
+		EasyMock.replay(startEdmEntityType, startEdmEntitySet);
 		EasyMock.expect(edmEntitySet.getEntityType()).andStubReturn(edmEntityType);
 		EasyMock.expect(edmEntityType.getName()).andStubReturn("SOHeader");
 		EasyMock.replay(edmEntityType,edmEntitySet,entityUriInfo);
@@ -124,10 +131,10 @@ public class JPQLJoinSelectSingleContextTest {
 		List<JPAJoinClause> joinClauses = joinContext.getJPAJoinClauses();
 		assertNotNull(joinClauses);
 		assertTrue(joinClauses.size() > 0);
-		assertEquals(joinClauses.get(0).getEntityAlias(), "E1");
-		assertEquals(joinClauses.get(0).getEntityName(), "sItema");
-		assertEquals(joinClauses.get(0).getEntityRelationShip(), "s_Itema");
-		assertEquals(joinClauses.get(0).getEntityRelationShipAlias(), "R1");
+		assertEquals("E1",joinClauses.get(0).getEntityAlias());
+		assertEquals("SOHeader",joinClauses.get(0).getEntityName());
+		assertEquals("s_Itema",joinClauses.get(1).getEntityRelationShip());
+		assertEquals("R1",joinClauses.get(1).getEntityRelationShipAlias());
 	}
 	
 	@Test

@@ -63,17 +63,6 @@ public class SalesOrderHeader {
 	@OneToMany(mappedBy = "salesOrderHeader", cascade = CascadeType.ALL)
 	private List<Note> notes = new ArrayList<Note>();
 	
-	@OneToMany(mappedBy = "salesOrderHeader", cascade = CascadeType.ALL)
-	private List<Test> testItems = new ArrayList<Test>();
-
-	public List<Test> getTestItems() {
-		return testItems;
-	}
-
-	public void setTestItems(List<Test> testItems) {
-		this.testItems = testItems;
-	}
-
 	public long getSoId() {
 		return soId;
 	}
