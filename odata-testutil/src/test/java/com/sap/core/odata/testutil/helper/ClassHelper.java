@@ -27,7 +27,6 @@ public class ClassHelper {
   /**
    * 
    * @param exClasses
-   * @return
    */
   public static <T> List<T> getClassInstances(List<Class<T>> exClasses) {
     return getClassInstances(exClasses, EMPTY_CLASS_ARRAY, EMPTY_OBJECT_ARRAY);
@@ -37,7 +36,6 @@ public class ClassHelper {
    * 
    * @param exClasses
    * @param ctorParameters
-   * @return
    */
   public static <T> List<T> getClassInstances(List<Class<T>> exClasses, Object... ctorParameters) {
     final List<Class<?>> ctorParameterClasses = new ArrayList<Class<?>>();
@@ -52,7 +50,6 @@ public class ClassHelper {
    * @param exClasses
    * @param ctorParameterClasses
    * @param ctorParameters
-   * @return
    */
   public static <T> List<T> getClassInstances(List<Class<T>> exClasses, Class<?>[] ctorParameterClasses, Object[] ctorParameters) {
 
@@ -84,7 +81,6 @@ public class ClassHelper {
 
   /**
    * @param clazz
-   * @return
    */
   public static boolean isNotAbstractOrInterface(Class<?> clazz) {
     return !Modifier.isAbstract(clazz.getModifiers()) && !Modifier.isInterface(clazz.getModifiers());
@@ -93,7 +89,6 @@ public class ClassHelper {
   /**
    * @param packageName
    * @param assignableToClass
-   * @return
    */
   public static <T> List<Class<T>> getAssignableClasses(String packageName, Class<T> assignableToClass) {
     final List<Class<T>> foundClasses = new ArrayList<Class<T>>();
@@ -117,7 +112,6 @@ public class ClassHelper {
    * @param file
    * @param packageName
    * @param clazz
-   * @return
    */
   public static <T> Class<T> getClass(File file, String packageName, Class<T> clazz) {
     String className = file.getName();
@@ -131,7 +125,6 @@ public class ClassHelper {
   /**
    * @param className
    * @param clazz
-   * @return
    */
   @SuppressWarnings("unchecked")
   public static <T> Class<T> getClass(String className, Class<T> clazz) {

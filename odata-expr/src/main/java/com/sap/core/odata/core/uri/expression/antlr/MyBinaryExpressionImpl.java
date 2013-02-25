@@ -9,8 +9,7 @@ import com.sap.core.odata.api.uri.expression.ExceptionVisitExpression;
 import com.sap.core.odata.api.uri.expression.ExpressionKind;
 import com.sap.core.odata.api.uri.expression.ExpressionVisitor;
 
-public class MyBinaryExpressionImpl implements BinaryExpression
-{
+public class MyBinaryExpressionImpl implements BinaryExpression {
   private final BinaryOperator operator;
   CommonExpression leftSide;
   CommonExpression rightSide;
@@ -30,45 +29,38 @@ public class MyBinaryExpressionImpl implements BinaryExpression
   }
 
   @Override
-  public CommonExpression getLeftOperand()
-  {
+  public CommonExpression getLeftOperand() {
     return leftSide;
   }
 
   @Override
-  public CommonExpression getRightOperand()
-  {
+  public CommonExpression getRightOperand() {
     return rightSide;
   }
 
   @Override
-  public EdmType getEdmType()
-  {
+  public EdmType getEdmType() {
     return edmType;
   }
 
   @Override
-  public CommonExpression setEdmType(EdmType edmType)
-  {
+  public CommonExpression setEdmType(EdmType edmType) {
     this.edmType = edmType;
     return this;
   }
 
   @Override
-  public ExpressionKind getKind()
-  {
+  public ExpressionKind getKind() {
     return ExpressionKind.BINARY;
   }
 
   @Override
-  public String getUriLiteral()
-  {
+  public String getUriLiteral() {
     return null;
   }
 
   @Override
-  public Object accept(ExpressionVisitor visitor) throws ExceptionVisitExpression, ODataApplicationException
-  {
+  public Object accept(ExpressionVisitor visitor) throws ExceptionVisitExpression, ODataApplicationException {
     final Object retLeftSide = leftSide.accept(visitor);
     final Object retRightSide = rightSide.accept(visitor);
 

@@ -64,9 +64,9 @@ public class TestResult implements Comparable<TestResult> {
       addResponseHeader(header.getName(), header.getValue());
     }
   }
-  
+
   private String normalizeHeaderName(String name) {
-    if(name == null) {
+    if (name == null) {
       throw new IllegalArgumentException("NULL header names are not allowed.");
     }
     return name.toLowerCase(Locale.ENGLISH);

@@ -14,7 +14,7 @@ import com.sap.core.odata.testutil.server.TestServer;
 public class FitStaticServiceFactory extends ODataServiceFactory {
 
   private static Map<String, ODataService> HOST_2_SERVICE = Collections.synchronizedMap(new HashMap<String, ODataService>());
-  
+
   public static void bindService(TestServer server, ODataService service) {
     HOST_2_SERVICE.put(createId(server), service);
   }
@@ -25,11 +25,11 @@ public class FitStaticServiceFactory extends ODataServiceFactory {
 
   @Override
   public ODataService createService(ODataContext ctx) throws ODataException {
-    Map<String, String> requestHeaders = ctx.getHttpRequestHeaders();
-    String host = requestHeaders.get("Host");
+    final Map<String, String> requestHeaders = ctx.getHttpRequestHeaders();
+    final String host = requestHeaders.get("Host");
     // access and validation in synchronized block
     synchronized (HOST_2_SERVICE) {
-      ODataService service = HOST_2_SERVICE.get(host);
+      final ODataService service = HOST_2_SERVICE.get(host);
       if (service == null) {
         throw new IllegalArgumentException("no static service set for JUnit test");
       }
@@ -38,8 +38,8 @@ public class FitStaticServiceFactory extends ODataServiceFactory {
   }
 
   private static String createId(TestServer server) {
-    URI endpoint = server.getEndpoint();
-    if(endpoint == null) {
+    final URI endpoint = server.getEndpoint();
+    if (endpoint == null) {
       throw new IllegalArgumentException("Got TestServer without endpoint.");
     }
     return endpoint.getHost() + ":" + endpoint.getPort();

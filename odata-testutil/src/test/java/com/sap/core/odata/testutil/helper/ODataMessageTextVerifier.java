@@ -75,8 +75,9 @@ public class ODataMessageTextVerifier {
       // if field from type MessageReference
       if (field.getType().isAssignableFrom(MessageReference.class)) {
         final int modifiers = field.getModifiers();
-        if (!Modifier.isStatic(modifiers))
+        if (!Modifier.isStatic(modifiers)) {
           continue;
+        }
         // field should be public
         assertTrue("MsgRef Error--> Error: field should be public.", Modifier.isPublic(modifiers));
         // field should be final

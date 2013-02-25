@@ -26,7 +26,7 @@ public abstract class AbstractFitTest extends BaseTest {
   public AbstractFitTest() {
     server = new TestServer(this.getClass().getSimpleName());
   }
-  
+
   protected URI getEndpoint() {
     return server.getEndpoint();
   }
@@ -48,7 +48,7 @@ public abstract class AbstractFitTest extends BaseTest {
       server.startServer(service);
     } catch (final ODataException e) {
       throw new TestutilException(e);
-    } 
+    }
   }
 
   @After
@@ -57,6 +57,6 @@ public abstract class AbstractFitTest extends BaseTest {
       server.stopServer();
     } catch (final Exception e) {
       throw new TestutilException(e);
-    } 
+    }
   }
 }

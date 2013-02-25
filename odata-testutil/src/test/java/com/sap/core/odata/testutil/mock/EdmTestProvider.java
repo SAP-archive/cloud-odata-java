@@ -141,15 +141,15 @@ public class EdmTestProvider extends EdmProvider {
 
     schema.setEntityContainers(Arrays.asList(entityContainer));
 
-    List<AnnotationElement> childElements = new ArrayList<AnnotationElement>();
+    final List<AnnotationElement> childElements = new ArrayList<AnnotationElement>();
     childElements.add(new AnnotationElement().setName("schemaElementTest2").setText("text2").setNamespace(NAMESPACE_1));
     childElements.add(new AnnotationElement().setName("schemaElementTest3").setText("text3").setPrefix("prefix").setNamespace("namespace"));
-    List<AnnotationAttribute> elementAttributes = new ArrayList<AnnotationAttribute>();
+    final List<AnnotationAttribute> elementAttributes = new ArrayList<AnnotationAttribute>();
     elementAttributes.add(new AnnotationAttribute().setName("rel").setText("self"));
     elementAttributes.add(new AnnotationAttribute().setName("href").setText("http://google.com").setPrefix("pre").setNamespace("namespaceForAnno"));
     childElements.add(new AnnotationElement().setName("schemaElementTest4").setText("text4").setAttributes(elementAttributes));
 
-    List<AnnotationElement> schemaElements = new ArrayList<AnnotationElement>();
+    final List<AnnotationElement> schemaElements = new ArrayList<AnnotationElement>();
     schemaElements.add(new AnnotationElement().setName("schemaElementTest1").setText("text1").setChildElements(childElements));
 
     schema.setAnnotationElements(schemaElements);
@@ -184,10 +184,10 @@ public class EdmTestProvider extends EdmProvider {
         final ArrayList<AnnotationAttribute> annoList2 = new ArrayList<AnnotationAttribute>();
         annoList2.add(new AnnotationAttribute().setName("annoName").setNamespace("http://annoNamespace").setPrefix("annoPrefix").setText("annoText"));
 
-        List<AnnotationElement> annoElementsForSimpleProp = new ArrayList<AnnotationElement>();
+        final List<AnnotationElement> annoElementsForSimpleProp = new ArrayList<AnnotationElement>();
         annoElementsForSimpleProp.add(new AnnotationElement().setName("propertyAnnoElement").setText("text"));
         annoElementsForSimpleProp.add(new AnnotationElement().setName("propertyAnnoElement2"));
-        SimpleProperty simpleProp = new SimpleProperty().setName("EmployeeName").setType(EdmSimpleTypeKind.String)
+        final SimpleProperty simpleProp = new SimpleProperty().setName("EmployeeName").setType(EdmSimpleTypeKind.String)
             .setCustomizableFeedMappings(new CustomizableFeedMappings()
                 .setFcTargetPath(EdmTargetPath.SYNDICATION_TITLE)).setAnnotationAttributes(annoList2).setAnnotationElements(annoElementsForSimpleProp);
 
