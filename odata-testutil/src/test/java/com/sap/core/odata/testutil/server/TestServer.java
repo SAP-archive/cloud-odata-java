@@ -75,20 +75,16 @@ public class TestServer {
         final ServletContextHandler contextHandler = new ServletContextHandler(ServletContextHandler.SESSIONS);
         contextHandler.addServlet(odataServletHolder, path + "/*");
 
-        final InetSocketAddress isa = new InetSocketAddress(DEFAULT_HOST, port);
         try {
-          final ServerSocket ss = new ServerSocket(port);
-          if (ss.isBound()) {
-            log.trace("Created socket " + ss.isBound());
-            server = new Server(isa);
-            server.setHandler(contextHandler);
-            server.start();
-            endpoint = new URI(DEFAULT_SCHEME, null, DEFAULT_HOST, isa.getPort(), path, null, null);
-            log.trace("Started server at endpoint " + endpoint.toASCIIString());
-            break;
-          }
+          final InetSocketAddress isa = new InetSocketAddress(DEFAULT_HOST, port);
+          server = new Server(isa);
+          server.setHandler(contextHandler);
+          server.start();
+          endpoint = new URI(DEFAULT_SCHEME, null, DEFAULT_HOST, isa.getPort(), path, null, null);
+          log.trace("Started server at endpoint " + endpoint.toASCIIString());
+          break;
         } catch (final BindException e) {
-          log.trace("port is busy... " + isa.getPort() + " [" + e.getMessage() + "]");
+          log.trace("port is busy... " + port + " [" + e.getMessage() + "]");
         }
       }
 
@@ -96,8 +92,9 @@ public class TestServer {
         throw new BindException("no free port in range of [" + PORT_MIN + ".." + PORT_MAX + "]");
       }
 
-    } catch (final Exception e) {
-      throw new ServerException(e);
+    } catch (final Throwable e) {
+      log.error(e);
+      new RuntimeException(e);
     }
   }
 

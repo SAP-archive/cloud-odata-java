@@ -25,6 +25,9 @@ import com.sap.core.odata.api.uri.info.GetServiceDocumentUriInfo;
 
 public class FitLoadTest extends AbstractBasicTest {
 
+  /*
+   * increase for load analysis > 10.000
+   */
   private static int LOOP_COUNT = 1;
 
   @Override
