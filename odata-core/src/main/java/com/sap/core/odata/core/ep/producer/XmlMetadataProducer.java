@@ -81,7 +81,7 @@ public class XmlMetadataProducer {
           xmlStreamWriter.writeAttribute("Namespace", schema.getNamespace());
           xmlStreamWriter.writeDefaultNamespace(Edm.NAMESPACE_EDM_2008_09);
 
-          writeAnnotationAttributes(schema.getAnnotationAttributes(), predefinedNamespaces, xmlStreamWriter);
+          writeAnnotationAttributes(schema.getAnnotationAttributes(), predefinedNamespaces, null, xmlStreamWriter);
 
           Collection<Using> usings = schema.getUsings();
           if (usings != null) {
@@ -89,7 +89,7 @@ public class XmlMetadataProducer {
               xmlStreamWriter.writeStartElement("Using");
               xmlStreamWriter.writeAttribute("Namespace", using.getNamespace());
               xmlStreamWriter.writeAttribute("Alias", using.getAlias());
-              writeAnnotationAttributes(using.getAnnotationAttributes(), predefinedNamespaces, xmlStreamWriter);
+              writeAnnotationAttributes(using.getAnnotationAttributes(), predefinedNamespaces, null, xmlStreamWriter);
               writeDocumentation(using.getDocumentation(), predefinedNamespaces, xmlStreamWriter);
               writeAnnotationElements(using.getAnnotationElements(), predefinedNamespaces, xmlStreamWriter);
               xmlStreamWriter.writeEndElement();
@@ -113,7 +113,7 @@ public class XmlMetadataProducer {
 
               writeCustomizableFeedMappings(entityType.getCustomizableFeedMappings(), xmlStreamWriter);
 
-              writeAnnotationAttributes(entityType.getAnnotationAttributes(), predefinedNamespaces, xmlStreamWriter);
+              writeAnnotationAttributes(entityType.getAnnotationAttributes(), predefinedNamespaces, null, xmlStreamWriter);
 
               writeDocumentation(entityType.getDocumentation(), predefinedNamespaces, xmlStreamWriter);
 
@@ -121,13 +121,13 @@ public class XmlMetadataProducer {
               if (key != null) {
                 xmlStreamWriter.writeStartElement("Key");
 
-                writeAnnotationAttributes(key.getAnnotationAttributes(), predefinedNamespaces, xmlStreamWriter);
+                writeAnnotationAttributes(key.getAnnotationAttributes(), predefinedNamespaces, null, xmlStreamWriter);
 
                 Collection<PropertyRef> propertyRefs = entityType.getKey().getKeys();
                 for (PropertyRef propertyRef : propertyRefs) {
                   xmlStreamWriter.writeStartElement("PropertyRef");
 
-                  writeAnnotationAttributes(propertyRef.getAnnotationAttributes(), predefinedNamespaces, xmlStreamWriter);
+                  writeAnnotationAttributes(propertyRef.getAnnotationAttributes(), predefinedNamespaces, null, xmlStreamWriter);
 
                   xmlStreamWriter.writeAttribute("Name", propertyRef.getName());
 
@@ -155,7 +155,7 @@ public class XmlMetadataProducer {
                   xmlStreamWriter.writeAttribute("FromRole", navigationProperty.getFromRole());
                   xmlStreamWriter.writeAttribute("ToRole", navigationProperty.getToRole());
 
-                  writeAnnotationAttributes(navigationProperty.getAnnotationAttributes(), predefinedNamespaces, xmlStreamWriter);
+                  writeAnnotationAttributes(navigationProperty.getAnnotationAttributes(), predefinedNamespaces, null, xmlStreamWriter);
 
                   writeDocumentation(navigationProperty.getDocumentation(), predefinedNamespaces, xmlStreamWriter);
 
@@ -183,7 +183,7 @@ public class XmlMetadataProducer {
                 xmlStreamWriter.writeAttribute("Abstract", "true");
               }
 
-              writeAnnotationAttributes(complexType.getAnnotationAttributes(), predefinedNamespaces, xmlStreamWriter);
+              writeAnnotationAttributes(complexType.getAnnotationAttributes(), predefinedNamespaces, null, xmlStreamWriter);
 
               writeDocumentation(complexType.getDocumentation(), predefinedNamespaces, xmlStreamWriter);
 
@@ -204,7 +204,7 @@ public class XmlMetadataProducer {
               xmlStreamWriter.writeStartElement("Association");
               xmlStreamWriter.writeAttribute("Name", association.getName());
 
-              writeAnnotationAttributes(association.getAnnotationAttributes(), predefinedNamespaces, xmlStreamWriter);
+              writeAnnotationAttributes(association.getAnnotationAttributes(), predefinedNamespaces, null, xmlStreamWriter);
 
               writeDocumentation(association.getDocumentation(), predefinedNamespaces, xmlStreamWriter);
 
@@ -214,13 +214,13 @@ public class XmlMetadataProducer {
               ReferentialConstraint referentialConstraint = association.getReferentialConstraint();
               if (referentialConstraint != null) {
                 xmlStreamWriter.writeStartElement("ReferentialConstraint");
-                writeAnnotationAttributes(referentialConstraint.getAnnotationAttributes(), predefinedNamespaces, xmlStreamWriter);
+                writeAnnotationAttributes(referentialConstraint.getAnnotationAttributes(), predefinedNamespaces, null, xmlStreamWriter);
                 writeDocumentation(referentialConstraint.getDocumentation(), predefinedNamespaces, xmlStreamWriter);
 
                 ReferentialConstraintRole principal = referentialConstraint.getPrincipal();
                 xmlStreamWriter.writeStartElement("Principal");
                 xmlStreamWriter.writeAttribute("Role", principal.getRole());
-                writeAnnotationAttributes(principal.getAnnotationAttributes(), predefinedNamespaces, xmlStreamWriter);
+                writeAnnotationAttributes(principal.getAnnotationAttributes(), predefinedNamespaces, null, xmlStreamWriter);
 
                 for (PropertyRef propertyRef : principal.getPropertyRefs()) {
                   xmlStreamWriter.writeStartElement("PropertyRef");
@@ -233,7 +233,7 @@ public class XmlMetadataProducer {
                 ReferentialConstraintRole dependent = referentialConstraint.getDependent();
                 xmlStreamWriter.writeStartElement("Dependent");
                 xmlStreamWriter.writeAttribute("Role", dependent.getRole());
-                writeAnnotationAttributes(dependent.getAnnotationAttributes(), predefinedNamespaces, xmlStreamWriter);
+                writeAnnotationAttributes(dependent.getAnnotationAttributes(), predefinedNamespaces, null, xmlStreamWriter);
 
                 for (PropertyRef propertyRef : dependent.getPropertyRefs()) {
                   xmlStreamWriter.writeStartElement("PropertyRef");
@@ -265,7 +265,7 @@ public class XmlMetadataProducer {
                 xmlStreamWriter.writeAttribute(Edm.PREFIX_M, Edm.NAMESPACE_M_2007_08, "IsDefaultEntityContainer", "true");
               }
 
-              writeAnnotationAttributes(entityContainer.getAnnotationAttributes(), predefinedNamespaces, xmlStreamWriter);
+              writeAnnotationAttributes(entityContainer.getAnnotationAttributes(), predefinedNamespaces, null, xmlStreamWriter);
 
               writeDocumentation(entityContainer.getDocumentation(), predefinedNamespaces, xmlStreamWriter);
 
@@ -276,7 +276,7 @@ public class XmlMetadataProducer {
                   xmlStreamWriter.writeAttribute("Name", entitySet.getName());
                   xmlStreamWriter.writeAttribute("EntityType", entitySet.getEntityType().toString());
 
-                  writeAnnotationAttributes(entitySet.getAnnotationAttributes(), predefinedNamespaces, xmlStreamWriter);
+                  writeAnnotationAttributes(entitySet.getAnnotationAttributes(), predefinedNamespaces, null, xmlStreamWriter);
 
                   writeDocumentation(entitySet.getDocumentation(), predefinedNamespaces, xmlStreamWriter);
 
@@ -293,7 +293,7 @@ public class XmlMetadataProducer {
                   xmlStreamWriter.writeAttribute("Name", associationSet.getName());
                   xmlStreamWriter.writeAttribute("Association", associationSet.getAssociation().toString());
 
-                  writeAnnotationAttributes(associationSet.getAnnotationAttributes(), predefinedNamespaces, xmlStreamWriter);
+                  writeAnnotationAttributes(associationSet.getAnnotationAttributes(), predefinedNamespaces, null, xmlStreamWriter);
 
                   writeDocumentation(associationSet.getDocumentation(), predefinedNamespaces, xmlStreamWriter);
 
@@ -321,7 +321,7 @@ public class XmlMetadataProducer {
                     xmlStreamWriter.writeAttribute(Edm.PREFIX_M, Edm.NAMESPACE_M_2007_08, "HttpMethod", functionImport.getHttpMethod());
                   }
 
-                  writeAnnotationAttributes(functionImport.getAnnotationAttributes(), predefinedNamespaces, xmlStreamWriter);
+                  writeAnnotationAttributes(functionImport.getAnnotationAttributes(), predefinedNamespaces, null, xmlStreamWriter);
 
                   writeDocumentation(functionImport.getDocumentation(), predefinedNamespaces, xmlStreamWriter);
 
@@ -337,7 +337,7 @@ public class XmlMetadataProducer {
 
                       writeFacets(xmlStreamWriter, functionImportParameter.getFacets());
 
-                      writeAnnotationAttributes(functionImportParameter.getAnnotationAttributes(), predefinedNamespaces, xmlStreamWriter);
+                      writeAnnotationAttributes(functionImportParameter.getAnnotationAttributes(), predefinedNamespaces, null, xmlStreamWriter);
 
                       writeDocumentation(functionImportParameter.getDocumentation(), predefinedNamespaces, xmlStreamWriter);
 
@@ -420,7 +420,7 @@ public class XmlMetadataProducer {
 
       writeCustomizableFeedMappings(property.getCustomizableFeedMappings(), xmlStreamWriter);
 
-      writeAnnotationAttributes(property.getAnnotationAttributes(), predefinedNamespaces, xmlStreamWriter);
+      writeAnnotationAttributes(property.getAnnotationAttributes(), predefinedNamespaces, null, xmlStreamWriter);
 
       writeDocumentation(property.getDocumentation(), predefinedNamespaces, xmlStreamWriter);
 
@@ -470,7 +470,7 @@ public class XmlMetadataProducer {
       xmlStreamWriter.writeAttribute("Role", end.getRole());
     }
 
-    writeAnnotationAttributes(end.getAnnotationAttributes(), predefinedNamespaces, xmlStreamWriter);
+    writeAnnotationAttributes(end.getAnnotationAttributes(), predefinedNamespaces, null, xmlStreamWriter);
 
     writeDocumentation(end.getDocumentation(), predefinedNamespaces, xmlStreamWriter);
 
@@ -478,7 +478,7 @@ public class XmlMetadataProducer {
     if (onDelete != null) {
       xmlStreamWriter.writeStartElement("OnDelete");
       xmlStreamWriter.writeAttribute("Action", onDelete.getAction().toString());
-      writeAnnotationAttributes(onDelete.getAnnotationAttributes(), predefinedNamespaces, xmlStreamWriter);
+      writeAnnotationAttributes(onDelete.getAnnotationAttributes(), predefinedNamespaces, null, xmlStreamWriter);
       writeDocumentation(onDelete.getDocumentation(), predefinedNamespaces, xmlStreamWriter);
       writeAnnotationElements(onDelete.getAnnotationElements(), predefinedNamespaces, xmlStreamWriter);
       xmlStreamWriter.writeEndElement();
@@ -495,7 +495,7 @@ public class XmlMetadataProducer {
     if (end.getRole() != null) {
       xmlStreamWriter.writeAttribute("Role", end.getRole());
     }
-    writeAnnotationAttributes(end.getAnnotationAttributes(), predefinedNamespaces, xmlStreamWriter);
+    writeAnnotationAttributes(end.getAnnotationAttributes(), predefinedNamespaces, null, xmlStreamWriter);
     writeDocumentation(end.getDocumentation(), predefinedNamespaces, xmlStreamWriter);
     writeAnnotationElements(end.getAnnotationElements(), predefinedNamespaces, xmlStreamWriter);
     xmlStreamWriter.writeEndElement();
@@ -504,7 +504,7 @@ public class XmlMetadataProducer {
   private static void writeDocumentation(Documentation documentation, Map<String, String> predefinedNamespaces, XMLStreamWriter xmlStreamWriter) throws XMLStreamException {
     if (documentation != null) {
       xmlStreamWriter.writeStartElement("Documentation");
-      writeAnnotationAttributes(documentation.getAnnotationAttributes(), predefinedNamespaces, xmlStreamWriter);
+      writeAnnotationAttributes(documentation.getAnnotationAttributes(), predefinedNamespaces, null, xmlStreamWriter);
 
       xmlStreamWriter.writeStartElement("Summary");
       xmlStreamWriter.writeCharacters(documentation.getSummary());
@@ -519,10 +519,12 @@ public class XmlMetadataProducer {
     }
   }
 
-  private static void writeAnnotationAttributes(Collection<AnnotationAttribute> annotationAttributes, Map<String, String> predefinedNamespaces, XMLStreamWriter xmlStreamWriter) throws XMLStreamException {
+  private static void writeAnnotationAttributes(Collection<AnnotationAttribute> annotationAttributes, Map<String, String> predefinedNamespaces, ArrayList<String> setNamespaces, XMLStreamWriter xmlStreamWriter) throws XMLStreamException {
     if (annotationAttributes != null) {
-      ArrayList<String> setNamespaces = new ArrayList<String>();
-      for (AnnotationAttribute annotationAttribute : annotationAttributes) {
+      if(setNamespaces == null){
+        setNamespaces = new ArrayList<String>();   
+      }
+      for (AnnotationAttribute annotationAttribute : annotationAttributes) {    
         xmlStreamWriter.writeAttribute(annotationAttribute.getPrefix(), annotationAttribute.getNamespace(), annotationAttribute.getName(), annotationAttribute.getText());
         if (setNamespaces.contains(annotationAttribute.getNamespace()) == false && predefinedNamespaces.containsValue(annotationAttribute.getNamespace()) == false) {
           if (annotationAttribute.getNamespace() != null) {
@@ -536,18 +538,17 @@ public class XmlMetadataProducer {
 
   private static void writeAnnotationElements(Collection<AnnotationElement> annotationElements, Map<String, String> predefinedNamespaces, XMLStreamWriter xmlStreamWriter) throws XMLStreamException {
     if (annotationElements != null) {
-      ArrayList<String> setNamespaces = new ArrayList<String>();
       for (AnnotationElement annotationElement : annotationElements) {
+        ArrayList<String> setNamespaces = new ArrayList<String>();
         xmlStreamWriter.writeStartElement(annotationElement.getPrefix(), annotationElement.getName(), annotationElement.getNamespace());
-
-        if (!setNamespaces.contains(annotationElement.getNamespace()) && !predefinedNamespaces.containsValue(annotationElement.getNamespace())) {
+        if (!predefinedNamespaces.containsValue(annotationElement.getNamespace())) {
           if (annotationElement.getNamespace() != null) {
             xmlStreamWriter.writeNamespace(annotationElement.getPrefix(), annotationElement.getNamespace());
             setNamespaces.add(annotationElement.getNamespace());
           }
         }
 
-        writeAnnotationAttributes(annotationElement.getAttributes(), predefinedNamespaces, xmlStreamWriter);
+        writeAnnotationAttributes(annotationElement.getAttributes(), predefinedNamespaces,setNamespaces, xmlStreamWriter);
 
         if (annotationElement.getChildElements() != null) {
           writeAnnotationElements(annotationElement.getChildElements(), predefinedNamespaces, xmlStreamWriter);
