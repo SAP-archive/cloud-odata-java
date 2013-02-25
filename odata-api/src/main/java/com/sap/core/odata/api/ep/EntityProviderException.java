@@ -3,6 +3,11 @@ package com.sap.core.odata.api.ep;
 import com.sap.core.odata.api.exception.MessageReference;
 import com.sap.core.odata.api.exception.ODataMessageException;
 
+/**
+ * An {@link EntityProviderException} is the base exception for all <code>EntityProvider</code> related exceptions.
+ * It extends the {@link ODataMessageException} and provides several {@link MessageReference} for specification of 
+ * the thrown exception.
+ */
 public class EntityProviderException extends ODataMessageException {
 
   private static final long serialVersionUID = 1L;

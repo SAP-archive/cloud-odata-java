@@ -4,10 +4,11 @@ import java.net.URI;
 
 import com.sap.core.odata.api.commons.HttpHeaders;
 import com.sap.core.odata.api.commons.InlineCount;
+import com.sap.core.odata.api.ep.entry.ODataEntry;
 
 /**
- * Options for (de-)serialization.
- * @author SAP AG
+ * {@link EntityProviderProperties} contains all additional properties which are necessary to <b>write (serialize)</b> an
+ * {@link ODataEntry} into an specific format (e.g. <code>XML</code> or <code>JSON</code> or ...).
  */
 public class EntityProviderProperties {
 
