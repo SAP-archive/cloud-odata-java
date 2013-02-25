@@ -114,12 +114,13 @@ public class BasicEntityProvider {
    * @return resulting {@link ODataResponse} with written content
    * @throws EntityProviderException
    */
-  public ODataResponse writePropertyValue(final EdmProperty edmProperty, Object value) throws EntityProviderException {
+  public ODataResponse writePropertyValue(final EdmProperty edmProperty, final Object value) throws EntityProviderException {
     try {
       final EdmSimpleType type = (EdmSimpleType) edmProperty.getType();
 
       if (type == EdmSimpleTypeKind.Binary.getEdmSimpleTypeInstance()) {
         String contentType = HttpContentType.APPLICATION_OCTET_STREAM;
+        Object binary = value;
         if (edmProperty.getMimeType() != null) {
           contentType = edmProperty.getMimeType();
         } else {
@@ -127,14 +128,14 @@ public class BasicEntityProvider {
             String mimeTypeMapping = edmProperty.getMapping().getMimeType();
             if (value instanceof Map) {
               final Map<?, ?> mappedData = (Map<?, ?>) value;
-              value = mappedData.get(edmProperty.getName());
+              binary = mappedData.get(edmProperty.getName());
               contentType = (String) mappedData.get(mimeTypeMapping);
             } else {
               throw new EntityProviderException(EntityProviderException.COMMON);
             }
           }
         }
-        return writeBinary(contentType, (byte[]) value);
+        return writeBinary(contentType, (byte[]) binary);
 
       } else {
         return writeText(type.valueToString(value, EdmLiteralKind.DEFAULT, edmProperty.getFacets()));
