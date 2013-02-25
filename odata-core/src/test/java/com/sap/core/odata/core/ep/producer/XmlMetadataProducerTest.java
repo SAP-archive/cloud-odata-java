@@ -142,6 +142,123 @@ public class XmlMetadataProducerTest extends BaseTest {
     assertXpathExists("/edmx:Edmx/edmx:DataServices/a:Schema/a:test", metadata);
   }
 
+  //Elements with namespace and attributes without namespace
+  @Test
+  public void writeValidMetadata4() throws Exception {
+
+    List<Schema> schemas = new ArrayList<Schema>();
+
+    List<AnnotationAttribute> attributesElement1 = new ArrayList<AnnotationAttribute>();
+    attributesElement1.add(new AnnotationAttribute().setName("rel").setText("self"));
+    attributesElement1.add(new AnnotationAttribute().setName("href").setText("link"));
+
+    List<AnnotationElement> schemaElements = new ArrayList<AnnotationElement>();
+    schemaElements.add(new AnnotationElement().setName("schemaElementTest1").setPrefix("atom").setNamespace("http://www.w3.org/2005/Atom").setAttributes(attributesElement1));
+    schemaElements.add(new AnnotationElement().setName("schemaElementTest2").setPrefix("atom").setNamespace("http://www.w3.org/2005/Atom").setAttributes(attributesElement1));
+
+    Schema schema = new Schema().setAnnotationElements(schemaElements);
+    schema.setNamespace("http://namespace.com");
+    schemas.add(schema);
+
+    DataServices data = new DataServices().setSchemas(schemas).setDataServiceVersion(ODataServiceVersion.V20);
+    OutputStreamWriter writer = null;
+    CircleStreamBuffer csb = new CircleStreamBuffer();
+    writer = new OutputStreamWriter(csb.getOutputStream(), "UTF-8");
+    XmlMetadataProducer.writeMetadata(data, writer, null);
+    String metadata = StringHelper.inputStreamToString(csb.getInputStream());
+
+    Map<String, String> prefixMap = new HashMap<String, String>();
+    prefixMap.put("edmx", "http://schemas.microsoft.com/ado/2007/06/edmx");
+    prefixMap.put("a", "http://schemas.microsoft.com/ado/2008/09/edm");
+    prefixMap.put("atom", "http://www.w3.org/2005/Atom");
+
+    NamespaceContext ctx = new SimpleNamespaceContext(prefixMap);
+    XMLUnit.setXpathNamespaceContext(ctx);
+
+    assertXpathExists("/edmx:Edmx/edmx:DataServices/a:Schema/atom:schemaElementTest1", metadata);
+    assertXpathExists("/edmx:Edmx/edmx:DataServices/a:Schema/atom:schemaElementTest2", metadata);
+  }
+  
+  //Element with namespace and attributes with same namespace
+  @Test
+  public void writeValidMetadata5() throws Exception {
+
+    List<Schema> schemas = new ArrayList<Schema>();
+
+    List<AnnotationAttribute> attributesElement1 = new ArrayList<AnnotationAttribute>();
+    attributesElement1.add(new AnnotationAttribute().setName("rel").setText("self").setPrefix("atom").setNamespace("http://www.w3.org/2005/Atom"));
+    attributesElement1.add(new AnnotationAttribute().setName("href").setText("link").setPrefix("atom").setNamespace("http://www.w3.org/2005/Atom"));
+
+    List<AnnotationElement> schemaElements = new ArrayList<AnnotationElement>();
+    schemaElements.add(new AnnotationElement().setName("schemaElementTest1").setPrefix("atom").setNamespace("http://www.w3.org/2005/Atom").setAttributes(attributesElement1));
+    schemaElements.add(new AnnotationElement().setName("schemaElementTest2").setPrefix("atom").setNamespace("http://www.w3.org/2005/Atom").setAttributes(attributesElement1));
+
+    Schema schema = new Schema().setAnnotationElements(schemaElements);
+    schema.setNamespace("http://namespace.com");
+    schemas.add(schema);
+
+    DataServices data = new DataServices().setSchemas(schemas).setDataServiceVersion(ODataServiceVersion.V20);
+    OutputStreamWriter writer = null;
+    CircleStreamBuffer csb = new CircleStreamBuffer();
+    writer = new OutputStreamWriter(csb.getOutputStream(), "UTF-8");
+    XmlMetadataProducer.writeMetadata(data, writer, null);
+    String metadata = StringHelper.inputStreamToString(csb.getInputStream());
+
+    Map<String, String> prefixMap = new HashMap<String, String>();
+    prefixMap.put("edmx", "http://schemas.microsoft.com/ado/2007/06/edmx");
+    prefixMap.put("a", "http://schemas.microsoft.com/ado/2008/09/edm");
+    prefixMap.put("atom", "http://www.w3.org/2005/Atom");
+
+    NamespaceContext ctx = new SimpleNamespaceContext(prefixMap);
+    XMLUnit.setXpathNamespaceContext(ctx);
+
+    assertXpathExists("/edmx:Edmx/edmx:DataServices/a:Schema/atom:schemaElementTest1", metadata);
+    assertXpathExists("/edmx:Edmx/edmx:DataServices/a:Schema/atom:schemaElementTest2", metadata);
+  }
+  
+  //Element with namespace childelements with same namespace
+  @Test
+  public void writeValidMetadata6() throws Exception {
+
+    List<Schema> schemas = new ArrayList<Schema>();
+
+    List<AnnotationAttribute> attributesElement1 = new ArrayList<AnnotationAttribute>();
+    attributesElement1.add(new AnnotationAttribute().setName("rel").setText("self").setPrefix("atom").setNamespace("http://www.w3.org/2005/Atom"));
+    attributesElement1.add(new AnnotationAttribute().setName("href").setText("link").setPrefix("atom").setNamespace("http://www.w3.org/2005/Atom"));
+
+     
+    List<AnnotationElement> elementElements = new ArrayList<AnnotationElement>();
+    elementElements.add(new AnnotationElement().setName("schemaElementTest2").setPrefix("atom").setNamespace("http://www.w3.org/2005/Atom").setAttributes(attributesElement1));
+    elementElements.add(new AnnotationElement().setName("schemaElementTest3").setPrefix("atom").setNamespace("http://www.w3.org/2005/Atom").setAttributes(attributesElement1));
+    
+    List<AnnotationElement> schemaElements = new ArrayList<AnnotationElement>();
+    schemaElements.add(new AnnotationElement().setName("schemaElementTest1").setPrefix("atom").setNamespace("http://www.w3.org/2005/Atom").setAttributes(attributesElement1).setChildElements(elementElements));
+  
+    
+    Schema schema = new Schema().setAnnotationElements(schemaElements);
+    schema.setNamespace("http://namespace.com");
+    schemas.add(schema);
+
+    DataServices data = new DataServices().setSchemas(schemas).setDataServiceVersion(ODataServiceVersion.V20);
+    OutputStreamWriter writer = null;
+    CircleStreamBuffer csb = new CircleStreamBuffer();
+    writer = new OutputStreamWriter(csb.getOutputStream(), "UTF-8");
+    XmlMetadataProducer.writeMetadata(data, writer, null);
+    String metadata = StringHelper.inputStreamToString(csb.getInputStream());
+
+    Map<String, String> prefixMap = new HashMap<String, String>();
+    prefixMap.put("edmx", "http://schemas.microsoft.com/ado/2007/06/edmx");
+    prefixMap.put("a", "http://schemas.microsoft.com/ado/2008/09/edm");
+    prefixMap.put("atom", "http://www.w3.org/2005/Atom");
+
+    NamespaceContext ctx = new SimpleNamespaceContext(prefixMap);
+    XMLUnit.setXpathNamespaceContext(ctx);
+
+    assertXpathExists("/edmx:Edmx/edmx:DataServices/a:Schema/atom:schemaElementTest1", metadata);
+    assertXpathExists("/edmx:Edmx/edmx:DataServices/a:Schema/atom:schemaElementTest1/atom:schemaElementTest2", metadata);
+    assertXpathExists("/edmx:Edmx/edmx:DataServices/a:Schema/atom:schemaElementTest1/atom:schemaElementTest3", metadata);
+  }
+
   //If no name for an AnnotationAttribute is set this has to result in a NullPointerException
   @Test(expected = NullPointerException.class)
   public void writeInvalidMetadata() throws Exception {
