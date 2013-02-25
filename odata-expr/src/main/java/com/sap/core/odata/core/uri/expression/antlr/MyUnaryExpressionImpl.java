@@ -11,8 +11,7 @@ import com.sap.core.odata.api.uri.expression.ExpressionVisitor;
 import com.sap.core.odata.api.uri.expression.UnaryExpression;
 import com.sap.core.odata.api.uri.expression.UnaryOperator;
 
-public class MyUnaryExpressionImpl implements UnaryExpression
-{
+public class MyUnaryExpressionImpl implements UnaryExpression {
   private UnaryOperator operator = null;
   private CommonExpression operand = null;
   private EdmType edmType = null;
@@ -24,32 +23,27 @@ public class MyUnaryExpressionImpl implements UnaryExpression
   }
 
   @Override
-  public ExpressionKind getKind()
-  {
+  public ExpressionKind getKind() {
     return ExpressionKind.UNARY;
   }
 
   @Override
-  public UnaryOperator getOperator()
-  {
+  public UnaryOperator getOperator() {
     return operator;
   }
 
   @Override
-  public CommonExpression getOperand()
-  {
+  public CommonExpression getOperand() {
     return operand;
   }
 
   @Override
-  public EdmType getEdmType()
-  {
+  public EdmType getEdmType() {
     return edmType;
   }
 
   @Override
-  public CommonExpression setEdmType(EdmType edmType)
-  {
+  public CommonExpression setEdmType(EdmType edmType) {
     this.edmType = edmType;
     return this;
   }
@@ -61,8 +55,7 @@ public class MyUnaryExpressionImpl implements UnaryExpression
   }
 
   @Override
-  public Object accept(ExpressionVisitor visitor) throws ExceptionVisitExpression, ODataApplicationException
-  {
+  public Object accept(ExpressionVisitor visitor) throws ExceptionVisitExpression, ODataApplicationException {
     final Object retOperand = operand.accept(visitor);
 
     final Object ret = visitor.visitUnary(this, operator, retOperand);

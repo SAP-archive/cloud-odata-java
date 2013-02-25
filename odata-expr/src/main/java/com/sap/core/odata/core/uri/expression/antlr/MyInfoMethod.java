@@ -8,8 +8,7 @@ import com.sap.core.odata.core.uri.expression.ParameterSetCombination;
  * Describes a method expression which is allowed in OData expressions
  * @author SAP AG
  */
-class MyInfoMethod
-{
+class MyInfoMethod {
 
   public MethodOperator method;
   public String syntax;
@@ -17,8 +16,7 @@ class MyInfoMethod
   public int maxParameter;
   ParameterSetCombination combination;
 
-  public MyInfoMethod(MethodOperator method, String syntax, ParameterSetCombination combination)
-  {
+  public MyInfoMethod(MethodOperator method, String syntax, ParameterSetCombination combination) {
     this.method = method;
     this.syntax = syntax;
     minParameter = 1;
@@ -26,8 +24,7 @@ class MyInfoMethod
     this.combination = combination;
   }
 
-  public MyInfoMethod(MethodOperator method, String syntax, int minParameters, int maxParameters, ParameterSetCombination combination)
-  {
+  public MyInfoMethod(MethodOperator method, String syntax, int minParameters, int maxParameters, ParameterSetCombination combination) {
     this.method = method;
     this.syntax = syntax;
     minParameter = minParameters;
@@ -35,23 +32,19 @@ class MyInfoMethod
     this.combination = combination;
   }
 
-  public MethodOperator getMethod()
-  {
+  public MethodOperator getMethod() {
     return method;
   }
 
-  public String getSyntax()
-  {
+  public String getSyntax() {
     return syntax;
   }
 
-  public int getMinParameter()
-  {
+  public int getMinParameter() {
     return minParameter;
   }
 
-  public int getMaxParameter()
-  {
+  public int getMaxParameter() {
     return maxParameter;
   }
 

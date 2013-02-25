@@ -22,8 +22,7 @@ import com.sap.core.odata.api.uri.expression.UnaryOperator;
 public class MyVisitorTool implements ExpressionVisitor {
 
   @Override
-  public Object visitBinary(BinaryExpression binaryExpression, BinaryOperator operator, Object leftSide, Object rightSide)
-  {
+  public Object visitBinary(BinaryExpression binaryExpression, BinaryOperator operator, Object leftSide, Object rightSide) {
     return "{" + leftSide.toString() + " " + operator.toUriLiteral() + " " + rightSide.toString() + "}";
   }
 
@@ -33,21 +32,18 @@ public class MyVisitorTool implements ExpressionVisitor {
   }
 
   @Override
-  public Object visitLiteral(LiteralExpression literal, EdmLiteral edmLiteral)
-  {
+  public Object visitLiteral(LiteralExpression literal, EdmLiteral edmLiteral) {
     return "" + literal.getUriLiteral() + "";
   }
 
   @Override
-  public Object visitMethod(MethodExpression methodExpression, MethodOperator method, List<Object> retParameters)
-  {
+  public Object visitMethod(MethodExpression methodExpression, MethodOperator method, List<Object> retParameters) {
     final StringBuilder sb = new StringBuilder();
     sb.append("{");
     sb.append(method.toUriLiteral());
 
     sb.append("(");
-    for (int i = 0; i < retParameters.size(); i++)
-    {
+    for (int i = 0; i < retParameters.size(); i++) {
       if (i != 0) {
         sb.append(",");
       }
@@ -60,33 +56,28 @@ public class MyVisitorTool implements ExpressionVisitor {
   }
 
   @Override
-  public Object visitMember(MemberExpression memberExpression, Object source, Object path)
-  {
+  public Object visitMember(MemberExpression memberExpression, Object source, Object path) {
     return "{" + source.toString() + "/" + path.toString() + "}";
   }
 
   @Override
-  public Object visitProperty(PropertyExpression literal, String uriLiteral, EdmTyped edmProperty)
-  {
+  public Object visitProperty(PropertyExpression literal, String uriLiteral, EdmTyped edmProperty) {
     return uriLiteral;
   }
 
   @Override
-  public Object visitUnary(UnaryExpression unaryExpression, UnaryOperator operator, Object operand)
-  {
+  public Object visitUnary(UnaryExpression unaryExpression, UnaryOperator operator, Object operand) {
     return "{" + operator.toUriLiteral() + " " + operand.toString() + "}";
   }
 
   @Override
-  public Object visitOrderByExpression(OrderByExpression orderByExpression, String expressionString, List<Object> orders)
-  {
+  public Object visitOrderByExpression(OrderByExpression orderByExpression, String expressionString, List<Object> orders) {
     final StringBuilder sb = new StringBuilder();
     sb.append("{");
     sb.append("oc");
 
     sb.append("(");
-    for (int i = 0; i < orders.size(); i++)
-    {
+    for (int i = 0; i < orders.size(); i++) {
       if (i != 0) {
         sb.append(",");
       }
@@ -99,8 +90,7 @@ public class MyVisitorTool implements ExpressionVisitor {
   }
 
   @Override
-  public Object visitOrder(OrderExpression orderExpression, Object filterResult, SortOrder sortOrder)
-  {
+  public Object visitOrder(OrderExpression orderExpression, Object filterResult, SortOrder sortOrder) {
     return "{o(" + filterResult + ", " + sortOrder.toString() + ")}";
   }
 }

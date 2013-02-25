@@ -15,24 +15,20 @@ import com.sap.core.odata.core.uri.expression.antlr.ODataTreeWalker;
 
 public class ParserTest {
   @Test
-  public void testQuick() throws RecognitionException
-  {
+  public void testQuick() throws RecognitionException {
     getParserFilter("substring('Test',1 add 2)").aSerialized("{substring('Test',{1 add 2})}");
   }
 
   @Test
-  public void testSimpleSameBinary() throws RecognitionException
-  {
+  public void testSimpleSameBinary() throws RecognitionException {
     getParserFilter("1 add 2").aSerialized("{1 add 2}");
 
-    getParserFilter("1 add 2").aSerialized("{1 add 2}")
-        .aKind(ExpressionKind.BINARY);
+    getParserFilter("1 add 2").aSerialized("{1 add 2}").aKind(ExpressionKind.BINARY);
 
   }
 
   @Test
-  public void testSimpleSameBinaryBinaryBinaryPriority() throws RecognitionException
-  {
+  public void testSimpleSameBinaryBinaryBinaryPriority() throws RecognitionException {
     getParserFilter("1 add 2 add 3 add 4").aSerialized("{{{1 add 2} add 3} add 4}");
     getParserFilter("1 add 2 add 3 div 4").aSerialized("{{1 add 2} add {3 div 4}}");
     getParserFilter("1 add 2 div 3 add 4").aSerialized("{{1 add {2 div 3}} add 4}");
@@ -44,8 +40,7 @@ public class ParserTest {
   }
 
   @Test
-  public void testParenthesisWithBinaryBinary() throws RecognitionException
-  {
+  public void testParenthesisWithBinaryBinary() throws RecognitionException {
     getParserFilter("1 add 2 add 3").aSerialized("{{1 add 2} add 3}");
     getParserFilter("1 add (2 add 3)").aSerialized("{1 add {2 add 3}}");
     getParserFilter("(1 add 2) add 3").aSerialized("{{1 add 2} add 3}");
@@ -63,8 +58,7 @@ public class ParserTest {
   }
 
   @Test
-  public void testDeepParenthesis() throws RecognitionException
-  {
+  public void testDeepParenthesis() throws RecognitionException {
     getParserFilter("2").aSerialized("2");
     getParserFilter("(2)").aSerialized("2");
     getParserFilter("((2))").aSerialized("2");
@@ -72,8 +66,7 @@ public class ParserTest {
   }
 
   @Test
-  public void testComplexMixedPriority() throws RecognitionException
-  {
+  public void testComplexMixedPriority() throws RecognitionException {
     getParserFilter("1      or 3      and 5     ").aSerializedCompr("{ 1       or { 3       and  5      }}");
     getParserFilter("1      or 3      and 5 eq 6").aSerializedCompr("{ 1       or { 3       and {5 eq 6}}}");
     getParserFilter("1      or 3 eq 4 and 5     ").aSerializedCompr("{ 1       or {{3 eq 4} and  5      }}");
@@ -88,15 +81,13 @@ public class ParserTest {
   }
 
   @Test
-  public void testSimpleUnaryOperator() throws RecognitionException
-  {
+  public void testSimpleUnaryOperator() throws RecognitionException {
     getParserFilter("not true").aSerialized("{not true}").aKind(ExpressionKind.UNARY);
     //   getParserFilter("- 2").aSerialized("{- 2}");
   }
 
   @Test
-  public void testDeepUnaryOperator() throws RecognitionException
-  {
+  public void testDeepUnaryOperator() throws RecognitionException {
     getParserFilter("not not true").aSerialized("{not {not true}}");
     getParserFilter("not not not true").aSerialized("{not {not {not true}}}");
     /*getParserFilter("-- 2d").aSerialized("{- {- 2d}}");
@@ -109,8 +100,7 @@ public class ParserTest {
   }
 
   @Test
-  public void testSimpleMethod() throws RecognitionException
-  {
+  public void testSimpleMethod() throws RecognitionException {
 
     getParserFilter("startswith('Test','Te')").aSerialized("{startswith('Test','Te')}").aKind(ExpressionKind.METHOD);
 
@@ -120,15 +110,13 @@ public class ParserTest {
   }
 
   @Test
-  public void testProperties() throws RecognitionException
-  {
+  public void testProperties() throws RecognitionException {
     getParserFilter("property1 add property2").aKind(ExpressionKind.BINARY);
     getParserFilter("property1 add property2").aSerialized("{property1 add property2}");
   }
 
   @Test
-  public void testDeepProperties() throws RecognitionException
-  {
+  public void testDeepProperties() throws RecognitionException {
     getParserFilter("a.adress/city").aKind(ExpressionKind.MEMBER);
     getParserFilter("a.adress/city").aSerialized("{a.adress/city}");
     getParserFilter("c").aSerialized("c").aKind(ExpressionKind.PROPERTY);
@@ -136,22 +124,18 @@ public class ParserTest {
   }
 
   @Test
-  public void testString() throws RecognitionException
-  {
+  public void testString() throws RecognitionException {
     getParserFilter("'TEST'").aKind(ExpressionKind.LITERAL);
     getParserFilter("'TEST'").aSerialized("'TEST'");
     getParserFilter("'TE''ST'").aSerialized("'TE'ST'");
   }
 
   @Test
-  public void test() throws RecognitionException
-  {
-    getParserFilter("(true and (id eq (6 div 2)) or substringof('te',concat('t','est')))")
-        .aSerialized("{{true and {id eq {6 div 2}}} or {substringof('te',{concat('t','est')})}}");
+  public void test() throws RecognitionException {
+    getParserFilter("(true and (id eq (6 div 2)) or substringof('te',concat('t','est')))").aSerialized("{{true and {id eq {6 div 2}}} or {substringof('te',{concat('t','est')})}}");
   }
 
-  static public MyParserTool getParserFilter(String expression) throws RecognitionException
-  {
+  static public MyParserTool getParserFilter(String expression) throws RecognitionException {
     final ANTLRStringStream input = new ANTLRStringStream(expression);
     final ODataFilter4Lexer lexer = new ODataFilter4Lexer(input);
     final CommonTokenStream tokens = new CommonTokenStream(lexer);

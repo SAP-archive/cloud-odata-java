@@ -31,21 +31,21 @@ public class TestServer {
 
   private URI endpoint; //= URI.create("http://localhost:19080/test"); // no slash at the end !!!
   private final String path;
-  
+
   private int pathSplit = 0;
 
   public TestServer() {
     this(DEFAULT_PATH);
   }
-  
+
   public TestServer(String path) {
-    if(path.startsWith("/")) {
+    if (path.startsWith("/")) {
       this.path = path;
     } else {
       this.path = "/" + path;
     }
   }
-  
+
   public int getPathSplit() {
     return pathSplit;
   }
@@ -75,11 +75,11 @@ public class TestServer {
         final ServletContextHandler contextHandler = new ServletContextHandler(ServletContextHandler.SESSIONS);
         contextHandler.addServlet(odataServletHolder, path + "/*");
 
-        InetSocketAddress isa = new InetSocketAddress(DEFAULT_HOST, port);
+        final InetSocketAddress isa = new InetSocketAddress(DEFAULT_HOST, port);
         try {
-          ServerSocket ss = new ServerSocket(port);
-          if(ss.isBound()) {
-//            log.trace("Created socket " + ss.isBound());
+          final ServerSocket ss = new ServerSocket(port);
+          if (ss.isBound()) {
+            log.trace("Created socket " + ss.isBound());
             server = new Server(isa);
             server.setHandler(contextHandler);
             server.start();
@@ -88,7 +88,7 @@ public class TestServer {
             break;
           }
         } catch (final BindException e) {
-//          log.trace("port is busy... " + isa.getPort() + " [" + e.getMessage() + "]");
+          log.trace("port is busy... " + isa.getPort() + " [" + e.getMessage() + "]");
         }
       }
 
@@ -104,11 +104,11 @@ public class TestServer {
   public void startServer(ODataService service) {
     startServer(FitStaticServiceFactory.class);
 
-    if(server != null && server.isStarted()) {
+    if ((server != null) && server.isStarted()) {
       FitStaticServiceFactory.bindService(this, service);
     }
   }
-  
+
   public void stopServer() {
     try {
       if (server != null) {

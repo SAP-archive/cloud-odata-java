@@ -24,7 +24,7 @@ public abstract class BaseTest {
   private static final String CLASSNAME_ODATA_EXCEPTION_MAPPER = "com.sap.core.odata.core.rest.ODataExceptionMapperImpl";
 
   static {
-    DOMConfigurator.configureAndWatch("log4j.xml");
+    DOMConfigurator.configureAndWatch("/log4j.xml");
   }
 
   protected final Logger log = LoggerFactory.getLogger(this.getClass());
