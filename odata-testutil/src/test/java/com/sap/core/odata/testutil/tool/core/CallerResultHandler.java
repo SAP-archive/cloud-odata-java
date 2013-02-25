@@ -150,13 +150,51 @@ public class CallerResultHandler {
         append(b, result.getRequestHeader(HttpHeaders.ACCEPT));
         acceptHeaderUnwritten = false;
       }
-      append(b, result.getResponseHeader(HttpHeaders.CONTENT_TYPE));
-      append(b, result.getSomeValue(RESPONSE_STATUS_CODE));
+      append(b, result.getResponseHeader(HttpHeaders.CONTENT_TYPE), getResultColor(results, true, HttpHeaders.CONTENT_TYPE));
+      append(b, result.getSomeValue(RESPONSE_STATUS_CODE), getResultColor(results, false, RESPONSE_STATUS_CODE));
     }
 
     b.append("\n");
 
     return b.toString();
+  }
+
+  private JiraColor getResultColor(Set<TestResult> results, boolean isResponseHeader, String key) {
+    if(results == null || results.isEmpty() || results.size() == 1) {
+      return JiraColor.NONE;
+    } else {
+      String tempValue = null;
+      boolean first = true;
+      for (TestResult testResult : results) {
+        String value;
+        if(isResponseHeader) {
+          value = testResult.getResponseHeader(key);
+          // XXX: this should not be necessary (but is currently because of whitespaces in content type)
+          value = normalizeHeaderValue(value);
+        } else {
+          value = testResult.getSomeValue(key);
+        }
+
+        if(first) {
+          tempValue = value;
+          first = false;
+        } else if(tempValue != null) {
+          if(!tempValue.equals(value)) {
+            return JiraColor.RED;
+          }
+        } else if(value != null) {
+          return JiraColor.RED;          
+        }
+      }
+      return JiraColor.NONE;
+    }
+  }
+  
+  private String normalizeHeaderValue(String value) {
+    if(value == null) {
+      return null;
+    }
+    return value.replaceAll("\\s", "");
   }
 
   private String buildUriForJira(Set<TestResult> results) {
@@ -190,12 +228,24 @@ public class CallerResultHandler {
     }
     return baseUri;
   }
-
+  
   private void append(StringBuilder b, String value) {
+    append(b, value, JiraColor.NONE);
+  }
+  
+  private void append(StringBuilder b, String value, JiraColor color) {
     if (value == null) {
       value = NULL_VALUE;
     }
-    b.append(VALUE_QUOTE).append(value).append(VALUE_QUOTE).append(SEPARATOR);
+    
+    if(JiraColor.NONE != color) {
+      b.append("{color:").append(color.jiraCode).append("}");
+    }
+    b.append(VALUE_QUOTE).append(value).append(VALUE_QUOTE);
+    if(JiraColor.NONE != color) {
+      b.append("{color}");
+    }
+    b.append(SEPARATOR);
   }
 
   public void handle(TestPath testPath, HttpRequest request, Exception e) {
@@ -215,5 +265,18 @@ public class CallerResultHandler {
 
   public String getErrors() {
     return errorLines.toString();
+  }
+
+  /**
+   * 
+   */
+  enum JiraColor {
+    NONE(""), RED("red");
+    
+    final String jiraCode;
+    
+    private JiraColor(String code) {
+      jiraCode = code;
+    }
   }
 }
