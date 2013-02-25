@@ -20,7 +20,7 @@ public class MockFacade {
 
   public static List<PathSegment> getPathSegmentsAsODataPathSegmentMock(final List<String> segments) {
     final ArrayList<PathSegment> pathSegmentsMock = new ArrayList<PathSegment>();
-    for (final String segment : segments)
+    for (final String segment : segments) {
       pathSegmentsMock.add(new PathSegment() {
         @Override
         public String getPath() {
@@ -32,6 +32,7 @@ public class MockFacade {
           return null;
         }
       });
+    }
     return pathSegmentsMock;
   }
 }

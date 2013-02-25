@@ -9,8 +9,7 @@ import com.sap.core.odata.api.uri.expression.ExceptionVisitExpression;
 import com.sap.core.odata.api.uri.expression.ExpressionKind;
 import com.sap.core.odata.api.uri.expression.ExpressionVisitor;
 
-public class MyParserTool
-{
+public class MyParserTool {
   private final String expression;
   private final CommonExpression tree;
   private final CommonExpression curNode;
@@ -34,26 +33,23 @@ public class MyParserTool
     }
 
     final String info = "GetSerialized(" + expression + ")-->";
-//    System.out.println("  " + info + "Expected: " + expected + " Actual: " + actual);
+    //    System.out.println("  " + info + "Expected: " + expected + " Actual: " + actual);
 
     assertEquals(info, expected, actual);
     return this;
 
   }
 
-  public MyParserTool aSerializedCompr(String expected)
-  {
+  public MyParserTool aSerializedCompr(String expected) {
     aSerialized(compress(expected));
     return this;
   }
 
-  static public String compress(String expression)
-  {
+  static public String compress(String expression) {
     String ret = "";
     final char[] charArray = expression.trim().toCharArray();
     Character oldChar = null;
-    for (final char x : charArray)
-    {
+    for (final char x : charArray) {
       if ((x != ' ') || (oldChar == null) || (oldChar != ' ')) {
         ret += x;
       }
@@ -65,8 +61,7 @@ public class MyParserTool
     return ret;
   }
 
-  MyParserTool aKind(ExpressionKind kind)
-  {
+  MyParserTool aKind(ExpressionKind kind) {
     final String info = "GetInfoKind(" + expression + ")-->";
     // dout("  " + info + "Expected: " + kind.toString() + " Actual: " + curNode.getKind().toString());
 

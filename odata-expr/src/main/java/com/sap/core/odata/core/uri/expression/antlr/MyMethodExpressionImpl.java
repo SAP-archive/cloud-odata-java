@@ -37,8 +37,7 @@ public class MyMethodExpressionImpl implements MethodExpression {
   }
 
   @Override
-  public MethodOperator getMethod()
-  {
+  public MethodOperator getMethod() {
     return infoMethod.getMethod();
   }
 
@@ -56,8 +55,7 @@ public class MyMethodExpressionImpl implements MethodExpression {
    * @param expression
    * @return "this" self reference for method chaining" 
    */
-  public MyMethodExpressionImpl appendParameter(CommonExpression expression)
-  {
+  public MyMethodExpressionImpl appendParameter(CommonExpression expression) {
     actualParameters.add(expression);
     return this;
   }
@@ -73,11 +71,9 @@ public class MyMethodExpressionImpl implements MethodExpression {
   }
 
   @Override
-  public Object accept(ExpressionVisitor visitor) throws ExceptionVisitExpression, ODataApplicationException
-  {
+  public Object accept(ExpressionVisitor visitor) throws ExceptionVisitExpression, ODataApplicationException {
     final Vector<Object> retParameters = new Vector<Object>();
-    for (final CommonExpression parameter : actualParameters)
-    {
+    for (final CommonExpression parameter : actualParameters) {
       final Object retParameter = parameter.accept(visitor);
       retParameters.add(retParameter);
     }

@@ -40,7 +40,7 @@ class EdmMock {
     final EdmServiceMetadata serviceMetadata = mock(EdmServiceMetadata.class);
     when(serviceMetadata.getDataServiceVersion()).thenReturn("MockEdm");
 
-    EdmEntityContainer defaultContainer = mock(EdmEntityContainer.class);
+    final EdmEntityContainer defaultContainer = mock(EdmEntityContainer.class);
     when(defaultContainer.isDefaultEntityContainer()).thenReturn(true);
 
     final EdmEntitySet employeeEntitySet = createEntitySetMock(defaultContainer, "Employees", EdmSimpleTypeKind.String, "EmployeeId");
@@ -63,10 +63,10 @@ class EdmMock {
     when(teamEntitySet.getEntityType().getProperty("nt_Employees")).thenReturn(employeeProperty);
     when(teamEntitySet.getRelatedEntitySet(employeeProperty)).thenReturn(employeeEntitySet);
 
-    EdmEntityType managerType = managerEntitySet.getEntityType();
+    final EdmEntityType managerType = managerEntitySet.getEntityType();
     when(managerType.getProperty("nm_Employees")).thenReturn(employeeProperty);
 
-    EdmEntityType employeeType = employeeEntitySet.getEntityType();
+    final EdmEntityType employeeType = employeeEntitySet.getEntityType();
     when(employeeType.hasStream()).thenReturn(true);
     when(employeeType.getPropertyNames()).thenReturn(Arrays.asList(
         "EmployeeId", "EmployeeName", "ManagerId", "RoomId", "TeamId",
@@ -76,8 +76,8 @@ class EdmMock {
     when(employeeType.getProperty("ne_Room")).thenReturn(roomNavigationProperty);
     when(employeeType.getNavigationPropertyNames()).thenReturn(Arrays.asList("ne_Manager", "ne_Team", "ne_Room"));
 
-    EdmProperty employeeNameProperty = createProperty("EmployeeName", EdmSimpleTypeKind.String, employeeType);
-    EdmCustomizableFeedMappings employeeTitleMappings = mock(EdmCustomizableFeedMappings.class);
+    final EdmProperty employeeNameProperty = createProperty("EmployeeName", EdmSimpleTypeKind.String, employeeType);
+    final EdmCustomizableFeedMappings employeeTitleMappings = mock(EdmCustomizableFeedMappings.class);
     when(employeeTitleMappings.getFcTargetPath()).thenReturn(EdmTargetPath.SYNDICATION_TITLE);
     when(employeeTitleMappings.isFcKeepInContent()).thenReturn(true);
     when(employeeNameProperty.getCustomizableFeedMappings()).thenReturn(employeeTitleMappings);
@@ -88,33 +88,33 @@ class EdmMock {
 
     createProperty("Age", EdmSimpleTypeKind.Int32, employeeType);
 
-    EdmProperty employeeEntryDateProperty = createProperty("EntryDate", EdmSimpleTypeKind.DateTime, employeeType);
-    EdmCustomizableFeedMappings employeeUpdatedMappings = mock(EdmCustomizableFeedMappings.class);
+    final EdmProperty employeeEntryDateProperty = createProperty("EntryDate", EdmSimpleTypeKind.DateTime, employeeType);
+    final EdmCustomizableFeedMappings employeeUpdatedMappings = mock(EdmCustomizableFeedMappings.class);
     when(employeeUpdatedMappings.getFcTargetPath()).thenReturn(EdmTargetPath.SYNDICATION_UPDATED);
     when(employeeUpdatedMappings.isFcKeepInContent()).thenReturn(true);
     when(employeeEntryDateProperty.getCustomizableFeedMappings()).thenReturn(employeeUpdatedMappings);
 
     createProperty("ImageUrl", EdmSimpleTypeKind.String, employeeType);
 
-    EdmComplexType locationComplexType = mock(EdmComplexType.class);
+    final EdmComplexType locationComplexType = mock(EdmComplexType.class);
     when(locationComplexType.getKind()).thenReturn(EdmTypeKind.COMPLEX);
     when(locationComplexType.getName()).thenReturn("c_Location");
     when(locationComplexType.getNamespace()).thenReturn("RefScenario");
     when(locationComplexType.getPropertyNames()).thenReturn(Arrays.asList("City", "Country"));
 
-    EdmProperty locationComplexProperty = mock(EdmProperty.class);
+    final EdmProperty locationComplexProperty = mock(EdmProperty.class);
     when(locationComplexProperty.getType()).thenReturn(locationComplexType);
     when(locationComplexProperty.getName()).thenReturn("Location");
     when(employeeType.getProperty("Location")).thenReturn(locationComplexProperty);
     createProperty("Country", EdmSimpleTypeKind.String, locationComplexType);
 
-    EdmComplexType cityComplexType = mock(EdmComplexType.class);
+    final EdmComplexType cityComplexType = mock(EdmComplexType.class);
     when(cityComplexType.getKind()).thenReturn(EdmTypeKind.COMPLEX);
     when(cityComplexType.getName()).thenReturn("City");
     when(cityComplexType.getNamespace()).thenReturn("RefScenario");
     when(cityComplexType.getPropertyNames()).thenReturn(Arrays.asList("PostalCode", "CityName"));
 
-    EdmProperty cityProperty = mock(EdmProperty.class);
+    final EdmProperty cityProperty = mock(EdmProperty.class);
     when(cityProperty.getType()).thenReturn(cityComplexType);
     when(cityProperty.getName()).thenReturn("City");
     when(locationComplexType.getProperty("City")).thenReturn(cityProperty);
@@ -122,16 +122,16 @@ class EdmMock {
     createProperty("PostalCode", EdmSimpleTypeKind.String, cityComplexType);
     createProperty("CityName", EdmSimpleTypeKind.String, cityComplexType);
 
-    EdmEntityType roomType = roomEntitySet.getEntityType();
-    EdmProperty roomId = roomType.getKeyProperties().get(0);
-    EdmFacets roomIdFacet = mock(EdmFacets.class);
+    final EdmEntityType roomType = roomEntitySet.getEntityType();
+    final EdmProperty roomId = roomType.getKeyProperties().get(0);
+    final EdmFacets roomIdFacet = mock(EdmFacets.class);
     when(roomIdFacet.getMaxLength()).thenReturn(100);
     when(roomIdFacet.getConcurrencyMode()).thenReturn(EdmConcurrencyMode.Fixed);
     when(roomId.getFacets()).thenReturn(roomIdFacet);
 
-    EdmFunctionImport employeeSearchFunctionImport = createFunctionImportMock(defaultContainer, "EmployeeSearch", employeeType, EdmMultiplicity.MANY);
+    final EdmFunctionImport employeeSearchFunctionImport = createFunctionImportMock(defaultContainer, "EmployeeSearch", employeeType, EdmMultiplicity.MANY);
     when(employeeSearchFunctionImport.getEntitySet()).thenReturn(employeeEntitySet);
-    EdmParameter employeeSearchParameter = mock(EdmParameter.class);
+    final EdmParameter employeeSearchParameter = mock(EdmParameter.class);
     when(employeeSearchParameter.getType()).thenReturn(EdmSimpleTypeKind.String.getEdmSimpleTypeInstance());
     when(employeeSearchFunctionImport.getParameterNames()).thenReturn(Arrays.asList("q"));
     when(employeeSearchFunctionImport.getParameter("q")).thenReturn(employeeSearchParameter);
@@ -139,30 +139,30 @@ class EdmMock {
     createFunctionImportMock(defaultContainer, "AllUsedRoomIds", EdmSimpleTypeKind.String.getEdmSimpleTypeInstance(), EdmMultiplicity.MANY);
     createFunctionImportMock(defaultContainer, "MaximalAge", EdmSimpleTypeKind.Int16.getEdmSimpleTypeInstance(), EdmMultiplicity.ONE);
     createFunctionImportMock(defaultContainer, "MostCommonLocation", locationComplexType, EdmMultiplicity.ONE);
-    EdmFunctionImport managerPhotoFunctionImport = createFunctionImportMock(defaultContainer, "ManagerPhoto", EdmSimpleTypeKind.Binary.getEdmSimpleTypeInstance(), EdmMultiplicity.ONE);
-    EdmParameter managerPhotoParameter = mock(EdmParameter.class);
+    final EdmFunctionImport managerPhotoFunctionImport = createFunctionImportMock(defaultContainer, "ManagerPhoto", EdmSimpleTypeKind.Binary.getEdmSimpleTypeInstance(), EdmMultiplicity.ONE);
+    final EdmParameter managerPhotoParameter = mock(EdmParameter.class);
     when(managerPhotoParameter.getType()).thenReturn(EdmSimpleTypeKind.String.getEdmSimpleTypeInstance());
-    EdmFacets managerPhotoParameterFacets = mock(EdmFacets.class);
+    final EdmFacets managerPhotoParameterFacets = mock(EdmFacets.class);
     when(managerPhotoParameterFacets.isNullable()).thenReturn(false);
     when(managerPhotoParameter.getFacets()).thenReturn(managerPhotoParameterFacets);
     when(managerPhotoFunctionImport.getParameterNames()).thenReturn(Arrays.asList("Id"));
     when(managerPhotoFunctionImport.getParameter("Id")).thenReturn(managerPhotoParameter);
-    EdmFunctionImport oldestEmployeeFunctionImport = createFunctionImportMock(defaultContainer, "OldestEmployee", employeeType, EdmMultiplicity.ONE);
+    final EdmFunctionImport oldestEmployeeFunctionImport = createFunctionImportMock(defaultContainer, "OldestEmployee", employeeType, EdmMultiplicity.ONE);
     when(oldestEmployeeFunctionImport.getEntitySet()).thenReturn(employeeEntitySet);
 
-    EdmEntityContainer specificContainer = mock(EdmEntityContainer.class);
+    final EdmEntityContainer specificContainer = mock(EdmEntityContainer.class);
     when(specificContainer.getEntitySet("Employees")).thenReturn(employeeEntitySet);
     when(specificContainer.getName()).thenReturn("Container1");
 
-    EdmEntityType photoEntityType = mock(EdmEntityType.class);
+    final EdmEntityType photoEntityType = mock(EdmEntityType.class);
     when(photoEntityType.getName()).thenReturn("Photo");
     when(photoEntityType.getNamespace()).thenReturn("RefScenario2");
     when(photoEntityType.getPropertyNames()).thenReturn(Arrays.asList(
         "Id", "Name", "Type", "Image", "BinaryData", "Содержание", "CustomProperty"));
     when(photoEntityType.getKeyPropertyNames()).thenReturn(Arrays.asList("Id", "Type"));
 
-    EdmProperty photoIdProperty = createProperty("Id", EdmSimpleTypeKind.Int32, photoEntityType);
-    EdmFacets photoIdFacet = mock(EdmFacets.class);
+    final EdmProperty photoIdProperty = createProperty("Id", EdmSimpleTypeKind.Int32, photoEntityType);
+    final EdmFacets photoIdFacet = mock(EdmFacets.class);
     when(photoIdFacet.getConcurrencyMode()).thenReturn(EdmConcurrencyMode.Fixed);
     when(photoIdProperty.getFacets()).thenReturn(photoIdFacet);
 
@@ -171,46 +171,46 @@ class EdmMock {
 
     when(photoEntityType.getKeyProperties()).thenReturn(Arrays.asList(photoIdProperty, photoTypeProperty));
 
-    EdmProperty photoImageProperty = createProperty("Image", EdmSimpleTypeKind.Binary, photoEntityType);
-    EdmMapping imageMapping = mock(EdmMapping.class);
+    final EdmProperty photoImageProperty = createProperty("Image", EdmSimpleTypeKind.Binary, photoEntityType);
+    final EdmMapping imageMapping = mock(EdmMapping.class);
     when(imageMapping.getMimeType()).thenReturn("getImageType");
     when(photoImageProperty.getMapping()).thenReturn(imageMapping);
 
-    EdmProperty binaryDataProperty = createProperty("BinaryData", EdmSimpleTypeKind.Binary, photoEntityType);
+    final EdmProperty binaryDataProperty = createProperty("BinaryData", EdmSimpleTypeKind.Binary, photoEntityType);
     when(binaryDataProperty.getMimeType()).thenReturn("image/jpeg");
 
-    EdmProperty photoRussianProperty = createProperty("Содержание", EdmSimpleTypeKind.String, photoEntityType);
-    EdmFacets photoRussianFacets = mock(EdmFacets.class);
+    final EdmProperty photoRussianProperty = createProperty("Содержание", EdmSimpleTypeKind.String, photoEntityType);
+    final EdmFacets photoRussianFacets = mock(EdmFacets.class);
     when(photoRussianFacets.isNullable()).thenReturn(true);
     when(photoRussianFacets.isUnicode()).thenReturn(true);
     when(photoRussianFacets.getMaxLength()).thenReturn(Integer.MAX_VALUE);
     when(photoRussianProperty.getFacets()).thenReturn(photoRussianFacets);
-    CustomizableFeedMappings photoRussianMapping = mock(CustomizableFeedMappings.class);
+    final CustomizableFeedMappings photoRussianMapping = mock(CustomizableFeedMappings.class);
     when(photoRussianMapping.getFcKeepInContent()).thenReturn(false);
     when(photoRussianMapping.getFcNsPrefix()).thenReturn("ру");
     when(photoRussianMapping.getFcNsUri()).thenReturn("http://localhost");
     when(photoRussianMapping.getFcTargetPath()).thenReturn("Содержание");
     when(photoRussianProperty.getCustomizableFeedMappings()).thenReturn(photoRussianMapping);
 
-    EdmProperty customProperty = createProperty("CustomProperty", EdmSimpleTypeKind.String, photoEntityType);
-    CustomizableFeedMappings customFeedMapping = mock(CustomizableFeedMappings.class);
+    final EdmProperty customProperty = createProperty("CustomProperty", EdmSimpleTypeKind.String, photoEntityType);
+    final CustomizableFeedMappings customFeedMapping = mock(CustomizableFeedMappings.class);
     when(customFeedMapping.getFcKeepInContent()).thenReturn(false);
     when(customFeedMapping.getFcNsPrefix()).thenReturn("custom");
     when(customFeedMapping.getFcNsUri()).thenReturn("http://localhost");
     when(customFeedMapping.getFcTargetPath()).thenReturn("TarPath");
     when(customProperty.getCustomizableFeedMappings()).thenReturn(customFeedMapping);
 
-    EdmEntitySet photoEntitySet = mock(EdmEntitySet.class);
+    final EdmEntitySet photoEntitySet = mock(EdmEntitySet.class);
     when(photoEntitySet.getName()).thenReturn("Photos");
     when(photoEntitySet.getEntityType()).thenReturn(photoEntityType);
-    EdmEntityContainer photoContainer = mock(EdmEntityContainer.class);
+    final EdmEntityContainer photoContainer = mock(EdmEntityContainer.class);
     when(photoContainer.isDefaultEntityContainer()).thenReturn(false);
     when(photoContainer.getEntitySet("Photos")).thenReturn(photoEntitySet);
     when(photoContainer.getName()).thenReturn("Container2");
 
     when(photoEntitySet.getEntityContainer()).thenReturn(photoContainer);
 
-    Edm edm = mock(Edm.class);
+    final Edm edm = mock(Edm.class);
     when(edm.getServiceMetadata()).thenReturn(serviceMetadata);
     when(edm.getDefaultEntityContainer()).thenReturn(defaultContainer);
     when(edm.getEntityContainer("Container1")).thenReturn(specificContainer);
@@ -223,10 +223,10 @@ class EdmMock {
   }
 
   private static EdmNavigationProperty createNavigationProperty(final String name, final EdmMultiplicity multiplicity) throws EdmException {
-    EdmType navigationType = mock(EdmType.class);
+    final EdmType navigationType = mock(EdmType.class);
     when(navigationType.getKind()).thenReturn(EdmTypeKind.ENTITY);
 
-    EdmNavigationProperty navigationProperty = mock(EdmNavigationProperty.class);
+    final EdmNavigationProperty navigationProperty = mock(EdmNavigationProperty.class);
     when(navigationProperty.getName()).thenReturn(name);
     when(navigationProperty.getType()).thenReturn(navigationType);
     when(navigationProperty.getMultiplicity()).thenReturn(multiplicity);
@@ -235,7 +235,7 @@ class EdmMock {
   }
 
   private static EdmProperty createProperty(final String name, final EdmSimpleTypeKind kind, EdmStructuralType entityType) throws EdmException {
-    EdmProperty property = mock(EdmProperty.class);
+    final EdmProperty property = mock(EdmProperty.class);
     when(property.getType()).thenReturn(kind.getEdmSimpleTypeInstance());
     when(property.getName()).thenReturn(name);
     when(entityType.getProperty(name)).thenReturn(property);
@@ -243,9 +243,9 @@ class EdmMock {
   }
 
   private static EdmEntitySet createEntitySetMock(final EdmEntityContainer container, final String name, final EdmSimpleTypeKind kind, final String keyPropertyId) throws EdmException {
-    EdmEntityType entityType = createEntityTypeMock(name.substring(0, name.length() - 1), kind, keyPropertyId);
+    final EdmEntityType entityType = createEntityTypeMock(name.substring(0, name.length() - 1), kind, keyPropertyId);
 
-    EdmEntitySet entitySet = mock(EdmEntitySet.class);
+    final EdmEntitySet entitySet = mock(EdmEntitySet.class);
     when(entitySet.getName()).thenReturn(name);
     when(entitySet.getEntityType()).thenReturn(entityType);
 
@@ -257,7 +257,7 @@ class EdmMock {
   }
 
   private static EdmEntityType createEntityTypeMock(final String name, final EdmSimpleTypeKind kind, final String keyPropertyId) throws EdmException {
-    EdmEntityType entityType = mock(EdmEntityType.class);
+    final EdmEntityType entityType = mock(EdmEntityType.class);
     when(entityType.getName()).thenReturn(name);
     when(entityType.getNamespace()).thenReturn("RefScenario");
 
@@ -272,11 +272,11 @@ class EdmMock {
   }
 
   private static EdmFunctionImport createFunctionImportMock(final EdmEntityContainer container, final String name, final EdmType type, final EdmMultiplicity multiplicity) throws EdmException {
-    EdmTyped returnType = mock(EdmTyped.class);
+    final EdmTyped returnType = mock(EdmTyped.class);
     when(returnType.getType()).thenReturn(type);
     when(returnType.getMultiplicity()).thenReturn(multiplicity);
 
-    EdmFunctionImport functionImport = mock(EdmFunctionImport.class);
+    final EdmFunctionImport functionImport = mock(EdmFunctionImport.class);
     when(functionImport.getName()).thenReturn(name);
     when(functionImport.getReturnType()).thenReturn(returnType);
     when(functionImport.getHttpMethod()).thenReturn("GET");
