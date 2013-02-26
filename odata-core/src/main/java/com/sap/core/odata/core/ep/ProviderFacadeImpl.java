@@ -104,13 +104,13 @@ public class ProviderFacadeImpl implements EntityProviderInterface {
   }
 
   @Override
-  public ODataEntry readEntry(String contentType, EdmEntitySet entitySet, InputStream content) throws EntityProviderException {
-    return create(contentType).readEntry(entitySet, content);
+  public ODataEntry readEntry(String contentType, EdmEntitySet entitySet, InputStream content, boolean validate) throws EntityProviderException {
+    return create(contentType).readEntry(entitySet, content, validate);
   }
 
   @Override
-  public Map<String, Object> readProperty(String contentType, EdmProperty edmProperty, InputStream content) throws EntityProviderException {
-    return create(contentType).readProperty(edmProperty, content);
+  public Map<String, Object> readProperty(String contentType, EdmProperty edmProperty, InputStream content, boolean validate) throws EntityProviderException {
+    return create(contentType).readProperty(edmProperty, content, validate);
   }
 
   @Override

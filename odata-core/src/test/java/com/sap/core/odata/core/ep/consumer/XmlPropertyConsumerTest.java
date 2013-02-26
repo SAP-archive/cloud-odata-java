@@ -24,7 +24,7 @@ public class XmlPropertyConsumerTest extends AbstractConsumerTest {
     EdmEntitySet entitySet = MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Employees");
     EdmProperty property = (EdmProperty) entitySet.getEntityType().getProperty("Age");
     
-    Map<String, Object> resultMap = xpc.readProperty(reader, property);
+    Map<String, Object> resultMap = xpc.readProperty(reader, property, false);
     
     assertEquals(Integer.valueOf(67), resultMap.get("Age"));
   }
@@ -38,7 +38,7 @@ public class XmlPropertyConsumerTest extends AbstractConsumerTest {
     EdmEntitySet entitySet = MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Employees");
     EdmProperty property = (EdmProperty) entitySet.getEntityType().getProperty("EmployeeName");
     
-    Map<String, Object> resultMap = xpc.readProperty(reader, property);
+    Map<String, Object> resultMap = xpc.readProperty(reader, property, false);
 
     assertEquals("Max Mustermann", resultMap.get("EmployeeName"));
   }
@@ -52,7 +52,7 @@ public class XmlPropertyConsumerTest extends AbstractConsumerTest {
     EdmEntitySet entitySet = MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Employees");
     EdmProperty property = (EdmProperty) entitySet.getEntityType().getProperty("EntryDate");
     
-    Map<String, Object> resultMap = xpc.readProperty(reader, property);
+    Map<String, Object> resultMap = xpc.readProperty(reader, property, false);
 
     assertEquals(null, resultMap.get("EntryDate"));
   }
@@ -74,7 +74,7 @@ public class XmlPropertyConsumerTest extends AbstractConsumerTest {
     EdmEntitySet entitySet = MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Employees");
     EdmProperty property = (EdmProperty) entitySet.getEntityType().getProperty("Location");
     
-    Map<String, Object> resultMap = xpc.readProperty(reader, property);
+    Map<String, Object> resultMap = xpc.readProperty(reader, property, false);
     
     Map<String, Object> locationMap = (Map<String, Object>) resultMap.get("Location");
     assertEquals("Germany", locationMap.get("Country"));
@@ -103,7 +103,7 @@ public class XmlPropertyConsumerTest extends AbstractConsumerTest {
     EdmEntitySet entitySet = MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Employees");
     EdmProperty property = (EdmProperty) entitySet.getEntityType().getProperty("Location");
     
-    Map<String, Object> resultMap = xpc.readProperty(reader, property);
+    Map<String, Object> resultMap = xpc.readProperty(reader, property, false);
     
     Map<String, Object> locationMap = (Map<String, Object>) resultMap.get("Location");
     assertEquals("Germany", locationMap.get("Country"));
@@ -130,7 +130,7 @@ public class XmlPropertyConsumerTest extends AbstractConsumerTest {
     EdmEntitySet entitySet = MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Employees");
     EdmProperty property = (EdmProperty) entitySet.getEntityType().getProperty("Location");
     
-    Object prop = xpc.readProperty(reader, property);
+    Object prop = xpc.readProperty(reader, property, false);
     Map<String, Object> resultMap = (Map<String, Object>) prop;
     
     Map<String, Object> locationMap = (Map<String, Object>) resultMap.get("Location");

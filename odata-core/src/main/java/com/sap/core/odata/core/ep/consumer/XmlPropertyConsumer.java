@@ -7,6 +7,7 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
 import com.sap.core.odata.api.edm.EdmException;
+import com.sap.core.odata.api.edm.EdmFacets;
 import com.sap.core.odata.api.edm.EdmLiteralKind;
 import com.sap.core.odata.api.edm.EdmProperty;
 import com.sap.core.odata.api.edm.EdmSimpleType;
@@ -17,18 +18,52 @@ import com.sap.core.odata.core.ep.aggregator.EntityPropertyInfo;
 
 public class XmlPropertyConsumer {
 
-  public Map<String, Object> readProperty(XMLStreamReader reader, EdmProperty property) throws EntityProviderException {
+  public Map<String, Object> readProperty(XMLStreamReader reader, EdmProperty property, boolean merge) throws EntityProviderException {
     try {
       EntityPropertyInfo eia = EntityInfoAggregator.create(property);
       reader.next();
 
       Object value = readStartedElement(reader, eia);
       
+      if(eia.isComplex() && merge) {
+        mergeWithDefaultValues(value, eia);
+      }
+      
       Map<String, Object> result = new HashMap<String, Object>();
       result.put(property.getName(), value);
       return result;
     } catch (Exception e) {
       throw new EntityProviderException(EntityProviderException.COMMON, e);      
+    }
+  }
+
+  @SuppressWarnings("unchecked")
+  private void mergeWithDefaultValues(Object value, EntityPropertyInfo epi) throws EntityProviderException {
+    if(!(value instanceof Map)) {
+      throw new EntityProviderException(EntityProviderException.COMMON);      
+    }
+    if(!epi.isComplex()) {
+      throw new EntityProviderException(EntityProviderException.COMMON);            
+    }
+    
+    mergeComplexWithDefaultValues((Map<String, Object>) value, (EntityComplexPropertyInfo) epi);
+  }
+  
+  private void mergeComplexWithDefaultValues(Map<String, Object> complexValue, EntityComplexPropertyInfo ecpi) {
+    for(EntityPropertyInfo info: ecpi.getPropertyInfos()) {
+      Object obj = complexValue.get(info.getName());
+      if(obj == null) {
+        if(info.isComplex()) {
+          Map<String, Object> defaultValue = new HashMap<String, Object>();
+          mergeComplexWithDefaultValues(defaultValue, (EntityComplexPropertyInfo) ecpi);
+          complexValue.put(info.getName(), defaultValue);
+        } else {
+          EdmFacets facets = info.getFacets();
+          if(facets != null) {
+            complexValue.put(info.getName(), facets.getDefaultValue());
+          }
+        }
+      }
     }
   }
 

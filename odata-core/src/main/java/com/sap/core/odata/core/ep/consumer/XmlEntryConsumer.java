@@ -45,7 +45,7 @@ public class XmlEntryConsumer {
     readEntryResult = new ODataEntryImpl(properties, mediaMetadata, entryMetadata);
   }
 
-  public ODataEntry readEntry(XMLStreamReader reader, EntityInfoAggregator eia) throws EntityProviderException {
+  public ODataEntry readEntry(XMLStreamReader reader, EntityInfoAggregator eia, boolean merge) throws EntityProviderException {
     try {
       int eventType;
       while ((eventType = reader.next()) != XMLStreamReader.END_DOCUMENT) {
@@ -55,7 +55,13 @@ public class XmlEntryConsumer {
         }
       }
 
+      if(!merge) {
+        readEntryResult.validate(eia);
+      }
+      
       return readEntryResult;
+    } catch (EntityProviderException e) {
+      throw e;
     } catch (Exception e) {
       throw new EntityProviderException(EntityProviderException.COMMON, e);
     }

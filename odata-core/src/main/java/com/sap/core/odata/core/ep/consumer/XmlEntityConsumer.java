@@ -32,7 +32,7 @@ public class XmlEntityConsumer {
     super();
   }
 
-  public ODataEntry readEntry(EdmEntitySet entitySet, Object content) throws EntityProviderException {
+  public ODataEntry readEntry(EdmEntitySet entitySet, Object content, boolean merge) throws EntityProviderException {
     XMLStreamReader reader = null;
     
     try {
@@ -40,8 +40,10 @@ public class XmlEntityConsumer {
       reader = createStaxReader(content);
       
       EntityInfoAggregator eia = EntityInfoAggregator.create(entitySet);
-      ODataEntry result = xec.readEntry(reader, eia);
+      ODataEntry result = xec.readEntry(reader, eia, merge);
       return result;
+    } catch (EntityProviderException e) {
+      throw e;
     } catch (Exception e) {
       throw new EntityProviderException(EntityProviderException.COMMON, e);
     } finally {
@@ -56,13 +58,13 @@ public class XmlEntityConsumer {
     }
   }
 
-  public Map<String, Object> readProperty(EdmProperty edmProperty, Object content) throws EntityProviderException {
+  public Map<String, Object> readProperty(EdmProperty edmProperty, Object content, boolean merge) throws EntityProviderException {
     XMLStreamReader reader = null;
 
     try {
       XmlPropertyConsumer xec = new XmlPropertyConsumer();
       reader = createStaxReader(content);
-      Map<String, Object> result = xec.readProperty(reader, edmProperty);
+      Map<String, Object> result = xec.readProperty(reader, edmProperty, merge);
       return result;
     } catch (Exception e) {
       throw new EntityProviderException(EntityProviderException.COMMON, e);
@@ -80,7 +82,7 @@ public class XmlEntityConsumer {
   
   public Object readPropertyValue(EdmProperty edmProperty, Object content) throws EntityProviderException {
     try {
-      Map<String, Object> result = readProperty(edmProperty, content);
+      Map<String, Object> result = readProperty(edmProperty, content, false);
       return result.get(edmProperty.getName());
     } catch (Exception e) {
       throw new EntityProviderException(EntityProviderException.COMMON, e);

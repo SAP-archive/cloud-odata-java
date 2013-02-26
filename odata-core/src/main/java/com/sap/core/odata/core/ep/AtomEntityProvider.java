@@ -353,15 +353,15 @@ public class AtomEntityProvider implements ContentTypeBasedEntityProvider {
   }
 
   @Override
-  public ODataEntry readEntry(EdmEntitySet entitySet, InputStream content) throws EntityProviderException {
+  public ODataEntry readEntry(EdmEntitySet entitySet, InputStream content, boolean validate) throws EntityProviderException {
     XmlEntityConsumer xec = new XmlEntityConsumer();
-    return xec.readEntry(entitySet, content);
+    return xec.readEntry(entitySet, content, validate);
   }
 
   @Override
-  public Map<String, Object> readProperty(EdmProperty edmProperty, InputStream content) throws EntityProviderException {
+  public Map<String, Object> readProperty(EdmProperty edmProperty, InputStream content, boolean validate) throws EntityProviderException {
     XmlEntityConsumer xec = new XmlEntityConsumer();
-    return xec.readProperty(edmProperty, content);
+    return xec.readProperty(edmProperty, content, validate);
   }
   
   @Override

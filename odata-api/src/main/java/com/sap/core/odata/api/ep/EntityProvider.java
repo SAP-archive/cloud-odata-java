@@ -190,10 +190,12 @@ public final class EntityProvider {
      * @param contentType format of content in the given input stream.
      * @param entitySet entity data model for entity set to be read
      * @param content data in form of an {@link InputStream} which contains the data in specified format
+     * @param merge if <code>true</code> the input content is in context of an <b>merge</b> (e.g. MERGE, PATCH) read request, 
+     *                  otherwise if <code>false</code> it is an <b>none merge</b> (e.g. CREATE) read request
      * @return entry as {@link ODataEntry}
      * @throws EntityProviderException if reading of data (de-serialization) fails
      */
-    ODataEntry readEntry(String contentType, EdmEntitySet entitySet, InputStream content) throws EntityProviderException;
+    ODataEntry readEntry(String contentType, EdmEntitySet entitySet, InputStream content, boolean validate) throws EntityProviderException;
 
     /**
      * Read (de-serialize) properties from <code>content</code> (as {@link InputStream}) in specified format (given as <code>contentType</code>)
@@ -201,18 +203,20 @@ public final class EntityProvider {
      * the read data in form of <code>property name</code> to <code>property value</code> mapping.
      * 
      * @param contentType format of content in the given input stream.
-     * @param entitySet entity data model for entity property to be read
+     * @param edmProperty entity data model for entity property to be read
      * @param content data in form of an {@link InputStream} which contains the data in specified format
+     * @param merge if <code>true</code> the input content is in context of an <b>merge</b> (e.g. MERGE, PATCH) read request, 
+     *                  otherwise if <code>false</code> it is an <b>none merge</b> (e.g. CREATE) read request
      * @return property as name and value in a map
      * @throws EntityProviderException if reading of data (de-serialization) fails
      */
-    Map<String, Object> readProperty(String contentType, EdmProperty edmProperty, InputStream content) throws EntityProviderException;
+    Map<String, Object> readProperty(String contentType, EdmProperty edmProperty, InputStream content, boolean validate) throws EntityProviderException;
 
     /**
      * Read (de-serialize) a property value from <code>content</code> (as {@link InputStream}) in format <code>text/plain</code>
      * based on <code>entity data model</code> (given as {@link EdmProperty}) and provide this data as {@link Object}.
      * 
-     * @param entitySet entity data model for entity property to be read
+     * @param edmProperty entity data model for entity property to be read
      * @param content data in form of an {@link InputStream} which contains the data in format <code>text/plain</code>
      * @return property value as object
      * @throws EntityProviderException if reading of data (de-serialization) fails
@@ -436,11 +440,13 @@ public final class EntityProvider {
    * @param contentType format of content in the given input stream.
    * @param entitySet entity data model for entity set to be read
    * @param content data in form of an {@link InputStream} which contains the data in specified format
+   * @param merge if <code>true</code> the input content is in context of an <b>merge</b> (e.g. MERGE, PATCH) read request, 
+   *                  otherwise if <code>false</code> it is an <b>none merge</b> (e.g. CREATE) read request
    * @return entry as {@link ODataEntry}
    * @throws EntityProviderException if reading of data (de-serialization) fails
    */
-  public static ODataEntry readEntry(String contentType, EdmEntitySet entitySet, InputStream content) throws EntityProviderException {
-    return createEntityProvider().readEntry(contentType, entitySet, content);
+  public static ODataEntry readEntry(String contentType, EdmEntitySet entitySet, InputStream content, boolean merge) throws EntityProviderException {
+    return createEntityProvider().readEntry(contentType, entitySet, content, merge);
   }
 
   /**
@@ -449,20 +455,22 @@ public final class EntityProvider {
    * the read data in form of <code>property name</code> to <code>property value</code> mapping.
    * 
    * @param contentType format of content in the given input stream.
-   * @param entitySet entity data model for entity property to be read
+   * @param edmProperty entity data model for entity property to be read
    * @param content data in form of an {@link InputStream} which contains the data in specified format
+   * @param merge if <code>true</code> the input content is in context of an <b>merge</b> (e.g. MERGE, PATCH) read request, 
+   *                  otherwise if <code>false</code> it is an <b>none merge</b> (e.g. CREATE) read request
    * @return property as name and value in a map
    * @throws EntityProviderException if reading of data (de-serialization) fails
    */
-  public static Map<String, Object> readProperty(String contentType, EdmProperty edmProperty, InputStream content) throws EntityProviderException {
-    return createEntityProvider().readProperty(contentType, edmProperty, content);
+  public static Map<String, Object> readProperty(String contentType, EdmProperty edmProperty, InputStream content, boolean merge) throws EntityProviderException {
+    return createEntityProvider().readProperty(contentType, edmProperty, content, merge);
   }
 
   /**
    * Read (de-serialize) a property value from <code>content</code> (as {@link InputStream}) in format <code>text/plain</code>
    * based on <code>entity data model</code> (given as {@link EdmProperty}) and provide this data as {@link Object}.
    * 
-   * @param entitySet entity data model for entity property to be read
+   * @param edmProperty entity data model for entity property to be read
    * @param content data in form of an {@link InputStream} which contains the data in format <code>text/plain</code>
    * @return property value as object
    * @throws EntityProviderException if reading of data (de-serialization) fails

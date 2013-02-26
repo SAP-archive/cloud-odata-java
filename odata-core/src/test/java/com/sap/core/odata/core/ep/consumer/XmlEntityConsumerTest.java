@@ -15,6 +15,7 @@ import org.junit.Test;
 
 import com.sap.core.odata.api.edm.EdmEntitySet;
 import com.sap.core.odata.api.edm.EdmProperty;
+import com.sap.core.odata.api.ep.EntityProviderException;
 import com.sap.core.odata.api.ep.entry.EntryMetadata;
 import com.sap.core.odata.api.ep.entry.MediaMetadata;
 import com.sap.core.odata.api.ep.entry.ODataEntry;
@@ -103,7 +104,7 @@ public class XmlEntityConsumerTest extends BaseTest {
 
     // execute
     XmlEntityConsumer xec = new XmlEntityConsumer();
-    ODataEntry result = xec.readEntry(entitySet, contentBody);
+    ODataEntry result = xec.readEntry(entitySet, contentBody, true);
 
     // verify
     EntryMetadata metadata = result.getMetadata();
@@ -144,7 +145,7 @@ public class XmlEntityConsumerTest extends BaseTest {
 
     // execute
     XmlEntityConsumer xec = new XmlEntityConsumer();
-    ODataEntry result = xec.readEntry(entitySet, contentBody);
+    ODataEntry result = xec.readEntry(entitySet, contentBody, true);
 
     // verify
     List<String> associationUris = result.getMetadata().getAssociationUris("ne_Room");
@@ -167,7 +168,8 @@ public class XmlEntityConsumerTest extends BaseTest {
 
     // execute
     XmlEntityConsumer xec = new XmlEntityConsumer();
-    ODataEntry result = xec.readEntry(entitySet, contentBody);
+    boolean merge = false;
+    ODataEntry result = xec.readEntry(entitySet, contentBody, merge);
 
     // verify
     Map<String, Object> properties = result.getProperties();
@@ -199,6 +201,77 @@ public class XmlEntityConsumerTest extends BaseTest {
     assertEquals("/SAP/PUBLIC/BC/NWDEMO_MODEL/IMAGES/male_1_WinterW.jpg", properties.get("ImageUrl"));
   }
 
+  @Test(expected=EntityProviderException.class)
+  public void testReadEntryMissingProperty() throws Exception {
+    // prepare
+    EdmEntitySet entitySet = MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Employees");
+    String content = EMPLOYEE_1_XML.replace("<d:Age>52</d:Age>", "");
+    InputStream contentBody = createContentAsStream(content);
+
+    // execute
+    try {
+      XmlEntityConsumer xec = new XmlEntityConsumer();
+      ODataEntry result = xec.readEntry(entitySet, contentBody, false);
+      
+      // verify - not necessary because of thrown exception - but kept to prevent eclipse warning about unused variables
+      Map<String, Object> properties = result.getProperties();
+      assertEquals(9, properties.size());
+    } catch (EntityProviderException e) {
+      // do some assertions...
+      assertEquals(EntityProviderException.MISSING_PROPERTY.getKey(), e.getMessageReference().getKey());
+      assertEquals("Age", e.getMessageReference().getContent().get(0));
+      // ...and then re-throw
+      throw e;
+    }
+
+  }
+
+  @SuppressWarnings("unchecked")
+  @Test
+  public void testReadEntryWithMerge() throws Exception {
+    // prepare
+    EdmEntitySet entitySet = MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Employees");
+    String content = EMPLOYEE_1_XML.replace("<d:Age>52</d:Age>", "");
+    InputStream contentBody = createContentAsStream(content);
+
+    // execute
+    XmlEntityConsumer xec = new XmlEntityConsumer();
+    ODataEntry result = xec.readEntry(entitySet, contentBody, true);
+
+    // verify
+    Map<String, Object> properties = result.getProperties();
+    assertEquals(8, properties.size());
+
+    // removed property
+    assertNull(properties.get("Age"));
+
+    // available properties
+    assertEquals("1", properties.get("EmployeeId"));
+    assertEquals("Walter Winter", properties.get("EmployeeName"));
+    assertEquals("1", properties.get("ManagerId"));
+    assertEquals("1", properties.get("RoomId"));
+    assertEquals("1", properties.get("TeamId"));
+    Map<String, Object> location = (Map<String, Object>) properties.get("Location");
+    assertEquals(2, location.size());
+    assertEquals("Germany", location.get("Country"));
+    Map<String, Object> city = (Map<String, Object>) location.get("City");
+    assertEquals(2, city.size());
+    assertEquals("69124", city.get("PostalCode"));
+    assertEquals("Heidelberg", city.get("CityName"));
+    //    System.out.println(((Calendar)result.get("EntryDate")).getTimeInMillis());
+    //    //"1999-01-01T00:00:00"
+    //    Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("GMT"));
+    //    cal.set(1999, 0, 1, 0, 0, 0);
+    //    cal.setTimeInMillis(915148800000l);
+    //    System.out.println(cal);
+    //    System.out.println(result.get("EntryDate"));
+    Calendar entryDate = (Calendar) properties.get("EntryDate");
+    assertEquals(Long.valueOf(915148800000l), Long.valueOf(entryDate.getTimeInMillis()));
+    assertEquals(TimeZone.getTimeZone("GMT"), entryDate.getTimeZone());
+    assertEquals("/SAP/PUBLIC/BC/NWDEMO_MODEL/IMAGES/male_1_WinterW.jpg", properties.get("ImageUrl"));
+  }
+
+  
   @SuppressWarnings("unchecked")
   @Test
   public void testReadEntryRequest() throws Exception {
@@ -206,7 +279,7 @@ public class XmlEntityConsumerTest extends BaseTest {
 
     EdmEntitySet entitySet = MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Employees");
     InputStream content = createContentAsStream(EMPLOYEE_1_XML);
-    ODataEntry result = xec.readEntry(entitySet, content);
+    ODataEntry result = xec.readEntry(entitySet, content, true);
 
     // verify
     Map<String, Object> properties = result.getProperties();
@@ -244,7 +317,7 @@ public class XmlEntityConsumerTest extends BaseTest {
 
     EdmEntitySet entitySet = MockFacade.getMockEdm().getEntityContainer("Container2").getEntitySet("Photos");
     InputStream reqContent = createContentAsStream(PHOTO_XML);
-    ODataEntry result = xec.readEntry(entitySet, reqContent);
+    ODataEntry result = xec.readEntry(entitySet, reqContent, true);
 
     // verify
     EntryMetadata entryMetadata = result.getMetadata();
@@ -263,7 +336,7 @@ public class XmlEntityConsumerTest extends BaseTest {
 
     EdmEntitySet entitySet = MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Rooms");
     InputStream reqContent = createContentAsStream(ROOM_1_XML);
-    ODataEntry result = xec.readEntry(entitySet, reqContent);
+    ODataEntry result = xec.readEntry(entitySet, reqContent, true);
 
     // verify
     EntryMetadata entryMetadata = result.getMetadata();
@@ -291,7 +364,7 @@ public class XmlEntityConsumerTest extends BaseTest {
 
     String xml = "<Age>67</Age>";
     InputStream content = createContentAsStream(xml);
-    Map<String, Object> value = xec.readProperty(property, content);
+    Map<String, Object> value = xec.readProperty(property, content, true);
 
     assertEquals(Integer.valueOf(67), value.get("Age"));
 
