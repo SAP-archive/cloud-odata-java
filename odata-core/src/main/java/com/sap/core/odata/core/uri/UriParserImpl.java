@@ -27,6 +27,7 @@ import com.sap.core.odata.api.edm.EdmType;
 import com.sap.core.odata.api.edm.EdmTypeKind;
 import com.sap.core.odata.api.edm.EdmTyped;
 import com.sap.core.odata.api.exception.MessageReference;
+import com.sap.core.odata.api.exception.ODataBadRequestException;
 import com.sap.core.odata.api.exception.ODataMessageException;
 import com.sap.core.odata.api.uri.KeyPredicate;
 import com.sap.core.odata.api.uri.NavigationPropertySegment;
@@ -713,7 +714,7 @@ public class UriParserImpl extends UriParser {
     else if (key == EdmLiteralException.UNKNOWNLITERAL.getKey())
       return new UriSyntaxException(UriSyntaxException.UNKNOWNLITERAL.addContent(messageReference.getContent()), e);
     else
-      return new UriSyntaxException(UriSyntaxException.COMMON, e);
+      return new UriSyntaxException(ODataBadRequestException.COMMON, e);
   }
 
   private static List<String> copyPathSegmentList(final List<PathSegment> source) {

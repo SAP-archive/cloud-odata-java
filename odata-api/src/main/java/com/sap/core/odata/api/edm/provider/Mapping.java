@@ -41,7 +41,7 @@ public class Mapping implements EdmMapping {
    * @param value
    * @return {@link Mapping} for method chaining
    */
-  public Mapping setInternalName(String value) {
+  public Mapping setInternalName(final String value) {
     this.value = value;
     return this;
   }
@@ -51,7 +51,7 @@ public class Mapping implements EdmMapping {
    * @param mimeType
    * @return {@link Mapping} for method chaining
    */
-  public Mapping setMimeType(String mimeType) {
+  public Mapping setMimeType(final String mimeType) {
     this.mimeType = mimeType;
     return this;
   }
@@ -61,7 +61,7 @@ public class Mapping implements EdmMapping {
    * @param object
    * @return {@link Mapping} for method chaining
    */
-  public Mapping setObject(Object object) {
+  public Mapping setObject(final Object object) {
     this.object = object;
     return this;
   }

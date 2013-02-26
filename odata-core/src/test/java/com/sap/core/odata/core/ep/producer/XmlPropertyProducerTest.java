@@ -32,7 +32,7 @@ public class XmlPropertyProducerTest extends AbstractProviderTest {
     EdmTyped edmTyped = MockFacade.getMockEdm().getEntityType("RefScenario", "Employee").getProperty("EmployeeId");
     EdmProperty edmProperty = (EdmProperty) edmTyped;
 
-    ODataResponse response = s.writeProperty(edmProperty, this.employeeData.get("EmployeeId"));
+    ODataResponse response = s.writeProperty(edmProperty, employeeData.get("EmployeeId"));
     assertNotNull(response);
     assertNotNull(response.getEntity());
     assertEquals(ContentType.APPLICATION_XML.toString() + "; charset=utf-8", response.getContentHeader());
@@ -51,7 +51,7 @@ public class XmlPropertyProducerTest extends AbstractProviderTest {
     EdmTyped edmTyped = MockFacade.getMockEdm().getEntityType("RefScenario", "Employee").getProperty("Age");
     EdmProperty edmProperty = (EdmProperty) edmTyped;
 
-    ODataResponse response = s.writeProperty(edmProperty, this.employeeData.get("Age"));
+    ODataResponse response = s.writeProperty(edmProperty, employeeData.get("Age"));
     assertNotNull(response);
     assertNotNull(response.getEntity());
     assertEquals(ContentType.APPLICATION_XML.toString() + "; charset=utf-8", response.getContentHeader());
@@ -69,7 +69,7 @@ public class XmlPropertyProducerTest extends AbstractProviderTest {
     EdmTyped edmTyped = MockFacade.getMockEdm().getEntityType("RefScenario", "Employee").getProperty("ImageUrl");
     EdmProperty edmProperty = (EdmProperty) edmTyped;
 
-    ODataResponse response = s.writeProperty(edmProperty, this.employeeData.get("ImageUrl"));
+    ODataResponse response = s.writeProperty(edmProperty, employeeData.get("ImageUrl"));
     assertNotNull(response);
     assertNotNull(response.getEntity());
     assertEquals(ContentType.APPLICATION_XML.toString() + "; charset=utf-8", response.getContentHeader());
@@ -119,7 +119,7 @@ public class XmlPropertyProducerTest extends AbstractProviderTest {
     EdmTyped edmTyped = edmEntityType.getProperty("Location");
     EdmProperty edmProperty = (EdmProperty) edmTyped;
 
-    ODataResponse response = s.writeProperty(edmProperty, this.employeeData.get("Location"));
+    ODataResponse response = s.writeProperty(edmProperty, employeeData.get("Location"));
     assertNotNull(response);
     assertNotNull(response.getEntity());
     assertEquals(ContentType.APPLICATION_XML.toString() + "; charset=utf-8", response.getContentHeader());

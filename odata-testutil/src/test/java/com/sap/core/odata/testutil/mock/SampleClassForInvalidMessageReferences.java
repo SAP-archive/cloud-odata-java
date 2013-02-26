@@ -7,11 +7,11 @@ public class SampleClassForInvalidMessageReferences extends ODataMessageExceptio
 {
   private static final long serialVersionUID = 1L;
 
-  public SampleClassForInvalidMessageReferences(MessageReference messageReference) {
+  public SampleClassForInvalidMessageReferences(final MessageReference messageReference) {
     super(messageReference);
   }
 
-  public SampleClassForInvalidMessageReferences(MessageReference messageReference, String errorCode) {
+  public SampleClassForInvalidMessageReferences(final MessageReference messageReference, final String errorCode) {
     super(messageReference, errorCode);
   }
 

@@ -16,11 +16,11 @@ class InfoUnaryOperator
   private String syntax;
   ParameterSetCombination combination;
 
-  public InfoUnaryOperator(UnaryOperator operator, String category, ParameterSetCombination combination)
+  public InfoUnaryOperator(final UnaryOperator operator, final String category, final ParameterSetCombination combination)
   {
     this.operator = operator;
     this.category = category;
-    this.syntax = operator.toUriLiteral();
+    syntax = operator.toUriLiteral();
     this.combination = combination;
   }
 
@@ -29,17 +29,17 @@ class InfoUnaryOperator
     return category;
   }
 
-  public String getSyntax() 
+  public String getSyntax()
   {
     return syntax;
   }
 
-  public UnaryOperator getOperator() 
+  public UnaryOperator getOperator()
   {
     return operator;
   }
 
-  public ParameterSet validateParameterSet(List<EdmType> actualParameterTypes) throws ExpressionParserInternalError 
+  public ParameterSet validateParameterSet(final List<EdmType> actualParameterTypes) throws ExpressionParserInternalError
   {
     return combination.validate(actualParameterTypes);
   }

@@ -55,19 +55,19 @@ public class ContentType {
   private Map<String, String> parameters;
   private ODataFormat odataFormat;
 
-  private ContentType(String type, String subtype) {
+  private ContentType(final String type, final String subtype) {
     this(type, subtype, ODataFormat.CUSTOM, null);
   }
 
-  private ContentType(String type, String subtype, Map<String, String> parameters) {
+  private ContentType(final String type, final String subtype, final Map<String, String> parameters) {
     this(type, subtype, mapToODataFormat(subtype), parameters);
   }
 
-  private ContentType(String type, String subtype, ODataFormat odataFormat) {
+  private ContentType(final String type, final String subtype, final ODataFormat odataFormat) {
     this(type, subtype, odataFormat, null);
   }
 
-  private ContentType(String type, String subtype, ODataFormat odataFormat, Map<String, String> parameters) {
+  private ContentType(final String type, final String subtype, final ODataFormat odataFormat, final Map<String, String> parameters) {
     this.odataFormat = odataFormat;
     this.type = type == null ? MEDIA_TYPE_WILDCARD : type;
     this.subtype = subtype == null ? MEDIA_TYPE_WILDCARD : subtype;
@@ -77,7 +77,7 @@ public class ContentType {
     } else {
       this.parameters = new TreeMap<String, String>(new Comparator<String>() {
         @Override
-        public int compare(String o1, String o2) {
+        public int compare(final String o1, final String o2) {
           return o1.compareToIgnoreCase(o2);
         }
       });
@@ -92,7 +92,7 @@ public class ContentType {
    * @param subtype
    * @return a new <code>ContentType</code> object
    */
-  public static ContentType create(String type, String subtype) {
+  public static ContentType create(final String type, final String subtype) {
     return new ContentType(type, subtype, mapToODataFormat(subtype), null);
   }
 
@@ -103,7 +103,7 @@ public class ContentType {
    * @param parameters
    * @return a new <code>ContentType</code> object
    */
-  public static ContentType create(String type, String subtype, Map<String, String> parameters) {
+  public static ContentType create(final String type, final String subtype, final Map<String, String> parameters) {
     return new ContentType(type, subtype, mapToODataFormat(subtype), parameters);
   }
 
@@ -114,7 +114,7 @@ public class ContentType {
    * @param parameterValue
    * @return a new <code>ContentType</code> object
    */
-  public static ContentType create(ContentType contentType, String parameterKey, String parameterValue) {
+  public static ContentType create(final ContentType contentType, final String parameterKey, final String parameterValue) {
     ContentType ct = new ContentType(contentType.type, contentType.subtype, contentType.odataFormat, contentType.parameters);
     ct.parameters.put(parameterKey, parameterValue);
     return ct;
@@ -128,7 +128,7 @@ public class ContentType {
    * @param format
    * @return a new <code>ContentType</code> object
    */
-  public static ContentType create(String format) {
+  public static ContentType create(final String format) {
     if (format == null)
       throw new IllegalArgumentException("Parameter format must no be null.");
 
@@ -151,7 +151,7 @@ public class ContentType {
     }
   }
 
-  private static ODataFormat mapToODataFormat(String subtype) {
+  private static ODataFormat mapToODataFormat(final String subtype) {
     ODataFormat odataFormat = null;
     if (subtype.contains("atom")) {
       odataFormat = ODataFormat.ATOM;
@@ -170,7 +170,7 @@ public class ContentType {
    * @param content
    * @return a new <code>ContentType</code> object
    */
-  private static Map<String, String> parameterMap(String... content) {
+  private static Map<String, String> parameterMap(final String... content) {
     Map<String, String> map = new HashMap<String, String>();
     for (int i = 0; i < content.length - 1; i += 2) {
       String key = content[i];
@@ -186,7 +186,7 @@ public class ContentType {
    * @param parameters
    * @return Map with keys mapped to values
    */
-  private static Map<String, String> parseParameters(String parameters) {
+  private static Map<String, String> parseParameters(final String parameters) {
     Map<String, String> parameterMap = new HashMap<String, String>();
     if (parameters != null) {
       String[] splittedParameters = parameters.split(PARAMETER_SEPARATOR);
@@ -237,7 +237,7 @@ public class ContentType {
    * @return <code>true</code> if both instances are equal (see definition above), otherwise <code>false</code>.
    */
   @Override
-  public boolean equals(Object obj) {
+  public boolean equals(final Object obj) {
     // basic checks
     if (this == obj)
       return true;
@@ -335,7 +335,7 @@ public class ContentType {
    * @param toMatchContentTypes list of {@link ContentType}s which are matches against this {@link ContentType}
    * @return best matched content type in list or <code>NULL</code> if none content type match to this content type instance
    */
-  public ContentType match(List<ContentType> toMatchContentTypes) {
+  public ContentType match(final List<ContentType> toMatchContentTypes) {
     for (ContentType supportedContentType : toMatchContentTypes) {
       if (equals(supportedContentType)) {
         if (compareWildcardCounts(supportedContentType) < 0) {
@@ -347,7 +347,7 @@ public class ContentType {
     }
     return null;
   }
-  
+
   /**
    * Check if a valid match for this {@link ContentType} exists in given list.
    * For more detail what a valid match is see {@link #match(List)}.
@@ -356,10 +356,9 @@ public class ContentType {
    * @return <code>true</code> if a matching content type was found in given list 
    *          or <code>false</code> if none matching content type match was found
    */
-  public boolean hasMatch(List<ContentType> toMatchContentTypes) {
+  public boolean hasMatch(final List<ContentType> toMatchContentTypes) {
     return match(toMatchContentTypes) != null;
   }
-
 
   /**
    * Compare wildcards counts/weights of both {@link ContentType}.
@@ -372,7 +371,7 @@ public class ContentType {
    * @param otherContentType {@link ContentType} to be compared to
    * @return this object weighted wildcards minus the given parameter object weighted wildcards.
    */
-  public int compareWildcardCounts(ContentType otherContentType) {
+  public int compareWildcardCounts(final ContentType otherContentType) {
     return countWildcards() - otherContentType.countWildcards();
   }
 
@@ -395,7 +394,7 @@ public class ContentType {
     return (MEDIA_TYPE_WILDCARD.equals(type) && MEDIA_TYPE_WILDCARD.equals(subtype));
   }
 
-  public static List<ContentType> convert(List<String> types) {
+  public static List<ContentType> convert(final List<String> types) {
     List<ContentType> results = new ArrayList<ContentType>();
     for (String contentType : types) {
       results.add(ContentType.create(contentType));
@@ -415,7 +414,7 @@ public class ContentType {
    * @return <code>true</code> if a matching content type was found in given list 
    *          or <code>false</code> if none matching content type match was found
    */
-  public static boolean match(String toMatch, ContentType ... matchExamples) {
+  public static boolean match(final String toMatch, final ContentType... matchExamples) {
     ContentType toMatchContentType = ContentType.create(toMatch);
 
     return toMatchContentType.hasMatch(Arrays.asList(matchExamples));

@@ -12,7 +12,7 @@ public class TokenList implements Iterator<Token>
 
   public TokenList()
   {
-    this.tokens = new ArrayList<Token>();
+    tokens = new ArrayList<Token>();
   }
 
   /**
@@ -21,10 +21,10 @@ public class TokenList implements Iterator<Token>
    * @param kind Kind of parsed token
    * @param uriLiteral String value of parsed token
    */
-  public void appendToken(int position, TokenKind kind, String uriLiteral)
+  public void appendToken(final int position, final TokenKind kind, final String uriLiteral)
   {
     Token token = new Token(kind, position, uriLiteral);
-    this.tokens.add(token);
+    tokens.add(token);
     return;
   }
 
@@ -34,10 +34,10 @@ public class TokenList implements Iterator<Token>
    * @param kind Kind of parsed token
    * @param charValue Char value of parsed token
    */
-  public void appendToken(int position, TokenKind kind, char charValue)
+  public void appendToken(final int position, final TokenKind kind, final char charValue)
   {
     Token token = new Token(kind, position, Character.toString(charValue));
-    this.tokens.add(token);
+    tokens.add(token);
     return;
   }
 
@@ -47,10 +47,10 @@ public class TokenList implements Iterator<Token>
    * @param kind Kind of parsed token
    * @param javaLiteral EdmLiteral of parsed token containing type and value of UriLiteral 
    */
-  public void appendEdmTypedToken(int position, TokenKind kind, String uriLiteral, EdmLiteral javaLiteral)
+  public void appendEdmTypedToken(final int position, final TokenKind kind, final String uriLiteral, final EdmLiteral javaLiteral)
   {
     Token token = new Token(kind, position, uriLiteral, javaLiteral);
-    this.tokens.add(token);
+    tokens.add(token);
     return;
   }
 
@@ -61,13 +61,13 @@ public class TokenList implements Iterator<Token>
 
     return tokens.get(currentToken);
   }
-  
+
   public Token lookPrevToken()
   {
-    if (currentToken-1 < 0)
+    if (currentToken - 1 < 0)
       return null;
 
-    return tokens.get(currentToken-1);
+    return tokens.get(currentToken - 1);
   }
 
   public boolean hasTokens()
@@ -82,7 +82,7 @@ public class TokenList implements Iterator<Token>
     return i;
   }
 
-  public Token expectToken(TokenKind comma) throws TokenizerExpectError
+  public Token expectToken(final TokenKind comma) throws TokenizerExpectError
   {
     Token actual = next();
     if (actual == null)
@@ -97,7 +97,7 @@ public class TokenList implements Iterator<Token>
     return actual;
   }
 
-  public Token expectToken(TokenKind comma, boolean throwFilterExpression) throws  ExpressionParserInternalError
+  public Token expectToken(final TokenKind comma, final boolean throwFilterExpression) throws ExpressionParserInternalError
   {
     Token actual = next();
     if (actual == null)
@@ -107,14 +107,13 @@ public class TokenList implements Iterator<Token>
 
     if (comma != actual.getKind())
     {
-      if ( throwFilterExpression)
+      if (throwFilterExpression)
         throw ExpressionParserInternalError.createINVALID_TOKENKIND_AT(comma, actual);
     }
     return actual;
   }
 
-  
-  public Token expectToken(String literal) throws TokenizerExpectError
+  public Token expectToken(final String literal) throws TokenizerExpectError
   {
     Token actual = next();
     if (actual == null)
@@ -124,13 +123,12 @@ public class TokenList implements Iterator<Token>
 
     if (!literal.equals(actual.getUriLiteral()))
     {
-        throw TokenizerExpectError.createINVALID_TOKEN_AT(literal, actual);
+      throw TokenizerExpectError.createINVALID_TOKEN_AT(literal, actual);
     }
     return actual;
   }
-  
-  
-  public Token expectToken(String literal, boolean throwInternal) throws ExpressionParserInternalError
+
+  public Token expectToken(final String literal, final boolean throwInternal) throws ExpressionParserInternalError
   {
     Token actual = next();
     if (actual == null)
@@ -152,13 +150,13 @@ public class TokenList implements Iterator<Token>
   }
 
   @Override
-  public boolean hasNext() 
+  public boolean hasNext()
   {
     return (currentToken < tokens.size());
   }
 
   @Override
-  public Token next() 
+  public Token next()
   {
     if (currentToken >= tokens.size())
       return null;
@@ -169,12 +167,12 @@ public class TokenList implements Iterator<Token>
   }
 
   @Override
-  public void remove() 
+  public void remove()
   {
     throw new IllegalArgumentException("Method not allowed");
   }
 
-  public Token elementAt(int index) 
+  public Token elementAt(final int index)
   {
 
     return tokens.get(index);

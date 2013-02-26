@@ -27,7 +27,7 @@ public class EdmEntityTypeImplProv extends EdmStructuralTypeImplProv implements 
   private Map<String, NavigationProperty> navigationProperties;
   private List<String> edmNavigationPropertyNames;
 
-  public EdmEntityTypeImplProv(EdmImplProv edm, EntityType entityType, String namespace) throws EdmException {
+  public EdmEntityTypeImplProv(final EdmImplProv edm, final EntityType entityType, final String namespace) throws EdmException {
     super(edm, entityType, EdmTypeKind.ENTITY, namespace);
     this.entityType = entityType;
 
@@ -117,7 +117,7 @@ public class EdmEntityTypeImplProv extends EdmStructuralTypeImplProv implements 
   }
 
   @Override
-  protected EdmTyped getPropertyInternal(String name) throws EdmException {
+  protected EdmTyped getPropertyInternal(final String name) throws EdmException {
     EdmTyped edmProperty = super.getPropertyInternal(name);
 
     if (edmProperty != null) {
@@ -137,7 +137,7 @@ public class EdmEntityTypeImplProv extends EdmStructuralTypeImplProv implements 
     return edmProperty;
   }
 
-  protected EdmTyped createNavigationProperty(NavigationProperty property) throws EdmException {
+  protected EdmTyped createNavigationProperty(final NavigationProperty property) throws EdmException {
     return new EdmNavigationPropertyImplProv(edm, property);
   }
 

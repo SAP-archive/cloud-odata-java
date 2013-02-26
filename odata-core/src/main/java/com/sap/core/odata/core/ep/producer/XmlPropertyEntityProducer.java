@@ -32,7 +32,7 @@ public class XmlPropertyEntityProducer {
    * @param value
    * @throws EntityProviderException
    */
-  public void append(XMLStreamWriter writer, String name, EntityPropertyInfo propertyInfo, Object value) throws EntityProviderException {
+  public void append(final XMLStreamWriter writer, final String name, final EntityPropertyInfo propertyInfo, final Object value) throws EntityProviderException {
     try {
       if (hasCustomNamespace(propertyInfo))
         writeStartElementWithCustomNamespace(writer, propertyInfo, name);
@@ -62,7 +62,7 @@ public class XmlPropertyEntityProducer {
    * @param value
    * @throws EntityProviderException
    */
-  public void append(XMLStreamWriter writer, EntityPropertyInfo propertyInfo, Object value) throws EntityProviderException {
+  public void append(final XMLStreamWriter writer, final EntityPropertyInfo propertyInfo, final Object value) throws EntityProviderException {
     try {
       writer.writeStartElement(propertyInfo.getName());
       writer.writeDefaultNamespace(Edm.NAMESPACE_D_2007_08);
@@ -90,7 +90,7 @@ public class XmlPropertyEntityProducer {
    * @throws EdmException
    * @throws EntityProviderException
    */
-  private void appendProperty(XMLStreamWriter writer, EntityComplexPropertyInfo propertyInfo, Object value) throws XMLStreamException, EdmException, EntityProviderException {
+  private void appendProperty(final XMLStreamWriter writer, final EntityComplexPropertyInfo propertyInfo, final Object value) throws XMLStreamException, EdmException, EntityProviderException {
 
     if (value == null) {
       writer.writeAttribute(Edm.NAMESPACE_M_2007_08, FormatXml.ATOM_NULL, FormatXml.ATOM_VALUE_TRUE);
@@ -120,7 +120,7 @@ public class XmlPropertyEntityProducer {
    * @param name
    * @return name or result (see above)
    */
-  private Object extractChildValue(Object value, String name) {
+  private Object extractChildValue(final Object value, final String name) {
     if (value instanceof Map) {
       Map<?, ?> map = (Map<?, ?>) value;
       return map.get(name);
@@ -136,14 +136,14 @@ public class XmlPropertyEntityProducer {
    * @throws XMLStreamException
    * @throws EdmException
    */
-  private void appendProperty(XMLStreamWriter writer, EntityPropertyInfo prop, Object value) throws XMLStreamException, EdmException {
+  private void appendProperty(final XMLStreamWriter writer, final EntityPropertyInfo prop, final Object value) throws XMLStreamException, EdmException {
     Object contentValue = value;
     String mimeType = null;
     if (prop.getMimeType() != null) {
       mimeType = prop.getMimeType();
     } else if (prop.getMapping() != null && prop.getMapping().getMimeType() != null) {
-        mimeType = (String) extractChildValue(value, prop.getMapping().getMimeType());
-        contentValue = extractChildValue(value, prop.getName());
+      mimeType = (String) extractChildValue(value, prop.getMapping().getMimeType());
+      contentValue = extractChildValue(value, prop.getName());
     }
 
     if (mimeType != null)
@@ -165,7 +165,7 @@ public class XmlPropertyEntityProducer {
    * @param name
    * @throws XMLStreamException
    */
-  private void writeStartElementWithCustomNamespace(XMLStreamWriter writer, EntityPropertyInfo prop, String name) throws XMLStreamException {
+  private void writeStartElementWithCustomNamespace(final XMLStreamWriter writer, final EntityPropertyInfo prop, final String name) throws XMLStreamException {
     EdmCustomizableFeedMappings mapping = prop.getCustomMapping();
     String nsPrefix = mapping.getFcNsPrefix();
     String nsUri = mapping.getFcNsUri();
@@ -178,7 +178,7 @@ public class XmlPropertyEntityProducer {
    * @param prop
    * @return true if property has a custom namespace
    */
-  private boolean hasCustomNamespace(EntityPropertyInfo prop) {
+  private boolean hasCustomNamespace(final EntityPropertyInfo prop) {
     if (prop.getCustomMapping() != null) {
       EdmCustomizableFeedMappings mapping = prop.getCustomMapping();
       return !(mapping.getFcNsPrefix() == null || mapping.getFcNsUri() == null);

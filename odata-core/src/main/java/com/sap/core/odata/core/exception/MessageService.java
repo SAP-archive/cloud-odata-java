@@ -24,7 +24,7 @@ public class MessageService {
 
   private static final Map<Locale, MessageService> LOCALE_2_MESSAGE_SERVICE = new HashMap<Locale, MessageService>();
 
-  private MessageService(Locale locale) {
+  private MessageService(final Locale locale) {
     requestedLocale = locale;
     resourceBundle = ResourceBundle.getBundle(BUNDLE_NAME, locale);
   }
@@ -33,9 +33,9 @@ public class MessageService {
     private final String localizedText;
     private final Locale locale;
 
-    public Message(Locale locale, String localizedMessage) {
+    public Message(final Locale locale, final String localizedMessage) {
       super();
-      this.localizedText = localizedMessage;
+      localizedText = localizedMessage;
       this.locale = locale;
     }
 
@@ -61,7 +61,7 @@ public class MessageService {
     }
   }
 
-  public static MessageService getInstance(Locale locale) {
+  public static MessageService getInstance(final Locale locale) {
     MessageService messagesInstance = LOCALE_2_MESSAGE_SERVICE.get(locale);
     if (messagesInstance == null) {
       messagesInstance = new MessageService(locale);
@@ -70,7 +70,7 @@ public class MessageService {
     return messagesInstance;
   }
 
-  public static boolean isLocaleSupported(Locale locale) {
+  public static boolean isLocaleSupported(final Locale locale) {
     MessageService service = getInstance(locale);
     return service.getLocale().equals(locale);
   }
@@ -82,7 +82,7 @@ public class MessageService {
    * @param locales
    * @return first supported {@link Locale} or <code>NULL</code>.
    */
-  public static Locale getSupportedLocale(List<Locale> locales) {
+  public static Locale getSupportedLocale(final List<Locale> locales) {
     for (Locale locale : locales) {
       if (isLocaleSupported(locale)) {
         return locale;
@@ -91,7 +91,7 @@ public class MessageService {
     return null;
   }
 
-  public static MessageService getInstance(List<Locale> locales) {
+  public static MessageService getInstance(final List<Locale> locales) {
     MessageService service = null;
 
     for (Locale locale : locales) {
@@ -104,12 +104,12 @@ public class MessageService {
     return service;
   }
 
-  public static Message getMessage(Locale language, MessageReference context) {
+  public static Message getMessage(final Locale language, final MessageReference context) {
     Object[] contentAsArray = context.getContent().toArray(new Object[0]);
     return getMessage(language, context.getKey(), contentAsArray);
   }
 
-  public static Message getMessage(Locale locale, String key, Object... replacements) {
+  public static Message getMessage(final Locale locale, final String key, final Object... replacements) {
     MessageService messages = MessageService.getInstance(locale);
     return messages.getMessage(key, replacements);
   }
@@ -120,7 +120,7 @@ public class MessageService {
    * @param replacements
    * @return the message
    */
-  private Message getMessage(String key, Object... replacements) {
+  private Message getMessage(final String key, final Object... replacements) {
     String value = null;
 
     try {

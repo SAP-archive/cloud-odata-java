@@ -279,7 +279,7 @@ public class ODataExceptionMapperImplTest extends BaseTest {
     assertXpathExists("/a:error/a:code", errorMessage);
     assertXpathEvaluatesTo(exceptionMessage, "/a:error/a:message", errorMessage);
   }
-  
+
   @Test
   public void testErrorCodeForApplicationException() throws Exception {
     // prepare
@@ -297,7 +297,7 @@ public class ODataExceptionMapperImplTest extends BaseTest {
     assertXpathEvaluatesTo(errorCode, "/a:error/a:code", errorMessage);
     assertXpathEvaluatesTo(message, "/a:error/a:message", errorMessage);
   }
-  
+
   @Test
   public void testODataNotFoundExceptionWithErrorCode() throws Exception {
     // prepare

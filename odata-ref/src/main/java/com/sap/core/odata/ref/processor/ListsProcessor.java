@@ -42,6 +42,7 @@ import com.sap.core.odata.api.ep.entry.EntryMetadata;
 import com.sap.core.odata.api.ep.entry.ODataEntry;
 import com.sap.core.odata.api.exception.ODataBadRequestException;
 import com.sap.core.odata.api.exception.ODataException;
+import com.sap.core.odata.api.exception.ODataHttpException;
 import com.sap.core.odata.api.exception.ODataNotFoundException;
 import com.sap.core.odata.api.exception.ODataNotImplementedException;
 import com.sap.core.odata.api.processor.ODataContext;
@@ -93,7 +94,7 @@ public class ListsProcessor extends ODataSingleProcessor {
 
   private final ListsDataSource dataSource;
 
-  public ListsProcessor(ListsDataSource dataSource) {
+  public ListsProcessor(final ListsDataSource dataSource) {
     this.dataSource = dataSource;
   }
 
@@ -284,7 +285,7 @@ public class ListsProcessor extends ODataSingleProcessor {
   }
 
   @Override
-  public ODataResponse createEntity(final PostUriInfo uriInfo, InputStream content, final String requestContentType, final String contentType) throws ODataException {
+  public ODataResponse createEntity(final PostUriInfo uriInfo, final InputStream content, final String requestContentType, final String contentType) throws ODataException {
     final EdmEntitySet entitySet = uriInfo.getTargetEntitySet();
     final EdmEntityType entityType = entitySet.getEntityType();
 
@@ -318,7 +319,7 @@ public class ListsProcessor extends ODataSingleProcessor {
   }
 
   @Override
-  public ODataResponse updateEntity(final PutMergePatchUriInfo uriInfo, InputStream content, final String requestContentType, final boolean merge, final String contentType) throws ODataException {
+  public ODataResponse updateEntity(final PutMergePatchUriInfo uriInfo, final InputStream content, final String requestContentType, final boolean merge, final String contentType) throws ODataException {
     Object data = retrieveData(
         uriInfo.getStartEntitySet(),
         uriInfo.getKeyPredicates(),
@@ -411,7 +412,7 @@ public class ListsProcessor extends ODataSingleProcessor {
   }
 
   @Override
-  public ODataResponse createEntityLink(final PostUriInfo uriInfo, InputStream content, final String requestContentType, final String contentType) throws ODataException {
+  public ODataResponse createEntityLink(final PostUriInfo uriInfo, final InputStream content, final String requestContentType, final String contentType) throws ODataException {
     final List<NavigationSegment> navigationSegments = uriInfo.getNavigationSegments();
     final List<NavigationSegment> previousSegments = navigationSegments.subList(0, navigationSegments.size() - 1);
 
@@ -437,7 +438,7 @@ public class ListsProcessor extends ODataSingleProcessor {
   }
 
   @Override
-  public ODataResponse updateEntityLink(final PutMergePatchUriInfo uriInfo, InputStream content, final String requestContentType, final String contentType) throws ODataException {
+  public ODataResponse updateEntityLink(final PutMergePatchUriInfo uriInfo, final InputStream content, final String requestContentType, final String contentType) throws ODataException {
     final List<NavigationSegment> navigationSegments = uriInfo.getNavigationSegments();
     final List<NavigationSegment> previousSegments = navigationSegments.subList(0, navigationSegments.size() - 1);
 
@@ -561,7 +562,7 @@ public class ListsProcessor extends ODataSingleProcessor {
   }
 
   @Override
-  public ODataResponse updateEntityComplexProperty(final PutMergePatchUriInfo uriInfo, InputStream content, final String requestContentType, final boolean merge, final String contentType) throws ODataException {
+  public ODataResponse updateEntityComplexProperty(final PutMergePatchUriInfo uriInfo, final InputStream content, final String requestContentType, final boolean merge, final String contentType) throws ODataException {
     Object data = retrieveData(
         uriInfo.getStartEntitySet(),
         uriInfo.getKeyPredicates(),
@@ -605,12 +606,12 @@ public class ListsProcessor extends ODataSingleProcessor {
   }
 
   @Override
-  public ODataResponse updateEntitySimpleProperty(final PutMergePatchUriInfo uriInfo, InputStream content, final String requestContentType, final String contentType) throws ODataException {
+  public ODataResponse updateEntitySimpleProperty(final PutMergePatchUriInfo uriInfo, final InputStream content, final String requestContentType, final String contentType) throws ODataException {
     return updateEntityComplexProperty(uriInfo, content, requestContentType, false, contentType);
   }
 
   @Override
-  public ODataResponse updateEntitySimplePropertyValue(final PutMergePatchUriInfo uriInfo, InputStream content, final String requestContentType, final String contentType) throws ODataException {
+  public ODataResponse updateEntitySimplePropertyValue(final PutMergePatchUriInfo uriInfo, final InputStream content, final String requestContentType, final String contentType) throws ODataException {
     Object data = retrieveData(
         uriInfo.getStartEntitySet(),
         uriInfo.getKeyPredicates(),
@@ -689,7 +690,7 @@ public class ListsProcessor extends ODataSingleProcessor {
   }
 
   @Override
-  public ODataResponse updateEntityMedia(final PutMergePatchUriInfo uriInfo, InputStream content, final String requestContentType, final String contentType) throws ODataException {
+  public ODataResponse updateEntityMedia(final PutMergePatchUriInfo uriInfo, final InputStream content, final String requestContentType, final String contentType) throws ODataException {
     final Object data = retrieveData(
         uriInfo.getStartEntitySet(),
         uriInfo.getKeyPredicates(),
@@ -727,7 +728,7 @@ public class ListsProcessor extends ODataSingleProcessor {
         null);
 
     if (data == null)
-      throw new ODataNotFoundException(ODataNotFoundException.COMMON);
+      throw new ODataNotFoundException(ODataHttpException.COMMON);
 
     Object value;
     if (type.getKind() == EdmTypeKind.SIMPLE) {
@@ -768,7 +769,7 @@ public class ListsProcessor extends ODataSingleProcessor {
         null);
 
     if (data == null)
-      throw new ODataNotFoundException(ODataNotFoundException.COMMON);
+      throw new ODataNotFoundException(ODataHttpException.COMMON);
 
     ODataResponse response;
     if (type == EdmSimpleTypeKind.Binary.getEdmSimpleTypeInstance()) {
@@ -872,7 +873,7 @@ public class ListsProcessor extends ODataSingleProcessor {
     return response;
   }
 
-  private ODataEntry parseEntry(final EdmEntitySet entitySet, InputStream content, final String requestContentType, boolean merge) throws ODataBadRequestException {
+  private ODataEntry parseEntry(final EdmEntitySet entitySet, final InputStream content, final String requestContentType, final boolean merge) throws ODataBadRequestException {
     ODataContext context = getContext();
     final int timingHandle = context.startRuntimeMeasurement("EntityConsumer", "readEntry");
 
@@ -888,7 +889,7 @@ public class ListsProcessor extends ODataSingleProcessor {
     return entryValues;
   }
 
-  private Map<String, Object> parseLink(final EdmEntitySet entitySet, InputStream content, final String contentType) throws ODataException {
+  private Map<String, Object> parseLink(final EdmEntitySet entitySet, final InputStream content, final String contentType) throws ODataException {
     ODataContext context = getContext();
     final int timingHandle = context.startRuntimeMeasurement("EntityProvider", "readLink");
 
@@ -911,6 +912,7 @@ public class ListsProcessor extends ODataSingleProcessor {
       public String getPath() {
         return path;
       }
+
       @Override
       public Map<String, List<String>> getMatrixParameters() {
         return null;
@@ -941,7 +943,7 @@ public class ListsProcessor extends ODataSingleProcessor {
       return mapKey(uri.getKeyPredicates());
   }
 
-  private void linkEntity(final EdmEntitySet entitySet, Object data, final EntryMetadata entryMetadata) throws ODataException {
+  private void linkEntity(final EdmEntitySet entitySet, final Object data, final EntryMetadata entryMetadata) throws ODataException {
     final EdmEntityType entityType = entitySet.getEntityType();
     for (final String navigationPropertyName : entityType.getNavigationPropertyNames()) {
       final EdmNavigationProperty navigationProperty = (EdmNavigationProperty) entityType.getProperty(navigationPropertyName);
@@ -954,7 +956,7 @@ public class ListsProcessor extends ODataSingleProcessor {
     }
   }
 
-  private <T> Integer applySystemQueryOptions(final EdmEntitySet entitySet, List<T> data, final FilterExpression filter, final InlineCount inlineCount, final OrderByExpression orderBy, final String skipToken, final Integer skip, final Integer top) throws ODataException {
+  private <T> Integer applySystemQueryOptions(final EdmEntitySet entitySet, final List<T> data, final FilterExpression filter, final InlineCount inlineCount, final OrderByExpression orderBy, final String skipToken, final Integer skip, final Integer top) throws ODataException {
     ODataContext context = getContext();
     final int timingHandle = context.startRuntimeMeasurement(getClass().getSimpleName(), "applySystemQueryOptions");
 
@@ -992,7 +994,7 @@ public class ListsProcessor extends ODataSingleProcessor {
     return count;
   }
 
-  private static <T> void sort(List<T> data, final OrderByExpression orderBy) {
+  private static <T> void sort(final List<T> data, final OrderByExpression orderBy) {
     Collections.sort(data, new Comparator<T>() {
       @Override
       public int compare(final T entity1, final T entity2) {
@@ -1014,7 +1016,7 @@ public class ListsProcessor extends ODataSingleProcessor {
     });
   }
 
-  private static <T> void sortInDefaultOrder(final EdmEntitySet entitySet, List<T> data) {
+  private static <T> void sortInDefaultOrder(final EdmEntitySet entitySet, final List<T> data) {
     Collections.sort(data, new Comparator<T>() {
       @Override
       public int compare(final T entity1, final T entity2) {
@@ -1311,7 +1313,7 @@ public class ListsProcessor extends ODataSingleProcessor {
     return valueMap;
   }
 
-  private <T> void setStructuralTypeValuesFromMap(T data, final EdmStructuralType type, final Map<String, Object> valueMap, final boolean merge) throws ODataException {
+  private <T> void setStructuralTypeValuesFromMap(final T data, final EdmStructuralType type, final Map<String, Object> valueMap, final boolean merge) throws ODataException {
     ODataContext context = getContext();
     final int timingHandle = context.startRuntimeMeasurement(getClass().getSimpleName(), "setStructuralTypeValuesFromMap");
 
@@ -1342,15 +1344,15 @@ public class ListsProcessor extends ODataSingleProcessor {
         try {
           dataObject = dataObject.getClass().getMethod(method).invoke(dataObject);
         } catch (SecurityException e) {
-          throw new ODataNotFoundException(ODataNotFoundException.COMMON, e);
+          throw new ODataNotFoundException(ODataHttpException.COMMON, e);
         } catch (NoSuchMethodException e) {
-          throw new ODataNotFoundException(ODataNotFoundException.COMMON, e);
+          throw new ODataNotFoundException(ODataHttpException.COMMON, e);
         } catch (IllegalArgumentException e) {
-          throw new ODataNotFoundException(ODataNotFoundException.COMMON, e);
+          throw new ODataNotFoundException(ODataHttpException.COMMON, e);
         } catch (IllegalAccessException e) {
-          throw new ODataNotFoundException(ODataNotFoundException.COMMON, e);
+          throw new ODataNotFoundException(ODataHttpException.COMMON, e);
         } catch (InvocationTargetException e) {
-          throw new ODataNotFoundException(ODataNotFoundException.COMMON, e);
+          throw new ODataNotFoundException(ODataHttpException.COMMON, e);
         }
 
     return dataObject;

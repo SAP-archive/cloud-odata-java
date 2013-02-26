@@ -13,10 +13,10 @@ public class EdmAssociationSetEndImplProv implements EdmAssociationSetEnd, EdmAn
   private String role;
   private AssociationSetEnd end;
 
-  public EdmAssociationSetEndImplProv(AssociationSetEnd end, EdmEntitySet entitySet) throws EdmException {
+  public EdmAssociationSetEndImplProv(final AssociationSetEnd end, final EdmEntitySet entitySet) throws EdmException {
     this.end = end;
     this.entitySet = entitySet;
-    this.role = end.getRole();
+    role = end.getRole();
   }
 
   @Override

@@ -19,12 +19,12 @@ public enum SortOrder {
   private String syntax;
   private String stringRespresentation;
 
-  private SortOrder(String syntax) {
+  private SortOrder(final String syntax) {
     this.syntax = syntax;
     stringRespresentation = syntax;
   }
 
-  private SortOrder(String syntax, String stringRespresentation) {
+  private SortOrder(final String syntax, final String stringRespresentation) {
     this.syntax = syntax;
     this.stringRespresentation = stringRespresentation;
   }

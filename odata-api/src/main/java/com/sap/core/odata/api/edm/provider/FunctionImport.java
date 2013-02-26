@@ -86,7 +86,7 @@ public class FunctionImport {
    * @param name
    * @return {@link FunctionImport} for method chaining
    */
-  public FunctionImport setName(String name) {
+  public FunctionImport setName(final String name) {
     this.name = name;
     return this;
   }
@@ -96,7 +96,7 @@ public class FunctionImport {
    * @param returnType
    * @return {@link FunctionImport} for method chaining
    */
-  public FunctionImport setReturnType(ReturnType returnType) {
+  public FunctionImport setReturnType(final ReturnType returnType) {
     this.returnType = returnType;
     return this;
   }
@@ -106,7 +106,7 @@ public class FunctionImport {
    * @param entitySet
    * @return {@link FunctionImport} for method chaining
    */
-  public FunctionImport setEntitySet(String entitySet) {
+  public FunctionImport setEntitySet(final String entitySet) {
     this.entitySet = entitySet;
     return this;
   }
@@ -116,7 +116,7 @@ public class FunctionImport {
    * @param httpMethod
    * @return {@link FunctionImport} for method chaining
    */
-  public FunctionImport setHttpMethod(String httpMethod) {
+  public FunctionImport setHttpMethod(final String httpMethod) {
     this.httpMethod = httpMethod;
     return this;
   }
@@ -126,7 +126,7 @@ public class FunctionImport {
    * @param parameters
    * @return {@link FunctionImport} for method chaining
    */
-  public FunctionImport setParameters(List<FunctionImportParameter> parameters) {
+  public FunctionImport setParameters(final List<FunctionImportParameter> parameters) {
     this.parameters = parameters;
     return this;
   }
@@ -136,7 +136,7 @@ public class FunctionImport {
    * @param mapping
    * @return {@link FunctionImport} for method chaining
    */
-  public FunctionImport setMapping(Mapping mapping) {
+  public FunctionImport setMapping(final Mapping mapping) {
     this.mapping = mapping;
     return this;
   }
@@ -146,7 +146,7 @@ public class FunctionImport {
    * @param documentation
    * @return {@link FunctionImport} for method chaining
    */
-  public FunctionImport setDocumentation(Documentation documentation) {
+  public FunctionImport setDocumentation(final Documentation documentation) {
     this.documentation = documentation;
     return this;
   }
@@ -156,7 +156,7 @@ public class FunctionImport {
    * @param annotationAttributes
    * @return {@link FunctionImport} for method chaining
    */
-  public FunctionImport setAnnotationAttributes(List<AnnotationAttribute> annotationAttributes) {
+  public FunctionImport setAnnotationAttributes(final List<AnnotationAttribute> annotationAttributes) {
     this.annotationAttributes = annotationAttributes;
     return this;
   }
@@ -166,7 +166,7 @@ public class FunctionImport {
    * @param annotationElements
    * @return {@link FunctionImport} for method chaining
    */
-  public FunctionImport setAnnotationElements(List<AnnotationElement> annotationElements) {
+  public FunctionImport setAnnotationElements(final List<AnnotationElement> annotationElements) {
     this.annotationElements = annotationElements;
     return this;
   }

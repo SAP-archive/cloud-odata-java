@@ -9,12 +9,12 @@ public class City {
     this(null, null);
   }
 
-  public City(String postalCode, String name) {
+  public City(final String postalCode, final String name) {
     this.postalCode = postalCode;
-    this.cityName = name;
+    cityName = name;
   }
 
-  public void setPostalCode(String postalCode) {
+  public void setPostalCode(final String postalCode) {
     this.postalCode = postalCode;
   }
 
@@ -22,7 +22,7 @@ public class City {
     return postalCode;
   }
 
-  public void setCityName(String cityName) {
+  public void setCityName(final String cityName) {
     this.cityName = cityName;
   }
 

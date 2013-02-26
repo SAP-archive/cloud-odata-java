@@ -24,7 +24,7 @@ public class XmlLinksEntityProducer {
     this.properties = properties;
   }
 
-  public void append(XMLStreamWriter writer, final EntityInfoAggregator entityInfo, final List<Map<String, Object>> data) throws EntityProviderException {
+  public void append(final XMLStreamWriter writer, final EntityInfoAggregator entityInfo, final List<Map<String, Object>> data) throws EntityProviderException {
     try {
       writer.writeStartElement(FormatXml.D_LINKS);
       writer.writeDefaultNamespace(Edm.NAMESPACE_D_2007_08);

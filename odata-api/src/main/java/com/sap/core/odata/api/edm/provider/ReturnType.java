@@ -31,7 +31,7 @@ public class ReturnType {
    * @param qualifiedName
    * @return {@link ReturnType} for method chaining
    */
-  public ReturnType setTypeName(FullQualifiedName qualifiedName) {
+  public ReturnType setTypeName(final FullQualifiedName qualifiedName) {
     typeName = qualifiedName;
     return this;
   }
@@ -41,7 +41,7 @@ public class ReturnType {
    * @param multiplicity
    * @return {@link ReturnType} for method chaining
    */
-  public ReturnType setMultiplicity(EdmMultiplicity multiplicity) {
+  public ReturnType setMultiplicity(final EdmMultiplicity multiplicity) {
     this.multiplicity = multiplicity;
     return this;
   }

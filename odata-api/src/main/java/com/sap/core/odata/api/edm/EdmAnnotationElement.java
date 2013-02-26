@@ -40,20 +40,19 @@ public interface EdmAnnotationElement {
    * @return String
    */
   String getText();
-  
+
   /**
    * Get the child elements of the custom element
    * 
    * @return child elements of this {@link EdmAnnotationElement}
    */
   List<AnnotationElement> getChildElements();
-  
-  
+
   /**
    * Get the attributes of this custom element
    * 
    * @return the attributes of this {@link EdmAnnotationElement}
    */
   List<AnnotationAttribute> getAttributes();
-  
+
 }

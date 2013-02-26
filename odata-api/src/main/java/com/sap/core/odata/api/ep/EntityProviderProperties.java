@@ -70,7 +70,7 @@ public class EntityProviderProperties {
     return hasLocationHeader;
   }
 
-  public static ODataEntityProviderPropertiesBuilder serviceRoot(URI serviceRoot) {
+  public static ODataEntityProviderPropertiesBuilder serviceRoot(final URI serviceRoot) {
     return new ODataEntityProviderPropertiesBuilder().serviceRoot(serviceRoot);
   }
 
@@ -80,7 +80,7 @@ public class EntityProviderProperties {
     /**
      * @param mediaResourceMimeType  the mediaResourceMimeType to set
      */
-    public final ODataEntityProviderPropertiesBuilder mediaResourceMimeType(String mediaResourceMimeType) {
+    public final ODataEntityProviderPropertiesBuilder mediaResourceMimeType(final String mediaResourceMimeType) {
       properties.mediaResourceMimeType = mediaResourceMimeType;
       return this;
     }
@@ -88,7 +88,7 @@ public class EntityProviderProperties {
     /**
      * @param inlineCountType  the inlineCountType to set
      */
-    public final ODataEntityProviderPropertiesBuilder inlineCountType(InlineCount inlineCountType) {
+    public final ODataEntityProviderPropertiesBuilder inlineCountType(final InlineCount inlineCountType) {
       properties.inlineCountType = inlineCountType;
       return this;
     }
@@ -96,7 +96,7 @@ public class EntityProviderProperties {
     /**
      * @param inlineCount  the inlineCount to set
      */
-    public final ODataEntityProviderPropertiesBuilder inlineCount(Integer inlineCount) {
+    public final ODataEntityProviderPropertiesBuilder inlineCount(final Integer inlineCount) {
       properties.inlineCount = inlineCount;
       return this;
     }
@@ -104,7 +104,7 @@ public class EntityProviderProperties {
     /**
      * @param serviceRoot
      */
-    private final ODataEntityProviderPropertiesBuilder serviceRoot(URI serviceRoot) {
+    private final ODataEntityProviderPropertiesBuilder serviceRoot(final URI serviceRoot) {
       properties.serviceRoot = serviceRoot;
       return this;
     }
@@ -112,7 +112,7 @@ public class EntityProviderProperties {
     /**
      * @param nextLink Next link to render feeds with server side paging. Should usually contain a skiptoken.
      */
-    public ODataEntityProviderPropertiesBuilder nextLink(String nextLink) {
+    public ODataEntityProviderPropertiesBuilder nextLink(final String nextLink) {
       properties.nextLink = nextLink;
       return this;
     }

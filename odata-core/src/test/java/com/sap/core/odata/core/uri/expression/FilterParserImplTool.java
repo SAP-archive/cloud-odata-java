@@ -12,11 +12,11 @@ import com.sap.core.odata.api.uri.expression.MethodOperator;
  */
 public class FilterParserImplTool extends FilterParserImpl {
 
-  public FilterParserImplTool(EdmEntityType resourceEntityType) 
+  public FilterParserImplTool(final EdmEntityType resourceEntityType)
   {
     super(resourceEntityType);
   }
-  
+
   public void addTestfunctions()
   {
     Map<String, InfoMethod> lAvailableMethods = new HashMap<String, InfoMethod>(availableMethods);
@@ -50,9 +50,9 @@ public class FilterParserImplTool extends FilterParserImpl {
     //TESTING
     combination = new ParameterSetCombination.PSCflex();
     lAvailableMethods.put("testingMINMAX7", new InfoMethod(MethodOperator.CONCAT, "testingMINMAX7", 1, 1, combination));
-    
+
     availableMethods = Collections.unmodifiableMap(lAvailableMethods);
-    
+
   }
 
 }

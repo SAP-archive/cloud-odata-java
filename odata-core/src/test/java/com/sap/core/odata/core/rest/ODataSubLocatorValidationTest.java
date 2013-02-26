@@ -24,6 +24,7 @@ import javax.ws.rs.core.UriInfo;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Matchers;
 import org.mockito.Mockito;
 
 import com.sap.core.odata.api.ODataService;
@@ -52,13 +53,13 @@ import com.sap.core.odata.api.processor.part.FunctionImportProcessor;
 import com.sap.core.odata.api.processor.part.FunctionImportValueProcessor;
 import com.sap.core.odata.api.processor.part.MetadataProcessor;
 import com.sap.core.odata.api.processor.part.ServiceDocumentProcessor;
+import com.sap.core.odata.api.uri.UriParser;
 import com.sap.core.odata.core.DispatcherTest;
 import com.sap.core.odata.core.commons.ContentType;
 import com.sap.core.odata.core.commons.ContentType.ODataFormat;
 import com.sap.core.odata.core.commons.ODataHttpMethod;
 import com.sap.core.odata.core.rest.ODataSubLocator.InitParameter;
 import com.sap.core.odata.core.uri.UriInfoImpl;
-import com.sap.core.odata.core.uri.UriParserImpl;
 import com.sap.core.odata.core.uri.UriType;
 import com.sap.core.odata.testutil.fit.BaseTest;
 import com.sap.core.odata.testutil.mock.MockFacade;
@@ -151,7 +152,7 @@ public class ODataSubLocatorValidationTest extends BaseTest {
 
     // self-test
     try {
-      final UriInfoImpl uriInfo = (UriInfoImpl) UriParserImpl.parse(edm,
+      final UriInfoImpl uriInfo = (UriInfoImpl) UriParser.parse(edm,
           MockFacade.getPathSegmentsAsODataPathSegmentMock(segments),
           Collections.<String, String> emptyMap());
       assertEquals(uriType, uriInfo.getUriType());
@@ -196,7 +197,7 @@ public class ODataSubLocatorValidationTest extends BaseTest {
     return map;
   }
 
-  private void mockSubLocatorInputForUriInfoTests(ODataSubLocator locator,
+  private void mockSubLocatorInputForUriInfoTests(final ODataSubLocator locator,
       final List<PathSegment> pathSegments,
       final MultivaluedMap<String, String> queryParameters,
       final String requestContentType) throws Exception {
@@ -236,12 +237,12 @@ public class ODataSubLocatorValidationTest extends BaseTest {
     locator.initialize(param);
   }
 
-  private void mockODataService(ODataServiceFactory serviceFactory) throws ODataException {
+  private void mockODataService(final ODataServiceFactory serviceFactory) throws ODataException {
     ODataService service = DispatcherTest.getMockService();
     when(service.getEntityDataModel()).thenReturn(edm);
     when(service.getProcessor()).thenReturn(mock(ODataProcessor.class));
-    when(serviceFactory.createService(Mockito.any(ODataContext.class))).thenReturn(service);
-    
+    when(serviceFactory.createService(Matchers.any(ODataContext.class))).thenReturn(service);
+
     Mockito.when(service.getSupportedContentTypes(BatchProcessor.class)).thenReturn(
         Arrays.asList(HttpContentType.MULTIPART_MIXED));
 
@@ -288,7 +289,7 @@ public class ODataSubLocatorValidationTest extends BaseTest {
         HttpContentType.APPLICATION_JSON_UTF8,
         HttpContentType.APPLICATION_XML_UTF8));
   }
-  
+
   private void checkRequest(final ODataHttpMethod method,
       final List<PathSegment> pathSegments,
       final MultivaluedMap<String, String> queryParameters,
@@ -325,8 +326,8 @@ public class ODataSubLocatorValidationTest extends BaseTest {
   }
 
   private void wrongRequest(final ODataHttpMethod method,
-    final List<PathSegment> pathSegments,
-    final MultivaluedMap<String, String> queryParameters) {
+      final List<PathSegment> pathSegments,
+      final MultivaluedMap<String, String> queryParameters) {
     try {
       checkRequest(method, pathSegments, queryParameters, null);
       fail("Expected ODataMethodNotAllowedException not thrown");
@@ -373,11 +374,10 @@ public class ODataSubLocatorValidationTest extends BaseTest {
       pathSegments.add(mockPathSegment("Location"));
     if (ofComplex)
       pathSegments.add(mockPathSegment("Country"));
+    else if (key)
+      pathSegments.add(mockPathSegment("EmployeeId"));
     else
-      if (key)
-        pathSegments.add(mockPathSegment("EmployeeId"));
-      else
-        pathSegments.add(mockPathSegment("Age"));
+      pathSegments.add(mockPathSegment("Age"));
 
     wrongRequest(method, pathSegments, null);
   }
@@ -393,15 +393,15 @@ public class ODataSubLocatorValidationTest extends BaseTest {
     }
   }
 
-  private void wrongRequestContentType(final ODataHttpMethod method, final UriType uriType, ContentType requestContentType) throws EdmException, ODataException {
+  private void wrongRequestContentType(final ODataHttpMethod method, final UriType uriType, final ContentType requestContentType) throws EdmException, ODataException {
     wrongRequestContentType(method, uriType, false, requestContentType);
   }
 
-  private void wrongRequestContentType(final ODataHttpMethod method, final UriType uriType, boolean isValue, ContentType requestContentType) throws EdmException, ODataException {
+  private void wrongRequestContentType(final ODataHttpMethod method, final UriType uriType, final boolean isValue, final ContentType requestContentType) throws EdmException, ODataException {
     wrongRequestContentType(method, uriType, isValue, requestContentType.toContentTypeString());
   }
 
-  private void wrongRequestContentType(final ODataHttpMethod method, final UriType uriType, boolean isValue, String requestContentType) throws EdmException, ODataException {
+  private void wrongRequestContentType(final ODataHttpMethod method, final UriType uriType, final boolean isValue, final String requestContentType) throws EdmException, ODataException {
     try {
       checkRequest(method, mockPathSegments(uriType, false, isValue), null, requestContentType);
       fail("Expected ODataException not thrown");
@@ -418,7 +418,7 @@ public class ODataSubLocatorValidationTest extends BaseTest {
     checkRequest(ODataHttpMethod.PATCH, mockPathSegments(UriType.URI2, false, false), null, "image/jpeg");
     checkRequest(ODataHttpMethod.MERGE, mockPathSegments(UriType.URI2, false, false), null, "image/jpeg");
   }
-  
+
   @Test
   public void requestContentType() throws Exception {
     checkValueContentType(ODataHttpMethod.PUT, UriType.URI4, HttpContentType.TEXT_PLAIN);

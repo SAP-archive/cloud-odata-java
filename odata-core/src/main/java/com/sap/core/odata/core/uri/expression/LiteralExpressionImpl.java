@@ -13,10 +13,10 @@ public class LiteralExpressionImpl implements LiteralExpression {
   private EdmLiteral edmLiteral;
   private String uriLiteral;
 
-  public LiteralExpressionImpl(String uriLiteral, EdmLiteral javaLiteral) {
+  public LiteralExpressionImpl(final String uriLiteral, final EdmLiteral javaLiteral) {
     this.uriLiteral = uriLiteral;
-    this.edmLiteral = javaLiteral;
-    this.edmType = this.edmLiteral.getType();
+    edmLiteral = javaLiteral;
+    edmType = edmLiteral.getType();
   }
 
   @Override
@@ -26,7 +26,7 @@ public class LiteralExpressionImpl implements LiteralExpression {
   }
 
   @Override
-  public CommonExpression setEdmType(EdmType edmType) 
+  public CommonExpression setEdmType(final EdmType edmType)
   {
     this.edmType = edmType;
     return this;
@@ -45,9 +45,9 @@ public class LiteralExpressionImpl implements LiteralExpression {
   }
 
   @Override
-  public Object accept(ExpressionVisitor visitor)
+  public Object accept(final ExpressionVisitor visitor)
   {
-    Object ret = visitor.visitLiteral(this, this.edmLiteral);
+    Object ret = visitor.visitLiteral(this, edmLiteral);
     return ret;
   }
 

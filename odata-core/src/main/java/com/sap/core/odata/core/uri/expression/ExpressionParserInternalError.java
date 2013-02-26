@@ -21,47 +21,47 @@ public class ExpressionParserInternalError extends ODataMessageException {
 
   CommonExpression parenthesisExpression = null;
 
-  public ExpressionParserInternalError(MessageReference messageReference)
+  public ExpressionParserInternalError(final MessageReference messageReference)
   {
     super(messageReference);
   }
 
-  public ExpressionParserInternalError(MessageReference messageReference, Throwable cause)
+  public ExpressionParserInternalError(final MessageReference messageReference, final Throwable cause)
   {
     super(messageReference, cause);
   }
 
-  public ExpressionParserInternalError(MessageReference messageReference, TokenizerExpectError cause)
+  public ExpressionParserInternalError(final MessageReference messageReference, final TokenizerExpectError cause)
   {
     super(messageReference, cause);
   }
 
-  public ExpressionParserInternalError(MessageReference messageReference, EdmException cause)
+  public ExpressionParserInternalError(final MessageReference messageReference, final EdmException cause)
   {
     super(messageReference, cause);
   }
 
-  public ExpressionParserInternalError setExpression(CommonExpression parenthesisExpression) {
+  public ExpressionParserInternalError setExpression(final CommonExpression parenthesisExpression) {
     this.parenthesisExpression = parenthesisExpression;
     return this;
   }
 
-  public static ExpressionParserInternalError createERROR_PARSING_METHOD(TokenizerExpectError cause)
+  public static ExpressionParserInternalError createERROR_PARSING_METHOD(final TokenizerExpectError cause)
   {
     return new ExpressionParserInternalError(ERROR_PARSING_METHOD, cause);
   }
 
-  public static ExpressionParserInternalError createERROR_PARSING_PARENTHESIS(TokenizerExpectError cause)
+  public static ExpressionParserInternalError createERROR_PARSING_PARENTHESIS(final TokenizerExpectError cause)
   {
     return new ExpressionParserInternalError(ERROR_PARSING_PARENTHESIS, cause);
   }
 
-  public static ExpressionParserInternalError createERROR_PARSING_PARENTHESIS(CommonExpression parenthesisExpression, TokenizerExpectError cause)
+  public static ExpressionParserInternalError createERROR_PARSING_PARENTHESIS(final CommonExpression parenthesisExpression, final TokenizerExpectError cause)
   {
     return new ExpressionParserInternalError(ERROR_PARSING_PARENTHESIS, cause).setExpression(parenthesisExpression);
   }
 
-  public static ExpressionParserInternalError createERROR_ACCESSING_EDM(EdmException cause)
+  public static ExpressionParserInternalError createERROR_ACCESSING_EDM(final EdmException cause)
   {
     return new ExpressionParserInternalError(ERROR_ACCESSING_EDM, cause);
   }
@@ -71,22 +71,22 @@ public class ExpressionParserInternalError extends ODataMessageException {
     return new ExpressionParserInternalError(COMMON);
   }
 
-  public static ExpressionParserInternalError createCOMMON(Throwable e) 
+  public static ExpressionParserInternalError createCOMMON(final Throwable e)
   {
     return new ExpressionParserInternalError(COMMON, e);
   }
 
-  public static ExpressionParserInternalError createINVALID_TYPE_COUNT() 
+  public static ExpressionParserInternalError createINVALID_TYPE_COUNT()
   {
     return new ExpressionParserInternalError(INVALID_TYPE_COUNT);
   }
 
-  public static ExpressionParserInternalError createERROR_ACCESSING_EDM() 
+  public static ExpressionParserInternalError createERROR_ACCESSING_EDM()
   {
     return new ExpressionParserInternalError(ERROR_ACCESSING_EDM);
   }
-  
-  public static ExpressionParserInternalError createINVALID_TOKEN_AT(String expectedToken, Token actualToken)
+
+  public static ExpressionParserInternalError createINVALID_TOKEN_AT(final String expectedToken, final Token actualToken)
   {
     MessageReference msgRef = ExpressionParserInternalError.INVALID_TOKEN_AT.create();
 
@@ -97,7 +97,7 @@ public class ExpressionParserInternalError extends ODataMessageException {
     return new ExpressionParserInternalError(msgRef);
   }
 
-  public static ExpressionParserInternalError createINVALID_TOKENKIND_AT(TokenKind expectedTokenKind, Token actualToken)
+  public static ExpressionParserInternalError createINVALID_TOKENKIND_AT(final TokenKind expectedTokenKind, final Token actualToken)
   {
     MessageReference msgRef = ExpressionParserInternalError.INVALID_TOKEN_AT.create();
 
@@ -108,8 +108,8 @@ public class ExpressionParserInternalError extends ODataMessageException {
 
     return new ExpressionParserInternalError(msgRef);
   }
-  
-  public static ExpressionParserInternalError createNO_TOKEN_AVAILABLE(String expectedToken)
+
+  public static ExpressionParserInternalError createNO_TOKEN_AVAILABLE(final String expectedToken)
   {
     MessageReference msgRef = ExpressionParserInternalError.INVALID_TOKEN_AT.create();
 

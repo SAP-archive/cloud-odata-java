@@ -15,7 +15,7 @@ public class ODataPathSegmentImpl implements PathSegment {
   private String path;
   private Map<String, List<String>> matrixParameter;
 
-  public ODataPathSegmentImpl(String path, Map<String, List<String>> matrixParameters) {
+  public ODataPathSegmentImpl(final String path, final Map<String, List<String>> matrixParameters) {
     this.path = path;
 
     Map<String, List<String>> unmodifiableMap = new HashMap<String, List<String>>();
@@ -26,17 +26,17 @@ public class ODataPathSegmentImpl implements PathSegment {
       }
     }
 
-    this.matrixParameter = Collections.unmodifiableMap(unmodifiableMap);
+    matrixParameter = Collections.unmodifiableMap(unmodifiableMap);
   }
 
   @Override
   public String getPath() {
-    return this.path;
+    return path;
   }
 
   @Override
   public Map<String, List<String>> getMatrixParameters() {
-    return this.matrixParameter;
+    return matrixParameter;
   }
 
 }

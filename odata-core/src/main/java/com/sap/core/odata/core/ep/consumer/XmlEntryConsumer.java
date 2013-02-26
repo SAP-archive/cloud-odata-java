@@ -15,6 +15,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import javax.xml.namespace.NamespaceContext;
+import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
@@ -45,20 +46,20 @@ public class XmlEntryConsumer {
     readEntryResult = new ODataEntryImpl(properties, mediaMetadata, entryMetadata);
   }
 
-  public ODataEntry readEntry(XMLStreamReader reader, EntityInfoAggregator eia, boolean merge) throws EntityProviderException {
+  public ODataEntry readEntry(final XMLStreamReader reader, final EntityInfoAggregator eia, final boolean merge) throws EntityProviderException {
     try {
       int eventType;
-      while ((eventType = reader.next()) != XMLStreamReader.END_DOCUMENT) {
-        if (eventType == XMLStreamReader.START_ELEMENT) {
+      while ((eventType = reader.next()) != XMLStreamConstants.END_DOCUMENT) {
+        if (eventType == XMLStreamConstants.START_ELEMENT) {
           String tagName = reader.getLocalName();
           handleStartedTag(reader, tagName, eia);
         }
       }
 
-      if(!merge) {
+      if (!merge) {
         readEntryResult.validate(eia);
       }
-      
+
       return readEntryResult;
     } catch (EntityProviderException e) {
       throw e;
@@ -76,7 +77,7 @@ public class XmlEntryConsumer {
    * @throws XMLStreamException
    * @throws EdmException
    */
-  private void handleStartedTag(XMLStreamReader reader, String tagName, EntityInfoAggregator eia) throws EntityProviderException, XMLStreamException, EdmException {
+  private void handleStartedTag(final XMLStreamReader reader, final String tagName, final EntityInfoAggregator eia) throws EntityProviderException, XMLStreamException, EdmException {
     if (ATOM_ID.equals(tagName)) {
       readId(reader);
     } else if (ATOM_ENTRY.equals(tagName)) {
@@ -92,7 +93,7 @@ public class XmlEntryConsumer {
     }
   }
 
-  private void readCustomElement(XMLStreamReader reader, String tagName, EntityInfoAggregator eia) throws EdmException, EntityProviderException, XMLStreamException {
+  private void readCustomElement(final XMLStreamReader reader, final String tagName, final EntityInfoAggregator eia) throws EdmException, EntityProviderException, XMLStreamException {
     EntityPropertyInfo targetPathInfo = eia.getTargetPathInfo(tagName);
     if (targetPathInfo != null) {
       String edmPrefix = targetPathInfo.getCustomMapping().getFcNsPrefix();
@@ -114,7 +115,7 @@ public class XmlEntryConsumer {
     }
   }
 
-  private void readEntry(XMLStreamReader reader) throws EntityProviderException, XMLStreamException {
+  private void readEntry(final XMLStreamReader reader) throws EntityProviderException, XMLStreamException {
     validateStartPosition(reader, ATOM_ENTRY);
     Map<String, String> attributes = readAttributes(reader);
 
@@ -128,7 +129,7 @@ public class XmlEntryConsumer {
    * @throws EntityProviderException
    * @throws XMLStreamException
    */
-  private void readLink(XMLStreamReader reader) throws EntityProviderException, XMLStreamException {
+  private void readLink(final XMLStreamReader reader) throws EntityProviderException, XMLStreamException {
     validateStartPosition(reader, ATOM_LINK);
     Map<String, String> attributes = readAttributes(reader);
     readAndValidateEndPosition(reader, ATOM_LINK);
@@ -149,14 +150,14 @@ public class XmlEntryConsumer {
     }
   }
 
-  private void readContent(XMLStreamReader reader, EntityInfoAggregator eia) throws EntityProviderException, XMLStreamException, EdmException {
+  private void readContent(final XMLStreamReader reader, final EntityInfoAggregator eia) throws EntityProviderException, XMLStreamException, EdmException {
     validateStartPosition(reader, ATOM_CONTENT);
     Map<String, String> attributes = readAttributes(reader);
     int nextEventType = reader.nextTag();
 
-    if (XMLStreamReader.END_ELEMENT == nextEventType) {
+    if (XMLStreamConstants.END_ELEMENT == nextEventType) {
       validateEndPosition(reader, ATOM_CONTENT);
-    } else if (XMLStreamReader.START_ELEMENT == nextEventType && reader.getLocalName().equals(M_PROPERTIES)) {
+    } else if (XMLStreamConstants.START_ELEMENT == nextEventType && reader.getLocalName().equals(M_PROPERTIES)) {
       readProperties(reader, eia);
     } else {
       throw new EntityProviderException(EntityProviderException.INVALID_STATE
@@ -169,11 +170,11 @@ public class XmlEntryConsumer {
     mediaMetadata.setSourceLink(sourceLink);
   }
 
-  private void readId(XMLStreamReader reader) throws EntityProviderException, XMLStreamException {
+  private void readId(final XMLStreamReader reader) throws EntityProviderException, XMLStreamException {
     validateStartPosition(reader, ATOM_ID);
     int eventType = reader.next();
     String value = null;
-    if (eventType == XMLStreamReader.CHARACTERS) {
+    if (eventType == XMLStreamConstants.CHARACTERS) {
       value = reader.getText();
     }
     readAndValidateEndPosition(reader, ATOM_ID);
@@ -189,20 +190,20 @@ public class XmlEntryConsumer {
    * @throws EdmException
    * @throws EntityProviderException
    */
-  private void readProperties(XMLStreamReader reader, EntityInfoAggregator entitySet) throws XMLStreamException, EdmException, EntityProviderException {
+  private void readProperties(final XMLStreamReader reader, final EntityInfoAggregator entitySet) throws XMLStreamException, EdmException, EntityProviderException {
     //
     int nextTagEventType = reader.next();
 
     XmlPropertyConsumer xpc = new XmlPropertyConsumer();
     boolean run = true;
     while (run) {
-      if (nextTagEventType == XMLStreamReader.START_ELEMENT) {
+      if (nextTagEventType == XMLStreamConstants.START_ELEMENT) {
         String name = reader.getLocalName();
         //        EdmProperty property = (EdmProperty) entitySet.getEntityType().getProperty(name);
         EntityPropertyInfo property = entitySet.getPropertyInfo(name);
         Object value = xpc.readStartedElement(reader, property);
         properties.put(name, value);
-      } else if (nextTagEventType == XMLStreamReader.END_ELEMENT) {
+      } else if (nextTagEventType == XMLStreamConstants.END_ELEMENT) {
         String name = reader.getLocalName();
         if (M_PROPERTIES.equals(name)) {
           run = false;
@@ -218,7 +219,7 @@ public class XmlEntryConsumer {
    * @param reader
    * @return all the attributes for the current element
    */
-  private Map<String, String> readAttributes(XMLStreamReader reader) {
+  private Map<String, String> readAttributes(final XMLStreamReader reader) {
     int attributesCount = reader.getAttributeCount();
 
     Map<String, String> attributes = new HashMap<String, String>();
@@ -236,19 +237,19 @@ public class XmlEntryConsumer {
    * @param tagName
    * @throws EntityProviderException
    */
-  private void validateStartPosition(XMLStreamReader reader, String tagName) throws EntityProviderException {
-    validatePosition(reader, tagName, XMLStreamReader.START_ELEMENT);
+  private void validateStartPosition(final XMLStreamReader reader, final String tagName) throws EntityProviderException {
+    validatePosition(reader, tagName, XMLStreamConstants.START_ELEMENT);
   }
 
-  private void validateEndPosition(XMLStreamReader reader, String tagName) throws EntityProviderException {
-    validatePosition(reader, tagName, XMLStreamReader.END_ELEMENT);
+  private void validateEndPosition(final XMLStreamReader reader, final String tagName) throws EntityProviderException {
+    validatePosition(reader, tagName, XMLStreamConstants.END_ELEMENT);
   }
 
-  private void readAndValidateEndPosition(XMLStreamReader reader, String tagName) throws EntityProviderException, XMLStreamException {
-    readAndValidatePosition(reader, tagName, XMLStreamReader.END_ELEMENT);
+  private void readAndValidateEndPosition(final XMLStreamReader reader, final String tagName) throws EntityProviderException, XMLStreamException {
+    readAndValidatePosition(reader, tagName, XMLStreamConstants.END_ELEMENT);
   }
 
-  private void readAndValidatePosition(XMLStreamReader reader, String tagName, int eventType) throws EntityProviderException, XMLStreamException {
+  private void readAndValidatePosition(final XMLStreamReader reader, final String tagName, final int eventType) throws EntityProviderException, XMLStreamException {
     if (eventType != reader.next() || !reader.getLocalName().equals(tagName)) {
       String msg = "Invalid position for expected name=" + tagName + " event='" + eventType +
           "'; found name='" + reader.getLocalName() + "' event='" + reader.getEventType() + "'.";
@@ -256,7 +257,7 @@ public class XmlEntryConsumer {
     }
   }
 
-  private void validatePosition(XMLStreamReader reader, String tagName, int eventType) throws EntityProviderException {
+  private void validatePosition(final XMLStreamReader reader, final String tagName, final int eventType) throws EntityProviderException {
     if (eventType != reader.getEventType() || !reader.getLocalName().equals(tagName)) {
       String msg = "Invalid position for expected name=" + tagName + " event='" + eventType +
           "'; found name='" + reader.getLocalName() + "' event='" + reader.getEventType() + "'.";

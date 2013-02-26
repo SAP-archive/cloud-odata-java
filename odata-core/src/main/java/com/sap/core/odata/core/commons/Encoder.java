@@ -20,7 +20,7 @@ public class Encoder {
    * @param value the Java String
    * @return the encoded String
    */
-  public static String encode(String value) {
+  public static String encode(final String value) {
     Encoder encoder = new Encoder(UNSAFE, UNRESERVED, null);
     return encoder.encodeInternal(value);
   }
@@ -29,7 +29,7 @@ public class Encoder {
   private final String unreserved;
   private final Map<Character, String> map;
 
-  private Encoder(String unsafe, String unreserved, Map<Character, String> map) {
+  private Encoder(final String unsafe, final String unreserved, final Map<Character, String> map) {
     this.unsafe = unsafe;
     this.unreserved = unreserved;
     this.map = map;
@@ -99,7 +99,7 @@ public class Encoder {
    * @param input input String
    * @return encoded representation
    */
-  private String encodeInternal(String input) {
+  private String encodeInternal(final String input) {
     StringBuilder resultStr = new StringBuilder();
 
     try {

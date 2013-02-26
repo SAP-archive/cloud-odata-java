@@ -24,7 +24,7 @@ public class TokenizerException extends ODataMessageException
     return token;
   }
 
-  public TokenizerException setToken(Token token)
+  public TokenizerException setToken(final Token token)
   {
     this.token = token;
     return this;
@@ -35,22 +35,22 @@ public class TokenizerException extends ODataMessageException
     return position;
   }
 
-  public void setPosition(int position)
+  public void setPosition(final int position)
   {
     this.position = position;
   }
 
-  public TokenizerException(MessageReference messageReference)
+  public TokenizerException(final MessageReference messageReference)
   {
     super(messageReference);
   }
 
-  public TokenizerException(MessageReference messageReference, Throwable cause)
+  public TokenizerException(final MessageReference messageReference, final Throwable cause)
   {
     super(messageReference, cause);
   }
 
-  static public TokenizerException createTYPEDECTECTION_FAILED_ON_STRING(EdmLiteralException ex, int position, String uriLiteral)
+  static public TokenizerException createTYPEDECTECTION_FAILED_ON_STRING(final EdmLiteralException ex, final int position, final String uriLiteral)
   {
     MessageReference msgRef = TokenizerException.TYPEDECTECTION_FAILED_ON_STRING.create();
 
@@ -73,7 +73,7 @@ public class TokenizerException extends ODataMessageException
     return new TokenizerException(msgRef).setToken(token);
   }
   */
-  static public TokenizerException createUNKNOWN_CHARACTER(int position, String uriLiteral, String expression)
+  static public TokenizerException createUNKNOWN_CHARACTER(final int position, final String uriLiteral, final String expression)
   {
     MessageReference msgRef = TokenizerException.UNKNOWN_CHARACTER.create();
 

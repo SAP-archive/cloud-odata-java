@@ -82,7 +82,7 @@ public class EntityInfoAggregator {
    *           access
    *           of {@link EdmEntitySet}).
    */
-  public static EntityInfoAggregator create(EdmEntitySet entitySet) throws EntityProviderException {
+  public static EntityInfoAggregator create(final EdmEntitySet entitySet) throws EntityProviderException {
     EntityInfoAggregator eia = new EntityInfoAggregator();
     eia.initialize(entitySet);
     return eia;
@@ -98,7 +98,7 @@ public class EntityInfoAggregator {
    *           if create of {@link EntityPropertyInfo} something goes wrong (e.g. exceptions during
    *           access of {@link EdmProperty}).
    */
-  public static EntityPropertyInfo create(EdmProperty property) throws EntityProviderException {
+  public static EntityPropertyInfo create(final EdmProperty property) throws EntityProviderException {
     try {
       EntityInfoAggregator eia = new EntityInfoAggregator();
       return eia.createEntityPropertyInfo(property);
@@ -136,7 +136,7 @@ public class EntityInfoAggregator {
    *           if create of {@link EntityPropertyInfo} something goes wrong (e.g. exceptions during
    *           access of {@link EdmFunctionImport}).
    */
-  public static EntityPropertyInfo create(EdmFunctionImport functionImport) throws EntityProviderException {
+  public static EntityPropertyInfo create(final EdmFunctionImport functionImport) throws EntityProviderException {
     try {
       EntityInfoAggregator eia = new EntityInfoAggregator();
       return eia.createEntityPropertyInfo(functionImport, functionImport.getReturnType().getType());
@@ -164,7 +164,7 @@ public class EntityInfoAggregator {
     return isDefaultEntityContainer;
   }
 
-  public EntityPropertyInfo getTargetPathInfo(String targetPath) {
+  public EntityPropertyInfo getTargetPathInfo(final String targetPath) {
     return targetPath2EntityPropertyInfo.get(targetPath);
   }
 
@@ -217,7 +217,7 @@ public class EntityInfoAggregator {
     return Collections.unmodifiableCollection(name2EntityPropertyInfo.values());
   }
 
-  public EntityPropertyInfo getPropertyInfo(String name) {
+  public EntityPropertyInfo getPropertyInfo(final String name) {
     return name2EntityPropertyInfo.get(name);
   }
 
@@ -254,7 +254,7 @@ public class EntityInfoAggregator {
   // #
   // #########################################
 
-  private void initialize(EdmEntitySet entitySet) throws EntityProviderException {
+  private void initialize(final EdmEntitySet entitySet) throws EntityProviderException {
     try {
       EdmEntityType type = entitySet.getEntityType();
       entitySetName = entitySet.getName();
@@ -276,7 +276,7 @@ public class EntityInfoAggregator {
     }
   }
 
-  private Map<String, EntityPropertyInfo> createInfoObjects(EdmStructuralType type, List<String> propertyNames) throws EntityProviderException {
+  private Map<String, EntityPropertyInfo> createInfoObjects(final EdmStructuralType type, final List<String> propertyNames) throws EntityProviderException {
     try {
       Map<String, EntityPropertyInfo> infos = new HashMap<String, EntityPropertyInfo>();
 
@@ -306,7 +306,7 @@ public class EntityInfoAggregator {
     }
   }
 
-  private EntityPropertyInfo createEntityPropertyInfo(EdmProperty property) throws EdmException, EntityProviderException {
+  private EntityPropertyInfo createEntityPropertyInfo(final EdmProperty property) throws EdmException, EntityProviderException {
     EdmType type = property.getType();
     if (type instanceof EdmSimpleType) {
       return EntityPropertyInfo.create(property);
@@ -319,7 +319,7 @@ public class EntityInfoAggregator {
     }
   }
 
-  private EntityPropertyInfo createEntityPropertyInfo(EdmFunctionImport functionImport, EdmType type) throws EdmException, EntityProviderException {
+  private EntityPropertyInfo createEntityPropertyInfo(final EdmFunctionImport functionImport, final EdmType type) throws EdmException, EntityProviderException {
     EntityPropertyInfo epi;
 
     if (type.getKind() == EdmTypeKind.COMPLEX) {
@@ -341,7 +341,7 @@ public class EntityInfoAggregator {
     return epi;
   }
 
-  private void checkETagRelevant(EdmProperty edmProperty) throws EntityProviderException {
+  private void checkETagRelevant(final EdmProperty edmProperty) throws EntityProviderException {
     try {
       if (edmProperty.getFacets() != null && edmProperty.getFacets().getConcurrencyMode() == EdmConcurrencyMode.Fixed) {
         etagPropertyNames.add(edmProperty.getName());
@@ -351,7 +351,7 @@ public class EntityInfoAggregator {
     }
   }
 
-  private void checkTargetPathInfo(EdmProperty property, EntityPropertyInfo propertyInfo) throws EntityProviderException {
+  private void checkTargetPathInfo(final EdmProperty property, final EntityPropertyInfo propertyInfo) throws EntityProviderException {
     try {
       EdmCustomizableFeedMappings customizableFeedMappings = property.getCustomizableFeedMappings();
       if (customizableFeedMappings != null) {

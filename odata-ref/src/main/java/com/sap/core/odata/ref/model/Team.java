@@ -22,7 +22,7 @@ public class Team {
   }
 
   public String getName() {
-    return this.name;
+    return name;
   }
 
   public void setName(final String name) {

@@ -29,7 +29,7 @@ public class EdmServiceMetadataImplProv implements EdmServiceMetadata {
   private String dataServiceVersion;
   private List<Schema> schemas;
 
-  public EdmServiceMetadataImplProv(EdmProvider edmProvider) {
+  public EdmServiceMetadataImplProv(final EdmProvider edmProvider) {
     this.edmProvider = edmProvider;
   }
 
@@ -41,7 +41,7 @@ public class EdmServiceMetadataImplProv implements EdmServiceMetadata {
 
     OutputStreamWriter writer = null;
     CircleStreamBuffer csb = new CircleStreamBuffer();
-    
+
     try {
       DataServices metadata = new DataServices().setSchemas(schemas).setDataServiceVersion(getDataServiceVersion());
       writer = new OutputStreamWriter(csb.getOutputStream(), "UTF-8");

@@ -17,7 +17,7 @@ public class UnaryExpressionImpl implements UnaryExpression
   private CommonExpression operand = null;
   private EdmType edmType = null;
 
-  public UnaryExpressionImpl(InfoUnaryOperator operatorInfo, CommonExpression operand) 
+  public UnaryExpressionImpl(final InfoUnaryOperator operatorInfo, final CommonExpression operand)
   {
     this.operatorInfo = operatorInfo;
     this.operand = operand;
@@ -44,11 +44,11 @@ public class UnaryExpressionImpl implements UnaryExpression
   @Override
   public EdmType getEdmType()
   {
-    return this.edmType;
+    return edmType;
   }
 
   @Override
-  public CommonExpression setEdmType(EdmType edmType)
+  public CommonExpression setEdmType(final EdmType edmType)
   {
     this.edmType = edmType;
     return this;
@@ -61,7 +61,7 @@ public class UnaryExpressionImpl implements UnaryExpression
   }
 
   @Override
-  public Object accept(ExpressionVisitor visitor) throws ExceptionVisitExpression, ODataApplicationException
+  public Object accept(final ExpressionVisitor visitor) throws ExceptionVisitExpression, ODataApplicationException
   {
     Object retOperand = operand.accept(visitor);
 

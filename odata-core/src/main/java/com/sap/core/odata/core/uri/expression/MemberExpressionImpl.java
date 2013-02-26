@@ -16,11 +16,11 @@ public class MemberExpressionImpl implements BinaryExpression, MemberExpression
   CommonExpression property;
   EdmType edmType;
 
-  public MemberExpressionImpl(CommonExpression path, CommonExpression property)
+  public MemberExpressionImpl(final CommonExpression path, final CommonExpression property)
   {
     this.path = path;
     this.property = property;
-    this.edmType = property.getEdmType();
+    edmType = property.getEdmType();
   }
 
   @Override
@@ -40,7 +40,7 @@ public class MemberExpressionImpl implements BinaryExpression, MemberExpression
   }
 
   @Override
-  public CommonExpression setEdmType(EdmType edmType) {
+  public CommonExpression setEdmType(final EdmType edmType) {
     this.edmType = edmType;
     return this;
   }
@@ -58,13 +58,13 @@ public class MemberExpressionImpl implements BinaryExpression, MemberExpression
   }
 
   @Override
-  public String getUriLiteral() 
+  public String getUriLiteral()
   {
     return BinaryOperator.PROPERTY_ACCESS.toUriLiteral();
   }
 
   @Override
-  public Object accept(ExpressionVisitor visitor) throws ExceptionVisitExpression, ODataApplicationException
+  public Object accept(final ExpressionVisitor visitor) throws ExceptionVisitExpression, ODataApplicationException
   {
     Object retSource = path.accept(visitor);
     Object retPath = property.accept(visitor);
@@ -74,7 +74,7 @@ public class MemberExpressionImpl implements BinaryExpression, MemberExpression
   }
 
   @Override
-  public CommonExpression getLeftOperand() 
+  public CommonExpression getLeftOperand()
   {
     return path;
   }

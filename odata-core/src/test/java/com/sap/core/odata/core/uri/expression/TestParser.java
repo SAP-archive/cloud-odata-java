@@ -413,8 +413,6 @@ public class TestParser extends TestBase
 
   }
 
-  
-
   ExpressionParserException GetException()
   {
     ExpressionParserException ex = new ExpressionParserException(ExpressionParserException.COMMON_ERROR);

@@ -16,7 +16,7 @@ import java.util.Locale;
 public class ClassHelper {
   public static final FileFilter JAVA_FILE_FILTER = new FileFilter() {
     @Override
-    public boolean accept(File path) {
+    public boolean accept(final File path) {
       return path.isFile() && path.getName().toLowerCase(Locale.ROOT).endsWith("class");
     }
   };
@@ -28,7 +28,7 @@ public class ClassHelper {
    * 
    * @param exClasses
    */
-  public static <T> List<T> getClassInstances(List<Class<T>> exClasses) {
+  public static <T> List<T> getClassInstances(final List<Class<T>> exClasses) {
     return getClassInstances(exClasses, EMPTY_CLASS_ARRAY, EMPTY_OBJECT_ARRAY);
   }
 
@@ -37,7 +37,7 @@ public class ClassHelper {
    * @param exClasses
    * @param ctorParameters
    */
-  public static <T> List<T> getClassInstances(List<Class<T>> exClasses, Object... ctorParameters) {
+  public static <T> List<T> getClassInstances(final List<Class<T>> exClasses, final Object... ctorParameters) {
     final List<Class<?>> ctorParameterClasses = new ArrayList<Class<?>>();
     for (final Object object : ctorParameters) {
       ctorParameterClasses.add(object.getClass());
@@ -51,7 +51,7 @@ public class ClassHelper {
    * @param ctorParameterClasses
    * @param ctorParameters
    */
-  public static <T> List<T> getClassInstances(List<Class<T>> exClasses, Class<?>[] ctorParameterClasses, Object[] ctorParameters) {
+  public static <T> List<T> getClassInstances(final List<Class<T>> exClasses, final Class<?>[] ctorParameterClasses, final Object[] ctorParameters) {
 
     final List<T> toTestExceptions = new ArrayList<T>();
     for (final Class<T> clazz : exClasses) {
@@ -82,7 +82,7 @@ public class ClassHelper {
   /**
    * @param clazz
    */
-  public static boolean isNotAbstractOrInterface(Class<?> clazz) {
+  public static boolean isNotAbstractOrInterface(final Class<?> clazz) {
     return !Modifier.isAbstract(clazz.getModifiers()) && !Modifier.isInterface(clazz.getModifiers());
   }
 
@@ -90,7 +90,7 @@ public class ClassHelper {
    * @param packageName
    * @param assignableToClass
    */
-  public static <T> List<Class<T>> getAssignableClasses(String packageName, Class<T> assignableToClass) {
+  public static <T> List<Class<T>> getAssignableClasses(final String packageName, final Class<T> assignableToClass) {
     final List<Class<T>> foundClasses = new ArrayList<Class<T>>();
     final URL url = Thread.currentThread().getContextClassLoader().getResource(packageName.replace(".", "/"));
 
@@ -113,7 +113,7 @@ public class ClassHelper {
    * @param packageName
    * @param clazz
    */
-  public static <T> Class<T> getClass(File file, String packageName, Class<T> clazz) {
+  public static <T> Class<T> getClass(final File file, final String packageName, final Class<T> clazz) {
     String className = file.getName();
     if (className.endsWith(CLASS_FILE_ENDING)) {
       className = className.substring(0, className.length() - CLASS_FILE_ENDING.length());
@@ -127,7 +127,7 @@ public class ClassHelper {
    * @param clazz
    */
   @SuppressWarnings("unchecked")
-  public static <T> Class<T> getClass(String className, Class<T> clazz) {
+  public static <T> Class<T> getClass(final String className, final Class<T> clazz) {
     try {
       final Class<?> clazzForName = Class.forName(className);
       if (clazz.isAssignableFrom(clazzForName)) {

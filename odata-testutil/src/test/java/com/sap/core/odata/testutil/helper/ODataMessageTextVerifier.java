@@ -36,7 +36,7 @@ public class ODataMessageTextVerifier {
     errorCollector = new ArrayList<Throwable>();
   }
 
-  private void failCollector(String text) {
+  private void failCollector(final String text) {
     try {
       // System.out.println(text);
       fail(text);
@@ -45,7 +45,7 @@ public class ODataMessageTextVerifier {
     }
   }
 
-  private String getMessage(MessageReference msgRef) {
+  private String getMessage(final MessageReference msgRef) {
     try {
       final String key = msgRef.getKey();
       final String value = resourceBundle.getString(key);
@@ -56,7 +56,7 @@ public class ODataMessageTextVerifier {
     return null;
   }
 
-  private void assertExistMessage(MessageReference msgRef) {
+  private void assertExistMessage(final MessageReference msgRef) {
     final String text = getMessage(msgRef);
     if (text == null)
     {
@@ -68,7 +68,7 @@ public class ODataMessageTextVerifier {
     }
   }
 
-  public void CheckMessagesOfClass(Class<? extends Exception> exceptionClassToBeTested) {
+  public void CheckMessagesOfClass(final Class<? extends Exception> exceptionClassToBeTested) {
     final Class<? extends Exception> testClass = exceptionClassToBeTested;
 
     for (final Field field : testClass.getDeclaredFields()) {
@@ -108,7 +108,7 @@ public class ODataMessageTextVerifier {
     return errorCollector;
   }
 
-  static public void TestClass(Class<? extends Exception> exceptionClassToBeTested) {
+  static public void TestClass(final Class<? extends Exception> exceptionClassToBeTested) {
     final ODataMessageTextVerifier tool = new ODataMessageTextVerifier();
     tool.CheckMessagesOfClass(exceptionClassToBeTested);
     for (final Throwable throwable : tool.getErrorCollector()) {

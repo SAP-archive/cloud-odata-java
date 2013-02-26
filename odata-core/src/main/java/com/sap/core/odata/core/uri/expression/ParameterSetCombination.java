@@ -20,7 +20,7 @@ public interface ParameterSetCombination {
     public List<ParameterSet> combinations = new ArrayList<ParameterSet>();
 
     @Override
-    public void add(ParameterSet parameterSet)
+    public void add(final ParameterSet parameterSet)
     {
       combinations.add(parameterSet);
     }
@@ -49,7 +49,7 @@ public interface ParameterSetCombination {
     }
 
     @Override
-    public void addFirst(ParameterSet parameterSet)
+    public void addFirst(final ParameterSet parameterSet)
     {
       List<ParameterSet> oldCombinations = combinations;
       combinations = new ArrayList<ParameterSet>();
@@ -62,13 +62,13 @@ public interface ParameterSetCombination {
     }
 
     @Override
-    public ParameterSet validate(List<EdmType> actualParameterTypes) throws ExpressionParserInternalError
+    public ParameterSet validate(final List<EdmType> actualParameterTypes) throws ExpressionParserInternalError
     {
       if (combinations.size() == 0)
       {
-          return new ParameterSet(null,null);
+        return new ParameterSet(null, null);
       }
-      
+
       //first check for exact parameter combination
       for (ParameterSet parameterSet : combinations)
       {
@@ -93,22 +93,22 @@ public interface ParameterSetCombination {
   {
 
     @Override
-    public void add(ParameterSet parameterSet) 
+    public void add(final ParameterSet parameterSet)
     {
       throw new IllegalStateException();
     }
 
     @Override
-    public void addFirst(ParameterSet parameterSet) 
+    public void addFirst(final ParameterSet parameterSet)
     {
       throw new IllegalStateException();
     }
 
     @Override
-    public ParameterSet validate(List<EdmType> actualParameterTypes) throws ExpressionParserInternalError 
+    public ParameterSet validate(final List<EdmType> actualParameterTypes) throws ExpressionParserInternalError
     {
-      EdmType xxx=  actualParameterTypes.get(actualParameterTypes.size() - 1);
-      return new ParameterSet(xxx,null);
+      EdmType xxx = actualParameterTypes.get(actualParameterTypes.size() - 1);
+      return new ParameterSet(xxx, null);
       //return actualParameterTypes.get(actualParameterTypes.size() - 1);
     }
 

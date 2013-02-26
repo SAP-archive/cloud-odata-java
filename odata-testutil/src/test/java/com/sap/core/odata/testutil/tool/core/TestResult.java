@@ -16,7 +16,7 @@ public class TestResult implements Comparable<TestResult> {
   private final Map<String, String> resHeaders = new HashMap<String, String>();
   private final Map<String, String> someValues = new HashMap<String, String>();
 
-  public TestResult(URI baseUri, String path) {
+  public TestResult(final URI baseUri, final String path) {
     this.baseUri = baseUri;
     this.path = path;
   }
@@ -29,43 +29,43 @@ public class TestResult implements Comparable<TestResult> {
     return path;
   }
 
-  public void addSomeValue(String key, String value) {
+  public void addSomeValue(final String key, final String value) {
     someValues.put(key, value);
   }
 
-  public String getSomeValue(String key) {
+  public String getSomeValue(final String key) {
     return someValues.get(key);
   }
 
-  public String getRequestHeader(String name) {
+  public String getRequestHeader(final String name) {
     return reqHeaders.get(normalizeHeaderName(name));
   }
 
-  public String getResponseHeader(String name) {
+  public String getResponseHeader(final String name) {
     return resHeaders.get(normalizeHeaderName(name));
   }
 
-  public void addRequestHeader(String name, String value) {
+  public void addRequestHeader(final String name, final String value) {
     reqHeaders.put(normalizeHeaderName(name), value);
   }
 
-  public void addResponseHeader(String name, String value) {
+  public void addResponseHeader(final String name, final String value) {
     resHeaders.put(normalizeHeaderName(name), value);
   }
 
-  public void addRequestHeaders(Header[] allHeaders) {
+  public void addRequestHeaders(final Header[] allHeaders) {
     for (final Header header : allHeaders) {
       addRequestHeader(header.getName(), header.getValue());
     }
   }
 
-  public void addResponseHeaders(Header[] allHeaders) {
+  public void addResponseHeaders(final Header[] allHeaders) {
     for (final Header header : allHeaders) {
       addResponseHeader(header.getName(), header.getValue());
     }
   }
 
-  private String normalizeHeaderName(String name) {
+  private String normalizeHeaderName(final String name) {
     if (name == null) {
       throw new IllegalArgumentException("NULL header names are not allowed.");
     }
@@ -88,7 +88,7 @@ public class TestResult implements Comparable<TestResult> {
    * @see java.lang.Object#equals(java.lang.Object)
    */
   @Override
-  public boolean equals(Object obj) {
+  public boolean equals(final Object obj) {
     if (this == obj) {
       return true;
     }
@@ -117,7 +117,7 @@ public class TestResult implements Comparable<TestResult> {
   }
 
   @Override
-  public int compareTo(TestResult o) {
+  public int compareTo(final TestResult o) {
     if (baseUri == null) {
       return -1;
     } else if ((o == null) || (o.baseUri == null)) {

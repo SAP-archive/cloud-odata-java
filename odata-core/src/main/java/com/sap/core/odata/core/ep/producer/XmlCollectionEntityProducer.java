@@ -16,7 +16,7 @@ import com.sap.core.odata.core.ep.util.FormatXml;
  */
 public class XmlCollectionEntityProducer {
 
-  public static void append(XMLStreamWriter writer, final EntityPropertyInfo propertyInfo, final List<?> data) throws EntityProviderException {
+  public static void append(final XMLStreamWriter writer, final EntityPropertyInfo propertyInfo, final List<?> data) throws EntityProviderException {
     try {
       writer.writeStartElement(propertyInfo.getName());
       writer.writeDefaultNamespace(Edm.NAMESPACE_D_2007_08);

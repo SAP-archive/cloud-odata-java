@@ -16,21 +16,21 @@ public class CallerConfig {
   //
   private List<TestPath> testPaths;
 
-  public CallerConfig(String baseUrl, CallerResultHandler responseHandler, List<TestPath> testPaths) throws URISyntaxException {
+  public CallerConfig(final String baseUrl, final CallerResultHandler responseHandler, final List<TestPath> testPaths) throws URISyntaxException {
     this(baseUrl);
     this.responseHandler = responseHandler;
     this.testPaths = testPaths;
   }
 
-  public CallerConfig(String baseUrl) throws URISyntaxException {
+  public CallerConfig(final String baseUrl) throws URISyntaxException {
     baseUri = new URI(baseUrl);
   }
 
-  public static CallerConfig create(String baseUrl) throws URISyntaxException {
+  public static CallerConfig create(final String baseUrl) throws URISyntaxException {
     return new CallerConfig(baseUrl);
   }
 
-  public CallerConfig setProxy(String proxy) {
+  public CallerConfig setProxy(final String proxy) {
     this.proxy = proxy;
     return this;
   }
@@ -50,7 +50,7 @@ public class CallerConfig {
     return baseUri.toString();
   }
 
-  public CallerConfig setResponseHandler(CallerResultHandler responseHandler) {
+  public CallerConfig setResponseHandler(final CallerResultHandler responseHandler) {
     this.responseHandler = responseHandler;
     return this;
   }
@@ -59,7 +59,7 @@ public class CallerConfig {
     return responseHandler;
   }
 
-  public CallerConfig addTestPath(TestPath path) {
+  public CallerConfig addTestPath(final TestPath path) {
     testPaths.add(path);
     return this;
   }
@@ -79,7 +79,7 @@ public class CallerConfig {
     return basicAuthCredentials;
   }
 
-  public CallerConfig setBasicAuthCredentials(String basicAuthCredentials) {
+  public CallerConfig setBasicAuthCredentials(final String basicAuthCredentials) {
     this.basicAuthCredentials = basicAuthCredentials;
     return this;
   }

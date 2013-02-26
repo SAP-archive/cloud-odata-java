@@ -70,7 +70,7 @@ public class Association {
    * @param name
    * @return {@link Association} for method chaining
    */
-  public Association setName(String name) {
+  public Association setName(final String name) {
     this.name = name;
     return this;
   }
@@ -80,7 +80,7 @@ public class Association {
    * @param end1
    * @return {@link Association} for method chaining
    */
-  public Association setEnd1(AssociationEnd end1) {
+  public Association setEnd1(final AssociationEnd end1) {
     this.end1 = end1;
     return this;
   }
@@ -90,7 +90,7 @@ public class Association {
    * @param end2
    * @return {@link Association} for method chaining
    */
-  public Association setEnd2(AssociationEnd end2) {
+  public Association setEnd2(final AssociationEnd end2) {
     this.end2 = end2;
     return this;
   }
@@ -100,7 +100,7 @@ public class Association {
    * @param referentialConstraint
    * @return {@link Association} for method chaining
    */
-  public Association setReferentialConstraint(ReferentialConstraint referentialConstraint) {
+  public Association setReferentialConstraint(final ReferentialConstraint referentialConstraint) {
     this.referentialConstraint = referentialConstraint;
     return this;
   }
@@ -110,7 +110,7 @@ public class Association {
    * @param documentation
    * @return {@link Association} for method chaining
    */
-  public Association setDocumentation(Documentation documentation) {
+  public Association setDocumentation(final Documentation documentation) {
     this.documentation = documentation;
     return this;
   }
@@ -120,7 +120,7 @@ public class Association {
    * @param annotationAttributes
    * @return {@link Association} for method chaining
    */
-  public Association setAnnotationAttributes(List<AnnotationAttribute> annotationAttributes) {
+  public Association setAnnotationAttributes(final List<AnnotationAttribute> annotationAttributes) {
     this.annotationAttributes = annotationAttributes;
     return this;
   }
@@ -130,7 +130,7 @@ public class Association {
    * @param annotationElements
    * @return {@link Association} for method chaining
    */
-  public Association setAnnotationElements(List<AnnotationElement> annotationElements) {
+  public Association setAnnotationElements(final List<AnnotationElement> annotationElements) {
     this.annotationElements = annotationElements;
     return this;
   }

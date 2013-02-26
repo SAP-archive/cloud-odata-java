@@ -124,7 +124,8 @@ public class DispatcherTest extends BaseTest {
 
   private static Answer<ODataResponse> getAnswer() {
     return new Answer<ODataResponse>() {
-      public ODataResponse answer(InvocationOnMock invocation) {
+      @Override
+      public ODataResponse answer(final InvocationOnMock invocation) {
         return mockResponse(invocation.getMethod().getName());
       }
     };

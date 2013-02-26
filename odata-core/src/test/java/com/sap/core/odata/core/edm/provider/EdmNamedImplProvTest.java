@@ -11,7 +11,7 @@ import com.sap.core.odata.api.edm.provider.SimpleProperty;
 import com.sap.core.odata.testutil.fit.BaseTest;
 
 public class EdmNamedImplProvTest extends BaseTest {
-  
+
   @Test(expected = EdmException.class)
   public void testPropertySimple() throws Exception {
 

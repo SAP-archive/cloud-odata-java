@@ -19,7 +19,7 @@ public abstract class EdmNamedImplProv implements EdmNamed {
   protected EdmImplProv edm;
   private String name;
 
-  public EdmNamedImplProv(EdmImplProv edm, String name) throws EdmException {
+  public EdmNamedImplProv(final EdmImplProv edm, final String name) throws EdmException {
     this.edm = edm;
     this.name = name;
     validateName(name);
@@ -30,7 +30,7 @@ public abstract class EdmNamedImplProv implements EdmNamed {
     return name;
   }
 
-  private void validateName(String name) throws EdmException {
+  private void validateName(final String name) throws EdmException {
     Matcher matcher = pattern.matcher(name);
     if (!matcher.matches()) {
       throw new EdmException(EdmException.COMMON);

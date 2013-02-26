@@ -19,11 +19,11 @@ public abstract class MessageReference {
   protected final String key;
   protected List<Object> content = null;
 
-  private MessageReference(String key) {
+  private MessageReference(final String key) {
     this(key, null);
   }
 
-  private MessageReference(String key, List<Object> content) {
+  private MessageReference(final String key, final List<Object> content) {
     this.key = key;
     this.content = content;
   }
@@ -38,7 +38,7 @@ public abstract class MessageReference {
    *              to message text in resource bundle
    * @return created {@link MessageReference}
    */
-  public static MessageReference create(Class<? extends ODataException> clazz, String key) {
+  public static MessageReference create(final Class<? extends ODataException> clazz, final String key) {
     return new SimpleMessageReference(clazz.getName() + "." + key);
   }
 
@@ -56,7 +56,7 @@ public abstract class MessageReference {
   /**
    * Adds given content to message reference.
    */
-  public MessageReference addContent(Object... content) {
+  public MessageReference addContent(final Object... content) {
     if (this.content == null) {
       return new SimpleMessageReference(key, content);
     } else {
@@ -83,34 +83,34 @@ public abstract class MessageReference {
    * Simple inner class for realization of {@link MessageReference} interface.
    */
   private static class SimpleMessageReference extends MessageReference {
-    public SimpleMessageReference(String implKey) {
+    public SimpleMessageReference(final String implKey) {
       super(implKey);
     }
 
-    public SimpleMessageReference(String implKey, List<Object> content) {
+    public SimpleMessageReference(final String implKey, final List<Object> content) {
       super(implKey, content);
     }
 
-    public SimpleMessageReference(String implKey, Object... content) {
+    public SimpleMessageReference(final String implKey, final Object... content) {
       super(implKey, Arrays.asList(content));
     }
   }
 
   private static class SingleMessageReference extends MessageReference {
-    public SingleMessageReference(String implKey) {
+    public SingleMessageReference(final String implKey) {
       super(implKey);
     }
 
-    public SingleMessageReference(String implKey, List<Object> content) {
+    public SingleMessageReference(final String implKey, final List<Object> content) {
       super(implKey, content);
     }
 
-    public SingleMessageReference(String implKey, Object... content) {
+    public SingleMessageReference(final String implKey, final Object... content) {
       super(implKey, Arrays.asList(content));
     }
 
     @Override
-    public MessageReference addContent(Object... content) {
+    public MessageReference addContent(final Object... content) {
 
       if (this.content == null) {
         this.content = new ArrayList<Object>();

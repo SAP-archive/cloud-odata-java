@@ -14,15 +14,15 @@ public class FilterExpressionImpl implements FilterExpression
   private EdmType edmType;
   private CommonExpression commonExpression;
 
-  public FilterExpressionImpl(String filterExpression)
+  public FilterExpressionImpl(final String filterExpression)
   {
-    this.filterString = filterExpression;
+    filterString = filterExpression;
   }
 
-  public FilterExpressionImpl(String filterExpression, CommonExpression childExpression)
+  public FilterExpressionImpl(final String filterExpression, final CommonExpression childExpression)
   {
-    this.filterString = filterExpression;
-    this.commonExpression = childExpression;
+    filterString = filterExpression;
+    commonExpression = childExpression;
   }
 
   @Override
@@ -36,7 +36,7 @@ public class FilterExpressionImpl implements FilterExpression
   }
 
   @Override
-  public Object accept(ExpressionVisitor visitor) throws ExceptionVisitExpression, ODataApplicationException
+  public Object accept(final ExpressionVisitor visitor) throws ExceptionVisitExpression, ODataApplicationException
   {
     Object retCommonExpression = commonExpression.accept(visitor);
 
@@ -44,7 +44,7 @@ public class FilterExpressionImpl implements FilterExpression
   }
 
   @Override
-  public CommonExpression setEdmType(EdmType edmType)
+  public CommonExpression setEdmType(final EdmType edmType)
   {
     this.edmType = edmType;
     return this;

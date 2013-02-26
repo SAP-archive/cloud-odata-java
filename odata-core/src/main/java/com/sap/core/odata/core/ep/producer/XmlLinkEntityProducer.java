@@ -29,7 +29,7 @@ public class XmlLinkEntityProducer {
     this.properties = properties;
   }
 
-  public void append(XMLStreamWriter writer, final EntityInfoAggregator entityInfo, final Map<String, Object> data, final boolean isRootElement) throws EntityProviderException {
+  public void append(final XMLStreamWriter writer, final EntityInfoAggregator entityInfo, final Map<String, Object> data, final boolean isRootElement) throws EntityProviderException {
     try {
       writer.writeStartElement(FormatXml.D_URI);
       if (isRootElement) {

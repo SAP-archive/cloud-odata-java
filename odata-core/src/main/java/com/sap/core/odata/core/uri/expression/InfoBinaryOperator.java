@@ -17,23 +17,23 @@ class InfoBinaryOperator
   private int priority;
   ParameterSetCombination combination;
 
-  public InfoBinaryOperator(BinaryOperator operator, String category, int priority, ParameterSetCombination combination) 
+  public InfoBinaryOperator(final BinaryOperator operator, final String category, final int priority, final ParameterSetCombination combination)
   {
     this.operator = operator;
     this.category = category;
-    this.syntax = operator.toUriLiteral();
+    syntax = operator.toUriLiteral();
     this.priority = priority;
     this.combination = combination;
   }
 
   public String getCategory()
   {
-    return this.category;
+    return category;
   }
 
   public String getSyntax()
   {
-    return this.syntax;
+    return syntax;
   }
 
   public BinaryOperator getOperator()
@@ -46,7 +46,7 @@ class InfoBinaryOperator
     return priority;
   }
 
-  public ParameterSet validateParameterSet(List<EdmType> actualParameterTypes) throws ExpressionParserInternalError 
+  public ParameterSet validateParameterSet(final List<EdmType> actualParameterTypes) throws ExpressionParserInternalError
   {
     return combination.validate(actualParameterTypes);
   }

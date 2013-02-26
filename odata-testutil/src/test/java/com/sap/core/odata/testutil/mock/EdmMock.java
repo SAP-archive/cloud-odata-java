@@ -243,7 +243,7 @@ class EdmMock {
     return navigationProperty;
   }
 
-  private static EdmProperty createProperty(final String name, final EdmSimpleTypeKind kind, EdmStructuralType entityType) throws EdmException {
+  private static EdmProperty createProperty(final String name, final EdmSimpleTypeKind kind, final EdmStructuralType entityType) throws EdmException {
     final EdmProperty property = mock(EdmProperty.class);
     when(property.getType()).thenReturn(kind.getEdmSimpleTypeInstance());
     when(property.getName()).thenReturn(name);

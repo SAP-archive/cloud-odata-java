@@ -12,7 +12,7 @@ public enum EdmMultiplicity {
 
   private final String literal;
 
-  private EdmMultiplicity(String literal) {
+  private EdmMultiplicity(final String literal) {
     this.literal = literal;
   }
 
@@ -22,7 +22,7 @@ public enum EdmMultiplicity {
    * @param literal
    * @return {@link EdmMultiplicity}
    */
-  public static EdmMultiplicity fromLiteral(String literal) {
+  public static EdmMultiplicity fromLiteral(final String literal) {
     for (final EdmMultiplicity edmMultiplicity : EdmMultiplicity.values()) {
       if (edmMultiplicity.toString().equals(literal)) {
         return edmMultiplicity;

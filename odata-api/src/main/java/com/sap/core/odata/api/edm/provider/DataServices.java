@@ -16,7 +16,7 @@ public class DataServices {
    * @param schemas
    * @return {@link DataServices} for method chaining
    */
-  public DataServices setSchemas(List<Schema> schemas) {
+  public DataServices setSchemas(final List<Schema> schemas) {
     this.schemas = schemas;
     return this;
   }
@@ -26,7 +26,7 @@ public class DataServices {
    * @param dataServiceVersion
    * @return {@link DataServices} for method chaining
    */
-  public DataServices setDataServiceVersion(String dataServiceVersion) {
+  public DataServices setDataServiceVersion(final String dataServiceVersion) {
     this.dataServiceVersion = dataServiceVersion;
     return this;
   }

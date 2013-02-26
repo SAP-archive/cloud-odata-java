@@ -48,7 +48,7 @@ public class OnDelete {
    * @param action
    * @return {@link OnDelete} for method chaining
    */
-  public OnDelete setAction(EdmAction action) {
+  public OnDelete setAction(final EdmAction action) {
     this.action = action;
     return this;
   }
@@ -58,7 +58,7 @@ public class OnDelete {
    * @param documentation
    * @return {@link OnDelete} for method chaining
    */
-  public OnDelete setDocumentation(Documentation documentation) {
+  public OnDelete setDocumentation(final Documentation documentation) {
     this.documentation = documentation;
     return this;
   }
@@ -68,7 +68,7 @@ public class OnDelete {
    * @param annotationAttributes
    * @return {@link OnDelete} for method chaining
    */
-  public OnDelete setAnnotationAttributes(List<AnnotationAttribute> annotationAttributes) {
+  public OnDelete setAnnotationAttributes(final List<AnnotationAttribute> annotationAttributes) {
     this.annotationAttributes = annotationAttributes;
     return this;
   }
@@ -78,7 +78,7 @@ public class OnDelete {
    * @param annotationElements
    * @return {@link OnDelete} for method chaining
    */
-  public OnDelete setAnnotationElements(List<AnnotationElement> annotationElements) {
+  public OnDelete setAnnotationElements(final List<AnnotationElement> annotationElements) {
     this.annotationElements = annotationElements;
     return this;
   }

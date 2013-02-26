@@ -16,7 +16,7 @@ public class EdmAssociationSetImplProv extends EdmNamedImplProv implements EdmAs
   private AssociationSet associationSet;
   private EdmEntityContainer edmEntityContainer;
 
-  public EdmAssociationSetImplProv(EdmImplProv edm, AssociationSet associationSet, EdmEntityContainer edmEntityContainer) throws EdmException {
+  public EdmAssociationSetImplProv(final EdmImplProv edm, final AssociationSet associationSet, final EdmEntityContainer edmEntityContainer) throws EdmException {
     super(edm, associationSet.getName());
     this.associationSet = associationSet;
     this.edmEntityContainer = edmEntityContainer;

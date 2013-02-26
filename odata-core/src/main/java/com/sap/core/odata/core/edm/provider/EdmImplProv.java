@@ -18,13 +18,13 @@ public class EdmImplProv extends EdmImpl implements EdmProviderAccessor {
 
   protected EdmProvider edmProvider;
 
-  public EdmImplProv(EdmProvider edmProvider) {
+  public EdmImplProv(final EdmProvider edmProvider) {
     super(new EdmServiceMetadataImplProv(edmProvider));
     this.edmProvider = edmProvider;
   }
 
   @Override
-  protected EdmEntityContainer createEntityContainer(String name) throws ODataException {
+  protected EdmEntityContainer createEntityContainer(final String name) throws ODataException {
     EntityContainerInfo enitityContainerInfo = edmProvider.getEntityContainerInfo(name);
     if (enitityContainerInfo == null) {
       return null;
@@ -33,7 +33,7 @@ public class EdmImplProv extends EdmImpl implements EdmProviderAccessor {
   }
 
   @Override
-  protected EdmEntityType createEntityType(FullQualifiedName fqName) throws ODataException {
+  protected EdmEntityType createEntityType(final FullQualifiedName fqName) throws ODataException {
     EntityType entityType = edmProvider.getEntityType(fqName);
     if (entityType == null) {
       return null;
@@ -43,7 +43,7 @@ public class EdmImplProv extends EdmImpl implements EdmProviderAccessor {
   }
 
   @Override
-  protected EdmComplexType createComplexType(FullQualifiedName fqName) throws ODataException {
+  protected EdmComplexType createComplexType(final FullQualifiedName fqName) throws ODataException {
     ComplexType complexType = edmProvider.getComplexType(fqName);
     if (complexType == null) {
       return null;
@@ -52,7 +52,7 @@ public class EdmImplProv extends EdmImpl implements EdmProviderAccessor {
   }
 
   @Override
-  protected EdmAssociation createAssociation(FullQualifiedName fqName) throws ODataException {
+  protected EdmAssociation createAssociation(final FullQualifiedName fqName) throws ODataException {
     Association association = edmProvider.getAssociation(fqName);
     if (association == null) {
       return null;

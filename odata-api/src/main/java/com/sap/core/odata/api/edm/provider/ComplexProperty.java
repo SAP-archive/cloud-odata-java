@@ -25,7 +25,7 @@ public class ComplexProperty extends Property {
    * @param type
    * @return {@link Property} for method chaining
    */
-  public ComplexProperty setType(FullQualifiedName type) {
+  public ComplexProperty setType(final FullQualifiedName type) {
     this.type = type;
     return this;
   }
@@ -34,7 +34,7 @@ public class ComplexProperty extends Property {
    * @see com.sap.core.odata.api.edm.provider.Property#setName(java.lang.String)
    */
   @Override
-  public ComplexProperty setName(String name) {
+  public ComplexProperty setName(final String name) {
     super.setName(name);
     return this;
   }
@@ -43,7 +43,7 @@ public class ComplexProperty extends Property {
    * @see com.sap.core.odata.api.edm.provider.Property#setFacets(com.sap.core.odata.api.edm.EdmFacets)
    */
   @Override
-  public ComplexProperty setFacets(EdmFacets facets) {
+  public ComplexProperty setFacets(final EdmFacets facets) {
     super.setFacets(facets);
     return this;
   }
@@ -52,7 +52,7 @@ public class ComplexProperty extends Property {
    * @see com.sap.core.odata.api.edm.provider.Property#setCustomizableFeedMappings(com.sap.core.odata.api.edm.provider.CustomizableFeedMappings)
    */
   @Override
-  public ComplexProperty setCustomizableFeedMappings(CustomizableFeedMappings customizableFeedMappings) {
+  public ComplexProperty setCustomizableFeedMappings(final CustomizableFeedMappings customizableFeedMappings) {
     super.setCustomizableFeedMappings(customizableFeedMappings);
     return this;
   }
@@ -61,7 +61,7 @@ public class ComplexProperty extends Property {
    * @see com.sap.core.odata.api.edm.provider.Property#setMimeType(java.lang.String)
    */
   @Override
-  public ComplexProperty setMimeType(String mimeType) {
+  public ComplexProperty setMimeType(final String mimeType) {
     super.setMimeType(mimeType);
     return this;
   }
@@ -70,7 +70,7 @@ public class ComplexProperty extends Property {
    * @see com.sap.core.odata.api.edm.provider.Property#setMapping(com.sap.core.odata.api.edm.provider.Mapping)
    */
   @Override
-  public ComplexProperty setMapping(Mapping mapping) {
+  public ComplexProperty setMapping(final Mapping mapping) {
     super.setMapping(mapping);
     return this;
   }
@@ -79,7 +79,7 @@ public class ComplexProperty extends Property {
    * @see com.sap.core.odata.api.edm.provider.Property#setDocumentation(com.sap.core.odata.api.edm.provider.Documentation)
    */
   @Override
-  public ComplexProperty setDocumentation(Documentation documentation) {
+  public ComplexProperty setDocumentation(final Documentation documentation) {
     super.setDocumentation(documentation);
     return this;
   }
@@ -88,7 +88,7 @@ public class ComplexProperty extends Property {
    * @see com.sap.core.odata.api.edm.provider.Property#setAnnotationAttributes(java.util.List)
    */
   @Override
-  public ComplexProperty setAnnotationAttributes(List<AnnotationAttribute> annotationAttributes) {
+  public ComplexProperty setAnnotationAttributes(final List<AnnotationAttribute> annotationAttributes) {
     super.setAnnotationAttributes(annotationAttributes);
     return this;
   }
@@ -97,7 +97,7 @@ public class ComplexProperty extends Property {
    * @see com.sap.core.odata.api.edm.provider.Property#setAnnotationElements(java.util.List)
    */
   @Override
-  public ComplexProperty setAnnotationElements(List<AnnotationElement> annotationElements) {
+  public ComplexProperty setAnnotationElements(final List<AnnotationElement> annotationElements) {
     super.setAnnotationElements(annotationElements);
     return this;
   }

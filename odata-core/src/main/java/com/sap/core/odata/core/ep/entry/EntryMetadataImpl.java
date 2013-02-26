@@ -22,7 +22,7 @@ public class EntryMetadataImpl implements EntryMetadata {
     return id;
   }
 
-  public void setId(String id) {
+  public void setId(final String id) {
     this.id = id;
   }
 
@@ -31,7 +31,7 @@ public class EntryMetadataImpl implements EntryMetadata {
     return etag;
   }
 
-  public void setEtag(String etag) {
+  public void setEtag(final String etag) {
     this.etag = etag;
   }
 
@@ -40,7 +40,7 @@ public class EntryMetadataImpl implements EntryMetadata {
     return uri;
   }
 
-  public void setUri(String uri) {
+  public void setUri(final String uri) {
     this.uri = uri;
   }
 

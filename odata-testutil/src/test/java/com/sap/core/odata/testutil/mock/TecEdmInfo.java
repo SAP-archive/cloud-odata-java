@@ -14,7 +14,7 @@ public class TecEdmInfo
 {
   private final Edm edm;
 
-  public TecEdmInfo(Edm edm) {
+  public TecEdmInfo(final Edm edm) {
     this.edm = edm;
   }
 

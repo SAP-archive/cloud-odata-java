@@ -33,7 +33,7 @@ public class CircleStreamBuffer {
     this(DEFAULT_CAPACITY);
   }
 
-  public CircleStreamBuffer(int bufferSize) {
+  public CircleStreamBuffer(final int bufferSize) {
     currentAllocateCapacity = bufferSize;
     createNewWriteBuffer();
     inStream = new InternalInputStream(this);
@@ -65,11 +65,11 @@ public class CircleStreamBuffer {
   // #############################################
 
   public void closeWrite() {
-    this.writeClosed = true;
+    writeClosed = true;
   }
 
   public void closeRead() {
-    this.readClosed = true;
+    readClosed = true;
   }
 
   private int remaining() throws IOException {
@@ -119,7 +119,7 @@ public class CircleStreamBuffer {
     return tmp;
   }
 
-  private int read(byte[] b, int off, int len) throws IOException {
+  private int read(final byte[] b, final int off, int len) throws IOException {
     ByteBuffer toRead = getReadBuffer();
     if (toRead == null) {
       return -1;
@@ -148,12 +148,12 @@ public class CircleStreamBuffer {
   // #
   // #############################################
 
-  private void write(byte[] data, int off, int len) throws IOException {
+  private void write(final byte[] data, final int off, final int len) throws IOException {
     ByteBuffer writeBuffer = getWriteBuffer(len);
     writeBuffer.put(data, off, len);
   }
 
-  private ByteBuffer getWriteBuffer(int size) throws IOException {
+  private ByteBuffer getWriteBuffer(final int size) throws IOException {
     if (writeClosed) {
       throw new IOException("Tried to write into closed stream.");
     }
@@ -170,7 +170,7 @@ public class CircleStreamBuffer {
     return currentWriteBuffer;
   }
 
-  private void write(int b) throws IOException {
+  private void write(final int b) throws IOException {
     ByteBuffer writeBuffer = getWriteBuffer(1);
     writeBuffer.put((byte) b);
   }
@@ -185,7 +185,7 @@ public class CircleStreamBuffer {
    * 
    * @param requestedCapacity minimum capacity for new allocated buffer
    */
-  private void createNewWriteBuffer(int requestedCapacity) {
+  private void createNewWriteBuffer(final int requestedCapacity) {
     ByteBuffer b = allocateBuffer(requestedCapacity);
     bufferQueue.add(b);
     currentWriteBuffer = b;
@@ -219,8 +219,8 @@ public class CircleStreamBuffer {
 
     private final CircleStreamBuffer inBuffer;
 
-    public InternalInputStream(CircleStreamBuffer csBuffer) {
-      this.inBuffer = csBuffer;
+    public InternalInputStream(final CircleStreamBuffer csBuffer) {
+      inBuffer = csBuffer;
     }
 
     @Override
@@ -234,7 +234,7 @@ public class CircleStreamBuffer {
     }
 
     @Override
-    public int read(byte[] b, int off, int len) throws IOException {
+    public int read(final byte[] b, final int off, final int len) throws IOException {
       return inBuffer.read(b, off, len);
     }
 
@@ -250,17 +250,17 @@ public class CircleStreamBuffer {
   private static class InternalOutputStream extends OutputStream {
     private final CircleStreamBuffer outBuffer;
 
-    public InternalOutputStream(CircleStreamBuffer csBuffer) {
-      this.outBuffer = csBuffer;
+    public InternalOutputStream(final CircleStreamBuffer csBuffer) {
+      outBuffer = csBuffer;
     }
 
     @Override
-    public void write(int b) throws IOException {
+    public void write(final int b) throws IOException {
       outBuffer.write(b);
     }
 
     @Override
-    public void write(byte[] b, int off, int len) throws IOException {
+    public void write(final byte[] b, final int off, final int len) throws IOException {
       outBuffer.write(b, off, len);
     }
 

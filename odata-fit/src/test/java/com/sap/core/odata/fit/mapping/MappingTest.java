@@ -30,7 +30,7 @@ import com.sap.core.odata.testutil.server.TestServer;
  */
 public class MappingTest extends AbstractFitTest {
 
-  public static void main(String[] args) {
+  public static void main(final String[] args) {
     final TestServer server = new TestServer();
     try {
       server.startServer(MapFactory.class);

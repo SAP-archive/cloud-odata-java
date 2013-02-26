@@ -27,7 +27,7 @@ public class FilterParserExceptionImpl extends ExpressionParserException
     return new ExpressionParserException(ODataBadRequestException.COMMON);
   }
 
-  static public ExpressionParserException createERROR_IN_TOKENIZER(TokenizerException exceptionTokenizer, String expression)
+  static public ExpressionParserException createERROR_IN_TOKENIZER(final TokenizerException exceptionTokenizer, final String expression)
   {
     Token token = exceptionTokenizer.getToken();
     MessageReference msgRef = ExpressionParserException.ERROR_IN_TOKENIZER.create();
@@ -39,7 +39,7 @@ public class FilterParserExceptionImpl extends ExpressionParserException
     return new ExpressionParserException(msgRef, exceptionTokenizer);
   }
 
-  static public ExpressionParserException createINVALID_TRAILING_TOKEN_DETECTED_AFTER_PARSING(Token token, String expression)
+  static public ExpressionParserException createINVALID_TRAILING_TOKEN_DETECTED_AFTER_PARSING(final Token token, final String expression)
   {
     MessageReference msgRef = ExpressionParserException.INVALID_TRAILING_TOKEN_DETECTED_AFTER_PARSING.create();
 
@@ -50,7 +50,7 @@ public class FilterParserExceptionImpl extends ExpressionParserException
     return new ExpressionParserException(msgRef);
   }
 
-  static public ExpressionParserException createEXPRESSION_EXPECTED_AFTER_POS(Token token, String expression)
+  static public ExpressionParserException createEXPRESSION_EXPECTED_AFTER_POS(final Token token, final String expression)
   {
     MessageReference msgRef = ExpressionParserException.EXPRESSION_EXPECTED_AFTER_POS.create();
 
@@ -60,7 +60,7 @@ public class FilterParserExceptionImpl extends ExpressionParserException
     return new ExpressionParserException(msgRef);
   }
 
-  static public ExpressionParserException createCOMMA_OR_END_EXPECTED_AT_POS(Token token, String expression)
+  static public ExpressionParserException createCOMMA_OR_END_EXPECTED_AT_POS(final Token token, final String expression)
   {
     MessageReference msgRef = ExpressionParserException.COMMA_OR_END_EXPECTED_AT_POS.create();
 
@@ -70,7 +70,7 @@ public class FilterParserExceptionImpl extends ExpressionParserException
     return new ExpressionParserException(msgRef);
   }
 
-  static public ExpressionParserException createEXPRESSION_EXPECTED_AT_POS(Token token, String expression)
+  static public ExpressionParserException createEXPRESSION_EXPECTED_AT_POS(final Token token, final String expression)
   {
     MessageReference msgRef = ExpressionParserException.EXPRESSION_EXPECTED_AT_POS.create();
 
@@ -80,7 +80,7 @@ public class FilterParserExceptionImpl extends ExpressionParserException
     return new ExpressionParserException(msgRef);
   }
 
-  static public ExpressionParserException createCOMMA_OR_CLOSING_PHARENTHESIS_EXPECTED_AFTER_POS(Token token, String expression)
+  static public ExpressionParserException createCOMMA_OR_CLOSING_PHARENTHESIS_EXPECTED_AFTER_POS(final Token token, final String expression)
   {
     MessageReference msgRef = ExpressionParserException.COMMA_OR_CLOSING_PHARENTHESIS_EXPECTED_AFTER_POS.create();
 
@@ -90,7 +90,7 @@ public class FilterParserExceptionImpl extends ExpressionParserException
     return new ExpressionParserException(msgRef);
   }
 
-  public static ExpressionParserException createMETHOD_WRONG_ARG_COUNT(MethodExpressionImpl methodExpression, Token token, String expression)
+  public static ExpressionParserException createMETHOD_WRONG_ARG_COUNT(final MethodExpressionImpl methodExpression, final Token token, final String expression)
   {
     MessageReference msgRef = null;
     int minParam = methodExpression.getMethodInfo().getMinParameter();
@@ -144,7 +144,7 @@ public class FilterParserExceptionImpl extends ExpressionParserException
     return new ExpressionParserException(msgRef);
   }
 
-  public static ExpressionParserException createMETHOD_WRONG_INPUT_TYPE(MethodExpressionImpl methodExpression, Token token, String expression)
+  public static ExpressionParserException createMETHOD_WRONG_INPUT_TYPE(final MethodExpressionImpl methodExpression, final Token token, final String expression)
   {
     MessageReference msgRef = null;
 
@@ -157,7 +157,7 @@ public class FilterParserExceptionImpl extends ExpressionParserException
     return new ExpressionParserException(msgRef);
   }
 
-  public static ExpressionParserException createLEFT_SIDE_NOT_A_PROPERTY(Token token, String expression) throws ExpressionParserInternalError
+  public static ExpressionParserException createLEFT_SIDE_NOT_A_PROPERTY(final Token token, final String expression) throws ExpressionParserInternalError
   {
     MessageReference msgRef = ExpressionParserException.LEFT_SIDE_NOT_A_PROPERTY.create();
 
@@ -167,7 +167,7 @@ public class FilterParserExceptionImpl extends ExpressionParserException
     return new ExpressionParserException(msgRef);
   }
 
-  public static ExpressionParserException createLEFT_SIDE_NOT_STRUCTURAL_TYPE(EdmType parentType, PropertyExpressionImpl property, Token token, String expression) throws ExpressionParserInternalError
+  public static ExpressionParserException createLEFT_SIDE_NOT_STRUCTURAL_TYPE(final EdmType parentType, final PropertyExpressionImpl property, final Token token, final String expression) throws ExpressionParserInternalError
   {
     MessageReference msgRef = ExpressionParserException.LEFT_SIDE_NOT_STRUCTURAL_TYPE.create();
 
@@ -183,7 +183,7 @@ public class FilterParserExceptionImpl extends ExpressionParserException
     return new ExpressionParserException(msgRef);
   }
 
-  public static ExpressionParserException createPROPERTY_NAME_NOT_FOUND_IN_TYPE(EdmStructuralType parentType, PropertyExpression property, Token token, String expression) throws ExpressionParserInternalError
+  public static ExpressionParserException createPROPERTY_NAME_NOT_FOUND_IN_TYPE(final EdmStructuralType parentType, final PropertyExpression property, final Token token, final String expression) throws ExpressionParserInternalError
   {
     MessageReference msgRef = ExpressionParserException.PROPERTY_NAME_NOT_FOUND_IN_TYPE.create();
 
@@ -199,7 +199,7 @@ public class FilterParserExceptionImpl extends ExpressionParserException
     return new ExpressionParserException(msgRef);
   }
 
-  public static ExpressionParserException createTOKEN_UNDETERMINATED_STRING(int position, String expression) {
+  public static ExpressionParserException createTOKEN_UNDETERMINATED_STRING(final int position, final String expression) {
     MessageReference msgRef = ExpressionParserException.TOKEN_UNDETERMINATED_STRING.create();
 
     msgRef.addContent(position + 1);
@@ -208,7 +208,7 @@ public class FilterParserExceptionImpl extends ExpressionParserException
     return new ExpressionParserException(msgRef);
   }
 
-  public static ExpressionParserException createINVALID_TYPES_FOR_BINARY_OPERATOR(BinaryOperator op, EdmType left, EdmType right, Token token, String expression) {
+  public static ExpressionParserException createINVALID_TYPES_FOR_BINARY_OPERATOR(final BinaryOperator op, final EdmType left, final EdmType right, final Token token, final String expression) {
     MessageReference msgRef = ExpressionParserException.INVALID_TYPES_FOR_BINARY_OPERATOR.create();
 
     msgRef.addContent(op.toUriLiteral());
@@ -229,7 +229,7 @@ public class FilterParserExceptionImpl extends ExpressionParserException
     return new ExpressionParserException(msgRef);
   }
 
-  public static ExpressionParserException createMISSING_CLOSING_PHARENTHESIS(int position, String expression, TokenizerExpectError e) {
+  public static ExpressionParserException createMISSING_CLOSING_PHARENTHESIS(final int position, final String expression, final TokenizerExpectError e) {
     MessageReference msgRef = ExpressionParserException.MISSING_CLOSING_PHARENTHESIS.create();
 
     msgRef.addContent(position + 1);
@@ -238,7 +238,7 @@ public class FilterParserExceptionImpl extends ExpressionParserException
     return new ExpressionParserException(msgRef, e);
   }
 
-  public static ExpressionParserException createINVALID_SORT_ORDER(Token token, String expression)
+  public static ExpressionParserException createINVALID_SORT_ORDER(final Token token, final String expression)
   {
     MessageReference msgRef = ExpressionParserException.INVALID_SORT_ORDER.create();
     msgRef.addContent(token.getPosition() + 1);
@@ -247,7 +247,7 @@ public class FilterParserExceptionImpl extends ExpressionParserException
     return new ExpressionParserException(msgRef);
   }
 
-  public static ExpressionParserException createINVALID_METHOD_CALL(CommonExpression leftNode, Token prevToken, String expression)
+  public static ExpressionParserException createINVALID_METHOD_CALL(final CommonExpression leftNode, final Token prevToken, final String expression)
   {
     final MessageReference msgRef = ExpressionParserException.INVALID_METHOD_CALL.create();
 
@@ -259,7 +259,7 @@ public class FilterParserExceptionImpl extends ExpressionParserException
 
   }
 
-  public static ExpressionParserException createTYPE_EXPECTED_AT(EdmType expectedType, EdmType actualType, int position, String expression)
+  public static ExpressionParserException createTYPE_EXPECTED_AT(final EdmType expectedType, final EdmType actualType, final int position, final String expression)
   {
     final MessageReference msgRef = ExpressionParserException.TYPE_EXPECTED_AT.create();
 

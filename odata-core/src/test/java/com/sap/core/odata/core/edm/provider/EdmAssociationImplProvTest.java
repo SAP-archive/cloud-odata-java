@@ -40,16 +40,15 @@ public class EdmAssociationImplProvTest extends BaseTest {
     AssociationEnd end2 = new AssociationEnd().setRole("end2Role").setMultiplicity(EdmMultiplicity.ONE).setType(EdmSimpleTypeKind.String.getFullQualifiedName());
 
     List<PropertyRef> propRef = new ArrayList<PropertyRef>();
-        propRef.add(new PropertyRef().setName("prop1"));
-        List<PropertyRef> propRef2 = new ArrayList<PropertyRef>();    
+    propRef.add(new PropertyRef().setName("prop1"));
+    List<PropertyRef> propRef2 = new ArrayList<PropertyRef>();
     propRef2.add(new PropertyRef().setName("prop2"));
-    
-    
-//    TODO: How to test the referential constraint role?
-//    ReferentialConstraintRole principal = new ReferentialConstraintRole().setRole("forRole1").setPropertyRef(propRef);
-//    ReferentialConstraintRole dependent = new ReferentialConstraintRole().setRole("forRole2").setPropertyRef(propRef2);
-//    ReferentialConstraint referentialConstraint = new ReferentialConstraint().setPrincipal(principal).setDependent(dependent);
-    
+
+    //    TODO: How to test the referential constraint role?
+    //    ReferentialConstraintRole principal = new ReferentialConstraintRole().setRole("forRole1").setPropertyRef(propRef);
+    //    ReferentialConstraintRole dependent = new ReferentialConstraintRole().setRole("forRole2").setPropertyRef(propRef2);
+    //    ReferentialConstraint referentialConstraint = new ReferentialConstraint().setPrincipal(principal).setDependent(dependent);
+
     Association association = new Association().setName("association").setEnd1(end1).setEnd2(end2);//.setReferentialConstraint(referentialConstraint);
 
     associationProv = new EdmAssociationImplProv(edmImplProv, association, "namespace");

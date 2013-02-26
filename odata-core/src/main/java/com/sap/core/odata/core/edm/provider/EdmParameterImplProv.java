@@ -15,7 +15,7 @@ public class EdmParameterImplProv extends EdmElementImplProv implements EdmParam
 
   FunctionImportParameter parameter;
 
-  public EdmParameterImplProv(EdmImplProv edm, FunctionImportParameter parameter) throws EdmException {
+  public EdmParameterImplProv(final EdmImplProv edm, final FunctionImportParameter parameter) throws EdmException {
     super(edm, parameter.getName(), parameter.getType().getFullQualifiedName(), parameter.getFacets(), parameter.getMapping());
     this.parameter = parameter;
   }

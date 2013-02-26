@@ -14,7 +14,7 @@ public class FullQualifiedName {
    * @param namespace
    * @param name
    */
-  public FullQualifiedName(String namespace, String name) {
+  public FullQualifiedName(final String namespace, final String name) {
     this.namespace = namespace;
     this.name = name;
   }
@@ -39,7 +39,7 @@ public class FullQualifiedName {
   }
 
   @Override
-  public boolean equals(Object obj) {
+  public boolean equals(final Object obj) {
     if (this == obj) {
       return true;
     }

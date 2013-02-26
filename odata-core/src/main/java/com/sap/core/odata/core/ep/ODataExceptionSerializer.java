@@ -39,14 +39,14 @@ public class ODataExceptionSerializer {
    * @param locale      the {@link Locale} that should be used to format the error message
    * @return            an {@link InputStream} containing the serialized error message
    */
-  public static InputStream serialize(String errorCode, String message, ContentType contentType, Locale locale) {
+  public static InputStream serialize(final String errorCode, final String message, final ContentType contentType, final Locale locale) {
     if (contentType.getODataFormat() == ODataFormat.JSON)
       return serializeJson(errorCode, message, locale);
     else
       return serializeXml(errorCode, message, locale);
   }
 
-  private static InputStream serializeJson(String errorCode, String message, Locale locale) {
+  private static InputStream serializeJson(final String errorCode, final String message, final Locale locale) {
     String notsupported = "not supported error format JSON; " + errorCode + ", " + message;
     try {
       return new ByteArrayInputStream(notsupported.getBytes("UTF-8"));

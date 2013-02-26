@@ -14,7 +14,7 @@ public class TokenizerRTException extends Exception {
   /**
    * 
    */
-  public TokenizerRTException() 
+  public TokenizerRTException()
   {
     super();
   }

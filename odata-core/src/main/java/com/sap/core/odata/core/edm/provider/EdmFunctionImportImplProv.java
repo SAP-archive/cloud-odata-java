@@ -31,7 +31,7 @@ public class EdmFunctionImportImplProv extends EdmNamedImplProv implements EdmFu
   private Map<String, FunctionImportParameter> parameters;
   private List<String> parametersList;
 
-  public EdmFunctionImportImplProv(EdmImplProv edm, FunctionImport functionImport, EdmEntityContainer edmEntityContainer) throws EdmException {
+  public EdmFunctionImportImplProv(final EdmImplProv edm, final FunctionImport functionImport, final EdmEntityContainer edmEntityContainer) throws EdmException {
     super(edm, functionImport.getName());
     this.functionImport = functionImport;
     this.edmEntityContainer = edmEntityContainer;
@@ -42,7 +42,7 @@ public class EdmFunctionImportImplProv extends EdmNamedImplProv implements EdmFu
   }
 
   private void buildFunctionImportParametersInternal() {
-    this.parameters = new HashMap<String, FunctionImportParameter>();
+    parameters = new HashMap<String, FunctionImportParameter>();
 
     List<FunctionImportParameter> parameters = functionImport.getParameters();
     if (parameters != null) {
@@ -55,7 +55,7 @@ public class EdmFunctionImportImplProv extends EdmNamedImplProv implements EdmFu
   }
 
   @Override
-  public EdmParameter getParameter(String name) throws EdmException {
+  public EdmParameter getParameter(final String name) throws EdmException {
     EdmParameter parameter = null;
     if (edmParameters.containsKey(name)) {
       parameter = edmParameters.get(name);
@@ -66,7 +66,7 @@ public class EdmFunctionImportImplProv extends EdmNamedImplProv implements EdmFu
     return parameter;
   }
 
-  private EdmParameter createParameter(String name) throws EdmException {
+  private EdmParameter createParameter(final String name) throws EdmException {
     EdmParameter edmParameter = null;
     if (parameters.containsKey(name)) {
       FunctionImportParameter parameter = parameters.get(name);

@@ -12,7 +12,7 @@ public class Token {
   private String uriLiteral;
   private EdmLiteral javaLiteral;
 
-  public Token(TokenKind kind, int position, String uriLiteral, EdmLiteral javaLiteral)
+  public Token(final TokenKind kind, final int position, final String uriLiteral, final EdmLiteral javaLiteral)
   {
     this.kind = kind;
     this.position = position;
@@ -20,12 +20,12 @@ public class Token {
     this.javaLiteral = javaLiteral;
   }
 
-  public Token(TokenKind kind, int position, String uriLiteral)
+  public Token(final TokenKind kind, final int position, final String uriLiteral)
   {
     this.kind = kind;
     this.position = position;
     this.uriLiteral = uriLiteral;
-    this.javaLiteral = null;
+    javaLiteral = null;
   }
 
   public TokenKind getKind()

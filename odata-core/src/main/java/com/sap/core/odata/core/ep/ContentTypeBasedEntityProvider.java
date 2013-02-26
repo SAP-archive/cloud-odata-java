@@ -29,7 +29,7 @@ public interface ContentTypeBasedEntityProvider {
   List<String> readLinks(EdmEntitySet entitySet, InputStream content) throws EntityProviderException;
 
   ODataResponse writeServiceDocument(Edm edm, String serviceRoot) throws EntityProviderException;
-  
+
   ODataResponse writeFeed(EdmEntitySet entitySet, List<Map<String, Object>> data, EntityProviderProperties properties) throws EntityProviderException;
 
   ODataResponse writeEntry(EdmEntitySet entitySet, Map<String, Object> data, EntityProviderProperties properties) throws EntityProviderException;

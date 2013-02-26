@@ -2,7 +2,6 @@ package com.sap.core.odata.testutil.server;
 
 import java.net.BindException;
 import java.net.InetSocketAddress;
-import java.net.ServerSocket;
 import java.net.URI;
 
 import org.apache.cxf.jaxrs.servlet.CXFNonSpringJaxrsServlet;
@@ -38,7 +37,7 @@ public class TestServer {
     this(DEFAULT_PATH);
   }
 
-  public TestServer(String path) {
+  public TestServer(final String path) {
     if (path.startsWith("/")) {
       this.path = path;
     } else {
@@ -50,7 +49,7 @@ public class TestServer {
     return pathSplit;
   }
 
-  public void setPathSplit(int pathSplit) {
+  public void setPathSplit(final int pathSplit) {
     this.pathSplit = pathSplit;
   }
 
@@ -60,7 +59,7 @@ public class TestServer {
 
   private Server server;
 
-  public void startServer(Class<? extends ODataServiceFactory> factoryClass) {
+  public void startServer(final Class<? extends ODataServiceFactory> factoryClass) {
     try {
       for (int port = PORT_MIN; port <= PORT_MAX; port += PORT_INC) {
         final CXFNonSpringJaxrsServlet odataServlet = new CXFNonSpringJaxrsServlet();
@@ -98,7 +97,7 @@ public class TestServer {
     }
   }
 
-  public void startServer(ODataService service) {
+  public void startServer(final ODataService service) {
     startServer(FitStaticServiceFactory.class);
 
     if ((server != null) && server.isStarted()) {

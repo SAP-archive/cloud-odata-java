@@ -8,7 +8,7 @@ import com.sap.core.odata.api.edm.provider.ComplexType;
 
 public class EdmComplexTypeImplProv extends EdmStructuralTypeImplProv implements EdmComplexType {
 
-  public EdmComplexTypeImplProv(EdmImplProv edm, ComplexType complexType, String namespace) throws EdmException {
+  public EdmComplexTypeImplProv(final EdmImplProv edm, final ComplexType complexType, final String namespace) throws EdmException {
     super(edm, complexType, EdmTypeKind.COMPLEX, namespace);
   }
 

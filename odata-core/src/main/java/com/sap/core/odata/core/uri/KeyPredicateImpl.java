@@ -5,7 +5,7 @@ import com.sap.core.odata.api.uri.KeyPredicate;
 
 public class KeyPredicateImpl implements KeyPredicate {
 
-  public KeyPredicateImpl(String literal, EdmProperty property) {
+  public KeyPredicateImpl(final String literal, final EdmProperty property) {
     super();
     this.literal = literal;
     this.property = property;
@@ -19,8 +19,8 @@ public class KeyPredicateImpl implements KeyPredicate {
     return literal;
   }
 
-  public void setValue(String value) {
-    this.literal = value;
+  public void setValue(final String value) {
+    literal = value;
   }
 
   @Override
@@ -28,13 +28,13 @@ public class KeyPredicateImpl implements KeyPredicate {
     return property;
   }
 
-  public void setProperty(EdmProperty property) {
+  public void setProperty(final EdmProperty property) {
     this.property = property;
   }
 
   @Override
   public String toString() {
-    return "KeyPredicate: literal=" + this.literal + ", propertyName=" + this.property;
+    return "KeyPredicate: literal=" + literal + ", propertyName=" + property;
   }
 
 }

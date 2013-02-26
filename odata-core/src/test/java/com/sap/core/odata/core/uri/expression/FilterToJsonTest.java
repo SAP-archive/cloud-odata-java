@@ -176,7 +176,7 @@ public class FilterToJsonTest {
     checkProperty(path, null, "PostalCode");
   }
 
-  private void checkUnary(StringMap<Object> unary, UnaryOperator expectedOperator, String expectedType) {
+  private void checkUnary(final StringMap<Object> unary, final UnaryOperator expectedOperator, final String expectedType) {
     String nodeType = (String) unary.get(NODETYPE);
     assertEquals(ExpressionKind.UNARY.toString(), nodeType);
 
@@ -190,7 +190,7 @@ public class FilterToJsonTest {
     assertNotNull(operand);
   }
 
-  private void checkMember(StringMap<Object> member, String expectedType) {
+  private void checkMember(final StringMap<Object> member, final String expectedType) {
     String nodeType = (String) member.get(NODETYPE);
     assertEquals(ExpressionKind.MEMBER.toString(), nodeType);
 
@@ -204,7 +204,7 @@ public class FilterToJsonTest {
     assertNotNull(path);
   }
 
-  private void checkMethod(StringMap<Object> method, MethodOperator expectedOperator, String expectedType) {
+  private void checkMethod(final StringMap<Object> method, final MethodOperator expectedOperator, final String expectedType) {
     String nodeType = (String) method.get(NODETYPE);
     assertEquals(ExpressionKind.METHOD.toString(), nodeType);
 
@@ -218,7 +218,7 @@ public class FilterToJsonTest {
 
   }
 
-  private void checkProperty(StringMap<Object> property, String expectedType, Object expectedValue) {
+  private void checkProperty(final StringMap<Object> property, final String expectedType, final Object expectedValue) {
     String nodeType = (String) property.get(NODETYPE);
     assertEquals(ExpressionKind.PROPERTY.toString(), nodeType);
 
@@ -229,7 +229,7 @@ public class FilterToJsonTest {
     assertEquals(expectedValue, value);
   }
 
-  private void checkLiteral(StringMap<Object> literal, String expectedType, Object expectedValue) {
+  private void checkLiteral(final StringMap<Object> literal, final String expectedType, final Object expectedValue) {
     String nodeType = (String) literal.get(NODETYPE);
     assertEquals(ExpressionKind.LITERAL.toString(), nodeType);
 
@@ -240,7 +240,7 @@ public class FilterToJsonTest {
     assertEquals(expectedValue, value);
   }
 
-  private void checkBinary(StringMap<Object> binary, String expectedOperator, String expectedType) throws Exception {
+  private void checkBinary(final StringMap<Object> binary, final String expectedOperator, final String expectedType) throws Exception {
     String nodeType = (String) binary.get(NODETYPE);
     assertEquals(ExpressionKind.BINARY.toString(), nodeType);
 
@@ -259,7 +259,7 @@ public class FilterToJsonTest {
 
   public class FilterToJsonConverter {
 
-    String toJson(FilterExpression expression) throws ExceptionVisitExpression, ODataApplicationException {
+    String toJson(final FilterExpression expression) throws ExceptionVisitExpression, ODataApplicationException {
       ExpressionVisitor visitor = new JsonVisitor();
 
       return (String) expression.accept(visitor);
@@ -269,12 +269,12 @@ public class FilterToJsonTest {
   public class JsonVisitor implements ExpressionVisitor {
 
     @Override
-    public Object visitFilterExpression(FilterExpression filterExpression, String expressionString, Object expression) {
+    public Object visitFilterExpression(final FilterExpression filterExpression, final String expressionString, final Object expression) {
       return expression;
     }
 
     @Override
-    public Object visitBinary(BinaryExpression binaryExpression, BinaryOperator operator, Object leftSide, Object rightSide) {
+    public Object visitBinary(final BinaryExpression binaryExpression, final BinaryOperator operator, final Object leftSide, final Object rightSide) {
       String binaryType = "null";
 
       try {
@@ -289,7 +289,7 @@ public class FilterToJsonTest {
     }
 
     @Override
-    public Object visitOrderByExpression(OrderByExpression orderByExpression, String expressionString, List<Object> orders) {
+    public Object visitOrderByExpression(final OrderByExpression orderByExpression, final String expressionString, final List<Object> orders) {
       String expression = "";
 
       for (Object order : orders) {
@@ -300,12 +300,12 @@ public class FilterToJsonTest {
     }
 
     @Override
-    public Object visitOrder(OrderExpression orderExpression, Object filterResult, SortOrder sortOrder) {
+    public Object visitOrder(final OrderExpression orderExpression, final Object filterResult, final SortOrder sortOrder) {
       return filterResult;
     }
 
     @Override
-    public Object visitLiteral(LiteralExpression literal, EdmLiteral edmLiteral) {
+    public Object visitLiteral(final LiteralExpression literal, final EdmLiteral edmLiteral) {
       String literalType = "null";
 
       try {
@@ -318,7 +318,7 @@ public class FilterToJsonTest {
     }
 
     @Override
-    public Object visitMethod(MethodExpression methodExpression, MethodOperator method, List<Object> parameters) {
+    public Object visitMethod(final MethodExpression methodExpression, final MethodOperator method, final List<Object> parameters) {
 
       String methodType = "null";
 
@@ -342,7 +342,7 @@ public class FilterToJsonTest {
     }
 
     @Override
-    public Object visitMember(MemberExpression memberExpression, Object path, Object property) {
+    public Object visitMember(final MemberExpression memberExpression, final Object path, final Object property) {
       String memberType = "null";
       try {
         if (memberExpression.getEdmType() != null) {
@@ -356,7 +356,7 @@ public class FilterToJsonTest {
     }
 
     @Override
-    public Object visitProperty(PropertyExpression propertyExpression, String uriLiteral, EdmTyped edmProperty) {
+    public Object visitProperty(final PropertyExpression propertyExpression, final String uriLiteral, final EdmTyped edmProperty) {
       String propertyType = "null";
 
       if (edmProperty != null) {
@@ -371,7 +371,7 @@ public class FilterToJsonTest {
     }
 
     @Override
-    public Object visitUnary(UnaryExpression unaryExpression, UnaryOperator operator, Object operand) {
+    public Object visitUnary(final UnaryExpression unaryExpression, final UnaryOperator operator, final Object operand) {
       String unaryType = "null";
 
       try {

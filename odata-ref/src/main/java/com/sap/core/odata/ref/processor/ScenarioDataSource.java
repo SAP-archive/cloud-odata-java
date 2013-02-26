@@ -397,7 +397,7 @@ public class ScenarioDataSource implements ListsDataSource {
   }
 
   @Override
-  public void deleteRelation(final EdmEntitySet sourceEntitySet, Object sourceData, final EdmEntitySet targetEntitySet, final Map<String, Object> targetKeys) throws ODataNotImplementedException, ODataNotFoundException, EdmException, ODataApplicationException {
+  public void deleteRelation(final EdmEntitySet sourceEntitySet, final Object sourceData, final EdmEntitySet targetEntitySet, final Map<String, Object> targetKeys) throws ODataNotImplementedException, ODataNotFoundException, EdmException, ODataApplicationException {
     if (ENTITYSET_1_1.equals(targetEntitySet.getName())) {
       if (ENTITYSET_1_2.equals(sourceEntitySet.getName())) {
         for (Iterator<Employee> iterator = ((Team) sourceData).getEmployees().iterator(); iterator.hasNext();) {
@@ -457,7 +457,7 @@ public class ScenarioDataSource implements ListsDataSource {
   }
 
   @Override
-  public void writeRelation(final EdmEntitySet sourceEntitySet, Object sourceData, final EdmEntitySet targetEntitySet, final Map<String, Object> targetKeys) throws ODataNotImplementedException, ODataNotFoundException, EdmException, ODataApplicationException {
+  public void writeRelation(final EdmEntitySet sourceEntitySet, final Object sourceData, final EdmEntitySet targetEntitySet, final Map<String, Object> targetKeys) throws ODataNotImplementedException, ODataNotFoundException, EdmException, ODataApplicationException {
     if (ENTITYSET_1_1.equals(targetEntitySet.getName())) {
       final Employee employee = (Employee) readData(targetEntitySet, targetKeys);
       if (ENTITYSET_1_2.equals(sourceEntitySet.getName())) {

@@ -22,7 +22,7 @@ public class NavigationSegmentImpl implements NavigationSegment {
     return keyPredicates;
   }
 
-  public void setKeyPredicates(List<KeyPredicate> keyPredicates) {
+  public void setKeyPredicates(final List<KeyPredicate> keyPredicates) {
     this.keyPredicates = keyPredicates;
   }
 
@@ -31,8 +31,8 @@ public class NavigationSegmentImpl implements NavigationSegment {
     return navigationProperty;
   }
 
-  public void setNavigationProperty(EdmNavigationProperty edmNavigationProperty) {
-    this.navigationProperty = edmNavigationProperty;
+  public void setNavigationProperty(final EdmNavigationProperty edmNavigationProperty) {
+    navigationProperty = edmNavigationProperty;
   }
 
   @Override
@@ -40,8 +40,8 @@ public class NavigationSegmentImpl implements NavigationSegment {
     return targetEntitySet;
   }
 
-  public void setEntitySet(EdmEntitySet edmEntitySet) {
-    this.targetEntitySet = edmEntitySet;
+  public void setEntitySet(final EdmEntitySet edmEntitySet) {
+    targetEntitySet = edmEntitySet;
   }
 
   @Override

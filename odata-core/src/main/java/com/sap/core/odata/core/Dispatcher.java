@@ -33,7 +33,7 @@ public class Dispatcher {
 
   private final ODataService service;
 
-  public Dispatcher(ODataService service) {
+  public Dispatcher(final ODataService service) {
     this.service = service;
   }
 

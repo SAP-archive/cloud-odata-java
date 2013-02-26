@@ -81,6 +81,7 @@ public abstract class AbstractContentNegotiationTest extends AbstractFitTest {
       HttpContentType.APPLICATION_ATOM_XML_UTF8
       );
 
+  @Override
   protected ODataService createService() throws ODataException {
     DataContainer dataContainer = new DataContainer();
     dataContainer.init();
@@ -92,26 +93,26 @@ public abstract class AbstractContentNegotiationTest extends AbstractFitTest {
   protected static class FitTestSetBuilder {
     private final FitTestSet testSet;
 
-    public FitTestSetBuilder(FitTestSet testSet) {
+    public FitTestSetBuilder(final FitTestSet testSet) {
       this.testSet = testSet;
     }
 
-    public FitTestSetBuilder queryOptions(List<String> queryOptions) {
+    public FitTestSetBuilder queryOptions(final List<String> queryOptions) {
       testSet.queryOptions = queryOptions;
       return this;
     }
 
-    public FitTestSetBuilder acceptHeader(List<String> acceptHeader) {
+    public FitTestSetBuilder acceptHeader(final List<String> acceptHeader) {
       testSet.acceptHeader = acceptHeader;
       return this;
     }
 
-    public FitTestSetBuilder expectedStatusCode(int expectedStatusCode) {
+    public FitTestSetBuilder expectedStatusCode(final int expectedStatusCode) {
       testSet.expectedStatusCode = expectedStatusCode;
       return this;
     }
 
-    public FitTestSetBuilder expectedContentType(String expectedContentType) {
+    public FitTestSetBuilder expectedContentType(final String expectedContentType) {
       testSet.expectedContentType = expectedContentType;
       return this;
     }
@@ -120,24 +121,24 @@ public abstract class AbstractContentNegotiationTest extends AbstractFitTest {
       return init(true);
     }
 
-    public FitTestSet init(boolean populate) {
+    public FitTestSet init(final boolean populate) {
       if (populate) {
         testSet.populate();
       }
       return testSet;
     }
 
-    public FitTestSetBuilder content(String content) {
+    public FitTestSetBuilder content(final String content) {
       testSet.content = content;
       return this;
     }
 
-    public FitTestSetBuilder httpMethod(String httpMethod) {
+    public FitTestSetBuilder httpMethod(final String httpMethod) {
       testSet.httpMethod = httpMethod;
       return this;
     }
 
-    public FitTestSetBuilder requestContentTypes(List<String> contentTypes) {
+    public FitTestSetBuilder requestContentTypes(final List<String> contentTypes) {
       testSet.requestContentTypes = contentTypes;
       return this;
     }
@@ -163,18 +164,18 @@ public abstract class AbstractContentNegotiationTest extends AbstractFitTest {
     private String httpMethod = "GET";
     private String content = null;
 
-    private FitTestSet(UriType uriType, String path) {
+    private FitTestSet(final UriType uriType, final String path) {
       super();
       this.uriType = uriType;
       this.path = path;
     }
 
-    public static FitTestSetBuilder create(UriType uriType, String path) {
+    public static FitTestSetBuilder create(final UriType uriType, final String path) {
       return create(uriType, path, true, true, false);
     }
 
-    public static FitTestSetBuilder create(UriType uriType, String path,
-        boolean defaultQueryOptions, boolean defaultAcceptHeaders, boolean defaultRequestContentTypeHeaders) {
+    public static FitTestSetBuilder create(final UriType uriType, final String path,
+        final boolean defaultQueryOptions, final boolean defaultAcceptHeaders, final boolean defaultRequestContentTypeHeaders) {
 
       FitTestSetBuilder builder = new FitTestSetBuilder(new FitTestSet(uriType, path));
       if (defaultQueryOptions) {
@@ -193,12 +194,12 @@ public abstract class AbstractContentNegotiationTest extends AbstractFitTest {
       testParameters.addAll(FitTest.create(this));
     }
 
-    public void setTestParam(FitTest fitTest) {
+    public void setTestParam(final FitTest fitTest) {
       testParameters.remove(fitTest);
       testParameters.add(fitTest);
     }
 
-    public void modifyRequestContentTypes(List<String> requestContentTypes, int expectedStatusCode, String expectedContentType) {
+    public void modifyRequestContentTypes(final List<String> requestContentTypes, final int expectedStatusCode, final String expectedContentType) {
       FitTestSet fts = new FitTestSetBuilder(this)
           .requestContentTypes(requestContentTypes)
           .expectedStatusCode(expectedStatusCode)
@@ -206,21 +207,21 @@ public abstract class AbstractContentNegotiationTest extends AbstractFitTest {
       replaceTestParameters(FitTest.create(fts));
     }
 
-    public void setTestParam(List<String> acceptHeader, int expectedStatusCode, String expectedContentType) {
+    public void setTestParam(final List<String> acceptHeader, final int expectedStatusCode, final String expectedContentType) {
       setTestParam(queryOptions, acceptHeader, expectedStatusCode, expectedContentType);
     }
 
-    public void setTestParam(List<String> queryOptions, List<String> acceptHeader, int expectedStatusCode, String expectedContentType) {
+    public void setTestParam(final List<String> queryOptions, final List<String> acceptHeader, final int expectedStatusCode, final String expectedContentType) {
       List<FitTest> tp = FitTest.create(this, queryOptions, acceptHeader, expectedStatusCode, expectedContentType);
       replaceTestParameters(tp);
     }
 
-    private void replaceTestParameters(List<FitTest> tp) {
+    private void replaceTestParameters(final List<FitTest> tp) {
       testParameters.removeAll(tp);
       testParameters.addAll(tp);
     }
 
-    public void execute(URI serviceEndpoint) throws Exception {
+    public void execute(final URI serviceEndpoint) throws Exception {
       Map<FitTest, AssertionError> test2Failure = new HashMap<AbstractContentNegotiationTest.FitTest, AssertionError>();
       List<FitTest> successTests = new ArrayList<AbstractContentNegotiationTest.FitTest>();
 
@@ -252,20 +253,20 @@ public abstract class AbstractContentNegotiationTest extends AbstractFitTest {
   static class FitTestBuilder {
     private FitTest test;
 
-    public FitTestBuilder(FitTestSet testSet) {
+    public FitTestBuilder(final FitTestSet testSet) {
       test = new FitTest(testSet);
     }
 
-    public FitTestBuilder(UriType uriType, String httpMethod, String path, int expectedStatusCode, String expectedContentType) {
+    public FitTestBuilder(final UriType uriType, final String httpMethod, final String path, final int expectedStatusCode, final String expectedContentType) {
       test = new FitTest(uriType, httpMethod, path, expectedStatusCode, expectedContentType);
     }
 
-    public FitTestBuilder queryOptions(String queryOptions) {
+    public FitTestBuilder queryOptions(final String queryOptions) {
       test.queryOptions = queryOptions;
       return this;
     }
 
-    public FitTestBuilder content(String content) {
+    public FitTestBuilder content(final String content) {
       test.request.content = content;
       return this;
     }
@@ -276,7 +277,7 @@ public abstract class AbstractContentNegotiationTest extends AbstractFitTest {
      * @param value
      * @return
      */
-    public FitTestBuilder header(String name, String value) {
+    public FitTestBuilder header(final String name, final String value) {
       test.request.headers.put(name, value);
       return this;
     }
@@ -286,7 +287,7 @@ public abstract class AbstractContentNegotiationTest extends AbstractFitTest {
      * @param value
      * @return
      */
-    public FitTestBuilder acceptHeader(String value) {
+    public FitTestBuilder acceptHeader(final String value) {
       if (value != null && value.length() > 0) {
         return header(HttpHeaders.ACCEPT, value);
       }
@@ -298,14 +299,14 @@ public abstract class AbstractContentNegotiationTest extends AbstractFitTest {
      * @param value
      * @return
      */
-    public FitTestBuilder contentTypeHeader(String value) {
+    public FitTestBuilder contentTypeHeader(final String value) {
       if (value != null && value.length() > 0) {
         return header(HttpHeaders.CONTENT_TYPE, value);
       }
       return this;
     }
 
-    public FitTestBuilder isResponseContentExpected(boolean isExpected) {
+    public FitTestBuilder isResponseContentExpected(final boolean isExpected) {
       test.isContentExpected = isExpected;
       return this;
     }
@@ -331,20 +332,20 @@ public abstract class AbstractContentNegotiationTest extends AbstractFitTest {
     private String expectedContentType;
     private boolean isContentExpected;
 
-    public FitTest(FitTestSet testSet) {
+    public FitTest(final FitTestSet testSet) {
       this(testSet.uriType, testSet.httpMethod, testSet.path, testSet.expectedStatusCode, testSet.expectedContentType);
     }
 
-    public FitTest(UriType uriType, String httpMethod, String path,
-        int expectedStatusCode, String expectedContentType) {
+    public FitTest(final UriType uriType, final String httpMethod, final String path,
+        final int expectedStatusCode, final String expectedContentType) {
       super();
       this.uriType = uriType;
       this.path = path;
       this.expectedStatusCode = expectedStatusCode;
       this.expectedContentType = expectedContentType;
-      this.isContentExpected = false;
+      isContentExpected = false;
       //
-      this.request = new FitTestRequest();
+      request = new FitTestRequest();
       request.type = httpMethod;
     }
 
@@ -370,7 +371,7 @@ public abstract class AbstractContentNegotiationTest extends AbstractFitTest {
     }
 
     @Override
-    public boolean equals(Object obj) {
+    public boolean equals(final Object obj) {
       if (this == obj)
         return true;
       if (obj == null)
@@ -396,7 +397,7 @@ public abstract class AbstractContentNegotiationTest extends AbstractFitTest {
       return true;
     }
 
-    public void execute(URI serviceEndpoint) throws Exception {
+    public void execute(final URI serviceEndpoint) throws Exception {
       HttpRequestBase request = null;
 
       try {
@@ -434,18 +435,18 @@ public abstract class AbstractContentNegotiationTest extends AbstractFitTest {
       }
     }
 
-    public static FitTestBuilder init(UriType uriType, String httpMethod, String path,
-        int expectedStatusCode, String expectedContentType) {
+    public static FitTestBuilder init(final UriType uriType, final String httpMethod, final String path,
+        final int expectedStatusCode, final String expectedContentType) {
       return new FitTestBuilder(uriType, httpMethod, path, expectedStatusCode, expectedContentType);
     }
 
-    public static FitTestBuilder init(FitTestSet fitTestSet) {
+    public static FitTestBuilder init(final FitTestSet fitTestSet) {
       return new FitTestBuilder(fitTestSet);
     }
 
-    public static FitTest create(UriType uriType, String httpMethod, String path, String queryOption, String acceptHeader,
-        String content, String requestContentType,
-        int expectedStatusCode, String expectedContentType) {
+    public static FitTest create(final UriType uriType, final String httpMethod, final String path, final String queryOption, final String acceptHeader,
+        final String content, final String requestContentType,
+        final int expectedStatusCode, final String expectedContentType) {
 
       return init(uriType, httpMethod, path, expectedStatusCode, expectedContentType)
           .queryOptions(queryOption)
@@ -454,9 +455,9 @@ public abstract class AbstractContentNegotiationTest extends AbstractFitTest {
           .build();
     }
 
-    private static List<FitTest> create(FitTestSet fitTestSet,
-        List<String> queryOptions, List<String> acceptHeaders,
-        int expectedStatusCode, String expectedContentType) {
+    private static List<FitTest> create(final FitTestSet fitTestSet,
+        final List<String> queryOptions, final List<String> acceptHeaders,
+        final int expectedStatusCode, final String expectedContentType) {
 
       Map<String, ContentType> acceptHeader2ContentType = new HashMap<String, ContentType>();
       for (String acceptHeader : acceptHeaders) {
@@ -470,7 +471,7 @@ public abstract class AbstractContentNegotiationTest extends AbstractFitTest {
           content, reqContentTypes, expectedStatusCode);
     }
 
-    public static List<FitTest> create(FitTestSet fitTestSet) {
+    public static List<FitTest> create(final FitTestSet fitTestSet) {
       Map<String, ContentType> acceptHeader2ContentType = new HashMap<String, ContentType>();
       if (fitTestSet.expectedContentType != null) {
         for (String acceptHeader : fitTestSet.acceptHeader) {
@@ -481,7 +482,7 @@ public abstract class AbstractContentNegotiationTest extends AbstractFitTest {
       return create(fitTestSet, acceptHeader2ContentType);
     }
 
-    public static List<FitTest> create(FitTestSet fitTestSet, Map<String, ContentType> acceptHeader2ContentType) {
+    public static List<FitTest> create(final FitTestSet fitTestSet, final Map<String, ContentType> acceptHeader2ContentType) {
       UriType uriType = fitTestSet.uriType;
       String httpMethod = fitTestSet.httpMethod;
       String path = fitTestSet.path;
@@ -498,9 +499,9 @@ public abstract class AbstractContentNegotiationTest extends AbstractFitTest {
     /**
      * 
      */
-    private static List<FitTest> create(UriType uriType, String httpMethod, String path, List<String> queryOptions,
-        List<String> acceptHeaders, Map<String, ContentType> acceptHeader2ContentType,
-        String content, List<String> requestContentTypeHeaders, int expectedStatusCode) {
+    private static List<FitTest> create(final UriType uriType, final String httpMethod, final String path, final List<String> queryOptions,
+        final List<String> acceptHeaders, final Map<String, ContentType> acceptHeader2ContentType,
+        final String content, final List<String> requestContentTypeHeaders, final int expectedStatusCode) {
 
       List<FitTest> testParameters = new ArrayList<AbstractContentNegotiationTest.FitTest>();
 
@@ -521,7 +522,7 @@ public abstract class AbstractContentNegotiationTest extends AbstractFitTest {
       return testParameters;
     }
 
-    private static String getExpectedResponseContentType(Map<String, ContentType> acceptHeader2ContentType, String acceptHeader) {
+    private static String getExpectedResponseContentType(final Map<String, ContentType> acceptHeader2ContentType, final String acceptHeader) {
       String expectedContentType = null;
       if (acceptHeader != null) {
         ContentType tmpContentType = acceptHeader2ContentType.get(acceptHeader);
@@ -542,7 +543,7 @@ public abstract class AbstractContentNegotiationTest extends AbstractFitTest {
 
     String requestUrl;
 
-    HttpRequestBase createRequest(String requestUrl) {
+    HttpRequestBase createRequest(final String requestUrl) {
       this.requestUrl = requestUrl;
       URI uri = URI.create(requestUrl);
       HttpRequestBase request;
@@ -597,7 +598,7 @@ public abstract class AbstractContentNegotiationTest extends AbstractFitTest {
     }
 
     @Override
-    public boolean equals(Object obj) {
+    public boolean equals(final Object obj) {
       if (this == obj)
         return true;
       if (obj == null)

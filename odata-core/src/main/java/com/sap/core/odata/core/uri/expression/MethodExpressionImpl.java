@@ -18,11 +18,11 @@ public class MethodExpressionImpl implements MethodExpression {
   private EdmType returnType;
   private List<CommonExpression> actualParameters;
 
-  public MethodExpressionImpl(InfoMethod infoMethod)
+  public MethodExpressionImpl(final InfoMethod infoMethod)
   {
     this.infoMethod = infoMethod;
-    this.returnType = infoMethod.getReturnType();
-    this.actualParameters = new ArrayList<CommonExpression>();
+    returnType = infoMethod.getReturnType();
+    actualParameters = new ArrayList<CommonExpression>();
   }
 
   @Override
@@ -32,9 +32,9 @@ public class MethodExpressionImpl implements MethodExpression {
   }
 
   @Override
-  public CommonExpression setEdmType(EdmType edmType) 
+  public CommonExpression setEdmType(final EdmType edmType)
   {
-    this.returnType = edmType;
+    returnType = edmType;
     return this;
   }
 
@@ -43,7 +43,7 @@ public class MethodExpressionImpl implements MethodExpression {
   {
     return infoMethod.getMethod();
   }
-  
+
   public InfoMethod getMethodInfo()
   {
     return infoMethod;
@@ -65,14 +65,14 @@ public class MethodExpressionImpl implements MethodExpression {
    * @param expression
    * @return A self reference for method chaining" 
    */
-  public MethodExpressionImpl appendParameter(CommonExpression expression) 
+  public MethodExpressionImpl appendParameter(final CommonExpression expression)
   {
     actualParameters.add(expression);
     return this;
   }
 
   @Override
-  public ExpressionKind getKind() 
+  public ExpressionKind getKind()
   {
     return ExpressionKind.METHOD;
   }
@@ -84,7 +84,7 @@ public class MethodExpressionImpl implements MethodExpression {
   }
 
   @Override
-  public Object accept(ExpressionVisitor visitor) throws ExceptionVisitExpression, ODataApplicationException
+  public Object accept(final ExpressionVisitor visitor) throws ExceptionVisitExpression, ODataApplicationException
   {
     ArrayList<Object> retParameters = new ArrayList<Object>();
     for (CommonExpression parameter : actualParameters)
@@ -93,7 +93,7 @@ public class MethodExpressionImpl implements MethodExpression {
       retParameters.add(retParameter);
     }
 
-    Object ret = visitor.visitMethod(this, this.getMethod(), retParameters);
+    Object ret = visitor.visitMethod(this, getMethod(), retParameters);
     return ret;
   }
 

@@ -30,7 +30,7 @@ public class ODataServiceVersion {
    * @param version version string
    * @return true for a valid version
    */
-  public static boolean validateDataServiceVersion(String version) {
+  public static boolean validateDataServiceVersion(final String version) {
     final Matcher matcher = DATASERVICEVERSIONPATTERN.matcher(version);
     if (!matcher.matches()) {
       throw new IllegalArgumentException(version);
@@ -55,7 +55,7 @@ public class ODataServiceVersion {
    * @param comparedTo
    * @return true if actual is bigger than comaredTo
    */
-  public static boolean isBiggerThan(String actual, String comparedTo) {
+  public static boolean isBiggerThan(final String actual, final String comparedTo) {
     if (!validateDataServiceVersion(comparedTo) || !validateDataServiceVersion(actual)) {
       throw new IllegalArgumentException("Illegal arguments: " + comparedTo + " and " + actual);
     }
@@ -66,7 +66,7 @@ public class ODataServiceVersion {
     return me > other;
   }
 
-  private static String extractDataServiceVersionString(String rawDataServiceVersion) {
+  private static String extractDataServiceVersionString(final String rawDataServiceVersion) {
     if (rawDataServiceVersion != null) {
       final String[] pattern = rawDataServiceVersion.split(";");
       return pattern[0];

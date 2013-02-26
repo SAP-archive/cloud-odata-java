@@ -9,7 +9,7 @@ public class EdmSimplePropertyImplProv extends EdmPropertyImplProv {
 
   private SimpleProperty property;
 
-  public EdmSimplePropertyImplProv(EdmImplProv edm, SimpleProperty property) throws EdmException {
+  public EdmSimplePropertyImplProv(final EdmImplProv edm, final SimpleProperty property) throws EdmException {
     super(edm, property.getType().getFullQualifiedName(), property);
     this.property = property;
   }

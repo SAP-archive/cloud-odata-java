@@ -20,11 +20,11 @@ public class AcceptHeaderCaller {
   private DefaultHttpClient httpClient;
   private final CallerConfig config;
 
-  AcceptHeaderCaller(CallerConfig config) {
+  AcceptHeaderCaller(final CallerConfig config) {
     this.config = config;
   }
 
-  public static AcceptHeaderCaller create(CallerConfig config) {
+  public static AcceptHeaderCaller create(final CallerConfig config) {
     return new AcceptHeaderCaller(config);
   }
 
@@ -68,7 +68,7 @@ public class AcceptHeaderCaller {
     }
   }
 
-  private void call(URI baseUri, TestPath testPath) {
+  private void call(final URI baseUri, final TestPath testPath) {
     HttpGet request = null;
     try {
       request = new HttpGet(baseUri.getPath() + testPath.getPath());

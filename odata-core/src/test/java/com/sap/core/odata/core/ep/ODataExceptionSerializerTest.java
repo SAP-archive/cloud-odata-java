@@ -89,14 +89,14 @@ public class ODataExceptionSerializerTest extends BaseTest {
   }
 
   //HelperMethod
-  private void testSerializeJSON(String errorCode, String message, ContentType contentType, Locale locale) throws Exception {
+  private void testSerializeJSON(final String errorCode, final String message, final ContentType contentType, final Locale locale) throws Exception {
     InputStream inputStream = ODataExceptionSerializer.serialize(errorCode, message, contentType, locale);
     String jsonErrorMessage = StringHelper.inputStreamToString(inputStream);
     assertEquals("not supported error format JSON; " + errorCode + ", " + message, jsonErrorMessage);
   }
 
   //HelperMethod
-  private void testSerializeXML(String errorCode, String message, ContentType contentType, Locale locale) throws Exception {
+  private void testSerializeXML(final String errorCode, final String message, final ContentType contentType, final Locale locale) throws Exception {
     InputStream inputStream = ODataExceptionSerializer.serialize(errorCode, message, contentType, locale);
     String xmlErrorMessage = StringHelper.inputStreamToString(inputStream);
     if (errorCode != null) {
@@ -116,7 +116,7 @@ public class ODataExceptionSerializerTest extends BaseTest {
   }
 
   //HelperMethod
-  private String getLang(Locale locale) {
+  private String getLang(final Locale locale) {
     if (locale == null) {
       return "";
     }

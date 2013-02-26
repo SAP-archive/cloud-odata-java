@@ -72,7 +72,7 @@ public class Employee {
   }
 
   public void setImageUri(final String imageUri) {
-    this.imageUrl = imageUri;
+    imageUrl = imageUri;
   }
 
   public String getImageUri() {
@@ -88,7 +88,7 @@ public class Employee {
   }
 
   public void setEntryDate(final Calendar date) {
-    this.entryDate = date;
+    entryDate = date;
   }
 
   public Calendar getEntryDate() {

@@ -5,14 +5,14 @@ import static org.junit.Assert.fail;
 
 import java.util.Locale;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.sap.core.odata.api.exception.MessageReference;
 import com.sap.core.odata.api.exception.ODataMessageException;
 import com.sap.core.odata.api.uri.expression.ExpressionParserException;
 import com.sap.core.odata.core.exception.MessageService;
 import com.sap.core.odata.core.exception.MessageService.Message;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class TokenTool
 {
@@ -22,29 +22,27 @@ public class TokenTool
   private Exception exception;
   private String expression;
   private static boolean debug = false;
-  
+
   private static final Logger log = LoggerFactory.getLogger(ParserTool.class);
   private static final Locale DEFAULT_LANGUAGE = new Locale("test", "SAP");
-  
-  
-  public TokenTool(String expression,boolean wsp) 
+
+  public TokenTool(final String expression, final boolean wsp)
   {
     dout("TokenTool - Testing: " + expression);
     this.expression = expression;
-    
+
     Tokenizer tokenizer = new Tokenizer(expression).setFlagWhiteSpace(wsp);
     try {
-      this.tokens =  tokenizer.tokenize();
-      this.at(0);
+      tokens = tokenizer.tokenize();
+      at(0);
     } catch (TokenizerException e) {
-      this.exception = e;
+      exception = e;
     } catch (ExpressionParserException e) {
-      this.exception = e;
+      exception = e;
     }
-    
-    this.curException = this.exception;
-  }
 
+    curException = exception;
+  }
 
   /**
    * Set the token to be check to the token at position <code>index</code>
@@ -53,7 +51,7 @@ public class TokenTool
    * @return Returns <code>this</code>
    * @throws AssertionError
    */
-  public TokenTool at(int index)
+  public TokenTool at(final int index)
   {
     token = tokens.elementAt(index);
     return this;
@@ -66,9 +64,9 @@ public class TokenTool
    * @return Returns <code>this</code>
    * @throws AssertionError 
    */
-  public TokenTool aKind(TokenKind kind)
+  public TokenTool aKind(final TokenKind kind)
   {
-    assertEquals( kind,token.getKind() );
+    assertEquals(kind, token.getKind());
     return this;
   }
 
@@ -79,9 +77,9 @@ public class TokenTool
    * @return Returns <code>this</code>
    * @throws AssertionError
    */
-  public TokenTool aEdmType(int edmType)
+  public TokenTool aEdmType(final int edmType)
   {
-    assertEquals( edmType,token.getEdmType());
+    assertEquals(edmType, token.getEdmType());
     return this;
   }
 
@@ -92,29 +90,28 @@ public class TokenTool
    * @return Returns <code>this</code>
    * @throws AssertionError
    */
-  public TokenTool aUriLiteral(String stringValue)
+  public TokenTool aUriLiteral(final String stringValue)
   {
-    assertEquals( stringValue,token.getUriLiteral());
+    assertEquals(stringValue, token.getUriLiteral());
     return this;
   }
 
-  public TokenTool aPosition(int position)
+  public TokenTool aPosition(final int position)
   {
-    assertEquals( position,token.getPosition());
+    assertEquals(position, token.getPosition());
     return this;
   }
 
-  
-  public static void dout(String out)
+  public static void dout(final String out)
   {
     if (debug) log.debug(out);
   }
-  public static void out(String out)
+
+  public static void out(final String out)
   {
     log.debug(out);
   }
-    
-  
+
   /**
    * Verifies that all place holders in the message text definition of the thrown exception are provided with content
    * @return
@@ -184,7 +181,7 @@ public class TokenTool
     return this;
   }
 
-  public TokenTool aExKey(MessageReference expressionExpectedAtPos) 
+  public TokenTool aExKey(final MessageReference expressionExpectedAtPos)
   {
     String expectedKey = expressionExpectedAtPos.getKey();
     ODataMessageException messageException;
@@ -215,7 +212,7 @@ public class TokenTool
     return this;
   }
 
-  public TokenTool printExMessage() 
+  public TokenTool printExMessage()
   {
     ODataMessageException messageException;
 
@@ -247,7 +244,7 @@ public class TokenTool
    *   Expected message text 
    * @return  this
    */
-  public TokenTool aExMsgText(String messageText)
+  public TokenTool aExMsgText(final String messageText)
   {
     String info = "aExMessageText(" + expression + ")-->";
     if (curException == null)

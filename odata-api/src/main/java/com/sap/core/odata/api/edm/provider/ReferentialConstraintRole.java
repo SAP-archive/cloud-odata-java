@@ -46,7 +46,7 @@ public class ReferentialConstraintRole {
    * @param role
    * @return {@link ReferentialConstraintRole} for method chaining
    */
-  public ReferentialConstraintRole setRole(String role) {
+  public ReferentialConstraintRole setRole(final String role) {
     this.role = role;
     return this;
   }
@@ -56,7 +56,7 @@ public class ReferentialConstraintRole {
    * @param propertyRef
    * @return {@link ReferentialConstraintRole} for method chaining
    */
-  public ReferentialConstraintRole setPropertyRefs(List<PropertyRef> propertyRef) {
+  public ReferentialConstraintRole setPropertyRefs(final List<PropertyRef> propertyRef) {
     propertyRefs = propertyRef;
     return this;
   }
@@ -66,7 +66,7 @@ public class ReferentialConstraintRole {
    * @param annotationAttributes
    * @return {@link ReferentialConstraintRole} for method chaining
    */
-  public ReferentialConstraintRole setAnnotationAttributes(List<AnnotationAttribute> annotationAttributes) {
+  public ReferentialConstraintRole setAnnotationAttributes(final List<AnnotationAttribute> annotationAttributes) {
     this.annotationAttributes = annotationAttributes;
     return this;
   }
@@ -76,7 +76,7 @@ public class ReferentialConstraintRole {
    * @param annotationElements
    * @return {@link ReferentialConstraintRole} for method chaining
    */
-  public ReferentialConstraintRole setAnnotationElements(List<AnnotationElement> annotationElements) {
+  public ReferentialConstraintRole setAnnotationElements(final List<AnnotationElement> annotationElements) {
     this.annotationElements = annotationElements;
     return this;
   }

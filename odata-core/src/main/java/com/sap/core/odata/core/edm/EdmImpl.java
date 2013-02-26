@@ -25,7 +25,7 @@ public abstract class EdmImpl implements Edm {
 
   protected EdmServiceMetadata edmServiceMetadata;
 
-  public EdmImpl(EdmServiceMetadata edmServiceMetadata) {
+  public EdmImpl(final EdmServiceMetadata edmServiceMetadata) {
     edmEntityContainers = new HashMap<String, EdmEntityContainer>();
     edmEntityTypes = new HashMap<FullQualifiedName, EdmEntityType>();
     edmComplexTypes = new HashMap<FullQualifiedName, EdmComplexType>();
@@ -34,7 +34,7 @@ public abstract class EdmImpl implements Edm {
   }
 
   @Override
-  public EdmEntityContainer getEntityContainer(String name) throws EdmException {
+  public EdmEntityContainer getEntityContainer(final String name) throws EdmException {
     if (edmEntityContainers.containsKey(name))
       return edmEntityContainers.get(name);
 
@@ -63,7 +63,7 @@ public abstract class EdmImpl implements Edm {
   }
 
   @Override
-  public EdmEntityType getEntityType(String namespace, String name) throws EdmException {
+  public EdmEntityType getEntityType(final String namespace, final String name) throws EdmException {
     FullQualifiedName fqName = new FullQualifiedName(namespace, name);
     if (edmEntityTypes.containsKey(fqName))
       return edmEntityTypes.get(fqName);
@@ -83,7 +83,7 @@ public abstract class EdmImpl implements Edm {
   }
 
   @Override
-  public EdmComplexType getComplexType(String namespace, String name) throws EdmException {
+  public EdmComplexType getComplexType(final String namespace, final String name) throws EdmException {
     FullQualifiedName fqName = new FullQualifiedName(namespace, name);
     if (edmComplexTypes.containsKey(fqName))
       return edmComplexTypes.get(fqName);
@@ -103,7 +103,7 @@ public abstract class EdmImpl implements Edm {
   }
 
   @Override
-  public EdmAssociation getAssociation(String namespace, String name) throws EdmException {
+  public EdmAssociation getAssociation(final String namespace, final String name) throws EdmException {
     FullQualifiedName fqName = new FullQualifiedName(namespace, name);
     if (edmAssociations.containsKey(fqName))
       return edmAssociations.get(fqName);

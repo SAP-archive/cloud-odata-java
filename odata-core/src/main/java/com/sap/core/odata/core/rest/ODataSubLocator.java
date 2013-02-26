@@ -111,7 +111,7 @@ public final class ODataSubLocator implements ODataLocator {
   }
 
   @POST
-  public Response handlePost(@HeaderParam("X-HTTP-Method") String xHttpMethod) throws ODataException {
+  public Response handlePost(@HeaderParam("X-HTTP-Method") final String xHttpMethod) throws ODataException {
     Response response;
 
     if (xHttpMethod == null) {
@@ -306,7 +306,7 @@ public final class ODataSubLocator implements ODataLocator {
       }
       EdmEntityType entityType = uriInfo.getTargetEntitySet().getEntityType();
       if (entityType.hasStream()) {
-        if(entityType.getMapping() != null && entityType.getMapping().getMimeType() != null) {
+        if (entityType.getMapping() != null && entityType.getMapping().getMimeType() != null) {
           String mimeType = entityType.getMapping().getMimeType();
           supportedContentTypes.add(ContentType.create(mimeType));
         }
@@ -329,7 +329,7 @@ public final class ODataSubLocator implements ODataLocator {
     }
   }
 
-  private boolean isValidRequestContentType(final String requestContentType, List<ContentType> allowedContentTypes) {
+  private boolean isValidRequestContentType(final String requestContentType, final List<ContentType> allowedContentTypes) {
     if (requestContentType == null) {
       return false;
     }
@@ -338,7 +338,7 @@ public final class ODataSubLocator implements ODataLocator {
     return requested.hasMatch(allowedContentTypes);
   }
 
-  private boolean isValidRequestContentTypeForProperty(final EdmProperty property, String requestContentType) throws EdmException {
+  private boolean isValidRequestContentTypeForProperty(final EdmProperty property, final String requestContentType) throws EdmException {
     final ContentType requested = ensureCharsetIsSet(ContentType.create(requestContentType));
     final String mimeType = property.getMimeType();
     if (mimeType != null) {
@@ -377,7 +377,7 @@ public final class ODataSubLocator implements ODataLocator {
     throw new ODataNotAcceptableException(ODataNotAcceptableException.NOT_SUPPORTED_CONTENT_TYPE.addContent(uriInfo.getFormat()));
   }
 
-  private ContentType ensureCharsetIsSet(ContentType contentType) {
+  private ContentType ensureCharsetIsSet(final ContentType contentType) {
     if (isContentTypeODataTextRelated(contentType)) {
       if (!contentType.getParameters().containsKey(ContentType.PARAMETER_CHARSET)) {
         return ContentType.create(contentType, ContentType.PARAMETER_CHARSET, DEFAULT_CHARSET);
@@ -386,7 +386,7 @@ public final class ODataSubLocator implements ODataLocator {
     return contentType;
   }
 
-  private boolean isContentTypeODataTextRelated(ContentType contentType) {
+  private boolean isContentTypeODataTextRelated(final ContentType contentType) {
     return (contentType != null) && (contentType.equals(ContentType.TEXT_PLAIN) || (contentType.getODataFormat() == ODataFormat.XML) || (contentType.getODataFormat() == ODataFormat.ATOM) || (contentType.getODataFormat() == ODataFormat.JSON));
   }
 
@@ -413,7 +413,7 @@ public final class ODataSubLocator implements ODataLocator {
     return contentNegotiation(acceptHeaderContentTypes, supportedContentTypes);
   }
 
-  private List<ContentType> getSupportedContentTypes(Class<? extends ODataProcessor> processorFeature) throws ODataException {
+  private List<ContentType> getSupportedContentTypes(final Class<? extends ODataProcessor> processorFeature) throws ODataException {
     final List<ContentType> resultContentTypes = new ArrayList<ContentType>();
     for (final String contentType : service.getSupportedContentTypes(processorFeature)) {
       resultContentTypes.add(ContentType.create(contentType));
@@ -422,7 +422,7 @@ public final class ODataSubLocator implements ODataLocator {
     return resultContentTypes;
   }
 
-  ContentType contentNegotiation(List<ContentType> acceptedContentTypes, List<ContentType> supportedContentTypes) throws ODataException {
+  ContentType contentNegotiation(final List<ContentType> acceptedContentTypes, final List<ContentType> supportedContentTypes) throws ODataException {
     final Set<ContentType> setSupported = new HashSet<ContentType>(supportedContentTypes);
 
     if (acceptedContentTypes.isEmpty()) {
@@ -442,7 +442,7 @@ public final class ODataSubLocator implements ODataLocator {
     throw new ODataNotAcceptableException(ODataNotAcceptableException.NOT_SUPPORTED_CONTENT_TYPE.addContent(acceptedContentTypes.toString()));
   }
 
-  public void initialize(InitParameter param) throws ODataException {
+  public void initialize(final InitParameter param) throws ODataException {
     fillRequestHeader(param.getHttpHeaders());
     context.setUriInfo(buildODataUriInfo(param));
 
@@ -468,7 +468,7 @@ public final class ODataSubLocator implements ODataLocator {
     return serverDataServiceVersion;
   }
 
-  private void validateDataServiceVersion(String serverDataServiceVersion) throws ODataException {
+  private void validateDataServiceVersion(final String serverDataServiceVersion) throws ODataException {
     final String requestDataServiceVersion = context.getHttpRequestHeader(ODataHttpHeaders.DATASERVICEVERSION);
     if (requestDataServiceVersion != null) {
       try {
@@ -482,7 +482,7 @@ public final class ODataSubLocator implements ODataLocator {
     }
   }
 
-  private String extractRequestContentType(InitParameter param) {
+  private String extractRequestContentType(final InitParameter param) {
     final MediaType requestMediaType = param.getHttpHeaders().getMediaType();
     return requestMediaType == null ? null : requestMediaType.toString();
   }
@@ -521,7 +521,7 @@ public final class ODataSubLocator implements ODataLocator {
     return inputStream;
   }
 
-  private List<ContentType> convertMediaTypes(List<MediaType> acceptableMediaTypes) {
+  private List<ContentType> convertMediaTypes(final List<MediaType> acceptableMediaTypes) {
     final List<ContentType> mediaTypes = new ArrayList<ContentType>();
 
     for (final MediaType x : acceptableMediaTypes) {
@@ -531,7 +531,7 @@ public final class ODataSubLocator implements ODataLocator {
     return mediaTypes;
   }
 
-  private void fillRequestHeader(HttpHeaders httpHeaders) {
+  private void fillRequestHeader(final HttpHeaders httpHeaders) {
     final MultivaluedMap<String, String> headers = httpHeaders.getRequestHeaders();
 
     for (final String key : headers.keySet()) {
@@ -540,7 +540,7 @@ public final class ODataSubLocator implements ODataLocator {
     }
   }
 
-  private PathInfo buildODataUriInfo(InitParameter param) throws ODataException {
+  private PathInfo buildODataUriInfo(final InitParameter param) throws ODataException {
     final PathInfoImpl pathInfo = new PathInfoImpl();
 
     splitPath(pathInfo, param);
@@ -553,7 +553,7 @@ public final class ODataSubLocator implements ODataLocator {
     return pathInfo;
   }
 
-  private void splitPath(PathInfoImpl pathInfo, InitParameter param) throws ODataException {
+  private void splitPath(final PathInfoImpl pathInfo, final InitParameter param) throws ODataException {
     List<javax.ws.rs.core.PathSegment> precedingPathSegments;
     List<javax.ws.rs.core.PathSegment> pathSegments;
 
@@ -581,7 +581,7 @@ public final class ODataSubLocator implements ODataLocator {
     pathInfo.setPrecedingPathSegment(convertPathSegmentList(precedingPathSegments));
   }
 
-  private URI buildBaseUri(javax.ws.rs.core.UriInfo uriInfo, List<PathSegment> precedingPathSegments) throws ODataException {
+  private URI buildBaseUri(final javax.ws.rs.core.UriInfo uriInfo, final List<PathSegment> precedingPathSegments) throws ODataException {
     try {
       UriBuilder uriBuilder = uriInfo.getBaseUriBuilder();
       for (final PathSegment ps : precedingPathSegments) {
@@ -603,7 +603,7 @@ public final class ODataSubLocator implements ODataLocator {
     }
   }
 
-  public List<PathSegment> convertPathSegmentList(List<javax.ws.rs.core.PathSegment> pathSegments) {
+  public List<PathSegment> convertPathSegmentList(final List<javax.ws.rs.core.PathSegment> pathSegments) {
     final ArrayList<PathSegment> converted = new ArrayList<PathSegment>();
 
     for (final javax.ws.rs.core.PathSegment pathSegment : pathSegments) {
@@ -613,7 +613,7 @@ public final class ODataSubLocator implements ODataLocator {
     return converted;
   }
 
-  private Map<String, String> convertToSinglevaluedMap(MultivaluedMap<String, String> multi) {
+  private Map<String, String> convertToSinglevaluedMap(final MultivaluedMap<String, String> multi) {
     final Map<String, String> single = new HashMap<String, String>();
 
     for (final String key : multi.keySet()) {
@@ -657,7 +657,7 @@ public final class ODataSubLocator implements ODataLocator {
       return serviceFactory;
     }
 
-    public void setServiceFactory(ODataServiceFactory serviceFactory) {
+    public void setServiceFactory(final ODataServiceFactory serviceFactory) {
       this.serviceFactory = serviceFactory;
     }
 
@@ -665,7 +665,7 @@ public final class ODataSubLocator implements ODataLocator {
       return pathSegments;
     }
 
-    public void setPathSegments(List<javax.ws.rs.core.PathSegment> pathSegments) {
+    public void setPathSegments(final List<javax.ws.rs.core.PathSegment> pathSegments) {
       this.pathSegments = pathSegments;
     }
 
@@ -673,7 +673,7 @@ public final class ODataSubLocator implements ODataLocator {
       return httpHeaders;
     }
 
-    public void setHttpHeaders(HttpHeaders httpHeaders) {
+    public void setHttpHeaders(final HttpHeaders httpHeaders) {
       this.httpHeaders = httpHeaders;
     }
 
@@ -681,7 +681,7 @@ public final class ODataSubLocator implements ODataLocator {
       return uriInfo;
     }
 
-    public void setUriInfo(javax.ws.rs.core.UriInfo uriInfo) {
+    public void setUriInfo(final javax.ws.rs.core.UriInfo uriInfo) {
       this.uriInfo = uriInfo;
     }
 
@@ -689,7 +689,7 @@ public final class ODataSubLocator implements ODataLocator {
       return request;
     }
 
-    public void setRequest(Request request) {
+    public void setRequest(final Request request) {
       this.request = request;
     }
 
@@ -697,11 +697,11 @@ public final class ODataSubLocator implements ODataLocator {
       return pathSplit;
     }
 
-    public void setPathSplit(int pathSplit) {
+    public void setPathSplit(final int pathSplit) {
       this.pathSplit = pathSplit;
     }
 
-    public void setServletRequest(HttpServletRequest servletRequest) {
+    public void setServletRequest(final HttpServletRequest servletRequest) {
       this.servletRequest = servletRequest;
     }
 

@@ -12,19 +12,19 @@ public class ODataPreconditionFailedException extends ODataHttpException {
 
   public static final MessageReference COMMON = createMessageReference(ODataPreconditionFailedException.class, "COMMON");
 
-  public ODataPreconditionFailedException(MessageReference context) {
+  public ODataPreconditionFailedException(final MessageReference context) {
     super(context, HttpStatusCodes.PRECONDITION_FAILED);
   }
 
-  public ODataPreconditionFailedException(MessageReference context, Throwable cause) {
+  public ODataPreconditionFailedException(final MessageReference context, final Throwable cause) {
     super(context, cause, HttpStatusCodes.PRECONDITION_FAILED);
   }
 
-  public ODataPreconditionFailedException(MessageReference context, String errorCode) {
+  public ODataPreconditionFailedException(final MessageReference context, final String errorCode) {
     super(context, HttpStatusCodes.PRECONDITION_FAILED, errorCode);
   }
 
-  public ODataPreconditionFailedException(MessageReference context, Throwable cause, String errorCode) {
+  public ODataPreconditionFailedException(final MessageReference context, final Throwable cause, final String errorCode) {
     super(context, cause, HttpStatusCodes.PRECONDITION_FAILED, errorCode);
   }
 }

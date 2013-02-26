@@ -3,6 +3,7 @@ package com.sap.core.odata.core.ep.consumer;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
@@ -32,7 +33,7 @@ public class XmlLinkConsumer {
    * @return link as string object
    * @throws EntityProviderException
    */
-  public String readLink(XMLStreamReader reader, EdmEntitySet entitySet) throws EntityProviderException {
+  public String readLink(final XMLStreamReader reader, final EdmEntitySet entitySet) throws EntityProviderException {
     try {
       String link = readLink(reader);
 
@@ -42,38 +43,38 @@ public class XmlLinkConsumer {
     }
   }
 
-  private String readLink(XMLStreamReader reader) throws EntityProviderException, XMLStreamException {
+  private String readLink(final XMLStreamReader reader) throws EntityProviderException, XMLStreamException {
     return readLink(reader, false);
   }
-  
-  private String readLink(XMLStreamReader reader, boolean started) throws EntityProviderException, XMLStreamException {
+
+  private String readLink(final XMLStreamReader reader, final boolean started) throws EntityProviderException, XMLStreamException {
     //
     int eventType = reader.getEventType();
-    if(!started) {
+    if (!started) {
       eventType = reader.next();
     }
-    
-    if(eventType != XMLStreamReader.START_ELEMENT || !reader.getLocalName().equals(TAG_URI)) {
+
+    if (eventType != XMLStreamConstants.START_ELEMENT || !reader.getLocalName().equals(TAG_URI)) {
       throw new EntityProviderException(EntityProviderException.INVALID_STATE
           .addContent("Found no starting '" + TAG_URI + "' tag for link parsing."));
     }
-    
+
     //
     String result = null;
     eventType = reader.next();
-    if(XMLStreamReader.CHARACTERS == eventType) {
+    if (XMLStreamConstants.CHARACTERS == eventType) {
       result = reader.getText();
     } else {
       throw new EntityProviderException(EntityProviderException.INVALID_STATE
-          .addContent("Found no text for '" + TAG_URI + "' tag for link parsing."));      
+          .addContent("Found no text for '" + TAG_URI + "' tag for link parsing."));
     }
-    
+
     //
     eventType = reader.next();
-    if(eventType != XMLStreamReader.END_ELEMENT || !reader.getLocalName().equals(TAG_URI)) {
+    if (eventType != XMLStreamConstants.END_ELEMENT || !reader.getLocalName().equals(TAG_URI)) {
       throw new EntityProviderException(EntityProviderException.INVALID_STATE
           .addContent("Found no closing '" + TAG_URI + "' tag for link parsing."));
-    } 
+    }
     return result;
   }
 
@@ -96,16 +97,16 @@ public class XmlLinkConsumer {
    * @return list of string based links
    * @throws EntityProviderException
    */
-  public List<String> readLinks(XMLStreamReader reader, EdmEntitySet entitySet) throws EntityProviderException {
+  public List<String> readLinks(final XMLStreamReader reader, final EdmEntitySet entitySet) throws EntityProviderException {
     try {
-      List<String > links = new ArrayList<String>();
-      
-      if(!startWithLinksTag(reader)) {
+      List<String> links = new ArrayList<String>();
+
+      if (!startWithLinksTag(reader)) {
         throw new EntityProviderException(EntityProviderException.INVALID_STATE
             .addContent("Found no starting '" + TAG_LINKS + "' tag for link parsing."));
       }
-      
-      while(linksEndNotReached(reader)) {
+
+      while (linksEndNotReached(reader)) {
         String link = readLink(reader, true);
         links.add(link);
       }
@@ -116,18 +117,18 @@ public class XmlLinkConsumer {
     }
   }
 
-  private boolean startWithLinksTag(XMLStreamReader reader) throws XMLStreamException {
+  private boolean startWithLinksTag(final XMLStreamReader reader) throws XMLStreamException {
     int eventType = reader.next();
-    boolean isStartLinks = eventType == XMLStreamReader.START_ELEMENT && reader.getLocalName().equals(TAG_LINKS);
+    boolean isStartLinks = eventType == XMLStreamConstants.START_ELEMENT && reader.getLocalName().equals(TAG_LINKS);
     return isStartLinks;
   }
 
-  private boolean isEndLinksTag(XMLStreamReader reader, int eventType) {
-    boolean isStartLinks = eventType != XMLStreamReader.END_ELEMENT || !reader.getLocalName().equals(TAG_LINKS);
+  private boolean isEndLinksTag(final XMLStreamReader reader, final int eventType) {
+    boolean isStartLinks = eventType != XMLStreamConstants.END_ELEMENT || !reader.getLocalName().equals(TAG_LINKS);
     return isStartLinks;
   }
 
-  private boolean linksEndNotReached(XMLStreamReader reader) throws XMLStreamException {
+  private boolean linksEndNotReached(final XMLStreamReader reader) throws XMLStreamException {
     int eventType = reader.next();
     return isEndLinksTag(reader, eventType);
   }

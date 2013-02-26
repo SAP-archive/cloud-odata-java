@@ -11,7 +11,7 @@ public class EdmComplexPropertyImplProv extends EdmPropertyImplProv {
 
   private ComplexProperty property;
 
-  public EdmComplexPropertyImplProv(EdmImplProv edm, ComplexProperty property) throws EdmException {
+  public EdmComplexPropertyImplProv(final EdmImplProv edm, final ComplexProperty property) throws EdmException {
     super(edm, property.getType(), property);
     this.property = property;
   }

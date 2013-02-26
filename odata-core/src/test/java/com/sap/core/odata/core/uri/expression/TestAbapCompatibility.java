@@ -385,7 +385,7 @@ public class TestAbapCompatibility extends TestBase {
     //iv_expression = `replace('aBa','B','CCC')`
     //iv_expected_textid = /iwcor/cx_ds_expr_syntax_error=>function_invalid
     //iv_expected_msg    = `Invalid function 'replace' detected`  ).
-    
+
     //http://services.odata.org/Northwind/Northwind.svc/Products/?$filter=replace('aBa','B','CCC')
     //-->Unknown function 'replace' at position 0.
     GetPTF("replace('aBa','B','CCC')")

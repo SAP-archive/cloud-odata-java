@@ -13,19 +13,19 @@ public class ODataNotAcceptableException extends ODataHttpException {
   public static final MessageReference COMMON = createMessageReference(ODataNotAcceptableException.class, "COMMON");
   public static final MessageReference NOT_SUPPORTED_CONTENT_TYPE = createMessageReference(ODataNotAcceptableException.class, "NOT_SUPPORTED_CONTENT_TYPE");
 
-  public ODataNotAcceptableException(MessageReference context) {
+  public ODataNotAcceptableException(final MessageReference context) {
     super(context, HttpStatusCodes.NOT_ACCEPTABLE);
   }
 
-  public ODataNotAcceptableException(MessageReference context, Throwable cause) {
+  public ODataNotAcceptableException(final MessageReference context, final Throwable cause) {
     super(context, cause, HttpStatusCodes.NOT_ACCEPTABLE);
   }
 
-  public ODataNotAcceptableException(MessageReference context, String errorCode) {
+  public ODataNotAcceptableException(final MessageReference context, final String errorCode) {
     super(context, HttpStatusCodes.NOT_ACCEPTABLE, errorCode);
   }
 
-  public ODataNotAcceptableException(MessageReference context, Throwable cause, String errorCode) {
+  public ODataNotAcceptableException(final MessageReference context, final Throwable cause, final String errorCode) {
     super(context, cause, HttpStatusCodes.NOT_ACCEPTABLE, errorCode);
   }
 }

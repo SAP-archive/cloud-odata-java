@@ -8,14 +8,13 @@ import com.sap.core.odata.api.uri.expression.SortOrder;
 
 public class OrderByParserImpl extends FilterParserImpl implements OrderByParser
 {
-  public OrderByParserImpl(EdmEntityType resourceEntityType)
+  public OrderByParserImpl(final EdmEntityType resourceEntityType)
   {
     super(resourceEntityType);
   }
 
-
   @Override
-  public OrderByExpression parseOrderByString(String orderByExpression) throws ExpressionParserException, ExpressionParserInternalError
+  public OrderByExpression parseOrderByString(final String orderByExpression) throws ExpressionParserException, ExpressionParserInternalError
   {
     OrderByExpressionImpl orderCollection = new OrderByExpressionImpl(curExpression);
     curExpression = orderByExpression;

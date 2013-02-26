@@ -15,8 +15,8 @@ public class ODataEntryImpl implements ODataEntry {
   private Map<String, Object> data;
   private EntryMetadata entryMetadata;
   private MediaMetadata mediaMetadata;
-  
-  public ODataEntryImpl(Map<String, Object> data, MediaMetadata mediaMetadata, EntryMetadata entryMetadata) {
+
+  public ODataEntryImpl(final Map<String, Object> data, final MediaMetadata mediaMetadata, final EntryMetadata entryMetadata) {
     this.data = data;
     this.entryMetadata = entryMetadata;
     this.mediaMetadata = mediaMetadata;
@@ -36,14 +36,14 @@ public class ODataEntryImpl implements ODataEntry {
   public EntryMetadata getMetadata() {
     return entryMetadata;
   }
-  
-  public void validate(EntityInfoAggregator eia) throws EntityProviderException {
+
+  public void validate(final EntityInfoAggregator eia) throws EntityProviderException {
     Collection<EntityPropertyInfo> propertyInfos = eia.getPropertyInfos();
 
     for (EntityPropertyInfo entityPropertyInfo : propertyInfos) {
       boolean mandatory = entityPropertyInfo.isMandatory();
-      if(mandatory) {
-        if(!data.containsKey(entityPropertyInfo.getName())) {
+      if (mandatory) {
+        if (!data.containsKey(entityPropertyInfo.getName())) {
           throw new EntityProviderException(EntityProviderException.MISSING_PROPERTY.addContent(entityPropertyInfo.getName()));
         }
       }

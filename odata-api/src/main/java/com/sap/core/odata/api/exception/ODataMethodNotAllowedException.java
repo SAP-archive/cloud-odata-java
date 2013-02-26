@@ -13,19 +13,19 @@ public class ODataMethodNotAllowedException extends ODataHttpException {
   public static final MessageReference DISPATCH = createMessageReference(ODataMethodNotAllowedException.class, "DISPATCH");
   public static final MessageReference TUNNELING = createMessageReference(ODataMethodNotAllowedException.class, "TUNNELING");
 
-  public ODataMethodNotAllowedException(MessageReference messageReference) {
+  public ODataMethodNotAllowedException(final MessageReference messageReference) {
     super(messageReference, HttpStatusCodes.METHOD_NOT_ALLOWED);
   }
 
-  public ODataMethodNotAllowedException(MessageReference messageReference, Throwable cause) {
+  public ODataMethodNotAllowedException(final MessageReference messageReference, final Throwable cause) {
     super(messageReference, cause, HttpStatusCodes.METHOD_NOT_ALLOWED);
   }
 
-  public ODataMethodNotAllowedException(MessageReference messageReference, String errorCode) {
+  public ODataMethodNotAllowedException(final MessageReference messageReference, final String errorCode) {
     super(messageReference, HttpStatusCodes.METHOD_NOT_ALLOWED, errorCode);
   }
 
-  public ODataMethodNotAllowedException(MessageReference messageReference, Throwable cause, String errorCode) {
+  public ODataMethodNotAllowedException(final MessageReference messageReference, final Throwable cause, final String errorCode) {
     super(messageReference, cause, HttpStatusCodes.METHOD_NOT_ALLOWED, errorCode);
   }
 

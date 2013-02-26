@@ -19,7 +19,6 @@ import com.sap.core.odata.core.commons.Encoder;
 import com.sap.core.odata.core.edm.EdmDateTimeOffset;
 import com.sap.core.odata.core.ep.aggregator.EntityInfoAggregator;
 import com.sap.core.odata.core.ep.util.FormatXml;
-import com.sap.core.odata.core.uri.SystemQueryOption;
 
 /**
  * Serializes an ATOM feed.
@@ -33,7 +32,7 @@ public class AtomFeedProducer {
     this.properties = properties;
   }
 
-  public void append(XMLStreamWriter writer, EntityInfoAggregator eia, List<Map<String, Object>> data) throws EntityProviderException {
+  public void append(final XMLStreamWriter writer, final EntityInfoAggregator eia, final List<Map<String, Object>> data) throws EntityProviderException {
     try {
       writer.writeStartElement("feed");
 
@@ -45,7 +44,7 @@ public class AtomFeedProducer {
       // write all atom infos (mandatory and optional)
       appendAtomMandatoryParts(writer, eia);
       appendAtomSelfLink(writer, eia);
-      if (this.properties.getInlineCountType() == InlineCount.ALLPAGES) {
+      if (properties.getInlineCountType() == InlineCount.ALLPAGES) {
         appendInlineCount(writer, properties.getInlineCount());
       }
 
@@ -61,7 +60,7 @@ public class AtomFeedProducer {
     }
   }
 
-  private void appendNextLink(XMLStreamWriter writer, String nextLink) throws EntityProviderException {
+  private void appendNextLink(final XMLStreamWriter writer, final String nextLink) throws EntityProviderException {
     try {
       writer.writeStartElement(FormatXml.ATOM_LINK);
       writer.writeAttribute(FormatXml.ATOM_HREF, nextLink);
@@ -72,13 +71,13 @@ public class AtomFeedProducer {
     }
   }
 
-  private void appendEntries(XMLStreamWriter writer, EntityInfoAggregator eia, List<Map<String, Object>> data) throws EntityProviderException {
+  private void appendEntries(final XMLStreamWriter writer, final EntityInfoAggregator eia, final List<Map<String, Object>> data) throws EntityProviderException {
     AtomEntryEntityProducer entryProvider = new AtomEntryEntityProducer(properties);
     for (Map<String, Object> singleEntryData : data)
       entryProvider.append(writer, eia, singleEntryData, false);
   }
 
-  private void appendInlineCount(XMLStreamWriter writer, int inlinecount) throws EntityProviderException {
+  private void appendInlineCount(final XMLStreamWriter writer, final int inlinecount) throws EntityProviderException {
     if (inlinecount < 0) {
       throw new EntityProviderException(EntityProviderException.INLINECOUNT_INVALID);
     }
@@ -91,7 +90,7 @@ public class AtomFeedProducer {
     }
   }
 
-  private void appendAtomSelfLink(XMLStreamWriter writer, EntityInfoAggregator eia) throws EntityProviderException {
+  private void appendAtomSelfLink(final XMLStreamWriter writer, final EntityInfoAggregator eia) throws EntityProviderException {
     String selfLink = createSelfLink(eia);
     try {
       writer.writeStartElement(FormatXml.ATOM_LINK);
@@ -104,23 +103,7 @@ public class AtomFeedProducer {
     }
   }
 
-  private String createNextLink(EntityInfoAggregator eia, String nextSkiptoken, Map<String, String> queryOptions) throws EntityProviderException {
-    String query = SystemQueryOption.$skiptoken + "=" + Encoder.encode(nextSkiptoken);
-
-    if (queryOptions != null) {
-      for (String key : queryOptions.keySet()) {
-        query += "&";
-        query += Encoder.encode(key);
-        query += "=";
-        query += Encoder.encode(queryOptions.get(key));
-      }
-    }
-
-    String path = createSelfLink(eia);
-    return path + "?" + query;
-  }
-
-  private String createSelfLink(EntityInfoAggregator eia) throws EntityProviderException {
+  private String createSelfLink(final EntityInfoAggregator eia) throws EntityProviderException {
     StringBuilder sb = new StringBuilder();
     if (!eia.isDefaultEntityContainer()) {
       String entityContainerName = Encoder.encode(eia.getEntityContainerName());
@@ -131,7 +114,7 @@ public class AtomFeedProducer {
     return sb.toString();
   }
 
-  private void appendAtomMandatoryParts(XMLStreamWriter writer, EntityInfoAggregator eia) throws EntityProviderException {
+  private void appendAtomMandatoryParts(final XMLStreamWriter writer, final EntityInfoAggregator eia) throws EntityProviderException {
     try {
       writer.writeStartElement(FormatXml.ATOM_ID);
       writer.writeCharacters(createAtomId(eia));
@@ -162,7 +145,7 @@ public class AtomFeedProducer {
     }
   }
 
-  private String createAtomId(EntityInfoAggregator eia) throws EntityProviderException {
+  private String createAtomId(final EntityInfoAggregator eia) throws EntityProviderException {
     String id = "";
 
     if (!eia.isDefaultEntityContainer()) {

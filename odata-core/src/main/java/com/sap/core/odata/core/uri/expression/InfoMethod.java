@@ -18,29 +18,29 @@ class InfoMethod
   public int maxParameter;
   ParameterSetCombination combination;
 
-  public InfoMethod(MethodOperator method, ParameterSetCombination combination)
+  public InfoMethod(final MethodOperator method, final ParameterSetCombination combination)
   {
     this.method = method;
-    this.syntax = method.toUriLiteral();
-    this.minParameter = 1;
-    this.maxParameter = 1;
+    syntax = method.toUriLiteral();
+    minParameter = 1;
+    maxParameter = 1;
     this.combination = combination;
   }
 
-  public InfoMethod(MethodOperator method, int minParameters, int maxParameters, ParameterSetCombination combination)
+  public InfoMethod(final MethodOperator method, final int minParameters, final int maxParameters, final ParameterSetCombination combination)
   {
     this.method = method;
-    this.syntax = method.toUriLiteral();
-    this.minParameter = minParameters;
-    this.maxParameter = maxParameters;
+    syntax = method.toUriLiteral();
+    minParameter = minParameters;
+    maxParameter = maxParameters;
     this.combination = combination;
   }
 
-  public InfoMethod(MethodOperator method, String string, int minParameters, int maxParameters, ParameterSetCombination combination) {
+  public InfoMethod(final MethodOperator method, final String string, final int minParameters, final int maxParameters, final ParameterSetCombination combination) {
     this.method = method;
-    this.syntax = string;
-    this.minParameter = minParameters;
-    this.maxParameter = maxParameters;
+    syntax = string;
+    minParameter = minParameters;
+    maxParameter = maxParameters;
     this.combination = combination;
   }
 
@@ -64,7 +64,7 @@ class InfoMethod
     return maxParameter;
   }
 
-  public ParameterSet validateParameterSet(List<EdmType> actualParameterTypes) throws ExpressionParserInternalError
+  public ParameterSet validateParameterSet(final List<EdmType> actualParameterTypes) throws ExpressionParserInternalError
   {
     return combination.validate(actualParameterTypes);
   }
@@ -74,7 +74,7 @@ class InfoMethod
    * If a method may have different return types (depending on the input type) null will be returned. 
    */
   public EdmType getReturnType() {
-     return combination.getReturnType();
+    return combination.getReturnType();
 
   }
 }

@@ -38,7 +38,7 @@ public class Key {
    * @param keys
    * @return {@link Key} for method chaining
    */
-  public Key setKeys(List<PropertyRef> keys) {
+  public Key setKeys(final List<PropertyRef> keys) {
     this.keys = keys;
     return this;
   }
@@ -48,7 +48,7 @@ public class Key {
    * @param annotationAttributes
    * @return {@link Key} for method chaining
    */
-  public Key setAnnotationAttributes(List<AnnotationAttribute> annotationAttributes) {
+  public Key setAnnotationAttributes(final List<AnnotationAttribute> annotationAttributes) {
     this.annotationAttributes = annotationAttributes;
     return this;
   }
@@ -58,7 +58,7 @@ public class Key {
    * @param annotationElements
    * @return {@link Key} for method chaining
    */
-  public Key setAnnotationElements(List<AnnotationElement> annotationElements) {
+  public Key setAnnotationElements(final List<AnnotationElement> annotationElements) {
     this.annotationElements = annotationElements;
     return this;
   }

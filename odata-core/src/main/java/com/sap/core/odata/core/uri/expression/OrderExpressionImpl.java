@@ -14,54 +14,54 @@ public class OrderExpressionImpl implements OrderExpression {
   SortOrder orderType = SortOrder.asc;
   CommonExpression expression;
 
-  OrderExpressionImpl(CommonExpression expression)
+  OrderExpressionImpl(final CommonExpression expression)
   {
     this.expression = expression;
   }
 
   @Override
-  public SortOrder getSortOrder() 
+  public SortOrder getSortOrder()
   {
     return orderType;
   }
 
   @Override
-  public CommonExpression getExpression() 
+  public CommonExpression getExpression()
   {
     return expression;
   }
 
-  void setSortOrder(SortOrder orderType)
+  void setSortOrder(final SortOrder orderType)
   {
     this.orderType = orderType;
   }
 
   @Override
-  public ExpressionKind getKind() 
+  public ExpressionKind getKind()
   {
     return ExpressionKind.ORDER;
   }
 
   @Override
-  public EdmType getEdmType() 
+  public EdmType getEdmType()
   {
     return null;
   }
 
   @Override
-  public CommonExpression setEdmType(EdmType edmType) 
+  public CommonExpression setEdmType(final EdmType edmType)
   {
     return this;
   }
 
   @Override
-  public String getUriLiteral() 
+  public String getUriLiteral()
   {
     return "";
   }
 
   @Override
-  public Object accept(ExpressionVisitor visitor) throws ExceptionVisitExpression, ODataApplicationException 
+  public Object accept(final ExpressionVisitor visitor) throws ExceptionVisitExpression, ODataApplicationException
   {
     Object obj = expression.accept(visitor);
     Object ret = visitor.visitOrder(this, obj, orderType);

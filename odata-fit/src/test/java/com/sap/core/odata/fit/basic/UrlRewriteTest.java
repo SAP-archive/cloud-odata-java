@@ -108,7 +108,7 @@ public class UrlRewriteTest extends AbstractBasicTest {
     assertEquals(HttpStatusCodes.METHOD_NOT_ALLOWED.getStatusCode(), response.getStatusLine().getStatusCode());
   }
 
-  private HttpRequestBase createRedirectRequest(Class<? extends HttpRequestBase> clazz) throws Exception {
+  private HttpRequestBase createRedirectRequest(final Class<? extends HttpRequestBase> clazz) throws Exception {
     String endpoint = getEndpoint().toASCIIString();
     endpoint = endpoint.substring(0, endpoint.length() - 1);
 

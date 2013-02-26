@@ -47,7 +47,7 @@ public class BasicEntityProvider {
    * @return the binary data
    * @throws EntityProviderException
    */
-  public byte[] readBinary(InputStream content) throws EntityProviderException {
+  public byte[] readBinary(final InputStream content) throws EntityProviderException {
     ByteArrayOutputStream buffer = new ByteArrayOutputStream();
     byte[] value = new byte[Short.MAX_VALUE];
     int count;
@@ -68,7 +68,7 @@ public class BasicEntityProvider {
    * @return text as string from <code>InputStream</code>
    * @throws EntityProviderException
    */
-  private String readText(InputStream content) throws EntityProviderException {
+  private String readText(final InputStream content) throws EntityProviderException {
     BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(content, Charset.forName(DEFAULT_CHARSET)));
     StringBuilder stringBuilder = new StringBuilder();
     try {
@@ -89,7 +89,7 @@ public class BasicEntityProvider {
    * @return the value as the proper system data type
    * @throws EntityProviderException
    */
-  public Object readPropertyValue(final EdmProperty edmProperty, InputStream content) throws EntityProviderException {
+  public Object readPropertyValue(final EdmProperty edmProperty, final InputStream content) throws EntityProviderException {
     EdmSimpleType type;
     try {
       type = (EdmSimpleType) edmProperty.getType();
@@ -174,7 +174,7 @@ public class BasicEntityProvider {
    * @return resulting {@link ODataResponse} with written binary content
    * @throws EntityProviderException
    */
-  public ODataResponse writeBinary(String mimeType, byte[] data) throws EntityProviderException {
+  public ODataResponse writeBinary(final String mimeType, final byte[] data) throws EntityProviderException {
     ODataResponseBuilder builder = ODataResponse.newBuilder();
     if (data != null) {
       ByteArrayInputStream bais = new ByteArrayInputStream(data);
@@ -191,23 +191,23 @@ public class BasicEntityProvider {
    * @return resulting {@link ODataResponse} with written metadata content
    * @throws EntityProviderException
    */
-  public ODataResponse writeMetadata(List<Schema> schemas, Map<String, String> predefinedNamespaces) throws EntityProviderException {
+  public ODataResponse writeMetadata(final List<Schema> schemas, final Map<String, String> predefinedNamespaces) throws EntityProviderException {
     ODataResponseBuilder builder = ODataResponse.newBuilder();
     String dataServiceVersion = ODataServiceVersion.V10;
     if (schemas != null) {
       dataServiceVersion = calculateDataServiceVersion(schemas);
     }
-      DataServices metadata = new DataServices().setSchemas(schemas).setDataServiceVersion(dataServiceVersion);
-      OutputStreamWriter writer = null;
-      CircleStreamBuffer csb = new CircleStreamBuffer();
-      try {
-        writer = new OutputStreamWriter(csb.getOutputStream(), "UTF-8");
-      } catch (UnsupportedEncodingException e) {
-        throw new EntityProviderException(EntityProviderException.COMMON, e);
-      }
-      XmlMetadataProducer.writeMetadata(metadata, writer, predefinedNamespaces);
-      builder.entity(csb.getInputStream());
-    
+    DataServices metadata = new DataServices().setSchemas(schemas).setDataServiceVersion(dataServiceVersion);
+    OutputStreamWriter writer = null;
+    CircleStreamBuffer csb = new CircleStreamBuffer();
+    try {
+      writer = new OutputStreamWriter(csb.getOutputStream(), "UTF-8");
+    } catch (UnsupportedEncodingException e) {
+      throw new EntityProviderException(EntityProviderException.COMMON, e);
+    }
+    XmlMetadataProducer.writeMetadata(metadata, writer, predefinedNamespaces);
+    builder.entity(csb.getInputStream());
+
     builder.contentHeader(ContentType.APPLICATION_XML_CS_UTF_8.toContentTypeString());
     builder.header(ODataHttpHeaders.DATASERVICEVERSION, dataServiceVersion);
     return builder.build();
@@ -218,7 +218,7 @@ public class BasicEntityProvider {
    * @param schemas
    * @return DataServiceversion as String
    */
-  private String calculateDataServiceVersion(List<Schema> schemas) {
+  private String calculateDataServiceVersion(final List<Schema> schemas) {
 
     String dataServiceVersion = ODataServiceVersion.V10;
 

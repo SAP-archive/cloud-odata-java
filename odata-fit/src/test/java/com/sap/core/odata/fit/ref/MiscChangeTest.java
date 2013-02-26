@@ -71,7 +71,7 @@ public class MiscChangeTest extends AbstractRefTest {
 
     response = callUri(ODataHttpMethod.PUT, "Container2.Photos(Id=2,Type='image%2Fbmp')/$value", null, null, "00", IMAGE_GIF, HttpStatusCodes.NO_CONTENT);
     checkEtag(response, "W/\"2\"");
-}
+  }
 
   @Test
   public void updatePropertyValue() throws Exception {

@@ -23,7 +23,7 @@ public class Schema {
    * @param namespace
    * @return {@link Schema} for method chaining
    */
-  public Schema setNamespace(String namespace) {
+  public Schema setNamespace(final String namespace) {
     this.namespace = namespace;
     return this;
   }
@@ -33,7 +33,7 @@ public class Schema {
    * @param alias
    * @return {@link Schema} for method chaining
    */
-  public Schema setAlias(String alias) {
+  public Schema setAlias(final String alias) {
     this.alias = alias;
     return this;
   }
@@ -43,7 +43,7 @@ public class Schema {
    * @param usings
    * @return {@link Schema} for method chaining
    */
-  public Schema setUsings(List<Using> usings) {
+  public Schema setUsings(final List<Using> usings) {
     this.usings = usings;
     return this;
   }
@@ -53,7 +53,7 @@ public class Schema {
    * @param entityTypes
    * @return {@link Schema} for method chaining
    */
-  public Schema setEntityTypes(List<EntityType> entityTypes) {
+  public Schema setEntityTypes(final List<EntityType> entityTypes) {
     this.entityTypes = entityTypes;
     return this;
   }
@@ -63,7 +63,7 @@ public class Schema {
    * @param complexTypes
    * @return {@link Schema} for method chaining
    */
-  public Schema setComplexTypes(List<ComplexType> complexTypes) {
+  public Schema setComplexTypes(final List<ComplexType> complexTypes) {
     this.complexTypes = complexTypes;
     return this;
   }
@@ -73,7 +73,7 @@ public class Schema {
    * @param associations
    * @return {@link Schema} for method chaining
    */
-  public Schema setAssociations(List<Association> associations) {
+  public Schema setAssociations(final List<Association> associations) {
     this.associations = associations;
     return this;
   }
@@ -83,7 +83,7 @@ public class Schema {
    * @param entityContainers
    * @return {@link Schema} for method chaining
    */
-  public Schema setEntityContainers(List<EntityContainer> entityContainers) {
+  public Schema setEntityContainers(final List<EntityContainer> entityContainers) {
     this.entityContainers = entityContainers;
     return this;
   }
@@ -93,7 +93,7 @@ public class Schema {
    * @param annotationAttributes
    * @return {@link Schema} for method chaining
    */
-  public Schema setAnnotationAttributes(List<AnnotationAttribute> annotationAttributes) {
+  public Schema setAnnotationAttributes(final List<AnnotationAttribute> annotationAttributes) {
     this.annotationAttributes = annotationAttributes;
     return this;
   }
@@ -103,7 +103,7 @@ public class Schema {
    * @param annotationElements
    * @return {@link Schema} for method chaining
    */
-  public Schema setAnnotationElements(List<AnnotationElement> annotationElements) {
+  public Schema setAnnotationElements(final List<AnnotationElement> annotationElements) {
     this.annotationElements = annotationElements;
     return this;
   }

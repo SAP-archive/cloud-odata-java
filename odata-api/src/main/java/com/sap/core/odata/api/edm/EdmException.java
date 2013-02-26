@@ -15,19 +15,19 @@ public class EdmException extends ODataMessageException {
   public static final MessageReference COMMON = createMessageReference(EdmException.class, "COMMON");
   public static final MessageReference PROVIDERPROBLEM = createMessageReference(EdmException.class, "PROVIDERPROBLEM");
 
-  public EdmException(MessageReference messageReference) {
+  public EdmException(final MessageReference messageReference) {
     super(messageReference);
   }
 
-  public EdmException(MessageReference messageReference, Throwable cause) {
+  public EdmException(final MessageReference messageReference, final Throwable cause) {
     super(messageReference, cause);
   }
 
-  public EdmException(MessageReference messageReference, String errorCode) {
+  public EdmException(final MessageReference messageReference, final String errorCode) {
     super(messageReference, errorCode);
   }
 
-  public EdmException(MessageReference messageReference, Throwable cause, String errorCode) {
+  public EdmException(final MessageReference messageReference, final Throwable cause, final String errorCode) {
     super(messageReference, cause, errorCode);
   }
 

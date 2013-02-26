@@ -57,10 +57,10 @@ public class ODataRootLocator {
    */
   @Path("/{pathSegments: .*}")
   public ODataLocator handleRequest(
-      @Encoded @PathParam("pathSegments") List<PathSegment> pathSegments,
-      @HeaderParam("X-HTTP-Method") String xHttpMethod,
-      @HeaderParam("X-HTTP-Method-Override") String xHttpMethodOverride)
-          throws ODataException, ClassNotFoundException, InstantiationException, IllegalAccessException {
+      @Encoded @PathParam("pathSegments") final List<PathSegment> pathSegments,
+      @HeaderParam("X-HTTP-Method") final String xHttpMethod,
+      @HeaderParam("X-HTTP-Method-Override") final String xHttpMethodOverride)
+      throws ODataException, ClassNotFoundException, InstantiationException, IllegalAccessException {
 
     if (xHttpMethod != null && xHttpMethodOverride != null) {
 

@@ -15,16 +15,16 @@ public class FitStaticServiceFactory extends ODataServiceFactory {
 
   private static Map<String, ODataService> HOST_2_SERVICE = Collections.synchronizedMap(new HashMap<String, ODataService>());
 
-  public static void bindService(TestServer server, ODataService service) {
+  public static void bindService(final TestServer server, final ODataService service) {
     HOST_2_SERVICE.put(createId(server), service);
   }
 
-  public static void unbindService(TestServer server) {
+  public static void unbindService(final TestServer server) {
     HOST_2_SERVICE.remove(createId(server));
   }
 
   @Override
-  public ODataService createService(ODataContext ctx) throws ODataException {
+  public ODataService createService(final ODataContext ctx) throws ODataException {
     final Map<String, String> requestHeaders = ctx.getHttpRequestHeaders();
     final String host = requestHeaders.get("Host");
     // access and validation in synchronized block
@@ -37,7 +37,7 @@ public class FitStaticServiceFactory extends ODataServiceFactory {
     }
   }
 
-  private static String createId(TestServer server) {
+  private static String createId(final TestServer server) {
     final URI endpoint = server.getEndpoint();
     if (endpoint == null) {
       throw new IllegalArgumentException("Got TestServer without endpoint.");

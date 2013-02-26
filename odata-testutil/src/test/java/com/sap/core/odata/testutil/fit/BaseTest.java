@@ -38,25 +38,25 @@ public abstract class BaseTest {
   public TestRule watch = new TestWatcher() {
 
     @Override
-    protected void failed(Throwable e, Description description) {
+    protected void failed(final Throwable e, final Description description) {
       super.failed(e, description);
       log.info("starting " + description.getDisplayName());
       log.error(description.getDisplayName(), e);
     }
 
     @Override
-    protected void starting(Description description) {
+    protected void starting(final Description description) {
       super.starting(description);
     }
 
     @Override
-    protected void finished(Description description) {
+    protected void finished(final Description description) {
       super.finished(description);
       reEnableLogging();
     }
 
     @Override
-    protected void succeeded(Description description) {
+    protected void succeeded(final Description description) {
       super.succeeded(description);
     }
 
@@ -86,7 +86,7 @@ public abstract class BaseTest {
    * 
    * @param classes
    */
-  protected void disableLogging(Class<?>... classes) {
+  protected void disableLogging(final Class<?>... classes) {
     for (final Class<?> clazz : classes) {
       final org.apache.log4j.Logger l = org.apache.log4j.Logger.getLogger(clazz);
       if (l != null) {

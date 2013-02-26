@@ -234,7 +234,7 @@ public final class EntityProvider {
      * @throws EntityProviderException if reading of data (de-serialization) fails
      */
     String readLink(String contentType, EdmEntitySet entitySet, InputStream content) throws EntityProviderException;
-    
+
     /**
      * Read (de-serialize) all links from <code>content</code> (as {@link InputStream}) in specified format (given as <code>contentType</code>)
      * based on <code>entity data model</code> (given as {@link EdmEntitySet}) and provide the link as {@link String}.
@@ -276,7 +276,7 @@ public final class EntityProvider {
    * @return resulting {@link ODataResponse} with written metadata content.
    * @throws EntityProviderException if writing of data (serialization) fails
    */
-  public static ODataResponse writeMetadata(List<Schema> schemas, Map<String, String> predefinedNamespaces) throws EntityProviderException {
+  public static ODataResponse writeMetadata(final List<Schema> schemas, final Map<String, String> predefinedNamespaces) throws EntityProviderException {
     return createEntityProvider().writeMetadata(schemas, predefinedNamespaces);
   }
 
@@ -290,7 +290,7 @@ public final class EntityProvider {
    * @return resulting {@link ODataResponse} with written service document content.
    * @throws EntityProviderException if writing of data (serialization) fails
    */
-  public static ODataResponse writeServiceDocument(String contentType, Edm edm, String serviceRoot) throws EntityProviderException {
+  public static ODataResponse writeServiceDocument(final String contentType, final Edm edm, final String serviceRoot) throws EntityProviderException {
     return createEntityProvider().writeServiceDocument(contentType, edm, serviceRoot);
   }
 
@@ -302,7 +302,7 @@ public final class EntityProvider {
    * @return resulting {@link ODataResponse} with written property value content.
    * @throws EntityProviderException if writing of data (serialization) fails
    */
-  public static ODataResponse writePropertyValue(EdmProperty edmProperty, Object value) throws EntityProviderException {
+  public static ODataResponse writePropertyValue(final EdmProperty edmProperty, final Object value) throws EntityProviderException {
     return createEntityProvider().writePropertyValue(edmProperty, value);
   }
 
@@ -313,10 +313,10 @@ public final class EntityProvider {
    * @return resulting {@link ODataResponse} with written text/plain content.
    * @throws EntityProviderException if writing of data (serialization) fails
    */
-  public static ODataResponse writeText(String value) throws EntityProviderException {
+  public static ODataResponse writeText(final String value) throws EntityProviderException {
     return createEntityProvider().writeText(value);
   }
-  
+
   /**
    * Write binary content with content type header set to given <code>mime type</code> parameter.
    * 
@@ -325,7 +325,7 @@ public final class EntityProvider {
    * @return response object resulting {@link ODataResponse} with written binary content.
    * @throws EntityProviderException if writing of data (serialization) fails
    */
-  public static ODataResponse writeBinary(String mimeType, byte[] data) throws EntityProviderException {
+  public static ODataResponse writeBinary(final String mimeType, final byte[] data) throws EntityProviderException {
     return createEntityProvider().writeBinary(mimeType, data);
   }
 
@@ -343,7 +343,7 @@ public final class EntityProvider {
    * @return resulting {@link ODataResponse} with written feed content.
    * @throws EntityProviderException if writing of data (serialization) fails
    */
-  public static ODataResponse writeFeed(String contentType, EdmEntitySet entitySet, List<Map<String, Object>> data, EntityProviderProperties properties) throws EntityProviderException {
+  public static ODataResponse writeFeed(final String contentType, final EdmEntitySet entitySet, final List<Map<String, Object>> data, final EntityProviderProperties properties) throws EntityProviderException {
     return createEntityProvider().writeFeed(contentType, entitySet, data, properties);
   }
 
@@ -360,7 +360,7 @@ public final class EntityProvider {
    * @return resulting {@link ODataResponse} with written entry content
    * @throws EntityProviderException if writing of data (serialization) fails
    */
-  public static ODataResponse writeEntry(String contentType, EdmEntitySet entitySet, Map<String, Object> data, EntityProviderProperties properties) throws EntityProviderException {
+  public static ODataResponse writeEntry(final String contentType, final EdmEntitySet entitySet, final Map<String, Object> data, final EntityProviderProperties properties) throws EntityProviderException {
     return createEntityProvider().writeEntry(contentType, entitySet, data, properties);
   }
 
@@ -375,7 +375,7 @@ public final class EntityProvider {
    * @return resulting {@link ODataResponse} with written property content.
    * @throws EntityProviderException if writing of data (serialization) fails
    */
-  public static ODataResponse writeProperty(String contentType, EdmProperty edmProperty, Object value) throws EntityProviderException {
+  public static ODataResponse writeProperty(final String contentType, final EdmProperty edmProperty, final Object value) throws EntityProviderException {
     return createEntityProvider().writeProperty(contentType, edmProperty, value);
   }
 
@@ -393,7 +393,7 @@ public final class EntityProvider {
    * @return resulting {@link ODataResponse} with written link content.
    * @throws EntityProviderException if writing of data (serialization) fails
    */
-  public static ODataResponse writeLink(String contentType, EdmEntitySet entitySet, Map<String, Object> data, EntityProviderProperties properties) throws EntityProviderException {
+  public static ODataResponse writeLink(final String contentType, final EdmEntitySet entitySet, final Map<String, Object> data, final EntityProviderProperties properties) throws EntityProviderException {
     return createEntityProvider().writeLink(contentType, entitySet, data, properties);
   }
 
@@ -413,7 +413,7 @@ public final class EntityProvider {
    * @return resulting {@link ODataResponse} with written links content.
    * @throws EntityProviderException if writing of data (serialization) fails
    */
-  public static ODataResponse writeLinks(String contentType, EdmEntitySet entitySet, List<Map<String, Object>> data, EntityProviderProperties properties) throws EntityProviderException {
+  public static ODataResponse writeLinks(final String contentType, final EdmEntitySet entitySet, final List<Map<String, Object>> data, final EntityProviderProperties properties) throws EntityProviderException {
     return createEntityProvider().writeLinks(contentType, entitySet, data, properties);
   }
 
@@ -429,7 +429,7 @@ public final class EntityProvider {
    * @return resulting {@link ODataResponse} with written function import result content.
    * @throws EntityProviderException if writing of data (serialization) fails
    */
-  public static ODataResponse writeFunctionImport(String contentType, EdmFunctionImport functionImport, Object data, EntityProviderProperties properties) throws EntityProviderException {
+  public static ODataResponse writeFunctionImport(final String contentType, final EdmFunctionImport functionImport, final Object data, final EntityProviderProperties properties) throws EntityProviderException {
     return createEntityProvider().writeFunctionImport(contentType, functionImport, data, properties);
   }
 
@@ -445,7 +445,7 @@ public final class EntityProvider {
    * @return entry as {@link ODataEntry}
    * @throws EntityProviderException if reading of data (de-serialization) fails
    */
-  public static ODataEntry readEntry(String contentType, EdmEntitySet entitySet, InputStream content, boolean merge) throws EntityProviderException {
+  public static ODataEntry readEntry(final String contentType, final EdmEntitySet entitySet, final InputStream content, final boolean merge) throws EntityProviderException {
     return createEntityProvider().readEntry(contentType, entitySet, content, merge);
   }
 
@@ -462,7 +462,7 @@ public final class EntityProvider {
    * @return property as name and value in a map
    * @throws EntityProviderException if reading of data (de-serialization) fails
    */
-  public static Map<String, Object> readProperty(String contentType, EdmProperty edmProperty, InputStream content, boolean merge) throws EntityProviderException {
+  public static Map<String, Object> readProperty(final String contentType, final EdmProperty edmProperty, final InputStream content, final boolean merge) throws EntityProviderException {
     return createEntityProvider().readProperty(contentType, edmProperty, content, merge);
   }
 
@@ -475,7 +475,7 @@ public final class EntityProvider {
    * @return property value as object
    * @throws EntityProviderException if reading of data (de-serialization) fails
    */
-  public static Object readPropertyValue(EdmProperty edmProperty, InputStream content) throws EntityProviderException {
+  public static Object readPropertyValue(final EdmProperty edmProperty, final InputStream content) throws EntityProviderException {
     return createEntityProvider().readPropertyValue(edmProperty, content);
   }
 
@@ -489,10 +489,10 @@ public final class EntityProvider {
    * @return link as string
    * @throws EntityProviderException if reading of data (de-serialization) fails
    */
-  public static String readLink(String contentType, EdmEntitySet entitySet, InputStream content) throws EntityProviderException {
+  public static String readLink(final String contentType, final EdmEntitySet entitySet, final InputStream content) throws EntityProviderException {
     return createEntityProvider().readLink(contentType, entitySet, content);
   }
-  
+
   /**
    * Read (de-serialize) a link from <code>content</code> (as {@link InputStream}) in specified format (given as <code>contentType</code>)
    * based on <code>entity data model</code> (given as {@link EdmEntitySet}) and provide the link as {@link String}.
@@ -503,7 +503,7 @@ public final class EntityProvider {
    * @return link as string
    * @throws EntityProviderException if reading of data (de-serialization) fails
    */
-  public static List<String> readLinks(String contentType, EdmEntitySet entitySet, InputStream content) throws EntityProviderException {
+  public static List<String> readLinks(final String contentType, final EdmEntitySet entitySet, final InputStream content) throws EntityProviderException {
     return createEntityProvider().readLinks(contentType, entitySet, content);
   }
 
@@ -514,7 +514,7 @@ public final class EntityProvider {
    * @return binary data as bytes
    * @throws EntityProviderException if reading of data (de-serialization) fails
    */
-  public static byte[] readBinary(InputStream content) throws EntityProviderException {
+  public static byte[] readBinary(final InputStream content) throws EntityProviderException {
     return createEntityProvider().readBinary(content);
   }
 }

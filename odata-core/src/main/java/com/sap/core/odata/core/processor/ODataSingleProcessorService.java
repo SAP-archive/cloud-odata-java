@@ -47,7 +47,7 @@ public class ODataSingleProcessorService implements ODataService {
    * @param provider A custom {@link EdmProvider}
    * @param processor A custom {@link ODataSingleProcessor}
    */
-  public ODataSingleProcessorService(EdmProvider provider, ODataSingleProcessor processor) {
+  public ODataSingleProcessorService(final EdmProvider provider, final ODataSingleProcessor processor) {
     this.processor = processor;
     edm = RuntimeDelegate.createEdm(provider);
   }
@@ -181,11 +181,11 @@ public class ODataSingleProcessorService implements ODataService {
   }
 
   @Override
-  public List<String> getSupportedContentTypes(Class<? extends ODataProcessor> processorFeature) throws ODataException {
+  public List<String> getSupportedContentTypes(final Class<? extends ODataProcessor> processorFeature) throws ODataException {
     List<String> result = new ArrayList<String>();
 
-    if(processor instanceof CustomContentType) {
-      result.addAll(((CustomContentType)processor).getCustomContentTypes(processorFeature));
+    if (processor instanceof CustomContentType) {
+      result.addAll(((CustomContentType) processor).getCustomContentTypes(processorFeature));
     }
 
     if (processorFeature == BatchProcessor.class) {

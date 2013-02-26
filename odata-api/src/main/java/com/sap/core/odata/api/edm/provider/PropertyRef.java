@@ -39,7 +39,7 @@ public class PropertyRef {
    * @param name
    * @return {@link PropertyRef} for method chaining
    */
-  public PropertyRef setName(String name) {
+  public PropertyRef setName(final String name) {
     this.name = name;
     return this;
   }
@@ -49,7 +49,7 @@ public class PropertyRef {
    * @param annotationAttributes
    * @return {@link PropertyRef} for method chaining
    */
-  public PropertyRef setAnnotationAttributes(List<AnnotationAttribute> annotationAttributes) {
+  public PropertyRef setAnnotationAttributes(final List<AnnotationAttribute> annotationAttributes) {
     this.annotationAttributes = annotationAttributes;
     return this;
   }
@@ -59,7 +59,7 @@ public class PropertyRef {
    * @param annotationElements
    * @return {@link PropertyRef} for method chaining
    */
-  public PropertyRef setAnnotationElements(List<AnnotationElement> annotationElements) {
+  public PropertyRef setAnnotationElements(final List<AnnotationElement> annotationElements) {
     this.annotationElements = annotationElements;
     return this;
   }

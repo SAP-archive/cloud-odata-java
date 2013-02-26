@@ -18,7 +18,7 @@ public class EdmTypedImplProv extends EdmNamedImplProv implements EdmTyped {
   private FullQualifiedName typeName;
   private EdmMultiplicity multiplicity;
 
-  public EdmTypedImplProv(EdmImplProv edm, String name, FullQualifiedName typeName, EdmMultiplicity multiplicity) throws EdmException {
+  public EdmTypedImplProv(final EdmImplProv edm, final String name, final FullQualifiedName typeName, final EdmMultiplicity multiplicity) throws EdmException {
     super(edm, name);
     this.typeName = typeName;
     this.multiplicity = multiplicity;

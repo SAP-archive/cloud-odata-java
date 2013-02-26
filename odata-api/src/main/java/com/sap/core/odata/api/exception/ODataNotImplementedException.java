@@ -12,11 +12,11 @@ public class ODataNotImplementedException extends ODataHttpException {
 
   public static final MessageReference COMMON = createMessageReference(ODataNotImplementedException.class, "COMMON");
 
-  public ODataNotImplementedException(MessageReference context) {
+  public ODataNotImplementedException(final MessageReference context) {
     super(context, HttpStatusCodes.NOT_IMPLEMENTED);
   }
 
-  public ODataNotImplementedException(MessageReference context, String errorCode) {
+  public ODataNotImplementedException(final MessageReference context, final String errorCode) {
     super(context, HttpStatusCodes.NOT_IMPLEMENTED, errorCode);
   }
 

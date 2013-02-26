@@ -26,7 +26,7 @@ import com.sap.core.odata.core.ODataPathSegmentImpl;
 import com.sap.core.odata.testutil.fit.BaseTest;
 import com.sap.core.odata.testutil.mock.MockFacade;
 
-public class UriInfoTest extends BaseTest{
+public class UriInfoTest extends BaseTest {
 
   private static Edm edm;
 

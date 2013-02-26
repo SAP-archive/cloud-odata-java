@@ -50,7 +50,7 @@ public class AnnotationAttribute implements EdmAnnotationAttribute {
    * @param namespace
    * @return {@link AnnotationAttribute} for method chaining
    */
-  public AnnotationAttribute setNamespace(String namespace) {
+  public AnnotationAttribute setNamespace(final String namespace) {
     this.namespace = namespace;
     return this;
   }
@@ -60,7 +60,7 @@ public class AnnotationAttribute implements EdmAnnotationAttribute {
    * @param prefix
    * @return {@link AnnotationAttribute} for method chaining
    */
-  public AnnotationAttribute setPrefix(String prefix) {
+  public AnnotationAttribute setPrefix(final String prefix) {
     this.prefix = prefix;
     return this;
   }
@@ -70,7 +70,7 @@ public class AnnotationAttribute implements EdmAnnotationAttribute {
    * @param name
    * @return {@link AnnotationAttribute} for method chaining
    */
-  public AnnotationAttribute setName(String name) {
+  public AnnotationAttribute setName(final String name) {
     this.name = name;
     return this;
   }
@@ -80,7 +80,7 @@ public class AnnotationAttribute implements EdmAnnotationAttribute {
    * @param text
    * @return {@link AnnotationAttribute} for method chaining
    */
-  public AnnotationAttribute setText(String text) {
+  public AnnotationAttribute setText(final String text) {
     this.text = text;
     return this;
   }

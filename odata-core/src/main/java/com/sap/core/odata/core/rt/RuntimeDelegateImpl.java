@@ -30,12 +30,12 @@ public class RuntimeDelegateImpl extends RuntimeDelegateInstance {
   }
 
   @Override
-  protected EdmSimpleType getEdmSimpleType(EdmSimpleTypeKind edmSimpleType) {
+  protected EdmSimpleType getEdmSimpleType(final EdmSimpleTypeKind edmSimpleType) {
     return EdmSimpleTypeFacadeImpl.getEdmSimpleType(edmSimpleType);
   }
 
   @Override
-  protected UriParser getUriParser(Edm edm) {
+  protected UriParser getUriParser(final Edm edm) {
     return new UriParserImpl(edm);
   }
 
@@ -45,19 +45,17 @@ public class RuntimeDelegateImpl extends RuntimeDelegateInstance {
   }
 
   @Override
-  protected Edm createEdm(EdmProvider provider) {
+  protected Edm createEdm(final EdmProvider provider) {
     return new EdmImplProv(provider);
   }
-
 
   @Override
   protected EntityProviderInterface createEntityProvider() {
     return new ProviderFacadeImpl();
   }
 
-  
   @Override
-  protected ODataService createODataSingleProcessorService(EdmProvider provider, ODataSingleProcessor processor) {
+  protected ODataService createODataSingleProcessorService(final EdmProvider provider, final ODataSingleProcessor processor) {
     return new ODataSingleProcessorService(provider, processor);
   }
 }

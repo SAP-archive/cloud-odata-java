@@ -67,7 +67,7 @@ public abstract class ODataResponse {
    * @param status http status code
    * @return a builder object
    */
-  public static ODataResponseBuilder status(HttpStatusCodes status) {
+  public static ODataResponseBuilder status(final HttpStatusCodes status) {
     final ODataResponseBuilder b = ODataResponseBuilder.newInstance();
     b.status(status);
     return b;
@@ -77,7 +77,7 @@ public abstract class ODataResponse {
    * @param response
    * @return a new builder object
    */
-  public static ODataResponseBuilder fromResponse(ODataResponse response) {
+  public static ODataResponseBuilder fromResponse(final ODataResponse response) {
     final ODataResponseBuilder b = ODataResponseBuilder.newInstance();
     b.fromResponse(response);
     return b;
@@ -87,7 +87,7 @@ public abstract class ODataResponse {
    * @param entity
    * @return a builder object
    */
-  public static ODataResponseBuilder entity(Object entity) {
+  public static ODataResponseBuilder entity(final Object entity) {
     final ODataResponseBuilder b = ODataResponseBuilder.newInstance();
     b.entity(entity);
     return b;
@@ -98,7 +98,7 @@ public abstract class ODataResponse {
    * @param value associated value
    * @return a builder object
    */
-  public static ODataResponseBuilder header(String name, String value) {
+  public static ODataResponseBuilder header(final String name, final String value) {
     final ODataResponseBuilder b = ODataResponseBuilder.newInstance();
     b.header(name, value);
     return b;
@@ -108,7 +108,7 @@ public abstract class ODataResponse {
    * @param value content header value
    * @return a builder object
    */
-  public static ODataResponseBuilder contentHeader(String value) {
+  public static ODataResponseBuilder contentHeader(final String value) {
     final ODataResponseBuilder b = ODataResponseBuilder.newInstance();
     b.contentHeader(value);
     return b;

@@ -58,18 +58,18 @@ public class AtomEntityProvider implements ContentTypeBasedEntityProvider {
     this(ODataFormat.ATOM);
   }
 
-  public AtomEntityProvider(ContentType contentType) throws EntityProviderException {
+  public AtomEntityProvider(final ContentType contentType) throws EntityProviderException {
     this(contentType.getODataFormat());
   }
 
-  public AtomEntityProvider(ODataFormat odataFormat) throws EntityProviderException {
+  public AtomEntityProvider(final ODataFormat odataFormat) throws EntityProviderException {
     switch (odataFormat) {
-      case ATOM: 
-      case XML: 
-        this.odataFormat = odataFormat;
-        break;
-      default:
-        throw new EntityProviderException(EntityProviderException.ILLEGAL_ARGUMENT.addContent("Got unsupported ODataFormat '" + odataFormat + "'."));
+    case ATOM:
+    case XML:
+      this.odataFormat = odataFormat;
+      break;
+    default:
+      throw new EntityProviderException(EntityProviderException.ILLEGAL_ARGUMENT.addContent("Got unsupported ODataFormat '" + odataFormat + "'."));
     }
   }
 
@@ -83,7 +83,7 @@ public class AtomEntityProvider implements ContentTypeBasedEntityProvider {
    * @throws EntityProviderException
    */
   @Override
-  public ODataResponse writeServiceDocument(Edm edm, String serviceRoot) throws EntityProviderException {
+  public ODataResponse writeServiceDocument(final Edm edm, final String serviceRoot) throws EntityProviderException {
     OutputStreamWriter writer = null;
 
     try {
@@ -112,7 +112,7 @@ public class AtomEntityProvider implements ContentTypeBasedEntityProvider {
   }
 
   @Override
-  public ODataResponse writeEntry(EdmEntitySet entitySet, Map<String, Object> data, EntityProviderProperties properties) throws EntityProviderException {
+  public ODataResponse writeEntry(final EdmEntitySet entitySet, final Map<String, Object> data, final EntityProviderProperties properties) throws EntityProviderException {
     OutputStream outStream = null;
 
     try {
@@ -150,7 +150,7 @@ public class AtomEntityProvider implements ContentTypeBasedEntityProvider {
   }
 
   @Override
-  public ODataResponse writeProperty(EdmProperty edmProperty, Object value) throws EntityProviderException {
+  public ODataResponse writeProperty(final EdmProperty edmProperty, final Object value) throws EntityProviderException {
     EntityPropertyInfo propertyInfo = EntityInfoAggregator.create(edmProperty);
     return writeSingleTypedElement(propertyInfo, value);
   }
@@ -188,7 +188,7 @@ public class AtomEntityProvider implements ContentTypeBasedEntityProvider {
   }
 
   @Override
-  public ODataResponse writeFeed(EdmEntitySet entitySet, List<Map<String, Object>> data, EntityProviderProperties properties) throws EntityProviderException {
+  public ODataResponse writeFeed(final EdmEntitySet entitySet, final List<Map<String, Object>> data, final EntityProviderProperties properties) throws EntityProviderException {
     OutputStream outStream = null;
 
     try {
@@ -222,8 +222,8 @@ public class AtomEntityProvider implements ContentTypeBasedEntityProvider {
     }
   }
 
-  private String getContentHeader(ContentType mediaType) {
-    if(odataFormat == ODataFormat.XML) {
+  private String getContentHeader(final ContentType mediaType) {
+    if (odataFormat == ODataFormat.XML) {
       return ContentType.APPLICATION_XML_CS_UTF_8.toContentTypeString();
     }
     return ContentType.create(mediaType, ContentType.PARAMETER_CHARSET, DEFAULT_CHARSET).toContentTypeString();
@@ -330,7 +330,7 @@ public class AtomEntityProvider implements ContentTypeBasedEntityProvider {
   }
 
   @Override
-  public ODataResponse writeFunctionImport(final EdmFunctionImport functionImport, Object data, final EntityProviderProperties properties) throws EntityProviderException {
+  public ODataResponse writeFunctionImport(final EdmFunctionImport functionImport, final Object data, final EntityProviderProperties properties) throws EntityProviderException {
     try {
       final EdmType type = functionImport.getReturnType().getType();
       final boolean isCollection = functionImport.getReturnType().getMultiplicity() == EdmMultiplicity.MANY;
@@ -353,25 +353,25 @@ public class AtomEntityProvider implements ContentTypeBasedEntityProvider {
   }
 
   @Override
-  public ODataEntry readEntry(EdmEntitySet entitySet, InputStream content, boolean validate) throws EntityProviderException {
+  public ODataEntry readEntry(final EdmEntitySet entitySet, final InputStream content, final boolean validate) throws EntityProviderException {
     XmlEntityConsumer xec = new XmlEntityConsumer();
     return xec.readEntry(entitySet, content, validate);
   }
 
   @Override
-  public Map<String, Object> readProperty(EdmProperty edmProperty, InputStream content, boolean validate) throws EntityProviderException {
+  public Map<String, Object> readProperty(final EdmProperty edmProperty, final InputStream content, final boolean validate) throws EntityProviderException {
     XmlEntityConsumer xec = new XmlEntityConsumer();
     return xec.readProperty(edmProperty, content, validate);
   }
-  
+
   @Override
-  public String readLink(EdmEntitySet entitySet, InputStream content) throws EntityProviderException {
+  public String readLink(final EdmEntitySet entitySet, final InputStream content) throws EntityProviderException {
     XmlEntityConsumer xec = new XmlEntityConsumer();
     return xec.readLink(entitySet, content);
   }
 
   @Override
-  public List<String> readLinks(EdmEntitySet entitySet, InputStream content) throws EntityProviderException {
+  public List<String> readLinks(final EdmEntitySet entitySet, final InputStream content) throws EntityProviderException {
     XmlEntityConsumer xec = new XmlEntityConsumer();
     return xec.readLinks(entitySet, content);
   }

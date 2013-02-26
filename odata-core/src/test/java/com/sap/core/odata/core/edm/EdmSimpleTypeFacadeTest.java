@@ -72,7 +72,7 @@ public class EdmSimpleTypeFacadeTest extends BaseTest {
     parse("123", Uint7.getInstance());
     parse("111", Uint7.getInstance());
     parse("42", Uint7.getInstance());
-}
+  }
 
   @Test
   public void parseUriLiteralDateTime() throws EdmLiteralException {

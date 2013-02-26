@@ -25,7 +25,7 @@ public class SimpleProperty extends Property {
    * @param type
    * @return {@link Property} for method chaining
    */
-  public SimpleProperty setType(EdmSimpleTypeKind type) {
+  public SimpleProperty setType(final EdmSimpleTypeKind type) {
     this.type = type;
     return this;
   }
@@ -34,7 +34,7 @@ public class SimpleProperty extends Property {
    * @see com.sap.core.odata.api.edm.provider.Property#setName(java.lang.String)
    */
   @Override
-  public SimpleProperty setName(String name) {
+  public SimpleProperty setName(final String name) {
     super.setName(name);
     return this;
   }
@@ -43,7 +43,7 @@ public class SimpleProperty extends Property {
    * @see com.sap.core.odata.api.edm.provider.Property#setFacets(com.sap.core.odata.api.edm.EdmFacets)
    */
   @Override
-  public SimpleProperty setFacets(EdmFacets facets) {
+  public SimpleProperty setFacets(final EdmFacets facets) {
     super.setFacets(facets);
     return this;
   }
@@ -52,7 +52,7 @@ public class SimpleProperty extends Property {
    * @see com.sap.core.odata.api.edm.provider.Property#setCustomizableFeedMappings(com.sap.core.odata.api.edm.provider.CustomizableFeedMappings)
    */
   @Override
-  public SimpleProperty setCustomizableFeedMappings(CustomizableFeedMappings customizableFeedMappings) {
+  public SimpleProperty setCustomizableFeedMappings(final CustomizableFeedMappings customizableFeedMappings) {
     super.setCustomizableFeedMappings(customizableFeedMappings);
     return this;
   }
@@ -61,7 +61,7 @@ public class SimpleProperty extends Property {
    * @see com.sap.core.odata.api.edm.provider.Property#setMimeType(java.lang.String)
    */
   @Override
-  public SimpleProperty setMimeType(String mimeType) {
+  public SimpleProperty setMimeType(final String mimeType) {
     super.setMimeType(mimeType);
     return this;
   }
@@ -70,7 +70,7 @@ public class SimpleProperty extends Property {
    * @see com.sap.core.odata.api.edm.provider.Property#setMapping(com.sap.core.odata.api.edm.provider.Mapping)
    */
   @Override
-  public SimpleProperty setMapping(Mapping mapping) {
+  public SimpleProperty setMapping(final Mapping mapping) {
     super.setMapping(mapping);
     return this;
   }
@@ -79,7 +79,7 @@ public class SimpleProperty extends Property {
    * @see com.sap.core.odata.api.edm.provider.Property#setDocumentation(com.sap.core.odata.api.edm.provider.Documentation)
    */
   @Override
-  public SimpleProperty setDocumentation(Documentation documentation) {
+  public SimpleProperty setDocumentation(final Documentation documentation) {
     super.setDocumentation(documentation);
     return this;
   }
@@ -88,7 +88,7 @@ public class SimpleProperty extends Property {
    * @see com.sap.core.odata.api.edm.provider.Property#setAnnotationAttributes(java.util.List)
    */
   @Override
-  public SimpleProperty setAnnotationAttributes(List<AnnotationAttribute> annotationAttributes) {
+  public SimpleProperty setAnnotationAttributes(final List<AnnotationAttribute> annotationAttributes) {
     super.setAnnotationAttributes(annotationAttributes);
     return this;
   }
@@ -97,7 +97,7 @@ public class SimpleProperty extends Property {
    * @see com.sap.core.odata.api.edm.provider.Property#setAnnotationElements(java.util.List)
    */
   @Override
-  public SimpleProperty setAnnotationElements(List<AnnotationElement> annotationElements) {
+  public SimpleProperty setAnnotationElements(final List<AnnotationElement> annotationElements) {
     super.setAnnotationElements(annotationElements);
     return this;
   }

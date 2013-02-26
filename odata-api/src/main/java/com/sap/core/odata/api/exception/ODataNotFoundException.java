@@ -13,19 +13,19 @@ public class ODataNotFoundException extends ODataHttpException {
   public static final MessageReference ENTITY = createMessageReference(ODataNotFoundException.class, "ENTITY");
   public static final MessageReference MATRIX = createMessageReference(ODataNotFoundException.class, "MATRIX");
 
-  public ODataNotFoundException(MessageReference messageReference) {
+  public ODataNotFoundException(final MessageReference messageReference) {
     super(messageReference, HttpStatusCodes.NOT_FOUND);
   }
 
-  public ODataNotFoundException(MessageReference messageReference, String errorCode) {
+  public ODataNotFoundException(final MessageReference messageReference, final String errorCode) {
     super(messageReference, HttpStatusCodes.NOT_FOUND, errorCode);
   }
 
-  public ODataNotFoundException(MessageReference messageReference, Throwable cause) {
+  public ODataNotFoundException(final MessageReference messageReference, final Throwable cause) {
     super(messageReference, cause, HttpStatusCodes.NOT_FOUND);
   }
 
-  public ODataNotFoundException(MessageReference messageReference, Throwable cause, String errorCode) {
+  public ODataNotFoundException(final MessageReference messageReference, final Throwable cause, final String errorCode) {
     super(messageReference, cause, HttpStatusCodes.NOT_FOUND, errorCode);
   }
 }

@@ -29,7 +29,7 @@ public abstract class UriParser {
    * @return {@link UriInfo} information about the parsed URI
    * @throws ODataException
    */
-  public static UriInfo parse(Edm edm, List<PathSegment> pathSegments, Map<String, String> queryParameters) throws ODataException {
+  public static UriInfo parse(final Edm edm, final List<PathSegment> pathSegments, final Map<String, String> queryParameters) throws ODataException {
     return RuntimeDelegate.getUriParser(edm).parse(pathSegments, queryParameters);
   }
 
@@ -76,7 +76,7 @@ public abstract class UriParser {
    * @throws ExpressionParserException thrown due to errors while parsing the $filter expression string
    * @throws ODataMessageException     for extensibility
    */
-  public static FilterExpression parseFilter(Edm edm, EdmEntityType edmType, String expression) throws ExpressionParserException, ODataMessageException {
+  public static FilterExpression parseFilter(final Edm edm, final EdmEntityType edmType, final String expression) throws ExpressionParserException, ODataMessageException {
     return RuntimeDelegate.getUriParser(edm).parseFilterString(edmType, expression);
   }
 
@@ -123,7 +123,7 @@ public abstract class UriParser {
    * @throws ExpressionParserException thrown due to errors while parsing the $orderby expression string
    * @throws ODataMessageException     used for extensibility
    */
-  public static OrderByExpression parseOrderBy(Edm edm, EdmEntityType edmType, String expression) throws ExpressionParserException, ODataMessageException {
+  public static OrderByExpression parseOrderBy(final Edm edm, final EdmEntityType edmType, final String expression) throws ExpressionParserException, ODataMessageException {
     return RuntimeDelegate.getUriParser(edm).parseOrderByString(edmType, expression);
   }
 
