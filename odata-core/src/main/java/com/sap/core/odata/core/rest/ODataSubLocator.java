@@ -304,7 +304,12 @@ public final class ODataSubLocator implements ODataLocator {
       if (uriInfo.isValue()) {
         supportedContentTypes.add(ContentType.TEXT_PLAIN);
       }
-      if (uriInfo.getTargetEntitySet().getEntityType().hasStream()) {
+      EdmEntityType entityType = uriInfo.getTargetEntitySet().getEntityType();
+      if (entityType.hasStream()) {
+        if(entityType.getMapping() != null && entityType.getMapping().getMimeType() != null) {
+          String mimeType = entityType.getMapping().getMimeType();
+          supportedContentTypes.add(ContentType.create(mimeType));
+        }
         supportedContentTypes.addAll(Arrays.asList(ContentType.TEXT_PLAIN, ContentType.TEXT_PLAIN_CS_UTF_8, ContentType.APPLICATION_OCTET_STREAM));
       }
       if (!isValidRequestContentType(contentType, supportedContentTypes)) {

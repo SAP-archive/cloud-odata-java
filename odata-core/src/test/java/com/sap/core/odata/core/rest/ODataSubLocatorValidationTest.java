@@ -413,6 +413,13 @@ public class ODataSubLocatorValidationTest extends BaseTest {
   }
 
   @Test
+  public void requestContentTypeMediaResource() throws Exception {
+    checkRequest(ODataHttpMethod.PUT, mockPathSegments(UriType.URI2, false, false), null, "image/jpeg");
+    checkRequest(ODataHttpMethod.PATCH, mockPathSegments(UriType.URI2, false, false), null, "image/jpeg");
+    checkRequest(ODataHttpMethod.MERGE, mockPathSegments(UriType.URI2, false, false), null, "image/jpeg");
+  }
+  
+  @Test
   public void requestContentType() throws Exception {
     checkValueContentType(ODataHttpMethod.PUT, UriType.URI4, HttpContentType.TEXT_PLAIN);
     checkValueContentType(ODataHttpMethod.DELETE, UriType.URI4, HttpContentType.TEXT_PLAIN);

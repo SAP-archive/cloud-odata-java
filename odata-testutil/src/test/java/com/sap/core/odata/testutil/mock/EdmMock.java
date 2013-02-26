@@ -70,6 +70,9 @@ class EdmMock {
 
     final EdmEntityType employeeType = employeeEntitySet.getEntityType();
     when(employeeType.hasStream()).thenReturn(true);
+    EdmMapping employeeTypeMapping = Mockito.mock(EdmMapping.class);
+    when(employeeTypeMapping.getMimeType()).thenReturn("image/jpeg");
+    when(employeeType.getMapping()).thenReturn(employeeTypeMapping);
     when(employeeType.getPropertyNames()).thenReturn(Arrays.asList(
         "EmployeeId", "EmployeeName", "ManagerId", "RoomId", "TeamId",
         "Location", "Age", "EntryDate", "ImageUrl"));

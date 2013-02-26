@@ -197,7 +197,7 @@ public class ScenarioEdmProvider extends EdmProvider {
             .setHasStream(true)
             .setKey(getKey("EmployeeId"))
             .setNavigationProperties(navigationProperties)
-            .setMapping(new Mapping().setMimeType("getImageType"));
+            .setMapping(new Mapping().setMimeType("image/*"));
 
       } else if (ENTITY_TYPE_1_BASE.getName().equals(edmFQName.getName())) {
         List<Property> properties = new ArrayList<Property>();

@@ -11,7 +11,6 @@ import com.sap.core.odata.core.uri.UriType;
 /**
  * 
  */
-@Ignore
 public class ContentNegotiationPostRequestTest extends AbstractContentNegotiationTest {
 
   public static final String EMPLOYEE_1_XML = 
@@ -128,7 +127,74 @@ public class ContentNegotiationPostRequestTest extends AbstractContentNegotiatio
     // execute all defined tests
     testSet.execute(getEndpoint());
   }
-  
+
+  @Test
+  public void testURI_1_ForIssue() throws Exception {
+    // create test set
+    UriType uriType = UriType.URI1;
+    String httpMethod = "POST";
+    String path = "/Employees";
+    String queryOption = "";
+    String acceptHeader = "*";
+    String content = "IMAGE_;o)";
+    String requestContentType = "image/jpeg";
+    int expectedStatusCode = 201;
+    String expectedContentType = "application/atom+xml; charset=utf-8; type=entry";
+    
+    FitTest test = FitTest.create(uriType, httpMethod, path, queryOption, acceptHeader, content, requestContentType, expectedStatusCode, expectedContentType);
+    
+    test.execute(getEndpoint());
+  }
+
+  @Test
+  @Ignore("What is expected service behavior?")
+  public void testURI_2_ForIssue() throws Exception {
+    // create test set
+    UriType uriType = UriType.URI2;
+    String httpMethod = "PUT";
+    String path = "/Employees('1')";
+    String queryOption = "";
+    String acceptHeader = "*";
+    String content = "IMAGE_;o)";
+    String requestContentType = "image/jpeg";
+    int expectedStatusCode = 201;
+    String expectedContentType = "image/jpeg";
+    
+    FitTest test = FitTest.create(uriType, httpMethod, path, queryOption, acceptHeader, content, requestContentType, expectedStatusCode, expectedContentType);
+    
+    test.execute(getEndpoint());
+  }
+
+  @Test
+  @Ignore("Some test failure")
+  public void testURI_17_EntitySetWithMediaResource() throws Exception {
+    // create test set
+    FitTestSet testSet = FitTestSet.create(UriType.URI17, "/Employees('1')")
+        .httpMethod("POST")
+        .queryOptions(Arrays.asList(""))
+        .acceptHeader(Arrays.asList("", "image/jpeg"))
+        .content("Jon Doe")
+        .requestContentTypes(Arrays.asList("image/jpeg"))
+        .expectedStatusCode(201)
+        .init();
+
+    // set all 'NOT ACCEPTED' requests
+    final List<String> unsupportedRequestContentTypes = Arrays.asList(
+        "text/plain",
+        "text/plain; charset=utf-8",
+        "application/xml",
+        "application/xml; charset=utf-8",
+        "application/json",
+        "application/json; charset=utf-8",
+        "application/atomsvc+xml",
+        "application/atomsvc+xml; charset=utf-8"
+        );
+    testSet.modifyRequestContentTypes(unsupportedRequestContentTypes, 415, "application/xml");
+
+    // execute all defined tests
+    testSet.execute(getEndpoint());
+  }
+
   @Test
   @Ignore("Some test failure")
   public void testURI_5_EntitySet() throws Exception {
