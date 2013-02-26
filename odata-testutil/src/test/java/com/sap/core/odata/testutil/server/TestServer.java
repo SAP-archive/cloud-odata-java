@@ -91,7 +91,7 @@ public class TestServer {
         throw new BindException("no free port in range of [" + PORT_MIN + ".." + PORT_MAX + "]");
       }
 
-    } catch (final Throwable e) {
+    } catch (final Exception e) {
       log.error(e);
       new RuntimeException(e);
     }
