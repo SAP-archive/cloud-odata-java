@@ -223,9 +223,34 @@ public class XmlEntityConsumerTest extends BaseTest {
       // ...and then re-throw
       throw e;
     }
-
   }
 
+  
+  @Test(expected = EntityProviderException.class)
+  public void testReadEntryTooManyValues() throws Exception {
+    // prepare
+    EdmEntitySet entitySet = MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Employees");
+    String content = EMPLOYEE_1_XML.replace("<d:Age>52</d:Age>", "<d:Age>52</d:Age><d:SomeUnknownTag>SomeUnknownValue</d:SomeUnknownTag>");
+    InputStream contentBody = createContentAsStream(content);
+
+    // execute
+    try {
+      XmlEntityConsumer xec = new XmlEntityConsumer();
+      ODataEntry result = xec.readEntry(entitySet, contentBody, false);
+
+      // verify - not necessary because of thrown exception - but kept to prevent eclipse warning about unused variables
+      Map<String, Object> properties = result.getProperties();
+      assertEquals(9, properties.size());
+    } catch (EntityProviderException e) {
+      // do some assertions...
+      assertEquals(EntityProviderException.INVALID_PROPERTY.getKey(), e.getMessageReference().getKey());
+      assertEquals("SomeUnknownTag", e.getMessageReference().getContent().get(0));
+      // ...and then re-throw
+      throw e;
+    }
+  }
+
+  
   @SuppressWarnings("unchecked")
   @Test
   public void testReadEntryWithMerge() throws Exception {

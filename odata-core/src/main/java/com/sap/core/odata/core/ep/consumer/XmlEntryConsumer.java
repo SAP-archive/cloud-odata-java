@@ -107,7 +107,7 @@ public class XmlEntryConsumer {
 
         if (edmNamespaceURI.equals(xmlNamespaceUri) && edmPrefix.equals(xmlPrefix)) {
           String name = reader.getLocalName();
-          Object value = xpc.readStartedElement(reader, eia.getPropertyInfo(name));
+          Object value = xpc.readStartedElement(reader, getValidatedPropertyInfo(eia, name));
           properties.put(name, value);
         }
       }
@@ -199,8 +199,7 @@ public class XmlEntryConsumer {
     while (run) {
       if (nextTagEventType == XMLStreamConstants.START_ELEMENT) {
         String name = reader.getLocalName();
-        //        EdmProperty property = (EdmProperty) entitySet.getEntityType().getProperty(name);
-        EntityPropertyInfo property = entitySet.getPropertyInfo(name);
+        EntityPropertyInfo property = getValidatedPropertyInfo(entitySet, name);
         Object value = xpc.readStartedElement(reader, property);
         properties.put(name, value);
       } else if (nextTagEventType == XMLStreamConstants.END_ELEMENT) {
@@ -211,6 +210,25 @@ public class XmlEntryConsumer {
       }
       nextTagEventType = reader.next();
     }
+  }
+
+  /**
+   * Get validated {@link EntityPropertyInfo} for property with given <code>name</code>.
+   * If validation fails an {@link EntityProviderException} is thrown.
+   * 
+   * Currently this is the case if no {@link EntityPropertyInfo} if found for given <code>name</code>.
+   * 
+   * @param entitySet
+   * @param name
+   * @return valid {@link EntityPropertyInfo} (which is never <code>NULL</code>).
+   * @throws EntityProviderException
+   */
+  private EntityPropertyInfo getValidatedPropertyInfo(final EntityInfoAggregator entitySet, final String name) throws EntityProviderException {
+    EntityPropertyInfo info = entitySet.getPropertyInfo(name);
+    if(info == null) {
+      throw new EntityProviderException(EntityProviderException.INVALID_PROPERTY.addContent(name));
+    }
+    return info;
   }
 
   /**
