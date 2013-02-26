@@ -814,7 +814,7 @@ public class EdmSimpleTypeTest extends BaseTest {
     final EdmSimpleType instance = EdmSimpleTypeKind.Binary.getEdmSimpleTypeInstance();
 
     assertTrue(Arrays.equals(binary, instance.valueOfString("qrvM3e7/", EdmLiteralKind.DEFAULT, null, byte[].class)));
-    assertTrue(Arrays.equals(new Byte[]{binary[0], binary[1], binary[2]}, instance.valueOfString("qrvM", EdmLiteralKind.JSON, null, Byte[].class)));
+    assertTrue(Arrays.equals(new Byte[] { binary[0], binary[1], binary[2] }, instance.valueOfString("qrvM", EdmLiteralKind.JSON, null, Byte[].class)));
     assertTrue(Arrays.equals(binary, instance.valueOfString("binary'AABBCCDDEEFF'", EdmLiteralKind.URI, null, byte[].class)));
 
     assertTrue(Arrays.equals(binary, instance.valueOfString("qrvM3e7/", EdmLiteralKind.DEFAULT, getMaxLengthFacets(6), byte[].class)));

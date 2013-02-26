@@ -8,12 +8,12 @@ public class Location {
     this(null, null, null);
   }
 
-  public Location(String country, String postalCode, String cityName) {
+  public Location(final String country, final String postalCode, final String cityName) {
     this.country = country;
-    this.city = new City(postalCode, cityName);
+    city = new City(postalCode, cityName);
   }
 
-  public void setCountry(String country) {
+  public void setCountry(final String country) {
     this.country = country;
   }
 
@@ -21,7 +21,7 @@ public class Location {
     return country;
   }
 
-  public void setCity(City city) {
+  public void setCity(final City city) {
     this.city = city;
   }
 

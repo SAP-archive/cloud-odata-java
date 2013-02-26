@@ -34,8 +34,8 @@ public class CircleStreamBufferTest extends BaseTest {
 
     OutputStream write = csb.getOutputStream();
     byte[] writeData = "Test".getBytes("UTF-8");
-    for (int i = 0; i < writeData.length; i++) {
-      write.write(writeData[i]);
+    for (byte element : writeData) {
+      write.write(element);
     }
 
     InputStream inStream = csb.getInputStream();
@@ -58,8 +58,8 @@ public class CircleStreamBufferTest extends BaseTest {
     int signs = 1024;
     String testData = createTestString(signs);
     byte[] writeData = testData.getBytes("UTF-8");
-    for (int i = 0; i < writeData.length; i++) {
-      write.write(writeData[i]);
+    for (byte element : writeData) {
+      write.write(element);
     }
 
     InputStream inStream = csb.getInputStream();
@@ -196,11 +196,11 @@ public class CircleStreamBufferTest extends BaseTest {
   // #
   // ###################################################
 
-  private String readFrom(InputStream stream) throws IOException {
+  private String readFrom(final InputStream stream) throws IOException {
     return readFrom(stream, 128);
   }
 
-  private String readFrom(InputStream stream, int bufferSize) throws IOException {
+  private String readFrom(final InputStream stream, final int bufferSize) throws IOException {
     StringBuilder b = new StringBuilder();
     int count;
     byte[] buffer = new byte[bufferSize];
@@ -210,7 +210,7 @@ public class CircleStreamBufferTest extends BaseTest {
     return b.toString();
   }
 
-  private String createTestString(int signs) {
+  private String createTestString(final int signs) {
     StringBuilder b = new StringBuilder();
 
     for (int i = 0; i < signs; i++) {
@@ -221,7 +221,7 @@ public class CircleStreamBufferTest extends BaseTest {
     return b.toString();
   }
 
-  private void log(String toLog) {
+  private void log(final String toLog) {
     if (LOG_ON) {
       System.out.println(toLog);
     }

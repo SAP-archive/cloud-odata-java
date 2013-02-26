@@ -40,32 +40,32 @@ public class PathSegmentTest extends BaseTest {
     mp.put("c", v3);
     mp.put("m", m);
 
-    this.segment = new ODataPathSegmentImpl("segment", mp);
-    this.segmentNoMatrix = new ODataPathSegmentImpl("segment", null);
+    segment = new ODataPathSegmentImpl("segment", mp);
+    segmentNoMatrix = new ODataPathSegmentImpl("segment", null);
   }
 
   @Test
   public void testPathSegement() {
-    assertEquals("segment", this.segment.getPath());
+    assertEquals("segment", segment.getPath());
 
-    assertEquals("1", this.segment.getMatrixParameters().get("a").get(0));
-    assertEquals("2", this.segment.getMatrixParameters().get("b").get(0));
-    assertEquals("3", this.segment.getMatrixParameters().get("c").get(0));
+    assertEquals("1", segment.getMatrixParameters().get("a").get(0));
+    assertEquals("2", segment.getMatrixParameters().get("b").get(0));
+    assertEquals("3", segment.getMatrixParameters().get("c").get(0));
 
-    assertEquals("x", this.segment.getMatrixParameters().get("m").get(0));
-    assertEquals("y", this.segment.getMatrixParameters().get("m").get(1));
-    assertEquals("z", this.segment.getMatrixParameters().get("m").get(2));
+    assertEquals("x", segment.getMatrixParameters().get("m").get(0));
+    assertEquals("y", segment.getMatrixParameters().get("m").get(1));
+    assertEquals("z", segment.getMatrixParameters().get("m").get(2));
   }
 
   @Test(expected = UnsupportedOperationException.class)
   public void readonlyMatrixParameter() {
-    this.segment.getMatrixParameters().get("m").clear();
+    segment.getMatrixParameters().get("m").clear();
   }
 
   @Test
   public void noMatrixParameter() {
-    assertEquals("segment", this.segmentNoMatrix.getPath());
-    assertTrue(this.segmentNoMatrix.getMatrixParameters().isEmpty());
+    assertEquals("segment", segmentNoMatrix.getPath());
+    assertTrue(segmentNoMatrix.getMatrixParameters().isEmpty());
 
   }
 }

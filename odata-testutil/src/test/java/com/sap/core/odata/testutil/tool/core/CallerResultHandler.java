@@ -74,7 +74,7 @@ public class CallerResultHandler {
 
   private final Map<TestPath, Set<TestResult>> testPath2TestResult = new HashMap<TestPath, Set<TestResult>>();
 
-  public void handle(URI baseUri, TestPath testPath, HttpRequest request, HttpResponse response) {
+  public void handle(final URI baseUri, final TestPath testPath, final HttpRequest request, final HttpResponse response) {
     final TestResult tr = new TestResult(baseUri, testPath.getPath());
 
     tr.addRequestHeaders(request.getAllHeaders());
@@ -105,7 +105,7 @@ public class CallerResultHandler {
     return b.toString();
   }
 
-  public void writeJiraResultToFile(File file) {
+  public void writeJiraResultToFile(final File file) {
     // this
     final String line = getJiraResult();
     // to file
@@ -139,7 +139,7 @@ public class CallerResultHandler {
     writeJiraResultToFile(file);
   }
 
-  private String createLineForJiraTable(Set<TestResult> results) {
+  private String createLineForJiraTable(final Set<TestResult> results) {
     final StringBuilder b = new StringBuilder(SEPARATOR);
 
     append(b, buildUriForJira(results));
@@ -159,15 +159,15 @@ public class CallerResultHandler {
     return b.toString();
   }
 
-  private JiraColor getResultColor(Set<TestResult> results, boolean isResponseHeader, String key) {
-    if(results == null || results.isEmpty() || results.size() == 1) {
+  private JiraColor getResultColor(final Set<TestResult> results, final boolean isResponseHeader, final String key) {
+    if (results == null || results.isEmpty() || results.size() == 1) {
       return JiraColor.NONE;
     } else {
       String tempValue = null;
       boolean first = true;
       for (TestResult testResult : results) {
         String value;
-        if(isResponseHeader) {
+        if (isResponseHeader) {
           value = testResult.getResponseHeader(key);
           // XXX: this should not be necessary (but is currently because of whitespaces in content type)
           value = normalizeHeaderValue(value);
@@ -175,29 +175,29 @@ public class CallerResultHandler {
           value = testResult.getSomeValue(key);
         }
 
-        if(first) {
+        if (first) {
           tempValue = value;
           first = false;
-        } else if(tempValue != null) {
-          if(!tempValue.equals(value)) {
+        } else if (tempValue != null) {
+          if (!tempValue.equals(value)) {
             return JiraColor.RED;
           }
-        } else if(value != null) {
-          return JiraColor.RED;          
+        } else if (value != null) {
+          return JiraColor.RED;
         }
       }
       return JiraColor.NONE;
     }
   }
-  
-  private String normalizeHeaderValue(String value) {
-    if(value == null) {
+
+  private String normalizeHeaderValue(final String value) {
+    if (value == null) {
       return null;
     }
     return value.replaceAll("\\s", "");
   }
 
-  private String buildUriForJira(Set<TestResult> results) {
+  private String buildUriForJira(final Set<TestResult> results) {
 
     // GET for 'path' on [ABAP GMD|alskdfj] [JAVA NWC| lsakfj] [ukn|alskdjf]
     final StringBuilder b = new StringBuilder();
@@ -217,7 +217,7 @@ public class CallerResultHandler {
     return b.toString();
   }
 
-  private String getKnownHostName(String baseUri) {
+  private String getKnownHostName(final String baseUri) {
     final String lcBaseUri = baseUri.toLowerCase(Locale.ENGLISH);
     if (lcBaseUri.contains("localhost")) {
       return "localhost";
@@ -228,27 +228,27 @@ public class CallerResultHandler {
     }
     return baseUri;
   }
-  
-  private void append(StringBuilder b, String value) {
+
+  private void append(final StringBuilder b, final String value) {
     append(b, value, JiraColor.NONE);
   }
-  
-  private void append(StringBuilder b, String value, JiraColor color) {
+
+  private void append(final StringBuilder b, String value, final JiraColor color) {
     if (value == null) {
       value = NULL_VALUE;
     }
-    
-    if(JiraColor.NONE != color) {
+
+    if (JiraColor.NONE != color) {
       b.append("{color:").append(color.jiraCode).append("}");
     }
     b.append(VALUE_QUOTE).append(value).append(VALUE_QUOTE);
-    if(JiraColor.NONE != color) {
+    if (JiraColor.NONE != color) {
       b.append("{color}");
     }
     b.append(SEPARATOR);
   }
 
-  public void handle(TestPath testPath, HttpRequest request, Exception e) {
+  public void handle(final TestPath testPath, final HttpRequest request, final Exception e) {
     errorLines.append("\n--- START   ---")
         .append(testPath.toString())
         .append("--- Request ---")
@@ -272,10 +272,10 @@ public class CallerResultHandler {
    */
   enum JiraColor {
     NONE(""), RED("red");
-    
+
     final String jiraCode;
-    
-    private JiraColor(String code) {
+
+    private JiraColor(final String code) {
       jiraCode = code;
     }
   }

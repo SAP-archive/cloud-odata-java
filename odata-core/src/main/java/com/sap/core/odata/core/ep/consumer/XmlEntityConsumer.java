@@ -32,13 +32,13 @@ public class XmlEntityConsumer {
     super();
   }
 
-  public ODataEntry readEntry(EdmEntitySet entitySet, Object content, boolean merge) throws EntityProviderException {
+  public ODataEntry readEntry(final EdmEntitySet entitySet, final Object content, final boolean merge) throws EntityProviderException {
     XMLStreamReader reader = null;
-    
+
     try {
       XmlEntryConsumer xec = new XmlEntryConsumer();
       reader = createStaxReader(content);
-      
+
       EntityInfoAggregator eia = EntityInfoAggregator.create(entitySet);
       ODataEntry result = xec.readEntry(reader, eia, merge);
       return result;
@@ -58,7 +58,7 @@ public class XmlEntityConsumer {
     }
   }
 
-  public Map<String, Object> readProperty(EdmProperty edmProperty, Object content, boolean merge) throws EntityProviderException {
+  public Map<String, Object> readProperty(final EdmProperty edmProperty, final Object content, final boolean merge) throws EntityProviderException {
     XMLStreamReader reader = null;
 
     try {
@@ -79,8 +79,8 @@ public class XmlEntityConsumer {
       }
     }
   }
-  
-  public Object readPropertyValue(EdmProperty edmProperty, Object content) throws EntityProviderException {
+
+  public Object readPropertyValue(final EdmProperty edmProperty, final Object content) throws EntityProviderException {
     try {
       Map<String, Object> result = readProperty(edmProperty, content, false);
       return result.get(edmProperty.getName());
@@ -89,8 +89,7 @@ public class XmlEntityConsumer {
     }
   }
 
-  
-  public String readLink(EdmEntitySet entitySet, Object content) throws EntityProviderException {
+  public String readLink(final EdmEntitySet entitySet, final Object content) throws EntityProviderException {
     XMLStreamReader reader = null;
 
     try {
@@ -111,7 +110,7 @@ public class XmlEntityConsumer {
     }
   }
 
-  public List<String> readLinks(EdmEntitySet entitySet, Object content) throws EntityProviderException {
+  public List<String> readLinks(final EdmEntitySet entitySet, final Object content) throws EntityProviderException {
     XMLStreamReader reader = null;
 
     try {
@@ -132,21 +131,21 @@ public class XmlEntityConsumer {
     }
   }
 
-  private XMLStreamReader createStaxReader(Object content) throws XMLStreamException, EntityProviderException {
+  private XMLStreamReader createStaxReader(final Object content) throws XMLStreamException, EntityProviderException {
     XMLInputFactory factory = XMLInputFactory.newInstance();
     factory.setProperty(XMLInputFactory.IS_VALIDATING, false);
     factory.setProperty(XMLInputFactory.IS_NAMESPACE_AWARE, true);
 
-    if(content == null) {
+    if (content == null) {
       throw new EntityProviderException(EntityProviderException.ILLEGAL_ARGUMENT
-          .addContent("Got not supported NULL object as content to de-serialize."));      
+          .addContent("Got not supported NULL object as content to de-serialize."));
     }
-    
-    if(content instanceof InputStream) {
+
+    if (content instanceof InputStream) {
       XMLStreamReader streamReader = factory.createXMLStreamReader((InputStream) content, DEFAULT_CHARSET);
       return streamReader;
     }
     throw new EntityProviderException(EntityProviderException.ILLEGAL_ARGUMENT
-        .addContent("Found not supported content of class '" + content.getClass() + "' to de-serialize."));      
+        .addContent("Found not supported content of class '" + content.getClass() + "' to de-serialize."));
   }
 }

@@ -28,17 +28,17 @@ public class ODataContextImpl implements ODataContext {
   private List<Locale> acceptableLanguages;
 
   @Override
-  public void setParameter(String name, Object value) {
+  public void setParameter(final String name, final Object value) {
     parameterTable.put(name, value);
   }
 
   @Override
-  public void removeParameter(String name) {
+  public void removeParameter(final String name) {
     parameterTable.remove(name);
   }
 
   @Override
-  public Object getParameter(String name) {
+  public Object getParameter(final String name) {
     return parameterTable.get(name);
   }
 
@@ -51,11 +51,11 @@ public class ODataContextImpl implements ODataContext {
   }
 
   @Override
-  public void setDebugMode(boolean debugMode) {
+  public void setDebugMode(final boolean debugMode) {
     setParameter(DEBUG_MODE, debugMode);
   }
 
-  public void setService(ODataService service) {
+  public void setService(final ODataService service) {
     setParameter(SERVICE, service);
   }
 
@@ -64,7 +64,7 @@ public class ODataContextImpl implements ODataContext {
     return (ODataService) getParameter(SERVICE);
   }
 
-  public void setUriInfo(PathInfo uriInfo) {
+  public void setUriInfo(final PathInfo uriInfo) {
     setParameter(PATH_INFO, uriInfo);
   }
 
@@ -74,7 +74,7 @@ public class ODataContextImpl implements ODataContext {
   }
 
   @Override
-  public int startRuntimeMeasurement(String className, String methodName) {
+  public int startRuntimeMeasurement(final String className, final String methodName) {
     if (isInDebugMode()) {
       final RuntimeMeasurement measurement = new RuntimeMeasurementImpl();
       measurement.setTimeStarted(System.nanoTime());
@@ -96,7 +96,7 @@ public class ODataContextImpl implements ODataContext {
   }
 
   @Override
-  public void stopRuntimeMeasurement(int handle) {
+  public void stopRuntimeMeasurement(final int handle) {
     if (isInDebugMode()) {
       @SuppressWarnings("unchecked")
       final List<RuntimeMeasurement> runtimeMeasurements = (List<RuntimeMeasurement>) getParameter(RUNTIME_MEASUREMENTS);
@@ -125,7 +125,7 @@ public class ODataContextImpl implements ODataContext {
     }
 
     @Override
-    public void setTimeStarted(long time_start) {
+    public void setTimeStarted(final long time_start) {
       timeStarted = time_start;
     }
 
@@ -135,7 +135,7 @@ public class ODataContextImpl implements ODataContext {
     }
 
     @Override
-    public void setTimeStopped(long time_stop) {
+    public void setTimeStopped(final long time_stop) {
       timeStopped = time_stop;
     }
 
@@ -145,7 +145,7 @@ public class ODataContextImpl implements ODataContext {
     }
 
     @Override
-    public void setClassName(String className) {
+    public void setClassName(final String className) {
       this.className = className;
     }
 
@@ -155,7 +155,7 @@ public class ODataContextImpl implements ODataContext {
     }
 
     @Override
-    public void setMethodName(String methodName) {
+    public void setMethodName(final String methodName) {
       this.methodName = methodName;
     }
 
@@ -165,12 +165,12 @@ public class ODataContextImpl implements ODataContext {
     }
   }
 
-  public void setHttpRequestHeader(String name, String value) {
+  public void setHttpRequestHeader(final String name, final String value) {
     requestHeader.put(name, value);
   }
 
   @Override
-  public String getHttpRequestHeader(String name) {
+  public String getHttpRequestHeader(final String name) {
     for (final String headerName : requestHeader.keySet()) {
       if (headerName.equalsIgnoreCase(name)) {
         return requestHeader.get(headerName);
@@ -189,7 +189,7 @@ public class ODataContextImpl implements ODataContext {
     return Collections.unmodifiableList(acceptableLanguages);
   }
 
-  public void setAcceptableLanguages(List<Locale> acceptableLanguages) {
+  public void setAcceptableLanguages(final List<Locale> acceptableLanguages) {
     this.acceptableLanguages = acceptableLanguages;
 
     if (this.acceptableLanguages.isEmpty()) {

@@ -32,13 +32,13 @@ public class EdmEntityContainerImplProv implements EdmEntityContainer, EdmAnnota
   private EdmEntityContainer edmExtendedEntityContainer;
   private boolean isDefaultContainer;
 
-  public EdmEntityContainerImplProv(EdmImplProv edm, EntityContainerInfo entityContainer) throws EdmException {
+  public EdmEntityContainerImplProv(final EdmImplProv edm, final EntityContainerInfo entityContainer) throws EdmException {
     this.edm = edm;
     this.entityContainer = entityContainer;
     edmEntitySets = new HashMap<String, EdmEntitySet>();
     edmAssociationSets = new HashMap<String, EdmAssociationSet>();
     edmFunctionImports = new HashMap<String, EdmFunctionImport>();
-    this.isDefaultContainer = entityContainer.isDefaultEntityContainer();
+    isDefaultContainer = entityContainer.isDefaultEntityContainer();
 
     if (entityContainer.getExtendz() != null) {
       edmExtendedEntityContainer = edm.getEntityContainer(entityContainer.getExtendz());
@@ -54,7 +54,7 @@ public class EdmEntityContainerImplProv implements EdmEntityContainer, EdmAnnota
   }
 
   @Override
-  public EdmEntitySet getEntitySet(String name) throws EdmException {
+  public EdmEntitySet getEntitySet(final String name) throws EdmException {
     EdmEntitySet edmEntitySet = edmEntitySets.get(name);
     if (edmEntitySet != null)
       return edmEntitySet;
@@ -80,7 +80,7 @@ public class EdmEntityContainerImplProv implements EdmEntityContainer, EdmAnnota
   }
 
   @Override
-  public EdmFunctionImport getFunctionImport(String name) throws EdmException {
+  public EdmFunctionImport getFunctionImport(final String name) throws EdmException {
     EdmFunctionImport edmFunctionImport = edmFunctionImports.get(name);
     if (edmFunctionImport != null)
       return edmFunctionImport;
@@ -106,7 +106,7 @@ public class EdmEntityContainerImplProv implements EdmEntityContainer, EdmAnnota
   }
 
   @Override
-  public EdmAssociationSet getAssociationSet(EdmEntitySet sourceEntitySet, EdmNavigationProperty navigationProperty) throws EdmException {
+  public EdmAssociationSet getAssociationSet(final EdmEntitySet sourceEntitySet, final EdmNavigationProperty navigationProperty) throws EdmException {
     EdmAssociation edmAssociation = navigationProperty.getRelationship();
     String association = edmAssociation.getNamespace() + "." + edmAssociation.getName();
     String entitySetName = sourceEntitySet.getName();
@@ -139,21 +139,21 @@ public class EdmEntityContainerImplProv implements EdmEntityContainer, EdmAnnota
     }
   }
 
-  private EdmEntitySet createEntitySet(EntitySet entitySet) throws EdmException {
+  private EdmEntitySet createEntitySet(final EntitySet entitySet) throws EdmException {
     return new EdmEntitySetImplProv(edm, entitySet, this);
   }
 
-  private EdmFunctionImport createFunctionImport(FunctionImport functionImport) throws EdmException {
+  private EdmFunctionImport createFunctionImport(final FunctionImport functionImport) throws EdmException {
     return new EdmFunctionImportImplProv(edm, functionImport, this);
   }
 
-  private EdmAssociationSet createAssociationSet(AssociationSet associationSet) throws EdmException {
+  private EdmAssociationSet createAssociationSet(final AssociationSet associationSet) throws EdmException {
     return new EdmAssociationSetImplProv(edm, associationSet, this);
   }
 
   @Override
   public boolean isDefaultEntityContainer() {
-    return this.isDefaultContainer;
+    return isDefaultContainer;
   }
 
   @Override

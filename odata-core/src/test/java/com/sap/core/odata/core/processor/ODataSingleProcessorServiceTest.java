@@ -34,7 +34,7 @@ import com.sap.core.odata.testutil.fit.BaseTest;
 /**
  * @author SAP AG
  */
-public class ODataSingleProcessorServiceTest extends BaseTest{
+public class ODataSingleProcessorServiceTest extends BaseTest {
 
   private static final String APPLICATION_XML = createConstant(ContentType.APPLICATION_XML);
   private static final String APPLICATION_ATOM_SVC = createConstant(ContentType.APPLICATION_ATOM_SVC);
@@ -50,11 +50,11 @@ public class ODataSingleProcessorServiceTest extends BaseTest{
     service = new ODataSingleProcessorService(provider, processor);
   }
 
-  private static String createConstant(ContentType contentType) {
+  private static String createConstant(final ContentType contentType) {
     return appendCharset(contentType).toContentTypeString();
   }
 
-  private static ContentType appendCharset(ContentType contentType) {
+  private static ContentType appendCharset(final ContentType contentType) {
     return ContentType.create(contentType, ContentType.PARAMETER_CHARSET, ContentType.CHARSET_UTF_8);
   }
 
@@ -75,7 +75,7 @@ public class ODataSingleProcessorServiceTest extends BaseTest{
     assertTrue(convertedTypes.contains(appendCharset(ContentType.APPLICATION_ATOM_XML_ENTRY)));
     assertTrue(convertedTypes.contains(appendCharset(ContentType.APPLICATION_JSON)));
   }
-  
+
   @Test
   public void defaultSupportedContentTypesForServiceDocument() throws Exception {
     List<String> types = service.getSupportedContentTypes(ServiceDocumentProcessor.class);

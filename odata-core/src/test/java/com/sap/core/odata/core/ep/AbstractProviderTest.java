@@ -54,20 +54,20 @@ public abstract class AbstractProviderTest extends BaseTest {
   protected ArrayList<Map<String, Object>> roomsData;
 
   {
-    this.employeeData = new HashMap<String, Object>();
+    employeeData = new HashMap<String, Object>();
 
     Calendar date = Calendar.getInstance(TimeZone.getTimeZone("GMT"));
     date.clear();
     date.set(1999, 0, 1);
 
-    this.employeeData.put("EmployeeId", "1");
-    this.employeeData.put("ImmageUrl", null);
-    this.employeeData.put("ManagerId", "1");
-    this.employeeData.put("Age", new Integer(52));
-    this.employeeData.put("RoomId", "1");
-    this.employeeData.put("EntryDate", date);
-    this.employeeData.put("TeamId", "42");
-    this.employeeData.put("EmployeeName", "Walter Winter");
+    employeeData.put("EmployeeId", "1");
+    employeeData.put("ImmageUrl", null);
+    employeeData.put("ManagerId", "1");
+    employeeData.put("Age", new Integer(52));
+    employeeData.put("RoomId", "1");
+    employeeData.put("EntryDate", date);
+    employeeData.put("TeamId", "42");
+    employeeData.put("EmployeeName", "Walter Winter");
 
     Map<String, Object> locationData = new HashMap<String, Object>();
     Map<String, Object> cityData = new HashMap<String, Object>();
@@ -76,36 +76,36 @@ public abstract class AbstractProviderTest extends BaseTest {
     locationData.put("City", cityData);
     locationData.put("Country", "Calisota");
 
-    this.employeeData.put("Location", locationData);
+    employeeData.put("Location", locationData);
 
-    this.photoData = new HashMap<String, Object>();
+    photoData = new HashMap<String, Object>();
     photoData.put("Id", Integer.valueOf(1));
     photoData.put("Name", "Mona Lisa");
     photoData.put("Type", "image/png");
     photoData.put("ImageUrl", "http://www.mopo.de/image/view/2012/6/4/16548086,13385561,medRes,maxh,234,maxw,234,Parodia_Mona_Lisa_Lego_Hamburger_Morgenpost.jpg");
     Map<String, Object> imageData = new HashMap<String, Object>();
-    imageData.put("Image", new byte[] {1, 2, 3, 4});
+    imageData.put("Image", new byte[] { 1, 2, 3, 4 });
     imageData.put("getImageType", "image/png");
     photoData.put("Image", imageData);
-    photoData.put("BinaryData", new byte[] {-1, -2, -3, -4});
+    photoData.put("BinaryData", new byte[] { -1, -2, -3, -4 });
     photoData.put("Содержание", "В лесу шумит водопад. Если он не торопится просп воды");
 
-    this.roomData = new HashMap<String, Object>();
-    this.roomData.put("Id", "1");
-    this.roomData.put("Name", "Neu Schwanstein");
-    this.roomData.put("Seats", new Integer(20));
-    this.roomData.put("Version", new Integer(3));
+    roomData = new HashMap<String, Object>();
+    roomData.put("Id", "1");
+    roomData.put("Name", "Neu Schwanstein");
+    roomData.put("Seats", new Integer(20));
+    roomData.put("Version", new Integer(3));
   }
 
-  protected void initializeRoomData(int count) {
-    this.roomsData = new ArrayList<Map<String, Object>>();
+  protected void initializeRoomData(final int count) {
+    roomsData = new ArrayList<Map<String, Object>>();
     for (int i = 1; i <= count; i++) {
       HashMap<String, Object> tmp = new HashMap<String, Object>();
       tmp.put("Id", "" + i);
       tmp.put("Name", "Neu Schwanstein" + i);
       tmp.put("Seats", new Integer(20));
       tmp.put("Version", new Integer(3));
-      this.roomsData.add(tmp);
+      roomsData.add(tmp);
     }
   }
 

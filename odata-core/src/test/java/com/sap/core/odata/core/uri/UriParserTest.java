@@ -105,7 +105,7 @@ public class UriParserTest extends BaseTest {
     }
   }
 
-  private void parseWrongUri(final String uri, MessageReference exceptionContext) {
+  private void parseWrongUri(final String uri, final MessageReference exceptionContext) {
     try {
       parse(uri);
       fail("Expected UriParserException not thrown");
@@ -608,10 +608,10 @@ public class UriParserTest extends BaseTest {
     // override parameter type for testing literal parsing errors
     when(edm.getDefaultEntityContainer().getFunctionImport("ManagerPhoto").getParameter("Id").getType())
         .thenReturn(EdmSimpleTypeKind.Binary.getEdmSimpleTypeInstance());
-    parseWrongUri("ManagerPhoto?Id=X'Z'", UriSyntaxException.LITERALFORMAT);    
+    parseWrongUri("ManagerPhoto?Id=X'Z'", UriSyntaxException.LITERALFORMAT);
     when(edm.getDefaultEntityContainer().getFunctionImport("ManagerPhoto").getParameter("Id").getType())
         .thenReturn(EdmSimpleTypeKind.Int32.getEdmSimpleTypeInstance());
-    parseWrongUri("ManagerPhoto?Id=12345678901234567890", UriSyntaxException.LITERALFORMAT);    
+    parseWrongUri("ManagerPhoto?Id=12345678901234567890", UriSyntaxException.LITERALFORMAT);
   }
 
   @Test

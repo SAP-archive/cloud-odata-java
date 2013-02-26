@@ -13,19 +13,19 @@ public class ODataUnsupportedMediaTypeException extends ODataHttpException {
   public static final MessageReference COMMON = createMessageReference(ODataUnsupportedMediaTypeException.class, "COMMON");
   public static final MessageReference NOT_SUPPORTED = createMessageReference(ODataUnsupportedMediaTypeException.class, "NOT_SUPPORTED");
 
-  public ODataUnsupportedMediaTypeException(MessageReference context) {
+  public ODataUnsupportedMediaTypeException(final MessageReference context) {
     super(context, HttpStatusCodes.UNSUPPORTED_MEDIA_TYPE);
   }
 
-  public ODataUnsupportedMediaTypeException(MessageReference context, Throwable cause) {
+  public ODataUnsupportedMediaTypeException(final MessageReference context, final Throwable cause) {
     super(context, cause, HttpStatusCodes.UNSUPPORTED_MEDIA_TYPE);
   }
 
-  public ODataUnsupportedMediaTypeException(MessageReference context, String errorCode) {
+  public ODataUnsupportedMediaTypeException(final MessageReference context, final String errorCode) {
     super(context, HttpStatusCodes.UNSUPPORTED_MEDIA_TYPE, errorCode);
   }
 
-  public ODataUnsupportedMediaTypeException(MessageReference context, Throwable cause, String errorCode) {
+  public ODataUnsupportedMediaTypeException(final MessageReference context, final Throwable cause, final String errorCode) {
     super(context, cause, HttpStatusCodes.UNSUPPORTED_MEDIA_TYPE, errorCode);
   }
 }

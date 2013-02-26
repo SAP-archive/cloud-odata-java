@@ -9,6 +9,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.junit.Test;
+import org.mockito.Matchers;
 import org.mockito.Mockito;
 
 import com.sap.core.odata.api.ODataService;
@@ -147,7 +148,7 @@ public class ODataSubLocatorTest extends BaseTest {
     negotiateContentTypeCharset("application/xml; charset=utf-8", "application/xml; charset=utf-8", true);
   }
 
-  private void mockSubLocatorForContentNegotiation(ODataSubLocator locator, boolean asFormat, String reqContentType, String... supportedContentTypes)
+  private void mockSubLocatorForContentNegotiation(final ODataSubLocator locator, final boolean asFormat, final String reqContentType, final String... supportedContentTypes)
       throws SecurityException, IllegalArgumentException, NoSuchFieldException, IllegalAccessException, ODataException {
 
     UriParser parser = mockUriParser(locator);
@@ -160,46 +161,46 @@ public class ODataSubLocatorTest extends BaseTest {
       setField(locator, "acceptHeaderContentTypes", acceptedContentTypes);
     }
 
-    Mockito.when(parser.parse(Mockito.anyListOf(com.sap.core.odata.api.uri.PathSegment.class), Mockito.anyMapOf(String.class, String.class))).thenReturn(uriInfo);
+    Mockito.when(parser.parse(Matchers.anyListOf(com.sap.core.odata.api.uri.PathSegment.class), Matchers.anyMapOf(String.class, String.class))).thenReturn(uriInfo);
     ODataService service = mockODataService(locator);
     ODataContextImpl context = mockODataContext(locator);
     Mockito.when(context.getPathInfo()).thenReturn(new PathInfoImpl());
     Dispatcher dispatcher = mockDispatcher(locator);
     String contentHeader = "application/xml; charset=utf-8";
     ODataResponse odataResponse = ODataResponse.status(HttpStatusCodes.OK).contentHeader(contentHeader).build();
-    Mockito.when(dispatcher.dispatch(Mockito.any(ODataHttpMethod.class),
-        Mockito.any(UriInfoImpl.class),
-        Mockito.any(InputStream.class),
-        Mockito.anyString(),
-        Mockito.refEq(contentHeader))).thenReturn(odataResponse);
+    Mockito.when(dispatcher.dispatch(Matchers.any(ODataHttpMethod.class),
+        Matchers.any(UriInfoImpl.class),
+        Matchers.any(InputStream.class),
+        Matchers.anyString(),
+        Matchers.refEq(contentHeader))).thenReturn(odataResponse);
     Mockito.when(service.getSupportedContentTypes(null)).thenReturn(Arrays.asList(supportedContentTypes));
   }
 
-  private Dispatcher mockDispatcher(ODataSubLocator locator) throws SecurityException, IllegalArgumentException, NoSuchFieldException, IllegalAccessException {
+  private Dispatcher mockDispatcher(final ODataSubLocator locator) throws SecurityException, IllegalArgumentException, NoSuchFieldException, IllegalAccessException {
     Dispatcher dispatcher = Mockito.mock(Dispatcher.class);
     setField(locator, "dispatcher", dispatcher);
     return dispatcher;
   }
 
-  private ODataContextImpl mockODataContext(ODataSubLocator locator) throws SecurityException, IllegalArgumentException, NoSuchFieldException, IllegalAccessException {
+  private ODataContextImpl mockODataContext(final ODataSubLocator locator) throws SecurityException, IllegalArgumentException, NoSuchFieldException, IllegalAccessException {
     ODataContextImpl context = Mockito.mock(ODataContextImpl.class);
     setField(locator, "context", context);
     return context;
   }
 
-  private ODataService mockODataService(ODataSubLocator locator) throws SecurityException, IllegalArgumentException, NoSuchFieldException, IllegalAccessException {
+  private ODataService mockODataService(final ODataSubLocator locator) throws SecurityException, IllegalArgumentException, NoSuchFieldException, IllegalAccessException {
     ODataService service = Mockito.mock(ODataService.class);
     setField(locator, "service", service);
     return service;
   }
 
-  private UriParser mockUriParser(ODataSubLocator locator) throws SecurityException, IllegalArgumentException, NoSuchFieldException, IllegalAccessException {
+  private UriParser mockUriParser(final ODataSubLocator locator) throws SecurityException, IllegalArgumentException, NoSuchFieldException, IllegalAccessException {
     UriParser parser = Mockito.mock(UriParserImpl.class);
     setField(locator, "uriParser", parser);
     return parser;
   }
 
-  private static void setField(Object instance, String fieldname, Object value) throws SecurityException,
+  private static void setField(final Object instance, final String fieldname, final Object value) throws SecurityException,
       NoSuchFieldException, IllegalArgumentException, IllegalAccessException {
     Field field = instance.getClass().getDeclaredField(fieldname);
     boolean access = field.isAccessible();
@@ -210,7 +211,7 @@ public class ODataSubLocatorTest extends BaseTest {
     field.setAccessible(access);
   }
 
-  private List<ContentType> contentTypes(String... contentType) {
+  private List<ContentType> contentTypes(final String... contentType) {
     List<ContentType> ctList = new ArrayList<ContentType>();
     for (String ct : contentType) {
       ctList.add(ContentType.create(ct));

@@ -28,7 +28,7 @@ public abstract class ODataMessageException extends ODataException {
    * @param messageReference references the message text (and additional values)
    *                         of this {@link ODataMessageException}
    */
-  public ODataMessageException(MessageReference messageReference) {
+  public ODataMessageException(final MessageReference messageReference) {
     this(messageReference, null, null);
   }
 
@@ -39,7 +39,7 @@ public abstract class ODataMessageException extends ODataException {
    *                         of this {@link ODataMessageException}
    * @param cause            exception which caused this exception
    */
-  public ODataMessageException(MessageReference messageReference, Throwable cause) {
+  public ODataMessageException(final MessageReference messageReference, final Throwable cause) {
     this(messageReference, cause, null);
   }
 
@@ -51,7 +51,7 @@ public abstract class ODataMessageException extends ODataException {
    * @param cause            exception which caused this exception
    * @param errorCode        a String with a unique code identifying this exception
    */
-  public ODataMessageException(MessageReference messageReference, Throwable cause, String errorCode) {
+  public ODataMessageException(final MessageReference messageReference, final Throwable cause, final String errorCode) {
     super(cause);
     this.messageReference = messageReference;
     this.errorCode = errorCode;
@@ -63,7 +63,7 @@ public abstract class ODataMessageException extends ODataException {
    *                         of this {@link ODataMessageException}
    * @param errorCode        a String with a unique code identifying this exception
    */
-  public ODataMessageException(MessageReference messageReference, String errorCode) {
+  public ODataMessageException(final MessageReference messageReference, final String errorCode) {
     this(messageReference, null, errorCode);
   }
 
@@ -73,7 +73,7 @@ public abstract class ODataMessageException extends ODataException {
    * @param messageReferenceKey unique (in exception class) key for message reference
    * @return created message-reference instance
    */
-  protected static final MessageReference createMessageReference(Class<? extends ODataMessageException> clazz, String messageReferenceKey) {
+  protected static final MessageReference createMessageReference(final Class<? extends ODataMessageException> clazz, final String messageReferenceKey) {
     return MessageReference.create(clazz, messageReferenceKey);
   }
 

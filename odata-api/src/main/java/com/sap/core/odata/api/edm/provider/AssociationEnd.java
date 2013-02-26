@@ -73,7 +73,7 @@ public class AssociationEnd {
    * @param type
    * @return {@link AssociationEnd} for method chaining
    */
-  public AssociationEnd setType(FullQualifiedName type) {
+  public AssociationEnd setType(final FullQualifiedName type) {
     this.type = type;
     return this;
   }
@@ -83,7 +83,7 @@ public class AssociationEnd {
    * @param role
    * @return {@link AssociationEnd} for method chaining
    */
-  public AssociationEnd setRole(String role) {
+  public AssociationEnd setRole(final String role) {
     this.role = role;
     return this;
   }
@@ -93,7 +93,7 @@ public class AssociationEnd {
    * @param multiplicity
    * @return {@link AssociationEnd} for method chaining
    */
-  public AssociationEnd setMultiplicity(EdmMultiplicity multiplicity) {
+  public AssociationEnd setMultiplicity(final EdmMultiplicity multiplicity) {
     this.multiplicity = multiplicity;
     return this;
   }
@@ -103,7 +103,7 @@ public class AssociationEnd {
    * @param onDelete
    * @return {@link AssociationEnd} for method chaining
    */
-  public AssociationEnd setOnDelete(OnDelete onDelete) {
+  public AssociationEnd setOnDelete(final OnDelete onDelete) {
     this.onDelete = onDelete;
     return this;
   }
@@ -113,7 +113,7 @@ public class AssociationEnd {
    * @param documentation
    * @return {@link AssociationEnd} for method chaining
    */
-  public AssociationEnd setDocumentation(Documentation documentation) {
+  public AssociationEnd setDocumentation(final Documentation documentation) {
     this.documentation = documentation;
     return this;
   }
@@ -123,7 +123,7 @@ public class AssociationEnd {
    * @param annotationAttributes
    * @return {@link AssociationEnd} for method chaining
    */
-  public AssociationEnd setAnnotationAttributes(List<AnnotationAttribute> annotationAttributes) {
+  public AssociationEnd setAnnotationAttributes(final List<AnnotationAttribute> annotationAttributes) {
     this.annotationAttributes = annotationAttributes;
     return this;
   }
@@ -133,7 +133,7 @@ public class AssociationEnd {
    * @param annotationElements
    * @return {@link AssociationEnd} for method chaining
    */
-  public AssociationEnd setAnnotationElements(List<AnnotationElement> annotationElements) {
+  public AssociationEnd setAnnotationElements(final List<AnnotationElement> annotationElements) {
     this.annotationElements = annotationElements;
     return this;
   }

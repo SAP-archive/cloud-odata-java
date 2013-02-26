@@ -201,7 +201,7 @@ public class XmlEntityConsumerTest extends BaseTest {
     assertEquals("/SAP/PUBLIC/BC/NWDEMO_MODEL/IMAGES/male_1_WinterW.jpg", properties.get("ImageUrl"));
   }
 
-  @Test(expected=EntityProviderException.class)
+  @Test(expected = EntityProviderException.class)
   public void testReadEntryMissingProperty() throws Exception {
     // prepare
     EdmEntitySet entitySet = MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Employees");
@@ -212,7 +212,7 @@ public class XmlEntityConsumerTest extends BaseTest {
     try {
       XmlEntityConsumer xec = new XmlEntityConsumer();
       ODataEntry result = xec.readEntry(entitySet, contentBody, false);
-      
+
       // verify - not necessary because of thrown exception - but kept to prevent eclipse warning about unused variables
       Map<String, Object> properties = result.getProperties();
       assertEquals(9, properties.size());
@@ -271,7 +271,6 @@ public class XmlEntityConsumerTest extends BaseTest {
     assertEquals("/SAP/PUBLIC/BC/NWDEMO_MODEL/IMAGES/male_1_WinterW.jpg", properties.get("ImageUrl"));
   }
 
-  
   @SuppressWarnings("unchecked")
   @Test
   public void testReadEntryRequest() throws Exception {
@@ -386,7 +385,7 @@ public class XmlEntityConsumerTest extends BaseTest {
     assertEquals("Max Mustermann", result);
   }
 
-  private InputStream createContentAsStream(String xml) throws UnsupportedEncodingException {
+  private InputStream createContentAsStream(final String xml) throws UnsupportedEncodingException {
     InputStream content = new ByteArrayInputStream(xml.getBytes("utf-8"));
     return content;
   }

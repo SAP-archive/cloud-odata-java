@@ -8,7 +8,7 @@ public final class NavigationPropertyInfo {
   private String name;
   private EdmMultiplicity multiplicity;
 
-  static NavigationPropertyInfo create(EdmNavigationProperty property) throws EdmException {
+  static NavigationPropertyInfo create(final EdmNavigationProperty property) throws EdmException {
     NavigationPropertyInfo info = new NavigationPropertyInfo();
     info.name = property.getName();
     info.multiplicity = property.getMultiplicity();

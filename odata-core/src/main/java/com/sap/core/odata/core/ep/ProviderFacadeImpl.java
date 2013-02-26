@@ -26,11 +26,11 @@ public class ProviderFacadeImpl implements EntityProviderInterface {
     return new BasicEntityProvider();
   }
 
-  private static ContentTypeBasedEntityProvider create(String contentType) throws EntityProviderException {
+  private static ContentTypeBasedEntityProvider create(final String contentType) throws EntityProviderException {
     return create(ContentType.create(contentType));
   }
 
-  private static ContentTypeBasedEntityProvider create(ContentType contentType) throws EntityProviderException {
+  private static ContentTypeBasedEntityProvider create(final ContentType contentType) throws EntityProviderException {
     try {
       ContentTypeBasedEntityProvider provider;
 
@@ -54,87 +54,87 @@ public class ProviderFacadeImpl implements EntityProviderInterface {
   }
 
   @Override
-  public ODataResponse writeServiceDocument(String contentType, Edm edm, String serviceRoot) throws EntityProviderException {
+  public ODataResponse writeServiceDocument(final String contentType, final Edm edm, final String serviceRoot) throws EntityProviderException {
     return create(contentType).writeServiceDocument(edm, serviceRoot);
   }
 
   @Override
-  public ODataResponse writePropertyValue(EdmProperty edmProperty, Object value) throws EntityProviderException {
+  public ODataResponse writePropertyValue(final EdmProperty edmProperty, final Object value) throws EntityProviderException {
     return create().writePropertyValue(edmProperty, value);
   }
 
   @Override
-  public ODataResponse writeText(String value) throws EntityProviderException {
+  public ODataResponse writeText(final String value) throws EntityProviderException {
     return create().writeText(value);
   }
 
   @Override
-  public ODataResponse writeBinary(String mimeType, byte[] data) throws EntityProviderException {
+  public ODataResponse writeBinary(final String mimeType, final byte[] data) throws EntityProviderException {
     return create().writeBinary(mimeType, data);
   }
 
   @Override
-  public ODataResponse writeFeed(String contentType, EdmEntitySet entitySet, List<Map<String, Object>> data, EntityProviderProperties properties) throws EntityProviderException {
+  public ODataResponse writeFeed(final String contentType, final EdmEntitySet entitySet, final List<Map<String, Object>> data, final EntityProviderProperties properties) throws EntityProviderException {
     return create(contentType).writeFeed(entitySet, data, properties);
   }
 
   @Override
-  public ODataResponse writeEntry(String contentType, EdmEntitySet entitySet, Map<String, Object> data, EntityProviderProperties properties) throws EntityProviderException {
+  public ODataResponse writeEntry(final String contentType, final EdmEntitySet entitySet, final Map<String, Object> data, final EntityProviderProperties properties) throws EntityProviderException {
     return create(contentType).writeEntry(entitySet, data, properties);
   }
 
   @Override
-  public ODataResponse writeProperty(String contentType, EdmProperty edmProperty, Object value) throws EntityProviderException {
+  public ODataResponse writeProperty(final String contentType, final EdmProperty edmProperty, final Object value) throws EntityProviderException {
     return create(contentType).writeProperty(edmProperty, value);
   }
 
   @Override
-  public ODataResponse writeLink(String contentType, EdmEntitySet entitySet, Map<String, Object> data, EntityProviderProperties properties) throws EntityProviderException {
+  public ODataResponse writeLink(final String contentType, final EdmEntitySet entitySet, final Map<String, Object> data, final EntityProviderProperties properties) throws EntityProviderException {
     return create(contentType).writeLink(entitySet, data, properties);
   }
 
   @Override
-  public ODataResponse writeLinks(String contentType, EdmEntitySet entitySet, List<Map<String, Object>> data, EntityProviderProperties properties) throws EntityProviderException {
+  public ODataResponse writeLinks(final String contentType, final EdmEntitySet entitySet, final List<Map<String, Object>> data, final EntityProviderProperties properties) throws EntityProviderException {
     return create(contentType).writeLinks(entitySet, data, properties);
   }
 
   @Override
-  public ODataResponse writeFunctionImport(String contentType, EdmFunctionImport functionImport, Object data, EntityProviderProperties properties) throws EntityProviderException {
+  public ODataResponse writeFunctionImport(final String contentType, final EdmFunctionImport functionImport, final Object data, final EntityProviderProperties properties) throws EntityProviderException {
     return create(contentType).writeFunctionImport(functionImport, data, properties);
   }
 
   @Override
-  public ODataEntry readEntry(String contentType, EdmEntitySet entitySet, InputStream content, boolean validate) throws EntityProviderException {
+  public ODataEntry readEntry(final String contentType, final EdmEntitySet entitySet, final InputStream content, final boolean validate) throws EntityProviderException {
     return create(contentType).readEntry(entitySet, content, validate);
   }
 
   @Override
-  public Map<String, Object> readProperty(String contentType, EdmProperty edmProperty, InputStream content, boolean validate) throws EntityProviderException {
+  public Map<String, Object> readProperty(final String contentType, final EdmProperty edmProperty, final InputStream content, final boolean validate) throws EntityProviderException {
     return create(contentType).readProperty(edmProperty, content, validate);
   }
 
   @Override
-  public Object readPropertyValue(EdmProperty edmProperty, InputStream content) throws EntityProviderException {
+  public Object readPropertyValue(final EdmProperty edmProperty, final InputStream content) throws EntityProviderException {
     return create().readPropertyValue(edmProperty, content);
   }
 
   @Override
-  public List<String> readLinks(String contentType, EdmEntitySet entitySet, InputStream content) throws EntityProviderException {
+  public List<String> readLinks(final String contentType, final EdmEntitySet entitySet, final InputStream content) throws EntityProviderException {
     return create(contentType).readLinks(entitySet, content);
   }
 
   @Override
-  public String readLink(String contentType, EdmEntitySet entitySet, InputStream content) throws EntityProviderException {
+  public String readLink(final String contentType, final EdmEntitySet entitySet, final InputStream content) throws EntityProviderException {
     return create(contentType).readLink(entitySet, content);
   }
 
   @Override
-  public byte[] readBinary(InputStream content) throws EntityProviderException {
+  public byte[] readBinary(final InputStream content) throws EntityProviderException {
     return create().readBinary(content);
   }
 
   @Override
-  public ODataResponse writeMetadata(List<Schema> schemas, Map<String, String> predefinedNamespaces) throws EntityProviderException {
+  public ODataResponse writeMetadata(final List<Schema> schemas, final Map<String, String> predefinedNamespaces) throws EntityProviderException {
     return create().writeMetadata(schemas, predefinedNamespaces);
   }
 

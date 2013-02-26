@@ -19,7 +19,7 @@ public class EdmEntitySetImplProv extends EdmNamedImplProv implements EdmEntityS
   private EdmEntityContainer edmEntityContainer;
   private EdmEntityType edmEntityType;
 
-  public EdmEntitySetImplProv(EdmImplProv edm, EntitySet entitySet, EdmEntityContainer edmEntityContainer) throws EdmException {
+  public EdmEntitySetImplProv(final EdmImplProv edm, final EntitySet entitySet, final EdmEntityContainer edmEntityContainer) throws EdmException {
     super(edm, entitySet.getName());
     this.entitySet = entitySet;
     this.edmEntityContainer = edmEntityContainer;
@@ -38,7 +38,7 @@ public class EdmEntitySetImplProv extends EdmNamedImplProv implements EdmEntityS
   }
 
   @Override
-  public EdmEntitySet getRelatedEntitySet(EdmNavigationProperty navigationProperty) throws EdmException {
+  public EdmEntitySet getRelatedEntitySet(final EdmNavigationProperty navigationProperty) throws EdmException {
     EdmAssociationSet associationSet = edmEntityContainer.getAssociationSet(edmEntityContainer.getEntitySet(entitySet.getName()), navigationProperty);
     EdmAssociationSetEnd toEnd = associationSet.getEnd(navigationProperty.getToRole());
     if (toEnd == null)

@@ -15,17 +15,17 @@ public class PropertyExpressionImpl implements PropertyExpression {
   private EdmTyped edmProperty;
   private EdmLiteral edmLiteral;
 
-  public PropertyExpressionImpl(String uriLiteral, EdmLiteral edmLiteral) {
+  public PropertyExpressionImpl(final String uriLiteral, final EdmLiteral edmLiteral) {
     this.uriLiteral = uriLiteral;
 
     this.edmLiteral = edmLiteral;
     if (edmLiteral != null)
     {
-      this.edmType = edmLiteral.getType();
+      edmType = edmLiteral.getType();
     }
   }
 
-  public CommonExpression setEdmProperty(EdmTyped edmProperty)
+  public CommonExpression setEdmProperty(final EdmTyped edmProperty)
   {
     //used EdmTyped because it may be a EdmProperty or a EdmNavigationProperty
     this.edmProperty = edmProperty;
@@ -33,7 +33,7 @@ public class PropertyExpressionImpl implements PropertyExpression {
   }
 
   @Override
-  public CommonExpression setEdmType(EdmType edmType) 
+  public CommonExpression setEdmType(final EdmType edmType)
   {
     this.edmType = edmType;
     return this;
@@ -57,19 +57,19 @@ public class PropertyExpressionImpl implements PropertyExpression {
   }
 
   @Override
-  public EdmTyped getEdmProperty() 
+  public EdmTyped getEdmProperty()
   {
     return edmProperty;
   }
 
   @Override
-  public ExpressionKind getKind() 
+  public ExpressionKind getKind()
   {
     return ExpressionKind.PROPERTY;
   }
 
   @Override
-  public String getUriLiteral() 
+  public String getUriLiteral()
   {
     return uriLiteral;
   }
@@ -81,7 +81,7 @@ public class PropertyExpressionImpl implements PropertyExpression {
   }
 
   @Override
-  public Object accept(ExpressionVisitor visitor) 
+  public Object accept(final ExpressionVisitor visitor)
   {
     Object ret = visitor.visitProperty(this, uriLiteral, edmProperty);
     return ret;

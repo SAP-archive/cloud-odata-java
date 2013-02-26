@@ -142,7 +142,7 @@ public class PerformanceTest extends AbstractProviderTest {
     stopTimer(t, "readAtomEntryOptimizedCsb");
   }
 
-  private void stopTimer(long t, String msg) {
+  private void stopTimer(long t, final String msg) {
     t = (System.nanoTime() - t) / TIMES;
 
     long millis = t / (1000L * 1000L);

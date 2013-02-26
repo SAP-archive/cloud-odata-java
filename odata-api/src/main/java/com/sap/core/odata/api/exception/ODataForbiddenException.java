@@ -12,19 +12,19 @@ public class ODataForbiddenException extends ODataHttpException {
 
   public static final MessageReference COMMON = createMessageReference(ODataForbiddenException.class, "COMMON");
 
-  public ODataForbiddenException(MessageReference context) {
+  public ODataForbiddenException(final MessageReference context) {
     super(context, HttpStatusCodes.FORBIDDEN);
   }
 
-  public ODataForbiddenException(MessageReference context, Throwable cause) {
+  public ODataForbiddenException(final MessageReference context, final Throwable cause) {
     super(context, cause, HttpStatusCodes.FORBIDDEN);
   }
 
-  public ODataForbiddenException(MessageReference context, String errorCode) {
+  public ODataForbiddenException(final MessageReference context, final String errorCode) {
     super(context, HttpStatusCodes.FORBIDDEN, errorCode);
   }
 
-  public ODataForbiddenException(MessageReference context, Throwable cause, String errorCode) {
+  public ODataForbiddenException(final MessageReference context, final Throwable cause, final String errorCode) {
     super(context, cause, HttpStatusCodes.FORBIDDEN, errorCode);
   }
 }

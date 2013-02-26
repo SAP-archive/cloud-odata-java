@@ -14,19 +14,19 @@ public abstract class ODataHttpException extends ODataMessageException {
 
   public static final MessageReference COMMON = createMessageReference(ODataHttpException.class, "COMMON");
 
-  public ODataHttpException(MessageReference messageReference, HttpStatusCodes httpStatus) {
+  public ODataHttpException(final MessageReference messageReference, final HttpStatusCodes httpStatus) {
     this(messageReference, null, httpStatus);
   }
 
-  public ODataHttpException(MessageReference messageReference, HttpStatusCodes httpStatus, String errorCode) {
+  public ODataHttpException(final MessageReference messageReference, final HttpStatusCodes httpStatus, final String errorCode) {
     this(messageReference, null, httpStatus, errorCode);
   }
 
-  public ODataHttpException(MessageReference messageReference, Throwable cause, HttpStatusCodes httpStatus) {
+  public ODataHttpException(final MessageReference messageReference, final Throwable cause, final HttpStatusCodes httpStatus) {
     this(messageReference, cause, httpStatus, null);
   }
 
-  public ODataHttpException(MessageReference messageReference, Throwable cause, HttpStatusCodes httpStatus, String errorCode) {
+  public ODataHttpException(final MessageReference messageReference, final Throwable cause, final HttpStatusCodes httpStatus, final String errorCode) {
     super(messageReference, cause, errorCode);
     this.httpStatus = httpStatus;
   }

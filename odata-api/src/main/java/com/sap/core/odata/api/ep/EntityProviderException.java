@@ -21,19 +21,19 @@ public class EntityProviderException extends ODataMessageException {
   public static final MessageReference INVALID_PROPERTY = createMessageReference(EntityProviderException.class, "INVALID_PROPERTY");
   public static final MessageReference ILLEGAL_ARGUMENT = createMessageReference(EntityProviderException.class, "ILLEGAL_ARGUMENT");
 
-  public EntityProviderException(MessageReference messageReference) {
+  public EntityProviderException(final MessageReference messageReference) {
     super(messageReference);
   }
 
-  public EntityProviderException(MessageReference messageReference, Throwable cause) {
+  public EntityProviderException(final MessageReference messageReference, final Throwable cause) {
     super(messageReference, cause);
   }
 
-  public EntityProviderException(MessageReference messageReference, String errorCode) {
+  public EntityProviderException(final MessageReference messageReference, final String errorCode) {
     super(messageReference, errorCode);
   }
 
-  public EntityProviderException(MessageReference messageReference, Throwable cause, String errorCode) {
+  public EntityProviderException(final MessageReference messageReference, final Throwable cause, final String errorCode) {
     super(messageReference, cause, errorCode);
   }
 }

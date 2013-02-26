@@ -80,7 +80,7 @@ public abstract class Property {
    * @param name
    * @return {@link Property} for method chaining
    */
-  public Property setName(String name) {
+  public Property setName(final String name) {
     this.name = name;
     return this;
   }
@@ -90,7 +90,7 @@ public abstract class Property {
    * @param facets
    * @return {@link Property} for method chaining
    */
-  public Property setFacets(EdmFacets facets) {
+  public Property setFacets(final EdmFacets facets) {
     this.facets = facets;
     return this;
   }
@@ -100,7 +100,7 @@ public abstract class Property {
    * @param customizableFeedMappings
    * @return {@link Property} for method chaining
    */
-  public Property setCustomizableFeedMappings(CustomizableFeedMappings customizableFeedMappings) {
+  public Property setCustomizableFeedMappings(final CustomizableFeedMappings customizableFeedMappings) {
     this.customizableFeedMappings = customizableFeedMappings;
     return this;
   }
@@ -110,7 +110,7 @@ public abstract class Property {
    * @param mimeType
    * @return {@link Property} for method chaining
    */
-  public Property setMimeType(String mimeType) {
+  public Property setMimeType(final String mimeType) {
     this.mimeType = mimeType;
     return this;
   }
@@ -120,7 +120,7 @@ public abstract class Property {
    * @param mapping
    * @return {@link Property} for method chaining
    */
-  public Property setMapping(Mapping mapping) {
+  public Property setMapping(final Mapping mapping) {
     this.mapping = mapping;
     return this;
   }
@@ -130,7 +130,7 @@ public abstract class Property {
    * @param documentation
    * @return {@link Property} for method chaining
    */
-  public Property setDocumentation(Documentation documentation) {
+  public Property setDocumentation(final Documentation documentation) {
     this.documentation = documentation;
     return this;
   }
@@ -140,7 +140,7 @@ public abstract class Property {
    * @param annotationAttributes
    * @return {@link Property} for method chaining
    */
-  public Property setAnnotationAttributes(List<AnnotationAttribute> annotationAttributes) {
+  public Property setAnnotationAttributes(final List<AnnotationAttribute> annotationAttributes) {
     this.annotationAttributes = annotationAttributes;
     return this;
   }
@@ -150,7 +150,7 @@ public abstract class Property {
    * @param annotationElements
    * @return {@link Property} for method chaining
    */
-  public Property setAnnotationElements(List<AnnotationElement> annotationElements) {
+  public Property setAnnotationElements(final List<AnnotationElement> annotationElements) {
     this.annotationElements = annotationElements;
     return this;
   }

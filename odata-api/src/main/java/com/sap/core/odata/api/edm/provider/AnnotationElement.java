@@ -65,13 +65,12 @@ public class AnnotationElement implements EdmAnnotationElement {
     return attributes;
   }
 
-
   /**
    * Sets the attributes for this {@link AnnotationElement}
    * @param attributes
    * @return {@link AnnotationElement} for method chaining
    */
-  public AnnotationElement setAttributes(List<AnnotationAttribute> attributes) {
+  public AnnotationElement setAttributes(final List<AnnotationAttribute> attributes) {
     this.attributes = attributes;
     return this;
   }
@@ -81,7 +80,7 @@ public class AnnotationElement implements EdmAnnotationElement {
    * @param childElements
    * @return {@link AnnotationElement} for method chaining
    */
-  public AnnotationElement setChildElements(List<AnnotationElement> childElements) {
+  public AnnotationElement setChildElements(final List<AnnotationElement> childElements) {
     this.childElements = childElements;
     return this;
   }
@@ -91,7 +90,7 @@ public class AnnotationElement implements EdmAnnotationElement {
    * @param namespace
    * @return {@link AnnotationElement} for method chaining
    */
-  public AnnotationElement setNamespace(String namespace) {
+  public AnnotationElement setNamespace(final String namespace) {
     this.namespace = namespace;
     return this;
   }
@@ -101,7 +100,7 @@ public class AnnotationElement implements EdmAnnotationElement {
    * @param prefix
    * @return {@link AnnotationElement} for method chaining
    */
-  public AnnotationElement setPrefix(String prefix) {
+  public AnnotationElement setPrefix(final String prefix) {
     this.prefix = prefix;
     return this;
   }
@@ -111,7 +110,7 @@ public class AnnotationElement implements EdmAnnotationElement {
    * @param name
    * @return {@link AnnotationElement} for method chaining
    */
-  public AnnotationElement setName(String name) {
+  public AnnotationElement setName(final String name) {
     this.name = name;
     return this;
   }
@@ -121,7 +120,7 @@ public class AnnotationElement implements EdmAnnotationElement {
    * @param text
    * @return {@link AnnotationElement} for method chaining
    */
-  public AnnotationElement setText(String text) {
+  public AnnotationElement setText(final String text) {
     this.text = text;
     return this;
   }

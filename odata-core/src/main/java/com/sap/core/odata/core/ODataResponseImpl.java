@@ -17,50 +17,50 @@ public class ODataResponseImpl extends ODataResponse {
 
   @Override
   public HttpStatusCodes getStatus() {
-    return this.status;
+    return status;
   }
 
   @Override
   public Object getEntity() {
-    return this.entity;
+    return entity;
   }
 
   @Override
-  public String getHeader(String name) {
-    return this.header.get(name);
+  public String getHeader(final String name) {
+    return header.get(name);
   }
 
   @Override
   public Set<String> getHeaderNames() {
-    return this.header.keySet();
+    return header.keySet();
   }
 
   @Override
   public String getIdLiteral() {
-    return this.idLiteral;
+    return idLiteral;
   }
 
   @Override
   public String getETag() {
-    return this.eTag;
+    return eTag;
   }
 
   @Override
   public String getContentHeader() {
-    return this.header.get(HttpHeaders.CONTENT_TYPE);
+    return header.get(HttpHeaders.CONTENT_TYPE);
   }
-  
+
   @Override
-  public boolean containsHeader(String header) {
-    
+  public boolean containsHeader(final String header) {
+
     boolean contains = false;
-    
+
     for (String containedHeader : this.header.keySet()) {
-      if(containedHeader.equalsIgnoreCase(header)){
+      if (containedHeader.equalsIgnoreCase(header)) {
         contains = true;
         break;
       }
-      
+
     }
     return contains;
   }
@@ -74,65 +74,65 @@ public class ODataResponseImpl extends ODataResponse {
 
     @Override
     public ODataResponse build() {
-      ODataResponseImpl.this.entity = this.entity;
-      ODataResponseImpl.this.header = this.header;
-      ODataResponseImpl.this.eTag = this.eTag;
-      ODataResponseImpl.this.status = this.status;
-      ODataResponseImpl.this.idLiteral = this.idLiteral;
+      ODataResponseImpl.this.entity = entity;
+      ODataResponseImpl.this.header = header;
+      ODataResponseImpl.this.eTag = eTag;
+      ODataResponseImpl.this.status = status;
+      ODataResponseImpl.this.idLiteral = idLiteral;
 
       return ODataResponseImpl.this;
     }
 
     @Override
-    public ODataResponseBuilder status(HttpStatusCodes status) {
+    public ODataResponseBuilder status(final HttpStatusCodes status) {
       this.status = status;
       return this;
     }
 
     @Override
-    public ODataResponseBuilder entity(Object entity) {
+    public ODataResponseBuilder entity(final Object entity) {
       this.entity = entity;
       return this;
     }
 
     @Override
-    public ODataResponseBuilder header(String name, String value) {
+    public ODataResponseBuilder header(final String name, final String value) {
       if (value == null) {
-        this.header.remove(name);
+        header.remove(name);
       } else {
-        this.header.put(name, value);
+        header.put(name, value);
       }
 
       return this;
     }
 
     @Override
-    public ODataResponseBuilder idLiteral(String idLiteral) {
+    public ODataResponseBuilder idLiteral(final String idLiteral) {
       this.idLiteral = idLiteral;
       return this;
     }
 
     @Override
-    public ODataResponseBuilder eTag(String eTag) {
+    public ODataResponseBuilder eTag(final String eTag) {
       this.eTag = eTag;
       return this;
     }
 
     @Override
-    public ODataResponseBuilder contentHeader(String value) {
-      this.header.put(javax.ws.rs.core.HttpHeaders.CONTENT_TYPE, value);
+    public ODataResponseBuilder contentHeader(final String value) {
+      header.put(javax.ws.rs.core.HttpHeaders.CONTENT_TYPE, value);
       return this;
     }
 
     @Override
-    protected ODataResponseBuilder fromResponse(ODataResponse response) {
-      this.entity = response.getEntity();
-      this.eTag = response.getETag();
-      this.idLiteral = response.getIdLiteral();
+    protected ODataResponseBuilder fromResponse(final ODataResponse response) {
+      entity = response.getEntity();
+      eTag = response.getETag();
+      idLiteral = response.getIdLiteral();
 
-      this.header = new HashMap<String, String>();
+      header = new HashMap<String, String>();
       for (String key : response.getHeaderNames()) {
-        this.header.put(key, response.getHeader(key));
+        header.put(key, response.getHeader(key));
       }
 
       return this;

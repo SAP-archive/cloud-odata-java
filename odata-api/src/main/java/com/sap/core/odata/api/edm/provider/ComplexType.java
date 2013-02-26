@@ -80,7 +80,7 @@ public class ComplexType {
    * @param name
    * @return {@link ComplexType} for method chaining
    */
-  public ComplexType setName(String name) {
+  public ComplexType setName(final String name) {
     this.name = name;
     return this;
   }
@@ -90,7 +90,7 @@ public class ComplexType {
    * @param baseType
    * @return {@link ComplexType} for method chaining
    */
-  public ComplexType setBaseType(FullQualifiedName baseType) {
+  public ComplexType setBaseType(final FullQualifiedName baseType) {
     this.baseType = baseType;
     return this;
   }
@@ -100,7 +100,7 @@ public class ComplexType {
    * @param isAbstract
    * @return {@link ComplexType} for method chaining
    */
-  public ComplexType setAbstract(boolean isAbstract) {
+  public ComplexType setAbstract(final boolean isAbstract) {
     this.isAbstract = isAbstract;
     return this;
   }
@@ -110,7 +110,7 @@ public class ComplexType {
    * @param properties
    * @return {@link ComplexType} for method chaining
    */
-  public ComplexType setProperties(List<Property> properties) {
+  public ComplexType setProperties(final List<Property> properties) {
     this.properties = properties;
     return this;
   }
@@ -120,7 +120,7 @@ public class ComplexType {
    * @param mapping
    * @return {@link ComplexType} for method chaining
    */
-  public ComplexType setMapping(Mapping mapping) {
+  public ComplexType setMapping(final Mapping mapping) {
     this.mapping = mapping;
     return this;
   }
@@ -130,7 +130,7 @@ public class ComplexType {
    * @param documentation
    * @return {@link ComplexType} for method chaining
    */
-  public ComplexType setDocumentation(Documentation documentation) {
+  public ComplexType setDocumentation(final Documentation documentation) {
     this.documentation = documentation;
     return this;
   }
@@ -140,7 +140,7 @@ public class ComplexType {
    * @param annotationAttributes
    * @return {@link ComplexType} for method chaining
    */
-  public ComplexType setAnnotationAttributes(List<AnnotationAttribute> annotationAttributes) {
+  public ComplexType setAnnotationAttributes(final List<AnnotationAttribute> annotationAttributes) {
     this.annotationAttributes = annotationAttributes;
     return this;
   }
@@ -150,7 +150,7 @@ public class ComplexType {
    * @param annotationElements
    * @return {@link ComplexType} for method chaining
    */
-  public ComplexType setAnnotationElements(List<AnnotationElement> annotationElements) {
+  public ComplexType setAnnotationElements(final List<AnnotationElement> annotationElements) {
     this.annotationElements = annotationElements;
     return this;
   }

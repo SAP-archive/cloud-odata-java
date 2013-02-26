@@ -19,13 +19,13 @@ public class TestPath implements Comparable<TestPath> {
   private final String path;
   private final Map<String, String> headers;
 
-  public TestPath(String path) {
+  public TestPath(final String path) {
     super();
     this.path = path;
     headers = new HashMap<String, String>();
   }
 
-  public static TestPath create(String path) {
+  public static TestPath create(final String path) {
     return new TestPath(path);
   }
 
@@ -33,12 +33,12 @@ public class TestPath implements Comparable<TestPath> {
     return path;
   }
 
-  public TestPath setAcceptHeader(String value) {
+  public TestPath setAcceptHeader(final String value) {
     addHeader(HttpHeaders.ACCEPT, value);
     return this;
   }
 
-  public TestPath addHeader(String name, String value) {
+  public TestPath addHeader(final String name, final String value) {
     headers.put(name, value);
     return this;
   }
@@ -47,7 +47,7 @@ public class TestPath implements Comparable<TestPath> {
     return Collections.unmodifiableMap(headers);
   }
 
-  public void applyHeaders(HttpRequest request) {
+  public void applyHeaders(final HttpRequest request) {
     final Set<Entry<String, String>> entries = headers.entrySet();
 
     for (final Entry<String, String> entry : entries) {
@@ -74,7 +74,7 @@ public class TestPath implements Comparable<TestPath> {
   }
 
   @Override
-  public boolean equals(Object obj) {
+  public boolean equals(final Object obj) {
     if (this == obj) {
       return true;
     }
@@ -102,7 +102,7 @@ public class TestPath implements Comparable<TestPath> {
     return true;
   }
 
-  public static List<TestPath> createTestPaths(List<String> paths, List<String> headerValues) {
+  public static List<TestPath> createTestPaths(final List<String> paths, final List<String> headerValues) {
     final List<TestPath> testPaths = new ArrayList<TestPath>();
 
     for (final String path : paths) {
@@ -119,7 +119,7 @@ public class TestPath implements Comparable<TestPath> {
   }
 
   @Override
-  public int compareTo(TestPath o) {
+  public int compareTo(final TestPath o) {
     if (path == null) {
       return -1;
     } else if ((o == null) || (o.path == null)) {

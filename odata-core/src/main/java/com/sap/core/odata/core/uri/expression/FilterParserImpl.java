@@ -52,18 +52,18 @@ public class FilterParserImpl implements FilterParser
    * Creates a new FilterParser implementation
    * @param resourceEntityType EntityType of the resource on which the filter is applied
    */
-  public FilterParserImpl(EdmEntityType resourceEntityType)
+  public FilterParserImpl(final EdmEntityType resourceEntityType)
   {
     this.resourceEntityType = resourceEntityType;
   }
 
   @Override
-  public FilterExpression parseFilterString(String filterExpression) throws ExpressionParserException, ExpressionParserInternalError
+  public FilterExpression parseFilterString(final String filterExpression) throws ExpressionParserException, ExpressionParserInternalError
   {
     return parseFilterString(filterExpression, false);
   }
 
-  public FilterExpression parseFilterString(String filterExpression, boolean allowOnlyBinary) throws ExpressionParserException, ExpressionParserInternalError
+  public FilterExpression parseFilterString(final String filterExpression, final boolean allowOnlyBinary) throws ExpressionParserException, ExpressionParserInternalError
   {
     CommonExpression node = null;
     curExpression = filterExpression;
@@ -110,7 +110,7 @@ public class FilterParserImpl implements FilterParser
     return new FilterExpressionImpl(filterExpression, node);
   }
 
-  protected CommonExpression readElements(CommonExpression leftExpression, int priority) throws ExpressionParserException, ExpressionParserInternalError
+  protected CommonExpression readElements(final CommonExpression leftExpression, final int priority) throws ExpressionParserException, ExpressionParserInternalError
   {
     CommonExpression leftNode = leftExpression;
     CommonExpression rightNode;
@@ -219,7 +219,7 @@ public class FilterParserImpl implements FilterParser
    * @throws TokenizerExpectError 
    *   The next token did not match the expected token
    */
-  protected MethodExpression readParameters(InfoMethod methodInfo, MethodExpressionImpl methodExpression, Token methodToken) throws ExpressionParserException, ExpressionParserInternalError
+  protected MethodExpression readParameters(final InfoMethod methodInfo, final MethodExpressionImpl methodExpression, final Token methodToken) throws ExpressionParserException, ExpressionParserInternalError
   {
     CommonExpression expression;
     boolean expectAnotherExpression = false;
@@ -301,7 +301,7 @@ public class FilterParserImpl implements FilterParser
     return methodExpression;
   }
 
-  protected CommonExpression readElement(CommonExpression leftExpression) throws ExpressionParserException, ExpressionParserInternalError
+  protected CommonExpression readElement(final CommonExpression leftExpression) throws ExpressionParserException, ExpressionParserInternalError
   {
     return readElement(leftExpression, null);
   }
@@ -317,7 +317,7 @@ public class FilterParserImpl implements FilterParser
    * @throws ExpressionParserInternalError 
    * @throws TokenizerMessage 
    */
-  protected CommonExpression readElement(CommonExpression leftExpression, ActualBinaryOperator leftOperator) throws ExpressionParserException, ExpressionParserInternalError
+  protected CommonExpression readElement(final CommonExpression leftExpression, final ActualBinaryOperator leftOperator) throws ExpressionParserException, ExpressionParserInternalError
   {
     CommonExpression node = null;
     Token token;
@@ -378,7 +378,7 @@ public class FilterParserImpl implements FilterParser
     throw ExpressionParserInternalError.createCOMMON();
   }
 
-  protected CommonExpression readUnaryoperator(Token lookToken, InfoUnaryOperator unaryOperator) throws ExpressionParserException, ExpressionParserInternalError
+  protected CommonExpression readUnaryoperator(final Token lookToken, final InfoUnaryOperator unaryOperator) throws ExpressionParserException, ExpressionParserInternalError
   {
     tokenList.expectToken(lookToken.getUriLiteral(), true);
 
@@ -389,7 +389,7 @@ public class FilterParserImpl implements FilterParser
     return unaryExpression;
   }
 
-  protected CommonExpression readMethod(Token token, InfoMethod methodOperator) throws ExpressionParserException, ExpressionParserInternalError
+  protected CommonExpression readMethod(final Token token, final InfoMethod methodOperator) throws ExpressionParserException, ExpressionParserInternalError
   {
     MethodExpressionImpl method = new MethodExpressionImpl(methodOperator);
 
@@ -429,7 +429,7 @@ public class FilterParserImpl implements FilterParser
    *   <li>An instance of {@link InfoUnaryOperator} containing information about the specific unary operator</li> 
    *   <li><code>null</code> if the token is not an unary operator</li>
    */
-  protected InfoUnaryOperator isUnaryOperator(Token token)
+  protected InfoUnaryOperator isUnaryOperator(final Token token)
   {
     if ((token.getKind() == TokenKind.LITERAL) || (token.getKind() == TokenKind.SYMBOL))
     {
@@ -439,7 +439,7 @@ public class FilterParserImpl implements FilterParser
     return null;
   }
 
-  protected InfoMethod isMethod(Token token, Token lookToken)
+  protected InfoMethod isMethod(final Token token, final Token lookToken)
   {
     if ((lookToken != null) && (lookToken.getKind() == TokenKind.OPENPAREN))
     {
@@ -448,16 +448,16 @@ public class FilterParserImpl implements FilterParser
     return null;
   }
 
-  protected void validateEdmProperty(CommonExpression leftExpression, PropertyExpressionImpl property, Token propertyToken, ActualBinaryOperator actBinOp) throws ExpressionParserException, ExpressionParserInternalError {
+  protected void validateEdmProperty(final CommonExpression leftExpression, final PropertyExpressionImpl property, final Token propertyToken, final ActualBinaryOperator actBinOp) throws ExpressionParserException, ExpressionParserInternalError {
 
     // Exist if no edm provided
-    if (this.resourceEntityType == null)
+    if (resourceEntityType == null)
       return;
 
     if (leftExpression == null)
     {
       //e.g. "$filter=city eq 'Hong Kong'" --> "city" is checked against the resource entity type of the last URL segment 
-      validateEdmPropertyOfStructuredType(this.resourceEntityType, property, propertyToken);
+      validateEdmPropertyOfStructuredType(resourceEntityType, property, propertyToken);
       return;
     }
     //e.g. "$filter='Hong Kong' eq address/city" --> city is "checked" against the type of the property "address".
@@ -467,7 +467,7 @@ public class FilterParserImpl implements FilterParser
 
     if ((actBinOp != null) && (actBinOp.operator.getOperator() != BinaryOperator.PROPERTY_ACCESS))
     {
-      validateEdmPropertyOfStructuredType(this.resourceEntityType, property, propertyToken);
+      validateEdmPropertyOfStructuredType(resourceEntityType, property, propertyToken);
       return;
     }
     else
@@ -504,7 +504,7 @@ public class FilterParserImpl implements FilterParser
     return;
   }
 
-  protected void validateEdmPropertyOfStructuredType(EdmStructuralType parentType, PropertyExpressionImpl property, Token propertyToken) throws ExpressionParserException, ExpressionParserInternalError
+  protected void validateEdmPropertyOfStructuredType(final EdmStructuralType parentType, final PropertyExpressionImpl property, final Token propertyToken) throws ExpressionParserException, ExpressionParserInternalError
   {
     try {
       String propertyName = property.getUriLiteral();
@@ -574,7 +574,7 @@ public class FilterParserImpl implements FilterParser
       }
     }*/
 
-  protected void validateUnaryOperatorTypes(UnaryExpression unaryExpression) throws ExpressionParserInternalError
+  protected void validateUnaryOperatorTypes(final UnaryExpression unaryExpression) throws ExpressionParserInternalError
   {
     InfoUnaryOperator unOpt = availableUnaryOperators.get(unaryExpression.getOperator().toUriLiteral());
     EdmType operandType = unaryExpression.getOperand().getEdmType();
@@ -591,7 +591,7 @@ public class FilterParserImpl implements FilterParser
     }
   }
 
-  protected void validateBinaryOperatorTypes(BinaryExpression binaryExpression) throws ExpressionParserException, ExpressionParserInternalError
+  protected void validateBinaryOperatorTypes(final BinaryExpression binaryExpression) throws ExpressionParserException, ExpressionParserInternalError
   {
     InfoBinaryOperator binOpt = availableBinaryOperators.get(binaryExpression.getOperator().toUriLiteral());
 
@@ -622,7 +622,7 @@ public class FilterParserImpl implements FilterParser
     binaryExpression.setEdmType(parameterSet.getReturnType());
   }
 
-  protected void validateMethodTypes(MethodExpression methodExpression, Token methodToken) throws ExpressionParserException, ExpressionParserInternalError
+  protected void validateMethodTypes(final MethodExpression methodExpression, final Token methodToken) throws ExpressionParserException, ExpressionParserInternalError
   {
     InfoMethod methOpt = availableMethods.get(methodExpression.getUriLiteral());
 

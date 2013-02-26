@@ -17,7 +17,7 @@ public class XMLUnitHelper {
    * @param xmlString
    * @param toCheckTags
    */
-  public static void verifyTagOrdering(String xmlString, String... toCheckTags) {
+  public static void verifyTagOrdering(final String xmlString, final String... toCheckTags) {
     int lastTagPos = -1;
 
     for (final String tagName : toCheckTags) {

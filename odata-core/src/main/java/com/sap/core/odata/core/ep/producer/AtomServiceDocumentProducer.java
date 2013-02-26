@@ -24,7 +24,7 @@ import com.sap.core.odata.core.ep.util.FormatXml;
  */
 public class AtomServiceDocumentProducer {
 
-  public static void writeServiceDocument(Edm edm, String serviceRoot, Writer writer) throws EntityProviderException {
+  public static void writeServiceDocument(final Edm edm, final String serviceRoot, final Writer writer) throws EntityProviderException {
 
     EdmProvider edmProvider = ((EdmImplProv) edm).getEdmProvider();
 

@@ -37,7 +37,7 @@ public abstract class ODataServiceFactory {
    * @param processor A custom processor implementation derived from <code>ODataSingleProcessor</code> .
    * @return A new default <code>ODataSingleProcessorService</code> instance.
    */
-  public ODataService createODataSingleProcessorService(EdmProvider provider, ODataSingleProcessor processor) {
+  public ODataService createODataSingleProcessorService(final EdmProvider provider, final ODataSingleProcessor processor) {
     return RuntimeDelegate.createODataSingleProcessorService(provider, processor);
   }
 

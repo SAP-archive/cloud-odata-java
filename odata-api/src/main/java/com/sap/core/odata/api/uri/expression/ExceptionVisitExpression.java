@@ -24,7 +24,7 @@ public class ExceptionVisitExpression extends ODataMessageException {
    * @param messageReference
    *   references the message text (and additional values) of this {@link ExceptionVisitExpression}
    */
-  public ExceptionVisitExpression(MessageReference messageReference) {
+  public ExceptionVisitExpression(final MessageReference messageReference) {
     super(messageReference);
   }
 
@@ -37,7 +37,7 @@ public class ExceptionVisitExpression extends ODataMessageException {
    * @param cause
    *   exception which caused this {@link ExceptionVisitExpression}
    */
-  public ExceptionVisitExpression(MessageReference message, Throwable cause) {
+  public ExceptionVisitExpression(final MessageReference message, final Throwable cause) {
     super(message, cause);
   }
 
@@ -53,7 +53,7 @@ public class ExceptionVisitExpression extends ODataMessageException {
    * Sets erroneous filter tree for debug information.
    * @param filterTree Erroneous filter tree
    */
-  public void setFilterTree(CommonExpression filterTree) {
+  public void setFilterTree(final CommonExpression filterTree) {
     this.filterTree = filterTree;
   }
 }

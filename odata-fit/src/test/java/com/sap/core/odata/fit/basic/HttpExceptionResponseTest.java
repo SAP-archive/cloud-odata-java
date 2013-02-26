@@ -118,7 +118,7 @@ public class HttpExceptionResponseTest extends AbstractBasicTest {
 
     private final String keyLiteral;
 
-    public EntityKeyMatcher(String keyLiteral) {
+    public EntityKeyMatcher(final String keyLiteral) {
       if (keyLiteral == null) {
         throw new IllegalArgumentException("Key parameter MUST NOT be NULL.");
       }
@@ -126,7 +126,7 @@ public class HttpExceptionResponseTest extends AbstractBasicTest {
     }
 
     @Override
-    public boolean matches(Object item) {
+    public boolean matches(final Object item) {
       if (item instanceof UriInfoImpl) {
         final UriInfoImpl upr = (UriInfoImpl) item;
         final List<KeyPredicate> keyPredicates = upr.getKeyPredicates();
@@ -140,7 +140,7 @@ public class HttpExceptionResponseTest extends AbstractBasicTest {
     }
 
     @Override
-    public void describeTo(Description description) {
+    public void describeTo(final Description description) {
       //      description.appendText("");
     }
 

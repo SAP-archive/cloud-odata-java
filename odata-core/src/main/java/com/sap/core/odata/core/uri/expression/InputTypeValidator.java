@@ -11,7 +11,7 @@ public interface InputTypeValidator {
   public static class TypePromotionValidator implements InputTypeValidator {
 
     @Override
-    public EdmType validateParameterSet(List<ParameterSet> allowedParameterTypes, List<EdmType> actualParameterTypes) throws ExpressionParserInternalError
+    public EdmType validateParameterSet(final List<ParameterSet> allowedParameterTypes, final List<EdmType> actualParameterTypes) throws ExpressionParserInternalError
     {
       //first check for exact parameter combination
       for (ParameterSet parameterSet : allowedParameterTypes)

@@ -178,7 +178,7 @@ public class XmlMetadataProducerTest extends BaseTest {
     assertXpathExists("/edmx:Edmx/edmx:DataServices/a:Schema/atom:schemaElementTest1", metadata);
     assertXpathExists("/edmx:Edmx/edmx:DataServices/a:Schema/atom:schemaElementTest2", metadata);
   }
-  
+
   //Element with namespace and attributes with same namespace
   @Test
   public void writeValidMetadata5() throws Exception {
@@ -215,7 +215,7 @@ public class XmlMetadataProducerTest extends BaseTest {
     assertXpathExists("/edmx:Edmx/edmx:DataServices/a:Schema/atom:schemaElementTest1", metadata);
     assertXpathExists("/edmx:Edmx/edmx:DataServices/a:Schema/atom:schemaElementTest2", metadata);
   }
-  
+
   //Element with namespace childelements with same namespace
   @Test
   public void writeValidMetadata6() throws Exception {
@@ -226,15 +226,13 @@ public class XmlMetadataProducerTest extends BaseTest {
     attributesElement1.add(new AnnotationAttribute().setName("rel").setText("self").setPrefix("atom").setNamespace("http://www.w3.org/2005/Atom"));
     attributesElement1.add(new AnnotationAttribute().setName("href").setText("link").setPrefix("atom").setNamespace("http://www.w3.org/2005/Atom"));
 
-     
     List<AnnotationElement> elementElements = new ArrayList<AnnotationElement>();
     elementElements.add(new AnnotationElement().setName("schemaElementTest2").setPrefix("atom").setNamespace("http://www.w3.org/2005/Atom").setAttributes(attributesElement1));
     elementElements.add(new AnnotationElement().setName("schemaElementTest3").setPrefix("atom").setNamespace("http://www.w3.org/2005/Atom").setAttributes(attributesElement1));
-    
+
     List<AnnotationElement> schemaElements = new ArrayList<AnnotationElement>();
     schemaElements.add(new AnnotationElement().setName("schemaElementTest1").setPrefix("atom").setNamespace("http://www.w3.org/2005/Atom").setAttributes(attributesElement1).setChildElements(elementElements));
-  
-    
+
     Schema schema = new Schema().setAnnotationElements(schemaElements);
     schema.setNamespace("http://namespace.com");
     schemas.add(schema);

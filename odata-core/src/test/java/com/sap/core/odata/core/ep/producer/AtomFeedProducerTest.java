@@ -48,7 +48,7 @@ public class AtomFeedProducerTest extends AbstractProviderTest {
     AtomEntityProvider ser = createAtomEntityProvider();
     //EntityProviderProperties properties = EntityProviderProperties.baseUri(BASE_URI).mediaResourceMimeType("mediatype").inlineCountType(view.getInlineCount()).build();
     EntityProviderProperties properties = EntityProviderProperties.serviceRoot(BASE_URI).mediaResourceMimeType("mediatype").build();
-    ODataResponse response = ser.writeFeed(view.getTargetEntitySet(), this.roomsData, properties);
+    ODataResponse response = ser.writeFeed(view.getTargetEntitySet(), roomsData, properties);
     String xmlString = verifyResponse(response);
 
     assertXpathExists("/a:feed", xmlString);
@@ -59,7 +59,7 @@ public class AtomFeedProducerTest extends AbstractProviderTest {
   public void testSelfLink() throws Exception {
     AtomEntityProvider ser = createAtomEntityProvider();
     EntityProviderProperties properties = EntityProviderProperties.serviceRoot(BASE_URI).mediaResourceMimeType("mediatype").build();
-    ODataResponse response = ser.writeFeed(view.getTargetEntitySet(), this.roomsData, properties);
+    ODataResponse response = ser.writeFeed(view.getTargetEntitySet(), roomsData, properties);
     String xmlString = verifyResponse(response);
 
     assertXpathExists("/a:feed/a:link[@rel='self']", xmlString);
@@ -71,7 +71,7 @@ public class AtomFeedProducerTest extends AbstractProviderTest {
   public void testFeedMandatoryParts() throws Exception {
     AtomEntityProvider ser = createAtomEntityProvider();
     EntityProviderProperties properties = EntityProviderProperties.serviceRoot(BASE_URI).mediaResourceMimeType("mediatype").build();
-    ODataResponse response = ser.writeFeed(view.getTargetEntitySet(), this.roomsData, properties);
+    ODataResponse response = ser.writeFeed(view.getTargetEntitySet(), roomsData, properties);
     String xmlString = verifyResponse(response);
 
     assertXpathExists("/a:feed/a:id", xmlString);
@@ -85,7 +85,7 @@ public class AtomFeedProducerTest extends AbstractProviderTest {
     assertXpathExists("/a:feed/a:author/a:name", xmlString);
   }
 
-  private String verifyResponse(ODataResponse response) throws IOException {
+  private String verifyResponse(final ODataResponse response) throws IOException {
     assertNotNull(response);
     assertNotNull(response.getEntity());
     assertEquals(ContentType.APPLICATION_ATOM_XML_FEED_CS_UTF_8.toContentTypeString(), response.getContentHeader());
@@ -103,7 +103,7 @@ public class AtomFeedProducerTest extends AbstractProviderTest {
         .inlineCount(Integer.valueOf(103))
         .inlineCountType(InlineCount.ALLPAGES)
         .build();
-    ODataResponse response = ser.writeFeed(view.getTargetEntitySet(), this.roomsData, properties);
+    ODataResponse response = ser.writeFeed(view.getTargetEntitySet(), roomsData, properties);
     String xmlString = verifyResponse(response);
 
     assertXpathExists("/a:feed/m:count", xmlString);
@@ -116,7 +116,7 @@ public class AtomFeedProducerTest extends AbstractProviderTest {
 
     AtomEntityProvider ser = createAtomEntityProvider();
     EntityProviderProperties properties = EntityProviderProperties.serviceRoot(BASE_URI).mediaResourceMimeType("mediatype").build();
-    ODataResponse response = ser.writeFeed(view.getTargetEntitySet(), this.roomsData, properties);
+    ODataResponse response = ser.writeFeed(view.getTargetEntitySet(), roomsData, properties);
     String xmlString = verifyResponse(response);
 
     assertXpathNotExists("/a:feed/m:count", xmlString);
@@ -131,20 +131,18 @@ public class AtomFeedProducerTest extends AbstractProviderTest {
         .mediaResourceMimeType("mediatype")
         .nextLink("http://thisisanextlink")
         .build();
-    ODataResponse response = ser.writeFeed(view.getTargetEntitySet(), this.roomsData, properties);
+    ODataResponse response = ser.writeFeed(view.getTargetEntitySet(), roomsData, properties);
     String xmlString = verifyResponse(response);
 
     assertXpathExists("/a:feed/a:link[@rel='next']", xmlString);
     assertXpathEvaluatesTo("http://thisisanextlink", "/a:feed/a:link[@rel='next']/@href", xmlString);
   }
-  
-
 
   @Test(expected = EntityProviderException.class)
   public void testInlineCountInvalid() throws Exception {
     AtomEntityProvider ser = createAtomEntityProvider();
     EntityProviderProperties properties = EntityProviderProperties.serviceRoot(BASE_URI).mediaResourceMimeType("mediatype").inlineCountType(InlineCount.ALLPAGES).build();
-    ser.writeFeed(view.getTargetEntitySet(), this.roomsData, properties);
+    ser.writeFeed(view.getTargetEntitySet(), roomsData, properties);
   }
 
   @Test
@@ -153,7 +151,7 @@ public class AtomFeedProducerTest extends AbstractProviderTest {
 
     AtomEntityProvider ser = createAtomEntityProvider();
     EntityProviderProperties properties = EntityProviderProperties.serviceRoot(BASE_URI).mediaResourceMimeType("mediatype").build();
-    ODataResponse response = ser.writeFeed(view.getTargetEntitySet(), this.roomsData, properties);
+    ODataResponse response = ser.writeFeed(view.getTargetEntitySet(), roomsData, properties);
     String xmlString = verifyResponse(response);
 
     assertXpathExists("/a:feed/a:entry[1]", xmlString);

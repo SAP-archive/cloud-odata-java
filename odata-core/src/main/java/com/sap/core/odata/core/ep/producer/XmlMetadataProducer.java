@@ -45,7 +45,7 @@ import com.sap.core.odata.core.exception.ODataRuntimeException;
 
 public class XmlMetadataProducer {
 
-  public static void writeMetadata(DataServices metadata, Writer writer, Map<String, String> predefinedNamespaces) throws EntityProviderException {
+  public static void writeMetadata(final DataServices metadata, final Writer writer, Map<String, String> predefinedNamespaces) throws EntityProviderException {
 
     try {
       XMLStreamWriter xmlStreamWriter = XMLOutputFactory.newInstance().createXMLStreamWriter(writer);
@@ -377,7 +377,7 @@ public class XmlMetadataProducer {
     }
   }
 
-  private static void writeCustomizableFeedMappings(CustomizableFeedMappings customizableFeedMappings, XMLStreamWriter xmlStreamWriter) throws XMLStreamException {
+  private static void writeCustomizableFeedMappings(final CustomizableFeedMappings customizableFeedMappings, final XMLStreamWriter xmlStreamWriter) throws XMLStreamException {
     if (customizableFeedMappings != null) {
       if (customizableFeedMappings.getFcKeepInContent() != null) {
         xmlStreamWriter.writeAttribute(Edm.PREFIX_M, Edm.NAMESPACE_M_2007_08, "FC_KeepInContent", customizableFeedMappings.getFcKeepInContent().toString().toLowerCase(Locale.ROOT));
@@ -400,7 +400,7 @@ public class XmlMetadataProducer {
     }
   }
 
-  private static void writeProperties(Collection<Property> properties, Map<String, String> predefinedNamespaces, XMLStreamWriter xmlStreamWriter) throws XMLStreamException {
+  private static void writeProperties(final Collection<Property> properties, final Map<String, String> predefinedNamespaces, final XMLStreamWriter xmlStreamWriter) throws XMLStreamException {
     for (Property property : properties) {
       xmlStreamWriter.writeStartElement("Property");
       xmlStreamWriter.writeAttribute("Name", property.getName());
@@ -430,7 +430,7 @@ public class XmlMetadataProducer {
     }
   }
 
-  private static void writeFacets(XMLStreamWriter xmlStreamWriter, EdmFacets facets) throws XMLStreamException {
+  private static void writeFacets(final XMLStreamWriter xmlStreamWriter, final EdmFacets facets) throws XMLStreamException {
     if (facets != null) {
       if (facets.isNullable() != null) {
         xmlStreamWriter.writeAttribute("Nullable", facets.isNullable().toString().toLowerCase(Locale.ROOT));
@@ -462,7 +462,7 @@ public class XmlMetadataProducer {
     }
   }
 
-  private static void writeAssociationEnd(AssociationEnd end, Map<String, String> predefinedNamespaces, XMLStreamWriter xmlStreamWriter) throws XMLStreamException {
+  private static void writeAssociationEnd(final AssociationEnd end, final Map<String, String> predefinedNamespaces, final XMLStreamWriter xmlStreamWriter) throws XMLStreamException {
     xmlStreamWriter.writeStartElement("End");
     xmlStreamWriter.writeAttribute("Type", end.getType().toString());
     xmlStreamWriter.writeAttribute("Multiplicity", end.getMultiplicity().toString());
@@ -489,7 +489,7 @@ public class XmlMetadataProducer {
     xmlStreamWriter.writeEndElement();
   }
 
-  private static void writeAssociationSetEnd(AssociationSetEnd end, Map<String, String> predefinedNamespaces, XMLStreamWriter xmlStreamWriter) throws XMLStreamException {
+  private static void writeAssociationSetEnd(final AssociationSetEnd end, final Map<String, String> predefinedNamespaces, final XMLStreamWriter xmlStreamWriter) throws XMLStreamException {
     xmlStreamWriter.writeStartElement("End");
     xmlStreamWriter.writeAttribute("EntitySet", end.getEntitySet().toString());
     if (end.getRole() != null) {
@@ -501,7 +501,7 @@ public class XmlMetadataProducer {
     xmlStreamWriter.writeEndElement();
   }
 
-  private static void writeDocumentation(Documentation documentation, Map<String, String> predefinedNamespaces, XMLStreamWriter xmlStreamWriter) throws XMLStreamException {
+  private static void writeDocumentation(final Documentation documentation, final Map<String, String> predefinedNamespaces, final XMLStreamWriter xmlStreamWriter) throws XMLStreamException {
     if (documentation != null) {
       xmlStreamWriter.writeStartElement("Documentation");
       writeAnnotationAttributes(documentation.getAnnotationAttributes(), predefinedNamespaces, null, xmlStreamWriter);
@@ -519,12 +519,12 @@ public class XmlMetadataProducer {
     }
   }
 
-  private static void writeAnnotationAttributes(Collection<AnnotationAttribute> annotationAttributes, Map<String, String> predefinedNamespaces, ArrayList<String> setNamespaces, XMLStreamWriter xmlStreamWriter) throws XMLStreamException {
+  private static void writeAnnotationAttributes(final Collection<AnnotationAttribute> annotationAttributes, final Map<String, String> predefinedNamespaces, ArrayList<String> setNamespaces, final XMLStreamWriter xmlStreamWriter) throws XMLStreamException {
     if (annotationAttributes != null) {
-      if(setNamespaces == null){
-        setNamespaces = new ArrayList<String>();   
+      if (setNamespaces == null) {
+        setNamespaces = new ArrayList<String>();
       }
-      for (AnnotationAttribute annotationAttribute : annotationAttributes) {    
+      for (AnnotationAttribute annotationAttribute : annotationAttributes) {
         xmlStreamWriter.writeAttribute(annotationAttribute.getPrefix(), annotationAttribute.getNamespace(), annotationAttribute.getName(), annotationAttribute.getText());
         if (setNamespaces.contains(annotationAttribute.getNamespace()) == false && predefinedNamespaces.containsValue(annotationAttribute.getNamespace()) == false) {
           if (annotationAttribute.getNamespace() != null) {
@@ -536,7 +536,7 @@ public class XmlMetadataProducer {
     }
   }
 
-  private static void writeAnnotationElements(Collection<AnnotationElement> annotationElements, Map<String, String> predefinedNamespaces, XMLStreamWriter xmlStreamWriter) throws XMLStreamException {
+  private static void writeAnnotationElements(final Collection<AnnotationElement> annotationElements, final Map<String, String> predefinedNamespaces, final XMLStreamWriter xmlStreamWriter) throws XMLStreamException {
     if (annotationElements != null) {
       for (AnnotationElement annotationElement : annotationElements) {
         ArrayList<String> setNamespaces = new ArrayList<String>();
@@ -548,7 +548,7 @@ public class XmlMetadataProducer {
           }
         }
 
-        writeAnnotationAttributes(annotationElement.getAttributes(), predefinedNamespaces,setNamespaces, xmlStreamWriter);
+        writeAnnotationAttributes(annotationElement.getAttributes(), predefinedNamespaces, setNamespaces, xmlStreamWriter);
 
         if (annotationElement.getChildElements() != null) {
           writeAnnotationElements(annotationElement.getChildElements(), predefinedNamespaces, xmlStreamWriter);

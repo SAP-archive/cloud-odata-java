@@ -19,7 +19,7 @@ public class SelectItemImpl implements SelectItem {
     return star;
   }
 
-  public void setStar(boolean star) {
+  public void setStar(final boolean star) {
     this.star = star;
   }
 
@@ -28,11 +28,11 @@ public class SelectItemImpl implements SelectItem {
     return property;
   }
 
-  public void setProperty(EdmTyped property) {
+  public void setProperty(final EdmTyped property) {
     this.property = property;
   }
 
-  public void addNavigationPropertySegment(NavigationPropertySegment segment) {
+  public void addNavigationPropertySegment(final NavigationPropertySegment segment) {
     if (navigationPropertySegments.equals(Collections.EMPTY_LIST))
       navigationPropertySegments = new ArrayList<NavigationPropertySegment>();
 

@@ -15,7 +15,7 @@ public abstract class EdmElementImplProv extends EdmTypedImplProv implements Edm
   private EdmFacets edmFacets;
   private EdmMapping edmMapping;
 
-  public EdmElementImplProv(EdmImplProv edm, String name, FullQualifiedName typeName, EdmFacets edmFacets, EdmMapping edmMapping) throws EdmException {
+  public EdmElementImplProv(final EdmImplProv edm, final String name, final FullQualifiedName typeName, final EdmFacets edmFacets, final EdmMapping edmMapping) throws EdmException {
     super(edm, name, typeName, (edmFacets == null || edmFacets.isNullable() == null) || edmFacets.isNullable() ? EdmMultiplicity.ZERO_TO_ONE : EdmMultiplicity.ONE);
     this.edmFacets = edmFacets;
     this.edmMapping = edmMapping;

@@ -19,7 +19,7 @@ public class Using {
    * @param namespace
    * @return {@link Using} for method chaining
    */
-  public Using setNamespace(String namespace) {
+  public Using setNamespace(final String namespace) {
     this.namespace = namespace;
     return this;
   }
@@ -29,7 +29,7 @@ public class Using {
    * @param alias
    * @return {@link Using} for method chaining
    */
-  public Using setAlias(String alias) {
+  public Using setAlias(final String alias) {
     this.alias = alias;
     return this;
   }
@@ -39,7 +39,7 @@ public class Using {
    * @param documentation
    * @return {@link Using} for method chaining
    */
-  public Using setDocumentation(Documentation documentation) {
+  public Using setDocumentation(final Documentation documentation) {
     this.documentation = documentation;
     return this;
   }
@@ -49,7 +49,7 @@ public class Using {
    * @param annotationAttributes
    * @return {@link Using} for method chaining
    */
-  public Using setAnnotationAttributes(List<AnnotationAttribute> annotationAttributes) {
+  public Using setAnnotationAttributes(final List<AnnotationAttribute> annotationAttributes) {
     this.annotationAttributes = annotationAttributes;
     return this;
   }
@@ -59,7 +59,7 @@ public class Using {
    * @param annotationElements
    * @return {@link Using} for method chaining
    */
-  public Using setAnnotationElements(List<AnnotationElement> annotationElements) {
+  public Using setAnnotationElements(final List<AnnotationElement> annotationElements) {
     this.annotationElements = annotationElements;
     return this;
   }

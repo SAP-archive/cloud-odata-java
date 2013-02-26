@@ -94,12 +94,12 @@ public enum UriType {
 
   private ArrayList<SystemQueryOption> whiteList = new ArrayList<SystemQueryOption>();
 
-  private UriType(SystemQueryOption... compatibleQueryOptions) {
+  private UriType(final SystemQueryOption... compatibleQueryOptions) {
     for (SystemQueryOption queryOption : compatibleQueryOptions)
       whiteList.add(queryOption);
   }
 
-  public boolean isCompatible(SystemQueryOption queryOption) {
+  public boolean isCompatible(final SystemQueryOption queryOption) {
     return whiteList.contains(queryOption);
   }
 

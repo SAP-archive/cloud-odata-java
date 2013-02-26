@@ -34,7 +34,7 @@ public class TestCallTool {
    * 
    * @param args not used
    */
-  public static void main(String[] args) throws Exception {
+  public static void main(final String[] args) throws Exception {
     activateLoggingToJiraMarkupFile(ACCEPT_HEADER_REQUEST_JIRA_FILENAME);
 
     final List<String> paths = Arrays.asList(

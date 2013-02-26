@@ -15,7 +15,7 @@ public class EdmNavigationPropertyImplProv extends EdmTypedImplProv implements E
 
   private NavigationProperty navigationProperty;
 
-  public EdmNavigationPropertyImplProv(EdmImplProv edm, NavigationProperty property) throws EdmException {
+  public EdmNavigationPropertyImplProv(final EdmImplProv edm, final NavigationProperty property) throws EdmException {
     super(edm, property.getName(), null, null);
     navigationProperty = property;
   }

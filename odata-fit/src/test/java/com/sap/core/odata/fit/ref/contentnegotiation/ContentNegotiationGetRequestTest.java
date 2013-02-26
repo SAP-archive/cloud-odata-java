@@ -90,11 +90,11 @@ public class ContentNegotiationGetRequestTest extends AbstractContentNegotiation
     // TODO: check which behavior is currently wanted
     testSet.setTestParam(Arrays.asList("?$format=json"), ACCEPT_HEADER_VALUES, 406, "application/xml");
     testSet.setTestParam(Arrays.asList("", "?$format=json"), notAcceptedJsonHeaderValues, 406, "application/json");
-    
+
     // execute all defined tests
     testSet.execute(getEndpoint());
   }
-  
+
   @Test
   public void testURI_1_EntitySet() throws Exception {
     // create test set
@@ -103,7 +103,7 @@ public class ContentNegotiationGetRequestTest extends AbstractContentNegotiation
     // set specific response 'Content-Type's for '$format'
     testSet.setTestParam(Arrays.asList("?$format=xml"), ACCEPT_HEADER_VALUES, 200, "application/xml; charset=utf-8");
     testSet.setTestParam(Arrays.asList("?$format=atom"), ACCEPT_HEADER_VALUES, 200, "application/atom+xml; type=feed; charset=utf-8");
-    testSet.setTestParam(Arrays.asList(""), Arrays.asList("", "application/atom+xml", "application/atom+xml; charset=utf-8"), 
+    testSet.setTestParam(Arrays.asList(""), Arrays.asList("", "application/atom+xml", "application/atom+xml; charset=utf-8"),
         200, "application/atom+xml; type=feed; charset=utf-8");
 
     // set all 'NOT ACCEPTED' requests
@@ -123,11 +123,11 @@ public class ContentNegotiationGetRequestTest extends AbstractContentNegotiation
     // TODO: check which behavior is currently wanted
     testSet.setTestParam(Arrays.asList("?$format=json"), ACCEPT_HEADER_VALUES, 406, "application/xml");
     testSet.setTestParam(Arrays.asList("", "?$format=json"), notAcceptedJsonHeaderValues, 406, "application/json");
-    
+
     // execute all defined tests
     testSet.execute(getEndpoint());
   }
-  
+
   @Test
   public void testURI_2_Entity() throws Exception {
     // create test set
@@ -136,7 +136,7 @@ public class ContentNegotiationGetRequestTest extends AbstractContentNegotiation
     // set specific response 'Content-Type's for '$format'
     testSet.setTestParam(Arrays.asList("?$format=xml"), ACCEPT_HEADER_VALUES, 200, "application/xml; charset=utf-8");
     testSet.setTestParam(Arrays.asList("?$format=atom"), ACCEPT_HEADER_VALUES, 200, "application/atom+xml; type=entry; charset=utf-8");
-    testSet.setTestParam(Arrays.asList(""), Arrays.asList("", "application/atom+xml", "application/atom+xml; charset=utf-8"), 
+    testSet.setTestParam(Arrays.asList(""), Arrays.asList("", "application/atom+xml", "application/atom+xml; charset=utf-8"),
         200, "application/atom+xml; type=entry; charset=utf-8");
 
     // set all 'NOT ACCEPTED' requests
@@ -156,7 +156,7 @@ public class ContentNegotiationGetRequestTest extends AbstractContentNegotiation
     // TODO: check which behavior is currently wanted
     testSet.setTestParam(Arrays.asList("?$format=json"), ACCEPT_HEADER_VALUES, 406, "application/xml");
     testSet.setTestParam(Arrays.asList("", "?$format=json"), notAcceptedJsonHeaderValues, 406, "application/json");
-    
+
     // execute all defined tests
     testSet.execute(getEndpoint());
   }
@@ -191,11 +191,10 @@ public class ContentNegotiationGetRequestTest extends AbstractContentNegotiation
     // TODO: check which behavior is currently wanted
     testSet.setTestParam(Arrays.asList("?$format=json"), ACCEPT_HEADER_VALUES, 406, "application/xml");
     testSet.setTestParam(Arrays.asList("", "?$format=json", "?$format=atom"), notAcceptedJsonHeaderValues, 406, "application/json");
-    
+
     // execute all defined tests
     testSet.execute(getEndpoint());
   }
-
 
   @Test
   public void testURI_4_EntityComplexPropertySimpleProperty() throws Exception {
@@ -227,7 +226,7 @@ public class ContentNegotiationGetRequestTest extends AbstractContentNegotiation
     // TODO: check which behavior is currently wanted
     testSet.setTestParam(Arrays.asList("?$format=json"), ACCEPT_HEADER_VALUES, 406, "application/xml");
     testSet.setTestParam(Arrays.asList("", "?$format=json", "?$format=atom"), notAcceptedJsonHeaderValues, 406, "application/json");
-    
+
     // execute all defined tests
     testSet.execute(getEndpoint());
   }
@@ -262,7 +261,7 @@ public class ContentNegotiationGetRequestTest extends AbstractContentNegotiation
     // TODO: check which behavior is currently wanted
     testSet.setTestParam(Arrays.asList("?$format=json"), ACCEPT_HEADER_VALUES, 406, "application/xml");
     testSet.setTestParam(Arrays.asList("", "?$format=json", "?$format=atom"), notAcceptedJsonHeaderValues, 406, "application/json");
-    
+
     // execute all defined tests
     testSet.execute(getEndpoint());
   }
@@ -275,7 +274,7 @@ public class ContentNegotiationGetRequestTest extends AbstractContentNegotiation
     // set specific response 'Content-Type's for '$format'
     testSet.setTestParam(Arrays.asList("?$format=xml"), ACCEPT_HEADER_VALUES, 200, "application/xml; charset=utf-8");
     testSet.setTestParam(Arrays.asList("?$format=atom"), ACCEPT_HEADER_VALUES, 200, "application/atom+xml; type=entry; charset=utf-8");
-    testSet.setTestParam(Arrays.asList(""), Arrays.asList("", "application/atom+xml", "application/atom+xml; charset=utf-8"), 
+    testSet.setTestParam(Arrays.asList(""), Arrays.asList("", "application/atom+xml", "application/atom+xml; charset=utf-8"),
         200, "application/atom+xml; type=entry; charset=utf-8");
 
     // set all 'NOT ACCEPTED' requests
@@ -295,7 +294,7 @@ public class ContentNegotiationGetRequestTest extends AbstractContentNegotiation
     // TODO: check which behavior is currently wanted
     testSet.setTestParam(Arrays.asList("?$format=json"), ACCEPT_HEADER_VALUES, 406, "application/xml");
     testSet.setTestParam(Arrays.asList("", "?$format=json"), notAcceptedJsonHeaderValues, 406, "application/json");
-    
+
     // execute all defined tests
     testSet.execute(getEndpoint());
   }
@@ -328,7 +327,7 @@ public class ContentNegotiationGetRequestTest extends AbstractContentNegotiation
     // TODO: check which behavior is currently wanted
     testSet.setTestParam(Arrays.asList("?$format=json", "?$format=atom"), ACCEPT_HEADER_VALUES, 406, "application/xml");
     testSet.setTestParam(Arrays.asList("", "?$format=json", "?$format=atom"), notAcceptedJsonHeaderValues, 406, "application/json");
-    
+
     // execute all defined tests
     testSet.execute(getEndpoint());
   }
@@ -339,7 +338,7 @@ public class ContentNegotiationGetRequestTest extends AbstractContentNegotiation
     FitTestSet testSet = FitTestSet.create(UriType.URI8, "/$metadata").init();
 
     // set specific response 'Content-Type's for '$format'
-    testSet.setTestParam(Arrays.asList(""), Arrays.asList("", "application/xml", "application/xml; charset=utf-8"), 
+    testSet.setTestParam(Arrays.asList(""), Arrays.asList("", "application/xml", "application/xml; charset=utf-8"),
         200, "application/xml; charset=utf-8");
 
     // set all 'NOT ACCEPTED' requests
@@ -363,7 +362,7 @@ public class ContentNegotiationGetRequestTest extends AbstractContentNegotiation
     // TODO: check which behavior is currently wanted
     testSet.setTestParam(Arrays.asList("?$format=json", "?$format=xml", "?$format=atom"), jsonAcceptHeaders, 400, "application/json");
     testSet.setTestParam(Arrays.asList(""), jsonAcceptHeaders, 406, "application/json");
-    
+
     // execute all defined tests
     testSet.execute(getEndpoint());
   }
@@ -373,7 +372,7 @@ public class ContentNegotiationGetRequestTest extends AbstractContentNegotiation
   public void testURI_17_EntityMediaResourceDollarValue() throws Exception {
     // create test set
     FitTestSet testSet = FitTestSet.create(UriType.URI17, "/Employees('1')/$value").expectedStatusCode(200).expectedContentType("image/jpeg").init();
-    
+
     // every combination of $format and $value is a 'BAD REQUEST'
     testSet.setTestParam(Arrays.asList("?$format=json", "?$format=xml", "?$format=atom"), ACCEPT_HEADER_VALUES, 400, "application/xml");
     //
@@ -391,8 +390,8 @@ public class ContentNegotiationGetRequestTest extends AbstractContentNegotiation
   public void testURI_17_EntitySimpleTypeDollarValue() throws Exception {
     // create test set
     FitTestSet testSet = FitTestSet.create(UriType.URI17, "/Employees('1')/Age/$value")
-                                    .expectedStatusCode(200).expectedContentType("text/plain; charset=utf-8").init();
-    
+        .expectedStatusCode(200).expectedContentType("text/plain; charset=utf-8").init();
+
     // every combination of $format and $value is a 'BAD REQUEST'
     testSet.setTestParam(Arrays.asList("?$format=json", "?$format=xml", "?$format=atom"), ACCEPT_HEADER_VALUES, 400, "application/xml");
     //

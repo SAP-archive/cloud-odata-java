@@ -12,15 +12,15 @@ public class ODataException extends Exception {
     super();
   }
 
-  public ODataException(String msg) {
+  public ODataException(final String msg) {
     super(msg);
   }
 
-  public ODataException(String msg, Throwable e) {
+  public ODataException(final String msg, final Throwable e) {
     super(msg, e);
   }
 
-  public ODataException(Throwable e) {
+  public ODataException(final Throwable e) {
     super(e);
   }
 
@@ -84,7 +84,7 @@ public class ODataException extends Exception {
     return getSpecificCause(ODataApplicationException.class);
   }
 
-  private <T extends ODataException> T getSpecificCause(Class<T> causeClass) {
+  private <T extends ODataException> T getSpecificCause(final Class<T> causeClass) {
     Throwable cause = this;
     while (cause != null)
       if (causeClass.isInstance(cause))

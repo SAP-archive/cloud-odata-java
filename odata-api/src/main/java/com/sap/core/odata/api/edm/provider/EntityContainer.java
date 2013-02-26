@@ -25,7 +25,7 @@ public class EntityContainer extends EntityContainerInfo {
    * @param entitySets
    * @return {@link EntityContainerInfo} for method chaining
    */
-  public EntityContainer setEntitySets(List<EntitySet> entitySets) {
+  public EntityContainer setEntitySets(final List<EntitySet> entitySets) {
     this.entitySets = entitySets;
     return this;
   }
@@ -42,7 +42,7 @@ public class EntityContainer extends EntityContainerInfo {
    * @param associationSets
    * @return {@link EntityContainerInfo} for method chaining
    */
-  public EntityContainer setAssociationSets(List<AssociationSet> associationSets) {
+  public EntityContainer setAssociationSets(final List<AssociationSet> associationSets) {
     this.associationSets = associationSets;
     return this;
   }
@@ -59,7 +59,7 @@ public class EntityContainer extends EntityContainerInfo {
    * @param functionImports
    * @return {@link EntityContainerInfo} for method chaining
    */
-  public EntityContainer setFunctionImports(List<FunctionImport> functionImports) {
+  public EntityContainer setFunctionImports(final List<FunctionImport> functionImports) {
     this.functionImports = functionImports;
     return this;
   }
@@ -70,7 +70,7 @@ public class EntityContainer extends EntityContainerInfo {
    * @return {@link EntityContainer} for method chaining
    */
   @Override
-  public EntityContainer setName(String name) {
+  public EntityContainer setName(final String name) {
     super.setName(name);
     return this;
   }
@@ -81,7 +81,7 @@ public class EntityContainer extends EntityContainerInfo {
    * @return {@link EntityContainer} for method chaining
    */
   @Override
-  public EntityContainer setExtendz(String extendz) {
+  public EntityContainer setExtendz(final String extendz) {
     super.setExtendz(extendz);
     return this;
   }
@@ -92,7 +92,7 @@ public class EntityContainer extends EntityContainerInfo {
    * @return {@link EntityContainer} for method chaining
    */
   @Override
-  public EntityContainer setDefaultEntityContainer(boolean isDefaultEntityContainer) {
+  public EntityContainer setDefaultEntityContainer(final boolean isDefaultEntityContainer) {
     super.setDefaultEntityContainer(isDefaultEntityContainer);
     return this;
   }
@@ -109,7 +109,7 @@ public class EntityContainer extends EntityContainerInfo {
    * @param documentation
    * @return {@link EntityContainer} for method chaining
    */
-  public EntityContainer setDocumentation(Documentation documentation) {
+  public EntityContainer setDocumentation(final Documentation documentation) {
     this.documentation = documentation;
     return this;
   }

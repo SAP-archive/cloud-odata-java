@@ -12,19 +12,19 @@ public class ODataServiceUnavailableException extends ODataHttpException {
 
   public static final MessageReference COMMON = createMessageReference(ODataServiceUnavailableException.class, "COMMON");
 
-  public ODataServiceUnavailableException(MessageReference context) {
+  public ODataServiceUnavailableException(final MessageReference context) {
     super(context, HttpStatusCodes.SERVICE_UNAVAILABLE);
   }
 
-  public ODataServiceUnavailableException(MessageReference context, Throwable cause) {
+  public ODataServiceUnavailableException(final MessageReference context, final Throwable cause) {
     super(context, cause, HttpStatusCodes.SERVICE_UNAVAILABLE);
   }
 
-  public ODataServiceUnavailableException(MessageReference context, String errorCode) {
+  public ODataServiceUnavailableException(final MessageReference context, final String errorCode) {
     super(context, HttpStatusCodes.SERVICE_UNAVAILABLE, errorCode);
   }
 
-  public ODataServiceUnavailableException(MessageReference context, Throwable cause, String errorCode) {
+  public ODataServiceUnavailableException(final MessageReference context, final Throwable cause, final String errorCode) {
     super(context, cause, HttpStatusCodes.SERVICE_UNAVAILABLE, errorCode);
   }
 

@@ -80,7 +80,7 @@ public class NavigationProperty {
    * @param name
    * @return {@link NavigationProperty} for method chaining
    */
-  public NavigationProperty setName(String name) {
+  public NavigationProperty setName(final String name) {
     this.name = name;
     return this;
   }
@@ -90,7 +90,7 @@ public class NavigationProperty {
    * @param relationship
    * @return {@link NavigationProperty} for method chaining
    */
-  public NavigationProperty setRelationship(FullQualifiedName relationship) {
+  public NavigationProperty setRelationship(final FullQualifiedName relationship) {
     this.relationship = relationship;
     return this;
   }
@@ -100,7 +100,7 @@ public class NavigationProperty {
    * @param fromRole
    * @return {@link NavigationProperty} for method chaining
    */
-  public NavigationProperty setFromRole(String fromRole) {
+  public NavigationProperty setFromRole(final String fromRole) {
     this.fromRole = fromRole;
     return this;
   }
@@ -110,7 +110,7 @@ public class NavigationProperty {
    * @param toRole
    * @return {@link NavigationProperty} for method chaining
    */
-  public NavigationProperty setToRole(String toRole) {
+  public NavigationProperty setToRole(final String toRole) {
     this.toRole = toRole;
     return this;
   }
@@ -120,7 +120,7 @@ public class NavigationProperty {
    * @param mapping
    * @return {@link NavigationProperty} for method chaining
    */
-  public NavigationProperty setMapping(Mapping mapping) {
+  public NavigationProperty setMapping(final Mapping mapping) {
     this.mapping = mapping;
     return this;
   }
@@ -130,7 +130,7 @@ public class NavigationProperty {
    * @param documentation
    * @return {@link NavigationProperty} for method chaining
    */
-  public NavigationProperty setDocumentation(Documentation documentation) {
+  public NavigationProperty setDocumentation(final Documentation documentation) {
     this.documentation = documentation;
     return this;
   }
@@ -140,7 +140,7 @@ public class NavigationProperty {
    * @param annotationAttributes
    * @return {@link NavigationProperty} for method chaining
    */
-  public NavigationProperty setAnnotationAttributes(List<AnnotationAttribute> annotationAttributes) {
+  public NavigationProperty setAnnotationAttributes(final List<AnnotationAttribute> annotationAttributes) {
     this.annotationAttributes = annotationAttributes;
     return this;
   }
@@ -150,7 +150,7 @@ public class NavigationProperty {
    * @param annotationElements
    * @return {@link NavigationProperty} for method chaining
    */
-  public NavigationProperty setAnnotationElements(List<AnnotationElement> annotationElements) {
+  public NavigationProperty setAnnotationElements(final List<AnnotationElement> annotationElements) {
     this.annotationElements = annotationElements;
     return this;
   }

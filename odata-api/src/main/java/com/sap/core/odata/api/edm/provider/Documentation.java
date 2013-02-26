@@ -46,7 +46,7 @@ public class Documentation {
    * @param summary
    * @return {@link Documentation} for method chaining
    */
-  public Documentation setSummary(String summary) {
+  public Documentation setSummary(final String summary) {
     this.summary = summary;
     return this;
   }
@@ -56,7 +56,7 @@ public class Documentation {
    * @param longDescription
    * @return {@link Documentation} for method chaining
    */
-  public Documentation setLongDescription(String longDescription) {
+  public Documentation setLongDescription(final String longDescription) {
     this.longDescription = longDescription;
     return this;
   }
@@ -66,7 +66,7 @@ public class Documentation {
    * @param annotationAttributes
    * @return {@link Documentation} for method chaining
    */
-  public Documentation setAnnotationAttributes(List<AnnotationAttribute> annotationAttributes) {
+  public Documentation setAnnotationAttributes(final List<AnnotationAttribute> annotationAttributes) {
     this.annotationAttributes = annotationAttributes;
     return this;
   }
@@ -76,7 +76,7 @@ public class Documentation {
    * @param annotationElements
    * @return {@link Documentation} for method chaining
    */
-  public Documentation setAnnotationElements(List<AnnotationElement> annotationElements) {
+  public Documentation setAnnotationElements(final List<AnnotationElement> annotationElements) {
     this.annotationElements = annotationElements;
     return this;
   }

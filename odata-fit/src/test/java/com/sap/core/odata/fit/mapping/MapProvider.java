@@ -96,7 +96,7 @@ public class MapProvider extends EdmProvider {
   }
 
   @Override
-  public EntityType getEntityType(FullQualifiedName edmFQName) throws ODataException {
+  public EntityType getEntityType(final FullQualifiedName edmFQName) throws ODataException {
     if (!NAMESPACE.equals(edmFQName.getNamespace()) || !mapping[ENTITYTYPE][EDM].equals(edmFQName.getName())) {
       throw new ODataException("not found: " + edmFQName);
     }
@@ -105,7 +105,7 @@ public class MapProvider extends EdmProvider {
   }
 
   @Override
-  public EntitySet getEntitySet(String entityContainer, String name) throws ODataException {
+  public EntitySet getEntitySet(final String entityContainer, final String name) throws ODataException {
     if (!MAPPING_CONTAINER.equals(entityContainer) || !mapping[ENTITYSET][EDM].equals(name)) {
       throw new ODataException("not found: " + entityContainer + ", " + name);
     }
@@ -114,7 +114,7 @@ public class MapProvider extends EdmProvider {
   }
 
   @Override
-  public EntityContainerInfo getEntityContainerInfo(String name) throws ODataException {
+  public EntityContainerInfo getEntityContainerInfo(final String name) throws ODataException {
     EntityContainerInfo entityContainerInfo = null;
 
     if (MAPPING_CONTAINER.equals(name) || (name == null)) {

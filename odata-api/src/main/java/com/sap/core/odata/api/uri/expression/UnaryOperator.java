@@ -11,12 +11,12 @@ public enum UnaryOperator {
   private String syntax;
   private String stringRespresentation;
 
-  private UnaryOperator(String syntax) {
+  private UnaryOperator(final String syntax) {
     this.syntax = syntax;
     stringRespresentation = syntax;
   }
 
-  private UnaryOperator(String syntax, String stringRespresentation) {
+  private UnaryOperator(final String syntax, final String stringRespresentation) {
     this.syntax = syntax;
     this.stringRespresentation = stringRespresentation;
   }

@@ -7,7 +7,7 @@ public class ModelException extends RuntimeException {
 
   private static final long serialVersionUID = 1L;
 
-  public ModelException(Exception e) {
+  public ModelException(final Exception e) {
     super(e);
   }
 

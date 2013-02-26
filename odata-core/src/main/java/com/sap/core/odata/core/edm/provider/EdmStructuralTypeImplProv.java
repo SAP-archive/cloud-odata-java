@@ -30,7 +30,7 @@ public abstract class EdmStructuralTypeImplProv extends EdmNamedImplProv impleme
   private Map<String, Property> properties;
   private List<String> edmPropertyNames;
 
-  public EdmStructuralTypeImplProv(EdmImplProv edm, ComplexType structuralType, EdmTypeKind edmTypeKind, String namespace) throws EdmException {
+  public EdmStructuralTypeImplProv(final EdmImplProv edm, final ComplexType structuralType, final EdmTypeKind edmTypeKind, final String namespace) throws EdmException {
     super(edm, structuralType.getName());
     this.structuralType = structuralType;
     this.namespace = namespace;
@@ -71,7 +71,7 @@ public abstract class EdmStructuralTypeImplProv extends EdmNamedImplProv impleme
   }
 
   @Override
-  public EdmTyped getProperty(String name) throws EdmException {
+  public EdmTyped getProperty(final String name) throws EdmException {
     EdmTyped property = edmProperties.get(name);
     if (property == null) {
       property = getPropertyInternal(name);
@@ -111,7 +111,7 @@ public abstract class EdmStructuralTypeImplProv extends EdmNamedImplProv impleme
     return structuralType.getMapping();
   }
 
-  protected EdmTyped getPropertyInternal(String name) throws EdmException {
+  protected EdmTyped getPropertyInternal(final String name) throws EdmException {
     EdmTyped edmProperty = null;
 
     if (properties.containsKey(name)) {
@@ -127,7 +127,7 @@ public abstract class EdmStructuralTypeImplProv extends EdmNamedImplProv impleme
     return edmProperty;
   }
 
-  protected EdmTyped createProperty(Property property) throws EdmException {
+  protected EdmTyped createProperty(final Property property) throws EdmException {
     if (property instanceof SimpleProperty) {
       return new EdmSimplePropertyImplProv(edm, (SimpleProperty) property);
     } else if (property instanceof ComplexProperty) {

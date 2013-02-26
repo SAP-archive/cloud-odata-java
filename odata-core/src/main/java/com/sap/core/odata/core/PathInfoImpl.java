@@ -13,30 +13,30 @@ public class PathInfoImpl implements PathInfo {
   private List<PathSegment> odataPathSegment = Collections.emptyList();
   private URI serviceRoot;
 
-  public void setODataPathSegment(List<PathSegment> odataPathSegement) {
-    this.odataPathSegment = odataPathSegement;
+  public void setODataPathSegment(final List<PathSegment> odataPathSegement) {
+    odataPathSegment = odataPathSegement;
   }
 
-  public void setPrecedingPathSegment(List<PathSegment> precedingPathSegement) {
-    this.precedingPathSegment = precedingPathSegement;
+  public void setPrecedingPathSegment(final List<PathSegment> precedingPathSegement) {
+    precedingPathSegment = precedingPathSegement;
   }
 
-  public void setServiceRoot(URI uri) {
-    this.serviceRoot = uri;
+  public void setServiceRoot(final URI uri) {
+    serviceRoot = uri;
   }
 
   @Override
   public List<PathSegment> getPrecedingSegments() {
-    return Collections.unmodifiableList(this.precedingPathSegment);
+    return Collections.unmodifiableList(precedingPathSegment);
   }
 
   @Override
   public List<PathSegment> getODataSegments() {
-    return Collections.unmodifiableList(this.odataPathSegment);
+    return Collections.unmodifiableList(odataPathSegment);
   }
 
   @Override
   public URI getServiceRoot() {
-    return this.serviceRoot;
+    return serviceRoot;
   }
 }

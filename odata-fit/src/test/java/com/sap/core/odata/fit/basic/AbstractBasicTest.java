@@ -39,7 +39,7 @@ public abstract class AbstractBasicTest extends AbstractFitTest {
 
     doAnswer(new Answer<Object>() {
       @Override
-      public Object answer(InvocationOnMock invocation) throws Throwable {
+      public Object answer(final InvocationOnMock invocation) throws Throwable {
         context = (ODataContext) invocation.getArguments()[0];
         return null;
       }
@@ -47,7 +47,7 @@ public abstract class AbstractBasicTest extends AbstractFitTest {
 
     when(processor.getContext()).thenAnswer(new Answer<ODataContext>() {
       @Override
-      public ODataContext answer(InvocationOnMock invocation) throws Throwable {
+      public ODataContext answer(final InvocationOnMock invocation) throws Throwable {
         return context;
       }
     });
@@ -61,7 +61,7 @@ public abstract class AbstractBasicTest extends AbstractFitTest {
 
   abstract ODataSingleProcessor createProcessor() throws ODataException;
 
-  protected HttpResponse executeGetRequest(String request) throws ClientProtocolException, IOException {
+  protected HttpResponse executeGetRequest(final String request) throws ClientProtocolException, IOException {
     final HttpGet get = new HttpGet(URI.create(getEndpoint().toString() + request));
     return getHttpClient().execute(get);
   }

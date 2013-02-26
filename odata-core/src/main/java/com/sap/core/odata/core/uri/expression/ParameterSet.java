@@ -21,20 +21,20 @@ class ParameterSet
   public ArrayList<EdmSimpleType> types = new ArrayList<EdmSimpleType>();
   private EdmSimpleType furtherType = null;
 
-  public ParameterSet(EdmType returnType, EdmSimpleType type1)
+  public ParameterSet(final EdmType returnType, final EdmSimpleType type1)
   {
     this.returnType = returnType;
     types.add(type1);
   }
 
-  public ParameterSet(EdmSimpleType returnType, EdmSimpleType type1, EdmSimpleType type2)
+  public ParameterSet(final EdmSimpleType returnType, final EdmSimpleType type1, final EdmSimpleType type2)
   {
     this.returnType = returnType;
     types.add(type1);
     types.add(type2);
   }
 
-  public ParameterSet(EdmSimpleType returnType, EdmSimpleType type1, EdmSimpleType type2, EdmSimpleType type3)
+  public ParameterSet(final EdmSimpleType returnType, final EdmSimpleType type1, final EdmSimpleType type2, final EdmSimpleType type3)
   {
     this.returnType = returnType;
     types.add(type1);
@@ -52,7 +52,7 @@ class ParameterSet
     return furtherType;
   }
 
-  public ParameterSet setFurtherType(EdmSimpleType furtherType)
+  public ParameterSet setFurtherType(final EdmSimpleType furtherType)
   {
     this.furtherType = furtherType;
     return this;
@@ -68,7 +68,7 @@ class ParameterSet
    * @return
    * @throws ExpressionParserInternalError
    */
-  public boolean equals(List<EdmType> actualParameterTypes, boolean allowPromotion) throws ExpressionParserInternalError
+  public boolean equals(final List<EdmType> actualParameterTypes, final boolean allowPromotion) throws ExpressionParserInternalError
   {
     int actSize = actualParameterTypes.size();
     int paramSize = types.size();
@@ -108,7 +108,7 @@ class ParameterSet
         //Promotion only allowed for simple types
         if (actType.getKind() != EdmTypeKind.SIMPLE)
           return false; //Tested with TestParserExceptions.testAdditionalStuff CASE 8
-              
+
         //The type simply don't match          
         if (!paramType.isCompatible((EdmSimpleType) actType))
           return false;

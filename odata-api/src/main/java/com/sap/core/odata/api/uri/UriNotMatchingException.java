@@ -17,19 +17,19 @@ public class UriNotMatchingException extends ODataNotFoundException {
   public static final MessageReference ENTITYNOTFOUND = createMessageReference(UriNotMatchingException.class, "ENTITYNOTFOUND");
   public static final MessageReference PROPERTYNOTFOUND = createMessageReference(UriNotMatchingException.class, "PROPERTYNOTFOUND");
 
-  public UriNotMatchingException(MessageReference messageReference) {
+  public UriNotMatchingException(final MessageReference messageReference) {
     super(messageReference);
   }
 
-  public UriNotMatchingException(MessageReference messageReference, Throwable cause) {
+  public UriNotMatchingException(final MessageReference messageReference, final Throwable cause) {
     super(messageReference, cause);
   }
 
-  public UriNotMatchingException(MessageReference messageReference, String errorCode) {
+  public UriNotMatchingException(final MessageReference messageReference, final String errorCode) {
     super(messageReference, errorCode);
   }
 
-  public UriNotMatchingException(MessageReference messageReference, Throwable cause, String errorCode) {
+  public UriNotMatchingException(final MessageReference messageReference, final Throwable cause, final String errorCode) {
     super(messageReference, cause, errorCode);
   }
 }

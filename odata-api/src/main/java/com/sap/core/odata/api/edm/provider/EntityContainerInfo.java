@@ -40,7 +40,7 @@ public class EntityContainerInfo {
    * @param name
    * @return {@link EntityContainerInfo} for method chaining
    */
-  public EntityContainerInfo setName(String name) {
+  public EntityContainerInfo setName(final String name) {
     this.name = name;
     return this;
   }
@@ -50,7 +50,7 @@ public class EntityContainerInfo {
    * @param extendz
    * @return {@link EntityContainerInfo} for method chaining
    */
-  public EntityContainerInfo setExtendz(String extendz) {
+  public EntityContainerInfo setExtendz(final String extendz) {
     this.extendz = extendz;
     return this;
   }
@@ -60,7 +60,7 @@ public class EntityContainerInfo {
    * @param isDefaultEntityContainer
    * @return {@link EntityContainerInfo} for method chaining
    */
-  public EntityContainerInfo setDefaultEntityContainer(boolean isDefaultEntityContainer) {
+  public EntityContainerInfo setDefaultEntityContainer(final boolean isDefaultEntityContainer) {
     this.isDefaultEntityContainer = isDefaultEntityContainer;
     return this;
   }
@@ -77,7 +77,7 @@ public class EntityContainerInfo {
    * @param annotationAttributes
    * @return {@link EntityContainer} for method chaining
    */
-  public EntityContainerInfo setAnnotationAttributes(List<AnnotationAttribute> annotationAttributes) {
+  public EntityContainerInfo setAnnotationAttributes(final List<AnnotationAttribute> annotationAttributes) {
     this.annotationAttributes = annotationAttributes;
     return this;
   }
@@ -94,7 +94,7 @@ public class EntityContainerInfo {
    * @param annotationElements
    * @return {@link EntityContainer} for method chaining
    */
-  public EntityContainerInfo setAnnotationElements(List<AnnotationElement> annotationElements) {
+  public EntityContainerInfo setAnnotationElements(final List<AnnotationElement> annotationElements) {
     this.annotationElements = annotationElements;
     return this;
   }

@@ -23,7 +23,7 @@ public class EntityPropertyInfo {
     this.name = name;
     this.type = type;
     this.facets = facets;
-    this.customMapping = customizableFeedMapping;
+    customMapping = customizableFeedMapping;
     this.mimeType = mimeType;
     this.mapping = mapping;
   }
@@ -39,15 +39,15 @@ public class EntityPropertyInfo {
   }
 
   public boolean isMandatory() {
-    if(facets == null) {
+    if (facets == null) {
       return false;
-    } else if(facets.isNullable() == null) {
+    } else if (facets.isNullable() == null) {
       return false;
     } else {
       return !facets.isNullable();
     }
   }
-  
+
   public boolean isComplex() {
     return false;
   }

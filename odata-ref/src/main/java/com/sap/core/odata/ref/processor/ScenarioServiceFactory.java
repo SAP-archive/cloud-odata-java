@@ -16,7 +16,7 @@ public class ScenarioServiceFactory extends ODataServiceFactory {
   public ODataService createService(final ODataContext context) throws ODataException {
     DataContainer dataContainer = new DataContainer();
     dataContainer.reset();
-    
+
     return createODataSingleProcessorService(
         new ScenarioEdmProvider(),
         new ListsProcessor(new ScenarioDataSource(dataContainer)));

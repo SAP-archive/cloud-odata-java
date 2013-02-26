@@ -16,12 +16,12 @@ public enum BinaryOperator {
   private String uriSyntax;
   private String stringRespresentation;
 
-  private BinaryOperator(String uriSyntax) {
+  private BinaryOperator(final String uriSyntax) {
     this.uriSyntax = uriSyntax;
     stringRespresentation = uriSyntax;
   }
 
-  private BinaryOperator(String syntax, String stringRespresentation) {
+  private BinaryOperator(final String syntax, final String stringRespresentation) {
     uriSyntax = syntax;
     this.stringRespresentation = stringRespresentation;
   }

@@ -23,7 +23,7 @@ public class EntityComplexPropertyInfo extends EntityPropertyInfo {
     entityPropertyInfo = childEntityInfos;
   }
 
-  static EntityComplexPropertyInfo create(EdmProperty property, List<String> propertyNames, Map<String, EntityPropertyInfo> childEntityInfos) throws EdmException {
+  static EntityComplexPropertyInfo create(final EdmProperty property, final List<String> propertyNames, final Map<String, EntityPropertyInfo> childEntityInfos) throws EdmException {
     List<EntityPropertyInfo> childEntityInfoList = new ArrayList<EntityPropertyInfo>(childEntityInfos.size());
     for (String name : propertyNames) {
       childEntityInfoList.add(childEntityInfos.get(name));
@@ -46,10 +46,10 @@ public class EntityComplexPropertyInfo extends EntityPropertyInfo {
   public List<EntityPropertyInfo> getPropertyInfos() {
     return Collections.unmodifiableList(entityPropertyInfo);
   }
-  
-  public EntityPropertyInfo getPropertyInfo(String name) {
+
+  public EntityPropertyInfo getPropertyInfo(final String name) {
     for (EntityPropertyInfo info : entityPropertyInfo) {
-      if(info.getName().equals(name)) {
+      if (info.getName().equals(name)) {
         return info;
       }
     }

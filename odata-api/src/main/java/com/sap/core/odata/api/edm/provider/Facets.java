@@ -74,7 +74,7 @@ public class Facets implements EdmFacets {
    * @param nullable
    * @return {@link Facets} for method chaining
    */
-  public Facets setNullable(Boolean nullable) {
+  public Facets setNullable(final Boolean nullable) {
     this.nullable = nullable;
     return this;
   }
@@ -84,7 +84,7 @@ public class Facets implements EdmFacets {
    * @param fixedLength
    * @return {@link Facets} for method chaining
    */
-  public Facets setFixedLength(Boolean fixedLength) {
+  public Facets setFixedLength(final Boolean fixedLength) {
     this.fixedLength = fixedLength;
     return this;
   }
@@ -94,7 +94,7 @@ public class Facets implements EdmFacets {
    * @param unicode
    * @return {@link Facets} for method chaining
    */
-  public Facets setUnicode(Boolean unicode) {
+  public Facets setUnicode(final Boolean unicode) {
     this.unicode = unicode;
     return this;
   }
@@ -104,7 +104,7 @@ public class Facets implements EdmFacets {
    * @param defaultValue
    * @return {@link Facets} for method chaining
    */
-  public Facets setDefaultValue(String defaultValue) {
+  public Facets setDefaultValue(final String defaultValue) {
     this.defaultValue = defaultValue;
     return this;
   }
@@ -114,7 +114,7 @@ public class Facets implements EdmFacets {
    * @param maxLength
    * @return {@link Facets} for method chaining
    */
-  public Facets setMaxLength(Integer maxLength) {
+  public Facets setMaxLength(final Integer maxLength) {
     this.maxLength = maxLength;
     return this;
   }
@@ -124,7 +124,7 @@ public class Facets implements EdmFacets {
    * @param precision
    * @return {@link Facets} for method chaining
    */
-  public Facets setPrecision(Integer precision) {
+  public Facets setPrecision(final Integer precision) {
     this.precision = precision;
     return this;
   }
@@ -134,7 +134,7 @@ public class Facets implements EdmFacets {
    * @param scale
    * @return {@link Facets} for method chaining
    */
-  public Facets setScale(Integer scale) {
+  public Facets setScale(final Integer scale) {
     this.scale = scale;
     return this;
   }
@@ -144,7 +144,7 @@ public class Facets implements EdmFacets {
    * @param collation
    * @return {@link Facets} for method chaining
    */
-  public Facets setCollation(String collation) {
+  public Facets setCollation(final String collation) {
     this.collation = collation;
     return this;
   }
@@ -154,7 +154,7 @@ public class Facets implements EdmFacets {
    * @param concurrencyMode
    * @return {@link Facets} for method chaining
    */
-  public Facets setConcurrencyMode(EdmConcurrencyMode concurrencyMode) {
+  public Facets setConcurrencyMode(final EdmConcurrencyMode concurrencyMode) {
     this.concurrencyMode = concurrencyMode;
     return this;
   }

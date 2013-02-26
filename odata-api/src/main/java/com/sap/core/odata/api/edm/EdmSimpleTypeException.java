@@ -26,19 +26,19 @@ public class EdmSimpleTypeException extends EdmException {
   public static final MessageReference VALUE_ILLEGAL_CONTENT = createMessageReference(EdmSimpleTypeException.class, "VALUE_ILLEGAL_CONTENT");
   public static final MessageReference VALUE_FACETS_NOT_MATCHED = createMessageReference(EdmSimpleTypeException.class, "VALUE_FACETS_NOT_MATCHED");
 
-  public EdmSimpleTypeException(MessageReference messageReference) {
+  public EdmSimpleTypeException(final MessageReference messageReference) {
     super(messageReference);
   }
 
-  public EdmSimpleTypeException(MessageReference messageReference, Throwable cause) {
+  public EdmSimpleTypeException(final MessageReference messageReference, final Throwable cause) {
     super(messageReference, cause);
   }
 
-  public EdmSimpleTypeException(MessageReference messageReference, String errorCode) {
+  public EdmSimpleTypeException(final MessageReference messageReference, final String errorCode) {
     super(messageReference, errorCode);
   }
 
-  public EdmSimpleTypeException(MessageReference messageReference, Throwable cause, String errorCode) {
+  public EdmSimpleTypeException(final MessageReference messageReference, final Throwable cause, final String errorCode) {
     super(messageReference, cause, errorCode);
   }
 }

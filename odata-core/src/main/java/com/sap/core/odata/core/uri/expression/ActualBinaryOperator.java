@@ -5,18 +5,18 @@ public class ActualBinaryOperator
   final protected InfoBinaryOperator operator;
   final protected Token token;
 
-  public ActualBinaryOperator(InfoBinaryOperator operatorInfo, Token token)
+  public ActualBinaryOperator(final InfoBinaryOperator operatorInfo, final Token token)
   {
     if (operatorInfo == null)
       throw new IllegalArgumentException("operatorInfo parameter must not be null");
 
-    this.operator = operatorInfo;
+    operator = operatorInfo;
     this.token = token;
   }
 
   public Token getToken()
   {
-   return token;
+    return token;
   }
 
   public InfoBinaryOperator getOP()

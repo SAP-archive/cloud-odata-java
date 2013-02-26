@@ -54,7 +54,7 @@ public class ReferentialConstraint {
    * @param principal
    * @return {@link ReferentialConstraint} for method chaining
    */
-  public ReferentialConstraint setPrincipal(ReferentialConstraintRole principal) {
+  public ReferentialConstraint setPrincipal(final ReferentialConstraintRole principal) {
     this.principal = principal;
     return this;
   }
@@ -64,7 +64,7 @@ public class ReferentialConstraint {
    * @param dependent
    * @return {@link ReferentialConstraint} for method chaining
    */
-  public ReferentialConstraint setDependent(ReferentialConstraintRole dependent) {
+  public ReferentialConstraint setDependent(final ReferentialConstraintRole dependent) {
     this.dependent = dependent;
     return this;
   }
@@ -74,7 +74,7 @@ public class ReferentialConstraint {
    * @param documentation
    * @return {@link ReferentialConstraint} for method chaining
    */
-  public ReferentialConstraint setDocumentation(Documentation documentation) {
+  public ReferentialConstraint setDocumentation(final Documentation documentation) {
     this.documentation = documentation;
     return this;
   }
@@ -84,7 +84,7 @@ public class ReferentialConstraint {
    * @param annotationAttributes
    * @return {@link ReferentialConstraint} for method chaining
    */
-  public ReferentialConstraint setAnnotationAttributes(List<AnnotationAttribute> annotationAttributes) {
+  public ReferentialConstraint setAnnotationAttributes(final List<AnnotationAttribute> annotationAttributes) {
     this.annotationAttributes = annotationAttributes;
     return this;
   }
@@ -94,7 +94,7 @@ public class ReferentialConstraint {
    * @param annotationElements
    * @return {@link ReferentialConstraint} for method chaining
    */
-  public ReferentialConstraint setAnnotationElements(List<AnnotationElement> annotationElements) {
+  public ReferentialConstraint setAnnotationElements(final List<AnnotationElement> annotationElements) {
     this.annotationElements = annotationElements;
     return this;
   }

@@ -190,7 +190,7 @@ public class ContentTypeTest extends BaseTest {
   //    return map;
   //  }
 
-  private Map<String, String> addParameters(String... content) {
+  private Map<String, String> addParameters(final String... content) {
     Map<String, String> map = new HashMap<String, String>();
     for (int i = 0; i < content.length - 1; i += 2) {
       String key = content[i];
@@ -492,7 +492,7 @@ public class ContentTypeTest extends BaseTest {
 
     assertFalse(t1.equals(t2));
   }
-  
+
   @Test
   public void testMatchSimple() {
     ContentType m1 = ContentType.create("aaa/bbb;x=z;a=b");
@@ -506,7 +506,7 @@ public class ContentTypeTest extends BaseTest {
     ContentType check = ContentType.create("foo/me");
 
     ContentType match = check.match(toMatchContentTypes);
-    
+
     assertEquals(ContentType.create("foo/me"), match);
     assertEquals("foo/me", match.toContentTypeString());
   }

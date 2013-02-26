@@ -49,7 +49,7 @@ public class BasicProviderTest extends AbstractProviderTest {
     assertTrue(metadata.contains("xmlns:annoPrefix=\"http://annoNamespace\""));
     assertTrue(metadata.contains("xmlns:annoPrefix2=\"http://annoNamespace\""));
   }
-  
+
   @Test
   public void writeMetadata2() throws Exception {
     EdmProvider testProvider = new EdmTestProvider();
@@ -61,13 +61,13 @@ public class BasicProviderTest extends AbstractProviderTest {
     predefinedNamespaces.put("annoPrefix", "http://annoNamespace");
     predefinedNamespaces.put("prefix", "namespace");
     predefinedNamespaces.put("pre", "namespaceForAnno");
-    
+
     ODataResponse response = provider.writeMetadata(testProvider.getSchemas(), predefinedNamespaces);
     assertNotNull(response);
     assertNotNull(response.getEntity());
     assertEquals(ContentType.APPLICATION_XML_CS_UTF_8.toString(), response.getContentHeader());
     String metadata = StringHelper.inputStreamToString((InputStream) response.getEntity());
-    
+
     Map<String, String> prefixMap = new HashMap<String, String>();
     prefixMap.put(null, "http://schemas.microsoft.com/ado/2008/09/edm");
     prefixMap.put("edmx", "http://schemas.microsoft.com/ado/2007/06/edmx");
@@ -77,7 +77,7 @@ public class BasicProviderTest extends AbstractProviderTest {
     prefixMap.put("prefix", "namespace");
     prefixMap.put("b", "RefScenario");
     prefixMap.put("pre", "namespaceForAnno");
-    
+
     NamespaceContext ctx = new SimpleNamespaceContext(prefixMap);
     XMLUnit.setXpathNamespaceContext(ctx);
     assertXpathExists("/edmx:Edmx/edmx:DataServices/a:Schema/a:EntityType/a:Property[@Name and @Type and @Nullable and @annoPrefix:annoName]", metadata);
@@ -85,13 +85,13 @@ public class BasicProviderTest extends AbstractProviderTest {
     assertXpathExists("/edmx:Edmx/edmx:DataServices/a:Schema/a:EntityType/a:Property[@Name=\"EmployeeName\"]", metadata);
     assertXpathExists("/edmx:Edmx/edmx:DataServices/a:Schema/a:EntityType/a:Property[@Name=\"EmployeeName\"]/a:propertyAnnoElement", metadata);
     assertXpathExists("/edmx:Edmx/edmx:DataServices/a:Schema/a:EntityType/a:Property[@Name=\"EmployeeName\"]/a:propertyAnnoElement2", metadata);
-    
+
     assertXpathExists("/edmx:Edmx/edmx:DataServices/a:Schema/a:schemaElementTest1", metadata);
     assertXpathExists("/edmx:Edmx/edmx:DataServices/a:Schema/a:schemaElementTest1/b:schemaElementTest2", metadata);
     assertXpathExists("/edmx:Edmx/edmx:DataServices/a:Schema/a:schemaElementTest1/prefix:schemaElementTest3", metadata);
     assertXpathExists("/edmx:Edmx/edmx:DataServices/a:Schema/a:schemaElementTest1/a:schemaElementTest4[@rel=\"self\" and @pre:href=\"http://google.com\"]", metadata);
   }
-  
+
   @Test
   public void writeMetadata3() throws Exception {
     EdmProvider testProvider = new EdmTestProvider();
@@ -101,7 +101,7 @@ public class BasicProviderTest extends AbstractProviderTest {
     assertNotNull(response.getEntity());
     assertEquals(ContentType.APPLICATION_XML_CS_UTF_8.toString(), response.getContentHeader());
     String metadata = StringHelper.inputStreamToString((InputStream) response.getEntity());
-    
+
     Map<String, String> prefixMap = new HashMap<String, String>();
     prefixMap.put(null, "http://schemas.microsoft.com/ado/2008/09/edm");
     prefixMap.put("edmx", "http://schemas.microsoft.com/ado/2007/06/edmx");
@@ -114,30 +114,30 @@ public class BasicProviderTest extends AbstractProviderTest {
 
     NamespaceContext ctx = new SimpleNamespaceContext(prefixMap);
     XMLUnit.setXpathNamespaceContext(ctx);
-    
+
     assertXpathExists("/edmx:Edmx/edmx:DataServices/a:Schema/a:EntityType/a:Property[@Name and @Type and @Nullable and @annoPrefix:annoName]", metadata);
     assertXpathExists("/edmx:Edmx/edmx:DataServices/a:Schema/a:EntityType/a:Property[@Name and @Type and @m:FC_TargetPath and @annoPrefix:annoName]", metadata);
     assertXpathExists("/edmx:Edmx/edmx:DataServices/a:Schema/a:EntityType/a:Property[@Name=\"EmployeeName\"]", metadata);
     assertXpathExists("/edmx:Edmx/edmx:DataServices/a:Schema/a:EntityType/a:Property[@Name=\"EmployeeName\"]/a:propertyAnnoElement", metadata);
     assertXpathExists("/edmx:Edmx/edmx:DataServices/a:Schema/a:EntityType/a:Property[@Name=\"EmployeeName\"]/a:propertyAnnoElement2", metadata);
-    
+
     assertXpathExists("/edmx:Edmx/edmx:DataServices/a:Schema/a:schemaElementTest1", metadata);
     assertXpathExists("/edmx:Edmx/edmx:DataServices/a:Schema/a:schemaElementTest1/b:schemaElementTest2", metadata);
     assertXpathExists("/edmx:Edmx/edmx:DataServices/a:Schema/a:schemaElementTest1/prefix:schemaElementTest3", metadata);
     assertXpathExists("/edmx:Edmx/edmx:DataServices/a:Schema/a:schemaElementTest1/a:schemaElementTest4[@rel=\"self\" and @pre:href=\"http://google.com\"]", metadata);
   }
-  
+
   @Test
   public void writePropertyValue() throws Exception {
     EdmTyped edmTyped = MockFacade.getMockEdm().getEntityType("RefScenario", "Employee").getProperty("Age");
     EdmProperty edmProperty = (EdmProperty) edmTyped;
 
-    ODataResponse response = provider.writePropertyValue(edmProperty, this.employeeData.get("Age"));
+    ODataResponse response = provider.writePropertyValue(edmProperty, employeeData.get("Age"));
     assertNotNull(response);
     assertNotNull(response.getEntity());
     assertEquals(ContentType.TEXT_PLAIN_CS_UTF_8.toString(), response.getContentHeader());
     String value = StringHelper.inputStreamToString((InputStream) response.getEntity());
-    assertEquals(this.employeeData.get("Age").toString(), value);
+    assertEquals(employeeData.get("Age").toString(), value);
   }
 
   @Test

@@ -14,7 +14,7 @@ public class EdmAnnotationsImplProv implements EdmAnnotations {
   private List<AnnotationAttribute> annotationAttributes;
   private List<? extends EdmAnnotationElement> annotationElements;
 
-  public EdmAnnotationsImplProv(List<AnnotationAttribute> annotationAttributes, List<AnnotationElement> annotationElements) {
+  public EdmAnnotationsImplProv(final List<AnnotationAttribute> annotationAttributes, final List<AnnotationElement> annotationElements) {
     this.annotationAttributes = annotationAttributes;
     this.annotationElements = annotationElements;
   }
@@ -25,7 +25,7 @@ public class EdmAnnotationsImplProv implements EdmAnnotations {
   }
 
   @Override
-  public EdmAnnotationElement getAnnotationElement(String name, String namespace) {
+  public EdmAnnotationElement getAnnotationElement(final String name, final String namespace) {
     if (annotationElements != null) {
       Iterator<? extends EdmAnnotationElement> annotationElementIterator = annotationElements.iterator();
 
@@ -45,7 +45,7 @@ public class EdmAnnotationsImplProv implements EdmAnnotations {
   }
 
   @Override
-  public EdmAnnotationAttribute getAnnotationAttribute(String name, String namespace) {
+  public EdmAnnotationAttribute getAnnotationAttribute(final String name, final String namespace) {
     if (annotationElements != null) {
       Iterator<? extends EdmAnnotationAttribute> annotationAttributesIterator = annotationAttributes.iterator();
 

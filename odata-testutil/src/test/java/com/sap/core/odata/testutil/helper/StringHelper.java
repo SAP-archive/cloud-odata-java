@@ -12,7 +12,7 @@ import org.apache.http.HttpEntity;
  * @author SAP AG
  */
 public class StringHelper {
-  public static String inputStreamToString(InputStream in) throws IOException {
+  public static String inputStreamToString(final InputStream in) throws IOException {
     final BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(in, Charset.forName("UTF-8")));
     final StringBuilder stringBuilder = new StringBuilder();
     String line = null;
@@ -28,7 +28,7 @@ public class StringHelper {
     return result;
   }
 
-  public static String httpEntityToString(HttpEntity entity) throws IOException, IllegalStateException {
+  public static String httpEntityToString(final HttpEntity entity) throws IOException, IllegalStateException {
     return inputStreamToString(entity.getContent());
   }
 }

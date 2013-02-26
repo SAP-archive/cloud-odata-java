@@ -58,7 +58,7 @@ public class ExpressionParserException extends ODataBadRequestException {
    * @param messageReference
    *   references the message text (and additional values) of this {@link ExpressionParserException}
    */
-  public ExpressionParserException(MessageReference messageReference) {
+  public ExpressionParserException(final MessageReference messageReference) {
     super(messageReference);
   }
 
@@ -71,7 +71,7 @@ public class ExpressionParserException extends ODataBadRequestException {
    * @param cause
    *   Exception which caused this {@link ExpressionParserException}
    */
-  public ExpressionParserException(MessageReference messageReference, Throwable cause) {
+  public ExpressionParserException(final MessageReference messageReference, final Throwable cause) {
     super(messageReference, cause);
   }
 
@@ -91,7 +91,7 @@ public class ExpressionParserException extends ODataBadRequestException {
    * @return 
    *   A self reference for method chaining"
    */
-  public ExpressionParserException setFilterTree(CommonExpression filterTree) {
+  public ExpressionParserException setFilterTree(final CommonExpression filterTree) {
     this.filterTree = filterTree;
     return this;
   }
@@ -103,7 +103,7 @@ public class ExpressionParserException extends ODataBadRequestException {
    * @return 
    *   A self reference for method chaining"
    */
-  public ExpressionParserException setCause(Throwable cause) {
+  public ExpressionParserException setCause(final Throwable cause) {
     initCause(cause);
     return this;
   }

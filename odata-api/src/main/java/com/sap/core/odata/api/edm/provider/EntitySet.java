@@ -64,7 +64,7 @@ public class EntitySet {
    * @param name
    * @return {@link EntitySet} for method chaining
    */
-  public EntitySet setName(String name) {
+  public EntitySet setName(final String name) {
     this.name = name;
     return this;
   }
@@ -74,7 +74,7 @@ public class EntitySet {
    * @param entityType
    * @return {@link EntitySet} for method chaining
    */
-  public EntitySet setEntityType(FullQualifiedName entityType) {
+  public EntitySet setEntityType(final FullQualifiedName entityType) {
     this.entityType = entityType;
     return this;
   }
@@ -84,7 +84,7 @@ public class EntitySet {
    * @param mapping
    * @return {@link EntitySet} for method chaining
    */
-  public EntitySet setMapping(Mapping mapping) {
+  public EntitySet setMapping(final Mapping mapping) {
     this.mapping = mapping;
     return this;
   }
@@ -94,7 +94,7 @@ public class EntitySet {
    * @param documentation
    * @return {@link EntitySet} for method chaining
    */
-  public EntitySet setDocumentation(Documentation documentation) {
+  public EntitySet setDocumentation(final Documentation documentation) {
     this.documentation = documentation;
     return this;
   }
@@ -104,7 +104,7 @@ public class EntitySet {
    * @param annotationAttributes
    * @return {@link EntitySet} for method chaining
    */
-  public EntitySet setAnnotationAttributes(List<AnnotationAttribute> annotationAttributes) {
+  public EntitySet setAnnotationAttributes(final List<AnnotationAttribute> annotationAttributes) {
     this.annotationAttributes = annotationAttributes;
     return this;
   }
@@ -114,7 +114,7 @@ public class EntitySet {
    * @param annotationElements
    * @return {@link EntitySet} for method chaining
    */
-  public EntitySet setAnnotationElements(List<AnnotationElement> annotationElements) {
+  public EntitySet setAnnotationElements(final List<AnnotationElement> annotationElements) {
     this.annotationElements = annotationElements;
     return this;
   }

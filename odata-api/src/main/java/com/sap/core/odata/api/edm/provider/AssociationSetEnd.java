@@ -54,7 +54,7 @@ public class AssociationSetEnd {
    * @param role
    * @return {@link AssociationSetEnd} for method chaining
    */
-  public AssociationSetEnd setRole(String role) {
+  public AssociationSetEnd setRole(final String role) {
     this.role = role;
     return this;
   }
@@ -64,7 +64,7 @@ public class AssociationSetEnd {
    * @param entitySet
    * @return {@link AssociationSetEnd} for method chaining
    */
-  public AssociationSetEnd setEntitySet(String entitySet) {
+  public AssociationSetEnd setEntitySet(final String entitySet) {
     this.entitySet = entitySet;
     return this;
   }
@@ -74,7 +74,7 @@ public class AssociationSetEnd {
    * @param documentation
    * @return {@link AssociationSetEnd} for method chaining
    */
-  public AssociationSetEnd setDocumentation(Documentation documentation) {
+  public AssociationSetEnd setDocumentation(final Documentation documentation) {
     this.documentation = documentation;
     return this;
   }
@@ -84,7 +84,7 @@ public class AssociationSetEnd {
    * @param annotationAttributes
    * @return {@link AssociationSetEnd} for method chaining
    */
-  public AssociationSetEnd setAnnotationAttributes(List<AnnotationAttribute> annotationAttributes) {
+  public AssociationSetEnd setAnnotationAttributes(final List<AnnotationAttribute> annotationAttributes) {
     this.annotationAttributes = annotationAttributes;
     return this;
   }
@@ -94,7 +94,7 @@ public class AssociationSetEnd {
    * @param annotationElements
    * @return {@link AssociationSetEnd} for method chaining
    */
-  public AssociationSetEnd setAnnotationElements(List<AnnotationElement> annotationElements) {
+  public AssociationSetEnd setAnnotationElements(final List<AnnotationElement> annotationElements) {
     this.annotationElements = annotationElements;
     return this;
   }

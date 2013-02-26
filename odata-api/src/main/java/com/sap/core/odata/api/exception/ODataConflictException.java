@@ -12,19 +12,19 @@ public class ODataConflictException extends ODataHttpException {
 
   public static final MessageReference COMMON = createMessageReference(ODataConflictException.class, "COMMON");
 
-  public ODataConflictException(MessageReference context) {
+  public ODataConflictException(final MessageReference context) {
     super(context, HttpStatusCodes.CONFLICT);
   }
 
-  public ODataConflictException(MessageReference context, Throwable cause) {
+  public ODataConflictException(final MessageReference context, final Throwable cause) {
     super(context, cause, HttpStatusCodes.CONFLICT);
   }
 
-  public ODataConflictException(MessageReference context, String errorCode) {
+  public ODataConflictException(final MessageReference context, final String errorCode) {
     super(context, HttpStatusCodes.CONFLICT, errorCode);
   }
 
-  public ODataConflictException(MessageReference context, Throwable cause, String errorCode) {
+  public ODataConflictException(final MessageReference context, final Throwable cause, final String errorCode) {
     super(context, cause, HttpStatusCodes.CONFLICT, errorCode);
   }
 

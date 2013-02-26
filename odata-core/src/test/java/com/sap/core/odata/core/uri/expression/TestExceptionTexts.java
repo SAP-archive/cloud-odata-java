@@ -19,13 +19,13 @@ public class TestExceptionTexts extends TestBase
   {
     ODataMessageTextVerifier.TestClass(ExpressionParserInternalError.class);
   }
-  
+
   @Test
   public void TestExceptionVisitExpressionMessages()
   {
     ODataMessageTextVerifier.TestClass(ExceptionVisitExpression.class);
   }
-    
+
   @Test
   public void TestExceptionTokenizerExpectMessages()
   {

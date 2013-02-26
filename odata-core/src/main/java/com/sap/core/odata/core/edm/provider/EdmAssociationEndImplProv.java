@@ -14,7 +14,7 @@ public class EdmAssociationEndImplProv implements EdmAssociationEnd, EdmAnnotata
   private EdmImplProv edm;
   private AssociationEnd associationEnd;
 
-  public EdmAssociationEndImplProv(EdmImplProv edm, AssociationEnd associationEnd) throws EdmException {
+  public EdmAssociationEndImplProv(final EdmImplProv edm, final AssociationEnd associationEnd) throws EdmException {
     this.edm = edm;
     this.associationEnd = associationEnd;
   }

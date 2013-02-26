@@ -76,7 +76,7 @@ public class CustomizableFeedMappings implements EdmCustomizableFeedMappings {
    * @param fcKeepInContent
    * @return {@link CustomizableFeedMappings} for method chaining
    */
-  public CustomizableFeedMappings setFcKeepInContent(Boolean fcKeepInContent) {
+  public CustomizableFeedMappings setFcKeepInContent(final Boolean fcKeepInContent) {
     this.fcKeepInContent = fcKeepInContent;
     return this;
   }
@@ -86,7 +86,7 @@ public class CustomizableFeedMappings implements EdmCustomizableFeedMappings {
    * @param fcContentKind
    * @return {@link CustomizableFeedMappings} for method chaining
    */
-  public CustomizableFeedMappings setFcContentKind(EdmContentKind fcContentKind) {
+  public CustomizableFeedMappings setFcContentKind(final EdmContentKind fcContentKind) {
     this.fcContentKind = fcContentKind;
     return this;
   }
@@ -96,7 +96,7 @@ public class CustomizableFeedMappings implements EdmCustomizableFeedMappings {
    * @param fcNsPrefix
    * @return {@link CustomizableFeedMappings} for method chaining
    */
-  public CustomizableFeedMappings setFcNsPrefix(String fcNsPrefix) {
+  public CustomizableFeedMappings setFcNsPrefix(final String fcNsPrefix) {
     this.fcNsPrefix = fcNsPrefix;
     return this;
   }
@@ -106,7 +106,7 @@ public class CustomizableFeedMappings implements EdmCustomizableFeedMappings {
    * @param fcNsUri
    * @return {@link CustomizableFeedMappings} for method chaining
    */
-  public CustomizableFeedMappings setFcNsUri(String fcNsUri) {
+  public CustomizableFeedMappings setFcNsUri(final String fcNsUri) {
     this.fcNsUri = fcNsUri;
     return this;
   }
@@ -116,7 +116,7 @@ public class CustomizableFeedMappings implements EdmCustomizableFeedMappings {
    * @param fcSourcePath
    * @return {@link CustomizableFeedMappings} for method chaining
    */
-  public CustomizableFeedMappings setFcSourcePath(String fcSourcePath) {
+  public CustomizableFeedMappings setFcSourcePath(final String fcSourcePath) {
     this.fcSourcePath = fcSourcePath;
     return this;
   }
@@ -126,7 +126,7 @@ public class CustomizableFeedMappings implements EdmCustomizableFeedMappings {
    * @param fcTargetPath
    * @return {@link CustomizableFeedMappings} for method chaining
    */
-  public CustomizableFeedMappings setFcTargetPath(String fcTargetPath) {
+  public CustomizableFeedMappings setFcTargetPath(final String fcTargetPath) {
     this.fcTargetPath = fcTargetPath;
     return this;
   }

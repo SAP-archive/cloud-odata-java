@@ -10,13 +10,13 @@ import com.sap.core.odata.testutil.fit.BaseTest;
 
 public abstract class AbstractConsumerTest extends BaseTest {
 
-  protected XMLStreamReader createReaderForTest(String input) throws XMLStreamException {
+  protected XMLStreamReader createReaderForTest(final String input) throws XMLStreamException {
     XMLInputFactory factory = XMLInputFactory.newInstance();
     factory.setProperty(XMLInputFactory.IS_VALIDATING, false);
     factory.setProperty(XMLInputFactory.IS_NAMESPACE_AWARE, false);
 
     XMLStreamReader streamReader = factory.createXMLStreamReader(new StringReader(input));
-    
+
     return streamReader;
   }
 

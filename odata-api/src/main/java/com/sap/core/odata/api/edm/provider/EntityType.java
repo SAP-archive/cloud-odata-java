@@ -48,7 +48,7 @@ public class EntityType extends ComplexType {
    * @param hasStream
    * @return {@link EntityType} for method chaining,
    */
-  public EntityType setHasStream(boolean hasStream) {
+  public EntityType setHasStream(final boolean hasStream) {
     this.hasStream = hasStream;
     return this;
   }
@@ -58,7 +58,7 @@ public class EntityType extends ComplexType {
    * @param customizableFeedMappings
    * @return {@link EntityType} for method chaining
    */
-  public EntityType setCustomizableFeedMappings(CustomizableFeedMappings customizableFeedMappings) {
+  public EntityType setCustomizableFeedMappings(final CustomizableFeedMappings customizableFeedMappings) {
     this.customizableFeedMappings = customizableFeedMappings;
     return this;
   }
@@ -68,7 +68,7 @@ public class EntityType extends ComplexType {
    * @param key
    * @return {@link EntityType} for method chaining
    */
-  public EntityType setKey(Key key) {
+  public EntityType setKey(final Key key) {
     this.key = key;
     return this;
   }
@@ -78,7 +78,7 @@ public class EntityType extends ComplexType {
    * @param navigationProperties
    * @return {@link EntityType} for method chaining
    */
-  public EntityType setNavigationProperties(List<NavigationProperty> navigationProperties) {
+  public EntityType setNavigationProperties(final List<NavigationProperty> navigationProperties) {
     this.navigationProperties = navigationProperties;
     return this;
   }
@@ -88,7 +88,7 @@ public class EntityType extends ComplexType {
    * @return {@link EntityType} for method chaining
    */
   @Override
-  public EntityType setName(String name) {
+  public EntityType setName(final String name) {
     super.setName(name);
     return this;
   }
@@ -98,7 +98,7 @@ public class EntityType extends ComplexType {
    * @return {@link EntityType} for method chaining
    */
   @Override
-  public EntityType setBaseType(FullQualifiedName baseType) {
+  public EntityType setBaseType(final FullQualifiedName baseType) {
     super.setBaseType(baseType);
     return this;
   }
@@ -108,7 +108,7 @@ public class EntityType extends ComplexType {
    * @return {@link EntityType} for method chaining
    */
   @Override
-  public EntityType setAbstract(boolean isAbstract) {
+  public EntityType setAbstract(final boolean isAbstract) {
     super.setAbstract(isAbstract);
     return this;
   }
@@ -118,7 +118,7 @@ public class EntityType extends ComplexType {
    * @return {@link EntityType} for method chaining
    */
   @Override
-  public EntityType setProperties(List<Property> properties) {
+  public EntityType setProperties(final List<Property> properties) {
     super.setProperties(properties);
     return this;
   }
@@ -128,7 +128,7 @@ public class EntityType extends ComplexType {
    * @return {@link EntityType} for method chaining
    */
   @Override
-  public EntityType setMapping(Mapping mapping) {
+  public EntityType setMapping(final Mapping mapping) {
     super.setMapping(mapping);
     return this;
   }
@@ -138,7 +138,7 @@ public class EntityType extends ComplexType {
    * @return {@link EntityType} for method chaining
    */
   @Override
-  public EntityType setDocumentation(Documentation documentation) {
+  public EntityType setDocumentation(final Documentation documentation) {
     super.setDocumentation(documentation);
     return this;
   }
@@ -149,7 +149,7 @@ public class EntityType extends ComplexType {
    * @return {@link EntityType} for method chaining
    */
   @Override
-  public EntityType setAnnotationAttributes(List<AnnotationAttribute> annotationAttributes) {
+  public EntityType setAnnotationAttributes(final List<AnnotationAttribute> annotationAttributes) {
     super.setAnnotationAttributes(annotationAttributes);
     return this;
   }
@@ -160,7 +160,7 @@ public class EntityType extends ComplexType {
    * @return {@link EntityType} for method chaining
    */
   @Override
-  public EntityType setAnnotationElements(List<AnnotationElement> annotationElements) {
+  public EntityType setAnnotationElements(final List<AnnotationElement> annotationElements) {
     super.setAnnotationElements(annotationElements);
     return this;
   }

@@ -17,61 +17,61 @@ public class OrderByExpressionImpl implements OrderByExpression {
 
   List<OrderExpression> orders;
 
-  public OrderByExpressionImpl(String orderbyString)
+  public OrderByExpressionImpl(final String orderbyString)
   {
     this.orderbyString = orderbyString;
-    this.orders = new ArrayList<OrderExpression>();
+    orders = new ArrayList<OrderExpression>();
   }
 
   @Override
-  public String getExpressionString() 
+  public String getExpressionString()
   {
     return orderbyString;
   }
 
   @Override
-  public List<OrderExpression> getOrders() 
+  public List<OrderExpression> getOrders()
   {
     return orders;
   }
 
   @Override
-  public int getOrdersCount() 
+  public int getOrdersCount()
   {
     return orders.size();
   }
 
-  public void addOrder(OrderExpression orderNode) 
+  public void addOrder(final OrderExpression orderNode)
   {
     orders.add(orderNode);
   }
 
   @Override
-  public ExpressionKind getKind() 
+  public ExpressionKind getKind()
   {
     return ExpressionKind.ORDERBY;
   }
 
   @Override
-  public EdmType getEdmType() 
+  public EdmType getEdmType()
   {
     return null;
   }
 
   @Override
-  public CommonExpression setEdmType(EdmType edmType) 
+  public CommonExpression setEdmType(final EdmType edmType)
   {
     return this;
   }
 
   @Override
-  public String getUriLiteral() 
+  public String getUriLiteral()
   {
     return "";
   }
 
   @Override
-  public Object accept(ExpressionVisitor visitor) throws ExceptionVisitExpression, ODataApplicationException
+  public Object accept(final ExpressionVisitor visitor) throws ExceptionVisitExpression, ODataApplicationException
   {
     ArrayList<Object> retParameters = new ArrayList<Object>();
     for (OrderExpression order : orders)
@@ -80,7 +80,7 @@ public class OrderByExpressionImpl implements OrderByExpression {
       retParameters.add(retParameter);
     }
 
-    Object ret = visitor.visitOrderByExpression(this, this.orderbyString, retParameters);
+    Object ret = visitor.visitOrderByExpression(this, orderbyString, retParameters);
     return ret;
   }
 

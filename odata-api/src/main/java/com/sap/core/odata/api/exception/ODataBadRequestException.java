@@ -18,19 +18,19 @@ public class ODataBadRequestException extends ODataHttpException {
   public static final MessageReference BODY = createMessageReference(ODataBadRequestException.class, "BODY");
   public static final MessageReference AMBIGUOUS_XMETHOD = createMessageReference(ODataBadRequestException.class, "AMBIGUOUS_XMETHOD");
 
-  public ODataBadRequestException(MessageReference messageReference) {
+  public ODataBadRequestException(final MessageReference messageReference) {
     super(messageReference, HttpStatusCodes.BAD_REQUEST);
   }
 
-  public ODataBadRequestException(MessageReference messageReference, String errorCode) {
+  public ODataBadRequestException(final MessageReference messageReference, final String errorCode) {
     super(messageReference, HttpStatusCodes.BAD_REQUEST, errorCode);
   }
 
-  public ODataBadRequestException(MessageReference messageReference, Throwable cause) {
+  public ODataBadRequestException(final MessageReference messageReference, final Throwable cause) {
     super(messageReference, cause, HttpStatusCodes.BAD_REQUEST);
   }
 
-  public ODataBadRequestException(MessageReference messageReference, Throwable cause, String errorCode) {
+  public ODataBadRequestException(final MessageReference messageReference, final Throwable cause, final String errorCode) {
     super(messageReference, cause, HttpStatusCodes.BAD_REQUEST, errorCode);
   }
 }

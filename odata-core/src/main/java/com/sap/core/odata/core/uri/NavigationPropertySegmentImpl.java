@@ -17,7 +17,7 @@ public class NavigationPropertySegmentImpl implements NavigationPropertySegment 
     return navigationProperty;
   }
 
-  public void setNavigationProperty(EdmNavigationProperty navigationProperty) {
+  public void setNavigationProperty(final EdmNavigationProperty navigationProperty) {
     this.navigationProperty = navigationProperty;
   }
 
@@ -26,7 +26,7 @@ public class NavigationPropertySegmentImpl implements NavigationPropertySegment 
     return targetEntitySet;
   }
 
-  public void setTargetEntitySet(EdmEntitySet targetEntitySet) {
+  public void setTargetEntitySet(final EdmEntitySet targetEntitySet) {
     this.targetEntitySet = targetEntitySet;
   }
 

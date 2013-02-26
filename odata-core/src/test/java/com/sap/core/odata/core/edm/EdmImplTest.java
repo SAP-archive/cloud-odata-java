@@ -62,14 +62,14 @@ public class EdmImplTest extends BaseTest {
     }
 
     @Override
-    protected EdmEntityContainer createEntityContainer(String name) throws ODataException {
+    protected EdmEntityContainer createEntityContainer(final String name) throws ODataException {
       EdmEntityContainer edmEntityContainer = mock(EdmEntityContainer.class);
       when(edmEntityContainer.getName()).thenReturn(name);
       return edmEntityContainer;
     }
 
     @Override
-    protected EdmEntityType createEntityType(FullQualifiedName fqName) throws ODataException {
+    protected EdmEntityType createEntityType(final FullQualifiedName fqName) throws ODataException {
       EdmEntityType edmEntityType = mock(EdmEntityType.class);
       when(edmEntityType.getNamespace()).thenReturn(fqName.getNamespace());
       when(edmEntityType.getName()).thenReturn(fqName.getName());
@@ -77,7 +77,7 @@ public class EdmImplTest extends BaseTest {
     }
 
     @Override
-    protected EdmComplexType createComplexType(FullQualifiedName fqName) throws ODataException {
+    protected EdmComplexType createComplexType(final FullQualifiedName fqName) throws ODataException {
       EdmComplexType edmComplexType = mock(EdmComplexType.class);
       when(edmComplexType.getNamespace()).thenReturn(fqName.getNamespace());
       when(edmComplexType.getName()).thenReturn(fqName.getName());
@@ -85,7 +85,7 @@ public class EdmImplTest extends BaseTest {
     }
 
     @Override
-    protected EdmAssociation createAssociation(FullQualifiedName fqName) throws ODataException {
+    protected EdmAssociation createAssociation(final FullQualifiedName fqName) throws ODataException {
       EdmAssociation edmAssociation = mock(EdmAssociation.class);
       when(edmAssociation.getNamespace()).thenReturn(fqName.getNamespace());
       when(edmAssociation.getName()).thenReturn(fqName.getName());

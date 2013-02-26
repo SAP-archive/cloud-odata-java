@@ -56,14 +56,14 @@ public class ServiceResolutionTest extends BaseTest {
       final EdmProvider provider = mock(EdmProvider.class);
 
       service = new ODataSingleProcessorService(provider, processor) {};
-//      FitStaticServiceFactory.setService(service);
+      //      FitStaticServiceFactory.setService(service);
 
       // science fiction (return context after setContext)
       // see http://www.planetgeek.ch/2010/07/20/mockito-answer-vs-return/
 
       doAnswer(new Answer<Object>() {
         @Override
-        public Object answer(InvocationOnMock invocation) throws Throwable {
+        public Object answer(final InvocationOnMock invocation) throws Throwable {
           context = (ODataContext) invocation.getArguments()[0];
           return null;
         }
@@ -71,7 +71,7 @@ public class ServiceResolutionTest extends BaseTest {
 
       when(processor.getContext()).thenAnswer(new Answer<ODataContext>() {
         @Override
-        public ODataContext answer(InvocationOnMock invocation) throws Throwable {
+        public ODataContext answer(final InvocationOnMock invocation) throws Throwable {
           return context;
         }
       });
@@ -83,7 +83,6 @@ public class ServiceResolutionTest extends BaseTest {
     }
   }
 
-  
   private void startServer() {
     server.startServer(service);
   }

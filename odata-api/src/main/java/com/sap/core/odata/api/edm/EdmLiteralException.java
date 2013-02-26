@@ -15,19 +15,19 @@ public class EdmLiteralException extends EdmException {
   public static final MessageReference LITERALFORMAT = createMessageReference(EdmLiteralException.class, "LITERALFORMAT");
   public static final MessageReference UNKNOWNLITERAL = createMessageReference(EdmLiteralException.class, "UNKNOWNLITERAL");
 
-  public EdmLiteralException(MessageReference MessageReference) {
+  public EdmLiteralException(final MessageReference MessageReference) {
     super(MessageReference);
   }
 
-  public EdmLiteralException(MessageReference messageReference, Throwable cause) {
+  public EdmLiteralException(final MessageReference messageReference, final Throwable cause) {
     super(messageReference, cause);
   }
 
-  public EdmLiteralException(MessageReference MessageReference, String errorCode) {
+  public EdmLiteralException(final MessageReference MessageReference, final String errorCode) {
     super(MessageReference, errorCode);
   }
 
-  public EdmLiteralException(MessageReference messageReference, Throwable cause, String errorCode) {
+  public EdmLiteralException(final MessageReference messageReference, final Throwable cause, final String errorCode) {
     super(messageReference, cause, errorCode);
   }
 }

@@ -1,5 +1,6 @@
 package com.sap.core.odata.core.edm;
 
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -153,7 +154,7 @@ public class EdmDateTime extends AbstractSimpleType {
       return "\\/Date(" + dateTimeValue.getTimeInMillis() + ")\\/";
 
     final String pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS";
-    SimpleDateFormat dateFormat = (SimpleDateFormat) SimpleDateFormat.getDateTimeInstance();
+    SimpleDateFormat dateFormat = (SimpleDateFormat) DateFormat.getDateTimeInstance();
     dateFormat.setTimeZone(TimeZone.getTimeZone("GMT"));
     dateFormat.applyPattern(pattern);
     String result = dateFormat.format(dateTimeValue.getTime());

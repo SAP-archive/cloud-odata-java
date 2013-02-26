@@ -53,14 +53,14 @@ public class UriInfoImpl implements UriInfo {
   private Map<String, String> customQueryOptions = Collections.emptyMap();
 
   public UriType getUriType() {
-    return this.uriType;
+    return uriType;
   }
 
-  public void setUriType(UriType uriType) {
+  public void setUriType(final UriType uriType) {
     this.uriType = uriType;
   }
 
-  public void setEntityContainer(EdmEntityContainer entityContainer) {
+  public void setEntityContainer(final EdmEntityContainer entityContainer) {
     this.entityContainer = entityContainer;
   }
 
@@ -69,8 +69,8 @@ public class UriInfoImpl implements UriInfo {
     return entityContainer;
   }
 
-  public void setStartEntitySet(EdmEntitySet edmEntitySet) {
-    this.startEntitySet = edmEntitySet;
+  public void setStartEntitySet(final EdmEntitySet edmEntitySet) {
+    startEntitySet = edmEntitySet;
   }
 
   @Override
@@ -78,7 +78,7 @@ public class UriInfoImpl implements UriInfo {
     return startEntitySet;
   }
 
-  public void setTargetEntitySet(EdmEntitySet targetEntitySet) {
+  public void setTargetEntitySet(final EdmEntitySet targetEntitySet) {
     this.targetEntitySet = targetEntitySet;
   }
 
@@ -87,7 +87,7 @@ public class UriInfoImpl implements UriInfo {
     return targetEntitySet;
   }
 
-  public void setFunctionImport(EdmFunctionImport functionImport) {
+  public void setFunctionImport(final EdmFunctionImport functionImport) {
     this.functionImport = functionImport;
   }
 
@@ -96,7 +96,7 @@ public class UriInfoImpl implements UriInfo {
     return functionImport;
   }
 
-  public void setTargetType(EdmType targetType) {
+  public void setTargetType(final EdmType targetType) {
     this.targetType = targetType;
   }
 
@@ -105,7 +105,7 @@ public class UriInfoImpl implements UriInfo {
     return targetType;
   }
 
-  public void setKeyPredicates(List<KeyPredicate> keyPredicates) {
+  public void setKeyPredicates(final List<KeyPredicate> keyPredicates) {
     this.keyPredicates = keyPredicates;
   }
 
@@ -114,7 +114,7 @@ public class UriInfoImpl implements UriInfo {
     return keyPredicates;
   }
 
-  public void addNavigationSegment(NavigationSegment navigationSegment) {
+  public void addNavigationSegment(final NavigationSegment navigationSegment) {
     if (navigationSegments.equals(Collections.EMPTY_LIST))
       navigationSegments = new ArrayList<NavigationSegment>();
 
@@ -126,7 +126,7 @@ public class UriInfoImpl implements UriInfo {
     return navigationSegments;
   }
 
-  public void addProperty(EdmProperty property) {
+  public void addProperty(final EdmProperty property) {
     if (propertyPath.equals(Collections.EMPTY_LIST))
       propertyPath = new ArrayList<EdmProperty>();
 
@@ -138,7 +138,7 @@ public class UriInfoImpl implements UriInfo {
     return propertyPath;
   }
 
-  public void setCount(boolean count) {
+  public void setCount(final boolean count) {
     this.count = count;
   }
 
@@ -147,7 +147,7 @@ public class UriInfoImpl implements UriInfo {
     return count;
   }
 
-  public void setValue(boolean value) {
+  public void setValue(final boolean value) {
     this.value = value;
   }
 
@@ -156,7 +156,7 @@ public class UriInfoImpl implements UriInfo {
     return value;
   }
 
-  public void setLinks(boolean links) {
+  public void setLinks(final boolean links) {
     this.links = links;
   }
 
@@ -165,8 +165,8 @@ public class UriInfoImpl implements UriInfo {
     return links;
   }
 
-  public void setFormat(String contentType) {
-    this.format = contentType;
+  public void setFormat(final String contentType) {
+    format = contentType;
   }
 
   @Override
@@ -174,7 +174,7 @@ public class UriInfoImpl implements UriInfo {
     return format;
   }
 
-  public void setFilter(FilterExpression filter) {
+  public void setFilter(final FilterExpression filter) {
     this.filter = filter;
   }
 
@@ -183,7 +183,7 @@ public class UriInfoImpl implements UriInfo {
     return filter;
   }
 
-  public void setInlineCount(InlineCount inlineCount) {
+  public void setInlineCount(final InlineCount inlineCount) {
     this.inlineCount = inlineCount;
   }
 
@@ -192,7 +192,7 @@ public class UriInfoImpl implements UriInfo {
     return inlineCount;
   }
 
-  public void setOrderBy(OrderByExpression orderBy) {
+  public void setOrderBy(final OrderByExpression orderBy) {
     this.orderBy = orderBy;
   }
 
@@ -201,7 +201,7 @@ public class UriInfoImpl implements UriInfo {
     return orderBy;
   }
 
-  public void setSkipToken(String skipToken) {
+  public void setSkipToken(final String skipToken) {
     this.skipToken = skipToken;
   }
 
@@ -270,11 +270,11 @@ public class UriInfoImpl implements UriInfo {
   @Override
   public String toString() {
     return "UriParserResult: uriType=" + uriType + ", "
-        + "entityContainer=" + this.entityContainer + ", "
-        + "entitySet=" + this.startEntitySet + ", "
-        + "targetEntitySet=" + this.targetEntitySet + ", "
-        + "functionImport=" + this.functionImport + ", "
-        + "targetType=" + this.targetType + ", "
+        + "entityContainer=" + entityContainer + ", "
+        + "entitySet=" + startEntitySet + ", "
+        + "targetEntitySet=" + targetEntitySet + ", "
+        + "functionImport=" + functionImport + ", "
+        + "targetType=" + targetType + ", "
         + "keyPredicates=" + keyPredicates + ", "
         + "navigationSegments=" + navigationSegments + ", "
         + "propertyPath=" + propertyPath + ", "

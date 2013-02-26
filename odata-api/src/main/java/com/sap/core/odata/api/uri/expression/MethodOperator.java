@@ -11,12 +11,12 @@ public enum MethodOperator {
   private String syntax;
   private String stringRespresentation;
 
-  private MethodOperator(String syntax) {
+  private MethodOperator(final String syntax) {
     this.syntax = syntax;
     stringRespresentation = syntax;
   }
 
-  private MethodOperator(String syntax, String stringRespresentation) {
+  private MethodOperator(final String syntax, final String stringRespresentation) {
     this.syntax = syntax;
     this.stringRespresentation = stringRespresentation;
   }

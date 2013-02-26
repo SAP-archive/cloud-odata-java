@@ -15,7 +15,7 @@ public class EdmAssociationImplProv extends EdmNamedImplProv implements EdmAssoc
   private Association association;
   private String namespace;
 
-  public EdmAssociationImplProv(EdmImplProv edm, Association association, String namespace) throws EdmException {
+  public EdmAssociationImplProv(final EdmImplProv edm, final Association association, final String namespace) throws EdmException {
     super(edm, association.getName());
     this.association = association;
     this.namespace = namespace;
@@ -32,7 +32,7 @@ public class EdmAssociationImplProv extends EdmNamedImplProv implements EdmAssoc
   }
 
   @Override
-  public EdmAssociationEnd getEnd(String role) throws EdmException {
+  public EdmAssociationEnd getEnd(final String role) throws EdmException {
     AssociationEnd end = association.getEnd1();
     if (end.getRole().equals(role))
       return new EdmAssociationEndImplProv(edm, end);
@@ -48,13 +48,13 @@ public class EdmAssociationImplProv extends EdmNamedImplProv implements EdmAssoc
     return new EdmAnnotationsImplProv(association.getAnnotationAttributes(), association.getAnnotationElements());
   }
 
-  public EdmMultiplicity getEndMultiplicity(String role) {
+  public EdmMultiplicity getEndMultiplicity(final String role) {
     if (association.getEnd1().getRole().equals(role))
       return association.getEnd1().getMultiplicity();
 
     if (association.getEnd2().getRole().equals(role))
       return association.getEnd2().getMultiplicity();
-    
+
     return null;
   }
 

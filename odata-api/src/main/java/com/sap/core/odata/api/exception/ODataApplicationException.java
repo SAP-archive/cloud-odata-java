@@ -22,7 +22,7 @@ public class ODataApplicationException extends ODataException {
    * @param message
    * @param locale
    */
-  public ODataApplicationException(String message, Locale locale) {
+  public ODataApplicationException(final String message, final Locale locale) {
     super(message);
     this.locale = locale;
   }
@@ -34,7 +34,7 @@ public class ODataApplicationException extends ODataException {
    * @param locale
    * @param status
    */
-  public ODataApplicationException(String message, Locale locale, HttpStatusCodes status) {
+  public ODataApplicationException(final String message, final Locale locale, final HttpStatusCodes status) {
     this(message, locale);
     httpStatus = status;
   }
@@ -48,7 +48,7 @@ public class ODataApplicationException extends ODataException {
    * @param status
    * @param errorCode
    */
-  public ODataApplicationException(String message, Locale locale, HttpStatusCodes status, String errorCode) {
+  public ODataApplicationException(final String message, final Locale locale, final HttpStatusCodes status, final String errorCode) {
     this(message, locale, status);
     this.errorCode = errorCode;
   }
@@ -63,7 +63,7 @@ public class ODataApplicationException extends ODataException {
    * @param errorCode
    * @param e
    */
-  public ODataApplicationException(String message, Locale locale, HttpStatusCodes status, String errorCode, Throwable e) {
+  public ODataApplicationException(final String message, final Locale locale, final HttpStatusCodes status, final String errorCode, final Throwable e) {
     super(message, e);
     this.errorCode = errorCode;
     httpStatus = status;
@@ -76,7 +76,7 @@ public class ODataApplicationException extends ODataException {
    * @param locale
    * @param e
    */
-  public ODataApplicationException(String message, Locale locale, Throwable e) {
+  public ODataApplicationException(final String message, final Locale locale, final Throwable e) {
     super(message, e);
     this.locale = locale;
   }
@@ -89,7 +89,7 @@ public class ODataApplicationException extends ODataException {
    * @param status
    * @param e
    */
-  public ODataApplicationException(String message, Locale locale, HttpStatusCodes status, Throwable e) {
+  public ODataApplicationException(final String message, final Locale locale, final HttpStatusCodes status, final Throwable e) {
     this(message, locale, e);
     httpStatus = status;
   }
@@ -102,7 +102,7 @@ public class ODataApplicationException extends ODataException {
    * @param errorCode
    * @param e
    */
-  public ODataApplicationException(String message, Locale locale, String errorCode, Throwable e) {
+  public ODataApplicationException(final String message, final Locale locale, final String errorCode, final Throwable e) {
     this(message, locale, e);
     this.errorCode = errorCode;
 

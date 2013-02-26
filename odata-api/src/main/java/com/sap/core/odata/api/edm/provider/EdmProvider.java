@@ -19,7 +19,7 @@ public abstract class EdmProvider {
    * @return {@link EntityContainerInfo} for the given name
    * @throws ODataException
    */
-  public EntityContainerInfo getEntityContainerInfo(String name) throws ODataException {
+  public EntityContainerInfo getEntityContainerInfo(final String name) throws ODataException {
     throw new ODataNotImplementedException();
   }
 
@@ -29,7 +29,7 @@ public abstract class EdmProvider {
    * @return {@link EntityType} for the given name
    * @throws ODataException
    */
-  public EntityType getEntityType(FullQualifiedName edmFQName) throws ODataException {
+  public EntityType getEntityType(final FullQualifiedName edmFQName) throws ODataException {
     throw new ODataNotImplementedException();
   }
 
@@ -39,7 +39,7 @@ public abstract class EdmProvider {
    * @return {@link ComplexType} for the given name
    * @throws ODataException
    */
-  public ComplexType getComplexType(FullQualifiedName edmFQName) throws ODataException {
+  public ComplexType getComplexType(final FullQualifiedName edmFQName) throws ODataException {
     throw new ODataNotImplementedException();
   }
 
@@ -49,7 +49,7 @@ public abstract class EdmProvider {
    * @return {@link Association} for the given name
    * @throws ODataException
    */
-  public Association getAssociation(FullQualifiedName edmFQName) throws ODataException {
+  public Association getAssociation(final FullQualifiedName edmFQName) throws ODataException {
     throw new ODataNotImplementedException();
   }
 
@@ -60,7 +60,7 @@ public abstract class EdmProvider {
    * @return {@link EntitySet} for the given container name and entity set name
    * @throws ODataException
    */
-  public EntitySet getEntitySet(String entityContainer, String name) throws ODataException {
+  public EntitySet getEntitySet(final String entityContainer, final String name) throws ODataException {
     throw new ODataNotImplementedException();
   }
 
@@ -73,7 +73,7 @@ public abstract class EdmProvider {
    * @return {@link AssociationSet} for the given container name, association name, source entity set name and source entity set role
    * @throws ODataException
    */
-  public AssociationSet getAssociationSet(String entityContainer, FullQualifiedName association, String sourceEntitySetName, String sourceEntitySetRole) throws ODataException {
+  public AssociationSet getAssociationSet(final String entityContainer, final FullQualifiedName association, final String sourceEntitySetName, final String sourceEntitySetRole) throws ODataException {
     throw new ODataNotImplementedException();
   }
 
@@ -84,7 +84,7 @@ public abstract class EdmProvider {
    * @return {@link FunctionImport} for the given container name and function import name
    * @throws ODataException
    */
-  public FunctionImport getFunctionImport(String entityContainer, String name) throws ODataException {
+  public FunctionImport getFunctionImport(final String entityContainer, final String name) throws ODataException {
     throw new ODataNotImplementedException();
   }
 

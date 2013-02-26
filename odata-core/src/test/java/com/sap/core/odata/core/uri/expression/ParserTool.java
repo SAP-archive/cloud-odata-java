@@ -46,17 +46,17 @@ public class ParserTool
   private Exception curException;
   private static final Locale DEFAULT_LANGUAGE = new Locale("test", "SAP");
 
-  public static void dout(String out)
+  public static void dout(final String out)
   {
     if (debug) ParserTool.log.debug(out);
   }
 
-  public static void out(String out)
+  public static void out(final String out)
   {
     ParserTool.log.debug(out);
   }
 
-  public ParserTool(String expression, boolean isOrder, boolean addTestfunctions, boolean allowOnlyBinary)
+  public ParserTool(final String expression, final boolean isOrder, final boolean addTestfunctions, final boolean allowOnlyBinary)
   {
     dout("ParserTool - Testing: " + expression);
     this.expression = expression;
@@ -66,23 +66,23 @@ public class ParserTool
       {
         FilterParserImplTool parser = new FilterParserImplTool(null);
         if (addTestfunctions) parser.addTestfunctions();
-        this.tree = parser.parseFilterString(expression,allowOnlyBinary).getExpression();
+        tree = parser.parseFilterString(expression, allowOnlyBinary).getExpression();
       }
       else
       {
         OrderByParserImpl parser = new OrderByParserImpl(null);
-        this.tree = parser.parseOrderByString(expression);
+        tree = parser.parseOrderByString(expression);
       }
     } catch (ExpressionParserException e) {
-      this.curException = e;
+      curException = e;
     } catch (ExpressionParserInternalError e) {
-      this.curException = e;
+      curException = e;
     }
 
-    this.curNode = this.tree;
+    curNode = tree;
   }
 
-  public ParserTool(String expression, boolean isOrder, boolean addTestfunctions,  boolean allowOnlyBinary, EdmEntityType resourceEntityType)
+  public ParserTool(final String expression, final boolean isOrder, final boolean addTestfunctions, final boolean allowOnlyBinary, final EdmEntityType resourceEntityType)
   {
     dout("ParserTool - Testing: " + expression);
     this.expression = expression;
@@ -92,23 +92,23 @@ public class ParserTool
       {
         FilterParserImplTool parser = new FilterParserImplTool(resourceEntityType);
         if (addTestfunctions) parser.addTestfunctions();
-        this.tree = parser.parseFilterString(expression,allowOnlyBinary).getExpression();
+        tree = parser.parseFilterString(expression, allowOnlyBinary).getExpression();
       }
       else
       {
-        OrderByParserImpl parser = new OrderByParserImpl( resourceEntityType);
-        this.tree = parser.parseOrderByString(expression);
+        OrderByParserImpl parser = new OrderByParserImpl(resourceEntityType);
+        tree = parser.parseOrderByString(expression);
       }
     } catch (ExpressionParserException e) {
-      this.curException = e;
+      curException = e;
     } catch (ExpressionParserInternalError e) {
-      this.curException = e;
+      curException = e;
     }
 
-    this.curNode = this.tree;
+    curNode = tree;
   }
 
-  ParserTool aKind(ExpressionKind kind)
+  ParserTool aKind(final ExpressionKind kind)
   {
     String info = "GetInfoKind(" + expression + ")-->";
     dout("  " + info + "Expected: " + kind.toString() + " Actual: " + curNode.getKind().toString());
@@ -117,7 +117,7 @@ public class ParserTool
     return this;
   }
 
-  public ParserTool aUriLiteral(String uriLiteral)
+  public ParserTool aUriLiteral(final String uriLiteral)
   {
     String info = "GetUriLiteral(" + expression + ")-->";
     dout("  " + info + "Expected: " + uriLiteral + " Actual: " + curNode.getUriLiteral());
@@ -132,7 +132,7 @@ public class ParserTool
    *   Expected Exception class 
    * @return
    */
-  public ParserTool aExType(Class<? extends Exception> expected)
+  public ParserTool aExType(final Class<? extends Exception> expected)
   {
     String info = "GetExceptionType(" + expression + ")-->";
 
@@ -156,7 +156,7 @@ public class ParserTool
    *   Expected message text 
    * @return  this
    */
-  public ParserTool aExMsgText(String messageText)
+  public ParserTool aExMsgText(final String messageText)
   {
     String info = "aExMessageText(" + expression + ")-->";
     if (curException == null)
@@ -253,7 +253,7 @@ public class ParserTool
     return this;
   }
 
-  public ParserTool aExKey(MessageReference expressionExpectedAtPos)
+  public ParserTool aExKey(final MessageReference expressionExpectedAtPos)
   {
     String expectedKey = expressionExpectedAtPos.getKey();
     ODataMessageException messageException;
@@ -354,13 +354,13 @@ public class ParserTool
     return this;
   }
 
-  private void checkNoException(String infoMethod) {
+  private void checkNoException(final String infoMethod) {
     if (curException != null) {
       fail("Error in " + infoMethod + ": exception '" + getExceptionText() + "' occured!");
     }
   }
 
-  public ParserTool aEdmType(EdmType type)
+  public ParserTool aEdmType(final EdmType type)
   {
     checkNoException("aEdmType");
     String info = "GetEdmType(" + expression + ")-->";
@@ -382,7 +382,7 @@ public class ParserTool
     return this;
   }
 
-  public ParserTool aSortOrder(SortOrder orderType)
+  public ParserTool aSortOrder(final SortOrder orderType)
   {
     String info = "GetSortOrder(" + expression + ")-->";
 
@@ -425,7 +425,7 @@ public class ParserTool
     return this;
   }
 
-  public ParserTool aEdmProperty(EdmProperty string)
+  public ParserTool aEdmProperty(final EdmProperty string)
   {
     String info = "GetEdmProperty(" + expression + ")-->";
 
@@ -447,16 +447,16 @@ public class ParserTool
     return this;
   }
 
-  public ParserTool aSerializedCompr(String expected)
+  public ParserTool aSerializedCompr(final String expected)
   {
     aSerialized(compress(expected));
     return this;
   }
 
-  public ParserTool aSerialized(String expected)
+  public ParserTool aSerialized(final String expected)
   {
     checkNoException("aSerialized");
-    
+
     String actual = null;
     ExpressionVisitor visitor = new VisitorTool();
     try {
@@ -528,7 +528,7 @@ public class ParserTool
     return this;
   }
 
-  public ParserTool order(int i)
+  public ParserTool order(final int i)
   {
     if (curNode.getKind() != ExpressionKind.ORDERBY)
     {
@@ -552,7 +552,7 @@ public class ParserTool
 
   }
 
-  public ParserTool param(int i)
+  public ParserTool param(final int i)
   {
     if (curNode.getKind() != ExpressionKind.METHOD)
     {
@@ -577,11 +577,11 @@ public class ParserTool
 
   public ParserTool root()
   {
-    curNode = this.tree;
+    curNode = tree;
     return this;
   }
 
-  static public String compress(String expression)
+  static public String compress(final String expression)
   {
     String ret = "";
     char[] charArray = expression.trim().toCharArray();

@@ -33,7 +33,7 @@ public class MapProcessor extends ODataSingleProcessor {
     }
   }
 
-  private int indexOf(String key, String value) {
+  private int indexOf(final String key, final String value) {
     for (int i = 0; i < RECORD_COUNT; i++) {
       if (records.get(i).containsKey(key) && records.get(i).containsValue(value)) {
         return i;
@@ -43,7 +43,7 @@ public class MapProcessor extends ODataSingleProcessor {
   }
 
   @Override
-  public ODataResponse readEntitySet(GetEntitySetUriInfo uriInfo, String contentType) throws ODataException {
+  public ODataResponse readEntitySet(final GetEntitySetUriInfo uriInfo, final String contentType) throws ODataException {
     final EntityProviderProperties properties = EntityProviderProperties.serviceRoot(getContext().getPathInfo().getServiceRoot()).build();
 
     final List<Map<String, Object>> values = new ArrayList<Map<String, Object>>();
@@ -66,7 +66,7 @@ public class MapProcessor extends ODataSingleProcessor {
   }
 
   @Override
-  public ODataResponse readEntity(GetEntityUriInfo uriInfo, String contentType) throws ODataException {
+  public ODataResponse readEntity(final GetEntityUriInfo uriInfo, final String contentType) throws ODataException {
     final EntityProviderProperties properties = EntityProviderProperties.serviceRoot(getContext().getPathInfo().getServiceRoot()).build();
 
     // query
@@ -90,7 +90,7 @@ public class MapProcessor extends ODataSingleProcessor {
   }
 
   @Override
-  public ODataResponse readEntitySimplePropertyValue(GetSimplePropertyUriInfo uriInfo, String contentType) throws ODataException {
+  public ODataResponse readEntitySimplePropertyValue(final GetSimplePropertyUriInfo uriInfo, final String contentType) throws ODataException {
     final List<EdmProperty> propertyPath = uriInfo.getPropertyPath();
     final EdmProperty property = propertyPath.get(propertyPath.size() - 1);
 

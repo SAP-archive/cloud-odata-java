@@ -11,7 +11,7 @@ import com.sap.core.odata.api.processor.ODataContext;
 public class MapFactory extends ODataServiceFactory {
 
   @Override
-  public ODataService createService(ODataContext ctx) throws ODataException {
+  public ODataService createService(final ODataContext ctx) throws ODataException {
     final MapProvider provider = new MapProvider();
     final MapProcessor processor = new MapProcessor();
 

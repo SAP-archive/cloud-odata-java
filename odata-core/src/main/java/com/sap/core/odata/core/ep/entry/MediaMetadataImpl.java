@@ -3,12 +3,12 @@ package com.sap.core.odata.core.ep.entry;
 import com.sap.core.odata.api.ep.entry.MediaMetadata;
 
 public class MediaMetadataImpl implements MediaMetadata {
-  
+
   private String sourceLink;
   private String etag;
   private String contentType;
   private String editLink;
-  
+
   @Override
   public String getSourceLink() {
     return sourceLink;
@@ -29,19 +29,19 @@ public class MediaMetadataImpl implements MediaMetadata {
     return editLink;
   }
 
-  public void setSourceLink(String sourceLink) {
+  public void setSourceLink(final String sourceLink) {
     this.sourceLink = sourceLink;
   }
-  
-  public void setEtag(String etag) {
+
+  public void setEtag(final String etag) {
     this.etag = etag;
   }
-  
-  public void setContentType(String contentType) {
+
+  public void setContentType(final String contentType) {
     this.contentType = contentType;
   }
-  
-  public void setEditLink(String editLink) {
+
+  public void setEditLink(final String editLink) {
     this.editLink = editLink;
   }
 }

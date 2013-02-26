@@ -17,7 +17,7 @@ public class BinaryExpressionImpl implements BinaryExpression
   final protected Token token;
   protected EdmType edmType;
 
-  public BinaryExpressionImpl(InfoBinaryOperator operatorInfo, CommonExpression leftSide, CommonExpression rightSide, Token token) {
+  public BinaryExpressionImpl(final InfoBinaryOperator operatorInfo, final CommonExpression leftSide, final CommonExpression rightSide, final Token token) {
     this.operatorInfo = operatorInfo;
     this.leftSide = leftSide;
     this.rightSide = rightSide;
@@ -50,7 +50,7 @@ public class BinaryExpressionImpl implements BinaryExpression
   }
 
   @Override
-  public CommonExpression setEdmType(EdmType edmType)
+  public CommonExpression setEdmType(final EdmType edmType)
   {
     this.edmType = edmType;
     return this;
@@ -69,7 +69,7 @@ public class BinaryExpressionImpl implements BinaryExpression
   }
 
   @Override
-  public Object accept(ExpressionVisitor visitor) throws ExceptionVisitExpression, ODataApplicationException
+  public Object accept(final ExpressionVisitor visitor) throws ExceptionVisitExpression, ODataApplicationException
   {
     Object retLeftSide = leftSide.accept(visitor);
     Object retRightSide = rightSide.accept(visitor);

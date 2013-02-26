@@ -81,7 +81,7 @@ public class FunctionImportParameter {
    * @param name
    * @return {@link FunctionImportParameter} for method chaining
    */
-  public FunctionImportParameter setName(String name) {
+  public FunctionImportParameter setName(final String name) {
     this.name = name;
     return this;
   }
@@ -91,7 +91,7 @@ public class FunctionImportParameter {
    * @param mode
    * @return {@link FunctionImportParameter} for method chaining
    */
-  public FunctionImportParameter setMode(String mode) {
+  public FunctionImportParameter setMode(final String mode) {
     this.mode = mode;
     return this;
   }
@@ -101,7 +101,7 @@ public class FunctionImportParameter {
    * @param type
    * @return {@link FunctionImportParameter} for method chaining
    */
-  public FunctionImportParameter setType(EdmSimpleTypeKind type) {
+  public FunctionImportParameter setType(final EdmSimpleTypeKind type) {
     this.type = type;
     return this;
   }
@@ -111,7 +111,7 @@ public class FunctionImportParameter {
    * @param facets
    * @return {@link FunctionImportParameter} for method chaining
    */
-  public FunctionImportParameter setFacets(EdmFacets facets) {
+  public FunctionImportParameter setFacets(final EdmFacets facets) {
     this.facets = facets;
     return this;
   }
@@ -121,7 +121,7 @@ public class FunctionImportParameter {
    * @param mapping
    * @return {@link FunctionImportParameter} for method chaining
    */
-  public FunctionImportParameter setMapping(Mapping mapping) {
+  public FunctionImportParameter setMapping(final Mapping mapping) {
     this.mapping = mapping;
     return this;
   }
@@ -131,7 +131,7 @@ public class FunctionImportParameter {
    * @param documentation
    * @return {@link FunctionImportParameter} for method chaining
    */
-  public FunctionImportParameter setDocumentation(Documentation documentation) {
+  public FunctionImportParameter setDocumentation(final Documentation documentation) {
     this.documentation = documentation;
     return this;
   }
@@ -141,7 +141,7 @@ public class FunctionImportParameter {
    * @param annotationAttributes
    * @return {@link FunctionImportParameter} for method chaining
    */
-  public FunctionImportParameter setAnnotationAttributes(List<AnnotationAttribute> annotationAttributes) {
+  public FunctionImportParameter setAnnotationAttributes(final List<AnnotationAttribute> annotationAttributes) {
     this.annotationAttributes = annotationAttributes;
     return this;
   }
@@ -151,7 +151,7 @@ public class FunctionImportParameter {
    * @param annotationElements
    * @return {@link FunctionImportParameter} for method chaining
    */
-  public FunctionImportParameter setAnnotationElements(List<AnnotationElement> annotationElements) {
+  public FunctionImportParameter setAnnotationElements(final List<AnnotationElement> annotationElements) {
     this.annotationElements = annotationElements;
     return this;
   }

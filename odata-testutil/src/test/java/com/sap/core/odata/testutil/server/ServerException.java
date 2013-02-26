@@ -7,7 +7,7 @@ public class ServerException extends RuntimeException {
 
   private static final long serialVersionUID = 1L;
 
-  public ServerException(Exception e) {
+  public ServerException(final Exception e) {
     super(e);
   }
 }

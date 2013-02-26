@@ -38,7 +38,6 @@ public class FitLoadTest extends AbstractBasicTest {
     return processor;
   }
 
-
   @Test
   public void useApacheHttpClient() throws ClientProtocolException, IOException {
     for (int i = 0; i < LOOP_COUNT; i++) {

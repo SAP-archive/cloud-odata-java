@@ -1,5 +1,6 @@
 package com.sap.core.odata.core.edm;
 
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -120,7 +121,7 @@ public class EdmTime extends AbstractSimpleType {
     }
 
     final String pattern = "'PT'H'H'm'M's.SSS";
-    SimpleDateFormat dateFormat = (SimpleDateFormat) SimpleDateFormat.getDateTimeInstance();
+    SimpleDateFormat dateFormat = (SimpleDateFormat) DateFormat.getDateTimeInstance();
     dateFormat.setTimeZone(dateTimeValue.getTimeZone());
     dateFormat.applyPattern(pattern);
     String result = dateFormat.format(dateTimeValue.getTime());

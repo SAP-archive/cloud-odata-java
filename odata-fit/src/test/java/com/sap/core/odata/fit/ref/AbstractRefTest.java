@@ -36,7 +36,7 @@ import com.sap.core.odata.testutil.helper.StringHelper;
  * @author SAP AG
  */
 public class AbstractRefTest extends AbstractFitTest {
-  
+
   private static final Logger LOG = Logger.getLogger(AbstractRefTest.class);
 
   protected static final String IMAGE_JPEG = "image/jpeg";
@@ -89,7 +89,7 @@ public class AbstractRefTest extends AbstractFitTest {
     }
 
     LOG.trace("Request url [" + request.getRequestLine() + "] for " + this.getClass().getSimpleName());
-    
+
     final HttpResponse response = getHttpClient().execute(request);
 
     assertNotNull(response);
@@ -149,7 +149,7 @@ public class AbstractRefTest extends AbstractFitTest {
   }
 
   protected HttpResponse postUri(final String uri, final String requestBody, final String requestContentType, final HttpStatusCodes expectedStatusCode) throws Exception {
-//    return callUri(ODataHttpMethod.POST, uri, null, null, requestBody, requestContentType, expectedStatusCode);
+    //    return callUri(ODataHttpMethod.POST, uri, null, null, requestBody, requestContentType, expectedStatusCode);
     return callUri(ODataHttpMethod.POST, uri, HttpHeaders.ACCEPT, HttpContentType.WILDCARD, requestBody, requestContentType, expectedStatusCode);
   }
 

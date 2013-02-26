@@ -15,7 +15,7 @@ import com.sap.core.odata.testutil.fit.BaseTest;
  * @author SAP AG
  */
 public class DataContainerTest extends BaseTest {
-  
+
   private DataContainer dataContainer = new DataContainer();
   private static final String NAME = "Other name for team";
 

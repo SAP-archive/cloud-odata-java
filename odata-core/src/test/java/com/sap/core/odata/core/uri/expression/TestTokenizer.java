@@ -94,7 +94,7 @@ public class TestTokenizer
 
   }
 
-  public static String HexToBase64(String hex)
+  public static String HexToBase64(final String hex)
   {
     String base64 = "";
     byte bArr[];
@@ -194,7 +194,7 @@ public class TestTokenizer
    * Create TokenTool ( and Token list) without respecting whitespaces
    * @param expression Expression to be tokenized
    */
-  public TokenTool getTT(String expression)
+  public TokenTool getTT(final String expression)
   {
     return new TokenTool(expression, false);
   }
@@ -203,7 +203,7 @@ public class TestTokenizer
    * Create TokenTool ( and Token list) without respecting whitespaces
    * @param expression Expression to be tokenized
    */
-  public TokenTool getTTW(String expression)
+  public TokenTool getTTW(final String expression)
   {
     return new TokenTool(expression, true);
   }

@@ -14,11 +14,11 @@ public final class ODataRuntimeException extends RuntimeException {
     super();
   }
 
-  public ODataRuntimeException(String message) {
+  public ODataRuntimeException(final String message) {
     super(message);
   }
 
-  public ODataRuntimeException(String message, Throwable throwable) {
+  public ODataRuntimeException(final String message, final Throwable throwable) {
     super(message, throwable);
   }
 

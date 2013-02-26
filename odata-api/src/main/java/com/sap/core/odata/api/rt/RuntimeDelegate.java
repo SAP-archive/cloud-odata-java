@@ -73,7 +73,7 @@ public abstract class RuntimeDelegate {
    * @param edmSimpleTypeKind type kind
    * @return an implementation object
    */
-  public static EdmSimpleType getEdmSimpleType(EdmSimpleTypeKind edmSimpleTypeKind) {
+  public static EdmSimpleType getEdmSimpleType(final EdmSimpleTypeKind edmSimpleTypeKind) {
     return RuntimeDelegate.getInstance().getEdmSimpleType(edmSimpleTypeKind);
   }
 
@@ -98,7 +98,7 @@ public abstract class RuntimeDelegate {
    * @param provider a provider implemented by the OData service
    * @return an implementation object
    */
-  public static Edm createEdm(EdmProvider provider) {
+  public static Edm createEdm(final EdmProvider provider) {
     return RuntimeDelegate.getInstance().createEdm(provider);
   }
 
@@ -107,7 +107,7 @@ public abstract class RuntimeDelegate {
    * @param edm metadata of the implemented service
    * @return an implementation object
    */
-  public static UriParser getUriParser(Edm edm) {
+  public static UriParser getUriParser(final Edm edm) {
     return RuntimeDelegate.getInstance().getUriParser(edm);
   }
 
@@ -125,7 +125,7 @@ public abstract class RuntimeDelegate {
    * @param processor a single data processor implementation of the OData service
    * @return a implementation object
    */
-  public static ODataService createODataSingleProcessorService(EdmProvider provider, ODataSingleProcessor processor) {
+  public static ODataService createODataSingleProcessorService(final EdmProvider provider, final ODataSingleProcessor processor) {
     return RuntimeDelegate.getInstance().createODataSingleProcessorService(provider, processor);
   }
 
@@ -133,7 +133,7 @@ public abstract class RuntimeDelegate {
 
     private static final long serialVersionUID = 1L;
 
-    public RuntimeDelegateException(Exception e) {
+    public RuntimeDelegateException(final Exception e) {
       super(e);
     }
   }

@@ -12,7 +12,7 @@ public abstract class EdmPropertyImplProv extends EdmElementImplProv implements 
 
   private Property property;
 
-  public EdmPropertyImplProv(EdmImplProv edm, FullQualifiedName propertyName, Property property) throws EdmException {
+  public EdmPropertyImplProv(final EdmImplProv edm, final FullQualifiedName propertyName, final Property property) throws EdmException {
     super(edm, property.getName(), propertyName, property.getFacets(), property.getMapping());
     this.property = property;
   }
