@@ -38,6 +38,16 @@ public class EntityPropertyInfo {
         property.getMapping());
   }
 
+  public boolean isMandatory() {
+    if(facets == null) {
+      return false;
+    } else if(facets.isNullable() == null) {
+      return false;
+    } else {
+      return !facets.isNullable();
+    }
+  }
+  
   public boolean isComplex() {
     return false;
   }

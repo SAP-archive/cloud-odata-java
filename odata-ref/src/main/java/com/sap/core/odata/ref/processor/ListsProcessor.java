@@ -299,7 +299,7 @@ public class ListsProcessor extends ODataSingleProcessor {
           new BinaryData(EntityProvider.readBinary(content), requestContentType));
 
     } else {
-      final ODataEntry entryValues = parseEntry(entitySet, content, requestContentType);
+      final ODataEntry entryValues = parseEntry(entitySet, content, requestContentType, true);
 
       setStructuralTypeValuesFromMap(data, entityType, entryValues.getProperties(), true);
 
@@ -330,7 +330,7 @@ public class ListsProcessor extends ODataSingleProcessor {
       throw new ODataNotFoundException(ODataNotFoundException.ENTITY);
 
     final EdmEntitySet entitySet = uriInfo.getTargetEntitySet();
-    final ODataEntry entryValues = parseEntry(entitySet, content, requestContentType);
+    final ODataEntry entryValues = parseEntry(entitySet, content, requestContentType, merge);
 
     final EdmEntityType entityType = entitySet.getEntityType();
     setStructuralTypeValuesFromMap(data, entityType, entryValues.getProperties(), merge);
@@ -582,7 +582,7 @@ public class ListsProcessor extends ODataSingleProcessor {
 
     Map<String, Object> values;
     try {
-      values = EntityProvider.readProperty(requestContentType, property, content);
+      values = EntityProvider.readProperty(requestContentType, property, content, merge);
     } catch (EntityProviderException e) {
       throw new ODataBadRequestException(ODataBadRequestException.BODY, e);
     }
@@ -872,13 +872,13 @@ public class ListsProcessor extends ODataSingleProcessor {
     return response;
   }
 
-  private ODataEntry parseEntry(final EdmEntitySet entitySet, InputStream content, final String requestContentType) throws ODataBadRequestException {
+  private ODataEntry parseEntry(final EdmEntitySet entitySet, InputStream content, final String requestContentType, boolean merge) throws ODataBadRequestException {
     ODataContext context = getContext();
     final int timingHandle = context.startRuntimeMeasurement("EntityConsumer", "readEntry");
 
     ODataEntry entryValues;
     try {
-      entryValues = EntityProvider.readEntry(requestContentType, entitySet, content);
+      entryValues = EntityProvider.readEntry(requestContentType, entitySet, content, merge);
     } catch (EntityProviderException e) {
       throw new ODataBadRequestException(ODataBadRequestException.BODY, e);
     }

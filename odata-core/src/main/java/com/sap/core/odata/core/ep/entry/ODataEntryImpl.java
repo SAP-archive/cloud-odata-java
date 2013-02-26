@@ -1,10 +1,14 @@
 package com.sap.core.odata.core.ep.entry;
 
+import java.util.Collection;
 import java.util.Map;
 
+import com.sap.core.odata.api.ep.EntityProviderException;
 import com.sap.core.odata.api.ep.entry.EntryMetadata;
 import com.sap.core.odata.api.ep.entry.MediaMetadata;
 import com.sap.core.odata.api.ep.entry.ODataEntry;
+import com.sap.core.odata.core.ep.aggregator.EntityInfoAggregator;
+import com.sap.core.odata.core.ep.aggregator.EntityPropertyInfo;
 
 public class ODataEntryImpl implements ODataEntry {
 
@@ -31,5 +35,18 @@ public class ODataEntryImpl implements ODataEntry {
   @Override
   public EntryMetadata getMetadata() {
     return entryMetadata;
+  }
+  
+  public void validate(EntityInfoAggregator eia) throws EntityProviderException {
+    Collection<EntityPropertyInfo> propertyInfos = eia.getPropertyInfos();
+
+    for (EntityPropertyInfo entityPropertyInfo : propertyInfos) {
+      boolean mandatory = entityPropertyInfo.isMandatory();
+      if(mandatory) {
+        if(!data.containsKey(entityPropertyInfo.getName())) {
+          throw new EntityProviderException(EntityProviderException.MISSING_PROPERTY.addContent(entityPropertyInfo.getName()));
+        }
+      }
+    }
   }
 }

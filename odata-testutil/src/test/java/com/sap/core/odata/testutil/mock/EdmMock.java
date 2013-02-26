@@ -5,6 +5,8 @@ import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
 
+import org.mockito.Mockito;
+
 import com.sap.core.odata.api.edm.Edm;
 import com.sap.core.odata.api.edm.EdmComplexType;
 import com.sap.core.odata.api.edm.EdmConcurrencyMode;
@@ -86,7 +88,11 @@ class EdmMock {
     createProperty("RoomId", EdmSimpleTypeKind.String, employeeType);
     createProperty("TeamId", EdmSimpleTypeKind.String, employeeType);
 
-    createProperty("Age", EdmSimpleTypeKind.Int32, employeeType);
+    EdmProperty employeeAgeProperty = createProperty("Age", EdmSimpleTypeKind.Int32, employeeType);
+    EdmFacets employeeAgeFacets = Mockito.mock(EdmFacets.class);
+    when(employeeAgeFacets.getMaxLength()).thenReturn(null);
+    when(employeeAgeFacets.isNullable()).thenReturn(Boolean.FALSE);
+    when(employeeAgeProperty.getFacets()).thenReturn(employeeAgeFacets);
 
     final EdmProperty employeeEntryDateProperty = createProperty("EntryDate", EdmSimpleTypeKind.DateTime, employeeType);
     final EdmCustomizableFeedMappings employeeUpdatedMappings = mock(EdmCustomizableFeedMappings.class);

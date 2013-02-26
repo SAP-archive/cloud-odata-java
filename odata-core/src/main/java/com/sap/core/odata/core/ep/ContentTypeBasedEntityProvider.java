@@ -20,11 +20,11 @@ import com.sap.core.odata.api.processor.ODataResponse;
  */
 public interface ContentTypeBasedEntityProvider {
 
-  ODataEntry readEntry(EdmEntitySet entitySet, InputStream content) throws EntityProviderException;
+  ODataEntry readEntry(EdmEntitySet entitySet, InputStream content, boolean validate) throws EntityProviderException;
 
   String readLink(EdmEntitySet entitySet, InputStream content) throws EntityProviderException;
 
-  Map<String, Object> readProperty(EdmProperty edmProperty, InputStream content) throws EntityProviderException;
+  Map<String, Object> readProperty(EdmProperty edmProperty, InputStream content, boolean validate) throws EntityProviderException;
 
   List<String> readLinks(EdmEntitySet entitySet, InputStream content) throws EntityProviderException;
 
