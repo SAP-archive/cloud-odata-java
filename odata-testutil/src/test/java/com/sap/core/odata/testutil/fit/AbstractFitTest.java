@@ -9,7 +9,7 @@ import org.junit.Before;
 
 import com.sap.core.odata.api.ODataService;
 import com.sap.core.odata.api.exception.ODataException;
-import com.sap.core.odata.testutil.helper.TestutilException;
+import com.sap.core.odata.testutil.helper.TestUtilException;
 import com.sap.core.odata.testutil.server.TestServer;
 
 /**
@@ -47,7 +47,7 @@ public abstract class AbstractFitTest extends BaseTest {
       service = createService();
       server.startServer(service);
     } catch (final ODataException e) {
-      throw new TestutilException(e);
+      throw new TestUtilException(e);
     }
   }
 
@@ -56,7 +56,7 @@ public abstract class AbstractFitTest extends BaseTest {
     try {
       server.stopServer();
     } catch (final Exception e) {
-      throw new TestutilException(e);
+      throw new TestUtilException(e);
     }
   }
 }
