@@ -74,20 +74,25 @@ class ParameterSet
     int paramSize = types.size();
 
     if (actSize < paramSize)
+    {
       return false;
-    //throw FilterParserInternalError.createINVALID_TYPE_COUNT(); //to few actual Parameters
+      //throw FilterParserInternalError.createINVALID_TYPE_COUNT(); //to few actual Parameters
+    }
 
     //This may happen if the number of supplied actual method parameters is higher then than the number
     //of allowed method parameters but this should be checked before, hence this is an internal error in the parser
     if ((actSize > paramSize) && (furtherType == null))
+    {
       return false;
-    //throw FilterParserInternalError.createINVALID_TYPE_COUNT();
+      //throw FilterParserInternalError.createINVALID_TYPE_COUNT();
+    }
 
     for (int i = 0; i < actSize; i++)
     {
       EdmType actType = actualParameterTypes.get(i);
-      if (actType == null)
+      if (actType == null) {
         return false;
+      }
 
       EdmSimpleType paramType = null;
       if (i < paramSize) {
@@ -100,18 +105,22 @@ class ParameterSet
       {
         //this the parameter type does not fit and if it is not allowed to promoted the actual parameter then
         //this parameter combination does not fit
-        if (!allowPromotion)
+        if (!allowPromotion) {
           return false;
+        }
 
         //Its allowed to promoted the actual parameter!!!
 
         //Promotion only allowed for simple types
         if (actType.getKind() != EdmTypeKind.SIMPLE)
+        {
           return false; //Tested with TestParserExceptions.testAdditionalStuff CASE 8
+        }
 
         //The type simply don't match          
-        if (!paramType.isCompatible((EdmSimpleType) actType))
+        if (!paramType.isCompatible((EdmSimpleType) actType)) {
           return false;
+        }
       }
     }
     return true;

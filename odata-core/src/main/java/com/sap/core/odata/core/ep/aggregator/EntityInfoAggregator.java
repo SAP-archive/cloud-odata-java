@@ -327,8 +327,9 @@ public class EntityInfoAggregator {
       Map<String, EntityPropertyInfo> eia = EntityInfoAggregator.create(complex);
 
       List<EntityPropertyInfo> childEntityInfoList = new ArrayList<EntityPropertyInfo>();
-      for (String propertyName : complex.getPropertyNames())
+      for (String propertyName : complex.getPropertyNames()) {
         childEntityInfoList.add(eia.get(propertyName));
+      }
       epi = new EntityComplexPropertyInfo(functionImport.getName(), type, null, null, childEntityInfoList);
 
     } else if (type.getKind() == EdmTypeKind.SIMPLE) {

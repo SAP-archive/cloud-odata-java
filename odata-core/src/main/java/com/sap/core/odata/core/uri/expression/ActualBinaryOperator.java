@@ -7,8 +7,9 @@ public class ActualBinaryOperator
 
   public ActualBinaryOperator(final InfoBinaryOperator operatorInfo, final Token token)
   {
-    if (operatorInfo == null)
+    if (operatorInfo == null) {
       throw new IllegalArgumentException("operatorInfo parameter must not be null");
+    }
 
     operator = operatorInfo;
     this.token = token;

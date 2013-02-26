@@ -40,8 +40,9 @@ public class Token {
 
   public EdmType getEdmType()
   {
-    if (javaLiteral == null)
+    if (javaLiteral == null) {
       return null;
+    }
     return javaLiteral.getType();
   }
 

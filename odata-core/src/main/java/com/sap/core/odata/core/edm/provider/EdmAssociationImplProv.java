@@ -34,11 +34,13 @@ public class EdmAssociationImplProv extends EdmNamedImplProv implements EdmAssoc
   @Override
   public EdmAssociationEnd getEnd(final String role) throws EdmException {
     AssociationEnd end = association.getEnd1();
-    if (end.getRole().equals(role))
+    if (end.getRole().equals(role)) {
       return new EdmAssociationEndImplProv(edm, end);
+    }
     end = association.getEnd2();
-    if (end.getRole().equals(role))
+    if (end.getRole().equals(role)) {
       return new EdmAssociationEndImplProv(edm, end);
+    }
 
     return null;
   }
@@ -49,11 +51,13 @@ public class EdmAssociationImplProv extends EdmNamedImplProv implements EdmAssoc
   }
 
   public EdmMultiplicity getEndMultiplicity(final String role) {
-    if (association.getEnd1().getRole().equals(role))
+    if (association.getEnd1().getRole().equals(role)) {
       return association.getEnd1().getMultiplicity();
+    }
 
-    if (association.getEnd2().getRole().equals(role))
+    if (association.getEnd2().getRole().equals(role)) {
       return association.getEnd2().getMultiplicity();
+    }
 
     return null;
   }

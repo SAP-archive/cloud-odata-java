@@ -372,28 +372,37 @@ public abstract class AbstractContentNegotiationTest extends AbstractFitTest {
 
     @Override
     public boolean equals(final Object obj) {
-      if (this == obj)
+      if (this == obj) {
         return true;
-      if (obj == null)
+      }
+      if (obj == null) {
         return false;
-      if (getClass() != obj.getClass())
+      }
+      if (getClass() != obj.getClass()) {
         return false;
+      }
       FitTest other = (FitTest) obj;
       if (request == null) {
-        if (other.request != null)
+        if (other.request != null) {
           return false;
-      } else if (!request.equals(other.request))
+        }
+      } else if (!request.equals(other.request)) {
         return false;
+      }
       if (path == null) {
-        if (other.path != null)
+        if (other.path != null) {
           return false;
-      } else if (!path.equals(other.path))
+        }
+      } else if (!path.equals(other.path)) {
         return false;
+      }
       if (queryOptions == null) {
-        if (other.queryOptions != null)
+        if (other.queryOptions != null) {
           return false;
-      } else if (!queryOptions.equals(other.queryOptions))
+        }
+      } else if (!queryOptions.equals(other.queryOptions)) {
         return false;
+      }
       return true;
     }
 
@@ -599,28 +608,37 @@ public abstract class AbstractContentNegotiationTest extends AbstractFitTest {
 
     @Override
     public boolean equals(final Object obj) {
-      if (this == obj)
+      if (this == obj) {
         return true;
-      if (obj == null)
+      }
+      if (obj == null) {
         return false;
-      if (getClass() != obj.getClass())
+      }
+      if (getClass() != obj.getClass()) {
         return false;
+      }
       FitTestRequest other = (FitTestRequest) obj;
       if (content == null) {
-        if (other.content != null)
+        if (other.content != null) {
           return false;
-      } else if (!content.equals(other.content))
+        }
+      } else if (!content.equals(other.content)) {
         return false;
+      }
       if (headers == null) {
-        if (other.headers != null)
+        if (other.headers != null) {
           return false;
-      } else if (!headers.equals(other.headers))
+        }
+      } else if (!headers.equals(other.headers)) {
         return false;
+      }
       if (type == null) {
-        if (other.type != null)
+        if (other.type != null) {
           return false;
-      } else if (!type.equals(other.type))
+        }
+      } else if (!type.equals(other.type)) {
         return false;
+      }
       return true;
     }
 

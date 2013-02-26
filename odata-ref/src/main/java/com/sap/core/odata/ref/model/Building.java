@@ -35,10 +35,11 @@ public class Building {
   }
 
   public byte[] getImage() {
-    if (image == null)
+    if (image == null) {
       return null;
-    else
+    } else {
       return image.clone();
+    }
   }
 
   public List<Room> getRooms() {

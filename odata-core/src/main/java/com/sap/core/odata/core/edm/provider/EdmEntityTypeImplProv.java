@@ -37,9 +37,11 @@ public class EdmEntityTypeImplProv extends EdmStructuralTypeImplProv implements 
   private void buildNavigationPropertiesInternal() throws EdmException {
     navigationProperties = new HashMap<String, NavigationProperty>();
 
-    if (entityType.getNavigationProperties() != null)
-      for (final NavigationProperty navigationProperty : entityType.getNavigationProperties())
+    if (entityType.getNavigationProperties() != null) {
+      for (final NavigationProperty navigationProperty : entityType.getNavigationProperties()) {
         navigationProperties.put(navigationProperty.getName(), navigationProperty);
+      }
+    }
   }
 
   @Override
@@ -51,12 +53,14 @@ public class EdmEntityTypeImplProv extends EdmStructuralTypeImplProv implements 
 
       edmKeyPropertyNames = new ArrayList<String>();
 
-      if (entityType.getKey() != null)
-        for (final PropertyRef keyProperty : entityType.getKey().getKeys())
+      if (entityType.getKey() != null) {
+        for (final PropertyRef keyProperty : entityType.getKey().getKeys()) {
           edmKeyPropertyNames.add(keyProperty.getName());
-      else
+        }
+      } else {
         //Entity Type does not define a key
         throw new EdmException(EdmException.COMMON);
+      }
     }
 
     return edmKeyPropertyNames;
@@ -102,11 +106,14 @@ public class EdmEntityTypeImplProv extends EdmStructuralTypeImplProv implements 
   public List<String> getNavigationPropertyNames() throws EdmException {
     if (edmNavigationPropertyNames == null) {
       edmNavigationPropertyNames = new ArrayList<String>();
-      if (edmBaseType != null)
+      if (edmBaseType != null) {
         edmNavigationPropertyNames.addAll(((EdmEntityType) edmBaseType).getNavigationPropertyNames());
-      if (entityType.getNavigationProperties() != null)
-        for (final NavigationProperty navigationProperty : entityType.getNavigationProperties())
+      }
+      if (entityType.getNavigationProperties() != null) {
+        for (final NavigationProperty navigationProperty : entityType.getNavigationProperties()) {
           edmNavigationPropertyNames.add(navigationProperty.getName());
+        }
+      }
     }
     return edmNavigationPropertyNames;
   }

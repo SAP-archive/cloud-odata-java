@@ -48,7 +48,9 @@ public class VisitorTool implements ExpressionVisitor {
     sb.append("(");
     for (int i = 0; i < retParameters.size(); i++)
     {
-      if (i != 0) sb.append(",");
+      if (i != 0) {
+        sb.append(",");
+      }
       sb.append(retParameters.get(i));
     }
 
@@ -85,7 +87,9 @@ public class VisitorTool implements ExpressionVisitor {
     sb.append("(");
     for (int i = 0; i < orders.size(); i++)
     {
-      if (i != 0) sb.append(",");
+      if (i != 0) {
+        sb.append(",");
+      }
       sb.append(orders.get(i));
     }
 

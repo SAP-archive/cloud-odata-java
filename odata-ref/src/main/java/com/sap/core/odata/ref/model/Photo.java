@@ -32,8 +32,9 @@ public class Photo {
       InputStream instream = Photo.class.getResourceAsStream(RESOURCE);
       ByteArrayOutputStream stream = new ByteArrayOutputStream();
       int b = 0;
-      while ((b = instream.read()) != -1)
+      while ((b = instream.read()) != -1) {
         stream.write(b);
+      }
 
       Photo.defaultImage = stream.toByteArray();
     } catch (IOException e) {
@@ -86,10 +87,11 @@ public class Photo {
   }
 
   public byte[] getBinaryData() {
-    if (binaryData == null)
+    if (binaryData == null) {
       return null;
-    else
+    } else {
       return binaryData.clone();
+    }
   }
 
   public void setBinaryData(final byte[] binaryData) {

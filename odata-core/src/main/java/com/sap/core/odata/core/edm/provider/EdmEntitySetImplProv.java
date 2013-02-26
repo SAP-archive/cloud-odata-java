@@ -41,11 +41,13 @@ public class EdmEntitySetImplProv extends EdmNamedImplProv implements EdmEntityS
   public EdmEntitySet getRelatedEntitySet(final EdmNavigationProperty navigationProperty) throws EdmException {
     EdmAssociationSet associationSet = edmEntityContainer.getAssociationSet(edmEntityContainer.getEntitySet(entitySet.getName()), navigationProperty);
     EdmAssociationSetEnd toEnd = associationSet.getEnd(navigationProperty.getToRole());
-    if (toEnd == null)
+    if (toEnd == null) {
       throw new EdmException(EdmException.COMMON);
+    }
     EdmEntitySet targetEntitySet = toEnd.getEntitySet();
-    if (targetEntitySet == null)
+    if (targetEntitySet == null) {
       throw new EdmException(EdmException.COMMON);
+    }
     return targetEntitySet;
   }
 

@@ -46,59 +46,72 @@ public class ScenarioDataSource implements ListsDataSource {
 
   @Override
   public List<?> readData(final EdmEntitySet entitySet) throws ODataNotImplementedException, ODataNotFoundException, EdmException {
-    if (ENTITYSET_1_1.equals(entitySet.getName()))
+    if (ENTITYSET_1_1.equals(entitySet.getName())) {
       return Arrays.asList(dataContainer.getEmployees().toArray());
-    else if (ENTITYSET_1_2.equals(entitySet.getName()))
+    } else if (ENTITYSET_1_2.equals(entitySet.getName())) {
       return Arrays.asList(dataContainer.getTeams().toArray());
-    else if (ENTITYSET_1_3.equals(entitySet.getName()))
+    } else if (ENTITYSET_1_3.equals(entitySet.getName())) {
       return Arrays.asList(dataContainer.getRooms().toArray());
-    else if (ENTITYSET_1_4.equals(entitySet.getName()))
+    } else if (ENTITYSET_1_4.equals(entitySet.getName())) {
       return Arrays.asList(dataContainer.getManagers().toArray());
-    else if (ENTITYSET_1_5.equals(entitySet.getName()))
+    } else if (ENTITYSET_1_5.equals(entitySet.getName())) {
       return Arrays.asList(dataContainer.getBuildings().toArray());
-    else if (ENTITYSET_2_1.equals(entitySet.getName()))
+    } else if (ENTITYSET_2_1.equals(entitySet.getName())) {
       return Arrays.asList(dataContainer.getPhotos().toArray());
-    else
+    } else {
       throw new ODataNotImplementedException();
+    }
   }
 
   @Override
   public Object readData(final EdmEntitySet entitySet, final Map<String, Object> keys) throws ODataNotImplementedException, ODataNotFoundException, EdmException {
     if (ENTITYSET_1_1.equals(entitySet.getName())) {
-      for (final Employee employee : dataContainer.getEmployees())
-        if (employee.getId().equals(keys.get("EmployeeId")))
+      for (final Employee employee : dataContainer.getEmployees()) {
+        if (employee.getId().equals(keys.get("EmployeeId"))) {
           return employee;
+        }
+      }
       throw new ODataNotFoundException(ODataNotFoundException.ENTITY);
 
     } else if (ENTITYSET_1_2.equals(entitySet.getName())) {
-      for (final Team team : dataContainer.getTeams())
-        if (team.getId().equals(keys.get("Id")))
+      for (final Team team : dataContainer.getTeams()) {
+        if (team.getId().equals(keys.get("Id"))) {
           return team;
+        }
+      }
       throw new ODataNotFoundException(ODataNotFoundException.ENTITY);
 
     } else if (ENTITYSET_1_3.equals(entitySet.getName())) {
-      for (final Room room : dataContainer.getRooms())
-        if (room.getId().equals(keys.get("Id")))
+      for (final Room room : dataContainer.getRooms()) {
+        if (room.getId().equals(keys.get("Id"))) {
           return room;
+        }
+      }
       throw new ODataNotFoundException(ODataNotFoundException.ENTITY);
 
     } else if (ENTITYSET_1_4.equals(entitySet.getName())) {
-      for (final Manager manager : dataContainer.getManagers())
-        if (manager.getId().equals(keys.get("EmployeeId")))
+      for (final Manager manager : dataContainer.getManagers()) {
+        if (manager.getId().equals(keys.get("EmployeeId"))) {
           return manager;
+        }
+      }
       throw new ODataNotFoundException(ODataNotFoundException.ENTITY);
 
     } else if (ENTITYSET_1_5.equals(entitySet.getName())) {
-      for (final Building building : dataContainer.getBuildings())
-        if (building.getId().equals(keys.get("Id")))
+      for (final Building building : dataContainer.getBuildings()) {
+        if (building.getId().equals(keys.get("Id"))) {
           return building;
+        }
+      }
       throw new ODataNotFoundException(ODataNotFoundException.ENTITY);
 
     } else if (ENTITYSET_2_1.equals(entitySet.getName())) {
-      for (final Photo photo : dataContainer.getPhotos())
+      for (final Photo photo : dataContainer.getPhotos()) {
         if (photo.getId() == (Integer) keys.get("Id")
-            && photo.getType().equals(keys.get("Type")))
+            && photo.getType().equals(keys.get("Type"))) {
           return photo;
+        }
+      }
       throw new ODataNotFoundException(ODataNotFoundException.ENTITY);
     }
 
@@ -109,60 +122,73 @@ public class ScenarioDataSource implements ListsDataSource {
   public Object readRelatedData(final EdmEntitySet sourceEntitySet, final Object sourceData, final EdmEntitySet targetEntitySet, final Map<String, Object> targetKeys) throws ODataNotImplementedException, ODataNotFoundException, EdmException {
     if (ENTITYSET_1_1.equals(targetEntitySet.getName())) {
       List<?> data = Collections.emptyList();
-      if (ENTITYSET_1_2.equals(sourceEntitySet.getName()))
+      if (ENTITYSET_1_2.equals(sourceEntitySet.getName())) {
         data = ((Team) sourceData).getEmployees();
-      else if (ENTITYSET_1_3.equals(sourceEntitySet.getName()))
+      } else if (ENTITYSET_1_3.equals(sourceEntitySet.getName())) {
         data = ((Room) sourceData).getEmployees();
-      else if (ENTITYSET_1_4.equals(sourceEntitySet.getName()))
+      } else if (ENTITYSET_1_4.equals(sourceEntitySet.getName())) {
         data = ((Manager) sourceData).getEmployees();
+      }
 
-      if (data.isEmpty())
+      if (data.isEmpty()) {
         throw new ODataNotFoundException(null);
-      if (targetKeys.isEmpty())
+      }
+      if (targetKeys.isEmpty()) {
         return Arrays.asList(data.toArray());
-      else
-        for (final Object employee : data)
-          if (((Employee) employee).getId().equals(targetKeys.get("EmployeeId")))
+      } else {
+        for (final Object employee : data) {
+          if (((Employee) employee).getId().equals(targetKeys.get("EmployeeId"))) {
             return employee;
+          }
+        }
+      }
       throw new ODataNotFoundException(ODataNotFoundException.ENTITY);
 
     } else if (ENTITYSET_1_2.equals(targetEntitySet.getName())) {
-      if (((Employee) sourceData).getTeam() == null)
+      if (((Employee) sourceData).getTeam() == null) {
         throw new ODataNotFoundException(ODataNotFoundException.ENTITY);
-      else
+      } else {
         return ((Employee) sourceData).getTeam();
+      }
 
     } else if (ENTITYSET_1_3.equals(targetEntitySet.getName())) {
       if (ENTITYSET_1_1.equals(sourceEntitySet.getName())) {
-        if (((Employee) sourceData).getRoom() == null)
+        if (((Employee) sourceData).getRoom() == null) {
           throw new ODataNotFoundException(ODataNotFoundException.ENTITY);
-        else
+        } else {
           return ((Employee) sourceData).getRoom();
+        }
       } else if (ENTITYSET_1_5.equals(sourceEntitySet.getName())) {
         List<Room> data = ((Building) sourceData).getRooms();
-        if (data.isEmpty())
+        if (data.isEmpty()) {
           throw new ODataNotFoundException(null);
-        if (targetKeys.isEmpty())
+        }
+        if (targetKeys.isEmpty()) {
           return Arrays.asList(data.toArray());
-        else
-          for (final Object room : data)
-            if (((Room) room).getId().equals(targetKeys.get("Id")))
+        } else {
+          for (final Object room : data) {
+            if (((Room) room).getId().equals(targetKeys.get("Id"))) {
               return room;
+            }
+          }
+        }
         throw new ODataNotFoundException(ODataNotFoundException.ENTITY);
       }
       throw new ODataNotImplementedException();
 
     } else if (ENTITYSET_1_4.equals(targetEntitySet.getName())) {
-      if (((Employee) sourceData).getManager() == null)
+      if (((Employee) sourceData).getManager() == null) {
         throw new ODataNotFoundException(ODataNotFoundException.ENTITY);
-      else
+      } else {
         return ((Employee) sourceData).getManager();
+      }
 
     } else if (ENTITYSET_1_5.equals(targetEntitySet.getName())) {
-      if (((Room) sourceData).getBuilding() == null)
+      if (((Room) sourceData).getBuilding() == null) {
         throw new ODataNotFoundException(ODataNotFoundException.ENTITY);
-      else
+      } else {
         return ((Room) sourceData).getBuilding();
+      }
 
     } else {
       throw new ODataNotImplementedException();
@@ -176,12 +202,15 @@ public class ScenarioDataSource implements ListsDataSource {
         throw new ODataNotFoundException(null);
       } else {
         final List<Employee> found = searchEmployees((String) parameters.get("q"));
-        if (keys.isEmpty())
+        if (keys.isEmpty()) {
           return found;
-        else
-          for (final Employee employee : found)
-            if (employee.getId().equals(keys.get("EmployeeId")))
+        } else {
+          for (final Employee employee : found) {
+            if (employee.getId().equals(keys.get("EmployeeId"))) {
               return employee;
+            }
+          }
+        }
         throw new ODataNotFoundException(ODataNotFoundException.ENTITY);
       }
 
@@ -190,13 +219,16 @@ public class ScenarioDataSource implements ListsDataSource {
 
     } else if (function.getName().equals("AllUsedRoomIds")) {
       List<String> data = new ArrayList<String>();
-      for (final Room room : dataContainer.getRooms())
-        if (!room.getEmployees().isEmpty())
+      for (final Room room : dataContainer.getRooms()) {
+        if (!room.getEmployees().isEmpty()) {
           data.add(room.getId());
-      if (data.isEmpty())
+        }
+      }
+      if (data.isEmpty()) {
         throw new ODataNotFoundException(null);
-      else
+      } else {
         return data;
+      }
 
     } else if (function.getName().equals("MaximalAge")) {
       return getOldestEmployee().getAge();
@@ -205,11 +237,14 @@ public class ScenarioDataSource implements ListsDataSource {
       return getMostCommonLocation();
 
     } else if (function.getName().equals("ManagerPhoto")) {
-      if (parameters.get("Id") == null)
+      if (parameters.get("Id") == null) {
         throw new ODataNotFoundException(ODataNotFoundException.ENTITY);
-      for (final Manager manager : dataContainer.getManagers())
-        if (manager.getId().equals(parameters.get("Id")))
+      }
+      for (final Manager manager : dataContainer.getManagers()) {
+        if (manager.getId().equals(parameters.get("Id"))) {
           return new BinaryData(manager.getImage(), manager.getImageType());
+        }
+      }
       throw new ODataNotFoundException(ODataNotFoundException.ENTITY);
 
     } else if (function.getName().equals("OldestEmployee")) {
@@ -222,60 +257,70 @@ public class ScenarioDataSource implements ListsDataSource {
 
   private List<Employee> searchEmployees(final String search) {
     List<Employee> employees = new ArrayList<Employee>();
-    for (final Employee employee : dataContainer.getEmployees())
+    for (final Employee employee : dataContainer.getEmployees()) {
       if (employee.getEmployeeName().contains(search)
           || employee.getLocation() != null
           && (employee.getLocation().getCity().getCityName().contains(search)
               || employee.getLocation().getCity().getPostalCode().contains(search)
-              || employee.getLocation().getCountry().contains(search)))
+              || employee.getLocation().getCountry().contains(search))) {
         employees.add(employee);
+      }
+    }
     return employees;
   }
 
   private Map<Location, Integer> getLocations() throws ODataNotFoundException {
     Map<Location, Integer> locations = new HashMap<Location, Integer>();
-    for (Employee employee : dataContainer.getEmployees())
+    for (Employee employee : dataContainer.getEmployees()) {
       if (employee.getLocation() != null && employee.getLocation().getCity() != null) {
         boolean found = false;
-        for (final Location location : locations.keySet())
+        for (final Location location : locations.keySet()) {
           if (employee.getLocation().getCity().getPostalCode() == location.getCity().getPostalCode()
               && employee.getLocation().getCity().getCityName() == location.getCity().getCityName()
               && employee.getLocation().getCountry() == location.getCountry()) {
             found = true;
             locations.put(location, locations.get(location) + 1);
           }
-        if (!found)
+        }
+        if (!found) {
           locations.put(employee.getLocation(), 1);
+        }
       }
-    if (locations.isEmpty())
+    }
+    if (locations.isEmpty()) {
       throw new ODataNotFoundException(null);
-    else
+    } else {
       return locations;
+    }
   }
 
   private Location getMostCommonLocation() throws ODataNotFoundException {
     Integer count = 0;
     Location location = null;
-    for (Entry<Location, Integer> entry : getLocations().entrySet())
+    for (Entry<Location, Integer> entry : getLocations().entrySet()) {
       if (entry.getValue() > count) {
         count = entry.getValue();
         location = entry.getKey();
       }
+    }
     return location;
   }
 
   private Employee getOldestEmployee() {
     Employee oldestEmployee = null;
-    for (final Employee employee : dataContainer.getEmployees())
-      if (oldestEmployee == null || employee.getAge() > oldestEmployee.getAge())
+    for (final Employee employee : dataContainer.getEmployees()) {
+      if (oldestEmployee == null || employee.getAge() > oldestEmployee.getAge()) {
         oldestEmployee = employee;
+      }
+    }
     return oldestEmployee;
   }
 
   @Override
   public BinaryData readBinaryData(final EdmEntitySet entitySet, final Object mediaLinkEntryData) throws ODataNotImplementedException, ODataNotFoundException, EdmException, ODataApplicationException {
-    if (mediaLinkEntryData == null)
+    if (mediaLinkEntryData == null) {
       throw new ODataNotFoundException(null);
+    }
 
     if (ENTITYSET_1_1.equals(entitySet.getName()) || ENTITYSET_1_4.equals(entitySet.getName())) {
       final Employee employee = (Employee) mediaLinkEntryData;
@@ -290,8 +335,9 @@ public class ScenarioDataSource implements ListsDataSource {
 
   @Override
   public void writeBinaryData(final EdmEntitySet entitySet, final Object mediaLinkEntryData, final BinaryData binaryData) throws ODataNotImplementedException, ODataNotFoundException, EdmException, ODataApplicationException {
-    if (mediaLinkEntryData == null)
+    if (mediaLinkEntryData == null) {
       throw new ODataNotFoundException(null);
+    }
 
     if (ENTITYSET_1_1.equals(entitySet.getName()) || ENTITYSET_1_4.equals(entitySet.getName())) {
       final Employee employee = (Employee) mediaLinkEntryData;
@@ -339,35 +385,45 @@ public class ScenarioDataSource implements ListsDataSource {
     final Object data = readData(entitySet, keys);
 
     if (ENTITYSET_1_1.equals(entitySet.getName()) || ENTITYSET_1_4.equals(entitySet.getName())) {
-      if (data instanceof Manager)
-        for (Employee employee : ((Manager) data).getEmployees())
+      if (data instanceof Manager) {
+        for (Employee employee : ((Manager) data).getEmployees()) {
           employee.setManager(null);
+        }
+      }
       final Employee employee = (Employee) data;
-      if (employee.getManager() != null)
+      if (employee.getManager() != null) {
         employee.getManager().getEmployees().remove(employee);
-      if (employee.getTeam() != null)
+      }
+      if (employee.getTeam() != null) {
         employee.getTeam().getEmployees().remove(employee);
-      if (employee.getRoom() != null)
+      }
+      if (employee.getRoom() != null) {
         employee.getRoom().getEmployees().remove(employee);
-      if (data instanceof Manager)
+      }
+      if (data instanceof Manager) {
         dataContainer.getManagers().remove(data);
+      }
       dataContainer.getEmployees().remove(data);
 
     } else if (ENTITYSET_1_2.equals(entitySet.getName())) {
-      for (Employee employee : ((Team) data).getEmployees())
+      for (Employee employee : ((Team) data).getEmployees()) {
         employee.setTeam(null);
+      }
       dataContainer.getTeams().remove(data);
 
     } else if (ENTITYSET_1_3.equals(entitySet.getName())) {
-      for (Employee employee : ((Room) data).getEmployees())
+      for (Employee employee : ((Room) data).getEmployees()) {
         employee.setRoom(null);
-      if (((Room) data).getBuilding() != null)
+      }
+      if (((Room) data).getBuilding() != null) {
         ((Room) data).getBuilding().getRooms().remove(data);
+      }
       dataContainer.getRooms().remove(data);
 
     } else if (ENTITYSET_1_5.equals(entitySet.getName())) {
-      for (Room room : ((Building) data).getRooms())
+      for (Room room : ((Building) data).getRooms()) {
         room.setBuilding(null);
+      }
       dataContainer.getBuildings().remove(data);
 
     } else if (ENTITYSET_2_1.equals(entitySet.getName())) {
@@ -380,20 +436,21 @@ public class ScenarioDataSource implements ListsDataSource {
 
   @Override
   public void createData(final EdmEntitySet entitySet, final Object data) throws ODataNotImplementedException, EdmException, ODataApplicationException {
-    if (ENTITYSET_1_1.equals(entitySet.getName()))
+    if (ENTITYSET_1_1.equals(entitySet.getName())) {
       dataContainer.getEmployees().add((Employee) data);
-    else if (ENTITYSET_1_2.equals(entitySet.getName()))
+    } else if (ENTITYSET_1_2.equals(entitySet.getName())) {
       dataContainer.getTeams().add((Team) data);
-    else if (ENTITYSET_1_3.equals(entitySet.getName()))
+    } else if (ENTITYSET_1_3.equals(entitySet.getName())) {
       dataContainer.getRooms().add((Room) data);
-    else if (ENTITYSET_1_4.equals(entitySet.getName()))
+    } else if (ENTITYSET_1_4.equals(entitySet.getName())) {
       dataContainer.getManagers().add((Manager) data);
-    else if (ENTITYSET_1_5.equals(entitySet.getName()))
+    } else if (ENTITYSET_1_5.equals(entitySet.getName())) {
       dataContainer.getBuildings().add((Building) data);
-    else if (ENTITYSET_2_1.equals(entitySet.getName()))
+    } else if (ENTITYSET_2_1.equals(entitySet.getName())) {
       dataContainer.getPhotos().add((Photo) data);
-    else
+    } else {
       throw new ODataNotImplementedException();
+    }
   }
 
   @Override
@@ -461,54 +518,62 @@ public class ScenarioDataSource implements ListsDataSource {
     if (ENTITYSET_1_1.equals(targetEntitySet.getName())) {
       final Employee employee = (Employee) readData(targetEntitySet, targetKeys);
       if (ENTITYSET_1_2.equals(sourceEntitySet.getName())) {
-        if (employee.getTeam() != null)
+        if (employee.getTeam() != null) {
           employee.getTeam().getEmployees().remove(employee);
+        }
         employee.setTeam((Team) sourceData);
         ((Team) sourceData).getEmployees().add(employee);
       } else if (ENTITYSET_1_3.equals(sourceEntitySet.getName())) {
-        if (employee.getRoom() != null)
+        if (employee.getRoom() != null) {
           employee.getRoom().getEmployees().remove(employee);
+        }
         employee.setRoom((Room) sourceData);
         ((Room) sourceData).getEmployees().add(employee);
       } else if (ENTITYSET_1_4.equals(sourceEntitySet.getName())) {
-        if (employee.getManager() != null)
+        if (employee.getManager() != null) {
           employee.getManager().getEmployees().remove(employee);
+        }
         employee.setManager((Manager) sourceData);
         ((Manager) sourceData).getEmployees().add(employee);
       }
 
     } else if (ENTITYSET_1_2.equals(targetEntitySet.getName())) {
       final Team team = (Team) readData(targetEntitySet, targetKeys);
-      if (((Employee) sourceData).getTeam() != null)
+      if (((Employee) sourceData).getTeam() != null) {
         ((Employee) sourceData).getTeam().getEmployees().remove(sourceData);
+      }
       ((Employee) sourceData).setTeam(team);
       team.getEmployees().add((Employee) sourceData);
 
     } else if (ENTITYSET_1_3.equals(targetEntitySet.getName())) {
       final Room room = (Room) readData(targetEntitySet, targetKeys);
       if (ENTITYSET_1_1.equals(sourceEntitySet.getName())) {
-        if (((Employee) sourceData).getRoom() != null)
+        if (((Employee) sourceData).getRoom() != null) {
           ((Employee) sourceData).getRoom().getEmployees().remove(sourceData);
+        }
         ((Employee) sourceData).setRoom(room);
         room.getEmployees().add((Employee) sourceData);
       } else if (ENTITYSET_1_5.equals(sourceEntitySet.getName())) {
-        if (room.getBuilding() != null)
+        if (room.getBuilding() != null) {
           room.getBuilding().getRooms().remove(room);
+        }
         room.setBuilding((Building) sourceData);
         ((Building) sourceData).getRooms().add(room);
       }
 
     } else if (ENTITYSET_1_4.equals(targetEntitySet.getName())) {
       final Manager manager = (Manager) readData(targetEntitySet, targetKeys);
-      if (((Employee) sourceData).getManager() != null)
+      if (((Employee) sourceData).getManager() != null) {
         ((Employee) sourceData).getManager().getEmployees().remove(sourceData);
+      }
       ((Employee) sourceData).setManager(manager);
       manager.getEmployees().add((Employee) sourceData);
 
     } else if (ENTITYSET_1_5.equals(targetEntitySet.getName())) {
       final Building building = (Building) readData(targetEntitySet, targetKeys);
-      if (((Room) sourceData).getBuilding() != null)
+      if (((Room) sourceData).getBuilding() != null) {
         ((Room) sourceData).getBuilding().getRooms().remove(sourceData);
+      }
       ((Room) sourceData).setBuilding(building);
       building.getRooms().add((Room) sourceData);
 

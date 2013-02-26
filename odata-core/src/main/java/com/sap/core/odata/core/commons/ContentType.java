@@ -129,8 +129,9 @@ public class ContentType {
    * @return a new <code>ContentType</code> object
    */
   public static ContentType create(final String format) {
-    if (format == null)
+    if (format == null) {
       throw new IllegalArgumentException("Parameter format must no be null.");
+    }
 
     // split 'types' and 'parameters'
     String[] typesAndParameters = format.split(PARAMETER_SEPARATOR, 2);
@@ -239,12 +240,15 @@ public class ContentType {
   @Override
   public boolean equals(final Object obj) {
     // basic checks
-    if (this == obj)
+    if (this == obj) {
       return true;
-    if (obj == null)
+    }
+    if (obj == null) {
       return false;
-    if (getClass() != obj.getClass())
+    }
+    if (getClass() != obj.getClass()) {
       return false;
+    }
 
     ContentType other = (ContentType) obj;
 

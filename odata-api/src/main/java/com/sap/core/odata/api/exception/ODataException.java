@@ -86,11 +86,13 @@ public class ODataException extends Exception {
 
   private <T extends ODataException> T getSpecificCause(final Class<T> causeClass) {
     Throwable cause = this;
-    while (cause != null)
-      if (causeClass.isInstance(cause))
+    while (cause != null) {
+      if (causeClass.isInstance(cause)) {
         return causeClass.cast(cause);
-      else
+      } else {
         cause = cause.getCause();
+      }
+    }
 
     return null;
   }

@@ -36,8 +36,9 @@ public class EdmByte extends AbstractSimpleType {
       return null;
     }
 
-    if (literalKind == null)
+    if (literalKind == null) {
       throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_KIND_MISSING);
+    }
 
     Short valueShort;
     try {
@@ -45,38 +46,45 @@ public class EdmByte extends AbstractSimpleType {
     } catch (NumberFormatException e) {
       throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_ILLEGAL_CONTENT.addContent(value), e);
     }
-    if (valueShort < 0 || valueShort > 255)
+    if (valueShort < 0 || valueShort > 255) {
       throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_ILLEGAL_CONTENT.addContent(value));
+    }
 
-    if (returnType.isAssignableFrom(Short.class))
+    if (returnType.isAssignableFrom(Short.class)) {
       return returnType.cast(valueShort);
-    else if (returnType.isAssignableFrom(Byte.class))
-      if (valueShort <= Byte.MAX_VALUE)
+    } else if (returnType.isAssignableFrom(Byte.class)) {
+      if (valueShort <= Byte.MAX_VALUE) {
         return returnType.cast(valueShort.byteValue());
-      else
+      } else {
         throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_UNCONVERTIBLE_TO_VALUE_TYPE.addContent(value, returnType));
-    else if (returnType.isAssignableFrom(Integer.class))
+      }
+    } else if (returnType.isAssignableFrom(Integer.class)) {
       return returnType.cast(valueShort.intValue());
-    else if (returnType.isAssignableFrom(Long.class))
+    } else if (returnType.isAssignableFrom(Long.class)) {
       return returnType.cast(valueShort.longValue());
-    else
+    } else {
       throw new EdmSimpleTypeException(EdmSimpleTypeException.VALUE_TYPE_NOT_SUPPORTED.addContent(returnType));
+    }
   }
 
   @Override
   public String valueToString(final Object value, final EdmLiteralKind literalKind, final EdmFacets facets) throws EdmSimpleTypeException {
-    if (value == null)
+    if (value == null) {
       return getNullOrDefaultLiteral(facets);
+    }
 
-    if (literalKind == null)
+    if (literalKind == null) {
       throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_KIND_MISSING);
+    }
 
-    if (value instanceof Byte || value instanceof Short || value instanceof Integer || value instanceof Long)
-      if (((Number) value).longValue() >= 0 && ((Number) value).longValue() <= 255)
+    if (value instanceof Byte || value instanceof Short || value instanceof Integer || value instanceof Long) {
+      if (((Number) value).longValue() >= 0 && ((Number) value).longValue() <= 255) {
         return value.toString();
-      else
+      } else {
         throw new EdmSimpleTypeException(EdmSimpleTypeException.VALUE_ILLEGAL_CONTENT.addContent(value));
-    else
+      }
+    } else {
       throw new EdmSimpleTypeException(EdmSimpleTypeException.VALUE_TYPE_NOT_SUPPORTED.addContent(value.getClass()));
+    }
   }
 }

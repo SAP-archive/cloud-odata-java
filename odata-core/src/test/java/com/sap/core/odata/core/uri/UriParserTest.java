@@ -59,8 +59,9 @@ public class UriParserTest extends BaseTest {
     */
   private UriInfoImpl parse(final String uri) throws UriSyntaxException, UriNotMatchingException, EdmException {
     final String[] path = uri.split("\\?", -1);
-    if (path.length > 2)
+    if (path.length > 2) {
       throw new UriSyntaxException(UriSyntaxException.URISYNTAX);
+    }
 
     final List<PathSegment> pathSegments = getPathSegments(path[0]);
     Map<String, String> queryParameters;
@@ -89,10 +90,11 @@ public class UriParserTest extends BaseTest {
     Map<String, String> queryParameters = new HashMap<String, String>();
     for (final String option : uri.split("&")) {
       final String[] keyAndValue = option.split("=");
-      if (keyAndValue.length == 2)
+      if (keyAndValue.length == 2) {
         queryParameters.put(keyAndValue[0], keyAndValue[1]);
-      else
+      } else {
         queryParameters.put(keyAndValue[0], "");
+      }
     }
     return queryParameters;
   }

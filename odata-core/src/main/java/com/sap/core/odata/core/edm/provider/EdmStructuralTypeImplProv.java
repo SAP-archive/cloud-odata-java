@@ -60,9 +60,11 @@ public abstract class EdmStructuralTypeImplProv extends EdmNamedImplProv impleme
   private void buildPropertiesInternal() throws EdmException {
     properties = new HashMap<String, Property>();
 
-    if (structuralType.getProperties() != null)
-      for (final Property property : structuralType.getProperties())
+    if (structuralType.getProperties() != null) {
+      for (final Property property : structuralType.getProperties()) {
         properties.put(property.getName(), property);
+      }
+    }
   }
 
   @Override
@@ -86,11 +88,14 @@ public abstract class EdmStructuralTypeImplProv extends EdmNamedImplProv impleme
   public List<String> getPropertyNames() throws EdmException {
     if (edmPropertyNames == null) {
       edmPropertyNames = new ArrayList<String>();
-      if (edmBaseType != null)
+      if (edmBaseType != null) {
         edmPropertyNames.addAll(edmBaseType.getPropertyNames());
-      if (structuralType.getProperties() != null)
-        for (final Property property : structuralType.getProperties())
+      }
+      if (structuralType.getProperties() != null) {
+        for (final Property property : structuralType.getProperties()) {
           edmPropertyNames.add(property.getName());
+        }
+      }
     }
 
     return edmPropertyNames;

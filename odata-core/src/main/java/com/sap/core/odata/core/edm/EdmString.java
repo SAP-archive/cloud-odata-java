@@ -28,55 +28,69 @@ public class EdmString extends AbstractSimpleType {
       return null;
     }
 
-    if (literalKind == null)
+    if (literalKind == null) {
       throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_KIND_MISSING);
-
-    String result;
-    if (literalKind == EdmLiteralKind.URI)
-      if (value.length() >= 2 && value.startsWith("'") && value.endsWith("'"))
-        result = (value.substring(1, value.length() - 1)).replace("''", "'");
-      else
-        throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_ILLEGAL_CONTENT.addContent(value));
-    else
-      result = value;
-
-    if (facets != null) {
-      if (facets.isUnicode() != null && !facets.isUnicode())
-        if (!result.matches("\\p{ASCII}*"))
-          throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_FACETS_NOT_MATCHED.addContent(value, facets));
-      if (facets.getMaxLength() != null && facets.getMaxLength() < result.length())
-        throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_FACETS_NOT_MATCHED.addContent(value, facets));
     }
 
-    if (returnType.isAssignableFrom(String.class))
+    String result;
+    if (literalKind == EdmLiteralKind.URI) {
+      if (value.length() >= 2 && value.startsWith("'") && value.endsWith("'")) {
+        result = (value.substring(1, value.length() - 1)).replace("''", "'");
+      } else {
+        throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_ILLEGAL_CONTENT.addContent(value));
+      }
+    } else {
+      result = value;
+    }
+
+    if (facets != null) {
+      if (facets.isUnicode() != null && !facets.isUnicode()) {
+        if (!result.matches("\\p{ASCII}*")) {
+          throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_FACETS_NOT_MATCHED.addContent(value, facets));
+        }
+      }
+      if (facets.getMaxLength() != null && facets.getMaxLength() < result.length()) {
+        throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_FACETS_NOT_MATCHED.addContent(value, facets));
+      }
+    }
+
+    if (returnType.isAssignableFrom(String.class)) {
       return returnType.cast(result);
-    else
+    } else {
       throw new EdmSimpleTypeException(EdmSimpleTypeException.VALUE_TYPE_NOT_SUPPORTED.addContent(returnType));
+    }
   }
 
   @Override
   public String valueToString(final Object value, final EdmLiteralKind literalKind, final EdmFacets facets) throws EdmSimpleTypeException {
-    if (value == null)
+    if (value == null) {
       return getNullOrDefaultLiteral(facets);
+    }
 
-    if (literalKind == null)
+    if (literalKind == null) {
       throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_KIND_MISSING);
+    }
 
     String result;
-    if (value instanceof String)
+    if (value instanceof String) {
       result = (String) value;
-    else
+    } else {
       result = String.valueOf(value);
+    }
 
-    if (facets != null && facets.isUnicode() != null && !facets.isUnicode())
-      if (!result.matches("\\p{ASCII}*"))
+    if (facets != null && facets.isUnicode() != null && !facets.isUnicode()) {
+      if (!result.matches("\\p{ASCII}*")) {
         throw new EdmSimpleTypeException(EdmSimpleTypeException.VALUE_FACETS_NOT_MATCHED.addContent(value, facets));
+      }
+    }
 
-    if (facets != null && facets.getMaxLength() != null && facets.getMaxLength() < result.length())
+    if (facets != null && facets.getMaxLength() != null && facets.getMaxLength() < result.length()) {
       throw new EdmSimpleTypeException(EdmSimpleTypeException.VALUE_FACETS_NOT_MATCHED.addContent(value, facets));
+    }
 
-    if (literalKind == EdmLiteralKind.URI)
+    if (literalKind == EdmLiteralKind.URI) {
       result = toUriLiteral(result);
+    }
 
     return result;
   }

@@ -52,8 +52,9 @@ public class BasicEntityProvider {
     byte[] value = new byte[Short.MAX_VALUE];
     int count;
     try {
-      while ((count = content.read(value)) > 0)
+      while ((count = content.read(value)) > 0) {
         buffer.write(value, 0, count);
+      }
       content.close();
       buffer.flush();
       return buffer.toByteArray();
@@ -73,8 +74,9 @@ public class BasicEntityProvider {
     StringBuilder stringBuilder = new StringBuilder();
     try {
       String line = null;
-      while ((line = bufferedReader.readLine()) != null)
+      while ((line = bufferedReader.readLine()) != null) {
         stringBuilder.append(line);
+      }
       bufferedReader.close();
     } catch (IOException e) {
       throw new EntityProviderException(EntityProviderException.COMMON, e);
@@ -97,14 +99,15 @@ public class BasicEntityProvider {
       throw new EntityProviderException(EntityProviderException.COMMON, e);
     }
 
-    if (type == EdmSimpleTypeKind.Binary.getEdmSimpleTypeInstance())
+    if (type == EdmSimpleTypeKind.Binary.getEdmSimpleTypeInstance()) {
       return readBinary(content);
-    else
+    } else {
       try {
         return type.valueOfString(readText(content), EdmLiteralKind.DEFAULT, edmProperty.getFacets(), type.getDefaultType());
       } catch (EdmException e) {
         throw new EntityProviderException(EntityProviderException.COMMON, e);
       }
+    }
   }
 
   /**

@@ -103,31 +103,37 @@ public class Tokenizer
         String rem_expr = expression.substring(curPosition); //remaining expression
 
         boolean isBinary = checkForBinary(oldPosition, rem_expr);
-        if (isBinary)
+        if (isBinary) {
           break;
+        }
 
         //check for prefixes like X, binary, guid, datetime
         boolean isPrefix = checkForPrefix(rem_expr);
-        if (isPrefix)
+        if (isPrefix) {
           break;
+        }
 
         //check for math
         boolean isMath = checkForMath(oldPosition, rem_expr);
-        if (isMath)
+        if (isMath) {
           break;
+        }
 
         //check for function
         boolean isFunction = checkForMethod(oldPosition, rem_expr);
-        if (isFunction)
+        if (isFunction) {
           break;
+        }
 
         boolean isBoolean = checkForBoolean(oldPosition, rem_expr);
-        if (isBoolean)
+        if (isBoolean) {
           break;
+        }
 
         boolean isLiteral = checkForLiteral(oldPosition, curCharacter, rem_expr);
-        if (isLiteral)
+        if (isLiteral) {
           break;
+        }
 
         token = new Character(curCharacter).toString();
         throw TokenizerException.createUNKNOWN_CHARACTER(oldPosition, token, expression);
@@ -189,8 +195,9 @@ public class Tokenizer
     while ((curCharacter == ' ') && (curPosition < expressionLength))
     {
       curPosition = curPosition + 1;
-      if (curPosition < expressionLength)
+      if (curPosition < expressionLength) {
         curCharacter = expression.charAt(curPosition);
+      }
     }
 
     lv_token_len = curPosition - oldPosition;
@@ -292,8 +299,9 @@ public class Tokenizer
 
       if (curCharacter != '\'')
       {
-        if (wasHochkomma == true)
+        if (wasHochkomma == true) {
           break;
+        }
 
         token = token + curCharacter;
         wasHochkomma = false;
@@ -313,9 +321,10 @@ public class Tokenizer
       curPosition += 1;
     }
 
-    if (!wasHochkomma)
+    if (!wasHochkomma) {
       //Exception tested within TestPMparseFilterString
       throw FilterParserExceptionImpl.createTOKEN_UNDETERMINATED_STRING(oldPosition, expression);
+    }
 
     try
     {

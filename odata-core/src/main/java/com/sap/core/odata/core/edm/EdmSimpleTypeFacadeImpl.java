@@ -16,61 +16,77 @@ public class EdmSimpleTypeFacadeImpl implements EdmSimpleTypeFacade {
 
   @Override
   public EdmLiteral parseUriLiteral(final String uriLiteral) throws EdmLiteralException {
-    if (uriLiteral == null || "null".equals(uriLiteral))
+    if (uriLiteral == null || "null".equals(uriLiteral)) {
       return new EdmLiteral(getEdmSimpleType(EdmSimpleTypeKind.Null), uriLiteral);
+    }
 
-    if ("true".equals(uriLiteral) || "false".equals(uriLiteral))
+    if ("true".equals(uriLiteral) || "false".equals(uriLiteral)) {
       return new EdmLiteral(getEdmSimpleType(EdmSimpleTypeKind.Boolean), uriLiteral);
+    }
 
     if (uriLiteral.length() >= 2
-        && uriLiteral.startsWith("'") && uriLiteral.endsWith("'"))
+        && uriLiteral.startsWith("'") && uriLiteral.endsWith("'")) {
       try {
         final EdmSimpleType type = getEdmSimpleType(EdmSimpleTypeKind.String);
         return new EdmLiteral(type, type.valueOfString(uriLiteral, EdmLiteralKind.URI, null, String.class));
       } catch (EdmSimpleTypeException e) {
         throw new EdmLiteralException(EdmLiteralException.LITERALFORMAT.addContent(uriLiteral), e);
       }
+    }
 
-    if (uriLiteral.matches("-?\\p{Digit}+"))
+    if (uriLiteral.matches("-?\\p{Digit}+")) {
       try {
         final int i = getEdmSimpleType(EdmSimpleTypeKind.Int32).valueOfString(uriLiteral, EdmLiteralKind.URI, null, Integer.class);
-        if (i == 0 || i == 1)
+        if (i == 0 || i == 1) {
           return new EdmLiteral(getInternalEdmSimpleTypeByString("Bit"), uriLiteral);
-        if (i >= 0 && i <= Byte.MAX_VALUE)
+        }
+        if (i >= 0 && i <= Byte.MAX_VALUE) {
           return new EdmLiteral(getInternalEdmSimpleTypeByString("Uint7"), uriLiteral);
-        if (i >= Byte.MIN_VALUE && i < 0)
+        }
+        if (i >= Byte.MIN_VALUE && i < 0) {
           return new EdmLiteral(getEdmSimpleType(EdmSimpleTypeKind.SByte), uriLiteral);
-        else if (i > Byte.MAX_VALUE && i <= 255)
+        } else if (i > Byte.MAX_VALUE && i <= 255) {
           return new EdmLiteral(getEdmSimpleType(EdmSimpleTypeKind.Byte), uriLiteral);
-        else if (i >= Short.MIN_VALUE && i <= Short.MAX_VALUE)
+        } else if (i >= Short.MIN_VALUE && i <= Short.MAX_VALUE) {
           return new EdmLiteral(getEdmSimpleType(EdmSimpleTypeKind.Int16), uriLiteral);
-        else
+        } else {
           return new EdmLiteral(getEdmSimpleType(EdmSimpleTypeKind.Int32), uriLiteral);
+        }
       } catch (EdmSimpleTypeException e) {
         throw new EdmLiteralException(EdmLiteralException.LITERALFORMAT.addContent(uriLiteral), e);
       }
+    }
 
-    if (uriLiteral.endsWith("L") || uriLiteral.endsWith("l"))
+    if (uriLiteral.endsWith("L") || uriLiteral.endsWith("l")) {
       return createEdmLiteral(EdmSimpleTypeKind.Int64, uriLiteral, 0, 1);
-    if (uriLiteral.endsWith("M") || uriLiteral.endsWith("m"))
+    }
+    if (uriLiteral.endsWith("M") || uriLiteral.endsWith("m")) {
       return createEdmLiteral(EdmSimpleTypeKind.Decimal, uriLiteral, 0, 1);
-    if (uriLiteral.endsWith("D") || uriLiteral.endsWith("d"))
+    }
+    if (uriLiteral.endsWith("D") || uriLiteral.endsWith("d")) {
       return createEdmLiteral(EdmSimpleTypeKind.Double, uriLiteral, 0, 1);
-    if (uriLiteral.equals("-INF") || uriLiteral.equals("INF") || uriLiteral.equals("NaN"))
+    }
+    if (uriLiteral.equals("-INF") || uriLiteral.equals("INF") || uriLiteral.equals("NaN")) {
       return new EdmLiteral(getEdmSimpleType(EdmSimpleTypeKind.Single), uriLiteral);
-    if (uriLiteral.endsWith("F") || uriLiteral.endsWith("f"))
+    }
+    if (uriLiteral.endsWith("F") || uriLiteral.endsWith("f")) {
       return createEdmLiteral(EdmSimpleTypeKind.Single, uriLiteral, 0, 1);
+    }
 
-    if (uriLiteral.startsWith("datetime'"))
+    if (uriLiteral.startsWith("datetime'")) {
       return createEdmLiteral(EdmSimpleTypeKind.DateTime, uriLiteral, 9, 1);
-    if (uriLiteral.startsWith("datetimeoffset'"))
+    }
+    if (uriLiteral.startsWith("datetimeoffset'")) {
       return createEdmLiteral(EdmSimpleTypeKind.DateTimeOffset, uriLiteral, 15, 1);
-    if (uriLiteral.startsWith("guid'"))
+    }
+    if (uriLiteral.startsWith("guid'")) {
       return createEdmLiteral(EdmSimpleTypeKind.Guid, uriLiteral, 5, 1);
-    if (uriLiteral.startsWith("time'"))
+    }
+    if (uriLiteral.startsWith("time'")) {
       return createEdmLiteral(EdmSimpleTypeKind.Time, uriLiteral, 5, 1);
+    }
 
-    if (uriLiteral.startsWith("X'") || uriLiteral.startsWith("binary'"))
+    if (uriLiteral.startsWith("X'") || uriLiteral.startsWith("binary'")) {
       try {
         final EdmSimpleType type = getEdmSimpleType(EdmSimpleTypeKind.Binary);
         final byte[] value = type.valueOfString(uriLiteral, EdmLiteralKind.URI, null, byte[].class);
@@ -78,16 +94,18 @@ public class EdmSimpleTypeFacadeImpl implements EdmSimpleTypeFacade {
       } catch (EdmSimpleTypeException e) {
         throw new EdmLiteralException(EdmLiteralException.LITERALFORMAT.addContent(uriLiteral), e);
       }
+    }
 
     throw new EdmLiteralException(EdmLiteralException.UNKNOWNLITERAL.addContent(uriLiteral));
   }
 
   private static EdmLiteral createEdmLiteral(final EdmSimpleTypeKind typeKind, final String literal, final int prefixLength, final int suffixLength) throws EdmLiteralException {
     final EdmSimpleType type = getEdmSimpleType(typeKind);
-    if (type.validate(literal, EdmLiteralKind.URI, null))
+    if (type.validate(literal, EdmLiteralKind.URI, null)) {
       return new EdmLiteral(type, literal.substring(prefixLength, literal.length() - suffixLength));
-    else
+    } else {
       throw new EdmLiteralException(EdmLiteralException.LITERALFORMAT.addContent(literal));
+    }
   }
 
   public static EdmSimpleType getEdmSimpleType(final EdmSimpleTypeKind typeKind) {
@@ -131,11 +149,12 @@ public class EdmSimpleTypeFacadeImpl implements EdmSimpleTypeFacade {
   }
 
   public static EdmSimpleType getInternalEdmSimpleTypeByString(final String edmSimpleType) {
-    if ("Bit".equals(edmSimpleType))
+    if ("Bit".equals(edmSimpleType)) {
       return Bit.getInstance();
-    else if ("Uint7".equals(edmSimpleType))
+    } else if ("Uint7".equals(edmSimpleType)) {
       return Uint7.getInstance();
-    else
+    } else {
       throw new ODataRuntimeException("Invalid internal Type " + edmSimpleType);
+    }
   }
 }

@@ -98,14 +98,19 @@ public class UriParserImpl extends UriParser {
 
   private void preparePathSegments() throws UriSyntaxException {
     if (!pathSegments.isEmpty()) {
-      if (pathSegments.get(0).equals("")) // initial '/' is allowed but ignored
+      if (pathSegments.get(0).equals("")) {
         pathSegments.remove(0);
-      if (pathSegments.size() == 1)
-        if (pathSegments.get(0).equals("")) // only '/': service document
+      }
+      if (pathSegments.size() == 1) {
+        if (pathSegments.get(0).equals("")) {
           pathSegments.remove(0);
-      for (String pathSegment : pathSegments)
-        if (pathSegment.equals(""))
+        }
+      }
+      for (String pathSegment : pathSegments) {
+        if (pathSegment.equals("")) {
           throw new UriSyntaxException(UriSyntaxException.EMPTYSEGMENT);
+        }
+      }
     }
   }
 
@@ -132,8 +137,9 @@ public class UriParserImpl extends UriParser {
 
   private void handleNormalInitialSegment() throws UriSyntaxException, UriNotMatchingException, EdmException {
     final Matcher matcher = INITIAL_SEGMENT_PATTERN.matcher(currentPathSegment);
-    if (!matcher.matches())
+    if (!matcher.matches()) {
       throw new UriNotMatchingException(UriNotMatchingException.MATCHPROBLEM.addContent(currentPathSegment));
+    }
 
     final String entityContainerName = percentDecode(matcher.group(1));
     final String segmentName = percentDecode(matcher.group(2));
@@ -142,8 +148,9 @@ public class UriParserImpl extends UriParser {
 
     final EdmEntityContainer entityContainer =
         entityContainerName == null ? edm.getDefaultEntityContainer() : edm.getEntityContainer(entityContainerName);
-    if (entityContainer == null)
+    if (entityContainer == null) {
       throw new UriNotMatchingException(UriNotMatchingException.CONTAINERNOTFOUND.addContent(entityContainerName));
+    }
     uriResult.setEntityContainer(entityContainer);
 
     final EdmEntitySet entitySet = entityContainer.getEntitySet(segmentName);
@@ -152,8 +159,9 @@ public class UriParserImpl extends UriParser {
       handleEntitySet(entitySet, keyPredicate);
     } else {
       final EdmFunctionImport functionImport = entityContainer.getFunctionImport(segmentName);
-      if (functionImport == null)
+      if (functionImport == null) {
         throw new UriNotMatchingException(UriNotMatchingException.NOTFOUND.addContent(segmentName));
+      }
       uriResult.setFunctionImport(functionImport);
       handleFunctionImport(functionImport, emptyParentheses, keyPredicate);
     }
@@ -171,17 +179,19 @@ public class UriParserImpl extends UriParser {
       } else {
         currentPathSegment = pathSegments.remove(0);
         checkCount();
-        if (uriResult.isCount())
+        if (uriResult.isCount()) {
           uriResult.setUriType(UriType.URI15);
-        else
+        } else {
           throw new UriSyntaxException(UriSyntaxException.ENTITYSETINSTEADOFENTITY.addContent(entitySet.getName()));
+        }
       }
     } else {
       uriResult.setKeyPredicates(parseKey(keyPredicate, entityType));
-      if (pathSegments.isEmpty())
+      if (pathSegments.isEmpty()) {
         uriResult.setUriType(UriType.URI2);
-      else
+      } else {
         handleNavigationPathOptions();
+      }
     }
   }
 
@@ -197,14 +207,15 @@ public class UriParserImpl extends UriParser {
         ensureLastSegment();
         uriResult.setUriType(UriType.URI17);
         uriResult.setValue(true);
-      }
-      else
+      } else {
         throw new UriSyntaxException(UriSyntaxException.NOMEDIARESOURCE);
+      }
 
     } else if ("$links".equals(currentPathSegment)) {
       uriResult.setLinks(true);
-      if (pathSegments.isEmpty())
+      if (pathSegments.isEmpty()) {
         throw new UriSyntaxException(UriSyntaxException.MUSTNOTBELASTSEGMENT.addContent(currentPathSegment));
+      }
       currentPathSegment = pathSegments.remove(0);
       handleNavigationProperties();
 
@@ -216,62 +227,74 @@ public class UriParserImpl extends UriParser {
   private void handleNavigationProperties() throws UriSyntaxException, UriNotMatchingException, EdmException {
 
     final Matcher matcher = NAVIGATION_SEGMENT_PATTERN.matcher(currentPathSegment);
-    if (!matcher.matches())
+    if (!matcher.matches()) {
       throw new UriNotMatchingException(UriNotMatchingException.MATCHPROBLEM.addContent(currentPathSegment));
+    }
 
     final String navigationPropertyName = percentDecode(matcher.group(1));
     final String keyPredicateName = matcher.group(2);
     final String emptyParentheses = matcher.group(3);
 
     final EdmTyped property = uriResult.getTargetEntitySet().getEntityType().getProperty(navigationPropertyName);
-    if (property == null)
+    if (property == null) {
       throw new UriNotMatchingException(UriNotMatchingException.PROPERTYNOTFOUND.addContent(navigationPropertyName));
+    }
 
     switch (property.getType().getKind()) {
     case SIMPLE:
     case COMPLEX:
-      if (keyPredicateName != null || emptyParentheses != null)
+      if (keyPredicateName != null || emptyParentheses != null) {
         throw new UriSyntaxException(UriSyntaxException.INVALIDSEGMENT.addContent(currentPathSegment));
-      if (uriResult.isLinks())
+      }
+      if (uriResult.isLinks()) {
         throw new UriSyntaxException(UriSyntaxException.NONAVIGATIONPROPERTY.addContent(property));
+      }
 
       handlePropertyPath((EdmProperty) property);
       break;
 
     case ENTITY: // navigation properties point to entities
       final EdmNavigationProperty navigationProperty = (EdmNavigationProperty) property;
-      if (keyPredicateName != null || emptyParentheses != null)
-        if (navigationProperty.getMultiplicity() != EdmMultiplicity.MANY)
+      if (keyPredicateName != null || emptyParentheses != null) {
+        if (navigationProperty.getMultiplicity() != EdmMultiplicity.MANY) {
           throw new UriSyntaxException(UriSyntaxException.INVALIDSEGMENT.addContent(currentPathSegment));
+        }
+      }
 
       addNavigationSegment(keyPredicateName, navigationProperty);
 
       boolean many = false;
-      if (navigationProperty.getMultiplicity() == EdmMultiplicity.MANY)
+      if (navigationProperty.getMultiplicity() == EdmMultiplicity.MANY) {
         many = keyPredicateName == null;
+      }
 
-      if (pathSegments.isEmpty())
-        if (many)
-          if (uriResult.isLinks())
+      if (pathSegments.isEmpty()) {
+        if (many) {
+          if (uriResult.isLinks()) {
             uriResult.setUriType(UriType.URI7B);
-          else
+          } else {
             uriResult.setUriType(UriType.URI6B);
-        else if (uriResult.isLinks())
+          }
+        } else if (uriResult.isLinks()) {
           uriResult.setUriType(UriType.URI7A);
-        else
+        } else {
           uriResult.setUriType(UriType.URI6A);
-      else if (many || uriResult.isLinks()) {
+        }
+      } else if (many || uriResult.isLinks()) {
         currentPathSegment = pathSegments.remove(0);
         checkCount();
-        if (!uriResult.isCount())
+        if (!uriResult.isCount()) {
           throw new UriSyntaxException(UriSyntaxException.INVALIDSEGMENT.addContent(currentPathSegment));
-        if (many)
-          if (uriResult.isLinks())
+        }
+        if (many) {
+          if (uriResult.isLinks()) {
             uriResult.setUriType(UriType.URI50B);
-          else
+          } else {
             uriResult.setUriType(UriType.URI15);
-        else
+          }
+        } else {
           uriResult.setUriType(UriType.URI50A);
+        }
       } else {
         handleNavigationPathOptions();
       }
@@ -291,8 +314,9 @@ public class UriParserImpl extends UriParser {
     NavigationSegmentImpl navigationSegment = new NavigationSegmentImpl();
     navigationSegment.setEntitySet(targetEntitySet);
     navigationSegment.setNavigationProperty(navigationProperty);
-    if (keyPredicateName != null)
+    if (keyPredicateName != null) {
       navigationSegment.setKeyPredicates(parseKey(keyPredicateName, targetEntityType));
+    }
     uriResult.addNavigationSegment(navigationSegment);
   }
 
@@ -301,15 +325,17 @@ public class UriParserImpl extends UriParser {
     final EdmType type = property.getType();
 
     if (pathSegments.isEmpty()) {
-      if (type.getKind() == EdmTypeKind.SIMPLE)
-        if (uriResult.getPropertyPath().size() == 1)
+      if (type.getKind() == EdmTypeKind.SIMPLE) {
+        if (uriResult.getPropertyPath().size() == 1) {
           uriResult.setUriType(UriType.URI5);
-        else
+        } else {
           uriResult.setUriType(UriType.URI4);
-      else if (type.getKind() == EdmTypeKind.COMPLEX)
+        }
+      } else if (type.getKind() == EdmTypeKind.COMPLEX) {
         uriResult.setUriType(UriType.URI3);
-      else
+      } else {
         throw new UriSyntaxException(UriSyntaxException.INVALIDPROPERTYTYPE.addContent(type.getKind()));
+      }
       uriResult.setTargetType(type);
     } else {
 
@@ -319,10 +345,11 @@ public class UriParserImpl extends UriParser {
         if ("$value".equals(currentPathSegment)) {
           ensureLastSegment();
           uriResult.setValue(true);
-          if (uriResult.getPropertyPath().size() == 1)
+          if (uriResult.getPropertyPath().size() == 1) {
             uriResult.setUriType(UriType.URI5);
-          else
+          } else {
             uriResult.setUriType(UriType.URI4);
+          }
         } else {
           throw new UriSyntaxException(UriSyntaxException.INVALIDSEGMENT.addContent(currentPathSegment));
         }
@@ -331,8 +358,9 @@ public class UriParserImpl extends UriParser {
 
       case COMPLEX:
         final EdmProperty nextProperty = (EdmProperty) ((EdmComplexType) type).getProperty(currentPathSegment);
-        if (nextProperty == null)
+        if (nextProperty == null) {
           throw new UriNotMatchingException(UriNotMatchingException.PROPERTYNOTFOUND.addContent(currentPathSegment));
+        }
 
         handlePropertyPath(nextProperty);
         break;
@@ -344,16 +372,19 @@ public class UriParserImpl extends UriParser {
   }
 
   private void ensureLastSegment() throws UriSyntaxException {
-    if (!pathSegments.isEmpty())
+    if (!pathSegments.isEmpty()) {
       throw new UriSyntaxException(UriSyntaxException.MUSTBELASTSEGMENT.addContent(currentPathSegment));
+    }
   }
 
   private void checkCount() throws UriSyntaxException {
-    if ("$count".equals(currentPathSegment))
-      if (pathSegments.isEmpty())
+    if ("$count".equals(currentPathSegment)) {
+      if (pathSegments.isEmpty()) {
         uriResult.setCount(true);
-      else
+      } else {
         throw new UriSyntaxException(UriSyntaxException.MUSTBELASTSEGMENT.addContent(currentPathSegment));
+      }
+    }
   }
 
   private ArrayList<KeyPredicate> parseKey(final String keyPredicate, final EdmEntityType entityType) throws UriSyntaxException, EdmException {
@@ -364,36 +395,43 @@ public class UriParserImpl extends UriParser {
     for (final String key : keyPredicate.split(",", -1)) {
 
       final Matcher matcher = NAMED_VALUE_PATTERN.matcher(key);
-      if (!matcher.matches())
+      if (!matcher.matches()) {
         throw new UriSyntaxException(UriSyntaxException.INVALIDKEYPREDICATE.addContent(keyPredicate));
+      }
 
       String name = percentDecode(matcher.group(1));
       final String value = percentDecode(matcher.group(2));
 
-      if (name == null)
-        if (keyProperties.size() == 1)
+      if (name == null) {
+        if (keyProperties.size() == 1) {
           name = keyProperties.get(0).getName();
-        else
+        } else {
           throw new UriSyntaxException(UriSyntaxException.MISSINGKEYPREDICATENAME.addContent(key));
+        }
+      }
 
       EdmProperty keyProperty = null;
-      for (final EdmProperty testKeyProperty : keyProperties)
+      for (final EdmProperty testKeyProperty : keyProperties) {
         if (testKeyProperty.getName().equals(name)) {
           keyProperty = testKeyProperty;
           break;
         }
-      if (keyProperty == null)
+      }
+      if (keyProperty == null) {
         throw new UriSyntaxException(UriSyntaxException.INVALIDKEYPREDICATE.addContent(keyPredicate));
-      if (parsedKeyProperties.contains(keyProperty))
+      }
+      if (parsedKeyProperties.contains(keyProperty)) {
         throw new UriSyntaxException(UriSyntaxException.DUPLICATEKEYNAMES.addContent(keyPredicate));
+      }
       parsedKeyProperties.add(keyProperty);
 
       final EdmLiteral uriLiteral = parseLiteral(value, (EdmSimpleType) keyProperty.getType());
       keyPredicates.add(new KeyPredicateImpl(uriLiteral.getLiteral(), keyProperty));
     }
 
-    if (parsedKeyProperties.size() != keyProperties.size())
+    if (parsedKeyProperties.size() != keyProperties.size()) {
       throw new UriSyntaxException(UriSyntaxException.INVALIDKEYPREDICATE.addContent(keyPredicate));
+    }
 
     return keyPredicates;
   }
@@ -408,8 +446,9 @@ public class UriParserImpl extends UriParser {
       return;
     }
 
-    if (emptyParentheses != null)
+    if (emptyParentheses != null) {
       throw new UriSyntaxException(UriSyntaxException.INVALIDSEGMENT.addContent(emptyParentheses));
+    }
 
     uriResult.setTargetType(type);
     switch (type.getKind()) {
@@ -426,14 +465,16 @@ public class UriParserImpl extends UriParser {
       throw new UriSyntaxException(UriSyntaxException.INVALIDRETURNTYPE.addContent(type.getKind()));
     }
 
-    if (!pathSegments.isEmpty())
+    if (!pathSegments.isEmpty()) {
       if (uriResult.getUriType() == UriType.URI14) {
         currentPathSegment = pathSegments.remove(0);
-        if ("$value".equals(currentPathSegment))
+        if ("$value".equals(currentPathSegment)) {
           uriResult.setValue(true);
-        else
+        } else {
           throw new UriSyntaxException(UriSyntaxException.INVALIDSEGMENT.addContent(currentPathSegment));
+        }
       }
+    }
     ensureLastSegment();
   }
 
@@ -447,10 +488,11 @@ public class UriParserImpl extends UriParser {
         } catch (IllegalArgumentException e) {
           throw new UriSyntaxException(UriSyntaxException.INVALIDSYSTEMQUERYOPTION.addContent(queryOptionString), e);
         }
-        if ("".equals(value))
+        if ("".equals(value)) {
           throw new UriSyntaxException(UriSyntaxException.INVALIDNULLVALUE.addContent(queryOptionString));
-        else
+        } else {
           systemQueryOptions.put(queryOption, value);
+        }
       } else {
         otherQueryParameters.put(queryOptionString, value);
       }
@@ -462,17 +504,19 @@ public class UriParserImpl extends UriParser {
 
     for (SystemQueryOption queryOption : systemQueryOptions.keySet()) {
 
-      if (queryOption == SystemQueryOption.$format && (uriType == UriType.URI4 || uriType == UriType.URI5) && uriResult.isValue())
+      if (queryOption == SystemQueryOption.$format && (uriType == UriType.URI4 || uriType == UriType.URI5) && uriResult.isValue()) {
         throw new UriSyntaxException(UriSyntaxException.INCOMPATIBLESYSTEMQUERYOPTION.addContent(queryOption));
+      }
 
-      if (!uriType.isCompatible(queryOption))
+      if (!uriType.isCompatible(queryOption)) {
         throw new UriSyntaxException(UriSyntaxException.INCOMPATIBLESYSTEMQUERYOPTION.addContent(queryOption));
+      }
     }
   }
 
   private void handleSystemQueryOptions() throws UriSyntaxException, UriNotMatchingException, EdmException {
 
-    for (SystemQueryOption queryOption : systemQueryOptions.keySet())
+    for (SystemQueryOption queryOption : systemQueryOptions.keySet()) {
       switch (queryOption) {
       case $format:
         handleSystemQueryOptionFormat(systemQueryOptions.get(SystemQueryOption.$format));
@@ -504,6 +548,7 @@ public class UriParserImpl extends UriParser {
       default:
         throw new ODataRuntimeException("Invalid System Query Option " + queryOption);
       }
+    }
   }
 
   private void handleSystemQueryOptionFormat(final String format) throws UriSyntaxException {
@@ -512,7 +557,7 @@ public class UriParserImpl extends UriParser {
 
   private void handleSystemQueryOptionFilter(final String filter) throws UriSyntaxException {
     final EdmType targetType = uriResult.getTargetType();
-    if (targetType instanceof EdmEntityType)
+    if (targetType instanceof EdmEntityType) {
       try {
         uriResult.setFilter(new FilterParserImpl((EdmEntityType) targetType).parseFilterString(filter, true));
       } catch (ExpressionParserException e) {
@@ -520,11 +565,12 @@ public class UriParserImpl extends UriParser {
       } catch (ODataMessageException e) {
         throw new UriSyntaxException(UriSyntaxException.INVALIDFILTEREXPRESSION.addContent(filter), e);
       }
+    }
   }
 
   private void handleSystemQueryOptionOrderBy(final String orderBy) throws UriSyntaxException {
     final EdmType targetType = uriResult.getTargetType();
-    if (targetType instanceof EdmEntityType)
+    if (targetType instanceof EdmEntityType) {
       try {
         uriResult.setOrderBy(parseOrderByString((EdmEntityType) targetType, orderBy));
       } catch (ExpressionParserException e) {
@@ -532,15 +578,17 @@ public class UriParserImpl extends UriParser {
       } catch (ODataMessageException e) {
         throw new UriSyntaxException(UriSyntaxException.INVALIDORDERBYEXPRESSION.addContent(orderBy), e);
       }
+    }
   }
 
   private void handleSystemQueryOptionInlineCount(final String inlineCount) throws UriSyntaxException {
-    if ("allpages".equals(inlineCount))
+    if ("allpages".equals(inlineCount)) {
       uriResult.setInlineCount(InlineCount.ALLPAGES);
-    else if ("none".equals(inlineCount))
+    } else if ("none".equals(inlineCount)) {
       uriResult.setInlineCount(InlineCount.NONE);
-    else
+    } else {
       throw new UriSyntaxException(UriSyntaxException.INVALIDVALUE.addContent(inlineCount));
+    }
   }
 
   private void handleSystemQueryOptionSkipToken(final String skiptoken) throws UriSyntaxException {
@@ -553,8 +601,9 @@ public class UriParserImpl extends UriParser {
     } catch (NumberFormatException e) {
       throw new UriSyntaxException(UriSyntaxException.INVALIDVALUE.addContent(skip), e);
     }
-    if (uriResult.getSkip() < 0)
+    if (uriResult.getSkip() < 0) {
       throw new UriSyntaxException(UriSyntaxException.INVALIDNEGATIVEVALUE.addContent(skip));
+    }
 
   }
 
@@ -564,33 +613,39 @@ public class UriParserImpl extends UriParser {
     } catch (NumberFormatException e) {
       throw new UriSyntaxException(UriSyntaxException.INVALIDVALUE.addContent(top), e);
     }
-    if (uriResult.getTop() < 0)
+    if (uriResult.getTop() < 0) {
       throw new UriSyntaxException(UriSyntaxException.INVALIDNEGATIVEVALUE.addContent(top));
+    }
   }
 
   private void handleSystemQueryOptionExpand(final String expandStatement) throws UriSyntaxException, UriNotMatchingException, EdmException {
     ArrayList<ArrayList<NavigationPropertySegment>> expand = new ArrayList<ArrayList<NavigationPropertySegment>>();
 
-    if (expandStatement.startsWith(",") || expandStatement.endsWith(","))
+    if (expandStatement.startsWith(",") || expandStatement.endsWith(",")) {
       throw new UriSyntaxException(UriSyntaxException.EMPTYSEGMENT);
+    }
 
     for (String expandItemString : expandStatement.split(",")) {
       expandItemString = expandItemString.trim();
-      if ("".equals(expandItemString))
+      if ("".equals(expandItemString)) {
         throw new UriSyntaxException(UriSyntaxException.EMPTYSEGMENT);
-      if (expandItemString.startsWith("/") || expandItemString.endsWith("/"))
+      }
+      if (expandItemString.startsWith("/") || expandItemString.endsWith("/")) {
         throw new UriSyntaxException(UriSyntaxException.EMPTYSEGMENT);
+      }
 
       ArrayList<NavigationPropertySegment> expandNavigationProperties = new ArrayList<NavigationPropertySegment>();
       EdmEntitySet fromEntitySet = uriResult.getTargetEntitySet();
 
       for (String expandPropertyName : expandItemString.split("/")) {
-        if ("".equals(expandPropertyName))
+        if ("".equals(expandPropertyName)) {
           throw new UriSyntaxException(UriSyntaxException.EMPTYSEGMENT);
+        }
 
         final EdmTyped property = fromEntitySet.getEntityType().getProperty(expandPropertyName);
-        if (property == null)
+        if (property == null) {
           throw new UriNotMatchingException(UriNotMatchingException.PROPERTYNOTFOUND.addContent(expandPropertyName));
+        }
         if (property.getType().getKind() == EdmTypeKind.ENTITY) {
           final EdmNavigationProperty navigationProperty = (EdmNavigationProperty) property;
           fromEntitySet = fromEntitySet.getRelatedEntitySet(navigationProperty);
@@ -610,26 +665,31 @@ public class UriParserImpl extends UriParser {
   private void handleSystemQueryOptionSelect(final String selectStatement) throws UriSyntaxException, UriNotMatchingException, EdmException {
     ArrayList<SelectItem> select = new ArrayList<SelectItem>();
 
-    if (selectStatement.startsWith(",") || selectStatement.endsWith(","))
+    if (selectStatement.startsWith(",") || selectStatement.endsWith(",")) {
       throw new UriSyntaxException(UriSyntaxException.EMPTYSEGMENT);
+    }
 
     for (String selectItemString : selectStatement.split(",")) {
       selectItemString = selectItemString.trim();
-      if ("".equals(selectItemString))
+      if ("".equals(selectItemString)) {
         throw new UriSyntaxException(UriSyntaxException.EMPTYSEGMENT);
-      if (selectItemString.startsWith("/") || selectItemString.endsWith("/"))
+      }
+      if (selectItemString.startsWith("/") || selectItemString.endsWith("/")) {
         throw new UriSyntaxException(UriSyntaxException.EMPTYSEGMENT);
+      }
 
       SelectItemImpl selectItem = new SelectItemImpl();
       boolean exit = false;
       EdmEntitySet fromEntitySet = uriResult.getTargetEntitySet();
 
       for (String selectedPropertyName : selectItemString.split("/")) {
-        if ("".equals(selectedPropertyName))
+        if ("".equals(selectedPropertyName)) {
           throw new UriSyntaxException(UriSyntaxException.EMPTYSEGMENT);
+        }
 
-        if (exit)
+        if (exit) {
           throw new UriSyntaxException(UriSyntaxException.INVALIDSEGMENT.addContent(selectItemString));
+        }
 
         if ("*".equals(selectedPropertyName)) {
           selectItem.setStar(true);
@@ -638,8 +698,9 @@ public class UriParserImpl extends UriParser {
         }
 
         final EdmTyped property = fromEntitySet.getEntityType().getProperty(selectedPropertyName);
-        if (property == null)
+        if (property == null) {
           throw new UriNotMatchingException(UriNotMatchingException.PROPERTYNOTFOUND.addContent(selectedPropertyName));
+        }
 
         switch (property.getType().getKind()) {
         case SIMPLE:
@@ -671,20 +732,23 @@ public class UriParserImpl extends UriParser {
 
   private void handleOtherQueryParameters() throws UriSyntaxException, EdmException {
     final EdmFunctionImport functionImport = uriResult.getFunctionImport();
-    if (functionImport != null)
+    if (functionImport != null) {
       for (final String parameterName : functionImport.getParameterNames()) {
         final EdmParameter parameter = functionImport.getParameter(parameterName);
         final String value = otherQueryParameters.remove(parameterName);
 
-        if (value == null)
-          if (parameter.getFacets() == null || parameter.getFacets().isNullable())
+        if (value == null) {
+          if (parameter.getFacets() == null || parameter.getFacets().isNullable()) {
             continue;
-          else
+          } else {
             throw new UriSyntaxException(UriSyntaxException.MISSINGPARAMETER);
+          }
+        }
 
         EdmLiteral uriLiteral = parseLiteral(value, (EdmSimpleType) parameter.getType());
         uriResult.addFunctionImportParameter(parameterName, uriLiteral);
       }
+    }
 
     uriResult.setCustomQueryOptions(otherQueryParameters);
   }
@@ -697,31 +761,34 @@ public class UriParserImpl extends UriParser {
       throw convertEdmLiteralException(e);
     }
 
-    if (expectedType.isCompatible(literal.getType()))
+    if (expectedType.isCompatible(literal.getType())) {
       return literal;
-    else
+    } else {
       throw new UriSyntaxException(UriSyntaxException.INCOMPATIBLELITERAL.addContent(value, expectedType));
+    }
   }
 
   private static UriSyntaxException convertEdmLiteralException(final EdmLiteralException e) {
     final MessageReference messageReference = e.getMessageReference();
     final String key = messageReference.getKey();
 
-    if (key == EdmLiteralException.LITERALFORMAT.getKey())
+    if (key == EdmLiteralException.LITERALFORMAT.getKey()) {
       return new UriSyntaxException(UriSyntaxException.LITERALFORMAT.addContent(messageReference.getContent()), e);
-    else if (key == EdmLiteralException.NOTEXT.getKey())
+    } else if (key == EdmLiteralException.NOTEXT.getKey()) {
       return new UriSyntaxException(UriSyntaxException.NOTEXT.addContent(messageReference.getContent()), e);
-    else if (key == EdmLiteralException.UNKNOWNLITERAL.getKey())
+    } else if (key == EdmLiteralException.UNKNOWNLITERAL.getKey()) {
       return new UriSyntaxException(UriSyntaxException.UNKNOWNLITERAL.addContent(messageReference.getContent()), e);
-    else
+    } else {
       return new UriSyntaxException(ODataBadRequestException.COMMON, e);
+    }
   }
 
   private static List<String> copyPathSegmentList(final List<PathSegment> source) {
     List<String> copy = new ArrayList<String>();
 
-    for (final PathSegment segment : source)
+    for (final PathSegment segment : source) {
       copy.add(segment.getPath());
+    }
 
     return copy;
   }

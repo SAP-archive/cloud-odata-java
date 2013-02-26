@@ -35,8 +35,9 @@ public class XmlLinksEntityProducer {
         writer.writeEndElement();
       }
       XmlLinkEntityProducer provider = new XmlLinkEntityProducer(properties);
-      for (final Map<String, Object> entityData : data)
+      for (final Map<String, Object> entityData : data) {
         provider.append(writer, entityInfo, entityData, false);
+      }
       writer.writeEndElement();
       writer.flush();
     } catch (XMLStreamException e) {

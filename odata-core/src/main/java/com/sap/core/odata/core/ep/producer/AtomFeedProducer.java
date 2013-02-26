@@ -73,8 +73,9 @@ public class AtomFeedProducer {
 
   private void appendEntries(final XMLStreamWriter writer, final EntityInfoAggregator eia, final List<Map<String, Object>> data) throws EntityProviderException {
     AtomEntryEntityProducer entryProvider = new AtomEntryEntityProducer(properties);
-    for (Map<String, Object> singleEntryData : data)
+    for (Map<String, Object> singleEntryData : data) {
       entryProvider.append(writer, eia, singleEntryData, false);
+    }
   }
 
   private void appendInlineCount(final XMLStreamWriter writer, final int inlinecount) throws EntityProviderException {

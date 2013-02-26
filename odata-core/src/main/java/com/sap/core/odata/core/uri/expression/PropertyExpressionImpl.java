@@ -42,7 +42,9 @@ public class PropertyExpressionImpl implements PropertyExpression {
   @Override
   public String getPropertyName()
   {
-    if (edmProperty == null) return "";
+    if (edmProperty == null) {
+      return "";
+    }
 
     try {
       return edmProperty.getName();

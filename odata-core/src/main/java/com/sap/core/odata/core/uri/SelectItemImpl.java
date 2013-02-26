@@ -33,8 +33,9 @@ public class SelectItemImpl implements SelectItem {
   }
 
   public void addNavigationPropertySegment(final NavigationPropertySegment segment) {
-    if (navigationPropertySegments.equals(Collections.EMPTY_LIST))
+    if (navigationPropertySegments.equals(Collections.EMPTY_LIST)) {
       navigationPropertySegments = new ArrayList<NavigationPropertySegment>();
+    }
 
     navigationPropertySegments.add(segment);
   }

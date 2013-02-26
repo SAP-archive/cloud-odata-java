@@ -108,8 +108,9 @@ public class ODataSubLocatorValidationTest extends BaseTest {
         segments.add("nm_Employees('1')");
         segments.add("ne_Manager");
       }
-      if (uriType == UriType.URI7A || uriType == UriType.URI50A)
+      if (uriType == UriType.URI7A || uriType == UriType.URI50A) {
         segments.add("$links");
+      }
       segments.add("nm_Employees('1')");
     } else if (uriType == UriType.URI6B || uriType == UriType.URI7B || uriType == UriType.URI50B) {
       segments.add("Managers('1')");
@@ -117,8 +118,9 @@ public class ODataSubLocatorValidationTest extends BaseTest {
         segments.add("nm_Employees('1')");
         segments.add("ne_Manager");
       }
-      if (uriType == UriType.URI7B || uriType == UriType.URI50B)
+      if (uriType == UriType.URI7B || uriType == UriType.URI50B) {
         segments.add("$links");
+      }
       segments.add("nm_Employees");
     } else if (uriType == UriType.URI8) {
       segments.add("$metadata");
@@ -136,19 +138,23 @@ public class ODataSubLocatorValidationTest extends BaseTest {
       segments.add("MaximalAge");
     }
 
-    if (uriType == UriType.URI3 || uriType == UriType.URI4)
+    if (uriType == UriType.URI3 || uriType == UriType.URI4) {
       segments.add("Location");
-    if (uriType == UriType.URI4)
+    }
+    if (uriType == UriType.URI4) {
       segments.add("Country");
-    else if (uriType == UriType.URI5)
+    } else if (uriType == UriType.URI5) {
       segments.add("EmployeeName");
+    }
 
     if (uriType == UriType.URI15 || uriType == UriType.URI16
-        || uriType == UriType.URI50A || uriType == UriType.URI50B)
+        || uriType == UriType.URI50A || uriType == UriType.URI50B) {
       segments.add("$count");
+    }
 
-    if (uriType == UriType.URI17 || isValue)
+    if (uriType == UriType.URI17 || isValue) {
       segments.add("$value");
+    }
 
     // self-test
     try {
@@ -162,8 +168,9 @@ public class ODataSubLocatorValidationTest extends BaseTest {
     }
 
     List<PathSegment> pathSegments = new ArrayList<PathSegment>();
-    for (final String segment : segments)
+    for (final String segment : segments) {
       pathSegments.add(mockPathSegment(segment));
+    }
     return pathSegments;
   }
 
@@ -175,24 +182,33 @@ public class ODataSubLocatorValidationTest extends BaseTest {
 
     MultivaluedMap<String, String> map = new MultivaluedHashMap<String, String>();
 
-    if (format)
+    if (format) {
       map.add("$format", ODataFormat.XML.toString());
-    if (filter)
+    }
+    if (filter) {
       map.add("$filter", "true");
-    if (inlineCount)
+    }
+    if (inlineCount) {
       map.add("$inlinecount", "none");
-    if (orderBy)
+    }
+    if (orderBy) {
       map.add("$orderby", "Age");
-    if (skipToken)
+    }
+    if (skipToken) {
       map.add("$skiptoken", "x");
-    if (skip)
+    }
+    if (skip) {
       map.add("$skip", "0");
-    if (top)
+    }
+    if (top) {
       map.add("$top", "0");
-    if (expand)
+    }
+    if (expand) {
       map.add("$expand", "ne_Team");
-    if (select)
+    }
+    if (select) {
       map.add("$select", "Age");
+    }
 
     return map;
   }
@@ -219,10 +235,11 @@ public class ODataSubLocatorValidationTest extends BaseTest {
     UriBuilder uriBuilder = mock(UriBuilder.class);
     when(uriBuilder.build()).thenReturn(URI.create(""));
     when(initUriInfo.getBaseUriBuilder()).thenReturn(uriBuilder);
-    if (queryParameters == null)
+    if (queryParameters == null) {
       when(initUriInfo.getQueryParameters()).thenReturn(map);
-    else
+    } else {
       when(initUriInfo.getQueryParameters()).thenReturn(queryParameters);
+    }
     param.setUriInfo(initUriInfo);
 
     HttpServletRequest servletRequest = mock(HttpServletRequest.class);
@@ -349,19 +366,21 @@ public class ODataSubLocatorValidationTest extends BaseTest {
   }
 
   private void wrongFunctionHttpMethod(final ODataHttpMethod method, final UriType uriType) {
-    if (uriType == UriType.URI1)
+    if (uriType == UriType.URI1) {
       wrongRequest(method, Arrays.asList(mockPathSegment("EmployeeSearch")), null);
-    else
+    } else {
       wrongRequest(method, mockPathSegments(uriType, false, false), null);
+    }
   }
 
   private void wrongProperty(final ODataHttpMethod method, final boolean ofComplex, final boolean key, final boolean nullable) {
     EdmProperty property = null;
     try {
-      if (ofComplex)
+      if (ofComplex) {
         property = (EdmProperty) edm.getEntityType("RefScenario", "Employee").getProperty("Age");
-      else
+      } else {
         property = (EdmProperty) edm.getComplexType("RefScenario", "c_Location").getProperty("Country");
+      }
       EdmFacets facets = mock(EdmFacets.class);
       when(facets.isNullable()).thenReturn(nullable);
       when(property.getFacets()).thenReturn(facets);
@@ -370,14 +389,16 @@ public class ODataSubLocatorValidationTest extends BaseTest {
     }
     List<PathSegment> pathSegments = new ArrayList<PathSegment>();
     pathSegments.add(mockPathSegment("Employees('1')"));
-    if (ofComplex)
+    if (ofComplex) {
       pathSegments.add(mockPathSegment("Location"));
-    if (ofComplex)
+    }
+    if (ofComplex) {
       pathSegments.add(mockPathSegment("Country"));
-    else if (key)
+    } else if (key) {
       pathSegments.add(mockPathSegment("EmployeeId"));
-    else
+    } else {
       pathSegments.add(mockPathSegment("Age"));
+    }
 
     wrongRequest(method, pathSegments, null);
   }

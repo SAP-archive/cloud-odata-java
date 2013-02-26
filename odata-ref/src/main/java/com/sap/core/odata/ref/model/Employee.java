@@ -116,8 +116,9 @@ public class Employee {
       InputStream in = Employee.class.getResourceAsStream(imageUrl);
       ByteArrayOutputStream stream = new ByteArrayOutputStream();
       int b = 0;
-      while ((b = in.read()) != -1)
+      while ((b = in.read()) != -1) {
         stream.write(b);
+      }
 
       return stream.toByteArray();
     } catch (IOException e) {
@@ -136,10 +137,12 @@ public class Employee {
 
   @Override
   public boolean equals(final Object obj) {
-    if (this == obj)
+    if (this == obj) {
       return true;
-    if (obj == null || getClass() != obj.getClass())
+    }
+    if (obj == null || getClass() != obj.getClass()) {
       return false;
+    }
 
     return employeeId == ((Employee) obj).employeeId;
   }

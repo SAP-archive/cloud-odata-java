@@ -26,17 +26,19 @@ public class EdmGuid extends AbstractSimpleType {
 
   @Override
   public boolean validate(final String value, final EdmLiteralKind literalKind, final EdmFacets facets) {
-    if (value == null)
+    if (value == null) {
       return facets == null || facets.isNullable() == null || facets.isNullable();
-    else
+    } else {
       return validateLiteral(value, literalKind);
+    }
   }
 
   private boolean validateLiteral(final String value, final EdmLiteralKind literalKind) {
-    if (literalKind == EdmLiteralKind.URI)
+    if (literalKind == EdmLiteralKind.URI) {
       return value.matches(toUriLiteral(PATTERN));
-    else
+    } else {
       return value.matches(PATTERN);
+    }
   }
 
   @Override
@@ -46,37 +48,44 @@ public class EdmGuid extends AbstractSimpleType {
       return null;
     }
 
-    if (literalKind == null)
+    if (literalKind == null) {
       throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_KIND_MISSING);
+    }
 
     UUID result;
-    if (validateLiteral(value, literalKind))
+    if (validateLiteral(value, literalKind)) {
       result = UUID.fromString(
           literalKind == EdmLiteralKind.URI ? value.substring(5, value.length() - 1) : value);
-    else
+    } else {
       throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_ILLEGAL_CONTENT.addContent(value));
+    }
 
-    if (returnType.isAssignableFrom(UUID.class))
+    if (returnType.isAssignableFrom(UUID.class)) {
       return returnType.cast(result);
-    else
+    } else {
       throw new EdmSimpleTypeException(EdmSimpleTypeException.VALUE_TYPE_NOT_SUPPORTED.addContent(returnType));
+    }
   }
 
   @Override
   public String valueToString(final Object value, final EdmLiteralKind literalKind, final EdmFacets facets) throws EdmSimpleTypeException {
-    if (value == null)
+    if (value == null) {
       return getNullOrDefaultLiteral(facets);
+    }
 
-    if (literalKind == null)
+    if (literalKind == null) {
       throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_KIND_MISSING);
+    }
 
-    if (value instanceof UUID)
-      if (literalKind == EdmLiteralKind.URI)
+    if (value instanceof UUID) {
+      if (literalKind == EdmLiteralKind.URI) {
         return toUriLiteral(((UUID) value).toString());
-      else
+      } else {
         return ((UUID) value).toString();
-    else
+      }
+    } else {
       throw new EdmSimpleTypeException(EdmSimpleTypeException.VALUE_TYPE_NOT_SUPPORTED.addContent(value.getClass()));
+    }
   }
 
   @Override

@@ -56,8 +56,9 @@ public class EdmEntityContainerImplProv implements EdmEntityContainer, EdmAnnota
   @Override
   public EdmEntitySet getEntitySet(final String name) throws EdmException {
     EdmEntitySet edmEntitySet = edmEntitySets.get(name);
-    if (edmEntitySet != null)
+    if (edmEntitySet != null) {
       return edmEntitySet;
+    }
 
     EntitySet entitySet;
     try {
@@ -82,8 +83,9 @@ public class EdmEntityContainerImplProv implements EdmEntityContainer, EdmAnnota
   @Override
   public EdmFunctionImport getFunctionImport(final String name) throws EdmException {
     EdmFunctionImport edmFunctionImport = edmFunctionImports.get(name);
-    if (edmFunctionImport != null)
+    if (edmFunctionImport != null) {
       return edmFunctionImport;
+    }
 
     FunctionImport functionImport;
     try {
@@ -115,8 +117,9 @@ public class EdmEntityContainerImplProv implements EdmEntityContainer, EdmAnnota
     String key = entitySetName + ">>" + association + ">>" + entitySetFromRole;
 
     EdmAssociationSet edmAssociationSet = edmAssociationSets.get(key);
-    if (edmAssociationSet != null)
+    if (edmAssociationSet != null) {
       return edmAssociationSet;
+    }
 
     AssociationSet associationSet;
     FullQualifiedName associationFQName = new FullQualifiedName(edmAssociation.getNamespace(), edmAssociation.getName());
