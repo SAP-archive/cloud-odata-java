@@ -34,15 +34,17 @@ public class XmlPropertyEntityProducer {
    */
   public void append(final XMLStreamWriter writer, final String name, final EntityPropertyInfo propertyInfo, final Object value) throws EntityProviderException {
     try {
-      if (hasCustomNamespace(propertyInfo))
+      if (hasCustomNamespace(propertyInfo)) {
         writeStartElementWithCustomNamespace(writer, propertyInfo, name);
-      else
+      } else {
         writer.writeStartElement(Edm.NAMESPACE_D_2007_08, name);
+      }
 
-      if (propertyInfo.isComplex())
+      if (propertyInfo.isComplex()) {
         appendProperty(writer, (EntityComplexPropertyInfo) propertyInfo, value);
-      else
+      } else {
         appendProperty(writer, propertyInfo, value);
+      }
 
       writer.writeEndElement();
     } catch (XMLStreamException e) {
@@ -68,10 +70,11 @@ public class XmlPropertyEntityProducer {
       writer.writeDefaultNamespace(Edm.NAMESPACE_D_2007_08);
       writer.writeNamespace(Edm.PREFIX_M, Edm.NAMESPACE_M_2007_08);
 
-      if (propertyInfo.isComplex())
+      if (propertyInfo.isComplex()) {
         appendProperty(writer, (EntityComplexPropertyInfo) propertyInfo, value);
-      else
+      } else {
         appendProperty(writer, propertyInfo, value);
+      }
 
       writer.writeEndElement();
     } catch (XMLStreamException e) {
@@ -146,8 +149,9 @@ public class XmlPropertyEntityProducer {
       contentValue = extractChildValue(value, prop.getName());
     }
 
-    if (mimeType != null)
+    if (mimeType != null) {
       writer.writeAttribute(Edm.NAMESPACE_M_2007_08, FormatXml.M_MIME_TYPE, mimeType);
+    }
 
     final EdmSimpleType type = (EdmSimpleType) prop.getType();
     final String valueAsString = type.valueToString(contentValue, EdmLiteralKind.DEFAULT, prop.getFacets());

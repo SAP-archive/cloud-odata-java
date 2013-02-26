@@ -111,10 +111,11 @@ public class Encoder {
         } else if (isUnreserved(utf8Byte)) { // case unreserved
           resultStr.append((char) utf8Byte);
         } else if (utf8Byte >= 0) { // case other ASCII
-          if (utf8Byte < ' ') // case ASCII control character
+          if (utf8Byte < ' ') {
             resultStr.append(hex[utf8Byte]);
-          else
+          } else {
             resultStr.append((char) utf8Byte);
+          }
         } else { // case UTF-8 continuation byte
           resultStr.append(hex[256 + utf8Byte]); // index adjusted for the usage of signed bytes
         }

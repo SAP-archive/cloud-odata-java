@@ -28,11 +28,13 @@ public interface ParameterSetCombination {
     @Override
     public EdmType getReturnType() {
       int parameterCount = combinations.size();
-      if (parameterCount == 0)
+      if (parameterCount == 0) {
         return null;
+      }
 
-      if (parameterCount == 1)
+      if (parameterCount == 1) {
         return combinations.get(0).getReturnType();
+      }
 
       //There are more than 1 possible return type, check if they are equal, if not return null.
       EdmType returnType = combinations.get(0).getReturnType();
@@ -73,16 +75,18 @@ public interface ParameterSetCombination {
       for (ParameterSet parameterSet : combinations)
       {
         boolean s = parameterSet.equals(actualParameterTypes, false);
-        if (s)
+        if (s) {
           return parameterSet;
+        }
       }
 
       //first check for parameter combination with promotion
       for (ParameterSet parameterSet : combinations)
       {
         boolean s = parameterSet.equals(actualParameterTypes, true);
-        if (s)
+        if (s) {
           return parameterSet;
+        }
       }
       return null;
     }

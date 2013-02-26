@@ -266,7 +266,7 @@ public class ScenarioEdmProvider extends EdmProvider {
             .setNavigationProperties(navigationProperties);
       }
 
-    } else if (NAMESPACE_2.equals(edmFQName.getNamespace()))
+    } else if (NAMESPACE_2.equals(edmFQName.getNamespace())) {
       if (ENTITY_TYPE_2_1.getName().equals(edmFQName.getName())) {
         List<Property> properties = new ArrayList<Property>();
         properties.add(new SimpleProperty().setName("Id").setType(EdmSimpleTypeKind.Int32)
@@ -299,13 +299,14 @@ public class ScenarioEdmProvider extends EdmProvider {
             .setKey(getKey("Id", "Type"))
             .setMapping(new Mapping().setMimeType("getType"));
       }
+    }
 
     return null;
   }
 
   @Override
   public ComplexType getComplexType(final FullQualifiedName edmFQName) throws ODataException {
-    if (NAMESPACE_1.equals(edmFQName.getNamespace()))
+    if (NAMESPACE_1.equals(edmFQName.getNamespace())) {
       if (COMPLEX_TYPE_1.getName().equals(edmFQName.getName())) {
         List<Property> properties = new ArrayList<Property>();
         properties.add(new ComplexProperty().setName("City").setType(COMPLEX_TYPE_2));
@@ -318,39 +319,43 @@ public class ScenarioEdmProvider extends EdmProvider {
         properties.add(new SimpleProperty().setName("CityName").setType(EdmSimpleTypeKind.String));
         return new ComplexType().setName(COMPLEX_TYPE_2.getName()).setProperties(properties);
       }
+    }
 
     return null;
   }
 
   @Override
   public Association getAssociation(final FullQualifiedName edmFQName) throws ODataException {
-    if (NAMESPACE_1.equals(edmFQName.getNamespace()))
-      if (ASSOCIATION_1_1.getName().equals(edmFQName.getName()))
+    if (NAMESPACE_1.equals(edmFQName.getNamespace())) {
+      if (ASSOCIATION_1_1.getName().equals(edmFQName.getName())) {
         return new Association().setName(ASSOCIATION_1_1.getName())
             .setEnd1(new AssociationEnd().setType(ENTITY_TYPE_1_1).setRole(ROLE_1_1).setMultiplicity(EdmMultiplicity.MANY))
             .setEnd2(new AssociationEnd().setType(ENTITY_TYPE_1_4).setRole(ROLE_1_4).setMultiplicity(EdmMultiplicity.ONE));
-      else if (ASSOCIATION_1_2.getName().equals(edmFQName.getName()))
+      } else if (ASSOCIATION_1_2.getName().equals(edmFQName.getName())) {
         return new Association().setName(ASSOCIATION_1_2.getName())
             .setEnd1(new AssociationEnd().setType(ENTITY_TYPE_1_1).setRole(ROLE_1_1).setMultiplicity(EdmMultiplicity.MANY))
             .setEnd2(new AssociationEnd().setType(ENTITY_TYPE_1_2).setRole(ROLE_1_2).setMultiplicity(EdmMultiplicity.ONE));
-      else if (ASSOCIATION_1_3.getName().equals(edmFQName.getName()))
+      } else if (ASSOCIATION_1_3.getName().equals(edmFQName.getName())) {
         return new Association().setName(ASSOCIATION_1_3.getName())
             .setEnd1(new AssociationEnd().setType(ENTITY_TYPE_1_1).setRole(ROLE_1_1).setMultiplicity(EdmMultiplicity.MANY))
             .setEnd2(new AssociationEnd().setType(ENTITY_TYPE_1_3).setRole(ROLE_1_3).setMultiplicity(EdmMultiplicity.ONE));
-      else if (ASSOCIATION_1_4.getName().equals(edmFQName.getName()))
+      } else if (ASSOCIATION_1_4.getName().equals(edmFQName.getName())) {
         return new Association().setName(ASSOCIATION_1_4.getName())
             .setEnd1(new AssociationEnd().setType(ENTITY_TYPE_1_5).setRole(ROLE_1_5).setMultiplicity(EdmMultiplicity.ONE))
             .setEnd2(new AssociationEnd().setType(ENTITY_TYPE_1_3).setRole(ROLE_1_3).setMultiplicity(EdmMultiplicity.MANY));
+      }
+    }
 
     return null;
   }
 
   @Override
   public EntityContainerInfo getEntityContainerInfo(final String name) throws ODataException {
-    if (name == null || ENTITY_CONTAINER_1.equals(name))
+    if (name == null || ENTITY_CONTAINER_1.equals(name)) {
       return new EntityContainerInfo().setName(ENTITY_CONTAINER_1).setDefaultEntityContainer(true);
-    else if (ENTITY_CONTAINER_2.equals(name))
+    } else if (ENTITY_CONTAINER_2.equals(name)) {
       return new EntityContainerInfo().setName(name).setDefaultEntityContainer(false);
+    }
 
     return null;
   }
@@ -358,27 +363,30 @@ public class ScenarioEdmProvider extends EdmProvider {
   @Override
   public EntitySet getEntitySet(final String entityContainer, final String name) throws ODataException {
     if (ENTITY_CONTAINER_1.equals(entityContainer)) {
-      if (ENTITY_SET_1_1.equals(name))
+      if (ENTITY_SET_1_1.equals(name)) {
         return new EntitySet().setName(name).setEntityType(ENTITY_TYPE_1_1);
-      else if (ENTITY_SET_1_2.equals(name))
+      } else if (ENTITY_SET_1_2.equals(name)) {
         return new EntitySet().setName(name).setEntityType(ENTITY_TYPE_1_2);
-      else if (ENTITY_SET_1_3.equals(name))
+      } else if (ENTITY_SET_1_3.equals(name)) {
         return new EntitySet().setName(name).setEntityType(ENTITY_TYPE_1_3);
-      else if (ENTITY_SET_1_4.equals(name))
+      } else if (ENTITY_SET_1_4.equals(name)) {
         return new EntitySet().setName(name).setEntityType(ENTITY_TYPE_1_4);
-      else if (ENTITY_SET_1_5.equals(name))
+      } else if (ENTITY_SET_1_5.equals(name)) {
         return new EntitySet().setName(name).setEntityType(ENTITY_TYPE_1_5);
+      }
 
-    } else if (ENTITY_CONTAINER_2.equals(entityContainer))
-      if (ENTITY_SET_2_1.equals(name))
+    } else if (ENTITY_CONTAINER_2.equals(entityContainer)) {
+      if (ENTITY_SET_2_1.equals(name)) {
         return new EntitySet().setName(name).setEntityType(ENTITY_TYPE_2_1);
+      }
+    }
 
     return null;
   }
 
   @Override
   public FunctionImport getFunctionImport(final String entityContainer, final String name) throws ODataException {
-    if (ENTITY_CONTAINER_1.equals(entityContainer))
+    if (ENTITY_CONTAINER_1.equals(entityContainer)) {
       if (FUNCTION_IMPORT_1.equals(name)) {
         return new FunctionImport().setName(name)
             .setReturnType(new ReturnType().setTypeName(ENTITY_TYPE_1_1).setMultiplicity(EdmMultiplicity.MANY))
@@ -422,41 +430,45 @@ public class ScenarioEdmProvider extends EdmProvider {
             .setEntitySet(ENTITY_SET_1_1)
             .setHttpMethod("GET");
       }
+    }
 
     return null;
   }
 
   @Override
   public AssociationSet getAssociationSet(final String entityContainer, final FullQualifiedName association, final String sourceEntitySetName, final String sourceEntitySetRole) throws ODataException {
-    if (ENTITY_CONTAINER_1.equals(entityContainer))
-      if (ASSOCIATION_1_1.equals(association))
+    if (ENTITY_CONTAINER_1.equals(entityContainer)) {
+      if (ASSOCIATION_1_1.equals(association)) {
         return new AssociationSet().setName(ASSOCIATION_1_1.getName())
             .setAssociation(ASSOCIATION_1_1)
             .setEnd1(new AssociationSetEnd().setRole(ROLE_1_4).setEntitySet(ENTITY_SET_1_4))
             .setEnd2(new AssociationSetEnd().setRole(ROLE_1_1).setEntitySet(ENTITY_SET_1_1));
-      else if (ASSOCIATION_1_2.equals(association))
+      } else if (ASSOCIATION_1_2.equals(association)) {
         return new AssociationSet().setName(ASSOCIATION_1_2.getName())
             .setAssociation(ASSOCIATION_1_2)
             .setEnd1(new AssociationSetEnd().setRole(ROLE_1_2).setEntitySet(ENTITY_SET_1_2))
             .setEnd2(new AssociationSetEnd().setRole(ROLE_1_1).setEntitySet(ENTITY_SET_1_1));
-      else if (ASSOCIATION_1_3.equals(association))
+      } else if (ASSOCIATION_1_3.equals(association)) {
         return new AssociationSet().setName(ASSOCIATION_1_3.getName())
             .setAssociation(ASSOCIATION_1_3)
             .setEnd1(new AssociationSetEnd().setRole(ROLE_1_3).setEntitySet(ENTITY_SET_1_3))
             .setEnd2(new AssociationSetEnd().setRole(ROLE_1_1).setEntitySet(ENTITY_SET_1_1));
-      else if (ASSOCIATION_1_4.equals(association))
+      } else if (ASSOCIATION_1_4.equals(association)) {
         return new AssociationSet().setName(ASSOCIATION_1_4.getName())
             .setAssociation(ASSOCIATION_1_4)
             .setEnd1(new AssociationSetEnd().setRole(ROLE_1_5).setEntitySet(ENTITY_SET_1_5))
             .setEnd2(new AssociationSetEnd().setRole(ROLE_1_3).setEntitySet(ENTITY_SET_1_3));
+      }
+    }
 
     return null;
   }
 
   private Key getKey(final String... keyNames) {
     List<PropertyRef> keyProperties = new ArrayList<PropertyRef>();
-    for (final String keyName : keyNames)
+    for (final String keyName : keyNames) {
       keyProperties.add(new PropertyRef().setName(keyName));
+    }
     return new Key().setKeys(keyProperties);
   }
 }

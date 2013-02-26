@@ -132,8 +132,9 @@ public class AtomEntityProvider implements ContentTypeBasedEntityProvider {
       ODataResponseBuilder response = ODataResponse.entity(csb.getInputStream())
           .contentHeader(getContentHeader(ContentType.APPLICATION_ATOM_XML_ENTRY))
           .eTag(as.getETag());
-      if (properties.hasLocationHeader())
+      if (properties.hasLocationHeader()) {
         response.header(HttpHeaders.LOCATION, as.getLocation());
+      }
       return response.build();
     } catch (Exception e) {
       throw new EntityProviderException(EntityProviderException.COMMON, e);
@@ -252,12 +253,13 @@ public class AtomEntityProvider implements ContentTypeBasedEntityProvider {
     } catch (IOException e3) {
       throw new EntityProviderException(EntityProviderException.COMMON, e3);
     } finally {
-      if (outStream != null)
+      if (outStream != null) {
         try {
           outStream.close();
         } catch (IOException e) {
           // don't throw in finally!
-        LOG.error(e.getLocalizedMessage(), e);
+          LOG.error(e.getLocalizedMessage(), e);
+        }
       }
     }
 
@@ -287,12 +289,13 @@ public class AtomEntityProvider implements ContentTypeBasedEntityProvider {
     } catch (IOException e3) {
       throw new EntityProviderException(EntityProviderException.COMMON, e3);
     } finally {
-      if (outStream != null)
+      if (outStream != null) {
         try {
           outStream.close();
         } catch (IOException e) {
           // don't throw in finally!
-        LOG.error(e.getLocalizedMessage(), e);
+          LOG.error(e.getLocalizedMessage(), e);
+        }
       }
     }
 

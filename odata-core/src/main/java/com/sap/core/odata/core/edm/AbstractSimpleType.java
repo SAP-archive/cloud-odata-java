@@ -36,10 +36,11 @@ public abstract class AbstractSimpleType implements EdmSimpleType {
   @Override
   public String getName() throws EdmException {
     final String name = getClass().getSimpleName();
-    if (name.startsWith(EDM_NAMESPACE))
+    if (name.startsWith(EDM_NAMESPACE)) {
       return name.substring(3);
-    else
+    } else {
       return name;
+    }
   }
 
   @Override
@@ -68,8 +69,9 @@ public abstract class AbstractSimpleType implements EdmSimpleType {
    * @throws EdmSimpleTypeException  if the metadata constraints are not met
    */
   protected static final void checkNullLiteralAllowed(final EdmFacets facets) throws EdmSimpleTypeException {
-    if (facets != null && facets.isNullable() != null && !facets.isNullable())
+    if (facets != null && facets.isNullable() != null && !facets.isNullable()) {
       throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_NULL_NOT_ALLOWED);
+    }
   }
 
   /**
@@ -78,14 +80,16 @@ public abstract class AbstractSimpleType implements EdmSimpleType {
    * @throws EdmSimpleTypeException  if the metadata constraints are not met
    */
   protected static final String getNullOrDefaultLiteral(final EdmFacets facets) throws EdmSimpleTypeException {
-    if (facets == null)
+    if (facets == null) {
       return null;
-    else if (facets.getDefaultValue() == null)
-      if (facets.isNullable() == null || facets.isNullable())
+    } else if (facets.getDefaultValue() == null) {
+      if (facets.isNullable() == null || facets.isNullable()) {
         return null;
-      else
+      } else {
         throw new EdmSimpleTypeException(EdmSimpleTypeException.VALUE_NULL_NOT_ALLOWED);
-    else
+      }
+    } else {
       return facets.getDefaultValue();
+    }
   }
 }

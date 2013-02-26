@@ -115,8 +115,9 @@ public class UriInfoImpl implements UriInfo {
   }
 
   public void addNavigationSegment(final NavigationSegment navigationSegment) {
-    if (navigationSegments.equals(Collections.EMPTY_LIST))
+    if (navigationSegments.equals(Collections.EMPTY_LIST)) {
       navigationSegments = new ArrayList<NavigationSegment>();
+    }
 
     navigationSegments.add(navigationSegment);
   }
@@ -127,8 +128,9 @@ public class UriInfoImpl implements UriInfo {
   }
 
   public void addProperty(final EdmProperty property) {
-    if (propertyPath.equals(Collections.EMPTY_LIST))
+    if (propertyPath.equals(Collections.EMPTY_LIST)) {
       propertyPath = new ArrayList<EdmProperty>();
+    }
 
     propertyPath.add(property);
   }
@@ -247,8 +249,9 @@ public class UriInfoImpl implements UriInfo {
   }
 
   public void addFunctionImportParameter(final String name, final EdmLiteral value) {
-    if (functionImportParameters.equals(Collections.EMPTY_MAP))
+    if (functionImportParameters.equals(Collections.EMPTY_MAP)) {
       functionImportParameters = new HashMap<String, EdmLiteral>();
+    }
 
     functionImportParameters.put(name, value);
   }

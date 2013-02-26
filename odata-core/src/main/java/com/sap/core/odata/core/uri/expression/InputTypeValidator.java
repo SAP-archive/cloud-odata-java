@@ -17,16 +17,18 @@ public interface InputTypeValidator {
       for (ParameterSet parameterSet : allowedParameterTypes)
       {
         boolean s = parameterSet.equals(actualParameterTypes, false);
-        if (s)
+        if (s) {
           return parameterSet.getReturnType();
+        }
       }
 
       //first check for parameter combination with promotion
       for (ParameterSet parameterSet : allowedParameterTypes)
       {
         boolean s = parameterSet.equals(actualParameterTypes, true);
-        if (s)
+        if (s) {
           return parameterSet.getReturnType();
+        }
       }
       return null;
     }

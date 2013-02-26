@@ -56,16 +56,18 @@ public class TokenList implements Iterator<Token>
 
   public Token lookToken()
   {
-    if (currentToken >= tokens.size())
+    if (currentToken >= tokens.size()) {
       return null;
+    }
 
     return tokens.get(currentToken);
   }
 
   public Token lookPrevToken()
   {
-    if (currentToken - 1 < 0)
+    if (currentToken - 1 < 0) {
       return null;
+    }
 
     return tokens.get(currentToken - 1);
   }
@@ -107,8 +109,9 @@ public class TokenList implements Iterator<Token>
 
     if (comma != actual.getKind())
     {
-      if (throwFilterExpression)
+      if (throwFilterExpression) {
         throw ExpressionParserInternalError.createINVALID_TOKENKIND_AT(comma, actual);
+      }
     }
     return actual;
   }
@@ -138,8 +141,9 @@ public class TokenList implements Iterator<Token>
 
     if (!literal.equals(actual.getUriLiteral()))
     {
-      if (throwInternal)
+      if (throwInternal) {
         throw ExpressionParserInternalError.createINVALID_TOKEN_AT(literal, actual);
+      }
     }
     return actual;
   }
@@ -158,8 +162,9 @@ public class TokenList implements Iterator<Token>
   @Override
   public Token next()
   {
-    if (currentToken >= tokens.size())
+    if (currentToken >= tokens.size()) {
       return null;
+    }
 
     Token ret = tokens.get(currentToken);
     currentToken++;

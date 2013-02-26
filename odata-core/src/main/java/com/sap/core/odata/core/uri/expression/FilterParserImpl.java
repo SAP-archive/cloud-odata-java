@@ -243,7 +243,9 @@ public class FilterParserImpl implements FilterParser
         throw FilterParserExceptionImpl.createCOMMA_OR_CLOSING_PHARENTHESIS_EXPECTED_AFTER_POS(tokenList.lookPrevToken(), curExpression);
       }
       expression = readElement(null);
-      if (expression != null) expression = readElements(expression, 0);
+      if (expression != null) {
+        expression = readElements(expression, 0);
+      }
 
       if ((expression == null) && (expectAnotherExpression == true))
       {
@@ -323,8 +325,9 @@ public class FilterParserImpl implements FilterParser
     Token token;
     Token lookToken;
     lookToken = tokenList.lookToken();
-    if (lookToken == null)
+    if (lookToken == null) {
       return null;
+    }
 
     switch (lookToken.getKind())
     {
@@ -403,8 +406,9 @@ public class FilterParserImpl implements FilterParser
   {
     InfoBinaryOperator operator = null;
     Token token = tokenList.lookToken();
-    if (token == null)
+    if (token == null) {
       return null;
+    }
     if ((token.getKind() == TokenKind.SYMBOL) && (token.getUriLiteral().equals("/")))
     {
       operator = availableBinaryOperators.get(token.getUriLiteral());
@@ -414,8 +418,9 @@ public class FilterParserImpl implements FilterParser
       operator = availableBinaryOperators.get(token.getUriLiteral());
     }
 
-    if (operator == null)
+    if (operator == null) {
       return null;
+    }
 
     return new ActualBinaryOperator(operator, token);
   }
@@ -451,8 +456,9 @@ public class FilterParserImpl implements FilterParser
   protected void validateEdmProperty(final CommonExpression leftExpression, final PropertyExpressionImpl property, final Token propertyToken, final ActualBinaryOperator actBinOp) throws ExpressionParserException, ExpressionParserInternalError {
 
     // Exist if no edm provided
-    if (resourceEntityType == null)
+    if (resourceEntityType == null) {
       return;
+    }
 
     if (leftExpression == null)
     {
@@ -474,12 +480,13 @@ public class FilterParserImpl implements FilterParser
     {
       if ((leftExpression.getKind() != ExpressionKind.PROPERTY) && (leftExpression.getKind() != ExpressionKind.MEMBER))
       {
-        if (actBinOp != null)
+        if (actBinOp != null) {
           //Tested with TestParserExceptions.TestPMvalidateEdmProperty CASE 6
           throw FilterParserExceptionImpl.createLEFT_SIDE_NOT_A_PROPERTY(actBinOp.token, curExpression);
-        else
+        } else {
           // not Tested, should not occur 
           throw ExpressionParserInternalError.createCOMMON();
+        }
 
       }
     }
@@ -579,7 +586,9 @@ public class FilterParserImpl implements FilterParser
     InfoUnaryOperator unOpt = availableUnaryOperators.get(unaryExpression.getOperator().toUriLiteral());
     EdmType operandType = unaryExpression.getOperand().getEdmType();
 
-    if ((operandType == null) && (resourceEntityType == null)) return;
+    if ((operandType == null) && (resourceEntityType == null)) {
+      return;
+    }
 
     List<EdmType> actualParameterTypes = new ArrayList<EdmType>();
     actualParameterTypes.add(operandType);
@@ -598,12 +607,16 @@ public class FilterParserImpl implements FilterParser
     List<EdmType> actualParameterTypes = new ArrayList<EdmType>();
     EdmType operand = binaryExpression.getLeftOperand().getEdmType();
 
-    if ((operand == null) && (resourceEntityType == null)) return;
+    if ((operand == null) && (resourceEntityType == null)) {
+      return;
+    }
     actualParameterTypes.add(operand);
 
     operand = binaryExpression.getRightOperand().getEdmType();
 
-    if ((operand == null) && (resourceEntityType == null)) return;
+    if ((operand == null) && (resourceEntityType == null)) {
+      return;
+    }
     actualParameterTypes.add(operand);
 
     ParameterSet parameterSet = binOpt.validateParameterSet(actualParameterTypes);

@@ -104,7 +104,9 @@ public class TokenTool
 
   public static void dout(final String out)
   {
-    if (debug) log.debug(out);
+    if (debug) {
+      log.debug(out);
+    }
   }
 
   public static void out(final String out)

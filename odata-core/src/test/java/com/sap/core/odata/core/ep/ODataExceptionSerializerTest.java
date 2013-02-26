@@ -120,9 +120,10 @@ public class ODataExceptionSerializerTest extends BaseTest {
     if (locale == null) {
       return "";
     }
-    if (locale.getCountry().isEmpty())
+    if (locale.getCountry().isEmpty()) {
       return locale.getLanguage();
-    else
+    } else {
       return locale.getLanguage() + "-" + locale.getCountry();
+    }
   }
 }

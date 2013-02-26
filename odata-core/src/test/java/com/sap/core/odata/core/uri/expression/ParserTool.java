@@ -48,7 +48,9 @@ public class ParserTool
 
   public static void dout(final String out)
   {
-    if (debug) ParserTool.log.debug(out);
+    if (debug) {
+      ParserTool.log.debug(out);
+    }
   }
 
   public static void out(final String out)
@@ -65,7 +67,9 @@ public class ParserTool
       if (!isOrder)
       {
         FilterParserImplTool parser = new FilterParserImplTool(null);
-        if (addTestfunctions) parser.addTestfunctions();
+        if (addTestfunctions) {
+          parser.addTestfunctions();
+        }
         tree = parser.parseFilterString(expression, allowOnlyBinary).getExpression();
       }
       else
@@ -91,7 +95,9 @@ public class ParserTool
       if (!isOrder)
       {
         FilterParserImplTool parser = new FilterParserImplTool(resourceEntityType);
-        if (addTestfunctions) parser.addTestfunctions();
+        if (addTestfunctions) {
+          parser.addTestfunctions();
+        }
         tree = parser.parseFilterString(expression, allowOnlyBinary).getExpression();
       }
       else
@@ -588,8 +594,9 @@ public class ParserTool
     Character oldChar = null;
     for (char x : charArray)
     {
-      if ((x != ' ') || (oldChar == null) || (oldChar != ' '))
+      if ((x != ' ') || (oldChar == null) || (oldChar != ' ')) {
         ret += x;
+      }
 
       oldChar = x;
     }

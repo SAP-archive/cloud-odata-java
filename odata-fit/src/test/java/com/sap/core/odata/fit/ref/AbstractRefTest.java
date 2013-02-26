@@ -81,8 +81,9 @@ public class AbstractRefTest extends AbstractFitTest {
                 httpMethod == ODataHttpMethod.POST ? new HttpPost() :
                     httpMethod == ODataHttpMethod.PUT ? new HttpPut() : new HttpPatch();
     request.setURI(URI.create(getEndpoint() + uri));
-    if (additionalHeader != null)
+    if (additionalHeader != null) {
       request.addHeader(additionalHeader, additionalHeaderValue);
+    }
     if (requestBody != null) {
       ((HttpEntityEnclosingRequest) request).setEntity(new StringEntity(requestBody));
       request.setHeader(HttpHeaders.CONTENT_TYPE, requestContentType);
@@ -140,8 +141,9 @@ public class AbstractRefTest extends AbstractFitTest {
 
   protected void deleteUri(final String uri, final HttpStatusCodes expectedStatusCode) throws Exception, AssertionError {
     final HttpResponse response = callUri(ODataHttpMethod.DELETE, uri, null, null, null, null, expectedStatusCode);
-    if (expectedStatusCode != HttpStatusCodes.NO_CONTENT)
+    if (expectedStatusCode != HttpStatusCodes.NO_CONTENT) {
       response.getEntity().getContent().close();
+    }
   }
 
   protected void deleteUriOk(final String uri) throws Exception {
@@ -157,8 +159,9 @@ public class AbstractRefTest extends AbstractFitTest {
       final String requestBody, final String requestContentType,
       final HttpStatusCodes expectedStatusCode) throws Exception {
     final HttpResponse response = callUri(ODataHttpMethod.PUT, uri, null, null, requestBody, requestContentType, expectedStatusCode);
-    if (expectedStatusCode != HttpStatusCodes.NO_CONTENT)
+    if (expectedStatusCode != HttpStatusCodes.NO_CONTENT) {
       response.getEntity().getContent().close();
+    }
   }
 
   protected String getBody(final HttpResponse response) throws Exception {

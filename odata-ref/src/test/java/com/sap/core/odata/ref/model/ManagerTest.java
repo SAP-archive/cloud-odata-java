@@ -37,8 +37,9 @@ public class ManagerTest extends BaseTest {
     Manager manager2 = new Manager(3, "Jonathan Smith");
     List<Employee> list = Arrays.asList(manager2, employee, manager);
     manager.getEmployees().addAll(list);
-    for (Employee emp : list)
+    for (Employee emp : list) {
       emp.setManager(manager);
+    }
     assertEquals(list, manager.getEmployees());
     assertEquals(manager, employee.getManager());
   }
@@ -71,8 +72,9 @@ public class ManagerTest extends BaseTest {
     Employee employee2 = new Employee(3, null);
     List<Employee> employeesList = Arrays.asList(employee1, employee2);
     manager.getEmployees().addAll(employeesList);
-    for (Employee emp : employeesList)
+    for (Employee emp : employeesList) {
       emp.setManager(manager);
+    }
     List<Employee> testList = manager.getEmployees();
     assertEquals(testList, employeesList);
     assertEquals(manager, employee1.getManager());

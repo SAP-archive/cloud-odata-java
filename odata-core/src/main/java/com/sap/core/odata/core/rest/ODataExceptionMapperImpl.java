@@ -142,10 +142,11 @@ public class ODataExceptionMapperImpl implements ExceptionMapper<Exception> {
   private Response buildResponseInternal(final InputStream entity, final ContentType contentType, final int status) {
     ResponseBuilder responseBuilder = Response.status(status).entity(entity).header(ODataHttpHeaders.DATASERVICEVERSION, ODataServiceVersion.V10);
 
-    if (contentType.getODataFormat() == ODataFormat.JSON)
+    if (contentType.getODataFormat() == ODataFormat.JSON) {
       return responseBuilder.type(MediaType.APPLICATION_JSON_TYPE).build();
-    else
+    } else {
       return responseBuilder.type(MediaType.APPLICATION_XML_TYPE).build();
+    }
   }
 
   private int extractStatus(final ODataException exception) {

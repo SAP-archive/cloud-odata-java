@@ -80,13 +80,15 @@ public class EdmSimpleTypeTest extends BaseTest {
 
   @Test
   public void testKind() throws Exception {
-    for (EdmSimpleTypeKind kind : EdmSimpleTypeKind.values())
+    for (EdmSimpleTypeKind kind : EdmSimpleTypeKind.values()) {
       assertEquals(EdmTypeKind.SIMPLE, kind.getEdmSimpleTypeInstance().getKind());
+    }
   }
 
   private void testCompatibility(final EdmSimpleType type, final EdmSimpleType... edmSimpleTypes) {
-    for (EdmSimpleType compatible : edmSimpleTypes)
+    for (EdmSimpleType compatible : edmSimpleTypes) {
       assertTrue(type.isCompatible(compatible));
+    }
   }
 
   @Test
@@ -354,8 +356,9 @@ public class EdmSimpleTypeTest extends BaseTest {
   @Test
   public void checkNull() throws Exception {
     for (EdmSimpleTypeKind kind : EdmSimpleTypeKind.values()) {
-      if (kind == EdmSimpleTypeKind.Null)
+      if (kind == EdmSimpleTypeKind.Null) {
         continue;
+      }
       final EdmSimpleType instance = kind.getEdmSimpleTypeInstance();
       assertNull(instance.valueToString(null, EdmLiteralKind.DEFAULT, null));
       assertNull(instance.valueToString(null, EdmLiteralKind.DEFAULT, getNullableFacets(true)));
@@ -796,8 +799,9 @@ public class EdmSimpleTypeTest extends BaseTest {
   @Test
   public void checkValueOfNull() throws Exception {
     for (EdmSimpleTypeKind kind : EdmSimpleTypeKind.values()) {
-      if (kind == EdmSimpleTypeKind.Null)
+      if (kind == EdmSimpleTypeKind.Null) {
         continue;
+      }
       final EdmSimpleType instance = kind.getEdmSimpleTypeInstance();
       assertNull(instance.valueOfString(null, EdmLiteralKind.DEFAULT, null, instance.getDefaultType()));
       assertNull(instance.valueOfString(null, EdmLiteralKind.DEFAULT, getNullableFacets(true), instance.getDefaultType()));
@@ -1286,8 +1290,9 @@ public class EdmSimpleTypeTest extends BaseTest {
   @Test
   public void validate() throws Exception {
     for (EdmSimpleTypeKind kind : EdmSimpleTypeKind.values()) {
-      if (kind == EdmSimpleTypeKind.Null)
+      if (kind == EdmSimpleTypeKind.Null) {
         continue;
+      }
       final EdmSimpleType instance = kind.getEdmSimpleTypeInstance();
       assertTrue(instance.validate(null, null, null));
       assertTrue(instance.validate(null, null, getNullableFacets(null)));

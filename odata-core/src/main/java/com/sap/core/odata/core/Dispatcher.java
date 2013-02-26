@@ -40,10 +40,11 @@ public class Dispatcher {
   public ODataResponse dispatch(final ODataHttpMethod method, final UriInfoImpl uriInfo, final InputStream content, final String requestContentType, final String contentType) throws ODataException {
     switch (uriInfo.getUriType()) {
     case URI0:
-      if (method == ODataHttpMethod.GET)
+      if (method == ODataHttpMethod.GET) {
         return service.getServiceDocumentProcessor().readServiceDocument(uriInfo, contentType);
-      else
+      } else {
         throw new ODataMethodNotAllowedException(ODataMethodNotAllowedException.DISPATCH);
+      }
 
     case URI1:
     case URI6B:
@@ -88,22 +89,25 @@ public class Dispatcher {
     case URI5:
       switch (method) {
       case GET:
-        if (uriInfo.isValue())
+        if (uriInfo.isValue()) {
           return service.getEntitySimplePropertyValueProcessor().readEntitySimplePropertyValue(uriInfo, contentType);
-        else
+        } else {
           return service.getEntitySimplePropertyProcessor().readEntitySimpleProperty(uriInfo, contentType);
+        }
       case PUT:
       case PATCH:
       case MERGE:
-        if (uriInfo.isValue())
+        if (uriInfo.isValue()) {
           return service.getEntitySimplePropertyValueProcessor().updateEntitySimplePropertyValue(uriInfo, content, requestContentType, contentType);
-        else
+        } else {
           return service.getEntitySimplePropertyProcessor().updateEntitySimpleProperty(uriInfo, content, requestContentType, contentType);
+        }
       case DELETE:
-        if (uriInfo.isValue())
+        if (uriInfo.isValue()) {
           return service.getEntitySimplePropertyValueProcessor().deleteEntitySimplePropertyValue(uriInfo, contentType);
-        else
+        } else {
           throw new ODataMethodNotAllowedException(ODataMethodNotAllowedException.DISPATCH);
+        }
       default:
         throw new ODataMethodNotAllowedException(ODataMethodNotAllowedException.DISPATCH);
       }
@@ -146,16 +150,18 @@ public class Dispatcher {
       }
 
     case URI8:
-      if (method == ODataHttpMethod.GET)
+      if (method == ODataHttpMethod.GET) {
         return service.getMetadataProcessor().readMetadata(uriInfo, contentType);
-      else
+      } else {
         throw new ODataMethodNotAllowedException(ODataMethodNotAllowedException.DISPATCH);
+      }
 
     case URI9:
-      if (method == ODataHttpMethod.POST)
+      if (method == ODataHttpMethod.POST) {
         return service.getBatchProcessor().executeBatch(contentType);
-      else
+      } else {
         throw new ODataMethodNotAllowedException(ODataMethodNotAllowedException.DISPATCH);
+      }
 
     case URI10:
     case URI11:
@@ -164,22 +170,25 @@ public class Dispatcher {
       return service.getFunctionImportProcessor().executeFunctionImport(uriInfo, contentType);
 
     case URI14:
-      if (uriInfo.isValue())
+      if (uriInfo.isValue()) {
         return service.getFunctionImportValueProcessor().executeFunctionImportValue(uriInfo, contentType);
-      else
+      } else {
         return service.getFunctionImportProcessor().executeFunctionImport(uriInfo, contentType);
+      }
 
     case URI15:
-      if (method == ODataHttpMethod.GET)
+      if (method == ODataHttpMethod.GET) {
         return service.getEntitySetProcessor().countEntitySet(uriInfo, contentType);
-      else
+      } else {
         throw new ODataMethodNotAllowedException(ODataMethodNotAllowedException.DISPATCH);
+      }
 
     case URI16:
-      if (method == ODataHttpMethod.GET)
+      if (method == ODataHttpMethod.GET) {
         return service.getEntityProcessor().existsEntity(uriInfo, contentType);
-      else
+      } else {
         throw new ODataMethodNotAllowedException(ODataMethodNotAllowedException.DISPATCH);
+      }
 
     case URI17:
       switch (method) {
@@ -194,16 +203,18 @@ public class Dispatcher {
       }
 
     case URI50A:
-      if (method == ODataHttpMethod.GET)
+      if (method == ODataHttpMethod.GET) {
         return service.getEntityLinkProcessor().existsEntityLink(uriInfo, contentType);
-      else
+      } else {
         throw new ODataMethodNotAllowedException(ODataMethodNotAllowedException.DISPATCH);
+      }
 
     case URI50B:
-      if (method == ODataHttpMethod.GET)
+      if (method == ODataHttpMethod.GET) {
         return service.getEntityLinksProcessor().countEntityLinks(uriInfo, contentType);
-      else
+      } else {
         throw new ODataMethodNotAllowedException(ODataMethodNotAllowedException.DISPATCH);
+      }
 
     default:
       throw new ODataRuntimeException("Unknown or not implemented URI type: " + uriInfo.getUriType());

@@ -56,11 +56,13 @@ public class XmlLinkEntityProducer {
     String keys = "";
 
     for (final EntityPropertyInfo keyPropertyInfo : keyPropertyInfos) {
-      if (!keys.isEmpty())
+      if (!keys.isEmpty()) {
         keys += ",";
+      }
 
-      if (keyPropertyInfos.size() > 1)
+      if (keyPropertyInfos.size() > 1) {
         keys += Encoder.encode(keyPropertyInfo.getName()) + "=";
+      }
 
       final EdmSimpleType type = (EdmSimpleType) keyPropertyInfo.getType();
       try {

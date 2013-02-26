@@ -47,16 +47,18 @@ public class EntryMetadataImpl implements EntryMetadata {
   @Override
   public List<String> getAssociationUris(final String navigationPropertyName) {
     final List<String> uris = associationUris.get(navigationPropertyName);
-    if (uris == null)
+    if (uris == null) {
       return Collections.emptyList();
-    else
+    } else {
       return Collections.unmodifiableList(uris);
+    }
   }
 
   public void putAssociationUri(final String navigationPropertyName, final String uri) {
     List<String> uris = associationUris.get(navigationPropertyName);
-    if (uris == null)
+    if (uris == null) {
       uris = new ArrayList<String>();
+    }
     uris.add(uri);
     associationUris.put(navigationPropertyName, uris);
   }

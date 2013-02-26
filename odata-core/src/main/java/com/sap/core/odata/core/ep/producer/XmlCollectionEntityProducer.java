@@ -20,11 +20,13 @@ public class XmlCollectionEntityProducer {
     try {
       writer.writeStartElement(propertyInfo.getName());
       writer.writeDefaultNamespace(Edm.NAMESPACE_D_2007_08);
-      if (propertyInfo.isComplex())
+      if (propertyInfo.isComplex()) {
         writer.writeNamespace(Edm.PREFIX_M, Edm.NAMESPACE_M_2007_08);
+      }
       XmlPropertyEntityProducer provider = new XmlPropertyEntityProducer();
-      for (final Object propertyData : data)
+      for (final Object propertyData : data) {
         provider.append(writer, FormatXml.D_ELEMENT, propertyInfo, propertyData);
+      }
       writer.writeEndElement();
       writer.flush();
     } catch (XMLStreamException e) {

@@ -42,66 +42,78 @@ public class EdmInt64 extends AbstractSimpleType {
       return null;
     }
 
-    if (literalKind == null)
+    if (literalKind == null) {
       throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_KIND_MISSING);
+    }
 
     Long valueLong;
     try {
-      if (literalKind == EdmLiteralKind.URI)
-        if (value.endsWith("L") || value.endsWith("l"))
+      if (literalKind == EdmLiteralKind.URI) {
+        if (value.endsWith("L") || value.endsWith("l")) {
           valueLong = Long.parseLong(value.substring(0, value.length() - 1));
-        else
+        } else {
           throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_ILLEGAL_CONTENT.addContent(value));
-      else
+        }
+      } else {
         valueLong = Long.parseLong(value);
+      }
     } catch (NumberFormatException e) {
       throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_ILLEGAL_CONTENT.addContent(value), e);
     }
 
-    if (returnType.isAssignableFrom(Long.class))
+    if (returnType.isAssignableFrom(Long.class)) {
       return returnType.cast(valueLong);
-    else if (returnType.isAssignableFrom(Byte.class))
-      if (valueLong >= Byte.MIN_VALUE && valueLong <= Byte.MAX_VALUE)
+    } else if (returnType.isAssignableFrom(Byte.class)) {
+      if (valueLong >= Byte.MIN_VALUE && valueLong <= Byte.MAX_VALUE) {
         return returnType.cast(valueLong.byteValue());
-      else
+      } else {
         throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_UNCONVERTIBLE_TO_VALUE_TYPE.addContent(value, returnType));
-    else if (returnType.isAssignableFrom(Short.class))
-      if (valueLong >= Short.MIN_VALUE && valueLong <= Short.MAX_VALUE)
+      }
+    } else if (returnType.isAssignableFrom(Short.class)) {
+      if (valueLong >= Short.MIN_VALUE && valueLong <= Short.MAX_VALUE) {
         return returnType.cast(valueLong.shortValue());
-      else
+      } else {
         throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_UNCONVERTIBLE_TO_VALUE_TYPE.addContent(value, returnType));
-    else if (returnType.isAssignableFrom(Integer.class))
-      if (valueLong >= Integer.MIN_VALUE && valueLong <= Integer.MAX_VALUE)
+      }
+    } else if (returnType.isAssignableFrom(Integer.class)) {
+      if (valueLong >= Integer.MIN_VALUE && valueLong <= Integer.MAX_VALUE) {
         return returnType.cast(valueLong.intValue());
-      else
+      } else {
         throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_UNCONVERTIBLE_TO_VALUE_TYPE.addContent(value, returnType));
-    else if (returnType.isAssignableFrom(BigInteger.class))
+      }
+    } else if (returnType.isAssignableFrom(BigInteger.class)) {
       return returnType.cast(BigInteger.valueOf(valueLong));
-    else
+    } else {
       throw new EdmSimpleTypeException(EdmSimpleTypeException.VALUE_TYPE_NOT_SUPPORTED.addContent(returnType));
+    }
   }
 
   @Override
   public String valueToString(final Object value, final EdmLiteralKind literalKind, final EdmFacets facets) throws EdmSimpleTypeException {
-    if (value == null)
+    if (value == null) {
       return getNullOrDefaultLiteral(facets);
+    }
 
-    if (literalKind == null)
+    if (literalKind == null) {
       throw new EdmSimpleTypeException(EdmSimpleTypeException.LITERAL_KIND_MISSING);
+    }
 
     String result;
-    if (value instanceof Byte || value instanceof Short || value instanceof Integer || value instanceof Long)
+    if (value instanceof Byte || value instanceof Short || value instanceof Integer || value instanceof Long) {
       result = value.toString();
-    else if (value instanceof BigInteger)
-      if (((BigInteger) value).bitLength() < Long.SIZE) // "<" because of the sign bit
+    } else if (value instanceof BigInteger) {
+      if (((BigInteger) value).bitLength() < Long.SIZE) {
         result = value.toString();
-      else
+      } else {
         throw new EdmSimpleTypeException(EdmSimpleTypeException.VALUE_ILLEGAL_CONTENT.addContent(value));
-    else
+      }
+    } else {
       throw new EdmSimpleTypeException(EdmSimpleTypeException.VALUE_TYPE_NOT_SUPPORTED.addContent(value.getClass()));
+    }
 
-    if (literalKind == EdmLiteralKind.URI)
+    if (literalKind == EdmLiteralKind.URI) {
       result = toUriLiteral(result);
+    }
 
     return result;
   }
