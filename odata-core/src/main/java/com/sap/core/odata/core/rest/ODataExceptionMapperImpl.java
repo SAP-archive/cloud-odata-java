@@ -162,7 +162,7 @@ public class ODataExceptionMapperImpl implements ExceptionMapper<Exception> {
   }
 
   private Message extractEntity(final MessageReference context) {
-    final Locale locale = MessageService.getSupportedLocale(getLanguages());
+    final Locale locale = MessageService.getSupportedLocale(getLanguages(), DEFAULT_RESPONSE_LOCALE);
     return MessageService.getMessage(locale, context);
   }
 

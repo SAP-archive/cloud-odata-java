@@ -5,14 +5,12 @@ import static org.custommonkey.xmlunit.XMLAssert.assertXpathExists;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
-import static org.junit.Assert.*;
 
 import java.io.IOException;
 import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.http.Header;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.methods.HttpGet;
@@ -20,7 +18,6 @@ import org.custommonkey.xmlunit.SimpleNamespaceContext;
 import org.custommonkey.xmlunit.XMLUnit;
 import org.custommonkey.xmlunit.exceptions.XpathException;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.xml.sax.SAXException;
 
@@ -57,7 +54,6 @@ public class LanguageNegotiationTest extends AbstractBasicTest {
   }
 
   @Test
-  @Ignore("no bundle for locale es => NPE in exception mapper")
   public void issue_ODATAFORSAP_61() throws ClientProtocolException, IOException, XpathException, SAXException {
     final HttpGet get = new HttpGet(URI.create(getEndpoint().toString() + "$metadata"));
     get.setHeader(HttpHeaders.ACCEPT_LANGUAGE, "es");
