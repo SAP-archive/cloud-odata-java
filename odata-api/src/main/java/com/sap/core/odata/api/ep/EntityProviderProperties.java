@@ -2,7 +2,6 @@ package com.sap.core.odata.api.ep;
 
 import java.net.URI;
 
-import com.sap.core.odata.api.commons.HttpHeaders;
 import com.sap.core.odata.api.commons.InlineCount;
 import com.sap.core.odata.api.ep.entry.ODataEntry;
 
@@ -17,7 +16,6 @@ public class EntityProviderProperties {
   private InlineCount inlineCountType;
   private Integer inlineCount;
   private String nextLink;
-  private boolean hasLocationHeader;
 
   private EntityProviderProperties() {}
 
@@ -60,14 +58,6 @@ public class EntityProviderProperties {
    */
   public final String getNextLink() {
     return nextLink;
-  }
-
-  /**
-   * Gets the option whether the response should have a Location HTTP header
-   * with the canonical URI of the entity.
-   */
-  public final boolean hasLocationHeader() {
-    return hasLocationHeader;
   }
 
   public static ODataEntityProviderPropertiesBuilder serviceRoot(final URI serviceRoot) {
@@ -114,15 +104,6 @@ public class EntityProviderProperties {
      */
     public ODataEntityProviderPropertiesBuilder nextLink(final String nextLink) {
       properties.nextLink = nextLink;
-      return this;
-    }
-
-    /**
-     * Requests that the response will have a Location HTTP header with the canonical URI of the entity.
-     * @see HttpHeaders#LOCATION
-     */
-    public ODataEntityProviderPropertiesBuilder hasLocationHeader() {
-      properties.hasLocationHeader = true;
       return this;
     }
 

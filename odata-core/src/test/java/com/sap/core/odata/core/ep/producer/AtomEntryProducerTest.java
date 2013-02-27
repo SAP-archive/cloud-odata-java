@@ -22,7 +22,6 @@ import org.custommonkey.xmlunit.exceptions.XpathException;
 import org.junit.Test;
 import org.xml.sax.SAXException;
 
-import com.sap.core.odata.api.commons.HttpHeaders;
 import com.sap.core.odata.api.edm.Edm;
 import com.sap.core.odata.api.edm.EdmCustomizableFeedMappings;
 import com.sap.core.odata.api.edm.EdmEntitySet;
@@ -183,7 +182,7 @@ public class AtomEntryProducerTest extends AbstractProviderTest {
 
   @Test
   public void serializeAtomEntry() throws IOException, XpathException, SAXException, XMLStreamException, FactoryConfigurationError, ODataException {
-    final EntityProviderProperties properties = EntityProviderProperties.serviceRoot(BASE_URI).hasLocationHeader().build();
+    final EntityProviderProperties properties = EntityProviderProperties.serviceRoot(BASE_URI).build();
     AtomEntityProvider ser = createAtomEntityProvider();
     ODataResponse response = ser.writeEntry(MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Rooms"), roomData, properties);
     String xmlString = verifyResponse(response);
@@ -195,8 +194,6 @@ public class AtomEntryProducerTest extends AbstractProviderTest {
     assertXpathEvaluatesTo(ContentType.APPLICATION_XML.toString(), "/a:entry/a:content/@type", xmlString);
 
     assertXpathExists("/a:entry/a:content/m:properties", xmlString);
-
-    assertEquals(BASE_URI + "Rooms('1')", response.getHeader(HttpHeaders.LOCATION));
   }
 
   @Test
