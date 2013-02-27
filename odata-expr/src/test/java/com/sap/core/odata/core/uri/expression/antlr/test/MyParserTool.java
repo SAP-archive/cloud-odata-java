@@ -14,14 +14,14 @@ public class MyParserTool {
   private final CommonExpression tree;
   private final CommonExpression curNode;
 
-  public MyParserTool(String expression, CommonExpression tree) {
+  public MyParserTool(final String expression, final CommonExpression tree) {
     this.expression = expression;
     this.tree = tree;
     curNode = this.tree;
 
   }
 
-  public MyParserTool aSerialized(String expected) {
+  public MyParserTool aSerialized(final String expected) {
     String actual = null;
     final ExpressionVisitor visitor = new MyVisitorTool();
     try {
@@ -40,12 +40,12 @@ public class MyParserTool {
 
   }
 
-  public MyParserTool aSerializedCompr(String expected) {
+  public MyParserTool aSerializedCompr(final String expected) {
     aSerialized(compress(expected));
     return this;
   }
 
-  static public String compress(String expression) {
+  static public String compress(final String expression) {
     String ret = "";
     final char[] charArray = expression.trim().toCharArray();
     Character oldChar = null;
@@ -61,7 +61,7 @@ public class MyParserTool {
     return ret;
   }
 
-  MyParserTool aKind(ExpressionKind kind) {
+  MyParserTool aKind(final ExpressionKind kind) {
     final String info = "GetInfoKind(" + expression + ")-->";
     // dout("  " + info + "Expected: " + kind.toString() + " Actual: " + curNode.getKind().toString());
 

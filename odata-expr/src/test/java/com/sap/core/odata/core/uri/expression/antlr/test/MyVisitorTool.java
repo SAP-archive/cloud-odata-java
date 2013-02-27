@@ -22,22 +22,22 @@ import com.sap.core.odata.api.uri.expression.UnaryOperator;
 public class MyVisitorTool implements ExpressionVisitor {
 
   @Override
-  public Object visitBinary(BinaryExpression binaryExpression, BinaryOperator operator, Object leftSide, Object rightSide) {
+  public Object visitBinary(final BinaryExpression binaryExpression, final BinaryOperator operator, final Object leftSide, final Object rightSide) {
     return "{" + leftSide.toString() + " " + operator.toUriLiteral() + " " + rightSide.toString() + "}";
   }
 
   @Override
-  public Object visitFilterExpression(FilterExpression filterExpression, String expressionString, Object expression) {
+  public Object visitFilterExpression(final FilterExpression filterExpression, final String expressionString, final Object expression) {
     return expression;
   }
 
   @Override
-  public Object visitLiteral(LiteralExpression literal, EdmLiteral edmLiteral) {
+  public Object visitLiteral(final LiteralExpression literal, final EdmLiteral edmLiteral) {
     return "" + literal.getUriLiteral() + "";
   }
 
   @Override
-  public Object visitMethod(MethodExpression methodExpression, MethodOperator method, List<Object> retParameters) {
+  public Object visitMethod(final MethodExpression methodExpression, final MethodOperator method, final List<Object> retParameters) {
     final StringBuilder sb = new StringBuilder();
     sb.append("{");
     sb.append(method.toUriLiteral());
@@ -56,22 +56,22 @@ public class MyVisitorTool implements ExpressionVisitor {
   }
 
   @Override
-  public Object visitMember(MemberExpression memberExpression, Object source, Object path) {
+  public Object visitMember(final MemberExpression memberExpression, final Object source, final Object path) {
     return "{" + source.toString() + "/" + path.toString() + "}";
   }
 
   @Override
-  public Object visitProperty(PropertyExpression literal, String uriLiteral, EdmTyped edmProperty) {
+  public Object visitProperty(final PropertyExpression literal, final String uriLiteral, final EdmTyped edmProperty) {
     return uriLiteral;
   }
 
   @Override
-  public Object visitUnary(UnaryExpression unaryExpression, UnaryOperator operator, Object operand) {
+  public Object visitUnary(final UnaryExpression unaryExpression, final UnaryOperator operator, final Object operand) {
     return "{" + operator.toUriLiteral() + " " + operand.toString() + "}";
   }
 
   @Override
-  public Object visitOrderByExpression(OrderByExpression orderByExpression, String expressionString, List<Object> orders) {
+  public Object visitOrderByExpression(final OrderByExpression orderByExpression, final String expressionString, final List<Object> orders) {
     final StringBuilder sb = new StringBuilder();
     sb.append("{");
     sb.append("oc");
@@ -90,7 +90,7 @@ public class MyVisitorTool implements ExpressionVisitor {
   }
 
   @Override
-  public Object visitOrder(OrderExpression orderExpression, Object filterResult, SortOrder sortOrder) {
+  public Object visitOrder(final OrderExpression orderExpression, final Object filterResult, final SortOrder sortOrder) {
     return "{o(" + filterResult + ", " + sortOrder.toString() + ")}";
   }
 }

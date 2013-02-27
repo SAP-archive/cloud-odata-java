@@ -135,7 +135,7 @@ public class ParserTest {
     getParserFilter("(true and (id eq (6 div 2)) or substringof('te',concat('t','est')))").aSerialized("{{true and {id eq {6 div 2}}} or {substringof('te',{concat('t','est')})}}");
   }
 
-  static public MyParserTool getParserFilter(String expression) throws RecognitionException {
+  static public MyParserTool getParserFilter(final String expression) throws RecognitionException {
     final ANTLRStringStream input = new ANTLRStringStream(expression);
     final ODataFilter4Lexer lexer = new ODataFilter4Lexer(input);
     final CommonTokenStream tokens = new CommonTokenStream(lexer);

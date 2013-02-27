@@ -12,7 +12,7 @@ public class TestUtilException extends RuntimeException {
    */
   private static final long serialVersionUID = 1L;
 
-  public TestUtilException(Throwable e) {
+  public TestUtilException(final Throwable e) {
     super(e);
   }
 

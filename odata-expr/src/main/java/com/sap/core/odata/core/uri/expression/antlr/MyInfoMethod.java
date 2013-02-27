@@ -16,7 +16,7 @@ class MyInfoMethod {
   public int maxParameter;
   ParameterSetCombination combination;
 
-  public MyInfoMethod(MethodOperator method, String syntax, ParameterSetCombination combination) {
+  public MyInfoMethod(final MethodOperator method, final String syntax, final ParameterSetCombination combination) {
     this.method = method;
     this.syntax = syntax;
     minParameter = 1;
@@ -24,7 +24,7 @@ class MyInfoMethod {
     this.combination = combination;
   }
 
-  public MyInfoMethod(MethodOperator method, String syntax, int minParameters, int maxParameters, ParameterSetCombination combination) {
+  public MyInfoMethod(final MethodOperator method, final String syntax, final int minParameters, final int maxParameters, final ParameterSetCombination combination) {
     this.method = method;
     this.syntax = syntax;
     minParameter = minParameters;
