@@ -82,16 +82,6 @@ public class JPAEdmAssociationTest extends JPAEdmTestModelView {
 	public void testGetBuilder() throws ODataJPAModelException,
 			SecurityException, NoSuchFieldException, IllegalArgumentException,
 			IllegalAccessException, ClassNotFoundException {
-		/*
-		 * JPAEdmReferentialConstraint refConstraintView = new
-		 * JPAEdmReferentialConstraint(localView, localView, localView);
-		 * Class<?> clazz = Class.forName(
-		 * "com.sap.core.odata.processor.jpa.model.JPAEdmReferentialConstraint"
-		 * ); Field f = clazz.getField("exists"); f.setAccessible(true);
-		 * f.set(refConstraintView, true);
-		 * objAssociation.addJPAEdmRefConstraintView(refConstraintView);
-		 * objAssociation.getBuilder().build();
-		 */
 		assertNotNull(objAssociation.getBuilder());
 	}
 

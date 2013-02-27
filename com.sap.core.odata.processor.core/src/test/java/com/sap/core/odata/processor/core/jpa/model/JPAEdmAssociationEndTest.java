@@ -142,11 +142,6 @@ public class JPAEdmAssociationEndTest extends JPAEdmTestModelView {
 			return (Class<String>) SimpleType.SimpleTypeA.clazz;
 		}
 
-		/*@Override
-		public java.lang.String getName() {
-			return SimpleType.SimpleTypeA.NAME;
-		}*/
-
 		@Override
 		public PersistentAttributeType getPersistentAttributeType() {
 			if (variant == VARIANT1)
@@ -159,8 +154,6 @@ public class JPAEdmAssociationEndTest extends JPAEdmTestModelView {
 				return PersistentAttributeType.MANY_TO_MANY;
 		
 		}
-
-		
 	}
 
 }

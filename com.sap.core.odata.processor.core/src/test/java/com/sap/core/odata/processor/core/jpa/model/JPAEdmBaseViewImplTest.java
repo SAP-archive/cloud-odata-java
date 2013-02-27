@@ -10,7 +10,6 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.sap.core.odata.processor.api.jpa.access.JPAEdmBuilder;
-import com.sap.core.odata.processor.api.jpa.access.JPAEdmMappingModelAccess;
 import com.sap.core.odata.processor.core.jpa.mock.model.JPAMetaModelMock;
 
 public class JPAEdmBaseViewImplTest extends JPAEdmTestModelView{
@@ -37,13 +36,6 @@ public class JPAEdmBaseViewImplTest extends JPAEdmTestModelView{
 			}
 		};
 		
-		/*objJPAEdmBaseViewImpl = new JPAEdmBaseViewImpl(this) {
-			
-			@Override
-			public JPAEdmBuilder getBuilder() {
-				return null;
-			}
-		};*/
 	}
 
 	@Test
@@ -77,11 +69,5 @@ public class JPAEdmBaseViewImplTest extends JPAEdmTestModelView{
 		return new JPAMetaModelMock();
 	}
 
-	@Override
-	public JPAEdmMappingModelAccess getJPAEdmMappingModelAccess() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-	
 
 }

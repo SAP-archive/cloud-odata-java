@@ -45,14 +45,11 @@ public class JPAEdmAssociationSetTest extends JPAEdmTestModelView {
 	@Test
 	public void testGetConsistentEdmAssociationSetList() {
 		assertNotNull(objJPAEdmAssociationSet.getConsistentEdmAssociationSetList());
-		//assertTrue(objJPAEdmAssociationSet.getConsistentEdmAssociationSetList().size() > 0);
 	}
 
 	@Test
 	public void testGetEdmAssociationSet() throws ODataJPAModelException {
 		assertNotNull(objJPAEdmAssociationSet.getEdmAssociationSet());
-		//assertNotNull(objJPAEdmAssociationSet.getEdmAssociationSet().getEnd1());
-		//assertNotNull(objJPAEdmAssociationSet.getEdmAssociationSet().getEnd2());
 	}
 
 	@Test
@@ -93,9 +90,6 @@ public class JPAEdmAssociationSetTest extends JPAEdmTestModelView {
 		AssociationSet associationSet = new AssociationSet();
 		associationSet.setEnd1(new AssociationSetEnd());
 		associationSet.setEnd2(new AssociationSetEnd());
-		
-		//associationSet.setEnd1(new AssociationEnd().setType(new FullQualifiedName("salesorderprocessing", "String")).setRole("SalesOrderHeader"));
-		//associationSet.setEnd2(new AssociationEnd().setType(new FullQualifiedName("salesorderprocessing", "SalesOrderItem")).setRole("SalesOrderItem"));
 		
 		return associationSet;
 	}

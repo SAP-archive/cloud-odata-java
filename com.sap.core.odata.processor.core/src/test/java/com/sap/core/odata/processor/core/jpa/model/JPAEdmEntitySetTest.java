@@ -47,8 +47,6 @@ public class JPAEdmEntitySetTest extends JPAEdmTestModelView{
 	@Test
 	public void testGetEdmEntitySet() {
 		assertNotNull(objJPAEdmEntitySet.getEdmEntitySet());
-		//assertTrue(objJPAEdmEntitySet.getEdmEntitySet().getAnnotationAttributes().size() > 0);
-		//assertTrue(objJPAEdmEntitySet.getEdmEntitySet().getAnnotationElements().size() > 0);
 		assertNotNull(objJPAEdmEntitySet.getEdmEntitySet().getEntityType());
 	}
 	

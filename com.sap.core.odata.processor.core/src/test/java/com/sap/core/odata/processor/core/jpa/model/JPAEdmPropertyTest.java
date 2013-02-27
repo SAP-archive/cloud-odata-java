@@ -317,12 +317,6 @@ public class JPAEdmPropertyTest extends JPAEdmTestModelView {
 							java.lang.String.class, "SONAME"));
 		}
 
-		/*
-		 * @Override public Attribute<? super Object, ?>
-		 * getAttribute(java.lang.String arg0) { return
-		 * super.getAttribute(arg0); }
-		 */
-
 		@Override
 		public Set<Attribute<? super String, ?>> getAttributes() {
 			setValuesToSet();

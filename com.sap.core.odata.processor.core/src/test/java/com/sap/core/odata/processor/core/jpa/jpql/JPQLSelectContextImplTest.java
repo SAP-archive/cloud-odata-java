@@ -386,11 +386,11 @@ public class JPQLSelectContextImplTest {
 		FilterExpression filterExpression = EasyMock
 				.createMock(FilterExpression.class);
 		EasyMock.expect(filterExpression.getKind())
-				.andReturn(ExpressionKind.FILTER).times(10);
+				.andStubReturn(ExpressionKind.FILTER);
 		EasyMock.expect(filterExpression.getExpression())
-				.andReturn(
+				.andStubReturn(
 						getPropertyExpressionMockedObj(leftOperandExpKind,
-								propertyName)).times(10);
+								propertyName));
 		EasyMock.replay(filterExpression);
 		return filterExpression;
 	}

@@ -28,7 +28,6 @@ public class JPATypeConvertorTest {
 	private EdmSimpleTypeKind edmSimpleKindTypeByte;
 	private EdmSimpleTypeKind edmSimpleKindTypeBoolean;
 	private EdmSimpleTypeKind edmSimpleKindTypeDate;
-	// private EdmSimpleTypeKind edmSimpleKindTypeCalendar;
 	private EdmSimpleTypeKind edmSimpleKindTypeUUID;
 
 	@Test
@@ -44,7 +43,6 @@ public class JPATypeConvertorTest {
 		Byte byteObj = new Byte((byte) 0);
 		Boolean booleanObj = Boolean.TRUE;
 		Date dateObj = Calendar.getInstance().getTime();
-		// Calendar cal = Calendar.getInstance();
 		UUID uUID = new UUID(0, 0);
 
 		try {
@@ -70,8 +68,6 @@ public class JPATypeConvertorTest {
 					.convertToEdmSimpleType(booleanObj.getClass());
 			edmSimpleKindTypeDate = JPATypeConvertor
 					.convertToEdmSimpleType(dateObj.getClass());
-			// edmSimpleKindTypeCalendar =
-			// JPATypeConvertor.convertToEdmSimpleType(cal.getClass());
 			edmSimpleKindTypeUUID = JPATypeConvertor
 					.convertToEdmSimpleType(uUID.getClass());
 		} catch (ODataJPAModelException e) {
@@ -92,7 +88,6 @@ public class JPATypeConvertorTest {
 		assertEquals(EdmSimpleTypeKind.Byte, edmSimpleKindTypeByte);
 		assertEquals(EdmSimpleTypeKind.Boolean, edmSimpleKindTypeBoolean);
 		assertEquals(EdmSimpleTypeKind.DateTime, edmSimpleKindTypeDate);
-		// assertEquals(EdmSimpleTypeKind.DateTime, edmSimpleKindTypeCalendar);
 		assertEquals(EdmSimpleTypeKind.Guid, edmSimpleKindTypeUUID);
 	}
 

@@ -1,6 +1,7 @@
 package com.sap.core.odata.processor.core.jpa;
 
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.net.URI;
@@ -83,13 +84,13 @@ public class ODataJPAResponseBuilderTest extends JPAEdmTestModelView{
 		try {
 			ODataJPAResponseBuilder.build(getJPAEntities(), getResultsViewWithNullSelects(), "xml", getODataJPAContext());
 		} catch (ODataJPARuntimeException e) {
-			//Nothing to do, Expected.
+			assertTrue(true);//Nothing to do, Expected.
 		}
 	}
 	
 	private ODataJPAContext getODataJPAContext() {
 		ODataJPAContext objODataJPAContext = EasyMock.createMock(ODataJPAContext.class);
-		EasyMock.expect(objODataJPAContext.getODataContext()).andReturn(getLocalODataContext()).times(10);
+		EasyMock.expect(objODataJPAContext.getODataContext()).andStubReturn(getLocalODataContext());
 		
 		EasyMock.replay(objODataJPAContext);
 		return objODataJPAContext;
@@ -98,7 +99,7 @@ public class ODataJPAResponseBuilderTest extends JPAEdmTestModelView{
 	private ODataContext getLocalODataContext() {
 		ODataContext objODataContext = EasyMock.createMock(ODataContext.class);
 		try {
-			EasyMock.expect(objODataContext.getPathInfo()).andReturn(getLocalPathInfo()).times(10);
+			EasyMock.expect(objODataContext.getPathInfo()).andStubReturn(getLocalPathInfo());
 		} catch (ODataException e) {
 			fail("ODataException not expected");
 		}
@@ -108,7 +109,7 @@ public class ODataJPAResponseBuilderTest extends JPAEdmTestModelView{
 
 	private PathInfo getLocalPathInfo() {
 		PathInfo pathInfo = EasyMock.createMock(PathInfo.class);
-		EasyMock.expect(pathInfo.getServiceRoot()).andReturn(getLocalURI()).times(10);
+		EasyMock.expect(pathInfo.getServiceRoot()).andStubReturn(getLocalURI());
 		EasyMock.replay(pathInfo);
 		return pathInfo;
 	}
@@ -125,9 +126,9 @@ public class ODataJPAResponseBuilderTest extends JPAEdmTestModelView{
 
 	private GetEntitySetUriInfo getResultsView() {
 		GetEntitySetUriInfo objGetEntitySetUriInfo = EasyMock.createMock(GetEntitySetUriInfo.class);
-		EasyMock.expect(objGetEntitySetUriInfo.getInlineCount()).andReturn(getLocalInlineCount()).times(10);
-		EasyMock.expect(objGetEntitySetUriInfo.getTargetEntitySet()).andReturn(getLocalTargetEntitySet()).times(10);
-		EasyMock.expect(objGetEntitySetUriInfo.getSelect()).andReturn(getSelectItemList()).times(10);
+		EasyMock.expect(objGetEntitySetUriInfo.getInlineCount()).andStubReturn(getLocalInlineCount());
+		EasyMock.expect(objGetEntitySetUriInfo.getTargetEntitySet()).andStubReturn(getLocalTargetEntitySet());
+		EasyMock.expect(objGetEntitySetUriInfo.getSelect()).andStubReturn(getSelectItemList());
 		
 		EasyMock.replay(objGetEntitySetUriInfo);
 		return objGetEntitySetUriInfo;
@@ -135,9 +136,9 @@ public class ODataJPAResponseBuilderTest extends JPAEdmTestModelView{
 	
 	private GetEntitySetUriInfo getResultsViewWithNullSelects() {
 		GetEntitySetUriInfo objGetEntitySetUriInfo = EasyMock.createMock(GetEntitySetUriInfo.class);
-		EasyMock.expect(objGetEntitySetUriInfo.getInlineCount()).andReturn(getLocalInlineCount()).times(10);
-		EasyMock.expect(objGetEntitySetUriInfo.getTargetEntitySet()).andReturn(getLocalTargetEntitySet()).times(10);
-		EasyMock.expect(objGetEntitySetUriInfo.getSelect()).andReturn(null).times(10);
+		EasyMock.expect(objGetEntitySetUriInfo.getInlineCount()).andStubReturn(getLocalInlineCount());
+		EasyMock.expect(objGetEntitySetUriInfo.getTargetEntitySet()).andStubReturn(getLocalTargetEntitySet());
+		EasyMock.expect(objGetEntitySetUriInfo.getSelect()).andStubReturn(null);
 		
 		EasyMock.replay(objGetEntitySetUriInfo);
 		return objGetEntitySetUriInfo;
@@ -145,9 +146,9 @@ public class ODataJPAResponseBuilderTest extends JPAEdmTestModelView{
 	
 	private GetEntityUriInfo getLocalGetURIInfo() {
 		GetEntityUriInfo objGetEntityUriInfo = EasyMock.createMock(GetEntityUriInfo.class);
-		EasyMock.expect(objGetEntityUriInfo.getSelect()).andReturn(getSelectItemList()).times(10);
-		EasyMock.expect(objGetEntityUriInfo.getTargetEntitySet()).andReturn(getLocalTargetEntitySet()).times(10);
-		EasyMock.expect(objGetEntityUriInfo.getSelect()).andReturn(getSelectItemList()).times(10);
+		EasyMock.expect(objGetEntityUriInfo.getSelect()).andStubReturn(getSelectItemList());
+		EasyMock.expect(objGetEntityUriInfo.getTargetEntitySet()).andStubReturn(getLocalTargetEntitySet());
+		EasyMock.expect(objGetEntityUriInfo.getSelect()).andStubReturn(getSelectItemList());
 		
 		EasyMock.replay(objGetEntityUriInfo);
 		return objGetEntityUriInfo;
@@ -162,7 +163,7 @@ public class ODataJPAResponseBuilderTest extends JPAEdmTestModelView{
 
 	private SelectItem getSelectItem() {
 		SelectItem selectItem = EasyMock.createMock(SelectItem.class);
-		EasyMock.expect(selectItem.getProperty()).andReturn(getEdmProperty()).times(10);
+		EasyMock.expect(selectItem.getProperty()).andStubReturn(getEdmProperty());
 		EasyMock.replay(selectItem);
 		return selectItem;
 	}
@@ -171,21 +172,21 @@ public class ODataJPAResponseBuilderTest extends JPAEdmTestModelView{
 		EdmProperty edmTyped = EasyMock.createMock(EdmProperty.class);
 		
 		EdmMapping edmMapping = EasyMock.createMock(EdmMapping.class);
-		EasyMock.expect(edmMapping.getInternalName()).andReturn(
-				"Field1").times(10);
+		EasyMock.expect(edmMapping.getInternalName()).andStubReturn(
+				"Field1");
 		EasyMock.replay(edmMapping);
 		
 		EdmType edmType = EasyMock.createMock(EdmType.class);
 		
 		try {
-			EasyMock.expect(edmType.getKind()).andReturn(EdmTypeKind.SIMPLE).times(10);
-			EasyMock.expect(edmType.getName()).andReturn("identifier").times(10);
-			EasyMock.expect(edmTyped.getName()).andReturn("SalesOrderHeader").times(10);
+			EasyMock.expect(edmType.getKind()).andStubReturn(EdmTypeKind.SIMPLE);
+			EasyMock.expect(edmType.getName()).andStubReturn("identifier");
+			EasyMock.expect(edmTyped.getName()).andStubReturn("SalesOrderHeader");
 			EasyMock.expect(edmTyped.getMapping())
-					.andReturn(edmMapping).times(10);
+					.andStubReturn(edmMapping);
 			
-			EasyMock.expect(edmTyped.getType()).andReturn(edmType).times(10);
-			EasyMock.expect(edmTyped.getMapping()).andReturn(edmMapping).times(10);
+			EasyMock.expect(edmTyped.getType()).andStubReturn(edmType);
+			EasyMock.expect(edmTyped.getMapping()).andStubReturn(edmMapping);
 			
 		} catch (EdmException e) {
 			fail("EdmException not expected");
@@ -198,9 +199,9 @@ public class ODataJPAResponseBuilderTest extends JPAEdmTestModelView{
 	private EdmEntitySet getLocalTargetEntitySet() {
 		EdmEntitySet objEdmEntitySet = EasyMock.createMock(EdmEntitySet.class);
 		try {
-			EasyMock.expect(objEdmEntitySet.getEntityType()).andReturn(getLocalEdmEntityType()).times(10);
-			EasyMock.expect(objEdmEntitySet.getName()).andReturn("SalesOderHeaders").times(10);
-			EasyMock.expect(objEdmEntitySet.getEntityContainer()).andReturn(getLocalEdmEntityContainer()).times(10);
+			EasyMock.expect(objEdmEntitySet.getEntityType()).andStubReturn(getLocalEdmEntityType());
+			EasyMock.expect(objEdmEntitySet.getName()).andStubReturn("SalesOderHeaders");
+			EasyMock.expect(objEdmEntitySet.getEntityContainer()).andStubReturn(getLocalEdmEntityContainer());
 		} catch (EdmException e) {
 			fail("EdmException not expected");
 		}
@@ -211,9 +212,9 @@ public class ODataJPAResponseBuilderTest extends JPAEdmTestModelView{
 
 	private EdmEntityContainer getLocalEdmEntityContainer() {
 		EdmEntityContainer edmEntityContainer = EasyMock.createMock(EdmEntityContainer.class);
-		EasyMock.expect(edmEntityContainer.isDefaultEntityContainer()).andReturn(true).times(10);
+		EasyMock.expect(edmEntityContainer.isDefaultEntityContainer()).andStubReturn(true);
 		try {
-			EasyMock.expect(edmEntityContainer.getName()).andReturn("salesorderprocessingContainer").times(10);
+			EasyMock.expect(edmEntityContainer.getName()).andStubReturn("salesorderprocessingContainer");
 		} catch (EdmException e) {
 			fail("EdmException not expected");
 		}
@@ -225,13 +226,13 @@ public class ODataJPAResponseBuilderTest extends JPAEdmTestModelView{
 	private EdmEntityType getLocalEdmEntityType() {
 		EdmEntityType objEdmEntityType = EasyMock.createMock(EdmEntityType.class);
 		try {
-			EasyMock.expect(objEdmEntityType.getName()).andReturn("SalesOderHeaders").times(10);
-			EasyMock.expect(objEdmEntityType.getNamespace()).andReturn("SalesOderHeaders").times(10);
-			EasyMock.expect(objEdmEntityType.hasStream()).andReturn(false).times(10);
-			EasyMock.expect(objEdmEntityType.hasStream()).andReturn(false).times(10);
-		    EasyMock.expect(objEdmEntityType.getPropertyNames()).andReturn(new ArrayList<String>()).times(10);
-		    EasyMock.expect(objEdmEntityType.getNavigationPropertyNames()).andReturn(new ArrayList<String>()).times(10);
-		    EasyMock.expect(objEdmEntityType.getKeyPropertyNames()).andReturn(new ArrayList<String>()).times(10);
+			EasyMock.expect(objEdmEntityType.getName()).andStubReturn("SalesOderHeaders");
+			EasyMock.expect(objEdmEntityType.getNamespace()).andStubReturn("SalesOderHeaders");
+			EasyMock.expect(objEdmEntityType.hasStream()).andStubReturn(false);
+			EasyMock.expect(objEdmEntityType.hasStream()).andStubReturn(false);
+		    EasyMock.expect(objEdmEntityType.getPropertyNames()).andStubReturn(new ArrayList<String>());
+		    EasyMock.expect(objEdmEntityType.getNavigationPropertyNames()).andStubReturn(new ArrayList<String>());
+		    EasyMock.expect(objEdmEntityType.getKeyPropertyNames()).andStubReturn(new ArrayList<String>());
 		} catch (EdmException e) {
 			fail("EdmException not expected");
 		}

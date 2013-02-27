@@ -16,7 +16,7 @@ public abstract class ODataJPAContextMock {
 	public static ODataJPAContext mockODataJPAContext()
 	{
 		ODataJPAContext odataJPAContext = EasyMock.createMock(ODataJPAContext.class);
-		EasyMock.expect(odataJPAContext.getPersistenceUnitName()).andReturn(NAMESPACE).times(2);
+		EasyMock.expect(odataJPAContext.getPersistenceUnitName()).andStubReturn(NAMESPACE);
 		EasyMock.expect(odataJPAContext.getEntityManagerFactory()).andReturn(mockEntityManagerFactory());
 		EasyMock.expect(odataJPAContext.getJPAEdmNameMappingModel()).andReturn(MAPPING_MODEL);
 		EasyMock.replay(odataJPAContext);

@@ -488,7 +488,7 @@ public class JPAResultParserTest {
 
 	private SelectItem getSelectItem() {
 		SelectItem selectItem = EasyMock.createMock(SelectItem.class);
-		EasyMock.expect(selectItem.getProperty()).andReturn(getEdmProperty()).times(10);
+		EasyMock.expect(selectItem.getProperty()).andStubReturn(getEdmProperty());
 		EasyMock.replay(selectItem);
 		return selectItem;
 	}
@@ -497,21 +497,21 @@ public class JPAResultParserTest {
 		EdmProperty edmTyped = EasyMock.createMock(EdmProperty.class);
 		
 		EdmMapping edmMapping = EasyMock.createMock(EdmMapping.class);
-		EasyMock.expect(edmMapping.getInternalName()).andReturn(
-				"Field1").times(10);
+		EasyMock.expect(edmMapping.getInternalName()).andStubReturn(
+				"Field1");
 		EasyMock.replay(edmMapping);
 		
 		EdmType edmType = EasyMock.createMock(EdmType.class);
 		
 		try {
-			EasyMock.expect(edmType.getKind()).andReturn(EdmTypeKind.SIMPLE).times(10);
-			EasyMock.expect(edmType.getName()).andReturn("identifier").times(10);
-			EasyMock.expect(edmTyped.getName()).andReturn("SalesOrderHeader").times(10);
+			EasyMock.expect(edmType.getKind()).andStubReturn(EdmTypeKind.SIMPLE);
+			EasyMock.expect(edmType.getName()).andStubReturn("identifier");
+			EasyMock.expect(edmTyped.getName()).andStubReturn("SalesOrderHeader");
 			EasyMock.expect(edmTyped.getMapping())
-					.andReturn(edmMapping).times(10);
+					.andStubReturn(edmMapping);
 			
-			EasyMock.expect(edmTyped.getType()).andReturn(edmType).times(10);
-			EasyMock.expect(edmTyped.getMapping()).andReturn(edmMapping).times(10);
+			EasyMock.expect(edmTyped.getType()).andStubReturn(edmType);
+			EasyMock.expect(edmTyped.getMapping()).andStubReturn(edmMapping);
 			
 		} catch (EdmException e) {
 			fail("EdmException not expected");
