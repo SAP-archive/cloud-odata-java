@@ -261,9 +261,10 @@ public class ListsProcessor extends ODataSingleProcessor {
 
     final EdmEntitySet entitySet = uriInfo.getTargetEntitySet();
     final Map<String, Object> values = getStructuralTypeValueMap(data, entitySet.getEntityType());
-    final ODataResponse response = writeEntry(entitySet, values, contentType, false);
 
-    return ODataResponse.fromResponse(response).status(HttpStatusCodes.OK).build();
+    return ODataResponse.fromResponse(writeEntry(entitySet, values, contentType))
+        .status(HttpStatusCodes.OK)
+        .build();
   }
 
   @Override
@@ -316,9 +317,8 @@ public class ListsProcessor extends ODataSingleProcessor {
     }
 
     Map<String, Object> values = getStructuralTypeValueMap(data, entityType);
-    final ODataResponse response = writeEntry(entitySet, values, contentType, true);
 
-    return ODataResponse.fromResponse(response)
+    return ODataResponse.fromResponse(writeEntry(entitySet, values, contentType))
         .status(HttpStatusCodes.CREATED)
         .eTag(constructETag(entitySet, data))
         .build();
@@ -891,13 +891,10 @@ public class ListsProcessor extends ODataSingleProcessor {
     return eTag;
   }
 
-  private ODataResponse writeEntry(final EdmEntitySet entitySet, final Map<String, Object> values, final String contentType, final boolean hasLocationHeader) throws ODataException, EntityProviderException {
+  private ODataResponse writeEntry(final EdmEntitySet entitySet, final Map<String, Object> values, final String contentType) throws ODataException, EntityProviderException {
     ODataContext context = getContext();
     ODataEntityProviderPropertiesBuilder entryProperties = EntityProviderProperties
         .serviceRoot(context.getPathInfo().getServiceRoot());
-    if (hasLocationHeader) {
-      entryProperties = entryProperties.hasLocationHeader();
-    }
 
     final int timingHandle = context.startRuntimeMeasurement("EntityProvider", "writeEntry");
 

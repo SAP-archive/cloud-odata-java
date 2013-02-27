@@ -24,7 +24,6 @@ import javax.ws.rs.HeaderParam;
 import javax.ws.rs.OPTIONS;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
-import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Request;
@@ -35,6 +34,7 @@ import javax.ws.rs.core.UriBuilder;
 import com.sap.core.odata.api.ODataService;
 import com.sap.core.odata.api.ODataServiceFactory;
 import com.sap.core.odata.api.ODataServiceVersion;
+import com.sap.core.odata.api.commons.HttpHeaders;
 import com.sap.core.odata.api.commons.ODataHttpHeaders;
 import com.sap.core.odata.api.edm.EdmEntityType;
 import com.sap.core.odata.api.edm.EdmException;
@@ -156,15 +156,17 @@ public final class ODataSubLocator implements ODataLocator {
       checkProperty(method, uriInfo);
 
       if (method == ODataHttpMethod.POST || method == ODataHttpMethod.PUT
-          || method == ODataHttpMethod.PATCH || method == ODataHttpMethod.MERGE) {
+          || method == ODataHttpMethod.PATCH || method == ODataHttpMethod.MERGE)
         checkRequestContentType(uriInfo, requestContentType);
-      }
     }
 
     final String contentType = doContentNegotiation(uriInfo);
 
     final ODataResponse odataResponse = dispatcher.dispatch(method, uriInfo, requestContent, requestContentType, contentType);
-    final Response response = convertResponse(odataResponse, serverDataServiceVersion);
+
+    final String location = (method == ODataHttpMethod.POST && (uriInfo.getUriType() == UriType.URI1 || uriInfo.getUriType() == UriType.URI6B)) ? odataResponse.getIdLiteral() : null;
+
+    final Response response = convertResponse(odataResponse, serverDataServiceVersion, location);
 
     return response;
   }
@@ -548,7 +550,7 @@ public final class ODataSubLocator implements ODataLocator {
     return mediaTypes;
   }
 
-  private void fillRequestHeader(final HttpHeaders httpHeaders) {
+  private void fillRequestHeader(final javax.ws.rs.core.HttpHeaders httpHeaders) {
     final MultivaluedMap<String, String> headers = httpHeaders.getRequestHeaders();
 
     for (final String key : headers.keySet()) {
@@ -641,7 +643,7 @@ public final class ODataSubLocator implements ODataLocator {
     return single;
   }
 
-  private Response convertResponse(final ODataResponse odataResponse, final String version) {
+  private Response convertResponse(final ODataResponse odataResponse, final String version, final String location) {
     ResponseBuilder responseBuilder = Response.noContent().status(odataResponse.getStatus().getStatusCode()).entity(odataResponse.getEntity());
 
     for (final String name : odataResponse.getHeaderNames()) {
@@ -651,6 +653,9 @@ public final class ODataSubLocator implements ODataLocator {
     if (!odataResponse.containsHeader(ODataHttpHeaders.DATASERVICEVERSION)) {
       responseBuilder = responseBuilder.header(ODataHttpHeaders.DATASERVICEVERSION, version);
     }
+
+    if (!odataResponse.containsHeader(HttpHeaders.LOCATION) && location != null)
+      responseBuilder = responseBuilder.header(HttpHeaders.LOCATION, location);
 
     final String eTag = odataResponse.getETag();
     if (eTag != null) {
@@ -663,7 +668,7 @@ public final class ODataSubLocator implements ODataLocator {
   public class InitParameter {
 
     private List<javax.ws.rs.core.PathSegment> pathSegments;
-    private HttpHeaders httpHeaders;
+    private javax.ws.rs.core.HttpHeaders httpHeaders;
     private javax.ws.rs.core.UriInfo uriInfo;
     private Request request;
     private int pathSplit;
@@ -686,11 +691,11 @@ public final class ODataSubLocator implements ODataLocator {
       this.pathSegments = pathSegments;
     }
 
-    public HttpHeaders getHttpHeaders() {
+    public javax.ws.rs.core.HttpHeaders getHttpHeaders() {
       return httpHeaders;
     }
 
-    public void setHttpHeaders(final HttpHeaders httpHeaders) {
+    public void setHttpHeaders(final javax.ws.rs.core.HttpHeaders httpHeaders) {
       this.httpHeaders = httpHeaders;
     }
 

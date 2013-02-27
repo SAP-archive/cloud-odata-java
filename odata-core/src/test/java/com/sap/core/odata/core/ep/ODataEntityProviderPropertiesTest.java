@@ -1,9 +1,7 @@
 package com.sap.core.odata.core.ep;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
 
 import java.net.URI;
 
@@ -43,7 +41,6 @@ public class ODataEntityProviderPropertiesTest extends BaseTest {
     assertNull(properties.getInlineCount());
     assertNull(properties.getMediaResourceMimeType());
     assertNull(properties.getNextLink());
-    assertFalse(properties.hasLocationHeader());
   }
 
   @Test
@@ -52,9 +49,7 @@ public class ODataEntityProviderPropertiesTest extends BaseTest {
     final URI serviceRoot = new URI("http://localhost:80/");
     final EntityProviderProperties properties = EntityProviderProperties.serviceRoot(serviceRoot)
         .mediaResourceMimeType(mediaResourceMimeType)
-        .hasLocationHeader()
         .build();
     assertEquals("Wrong mime type.", "text/html", properties.getMediaResourceMimeType());
-    assertTrue("Wrong Location header option.", properties.hasLocationHeader());
   }
 }
