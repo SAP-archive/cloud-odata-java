@@ -17,6 +17,8 @@ public class ODataBadRequestException extends ODataHttpException {
   public static final MessageReference PARSEVERSIONERROR = createMessageReference(ODataBadRequestException.class, "PARSEVERSIONERROR");
   public static final MessageReference BODY = createMessageReference(ODataBadRequestException.class, "BODY");
   public static final MessageReference AMBIGUOUS_XMETHOD = createMessageReference(ODataBadRequestException.class, "AMBIGUOUS_XMETHOD");
+  /** INVALID_HEADER requires 2 content values ('header key' and 'header value' */
+  public static final MessageReference INVALID_HEADER = createMessageReference(ODataBadRequestException.class, "INVALID_HEADER");
 
   public ODataBadRequestException(final MessageReference messageReference) {
     super(messageReference, HttpStatusCodes.BAD_REQUEST);
