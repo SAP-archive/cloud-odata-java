@@ -1,4 +1,4 @@
-package com.sap.core.odata.processor.core.jpa.access;
+package com.sap.core.odata.processor.core.jpa.access.model;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;

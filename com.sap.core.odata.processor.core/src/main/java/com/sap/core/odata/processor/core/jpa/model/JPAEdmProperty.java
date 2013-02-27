@@ -175,7 +175,7 @@ public class JPAEdmProperty extends JPAEdmBaseViewImpl implements
 
 					currentSimpleProperty = new SimpleProperty();
 					JPAEdmNameBuilder
-							.build((JPAEdmPropertyView) JPAEdmProperty.this);
+							.build((JPAEdmPropertyView) JPAEdmProperty.this,isBuildModeComplexType);
 
 					EdmSimpleTypeKind simpleTypeKind = JPATypeConvertor
 							.convertToEdmSimpleType(currentAttribute
@@ -303,5 +303,15 @@ public class JPAEdmProperty extends JPAEdmBaseViewImpl implements
 			}
 			return facets;
 		}
+	}
+
+	@Override
+	public JPAEdmEntityTypeView getJPAEdmEntityTypeView() {
+		return entityTypeView;
+	}
+	
+	@Override
+	public JPAEdmComplexTypeView getJPAEdmComplexTypeView( ){
+		return complexTypeView;
 	}
 }

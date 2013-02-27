@@ -3,8 +3,10 @@ package com.sap.core.odata.processor.core.jpa.jpql;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.sap.core.odata.api.edm.EdmEntityType;
 import com.sap.core.odata.api.edm.EdmException;
 import com.sap.core.odata.api.edm.EdmProperty;
+import com.sap.core.odata.api.edm.provider.Mapping;
 import com.sap.core.odata.api.uri.KeyPredicate;
 import com.sap.core.odata.api.uri.SelectItem;
 import com.sap.core.odata.api.uri.info.GetEntityUriInfo;
@@ -51,9 +53,14 @@ public class JPQLSelectSingleContext extends JPQLContext implements JPQLSelectSi
 				try {
 
 					JPQLSelectSingleContext.this.setType(JPQLContextType.SELECT_SINGLE);
-
-					JPQLSelectSingleContext.this.setJPAEntityName(entityView
-							.getTargetEntitySet().getEntityType().getName());
+					
+					EdmEntityType entityType = entityView
+							.getTargetEntitySet().getEntityType();
+					Mapping mapping = (Mapping) entityType.getMapping();
+					if(mapping != null)
+						JPQLSelectSingleContext.this.setJPAEntityName(mapping.getInternalName());
+					else
+						JPQLSelectSingleContext.this.setJPAEntityName(entityType.getName());
 					
 					JPQLSelectSingleContext.this.setJPAEntityAlias(generateJPAEntityAlias());
 					

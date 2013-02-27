@@ -3,6 +3,7 @@ package com.sap.core.odata.processor.api.jpa.model;
 import javax.persistence.metamodel.Metamodel;
 
 import com.sap.core.odata.processor.api.jpa.access.JPAEdmBuilder;
+import com.sap.core.odata.processor.api.jpa.access.JPAEdmMappingModelAccess;
 
 /**
  * <p>
@@ -27,7 +28,8 @@ public interface JPAEdmBaseView {
 	/**
 	 * The method returns the Java Persistence MetaModel
 	 * 
-	 * @return a meta model of type {@link javax.persistence.metamodel.Metamodel}
+	 * @return a meta model of type
+	 *         {@link javax.persistence.metamodel.Metamodel}
 	 */
 	public Metamodel getJPAMetaModel();
 
@@ -54,4 +56,11 @@ public interface JPAEdmBaseView {
 	 * The method cleans the container.
 	 */
 	public void clean();
+
+	/**
+	 * The method returns a reference to JPA EDM mapping model access.
+	 * 
+	 * @return an instance to JPA EDM mapping model access
+	 */
+	public JPAEdmMappingModelAccess getJPAEdmMappingModelAccess();
 }

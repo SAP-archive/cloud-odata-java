@@ -22,24 +22,22 @@ import com.sap.core.odata.processor.api.jpa.access.JPAEdmBuilder;
 import com.sap.core.odata.processor.api.jpa.exception.ODataJPAModelException;
 import com.sap.core.odata.processor.api.jpa.exception.ODataJPARuntimeException;
 import com.sap.core.odata.processor.api.jpa.model.JPAEdmKeyView;
-import com.sap.core.odata.processor.core.jpa.model.JPAEdmKey;
-import com.sap.core.odata.processor.core.jpa.model.mock.JPAAttributeMock;
-import com.sap.core.odata.processor.core.jpa.testdata.JPAEdmMockData;
-import com.sap.core.odata.processor.core.jpa.testdata.JPAEdmTestModelView;
-import com.sap.core.odata.processor.core.jpa.testdata.JPAEdmMockData.ComplexType.ComplexTypeA;
-import com.sap.core.odata.processor.core.jpa.util.MockData;
+import com.sap.core.odata.processor.core.jpa.mock.ODataJPAContextMock;
+import com.sap.core.odata.processor.core.jpa.mock.model.JPAAttributeMock;
+import com.sap.core.odata.processor.core.jpa.mock.model.JPAEdmMockData;
+import com.sap.core.odata.processor.core.jpa.mock.model.JPAEdmMockData.ComplexType.ComplexTypeA;
 
 public class JPAEdmKeyTest extends JPAEdmTestModelView {
 
 	private static JPAEdmKeyView keyView;
 	private static JPAEdmKeyTest objJpaEdmKeyTest;
-	
+
 	@BeforeClass
-	public static void setup(){
+	public static void setup() {
 		objJpaEdmKeyTest = new JPAEdmKeyTest();
 		keyView = new JPAEdmKey(objJpaEdmKeyTest, objJpaEdmKeyTest);
 	}
-	
+
 	@SuppressWarnings("hiding")
 	private class JPAAttributeA<Object, ComplexTypeA> extends
 			JPAAttributeMock<Object, ComplexTypeA> {
@@ -56,8 +54,7 @@ public class JPAEdmKeyTest extends JPAEdmTestModelView {
 			keyView.getBuilder().build();
 		} catch (ODataJPAModelException e) {
 			fail("Exception Not Expected");
-		}
-		catch (ODataJPARuntimeException e) {
+		} catch (ODataJPARuntimeException e) {
 			fail("Exception Not Expected");
 		}
 
@@ -75,14 +72,14 @@ public class JPAEdmKeyTest extends JPAEdmTestModelView {
 		assertEquals(
 				JPAEdmMockData.ComplexType.ComplexTypeB.Property.PROPERTY_E,
 				key.getKeys().get(3).getName());
-		
+
 	}
-	
+
 	@Test
-	public void testGetBuilderIdempotent(){
+	public void testGetBuilderIdempotent() {
 		JPAEdmBuilder builder1 = keyView.getBuilder();
 		JPAEdmBuilder builder2 = keyView.getBuilder();
-		
+
 		assertEquals(builder1.hashCode(), builder2.hashCode());
 	}
 
@@ -128,7 +125,7 @@ public class JPAEdmKeyTest extends JPAEdmTestModelView {
 		property = new SimpleProperty();
 		property.setName(JPAEdmMockData.ComplexType.ComplexTypeB.Property.PROPERTY_E);
 		property.setType(EdmSimpleTypeKind.Int16);
-		
+
 		propertyList.add(property);
 
 		return propertyList;
@@ -154,13 +151,13 @@ public class JPAEdmKeyTest extends JPAEdmTestModelView {
 		property = new SimpleProperty();
 		property.setName(JPAEdmMockData.ComplexType.ComplexTypeA.Property.PROPERTY_B);
 		property.setType(EdmSimpleTypeKind.Int16);
-		
+
 		propertyList.add(property);
 
 		ComplexProperty complexProperty = new ComplexProperty();
 		complexProperty
 				.setName(JPAEdmMockData.ComplexType.ComplexTypeA.Property.PROPERTY_C);
-		complexProperty.setType(new FullQualifiedName(MockData.NAME_SPACE,
+		complexProperty.setType(new FullQualifiedName(ODataJPAContextMock.NAMESPACE,
 				JPAEdmMockData.ComplexType.ComplexTypeB.name));
 
 		propertyList.add(complexProperty);

@@ -22,10 +22,10 @@ import com.sap.core.odata.api.edm.provider.AssociationEnd;
 import com.sap.core.odata.processor.api.jpa.access.JPAEdmBuilder;
 import com.sap.core.odata.processor.api.jpa.exception.ODataJPAModelException;
 import com.sap.core.odata.processor.api.jpa.exception.ODataJPARuntimeException;
+import com.sap.core.odata.processor.core.jpa.mock.model.JPAAttributeMock;
+import com.sap.core.odata.processor.core.jpa.mock.model.JPAJavaMemberMock;
+import com.sap.core.odata.processor.core.jpa.mock.model.JPAManagedTypeMock;
 import com.sap.core.odata.processor.core.jpa.model.JPAEdmReferentialConstraint;
-import com.sap.core.odata.processor.core.jpa.model.mock.JPAAttributeMock;
-import com.sap.core.odata.processor.core.jpa.model.mock.JPAJavaMemberMock;
-import com.sap.core.odata.processor.core.jpa.model.mock.JPAManagedTypeMock;
 
 public class JPAEdmReferentialConstraintTest extends JPAEdmTestModelView {
 

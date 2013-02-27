@@ -2,7 +2,9 @@ package com.sap.core.odata.processor.core.jpa.model;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.Set;
 
 import com.sap.core.odata.api.edm.provider.EntityType;
@@ -22,7 +24,7 @@ public class JPAEdmEntityType extends JPAEdmBaseViewImpl implements
 	private JPAEdmSchemaView schemaView = null;
 	private EntityType currentEdmEntityType = null;
 	private javax.persistence.metamodel.EntityType<?> currentJPAEntityType = null;
-	private List<EntityType> consistentEntityTypes = null;
+	private EntityTypeList<EntityType> consistentEntityTypes = null;
 
 	private HashMap<String, EntityType> consistentEntityTypeMap;
 
@@ -36,7 +38,7 @@ public class JPAEdmEntityType extends JPAEdmBaseViewImpl implements
 	public JPAEdmBuilder getBuilder() {
 		if (this.builder == null)
 			this.builder = new JPAEdmEntityTypeBuilder();
-		
+
 		return builder;
 	}
 
@@ -63,7 +65,8 @@ public class JPAEdmEntityType extends JPAEdmBaseViewImpl implements
 	private class JPAEdmEntityTypeBuilder implements JPAEdmBuilder {
 
 		@Override
-		public void build() throws ODataJPAModelException, ODataJPARuntimeException {
+		public void build() throws ODataJPAModelException,
+				ODataJPARuntimeException {
 
 			Set<javax.persistence.metamodel.EntityType<?>> jpaEntityTypes = metaModel
 					.getEntities();
@@ -71,7 +74,7 @@ public class JPAEdmEntityType extends JPAEdmBaseViewImpl implements
 			if (jpaEntityTypes == null || jpaEntityTypes.isEmpty() == true)
 				return;
 			else if (consistentEntityTypes == null) {
-				consistentEntityTypes = new ArrayList<EntityType>();
+				consistentEntityTypes = new EntityTypeList<EntityType>();
 
 			}
 
@@ -109,4 +112,91 @@ public class JPAEdmEntityType extends JPAEdmBaseViewImpl implements
 
 	}
 
+	private class EntityTypeList<X> extends ArrayList<EntityType> {
+
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 719079109608251592L;
+
+		@Override
+		public Iterator<EntityType> iterator() {
+			return new EntityTypeListIterator<X>(size());
+		}
+
+	}
+
+	private class EntityTypeListIterator<E> implements ListIterator<EntityType> {
+
+		private int size = 0;
+		private int pos = 0;
+
+		public EntityTypeListIterator(int listSize) {
+			this.size = listSize;
+		}
+
+		@Override
+		public void add(EntityType e) {
+			consistentEntityTypes.add(e);
+			size++;
+		}
+
+		@Override
+		public boolean hasNext() {
+			if (pos < size)
+				return true;
+
+			return false;
+		}
+
+		@Override
+		public boolean hasPrevious() {
+			if (pos > 0)
+				return true;
+			return false;
+		}
+
+		@Override
+		public EntityType next() {
+			if (pos < size) {
+				currentEdmEntityType = consistentEntityTypes.get(pos++);
+				return currentEdmEntityType;
+			}
+
+			return null;
+		}
+
+		@Override
+		public int nextIndex() {
+			return pos;
+		}
+
+		@Override
+		public EntityType previous() {
+			if (pos > 0 && pos < size) {
+				currentEdmEntityType = consistentEntityTypes.get(--pos);
+				return currentEdmEntityType;
+			}
+			return null;
+		}
+
+		@Override
+		public int previousIndex() {
+			if (pos > 0)
+				return pos - 1;
+
+			return 0;
+		}
+
+		@Override
+		public void remove() {
+			consistentEntityTypes.remove(pos);
+		}
+
+		@Override
+		public void set(EntityType e) {
+			consistentEntityTypes.set(pos, e);
+		}
+
+	}
 }

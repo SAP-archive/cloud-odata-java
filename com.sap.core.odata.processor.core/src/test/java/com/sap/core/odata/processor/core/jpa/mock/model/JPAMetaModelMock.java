@@ -1,4 +1,4 @@
-package com.sap.core.odata.processor.core.jpa.model.mock;
+package com.sap.core.odata.processor.core.jpa.mock.model;
 
 import java.util.Set;
 

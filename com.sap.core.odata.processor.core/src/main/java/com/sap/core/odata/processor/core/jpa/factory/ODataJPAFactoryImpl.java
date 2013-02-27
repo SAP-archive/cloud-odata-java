@@ -5,6 +5,7 @@ import java.util.Locale;
 import com.sap.core.odata.api.edm.provider.EdmProvider;
 import com.sap.core.odata.api.processor.ODataSingleProcessor;
 import com.sap.core.odata.processor.api.jpa.ODataJPAContext;
+import com.sap.core.odata.processor.api.jpa.access.JPAEdmMappingModelAccess;
 import com.sap.core.odata.processor.api.jpa.access.JPAProcessor;
 import com.sap.core.odata.processor.api.jpa.exception.ODataJPAMessageService;
 import com.sap.core.odata.processor.api.jpa.factory.JPAAccessFactory;
@@ -19,6 +20,7 @@ import com.sap.core.odata.processor.api.jpa.model.JPAEdmModelView;
 import com.sap.core.odata.processor.core.jpa.ODataJPAContextImpl;
 import com.sap.core.odata.processor.core.jpa.ODataJPAProcessorDefault;
 import com.sap.core.odata.processor.core.jpa.access.data.JPAProcessorImpl;
+import com.sap.core.odata.processor.core.jpa.access.model.JPAEdmMappingModelService;
 import com.sap.core.odata.processor.core.jpa.edm.ODataJPAEdmProvider;
 import com.sap.core.odata.processor.core.jpa.expception.ODataJPAMessageServiceDefault;
 import com.sap.core.odata.processor.core.jpa.jpql.JPQLJoinSelectContext;
@@ -31,27 +33,27 @@ import com.sap.core.odata.processor.core.jpa.jpql.JPQLSelectSingleStatementBuild
 import com.sap.core.odata.processor.core.jpa.jpql.JPQLSelectStatementBuilder;
 import com.sap.core.odata.processor.core.jpa.model.JPAEdmModel;
 
-
 public class ODataJPAFactoryImpl extends ODataJPAFactory {
-	
+
 	public JPQLBuilderFactory getJPQLBuilderFactory() {
-		return JPQLBuilderFactoryImpl.create( );
+		return JPQLBuilderFactoryImpl.create();
 	};
 
 	public JPAAccessFactory getJPAAccessFactory() {
-		return JPAAccessFactoryImpl.create( );
+		return JPAAccessFactoryImpl.create();
 	};
 
 	public ODataJPAAccessFactory getODataJPAAccessFactory() {
-		return ODataJPAAccessFactoryImpl.create() ;
+		return ODataJPAAccessFactoryImpl.create();
 	};
-	
-	
-	private static class JPQLBuilderFactoryImpl implements JPQLBuilderFactory{
-		
+
+	private static class JPQLBuilderFactoryImpl implements JPQLBuilderFactory {
+
 		private static JPQLBuilderFactoryImpl factory = null;
-		private JPQLBuilderFactoryImpl( ){}
-		
+
+		private JPQLBuilderFactoryImpl() {
+		}
+
 		@Override
 		public JPQLStatementBuilder getStatementBuilder(JPQLContextView context) {
 			JPQLStatementBuilder builder = null;
@@ -70,22 +72,22 @@ public class ODataJPAFactoryImpl extends ODataJPAFactory {
 			default:
 				break;
 			}
-			
+
 			return builder;
 		}
 
 		@Override
 		public JPQLContextBuilder getContextBuilder(JPQLContextType contextType) {
-JPQLContextBuilder contextBuilder = null;
-			
+			JPQLContextBuilder contextBuilder = null;
+
 			switch (contextType) {
 			case SELECT:
 				JPQLSelectContext selectContext = new JPQLSelectContext();
-				contextBuilder =  selectContext.new JPQLSelectContextBuilder();
+				contextBuilder = selectContext.new JPQLSelectContextBuilder();
 				break;
 			case SELECT_SINGLE:
 				JPQLSelectSingleContext singleSelectContext = new JPQLSelectSingleContext();
-				contextBuilder =  singleSelectContext.new JPQLSelectSingleContextBuilder();
+				contextBuilder = singleSelectContext.new JPQLSelectSingleContextBuilder();
 				break;
 			case JOIN:
 				JPQLJoinSelectContext joinContext = new JPQLJoinSelectContext();
@@ -98,32 +100,35 @@ JPQLContextBuilder contextBuilder = null;
 			default:
 				break;
 			}
-			
+
 			return contextBuilder;
 		}
-		
-		private static JPQLBuilderFactory create( ){
+
+		private static JPQLBuilderFactory create() {
 			if (factory == null)
 				return new JPQLBuilderFactoryImpl();
 			else
 				return factory;
 		}
-		
+
 	}
-	
-	private static class ODataJPAAccessFactoryImpl implements ODataJPAAccessFactory {
-		
+
+	private static class ODataJPAAccessFactoryImpl implements
+			ODataJPAAccessFactory {
+
 		private static ODataJPAAccessFactoryImpl factory = null;
-		private ODataJPAAccessFactoryImpl( ){}
-		
+
+		private ODataJPAAccessFactoryImpl() {
+		}
+
 		@Override
 		public ODataSingleProcessor createODataProcessor(
-				ODataJPAContext oDataJPAContext){
+				ODataJPAContext oDataJPAContext) {
 			return new ODataJPAProcessorDefault(oDataJPAContext);
 		}
 
 		@Override
-		public EdmProvider createJPAEdmProvider(ODataJPAContext oDataJPAContext){
+		public EdmProvider createJPAEdmProvider(ODataJPAContext oDataJPAContext) {
 			return new ODataJPAEdmProvider(oDataJPAContext);
 		}
 
@@ -131,8 +136,8 @@ JPQLContextBuilder contextBuilder = null;
 		public ODataJPAContext createODataJPAContext() {
 			return new ODataJPAContextImpl();
 		}
-		
-		private static ODataJPAAccessFactoryImpl create( ){
+
+		private static ODataJPAAccessFactoryImpl create() {
 			if (factory == null)
 				return new ODataJPAAccessFactoryImpl();
 			else
@@ -143,35 +148,47 @@ JPQLContextBuilder contextBuilder = null;
 		public ODataJPAMessageService getODataJPAMessageService(Locale locale) {
 			return ODataJPAMessageServiceDefault.getInstance(locale);
 		}
-		
+
 	}
-	
-	private static class JPAAccessFactoryImpl implements JPAAccessFactory{
-		
+
+	private static class JPAAccessFactoryImpl implements JPAAccessFactory {
+
 		private static JPAAccessFactoryImpl factory = null;
-		private JPAAccessFactoryImpl( ){}
-		
+
+		private JPAAccessFactoryImpl() {
+		}
+
 		@Override
-		public JPAEdmModelView getJPAEdmModelView(ODataJPAContext oDataJPAContext) {
+		public JPAEdmModelView getJPAEdmModelView(
+				ODataJPAContext oDataJPAContext) {
 			JPAEdmModelView view = null;
 
-			view = new JPAEdmModel(oDataJPAContext.getEntityManagerFactory().getMetamodel(),oDataJPAContext.getPersistenceUnitName());
+			view = new JPAEdmModel(oDataJPAContext);
 			return view;
 		}
-		
+
 		@Override
 		public JPAProcessor getJPAProcessor(ODataJPAContext oDataJPAContext) {
 			JPAProcessor jpaProcessor = new JPAProcessorImpl(oDataJPAContext);
-			
+
 			return jpaProcessor;
 		}
-		
-		private static JPAAccessFactoryImpl create( ){
+
+		private static JPAAccessFactoryImpl create() {
 			if (factory == null)
 				return new JPAAccessFactoryImpl();
 			else
 				return factory;
 		}
-		
+
+		@Override
+		public JPAEdmMappingModelAccess getJPAEdmMappingModelAccess(
+				ODataJPAContext oDataJPAContext) {
+			JPAEdmMappingModelAccess mappingModelAccess = new JPAEdmMappingModelService(
+					oDataJPAContext);
+
+			return mappingModelAccess;
+		}
+
 	}
 }

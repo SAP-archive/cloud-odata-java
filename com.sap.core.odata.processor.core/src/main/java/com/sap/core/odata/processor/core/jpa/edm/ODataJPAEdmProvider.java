@@ -91,32 +91,37 @@ public class ODataJPAEdmProvider extends EdmProvider {
 	@Override
 	public EntityType getEntityType(FullQualifiedName edmFQName)
 			throws ODataException {
+
+		String strEdmFQName = edmFQName.toString();
+
 		if (edmFQName != null) {
-			// Load from Buffer
-			if (edmFQName != null
-					&& entityTypes.containsKey(edmFQName.toString()))
-				return entityTypes.get(edmFQName.toString());
+			if (edmFQName != null && entityTypes.containsKey(strEdmFQName))
+				return entityTypes.get(strEdmFQName);
 			else if (schemas == null)
 				getSchemas();
 
 			if (edmFQName != null) {
+
+				String entityTypeNamespace = edmFQName.getNamespace();
+				String entityTypeName = edmFQName.getName();
+
 				for (Schema schema : schemas) {
-					if (schema.getNamespace().equals(edmFQName.getNamespace())) {
+					String schemaNamespace = schema.getNamespace();
+					if (schemaNamespace.equals(entityTypeNamespace)) {
 						for (EntityType et : schema.getEntityTypes()) {
-							if (et.getName().equals(edmFQName.getName())) {
-								entityTypes.put(edmFQName.toString(), et);
+							if (et.getName().equals(entityTypeName)) {
+								entityTypes.put(strEdmFQName, et);
 								return et;
 							}
 						}
 					}
 				}
 			}
-
-			throw ODataJPAModelException.throwException(
-					ODataJPAModelException.INVALID_ENTITY_TYPE
-							.addContent(edmFQName.toString()), null);
 		}
-		return null;
+
+		throw ODataJPAModelException.throwException(
+				ODataJPAModelException.INVALID_ENTITY_TYPE.addContent(edmFQName
+						.toString()), null);
 	}
 
 	@Override
@@ -141,11 +146,11 @@ public class ODataJPAEdmProvider extends EdmProvider {
 					}
 				}
 
-			throw ODataJPAModelException.throwException(
-					ODataJPAModelException.INVALID_COMPLEX_TYPE
-							.addContent(edmFQName.toString()), null);
 		}
-		return null;
+
+		throw ODataJPAModelException.throwException(
+				ODataJPAModelException.INVALID_COMPLEX_TYPE
+						.addContent(edmFQName.toString()), null);
 	}
 
 	@Override
@@ -171,11 +176,11 @@ public class ODataJPAEdmProvider extends EdmProvider {
 						}
 					}
 				}
-			throw ODataJPAModelException.throwException(
-					ODataJPAModelException.INVALID_ASSOCIATION
-							.addContent(edmFQName.toString()), null);
+
 		}
-		return null;
+		throw ODataJPAModelException.throwException(
+				ODataJPAModelException.INVALID_ASSOCIATION.addContent(edmFQName
+						.toString()), null);
 	}
 
 	@Override

@@ -29,12 +29,12 @@ import com.sap.core.odata.processor.api.jpa.model.JPAEdmComplexTypeView;
 import com.sap.core.odata.processor.api.jpa.model.JPAEdmEntityContainerView;
 import com.sap.core.odata.processor.api.jpa.model.JPAEdmEntitySetView;
 import com.sap.core.odata.processor.api.jpa.model.JPAEdmEntityTypeView;
-import com.sap.core.odata.processor.core.jpa.model.mock.JPAEmbeddableTypeMock;
-import com.sap.core.odata.processor.core.jpa.model.mock.JPAEntityTypeMock;
-import com.sap.core.odata.processor.core.jpa.model.mock.JPAMetaModelMock;
-import com.sap.core.odata.processor.core.jpa.model.mock.JPASingularAttributeMock;
-import com.sap.core.odata.processor.core.jpa.testdata.JPAEdmMockData.ComplexType;
-import com.sap.core.odata.processor.core.jpa.testdata.JPAEdmMockData.SimpleType;
+import com.sap.core.odata.processor.core.jpa.mock.model.JPAEmbeddableTypeMock;
+import com.sap.core.odata.processor.core.jpa.mock.model.JPAEntityTypeMock;
+import com.sap.core.odata.processor.core.jpa.mock.model.JPAMetaModelMock;
+import com.sap.core.odata.processor.core.jpa.mock.model.JPASingularAttributeMock;
+import com.sap.core.odata.processor.core.jpa.mock.model.JPAEdmMockData.ComplexType;
+import com.sap.core.odata.processor.core.jpa.mock.model.JPAEdmMockData.SimpleType;
 
 public class JPAEdmPropertyTest extends JPAEdmTestModelView {
 

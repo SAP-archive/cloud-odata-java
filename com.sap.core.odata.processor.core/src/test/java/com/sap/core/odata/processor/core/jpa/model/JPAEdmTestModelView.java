@@ -22,6 +22,7 @@ import com.sap.core.odata.api.edm.provider.ReferentialConstraint;
 import com.sap.core.odata.api.edm.provider.Schema;
 import com.sap.core.odata.api.edm.provider.SimpleProperty;
 import com.sap.core.odata.processor.api.jpa.access.JPAEdmBuilder;
+import com.sap.core.odata.processor.api.jpa.access.JPAEdmMappingModelAccess;
 import com.sap.core.odata.processor.api.jpa.model.JPAEdmAssociationEndView;
 import com.sap.core.odata.processor.api.jpa.model.JPAEdmAssociationSetView;
 import com.sap.core.odata.processor.api.jpa.model.JPAEdmAssociationView;
@@ -56,6 +57,8 @@ JPAEdmReferentialConstraintView,
 JPAEdmSchemaView
 {
 
+	protected JPAEdmMappingModelAccess mappingModelAccess;
+	
 	@Override
 	public Schema getEdmSchema() {
 		// TODO Auto-generated method stub
@@ -381,5 +384,11 @@ JPAEdmSchemaView
 		// TODO Auto-generated method stub
 		
 	}
+	
+	@Override
+	public JPAEdmMappingModelAccess getJPAEdmMappingModelAccess() {
+		return null;
+	}
+	
 
 }

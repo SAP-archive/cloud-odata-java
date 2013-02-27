@@ -12,8 +12,8 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.sap.core.odata.processor.api.jpa.access.JPAEdmBuilder;
+import com.sap.core.odata.processor.core.jpa.mock.model.JPAMetaModelMock;
 import com.sap.core.odata.processor.core.jpa.model.JPAEdmSchema;
-import com.sap.core.odata.processor.core.jpa.model.mock.JPAMetaModelMock;
 
 public class JPAEdmSchemaTest extends JPAEdmTestModelView {
 	private JPAEdmSchemaTest objJPAEdmSchemaTest;

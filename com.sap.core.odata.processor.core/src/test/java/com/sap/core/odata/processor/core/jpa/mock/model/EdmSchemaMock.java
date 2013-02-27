@@ -1,4 +1,4 @@
-package com.sap.core.odata.processor.core.jpa.util;
+package com.sap.core.odata.processor.core.jpa.mock.model;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,7 +23,7 @@ import com.sap.core.odata.api.edm.provider.SimpleProperty;
 import com.sap.core.odata.processor.api.jpa.model.JPAEdmMapping;
 import com.sap.core.odata.processor.core.jpa.model.JPAEdmMappingImpl;
 
-public class MockEdmSchema {
+public class EdmSchemaMock {
 	
 	private static final String ASSOCIATION_ROLE_NAME_ONE = "SalesOrderHeader";
 	private static final String ASSOCIATION_NAME = "SalesOrderHeader_SalesOrderItem";

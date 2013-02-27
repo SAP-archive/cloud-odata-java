@@ -19,7 +19,7 @@ public class JPAReferenceServiceFactory extends ODataJPAServiceFactory{
 		
 		oDataJPAContext.setEntityManagerFactory(emf);
 		oDataJPAContext.setPersistenceUnitName(PUNIT_NAME); 
-		
+		oDataJPAContext.setJPAEdmNameMappingModel("SalesOrderProcessingMappingModel.xml");
 		return oDataJPAContext;
 	}
 

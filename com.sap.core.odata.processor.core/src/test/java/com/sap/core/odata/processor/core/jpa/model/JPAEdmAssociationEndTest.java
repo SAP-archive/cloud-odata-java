@@ -17,10 +17,10 @@ import com.sap.core.odata.api.edm.provider.EntityType;
 import com.sap.core.odata.processor.api.jpa.access.JPAEdmBuilder;
 import com.sap.core.odata.processor.api.jpa.exception.ODataJPAModelException;
 import com.sap.core.odata.processor.api.jpa.exception.ODataJPARuntimeException;
+import com.sap.core.odata.processor.core.jpa.mock.model.JPAAttributeMock;
+import com.sap.core.odata.processor.core.jpa.mock.model.JPAEdmMockData.SimpleType;
+import com.sap.core.odata.processor.core.jpa.mock.model.JPAEdmMockData.SimpleType.SimpleTypeA;
 import com.sap.core.odata.processor.core.jpa.model.JPAEdmAssociationEnd;
-import com.sap.core.odata.processor.core.jpa.model.mock.JPAAttributeMock;
-import com.sap.core.odata.processor.core.jpa.testdata.JPAEdmMockData.SimpleType;
-import com.sap.core.odata.processor.core.jpa.testdata.JPAEdmMockData.SimpleType.SimpleTypeA;
 
 public class JPAEdmAssociationEndTest extends JPAEdmTestModelView {
 

@@ -1,4 +1,4 @@
-package com.sap.core.odata.processor.core.jpa.model.mock;
+package com.sap.core.odata.processor.core.jpa.mock.model;
 
 import java.util.Set;
 
@@ -11,7 +11,7 @@ import javax.persistence.metamodel.PluralAttribute;
 import javax.persistence.metamodel.SetAttribute;
 import javax.persistence.metamodel.SingularAttribute;
 
-public class JPAEmbeddableMock<X> implements EmbeddableType<X> {
+public class JPAEmbeddableTypeMock<X> implements EmbeddableType<X> {
 
 	@Override
 	public Attribute<? super X, ?> getAttribute(String arg0) {

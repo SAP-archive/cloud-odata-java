@@ -7,6 +7,7 @@ import com.sap.core.odata.api.edm.EdmEntityType;
 import com.sap.core.odata.api.edm.EdmException;
 import com.sap.core.odata.api.edm.EdmMapping;
 import com.sap.core.odata.api.edm.EdmNavigationProperty;
+import com.sap.core.odata.api.edm.provider.Mapping;
 import com.sap.core.odata.api.uri.NavigationSegment;
 import com.sap.core.odata.processor.api.jpa.access.JPAJoinClause;
 import com.sap.core.odata.processor.api.jpa.exception.ODataJPAModelException;
@@ -71,18 +72,22 @@ public class JPQLJoinSelectSingleContext extends JPQLSelectSingleContext
 			String joinCondition = null;
 			String entityAlias = generateJPAEntityAlias();
 			joinCondition = ODataExpressionParser.parseKeyPredicates(
-					entityView.getKeyPredicates(),
-					entityAlias);
-			
-			jpaOuterJoinClause = new JPAJoinClause(
-					entityView.getStartEntitySet().getEntityType().getName(),
-					entityAlias,
-					null,
-					null, joinCondition,
-					JPAJoinClause.JOIN.INNER);
+					entityView.getKeyPredicates(), entityAlias);
+
+			EdmEntityType entityType = entityView.getStartEntitySet()
+					.getEntityType();
+			Mapping mapping = (Mapping) entityType.getMapping();
+			String entityTypeName = null;
+			if (mapping != null)
+				entityTypeName = mapping.getInternalName();
+			else
+				entityTypeName = entityType.getName();
+
+			jpaOuterJoinClause = new JPAJoinClause(entityTypeName, entityAlias,
+					null, null, joinCondition, JPAJoinClause.JOIN.INNER);
 
 			jpaOuterJoinClauses.add(jpaOuterJoinClause);
-			
+
 			for (NavigationSegment navigationSegment : entityView
 					.getNavigationSegments()) {
 
@@ -91,13 +96,13 @@ public class JPQLJoinSelectSingleContext extends JPQLSelectSingleContext
 
 				String relationShipAlias = generateRelationShipAlias();
 
-				joinCondition = ODataExpressionParser.parseKeyPredicates(
-							navigationSegment.getKeyPredicates(),
-							relationShipAlias);
+				joinCondition = ODataExpressionParser
+						.parseKeyPredicates(
+								navigationSegment.getKeyPredicates(),
+								relationShipAlias);
 
 				jpaOuterJoinClause = new JPAJoinClause(
-						getFromEntityName(navigationProperty),
-						entityAlias,
+						getFromEntityName(navigationProperty), entityAlias,
 						getRelationShipName(navigationProperty),
 						relationShipAlias, joinCondition,
 						JPAJoinClause.JOIN.INNER);

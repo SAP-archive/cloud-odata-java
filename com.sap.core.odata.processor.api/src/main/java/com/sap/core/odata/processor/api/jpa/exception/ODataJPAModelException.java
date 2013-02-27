@@ -31,6 +31,8 @@ public class ODataJPAModelException extends ODataJPAException {
 			ODataJPAModelException.class, "BUILDER_NULL");
 	public static final MessageReference TYPE_NOT_SUPPORTED = createMessageReference(
 			ODataJPAModelException.class, "TYPE_NOT_SUPPORTED");
+	public static final MessageReference GENERAL = createMessageReference(
+			ODataJPAModelException.class, "GENERAL");
 
 	private ODataJPAModelException(String localizedMessage, Throwable e) {
 		super(localizedMessage, e);
@@ -61,5 +63,6 @@ public class ODataJPAModelException extends ODataJPAException {
 	}
 
 	private static final long serialVersionUID = 7940106375606950703L;
+
 
 }

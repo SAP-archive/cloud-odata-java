@@ -19,9 +19,9 @@ import com.sap.core.odata.api.edm.provider.Schema;
 import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.processor.api.jpa.exception.ODataJPAModelException;
 import com.sap.core.odata.processor.core.jpa.edm.ODataJPAEdmProvider;
+import com.sap.core.odata.processor.core.jpa.mock.ODataJPAContextMock;
+import com.sap.core.odata.processor.core.jpa.mock.model.EdmSchemaMock;
 import com.sap.core.odata.processor.core.jpa.model.JPAEdmModel;
-import com.sap.core.odata.processor.core.jpa.util.MockEdmSchema;
-import com.sap.core.odata.processor.core.jpa.util.MockODataJPAContext;
 
 public class ODataJPAEdmProviderTest {
 
@@ -35,11 +35,11 @@ public class ODataJPAEdmProviderTest {
 		Field field = clazz.getDeclaredField("schemas");
 		field.setAccessible(true);
 		List<Schema> schemas = new ArrayList<Schema>();
-		schemas.add(MockEdmSchema.createMockEdmSchema());
+		schemas.add(EdmSchemaMock.createMockEdmSchema());
 		field.set(edmProvider,schemas);
 		field = clazz.getDeclaredField("oDataJPAContext");
 		field.setAccessible(true);
-		field.set(edmProvider, MockODataJPAContext.mockODataJPAContext());
+		field.set(edmProvider, ODataJPAContextMock.mockODataJPAContext());
 		field = clazz.getDeclaredField("jpaEdmModel");
 		field.setAccessible(true);
 		field.set(edmProvider, new JPAEdmModel(null, null));
@@ -50,7 +50,7 @@ public class ODataJPAEdmProviderTest {
 	{
 		try
 		{
-			ODataJPAEdmProvider edmProv = new ODataJPAEdmProvider(MockODataJPAContext.mockODataJPAContext());
+			ODataJPAEdmProvider edmProv = new ODataJPAEdmProvider(ODataJPAContextMock.mockODataJPAContext());
 			edmProv.getClass();
 		}
 		catch(Exception e)

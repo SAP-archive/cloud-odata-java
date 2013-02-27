@@ -4,8 +4,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import com.sap.core.odata.api.edm.EdmEntityType;
 import com.sap.core.odata.api.edm.EdmException;
 import com.sap.core.odata.api.edm.EdmProperty;
+import com.sap.core.odata.api.edm.provider.Mapping;
 import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.api.uri.SelectItem;
 import com.sap.core.odata.api.uri.info.GetEntitySetUriInfo;
@@ -68,9 +70,14 @@ public class JPQLSelectContext extends JPQLContext implements
 				try {
 
 					JPQLSelectContext.this.setType(JPQLContextType.SELECT);
-
-					JPQLSelectContext.this.setJPAEntityName(entitySetView
-							.getTargetEntitySet().getEntityType().getName());
+					
+					EdmEntityType entityType = entitySetView
+							.getTargetEntitySet().getEntityType();
+					Mapping mapping = (Mapping) entityType.getMapping();
+					if(mapping != null)
+						JPQLSelectContext.this.setJPAEntityName(mapping.getInternalName());
+					else
+						JPQLSelectContext.this.setJPAEntityName(entityType.getName());
 					
 					JPQLSelectContext.this.setJPAEntityAlias(generateJPAEntityAlias());
 

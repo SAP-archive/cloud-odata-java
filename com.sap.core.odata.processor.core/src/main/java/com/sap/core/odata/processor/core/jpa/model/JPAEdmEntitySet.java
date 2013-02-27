@@ -78,7 +78,7 @@ public class JPAEdmEntitySet extends JPAEdmBaseViewImpl implements
 					currentEntitySet = new EntitySet();
 					currentEntitySet.setEntityType(new FullQualifiedName(
 							nameSpace, entityType.getName()));
-					JPAEdmNameBuilder.build(JPAEdmEntitySet.this);
+					JPAEdmNameBuilder.build(JPAEdmEntitySet.this,entityTypeView);
 					consistentEntitySetList.add(currentEntitySet);
 
 				}

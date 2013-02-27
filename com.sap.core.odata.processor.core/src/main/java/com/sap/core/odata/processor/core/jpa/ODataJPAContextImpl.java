@@ -14,6 +14,7 @@ public class ODataJPAContextImpl implements ODataJPAContext {
 	private ODataContext odataContext;
 	private ODataProcessor processor;
 	private EdmProvider	edmProvider;
+	private String jpaEdmMappingModelName;
 
 	
 	@Override
@@ -65,6 +66,17 @@ public class ODataJPAContextImpl implements ODataJPAContext {
 	@Override
 	public EdmProvider getEdmProvider() {
 		return this.edmProvider;
+	}
+
+	@Override
+	public void setJPAEdmNameMappingModel(String name) {
+		jpaEdmMappingModelName = name;
+		
+	}
+
+	@Override
+	public String getJPAEdmNameMappingModel() {
+		return jpaEdmMappingModelName;
 	}
 
 

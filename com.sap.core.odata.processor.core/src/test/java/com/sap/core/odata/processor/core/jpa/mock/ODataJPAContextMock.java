@@ -1,4 +1,4 @@
-package com.sap.core.odata.processor.core.jpa.util;
+package com.sap.core.odata.processor.core.jpa.mock;
 
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.metamodel.Metamodel;
@@ -7,14 +7,18 @@ import org.easymock.EasyMock;
 
 import com.sap.core.odata.processor.api.jpa.ODataJPAContext;
 
-public class MockODataJPAContext {
+public abstract class ODataJPAContextMock {
 	
-	private static final String NAMESPACE = "salesorderprocessing";  
+	public static final String NAMESPACE = "salesorderprocessing";
+	public static final String MAPPING_MODEL = "SalesOrderProcessingMappingModel";
+	public static final String PERSISTENCE_UNIT_NAME = "salesorderprocessing";
+	
 	public static ODataJPAContext mockODataJPAContext()
 	{
 		ODataJPAContext odataJPAContext = EasyMock.createMock(ODataJPAContext.class);
 		EasyMock.expect(odataJPAContext.getPersistenceUnitName()).andReturn(NAMESPACE).times(2);
 		EasyMock.expect(odataJPAContext.getEntityManagerFactory()).andReturn(mockEntityManagerFactory());
+		EasyMock.expect(odataJPAContext.getJPAEdmNameMappingModel()).andReturn(MAPPING_MODEL);
 		EasyMock.replay(odataJPAContext);
 		return odataJPAContext;
 	}

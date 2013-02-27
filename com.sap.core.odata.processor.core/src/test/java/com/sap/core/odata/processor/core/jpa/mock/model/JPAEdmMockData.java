@@ -1,6 +1,6 @@
-package com.sap.core.odata.processor.core.jpa.testdata;
+package com.sap.core.odata.processor.core.jpa.mock.model;
 
-import com.sap.core.odata.processor.core.jpa.testdata.JPAEdmMockData.EntityType.EntityTypeA;
+import com.sap.core.odata.processor.core.jpa.mock.model.JPAEdmMockData.EntityType.EntityTypeA;
 
 public interface JPAEdmMockData {
 	/*

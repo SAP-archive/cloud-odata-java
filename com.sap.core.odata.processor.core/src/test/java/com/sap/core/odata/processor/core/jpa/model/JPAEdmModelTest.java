@@ -12,9 +12,9 @@ import javax.persistence.metamodel.Metamodel;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.sap.core.odata.processor.core.jpa.model.mock.JPAEmbeddableMock;
-import com.sap.core.odata.processor.core.jpa.model.mock.JPAMetaModelMock;
-import com.sap.core.odata.processor.core.jpa.model.mock.JPASingularAttributeMock;
+import com.sap.core.odata.processor.core.jpa.mock.model.JPAEmbeddableMock;
+import com.sap.core.odata.processor.core.jpa.mock.model.JPAMetaModelMock;
+import com.sap.core.odata.processor.core.jpa.mock.model.JPASingularAttributeMock;
 
 public class JPAEdmModelTest extends JPAEdmTestModelView{
 

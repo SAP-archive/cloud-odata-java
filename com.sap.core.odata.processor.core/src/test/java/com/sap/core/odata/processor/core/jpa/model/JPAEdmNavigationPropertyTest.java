@@ -6,6 +6,7 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import javax.persistence.metamodel.Attribute;
+import javax.persistence.metamodel.EntityType;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -16,7 +17,9 @@ import com.sap.core.odata.api.edm.provider.AssociationEnd;
 import com.sap.core.odata.processor.api.jpa.access.JPAEdmBuilder;
 import com.sap.core.odata.processor.api.jpa.exception.ODataJPAModelException;
 import com.sap.core.odata.processor.api.jpa.exception.ODataJPARuntimeException;
-import com.sap.core.odata.processor.core.jpa.model.mock.JPAAttributeMock;
+import com.sap.core.odata.processor.api.jpa.model.JPAEdmEntityTypeView;
+import com.sap.core.odata.processor.core.jpa.mock.model.JPAAttributeMock;
+import com.sap.core.odata.processor.core.jpa.mock.model.JPAEntityTypeMock;
 
 public class JPAEdmNavigationPropertyTest extends JPAEdmTestModelView {
 
@@ -42,7 +45,17 @@ public class JPAEdmNavigationPropertyTest extends JPAEdmTestModelView {
 	public String getpUnitName() {
 		return "salesorderprocessing";
 	}
-
+	
+	@Override
+	public JPAEdmEntityTypeView getJPAEdmEntityTypeView( ){
+		return this;
+	}
+	
+	@Override
+	public EntityType<?> getJPAEntityType(){
+		return new JPAEdmEntityType( );
+	}
+	
 	private Attribute<?, ?> getJPAAttributeLocal() {
 		AttributeMock<Object, String> attr = new AttributeMock<Object, String>();
 		return attr;
@@ -143,6 +156,13 @@ public class JPAEdmNavigationPropertyTest extends JPAEdmTestModelView {
 			return (Class<String>) java.lang.String.class;
 		}
 
+	}
+	
+	private class JPAEdmEntityType extends JPAEntityTypeMock<String>{
+		@Override
+		public String getName() {
+			return "SalesOrderHeader";
+		}
 	}
 
 }

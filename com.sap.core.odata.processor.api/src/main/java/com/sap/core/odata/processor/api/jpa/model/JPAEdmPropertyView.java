@@ -71,4 +71,21 @@ public interface JPAEdmPropertyView extends JPAEdmBaseView {
 	 */
 	JPAEdmNavigationPropertyView getJPAEdmNavigationPropertyView();
 
+	/**
+	 * The method returns a JPA EDM Entity Type view that holds the property
+	 * view.
+	 * 
+	 * @return an instance of type
+	 *         {@link com.sap.core.odata.processor.api.jpa.model.JPAEdmEntityTypeView}
+	 */
+	JPAEdmEntityTypeView getJPAEdmEntityTypeView();
+	
+	/**
+	 * The method returns a JPA EDM Complex Type view that holds the property
+	 * view.
+	 * 
+	 * @return an instance of type
+	 *         {@link com.sap.core.odata.processor.api.jpa.model.JPAEdmComplexTypeView}
+	 */
+	JPAEdmComplexTypeView getJPAEdmComplexTypeView();
 }

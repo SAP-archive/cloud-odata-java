@@ -18,10 +18,10 @@ import com.sap.core.odata.processor.api.jpa.access.JPAEdmBuilder;
 import com.sap.core.odata.processor.api.jpa.model.JPAEdmEntityContainerView;
 import com.sap.core.odata.processor.api.jpa.model.JPAEdmEntitySetView;
 import com.sap.core.odata.processor.api.jpa.model.JPAEdmEntityTypeView;
+import com.sap.core.odata.processor.core.jpa.mock.model.JPAEntityTypeMock;
+import com.sap.core.odata.processor.core.jpa.mock.model.JPAMetaModelMock;
+import com.sap.core.odata.processor.core.jpa.mock.model.JPASingularAttributeMock;
 import com.sap.core.odata.processor.core.jpa.model.JPAEdmEntityType;
-import com.sap.core.odata.processor.core.jpa.model.mock.JPAEntityTypeMock;
-import com.sap.core.odata.processor.core.jpa.model.mock.JPAMetaModelMock;
-import com.sap.core.odata.processor.core.jpa.model.mock.JPASingularAttributeMock;
 
 public class JPAEdmEntityTypeTest extends JPAEdmTestModelView{
 

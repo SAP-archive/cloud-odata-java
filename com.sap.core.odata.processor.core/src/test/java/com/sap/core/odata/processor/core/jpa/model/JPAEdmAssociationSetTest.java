@@ -1,8 +1,8 @@
 package com.sap.core.odata.processor.core.jpa.model;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.assertEquals;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,8 +22,6 @@ import com.sap.core.odata.processor.api.jpa.exception.ODataJPAModelException;
 import com.sap.core.odata.processor.api.jpa.model.JPAEdmAssociationView;
 import com.sap.core.odata.processor.api.jpa.model.JPAEdmEntityContainerView;
 import com.sap.core.odata.processor.api.jpa.model.JPAEdmEntitySetView;
-import com.sap.core.odata.processor.core.jpa.model.JPAEdmAssociationSet;
-import com.sap.core.odata.processor.core.jpa.testdata.JPAEdmTestModelView;
 
 public class JPAEdmAssociationSetTest extends JPAEdmTestModelView {
 	

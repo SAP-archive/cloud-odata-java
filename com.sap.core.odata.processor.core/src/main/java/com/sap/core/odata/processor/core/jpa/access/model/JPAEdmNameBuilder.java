@@ -15,21 +15,22 @@ import com.sap.core.odata.api.edm.provider.ComplexProperty;
 import com.sap.core.odata.api.edm.provider.EntityType;
 import com.sap.core.odata.api.edm.provider.Mapping;
 import com.sap.core.odata.api.edm.provider.NavigationProperty;
+import com.sap.core.odata.processor.api.jpa.access.JPAEdmMappingModelAccess;
 import com.sap.core.odata.processor.api.jpa.exception.ODataJPAModelException;
 import com.sap.core.odata.processor.api.jpa.model.JPAEdmAssociationEndView;
 import com.sap.core.odata.processor.api.jpa.model.JPAEdmAssociationSetView;
 import com.sap.core.odata.processor.api.jpa.model.JPAEdmAssociationView;
+import com.sap.core.odata.processor.api.jpa.model.JPAEdmBaseView;
 import com.sap.core.odata.processor.api.jpa.model.JPAEdmComplexPropertyView;
 import com.sap.core.odata.processor.api.jpa.model.JPAEdmEntityContainerView;
 import com.sap.core.odata.processor.api.jpa.model.JPAEdmEntitySetView;
 import com.sap.core.odata.processor.api.jpa.model.JPAEdmEntityTypeView;
 import com.sap.core.odata.processor.api.jpa.model.JPAEdmMapping;
+import com.sap.core.odata.processor.api.jpa.model.JPAEdmNavigationPropertyView;
 import com.sap.core.odata.processor.api.jpa.model.JPAEdmPropertyView;
 import com.sap.core.odata.processor.api.jpa.model.JPAEdmSchemaView;
 import com.sap.core.odata.processor.core.jpa.model.JPAEdmComplexType;
 import com.sap.core.odata.processor.core.jpa.model.JPAEdmMappingImpl;
-import com.sap.core.odata.processor.core.jpa.model.JPAEdmNavigationProperty;
-
 
 public class JPAEdmNameBuilder {
 	private static final String ENTITY_CONTAINER_SUFFIX = "Container";
@@ -52,9 +53,22 @@ public class JPAEdmNameBuilder {
 
 		EntityType edmEntityType = view.getEdmEntityType();
 		String jpaEntityName = view.getJPAEntityType().getName();
+		JPAEdmMappingModelAccess mappingModelAccess = view
+				.getJPAEdmMappingModelAccess();
+		String edmEntityTypeName = null;
+		if (mappingModelAccess != null
+				&& mappingModelAccess.isMappingModelExists())
+			edmEntityTypeName = mappingModelAccess
+					.mapJPAEntityType(jpaEntityName);
 
-		edmEntityType.setName(jpaEntityName);
-		edmEntityType.setMapping(new Mapping().setInternalName(jpaEntityName));
+		if (edmEntityTypeName == null)
+			edmEntityTypeName = jpaEntityName;
+		else
+			edmEntityType.setMapping(new Mapping()
+					.setInternalName(jpaEntityName));
+
+		edmEntityType.setName(edmEntityTypeName);
+
 	}
 
 	/*
@@ -68,7 +82,7 @@ public class JPAEdmNameBuilder {
 	 */
 	public static void build(JPAEdmSchemaView view)
 			throws ODataJPAModelException {
-		view.getEdmSchema().setNamespace(buildNamespace(view.getpUnitName()));
+		view.getEdmSchema().setNamespace(buildNamespace(view));
 	}
 
 	/*
@@ -84,14 +98,34 @@ public class JPAEdmNameBuilder {
 	 * EDM Property Name - RULES
 	 * ************************************************************************
 	 */
-	public static void build(JPAEdmPropertyView view) {
+	public static void build(JPAEdmPropertyView view, boolean isComplexMode) {
 		Attribute<?, ?> jpaAttribute = view.getJPAAttribute();
 		String jpaAttributeName = jpaAttribute.getName();
-		String propertyName = Character.toUpperCase(jpaAttributeName.charAt(0))
-				+ jpaAttributeName.substring(1);
+		String propertyName = null;
+
+		JPAEdmMappingModelAccess mappingModelAccess = view
+				.getJPAEdmMappingModelAccess();
+		if (mappingModelAccess != null
+				&& mappingModelAccess.isMappingModelExists()) {
+			if (isComplexMode)
+				propertyName = mappingModelAccess
+						.mapJPAEmbeddableTypeAttribute(view
+								.getJPAEdmComplexTypeView()
+								.getJPAEmbeddableType().getJavaType()
+								.getSimpleName(), jpaAttributeName);
+			else
+				propertyName = mappingModelAccess.mapJPAAttribute(
+						view.getJPAEdmEntityTypeView().getJPAEntityType()
+								.getName(), jpaAttributeName);
+		}
+		if (propertyName == null)
+			propertyName = Character.toUpperCase(jpaAttributeName.charAt(0))
+					+ jpaAttributeName.substring(1);
+
 		view.getEdmSimpleProperty().setName(propertyName);
 
 		JPAEdmMapping mapping = new JPAEdmMappingImpl();
+		((Mapping) mapping).setInternalName(jpaAttributeName);
 
 		AnnotatedElement annotatedElement = (AnnotatedElement) jpaAttribute
 				.getJavaMember();
@@ -117,7 +151,6 @@ public class JPAEdmNameBuilder {
 			}
 
 		}
-		((Mapping) mapping).setInternalName(jpaAttributeName);
 		view.getEdmSimpleProperty().setMapping((Mapping) mapping);
 	}
 
@@ -132,7 +165,7 @@ public class JPAEdmNameBuilder {
 	 */
 	public static void build(JPAEdmEntityContainerView view) {
 		view.getEdmEntityContainer().setName(
-				buildNamespace(view.getpUnitName()) + ENTITY_CONTAINER_SUFFIX);
+				buildNamespace(view) + ENTITY_CONTAINER_SUFFIX);
 	}
 
 	/*
@@ -144,9 +177,24 @@ public class JPAEdmNameBuilder {
 	 * EDM EntitySet Name - RULES
 	 * ************************************************************************
 	 */
-	public static void build(JPAEdmEntitySetView view) {
+	public static void build(JPAEdmEntitySetView view,
+			JPAEdmEntityTypeView entityTypeView) {
 		FullQualifiedName fQname = view.getEdmEntitySet().getEntityType();
-		view.getEdmEntitySet().setName(fQname.getName() + ENTITY_SET_SUFFIX);
+		JPAEdmMappingModelAccess mappingModelAccess = view
+				.getJPAEdmMappingModelAccess();
+		String entitySetName = null;
+		if (mappingModelAccess != null
+				&& mappingModelAccess.isMappingModelExists()) {
+			Mapping mapping = entityTypeView.getEdmEntityType().getMapping();
+			if (mapping != null)
+				entitySetName = mappingModelAccess.mapJPAEntitySet(mapping
+						.getInternalName());
+		}
+
+		if (entitySetName == null)
+			entitySetName = fQname.getName() + ENTITY_SET_SUFFIX;
+
+		view.getEdmEntitySet().setName(entitySetName);
 	}
 
 	/*
@@ -159,8 +207,21 @@ public class JPAEdmNameBuilder {
 	 * ************************************************************************
 	 */
 	public static void build(JPAEdmComplexType view) {
-		view.getEdmComplexType().setName(
-				view.getJPAEmbeddableType().getJavaType().getSimpleName());
+
+		JPAEdmMappingModelAccess mappingModelAccess = view
+				.getJPAEdmMappingModelAccess();
+		String jpaEmbeddableTypeName = view.getJPAEmbeddableType()
+				.getJavaType().getSimpleName();
+		String edmComplexTypeName = null;
+		if (mappingModelAccess != null
+				&& mappingModelAccess.isMappingModelExists())
+			edmComplexTypeName = mappingModelAccess
+					.mapJPAEmbeddableType(jpaEmbeddableTypeName);
+
+		if (edmComplexTypeName == null)
+			edmComplexTypeName = jpaEmbeddableTypeName;
+
+		view.getEdmComplexType().setName(edmComplexTypeName);
 
 	}
 
@@ -178,13 +239,30 @@ public class JPAEdmNameBuilder {
 	 */
 	public static void build(JPAEdmComplexPropertyView complexView,
 			JPAEdmPropertyView propertyView) {
-		String name = propertyView.getJPAAttribute().getName();
-		String propertyName = Character.toUpperCase(name.charAt(0))
-				+ name.substring(1);
+
 		ComplexProperty complexProperty = complexView.getEdmComplexProperty();
+
+		String jpaAttributeName = propertyView.getJPAAttribute().getName();
+		String jpaEntityTypeName = propertyView.getJPAEdmEntityTypeView()
+				.getJPAEntityType().getName();
+
+		JPAEdmMappingModelAccess mappingModelAccess = complexView
+				.getJPAEdmMappingModelAccess();
+		String propertyName = null;
+
+		if (mappingModelAccess != null
+				&& mappingModelAccess.isMappingModelExists())
+			propertyName = mappingModelAccess.mapJPAAttribute(
+					jpaEntityTypeName, jpaAttributeName);
+
+		if (propertyName == null)
+			propertyName = Character.toUpperCase(jpaAttributeName.charAt(0))
+					+ jpaAttributeName.substring(1);
+		else
+			complexProperty.setMapping(((Mapping) new JPAEdmMappingImpl())
+					.setInternalName(jpaAttributeName));
+
 		complexProperty.setName(propertyName);
-		complexProperty.setMapping(((Mapping) new JPAEdmMappingImpl())
-				.setInternalName(name));
 
 	}
 
@@ -200,28 +278,54 @@ public class JPAEdmNameBuilder {
 	public static void build(JPAEdmAssociationEndView assocaitionEndView,
 			JPAEdmEntityTypeView entityTypeView, JPAEdmPropertyView propertyView) {
 
-		String namespace = buildNamespace(assocaitionEndView.getpUnitName());
+		String namespace = buildNamespace(assocaitionEndView);
 
 		String name = entityTypeView.getEdmEntityType().getName();
 		FullQualifiedName fQName = new FullQualifiedName(namespace, name);
 		assocaitionEndView.getEdmAssociationEnd1().setType(fQName);
-		try
-		{
-			PluralAttribute<?, ?, ?> jpattr = (PluralAttribute<?, ?, ?>)propertyView.getJPAAttribute();
-			name = jpattr.getElementType().getJavaType().getSimpleName();
-		}
-		catch(Exception e)
-		{
-			name = propertyView.getJPAAttribute().getJavaType().getSimpleName();
-		}
 		
+		name = null;
+		String jpaEntityTypeName = null;
+		try {
+
+			PluralAttribute<?, ?, ?> jpattr = (PluralAttribute<?, ?, ?>) propertyView
+					.getJPAAttribute();
+
+			jpaEntityTypeName = jpattr.getElementType().getJavaType()
+					.getSimpleName();
+
+		} catch (Exception e) {
+			jpaEntityTypeName = propertyView.getJPAAttribute().getJavaType()
+					.getSimpleName();
+		}
+
+		JPAEdmMappingModelAccess mappingModelAccess = assocaitionEndView
+				.getJPAEdmMappingModelAccess();
+
+		if (mappingModelAccess != null
+				&& mappingModelAccess.isMappingModelExists())
+			name = mappingModelAccess.mapJPAEntityType(jpaEntityTypeName);
+
+		if (name == null)
+			name = jpaEntityTypeName;
+
 		fQName = new FullQualifiedName(namespace, name);
 		assocaitionEndView.getEdmAssociationEnd2().setType(fQName);
 
 	}
 
-	private static String buildNamespace(String name) {
-		return name;
+	private static String buildNamespace(JPAEdmBaseView view) {
+		JPAEdmMappingModelAccess mappingModelAccess = view
+				.getJPAEdmMappingModelAccess();
+		String namespace = null;
+		if (mappingModelAccess != null
+				&& mappingModelAccess.isMappingModelExists())
+			namespace = mappingModelAccess.mapJPAPersistenceUnit(view
+					.getpUnitName());
+		if (namespace == null)
+			namespace = view.getpUnitName();
+
+		return namespace;
 	}
 
 	/*
@@ -241,11 +345,9 @@ public class JPAEdmNameBuilder {
 		String end2Name = association.getEnd2().getType().getName();
 
 		if (end1Name.compareToIgnoreCase(end2Name) > 0) {
-			association.setName(end2Name + UNDERSCORE
-					+ end1Name);
+			association.setName(end2Name + UNDERSCORE + end1Name);
 		} else {
-			association.setName(end1Name + UNDERSCORE
-					+ end2Name);
+			association.setName(end1Name + UNDERSCORE + end2Name);
 		}
 
 	}
@@ -269,11 +371,10 @@ public class JPAEdmNameBuilder {
 
 	public static void build(JPAEdmAssociationView associationView,
 			JPAEdmPropertyView propertyView,
-			JPAEdmNavigationProperty jpaEdmNavigationProperty) {
+			JPAEdmNavigationPropertyView navPropertyView) {
 
-		NavigationProperty navProp = jpaEdmNavigationProperty
-				.getEdmNavigationProperty();
-		String namespace = buildNamespace(associationView.getpUnitName());
+		NavigationProperty navProp = navPropertyView.getEdmNavigationProperty();
+		String namespace = buildNamespace(associationView);
 
 		Association association = associationView.getEdmAssociation();
 		navProp.setRelationship(new FullQualifiedName(namespace, association
@@ -282,29 +383,52 @@ public class JPAEdmNameBuilder {
 		FullQualifiedName associationEndTypeOne = association.getEnd1()
 				.getType();
 
-		
 		Attribute<?, ?> jpaAttribute = propertyView.getJPAAttribute();
 		navProp.setMapping(new Mapping().setInternalName(jpaAttribute.getName()));
-		try
-		{
-			PluralAttribute<?, ?, ?> jpattr = (PluralAttribute<?, ?, ?>)propertyView.getJPAAttribute();
-			navProp.setName(jpattr.getElementType().getJavaType().getSimpleName()
-					.concat(NAVIGATION_NAME));
+
+		String jpaEntityTypeName = propertyView.getJPAEdmEntityTypeView()
+				.getJPAEntityType().getName();
+		String navPropName = null;
+
+		JPAEdmMappingModelAccess mappingModelAccess = navPropertyView
+				.getJPAEdmMappingModelAccess();
+
+		try {
+			PluralAttribute<?, ?, ?> jpattr = (PluralAttribute<?, ?, ?>) propertyView
+					.getJPAAttribute();
+
+			if (mappingModelAccess != null
+					&& mappingModelAccess.isMappingModelExists())
+				navPropName = mappingModelAccess.mapJPARelationship(
+						jpaEntityTypeName, jpattr.getName());
+			if (navPropName == null)
+				navPropName = jpattr.getElementType().getJavaType()
+						.getSimpleName().concat(NAVIGATION_NAME);
+
+			navProp.setName(navPropName);
+
 			if (jpattr.getElementType().getJavaType().getSimpleName()
 					.equals(associationEndTypeOne.getName())) {
 				navProp.setFromRole(association.getEnd2().getRole());
 				navProp.setToRole(association.getEnd1().getRole());
 			} else {
-
 				navProp.setToRole(association.getEnd2().getRole());
 				navProp.setFromRole(association.getEnd1().getRole());
 			}
-		}
-		catch(Exception e)
-		{
-			navProp.setName(jpaAttribute.getJavaType().getSimpleName()
-					.concat(NAVIGATION_NAME));
-			if (propertyView.getJPAAttribute().getJavaType().getSimpleName()
+
+		} catch (Exception e) {
+			if (mappingModelAccess != null
+					&& mappingModelAccess.isMappingModelExists())
+				navPropName = mappingModelAccess.mapJPARelationship(
+						jpaEntityTypeName, jpaAttribute.getName());
+
+			if (navPropName == null)
+				navPropName = jpaAttribute.getJavaType().getSimpleName()
+						.concat(NAVIGATION_NAME);
+
+			navProp.setName(navPropName);
+
+			if (jpaAttribute.getJavaType().getSimpleName()
 					.equals(associationEndTypeOne.getName())) {
 				navProp.setFromRole(association.getEnd2().getRole());
 				navProp.setToRole(association.getEnd1().getRole());
@@ -314,7 +438,6 @@ public class JPAEdmNameBuilder {
 				navProp.setFromRole(association.getEnd1().getRole());
 			}
 		}
-		
 
 	}
 }

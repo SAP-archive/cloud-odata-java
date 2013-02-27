@@ -7,6 +7,7 @@ import com.sap.core.odata.api.edm.EdmEntityType;
 import com.sap.core.odata.api.edm.EdmException;
 import com.sap.core.odata.api.edm.EdmMapping;
 import com.sap.core.odata.api.edm.EdmNavigationProperty;
+import com.sap.core.odata.api.edm.provider.Mapping;
 import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.api.uri.NavigationSegment;
 import com.sap.core.odata.processor.api.jpa.access.JPAJoinClause;
@@ -76,8 +77,17 @@ public class JPQLJoinSelectContext extends JPQLSelectContext implements
 					entitySetView.getKeyPredicates(),
 					entityAlias);
 			
+			EdmEntityType entityType = entitySetView.getStartEntitySet()
+					.getEntityType();
+			Mapping mapping = (Mapping) entityType.getMapping();
+			String entityTypeName = null;
+			if (mapping != null)
+				entityTypeName = mapping.getInternalName();
+			else
+				entityTypeName = entityType.getName();
+			
 			jpaOuterJoinClause = new JPAJoinClause(
-					entitySetView.getStartEntitySet().getEntityType().getName(),
+					entityTypeName,
 					entityAlias,
 					null,
 					null, joinCondition,

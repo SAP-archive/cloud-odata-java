@@ -2,6 +2,7 @@ package com.sap.core.odata.processor.core.jpa.model;
 
 import javax.persistence.metamodel.Metamodel;
 
+import com.sap.core.odata.processor.api.jpa.ODataJPAContext;
 import com.sap.core.odata.processor.api.jpa.access.JPAEdmBuilder;
 import com.sap.core.odata.processor.api.jpa.exception.ODataJPAModelException;
 import com.sap.core.odata.processor.api.jpa.exception.ODataJPARuntimeException;
@@ -13,6 +14,10 @@ public class JPAEdmModel extends JPAEdmBaseViewImpl implements JPAEdmModelView {
 	protected JPAEdmSchemaView schemaView;
 	public JPAEdmModel(Metamodel metaModel, String pUnitName) {
 		super(metaModel,pUnitName);
+	}
+	
+	public JPAEdmModel(ODataJPAContext ctx){
+		super(ctx);
 	}
 
 	@Override
