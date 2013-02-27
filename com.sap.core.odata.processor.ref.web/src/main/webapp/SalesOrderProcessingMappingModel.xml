@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <JPAEDMMappingModel
-	xmlns="http://www.sap.com/core/odata/processor/api/jpa/model/mapping"
-	>
+	xmlns="http://www.sap.com/core/odata/processor/api/jpa/model/mapping" >
 	<PersistenceUnit name="salesorderprocessing">
 		<EDMSchemaNamespace>SalesOrderProcessing</EDMSchemaNamespace>
 		<JPAEntityTypes>
@@ -26,10 +25,8 @@
 					<JPAAttribute name="soId">SalesOrderID</JPAAttribute>
 				</JPAAttributes>
 				<JPARelationships>
-					<JPARelationship name="salesOrderHeader">SalesOrderHeaderDetails
-					</JPARelationship>
-					<JPARelationship name="materials">MaterialDetails
-					</JPARelationship>
+					<JPARelationship name="salesOrderHeader">SalesOrderHeaderDetails</JPARelationship>
+					<JPARelationship name="materials">MaterialDetails</JPARelationship>
 				</JPARelationships>
 			</JPAEntityType>
 		</JPAEntityTypes>

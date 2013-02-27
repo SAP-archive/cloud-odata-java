@@ -171,15 +171,15 @@ body {
 			<tr>
 				<td width=20%>Query all Sales Orders</td>
 				<td width=40%><a
-					href="SalesOrderProcessing.svc/SalesOrderHeaders" target="_blank">SalesOrderProcessing.svc/SalesOrderHeaders
+					href="SalesOrderProcessing.svc/SalesOrders" target="_blank">SalesOrderProcessing.svc/SalesOrders
 				</a></td>
 				<td width=40%><code style="font-size: small">SELECT E1 FROM SalesOrderHeader E1</code></td>
 			</tr>
 			<tr>
 				<td width=20%>Query for Sales Order with So ID = 1</td>
 				<td width=40%><a
-					href="SalesOrderProcessing.svc/SalesOrderHeaders?$filter=SoId eq 1"
-					target="_blank">SalesOrderProcessing.svc/SalesOrderHeaders?$filter=SoId
+					href="SalesOrderProcessing.svc/SalesOrders?$filter=ID eq 1"
+					target="_blank">SalesOrderProcessing.svc/SalesOrders?$filter=ID
 						eq 1</a></td>
 				<td width=40%><code style="font-size: small">SELECT E1 FROM SalesOrderHeader E1
 						WHERE E1.soId = 1</code></td>
@@ -187,8 +187,8 @@ body {
 			<tr>
 				<td>Query for Sales Order with Buyer Name = buyerName_3</td>
 				<td><a
-					href="SalesOrderProcessing.svc/SalesOrderHeaders?$filter=BuyerName eq 'buyerName_3'"
-					target="_blank">SalesOrderProcessing.svc/SalesOrderHeaders?$filter=BuyerName
+					href="SalesOrderProcessing.svc/SalesOrders?$filter=BuyerName eq 'buyerName_3'"
+					target="_blank">SalesOrderProcessing.svc/SalesOrders?$filter=BuyerName
 						eq 'buyerName_3'</a></td>
 				<td width=60%><code style="font-size: small">SELECT E1 FROM SalesOrderHeader E1
 						WHERE E1.buyerName = 'buyerName_3'</code></td>
@@ -196,8 +196,8 @@ body {
 			<tr>
 				<td>Query for undelivered Sales Orders</td>
 				<td><a
-					href="SalesOrderProcessing.svc/SalesOrderHeaders?$filter=DeliveryStatus eq false"
-					target="_blank">SalesOrderProcessing.svc/SalesOrderHeaders?$filter=DeliveryStatus
+					href="SalesOrderProcessing.svc/SalesOrders?$filter=DeliveryStatus eq false"
+					target="_blank">SalesOrderProcessing.svc/SalesOrders?$filter=DeliveryStatus
 						eq false</a></td>
 				<td width=60%><code style="font-size: small">SELECT E1 FROM SalesOrderHeader E1
 						WHERE E1.deliveryStatus = 'false'</code></td>
@@ -205,16 +205,16 @@ body {
 			<tr>
 				<td>Query for Sales Order creation date</td>
 				<td><a
-					href="SalesOrderProcessing.svc/SalesOrderHeaders?$filter=CreationDate eq datetime'2013-01-01T00:00:00'"
-					target="_blank">SalesOrderProcessing.svc/SalesOrderHeaders?$filter=CreationDate
+					href="SalesOrderProcessing.svc/SalesOrders?$filter=CreationDate eq datetime'2013-01-01T00:00:00'"
+					target="_blank">SalesOrderProcessing.svc/SalesOrders?$filter=CreationDate
 						eq datetime'2013-01-01T00:00:00'</a></td>
 				<td width=60%><code style="font-size: small">SELECT E1 FROM SalesOrderHeader E1 WHERE E1.creationDate = {d '2013-01-01'}</code></td>
 			</tr>
 			<tr>
 				<td>Query for Sales Order with Buyer Address House number = 7</td>
 				<td><a
-					href="SalesOrderProcessing.svc/SalesOrderHeaders?$filter=BuyerAddress/HouseNumber eq 7"
-					target="_blank">SalesOrderProcessing.svc/SalesOrderHeaders?$filter=BuyerAddress/HouseNumber
+					href="SalesOrderProcessing.svc/SalesOrders?$filter=BuyerAddressInfo/HouseNumber eq 7"
+					target="_blank">SalesOrderProcessing.svc/SalesOrders?$filter=BuyerAddressInfo/HouseNumber
 						eq 7 </a></td>
 				<td width=60%><code style="font-size: small">SELECT E1 FROM SalesOrderHeader E1 WHERE E1.buyerAddress.houseNumber = 7</code></td>
 			</tr>
@@ -222,9 +222,9 @@ body {
 				<td>Query for SalesOrders with buyer id less than 5 and Buyer
 					Country = Test_Country_3</td>
 				<td><a
-					href="SalesOrderProcessing.svc/SalesOrderHeaders?$filter=BuyerId le 5 and BuyerAddress/Country eq 'Test_Country_3'"
-					target="_blank">SalesOrderProcessing.svc/SalesOrderHeaders?$filter=BuyerId
-						le 5 and BuyerAddress/Country eq 'Test_Country_3'</a></td>
+					href="SalesOrderProcessing.svc/SalesOrders?$filter=BuyerId le 5 and BuyerAddressInfo/Country eq 'Test_Country_3'"
+					target="_blank">SalesOrderProcessing.svc/SalesOrders?$filter=BuyerId
+						le 5 and BuyerAddressInfo/Country eq 'Test_Country_3'</a></td>
 				<td width=60%><code style="font-size: small">SELECT E1 FROM SalesOrderHeader E1
 						WHERE E1.buyerId &lt; 5 and E1.buyerAddress.Country =
 						'Test_Country_3'</code></td>
@@ -233,17 +233,17 @@ body {
 				<td>Query for SalesOrders with buyer id less than 5 or Sales
 					Order Id greater than 5</td>
 				<td><a
-					href="SalesOrderProcessing.svc/SalesOrderHeaders?$filter=BuyerId le 5 or SoId gt 5"
-					target="_blank">SalesOrderProcessing.svc/SalesOrderHeaders?$filter=BuyerId
-						le 5 or SoId gt 5</a></td>
+					href="SalesOrderProcessing.svc/SalesOrders?$filter=BuyerId le 5 or ID gt 5"
+					target="_blank">SalesOrderProcessing.svc/SalesOrders?$filter=BuyerId
+						le 5 or ID gt 5</a></td>
 				<td width=60%><code style="font-size: small">SELECT E1 FROM SalesOrderHeader E1
 						WHERE E1.buyerId &lt; 5 or E1.soId &gt; 5 </code></td>
 			</tr>
 			<tr>
 				<td>Query for SalesOrders in the descending order of Buyer Id</td>
 				<td><a
-					href="SalesOrderProcessing.svc/SalesOrderHeaders?$orderby=BuyerId desc"
-					target="_blank">SalesOrderProcessing.svc/SalesOrderHeaders?$orderby=BuyerId
+					href="SalesOrderProcessing.svc/SalesOrders?$orderby=BuyerId desc"
+					target="_blank">SalesOrderProcessing.svc/SalesOrders?$orderby=BuyerId
 						desc</a></td>
 				<td width=60%><code style="font-size: small">SELECT E1 FROM SalesOrderHeader E1
 						ORDERBY E1.buyerId desc </code></td>
@@ -252,38 +252,38 @@ body {
 				<td>Query for SalesOrders in the ascending order of Sales Order
 					Id</td>
 				<td><a
-					href="SalesOrderProcessing.svc/SalesOrderHeaders?$orderby=SoId asc"
-					target="_blank">SalesOrderProcessing.svc/SalesOrderHeaders?$orderby=SoId
+					href="SalesOrderProcessing.svc/SalesOrders?$orderby=ID asc"
+					target="_blank">SalesOrderProcessing.svc/SalesOrders?$orderby=ID
 						asc</a></td>
 				<td width=60%><code style="font-size: small">SELECT E1 FROM SalesOrderHeader E1
 						ORDERBY E1.soId </code></td>
 			</tr>
 			<tr>
 				<td>Query for top 3 SalesOrders</td>
-				<td><a href="SalesOrderProcessing.svc/SalesOrderHeaders?$top=3"
-					target="_blank">SalesOrderProcessing.svc/SalesOrderHeaders?$top=3</a></td>
+				<td><a href="SalesOrderProcessing.svc/SalesOrders?$top=3"
+					target="_blank">SalesOrderProcessing.svc/SalesOrders?$top=3</a></td>
 				<td width=60%><code style="font-size: small">SELECT E1 FROM SalesOrderHeader E1</code></td>
 			</tr>
 			<tr>
 				<td>Query for SalesOrders and Skip top 3</td>
 				<td><a
-					href="SalesOrderProcessing.svc/SalesOrderHeaders?$skip=2"
-					target="_blank">SalesOrderProcessing.svc/SalesOrderHeaders?$skip=2</a></td>
+					href="SalesOrderProcessing.svc/SalesOrders?$skip=2"
+					target="_blank">SalesOrderProcessing.svc/SalesOrders?$skip=2</a></td>
 				<td width=60%><code style="font-size: small">SELECT E1 FROM SalesOrderHeader E1</code></td>
 			</tr>
 			<tr>
 				<td>Query for SalesOrders and count Number of Sales Orders
 					Inline</td>
 				<td><a
-					href="SalesOrderProcessing.svc/SalesOrderHeaders?$inlinecount=allpages"
-					target="_blank">SalesOrderProcessing.svc/SalesOrderHeaders?$inlinecount=allpages</a></td>
+					href="SalesOrderProcessing.svc/SalesOrders?$inlinecount=allpages"
+					target="_blank">SalesOrderProcessing.svc/SalesOrders?$inlinecount=allpages</a></td>
 				<td width=60%><code style="font-size: small">SELECT E1 FROM SalesOrderHeader E1</code></td>
 			</tr>
 			<tr>
 				<td>Mixed Query Example</td>
 				<td><a
-					href="SalesOrderProcessing.svc/SalesOrderHeaders?$skip=2&$top=2&$orderby=SoId"
-					target="_blank">SalesOrderProcessing.svc/SalesOrderHeaders?$skip=2&amp;$top=2&amp;$orderby=SoId</a></td>
+					href="SalesOrderProcessing.svc/SalesOrders?$skip=2&$top=2&$orderby=ID"
+					target="_blank">SalesOrderProcessing.svc/SalesOrders?$skip=2&amp;$top=2&amp;$orderby=ID</a></td>
 				<td width=60%><code style="font-size: small">SELECT E1 FROM SalesOrderHeader E1
 						ORDERBY E1.soId asc</code></td>
 			</tr>
@@ -314,14 +314,14 @@ body {
 			<tr>
 				<td width=20%>Read operation on SalesOrderHeader</td>
 				<td width=40%><a
-					href="SalesOrderProcessing.svc/SalesOrderHeaders(1L)" target="_blank">SalesOrderProcessing.svc/SalesOrderHeaders(1L)
+					href="SalesOrderProcessing.svc/SalesOrders(1L)" target="_blank">SalesOrderProcessing.svc/SalesOrders(1L)
 				</a></td>
 				<td width=40%><code style="font-size: small">SELECT E1 FROM SalesOrderHeader E1 WHERE E1.soId = 1</code></td>
 			</tr>
 			<tr>
 				<td width=20%>Read operation on SalesOrderItem</td>
 				<td width=40%><a
-					href="SalesOrderProcessing.svc/SalesOrderItems(SoId=1L,LiId=111L)" target="_blank">SalesOrderProcessing.svc/SalesOrderItems(SoId=1L,LiId=111L)
+					href="SalesOrderProcessing.svc/SalesOrderLineItems(SoId=1L,LiId=111L)" target="_blank">SalesOrderProcessing.svc/SalesOrderLineItems(SoId=1L,LiId=111L)
 				</a></td>
 				<td width=40%><code style="font-size: small">SELECT E1 FROM SalesOrderItem E1 WHERE E1.salesOrderItemKey.soId = 1 AND E1.salesOrderItemKey.liId = 111</code></td>
 			</tr>
@@ -367,7 +367,7 @@ body {
 			<tr>
 				<td width=20%>SalesOrderHeader-SalesOrderItem (OneToMany)</td>
 				<td width=40%><a
-					href="SalesOrderProcessing.svc/SalesOrderHeaders(1L)/SalesOrderItemDetails" target="_blank">SalesOrderProcessing.svc/SalesOrderHeaders(1L)/SalesOrderItemDetails
+					href="SalesOrderProcessing.svc/SalesOrders(1L)/SalesOrderLineItemDetails" target="_blank">SalesOrderProcessing.svc/SalesOrders(1L)/SalesOrderLineItemDetails
 				</a></td>
 				<td width=40%><code style="font-size: small">SELECT R1 FROM SalesOrderHeader E1 JOIN E1.salesOrderItem R1 WHERE E1.soId = 1</code></td>
 			</tr>
@@ -375,7 +375,7 @@ body {
 			<tr>
 				<td width=20%>SalesOrderItem-SalesOrderHeader (ManyToOne)</td>
 				<td width=40%><a
-					href="SalesOrderProcessing.svc/SalesOrderItems(SoId=1L,LiId=111L)/SalesOrderHeaderDetails" target="_blank">SalesOrderProcessing.svc/SalesOrderItems(SoId=1L,LiId=111L)/SalesOrderHeaderDetails
+					href="SalesOrderProcessing.svc/SalesOrderLineItems(SoId=1L,LiId=111L)/SalesOrderHeaderDetails" target="_blank">SalesOrderProcessing.svc/SalesOrderLineItems(SoId=1L,LiId=111L)/SalesOrderHeaderDetails
 				</a></td>
 				<td width=40%><code style="font-size: small">SELECT R1 FROM SalesOrderItem E1 JOIN E1.salesOrderHeader R1 WHERE E1.salesOrderItemKey.soId = 1 AND E1.salesOrderItemKey.liId = 111</code></td>
 			</tr>
@@ -383,7 +383,7 @@ body {
 			<tr>
 				<td width=20%>SalesOrderItem-Material (ManyToOne)</td>
 				<td width=40%><a
-					href="SalesOrderProcessing.svc/SalesOrderItems(SoId=1L,LiId=111L)/MaterialDetails" target="_blank">SalesOrderProcessing.svc/SalesOrderItems(SoId=1L,LiId=111L)/MaterialDetails
+					href="SalesOrderProcessing.svc/SalesOrderLineItems(SoId=1L,LiId=111L)/MaterialDetails" target="_blank">SalesOrderProcessing.svc/SalesOrderLineItems(SoId=1L,LiId=111L)/MaterialDetails
 				</a></td>
 				<td width=40%><code style="font-size: small">SELECT R1 FROM SalesOrderItem E1 JOIN E1.material R1 WHERE E1.salesOrderItemKey.soId = 1 AND E1.salesOrderItemKey.liId = 111</code></td>
 			</tr>
