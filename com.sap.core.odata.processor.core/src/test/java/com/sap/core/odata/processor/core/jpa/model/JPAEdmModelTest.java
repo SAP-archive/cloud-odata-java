@@ -1,6 +1,7 @@
 package com.sap.core.odata.processor.core.jpa.model;
 
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.fail;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -12,6 +13,9 @@ import javax.persistence.metamodel.Metamodel;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.sap.core.odata.processor.api.jpa.exception.ODataJPAModelException;
+import com.sap.core.odata.processor.api.jpa.exception.ODataJPARuntimeException;
+import com.sap.core.odata.processor.core.jpa.common.JPATestConstants;
 import com.sap.core.odata.processor.core.jpa.mock.model.JPAEmbeddableMock;
 import com.sap.core.odata.processor.core.jpa.mock.model.JPAMetaModelMock;
 import com.sap.core.odata.processor.core.jpa.mock.model.JPASingularAttributeMock;
@@ -20,9 +24,15 @@ public class JPAEdmModelTest extends JPAEdmTestModelView{
 
 	private JPAEdmModel objJPAEdmModel;
 	@Before
-	public void setUp() throws Exception {
+	public void setUp() {
 		objJPAEdmModel = new JPAEdmModel(getJPAMetaModel(), "salesorderprocessing");
-		objJPAEdmModel.getBuilder().build();
+		try {
+			objJPAEdmModel.getBuilder().build();
+		} catch (ODataJPAModelException e) {
+			fail(JPATestConstants.EXCEPTION_MSG_PART_1+e.getMessage()+ JPATestConstants.EXCEPTION_MSG_PART_2);
+		} catch (ODataJPARuntimeException e) {
+			fail(JPATestConstants.EXCEPTION_MSG_PART_1+e.getMessage()+ JPATestConstants.EXCEPTION_MSG_PART_2);
+		}
 	}
 
 	@Test

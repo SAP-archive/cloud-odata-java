@@ -18,7 +18,7 @@ public class JPAEdmBaseViewImplTest extends JPAEdmTestModelView{
 	private JPAEdmBaseViewImpl objJPAEdmBaseViewImpl;
 
 	@Before
-	public void setUp() throws Exception {
+	public void setUp() {
 		objJPAEdmBaseViewImplTest = new JPAEdmBaseViewImplTest();
 		objJPAEdmBaseViewImpl = new JPAEdmBaseViewImpl(objJPAEdmBaseViewImplTest) {
 			

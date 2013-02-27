@@ -18,6 +18,7 @@ import com.sap.core.odata.processor.api.jpa.access.JPAEdmBuilder;
 import com.sap.core.odata.processor.api.jpa.exception.ODataJPAModelException;
 import com.sap.core.odata.processor.api.jpa.exception.ODataJPARuntimeException;
 import com.sap.core.odata.processor.api.jpa.model.JPAEdmEntityTypeView;
+import com.sap.core.odata.processor.core.jpa.common.JPATestConstants;
 import com.sap.core.odata.processor.core.jpa.mock.model.JPAAttributeMock;
 import com.sap.core.odata.processor.core.jpa.mock.model.JPAEntityTypeMock;
 
@@ -35,9 +36,9 @@ public class JPAEdmNavigationPropertyTest extends JPAEdmTestModelView {
 		try {
 			objNavigationProperty.getBuilder().build();
 		} catch (ODataJPAModelException e) {
-			fail("ODataJPAModelException not expected");
+			fail(JPATestConstants.EXCEPTION_MSG_PART_1+e.getMessage()+ JPATestConstants.EXCEPTION_MSG_PART_2);
 		} catch (ODataJPARuntimeException e) {
-			fail("ODataJPARuntimeException not expected");
+			fail(JPATestConstants.EXCEPTION_MSG_PART_1+e.getMessage()+ JPATestConstants.EXCEPTION_MSG_PART_2);
 		}
 	}
 
@@ -117,9 +118,9 @@ public class JPAEdmNavigationPropertyTest extends JPAEdmTestModelView {
 		try {
 			objNavigationProperty.getBuilder().build();
 		} catch (ODataJPAModelException e) {
-			fail("ODataJPAModelException not expected");
+			fail(JPATestConstants.EXCEPTION_MSG_PART_1+e.getMessage()+ JPATestConstants.EXCEPTION_MSG_PART_2);
 		} catch (ODataJPARuntimeException e) {
-			fail("ODataJPARuntimeException not expected");
+			fail(JPATestConstants.EXCEPTION_MSG_PART_1+e.getMessage()+ JPATestConstants.EXCEPTION_MSG_PART_2);
 		}
 		objNavigationProperty.addJPAEdmNavigationPropertyView(navPropView);
 		assertTrue(objNavigationProperty.getConsistentEdmNavigationProperties()
@@ -132,12 +133,14 @@ public class JPAEdmNavigationPropertyTest extends JPAEdmTestModelView {
 	}
 
 	@Test
-	public void testBuildNavigationProperty() throws ODataJPAModelException {
+	public void testBuildNavigationProperty() {
 
 		try {
 			objNavigationProperty.getBuilder().build();
 		} catch (ODataJPARuntimeException e) {
-			fail("Not expected");
+			fail(JPATestConstants.EXCEPTION_MSG_PART_1+e.getMessage()+ JPATestConstants.EXCEPTION_MSG_PART_2);
+		} catch (ODataJPAModelException e) {
+			fail(JPATestConstants.EXCEPTION_MSG_PART_1+e.getMessage()+ JPATestConstants.EXCEPTION_MSG_PART_2);
 		}
 		assertEquals(objNavigationProperty.getEdmNavigationProperty()
 				.getFromRole(), "SalesOrderItem");

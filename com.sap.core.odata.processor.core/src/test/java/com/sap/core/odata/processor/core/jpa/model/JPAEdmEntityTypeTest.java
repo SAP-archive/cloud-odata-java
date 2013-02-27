@@ -3,6 +3,7 @@ package com.sap.core.odata.processor.core.jpa.model;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -15,9 +16,12 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.sap.core.odata.processor.api.jpa.access.JPAEdmBuilder;
+import com.sap.core.odata.processor.api.jpa.exception.ODataJPAModelException;
+import com.sap.core.odata.processor.api.jpa.exception.ODataJPARuntimeException;
 import com.sap.core.odata.processor.api.jpa.model.JPAEdmEntityContainerView;
 import com.sap.core.odata.processor.api.jpa.model.JPAEdmEntitySetView;
 import com.sap.core.odata.processor.api.jpa.model.JPAEdmEntityTypeView;
+import com.sap.core.odata.processor.core.jpa.common.JPATestConstants;
 import com.sap.core.odata.processor.core.jpa.mock.model.JPAEntityTypeMock;
 import com.sap.core.odata.processor.core.jpa.mock.model.JPAMetaModelMock;
 import com.sap.core.odata.processor.core.jpa.mock.model.JPASingularAttributeMock;
@@ -29,10 +33,16 @@ public class JPAEdmEntityTypeTest extends JPAEdmTestModelView{
 	private static JPAEdmEntityType objJPAEdmEntityType;
 	
 	@Before
-	public void setUp() throws Exception {
+	public void setUp() {
 		objJPAEdmEntityTypeTest = new JPAEdmEntityTypeTest();
 		objJPAEdmEntityType = new JPAEdmEntityType(objJPAEdmEntityTypeTest);
-		objJPAEdmEntityType.getBuilder().build();
+		try {
+			objJPAEdmEntityType.getBuilder().build();
+		} catch (ODataJPAModelException e) {
+			fail(JPATestConstants.EXCEPTION_MSG_PART_1+e.getMessage()+ JPATestConstants.EXCEPTION_MSG_PART_2);
+		} catch (ODataJPARuntimeException e) {
+			fail(JPATestConstants.EXCEPTION_MSG_PART_1+e.getMessage()+ JPATestConstants.EXCEPTION_MSG_PART_2);
+		}
 	}
 
 	@Test

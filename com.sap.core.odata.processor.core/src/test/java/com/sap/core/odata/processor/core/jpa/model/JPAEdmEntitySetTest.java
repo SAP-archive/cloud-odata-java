@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -18,10 +19,12 @@ import org.junit.Test;
 import com.sap.core.odata.api.edm.provider.Schema;
 import com.sap.core.odata.processor.api.jpa.access.JPAEdmBuilder;
 import com.sap.core.odata.processor.api.jpa.exception.ODataJPAModelException;
+import com.sap.core.odata.processor.api.jpa.exception.ODataJPARuntimeException;
 import com.sap.core.odata.processor.api.jpa.model.JPAEdmEntityContainerView;
 import com.sap.core.odata.processor.api.jpa.model.JPAEdmEntitySetView;
 import com.sap.core.odata.processor.api.jpa.model.JPAEdmEntityTypeView;
 import com.sap.core.odata.processor.api.jpa.model.JPAEdmKeyView;
+import com.sap.core.odata.processor.core.jpa.common.JPATestConstants;
 import com.sap.core.odata.processor.core.jpa.mock.model.JPAEntityTypeMock;
 import com.sap.core.odata.processor.core.jpa.mock.model.JPAMetaModelMock;
 import com.sap.core.odata.processor.core.jpa.mock.model.JPASingularAttributeMock;
@@ -33,10 +36,16 @@ public class JPAEdmEntitySetTest extends JPAEdmTestModelView{
 	private static JPAEdmEntitySetTest objJPAEdmEntitySetTest;
 	
 	@Before
-	public void setUp() throws Exception {
+	public void setUp() {
 		objJPAEdmEntitySetTest = new JPAEdmEntitySetTest();
 		objJPAEdmEntitySet = new JPAEdmEntitySet(objJPAEdmEntitySetTest);
-		objJPAEdmEntitySet.getBuilder().build();
+		try {
+			objJPAEdmEntitySet.getBuilder().build();
+		} catch (ODataJPAModelException e) {
+			fail(JPATestConstants.EXCEPTION_MSG_PART_1+e.getMessage()+ JPATestConstants.EXCEPTION_MSG_PART_2);
+		} catch (ODataJPARuntimeException e) {
+			fail(JPATestConstants.EXCEPTION_MSG_PART_1+e.getMessage()+ JPATestConstants.EXCEPTION_MSG_PART_2);
+		}
 	}
 
 	@Test
@@ -62,7 +71,7 @@ public class JPAEdmEntitySetTest extends JPAEdmTestModelView{
 	}
 
 	@Test
-	public void testIsConsistent() throws ODataJPAModelException {
+	public void testIsConsistent() {
 		assertTrue(objJPAEdmEntitySet.isConsistent());
 		
 		objJPAEdmEntitySet.getJPAEdmEntityTypeView().clean();

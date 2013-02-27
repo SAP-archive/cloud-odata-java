@@ -1,6 +1,7 @@
 package com.sap.core.odata.processor.core.jpa;
 
 import static org.junit.Assert.fail;
+import static org.junit.Assert.assertTrue;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -41,6 +42,7 @@ import com.sap.core.odata.api.uri.info.GetEntityUriInfo;
 import com.sap.core.odata.processor.api.jpa.ODataJPAContext;
 import com.sap.core.odata.processor.api.jpa.exception.ODataJPAModelException;
 import com.sap.core.odata.processor.api.jpa.exception.ODataJPARuntimeException;
+import com.sap.core.odata.processor.core.jpa.common.JPATestConstants;
 import com.sap.core.odata.processor.core.jpa.model.JPAEdmTestModelView;
 
 public class ODataJPAProcessorDefaultTest extends JPAEdmTestModelView{
@@ -48,7 +50,7 @@ public class ODataJPAProcessorDefaultTest extends JPAEdmTestModelView{
 	ODataJPAProcessorDefault objODataJPAProcessorDefault;
 	ODataJPAProcessorDefaultTest objODataJPAProcessorDefaultTest;
 	@Before
-	public void setUp() throws Exception {
+	public void setUp() {
 		objODataJPAProcessorDefaultTest = new ODataJPAProcessorDefaultTest();
 		objODataJPAProcessorDefault = new ODataJPAProcessorDefault(getLocalmockODataJPAContext());
 	}
@@ -59,9 +61,14 @@ public class ODataJPAProcessorDefaultTest extends JPAEdmTestModelView{
 		try {
 			GetEntityUriInfo getEntityView = getEntityUriInfo();
 			Assert.assertNotNull(objODataJPAProcessorDefault.readEntity(getEntityView, "Application/xml"));
-		} catch (ODataJPAModelException e1) {
+		} catch (ODataJPAModelException e) {
+			fail(JPATestConstants.EXCEPTION_MSG_PART_1+e.getMessage()
+					+ JPATestConstants.EXCEPTION_MSG_PART_2);
 		} catch (ODataJPARuntimeException e1) {//Expected
+			assertTrue(true);
 		} catch (ODataException e) {
+			fail(JPATestConstants.EXCEPTION_MSG_PART_1+e.getMessage()
+					+ JPATestConstants.EXCEPTION_MSG_PART_2);
 		}
 		
 	}
@@ -71,49 +78,59 @@ public class ODataJPAProcessorDefaultTest extends JPAEdmTestModelView{
 		try {
 			GetEntitySetUriInfo getEntityView = getEntitySetUriInfo();
 			Assert.assertNotNull(objODataJPAProcessorDefault.readEntitySet(getEntityView, "Application/xml"));
-		} catch (ODataJPAModelException e1) {
+		} catch (ODataJPAModelException e) {
+			fail(JPATestConstants.EXCEPTION_MSG_PART_1+e.getMessage()
+					+ JPATestConstants.EXCEPTION_MSG_PART_2);
 		} catch (ODataJPARuntimeException e1) {//Expected
+			assertTrue(true);
 		} catch (ODataException e) {
+			fail(JPATestConstants.EXCEPTION_MSG_PART_1+e.getMessage()
+					+ JPATestConstants.EXCEPTION_MSG_PART_2);
 		}
 	}
 
-	private GetEntitySetUriInfo getEntitySetUriInfo() throws EdmException {
+	private GetEntitySetUriInfo getEntitySetUriInfo() {
 		GetEntitySetUriInfo objGetEntitySetUriInfo = EasyMock.createMock(GetEntitySetUriInfo.class);
 		
 		EdmEntitySet edmEntitySet = EasyMock.createMock(EdmEntitySet.class);
 		EdmEntityType edmEntityType = EasyMock.createMock(EdmEntityType.class);
-		EasyMock.expect(edmEntityType.getKeyProperties()).andStubReturn(
-				new ArrayList<EdmProperty>());
-		EasyMock.expect(edmEntitySet.getEntityType()).andStubReturn(
-				edmEntityType);
-		EasyMock.expect(edmEntitySet.getName()).andStubReturn("SalesOrderHeaders");
-		
-		EasyMock.expect(objGetEntitySetUriInfo.getSelect()).andStubReturn(null);
-		EasyMock.expect(objGetEntitySetUriInfo.getTargetEntitySet()).andStubReturn(
-				edmEntitySet);
-		EasyMock.expect(objGetEntitySetUriInfo.getOrderBy()).andStubReturn(getOrderByExpression());
-		EasyMock.expect(objGetEntitySetUriInfo.getTop()).andStubReturn(getTop());
-		EasyMock.expect(objGetEntitySetUriInfo.getSkip()).andStubReturn(getSkip());
-		
-		EasyMock.expect(objGetEntitySetUriInfo.getInlineCount()).andStubReturn(getInlineCount());
-		EasyMock.expect(objGetEntitySetUriInfo.getFilter()).andStubReturn(getFilter());
-		EasyMock.expect(edmEntityType.getPropertyNames()).andStubReturn(getLocalPropertyNames());
-		EasyMock.expect(edmEntityType.getProperty("SoId")).andStubReturn(getEdmTypedMockedObj("SoId"));
-		
-		EasyMock.expect(edmEntityType.getKind()).andStubReturn(EdmTypeKind.SIMPLE);
-		EasyMock.expect(edmEntityType.getNamespace()).andStubReturn("SalesOrderHeaders");
-		EasyMock.expect(edmEntityType.getName()).andStubReturn("SalesOrderHeaders");
-		EasyMock.expect(edmEntityType.hasStream()).andStubReturn(false);
-	    EasyMock.expect(edmEntityType.getNavigationPropertyNames()).andStubReturn(new ArrayList<String>());
-	    EasyMock.expect(edmEntityType.getKeyPropertyNames()).andStubReturn(new ArrayList<String>());
+		try {
+			EasyMock.expect(edmEntityType.getKeyProperties()).andStubReturn(
+					new ArrayList<EdmProperty>());
+			EasyMock.expect(edmEntitySet.getEntityType()).andStubReturn(
+					edmEntityType);
+			EasyMock.expect(edmEntitySet.getName()).andStubReturn("SalesOrderHeaders");
+			
+			EasyMock.expect(objGetEntitySetUriInfo.getSelect()).andStubReturn(null);
+			EasyMock.expect(objGetEntitySetUriInfo.getTargetEntitySet()).andStubReturn(
+					edmEntitySet);
+			EasyMock.expect(objGetEntitySetUriInfo.getOrderBy()).andStubReturn(getOrderByExpression());
+			EasyMock.expect(objGetEntitySetUriInfo.getTop()).andStubReturn(getTop());
+			EasyMock.expect(objGetEntitySetUriInfo.getSkip()).andStubReturn(getSkip());
+			
+			EasyMock.expect(objGetEntitySetUriInfo.getInlineCount()).andStubReturn(getInlineCount());
+			EasyMock.expect(objGetEntitySetUriInfo.getFilter()).andStubReturn(getFilter());
+			EasyMock.expect(edmEntityType.getPropertyNames()).andStubReturn(getLocalPropertyNames());
+			EasyMock.expect(edmEntityType.getProperty("SoId")).andStubReturn(getEdmTypedMockedObj("SoId"));
+			
+			EasyMock.expect(edmEntityType.getKind()).andStubReturn(EdmTypeKind.SIMPLE);
+			EasyMock.expect(edmEntityType.getNamespace()).andStubReturn("SalesOrderHeaders");
+			EasyMock.expect(edmEntityType.getName()).andStubReturn("SalesOrderHeaders");
+			EasyMock.expect(edmEntityType.hasStream()).andStubReturn(false);
+		    EasyMock.expect(edmEntityType.getNavigationPropertyNames()).andStubReturn(new ArrayList<String>());
+		    EasyMock.expect(edmEntityType.getKeyPropertyNames()).andStubReturn(new ArrayList<String>());
 	    
-	    EasyMock.expect(edmEntitySet.getEntityContainer()).andStubReturn(getLocalEdmEntityContainer());
+			EasyMock.expect(edmEntitySet.getEntityContainer()).andStubReturn(getLocalEdmEntityContainer());
+			EasyMock.replay(edmEntityType, edmEntitySet);
+			
+			EasyMock.expect(objGetEntitySetUriInfo.getStartEntitySet()).andStubReturn(edmEntitySet);
+			
+			EasyMock.replay(objGetEntitySetUriInfo);
+		} catch (EdmException e) {
+			fail(JPATestConstants.EXCEPTION_MSG_PART_1+e.getMessage()
+					+ JPATestConstants.EXCEPTION_MSG_PART_2);
+		}
 		
-		EasyMock.replay(edmEntityType, edmEntitySet);
-		
-		EasyMock.expect(objGetEntitySetUriInfo.getStartEntitySet()).andStubReturn(edmEntitySet);
-		
-		EasyMock.replay(objGetEntitySetUriInfo);
 		return objGetEntitySetUriInfo;
 	}
 
@@ -194,41 +211,46 @@ public class ODataJPAProcessorDefaultTest extends JPAEdmTestModelView{
 		return metaModel;
 	}
 
-	private GetEntityUriInfo getEntityUriInfo() throws EdmException {
+	private GetEntityUriInfo getEntityUriInfo() {
 		GetEntityUriInfo getEntityView = EasyMock
 				.createMock(GetEntityUriInfo.class);
 		EdmEntitySet edmEntitySet = EasyMock.createMock(EdmEntitySet.class);
 		EdmEntityType edmEntityType = EasyMock.createMock(EdmEntityType.class);
-		EasyMock.expect(edmEntityType.getKeyProperties()).andStubReturn(
-				new ArrayList<EdmProperty>());
-		EasyMock.expect(edmEntitySet.getEntityType()).andStubReturn(
-				edmEntityType);
-		EasyMock.expect(edmEntitySet.getName()).andStubReturn("SalesOrderHeaders");
-		
-		EasyMock.expect(getEntityView.getSelect()).andStubReturn(null);
-		EasyMock.expect(getEntityView.getTargetEntitySet()).andStubReturn(
-				edmEntitySet);
-		EasyMock.expect(edmEntityType.getPropertyNames()).andStubReturn(getLocalPropertyNames());
-		EasyMock.expect(edmEntityType.getProperty("SoId")).andStubReturn(getEdmTypedMockedObj("SoId"));
-		
-		EasyMock.expect(edmEntityType.getKind()).andStubReturn(EdmTypeKind.SIMPLE);
-		EasyMock.expect(edmEntityType.getNamespace()).andStubReturn("SalesOrderHeaders");
-		EasyMock.expect(edmEntityType.getName()).andStubReturn("SalesOrderHeaders");
-		EasyMock.expect(edmEntityType.hasStream()).andStubReturn(false);
-	    EasyMock.expect(edmEntityType.getNavigationPropertyNames()).andStubReturn(new ArrayList<String>());
-	    EasyMock.expect(edmEntityType.getKeyPropertyNames()).andStubReturn(new ArrayList<String>());
-	    
-	    EasyMock.expect(edmEntitySet.getEntityContainer()).andStubReturn(getLocalEdmEntityContainer());
-		
-		EasyMock.replay(edmEntityType, edmEntitySet);
-		EasyMock.expect(getEntityView.getKeyPredicates()).andStubReturn(
-				new ArrayList<KeyPredicate>());
-		List<NavigationSegment> navigationSegments = new ArrayList<NavigationSegment>();
-		EasyMock.expect(getEntityView.getNavigationSegments()).andReturn(
-				navigationSegments);
-		EasyMock.expect(getEntityView.getStartEntitySet()).andReturn(edmEntitySet);
-		
-		EasyMock.replay(getEntityView);
+		try {
+			EasyMock.expect(edmEntityType.getKeyProperties()).andStubReturn(
+					new ArrayList<EdmProperty>());
+			EasyMock.expect(edmEntitySet.getEntityType()).andStubReturn(
+					edmEntityType);
+			EasyMock.expect(edmEntitySet.getName()).andStubReturn("SalesOrderHeaders");
+			
+			EasyMock.expect(getEntityView.getSelect()).andStubReturn(null);
+			EasyMock.expect(getEntityView.getTargetEntitySet()).andStubReturn(
+					edmEntitySet);
+			EasyMock.expect(edmEntityType.getPropertyNames()).andStubReturn(getLocalPropertyNames());
+			EasyMock.expect(edmEntityType.getProperty("SoId")).andStubReturn(getEdmTypedMockedObj("SoId"));
+			
+			EasyMock.expect(edmEntityType.getKind()).andStubReturn(EdmTypeKind.SIMPLE);
+			EasyMock.expect(edmEntityType.getNamespace()).andStubReturn("SalesOrderHeaders");
+			EasyMock.expect(edmEntityType.getName()).andStubReturn("SalesOrderHeaders");
+			EasyMock.expect(edmEntityType.hasStream()).andStubReturn(false);
+		    EasyMock.expect(edmEntityType.getNavigationPropertyNames()).andStubReturn(new ArrayList<String>());
+		    EasyMock.expect(edmEntityType.getKeyPropertyNames()).andStubReturn(new ArrayList<String>());
+		    
+		    EasyMock.expect(edmEntitySet.getEntityContainer()).andStubReturn(getLocalEdmEntityContainer());
+			
+			EasyMock.replay(edmEntityType, edmEntitySet);
+			EasyMock.expect(getEntityView.getKeyPredicates()).andStubReturn(
+					new ArrayList<KeyPredicate>());
+			List<NavigationSegment> navigationSegments = new ArrayList<NavigationSegment>();
+			EasyMock.expect(getEntityView.getNavigationSegments()).andReturn(
+					navigationSegments);
+			EasyMock.expect(getEntityView.getStartEntitySet()).andReturn(edmEntitySet);
+			
+			EasyMock.replay(getEntityView);
+		} catch (EdmException e) {
+			fail(JPATestConstants.EXCEPTION_MSG_PART_1+e.getMessage()
+					+ JPATestConstants.EXCEPTION_MSG_PART_2);
+		}
 		return getEntityView;
 	}
 	
@@ -238,26 +260,31 @@ public class ODataJPAProcessorDefaultTest extends JPAEdmTestModelView{
 		try {
 			EasyMock.expect(edmEntityContainer.getName()).andStubReturn("salesorderprocessingContainer");
 		} catch (EdmException e) {
-			fail("EdmException not expected");
+			fail(JPATestConstants.EXCEPTION_MSG_PART_1+e.getMessage()
+					+ JPATestConstants.EXCEPTION_MSG_PART_2);
 		}
 		
 		EasyMock.replay(edmEntityContainer);
 		return edmEntityContainer;
 	}
 
-	private EdmTyped getEdmTypedMockedObj(String propertyName)
-			throws EdmException {
+	private EdmTyped getEdmTypedMockedObj(String propertyName){
 		EdmProperty mockedEdmProperty = EasyMock.createMock(EdmProperty.class);
-		EasyMock.expect(mockedEdmProperty.getMapping())
-				.andStubReturn(getEdmMappingMockedObj(propertyName));
-		EdmType edmType = EasyMock.createMock(EdmType.class);
-		EasyMock.expect(edmType.getKind()).andStubReturn(EdmTypeKind.SIMPLE);
-		EasyMock.replay(edmType);
-		EasyMock.expect(mockedEdmProperty.getName()).andStubReturn("identifier");
-		EasyMock.expect(mockedEdmProperty.getType()).andStubReturn(edmType);
-		EasyMock.expect(mockedEdmProperty.getFacets()).andStubReturn(getEdmFacetsMockedObj());
-		
-		EasyMock.replay(mockedEdmProperty);
+		try {
+			EasyMock.expect(mockedEdmProperty.getMapping())
+					.andStubReturn(getEdmMappingMockedObj(propertyName));
+			EdmType edmType = EasyMock.createMock(EdmType.class);
+			EasyMock.expect(edmType.getKind()).andStubReturn(EdmTypeKind.SIMPLE);
+			EasyMock.replay(edmType);
+			EasyMock.expect(mockedEdmProperty.getName()).andStubReturn("identifier");
+			EasyMock.expect(mockedEdmProperty.getType()).andStubReturn(edmType);
+			EasyMock.expect(mockedEdmProperty.getFacets()).andStubReturn(getEdmFacetsMockedObj());
+			
+			EasyMock.replay(mockedEdmProperty);
+		} catch (EdmException e) {
+			fail(JPATestConstants.EXCEPTION_MSG_PART_1+e.getMessage()
+					+ JPATestConstants.EXCEPTION_MSG_PART_2);
+		}
 		return mockedEdmProperty;
 	}
 	
@@ -288,7 +315,8 @@ public class ODataJPAProcessorDefaultTest extends JPAEdmTestModelView{
 		try {
 			EasyMock.expect(objODataContext.getPathInfo()).andStubReturn(getLocalPathInfo());
 		} catch (ODataException e) {
-			fail("ODataException not expected");
+			fail(JPATestConstants.EXCEPTION_MSG_PART_1+e.getMessage()
+					+ JPATestConstants.EXCEPTION_MSG_PART_2);
 		}
 		EasyMock.replay(objODataContext);
 		return objODataContext;
@@ -306,7 +334,8 @@ public class ODataJPAProcessorDefaultTest extends JPAEdmTestModelView{
 		try {
 			uri = new URI("http://localhost:8080/com.sap.core.odata.processor.ref.web/");
 		} catch (URISyntaxException e) {
-			fail("URISyntaxException not expected");
+			fail(JPATestConstants.EXCEPTION_MSG_PART_1+e.getMessage()
+					+ JPATestConstants.EXCEPTION_MSG_PART_2);
 		}
 		return uri;
 	}

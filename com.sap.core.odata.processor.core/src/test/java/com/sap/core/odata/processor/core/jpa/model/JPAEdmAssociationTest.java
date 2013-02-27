@@ -18,6 +18,7 @@ import com.sap.core.odata.api.edm.provider.EntityType;
 import com.sap.core.odata.processor.api.jpa.exception.ODataJPAModelException;
 import com.sap.core.odata.processor.api.jpa.exception.ODataJPARuntimeException;
 import com.sap.core.odata.processor.api.jpa.model.JPAEdmReferentialConstraintView;
+import com.sap.core.odata.processor.core.jpa.common.JPATestConstants;
 import com.sap.core.odata.processor.core.jpa.mock.model.JPAAttributeMock;
 import com.sap.core.odata.processor.core.jpa.mock.model.JPAEdmMockData.SimpleType;
 
@@ -28,11 +29,16 @@ public class JPAEdmAssociationTest extends JPAEdmTestModelView {
 	private static JPAEdmAssociationTest localView = null;
 
 	@BeforeClass
-	public static void setup() throws ODataJPAModelException,
-			ODataJPARuntimeException {
+	public static void setup() {
 		localView = new JPAEdmAssociationTest();
 		objAssociation = new JPAEdmAssociation(localView, localView, localView);
-		objAssociation.getBuilder().build();
+		try {
+			objAssociation.getBuilder().build();
+		} catch (ODataJPAModelException e) {
+			fail(JPATestConstants.EXCEPTION_MSG_PART_1+e.getMessage()+ JPATestConstants.EXCEPTION_MSG_PART_2);
+		} catch (ODataJPARuntimeException e) {
+			fail(JPATestConstants.EXCEPTION_MSG_PART_1+e.getMessage()+ JPATestConstants.EXCEPTION_MSG_PART_2);
+		}
 	}
 
 	@Override
@@ -79,9 +85,7 @@ public class JPAEdmAssociationTest extends JPAEdmTestModelView {
 	}
 
 	@Test
-	public void testGetBuilder() throws ODataJPAModelException,
-			SecurityException, NoSuchFieldException, IllegalArgumentException,
-			IllegalAccessException, ClassNotFoundException {
+	public void testGetBuilder() {
 		assertNotNull(objAssociation.getBuilder());
 	}
 
@@ -103,7 +107,7 @@ public class JPAEdmAssociationTest extends JPAEdmTestModelView {
 	}
 
 	@Test
-	public void testSearchAssociation1() throws ODataJPAModelException {
+	public void testSearchAssociation1() {
 		class TestAssociationEndView extends JPAEdmTestModelView {
 			private Attribute<?, ?> getJPAAttributeLocal() {
 				AttributeMock<Object, String> attr = new AttributeMock<Object, String>();
@@ -152,14 +156,16 @@ public class JPAEdmAssociationTest extends JPAEdmTestModelView {
 		try {
 			objJPAEdmAssociationEnd.getBuilder().build();
 		} catch (ODataJPARuntimeException e) {
-			fail("Not expected");
+			fail(JPATestConstants.EXCEPTION_MSG_PART_1+e.getMessage()+ JPATestConstants.EXCEPTION_MSG_PART_2);
+		} catch (ODataJPAModelException e) {
+			fail(JPATestConstants.EXCEPTION_MSG_PART_1+e.getMessage()+ JPATestConstants.EXCEPTION_MSG_PART_2);
 		}
 		assertNotNull(objAssociation.searchAssociation(objJPAEdmAssociationEnd));
 
 	}
 
 	@Test
-	public void testAddJPAEdmAssociationView() throws ODataJPAModelException {
+	public void testAddJPAEdmAssociationView() {
 
 		class LocalJPAAssociationView extends JPAEdmTestModelView {
 			@Override
@@ -201,7 +207,9 @@ public class JPAEdmAssociationTest extends JPAEdmTestModelView {
 		try {
 			objLocalAssociation.getBuilder().build();
 		} catch (ODataJPARuntimeException e) {
-			fail("Not expected");
+			fail(JPATestConstants.EXCEPTION_MSG_PART_1+e.getMessage()+ JPATestConstants.EXCEPTION_MSG_PART_2);
+		} catch (ODataJPAModelException e) {
+			fail(JPATestConstants.EXCEPTION_MSG_PART_1+e.getMessage()+ JPATestConstants.EXCEPTION_MSG_PART_2);
 		}
 		objAssociation.addJPAEdmAssociationView(objLocalAssociation);
 
@@ -215,9 +223,9 @@ public class JPAEdmAssociationTest extends JPAEdmTestModelView {
 		try {
 			objAssociation.getBuilder().build();
 		} catch (ODataJPAModelException e) {
-			fail("ODataJPAModelException not expected");
+			fail(JPATestConstants.EXCEPTION_MSG_PART_1+e.getMessage()+ JPATestConstants.EXCEPTION_MSG_PART_2);
 		} catch (ODataJPARuntimeException e) {
-			fail("ODataJPARuntimeException not expected");
+			fail(JPATestConstants.EXCEPTION_MSG_PART_1+e.getMessage()+ JPATestConstants.EXCEPTION_MSG_PART_2);
 		}
 		
 		objAssociation.addJPAEdmRefConstraintView(localView);

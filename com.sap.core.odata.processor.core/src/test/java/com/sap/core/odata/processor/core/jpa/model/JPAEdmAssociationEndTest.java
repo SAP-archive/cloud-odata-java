@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import javax.persistence.metamodel.Attribute;
 
@@ -17,6 +18,7 @@ import com.sap.core.odata.api.edm.provider.EntityType;
 import com.sap.core.odata.processor.api.jpa.access.JPAEdmBuilder;
 import com.sap.core.odata.processor.api.jpa.exception.ODataJPAModelException;
 import com.sap.core.odata.processor.api.jpa.exception.ODataJPARuntimeException;
+import com.sap.core.odata.processor.core.jpa.common.JPATestConstants;
 import com.sap.core.odata.processor.core.jpa.mock.model.JPAAttributeMock;
 import com.sap.core.odata.processor.core.jpa.mock.model.JPAEdmMockData.SimpleType;
 import com.sap.core.odata.processor.core.jpa.mock.model.JPAEdmMockData.SimpleType.SimpleTypeA;
@@ -37,11 +39,17 @@ public class JPAEdmAssociationEndTest extends JPAEdmTestModelView {
 	
 
 	@BeforeClass
-	public static void setup() throws ODataJPAModelException, ODataJPARuntimeException{
+	public static void setup() {
 		objJPAEdmAssociationEndTest = new JPAEdmAssociationEndTest();
 		objJPAEdmAssociationEnd = new JPAEdmAssociationEnd(
 				objJPAEdmAssociationEndTest, objJPAEdmAssociationEndTest);
-		objJPAEdmAssociationEnd.getBuilder().build();
+		try {
+			objJPAEdmAssociationEnd.getBuilder().build();
+		} catch (ODataJPAModelException e) {
+			fail(JPATestConstants.EXCEPTION_MSG_PART_1+e.getMessage()+ JPATestConstants.EXCEPTION_MSG_PART_2);
+		} catch (ODataJPARuntimeException e) {
+			fail(JPATestConstants.EXCEPTION_MSG_PART_1+e.getMessage()+ JPATestConstants.EXCEPTION_MSG_PART_2);
+		}
 	}
 
 	@Test
@@ -74,7 +82,7 @@ public class JPAEdmAssociationEndTest extends JPAEdmTestModelView {
 	}
 
 	@Test
-	public void testCompare() throws ODataJPAModelException {
+	public void testCompare() {
 		assertTrue(objJPAEdmAssociationEnd.compare(
 				getAssociationEnd("SOID", 1), getAssociationEnd("String", 1)));
 		assertFalse(objJPAEdmAssociationEnd.compare(

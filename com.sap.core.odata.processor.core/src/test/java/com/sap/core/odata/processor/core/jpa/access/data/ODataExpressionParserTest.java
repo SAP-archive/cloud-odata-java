@@ -30,127 +30,162 @@ import com.sap.core.odata.api.uri.expression.PropertyExpression;
 import com.sap.core.odata.api.uri.expression.UnaryExpression;
 import com.sap.core.odata.api.uri.expression.UnaryOperator;
 import com.sap.core.odata.processor.api.jpa.exception.ODataJPARuntimeException;
-import com.sap.core.odata.processor.api.jpa.jpql.JPQLStatement.Operator;
+import com.sap.core.odata.processor.core.jpa.common.JPATestConstants;
 
 public class ODataExpressionParserTest {
-	private static final String TABLE_ALIAS = "gwt1"; //$NON-NLS-1$
+	
+	private final String EXPECTED_STR_1 = "gwt1.SalesOrder = 1234";
+	private final String EXPECTED_STR_2 = "gwt1.SalesOrder >= 1234 AND gwt1.SalesABC <> XYZ";
+	private final String EXPECTED_STR_3 = "gwt1.SalesOrder >= 1234 OR gwt1.SalesABC <> XYZ";
+	private final String EXPECTED_STR_4 = "gwt1.SalesOrder < 1234 AND gwt1.SalesABC <= XYZ";
+	private final String EXPECTED_STR_5 = "gwt1.LineItems > 2345 AND gwt1.SalesOrder >= Amazon";
+	private final String EXPECTED_STR_6 = "gwt1.Address.city = \'City_3\'";
+	private final String EXPECTED_STR_7 = "gwt1.Address.city.area = \'BTM\'";
+	private final String EXPECTED_STR_8 = "gwt1.field1 = 1 AND gwt1.field2 = 'abc'";
+	private final String EXPECTED_STR_9 = "gwt1.BuyerAddress, gwt1.BuyerName, gwt1.BuyerId";
+	private final String EXPECTED_STR_10 = "gwt1.SalesOrder";
+	private final String EXPECTED_STR_11 = "NOT(gwt1.deliveryStatus)";
+	
+	private final String ADDRESS = "Address";
+	private final String CITY = "city";
+	private final String AREA = "area";
+	private final String SALES_ORDER = "SalesOrder";
+	private final String SALES_ABC = "SalesABC";
+	private final String SAMPLE_DATA_1 = "1234";
+	private final String SAMPLE_DATA_2 = "2345";
+	private final String SAMPLE_DATA_XYZ = "XYZ";
+	private final String SAMPLE_DATA_BTM = "\'BTM\'";
+	private final String SAMPLE_DATA_CITY_3 = "\'City_3\'";
+	private final String SAMPLE_DATA_LINE_ITEMS = "LineItems";
+	private final String SAMPLE_DATA_AMAZON = "Amazon";
+	private final String SAMPLE_DATA_FIELD1 = "field1";
+	private final String SAMPLE_DATA_FIELD2 = "field2";
+	
+	private final String TABLE_ALIAS = "gwt1"; //$NON-NLS-1$
+	
+	
+	@Test
+	public void testParseWhereExpression() {
+		try {
+			String parsedStr = JPATestConstants.EMPTY_STRING;
+			// Simple Binary query -
+			parsedStr = ODataExpressionParser.parseToJPAWhereExpression(
+					getBinaryExpressionMockedObj(BinaryOperator.EQ, ExpressionKind.PROPERTY, 
+							SALES_ORDER, SAMPLE_DATA_1), TABLE_ALIAS);
+
+			assertEquals(EXPECTED_STR_1, parsedStr);
+			// complex query -
+			parsedStr = JPATestConstants.EMPTY_STRING;
+
+			CommonExpression exp1 = getBinaryExpressionMockedObj(
+					BinaryOperator.GE, ExpressionKind.PROPERTY, SALES_ORDER, SAMPLE_DATA_1);
+			CommonExpression exp2 = getBinaryExpressionMockedObj(
+					BinaryOperator.NE, ExpressionKind.PROPERTY, SALES_ABC,	SAMPLE_DATA_XYZ);
+			parsedStr = ODataExpressionParser.parseToJPAWhereExpression(
+								getBinaryExpression(exp1, BinaryOperator.AND, exp2), TABLE_ALIAS);
+			assertEquals(EXPECTED_STR_2, parsedStr);
+		} catch (EdmException e) {
+			fail(JPATestConstants.EXCEPTION_MSG_PART_1+e.getMessage()
+					+ JPATestConstants.EXCEPTION_MSG_PART_2);
+		} catch (ODataException e) {
+			fail(JPATestConstants.EXCEPTION_MSG_PART_1+e.getMessage()
+					+ JPATestConstants.EXCEPTION_MSG_PART_2);
+		}
+	}
 
 	@Test
-	public void testParseWhereExpression() throws ODataException {
-
-		String parsedStr = "";
-
-		// Simple Binary query -
-		parsedStr = ODataExpressionParser.parseToJPAWhereExpression(
-				getBinaryExpressionMockedObj(BinaryOperator.EQ,
-						ExpressionKind.PROPERTY, "SalesOrder", "1234"),
-				TABLE_ALIAS);
-		assertEquals(getAliasedProperty("SalesOrder") + " = 1234", parsedStr);
-
+	public void testMoreThanOneBinaryExpression() {
 		// complex query -
-		parsedStr = "";
-
+		String parsedStr = JPATestConstants.EMPTY_STRING;
 		CommonExpression exp1 = getBinaryExpressionMockedObj(BinaryOperator.GE,
-				ExpressionKind.PROPERTY, "SalesOrder", "1234");
+				ExpressionKind.PROPERTY, SALES_ORDER, SAMPLE_DATA_1);
 		CommonExpression exp2 = getBinaryExpressionMockedObj(BinaryOperator.NE,
-				ExpressionKind.PROPERTY, "SalesABC", "XYZ");
-
-		parsedStr = parsedStr.concat(ODataExpressionParser
-				.parseToJPAWhereExpression(
-						getBinaryExpression(exp1, BinaryOperator.AND, exp2),
-						TABLE_ALIAS));
-		assertEquals(getAliasedProperty("SalesOrder") + " >= 1234 AND "
-				+ getAliasedProperty("SalesABC") + " <> XYZ", parsedStr);
+				ExpressionKind.PROPERTY, SALES_ABC, SAMPLE_DATA_XYZ);
+		try {
+			parsedStr = ODataExpressionParser.parseToJPAWhereExpression(
+					getBinaryExpression(exp1, BinaryOperator.AND, exp2),
+					TABLE_ALIAS);
+			assertEquals(EXPECTED_STR_2, parsedStr);
+			parsedStr = ODataExpressionParser
+						.parseToJPAWhereExpression(
+								getBinaryExpression(exp1, BinaryOperator.OR, exp2),
+								TABLE_ALIAS);
+		} catch (ODataException e) {
+			fail(JPATestConstants.EXCEPTION_MSG_PART_1+e.getMessage()+ JPATestConstants.EXCEPTION_MSG_PART_2);
+		}
+		assertEquals(EXPECTED_STR_3, parsedStr);
 	}
 
 	@Test
-	public void testMoreThanOneBinaryExpression() throws ODataException {
+	public void testParseFilterExpression() {
+		try {
+			assertEquals(EXPECTED_STR_10,
+					ODataExpressionParser.parseToJPAWhereExpression(
+							getFilterExpressionMockedObj(ExpressionKind.PROPERTY,
+									SALES_ORDER), TABLE_ALIAS));
+		} catch (ODataException e) {
+			fail(JPATestConstants.EXCEPTION_MSG_PART_1+e.getMessage()+ JPATestConstants.EXCEPTION_MSG_PART_2);
+		}
+	}
+
+	@Test
+	public void testAllBinaryOperators() { // Test for all Binary Operators
 		// complex query -
-		String parsedStr = "";
-		CommonExpression exp1 = getBinaryExpressionMockedObj(BinaryOperator.GE,
-				ExpressionKind.PROPERTY, "SalesOrder", "1234");
-		CommonExpression exp2 = getBinaryExpressionMockedObj(BinaryOperator.NE,
-				ExpressionKind.PROPERTY, "SalesABC", "XYZ");
-
-		parsedStr = ODataExpressionParser.parseToJPAWhereExpression(
-				getBinaryExpression(exp1, BinaryOperator.AND, exp2),
-				TABLE_ALIAS);
-		assertEquals(getAliasedProperty("SalesOrder") + " >= 1234 AND "
-				+ getAliasedProperty("SalesABC") + " <> XYZ", parsedStr);
-
-		parsedStr = ODataExpressionParser
-				.parseToJPAWhereExpression(
-						getBinaryExpression(exp1, BinaryOperator.OR, exp2),
-						TABLE_ALIAS);
-		assertEquals(getAliasedProperty("SalesOrder") + " >= 1234 OR "
-				+ getAliasedProperty("SalesABC") + " <> XYZ", parsedStr);
-	}
-
-	@Test
-	public void testParseFilterExpression() throws ODataException {
-		assertEquals(getAliasedProperty("SalesOrder"),
-				ODataExpressionParser.parseToJPAWhereExpression(
-						getFilterExpressionMockedObj(ExpressionKind.PROPERTY,
-								"SalesOrder"), TABLE_ALIAS));
-	}
-
-	@Test
-	public void testAllBinaryOperators() throws ODataException { // Test for all
-																	// Binary
-																	// Operators
-		// complex query -
-		String parsedStr1 = "";
-		String parsedStr2 = "";
+		String parsedStr1 = JPATestConstants.EMPTY_STRING;
+		String parsedStr2 = JPATestConstants.EMPTY_STRING;
 
 		CommonExpression exp1 = getBinaryExpressionMockedObj(BinaryOperator.LT,
-				ExpressionKind.PROPERTY, "SalesOrder", "1234");
+				ExpressionKind.PROPERTY, SALES_ORDER, SAMPLE_DATA_1);
 		CommonExpression exp2 = getBinaryExpressionMockedObj(BinaryOperator.LE,
-				ExpressionKind.PROPERTY, "SalesABC", "XYZ");
+				ExpressionKind.PROPERTY, SALES_ABC, SAMPLE_DATA_XYZ);
 
-		parsedStr1 = ODataExpressionParser.parseToJPAWhereExpression(
-				(BinaryExpression) getBinaryExpression(exp1,
-						BinaryOperator.AND, exp2), TABLE_ALIAS);
-		assertEquals(getAliasedProperty("SalesOrder") + " < 1234 AND "
-				+ getAliasedProperty("SalesABC") + " <= XYZ", parsedStr1);
+		try {
+			parsedStr1 = ODataExpressionParser.parseToJPAWhereExpression(
+					(BinaryExpression) getBinaryExpression(exp1,
+							BinaryOperator.AND, exp2), TABLE_ALIAS);
+			assertEquals(EXPECTED_STR_4, parsedStr1);
+	
+			CommonExpression exp3 = getBinaryExpressionMockedObj(BinaryOperator.GT,
+					ExpressionKind.PROPERTY, SAMPLE_DATA_LINE_ITEMS, SAMPLE_DATA_2);
+			CommonExpression exp4 = getBinaryExpressionMockedObj(BinaryOperator.GE,
+					ExpressionKind.PROPERTY, SALES_ORDER, SAMPLE_DATA_AMAZON);
+	
+			parsedStr2 = ODataExpressionParser.parseToJPAWhereExpression(
+					getBinaryExpression(exp3, BinaryOperator.AND, exp4),
+					TABLE_ALIAS);
 
-		CommonExpression exp3 = getBinaryExpressionMockedObj(BinaryOperator.GT,
-				ExpressionKind.PROPERTY, "LineItems", "2345");
-		CommonExpression exp4 = getBinaryExpressionMockedObj(BinaryOperator.GE,
-				ExpressionKind.PROPERTY, "SalesOrder", "Amazon");
-
-		parsedStr2 = ODataExpressionParser.parseToJPAWhereExpression(
-				getBinaryExpression(exp3, BinaryOperator.AND, exp4),
-				TABLE_ALIAS);
-
-		assertEquals(getAliasedProperty("LineItems") + " > 2345 AND "
-				+ getAliasedProperty("SalesOrder") + " >= Amazon", parsedStr2);
+		} catch (ODataException e) {
+			fail(JPATestConstants.EXCEPTION_MSG_PART_1+e.getMessage()+ JPATestConstants.EXCEPTION_MSG_PART_2);
+		}
+		assertEquals(EXPECTED_STR_5, parsedStr2);
 	}
 
 	@Test
-	public void testParseMemberExpression() throws ODataException {
-		assertEquals(
-				getAliasedProperty("Address") + "." + "city" + " = "
-						+ "\'City_3\'",
-				ODataExpressionParser
+	public void testParseMemberExpression() {
+		try {
+			assertEquals(EXPECTED_STR_6,
+					ODataExpressionParser
+							.parseToJPAWhereExpression(
+									getBinaryExpression(
+											getMemberExpressionMockedObj(ADDRESS,
+													CITY),
+											BinaryOperator.EQ,
+											getLiteralExpressionMockedObj(SAMPLE_DATA_CITY_3)),
+									TABLE_ALIAS));
+			assertEquals(EXPECTED_STR_7,
+					ODataExpressionParser
 						.parseToJPAWhereExpression(
 								getBinaryExpression(
-										getMemberExpressionMockedObj("Address",
-												"city"),
+										getMultipleMemberExpressionMockedObj(ADDRESS,CITY,AREA),
 										BinaryOperator.EQ,
-										getLiteralExpressionMockedObj("\'City_3\'")),
+										getLiteralExpressionMockedObj(SAMPLE_DATA_BTM)),
 								TABLE_ALIAS));
-		assertEquals(
-				getAliasedProperty("Address") + "." + "city" + "." + "area" + " = " + "\'BTM\'",
-				ODataExpressionParser
-					.parseToJPAWhereExpression(
-							getBinaryExpression(
-									getMultipleMemberExpressionMockedObj("Address","city","area"),
-									BinaryOperator.EQ,
-									getLiteralExpressionMockedObj("\'BTM\'")),
-							TABLE_ALIAS));
+		} catch (ODataException e) {
+			fail(JPATestConstants.EXCEPTION_MSG_PART_1+e.getMessage()+ JPATestConstants.EXCEPTION_MSG_PART_2);
+		}
 	}
 	
-	private CommonExpression getMultipleMemberExpressionMockedObj(String string1,String string2, String string3) throws EdmException {
+	private CommonExpression getMultipleMemberExpressionMockedObj(String string1,String string2, String string3) {
 		
 		MemberExpression memberExpression = EasyMock.createMock(MemberExpression.class);
 		
@@ -163,15 +198,18 @@ public class ODataExpressionParserTest {
 	}
 
 	@Test
-	public void testParseUnaryExpression() throws ODataException {
+	public void testParseUnaryExpression() {
 
 		UnaryExpression unaryExpression = getUnaryExpressionMockedObj(
 				getPropertyExpressionMockedObj(ExpressionKind.PROPERTY,
 						"deliveryStatus"),
 				com.sap.core.odata.api.uri.expression.UnaryOperator.NOT);
-		assertEquals(Operator.NOT + "(" + getAliasedProperty("deliveryStatus")
-				+ ")", ODataExpressionParser.parseToJPAWhereExpression(
-				unaryExpression, TABLE_ALIAS));
+		try {
+			assertEquals(EXPECTED_STR_11, ODataExpressionParser.parseToJPAWhereExpression(
+					unaryExpression, TABLE_ALIAS));
+		} catch (ODataException e) {
+			fail(JPATestConstants.EXCEPTION_MSG_PART_1+e.getMessage()+ JPATestConstants.EXCEPTION_MSG_PART_2);
+		}
 
 	}
 
@@ -191,8 +229,7 @@ public class ODataExpressionParserTest {
 	}
 
 	private CommonExpression getMemberExpressionMockedObj(
-			String pathUriLiteral, String propertyUriLiteral)
-			throws EdmException {
+			String pathUriLiteral, String propertyUriLiteral){
 		MemberExpression memberExpression = EasyMock
 				.createMock(MemberExpression.class);
 		EasyMock.expect(memberExpression.getPath())
@@ -210,18 +247,13 @@ public class ODataExpressionParserTest {
 		return memberExpression;
 	}
 
-	private String getAliasedProperty(String property) {
-		return TABLE_ALIAS + "." + property;
-	}
-
-	private LiteralExpression getLiteralExpressionMockedObj(String uriLiteral)
-			throws EdmException {
+	private LiteralExpression getLiteralExpressionMockedObj(String uriLiteral) {
 		LiteralExpression rightOperandLiteralExpresion = EasyMock
 				.createMock(LiteralExpression.class);
 		EasyMock.expect(rightOperandLiteralExpresion.getKind())
 				.andStubReturn(ExpressionKind.LITERAL);
 		EasyMock.expect(rightOperandLiteralExpresion.getUriLiteral())
-				.andStubReturn(uriLiteral);// "1234"
+				.andStubReturn(uriLiteral);// SAMPLE_DATA
 		EasyMock.expect(rightOperandLiteralExpresion.getEdmType())
 				.andStubReturn(getEdmSimpleTypeMockedObj(uriLiteral));
 		EasyMock.replay(rightOperandLiteralExpresion);
@@ -229,28 +261,21 @@ public class ODataExpressionParserTest {
 
 	}
 
-	private EdmSimpleType getEdmSimpleTypeMockedObj(String value)
-			throws EdmException {
+	private EdmSimpleType getEdmSimpleTypeMockedObj(String value) {
 		EdmSimpleType edmSimpleType = EasyMock.createMock(EdmSimpleType.class);
-		EasyMock.expect(edmSimpleType.getName()).andReturn(value);
-		EasyMock.expect(edmSimpleType.getKind()).andStubReturn(EdmTypeKind.SIMPLE)
-				;
-		EasyMock.expect(
-				edmSimpleType.valueOfString(value, EdmLiteralKind.URI,
-						getEdmFacetsMockedObj(), null)).andStubReturn(value)
-				;
-		EasyMock.expect(
-				edmSimpleType.valueOfString(value, EdmLiteralKind.URI, null,
-						null)).andStubReturn(value);
-		EasyMock.expect(
-				edmSimpleType.valueToString(value, EdmLiteralKind.DEFAULT,
+		try {
+			EasyMock.expect(edmSimpleType.getName()).andReturn(value);
+			EasyMock.expect(edmSimpleType.getKind()).andStubReturn(EdmTypeKind.SIMPLE);
+			EasyMock.expect(edmSimpleType.valueOfString(value, EdmLiteralKind.URI,
+						getEdmFacetsMockedObj(), null)).andStubReturn(value);
+			EasyMock.expect(edmSimpleType.valueOfString(value, EdmLiteralKind.URI, null, null)).andStubReturn(value);
+			EasyMock.expect(edmSimpleType.valueToString(value, EdmLiteralKind.DEFAULT,
 						getEdmFacetsMockedObj())).andStubReturn(value);
-		EasyMock.expect(
-				edmSimpleType
-						.valueToString(value, EdmLiteralKind.DEFAULT, null))
-				.andStubReturn(value);
-		EasyMock.expect(edmSimpleType.getDefaultType()).andStubReturn(null)
-				;
+			EasyMock.expect(edmSimpleType.valueToString(value, EdmLiteralKind.DEFAULT, null)).andStubReturn(value);
+		} catch (EdmException e) {
+			fail(JPATestConstants.EXCEPTION_MSG_PART_1+e.getMessage()+ JPATestConstants.EXCEPTION_MSG_PART_2);
+		}
+		EasyMock.expect(edmSimpleType.getDefaultType()).andStubReturn(null);
 		EasyMock.replay(edmSimpleType);
 		return edmSimpleType;
 	}
@@ -263,25 +288,23 @@ public class ODataExpressionParserTest {
 	}
 
 	private PropertyExpression getPropertyExpressionMockedObj(
-			ExpressionKind expKind, String propertyName) throws EdmException {
-		PropertyExpression leftOperandPropertyExpresion = EasyMock
-				.createMock(PropertyExpression.class);
-		EasyMock.expect(leftOperandPropertyExpresion.getKind())
-				.andStubReturn(ExpressionKind.PROPERTY);
-		EasyMock.expect(leftOperandPropertyExpresion.getPropertyName())
-				.andStubReturn(propertyName);
-		EasyMock.expect(leftOperandPropertyExpresion.getEdmProperty())
-				.andStubReturn(getEdmTypedMockedObj(propertyName));
+			ExpressionKind expKind, String propertyName) {
+		PropertyExpression leftOperandPropertyExpresion = EasyMock.createMock(PropertyExpression.class);
+		EasyMock.expect(leftOperandPropertyExpresion.getKind()).andStubReturn(ExpressionKind.PROPERTY);
+		EasyMock.expect(leftOperandPropertyExpresion.getPropertyName()).andStubReturn(propertyName);
+		EasyMock.expect(leftOperandPropertyExpresion.getEdmProperty()).andStubReturn(getEdmTypedMockedObj(propertyName));
 		EasyMock.replay(leftOperandPropertyExpresion);
 		return leftOperandPropertyExpresion;
 	}
 
-	private EdmTyped getEdmTypedMockedObj(String propertyName)
-			throws EdmException {
+	private EdmTyped getEdmTypedMockedObj(String propertyName) {
 		EdmProperty mockedEdmProperty = EasyMock.createMock(EdmProperty.class);
-		EasyMock.expect(mockedEdmProperty.getMapping())
-				.andStubReturn(getEdmMappingMockedObj(propertyName));
-		EasyMock.replay(mockedEdmProperty);
+		try {
+			EasyMock.expect(mockedEdmProperty.getMapping()).andStubReturn(getEdmMappingMockedObj(propertyName));
+			EasyMock.replay(mockedEdmProperty);
+		} catch (EdmException e) {
+			fail(JPATestConstants.EXCEPTION_MSG_PART_1+e.getMessage()+ JPATestConstants.EXCEPTION_MSG_PART_2);
+		}
 		return mockedEdmProperty;
 	}
 
@@ -295,7 +318,7 @@ public class ODataExpressionParserTest {
 
 	private BinaryExpression getBinaryExpressionMockedObj(
 			BinaryOperator operator, ExpressionKind leftOperandExpKind,
-			String propertyName, String literalStr) throws EdmException {
+			String propertyName, String literalStr) {
 		BinaryExpression binaryExpression = EasyMock
 				.createMock(BinaryExpression.class);
 		EasyMock.expect(binaryExpression.getKind())
@@ -304,8 +327,7 @@ public class ODataExpressionParserTest {
 				.andStubReturn(
 						getPropertyExpressionMockedObj(leftOperandExpKind,
 								propertyName));
-		EasyMock.expect(binaryExpression.getOperator()).andStubReturn(operator)
-				;
+		EasyMock.expect(binaryExpression.getOperator()).andStubReturn(operator);
 		EasyMock.expect(binaryExpression.getRightOperand())
 				.andStubReturn(getLiteralExpressionMockedObj(literalStr));
 
@@ -314,8 +336,7 @@ public class ODataExpressionParserTest {
 	}
 
 	private FilterExpression getFilterExpressionMockedObj(
-			ExpressionKind leftOperandExpKind, String propertyName)
-			throws EdmException {
+			ExpressionKind leftOperandExpKind, String propertyName) {
 		FilterExpression filterExpression = EasyMock
 				.createMock(FilterExpression.class);
 		EasyMock.expect(filterExpression.getKind())
@@ -340,15 +361,14 @@ public class ODataExpressionParserTest {
 				.andStubReturn(leftOperand);
 		EasyMock.expect(binaryExpression.getRightOperand())
 				.andStubReturn(rightOperand);
-		EasyMock.expect(binaryExpression.getOperator()).andStubReturn(operator)
-				;
+		EasyMock.expect(binaryExpression.getOperator()).andStubReturn(operator);
 
 		EasyMock.replay(binaryExpression);
 		return binaryExpression;
 	}
 
 	@Test
-	public void testParseKeyPredicates() throws EdmException {
+	public void testParseKeyPredicates() {
 		// Setting up the expected value
 		KeyPredicate keyPredicate1 = EasyMock.createMock(KeyPredicate.class);
 		EdmProperty kpProperty1 = EasyMock.createMock(EdmProperty.class);
@@ -358,21 +378,21 @@ public class ODataExpressionParserTest {
 		EasyMock.expect(keyPredicate2.getLiteral()).andStubReturn("abc");
 		EdmMapping edmMapping = EasyMock.createMock(EdmMapping.class);
 		try {
-			EasyMock.expect(kpProperty1.getName()).andStubReturn("field1");
+			EasyMock.expect(kpProperty1.getName()).andStubReturn(SAMPLE_DATA_FIELD1);
 			EasyMock.expect(kpProperty1.getType()).andStubReturn(
 					EdmSimpleTypeKind.Int32.getEdmSimpleTypeInstance());
-			EasyMock.expect(kpProperty2.getName()).andStubReturn("field2");
+			EasyMock.expect(kpProperty2.getName()).andStubReturn(SAMPLE_DATA_FIELD2);
 			EasyMock.expect(kpProperty2.getType()).andStubReturn(
 					EdmSimpleTypeKind.String.getEdmSimpleTypeInstance());
-		} catch (EdmException e2) {
-			fail("this should not happen");
+			EasyMock.expect(keyPredicate1.getProperty()).andStubReturn(kpProperty1);
+			EasyMock.expect(kpProperty1.getMapping()).andReturn(edmMapping);
+			EasyMock.expect(edmMapping.getInternalName()).andReturn(SAMPLE_DATA_FIELD1);
+			EasyMock.expect(keyPredicate2.getProperty()).andStubReturn(kpProperty2);
+			EasyMock.expect(kpProperty2.getMapping()).andReturn(edmMapping);
+		} catch (EdmException e) {
+			fail(JPATestConstants.EXCEPTION_MSG_PART_1+e.getMessage()+ JPATestConstants.EXCEPTION_MSG_PART_2);
 		}
-		EasyMock.expect(keyPredicate1.getProperty()).andStubReturn(kpProperty1);
-		EasyMock.expect(kpProperty1.getMapping()).andReturn(edmMapping);
-		EasyMock.expect(edmMapping.getInternalName()).andReturn("field1");
-		EasyMock.expect(keyPredicate2.getProperty()).andStubReturn(kpProperty2);
-		EasyMock.expect(kpProperty2.getMapping()).andReturn(edmMapping);
-		EasyMock.expect(edmMapping.getInternalName()).andReturn("field2");
+		EasyMock.expect(edmMapping.getInternalName()).andReturn(SAMPLE_DATA_FIELD2);
 		EasyMock.replay(edmMapping);
 		EasyMock.replay(kpProperty1, keyPredicate1, kpProperty2, keyPredicate2);
 
@@ -385,10 +405,10 @@ public class ODataExpressionParserTest {
 			str = ODataExpressionParser.parseKeyPredicates(keyPredicates,
 					TABLE_ALIAS);
 		} catch (ODataJPARuntimeException e) {
-			fail("this should not happen");
+			fail(JPATestConstants.EXCEPTION_MSG_PART_1+e.getMessage()+ JPATestConstants.EXCEPTION_MSG_PART_2);
 		}
 
-		assertEquals("gwt1.field1 = 1 AND gwt1.field2 = 'abc'", str);
+		assertEquals(EXPECTED_STR_8, str);
 	}
 
 	@Test
@@ -399,14 +419,14 @@ public class ODataExpressionParserTest {
 		selectedFields.add("BuyerName");
 		selectedFields.add("BuyerId");
 
-		assertEquals("gwt1.BuyerAddress, gwt1.BuyerName, gwt1.BuyerId",
+		assertEquals(EXPECTED_STR_9,
 				ODataExpressionParser.parseToJPASelectExpression(TABLE_ALIAS,
 						selectedFields));
-		assertEquals("gwt1", ODataExpressionParser.parseToJPASelectExpression(
+		assertEquals(TABLE_ALIAS, ODataExpressionParser.parseToJPASelectExpression(
 				TABLE_ALIAS, null));
 
 		selectedFields.clear();
-		assertEquals("gwt1", ODataExpressionParser.parseToJPASelectExpression(
+		assertEquals(TABLE_ALIAS, ODataExpressionParser.parseToJPASelectExpression(
 				TABLE_ALIAS, selectedFields));
 	}
 }

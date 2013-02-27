@@ -20,10 +20,10 @@ public class JPAEdmSchemaTest extends JPAEdmTestModelView {
 	private JPAEdmSchema objJPAEdmSchema;
 
 	@Before
-	public void setUp() throws Exception {
+	public void setUp() {
 		objJPAEdmSchemaTest = new JPAEdmSchemaTest();
 		objJPAEdmSchema = new JPAEdmSchema(objJPAEdmSchemaTest);
-		//objJPAEdmSchema.getBuilder().build(); //building schema is not required as downstream structure already tested
+		//building schema is not required as downstream structure already tested
 	
 	}
 

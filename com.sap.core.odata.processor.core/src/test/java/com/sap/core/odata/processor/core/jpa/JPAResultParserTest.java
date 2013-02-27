@@ -21,10 +21,9 @@ import com.sap.core.odata.api.edm.EdmType;
 import com.sap.core.odata.api.edm.EdmTypeKind;
 import com.sap.core.odata.api.edm.EdmTyped;
 import com.sap.core.odata.api.exception.MessageReference;
-import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.api.uri.SelectItem;
 import com.sap.core.odata.processor.api.jpa.exception.ODataJPARuntimeException;
-import com.sap.core.odata.processor.core.jpa.JPAResultParser;
+import com.sap.core.odata.processor.core.jpa.common.JPATestConstants;
 
 public class JPAResultParserTest {
 
@@ -90,14 +89,15 @@ public class JPAResultParserTest {
 			EasyMock.replay(structuralType);
 
 		} catch (EdmException e) {
-			e.printStackTrace();
+			fail(JPATestConstants.EXCEPTION_MSG_PART_1+e.getMessage()
+					+ JPATestConstants.EXCEPTION_MSG_PART_2);
 		}
 
 		try {
 			resultParser.parse2EdmPropertyValueMap(jpaEntity, structuralType);
 		} catch (ODataJPARuntimeException e) {
-			fail("JUnit failed with exception "
-					+ ODataJPARuntimeException.GENERAL);
+			fail(JPATestConstants.EXCEPTION_MSG_PART_1+e.getMessage()
+					+ JPATestConstants.EXCEPTION_MSG_PART_2);
 		}
 
 	}
@@ -152,7 +152,8 @@ public class JPAResultParserTest {
 			EasyMock.replay(structuralType);
 
 		} catch (EdmException e) {
-			assertTrue(false);
+			fail(JPATestConstants.EXCEPTION_MSG_PART_1+e.getMessage()
+					+ JPATestConstants.EXCEPTION_MSG_PART_2); // assertTrue(false);
 		}
 
 		try {
@@ -192,17 +193,23 @@ public class JPAResultParserTest {
 			assertEquals("getField1", name);
 
 		} catch (EdmException e) {
-			fail("Exception " + e.getMessage() + " not expected");
+			fail(JPATestConstants.EXCEPTION_MSG_PART_1+e.getMessage()
+					+ JPATestConstants.EXCEPTION_MSG_PART_2);
 		} catch (IllegalAccessException e) {
-			fail("Exception " + e.getMessage() + " not expected");
+			fail(JPATestConstants.EXCEPTION_MSG_PART_1+e.getMessage()
+					+ JPATestConstants.EXCEPTION_MSG_PART_2);
 		} catch (IllegalArgumentException e) {
-			fail("Exception " + e.getMessage() + " not expected");
+			fail(JPATestConstants.EXCEPTION_MSG_PART_1+e.getMessage()
+					+ JPATestConstants.EXCEPTION_MSG_PART_2);
 		} catch (InvocationTargetException e) {
-			fail("Exception " + e.getMessage() + " not expected");
+			fail(JPATestConstants.EXCEPTION_MSG_PART_1+e.getMessage()
+					+ JPATestConstants.EXCEPTION_MSG_PART_2);
 		} catch (NoSuchMethodException e) {
-			fail("Exception " + e.getMessage() + " not expected");
+			fail(JPATestConstants.EXCEPTION_MSG_PART_1+e.getMessage()
+					+ JPATestConstants.EXCEPTION_MSG_PART_2);
 		} catch (SecurityException e) {
-			fail("Exception " + e.getMessage() + " not expected");
+			fail(JPATestConstants.EXCEPTION_MSG_PART_1+e.getMessage()
+					+ JPATestConstants.EXCEPTION_MSG_PART_2);
 
 		}
 	}
@@ -231,17 +238,22 @@ public class JPAResultParserTest {
 			fail("Exception expected");
 
 		} catch (EdmException e) {
-			fail("Exception " + e.getMessage() + " not expected");
+			fail(JPATestConstants.EXCEPTION_MSG_PART_1+e.getMessage()
+					+ JPATestConstants.EXCEPTION_MSG_PART_2);
 		} catch (IllegalAccessException e) {
-			fail("Exception " + e.getMessage() + " not expected");
+			fail(JPATestConstants.EXCEPTION_MSG_PART_1+e.getMessage()
+					+ JPATestConstants.EXCEPTION_MSG_PART_2);
 		} catch (IllegalArgumentException e) {
-			fail("Exception " + e.getMessage() + " not expected");
+			fail(JPATestConstants.EXCEPTION_MSG_PART_1+e.getMessage()
+					+ JPATestConstants.EXCEPTION_MSG_PART_2);
 		} catch (InvocationTargetException e) {
 			assertTrue(true);
 		} catch (NoSuchMethodException e) {
-			fail("Exception " + e.getMessage() + " not expected");
+			fail(JPATestConstants.EXCEPTION_MSG_PART_1+e.getMessage()
+					+ JPATestConstants.EXCEPTION_MSG_PART_2);
 		} catch (SecurityException e) {
-			fail("Exception " + e.getMessage() + " not expected");
+			fail(JPATestConstants.EXCEPTION_MSG_PART_1+e.getMessage()
+					+ JPATestConstants.EXCEPTION_MSG_PART_2);
 
 		}
 	}
@@ -271,18 +283,22 @@ public class JPAResultParserTest {
 			assertEquals("getField1", name);
 
 		} catch (EdmException e) {
-			fail("Exception " + e.getMessage() + " not expected");
+			fail(JPATestConstants.EXCEPTION_MSG_PART_1+e.getMessage()
+					+ JPATestConstants.EXCEPTION_MSG_PART_2);
 		} catch (IllegalAccessException e) {
-			fail("Exception " + e.getMessage() + " not expected");
+			fail(JPATestConstants.EXCEPTION_MSG_PART_1+e.getMessage()
+					+ JPATestConstants.EXCEPTION_MSG_PART_2);
 		} catch (IllegalArgumentException e) {
-			fail("Exception " + e.getMessage() + " not expected");
+			fail(JPATestConstants.EXCEPTION_MSG_PART_1+e.getMessage()
+					+ JPATestConstants.EXCEPTION_MSG_PART_2);
 		} catch (InvocationTargetException e) {
 			assertTrue(true);
 		} catch (NoSuchMethodException e) {
-			fail("Exception " + e.getMessage() + " not expected");
+			fail(JPATestConstants.EXCEPTION_MSG_PART_1+e.getMessage()
+					+ JPATestConstants.EXCEPTION_MSG_PART_2);
 		} catch (SecurityException e) {
-			fail("Exception " + e.getMessage() + " not expected");
-
+			fail(JPATestConstants.EXCEPTION_MSG_PART_1+e.getMessage()
+					+ JPATestConstants.EXCEPTION_MSG_PART_2);
 		}
 	}
 
@@ -312,17 +328,22 @@ public class JPAResultParserTest {
 			assertEquals("getField1", name);
 
 		} catch (EdmException e) {
-			fail("Exception " + e.getMessage() + " not expected");
+			fail(JPATestConstants.EXCEPTION_MSG_PART_1+e.getMessage()
+					+ JPATestConstants.EXCEPTION_MSG_PART_2);
 		} catch (IllegalAccessException e) {
-			fail("Exception " + e.getMessage() + " not expected");
+			fail(JPATestConstants.EXCEPTION_MSG_PART_1+e.getMessage()
+					+ JPATestConstants.EXCEPTION_MSG_PART_2);
 		} catch (IllegalArgumentException e) {
-			fail("Exception " + e.getMessage() + " not expected");
+			fail(JPATestConstants.EXCEPTION_MSG_PART_1+e.getMessage()
+					+ JPATestConstants.EXCEPTION_MSG_PART_2);
 		} catch (InvocationTargetException e) {
 			assertTrue(true);
 		} catch (NoSuchMethodException e) {
-			fail("Exception " + e.getMessage() + " not expected");
+			fail(JPATestConstants.EXCEPTION_MSG_PART_1+e.getMessage()
+					+ JPATestConstants.EXCEPTION_MSG_PART_2);
 		} catch (SecurityException e) {
-			fail("Exception " + e.getMessage() + " not expected");
+			fail(JPATestConstants.EXCEPTION_MSG_PART_1+e.getMessage()
+					+ JPATestConstants.EXCEPTION_MSG_PART_2);
 
 		}
 	}
@@ -364,17 +385,23 @@ public class JPAResultParserTest {
 			assertEquals("getField2", name);
 
 		} catch (EdmException e) {
-			fail("Exception " + e.getMessage() + " not expected");
+			fail(JPATestConstants.EXCEPTION_MSG_PART_1+e.getMessage()
+					+ JPATestConstants.EXCEPTION_MSG_PART_2);
 		} catch (IllegalAccessException e) {
-			fail("Exception " + e.getMessage() + " not expected");
+			fail(JPATestConstants.EXCEPTION_MSG_PART_1+e.getMessage()
+					+ JPATestConstants.EXCEPTION_MSG_PART_2);
 		} catch (IllegalArgumentException e) {
-			fail("Exception " + e.getMessage() + " not expected");
+			fail(JPATestConstants.EXCEPTION_MSG_PART_1+e.getMessage()
+					+ JPATestConstants.EXCEPTION_MSG_PART_2);
 		} catch (InvocationTargetException e) {
-			fail("Exception " + e.getMessage() + " not expected");
+			fail(JPATestConstants.EXCEPTION_MSG_PART_1+e.getMessage()
+					+ JPATestConstants.EXCEPTION_MSG_PART_2);
 		} catch (NoSuchMethodException e) {
-			fail("Exception " + e.getMessage() + " not expected");
+			fail(JPATestConstants.EXCEPTION_MSG_PART_1+e.getMessage()
+					+ JPATestConstants.EXCEPTION_MSG_PART_2);
 		} catch (SecurityException e) {
-			fail("Exception " + e.getMessage() + " not expected");
+			fail(JPATestConstants.EXCEPTION_MSG_PART_1+e.getMessage()
+					+ JPATestConstants.EXCEPTION_MSG_PART_2);
 
 		}
 	}
@@ -393,7 +420,8 @@ public class JPAResultParserTest {
 					"com.sap.core.odata.processor.core.jpa.JPAResultParser.getGetterName1(com.sap.core.odata.api.edm.EdmProperty)",
 					e.getMessage());
 		} catch (SecurityException e) {
-			fail("Exception " + e.getMessage() + " not expected");
+			fail(JPATestConstants.EXCEPTION_MSG_PART_1+e.getMessage()
+					+ JPATestConstants.EXCEPTION_MSG_PART_2);
 
 		}
 	}
@@ -405,8 +433,8 @@ public class JPAResultParserTest {
 		try {
 			resultParser.parse2EdmPropertyValueMap(jpaEntity, getSelectItemList()); 
 		} catch (ODataJPARuntimeException e) {
-			fail("JUnit failed with exception "
-					+ ODataJPARuntimeException.GENERAL);
+			fail(JPATestConstants.EXCEPTION_MSG_PART_1+e.getMessage()
+					+ JPATestConstants.EXCEPTION_MSG_PART_2);
 		}
 	}
 
@@ -426,9 +454,11 @@ public class JPAResultParserTest {
 			try {
 				getGetters.invoke(resultParser, jpaEntity, structuralType);
 			} catch (IllegalAccessException e) {
-				fail("Exception " + e.getMessage() + " not expected");
+				fail(JPATestConstants.EXCEPTION_MSG_PART_1+e.getMessage()
+						+ JPATestConstants.EXCEPTION_MSG_PART_2);
 			} catch (IllegalArgumentException e) {
-				fail("Exception " + e.getMessage() + " not expected");
+				fail(JPATestConstants.EXCEPTION_MSG_PART_1+e.getMessage()
+						+ JPATestConstants.EXCEPTION_MSG_PART_2);
 			} catch (InvocationTargetException e) {
 				assertTrue(true);
 			}
@@ -437,20 +467,28 @@ public class JPAResultParserTest {
 					"com.sap.core.odata.processor.jpa.JPAResultParser.getGetterName1(com.sap.core.odata.api.edm.EdmProperty)",
 					e.getMessage());
 		} catch (SecurityException e) {
-			fail("Exception " + e.getMessage() + " not expected");
+			fail(JPATestConstants.EXCEPTION_MSG_PART_1+e.getMessage()
+					+ JPATestConstants.EXCEPTION_MSG_PART_2);
 		} catch (EdmException e) {
-			fail("Exception " + e.getMessage() + " not expected");
+			fail(JPATestConstants.EXCEPTION_MSG_PART_1+e.getMessage()
+					+ JPATestConstants.EXCEPTION_MSG_PART_2);
 		}
 	}
 
 	@Test
-	public void testForNullJPAEntity() throws ODataException {
+	public void testForNullJPAEntity() {
 		JPAResultParser resultParser = JPAResultParser.create();
 		EdmStructuralType structuralType = EasyMock
 				.createMock(EdmStructuralType.class);
-		Object map = resultParser.parse2EdmPropertyValueMap(null,
-				structuralType);
-		assertNull(map);
+		Object map;
+		try {
+			map = resultParser.parse2EdmPropertyValueMap(null,
+					structuralType);
+			assertNull(map);
+		} catch (ODataJPARuntimeException e) {
+			fail(JPATestConstants.EXCEPTION_MSG_PART_1+e.getMessage()
+					+ JPATestConstants.EXCEPTION_MSG_PART_2);
+		}
 	}
 
 	class demoItem {
@@ -514,7 +552,8 @@ public class JPAResultParserTest {
 			EasyMock.expect(edmTyped.getMapping()).andStubReturn(edmMapping);
 			
 		} catch (EdmException e) {
-			fail("EdmException not expected");
+			fail(JPATestConstants.EXCEPTION_MSG_PART_1+e.getMessage()
+					+ JPATestConstants.EXCEPTION_MSG_PART_2);
 		}
 		EasyMock.replay(edmType);
 		EasyMock.replay(edmTyped);

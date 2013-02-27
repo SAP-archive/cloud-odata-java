@@ -18,6 +18,7 @@ import com.sap.core.odata.api.edm.provider.EntityContainerInfo;
 import com.sap.core.odata.api.edm.provider.Schema;
 import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.processor.api.jpa.exception.ODataJPAModelException;
+import com.sap.core.odata.processor.core.jpa.common.JPATestConstants;
 import com.sap.core.odata.processor.core.jpa.edm.ODataJPAEdmProvider;
 import com.sap.core.odata.processor.core.jpa.mock.ODataJPAContextMock;
 import com.sap.core.odata.processor.core.jpa.mock.model.EdmSchemaMock;
@@ -28,21 +29,31 @@ public class ODataJPAEdmProviderTest {
 	private static ODataJPAEdmProvider edmProvider;
 	
 	@BeforeClass
-	  public static void setup() throws IllegalArgumentException, IllegalAccessException, SecurityException, NoSuchFieldException  {
+	  public static void setup() {
 		
 		edmProvider = new ODataJPAEdmProvider();
-		Class<? extends ODataJPAEdmProvider> clazz = edmProvider.getClass();
-		Field field = clazz.getDeclaredField("schemas");
-		field.setAccessible(true);
-		List<Schema> schemas = new ArrayList<Schema>();
-		schemas.add(EdmSchemaMock.createMockEdmSchema());
-		field.set(edmProvider,schemas);
-		field = clazz.getDeclaredField("oDataJPAContext");
-		field.setAccessible(true);
-		field.set(edmProvider, ODataJPAContextMock.mockODataJPAContext());
-		field = clazz.getDeclaredField("jpaEdmModel");
-		field.setAccessible(true);
-		field.set(edmProvider, new JPAEdmModel(null, null));
+		try {
+			Class<? extends ODataJPAEdmProvider> clazz = edmProvider.getClass();
+			Field field = clazz.getDeclaredField("schemas");
+			field.setAccessible(true);
+			List<Schema> schemas = new ArrayList<Schema>();
+			schemas.add(EdmSchemaMock.createMockEdmSchema());
+			field.set(edmProvider,schemas);
+			field = clazz.getDeclaredField("oDataJPAContext");
+			field.setAccessible(true);
+			field.set(edmProvider, ODataJPAContextMock.mockODataJPAContext());
+			field = clazz.getDeclaredField("jpaEdmModel");
+			field.setAccessible(true);
+			field.set(edmProvider, new JPAEdmModel(null, null));
+		} catch (IllegalArgumentException e) {
+			fail(JPATestConstants.EXCEPTION_MSG_PART_1+e.getMessage()+ JPATestConstants.EXCEPTION_MSG_PART_2);
+		} catch (IllegalAccessException e) {
+			fail(JPATestConstants.EXCEPTION_MSG_PART_1+e.getMessage()+ JPATestConstants.EXCEPTION_MSG_PART_2);
+		} catch (NoSuchFieldException e) {
+			fail(JPATestConstants.EXCEPTION_MSG_PART_1+e.getMessage()+ JPATestConstants.EXCEPTION_MSG_PART_2);
+		} catch (SecurityException e) {
+			fail(JPATestConstants.EXCEPTION_MSG_PART_1+e.getMessage()+ JPATestConstants.EXCEPTION_MSG_PART_2);
+		}
 		
 	  }
 	@Test
@@ -74,7 +85,7 @@ public class ODataJPAEdmProviderTest {
 			entityContainer = edmProvider.getEntityContainerInfo("salesorderprocessingContainer");
 			entityContainerName = entityContainer.getName();
 			} catch (ODataException e) {
-			fail("OData Exception raised with "+e.getMessage());
+				fail(JPATestConstants.EXCEPTION_MSG_PART_1+e.getMessage()+ JPATestConstants.EXCEPTION_MSG_PART_2);
 		}
 		
 		assertEquals("salesorderprocessingContainer", entityContainerName);
@@ -88,7 +99,7 @@ public class ODataJPAEdmProviderTest {
 		try {
 			entityName = edmProvider.getEntityType(entityTypeName).getName();
 		} catch (ODataException e) {
-			fail("OData exception raised with " + e.getMessage());
+			fail(JPATestConstants.EXCEPTION_MSG_PART_1+e.getMessage()+ JPATestConstants.EXCEPTION_MSG_PART_2);
 		}
 		assertEquals("SalesOrderHeader", entityName);
 		try{
@@ -107,7 +118,7 @@ public class ODataJPAEdmProviderTest {
 		try {
 			nameStr = edmProvider.getComplexType(complexTypeName).getName();
 		} catch (ODataException e) {
-			fail("Odata Exception raised with "+e.getMessage());
+			fail(JPATestConstants.EXCEPTION_MSG_PART_1+e.getMessage()+ JPATestConstants.EXCEPTION_MSG_PART_2);
 		}
 		assertEquals("Address", nameStr);
 	}
@@ -118,7 +129,7 @@ public class ODataJPAEdmProviderTest {
 		try {
 			association = edmProvider.getAssociation(new FullQualifiedName("salesorderprocessing", "SalesOrderHeader_SalesOrderItem"));
 		} catch (ODataException e) {
-			fail("OData exception raised with " + e.getMessage());
+			fail(JPATestConstants.EXCEPTION_MSG_PART_1+e.getMessage()+ JPATestConstants.EXCEPTION_MSG_PART_2);
 		}
 		assertNotNull(association);
 		assertEquals("SalesOrderHeader_SalesOrderItem", association.getName());
@@ -130,7 +141,7 @@ public class ODataJPAEdmProviderTest {
 		try {
 			entitySetName = edmProvider.getEntitySet("salesorderprocessingContainer", "SalesOrderHeaders").getName();
 		} catch (ODataException e) {
-			fail("OData exception raised with " + e.getMessage());
+			fail(JPATestConstants.EXCEPTION_MSG_PART_1+e.getMessage()+ JPATestConstants.EXCEPTION_MSG_PART_2);
 		}
 		assertEquals("SalesOrderHeaders", entitySetName);
 		try {
@@ -147,14 +158,14 @@ public class ODataJPAEdmProviderTest {
 		try {
 			associationSet = edmProvider.getAssociationSet("salesorderprocessingContainer", new FullQualifiedName("salesorderprocessing", "SalesOrderHeader_SalesOrderItem"), "SalesOrderHeaders", "SalesOrderHeader");
 		} catch (ODataException e) {
-			fail("OData exception raised with " + e.getMessage());
+			fail(JPATestConstants.EXCEPTION_MSG_PART_1+e.getMessage()+ JPATestConstants.EXCEPTION_MSG_PART_2);
 		}
 		assertNotNull(associationSet);
 		assertEquals("SalesOrderHeader_SalesOrderItemSet", associationSet.getName());
 		try {
 			associationSet = edmProvider.getAssociationSet("salesorderprocessingContainer", new FullQualifiedName("salesorderprocessing", "SalesOrderHeader_SalesOrderItem"), "SalesOrderItems", "SalesOrderItem");
 		} catch (ODataException e) {
-			fail("OData exception raised with " + e.getMessage());
+			fail(JPATestConstants.EXCEPTION_MSG_PART_1+e.getMessage()+ JPATestConstants.EXCEPTION_MSG_PART_2);
 		}
 		assertNotNull(associationSet);
 		try {
@@ -178,11 +189,11 @@ public class ODataJPAEdmProviderTest {
 		try {
 			assertNotNull(edmProvider.getSchemas());
 		} catch (ODataException e) {
-			fail("OData exception raised with " + e.getMessage());
+			fail(JPATestConstants.EXCEPTION_MSG_PART_1+e.getMessage()+ JPATestConstants.EXCEPTION_MSG_PART_2);
 		}
 	}
 	@Test
-	public void testgetComplexTypeWithBuffer() throws Exception
+	public void testgetComplexTypeWithBuffer()
 	{
 		HashMap<String, ComplexType> compTypes = new HashMap<String, ComplexType>();
 		ComplexType comp = new ComplexType();
@@ -190,10 +201,26 @@ public class ODataJPAEdmProviderTest {
 		compTypes.put("salesorderprocessing"+"."+"Address", comp);
 		ODataJPAEdmProvider jpaEdmProv = new ODataJPAEdmProvider();
 		Class<?> claz = jpaEdmProv.getClass();
-		Field f = claz.getDeclaredField("complexTypes");
-		f.setAccessible(true);
-		f.set(jpaEdmProv, compTypes);
-		assertEquals(comp, jpaEdmProv.getComplexType(new FullQualifiedName("salesorderprocessing", "Address")));
+		Field f;
+		try {
+			f = claz.getDeclaredField("complexTypes");
+			f.setAccessible(true);
+			f.set(jpaEdmProv, compTypes);
+		} catch (NoSuchFieldException e) {
+			fail(JPATestConstants.EXCEPTION_MSG_PART_1+e.getMessage()+ JPATestConstants.EXCEPTION_MSG_PART_2);
+		} catch (SecurityException e) {
+			fail(JPATestConstants.EXCEPTION_MSG_PART_1+e.getMessage()+ JPATestConstants.EXCEPTION_MSG_PART_2);
+		} catch (IllegalArgumentException e) {
+			fail(JPATestConstants.EXCEPTION_MSG_PART_1+e.getMessage()+ JPATestConstants.EXCEPTION_MSG_PART_2);
+		} catch (IllegalAccessException e) {
+			fail(JPATestConstants.EXCEPTION_MSG_PART_1+e.getMessage()+ JPATestConstants.EXCEPTION_MSG_PART_2);
+		}
+		
+		try {
+			assertEquals(comp, jpaEdmProv.getComplexType(new FullQualifiedName("salesorderprocessing", "Address")));
+		} catch (ODataException e) {
+			fail(JPATestConstants.EXCEPTION_MSG_PART_1+e.getMessage()+ JPATestConstants.EXCEPTION_MSG_PART_2);
+		}
 		try
 		{
 			jpaEdmProv.getComplexType(new FullQualifiedName("salesorderessing", "abc"));
@@ -201,10 +228,12 @@ public class ODataJPAEdmProviderTest {
 		catch(ODataJPAModelException e)
 		{
 			assertTrue(true);
+		} catch (ODataException e) {
+			fail(JPATestConstants.EXCEPTION_MSG_PART_1+e.getMessage()+ JPATestConstants.EXCEPTION_MSG_PART_2);
 		}
 	}
 	@Test
-	public void testGetEntityContainerInfoWithBuffer() throws Exception
+	public void testGetEntityContainerInfoWithBuffer() 
 	{
 		HashMap<String, EntityContainerInfo> entityContainerInfos = new HashMap<String, EntityContainerInfo>();
 		EntityContainerInfo entityContainer = new EntityContainerInfo();
@@ -212,21 +241,31 @@ public class ODataJPAEdmProviderTest {
 		entityContainerInfos.put("salesorderprocessingContainer", entityContainer);
 		ODataJPAEdmProvider jpaEdmProv = new ODataJPAEdmProvider();
 		Class<?> claz = jpaEdmProv.getClass();
-		Field f = claz.getDeclaredField("entityContainerInfos");
-		f.setAccessible(true);
-		f.set(jpaEdmProv, entityContainerInfos);
-		assertEquals(entityContainer, jpaEdmProv.getEntityContainerInfo("salesorderprocessingContainer"));
 		try
 		{
+			Field f = claz.getDeclaredField("entityContainerInfos");
+			f.setAccessible(true);
+			f.set(jpaEdmProv, entityContainerInfos);
+			assertEquals(entityContainer, jpaEdmProv.getEntityContainerInfo("salesorderprocessingContainer"));
 			jpaEdmProv.getEntityContainerInfo("abc");
 		}
 		catch(ODataJPAModelException e)
 		{
 			assertTrue(true);
+		} catch (NoSuchFieldException e) {
+			fail(JPATestConstants.EXCEPTION_MSG_PART_1+e.getMessage()+ JPATestConstants.EXCEPTION_MSG_PART_2);
+		} catch (SecurityException e) {
+			fail(JPATestConstants.EXCEPTION_MSG_PART_1+e.getMessage()+ JPATestConstants.EXCEPTION_MSG_PART_2);
+		} catch (IllegalArgumentException e) {
+			fail(JPATestConstants.EXCEPTION_MSG_PART_1+e.getMessage()+ JPATestConstants.EXCEPTION_MSG_PART_2);
+		} catch (IllegalAccessException e) {
+			fail(JPATestConstants.EXCEPTION_MSG_PART_1+e.getMessage()+ JPATestConstants.EXCEPTION_MSG_PART_2);
+		} catch (ODataException e) {
+			fail(JPATestConstants.EXCEPTION_MSG_PART_1+e.getMessage()+ JPATestConstants.EXCEPTION_MSG_PART_2);
 		}
 	}
 	@Test
-	public void testGetEntityTypeWithBuffer() throws Exception
+	public void testGetEntityTypeWithBuffer() 
 	{
 		HashMap<String, com.sap.core.odata.api.edm.provider.EntityType> entityTypes = new HashMap<String,com.sap.core.odata.api.edm.provider.EntityType >();
 		com.sap.core.odata.api.edm.provider.EntityType entity = new com.sap.core.odata.api.edm.provider.EntityType();
@@ -234,10 +273,23 @@ public class ODataJPAEdmProviderTest {
 		entityTypes.put("salesorderprocessing"+"."+"SalesorderHeader", entity);
 		ODataJPAEdmProvider jpaEdmProv = new ODataJPAEdmProvider();
 		Class<?> claz = jpaEdmProv.getClass();
-		Field f = claz.getDeclaredField("entityTypes");
-		f.setAccessible(true);
-		f.set(jpaEdmProv, entityTypes);
-		assertEquals(entity, jpaEdmProv.getEntityType(new FullQualifiedName("salesorderprocessing", "SalesorderHeader")));
+		Field f;
+		try {
+			f = claz.getDeclaredField("entityTypes");
+			f.setAccessible(true);
+			f.set(jpaEdmProv, entityTypes);
+			assertEquals(entity, jpaEdmProv.getEntityType(new FullQualifiedName("salesorderprocessing", "SalesorderHeader")));
+		} catch (NoSuchFieldException e) {
+			fail(JPATestConstants.EXCEPTION_MSG_PART_1+e.getMessage()+ JPATestConstants.EXCEPTION_MSG_PART_2);
+		} catch (SecurityException e) {
+			fail(JPATestConstants.EXCEPTION_MSG_PART_1+e.getMessage()+ JPATestConstants.EXCEPTION_MSG_PART_2);
+		} catch (IllegalArgumentException e) {
+			fail(JPATestConstants.EXCEPTION_MSG_PART_1+e.getMessage()+ JPATestConstants.EXCEPTION_MSG_PART_2);
+		} catch (IllegalAccessException e) {
+			fail(JPATestConstants.EXCEPTION_MSG_PART_1+e.getMessage()+ JPATestConstants.EXCEPTION_MSG_PART_2);
+		} catch (ODataException e) {
+			fail(JPATestConstants.EXCEPTION_MSG_PART_1+e.getMessage()+ JPATestConstants.EXCEPTION_MSG_PART_2);
+		}
 		try
 		{
 			jpaEdmProv.getEntityType(new FullQualifiedName("salesoprocessing", "abc"));
@@ -245,10 +297,12 @@ public class ODataJPAEdmProviderTest {
 		catch(ODataJPAModelException e)
 		{
 			assertTrue(true);
+		} catch (ODataException e) {
+			fail(JPATestConstants.EXCEPTION_MSG_PART_1+e.getMessage()+ JPATestConstants.EXCEPTION_MSG_PART_2);
 		}
 	}
 	@Test
-	public void testGetAssociationWithBuffer() throws Exception
+	public void testGetAssociationWithBuffer()
 	{
 		HashMap<String, Association> associations = new HashMap<String,Association >();
 		Association association = new Association();
@@ -256,10 +310,23 @@ public class ODataJPAEdmProviderTest {
 		associations.put("salesorderprocessing"+"."+"SalesOrderHeader_SalesOrderItem", association);
 		ODataJPAEdmProvider jpaEdmProv = new ODataJPAEdmProvider();
 		Class<?> claz = jpaEdmProv.getClass();
-		Field f = claz.getDeclaredField("associations");
-		f.setAccessible(true);
-		f.set(jpaEdmProv, associations);
-		assertEquals(association, jpaEdmProv.getAssociation(new FullQualifiedName("salesorderprocessing", "SalesOrderHeader_SalesOrderItem")));
+		Field f;
+		try {
+			f = claz.getDeclaredField("associations");
+			f.setAccessible(true);
+			f.set(jpaEdmProv, associations);
+			assertEquals(association, jpaEdmProv.getAssociation(new FullQualifiedName("salesorderprocessing", "SalesOrderHeader_SalesOrderItem")));
+		} catch (NoSuchFieldException e) {
+			fail(JPATestConstants.EXCEPTION_MSG_PART_1+e.getMessage()+ JPATestConstants.EXCEPTION_MSG_PART_2);
+		} catch (SecurityException e) {
+			fail(JPATestConstants.EXCEPTION_MSG_PART_1+e.getMessage()+ JPATestConstants.EXCEPTION_MSG_PART_2);
+		} catch (IllegalArgumentException e) {
+			fail(JPATestConstants.EXCEPTION_MSG_PART_1+e.getMessage()+ JPATestConstants.EXCEPTION_MSG_PART_2);
+		} catch (IllegalAccessException e) {
+			fail(JPATestConstants.EXCEPTION_MSG_PART_1+e.getMessage()+ JPATestConstants.EXCEPTION_MSG_PART_2);
+		} catch (ODataException e) {
+			fail(JPATestConstants.EXCEPTION_MSG_PART_1+e.getMessage()+ JPATestConstants.EXCEPTION_MSG_PART_2);
+		}
 		try
 		{
 			jpaEdmProv.getAssociation(new FullQualifiedName("salesorderprocessing", "abc"));
@@ -267,6 +334,8 @@ public class ODataJPAEdmProviderTest {
 		catch(ODataJPAModelException e)
 		{
 			assertTrue(true);
+		} catch (ODataException e) {
+			fail(JPATestConstants.EXCEPTION_MSG_PART_1+e.getMessage()+ JPATestConstants.EXCEPTION_MSG_PART_2);
 		}
 	}
 

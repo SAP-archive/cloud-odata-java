@@ -22,6 +22,7 @@ import com.sap.core.odata.processor.api.jpa.access.JPAEdmBuilder;
 import com.sap.core.odata.processor.api.jpa.exception.ODataJPAModelException;
 import com.sap.core.odata.processor.api.jpa.exception.ODataJPARuntimeException;
 import com.sap.core.odata.processor.api.jpa.model.JPAEdmKeyView;
+import com.sap.core.odata.processor.core.jpa.common.JPATestConstants;
 import com.sap.core.odata.processor.core.jpa.mock.ODataJPAContextMock;
 import com.sap.core.odata.processor.core.jpa.mock.model.JPAAttributeMock;
 import com.sap.core.odata.processor.core.jpa.mock.model.JPAEdmMockData;
@@ -53,9 +54,9 @@ public class JPAEdmKeyTest extends JPAEdmTestModelView {
 		try {
 			keyView.getBuilder().build();
 		} catch (ODataJPAModelException e) {
-			fail("Exception Not Expected");
+			fail(JPATestConstants.EXCEPTION_MSG_PART_1+e.getMessage()+ JPATestConstants.EXCEPTION_MSG_PART_2);
 		} catch (ODataJPARuntimeException e) {
-			fail("Exception Not Expected");
+			fail(JPATestConstants.EXCEPTION_MSG_PART_1+e.getMessage()+ JPATestConstants.EXCEPTION_MSG_PART_2);
 		}
 
 		Key key = keyView.getEdmKey();

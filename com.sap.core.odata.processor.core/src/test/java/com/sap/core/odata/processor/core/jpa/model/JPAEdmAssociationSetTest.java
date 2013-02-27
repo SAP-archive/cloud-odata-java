@@ -3,6 +3,7 @@ package com.sap.core.odata.processor.core.jpa.model;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,9 +20,11 @@ import com.sap.core.odata.api.edm.provider.EntitySet;
 import com.sap.core.odata.api.edm.provider.Schema;
 import com.sap.core.odata.processor.api.jpa.access.JPAEdmBuilder;
 import com.sap.core.odata.processor.api.jpa.exception.ODataJPAModelException;
+import com.sap.core.odata.processor.api.jpa.exception.ODataJPARuntimeException;
 import com.sap.core.odata.processor.api.jpa.model.JPAEdmAssociationView;
 import com.sap.core.odata.processor.api.jpa.model.JPAEdmEntityContainerView;
 import com.sap.core.odata.processor.api.jpa.model.JPAEdmEntitySetView;
+import com.sap.core.odata.processor.core.jpa.common.JPATestConstants;
 
 public class JPAEdmAssociationSetTest extends JPAEdmTestModelView {
 	
@@ -30,10 +33,16 @@ public class JPAEdmAssociationSetTest extends JPAEdmTestModelView {
 	
 	
 	@Before
-	public void setUp() throws Exception {
+	public void setUp() {
 		objJPAEdmAssociationSetTest = new JPAEdmAssociationSetTest();
 		objJPAEdmAssociationSet = new JPAEdmAssociationSet(objJPAEdmAssociationSetTest);
-		objJPAEdmAssociationSet.getBuilder().build();
+		try {
+			objJPAEdmAssociationSet.getBuilder().build();
+		} catch (ODataJPAModelException e) {
+			fail(JPATestConstants.EXCEPTION_MSG_PART_1+e.getMessage()+ JPATestConstants.EXCEPTION_MSG_PART_2);
+		} catch (ODataJPARuntimeException e) {
+			fail(JPATestConstants.EXCEPTION_MSG_PART_1+e.getMessage()+ JPATestConstants.EXCEPTION_MSG_PART_2);
+		}
 		
 	}
 
@@ -48,7 +57,7 @@ public class JPAEdmAssociationSetTest extends JPAEdmTestModelView {
 	}
 
 	@Test
-	public void testGetEdmAssociationSet() throws ODataJPAModelException {
+	public void testGetEdmAssociationSet() {
 		assertNotNull(objJPAEdmAssociationSet.getEdmAssociationSet());
 	}
 

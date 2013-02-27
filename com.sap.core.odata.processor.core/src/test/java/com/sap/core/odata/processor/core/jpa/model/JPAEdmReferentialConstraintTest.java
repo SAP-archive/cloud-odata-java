@@ -22,6 +22,7 @@ import com.sap.core.odata.api.edm.provider.AssociationEnd;
 import com.sap.core.odata.processor.api.jpa.access.JPAEdmBuilder;
 import com.sap.core.odata.processor.api.jpa.exception.ODataJPAModelException;
 import com.sap.core.odata.processor.api.jpa.exception.ODataJPARuntimeException;
+import com.sap.core.odata.processor.core.jpa.common.JPATestConstants;
 import com.sap.core.odata.processor.core.jpa.mock.model.JPAAttributeMock;
 import com.sap.core.odata.processor.core.jpa.mock.model.JPAJavaMemberMock;
 import com.sap.core.odata.processor.core.jpa.mock.model.JPAManagedTypeMock;
@@ -42,9 +43,9 @@ public class JPAEdmReferentialConstraintTest extends JPAEdmTestModelView {
 		try {
 			objJPAEdmReferentialConstraint.getBuilder().build();
 		} catch (ODataJPAModelException e) {
-			fail("ODataJPAModelException not expected");
+			fail(JPATestConstants.EXCEPTION_MSG_PART_1+e.getMessage()+ JPATestConstants.EXCEPTION_MSG_PART_2);
 		} catch (ODataJPARuntimeException e) {
-			fail("ODataJPARuntimeException not expected");
+			fail(JPATestConstants.EXCEPTION_MSG_PART_1+e.getMessage()+ JPATestConstants.EXCEPTION_MSG_PART_2);
 		}
 	}
 
@@ -78,9 +79,9 @@ public class JPAEdmReferentialConstraintTest extends JPAEdmTestModelView {
 			objJPAEdmReferentialConstraint.getBuilder().build();
 			objJPAEdmReferentialConstraint.getBuilder().build();
 		} catch (ODataJPAModelException e) {
-			fail("ODataJPAModelException not expected");
+			fail(JPATestConstants.EXCEPTION_MSG_PART_1+e.getMessage()+ JPATestConstants.EXCEPTION_MSG_PART_2);
 		}catch (ODataJPARuntimeException e) {
-			fail("ODataJPARuntimeException not expected");
+			fail(JPATestConstants.EXCEPTION_MSG_PART_1+e.getMessage()+ JPATestConstants.EXCEPTION_MSG_PART_2);
 		}
 		assertTrue(objJPAEdmReferentialConstraint.isExists());
 	}
