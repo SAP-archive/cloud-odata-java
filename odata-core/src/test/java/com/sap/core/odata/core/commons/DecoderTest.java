@@ -1,6 +1,7 @@
 package com.sap.core.odata.core.commons;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 import org.junit.Test;
 
@@ -13,7 +14,7 @@ public class DecoderTest extends BaseTest {
 
   @Test
   public void asciiCharacters() {
-    assertEquals(null, Decoder.decode(null));
+    assertNull(Decoder.decode(null));
 
     String s = "azAZ019";
     assertEquals(s, Decoder.decode(s));
@@ -24,7 +25,7 @@ public class DecoderTest extends BaseTest {
 
   @Test
   public void asciiControl() {
-    assertEquals("\b\t\n\r", Decoder.decode("%08%09%0a%0d"));
+    assertEquals("\u0000\b\t\n\r", Decoder.decode("%00%08%09%0a%0d"));
   }
 
   @Test
@@ -36,14 +37,12 @@ public class DecoderTest extends BaseTest {
 
   @Test
   public void unicodeCharacters() {
-    assertEquals("€", Decoder.decode("%e2%82%ac"));
-    assertEquals("\uFDFC", Decoder.decode("%ef%b7%bc")); // RIAL SIGN
+    assertEquals("€", Decoder.decode("%E2%82%AC"));
+    assertEquals("\uFDFC", Decoder.decode("%EF%B7%BC"));
   }
 
   @Test
   public void charactersOutsideBmp() {
-    // Unicode characters outside the Basic Multilingual Plane are stored
-    // in a Java String in two surrogate characters.
     assertEquals(String.valueOf(Character.toChars(0x1F603)), Decoder.decode("%f0%9f%98%83"));
   }
 
@@ -65,5 +64,10 @@ public class DecoderTest extends BaseTest {
   @Test(expected = IllegalArgumentException.class)
   public void unfinishedPercent() {
     Decoder.decode("%a");
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void nullByte() {
+    Decoder.decode("%\u0000ff");
   }
 }
