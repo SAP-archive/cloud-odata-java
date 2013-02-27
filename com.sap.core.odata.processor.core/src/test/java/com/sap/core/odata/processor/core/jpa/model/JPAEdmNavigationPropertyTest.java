@@ -98,6 +98,19 @@ public class JPAEdmNavigationPropertyTest extends JPAEdmTestModelView {
 
 	@Test
 	public void testGetEdmNavigationProperty() {
+		if(objNavigationProperty == null || objNavigationProperty.getEdmNavigationProperty() == null ){
+			JPAEdmNavigationPropertyTest localView = new JPAEdmNavigationPropertyTest();
+			navPropView = new JPAEdmNavigationPropertyTest();
+			objNavigationProperty = new JPAEdmNavigationProperty(localView,
+					localView);
+			try {
+				objNavigationProperty.getBuilder().build();
+			} catch (ODataJPAModelException e) {
+				fail(ODataJPATestConstants.EXCEPTION_MSG_PART_1+e.getMessage()+ ODataJPATestConstants.EXCEPTION_MSG_PART_2);
+			} catch (ODataJPARuntimeException e) {
+				fail(ODataJPATestConstants.EXCEPTION_MSG_PART_1+e.getMessage()+ ODataJPATestConstants.EXCEPTION_MSG_PART_2);
+			}
+		}
 		assertEquals(
 				objNavigationProperty.getEdmNavigationProperty().getName(),
 				"StringDetails");
