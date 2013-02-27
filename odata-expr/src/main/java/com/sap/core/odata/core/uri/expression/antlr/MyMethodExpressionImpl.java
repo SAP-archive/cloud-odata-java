@@ -19,7 +19,7 @@ public class MyMethodExpressionImpl implements MethodExpression {
   private EdmType returnType;
   private final List<CommonExpression> actualParameters;
 
-  public MyMethodExpressionImpl(MyInfoMethod infoMethod) {
+  public MyMethodExpressionImpl(final MyInfoMethod infoMethod) {
     this.infoMethod = infoMethod;
     returnType = infoMethod.getReturnType();
     actualParameters = new ArrayList<CommonExpression>();
@@ -31,7 +31,7 @@ public class MyMethodExpressionImpl implements MethodExpression {
   }
 
   @Override
-  public CommonExpression setEdmType(EdmType edmType) {
+  public CommonExpression setEdmType(final EdmType edmType) {
     returnType = edmType;
     return this;
   }
@@ -55,7 +55,7 @@ public class MyMethodExpressionImpl implements MethodExpression {
    * @param expression
    * @return "this" self reference for method chaining" 
    */
-  public MyMethodExpressionImpl appendParameter(CommonExpression expression) {
+  public MyMethodExpressionImpl appendParameter(final CommonExpression expression) {
     actualParameters.add(expression);
     return this;
   }
@@ -71,7 +71,7 @@ public class MyMethodExpressionImpl implements MethodExpression {
   }
 
   @Override
-  public Object accept(ExpressionVisitor visitor) throws ExceptionVisitExpression, ODataApplicationException {
+  public Object accept(final ExpressionVisitor visitor) throws ExceptionVisitExpression, ODataApplicationException {
     final Vector<Object> retParameters = new Vector<Object>();
     for (final CommonExpression parameter : actualParameters) {
       final Object retParameter = parameter.accept(visitor);

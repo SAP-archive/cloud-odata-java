@@ -15,7 +15,7 @@ public class MyBinaryExpressionImpl implements BinaryExpression {
   CommonExpression rightSide;
   EdmType edmType;
 
-  public MyBinaryExpressionImpl(BinaryOperator operator, CommonExpression leftSide, CommonExpression rightSide) {
+  public MyBinaryExpressionImpl(final BinaryOperator operator, final CommonExpression leftSide, final CommonExpression rightSide) {
     this.operator = operator;
     this.leftSide = leftSide;
     this.rightSide = rightSide;
@@ -44,7 +44,7 @@ public class MyBinaryExpressionImpl implements BinaryExpression {
   }
 
   @Override
-  public CommonExpression setEdmType(EdmType edmType) {
+  public CommonExpression setEdmType(final EdmType edmType) {
     this.edmType = edmType;
     return this;
   }
@@ -60,7 +60,7 @@ public class MyBinaryExpressionImpl implements BinaryExpression {
   }
 
   @Override
-  public Object accept(ExpressionVisitor visitor) throws ExceptionVisitExpression, ODataApplicationException {
+  public Object accept(final ExpressionVisitor visitor) throws ExceptionVisitExpression, ODataApplicationException {
     final Object retLeftSide = leftSide.accept(visitor);
     final Object retRightSide = rightSide.accept(visitor);
 
