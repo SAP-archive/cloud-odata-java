@@ -29,7 +29,7 @@ import com.sap.core.odata.processor.api.jpa.access.JPAEdmBuilder;
 import com.sap.core.odata.processor.api.jpa.exception.ODataJPAModelException;
 import com.sap.core.odata.processor.api.jpa.exception.ODataJPARuntimeException;
 import com.sap.core.odata.processor.api.jpa.model.JPAEdmReferentialConstraintRoleView.RoleType;
-import com.sap.core.odata.processor.core.jpa.common.JPATestConstants;
+import com.sap.core.odata.processor.core.jpa.common.ODataJPATestConstants;
 import com.sap.core.odata.processor.core.jpa.mock.model.JPAAttributeMock;
 import com.sap.core.odata.processor.core.jpa.mock.model.JPAJavaMemberMock;
 import com.sap.core.odata.processor.core.jpa.mock.model.JPAManagedTypeMock;
@@ -53,9 +53,9 @@ public class JPAEdmReferentialConstraintRoleTest extends JPAEdmTestModelView {
 		try {
 			objJPAEdmReferentialConstraintRole.getBuilder().build();
 		} catch (ODataJPAModelException e) {
-			fail(JPATestConstants.EXCEPTION_MSG_PART_1+e.getMessage()+ JPATestConstants.EXCEPTION_MSG_PART_2);
+			fail(ODataJPATestConstants.EXCEPTION_MSG_PART_1+e.getMessage()+ ODataJPATestConstants.EXCEPTION_MSG_PART_2);
 		} catch (ODataJPARuntimeException e) {
-			fail(JPATestConstants.EXCEPTION_MSG_PART_1+e.getMessage()+ JPATestConstants.EXCEPTION_MSG_PART_2);
+			fail(ODataJPATestConstants.EXCEPTION_MSG_PART_1+e.getMessage()+ ODataJPATestConstants.EXCEPTION_MSG_PART_2);
 		}
 	}
 
@@ -97,9 +97,9 @@ public class JPAEdmReferentialConstraintRoleTest extends JPAEdmTestModelView {
 			objJPAEdmReferentialConstraintRole.getBuilder().build();
 			objJPAEdmReferentialConstraintRole.getBuilder().build();
 		} catch (ODataJPAModelException e) {
-			fail(JPATestConstants.EXCEPTION_MSG_PART_1+e.getMessage()+ JPATestConstants.EXCEPTION_MSG_PART_2);
+			fail(ODataJPATestConstants.EXCEPTION_MSG_PART_1+e.getMessage()+ ODataJPATestConstants.EXCEPTION_MSG_PART_2);
 		} catch (ODataJPARuntimeException e) {
-			fail(JPATestConstants.EXCEPTION_MSG_PART_1+e.getMessage()+ JPATestConstants.EXCEPTION_MSG_PART_2);
+			fail(ODataJPATestConstants.EXCEPTION_MSG_PART_1+e.getMessage()+ ODataJPATestConstants.EXCEPTION_MSG_PART_2);
 		}
 		assertEquals(objJPAEdmReferentialConstraintRole.getRoleType(),
 				RoleType.DEPENDENT);
@@ -110,9 +110,9 @@ public class JPAEdmReferentialConstraintRoleTest extends JPAEdmTestModelView {
 		try {
 			objJPAEdmReferentialConstraintRole.getBuilder().build();
 		} catch (ODataJPAModelException e) {
-			fail(JPATestConstants.EXCEPTION_MSG_PART_1+e.getMessage()+ JPATestConstants.EXCEPTION_MSG_PART_2);
+			fail(ODataJPATestConstants.EXCEPTION_MSG_PART_1+e.getMessage()+ ODataJPATestConstants.EXCEPTION_MSG_PART_2);
 		} catch (ODataJPARuntimeException e) {
-			fail(JPATestConstants.EXCEPTION_MSG_PART_1+e.getMessage()+ JPATestConstants.EXCEPTION_MSG_PART_2);
+			fail(ODataJPATestConstants.EXCEPTION_MSG_PART_1+e.getMessage()+ ODataJPATestConstants.EXCEPTION_MSG_PART_2);
 		}
 		assertNotNull(objJPAEdmReferentialConstraintRole
 				.getEdmReferentialConstraintRole());

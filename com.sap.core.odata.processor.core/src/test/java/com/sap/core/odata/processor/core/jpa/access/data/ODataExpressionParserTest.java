@@ -30,44 +30,44 @@ import com.sap.core.odata.api.uri.expression.PropertyExpression;
 import com.sap.core.odata.api.uri.expression.UnaryExpression;
 import com.sap.core.odata.api.uri.expression.UnaryOperator;
 import com.sap.core.odata.processor.api.jpa.exception.ODataJPARuntimeException;
-import com.sap.core.odata.processor.core.jpa.common.JPATestConstants;
+import com.sap.core.odata.processor.core.jpa.common.ODataJPATestConstants;
 
 public class ODataExpressionParserTest {
 	
-	private final String EXPECTED_STR_1 = "gwt1.SalesOrder = 1234";
-	private final String EXPECTED_STR_2 = "gwt1.SalesOrder >= 1234 AND gwt1.SalesABC <> XYZ";
-	private final String EXPECTED_STR_3 = "gwt1.SalesOrder >= 1234 OR gwt1.SalesABC <> XYZ";
-	private final String EXPECTED_STR_4 = "gwt1.SalesOrder < 1234 AND gwt1.SalesABC <= XYZ";
-	private final String EXPECTED_STR_5 = "gwt1.LineItems > 2345 AND gwt1.SalesOrder >= Amazon";
-	private final String EXPECTED_STR_6 = "gwt1.Address.city = \'City_3\'";
-	private final String EXPECTED_STR_7 = "gwt1.Address.city.area = \'BTM\'";
-	private final String EXPECTED_STR_8 = "gwt1.field1 = 1 AND gwt1.field2 = 'abc'";
-	private final String EXPECTED_STR_9 = "gwt1.BuyerAddress, gwt1.BuyerName, gwt1.BuyerId";
-	private final String EXPECTED_STR_10 = "gwt1.SalesOrder";
-	private final String EXPECTED_STR_11 = "NOT(gwt1.deliveryStatus)";
+	private static final String EXPECTED_STR_1 = "gwt1.SalesOrder = 1234";
+	private static final String EXPECTED_STR_2 = "gwt1.SalesOrder >= 1234 AND gwt1.SalesABC <> XYZ";
+	private static final String EXPECTED_STR_3 = "gwt1.SalesOrder >= 1234 OR gwt1.SalesABC <> XYZ";
+	private static final String EXPECTED_STR_4 = "gwt1.SalesOrder < 1234 AND gwt1.SalesABC <= XYZ";
+	private static final String EXPECTED_STR_5 = "gwt1.LineItems > 2345 AND gwt1.SalesOrder >= Amazon";
+	private static final String EXPECTED_STR_6 = "gwt1.Address.city = \'City_3\'";
+	private static final String EXPECTED_STR_7 = "gwt1.Address.city.area = \'BTM\'";
+	private static final String EXPECTED_STR_8 = "gwt1.field1 = 1 AND gwt1.field2 = 'abc'";
+	private static final String EXPECTED_STR_9 = "gwt1.BuyerAddress, gwt1.BuyerName, gwt1.BuyerId";
+	private static final String EXPECTED_STR_10 = "gwt1.SalesOrder";
+	private static final String EXPECTED_STR_11 = "NOT(gwt1.deliveryStatus)";
 	
-	private final String ADDRESS = "Address";
-	private final String CITY = "city";
-	private final String AREA = "area";
-	private final String SALES_ORDER = "SalesOrder";
-	private final String SALES_ABC = "SalesABC";
-	private final String SAMPLE_DATA_1 = "1234";
-	private final String SAMPLE_DATA_2 = "2345";
-	private final String SAMPLE_DATA_XYZ = "XYZ";
-	private final String SAMPLE_DATA_BTM = "\'BTM\'";
-	private final String SAMPLE_DATA_CITY_3 = "\'City_3\'";
-	private final String SAMPLE_DATA_LINE_ITEMS = "LineItems";
-	private final String SAMPLE_DATA_AMAZON = "Amazon";
-	private final String SAMPLE_DATA_FIELD1 = "field1";
-	private final String SAMPLE_DATA_FIELD2 = "field2";
+	private static final String ADDRESS = "Address";
+	private static final String CITY = "city";
+	private static final String AREA = "area";
+	private static final String SALES_ORDER = "SalesOrder";
+	private static final String SALES_ABC = "SalesABC";
+	private static final String SAMPLE_DATA_1 = "1234";
+	private static final String SAMPLE_DATA_2 = "2345";
+	private static final String SAMPLE_DATA_XYZ = "XYZ";
+	private static final String SAMPLE_DATA_BTM = "\'BTM\'";
+	private static final String SAMPLE_DATA_CITY_3 = "\'City_3\'";
+	private static final String SAMPLE_DATA_LINE_ITEMS = "LineItems";
+	private static final String SAMPLE_DATA_AMAZON = "Amazon";
+	private static final String SAMPLE_DATA_FIELD1 = "field1";
+	private static final String SAMPLE_DATA_FIELD2 = "field2";
 	
-	private final String TABLE_ALIAS = "gwt1"; //$NON-NLS-1$
+	private static final String TABLE_ALIAS = "gwt1"; //$NON-NLS-1$
 	
 	
 	@Test
 	public void testParseWhereExpression() {
 		try {
-			String parsedStr = JPATestConstants.EMPTY_STRING;
+			String parsedStr = ODataJPATestConstants.EMPTY_STRING;
 			// Simple Binary query -
 			parsedStr = ODataExpressionParser.parseToJPAWhereExpression(
 					getBinaryExpressionMockedObj(BinaryOperator.EQ, ExpressionKind.PROPERTY, 
@@ -75,7 +75,7 @@ public class ODataExpressionParserTest {
 
 			assertEquals(EXPECTED_STR_1, parsedStr);
 			// complex query -
-			parsedStr = JPATestConstants.EMPTY_STRING;
+			parsedStr = ODataJPATestConstants.EMPTY_STRING;
 
 			CommonExpression exp1 = getBinaryExpressionMockedObj(
 					BinaryOperator.GE, ExpressionKind.PROPERTY, SALES_ORDER, SAMPLE_DATA_1);
@@ -85,18 +85,18 @@ public class ODataExpressionParserTest {
 								getBinaryExpression(exp1, BinaryOperator.AND, exp2), TABLE_ALIAS);
 			assertEquals(EXPECTED_STR_2, parsedStr);
 		} catch (EdmException e) {
-			fail(JPATestConstants.EXCEPTION_MSG_PART_1+e.getMessage()
-					+ JPATestConstants.EXCEPTION_MSG_PART_2);
+			fail(ODataJPATestConstants.EXCEPTION_MSG_PART_1+e.getMessage()
+					+ ODataJPATestConstants.EXCEPTION_MSG_PART_2);
 		} catch (ODataException e) {
-			fail(JPATestConstants.EXCEPTION_MSG_PART_1+e.getMessage()
-					+ JPATestConstants.EXCEPTION_MSG_PART_2);
+			fail(ODataJPATestConstants.EXCEPTION_MSG_PART_1+e.getMessage()
+					+ ODataJPATestConstants.EXCEPTION_MSG_PART_2);
 		}
 	}
 
 	@Test
 	public void testMoreThanOneBinaryExpression() {
 		// complex query -
-		String parsedStr = JPATestConstants.EMPTY_STRING;
+		String parsedStr = ODataJPATestConstants.EMPTY_STRING;
 		CommonExpression exp1 = getBinaryExpressionMockedObj(BinaryOperator.GE,
 				ExpressionKind.PROPERTY, SALES_ORDER, SAMPLE_DATA_1);
 		CommonExpression exp2 = getBinaryExpressionMockedObj(BinaryOperator.NE,
@@ -111,7 +111,7 @@ public class ODataExpressionParserTest {
 								getBinaryExpression(exp1, BinaryOperator.OR, exp2),
 								TABLE_ALIAS);
 		} catch (ODataException e) {
-			fail(JPATestConstants.EXCEPTION_MSG_PART_1+e.getMessage()+ JPATestConstants.EXCEPTION_MSG_PART_2);
+			fail(ODataJPATestConstants.EXCEPTION_MSG_PART_1+e.getMessage()+ ODataJPATestConstants.EXCEPTION_MSG_PART_2);
 		}
 		assertEquals(EXPECTED_STR_3, parsedStr);
 	}
@@ -124,15 +124,15 @@ public class ODataExpressionParserTest {
 							getFilterExpressionMockedObj(ExpressionKind.PROPERTY,
 									SALES_ORDER), TABLE_ALIAS));
 		} catch (ODataException e) {
-			fail(JPATestConstants.EXCEPTION_MSG_PART_1+e.getMessage()+ JPATestConstants.EXCEPTION_MSG_PART_2);
+			fail(ODataJPATestConstants.EXCEPTION_MSG_PART_1+e.getMessage()+ ODataJPATestConstants.EXCEPTION_MSG_PART_2);
 		}
 	}
 
 	@Test
 	public void testAllBinaryOperators() { // Test for all Binary Operators
 		// complex query -
-		String parsedStr1 = JPATestConstants.EMPTY_STRING;
-		String parsedStr2 = JPATestConstants.EMPTY_STRING;
+		String parsedStr1 = ODataJPATestConstants.EMPTY_STRING;
+		String parsedStr2 = ODataJPATestConstants.EMPTY_STRING;
 
 		CommonExpression exp1 = getBinaryExpressionMockedObj(BinaryOperator.LT,
 				ExpressionKind.PROPERTY, SALES_ORDER, SAMPLE_DATA_1);
@@ -155,7 +155,7 @@ public class ODataExpressionParserTest {
 					TABLE_ALIAS);
 
 		} catch (ODataException e) {
-			fail(JPATestConstants.EXCEPTION_MSG_PART_1+e.getMessage()+ JPATestConstants.EXCEPTION_MSG_PART_2);
+			fail(ODataJPATestConstants.EXCEPTION_MSG_PART_1+e.getMessage()+ ODataJPATestConstants.EXCEPTION_MSG_PART_2);
 		}
 		assertEquals(EXPECTED_STR_5, parsedStr2);
 	}
@@ -181,7 +181,7 @@ public class ODataExpressionParserTest {
 										getLiteralExpressionMockedObj(SAMPLE_DATA_BTM)),
 								TABLE_ALIAS));
 		} catch (ODataException e) {
-			fail(JPATestConstants.EXCEPTION_MSG_PART_1+e.getMessage()+ JPATestConstants.EXCEPTION_MSG_PART_2);
+			fail(ODataJPATestConstants.EXCEPTION_MSG_PART_1+e.getMessage()+ ODataJPATestConstants.EXCEPTION_MSG_PART_2);
 		}
 	}
 	
@@ -208,7 +208,7 @@ public class ODataExpressionParserTest {
 			assertEquals(EXPECTED_STR_11, ODataExpressionParser.parseToJPAWhereExpression(
 					unaryExpression, TABLE_ALIAS));
 		} catch (ODataException e) {
-			fail(JPATestConstants.EXCEPTION_MSG_PART_1+e.getMessage()+ JPATestConstants.EXCEPTION_MSG_PART_2);
+			fail(ODataJPATestConstants.EXCEPTION_MSG_PART_1+e.getMessage()+ ODataJPATestConstants.EXCEPTION_MSG_PART_2);
 		}
 
 	}
@@ -273,7 +273,7 @@ public class ODataExpressionParserTest {
 						getEdmFacetsMockedObj())).andStubReturn(value);
 			EasyMock.expect(edmSimpleType.valueToString(value, EdmLiteralKind.DEFAULT, null)).andStubReturn(value);
 		} catch (EdmException e) {
-			fail(JPATestConstants.EXCEPTION_MSG_PART_1+e.getMessage()+ JPATestConstants.EXCEPTION_MSG_PART_2);
+			fail(ODataJPATestConstants.EXCEPTION_MSG_PART_1+e.getMessage()+ ODataJPATestConstants.EXCEPTION_MSG_PART_2);
 		}
 		EasyMock.expect(edmSimpleType.getDefaultType()).andStubReturn(null);
 		EasyMock.replay(edmSimpleType);
@@ -303,7 +303,7 @@ public class ODataExpressionParserTest {
 			EasyMock.expect(mockedEdmProperty.getMapping()).andStubReturn(getEdmMappingMockedObj(propertyName));
 			EasyMock.replay(mockedEdmProperty);
 		} catch (EdmException e) {
-			fail(JPATestConstants.EXCEPTION_MSG_PART_1+e.getMessage()+ JPATestConstants.EXCEPTION_MSG_PART_2);
+			fail(ODataJPATestConstants.EXCEPTION_MSG_PART_1+e.getMessage()+ ODataJPATestConstants.EXCEPTION_MSG_PART_2);
 		}
 		return mockedEdmProperty;
 	}
@@ -390,7 +390,7 @@ public class ODataExpressionParserTest {
 			EasyMock.expect(keyPredicate2.getProperty()).andStubReturn(kpProperty2);
 			EasyMock.expect(kpProperty2.getMapping()).andReturn(edmMapping);
 		} catch (EdmException e) {
-			fail(JPATestConstants.EXCEPTION_MSG_PART_1+e.getMessage()+ JPATestConstants.EXCEPTION_MSG_PART_2);
+			fail(ODataJPATestConstants.EXCEPTION_MSG_PART_1+e.getMessage()+ ODataJPATestConstants.EXCEPTION_MSG_PART_2);
 		}
 		EasyMock.expect(edmMapping.getInternalName()).andReturn(SAMPLE_DATA_FIELD2);
 		EasyMock.replay(edmMapping);
@@ -405,7 +405,7 @@ public class ODataExpressionParserTest {
 			str = ODataExpressionParser.parseKeyPredicates(keyPredicates,
 					TABLE_ALIAS);
 		} catch (ODataJPARuntimeException e) {
-			fail(JPATestConstants.EXCEPTION_MSG_PART_1+e.getMessage()+ JPATestConstants.EXCEPTION_MSG_PART_2);
+			fail(ODataJPATestConstants.EXCEPTION_MSG_PART_1+e.getMessage()+ ODataJPATestConstants.EXCEPTION_MSG_PART_2);
 		}
 
 		assertEquals(EXPECTED_STR_8, str);

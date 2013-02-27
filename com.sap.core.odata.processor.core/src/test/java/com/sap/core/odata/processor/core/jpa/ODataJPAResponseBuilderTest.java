@@ -32,7 +32,7 @@ import com.sap.core.odata.api.uri.info.GetEntitySetUriInfo;
 import com.sap.core.odata.api.uri.info.GetEntityUriInfo;
 import com.sap.core.odata.processor.api.jpa.ODataJPAContext;
 import com.sap.core.odata.processor.api.jpa.exception.ODataJPARuntimeException;
-import com.sap.core.odata.processor.core.jpa.common.JPATestConstants;
+import com.sap.core.odata.processor.core.jpa.common.ODataJPATestConstants;
 import com.sap.core.odata.processor.core.jpa.model.JPAEdmTestModelView;
 
 public class ODataJPAResponseBuilderTest extends JPAEdmTestModelView{
@@ -46,8 +46,8 @@ public class ODataJPAResponseBuilderTest extends JPAEdmTestModelView{
 		try {
 			assertNotNull(ODataJPAResponseBuilder.build(getJPAEntities(), getResultsView(), "application/xml", getODataJPAContext()));
 		} catch (ODataJPARuntimeException e) {
-			fail(JPATestConstants.EXCEPTION_MSG_PART_1+e.getMessage()
-					+ JPATestConstants.EXCEPTION_MSG_PART_2);
+			fail(ODataJPATestConstants.EXCEPTION_MSG_PART_1+e.getMessage()
+					+ ODataJPATestConstants.EXCEPTION_MSG_PART_2);
 		}
 	}
 	
@@ -74,8 +74,8 @@ public class ODataJPAResponseBuilderTest extends JPAEdmTestModelView{
 			entity.setName("SalesOrderHeader");
 			assertNotNull(ODataJPAResponseBuilder.build(entity, getLocalGetURIInfo(), "application/xml", getODataJPAContext()));
 		} catch (ODataJPARuntimeException e) {
-			fail(JPATestConstants.EXCEPTION_MSG_PART_1+e.getMessage()
-					+ JPATestConstants.EXCEPTION_MSG_PART_2);
+			fail(ODataJPATestConstants.EXCEPTION_MSG_PART_1+e.getMessage()
+					+ ODataJPATestConstants.EXCEPTION_MSG_PART_2);
 		} 
 	}
 
@@ -101,8 +101,8 @@ public class ODataJPAResponseBuilderTest extends JPAEdmTestModelView{
 		try {
 			EasyMock.expect(objODataContext.getPathInfo()).andStubReturn(getLocalPathInfo());
 		} catch (ODataException e) {
-			fail(JPATestConstants.EXCEPTION_MSG_PART_1+e.getMessage()
-					+ JPATestConstants.EXCEPTION_MSG_PART_2);
+			fail(ODataJPATestConstants.EXCEPTION_MSG_PART_1+e.getMessage()
+					+ ODataJPATestConstants.EXCEPTION_MSG_PART_2);
 		}
 		EasyMock.replay(objODataContext);
 		return objODataContext;
@@ -120,7 +120,7 @@ public class ODataJPAResponseBuilderTest extends JPAEdmTestModelView{
 		try {
 			uri = new URI("http://localhost:8080/com.sap.core.odata.processor.ref.web/");
 		} catch (URISyntaxException e) {
-			fail(JPATestConstants.EXCEPTION_MSG_PART_1+e.getMessage()+ JPATestConstants.EXCEPTION_MSG_PART_2);
+			fail(ODataJPATestConstants.EXCEPTION_MSG_PART_1+e.getMessage()+ ODataJPATestConstants.EXCEPTION_MSG_PART_2);
 		}
 		return uri;
 	}
@@ -190,8 +190,8 @@ public class ODataJPAResponseBuilderTest extends JPAEdmTestModelView{
 			EasyMock.expect(edmTyped.getMapping()).andStubReturn(edmMapping);
 			
 		} catch (EdmException e) {
-			fail(JPATestConstants.EXCEPTION_MSG_PART_1+e.getMessage()
-					+ JPATestConstants.EXCEPTION_MSG_PART_2);
+			fail(ODataJPATestConstants.EXCEPTION_MSG_PART_1+e.getMessage()
+					+ ODataJPATestConstants.EXCEPTION_MSG_PART_2);
 		}
 		EasyMock.replay(edmType);
 		EasyMock.replay(edmTyped);
@@ -205,8 +205,8 @@ public class ODataJPAResponseBuilderTest extends JPAEdmTestModelView{
 			EasyMock.expect(objEdmEntitySet.getName()).andStubReturn("SalesOderHeaders");
 			EasyMock.expect(objEdmEntitySet.getEntityContainer()).andStubReturn(getLocalEdmEntityContainer());
 		} catch (EdmException e) {
-			fail(JPATestConstants.EXCEPTION_MSG_PART_1+e.getMessage()
-					+ JPATestConstants.EXCEPTION_MSG_PART_2);
+			fail(ODataJPATestConstants.EXCEPTION_MSG_PART_1+e.getMessage()
+					+ ODataJPATestConstants.EXCEPTION_MSG_PART_2);
 		}
 		
 		EasyMock.replay(objEdmEntitySet);
@@ -219,8 +219,8 @@ public class ODataJPAResponseBuilderTest extends JPAEdmTestModelView{
 		try {
 			EasyMock.expect(edmEntityContainer.getName()).andStubReturn("salesorderprocessingContainer");
 		} catch (EdmException e) {
-			fail(JPATestConstants.EXCEPTION_MSG_PART_1+e.getMessage()
-					+ JPATestConstants.EXCEPTION_MSG_PART_2);
+			fail(ODataJPATestConstants.EXCEPTION_MSG_PART_1+e.getMessage()
+					+ ODataJPATestConstants.EXCEPTION_MSG_PART_2);
 		}
 		
 		EasyMock.replay(edmEntityContainer);
@@ -238,8 +238,8 @@ public class ODataJPAResponseBuilderTest extends JPAEdmTestModelView{
 		    EasyMock.expect(objEdmEntityType.getNavigationPropertyNames()).andStubReturn(new ArrayList<String>());
 		    EasyMock.expect(objEdmEntityType.getKeyPropertyNames()).andStubReturn(new ArrayList<String>());
 		} catch (EdmException e) {
-			fail(JPATestConstants.EXCEPTION_MSG_PART_1+e.getMessage()
-					+ JPATestConstants.EXCEPTION_MSG_PART_2);
+			fail(ODataJPATestConstants.EXCEPTION_MSG_PART_1+e.getMessage()
+					+ ODataJPATestConstants.EXCEPTION_MSG_PART_2);
 		}
 		EasyMock.replay(objEdmEntityType);
 		return objEdmEntityType;

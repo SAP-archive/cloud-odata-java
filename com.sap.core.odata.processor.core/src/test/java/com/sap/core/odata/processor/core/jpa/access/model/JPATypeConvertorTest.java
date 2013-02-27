@@ -14,7 +14,7 @@ import com.sap.core.odata.api.edm.EdmSimpleTypeKind;
 import com.sap.core.odata.processor.api.jpa.exception.ODataJPAModelException;
 import com.sap.core.odata.processor.api.jpa.exception.ODataJPARuntimeException;
 import com.sap.core.odata.processor.core.jpa.access.model.JPATypeConvertor;
-import com.sap.core.odata.processor.core.jpa.common.JPATestConstants;
+import com.sap.core.odata.processor.core.jpa.common.ODataJPATestConstants;
 
 public class JPATypeConvertorTest {
 
@@ -72,11 +72,11 @@ public class JPATypeConvertorTest {
 			edmSimpleKindTypeUUID = JPATypeConvertor
 					.convertToEdmSimpleType(uUID.getClass());
 		} catch (ODataJPAModelException e) {
-			fail(JPATestConstants.EXCEPTION_MSG_PART_1+e.getMessage()+ JPATestConstants.EXCEPTION_MSG_PART_2);
+			fail(ODataJPATestConstants.EXCEPTION_MSG_PART_1+e.getMessage()+ ODataJPATestConstants.EXCEPTION_MSG_PART_2);
 		}
 
 		catch (ODataJPARuntimeException e) {
-			fail(JPATestConstants.EXCEPTION_MSG_PART_1+e.getMessage()+ JPATestConstants.EXCEPTION_MSG_PART_2);
+			fail(ODataJPATestConstants.EXCEPTION_MSG_PART_1+e.getMessage()+ ODataJPATestConstants.EXCEPTION_MSG_PART_2);
 		}
 		assertEquals(EdmSimpleTypeKind.String, edmSimpleKindTypeString);
 		assertEquals(EdmSimpleTypeKind.Binary, edmSimpleKindTypeByteArr);

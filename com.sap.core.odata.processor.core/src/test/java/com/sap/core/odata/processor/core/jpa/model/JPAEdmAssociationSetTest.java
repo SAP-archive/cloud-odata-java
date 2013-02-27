@@ -24,7 +24,7 @@ import com.sap.core.odata.processor.api.jpa.exception.ODataJPARuntimeException;
 import com.sap.core.odata.processor.api.jpa.model.JPAEdmAssociationView;
 import com.sap.core.odata.processor.api.jpa.model.JPAEdmEntityContainerView;
 import com.sap.core.odata.processor.api.jpa.model.JPAEdmEntitySetView;
-import com.sap.core.odata.processor.core.jpa.common.JPATestConstants;
+import com.sap.core.odata.processor.core.jpa.common.ODataJPATestConstants;
 
 public class JPAEdmAssociationSetTest extends JPAEdmTestModelView {
 	
@@ -39,9 +39,9 @@ public class JPAEdmAssociationSetTest extends JPAEdmTestModelView {
 		try {
 			objJPAEdmAssociationSet.getBuilder().build();
 		} catch (ODataJPAModelException e) {
-			fail(JPATestConstants.EXCEPTION_MSG_PART_1+e.getMessage()+ JPATestConstants.EXCEPTION_MSG_PART_2);
+			fail(ODataJPATestConstants.EXCEPTION_MSG_PART_1+e.getMessage()+ ODataJPATestConstants.EXCEPTION_MSG_PART_2);
 		} catch (ODataJPARuntimeException e) {
-			fail(JPATestConstants.EXCEPTION_MSG_PART_1+e.getMessage()+ JPATestConstants.EXCEPTION_MSG_PART_2);
+			fail(ODataJPATestConstants.EXCEPTION_MSG_PART_1+e.getMessage()+ ODataJPATestConstants.EXCEPTION_MSG_PART_2);
 		}
 		
 	}
@@ -126,7 +126,6 @@ public class JPAEdmAssociationSetTest extends JPAEdmTestModelView {
 	
 	@Override
 	public boolean isConsistent() {
-		// TODO 
 		return true;
 	}
 	
