@@ -125,12 +125,12 @@ public class ContentType {
    * 
    * Supported format is <code>HTTP Accept HEADER</code> format as defined in <code>RFC 2616 chapter 14.1</code>
    * 
-   * @param format
+   * @param format a string in format as defined in <code>RFC 2616 chapter 14.1</code>
    * @return a new <code>ContentType</code> object
    */
   public static ContentType create(String format) {
     if (format == null) {
-      throw new IllegalArgumentException("Parameter format must no be null.");
+      throw new IllegalArgumentException("Parameter format MUST NOT be NULL.");
     }
 
     // split 'types' and 'parameters'
@@ -145,7 +145,7 @@ public class ContentType {
       if (tokens.length == 2) {
         return create(tokens[0], tokens[1], parametersMap);
       } else {
-        throw new IllegalArgumentException("Too many '/' in format '" + format + "'.");
+        throw new IllegalArgumentException("Too many '" + TYPE_SUBTYPE_SEPARATOR + "' in format '" + format + "'.");
       }
     } else {
       return create(types, MEDIA_TYPE_WILDCARD, parametersMap);

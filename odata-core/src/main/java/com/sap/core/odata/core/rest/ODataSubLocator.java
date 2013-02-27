@@ -83,7 +83,7 @@ public final class ODataSubLocator implements ODataLocator {
   private List<ContentType> acceptHeaderContentTypes;
 
   private InputStream requestContent;
-  private String requestContentType;
+  private ContentType requestContentTypeHeader;
 
   @GET
   public Response handleGet() throws ODataException {
@@ -156,16 +156,17 @@ public final class ODataSubLocator implements ODataLocator {
       checkProperty(method, uriInfo);
 
       if (method == ODataHttpMethod.POST || method == ODataHttpMethod.PUT
-          || method == ODataHttpMethod.PATCH || method == ODataHttpMethod.MERGE)
-        checkRequestContentType(uriInfo, requestContentType);
+          || method == ODataHttpMethod.PATCH || method == ODataHttpMethod.MERGE) {
+        checkRequestContentType(uriInfo, requestContentTypeHeader);
+      }
     }
 
-    final String contentType = doContentNegotiation(uriInfo);
+    final String acceptContentType = doContentNegotiation(uriInfo);
+    final String requestContentType = (requestContentTypeHeader == null? null : requestContentTypeHeader.toContentTypeString());
 
-    final ODataResponse odataResponse = dispatcher.dispatch(method, uriInfo, requestContent, requestContentType, contentType);
+    final ODataResponse odataResponse = dispatcher.dispatch(method, uriInfo, requestContent, requestContentType, acceptContentType);
 
     final String location = (method == ODataHttpMethod.POST && (uriInfo.getUriType() == UriType.URI1 || uriInfo.getUriType() == UriType.URI6B)) ? odataResponse.getIdLiteral() : null;
-
     final Response response = convertResponse(odataResponse, serverDataServiceVersion, location);
 
     return response;
@@ -310,7 +311,7 @@ public final class ODataSubLocator implements ODataLocator {
     return property.getFacets() == null || property.getFacets().isNullable();
   }
 
-  private void checkRequestContentType(final UriInfoImpl uriInfo, final String contentType) throws ODataException {
+  private void checkRequestContentType(final UriInfoImpl uriInfo, final ContentType contentType) throws ODataException {
     switch (uriInfo.getUriType()) {
     case URI1:
     case URI6B:
@@ -348,17 +349,17 @@ public final class ODataSubLocator implements ODataLocator {
     }
   }
 
-  private boolean isValidRequestContentType(final String requestContentType, final List<ContentType> allowedContentTypes) {
-    if (requestContentType == null) {
+  private boolean isValidRequestContentType(final ContentType contentType, final List<ContentType> allowedContentTypes) {
+    if (contentType == null) {
       return false;
     }
 
-    final ContentType requested = ensureCharsetIsSet(ContentType.create(requestContentType));
+    final ContentType requested = ensureCharsetIsSet(contentType);
     return requested.hasMatch(allowedContentTypes);
   }
 
-  private boolean isValidRequestContentTypeForProperty(final EdmProperty property, final String requestContentType) throws EdmException {
-    final ContentType requested = ensureCharsetIsSet(ContentType.create(requestContentType));
+  private boolean isValidRequestContentTypeForProperty(final EdmProperty property, final ContentType contentType) throws EdmException {
+    final ContentType requested = ensureCharsetIsSet(contentType);
     final String mimeType = property.getMimeType();
     if (mimeType != null) {
       return requested.equals(ContentType.create(mimeType));
@@ -469,7 +470,7 @@ public final class ODataSubLocator implements ODataLocator {
 
     acceptHeaderContentTypes = convertMediaTypes(param.getHttpHeaders().getAcceptableMediaTypes());
     requestContent = contentAsStream(extractRequestContent(param));
-    requestContentType = extractRequestContentType(param);
+    requestContentTypeHeader = extractRequestContentType(param);
     service = param.getServiceFactory().createService(context);
     context.setService(service);
     service.getProcessor().setContext(context);
@@ -501,9 +502,17 @@ public final class ODataSubLocator implements ODataLocator {
     }
   }
 
-  private String extractRequestContentType(final InitParameter param) {
+  private ContentType extractRequestContentType(final InitParameter param) throws ODataBadRequestException {
     final MediaType requestMediaType = param.getHttpHeaders().getMediaType();
-    return requestMediaType == null ? null : requestMediaType.toString();
+    if(requestMediaType == null) {
+      return null;
+    } else {
+      try {
+        return ContentType.create(requestMediaType.toString());
+      } catch(IllegalArgumentException e) {
+        throw new ODataBadRequestException(ODataBadRequestException.INVALID_HEADER.addContent("Content-Type").addContent(requestMediaType.toString()));
+      }
+    }
   }
 
   /**

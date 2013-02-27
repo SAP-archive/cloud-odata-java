@@ -223,8 +223,11 @@ public class ODataSubLocatorValidationTest extends BaseTest {
     HttpHeaders httpHeaders = mock(HttpHeaders.class);
     final MultivaluedMap<String, String> map = new MultivaluedHashMap<String, String>();
     when(httpHeaders.getRequestHeaders()).thenReturn(map);
-    MediaType mediaType = mock(MediaType.class);
-    when(mediaType.toString()).thenReturn(requestContentType);
+    MediaType mediaType = null;
+    if(requestContentType != null) {
+      mediaType = mock(MediaType.class);
+      when(mediaType.toString()).thenReturn(requestContentType);
+    }
     when(httpHeaders.getMediaType()).thenReturn(mediaType);
     param.setHttpHeaders(httpHeaders);
 
@@ -351,7 +354,7 @@ public class ODataSubLocatorValidationTest extends BaseTest {
     } catch (ODataMethodNotAllowedException e) {
       assertNotNull(e);
     } catch (Exception e) {
-      fail("Unexpected Exception thrown");
+      fail("Unexpected Exception '" + e.getClass().getSimpleName() + "' thrown");
     }
   }
 
@@ -433,6 +436,18 @@ public class ODataSubLocatorValidationTest extends BaseTest {
     }
   }
 
+  private void invalidRequestContentType(final ODataHttpMethod method, final UriType uriType, final boolean isValue, final String requestContentType) throws EdmException, ODataException {
+    try {
+      checkRequest(method, mockPathSegments(uriType, false, isValue), null, requestContentType);
+      fail("Expected ODataException not thrown");
+    } catch (ODataBadRequestException e) {
+      assertNotNull(e);
+    } catch (Exception e) {
+      fail("Unexpected Exception thrown");
+    }
+  }
+
+  
   @Test
   public void requestContentTypeMediaResource() throws Exception {
     checkRequest(ODataHttpMethod.PUT, mockPathSegments(UriType.URI2, false, false), null, "image/jpeg");
@@ -572,5 +587,10 @@ public class ODataSubLocatorValidationTest extends BaseTest {
 
     wrongRequestContentType(ODataHttpMethod.PUT, UriType.URI5, true, ContentType.APPLICATION_ATOM_SVC);
     wrongRequestContentType(ODataHttpMethod.PUT, UriType.URI5, true, ContentType.APPLICATION_ATOM_SVC_CS_UTF_8);
+  }
+
+  @Test
+  public void invalidRequestContentType() throws Exception {
+    invalidRequestContentType(ODataHttpMethod.POST, UriType.URI1, false, "app/app/xml");
   }
 }
