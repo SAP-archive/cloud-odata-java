@@ -85,7 +85,6 @@ public class LanguageNegotiationTest extends AbstractBasicTest {
     HttpResponse response = getHttpClient().execute(get);
 
     String content = StringHelper.httpEntityToString(response.getEntity());
-    System.out.println(content);
 
     assertXpathExists("/m:error/m:message", content);
     assertXpathExists("/m:error/m:message[@xml:lang=\"en\"]", content);

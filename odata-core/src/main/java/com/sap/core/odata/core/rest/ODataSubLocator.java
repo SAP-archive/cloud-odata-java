@@ -162,7 +162,7 @@ public final class ODataSubLocator implements ODataLocator {
     }
 
     final String acceptContentType = doContentNegotiation(uriInfo);
-    final String requestContentType = (requestContentTypeHeader == null? null : requestContentTypeHeader.toContentTypeString());
+    final String requestContentType = (requestContentTypeHeader == null ? null : requestContentTypeHeader.toContentTypeString());
 
     final ODataResponse odataResponse = dispatcher.dispatch(method, uriInfo, requestContent, requestContentType, acceptContentType);
 
@@ -504,13 +504,13 @@ public final class ODataSubLocator implements ODataLocator {
 
   private ContentType extractRequestContentType(final InitParameter param) throws ODataBadRequestException {
     final MediaType requestMediaType = param.getHttpHeaders().getMediaType();
-    if(requestMediaType == null) {
+    if (requestMediaType == null) {
       return null;
     } else {
       try {
         return ContentType.create(requestMediaType.toString());
-      } catch(IllegalArgumentException e) {
-        throw new ODataBadRequestException(ODataBadRequestException.INVALID_HEADER.addContent("Content-Type").addContent(requestMediaType.toString()));
+      } catch (IllegalArgumentException e) {
+        throw new ODataBadRequestException(ODataBadRequestException.INVALID_HEADER.addContent("Content-Type").addContent(requestMediaType.toString()), e);
       }
     }
   }
