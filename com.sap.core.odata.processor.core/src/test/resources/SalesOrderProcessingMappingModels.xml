@@ -13,8 +13,7 @@
 					<JPAAttribute name="buyerAddress">BuyerAddressInfo</JPAAttribute>
 				</JPAAttributes>
 				<JPARelationships>
-					<JPARelationship name="salesOrderItems">SalesOrderItemDetails
-					</JPARelationship>
+					<JPARelationship name="salesOrderItems">SalesOrderItemDetails</JPARelationship>
 					<JPARelationship name="notes">NoteDetails</JPARelationship>
 				</JPARelationships>
 			</JPAEntityType>
@@ -26,8 +25,7 @@
 					<JPAAttribute name="soId">SalesOrderID</JPAAttribute>
 				</JPAAttributes>
 				<JPARelationships>
-					<JPARelationship name="salesOrderHeader">SalesOrderHeaderDetails
-					</JPARelationship>
+					<JPARelationship name="salesOrderHeader">SalesOrderHeaderDetails</JPARelationship>
 					<JPARelationship name="materials">MaterialDetails
 					</JPARelationship>
 				</JPARelationships>
