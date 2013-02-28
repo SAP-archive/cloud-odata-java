@@ -287,10 +287,6 @@ public class ListsProcessor extends ODataSingleProcessor {
     final EdmEntitySet entitySet = uriInfo.getTargetEntitySet();
     final EdmEntityType entityType = entitySet.getEntityType();
 
-    if (!uriInfo.getNavigationSegments().isEmpty()) {
-      throw new ODataNotImplementedException();
-    }
-
     Object data = dataSource.newDataObject(entitySet);
 
     if (entityType.hasStream()) {
