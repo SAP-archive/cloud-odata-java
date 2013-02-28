@@ -23,6 +23,7 @@ import org.slf4j.LoggerFactory;
 import com.sap.core.odata.api.ODataServiceVersion;
 import com.sap.core.odata.api.commons.HttpStatusCodes;
 import com.sap.core.odata.api.commons.ODataHttpHeaders;
+import com.sap.core.odata.api.ep.EntityProviderException;
 import com.sap.core.odata.api.exception.MessageReference;
 import com.sap.core.odata.api.exception.ODataApplicationException;
 import com.sap.core.odata.api.exception.ODataException;
@@ -77,15 +78,23 @@ public class ODataExceptionMapperImpl implements ExceptionMapper<Exception> {
   }
 
   private Response buildResponseForMessageException(final ODataMessageException messageException) {
+    HttpStatusCodes responseStatusCode;
+
+    if(messageException instanceof EntityProviderException) {
+      responseStatusCode = HttpStatusCodes.BAD_REQUEST;
+    } else {
+      responseStatusCode = HttpStatusCodes.INTERNAL_SERVER_ERROR;
+    }
+    
     MessageReference messageReference = messageException.getMessageReference();
     Message localizedMessage = messageReference == null ? null : extractEntity(messageReference);
     ContentType contentType = getContentType();
     InputStream entity = ODataExceptionSerializer.serialize(
         messageException.getErrorCode(),
         localizedMessage == null ? null : localizedMessage.getText(),
-        contentType,
-        localizedMessage == null ? null : localizedMessage.getLocale());
-    return buildResponseInternal(entity, contentType, HttpStatusCodes.INTERNAL_SERVER_ERROR.getStatusCode());
+            contentType,
+            localizedMessage == null ? null : localizedMessage.getLocale());
+    return buildResponseInternal(entity, contentType, responseStatusCode.getStatusCode());
   }
 
   private Response buildResponseForWebApplicationException(final WebApplicationException webApplicationException) {

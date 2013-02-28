@@ -101,6 +101,17 @@ public class EntryXmlChangeTest extends AbstractRefXmlTest {
   }
 
   @Test
+  public void updateUnknownProperty() throws Exception {
+    final String requestBody = getBody(callUri("Employees('1')"))
+        .replace("<d:Age>52</d:Age>", "<d:Age>33</d:Age><d:SomeUnknownTag>SomeUnknownValue</d:SomeUnknownTag>");
+    
+    // 
+    putUri("Employees('1')", requestBody, HttpContentType.APPLICATION_ATOM_XML_ENTRY, HttpStatusCodes.BAD_REQUEST);
+    // check nothing has changed
+    assertXpathEvaluatesTo("52", "/atom:entry/m:properties/d:Age", getBody(callUri("Employees('1')")));
+  }
+
+  @Test
   public void patch() throws Exception {
     String requestBody = "<entry xmlns=\"" + Edm.NAMESPACE_ATOM_2005 + "\"" + "\n"
         + "       xmlns:d=\"" + Edm.NAMESPACE_D_2007_08 + "\"" + "\n"
