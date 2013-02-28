@@ -14,7 +14,6 @@ import java.util.Locale;
 import java.util.Map;
 
 import com.sap.core.odata.api.commons.HttpContentType;
-import com.sap.core.odata.api.commons.HttpStatusCodes;
 import com.sap.core.odata.api.commons.InlineCount;
 import com.sap.core.odata.api.edm.Edm;
 import com.sap.core.odata.api.edm.EdmConcurrencyMode;
@@ -169,7 +168,7 @@ public class ListsProcessor extends ODataSingleProcessor {
 
     context.stopRuntimeMeasurement(timingHandle);
 
-    return ODataResponse.fromResponse(response).status(HttpStatusCodes.OK).build();
+    return ODataResponse.fromResponse(response).build();
   }
 
   @Override
@@ -192,9 +191,7 @@ public class ListsProcessor extends ODataSingleProcessor {
         uriInfo.getSkip(),
         uriInfo.getTop());
 
-    return ODataResponse.fromResponse(EntityProvider.writeText(String.valueOf(data.size())))
-        .status(HttpStatusCodes.OK)
-        .build();
+    return ODataResponse.fromResponse(EntityProvider.writeText(String.valueOf(data.size()))).build();
   }
 
   @Override
@@ -238,7 +235,7 @@ public class ListsProcessor extends ODataSingleProcessor {
 
     context.stopRuntimeMeasurement(timingHandle);
 
-    return ODataResponse.fromResponse(response).status(HttpStatusCodes.OK).build();
+    return ODataResponse.fromResponse(response).build();
   }
 
   @Override
@@ -262,9 +259,7 @@ public class ListsProcessor extends ODataSingleProcessor {
     final EdmEntitySet entitySet = uriInfo.getTargetEntitySet();
     final Map<String, Object> values = getStructuralTypeValueMap(data, entitySet.getEntityType());
 
-    return ODataResponse.fromResponse(writeEntry(entitySet, values, contentType))
-        .status(HttpStatusCodes.OK)
-        .build();
+    return ODataResponse.fromResponse(writeEntry(entitySet, values, contentType)).build();
   }
 
   @Override
@@ -276,10 +271,7 @@ public class ListsProcessor extends ODataSingleProcessor {
         mapFunctionParameters(uriInfo.getFunctionImportParameters()),
         uriInfo.getNavigationSegments());
 
-    return ODataResponse.fromResponse(EntityProvider.writeText(
-        appliesFilter(data, uriInfo.getFilter()) ? "1" : "0"))
-        .status(HttpStatusCodes.OK)
-        .build();
+    return ODataResponse.fromResponse(EntityProvider.writeText(appliesFilter(data, uriInfo.getFilter()) ? "1" : "0")).build();
   }
 
   @Override
@@ -287,7 +279,7 @@ public class ListsProcessor extends ODataSingleProcessor {
     dataSource.deleteData(
         uriInfo.getStartEntitySet(),
         mapKey(uriInfo.getKeyPredicates()));
-    return ODataResponse.status(HttpStatusCodes.NO_CONTENT).build();
+    return ODataResponse.newBuilder().build();
   }
 
   @Override
@@ -318,10 +310,7 @@ public class ListsProcessor extends ODataSingleProcessor {
 
     Map<String, Object> values = getStructuralTypeValueMap(data, entityType);
 
-    return ODataResponse.fromResponse(writeEntry(entitySet, values, contentType))
-        .status(HttpStatusCodes.CREATED)
-        .eTag(constructETag(entitySet, data))
-        .build();
+    return ODataResponse.fromResponse(writeEntry(entitySet, values, contentType)).eTag(constructETag(entitySet, data)).build();
   }
 
   @Override
@@ -343,10 +332,7 @@ public class ListsProcessor extends ODataSingleProcessor {
     final EdmEntityType entityType = entitySet.getEntityType();
     setStructuralTypeValuesFromMap(data, entityType, entryValues.getProperties(), merge);
 
-    return ODataResponse
-        .status(HttpStatusCodes.NO_CONTENT)
-        .eTag(constructETag(entitySet, data))
-        .build();
+    return ODataResponse.newBuilder().eTag(constructETag(entitySet, data)).build();
   }
 
   @Override
@@ -380,7 +366,7 @@ public class ListsProcessor extends ODataSingleProcessor {
 
     context.stopRuntimeMeasurement(timingHandle);
 
-    return ODataResponse.fromResponse(response).status(HttpStatusCodes.OK).build();
+    return ODataResponse.fromResponse(response).build();
   }
 
   @Override
@@ -419,7 +405,7 @@ public class ListsProcessor extends ODataSingleProcessor {
 
     dataSource.deleteRelation(entitySet, sourceData, navigationSegment.getEntitySet(), keys);
 
-    return ODataResponse.status(HttpStatusCodes.NO_CONTENT).build();
+    return ODataResponse.newBuilder().build();
   }
 
   @Override
@@ -446,7 +432,7 @@ public class ListsProcessor extends ODataSingleProcessor {
 
     dataSource.writeRelation(entitySet, sourceData, targetEntitySet, targetKeys);
 
-    return ODataResponse.status(HttpStatusCodes.NO_CONTENT).build();
+    return ODataResponse.newBuilder().build();
   }
 
   @Override
@@ -483,7 +469,7 @@ public class ListsProcessor extends ODataSingleProcessor {
 
     dataSource.writeRelation(entitySet, sourceData, targetEntitySet, newKeys);
 
-    return ODataResponse.status(HttpStatusCodes.NO_CONTENT).build();
+    return ODataResponse.newBuilder().build();
   }
 
   @Override
@@ -520,10 +506,7 @@ public class ListsProcessor extends ODataSingleProcessor {
 
     context.stopRuntimeMeasurement(timingHandle);
 
-    return ODataResponse.fromResponse(response)
-        .status(HttpStatusCodes.OK)
-        .eTag(constructETag(uriInfo.getTargetEntitySet(), data))
-        .build();
+    return ODataResponse.fromResponse(response).eTag(constructETag(uriInfo.getTargetEntitySet(), data)).build();
   }
 
   @Override
@@ -550,10 +533,7 @@ public class ListsProcessor extends ODataSingleProcessor {
     final Object value = property.getMapping() == null || property.getMapping().getMimeType() == null ?
         getPropertyValue(data, propertyPath) : getSimpleTypeValueMap(data, propertyPath);
 
-    return ODataResponse.fromResponse(EntityProvider.writePropertyValue(property, value))
-        .status(HttpStatusCodes.OK)
-        .eTag(constructETag(uriInfo.getTargetEntitySet(), data))
-        .build();
+    return ODataResponse.fromResponse(EntityProvider.writePropertyValue(property, value)).eTag(constructETag(uriInfo.getTargetEntitySet(), data)).build();
   }
 
   @Override
@@ -578,7 +558,7 @@ public class ListsProcessor extends ODataSingleProcessor {
       setValue(data, getSetterMethodName(property.getMapping().getMimeType()), null);
     }
 
-    return ODataResponse.status(HttpStatusCodes.NO_CONTENT).build();
+    return ODataResponse.newBuilder().build();
   }
 
   @Override
@@ -620,10 +600,7 @@ public class ListsProcessor extends ODataSingleProcessor {
       setStructuralTypeValuesFromMap(getPropertyValue(data, property), (EdmStructuralType) property.getType(), propertyValue, merge);
     }
 
-    return ODataResponse
-        .status(HttpStatusCodes.NO_CONTENT)
-        .eTag(constructETag(uriInfo.getTargetEntitySet(), data))
-        .build();
+    return ODataResponse.newBuilder().eTag(constructETag(uriInfo.getTargetEntitySet(), data)).build();
   }
 
   @Override
@@ -666,10 +643,7 @@ public class ListsProcessor extends ODataSingleProcessor {
       setValue(data, getSetterMethodName(property.getMapping().getMimeType()), requestContentType);
     }
 
-    return ODataResponse
-        .status(HttpStatusCodes.NO_CONTENT)
-        .eTag(constructETag(uriInfo.getTargetEntitySet(), data))
-        .build();
+    return ODataResponse.newBuilder().eTag(constructETag(uriInfo.getTargetEntitySet(), data)).build();
   }
 
   @Override
@@ -690,10 +664,7 @@ public class ListsProcessor extends ODataSingleProcessor {
     final String mimeType = binaryData.getMimeType() == null ?
         HttpContentType.APPLICATION_OCTET_STREAM : binaryData.getMimeType();
 
-    return ODataResponse.fromResponse(EntityProvider.writeBinary(mimeType, binaryData.getData()))
-        .status(HttpStatusCodes.OK)
-        .eTag(constructETag(entitySet, data))
-        .build();
+    return ODataResponse.fromResponse(EntityProvider.writeBinary(mimeType, binaryData.getData())).eTag(constructETag(entitySet, data)).build();
   }
 
   @Override
@@ -711,7 +682,7 @@ public class ListsProcessor extends ODataSingleProcessor {
 
     dataSource.writeBinaryData(uriInfo.getTargetEntitySet(), data, new BinaryData(null, null));
 
-    return ODataResponse.status(HttpStatusCodes.NO_CONTENT).build();
+    return ODataResponse.newBuilder().build();
   }
 
   @Override
@@ -737,10 +708,7 @@ public class ListsProcessor extends ODataSingleProcessor {
     final EdmEntitySet entitySet = uriInfo.getTargetEntitySet();
     dataSource.writeBinaryData(entitySet, data, new BinaryData(value, requestContentType));
 
-    return ODataResponse
-        .status(HttpStatusCodes.NO_CONTENT)
-        .eTag(constructETag(entitySet, data))
-        .build();
+    return ODataResponse.newBuilder().eTag(constructETag(entitySet, data)).build();
   }
 
   @Override
@@ -784,7 +752,7 @@ public class ListsProcessor extends ODataSingleProcessor {
 
     context.stopRuntimeMeasurement(timingHandle);
 
-    return ODataResponse.fromResponse(response).status(HttpStatusCodes.OK).build();
+    return ODataResponse.fromResponse(response).build();
   }
 
   @Override
@@ -808,9 +776,7 @@ public class ListsProcessor extends ODataSingleProcessor {
       final String value = type.valueToString(data, EdmLiteralKind.DEFAULT, null);
       response = EntityProvider.writeText(value == null ? "" : value);
     }
-    return ODataResponse.fromResponse(response)
-        .status(HttpStatusCodes.OK)
-        .build();
+    return ODataResponse.fromResponse(response).build();
   }
 
   private static Map<String, Object> mapKey(final List<KeyPredicate> keys) throws EdmException {

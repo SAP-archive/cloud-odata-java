@@ -35,6 +35,7 @@ import com.sap.core.odata.api.ODataService;
 import com.sap.core.odata.api.ODataServiceFactory;
 import com.sap.core.odata.api.ODataServiceVersion;
 import com.sap.core.odata.api.commons.HttpHeaders;
+import com.sap.core.odata.api.commons.HttpStatusCodes;
 import com.sap.core.odata.api.commons.ODataHttpHeaders;
 import com.sap.core.odata.api.edm.EdmEntityType;
 import com.sap.core.odata.api.edm.EdmException;
@@ -167,7 +168,8 @@ public final class ODataSubLocator implements ODataLocator {
     final ODataResponse odataResponse = dispatcher.dispatch(method, uriInfo, requestContent, requestContentType, acceptContentType);
 
     final String location = (method == ODataHttpMethod.POST && (uriInfo.getUriType() == UriType.URI1 || uriInfo.getUriType() == UriType.URI6B)) ? odataResponse.getIdLiteral() : null;
-    final Response response = convertResponse(odataResponse, serverDataServiceVersion, location);
+    final HttpStatusCodes s = odataResponse.getStatus() == null ? method == ODataHttpMethod.POST ? uriInfo.getUriType() == UriType.URI9 ? HttpStatusCodes.OK : uriInfo.getUriType() == UriType.URI7B ? HttpStatusCodes.NO_CONTENT : HttpStatusCodes.CREATED : method == ODataHttpMethod.PUT || method == ODataHttpMethod.PATCH || method == ODataHttpMethod.MERGE || method == ODataHttpMethod.DELETE ? HttpStatusCodes.NO_CONTENT : HttpStatusCodes.OK : odataResponse.getStatus();
+    final Response response = convertResponse(odataResponse, s, serverDataServiceVersion, location);
 
     return response;
   }
@@ -652,8 +654,8 @@ public final class ODataSubLocator implements ODataLocator {
     return single;
   }
 
-  private Response convertResponse(final ODataResponse odataResponse, final String version, final String location) {
-    ResponseBuilder responseBuilder = Response.noContent().status(odataResponse.getStatus().getStatusCode()).entity(odataResponse.getEntity());
+  private Response convertResponse(final ODataResponse odataResponse, HttpStatusCodes s, final String version, final String location) {
+    ResponseBuilder responseBuilder = Response.noContent().status(s.getStatusCode()).entity(odataResponse.getEntity());
 
     for (final String name : odataResponse.getHeaderNames()) {
       responseBuilder = responseBuilder.header(name, odataResponse.getHeader(name));
