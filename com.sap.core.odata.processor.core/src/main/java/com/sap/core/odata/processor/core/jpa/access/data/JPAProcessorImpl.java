@@ -52,19 +52,24 @@ public class JPAProcessorImpl implements JPAProcessor {
 		// Build JPQL Statement
 		JPQLStatement jpqlStatement = JPQLStatement.createBuilder(jpqlContext)
 				.build();
-
-		// Instantiate JPQL
-		Query query = em.createQuery(jpqlStatement.toString());
-		if (uriParserResultView.getSkip() != null)
-			query.setFirstResult(uriParserResultView.getSkip());
-
-		if (uriParserResultView.getTop() != null){
-			if(uriParserResultView.getTop() == 0){
-				List<T> resultList = new ArrayList<T>();
-				return resultList;
-			}else{
-				query.setMaxResults(uriParserResultView.getTop());
+		Query query = null;
+		try{
+			// Instantiate JPQL
+			query = em.createQuery(jpqlStatement.toString());
+			if (uriParserResultView.getSkip() != null)
+				query.setFirstResult(uriParserResultView.getSkip());
+	
+			if (uriParserResultView.getTop() != null){
+				if(uriParserResultView.getTop() == 0){
+					List<T> resultList = new ArrayList<T>();
+					return resultList;
+				}else{
+					query.setMaxResults(uriParserResultView.getTop());
+				}
 			}
+		}catch(IllegalArgumentException e){
+			throw ODataJPARuntimeException.throwException(
+					ODataJPARuntimeException.ERROR_JPQL_QUERY_CREATE, e);
 		}
 			
 		return query.getResultList();
@@ -95,9 +100,14 @@ public class JPAProcessorImpl implements JPAProcessor {
 		// Build JPQL Statement
 		JPQLStatement selectStatement = JPQLStatement.createBuilder(
 				singleSelectContext).build();
-
+		Query query = null;
+		try{
 		// Instantiate JPQL
-		Query query = em.createQuery(selectStatement.toString());
+		query = em.createQuery(selectStatement.toString());
+		}catch(IllegalArgumentException e){
+			throw ODataJPARuntimeException.throwException(
+					ODataJPARuntimeException.ERROR_JPQL_QUERY_CREATE, e);
+		}
 		
 		if(query.getResultList().isEmpty())
 			return null;
