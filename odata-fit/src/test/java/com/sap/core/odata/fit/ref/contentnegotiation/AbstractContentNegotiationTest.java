@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -440,7 +441,7 @@ public abstract class AbstractContentNegotiationTest extends AbstractFitTest {
           request.releaseConnection();
           LOG.debug("Released connection [" + requestLine + "]");
         }
-        //        TimeUnit.MILLISECONDS.sleep(10);
+        TimeUnit.MILLISECONDS.sleep(10);
       }
     }
 

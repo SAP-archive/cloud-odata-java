@@ -1,6 +1,7 @@
 package com.sap.core.odata.core.ep.consumer;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
 import java.io.ByteArrayInputStream;
@@ -13,12 +14,15 @@ import java.util.TimeZone;
 
 import org.junit.Test;
 
+import com.sap.core.odata.api.edm.Edm;
 import com.sap.core.odata.api.edm.EdmEntitySet;
 import com.sap.core.odata.api.edm.EdmProperty;
 import com.sap.core.odata.api.ep.EntityProviderException;
 import com.sap.core.odata.api.ep.entry.EntryMetadata;
 import com.sap.core.odata.api.ep.entry.MediaMetadata;
 import com.sap.core.odata.api.ep.entry.ODataEntry;
+import com.sap.core.odata.api.exception.MessageReference;
+import com.sap.core.odata.api.exception.ODataMessageException;
 import com.sap.core.odata.testutil.fit.BaseTest;
 import com.sap.core.odata.testutil.mock.MockFacade;
 
@@ -29,49 +33,50 @@ public class XmlEntityConsumerTest extends BaseTest {
 
   public static final String EMPLOYEE_1_XML = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
       "<entry xmlns=\"http://www.w3.org/2005/Atom\" xmlns:m=\"http://schemas.microsoft.com/ado/2007/08/dataservices/metadata\" xmlns:d=\"http://schemas.microsoft.com/ado/2007/08/dataservices\" xml:base=\"http://localhost:19000/\"  m:etag=\"W/&quot;1&quot;\">" +
-      "<id>http://localhost:19000/Employees('1')</id>" +
-      "<title type=\"text\">Walter Winter</title>" +
-      "<updated>1999-01-01T00:00:00Z</updated>" +
-      "<category term=\"RefScenario.Employee\" scheme=\"http://schemas.microsoft.com/ado/2007/08/dataservices/scheme\"/>" +
-      "<link href=\"Employees('1')\" rel=\"edit\" title=\"Employee\"/>" +
-      "<link href=\"Employees('1')/$value\" rel=\"edit-media\" type=\"application/octet-stream\" etag=\"mmEtag\"/>" +
-      "<link href=\"Employees('1')/ne_Room\" rel=\"http://schemas.microsoft.com/ado/2007/08/dataservices/related/ne_Room\" type=\"application/atom+xml; type=entry\" title=\"ne_Room\"/>" +
-      "<link href=\"Employees('1')/ne_Manager\" rel=\"http://schemas.microsoft.com/ado/2007/08/dataservices/related/ne_Manager\" type=\"application/atom+xml; type=entry\" title=\"ne_Manager\"/>" +
-      "<link href=\"Employees('1')/ne_Team\" rel=\"http://schemas.microsoft.com/ado/2007/08/dataservices/related/ne_Team\" type=\"application/atom+xml; type=entry\" title=\"ne_Team\"/>" +
-      "<content type=\"application/octet-stream\" src=\"Employees('1')/$value\"/>" +
-      "<m:properties>" +
-      "<d:EmployeeId>1</d:EmployeeId>" +
-      "<d:EmployeeName>Walter Winter</d:EmployeeName>" +
-      "<d:ManagerId>1</d:ManagerId>" +
-      "<d:RoomId>1</d:RoomId>" +
-      "<d:TeamId>1</d:TeamId>" +
-      "<d:Location m:type=\"RefScenario.c_Location\">" +
-      "<d:Country>Germany</d:Country>" +
-      "<d:City m:type=\"RefScenario.c_City\">" +
-      "<d:PostalCode>69124</d:PostalCode>" +
-      "<d:CityName>Heidelberg</d:CityName>" +
-      "</d:City>" +
-      "</d:Location>" +
-      "<d:Age>52</d:Age>" +
-      "<d:EntryDate>1999-01-01T00:00:00</d:EntryDate>" +
-      "<d:ImageUrl>/SAP/PUBLIC/BC/NWDEMO_MODEL/IMAGES/male_1_WinterW.jpg</d:ImageUrl>" +
-      "</m:properties>" +
+      "  <id>http://localhost:19000/Employees('1')</id>" +
+      "  <title type=\"text\">Walter Winter</title>" +
+      "  <updated>1999-01-01T00:00:00Z</updated>" +
+      "  <category term=\"RefScenario.Employee\" scheme=\"http://schemas.microsoft.com/ado/2007/08/dataservices/scheme\"/>" +
+      "  <link href=\"Employees('1')\" rel=\"edit\" title=\"Employee\"/>" +
+      "  <link href=\"Employees('1')/$value\" rel=\"edit-media\" type=\"application/octet-stream\" etag=\"mmEtag\"/>" +
+      "  <link href=\"Employees('1')/ne_Room\" rel=\"http://schemas.microsoft.com/ado/2007/08/dataservices/related/ne_Room\" type=\"application/atom+xml; type=entry\" title=\"ne_Room\"/>" +
+      "  <link href=\"Employees('1')/ne_Manager\" rel=\"http://schemas.microsoft.com/ado/2007/08/dataservices/related/ne_Manager\" type=\"application/atom+xml; type=entry\" title=\"ne_Manager\"/>" +
+      "  <link href=\"Employees('1')/ne_Team\" rel=\"http://schemas.microsoft.com/ado/2007/08/dataservices/related/ne_Team\" type=\"application/atom+xml; type=entry\" title=\"ne_Team\"/>" +
+      "  <content type=\"application/octet-stream\" src=\"Employees('1')/$value\"/>" +
+      "  <m:properties>" +
+      "    <d:EmployeeId>1</d:EmployeeId>" +
+      "    <d:EmployeeName>Walter Winter</d:EmployeeName>" +
+      "    <d:ManagerId>1</d:ManagerId>" +
+      "    <d:RoomId>1</d:RoomId>" +
+      "    <d:TeamId>1</d:TeamId>" +
+      "    <d:Location m:type=\"RefScenario.c_Location\">" +
+      "      <d:Country>Germany</d:Country>" +
+      "      <d:City m:type=\"RefScenario.c_City\">" +
+      "        <d:PostalCode>69124</d:PostalCode>" +
+      "        <d:CityName>Heidelberg</d:CityName>" +
+      "      </d:City>" +
+      "    </d:Location>" +
+      "    <d:Age>52</d:Age>" +
+      "    <d:EntryDate>1999-01-01T00:00:00</d:EntryDate>" +
+      "    <d:ImageUrl>/SAP/PUBLIC/BC/NWDEMO_MODEL/IMAGES/male_1_WinterW.jpg</d:ImageUrl>" +
+      "  </m:properties>" +
       "</entry>";
 
-  private static final String ROOM_1_XML = "<?xml version='1.0' encoding='UTF-8'?>" +
+  private static final String ROOM_1_XML = 
+      "<?xml version='1.0' encoding='UTF-8'?>" +
       "<entry xmlns=\"http://www.w3.org/2005/Atom\" xmlns:m=\"http://schemas.microsoft.com/ado/2007/08/dataservices/metadata\" xmlns:d=\"http://schemas.microsoft.com/ado/2007/08/dataservices\" xml:base=\"http://localhost:19000/test/\" m:etag=\"W/&quot;1&quot;\">" +
-      "<id>http://localhost:19000/test/Rooms('1')</id>" +
-      "<title type=\"text\">Room 1</title>" +
-      "<updated>2013-01-11T13:50:50.541+01:00</updated>" +
-      "<category term=\"RefScenario.Room\" scheme=\"http://schemas.microsoft.com/ado/2007/08/dataservices/scheme\"/>" +
-      "<link href=\"Rooms('1')\" rel=\"edit\" title=\"Room\"/>" +
-      "<link href=\"Rooms('1')/nr_Employees\" rel=\"http://schemas.microsoft.com/ado/2007/08/dataservices/related/nr_Employees\" type=\"application/atom+xml; type=feed\" title=\"nr_Employees\"/>" +
-      "<link href=\"Rooms('1')/nr_Building\" rel=\"http://schemas.microsoft.com/ado/2007/08/dataservices/related/nr_Building\" type=\"application/atom+xml; type=entry\" title=\"nr_Building\"/>" +
-      "<content type=\"application/xml\">" +
-      "<m:properties>" +
-      "<d:Id>1</d:Id>" +
-      "</m:properties>" +
-      "</content>" +
+      "  <id>http://localhost:19000/test/Rooms('1')</id>" +
+      "  <title type=\"text\">Room 1</title>" +
+      "  <updated>2013-01-11T13:50:50.541+01:00</updated>" +
+      "  <category term=\"RefScenario.Room\" scheme=\"http://schemas.microsoft.com/ado/2007/08/dataservices/scheme\"/>" +
+      "  <link href=\"Rooms('1')\" rel=\"edit\" title=\"Room\"/>" +
+      "  <link href=\"Rooms('1')/nr_Employees\" rel=\"http://schemas.microsoft.com/ado/2007/08/dataservices/related/nr_Employees\" type=\"application/atom+xml; type=feed\" title=\"nr_Employees\"/>" +
+      "  <link href=\"Rooms('1')/nr_Building\" rel=\"http://schemas.microsoft.com/ado/2007/08/dataservices/related/nr_Building\" type=\"application/atom+xml; type=entry\" title=\"nr_Building\"/>" +
+      "  <content type=\"application/xml\">" +
+      "    <m:properties>" +
+      "      <d:Id>1</d:Id>" +
+      "    </m:properties>" +
+      "  </content>" +
       "</entry>";
 
   private static final String PHOTO_XML = "<?xml version=\"1.0\" encoding=\"utf-8\"?>" +
@@ -95,6 +100,103 @@ public class XmlEntityConsumerTest extends BaseTest {
       //  		    "<d:BinaryData/>" +
       "</m:properties>" +
       "</entry>";
+
+  @Test
+  public void validationOfNamespacesSuccess() throws Exception {
+    String roomWithValidNamespaces = 
+        "<?xml version='1.0' encoding='UTF-8'?>" +
+        "<entry xmlns=\"http://www.w3.org/2005/Atom\" xmlns:m=\"http://schemas.microsoft.com/ado/2007/08/dataservices/metadata\" xmlns:d=\"http://schemas.microsoft.com/ado/2007/08/dataservices\" xml:base=\"http://localhost:19000/test/\" m:etag=\"W/&quot;1&quot;\">" +
+        "  <id>http://localhost:19000/test/Rooms('1')</id>" +
+        "  <title type=\"text\">Room 1</title>" +
+        "  <updated>2013-01-11T13:50:50.541+01:00</updated>" +
+        "  <content type=\"application/xml\">" +
+        "    <m:properties>" +
+        "      <d:Id>1</d:Id>" +
+        "    </m:properties>" +
+        "  </content>" +
+        "</entry>";
+
+    EdmEntitySet entitySet = MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Rooms");
+    InputStream reqContent = createContentAsStream(roomWithValidNamespaces);
+    readAndExpectException(entitySet, reqContent, EntityProviderException.INVALID_NAMESPACE);
+  }
+  
+  @Test(expected=EntityProviderException.class)
+  public void validationOfNamespacesMissingXmlns() throws Exception {
+    String roomWithValidNamespaces = 
+        "<?xml version='1.0' encoding='UTF-8'?>" +
+//        "<entry m:etag=\"W/&quot;1&quot;\">" +
+        "<entry etag=\"W/&quot;1&quot;\">" +
+        "  <id>http://localhost:19000/test/Rooms('1')</id>" +
+        "  <title type=\"text\">Room 1</title>" +
+        "  <updated>2013-01-11T13:50:50.541+01:00</updated>" +
+        "  <content type=\"application/xml\">" +
+        "    <m:properties>" +
+        "      <d:Id>1</d:Id>" +
+        "    </m:properties>" +
+        "  </content>" +
+        "</entry>";
+
+    EdmEntitySet entitySet = MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Rooms");
+    InputStream reqContent = createContentAsStream(roomWithValidNamespaces);
+    readAndExpectException(entitySet, reqContent, EntityProviderException.INVALID_NAMESPACE.addContent(Edm.NAMESPACE_D_2007_08));
+  }
+
+  @Test(expected=EntityProviderException.class)
+  public void validationOfNamespacesMissingM_NamespaceAtProperties() throws Exception {
+    String roomWithValidNamespaces = 
+        "<?xml version='1.0' encoding='UTF-8'?>" +
+        "<entry xmlns=\"http://www.w3.org/2005/Atom\" xmlns:m=\"http://schemas.microsoft.com/ado/2007/08/dataservices/metadata\" xmlns:d=\"http://schemas.microsoft.com/ado/2007/08/dataservices\" xml:base=\"http://localhost:19000/test/\" m:etag=\"W/&quot;1&quot;\">" +
+        "  <id>http://localhost:19000/test/Rooms('1')</id>" +
+        "  <title type=\"text\">Room 1</title>" +
+        "  <updated>2013-01-11T13:50:50.541+01:00</updated>" +
+        "  <content type=\"application/xml\">" +
+        "    <properties>" +
+        "      <d:Id>1</d:Id>" +
+        "    </properties>" +
+        "  </content>" +
+        "</entry>";
+
+
+    EdmEntitySet entitySet = MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Rooms");
+    InputStream reqContent = createContentAsStream(roomWithValidNamespaces);
+    readAndExpectException(entitySet, reqContent, EntityProviderException.INVALID_NAMESPACE.addContent("properties"));
+  }
+
+  @Test(expected=EntityProviderException.class)
+  public void validationOfNamespacesMissingD_NamespaceAtTag() throws Exception {
+    String roomWithValidNamespaces = 
+        "<?xml version='1.0' encoding='UTF-8'?>" +
+        "<entry xmlns=\"http://www.w3.org/2005/Atom\" xmlns:m=\"http://schemas.microsoft.com/ado/2007/08/dataservices/metadata\" xmlns:d=\"http://schemas.microsoft.com/ado/2007/08/dataservices\" xml:base=\"http://localhost:19000/test/\" m:etag=\"W/&quot;1&quot;\">" +
+        "  <id>http://localhost:19000/test/Rooms('1')</id>" +
+        "  <title type=\"text\">Room 1</title>" +
+        "  <updated>2013-01-11T13:50:50.541+01:00</updated>" +
+        "  <content type=\"application/xml\">" +
+        "    <m:properties>" +
+        "      <Id>1</Id>" +
+        "    </m:properties>" +
+        "  </content>" +
+        "</entry>";
+
+
+    EdmEntitySet entitySet = MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Rooms");
+    InputStream reqContent = createContentAsStream(roomWithValidNamespaces);
+    readAndExpectException(entitySet, reqContent, EntityProviderException.INVALID_NAMESPACE.addContent("Id"));
+  }
+
+  private void readAndExpectException(EdmEntitySet entitySet, InputStream reqContent, MessageReference messageReference) throws ODataMessageException {
+    try {
+      XmlEntityConsumer xec = new XmlEntityConsumer();
+      ODataEntry result = xec.readEntry(entitySet, reqContent, true);
+      assertNotNull(result);
+    } catch(ODataMessageException e) {
+      assertEquals(messageReference.getKey(), e.getMessageReference().getKey());
+      assertEquals(messageReference.getContent(), e.getMessageReference().getContent());
+      throw e;
+    }
+  }
+  
+  
 
   @Test
   public void readEntryAtomProperties() throws Exception {

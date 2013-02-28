@@ -20,6 +20,8 @@ public class EntityProviderException extends ODataMessageException {
   public static final MessageReference INVALID_STATE = createMessageReference(EntityProviderException.class, "INVALID_STATE");
   public static final MessageReference INVALID_PROPERTY = createMessageReference(EntityProviderException.class, "INVALID_PROPERTY");
   public static final MessageReference ILLEGAL_ARGUMENT = createMessageReference(EntityProviderException.class, "ILLEGAL_ARGUMENT");
+  /** INVALID_NAMESPACE requires 1 content value ('invalid tag/namespace') */
+  public static final MessageReference INVALID_NAMESPACE = createMessageReference(EntityProviderException.class, "INVALID_NAMESPACE");
 
   public EntityProviderException(final MessageReference messageReference) {
     super(messageReference);
