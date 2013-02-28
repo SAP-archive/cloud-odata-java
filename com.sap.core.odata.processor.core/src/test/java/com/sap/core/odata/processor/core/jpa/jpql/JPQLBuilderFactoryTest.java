@@ -151,12 +151,16 @@ public class JPQLBuilderFactoryTest {
 				.createMock(GetEntitySetUriInfo.class);
 		EdmEntitySet edmEntitySet = EasyMock.createMock(EdmEntitySet.class);
 		EdmEntityType edmEntityType = EasyMock.createMock(EdmEntityType.class);
+		EasyMock.expect(edmEntityType.getMapping()).andStubReturn(null);
+		EasyMock.expect(edmEntityType.getName()).andStubReturn("SOItem");
+		EasyMock.replay(edmEntityType);
 		OrderByExpression orderByExpression = EasyMock
 				.createMock(OrderByExpression.class);
 		EasyMock.expect(getEntitySetView.getTargetEntitySet()).andStubReturn(
 				edmEntitySet);
 		EdmEntitySet startEdmEntitySet = EasyMock.createMock(EdmEntitySet.class);
 		EdmEntityType startEdmEntityType = EasyMock.createMock(EdmEntityType.class);
+		EasyMock.expect(startEdmEntityType.getMapping()).andStubReturn(null);
 		EasyMock.expect(startEdmEntityType.getName()).andStubReturn("SOHeader");
 		EasyMock.expect(startEdmEntitySet.getEntityType()).andStubReturn(startEdmEntityType);
 		EasyMock.expect(getEntitySetView.getStartEntitySet()).andStubReturn(
@@ -206,6 +210,7 @@ public class JPQLBuilderFactoryTest {
 		EdmEntityType edmEntityType = EasyMock.createMock(EdmEntityType.class);
 		EasyMock.expect(edmEntityType.getKeyProperties()).andStubReturn(
 				new ArrayList<EdmProperty>());
+		EasyMock.expect(edmEntityType.getMapping()).andStubReturn(null);
 		EasyMock.expect(edmEntityType.getName()).andStubReturn("");
 		EasyMock.expect(edmEntitySet.getEntityType()).andStubReturn(
 				edmEntityType);
@@ -214,6 +219,7 @@ public class JPQLBuilderFactoryTest {
 				edmEntitySet);
 		EdmEntitySet startEdmEntitySet = EasyMock.createMock(EdmEntitySet.class);
 		EdmEntityType startEdmEntityType = EasyMock.createMock(EdmEntityType.class);
+		EasyMock.expect(startEdmEntityType.getMapping()).andStubReturn(null);
 		EasyMock.expect(startEdmEntityType.getName()).andStubReturn("SOHeader");
 		EasyMock.expect(startEdmEntitySet.getEntityType()).andStubReturn(startEdmEntityType);
 		EasyMock.expect(getEntityView.getStartEntitySet()).andStubReturn(

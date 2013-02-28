@@ -82,6 +82,7 @@ public class JPQLSelectSingleContextImplTest {
 
 			} while (++i < 2);
 
+			EasyMock.expect(entityType.getMapping()).andStubReturn(null);
 			EasyMock.expect(entityType.getName()).andStubReturn(entityTypeName);
 			EasyMock.replay(entityType);
 			EasyMock.expect(entitySet.getEntityType())

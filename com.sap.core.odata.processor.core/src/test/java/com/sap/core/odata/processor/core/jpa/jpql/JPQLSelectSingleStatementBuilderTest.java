@@ -76,6 +76,7 @@ public class JPQLSelectSingleStatementBuilderTest {
 				
 				EasyMock.expect(edmEntitySet.getEntityType()).andStubReturn(edmEntityType);
 				EasyMock.replay(edmEntitySet);
+				EasyMock.expect(edmEntityType.getMapping()).andStubReturn(null);
 				EasyMock.expect(edmEntityType.getName()).andStubReturn("SalesOrderHeader");
 				EasyMock.replay(edmEntityType);
 				ArrayList<KeyPredicate> arrayList = new ArrayList<KeyPredicate>();

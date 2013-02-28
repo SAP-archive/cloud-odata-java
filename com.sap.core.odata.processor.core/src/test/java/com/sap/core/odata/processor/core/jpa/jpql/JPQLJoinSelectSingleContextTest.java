@@ -99,12 +99,14 @@ public class JPQLJoinSelectSingleContextTest {
 							.getTargetEntitySet()).andStubReturn(edmEntitySet);
 		EdmEntitySet startEdmEntitySet = EasyMock.createMock(EdmEntitySet.class);
 		EdmEntityType startEdmEntityType = EasyMock.createMock(EdmEntityType.class);
+		EasyMock.expect(startEdmEntityType.getMapping()).andStubReturn(null);
 		EasyMock.expect(startEdmEntityType.getName()).andStubReturn("SOHeader");
 		EasyMock.expect(startEdmEntitySet.getEntityType()).andStubReturn(startEdmEntityType);
 		EasyMock.expect(entityUriInfo.getStartEntitySet()).andStubReturn(
 				startEdmEntitySet);
 		EasyMock.replay(startEdmEntityType, startEdmEntitySet);
 		EasyMock.expect(edmEntitySet.getEntityType()).andStubReturn(edmEntityType);
+		EasyMock.expect(edmEntityType.getMapping()).andStubReturn(null);
 		EasyMock.expect(edmEntityType.getName()).andStubReturn("SOHeader");
 		EasyMock.replay(edmEntityType,edmEntitySet,entityUriInfo);
 		

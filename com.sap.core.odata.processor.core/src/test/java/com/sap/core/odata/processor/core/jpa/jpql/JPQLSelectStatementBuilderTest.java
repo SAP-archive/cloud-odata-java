@@ -58,6 +58,7 @@ public class JPQLSelectStatementBuilderTest {
 				EasyMock.replay(getEntitySetView);
 				EasyMock.expect(edmEntitySet.getEntityType()).andStubReturn(edmEntityType);
 				EasyMock.replay(edmEntitySet);
+				EasyMock.expect(edmEntityType.getMapping()).andStubReturn(null);
 				EasyMock.expect(edmEntityType.getName()).andStubReturn("SalesOrderHeader");
 				EasyMock.replay(edmEntityType);
 				
