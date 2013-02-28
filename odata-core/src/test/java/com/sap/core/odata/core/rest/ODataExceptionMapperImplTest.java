@@ -28,6 +28,7 @@ import org.junit.Test;
 
 import com.sap.core.odata.api.commons.HttpStatusCodes;
 import com.sap.core.odata.api.edm.Edm;
+import com.sap.core.odata.api.ep.EntityProviderException;
 import com.sap.core.odata.api.exception.ODataApplicationException;
 import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.api.exception.ODataNotFoundException;
@@ -79,6 +80,25 @@ public class ODataExceptionMapperImplTest extends BaseTest {
     assertXpathEvaluatesTo(MessageService.getMessage(Locale.ENGLISH, ODataNotFoundException.ENTITY).getText(), "/a:error/a:message", errorMessage);
   }
 
+  @Test
+  public void testEntityProviderException() throws Exception {
+    // prepare
+    Exception exception = new EntityProviderException(EntityProviderException.INVALID_PROPERTY.addContent("unknown"));
+
+    // execute
+    Response response = exceptionMapper.toResponse(exception);
+
+    // verify
+    assertNotNull(response);
+    assertEquals(HttpStatusCodes.BAD_REQUEST.getStatusCode(), response.getStatus());
+    String errorMessage = StringHelper.inputStreamToString((InputStream) response.getEntity());
+    assertXpathExists("/a:error/a:code", errorMessage);
+    assertXpathEvaluatesTo(
+        MessageService.getMessage(Locale.ENGLISH, EntityProviderException.INVALID_PROPERTY.addContent("unknown")).getText(), 
+        "/a:error/a:message", errorMessage);
+  }
+
+  
   @Test
   public void testODataNotFoundExceptionDe() throws Exception {
     // prepare

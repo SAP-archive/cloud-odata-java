@@ -8,9 +8,7 @@ import java.io.UnsupportedEncodingException;
 import java.util.List;
 import java.util.Map;
 
-import javax.xml.stream.FactoryConfigurationError;
 import javax.xml.stream.XMLOutputFactory;
-import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 
 import org.slf4j.Logger;
@@ -243,12 +241,8 @@ public class AtomEntityProvider implements ContentTypeBasedEntityProvider {
       writer.flush();
       outStream.flush();
       outStream.close();
-    } catch (FactoryConfigurationError e1) {
-      throw new EntityProviderException(EntityProviderException.COMMON, e1);
-    } catch (XMLStreamException e2) {
-      throw new EntityProviderException(EntityProviderException.COMMON, e2);
-    } catch (IOException e3) {
-      throw new EntityProviderException(EntityProviderException.COMMON, e3);
+    } catch (Exception e) {
+      throw new EntityProviderException(EntityProviderException.COMMON, e);
     } finally {
       if (outStream != null) {
         try {
@@ -279,12 +273,8 @@ public class AtomEntityProvider implements ContentTypeBasedEntityProvider {
       writer.flush();
       outStream.flush();
       outStream.close();
-    } catch (FactoryConfigurationError e1) {
-      throw new EntityProviderException(EntityProviderException.COMMON, e1);
-    } catch (XMLStreamException e2) {
-      throw new EntityProviderException(EntityProviderException.COMMON, e2);
-    } catch (IOException e3) {
-      throw new EntityProviderException(EntityProviderException.COMMON, e3);
+    } catch (Exception e) {
+      throw new EntityProviderException(EntityProviderException.COMMON, e);
     } finally {
       if (outStream != null) {
         try {
