@@ -64,10 +64,19 @@ public class BasicHttpTest extends AbstractBasicTest {
 
   @Test
   public void testGet() throws ODataException, IOException {
-    final HttpResponse response = executeGetRequest("$metadata");
+    HttpResponse response = executeGetRequest("$metadata");
 
     assertEquals(HttpStatusCodes.OK.getStatusCode(), response.getStatusLine().getStatusCode());
     assertEquals("metadata", StringHelper.inputStreamToString(response.getEntity().getContent()));
+
+    response = executeGetRequest("//////$metadata");
+    assertEquals(HttpStatusCodes.OK.getStatusCode(), response.getStatusLine().getStatusCode());
+    StringHelper.inputStreamToString(response.getEntity().getContent());
+    response = executeGetRequest("/./$metadata");
+    assertEquals(HttpStatusCodes.NOT_FOUND.getStatusCode(), response.getStatusLine().getStatusCode());
+    StringHelper.inputStreamToString(response.getEntity().getContent());
+    response = executeGetRequest("$metadata/");
+    assertEquals(HttpStatusCodes.BAD_REQUEST.getStatusCode(), response.getStatusLine().getStatusCode());
   }
 
   @Test
