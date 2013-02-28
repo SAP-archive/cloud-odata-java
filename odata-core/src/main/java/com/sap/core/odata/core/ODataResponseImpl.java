@@ -66,7 +66,7 @@ public class ODataResponseImpl extends ODataResponse {
   }
 
   public class ODataResponseBuilderImpl extends ODataResponseBuilder {
-    private HttpStatusCodes status = HttpStatusCodes.OK;
+    private HttpStatusCodes status;
     private Object entity;
     private HashMap<String, String> header = new HashMap<String, String>();
     private String idLiteral;
@@ -120,7 +120,7 @@ public class ODataResponseImpl extends ODataResponse {
 
     @Override
     public ODataResponseBuilder contentHeader(final String value) {
-      header.put(javax.ws.rs.core.HttpHeaders.CONTENT_TYPE, value);
+      header.put(HttpHeaders.CONTENT_TYPE, value);
       return this;
     }
 

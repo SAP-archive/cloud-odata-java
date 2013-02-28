@@ -1,6 +1,7 @@
 package com.sap.core.odata.core;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 import org.junit.Test;
 
@@ -19,7 +20,7 @@ public class ODataResponseTest extends BaseTest {
   @Test
   public void buildEntityResponseTest() {
     ODataResponse response = ODataResponse.entity("abc").build();
-    assertEquals(HttpStatusCodes.OK, response.getStatus());
+    assertNull(response.getStatus());
     assertEquals("abc", response.getEntity());
   }
 
@@ -29,7 +30,7 @@ public class ODataResponseTest extends BaseTest {
         .header("abc", "123")
         .header("def", "456")
         .build();
-    assertEquals(HttpStatusCodes.OK, response.getStatus());
+    assertNull(response.getStatus());
     assertEquals("123", response.getHeader("abc"));
     assertEquals("456", response.getHeader("def"));
   }
