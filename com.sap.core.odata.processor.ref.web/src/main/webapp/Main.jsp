@@ -213,8 +213,8 @@ body {
 			<tr>
 				<td>Query for Sales Order with Buyer Address House number = 7</td>
 				<td><a
-					href="SalesOrderProcessing.svc/SalesOrders?$filter=BuyerAddressInfo/HouseNumber eq 7"
-					target="_blank">SalesOrderProcessing.svc/SalesOrders?$filter=BuyerAddressInfo/HouseNumber
+					href="SalesOrderProcessing.svc/SalesOrders?$filter=BuyerAddressInfo/Number eq 7"
+					target="_blank">SalesOrderProcessing.svc/SalesOrders?$filter=BuyerAddressInfo/Number
 						eq 7 </a></td>
 				<td width=60%><code style="font-size: small">SELECT E1 FROM SalesOrderHeader E1 WHERE E1.buyerAddress.houseNumber = 7</code></td>
 			</tr>
