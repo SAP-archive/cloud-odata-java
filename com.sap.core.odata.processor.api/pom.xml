@@ -29,7 +29,6 @@
 			<version>${version.odataforsap}</version>
 			<scope>provided</scope>
 		</dependency>
-
 	</dependencies>
 	
 	<name>OData Processors - JPA Processor API</name>
