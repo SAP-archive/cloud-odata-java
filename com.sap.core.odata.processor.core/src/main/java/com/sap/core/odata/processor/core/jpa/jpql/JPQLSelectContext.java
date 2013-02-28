@@ -6,8 +6,8 @@ import java.util.List;
 
 import com.sap.core.odata.api.edm.EdmEntityType;
 import com.sap.core.odata.api.edm.EdmException;
+import com.sap.core.odata.api.edm.EdmMapping;
 import com.sap.core.odata.api.edm.EdmProperty;
-import com.sap.core.odata.api.edm.provider.Mapping;
 import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.api.uri.SelectItem;
 import com.sap.core.odata.api.uri.info.GetEntitySetUriInfo;
@@ -73,7 +73,7 @@ public class JPQLSelectContext extends JPQLContext implements
 					
 					EdmEntityType entityType = entitySetView
 							.getTargetEntitySet().getEntityType();
-					Mapping mapping = (Mapping) entityType.getMapping();
+					EdmMapping mapping = entityType.getMapping();
 					if(mapping != null)
 						JPQLSelectContext.this.setJPAEntityName(mapping.getInternalName());
 					else

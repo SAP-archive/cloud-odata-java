@@ -111,7 +111,7 @@ public class ODataJPAProcessorDefaultTest extends JPAEdmTestModelView{
 			EasyMock.expect(objGetEntitySetUriInfo.getInlineCount()).andStubReturn(getInlineCount());
 			EasyMock.expect(objGetEntitySetUriInfo.getFilter()).andStubReturn(getFilter());
 			EasyMock.expect(edmEntityType.getPropertyNames()).andStubReturn(getLocalPropertyNames());
-			EasyMock.expect(edmEntityType.getProperty("SoId")).andStubReturn(getEdmTypedMockedObj("SoId"));
+			EasyMock.expect(edmEntityType.getProperty("SoId")).andStubReturn(getEdmTypedMockedObj("SalesOrder"));
 			
 			EasyMock.expect(edmEntityType.getKind()).andStubReturn(EdmTypeKind.SIMPLE);
 			EasyMock.expect(edmEntityType.getNamespace()).andStubReturn("SalesOrderHeaders");
@@ -119,6 +119,7 @@ public class ODataJPAProcessorDefaultTest extends JPAEdmTestModelView{
 			EasyMock.expect(edmEntityType.hasStream()).andStubReturn(false);
 		    EasyMock.expect(edmEntityType.getNavigationPropertyNames()).andStubReturn(new ArrayList<String>());
 		    EasyMock.expect(edmEntityType.getKeyPropertyNames()).andStubReturn(new ArrayList<String>());
+		    EasyMock.expect(edmEntityType.getMapping()).andStubReturn(getEdmMappingMockedObj("SalesOrder"));// ID vs Salesorder ID
 	    
 			EasyMock.expect(edmEntitySet.getEntityContainer()).andStubReturn(getLocalEdmEntityContainer());
 			EasyMock.replay(edmEntityType, edmEntitySet);
@@ -229,6 +230,8 @@ public class ODataJPAProcessorDefaultTest extends JPAEdmTestModelView{
 			EasyMock.expect(edmEntityType.getPropertyNames()).andStubReturn(getLocalPropertyNames());
 			EasyMock.expect(edmEntityType.getProperty("SoId")).andStubReturn(getEdmTypedMockedObj("SoId"));
 			
+			 EasyMock.expect(edmEntityType.getMapping()).andStubReturn(getEdmMappingMockedObj("SalesOrder"));
+			
 			EasyMock.expect(edmEntityType.getKind()).andStubReturn(EdmTypeKind.SIMPLE);
 			EasyMock.expect(edmEntityType.getNamespace()).andStubReturn("SalesOrderHeaders");
 			EasyMock.expect(edmEntityType.getName()).andStubReturn("SalesOrderHeaders");
@@ -298,8 +301,13 @@ public class ODataJPAProcessorDefaultTest extends JPAEdmTestModelView{
 	
 	private EdmMapping getEdmMappingMockedObj(String propertyName) {
 		EdmMapping mockedEdmMapping = EasyMock.createMock(EdmMapping.class);
-		EasyMock.expect(mockedEdmMapping.getInternalName())
-				.andStubReturn(propertyName);
+		if(propertyName.equalsIgnoreCase("SalesOrder")){
+			EasyMock.expect(mockedEdmMapping.getInternalName())
+			.andStubReturn("SalesOrderHeaders");
+		}else{
+			EasyMock.expect(mockedEdmMapping.getInternalName())
+			.andStubReturn(propertyName);
+		}
 		EasyMock.replay(mockedEdmMapping);
 		return mockedEdmMapping;
 	}
