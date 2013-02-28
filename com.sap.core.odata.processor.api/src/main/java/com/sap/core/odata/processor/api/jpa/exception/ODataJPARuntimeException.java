@@ -25,6 +25,10 @@ public class ODataJPARuntimeException extends ODataJPAException {
 			ODataJPARuntimeException.class, "JOIN_CLAUSE_EXPECTED");
 	public static final MessageReference ERROR_JPQLCTXBLDR_CREATE = createMessageReference(
 			ODataJPARuntimeException.class, "ERROR_JPQLCTXBLDR_CREATE");
+	public static final MessageReference ERROR_ODATA_FILTER_CONDITION = createMessageReference(
+			ODataJPARuntimeException.class, "ERROR_ODATA_FILTER_CONDITION");
+	public static final MessageReference ERROR_JPQL_QUERY_CREATE = createMessageReference(
+			ODataJPARuntimeException.class, "ERROR_JPQL_QUERY_CREATE");
 
 	private ODataJPARuntimeException(String localizedMessage, Throwable e) {
 		super(localizedMessage, e);
