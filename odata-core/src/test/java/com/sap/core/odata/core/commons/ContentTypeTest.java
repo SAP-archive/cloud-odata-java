@@ -34,6 +34,17 @@ import com.sap.core.odata.testutil.fit.BaseTest;
 public class ContentTypeTest extends BaseTest {
 
   @Test
+  public void parseable() {
+    assertTrue(ContentType.isParseable("application/xml"));
+    assertTrue(ContentType.isParseable("text/plain"));
+    assertTrue(ContentType.isParseable("application/atom+xml; charset=UTF-8"));
+    
+    assertFalse(ContentType.isParseable("app/app/moreapp"));
+    //assertFalse(ContentType.isParseable("application/atom+xml; charset   =   UTF-8"));
+    assertFalse(ContentType.isParseable(null));
+  }
+  
+  @Test
   public void creationFromHttpContentTypeAtomXmlEntry() {
     ContentType mt = ContentType.create(HttpContentType.APPLICATION_ATOM_XML_ENTRY_UTF8);
 
