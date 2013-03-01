@@ -31,6 +31,7 @@ public class ODataJPAContextImplTest {
 		EasyMock.replay(emf);
 
 		odataContext = EasyMock.createMock(ODataContext.class);
+		EasyMock.expect(odataContext.getAcceptableLanguages()).andStubReturn(null);
 		EasyMock.replay(odataContext);
 
 		processor = EasyMock.createMock(ODataProcessor.class);
