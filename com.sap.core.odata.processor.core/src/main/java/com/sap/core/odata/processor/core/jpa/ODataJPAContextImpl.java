@@ -1,5 +1,8 @@
 package com.sap.core.odata.processor.core.jpa;
 
+import java.util.List;
+import java.util.Locale;
+
 import javax.persistence.EntityManagerFactory;
 
 import com.sap.core.odata.api.edm.provider.EdmProvider;
@@ -15,6 +18,7 @@ public class ODataJPAContextImpl implements ODataJPAContext {
 	private ODataProcessor processor;
 	private EdmProvider	edmProvider;
 	private String jpaEdmMappingModelName;
+	private static final ThreadLocal<List<Locale>> oDataContextThreadLocal = new ThreadLocal<List<Locale>>();
 
 	
 	@Override
@@ -40,6 +44,7 @@ public class ODataJPAContextImpl implements ODataJPAContext {
 	@Override
 	public void setODataContext(ODataContext ctx) {
 		this.odataContext = ctx;
+		setLocales(this.odataContext.getAcceptableLanguages());
 		
 	}
 
@@ -77,6 +82,18 @@ public class ODataJPAContextImpl implements ODataJPAContext {
 	@Override
 	public String getJPAEdmNameMappingModel() {
 		return jpaEdmMappingModelName;
+	}
+	
+	public static void setLocales(List<Locale> acceptedLocales) {
+		oDataContextThreadLocal.set(acceptedLocales);
+	}
+
+	public static void unsetLocales() {
+		oDataContextThreadLocal.remove();
+	}
+
+	public static List<Locale> getLocales() {
+		return oDataContextThreadLocal.get();
 	}
 
 

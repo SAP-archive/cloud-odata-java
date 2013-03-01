@@ -3,6 +3,8 @@ package com.sap.core.odata.processor.core.jpa.expception;
 import java.util.Arrays;
 import java.util.Formatter;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.MissingFormatArgumentException;
@@ -11,6 +13,7 @@ import java.util.ResourceBundle;
 
 import com.sap.core.odata.api.exception.MessageReference;
 import com.sap.core.odata.processor.api.jpa.exception.ODataJPAMessageService;
+import com.sap.core.odata.processor.core.jpa.ODataJPAContextImpl;
 
 public class ODataJPAMessageServiceDefault implements ODataJPAMessageService {
 
@@ -56,15 +59,29 @@ public class ODataJPAMessageServiceDefault implements ODataJPAMessageService {
 	}
 
 	public static ODataJPAMessageService getInstance(Locale locale) {
+		
+		List<Locale> acceptedLanguages = ODataJPAContextImpl.getLocales();
+		Locale acceptedLocale = Locale.ENGLISH;
+		Iterator<Locale> itr = acceptedLanguages.iterator();
+		
+		while(itr.hasNext()) {
+			
+			Locale tempLocale = itr.next();
+			if(ResourceBundle.getBundle(BUNDLE_NAME, tempLocale).getLocale().equals(tempLocale)) {
+				acceptedLocale = tempLocale;
+				break;
+			}
+		}
+		
 		ODataJPAMessageService messagesInstance = LOCALE_2_MESSAGE_SERVICE
-				.get(locale);
+				.get(acceptedLocale);
 		if (messagesInstance == null) {
-			ResourceBundle resourceBundle = ResourceBundle.getBundle(
-					BUNDLE_NAME, locale);
+			ResourceBundle resourceBundle = ResourceBundle.getBundle(BUNDLE_NAME, acceptedLocale);
+			
 			if (resourceBundle != null) {
 				messagesInstance = new ODataJPAMessageServiceDefault(
-						resourceBundle, locale);
-				LOCALE_2_MESSAGE_SERVICE.put(locale, messagesInstance);
+						resourceBundle, acceptedLocale);
+				LOCALE_2_MESSAGE_SERVICE.put(acceptedLocale, messagesInstance);
 			} else if (defaultResourceBundle != null) {
 				messagesInstance = new ODataJPAMessageServiceDefault(
 						defaultResourceBundle, null);
@@ -76,6 +93,5 @@ public class ODataJPAMessageServiceDefault implements ODataJPAMessageService {
 
 	private String getMessage(String key) {
 		return resourceBundle.getString(key);
-	}
-
+	}	
 }
