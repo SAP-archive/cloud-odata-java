@@ -194,13 +194,15 @@ public class ODataExceptionMapperImpl implements ExceptionMapper<Exception> {
 
   private ContentType getContentType() {
     for (MediaType type : httpHeaders.getAcceptableMediaTypes()) {
-      ContentType convertedContentType = ContentType.create(type.toString());
-      if (convertedContentType.isWildcard()
-          || ContentType.APPLICATION_XML.equals(convertedContentType) || ContentType.APPLICATION_XML_CS_UTF_8.equals(convertedContentType)
-          || ContentType.APPLICATION_ATOM_XML.equals(convertedContentType) || ContentType.APPLICATION_ATOM_XML_CS_UTF_8.equals(convertedContentType)) {
-        return ContentType.APPLICATION_XML_CS_UTF_8;
-      } else if (ContentType.APPLICATION_JSON.equals(convertedContentType) || ContentType.APPLICATION_JSON_CS_UTF_8.equals(convertedContentType)) {
-        return ContentType.APPLICATION_JSON_CS_UTF_8;
+      if(ContentType.isParseable(type.toString())) {
+        ContentType convertedContentType = ContentType.create(type.toString());
+        if (convertedContentType.isWildcard()
+            || ContentType.APPLICATION_XML.equals(convertedContentType) || ContentType.APPLICATION_XML_CS_UTF_8.equals(convertedContentType)
+            || ContentType.APPLICATION_ATOM_XML.equals(convertedContentType) || ContentType.APPLICATION_ATOM_XML_CS_UTF_8.equals(convertedContentType)) {
+          return ContentType.APPLICATION_XML_CS_UTF_8;
+        } else if (ContentType.APPLICATION_JSON.equals(convertedContentType) || ContentType.APPLICATION_JSON_CS_UTF_8.equals(convertedContentType)) {
+          return ContentType.APPLICATION_JSON_CS_UTF_8;
+        }
       }
     }
     return ContentType.APPLICATION_XML_CS_UTF_8;

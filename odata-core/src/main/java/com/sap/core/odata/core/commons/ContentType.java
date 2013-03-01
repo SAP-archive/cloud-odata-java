@@ -87,6 +87,22 @@ public class ContentType {
   }
 
   /**
+   * Validates if given <code>format</code> is parseable and can be used as input for {@link #create(String)} method.
+   * 
+   * @param format to be validated string
+   * @return <code>true</code> if format is parseable otherwise <code>false</code>
+   */
+  public static boolean isParseable(final String format) {
+    try {
+      ContentType ct = ContentType.create(format);
+      return ct != null;
+    } catch(Exception e) {
+      return false;
+    }
+  }
+  
+  
+  /**
    * Creates a content type from type and subtype
    * @param type
    * @param subtype
