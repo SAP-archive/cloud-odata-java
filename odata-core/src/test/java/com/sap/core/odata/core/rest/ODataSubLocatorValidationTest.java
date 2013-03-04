@@ -224,7 +224,7 @@ public class ODataSubLocatorValidationTest extends BaseTest {
     final MultivaluedMap<String, String> map = new MultivaluedHashMap<String, String>();
     when(httpHeaders.getRequestHeaders()).thenReturn(map);
     MediaType mediaType = null;
-    if(requestContentType != null) {
+    if (requestContentType != null) {
       mediaType = mock(MediaType.class);
       when(mediaType.toString()).thenReturn(requestContentType);
     }
@@ -447,7 +447,6 @@ public class ODataSubLocatorValidationTest extends BaseTest {
     }
   }
 
-  
   @Test
   public void requestContentTypeMediaResource() throws Exception {
     checkRequest(ODataHttpMethod.PUT, mockPathSegments(UriType.URI2, false, false), null, "image/jpeg");

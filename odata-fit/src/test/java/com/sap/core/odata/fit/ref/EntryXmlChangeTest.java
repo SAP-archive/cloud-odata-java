@@ -104,7 +104,7 @@ public class EntryXmlChangeTest extends AbstractRefXmlTest {
   public void updateUnknownProperty() throws Exception {
     final String requestBody = getBody(callUri("Employees('1')"))
         .replace("<d:Age>52</d:Age>", "<d:Age>33</d:Age><d:SomeUnknownTag>SomeUnknownValue</d:SomeUnknownTag>");
-    
+
     // 
     putUri("Employees('1')", requestBody, HttpContentType.APPLICATION_ATOM_XML_ENTRY, HttpStatusCodes.BAD_REQUEST);
     // check nothing has changed

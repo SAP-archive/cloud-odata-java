@@ -327,7 +327,6 @@ public class XmlEntityConsumerTest extends BaseTest {
     }
   }
 
-  
   @Test(expected = EntityProviderException.class)
   public void testReadEntryTooManyValues() throws Exception {
     // prepare
@@ -352,7 +351,6 @@ public class XmlEntityConsumerTest extends BaseTest {
     }
   }
 
-  
   @SuppressWarnings("unchecked")
   @Test
   public void testReadEntryWithMerge() throws Exception {
