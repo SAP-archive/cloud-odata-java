@@ -1,5 +1,7 @@
 package com.sap.core.odata.testutil.fit;
 
+import static org.junit.Assert.assertNotNull;
+
 import java.net.URI;
 import java.util.Collections;
 import java.util.HashMap;
@@ -25,6 +27,10 @@ public class FitStaticServiceFactory extends ODataServiceFactory {
 
   @Override
   public ODataService createService(final ODataContext ctx) throws ODataException {
+
+    assertNotNull(ctx);
+    assertNotNull(ctx.getAcceptableLanguages());
+
     final Map<String, String> requestHeaders = ctx.getHttpRequestHeaders();
     final String host = requestHeaders.get("Host");
     // access and validation in synchronized block

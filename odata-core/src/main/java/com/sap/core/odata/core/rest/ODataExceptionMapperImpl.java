@@ -80,20 +80,20 @@ public class ODataExceptionMapperImpl implements ExceptionMapper<Exception> {
   private Response buildResponseForMessageException(final ODataMessageException messageException) {
     HttpStatusCodes responseStatusCode;
 
-    if(messageException instanceof EntityProviderException) {
+    if (messageException instanceof EntityProviderException) {
       responseStatusCode = HttpStatusCodes.BAD_REQUEST;
     } else {
       responseStatusCode = HttpStatusCodes.INTERNAL_SERVER_ERROR;
     }
-    
+
     MessageReference messageReference = messageException.getMessageReference();
     Message localizedMessage = messageReference == null ? null : extractEntity(messageReference);
     ContentType contentType = getContentType();
     InputStream entity = ODataExceptionSerializer.serialize(
         messageException.getErrorCode(),
         localizedMessage == null ? null : localizedMessage.getText(),
-            contentType,
-            localizedMessage == null ? null : localizedMessage.getLocale());
+        contentType,
+        localizedMessage == null ? null : localizedMessage.getLocale());
     return buildResponseInternal(entity, contentType, responseStatusCode.getStatusCode());
   }
 

@@ -94,11 +94,10 @@ public class ODataExceptionMapperImplTest extends BaseTest {
     String errorMessage = StringHelper.inputStreamToString((InputStream) response.getEntity());
     assertXpathExists("/a:error/a:code", errorMessage);
     assertXpathEvaluatesTo(
-        MessageService.getMessage(Locale.ENGLISH, EntityProviderException.INVALID_PROPERTY.addContent("unknown")).getText(), 
+        MessageService.getMessage(Locale.ENGLISH, EntityProviderException.INVALID_PROPERTY.addContent("unknown")).getText(),
         "/a:error/a:message", errorMessage);
   }
 
-  
   @Test
   public void testODataNotFoundExceptionDe() throws Exception {
     // prepare

@@ -25,7 +25,7 @@ public class MessageService {
   private static final Map<Locale, MessageService> LOCALE_2_MESSAGE_SERVICE = new HashMap<Locale, MessageService>();
 
   private MessageService(final Locale locale) {
-    if(locale == null) {
+    if (locale == null) {
       throw new IllegalArgumentException("Parameter locale MUST NOT be NULL.");
     }
     requestedLocale = locale;
@@ -74,7 +74,7 @@ public class MessageService {
   }
 
   public static boolean isLocaleSupported(final Locale locale) {
-    if(locale == null) {
+    if (locale == null) {
       return false;
     }
     MessageService service = getInstance(locale);

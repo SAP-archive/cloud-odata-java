@@ -473,10 +473,11 @@ public final class ODataSubLocator implements ODataLocator {
     acceptHeaderContentTypes = convertMediaTypes(param.getHttpHeaders().getAcceptableMediaTypes());
     requestContent = contentAsStream(extractRequestContent(param));
     requestContentTypeHeader = extractRequestContentType(param);
+
+    context.setAcceptableLanguages(param.httpHeaders.getAcceptableLanguages());
     service = param.getServiceFactory().createService(context);
     context.setService(service);
     service.getProcessor().setContext(context);
-    context.setAcceptableLanguages(param.httpHeaders.getAcceptableLanguages());
 
     uriParser = new UriParserImpl(service.getEntityDataModel());
     dispatcher = new Dispatcher(service);
@@ -654,7 +655,7 @@ public final class ODataSubLocator implements ODataLocator {
     return single;
   }
 
-  private Response convertResponse(final ODataResponse odataResponse, HttpStatusCodes s, final String version, final String location) {
+  private Response convertResponse(final ODataResponse odataResponse, final HttpStatusCodes s, final String version, final String location) {
     ResponseBuilder responseBuilder = Response.noContent().status(s.getStatusCode()).entity(odataResponse.getEntity());
 
     for (final String name : odataResponse.getHeaderNames()) {
@@ -665,8 +666,9 @@ public final class ODataSubLocator implements ODataLocator {
       responseBuilder = responseBuilder.header(ODataHttpHeaders.DATASERVICEVERSION, version);
     }
 
-    if (!odataResponse.containsHeader(HttpHeaders.LOCATION) && location != null)
+    if (!odataResponse.containsHeader(HttpHeaders.LOCATION) && location != null) {
       responseBuilder = responseBuilder.header(HttpHeaders.LOCATION, location);
+    }
 
     final String eTag = odataResponse.getETag();
     if (eTag != null) {

@@ -42,6 +42,7 @@ public class LanguageNegotiationTest extends AbstractBasicTest {
     return processor;
   }
 
+  @Override
   @Before
   public void before() {
     super.before();
@@ -93,7 +94,7 @@ public class LanguageNegotiationTest extends AbstractBasicTest {
 
   static class MyException extends ODataMessageException {
 
-    public MyException(MessageReference messageReference) {
+    public MyException(final MessageReference messageReference) {
       super(TEST);
     }
 

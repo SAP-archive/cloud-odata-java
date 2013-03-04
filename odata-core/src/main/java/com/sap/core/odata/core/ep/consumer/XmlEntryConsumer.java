@@ -297,7 +297,7 @@ public class XmlEntryConsumer {
    */
   private EntityPropertyInfo getValidatedPropertyInfo(final EntityInfoAggregator entitySet, final String name) throws EntityProviderException {
     EntityPropertyInfo info = entitySet.getPropertyInfo(name);
-    if(info == null) {
+    if (info == null) {
       throw new EntityProviderException(EntityProviderException.INVALID_PROPERTY.addContent(name));
     }
     return info;
