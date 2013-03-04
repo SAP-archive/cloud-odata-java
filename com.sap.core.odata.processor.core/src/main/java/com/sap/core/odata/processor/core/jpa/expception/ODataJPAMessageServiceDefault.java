@@ -19,8 +19,7 @@ public class ODataJPAMessageServiceDefault implements ODataJPAMessageService {
 
 	private static final String BUNDLE_NAME = "jpaprocessor_msg"; //$NON-NLS-1$
 	private static final Map<Locale, ODataJPAMessageService> LOCALE_2_MESSAGE_SERVICE = new HashMap<Locale, ODataJPAMessageService>();
-	private static final ResourceBundle defaultResourceBundle = ResourceBundle
-			.getBundle(BUNDLE_NAME);
+	private static final ResourceBundle defaultResourceBundle = ResourceBundle.getBundle(BUNDLE_NAME);
 	private final ResourceBundle resourceBundle;
 	private final Locale lanLocale;
 
@@ -59,30 +58,38 @@ public class ODataJPAMessageServiceDefault implements ODataJPAMessageService {
 	}
 
 	public static ODataJPAMessageService getInstance(Locale locale) {
-
+		
 		Locale acceptedLocale = null;
-		List<Locale> acceptedLanguages = ODataJPAContextImpl.getLocales();
-		if (acceptedLanguages != null) {
-			Iterator<Locale> itr = acceptedLanguages.iterator();
-
-			while (itr.hasNext()) {
-
-				Locale tempLocale = itr.next();
-				if (ResourceBundle.getBundle(BUNDLE_NAME, tempLocale)
-						.getLocale().equals(tempLocale)) {
-					acceptedLocale = tempLocale;
-					break;
-				}
+		if(ODataJPAContextImpl.getContextInThreadLocal()!=null) {
+		List<Locale> acceptedLanguages = ODataJPAContextImpl.getContextInThreadLocal().getAcceptableLanguages();			
+		if(acceptedLanguages!=null) {		
+		Iterator<Locale> itr = acceptedLanguages.iterator();
+		
+		while(itr.hasNext()) {
+			
+			Locale tempLocale = itr.next();
+			if(ResourceBundle.getBundle(BUNDLE_NAME, tempLocale).getLocale().equals(tempLocale)) {
+				acceptedLocale = tempLocale;
+				break;
 			}
-		} else
+		}
+		}
+		
+		else {		
 			acceptedLocale = Locale.ENGLISH;
-
+		}
+		
+		}
+				
+		else {		
+			acceptedLocale = Locale.ENGLISH;
+		}
+		
 		ODataJPAMessageService messagesInstance = LOCALE_2_MESSAGE_SERVICE
 				.get(acceptedLocale);
 		if (messagesInstance == null) {
-			ResourceBundle resourceBundle = ResourceBundle.getBundle(
-					BUNDLE_NAME, acceptedLocale);
-
+			ResourceBundle resourceBundle = ResourceBundle.getBundle(BUNDLE_NAME, acceptedLocale);
+			
 			if (resourceBundle != null) {
 				messagesInstance = new ODataJPAMessageServiceDefault(
 						resourceBundle, acceptedLocale);
@@ -98,5 +105,5 @@ public class ODataJPAMessageServiceDefault implements ODataJPAMessageService {
 
 	private String getMessage(String key) {
 		return resourceBundle.getString(key);
-	}
+	}	
 }
