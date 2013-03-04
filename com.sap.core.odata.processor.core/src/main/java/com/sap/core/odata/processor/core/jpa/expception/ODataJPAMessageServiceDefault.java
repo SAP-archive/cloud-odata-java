@@ -59,7 +59,7 @@ public class ODataJPAMessageServiceDefault implements ODataJPAMessageService {
 
 	public static ODataJPAMessageService getInstance(Locale locale) {
 		
-		Locale acceptedLocale = null;
+		Locale acceptedLocale = Locale.ENGLISH;
 		if(ODataJPAContextImpl.getContextInThreadLocal()!=null) {
 		List<Locale> acceptedLanguages = ODataJPAContextImpl.getContextInThreadLocal().getAcceptableLanguages();			
 		if(acceptedLanguages!=null) {		
