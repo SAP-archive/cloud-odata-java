@@ -661,10 +661,14 @@ public class ListsProcessor extends ODataSingleProcessor {
 
     final EdmEntitySet entitySet = uriInfo.getTargetEntitySet();
     final BinaryData binaryData = dataSource.readBinaryData(entitySet, data);
-    final String mimeType = binaryData.getMimeType() == null ?
-        HttpContentType.APPLICATION_OCTET_STREAM : binaryData.getMimeType();
-
-    return ODataResponse.fromResponse(EntityProvider.writeBinary(mimeType, binaryData.getData())).eTag(constructETag(entitySet, data)).build();
+    if(binaryData == null) {
+      throw new ODataNotFoundException(ODataNotFoundException.ENTITY);
+    } else {
+      final String mimeType = binaryData.getMimeType() == null ?
+          HttpContentType.APPLICATION_OCTET_STREAM : binaryData.getMimeType();
+      
+      return ODataResponse.fromResponse(EntityProvider.writeBinary(mimeType, binaryData.getData())).eTag(constructETag(entitySet, data)).build();
+    }
   }
 
   @Override
