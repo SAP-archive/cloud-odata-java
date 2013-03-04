@@ -324,6 +324,9 @@ public class ScenarioDataSource implements ListsDataSource {
 
     if (ENTITYSET_1_1.equals(entitySet.getName()) || ENTITYSET_1_4.equals(entitySet.getName())) {
       final Employee employee = (Employee) mediaLinkEntryData;
+      if(employee.getImage() == null) {
+        throw new ODataNotFoundException(null);
+      }
       return new BinaryData(employee.getImage(), employee.getImageType());
     } else if (ENTITYSET_2_1.equals(entitySet.getName())) {
       final Photo photo = (Photo) mediaLinkEntryData;
