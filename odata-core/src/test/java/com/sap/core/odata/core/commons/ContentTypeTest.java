@@ -292,9 +292,29 @@ public class ContentTypeTest extends BaseTest {
   }
 
   @Test
+  public void testEqualWithParametersIgnoreCase() {
+    ContentType t1 = ContentType.create("aaa/bbb;x=YY");
+    ContentType t2 = ContentType.create("aaa/bbb;x=yy");
+
+    assertEquals(t1, t2);
+    assertTrue(t1.equals(t2));
+    assertTrue(t2.equals(t1));
+  }
+
+  @Test
   public void testEqualWithUnsortedParameters() {
     ContentType t1 = ContentType.create("aaa/bbb;x=y;a=b");
     ContentType t2 = ContentType.create("aaa/bbb;a=b;x=y");
+
+    assertEquals(t1, t2);
+    assertTrue(t1.equals(t2));
+    assertTrue(t2.equals(t1));
+  }
+
+  @Test
+  public void testEqualWithUnsortedParametersIgnoreCase() {
+    ContentType t1 = ContentType.create("aaa/bbb;xx=y;a=BB");
+    ContentType t2 = ContentType.create("aaa/bbb;a=bb;XX=y");
 
     assertEquals(t1, t2);
     assertTrue(t1.equals(t2));

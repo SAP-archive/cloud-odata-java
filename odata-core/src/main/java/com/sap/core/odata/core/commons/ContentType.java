@@ -312,7 +312,10 @@ public class ContentType {
         Entry<String, String> e = entries.next();
         Entry<String, String> oe = otherEntries.next();
 
-        if (!e.equals(oe)) {
+        if(!areEqual(e.getKey(), oe.getKey())) {
+          return false;
+        }
+        if(!areEqual(e.getValue(), oe.getValue())) {
           return false;
         }
       }
@@ -324,6 +327,24 @@ public class ContentType {
     return true;
   }
 
+  /**
+   * Check whether both string are equal ignoring the case of the strings.
+   * 
+   * @param first
+   * @param second
+   * @return
+   */
+  private static boolean areEqual(String first, String second) {
+    if (first == null) {
+      if (second != null) {
+        return false;
+      }
+    } else if(!first.equalsIgnoreCase(second)) {
+      return false;
+    }
+    return true;
+  }
+  
   /**
    * Get {@link ContentType} as string as defined in RFC 2616 (http://www.ietf.org/rfc/rfc2616.txt - chapter 14.17: Content-Type)
    * 
