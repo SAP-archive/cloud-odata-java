@@ -12,7 +12,7 @@ public class JPAReferenceServiceFactory extends ODataJPAServiceFactory{
 	private static final String PUNIT_NAME = "salesorderprocessing";
 		
 	@Override
-	public ODataJPAContext initializeJPAContext() throws ODataJPARuntimeException  {
+	public ODataJPAContext initializeODataJPAContext() throws ODataJPARuntimeException  {
 		ODataJPAContext oDataJPAContext= this.getODataJPAContext();
 		
 		EntityManagerFactory emf = Persistence.createEntityManagerFactory(PUNIT_NAME);

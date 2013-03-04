@@ -27,7 +27,7 @@ import com.sap.core.odata.processor.api.jpa.factory.ODataJPAFactory;
  * </p>
  * 
  * <p>
- * <b>Mandatory:</b> Implement the abstract method initializeJPAContext. Fill
+ * <b>Mandatory:</b> Implement the abstract method initializeODataJPAContext. Fill
  * {@link com.sap.core.odata.processor.api.jpa.ODataJPAContext} with context
  * values.
  * </p>
@@ -70,7 +70,7 @@ public abstract class ODataJPAServiceFactory extends ODataServiceFactory {
 			throws ODataException {
 
 		// Initialize OData JPA Context
-		oDataJPAContext = initializeJPAContext();
+		oDataJPAContext = initializeODataJPAContext();
 
 		validatePreConditions();
 
@@ -112,7 +112,7 @@ public abstract class ODataJPAServiceFactory extends ODataServiceFactory {
 	 * 	
 	 * 	<blockquote>private static final String PUNIT_NAME = "punit";
 	 * <br>
-	 * public ODataJPAContext initializeJPAContext() { 
+	 * public ODataJPAContext initializeODataJPAContext() { 
 	 * <blockquote>ODataJPAContext oDataJPAContext = this.getODataJPAContext();
 	 * <br>
 	 * EntityManagerFactory emf = Persistence.createEntityManagerFactory(PUNIT_NAME);
@@ -128,7 +128,7 @@ public abstract class ODataJPAServiceFactory extends ODataServiceFactory {
 	 *         {@link com.sap.core.odata.processor.api.jpa.ODataJPAContext}
 	 * @throws ODataJPARuntimeException
 	 */
-	public abstract ODataJPAContext initializeJPAContext()
+	public abstract ODataJPAContext initializeODataJPAContext()
 			throws ODataJPARuntimeException;
 
 	/**
