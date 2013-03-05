@@ -258,7 +258,7 @@ public class JPAEdmNameBuilder {
 		if (propertyName == null)
 			propertyName = Character.toUpperCase(jpaAttributeName.charAt(0))
 					+ jpaAttributeName.substring(1);
-		else
+		// change for navigation property issue
 			complexProperty.setMapping(((Mapping) new JPAEdmMappingImpl())
 					.setInternalName(jpaAttributeName));
 
