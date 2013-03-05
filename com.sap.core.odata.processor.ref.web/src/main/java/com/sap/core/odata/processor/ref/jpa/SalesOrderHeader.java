@@ -39,7 +39,7 @@ public class SalesOrderHeader {
 	@Column(name = "BUYER_ID")
 	private int buyerId;
 
-	@Column(name = "BUYER_NAME")
+	@Column(name = "BUYER_NAME",length = 255)
 	private String buyerName;
 
 	@Embedded
@@ -51,10 +51,10 @@ public class SalesOrderHeader {
 	@Column(name = "DELIVERY_STATUS")
 	private boolean deliveryStatus;
 	
-	@Transient
+	@Column(precision = 5)
 	private double grossAmount;
 	
-	@Transient
+	@Column(precision = 8)
 	private double netAmount;
 	
 	@OneToMany(mappedBy = "salesOrderHeader", cascade = CascadeType.ALL)
