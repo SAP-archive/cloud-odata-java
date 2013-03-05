@@ -29,6 +29,7 @@ import com.sap.core.odata.core.ep.aggregator.EntityPropertyInfo;
 import com.sap.core.odata.core.ep.entry.EntryMetadataImpl;
 import com.sap.core.odata.core.ep.entry.MediaMetadataImpl;
 import com.sap.core.odata.core.ep.entry.ODataEntryImpl;
+import com.sap.core.odata.core.ep.util.FormatXml;
 
 /**
  * Atom/XML format reader/consumer for entries.
@@ -73,6 +74,8 @@ public class XmlEntryConsumer {
     }
   }
 
+  private String currentHandledStartTagName = null;
+  
   /**
    * 
    * @param reader
@@ -83,6 +86,8 @@ public class XmlEntryConsumer {
    * @throws EdmException
    */
   private void handleStartedTag(final XMLStreamReader reader, final String tagName, final EntityInfoAggregator eia) throws EntityProviderException, XMLStreamException, EdmException {
+    currentHandledStartTagName = tagName;
+
     if (ATOM_ID.equals(tagName)) {
       readId(reader);
     } else if (ATOM_ENTRY.equals(tagName)) {
@@ -245,6 +250,13 @@ public class XmlEntryConsumer {
     // validate namespace
     checkAllMandatoryNamespacesAvailable();
     checkNamespace(reader.getName(), Edm.NAMESPACE_M_2007_08);
+    if(entitySet.isEntityTypeHasStream()) {
+      // external properties
+      checkCurrentHandledStartTag(FormatXml.M_PROPERTIES);
+    } else {
+      // inline properties
+      checkCurrentHandledStartTag(ATOM_CONTENT);
+    }
     //
     int nextTagEventType = reader.next();
 
@@ -263,6 +275,21 @@ public class XmlEntryConsumer {
         }
       }
       nextTagEventType = reader.next();
+    }
+  }
+
+  /**
+   * Check if the {@link #currentHandledStartTagName} is the same as the <code>expectedTagName</code>.
+   * If tag name is not as expected or if {@link #currentHandledStartTagName} is not set an {@link EntityProviderException} is thrown.
+   * 
+   * @param expectedTagName expected name for {@link #currentHandledStartTagName}
+   * @throws EntityProviderException if tag name is not as expected or if {@link #currentHandledStartTagName} is <code>NULL</code>.
+   */
+  private void checkCurrentHandledStartTag(String expectedTagName) throws EntityProviderException {
+    if(currentHandledStartTagName == null) {
+      throw new EntityProviderException(EntityProviderException.INVALID_STATE.addContent("No current handled start tag name set."));
+    } else if(!currentHandledStartTagName.equals(expectedTagName)) {
+      throw new EntityProviderException(EntityProviderException.INVALID_PARENT_TAG.addContent(expectedTagName).addContent(currentHandledStartTagName));
     }
   }
 
