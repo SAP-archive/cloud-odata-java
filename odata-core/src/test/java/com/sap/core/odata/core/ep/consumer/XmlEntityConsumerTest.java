@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.TimeZone;
 
+import org.junit.Assert;
 import org.junit.Test;
 
 import com.sap.core.odata.api.edm.Edm;
@@ -31,7 +32,8 @@ import com.sap.core.odata.testutil.mock.MockFacade;
  */
 public class XmlEntityConsumerTest extends BaseTest {
 
-  public static final String EMPLOYEE_1_XML = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
+  public static final String EMPLOYEE_1_XML = 
+      "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
       "<entry xmlns=\"http://www.w3.org/2005/Atom\" xmlns:m=\"http://schemas.microsoft.com/ado/2007/08/dataservices/metadata\" xmlns:d=\"http://schemas.microsoft.com/ado/2007/08/dataservices\" xml:base=\"http://localhost:19000/\"  m:etag=\"W/&quot;1&quot;\">" +
       "  <id>http://localhost:19000/Employees('1')</id>" +
       "  <title type=\"text\">Walter Winter</title>" +
@@ -62,6 +64,7 @@ public class XmlEntityConsumerTest extends BaseTest {
       "  </m:properties>" +
       "</entry>";
 
+
   private static final String ROOM_1_XML = 
       "<?xml version='1.0' encoding='UTF-8'?>" +
       "<entry xmlns=\"http://www.w3.org/2005/Atom\" xmlns:m=\"http://schemas.microsoft.com/ado/2007/08/dataservices/metadata\" xmlns:d=\"http://schemas.microsoft.com/ado/2007/08/dataservices\" xml:base=\"http://localhost:19000/test/\" m:etag=\"W/&quot;1&quot;\">" +
@@ -78,6 +81,7 @@ public class XmlEntityConsumerTest extends BaseTest {
       "    </m:properties>" +
       "  </content>" +
       "</entry>";
+
 
   private static final String PHOTO_XML = "<?xml version=\"1.0\" encoding=\"utf-8\"?>" +
       "<entry m:etag=\"W/&quot;1&quot;\" xml:base=\"http://localhost:19000/test\" " +
@@ -101,6 +105,56 @@ public class XmlEntityConsumerTest extends BaseTest {
       "</m:properties>" +
       "</entry>";
 
+  /**
+   * OData specification v2: 2.2.6.2.2 Entity Type (as an Atom Entry Element)
+   * 
+   * @throws Exception
+   */
+  @Test(expected=EntityProviderException.class)
+  public void validationOfWrongPropertiesTagPositionForNoneMediaLinkEntry() throws Exception {
+    String roomWithValidNamespaces = 
+        "<?xml version='1.0' encoding='UTF-8'?>" +
+        "<entry xmlns=\"http://www.w3.org/2005/Atom\" xmlns:m=\"http://schemas.microsoft.com/ado/2007/08/dataservices/metadata\" xmlns:d=\"http://schemas.microsoft.com/ado/2007/08/dataservices\" xml:base=\"http://localhost:19000/test/\" m:etag=\"W/&quot;1&quot;\">" +
+        "  <id>http://localhost:19000/test/Rooms('1')</id>" +
+        "  <title type=\"text\">Room 1</title>" +
+        "  <updated>2013-01-11T13:50:50.541+01:00</updated>" +
+        "  <content type=\"application/xml\" />" +
+        "  <m:properties>" +
+        "    <d:Id>1</d:Id>" +
+        "  </m:properties>" +
+        "</entry>";
+
+    EdmEntitySet entitySet = MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Rooms");
+    InputStream reqContent = createContentAsStream(roomWithValidNamespaces);
+    readAndExpectException(entitySet, reqContent, EntityProviderException.INVALID_PARENT_TAG.addContent("content").addContent("properties"));
+  }
+
+  /**
+   * OData specification v2: 2.2.6.2.2 Entity Type (as an Atom Entry Element)
+   * And RFC5023 [section 4.2]
+   * 
+   * @throws Exception
+   */
+  @Test(expected=EntityProviderException.class)
+  public void validationOfWrongPropertiesTagPositionForMediaLinkEntry() throws Exception {
+    String roomWithValidNamespaces = 
+        "<?xml version='1.0' encoding='UTF-8'?>" +
+        "<entry xmlns=\"http://www.w3.org/2005/Atom\" xmlns:m=\"http://schemas.microsoft.com/ado/2007/08/dataservices/metadata\" xmlns:d=\"http://schemas.microsoft.com/ado/2007/08/dataservices\" xml:base=\"http://localhost:19000/test/\" m:etag=\"W/&quot;1&quot;\">" +
+        "  <id>http://localhost:19000/test/Employees('1')</id>" +
+        "  <title type=\"text\">Walter Winter</title>" +
+        "  <updated>2013-01-11T13:50:50.541+01:00</updated>" +
+        "  <content type=\"application/xml\">" +
+        "    <m:properties>" +
+        "      <d:EmployeeId>1</d:EmployeeId>" +
+        "    </m:properties>" +
+        "  </content>" +
+        "</entry>";
+
+    EdmEntitySet entitySet = MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Employees");
+    InputStream reqContent = createContentAsStream(roomWithValidNamespaces);
+    readAndExpectException(entitySet, reqContent, EntityProviderException.INVALID_PARENT_TAG.addContent("properties").addContent("content"));
+  }
+
   @Test
   public void validationOfNamespacesSuccess() throws Exception {
     String roomWithValidNamespaces = 
@@ -118,7 +172,9 @@ public class XmlEntityConsumerTest extends BaseTest {
 
     EdmEntitySet entitySet = MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Rooms");
     InputStream reqContent = createContentAsStream(roomWithValidNamespaces);
-    readAndExpectException(entitySet, reqContent, EntityProviderException.INVALID_NAMESPACE);
+    XmlEntityConsumer xec = new XmlEntityConsumer();
+    ODataEntry result = xec.readEntry(entitySet, reqContent, true);
+    assertNotNull(result);
   }
   
   @Test(expected=EntityProviderException.class)
@@ -189,6 +245,7 @@ public class XmlEntityConsumerTest extends BaseTest {
       XmlEntityConsumer xec = new XmlEntityConsumer();
       ODataEntry result = xec.readEntry(entitySet, reqContent, true);
       assertNotNull(result);
+      Assert.fail("Expected exception with MessageReference '" + messageReference.getKey() + "' was not thrown.");
     } catch(ODataMessageException e) {
       assertEquals(messageReference.getKey(), e.getMessageReference().getKey());
       assertEquals(messageReference.getContent(), e.getMessageReference().getContent());

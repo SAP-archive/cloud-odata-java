@@ -169,7 +169,10 @@ class EdmMock {
     when(photoEntityType.getPropertyNames()).thenReturn(Arrays.asList(
         "Id", "Name", "Type", "Image", "BinaryData", "Содержание", "CustomProperty"));
     when(photoEntityType.getKeyPropertyNames()).thenReturn(Arrays.asList("Id", "Type"));
-
+    when(photoEntityType.hasStream()).thenReturn(true);
+    EdmMapping photoEntityTypeMapping = Mockito.mock(EdmMapping.class);
+    when(photoEntityTypeMapping.getMimeType()).thenReturn("image/jpeg");
+    when(photoEntityType.getMapping()).thenReturn(photoEntityTypeMapping);
     final EdmProperty photoIdProperty = createProperty("Id", EdmSimpleTypeKind.Int32, photoEntityType);
     final EdmFacets photoIdFacet = mock(EdmFacets.class);
     when(photoIdFacet.getConcurrencyMode()).thenReturn(EdmConcurrencyMode.Fixed);
