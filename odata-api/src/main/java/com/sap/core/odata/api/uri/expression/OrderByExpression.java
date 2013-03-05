@@ -2,11 +2,9 @@ package com.sap.core.odata.api.uri.expression;
 
 import java.util.List;
 
-import com.sap.core.odata.api.uri.UriParser;
-
 /**
  * Represents a $orderby expression in the expression tree returned by
- * {@link UriParser#parseOrderByString(com.sap.core.odata.api.edm.EdmEntityType, String) }
+ * {@link com.sap.core.odata.api.uri.UriParser#parseOrderByString(com.sap.core.odata.api.edm.EdmEntityType, String) }
  * Used to define the <b>root</b> expression node in an $filter expression tree.
  * 
  * @author SAP AG

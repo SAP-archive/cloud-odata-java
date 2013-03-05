@@ -3,11 +3,10 @@ package com.sap.core.odata.api.ep;
 import java.net.URI;
 
 import com.sap.core.odata.api.commons.InlineCount;
-import com.sap.core.odata.api.ep.entry.ODataEntry;
 
 /**
  * {@link EntityProviderProperties} contains all additional properties which are necessary to <b>write (serialize)</b> an
- * {@link ODataEntry} into an specific format (e.g. <code>XML</code> or <code>JSON</code> or ...).
+ * {@link com.sap.core.odata.api.ep.entry.ODataEntry} into an specific format (e.g. <code>XML</code> or <code>JSON</code> or ...).
  */
 public class EntityProviderProperties {
 

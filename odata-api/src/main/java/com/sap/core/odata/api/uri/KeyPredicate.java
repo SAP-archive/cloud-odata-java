@@ -1,7 +1,5 @@
 package com.sap.core.odata.api.uri;
 
-import com.sap.core.odata.api.edm.EdmLiteral;
-import com.sap.core.odata.api.edm.EdmLiteralKind;
 import com.sap.core.odata.api.edm.EdmProperty;
 
 /**
@@ -13,10 +11,10 @@ public interface KeyPredicate {
 
   /**
    * <p>Gets the literal String in default representation.</p>
-   * <p>The description for {@link EdmLiteral} has some motivation for using
+   * <p>The description for {@link com.sap.core.odata.api.edm.EdmLiteral} has some motivation for using
    * this representation.</p> 
    * @return String literal in default (<em>not</em> URI) representation
-   * @see EdmLiteralKind
+   * @see com.sap.core.odata.api.edm.EdmLiteralKind
    */
   public String getLiteral();
 
