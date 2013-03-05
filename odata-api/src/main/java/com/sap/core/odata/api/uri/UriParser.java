@@ -10,10 +10,8 @@ import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.api.exception.ODataMessageException;
 import com.sap.core.odata.api.rt.RuntimeDelegate;
 import com.sap.core.odata.api.uri.expression.ExpressionParserException;
-import com.sap.core.odata.api.uri.expression.ExpressionVisitor;
 import com.sap.core.odata.api.uri.expression.FilterExpression;
 import com.sap.core.odata.api.uri.expression.OrderByExpression;
-import com.sap.core.odata.api.uri.expression.Visitable;
 
 /**
  * Wrapper for UriParser functionality.
@@ -72,7 +70,7 @@ public abstract class UriParser {
    * @param edmType    EDM type of the OData entity/complex type/... addressed by the URL
    * @param expression $filter expression string to be parsed
    * @return           expression tree which can be traversed with help of the interfaces
-   *                   {@link ExpressionVisitor} and {@link Visitable}
+   *                   {@link com.sap.core.odata.api.uri.expression.ExpressionVisitor} and {@link com.sap.core.odata.api.uri.expression.Visitable}
    * @throws ExpressionParserException thrown due to errors while parsing the $filter expression string
    * @throws ODataMessageException     for extensibility
    */
@@ -107,7 +105,7 @@ public abstract class UriParser {
    * @param edmType    EDM type of the OData entity/complex type/... addressed by the URL
    * @param expression $filter expression string to be parsed
    * @return           expression tree which can be traversed with help of the interfaces
-   *                   {@link ExpressionVisitor} and {@link Visitable}
+   *                   {@link com.sap.core.odata.api.uri.expression.ExpressionVisitor} and {@link com.sap.core.odata.api.uri.expression.Visitable}
    * @throws ExpressionParserException thrown due to errors while parsing the $filter expression string
    * @throws ODataMessageException     for extensibility
    */
@@ -119,7 +117,7 @@ public abstract class UriParser {
    * @param edmType    EDM type of the OData entity/complex type/... addressed by the URL
    * @param expression $orderby expression string to be parsed
    * @return           expression tree which can be traversed with help of the interfaces
-   *                   {@link ExpressionVisitor} and {@link Visitable}
+   *                   {@link com.sap.core.odata.api.uri.expression.ExpressionVisitor} and {@link com.sap.core.odata.api.uri.expression.Visitable}
    * @throws ExpressionParserException thrown due to errors while parsing the $orderby expression string
    * @throws ODataMessageException     used for extensibility
    */
@@ -132,7 +130,7 @@ public abstract class UriParser {
    * @param edmType    EDM type of the OData entity/complex type/... addressed by the URL
    * @param expression $orderby expression string to be parsed
    * @return           expression tree which can be traversed with help of the interfaces
-   *                   {@link ExpressionVisitor} and {@link Visitable}
+   *                   {@link com.sap.core.odata.api.uri.expression.ExpressionVisitor} and {@link com.sap.core.odata.api.uri.expression.Visitable}
    * @throws ExpressionParserException thrown due to errors while parsing the $orderby expression string
    * @throws ODataMessageException     used for extensibility
    */

@@ -1,12 +1,11 @@
 package com.sap.core.odata.api.uri.expression;
 
 import com.sap.core.odata.api.edm.EdmType;
-import com.sap.core.odata.api.uri.UriParser;
 
 /**
  * Parent class of all classes used to build the expression tree returned by 
- * <li>{@link UriParser#parseFilterString(com.sap.core.odata.api.edm.EdmEntityType, String)}</li>
- * <li>{@link UriParser#parseOrderByString(com.sap.core.odata.api.edm.EdmEntityType, String)}</li>
+ * <li>{@link com.sap.core.odata.api.uri.UriParser#parseFilterString(com.sap.core.odata.api.edm.EdmEntityType, String)}</li>
+ * <li>{@link com.sap.core.odata.api.uri.UriParser#parseOrderByString(com.sap.core.odata.api.edm.EdmEntityType, String)}</li>
  * <br>
  * <br>
  * <p>This interface defines the default methods for all expression tree nodes 

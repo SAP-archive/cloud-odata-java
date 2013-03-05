@@ -1,12 +1,11 @@
 package com.sap.core.odata.api.uri.expression;
 
 import com.sap.core.odata.api.edm.EdmTyped;
-import com.sap.core.odata.api.uri.UriParser;
 
 /**
  * Represents a property expression in the expression tree returned by the methods:
- * <li>{@link UriParser#parseFilterString(com.sap.core.odata.api.edm.EdmEntityType, String)}</li>
- * <li>{@link UriParser#parseOrderByString(com.sap.core.odata.api.edm.EdmEntityType, String)}</li>
+ * <li>{@link com.sap.core.odata.api.uri.UriParser#parseFilterString(com.sap.core.odata.api.edm.EdmEntityType, String)}</li>
+ * <li>{@link com.sap.core.odata.api.uri.UriParser#parseOrderByString(com.sap.core.odata.api.edm.EdmEntityType, String)}</li>
  * <br>
  * <br>
  * <p>A property expression node is inserted in the expression tree for any property.
