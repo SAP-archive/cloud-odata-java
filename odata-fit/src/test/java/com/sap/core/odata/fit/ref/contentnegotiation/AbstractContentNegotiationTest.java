@@ -151,6 +151,8 @@ public abstract class AbstractContentNegotiationTest extends AbstractFitTest {
    */
   protected static class FitTestSet {
 
+    private static final int DEFAULT_WAIT_BETWEEN_TESTCALLS_IN_MS = 25;
+
     private final Set<FitTest> testParameters = new HashSet<AbstractContentNegotiationTest.FitTest>();
 
     private final UriType uriType;
@@ -222,7 +224,19 @@ public abstract class AbstractContentNegotiationTest extends AbstractFitTest {
       testParameters.addAll(tp);
     }
 
+    /**
+     * Execute all {@link FitTest}s with a default wait time between the calls (of {@value #DEFAULT_WAIT_BETWEEN_TESTCALLS_IN_MS} ms).
+     * 
+     * For more information see  @see #execute(URI, long)
+     * 
+     * @param serviceEndpoint
+     * @throws Exception
+     */
     public void execute(final URI serviceEndpoint) throws Exception {
+      execute(serviceEndpoint, DEFAULT_WAIT_BETWEEN_TESTCALLS_IN_MS);
+    }
+    
+    public void execute(final URI serviceEndpoint, long sleepTimeInMs) throws Exception {
       Map<FitTest, AssertionError> test2Failure = new HashMap<AbstractContentNegotiationTest.FitTest, AssertionError>();
       List<FitTest> successTests = new ArrayList<AbstractContentNegotiationTest.FitTest>();
 
@@ -232,6 +246,10 @@ public abstract class AbstractContentNegotiationTest extends AbstractFitTest {
           successTests.add(testParam);
         } catch (AssertionError e) {
           test2Failure.put(testParam, e);
+        } finally {
+          if(sleepTimeInMs > 0) {
+            TimeUnit.MILLISECONDS.sleep(sleepTimeInMs);
+          }
         }
       }
 
@@ -436,12 +454,10 @@ public abstract class AbstractContentNegotiationTest extends AbstractFitTest {
         }
         LOG.trace("Test passed [" + toString() + "]");
       } finally {
-        //        TimeUnit.MILLISECONDS.sleep(10);
         if (request != null) {
           request.releaseConnection();
           LOG.debug("Released connection [" + requestLine + "]");
         }
-        TimeUnit.MILLISECONDS.sleep(10);
       }
     }
 
