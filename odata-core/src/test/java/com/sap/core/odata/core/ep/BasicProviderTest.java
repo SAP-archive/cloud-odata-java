@@ -19,6 +19,7 @@ import org.junit.Test;
 import com.sap.core.odata.api.edm.EdmProperty;
 import com.sap.core.odata.api.edm.EdmTyped;
 import com.sap.core.odata.api.edm.provider.EdmProvider;
+import com.sap.core.odata.api.ep.EntityProviderException;
 import com.sap.core.odata.api.processor.ODataResponse;
 import com.sap.core.odata.core.commons.ContentType;
 import com.sap.core.odata.testutil.helper.StringHelper;
@@ -144,16 +145,33 @@ public class BasicProviderTest extends AbstractProviderTest {
   public void readPropertyValue() throws Exception {
     final EdmProperty property = (EdmProperty) MockFacade.getMockEdm().getEntityType("RefScenario", "Employee").getProperty("Age");
 
-    final Integer age = (Integer) provider.readPropertyValue(property, new ByteArrayInputStream("42".getBytes("UTF-8")));
+    final Integer age = (Integer) provider.readPropertyValue(property, new ByteArrayInputStream("42".getBytes("UTF-8")), null);
     assertEquals(Integer.valueOf(42), age);
   }
 
+  @Test
+  public void readPropertyValueWithMapping() throws Exception {
+    final EdmProperty property = (EdmProperty) MockFacade.getMockEdm().getEntityType("RefScenario", "Employee").getProperty("Age");
+
+    final Long age = (Long) provider.readPropertyValue(property, new ByteArrayInputStream("42".getBytes("UTF-8")), Long.class);
+    assertEquals(Long.valueOf(42), age);
+  }
+
+  @Test(expected=EntityProviderException.class)
+  public void readPropertyValueWithInvalidMapping() throws Exception {
+    final EdmProperty property = (EdmProperty) MockFacade.getMockEdm().getEntityType("RefScenario", "Employee").getProperty("Age");
+
+    final Float age = (Float) provider.readPropertyValue(property, new ByteArrayInputStream("42".getBytes("UTF-8")), Float.class);
+    assertEquals(Float.valueOf(42), age);
+  }
+
+  
   @Test
   public void readPropertyBinaryValue() throws Exception {
     final byte[] bytes = new byte[] { 1, 2, 3, 4, -128 };
     final EdmProperty property = (EdmProperty) MockFacade.getMockEdm().getEntityType("RefScenario2", "Photo").getProperty("Image");
 
-    assertTrue(Arrays.equals(bytes, (byte[]) provider.readPropertyValue(property, new ByteArrayInputStream(bytes))));
+    assertTrue(Arrays.equals(bytes, (byte[]) provider.readPropertyValue(property, new ByteArrayInputStream(bytes), null)));
   }
 
   @Test

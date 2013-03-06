@@ -3,11 +3,14 @@ package com.sap.core.odata.core.ep.consumer;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.util.Calendar;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TimeZone;
@@ -24,13 +27,12 @@ import com.sap.core.odata.api.ep.entry.MediaMetadata;
 import com.sap.core.odata.api.ep.entry.ODataEntry;
 import com.sap.core.odata.api.exception.MessageReference;
 import com.sap.core.odata.api.exception.ODataMessageException;
-import com.sap.core.odata.testutil.fit.BaseTest;
 import com.sap.core.odata.testutil.mock.MockFacade;
 
 /**
  * @author SAP AG
  */
-public class XmlEntityConsumerTest extends BaseTest {
+public class XmlEntityConsumerTest extends AbstractConsumerTest {
 
   public static final String EMPLOYEE_1_XML =
       "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
@@ -448,16 +450,47 @@ public class XmlEntityConsumerTest extends BaseTest {
     assertEquals(2, city.size());
     assertEquals("69124", city.get("PostalCode"));
     assertEquals("Heidelberg", city.get("CityName"));
-    //    System.out.println(((Calendar)result.get("EntryDate")).getTimeInMillis());
-    //    //"1999-01-01T00:00:00"
-    //    Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("GMT"));
-    //    cal.set(1999, 0, 1, 0, 0, 0);
-    //    cal.setTimeInMillis(915148800000l);
-    //    System.out.println(cal);
-    //    System.out.println(result.get("EntryDate"));
     Calendar entryDate = (Calendar) properties.get("EntryDate");
     assertEquals(Long.valueOf(915148800000l), Long.valueOf(entryDate.getTimeInMillis()));
     assertEquals(TimeZone.getTimeZone("GMT"), entryDate.getTimeZone());
+    assertEquals("/SAP/PUBLIC/BC/NWDEMO_MODEL/IMAGES/male_1_WinterW.jpg", properties.get("ImageUrl"));
+  }
+
+  @SuppressWarnings("unchecked")
+  @Test
+  public void testReadEntryWithMergeAndMappings() throws Exception {
+    // prepare
+    EdmEntitySet entitySet = MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Employees");
+    String content = EMPLOYEE_1_XML.replace("<d:Age>52</d:Age>", "");
+    InputStream contentBody = createContentAsStream(content);
+
+    // execute
+    XmlEntityConsumer xec = new XmlEntityConsumer();
+    ODataEntry result = xec.readEntry(entitySet, contentBody, true, 
+        createTypeMappings("Age", Long.class, // test unused type mapping 
+                            "EntryDate", Date.class));
+
+    // verify
+    Map<String, Object> properties = result.getProperties();
+    assertEquals(8, properties.size());
+
+    // removed property
+    assertNull(properties.get("Age"));
+
+    // available properties
+    assertEquals("1", properties.get("EmployeeId"));
+    assertEquals("Walter Winter", properties.get("EmployeeName"));
+    assertEquals("1", properties.get("ManagerId"));
+    assertEquals("1", properties.get("RoomId"));
+    assertEquals("1", properties.get("TeamId"));
+    Map<String, Object> location = (Map<String, Object>) properties.get("Location");
+    assertEquals(2, location.size());
+    assertEquals("Germany", location.get("Country"));
+    Map<String, Object> city = (Map<String, Object>) location.get("City");
+    assertEquals(2, city.size());
+    assertEquals("69124", city.get("PostalCode"));
+    assertEquals("Heidelberg", city.get("CityName"));
+    assertEquals(new Date(915148800000l), properties.get("EntryDate"));
     assertEquals("/SAP/PUBLIC/BC/NWDEMO_MODEL/IMAGES/male_1_WinterW.jpg", properties.get("ImageUrl"));
   }
 
@@ -497,6 +530,137 @@ public class XmlEntityConsumerTest extends BaseTest {
     Calendar entryDate = (Calendar) properties.get("EntryDate");
     assertEquals(Long.valueOf(915148800000l), Long.valueOf(entryDate.getTimeInMillis()));
     assertEquals(TimeZone.getTimeZone("GMT"), entryDate.getTimeZone());
+    assertEquals("/SAP/PUBLIC/BC/NWDEMO_MODEL/IMAGES/male_1_WinterW.jpg", properties.get("ImageUrl"));
+  }
+
+  @SuppressWarnings("unchecked")
+  @Test
+  public void testReadEntryRequestNullMapping() throws Exception {
+    XmlEntityConsumer xec = new XmlEntityConsumer();
+
+    EdmEntitySet entitySet = MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Employees");
+    InputStream content = createContentAsStream(EMPLOYEE_1_XML);
+    ODataEntry result = xec.readEntry(entitySet, content, true, null);
+
+    // verify
+    Map<String, Object> properties = result.getProperties();
+    assertEquals(9, properties.size());
+
+    assertEquals("1", properties.get("EmployeeId"));
+    assertEquals("Walter Winter", properties.get("EmployeeName"));
+    assertEquals("1", properties.get("ManagerId"));
+    assertEquals("1", properties.get("RoomId"));
+    assertEquals("1", properties.get("TeamId"));
+    Map<String, Object> location = (Map<String, Object>) properties.get("Location");
+    assertEquals(2, location.size());
+    assertEquals("Germany", location.get("Country"));
+    Map<String, Object> city = (Map<String, Object>) location.get("City");
+    assertEquals(2, city.size());
+    assertEquals("69124", city.get("PostalCode"));
+    assertEquals("Heidelberg", city.get("CityName"));
+    assertEquals(Integer.valueOf(52), properties.get("Age"));
+    Calendar entryDate = (Calendar) properties.get("EntryDate");
+    assertEquals(Long.valueOf(915148800000l), Long.valueOf(entryDate.getTimeInMillis()));
+    assertEquals(TimeZone.getTimeZone("GMT"), entryDate.getTimeZone());
+    assertEquals("/SAP/PUBLIC/BC/NWDEMO_MODEL/IMAGES/male_1_WinterW.jpg", properties.get("ImageUrl"));
+  }
+
+  @SuppressWarnings("unchecked")
+  @Test
+  public void testReadEntryRequestEmptyMapping() throws Exception {
+    XmlEntityConsumer xec = new XmlEntityConsumer();
+
+    EdmEntitySet entitySet = MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Employees");
+    InputStream content = createContentAsStream(EMPLOYEE_1_XML);
+    ODataEntry result = xec.readEntry(entitySet, content, true, new HashMap<String, Class<?>>());
+
+    // verify
+    Map<String, Object> properties = result.getProperties();
+    assertEquals(9, properties.size());
+
+    assertEquals("1", properties.get("EmployeeId"));
+    assertEquals("Walter Winter", properties.get("EmployeeName"));
+    assertEquals("1", properties.get("ManagerId"));
+    assertEquals("1", properties.get("RoomId"));
+    assertEquals("1", properties.get("TeamId"));
+    Map<String, Object> location = (Map<String, Object>) properties.get("Location");
+    assertEquals(2, location.size());
+    assertEquals("Germany", location.get("Country"));
+    Map<String, Object> city = (Map<String, Object>) location.get("City");
+    assertEquals(2, city.size());
+    assertEquals("69124", city.get("PostalCode"));
+    assertEquals("Heidelberg", city.get("CityName"));
+    assertEquals(Integer.valueOf(52), properties.get("Age"));
+    Calendar entryDate = (Calendar) properties.get("EntryDate");
+    assertEquals(Long.valueOf(915148800000l), Long.valueOf(entryDate.getTimeInMillis()));
+    assertEquals(TimeZone.getTimeZone("GMT"), entryDate.getTimeZone());
+    assertEquals("/SAP/PUBLIC/BC/NWDEMO_MODEL/IMAGES/male_1_WinterW.jpg", properties.get("ImageUrl"));
+  }
+
+  @Test(expected=EntityProviderException.class)
+  public void testReadEntryRequestInvalidMapping() throws Exception {
+    XmlEntityConsumer xec = new XmlEntityConsumer();
+
+    EdmEntitySet entitySet = MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Employees");
+    InputStream content = createContentAsStream(EMPLOYEE_1_XML);
+    ODataEntry result = xec.readEntry(entitySet, content, true, createTypeMappings("EmployeeName", Integer.class));
+
+    // verify
+    Map<String, Object> properties = result.getProperties();
+    assertEquals(9, properties.size());
+  }
+
+  @Test
+  public void testReadEntryRequestObjectMapping() throws Exception {
+    XmlEntityConsumer xec = new XmlEntityConsumer();
+
+    EdmEntitySet entitySet = MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Employees");
+    InputStream content = createContentAsStream(EMPLOYEE_1_XML);
+    ODataEntry result = xec.readEntry(entitySet, content, true, createTypeMappings("EmployeeName", Object.class));
+
+    // verify
+    Map<String, Object> properties = result.getProperties();
+    assertEquals(9, properties.size());
+
+    assertEquals("1", properties.get("EmployeeId"));
+    Object o = properties.get("EmployeeName");
+    assertTrue(o instanceof String);
+    assertEquals("Walter Winter", properties.get("EmployeeName"));
+    assertEquals("1", properties.get("ManagerId"));
+    assertEquals("1", properties.get("RoomId"));
+    assertEquals("1", properties.get("TeamId"));
+  }
+
+  @SuppressWarnings("unchecked")
+  @Test
+  public void testReadEntryRequestWithMapping() throws Exception {
+    XmlEntityConsumer xec = new XmlEntityConsumer();
+
+    EdmEntitySet entitySet = MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Employees");
+    InputStream content = createContentAsStream(EMPLOYEE_1_XML);
+    ODataEntry result = xec.readEntry(entitySet, content, true, 
+        createTypeMappings("Age", Short.class, 
+                            "Heidelberg", String.class, 
+                            "EntryDate", Long.class));
+
+    // verify
+    Map<String, Object> properties = result.getProperties();
+    assertEquals(9, properties.size());
+
+    assertEquals("1", properties.get("EmployeeId"));
+    assertEquals("Walter Winter", properties.get("EmployeeName"));
+    assertEquals("1", properties.get("ManagerId"));
+    assertEquals("1", properties.get("RoomId"));
+    assertEquals("1", properties.get("TeamId"));
+    Map<String, Object> location = (Map<String, Object>) properties.get("Location");
+    assertEquals(2, location.size());
+    assertEquals("Germany", location.get("Country"));
+    Map<String, Object> city = (Map<String, Object>) location.get("City");
+    assertEquals(2, city.size());
+    assertEquals("69124", city.get("PostalCode"));
+    assertEquals("Heidelberg", city.get("CityName"));
+    assertEquals(Short.valueOf("52"), properties.get("Age"));
+    assertEquals(Long.valueOf(915148800000l), properties.get("EntryDate"));
     assertEquals("/SAP/PUBLIC/BC/NWDEMO_MODEL/IMAGES/male_1_WinterW.jpg", properties.get("ImageUrl"));
   }
 
@@ -564,13 +728,38 @@ public class XmlEntityConsumerTest extends BaseTest {
     Map<String, Object> value = xec.readProperty(property, content, true);
 
     assertEquals(Integer.valueOf(67), value.get("Age"));
-
-    //    Object value = xec.readProperty(property, request);
-    //    assertEquals(Integer.valueOf(67), value);
+  }
+  
+  @Test
+  public void readStringPropertyValue() throws Exception {
+    XmlEntityConsumer xec = new XmlEntityConsumer();
+    
+    String xml = "<EmployeeName>Max Mustermann</EmployeeName>";
+    InputStream content = createContentAsStream(xml);
+    EdmEntitySet entitySet = MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Employees");
+    EdmProperty property = (EdmProperty) entitySet.getEntityType().getProperty("EmployeeName");
+    
+    Object result = xec.readPropertyValue(property, content);
+    
+    assertEquals("Max Mustermann", result);
   }
 
   @Test
-  public void readStringPropertyValue() throws Exception {
+  public void testReadIntegerPropertyAsLong() throws Exception {
+    XmlEntityConsumer xec = new XmlEntityConsumer();
+
+    EdmEntitySet entitySet = MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Employees");
+    EdmProperty property = (EdmProperty) entitySet.getEntityType().getProperty("Age");
+
+    String xml = "<Age>42</Age>";
+    InputStream content = createContentAsStream(xml);
+    Map<String, Object> value = xec.readProperty(property, content, true, createTypeMappings("Age", Long.class));
+
+    assertEquals(Long.valueOf(42), value.get("Age"));
+  }
+
+  @Test(expected=EntityProviderException.class)
+  public void readStringPropertyValueWithInvalidMapping() throws Exception {
     XmlEntityConsumer xec = new XmlEntityConsumer();
 
     String xml = "<EmployeeName>Max Mustermann</EmployeeName>";
@@ -578,10 +767,11 @@ public class XmlEntityConsumerTest extends BaseTest {
     EdmEntitySet entitySet = MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Employees");
     EdmProperty property = (EdmProperty) entitySet.getEntityType().getProperty("EmployeeName");
 
-    Object result = xec.readPropertyValue(property, content);
+    Object result = xec.readPropertyValue(property, content, Integer.class);
 
     assertEquals("Max Mustermann", result);
   }
+
 
   private InputStream createContentAsStream(final String xml) throws UnsupportedEncodingException {
     InputStream content = new ByteArrayInputStream(xml.getBytes("utf-8"));

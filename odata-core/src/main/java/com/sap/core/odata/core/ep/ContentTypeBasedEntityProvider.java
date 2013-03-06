@@ -8,6 +8,7 @@ import com.sap.core.odata.api.edm.Edm;
 import com.sap.core.odata.api.edm.EdmEntitySet;
 import com.sap.core.odata.api.edm.EdmFunctionImport;
 import com.sap.core.odata.api.edm.EdmProperty;
+import com.sap.core.odata.api.edm.EdmType;
 import com.sap.core.odata.api.ep.EntityProviderException;
 import com.sap.core.odata.api.ep.EntityProviderProperties;
 import com.sap.core.odata.api.ep.entry.ODataEntry;
@@ -20,11 +21,11 @@ import com.sap.core.odata.api.processor.ODataResponse;
  */
 public interface ContentTypeBasedEntityProvider {
 
-  ODataEntry readEntry(EdmEntitySet entitySet, InputStream content, boolean validate) throws EntityProviderException;
+  ODataEntry readEntry(EdmEntitySet entitySet, InputStream content, boolean validate, Map<String, Class<?>> typeMappings) throws EntityProviderException;
+
+  Map<String, Object> readProperty(EdmProperty edmProperty, InputStream content, boolean validate, Map<String, Class<?>> typeMappings) throws EntityProviderException;
 
   String readLink(EdmEntitySet entitySet, InputStream content) throws EntityProviderException;
-
-  Map<String, Object> readProperty(EdmProperty edmProperty, InputStream content, boolean validate) throws EntityProviderException;
 
   List<String> readLinks(EdmEntitySet entitySet, InputStream content) throws EntityProviderException;
 
