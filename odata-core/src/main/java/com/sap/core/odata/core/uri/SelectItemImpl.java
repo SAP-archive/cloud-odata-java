@@ -4,14 +4,14 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import com.sap.core.odata.api.edm.EdmTyped;
+import com.sap.core.odata.api.edm.EdmProperty;
 import com.sap.core.odata.api.uri.NavigationPropertySegment;
 import com.sap.core.odata.api.uri.SelectItem;
 
 public class SelectItemImpl implements SelectItem {
 
   private List<NavigationPropertySegment> navigationPropertySegments = Collections.emptyList();
-  private EdmTyped property;
+  private EdmProperty property;
   private boolean star;
 
   @Override
@@ -24,11 +24,11 @@ public class SelectItemImpl implements SelectItem {
   }
 
   @Override
-  public EdmTyped getProperty() {
+  public EdmProperty getProperty() {
     return property;
   }
 
-  public void setProperty(final EdmTyped property) {
+  public void setProperty(final EdmProperty property) {
     this.property = property;
   }
 

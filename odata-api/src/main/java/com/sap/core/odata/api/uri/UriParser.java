@@ -1,5 +1,6 @@
 package com.sap.core.odata.api.uri;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -19,6 +20,11 @@ import com.sap.core.odata.api.uri.expression.OrderByExpression;
  */
 public abstract class UriParser {
 
+  public static ExpandSelectTreeNode createExpandSelectTree(List<SelectItem> select, List<ArrayList<NavigationPropertySegment>> expand){
+    return RuntimeDelegate.getExpandSelectTreeCreator(select, expand).create();
+  }
+  
+  
   /**
    * Parses path segments and query parameters for the given EDM.
    * @param edm Entity Data Model

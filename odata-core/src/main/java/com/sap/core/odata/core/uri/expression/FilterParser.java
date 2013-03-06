@@ -2,9 +2,7 @@ package com.sap.core.odata.core.uri.expression;
 
 import com.sap.core.odata.api.exception.ODataMessageException;
 import com.sap.core.odata.api.uri.expression.ExpressionParserException;
-import com.sap.core.odata.api.uri.expression.ExpressionVisitor;
 import com.sap.core.odata.api.uri.expression.FilterExpression;
-import com.sap.core.odata.api.uri.expression.Visitable;
 
 /**
  * Interface which defines a method for parsing a $filter expression to allow different parser implementations
@@ -32,7 +30,7 @@ public interface FilterParser
    * @param expression
    *   The $filter expression string ( for example "city eq 'Sydney'" ) to be parsed
    * @return
-   *   Expression tree which can be traversed with help of the interfaces {@link ExpressionVisitor} and {@link Visitable}
+   *   Expression tree which can be traversed with help of the interfaces {@link com.sap.core.odata.api.uri.expression.ExpressionVisitor} and {@link com.sap.core.odata.api.uri.expression.Visitable}
    * @throws ExpressionParserException
    *   Exception thrown due to errors while parsing the $filter expression string 
    * @throws ODataMessageException

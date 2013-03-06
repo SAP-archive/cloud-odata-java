@@ -705,7 +705,7 @@ public class UriParserImpl extends UriParser {
         switch (property.getType().getKind()) {
         case SIMPLE:
         case COMPLEX:
-          selectItem.setProperty(property);
+          selectItem.setProperty((EdmProperty) property);
           exit = true;
           break;
 
