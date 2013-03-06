@@ -8,6 +8,7 @@ import com.sap.core.odata.api.edm.Edm;
 import com.sap.core.odata.api.edm.EdmEntitySet;
 import com.sap.core.odata.api.edm.EdmFunctionImport;
 import com.sap.core.odata.api.edm.EdmProperty;
+import com.sap.core.odata.api.edm.EdmType;
 import com.sap.core.odata.api.edm.provider.Schema;
 import com.sap.core.odata.api.ep.EntityProvider.EntityProviderInterface;
 import com.sap.core.odata.api.ep.EntityProviderException;
@@ -104,18 +105,18 @@ public class ProviderFacadeImpl implements EntityProviderInterface {
   }
 
   @Override
-  public ODataEntry readEntry(final String contentType, final EdmEntitySet entitySet, final InputStream content, final boolean validate) throws EntityProviderException {
-    return create(contentType).readEntry(entitySet, content, validate);
+  public ODataEntry readEntry(final String contentType, final EdmEntitySet entitySet, final InputStream content, final boolean validate, Map<String, Class<?>> typeMappings) throws EntityProviderException {
+    return create(contentType).readEntry(entitySet, content, validate, typeMappings);
   }
 
   @Override
-  public Map<String, Object> readProperty(final String contentType, final EdmProperty edmProperty, final InputStream content, final boolean validate) throws EntityProviderException {
-    return create(contentType).readProperty(edmProperty, content, validate);
+  public Map<String, Object> readProperty(final String contentType, final EdmProperty edmProperty, final InputStream content, final boolean validate, Map<String, Class<?>> typeMappings) throws EntityProviderException {
+    return create(contentType).readProperty(edmProperty, content, validate, typeMappings);
   }
 
   @Override
-  public Object readPropertyValue(final EdmProperty edmProperty, final InputStream content) throws EntityProviderException {
-    return create().readPropertyValue(edmProperty, content);
+  public Object readPropertyValue(final EdmProperty edmProperty, final InputStream content, Class<?> typeMapping) throws EntityProviderException {
+    return create().readPropertyValue(edmProperty, content, typeMapping);
   }
 
   @Override

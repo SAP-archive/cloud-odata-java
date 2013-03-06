@@ -36,13 +36,14 @@ import com.sap.core.odata.core.ep.util.FormatXml;
  */
 public class XmlEntryConsumer {
 
-  //  private static final String DEFAULT_NS_PREFIX = "";
-
   final Map<String, String> foundPrefix2NamespaceUri;
   final ODataEntryImpl readEntryResult;
   final Map<String, Object> properties;
   final MediaMetadataImpl mediaMetadata;
   final EntryMetadataImpl entryMetadata;
+  final Map<String, Class<?>> typeMappings;
+  
+  private String currentHandledStartTagName = null;
 
   public XmlEntryConsumer() {
     properties = new HashMap<String, Object>();
@@ -50,10 +51,19 @@ public class XmlEntryConsumer {
     entryMetadata = new EntryMetadataImpl();
     readEntryResult = new ODataEntryImpl(properties, mediaMetadata, entryMetadata);
     foundPrefix2NamespaceUri = new HashMap<String, String>();
+    typeMappings = new HashMap<String, Class<?>>();
   }
 
   public ODataEntry readEntry(final XMLStreamReader reader, final EntityInfoAggregator eia, final boolean merge) throws EntityProviderException {
+    return readEntry(reader, eia, merge, null);
+  }
+  
+  public ODataEntry readEntry(final XMLStreamReader reader, final EntityInfoAggregator eia, final boolean merge, Map<String, Class<?>> typeMappings) throws EntityProviderException {
     try {
+      if(typeMappings != null) {
+        this.typeMappings.putAll(typeMappings);
+      }
+      
       int eventType;
       while ((eventType = reader.next()) != XMLStreamConstants.END_DOCUMENT) {
         if (eventType == XMLStreamConstants.START_ELEMENT) {
@@ -73,8 +83,6 @@ public class XmlEntryConsumer {
       throw new EntityProviderException(EntityProviderException.COMMON, e);
     }
   }
-
-  private String currentHandledStartTagName = null;
 
   /**
    * 
@@ -120,7 +128,7 @@ public class XmlEntryConsumer {
 
           if (edmNamespaceURI.equals(xmlNamespaceUri) && edmPrefix.equals(xmlPrefix)) {
             String name = reader.getLocalName();
-            Object value = xpc.readStartedElement(reader, getValidatedPropertyInfo(eia, name));
+            Object value = xpc.readStartedElement(reader, getValidatedPropertyInfo(eia, name), typeMappings);
             properties.put(name, value);
           }
         }
@@ -270,7 +278,7 @@ public class XmlEntryConsumer {
       if (nextTagEventType == XMLStreamConstants.START_ELEMENT) {
         String name = getValidPropertyName(reader);
         EntityPropertyInfo property = getValidatedPropertyInfo(entitySet, name);
-        Object value = xpc.readStartedElement(reader, property);
+        Object value = xpc.readStartedElement(reader, property, typeMappings);
         properties.put(name, value);
       } else if (nextTagEventType == XMLStreamConstants.END_ELEMENT) {
         String name = reader.getLocalName();

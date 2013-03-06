@@ -88,10 +88,11 @@ public class BasicEntityProvider {
    * Reads an unformatted value of an EDM property as binary or as content type <code>text/plain</code>.
    * @param edmProperty the EDM property
    * @param content the content input stream
+   * @param typeMapping 
    * @return the value as the proper system data type
    * @throws EntityProviderException
    */
-  public Object readPropertyValue(final EdmProperty edmProperty, final InputStream content) throws EntityProviderException {
+  public Object readPropertyValue(final EdmProperty edmProperty, final InputStream content, Class<?> typeMapping) throws EntityProviderException {
     EdmSimpleType type;
     try {
       type = (EdmSimpleType) edmProperty.getType();
@@ -103,7 +104,11 @@ public class BasicEntityProvider {
       return readBinary(content);
     } else {
       try {
-        return type.valueOfString(readText(content), EdmLiteralKind.DEFAULT, edmProperty.getFacets(), type.getDefaultType());
+        if(typeMapping == null) {
+          return type.valueOfString(readText(content), EdmLiteralKind.DEFAULT, edmProperty.getFacets(), type.getDefaultType());
+        } else {
+          return type.valueOfString(readText(content), EdmLiteralKind.DEFAULT, edmProperty.getFacets(), typeMapping);
+        }
       } catch (EdmException e) {
         throw new EntityProviderException(EntityProviderException.COMMON, e);
       }

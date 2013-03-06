@@ -28,7 +28,7 @@ import com.sap.core.odata.api.edm.EdmTyped;
 import com.sap.core.odata.api.ep.EntityProviderException;
 
 /**
- * Aggregator to get easy and fast access to all for a serializer necessary {@link EdmEntitySet} informations.
+ * Aggregator to get easy and fast access to all for serialization and de-serialization necessary {@link EdmEntitySet} informations.
  * 
  * @author SAP AG
  */

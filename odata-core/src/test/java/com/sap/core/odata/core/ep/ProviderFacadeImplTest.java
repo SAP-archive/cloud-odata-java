@@ -57,7 +57,7 @@ public class ProviderFacadeImplTest {
     String contentType = ContentType.APPLICATION_ATOM_XML_ENTRY.toContentTypeString();
     EdmEntitySet entitySet = MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Employees");
     InputStream content = new ByteArrayInputStream(EMPLOYEE_1_XML.getBytes("utf-8"));
-    Object result = provider.readEntry(contentType, entitySet, content, true);
+    Object result = provider.readEntry(contentType, entitySet, content, true, null);
 
     assertTrue(result instanceof ODataEntry);
   }
