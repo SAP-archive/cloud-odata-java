@@ -8,7 +8,6 @@ import com.sap.core.odata.api.edm.Edm;
 import com.sap.core.odata.api.edm.EdmEntitySet;
 import com.sap.core.odata.api.edm.EdmFunctionImport;
 import com.sap.core.odata.api.edm.EdmProperty;
-import com.sap.core.odata.api.edm.EdmType;
 import com.sap.core.odata.api.edm.provider.Schema;
 import com.sap.core.odata.api.ep.EntityProvider.EntityProviderInterface;
 import com.sap.core.odata.api.ep.EntityProviderException;

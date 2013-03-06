@@ -2,6 +2,8 @@ package com.sap.core.odata.core.commons;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
@@ -43,6 +45,18 @@ public class ContentTypeTest extends BaseTest {
     //assertFalse(ContentType.isParseable("application/atom+xml; charset   =   UTF-8"));
     assertFalse(ContentType.isParseable(null));
   }
+
+  @Test
+  public void parseNotThrow() {
+    assertNotNull(ContentType.parse("application/xml"));
+    assertNotNull(ContentType.parse("text/plain"));
+    assertNotNull(ContentType.parse("application/atom+xml; charset=UTF-8"));
+    
+    assertNull(ContentType.parse("app/app/moreapp"));
+    //assertFalse(ContentType.isParseable("application/atom+xml; charset   =   UTF-8"));
+    assertNull(ContentType.parse(null));
+  }
+
   
   @Test
   public void creationFromHttpContentTypeAtomXmlEntry() {

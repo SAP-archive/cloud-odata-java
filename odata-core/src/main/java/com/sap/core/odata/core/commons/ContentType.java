@@ -14,7 +14,11 @@ import java.util.TreeMap;
 
 /**
  * Internally used {@link ContentType} for OData library.
+ * For more details on format and content of a {@link ContentType} see    
+ * <code>Media Type</code> format as defined in <code>RFC 2616 chapter 3.7</code>.
+ * 
  * Once created a {@link ContentType} is IMMUTABLE.
+ * 
  * @author SAP AG
  */
 public class ContentType {
@@ -139,10 +143,15 @@ public class ContentType {
   /**
    * Create a {@link ContentType} based on given input string (<code>format</code>).
    * 
-   * Supported format is <code>HTTP Accept HEADER</code> format as defined in <code>RFC 2616 chapter 14.1</code>
+   * Supported format is <code>Media Type</code> format as defined in <code>RFC 2616 chapter 3.7</code>.
+   * This format is used as
+   * <code>HTTP Accept HEADER</code> format as defined in <code>RFC 2616 chapter 14.1</code>
+   * and 
+   * <code>HTTP Content-Type HEADER</code> format as defined in <code>RFC 2616 chapter 14.17</code>
    * 
-   * @param format a string in format as defined in <code>RFC 2616 chapter 14.1</code>
+   * @param format a string in format as defined in <code>RFC 2616 section 3.7</code>
    * @return a new <code>ContentType</code> object
+   * @throws IllegalArgumentException if input string is not parseable
    */
   public static ContentType create(final String format) {
     if (format == null) {
@@ -168,6 +177,28 @@ public class ContentType {
     }
   }
 
+  /**
+   * Parse given input string (<code>format</code>) and return created {@link ContentType} if input was valid 
+   * or return <code>NULL</code> if input was not parseable.
+   * 
+   * For definition of the supported format see {@link #create(String)}
+   * 
+   * @param format a string in format as defined in <code>RFC 2616 section 3.7</code>
+   * @return a new <code>ContentType</code> object
+   */
+  public static ContentType parse(final String format) {
+    try {
+      return ContentType.create(format);
+    } catch(Exception e) {
+      return null;
+    }
+  }
+  
+  /**
+   * 
+   * @param subtype
+   * @return
+   */
   private static ODataFormat mapToODataFormat(final String subtype) {
     ODataFormat odataFormat = null;
     if (subtype.contains("atom")) {
