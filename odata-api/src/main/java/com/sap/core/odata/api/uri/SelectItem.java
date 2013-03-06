@@ -2,7 +2,7 @@ package com.sap.core.odata.api.uri;
 
 import java.util.List;
 
-import com.sap.core.odata.api.edm.EdmTyped;
+import com.sap.core.odata.api.edm.EdmProperty;
 
 /**
  * An item of a $select system query option.
@@ -19,13 +19,13 @@ public interface SelectItem {
 
   /**
    * Gets the EDM property.
-   * @return {@link EdmTyped} property of this select item
+   * @return {@link EdmProperty} property of this select item
    */
-  public EdmTyped getProperty();
+  public EdmProperty getProperty();
 
   /**
    * Gets the navigation-property segments for this select item.
-   * @return List of {@link NavigationPropertySegment} for this select item
+   * @return List of {@link NavigationPropertySegment} for this select item or Collection.EmptyList
    */
   public List<NavigationPropertySegment> getNavigationPropertySegments();
 

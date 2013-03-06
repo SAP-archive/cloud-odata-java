@@ -1,5 +1,8 @@
 package com.sap.core.odata.core.rt;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.sap.core.odata.api.ODataService;
 import com.sap.core.odata.api.edm.Edm;
 import com.sap.core.odata.api.edm.EdmSimpleType;
@@ -10,12 +13,16 @@ import com.sap.core.odata.api.ep.EntityProvider.EntityProviderInterface;
 import com.sap.core.odata.api.processor.ODataResponse.ODataResponseBuilder;
 import com.sap.core.odata.api.processor.ODataSingleProcessor;
 import com.sap.core.odata.api.rt.RuntimeDelegate.RuntimeDelegateInstance;
+import com.sap.core.odata.api.uri.ExpandSelectTreeCreator;
+import com.sap.core.odata.api.uri.NavigationPropertySegment;
+import com.sap.core.odata.api.uri.SelectItem;
 import com.sap.core.odata.api.uri.UriParser;
 import com.sap.core.odata.core.ODataResponseImpl;
 import com.sap.core.odata.core.edm.EdmSimpleTypeFacadeImpl;
 import com.sap.core.odata.core.edm.provider.EdmImplProv;
 import com.sap.core.odata.core.ep.ProviderFacadeImpl;
 import com.sap.core.odata.core.processor.ODataSingleProcessorService;
+import com.sap.core.odata.core.uri.ExpandSelectTreeCreatorImpl;
 import com.sap.core.odata.core.uri.UriParserImpl;
 
 /**
@@ -57,5 +64,10 @@ public class RuntimeDelegateImpl extends RuntimeDelegateInstance {
   @Override
   protected ODataService createODataSingleProcessorService(final EdmProvider provider, final ODataSingleProcessor processor) {
     return new ODataSingleProcessorService(provider, processor);
+  }
+
+  @Override
+  protected ExpandSelectTreeCreator getExpandSelectTreeCreator(List<SelectItem> select, List<ArrayList<NavigationPropertySegment>> expand) {
+    return new ExpandSelectTreeCreatorImpl(select, expand);
   }
 }

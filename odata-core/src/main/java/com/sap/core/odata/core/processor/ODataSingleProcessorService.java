@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.sap.core.odata.api.ODataService;
-import com.sap.core.odata.api.ODataServiceFactory;
 import com.sap.core.odata.api.ODataServiceVersion;
 import com.sap.core.odata.api.commons.HttpContentType;
 import com.sap.core.odata.api.edm.Edm;
@@ -32,7 +31,7 @@ import com.sap.core.odata.api.rt.RuntimeDelegate;
 /**
  * <p>An {@link ODataService} implementation that uses {@link ODataSingleProcessor}.</p>
  * <p>Usually custom services create an instance by their implementation of
- * {@link ODataServiceFactory} and populate it with their custom {@link EdmProvider}
+ * {@link com.sap.core.odata.api.ODataServiceFactory} and populate it with their custom {@link EdmProvider}
  * and custom {@link ODataSingleProcessor} implementations.</p>
  *
  * @author SAP AG

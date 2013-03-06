@@ -776,10 +776,12 @@ public class UriParserTest extends BaseTest {
     assertEquals(1, result.getSelect().size());
     assertEquals(1, result.getSelect().get(0).getNavigationPropertySegments().size());
     assertEquals("Managers", result.getSelect().get(0).getNavigationPropertySegments().get(0).getTargetEntitySet().getName());
+    assertNull(result.getSelect().get(0).getProperty());
 
     result = parse("Teams?$select=nt_Employees/ne_Manager/*");
     assertEquals(1, result.getSelect().size());
     assertEquals(2, result.getSelect().get(0).getNavigationPropertySegments().size());
+    assertNull(result.getSelect().get(0).getProperty());
     assertTrue(result.getSelect().get(0).isStar());
   }
 
