@@ -67,7 +67,7 @@ public class EntryXmlChangeTest extends AbstractRefXmlTest {
   }
 
   @Test
-  public void createMediaResource() throws Exception {
+  public void createMediaResourceUriType1() throws Exception {
     HttpResponse response = postUri("Employees()", "plain text", HttpContentType.TEXT_PLAIN, HttpStatusCodes.CREATED);
     checkMediaType(response, HttpContentType.APPLICATION_ATOM_XML_UTF8 + "; type=entry");
     assertEquals(getEndpoint() + "Employees('7')", response.getFirstHeader(HttpHeaders.LOCATION).getValue());
@@ -85,8 +85,20 @@ public class EntryXmlChangeTest extends AbstractRefXmlTest {
     response = callUri("Container2.Photos(Id=5,Type='application%2Foctet-stream')/$value");
     checkMediaType(response, HttpContentType.TEXT_PLAIN);
     assertEquals("dummy", getBody(response));
+  }
+  
+  @Test
+  public void createMediaResourceUriType6b() throws Exception {
 
-    postUri("Teams('1')/nt_Employees", "X", HttpContentType.TEXT_PLAIN, HttpStatusCodes.NOT_IMPLEMENTED);
+    //
+    HttpResponse response = postUri("Teams('1')/nt_Employees", "X", HttpContentType.TEXT_PLAIN, HttpStatusCodes.CREATED);
+    checkMediaType(response, HttpContentType.APPLICATION_ATOM_XML_UTF8 + "; type=entry");
+    assertEquals(getEndpoint() + "Employees('7')", response.getFirstHeader(HttpHeaders.LOCATION).getValue());
+    assertXpathEvaluatesTo("7", "/atom:entry/m:properties/d:EmployeeId", getBody(response));
+    //
+    response = callUri("Employees('7')/$value");
+    checkMediaType(response, HttpContentType.TEXT_PLAIN);
+    assertEquals("X", getBody(response));
   }
 
   @Test

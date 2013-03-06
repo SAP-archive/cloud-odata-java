@@ -470,7 +470,7 @@ public final class ODataSubLocator implements ODataLocator {
 
     queryParameters = convertToSinglevaluedMap(param.getUriInfo().getQueryParameters());
 
-    acceptHeaderContentTypes = convertMediaTypes(param.getHttpHeaders().getAcceptableMediaTypes());
+    acceptHeaderContentTypes = extractAcceptHeaders(param);
     requestContent = contentAsStream(extractRequestContent(param));
     requestContentTypeHeader = extractRequestContentType(param);
 
@@ -552,11 +552,17 @@ public final class ODataSubLocator implements ODataLocator {
     return inputStream;
   }
 
-  private List<ContentType> convertMediaTypes(final List<MediaType> acceptableMediaTypes) {
+  private List<ContentType> extractAcceptHeaders(final InitParameter param) throws ODataBadRequestException {
+    final List<MediaType> acceptableMediaTypes = param.getHttpHeaders().getAcceptableMediaTypes();
     final List<ContentType> mediaTypes = new ArrayList<ContentType>();
 
-    for (final MediaType x : acceptableMediaTypes) {
-      mediaTypes.add(ContentType.create(x.getType(), x.getSubtype(), x.getParameters()));
+    for (final MediaType mediaType : acceptableMediaTypes) {
+      try {
+        mediaTypes.add(ContentType.create(mediaType.toString()));
+      } catch (IllegalArgumentException e) {
+        throw new ODataBadRequestException(ODataBadRequestException.INVALID_HEADER.addContent("Accept")
+            .addContent(mediaType.toString()), e);
+      }
     }
 
     return mediaTypes;
