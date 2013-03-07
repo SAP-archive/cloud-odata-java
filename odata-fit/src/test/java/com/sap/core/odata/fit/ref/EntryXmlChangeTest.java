@@ -5,6 +5,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
 import org.apache.http.HttpResponse;
+import org.custommonkey.xmlunit.XMLAssert;
 import org.junit.Test;
 
 import com.sap.core.odata.api.commons.HttpContentType;
@@ -124,7 +125,7 @@ public class EntryXmlChangeTest extends AbstractRefXmlTest {
   }
 
   @Test
-  public void patch() throws Exception {
+  public void patchAndMerge() throws Exception {
     String requestBody = "<entry xmlns=\"" + Edm.NAMESPACE_ATOM_2005 + "\"" + "\n"
         + "       xmlns:d=\"" + Edm.NAMESPACE_D_2007_08 + "\"" + "\n"
         + "       xmlns:m=\"" + Edm.NAMESPACE_M_2007_08 + "\">" + "\n"
@@ -153,5 +154,16 @@ public class EntryXmlChangeTest extends AbstractRefXmlTest {
     HttpResponse response = callUri(ODataHttpMethod.MERGE, "Rooms('3')", HttpHeaders.IF_MATCH, "W/\"3\"", requestBody, HttpContentType.APPLICATION_ATOM_XML_ENTRY, HttpStatusCodes.NO_CONTENT);
     checkEtag(response, "W/\"3\"");
     assertXpathEvaluatesTo("Room X", "/atom:entry/atom:content/m:properties/d:Name", getBody(callUri("Rooms('3')")));
+  }
+
+  
+  @Test
+  public void delete() throws Exception {
+    String uri = "Employees('2')";
+    deleteUriOk(uri);
+    final String requestBody = getBody(callUri(uri, HttpStatusCodes.NOT_FOUND));
+
+    XMLAssert.assertXpathExists("/m:error", requestBody);
+    assertXpathEvaluatesTo("Requested entity could not be found.", "/m:error/m:message", requestBody);
   }
 }
