@@ -68,7 +68,7 @@ public class XmlEntryConsumer {
       while ((eventType = reader.next()) != XMLStreamConstants.END_DOCUMENT) {
         if (eventType == XMLStreamConstants.START_ELEMENT) {
           String tagName = reader.getLocalName();
-          handleStartedTag(reader, tagName, eia);
+          handleStartedTag(reader, tagName, eia, merge);
         }
       }
 
@@ -89,11 +89,14 @@ public class XmlEntryConsumer {
    * @param reader
    * @param tagName
    * @param eia 
+   * @param merge 
    * @throws EntityProviderException
    * @throws XMLStreamException
    * @throws EdmException
    */
-  private void handleStartedTag(final XMLStreamReader reader, final String tagName, final EntityInfoAggregator eia) throws EntityProviderException, XMLStreamException, EdmException {
+  private void handleStartedTag(final XMLStreamReader reader, final String tagName, final EntityInfoAggregator eia, final boolean merge) 
+          throws EntityProviderException, XMLStreamException, EdmException {
+    
     currentHandledStartTagName = tagName;
 
     if (ATOM_ID.equals(tagName)) {
@@ -106,7 +109,7 @@ public class XmlEntryConsumer {
       readContent(reader, eia);
     } else if (M_PROPERTIES.equals(tagName)) {
       readProperties(reader, eia);
-    } else {
+    } else if(!merge) {
       readCustomElement(reader, tagName, eia);
     }
   }
