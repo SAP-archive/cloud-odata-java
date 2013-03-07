@@ -2,6 +2,7 @@ package com.sap.core.odata.core.uri;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -47,7 +48,15 @@ public class ExpandSelectTreeNodeImpl implements ExpandSelectTreeNode {
   public void setAllExplicitly() {
     isAll = true;
     properties.clear();
-    links.clear();
+
+    //Remove all selected navigation properties which are not mentioned in the expand 
+    Iterator<EdmNavigationProperty> iterator = links.keySet().iterator();
+    while (iterator.hasNext()) {
+      EdmNavigationProperty navProp = iterator.next();
+      if (links.get(navProp) == null) {
+        iterator.remove();
+      }
+    }
   }
 
   @Override
