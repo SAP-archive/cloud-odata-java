@@ -253,9 +253,13 @@ public class XmlEntityConsumerTest extends AbstractConsumerTest {
   }
 
   private void readAndExpectException(EdmEntitySet entitySet, InputStream reqContent, MessageReference messageReference) throws ODataMessageException {
+    readAndExpectException(entitySet, reqContent, true, messageReference);
+  }
+  
+  private void readAndExpectException(EdmEntitySet entitySet, InputStream reqContent, boolean merge, MessageReference messageReference) throws ODataMessageException {
     try {
       XmlEntityConsumer xec = new XmlEntityConsumer();
-      ODataEntry result = xec.readEntry(entitySet, reqContent, true);
+      ODataEntry result = xec.readEntry(entitySet, reqContent, merge);
       assertNotNull(result);
       Assert.fail("Expected exception with MessageReference '" + messageReference.getKey() + "' was not thrown.");
     } catch (ODataMessageException e) {
@@ -670,7 +674,7 @@ public class XmlEntityConsumerTest extends AbstractConsumerTest {
 
     EdmEntitySet entitySet = MockFacade.getMockEdm().getEntityContainer("Container2").getEntitySet("Photos");
     InputStream reqContent = createContentAsStream(PHOTO_XML);
-    ODataEntry result = xec.readEntry(entitySet, reqContent, true);
+    ODataEntry result = xec.readEntry(entitySet, reqContent, false);
 
     // verify
     EntryMetadata entryMetadata = result.getMetadata();
@@ -683,12 +687,32 @@ public class XmlEntityConsumerTest extends AbstractConsumerTest {
     assertNull(data.get("ignore"));
   }
 
+  @Test
+  public void readCustomizableFeedMappingsWithMergeSemantic() throws Exception {
+    XmlEntityConsumer xec = new XmlEntityConsumer();
+
+    EdmEntitySet entitySet = MockFacade.getMockEdm().getEntityContainer("Container2").getEntitySet("Photos");
+    InputStream reqContent = createContentAsStream(PHOTO_XML);
+    ODataEntry result = xec.readEntry(entitySet, reqContent, true);
+
+    // verify
+    EntryMetadata entryMetadata = result.getMetadata();
+    assertEquals("http://localhost:19000/test/Container2.Photos(Id=1,Type='image%2Fpng')", entryMetadata.getId());
+
+    Map<String, Object> data = result.getProperties();
+    assertEquals("Photo1", data.get("Name"));
+    assertEquals("image/png", data.get("Type"));
+    // ignored customizable feed mapping
+    assertNull(data.get("Содержание"));
+    assertNull(data.get("ignore"));
+  }
+
   @Test(expected = EntityProviderException.class)
   public void readCustomizableFeedMappingsBadRequest() throws Exception {
     EdmEntitySet entitySet = MockFacade.getMockEdm().getEntityContainer("Container2").getEntitySet("Photos");
     InputStream reqContent = createContentAsStream(PHOTO_XML_INVALID_MAPPING);
 
-    readAndExpectException(entitySet, reqContent, EntityProviderException.INVALID_PROPERTY.addContent("ignore"));
+    readAndExpectException(entitySet, reqContent, false, EntityProviderException.INVALID_PROPERTY.addContent("ignore"));
   }
 
   @Test
