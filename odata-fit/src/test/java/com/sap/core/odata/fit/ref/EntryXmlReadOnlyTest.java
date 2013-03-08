@@ -2,13 +2,16 @@ package com.sap.core.odata.fit.ref;
 
 import static org.custommonkey.xmlunit.XMLAssert.assertXpathEvaluatesTo;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
 import org.apache.http.HttpHeaders;
 import org.apache.http.HttpResponse;
+import org.custommonkey.xmlunit.XMLAssert;
 import org.junit.Test;
 
 import com.sap.core.odata.api.commons.HttpContentType;
+import com.sap.core.odata.api.commons.HttpStatusCodes;
 
 /**
  * Tests employing the reference scenario reading a single entity in XML format
@@ -58,6 +61,17 @@ public class EntryXmlReadOnlyTest extends AbstractRefXmlTest {
     badRequest("Rooms(X'33')");
   }
 
+  @Test
+  public void entryMediaResource() throws Exception {
+    HttpResponse response = callUri("Employees('2')/$value");
+    checkMediaType(response, "image/jpeg");
+    assertNotNull(getBody(response));
+    //
+    response = callUri("Employees('2')/$value?$format=xml", HttpStatusCodes.BAD_REQUEST);
+    String body = getBody(response);
+    XMLAssert.assertXpathExists("/m:error/m:message", body);
+  }
+  
   @Test
   public void navigationEntry() throws Exception {
     HttpResponse response = callUri("Employees('2')/ne_Manager");

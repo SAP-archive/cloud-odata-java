@@ -447,6 +447,19 @@ public class ODataSubLocatorValidationTest extends BaseTest {
     }
   }
 
+  private void invalidRequestDollarFormat(final ODataHttpMethod method, final UriType uriType, final boolean isValue, final String dollarFormatOption) throws EdmException, ODataException {
+    try {
+      MultivaluedMap<String, String> options = new MultivaluedHashMap<String, String>(3);
+      options.putSingle("$format", dollarFormatOption);
+      checkRequest(method, mockPathSegments(uriType, false, isValue), options, null);
+      fail("Expected ODataException not thrown");
+    } catch (ODataBadRequestException e) {
+      assertNotNull(e);
+    } catch (Exception e) {
+      fail("Unexpected Exception thrown");
+    }
+  }
+
   @Test
   public void requestContentTypeMediaResource() throws Exception {
     checkRequest(ODataHttpMethod.PUT, mockPathSegments(UriType.URI2, false, false), null, "image/jpeg");
@@ -591,5 +604,12 @@ public class ODataSubLocatorValidationTest extends BaseTest {
   @Test
   public void invalidRequestContentType() throws Exception {
     invalidRequestContentType(ODataHttpMethod.POST, UriType.URI1, false, "app/app/xml");
+  }
+  
+  @Test
+  public void invalidRequestDollarFormatSyntax() throws Exception {
+    invalidRequestDollarFormat(ODataHttpMethod.GET, UriType.URI17, true, "xml");
+    invalidRequestDollarFormat(ODataHttpMethod.GET, UriType.URI17, true, "atom+xml");
+    invalidRequestDollarFormat(ODataHttpMethod.GET, UriType.URI17, true, "json");
   }
 }
