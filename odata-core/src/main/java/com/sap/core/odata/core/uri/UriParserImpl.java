@@ -29,6 +29,7 @@ import com.sap.core.odata.api.edm.EdmTyped;
 import com.sap.core.odata.api.exception.MessageReference;
 import com.sap.core.odata.api.exception.ODataBadRequestException;
 import com.sap.core.odata.api.exception.ODataMessageException;
+import com.sap.core.odata.api.uri.ExpandSelectTreeNode;
 import com.sap.core.odata.api.uri.KeyPredicate;
 import com.sap.core.odata.api.uri.NavigationPropertySegment;
 import com.sap.core.odata.api.uri.PathSegment;
@@ -809,5 +810,10 @@ public class UriParserImpl extends UriParser {
   @Override
   public OrderByExpression parseOrderByString(final EdmEntityType entityType, final String expression) throws ExpressionParserException, ODataMessageException {
     return new OrderByParserImpl(entityType).parseOrderByString(expression);
+  }
+
+  @Override
+  public ExpandSelectTreeNode buildExpandSelectTree(List<SelectItem> select, List<ArrayList<NavigationPropertySegment>> expand) throws EdmException {
+    return new ExpandSelectTreeCreator(select, expand).create();
   }
 }
