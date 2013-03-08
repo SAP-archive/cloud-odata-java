@@ -33,6 +33,8 @@ public class ODataJPAModelException extends ODataJPAException {
 			ODataJPAModelException.class, "TYPE_NOT_SUPPORTED");
 	public static final MessageReference GENERAL = createMessageReference(
 			ODataJPAModelException.class, "GENERAL");
+	public static final MessageReference INNER_EXCEPTION = createMessageReference(
+			ODataJPAModelException.class, "INNER_EXCEPTION");
 
 	private ODataJPAModelException(String localizedMessage, Throwable e) {
 		super(localizedMessage, e);
@@ -58,7 +60,7 @@ public class ODataJPAModelException extends ODataJPAException {
 		messageService = ODataJPAFactory.createFactory()
 				.getODataJPAAccessFactory()
 				.getODataJPAMessageService(DEFAULT_LOCALE);
-		String message = messageService.getLocalizedMessage(messageReference);
+		String message = messageService.getLocalizedMessage(messageReference,e);
 		return new ODataJPAModelException(message, e);
 	}
 

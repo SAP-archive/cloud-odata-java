@@ -60,7 +60,7 @@ public class JPQLJoinSelectContext extends JPQLSelectContext implements
 
 			} catch (ODataException e) {
 				throw ODataJPARuntimeException.throwException(
-						ODataJPARuntimeException.GENERAL, e);
+						ODataJPARuntimeException.INNER_EXCEPTION, e);
 			}
 
 			return JPQLJoinSelectContext.this;

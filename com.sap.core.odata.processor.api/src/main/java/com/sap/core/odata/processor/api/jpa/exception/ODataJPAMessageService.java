@@ -25,5 +25,5 @@ public interface ODataJPAMessageService {
 	 *            is a Message Reference
 	 * @return a language dependent message text
 	 */
-	public String getLocalizedMessage(MessageReference context);
+	public String getLocalizedMessage(MessageReference context,Throwable exception);
 }
