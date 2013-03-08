@@ -68,6 +68,20 @@ public class EntryXmlChangeTest extends AbstractRefXmlTest {
   }
 
   @Test
+  public void createInvalidXml() throws Exception {
+    getBody(callUri("Employees('7')", HttpStatusCodes.NOT_FOUND));
+
+    String updateBody = "<invalidXml></invalid>";
+    HttpResponse postResult = postUri("Employees", updateBody, HttpContentType.APPLICATION_ATOM_XML_ENTRY, HttpStatusCodes.CREATED);
+    checkMediaType(postResult, HttpContentType.APPLICATION_ATOM_XML_UTF8 + "; type=entry");
+    assertXpathEvaluatesTo("7", "/atom:entry/m:properties/d:EmployeeId", getBody(postResult));
+
+    final String requestBodyAfter = getBody(callUri("Employees('7')"));
+
+    assertXpathEvaluatesTo("7", "/atom:entry/m:properties/d:EmployeeId", requestBodyAfter);
+  }
+
+  @Test
   public void createMediaResourceUriType1() throws Exception {
     HttpResponse response = postUri("Employees()", "plain text", HttpContentType.TEXT_PLAIN, HttpStatusCodes.CREATED);
     checkMediaType(response, HttpContentType.APPLICATION_ATOM_XML_UTF8 + "; type=entry");
@@ -122,6 +136,18 @@ public class EntryXmlChangeTest extends AbstractRefXmlTest {
     putUri("Employees('1')", requestBody, HttpContentType.APPLICATION_ATOM_XML_ENTRY, HttpStatusCodes.BAD_REQUEST);
     // check nothing has changed
     assertXpathEvaluatesTo("52", "/atom:entry/m:properties/d:Age", getBody(callUri("Employees('1')")));
+  }
+
+  @Test
+  public void updateInvalidXml() throws Exception {
+    final String requestBodyBefore = getBody(callUri("Employees('2')"));
+
+    String updateBody = "<invalidXml></invalid>";
+    putUri("Employees('2')", updateBody, HttpContentType.APPLICATION_ATOM_XML_ENTRY, HttpStatusCodes.BAD_REQUEST);
+
+    final String requestBodyAfter = getBody(callUri("Employees('2')"));
+
+    assertEquals(requestBodyBefore, requestBodyAfter);
   }
 
   @Test
