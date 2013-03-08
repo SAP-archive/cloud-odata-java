@@ -428,7 +428,7 @@ public class ODataSubLocatorValidationTest extends BaseTest {
   private void wrongRequestContentType(final ODataHttpMethod method, final UriType uriType, final boolean isValue, final String requestContentType) throws EdmException, ODataException {
     try {
       checkRequest(method, mockPathSegments(uriType, false, isValue), null, requestContentType);
-      fail("Expected ODataException not thrown");
+      fail("Expected ODataException not thrown fot method '" + method + "' and uriType '" + uriType + "'.");
     } catch (ODataUnsupportedMediaTypeException e) {
       assertNotNull(e);
     } catch (Exception e) {
@@ -597,8 +597,20 @@ public class ODataSubLocatorValidationTest extends BaseTest {
     wrongRequestContentType(ODataHttpMethod.PUT, UriType.URI2, ContentType.APPLICATION_ATOM_SVC);
     wrongRequestContentType(ODataHttpMethod.PUT, UriType.URI2, ContentType.APPLICATION_ATOM_SVC_CS_UTF_8);
 
-    wrongRequestContentType(ODataHttpMethod.PUT, UriType.URI5, true, ContentType.APPLICATION_ATOM_SVC);
-    wrongRequestContentType(ODataHttpMethod.PUT, UriType.URI5, true, ContentType.APPLICATION_ATOM_SVC_CS_UTF_8);
+    ODataHttpMethod[] methodsToTest = {ODataHttpMethod.PUT, ODataHttpMethod.PATCH, ODataHttpMethod.MERGE};
+    
+    for (ODataHttpMethod oDataHttpMethod : methodsToTest) {
+      wrongRequestContentType(oDataHttpMethod, UriType.URI5, true, ContentType.APPLICATION_ATOM_SVC);
+      wrongRequestContentType(oDataHttpMethod, UriType.URI5, true, ContentType.APPLICATION_ATOM_SVC_CS_UTF_8);
+      wrongRequestContentType(oDataHttpMethod, UriType.URI5, true, ContentType.APPLICATION_XML);
+      wrongRequestContentType(oDataHttpMethod, UriType.URI5, true, ContentType.APPLICATION_XML_CS_UTF_8);
+      wrongRequestContentType(oDataHttpMethod, UriType.URI5, true, ContentType.APPLICATION_ATOM_XML);
+      wrongRequestContentType(oDataHttpMethod, UriType.URI5, true, ContentType.APPLICATION_ATOM_XML_CS_UTF_8);
+      wrongRequestContentType(oDataHttpMethod, UriType.URI5, true, ContentType.APPLICATION_JSON);
+      wrongRequestContentType(oDataHttpMethod, UriType.URI5, true, ContentType.APPLICATION_JSON_CS_UTF_8);
+      
+      wrongRequestContentType(oDataHttpMethod, UriType.URI5, true, ContentType.create("image/jpeg"));
+    }
   }
 
   @Test
