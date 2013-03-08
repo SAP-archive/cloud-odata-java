@@ -11,6 +11,10 @@ import com.sap.core.odata.api.edm.EdmNavigationProperty;
 import com.sap.core.odata.api.edm.EdmProperty;
 import com.sap.core.odata.api.uri.ExpandSelectTreeNode;
 
+/**
+ * Expression tree node with information about selected properties and to be expanded links.
+ * @author SAP AG
+ */
 public class ExpandSelectTreeNodeImpl implements ExpandSelectTreeNode {
 
   private Boolean isAll;
@@ -82,10 +86,7 @@ public class ExpandSelectTreeNodeImpl implements ExpandSelectTreeNode {
 
   @Override
   public boolean isAll() {
-    if (isAll == null) {
-      return true;
-    }
-    return isAll;
+    return (isAll == null) || isAll;
   }
 
   @Override
@@ -94,7 +95,7 @@ public class ExpandSelectTreeNodeImpl implements ExpandSelectTreeNode {
   }
 
   @Override
-  public HashMap<EdmNavigationProperty, ExpandSelectTreeNode> getLinks() {
+  public Map<EdmNavigationProperty, ExpandSelectTreeNode> getLinks() {
     return links;
   }
 

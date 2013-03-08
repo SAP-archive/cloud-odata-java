@@ -20,12 +20,6 @@ import com.sap.core.odata.api.uri.expression.OrderByExpression;
  */
 public abstract class UriParser {
 
-  public static ExpandSelectTreeNode createExpandSelectTree(List<SelectItem> select, List<ArrayList<NavigationPropertySegment>> expand) throws EdmException{
-    return RuntimeDelegate.getUriParser(null).buildExpandSelectTree(select, expand);
-  }
-  
-  public abstract ExpandSelectTreeNode buildExpandSelectTree(List<SelectItem> select, List<ArrayList<NavigationPropertySegment>> expand) throws EdmException;
-
   /**
    * Parses path segments and query parameters for the given EDM.
    * @param edm Entity Data Model
@@ -77,7 +71,8 @@ public abstract class UriParser {
    * @param edmType    EDM type of the OData entity/complex type/... addressed by the URL
    * @param expression $filter expression string to be parsed
    * @return           expression tree which can be traversed with help of the interfaces
-   *                   {@link com.sap.core.odata.api.uri.expression.ExpressionVisitor} and {@link com.sap.core.odata.api.uri.expression.Visitable}
+   *                   {@link com.sap.core.odata.api.uri.expression.ExpressionVisitor ExpressionVisitor}
+   *                   and {@link com.sap.core.odata.api.uri.expression.Visitable Visitable}
    * @throws ExpressionParserException thrown due to errors while parsing the $filter expression string
    * @throws ODataMessageException     for extensibility
    */
@@ -112,7 +107,8 @@ public abstract class UriParser {
    * @param edmType    EDM type of the OData entity/complex type/... addressed by the URL
    * @param expression $filter expression string to be parsed
    * @return           expression tree which can be traversed with help of the interfaces
-   *                   {@link com.sap.core.odata.api.uri.expression.ExpressionVisitor} and {@link com.sap.core.odata.api.uri.expression.Visitable}
+   *                   {@link com.sap.core.odata.api.uri.expression.ExpressionVisitor ExpressionVisitor}
+   *                   and {@link com.sap.core.odata.api.uri.expression.Visitable Visitable}
    * @throws ExpressionParserException thrown due to errors while parsing the $filter expression string
    * @throws ODataMessageException     for extensibility
    */
@@ -124,7 +120,8 @@ public abstract class UriParser {
    * @param edmType    EDM type of the OData entity/complex type/... addressed by the URL
    * @param expression $orderby expression string to be parsed
    * @return           expression tree which can be traversed with help of the interfaces
-   *                   {@link com.sap.core.odata.api.uri.expression.ExpressionVisitor} and {@link com.sap.core.odata.api.uri.expression.Visitable}
+   *                   {@link com.sap.core.odata.api.uri.expression.ExpressionVisitor ExpressionVisitor}
+   *                   and {@link com.sap.core.odata.api.uri.expression.Visitable Visitable}
    * @throws ExpressionParserException thrown due to errors while parsing the $orderby expression string
    * @throws ODataMessageException     used for extensibility
    */
@@ -137,9 +134,30 @@ public abstract class UriParser {
    * @param edmType    EDM type of the OData entity/complex type/... addressed by the URL
    * @param expression $orderby expression string to be parsed
    * @return           expression tree which can be traversed with help of the interfaces
-   *                   {@link com.sap.core.odata.api.uri.expression.ExpressionVisitor} and {@link com.sap.core.odata.api.uri.expression.Visitable}
+   *                   {@link com.sap.core.odata.api.uri.expression.ExpressionVisitor ExpressionVisitor}
+   *                   and {@link com.sap.core.odata.api.uri.expression.Visitable Visitable}
    * @throws ExpressionParserException thrown due to errors while parsing the $orderby expression string
    * @throws ODataMessageException     used for extensibility
    */
   public abstract OrderByExpression parseOrderByString(EdmEntityType edmType, String expression) throws ExpressionParserException, ODataMessageException;
+
+  /**
+   * Creates an optimized expression tree out of $expand and $select expressions. 
+   * @param select List of {@link SelectItem select items}
+   * @param expand List of Lists of {@link NavigationPropertySegment navigation property segments}
+   * @return       expression tree of type {@link ExpandSelectTreeNode}
+   * @throws EdmException
+   */
+  public static ExpandSelectTreeNode createExpandSelectTree(List<SelectItem> select, List<ArrayList<NavigationPropertySegment>> expand) throws EdmException{
+    return RuntimeDelegate.getUriParser(null).buildExpandSelectTree(select, expand);
+  }
+  
+  /**
+   * Creates an optimized expression tree out of $expand and $select expressions. 
+   * @param select List of {@link SelectItem select items}
+   * @param expand List of Lists of {@link NavigationPropertySegment navigation property segments}
+   * @return       expression tree of type {@link ExpandSelectTreeNode}
+   * @throws EdmException
+   */
+  public abstract ExpandSelectTreeNode buildExpandSelectTree(List<SelectItem> select, List<ArrayList<NavigationPropertySegment>> expand) throws EdmException;
 }

@@ -24,11 +24,14 @@ import com.sap.core.odata.core.ODataPathSegmentImpl;
 import com.sap.core.odata.testutil.fit.BaseTest;
 import com.sap.core.odata.testutil.mock.EdmTestProvider;
 
+/**
+ * Tests for the combining of expand and select options into a single tree.
+ * @author SAP AG
+ */
 public class ExpandSelectTreeCreatorImplTest extends BaseTest {
 
   @Test
   public void testViaRuntimeDelegate() throws Exception {
-
     ExpandSelectTreeNode test = UriParser.createExpandSelectTree(null, null);
     assertNotNull(test);
   }
@@ -163,7 +166,7 @@ public class ExpandSelectTreeCreatorImplTest extends BaseTest {
     assertEquals("Age", actual.getProperties().get(0).getName());
     assertNotNull(actual.getLinks());
 
-    HashMap<EdmNavigationProperty, ExpandSelectTreeNode> links = actual.getLinks();
+    Map<EdmNavigationProperty, ExpandSelectTreeNode> links = actual.getLinks();
     assertEquals(3, links.size());
     for (EdmNavigationProperty navProperty : links.keySet()) {
       if ("ne_Room".equals(navProperty.getName())) {

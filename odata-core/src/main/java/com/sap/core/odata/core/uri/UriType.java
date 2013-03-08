@@ -2,6 +2,9 @@ package com.sap.core.odata.core.uri;
 
 import java.util.ArrayList;
 
+/**
+ * @author SAP AG
+ */
 public enum UriType {
   /**
    * Service document
