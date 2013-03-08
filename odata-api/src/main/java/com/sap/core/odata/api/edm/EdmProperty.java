@@ -1,10 +1,9 @@
 package com.sap.core.odata.api.edm;
 
 /**
- * @com.sap.core.odata.DoNotImplement
  * A CSDL Property element
- * 
  * <p>EdmProperty defines a simple type or a complex type.
+ * @com.sap.core.odata.DoNotImplement
  * @author SAP AG
  */
 public interface EdmProperty extends EdmElement {

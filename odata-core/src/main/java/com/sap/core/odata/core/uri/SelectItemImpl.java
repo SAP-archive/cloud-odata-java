@@ -8,6 +8,9 @@ import com.sap.core.odata.api.edm.EdmProperty;
 import com.sap.core.odata.api.uri.NavigationPropertySegment;
 import com.sap.core.odata.api.uri.SelectItem;
 
+/**
+ * @author SAP AG
+ */
 public class SelectItemImpl implements SelectItem {
 
   private List<NavigationPropertySegment> navigationPropertySegments = Collections.emptyList();

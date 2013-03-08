@@ -9,7 +9,11 @@ import com.sap.core.odata.api.uri.ExpandSelectTreeNode;
 import com.sap.core.odata.api.uri.NavigationPropertySegment;
 import com.sap.core.odata.api.uri.SelectItem;
 
-public class ExpandSelectTreeCreator{
+/**
+ * Creates an optimized combined expression tree out of the expand and select options.
+ * @author SAP AG
+ */
+public class ExpandSelectTreeCreator {
 
   private final List<SelectItem> initialSelect;
   private final List<ArrayList<NavigationPropertySegment>> initialExpand;
@@ -57,7 +61,7 @@ public class ExpandSelectTreeCreator{
   private void buildCombinedTree(final ExpandSelectTreeNodeImpl root) throws EdmException {
     for (SelectItem item : initialSelect) {
       ExpandSelectTreeNodeImpl actualNode = root;
-      List<NavigationPropertySegment> segmentsList = item.getNavigationPropertySegments();      
+      List<NavigationPropertySegment> segmentsList = item.getNavigationPropertySegments();
       for (int segmentListIndex = 0; segmentListIndex < segmentsList.size(); segmentListIndex++) {
         ExpandSelectTreeNodeImpl childNode = null;
         //Check all expand lists for matches

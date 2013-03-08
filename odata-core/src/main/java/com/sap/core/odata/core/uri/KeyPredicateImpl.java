@@ -3,6 +3,9 @@ package com.sap.core.odata.core.uri;
 import com.sap.core.odata.api.edm.EdmProperty;
 import com.sap.core.odata.api.uri.KeyPredicate;
 
+/**
+ * @author SAP AG
+ */
 public class KeyPredicateImpl implements KeyPredicate {
 
   public KeyPredicateImpl(final String literal, final EdmProperty property) {

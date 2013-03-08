@@ -4,7 +4,7 @@ import java.net.URI;
 import java.util.List;
 
 /**
- * Object to keep OData URI information. 
+ * Object to keep OData URI information.
  * @com.sap.core.odata.DoNotImplement
  * @author SAP AG
  */
