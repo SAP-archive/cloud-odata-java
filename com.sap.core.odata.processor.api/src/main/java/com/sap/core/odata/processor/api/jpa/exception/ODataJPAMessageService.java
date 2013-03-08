@@ -23,6 +23,8 @@ public interface ODataJPAMessageService {
 	 * 
 	 * @param context
 	 *            is a Message Reference
+	 *        exception
+	 *        	  is a Throwable Exception
 	 * @return a language dependent message text
 	 */
 	public String getLocalizedMessage(MessageReference context,Throwable exception);
