@@ -36,5 +36,15 @@ public enum JPQLContextType {
 	 * indicates that the JPQL context can be used for building JPQL join
 	 * statement that fetches single record
 	 */
-	JOIN_SINGLE
+	JOIN_SINGLE,
+	/**
+	 * indicates that the JPQL context can be used for building JPQL select
+	 * statement that fetches record counts
+	 */
+	SELECT_COUNT,
+	/**
+	 * indicates that the JPQL context can be used for building JPQL join
+	 * statement that fetches single record
+	 */
+	JOIN_COUNT
 }

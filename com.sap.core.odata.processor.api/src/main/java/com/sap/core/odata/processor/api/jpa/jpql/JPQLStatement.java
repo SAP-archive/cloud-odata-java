@@ -114,6 +114,7 @@ public class JPQLStatement {
 		public static final String OUTER = "OUTER";
 		public static final String JOIN = "JOIN";
 		public static final String ORDERBY = "ORDER BY";
+		public static final String COUNT = "COUNT";
 
 	}
 

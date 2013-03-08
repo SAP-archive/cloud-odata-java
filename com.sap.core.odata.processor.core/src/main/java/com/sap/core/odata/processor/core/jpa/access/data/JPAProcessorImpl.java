@@ -7,6 +7,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.Query;
 
 import com.sap.core.odata.api.edm.EdmException;
+import com.sap.core.odata.api.uri.info.GetEntityCountUriInfo;
 import com.sap.core.odata.api.uri.info.GetEntitySetUriInfo;
 import com.sap.core.odata.api.uri.info.GetEntityUriInfo;
 import com.sap.core.odata.processor.api.jpa.ODataJPAContext;
@@ -77,7 +78,7 @@ public class JPAProcessorImpl implements JPAProcessor {
 	}
 
 	@Override
-	public Object process(GetEntityUriInfo uriParserResultView)
+	public <T> Object process(GetEntityUriInfo uriParserResultView)
 			throws ODataJPAModelException, ODataJPARuntimeException {
 
 		JPQLContextType contextType = null;		
@@ -113,6 +114,14 @@ public class JPAProcessorImpl implements JPAProcessor {
 			return null;
 		
 		return query.getResultList().get(0);
+	}
+
+
+	@Override
+	public long process(GetEntityCountUriInfo requestView)
+			throws ODataJPAModelException, ODataJPARuntimeException {
+		// TODO Auto-generated method stub
+		return 0;
 	}
 
 }

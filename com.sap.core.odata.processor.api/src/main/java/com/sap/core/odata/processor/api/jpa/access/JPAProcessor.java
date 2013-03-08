@@ -2,6 +2,7 @@ package com.sap.core.odata.processor.api.jpa.access;
 
 import java.util.List;
 
+import com.sap.core.odata.api.uri.info.GetEntityCountUriInfo;
 import com.sap.core.odata.api.uri.info.GetEntitySetUriInfo;
 import com.sap.core.odata.api.uri.info.GetEntityUriInfo;
 import com.sap.core.odata.processor.api.jpa.exception.ODataJPAModelException;
@@ -9,9 +10,9 @@ import com.sap.core.odata.processor.api.jpa.exception.ODataJPARuntimeException;
 
 /**
  * The interface provides methods for processing OData Requests.
- *
+ * 
  * @author SAP AG
-*/
+ */
 public interface JPAProcessor {
 	/**
 	 * Processes OData request for querying an Entity Set. The method returns
@@ -48,5 +49,19 @@ public interface JPAProcessor {
 	 * @return object representing JPA entity type
 	 **/
 	public <T> Object process(GetEntityUriInfo requestView)
-			throws ODataJPAModelException, ODataJPARuntimeException;;
+			throws ODataJPAModelException, ODataJPARuntimeException;
+
+	/**
+	 * Processes OData request for fetching Entity count. The method returns an
+	 * Object of type representing JPA Entity count
+	 * 
+	 * @param requestView
+	 *            OData request for counting an entity
+	 * @return object representing count of JPA entity
+	 * 
+	 * @throws ODataJPAModelException
+	 * @throws ODataJPARuntimeException
+	 */
+	public long process(GetEntityCountUriInfo requestView)
+			throws ODataJPAModelException, ODataJPARuntimeException;
 }
