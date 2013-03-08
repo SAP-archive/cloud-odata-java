@@ -90,9 +90,8 @@ public class JPQLSelectContext extends JPQLContext implements
 					JPQLSelectContext.this
 							.setWhereExpression(generateWhereExpression());
 				} catch (ODataException e) {
-					throw ODataJPARuntimeException.throwException(ODataJPARuntimeException.GENERAL, e);
+					throw ODataJPARuntimeException.throwException(ODataJPARuntimeException.INNER_EXCEPTION, e);
 				}
-
 			}
 
 			return JPQLSelectContext.this;

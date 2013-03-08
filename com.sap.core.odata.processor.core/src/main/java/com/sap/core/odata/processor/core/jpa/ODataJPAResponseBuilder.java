@@ -112,7 +112,7 @@ public final class ODataJPAResponseBuilder {
 								.getServiceRoot()).build();
 			} catch (ODataException e) {
 				throw ODataJPARuntimeException.throwException(
-						ODataJPARuntimeException.GENERAL.addContent(e
+						ODataJPARuntimeException.INNER_EXCEPTION.addContent(e
 								.getMessage()), e);
 			}
 

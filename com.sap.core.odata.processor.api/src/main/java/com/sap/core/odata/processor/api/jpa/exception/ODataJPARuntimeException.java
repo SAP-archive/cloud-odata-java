@@ -21,6 +21,8 @@ public class ODataJPARuntimeException extends ODataJPAException {
 			ODataJPARuntimeException.class, "RESOURCE_NOT_FOUND");
 	public static final MessageReference GENERAL = createMessageReference(
 			ODataJPARuntimeException.class, "GENERAL");
+	public static final MessageReference INNER_EXCEPTION = createMessageReference(
+			ODataJPARuntimeException.class, "INNER_EXCEPTION");
 	public static final MessageReference JOIN_CLAUSE_EXPECTED = createMessageReference(
 			ODataJPARuntimeException.class, "JOIN_CLAUSE_EXPECTED");
 	public static final MessageReference ERROR_JPQLCTXBLDR_CREATE = createMessageReference(
@@ -53,7 +55,7 @@ public class ODataJPARuntimeException extends ODataJPAException {
 		messageService = ODataJPAFactory.createFactory()
 				.getODataJPAAccessFactory()
 				.getODataJPAMessageService(DEFAULT_LOCALE);
-		String message = messageService.getLocalizedMessage(messageReference);
+		String message = messageService.getLocalizedMessage(messageReference,e);
 		return new ODataJPARuntimeException(message, e);
 	}
 
