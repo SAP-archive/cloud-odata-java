@@ -385,6 +385,7 @@ public final class ODataSubLocator implements ODataLocator {
   }
 
   private ContentType doContentNegotiationForFormat(final UriInfoImpl uriInfo) throws ODataException {
+    validateFormatQuery(uriInfo);
     ContentType formatContentType = mapFormat(uriInfo);
     formatContentType = ensureCharsetIsSet(formatContentType);
 
@@ -397,6 +398,19 @@ public final class ODataSubLocator implements ODataLocator {
     }
 
     throw new ODataNotAcceptableException(ODataNotAcceptableException.NOT_SUPPORTED_CONTENT_TYPE.addContent(uriInfo.getFormat()));
+  }
+
+  /**
+   * Validates that <code>dollar format query/syntax</code> is correct for further processing.
+   * If some validation error occurs an exception is thrown.
+   * 
+   * @param uriInfo
+   * @throws ODataBadRequestException
+   */
+  private void validateFormatQuery(UriInfoImpl uriInfo) throws ODataBadRequestException {
+    if(uriInfo.isValue()) {
+      throw new ODataBadRequestException(ODataBadRequestException.INVALID_SYNTAX);
+    }
   }
 
   private ContentType ensureCharsetIsSet(final ContentType contentType) {
