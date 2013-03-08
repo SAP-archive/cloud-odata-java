@@ -33,7 +33,28 @@ public class ExpandSelectTreeNodeImpl implements ExpandSelectTreeNode {
     }
 
     if (links.containsKey(navigationProperty)) {
-      return links.get(navigationProperty);
+      ExpandSelectTreeNodeImpl existingNode = (ExpandSelectTreeNodeImpl) links.get(navigationProperty);
+      //If the existing node and the new node differ we can not just return the existing one
+      //Thus we merge the new child into the existing one
+      if (existingNode != childNode && childNode != null) {
+        if (existingNode.isAll() || childNode.isAll()) {
+          existingNode.setAllExplicitly();
+          for (Map.Entry<EdmNavigationProperty, ExpandSelectTreeNode> entry : childNode.getLinks().entrySet()) {
+            if (entry.getValue() != null) {
+              existingNode.addChild(entry.getKey(), entry.getValue());
+            }
+          }
+        } else {
+          for (EdmProperty property : childNode.getProperties()) {
+            existingNode.addProperty(property);
+          }
+          for (Map.Entry<EdmNavigationProperty, ExpandSelectTreeNode> entry : childNode.getLinks().entrySet()) {
+            existingNode.addChild(entry.getKey(), entry.getValue());
+          }
+        }
+      }
+
+      return existingNode;
     }
 
     if (isAll && childNode == null) {
@@ -61,6 +82,9 @@ public class ExpandSelectTreeNodeImpl implements ExpandSelectTreeNode {
 
   @Override
   public boolean isAll() {
+    if (isAll == null) {
+      return true;
+    }
     return isAll;
   }
 
@@ -74,19 +98,13 @@ public class ExpandSelectTreeNodeImpl implements ExpandSelectTreeNode {
     return links;
   }
 
-  @Override
-  public String toString() {
+  public String toJsonString() throws EdmException {
     String propertiesString = "";
     String linksString = "";
-    String isAllString = "";
 
     if (properties.isEmpty() == false) {
       for (EdmProperty property : properties) {
-        try {
-          propertiesString = propertiesString + "\"" + property.getName() + "\",";
-        } catch (EdmException e) {
-          //TODO: What here
-        }
+        propertiesString = propertiesString + "\"" + property.getName() + "\",";
       }
       propertiesString = propertiesString.substring(0, propertiesString.length() - 1);
     }
@@ -97,25 +115,14 @@ public class ExpandSelectTreeNodeImpl implements ExpandSelectTreeNode {
         if (entry.getValue() == null) {
           nodeString = null;
         } else {
-          nodeString = entry.getValue().toString();
+          nodeString = ((ExpandSelectTreeNodeImpl) entry.getValue()).toJsonString();
         }
-        try {
-          linksString = linksString + "{\"" + entry.getKey().getName() + "\":" + nodeString + "},";
-        } catch (EdmException e) {
-          //TODO: What here
-        }
+        linksString = linksString + "{\"" + entry.getKey().getName() + "\":" + nodeString + "},";
       }
       linksString = linksString.substring(0, linksString.length() - 1);
     }
 
-    if (isAll == null) {
-      isAllString = "true";
-    } else {
-      isAllString = isAll.toString();
-    }
-
-    //{"all":true,"properties":[],"links":[]}
-    return "{\"all\":" + isAllString + ",\"properties\":[" + propertiesString + "],\"links\":[" + linksString + "]}";
+    return "{\"all\":" + isAll() + ",\"properties\":[" + propertiesString + "],\"links\":[" + linksString + "]}";
   }
 
 }

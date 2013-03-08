@@ -20,11 +20,12 @@ import com.sap.core.odata.api.uri.expression.OrderByExpression;
  */
 public abstract class UriParser {
 
-  public static ExpandSelectTreeNode createExpandSelectTree(List<SelectItem> select, List<ArrayList<NavigationPropertySegment>> expand){
-    return RuntimeDelegate.getExpandSelectTreeCreator(select, expand).create();
+  public static ExpandSelectTreeNode createExpandSelectTree(List<SelectItem> select, List<ArrayList<NavigationPropertySegment>> expand) throws EdmException{
+    return RuntimeDelegate.getUriParser(null).buildExpandSelectTree(select, expand);
   }
   
-  
+  public abstract ExpandSelectTreeNode buildExpandSelectTree(List<SelectItem> select, List<ArrayList<NavigationPropertySegment>> expand) throws EdmException;
+
   /**
    * Parses path segments and query parameters for the given EDM.
    * @param edm Entity Data Model

@@ -1,8 +1,5 @@
 package com.sap.core.odata.api.rt;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.sap.core.odata.api.ODataService;
 import com.sap.core.odata.api.edm.Edm;
 import com.sap.core.odata.api.edm.EdmSimpleType;
@@ -12,9 +9,6 @@ import com.sap.core.odata.api.edm.provider.EdmProvider;
 import com.sap.core.odata.api.ep.EntityProvider.EntityProviderInterface;
 import com.sap.core.odata.api.processor.ODataResponse.ODataResponseBuilder;
 import com.sap.core.odata.api.processor.ODataSingleProcessor;
-import com.sap.core.odata.api.uri.ExpandSelectTreeCreator;
-import com.sap.core.odata.api.uri.NavigationPropertySegment;
-import com.sap.core.odata.api.uri.SelectItem;
 import com.sap.core.odata.api.uri.UriParser;
 
 /**
@@ -72,8 +66,6 @@ public abstract class RuntimeDelegate {
     protected abstract EntityProviderInterface createEntityProvider();
 
     protected abstract ODataService createODataSingleProcessorService(EdmProvider provider, ODataSingleProcessor processor);
-
-    protected abstract ExpandSelectTreeCreator getExpandSelectTreeCreator(List<SelectItem> select, List<ArrayList<NavigationPropertySegment>> expand);
   }
 
   /**
@@ -145,9 +137,4 @@ public abstract class RuntimeDelegate {
       super(e);
     }
   }
-
-  public static ExpandSelectTreeCreator getExpandSelectTreeCreator(List<SelectItem> select, List<ArrayList<NavigationPropertySegment>> expand) {
-    return RuntimeDelegate.getInstance().getExpandSelectTreeCreator(select, expand);
-  }
-
 }

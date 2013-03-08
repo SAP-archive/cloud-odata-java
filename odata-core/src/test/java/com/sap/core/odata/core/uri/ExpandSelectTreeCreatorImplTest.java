@@ -37,7 +37,7 @@ public class ExpandSelectTreeCreatorImplTest extends BaseTest {
   public void allNull() throws Exception {
     //{"all":true,"properties":[],"links":[]}
     String expected = "{\"all\":true,\"properties\":[],\"links\":[]}";
-    String actual = getExpandSelectTree(null, null).toString();
+    String actual = getExpandSelectTree(null, null).toJsonString();
     assertEquals(expected, actual);
   }
 
@@ -47,7 +47,7 @@ public class ExpandSelectTreeCreatorImplTest extends BaseTest {
     String expected = "{\"all\":false,\"properties\":[\"Age\"],\"links\":[]}";
 
     //$select=Age
-    String actual = getExpandSelectTree("Age", null).toString();
+    String actual = getExpandSelectTree("Age", null).toJsonString();
     assertEquals(expected, actual);
 
   }
@@ -58,7 +58,7 @@ public class ExpandSelectTreeCreatorImplTest extends BaseTest {
     String expected = "{\"all\":false,\"properties\":[\"Age\"],\"links\":[]}";
 
     //$select=Age&$expand=ne_Room
-    String actual = getExpandSelectTree("Age", "ne_Room").toString();
+    String actual = getExpandSelectTree("Age", "ne_Room").toJsonString();
     assertEquals(expected, actual);
 
   }
@@ -69,15 +69,15 @@ public class ExpandSelectTreeCreatorImplTest extends BaseTest {
     String expected = "{\"all\":true,\"properties\":[],\"links\":[]}";
 
     //$select=*&$expand=ne_Room
-    String actual = getExpandSelectTree("*", "ne_Room").toString();
+    String actual = getExpandSelectTree("*", "ne_Room").toJsonString();
     assertEquals(expected, actual);
 
     //$select=*,EmployeeId&$expand=ne_Room
-    actual = getExpandSelectTree("*,EmployeeId", "ne_Room").toString();
+    actual = getExpandSelectTree("*,EmployeeId", "ne_Room").toJsonString();
     assertEquals(expected, actual);
 
     //$select=EmployeeId,*&$expand=ne_Room
-    actual = getExpandSelectTree("EmployeeId,*", "ne_Room").toString();
+    actual = getExpandSelectTree("EmployeeId,*", "ne_Room").toJsonString();
     assertEquals(expected, actual);
   }
 
@@ -87,7 +87,7 @@ public class ExpandSelectTreeCreatorImplTest extends BaseTest {
     String expected = "{\"all\":false,\"properties\":[],\"links\":[{\"ne_Room\":null}]}";
 
     //$select=ne_Room
-    String actual = getExpandSelectTree("ne_Room", null).toString();
+    String actual = getExpandSelectTree("ne_Room", null).toJsonString();
     assertEquals(expected, actual);
   }
 
@@ -97,23 +97,23 @@ public class ExpandSelectTreeCreatorImplTest extends BaseTest {
     String expected = "{\"all\":true,\"properties\":[],\"links\":[{\"ne_Room\":{\"all\":true,\"properties\":[],\"links\":[]}}]}";
 
     //$select=ne_Room,* $expand=ne_Room
-    String actual = getExpandSelectTree("ne_Room,*", "ne_Room").toString();
+    String actual = getExpandSelectTree("ne_Room,*", "ne_Room").toJsonString();
     assertEquals(expected, actual);
 
     //$select=*,ne_Room $expand=ne_Room
-    actual = getExpandSelectTree("*,ne_Room", "ne_Room").toString();
+    actual = getExpandSelectTree("*,ne_Room", "ne_Room").toJsonString();
     assertEquals(expected, actual);
 
     //$select=*,ne_Room,ne_Manager $expand=ne_Room
-    actual = getExpandSelectTree("*,ne_Room,ne_Manager", "ne_Room").toString();
+    actual = getExpandSelectTree("*,ne_Room,ne_Manager", "ne_Room").toJsonString();
     assertEquals(expected, actual);
 
     //$select=ne_Room,*,ne_Manager $expand=ne_Room
-    actual = getExpandSelectTree("ne_Room,*,ne_Manager", "ne_Room").toString();
+    actual = getExpandSelectTree("ne_Room,*,ne_Manager", "ne_Room").toJsonString();
     assertEquals(expected, actual);
 
     //$select=ne_Room,ne_Manager,* $expand=ne_Room
-    actual = getExpandSelectTree("ne_Room,ne_Manager,*", "ne_Room").toString();
+    actual = getExpandSelectTree("ne_Room,ne_Manager,*", "ne_Room").toJsonString();
     assertEquals(expected, actual);
   }
 
@@ -123,11 +123,11 @@ public class ExpandSelectTreeCreatorImplTest extends BaseTest {
     String expected = "{\"all\":false,\"properties\":[],\"links\":[{\"ne_Room\":{\"all\":true,\"properties\":[],\"links\":[]}}]}";
 
     //$select=ne_Room&$expand=ne_Room
-    String actual = getExpandSelectTree("ne_Room", "ne_Room").toString();
+    String actual = getExpandSelectTree("ne_Room", "ne_Room").toJsonString();
     assertEquals(expected, actual);
 
     //$select=ne_Room/*&$expand=ne_Room
-    actual = getExpandSelectTree("ne_Room/*", "ne_Room").toString();
+    actual = getExpandSelectTree("ne_Room/*", "ne_Room").toJsonString();
     assertEquals(expected, actual);
   }
 
@@ -137,7 +137,7 @@ public class ExpandSelectTreeCreatorImplTest extends BaseTest {
     String expected = "{\"all\":false,\"properties\":[],\"links\":[{\"ne_Room\":{\"all\":false,\"properties\":[],\"links\":[{\"nr_Employees\":{\"all\":true,\"properties\":[],\"links\":[]}}]}}]}";
 
     //$select=ne_Room/nr_Employees&$expand=ne_Room,ne_Manager,ne_Room/nr_Employees,ne_Room/nr_Building
-    String actual = getExpandSelectTree("ne_Room/nr_Employees", "ne_Room,ne_Manager,ne_Room/nr_Employees,ne_Room/nr_Building").toString();
+    String actual = getExpandSelectTree("ne_Room/nr_Employees", "ne_Room,ne_Manager,ne_Room/nr_Employees,ne_Room/nr_Building").toJsonString();
     assertEquals(expected, actual);
   }
 
@@ -147,7 +147,7 @@ public class ExpandSelectTreeCreatorImplTest extends BaseTest {
     String expected = "{\"all\":true,\"properties\":[],\"links\":[{\"ne_Room\":{\"all\":true,\"properties\":[],\"links\":[]}}]}";
 
     //$expand=ne_Room
-    String actual = getExpandSelectTree(null, "ne_Room").toString();
+    String actual = getExpandSelectTree(null, "ne_Room").toJsonString();
     assertEquals(expected, actual);
   }
 
@@ -174,9 +174,9 @@ public class ExpandSelectTreeCreatorImplTest extends BaseTest {
       } else if ("ne_Team".equals(navProperty.getName())) {
         assertNull(links.get(navProperty));
       } else if ("ne_Manager".equals(navProperty.getName())) {
-        ExpandSelectTreeNode managerNode = links.get(navProperty);
+        ExpandSelectTreeNodeImpl managerNode = (ExpandSelectTreeNodeImpl) links.get(navProperty);
         String expected = "{\"all\":true,\"properties\":[],\"links\":[{\"ne_Team\":{\"all\":true,\"properties\":[],\"links\":[{\"nt_Employees\":{\"all\":true,\"properties\":[],\"links\":[]}}]}}]}";
-        String actualString = managerNode.toString();
+        String actualString = managerNode.toJsonString();
         assertEquals(expected, actualString);
       } else {
         fail("Unknown navigation property in links: " + navProperty.getName());
@@ -190,7 +190,7 @@ public class ExpandSelectTreeCreatorImplTest extends BaseTest {
     String expected = "{\"all\":false,\"properties\":[\"Age\",\"EmployeeId\"],\"links\":[]}";
 
     //$select=Age,EmployeeId
-    String actual = getExpandSelectTree("Age,EmployeeId", null).toString();
+    String actual = getExpandSelectTree("Age,EmployeeId", null).toJsonString();
     assertEquals(expected, actual);
   }
 
@@ -199,7 +199,7 @@ public class ExpandSelectTreeCreatorImplTest extends BaseTest {
     //{"all":false,"properties":["EmployeeId","Age"],"links":[]}
     String expected = "{\"all\":false,\"properties\":[\"EmployeeId\",\"Age\"],\"links\":[]}";
     //$select=EmployeeId,Age,EmployeeId
-    String actual = getExpandSelectTree("EmployeeId,Age,EmployeeId", null).toString();
+    String actual = getExpandSelectTree("EmployeeId,Age,EmployeeId", null).toJsonString();
     assertEquals(expected, actual);
   }
 
@@ -209,11 +209,11 @@ public class ExpandSelectTreeCreatorImplTest extends BaseTest {
     String expected = "{\"all\":true,\"properties\":[],\"links\":[]}";
 
     //$select=Age,EmployeeId,*
-    String actual = getExpandSelectTree("Age,EmployeeId,*", null).toString();
+    String actual = getExpandSelectTree("Age,EmployeeId,*", null).toJsonString();
     assertEquals(expected, actual);
 
     //$select=*,Age,EmployeeId
-    actual = getExpandSelectTree("*,Age,EmployeeId", null).toString();
+    actual = getExpandSelectTree("*,Age,EmployeeId", null).toJsonString();
     assertEquals(expected, actual);
   }
 
@@ -223,23 +223,23 @@ public class ExpandSelectTreeCreatorImplTest extends BaseTest {
     String expected = "{\"all\":false,\"properties\":[],\"links\":[{\"ne_Manager\":null}]}";
 
     //$select=ne_Manager
-    String actual = getExpandSelectTree("ne_Manager", null).toString();
+    String actual = getExpandSelectTree("ne_Manager", null).toJsonString();
     assertEquals(expected, actual);
 
     //$select=ne_Manager/ne_Manager
-    actual = getExpandSelectTree("ne_Manager/ne_Manager", null).toString();
+    actual = getExpandSelectTree("ne_Manager/ne_Manager", null).toJsonString();
     assertEquals(expected, actual);
 
     //$select=ne_Manager/ne_Manager,ne_Manager
-    actual = getExpandSelectTree("ne_Manager/ne_Manager,ne_Manager", null).toString();
+    actual = getExpandSelectTree("ne_Manager/ne_Manager,ne_Manager", null).toJsonString();
     assertEquals(expected, actual);
 
     //$select=ne_Manager/ne_Manager/ne_Manager/ne_Manager,ne_Manager
-    actual = getExpandSelectTree("ne_Manager/ne_Manager/ne_Manager/ne_Manager,ne_Manager", null).toString();
+    actual = getExpandSelectTree("ne_Manager/ne_Manager/ne_Manager/ne_Manager,ne_Manager", null).toJsonString();
     assertEquals(expected, actual);
 
     //$select=ne_Manager,ne_Manager/ne_Manager/ne_Manager/ne_Manager
-    actual = getExpandSelectTree("ne_Manager,ne_Manager/ne_Manager/ne_Manager/ne_Manager", null).toString();
+    actual = getExpandSelectTree("ne_Manager,ne_Manager/ne_Manager/ne_Manager/ne_Manager", null).toJsonString();
     assertEquals(expected, actual);
   }
 
@@ -249,7 +249,7 @@ public class ExpandSelectTreeCreatorImplTest extends BaseTest {
     String expected = "{\"all\":false,\"properties\":[],\"links\":[{\"ne_Manager\":null}]}";
 
     //$select=ne_Manager,ne_Manager
-    String actual = getExpandSelectTree("ne_Manager,ne_Manager", null).toString();
+    String actual = getExpandSelectTree("ne_Manager,ne_Manager", null).toJsonString();
     assertEquals(expected, actual);
   }
 
@@ -259,7 +259,7 @@ public class ExpandSelectTreeCreatorImplTest extends BaseTest {
     String expected = "{\"all\":true,\"properties\":[],\"links\":[{\"ne_Manager\":{\"all\":true,\"properties\":[],\"links\":[]}}]}";
 
     //$expand=ne_Manager,ne_Manager
-    String actual = getExpandSelectTree(null, "ne_Manager,ne_Manager").toString();
+    String actual = getExpandSelectTree(null, "ne_Manager,ne_Manager").toJsonString();
     assertEquals(expected, actual);
   }
 
@@ -269,7 +269,7 @@ public class ExpandSelectTreeCreatorImplTest extends BaseTest {
     String expected = "{\"all\":true,\"properties\":[],\"links\":[{\"ne_Manager\":{\"all\":true,\"properties\":[],\"links\":[{\"ne_Manager\":{\"all\":true,\"properties\":[],\"links\":[]}}]}}]}";
 
     //$expand=ne_Manager/ne_Manager,ne_Manager
-    String actual = getExpandSelectTree(null, "ne_Manager/ne_Manager,ne_Manager").toString();
+    String actual = getExpandSelectTree(null, "ne_Manager/ne_Manager,ne_Manager").toJsonString();
     assertEquals(expected, actual);
   }
 
@@ -280,7 +280,7 @@ public class ExpandSelectTreeCreatorImplTest extends BaseTest {
     String expected2 = "{\"all\":false,\"properties\":[],\"links\":[{\"ne_Room\":null},{\"ne_Manager\":null}]}";
 
     //$select=ne_Manager,ne_Room
-    String actual = getExpandSelectTree("ne_Manager,ne_Room", null).toString();
+    String actual = getExpandSelectTree("ne_Manager,ne_Room", null).toJsonString();
 
     if (!expected.equals(actual) && !expected2.equals(actual)) {
       fail("Either " + expected + " or " + expected2 + " expected but was: " + actual);
@@ -293,8 +293,20 @@ public class ExpandSelectTreeCreatorImplTest extends BaseTest {
     String expected = "{\"all\":false,\"properties\":[],\"links\":[{\"ne_Manager\":{\"all\":true,\"properties\":[],\"links\":[{\"ne_Room\":{\"all\":true,\"properties\":[],\"links\":[{\"nr_Building\":{\"all\":true,\"properties\":[],\"links\":[]}}]}}]}}]}";
 
     //$select=ne_Manager $expand=ne_Manager/ne_Room/nr_Building
-    String actual = getExpandSelectTree("ne_Manager", "ne_Manager/ne_Room/nr_Building").toString();
+    String actual = getExpandSelectTree("ne_Manager", "ne_Manager/ne_Room/nr_Building").toJsonString();
     assertEquals(expected, actual);
+    
+    //$select=ne_Manager,ne_Manager/EmployeeId $expand=ne_Manager/ne_Room/nr_Building
+    actual = getExpandSelectTree("ne_Manager,ne_Manager/EmployeeId", "ne_Manager/ne_Room/nr_Building").toJsonString();
+    assertEquals(expected, actual);   
+    
+    //$select=ne_Manager/EmployeeId,ne_Manager $expand=ne_Manager/ne_Room/nr_Building
+    actual = getExpandSelectTree("ne_Manager/EmployeeId,ne_Manager", "ne_Manager/ne_Room/nr_Building").toJsonString();
+    assertEquals(expected, actual); 
+    
+    //$select=ne_Manager,ne_Manager $expand=ne_Manager/ne_Room/nr_Building
+    actual = getExpandSelectTree("ne_Manager,ne_Manager", "ne_Manager/ne_Room/nr_Building").toJsonString();
+    assertEquals(expected, actual); 
   }
 
   @Test
@@ -304,11 +316,11 @@ public class ExpandSelectTreeCreatorImplTest extends BaseTest {
     String expected = "{\"all\":false,\"properties\":[\"EmployeeId\"],\"links\":[{\"ne_Room\":{\"all\":true,\"properties\":[],\"links\":[]}}]}";
 
     //$select=EmployeeId,ne_Room/* $expand=ne_Room/nr_Building
-    String actual = getExpandSelectTree("EmployeeId,ne_Room/*", "ne_Room/nr_Building").toString();
+    String actual = getExpandSelectTree("EmployeeId,ne_Room/*", "ne_Room/nr_Building").toJsonString();
     assertEquals(expected, actual);
 
     //$select=EmployeeId,ne_Room/Id $expand=ne_Room/nr_Building/nb_Rooms
-    actual = getExpandSelectTree("EmployeeId,ne_Room/*", "ne_Room/nr_Building/nb_Rooms").toString();
+    actual = getExpandSelectTree("EmployeeId,ne_Room/*", "ne_Room/nr_Building/nb_Rooms").toJsonString();
     assertEquals(expected, actual);
   }
 
@@ -319,11 +331,11 @@ public class ExpandSelectTreeCreatorImplTest extends BaseTest {
     String expected = "{\"all\":false,\"properties\":[\"EmployeeId\"],\"links\":[{\"ne_Room\":{\"all\":false,\"properties\":[\"Id\"],\"links\":[]}}]}";
 
     //$select=EmployeeId,ne_Room/* $expand=ne_Room/nr_Building
-    String actual = getExpandSelectTree("EmployeeId,ne_Room/Id", "ne_Room/nr_Building").toString();
+    String actual = getExpandSelectTree("EmployeeId,ne_Room/Id", "ne_Room/nr_Building").toJsonString();
     assertEquals(expected, actual);
 
     //$select=EmployeeId,ne_Room/Id $expand=ne_Room/nr_Building/nb_Rooms
-    actual = getExpandSelectTree("EmployeeId,ne_Room/Id", "ne_Room/nr_Building/nb_Rooms").toString();
+    actual = getExpandSelectTree("EmployeeId,ne_Room/Id", "ne_Room/nr_Building/nb_Rooms").toJsonString();
     assertEquals(expected, actual);
   }
 
@@ -334,15 +346,15 @@ public class ExpandSelectTreeCreatorImplTest extends BaseTest {
     String expected = "{\"all\":true,\"properties\":[],\"links\":[{\"ne_Room\":{\"all\":true,\"properties\":[],\"links\":[]}}]}";
 
     //$select=EmployeeId,ne_Room/* $expand=ne_Room/nr_Building
-    String actual = getExpandSelectTree("*,ne_Room/*", "ne_Room/nr_Building").toString();
+    String actual = getExpandSelectTree("*,ne_Room/*", "ne_Room/nr_Building").toJsonString();
     assertEquals(expected, actual);
 
     //$select=EmployeeId,ne_Room/Id $expand=ne_Room/nr_Building/nb_Rooms
-    actual = getExpandSelectTree("ne_Room/*,*", "ne_Room/nr_Building").toString();
+    actual = getExpandSelectTree("ne_Room/*,*", "ne_Room/nr_Building").toJsonString();
     assertEquals(expected, actual);
   }
 
-  private ExpandSelectTreeNode getExpandSelectTree(final String selectString, final String expandString) throws Exception {
+  private ExpandSelectTreeNodeImpl getExpandSelectTree(final String selectString, final String expandString) throws Exception {
 
     Edm edm = RuntimeDelegate.createEdm(new EdmTestProvider());
     UriParserImpl uriParser = new UriParserImpl(edm);
@@ -359,9 +371,9 @@ public class ExpandSelectTreeCreatorImplTest extends BaseTest {
     }
     UriInfoImpl uriInfo = (UriInfoImpl) uriParser.parse(pathSegments, queryParameters);
 
-    ExpandSelectTreeCreatorImpl expandSelectTreeCreator = new ExpandSelectTreeCreatorImpl(uriInfo.getSelect(), uriInfo.getExpand());
+    ExpandSelectTreeCreator expandSelectTreeCreator = new ExpandSelectTreeCreator(uriInfo.getSelect(), uriInfo.getExpand());
     ExpandSelectTreeNode expandSelectTree = expandSelectTreeCreator.create();
     assertNotNull(expandSelectTree);
-    return expandSelectTree;
+    return (ExpandSelectTreeNodeImpl) expandSelectTree;
   }
 }
