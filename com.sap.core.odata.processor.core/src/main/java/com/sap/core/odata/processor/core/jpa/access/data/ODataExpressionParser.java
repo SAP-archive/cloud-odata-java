@@ -69,7 +69,9 @@ public class ODataExpressionParser {
 	      final BinaryExpression binaryExpression = (BinaryExpression) whereExpression;
 	      final String left = parseToJPAWhereExpression(binaryExpression.getLeftOperand(), tableAlias);
 	      final String right = parseToJPAWhereExpression(binaryExpression.getRightOperand(), tableAlias);
-
+	      if(left.equalsIgnoreCase(right)){
+	    	  throw ODataJPARuntimeException.throwException(ODataJPARuntimeException.GENERAL.addContent(left+" equals "+ right), null);
+	      }
 	      switch (binaryExpression.getOperator()) {
 		      case AND:
 		    	  return left + JPQLStatement.DELIMITER.SPACE + JPQLStatement.Operator.AND + JPQLStatement.DELIMITER.SPACE + right;

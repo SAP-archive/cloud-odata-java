@@ -21,12 +21,18 @@ public class ODataJPAMessageServiceDefault implements ODataJPAMessageService {
 	private static final Map<Locale, ODataJPAMessageService> LOCALE_2_MESSAGE_SERVICE = new HashMap<Locale, ODataJPAMessageService>();
 	private static final ResourceBundle defaultResourceBundle = ResourceBundle.getBundle(BUNDLE_NAME);
 	private final ResourceBundle resourceBundle;
-	private final Locale lanLocale;
+	private final Locale lanLocale;	
 
 	@Override
-	public String getLocalizedMessage(MessageReference context) {
+	public String getLocalizedMessage(MessageReference context,Throwable exception) {
 
 		Object[] contentAsArray = context.getContent().toArray(new Object[0]);
+		
+		if(contentAsArray.length==0 && exception!=null) {
+			contentAsArray = new Object[2];
+			contentAsArray[0] = exception.getStackTrace()[1].getClassName();
+			contentAsArray[1] = exception.getMessage();
+		}
 		String value = null;
 		String key = context.getKey();
 
