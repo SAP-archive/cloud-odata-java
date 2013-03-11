@@ -80,13 +80,14 @@ public class ExpandSelectTreeCreator {
               //If the whole navigation part of a select item matches expand everything if the expand still has segments left
               if ((item.getProperty() == null && !item.isStar()) && segmentListIndex == segmentsList.size() - 1) {
                 ExpandSelectTreeNodeImpl expandNodes = childNode;
+                expandNodes.setAllExplicitly();
                 for (int expandListIndex = segmentListIndex + 1; expandListIndex < singleExpandList.size(); expandListIndex++) {
-                  ExpandSelectTreeNode newNode = new ExpandSelectTreeNodeImpl();
-                  expandNodes.setAllExplicitly();
+                  ExpandSelectTreeNodeImpl newNode = new ExpandSelectTreeNodeImpl();
+                  newNode.setAllExplicitly();
                   expandNodes = (ExpandSelectTreeNodeImpl) expandNodes.addChild(singleExpandList.get(expandListIndex).getNavigationProperty(), newNode);
                 }
               }
-              break;
+              actualNode.addChild(segmentsList.get(segmentListIndex).getNavigationProperty(), childNode);
             }
           }
         }

@@ -356,6 +356,40 @@ public class ExpandSelectTreeCreatorImplTest extends BaseTest {
     actual = getExpandSelectTree("ne_Room/*,*", "ne_Room/nr_Building").toJsonString();
     assertEquals(expected, actual);
   }
+  
+  @Test
+  public void twoExpandsTest() throws Exception {
+
+    //{"all":false,"properties":[],"links":[{"ne_Manager":{"all":true,"properties":[],"links":[{"ne_Room":{"all":true,"properties":[],"links":[{"nr_Building":{"all":true,"properties":[],"links":[]}}]}},{"ne_Team":{"all":true,"properties":[],"links":[]}}]}}]}
+    String expected1 = "{\"all\":false,\"properties\":[],\"links\":[{\"ne_Manager\":{\"all\":true,\"properties\":[],\"links\":[{\"ne_Room\":{\"all\":true,\"properties\":[],\"links\":[{\"nr_Building\":{\"all\":true,\"properties\":[],\"links\":[]}}]}},{\"ne_Team\":{\"all\":true,\"properties\":[],\"links\":[]}}]}}]}";
+    String expected2 = "{\"all\":false,\"properties\":[],\"links\":[{\"ne_Manager\":{\"all\":true,\"properties\":[],\"links\":[{\"ne_Team\":{\"all\":true,\"properties\":[],\"links\":[]}},{\"ne_Room\":{\"all\":true,\"properties\":[],\"links\":[{\"nr_Building\":{\"all\":true,\"properties\":[],\"links\":[]}}]}}]}}]}";
+
+    
+    
+    //$select=ne_Manager $expand=ne_Manager/ne_Room/nr_Building,ne_Manager/ne_Team
+    String actual = getExpandSelectTree("ne_Manager", "ne_Manager/ne_Room/nr_Building,ne_Manager/ne_Team").toJsonString();
+    if (!expected1.equals(actual) && !expected2.equals(actual)) {
+      fail("Either " + expected1 + " or " + expected2 + " expected but was: " + actual);
+    }
+    
+    //$select=ne_Manager $expand=ne_Manager/ne_Team,ne_Manager/ne_Room/nr_Building
+    actual = getExpandSelectTree("ne_Manager", "ne_Manager/ne_Team,ne_Manager/ne_Room/nr_Building").toJsonString();
+    if (!expected1.equals(actual) && !expected2.equals(actual)) {
+      fail("Either " + expected1 + " or " + expected2 + " expected but was: " + actual);
+    }
+    
+    //$select=ne_Manager,ne_Manager/ne_Team/Id $expand=ne_Manager/ne_Team,ne_Manager/ne_Room/nr_Building
+    actual = getExpandSelectTree("ne_Manager,ne_Manager/ne_Team/Id", "ne_Manager/ne_Team,ne_Manager/ne_Room/nr_Building").toJsonString();
+    if (!expected1.equals(actual) && !expected2.equals(actual)) {
+      fail("Either " + expected1 + " or " + expected2 + " expected but was: " + actual);
+    }
+    
+    //$select=ne_Manager/ne_Team/Id,ne_Manager $expand=ne_Manager/ne_Team,ne_Manager/ne_Room/nr_Building
+    actual = getExpandSelectTree("ne_Manager/ne_Team/Id,ne_Manager", "ne_Manager/ne_Team,ne_Manager/ne_Room/nr_Building").toJsonString();
+    if (!expected1.equals(actual) && !expected2.equals(actual)) {
+      fail("Either " + expected1 + " or " + expected2 + " expected but was: " + actual);
+    }
+  }
 
   private ExpandSelectTreeNodeImpl getExpandSelectTree(final String selectString, final String expandString) throws Exception {
 
