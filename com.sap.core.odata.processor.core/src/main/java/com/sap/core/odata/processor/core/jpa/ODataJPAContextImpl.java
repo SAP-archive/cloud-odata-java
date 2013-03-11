@@ -1,5 +1,6 @@
 package com.sap.core.odata.processor.core.jpa;
 
+import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 
 import com.sap.core.odata.api.edm.provider.EdmProvider;
@@ -8,15 +9,16 @@ import com.sap.core.odata.api.processor.ODataProcessor;
 import com.sap.core.odata.processor.api.jpa.ODataJPAContext;
 
 public class ODataJPAContextImpl implements ODataJPAContext {
-	
+
 	private String pUnitName;
 	private EntityManagerFactory emf;
+	private EntityManager em;
 	private ODataContext odataContext;
 	private ODataProcessor processor;
-	private EdmProvider	edmProvider;
+	private EdmProvider edmProvider;
 	private String jpaEdmMappingModelName;
 	private static final ThreadLocal<ODataContext> oDataContextThreadLocal = new ThreadLocal<ODataContext>();
-	
+
 	@Override
 	public String getPersistenceUnitName() {
 		return pUnitName;
@@ -40,7 +42,7 @@ public class ODataJPAContextImpl implements ODataJPAContext {
 	@Override
 	public void setODataContext(ODataContext ctx) {
 		this.odataContext = ctx;
-		setContextInThreadLocal(this.odataContext);		
+		setContextInThreadLocal(this.odataContext);
 	}
 
 	@Override
@@ -71,14 +73,14 @@ public class ODataJPAContextImpl implements ODataJPAContext {
 	@Override
 	public void setJPAEdmNameMappingModel(String name) {
 		jpaEdmMappingModelName = name;
-		
+
 	}
 
 	@Override
 	public String getJPAEdmNameMappingModel() {
 		return jpaEdmMappingModelName;
 	}
-	
+
 	public static void setContextInThreadLocal(ODataContext ctx) {
 		oDataContextThreadLocal.set(ctx);
 	}
@@ -89,5 +91,12 @@ public class ODataJPAContextImpl implements ODataJPAContext {
 
 	public static ODataContext getContextInThreadLocal() {
 		return (ODataContext) oDataContextThreadLocal.get();
+	}
+
+	@Override
+	public EntityManager getEntityManager() {
+		if (em == null)
+			emf. createEntityManager();
+		return em;
 	}
 }

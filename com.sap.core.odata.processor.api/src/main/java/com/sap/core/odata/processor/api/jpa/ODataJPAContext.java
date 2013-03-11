@@ -1,5 +1,6 @@
 package com.sap.core.odata.processor.api.jpa;
 
+import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 
 import com.sap.core.odata.api.edm.provider.EdmProvider;
@@ -78,7 +79,10 @@ public interface ODataJPAContext {
 
 	/**
 	 * The method gets the Java Persistence Entity Manager factory from the
-	 * context.
+	 * context. <br>
+	 * <b>CAUTION:-</b> Don't use the Entity Manager Factory to instantiate
+	 * Entity Managers. Instead get reference to Entity Manager using
+	 * {@link com.sap.core.odata.processor.api.jpa.ODataJPAContext#getEntityManager()}
 	 * 
 	 * @return an instance of Java Persistence Entity Manager Factory
 	 */
@@ -126,4 +130,13 @@ public interface ODataJPAContext {
 	 */
 	public String getJPAEdmNameMappingModel();
 
+	/**
+	 * The method returns an instance of type entity manager. The entity manager
+	 * thus returns a single persistence context for the current OData request.
+	 * Hence all entities that are accessed within JPA processor are managed by
+	 * single entity manager.
+	 * 
+	 * @return an instance of type {@link javax.persistence.EntityManager}
+	 */
+	public EntityManager getEntityManager();
 }

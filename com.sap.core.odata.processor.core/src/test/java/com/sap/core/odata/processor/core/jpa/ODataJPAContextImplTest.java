@@ -2,6 +2,7 @@ package com.sap.core.odata.processor.core.jpa;
 
 import static org.junit.Assert.assertEquals;
 
+import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 
 import org.easymock.EasyMock;
@@ -21,6 +22,7 @@ public class ODataJPAContextImplTest {
 	private ODataJPAContext odataJPAContext = null;
 	private EdmProvider edmProvider = null;
 	private EntityManagerFactory emf = null;
+	private EntityManager em = null;
 	private ODataProcessor processor = null;
 
 	@Before
@@ -28,10 +30,14 @@ public class ODataJPAContextImplTest {
 
 		edmProvider = new ODataJPAEdmProvider();
 		emf = EasyMock.createMock(EntityManagerFactory.class);
+		em = EasyMock.createMock(EntityManager.class);
+		EasyMock.replay(em);
+		
+		EasyMock.expect(emf.createEntityManager()).andStubReturn(em);
 		EasyMock.replay(emf);
 
 		odataContext = EasyMock.createMock(ODataContext.class);
-		EasyMock.expect(odataContext.getAcceptableLanguages()).andStubReturn(null);
+		//EasyMock.expect(odataContext.getAcceptableLanguages()).andStubReturn(null);
 		EasyMock.replay(odataContext);
 
 		processor = EasyMock.createMock(ODataProcessor.class);
@@ -57,6 +63,10 @@ public class ODataJPAContextImplTest {
 		assertEquals(odataJPAContext.getPersistenceUnitName(),
 				ODataJPAContextMock.PERSISTENCE_UNIT_NAME);
 		assertEquals(odataJPAContext.getJPAEdmNameMappingModel(), ODataJPAContextMock.MAPPING_MODEL);
+		
+		EntityManager em1 = odataJPAContext.getEntityManager();
+		EntityManager em2 = odataJPAContext.getEntityManager();
+		assertEquals(em1.hashCode(), em2.hashCode());
 
 	}
 
