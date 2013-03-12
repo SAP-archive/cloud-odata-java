@@ -358,6 +358,21 @@ public class ExpandSelectTreeCreatorImplTest extends BaseTest {
   }
   
   @Test
+  public void twoExpandsTwoSelects() throws Exception {
+
+    //{"all":false,"properties":[],"links":[{"ne_Manager":{"all":false,"properties":["EmployeeId"],"links":[{"ne_Room":{"all":true,"properties":[],"links":[{"nr_Building":{"all":true,"properties":[],"links":[]}}]}}]}}]}
+    String expected = "{\"all\":false,\"properties\":[],\"links\":[{\"ne_Manager\":{\"all\":false,\"properties\":[\"EmployeeId\"],\"links\":[{\"ne_Room\":{\"all\":true,\"properties\":[],\"links\":[{\"nr_Building\":{\"all\":true,\"properties\":[],\"links\":[]}}]}}]}}]}";
+
+    //$select=ne_Manager/EmployeeId,ne_Manager/ne_Room $expand=ne_Manager/ne_Room/nr_Building
+    String actual = getExpandSelectTree("ne_Manager/ne_Room,ne_Manager/EmployeeId", "ne_Manager/ne_Room/nr_Building").toJsonString();
+    assertEquals(expected, actual);
+
+    //$select=EmployeeId,ne_Room/Id $expand=ne_Room/nr_Building/nb_Rooms
+    actual = getExpandSelectTree("ne_Manager/EmployeeId,ne_Manager/ne_Room", "ne_Manager/ne_Room/nr_Building").toJsonString();
+    assertEquals(expected, actual);
+  }
+  
+  @Test
   public void twoExpandsTest() throws Exception {
 
     //{"all":false,"properties":[],"links":[{"ne_Manager":{"all":true,"properties":[],"links":[{"ne_Room":{"all":true,"properties":[],"links":[{"nr_Building":{"all":true,"properties":[],"links":[]}}]}},{"ne_Team":{"all":true,"properties":[],"links":[]}}]}}]}
