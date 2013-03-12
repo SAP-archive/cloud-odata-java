@@ -23,8 +23,10 @@ import org.junit.Test;
 import org.xml.sax.SAXException;
 
 import com.sap.core.odata.api.edm.Edm;
+import com.sap.core.odata.api.edm.EdmConcurrencyMode;
 import com.sap.core.odata.api.edm.EdmCustomizableFeedMappings;
 import com.sap.core.odata.api.edm.EdmEntitySet;
+import com.sap.core.odata.api.edm.EdmFacets;
 import com.sap.core.odata.api.edm.EdmProperty;
 import com.sap.core.odata.api.edm.EdmTargetPath;
 import com.sap.core.odata.api.edm.EdmTyped;
@@ -157,11 +159,11 @@ public class AtomEntryProducerTest extends AbstractProviderTest {
     EdmEntitySet employeeEntitySet = MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Employees");
 
     // set "keepInContent" to false for EntryDate
-    EdmCustomizableFeedMappings employeeUpdatedeMappings = mock(EdmCustomizableFeedMappings.class);
-    when(employeeUpdatedeMappings.getFcTargetPath()).thenReturn(EdmTargetPath.SYNDICATION_UPDATED);
-    when(employeeUpdatedeMappings.isFcKeepInContent()).thenReturn(Boolean.FALSE);
+    EdmCustomizableFeedMappings employeeUpdatedMappings = mock(EdmCustomizableFeedMappings.class);
+    when(employeeUpdatedMappings.getFcTargetPath()).thenReturn(EdmTargetPath.SYNDICATION_UPDATED);
+    when(employeeUpdatedMappings.isFcKeepInContent()).thenReturn(Boolean.FALSE);
     EdmTyped employeeEntryDateProperty = employeeEntitySet.getEntityType().getProperty("EntryDate");
-    when(((EdmProperty) employeeEntryDateProperty).getCustomizableFeedMappings()).thenReturn(employeeUpdatedeMappings);
+    when(((EdmProperty) employeeEntryDateProperty).getCustomizableFeedMappings()).thenReturn(employeeUpdatedMappings);
 
     ODataResponse response = ser.writeEntry(employeeEntitySet, employeeData, properties);
     String xmlString = verifyResponse(response);
@@ -294,20 +296,27 @@ public class AtomEntryProducerTest extends AbstractProviderTest {
 
   @Test
   public void serializeETagEncoding() throws IOException, XpathException, SAXException, XMLStreamException, FactoryConfigurationError, ODataException {
+    Edm edm = MockFacade.getMockEdm();
+    EdmTyped roomIdProperty = edm.getEntityType("RefScenario", "Room").getProperty("Id");
+    EdmFacets facets = mock(EdmFacets.class);
+    when(facets.getConcurrencyMode()).thenReturn(EdmConcurrencyMode.Fixed);
+    when(facets.getMaxLength()).thenReturn(3);
+    when(((EdmProperty) roomIdProperty).getFacets()).thenReturn(facets);
+
     roomData.put("Id", "<\">");
     AtomEntityProvider ser = createAtomEntityProvider();
-    ODataResponse response = ser.writeEntry(MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Rooms"), roomData, DEFAULT_PROPERTIES);
+    ODataResponse response = ser.writeEntry(edm.getDefaultEntityContainer().getEntitySet("Rooms"), roomData, DEFAULT_PROPERTIES);
 
     assertNotNull(response);
     assertNotNull(response.getEntity());
     assertEquals(ContentType.APPLICATION_ATOM_XML_ENTRY_CS_UTF_8.toContentTypeString(), response.getContentHeader());
-    assertEquals("W/\"<\">\"", response.getETag());
+    assertEquals("W/\"<\">.3\"", response.getETag());
 
     String xmlString = StringHelper.inputStreamToString((InputStream) response.getEntity());
 
     assertXpathExists("/a:entry", xmlString);
     assertXpathExists("/a:entry/@m:etag", xmlString);
-    assertXpathEvaluatesTo("W/\"<\">\"", "/a:entry/@m:etag", xmlString);
+    assertXpathEvaluatesTo("W/\"<\">.3\"", "/a:entry/@m:etag", xmlString);
   }
 
   @Test

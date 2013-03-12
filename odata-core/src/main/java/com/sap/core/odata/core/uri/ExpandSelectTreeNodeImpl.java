@@ -28,7 +28,6 @@ public class ExpandSelectTreeNodeImpl implements ExpandSelectTreeNode {
 
     public boolean getBoolean() {
       return booleanRepresentation;
-
     }
   }
 
@@ -123,37 +122,28 @@ public class ExpandSelectTreeNodeImpl implements ExpandSelectTreeNode {
     String propertiesString = "";
     String linksString = "";
 
-    if (properties.isEmpty() == false) {
-      for (EdmProperty property : properties) {
-        propertiesString = propertiesString + "\"" + property.getName() + "\",";
-      }
-      propertiesString = propertiesString.substring(0, propertiesString.length() - 1);
+    for (EdmProperty property : properties) {
+      if (!propertiesString.isEmpty())
+        propertiesString += ",";
+      propertiesString += "\"" + property.getName() + "\"";
     }
 
-    if (links.isEmpty() == false) {
-      for (Map.Entry<EdmNavigationProperty, ExpandSelectTreeNode> entry : links.entrySet()) {
-        String nodeString;
-        if (entry.getValue() == null) {
-          nodeString = null;
-        } else {
-          nodeString = ((ExpandSelectTreeNodeImpl) entry.getValue()).toJsonString();
-        }
-        linksString = linksString + "{\"" + entry.getKey().getName() + "\":" + nodeString + "},";
-      }
-      linksString = linksString.substring(0, linksString.length() - 1);
+    for (Map.Entry<EdmNavigationProperty, ExpandSelectTreeNode> entry : links.entrySet()) {
+      final String nodeString = entry.getValue() == null ? null : ((ExpandSelectTreeNodeImpl) entry.getValue()).toJsonString();
+      if (!linksString.isEmpty())
+        linksString += ",";
+      linksString += "{\"" + entry.getKey().getName() + "\":" + nodeString + "}";
     }
 
     return "{\"all\":" + isAll() + ",\"properties\":[" + propertiesString + "],\"links\":[" + linksString + "]}";
   }
-  
+
   @Override
-  public String toString(){
-   
+  public String toString() {
     try {
       return toJsonString();
     } catch (EdmException e) {
-     return "Edm Exception occoured";
+      return "EdmException occurred";
     }
   }
-
 }
