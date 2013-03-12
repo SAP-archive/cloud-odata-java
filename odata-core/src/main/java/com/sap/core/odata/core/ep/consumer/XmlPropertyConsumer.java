@@ -17,6 +17,7 @@ import com.sap.core.odata.api.ep.EntityProviderException;
 import com.sap.core.odata.core.ep.aggregator.EntityComplexPropertyInfo;
 import com.sap.core.odata.core.ep.aggregator.EntityInfoAggregator;
 import com.sap.core.odata.core.ep.aggregator.EntityPropertyInfo;
+import com.sap.core.odata.core.ep.aggregator.EntityTypeMapping;
 
 public class XmlPropertyConsumer {
 
@@ -24,12 +25,12 @@ public class XmlPropertyConsumer {
     return readProperty(reader, property, merge, null);
   }
   
-  public Map<String, Object> readProperty(final XMLStreamReader reader, final EdmProperty property, final boolean merge, Map<String, Class<?>> typeMappings) throws EntityProviderException {
+  public Map<String, Object> readProperty(final XMLStreamReader reader, final EdmProperty property, final boolean merge, Map<String, Object> typeMappings) throws EntityProviderException {
     try {
       EntityPropertyInfo eia = EntityInfoAggregator.create(property);
       reader.next();
 
-      Object value = readStartedElement(reader, eia, validatedTypeMappings(typeMappings));
+      Object value = readStartedElement(reader, eia, EntityTypeMapping.create(typeMappings));
 
       if (eia.isComplex() && merge) {
         mergeWithDefaultValues(value, eia);
@@ -43,14 +44,15 @@ public class XmlPropertyConsumer {
     }
   }
 
-  private Map<String, Class<?>> validatedTypeMappings(Map<String, Class<?>> typeMappings) {
+  private Map<String, Object> validatedTypeMappings(Map<String, Object> typeMappings) {
     if(typeMappings == null) {
       return Collections.emptyMap();
     }
-    Map<String, Class<?>> usedTypeMappings = new HashMap<String, Class<?>>();
+    Map<String, Object> usedTypeMappings = new HashMap<String, Object>();
     usedTypeMappings.putAll(typeMappings);
     return usedTypeMappings;
   }
+
 
   @SuppressWarnings("unchecked")
   private void mergeWithDefaultValues(final Object value, final EntityPropertyInfo epi) throws EntityProviderException {
@@ -82,7 +84,7 @@ public class XmlPropertyConsumer {
     }
   }
 
-  Object readStartedElement(final XMLStreamReader reader, final EntityPropertyInfo propertyInfo, Map<String, Class<?>> typeMappings) throws EntityProviderException, XMLStreamException, EdmException {
+  Object readStartedElement(final XMLStreamReader reader, final EntityPropertyInfo propertyInfo, EntityTypeMapping typeMappings) throws EntityProviderException, XMLStreamException, EdmException {
     //
     int eventType = reader.getEventType();
     if (eventType != XMLStreamConstants.START_ELEMENT) {
@@ -99,11 +101,11 @@ public class XmlPropertyConsumer {
         String childName = reader.getLocalName();
         EntityPropertyInfo childProperty = getChildProperty(childName, propertyInfo);
 
-        Object value = readStartedElement(reader, childProperty, typeMappings);
+        Object value = readStartedElement(reader, childProperty, typeMappings.getEntityTypeMapping(propertyInfo.getName()));
         name2Value.put(childName, value);
       } else if (XMLStreamConstants.CHARACTERS == eventType && !propertyInfo.isComplex()) {
-        Class<?> typeMapping = typeMappings.get(propertyInfo.getName());
-        result = convert(propertyInfo, reader.getText(), typeMapping);
+        Class<?> mapping = typeMappings.getMappingClass(propertyInfo.getName());
+        result = convert(propertyInfo, reader.getText(), mapping);
       }
     }
 

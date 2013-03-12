@@ -576,7 +576,7 @@ public class XmlEntityConsumerTest extends AbstractConsumerTest {
 
     EdmEntitySet entitySet = MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Employees");
     InputStream content = createContentAsStream(EMPLOYEE_1_XML);
-    ODataEntry result = xec.readEntry(entitySet, content, true, new HashMap<String, Class<?>>());
+    ODataEntry result = xec.readEntry(entitySet, content, true, new HashMap<String, Object>());
 
     // verify
     Map<String, Object> properties = result.getProperties();
