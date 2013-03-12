@@ -374,6 +374,46 @@ public class XmlEntityConsumerTest extends AbstractConsumerTest {
     assertEquals("/SAP/PUBLIC/BC/NWDEMO_MODEL/IMAGES/male_1_WinterW.jpg", properties.get("ImageUrl"));
   }
 
+  /**
+   * Missing 'key' properties are allowed for validation against Edm model.
+   * @throws Exception
+   */
+  @Test
+  @SuppressWarnings("unchecked")
+  public void testReadEntryMissingKeyProperty() throws Exception {
+    // prepare
+    EdmEntitySet entitySet = MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Employees");
+    InputStream contentBody = createContentAsStream(EMPLOYEE_1_XML.replace("<d:EmployeeId>1</d:EmployeeId>", ""));
+
+    // execute
+    XmlEntityConsumer xec = new XmlEntityConsumer();
+    boolean merge = false;
+    ODataEntry result = xec.readEntry(entitySet, contentBody, merge);
+
+    // verify
+    Map<String, Object> properties = result.getProperties();
+    assertEquals(8, properties.size());
+
+    assertNull(properties.get("EmployeeId"));
+//    assertEquals("1", properties.get("EmployeeId"));
+    assertEquals("Walter Winter", properties.get("EmployeeName"));
+    assertEquals("1", properties.get("ManagerId"));
+    assertEquals("1", properties.get("RoomId"));
+    assertEquals("1", properties.get("TeamId"));
+    Map<String, Object> location = (Map<String, Object>) properties.get("Location");
+    assertEquals(2, location.size());
+    assertEquals("Germany", location.get("Country"));
+    Map<String, Object> city = (Map<String, Object>) location.get("City");
+    assertEquals(2, city.size());
+    assertEquals("69124", city.get("PostalCode"));
+    assertEquals("Heidelberg", city.get("CityName"));
+    assertEquals(Integer.valueOf(52), properties.get("Age"));
+    Calendar entryDate = (Calendar) properties.get("EntryDate");
+    assertEquals(Long.valueOf(915148800000l), Long.valueOf(entryDate.getTimeInMillis()));
+    assertEquals(TimeZone.getTimeZone("GMT"), entryDate.getTimeZone());
+    assertEquals("/SAP/PUBLIC/BC/NWDEMO_MODEL/IMAGES/male_1_WinterW.jpg", properties.get("ImageUrl"));
+  }
+
   @Test(expected = EntityProviderException.class)
   public void testReadEntryMissingProperty() throws Exception {
     // prepare
