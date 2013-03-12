@@ -26,6 +26,13 @@ public abstract class AbstractConsumerTest extends BaseTest {
     return streamReader;
   }
 
+  
+  protected Map<String, Object> createTypeMappings(String key, Object value) {
+    Map<String, Object> typeMappings = new HashMap<String, Object>();
+    typeMappings.put(key, value);
+    return typeMappings;
+  }
+  
   /**
    * Create a map with a 'String' to 'Class<?>' mapping based on given parameters.
    * Therefore parameters MUST be a set of such pairs.
@@ -39,8 +46,8 @@ public abstract class AbstractConsumerTest extends BaseTest {
    * @param firstKeyThenMappingClass
    * @return
    */
-  protected Map<String, Class<?>> createTypeMappings(Object ... firstKeyThenMappingClass) {
-    Map<String, Class<?>> typeMappings = new HashMap<String, Class<?>>();
+  protected Map<String, Object> createTypeMappings(Object ... firstKeyThenMappingClass) {
+    Map<String, Object> typeMappings = new HashMap<String, Object>();
     if(firstKeyThenMappingClass.length % 2 != 0) {
       throw new IllegalArgumentException("Got odd number of parameters. Please read javadoc.");
     }

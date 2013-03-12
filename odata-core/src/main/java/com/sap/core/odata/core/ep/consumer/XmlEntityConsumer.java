@@ -37,7 +37,7 @@ public class XmlEntityConsumer {
     return readEntry(entitySet, content, merge, null);
   }
   
-  public ODataEntry readEntry(final EdmEntitySet entitySet, final Object content, final boolean merge, final Map<String, Class<?>> typeMappings) throws EntityProviderException {
+  public ODataEntry readEntry(final EdmEntitySet entitySet, final Object content, final boolean merge, final Map<String, Object> typeMappings) throws EntityProviderException {
     XMLStreamReader reader = null;
 
     try {
@@ -67,7 +67,7 @@ public class XmlEntityConsumer {
     return readProperty(edmProperty, content, merge, null);
   }
   
-  public Map<String, Object> readProperty(final EdmProperty edmProperty, final Object content, final boolean merge, final Map<String, Class<?>> typeMappings) throws EntityProviderException {
+  public Map<String, Object> readProperty(final EdmProperty edmProperty, final Object content, final boolean merge, final Map<String, Object> typeMappings) throws EntityProviderException {
     XMLStreamReader reader = null;
 
     try {
@@ -95,9 +95,14 @@ public class XmlEntityConsumer {
   
   public Object readPropertyValue(final EdmProperty edmProperty, final Object content, final Class<?> typeMapping) throws EntityProviderException {
     try {
-      Map<String, Class<?>> typeMappings = new HashMap<String, Class<?>>();
-      typeMappings.put(edmProperty.getName(), typeMapping);
-      Map<String, Object> result = readProperty(edmProperty, content, false, typeMappings);
+      final Map<String, Object> result;
+      if(typeMapping == null) {
+        result = readProperty(edmProperty, content, false, null);
+      } else {
+        Map<String, Object> typeMappings = new HashMap<String, Object>();
+        typeMappings.put(edmProperty.getName(), typeMapping);
+        result = readProperty(edmProperty, content, false, typeMappings);
+      }
       return result.get(edmProperty.getName());
     } catch (Exception e) {
       throw new EntityProviderException(EntityProviderException.COMMON, e);

@@ -199,7 +199,7 @@ public final class EntityProvider {
      * @return entry as {@link ODataEntry}
      * @throws EntityProviderException if reading of data (de-serialization) fails
      */
-    ODataEntry readEntry(String contentType, EdmEntitySet entitySet, InputStream content, boolean merge, Map<String, Class<?>> typeMappings) throws EntityProviderException;
+    ODataEntry readEntry(String contentType, EdmEntitySet entitySet, InputStream content, boolean merge, Map<String, Object> typeMappings) throws EntityProviderException;
 
     /**
      * Read (de-serialize) properties from <code>content</code> (as {@link InputStream}) in specified format (given as <code>contentType</code>)
@@ -218,7 +218,7 @@ public final class EntityProvider {
      * @return property as name and value in a map
      * @throws EntityProviderException if reading of data (de-serialization) fails
      */
-    Map<String, Object> readProperty(String contentType, EdmProperty edmProperty, InputStream content, boolean merge, Map<String, Class<?>> typeMappings) throws EntityProviderException;
+    Map<String, Object> readProperty(String contentType, EdmProperty edmProperty, InputStream content, boolean merge, Map<String, Object> typeMappings) throws EntityProviderException;
 
     /**
      * Read (de-serialize) a property value from <code>content</code> (as {@link InputStream}) in format <code>text/plain</code>
@@ -477,7 +477,7 @@ public final class EntityProvider {
    * @return entry as {@link ODataEntry}
    * @throws EntityProviderException if reading of data (de-serialization) fails
    */
-  public static ODataEntry readEntry(final String contentType, final EdmEntitySet entitySet, final InputStream content, final boolean merge, Map<String, Class<?>> typeMappings) throws EntityProviderException {
+  public static ODataEntry readEntry(final String contentType, final EdmEntitySet entitySet, final InputStream content, final boolean merge, Map<String, Object> typeMappings) throws EntityProviderException {
     return createEntityProvider().readEntry(contentType, entitySet, content, merge, typeMappings);
   }
 
@@ -516,7 +516,7 @@ public final class EntityProvider {
    * @return property as name and value in a map
    * @throws EntityProviderException if reading of data (de-serialization) fails
    */
-  public static Map<String, Object> readProperty(final String contentType, final EdmProperty edmProperty, final InputStream content, final boolean merge, Map<String, Class<?>> typeMappings) throws EntityProviderException {
+  public static Map<String, Object> readProperty(final String contentType, final EdmProperty edmProperty, final InputStream content, final boolean merge, Map<String, Object> typeMappings) throws EntityProviderException {
     return createEntityProvider().readProperty(contentType, edmProperty, content, merge, typeMappings);
   }
 

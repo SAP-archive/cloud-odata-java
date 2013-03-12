@@ -26,6 +26,7 @@ import com.sap.core.odata.api.ep.EntityProviderException;
 import com.sap.core.odata.api.ep.entry.ODataEntry;
 import com.sap.core.odata.core.ep.aggregator.EntityInfoAggregator;
 import com.sap.core.odata.core.ep.aggregator.EntityPropertyInfo;
+import com.sap.core.odata.core.ep.aggregator.EntityTypeMapping;
 import com.sap.core.odata.core.ep.entry.EntryMetadataImpl;
 import com.sap.core.odata.core.ep.entry.MediaMetadataImpl;
 import com.sap.core.odata.core.ep.entry.ODataEntryImpl;
@@ -41,7 +42,7 @@ public class XmlEntryConsumer {
   final Map<String, Object> properties;
   final MediaMetadataImpl mediaMetadata;
   final EntryMetadataImpl entryMetadata;
-  final Map<String, Class<?>> typeMappings;
+  EntityTypeMapping typeMappings;
   
   private String currentHandledStartTagName = null;
 
@@ -51,18 +52,15 @@ public class XmlEntryConsumer {
     entryMetadata = new EntryMetadataImpl();
     readEntryResult = new ODataEntryImpl(properties, mediaMetadata, entryMetadata);
     foundPrefix2NamespaceUri = new HashMap<String, String>();
-    typeMappings = new HashMap<String, Class<?>>();
   }
 
   public ODataEntry readEntry(final XMLStreamReader reader, final EntityInfoAggregator eia, final boolean merge) throws EntityProviderException {
     return readEntry(reader, eia, merge, null);
   }
   
-  public ODataEntry readEntry(final XMLStreamReader reader, final EntityInfoAggregator eia, final boolean merge, Map<String, Class<?>> typeMappings) throws EntityProviderException {
+  public ODataEntry readEntry(final XMLStreamReader reader, final EntityInfoAggregator eia, final boolean merge, Map<String, Object> typeMappings) throws EntityProviderException {
     try {
-      if(typeMappings != null) {
-        this.typeMappings.putAll(typeMappings);
-      }
+      this.typeMappings = EntityTypeMapping.create(typeMappings);
       
       int eventType;
       while ((eventType = reader.next()) != XMLStreamConstants.END_DOCUMENT) {
