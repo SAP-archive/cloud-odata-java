@@ -9,33 +9,13 @@ import java.util.Set;
 
 import com.sap.core.odata.api.ep.EntityProviderException;
 
+/**
+ * 
+ * 
+ * @author SAP AG
+ */
 public class EntityTypeMapping {
-  public static EntityTypeMapping create(Map<String, Object> mappings) throws EntityProviderException {
-    return create(null, mappings);
-  }
-
-  public static EntityTypeMapping create(String name, Map<String, Object> mappings) throws EntityProviderException {
-    if (mappings == null) {
-      return new EntityTypeMapping();
-    }
-    List<EntityTypeMapping> typeMappings = new ArrayList<EntityTypeMapping>();
-    Set<Entry<String, Object>> entries = mappings.entrySet();
-    for (Entry<String, Object> entry : entries) {
-      EntityTypeMapping typeMapping;
-      Object value = entry.getValue();
-      if (value instanceof Map) {
-        typeMapping = create(entry.getKey(), (Map) value);
-      } else if (value instanceof Class) {
-        typeMapping = new EntityTypeMapping(entry.getKey(), (Class<?>) value);
-      } else {
-        throw new EntityProviderException(EntityProviderException.COMMON);
-      }
-      typeMappings.add(typeMapping);
-    }
-
-    return new EntityTypeMapping(name, typeMappings);
-  }
-
+  private static final EntityTypeMapping ENTITY_TYPE_MAPPING = new EntityTypeMapping();
   final String propertyName;
   final Class<?> mapping;
   final List<EntityTypeMapping> mappings;
@@ -60,10 +40,45 @@ public class EntityTypeMapping {
     mappings = Collections.unmodifiableList(tmp);
   }
 
+  public static EntityTypeMapping create(Map<String, Object> mappings) throws EntityProviderException {
+    return create(null, mappings);
+  }
+
+  @SuppressWarnings("unchecked")
+  public static EntityTypeMapping create(String name, Map<String, Object> mappings) throws EntityProviderException {
+    if (mappings == null) {
+      return ENTITY_TYPE_MAPPING;
+    }
+    List<EntityTypeMapping> typeMappings = new ArrayList<EntityTypeMapping>();
+    Set<Entry<String, Object>> entries = mappings.entrySet();
+    for (Entry<String, Object> entry : entries) {
+      EntityTypeMapping typeMapping;
+      Object value = entry.getValue();
+      if (value instanceof Map) {
+        typeMapping = create(entry.getKey(), (Map<String, Object>) value);
+      } else if (value instanceof Class) {
+        typeMapping = new EntityTypeMapping(entry.getKey(), (Class<?>) value);
+      } else {
+        throw new EntityProviderException(EntityProviderException.ILLEGAL_ARGUMENT.addContent("Got invalid mapping value."));
+      }
+      typeMappings.add(typeMapping);
+    }
+
+    return new EntityTypeMapping(name, typeMappings);
+  }
+
   boolean isComplex() {
     return mappings != null && mapping == EntityTypeMapping.class;
   }
 
+  /**
+   * If this {@link EntityTypeMapping} is complex ({@link #isComplex()} the mapping for the property
+   * with given <code>name</code> is returned.
+   * If it is not complex an empty {@link EntityTypeMapping} is returned.
+   * 
+   * @param name
+   * @return
+   */
   public EntityTypeMapping getEntityTypeMapping(String name) {
     if (isComplex()) {
       for (EntityTypeMapping mapping : mappings) {
@@ -72,9 +87,17 @@ public class EntityTypeMapping {
         }
       }
     }
-    return new EntityTypeMapping();
+    return ENTITY_TYPE_MAPPING;
   }
 
+  /**
+   * If this {@link EntityTypeMapping} is complex ({@link #isComplex()} the mapping {@link Class} for the property
+   * with given <code>name</code> is returned.
+   * If it is not complex <code>NULL</code> is returned.
+   * 
+   * @param name
+   * @return mapping {@link Class} for the property with given <code>name</code> or <code>NULL</code>.
+   */
   public Class<?> getMappingClass(String name) {
     if (isComplex()) {
       for (EntityTypeMapping mapping : mappings) {
@@ -89,9 +112,9 @@ public class EntityTypeMapping {
   @Override
   public String toString() {
     if (isComplex()) {
-      return "Name: " + propertyName + " " + mappings.toString();
+      return "{'" + propertyName + "'->" + mappings.toString() + "}";
     }
-    return "Name: " + propertyName + " MappedClass: " + mapping;
+    return "{'" + propertyName + "' as " + (mapping == null? "NULL": mapping.getSimpleName()) + "}";
   }
 
 }

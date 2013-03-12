@@ -1,6 +1,5 @@
 package com.sap.core.odata.core.ep.consumer;
 
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -19,6 +18,11 @@ import com.sap.core.odata.core.ep.aggregator.EntityInfoAggregator;
 import com.sap.core.odata.core.ep.aggregator.EntityPropertyInfo;
 import com.sap.core.odata.core.ep.aggregator.EntityTypeMapping;
 
+/**
+ * 
+ * 
+ * @author SAP AG
+ */
 public class XmlPropertyConsumer {
 
   public Map<String, Object> readProperty(final XMLStreamReader reader, final EdmProperty property, final boolean merge) throws EntityProviderException {
@@ -43,16 +47,6 @@ public class XmlPropertyConsumer {
       throw new EntityProviderException(EntityProviderException.COMMON, e);
     }
   }
-
-  private Map<String, Object> validatedTypeMappings(Map<String, Object> typeMappings) {
-    if(typeMappings == null) {
-      return Collections.emptyMap();
-    }
-    Map<String, Object> usedTypeMappings = new HashMap<String, Object>();
-    usedTypeMappings.putAll(typeMappings);
-    return usedTypeMappings;
-  }
-
 
   @SuppressWarnings("unchecked")
   private void mergeWithDefaultValues(final Object value, final EntityPropertyInfo epi) throws EntityProviderException {
