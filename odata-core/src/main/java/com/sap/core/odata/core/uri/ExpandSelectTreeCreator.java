@@ -60,7 +60,7 @@ public class ExpandSelectTreeCreator {
 
   private void buildCombinedTree(final ExpandSelectTreeNodeImpl root) throws EdmException {
     for (SelectItem item : initialSelect) {
-      ExpandSelectTreeNodeImpl actualNode = root;
+      ExpandSelectTreeNodeImpl currentNode = root;
       List<NavigationPropertySegment> segmentsList = item.getNavigationPropertySegments();
       for (int segmentListIndex = 0; segmentListIndex < segmentsList.size(); segmentListIndex++) {
         ExpandSelectTreeNodeImpl childNode = null;
@@ -87,21 +87,21 @@ public class ExpandSelectTreeCreator {
                   expandNodes = (ExpandSelectTreeNodeImpl) expandNodes.addChild(singleExpandList.get(expandListIndex).getNavigationProperty(), newNode);
                 }
               }
-              actualNode.addChild(segmentsList.get(segmentListIndex).getNavigationProperty(), childNode);
+              currentNode.addChild(segmentsList.get(segmentListIndex).getNavigationProperty(), childNode);
             }
           }
         }
-        actualNode = (ExpandSelectTreeNodeImpl) actualNode.addChild(segmentsList.get(segmentListIndex).getNavigationProperty(), childNode);
-        if (actualNode == null) {
+        currentNode = (ExpandSelectTreeNodeImpl) currentNode.addChild(segmentsList.get(segmentListIndex).getNavigationProperty(), childNode);
+        if (currentNode == null) {
           break;
         }
       }
 
-      if (actualNode != null) {
+      if (currentNode != null) {
         if (item.getProperty() != null) {
-          actualNode.addProperty(item.getProperty());
+          currentNode.addProperty(item.getProperty());
         } else if (item.isStar()) {
-          actualNode.setAllExplicitly();
+          currentNode.setAllExplicitly();
         }
       }
 
