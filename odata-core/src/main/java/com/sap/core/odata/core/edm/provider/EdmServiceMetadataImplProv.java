@@ -21,6 +21,9 @@ import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.core.ep.producer.XmlMetadataProducer;
 import com.sap.core.odata.core.ep.util.CircleStreamBuffer;
 
+/**
+ * @author SAP AG
+ */
 public class EdmServiceMetadataImplProv implements EdmServiceMetadata {
 
   private static final Logger LOG = LoggerFactory.getLogger(EdmServiceMetadataImplProv.class);

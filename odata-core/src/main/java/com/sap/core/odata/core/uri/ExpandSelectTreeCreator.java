@@ -44,7 +44,7 @@ public class ExpandSelectTreeCreator {
     return root;
   }
 
-  private void buildPureExpandTree(final ExpandSelectTreeNodeImpl root) {
+  private void buildPureExpandTree(ExpandSelectTreeNodeImpl root) {
     root.setAllExplicitly();
     ExpandSelectTreeNodeImpl actualNode;
     for (ArrayList<NavigationPropertySegment> navigationPropertySegmentList : initialExpand) {
@@ -58,7 +58,7 @@ public class ExpandSelectTreeCreator {
 
   }
 
-  private void buildCombinedTree(final ExpandSelectTreeNodeImpl root) throws EdmException {
+  private void buildCombinedTree(ExpandSelectTreeNodeImpl root) throws EdmException {
     for (SelectItem item : initialSelect) {
       ExpandSelectTreeNodeImpl currentNode = root;
       List<NavigationPropertySegment> segmentsList = item.getNavigationPropertySegments();

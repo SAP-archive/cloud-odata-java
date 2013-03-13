@@ -12,9 +12,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.junit.BeforeClass;
 import org.junit.Test;
 
+import com.sap.core.odata.api.edm.Edm;
 import com.sap.core.odata.api.edm.EdmNavigationProperty;
+import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.api.uri.ExpandSelectTreeNode;
 import com.sap.core.odata.api.uri.PathSegment;
 import com.sap.core.odata.api.uri.UriInfo;
@@ -27,6 +30,13 @@ import com.sap.core.odata.testutil.mock.MockFacade;
  * @author SAP AG
  */
 public class ExpandSelectTreeCreatorImplTest extends BaseTest {
+
+  private static Edm edm;
+
+  @BeforeClass
+  public static void setEdm() throws ODataException {
+    edm = MockFacade.getMockEdm();
+  }
 
   @Test
   public void testViaRuntimeDelegate() throws Exception {
@@ -50,7 +60,16 @@ public class ExpandSelectTreeCreatorImplTest extends BaseTest {
     //$select=Age
     String actual = getExpandSelectTree("Age", null).toJsonString();
     assertEquals(expected, actual);
+  }
 
+  @Test
+  public void complexProperty() throws Exception {
+    final ExpandSelectTreeNode actual = getExpandSelectTree("Location", null);
+    assertNotNull(actual);
+    assertFalse(actual.isAll());
+    assertEquals(Arrays.asList(edm.getEntityType("RefScenario", "Employee").getProperty("Location")),
+        actual.getProperties());
+    assertTrue(actual.getLinks().isEmpty());
   }
 
   @Test
@@ -140,6 +159,15 @@ public class ExpandSelectTreeCreatorImplTest extends BaseTest {
     //$select=ne_Room/nr_Employees&$expand=ne_Room,ne_Manager,ne_Room/nr_Employees,ne_Room/nr_Building
     String actual = getExpandSelectTree("ne_Room/nr_Employees", "ne_Room,ne_Manager,ne_Room/nr_Employees,ne_Room/nr_Building").toJsonString();
     assertEquals(expected, actual);
+  }
+
+  @Test
+  public void thirdLevel() throws Exception {
+    assertEquals("{\"all\":false,\"properties\":[],\"links\":["
+        + "{\"ne_Team\":{\"all\":false,\"properties\":[],\"links\":["
+        + "{\"nt_Employees\":{\"all\":false,\"properties\":[],\"links\":["
+        + "{\"ne_Manager\":{\"all\":false,\"properties\":[\"EmployeeId\"],\"links\":[]}}]}}]}}]}",
+        getExpandSelectTree("ne_Team/nt_Employees/ne_Manager/EmployeeId", "ne_Team/nt_Employees/ne_Manager").toJsonString());
   }
 
   @Test
@@ -411,7 +439,7 @@ public class ExpandSelectTreeCreatorImplTest extends BaseTest {
     if (expandString != null)
       queryParameters.put("$expand", expandString);
 
-    final UriInfo uriInfo = UriParser.parse(MockFacade.getMockEdm(), pathSegments, queryParameters);
+    final UriInfo uriInfo = UriParser.parse(edm, pathSegments, queryParameters);
 
     ExpandSelectTreeCreator expandSelectTreeCreator = new ExpandSelectTreeCreator(uriInfo.getSelect(), uriInfo.getExpand());
     ExpandSelectTreeNode expandSelectTree = expandSelectTreeCreator.create();

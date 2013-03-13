@@ -7,18 +7,21 @@ import static org.mockito.Mockito.mock;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.custommonkey.xmlunit.NamespaceContext;
 import org.custommonkey.xmlunit.SimpleNamespaceContext;
 import org.custommonkey.xmlunit.XMLUnit;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import com.sap.core.odata.api.edm.Edm;
 import com.sap.core.odata.api.edm.EdmServiceMetadata;
 import com.sap.core.odata.api.edm.provider.EdmProvider;
 import com.sap.core.odata.testutil.fit.BaseTest;
 import com.sap.core.odata.testutil.helper.StringHelper;
 import com.sap.core.odata.testutil.mock.EdmTestProvider;
 
+/**
+ * @author SAP AG
+ */
 public class EdmServiceMetadataImplProvTest extends BaseTest {
 
   private static String metadata;
@@ -29,14 +32,12 @@ public class EdmServiceMetadataImplProvTest extends BaseTest {
     EdmServiceMetadata serviceMetadata = edmImplProv.getServiceMetadata();
     metadata = StringHelper.inputStreamToString(serviceMetadata.getMetadata());
     Map<String, String> prefixMap = new HashMap<String, String>();
-    prefixMap.put(null, "http://schemas.microsoft.com/ado/2008/09/edm");
-    prefixMap.put("edmx", "http://schemas.microsoft.com/ado/2007/06/edmx");
-    prefixMap.put("m", "http://schemas.microsoft.com/ado/2007/08/dataservices/metadata");
-    prefixMap.put("a", "http://schemas.microsoft.com/ado/2008/09/edm");
+    prefixMap.put("a", Edm.NAMESPACE_EDM_2008_09);
+    prefixMap.put("edmx", Edm.NAMESPACE_EDMX_2007_06);
+    prefixMap.put("m", Edm.NAMESPACE_M_2007_08);
     prefixMap.put("annoPrefix", "http://annoNamespace");
 
-    NamespaceContext ctx = new SimpleNamespaceContext(prefixMap);
-    XMLUnit.setXpathNamespaceContext(ctx);
+    XMLUnit.setXpathNamespaceContext(new SimpleNamespaceContext(prefixMap));
   }
 
   @Test

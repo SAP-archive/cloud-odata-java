@@ -2,7 +2,8 @@ package com.sap.core.odata.testutil.mock;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
+
+import org.mockito.Mockito;
 
 import com.sap.core.odata.api.edm.Edm;
 import com.sap.core.odata.api.exception.ODataException;
@@ -19,19 +20,11 @@ public class MockFacade {
   }
 
   public static List<PathSegment> getPathSegmentsAsODataPathSegmentMock(final List<String> segments) {
-    final ArrayList<PathSegment> pathSegmentsMock = new ArrayList<PathSegment>();
+    final List<PathSegment> pathSegmentsMock = new ArrayList<PathSegment>();
     for (final String segment : segments) {
-      pathSegmentsMock.add(new PathSegment() {
-        @Override
-        public String getPath() {
-          return segment;
-        }
-
-        @Override
-        public Map<String, List<String>> getMatrixParameters() {
-          return null;
-        }
-      });
+      PathSegment pathSegment = Mockito.mock(PathSegment.class);
+      Mockito.when(pathSegment.getPath()).thenReturn(segment);
+      pathSegmentsMock.add(pathSegment);
     }
     return pathSegmentsMock;
   }
