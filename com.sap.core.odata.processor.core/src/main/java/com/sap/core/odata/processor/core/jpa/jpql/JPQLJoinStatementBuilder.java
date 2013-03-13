@@ -6,6 +6,7 @@ import java.util.Map.Entry;
 
 import com.sap.core.odata.processor.api.jpa.access.JPAJoinClause;
 import com.sap.core.odata.processor.api.jpa.exception.ODataJPARuntimeException;
+import com.sap.core.odata.processor.api.jpa.jpql.JPQLContextType;
 import com.sap.core.odata.processor.api.jpa.jpql.JPQLContextView;
 import com.sap.core.odata.processor.api.jpa.jpql.JPQLJoinContextView;
 import com.sap.core.odata.processor.api.jpa.jpql.JPQLStatement;
@@ -33,9 +34,16 @@ public class JPQLJoinStatementBuilder extends JPQLStatementBuilder {
 		StringBuilder joinWhereCondition = null;
 		String tableAlias = context.getJPAEntityAlias();
 
-		jpqlQuery.append(JPQLStatement.KEYWORD.SELECT).append(
-				JPQLStatement.DELIMITER.SPACE);
-		jpqlQuery.append(context.getSelectExpression()).append(JPQLStatement.DELIMITER.SPACE);
+		jpqlQuery.append(JPQLStatement.KEYWORD.SELECT).append(JPQLStatement.DELIMITER.SPACE);
+		if(this.context.getType().equals(JPQLContextType.JOIN_COUNT)){//$COUNT
+			jpqlQuery.append(JPQLStatement.KEYWORD.COUNT).append(JPQLStatement.DELIMITER.SPACE);
+			jpqlQuery.append(JPQLStatement.DELIMITER.PARENTHESIS_LEFT).append(JPQLStatement.DELIMITER.SPACE);
+			jpqlQuery.append(context.getSelectExpression()).append(JPQLStatement.DELIMITER.SPACE);
+			jpqlQuery.append(JPQLStatement.DELIMITER.PARENTHESIS_RIGHT).append(JPQLStatement.DELIMITER.SPACE);
+		}else { //Normal
+			jpqlQuery.append(context.getSelectExpression()).append(JPQLStatement.DELIMITER.SPACE);
+		}
+		
 		jpqlQuery.append(JPQLStatement.KEYWORD.FROM).append(
 				JPQLStatement.DELIMITER.SPACE);
 
@@ -130,6 +138,5 @@ public class JPQLJoinStatementBuilder extends JPQLStatementBuilder {
 		}
 
 		return jpqlQuery.toString();
-
 	}
 }

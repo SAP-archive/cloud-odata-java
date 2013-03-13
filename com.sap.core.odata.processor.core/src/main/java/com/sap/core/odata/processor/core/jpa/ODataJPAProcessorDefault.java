@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.api.processor.ODataResponse;
+import com.sap.core.odata.api.uri.info.GetEntitySetCountUriInfo;
 import com.sap.core.odata.api.uri.info.GetEntitySetUriInfo;
 import com.sap.core.odata.api.uri.info.GetEntityUriInfo;
 import com.sap.core.odata.processor.api.jpa.ODataJPAContext;
@@ -45,8 +46,22 @@ public class ODataJPAProcessorDefault extends ODataJPAProcessor {
 				jpaEntity, uriParserResultView, contentType, oDataJPAContext);
 		
 		return oDataResponse;
-		
-		
 	}
+
+	@Override
+	public ODataResponse countEntitySet(GetEntitySetCountUriInfo uriInfo,
+			String contentType) throws ODataException {
+		
+		//Process OData Request
+		long jpaEntityCount = this.jpaProcessor.process(uriInfo);
+		 
+		// Build OData Response out of a JPA Response
+		ODataResponse oDataResponse = ODataJPAResponseBuilder.build(
+					jpaEntityCount, uriInfo, contentType, oDataJPAContext);
+		 
+		return oDataResponse;
+	}
+	
+	
 
 }

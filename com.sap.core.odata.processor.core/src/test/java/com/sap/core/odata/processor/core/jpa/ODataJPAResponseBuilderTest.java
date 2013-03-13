@@ -10,7 +10,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.easymock.EasyMock;
-import org.junit.Before;
 import org.junit.Test;
 
 import com.sap.core.odata.api.commons.InlineCount;
@@ -22,12 +21,13 @@ import com.sap.core.odata.api.edm.EdmMapping;
 import com.sap.core.odata.api.edm.EdmProperty;
 import com.sap.core.odata.api.edm.EdmType;
 import com.sap.core.odata.api.edm.EdmTypeKind;
-import com.sap.core.odata.api.edm.EdmTyped;
 import com.sap.core.odata.api.edm.provider.EntityType;
 import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.api.processor.ODataContext;
+import com.sap.core.odata.api.processor.ODataResponse;
 import com.sap.core.odata.api.uri.PathInfo;
 import com.sap.core.odata.api.uri.SelectItem;
+import com.sap.core.odata.api.uri.info.GetEntitySetCountUriInfo;
 import com.sap.core.odata.api.uri.info.GetEntitySetUriInfo;
 import com.sap.core.odata.api.uri.info.GetEntityUriInfo;
 import com.sap.core.odata.processor.api.jpa.ODataJPAContext;
@@ -36,10 +36,6 @@ import com.sap.core.odata.processor.core.jpa.common.ODataJPATestConstants;
 import com.sap.core.odata.processor.core.jpa.model.JPAEdmTestModelView;
 
 public class ODataJPAResponseBuilderTest extends JPAEdmTestModelView{
-
-	@Before
-	public void setUp() {
-	}
 
 	@Test
 	public void testBuildListOfTGetEntitySetUriInfoStringODataJPAContext() {
@@ -88,10 +84,27 @@ public class ODataJPAResponseBuilderTest extends JPAEdmTestModelView{
 		}
 	}
 	
+	@Test
+	public void testBuildGetCount() {
+		ODataResponse objODataResponse = null;
+		try {
+			objODataResponse = ODataJPAResponseBuilder.build(1, getCountEntitySetUriInfo(), "application/xml", getODataJPAContext());
+		} catch (ODataJPARuntimeException e) {
+			fail(ODataJPATestConstants.EXCEPTION_MSG_PART_1+e.getMessage()
+					+ ODataJPATestConstants.EXCEPTION_MSG_PART_2);
+		}
+		assertNotNull(objODataResponse);
+	}
+	
+	private GetEntitySetCountUriInfo getCountEntitySetUriInfo() {
+		GetEntitySetCountUriInfo objGetEntitySetCountUriInfo = EasyMock.createMock(GetEntitySetCountUriInfo.class);
+		EasyMock.replay(objGetEntitySetCountUriInfo);
+		return objGetEntitySetCountUriInfo;
+	}
+
 	private ODataJPAContext getODataJPAContext() {
 		ODataJPAContext objODataJPAContext = EasyMock.createMock(ODataJPAContext.class);
 		EasyMock.expect(objODataJPAContext.getODataContext()).andStubReturn(getLocalODataContext());
-		
 		EasyMock.replay(objODataJPAContext);
 		return objODataJPAContext;
 	}
@@ -169,7 +182,7 @@ public class ODataJPAResponseBuilderTest extends JPAEdmTestModelView{
 		return selectItem;
 	}
 
-	private EdmTyped getEdmProperty() {
+	private EdmProperty getEdmProperty() {
 		EdmProperty edmTyped = EasyMock.createMock(EdmProperty.class);
 		
 		EdmMapping edmMapping = EasyMock.createMock(EdmMapping.class);

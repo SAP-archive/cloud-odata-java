@@ -125,7 +125,7 @@ public class JPQLJoinContextTest {
 
 	@Test
 	public void testGetJPAOuterJoinClauses() {
-		JPQLJoinSelectContext joinContext = new JPQLJoinSelectContext();
+		JPQLJoinSelectContext joinContext = new JPQLJoinSelectContext(false);
 		JPQLJoinContextBuilder joinContextBuilder = joinContext.new JPQLJoinContextBuilder();
 		try { 
 			joinContextBuilder.entitySetView = entitySetUriInfo;

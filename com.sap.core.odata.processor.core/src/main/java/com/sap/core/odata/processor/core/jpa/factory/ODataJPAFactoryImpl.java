@@ -59,12 +59,14 @@ public class ODataJPAFactoryImpl extends ODataJPAFactory {
 			JPQLStatementBuilder builder = null;
 			switch (context.getType()) {
 			case SELECT:
+			case SELECT_COUNT:  // for $count, Same as select
 				builder = new JPQLSelectStatementBuilder(context);
 				break;
 			case SELECT_SINGLE:
 				builder = new JPQLSelectSingleStatementBuilder(context);
 				break;
 			case JOIN:
+			case JOIN_COUNT: // for $count, Same as join
 				builder = new JPQLJoinStatementBuilder(context);
 				break;
 			case JOIN_SINGLE:
@@ -82,7 +84,7 @@ public class ODataJPAFactoryImpl extends ODataJPAFactory {
 
 			switch (contextType) {
 			case SELECT:
-				JPQLSelectContext selectContext = new JPQLSelectContext();
+				JPQLSelectContext selectContext = new JPQLSelectContext(false);
 				contextBuilder = selectContext.new JPQLSelectContextBuilder();
 				break;
 			case SELECT_SINGLE:
@@ -90,13 +92,20 @@ public class ODataJPAFactoryImpl extends ODataJPAFactory {
 				contextBuilder = singleSelectContext.new JPQLSelectSingleContextBuilder();
 				break;
 			case JOIN:
-				JPQLJoinSelectContext joinContext = new JPQLJoinSelectContext();
+				JPQLJoinSelectContext joinContext = new JPQLJoinSelectContext(false);
 				contextBuilder = joinContext.new JPQLJoinContextBuilder();
 				break;
 			case JOIN_SINGLE:
 				JPQLJoinSelectSingleContext joinSingleContext = new JPQLJoinSelectSingleContext();
 				contextBuilder = joinSingleContext.new JPQLJoinSelectSingleContextBuilder();
 				break;
+			case SELECT_COUNT:
+				JPQLSelectContext selectCountContext = new JPQLSelectContext(true);
+				contextBuilder = selectCountContext.new JPQLSelectContextBuilder();
+				break;
+			case JOIN_COUNT:
+				JPQLJoinSelectContext joinCountContext = new JPQLJoinSelectContext(true);
+				contextBuilder = joinCountContext.new JPQLJoinContextBuilder();
 			default:
 				break;
 			}

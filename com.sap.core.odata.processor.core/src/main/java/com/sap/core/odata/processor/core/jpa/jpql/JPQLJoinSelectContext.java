@@ -22,11 +22,15 @@ public class JPQLJoinSelectContext extends JPQLSelectContext implements
 		JPQLJoinContextView {
 
 	private List<JPAJoinClause> jpaJoinClauses = null;
-
+	
 	protected void setJPAOuterJoinClause(List<JPAJoinClause> jpaOuterJoinClauses) {
 		this.jpaJoinClauses = jpaOuterJoinClauses;
 	}
 
+	public JPQLJoinSelectContext(boolean isCountOnly){
+		super(isCountOnly);
+	}
+	
 	public class JPQLJoinContextBuilder extends JPQLSelectContextBuilder {
 
 		protected int relationShipAliasCounter = 0;
@@ -35,7 +39,11 @@ public class JPQLJoinSelectContext extends JPQLSelectContext implements
 		public JPQLContext build() throws ODataJPAModelException,
 				ODataJPARuntimeException {
 			try {
-				JPQLJoinSelectContext.this.setType(JPQLContextType.JOIN);
+				
+				if(JPQLJoinSelectContext.this.isCountOnly)
+					JPQLJoinSelectContext.this.setType(JPQLContextType.JOIN_COUNT);
+				else
+					JPQLJoinSelectContext.this.setType(JPQLContextType.JOIN);
 
 				JPQLJoinSelectContext.this
 						.setJPAOuterJoinClause(generateJoinClauses());

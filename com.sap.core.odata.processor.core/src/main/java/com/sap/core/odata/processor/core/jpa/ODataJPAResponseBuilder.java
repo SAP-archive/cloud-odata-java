@@ -14,6 +14,7 @@ import com.sap.core.odata.api.ep.EntityProviderProperties;
 import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.api.processor.ODataResponse;
 import com.sap.core.odata.api.uri.SelectItem;
+import com.sap.core.odata.api.uri.info.GetEntitySetCountUriInfo;
 import com.sap.core.odata.api.uri.info.GetEntitySetUriInfo;
 import com.sap.core.odata.api.uri.info.GetEntityUriInfo;
 import com.sap.core.odata.processor.api.jpa.ODataJPAContext;
@@ -132,6 +133,22 @@ public final class ODataJPAResponseBuilder {
 							.addContent(e.getMessage()), e);
 		}
 
+		return odataResponse;
+	}
+
+	public static ODataResponse build(long jpaEntityCount,
+			GetEntitySetCountUriInfo uriInfo, String contentType,
+			ODataJPAContext oDataJPAContext) throws ODataJPARuntimeException {
+		
+		ODataResponse odataResponse = null;
+		try {
+			odataResponse = ODataResponse
+					.fromResponse(EntityProvider.writeText(String.valueOf(jpaEntityCount))).build();
+		} catch (EntityProviderException e) {
+			throw ODataJPARuntimeException
+					.throwException(ODataJPARuntimeException.GENERAL
+							.addContent(e.getMessage()), e);
+		} 
 		return odataResponse;
 	}
 }

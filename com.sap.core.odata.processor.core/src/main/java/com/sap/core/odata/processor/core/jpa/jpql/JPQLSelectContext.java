@@ -26,7 +26,11 @@ public class JPQLSelectContext extends JPQLContext implements
 	protected HashMap<String, String> orderByCollection;
 	protected String whereCondition;
 
+	protected boolean isCountOnly = false;//Support for $count
 	
+	public JPQLSelectContext(boolean isCountOnly){
+		this.isCountOnly = isCountOnly; 
+	}
 
 	protected final void setOrderByCollection(
 			HashMap<String, String> orderByCollection) {
@@ -69,8 +73,10 @@ public class JPQLSelectContext extends JPQLContext implements
 
 				try {
 
-					JPQLSelectContext.this.setType(JPQLContextType.SELECT);
-					
+					if(JPQLSelectContext.this.isCountOnly)
+						JPQLSelectContext.this.setType(JPQLContextType.SELECT_COUNT);
+					else
+						JPQLSelectContext.this.setType(JPQLContextType.SELECT);
 					EdmEntityType entityType = entitySetView
 							.getTargetEntitySet().getEntityType();
 					EdmMapping mapping = entityType.getMapping();

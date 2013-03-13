@@ -122,6 +122,8 @@ public class JPQLStatement {
 		public static final char SPACE = ' ';
 		public static final char COMMA = ',';
 		public static final char PERIOD = '.';
+		public static final char PARENTHESIS_LEFT = '(';
+		public static final char PARENTHESIS_RIGHT = ')';
 	}
 
 }

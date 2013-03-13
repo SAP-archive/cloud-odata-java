@@ -19,7 +19,6 @@ import com.sap.core.odata.api.edm.EdmProperty;
 import com.sap.core.odata.api.edm.EdmStructuralType;
 import com.sap.core.odata.api.edm.EdmType;
 import com.sap.core.odata.api.edm.EdmTypeKind;
-import com.sap.core.odata.api.edm.EdmTyped;
 import com.sap.core.odata.api.exception.MessageReference;
 import com.sap.core.odata.api.uri.SelectItem;
 import com.sap.core.odata.processor.api.jpa.exception.ODataJPARuntimeException;
@@ -531,7 +530,7 @@ public class JPAResultParserTest {
 		return selectItem;
 	}
 
-	private EdmTyped getEdmProperty() {
+	private EdmProperty getEdmProperty() {
 		EdmProperty edmTyped = EasyMock.createMock(EdmProperty.class);
 		
 		EdmMapping edmMapping = EasyMock.createMock(EdmMapping.class);
