@@ -15,7 +15,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.log4j.xml.DOMConfigurator;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -39,10 +38,6 @@ import com.sap.core.odata.testutil.mock.MockFacade;
  * @author SAP AG
  */
 public class UriParserTest extends BaseTest {
-
-  static {
-    DOMConfigurator.configureAndWatch("log4j.xml");
-  }
 
   private Edm edm;
 
@@ -826,6 +821,7 @@ public class UriParserTest extends BaseTest {
     parseWrongUri("Employees?$select=EmployeeName*", UriNotMatchingException.PROPERTYNOTFOUND);
     parseWrongUri("Employees?$select=/EmployeeName", UriSyntaxException.EMPTYSEGMENT);
     parseWrongUri("Employees?$select=EmployeeName/", UriSyntaxException.EMPTYSEGMENT);
+    parseWrongUri("Employees?$select=Location/City", UriSyntaxException.INVALIDSEGMENT);
     parseWrongUri("Teams('1')?$select=nt_Employees/Id", UriNotMatchingException.PROPERTYNOTFOUND);
     parseWrongUri("Teams('1')?$select=nt_Employees//*", UriSyntaxException.EMPTYSEGMENT);
   }
@@ -853,6 +849,7 @@ public class UriParserTest extends BaseTest {
     parseWrongUri("Managers('1')?$expand=nm_Employees//", UriSyntaxException.EMPTYSEGMENT);
     parseWrongUri("Managers('1')?$expand=somethingwrong", UriNotMatchingException.PROPERTYNOTFOUND);
     parseWrongUri("Managers('1')?$expand=nm_Employees/EmployeeName", UriSyntaxException.NONAVIGATIONPROPERTY);
+    parseWrongUri("Managers('1')?$expand=nm_Employees/Location", UriSyntaxException.NONAVIGATIONPROPERTY);
     parseWrongUri("Managers('1')?$expand=nm_Employees/somethingwrong", UriNotMatchingException.PROPERTYNOTFOUND);
     parseWrongUri("Managers('1')?$expand=nm_Employees/*", UriNotMatchingException.PROPERTYNOTFOUND);
     parseWrongUri("Managers('1')?$expand=nm_Employees/*,somethingwrong", UriNotMatchingException.PROPERTYNOTFOUND);

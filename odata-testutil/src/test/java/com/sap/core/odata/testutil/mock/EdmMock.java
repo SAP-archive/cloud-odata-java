@@ -39,9 +39,6 @@ import com.sap.core.odata.api.exception.ODataException;
 class EdmMock {
 
   public static Edm createMockEdm() throws ODataException {
-    EdmServiceMetadata serviceMetadata = mock(EdmServiceMetadata.class);
-    when(serviceMetadata.getDataServiceVersion()).thenReturn("MockEdm");
-
     EdmEntityContainer defaultContainer = mock(EdmEntityContainer.class);
     when(defaultContainer.isDefaultEntityContainer()).thenReturn(true);
 
@@ -228,6 +225,8 @@ class EdmMock {
     when(photoEntitySet.getEntityContainer()).thenReturn(photoContainer);
 
     Edm edm = mock(Edm.class);
+    EdmServiceMetadata serviceMetadata = mock(EdmServiceMetadata.class);
+    when(serviceMetadata.getDataServiceVersion()).thenReturn("MockEdm");
     when(edm.getServiceMetadata()).thenReturn(serviceMetadata);
     when(edm.getDefaultEntityContainer()).thenReturn(defaultContainer);
     when(edm.getEntityContainer("Container1")).thenReturn(specificContainer);

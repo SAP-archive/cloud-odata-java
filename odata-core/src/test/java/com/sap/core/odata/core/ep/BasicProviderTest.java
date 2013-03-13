@@ -11,11 +11,11 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.custommonkey.xmlunit.NamespaceContext;
 import org.custommonkey.xmlunit.SimpleNamespaceContext;
 import org.custommonkey.xmlunit.XMLUnit;
 import org.junit.Test;
 
+import com.sap.core.odata.api.edm.Edm;
 import com.sap.core.odata.api.edm.EdmProperty;
 import com.sap.core.odata.api.edm.EdmTyped;
 import com.sap.core.odata.api.edm.provider.EdmProvider;
@@ -51,6 +51,18 @@ public class BasicProviderTest extends AbstractProviderTest {
     assertTrue(metadata.contains("xmlns:annoPrefix2=\"http://annoNamespace\""));
   }
 
+  private void setNamespaces() {
+    Map<String, String> prefixMap = new HashMap<String, String>();
+    prefixMap.put("edmx", Edm.NAMESPACE_EDMX_2007_06);
+    prefixMap.put("m", Edm.NAMESPACE_M_2007_08);
+    prefixMap.put("a", Edm.NAMESPACE_EDM_2008_09);
+    prefixMap.put("annoPrefix", "http://annoNamespace");
+    prefixMap.put("prefix", "namespace");
+    prefixMap.put("b", "RefScenario");
+    prefixMap.put("pre", "namespaceForAnno");
+    XMLUnit.setXpathNamespaceContext(new SimpleNamespaceContext(prefixMap));
+  }
+
   @Test
   public void writeMetadata2() throws Exception {
     EdmProvider testProvider = new EdmTestProvider();
@@ -69,18 +81,7 @@ public class BasicProviderTest extends AbstractProviderTest {
     assertEquals(ContentType.APPLICATION_XML_CS_UTF_8.toString(), response.getContentHeader());
     String metadata = StringHelper.inputStreamToString((InputStream) response.getEntity());
 
-    Map<String, String> prefixMap = new HashMap<String, String>();
-    prefixMap.put(null, "http://schemas.microsoft.com/ado/2008/09/edm");
-    prefixMap.put("edmx", "http://schemas.microsoft.com/ado/2007/06/edmx");
-    prefixMap.put("m", "http://schemas.microsoft.com/ado/2007/08/dataservices/metadata");
-    prefixMap.put("a", "http://schemas.microsoft.com/ado/2008/09/edm");
-    prefixMap.put("annoPrefix", "http://annoNamespace");
-    prefixMap.put("prefix", "namespace");
-    prefixMap.put("b", "RefScenario");
-    prefixMap.put("pre", "namespaceForAnno");
-
-    NamespaceContext ctx = new SimpleNamespaceContext(prefixMap);
-    XMLUnit.setXpathNamespaceContext(ctx);
+    setNamespaces();
     assertXpathExists("/edmx:Edmx/edmx:DataServices/a:Schema/a:EntityType/a:Property[@Name and @Type and @Nullable and @annoPrefix:annoName]", metadata);
     assertXpathExists("/edmx:Edmx/edmx:DataServices/a:Schema/a:EntityType/a:Property[@Name and @Type and @m:FC_TargetPath and @annoPrefix:annoName]", metadata);
     assertXpathExists("/edmx:Edmx/edmx:DataServices/a:Schema/a:EntityType/a:Property[@Name=\"EmployeeName\"]", metadata);
@@ -103,19 +104,7 @@ public class BasicProviderTest extends AbstractProviderTest {
     assertEquals(ContentType.APPLICATION_XML_CS_UTF_8.toString(), response.getContentHeader());
     String metadata = StringHelper.inputStreamToString((InputStream) response.getEntity());
 
-    Map<String, String> prefixMap = new HashMap<String, String>();
-    prefixMap.put(null, "http://schemas.microsoft.com/ado/2008/09/edm");
-    prefixMap.put("edmx", "http://schemas.microsoft.com/ado/2007/06/edmx");
-    prefixMap.put("m", "http://schemas.microsoft.com/ado/2007/08/dataservices/metadata");
-    prefixMap.put("a", "http://schemas.microsoft.com/ado/2008/09/edm");
-    prefixMap.put("annoPrefix", "http://annoNamespace");
-    prefixMap.put("prefix", "namespace");
-    prefixMap.put("b", "RefScenario");
-    prefixMap.put("pre", "namespaceForAnno");
-
-    NamespaceContext ctx = new SimpleNamespaceContext(prefixMap);
-    XMLUnit.setXpathNamespaceContext(ctx);
-
+    setNamespaces();
     assertXpathExists("/edmx:Edmx/edmx:DataServices/a:Schema/a:EntityType/a:Property[@Name and @Type and @Nullable and @annoPrefix:annoName]", metadata);
     assertXpathExists("/edmx:Edmx/edmx:DataServices/a:Schema/a:EntityType/a:Property[@Name and @Type and @m:FC_TargetPath and @annoPrefix:annoName]", metadata);
     assertXpathExists("/edmx:Edmx/edmx:DataServices/a:Schema/a:EntityType/a:Property[@Name=\"EmployeeName\"]", metadata);
@@ -157,7 +146,7 @@ public class BasicProviderTest extends AbstractProviderTest {
     assertEquals(Long.valueOf(42), age);
   }
 
-  @Test(expected=EntityProviderException.class)
+  @Test(expected = EntityProviderException.class)
   public void readPropertyValueWithInvalidMapping() throws Exception {
     final EdmProperty property = (EdmProperty) MockFacade.getMockEdm().getEntityType("RefScenario", "Employee").getProperty("Age");
 
@@ -165,7 +154,6 @@ public class BasicProviderTest extends AbstractProviderTest {
     assertEquals(Float.valueOf(42), age);
   }
 
-  
   @Test
   public void readPropertyBinaryValue() throws Exception {
     final byte[] bytes = new byte[] { 1, 2, 3, 4, -128 };
