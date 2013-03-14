@@ -72,6 +72,9 @@ public class ContentType {
   }
 
   private ContentType(final String type, final String subtype, final ODataFormat odataFormat, final Map<String, String> parameters) {
+    if((type == null || MEDIA_TYPE_WILDCARD.equals(type)) && !MEDIA_TYPE_WILDCARD.equals(subtype)) {
+      throw new IllegalArgumentException("Illegal combination of WILDCARD type with NONE WILDCARD subtype.");
+    }
     this.odataFormat = odataFormat;
     this.type = type == null ? MEDIA_TYPE_WILDCARD : type;
     this.subtype = subtype == null ? MEDIA_TYPE_WILDCARD : subtype;
