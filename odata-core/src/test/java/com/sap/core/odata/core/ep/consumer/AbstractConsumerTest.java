@@ -1,5 +1,7 @@
 package com.sap.core.odata.core.ep.consumer;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.StringReader;
 import java.util.HashMap;
 import java.util.Map;
@@ -31,6 +33,23 @@ public abstract class AbstractConsumerTest extends BaseTest {
     Map<String, Object> typeMappings = new HashMap<String, Object>();
     typeMappings.put(key, value);
     return typeMappings;
+  }
+  
+  protected String readFile(String filename) throws IOException {
+    InputStream in = Thread.currentThread().getContextClassLoader().getResourceAsStream(filename);
+    if(in == null) {
+      throw new IOException("Requested file '" + filename + "' was not found.");
+    }
+
+    byte[] tmp = new byte[8192];
+    int count = in.read(tmp);
+    StringBuffer b = new StringBuffer();
+    while(count >= 0) {
+      b.append(new String(tmp, 0, count));
+      count = in.read(tmp);
+    }
+    
+    return b.toString();
   }
   
   /**
