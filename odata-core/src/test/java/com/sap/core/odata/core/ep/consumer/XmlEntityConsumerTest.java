@@ -121,6 +121,27 @@ public class XmlEntityConsumerTest extends AbstractConsumerTest {
       "    <d:Type>image/png</d:Type>" +
       "  </m:properties>" +
       "</entry>";
+  
+  @Test
+  public void readWithInlineContent() throws Exception {
+    // prepare
+    String content = readFile("expanded_team.xml");
+    assertNotNull(content);
+    
+    EdmEntitySet entitySet = MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Teams");
+    InputStream reqContent = createContentAsStream(content);
+    
+    // execute
+    XmlEntityConsumer xec = new XmlEntityConsumer();
+    ODataEntry entry = xec.readEntry(entitySet, reqContent, false);
+
+    // validate
+    assertNotNull(entry);
+    Map<String, Object> properties = entry.getProperties();
+    assertEquals("1", properties.get("Id"));
+    assertEquals("Team 1", properties.get("Name"));
+    assertEquals(Boolean.FALSE, properties.get("isScrumTeam"));
+  }
 
   /**
    * OData specification v2: 2.2.6.2.2 Entity Type (as an Atom Entry Element)

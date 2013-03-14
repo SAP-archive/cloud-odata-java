@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="utf-8"?>
+<entry xml:base="http://ldcigmd.wdf.sap.corp:50055/sap/bc/odata/" xmlns="http://www.w3.org/2005/Atom" xmlns:m="http://schemas.microsoft.com/ado/2007/08/dataservices/metadata" xmlns:d="http://schemas.microsoft.com/ado/2007/08/dataservices">
+    <id>http://ldcigmd.wdf.sap.corp:50055/sap/bc/odata/Teams('1')</id>
+    <title type="text">Team 1</title>
+    <updated>2013-03-14T11:16:48Z</updated>
+    <category term="RefScenario.Team" scheme="http://schemas.microsoft.com/ado/2007/08/dataservices/scheme"/>
+    <link href="Teams('1')" rel="edit" title="Team"/>
+    <link href="Teams('1')/nt_Employees" rel="http://schemas.microsoft.com/ado/2007/08/dataservices/related/nt_Employees" type="application/atom+xml;type=feed" title="nt_Employees">
+        <m:inline>
+            <feed xml:base="http://ldcigmd.wdf.sap.corp:50055/sap/bc/odata/">
+                <id>http://ldcigmd.wdf.sap.corp:50055/sap/bc/odata/Employees</id>
+                <title type="text">Employees</title>
+                <updated>2013-03-14T11:16:48Z</updated>
+                <author>
+                    <name/>
+                </author>
+                <link href="Employees" rel="self" title="Employees"/>
+                <entry>
+                    <id>http://ldcigmd.wdf.sap.corp:50055/sap/bc/odata/Employees('1')</id>
+                    <title type="text">Walter Winter</title>
+                    <updated>1999-01-01T00:00:00Z</updated>
+                    <category term="RefScenario.Employee" scheme="http://schemas.microsoft.com/ado/2007/08/dataservices/scheme"/>
+                    <link href="Employees('1')" rel="edit" title="Employee"/>
+                    <link href="Employees('1')/$value" rel="edit-media" type="image/jpeg"/>
+                    <link href="Employees('1')/ne_Manager" rel="http://schemas.microsoft.com/ado/2007/08/dataservices/related/ne_Manager" type="application/atom+xml;type=entry" title="ne_Manager"/>
+                    <link href="Employees('1')/ne_Team" rel="http://schemas.microsoft.com/ado/2007/08/dataservices/related/ne_Team" type="application/atom+xml;type=entry" title="ne_Team"/>
+                    <link href="Employees('1')/ne_Room" rel="http://schemas.microsoft.com/ado/2007/08/dataservices/related/ne_Room" type="application/atom+xml;type=entry" title="ne_Room"/>
+                    <link href="Employees('1')/$links/ne_Manager" rel="http://schemas.microsoft.com/ado/2007/08/dataservices/relatedlinks/ne_Manager" type="application/xml" title="ne_Manager"/>
+                    <link href="Employees('1')/$links/ne_Team" rel="http://schemas.microsoft.com/ado/2007/08/dataservices/relatedlinks/ne_Team" type="application/xml" title="ne_Team"/>
+                    <link href="Employees('1')/$links/ne_Room" rel="http://schemas.microsoft.com/ado/2007/08/dataservices/relatedlinks/ne_Room" type="application/xml" title="ne_Room"/>
+                    <content type="image/jpeg" src="Employees('1')/$value"/>
+                    <m:properties>
+                        <d:EmployeeId>1</d:EmployeeId>
+                        <d:EmployeeName>Walter Winter</d:EmployeeName>
+                        <d:ManagerId>1</d:ManagerId>
+                        <d:RoomId>1</d:RoomId>
+                        <d:TeamId>1</d:TeamId>
+                        <d:Location m:type="RefScenario.c_Location">
+                            <d:City m:type="RefScenario.c_City">
+                                <d:PostalCode>69124</d:PostalCode>
+                                <d:CityName>Heidelberg</d:CityName>
+                            </d:City>
+                            <d:Country>Germany</d:Country>
+                        </d:Location>
+                        <d:Age>52</d:Age>
+                        <d:EntryDate>1999-01-01T00:00:00</d:EntryDate>
+                        <d:ImageUrl>Employees('1')/$value</d:ImageUrl>
+                    </m:properties>
+                </entry>
+                <entry>
+                    <id>http://ldcigmd.wdf.sap.corp:50055/sap/bc/odata/Employees('2')</id>
+                    <title type="text">Frederic Fall</title>
+                    <updated>2003-07-01T00:00:00Z</updated>
+                    <category term="RefScenario.Employee" scheme="http://schemas.microsoft.com/ado/2007/08/dataservices/scheme"/>
+                    <link href="Employees('2')" rel="edit" title="Employee"/>
+                    <link href="Employees('2')/$value" rel="edit-media" type="image/jpeg"/>
+                    <link href="Employees('2')/ne_Manager" rel="http://schemas.microsoft.com/ado/2007/08/dataservices/related/ne_Manager" type="application/atom+xml;type=entry" title="ne_Manager"/>
+                    <link href="Employees('2')/ne_Team" rel="http://schemas.microsoft.com/ado/2007/08/dataservices/related/ne_Team" type="application/atom+xml;type=entry" title="ne_Team"/>
+                    <link href="Employees('2')/ne_Room" rel="http://schemas.microsoft.com/ado/2007/08/dataservices/related/ne_Room" type="application/atom+xml;type=entry" title="ne_Room"/>
+                    <link href="Employees('2')/$links/ne_Manager" rel="http://schemas.microsoft.com/ado/2007/08/dataservices/relatedlinks/ne_Manager" type="application/xml" title="ne_Manager"/>
+                    <link href="Employees('2')/$links/ne_Team" rel="http://schemas.microsoft.com/ado/2007/08/dataservices/relatedlinks/ne_Team" type="application/xml" title="ne_Team"/>
+                    <link href="Employees('2')/$links/ne_Room" rel="http://schemas.microsoft.com/ado/2007/08/dataservices/relatedlinks/ne_Room" type="application/xml" title="ne_Room"/>
+                    <content type="image/jpeg" src="Employees('2')/$value"/>
+                    <m:properties>
+                        <d:EmployeeId>2</d:EmployeeId>
+                        <d:EmployeeName>Frederic Fall</d:EmployeeName>
+                        <d:ManagerId>1</d:ManagerId>
+                        <d:RoomId>2</d:RoomId>
+                        <d:TeamId>1</d:TeamId>
+                        <d:Location m:type="RefScenario.c_Location">
+                            <d:City m:type="RefScenario.c_City">
+                                <d:PostalCode>69190</d:PostalCode>
+                                <d:CityName>Walldorf</d:CityName>
+                            </d:City>
+                            <d:Country>Germany</d:Country>
+                        </d:Location>
+                        <d:Age>32</d:Age>
+                        <d:EntryDate>2003-07-01T00:00:00</d:EntryDate>
+                        <d:ImageUrl>Employees('2')/$value</d:ImageUrl>
+                    </m:properties>
+                </entry>
+                <entry>
+                    <id>http://ldcigmd.wdf.sap.corp:50055/sap/bc/odata/Employees('3')</id>
+                    <title type="text">Jonathan Smith</title>
+                    <updated>2013-03-14T11:16:48Z</updated>
+                    <category term="RefScenario.Employee" scheme="http://schemas.microsoft.com/ado/2007/08/dataservices/scheme"/>
+                    <link href="Employees('3')" rel="edit" title="Employee"/>
+                    <link href="Employees('3')/$value" rel="edit-media" type="image/jpeg"/>
+                    <link href="Employees('3')/ne_Manager" rel="http://schemas.microsoft.com/ado/2007/08/dataservices/related/ne_Manager" type="application/atom+xml;type=entry" title="ne_Manager"/>
+                    <link href="Employees('3')/ne_Team" rel="http://schemas.microsoft.com/ado/2007/08/dataservices/related/ne_Team" type="application/atom+xml;type=entry" title="ne_Team"/>
+                    <link href="Employees('3')/ne_Room" rel="http://schemas.microsoft.com/ado/2007/08/dataservices/related/ne_Room" type="application/atom+xml;type=entry" title="ne_Room"/>
+                    <link href="Employees('3')/$links/ne_Manager" rel="http://schemas.microsoft.com/ado/2007/08/dataservices/relatedlinks/ne_Manager" type="application/xml" title="ne_Manager"/>
+                    <link href="Employees('3')/$links/ne_Team" rel="http://schemas.microsoft.com/ado/2007/08/dataservices/relatedlinks/ne_Team" type="application/xml" title="ne_Team"/>
+                    <link href="Employees('3')/$links/ne_Room" rel="http://schemas.microsoft.com/ado/2007/08/dataservices/relatedlinks/ne_Room" type="application/xml" title="ne_Room"/>
+                    <content type="image/jpeg" src="Employees('3')/$value"/>
+                    <m:properties>
+                        <d:EmployeeId>3</d:EmployeeId>
+                        <d:EmployeeName>Jonathan Smith</d:EmployeeName>
+                        <d:ManagerId>1</d:ManagerId>
+                        <d:RoomId>2</d:RoomId>
+                        <d:TeamId>1</d:TeamId>
+                        <d:Location m:type="RefScenario.c_Location">
+                            <d:City m:type="RefScenario.c_City">
+                                <d:PostalCode>69190</d:PostalCode>
+                                <d:CityName>Walldorf</d:CityName>
+                            </d:City>
+                            <d:Country>Germany</d:Country>
+                        </d:Location>
+                        <d:Age>56</d:Age>
+                        <d:EntryDate m:null="true"/>
+                        <d:ImageUrl>Employees('3')/$value</d:ImageUrl>
+                    </m:properties>
+                </entry>
+            </feed>
+        </m:inline>
+    </link>
+    <link href="Teams('1')/$links/nt_Employees" rel="http://schemas.microsoft.com/ado/2007/08/dataservices/relatedlinks/nt_Employees" type="application/xml" title="nt_Employees"/>
+    <content type="application/xml">
+        <m:properties>
+            <d:Id>1</d:Id>
+            <d:Name>Team 1</d:Name>
+            <d:isScrumTeam>false</d:isScrumTeam>
+        </m:properties>
+    </content>
+</entry>

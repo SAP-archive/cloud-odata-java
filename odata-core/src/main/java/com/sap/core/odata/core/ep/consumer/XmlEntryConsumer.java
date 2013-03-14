@@ -194,22 +194,44 @@ public class XmlEntryConsumer {
   private void readLink(final XMLStreamReader reader) throws EntityProviderException, XMLStreamException {
     validateStartPosition(reader, ATOM_LINK);
     Map<String, String> attributes = readAttributes(reader);
-    readAndValidateEndPosition(reader, ATOM_LINK);
-
-    String uri = attributes.get(ATOM_HREF);
-    String rel = attributes.get(ATOM_REL);
-
-    if (rel == null || uri == null) {
-      throw new EntityProviderException(EntityProviderException.MISSING_ATTRIBUTE.addContent(
-          "'" + ATOM_HREF + "' and/or '" + ATOM_REL + "' at tag '" + ATOM_LINK + "'"));
-    } else if (rel.startsWith(Edm.NAMESPACE_REL_2007_08)) {
-      String navigationPropertyName = rel.substring(Edm.NAMESPACE_REL_2007_08.length());
-      entryMetadata.putAssociationUri(navigationPropertyName, uri);
-    } else if (rel.equals(Edm.LINK_REL_EDIT_MEDIA)) {
-      mediaMetadata.setEditLink(uri);
-      String etag = attributes.get(M_ETAG);
-      mediaMetadata.setEtag(etag);
+    
+    int nextTagEvent = reader.next();
+    if(nextTagEvent == XMLStreamConstants.END_ELEMENT && ATOM_LINK.equals(reader.getLocalName())) {
+      validateEndPosition(reader, ATOM_LINK);
+      
+      String uri = attributes.get(ATOM_HREF);
+      String rel = attributes.get(ATOM_REL);
+      
+      if (rel == null || uri == null) {
+        throw new EntityProviderException(EntityProviderException.MISSING_ATTRIBUTE.addContent(
+            "'" + ATOM_HREF + "' and/or '" + ATOM_REL + "' at tag '" + ATOM_LINK + "'"));
+      } else if (rel.startsWith(Edm.NAMESPACE_REL_2007_08)) {
+        String navigationPropertyName = rel.substring(Edm.NAMESPACE_REL_2007_08.length());
+        entryMetadata.putAssociationUri(navigationPropertyName, uri);
+      } else if (rel.equals(Edm.LINK_REL_EDIT_MEDIA)) {
+        mediaMetadata.setEditLink(uri);
+        String etag = attributes.get(M_ETAG);
+        mediaMetadata.setEtag(etag);
+      }
+    } else {
+      readInlineContent(reader);
     }
+    
+  }
+
+  private void readInlineContent(final XMLStreamReader reader) throws XMLStreamException, EntityProviderException {
+    int nextEventType = reader.nextTag();
+    validatePosition(reader, FormatXml.M_INLINE, XMLStreamConstants.START_ELEMENT);
+    nextEventType = reader.next();
+    boolean run = true;
+    while(run) {
+      if(XMLStreamConstants.END_ELEMENT == nextEventType && FormatXml.M_INLINE.equals(reader.getLocalName())) {
+        run = false;
+      } else {
+        nextEventType = reader.next();
+      }
+    }
+    validateEndPosition(reader, FormatXml.M_INLINE);
   }
 
   private void readContent(final XMLStreamReader reader, final EntityInfoAggregator eia) throws EntityProviderException, XMLStreamException, EdmException {

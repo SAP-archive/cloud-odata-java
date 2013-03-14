@@ -19,6 +19,7 @@ public class FormatXml {
   public static final String M_COUNT = "count";
   public static final String M_TYPE = "type";
   public static final String M_NULL = "null";
+  public static final String M_INLINE = "inline";
 
   public static final String M_ERROR = "error";
   public static final String M_CODE = "code";
