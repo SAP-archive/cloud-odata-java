@@ -18,7 +18,7 @@ public abstract class AbstractConsumerTest extends BaseTest {
     return createReaderForTest(input, false);
   }
 
-  protected XMLStreamReader createReaderForTest(final String input, boolean namespaceAware) throws XMLStreamException {
+  protected XMLStreamReader createReaderForTest(final String input, final boolean namespaceAware) throws XMLStreamException {
     XMLInputFactory factory = XMLInputFactory.newInstance();
     factory.setProperty(XMLInputFactory.IS_VALIDATING, false);
     factory.setProperty(XMLInputFactory.IS_NAMESPACE_AWARE, namespaceAware);
@@ -28,30 +28,29 @@ public abstract class AbstractConsumerTest extends BaseTest {
     return streamReader;
   }
 
-  
-  protected Map<String, Object> createTypeMappings(String key, Object value) {
+  protected Map<String, Object> createTypeMappings(final String key, final Object value) {
     Map<String, Object> typeMappings = new HashMap<String, Object>();
     typeMappings.put(key, value);
     return typeMappings;
   }
-  
-  protected String readFile(String filename) throws IOException {
+
+  protected String readFile(final String filename) throws IOException {
     InputStream in = Thread.currentThread().getContextClassLoader().getResourceAsStream(filename);
-    if(in == null) {
+    if (in == null) {
       throw new IOException("Requested file '" + filename + "' was not found.");
     }
 
     byte[] tmp = new byte[8192];
     int count = in.read(tmp);
     StringBuffer b = new StringBuffer();
-    while(count >= 0) {
+    while (count >= 0) {
       b.append(new String(tmp, 0, count));
       count = in.read(tmp);
     }
-    
+
     return b.toString();
   }
-  
+
   /**
    * Create a map with a 'String' to 'Class<?>' mapping based on given parameters.
    * Therefore parameters MUST be a set of such pairs.
@@ -65,14 +64,14 @@ public abstract class AbstractConsumerTest extends BaseTest {
    * @param firstKeyThenMappingClass
    * @return
    */
-  protected Map<String, Object> createTypeMappings(Object ... firstKeyThenMappingClass) {
+  protected Map<String, Object> createTypeMappings(final Object... firstKeyThenMappingClass) {
     Map<String, Object> typeMappings = new HashMap<String, Object>();
-    if(firstKeyThenMappingClass.length % 2 != 0) {
+    if (firstKeyThenMappingClass.length % 2 != 0) {
       throw new IllegalArgumentException("Got odd number of parameters. Please read javadoc.");
     }
-    for (int i = 0; i < firstKeyThenMappingClass.length; i+=2) {
+    for (int i = 0; i < firstKeyThenMappingClass.length; i += 2) {
       String key = (String) firstKeyThenMappingClass[i];
-      Class<?> mappingClass = (Class<?>) firstKeyThenMappingClass[i+1];
+      Class<?> mappingClass = (Class<?>) firstKeyThenMappingClass[i + 1];
       typeMappings.put(key, mappingClass);
     }
     return typeMappings;

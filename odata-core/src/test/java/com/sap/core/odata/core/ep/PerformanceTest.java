@@ -95,7 +95,7 @@ public class PerformanceTest extends AbstractProviderTest {
     long t = startTimer();
 
     for (int i = 0; i < TIMES; i++) {
-      EntityInfoAggregator eia = EntityInfoAggregator.create(edmEntitySet);
+      EntityInfoAggregator eia = EntityInfoAggregator.create(edmEntitySet, null);
       provider.append(writer, eia, roomData, false);
     }
     stopTimer(t, "readAtomEntry");
@@ -110,7 +110,7 @@ public class PerformanceTest extends AbstractProviderTest {
     long t = startTimer();
 
     for (int i = 0; i < TIMES; i++) {
-      EntityInfoAggregator eia = EntityInfoAggregator.create(edmEntitySet);
+      EntityInfoAggregator eia = EntityInfoAggregator.create(edmEntitySet, null);
       provider.append(writer, eia, roomData, false);
     }
     stopTimer(t, "readAtomEntry");
@@ -120,7 +120,7 @@ public class PerformanceTest extends AbstractProviderTest {
   public void readAtomEntryOptimized() throws IOException, XpathException, SAXException, XMLStreamException, FactoryConfigurationError, ODataException {
     long t = startTimer();
 
-    EntityInfoAggregator eia = EntityInfoAggregator.create(edmEntitySet);
+    EntityInfoAggregator eia = EntityInfoAggregator.create(edmEntitySet, null);
     for (int i = 0; i < TIMES; i++) {
       provider.append(writer, eia, roomData, false);
     }
@@ -135,7 +135,7 @@ public class PerformanceTest extends AbstractProviderTest {
 
     long t = startTimer();
 
-    EntityInfoAggregator eia = EntityInfoAggregator.create(edmEntitySet);
+    EntityInfoAggregator eia = EntityInfoAggregator.create(edmEntitySet, null);
     for (int i = 0; i < TIMES; i++) {
       provider.append(writer, eia, roomData, false);
     }

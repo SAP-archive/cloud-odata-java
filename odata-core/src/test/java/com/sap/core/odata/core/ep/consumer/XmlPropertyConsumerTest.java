@@ -55,7 +55,7 @@ public class XmlPropertyConsumerTest extends AbstractConsumerTest {
 
     assertEquals(Long.valueOf(67), resultMap.get("Age"));
   }
-  
+
   @Test
   public void testReadIntegerPropertyWithNullMapping() throws Exception {
     XmlPropertyConsumer xpc = new XmlPropertyConsumer();
@@ -70,7 +70,7 @@ public class XmlPropertyConsumerTest extends AbstractConsumerTest {
 
     assertEquals(Integer.valueOf(67), resultMap.get("Age"));
   }
-  
+
   @Test
   public void testReadIntegerPropertyWithEmptyMapping() throws Exception {
     XmlPropertyConsumer xpc = new XmlPropertyConsumer();
@@ -169,7 +169,7 @@ public class XmlPropertyConsumerTest extends AbstractConsumerTest {
     assertEquals("Heidelberg", cityMap.get("CityName"));
   }
 
-  @Test(expected=EntityProviderException.class)
+  @Test(expected = EntityProviderException.class)
   public void testReadComplexPropertyInvalidMapping() throws Exception {
     XmlPropertyConsumer xpc = new XmlPropertyConsumer();
 
@@ -186,13 +186,13 @@ public class XmlPropertyConsumerTest extends AbstractConsumerTest {
     EdmProperty property = (EdmProperty) entitySet.getEntityType().getProperty("Location");
 
     try {
-      Map<String, Object> resultMap = xpc.readProperty(reader, property, false, 
+      Map<String, Object> resultMap = xpc.readProperty(reader, property, false,
           createTypeMappings("Location", createTypeMappings("City", createTypeMappings("PostalCode", Integer.class))));
-      
-//      Map<String, Object> resultMap = xpc.readProperty(reader, property, false, 
-//          createTypeMappings("PostalCode", Integer.class));
+
+      //      Map<String, Object> resultMap = xpc.readProperty(reader, property, false, 
+      //          createTypeMappings("PostalCode", Integer.class));
       Assert.assertNotNull(resultMap);
-    } catch(EntityProviderException e) {
+    } catch (EntityProviderException e) {
       Assert.assertTrue(e.getCause() instanceof EdmSimpleTypeException);
       throw e;
     }
@@ -238,11 +238,10 @@ public class XmlPropertyConsumerTest extends AbstractConsumerTest {
     createProperty("PostalCode", EdmSimpleTypeKind.Int32, cityComplexType);
     createProperty("CityName", EdmSimpleTypeKind.String, cityComplexType);
 
-    
     // Execute test
     Map<String, Object> typeMappings =
-        createTypeMappings("Location", 
-            createTypeMappings("City", 
+        createTypeMappings("Location",
+            createTypeMappings("City",
                 createTypeMappings("CityName", String.class, "PostalCode", Long.class)));
     Map<String, Object> resultMap = xpc.readProperty(reader, locationComplexProperty, false, typeMappings);
 
@@ -254,7 +253,6 @@ public class XmlPropertyConsumerTest extends AbstractConsumerTest {
     assertEquals("Heidelberg", cityMap.get("CityName"));
   }
 
-
   @SuppressWarnings("unchecked")
   @Test
   public void testReadComplexPropertyWithNamespace() throws Exception {
@@ -262,14 +260,14 @@ public class XmlPropertyConsumerTest extends AbstractConsumerTest {
 
     String xml =
         "<d:Location m:type=\"RefScenario.c_Location\" " +
-        "    xmlns:m=\"http://schemas.microsoft.com/ado/2007/08/dataservices/metadata\" " +
-        "    xmlns:d=\"http://schemas.microsoft.com/ado/2007/08/dataservices\">" +
-        "  <d:Country>Germany</d:Country>" +
-        "  <d:City m:type=\"RefScenario.c_City\">" +
-        "    <d:PostalCode>69124</d:PostalCode>" +
-        "    <d:CityName>Heidelberg</d:CityName>" +
-        "  </d:City>" +
-        "</d:Location>";
+            "    xmlns:m=\"http://schemas.microsoft.com/ado/2007/08/dataservices/metadata\" " +
+            "    xmlns:d=\"http://schemas.microsoft.com/ado/2007/08/dataservices\">" +
+            "  <d:Country>Germany</d:Country>" +
+            "  <d:City m:type=\"RefScenario.c_City\">" +
+            "    <d:PostalCode>69124</d:PostalCode>" +
+            "    <d:CityName>Heidelberg</d:CityName>" +
+            "  </d:City>" +
+            "</d:Location>";
     XMLStreamReader reader = createReaderForTest(xml, true);
     EdmEntitySet entitySet = MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Employees");
     EdmProperty property = (EdmProperty) entitySet.getEntityType().getProperty("Location");
@@ -283,8 +281,7 @@ public class XmlPropertyConsumerTest extends AbstractConsumerTest {
     assertEquals("69124", cityMap.get("PostalCode"));
     assertEquals("Heidelberg", cityMap.get("CityName"));
   }
-  
-  
+
   private static EdmProperty createProperty(final String name, final EdmSimpleTypeKind kind, final EdmStructuralType entityType) throws EdmException {
     final EdmProperty property = mock(EdmProperty.class);
     when(property.getType()).thenReturn(kind.getEdmSimpleTypeInstance());

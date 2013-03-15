@@ -22,7 +22,7 @@ public class ExpandSelectTreeNodeImpl implements ExpandSelectTreeNode {
 
     private boolean booleanRepresentation;
 
-    private AllKinds(boolean booleanRepresentation) {
+    private AllKinds(final boolean booleanRepresentation) {
       this.booleanRepresentation = booleanRepresentation;
     }
 
@@ -123,15 +123,17 @@ public class ExpandSelectTreeNodeImpl implements ExpandSelectTreeNode {
     String linksString = "";
 
     for (EdmProperty property : properties) {
-      if (!propertiesString.isEmpty())
+      if (!propertiesString.isEmpty()) {
         propertiesString += ",";
+      }
       propertiesString += "\"" + property.getName() + "\"";
     }
 
     for (Map.Entry<EdmNavigationProperty, ExpandSelectTreeNode> entry : links.entrySet()) {
       final String nodeString = entry.getValue() == null ? null : ((ExpandSelectTreeNodeImpl) entry.getValue()).toJsonString();
-      if (!linksString.isEmpty())
+      if (!linksString.isEmpty()) {
         linksString += ",";
+      }
       linksString += "{\"" + entry.getKey().getName() + "\":" + nodeString + "}";
     }
 

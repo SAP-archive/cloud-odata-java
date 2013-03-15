@@ -194,7 +194,7 @@ public class ODataExceptionMapperImpl implements ExceptionMapper<Exception> {
 
   private ContentType getContentType() {
     for (MediaType type : httpHeaders.getAcceptableMediaTypes()) {
-      if(ContentType.isParseable(type.toString())) {
+      if (ContentType.isParseable(type.toString())) {
         ContentType convertedContentType = ContentType.create(type.toString());
         if (convertedContentType.isWildcard()
             || ContentType.APPLICATION_XML.equals(convertedContentType) || ContentType.APPLICATION_XML_CS_UTF_8.equals(convertedContentType)

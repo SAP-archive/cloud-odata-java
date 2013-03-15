@@ -121,16 +121,16 @@ public class XmlEntityConsumerTest extends AbstractConsumerTest {
       "    <d:Type>image/png</d:Type>" +
       "  </m:properties>" +
       "</entry>";
-  
+
   @Test
   public void readWithInlineContent() throws Exception {
     // prepare
     String content = readFile("expanded_team.xml");
     assertNotNull(content);
-    
+
     EdmEntitySet entitySet = MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Teams");
     InputStream reqContent = createContentAsStream(content);
-    
+
     // execute
     XmlEntityConsumer xec = new XmlEntityConsumer();
     ODataEntry entry = xec.readEntry(entitySet, reqContent, false);
@@ -273,11 +273,11 @@ public class XmlEntityConsumerTest extends AbstractConsumerTest {
     readAndExpectException(entitySet, reqContent, EntityProviderException.INVALID_NAMESPACE.addContent("Id"));
   }
 
-  private void readAndExpectException(EdmEntitySet entitySet, InputStream reqContent, MessageReference messageReference) throws ODataMessageException {
+  private void readAndExpectException(final EdmEntitySet entitySet, final InputStream reqContent, final MessageReference messageReference) throws ODataMessageException {
     readAndExpectException(entitySet, reqContent, true, messageReference);
   }
-  
-  private void readAndExpectException(EdmEntitySet entitySet, InputStream reqContent, boolean merge, MessageReference messageReference) throws ODataMessageException {
+
+  private void readAndExpectException(final EdmEntitySet entitySet, final InputStream reqContent, final boolean merge, final MessageReference messageReference) throws ODataMessageException {
     try {
       XmlEntityConsumer xec = new XmlEntityConsumer();
       ODataEntry result = xec.readEntry(entitySet, reqContent, merge);
@@ -416,7 +416,7 @@ public class XmlEntityConsumerTest extends AbstractConsumerTest {
     assertEquals(8, properties.size());
 
     assertNull(properties.get("EmployeeId"));
-//    assertEquals("1", properties.get("EmployeeId"));
+    //    assertEquals("1", properties.get("EmployeeId"));
     assertEquals("Walter Winter", properties.get("EmployeeName"));
     assertEquals("1", properties.get("ManagerId"));
     assertEquals("1", properties.get("RoomId"));
@@ -531,9 +531,9 @@ public class XmlEntityConsumerTest extends AbstractConsumerTest {
 
     // execute
     XmlEntityConsumer xec = new XmlEntityConsumer();
-    ODataEntry result = xec.readEntry(entitySet, contentBody, true, 
+    ODataEntry result = xec.readEntry(entitySet, contentBody, true,
         createTypeMappings("Age", Long.class, // test unused type mapping 
-                            "EntryDate", Date.class));
+            "EntryDate", Date.class));
 
     // verify
     Map<String, Object> properties = result.getProperties();
@@ -662,7 +662,7 @@ public class XmlEntityConsumerTest extends AbstractConsumerTest {
     assertEquals("/SAP/PUBLIC/BC/NWDEMO_MODEL/IMAGES/male_1_WinterW.jpg", properties.get("ImageUrl"));
   }
 
-  @Test(expected=EntityProviderException.class)
+  @Test(expected = EntityProviderException.class)
   public void testReadEntryRequestInvalidMapping() throws Exception {
     XmlEntityConsumer xec = new XmlEntityConsumer();
 
@@ -703,10 +703,10 @@ public class XmlEntityConsumerTest extends AbstractConsumerTest {
 
     EdmEntitySet entitySet = MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Employees");
     InputStream content = createContentAsStream(EMPLOYEE_1_XML);
-    ODataEntry result = xec.readEntry(entitySet, content, true, 
-        createTypeMappings("Age", Short.class, 
-                            "Heidelberg", String.class, 
-                            "EntryDate", Long.class));
+    ODataEntry result = xec.readEntry(entitySet, content, true,
+        createTypeMappings("Age", Short.class,
+            "Heidelberg", String.class,
+            "EntryDate", Long.class));
 
     // verify
     Map<String, Object> properties = result.getProperties();
@@ -814,18 +814,18 @@ public class XmlEntityConsumerTest extends AbstractConsumerTest {
 
     assertEquals(Integer.valueOf(67), value.get("Age"));
   }
-  
+
   @Test
   public void readStringPropertyValue() throws Exception {
     XmlEntityConsumer xec = new XmlEntityConsumer();
-    
+
     String xml = "<EmployeeName>Max Mustermann</EmployeeName>";
     InputStream content = createContentAsStream(xml);
     EdmEntitySet entitySet = MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Employees");
     EdmProperty property = (EdmProperty) entitySet.getEntityType().getProperty("EmployeeName");
-    
+
     Object result = xec.readPropertyValue(property, content);
-    
+
     assertEquals("Max Mustermann", result);
   }
 
@@ -843,7 +843,7 @@ public class XmlEntityConsumerTest extends AbstractConsumerTest {
     assertEquals(Long.valueOf(42), value.get("Age"));
   }
 
-  @Test(expected=EntityProviderException.class)
+  @Test(expected = EntityProviderException.class)
   public void readStringPropertyValueWithInvalidMapping() throws Exception {
     XmlEntityConsumer xec = new XmlEntityConsumer();
 
@@ -856,7 +856,6 @@ public class XmlEntityConsumerTest extends AbstractConsumerTest {
 
     assertEquals("Max Mustermann", result);
   }
-
 
   private InputStream createContentAsStream(final String xml) throws UnsupportedEncodingException {
     InputStream content = new ByteArrayInputStream(xml.getBytes("utf-8"));

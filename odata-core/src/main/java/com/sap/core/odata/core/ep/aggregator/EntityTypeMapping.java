@@ -24,13 +24,13 @@ public class EntityTypeMapping {
     this(null, Object.class);
   }
 
-  private EntityTypeMapping(String name, Class<?> mappingClass) {
+  private EntityTypeMapping(final String name, final Class<?> mappingClass) {
     propertyName = name;
     mapping = mappingClass;
     mappings = Collections.emptyList();
   }
 
-  private EntityTypeMapping(String name, List<EntityTypeMapping> typeMappings) {
+  private EntityTypeMapping(final String name, final List<EntityTypeMapping> typeMappings) {
     propertyName = name;
     mapping = EntityTypeMapping.class;
     List<EntityTypeMapping> tmp = new ArrayList<EntityTypeMapping>();
@@ -40,12 +40,12 @@ public class EntityTypeMapping {
     mappings = Collections.unmodifiableList(tmp);
   }
 
-  public static EntityTypeMapping create(Map<String, Object> mappings) throws EntityProviderException {
+  public static EntityTypeMapping create(final Map<String, Object> mappings) throws EntityProviderException {
     return create(null, mappings);
   }
 
   @SuppressWarnings("unchecked")
-  public static EntityTypeMapping create(String name, Map<String, Object> mappings) throws EntityProviderException {
+  public static EntityTypeMapping create(final String name, final Map<String, Object> mappings) throws EntityProviderException {
     if (mappings == null) {
       return ENTITY_TYPE_MAPPING;
     }
@@ -79,7 +79,7 @@ public class EntityTypeMapping {
    * @param name
    * @return
    */
-  public EntityTypeMapping getEntityTypeMapping(String name) {
+  public EntityTypeMapping getEntityTypeMapping(final String name) {
     if (isComplex()) {
       for (EntityTypeMapping mapping : mappings) {
         if (mapping.propertyName.equals(name)) {
@@ -98,7 +98,7 @@ public class EntityTypeMapping {
    * @param name
    * @return mapping {@link Class} for the property with given <code>name</code> or <code>NULL</code>.
    */
-  public Class<?> getMappingClass(String name) {
+  public Class<?> getMappingClass(final String name) {
     if (isComplex()) {
       for (EntityTypeMapping mapping : mappings) {
         if (mapping.propertyName.equals(name)) {
@@ -114,7 +114,7 @@ public class EntityTypeMapping {
     if (isComplex()) {
       return "{'" + propertyName + "'->" + mappings.toString() + "}";
     }
-    return "{'" + propertyName + "' as " + (mapping == null? "NULL": mapping.getSimpleName()) + "}";
+    return "{'" + propertyName + "' as " + (mapping == null ? "NULL" : mapping.getSimpleName()) + "}";
   }
 
 }

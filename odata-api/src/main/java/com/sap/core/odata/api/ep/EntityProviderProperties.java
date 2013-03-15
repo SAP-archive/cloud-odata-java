@@ -3,6 +3,7 @@ package com.sap.core.odata.api.ep;
 import java.net.URI;
 
 import com.sap.core.odata.api.commons.InlineCount;
+import com.sap.core.odata.api.uri.ExpandSelectTreeNode;
 
 /**
  * {@link EntityProviderProperties} contains all additional properties which are necessary to <b>write (serialize)</b> an
@@ -15,6 +16,7 @@ public class EntityProviderProperties {
   private InlineCount inlineCountType;
   private Integer inlineCount;
   private String nextLink;
+  private ExpandSelectTreeNode expandSelectTree;
 
   private EntityProviderProperties() {}
 
@@ -40,6 +42,14 @@ public class EntityProviderProperties {
   */
   public final InlineCount getInlineCountType() {
     return inlineCountType;
+  }
+
+  /**
+   * Gets the expand select tree data structure resulting from $expand and $select query options.
+   * @return a paresed tree structure representing the $expand and $select
+   */
+  public final ExpandSelectTreeNode getExpandSelectTree() {
+    return expandSelectTree;
   }
 
   /**
@@ -106,8 +116,23 @@ public class EntityProviderProperties {
       return this;
     }
 
+    /**
+     * Build properties object.
+     * @return assembled properties object
+     */
     public final EntityProviderProperties build() {
       return properties;
+    }
+
+    /**
+     * Set a expand select tree which results from $expand and $select query parameter. Usually the data structure is constructed 
+     * by the uri parser.
+     * @param expandSelectTree data structure
+     * @return properties builder
+     */
+    public ODataEntityProviderPropertiesBuilder setExpandSelectTree(ExpandSelectTreeNode expandSelectTree) {
+      properties.expandSelectTree = expandSelectTree;
+      return this;
     }
 
   }

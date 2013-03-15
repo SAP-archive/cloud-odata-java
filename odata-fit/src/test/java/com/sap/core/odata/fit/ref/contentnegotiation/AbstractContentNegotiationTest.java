@@ -235,8 +235,8 @@ public abstract class AbstractContentNegotiationTest extends AbstractFitTest {
     public void execute(final URI serviceEndpoint) throws Exception {
       execute(serviceEndpoint, DEFAULT_WAIT_BETWEEN_TESTCALLS_IN_MS);
     }
-    
-    public void execute(final URI serviceEndpoint, long sleepTimeInMs) throws Exception {
+
+    public void execute(final URI serviceEndpoint, final long sleepTimeInMs) throws Exception {
       Map<FitTest, AssertionError> test2Failure = new HashMap<AbstractContentNegotiationTest.FitTest, AssertionError>();
       List<FitTest> successTests = new ArrayList<AbstractContentNegotiationTest.FitTest>();
 
@@ -247,7 +247,7 @@ public abstract class AbstractContentNegotiationTest extends AbstractFitTest {
         } catch (AssertionError e) {
           test2Failure.put(testParam, e);
         } finally {
-          if(sleepTimeInMs > 0) {
+          if (sleepTimeInMs > 0) {
             TimeUnit.MILLISECONDS.sleep(sleepTimeInMs);
           }
         }

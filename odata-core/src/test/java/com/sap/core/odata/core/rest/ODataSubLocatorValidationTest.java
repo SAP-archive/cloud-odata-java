@@ -597,8 +597,8 @@ public class ODataSubLocatorValidationTest extends BaseTest {
     wrongRequestContentType(ODataHttpMethod.PUT, UriType.URI2, ContentType.APPLICATION_ATOM_SVC);
     wrongRequestContentType(ODataHttpMethod.PUT, UriType.URI2, ContentType.APPLICATION_ATOM_SVC_CS_UTF_8);
 
-    ODataHttpMethod[] methodsToTest = {ODataHttpMethod.PUT, ODataHttpMethod.PATCH, ODataHttpMethod.MERGE};
-    
+    ODataHttpMethod[] methodsToTest = { ODataHttpMethod.PUT, ODataHttpMethod.PATCH, ODataHttpMethod.MERGE };
+
     for (ODataHttpMethod oDataHttpMethod : methodsToTest) {
       wrongRequestContentType(oDataHttpMethod, UriType.URI5, true, ContentType.APPLICATION_ATOM_SVC);
       wrongRequestContentType(oDataHttpMethod, UriType.URI5, true, ContentType.APPLICATION_ATOM_SVC_CS_UTF_8);
@@ -608,7 +608,7 @@ public class ODataSubLocatorValidationTest extends BaseTest {
       wrongRequestContentType(oDataHttpMethod, UriType.URI5, true, ContentType.APPLICATION_ATOM_XML_CS_UTF_8);
       wrongRequestContentType(oDataHttpMethod, UriType.URI5, true, ContentType.APPLICATION_JSON);
       wrongRequestContentType(oDataHttpMethod, UriType.URI5, true, ContentType.APPLICATION_JSON_CS_UTF_8);
-      
+
       wrongRequestContentType(oDataHttpMethod, UriType.URI5, true, ContentType.create("image/jpeg"));
     }
   }
@@ -617,7 +617,7 @@ public class ODataSubLocatorValidationTest extends BaseTest {
   public void invalidRequestContentType() throws Exception {
     invalidRequestContentType(ODataHttpMethod.POST, UriType.URI1, false, "app/app/xml");
   }
-  
+
   @Test
   public void invalidRequestDollarFormatSyntax() throws Exception {
     invalidRequestDollarFormat(ODataHttpMethod.GET, UriType.URI17, true, "xml");

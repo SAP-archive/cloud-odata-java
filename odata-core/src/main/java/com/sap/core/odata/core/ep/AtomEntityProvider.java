@@ -119,7 +119,7 @@ public class AtomEntityProvider implements ContentTypeBasedEntityProvider {
       writer.writeStartDocument();
 
       AtomEntryEntityProducer as = new AtomEntryEntityProducer(properties);
-      EntityInfoAggregator eia = EntityInfoAggregator.create(entitySet);
+      EntityInfoAggregator eia = EntityInfoAggregator.create(entitySet, properties);
       as.append(writer, eia, data, true);
 
       writer.flush();
@@ -195,7 +195,7 @@ public class AtomEntityProvider implements ContentTypeBasedEntityProvider {
 
       AtomFeedProducer atomFeedProvider = new AtomFeedProducer(properties);
       //EdmEntitySet entitySet = entitySetView.getTargetEntitySet();
-      EntityInfoAggregator eia = EntityInfoAggregator.create(entitySet);
+      EntityInfoAggregator eia = EntityInfoAggregator.create(entitySet, properties);
       atomFeedProvider.append(writer, eia, data);
 
       writer.flush();
@@ -235,7 +235,7 @@ public class AtomEntityProvider implements ContentTypeBasedEntityProvider {
       writer.writeStartDocument();
 
       XmlLinkEntityProducer entity = new XmlLinkEntityProducer(properties);
-      final EntityInfoAggregator entityInfo = EntityInfoAggregator.create(entitySet);
+      final EntityInfoAggregator entityInfo = EntityInfoAggregator.create(entitySet, properties);
       entity.append(writer, entityInfo, data, true);
 
       writer.flush();
@@ -267,7 +267,7 @@ public class AtomEntityProvider implements ContentTypeBasedEntityProvider {
       writer.writeStartDocument();
 
       XmlLinksEntityProducer entity = new XmlLinksEntityProducer(properties);
-      final EntityInfoAggregator entityInfo = EntityInfoAggregator.create(entitySet);
+      final EntityInfoAggregator entityInfo = EntityInfoAggregator.create(entitySet, properties);
       entity.append(writer, entityInfo, data);
 
       writer.flush();
@@ -343,13 +343,13 @@ public class AtomEntityProvider implements ContentTypeBasedEntityProvider {
   }
 
   @Override
-  public ODataEntry readEntry(final EdmEntitySet entitySet, final InputStream content, final boolean validate, Map<String, Object> typeMappings) throws EntityProviderException {
+  public ODataEntry readEntry(final EdmEntitySet entitySet, final InputStream content, final boolean validate, final Map<String, Object> typeMappings) throws EntityProviderException {
     XmlEntityConsumer xec = new XmlEntityConsumer();
     return xec.readEntry(entitySet, content, validate);
   }
 
   @Override
-  public Map<String, Object> readProperty(final EdmProperty edmProperty, final InputStream content, final boolean validate, Map<String, Object> typeMappings) throws EntityProviderException {
+  public Map<String, Object> readProperty(final EdmProperty edmProperty, final InputStream content, final boolean validate, final Map<String, Object> typeMappings) throws EntityProviderException {
     XmlEntityConsumer xec = new XmlEntityConsumer();
     return xec.readProperty(edmProperty, content, validate, typeMappings);
   }

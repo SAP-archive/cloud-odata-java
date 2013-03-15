@@ -72,7 +72,7 @@ public class ContentType {
   }
 
   private ContentType(final String type, final String subtype, final ODataFormat odataFormat, final Map<String, String> parameters) {
-    if((type == null || MEDIA_TYPE_WILDCARD.equals(type)) && !MEDIA_TYPE_WILDCARD.equals(subtype)) {
+    if ((type == null || MEDIA_TYPE_WILDCARD.equals(type)) && !MEDIA_TYPE_WILDCARD.equals(subtype)) {
       throw new IllegalArgumentException("Illegal combination of WILDCARD type with NONE WILDCARD subtype.");
     }
     this.odataFormat = odataFormat;
@@ -103,12 +103,11 @@ public class ContentType {
     try {
       ContentType ct = ContentType.create(format);
       return ct != null;
-    } catch(Exception e) {
+    } catch (Exception e) {
       return false;
     }
   }
-  
-  
+
   /**
    * Creates a content type from type and subtype
    * @param type
@@ -192,11 +191,11 @@ public class ContentType {
   public static ContentType parse(final String format) {
     try {
       return ContentType.create(format);
-    } catch(Exception e) {
+    } catch (Exception e) {
       return null;
     }
   }
-  
+
   /**
    * 
    * @param subtype
@@ -341,10 +340,10 @@ public class ContentType {
         Entry<String, String> e = entries.next();
         Entry<String, String> oe = otherEntries.next();
 
-        if(!areEqual(e.getKey(), oe.getKey())) {
+        if (!areEqual(e.getKey(), oe.getKey())) {
           return false;
         }
-        if(!areEqual(e.getValue(), oe.getValue())) {
+        if (!areEqual(e.getValue(), oe.getValue())) {
           return false;
         }
       }
@@ -363,17 +362,17 @@ public class ContentType {
    * @param second
    * @return
    */
-  private static boolean areEqual(String first, String second) {
+  private static boolean areEqual(final String first, final String second) {
     if (first == null) {
       if (second != null) {
         return false;
       }
-    } else if(!first.equalsIgnoreCase(second)) {
+    } else if (!first.equalsIgnoreCase(second)) {
       return false;
     }
     return true;
   }
-  
+
   /**
    * Get {@link ContentType} as string as defined in RFC 2616 (http://www.ietf.org/rfc/rfc2616.txt - chapter 14.17: Content-Type)
    * 

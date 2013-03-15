@@ -813,7 +813,7 @@ public class UriParserImpl extends UriParser {
   }
 
   @Override
-  public ExpandSelectTreeNode buildExpandSelectTree(List<SelectItem> select, List<ArrayList<NavigationPropertySegment>> expand) throws EdmException {
+  public ExpandSelectTreeNode buildExpandSelectTree(final List<SelectItem> select, final List<ArrayList<NavigationPropertySegment>> expand) throws EdmException {
     return new ExpandSelectTreeCreator(select, expand).create();
   }
 }

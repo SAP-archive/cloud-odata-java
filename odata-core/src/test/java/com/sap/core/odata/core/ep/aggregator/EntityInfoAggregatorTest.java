@@ -20,7 +20,7 @@ public class EntityInfoAggregatorTest extends AbstractProviderTest {
   public void testEntitySet() throws Exception {
     EdmEntitySet entitySet = MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Employees");
 
-    EntityInfoAggregator eia = EntityInfoAggregator.create(entitySet);
+    EntityInfoAggregator eia = EntityInfoAggregator.create(entitySet, null);
 
     assertNotNull(eia);
     EntityPropertyInfo propertyInfoAge = eia.getPropertyInfo("Age");

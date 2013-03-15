@@ -434,10 +434,12 @@ public class ExpandSelectTreeCreatorImplTest extends BaseTest {
     final List<PathSegment> pathSegments = MockFacade.getPathSegmentsAsODataPathSegmentMock(Arrays.asList("Employees('1')"));
 
     Map<String, String> queryParameters = new HashMap<String, String>();
-    if (selectString != null)
+    if (selectString != null) {
       queryParameters.put("$select", selectString);
-    if (expandString != null)
+    }
+    if (expandString != null) {
       queryParameters.put("$expand", expandString);
+    }
 
     final UriInfo uriInfo = UriParser.parse(edm, pathSegments, queryParameters);
 
