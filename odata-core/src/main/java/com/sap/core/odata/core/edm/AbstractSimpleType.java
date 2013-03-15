@@ -1,5 +1,6 @@
 package com.sap.core.odata.core.edm;
 
+import com.sap.core.odata.api.edm.Edm;
 import com.sap.core.odata.api.edm.EdmException;
 import com.sap.core.odata.api.edm.EdmFacets;
 import com.sap.core.odata.api.edm.EdmLiteralKind;
@@ -36,11 +37,7 @@ public abstract class AbstractSimpleType implements EdmSimpleType {
   @Override
   public String getName() throws EdmException {
     final String name = getClass().getSimpleName();
-    if (name.startsWith(EDM_NAMESPACE)) {
-      return name.substring(3);
-    } else {
-      return name;
-    }
+    return name.startsWith(EDM_NAMESPACE) ? name.substring(3) : name;
   }
 
   @Override
@@ -61,6 +58,15 @@ public abstract class AbstractSimpleType implements EdmSimpleType {
   @Override
   public String toUriLiteral(final String literal) throws EdmSimpleTypeException {
     return literal;
+  }
+
+  @Override
+  public String toString() {
+    try {
+      return getNamespace() + Edm.DELIMITER + getName();
+    } catch (final EdmException e) {
+      return null;
+    }
   }
 
   /**
