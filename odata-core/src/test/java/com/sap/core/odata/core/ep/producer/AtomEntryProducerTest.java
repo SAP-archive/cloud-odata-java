@@ -139,7 +139,7 @@ public class AtomEntryProducerTest extends AbstractProviderTest {
     ODataResponse response = ser.writeEntry(employeeEntitySet, employeeData, properties);
     String xmlString = verifyResponse(response);
 
-    //    log.debug(xmlString);
+//        log.debug(xmlString);
 
     assertXpathExists("/a:entry", xmlString);
     assertXpathExists("/a:entry/a:content", xmlString);
