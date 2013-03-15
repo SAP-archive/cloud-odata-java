@@ -11,6 +11,7 @@ import static com.sap.core.odata.core.ep.util.FormatXml.M_ETAG;
 import static com.sap.core.odata.core.ep.util.FormatXml.M_PROPERTIES;
 import static com.sap.core.odata.core.ep.util.FormatXml.M_TYPE;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -71,7 +72,7 @@ public class XmlEntryConsumer {
       }
 
       if (!merge) {
-        readEntryResult.validate(eia);
+        validate(eia, readEntryResult);
       }
 
       return readEntryResult;
@@ -81,6 +82,21 @@ public class XmlEntryConsumer {
       throw new EntityProviderException(EntityProviderException.COMMON, e);
     }
   }
+  
+  public void validate(final EntityInfoAggregator eia, ODataEntryImpl entry) throws EntityProviderException {
+    Collection<EntityPropertyInfo> propertyInfos = eia.getPropertyInfos();
+    Map<String, Object> data = entry.getProperties();
+
+    for (EntityPropertyInfo entityPropertyInfo : propertyInfos) {
+      boolean mandatory = entityPropertyInfo.isMandatory();
+      if (mandatory) {
+        if (!data.containsKey(entityPropertyInfo.getName())) {
+          throw new EntityProviderException(EntityProviderException.MISSING_PROPERTY.addContent(entityPropertyInfo.getName()));
+        }
+      }
+    }
+  }
+
 
   /**
    * 
@@ -297,10 +313,12 @@ public class XmlEntryConsumer {
 
     XmlPropertyConsumer xpc = new XmlPropertyConsumer();
     boolean run = true;
+    EntityPropertyInfo property;
+    
     while (run) {
       if (nextTagEventType == XMLStreamConstants.START_ELEMENT) {
         String name = getValidPropertyName(reader);
-        EntityPropertyInfo property = getValidatedPropertyInfo(entitySet, name);
+        property = getValidatedPropertyInfo(entitySet, name);
         Object value = xpc.readStartedElement(reader, property, typeMappings);
         properties.put(name, value);
       } else if (nextTagEventType == XMLStreamConstants.END_ELEMENT) {

@@ -56,7 +56,7 @@ public class EntityInfoAggregator {
    * list with all property names in the order based on order in {@link EdmProperty} (normally [key, entity,
    * navigation])
    */
-  private List<String> allPropertyNames = new ArrayList<String>();
+  private List<String> propertyNames = new ArrayList<String>();
   private List<String> etagPropertyNames = new ArrayList<String>();
   private List<String> noneSyndicationTargetPaths = new ArrayList<String>();
   private boolean isDefaultEntityContainer;
@@ -210,7 +210,7 @@ public class EntityInfoAggregator {
    * @return unmodifiable set of all property names.
    */
   public List<String> getPropertyNames() {
-    return Collections.unmodifiableList(allPropertyNames);
+    return Collections.unmodifiableList(propertyNames);
   }
 
   public Collection<EntityPropertyInfo> getPropertyInfos() {
@@ -264,7 +264,6 @@ public class EntityInfoAggregator {
       isDefaultEntityContainer = entitySet.getEntityContainer().isDefaultEntityContainer();
       entityContainerName = entitySet.getEntityContainer().getName();
       //
-      List<String> propertyNames = new ArrayList<String>();
       propertyNames.addAll(type.getPropertyNames());
       propertyNames.addAll(type.getNavigationPropertyNames());
       //
@@ -282,7 +281,6 @@ public class EntityInfoAggregator {
 
       for (String propertyName : propertyNames) {
         EdmTyped typed = type.getProperty(propertyName);
-        allPropertyNames.add(typed.getName());
 
         if (typed instanceof EdmProperty) {
           EdmProperty property = (EdmProperty) typed;
@@ -291,11 +289,11 @@ public class EntityInfoAggregator {
 
           EntityPropertyInfo info = createEntityPropertyInfo(property);
           infos.put(info.getName(), info);
-
           checkTargetPathInfo(property, info);
         } else if (typed instanceof EdmNavigationProperty) {
           EdmNavigationProperty navProperty = (EdmNavigationProperty) typed;
           NavigationPropertyInfo info = NavigationPropertyInfo.create(navProperty);
+
           navigationPropertyInfos.add(info);
         }
       }
