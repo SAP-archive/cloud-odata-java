@@ -311,6 +311,28 @@ public class EdmSimpleTypeTest extends BaseTest {
     assertEquals("time'P120D'", EdmSimpleTypeKind.Time.getEdmSimpleTypeInstance().toUriLiteral("P120D"));
   }
 
+  @Test
+  public void toStringAll() throws Exception {
+    assertEquals("System.Bit", Bit.getInstance().toString());
+    assertEquals("System.Uint7", Uint7.getInstance().toString());
+
+    assertEquals("Edm.Null", EdmNull.getInstance().toString());
+    assertEquals("Edm.Binary", EdmBinary.getInstance().toString());
+    assertEquals("Edm.Boolean", EdmBoolean.getInstance().toString());
+    assertEquals("Edm.DateTime", EdmDateTime.getInstance().toString());
+    assertEquals("Edm.DateTimeOffset", EdmDateTimeOffset.getInstance().toString());
+    assertEquals("Edm.Decimal", EdmDecimal.getInstance().toString());
+    assertEquals("Edm.Double", EdmDouble.getInstance().toString());
+    assertEquals("Edm.Guid", EdmGuid.getInstance().toString());
+    assertEquals("Edm.Int16", EdmInt16.getInstance().toString());
+    assertEquals("Edm.Int32", EdmInt32.getInstance().toString());
+    assertEquals("Edm.Int64", EdmInt64.getInstance().toString());
+    assertEquals("Edm.SByte", EdmSByte.getInstance().toString());
+    assertEquals("Edm.Single", EdmSingle.getInstance().toString());
+    assertEquals("Edm.String", EdmString.getInstance().toString());
+    assertEquals("Edm.Time", EdmTime.getInstance().toString());
+  }
+
   private EdmFacets getMaxLengthFacets(final Integer maxLength) {
     EdmFacets facets = mock(EdmFacets.class);
     when(facets.getMaxLength()).thenReturn(maxLength);
