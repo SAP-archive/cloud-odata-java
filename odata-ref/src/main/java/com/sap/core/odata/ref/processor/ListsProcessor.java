@@ -295,7 +295,7 @@ public class ListsProcessor extends ODataSingleProcessor {
           new BinaryData(EntityProvider.readBinary(content), requestContentType));
 
     } else {
-      final ODataEntry entryValues = parseEntry(entitySet, content, requestContentType, true);
+      final ODataEntry entryValues = parseEntry(entitySet, content, requestContentType, true, getStructuralTypeTypeMap(data, entityType));
 
       setStructuralTypeValuesFromMap(data, entityType, entryValues.getProperties(), true);
 
@@ -304,7 +304,7 @@ public class ListsProcessor extends ODataSingleProcessor {
       linkEntity(entitySet, data, entryValues.getMetadata());
     }
 
-    Map<String, Object> values = getStructuralTypeValueMap(data, entityType);
+    final Map<String, Object> values = getStructuralTypeValueMap(data, entityType);
 
     return ODataResponse.fromResponse(writeEntry(entitySet, values, contentType)).eTag(constructETag(entitySet, data)).build();
   }
@@ -323,7 +323,7 @@ public class ListsProcessor extends ODataSingleProcessor {
     }
 
     final EdmEntitySet entitySet = uriInfo.getTargetEntitySet();
-    final ODataEntry entryValues = parseEntry(entitySet, content, requestContentType, merge);
+    final ODataEntry entryValues = parseEntry(entitySet, content, requestContentType, merge, getStructuralTypeTypeMap(data, entitySet.getEntityType()));
 
     final EdmEntityType entityType = entitySet.getEntityType();
     setStructuralTypeValuesFromMap(data, entityType, entryValues.getProperties(), merge);
@@ -485,15 +485,13 @@ public class ListsProcessor extends ODataSingleProcessor {
     final List<EdmProperty> propertyPath = uriInfo.getPropertyPath();
     final EdmProperty property = propertyPath.get(propertyPath.size() - 1);
     Object value;
-    if (property.isSimple()) {
-      if (property.getMapping() == null || property.getMapping().getMimeType() == null) {
+    if (property.isSimple())
+      if (property.getMapping() == null || property.getMapping().getMimeType() == null)
         value = getPropertyValue(data, propertyPath);
-      } else {
+      else
         value = getSimpleTypeValueMap(data, propertyPath);
-      }
-    } else {
+    else
       value = getStructuralTypeValueMap(getPropertyValue(data, propertyPath), (EdmStructuralType) property.getType());
-    }
 
     ODataContext context = getContext();
     final int timingHandle = context.startRuntimeMeasurement("EntityProvider", "writeProperty");
@@ -541,18 +539,16 @@ public class ListsProcessor extends ODataSingleProcessor {
         mapFunctionParameters(uriInfo.getFunctionImportParameters()),
         uriInfo.getNavigationSegments());
 
-    if (data == null) {
+    if (data == null)
       throw new ODataNotFoundException(ODataNotFoundException.ENTITY);
-    }
 
     final List<EdmProperty> propertyPath = uriInfo.getPropertyPath();
     final EdmProperty property = propertyPath.get(propertyPath.size() - 1);
 
     data = getPropertyValue(data, propertyPath.subList(0, propertyPath.size() - 1));
     setPropertyValue(data, property, null);
-    if (property.getMapping() != null && property.getMapping().getMimeType() != null) {
+    if (property.getMapping() != null && property.getMapping().getMimeType() != null)
       setValue(data, getSetterMethodName(property.getMapping().getMimeType()), null);
-    }
 
     return ODataResponse.newBuilder().build();
   }
@@ -566,9 +562,8 @@ public class ListsProcessor extends ODataSingleProcessor {
         mapFunctionParameters(uriInfo.getFunctionImportParameters()),
         uriInfo.getNavigationSegments());
 
-    if (!appliesFilter(data, uriInfo.getFilter())) {
+    if (!appliesFilter(data, uriInfo.getFilter()))
       throw new ODataNotFoundException(ODataNotFoundException.ENTITY);
-    }
 
     final List<EdmProperty> propertyPath = uriInfo.getPropertyPath();
     final EdmProperty property = propertyPath.get(propertyPath.size() - 1);
@@ -635,9 +630,8 @@ public class ListsProcessor extends ODataSingleProcessor {
     context.stopRuntimeMeasurement(timingHandle);
 
     setPropertyValue(data, property, value);
-    if (property.getMapping() != null && property.getMapping().getMimeType() != null) {
+    if (property.getMapping() != null && property.getMapping().getMimeType() != null)
       setValue(data, getSetterMethodName(property.getMapping().getMimeType()), requestContentType);
-    }
 
     return ODataResponse.newBuilder().eTag(constructETag(uriInfo.getTargetEntitySet(), data)).build();
   }
@@ -871,13 +865,13 @@ public class ListsProcessor extends ODataSingleProcessor {
     return response;
   }
 
-  private ODataEntry parseEntry(final EdmEntitySet entitySet, final InputStream content, final String requestContentType, final boolean merge) throws ODataBadRequestException {
+  private ODataEntry parseEntry(final EdmEntitySet entitySet, final InputStream content, final String requestContentType, final boolean merge, final Map<String, Object> typeMap) throws ODataBadRequestException {
     ODataContext context = getContext();
     final int timingHandle = context.startRuntimeMeasurement("EntityConsumer", "readEntry");
 
     ODataEntry entryValues;
     try {
-      entryValues = EntityProvider.readEntry(requestContentType, entitySet, content, merge);
+      entryValues = EntityProvider.readEntry(requestContentType, entitySet, content, merge, typeMap);
     } catch (EntityProviderException e) {
       throw new ODataBadRequestException(ODataBadRequestException.BODY, e);
     }
@@ -961,45 +955,34 @@ public class ListsProcessor extends ODataSingleProcessor {
     ODataContext context = getContext();
     final int timingHandle = context.startRuntimeMeasurement(getClass().getSimpleName(), "applySystemQueryOptions");
 
-    if (filter != null) {
+    if (filter != null)
       // Remove all elements the filter does not apply for.
       // A for-each loop would not work with "remove", see Java documentation.
-      for (Iterator<T> iterator = data.iterator(); iterator.hasNext();) {
-        if (!appliesFilter(iterator.next(), filter)) {
+      for (Iterator<T> iterator = data.iterator(); iterator.hasNext();)
+        if (!appliesFilter(iterator.next(), filter))
           iterator.remove();
-        }
-      }
-    }
 
     final Integer count = inlineCount == InlineCount.ALLPAGES ? data.size() : null;
 
-    if (orderBy != null) {
+    if (orderBy != null)
       sort(data, orderBy);
-    } else if (skipToken != null || skip != null || top != null) {
+    else if (skipToken != null || skip != null || top != null)
       sortInDefaultOrder(entitySet, data);
-    }
 
-    if (skipToken != null) {
-      while (!data.isEmpty() && !getSkipToken(entitySet, data.get(0)).equals(skipToken)) {
+    if (skipToken != null)
+      while (!data.isEmpty() && !getSkipToken(entitySet, data.get(0)).equals(skipToken))
         data.remove(0);
-      }
-    }
 
-    if (skip != null) {
-      if (skip >= data.size()) {
+    if (skip != null)
+      if (skip >= data.size())
         data.clear();
-      } else {
-        for (int i = 0; i < skip; i++) {
+      else
+        for (int i = 0; i < skip; i++)
           data.remove(0);
-        }
-      }
-    }
 
-    if (top != null) {
-      while (data.size() > top) {
+    if (top != null)
+      while (data.size() > top)
         data.remove(top.intValue());
-      }
-    }
 
     context.stopRuntimeMeasurement(timingHandle);
 
@@ -1015,12 +998,10 @@ public class ListsProcessor extends ODataSingleProcessor {
           for (final OrderExpression expression : orderBy.getOrders()) {
             result = evaluateExpression(entity1, expression.getExpression()).compareTo(
                 evaluateExpression(entity2, expression.getExpression()));
-            if (expression.getSortOrder() == SortOrder.desc) {
+            if (expression.getSortOrder() == SortOrder.desc)
               result = -result;
-            }
-            if (result != 0) {
+            if (result != 0)
               break;
-            }
           }
           return result;
         } catch (ODataException e) {
@@ -1275,11 +1256,9 @@ public class ListsProcessor extends ODataSingleProcessor {
 
   private static <T> Object getPropertyValue(final T data, final List<EdmProperty> propertyPath) throws ODataException {
     Object dataObject = data;
-    for (final EdmProperty property : propertyPath) {
-      if (dataObject != null) {
+    for (final EdmProperty property : propertyPath)
+      if (dataObject != null)
         dataObject = getPropertyValue(dataObject, property);
-      }
-    }
     return dataObject;
   }
 
@@ -1287,11 +1266,14 @@ public class ListsProcessor extends ODataSingleProcessor {
     return getValue(data, getGetterMethodName(property));
   }
 
+  private static <T> Class<?> getPropertyType(final T data, final EdmProperty property) throws ODataException {
+    return getType(data, getGetterMethodName(property));
+  }
+
   private static <T, V> void setPropertyValue(final T data, final EdmProperty property, final V value) throws ODataException {
     final String methodName = getSetterMethodName(getGetterMethodName(property));
-    if (methodName != null) {
+    if (methodName != null)
       setValue(data, methodName, value);
-    }
   }
 
   private static String getGetterMethodName(final EdmProperty property) throws EdmException {
@@ -1345,26 +1327,41 @@ public class ListsProcessor extends ODataSingleProcessor {
     return valueMap;
   }
 
+  private <T> Map<String, Object> getStructuralTypeTypeMap(final T data, final EdmStructuralType type) throws ODataException {
+    ODataContext context = getContext();
+    final int timingHandle = context.startRuntimeMeasurement(getClass().getSimpleName(), "getStructuralTypeTypeMap");
+
+    Map<String, Object> valueMap = new HashMap<String, Object>();
+    for (final String propertyName : type.getPropertyNames()) {
+      final EdmProperty property = (EdmProperty) type.getProperty(propertyName);
+      if (property.isSimple())
+        valueMap.put(propertyName, getPropertyType(data, property));
+      else
+        valueMap.put(propertyName, getStructuralTypeValueMap(getPropertyValue(data, property), (EdmStructuralType) property.getType()));
+    }
+
+    context.stopRuntimeMeasurement(timingHandle);
+
+    return valueMap;
+  }
+
   private <T> void setStructuralTypeValuesFromMap(final T data, final EdmStructuralType type, final Map<String, Object> valueMap, final boolean merge) throws ODataException {
     ODataContext context = getContext();
     final int timingHandle = context.startRuntimeMeasurement(getClass().getSimpleName(), "setStructuralTypeValuesFromMap");
 
     for (final String propertyName : type.getPropertyNames()) {
       final EdmProperty property = (EdmProperty) type.getProperty(propertyName);
-      if (type instanceof EdmEntityType && ((EdmEntityType) type).getKeyProperties().contains(property)) {
+      if (type instanceof EdmEntityType && ((EdmEntityType) type).getKeyProperties().contains(property))
         continue;
-      }
       if (property.isSimple()) {
         final Object value = valueMap.get(propertyName);
-        if (value != null || !merge) {
+        if (value != null || !merge)
           setPropertyValue(data, property, value);
-        }
       } else {
         @SuppressWarnings("unchecked")
         final Map<String, Object> values = (Map<String, Object>) valueMap.get(propertyName);
-        if (values != null || !merge) {
+        if (values != null || !merge)
           setStructuralTypeValuesFromMap(getPropertyValue(data, property), (EdmStructuralType) property.getType(), values, merge);
-        }
       }
     }
 
@@ -1374,8 +1371,8 @@ public class ListsProcessor extends ODataSingleProcessor {
   private static <T> Object getValue(final T data, final String methodName) throws ODataNotFoundException {
     Object dataObject = data;
 
-    for (final String method : methodName.split("\\.", -1)) {
-      if (dataObject != null) {
+    for (final String method : methodName.split("\\.", -1))
+      if (dataObject != null)
         try {
           dataObject = dataObject.getClass().getMethod(method).invoke(dataObject);
         } catch (SecurityException e) {
@@ -1389,33 +1386,48 @@ public class ListsProcessor extends ODataSingleProcessor {
         } catch (InvocationTargetException e) {
           throw new ODataNotFoundException(ODataHttpException.COMMON, e);
         }
-      }
-    }
 
     return dataObject;
+  }
+
+  private static <T> Class<?> getType(final T data, final String methodName) throws ODataNotFoundException {
+    if (data == null)
+      throw new ODataNotFoundException(ODataHttpException.COMMON);
+
+    Class<?> type = data.getClass();
+    for (final String method : methodName.split("\\.", -1))
+      try {
+        type = type.getMethod(method).getReturnType();
+      } catch (final SecurityException e) {
+        throw new ODataNotFoundException(ODataHttpException.COMMON, e);
+      } catch (final NoSuchMethodException e) {
+        throw new ODataNotFoundException(ODataHttpException.COMMON, e);
+      }
+    return type;
   }
 
   private static <T, V> void setValue(final T data, final String methodName, final V value) throws ODataNotFoundException {
     try {
       boolean found = false;
-      for (final Method method : Arrays.asList(data.getClass().getMethods())) {
+      for (final Method method : Arrays.asList(data.getClass().getMethods()))
         if (method.getName().equals(methodName)) {
           found = true;
-          // TODO: generalize type adaptation
-          Object typedValue;
-          Class<?> type = method.getParameterTypes()[0];
-          if (value != null && type == Integer.class && value.getClass() == Short.class) {
-            typedValue = Integer.valueOf((Short) value);
-          } else {
-            typedValue = value;
-          }
-          method.invoke(data, typedValue);
+          final Class<?> type = method.getParameterTypes()[0];
+          if (value == null)
+            if (type.equals(byte.class) || type.equals(short.class) || type.equals(int.class) || type.equals(long.class)|| type.equals(char.class))
+              method.invoke(data, 0);
+            else if (type.equals(float.class) || type.equals(double.class))
+              method.invoke(data, 0.0);
+            else if (type.equals(boolean.class))
+              method.invoke(data, false);
+            else
+              method.invoke(data, value);
+          else
+            method.invoke(data, value);
           break;
         }
-      }
-      if (!found) {
+      if (!found)
         throw new ODataNotFoundException(null);
-      }
     } catch (SecurityException e) {
       throw new ODataNotFoundException(null, e);
     } catch (IllegalArgumentException e) {

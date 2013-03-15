@@ -31,7 +31,7 @@ public class Room {
     this.name = name;
   }
 
-  public void setSeats(final Integer seats) {
+  public void setSeats(final int seats) {
     this.seats = seats;
   }
 
@@ -39,7 +39,7 @@ public class Room {
     return seats;
   }
 
-  public void setVersion(final Integer version) {
+  public void setVersion(final int version) {
     this.version = version;
   }
 

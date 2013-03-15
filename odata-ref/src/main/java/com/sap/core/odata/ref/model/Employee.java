@@ -39,7 +39,7 @@ public class Employee {
     return employeeName;
   }
 
-  public void setAge(final Integer age) {
+  public void setAge(final int age) {
     this.age = age;
   }
 
@@ -140,14 +140,8 @@ public class Employee {
 
   @Override
   public boolean equals(final Object obj) {
-    if (this == obj) {
-      return true;
-    }
-    if (obj == null || getClass() != obj.getClass()) {
-      return false;
-    }
-
-    return employeeId == ((Employee) obj).employeeId;
+    return this == obj
+        || obj != null && getClass() == obj.getClass() && employeeId == ((Employee) obj).employeeId;
   }
 
   @Override

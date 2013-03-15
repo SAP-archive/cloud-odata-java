@@ -33,7 +33,7 @@ public class Team {
     return isScrumTeam;
   }
 
-  public void setScrumTeam(final Boolean isScrumTeam) {
+  public void setScrumTeam(final boolean isScrumTeam) {
     this.isScrumTeam = isScrumTeam;
   }
 
