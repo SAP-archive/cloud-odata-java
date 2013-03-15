@@ -407,8 +407,8 @@ public final class ODataSubLocator implements ODataLocator {
    * @param uriInfo
    * @throws ODataBadRequestException
    */
-  private void validateFormatQuery(UriInfoImpl uriInfo) throws ODataBadRequestException {
-    if(uriInfo.isValue()) {
+  private void validateFormatQuery(final UriInfoImpl uriInfo) throws ODataBadRequestException {
+    if (uriInfo.isValue()) {
       throw new ODataBadRequestException(ODataBadRequestException.INVALID_SYNTAX);
     }
   }

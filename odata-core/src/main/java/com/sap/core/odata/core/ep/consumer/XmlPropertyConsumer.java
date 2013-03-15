@@ -28,8 +28,8 @@ public class XmlPropertyConsumer {
   public Map<String, Object> readProperty(final XMLStreamReader reader, final EdmProperty property, final boolean merge) throws EntityProviderException {
     return readProperty(reader, property, merge, null);
   }
-  
-  public Map<String, Object> readProperty(final XMLStreamReader reader, final EdmProperty property, final boolean merge, Map<String, Object> typeMappings) throws EntityProviderException {
+
+  public Map<String, Object> readProperty(final XMLStreamReader reader, final EdmProperty property, final boolean merge, final Map<String, Object> typeMappings) throws EntityProviderException {
     try {
       EntityPropertyInfo eia = EntityInfoAggregator.create(property);
       reader.next();
@@ -78,7 +78,7 @@ public class XmlPropertyConsumer {
     }
   }
 
-  Object readStartedElement(final XMLStreamReader reader, final EntityPropertyInfo propertyInfo, EntityTypeMapping typeMappings) throws EntityProviderException, XMLStreamException, EdmException {
+  Object readStartedElement(final XMLStreamReader reader, final EntityPropertyInfo propertyInfo, final EntityTypeMapping typeMappings) throws EntityProviderException, XMLStreamException, EdmException {
     //
     int eventType = reader.getEventType();
     if (eventType != XMLStreamConstants.START_ELEMENT) {
@@ -124,7 +124,7 @@ public class XmlPropertyConsumer {
   private Object convert(final EntityPropertyInfo property, final String value, final Class<?> typeMapping) throws EdmException, EntityProviderException {
     if (!property.isComplex()) {
       EdmSimpleType type = (EdmSimpleType) property.getType();
-      if(typeMapping == null) {
+      if (typeMapping == null) {
         return type.valueOfString(value, EdmLiteralKind.DEFAULT, property.getFacets(), type.getDefaultType());
       }
       return type.valueOfString(value, EdmLiteralKind.DEFAULT, property.getFacets(), typeMapping);

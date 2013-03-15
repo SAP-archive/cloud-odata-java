@@ -42,16 +42,16 @@ public class ContentTypeTest extends BaseTest {
     MediaType t = new MediaType("*", "xml");
     assertNotNull(t);
     System.out.println(t.toString());
-    
+
     assertTrue(t.isCompatible(new MediaType("app", "xml")));
   }
-  
+
   @Test
   public void parseable() {
     assertTrue(ContentType.isParseable("application/xml"));
     assertTrue(ContentType.isParseable("text/plain"));
     assertTrue(ContentType.isParseable("application/atom+xml; charset=UTF-8"));
-    
+
     assertFalse(ContentType.isParseable("app/app/moreapp"));
     //assertFalse(ContentType.isParseable("application/atom+xml; charset   =   UTF-8"));
     assertFalse(ContentType.isParseable(null));
@@ -62,13 +62,12 @@ public class ContentTypeTest extends BaseTest {
     assertNotNull(ContentType.parse("application/xml"));
     assertNotNull(ContentType.parse("text/plain"));
     assertNotNull(ContentType.parse("application/atom+xml; charset=UTF-8"));
-    
+
     assertNull(ContentType.parse("app/app/moreapp"));
     //assertFalse(ContentType.isParseable("application/atom+xml; charset   =   UTF-8"));
     assertNull(ContentType.parse(null));
   }
 
-  
   @Test
   public void creationFromHttpContentTypeAtomXmlEntry() {
     ContentType mt = ContentType.create(HttpContentType.APPLICATION_ATOM_XML_ENTRY_UTF8);
@@ -375,7 +374,7 @@ public class ContentTypeTest extends BaseTest {
     assertFalse(t2.equals(t1));
   }
 
-  @Test(expected=IllegalArgumentException.class)
+  @Test(expected = IllegalArgumentException.class)
   public void testIllegalSubTypeWildcardSubtype() {
     ContentType t1 = ContentType.create("*/bbb");
     assertNull(t1);

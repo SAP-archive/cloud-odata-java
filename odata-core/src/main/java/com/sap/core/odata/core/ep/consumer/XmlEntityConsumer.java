@@ -36,7 +36,7 @@ public class XmlEntityConsumer {
   public ODataEntry readEntry(final EdmEntitySet entitySet, final Object content, final boolean merge) throws EntityProviderException {
     return readEntry(entitySet, content, merge, null);
   }
-  
+
   public ODataEntry readEntry(final EdmEntitySet entitySet, final Object content, final boolean merge, final Map<String, Object> typeMappings) throws EntityProviderException {
     XMLStreamReader reader = null;
 
@@ -44,7 +44,7 @@ public class XmlEntityConsumer {
       XmlEntryConsumer xec = new XmlEntryConsumer();
       reader = createStaxReader(content);
 
-      EntityInfoAggregator eia = EntityInfoAggregator.create(entitySet);
+      EntityInfoAggregator eia = EntityInfoAggregator.create(entitySet, null);
       ODataEntry result = xec.readEntry(reader, eia, merge, typeMappings);
       return result;
     } catch (EntityProviderException e) {
@@ -66,7 +66,7 @@ public class XmlEntityConsumer {
   public Map<String, Object> readProperty(final EdmProperty edmProperty, final Object content, final boolean merge) throws EntityProviderException {
     return readProperty(edmProperty, content, merge, null);
   }
-  
+
   public Map<String, Object> readProperty(final EdmProperty edmProperty, final Object content, final boolean merge, final Map<String, Object> typeMappings) throws EntityProviderException {
     XMLStreamReader reader = null;
 
@@ -92,11 +92,11 @@ public class XmlEntityConsumer {
   public Object readPropertyValue(final EdmProperty edmProperty, final Object content) throws EntityProviderException {
     return readPropertyValue(edmProperty, content, null);
   }
-  
+
   public Object readPropertyValue(final EdmProperty edmProperty, final Object content, final Class<?> typeMapping) throws EntityProviderException {
     try {
       final Map<String, Object> result;
-      if(typeMapping == null) {
+      if (typeMapping == null) {
         result = readProperty(edmProperty, content, false, null);
       } else {
         Map<String, Object> typeMappings = new HashMap<String, Object>();

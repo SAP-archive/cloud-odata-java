@@ -71,7 +71,7 @@ public class EntryXmlReadOnlyTest extends AbstractRefXmlTest {
     String body = getBody(response);
     XMLAssert.assertXpathExists("/m:error/m:message", body);
   }
-  
+
   @Test
   public void navigationEntry() throws Exception {
     HttpResponse response = callUri("Employees('2')/ne_Manager");

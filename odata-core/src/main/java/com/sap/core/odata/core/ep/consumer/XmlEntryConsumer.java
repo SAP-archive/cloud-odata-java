@@ -44,7 +44,7 @@ public class XmlEntryConsumer {
   final MediaMetadataImpl mediaMetadata;
   final EntryMetadataImpl entryMetadata;
   EntityTypeMapping typeMappings;
-  
+
   private String currentHandledStartTagName = null;
 
   public XmlEntryConsumer() {
@@ -58,11 +58,11 @@ public class XmlEntryConsumer {
   public ODataEntry readEntry(final XMLStreamReader reader, final EntityInfoAggregator eia, final boolean merge) throws EntityProviderException {
     return readEntry(reader, eia, merge, null);
   }
-  
-  public ODataEntry readEntry(final XMLStreamReader reader, final EntityInfoAggregator eia, final boolean merge, Map<String, Object> typeMappings) throws EntityProviderException {
+
+  public ODataEntry readEntry(final XMLStreamReader reader, final EntityInfoAggregator eia, final boolean merge, final Map<String, Object> typeMappings) throws EntityProviderException {
     try {
       this.typeMappings = EntityTypeMapping.create(typeMappings);
-      
+
       int eventType;
       while ((eventType = reader.next()) != XMLStreamConstants.END_DOCUMENT) {
         if (eventType == XMLStreamConstants.START_ELEMENT) {
@@ -82,8 +82,8 @@ public class XmlEntryConsumer {
       throw new EntityProviderException(EntityProviderException.COMMON, e);
     }
   }
-  
-  public void validate(final EntityInfoAggregator eia, ODataEntryImpl entry) throws EntityProviderException {
+
+  public void validate(final EntityInfoAggregator eia, final ODataEntryImpl entry) throws EntityProviderException {
     Collection<EntityPropertyInfo> propertyInfos = eia.getPropertyInfos();
     Map<String, Object> data = entry.getProperties();
 
@@ -97,7 +97,6 @@ public class XmlEntryConsumer {
     }
   }
 
-
   /**
    * 
    * @param reader
@@ -108,9 +107,9 @@ public class XmlEntryConsumer {
    * @throws XMLStreamException
    * @throws EdmException
    */
-  private void handleStartedTag(final XMLStreamReader reader, final String tagName, final EntityInfoAggregator eia, final boolean merge) 
-          throws EntityProviderException, XMLStreamException, EdmException {
-    
+  private void handleStartedTag(final XMLStreamReader reader, final String tagName, final EntityInfoAggregator eia, final boolean merge)
+      throws EntityProviderException, XMLStreamException, EdmException {
+
     currentHandledStartTagName = tagName;
 
     if (ATOM_ID.equals(tagName)) {
@@ -123,7 +122,7 @@ public class XmlEntryConsumer {
       readContent(reader, eia);
     } else if (M_PROPERTIES.equals(tagName)) {
       readProperties(reader, eia);
-    } else if(!merge) {
+    } else if (!merge) {
       readCustomElement(reader, tagName, eia);
     }
   }
@@ -167,7 +166,7 @@ public class XmlEntryConsumer {
     entryMetadata.setEtag(etag);
   }
 
-  private void extractNamespacesFromTag(XMLStreamReader reader) throws EntityProviderException {
+  private void extractNamespacesFromTag(final XMLStreamReader reader) throws EntityProviderException {
     // collect namespaces
     int namespaceCount = reader.getNamespaceCount();
     for (int i = 0; i < namespaceCount; i++) {
@@ -188,7 +187,7 @@ public class XmlEntryConsumer {
     }
   }
 
-  private void checkNamespace(QName name, String expectedNsUriForPrefix) throws EntityProviderException {
+  private void checkNamespace(final QName name, final String expectedNsUriForPrefix) throws EntityProviderException {
     String nsPrefix = name.getPrefix();
     //    String nsUri = name.getNamespaceURI();
 
@@ -210,14 +209,14 @@ public class XmlEntryConsumer {
   private void readLink(final XMLStreamReader reader) throws EntityProviderException, XMLStreamException {
     validateStartPosition(reader, ATOM_LINK);
     Map<String, String> attributes = readAttributes(reader);
-    
+
     int nextTagEvent = reader.next();
-    if(nextTagEvent == XMLStreamConstants.END_ELEMENT && ATOM_LINK.equals(reader.getLocalName())) {
+    if (nextTagEvent == XMLStreamConstants.END_ELEMENT && ATOM_LINK.equals(reader.getLocalName())) {
       validateEndPosition(reader, ATOM_LINK);
-      
+
       String uri = attributes.get(ATOM_HREF);
       String rel = attributes.get(ATOM_REL);
-      
+
       if (rel == null || uri == null) {
         throw new EntityProviderException(EntityProviderException.MISSING_ATTRIBUTE.addContent(
             "'" + ATOM_HREF + "' and/or '" + ATOM_REL + "' at tag '" + ATOM_LINK + "'"));
@@ -232,7 +231,7 @@ public class XmlEntryConsumer {
     } else {
       readInlineContent(reader);
     }
-    
+
   }
 
   private void readInlineContent(final XMLStreamReader reader) throws XMLStreamException, EntityProviderException {
@@ -240,8 +239,8 @@ public class XmlEntryConsumer {
     validatePosition(reader, FormatXml.M_INLINE, XMLStreamConstants.START_ELEMENT);
     nextEventType = reader.next();
     boolean run = true;
-    while(run) {
-      if(XMLStreamConstants.END_ELEMENT == nextEventType && FormatXml.M_INLINE.equals(reader.getLocalName())) {
+    while (run) {
+      if (XMLStreamConstants.END_ELEMENT == nextEventType && FormatXml.M_INLINE.equals(reader.getLocalName())) {
         run = false;
       } else {
         nextEventType = reader.next();
@@ -314,7 +313,7 @@ public class XmlEntryConsumer {
     XmlPropertyConsumer xpc = new XmlPropertyConsumer();
     boolean run = true;
     EntityPropertyInfo property;
-    
+
     while (run) {
       if (nextTagEventType == XMLStreamConstants.START_ELEMENT) {
         String name = getValidPropertyName(reader);
@@ -338,7 +337,7 @@ public class XmlEntryConsumer {
    * @param expectedTagName expected name for {@link #currentHandledStartTagName}
    * @throws EntityProviderException if tag name is not as expected or if {@link #currentHandledStartTagName} is <code>NULL</code>.
    */
-  private void checkCurrentHandledStartTag(String expectedTagName) throws EntityProviderException {
+  private void checkCurrentHandledStartTag(final String expectedTagName) throws EntityProviderException {
     if (currentHandledStartTagName == null) {
       throw new EntityProviderException(EntityProviderException.INVALID_STATE.addContent("No current handled start tag name set."));
     } else if (!currentHandledStartTagName.equals(expectedTagName)) {
@@ -357,7 +356,7 @@ public class XmlEntryConsumer {
    * @return valid tag name (which is never <code>NULL</code>).
    * @throws EntityProviderException
    */
-  private String getValidPropertyName(XMLStreamReader reader) throws EntityProviderException {
+  private String getValidPropertyName(final XMLStreamReader reader) throws EntityProviderException {
     QName name = reader.getName();
     checkNamespace(name, Edm.NAMESPACE_D_2007_08);
 

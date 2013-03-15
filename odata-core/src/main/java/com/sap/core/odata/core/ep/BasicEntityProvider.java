@@ -92,7 +92,7 @@ public class BasicEntityProvider {
    * @return the value as the proper system data type
    * @throws EntityProviderException
    */
-  public Object readPropertyValue(final EdmProperty edmProperty, final InputStream content, Class<?> typeMapping) throws EntityProviderException {
+  public Object readPropertyValue(final EdmProperty edmProperty, final InputStream content, final Class<?> typeMapping) throws EntityProviderException {
     EdmSimpleType type;
     try {
       type = (EdmSimpleType) edmProperty.getType();
@@ -104,7 +104,7 @@ public class BasicEntityProvider {
       return readBinary(content);
     } else {
       try {
-        if(typeMapping == null) {
+        if (typeMapping == null) {
           return type.valueOfString(readText(content), EdmLiteralKind.DEFAULT, edmProperty.getFacets(), type.getDefaultType());
         } else {
           return type.valueOfString(readText(content), EdmLiteralKind.DEFAULT, edmProperty.getFacets(), typeMapping);

@@ -239,7 +239,7 @@ class EdmMock {
     return edm;
   }
 
-  private static EdmNavigationProperty createNavigationProperty(final String name, final EdmMultiplicity multiplicity, EdmEntitySet entitySet, final EdmEntitySet targetEntitySet) throws EdmException {
+  private static EdmNavigationProperty createNavigationProperty(final String name, final EdmMultiplicity multiplicity, final EdmEntitySet entitySet, final EdmEntitySet targetEntitySet) throws EdmException {
     EdmType navigationType = mock(EdmType.class);
     when(navigationType.getKind()).thenReturn(EdmTypeKind.ENTITY);
 
@@ -254,7 +254,7 @@ class EdmMock {
     return navigationProperty;
   }
 
-  private static EdmProperty createProperty(final String name, final EdmSimpleTypeKind kind, EdmStructuralType entityType) throws EdmException {
+  private static EdmProperty createProperty(final String name, final EdmSimpleTypeKind kind, final EdmStructuralType entityType) throws EdmException {
     EdmProperty property = mock(EdmProperty.class);
     when(property.getType()).thenReturn(kind.getEdmSimpleTypeInstance());
     when(property.getName()).thenReturn(name);
@@ -262,7 +262,7 @@ class EdmMock {
     return property;
   }
 
-  private static EdmEntitySet createEntitySetMock(EdmEntityContainer container, final String name, final EdmSimpleTypeKind kind, final String keyPropertyId) throws EdmException {
+  private static EdmEntitySet createEntitySetMock(final EdmEntityContainer container, final String name, final EdmSimpleTypeKind kind, final String keyPropertyId) throws EdmException {
     final EdmEntityType entityType = createEntityTypeMock(name.substring(0, name.length() - 1), kind, keyPropertyId);
 
     EdmEntitySet entitySet = mock(EdmEntitySet.class);
@@ -291,7 +291,7 @@ class EdmMock {
     return entityType;
   }
 
-  private static EdmFunctionImport createFunctionImportMock(EdmEntityContainer container, final String name, final EdmType type, final EdmMultiplicity multiplicity) throws EdmException {
+  private static EdmFunctionImport createFunctionImportMock(final EdmEntityContainer container, final String name, final EdmType type, final EdmMultiplicity multiplicity) throws EdmException {
     EdmTyped returnType = mock(EdmTyped.class);
     when(returnType.getType()).thenReturn(type);
     when(returnType.getMultiplicity()).thenReturn(multiplicity);

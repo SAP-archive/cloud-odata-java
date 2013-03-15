@@ -101,7 +101,7 @@ public class EntryXmlChangeTest extends AbstractRefXmlTest {
     checkMediaType(response, HttpContentType.TEXT_PLAIN);
     assertEquals("dummy", getBody(response));
   }
-  
+
   @Test
   public void createMediaResourceUriType6b() throws Exception {
 
@@ -182,7 +182,6 @@ public class EntryXmlChangeTest extends AbstractRefXmlTest {
     assertXpathEvaluatesTo("Room X", "/atom:entry/atom:content/m:properties/d:Name", getBody(callUri("Rooms('3')")));
   }
 
-  
   @Test
   public void delete() throws Exception {
     String uri = "Employees('2')";

@@ -104,17 +104,17 @@ public class ProviderFacadeImpl implements EntityProviderInterface {
   }
 
   @Override
-  public ODataEntry readEntry(final String contentType, final EdmEntitySet entitySet, final InputStream content, final boolean validate, Map<String, Object> typeMappings) throws EntityProviderException {
+  public ODataEntry readEntry(final String contentType, final EdmEntitySet entitySet, final InputStream content, final boolean validate, final Map<String, Object> typeMappings) throws EntityProviderException {
     return create(contentType).readEntry(entitySet, content, validate, typeMappings);
   }
 
   @Override
-  public Map<String, Object> readProperty(final String contentType, final EdmProperty edmProperty, final InputStream content, final boolean validate, Map<String, Object> typeMappings) throws EntityProviderException {
+  public Map<String, Object> readProperty(final String contentType, final EdmProperty edmProperty, final InputStream content, final boolean validate, final Map<String, Object> typeMappings) throws EntityProviderException {
     return create(contentType).readProperty(edmProperty, content, validate, typeMappings);
   }
 
   @Override
-  public Object readPropertyValue(final EdmProperty edmProperty, final InputStream content, Class<?> typeMapping) throws EntityProviderException {
+  public Object readPropertyValue(final EdmProperty edmProperty, final InputStream content, final Class<?> typeMapping) throws EntityProviderException {
     return create().readPropertyValue(edmProperty, content, typeMapping);
   }
 

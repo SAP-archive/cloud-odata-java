@@ -24,8 +24,8 @@ import com.sap.core.odata.api.edm.EdmStructuralType;
 import com.sap.core.odata.api.edm.EdmTargetPath;
 import com.sap.core.odata.api.edm.EdmType;
 import com.sap.core.odata.api.edm.EdmTypeKind;
-import com.sap.core.odata.api.edm.EdmTyped;
 import com.sap.core.odata.api.ep.EntityProviderException;
+import com.sap.core.odata.api.ep.EntityProviderProperties;
 
 /**
  * Aggregator to get easy and fast access to all for serialization and de-serialization necessary {@link EdmEntitySet} informations.
@@ -48,23 +48,27 @@ public class EntityInfoAggregator {
       EdmTargetPath.SYNDICATION_SOURCE,
       EdmTargetPath.SYNDICATION_SUMMARY));
 
-  private Map<String, EntityPropertyInfo> name2EntityPropertyInfo = new HashMap<String, EntityPropertyInfo>();
-  private Map<String, EntityPropertyInfo> targetPath2EntityPropertyInfo = new HashMap<String, EntityPropertyInfo>();
-  private List<NavigationPropertyInfo> navigationPropertyInfos = new ArrayList<NavigationPropertyInfo>();
-  private List<String> keyPropertyNames = new ArrayList<String>();
-  /**
+  private Map<String, EntityPropertyInfo> propertyInfo = new HashMap<String, EntityPropertyInfo>();
+  private Map<String, EntityPropertyInfo> selectedPropertyInfo = new HashMap<String, EntityPropertyInfo>();
+  private Map<String, NavigationPropertyInfo> navigationPropertyInfos = new HashMap<String, NavigationPropertyInfo>();
+  private Map<String, NavigationPropertyInfo> selectedNavigationPropertyInfos = new HashMap<String, NavigationPropertyInfo>();
+
+  /*
    * list with all property names in the order based on order in {@link EdmProperty} (normally [key, entity,
    * navigation])
    */
-  private List<String> propertyNames = new ArrayList<String>();
   private List<String> etagPropertyNames = new ArrayList<String>();
+  private Map<String, EntityPropertyInfo> targetPath2EntityPropertyInfo = new HashMap<String, EntityPropertyInfo>();
   private List<String> noneSyndicationTargetPaths = new ArrayList<String>();
+
   private boolean isDefaultEntityContainer;
   private String entitySetName;
   private String entityTypeNamespace;
   private String entityContainerName;
   private String entityTypeName;
   private boolean entityTypeHasStream;
+
+  private EdmEntityType entityType;
 
   /**
    * Constructor is private to force creation over {@link #create(EdmEntitySet)} method.
@@ -76,15 +80,16 @@ public class EntityInfoAggregator {
    * 
    * @param entitySet
    *          with which the {@link EntityInfoAggregator} is initialized.
+   * @param properties 
    * @return created and initialized {@link EntityInfoAggregator}
    * @throws EntityProviderException
    *           if during initialization of {@link EntityInfoAggregator} something goes wrong (e.g. exceptions during
    *           access
    *           of {@link EdmEntitySet}).
    */
-  public static EntityInfoAggregator create(final EdmEntitySet entitySet) throws EntityProviderException {
+  public static EntityInfoAggregator create(final EdmEntitySet entitySet, final EntityProviderProperties properties) throws EntityProviderException {
     EntityInfoAggregator eia = new EntityInfoAggregator();
-    eia.initialize(entitySet);
+    eia.initialize(entitySet, properties);
     return eia;
   }
 
@@ -120,7 +125,7 @@ public class EntityInfoAggregator {
   public static Map<String, EntityPropertyInfo> create(final EdmComplexType complexType) throws EntityProviderException {
     try {
       EntityInfoAggregator entityInfo = new EntityInfoAggregator();
-      return entityInfo.createInfoObjects(complexType, complexType.getPropertyNames());
+      return entityInfo.createPropertyInfoObjects(complexType, complexType.getPropertyNames());
     } catch (EdmException e) {
       throw new EntityProviderException(EntityProviderException.COMMON, e);
     }
@@ -197,55 +202,75 @@ public class EntityInfoAggregator {
 
   /**
    * @return unmodifiable set of all found navigation property names.
+   * @throws EntityProviderException 
    */
-  public List<String> getNavigationPropertyNames() {
-    List<String> navPropNames = new ArrayList<String>();
-    for (NavigationPropertyInfo info : navigationPropertyInfos) {
-      navPropNames.add(info.getName());
+  public List<String> getNavigationPropertyNames() throws EntityProviderException {
+    try {
+      return Collections.unmodifiableList(entityType.getNavigationPropertyNames());
+    } catch (EdmException e) {
+      throw new EntityProviderException(EntityProviderException.COMMON, e);
     }
-    return Collections.unmodifiableList(navPropNames);
   }
 
   /**
    * @return unmodifiable set of all property names.
+   * @throws EntityProviderException 
    */
-  public List<String> getPropertyNames() {
-    return Collections.unmodifiableList(propertyNames);
+  public List<String> getPropertyNames() throws EntityProviderException {
+    try {
+      return Collections.unmodifiableList(entityType.getPropertyNames());
+    } catch (EdmException e) {
+      throw new EntityProviderException(EntityProviderException.COMMON, e);
+    }
   }
 
   public Collection<EntityPropertyInfo> getPropertyInfos() {
-    return Collections.unmodifiableCollection(name2EntityPropertyInfo.values());
+    return Collections.unmodifiableCollection(propertyInfo.values());
   }
 
   public EntityPropertyInfo getPropertyInfo(final String name) {
-    return name2EntityPropertyInfo.get(name);
+    return propertyInfo.get(name);
   }
 
   public Collection<EntityPropertyInfo> getETagPropertyInfos() {
     List<EntityPropertyInfo> keyProperties = new ArrayList<EntityPropertyInfo>();
     for (String etagPropertyName : etagPropertyNames) {
-      EntityPropertyInfo e = name2EntityPropertyInfo.get(etagPropertyName);
+      EntityPropertyInfo e = propertyInfo.get(etagPropertyName);
       keyProperties.add(e);
     }
     return keyProperties;
   }
 
   /**
-   * @return list of all key property infos.
+   * @return list of all key property infos
+   * @throws EntityProviderException 
    */
-  public List<EntityPropertyInfo> getKeyPropertyInfos() {
-    List<EntityPropertyInfo> keyProperties = new ArrayList<EntityPropertyInfo>();
-    for (String keyPropertyName : keyPropertyNames) {
-      keyProperties.add(name2EntityPropertyInfo.get(keyPropertyName));
+  public List<EntityPropertyInfo> getKeyPropertyInfos() throws EntityProviderException {
+    try {
+      List<EntityPropertyInfo> keyProperties = new ArrayList<EntityPropertyInfo>();
+      for (String keyPropertyName : entityType.getKeyPropertyNames()) {
+        keyProperties.add(propertyInfo.get(keyPropertyName));
+      }
+      return keyProperties;
+    } catch (EdmException e) {
+      throw new EntityProviderException(EntityProviderException.COMMON, e);
     }
-    return keyProperties;
   }
 
   /**
    * @return unmodifiable collection of all navigation properties.
+   * @throws EntityProviderException 
    */
-  public List<NavigationPropertyInfo> getNavigationPropertyInfos() {
-    return Collections.unmodifiableList(navigationPropertyInfos);
+  public List<NavigationPropertyInfo> getNavigationPropertyInfos() throws EntityProviderException {
+    try {
+      List<NavigationPropertyInfo> navProperties = new ArrayList<NavigationPropertyInfo>();
+      for (String navPropertyName : entityType.getNavigationPropertyNames()) {
+        navProperties.add(navigationPropertyInfos.get(navPropertyName));
+      }
+      return Collections.unmodifiableList(navProperties);
+    } catch (EdmException e) {
+      throw new EntityProviderException(EntityProviderException.COMMON, e);
+    }
   }
 
   // #########################################
@@ -254,48 +279,67 @@ public class EntityInfoAggregator {
   // #
   // #########################################
 
-  private void initialize(final EdmEntitySet entitySet) throws EntityProviderException {
+  private void initialize(final EdmEntitySet entitySet, final EntityProviderProperties properties) throws EntityProviderException {
     try {
-      EdmEntityType type = entitySet.getEntityType();
+      entityType = entitySet.getEntityType();
       entitySetName = entitySet.getName();
-      entityTypeName = type.getName();
-      entityTypeNamespace = type.getNamespace();
-      entityTypeHasStream = type.hasStream();
+      entityTypeName = entityType.getName();
+      entityTypeNamespace = entityType.getNamespace();
+      entityTypeHasStream = entityType.hasStream();
       isDefaultEntityContainer = entitySet.getEntityContainer().isDefaultEntityContainer();
       entityContainerName = entitySet.getEntityContainer().getName();
-      //
-      propertyNames.addAll(type.getPropertyNames());
-      propertyNames.addAll(type.getNavigationPropertyNames());
-      //
-      name2EntityPropertyInfo = createInfoObjects(type, propertyNames);
-      //
-      keyPropertyNames.addAll(type.getKeyPropertyNames());
+
+      propertyInfo = createPropertyInfoObjects(entityType, entityType.getPropertyNames());
+      navigationPropertyInfos = createNavigationInfoObjects(entityType, entityType.getNavigationPropertyNames());
+
+      if (properties != null && properties.getExpandSelectTree() != null) {
+        if (properties.getExpandSelectTree().isAll()) {
+          selectedPropertyInfo = propertyInfo;
+        } else {
+          for (EdmProperty property : properties.getExpandSelectTree().getProperties()) {
+            String name = property.getName();
+            selectedPropertyInfo.put(name, propertyInfo.get(name));
+          }
+          for (EdmNavigationProperty property : properties.getExpandSelectTree().getLinks().keySet()) {
+            String name = property.getName();
+            selectedNavigationPropertyInfos.put(name, navigationPropertyInfos.get(name));
+          }
+        }
+      }
+
     } catch (EdmException e) {
       throw new EntityProviderException(EntityProviderException.COMMON, e);
     }
   }
 
-  private Map<String, EntityPropertyInfo> createInfoObjects(final EdmStructuralType type, final List<String> propertyNames) throws EntityProviderException {
+  private Map<String, EntityPropertyInfo> createPropertyInfoObjects(final EdmStructuralType type, final List<String> propertyNames) throws EntityProviderException {
     try {
       Map<String, EntityPropertyInfo> infos = new HashMap<String, EntityPropertyInfo>();
 
       for (String propertyName : propertyNames) {
-        EdmTyped typed = type.getProperty(propertyName);
+        EdmProperty property = (EdmProperty) type.getProperty(propertyName);
 
-        if (typed instanceof EdmProperty) {
-          EdmProperty property = (EdmProperty) typed;
+        checkETagRelevant(property);
 
-          checkETagRelevant(property);
+        EntityPropertyInfo info = createEntityPropertyInfo(property);
+        infos.put(info.getName(), info);
+        checkTargetPathInfo(property, info);
+      }
 
-          EntityPropertyInfo info = createEntityPropertyInfo(property);
-          infos.put(info.getName(), info);
-          checkTargetPathInfo(property, info);
-        } else if (typed instanceof EdmNavigationProperty) {
-          EdmNavigationProperty navProperty = (EdmNavigationProperty) typed;
-          NavigationPropertyInfo info = NavigationPropertyInfo.create(navProperty);
+      return infos;
+    } catch (EdmException e) {
+      throw new EntityProviderException(EntityProviderException.COMMON, e);
+    }
+  }
 
-          navigationPropertyInfos.add(info);
-        }
+  private Map<String, NavigationPropertyInfo> createNavigationInfoObjects(final EdmStructuralType type, final List<String> propertyNames) throws EntityProviderException {
+    try {
+      Map<String, NavigationPropertyInfo> infos = new HashMap<String, NavigationPropertyInfo>();
+
+      for (String propertyName : propertyNames) {
+        EdmNavigationProperty navProperty = (EdmNavigationProperty) type.getProperty(propertyName);
+        NavigationPropertyInfo info = NavigationPropertyInfo.create(navProperty);
+        infos.put(propertyName, info);
       }
 
       return infos;
@@ -310,7 +354,7 @@ public class EntityInfoAggregator {
       return EntityPropertyInfo.create(property);
     } else if (type instanceof EdmComplexType) {
       EdmComplexType complex = (EdmComplexType) type;
-      Map<String, EntityPropertyInfo> recursiveInfos = createInfoObjects(complex, complex.getPropertyNames());
+      Map<String, EntityPropertyInfo> recursiveInfos = createPropertyInfoObjects(complex, complex.getPropertyNames());
       return EntityComplexPropertyInfo.create(property, complex.getPropertyNames(), recursiveInfos);
     } else {
       throw new EntityProviderException(EntityProviderException.UNSUPPORTED_PROPERTY_TYPE);
