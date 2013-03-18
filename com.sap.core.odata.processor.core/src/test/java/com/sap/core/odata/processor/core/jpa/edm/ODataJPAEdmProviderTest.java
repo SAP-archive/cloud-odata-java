@@ -177,10 +177,22 @@ public class ODataJPAEdmProviderTest {
 
 	@Test
 	public void testGetFunctionImport() {
+		String functionImportName = null;
 		try {
-			edmProvider.getFunctionImport("salesorderprocessingContainer", "abc");
+			functionImportName = edmProvider.getFunctionImport("salesorderprocessingContainer", "SalesOrder_FunctionImport1").getName();
+		} catch (ODataException e) {
+			fail(ODataJPATestConstants.EXCEPTION_MSG_PART_1+e.getMessage()+ ODataJPATestConstants.EXCEPTION_MSG_PART_2);
+		}
+		assertEquals("SalesOrder_FunctionImport1", functionImportName);
+		try {
+			functionImportName = edmProvider.getFunctionImport("salesorderprocessingContainer", "SalesOrder_FunctionImport1").getName();
 		} catch (ODataException e) {
 			assertTrue(true);
+		}
+		try {
+			assertNotNull(edmProvider.getFunctionImport("salesorderprocessingContainer", "SalesOrder_FunctionImport1"));
+		} catch (ODataException e) {
+			e.printStackTrace();
 		}
 	}
 

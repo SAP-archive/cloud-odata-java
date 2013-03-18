@@ -33,12 +33,14 @@ public class ODataJPAEdmProvider extends EdmProvider {
 	private HashMap<String, EntityContainerInfo> entityContainerInfos;
 	private HashMap<String, ComplexType> complexTypes;
 	private HashMap<String, Association> associations;
+	private HashMap<String, FunctionImport> functionImports;	
 
 	public ODataJPAEdmProvider() {
 		entityTypes = new HashMap<String, EntityType>();
 		entityContainerInfos = new HashMap<String, EntityContainerInfo>();
 		complexTypes = new HashMap<String, ComplexType>();
 		associations = new HashMap<String, Association>();
+		functionImports = new HashMap<String, FunctionImport>();
 	}
 
 	public ODataJPAEdmProvider(ODataJPAContext oDataJPAContext) {
@@ -49,6 +51,7 @@ public class ODataJPAEdmProvider extends EdmProvider {
 		entityContainerInfos = new HashMap<String, EntityContainerInfo>();
 		complexTypes = new HashMap<String, ComplexType>();
 		associations = new HashMap<String, Association>();
+		functionImports = new HashMap<String, FunctionImport>();
 		jpaEdmModel = ODataJPAFactory.createFactory().getJPAAccessFactory()
 				.getJPAEdmModelView(oDataJPAContext);
 	}
@@ -241,10 +244,26 @@ public class ODataJPAEdmProvider extends EdmProvider {
 	@Override
 	public FunctionImport getFunctionImport(String entityContainer, String name)
 			throws ODataException {
+		
+		if (functionImports.containsKey(name))
+			return functionImports.get(name);
+		
+		EntityContainer container = null;
+		if (!entityContainerInfos.containsKey(entityContainer))
+			container = (EntityContainer) getEntityContainerInfo(entityContainer);
+		else
+			container = (EntityContainer) entityContainerInfos
+					.get(entityContainer);
 
+		if (container != null && name != null)
+			for (FunctionImport fi : container.getFunctionImports())
+				if (name.equals(fi.getName())) {
+					functionImports.put(name, fi);
+					return fi;
+				}
 		throw ODataJPAModelException
-				.throwException(ODataJPAModelException.INVALID_ENTITYSET
-						.addContent(name), null);
+				.throwException(ODataJPAModelException.INVALID_FUNC_IMPORT
+						.addContent(name), null);		
 	}
 
 	@Override

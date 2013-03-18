@@ -14,6 +14,7 @@ import com.sap.core.odata.api.edm.provider.ComplexType;
 import com.sap.core.odata.api.edm.provider.EntityContainer;
 import com.sap.core.odata.api.edm.provider.EntitySet;
 import com.sap.core.odata.api.edm.provider.EntityType;
+import com.sap.core.odata.api.edm.provider.FunctionImport;
 import com.sap.core.odata.api.edm.provider.Key;
 import com.sap.core.odata.api.edm.provider.Mapping;
 import com.sap.core.odata.api.edm.provider.Property;
@@ -34,6 +35,8 @@ public class EdmSchemaMock {
 	private static final String ENTITY_NAME_ONE = "SalesOrderHeader";
 	private static final String ENTITY_NAME_TWO = "SalesOrderItem";
 	private static final String ENTITY_SET_NAME_ONE = "SalesOrderHeaders";
+	private static final String FUNCTION_IMPORT_NAME_ONE = "SalesOrder_FunctionImport1";
+	private static final String FUNCTION_IMPORT_NAME_TWO = "SalesOrder_FunctionImport2";
 	private static final String ENTITY_SET_NAME_TWO = "SalesOrderItems";
 	private static final String COMPLEX_TYPE_NAME_ONE = "Address";
 	private static final String COMPLEX_TYPE_NAME_TWO = "SalesOrderItemKey";
@@ -54,7 +57,7 @@ public class EdmSchemaMock {
 		entityContainer.setName(ENTITY_CONTAINER_NAME);
 		entityContainer.setEntitySets(createEntitySets());
 		entityContainer.setAssociationSets(createAssociationSets());
-		entityContainer.setFunctionImports(null);
+		entityContainer.setFunctionImports(createFunctionImports());
 		entityContainers.add(entityContainer);
 		return entityContainers;
 	}
@@ -81,6 +84,16 @@ public class EdmSchemaMock {
 		entitySet.setEntityType(new FullQualifiedName(NAMESPACE, ENTITY_NAME_TWO));
 		entitySets.add(entitySet);
 		return entitySets;
+	}
+	private static List<FunctionImport> createFunctionImports() {
+		List<FunctionImport> functionImports = new ArrayList<FunctionImport>();
+		FunctionImport functionImport = new FunctionImport();
+		functionImport.setName(FUNCTION_IMPORT_NAME_ONE);
+		functionImports.add(functionImport);
+		functionImport = new FunctionImport();
+		functionImport.setName(FUNCTION_IMPORT_NAME_TWO);
+		functionImports.add(functionImport);
+		return functionImports;
 	}
 	private static List<Association> createAssociations() {
 		List<Association> associations = new ArrayList<Association>();
