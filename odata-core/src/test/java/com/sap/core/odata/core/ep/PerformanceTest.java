@@ -16,7 +16,6 @@ import javax.xml.stream.XMLStreamWriter;
 import org.custommonkey.xmlunit.exceptions.XpathException;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.xml.sax.SAXException;
 
@@ -33,10 +32,9 @@ import com.sap.core.odata.testutil.mock.MockFacade;
 /**
  * @author SAP AG
  */
-@Ignore("enable for manual performance testing")
 public class PerformanceTest extends AbstractProviderTest {
 
-  private static final long TIMES = 1000L;
+  private static final long TIMES = 1000L; // increase for manual performance testing (also increase vm memory -Xmx1G)
 
   private AtomEntryEntityProducer provider;
   private EdmEntitySet edmEntitySet;

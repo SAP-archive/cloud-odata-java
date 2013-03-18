@@ -49,24 +49,24 @@ public class EntityInfoAggregator {
       EdmTargetPath.SYNDICATION_SUMMARY));
 
   private Map<String, EntityPropertyInfo> propertyInfo = new HashMap<String, EntityPropertyInfo>();
-  private Map<String, EntityPropertyInfo> selectedPropertyInfo = new HashMap<String, EntityPropertyInfo>();
   private Map<String, NavigationPropertyInfo> navigationPropertyInfos = new HashMap<String, NavigationPropertyInfo>();
-  private Map<String, NavigationPropertyInfo> selectedNavigationPropertyInfos = new HashMap<String, NavigationPropertyInfo>();
 
   /*
    * list with all property names in the order based on order in {@link EdmProperty} (normally [key, entity,
    * navigation])
    */
   private List<String> etagPropertyNames = new ArrayList<String>();
+  private List<String> propertyNames;
+  private List<String> navigationPropertyNames;
+  private List<String> selectedPropertyNames;
+  private List<String> selectedNavigationPropertyNames;
+
   private Map<String, EntityPropertyInfo> targetPath2EntityPropertyInfo = new HashMap<String, EntityPropertyInfo>();
   private List<String> noneSyndicationTargetPaths = new ArrayList<String>();
 
   private boolean isDefaultEntityContainer;
   private String entitySetName;
-  private String entityTypeNamespace;
   private String entityContainerName;
-  private String entityTypeName;
-  private boolean entityTypeHasStream;
 
   private EdmEntityType entityType;
 
@@ -150,10 +150,6 @@ public class EntityInfoAggregator {
     }
   }
 
-  public boolean isEntityTypeHasStream() {
-    return entityTypeHasStream;
-  }
-
   /**
    * @return entity set name.
    */
@@ -173,12 +169,8 @@ public class EntityInfoAggregator {
     return targetPath2EntityPropertyInfo.get(targetPath);
   }
 
-  public String getEntityTypeNamespace() {
-    return entityTypeNamespace;
-  }
-
-  public String getEntityTypeName() {
-    return entityTypeName;
+  public EdmEntityType getEntityType() {
+    return entityType;
   }
 
   public String getEntityContainerName() {
@@ -202,26 +194,30 @@ public class EntityInfoAggregator {
 
   /**
    * @return unmodifiable set of all found navigation property names.
-   * @throws EntityProviderException 
    */
   public List<String> getNavigationPropertyNames() throws EntityProviderException {
-    try {
-      return Collections.unmodifiableList(entityType.getNavigationPropertyNames());
-    } catch (EdmException e) {
-      throw new EntityProviderException(EntityProviderException.COMMON, e);
-    }
+    return Collections.unmodifiableList(navigationPropertyNames);
   }
 
   /**
    * @return unmodifiable set of all property names.
-   * @throws EntityProviderException 
-   */
+    */
   public List<String> getPropertyNames() throws EntityProviderException {
-    try {
-      return Collections.unmodifiableList(entityType.getPropertyNames());
-    } catch (EdmException e) {
-      throw new EntityProviderException(EntityProviderException.COMMON, e);
-    }
+    return Collections.unmodifiableList(propertyNames);
+  }
+
+  /**
+   * @return unmodifiable set of selected property names.
+   */
+  public List<String> getSelectedPropertyNames() throws EntityProviderException {
+    return Collections.unmodifiableList(selectedPropertyNames);
+  }
+
+  /**
+   * @return unmodifiable set of selected property names.
+   */
+  public List<String> getSelectedNavigationPropertyNames() throws EntityProviderException {
+    return Collections.unmodifiableList(selectedNavigationPropertyNames);
   }
 
   public Collection<EntityPropertyInfo> getPropertyInfos() {
@@ -257,56 +253,37 @@ public class EntityInfoAggregator {
     }
   }
 
-  /**
-   * @return unmodifiable collection of all navigation properties.
-   * @throws EntityProviderException 
-   */
-  public List<NavigationPropertyInfo> getNavigationPropertyInfos() throws EntityProviderException {
-    try {
-      List<NavigationPropertyInfo> navProperties = new ArrayList<NavigationPropertyInfo>();
-      for (String navPropertyName : entityType.getNavigationPropertyNames()) {
-        navProperties.add(navigationPropertyInfos.get(navPropertyName));
-      }
-      return Collections.unmodifiableList(navProperties);
-    } catch (EdmException e) {
-      throw new EntityProviderException(EntityProviderException.COMMON, e);
-    }
+  public NavigationPropertyInfo getNavigationPropertyInfo(String name) {
+    return navigationPropertyInfos.get(name);
   }
-
-  // #########################################
-  // #
-  // # Start with private methods
-  // #
-  // #########################################
 
   private void initialize(final EdmEntitySet entitySet, final EntityProviderProperties properties) throws EntityProviderException {
     try {
       entityType = entitySet.getEntityType();
       entitySetName = entitySet.getName();
-      entityTypeName = entityType.getName();
-      entityTypeNamespace = entityType.getNamespace();
-      entityTypeHasStream = entityType.hasStream();
       isDefaultEntityContainer = entitySet.getEntityContainer().isDefaultEntityContainer();
       entityContainerName = entitySet.getEntityContainer().getName();
 
+      propertyNames = entityType.getPropertyNames();
+      navigationPropertyNames = entityType.getNavigationPropertyNames();
+
       propertyInfo = createPropertyInfoObjects(entityType, entityType.getPropertyNames());
       navigationPropertyInfos = createNavigationInfoObjects(entityType, entityType.getNavigationPropertyNames());
-
-      if (properties != null && properties.getExpandSelectTree() != null) {
-        if (properties.getExpandSelectTree().isAll()) {
-          selectedPropertyInfo = propertyInfo;
-        } else {
-          for (EdmProperty property : properties.getExpandSelectTree().getProperties()) {
-            String name = property.getName();
-            selectedPropertyInfo.put(name, propertyInfo.get(name));
-          }
-          for (EdmNavigationProperty property : properties.getExpandSelectTree().getLinks().keySet()) {
-            String name = property.getName();
-            selectedNavigationPropertyInfos.put(name, navigationPropertyInfos.get(name));
-          }
+      
+      selectedPropertyNames = propertyNames;
+      selectedNavigationPropertyNames = navigationPropertyNames;
+      
+      if (properties != null && properties.getExpandSelectTree() != null && !properties.getExpandSelectTree().isAll()) {
+        selectedPropertyNames = new ArrayList<String>();
+        selectedNavigationPropertyNames = new ArrayList<String>();
+        for (EdmProperty property : properties.getExpandSelectTree().getProperties()) {
+          selectedPropertyNames.add(property.getName());
+        }
+        for (EdmNavigationProperty property : properties.getExpandSelectTree().getLinks().keySet()) {
+          selectedNavigationPropertyNames.add(property.getName());
         }
       }
-
+      
     } catch (EdmException e) {
       throw new EntityProviderException(EntityProviderException.COMMON, e);
     }
@@ -408,4 +385,5 @@ public class EntityInfoAggregator {
       throw new EntityProviderException(EntityProviderException.COMMON, e);
     }
   }
+
 }

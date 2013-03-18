@@ -13,7 +13,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.custommonkey.xmlunit.exceptions.XpathException;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.xml.sax.SAXException;
 
@@ -53,7 +52,7 @@ public class XmlSelectProducerTest extends AbstractProviderTest {
     assertXpathExists("/a:entry/m:properties", xmlString);
     verifyKeyProperties(xmlString, T, T, T, T);
     verifySingleProperties(xmlString, T, T, T, T);
-    verifyComplexProperties(xmlString, T, T, T, T, T);
+    verifyComplexProperties(xmlString, T);
   }
 
   @Test
@@ -70,10 +69,9 @@ public class XmlSelectProducerTest extends AbstractProviderTest {
     assertXpathExists("/a:entry/m:properties", xmlString);
     verifyKeyProperties(xmlString, T, T, T, T);
     verifySingleProperties(xmlString, T, T, T, T);
-    verifyComplexProperties(xmlString, T, T, T, T, T);
+    verifyComplexProperties(xmlString, T);
   }
 
-  @Ignore
   @Test
   public void selectEmployeeId() throws Exception {
     ExpandSelectTreeNode selectTree = getSelectExpandTree("EmployeeId", null);
@@ -88,10 +86,94 @@ public class XmlSelectProducerTest extends AbstractProviderTest {
     assertXpathExists("/a:entry/m:properties", xmlString);
     verifyKeyProperties(xmlString, T, F, F, F);
     verifySingleProperties(xmlString, F, F, F, F);
-    verifyComplexProperties(xmlString, F, F, F, F, F);
+    verifyComplexProperties(xmlString, F);
   }
 
-  @Ignore
+  @Test
+  public void selectNavigationProperties() throws Exception {
+    ExpandSelectTreeNode selectTree = getSelectExpandTree("ne_Team, ne_Manager", null);
+
+    EntityProviderProperties properties = EntityProviderProperties.serviceRoot(BASE_URI).setExpandSelectTree(selectTree).build();
+    AtomEntityProvider provider = createAtomEntityProvider();
+    ODataResponse response = provider.writeEntry(MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Employees"), employeeData, properties);
+
+    String xmlString = verifyResponse(response);
+
+    verifyNavigationProperties(xmlString, T, F, T);
+    assertXpathExists("/a:entry/m:properties", xmlString);
+    verifyKeyProperties(xmlString, F, F, F, F);
+    verifySingleProperties(xmlString, F, F, F, F);
+    verifyComplexProperties(xmlString, F);
+  }
+
+  @Test
+  public void selectComplexProperties() throws Exception {
+    ExpandSelectTreeNode selectTree = getSelectExpandTree("Location", null);
+
+    EntityProviderProperties properties = EntityProviderProperties.serviceRoot(BASE_URI).setExpandSelectTree(selectTree).build();
+    AtomEntityProvider provider = createAtomEntityProvider();
+    ODataResponse response = provider.writeEntry(MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Employees"), employeeData, properties);
+
+    String xmlString = verifyResponse(response);
+
+    verifyNavigationProperties(xmlString, F, F, F);
+    assertXpathExists("/a:entry/m:properties", xmlString);
+    verifyKeyProperties(xmlString, F, F, F, F);
+    verifySingleProperties(xmlString, F, F, F, F);
+    verifyComplexProperties(xmlString, T);
+  }
+
+  @Test
+  public void selectComplexAndNavigationProperties() throws Exception {
+    ExpandSelectTreeNode selectTree = getSelectExpandTree("Location, ne_Room", null);
+
+    EntityProviderProperties properties = EntityProviderProperties.serviceRoot(BASE_URI).setExpandSelectTree(selectTree).build();
+    AtomEntityProvider provider = createAtomEntityProvider();
+    ODataResponse response = provider.writeEntry(MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Employees"), employeeData, properties);
+
+    String xmlString = verifyResponse(response);
+
+    verifyNavigationProperties(xmlString, F, T, F);
+    assertXpathExists("/a:entry/m:properties", xmlString);
+    verifyKeyProperties(xmlString, F, F, F, F);
+    verifySingleProperties(xmlString, F, F, F, F);
+    verifyComplexProperties(xmlString, T);
+  }
+
+  @Test
+  public void selectComplexAndNavigationAndKeyProperties() throws Exception {
+    ExpandSelectTreeNode selectTree = getSelectExpandTree("Location, ne_Room, EmployeeId, TeamId", null);
+
+    EntityProviderProperties properties = EntityProviderProperties.serviceRoot(BASE_URI).setExpandSelectTree(selectTree).build();
+    AtomEntityProvider provider = createAtomEntityProvider();
+    ODataResponse response = provider.writeEntry(MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Employees"), employeeData, properties);
+
+    String xmlString = verifyResponse(response);
+
+    verifyNavigationProperties(xmlString, F, T, F);
+    assertXpathExists("/a:entry/m:properties", xmlString);
+    verifyKeyProperties(xmlString, T, F, F, T);
+    verifySingleProperties(xmlString, F, F, F, F);
+    verifyComplexProperties(xmlString, T);
+  }
+
+  @Test
+  public void selectEmployeeIdEmployeeNameImageUrl() throws Exception {
+    ExpandSelectTreeNode selectTree = getSelectExpandTree("EmployeeId, EmployeeName, ImageUrl", null);
+
+    EntityProviderProperties properties = EntityProviderProperties.serviceRoot(BASE_URI).setExpandSelectTree(selectTree).build();
+    AtomEntityProvider provider = createAtomEntityProvider();
+    ODataResponse response = provider.writeEntry(MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Employees"), employeeData, properties);
+
+    String xmlString = verifyResponse(response);
+
+    verifyNavigationProperties(xmlString, F, F, F);
+    assertXpathExists("/a:entry/m:properties", xmlString);
+    verifyKeyProperties(xmlString, T, F, F, F);
+    verifySingleProperties(xmlString, T, F, F, T);
+    verifyComplexProperties(xmlString, F);
+  }
+
   @Test
   public void selectAge() throws Exception {
     ExpandSelectTreeNode selectTree = getSelectExpandTree("Age", null);
@@ -106,34 +188,14 @@ public class XmlSelectProducerTest extends AbstractProviderTest {
     assertXpathExists("/a:entry/m:properties", xmlString);
     verifyKeyProperties(xmlString, F, F, F, F);
     verifySingleProperties(xmlString, F, T, F, F);
-    verifyComplexProperties(xmlString, F, F, F, F, F);
+    verifyComplexProperties(xmlString, F);
   }
 
-  private void verifyComplexProperties(final String xmlString, final boolean location, final boolean city, final boolean postalCode, final boolean cityName, final boolean country) throws IOException, SAXException, XpathException {
+  private void verifyComplexProperties(final String xmlString, final boolean location) throws IOException, SAXException, XpathException {
     if (location) {
       assertXpathExists("/a:entry/m:properties/d:Location", xmlString);
     } else {
       assertXpathNotExists("/a:entry/m:properties/d:Location", xmlString);
-    }
-    if (city) {
-      assertXpathExists("/a:entry/m:properties/d:Location/d:City", xmlString);
-    } else {
-      assertXpathNotExists("/a:entry/m:properties/d:Location/d:City", xmlString);
-    }
-    if (postalCode) {
-      assertXpathExists("/a:entry/m:properties/d:Location/d:City/d:PostalCode", xmlString);
-    } else {
-      assertXpathNotExists("/a:entry/m:properties/d:Location/d:City/d:PostalCode", xmlString);
-    }
-    if (cityName) {
-      assertXpathExists("/a:entry/m:properties/d:Location/d:City/d:CityName", xmlString);
-    } else {
-      assertXpathNotExists("/a:entry/m:properties/d:Location/d:City/d:CityName", xmlString);
-    }
-    if (country) {
-      assertXpathExists("/a:entry/m:properties/d:Location/d:Country", xmlString);
-    } else {
-      assertXpathNotExists("/a:entry/m:properties/d:Location/d:Country", xmlString);
     }
   }
 

@@ -130,7 +130,7 @@ public class EntityProviderProperties {
      * @param expandSelectTree data structure
      * @return properties builder
      */
-    public ODataEntityProviderPropertiesBuilder setExpandSelectTree(ExpandSelectTreeNode expandSelectTree) {
+    public ODataEntityProviderPropertiesBuilder setExpandSelectTree(final ExpandSelectTreeNode expandSelectTree) {
       properties.expandSelectTree = expandSelectTree;
       return this;
     }

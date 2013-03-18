@@ -61,7 +61,7 @@ public class AtomEntryEntityProducer {
       appendAtomMandatoryParts(writer, eia, data);
       appendAtomOptionalParts(writer, eia, data);
 
-      if (eia.isEntityTypeHasStream()) {
+      if (eia.getEntityType().hasStream()) {
         // write all links
         appendAtomEditLink(writer, eia, data);
         appendAtomContentLink(writer, eia, data, properties.getMediaResourceMimeType());
@@ -85,7 +85,7 @@ public class AtomEntryEntityProducer {
       writer.writeEndElement();
 
       writer.flush();
-    } catch (XMLStreamException e) {
+    } catch (Exception e) {
       throw new EntityProviderException(EntityProviderException.COMMON, e);
     }
   }
@@ -135,11 +135,12 @@ public class AtomEntryEntityProducer {
   }
 
   private void appendAtomNavigationLinks(final XMLStreamWriter writer, final EntityInfoAggregator eia, final Map<String, Object> data) throws EntityProviderException {
-    for (NavigationPropertyInfo info : eia.getNavigationPropertyInfos()) {
+    for (String name : eia.getSelectedNavigationPropertyNames()) {
+      NavigationPropertyInfo info = eia.getNavigationPropertyInfo(name);
       boolean isFeed = (info.getMultiplicity() == EdmMultiplicity.MANY);
       String self = createSelfLink(eia, data, info.getName());
       appendAtomNavigationLink(writer, self, info.getName(), isFeed);
-    }
+    }    
   }
 
   private void appendAtomNavigationLink(final XMLStreamWriter writer, final String self, final String propertyName, final boolean isFeed) throws EntityProviderException {
@@ -167,9 +168,9 @@ public class AtomEntryEntityProducer {
       writer.writeStartElement(FormatXml.ATOM_LINK);
       writer.writeAttribute(FormatXml.ATOM_HREF, self);
       writer.writeAttribute(FormatXml.ATOM_REL, "edit");
-      writer.writeAttribute(FormatXml.ATOM_TITLE, eia.getEntityTypeName());
+      writer.writeAttribute(FormatXml.ATOM_TITLE, eia.getEntityType().getName());
       writer.writeEndElement();
-    } catch (XMLStreamException e) {
+    } catch (Exception e) {
       throw new EntityProviderException(EntityProviderException.COMMON, e);
     }
   }
@@ -311,12 +312,12 @@ public class AtomEntryEntityProducer {
       String published = getTargetPathValue(eia, EdmTargetPath.SYNDICATION_PUBLISHED, data);
       appendAtomOptionalPart(writer, FormatXml.ATOM_PUBLISHED, published, false);
 
-      String term = eia.getEntityTypeNamespace() + Edm.DELIMITER + eia.getEntityTypeName();
+      String term = eia.getEntityType().getNamespace() + Edm.DELIMITER + eia.getEntityType().getName();
       writer.writeStartElement(FormatXml.ATOM_CATEGORY);
       writer.writeAttribute(FormatXml.ATOM_CATEGORY_TERM, term);
       writer.writeAttribute(FormatXml.ATOM_CATEGORY_SCHEME, Edm.NAMESPACE_SCHEME_2007_08);
       writer.writeEndElement();
-    } catch (XMLStreamException e) {
+    } catch (Exception e) {
       throw new EntityProviderException(EntityProviderException.COMMON, e);
     }
   }
@@ -392,7 +393,7 @@ public class AtomEntryEntityProducer {
     try {
       writer.writeStartElement(Edm.NAMESPACE_M_2007_08, FormatXml.M_PROPERTIES);
 
-      List<String> propertyNames = eia.getPropertyNames();
+      List<String> propertyNames = eia.getSelectedPropertyNames();
 
       for (String propertyName : propertyNames) {
         EntityPropertyInfo propertyInfo = eia.getPropertyInfo(propertyName);
