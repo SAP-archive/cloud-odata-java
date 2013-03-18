@@ -148,10 +148,10 @@ public abstract class UriParser {
    * @return       expression tree of type {@link ExpandSelectTreeNode}
    * @throws EdmException
    */
-  public static ExpandSelectTreeNode createExpandSelectTree(List<SelectItem> select, List<ArrayList<NavigationPropertySegment>> expand) throws EdmException{
+  public static ExpandSelectTreeNode createExpandSelectTree(final List<SelectItem> select, final List<ArrayList<NavigationPropertySegment>> expand) throws EdmException {
     return RuntimeDelegate.getUriParser(null).buildExpandSelectTree(select, expand);
   }
-  
+
   /**
    * Creates an optimized expression tree out of $expand and $select expressions. 
    * @param select List of {@link SelectItem select items}

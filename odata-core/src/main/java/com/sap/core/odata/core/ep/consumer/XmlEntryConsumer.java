@@ -300,7 +300,7 @@ public class XmlEntryConsumer {
     // validate namespace
     checkAllMandatoryNamespacesAvailable();
     checkNamespace(reader.getName(), Edm.NAMESPACE_M_2007_08);
-    if (entitySet.isEntityTypeHasStream()) {
+    if (entitySet.getEntityType().hasStream()) {
       // external properties
       checkCurrentHandledStartTag(FormatXml.M_PROPERTIES);
     } else {
