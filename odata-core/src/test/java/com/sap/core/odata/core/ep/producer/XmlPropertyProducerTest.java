@@ -26,6 +26,10 @@ import com.sap.core.odata.testutil.mock.MockFacade;
  */
 public class XmlPropertyProducerTest extends AbstractProviderTest {
 
+  public XmlPropertyProducerTest(StreamWriterImplType type) {
+    super(type);
+  }
+
   @Test
   public void serializeEmployeeId() throws Exception {
     AtomEntityProvider s = createAtomEntityProvider();

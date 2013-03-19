@@ -17,6 +17,10 @@ import com.sap.core.odata.testutil.mock.MockFacade;
  */
 public class EntityInfoAggregatorTest extends AbstractProviderTest {
 
+  public EntityInfoAggregatorTest(StreamWriterImplType type) {
+    super(type);
+  }
+
   @Test
   public void testEntitySet() throws Exception {
     EdmEntitySet entitySet = MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Employees");

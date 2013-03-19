@@ -22,6 +22,10 @@ import com.sap.core.odata.testutil.mock.MockFacade;
  */
 public class FunctionImportTest extends AbstractProviderTest {
 
+  public FunctionImportTest(StreamWriterImplType type) {
+    super(type);
+  }
+
   @Test
   public void singleSimpleType() throws Exception {
     final EdmFunctionImport functionImport = MockFacade.getMockEdm().getDefaultEntityContainer().getFunctionImport("MaximalAge");

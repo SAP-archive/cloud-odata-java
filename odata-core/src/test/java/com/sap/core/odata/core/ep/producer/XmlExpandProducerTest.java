@@ -51,8 +51,8 @@ public class XmlExpandProducerTest extends AbstractProviderTest {
   private String teamXPathString = "/a:entry/a:link[@href=\"Employees('1')/ne_Team\" and @title='ne_Team']";
   private String buildingXPathString = "/a:entry/a:link[@href=\"Buildings('1')/nb_Rooms\" and @title='nb_Rooms']";
 
-  public XmlExpandProducerTest() {
-    super();
+  public XmlExpandProducerTest(StreamWriterImplType type) {
+    super(type);
 
     try {
       inlineBaseUri = new URI("http://hubbeldubbel.com/");

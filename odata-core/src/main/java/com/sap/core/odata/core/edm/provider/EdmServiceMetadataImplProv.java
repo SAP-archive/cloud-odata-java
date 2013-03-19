@@ -6,6 +6,11 @@ import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
 import java.util.List;
 
+import javax.xml.stream.FactoryConfigurationError;
+import javax.xml.stream.XMLOutputFactory;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamWriter;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -48,9 +53,14 @@ public class EdmServiceMetadataImplProv implements EdmServiceMetadata {
     try {
       DataServices metadata = new DataServices().setSchemas(schemas).setDataServiceVersion(getDataServiceVersion());
       writer = new OutputStreamWriter(csb.getOutputStream(), "UTF-8");
-      XmlMetadataProducer.writeMetadata(metadata, writer, null);
+      XMLStreamWriter xmlStreamWriter = XMLOutputFactory.newInstance().createXMLStreamWriter(writer);
+      XmlMetadataProducer.writeMetadata(metadata, xmlStreamWriter, null);
       return csb.getInputStream();
     } catch (UnsupportedEncodingException e) {
+      throw new EntityProviderException(EntityProviderException.COMMON, e);
+    } catch (XMLStreamException e) {
+      throw new EntityProviderException(EntityProviderException.COMMON, e);
+    } catch (FactoryConfigurationError e) {
       throw new EntityProviderException(EntityProviderException.COMMON, e);
     } finally {
       if (writer != null) {

@@ -1,6 +1,5 @@
 package com.sap.core.odata.core.ep.producer;
 
-import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -8,7 +7,6 @@ import java.util.Locale;
 import java.util.Map;
 
 import javax.xml.stream.FactoryConfigurationError;
-import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 
@@ -45,11 +43,9 @@ import com.sap.core.odata.core.exception.ODataRuntimeException;
 
 public class XmlMetadataProducer {
 
-  public static void writeMetadata(final DataServices metadata, final Writer writer, Map<String, String> predefinedNamespaces) throws EntityProviderException {
+  public static void writeMetadata(final DataServices metadata, final XMLStreamWriter xmlStreamWriter, Map<String, String> predefinedNamespaces) throws EntityProviderException {
 
     try {
-      XMLStreamWriter xmlStreamWriter = XMLOutputFactory.newInstance().createXMLStreamWriter(writer);
-
       xmlStreamWriter.writeStartDocument();
       xmlStreamWriter.setPrefix(Edm.PREFIX_EDMX, Edm.NAMESPACE_EDMX_2007_06);
       xmlStreamWriter.setPrefix(Edm.PREFIX_M, Edm.NAMESPACE_M_2007_08);
@@ -525,12 +521,14 @@ public class XmlMetadataProducer {
         setNamespaces = new ArrayList<String>();
       }
       for (AnnotationAttribute annotationAttribute : annotationAttributes) {
-        xmlStreamWriter.writeAttribute(annotationAttribute.getPrefix(), annotationAttribute.getNamespace(), annotationAttribute.getName(), annotationAttribute.getText());
-        if (setNamespaces.contains(annotationAttribute.getNamespace()) == false && predefinedNamespaces.containsValue(annotationAttribute.getNamespace()) == false) {
-          if (annotationAttribute.getNamespace() != null) {
+        if (annotationAttribute.getNamespace() != null) {
+          xmlStreamWriter.writeAttribute(annotationAttribute.getPrefix(), annotationAttribute.getNamespace(), annotationAttribute.getName(), annotationAttribute.getText());
+          if (setNamespaces.contains(annotationAttribute.getNamespace()) == false && predefinedNamespaces.containsValue(annotationAttribute.getNamespace()) == false) {
             xmlStreamWriter.writeNamespace(annotationAttribute.getPrefix(), annotationAttribute.getNamespace());
             setNamespaces.add(annotationAttribute.getNamespace());
           }
+        } else {
+          xmlStreamWriter.writeAttribute(annotationAttribute.getName(), annotationAttribute.getText());
         }
       }
     }
@@ -540,12 +538,22 @@ public class XmlMetadataProducer {
     if (annotationElements != null) {
       for (AnnotationElement annotationElement : annotationElements) {
         ArrayList<String> setNamespaces = new ArrayList<String>();
-        xmlStreamWriter.writeStartElement(annotationElement.getPrefix(), annotationElement.getName(), annotationElement.getNamespace());
-        if (!predefinedNamespaces.containsValue(annotationElement.getNamespace())) {
-          if (annotationElement.getNamespace() != null) {
-            xmlStreamWriter.writeNamespace(annotationElement.getPrefix(), annotationElement.getNamespace());
-            setNamespaces.add(annotationElement.getNamespace());
+        if (annotationElement.getNamespace() != null) {
+          if (annotationElement.getPrefix() != null) {
+            xmlStreamWriter.writeStartElement(annotationElement.getPrefix(), annotationElement.getName(), annotationElement.getNamespace());
+            if (!predefinedNamespaces.containsValue(annotationElement.getNamespace())) {
+              xmlStreamWriter.writeNamespace(annotationElement.getPrefix(), annotationElement.getNamespace());
+              setNamespaces.add(annotationElement.getNamespace());
+            }
+          } else {
+            xmlStreamWriter.writeStartElement("",annotationElement.getName(), annotationElement.getNamespace());
+            if (!predefinedNamespaces.containsValue(annotationElement.getNamespace())) {
+              xmlStreamWriter.writeNamespace("", annotationElement.getNamespace());
+              setNamespaces.add(annotationElement.getNamespace());
+            }
           }
+        } else {
+          xmlStreamWriter.writeStartElement(annotationElement.getName());
         }
 
         writeAnnotationAttributes(annotationElement.getAttributes(), predefinedNamespaces, setNamespaces, xmlStreamWriter);

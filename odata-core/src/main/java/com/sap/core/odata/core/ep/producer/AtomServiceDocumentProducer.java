@@ -15,6 +15,7 @@ import com.sap.core.odata.api.edm.provider.EntitySet;
 import com.sap.core.odata.api.edm.provider.Schema;
 import com.sap.core.odata.api.ep.EntityProviderException;
 import com.sap.core.odata.api.exception.ODataException;
+import com.sap.core.odata.core.commons.ContentType;
 import com.sap.core.odata.core.edm.provider.EdmImplProv;
 import com.sap.core.odata.core.ep.util.FormatXml;
 
@@ -23,6 +24,9 @@ import com.sap.core.odata.core.ep.util.FormatXml;
  * @author SAP AG
  */
 public class AtomServiceDocumentProducer {
+  
+  private static final String DEFAULT_CHARSET = ContentType.CHARSET_UTF_8;
+  private static final String XML_VERSION = "1.0";
 
   public static void writeServiceDocument(final Edm edm, final String serviceRoot, final Writer writer) throws EntityProviderException {
 
@@ -31,7 +35,7 @@ public class AtomServiceDocumentProducer {
     try {
       XMLStreamWriter xmlStreamWriter = XMLOutputFactory.newInstance().createXMLStreamWriter(writer);
 
-      xmlStreamWriter.writeStartDocument();
+      xmlStreamWriter.writeStartDocument(DEFAULT_CHARSET,XML_VERSION);
       xmlStreamWriter.setPrefix(Edm.PREFIX_XML, Edm.NAMESPACE_XML_1998);
       xmlStreamWriter.setPrefix(Edm.PREFIX_ATOM, Edm.NAMESPACE_ATOM_2005);
       xmlStreamWriter.setDefaultNamespace(Edm.NAMESPACE_APP_2007);
