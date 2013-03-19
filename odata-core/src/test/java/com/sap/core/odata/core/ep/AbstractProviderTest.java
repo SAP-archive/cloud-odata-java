@@ -26,12 +26,15 @@ import com.sap.core.odata.api.ep.EntityProviderProperties;
 import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.api.processor.ODataContext;
 import com.sap.core.odata.api.uri.PathInfo;
-import com.sap.core.odata.testutil.fit.BaseTest;
 
 /**
  * @author SAP AG
 */
-public abstract class AbstractProviderTest extends BaseTest {
+public abstract class AbstractProviderTest extends AbstractXmlProducerTestHelper {
+
+  public AbstractProviderTest(StreamWriterImplType type) {
+    super(type);
+  }
 
   protected final Logger log = LoggerFactory.getLogger(this.getClass());
 

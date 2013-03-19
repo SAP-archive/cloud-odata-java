@@ -41,8 +41,6 @@ public class ContentTypeTest extends BaseTest {
   public void testMe() {
     MediaType t = new MediaType("*", "xml");
     assertNotNull(t);
-    System.out.println(t.toString());
-
     assertTrue(t.isCompatible(new MediaType("app", "xml")));
   }
 

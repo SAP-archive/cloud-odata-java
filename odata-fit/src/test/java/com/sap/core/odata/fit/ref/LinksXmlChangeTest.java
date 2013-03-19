@@ -15,7 +15,7 @@ import com.sap.core.odata.core.commons.ODataHttpMethod;
  */
 public final class LinksXmlChangeTest extends AbstractRefTest {
 
-  private static final String XML_DECLARATION = "<?xml version='1.0' encoding='UTF-8'?>";
+  private static final String XML_DECLARATION = "<?xml version='1.0' encoding='utf-8'?>";
 
   @Test
   public void createLink() throws Exception {

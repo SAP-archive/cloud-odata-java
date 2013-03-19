@@ -22,6 +22,10 @@ import com.sap.core.odata.testutil.mock.MockFacade;
  */
 public class XmlLinksEntityProducerTest extends AbstractProviderTest {
 
+  public XmlLinksEntityProducerTest(StreamWriterImplType type) {
+    super(type);
+  }
+
   @Test
   public void serializeRoomLinks() throws Exception {
     final EdmEntitySet entitySet = MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Rooms");

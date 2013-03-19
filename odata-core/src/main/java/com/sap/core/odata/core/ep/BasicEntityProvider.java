@@ -12,6 +12,11 @@ import java.nio.charset.Charset;
 import java.util.List;
 import java.util.Map;
 
+import javax.xml.stream.FactoryConfigurationError;
+import javax.xml.stream.XMLOutputFactory;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamWriter;
+
 import com.sap.core.odata.api.ODataServiceVersion;
 import com.sap.core.odata.api.commons.HttpContentType;
 import com.sap.core.odata.api.commons.ODataHttpHeaders;
@@ -210,12 +215,16 @@ public class BasicEntityProvider {
     CircleStreamBuffer csb = new CircleStreamBuffer();
     try {
       writer = new OutputStreamWriter(csb.getOutputStream(), "UTF-8");
+      XMLStreamWriter xmlStreamWriter = XMLOutputFactory.newInstance().createXMLStreamWriter(writer);
+      XmlMetadataProducer.writeMetadata(metadata, xmlStreamWriter, predefinedNamespaces);
     } catch (UnsupportedEncodingException e) {
       throw new EntityProviderException(EntityProviderException.COMMON, e);
+    } catch (XMLStreamException e) {
+      throw new EntityProviderException(EntityProviderException.COMMON, e);
+    } catch (FactoryConfigurationError e) {
+      throw new EntityProviderException(EntityProviderException.COMMON, e);
     }
-    XmlMetadataProducer.writeMetadata(metadata, writer, predefinedNamespaces);
     builder.entity(csb.getInputStream());
-
     builder.contentHeader(ContentType.APPLICATION_XML_CS_UTF_8.toContentTypeString());
     builder.header(ODataHttpHeaders.DATASERVICEVERSION, dataServiceVersion);
     return builder.build();

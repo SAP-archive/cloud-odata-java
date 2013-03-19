@@ -31,6 +31,10 @@ import com.sap.core.odata.testutil.mock.MockFacade;
  */
 public class BasicProviderTest extends AbstractProviderTest {
 
+  public BasicProviderTest(StreamWriterImplType type) {
+    super(type);
+  }
+
   protected static BasicEntityProvider provider = new BasicEntityProvider();
 
   @Test

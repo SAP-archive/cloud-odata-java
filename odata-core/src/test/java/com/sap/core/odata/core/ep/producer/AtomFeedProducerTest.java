@@ -31,6 +31,10 @@ import com.sap.core.odata.testutil.mock.MockFacade;
  */
 public class AtomFeedProducerTest extends AbstractProviderTest {
 
+  public AtomFeedProducerTest(StreamWriterImplType type) {
+    super(type);
+  }
+
   private GetEntitySetUriInfo view;
 
   @Before

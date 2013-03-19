@@ -38,6 +38,10 @@ import com.sap.core.odata.testutil.mock.MockFacade;
  */
 public class XmlSelectProducerTest extends AbstractProviderTest {
 
+  public XmlSelectProducerTest(StreamWriterImplType type) {
+    super(type);
+  }
+
   private static final boolean T = true;
   private static final boolean F = false;
 

@@ -45,6 +45,10 @@ import com.sap.core.odata.testutil.mock.MockFacade;
  */
 public class AtomEntryProducerTest extends AbstractProviderTest {
 
+  public AtomEntryProducerTest(StreamWriterImplType type) {
+    super(type);
+  }
+
   @Test
   public void serializeAtomMediaResource() throws IOException, XpathException, SAXException, XMLStreamException, FactoryConfigurationError, ODataException {
     AtomEntityProvider ser = createAtomEntityProvider();
@@ -343,10 +347,9 @@ public class AtomEntryProducerTest extends AbstractProviderTest {
 
     ODataResponse response = ser.writeEntry(entitySet, photoData, DEFAULT_PROPERTIES);
     String xmlString = verifyResponse(response);
-
     assertXpathExists("/a:entry", xmlString);
     assertTrue("Expected result was not found in input [\n\n" + xmlString + "\n\n].",
-        Pattern.matches(".*<custom:CustomProperty xmlns:custom=\"http://localhost\" m:null=\"true\"/>.*", xmlString));
+        Pattern.matches(".*<custom:CustomProperty xmlns:custom=\"http://localhost\" m:null=\"true\".*", xmlString));
     verifyTagOrdering(xmlString, "category", "Содержание", "CustomProperty", "content", "properties");
   }
 
@@ -363,7 +366,7 @@ public class AtomEntryProducerTest extends AbstractProviderTest {
 
     assertXpathExists("/a:entry", xmlString);
     assertTrue("Expected result was not found in input [\n\n" + xmlString + "\n\n].",
-        Pattern.matches(".*<custom:CustomProperty xmlns:custom=\"http://localhost\" m:null=\"true\"/>.*", xmlString));
+        Pattern.matches(".*<custom:CustomProperty xmlns:custom=\"http://localhost\" m:null=\"true\".*", xmlString));
     verifyTagOrdering(xmlString, "category", "Содержание", "CustomProperty", "content", "properties");
   }
 

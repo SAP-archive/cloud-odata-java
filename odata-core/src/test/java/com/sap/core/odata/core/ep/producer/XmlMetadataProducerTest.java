@@ -8,9 +8,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.xml.stream.XMLOutputFactory;
+import javax.xml.stream.XMLStreamWriter;
+
 import org.custommonkey.xmlunit.NamespaceContext;
 import org.custommonkey.xmlunit.SimpleNamespaceContext;
 import org.custommonkey.xmlunit.XMLUnit;
+import org.junit.Before;
 import org.junit.Test;
 
 import com.sap.core.odata.api.ODataServiceVersion;
@@ -24,12 +28,23 @@ import com.sap.core.odata.api.edm.provider.Property;
 import com.sap.core.odata.api.edm.provider.PropertyRef;
 import com.sap.core.odata.api.edm.provider.Schema;
 import com.sap.core.odata.api.edm.provider.SimpleProperty;
+import com.sap.core.odata.core.ep.AbstractXmlProducerTestHelper;
 import com.sap.core.odata.core.ep.util.CircleStreamBuffer;
-import com.sap.core.odata.testutil.fit.BaseTest;
 import com.sap.core.odata.testutil.helper.StringHelper;
 
-public class XmlMetadataProducerTest extends BaseTest {
+public class XmlMetadataProducerTest extends AbstractXmlProducerTestHelper {
 
+  private XMLOutputFactory xmlStreamWriterFactory;
+  
+  public XmlMetadataProducerTest(StreamWriterImplType type) {
+    super(type);
+  }
+
+  @Before
+  public void before(){
+    xmlStreamWriterFactory = XMLOutputFactory.newInstance();
+  }
+  
   @Test
   public void writeValidMetadata() throws Exception {
     List<Schema> schemas = new ArrayList<Schema>();
@@ -44,7 +59,8 @@ public class XmlMetadataProducerTest extends BaseTest {
     OutputStreamWriter writer = null;
     CircleStreamBuffer csb = new CircleStreamBuffer();
     writer = new OutputStreamWriter(csb.getOutputStream(), "UTF-8");
-    XmlMetadataProducer.writeMetadata(data, writer, null);
+    XMLStreamWriter xmlStreamWriter = xmlStreamWriterFactory.createXMLStreamWriter(writer);
+    XmlMetadataProducer.writeMetadata(data, xmlStreamWriter, null);
 
     Map<String, String> prefixMap = new HashMap<String, String>();
     prefixMap.put("edmx", "http://schemas.microsoft.com/ado/2007/06/edmx");
@@ -84,7 +100,8 @@ public class XmlMetadataProducerTest extends BaseTest {
     OutputStreamWriter writer = null;
     CircleStreamBuffer csb = new CircleStreamBuffer();
     writer = new OutputStreamWriter(csb.getOutputStream(), "UTF-8");
-    XmlMetadataProducer.writeMetadata(data, writer, null);
+    XMLStreamWriter xmlStreamWriter = xmlStreamWriterFactory.createXMLStreamWriter(writer);
+    XmlMetadataProducer.writeMetadata(data, xmlStreamWriter, null);
 
     Map<String, String> prefixMap = new HashMap<String, String>();
     prefixMap.put("edmx", "http://schemas.microsoft.com/ado/2007/06/edmx");
@@ -129,7 +146,8 @@ public class XmlMetadataProducerTest extends BaseTest {
     OutputStreamWriter writer = null;
     CircleStreamBuffer csb = new CircleStreamBuffer();
     writer = new OutputStreamWriter(csb.getOutputStream(), "UTF-8");
-    XmlMetadataProducer.writeMetadata(data, writer, null);
+    XMLStreamWriter xmlStreamWriter = xmlStreamWriterFactory.createXMLStreamWriter(writer);
+    XmlMetadataProducer.writeMetadata(data, xmlStreamWriter, null);
 
     Map<String, String> prefixMap = new HashMap<String, String>();
     prefixMap.put("edmx", "http://schemas.microsoft.com/ado/2007/06/edmx");
@@ -164,7 +182,8 @@ public class XmlMetadataProducerTest extends BaseTest {
     OutputStreamWriter writer = null;
     CircleStreamBuffer csb = new CircleStreamBuffer();
     writer = new OutputStreamWriter(csb.getOutputStream(), "UTF-8");
-    XmlMetadataProducer.writeMetadata(data, writer, null);
+    XMLStreamWriter xmlStreamWriter = xmlStreamWriterFactory.createXMLStreamWriter(writer);
+    XmlMetadataProducer.writeMetadata(data, xmlStreamWriter, null);
     String metadata = StringHelper.inputStreamToString(csb.getInputStream());
 
     Map<String, String> prefixMap = new HashMap<String, String>();
@@ -201,7 +220,8 @@ public class XmlMetadataProducerTest extends BaseTest {
     OutputStreamWriter writer = null;
     CircleStreamBuffer csb = new CircleStreamBuffer();
     writer = new OutputStreamWriter(csb.getOutputStream(), "UTF-8");
-    XmlMetadataProducer.writeMetadata(data, writer, null);
+    XMLStreamWriter xmlStreamWriter = xmlStreamWriterFactory.createXMLStreamWriter(writer);
+    XmlMetadataProducer.writeMetadata(data, xmlStreamWriter, null);
     String metadata = StringHelper.inputStreamToString(csb.getInputStream());
 
     Map<String, String> prefixMap = new HashMap<String, String>();
@@ -241,7 +261,8 @@ public class XmlMetadataProducerTest extends BaseTest {
     OutputStreamWriter writer = null;
     CircleStreamBuffer csb = new CircleStreamBuffer();
     writer = new OutputStreamWriter(csb.getOutputStream(), "UTF-8");
-    XmlMetadataProducer.writeMetadata(data, writer, null);
+    XMLStreamWriter xmlStreamWriter = xmlStreamWriterFactory.createXMLStreamWriter(writer);
+    XmlMetadataProducer.writeMetadata(data, xmlStreamWriter, null);
     String metadata = StringHelper.inputStreamToString(csb.getInputStream());
 
     Map<String, String> prefixMap = new HashMap<String, String>();
@@ -257,8 +278,8 @@ public class XmlMetadataProducerTest extends BaseTest {
     assertXpathExists("/edmx:Edmx/edmx:DataServices/a:Schema/atom:schemaElementTest1/atom:schemaElementTest3", metadata);
   }
 
-  //If no name for an AnnotationAttribute is set this has to result in a NullPointerException
-  @Test(expected = NullPointerException.class)
+  //If no name for an AnnotationAttribute is set this has to result in an Exception
+  @Test(expected = Exception.class)
   public void writeInvalidMetadata() throws Exception {
     disableLogging(this.getClass());
     List<Schema> schemas = new ArrayList<Schema>();
@@ -273,6 +294,7 @@ public class XmlMetadataProducerTest extends BaseTest {
     OutputStreamWriter writer = null;
     CircleStreamBuffer csb = new CircleStreamBuffer();
     writer = new OutputStreamWriter(csb.getOutputStream(), "UTF-8");
-    XmlMetadataProducer.writeMetadata(data, writer, null);
+    XMLStreamWriter xmlStreamWriter = xmlStreamWriterFactory.createXMLStreamWriter(writer);
+    XmlMetadataProducer.writeMetadata(data, xmlStreamWriter, null);
   }
 }
