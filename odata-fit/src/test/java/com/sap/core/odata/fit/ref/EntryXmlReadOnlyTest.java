@@ -1,7 +1,8 @@
 package com.sap.core.odata.fit.ref;
 
 import static org.custommonkey.xmlunit.XMLAssert.assertXpathEvaluatesTo;
-import static org.junit.Assert.assertFalse;
+import static org.custommonkey.xmlunit.XMLAssert.assertXpathNotExists;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
@@ -42,9 +43,9 @@ public class EntryXmlReadOnlyTest extends AbstractRefXmlTest {
 
     response = callUri("Rooms('1')?$expand=nr_Employees");
     checkMediaType(response, HttpContentType.APPLICATION_ATOM_XML_UTF8 + "; type=entry");
+    assertNotNull(getBody(response));
     // assertNull(response.getFirstHeader(HttpHeaders.ETAG));
-    assertFalse(getBody(response).isEmpty());
-    // assertTrue(getBody(response).contains(EMPLOYEE_1_NAME));
+    // assertXpathEvaluatesTo(EMPLOYEE_1_NAME, "/atom:entry/atom:link[@href=\"Rooms('1')/nr_Employees\"]/m:inline/atom:feed/atom:entry/m:properties/d:EmployeeName", getBody(response));
 
     response = callUri("Container2.Photos(Id=1,Type='image%2Fpng')");
     checkMediaType(response, HttpContentType.APPLICATION_ATOM_XML_UTF8 + "; type=entry");
@@ -62,11 +63,52 @@ public class EntryXmlReadOnlyTest extends AbstractRefXmlTest {
   }
 
   @Test
+  public void select() throws Exception {
+    HttpResponse response = callUri("Employees('6')?$select=EmployeeId,Age");
+    checkMediaType(response, HttpContentType.APPLICATION_ATOM_XML_UTF8 + "; type=entry");
+    String body = getBody(response);
+    assertXpathEvaluatesTo(EMPLOYEE_6_AGE, "/atom:entry/m:properties/d:Age", body);
+    assertXpathNotExists("/atom:entry/m:properties/d:Location", body);
+
+    response = callUri("Employees('3')/ne_Room?$select=Seats");
+    checkMediaType(response, HttpContentType.APPLICATION_ATOM_XML_UTF8 + "; type=entry");
+    body = getBody(response);
+    assertXpathEvaluatesTo("5", "/atom:entry/atom:content/m:properties/d:Seats", body);
+    assertXpathNotExists("/atom:entry/m:properties/d:Id", body);
+
+    final String entry = getBody(callUri("Employees('6')"));
+    assertEquals(entry, getBody(callUri("Employees('6')?$select=*,Age")));
+    assertEquals(entry, getBody(callUri("Employees('6')?$select=*,ne_Room")));
+
+    checkUri("Container2.Photos(Id=4,Type='foo')?$select=%D0%A1%D0%BE%D0%B4%D0%B5%D1%80%D0%B6%D0%B0%D0%BD%D0%B8%D0%B5,Id");
+
+    response = callUri("Employees('6')?$expand=ne_Room&$select=ne_Room/Version");
+    checkMediaType(response, HttpContentType.APPLICATION_ATOM_XML_UTF8 + "; type=entry");
+    body = getBody(response);
+    // assertXpathEvaluatesTo("2", "/atom:entry/atom:link[@href=\"Employees('6')/ne_Room\"]/m:inline/atom:entry/atom:content[@type=\"application/xml\"]/m:properties/d:Id", body);
+    assertXpathNotExists("/atom:entry/m:properties/d:Location", body);
+    assertXpathNotExists("/atom:entry/atom:link[@href=\"Employees('6')/ne_Room\"]/m:inline/atom:entry/atom:content[@type=\"application/xml\"]/m:properties/d:Seats", body);
+
+    response = callUri("Rooms('3')?$expand=nr_Employees/ne_Team&$select=nr_Employees/ne_Team/Name");
+    checkMediaType(response, HttpContentType.APPLICATION_ATOM_XML_UTF8 + "; type=entry");
+    body = getBody(response);
+    // assertXpathEvaluatesTo("Team 2", "/atom:entry/atom:link[@href=\"Rooms('3')/nr_Employees\"]/m:inline/atom:feed/atom:entry/atom:link[@href=\"Employees('5')/ne_Team\"]/m:inline/atom:entry/atom:content/m:properties/d:Name", body);
+    // assertXpathNotExists("/atom:entry/atom:content/m:properties", body);
+    assertXpathNotExists("/atom:entry/atom:link[@href=\"Rooms('3')/nr_Employees\"]/m:inline/atom:feed/atom:entry/m:properties", body);
+    assertXpathNotExists("/atom:entry/atom:link[@href=\"Rooms('3')/nr_Employees\"]/m:inline/atom:feed/atom:entry/atom:link[@href=\"Employees('5')/ne_Team\"]/m:inline/atom:entry/atom:content/m:properties/d:Id", body);
+
+    notFound("Teams('3')?$select=noProp");
+    notFound("Teams()?$select=nt_Employees/noProp");
+    notFound("Employees('3')/ne_Room?$select=Age");
+    notFound("Employees('3')/ne_Room?$select=ne_Room");
+  }
+
+  @Test
   public void entryMediaResource() throws Exception {
     HttpResponse response = callUri("Employees('2')/$value");
     checkMediaType(response, "image/jpeg");
     assertNotNull(getBody(response));
-    //
+
     response = callUri("Employees('2')/$value?$format=xml", HttpStatusCodes.BAD_REQUEST);
     String body = getBody(response);
     XMLAssert.assertXpathExists("/m:error/m:message", body);

@@ -2,6 +2,7 @@ package com.sap.core.odata.fit.ref;
 
 import static org.custommonkey.xmlunit.XMLAssert.assertXpathEvaluatesTo;
 import static org.custommonkey.xmlunit.XMLAssert.assertXpathExists;
+import static org.custommonkey.xmlunit.XMLAssert.assertXpathNotExists;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -20,10 +21,8 @@ import com.sap.core.odata.api.commons.HttpHeaders;
 public class FunctionImportTest extends AbstractRefXmlTest {
 
   @Test
-  public void testFunctionImports() throws Exception {
-    HttpResponse response;
-
-    response = callUri("EmployeeSearch('1')/ne_Room/Id/$value?q='alter'");
+  public void functionImports() throws Exception {
+    HttpResponse response = callUri("EmployeeSearch('1')/ne_Room/Id/$value?q='alter'");
     checkMediaType(response, HttpContentType.TEXT_PLAIN_UTF8);
     // checkEtag(response, "W/\"1\"");
     assertEquals("1", getBody(response));
@@ -70,4 +69,18 @@ public class FunctionImportTest extends AbstractRefXmlTest {
     notFound("ManagerPhoto?Id='2'");
   }
 
+  @Test
+  public void select() throws Exception {
+    HttpResponse response = callUri("EmployeeSearch?q='ede'&$select=Age");
+    checkMediaType(response, HttpContentType.APPLICATION_ATOM_XML_UTF8 + "; type=feed");
+    String body = getBody(response);
+    assertXpathEvaluatesTo(EMPLOYEE_2_AGE, "/atom:feed/atom:entry/m:properties/d:Age", body);
+    assertXpathNotExists("/atom:feed/atom:entry/m:properties/d:Location", body);
+
+    response = callUri("EmployeeSearch('2')/ne_Room?q='ede'&$select=Seats");
+    checkMediaType(response, HttpContentType.APPLICATION_ATOM_XML_UTF8 + "; type=entry");
+    body = getBody(response);
+    assertXpathEvaluatesTo("5", "/atom:entry/atom:content/m:properties/d:Seats", body);
+    assertXpathNotExists("/atom:entry/atom:content/m:properties/d:Id", body);
+  }
 }
