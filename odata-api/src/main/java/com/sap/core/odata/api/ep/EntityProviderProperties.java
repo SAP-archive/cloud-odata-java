@@ -1,8 +1,11 @@
 package com.sap.core.odata.api.ep;
 
 import java.net.URI;
+import java.util.Collections;
+import java.util.Map;
 
 import com.sap.core.odata.api.commons.InlineCount;
+import com.sap.core.odata.api.ep.callback.Callback;
 import com.sap.core.odata.api.uri.ExpandSelectTreeNode;
 
 /**
@@ -17,6 +20,7 @@ public class EntityProviderProperties {
   private Integer inlineCount;
   private String nextLink;
   private ExpandSelectTreeNode expandSelectTree;
+  private Map<String, Callback> callbacks = Collections.emptyMap();
 
   private EntityProviderProperties() {}
 
@@ -42,6 +46,10 @@ public class EntityProviderProperties {
   */
   public final InlineCount getInlineCountType() {
     return inlineCountType;
+  }
+
+  public final Map<String,Callback> getCallbacks() {
+    return callbacks;
   }
 
   /**
@@ -103,7 +111,7 @@ public class EntityProviderProperties {
     /**
      * @param serviceRoot
      */
-    private final ODataEntityProviderPropertiesBuilder serviceRoot(final URI serviceRoot) {
+    public final ODataEntityProviderPropertiesBuilder serviceRoot(final URI serviceRoot) {
       properties.serviceRoot = serviceRoot;
       return this;
     }
@@ -130,10 +138,31 @@ public class EntityProviderProperties {
      * @param expandSelectTree data structure
      * @return properties builder
      */
-    public ODataEntityProviderPropertiesBuilder setExpandSelectTree(final ExpandSelectTreeNode expandSelectTree) {
+    public ODataEntityProviderPropertiesBuilder expandSelectTree(final ExpandSelectTreeNode expandSelectTree) {
       properties.expandSelectTree = expandSelectTree;
       return this;
     }
 
+    public ODataEntityProviderPropertiesBuilder callbacks(Map<String, Callback> callbacks) {
+      properties.callbacks = callbacks;
+      return this;
+    }
+
+    public ODataEntityProviderPropertiesBuilder fromProperties(EntityProviderProperties properties) {
+      this.properties.mediaResourceMimeType = properties.getMediaResourceMimeType();
+      this.properties.inlineCountType = properties.getInlineCountType();
+      this.properties.inlineCount = properties.getInlineCount();
+      this.properties.nextLink = properties.getNextLink();
+      this.properties.expandSelectTree = properties.getExpandSelectTree();
+      this.properties.callbacks = properties.getCallbacks();
+      return this;
+    }
+
+  }
+
+  public static ODataEntityProviderPropertiesBuilder fromProperties(EntityProviderProperties properties) {
+   final ODataEntityProviderPropertiesBuilder b = EntityProviderProperties.serviceRoot(properties.getServiceRoot());
+   b.fromProperties(properties);
+   return b;
   }
 }

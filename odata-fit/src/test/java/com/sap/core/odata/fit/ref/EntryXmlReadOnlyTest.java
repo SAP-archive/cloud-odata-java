@@ -9,6 +9,7 @@ import static org.junit.Assert.assertNull;
 import org.apache.http.HttpHeaders;
 import org.apache.http.HttpResponse;
 import org.custommonkey.xmlunit.XMLAssert;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import com.sap.core.odata.api.commons.HttpContentType;
@@ -62,6 +63,7 @@ public class EntryXmlReadOnlyTest extends AbstractRefXmlTest {
     badRequest("Rooms(X'33')");
   }
 
+  @Ignore("Expand under developement")
   @Test
   public void select() throws Exception {
     HttpResponse response = callUri("Employees('6')?$select=EmployeeId,Age");

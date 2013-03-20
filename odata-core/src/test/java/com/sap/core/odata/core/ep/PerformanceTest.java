@@ -23,6 +23,7 @@ import com.sap.core.odata.api.edm.Edm;
 import com.sap.core.odata.api.edm.EdmEntitySet;
 import com.sap.core.odata.api.ep.EntityProviderProperties;
 import com.sap.core.odata.api.exception.ODataException;
+import com.sap.core.odata.api.uri.ExpandSelectTreeNode;
 import com.sap.core.odata.core.ep.aggregator.EntityInfoAggregator;
 import com.sap.core.odata.core.ep.producer.AtomEntryEntityProducer;
 import com.sap.core.odata.core.ep.util.CircleStreamBuffer;
@@ -93,7 +94,7 @@ public class PerformanceTest extends AbstractProviderTest {
     long t = startTimer();
 
     for (int i = 0; i < TIMES; i++) {
-      EntityProviderProperties epProperties = null;
+      ExpandSelectTreeNode epProperties = null;
       EntityInfoAggregator eia = EntityInfoAggregator.create(edmEntitySet, epProperties);
       provider.append(writer, eia, roomData, false);
     }
@@ -109,7 +110,7 @@ public class PerformanceTest extends AbstractProviderTest {
     long t = startTimer();
 
     for (int i = 0; i < TIMES; i++) {
-      EntityProviderProperties epProperties = null;
+      ExpandSelectTreeNode epProperties = null;
       EntityInfoAggregator eia = EntityInfoAggregator.create(edmEntitySet, epProperties);
       provider.append(writer, eia, roomData, false);
     }
@@ -120,7 +121,7 @@ public class PerformanceTest extends AbstractProviderTest {
   public void readAtomEntryOptimized() throws IOException, XpathException, SAXException, XMLStreamException, FactoryConfigurationError, ODataException {
     long t = startTimer();
 
-    EntityProviderProperties epProperties = null;
+    ExpandSelectTreeNode epProperties = null;
     EntityInfoAggregator eia = EntityInfoAggregator.create(edmEntitySet, epProperties);
     for (int i = 0; i < TIMES; i++) {
       provider.append(writer, eia, roomData, false);
@@ -136,7 +137,7 @@ public class PerformanceTest extends AbstractProviderTest {
 
     long t = startTimer();
 
-    EntityProviderProperties epProperties = null;
+    ExpandSelectTreeNode epProperties = null;
     EntityInfoAggregator eia = EntityInfoAggregator.create(edmEntitySet, epProperties);
     for (int i = 0; i < TIMES; i++) {
       provider.append(writer, eia, roomData, false);

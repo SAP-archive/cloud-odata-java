@@ -26,7 +26,8 @@ public class EntityProviderException extends ODataMessageException {
   public static final MessageReference INVALID_NAMESPACE = createMessageReference(EntityProviderException.class, "INVALID_NAMESPACE");
   /** INVALID_PARENT_TAG requires 2 content value ('expected parent tag' and 'found parent tag') */
   public static final MessageReference INVALID_PARENT_TAG = createMessageReference(EntityProviderException.class, "INVALID_PARENT_TAG");
-
+  public static final MessageReference EXPANDNOTSUPPORTED = createMessageReference(EntityProviderException.class, "EXPANDNOTSUPPORTED");
+  
   public EntityProviderException(final MessageReference messageReference) {
     super(messageReference);
   }

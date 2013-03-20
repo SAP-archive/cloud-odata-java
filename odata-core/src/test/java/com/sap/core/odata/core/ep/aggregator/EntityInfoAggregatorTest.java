@@ -8,7 +8,7 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 
 import com.sap.core.odata.api.edm.EdmEntitySet;
-import com.sap.core.odata.api.ep.EntityProviderProperties;
+import com.sap.core.odata.api.uri.ExpandSelectTreeNode;
 import com.sap.core.odata.core.ep.AbstractProviderTest;
 import com.sap.core.odata.testutil.mock.MockFacade;
 
@@ -21,7 +21,7 @@ public class EntityInfoAggregatorTest extends AbstractProviderTest {
   public void testEntitySet() throws Exception {
     EdmEntitySet entitySet = MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Employees");
 
-    EntityProviderProperties epProperties = null;
+    ExpandSelectTreeNode epProperties = null;
     EntityInfoAggregator eia = EntityInfoAggregator.create(entitySet, epProperties);
 
     assertNotNull(eia);
