@@ -32,4 +32,12 @@ public class ODataEntryImpl implements ODataEntry {
   public EntryMetadata getMetadata() {
     return entryMetadata;
   }
+
+  /* (non-Javadoc)
+   * @see java.lang.Object#toString()
+   */
+  @Override
+  public String toString() {
+    return "ODataEntryImpl [data=" + data + ", entryMetadata=" + entryMetadata + ", mediaMetadata=" + mediaMetadata + "]";
+  }
 }

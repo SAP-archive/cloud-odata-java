@@ -26,6 +26,7 @@ import com.sap.core.odata.api.edm.EdmType;
 import com.sap.core.odata.api.edm.EdmTypeKind;
 import com.sap.core.odata.api.ep.EntityProviderException;
 import com.sap.core.odata.api.ep.EntityProviderProperties;
+import com.sap.core.odata.core.ep.consumer.ConsumerProperties;
 
 /**
  * Aggregator to get easy and fast access to all for serialization and de-serialization necessary {@link EdmEntitySet} informations.
@@ -92,6 +93,24 @@ public class EntityInfoAggregator {
     eia.initialize(entitySet, properties);
     return eia;
   }
+  
+  /**
+   * Create an {@link EntityInfoAggregator} based on given {@link EdmEntitySet}
+   * 
+   * @param entitySet
+   *          with which the {@link EntityInfoAggregator} is initialized.
+   * @return created and initialized {@link EntityInfoAggregator}
+   * @throws EntityProviderException
+   *           if during initialization of {@link EntityInfoAggregator} something goes wrong (e.g. exceptions during
+   *           access
+   *           of {@link EdmEntitySet}).
+   */
+  public static EntityInfoAggregator create(EdmEntitySet entitySet, ConsumerProperties properties) throws EntityProviderException {
+    EntityInfoAggregator eia = new EntityInfoAggregator();
+    eia.initialize(entitySet, null);
+    return eia;
+  }
+
 
   /**
    * Create an {@link EntityPropertyInfo} based on given {@link EdmProperty}
@@ -385,5 +404,4 @@ public class EntityInfoAggregator {
       throw new EntityProviderException(EntityProviderException.COMMON, e);
     }
   }
-
 }

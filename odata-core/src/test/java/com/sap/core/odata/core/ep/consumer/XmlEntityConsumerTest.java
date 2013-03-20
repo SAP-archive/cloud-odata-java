@@ -122,6 +122,7 @@ public class XmlEntityConsumerTest extends AbstractConsumerTest {
       "  </m:properties>" +
       "</entry>";
 
+  @SuppressWarnings("unchecked")
   @Test
   public void readWithInlineContent() throws Exception {
     // prepare
@@ -131,6 +132,57 @@ public class XmlEntityConsumerTest extends AbstractConsumerTest {
     EdmEntitySet entitySet = MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Teams");
     InputStream reqContent = createContentAsStream(content);
 
+    // execute
+    XmlEntityConsumer xec = new XmlEntityConsumer();
+    ConsumerProperties consumerProperties = new ConsumerProperties(false);
+    consumerProperties.setCallback(new ConsumerCallback() {
+      @Override
+      public CallbackResult callback(ConsumerProperties cProps, CallbackInfo infos) {
+        try {
+          String title = infos.getTitle();
+          if(title.contains("Employees")) {
+            EdmEntitySet employeeEntitySet = MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Employees");
+            return new CallbackResult(cProps, employeeEntitySet);
+          } else {
+            throw new RuntimeException("Invalid title");
+          }
+        } catch (Exception e) {
+          throw new RuntimeException();
+        }
+      }
+    });
+    
+    ODataEntry entry = xec.readEntry(entitySet, reqContent, consumerProperties);
+    // validate
+    assertNotNull(entry);
+    Map<String, Object> properties = entry.getProperties();
+    assertEquals("1", properties.get("Id"));
+    assertEquals("Team 1", properties.get("Name"));
+    assertEquals(Boolean.FALSE, properties.get("isScrumTeam"));
+    //
+    List<Object> employees = (List<Object>) properties.get("nt_Employees");
+    assertEquals(3, employees.size());
+    //
+    ODataEntry employeeNo2 = (ODataEntry) employees.get(1);
+    Map<String, Object> employessNo2Props = employeeNo2.getProperties();
+    assertEquals("Frederic Fall", employessNo2Props.get("EmployeeName"));
+    assertEquals("2", employessNo2Props.get("RoomId"));
+    assertEquals(32, employessNo2Props.get("Age"));
+    Map<String, Object> emp2Location = (Map<String, Object>) employessNo2Props.get("Location");
+    Map<String, Object> emp2City = (Map<String, Object>) emp2Location.get("City");
+    assertEquals("69190", emp2City.get("PostalCode"));
+    assertEquals("Walldorf", emp2City.get("CityName"));
+  }
+
+  @Test
+  public void readWithInlineContentIgnored() throws Exception {
+    // prepare
+    String content = readFile("expanded_team.xml");
+    assertNotNull(content);
+    
+    EdmEntitySet entitySet = MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Teams");
+    InputStream reqContent = createContentAsStream(content);
+    
     // execute
     XmlEntityConsumer xec = new XmlEntityConsumer();
     ODataEntry entry = xec.readEntry(entitySet, reqContent, false);
