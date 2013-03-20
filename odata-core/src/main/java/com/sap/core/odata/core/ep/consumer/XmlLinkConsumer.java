@@ -3,84 +3,54 @@ package com.sap.core.odata.core.ep.consumer;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
+import com.sap.core.odata.api.edm.Edm;
 import com.sap.core.odata.api.edm.EdmEntitySet;
 import com.sap.core.odata.api.ep.EntityProviderException;
+import com.sap.core.odata.core.ep.util.FormatXml;
 
 /**
- * 
+ * @author SAP AG
  */
 public class XmlLinkConsumer {
 
-  private static final String TAG_URI = "uri";
-  private static final String TAG_LINKS = "links";
-
   /**
-   * Reads single link with format:
-   * <code>
-   * <pre>
-   * {@code
-   *  <uri>http://somelink</uri>
-   * }
-   * </pre>
-   * </code>
-   * 
+   * Reads single link with format {@code <uri>http://somelink</uri>}.
    * @param reader
    * @param entitySet
    * @return link as string object
    * @throws EntityProviderException
    */
-  public String readLink(final XMLStreamReader reader, final EdmEntitySet entitySet) throws EntityProviderException {
+  public String readLink(XMLStreamReader reader, final EdmEntitySet entitySet) throws EntityProviderException {
     try {
-      String link = readLink(reader);
-
-      return link;
-    } catch (Exception e) {
+      reader.next();
+      return readLink(reader);
+    } catch (final XMLStreamException e) {
       throw new EntityProviderException(EntityProviderException.COMMON, e);
     }
   }
 
-  private String readLink(final XMLStreamReader reader) throws EntityProviderException, XMLStreamException {
-    return readLink(reader, false);
+  private String readLink(XMLStreamReader reader) throws XMLStreamException {
+    return readTag(reader, Edm.NAMESPACE_D_2007_08, FormatXml.D_URI);
   }
 
-  private String readLink(final XMLStreamReader reader, final boolean started) throws EntityProviderException, XMLStreamException {
-    //
-    int eventType = reader.getEventType();
-    if (!started) {
-      eventType = reader.next();
-    }
+  private String readTag(XMLStreamReader reader, final String namespaceURI, final String localName) throws XMLStreamException {
+    reader.require(XMLStreamReader.START_ELEMENT, namespaceURI, localName);
 
-    if (eventType != XMLStreamConstants.START_ELEMENT || !reader.getLocalName().equals(TAG_URI)) {
-      throw new EntityProviderException(EntityProviderException.INVALID_STATE
-          .addContent("Found no starting '" + TAG_URI + "' tag for link parsing."));
-    }
+    reader.next();
+    reader.require(XMLStreamReader.CHARACTERS, null, null);
+    final String result = reader.getText();
 
-    //
-    String result = null;
-    eventType = reader.next();
-    if (XMLStreamConstants.CHARACTERS == eventType) {
-      result = reader.getText();
-    } else {
-      throw new EntityProviderException(EntityProviderException.INVALID_STATE
-          .addContent("Found no text for '" + TAG_URI + "' tag for link parsing."));
-    }
+    reader.nextTag();
+    reader.require(XMLStreamReader.END_ELEMENT, namespaceURI, localName);
 
-    //
-    eventType = reader.next();
-    if (eventType != XMLStreamConstants.END_ELEMENT || !reader.getLocalName().equals(TAG_URI)) {
-      throw new EntityProviderException(EntityProviderException.INVALID_STATE
-          .addContent("Found no closing '" + TAG_URI + "' tag for link parsing."));
-    }
     return result;
   }
 
   /**
    * Reads multiple links with format 
-   * <code>
    * <pre>
    * {@code
    * <links>
@@ -90,46 +60,34 @@ public class XmlLinkConsumer {
    * </links>
    * }
    * </pre>
-   * </code>
-   * 
    * @param reader
    * @param entitySet
    * @return list of string based links
    * @throws EntityProviderException
    */
-  public List<String> readLinks(final XMLStreamReader reader, final EdmEntitySet entitySet) throws EntityProviderException {
+  public List<String> readLinks(XMLStreamReader reader, final EdmEntitySet entitySet) throws EntityProviderException {
     try {
       List<String> links = new ArrayList<String>();
 
-      if (!startWithLinksTag(reader)) {
-        throw new EntityProviderException(EntityProviderException.INVALID_STATE
-            .addContent("Found no starting '" + TAG_LINKS + "' tag for link parsing."));
+      reader.next();
+      reader.require(XMLStreamReader.START_ELEMENT, Edm.NAMESPACE_D_2007_08, FormatXml.D_LINKS);
+
+      reader.nextTag();
+      while (!reader.isEndElement()) {
+        if (reader.getLocalName().equals(FormatXml.M_COUNT)) {
+          readTag(reader, Edm.NAMESPACE_M_2007_08, FormatXml.M_COUNT);
+        } else {
+          final String link = readLink(reader);
+          links.add(link);
+        }
+        reader.nextTag();
       }
 
-      while (linksEndNotReached(reader)) {
-        String link = readLink(reader, true);
-        links.add(link);
-      }
+      reader.require(XMLStreamReader.END_ELEMENT, Edm.NAMESPACE_D_2007_08, FormatXml.D_LINKS);
 
       return links;
-    } catch (Exception e) {
+    } catch (final XMLStreamException e) {
       throw new EntityProviderException(EntityProviderException.COMMON, e);
     }
-  }
-
-  private boolean startWithLinksTag(final XMLStreamReader reader) throws XMLStreamException {
-    int eventType = reader.next();
-    boolean isStartLinks = eventType == XMLStreamConstants.START_ELEMENT && reader.getLocalName().equals(TAG_LINKS);
-    return isStartLinks;
-  }
-
-  private boolean isEndLinksTag(final XMLStreamReader reader, final int eventType) {
-    boolean isStartLinks = eventType != XMLStreamConstants.END_ELEMENT || !reader.getLocalName().equals(TAG_LINKS);
-    return isStartLinks;
-  }
-
-  private boolean linksEndNotReached(final XMLStreamReader reader) throws XMLStreamException {
-    int eventType = reader.next();
-    return isEndLinksTag(reader, eventType);
   }
 }
