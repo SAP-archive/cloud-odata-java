@@ -67,8 +67,10 @@ public class EntryXmlReadOnlyTest extends AbstractRefXmlTest {
     HttpResponse response = callUri("Employees('6')?$select=EmployeeId,Age");
     checkMediaType(response, HttpContentType.APPLICATION_ATOM_XML_UTF8 + "; type=entry");
     String body = getBody(response);
+    assertXpathEvaluatesTo("6", "/atom:entry/m:properties/d:EmployeeId", body);
     assertXpathEvaluatesTo(EMPLOYEE_6_AGE, "/atom:entry/m:properties/d:Age", body);
     assertXpathNotExists("/atom:entry/m:properties/d:Location", body);
+    assertXpathEvaluatesTo("2", "count(/atom:entry/atom:link)", body);
 
     response = callUri("Employees('3')/ne_Room?$select=Seats");
     checkMediaType(response, HttpContentType.APPLICATION_ATOM_XML_UTF8 + "; type=entry");
@@ -85,7 +87,7 @@ public class EntryXmlReadOnlyTest extends AbstractRefXmlTest {
     response = callUri("Employees('6')?$expand=ne_Room&$select=ne_Room/Version");
     checkMediaType(response, HttpContentType.APPLICATION_ATOM_XML_UTF8 + "; type=entry");
     body = getBody(response);
-    // assertXpathEvaluatesTo("2", "/atom:entry/atom:link[@href=\"Employees('6')/ne_Room\"]/m:inline/atom:entry/atom:content[@type=\"application/xml\"]/m:properties/d:Id", body);
+    // assertXpathEvaluatesTo("2", "/atom:entry/atom:link[@href=\"Employees('6')/ne_Room\"]/m:inline/atom:entry/atom:content[@type=\"application/xml\"]/m:properties/d:Version", body);
     assertXpathNotExists("/atom:entry/m:properties/d:Location", body);
     assertXpathNotExists("/atom:entry/atom:link[@href=\"Employees('6')/ne_Room\"]/m:inline/atom:entry/atom:content[@type=\"application/xml\"]/m:properties/d:Seats", body);
 
@@ -106,7 +108,7 @@ public class EntryXmlReadOnlyTest extends AbstractRefXmlTest {
   @Test
   public void entryMediaResource() throws Exception {
     HttpResponse response = callUri("Employees('2')/$value");
-    checkMediaType(response, "image/jpeg");
+    checkMediaType(response, IMAGE_JPEG);
     assertNotNull(getBody(response));
 
     response = callUri("Employees('2')/$value?$format=xml", HttpStatusCodes.BAD_REQUEST);

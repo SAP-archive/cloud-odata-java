@@ -110,7 +110,7 @@ public class EntryXmlChangeTest extends AbstractRefXmlTest {
     checkMediaType(response, HttpContentType.APPLICATION_ATOM_XML_UTF8 + "; type=entry");
     assertEquals(getEndpoint() + "Employees('7')", response.getFirstHeader(HttpHeaders.LOCATION).getValue());
     assertXpathEvaluatesTo("7", "/atom:entry/m:properties/d:EmployeeId", getBody(response));
-    //
+
     response = callUri("Employees('7')/$value");
     checkMediaType(response, HttpContentType.TEXT_PLAIN);
     assertEquals("X", getBody(response));
@@ -132,7 +132,6 @@ public class EntryXmlChangeTest extends AbstractRefXmlTest {
     final String requestBody = getBody(callUri("Employees('1')"))
         .replace("<d:Age>52</d:Age>", "<d:Age>33</d:Age><d:SomeUnknownTag>SomeUnknownValue</d:SomeUnknownTag>");
 
-    // 
     putUri("Employees('1')", requestBody, HttpContentType.APPLICATION_ATOM_XML_ENTRY, HttpStatusCodes.BAD_REQUEST);
     // check nothing has changed
     assertXpathEvaluatesTo("52", "/atom:entry/m:properties/d:Age", getBody(callUri("Employees('1')")));
@@ -142,12 +141,9 @@ public class EntryXmlChangeTest extends AbstractRefXmlTest {
   public void updateInvalidXml() throws Exception {
     final String requestBodyBefore = getBody(callUri("Employees('2')"));
 
-    String updateBody = "<invalidXml></invalid>";
-    putUri("Employees('2')", updateBody, HttpContentType.APPLICATION_ATOM_XML_ENTRY, HttpStatusCodes.BAD_REQUEST);
+    putUri("Employees('2')", "<invalidXml></invalid>", HttpContentType.APPLICATION_ATOM_XML_ENTRY, HttpStatusCodes.BAD_REQUEST);
 
-    final String requestBodyAfter = getBody(callUri("Employees('2')"));
-
-    assertEquals(requestBodyBefore, requestBodyAfter);
+    assertEquals(requestBodyBefore, getBody(callUri("Employees('2')")));
   }
 
   @Test
