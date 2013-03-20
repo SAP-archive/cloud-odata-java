@@ -25,8 +25,9 @@ import com.sap.core.odata.api.edm.EdmTargetPath;
 import com.sap.core.odata.api.edm.EdmType;
 import com.sap.core.odata.api.edm.EdmTypeKind;
 import com.sap.core.odata.api.ep.EntityProviderException;
-import com.sap.core.odata.api.ep.EntityProviderProperties;
+import com.sap.core.odata.api.uri.ExpandSelectTreeNode;
 import com.sap.core.odata.core.ep.consumer.ConsumerProperties;
+
 
 /**
  * Aggregator to get easy and fast access to all for serialization and de-serialization necessary {@link EdmEntitySet} informations.
@@ -61,6 +62,8 @@ public class EntityInfoAggregator {
   private List<String> navigationPropertyNames;
   private List<String> selectedPropertyNames;
   private List<String> selectedNavigationPropertyNames;
+  private List<String> expandedNavigationPropertyNames;
+  
 
   private Map<String, EntityPropertyInfo> targetPath2EntityPropertyInfo = new HashMap<String, EntityPropertyInfo>();
   private List<String> noneSyndicationTargetPaths = new ArrayList<String>();
@@ -70,6 +73,7 @@ public class EntityInfoAggregator {
   private String entityContainerName;
 
   private EdmEntityType entityType;
+  private EdmEntitySet entitySet;
 
   /**
    * Constructor is private to force creation over {@link #create(EdmEntitySet)} method.
@@ -81,16 +85,16 @@ public class EntityInfoAggregator {
    * 
    * @param entitySet
    *          with which the {@link EntityInfoAggregator} is initialized.
-   * @param properties 
+   * @param expandSelectTree 
    * @return created and initialized {@link EntityInfoAggregator}
    * @throws EntityProviderException
    *           if during initialization of {@link EntityInfoAggregator} something goes wrong (e.g. exceptions during
    *           access
    *           of {@link EdmEntitySet}).
    */
-  public static EntityInfoAggregator create(final EdmEntitySet entitySet, final EntityProviderProperties properties) throws EntityProviderException {
+  public static EntityInfoAggregator create(final EdmEntitySet entitySet, final ExpandSelectTreeNode expandSelectTree) throws EntityProviderException {
     EntityInfoAggregator eia = new EntityInfoAggregator();
-    eia.initialize(entitySet, properties);
+    eia.initialize(entitySet, expandSelectTree);
     return eia;
   }
   
@@ -167,6 +171,13 @@ public class EntityInfoAggregator {
     } catch (EdmException e) {
       throw new EntityProviderException(EntityProviderException.COMMON, e);
     }
+  }
+  
+  /**
+   * @return the edm entity set which was used to build this entity info aggregator object
+   */
+  public EdmEntitySet getEntitySet(){
+    return entitySet;
   }
 
   /**
@@ -276,8 +287,9 @@ public class EntityInfoAggregator {
     return navigationPropertyInfos.get(name);
   }
 
-  private void initialize(final EdmEntitySet entitySet, final EntityProviderProperties properties) throws EntityProviderException {
+  private void initialize(final EdmEntitySet entitySet, final ExpandSelectTreeNode expandSelectTree) throws EntityProviderException {
     try {
+      this.entitySet = entitySet;
       entityType = entitySet.getEntityType();
       entitySetName = entitySet.getName();
       isDefaultEntityContainer = entitySet.getEntityContainer().isDefaultEntityContainer();
@@ -291,15 +303,25 @@ public class EntityInfoAggregator {
       
       selectedPropertyNames = propertyNames;
       selectedNavigationPropertyNames = navigationPropertyNames;
+      expandedNavigationPropertyNames = new ArrayList<String>();
       
-      if (properties != null && properties.getExpandSelectTree() != null && !properties.getExpandSelectTree().isAll()) {
+      if (expandSelectTree != null && !expandSelectTree.isAll()) {
         selectedPropertyNames = new ArrayList<String>();
         selectedNavigationPropertyNames = new ArrayList<String>();
-        for (EdmProperty property : properties.getExpandSelectTree().getProperties()) {
+        for (EdmProperty property : expandSelectTree.getProperties()) {
           selectedPropertyNames.add(property.getName());
         }
-        for (EdmNavigationProperty property : properties.getExpandSelectTree().getLinks().keySet()) {
+        for (EdmNavigationProperty property : expandSelectTree.getLinks().keySet()) {
           selectedNavigationPropertyNames.add(property.getName());
+          if(expandSelectTree.getLinks().get(property) != null){
+            expandedNavigationPropertyNames.add(property.getName());
+          }
+        }
+      }else if(expandSelectTree != null){
+        for (EdmNavigationProperty property : expandSelectTree.getLinks().keySet()) {
+          if(expandSelectTree.getLinks().get(property) != null){
+            expandedNavigationPropertyNames.add(property.getName());
+          }
         }
       }
       
@@ -403,5 +425,9 @@ public class EntityInfoAggregator {
     } catch (EdmException e) {
       throw new EntityProviderException(EntityProviderException.COMMON, e);
     }
+  }
+
+  public List<String> getExpandedNavigationPropertyNames() {
+   return expandedNavigationPropertyNames;
   }
 }

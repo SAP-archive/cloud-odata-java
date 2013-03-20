@@ -156,7 +156,7 @@ public class ListsProcessor extends ODataSingleProcessor {
         .serviceRoot(context.getPathInfo().getServiceRoot())
         .inlineCountType(inlineCountType)
         .inlineCount(count)
-        .setExpandSelectTree(UriParser.createExpandSelectTree(uriInfo.getSelect(), uriInfo.getExpand()))
+        .expandSelectTree(UriParser.createExpandSelectTree(uriInfo.getSelect(), uriInfo.getExpand()))
         .nextLink(nextLink)
         .build();
 
@@ -823,7 +823,7 @@ public class ListsProcessor extends ODataSingleProcessor {
     ODataContext context = getContext();
     ODataEntityProviderPropertiesBuilder entryProperties = EntityProviderProperties
         .serviceRoot(context.getPathInfo().getServiceRoot())
-        .setExpandSelectTree(UriParser.createExpandSelectTree(uriInfo.getSelect(), uriInfo.getExpand()));
+        .expandSelectTree(UriParser.createExpandSelectTree(uriInfo.getSelect(), uriInfo.getExpand()));
 
     final int timingHandle = context.startRuntimeMeasurement("EntityProvider", "writeEntry");
 

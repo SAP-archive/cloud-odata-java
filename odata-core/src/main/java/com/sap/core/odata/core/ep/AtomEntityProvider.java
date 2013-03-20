@@ -119,7 +119,7 @@ public class AtomEntityProvider implements ContentTypeBasedEntityProvider {
       writer.writeStartDocument();
 
       AtomEntryEntityProducer as = new AtomEntryEntityProducer(properties);
-      EntityInfoAggregator eia = EntityInfoAggregator.create(entitySet, properties);
+      EntityInfoAggregator eia = EntityInfoAggregator.create(entitySet, properties.getExpandSelectTree());
       as.append(writer, eia, data, true);
 
       writer.flush();
@@ -195,7 +195,7 @@ public class AtomEntityProvider implements ContentTypeBasedEntityProvider {
 
       AtomFeedProducer atomFeedProvider = new AtomFeedProducer(properties);
       //EdmEntitySet entitySet = entitySetView.getTargetEntitySet();
-      EntityInfoAggregator eia = EntityInfoAggregator.create(entitySet, properties);
+      EntityInfoAggregator eia = EntityInfoAggregator.create(entitySet, properties.getExpandSelectTree());
       atomFeedProvider.append(writer, eia, data);
 
       writer.flush();
@@ -235,7 +235,7 @@ public class AtomEntityProvider implements ContentTypeBasedEntityProvider {
       writer.writeStartDocument();
 
       XmlLinkEntityProducer entity = new XmlLinkEntityProducer(properties);
-      final EntityInfoAggregator entityInfo = EntityInfoAggregator.create(entitySet, properties);
+      final EntityInfoAggregator entityInfo = EntityInfoAggregator.create(entitySet, properties.getExpandSelectTree());
       entity.append(writer, entityInfo, data, true);
 
       writer.flush();
@@ -267,7 +267,7 @@ public class AtomEntityProvider implements ContentTypeBasedEntityProvider {
       writer.writeStartDocument();
 
       XmlLinksEntityProducer entity = new XmlLinksEntityProducer(properties);
-      final EntityInfoAggregator entityInfo = EntityInfoAggregator.create(entitySet, properties);
+      final EntityInfoAggregator entityInfo = EntityInfoAggregator.create(entitySet, properties.getExpandSelectTree());
       entity.append(writer, entityInfo, data);
 
       writer.flush();
