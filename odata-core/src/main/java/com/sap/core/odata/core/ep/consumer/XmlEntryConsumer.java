@@ -11,8 +11,10 @@ import static com.sap.core.odata.core.ep.util.FormatXml.M_ETAG;
 import static com.sap.core.odata.core.ep.util.FormatXml.M_PROPERTIES;
 import static com.sap.core.odata.core.ep.util.FormatXml.M_TYPE;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.xml.namespace.NamespaceContext;
@@ -38,13 +40,14 @@ import com.sap.core.odata.core.ep.util.FormatXml;
  */
 public class XmlEntryConsumer {
 
-  final Map<String, String> foundPrefix2NamespaceUri;
-  final ODataEntryImpl readEntryResult;
-  final Map<String, Object> properties;
-  final MediaMetadataImpl mediaMetadata;
-  final EntryMetadataImpl entryMetadata;
-  EntityTypeMapping typeMappings;
-
+  final private Map<String, String> foundPrefix2NamespaceUri;
+  final private ODataEntryImpl readEntryResult;
+  final private Map<String, Object> properties;
+  final private MediaMetadataImpl mediaMetadata;
+  final private EntryMetadataImpl entryMetadata;
+  private EntityTypeMapping typeMappings;
+  private ConsumerProperties consumerProperties;
+  
   private String currentHandledStartTagName = null;
 
   public XmlEntryConsumer() {
@@ -56,17 +59,26 @@ public class XmlEntryConsumer {
   }
 
   public ODataEntry readEntry(final XMLStreamReader reader, final EntityInfoAggregator eia, final boolean merge) throws EntityProviderException {
-    return readEntry(reader, eia, merge, null);
+    return readEntry(reader, eia, new ConsumerProperties(merge));
   }
 
-  public ODataEntry readEntry(final XMLStreamReader reader, final EntityInfoAggregator eia, final boolean merge, final Map<String, Object> typeMappings) throws EntityProviderException {
+  public ODataEntry readEntry(final XMLStreamReader reader, final EntityInfoAggregator eia, final ConsumerProperties consumerProperties) throws EntityProviderException {
     try {
-      this.typeMappings = EntityTypeMapping.create(typeMappings);
+      this.consumerProperties = consumerProperties;
+      this.typeMappings = EntityTypeMapping.create(consumerProperties.getTypeMappings());
+      this.foundPrefix2NamespaceUri.putAll(consumerProperties.getValidatedPrefixNamespaceUris());
+      boolean merge = consumerProperties.getMergeSemantic();
 
-      int eventType;
-      while ((eventType = reader.next()) != XMLStreamConstants.END_DOCUMENT) {
-        if (eventType == XMLStreamConstants.START_ELEMENT) {
-          String tagName = reader.getLocalName();
+      int eventType = -1;
+      String tagName = null;
+      boolean run = true;
+      while (run) {
+        eventType = readTillNextTagOrDocumentEnd(reader);
+        tagName = getTagNameIfAvailable(reader, eventType);
+        
+        if (XMLStreamConstants.END_DOCUMENT == eventType || (XMLStreamConstants.END_ELEMENT == eventType && FormatXml.ATOM_ENTRY.equals(tagName))) {
+          run = false;
+        } else if(XMLStreamConstants.START_ELEMENT == eventType){
           handleStartedTag(reader, tagName, eia, merge);
         }
       }
@@ -81,6 +93,22 @@ public class XmlEntryConsumer {
     } catch (Exception e) {
       throw new EntityProviderException(EntityProviderException.COMMON, e);
     }
+  }
+
+  private String getTagNameIfAvailable(final XMLStreamReader reader, int eventType) {
+    if (eventType == XMLStreamConstants.START_ELEMENT || eventType == XMLStreamConstants.END_ELEMENT || eventType == XMLStreamConstants.ENTITY_REFERENCE) {
+      return reader.getLocalName();
+    }
+    return null;
+  }
+
+  private int readTillNextTagOrDocumentEnd(final XMLStreamReader reader) throws XMLStreamException {
+    int eventType;
+    eventType = reader.next();
+    while (eventType != XMLStreamConstants.START_ELEMENT && eventType != XMLStreamConstants.END_ELEMENT && XMLStreamConstants.END_DOCUMENT != eventType) {
+      eventType = reader.next();
+    }
+    return eventType;
   }
 
   public void validate(final EntityInfoAggregator eia, final ODataEntryImpl entry) throws EntityProviderException {
@@ -229,24 +257,51 @@ public class XmlEntryConsumer {
         mediaMetadata.setEtag(etag);
       }
     } else {
-      readInlineContent(reader);
+      readInlineContent(reader, attributes);
     }
 
   }
 
-  private void readInlineContent(final XMLStreamReader reader) throws XMLStreamException, EntityProviderException {
+  private void readInlineContent(final XMLStreamReader reader, final Map<String, String> linkAttributes) throws XMLStreamException, EntityProviderException {
     int nextEventType = reader.nextTag();
     validatePosition(reader, FormatXml.M_INLINE, XMLStreamConstants.START_ELEMENT);
+    //
+    ConsumerCallback callback = this.consumerProperties.getCallback();
+    //
+    consumerProperties.addValidatedPrefixNamespaceUris(foundPrefix2NamespaceUri);
+    CallbackResult cResult = (callback == null? null: callback.callback(consumerProperties, createCallbackInfo(linkAttributes)));
+    //
     nextEventType = reader.next();
+    List<ODataEntry> inlineEntries = new ArrayList<ODataEntry>();
     boolean run = true;
     while (run) {
       if (XMLStreamConstants.END_ELEMENT == nextEventType && FormatXml.M_INLINE.equals(reader.getLocalName())) {
         run = false;
+      } else if(XMLStreamConstants.START_ELEMENT == nextEventType && FormatXml.ATOM_ENTRY.equals(reader.getLocalName())) {
+        if(cResult != null) {
+          XmlEntryConsumer xec = new XmlEntryConsumer();
+          //
+          EntityInfoAggregator eia = EntityInfoAggregator.create(cResult.getEntitySet(), consumerProperties);
+          ConsumerProperties inlineConsumerProperties = cResult.getConsumerProperties();
+          
+          ODataEntry inlineEntry = xec.readEntry(reader, eia, inlineConsumerProperties);
+          inlineEntries.add(inlineEntry);
+        }
+        nextEventType = reader.next();
       } else {
         nextEventType = reader.next();
       }
     }
+    
+    this.properties.put(linkAttributes.get(FormatXml.ATOM_TITLE), inlineEntries);
+    
     validateEndPosition(reader, FormatXml.M_INLINE);
+  }
+
+  private CallbackInfo createCallbackInfo(Map<String, String> linkAttributes) {
+    CallbackInfo info = new CallbackInfo();
+    info.addInfos(linkAttributes);
+    return info;
   }
 
   private void readContent(final XMLStreamReader reader, final EntityInfoAggregator eia) throws EntityProviderException, XMLStreamException, EdmException {

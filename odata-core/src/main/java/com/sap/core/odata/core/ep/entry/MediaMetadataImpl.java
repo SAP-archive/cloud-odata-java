@@ -44,4 +44,12 @@ public class MediaMetadataImpl implements MediaMetadata {
   public void setEditLink(final String editLink) {
     this.editLink = editLink;
   }
+
+  /* (non-Javadoc)
+   * @see java.lang.Object#toString()
+   */
+  @Override
+  public String toString() {
+    return "MediaMetadataImpl [sourceLink=" + sourceLink + ", etag=" + etag + ", contentType=" + contentType + ", editLink=" + editLink + "]";
+  }
 }
