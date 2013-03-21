@@ -415,7 +415,6 @@ public class XmlEntryConsumer {
    */
   private String getValidPropertyName(final XMLStreamReader reader) throws EntityProviderException {
     QName name = reader.getName();
-    
     validateNamespace(name, Edm.NAMESPACE_D_2007_08);
 
     return name.getLocalPart();
@@ -433,11 +432,7 @@ public class XmlEntryConsumer {
    */
   private boolean isEdmNamespaceProperty(final XMLStreamReader reader) throws EntityProviderException {
     QName name = reader.getName();
-    String nsPrefix = name.getPrefix();
     String nsUri = name.getNamespaceURI();
-    if(nsUri == null) {
-      nsUri = foundPrefix2NamespaceUri.get(nsPrefix);
-    }
     if(nsUri == null) {
       throw new EntityProviderException(EntityProviderException.INVALID_NAMESPACE.addContent(name.getLocalPart()));
     } else if (Edm.NAMESPACE_D_2007_08.equals(nsUri)) {
