@@ -215,7 +215,7 @@ public class XmlEntryConsumer {
     }
   }
 
-  private void checkNamespace(final QName name, final String expectedNsUriForPrefix) throws EntityProviderException {
+  private void validateNamespace(final QName name, final String expectedNsUriForPrefix) throws EntityProviderException {
     String nsPrefix = name.getPrefix();
     //    String nsUri = name.getNamespaceURI();
 
@@ -354,7 +354,7 @@ public class XmlEntryConsumer {
     //    extractNamespacesFromTag(reader);
     // validate namespace
     checkAllMandatoryNamespacesAvailable();
-    checkNamespace(reader.getName(), Edm.NAMESPACE_M_2007_08);
+    validateNamespace(reader.getName(), Edm.NAMESPACE_M_2007_08);
     if (entitySet.getEntityType().hasStream()) {
       // external properties
       checkCurrentHandledStartTag(FormatXml.M_PROPERTIES);
@@ -371,10 +371,12 @@ public class XmlEntryConsumer {
 
     while (run) {
       if (nextTagEventType == XMLStreamConstants.START_ELEMENT) {
-        String name = getValidPropertyName(reader);
-        property = getValidatedPropertyInfo(entitySet, name);
-        Object value = xpc.readStartedElement(reader, property, typeMappings);
-        properties.put(name, value);
+        if(isEdmNamespaceProperty(reader)) {
+          String name = getValidPropertyName(reader);
+          property = getValidatedPropertyInfo(entitySet, name);
+          Object value = xpc.readStartedElement(reader, property, typeMappings);
+          properties.put(name, value);
+        }
       } else if (nextTagEventType == XMLStreamConstants.END_ELEMENT) {
         String name = reader.getLocalName();
         if (M_PROPERTIES.equals(name)) {
@@ -413,10 +415,38 @@ public class XmlEntryConsumer {
    */
   private String getValidPropertyName(final XMLStreamReader reader) throws EntityProviderException {
     QName name = reader.getName();
-    checkNamespace(name, Edm.NAMESPACE_D_2007_08);
+    
+    validateNamespace(name, Edm.NAMESPACE_D_2007_08);
 
     return name.getLocalPart();
   }
+  
+  /**
+   * Checks if property of currently read tag in {@link XMLStreamReader} is defined in 
+   * <code>edm properties namespace</code> {@value Edm#NAMESPACE_D_2007_08}.
+   * 
+   * If no namespace uri definition is found for namespace prefix of property (<code>tag</code>) an exception is thrown.
+   * 
+   * @param reader {@link XMLStreamReader} with position at to checked tag
+   * @return <code>true</code> if property is in <code>edm properties namespace</code>, otherwise <code>false</code>.
+   * @throws EntityProviderException If no namespace uri definition is found for namespace prefix of property (<code>tag</code>).
+   */
+  private boolean isEdmNamespaceProperty(final XMLStreamReader reader) throws EntityProviderException {
+    QName name = reader.getName();
+    String nsPrefix = name.getPrefix();
+    String nsUri = name.getNamespaceURI();
+    if(nsUri == null) {
+      nsUri = foundPrefix2NamespaceUri.get(nsPrefix);
+    }
+    if(nsUri == null) {
+      throw new EntityProviderException(EntityProviderException.INVALID_NAMESPACE.addContent(name.getLocalPart()));
+    } else if (Edm.NAMESPACE_D_2007_08.equals(nsUri)) {
+      // found correct edm namespace
+      return true;
+    }
+    return false;
+  }
+
 
   /**
    * Get validated {@link EntityPropertyInfo} for property with given <code>name</code>.
