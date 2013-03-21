@@ -43,8 +43,8 @@ public class XmlEntityConsumer {
     properties.addTypeMappings(typeMappings);
     return readEntry(entitySet, content, properties);
   }
-  
-  public ODataEntry readEntry(final EdmEntitySet entitySet, final Object content, ConsumerProperties properties) throws EntityProviderException {
+
+  public ODataEntry readEntry(final EdmEntitySet entitySet, final Object content, final ConsumerProperties properties) throws EntityProviderException {
     XMLStreamReader reader = null;
 
     try {

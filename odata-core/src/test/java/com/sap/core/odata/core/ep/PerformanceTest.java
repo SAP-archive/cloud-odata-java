@@ -96,7 +96,7 @@ public class PerformanceTest extends AbstractProviderTest {
     for (int i = 0; i < TIMES; i++) {
       ExpandSelectTreeNode epProperties = null;
       EntityInfoAggregator eia = EntityInfoAggregator.create(edmEntitySet, epProperties);
-      provider.append(writer, eia, roomData, false);
+      provider.append(writer, eia, roomData, false, false);
     }
     stopTimer(t, "readAtomEntry");
   }
@@ -112,7 +112,7 @@ public class PerformanceTest extends AbstractProviderTest {
     for (int i = 0; i < TIMES; i++) {
       ExpandSelectTreeNode epProperties = null;
       EntityInfoAggregator eia = EntityInfoAggregator.create(edmEntitySet, epProperties);
-      provider.append(writer, eia, roomData, false);
+      provider.append(writer, eia, roomData, false, false);
     }
     stopTimer(t, "readAtomEntry");
   }
@@ -124,7 +124,7 @@ public class PerformanceTest extends AbstractProviderTest {
     ExpandSelectTreeNode epProperties = null;
     EntityInfoAggregator eia = EntityInfoAggregator.create(edmEntitySet, epProperties);
     for (int i = 0; i < TIMES; i++) {
-      provider.append(writer, eia, roomData, false);
+      provider.append(writer, eia, roomData, false, false);
     }
     stopTimer(t, "readAtomEntryOptimized");
   }
@@ -140,7 +140,7 @@ public class PerformanceTest extends AbstractProviderTest {
     ExpandSelectTreeNode epProperties = null;
     EntityInfoAggregator eia = EntityInfoAggregator.create(edmEntitySet, epProperties);
     for (int i = 0; i < TIMES; i++) {
-      provider.append(writer, eia, roomData, false);
+      provider.append(writer, eia, roomData, false, false);
     }
     stopTimer(t, "readAtomEntryOptimizedCsb");
   }

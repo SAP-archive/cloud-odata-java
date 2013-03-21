@@ -47,6 +47,8 @@ public abstract class AbstractProviderTest extends BaseTest {
 
   protected Map<String, Object> employeeData;
 
+  protected ArrayList<Map<String, Object>> employeesData;
+
   protected Map<String, Object> photoData;
 
   protected Map<String, Object> roomData;
@@ -77,6 +79,29 @@ public abstract class AbstractProviderTest extends BaseTest {
     locationData.put("Country", "Calisota");
 
     employeeData.put("Location", locationData);
+
+    Map<String, Object> employeeData2 = new HashMap<String, Object>();
+    employeeData2.put("EmployeeId", "1");
+    employeeData2.put("ImmageUrl", null);
+    employeeData2.put("ManagerId", "1");
+    employeeData2.put("Age", new Integer(52));
+    employeeData2.put("RoomId", "1");
+    employeeData2.put("EntryDate", date);
+    employeeData2.put("TeamId", "42");
+    employeeData2.put("EmployeeName", "Walter Winter");
+
+    Map<String, Object> locationData2 = new HashMap<String, Object>();
+    Map<String, Object> cityData2 = new HashMap<String, Object>();
+    cityData2.put("PostalCode", "33470");
+    cityData2.put("CityName", "Duckburg");
+    locationData2.put("City", cityData2);
+    locationData2.put("Country", "Calisota");
+
+    employeeData2.put("Location", locationData2);
+
+    employeesData = new ArrayList<Map<String, Object>>();
+    employeesData.add(employeeData);
+    employeesData.add(employeeData2);
 
     photoData = new HashMap<String, Object>();
     photoData.put("Id", Integer.valueOf(1));
@@ -115,6 +140,7 @@ public abstract class AbstractProviderTest extends BaseTest {
     prefixMap.put("a", Edm.NAMESPACE_ATOM_2005);
     prefixMap.put("d", Edm.NAMESPACE_D_2007_08);
     prefixMap.put("m", Edm.NAMESPACE_M_2007_08);
+    prefixMap.put("xml", Edm.NAMESPACE_XML_1998);
     XMLUnit.setXpathNamespaceContext(new SimpleNamespaceContext(prefixMap));
   }
 

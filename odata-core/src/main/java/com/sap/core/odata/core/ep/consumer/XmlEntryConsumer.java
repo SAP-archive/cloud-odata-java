@@ -47,7 +47,7 @@ public class XmlEntryConsumer {
   final private EntryMetadataImpl entryMetadata;
   private EntityTypeMapping typeMappings;
   private ConsumerProperties consumerProperties;
-  
+
   private String currentHandledStartTagName = null;
 
   public XmlEntryConsumer() {
@@ -65,8 +65,8 @@ public class XmlEntryConsumer {
   public ODataEntry readEntry(final XMLStreamReader reader, final EntityInfoAggregator eia, final ConsumerProperties consumerProperties) throws EntityProviderException {
     try {
       this.consumerProperties = consumerProperties;
-      this.typeMappings = EntityTypeMapping.create(consumerProperties.getTypeMappings());
-      this.foundPrefix2NamespaceUri.putAll(consumerProperties.getValidatedPrefixNamespaceUris());
+      typeMappings = EntityTypeMapping.create(consumerProperties.getTypeMappings());
+      foundPrefix2NamespaceUri.putAll(consumerProperties.getValidatedPrefixNamespaceUris());
       boolean merge = consumerProperties.getMergeSemantic();
 
       int eventType = -1;
@@ -75,10 +75,10 @@ public class XmlEntryConsumer {
       while (run) {
         eventType = readTillNextTagOrDocumentEnd(reader);
         tagName = getTagNameIfAvailable(reader, eventType);
-        
+
         if (XMLStreamConstants.END_DOCUMENT == eventType || (XMLStreamConstants.END_ELEMENT == eventType && FormatXml.ATOM_ENTRY.equals(tagName))) {
           run = false;
-        } else if(XMLStreamConstants.START_ELEMENT == eventType){
+        } else if (XMLStreamConstants.START_ELEMENT == eventType) {
           handleStartedTag(reader, tagName, eia, merge);
         }
       }
@@ -95,7 +95,7 @@ public class XmlEntryConsumer {
     }
   }
 
-  private String getTagNameIfAvailable(final XMLStreamReader reader, int eventType) {
+  private String getTagNameIfAvailable(final XMLStreamReader reader, final int eventType) {
     if (eventType == XMLStreamConstants.START_ELEMENT || eventType == XMLStreamConstants.END_ELEMENT || eventType == XMLStreamConstants.ENTITY_REFERENCE) {
       return reader.getLocalName();
     }
@@ -266,10 +266,10 @@ public class XmlEntryConsumer {
     int nextEventType = reader.nextTag();
     validatePosition(reader, FormatXml.M_INLINE, XMLStreamConstants.START_ELEMENT);
     //
-    ConsumerCallback callback = this.consumerProperties.getCallback();
+    ConsumerCallback callback = consumerProperties.getCallback();
     //
     consumerProperties.addValidatedPrefixNamespaceUris(foundPrefix2NamespaceUri);
-    CallbackResult cResult = (callback == null? null: callback.callback(consumerProperties, createCallbackInfo(linkAttributes)));
+    CallbackResult cResult = (callback == null ? null : callback.callback(consumerProperties, createCallbackInfo(linkAttributes)));
     //
     nextEventType = reader.next();
     List<ODataEntry> inlineEntries = new ArrayList<ODataEntry>();
@@ -277,13 +277,13 @@ public class XmlEntryConsumer {
     while (run) {
       if (XMLStreamConstants.END_ELEMENT == nextEventType && FormatXml.M_INLINE.equals(reader.getLocalName())) {
         run = false;
-      } else if(XMLStreamConstants.START_ELEMENT == nextEventType && FormatXml.ATOM_ENTRY.equals(reader.getLocalName())) {
-        if(cResult != null) {
+      } else if (XMLStreamConstants.START_ELEMENT == nextEventType && FormatXml.ATOM_ENTRY.equals(reader.getLocalName())) {
+        if (cResult != null) {
           XmlEntryConsumer xec = new XmlEntryConsumer();
           //
           EntityInfoAggregator eia = EntityInfoAggregator.create(cResult.getEntitySet(), consumerProperties);
           ConsumerProperties inlineConsumerProperties = cResult.getConsumerProperties();
-          
+
           ODataEntry inlineEntry = xec.readEntry(reader, eia, inlineConsumerProperties);
           inlineEntries.add(inlineEntry);
         }
@@ -292,13 +292,13 @@ public class XmlEntryConsumer {
         nextEventType = reader.next();
       }
     }
-    
-    this.properties.put(linkAttributes.get(FormatXml.ATOM_TITLE), inlineEntries);
-    
+
+    properties.put(linkAttributes.get(FormatXml.ATOM_TITLE), inlineEntries);
+
     validateEndPosition(reader, FormatXml.M_INLINE);
   }
 
-  private CallbackInfo createCallbackInfo(Map<String, String> linkAttributes) {
+  private CallbackInfo createCallbackInfo(final Map<String, String> linkAttributes) {
     CallbackInfo info = new CallbackInfo();
     info.addInfos(linkAttributes);
     return info;

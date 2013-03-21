@@ -28,7 +28,6 @@ import com.sap.core.odata.api.ep.EntityProviderException;
 import com.sap.core.odata.api.uri.ExpandSelectTreeNode;
 import com.sap.core.odata.core.ep.consumer.ConsumerProperties;
 
-
 /**
  * Aggregator to get easy and fast access to all for serialization and de-serialization necessary {@link EdmEntitySet} informations.
  * 
@@ -63,7 +62,6 @@ public class EntityInfoAggregator {
   private List<String> selectedPropertyNames;
   private List<String> selectedNavigationPropertyNames;
   private List<String> expandedNavigationPropertyNames;
-  
 
   private Map<String, EntityPropertyInfo> targetPath2EntityPropertyInfo = new HashMap<String, EntityPropertyInfo>();
   private List<String> noneSyndicationTargetPaths = new ArrayList<String>();
@@ -97,7 +95,7 @@ public class EntityInfoAggregator {
     eia.initialize(entitySet, expandSelectTree);
     return eia;
   }
-  
+
   /**
    * Create an {@link EntityInfoAggregator} based on given {@link EdmEntitySet}
    * 
@@ -109,12 +107,11 @@ public class EntityInfoAggregator {
    *           access
    *           of {@link EdmEntitySet}).
    */
-  public static EntityInfoAggregator create(EdmEntitySet entitySet, ConsumerProperties properties) throws EntityProviderException {
+  public static EntityInfoAggregator create(final EdmEntitySet entitySet, final ConsumerProperties properties) throws EntityProviderException {
     EntityInfoAggregator eia = new EntityInfoAggregator();
     eia.initialize(entitySet, null);
     return eia;
   }
-
 
   /**
    * Create an {@link EntityPropertyInfo} based on given {@link EdmProperty}
@@ -172,11 +169,11 @@ public class EntityInfoAggregator {
       throw new EntityProviderException(EntityProviderException.COMMON, e);
     }
   }
-  
+
   /**
    * @return the edm entity set which was used to build this entity info aggregator object
    */
-  public EdmEntitySet getEntitySet(){
+  public EdmEntitySet getEntitySet() {
     return entitySet;
   }
 
@@ -283,7 +280,7 @@ public class EntityInfoAggregator {
     }
   }
 
-  public NavigationPropertyInfo getNavigationPropertyInfo(String name) {
+  public NavigationPropertyInfo getNavigationPropertyInfo(final String name) {
     return navigationPropertyInfos.get(name);
   }
 
@@ -300,31 +297,31 @@ public class EntityInfoAggregator {
 
       propertyInfo = createPropertyInfoObjects(entityType, entityType.getPropertyNames());
       navigationPropertyInfos = createNavigationInfoObjects(entityType, entityType.getNavigationPropertyNames());
-      
+
       selectedPropertyNames = propertyNames;
       selectedNavigationPropertyNames = navigationPropertyNames;
       expandedNavigationPropertyNames = new ArrayList<String>();
-      
+
       if (expandSelectTree != null && !expandSelectTree.isAll()) {
         selectedPropertyNames = new ArrayList<String>();
         selectedNavigationPropertyNames = new ArrayList<String>();
         for (EdmProperty property : expandSelectTree.getProperties()) {
           selectedPropertyNames.add(property.getName());
         }
-        for (EdmNavigationProperty property : expandSelectTree.getLinks().keySet()) {
-          selectedNavigationPropertyNames.add(property.getName());
-          if(expandSelectTree.getLinks().get(property) != null){
-            expandedNavigationPropertyNames.add(property.getName());
+        for (String property : expandSelectTree.getLinks().keySet()) {
+          selectedNavigationPropertyNames.add(property);
+          if (expandSelectTree.getLinks().get(property) != null) {
+            expandedNavigationPropertyNames.add(property);
           }
         }
-      }else if(expandSelectTree != null){
-        for (EdmNavigationProperty property : expandSelectTree.getLinks().keySet()) {
-          if(expandSelectTree.getLinks().get(property) != null){
-            expandedNavigationPropertyNames.add(property.getName());
+      } else if (expandSelectTree != null) {
+        for (String property : expandSelectTree.getLinks().keySet()) {
+          if (expandSelectTree.getLinks().get(property) != null) {
+            expandedNavigationPropertyNames.add(property);
           }
         }
       }
-      
+
     } catch (EdmException e) {
       throw new EntityProviderException(EntityProviderException.COMMON, e);
     }
@@ -428,6 +425,6 @@ public class EntityInfoAggregator {
   }
 
   public List<String> getExpandedNavigationPropertyNames() {
-   return expandedNavigationPropertyNames;
+    return expandedNavigationPropertyNames;
   }
 }

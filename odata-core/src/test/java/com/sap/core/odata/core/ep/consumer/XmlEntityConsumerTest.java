@@ -137,10 +137,10 @@ public class XmlEntityConsumerTest extends AbstractConsumerTest {
     ConsumerProperties consumerProperties = new ConsumerProperties(false);
     consumerProperties.setCallback(new ConsumerCallback() {
       @Override
-      public CallbackResult callback(ConsumerProperties cProps, CallbackInfo infos) {
+      public CallbackResult callback(final ConsumerProperties cProps, final CallbackInfo infos) {
         try {
           String title = infos.getTitle();
-          if(title.contains("Employees")) {
+          if (title.contains("Employees")) {
             EdmEntitySet employeeEntitySet = MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Employees");
             return new CallbackResult(cProps, employeeEntitySet);
           } else {
@@ -151,7 +151,7 @@ public class XmlEntityConsumerTest extends AbstractConsumerTest {
         }
       }
     });
-    
+
     ODataEntry entry = xec.readEntry(entitySet, reqContent, consumerProperties);
     // validate
     assertNotNull(entry);
@@ -179,10 +179,10 @@ public class XmlEntityConsumerTest extends AbstractConsumerTest {
     // prepare
     String content = readFile("expanded_team.xml");
     assertNotNull(content);
-    
+
     EdmEntitySet entitySet = MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Teams");
     InputStream reqContent = createContentAsStream(content);
-    
+
     // execute
     XmlEntityConsumer xec = new XmlEntityConsumer();
     ODataEntry entry = xec.readEntry(entitySet, reqContent, false);

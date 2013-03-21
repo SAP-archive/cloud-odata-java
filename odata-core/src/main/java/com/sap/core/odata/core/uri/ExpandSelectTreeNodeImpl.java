@@ -5,9 +5,9 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import com.sap.core.odata.api.edm.EdmException;
-import com.sap.core.odata.api.edm.EdmNavigationProperty;
 import com.sap.core.odata.api.edm.EdmProperty;
 import com.sap.core.odata.api.uri.ExpandSelectTreeNode;
 
@@ -33,7 +33,7 @@ public class ExpandSelectTreeNodeImpl implements ExpandSelectTreeNode {
 
   private AllKinds isAll = AllKinds.IMPLICITLYTRUE;
   private final List<EdmProperty> properties = new ArrayList<EdmProperty>();
-  private final HashMap<EdmNavigationProperty, ExpandSelectTreeNode> links = new HashMap<EdmNavigationProperty, ExpandSelectTreeNode>();
+  private final HashMap<String, ExpandSelectTreeNode> links = new HashMap<String, ExpandSelectTreeNode>();
 
   public void addProperty(final EdmProperty property) {
     if (isAll == AllKinds.IMPLICITLYTRUE) {
@@ -49,20 +49,20 @@ public class ExpandSelectTreeNodeImpl implements ExpandSelectTreeNode {
     return isAll;
   }
 
-  public ExpandSelectTreeNode addChild(final EdmNavigationProperty navigationProperty, final ExpandSelectTreeNode childNode) {
+  public ExpandSelectTreeNode addChild(final String navigationPropertyName, final ExpandSelectTreeNode childNode) {
     if (isAll == AllKinds.IMPLICITLYTRUE) {
       isAll = AllKinds.FALSE;
     }
 
-    if (links.containsKey(navigationProperty)) {
-      ExpandSelectTreeNodeImpl existingNode = (ExpandSelectTreeNodeImpl) links.get(navigationProperty);
+    if (links.containsKey(navigationPropertyName)) {
+      ExpandSelectTreeNodeImpl existingNode = (ExpandSelectTreeNodeImpl) links.get(navigationPropertyName);
       ExpandSelectTreeNodeImpl childNodeInternal = (ExpandSelectTreeNodeImpl) childNode;
       //If the existing node and the new node differ we can not just return the existing one
       //Thus we merge the new child into the existing one
       if (existingNode != childNode && childNode != null) {
         if (existingNode.isAllInternal() == AllKinds.EXPLICITLYTRUE || childNodeInternal.isAllInternal() == AllKinds.EXPLICITLYTRUE) {
           existingNode.setAllExplicitly();
-          for (Map.Entry<EdmNavigationProperty, ExpandSelectTreeNode> entry : childNode.getLinks().entrySet()) {
+          for (Entry<String, ExpandSelectTreeNode> entry : childNode.getLinks().entrySet()) {
             if (entry.getValue() != null) {
               existingNode.addChild(entry.getKey(), entry.getValue());
             }
@@ -71,7 +71,7 @@ public class ExpandSelectTreeNodeImpl implements ExpandSelectTreeNode {
           for (EdmProperty property : childNode.getProperties()) {
             existingNode.addProperty(property);
           }
-          for (Map.Entry<EdmNavigationProperty, ExpandSelectTreeNode> entry : childNode.getLinks().entrySet()) {
+          for (Map.Entry<String, ExpandSelectTreeNode> entry : childNode.getLinks().entrySet()) {
             existingNode.addChild(entry.getKey(), entry.getValue());
           }
         }
@@ -84,7 +84,7 @@ public class ExpandSelectTreeNodeImpl implements ExpandSelectTreeNode {
       return null;
     }
 
-    links.put(navigationProperty, childNode);
+    links.put(navigationPropertyName, childNode);
     return childNode;
 
   }
@@ -94,10 +94,10 @@ public class ExpandSelectTreeNodeImpl implements ExpandSelectTreeNode {
     properties.clear();
 
     //Remove all selected navigation properties which are not mentioned in the expand 
-    Iterator<EdmNavigationProperty> iterator = links.keySet().iterator();
+    Iterator<String> iterator = links.keySet().iterator();
     while (iterator.hasNext()) {
-      EdmNavigationProperty navProp = iterator.next();
-      if (links.get(navProp) == null) {
+      String navPropertyName = iterator.next();
+      if (links.get(navPropertyName) == null) {
         iterator.remove();
       }
     }
@@ -114,7 +114,7 @@ public class ExpandSelectTreeNodeImpl implements ExpandSelectTreeNode {
   }
 
   @Override
-  public Map<EdmNavigationProperty, ExpandSelectTreeNode> getLinks() {
+  public Map<String, ExpandSelectTreeNode> getLinks() {
     return links;
   }
 
@@ -129,12 +129,12 @@ public class ExpandSelectTreeNodeImpl implements ExpandSelectTreeNode {
       propertiesString += "\"" + property.getName() + "\"";
     }
 
-    for (Map.Entry<EdmNavigationProperty, ExpandSelectTreeNode> entry : links.entrySet()) {
+    for (Map.Entry<String, ExpandSelectTreeNode> entry : links.entrySet()) {
       final String nodeString = entry.getValue() == null ? null : ((ExpandSelectTreeNodeImpl) entry.getValue()).toJsonString();
       if (!linksString.isEmpty()) {
         linksString += ",";
       }
-      linksString += "{\"" + entry.getKey().getName() + "\":" + nodeString + "}";
+      linksString += "{\"" + entry.getKey() + "\":" + nodeString + "}";
     }
 
     return "{\"all\":" + isAll() + ",\"properties\":[" + propertiesString + "],\"links\":[" + linksString + "]}";

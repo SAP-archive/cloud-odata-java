@@ -48,7 +48,7 @@ public class EntityProviderProperties {
     return inlineCountType;
   }
 
-  public final Map<String,Callback> getCallbacks() {
+  public final Map<String, Callback> getCallbacks() {
     return callbacks;
   }
 
@@ -143,12 +143,12 @@ public class EntityProviderProperties {
       return this;
     }
 
-    public ODataEntityProviderPropertiesBuilder callbacks(Map<String, Callback> callbacks) {
+    public ODataEntityProviderPropertiesBuilder callbacks(final Map<String, Callback> callbacks) {
       properties.callbacks = callbacks;
       return this;
     }
 
-    public ODataEntityProviderPropertiesBuilder fromProperties(EntityProviderProperties properties) {
+    public ODataEntityProviderPropertiesBuilder fromProperties(final EntityProviderProperties properties) {
       this.properties.mediaResourceMimeType = properties.getMediaResourceMimeType();
       this.properties.inlineCountType = properties.getInlineCountType();
       this.properties.inlineCount = properties.getInlineCount();
@@ -160,9 +160,9 @@ public class EntityProviderProperties {
 
   }
 
-  public static ODataEntityProviderPropertiesBuilder fromProperties(EntityProviderProperties properties) {
-   final ODataEntityProviderPropertiesBuilder b = EntityProviderProperties.serviceRoot(properties.getServiceRoot());
-   b.fromProperties(properties);
-   return b;
+  public static ODataEntityProviderPropertiesBuilder fromProperties(final EntityProviderProperties properties) {
+    final ODataEntityProviderPropertiesBuilder b = EntityProviderProperties.serviceRoot(properties.getServiceRoot());
+    b.fromProperties(properties);
+    return b;
   }
 }

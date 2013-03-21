@@ -14,37 +14,37 @@ public class ConsumerProperties {
     this(false);
   }
 
-  public ConsumerProperties(boolean merge) {
+  public ConsumerProperties(final boolean merge) {
     typeMappings = new HashMap<String, Object>();
     validatedPrefix2NamespaceUri = new HashMap<String, String>();
     this.merge = merge;
   }
-  
-  public void addValidatedPrefixNamespaceUris(Map<String, String> prefix2NamespaceUri) {
-    if(prefix2NamespaceUri != null) {
+
+  public void addValidatedPrefixNamespaceUris(final Map<String, String> prefix2NamespaceUri) {
+    if (prefix2NamespaceUri != null) {
       validatedPrefix2NamespaceUri.putAll(prefix2NamespaceUri);
     }
   }
-  
+
   public Map<String, String> getValidatedPrefixNamespaceUris() {
     return Collections.unmodifiableMap(validatedPrefix2NamespaceUri);
   }
-  
-  public void addTypeMappings(Map<String, Object> typeMappings) {
-    if(typeMappings != null) {
+
+  public void addTypeMappings(final Map<String, Object> typeMappings) {
+    if (typeMappings != null) {
       this.typeMappings.putAll(typeMappings);
     }
   }
-  
+
   public Map<String, Object> getTypeMappings() {
     return Collections.unmodifiableMap(typeMappings);
   }
-  
+
   public ConsumerCallback getCallback() {
     return callback;
   }
-  
-  public void setCallback(ConsumerCallback callback) {
+
+  public void setCallback(final ConsumerCallback callback) {
     this.callback = callback;
   }
 

@@ -3,6 +3,7 @@ package com.sap.core.odata.core.ep.consumer;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
@@ -23,7 +24,7 @@ public class XmlLinkConsumer {
    * @return link as string object
    * @throws EntityProviderException
    */
-  public String readLink(XMLStreamReader reader, final EdmEntitySet entitySet) throws EntityProviderException {
+  public String readLink(final XMLStreamReader reader, final EdmEntitySet entitySet) throws EntityProviderException {
     try {
       reader.next();
       return readLink(reader);
@@ -32,19 +33,19 @@ public class XmlLinkConsumer {
     }
   }
 
-  private String readLink(XMLStreamReader reader) throws XMLStreamException {
+  private String readLink(final XMLStreamReader reader) throws XMLStreamException {
     return readTag(reader, Edm.NAMESPACE_D_2007_08, FormatXml.D_URI);
   }
 
-  private String readTag(XMLStreamReader reader, final String namespaceURI, final String localName) throws XMLStreamException {
-    reader.require(XMLStreamReader.START_ELEMENT, namespaceURI, localName);
+  private String readTag(final XMLStreamReader reader, final String namespaceURI, final String localName) throws XMLStreamException {
+    reader.require(XMLStreamConstants.START_ELEMENT, namespaceURI, localName);
 
     reader.next();
-    reader.require(XMLStreamReader.CHARACTERS, null, null);
+    reader.require(XMLStreamConstants.CHARACTERS, null, null);
     final String result = reader.getText();
 
     reader.nextTag();
-    reader.require(XMLStreamReader.END_ELEMENT, namespaceURI, localName);
+    reader.require(XMLStreamConstants.END_ELEMENT, namespaceURI, localName);
 
     return result;
   }
@@ -65,12 +66,12 @@ public class XmlLinkConsumer {
    * @return list of string based links
    * @throws EntityProviderException
    */
-  public List<String> readLinks(XMLStreamReader reader, final EdmEntitySet entitySet) throws EntityProviderException {
+  public List<String> readLinks(final XMLStreamReader reader, final EdmEntitySet entitySet) throws EntityProviderException {
     try {
       List<String> links = new ArrayList<String>();
 
       reader.next();
-      reader.require(XMLStreamReader.START_ELEMENT, Edm.NAMESPACE_D_2007_08, FormatXml.D_LINKS);
+      reader.require(XMLStreamConstants.START_ELEMENT, Edm.NAMESPACE_D_2007_08, FormatXml.D_LINKS);
 
       reader.nextTag();
       while (!reader.isEndElement()) {
@@ -83,7 +84,7 @@ public class XmlLinkConsumer {
         reader.nextTag();
       }
 
-      reader.require(XMLStreamReader.END_ELEMENT, Edm.NAMESPACE_D_2007_08, FormatXml.D_LINKS);
+      reader.require(XMLStreamConstants.END_ELEMENT, Edm.NAMESPACE_D_2007_08, FormatXml.D_LINKS);
 
       return links;
     } catch (final XMLStreamException e) {
