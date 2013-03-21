@@ -66,7 +66,7 @@
 		<jetty.version>7.5.4.v20111024</jetty.version>
 		<httpclient.version>4.2.3</httpclient.version>
 		<slf4j.version>1.7.1</slf4j.version>
-		<commonscodec.version>1.5</commonscodec.version>
+		<commonscodec.version>1.6</commonscodec.version>
 		<commonslang.version>3.1</commonslang.version>
 
 		<antlr.version>3.4</antlr.version>
