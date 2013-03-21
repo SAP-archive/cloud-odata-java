@@ -16,7 +16,6 @@ import java.util.Map;
 import java.util.TimeZone;
 
 import org.junit.Assert;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import com.sap.core.odata.api.edm.Edm;
@@ -501,7 +500,6 @@ public class XmlEntityConsumerTest extends AbstractConsumerTest {
    * @throws Exception
    */
   @Test
-  @Ignore("Issue with Unknown hierachical property")
   public void validationOfDoublePropertyDifferentTagHierachyD_Namespace() throws Exception {
     String room =
         "<?xml version='1.0' encoding='UTF-8'?>" +
