@@ -16,7 +16,6 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.sap.core.odata.api.edm.Edm;
-import com.sap.core.odata.api.edm.EdmNavigationProperty;
 import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.api.uri.ExpandSelectTreeNode;
 import com.sap.core.odata.api.uri.PathSegment;
@@ -192,23 +191,23 @@ public class ExpandSelectTreeCreatorImplTest extends BaseTest {
     assertEquals("Age", actual.getProperties().get(0).getName());
     assertNotNull(actual.getLinks());
 
-    Map<EdmNavigationProperty, ExpandSelectTreeNode> links = actual.getLinks();
+    Map<String, ExpandSelectTreeNode> links = actual.getLinks();
     assertEquals(3, links.size());
-    for (EdmNavigationProperty navProperty : links.keySet()) {
-      if ("ne_Room".equals(navProperty.getName())) {
-        ExpandSelectTreeNode roomNode = links.get(navProperty);
+    for (String navPropertyName : links.keySet()) {
+      if ("ne_Room".equals(navPropertyName)) {
+        ExpandSelectTreeNode roomNode = links.get(navPropertyName);
         assertFalse(roomNode.isAll());
         assertEquals("Seats", roomNode.getProperties().get(0).getName());
         assertTrue(roomNode.getLinks().isEmpty());
-      } else if ("ne_Team".equals(navProperty.getName())) {
-        assertNull(links.get(navProperty));
-      } else if ("ne_Manager".equals(navProperty.getName())) {
-        ExpandSelectTreeNodeImpl managerNode = (ExpandSelectTreeNodeImpl) links.get(navProperty);
+      } else if ("ne_Team".equals(navPropertyName)) {
+        assertNull(links.get(navPropertyName));
+      } else if ("ne_Manager".equals(navPropertyName)) {
+        ExpandSelectTreeNodeImpl managerNode = (ExpandSelectTreeNodeImpl) links.get(navPropertyName);
         String expected = "{\"all\":true,\"properties\":[],\"links\":[{\"ne_Team\":{\"all\":true,\"properties\":[],\"links\":[{\"nt_Employees\":{\"all\":true,\"properties\":[],\"links\":[]}}]}}]}";
         String actualString = managerNode.toJsonString();
         assertEquals(expected, actualString);
       } else {
-        fail("Unknown navigation property in links: " + navProperty.getName());
+        fail("Unknown navigation property in links: " + navPropertyName);
       }
     }
   }

@@ -20,8 +20,9 @@ public class Decoder {
    *                                  are not hexadecimal digits
    */
   public static String decode(final String value) throws IllegalArgumentException, NumberFormatException {
-    if (value == null)
+    if (value == null) {
       return value;
+    }
 
     // Use a tiny finite-state machine to handle decoding on byte level.
     // There are only three states:
@@ -32,30 +33,35 @@ public class Decoder {
     byte[] result = new byte[value.length()];
     int position = 0;
     byte encodedPart = -2;
-    for (final char c : value.toCharArray())
-      if (c <= Byte.MAX_VALUE)
+    for (final char c : value.toCharArray()) {
+      if (c <= Byte.MAX_VALUE) {
         if (c == '%') {
-          if (encodedPart == -2)
+          if (encodedPart == -2) {
             encodedPart = -1;
-          else
+          } else {
             throw new IllegalArgumentException();
+          }
         } else if (encodedPart == -1) {
           encodedPart = (byte) c;
         } else if (encodedPart >= 0) {
           final int i = Integer.parseInt(String.valueOf(new char[] { (char) encodedPart, c }), 16);
-          if (i >= 0)
+          if (i >= 0) {
             result[position++] = (byte) i;
-          else
+          } else {
             throw new NumberFormatException();
+          }
           encodedPart = -2;
         } else {
           result[position++] = (byte) c;
         }
-      else
+      } else {
         throw new IllegalArgumentException();
+      }
+    }
 
-    if (encodedPart >= 0)
+    if (encodedPart >= 0) {
       throw new IllegalArgumentException();
+    }
 
     try {
       return new String(result, 0, position, "UTF-8");

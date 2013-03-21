@@ -7,6 +7,8 @@ import static org.junit.Assert.assertNotNull;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -20,8 +22,6 @@ import com.sap.core.odata.api.edm.Edm;
 import com.sap.core.odata.api.ep.EntityProviderException;
 import com.sap.core.odata.api.ep.EntityProviderProperties;
 import com.sap.core.odata.api.ep.callback.Callback;
-import com.sap.core.odata.api.ep.callback.CallbackResult;
-import com.sap.core.odata.api.ep.callback.WriteLinkContentCallbackInterface;
 import com.sap.core.odata.api.processor.ODataResponse;
 import com.sap.core.odata.api.rt.RuntimeDelegate;
 import com.sap.core.odata.api.uri.ExpandSelectTreeNode;
@@ -31,6 +31,7 @@ import com.sap.core.odata.core.ODataPathSegmentImpl;
 import com.sap.core.odata.core.commons.ContentType;
 import com.sap.core.odata.core.ep.AbstractProviderTest;
 import com.sap.core.odata.core.ep.AtomEntityProvider;
+import com.sap.core.odata.core.exception.ODataRuntimeException;
 import com.sap.core.odata.core.uri.ExpandSelectTreeCreator;
 import com.sap.core.odata.core.uri.UriParserImpl;
 import com.sap.core.odata.testutil.helper.StringHelper;
@@ -41,85 +42,89 @@ public class XmlExpandProducerTest extends AbstractProviderTest {
 
   private static final boolean T = true;
   private static final boolean F = false;
+  private final URI inlineBaseUri;
 
   private HashMap<String, Callback> callbacksEmployee;
-  //private HashMap<String, Callback> callbacksRoom;
+  private HashMap<String, Callback> callbacksRoom;
 
   public XmlExpandProducerTest() {
     super();
-    callbacksEmployee = new HashMap<String, Callback>();
-    callbacksEmployee.put("ne_Room", new RoomCallback(roomData, BASE_URI));
-//    callbacksEmployee.put("ne_Team", new TeamCallback());
-//    callbacksEmployee.put("ne_Manager", new ManagerCallback());
 
-//    callbacksRoom = new HashMap<String, Callback>();
-//    callbacksRoom.put("nr_Employees",  new EmployeesCallback());
-//    callbacksRoom.put("nr_Building", new BuildingCallback());
+    try {
+      inlineBaseUri = new URI("http://hubbeldubbel.com/");
+    } catch (URISyntaxException e) {
+      throw new ODataRuntimeException(e);
+    }
+
+    callbacksEmployee = new HashMap<String, Callback>();
+    callbacksEmployee.put("ne_Room", new RoomCallback(roomData, inlineBaseUri));
+
+    callbacksRoom = new HashMap<String, Callback>();
+    callbacksRoom.put("nr_Employees", new EmployeesCallback(employeesData, inlineBaseUri, roomData));
+  }
+
+  @Test
+  public void expandSelectedEmployees() throws Exception {
+    ExpandSelectTreeNode selectTree = getSelectExpandTree("Rooms('1')", "nr_Employees", "nr_Employees");
+
+    EntityProviderProperties properties = EntityProviderProperties.serviceRoot(BASE_URI).expandSelectTree(selectTree).callbacks(callbacksRoom).build();
+    AtomEntityProvider provider = createAtomEntityProvider();
+    ODataResponse response = provider.writeEntry(MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Rooms"), roomData, properties);
+
+    verifyResponse(response);
+  }
+
+  @Test
+  public void deepExpandSelectedEmployees() throws Exception {
+    ExpandSelectTreeNode selectTree = getSelectExpandTree("Rooms('1')", "nr_Employees/ne_Room", "nr_Employees/ne_Room");
+
+    EntityProviderProperties properties = EntityProviderProperties.serviceRoot(BASE_URI).expandSelectTree(selectTree).callbacks(callbacksRoom).build();
+    AtomEntityProvider provider = createAtomEntityProvider();
+    ODataResponse response = provider.writeEntry(MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Rooms"), roomData, properties);
+
+    verifyResponse(response);
+  }
+
+  @Test
+  public void deepExpandSelectedEmployeesWithRoomId() throws Exception {
+    ExpandSelectTreeNode selectTree = getSelectExpandTree("Rooms('1')", "nr_Employees/ne_Room/Id", "nr_Employees/ne_Room");
+
+    EntityProviderProperties properties = EntityProviderProperties.serviceRoot(BASE_URI).expandSelectTree(selectTree).callbacks(callbacksRoom).build();
+    AtomEntityProvider provider = createAtomEntityProvider();
+    ODataResponse response = provider.writeEntry(MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Rooms"), roomData, properties);
+
+    verifyResponse(response);
   }
 
   @Test
   public void expandSelectedRoom() throws Exception {
-    ExpandSelectTreeNode selectTree = getSelectExpandTree("ne_Room", "ne_Room");
-    
+    ExpandSelectTreeNode selectTree = getSelectExpandTree("Employees('1')", "ne_Room", "ne_Room");
+
     EntityProviderProperties properties = EntityProviderProperties.serviceRoot(BASE_URI).expandSelectTree(selectTree).callbacks(callbacksEmployee).build();
     AtomEntityProvider provider = createAtomEntityProvider();
     ODataResponse response = provider.writeEntry(MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Employees"), employeeData, properties);
 
     String xmlString = verifyResponse(response);
-    System.out.println(xmlString);
     verifyNavigationProperties(xmlString, F, T, F);
     assertXpathNotExists("/a:entry/m:properties", xmlString);
     verifyRoom(xmlString);
   }
-  
-  
+
   @Test(expected = EntityProviderException.class)
   public void expandSelectedRoomWithoutCallback() throws Exception {
-    ExpandSelectTreeNode selectTree = getSelectExpandTree("ne_Room", "ne_Room");
-    
+    ExpandSelectTreeNode selectTree = getSelectExpandTree("Employees('1')", "ne_Room", "ne_Room");
+
     EntityProviderProperties properties = EntityProviderProperties.serviceRoot(BASE_URI).expandSelectTree(selectTree).build();
     AtomEntityProvider provider = createAtomEntityProvider();
     provider.writeEntry(MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Employees"), employeeData, properties);
-  }  
-  
-
-  public abstract class TeamCallback implements WriteLinkContentCallbackInterface {
-    @Override
-    public CallbackResult getLinkContentInformation(String fromEntitySetName, String navigationPropetyName) {
-      // TODO Auto-generated method stub
-      return null;
-    }
   }
 
-  public abstract class ManagerCallback implements WriteLinkContentCallbackInterface {
-    @Override
-    public CallbackResult getLinkContentInformation(String fromEntitySetName, String navigationPropetyName) {
-      // TODO Auto-generated method stub
-      return null;
-    }
-  }
-
-  public abstract class BuildingCallback implements WriteLinkContentCallbackInterface {
-    @Override
-    public CallbackResult getLinkContentInformation(String fromEntitySetName, String navigationPropetyName) {
-      // TODO Auto-generated method stub
-      return null;
-    }
-  }
-
-  public abstract class EmployeesCallback implements WriteLinkContentCallbackInterface {
-    @Override
-    public CallbackResult getLinkContentInformation(String fromEntitySetName, String navigationPropetyName) {
-      // TODO Auto-generated method stub
-      return null;
-    }
-  }
-
-  private void verifyRoom(String xmlString) throws XpathException, IOException, SAXException {
+  private void verifyRoom(final String xmlString) throws XpathException, IOException, SAXException {
     assertXpathExists("/a:entry/a:link[@href=\"Employees('1')/ne_Room\" and @title='ne_Room']", xmlString);
     assertXpathExists("/a:entry/a:link[@href=\"Employees('1')/ne_Room\" and @title='ne_Room']/m:inline", xmlString);
 
     assertXpathExists("/a:entry/a:link[@href=\"Employees('1')/ne_Room\" and @title='ne_Room']/m:inline/a:entry", xmlString);
+    assertXpathExists("/a:entry/a:link[@href=\"Employees('1')/ne_Room\" and @title='ne_Room']/m:inline/a:entry[@xml:base='" + inlineBaseUri.toString() + "']", xmlString);
     assertXpathExists("/a:entry/a:link[@href=\"Employees('1')/ne_Room\" and @title='ne_Room']/m:inline/a:entry/a:id", xmlString);
     assertXpathExists("/a:entry/a:link[@href=\"Employees('1')/ne_Room\" and @title='ne_Room']/m:inline/a:entry/a:title", xmlString);
     assertXpathExists("/a:entry/a:link[@href=\"Employees('1')/ne_Room\" and @title='ne_Room']/m:inline/a:entry/a:updated", xmlString);
@@ -162,13 +167,13 @@ public class XmlExpandProducerTest extends AbstractProviderTest {
     return xmlString;
   }
 
-  private ExpandSelectTreeNode getSelectExpandTree(final String selectString, final String expandString) throws Exception {
+  private ExpandSelectTreeNode getSelectExpandTree(final String pathSegment, final String selectString, final String expandString) throws Exception {
 
     Edm edm = RuntimeDelegate.createEdm(new EdmTestProvider());
     UriParserImpl uriParser = new UriParserImpl(edm);
 
     List<PathSegment> pathSegments = new ArrayList<PathSegment>();
-    pathSegments.add(new ODataPathSegmentImpl("Employees('1')", null));
+    pathSegments.add(new ODataPathSegmentImpl(pathSegment, null));
 
     Map<String, String> queryParameters = new HashMap<String, String>();
     if (selectString != null) {
@@ -183,6 +188,18 @@ public class XmlExpandProducerTest extends AbstractProviderTest {
     ExpandSelectTreeNode expandSelectTree = expandSelectTreeCreator.create();
     assertNotNull(expandSelectTree);
     return expandSelectTree;
+  }
+
+  public abstract class TeamCallback implements Callback {
+
+  }
+
+  public abstract class ManagerCallback implements Callback {
+
+  }
+
+  public abstract class BuildingCallback implements Callback {
+
   }
 
 }

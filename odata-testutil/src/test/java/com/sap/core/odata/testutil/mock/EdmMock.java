@@ -131,8 +131,6 @@ class EdmMock {
     when(roomVersionFacets.getConcurrencyMode()).thenReturn(EdmConcurrencyMode.Fixed);
     when(roomVersion.getFacets()).thenReturn(roomVersionFacets);
     when(roomType.getNavigationPropertyNames()).thenReturn(Arrays.asList("nr_Employees", "nr_Building"));
-
-    
     createNavigationProperty("nr_Employees", EdmMultiplicity.MANY, roomEntitySet, employeeEntitySet);
     createNavigationProperty("nr_Building", EdmMultiplicity.ONE, roomEntitySet, buildingEntitySet);
 

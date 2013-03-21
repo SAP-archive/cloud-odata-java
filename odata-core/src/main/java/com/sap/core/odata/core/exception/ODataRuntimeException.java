@@ -14,6 +14,10 @@ public final class ODataRuntimeException extends RuntimeException {
     super();
   }
 
+  public ODataRuntimeException(final Throwable throwable) {
+    super(throwable);
+  }
+
   public ODataRuntimeException(final String message) {
     super(message);
   }

@@ -1,5 +1,6 @@
 package com.sap.core.odata.core.ep.producer;
 
+import java.net.URI;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
@@ -24,6 +25,9 @@ import com.sap.core.odata.api.ep.EntityProviderException;
 import com.sap.core.odata.api.ep.EntityProviderProperties;
 import com.sap.core.odata.api.ep.callback.Callback;
 import com.sap.core.odata.api.ep.callback.CallbackResult;
+import com.sap.core.odata.api.ep.callback.EntryCallbackResult;
+import com.sap.core.odata.api.ep.callback.FeedCallbackResult;
+import com.sap.core.odata.api.uri.ExpandSelectTreeNode;
 import com.sap.core.odata.core.commons.ContentType;
 import com.sap.core.odata.core.commons.Encoder;
 import com.sap.core.odata.core.edm.EdmDateTimeOffset;
@@ -46,7 +50,7 @@ public class AtomEntryEntityProducer {
     this.properties = properties;
   }
 
-  public void append(final XMLStreamWriter writer, final EntityInfoAggregator eia, final Map<String, Object> data, final boolean isRootElement) throws EntityProviderException {
+  public void append(final XMLStreamWriter writer, final EntityInfoAggregator eia, final Map<String, Object> data, final boolean isRootElement, final boolean isFeedPart) throws EntityProviderException {
     try {
       writer.writeStartElement(FormatXml.ATOM_ENTRY);
 
@@ -54,6 +58,8 @@ public class AtomEntryEntityProducer {
         writer.writeDefaultNamespace(Edm.NAMESPACE_ATOM_2005);
         writer.writeNamespace(Edm.PREFIX_M, Edm.NAMESPACE_M_2007_08);
         writer.writeNamespace(Edm.PREFIX_D, Edm.NAMESPACE_D_2007_08);
+      }
+      if (!isFeedPart) {
         writer.writeAttribute(Edm.PREFIX_XML, Edm.NAMESPACE_XML_1998, "base", properties.getServiceRoot().toASCIIString());
       }
 
@@ -148,7 +154,7 @@ public class AtomEntryEntityProducer {
     }
   }
 
-  private void appendAtomNavigationLink(final XMLStreamWriter writer, final String self, final String navigationPropertyName, final boolean isFeed, EntityInfoAggregator eia, Map<String, Object> data) throws EntityProviderException {
+  private void appendAtomNavigationLink(final XMLStreamWriter writer, final String self, final String navigationPropertyName, final boolean isFeed, final EntityInfoAggregator eia, final Map<String, Object> data) throws EntityProviderException {
     try {
       writer.writeStartElement(FormatXml.ATOM_LINK);
       writer.writeAttribute(FormatXml.ATOM_HREF, self);
@@ -156,7 +162,7 @@ public class AtomEntryEntityProducer {
       writer.writeAttribute(FormatXml.ATOM_TITLE, navigationPropertyName);
       if (isFeed) {
         writer.writeAttribute(FormatXml.ATOM_TYPE, ContentType.APPLICATION_ATOM_XML_FEED.toString());
-        appendInlineFeed(writer, navigationPropertyName, eia);
+        appendInlineFeed(writer, navigationPropertyName, eia, data);
       } else {
         writer.writeAttribute(FormatXml.ATOM_TYPE, ContentType.APPLICATION_ATOM_XML_ENTRY.toString());
         appendInlineEntry(writer, navigationPropertyName, eia, data);
@@ -168,11 +174,7 @@ public class AtomEntryEntityProducer {
     }
   }
 
-  private void appendInlineFeed(XMLStreamWriter writer, String navigationPropertyName, EntityInfoAggregator eia) {
-    // TODO Auto-generated method stub
-  }
-
-  private void appendInlineEntry(XMLStreamWriter writer, String navigationPropertyName, EntityInfoAggregator eia, Map<String, Object> data) throws EntityProviderException {
+  private void appendInlineFeed(final XMLStreamWriter writer, final String navigationPropertyName, final EntityInfoAggregator eia, final Map<String, Object> data) throws EntityProviderException {
     try {
       if (eia.getExpandedNavigationPropertyNames().contains(navigationPropertyName)) {
         writer.writeStartElement(Edm.NAMESPACE_M_2007_08, FormatXml.M_INLINE);
@@ -187,15 +189,55 @@ public class AtomEntryEntityProducer {
         Callback callback = properties.getCallbacks().get(navigationPropertyName);
         CallbackResult result = callback.retriveResult(key);
 
-        EntityProviderProperties inlineProperties = EntityProviderProperties.fromProperties(properties).serviceRoot(result.getBaseUri()).expandSelectTree(properties.getExpandSelectTree().getLinks().get(navigationPropertyName)).callbacks(result.getCallbacks()).build();
-        Map<String, Object> inlineData = result.getData();
+        ExpandSelectTreeNode subNode = properties.getExpandSelectTree().getLinks().get(navigationPropertyName);
+        URI inlineBaseUri = result.getBaseUri();
+        Map<String, Callback> inlineCallbacks = result.getCallbacks();
+
+        EntityProviderProperties inlineProperties = EntityProviderProperties.fromProperties(properties).serviceRoot(inlineBaseUri).expandSelectTree(subNode).callbacks(inlineCallbacks).build();
+        List<Map<String, Object>> inlineData = ((FeedCallbackResult) result).getFeedData();
+
+        EdmNavigationProperty navProp = (EdmNavigationProperty) eia.getEntityType().getProperty(navigationPropertyName);
+        EdmEntitySet inlineEntitySet = eia.getEntitySet().getRelatedEntitySet(navProp);
+
+        AtomFeedProducer inlineFeedProducer = new AtomFeedProducer(inlineProperties);
+        EntityInfoAggregator inlineEia = EntityInfoAggregator.create(inlineEntitySet, inlineProperties.getExpandSelectTree());
+        inlineFeedProducer.append(writer, inlineEia, inlineData);
+
+        writer.writeEndElement();
+      }
+    } catch (Exception e) {
+      throw new EntityProviderException(EntityProviderException.COMMON, e);
+    }
+  }
+
+  private void appendInlineEntry(final XMLStreamWriter writer, final String navigationPropertyName, final EntityInfoAggregator eia, final Map<String, Object> data) throws EntityProviderException {
+    try {
+      if (eia.getExpandedNavigationPropertyNames().contains(navigationPropertyName)) {
+        writer.writeStartElement(Edm.NAMESPACE_M_2007_08, FormatXml.M_INLINE);
+
+        if (!properties.getCallbacks().containsKey(navigationPropertyName)) {
+          throw new EntityProviderException(EntityProviderException.EXPANDNOTSUPPORTED.addContent(navigationPropertyName));
+        }
+        HashMap<String, Object> key = new HashMap<String, Object>();
+        for (EntityPropertyInfo keyPropertyInfo : eia.getKeyPropertyInfos()) {
+          key.put(keyPropertyInfo.getName(), data.get(keyPropertyInfo.getName()));
+        }
+        Callback callback = properties.getCallbacks().get(navigationPropertyName);
+        CallbackResult result = callback.retriveResult(key);
+
+        ExpandSelectTreeNode subNode = properties.getExpandSelectTree().getLinks().get(navigationPropertyName);
+        URI inlineBaseUri = result.getBaseUri();
+        Map<String, Callback> inlineCallbacks = result.getCallbacks();
+
+        EntityProviderProperties inlineProperties = EntityProviderProperties.fromProperties(properties).serviceRoot(inlineBaseUri).expandSelectTree(subNode).callbacks(inlineCallbacks).build();
+        Map<String, Object> inlineData = ((EntryCallbackResult) result).getData();
 
         EdmNavigationProperty navProp = (EdmNavigationProperty) eia.getEntityType().getProperty(navigationPropertyName);
         EdmEntitySet inlineEntitySet = eia.getEntitySet().getRelatedEntitySet(navProp);
 
         AtomEntryEntityProducer inlineProducer = new AtomEntryEntityProducer(inlineProperties);
         EntityInfoAggregator inlineEia = EntityInfoAggregator.create(inlineEntitySet, inlineProperties.getExpandSelectTree());
-        inlineProducer.append(writer, inlineEia, inlineData, false);
+        inlineProducer.append(writer, inlineEia, inlineData, false, false);
 
         writer.writeEndElement();
       }

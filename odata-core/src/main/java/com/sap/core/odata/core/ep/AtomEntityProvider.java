@@ -120,7 +120,7 @@ public class AtomEntityProvider implements ContentTypeBasedEntityProvider {
 
       AtomEntryEntityProducer as = new AtomEntryEntityProducer(properties);
       EntityInfoAggregator eia = EntityInfoAggregator.create(entitySet, properties.getExpandSelectTree());
-      as.append(writer, eia, data, true);
+      as.append(writer, eia, data, true, false);
 
       writer.flush();
       outStream.flush();

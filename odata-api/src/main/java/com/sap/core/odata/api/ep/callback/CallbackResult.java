@@ -1,30 +1,20 @@
 package com.sap.core.odata.api.ep.callback;
 
 import java.net.URI;
+import java.util.HashMap;
 import java.util.Map;
 
+public abstract class CallbackResult {
 
-public class CallbackResult {
+  Map<String, Callback> callbacks;
 
-   Map<String, Object> data;
-   
-   Map<String, Callback> callbacks;
-   
-   URI baseUri;
-
-  public Map<String, Object> getData() {
-    return data;
-  }
-
-  public void setData(Map<String, Object> data) {
-    this.data = data;
-  }
+  URI baseUri;
 
   public Map<String, Callback> getCallbacks() {
     return callbacks;
   }
 
-  public void setCallbacks(Map<String, Callback> callbacks) {
+  public void setCallbacks(final HashMap<String, Callback> callbacks) {
     this.callbacks = callbacks;
   }
 
@@ -32,9 +22,8 @@ public class CallbackResult {
     return baseUri;
   }
 
-  public void setBaseUri(URI baseUri) {
+  public void setBaseUri(final URI baseUri) {
     this.baseUri = baseUri;
   }
 
- 
 }

@@ -7,7 +7,7 @@ public class CallbackResult {
   private ConsumerProperties properties;
   private EdmEntitySet entitySet;
 
-  public CallbackResult(ConsumerProperties properties, EdmEntitySet entitySet) {
+  public CallbackResult(final ConsumerProperties properties, final EdmEntitySet entitySet) {
     super();
     this.properties = properties;
     this.entitySet = entitySet;

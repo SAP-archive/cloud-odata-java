@@ -127,7 +127,7 @@ public class Employee {
   }
 
   public byte[] getImage() {
-    if(image == null) {
+    if (image == null) {
       return null;
     }
     return image.clone();

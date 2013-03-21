@@ -44,7 +44,7 @@ public class ExpandSelectTreeCreator {
     return root;
   }
 
-  private void buildPureExpandTree(final ExpandSelectTreeNodeImpl root) {
+  private void buildPureExpandTree(final ExpandSelectTreeNodeImpl root) throws EdmException {
     root.setAllExplicitly();
     ExpandSelectTreeNodeImpl actualNode;
     for (ArrayList<NavigationPropertySegment> navigationPropertySegmentList : initialExpand) {
@@ -52,7 +52,7 @@ public class ExpandSelectTreeCreator {
       for (NavigationPropertySegment segment : navigationPropertySegmentList) {
         ExpandSelectTreeNodeImpl childNode = new ExpandSelectTreeNodeImpl();
         childNode.setAllExplicitly();
-        actualNode = (ExpandSelectTreeNodeImpl) actualNode.addChild(segment.getNavigationProperty(), childNode);
+        actualNode = (ExpandSelectTreeNodeImpl) actualNode.addChild(segment.getNavigationProperty().getName(), childNode);
       }
     }
 
@@ -84,14 +84,14 @@ public class ExpandSelectTreeCreator {
                 for (int expandListIndex = segmentListIndex + 1; expandListIndex < singleExpandList.size(); expandListIndex++) {
                   ExpandSelectTreeNodeImpl newNode = new ExpandSelectTreeNodeImpl();
                   newNode.setAllExplicitly();
-                  expandNodes = (ExpandSelectTreeNodeImpl) expandNodes.addChild(singleExpandList.get(expandListIndex).getNavigationProperty(), newNode);
+                  expandNodes = (ExpandSelectTreeNodeImpl) expandNodes.addChild(singleExpandList.get(expandListIndex).getNavigationProperty().getName(), newNode);
                 }
               }
-              currentNode.addChild(segmentsList.get(segmentListIndex).getNavigationProperty(), childNode);
+              currentNode.addChild(segmentsList.get(segmentListIndex).getNavigationProperty().getName(), childNode);
             }
           }
         }
-        currentNode = (ExpandSelectTreeNodeImpl) currentNode.addChild(segmentsList.get(segmentListIndex).getNavigationProperty(), childNode);
+        currentNode = (ExpandSelectTreeNodeImpl) currentNode.addChild(segmentsList.get(segmentListIndex).getNavigationProperty().getName(), childNode);
         if (currentNode == null) {
           break;
         }

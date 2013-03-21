@@ -3,7 +3,6 @@ package com.sap.core.odata.api.uri;
 import java.util.List;
 import java.util.Map;
 
-import com.sap.core.odata.api.edm.EdmNavigationProperty;
 import com.sap.core.odata.api.edm.EdmProperty;
 
 /**
@@ -28,9 +27,9 @@ public interface ExpandSelectTreeNode {
 
   /**
    * Gets the links that have to be included or expanded.
-   * @return a Map from {@link EdmNavigationProperty} to its related {@link ExpandSelectTreeNode};
+   * @return a Map from EdmNavigationProperty Name to its related {@link ExpandSelectTreeNode};
    *         if that node is <code>null</code>, a deferred link has been requested,
    *         otherwise the link must be expanded with information found in that node
    */
-  public Map<EdmNavigationProperty, ExpandSelectTreeNode> getLinks();
+  public Map<String, ExpandSelectTreeNode> getLinks();
 }
