@@ -267,6 +267,143 @@ public class XmlEntityConsumerTest extends AbstractConsumerTest {
     assertNotNull(result);
   }
 
+  /**
+   * Use different namespace prefixes for <code>metadata (m)</code> and <code>data (d)</code>.
+   * 
+   * @throws Exception
+   */
+  @Test
+  public void validationOfDifferentNamespacesPrefixSuccess() throws Exception {
+    String roomWithValidNamespaces =
+        "<?xml version='1.0' encoding='UTF-8'?>" +
+            "<entry xmlns=\"http://www.w3.org/2005/Atom\" " +
+            "    xmlns:meta=\"http://schemas.microsoft.com/ado/2007/08/dataservices/metadata\" " +
+            "    xmlns:data=\"http://schemas.microsoft.com/ado/2007/08/dataservices\" " +
+            "    xml:base=\"http://localhost:19000/test/\" " +
+            "    meta:etag=\"W/&quot;1&quot;\">" +
+            "" +
+            "  <id>http://localhost:19000/test/Rooms('1')</id>" +
+            "  <title type=\"text\">Room 1</title>" +
+            "  <updated>2013-01-11T13:50:50.541+01:00</updated>" +
+            "  <content type=\"application/xml\">" +
+            "    <meta:properties>" +
+            "      <data:Id>1</data:Id>" +
+            "      <data:Seats>11</data:Seats>" +
+            "      <data:Name>Room 42</data:Name>" +
+            "      <data:Version>4711</data:Version>" +
+            "    </meta:properties>" +
+            "  </content>" +
+            "</entry>";
+
+    EdmEntitySet entitySet = MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Rooms");
+    InputStream reqContent = createContentAsStream(roomWithValidNamespaces);
+    XmlEntityConsumer xec = new XmlEntityConsumer();
+    ODataEntry result = xec.readEntry(entitySet, reqContent, false);
+    assertNotNull(result);
+  }
+
+  /**
+   * Add <code>unknown property</code> in own namespace which is defined in entry tag.
+   *  
+   * @throws Exception
+   */
+  @Test
+  public void validationOfUnknownPropertyOwnNamespaceSuccess() throws Exception {
+    String roomWithValidNamespaces =
+        "<?xml version='1.0' encoding='UTF-8'?>" +
+            "<entry xmlns=\"http://www.w3.org/2005/Atom\" " +
+            "    xmlns:m=\"http://schemas.microsoft.com/ado/2007/08/dataservices/metadata\" " +
+            "    xmlns:d=\"http://schemas.microsoft.com/ado/2007/08/dataservices\" " +
+            "    xmlns:more=\"http://sample.com/more\" " +
+            "    xml:base=\"http://localhost:19000/test/\" " +
+            "    m:etag=\"W/&quot;1&quot;\">" +
+            "" +
+            "  <id>http://localhost:19000/test/Rooms('1')</id>" +
+            "  <title type=\"text\">Room 1</title>" +
+            "  <updated>2013-01-11T13:50:50.541+01:00</updated>" +
+            "  <content type=\"application/xml\">" +
+            "    <m:properties>" +
+            "      <d:Id>1</d:Id>" +
+            "      <more:somePropertyToBeIgnored>ignore me</more:somePropertyToBeIgnored>" +
+            "      <d:Seats>11</d:Seats>" +
+            "      <d:Name>Room 42</d:Name>" +
+            "      <d:Version>4711</d:Version>" +
+            "    </m:properties>" +
+            "  </content>" +
+            "</entry>";
+
+    EdmEntitySet entitySet = MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Rooms");
+    InputStream reqContent = createContentAsStream(roomWithValidNamespaces);
+    XmlEntityConsumer xec = new XmlEntityConsumer();
+    ODataEntry result = xec.readEntry(entitySet, reqContent, false);
+    assertNotNull(result);
+  }
+
+  /**
+   * Is allowed because <code>Id</code> is in default namespace (<code>xmlns=\"http://www.w3.org/2005/Atom\"</code>)
+   * 
+   * @throws Exception
+   */
+  @Test
+  public void validationOfUnknownPropertyDefaultNamespaceSuccess() throws Exception {
+    String roomWithValidNamespaces =
+        "<?xml version='1.0' encoding='UTF-8'?>" +
+            "<entry xmlns=\"http://www.w3.org/2005/Atom\" xmlns:m=\"http://schemas.microsoft.com/ado/2007/08/dataservices/metadata\" xmlns:d=\"http://schemas.microsoft.com/ado/2007/08/dataservices\" xml:base=\"http://localhost:19000/test/\" m:etag=\"W/&quot;1&quot;\">" +
+            "  <id>http://localhost:19000/test/Rooms('1')</id>" +
+            "  <title type=\"text\">Room 1</title>" +
+            "  <updated>2013-01-11T13:50:50.541+01:00</updated>" +
+            "  <content type=\"application/xml\">" +
+            "    <m:properties>" +
+            "      <Id>1</Id>" +
+            "    </m:properties>" +
+            "  </content>" +
+            "</entry>";
+
+    EdmEntitySet entitySet = MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Rooms");
+    InputStream reqContent = createContentAsStream(roomWithValidNamespaces);
+    
+    XmlEntityConsumer xec = new XmlEntityConsumer();
+    ODataEntry result = xec.readEntry(entitySet, reqContent, true);
+    assertNotNull(result);
+  }
+
+  /**
+   * Add <code>unknown property</code> in own namespace which is defined directly in unknown tag.
+   *  
+   * @throws Exception
+   */
+  @Test
+  public void validationOfUnknownPropertyInlineNamespaceSuccess() throws Exception {
+    String roomWithValidNamespaces =
+        "<?xml version='1.0' encoding='UTF-8'?>" +
+            "<entry xmlns=\"http://www.w3.org/2005/Atom\" " +
+            "    xmlns:m=\"http://schemas.microsoft.com/ado/2007/08/dataservices/metadata\" " +
+            "    xmlns:d=\"http://schemas.microsoft.com/ado/2007/08/dataservices\" " +
+            "    xml:base=\"http://localhost:19000/test/\" " +
+            "    m:etag=\"W/&quot;1&quot;\">" +
+            "" +
+            "  <id>http://localhost:19000/test/Rooms('1')</id>" +
+            "  <title type=\"text\">Room 1</title>" +
+            "  <updated>2013-01-11T13:50:50.541+01:00</updated>" +
+            "  <content type=\"application/xml\">" +
+            "    <m:properties>" +
+            "      <d:Id>1</d:Id>" +
+            "      <more:somePropertyToBeIgnored xmlns:more=\"http://sample.com/more\">ignore me</more:somePropertyToBeIgnored>" +
+            "      <d:Seats>11</d:Seats>" +
+            "      <d:Name>Room 42</d:Name>" +
+            "      <d:Version>4711</d:Version>" +
+            "    </m:properties>" +
+            "  </content>" +
+            "</entry>";
+
+    EdmEntitySet entitySet = MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Rooms");
+    InputStream reqContent = createContentAsStream(roomWithValidNamespaces);
+    XmlEntityConsumer xec = new XmlEntityConsumer();
+    ODataEntry result = xec.readEntry(entitySet, reqContent, false);
+    assertNotNull(result);
+  }
+
+  
   @Test(expected = EntityProviderException.class)
   public void validationOfNamespacesMissingXmlns() throws Exception {
     String roomWithValidNamespaces =
@@ -305,8 +442,8 @@ public class XmlEntityConsumerTest extends AbstractConsumerTest {
     readAndExpectException(entitySet, reqContent, EntityProviderException.INVALID_NAMESPACE.addContent("properties"));
   }
 
-  @Test(expected = EntityProviderException.class)
-  public void validationOfNamespacesMissingD_NamespaceAtTag() throws Exception {
+  @Test(expected=EntityProviderException.class)
+  public void validationOfNamespacesMissingD_NamespaceAtRequiredTag() throws Exception {
     String roomWithValidNamespaces =
         "<?xml version='1.0' encoding='UTF-8'?>" +
             "<entry xmlns=\"http://www.w3.org/2005/Atom\" xmlns:m=\"http://schemas.microsoft.com/ado/2007/08/dataservices/metadata\" xmlns:d=\"http://schemas.microsoft.com/ado/2007/08/dataservices\" xml:base=\"http://localhost:19000/test/\" m:etag=\"W/&quot;1&quot;\">" +
@@ -322,7 +459,7 @@ public class XmlEntityConsumerTest extends AbstractConsumerTest {
 
     EdmEntitySet entitySet = MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Rooms");
     InputStream reqContent = createContentAsStream(roomWithValidNamespaces);
-    readAndExpectException(entitySet, reqContent, EntityProviderException.INVALID_NAMESPACE.addContent("Id"));
+    readAndExpectException(entitySet, reqContent, false, EntityProviderException.MISSING_PROPERTY.addContent("Id"));
   }
 
   private void readAndExpectException(final EdmEntitySet entitySet, final InputStream reqContent, final MessageReference messageReference) throws ODataMessageException {
