@@ -41,11 +41,11 @@ public enum UriType {
   /**
    * Link to a single entity
    */
-  URI7A(SystemQueryOption.$format, SystemQueryOption.$filter, SystemQueryOption.$select),
+  URI7A(SystemQueryOption.$format, SystemQueryOption.$filter),
   /**
    * Link to multiple entities
    */
-  URI7B(SystemQueryOption.$format, SystemQueryOption.$filter, SystemQueryOption.$inlinecount, SystemQueryOption.$skiptoken, SystemQueryOption.$skip, SystemQueryOption.$top, SystemQueryOption.$expand),
+  URI7B(SystemQueryOption.$format, SystemQueryOption.$filter, SystemQueryOption.$inlinecount, SystemQueryOption.$orderby, SystemQueryOption.$skiptoken, SystemQueryOption.$skip, SystemQueryOption.$top),
   /**
    * Metadata document
    */
@@ -77,11 +77,11 @@ public enum UriType {
   /**
    * Count of an entity set
    */
-  URI15(SystemQueryOption.$filter, SystemQueryOption.$orderby, SystemQueryOption.$skip, SystemQueryOption.$top, SystemQueryOption.$expand),
+  URI15(SystemQueryOption.$filter, SystemQueryOption.$orderby, SystemQueryOption.$skip, SystemQueryOption.$top),
   /**
    * Count of a single entity
    */
-  URI16(SystemQueryOption.$filter, SystemQueryOption.$expand),
+  URI16(SystemQueryOption.$filter),
   /**
    * Media resource of an entity
    */
@@ -89,11 +89,11 @@ public enum UriType {
   /**
    * Count of link to a single entity
    */
-  URI50A(SystemQueryOption.$format, SystemQueryOption.$select),
+  URI50A(SystemQueryOption.$filter),
   /**
    * Count of links to multiple entities
    */
-  URI50B(SystemQueryOption.$format, SystemQueryOption.$inlinecount, SystemQueryOption.$skiptoken, SystemQueryOption.$skip, SystemQueryOption.$top);
+  URI50B(SystemQueryOption.$filter, SystemQueryOption.$orderby, SystemQueryOption.$skip, SystemQueryOption.$top);
 
   private ArrayList<SystemQueryOption> whiteList = new ArrayList<SystemQueryOption>();
 
