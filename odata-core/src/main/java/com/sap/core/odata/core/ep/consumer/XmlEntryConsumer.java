@@ -350,8 +350,6 @@ public class XmlEntryConsumer {
    * @throws EntityProviderException
    */
   private void readProperties(final XMLStreamReader reader, final EntityInfoAggregator entitySet) throws XMLStreamException, EdmException, EntityProviderException {
-    //
-    //    extractNamespacesFromTag(reader);
     // validate namespace
     checkAllMandatoryNamespacesAvailable();
     validateNamespace(reader.getName(), Edm.NAMESPACE_M_2007_08);
@@ -362,25 +360,31 @@ public class XmlEntryConsumer {
       // inline properties
       checkCurrentHandledStartTag(ATOM_CONTENT);
     }
-    //
-    int nextTagEventType = reader.next();
 
+    //
+    EntityPropertyInfo property;
+    String closeTag = null;
+    
+    int nextTagEventType = reader.next();
     XmlPropertyConsumer xpc = new XmlPropertyConsumer();
     boolean run = true;
-    EntityPropertyInfo property;
-
+    //
     while (run) {
-      if (nextTagEventType == XMLStreamConstants.START_ELEMENT) {
+      if (nextTagEventType == XMLStreamConstants.START_ELEMENT && closeTag == null) {
+        closeTag = reader.getLocalName();
         if(isEdmNamespaceProperty(reader)) {
           String name = getValidPropertyName(reader);
           property = getValidatedPropertyInfo(entitySet, name);
           Object value = xpc.readStartedElement(reader, property, typeMappings);
           properties.put(name, value);
+          closeTag = null;
         }
       } else if (nextTagEventType == XMLStreamConstants.END_ELEMENT) {
         String name = reader.getLocalName();
         if (M_PROPERTIES.equals(name)) {
           run = false;
+        } else if(name.equals(closeTag)) {
+          closeTag = null;
         }
       }
       nextTagEventType = reader.next();
