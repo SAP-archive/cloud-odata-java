@@ -32,8 +32,9 @@ public class ODataJPARuntimeException extends ODataJPAException {
 	public static final MessageReference ERROR_JPQL_QUERY_CREATE = createMessageReference(
 			ODataJPARuntimeException.class, "ERROR_JPQL_QUERY_CREATE");
 
-	private ODataJPARuntimeException(String localizedMessage, Throwable e) {
-		super(localizedMessage, e);
+	private ODataJPARuntimeException(String localizedMessage, Throwable e,
+			MessageReference msgRef) {
+		super(localizedMessage, e, msgRef);
 	}
 
 	/**
@@ -55,8 +56,9 @@ public class ODataJPARuntimeException extends ODataJPAException {
 		messageService = ODataJPAFactory.createFactory()
 				.getODataJPAAccessFactory()
 				.getODataJPAMessageService(DEFAULT_LOCALE);
-		String message = messageService.getLocalizedMessage(messageReference,e);
-		return new ODataJPARuntimeException(message, e);
+		String message = messageService
+				.getLocalizedMessage(messageReference, e);
+		return new ODataJPARuntimeException(message, e, messageReference);
 	}
 
 	private static final long serialVersionUID = -5230976355642443012L;

@@ -7,6 +7,7 @@ import com.sap.core.odata.api.edm.provider.EdmProvider;
 import com.sap.core.odata.api.processor.ODataContext;
 import com.sap.core.odata.api.processor.ODataProcessor;
 import com.sap.core.odata.processor.api.jpa.ODataJPAContext;
+import com.sap.core.odata.processor.api.jpa.model.JPAEdmExtension;
 
 public class ODataJPAContextImpl implements ODataJPAContext {
 
@@ -17,6 +18,7 @@ public class ODataJPAContextImpl implements ODataJPAContext {
 	private ODataProcessor processor;
 	private EdmProvider edmProvider;
 	private String jpaEdmMappingModelName;
+	private JPAEdmExtension jpaEdmExtension;
 	private static final ThreadLocal<ODataContext> oDataContextThreadLocal = new ThreadLocal<ODataContext>();
 
 	@Override
@@ -71,13 +73,13 @@ public class ODataJPAContextImpl implements ODataJPAContext {
 	}
 
 	@Override
-	public void setJPAEdmNameMappingModel(String name) {
+	public void setJPAEdmMappingModel(String name) {
 		jpaEdmMappingModelName = name;
 
 	}
 
 	@Override
-	public String getJPAEdmNameMappingModel() {
+	public String getJPAEdmMappingModel() {
 		return jpaEdmMappingModelName;
 	}
 
@@ -98,5 +100,16 @@ public class ODataJPAContextImpl implements ODataJPAContext {
 		if (em == null)
 			emf. createEntityManager();
 		return em;
+	}
+
+	@Override
+	public void setJPAEdmExtension(JPAEdmExtension jpaEdmExtension) {
+		this.jpaEdmExtension = jpaEdmExtension;
+		
+	}
+
+	@Override
+	public JPAEdmExtension getJPAEdmExtension() {
+		return jpaEdmExtension;
 	}
 }

@@ -1,6 +1,7 @@
 package com.sap.core.odata.processor.core.jpa.model;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import com.sap.core.odata.api.edm.provider.Association;
@@ -28,6 +29,7 @@ public class JPAEdmSchema extends JPAEdmBaseViewImpl implements
 	private JPAEdmEntityContainerView entityContainerView;
 	private JPAEdmAssociationView associationView = null;
 	private List<String> nonKeyComplexList = null;
+	private HashMap<Class<?>, String[]> customOperations = null;
 
 	public JPAEdmSchema(JPAEdmModelView modelView) {
 		super(modelView);
@@ -65,7 +67,7 @@ public class JPAEdmSchema extends JPAEdmBaseViewImpl implements
 	public JPAEdmBuilder getBuilder() {
 		if (this.builder == null)
 			this.builder = new JPAEdmSchemaBuilder();
-		
+
 		return builder;
 	}
 
@@ -97,7 +99,8 @@ public class JPAEdmSchema extends JPAEdmBaseViewImpl implements
 		 * ************************************************************
 		 */
 		@Override
-		public void build() throws ODataJPAModelException, ODataJPARuntimeException {
+		public void build() throws ODataJPAModelException,
+				ODataJPARuntimeException {
 
 			schema = new Schema();
 			JPAEdmNameBuilder.build(JPAEdmSchema.this);
@@ -106,6 +109,11 @@ public class JPAEdmSchema extends JPAEdmBaseViewImpl implements
 
 			complexTypeView = new JPAEdmComplexType(JPAEdmSchema.this);
 			complexTypeView.getBuilder().build();
+
+			if (JPAEdmSchema.this.getJPAEdmExtension() != null) {
+				JPAEdmSchema.this.getJPAEdmExtension()
+						.extend(JPAEdmSchema.this);
+			}
 
 			entityContainerView = new JPAEdmEntityContainer(JPAEdmSchema.this);
 			entityContainerView.getBuilder().build();
@@ -177,6 +185,7 @@ public class JPAEdmSchema extends JPAEdmBaseViewImpl implements
 
 				}
 			}
+
 		}
 
 	}
@@ -184,5 +193,19 @@ public class JPAEdmSchema extends JPAEdmBaseViewImpl implements
 	@Override
 	public final JPAEdmAssociationView getJPAEdmAssociationView() {
 		return this.associationView;
+	}
+
+	@Override
+	public void registerOperations(Class<?> customClass, String[] methodNames) {
+		if (customOperations == null)
+			customOperations = new HashMap<Class<?>, String[]>();
+
+		customOperations.put(customClass, methodNames);
+
+	}
+
+	@Override
+	public HashMap<Class<?>, String[]> getRegisteredOperations() {
+		return customOperations;
 	}
 }

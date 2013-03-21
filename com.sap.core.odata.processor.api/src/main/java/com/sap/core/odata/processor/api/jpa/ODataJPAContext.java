@@ -6,6 +6,7 @@ import javax.persistence.EntityManagerFactory;
 import com.sap.core.odata.api.edm.provider.EdmProvider;
 import com.sap.core.odata.api.processor.ODataContext;
 import com.sap.core.odata.api.processor.ODataProcessor;
+import com.sap.core.odata.processor.api.jpa.model.JPAEdmExtension;
 
 /**
  * This class does the compilation of context objects required for OData JPA
@@ -121,14 +122,14 @@ public interface ODataJPAContext {
 	 * @param name
 	 *            is the name of JPA EDM mapping model
 	 */
-	public void setJPAEdmNameMappingModel(String name);
+	public void setJPAEdmMappingModel(String name);
 
 	/**
 	 * The method gets the JPA EDM mapping model name from the context.
 	 * 
 	 * @return name of JPA EDM mapping model
 	 */
-	public String getJPAEdmNameMappingModel();
+	public String getJPAEdmMappingModel();
 
 	/**
 	 * The method returns an instance of type entity manager. The entity manager
@@ -139,4 +140,24 @@ public interface ODataJPAContext {
 	 * @return an instance of type {@link javax.persistence.EntityManager}
 	 */
 	public EntityManager getEntityManager();
+
+	/**
+	 * The method sets the JPA Edm Extension instance into the context. There
+	 * can be at most only one extension for a context. Invoking the method
+	 * several times overwrites already set extension instance in the context.
+	 * 
+	 * @param jpaEdmExtension
+	 *            is an instance of type
+	 *            {@link com.sap.core.odata.processor.api.jpa.model.JPAEdmExtension}
+	 * 
+	 */
+	public void setJPAEdmExtension(JPAEdmExtension jpaEdmExtension);
+
+	/**
+	 * The method returns the JPA Edm Extension instance set into the context.
+	 * 
+	 * @return
+	 */
+	public JPAEdmExtension getJPAEdmExtension();
+
 }

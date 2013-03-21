@@ -7,6 +7,7 @@ import com.sap.core.odata.processor.api.jpa.access.JPAEdmBuilder;
 import com.sap.core.odata.processor.api.jpa.access.JPAEdmMappingModelAccess;
 import com.sap.core.odata.processor.api.jpa.factory.ODataJPAFactory;
 import com.sap.core.odata.processor.api.jpa.model.JPAEdmBaseView;
+import com.sap.core.odata.processor.api.jpa.model.JPAEdmExtension;
 
 public abstract class JPAEdmBaseViewImpl implements JPAEdmBaseView {
 
@@ -14,12 +15,15 @@ public abstract class JPAEdmBaseViewImpl implements JPAEdmBaseView {
 	protected Metamodel metaModel = null;
 	protected boolean isConsistent = true;
 	protected JPAEdmBuilder builder = null;
+	protected JPAEdmExtension jpaEdmExtension = null;
 	private JPAEdmMappingModelAccess jpaEdmMappingModelAccess = null;
 
 	public JPAEdmBaseViewImpl(JPAEdmBaseView view) {
 		this.pUnitName = view.getpUnitName();
 		this.metaModel = view.getJPAMetaModel();
 		this.jpaEdmMappingModelAccess = view.getJPAEdmMappingModelAccess();
+		this.jpaEdmExtension = view.getJPAEdmExtension();
+		int i = 0;
 	}
 
 	public JPAEdmBaseViewImpl(ODataJPAContext context) {
@@ -27,7 +31,7 @@ public abstract class JPAEdmBaseViewImpl implements JPAEdmBaseView {
 		this.metaModel = context.getEntityManagerFactory().getMetamodel();
 		this.jpaEdmMappingModelAccess = ODataJPAFactory.createFactory()
 				.getJPAAccessFactory().getJPAEdmMappingModelAccess(context);
-		
+		this.jpaEdmExtension = context.getJPAEdmExtension();
 		jpaEdmMappingModelAccess.loadMappingModel();
 	}
 
@@ -62,6 +66,11 @@ public abstract class JPAEdmBaseViewImpl implements JPAEdmBaseView {
 	public JPAEdmMappingModelAccess getJPAEdmMappingModelAccess() {
 		return jpaEdmMappingModelAccess;
 
+	}
+
+	@Override
+	public JPAEdmExtension getJPAEdmExtension() {
+		return this.jpaEdmExtension;
 	}
 
 }

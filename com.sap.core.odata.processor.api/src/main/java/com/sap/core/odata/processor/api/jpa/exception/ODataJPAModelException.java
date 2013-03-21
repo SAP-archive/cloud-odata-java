@@ -31,13 +31,22 @@ public class ODataJPAModelException extends ODataJPAException {
 			ODataJPAModelException.class, "BUILDER_NULL");
 	public static final MessageReference TYPE_NOT_SUPPORTED = createMessageReference(
 			ODataJPAModelException.class, "TYPE_NOT_SUPPORTED");
+	public static final MessageReference FUNC_ENTITYSET_EXP = createMessageReference(
+			ODataJPAModelException.class, "FUNC_ENTITYSET_EXP");
+	public static final MessageReference FUNC_RETURN_TYPE_EXP = createMessageReference(
+			ODataJPAModelException.class, "FUNC_RETURN_TYPE_EXP");
+	public static final MessageReference FUNC_RETURN_TYPE_ENTITY_NOT_FOUND = createMessageReference(
+			ODataJPAModelException.class, "FUNC_RETURN_TYPE_ENTITY_NOT_FOUND");
 	public static final MessageReference GENERAL = createMessageReference(
 			ODataJPAModelException.class, "GENERAL");
 	public static final MessageReference INNER_EXCEPTION = createMessageReference(
 			ODataJPAModelException.class, "INNER_EXCEPTION");
+	public static final MessageReference FUNC_PARAM_NAME_EXP = createMessageReference(
+			ODataJPAModelException.class, "FUNC_PARAM_NAME_EXP");
 
-	private ODataJPAModelException(String localizedMessage, Throwable e) {
-		super(localizedMessage, e);
+	private ODataJPAModelException(String localizedMessage, Throwable e,
+			MessageReference msgRef) {
+		super(localizedMessage, e, msgRef);
 	}
 
 	/**
@@ -60,11 +69,11 @@ public class ODataJPAModelException extends ODataJPAException {
 		messageService = ODataJPAFactory.createFactory()
 				.getODataJPAAccessFactory()
 				.getODataJPAMessageService(DEFAULT_LOCALE);
-		String message = messageService.getLocalizedMessage(messageReference,e);
-		return new ODataJPAModelException(message, e);
+		String message = messageService
+				.getLocalizedMessage(messageReference, e);
+		return new ODataJPAModelException(message, e, messageReference);
 	}
 
 	private static final long serialVersionUID = 7940106375606950703L;
-
 
 }

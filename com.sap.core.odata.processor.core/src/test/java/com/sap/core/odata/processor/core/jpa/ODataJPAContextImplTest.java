@@ -58,7 +58,7 @@ public class ODataJPAContextImplTest {
 		odataJPAContext.setODataProcessor(processor);
 		odataJPAContext
 				.setPersistenceUnitName(ODataJPAContextMock.PERSISTENCE_UNIT_NAME);
-		odataJPAContext.setJPAEdmNameMappingModel(ODataJPAContextMock.MAPPING_MODEL);
+		odataJPAContext.setJPAEdmMappingModel(ODataJPAContextMock.MAPPING_MODEL);
 	}
 
 	@Test
@@ -70,7 +70,7 @@ public class ODataJPAContextImplTest {
 		assertEquals(odataJPAContext.getODataProcessor().hashCode(), processor.hashCode());
 		assertEquals(odataJPAContext.getPersistenceUnitName(),
 				ODataJPAContextMock.PERSISTENCE_UNIT_NAME);
-		assertEquals(odataJPAContext.getJPAEdmNameMappingModel(), ODataJPAContextMock.MAPPING_MODEL);
+		assertEquals(odataJPAContext.getJPAEdmMappingModel(), ODataJPAContextMock.MAPPING_MODEL);
 		
 		EntityManager em1 = odataJPAContext.getEntityManager();
 		EntityManager em2 = odataJPAContext.getEntityManager();

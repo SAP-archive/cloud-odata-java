@@ -15,9 +15,15 @@
 	<name>OData Processors - JPA Processor Implementation</name>
 
 	<dependencies>
-	
+		<dependency>
+			<groupId>com.sap.core.odata</groupId>
+			<artifactId>com.sap.core.odata.api.annotation</artifactId>
+			<version>0.1.0-SNAPSHOT</version>
+			<scope>provided</scope>
+		</dependency>
+
 		<!-- ########################## -->
-		<!-- Java Persistence API		-->
+		<!-- Java Persistence API -->
 		<!-- ########################## -->
 		<dependency>
 			<groupId>org.eclipse.persistence</groupId>
@@ -27,7 +33,7 @@
 		</dependency>
 
 		<!-- ########################## -->
-		<!-- ODATA4SAP Support 			-->
+		<!-- ODATA4SAP Support -->
 		<!-- ########################## -->
 		<dependency>
 			<groupId>com.sap.core.odata</groupId>
@@ -41,9 +47,9 @@
 			<version>${version.odataforsap}</version>
 			<scope>provided</scope>
 		</dependency>
-		
+
 		<!-- ########################## -->
-		<!-- OData4SAP JPA API 			-->
+		<!-- OData4SAP JPA API -->
 		<!-- ########################## -->
 		<dependency>
 			<groupId>com.sap.core.odata</groupId>
@@ -51,9 +57,9 @@
 			<version>${version.odataforsap.processor}</version>
 			<scope>provided</scope>
 		</dependency>
-		
+
 		<!-- ########################## -->
-		<!-- For Testing 				-->
+		<!-- For Testing -->
 		<!-- ########################## -->
 		<dependency>
 			<groupId>junit</groupId>
@@ -67,9 +73,9 @@
 			<version>2.4.0</version>
 			<scope>test</scope>
 		</dependency>
-		
+
 		<!-- ########################## -->
-		<!-- Supportability Tools 		-->
+		<!-- Supportability Tools -->
 		<!-- ########################## -->
 		<dependency>
 			<groupId>org.slf4j</groupId>

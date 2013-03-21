@@ -23,7 +23,7 @@ public class JPAEdmMappingModelService implements JPAEdmMappingModelAccess {
 	private String mappingModelName;
 
 	public JPAEdmMappingModelService(ODataJPAContext ctx) {
-		mappingModelName = ctx.getJPAEdmNameMappingModel();
+		mappingModelName = ctx.getJPAEdmMappingModel();
 		if (mappingModelName == null) {
 			mappingModelExists = false;
 		}

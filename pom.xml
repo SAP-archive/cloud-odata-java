@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
@@ -19,7 +18,8 @@
 		<module>com.sap.core.odata.processor.api</module>
 		<module>com.sap.core.odata.processor.core</module>
 		<module>com.sap.core.odata.processor.ref.web</module>
-	</modules>
+		<module>com.sap.core.odata.api.annotation</module>
+        </modules>
 	
 	<developers>
 		<developer>
@@ -50,7 +50,7 @@
 	</developers>
 	
 	<properties>
-		<version.odataforsap>0.2.0</version.odataforsap>
+		<version.odataforsap>0.3.0-SNAPSHOT</version.odataforsap>
 		<version.odataforsap.processor>${project.version}</version.odataforsap.processor>
 		<version.eclipselink>2.1.2</version.eclipselink>
 		<version.javax.persistence>2.0.3</version.javax.persistence>

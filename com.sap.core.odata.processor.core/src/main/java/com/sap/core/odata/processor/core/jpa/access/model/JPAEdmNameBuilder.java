@@ -39,6 +39,12 @@ public class JPAEdmNameBuilder {
 	private static final String NAVIGATION_NAME = "Details";
 	private static final String UNDERSCORE = "_";
 
+	public static FullQualifiedName build(JPAEdmBaseView view, String name) {
+		FullQualifiedName fqName = new FullQualifiedName(buildNamespace(view),
+				name);
+		return fqName;
+	}
+
 	/*
 	 * ************************************************************************
 	 * EDM EntityType Name - RULES
@@ -259,8 +265,8 @@ public class JPAEdmNameBuilder {
 			propertyName = Character.toUpperCase(jpaAttributeName.charAt(0))
 					+ jpaAttributeName.substring(1);
 		// change for navigation property issue
-			complexProperty.setMapping(((Mapping) new JPAEdmMappingImpl())
-					.setInternalName(jpaAttributeName));
+		complexProperty.setMapping(((Mapping) new JPAEdmMappingImpl())
+				.setInternalName(jpaAttributeName));
 
 		complexProperty.setName(propertyName);
 
@@ -283,7 +289,7 @@ public class JPAEdmNameBuilder {
 		String name = entityTypeView.getEdmEntityType().getName();
 		FullQualifiedName fQName = new FullQualifiedName(namespace, name);
 		assocaitionEndView.getEdmAssociationEnd1().setType(fQName);
-		
+
 		name = null;
 		String jpaEntityTypeName = null;
 		try {
@@ -372,7 +378,7 @@ public class JPAEdmNameBuilder {
 	public static void build(JPAEdmAssociationView associationView,
 			JPAEdmPropertyView propertyView,
 			JPAEdmNavigationPropertyView navPropertyView) {
-		
+
 		String toName = null;
 		String fromName = null;
 		String navPropName = null;
@@ -385,7 +391,8 @@ public class JPAEdmNameBuilder {
 
 		FullQualifiedName associationEndTypeOne = association.getEnd1()
 				.getType();
-		FullQualifiedName associationEndTypeTwo = association.getEnd2().getType();
+		FullQualifiedName associationEndTypeTwo = association.getEnd2()
+				.getType();
 
 		Attribute<?, ?> jpaAttribute = propertyView.getJPAAttribute();
 		navProp.setMapping(new Mapping().setInternalName(jpaAttribute.getName()));
@@ -400,17 +407,19 @@ public class JPAEdmNameBuilder {
 					.getJPAAttribute();
 
 			if (mappingModelAccess != null
-					&& mappingModelAccess.isMappingModelExists())
-			{
-				toName = mappingModelAccess.mapJPAEntityType(jpattr.getElementType().getJavaType().getSimpleName());
-				fromName = mappingModelAccess.mapJPAEntityType(jpaEntityTypeName);
-				navPropName = mappingModelAccess.mapJPARelationship(jpaEntityTypeName, jpattr.getName());
+					&& mappingModelAccess.isMappingModelExists()) {
+				toName = mappingModelAccess.mapJPAEntityType(jpattr
+						.getElementType().getJavaType().getSimpleName());
+				fromName = mappingModelAccess
+						.mapJPAEntityType(jpaEntityTypeName);
+				navPropName = mappingModelAccess.mapJPARelationship(
+						jpaEntityTypeName, jpattr.getName());
 			}
-			if(toName == null)
+			if (toName == null)
 				toName = jpattr.getElementType().getJavaType().getSimpleName();
-			if(fromName == null)
+			if (fromName == null)
 				fromName = jpaEntityTypeName;
-			
+
 			if (navPropName == null)
 				navPropName = toName.concat(NAVIGATION_NAME);
 
@@ -419,26 +428,26 @@ public class JPAEdmNameBuilder {
 			if (toName.equals(associationEndTypeOne.getName())) {
 				navProp.setFromRole(association.getEnd2().getRole());
 				navProp.setToRole(association.getEnd1().getRole());
-			} else if(toName.equals(associationEndTypeTwo.getName())) {
+			} else if (toName.equals(associationEndTypeTwo.getName())) {
 				navProp.setToRole(association.getEnd2().getRole());
 				navProp.setFromRole(association.getEnd1().getRole());
 			}
 
 		} catch (Exception e) {
 			if (mappingModelAccess != null
-					&& mappingModelAccess.isMappingModelExists())
-			{
+					&& mappingModelAccess.isMappingModelExists()) {
 				navPropName = mappingModelAccess.mapJPARelationship(
-							jpaEntityTypeName, jpaAttribute.getName());
-				toName = mappingModelAccess.mapJPAEntityType(jpaAttribute.getJavaType().getSimpleName());
-				fromName = mappingModelAccess.mapJPAEntityType(jpaEntityTypeName);
+						jpaEntityTypeName, jpaAttribute.getName());
+				toName = mappingModelAccess.mapJPAEntityType(jpaAttribute
+						.getJavaType().getSimpleName());
+				fromName = mappingModelAccess
+						.mapJPAEntityType(jpaEntityTypeName);
 			}
-			if(toName == null)
+			if (toName == null)
 				toName = jpaAttribute.getJavaType().getSimpleName();
-			if(fromName == null)
+			if (fromName == null)
 				fromName = jpaEntityTypeName;
 
-			
 			if (navPropName == null)
 				navPropName = toName.concat(NAVIGATION_NAME);
 
@@ -447,7 +456,7 @@ public class JPAEdmNameBuilder {
 			if (toName.equals(associationEndTypeOne.getName())) {
 				navProp.setFromRole(association.getEnd2().getRole());
 				navProp.setToRole(association.getEnd1().getRole());
-			} else if(toName.equals(associationEndTypeTwo.getName())){
+			} else if (toName.equals(associationEndTypeTwo.getName())) {
 
 				navProp.setToRole(association.getEnd2().getRole());
 				navProp.setFromRole(association.getEnd1().getRole());

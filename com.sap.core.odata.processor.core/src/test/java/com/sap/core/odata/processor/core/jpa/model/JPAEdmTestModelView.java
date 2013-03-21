@@ -1,5 +1,6 @@
 package com.sap.core.odata.processor.core.jpa.model;
 
+import java.util.HashMap;
 import java.util.List;
 
 import javax.persistence.metamodel.Attribute;
@@ -32,6 +33,7 @@ import com.sap.core.odata.processor.api.jpa.model.JPAEdmComplexTypeView;
 import com.sap.core.odata.processor.api.jpa.model.JPAEdmEntityContainerView;
 import com.sap.core.odata.processor.api.jpa.model.JPAEdmEntitySetView;
 import com.sap.core.odata.processor.api.jpa.model.JPAEdmEntityTypeView;
+import com.sap.core.odata.processor.api.jpa.model.JPAEdmExtension;
 import com.sap.core.odata.processor.api.jpa.model.JPAEdmKeyView;
 import com.sap.core.odata.processor.api.jpa.model.JPAEdmModelView;
 import com.sap.core.odata.processor.api.jpa.model.JPAEdmNavigationPropertyView;
@@ -39,26 +41,15 @@ import com.sap.core.odata.processor.api.jpa.model.JPAEdmPropertyView;
 import com.sap.core.odata.processor.api.jpa.model.JPAEdmReferentialConstraintView;
 import com.sap.core.odata.processor.api.jpa.model.JPAEdmSchemaView;
 
-public class JPAEdmTestModelView implements
-JPAEdmAssociationEndView,
-JPAEdmAssociationSetView,
-JPAEdmAssociationView,
-JPAEdmBaseView,
-JPAEdmComplexPropertyView,
-JPAEdmComplexTypeView,
-JPAEdmEntityContainerView,
-JPAEdmEntitySetView,
-JPAEdmEntityTypeView,
-JPAEdmKeyView,
-JPAEdmModelView,
-JPAEdmNavigationPropertyView,
-JPAEdmPropertyView,
-JPAEdmReferentialConstraintView,
-JPAEdmSchemaView
-{
+public class JPAEdmTestModelView implements JPAEdmAssociationEndView,
+		JPAEdmAssociationSetView, JPAEdmAssociationView, JPAEdmBaseView,
+		JPAEdmComplexPropertyView, JPAEdmComplexTypeView,
+		JPAEdmEntityContainerView, JPAEdmEntitySetView, JPAEdmEntityTypeView,
+		JPAEdmKeyView, JPAEdmModelView, JPAEdmNavigationPropertyView,
+		JPAEdmPropertyView, JPAEdmReferentialConstraintView, JPAEdmSchemaView {
 
 	protected JPAEdmMappingModelAccess mappingModelAccess;
-	
+
 	@Override
 	public Schema getEdmSchema() {
 		return null;
@@ -161,7 +152,7 @@ JPAEdmSchemaView
 
 	@Override
 	public void addJPAEdmCompleTypeView(JPAEdmComplexTypeView arg0) {
-		
+
 	}
 
 	@Override
@@ -196,7 +187,7 @@ JPAEdmSchemaView
 
 	@Override
 	public void clean() {
-		
+
 	}
 
 	@Override
@@ -221,12 +212,12 @@ JPAEdmSchemaView
 
 	@Override
 	public void addJPAEdmAssociationView(JPAEdmAssociationView arg0) {
-		
+
 	}
 
 	@Override
 	public void addJPAEdmRefConstraintView(JPAEdmReferentialConstraintView arg0) {
-		
+
 	}
 
 	@Override
@@ -302,7 +293,7 @@ JPAEdmSchemaView
 	@Override
 	public void addJPAEdmNavigationPropertyView(
 			JPAEdmNavigationPropertyView view) {
-		
+
 	}
 
 	@Override
@@ -318,7 +309,7 @@ JPAEdmSchemaView
 	@Override
 	public void expandEdmComplexType(ComplexType complexType,
 			List<Property> expandedPropertyList, String embeddablePropertyName) {
-		
+
 	}
 
 	@Override
@@ -329,11 +320,25 @@ JPAEdmSchemaView
 	@Override
 	public void addNonKeyComplexName(String complexTypeName) {
 	}
-	
+
 	@Override
 	public JPAEdmMappingModelAccess getJPAEdmMappingModelAccess() {
 		return null;
 	}
-	
+
+	@Override
+	public void registerOperations(Class<?> customClass, String[] methodNames) {
+		// Do nothing
+	}
+
+	@Override
+	public HashMap<Class<?>, String[]> getRegisteredOperations() {
+		return null;
+	}
+
+	@Override
+	public JPAEdmExtension getJPAEdmExtension() {
+		return null;
+	}
 
 }

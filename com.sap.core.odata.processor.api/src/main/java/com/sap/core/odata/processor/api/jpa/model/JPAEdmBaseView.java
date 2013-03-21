@@ -63,4 +63,12 @@ public interface JPAEdmBaseView {
 	 * @return an instance to JPA EDM mapping model access
 	 */
 	public JPAEdmMappingModelAccess getJPAEdmMappingModelAccess();
+
+	/**
+	 * The method returns a reference to JPA EDM extension if available else
+	 * null.
+	 * 
+	 * @return an instance of JPA Edm Extension
+	 */
+	public JPAEdmExtension getJPAEdmExtension();
 }

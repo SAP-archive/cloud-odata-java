@@ -12,8 +12,6 @@ import org.junit.Test;
 
 import com.sap.core.odata.api.edm.EdmSimpleTypeKind;
 import com.sap.core.odata.processor.api.jpa.exception.ODataJPAModelException;
-import com.sap.core.odata.processor.api.jpa.exception.ODataJPARuntimeException;
-import com.sap.core.odata.processor.core.jpa.access.model.JPATypeConvertor;
 import com.sap.core.odata.processor.core.jpa.common.ODataJPATestConstants;
 
 public class JPATypeConvertorTest {
@@ -75,9 +73,7 @@ public class JPATypeConvertorTest {
 			fail(ODataJPATestConstants.EXCEPTION_MSG_PART_1+e.getMessage()+ ODataJPATestConstants.EXCEPTION_MSG_PART_2);
 		}
 
-		catch (ODataJPARuntimeException e) {
-			fail(ODataJPATestConstants.EXCEPTION_MSG_PART_1+e.getMessage()+ ODataJPATestConstants.EXCEPTION_MSG_PART_2);
-		}
+		
 		assertEquals(EdmSimpleTypeKind.String, edmSimpleKindTypeString);
 		assertEquals(EdmSimpleTypeKind.Binary, edmSimpleKindTypeByteArr);
 		assertEquals(EdmSimpleTypeKind.Int64, edmSimpleKindTypeLong);

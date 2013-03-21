@@ -1,5 +1,6 @@
 package com.sap.core.odata.processor.api.jpa.model;
 
+import java.util.HashMap;
 import java.util.List;
 
 import com.sap.core.odata.api.edm.provider.Schema;
@@ -64,6 +65,36 @@ public interface JPAEdmSchemaView extends JPAEdmBaseView {
 	 *         {@link com.sap.core.odata.processor.api.jpa.model.JPAEdmAssociationView}
 	 */
 	public JPAEdmAssociationView getJPAEdmAssociationView();
+
+	/**
+	 * The method registers custom operations that shall be represented as Edm
+	 * Function Imports. Custom operations are created using Edm Annotation
+	 * {@link com.sap.core.odata.api.annotation.edm.FunctionImport}.
+	 * <p>
+	 * Custom Operations can be part of JPA Entity or can be created in a class
+	 * other than JPA Entity. Such custom operations can be registered using
+	 * this method.
+	 * <p>
+	 * The method is a callback.
+	 * 
+	 * @param customClass
+	 *            is the class that contains custom operations
+	 * @param methodNames
+	 *            is the name of the method that needs to be transformed into
+	 *            Function Imports. It is an optional parameter. If null is
+	 *            passed then all annotated methods are transformed into
+	 *            Function Imports.
+	 * 
+	 */
+	public void registerOperations(Class<?> customClass, String methodNames[]);
+
+	/**
+	 * The method returns an Hash Map containing the registered custom
+	 * operations.
+	 * 
+	 * @return a HashMap of Class and the methods in the class
+	 */
+	public HashMap<Class<?>, String[]> getRegisteredOperations();
 
 	public List<String> getNonKeyComplexTypeList();
 

@@ -10,6 +10,7 @@ import com.sap.core.odata.processor.api.jpa.exception.ODataJPARuntimeException;
 import com.sap.core.odata.processor.api.jpa.model.JPAEdmAssociationSetView;
 import com.sap.core.odata.processor.api.jpa.model.JPAEdmEntityContainerView;
 import com.sap.core.odata.processor.api.jpa.model.JPAEdmEntitySetView;
+import com.sap.core.odata.processor.api.jpa.model.JPAEdmFunctionImportView;
 import com.sap.core.odata.processor.api.jpa.model.JPAEdmSchemaView;
 import com.sap.core.odata.processor.core.jpa.access.model.JPAEdmNameBuilder;
 
@@ -32,7 +33,7 @@ public class JPAEdmEntityContainer extends JPAEdmBaseViewImpl implements
 	public JPAEdmBuilder getBuilder() {
 		if (this.builder == null)
 			this.builder = new JPAEdmEntityContainerBuilder();
-		
+
 		return builder;
 	}
 
@@ -68,29 +69,26 @@ public class JPAEdmEntityContainer extends JPAEdmBaseViewImpl implements
 	private class JPAEdmEntityContainerBuilder implements JPAEdmBuilder {
 		/*
 		 * 
-		 *  Each call to build method creates a new Entity Container
-		 *  and builds the entity container with Association Sets and
-		 *  Entity Sets. The newly created and built entity container
-		 *  is added to the exiting Entity Container List.
-		 *   
+		 * Each call to build method creates a new Entity Container and builds
+		 * the entity container with Association Sets and Entity Sets. The newly
+		 * created and built entity container is added to the exiting Entity
+		 * Container List.
+		 * 
+		 * ************************************************************ Build
+		 * EDM Entity Container - STEPS
+		 * ************************************************************ 1)
+		 * Instantiate New EDM Entity Container 2) Build Name for EDM Entity
+		 * Container 2) Create Entity Container List (if does not exists) 3)
+		 * Build EDM Entity Set 4) Add EDM Entity Set to EDM Entity Container 6)
+		 * Build EDM Association Set 7) Add EDM Association Set to EDM Entity
+		 * Container 8) Add EDM Entity Container to the Container List
+		 * ************************************************************ Build
+		 * EDM Entity Container - STEPS
 		 * ************************************************************
-		 * 				Build EDM Entity Container - STEPS 
-		 * ************************************************************
-		 * 1) Instantiate New EDM Entity Container
-		 * 2) Build Name for EDM Entity Container
-		 * 2) Create Entity Container List (if does not exists)
-		 * 3) Build EDM Entity Set
-		 * 4) Add EDM Entity Set to EDM Entity Container
-		 * 6) Build EDM Association Set
-		 * 7) Add EDM Association Set to EDM Entity Container
-		 * 8) Add EDM Entity Container to the Container List
-		 * ************************************************************
-		 * 				Build EDM Entity Container - STEPS 
-		 * ************************************************************ 
-		 *  
 		 */
 		@Override
-		public void build() throws ODataJPAModelException, ODataJPARuntimeException {
+		public void build() throws ODataJPAModelException,
+				ODataJPARuntimeException {
 
 			currentEntityContainer = new EntityContainer();
 
@@ -108,10 +106,10 @@ public class JPAEdmEntityContainer extends JPAEdmBaseViewImpl implements
 				isConsistent = false;
 				return;
 			}
-			
-			if(!schemaView.getJPAEdmAssociationView().isConsistent())
+
+			if (!schemaView.getJPAEdmAssociationView().isConsistent())
 				schemaView.getJPAEdmAssociationView().getBuilder().build();
-			
+
 			associationSetView = new JPAEdmAssociationSet(schemaView);
 			associationSetView.getBuilder().build();
 			if (associationSetView.isConsistent())
@@ -121,9 +119,19 @@ public class JPAEdmEntityContainer extends JPAEdmBaseViewImpl implements
 				isConsistent = false;
 				return;
 			}
-			
-			
+
 			JPAEdmNameBuilder.build(JPAEdmEntityContainer.this);
+			if (schemaView.getJPAEdmExtension() != null) {
+				JPAEdmFunctionImportView functionImportView = new JPAEdmFunctionImport(
+						schemaView);
+				functionImportView.getBuilder().build();
+				if (functionImportView.getConsistentFunctionImportList() != null) {
+					currentEntityContainer
+							.setFunctionImports(functionImportView
+									.getConsistentFunctionImportList());
+				}
+			}
+			
 			consistentEntityContainerList.add(currentEntityContainer);
 			isConsistent = true;
 

@@ -31,7 +31,7 @@ public class JPATypeConvertor {
 	 * 
 	 * @see EdmSimpleTypeKind
 	 */
-	public static EdmSimpleTypeKind convertToEdmSimpleType(Class<?> jpaType) throws ODataJPAModelException, ODataJPARuntimeException{
+	public static EdmSimpleTypeKind convertToEdmSimpleType(Class<?> jpaType) throws ODataJPAModelException{
 		if (jpaType.equals(String.class)){
 			return EdmSimpleTypeKind.String;
 		}

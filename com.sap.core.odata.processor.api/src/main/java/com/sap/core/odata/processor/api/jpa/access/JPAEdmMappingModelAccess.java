@@ -17,7 +17,7 @@ public interface JPAEdmMappingModelAccess {
 	 * {@link com.sap.core.odata.processor.api.jpa.model.mapping.JPAEdmMappingModel}
 	 * . The name of the file is set into ODataJPAContext method.
 	 * 
-	 * @see com.sap.core.odata.processor.api.jpa.ODataJPAContext#setJPAEdmNameMappingModel(String)
+	 * @see com.sap.core.odata.processor.api.jpa.ODataJPAContext#setJPAEdmMappingModel(String)
 	 */
 	public void loadMappingModel();
 
