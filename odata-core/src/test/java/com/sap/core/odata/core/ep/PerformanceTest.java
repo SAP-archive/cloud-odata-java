@@ -35,7 +35,7 @@ import com.sap.core.odata.testutil.mock.MockFacade;
  */
 public class PerformanceTest extends AbstractProviderTest {
 
-  private static final long TIMES = 1000L; // increase for manual performance testing (also increase vm memory -Xmx1G)
+  private static final long TIMES = 100L; // increase for manual performance testing (also increase vm memory -Xmx1G)
 
   private AtomEntryEntityProducer provider;
   private EdmEntitySet edmEntitySet;
