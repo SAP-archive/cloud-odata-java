@@ -27,6 +27,8 @@ public class EntityProviderException extends ODataMessageException {
   /** INVALID_PARENT_TAG requires 2 content value ('expected parent tag' and 'found parent tag') */
   public static final MessageReference INVALID_PARENT_TAG = createMessageReference(EntityProviderException.class, "INVALID_PARENT_TAG");
   public static final MessageReference EXPANDNOTSUPPORTED = createMessageReference(EntityProviderException.class, "EXPANDNOTSUPPORTED");
+  /** DOUBLE_PROPERTY requires 1 content value ('double tag/property') */
+  public static final MessageReference DOUBLE_PROPERTY = createMessageReference(EntityProviderException.class, "DOUBLE_PROPERTY");
   
   public EntityProviderException(final MessageReference messageReference) {
     super(messageReference);
