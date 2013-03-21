@@ -16,6 +16,7 @@ import java.util.Map;
 import java.util.TimeZone;
 
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import com.sap.core.odata.api.edm.Edm;
@@ -420,6 +421,117 @@ public class XmlEntityConsumerTest extends AbstractConsumerTest {
     EdmEntitySet entitySet = MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Rooms");
     InputStream reqContent = createContentAsStream(roomWithValidNamespaces);
     readAndExpectException(entitySet, reqContent, EntityProviderException.INVALID_NAMESPACE.addContent(Edm.NAMESPACE_D_2007_08));
+  }
+
+  /**
+   * Duplicated occurrence of <code>d:Name</code> tag must result in an exception.
+   * 
+   * @throws Exception
+   */
+  @Test(expected = EntityProviderException.class)
+  public void validationOfDuplicatedPropertyException() throws Exception {
+    String room =
+        "<?xml version='1.0' encoding='UTF-8'?>" +
+            "<entry xmlns=\"http://www.w3.org/2005/Atom\" " +
+            "    xmlns:m=\"http://schemas.microsoft.com/ado/2007/08/dataservices/metadata\" " +
+            "    xmlns:d=\"http://schemas.microsoft.com/ado/2007/08/dataservices\" " +
+            "    xml:base=\"http://localhost:19000/test/\" " +
+            "    m:etag=\"W/&quot;1&quot;\">" +
+            "" +
+            "  <id>http://localhost:19000/test/Rooms('1')</id>" +
+            "  <title type=\"text\">Room 1</title>" +
+            "  <updated>2013-01-11T13:50:50.541+01:00</updated>" +
+            "  <content type=\"application/xml\">" +
+            "    <m:properties>" +
+            "      <d:Id>1</d:Id>" +
+            "      <d:Seats>11</d:Seats>" +
+            "      <d:Name>Room 42</d:Name>" +
+            "      <d:Name>Room 42</d:Name>" +
+            "      <d:Version>4711</d:Version>" +
+            "    </m:properties>" +
+            "  </content>" +
+            "</entry>";
+
+    EdmEntitySet entitySet = MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Rooms");
+    InputStream reqContent = createContentAsStream(room);
+    readAndExpectException(entitySet, reqContent, EntityProviderException.DOUBLE_PROPERTY.addContent("Name"));
+  }
+
+  /**
+   * Duplicated occurrence of <code>d:Name</code> tag must result in an exception.
+   * 
+   * @throws Exception
+   */
+  @Test
+  public void validationOfDoublePropertyDifferentTagHierachy() throws Exception {
+    String room =
+        "<?xml version='1.0' encoding='UTF-8'?>" +
+            "<entry xmlns=\"http://www.w3.org/2005/Atom\" " +
+            "    xmlns:m=\"http://schemas.microsoft.com/ado/2007/08/dataservices/metadata\" " +
+            "    xmlns:d=\"http://schemas.microsoft.com/ado/2007/08/dataservices\" " +
+            "    xml:base=\"http://localhost:19000/test/\" " +
+            "    m:etag=\"W/&quot;1&quot;\">" +
+            "" +
+            "  <id>http://localhost:19000/test/Rooms('1')</id>" +
+            "  <title type=\"text\">Room 1</title>" +
+            "  <updated>2013-01-11T13:50:50.541+01:00</updated>" +
+            "  <content type=\"application/xml\">" +
+            "    <m:properties>" +
+            "      <d:Id>1</d:Id>" +
+            "      <d:Seats>11</d:Seats>" +
+            "      <SomeProp>" +
+            "        <Name>Room 42</Name>" +
+            "      </SomeProp>" +
+            "      <d:Name>Room 42</d:Name>" +
+            "      <d:Version>4711</d:Version>" +
+            "    </m:properties>" +
+            "  </content>" +
+            "</entry>";
+
+    EdmEntitySet entitySet = MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Rooms");
+    InputStream reqContent = createContentAsStream(room);
+    XmlEntityConsumer xec = new XmlEntityConsumer();
+    ODataEntry result = xec.readEntry(entitySet, reqContent, false);
+    assertNotNull(result);
+  }
+
+  /**
+   * Duplicated occurrence of <code>d:Name</code> tag must result in an exception.
+   * 
+   * @throws Exception
+   */
+  @Test
+  @Ignore("Issue with Unknown hierachical property")
+  public void validationOfDoublePropertyDifferentTagHierachyD_Namespace() throws Exception {
+    String room =
+        "<?xml version='1.0' encoding='UTF-8'?>" +
+            "<entry xmlns=\"http://www.w3.org/2005/Atom\" " +
+            "    xmlns:m=\"http://schemas.microsoft.com/ado/2007/08/dataservices/metadata\" " +
+            "    xmlns:d=\"http://schemas.microsoft.com/ado/2007/08/dataservices\" " +
+            "    xml:base=\"http://localhost:19000/test/\" " +
+            "    m:etag=\"W/&quot;1&quot;\">" +
+            "" +
+            "  <id>http://localhost:19000/test/Rooms('1')</id>" +
+            "  <title type=\"text\">Room 1</title>" +
+            "  <updated>2013-01-11T13:50:50.541+01:00</updated>" +
+            "  <content type=\"application/xml\">" +
+            "    <m:properties>" +
+            "      <d:Id>1</d:Id>" +
+            "      <d:Seats>11</d:Seats>" +
+            "      <SomeProp>" +
+            "        <d:Name>Room 42</d:Name>" +
+            "      </SomeProp>" +
+            "      <d:Name>Room 42</d:Name>" +
+            "      <d:Version>4711</d:Version>" +
+            "    </m:properties>" +
+            "  </content>" +
+            "</entry>";
+
+    EdmEntitySet entitySet = MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Rooms");
+    InputStream reqContent = createContentAsStream(room);
+    XmlEntityConsumer xec = new XmlEntityConsumer();
+    ODataEntry result = xec.readEntry(entitySet, reqContent, false);
+    assertNotNull(result);
   }
 
   @Test(expected = EntityProviderException.class)

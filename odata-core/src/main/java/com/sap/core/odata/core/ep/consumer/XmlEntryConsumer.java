@@ -417,6 +417,10 @@ public class XmlEntryConsumer {
     QName name = reader.getName();
     validateNamespace(name, Edm.NAMESPACE_D_2007_08);
 
+    if(properties.containsKey(name.getLocalPart())) {
+      throw new EntityProviderException(EntityProviderException.DOUBLE_PROPERTY.addContent(name.getLocalPart()));
+    }
+
     return name.getLocalPart();
   }
   
