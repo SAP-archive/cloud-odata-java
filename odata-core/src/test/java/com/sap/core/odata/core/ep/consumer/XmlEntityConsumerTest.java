@@ -122,6 +122,11 @@ public class XmlEntityConsumerTest extends AbstractConsumerTest {
       "  </m:properties>" +
       "</entry>";
 
+  /**
+   * http://ldcigmd.wdf.sap.corp:50055/sap/bc/odata/Teams('1')?$expand=nt_Employees
+   * 
+   * @throws Exception
+   */
   @SuppressWarnings("unchecked")
   @Test
   public void readWithInlineContent() throws Exception {
@@ -173,6 +178,73 @@ public class XmlEntityConsumerTest extends AbstractConsumerTest {
     assertEquals("69190", emp2City.get("PostalCode"));
     assertEquals("Walldorf", emp2City.get("CityName"));
   }
+  
+    /**
+     * http://ldcigmd.wdf.sap.corp:50055/sap/bc/odata/Teams('1')?$expand=nt_Employees,nt_Employees/ne_Team
+     * 
+     * @throws Exception
+     */
+    @SuppressWarnings("unchecked")
+    @Test
+    public void readWithDoubleInlineContent() throws Exception {
+      // prepare
+      String content = readFile("double_expanded_team.xml");
+      assertNotNull(content);
+
+      EdmEntitySet entitySet = MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Teams");
+      InputStream reqContent = createContentAsStream(content);
+
+      // execute
+      XmlEntityConsumer xec = new XmlEntityConsumer();
+      ConsumerProperties consumerProperties = new ConsumerProperties(false);
+      consumerProperties.setCallback(new ConsumerCallback() {
+        @Override
+        public CallbackResult callback(ConsumerProperties cProps, CallbackInfo infos) {
+          try {
+            String title = infos.getTitle();
+            if(title.contains("Employees")) {
+              EdmEntitySet employeeEntitySet = MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Employees");
+              return new CallbackResult(cProps, employeeEntitySet);
+            } else if(title.contains("Team")) {
+              EdmEntitySet teamsEntitySet = MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Teams");
+              return new CallbackResult(cProps, teamsEntitySet);
+            } else {
+              throw new RuntimeException("Invalid title");
+            }
+          } catch (Exception e) {
+            throw new RuntimeException();
+          }
+        }
+      });
+      
+      ODataEntry entry = xec.readEntry(entitySet, reqContent, consumerProperties);
+      // validate
+      assertNotNull(entry);
+      Map<String, Object> properties = entry.getProperties();
+      assertEquals("1", properties.get("Id"));
+      assertEquals("Team 1", properties.get("Name"));
+      assertEquals(Boolean.FALSE, properties.get("isScrumTeam"));
+      //
+      List<Object> employees = (List<Object>) properties.get("nt_Employees");
+      assertEquals(3, employees.size());
+      //
+      ODataEntry employeeNo2 = (ODataEntry) employees.get(1);
+      Map<String, Object> employessNo2Props = employeeNo2.getProperties();
+      assertEquals("Frederic Fall", employessNo2Props.get("EmployeeName"));
+      assertEquals("2", employessNo2Props.get("RoomId"));
+      assertEquals(32, employessNo2Props.get("Age"));
+      Map<String, Object> emp2Location = (Map<String, Object>) employessNo2Props.get("Location");
+      Map<String, Object> emp2City = (Map<String, Object>) emp2Location.get("City");
+      assertEquals("69190", emp2City.get("PostalCode"));
+      assertEquals("Walldorf", emp2City.get("CityName"));
+      
+      List<Object> inlinedTeamEmployeeNo2 = (List<Object>) employessNo2Props.get("ne_Team");
+      assertEquals(1, inlinedTeamEmployeeNo2.size());
+      //
+      ODataEntry inlinedTeam = (ODataEntry) inlinedTeamEmployeeNo2.get(0);
+      assertEquals("1", inlinedTeam.getProperties().get("Id"));
+      assertEquals("Team 1", inlinedTeam.getProperties().get("Name"));
+    }
 
   @Test
   public void readWithInlineContentIgnored() throws Exception {
