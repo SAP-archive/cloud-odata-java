@@ -75,7 +75,7 @@ public class BasicHttpTest extends AbstractBasicTest {
     response = executeGetRequest("/./$metadata");
     assertEquals(HttpStatusCodes.NOT_FOUND.getStatusCode(), response.getStatusLine().getStatusCode());
     StringHelper.inputStreamToString(response.getEntity().getContent());
-    response = executeGetRequest("$metadata/");
+    response = executeGetRequest("$metadata/./");
     assertEquals(HttpStatusCodes.BAD_REQUEST.getStatusCode(), response.getStatusLine().getStatusCode());
   }
 

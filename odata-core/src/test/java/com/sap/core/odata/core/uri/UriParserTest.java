@@ -10,6 +10,7 @@ import static org.mockito.Mockito.when;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -35,6 +36,7 @@ import com.sap.core.odata.testutil.fit.BaseTest;
 import com.sap.core.odata.testutil.mock.MockFacade;
 
 /**
+ * Tests for OData URI parsing.
  * @author SAP AG
  */
 public class UriParserTest extends BaseTest {
@@ -54,42 +56,22 @@ public class UriParserTest extends BaseTest {
     */
   private UriInfoImpl parse(final String uri) throws UriSyntaxException, UriNotMatchingException, EdmException {
     final String[] path = uri.split("\\?", -1);
-    if (path.length > 2) {
+    if (path.length > 2)
       throw new UriSyntaxException(UriSyntaxException.URISYNTAX);
-    }
 
-    final List<PathSegment> pathSegments = getPathSegments(path[0]);
-    Map<String, String> queryParameters;
-    if (path.length == 2) {
-      queryParameters = getQueryParameters(unescape(path[1]));
-    } else {
-      queryParameters = new HashMap<String, String>();
-    }
+    final List<PathSegment> pathSegments =
+        MockFacade.getPathSegmentsAsODataPathSegmentMock(Arrays.asList(path[0].split("/", -1)));
+    final Map<String, String> queryParameters =
+        getQueryParameters(path.length == 2 ? unescape(path[1]) : "");
 
-    UriInfo result = new UriParserImpl(edm).parse(pathSegments, queryParameters);
-
-    return (UriInfoImpl) result;
-  }
-
-  private List<PathSegment> getPathSegments(final String uri) throws UriSyntaxException {
-    List<PathSegment> pathSegments = new ArrayList<PathSegment>();
-    for (final String segment : uri.split("/", -1)) {
-      final String unescapedSegment = unescape(segment);
-      PathSegment oDataSegment = new ODataPathSegmentImpl(unescapedSegment, null);
-      pathSegments.add(oDataSegment);
-    }
-    return pathSegments;
+    return (UriInfoImpl) new UriParserImpl(edm).parse(pathSegments, queryParameters);
   }
 
   private Map<String, String> getQueryParameters(final String uri) {
     Map<String, String> queryParameters = new HashMap<String, String>();
     for (final String option : uri.split("&")) {
       final String[] keyAndValue = option.split("=");
-      if (keyAndValue.length == 2) {
-        queryParameters.put(keyAndValue[0], keyAndValue[1]);
-      } else {
-        queryParameters.put(keyAndValue[0], "");
-      }
+      queryParameters.put(keyAndValue[0], keyAndValue.length == 2 ? keyAndValue[1] : "");
     }
     return queryParameters;
   }
@@ -120,7 +102,6 @@ public class UriParserTest extends BaseTest {
     assertNotNull(result);
     assertEquals(1, pathSegments.size());
     assertEquals("$metadata", pathSegments.get(0).getPath());
-
   }
 
   @Test
@@ -203,12 +184,19 @@ public class UriParserTest extends BaseTest {
   }
 
   @Test
+  public void finalEmptySegment() throws Exception {
+    UriInfoImpl result = parse("Employees()/");
+    assertEquals("Employees", result.getTargetEntitySet().getName());
+    assertEquals(UriType.URI1, result.getUriType());
+  }
+
+  @Test
   public void parseWrongEntities() throws Exception {
     parseWrongUri("//", UriSyntaxException.EMPTYSEGMENT);
-    parseWrongUri("/Employ ees('1')", UriSyntaxException.NOTEXT);
+    parseWrongUri("/Employees%20()", UriNotMatchingException.NOTFOUND);
+    parseWrongUri("/Employees()%2F", UriNotMatchingException.MATCHPROBLEM);
     parseWrongUri("/Employees()/somethingwrong", UriSyntaxException.ENTITYSETINSTEADOFENTITY);
     parseWrongUri("/Employees/somethingwrong", UriSyntaxException.ENTITYSETINSTEADOFENTITY);
-    parseWrongUri("Employees/", UriSyntaxException.EMPTYSEGMENT);
     parseWrongUri("//Employees", UriSyntaxException.EMPTYSEGMENT);
     parseWrongUri("Employees//", UriSyntaxException.EMPTYSEGMENT);
   }
@@ -436,6 +424,7 @@ public class UriParserTest extends BaseTest {
 
   @Test
   public void navigationPropertyWrong() throws Exception {
+    parseWrongUri("Employees('1')/somethingwrong", UriNotMatchingException.PROPERTYNOTFOUND);
     parseWrongUri("Employees('1')//ne_Manager", UriSyntaxException.EMPTYSEGMENT);
     parseWrongUri("Employees('1')/ne_Manager()", UriSyntaxException.INVALIDSEGMENT);
     parseWrongUri("Employees('1')/ne_Manager('1')", UriSyntaxException.INVALIDSEGMENT);
@@ -453,19 +442,16 @@ public class UriParserTest extends BaseTest {
     parseWrongUri("Employees('1')/$links/somethingwrong", UriNotMatchingException.PROPERTYNOTFOUND);
     parseWrongUri("Employees('1')/$links/EmployeeName", UriSyntaxException.NONAVIGATIONPROPERTY);
     parseWrongUri("Employees('1')/$links/$links/ne_Manager", UriNotMatchingException.PROPERTYNOTFOUND);
-    parseWrongUri("Managers('1')/nm_Employee/", UriSyntaxException.EMPTYSEGMENT);
   }
 
   @Test
   public void navigationPathWrongMatch() throws Exception {
     parseWrongUri("/Employees('1')/(somethingwrong(", UriNotMatchingException.MATCHPROBLEM);
-
   }
 
   @Test
   public void navigationSegmentWrongMatch() throws Exception {
     parseWrongUri("/Employees('1')/$links/(somethingwrong(", UriNotMatchingException.MATCHPROBLEM);
-
   }
 
   @Test
@@ -475,8 +461,13 @@ public class UriParserTest extends BaseTest {
 
   @Test
   public void parseWrongKey() throws Exception {
+    parseWrongUri("Employees(EmployeeId=)", UriSyntaxException.INVALIDKEYPREDICATE);
+    parseWrongUri("Employees(,)", UriSyntaxException.INVALIDKEYPREDICATE);
+    parseWrongUri("Employees(')", UriSyntaxException.UNKNOWNLITERAL);
+    parseWrongUri("Employees(0)", UriSyntaxException.INCOMPATIBLELITERAL);
     parseWrongUri("Employees(,'1')", UriSyntaxException.INVALIDKEYPREDICATE);
     parseWrongUri("Employees('1',)", UriSyntaxException.INVALIDKEYPREDICATE);
+    parseWrongUri("Employees('1','2')", UriSyntaxException.DUPLICATEKEYNAMES);
     parseWrongUri("Employees(EmployeeName='1')", UriSyntaxException.INVALIDKEYPREDICATE);
     parseWrongUri("Employees(EmployeeId='1',EmployeeId='1')", UriSyntaxException.DUPLICATEKEYNAMES);
     parseWrongUri("/Employees(EmployeeId='1',somethingwrong=abc)", UriSyntaxException.INVALIDKEYPREDICATE);
@@ -515,7 +506,7 @@ public class UriParserTest extends BaseTest {
   }
 
   @Test
-  public void parseContainerEmployeesEntitySetParenthese() throws Exception {
+  public void parseContainerEmployeesEntitySetParentheses() throws Exception {
     UriInfoImpl result = parse("/Container1.Employees()");
     assertEquals("Container1", result.getEntityContainer().getName());
     assertEquals("Employees", result.getTargetEntitySet().getName());
@@ -806,7 +797,6 @@ public class UriParserTest extends BaseTest {
     assertEquals("Location", result.getSelect().get(1).getProperty().getName());
     assertEquals(1, result.getSelect().get(0).getNavigationPropertySegments().size());
     assertEquals("Employees", result.getSelect().get(0).getNavigationPropertySegments().get(0).getTargetEntitySet().getName());
-
   }
 
   @Test
