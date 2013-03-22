@@ -10,7 +10,7 @@ public class EntryCallbackResult extends CallbackResult {
     return oneEntryData;
   }
 
-  public void setData(final Map<String, Object> data) {
+  public void setEntryData(final Map<String, Object> data) {
     oneEntryData = data;
   }
 
