@@ -495,7 +495,7 @@ public class XmlEntityConsumerTest extends AbstractConsumerTest {
   }
 
   /**
-   * Duplicated occurrence of <code>d:Name</code> tag must result in an exception.
+   * Double occurrence of <code>d:Name</code> tag must result in an exception.
    * 
    * @throws Exception
    */
@@ -529,7 +529,43 @@ public class XmlEntityConsumerTest extends AbstractConsumerTest {
   }
 
   /**
-   * Duplicated occurrence of <code>d:Name</code> tag must result in an exception.
+   * Double occurrence of <code>Name</code> tag within different namespace is allowed.
+   * 
+   * @throws Exception
+   */
+  @Test
+  public void validationOfDoublePropertyDifferentNamespace() throws Exception {
+    String room =
+        "<?xml version='1.0' encoding='UTF-8'?>" +
+            "<entry xmlns=\"http://www.w3.org/2005/Atom\" " +
+            "    xmlns:m=\"http://schemas.microsoft.com/ado/2007/08/dataservices/metadata\" " +
+            "    xmlns:d=\"http://schemas.microsoft.com/ado/2007/08/dataservices\" " +
+            "    xml:base=\"http://localhost:19000/test/\" " +
+            "    m:etag=\"W/&quot;1&quot;\">" +
+            "" +
+            "  <id>http://localhost:19000/test/Rooms('1')</id>" +
+            "  <title type=\"text\">Room 1</title>" +
+            "  <updated>2013-01-11T13:50:50.541+01:00</updated>" +
+            "  <content type=\"application/xml\">" +
+            "    <m:properties>" +
+            "      <d:Id>1</d:Id>" +
+            "      <d:Seats>11</d:Seats>" +
+            "      <o:Name xmlns:o=\"http://sample.org/own\">Room 42</o:Name>" +
+            "      <d:Name>Room 42</d:Name>" +
+            "      <d:Version>4711</d:Version>" +
+            "    </m:properties>" +
+            "  </content>" +
+            "</entry>";
+
+    EdmEntitySet entitySet = MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Rooms");
+    InputStream reqContent = createContentAsStream(room);
+    XmlEntityConsumer xec = new XmlEntityConsumer();
+    ODataEntry result = xec.readEntry(entitySet, reqContent, false);
+    assertNotNull(result);
+  }
+
+  /**
+   * Double occurrence of <code>Name</code> tag within ignored/unknown property AND different namespace is allowed.
    * 
    * @throws Exception
    */
@@ -567,7 +603,7 @@ public class XmlEntityConsumerTest extends AbstractConsumerTest {
   }
 
   /**
-   * Duplicated occurrence of <code>d:Name</code> tag must result in an exception.
+   * Double occurrence of <code>d:Name</code> tag within an unknown (and hence ignored) property is allowed.
    * 
    * @throws Exception
    */
@@ -624,6 +660,41 @@ public class XmlEntityConsumerTest extends AbstractConsumerTest {
     readAndExpectException(entitySet, reqContent, EntityProviderException.INVALID_NAMESPACE.addContent("properties"));
   }
 
+  /**
+   * Missing _d_ namespace at key property/tag (_id_) is allowed.
+   * 
+   * @throws Exception
+   */
+  @Test
+  public void validationOfNamespacesMissingD_NamespaceAtKeyPropertyTag() throws Exception {
+    String roomWithValidNamespaces =
+        "<?xml version='1.0' encoding='UTF-8'?>" +
+            "<entry xmlns=\"http://www.w3.org/2005/Atom\" xmlns:m=\"http://schemas.microsoft.com/ado/2007/08/dataservices/metadata\" xmlns:d=\"http://schemas.microsoft.com/ado/2007/08/dataservices\" xml:base=\"http://localhost:19000/test/\" m:etag=\"W/&quot;1&quot;\">" +
+            "  <id>http://localhost:19000/test/Rooms('1')</id>" +
+            "  <title type=\"text\">Room 1</title>" +
+            "  <updated>2013-01-11T13:50:50.541+01:00</updated>" +
+            "  <content type=\"application/xml\">" +
+            "    <m:properties>" +
+            "      <Id>1</Id>" +
+            "      <d:Seats>11</d:Seats>" +
+            "      <d:Name>Room 42</d:Name>" +
+            "      <d:Version>4711</d:Version>" +
+            "    </m:properties>" +
+            "  </content>" +
+            "</entry>";
+
+    EdmEntitySet entitySet = MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Rooms");
+    InputStream reqContent = createContentAsStream(roomWithValidNamespaces);
+    XmlEntityConsumer xec = new XmlEntityConsumer();
+    ODataEntry result = xec.readEntry(entitySet, reqContent, false);
+    assertNotNull(result);
+  }
+  
+  /**
+   * Missing _d_ namespace at mandatory property/tag (_Version_) results in an exception.
+   * 
+   * @throws Exception
+   */
   @Test(expected=EntityProviderException.class)
   public void validationOfNamespacesMissingD_NamespaceAtRequiredTag() throws Exception {
     String roomWithValidNamespaces =
@@ -634,15 +705,18 @@ public class XmlEntityConsumerTest extends AbstractConsumerTest {
             "  <updated>2013-01-11T13:50:50.541+01:00</updated>" +
             "  <content type=\"application/xml\">" +
             "    <m:properties>" +
-            "      <Id>1</Id>" +
+            "      <d:Seats>11</d:Seats>" +
+            "      <d:Name>Room 42</d:Name>" +
+            "      <Version>4711</Version>" +
             "    </m:properties>" +
             "  </content>" +
             "</entry>";
 
     EdmEntitySet entitySet = MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Rooms");
     InputStream reqContent = createContentAsStream(roomWithValidNamespaces);
-    readAndExpectException(entitySet, reqContent, false, EntityProviderException.MISSING_PROPERTY.addContent("Id"));
+    readAndExpectException(entitySet, reqContent, false, EntityProviderException.MISSING_PROPERTY.addContent("Version"));
   }
+
 
   private void readAndExpectException(final EdmEntitySet entitySet, final InputStream reqContent, final MessageReference messageReference) throws ODataMessageException {
     readAndExpectException(entitySet, reqContent, true, messageReference);
@@ -1232,5 +1306,4 @@ public class XmlEntityConsumerTest extends AbstractConsumerTest {
     InputStream content = new ByteArrayInputStream(xml.getBytes("utf-8"));
     return content;
   }
-
 }

@@ -12,12 +12,12 @@ import com.sap.core.odata.api.edm.EdmType;
  * @author SAP AG
  */
 public class EntityPropertyInfo {
-  protected String name;
-  protected EdmType type;
-  protected EdmFacets facets;
-  protected EdmCustomizableFeedMappings customMapping;
+  private String name;
+  private EdmType type;
+  private EdmFacets facets;
+  private EdmCustomizableFeedMappings customMapping;
   private String mimeType;
-  protected EdmMapping mapping;
+  private EdmMapping mapping;
 
   EntityPropertyInfo(final String name, final EdmType type, final EdmFacets facets, final EdmCustomizableFeedMappings customizableFeedMapping, final String mimeType, final EdmMapping mapping) {
     this.name = name;

@@ -112,7 +112,8 @@ public class XmlEntryConsumer {
   }
 
   public void validate(final EntityInfoAggregator eia, final ODataEntryImpl entry) throws EntityProviderException {
-    Collection<EntityPropertyInfo> propertyInfos = eia.getPropertyInfos();
+    Collection<EntityPropertyInfo> propertyInfos = new ArrayList<EntityPropertyInfo>(eia.getPropertyInfos());
+    propertyInfos.removeAll(eia.getKeyPropertyInfos());
     Map<String, Object> data = entry.getProperties();
 
     for (EntityPropertyInfo entityPropertyInfo : propertyInfos) {
