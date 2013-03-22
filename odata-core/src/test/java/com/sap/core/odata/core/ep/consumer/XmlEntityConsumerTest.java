@@ -268,6 +268,8 @@ public class XmlEntityConsumerTest extends AbstractConsumerTest {
   }
 
   /**
+   * For none media resource if <code>properties</code> tag is not within <code>content</code> tag it results in an exception.
+   * 
    * OData specification v2: 2.2.6.2.2 Entity Type (as an Atom Entry Element)
    * 
    * @throws Exception
@@ -292,6 +294,8 @@ public class XmlEntityConsumerTest extends AbstractConsumerTest {
   }
 
   /**
+   * For media resource if <code>properties</code> tag is within <code>content</code> tag it results in an exception.
+   * 
    * OData specification v2: 2.2.6.2.2 Entity Type (as an Atom Entry Element)
    * And RFC5023 [section 4.2]
    * 
