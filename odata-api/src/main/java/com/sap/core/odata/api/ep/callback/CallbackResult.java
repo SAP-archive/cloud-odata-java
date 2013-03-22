@@ -9,7 +9,7 @@ public abstract class CallbackResult {
   Map<String, Callback> callbacks;
 
   URI baseUri;
-
+  
   public Map<String, Callback> getCallbacks() {
     return callbacks;
   }

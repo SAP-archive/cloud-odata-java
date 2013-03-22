@@ -8,6 +8,7 @@ import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.TimeZone;
 
@@ -159,4 +160,22 @@ public abstract class AbstractProviderTest extends BaseTest {
   protected AtomEntityProvider createAtomEntityProvider() throws EntityProviderException {
     return new AtomEntityProvider();
   }
+
+  public Map<String, Object> getEmployeeData() {
+    return employeeData;
+  }
+
+  public List<Map<String, Object>> getEmployeesData() {
+    return employeesData;
+  }
+
+  public Map<String, Object> getRoomData() {
+    return roomData;
+  }
+
+  public ArrayList<Map<String, Object>> getRoomsData() {
+    return roomsData;
+  }
+  
+  
 }
