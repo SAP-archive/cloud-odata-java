@@ -104,8 +104,6 @@ public class EntryXmlChangeTest extends AbstractRefXmlTest {
 
   @Test
   public void createMediaResourceUriType6b() throws Exception {
-
-    //
     HttpResponse response = postUri("Teams('1')/nt_Employees", "X", HttpContentType.TEXT_PLAIN, HttpStatusCodes.CREATED);
     checkMediaType(response, HttpContentType.APPLICATION_ATOM_XML_UTF8 + "; type=entry");
     assertEquals(getEndpoint() + "Employees('7')", response.getFirstHeader(HttpHeaders.LOCATION).getValue());
