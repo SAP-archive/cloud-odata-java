@@ -525,7 +525,7 @@ public class JPAEdmFunctionImportTest extends JPAEdmTestModelView {
 
 	@Override
 	public EntityType searchEdmEntityType(String arg0) {
-		if (arg0.equals(JPACustomProcessorMock.className)) {
+		if (arg0.equals(JPACustomProcessorMock.class.getSimpleName())) {
 			return new EntityType().setName(JPACustomProcessorMock.edmName);
 		} else
 			return null;
@@ -533,7 +533,7 @@ public class JPAEdmFunctionImportTest extends JPAEdmTestModelView {
 
 	@Override
 	public ComplexType searchEdmComplexType(String arg0) {
-		if (arg0.equals(JPACustomProcessorMock.className)) {
+		if (arg0.equals(JPACustomProcessorMock.class.getName())) {
 			return new ComplexType().setName(JPACustomProcessorMock.edmName);
 		} else
 			return null;

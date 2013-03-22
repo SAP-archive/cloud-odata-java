@@ -23,7 +23,6 @@ public abstract class JPAEdmBaseViewImpl implements JPAEdmBaseView {
 		this.metaModel = view.getJPAMetaModel();
 		this.jpaEdmMappingModelAccess = view.getJPAEdmMappingModelAccess();
 		this.jpaEdmExtension = view.getJPAEdmExtension();
-		int i = 0;
 	}
 
 	public JPAEdmBaseViewImpl(ODataJPAContext context) {

@@ -233,7 +233,7 @@ public class JPAEdmFunctionImport extends JPAEdmBaseViewImpl implements
 										.getSimpleName());
 					else if (multiplicity == Multiplicity.MANY)
 						edmEntityType = jpaEdmEntityTypeView
-								.searchEdmEntityType(getReturnTypeName(method));
+								.searchEdmEntityType(getReturnTypeSimpleName(method));
 
 					if (edmEntityType == null)
 						throw ODataJPAModelException
@@ -286,6 +286,17 @@ public class JPAEdmFunctionImport extends JPAEdmBaseViewImpl implements
 		}
 
 		private String getReturnTypeName(Method method) {
+			try {
+				ParameterizedType pt = (ParameterizedType) method
+						.getGenericReturnType();
+				Type t = pt.getActualTypeArguments()[0];
+				return ((Class<?>) t).getName();
+			} catch (ClassCastException e) {
+				return method.getReturnType().getName();
+			}
+		}
+		
+		private String getReturnTypeSimpleName(Method method) {
 			try {
 				ParameterizedType pt = (ParameterizedType) method
 						.getGenericReturnType();
