@@ -5,20 +5,19 @@ import java.util.Map;
 import com.sap.core.odata.api.edm.EdmEntitySet;
 import com.sap.core.odata.api.edm.EdmNavigationProperty;
 
-public class CallbackContext {
-
-  private EdmEntitySet entitySet;
+public class WriteFeedCallbackContext {
+ private EdmEntitySet sourceEntitySet;
   
   private EdmNavigationProperty navigationProperty;
   
   private Map<String, Object> key;
 
-  public EdmEntitySet getEntitySet() {
-    return entitySet;
+  public EdmEntitySet getSourceEntitySet() {
+    return sourceEntitySet;
   }
 
-  public void setEntitySet(EdmEntitySet entitySet) {
-    this.entitySet = entitySet;
+  public void setSourceEntitySet(EdmEntitySet entitySet) {
+    this.sourceEntitySet = entitySet;
   }
 
   public EdmNavigationProperty getNavigationProperty() {
@@ -36,7 +35,4 @@ public class CallbackContext {
   public void setKey(Map<String, Object> key) {
     this.key = key;
   }
-  
-  
-  
 }

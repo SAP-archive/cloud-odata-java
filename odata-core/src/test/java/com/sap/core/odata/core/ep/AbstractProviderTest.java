@@ -53,6 +53,8 @@ public abstract class AbstractProviderTest extends BaseTest {
   protected Map<String, Object> photoData;
 
   protected Map<String, Object> roomData;
+  
+  protected Map<String, Object> buildingData;
 
   protected ArrayList<Map<String, Object>> roomsData;
 
@@ -121,6 +123,11 @@ public abstract class AbstractProviderTest extends BaseTest {
     roomData.put("Name", "Neu Schwanstein");
     roomData.put("Seats", new Integer(20));
     roomData.put("Version", new Integer(3));
+    
+    buildingData = new HashMap<String, Object>();
+    buildingData.put("Id", "1");
+    buildingData.put("Name", "WDF03");
+    buildingData.put("Image", "image");   
   }
 
   protected void initializeRoomData(final int count) {
