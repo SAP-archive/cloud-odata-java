@@ -26,4 +26,20 @@ public interface JPAEdmMapping {
 	 *         the container
 	 */
 	public String getJPAColumnName();
+
+	/**
+	 * The method sets the Java persistence entity/property type.
+	 * 
+	 * @param type
+	 *            is an instance of type Class<?>
+	 */
+	public void setJPAType(Class<?> type);
+
+	/**
+	 * The method returns the Java persistence entity/property type.
+	 * 
+	 * @return type
+	 */
+	public Class<?> getJPAType();
+
 }

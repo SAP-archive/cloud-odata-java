@@ -67,10 +67,13 @@ public class JPAEdmNameBuilder {
 			edmEntityTypeName = mappingModelAccess
 					.mapJPAEntityType(jpaEntityName);
 
+		JPAEdmMapping mapping = new JPAEdmMappingImpl();
+		mapping.setJPAType(view.getJPAEntityType().getClass());
+
 		if (edmEntityTypeName == null)
 			edmEntityTypeName = jpaEntityName;
 		else
-			edmEntityType.setMapping(new Mapping()
+			edmEntityType.setMapping(((Mapping) mapping)
 					.setInternalName(jpaEntityName));
 
 		edmEntityType.setName(edmEntityTypeName);
@@ -265,8 +268,10 @@ public class JPAEdmNameBuilder {
 			propertyName = Character.toUpperCase(jpaAttributeName.charAt(0))
 					+ jpaAttributeName.substring(1);
 		// change for navigation property issue
-		complexProperty.setMapping(((Mapping) new JPAEdmMappingImpl())
-				.setInternalName(jpaAttributeName));
+		JPAEdmMapping mapping = new JPAEdmMappingImpl();
+		((Mapping) mapping).setInternalName(jpaAttributeName);
+		mapping.setJPAType(propertyView.getJPAAttribute().getJavaType());
+		complexProperty.setMapping((Mapping) mapping);
 
 		complexProperty.setName(propertyName);
 
