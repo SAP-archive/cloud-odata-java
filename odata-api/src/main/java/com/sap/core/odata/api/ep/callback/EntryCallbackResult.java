@@ -6,7 +6,7 @@ public class EntryCallbackResult extends CallbackResult {
 
   Map<String, Object> oneEntryData;
 
-  public Map<String, Object> getData() {
+  public Map<String, Object> getEntryData() {
     return oneEntryData;
   }
 
