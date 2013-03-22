@@ -231,7 +231,7 @@ public class AtomEntryEntityProducer {
         context.setKey(key);
         Callback callback = properties.getCallbacks().get(navigationPropertyName);
         EntryCallbackResult result = callback.retriveResult(context, EntryCallbackResult.class);
-        Map<String, Object> inlineData = result.getData();
+        Map<String, Object> inlineData = result.getEntryData();
         if (inlineData != null) {
           ExpandSelectTreeNode subNode = properties.getExpandSelectTree().getLinks().get(navigationPropertyName);
           URI inlineBaseUri = result.getBaseUri();
