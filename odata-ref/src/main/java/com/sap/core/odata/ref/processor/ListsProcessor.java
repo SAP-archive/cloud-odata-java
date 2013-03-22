@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import com.sap.core.odata.api.ODataCallback;
 import com.sap.core.odata.api.commons.HttpContentType;
 import com.sap.core.odata.api.commons.InlineCount;
 import com.sap.core.odata.api.edm.Edm;
@@ -37,6 +38,12 @@ import com.sap.core.odata.api.ep.EntityProvider;
 import com.sap.core.odata.api.ep.EntityProviderException;
 import com.sap.core.odata.api.ep.EntityProviderProperties;
 import com.sap.core.odata.api.ep.EntityProviderProperties.ODataEntityProviderPropertiesBuilder;
+import com.sap.core.odata.api.ep.callback.OnWriteEntryContent;
+import com.sap.core.odata.api.ep.callback.OnWriteFeedContent;
+import com.sap.core.odata.api.ep.callback.WriteEntryCallbackContext;
+import com.sap.core.odata.api.ep.callback.WriteEntryCallbackResult;
+import com.sap.core.odata.api.ep.callback.WriteFeedCallbackContext;
+import com.sap.core.odata.api.ep.callback.WriteFeedCallbackResult;
 import com.sap.core.odata.api.ep.entry.EntryMetadata;
 import com.sap.core.odata.api.ep.entry.ODataEntry;
 import com.sap.core.odata.api.exception.ODataBadRequestException;
@@ -149,10 +156,10 @@ public class ListsProcessor extends ODataSingleProcessor {
       }
     }
 
+    final EdmEntityType entityType = entitySet.getEntityType();
     List<Map<String, Object>> values = new ArrayList<Map<String, Object>>();
-    for (final Object entryData : data) {
-      values.add(getStructuralTypeValueMap(entryData, entitySet.getEntityType()));
-    }
+    for (final Object entryData : data)
+      values.add(getStructuralTypeValueMap(entryData, entityType));
 
     ODataContext context = getContext();
     final EntityProviderProperties feedProperties = EntityProviderProperties
@@ -160,6 +167,7 @@ public class ListsProcessor extends ODataSingleProcessor {
         .inlineCountType(inlineCountType)
         .inlineCount(count)
         .expandSelectTree(UriParser.createExpandSelectTree(uriInfo.getSelect(), uriInfo.getExpand()))
+        .callbacks(getCallbacks(data, entityType))
         .nextLink(nextLink)
         .build();
 
@@ -256,14 +264,10 @@ public class ListsProcessor extends ODataSingleProcessor {
         mapFunctionParameters(uriInfo.getFunctionImportParameters()),
         uriInfo.getNavigationSegments());
 
-    if (!appliesFilter(data, uriInfo.getFilter())) {
+    if (!appliesFilter(data, uriInfo.getFilter()))
       throw new ODataNotFoundException(ODataNotFoundException.ENTITY);
-    }
 
-    final EdmEntitySet entitySet = uriInfo.getTargetEntitySet();
-    final Map<String, Object> values = getStructuralTypeValueMap(data, entitySet.getEntityType());
-
-    return ODataResponse.fromResponse(writeEntry((UriInfo) uriInfo, values, contentType)).build();
+    return ODataResponse.fromResponse(writeEntry((UriInfo) uriInfo, data, contentType)).build();
   }
 
   @Override
@@ -308,9 +312,7 @@ public class ListsProcessor extends ODataSingleProcessor {
       linkEntity(entitySet, data, entryValues.getMetadata());
     }
 
-    final Map<String, Object> values = getStructuralTypeValueMap(data, entityType);
-
-    return ODataResponse.fromResponse(writeEntry((UriInfo) uriInfo, values, contentType)).eTag(constructETag(entitySet, data)).build();
+    return ODataResponse.fromResponse(writeEntry((UriInfo) uriInfo, data, contentType)).eTag(constructETag(entitySet, data)).build();
   }
 
   @Override
@@ -535,9 +537,8 @@ public class ListsProcessor extends ODataSingleProcessor {
         mapFunctionParameters(uriInfo.getFunctionImportParameters()),
         uriInfo.getNavigationSegments());
 
-    if (data == null) {
+    if (data == null)
       throw new ODataNotFoundException(ODataNotFoundException.ENTITY);
-    }
 
     final List<EdmProperty> propertyPath = uriInfo.getPropertyPath();
     final EdmProperty property = propertyPath.get(propertyPath.size() - 1);
@@ -629,9 +630,8 @@ public class ListsProcessor extends ODataSingleProcessor {
     context.stopRuntimeMeasurement(timingHandle);
 
     setPropertyValue(data, property, value);
-    if (property.getMapping() != null && property.getMapping().getMimeType() != null) {
+    if (property.getMapping() != null && property.getMapping().getMimeType() != null)
       setValue(data, getSetterMethodName(property.getMapping().getMimeType()), requestContentType);
-    }
 
     return ODataResponse.newBuilder().eTag(constructETag(uriInfo.getTargetEntitySet(), data)).build();
   }
@@ -645,15 +645,13 @@ public class ListsProcessor extends ODataSingleProcessor {
         mapFunctionParameters(uriInfo.getFunctionImportParameters()),
         uriInfo.getNavigationSegments());
 
-    if (!appliesFilter(data, uriInfo.getFilter())) {
+    if (!appliesFilter(data, uriInfo.getFilter()))
       throw new ODataNotFoundException(ODataNotFoundException.ENTITY);
-    }
 
     final EdmEntitySet entitySet = uriInfo.getTargetEntitySet();
     final BinaryData binaryData = dataSource.readBinaryData(entitySet, data);
-    if (binaryData == null) {
+    if (binaryData == null)
       throw new ODataNotFoundException(ODataNotFoundException.ENTITY);
-    }
 
     final String mimeType = binaryData.getMimeType() == null ?
         HttpContentType.APPLICATION_OCTET_STREAM : binaryData.getMimeType();
@@ -771,7 +769,7 @@ public class ListsProcessor extends ODataSingleProcessor {
   }
 
   private static Map<String, Object> mapKey(final List<KeyPredicate> keys) throws EdmException {
-    HashMap<String, Object> keyMap = new HashMap<String, Object>();
+    Map<String, Object> keyMap = new HashMap<String, Object>();
     for (final KeyPredicate key : keys) {
       final EdmProperty property = key.getProperty();
       final EdmSimpleType type = (EdmSimpleType) property.getType();
@@ -801,15 +799,10 @@ public class ListsProcessor extends ODataSingleProcessor {
     ODataContext context = getContext();
     final int timingHandle = context.startRuntimeMeasurement(getClass().getSimpleName(), "retrieveData");
 
-    if (functionImport == null) {
-      if (keys.isEmpty()) {
-        data = dataSource.readData(startEntitySet);
-      } else {
-        data = dataSource.readData(startEntitySet, keys);
-      }
-    } else {
-      data = dataSource.readData(functionImport, functionImportParameters, keys);
-    }
+    data = functionImport == null ?
+        keys.isEmpty() ?
+            dataSource.readData(startEntitySet) : dataSource.readData(startEntitySet, keys) :
+        dataSource.readData(functionImport, functionImportParameters, keys);
 
     EdmEntitySet currentEntitySet =
         functionImport == null ? startEntitySet : functionImport.getEntitySet();
@@ -835,28 +828,79 @@ public class ListsProcessor extends ODataSingleProcessor {
       if (property.getFacets() != null && property.getFacets().getConcurrencyMode() == EdmConcurrencyMode.Fixed) {
         final EdmSimpleType type = (EdmSimpleType) property.getType();
         final String component = type.valueToString(getPropertyValue(data, property), EdmLiteralKind.DEFAULT, property.getFacets());
-        if (eTag == null) {
-          eTag = component;
-        } else {
-          eTag += Edm.DELIMITER + component;
-        }
+        eTag = eTag == null ? component : eTag + Edm.DELIMITER + component;
       }
     }
-    if (eTag != null) {
-      eTag = "W/\"" + eTag + "\"";
-    }
-    return eTag;
+    return eTag == null ? null : "W/\"" + eTag + "\"";
   }
 
-  private ODataResponse writeEntry(final UriInfo uriInfo, final Map<String, Object> values, final String contentType) throws ODataException, EntityProviderException {
+  private <T> Map<String, ODataCallback> getCallbacks(final T data, final EdmEntityType entityType) throws EdmException {
+    Map<String, ODataCallback> callbacks = new HashMap<String, ODataCallback>();
+    for (final String name : entityType.getNavigationPropertyNames())
+      callbacks.put(name, new WriteCallback(data));
+    return callbacks;
+  }
+
+  private class WriteCallback implements ODataCallback, OnWriteEntryContent, OnWriteFeedContent {
+    private final Object data;
+    private <T> WriteCallback(final T data) {
+      this.data = data;
+    }
+
+    @Override
+    public WriteFeedCallbackResult retrieveFeedResult(final WriteFeedCallbackContext context) {
+      try {
+        final EdmEntitySet entitySet = context.getSourceEntitySet();
+        final EdmEntitySet targetEntitySet = entitySet.getRelatedEntitySet(context.getNavigationProperty());
+        final EdmEntityType entityType = targetEntitySet.getEntityType();
+        final Object sourceData = data instanceof List ? dataSource.readData(entitySet, context.getKey()) : data;
+        final Object relatedData = dataSource.readRelatedData(entitySet, sourceData, targetEntitySet, Collections.<String, Object> emptyMap());
+        List<Map<String, Object>> values = new ArrayList<Map<String, Object>>();
+        for (final Object entryData : (List<?>) relatedData)
+          values.add(getStructuralTypeValueMap(entryData, entityType));
+        WriteFeedCallbackResult result = new WriteFeedCallbackResult();
+        result.setFeedData(values);
+        result.setCallbacks(getCallbacks(relatedData, entityType));
+        result.setBaseUri(getContext().getPathInfo().getServiceRoot());
+        return result;
+      } catch (final ODataException e) {
+        return null;
+      }
+    }
+
+    @Override
+    public WriteEntryCallbackResult retrieveEntryResult(final WriteEntryCallbackContext context) {
+      try {
+        final EdmEntitySet entitySet = context.getSourceEntitySet();
+        final EdmEntitySet targetEntitySet = entitySet.getRelatedEntitySet(context.getNavigationProperty());
+        final EdmEntityType entityType = targetEntitySet.getEntityType();
+        final Object sourceData = data instanceof List ? dataSource.readData(entitySet, context.getKey()) : data;
+        final Object relatedData = dataSource.readRelatedData(entitySet, sourceData, targetEntitySet, Collections.<String, Object> emptyMap());
+        WriteEntryCallbackResult result = new WriteEntryCallbackResult();
+        result.setEntryData(getStructuralTypeValueMap(relatedData, entityType));
+        result.setCallbacks(getCallbacks(relatedData, entityType));
+        result.setBaseUri(getContext().getPathInfo().getServiceRoot());
+        return result;
+      } catch (final ODataException e) {
+        return null;
+      }
+    }
+  }
+
+  private <T> ODataResponse writeEntry(final UriInfo uriInfo, final T data, final String contentType) throws ODataException, EntityProviderException {
+    final EdmEntitySet entitySet = uriInfo.getTargetEntitySet();
+    final EdmEntityType entityType = entitySet.getEntityType();
+    final Map<String, Object> values = getStructuralTypeValueMap(data, entityType);
+
     ODataContext context = getContext();
     ODataEntityProviderPropertiesBuilder entryProperties = EntityProviderProperties
         .serviceRoot(context.getPathInfo().getServiceRoot())
-        .expandSelectTree(UriParser.createExpandSelectTree(uriInfo.getSelect(), uriInfo.getExpand()));
+        .expandSelectTree(UriParser.createExpandSelectTree(uriInfo.getSelect(), uriInfo.getExpand()))
+        .callbacks(getCallbacks(data, entityType));
 
     final int timingHandle = context.startRuntimeMeasurement("EntityProvider", "writeEntry");
 
-    final ODataResponse response = EntityProvider.writeEntry(contentType, uriInfo.getTargetEntitySet(), values, entryProperties.build());
+    final ODataResponse response = EntityProvider.writeEntry(contentType, entitySet, values, entryProperties.build());
 
     context.stopRuntimeMeasurement(timingHandle);
 
@@ -935,16 +979,15 @@ public class ListsProcessor extends ODataSingleProcessor {
     }
   }
 
-  private void linkEntity(final EdmEntitySet entitySet, final Object data, final EntryMetadata entryMetadata) throws ODataException {
+  private <T> void linkEntity(final EdmEntitySet entitySet, final T data, final EntryMetadata entryMetadata) throws ODataException {
     final EdmEntityType entityType = entitySet.getEntityType();
     for (final String navigationPropertyName : entityType.getNavigationPropertyNames()) {
       final EdmNavigationProperty navigationProperty = (EdmNavigationProperty) entityType.getProperty(navigationPropertyName);
       final EdmEntitySet targetEntitySet = entitySet.getRelatedEntitySet(navigationProperty);
       for (final String uriString : entryMetadata.getAssociationUris(navigationPropertyName)) {
         final Map<String, Object> key = parseLinkUri(targetEntitySet, uriString);
-        if (key != null) {
+        if (key != null)
           dataSource.writeRelation(entitySet, data, targetEntitySet, key);
-        }
       }
     }
   }
