@@ -1,12 +1,37 @@
 package com.sap.core.odata.api.ep.callback;
 
+import java.net.URI;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class WriteFeedCallbackResult extends CallbackResult {
+import com.sap.core.odata.api.ODataCallback;
 
+public class WriteFeedCallbackResult {
+
+
+  Map<String, ODataCallback> callbacks;
+
+  URI baseUri;
+  
   List<Map<String, Object>> feedData;
 
+  public Map<String, ODataCallback> getCallbacks() {
+    return callbacks;
+  }
+
+  public void setCallbacks(final HashMap<String, ODataCallback> callbacks) {
+    this.callbacks = callbacks;
+  }
+
+  public URI getBaseUri() {
+    return baseUri;
+  }
+
+  public void setBaseUri(final URI baseUri) {
+    this.baseUri = baseUri;
+  }
+  
   public List<Map<String, Object>> getFeedData() {
     return feedData;
   }

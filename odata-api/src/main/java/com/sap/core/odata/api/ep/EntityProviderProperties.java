@@ -4,8 +4,8 @@ import java.net.URI;
 import java.util.Collections;
 import java.util.Map;
 
+import com.sap.core.odata.api.ODataCallback;
 import com.sap.core.odata.api.commons.InlineCount;
-import com.sap.core.odata.api.ep.callback.Callback;
 import com.sap.core.odata.api.uri.ExpandSelectTreeNode;
 
 /**
@@ -20,7 +20,7 @@ public class EntityProviderProperties {
   private Integer inlineCount;
   private String nextLink;
   private ExpandSelectTreeNode expandSelectTree;
-  private Map<String, Callback> callbacks = Collections.emptyMap();
+  private Map<String, ODataCallback> callbacks = Collections.emptyMap();
 
   private EntityProviderProperties() {}
 
@@ -48,7 +48,7 @@ public class EntityProviderProperties {
     return inlineCountType;
   }
 
-  public final Map<String, Callback> getCallbacks() {
+  public final Map<String, ODataCallback> getCallbacks() {
     return callbacks;
   }
 
@@ -143,7 +143,7 @@ public class EntityProviderProperties {
       return this;
     }
 
-    public ODataEntityProviderPropertiesBuilder callbacks(final Map<String, Callback> callbacks) {
+    public ODataEntityProviderPropertiesBuilder callbacks(final Map<String, ODataCallback> callbacks) {
       properties.callbacks = callbacks;
       return this;
     }
