@@ -34,7 +34,7 @@ public class FeedTest extends AbstractRefXmlTest {
     assertXpathEvaluatesTo("Rooms", "/atom:feed/atom:title", getBody(response));
 
     notFound("$top");
-    badRequest("Teams/");
+    badRequest("Teams/()");
   }
 
   @Test
