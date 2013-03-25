@@ -853,7 +853,7 @@ public class ListsProcessor extends ODataSingleProcessor {
         final EdmEntitySet entitySet = context.getSourceEntitySet();
         final EdmEntitySet targetEntitySet = entitySet.getRelatedEntitySet(context.getNavigationProperty());
         final EdmEntityType entityType = targetEntitySet.getEntityType();
-        final Object sourceData = data instanceof List ? dataSource.readData(entitySet, context.getKey()) : data;
+        final Object sourceData = data instanceof List ? dataSource.readData(entitySet, context.extractKeyFromEntryData()) : data;
         final Object relatedData = dataSource.readRelatedData(entitySet, sourceData, targetEntitySet, Collections.<String, Object> emptyMap());
         List<Map<String, Object>> values = new ArrayList<Map<String, Object>>();
         for (final Object entryData : (List<?>) relatedData)
@@ -874,7 +874,7 @@ public class ListsProcessor extends ODataSingleProcessor {
         final EdmEntitySet entitySet = context.getSourceEntitySet();
         final EdmEntitySet targetEntitySet = entitySet.getRelatedEntitySet(context.getNavigationProperty());
         final EdmEntityType entityType = targetEntitySet.getEntityType();
-        final Object sourceData = data instanceof List ? dataSource.readData(entitySet, context.getKey()) : data;
+        final Object sourceData = data instanceof List ? dataSource.readData(entitySet, context.extractKeyFromEntryData()) : data;
         final Object relatedData = dataSource.readRelatedData(entitySet, sourceData, targetEntitySet, Collections.<String, Object> emptyMap());
         WriteEntryCallbackResult result = new WriteEntryCallbackResult();
         result.setEntryData(getStructuralTypeValueMap(relatedData, entityType));

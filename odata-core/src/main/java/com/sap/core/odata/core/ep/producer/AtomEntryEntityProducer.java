@@ -3,7 +3,6 @@ package com.sap.core.odata.core.ep.producer;
 import java.net.URI;
 import java.util.Collection;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -185,15 +184,12 @@ public class AtomEntryEntityProducer {
         if (!properties.getCallbacks().containsKey(navigationPropertyName)) {
           throw new EntityProviderException(EntityProviderException.EXPANDNOTSUPPORTED.addContent(navigationPropertyName));
         }
-        HashMap<String, Object> key = new HashMap<String, Object>();
-        for (EntityPropertyInfo keyPropertyInfo : eia.getKeyPropertyInfos()) {
-          key.put(keyPropertyInfo.getName(), data.get(keyPropertyInfo.getName()));
-        }
+
         EdmNavigationProperty navProp = (EdmNavigationProperty) eia.getEntityType().getProperty(navigationPropertyName);
         WriteFeedCallbackContext context = new WriteFeedCallbackContext();
         context.setSourceEntitySet(eia.getEntitySet());
         context.setNavigationProperty(navProp);
-        context.setKey(key);
+        context.setEntryData(data);
         ODataCallback callback = properties.getCallbacks().get(navigationPropertyName);
 
         WriteFeedCallbackResult result = ((OnWriteFeedContent) callback).retrieveFeedResult(context);
@@ -225,15 +221,12 @@ public class AtomEntryEntityProducer {
         if (!properties.getCallbacks().containsKey(navigationPropertyName)) {
           throw new EntityProviderException(EntityProviderException.EXPANDNOTSUPPORTED.addContent(navigationPropertyName));
         }
-        HashMap<String, Object> key = new HashMap<String, Object>();
-        for (EntityPropertyInfo keyPropertyInfo : eia.getKeyPropertyInfos()) {
-          key.put(keyPropertyInfo.getName(), data.get(keyPropertyInfo.getName()));
-        }
+        
         EdmNavigationProperty navProp = (EdmNavigationProperty) eia.getEntityType().getProperty(navigationPropertyName);
         WriteEntryCallbackContext context = new WriteEntryCallbackContext();
         context.setSourceEntitySet(eia.getEntitySet());
         context.setNavigationProperty(navProp);
-        context.setKey(key);
+        context.setEntryData(data);
         ODataCallback callback = properties.getCallbacks().get(navigationPropertyName);
 
         WriteEntryCallbackResult result = ((OnWriteEntryContent) callback).retrieveEntryResult(context);
