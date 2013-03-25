@@ -9,7 +9,7 @@ import com.sap.core.odata.api.edm.EdmNavigationProperty;
 import com.sap.core.odata.api.ep.EntityProviderException;
 import com.sap.core.odata.api.uri.ExpandSelectTreeNode;
 
-public abstract class WrtiteCallbackContext {
+public abstract class WriteCallbackContext {
   private EdmEntitySet sourceEntitySet;
 
   private EdmNavigationProperty navigationProperty;
