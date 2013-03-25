@@ -7,6 +7,7 @@ import com.sap.core.odata.api.edm.EdmEntitySet;
 import com.sap.core.odata.api.edm.EdmException;
 import com.sap.core.odata.api.edm.EdmNavigationProperty;
 import com.sap.core.odata.api.ep.EntityProviderException;
+import com.sap.core.odata.api.uri.ExpandSelectTreeNode;
 
 public abstract class WrtiteCallbackContext {
   private EdmEntitySet sourceEntitySet;
@@ -14,6 +15,16 @@ public abstract class WrtiteCallbackContext {
   private EdmNavigationProperty navigationProperty;
 
   private Map<String, Object> entryData;
+
+  private ExpandSelectTreeNode currentNode;
+
+  public ExpandSelectTreeNode getCurrentExpandSelectTreeNode() {
+    return currentNode;
+  }
+
+  public void setCurrentExpandSelectTreeNode(ExpandSelectTreeNode currentNode) {
+    this.currentNode = currentNode;
+  }
 
   public EdmEntitySet getSourceEntitySet() {
     return sourceEntitySet;
