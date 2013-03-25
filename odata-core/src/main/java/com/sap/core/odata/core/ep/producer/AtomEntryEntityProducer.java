@@ -190,12 +190,13 @@ public class AtomEntryEntityProducer {
         context.setSourceEntitySet(eia.getEntitySet());
         context.setNavigationProperty(navProp);
         context.setEntryData(data);
+        ExpandSelectTreeNode subNode = properties.getExpandSelectTree().getLinks().get(navigationPropertyName);
+        context.setCurrentExpandSelectTreeNode(subNode);
+        
         ODataCallback callback = properties.getCallbacks().get(navigationPropertyName);
-
         WriteFeedCallbackResult result = ((OnWriteFeedContent) callback).retrieveFeedResult(context);
         List<Map<String, Object>> inlineData = result.getFeedData();
         if (inlineData != null) {
-          ExpandSelectTreeNode subNode = properties.getExpandSelectTree().getLinks().get(navigationPropertyName);
           URI inlineBaseUri = result.getBaseUri();
           Map<String, ODataCallback> inlineCallbacks = result.getCallbacks();
           EntityProviderProperties inlineProperties = EntityProviderProperties.fromProperties(properties).serviceRoot(inlineBaseUri).expandSelectTree(subNode).callbacks(inlineCallbacks).build();
@@ -227,12 +228,13 @@ public class AtomEntryEntityProducer {
         context.setSourceEntitySet(eia.getEntitySet());
         context.setNavigationProperty(navProp);
         context.setEntryData(data);
+        ExpandSelectTreeNode subNode = properties.getExpandSelectTree().getLinks().get(navigationPropertyName);
+        context.setCurrentExpandSelectTreeNode(subNode);
+        
         ODataCallback callback = properties.getCallbacks().get(navigationPropertyName);
-
         WriteEntryCallbackResult result = ((OnWriteEntryContent) callback).retrieveEntryResult(context);
         Map<String, Object> inlineData = result.getEntryData();
         if (inlineData != null) {
-          ExpandSelectTreeNode subNode = properties.getExpandSelectTree().getLinks().get(navigationPropertyName);
           URI inlineBaseUri = result.getBaseUri();
           Map<String, ODataCallback> inlineCallbacks = result.getCallbacks();
 
