@@ -1,5 +1,6 @@
 package com.sap.core.odata.processor.core.jpa;
 
+import java.io.InputStream;
 import java.util.List;
 
 import com.sap.core.odata.api.exception.ODataException;
@@ -7,6 +8,7 @@ import com.sap.core.odata.api.processor.ODataResponse;
 import com.sap.core.odata.api.uri.info.GetEntitySetCountUriInfo;
 import com.sap.core.odata.api.uri.info.GetEntitySetUriInfo;
 import com.sap.core.odata.api.uri.info.GetEntityUriInfo;
+import com.sap.core.odata.api.uri.info.PostUriInfo;
 import com.sap.core.odata.processor.api.jpa.ODataJPAContext;
 import com.sap.core.odata.processor.api.jpa.ODataJPAProcessor;
 import com.sap.core.odata.processor.api.jpa.exception.ODataJPAException;
@@ -60,6 +62,20 @@ public class ODataJPAProcessorDefault extends ODataJPAProcessor {
 					jpaEntityCount, uriInfo, contentType, oDataJPAContext);
 		 
 		return oDataResponse;
+	}
+	
+	@Override
+	public ODataResponse createEntity(PostUriInfo uriInfo, InputStream content,
+			String requestContentType, String contentType)
+			throws ODataException {
+		//Process OData Request
+				Object jpaEntity = this.jpaProcessor.process(uriInfo, content,requestContentType);
+				uriInfo.getTargetEntitySet().getEntityType();
+				// Build OData Response out of a JPA Response
+				ODataResponse oDataResponse = ODataJPAResponseBuilder.build(
+						jpaEntity, uriInfo, contentType, oDataJPAContext);
+				
+				return oDataResponse;
 	}
 	
 	

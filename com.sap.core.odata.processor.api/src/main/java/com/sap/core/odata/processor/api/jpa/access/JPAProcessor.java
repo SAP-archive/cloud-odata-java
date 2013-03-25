@@ -1,10 +1,12 @@
 package com.sap.core.odata.processor.api.jpa.access;
 
+import java.io.InputStream;
 import java.util.List;
 
 import com.sap.core.odata.api.uri.info.GetEntitySetCountUriInfo;
 import com.sap.core.odata.api.uri.info.GetEntitySetUriInfo;
 import com.sap.core.odata.api.uri.info.GetEntityUriInfo;
+import com.sap.core.odata.api.uri.info.PostUriInfo;
 import com.sap.core.odata.processor.api.jpa.exception.ODataJPAModelException;
 import com.sap.core.odata.processor.api.jpa.exception.ODataJPARuntimeException;
 
@@ -64,4 +66,10 @@ public interface JPAProcessor {
 	 */
 	public long process(GetEntitySetCountUriInfo requestView)
 			throws ODataJPAModelException, ODataJPARuntimeException;
+	
+	public <T> Object process(PostUriInfo createView, InputStream content, String requestContentType)
+			throws ODataJPAModelException, ODataJPARuntimeException;
+	
+//	public boolean process(DeleteUriInfo deleteView)
+//			throws ODataJPAModelException, ODataJPARuntimeException;
 }

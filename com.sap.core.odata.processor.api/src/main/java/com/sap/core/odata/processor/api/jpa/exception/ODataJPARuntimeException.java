@@ -31,6 +31,9 @@ public class ODataJPARuntimeException extends ODataJPAException {
 			ODataJPARuntimeException.class, "ERROR_ODATA_FILTER_CONDITION");
 	public static final MessageReference ERROR_JPQL_QUERY_CREATE = createMessageReference(
 			ODataJPARuntimeException.class, "ERROR_JPQL_QUERY_CREATE");
+	public static final MessageReference ERROR_JPQL_CREATE_CREATE = createMessageReference(
+			ODataJPARuntimeException.class, "ERROR_JPQL_CREATE_CREATE");
+
 
 	private ODataJPARuntimeException(String localizedMessage, Throwable e,
 			MessageReference msgRef) {

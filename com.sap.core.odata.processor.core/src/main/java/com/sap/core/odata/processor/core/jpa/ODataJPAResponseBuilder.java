@@ -17,6 +17,7 @@ import com.sap.core.odata.api.uri.SelectItem;
 import com.sap.core.odata.api.uri.info.GetEntitySetCountUriInfo;
 import com.sap.core.odata.api.uri.info.GetEntitySetUriInfo;
 import com.sap.core.odata.api.uri.info.GetEntityUriInfo;
+import com.sap.core.odata.api.uri.info.PostUriInfo;
 import com.sap.core.odata.processor.api.jpa.ODataJPAContext;
 import com.sap.core.odata.processor.api.jpa.exception.ODataJPARuntimeException;
 
@@ -149,6 +150,55 @@ public final class ODataJPAResponseBuilder {
 					.throwException(ODataJPARuntimeException.GENERAL
 							.addContent(e.getMessage()), e);
 		} 
+		return odataResponse;
+	}
+	
+	public static ODataResponse build(Object jpaEntity, PostUriInfo uriInfo,
+			String contentType, ODataJPAContext oDataJPAContext) throws ODataJPARuntimeException{
+
+		if (jpaEntity == null)
+			throw ODataJPARuntimeException.throwException(
+					ODataJPARuntimeException.RESOURCE_NOT_FOUND, null);
+
+		EdmEntityType edmEntityType = null;
+		ODataResponse odataResponse = null;
+
+		try {
+
+			edmEntityType = uriInfo.getTargetEntitySet().getEntityType();
+			Map<String, Object> edmPropertyValueMap = null;
+
+			JPAResultParser jpaResultParser = JPAResultParser.create();
+			edmPropertyValueMap = jpaResultParser.parse2EdmPropertyValueMap(
+					jpaEntity, edmEntityType);
+
+			EntityProviderProperties feedProperties = null;
+			try {
+				feedProperties = EntityProviderProperties.serviceRoot(
+						oDataJPAContext.getODataContext().getPathInfo()
+								.getServiceRoot()).build();
+			} catch (ODataException e) {
+				throw ODataJPARuntimeException.throwException(
+						ODataJPARuntimeException.INNER_EXCEPTION,e);
+			}
+
+			odataResponse = ODataResponse
+					.fromResponse(
+							EntityProvider.writeEntry(contentType,
+									uriInfo.getTargetEntitySet(),
+									edmPropertyValueMap, feedProperties))
+					.status(HttpStatusCodes.CREATED).build();
+
+		} catch (EntityProviderException e) {
+			throw ODataJPARuntimeException
+					.throwException(ODataJPARuntimeException.GENERAL
+							.addContent(e.getMessage()), e);
+		} catch (EdmException e) {
+			throw ODataJPARuntimeException
+					.throwException(ODataJPARuntimeException.GENERAL
+							.addContent(e.getMessage()), e);
+		}
+
 		return odataResponse;
 	}
 }

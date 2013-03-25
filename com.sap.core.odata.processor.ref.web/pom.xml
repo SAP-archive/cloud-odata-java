@@ -108,6 +108,11 @@
 			<artifactId>com.sap.core.odata.processor.api</artifactId>
 			<version>${version.odataforsap.processor}</version>
 		</dependency>
+		<dependency>
+			<groupId>com.sap.core.odata</groupId>
+			<artifactId>com.sap.core.odata.api.annotation</artifactId>
+			<version>${version.odataforsap.processor}</version>
+		</dependency>
 	</dependencies>
 
 	<profiles>
