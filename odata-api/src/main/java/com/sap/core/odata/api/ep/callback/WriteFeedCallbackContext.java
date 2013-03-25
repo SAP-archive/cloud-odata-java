@@ -1,6 +1,6 @@
 package com.sap.core.odata.api.ep.callback;
 
 
-public class WriteFeedCallbackContext extends WrtiteCallbackContext {
+public class WriteFeedCallbackContext extends WriteCallbackContext {
 
 }
