@@ -11,21 +11,16 @@ import com.sap.core.odata.api.uri.ExpandSelectTreeNode;
 
 /**
  * @com.sap.core.odata.DoNotImplement
- * <p>Wrapper for {@link WriteEntryCallbackContext} and {@link WriteFeedCallbackContext}.
+ * <p>Wrapper for {@link WriteEntryCallbackContext} and {@link WriteFeedCallbackContext}.</p>
  *  
  * @author SAP AG
- *
  */
 public abstract class WriteCallbackContext {
   private EdmEntitySet sourceEntitySet;
-
   private EdmNavigationProperty navigationProperty;
-
   private Map<String, Object> entryData;
-
   private ExpandSelectTreeNode currentNode;
 
- 
   /**
    * Current means the node pointing to the target entity set
    * @return the current node of the expand select tree
@@ -34,7 +29,6 @@ public abstract class WriteCallbackContext {
     return currentNode;
   }
 
-
   /**
    * Do Not Call This Method!
    * @param currentNode
@@ -42,7 +36,6 @@ public abstract class WriteCallbackContext {
   public void setCurrentExpandSelectTreeNode(ExpandSelectTreeNode currentNode) {
     this.currentNode = currentNode;
   }
-
 
   /**
    * @return source entity set
@@ -103,6 +96,6 @@ public abstract class WriteCallbackContext {
     } catch (EdmException e) {
       throw new EntityProviderException(EntityProviderException.COMMON, e);
     }
-    return entryData;
+    return key;
   }
 }
