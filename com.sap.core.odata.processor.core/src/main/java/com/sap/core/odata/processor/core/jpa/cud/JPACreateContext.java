@@ -3,9 +3,7 @@ package com.sap.core.odata.processor.core.jpa.cud;
 import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -25,9 +23,6 @@ import com.sap.core.odata.api.ep.EntityProvider;
 import com.sap.core.odata.api.ep.EntityProviderException;
 import com.sap.core.odata.api.ep.entry.ODataEntry;
 import com.sap.core.odata.api.exception.ODataBadRequestException;
-import com.sap.core.odata.api.exception.ODataException;
-import com.sap.core.odata.api.exception.ODataHttpException;
-import com.sap.core.odata.api.exception.ODataNotFoundException;
 import com.sap.core.odata.api.uri.info.PostUriInfo;
 import com.sap.core.odata.processor.api.jpa.exception.ODataJPAModelException;
 import com.sap.core.odata.processor.api.jpa.exception.ODataJPARuntimeException;
@@ -99,17 +94,12 @@ public class JPACreateContext {
 		
 		ODataEntry entryValues = null;
 		try {
-			entryValues = parseEntry(entitySet, content, requestContentType, true, getStructuralTypeTypeMap(jpaEntity, entityType));
+			entryValues = parseEntry(entitySet, content, requestContentType, true,new HashMap<String, Object>());
 		} catch (ODataBadRequestException e1) {
 			throw ODataJPARuntimeException
 			.throwException(ODataJPARuntimeException.GENERAL
 					.addContent(e1.getMessage()), e1);
-		} catch (ODataException e1) {
-			throw ODataJPARuntimeException
-			.throwException(ODataJPARuntimeException.GENERAL
-					.addContent(e1.getMessage()), e1);
-		}
-		
+		}		
 		try {
 			Map<String, Object> propertValueMap = entryValues.getProperties();
 			parse2JPAEntityValueMap(jpaEntity, entityType, propertValueMap,currentEntityName);
@@ -393,156 +383,5 @@ public class JPACreateContext {
 	    }
 	    return entryValues;
 	  }
-	
-	private <T> Map<String, Object> getStructuralTypeValueMap(final T data, final EdmStructuralType type) throws ODataException {
-
-	    Map<String, Object> valueMap = new HashMap<String, Object>();
-
-	    for (final String propertyName : type.getPropertyNames()) {
-	      final EdmProperty property = (EdmProperty) type.getProperty(propertyName);
-	      final Object value = getPropertyValue(data, property);
-
-	      if (property.isSimple()) {
-	        if (property.getMapping() == null || property.getMapping().getMimeType() == null) {
-	          valueMap.put(propertyName, value);
-	        } else {
-	          valueMap.put(propertyName, getSimpleTypeValueMap(data, Arrays.asList(property)));
-	        }
-	      } else {
-	        valueMap.put(propertyName, getStructuralTypeValueMap(value, (EdmStructuralType) property.getType()));
-	      }
-	    }
-
-	    return valueMap;
-	  }
-
-	  private <T> Map<String, Object> getStructuralTypeTypeMap(final T data, final EdmStructuralType type) throws ODataException {
-
-	    Map<String, Object> valueMap = new HashMap<String, Object>();
-	    for (final String propertyName : type.getPropertyNames()) {
-	      final EdmProperty property = (EdmProperty) type.getProperty(propertyName);
-	      if (property.isSimple())
-	        valueMap.put(propertyName, getPropertyType(data, property));
-	      else
-	        valueMap.put(propertyName, getStructuralTypeValueMap(getPropertyValue(data, property), (EdmStructuralType) property.getType()));
-	    }
-
-	    return valueMap;
-	  }
-	  
-	  private static <T> Class<?> getPropertyType(final T data, final EdmProperty property) throws ODataException {
-		    return getType(data, getGetterMethodName(property));
-		  }
-	  
-	  private static <T> Object getPropertyValue(final T data, final EdmProperty property) throws ODataException {
-		    return getValue(data, getGetterMethodName(property));
-		  }
-	  
-	  private static <T> Map<String, Object> getSimpleTypeValueMap(final T data, final List<EdmProperty> propertyPath) throws ODataException {
-		    final EdmProperty property = propertyPath.get(propertyPath.size() - 1);
-		    Map<String, Object> valueWithMimeType = new HashMap<String, Object>();
-		    valueWithMimeType.put(property.getName(), getPropertyValue(data, propertyPath));
-		    final String mimeTypeMappingName = property.getMapping().getMimeType();
-		    valueWithMimeType.put(mimeTypeMappingName, getValue(data, mimeTypeMappingName));
-		    return valueWithMimeType;
-		  }
-	  
-	  private static <T> Object getPropertyValue(final T data, final List<EdmProperty> propertyPath) throws ODataException {
-		    Object dataObject = data;
-		    for (final EdmProperty property : propertyPath)
-		      if (dataObject != null)
-		        dataObject = getPropertyValue(dataObject, property);
-		    return dataObject;
-		  }
-	  
-	  private static <T> Object getValue(final T data, final String methodName) throws ODataNotFoundException {
-		    Object dataObject = data;
-
-		    for (final String method : methodName.split("\\.", -1))
-		      if (dataObject != null)
-		        try {
-		          dataObject = dataObject.getClass().getMethod(method).invoke(dataObject);
-		        } catch (SecurityException e) {
-		          throw new ODataNotFoundException(ODataHttpException.COMMON, e);
-		        } catch (NoSuchMethodException e) {
-		          throw new ODataNotFoundException(ODataHttpException.COMMON, e);
-		        } catch (IllegalArgumentException e) {
-		          throw new ODataNotFoundException(ODataHttpException.COMMON, e);
-		        } catch (IllegalAccessException e) {
-		          throw new ODataNotFoundException(ODataHttpException.COMMON, e);
-		        } catch (InvocationTargetException e) {
-		          throw new ODataNotFoundException(ODataHttpException.COMMON, e);
-		        }
-
-		    return dataObject;
-		  }
-	  
-	  
-	  private static String getGetterMethodName(EdmProperty property)
-				throws ODataJPARuntimeException {
-			EdmMapping mapping = null;
-			String name = null;
-			try {
-				mapping = property.getMapping();
-				if (mapping == null || mapping.getInternalName() == null)
-					name = property.getName();
-				else {
-					name = mapping.getInternalName();
-				}
-
-			} catch (EdmException e) {
-				throw ODataJPARuntimeException
-						.throwException(ODataJPARuntimeException.GENERAL
-								.addContent(e.getMessage()), e);
-			}
-
-			String[] nameParts = name.split("\\.");
-			StringBuilder builder = new StringBuilder();
-
-			if (nameParts.length == 1) {
-				if (name != null) {
-					char c = Character.toUpperCase(name.charAt(0));
-
-					builder.append("get").append(c).append(name.substring(1))
-							.toString();
-				}
-			} else if (nameParts.length > 1) {
-
-				for (int i = 0; i < nameParts.length; i++) {
-					name = nameParts[i];
-					char c = Character.toUpperCase(name.charAt(0));
-					if (i == 0)
-						builder.append("get").append(c).append(name.substring(1));
-					else
-						builder.append(".").append("get").append(c)
-								.append(name.substring(1));
-				}
-			} else {
-				return null;
-			}
-
-			if (builder.length() > 0)
-				return builder.toString();
-			else
-				return null;
-
-		}
-
-	  
-	  private static <T> Class<?> getType(final T data, final String methodName) throws ODataNotFoundException {
-		    if (data == null)
-		      throw new ODataNotFoundException(ODataHttpException.COMMON);
-
-		    Class<?> type = data.getClass();
-		    for (final String method : methodName.split("\\.", -1))
-		      try {
-		        type = type.getMethod(method).getReturnType();
-		      } catch (final SecurityException e) {
-		        throw new ODataNotFoundException(ODataHttpException.COMMON, e);
-		      } catch (final NoSuchMethodException e) {
-		        throw new ODataNotFoundException(ODataHttpException.COMMON, e);
-		      }
-		    return type;
-		  }
 
 }
