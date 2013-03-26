@@ -12,10 +12,16 @@ var request = {
 		resourcePath : "$metadata"
 };
 
-odataTest("read metadata document", 3, request, function(response, data) {
+odataTest("read metadata document", 9, request, function(response, data) {
 		equal(response.statusCode, 200, "StatusCode: 200");
-		expectedHeaders(response.headers, { "Content-Length" : "6520" }, "Check if there is any change in metadata");
-		strictEqual((new RegExp('Complex')).test(response.body), true,"check for some substring in metadata");
+		expectedHeaders(response.headers, { "Content-Length" : "7221" }, "Check if there is any change in metadata");
+		strictEqual((new RegExp('<FunctionImport Name="getAddress" ReturnType="SalesOrderProcessing.AddressInfo">')).test(response.body), true,"Check function import 'getAddress'");
+		strictEqual((new RegExp('<FunctionImport Name="FindAllSalesOrders" ReturnType="Collection\\(SalesOrderProcessing.SalesOrder\\)" EntitySet="SalesOrders">')).test(response.body), true,"Check function import 'FindAllSalesOrders'");
+		strictEqual((new RegExp('<Parameter Name="LifeCycleStatusCode" Type="Edm.String" Mode="IN" Nullable="false" MaxLength="2"\\/>')).test(response.body), true,"Check the param in function import 'FindAllSalesOrders'");
+		strictEqual((new RegExp('<FunctionImport Name="CheckATP" ReturnType="Edm.Boolean">')).test(response.body), true,"Check the function import 'CheckATP'");
+		strictEqual((new RegExp('<Parameter Name="SoID" Type="Edm.Int64" Mode="IN" Nullable="false"\\/>')).test(response.body), true,"Check the param in function import 'CheckATP'");
+		strictEqual((new RegExp('<Parameter Name="LiId" Type="Edm.Int64" Mode="IN" Nullable="false"\\/>')).test(response.body), true,"Check the param in function import 'CheckATP'");
+		strictEqual((new RegExp('<FunctionImport Name="calculateNetAmount" ReturnType="SalesOrderProcessing.SalesOrder"\\/>')).test(response.body), true,"Check the function import 'calculateNetAmount' (without params)");		
 });
 
 //---------------------------------------------------------------
