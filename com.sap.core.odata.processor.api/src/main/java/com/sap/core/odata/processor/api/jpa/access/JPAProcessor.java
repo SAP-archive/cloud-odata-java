@@ -3,10 +3,12 @@ package com.sap.core.odata.processor.api.jpa.access;
 import java.io.InputStream;
 import java.util.List;
 
+import com.sap.core.odata.api.uri.info.DeleteUriInfo;
 import com.sap.core.odata.api.uri.info.GetEntitySetCountUriInfo;
 import com.sap.core.odata.api.uri.info.GetEntitySetUriInfo;
 import com.sap.core.odata.api.uri.info.GetEntityUriInfo;
 import com.sap.core.odata.api.uri.info.PostUriInfo;
+import com.sap.core.odata.api.uri.info.PutMergePatchUriInfo;
 import com.sap.core.odata.processor.api.jpa.exception.ODataJPAModelException;
 import com.sap.core.odata.processor.api.jpa.exception.ODataJPARuntimeException;
 
@@ -64,12 +66,50 @@ public interface JPAProcessor {
 	 * @throws ODataJPAModelException
 	 * @throws ODataJPARuntimeException
 	 */
+	
 	public long process(GetEntitySetCountUriInfo requestView)
 			throws ODataJPAModelException, ODataJPARuntimeException;
+	/**
+	 * Processes OData request for creating Entity. The method returns an
+	 * Object which is created. Null means object was not created.
+	 * 
+	 * @param createView
+	 * @param content
+	 * @param requestContentType
+	 * @param contentType
+	 * @return Created Object
+	 * 
+	 * @throws ODataJPAModelException
+	 * @throws ODataJPARuntimeException
+	 */
 	
 	public <T> Object process(PostUriInfo createView, InputStream content, String requestContentType)
 			throws ODataJPAModelException, ODataJPARuntimeException;
-	
-//	public boolean process(DeleteUriInfo deleteView)
-//			throws ODataJPAModelException, ODataJPARuntimeException;
+	/**
+	 * Processes OData request for updating Entity. The method returns an
+	 * Object which is updated. Null means object was not found or updated.
+	 * 
+	 * @param deleteuriInfo
+	 * @param contentType
+	 * @return Deleted Object
+	 * 
+	 * @throws ODataJPAModelException
+	 * @throws ODataJPARuntimeException
+	 */
+	public <T> Object process(PutMergePatchUriInfo updateView, InputStream content, String requestContentType)
+			throws ODataJPAModelException, ODataJPARuntimeException;
+
+	/**
+	 * Processes OData request for deleting Entity. The method returns an
+	 * Object which is deleted. Null means object was not found.
+	 * 
+	 * @param deleteuriInfo
+	 * @param contentType
+	 * @return Deleted Object
+	 * 
+	 * @throws ODataJPAModelException
+	 * @throws ODataJPARuntimeException
+	 */
+	public Object process(DeleteUriInfo deleteuriInfo, String contentType) 
+			throws ODataJPAModelException, ODataJPARuntimeException;
 }

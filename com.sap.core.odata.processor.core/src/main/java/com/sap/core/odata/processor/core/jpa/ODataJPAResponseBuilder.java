@@ -12,12 +12,15 @@ import com.sap.core.odata.api.ep.EntityProvider;
 import com.sap.core.odata.api.ep.EntityProviderException;
 import com.sap.core.odata.api.ep.EntityProviderProperties;
 import com.sap.core.odata.api.exception.ODataException;
+import com.sap.core.odata.api.exception.ODataNotFoundException;
 import com.sap.core.odata.api.processor.ODataResponse;
 import com.sap.core.odata.api.uri.SelectItem;
+import com.sap.core.odata.api.uri.info.DeleteUriInfo;
 import com.sap.core.odata.api.uri.info.GetEntitySetCountUriInfo;
 import com.sap.core.odata.api.uri.info.GetEntitySetUriInfo;
 import com.sap.core.odata.api.uri.info.GetEntityUriInfo;
 import com.sap.core.odata.api.uri.info.PostUriInfo;
+import com.sap.core.odata.api.uri.info.PutMergePatchUriInfo;
 import com.sap.core.odata.processor.api.jpa.ODataJPAContext;
 import com.sap.core.odata.processor.api.jpa.exception.ODataJPARuntimeException;
 
@@ -89,11 +92,10 @@ public final class ODataJPAResponseBuilder {
 
 	public static ODataResponse build(Object jpaEntity,
 			GetEntityUriInfo resultsView, String contentType,
-			ODataJPAContext oDataJPAContext) throws ODataJPARuntimeException {
+			ODataJPAContext oDataJPAContext) throws ODataJPARuntimeException, ODataNotFoundException {
 
 		if (jpaEntity == null)
-			throw ODataJPARuntimeException.throwException(
-					ODataJPARuntimeException.RESOURCE_NOT_FOUND, null);
+			throw new ODataNotFoundException(ODataNotFoundException.ENTITY); // Need to throw 404 with Message body
 
 		EdmEntityType edmEntityType = null;
 		ODataResponse odataResponse = null;
@@ -153,12 +155,11 @@ public final class ODataJPAResponseBuilder {
 		return odataResponse;
 	}
 	
-	public static ODataResponse build(Object jpaEntity, PostUriInfo uriInfo,
-			String contentType, ODataJPAContext oDataJPAContext) throws ODataJPARuntimeException{
+	public static ODataResponse build(Object createdObject, PostUriInfo uriInfo,
+			String contentType, ODataJPAContext oDataJPAContext) throws ODataJPARuntimeException, ODataNotFoundException{
 
-		if (jpaEntity == null)
-			throw ODataJPARuntimeException.throwException(
-					ODataJPARuntimeException.RESOURCE_NOT_FOUND, null);
+		if (createdObject == null)
+			throw new ODataNotFoundException(ODataNotFoundException.ENTITY); // Need to throw 404 with Message body
 
 		EdmEntityType edmEntityType = null;
 		ODataResponse odataResponse = null;
@@ -170,7 +171,7 @@ public final class ODataJPAResponseBuilder {
 
 			JPAResultParser jpaResultParser = JPAResultParser.create();
 			edmPropertyValueMap = jpaResultParser.parse2EdmPropertyValueMap(
-					jpaEntity, edmEntityType);
+					createdObject, edmEntityType);
 
 			EntityProviderProperties feedProperties = null;
 			try {
@@ -187,7 +188,7 @@ public final class ODataJPAResponseBuilder {
 							EntityProvider.writeEntry(contentType,
 									uriInfo.getTargetEntitySet(),
 									edmPropertyValueMap, feedProperties))
-					.status(HttpStatusCodes.CREATED).build();
+					.status(HttpStatusCodes.CREATED).build(); //Send status code along with body of created content
 
 		} catch (EntityProviderException e) {
 			throw ODataJPARuntimeException
@@ -200,5 +201,20 @@ public final class ODataJPAResponseBuilder {
 		}
 
 		return odataResponse;
+	}
+	
+	public static ODataResponse build(Object updatedObject, PutMergePatchUriInfo putUriInfo) throws ODataJPARuntimeException, ODataNotFoundException{
+		if (updatedObject == null) 
+			throw new ODataNotFoundException(ODataNotFoundException.ENTITY); // Need to throw 404 with Message body
+
+		return ODataResponse.status(HttpStatusCodes.ACCEPTED).build(); // Body is not needed for successful update;
+	}
+	
+	public static ODataResponse build(Object deletedObject, DeleteUriInfo deleteUriInfo) throws ODataJPARuntimeException, ODataNotFoundException {
+		
+		if (deletedObject == null){
+			throw new ODataNotFoundException(ODataNotFoundException.ENTITY); // Need to throw 404 with Message body
+		}
+		return ODataResponse.status(HttpStatusCodes.NO_CONTENT).build();	// Body is not needed for successful delete;
 	}
 }
