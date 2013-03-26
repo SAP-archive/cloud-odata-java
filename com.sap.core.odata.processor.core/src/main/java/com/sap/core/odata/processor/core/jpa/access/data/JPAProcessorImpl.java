@@ -13,6 +13,7 @@ import com.sap.core.odata.api.uri.info.GetEntitySetCountUriInfo;
 import com.sap.core.odata.api.uri.info.GetEntitySetUriInfo;
 import com.sap.core.odata.api.uri.info.GetEntityUriInfo;
 import com.sap.core.odata.api.uri.info.PostUriInfo;
+import com.sap.core.odata.api.uri.info.PutMergePatchUriInfo;
 import com.sap.core.odata.processor.api.jpa.ODataJPAContext;
 import com.sap.core.odata.processor.api.jpa.access.JPAProcessor;
 import com.sap.core.odata.processor.api.jpa.exception.ODataJPAModelException;
@@ -21,6 +22,7 @@ import com.sap.core.odata.processor.api.jpa.jpql.JPQLContext;
 import com.sap.core.odata.processor.api.jpa.jpql.JPQLContextType;
 import com.sap.core.odata.processor.api.jpa.jpql.JPQLStatement;
 import com.sap.core.odata.processor.core.jpa.cud.JPACreateContext;
+import com.sap.core.odata.processor.core.jpa.cud.JPAUpdateContext;
 
 
 public class JPAProcessorImpl implements JPAProcessor {
@@ -140,19 +142,53 @@ public class JPAProcessorImpl implements JPAProcessor {
 			throw ODataJPARuntimeException.throwException(
 					ODataJPARuntimeException.ERROR_JPQL_CREATE_CREATE, e);
 		}		
-//		Object createdObject = readEntity(createView);
 		if(em.contains(createObject)){
 			return createObject;
 		}		
 		return null;
 	}
+	
+	@Override
+	public <T> Object process(PutMergePatchUriInfo updateView,
+			InputStream content, String requestContentType)
+			throws ODataJPAModelException, ODataJPARuntimeException {
+		JPAUpdateContext jpaUpdateContext = new JPAUpdateContext(em.getEntityManagerFactory().getMetamodel());
+		Object updateObject = readEntity(updateView);
+		try{
+			em.getTransaction().begin();
+			jpaUpdateContext.build(updateObject, updateView, content, requestContentType);
+			em.flush();
+			em.getTransaction().commit();
+			}catch(Exception e){
+				em.getTransaction().rollback();
+				throw ODataJPARuntimeException.throwException(
+						ODataJPARuntimeException.ERROR_JPQL_UPDATE_CREATE, e);
+			}		
+		return updateObject;
+	}
 
-//	@Override
-//	public boolean process(DeleteUriInfo deleteView)
-//			throws ODataJPAModelException, ODataJPARuntimeException {
-//		// TODO Auto-generated method stub
-//		return false;
-//	}
+
+	@Override
+	public Object process(DeleteUriInfo uriParserResultView, String contentType) 
+			throws ODataJPAModelException, ODataJPARuntimeException {
+		
+		// First read the entity with read operation.
+		Object selectedObject = readEntity(uriParserResultView);
+		// Read operation done. This object would be passed on to entity manager for delete
+		if(selectedObject != null){
+			try{
+				em.getTransaction().begin();
+				em.remove(selectedObject); 
+				em.flush();
+				em.getTransaction().commit();
+			}catch(Exception e){
+				em.getTransaction().rollback();
+				throw ODataJPARuntimeException.throwException(
+						ODataJPARuntimeException.ERROR_JPQL_DELETE_CREATE, e);
+			}		
+		}
+		return selectedObject;
+	}
 	
 	/**
      * This is a common method to be used by read and delete process.
@@ -167,7 +203,7 @@ public class JPAProcessorImpl implements JPAProcessor {
             JPQLContextType contextType = null;      
             Object selectedObject = null;
             
-            if(uriParserResultView instanceof DeleteUriInfo || uriParserResultView instanceof GetEntityUriInfo || uriParserResultView instanceof PostUriInfo){
+            if(uriParserResultView instanceof DeleteUriInfo || uriParserResultView instanceof GetEntityUriInfo || uriParserResultView instanceof PutMergePatchUriInfo){
                    try {
                          if(uriParserResultView instanceof DeleteUriInfo){
                                 uriParserResultView = ((DeleteUriInfo)uriParserResultView);
@@ -176,10 +212,10 @@ public class JPAProcessorImpl implements JPAProcessor {
                                               contextType = JPQLContextType.JOIN_SINGLE;
                                        else
                                               contextType = JPQLContextType.SELECT_SINGLE;
-                         }else if(uriParserResultView instanceof PostUriInfo){
-                             uriParserResultView = ((PostUriInfo)uriParserResultView);
-                             if (!((PostUriInfo) uriParserResultView).getStartEntitySet().getName()
-                                           .equals(((PostUriInfo) uriParserResultView).getTargetEntitySet().getName()))
+                         }else if(uriParserResultView instanceof PutMergePatchUriInfo){
+                             uriParserResultView = ((PutMergePatchUriInfo)uriParserResultView);
+                             if (!((PutMergePatchUriInfo) uriParserResultView).getStartEntitySet().getName()
+                                           .equals(((PutMergePatchUriInfo) uriParserResultView).getTargetEntitySet().getName()))
                                     contextType = JPQLContextType.JOIN_SINGLE;
                              else
                                     contextType = JPQLContextType.SELECT_SINGLE;
@@ -220,5 +256,6 @@ public class JPAProcessorImpl implements JPAProcessor {
             return selectedObject;
      }
 
+	
 
 }

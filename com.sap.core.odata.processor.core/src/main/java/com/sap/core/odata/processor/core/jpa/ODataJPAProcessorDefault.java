@@ -5,10 +5,12 @@ import java.util.List;
 
 import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.api.processor.ODataResponse;
+import com.sap.core.odata.api.uri.info.DeleteUriInfo;
 import com.sap.core.odata.api.uri.info.GetEntitySetCountUriInfo;
 import com.sap.core.odata.api.uri.info.GetEntitySetUriInfo;
 import com.sap.core.odata.api.uri.info.GetEntityUriInfo;
 import com.sap.core.odata.api.uri.info.PostUriInfo;
+import com.sap.core.odata.api.uri.info.PutMergePatchUriInfo;
 import com.sap.core.odata.processor.api.jpa.ODataJPAContext;
 import com.sap.core.odata.processor.api.jpa.ODataJPAProcessor;
 import com.sap.core.odata.processor.api.jpa.exception.ODataJPAException;
@@ -70,14 +72,33 @@ public class ODataJPAProcessorDefault extends ODataJPAProcessor {
 			throws ODataException {
 		//Process OData Request
 				Object jpaEntity = this.jpaProcessor.process(uriInfo, content,requestContentType);
-				uriInfo.getTargetEntitySet().getEntityType();
+//				uriInfo.getTargetEntitySet().getEntityType();
 				// Build OData Response out of a JPA Response
 				ODataResponse oDataResponse = ODataJPAResponseBuilder.build(
 						jpaEntity, uriInfo, contentType, oDataJPAContext);
 				
 				return oDataResponse;
 	}
-	
-	
 
+	@Override
+	public ODataResponse updateEntity(PutMergePatchUriInfo uriInfo,
+			InputStream content, String requestContentType, boolean merge,
+			String contentType) throws ODataException {
+		//Process OData Request
+		Object jpaEntity = this.jpaProcessor.process(uriInfo, content,requestContentType);
+		ODataResponse oDataResponse = ODataJPAResponseBuilder.build(jpaEntity, uriInfo);
+		
+		return oDataResponse;
+	}
+	
+	@Override
+	public ODataResponse deleteEntity(DeleteUriInfo deleteUriInfo, String contentType)
+			throws ODataException {
+		//Process OData Request
+		Object deletedObj = this.jpaProcessor.process(deleteUriInfo, contentType);
+		// Build OData Response out of a JPA Response
+		ODataResponse oDataResponse = ODataJPAResponseBuilder.build(deletedObj, deleteUriInfo);
+		return oDataResponse;
+	}
+	
 }
