@@ -32,6 +32,7 @@ import com.sap.core.odata.api.uri.info.PostUriInfo;
 import com.sap.core.odata.processor.api.jpa.exception.ODataJPAModelException;
 import com.sap.core.odata.processor.api.jpa.exception.ODataJPARuntimeException;
 import com.sap.core.odata.processor.core.jpa.access.model.EdmTypeConvertor;
+import com.sap.core.odata.processor.core.jpa.model.JPAEdmMappingImpl;
 
 public class JPACreateContext {
 	
@@ -131,35 +132,27 @@ public class JPACreateContext {
 				EdmProperty property = (EdmProperty) structuralType
 						.getProperty(propertyName);
 				Class<?> propertyClass = null;
-				try {
-					if (property.getType().getKind().equals(EdmTypeKind.COMPLEX)) {
-						String internalPropertyName = null;
-							for(EntityType<?> entity:metamodel.getEntities())
-								{
-									if(entity.getName().equals(entityName))
-									{
-										if (property.getMapping() != null && property.getMapping().getInternalName() != null) {
-											internalPropertyName = property.getMapping().getInternalName();
-										}
-										Attribute<?,?> attribute = entity.getAttribute(internalPropertyName);
-										propertyClass = attribute.getJavaType();
-										try {
-											jpaComplexObjectMap.put(internalPropertyName, propertyClass.newInstance());
-										} catch (InstantiationException e) {
-											throw ODataJPARuntimeException
-											.throwException(ODataJPARuntimeException.GENERAL
-													.addContent(e.getMessage()), e);
-										} catch (IllegalAccessException e) {
-											throw ODataJPARuntimeException
-											.throwException(ODataJPARuntimeException.GENERAL
-													.addContent(e.getMessage()), e);
-										}
-										break;
-									}
-								}
-					}
-					else 
-					propertyClass = EdmTypeConvertor.convertToJavaType(property.getType());
+				try {					
+					if(property.getMapping() != null && ((JPAEdmMappingImpl)property.getMapping()).getJPAType() != null){
+						propertyClass = ((JPAEdmMappingImpl)property.getMapping()).getJPAType();
+						if (property.getType().getKind().equals(EdmTypeKind.COMPLEX)) {
+							try {
+								if(((JPAEdmMappingImpl)property.getMapping()).getInternalName() != null)
+									jpaComplexObjectMap.put(((JPAEdmMappingImpl)property.getMapping()).getInternalName(), propertyClass.newInstance());
+								else 								
+									jpaComplexObjectMap.put(propertyName, propertyClass.newInstance());
+							} catch (InstantiationException e) {
+								throw ODataJPARuntimeException
+								.throwException(ODataJPARuntimeException.GENERAL
+										.addContent(e.getMessage()), e);
+							} catch (IllegalAccessException e) {
+								throw ODataJPARuntimeException
+								.throwException(ODataJPARuntimeException.GENERAL
+										.addContent(e.getMessage()), e);
+							}
+						}
+					} else 
+						propertyClass = EdmTypeConvertor.convertToJavaType(property.getType());
 				} catch (ODataJPAModelException e) {
 					throw ODataJPARuntimeException
 					.throwException(ODataJPARuntimeException.GENERAL

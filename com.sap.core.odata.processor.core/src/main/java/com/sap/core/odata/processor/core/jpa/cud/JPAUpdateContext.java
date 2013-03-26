@@ -9,7 +9,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import javax.persistence.metamodel.Attribute;
 import javax.persistence.metamodel.EntityType;
 import javax.persistence.metamodel.Metamodel;
 
@@ -32,20 +31,17 @@ import com.sap.core.odata.api.uri.info.PutMergePatchUriInfo;
 import com.sap.core.odata.processor.api.jpa.exception.ODataJPAModelException;
 import com.sap.core.odata.processor.api.jpa.exception.ODataJPARuntimeException;
 import com.sap.core.odata.processor.core.jpa.access.model.EdmTypeConvertor;
+import com.sap.core.odata.processor.core.jpa.model.JPAEdmMappingImpl;
 
 public class JPAUpdateContext {
 	
 	private HashMap<String, HashMap<String, Method>> jpaEntityAccessMap = null;
-//	private HashMap<String, HashMap<String, String>> jpaEmbeddableKeyMap = null;
 	private HashMap<String, Object> jpaComplexObjectMap = null;
-//	private HashMap<String, Class<?>> jpaEmbeddableKeyObjectMap = null;
 	private Metamodel metamodel;
 
 	public JPAUpdateContext() {
 		jpaEntityAccessMap = new HashMap<String, HashMap<String, Method>>();
-//		jpaEmbeddableKeyMap = new HashMap<String, HashMap<String, String>>();
 		jpaComplexObjectMap = new HashMap<String, Object>();
-//		jpaEmbeddableKeyObjectMap = new HashMap<String, Class<?>>();		
 	}
 
 	public JPAUpdateContext(Metamodel metamodel) {
@@ -112,42 +108,33 @@ public class JPAUpdateContext {
 			EdmStructuralType structuralType,String entityName) throws ODataJPARuntimeException {
 
 		HashMap<String, Method> setters = new HashMap<String, Method>();
-//		HashMap<String, String> embeddableKey = new HashMap<String, String>();
 		try {
 			for (String propertyName : structuralType.getPropertyNames()) {
 
 				EdmProperty property = (EdmProperty) structuralType
 						.getProperty(propertyName);
 				Class<?> propertyClass = null;
-				try {
-					if (property.getType().getKind().equals(EdmTypeKind.COMPLEX)) {
-						String internalPropertyName = null;
-							for(EntityType<?> entity:metamodel.getEntities())
-								{
-									if(entity.getName().equals(entityName))
-									{
-										if (property.getMapping() != null && property.getMapping().getInternalName() != null) {
-											internalPropertyName = property.getMapping().getInternalName();
-										}
-										Attribute<?,?> attribute = entity.getAttribute(internalPropertyName);
-										propertyClass = attribute.getJavaType();
-										try {
-											jpaComplexObjectMap.put(internalPropertyName, propertyClass.newInstance());
-										} catch (InstantiationException e) {
-											throw ODataJPARuntimeException
-											.throwException(ODataJPARuntimeException.GENERAL
-													.addContent(e.getMessage()), e);
-										} catch (IllegalAccessException e) {
-											throw ODataJPARuntimeException
-											.throwException(ODataJPARuntimeException.GENERAL
-													.addContent(e.getMessage()), e);
-										}
-										break;
-									}
-								}
-					}
-					else 
-					propertyClass = EdmTypeConvertor.convertToJavaType(property.getType());
+				try {					
+					if(property.getMapping() != null && ((JPAEdmMappingImpl)property.getMapping()).getJPAType() != null){
+						propertyClass = ((JPAEdmMappingImpl)property.getMapping()).getJPAType();
+						if (property.getType().getKind().equals(EdmTypeKind.COMPLEX)) {
+							try {
+								if(((JPAEdmMappingImpl)property.getMapping()).getInternalName() != null)
+									jpaComplexObjectMap.put(((JPAEdmMappingImpl)property.getMapping()).getInternalName(), propertyClass.newInstance());
+								else 								
+									jpaComplexObjectMap.put(propertyName, propertyClass.newInstance());
+							} catch (InstantiationException e) {
+								throw ODataJPARuntimeException
+								.throwException(ODataJPARuntimeException.GENERAL
+										.addContent(e.getMessage()), e);
+							} catch (IllegalAccessException e) {
+								throw ODataJPARuntimeException
+								.throwException(ODataJPARuntimeException.GENERAL
+										.addContent(e.getMessage()), e);
+							}
+						}
+					} else 
+						propertyClass = EdmTypeConvertor.convertToJavaType(property.getType());
 				} catch (ODataJPAModelException e) {
 					throw ODataJPARuntimeException
 					.throwException(ODataJPARuntimeException.GENERAL
@@ -155,10 +142,6 @@ public class JPAUpdateContext {
 				}
 				String name = getSetterName(property);
 				String[] nameParts = name.split("\\.");
-//				if (nameParts.length > 1) {
-//					jpaEmbeddableKeyObjectMap.put(propertyName, propertyClass);
-//					embeddableKey.put(propertyName, name);
-//				} else
 				if (nameParts.length == 1) 
 					setters.put(
 							propertyName,
@@ -177,11 +160,6 @@ public class JPAUpdateContext {
 					.throwException(ODataJPARuntimeException.GENERAL
 							.addContent(e.getMessage()), e);
 		}
-
-//		if (!embeddableKey.isEmpty()) {
-//			jpaEmbeddableKeyMap.put(jpaEntity.getClass().getName(),
-//					embeddableKey);
-//		}
 		return setters;
 	}
 	
