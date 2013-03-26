@@ -23,6 +23,7 @@ import com.sap.core.odata.api.edm.EdmType;
 import com.sap.core.odata.api.edm.EdmTypeKind;
 import com.sap.core.odata.api.edm.provider.EntityType;
 import com.sap.core.odata.api.exception.ODataException;
+import com.sap.core.odata.api.exception.ODataNotFoundException;
 import com.sap.core.odata.api.processor.ODataContext;
 import com.sap.core.odata.api.processor.ODataResponse;
 import com.sap.core.odata.api.uri.PathInfo;
@@ -55,6 +56,8 @@ public class ODataJPAResponseBuilderTest extends JPAEdmTestModelView{
 			assertNotNull(ODataJPAResponseBuilder.build(entity, getLocalGetURIInfo(), "xml", getODataJPAContext()));
 		} catch (ODataJPARuntimeException e) {
 			assertTrue(true);//Nothing to do, Expected.
+		} catch (ODataNotFoundException e) {
+			assertTrue(false);//Not Expected.
 		}
 		try {// Bad content type
 			assertNotNull(ODataJPAResponseBuilder.build(getJPAEntities(), getResultsView(), "xml", getODataJPAContext()));
@@ -72,7 +75,9 @@ public class ODataJPAResponseBuilderTest extends JPAEdmTestModelView{
 		} catch (ODataJPARuntimeException e) {
 			fail(ODataJPATestConstants.EXCEPTION_MSG_PART_1+e.getMessage()
 					+ ODataJPATestConstants.EXCEPTION_MSG_PART_2);
-		} 
+		} catch (ODataNotFoundException e) {
+			assertTrue(false);//Not Expected.
+		}
 	}
 
 	@Test
