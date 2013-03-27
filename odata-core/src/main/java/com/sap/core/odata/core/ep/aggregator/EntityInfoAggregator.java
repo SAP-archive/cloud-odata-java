@@ -51,6 +51,7 @@ public class EntityInfoAggregator {
 
   private Map<String, EntityPropertyInfo> propertyInfo = new HashMap<String, EntityPropertyInfo>();
   private Map<String, NavigationPropertyInfo> navigationPropertyInfos = new HashMap<String, NavigationPropertyInfo>();
+  private List<EntityPropertyInfo> keyPropertyInfos;
 
   /*
    * list with all property names in the order based on order in {@link EdmProperty} (normally [key, entity,
@@ -269,15 +270,19 @@ public class EntityInfoAggregator {
    * @throws EntityProviderException 
    */
   public List<EntityPropertyInfo> getKeyPropertyInfos() throws EntityProviderException {
-    try {
-      List<EntityPropertyInfo> keyProperties = new ArrayList<EntityPropertyInfo>();
-      for (String keyPropertyName : entityType.getKeyPropertyNames()) {
-        keyProperties.add(propertyInfo.get(keyPropertyName));
+
+    if (keyPropertyInfos == null) {
+      try {
+        System.out.println("1");
+        keyPropertyInfos = new ArrayList<EntityPropertyInfo>();
+        for (String keyPropertyName : entityType.getKeyPropertyNames()) {
+          keyPropertyInfos.add(propertyInfo.get(keyPropertyName));
+        }
+      } catch (EdmException e) {
+        throw new EntityProviderException(EntityProviderException.COMMON, e);
       }
-      return keyProperties;
-    } catch (EdmException e) {
-      throw new EntityProviderException(EntityProviderException.COMMON, e);
     }
+    return keyPropertyInfos;
   }
 
   public NavigationPropertyInfo getNavigationPropertyInfo(final String name) {
@@ -295,8 +300,8 @@ public class EntityInfoAggregator {
       propertyNames = entityType.getPropertyNames();
       navigationPropertyNames = entityType.getNavigationPropertyNames();
 
-      propertyInfo = createPropertyInfoObjects(entityType, entityType.getPropertyNames());
-      navigationPropertyInfos = createNavigationInfoObjects(entityType, entityType.getNavigationPropertyNames());
+      propertyInfo = createPropertyInfoObjects(entityType, propertyNames);
+      navigationPropertyInfos = createNavigationInfoObjects(entityType, navigationPropertyNames);
 
       selectedPropertyNames = propertyNames;
       selectedNavigationPropertyNames = navigationPropertyNames;
