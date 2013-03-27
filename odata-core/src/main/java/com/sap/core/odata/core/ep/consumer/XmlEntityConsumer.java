@@ -56,7 +56,7 @@ public class XmlEntityConsumer {
       return result;
     } catch (EntityProviderException e) {
       throw e;
-    } catch (Exception e) {
+    } catch (XMLStreamException e) {
       throw new EntityProviderException(EntityProviderException.COMMON, e);
     } finally {
       if (reader != null) {
