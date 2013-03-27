@@ -139,7 +139,6 @@ class EdmMock {
     createNavigationProperty("ne_Room", EdmMultiplicity.ONE, managerEntitySet, roomEntitySet);
     createNavigationProperty("nm_Employees", EdmMultiplicity.MANY, managerEntitySet, employeeEntitySet);
 
-    
     EdmEntityType buildingType = buildingEntitySet.getEntityType();
     when(buildingType.getPropertyNames()).thenReturn(Arrays.asList("Id", "Name", "Image"));
     createProperty("Name", EdmSimpleTypeKind.String, buildingType);
@@ -147,8 +146,6 @@ class EdmMock {
     when(buildingType.getNavigationPropertyNames()).thenReturn(Arrays.asList("nb_Rooms"));
     createNavigationProperty("nb_Rooms", EdmMultiplicity.MANY, buildingEntitySet, roomEntitySet);
 
-    
-    
     EdmFunctionImport employeeSearchFunctionImport = createFunctionImportMock(defaultContainer, "EmployeeSearch", employeeType, EdmMultiplicity.MANY);
     when(employeeSearchFunctionImport.getEntitySet()).thenReturn(employeeEntitySet);
     EdmParameter employeeSearchParameter = mock(EdmParameter.class);

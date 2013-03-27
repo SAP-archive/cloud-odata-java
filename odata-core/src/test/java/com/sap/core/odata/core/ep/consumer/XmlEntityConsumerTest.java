@@ -26,6 +26,7 @@ import com.sap.core.odata.api.ep.entry.EntryMetadata;
 import com.sap.core.odata.api.ep.entry.MediaMetadata;
 import com.sap.core.odata.api.ep.entry.ODataEntry;
 import com.sap.core.odata.api.exception.MessageReference;
+import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.api.exception.ODataMessageException;
 import com.sap.core.odata.testutil.mock.MockFacade;
 
@@ -42,7 +43,7 @@ public class XmlEntityConsumerTest extends AbstractConsumerTest {
           "  <updated>1999-01-01T00:00:00Z</updated>" +
           "  <category term=\"RefScenario.Employee\" scheme=\"http://schemas.microsoft.com/ado/2007/08/dataservices/scheme\"/>" +
           "  <link href=\"Employees('1')\" rel=\"edit\" title=\"Employee\"/>" +
-          "  <link href=\"Employees('1')/$value\" rel=\"edit-media\" type=\"application/octet-stream\" etag=\"mmEtag\"/>" +
+          "  <link href=\"Employees('1')/$value\" rel=\"edit-media\" type=\"application/octet-stream\" m:etag=\"mmEtag\"/>" +
           "  <link href=\"Employees('1')/ne_Room\" rel=\"http://schemas.microsoft.com/ado/2007/08/dataservices/related/ne_Room\" type=\"application/atom+xml; type=entry\" title=\"ne_Room\"/>" +
           "  <link href=\"Employees('1')/ne_Manager\" rel=\"http://schemas.microsoft.com/ado/2007/08/dataservices/related/ne_Manager\" type=\"application/atom+xml; type=entry\" title=\"ne_Manager\"/>" +
           "  <link href=\"Employees('1')/ne_Team\" rel=\"http://schemas.microsoft.com/ado/2007/08/dataservices/related/ne_Team\" type=\"application/atom+xml; type=entry\" title=\"ne_Team\"/>" +
@@ -151,8 +152,8 @@ public class XmlEntityConsumerTest extends AbstractConsumerTest {
           } else {
             throw new RuntimeException("Invalid title");
           }
-        } catch (Exception e) {
-          throw new RuntimeException();
+        } catch (ODataException e) {
+          throw new RuntimeException(e);
         }
       }
     });
@@ -495,7 +496,7 @@ public class XmlEntityConsumerTest extends AbstractConsumerTest {
 
     EdmEntitySet entitySet = MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Rooms");
     InputStream reqContent = createContentAsStream(roomWithValidNamespaces);
-    readAndExpectException(entitySet, reqContent, EntityProviderException.INVALID_NAMESPACE.addContent(Edm.NAMESPACE_D_2007_08));
+    readAndExpectException(entitySet, reqContent, EntityProviderException.COMMON);
   }
 
   /**
@@ -661,7 +662,7 @@ public class XmlEntityConsumerTest extends AbstractConsumerTest {
 
     EdmEntitySet entitySet = MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Rooms");
     InputStream reqContent = createContentAsStream(roomWithValidNamespaces);
-    readAndExpectException(entitySet, reqContent, EntityProviderException.INVALID_NAMESPACE.addContent("properties"));
+    readAndExpectException(entitySet, reqContent, EntityProviderException.COMMON);
   }
 
   /**
@@ -1251,63 +1252,66 @@ public class XmlEntityConsumerTest extends AbstractConsumerTest {
   }
 
   @Test
-  public void testReadProperty() throws Exception {
-    XmlEntityConsumer xec = new XmlEntityConsumer();
+  public void readProperty() throws Exception {
+    final EdmProperty property = (EdmProperty) MockFacade.getMockEdm().getEntityType("RefScenario", "Employee").getProperty("Age");
 
-    EdmEntitySet entitySet = MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Employees");
-    EdmProperty property = (EdmProperty) entitySet.getEntityType().getProperty("Age");
-
-    String xml = "<Age>67</Age>";
+    String xml = "<Age xmlns=\"" + Edm.NAMESPACE_D_2007_08 + "\">67</Age>";
     InputStream content = createContentAsStream(xml);
-    Map<String, Object> value = xec.readProperty(property, content, true);
+    Map<String, Object> value = new XmlEntityConsumer().readProperty(property, content, true);
 
     assertEquals(Integer.valueOf(67), value.get("Age"));
   }
 
   @Test
   public void readStringPropertyValue() throws Exception {
-    XmlEntityConsumer xec = new XmlEntityConsumer();
-
-    String xml = "<EmployeeName>Max Mustermann</EmployeeName>";
+    String xml = "<EmployeeName xmlns=\"" + Edm.NAMESPACE_D_2007_08 + "\">Max Mustermann</EmployeeName>";
     InputStream content = createContentAsStream(xml);
-    EdmEntitySet entitySet = MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Employees");
-    EdmProperty property = (EdmProperty) entitySet.getEntityType().getProperty("EmployeeName");
+    final EdmProperty property = (EdmProperty) MockFacade.getMockEdm().getEntityType("RefScenario", "Employee").getProperty("EmployeeName");
 
-    Object result = xec.readPropertyValue(property, content);
+    Object result = new XmlEntityConsumer().readPropertyValue(property, content);
 
     assertEquals("Max Mustermann", result);
   }
 
   @Test
   public void testReadIntegerPropertyAsLong() throws Exception {
-    XmlEntityConsumer xec = new XmlEntityConsumer();
+    final EdmProperty property = (EdmProperty) MockFacade.getMockEdm().getEntityType("RefScenario", "Employee").getProperty("Age");
 
-    EdmEntitySet entitySet = MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Employees");
-    EdmProperty property = (EdmProperty) entitySet.getEntityType().getProperty("Age");
-
-    String xml = "<Age>42</Age>";
+    String xml = "<Age xmlns=\"" + Edm.NAMESPACE_D_2007_08 + "\">42</Age>";
     InputStream content = createContentAsStream(xml);
-    Map<String, Object> value = xec.readProperty(property, content, true, createTypeMappings("Age", Long.class));
+    Map<String, Object> value = new XmlEntityConsumer().readProperty(property, content, true, createTypeMappings("Age", Long.class));
 
     assertEquals(Long.valueOf(42), value.get("Age"));
   }
 
   @Test(expected = EntityProviderException.class)
   public void readStringPropertyValueWithInvalidMapping() throws Exception {
-    XmlEntityConsumer xec = new XmlEntityConsumer();
-
-    String xml = "<EmployeeName>Max Mustermann</EmployeeName>";
+    String xml = "<EmployeeName xmlns=\"" + Edm.NAMESPACE_D_2007_08 + "\">Max Mustermann</EmployeeName>";
     InputStream content = createContentAsStream(xml);
-    EdmEntitySet entitySet = MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Employees");
-    EdmProperty property = (EdmProperty) entitySet.getEntityType().getProperty("EmployeeName");
+    final EdmProperty property = (EdmProperty) MockFacade.getMockEdm().getEntityType("RefScenario", "Employee").getProperty("EmployeeName");
 
-    Object result = xec.readPropertyValue(property, content, Integer.class);
+    new XmlEntityConsumer().readPropertyValue(property, content, Integer.class);
+  }
 
-    assertEquals("Max Mustermann", result);
+  @Test(expected = EntityProviderException.class)
+  public void readPropertyWrongNamespace() throws Exception {
+    String xml = "<Age xmlns=\"" + Edm.NAMESPACE_M_2007_08 + "\">1</Age>";
+    InputStream content = createContentAsStream(xml);
+    final EdmProperty property = (EdmProperty) MockFacade.getMockEdm().getEntityType("RefScenario", "Employee").getProperty("Age");
+
+    new XmlEntityConsumer().readPropertyValue(property, content, Integer.class);
+  }
+
+  @Test(expected = EntityProviderException.class)
+  public void readPropertyWrongClosingNamespace() throws Exception {
+    String xml = "<d:Age xmlns:d=\"" + Edm.NAMESPACE_D_2007_08 + "\" xmlns:m=\"" + Edm.NAMESPACE_M_2007_08 + "\">1</m:Age>";
+    InputStream content = createContentAsStream(xml);
+    final EdmProperty property = (EdmProperty) MockFacade.getMockEdm().getEntityType("RefScenario", "Employee").getProperty("Age");
+
+    new XmlEntityConsumer().readPropertyValue(property, content, Integer.class);
   }
 
   private InputStream createContentAsStream(final String xml) throws UnsupportedEncodingException {
-    InputStream content = new ByteArrayInputStream(xml.getBytes("utf-8"));
-    return content;
+    return new ByteArrayInputStream(xml.getBytes("UTF-8"));
   }
 }
