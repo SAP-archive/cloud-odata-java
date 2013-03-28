@@ -22,7 +22,7 @@ import com.sap.core.odata.testutil.mock.MockFacade;
  */
 public class FunctionImportTest extends AbstractProviderTest {
 
-  public FunctionImportTest(StreamWriterImplType type) {
+  public FunctionImportTest(final StreamWriterImplType type) {
     super(type);
   }
 

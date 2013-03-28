@@ -17,7 +17,7 @@ import com.sap.core.odata.testutil.mock.MockFacade;
  */
 public class EntityInfoAggregatorTest extends AbstractProviderTest {
 
-  public EntityInfoAggregatorTest(StreamWriterImplType type) {
+  public EntityInfoAggregatorTest(final StreamWriterImplType type) {
     super(type);
   }
 

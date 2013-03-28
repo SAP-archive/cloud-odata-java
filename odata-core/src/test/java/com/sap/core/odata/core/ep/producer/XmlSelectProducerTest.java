@@ -38,7 +38,7 @@ import com.sap.core.odata.testutil.mock.MockFacade;
  */
 public class XmlSelectProducerTest extends AbstractProviderTest {
 
-  public XmlSelectProducerTest(StreamWriterImplType type) {
+  public XmlSelectProducerTest(final StreamWriterImplType type) {
     super(type);
   }
 

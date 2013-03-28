@@ -192,7 +192,7 @@ public class AtomEntryEntityProducer {
         context.setEntryData(data);
         ExpandSelectTreeNode subNode = properties.getExpandSelectTree().getLinks().get(navigationPropertyName);
         context.setCurrentExpandSelectTreeNode(subNode);
-        
+
         ODataCallback callback = properties.getCallbacks().get(navigationPropertyName);
         WriteFeedCallbackResult result = ((OnWriteFeedContent) callback).retrieveFeedResult(context);
         List<Map<String, Object>> inlineData = result.getFeedData();
@@ -222,7 +222,7 @@ public class AtomEntryEntityProducer {
         if (!properties.getCallbacks().containsKey(navigationPropertyName)) {
           throw new EntityProviderException(EntityProviderException.EXPANDNOTSUPPORTED.addContent(navigationPropertyName));
         }
-        
+
         EdmNavigationProperty navProp = (EdmNavigationProperty) eia.getEntityType().getProperty(navigationPropertyName);
         WriteEntryCallbackContext context = new WriteEntryCallbackContext();
         context.setSourceEntitySet(eia.getEntitySet());
@@ -230,7 +230,7 @@ public class AtomEntryEntityProducer {
         context.setEntryData(data);
         ExpandSelectTreeNode subNode = properties.getExpandSelectTree().getLinks().get(navigationPropertyName);
         context.setCurrentExpandSelectTreeNode(subNode);
-        
+
         ODataCallback callback = properties.getCallbacks().get(navigationPropertyName);
         WriteEntryCallbackResult result = ((OnWriteEntryContent) callback).retrieveEntryResult(context);
         Map<String, Object> inlineData = result.getEntryData();

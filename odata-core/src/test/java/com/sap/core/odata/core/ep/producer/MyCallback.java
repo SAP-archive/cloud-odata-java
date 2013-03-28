@@ -19,13 +19,13 @@ public class MyCallback implements ODataCallback, OnWriteEntryContent, OnWriteFe
   private AbstractProviderTest dataProvider;
   private URI baseUri;
 
-  public MyCallback(AbstractProviderTest dataProvider, URI baseUri) {
+  public MyCallback(final AbstractProviderTest dataProvider, final URI baseUri) {
     this.dataProvider = dataProvider;
     this.baseUri = baseUri;
   }
 
   @Override
-  public WriteFeedCallbackResult retrieveFeedResult(WriteFeedCallbackContext context) {
+  public WriteFeedCallbackResult retrieveFeedResult(final WriteFeedCallbackContext context) {
     WriteFeedCallbackResult result = new WriteFeedCallbackResult();
     try {
       if ("Rooms".equals(context.getSourceEntitySet().getName())) {
@@ -46,7 +46,7 @@ public class MyCallback implements ODataCallback, OnWriteEntryContent, OnWriteFe
   }
 
   @Override
-  public WriteEntryCallbackResult retrieveEntryResult(WriteEntryCallbackContext context) {
+  public WriteEntryCallbackResult retrieveEntryResult(final WriteEntryCallbackContext context) {
     WriteEntryCallbackResult result = new WriteEntryCallbackResult();
     try {
       if ("Employees".equals(context.getSourceEntitySet().getName())) {

@@ -51,7 +51,7 @@ public class XmlExpandProducerTest extends AbstractProviderTest {
   private String teamXPathString = "/a:entry/a:link[@href=\"Employees('1')/ne_Team\" and @title='ne_Team']";
   private String buildingXPathString = "/a:entry/a:link[@href=\"Buildings('1')/nb_Rooms\" and @title='nb_Rooms']";
 
-  public XmlExpandProducerTest(StreamWriterImplType type) {
+  public XmlExpandProducerTest(final StreamWriterImplType type) {
     super(type);
 
     try {
@@ -148,7 +148,7 @@ public class XmlExpandProducerTest extends AbstractProviderTest {
     assertXpathNotExists(buildingXPathString + "/m:inline/a:feed", xmlString);
   }
 
-  private HashMap<String, ODataCallback> createCallbacks(String entitySetName) throws EdmException, ODataException {
+  private HashMap<String, ODataCallback> createCallbacks(final String entitySetName) throws EdmException, ODataException {
     HashMap<String, ODataCallback> callbacksEmployee = new HashMap<String, ODataCallback>();
     MyCallback callback = new MyCallback(this, inlineBaseUri);
     for (String navPropName : MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet(entitySetName).getEntityType().getNavigationPropertyNames()) {
@@ -166,7 +166,7 @@ public class XmlExpandProducerTest extends AbstractProviderTest {
     provider.writeEntry(MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Employees"), employeeData, properties);
   }
 
-  private void verifyEmployees(String path, String xmlString) throws XpathException, IOException, SAXException {
+  private void verifyEmployees(final String path, final String xmlString) throws XpathException, IOException, SAXException {
     assertXpathExists(path, xmlString);
     assertXpathExists(path + "/m:inline", xmlString);
 

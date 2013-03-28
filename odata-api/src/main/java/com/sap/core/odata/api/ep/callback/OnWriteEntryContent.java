@@ -9,7 +9,7 @@ package com.sap.core.odata.api.ep.callback;
  *
  */
 public interface OnWriteEntryContent {
-  
+
   /**
    * Retrieves the data for an entry. See {@link WriteEntryCallbackContext} for details on the context and {@link WriteEntryCallbackResult} for details on the result of this method.
    * @param context of this entry

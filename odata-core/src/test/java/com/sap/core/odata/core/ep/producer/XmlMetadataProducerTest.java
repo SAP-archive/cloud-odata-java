@@ -35,16 +35,16 @@ import com.sap.core.odata.testutil.helper.StringHelper;
 public class XmlMetadataProducerTest extends AbstractXmlProducerTestHelper {
 
   private XMLOutputFactory xmlStreamWriterFactory;
-  
-  public XmlMetadataProducerTest(StreamWriterImplType type) {
+
+  public XmlMetadataProducerTest(final StreamWriterImplType type) {
     super(type);
   }
 
   @Before
-  public void before(){
+  public void before() {
     xmlStreamWriterFactory = XMLOutputFactory.newInstance();
   }
-  
+
   @Test
   public void writeValidMetadata() throws Exception {
     List<Schema> schemas = new ArrayList<Schema>();

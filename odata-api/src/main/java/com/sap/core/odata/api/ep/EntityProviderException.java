@@ -29,7 +29,7 @@ public class EntityProviderException extends ODataMessageException {
   public static final MessageReference EXPANDNOTSUPPORTED = createMessageReference(EntityProviderException.class, "EXPANDNOTSUPPORTED");
   /** DOUBLE_PROPERTY requires 1 content value ('double tag/property') */
   public static final MessageReference DOUBLE_PROPERTY = createMessageReference(EntityProviderException.class, "DOUBLE_PROPERTY");
-  
+
   public EntityProviderException(final MessageReference messageReference) {
     super(messageReference);
   }

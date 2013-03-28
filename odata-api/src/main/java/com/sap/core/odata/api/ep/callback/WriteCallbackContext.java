@@ -33,7 +33,7 @@ public abstract class WriteCallbackContext {
    * Do Not Call This Method!
    * @param currentNode
    */
-  public void setCurrentExpandSelectTreeNode(ExpandSelectTreeNode currentNode) {
+  public void setCurrentExpandSelectTreeNode(final ExpandSelectTreeNode currentNode) {
     this.currentNode = currentNode;
   }
 
@@ -48,8 +48,8 @@ public abstract class WriteCallbackContext {
    * Do Not Call This Method!
    * @param entitySet
    */
-  public void setSourceEntitySet(EdmEntitySet entitySet) {
-    this.sourceEntitySet = entitySet;
+  public void setSourceEntitySet(final EdmEntitySet entitySet) {
+    sourceEntitySet = entitySet;
   }
 
   /**
@@ -63,7 +63,7 @@ public abstract class WriteCallbackContext {
    * Do Not Call This Method!
    * @param navigationProperty
    */
-  public void setNavigationProperty(EdmNavigationProperty navigationProperty) {
+  public void setNavigationProperty(final EdmNavigationProperty navigationProperty) {
     this.navigationProperty = navigationProperty;
   }
 
@@ -79,7 +79,7 @@ public abstract class WriteCallbackContext {
    * Do Not Call This Method!
    * @param entryData
    */
-  public void setEntryData(Map<String, Object> entryData) {
+  public void setEntryData(final Map<String, Object> entryData) {
     this.entryData = entryData;
   }
 

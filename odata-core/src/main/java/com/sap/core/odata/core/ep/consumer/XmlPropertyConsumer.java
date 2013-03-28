@@ -88,27 +88,26 @@ public class XmlPropertyConsumer {
     reader.require(XMLStreamConstants.START_ELEMENT, Edm.NAMESPACE_D_2007_08, propertyInfo.getName());
     final String nullAttribute = reader.getAttributeValue(Edm.NAMESPACE_M_2007_08, FormatXml.M_NULL);
 
-    if ("true".equals(nullAttribute))
+    if ("true".equals(nullAttribute)) {
       reader.nextTag();
-    else
-      if (propertyInfo.isComplex()) {
-        reader.nextTag();
-        while (reader.hasNext() && !reader.isEndElement()) {
-          String childName = reader.getLocalName();
-          EntityPropertyInfo childProperty = getChildProperty(childName, propertyInfo);
+    } else if (propertyInfo.isComplex()) {
+      reader.nextTag();
+      while (reader.hasNext() && !reader.isEndElement()) {
+        String childName = reader.getLocalName();
+        EntityPropertyInfo childProperty = getChildProperty(childName, propertyInfo);
 
-          Object value = readStartedElement(reader, childProperty, typeMappings.getEntityTypeMapping(propertyInfo.getName()));
-          name2Value.put(childName, value);
-          reader.nextTag();
-        }
-      } else {
-        reader.next();
-        if (reader.isCharacters()) {
-          Class<?> mapping = typeMappings.getMappingClass(propertyInfo.getName());
-          result = convert(propertyInfo, reader.getText(), mapping);
-          reader.nextTag();
-        }
+        Object value = readStartedElement(reader, childProperty, typeMappings.getEntityTypeMapping(propertyInfo.getName()));
+        name2Value.put(childName, value);
+        reader.nextTag();
       }
+    } else {
+      reader.next();
+      if (reader.isCharacters()) {
+        Class<?> mapping = typeMappings.getMappingClass(propertyInfo.getName());
+        result = convert(propertyInfo, reader.getText(), mapping);
+        reader.nextTag();
+      }
+    }
     reader.require(XMLStreamConstants.END_ELEMENT, Edm.NAMESPACE_D_2007_08, propertyInfo.getName());
 
     // if reading finished check which result must be returned

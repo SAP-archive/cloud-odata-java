@@ -48,11 +48,11 @@ public class XmlEntryConsumer {
     foundPrefix2NamespaceUri = new HashMap<String, String>();
   }
 
-  public ODataEntry readEntry(XMLStreamReader reader, final EntityInfoAggregator eia, final boolean merge) throws EntityProviderException {
+  public ODataEntry readEntry(final XMLStreamReader reader, final EntityInfoAggregator eia, final boolean merge) throws EntityProviderException {
     return readEntry(reader, eia, new ConsumerProperties(merge));
   }
 
-  public ODataEntry readEntry(XMLStreamReader reader, final EntityInfoAggregator eia, final ConsumerProperties consumerProperties) throws EntityProviderException {
+  public ODataEntry readEntry(final XMLStreamReader reader, final EntityInfoAggregator eia, final ConsumerProperties consumerProperties) throws EntityProviderException {
     try {
       this.consumerProperties = consumerProperties;
       typeMappings = EntityTypeMapping.create(consumerProperties.getTypeMappings());
@@ -61,11 +61,13 @@ public class XmlEntryConsumer {
 
       while (reader.hasNext() && !(reader.isEndElement() && Edm.NAMESPACE_ATOM_2005.equals(reader.getNamespaceURI()) && FormatXml.ATOM_ENTRY.equals(reader.getLocalName()))) {
         reader.next();
-        while (reader.hasNext() && !reader.hasName())
+        while (reader.hasNext() && !reader.hasName()) {
           reader.next();
+        }
 
-        if (reader.isStartElement())
+        if (reader.isStartElement()) {
           handleStartedTag(reader, eia, merge);
+        }
       }
 
       if (!merge) {
@@ -95,7 +97,7 @@ public class XmlEntryConsumer {
     }
   }
 
-  private void handleStartedTag(XMLStreamReader reader, final EntityInfoAggregator eia, final boolean merge)
+  private void handleStartedTag(final XMLStreamReader reader, final EntityInfoAggregator eia, final boolean merge)
       throws EntityProviderException, XMLStreamException, EdmException {
 
     currentHandledStartTagName = reader.getLocalName();
@@ -216,7 +218,7 @@ public class XmlEntryConsumer {
 
   }
 
-  private void readInlineContent(XMLStreamReader reader, final Map<String, String> linkAttributes) throws XMLStreamException, EntityProviderException {
+  private void readInlineContent(final XMLStreamReader reader, final Map<String, String> linkAttributes) throws XMLStreamException, EntityProviderException {
     reader.nextTag();
     reader.require(XMLStreamConstants.START_ELEMENT, Edm.NAMESPACE_M_2007_08, FormatXml.M_INLINE);
 
@@ -311,8 +313,9 @@ public class XmlEntryConsumer {
       if (reader.isStartElement() && closeTag == null) {
         closeTag = reader.getLocalName();
         if (isEdmNamespaceProperty(reader)) {
-          if (properties.containsKey(closeTag))
+          if (properties.containsKey(closeTag)) {
             throw new EntityProviderException(EntityProviderException.DOUBLE_PROPERTY.addContent(closeTag));
+          }
           property = getValidatedPropertyInfo(entitySet, closeTag);
           final Object value = xpc.readStartedElement(reader, property, typeMappings);
           properties.put(closeTag, value);

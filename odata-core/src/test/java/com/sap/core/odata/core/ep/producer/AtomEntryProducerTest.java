@@ -45,7 +45,7 @@ import com.sap.core.odata.testutil.mock.MockFacade;
  */
 public class AtomEntryProducerTest extends AbstractProviderTest {
 
-  public AtomEntryProducerTest(StreamWriterImplType type) {
+  public AtomEntryProducerTest(final StreamWriterImplType type) {
     super(type);
   }
 
