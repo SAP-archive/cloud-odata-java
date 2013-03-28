@@ -130,8 +130,8 @@ public class JPAProcessorImpl implements JPAProcessor {
 	@Override
 	public <T> Object process(PostUriInfo createView, InputStream content, String requestedContentType)
 			throws ODataJPAModelException, ODataJPARuntimeException {
-		JPACreateRequest jpaCreateContext = new JPACreateRequest(em.getEntityManagerFactory().getMetamodel());		
-		Object createObject = jpaCreateContext.process(createView, content, requestedContentType);
+		JPACreateRequest jpaCreateRequest = new JPACreateRequest(em.getEntityManagerFactory().getMetamodel());		
+		Object createObject = jpaCreateRequest.process(createView, content, requestedContentType);
 		try{
 		em.getTransaction().begin();
 		em.persist(createObject);
@@ -152,11 +152,11 @@ public class JPAProcessorImpl implements JPAProcessor {
 	public <T> Object process(PutMergePatchUriInfo updateView,
 			InputStream content, String requestContentType)
 			throws ODataJPAModelException, ODataJPARuntimeException {
-		JPAUpdateRequest jpaUpdateContext = new JPAUpdateRequest();
+		JPAUpdateRequest jpaUpdateRequest = new JPAUpdateRequest();
 		Object updateObject = readEntity(updateView);
 		try{
 			em.getTransaction().begin();
-			jpaUpdateContext.process(updateObject, updateView, content, requestContentType);
+			jpaUpdateRequest.process(updateObject, updateView, content, requestContentType);
 			em.flush();
 			em.getTransaction().commit();
 			}catch(Exception e){
