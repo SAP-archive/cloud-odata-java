@@ -669,10 +669,6 @@ public class UriParserTest extends BaseTest {
     parseWrongUri("Employees??", UriSyntaxException.URISYNTAX);
     parseWrongUri("Employees?$inlinecount=no", UriSyntaxException.INVALIDVALUE);
     parseWrongUri("Employees?&$skiptoken==", UriSyntaxException.INVALIDNULLVALUE);
-    parseWrongUri("Employees?$skip=-1", UriSyntaxException.INVALIDNEGATIVEVALUE);
-    parseWrongUri("Employees?$skip='a'", UriSyntaxException.INVALIDVALUE);
-    parseWrongUri("Employees?$top=-1", UriSyntaxException.INVALIDNEGATIVEVALUE);
-    parseWrongUri("Employees?$top=12345678901234567890", UriSyntaxException.INVALIDVALUE);
     parseWrongUri("Employees?$somethingwrong", UriSyntaxException.INVALIDSYSTEMQUERYOPTION);
     parseWrongUri("Employees?$somethingwrong=", UriSyntaxException.INVALIDSYSTEMQUERYOPTION);
     parseWrongUri("Employees?$somethingwrong=adjaodjai", UriSyntaxException.INVALIDSYSTEMQUERYOPTION);
@@ -681,6 +677,39 @@ public class UriParserTest extends BaseTest {
     parseWrongUri("Employees?$filter=Age", UriSyntaxException.INVALIDFILTEREXPRESSION);
     parseWrongUri("Employees?$filter=(Age", UriSyntaxException.INVALIDFILTEREXPRESSION);
     parseWrongUri("Employees?$orderby=desc", UriSyntaxException.INVALIDORDERBYEXPRESSION);
+  }
+
+  @Test
+  public void parseWrongSystemQueryOptionSkip() throws Exception {
+    parseWrongUri("Employees?$skip=-1", UriSyntaxException.INVALIDNEGATIVEVALUE);
+    parseWrongUri("Employees?$skip=-0", UriSyntaxException.INVALIDNEGATIVEVALUE);
+    parseWrongUri("Employees?$skip=+1", UriSyntaxException.INVALIDVALUE);
+    parseWrongUri("Employees?$skip=+0", UriSyntaxException.INVALIDVALUE);
+    parseWrongUri("Employees?$skip=a", UriSyntaxException.INVALIDVALUE);
+    parseWrongUri("Employees?$skip=-a", UriSyntaxException.INVALIDVALUE);
+    parseWrongUri("Employees?$skip=+a", UriSyntaxException.INVALIDVALUE);
+    parseWrongUri("Employees?$skip='a'", UriSyntaxException.INVALIDVALUE);
+    parseWrongUri("Employees?$skip=-'a'", UriSyntaxException.INVALIDVALUE);
+    parseWrongUri("Employees?$skip=+'a'", UriSyntaxException.INVALIDVALUE);
+    parseWrongUri("Employees?$skip=-'a'", UriSyntaxException.INVALIDVALUE);
+    parseWrongUri("Employees?$skip='+a'", UriSyntaxException.INVALIDVALUE);
+    parseWrongUri("Employees?$skip='-a'", UriSyntaxException.INVALIDVALUE);
+    parseWrongUri("Employees?$skip=12345678901234567890", UriSyntaxException.INVALIDVALUE);
+  }
+
+  @Test
+  public void parseWrongSystemQueryOptionTop() throws Exception {
+    parseWrongUri("Employees?$top=-1", UriSyntaxException.INVALIDNEGATIVEVALUE);
+    parseWrongUri("Employees?$top=-0", UriSyntaxException.INVALIDNEGATIVEVALUE);
+    parseWrongUri("Employees?$top=+1", UriSyntaxException.INVALIDVALUE);
+    parseWrongUri("Employees?$top=+0", UriSyntaxException.INVALIDVALUE);
+    parseWrongUri("Employees?$top=a", UriSyntaxException.INVALIDVALUE);
+    parseWrongUri("Employees?$top=-a", UriSyntaxException.INVALIDVALUE);
+    parseWrongUri("Employees?$top=+a", UriSyntaxException.INVALIDVALUE);
+    parseWrongUri("Employees?$top='a'", UriSyntaxException.INVALIDVALUE);
+    parseWrongUri("Employees?$top=-'a'", UriSyntaxException.INVALIDVALUE);
+    parseWrongUri("Employees?$top=+'a'", UriSyntaxException.INVALIDVALUE);
+    parseWrongUri("Employees?$top=12345678901234567890", UriSyntaxException.INVALIDVALUE);
   }
 
   @Test
