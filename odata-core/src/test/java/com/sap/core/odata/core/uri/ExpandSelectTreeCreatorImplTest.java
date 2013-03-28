@@ -24,23 +24,12 @@ import com.sap.core.odata.api.uri.UriParser;
 import com.sap.core.odata.testutil.fit.BaseTest;
 import com.sap.core.odata.testutil.mock.MockFacade;
 
-/**
- * Tests for the combining of expand and select options into a single tree.
- * @author SAP AG
- */
 public class ExpandSelectTreeCreatorImplTest extends BaseTest {
-
   private static Edm edm;
 
   @BeforeClass
   public static void setEdm() throws ODataException {
     edm = MockFacade.getMockEdm();
-  }
-
-  @Test
-  public void testViaRuntimeDelegate() throws Exception {
-    ExpandSelectTreeNode test = UriParser.createExpandSelectTree(null, null);
-    assertNotNull(test);
   }
 
   @Test
@@ -427,6 +416,17 @@ public class ExpandSelectTreeCreatorImplTest extends BaseTest {
     if (!expected1.equals(actual) && !expected2.equals(actual)) {
       fail("Either " + expected1 + " or " + expected2 + " expected but was: " + actual);
     }
+  }
+
+  @Test
+  public void oneExpandsFourSelects() throws Exception {
+
+    //{"all":false,"properties":[],"links":[{"ne_Manager":{"all":true,"properties":[],"links":[{"ne_Room":{"all":true,"properties":[],"links":[{"nr_Building":{"all":true,"properties":[],"links":[]}}]}}]}}]}
+    String expected = "{\"all\":false,\"properties\":[],\"links\":[{\"ne_Manager\":{\"all\":true,\"properties\":[],\"links\":[{\"ne_Room\":{\"all\":true,\"properties\":[],\"links\":[{\"nr_Building\":{\"all\":true,\"properties\":[],\"links\":[]}}]}}]}}]}";
+
+    //$select=ne_Manager/EmployeeId,ne_Manager/ne_Room/Id,ne_Manager/ne_Room/nr_Building/Id,ne_Manager $expand=ne_Manager/ne_Room/nr_Building
+    String actual = getExpandSelectTree("ne_Manager/EmployeeId,ne_Manager/ne_Room/Id,ne_Manager/ne_Room/nr_Building/Id,ne_Manager", "ne_Manager/ne_Room/nr_Building").toJsonString();
+    assertEquals(expected, actual);
   }
 
   private ExpandSelectTreeNodeImpl getExpandSelectTree(final String selectString, final String expandString) throws Exception {
