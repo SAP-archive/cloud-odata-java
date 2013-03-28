@@ -21,8 +21,8 @@ import com.sap.core.odata.processor.api.jpa.exception.ODataJPARuntimeException;
 import com.sap.core.odata.processor.api.jpa.jpql.JPQLContext;
 import com.sap.core.odata.processor.api.jpa.jpql.JPQLContextType;
 import com.sap.core.odata.processor.api.jpa.jpql.JPQLStatement;
-import com.sap.core.odata.processor.core.jpa.cud.JPACreateContext;
-import com.sap.core.odata.processor.core.jpa.cud.JPAUpdateContext;
+import com.sap.core.odata.processor.core.jpa.cud.JPACreateRequest;
+import com.sap.core.odata.processor.core.jpa.cud.JPAUpdateRequest;
 
 
 public class JPAProcessorImpl implements JPAProcessor {
@@ -130,8 +130,8 @@ public class JPAProcessorImpl implements JPAProcessor {
 	@Override
 	public <T> Object process(PostUriInfo createView, InputStream content, String requestedContentType)
 			throws ODataJPAModelException, ODataJPARuntimeException {
-		JPACreateContext jpaCreateContext = new JPACreateContext(em.getEntityManagerFactory().getMetamodel());		
-		Object createObject = jpaCreateContext.build(createView, content, requestedContentType);
+		JPACreateRequest jpaCreateContext = new JPACreateRequest(em.getEntityManagerFactory().getMetamodel());		
+		Object createObject = jpaCreateContext.process(createView, content, requestedContentType);
 		try{
 		em.getTransaction().begin();
 		em.persist(createObject);
@@ -152,11 +152,11 @@ public class JPAProcessorImpl implements JPAProcessor {
 	public <T> Object process(PutMergePatchUriInfo updateView,
 			InputStream content, String requestContentType)
 			throws ODataJPAModelException, ODataJPARuntimeException {
-		JPAUpdateContext jpaUpdateContext = new JPAUpdateContext(em.getEntityManagerFactory().getMetamodel());
+		JPAUpdateRequest jpaUpdateContext = new JPAUpdateRequest();
 		Object updateObject = readEntity(updateView);
 		try{
 			em.getTransaction().begin();
-			jpaUpdateContext.build(updateObject, updateView, content, requestContentType);
+			jpaUpdateContext.process(updateObject, updateView, content, requestContentType);
 			em.flush();
 			em.getTransaction().commit();
 			}catch(Exception e){
