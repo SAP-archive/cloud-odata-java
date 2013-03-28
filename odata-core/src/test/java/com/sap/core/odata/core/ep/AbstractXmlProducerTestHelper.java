@@ -15,7 +15,7 @@ public abstract class AbstractXmlProducerTestHelper extends BaseTest {
     WOODSTOCKIMPL, SUNINTERNALIMPL;
   }
 
-  public AbstractXmlProducerTestHelper(StreamWriterImplType type) {
+  public AbstractXmlProducerTestHelper(final StreamWriterImplType type) {
     switch (type) {
     case WOODSTOCKIMPL:
       System.setProperty("javax.xml.stream.XMLOutputFactory", "com.ctc.wstx.stax.WstxOutputFactory");

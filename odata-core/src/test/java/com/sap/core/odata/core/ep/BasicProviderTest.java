@@ -31,7 +31,7 @@ import com.sap.core.odata.testutil.mock.MockFacade;
  */
 public class BasicProviderTest extends AbstractProviderTest {
 
-  public BasicProviderTest(StreamWriterImplType type) {
+  public BasicProviderTest(final StreamWriterImplType type) {
     super(type);
   }
 

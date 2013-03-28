@@ -22,7 +22,7 @@ import com.sap.core.odata.testutil.mock.MockFacade;
  */
 public class XmlLinksEntityProducerTest extends AbstractProviderTest {
 
-  public XmlLinksEntityProducerTest(StreamWriterImplType type) {
+  public XmlLinksEntityProducerTest(final StreamWriterImplType type) {
     super(type);
   }
 

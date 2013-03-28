@@ -56,8 +56,9 @@ public class UriParserTest extends BaseTest {
     */
   private UriInfoImpl parse(final String uri) throws UriSyntaxException, UriNotMatchingException, EdmException {
     final String[] path = uri.split("\\?", -1);
-    if (path.length > 2)
+    if (path.length > 2) {
       throw new UriSyntaxException(UriSyntaxException.URISYNTAX);
+    }
 
     final List<PathSegment> pathSegments =
         MockFacade.getPathSegmentsAsODataPathSegmentMock(Arrays.asList(path[0].split("/", -1)));

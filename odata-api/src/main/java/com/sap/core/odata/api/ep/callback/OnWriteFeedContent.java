@@ -16,5 +16,5 @@ public interface OnWriteFeedContent {
    * @return result - must not be null.
    */
   WriteFeedCallbackResult retrieveFeedResult(WriteFeedCallbackContext context);
-  
+
 }

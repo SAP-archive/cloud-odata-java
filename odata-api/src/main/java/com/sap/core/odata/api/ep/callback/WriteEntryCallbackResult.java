@@ -31,7 +31,6 @@ public class WriteEntryCallbackResult {
     this.callbacks = callbacks;
   }
 
-
   /**
    * @param baseUri of the feed
    */

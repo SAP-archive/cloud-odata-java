@@ -35,7 +35,7 @@ import com.sap.core.odata.testutil.mock.MockFacade;
  */
 public class PerformanceTest extends AbstractProviderTest {
 
-  public PerformanceTest(StreamWriterImplType type) {
+  public PerformanceTest(final StreamWriterImplType type) {
     super(type);
   }
 

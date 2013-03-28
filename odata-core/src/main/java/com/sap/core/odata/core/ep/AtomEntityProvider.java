@@ -117,7 +117,7 @@ public class AtomEntityProvider implements ContentTypeBasedEntityProvider {
       CircleStreamBuffer csb = new CircleStreamBuffer();
       outStream = csb.getOutputStream();
       XMLStreamWriter writer = XMLOutputFactory.newInstance().createXMLStreamWriter(outStream, DEFAULT_CHARSET);
-      writer.writeStartDocument(DEFAULT_CHARSET,XML_VERSION);
+      writer.writeStartDocument(DEFAULT_CHARSET, XML_VERSION);
 
       AtomEntryEntityProducer as = new AtomEntryEntityProducer(properties);
       EntityInfoAggregator eia = EntityInfoAggregator.create(entitySet, properties.getExpandSelectTree());
@@ -159,7 +159,7 @@ public class AtomEntityProvider implements ContentTypeBasedEntityProvider {
       CircleStreamBuffer csb = new CircleStreamBuffer();
       outStream = csb.getOutputStream();
       XMLStreamWriter writer = XMLOutputFactory.newInstance().createXMLStreamWriter(outStream, DEFAULT_CHARSET);
-      writer.writeStartDocument(DEFAULT_CHARSET,XML_VERSION);
+      writer.writeStartDocument(DEFAULT_CHARSET, XML_VERSION);
 
       XmlPropertyEntityProducer ps = new XmlPropertyEntityProducer();
       ps.append(writer, propertyInfo, value);
@@ -192,7 +192,7 @@ public class AtomEntityProvider implements ContentTypeBasedEntityProvider {
       CircleStreamBuffer csb = new CircleStreamBuffer();
       outStream = csb.getOutputStream();
       XMLStreamWriter writer = XMLOutputFactory.newInstance().createXMLStreamWriter(outStream, DEFAULT_CHARSET);
-      writer.writeStartDocument(DEFAULT_CHARSET,XML_VERSION);
+      writer.writeStartDocument(DEFAULT_CHARSET, XML_VERSION);
 
       AtomFeedProducer atomFeedProvider = new AtomFeedProducer(properties);
       //EdmEntitySet entitySet = entitySetView.getTargetEntitySet();
@@ -233,7 +233,7 @@ public class AtomEntityProvider implements ContentTypeBasedEntityProvider {
 
     try {
       XMLStreamWriter writer = XMLOutputFactory.newInstance().createXMLStreamWriter(outStream, DEFAULT_CHARSET);
-      writer.writeStartDocument(DEFAULT_CHARSET,XML_VERSION);
+      writer.writeStartDocument(DEFAULT_CHARSET, XML_VERSION);
 
       XmlLinkEntityProducer entity = new XmlLinkEntityProducer(properties);
       final EntityInfoAggregator entityInfo = EntityInfoAggregator.create(entitySet, properties.getExpandSelectTree());
@@ -265,7 +265,7 @@ public class AtomEntityProvider implements ContentTypeBasedEntityProvider {
 
     try {
       XMLStreamWriter writer = XMLOutputFactory.newInstance().createXMLStreamWriter(outStream, DEFAULT_CHARSET);
-      writer.writeStartDocument(DEFAULT_CHARSET,XML_VERSION);
+      writer.writeStartDocument(DEFAULT_CHARSET, XML_VERSION);
 
       XmlLinksEntityProducer entity = new XmlLinksEntityProducer(properties);
       final EntityInfoAggregator entityInfo = EntityInfoAggregator.create(entitySet, properties.getExpandSelectTree());
@@ -297,7 +297,7 @@ public class AtomEntityProvider implements ContentTypeBasedEntityProvider {
       CircleStreamBuffer buffer = new CircleStreamBuffer();
       outStream = buffer.getOutputStream();
       XMLStreamWriter writer = XMLOutputFactory.newInstance().createXMLStreamWriter(outStream, DEFAULT_CHARSET);
-      writer.writeStartDocument(DEFAULT_CHARSET,XML_VERSION);
+      writer.writeStartDocument(DEFAULT_CHARSET, XML_VERSION);
 
       XmlCollectionEntityProducer.append(writer, propertyInfo, data);
 

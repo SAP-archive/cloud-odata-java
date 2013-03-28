@@ -546,7 +546,7 @@ public class XmlMetadataProducer {
               setNamespaces.add(annotationElement.getNamespace());
             }
           } else {
-            xmlStreamWriter.writeStartElement("",annotationElement.getName(), annotationElement.getNamespace());
+            xmlStreamWriter.writeStartElement("", annotationElement.getName(), annotationElement.getNamespace());
             if (!predefinedNamespaces.containsValue(annotationElement.getNamespace())) {
               xmlStreamWriter.writeNamespace("", annotationElement.getNamespace());
               setNamespaces.add(annotationElement.getNamespace());
