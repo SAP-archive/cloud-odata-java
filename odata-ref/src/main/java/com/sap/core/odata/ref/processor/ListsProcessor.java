@@ -40,6 +40,7 @@ import com.sap.core.odata.api.ep.EntityProviderProperties;
 import com.sap.core.odata.api.ep.EntityProviderProperties.ODataEntityProviderPropertiesBuilder;
 import com.sap.core.odata.api.ep.callback.OnWriteEntryContent;
 import com.sap.core.odata.api.ep.callback.OnWriteFeedContent;
+import com.sap.core.odata.api.ep.callback.WriteCallbackContext;
 import com.sap.core.odata.api.ep.callback.WriteEntryCallbackContext;
 import com.sap.core.odata.api.ep.callback.WriteEntryCallbackResult;
 import com.sap.core.odata.api.ep.callback.WriteFeedCallbackContext;
@@ -814,10 +815,16 @@ public class ListsProcessor extends ODataSingleProcessor {
   }
 
   private <T> Map<String, ODataCallback> getCallbacks(final T data, final EdmEntityType entityType) throws EdmException {
-    Map<String, ODataCallback> callbacks = new HashMap<String, ODataCallback>();
-    for (final String name : entityType.getNavigationPropertyNames())
-      callbacks.put(name, new WriteCallback(data));
-    return callbacks;
+    final List<String> navigationPropertyNames = entityType.getNavigationPropertyNames();
+    if (navigationPropertyNames.isEmpty()) {
+      return null;
+    } else {
+      final WriteCallback callback = new WriteCallback(data);
+      Map<String, ODataCallback> callbacks = new HashMap<String, ODataCallback>();
+      for (final String name : navigationPropertyNames)
+        callbacks.put(name, callback);
+      return callbacks;
+    }
   }
 
   private class WriteCallback implements ODataCallback, OnWriteEntryContent, OnWriteFeedContent {
@@ -829,11 +836,8 @@ public class ListsProcessor extends ODataSingleProcessor {
     @Override
     public WriteFeedCallbackResult retrieveFeedResult(final WriteFeedCallbackContext context) {
       try {
-        final EdmEntitySet entitySet = context.getSourceEntitySet();
-        final EdmEntitySet targetEntitySet = entitySet.getRelatedEntitySet(context.getNavigationProperty());
-        final EdmEntityType entityType = targetEntitySet.getEntityType();
-        final Object sourceData = data instanceof List ? readEntryData((List<?>) data, entitySet.getEntityType(), context.extractKeyFromEntryData()) : data;
-        final Object relatedData = dataSource.readRelatedData(entitySet, sourceData, targetEntitySet, Collections.<String, Object> emptyMap());
+        final EdmEntityType entityType = context.getSourceEntitySet().getRelatedEntitySet(context.getNavigationProperty()).getEntityType();
+        final Object relatedData = readRelatedData(context);
         List<Map<String, Object>> values = new ArrayList<Map<String, Object>>();
         for (final Object entryData : (List<?>) relatedData)
           values.add(getStructuralTypeValueMap(entryData, entityType));
@@ -850,11 +854,8 @@ public class ListsProcessor extends ODataSingleProcessor {
     @Override
     public WriteEntryCallbackResult retrieveEntryResult(final WriteEntryCallbackContext context) {
       try {
-        final EdmEntitySet entitySet = context.getSourceEntitySet();
-        final EdmEntitySet targetEntitySet = entitySet.getRelatedEntitySet(context.getNavigationProperty());
-        final EdmEntityType entityType = targetEntitySet.getEntityType();
-        final Object sourceData = data instanceof List ? readEntryData((List<?>) data, entitySet.getEntityType(), context.extractKeyFromEntryData()) : data;
-        final Object relatedData = dataSource.readRelatedData(entitySet, sourceData, targetEntitySet, Collections.<String, Object> emptyMap());
+        final EdmEntityType entityType = context.getSourceEntitySet().getRelatedEntitySet(context.getNavigationProperty()).getEntityType();
+        final Object relatedData = readRelatedData(context);
         WriteEntryCallbackResult result = new WriteEntryCallbackResult();
         result.setEntryData(getStructuralTypeValueMap(relatedData, entityType));
         result.setCallbacks(getCallbacks(relatedData, entityType));
@@ -863,6 +864,15 @@ public class ListsProcessor extends ODataSingleProcessor {
       } catch (final ODataException e) {
         return null;
       }
+    }
+
+    private Object readRelatedData(final WriteCallbackContext context) throws ODataException {
+      final EdmEntitySet entitySet = context.getSourceEntitySet();
+      return dataSource.readRelatedData(
+          entitySet,
+          data instanceof List ? readEntryData((List<?>) data, entitySet.getEntityType(), context.extractKeyFromEntryData()) : data,
+          entitySet.getRelatedEntitySet(context.getNavigationProperty()),
+          Collections.<String, Object> emptyMap());
     }
 
     private <T> T readEntryData(final List<T> data, final EdmEntityType entityType, final Map<String, Object> key) throws ODataException {
