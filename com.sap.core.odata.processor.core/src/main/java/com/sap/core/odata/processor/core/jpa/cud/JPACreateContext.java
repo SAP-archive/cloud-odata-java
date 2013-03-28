@@ -112,7 +112,7 @@ public class JPACreateContext {
 	}
 	
 	private HashMap<String, Method> getSetters(Object jpaEntity,
-			EdmStructuralType structuralType,String entityName) throws ODataJPARuntimeException {
+			EdmStructuralType structuralType) throws ODataJPARuntimeException {
 
 		HashMap<String, Method> setters = new HashMap<String, Method>();
 		HashMap<String, String> embeddableKey = new HashMap<String, String>();
@@ -241,7 +241,7 @@ public class JPACreateContext {
 
 		if (!jpaEntityAccessMap.containsKey(jpaEntityAccessKey))
 			jpaEntityAccessMap.put(jpaEntityAccessKey,
-					getSetters(jpaEntity, edmEntityType,entityName));
+					getSetters(jpaEntity, edmEntityType));
 
 		HashMap<String, Method> setters = jpaEntityAccessMap
 				.get(jpaEntityAccessKey);

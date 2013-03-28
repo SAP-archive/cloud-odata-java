@@ -4,10 +4,9 @@ import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
-import javax.persistence.metamodel.EntityType;
 import javax.persistence.metamodel.Metamodel;
 
 import com.sap.core.odata.api.edm.EdmComplexType;
@@ -32,16 +31,14 @@ public class JPAUpdateContext {
 	
 	private HashMap<String, HashMap<String, Method>> jpaEntityAccessMap = null;
 	private HashMap<String, Object> jpaComplexObjectMap = null;
-	private Metamodel metamodel;
-
+	
 	public JPAUpdateContext() {
 		jpaEntityAccessMap = new HashMap<String, HashMap<String, Method>>();
 		jpaComplexObjectMap = new HashMap<String, Object>();
 	}
 
 	public JPAUpdateContext(Metamodel metamodel) {
-		this();
-		this.metamodel = metamodel;
+		this();		
 	}
 
 	public <T> Object build(Object jpaEntity, PutMergePatchUriInfo putUriInfo, InputStream content, String requestContentType) throws ODataJPARuntimeException  {
@@ -55,26 +52,8 @@ public class JPAUpdateContext {
 			.throwException(ODataJPARuntimeException.GENERAL
 					.addContent(e3.getMessage()), e3);
 		}
-	    String entityName = null;
-	    try{
-	    if(entityType.getMapping() != null && entityType.getMapping().getInternalName() != null)
-	    {
-	    	entityName = entityType.getMapping().getInternalName();
-	    }else{
-	    	entityName = entityType.getName();
-	    }
-	    }catch(EdmException e1){
-	    	
-	    }
-		Set<EntityType<?>> entityTypeSet = this.metamodel.getEntities();
-		String currentEntityName = null;
-		for(EntityType<?> entityTypeTemp : entityTypeSet){
-			if(entityTypeTemp.getJavaType().getName().endsWith("."+entityName)){
-				currentEntityName = entityTypeTemp.getName();	
-				break;
-			}
-		}
-		
+	    
+				
 		ODataEntry entryValues = null;
 		try {
 			entryValues = parseEntry(entitySet, content, requestContentType, false, new HashMap<String, Object>());
@@ -85,7 +64,7 @@ public class JPAUpdateContext {
 		} 		
 		try {
 			Map<String, Object> propertValueMap = entryValues.getProperties();
-			parse2JPAEntityValueMap(jpaEntity, entityType, propertValueMap,currentEntityName);
+			parse2JPAEntityValueMap(jpaEntity, entityType, propertValueMap);
 		} catch (ODataJPARuntimeException e) {
 			throw ODataJPARuntimeException
 			.throwException(ODataJPARuntimeException.GENERAL
@@ -95,7 +74,7 @@ public class JPAUpdateContext {
 	}
 	
 	private HashMap<String, Method> getSetters(Object jpaEntity,
-			EdmStructuralType structuralType,String entityName) throws ODataJPARuntimeException {
+			EdmStructuralType structuralType) throws ODataJPARuntimeException {
 
 		HashMap<String, Method> setters = new HashMap<String, Method>();
 		try {
@@ -205,7 +184,7 @@ public class JPAUpdateContext {
 	
 	@SuppressWarnings("unchecked")
 	public final Object parse2JPAEntityValueMap(
-			Object jpaEntity, EdmStructuralType edmEntityType, Map<String, Object> propertyValueMap,String entityName)
+			Object jpaEntity, EdmStructuralType edmEntityType, Map<String, Object> propertyValueMap)
 			throws ODataJPARuntimeException {
 
 		if (jpaEntity == null || edmEntityType == null)
@@ -215,14 +194,35 @@ public class JPAUpdateContext {
 
 		if (!jpaEntityAccessMap.containsKey(jpaEntityAccessKey))
 			jpaEntityAccessMap.put(jpaEntityAccessKey,
-					getSetters(jpaEntity, edmEntityType,entityName));
+					getSetters(jpaEntity, edmEntityType));
 
 		HashMap<String, Method> setters = jpaEntityAccessMap
 				.get(jpaEntityAccessKey);
-		
+		List<EdmProperty> keyProperties = null;
+		if(edmEntityType instanceof EdmEntityType){
+			try {
+				keyProperties = ((EdmEntityType)edmEntityType).getKeyProperties();
+			} catch (EdmException e) {
+				throw ODataJPARuntimeException
+				.throwException(ODataJPARuntimeException.GENERAL
+						.addContent(e.getMessage()), e);
+			}
+		}
+		boolean isKeyProperty = false;
 		try {
 			for (String key : setters.keySet()) {
-
+				isKeyProperty = false;
+				if(keyProperties != null){
+					for(EdmProperty keyProperty : keyProperties){
+						if(keyProperty.getName().equalsIgnoreCase(key)){
+							isKeyProperty = true;
+							break;
+						}
+					}
+					if(isKeyProperty){
+						continue;
+					}
+				}
 				EdmProperty property = (EdmProperty) edmEntityType
 						.getProperty(key);
 				String propertyName = null;
@@ -242,7 +242,7 @@ public class JPAUpdateContext {
 						if (property.getType().getKind().equals(EdmTypeKind.COMPLEX)) {
 							Object complexObject = jpaComplexObjectMap.get(propertyName);
 							parse2JPAEntityValueMap(complexObject, ((EdmComplexType)property.getType()), 
-									(Map<String, Object>)propertyValue, propertyName);
+									(Map<String, Object>)propertyValue);
 							setters.get(key).invoke(jpaEntity,complexObject);
 						} else 
 							setters.get(key).invoke(jpaEntity,propertyValue);
