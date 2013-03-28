@@ -14,6 +14,7 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
+import javax.servlet.ServletConfig;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MultivaluedHashMap;
 import javax.ws.rs.core.Response;
@@ -26,6 +27,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import com.sap.core.odata.api.ODataServiceFactory;
 import com.sap.core.odata.api.commons.HttpStatusCodes;
 import com.sap.core.odata.api.edm.Edm;
 import com.sap.core.odata.api.ep.EntityProviderException;
@@ -57,6 +59,7 @@ public class ODataExceptionMapperImplTest extends BaseTest {
     exceptionMapper = new ODataExceptionMapperImpl();
     exceptionMapper.httpHeaders = mock(HttpHeaders.class);
     exceptionMapper.uriInfo = mock(UriInfo.class);
+    exceptionMapper.servletConfig = mock(ServletConfig.class);
     MultivaluedHashMap<String, String> map = new MultivaluedHashMap<String, String>();
     when(exceptionMapper.uriInfo.getQueryParameters()).thenReturn(map);
 
@@ -332,6 +335,20 @@ public class ODataExceptionMapperImplTest extends BaseTest {
     String errorMessage = StringHelper.inputStreamToString((InputStream) response.getEntity());
     assertXpathEvaluatesTo(errorCode, "/a:error/a:code", errorMessage);
     assertXpathEvaluatesTo(MessageService.getMessage(Locale.ENGLISH, ODataNotFoundException.ENTITY).getText(), "/a:error/a:message", errorMessage);
+  }
+
+  @Test
+  public void testCallback() throws Exception {
+    when(exceptionMapper.servletConfig.getInitParameter(ODataServiceFactory.FACTORY_LABEL)).thenReturn(ODataServiceFactoryImpl.class.getName());
+    Response response = exceptionMapper.toResponse(new Exception());
+
+    // verify
+    assertNotNull(response);
+    assertEquals(HttpStatusCodes.BAD_REQUEST.getStatusCode(), response.getStatus());
+    //    String errorMessage = StringHelper.inputStreamToString((InputStream) response.getEntity());
+    //    assertEquals("bla", errorMessage);
+    String contentTypeHeader = response.getHeaderString(com.sap.core.odata.api.commons.HttpHeaders.CONTENT_TYPE);
+    assertEquals("text/html", contentTypeHeader);
   }
 
 }
