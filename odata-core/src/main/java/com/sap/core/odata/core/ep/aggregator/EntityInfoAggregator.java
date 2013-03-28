@@ -273,7 +273,6 @@ public class EntityInfoAggregator {
 
     if (keyPropertyInfos == null) {
       try {
-        System.out.println("1");
         keyPropertyInfos = new ArrayList<EntityPropertyInfo>();
         for (String keyPropertyName : entityType.getKeyPropertyNames()) {
           keyPropertyInfos.add(propertyInfo.get(keyPropertyName));

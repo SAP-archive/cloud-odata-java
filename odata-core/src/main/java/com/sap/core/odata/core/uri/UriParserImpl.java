@@ -600,20 +600,25 @@ public class UriParserImpl extends UriParser {
     } catch (NumberFormatException e) {
       throw new UriSyntaxException(UriSyntaxException.INVALIDVALUE.addContent(skip), e);
     }
-    if (uriResult.getSkip() < 0) {
+    
+    if (skip.startsWith("-")) {
       throw new UriSyntaxException(UriSyntaxException.INVALIDNEGATIVEVALUE.addContent(skip));
+    }else if(skip.startsWith("+")){
+      throw new UriSyntaxException(UriSyntaxException.INVALIDVALUE.addContent(skip));
     }
-
   }
 
   private void handleSystemQueryOptionTop(final String top) throws UriSyntaxException {
     try {
-      uriResult.setTop(Integer.valueOf(top));
+        uriResult.setTop(Integer.valueOf(top));     
     } catch (NumberFormatException e) {
       throw new UriSyntaxException(UriSyntaxException.INVALIDVALUE.addContent(top), e);
     }
-    if (uriResult.getTop() < 0) {
+    
+    if (top.startsWith("-")) {
       throw new UriSyntaxException(UriSyntaxException.INVALIDNEGATIVEVALUE.addContent(top));
+    }else if(top.startsWith("+")){
+      throw new UriSyntaxException(UriSyntaxException.INVALIDVALUE.addContent(top));
     }
   }
 
