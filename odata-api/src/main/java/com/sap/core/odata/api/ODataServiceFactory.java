@@ -41,4 +41,13 @@ public abstract class ODataServiceFactory {
     return RuntimeDelegate.createODataSingleProcessorService(provider, processor);
   }
 
+  /**
+   * A service can return implementation classes for various callback interfaces.
+   * @param callbackInterface a interface type to query for implementation
+   * @return a callback implementation for this interface or null
+   */
+  public <T extends ODataCallback> T getCallback(final Class<? extends ODataCallback> callbackInterface) {
+    return null;
+  }
+
 }
