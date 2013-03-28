@@ -28,13 +28,11 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Request;
 import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.UriBuilder;
 
 import com.sap.core.odata.api.ODataService;
 import com.sap.core.odata.api.ODataServiceFactory;
 import com.sap.core.odata.api.ODataServiceVersion;
-import com.sap.core.odata.api.commons.HttpHeaders;
 import com.sap.core.odata.api.commons.HttpStatusCodes;
 import com.sap.core.odata.api.commons.ODataHttpHeaders;
 import com.sap.core.odata.api.edm.EdmEntityType;
@@ -169,7 +167,7 @@ public final class ODataSubLocator implements ODataLocator {
 
     final String location = (method == ODataHttpMethod.POST && (uriInfo.getUriType() == UriType.URI1 || uriInfo.getUriType() == UriType.URI6B)) ? odataResponse.getIdLiteral() : null;
     final HttpStatusCodes s = odataResponse.getStatus() == null ? method == ODataHttpMethod.POST ? uriInfo.getUriType() == UriType.URI9 ? HttpStatusCodes.OK : uriInfo.getUriType() == UriType.URI7B ? HttpStatusCodes.NO_CONTENT : HttpStatusCodes.CREATED : method == ODataHttpMethod.PUT || method == ODataHttpMethod.PATCH || method == ODataHttpMethod.MERGE || method == ODataHttpMethod.DELETE ? HttpStatusCodes.NO_CONTENT : HttpStatusCodes.OK : odataResponse.getStatus();
-    final Response response = convertResponse(odataResponse, s, serverDataServiceVersion, location);
+    final Response response = Util.convertResponse(odataResponse, s, serverDataServiceVersion, location);
 
     return response;
   }
@@ -673,29 +671,6 @@ public final class ODataSubLocator implements ODataLocator {
     }
 
     return single;
-  }
-
-  private Response convertResponse(final ODataResponse odataResponse, final HttpStatusCodes s, final String version, final String location) {
-    ResponseBuilder responseBuilder = Response.noContent().status(s.getStatusCode()).entity(odataResponse.getEntity());
-
-    for (final String name : odataResponse.getHeaderNames()) {
-      responseBuilder = responseBuilder.header(name, odataResponse.getHeader(name));
-    }
-
-    if (!odataResponse.containsHeader(ODataHttpHeaders.DATASERVICEVERSION)) {
-      responseBuilder = responseBuilder.header(ODataHttpHeaders.DATASERVICEVERSION, version);
-    }
-
-    if (!odataResponse.containsHeader(HttpHeaders.LOCATION) && location != null) {
-      responseBuilder = responseBuilder.header(HttpHeaders.LOCATION, location);
-    }
-
-    final String eTag = odataResponse.getETag();
-    if (eTag != null) {
-      responseBuilder.header(HttpHeaders.ETAG, eTag);
-    }
-
-    return responseBuilder.build();
   }
 
   public class InitParameter {

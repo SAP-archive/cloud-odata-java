@@ -6,12 +6,12 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 
+import javax.servlet.ServletConfig;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 import javax.ws.rs.ext.ExceptionMapper;
@@ -20,6 +20,7 @@ import javax.ws.rs.ext.Provider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.sap.core.odata.api.ODataServiceFactory;
 import com.sap.core.odata.api.ODataServiceVersion;
 import com.sap.core.odata.api.commons.HttpStatusCodes;
 import com.sap.core.odata.api.commons.ODataHttpHeaders;
@@ -29,11 +30,14 @@ import com.sap.core.odata.api.exception.ODataApplicationException;
 import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.api.exception.ODataHttpException;
 import com.sap.core.odata.api.exception.ODataMessageException;
+import com.sap.core.odata.api.processor.ODataErrorHandlerCallback;
+import com.sap.core.odata.api.processor.ODataResponse;
 import com.sap.core.odata.core.commons.ContentType;
 import com.sap.core.odata.core.commons.ContentType.ODataFormat;
 import com.sap.core.odata.core.ep.ODataExceptionSerializer;
 import com.sap.core.odata.core.exception.MessageService;
 import com.sap.core.odata.core.exception.MessageService.Message;
+import com.sap.core.odata.core.exception.ODataRuntimeException;
 
 /**
  * Creates an error response according to the format defined by the OData standard
@@ -50,34 +54,43 @@ public class ODataExceptionMapperImpl implements ExceptionMapper<Exception> {
   UriInfo uriInfo;
   @Context
   HttpHeaders httpHeaders;
+  @Context
+  ServletConfig servletConfig;
 
   @Override
   public Response toResponse(final Exception exception) {
 
-    final Response response;
+    ODataResponse oDataResponse;
 
     final Exception toHandleException = extractException(exception);
 
     if (toHandleException instanceof ODataApplicationException) {
-      response = buildResponseForApplicationException((ODataApplicationException) toHandleException);
+      oDataResponse = buildResponseForApplicationException((ODataApplicationException) toHandleException);
     } else if (toHandleException instanceof ODataHttpException) {
-      response = buildResponseForHttpException((ODataHttpException) toHandleException);
+      oDataResponse = buildResponseForHttpException((ODataHttpException) toHandleException);
     } else if (toHandleException instanceof ODataMessageException) {
-      response = buildResponseForMessageException((ODataMessageException) toHandleException);
+      oDataResponse = buildResponseForMessageException((ODataMessageException) toHandleException);
     } else if (toHandleException instanceof WebApplicationException) {
-      response = buildResponseForWebApplicationException((WebApplicationException) toHandleException);
+      oDataResponse = buildResponseForWebApplicationException((WebApplicationException) toHandleException);
     } else {
-      response = buildResponseForException(exception);
+      oDataResponse = buildResponseForException(exception);
     }
 
-    if (isInternalServerError(response)) {
+    if (isInternalServerError(oDataResponse)) {
       LOG.error(exception.getMessage(), exception);
     }
+
+    ODataErrorHandlerCallback callback = getErrorHandlerCallback();
+    if (callback != null) {
+      oDataResponse = callback.handleError(oDataResponse, toHandleException);
+    }
+
+    Response response = Util.convertResponse(oDataResponse, oDataResponse.getStatus(), null, null);
 
     return response;
   }
 
-  private Response buildResponseForMessageException(final ODataMessageException messageException) {
+  private ODataResponse buildResponseForMessageException(final ODataMessageException messageException) {
     HttpStatusCodes responseStatusCode;
 
     if (messageException instanceof EntityProviderException) {
@@ -97,13 +110,13 @@ public class ODataExceptionMapperImpl implements ExceptionMapper<Exception> {
     return buildResponseInternal(entity, contentType, responseStatusCode.getStatusCode());
   }
 
-  private Response buildResponseForWebApplicationException(final WebApplicationException webApplicationException) {
+  private ODataResponse buildResponseForWebApplicationException(final WebApplicationException webApplicationException) {
     InputStream entity = ODataExceptionSerializer.serialize(null, webApplicationException.getMessage(), getContentType(), DEFAULT_RESPONSE_LOCALE);
     return buildResponseInternal(entity, getContentType(), webApplicationException.getResponse().getStatus());
   }
 
-  private boolean isInternalServerError(final Response response) {
-    return response.getStatus() == Status.INTERNAL_SERVER_ERROR.getStatusCode();
+  private boolean isInternalServerError(final ODataResponse response) {
+    return response.getStatus().getStatusCode() == Status.INTERNAL_SERVER_ERROR.getStatusCode();
   }
 
   private Exception extractException(final Exception exception) {
@@ -121,14 +134,14 @@ public class ODataExceptionMapperImpl implements ExceptionMapper<Exception> {
     return exception;
   }
 
-  private Response buildResponseForException(final Exception exception) {
+  private ODataResponse buildResponseForException(final Exception exception) {
     //final String innerError = getInnerError(exception);
     final ContentType contentType = getContentType();
     InputStream entity = ODataExceptionSerializer.serialize(null, exception.getMessage(), contentType, DEFAULT_RESPONSE_LOCALE);
     return buildResponseInternal(entity, contentType, Status.INTERNAL_SERVER_ERROR.getStatusCode());
   }
 
-  private Response buildResponseForApplicationException(final ODataApplicationException exception) {
+  private ODataResponse buildResponseForApplicationException(final ODataApplicationException exception) {
     final int status = extractStatus(exception);
     //    final String innerError = getInnerError(exception);
     final ContentType contentType = getContentType();
@@ -136,7 +149,7 @@ public class ODataExceptionMapperImpl implements ExceptionMapper<Exception> {
     return buildResponseInternal(entity, contentType, status);
   }
 
-  private Response buildResponseForHttpException(final ODataHttpException httpException) {
+  private ODataResponse buildResponseForHttpException(final ODataHttpException httpException) {
     final MessageReference messageReference = httpException.getMessageReference();
     final Message localizedMessage = messageReference == null ? null : extractEntity(messageReference);
     final ContentType contentType = getContentType();
@@ -148,13 +161,13 @@ public class ODataExceptionMapperImpl implements ExceptionMapper<Exception> {
     return buildResponseInternal(entity, contentType, extractStatus(httpException));
   }
 
-  private Response buildResponseInternal(final InputStream entity, final ContentType contentType, final int status) {
-    ResponseBuilder responseBuilder = Response.status(status).entity(entity).header(ODataHttpHeaders.DATASERVICEVERSION, ODataServiceVersion.V10);
+  private ODataResponse buildResponseInternal(final InputStream entity, final ContentType contentType, final int status) {
+    ODataResponse.ODataResponseBuilder responseBuilder = ODataResponse.status(HttpStatusCodes.fromStatusCode(status)).entity(entity).header(ODataHttpHeaders.DATASERVICEVERSION, ODataServiceVersion.V10);
 
     if (contentType.getODataFormat() == ODataFormat.JSON) {
-      return responseBuilder.type(MediaType.APPLICATION_JSON_TYPE).build();
+      return responseBuilder.contentHeader(MediaType.APPLICATION_JSON_TYPE.toString()).build();
     } else {
-      return responseBuilder.type(MediaType.APPLICATION_XML_TYPE).build();
+      return responseBuilder.contentHeader(MediaType.APPLICATION_XML_TYPE.toString()).build();
     }
   }
 
@@ -206,5 +219,22 @@ public class ODataExceptionMapperImpl implements ExceptionMapper<Exception> {
       }
     }
     return ContentType.APPLICATION_XML_CS_UTF_8;
+  }
+
+  private ODataErrorHandlerCallback getErrorHandlerCallback() {
+    try {
+      ODataErrorHandlerCallback callback = null;
+      final String factoryClassName = servletConfig.getInitParameter(ODataServiceFactory.FACTORY_LABEL);
+      if (factoryClassName != null) {
+        Class<?> factoryClass = Class.forName(factoryClassName);
+        final ODataServiceFactory serviceFactory = (ODataServiceFactory) factoryClass.newInstance();
+
+        callback = serviceFactory.getCallback(ODataErrorHandlerCallback.class);
+      }
+      return callback;
+    } catch (Exception e) {
+      throw new ODataRuntimeException("Exception during error handling occured!", e);
+    }
+
   }
 }
