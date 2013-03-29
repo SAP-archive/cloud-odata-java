@@ -6,6 +6,7 @@ import com.sap.core.odata.api.edm.provider.EdmProvider;
 import com.sap.core.odata.api.processor.ODataSingleProcessor;
 import com.sap.core.odata.processor.api.jpa.ODataJPAContext;
 import com.sap.core.odata.processor.api.jpa.access.JPAEdmMappingModelAccess;
+import com.sap.core.odata.processor.api.jpa.access.JPAMethodContext.JPAMethodContextBuilder;
 import com.sap.core.odata.processor.api.jpa.access.JPAProcessor;
 import com.sap.core.odata.processor.api.jpa.exception.ODataJPAMessageService;
 import com.sap.core.odata.processor.api.jpa.factory.JPAAccessFactory;
@@ -19,6 +20,7 @@ import com.sap.core.odata.processor.api.jpa.jpql.JPQLStatement.JPQLStatementBuil
 import com.sap.core.odata.processor.api.jpa.model.JPAEdmModelView;
 import com.sap.core.odata.processor.core.jpa.ODataJPAContextImpl;
 import com.sap.core.odata.processor.core.jpa.ODataJPAProcessorDefault;
+import com.sap.core.odata.processor.core.jpa.access.data.JPAFuctionContext;
 import com.sap.core.odata.processor.core.jpa.access.data.JPAProcessorImpl;
 import com.sap.core.odata.processor.core.jpa.access.model.JPAEdmMappingModelService;
 import com.sap.core.odata.processor.core.jpa.edm.ODataJPAEdmProvider;
@@ -59,7 +61,7 @@ public class ODataJPAFactoryImpl extends ODataJPAFactory {
 			JPQLStatementBuilder builder = null;
 			switch (context.getType()) {
 			case SELECT:
-			case SELECT_COUNT:  // for $count, Same as select
+			case SELECT_COUNT: // for $count, Same as select
 				builder = new JPQLSelectStatementBuilder(context);
 				break;
 			case SELECT_SINGLE:
@@ -92,7 +94,8 @@ public class ODataJPAFactoryImpl extends ODataJPAFactory {
 				contextBuilder = singleSelectContext.new JPQLSelectSingleContextBuilder();
 				break;
 			case JOIN:
-				JPQLJoinSelectContext joinContext = new JPQLJoinSelectContext(false);
+				JPQLJoinSelectContext joinContext = new JPQLJoinSelectContext(
+						false);
 				contextBuilder = joinContext.new JPQLJoinContextBuilder();
 				break;
 			case JOIN_SINGLE:
@@ -100,11 +103,13 @@ public class ODataJPAFactoryImpl extends ODataJPAFactory {
 				contextBuilder = joinSingleContext.new JPQLJoinSelectSingleContextBuilder();
 				break;
 			case SELECT_COUNT:
-				JPQLSelectContext selectCountContext = new JPQLSelectContext(true);
+				JPQLSelectContext selectCountContext = new JPQLSelectContext(
+						true);
 				contextBuilder = selectCountContext.new JPQLSelectContextBuilder();
 				break;
 			case JOIN_COUNT:
-				JPQLJoinSelectContext joinCountContext = new JPQLJoinSelectContext(true);
+				JPQLJoinSelectContext joinCountContext = new JPQLJoinSelectContext(
+						true);
 				contextBuilder = joinCountContext.new JPQLJoinContextBuilder();
 			default:
 				break;
@@ -118,6 +123,23 @@ public class ODataJPAFactoryImpl extends ODataJPAFactory {
 				return new JPQLBuilderFactoryImpl();
 			else
 				return factory;
+		}
+
+		@Override
+		public JPAMethodContextBuilder getJPAMethodContextBuilder(
+				JPQLContextType contextType) {
+
+			JPAMethodContextBuilder contextBuilder = null;
+			switch (contextType) {
+			case FUNCTION:
+				JPAFuctionContext methodConext = new JPAFuctionContext();
+				contextBuilder = methodConext.new JPAFunctionContextBuilder();
+
+				break;
+			default:
+				break;
+			}
+			return contextBuilder;
 		}
 
 	}
