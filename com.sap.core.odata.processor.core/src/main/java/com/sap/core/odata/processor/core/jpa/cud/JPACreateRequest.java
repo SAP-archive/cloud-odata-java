@@ -28,9 +28,8 @@ public class JPACreateRequest extends JPAWriteRequest{
 	private Metamodel metamodel;
 
 	public JPACreateRequest() {
-		jpaEntityAccessMap = new HashMap<String, HashMap<String, Method>>();
+		super();
 		jpaEmbeddableKeyMap = new HashMap<String, HashMap<String, String>>();
-		jpaComplexObjectMap = new HashMap<String, Object>();
 		jpaEmbeddableKeyObjectMap = new HashMap<String, Class<?>>();		
 	}
 

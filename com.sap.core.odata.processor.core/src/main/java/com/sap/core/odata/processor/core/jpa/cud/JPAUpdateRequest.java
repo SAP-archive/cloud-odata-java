@@ -22,11 +22,10 @@ import com.sap.core.odata.processor.api.jpa.exception.ODataJPARuntimeException;
 public class JPAUpdateRequest extends JPAWriteRequest{
 	
 	public JPAUpdateRequest() {
-		jpaEntityAccessMap = new HashMap<String, HashMap<String, Method>>();
-		jpaComplexObjectMap = new HashMap<String, Object>();
+		super();
 	}
 
-	public <T> Object process(Object jpaEntity, PutMergePatchUriInfo putUriInfo, InputStream content, String requestContentType) throws ODataJPARuntimeException  {
+	public void process(Object jpaEntity, PutMergePatchUriInfo putUriInfo, InputStream content, String requestContentType) throws ODataJPARuntimeException  {
 		
 		final EdmEntitySet entitySet = putUriInfo.getTargetEntitySet();
 	    EdmEntityType entityType = null;
@@ -36,8 +35,7 @@ public class JPAUpdateRequest extends JPAWriteRequest{
 			throw ODataJPARuntimeException
 			.throwException(ODataJPARuntimeException.GENERAL
 					.addContent(e3.getMessage()), e3);
-		}
-	    
+		}	    
 				
 		ODataEntry entryValues = null;
 		try {
@@ -54,8 +52,7 @@ public class JPAUpdateRequest extends JPAWriteRequest{
 			throw ODataJPARuntimeException
 			.throwException(ODataJPARuntimeException.GENERAL
 					.addContent(e.getMessage()), e);
-		}
-		return jpaEntity;
+		}		
 	}
 	
 	
