@@ -247,6 +247,8 @@ public class ODataExpressionParser {
 			value = "{d \'"+value+"\'}";	//$NON-NLS-1$ 	//$NON-NLS-2$
 		}else if(edmSimpleType == EdmSimpleTypeKind.Time.getEdmSimpleTypeInstance()){
 			value = "{t \'"+value+"\'}";	//$NON-NLS-1$	//$NON-NLS-2$
+		}else if(edmSimpleType == EdmSimpleTypeKind.Int64.getEdmSimpleTypeInstance()){
+			value = value+'L';
 		}
 		return value;
 	}
