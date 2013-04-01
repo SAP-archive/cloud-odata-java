@@ -9,6 +9,7 @@ import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
+import javax.persistence.EntityTransaction;
 import javax.persistence.Query;
 import javax.persistence.metamodel.Metamodel;
 
@@ -32,10 +33,12 @@ import com.sap.core.odata.api.edm.EdmTypeKind;
 import com.sap.core.odata.api.edm.EdmTyped;
 import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.api.processor.ODataContext;
+import com.sap.core.odata.api.uri.KeyPredicate;
 import com.sap.core.odata.api.uri.PathInfo;
 import com.sap.core.odata.api.uri.UriInfo;
 import com.sap.core.odata.api.uri.expression.FilterExpression;
 import com.sap.core.odata.api.uri.expression.OrderByExpression;
+import com.sap.core.odata.api.uri.info.DeleteUriInfo;
 import com.sap.core.odata.api.uri.info.GetEntitySetCountUriInfo;
 import com.sap.core.odata.processor.api.jpa.ODataJPAContext;
 import com.sap.core.odata.processor.api.jpa.exception.ODataJPAModelException;
@@ -44,7 +47,7 @@ import com.sap.core.odata.processor.core.jpa.common.ODataJPATestConstants;
 
 public class JPAProcessorImplTest {
 
-	// -------------------------------- Common Start ------------------------------------common in DataJPAProcessorDefaultTest as well
+	// -------------------------------- Common Start ------------------------------------common in ODataJPAProcessorDefaultTest as well
 	private static final String STR_LOCAL_URI = "http://localhost:8080/com.sap.core.odata.processor.ref.web/";
 	private static final String SALESORDERPROCESSING_CONTAINER = "salesorderprocessingContainer";
 	private static final String SO_ID = "SoId";
@@ -71,8 +74,58 @@ public class JPAProcessorImplTest {
 		}
 	}
 	
+	@Test
+	public void testProcessDeleteUriInfo() {
+		try {
+			Assert.assertNotNull(objJPAProcessorImpl.process(getDeletetUriInfo(), "application/xml"));
+			Assert.assertEquals(new Address(), objJPAProcessorImpl.process(getDeletetUriInfo(), "application/xml"));
+		} catch (ODataJPAModelException e) {
+			fail(ODataJPATestConstants.EXCEPTION_MSG_PART_1+e.getMessage()
+					+ ODataJPATestConstants.EXCEPTION_MSG_PART_2);
+		} catch (ODataJPARuntimeException e) {
+			fail(ODataJPATestConstants.EXCEPTION_MSG_PART_1+e.getMessage()
+					+ ODataJPATestConstants.EXCEPTION_MSG_PART_2);
+		}
+	}
 	
-	// ---------------------------- Common Code Start ---------------- TODO - common in DataJPAProcessorDefaultTest as well 
+	@Test
+	public void testProcessDeleteUriInfoNegative() {
+		try {
+			Assert.assertNotNull(objJPAProcessorImpl.process(getDeletetUriInfo(), "application/xml"));
+			Assert.assertNotSame(new Object(), objJPAProcessorImpl.process(getDeletetUriInfo(), "application/xml"));
+		} catch (ODataJPAModelException e) {
+			fail(ODataJPATestConstants.EXCEPTION_MSG_PART_1+e.getMessage()
+					+ ODataJPATestConstants.EXCEPTION_MSG_PART_2);
+		} catch (ODataJPARuntimeException e) {
+			fail(ODataJPATestConstants.EXCEPTION_MSG_PART_1+e.getMessage()
+					+ ODataJPATestConstants.EXCEPTION_MSG_PART_2);
+		}
+	}
+	
+	
+	// ---------------------------- Common Code Start ---------------- TODO - common in ODataJPAProcessorDefaultTest as well 
+	
+	private DeleteUriInfo getDeletetUriInfo() {
+		UriInfo objUriInfo = EasyMock.createMock(UriInfo.class);
+		EasyMock.expect(objUriInfo.getStartEntitySet()).andStubReturn(getLocalEdmEntitySet());
+		EasyMock.expect(objUriInfo.getTargetEntitySet()).andStubReturn(getLocalEdmEntitySet());
+		EasyMock.expect(objUriInfo.getSelect()).andStubReturn(null);
+		EasyMock.expect(objUriInfo.getOrderBy()).andStubReturn(getOrderByExpression());
+		EasyMock.expect(objUriInfo.getTop()).andStubReturn(getTop());
+		EasyMock.expect(objUriInfo.getSkip()).andStubReturn(getSkip());
+		EasyMock.expect(objUriInfo.getInlineCount()).andStubReturn(getInlineCount());
+		EasyMock.expect(objUriInfo.getFilter()).andStubReturn(getFilter());
+		EasyMock.expect(objUriInfo.getKeyPredicates()).andStubReturn(getKeyPredicates());
+		EasyMock.replay(objUriInfo);
+		return objUriInfo;
+	}
+
+
+	private List<KeyPredicate> getKeyPredicates() {
+		List<KeyPredicate> keyPredicates = new ArrayList<KeyPredicate>();
+		return keyPredicates;
+	}
+	
 	private GetEntitySetCountUriInfo getEntitySetCountUriInfo() {
 		return getLocalUriInfo();
 	}
@@ -179,17 +232,33 @@ public class JPAProcessorImplTest {
 	private EntityManagerFactory mockEntityManagerFactory() {
 		EntityManagerFactory emf = EasyMock.createMock(EntityManagerFactory.class);
 		EasyMock.expect(emf.getMetamodel()).andStubReturn(mockMetaModel());
-		EasyMock.expect(emf.createEntityManager()).andReturn(getLocalEntityManager());
+		EasyMock.expect(emf.createEntityManager()).andStubReturn(getLocalEntityManager());
 		EasyMock.replay(emf);
 		return emf;
 	}
 
 	private EntityManager getLocalEntityManager() {
 		EntityManager em = EasyMock.createMock(EntityManager.class);
-		EasyMock.expect(em.createQuery("SELECT E1 FROM SalesOrderHeaders E1")).andReturn(getQuery());
+		EasyMock.expect(em.createQuery("SELECT E1 FROM SalesOrderHeaders E1")).andStubReturn(getQuery());
 		EasyMock.expect(em.createQuery("SELECT COUNT ( E1 ) FROM SalesOrderHeaders E1")).andStubReturn(getQueryForSelectCount());
+		EasyMock.expect(em.getTransaction()).andStubReturn(getLocalTransaction()); //For Delete
+		em.flush();
+		em.flush();
+		Address obj = new Address();
+		em.remove(obj);// testing void method
+		em.remove(obj);// testing void method
 		EasyMock.replay(em);
 		return em;
+	}
+
+	private EntityTransaction getLocalTransaction() {
+		EntityTransaction entityTransaction = EasyMock.createMock(EntityTransaction.class);
+		entityTransaction.begin(); // testing void method
+		entityTransaction.begin(); // testing void method
+		entityTransaction.commit();// testing void method
+		entityTransaction.commit();// testing void method
+		EasyMock.replay(entityTransaction);
+		return entityTransaction;
 	}
 
 	private Query getQuery() {
@@ -219,9 +288,17 @@ public class JPAProcessorImplTest {
 	}
 	
 	private class Address{
-		@SuppressWarnings("unused")
+		private String soId = "12";
 		public String getSoId(){
-			return "12";
+			return soId;
+		}
+
+		@Override
+		public boolean equals(Object obj) {
+			boolean isEqual = false;
+			if(obj instanceof Address)
+				isEqual = this.getSoId().equalsIgnoreCase(((Address)obj).getSoId());//
+			return isEqual;
 		}
 	}
 

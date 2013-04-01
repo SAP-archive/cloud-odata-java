@@ -28,6 +28,7 @@ import com.sap.core.odata.api.processor.ODataContext;
 import com.sap.core.odata.api.processor.ODataResponse;
 import com.sap.core.odata.api.uri.PathInfo;
 import com.sap.core.odata.api.uri.SelectItem;
+import com.sap.core.odata.api.uri.info.DeleteUriInfo;
 import com.sap.core.odata.api.uri.info.GetEntitySetCountUriInfo;
 import com.sap.core.odata.api.uri.info.GetEntitySetUriInfo;
 import com.sap.core.odata.api.uri.info.GetEntityUriInfo;
@@ -53,11 +54,14 @@ public class ODataJPAResponseBuilderTest extends JPAEdmTestModelView{
 		try {
 			EntityType entity = new EntityType();
 			entity.setName("SalesOrderHeader");
-			assertNotNull(ODataJPAResponseBuilder.build(entity, getLocalGetURIInfo(), "xml", getODataJPAContext()));
+			try {
+				assertNotNull(ODataJPAResponseBuilder.build(entity, getLocalGetURIInfo(), "xml", getODataJPAContext()));
+			} catch (ODataNotFoundException e) {
+				fail(ODataJPATestConstants.EXCEPTION_MSG_PART_1+e.getMessage()
+						+ ODataJPATestConstants.EXCEPTION_MSG_PART_2);
+			}
 		} catch (ODataJPARuntimeException e) {
 			assertTrue(true);//Nothing to do, Expected.
-		} catch (ODataNotFoundException e) {
-			assertTrue(false);//Not Expected.
 		}
 		try {// Bad content type
 			assertNotNull(ODataJPAResponseBuilder.build(getJPAEntities(), getResultsView(), "xml", getODataJPAContext()));
@@ -76,8 +80,9 @@ public class ODataJPAResponseBuilderTest extends JPAEdmTestModelView{
 			fail(ODataJPATestConstants.EXCEPTION_MSG_PART_1+e.getMessage()
 					+ ODataJPATestConstants.EXCEPTION_MSG_PART_2);
 		} catch (ODataNotFoundException e) {
-			assertTrue(false);//Not Expected.
-		}
+			fail(ODataJPATestConstants.EXCEPTION_MSG_PART_1+e.getMessage()
+					+ ODataJPATestConstants.EXCEPTION_MSG_PART_2);
+		} 
 	}
 
 	@Test
@@ -101,6 +106,26 @@ public class ODataJPAResponseBuilderTest extends JPAEdmTestModelView{
 		assertNotNull(objODataResponse);
 	}
 	
+	@Test
+	public void testDeleteWithNotFound() {
+		try {
+			ODataJPAResponseBuilder.build(null, getDeleteUriInfo());
+		} catch (ODataJPARuntimeException e) {
+			fail(ODataJPATestConstants.EXCEPTION_MSG_PART_1+e.getMessage()
+					+ ODataJPATestConstants.EXCEPTION_MSG_PART_2);
+		} catch (ODataNotFoundException e) {
+			// Expected
+			assertTrue(true);
+		}
+	}
+	
+	private DeleteUriInfo getDeleteUriInfo() {
+		DeleteUriInfo objDeleteUriInfo = EasyMock.createMock(DeleteUriInfo.class);
+		//EasyMock.expect(objDeleteUriInfo.get)
+		EasyMock.replay(objDeleteUriInfo);
+		return objDeleteUriInfo;
+	}
+
 	private GetEntitySetCountUriInfo getCountEntitySetUriInfo() {
 		GetEntitySetCountUriInfo objGetEntitySetCountUriInfo = EasyMock.createMock(GetEntitySetCountUriInfo.class);
 		EasyMock.replay(objGetEntitySetCountUriInfo);
