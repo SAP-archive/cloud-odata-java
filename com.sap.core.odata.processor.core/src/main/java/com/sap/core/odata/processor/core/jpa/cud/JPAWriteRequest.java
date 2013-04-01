@@ -117,14 +117,14 @@ public class JPAWriteRequest {
 							.addContent(e.getMessage()), e);
 		}
 
-		String[] nameParts = name.split("\\.");
+		String[] nameParts = name.split("\\.");		//$NON-NLS-1$
 		StringBuilder builder = new StringBuilder();
 
 		if (nameParts.length == 1) {
 			if (name != null) {
 				char c = Character.toUpperCase(name.charAt(0));
 
-				builder.append("set").append(c).append(name.substring(1))
+				builder.append("set").append(c).append(name.substring(1))	//$NON-NLS-1$
 						.toString();
 			}
 		} else if (nameParts.length > 1) {
@@ -133,9 +133,9 @@ public class JPAWriteRequest {
 				name = nameParts[i];
 				char c = Character.toUpperCase(name.charAt(0));
 				if (i == 0)
-					builder.append("set").append(c).append(name.substring(1));
+					builder.append("set").append(c).append(name.substring(1)); 	//$NON-NLS-1$
 				else
-					builder.append(".").append("set").append(c)
+					builder.append(".").append("set").append(c)	//$NON-NLS-1$ //$NON-NLS-2$
 							.append(name.substring(1));
 			}
 		} else {
