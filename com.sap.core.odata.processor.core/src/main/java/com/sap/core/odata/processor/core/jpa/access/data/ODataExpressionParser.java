@@ -217,9 +217,7 @@ public class ODataExpressionParser {
 	            || edmSimpleType == EdmSimpleTypeKind.DateTimeOffset.getEdmSimpleTypeInstance()) {
 				literal = literal.substring(literal.indexOf('\''), literal.indexOf('}'));
 			}
-			else if (edmSimpleType == EdmSimpleTypeKind.Int64.getEdmSimpleTypeInstance())
-				literal = literal +  "l";
-				
+							
 			keyFilters.append(tableAlias+JPQLStatement.DELIMITER.PERIOD+propertyName + JPQLStatement.DELIMITER.SPACE + JPQLStatement.Operator.EQ+ JPQLStatement.DELIMITER.SPACE + literal);
 		}
 		if(keyFilters.length()>0)
