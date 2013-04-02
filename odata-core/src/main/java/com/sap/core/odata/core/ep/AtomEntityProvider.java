@@ -6,6 +6,7 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import javax.xml.stream.XMLOutputFactory;
@@ -14,6 +15,9 @@ import javax.xml.stream.XMLStreamWriter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.sap.core.odata.api.ODataServiceVersion;
+import com.sap.core.odata.api.commons.HttpStatusCodes;
+import com.sap.core.odata.api.commons.ODataHttpHeaders;
 import com.sap.core.odata.api.edm.Edm;
 import com.sap.core.odata.api.edm.EdmEntitySet;
 import com.sap.core.odata.api.edm.EdmException;
@@ -37,6 +41,7 @@ import com.sap.core.odata.core.ep.producer.AtomEntryEntityProducer;
 import com.sap.core.odata.core.ep.producer.AtomFeedProducer;
 import com.sap.core.odata.core.ep.producer.AtomServiceDocumentProducer;
 import com.sap.core.odata.core.ep.producer.XmlCollectionEntityProducer;
+import com.sap.core.odata.core.ep.producer.XmlErrorDocumentProducer;
 import com.sap.core.odata.core.ep.producer.XmlLinkEntityProducer;
 import com.sap.core.odata.core.ep.producer.XmlLinksEntityProducer;
 import com.sap.core.odata.core.ep.producer.XmlPropertyEntityProducer;
@@ -69,6 +74,52 @@ public class AtomEntityProvider implements ContentTypeBasedEntityProvider {
       break;
     default:
       throw new EntityProviderException(EntityProviderException.ILLEGAL_ARGUMENT.addContent("Got unsupported ODataFormat '" + odataFormat + "'."));
+    }
+  }
+
+  /**
+   * <p>Serializes an error message according to the OData standard.</p>
+   * <p>In case an error occurs, it is logged.
+   * An exception is not thrown because this method is used in exception handling.</p>
+   * @param status      the {@link HttpStatusCodes} associated with this error  
+   * @param errorCode   a String that serves as a substatus to the HTTP response code
+   * @param message     a human-readable message describing the error
+   * @param locale      the {@link Locale} that should be used to format the error message
+   * @param innerError  the inner error for this message. If it is null or an empty String no inner error tag is shown inside the response xml
+   * @return            an {@link ODataResponse} containing the serialized error message
+   */
+  @Override
+  public ODataResponse writeErrorDocument(final HttpStatusCodes status, final String errorCode, final String message, final Locale locale, final String innerError) throws EntityProviderException {
+    OutputStream outStream = null;
+
+    try {
+      CircleStreamBuffer csb = new CircleStreamBuffer();
+      outStream = csb.getOutputStream();
+      XMLStreamWriter writer = XMLOutputFactory.newInstance().createXMLStreamWriter(outStream, DEFAULT_CHARSET);
+
+      XmlErrorDocumentProducer producer = new XmlErrorDocumentProducer();
+      producer.writeErrorDocument(writer, errorCode, message, locale, innerError);
+
+      writer.flush();
+      outStream.flush();
+      outStream.close();
+
+      ODataResponseBuilder response = ODataResponse.entity(csb.getInputStream())
+          .contentHeader(ContentType.APPLICATION_XML.toContentTypeString())
+          .header(ODataHttpHeaders.DATASERVICEVERSION, ODataServiceVersion.V10)
+          .status(status);
+      return response.build();
+    } catch (Exception e) {
+        throw new EntityProviderException(EntityProviderException.COMMON, e);
+    } finally {
+      if (outStream != null) {
+        try {
+          outStream.close();
+        } catch (IOException e) {
+          // don't throw in finally!
+          LOG.error(e.getLocalizedMessage(), e);
+        }
+      }
     }
   }
 
