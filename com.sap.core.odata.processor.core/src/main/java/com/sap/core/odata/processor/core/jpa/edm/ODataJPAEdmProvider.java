@@ -86,9 +86,10 @@ public class ODataJPAEdmProvider extends EdmProvider {
 				}
 			}
 		}
-		throw ODataJPAModelException
+		/*throw ODataJPAModelException
 				.throwException(ODataJPAModelException.INVALID_ENTITYCONTAINER
-						.addContent(name), null);
+						.addContent(name), null);*/
+		return null;
 	}
 
 	@Override
@@ -122,14 +123,16 @@ public class ODataJPAEdmProvider extends EdmProvider {
 			}
 		}
 
-		throw ODataJPAModelException.throwException(
+		/*throw ODataJPAModelException.throwException(
 				ODataJPAModelException.INVALID_ENTITY_TYPE.addContent(edmFQName
-						.toString()), null);
+						.toString()), null);*/
+		return null;
 	}
 
 	@Override
 	public ComplexType getComplexType(FullQualifiedName edmFQName)
 			throws ODataException {
+		ComplexType returnCT = null;
 		if (edmFQName != null) {
 			if (edmFQName != null
 					&& complexTypes.containsKey(edmFQName.toString()))
@@ -143,7 +146,7 @@ public class ODataJPAEdmProvider extends EdmProvider {
 						for (ComplexType ct : schema.getComplexTypes()) {
 							if (ct.getName().equals(edmFQName.getName())) {
 								complexTypes.put(edmFQName.toString(), ct);
-								return ct;
+								returnCT = ct;
 							}
 						}
 					}
@@ -151,9 +154,10 @@ public class ODataJPAEdmProvider extends EdmProvider {
 
 		}
 
-		throw ODataJPAModelException.throwException(
+		/*throw ODataJPAModelException.throwException(
 				ODataJPAModelException.INVALID_COMPLEX_TYPE
-						.addContent(edmFQName.toString()), null);
+						.addContent(edmFQName.toString()), null);*/
+		return returnCT;
 	}
 
 	@Override
@@ -190,6 +194,7 @@ public class ODataJPAEdmProvider extends EdmProvider {
 	public EntitySet getEntitySet(String entityContainer, String name)
 			throws ODataException {
 
+		EntitySet returnedSet = null;
 		EntityContainer container = null;
 		if (!entityContainerInfos.containsKey(entityContainer))
 			container = (EntityContainer) getEntityContainerInfo(entityContainer);
@@ -199,12 +204,16 @@ public class ODataJPAEdmProvider extends EdmProvider {
 
 		if (container != null && name != null)
 			for (EntitySet es : container.getEntitySets())
-				if (name.equals(es.getName()))
-					return es;
+				if (name.equals(es.getName())){
+					//return es;
+					returnedSet = es;
+					break;
+				}
 
-		throw ODataJPAModelException
+		/*throw ODataJPAModelException
 				.throwException(ODataJPAModelException.INVALID_ENTITYSET
-						.addContent(name), null);
+						.addContent(name), null);*/
+		return returnedSet; //Fix for Function Import
 	}
 
 	@Override
@@ -248,6 +257,7 @@ public class ODataJPAEdmProvider extends EdmProvider {
 		if (functionImports.containsKey(name))
 			return functionImports.get(name);
 		
+		FunctionImport returnFI = null;
 		EntityContainer container = null;
 		if (!entityContainerInfos.containsKey(entityContainer))
 			container = (EntityContainer) getEntityContainerInfo(entityContainer);
@@ -259,11 +269,12 @@ public class ODataJPAEdmProvider extends EdmProvider {
 			for (FunctionImport fi : container.getFunctionImports())
 				if (name.equals(fi.getName())) {
 					functionImports.put(name, fi);
-					return fi;
+					returnFI = fi;
 				}
-		throw ODataJPAModelException
+		/*throw ODataJPAModelException
 				.throwException(ODataJPAModelException.INVALID_FUNC_IMPORT
-						.addContent(name), null);		
+						.addContent(name), null);	*/
+		return returnFI;
 	}
 
 	@Override

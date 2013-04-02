@@ -39,7 +39,7 @@ public class JPACustomProcessorMock {
 		return;
 	}
 
-	@FunctionImport(returnType = ReturnType.ENTITY_TYPE, multiplicity = Multiplicity.ONE)
+	@FunctionImport(returnType = ReturnType.ENTITY_TYPE, entitySet="MockSet", multiplicity = Multiplicity.ONE)
 	public JPACustomProcessorMock method7() {
 		return null;
 	}

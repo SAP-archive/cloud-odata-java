@@ -8,7 +8,7 @@ import com.sap.core.odata.processor.api.jpa.factory.ODataJPAFactory;
  * The abstract class is a compilation of objects required for building
  * {@link com.sap.core.odata.processor.api.jpa.jpql.JPQLStatement}. Extend this
  * class to implement specific implementations of JPQL context types (Select,
- * Insert, Delete, Modify, Join). A JPQL Context is constructed from an OData
+ * Join). A JPQL Context is constructed from an OData
  * request. Depending on OData CRUD operation performed on an Entity, a
  * corresponding JPQL context object is built. The JPQL context object thus
  * built can be used for constructing JPQL statements. <br>

@@ -28,6 +28,7 @@ import com.sap.core.odata.processor.api.jpa.model.JPAEdmComplexTypeView;
 import com.sap.core.odata.processor.api.jpa.model.JPAEdmEntityContainerView;
 import com.sap.core.odata.processor.api.jpa.model.JPAEdmEntitySetView;
 import com.sap.core.odata.processor.api.jpa.model.JPAEdmEntityTypeView;
+import com.sap.core.odata.processor.api.jpa.model.JPAEdmMapping;
 import com.sap.core.odata.processor.core.jpa.common.ODataJPATestConstants;
 import com.sap.core.odata.processor.core.jpa.mock.ODataJPAContextMock;
 import com.sap.core.odata.processor.core.jpa.mock.model.JPACustomProcessorMock;
@@ -133,7 +134,7 @@ public class JPAEdmFunctionImportTest extends JPAEdmTestModelView {
 
 		FunctionImport functionImport = functionImportList.get(0);
 		assertEquals(functionImport.getName(), "method3");
-		assertNull(functionImport.getMapping());
+		assertNotNull(functionImport.getMapping());
 
 		ReturnType returnType = functionImport.getReturnType();
 		assertNotNull(returnType);
@@ -158,7 +159,7 @@ public class JPAEdmFunctionImportTest extends JPAEdmTestModelView {
 
 		FunctionImport functionImport = functionImportList.get(0);
 		assertEquals(functionImport.getName(), "method4");
-		assertNull(functionImport.getMapping());
+		assertNotNull(functionImport.getMapping());
 
 		assertNull(functionImport.getReturnType());
 
@@ -219,7 +220,9 @@ public class JPAEdmFunctionImportTest extends JPAEdmTestModelView {
 
 		FunctionImport functionImport = functionImportList.get(0);
 		assertEquals(functionImport.getName(), "method7");
-		assertNull(functionImport.getMapping());
+		assertNotNull(functionImport.getMapping());
+		JPAEdmMapping mapping = (JPAEdmMapping) functionImport.getMapping();
+		assertEquals(JPACustomProcessorMock.class, mapping.getJPAType());
 
 		ReturnType returnType = functionImport.getReturnType();
 		assertNotNull(returnType);
@@ -267,7 +270,7 @@ public class JPAEdmFunctionImportTest extends JPAEdmTestModelView {
 
 		FunctionImport functionImport = functionImportList.get(0);
 		assertEquals(functionImport.getName(), "method9");
-		assertNull(functionImport.getMapping());
+		assertNotNull(functionImport.getMapping());
 
 		ReturnType returnType = functionImport.getReturnType();
 		assertNotNull(returnType);
@@ -295,7 +298,7 @@ public class JPAEdmFunctionImportTest extends JPAEdmTestModelView {
 
 		FunctionImport functionImport = functionImportList.get(0);
 		assertEquals(functionImport.getName(), "method10");
-		assertNull(functionImport.getMapping());
+		assertNotNull(functionImport.getMapping());
 
 		ReturnType returnType = functionImport.getReturnType();
 		assertNotNull(returnType);

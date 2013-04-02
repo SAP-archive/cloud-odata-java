@@ -18,7 +18,7 @@ public class SalesOrderHeader {
 
 	public SalesOrderHeader(Date creationDate,int buyerId, String buyerName,
 			Address buyerAddress, String currencyCode, double netAmount,
-			boolean deliveryStatus) {
+			String deliveryStatus) {
 		super();
 		this.creationDate = creationDate;
 		this.buyerId = buyerId;
@@ -33,7 +33,7 @@ public class SalesOrderHeader {
 	@Column(name = "SO_ID")
 	private long soId;
 
-	@Temporal(TemporalType.DATE)
+	@Temporal(TemporalType.TIMESTAMP)
 	private Date creationDate;
 
 	@Column(name = "BUYER_ID")
@@ -48,8 +48,8 @@ public class SalesOrderHeader {
 	@Column(name = "CURRENCY_CODE",length = 10)
 	private String currencyCode;
 	
-	@Column(name = "DELIVERY_STATUS")
-	private boolean deliveryStatus;
+	@Column(name = "DELIVERY_STATUS", length = 2)
+	private String deliveryStatus;
 	
 	@Column(precision = 5)
 	private double grossAmount;
@@ -115,11 +115,11 @@ public class SalesOrderHeader {
 		this.currencyCode = currencyCode;
 	}
 	
-	public boolean getDeliveryStatus() {
+	public String getDeliveryStatus() {
 		return deliveryStatus;
 	}
 
-	public void setDeliveryStatus(boolean deliveryStatus) {
+	public void setDeliveryStatus(String deliveryStatus) {
 		this.deliveryStatus = deliveryStatus;
 	}
 	

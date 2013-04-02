@@ -25,6 +25,7 @@ import com.sap.core.odata.processor.api.jpa.exception.ODataJPARuntimeException;
 import com.sap.core.odata.processor.api.jpa.model.JPAEdmComplexTypeView;
 import com.sap.core.odata.processor.api.jpa.model.JPAEdmEntityTypeView;
 import com.sap.core.odata.processor.api.jpa.model.JPAEdmFunctionImportView;
+import com.sap.core.odata.processor.api.jpa.model.JPAEdmMapping;
 import com.sap.core.odata.processor.api.jpa.model.JPAEdmSchemaView;
 import com.sap.core.odata.processor.core.jpa.access.model.JPAEdmNameBuilder;
 import com.sap.core.odata.processor.core.jpa.access.model.JPATypeConvertor;
@@ -127,12 +128,12 @@ public class JPAEdmFunctionImport extends JPAEdmBaseViewImpl implements
 
 				if (annotation.name().equals(""))
 					functionImport.setName(method.getName());
-				else {
-					Mapping mapping = new Mapping();
-					mapping.setInternalName(method.getName());
-					functionImport.setMapping(mapping);
+				else
 					functionImport.setName(annotation.name());
-				}
+				JPAEdmMapping mapping = new JPAEdmMappingImpl();
+				((Mapping) mapping).setInternalName(method.getName());
+				mapping.setJPAType(method.getDeclaringClass());
+				functionImport.setMapping((Mapping) mapping);
 
 				buildReturnType(functionImport, method, annotation);
 				buildParameter(functionImport, method);
@@ -148,6 +149,7 @@ public class JPAEdmFunctionImport extends JPAEdmBaseViewImpl implements
 			Annotation[][] annotations = method.getParameterAnnotations();
 			Class<?>[] parameterTypes = method.getParameterTypes();
 			List<FunctionImportParameter> funcImpList = new ArrayList<FunctionImportParameter>();
+			JPAEdmMapping mapping = null;
 			int j = 0;
 			for (Annotation[] annotationArr : annotations) {
 				Class<?> parameterType = parameterTypes[j++];
@@ -185,6 +187,9 @@ public class JPAEdmFunctionImport extends JPAEdmBaseViewImpl implements
 							facets.setScale(annotation.facets().scale());
 
 						functionImportParameter.setFacets(facets);
+						mapping = new JPAEdmMappingImpl();
+						mapping.setJPAType(parameterType);
+						functionImportParameter.setMapping((Mapping) mapping);
 						funcImpList.add(functionImportParameter);
 					}
 				}
@@ -204,17 +209,19 @@ public class JPAEdmFunctionImport extends JPAEdmBaseViewImpl implements
 				multiplicity = annotation.multiplicity();
 
 				if (multiplicity == Multiplicity.MANY) {
-					if (returnType == ReturnType.ENTITY_TYPE) {
-						String entitySet = annotation.entitySet();
-						if (entitySet.equals(""))
-							throw ODataJPAModelException.throwException(
-									ODataJPAModelException.FUNC_ENTITYSET_EXP,
-									null);
-						functionImport.setEntitySet(entitySet);
-					}
 					functionReturnType.setMultiplicity(EdmMultiplicity.MANY);
 				} else {
 					functionReturnType.setMultiplicity(EdmMultiplicity.ONE);
+				}
+
+				if (returnType == ReturnType.ENTITY_TYPE) {
+					String entitySet = annotation.entitySet();
+					if (entitySet.equals(""))
+						throw ODataJPAModelException
+								.throwException(
+										ODataJPAModelException.FUNC_ENTITYSET_EXP,
+										null);
+					functionImport.setEntitySet(entitySet);
 				}
 
 				Class<?> methodReturnType = method.getReturnType();
@@ -295,7 +302,7 @@ public class JPAEdmFunctionImport extends JPAEdmBaseViewImpl implements
 				return method.getReturnType().getName();
 			}
 		}
-		
+
 		private String getReturnTypeSimpleName(Method method) {
 			try {
 				ParameterizedType pt = (ParameterizedType) method
