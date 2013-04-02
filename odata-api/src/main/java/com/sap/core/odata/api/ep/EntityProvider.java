@@ -190,16 +190,11 @@ public final class EntityProvider {
      * @param contentType format of content in the given input stream.
      * @param entitySet entity data model for entity set to be read
      * @param content data in form of an {@link InputStream} which contains the data in specified format
-     * @param merge if <code>true</code> the input content is in context of an <b>merge</b> (e.g. MERGE, PATCH) read request, 
-     *                  otherwise if <code>false</code> it is an <b>none merge</b> (e.g. CREATE) read request
-     * @param typeMappings contains mappings from <code>edm property name</code> to <code>java class</code> which should be used
-     *                  for a type mapping during read of content. If according <code>edm property</code> can not be read
-     *                  into given <code>java class</code> an {@link EntityProviderException} is thrown.
-     *                  Supported mappings are documented in {@link com.sap.core.odata.api.edm.EdmSimpleType}.
+     * @param properties additional properties necessary for reading content from {@link InputStream} into {@link Map}.
      * @return entry as {@link ODataEntry}
      * @throws EntityProviderException if reading of data (de-serialization) fails
      */
-    ODataEntry readEntry(String contentType, EdmEntitySet entitySet, InputStream content, boolean merge, Map<String, Object> typeMappings) throws EntityProviderException;
+    ODataEntry readEntry(String contentType, EdmEntitySet entitySet, InputStream content, EntityProviderReadProperties properties) throws EntityProviderException;
 
     /**
      * Read (de-serialize) properties from <code>content</code> (as {@link InputStream}) in specified format (given as <code>contentType</code>)
@@ -209,16 +204,11 @@ public final class EntityProvider {
      * @param contentType format of content in the given input stream.
      * @param edmProperty entity data model for entity property to be read
      * @param content data in form of an {@link InputStream} which contains the data in specified format
-     * @param merge if <code>true</code> the input content is in context of an <b>merge</b> (e.g. MERGE, PATCH) read request, 
-     *                  otherwise if <code>false</code> it is an <b>none merge</b> (e.g. CREATE) read request
-     * @param typeMappings contains mappings from <code>edm property name</code> to <code>java class</code> which should be used
-     *                  for a type mapping during read of content. If according <code>edm property</code> can not be read
-     *                  into given <code>java class</code> an {@link EntityProviderException} is thrown.
-     *                  Supported mappings are documented in {@link com.sap.core.odata.api.edm.EdmSimpleType}.
+     * @param properties additional properties necessary for reading content from {@link InputStream} into {@link Map}.
      * @return property as name and value in a map
      * @throws EntityProviderException if reading of data (de-serialization) fails
      */
-    Map<String, Object> readProperty(String contentType, EdmProperty edmProperty, InputStream content, boolean merge, Map<String, Object> typeMappings) throws EntityProviderException;
+    Map<String, Object> readProperty(String contentType, EdmProperty edmProperty, InputStream content, EntityProviderReadProperties properties) throws EntityProviderException;
 
     /**
      * Read (de-serialize) a property value from <code>content</code> (as {@link InputStream}) in format <code>text/plain</code>
@@ -452,33 +442,12 @@ public final class EntityProvider {
    * @param contentType format of content in the given input stream.
    * @param entitySet entity data model for entity set to be read
    * @param content data in form of an {@link InputStream} which contains the data in specified format
-   * @param merge if <code>true</code> the input content is in context of an <b>merge</b> (e.g. MERGE, PATCH) read request, 
-   *                  otherwise if <code>false</code> it is an <b>none merge</b> (e.g. CREATE) read request
+   * @param properties additional properties necessary for reading content from {@link InputStream} into {@link Map}.
    * @return entry as {@link ODataEntry}
    * @throws EntityProviderException if reading of data (de-serialization) fails
    */
-  public static ODataEntry readEntry(final String contentType, final EdmEntitySet entitySet, final InputStream content, final boolean merge) throws EntityProviderException {
-    return createEntityProvider().readEntry(contentType, entitySet, content, merge, null);
-  }
-
-  /**
-   * Read (de-serialize) data from <code>content</code> (as {@link InputStream}) in specified format (given as <code>contentType</code>)
-   * based on <code>entity data model</code> (given as {@link EdmEntitySet}) and provide this data as {@link ODataEntry}.
-   * 
-   * @param contentType format of content in the given input stream.
-   * @param entitySet entity data model for entity set to be read
-   * @param content data in form of an {@link InputStream} which contains the data in specified format
-   * @param merge if <code>true</code> the input content is in context of an <b>merge</b> (e.g. MERGE, PATCH) read request, 
-   *                  otherwise if <code>false</code> it is an <b>none merge</b> (e.g. CREATE) read request
-   * @param typeMappings contains mappings from <code>edm property name</code> to <code>java class</code> which should be used
-   *                  for a type mapping during read of content. If according <code>edm property</code> can not be read
-   *                  into given <code>java class</code> an {@link EntityProviderException} is thrown.
-   *                  Supported mappings are documented in {@link com.sap.core.odata.api.edm.EdmSimpleType}.
-   * @return entry as {@link ODataEntry}
-   * @throws EntityProviderException if reading of data (de-serialization) fails
-   */
-  public static ODataEntry readEntry(final String contentType, final EdmEntitySet entitySet, final InputStream content, final boolean merge, final Map<String, Object> typeMappings) throws EntityProviderException {
-    return createEntityProvider().readEntry(contentType, entitySet, content, merge, typeMappings);
+  public static ODataEntry readEntry(final String contentType, final EdmEntitySet entitySet, final InputStream content, final EntityProviderReadProperties properties) throws EntityProviderException {
+    return createEntityProvider().readEntry(contentType, entitySet, content, properties);
   }
 
   /**
@@ -489,34 +458,12 @@ public final class EntityProvider {
    * @param contentType format of content in the given input stream.
    * @param edmProperty entity data model for entity property to be read
    * @param content data in form of an {@link InputStream} which contains the data in specified format
-   * @param merge if <code>true</code> the input content is in context of an <b>merge</b> (e.g. MERGE, PATCH) read request, 
-   *                  otherwise if <code>false</code> it is an <b>none merge</b> (e.g. CREATE) read request
+   * @param properties additional properties necessary for reading content from {@link InputStream} into {@link Map}.
    * @return property as name and value in a map
    * @throws EntityProviderException if reading of data (de-serialization) fails
    */
-  public static Map<String, Object> readProperty(final String contentType, final EdmProperty edmProperty, final InputStream content, final boolean merge) throws EntityProviderException {
-    return createEntityProvider().readProperty(contentType, edmProperty, content, merge, null);
-  }
-
-  /**
-   * Read (de-serialize) properties from <code>content</code> (as {@link InputStream}) in specified format (given as <code>contentType</code>)
-   * based on <code>entity data model</code> (given as {@link EdmProperty}) and provide this data as {@link Map} which contains
-   * the read data in form of <code>property name</code> to <code>property value</code> mapping.
-   * 
-   * @param contentType format of content in the given input stream.
-   * @param edmProperty entity data model for entity property to be read
-   * @param content data in form of an {@link InputStream} which contains the data in specified format
-   * @param merge if <code>true</code> the input content is in context of an <b>merge</b> (e.g. MERGE, PATCH) read request, 
-   *                  otherwise if <code>false</code> it is an <b>none merge</b> (e.g. CREATE) read request
-   * @param typeMappings contains mappings from <code>edm property name</code> to <code>java class</code> which should be used
-   *                  for a type mapping during read of content. If according <code>edm property</code> can not be read
-   *                  into given <code>java class</code> an {@link EntityProviderException} is thrown.
-   *                  Supported mappings are documented in {@link com.sap.core.odata.api.edm.EdmSimpleType}.
-   * @return property as name and value in a map
-   * @throws EntityProviderException if reading of data (de-serialization) fails
-   */
-  public static Map<String, Object> readProperty(final String contentType, final EdmProperty edmProperty, final InputStream content, final boolean merge, final Map<String, Object> typeMappings) throws EntityProviderException {
-    return createEntityProvider().readProperty(contentType, edmProperty, content, merge, typeMappings);
+  public static Map<String, Object> readProperty(final String contentType, final EdmProperty edmProperty, final InputStream content, final EntityProviderReadProperties properties) throws EntityProviderException {
+    return createEntityProvider().readProperty(contentType, edmProperty, content, properties);
   }
 
   /**

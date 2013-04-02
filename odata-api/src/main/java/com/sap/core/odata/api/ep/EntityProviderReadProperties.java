@@ -1,12 +1,24 @@
-package com.sap.core.odata.core.ep.consumer;
+package com.sap.core.odata.api.ep;
 
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.sap.core.odata.api.ep.callback.OnReadEntryContent;
+
 public class EntityProviderReadProperties {
   private OnReadEntryContent callback;
+  /**
+   * if merge is <code>true</code> the input content is in context of an <b>merge</b> (e.g. MERGE, PATCH) read request, 
+   * otherwise if <code>false</code> it is an <b>none merge</b> (e.g. CREATE) read request
+   */
   private boolean merge;
+  /**
+   * typeMappings contains mappings from <code>edm property name</code> to <code>java class</code> which should be used 
+   * for a type mapping during read of content. If according <code>edm property</code> can not be read
+   * into given <code>java class</code> an {@link EntityProviderException} is thrown.
+   * Supported mappings are documented in {@link com.sap.core.odata.api.edm.EdmSimpleType}.
+   */
   final private Map<String, Object> typeMappings;
   final private Map<String, String> validatedPrefix2NamespaceUri;
 
