@@ -1,41 +1,31 @@
 package com.sap.core.odata.api.ep.callback;
 
-import java.net.URI;
 import java.util.Map;
 
-import com.sap.core.odata.api.ODataCallback;
+import com.sap.core.odata.api.ep.EntityProviderProperties;
 
 /**
  * Result of a callback. It contains the data of the entry which is to be expanded as well as the BaseUri of the entry. Further callbacks for this entry can also be set.
  * @author SAP AG
  */
 public class WriteEntryCallbackResult {
-
-  //TODO: Check if itcan be null
-  Map<String, ODataCallback> callbacks;
-  URI baseUri;
+  
+  EntityProviderProperties inlineProperties;
   Map<String, Object> oneEntryData;
 
   /**
-   * @return callbacks for this entry
+   * @return the inline properties
    */
-  public Map<String, ODataCallback> getCallbacks() {
-    return callbacks;
+  public EntityProviderProperties getInlineProperties() {
+    return inlineProperties;
   }
 
   /**
-   * Sets the callbacks for this entry. Callbacks have to be marked by the {@link ODataCallback} interface.
-   * @param callbacks
+   * Sets the inline properties for this entry
+   * @param inlineProperties
    */
-  public void setCallbacks(final Map<String, ODataCallback> callbacks) {
-    this.callbacks = callbacks;
-  }
-
-  /**
-   * @param baseUri of the feed
-   */
-  public void setBaseUri(final URI baseUri) {
-    this.baseUri = baseUri;
+  public void setInlineProperties(EntityProviderProperties inlineProperties) {
+    this.inlineProperties = inlineProperties;
   }
 
   /**
@@ -51,12 +41,4 @@ public class WriteEntryCallbackResult {
   public void setEntryData(final Map<String, Object> data) {
     oneEntryData = data;
   }
-
-  /**
-   * @return the base uri for this entry
-   */
-  public URI getBaseUri() {
-    return baseUri;
-  }
-
 }

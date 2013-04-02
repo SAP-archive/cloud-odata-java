@@ -843,8 +843,8 @@ public class ListsProcessor extends ODataSingleProcessor {
           values.add(getStructuralTypeValueMap(entryData, entityType));
         WriteFeedCallbackResult result = new WriteFeedCallbackResult();
         result.setFeedData(values);
-        result.setCallbacks(getCallbacks(relatedData, entityType));
-        result.setBaseUri(getContext().getPathInfo().getServiceRoot());
+        EntityProviderProperties inlineProperties = EntityProviderProperties.serviceRoot(getContext().getPathInfo().getServiceRoot()).callbacks(getCallbacks(relatedData, entityType)).expandSelectTree(context.getCurrentExpandSelectTreeNode()).build();
+        result.setInlineProperties(inlineProperties);
         return result;
       } catch (final ODataException e) {
         return null;
@@ -858,8 +858,8 @@ public class ListsProcessor extends ODataSingleProcessor {
         final Object relatedData = readRelatedData(context);
         WriteEntryCallbackResult result = new WriteEntryCallbackResult();
         result.setEntryData(getStructuralTypeValueMap(relatedData, entityType));
-        result.setCallbacks(getCallbacks(relatedData, entityType));
-        result.setBaseUri(getContext().getPathInfo().getServiceRoot());
+        EntityProviderProperties inlineProperties = EntityProviderProperties.serviceRoot(getContext().getPathInfo().getServiceRoot()).callbacks(getCallbacks(relatedData, entityType)).expandSelectTree(context.getCurrentExpandSelectTreeNode()).build();
+        result.setInlineProperties(inlineProperties);
         return result;
       } catch (final ODataException e) {
         return null;

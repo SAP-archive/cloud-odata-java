@@ -21,9 +21,18 @@ public class EntityProviderProperties {
   private String nextLink;
   private ExpandSelectTreeNode expandSelectTree;
   private Map<String, ODataCallback> callbacks = Collections.emptyMap();
+  private URI selfLink;
 
   private EntityProviderProperties() {}
 
+  /**
+   * Gets the self link from an application. May be null.
+   * @return the self link
+   */
+  public final URI getSelfLink(){
+    return selfLink;
+  }
+  
   /**
    * Gets the service root.
    * @return the service root
@@ -147,6 +156,11 @@ public class EntityProviderProperties {
       properties.callbacks = callbacks;
       return this;
     }
+    
+    public ODataEntityProviderPropertiesBuilder selfLink(final URI selfLink){
+      properties.selfLink = selfLink;
+      return this;
+    }
 
     public ODataEntityProviderPropertiesBuilder fromProperties(final EntityProviderProperties properties) {
       this.properties.mediaResourceMimeType = properties.getMediaResourceMimeType();
@@ -155,6 +169,7 @@ public class EntityProviderProperties {
       this.properties.nextLink = properties.getNextLink();
       this.properties.expandSelectTree = properties.getExpandSelectTree();
       this.properties.callbacks = properties.getCallbacks();
+      this.properties.selfLink = properties.getSelfLink();
       return this;
     }
 
