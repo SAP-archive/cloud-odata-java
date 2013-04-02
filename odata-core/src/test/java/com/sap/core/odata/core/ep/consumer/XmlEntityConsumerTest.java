@@ -140,15 +140,16 @@ public class XmlEntityConsumerTest extends AbstractConsumerTest {
 
     // execute
     XmlEntityConsumer xec = new XmlEntityConsumer();
-    ConsumerProperties consumerProperties = new ConsumerProperties(false);
-    consumerProperties.setCallback(new ConsumerCallback() {
+    EntityProviderReadProperties consumerProperties = EntityProviderReadProperties.init()
+        .mergeSemantic(false)
+        .callback(new OnReadEntryContent() {
       @Override
-      public CallbackResult callback(final ConsumerProperties cProps, final CallbackInfo infos) {
+      public ReadCallbackResult retrieveReadResult(final ReadEntryCallbackContext context) {
         try {
-          String title = infos.getTitle();
+          String title = context.getTitle();
           if (title.contains("Employees")) {
             EdmEntitySet employeeEntitySet = MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Employees");
-            return new CallbackResult(cProps, employeeEntitySet);
+            return new ReadCallbackResult(context.getReadProperties(), employeeEntitySet);
           } else {
             throw new RuntimeException("Invalid title");
           }
@@ -156,7 +157,7 @@ public class XmlEntityConsumerTest extends AbstractConsumerTest {
           throw new RuntimeException(e);
         }
       }
-    });
+    }).build();
 
     ODataEntry entry = xec.readEntry(entitySet, reqContent, consumerProperties);
     // validate
@@ -197,18 +198,19 @@ public class XmlEntityConsumerTest extends AbstractConsumerTest {
 
     // execute
     XmlEntityConsumer xec = new XmlEntityConsumer();
-    ConsumerProperties consumerProperties = new ConsumerProperties(false);
-    consumerProperties.setCallback(new ConsumerCallback() {
+    EntityProviderReadProperties consumerProperties = EntityProviderReadProperties.init()
+        .mergeSemantic(false)
+        .callback(new OnReadEntryContent() {
       @Override
-      public CallbackResult callback(final ConsumerProperties cProps, final CallbackInfo infos) {
+      public ReadCallbackResult retrieveReadResult(final ReadEntryCallbackContext context) {
         try {
-          String title = infos.getTitle();
+          String title = context.getTitle();
           if (title.contains("Employees")) {
             EdmEntitySet employeeEntitySet = MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Employees");
-            return new CallbackResult(cProps, employeeEntitySet);
+            return new ReadCallbackResult(context.getReadProperties(), employeeEntitySet);
           } else if (title.contains("Team")) {
             EdmEntitySet teamsEntitySet = MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Teams");
-            return new CallbackResult(cProps, teamsEntitySet);
+            return new ReadCallbackResult(context.getReadProperties(), teamsEntitySet);
           } else {
             throw new RuntimeException("Invalid title");
           }
@@ -216,7 +218,7 @@ public class XmlEntityConsumerTest extends AbstractConsumerTest {
           throw new RuntimeException();
         }
       }
-    });
+    }).build();
 
     ODataEntry entry = xec.readEntry(entitySet, reqContent, consumerProperties);
     // validate

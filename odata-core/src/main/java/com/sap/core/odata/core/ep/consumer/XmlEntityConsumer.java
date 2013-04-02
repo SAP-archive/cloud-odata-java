@@ -34,24 +34,25 @@ public class XmlEntityConsumer {
   }
 
   public ODataEntry readEntry(final EdmEntitySet entitySet, final Object content, final boolean merge) throws EntityProviderException {
-    ConsumerProperties properties = new ConsumerProperties(merge);
+    EntityProviderReadProperties properties = EntityProviderReadProperties.init().mergeSemantic(merge).build();
     return readEntry(entitySet, content, properties);
   }
 
   public ODataEntry readEntry(final EdmEntitySet entitySet, final Object content, final boolean merge, final Map<String, Object> typeMappings) throws EntityProviderException {
-    ConsumerProperties properties = new ConsumerProperties(merge);
-    properties.addTypeMappings(typeMappings);
+    EntityProviderReadProperties properties = EntityProviderReadProperties.init()
+        .mergeSemantic(merge).addTypeMappings(typeMappings)
+        .build();
     return readEntry(entitySet, content, properties);
   }
 
-  public ODataEntry readEntry(final EdmEntitySet entitySet, final Object content, final ConsumerProperties properties) throws EntityProviderException {
+  public ODataEntry readEntry(final EdmEntitySet entitySet, final Object content, final EntityProviderReadProperties properties) throws EntityProviderException {
     XMLStreamReader reader = null;
 
     try {
       XmlEntryConsumer xec = new XmlEntryConsumer();
       reader = createStaxReader(content);
 
-      EntityInfoAggregator eia = EntityInfoAggregator.create(entitySet, properties);
+      EntityInfoAggregator eia = EntityInfoAggregator.create(entitySet);
       ODataEntry result = xec.readEntry(reader, eia, properties);
       return result;
     } catch (EntityProviderException e) {

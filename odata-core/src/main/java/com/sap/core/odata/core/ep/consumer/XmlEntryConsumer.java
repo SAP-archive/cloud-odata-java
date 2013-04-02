@@ -36,7 +36,7 @@ public class XmlEntryConsumer {
   final private MediaMetadataImpl mediaMetadata;
   final private EntryMetadataImpl entryMetadata;
   private EntityTypeMapping typeMappings;
-  private ConsumerProperties consumerProperties;
+  private EntityProviderReadProperties consumerProperties;
 
   private String currentHandledStartTagName = null;
 
@@ -49,10 +49,11 @@ public class XmlEntryConsumer {
   }
 
   public ODataEntry readEntry(final XMLStreamReader reader, final EntityInfoAggregator eia, final boolean merge) throws EntityProviderException {
-    return readEntry(reader, eia, new ConsumerProperties(merge));
+    EntityProviderReadProperties properties = EntityProviderReadProperties.init().mergeSemantic(merge).build();
+    return readEntry(reader, eia, properties);
   }
 
-  public ODataEntry readEntry(final XMLStreamReader reader, final EntityInfoAggregator eia, final ConsumerProperties consumerProperties) throws EntityProviderException {
+  public ODataEntry readEntry(final XMLStreamReader reader, final EntityInfoAggregator eia, final EntityProviderReadProperties consumerProperties) throws EntityProviderException {
     try {
       this.consumerProperties = consumerProperties;
       typeMappings = EntityTypeMapping.create(consumerProperties.getTypeMappings());
@@ -222,26 +223,24 @@ public class XmlEntryConsumer {
     reader.nextTag();
     reader.require(XMLStreamConstants.START_ELEMENT, Edm.NAMESPACE_M_2007_08, FormatXml.M_INLINE);
 
-    ConsumerCallback callback = consumerProperties.getCallback();
-
-    consumerProperties.addValidatedPrefixNamespaceUris(foundPrefix2NamespaceUri);
-    CallbackResult cResult = (callback == null ? null : callback.callback(consumerProperties, createCallbackInfo(linkAttributes)));
-
-    reader.next();
     List<ODataEntry> inlineEntries = new ArrayList<ODataEntry>();
+    
     while (!(reader.isEndElement() && Edm.NAMESPACE_M_2007_08.equals(reader.getNamespaceURI()) && FormatXml.M_INLINE.equals(reader.getLocalName()))) {
+      reader.next();
+ 
       if (reader.isStartElement() && Edm.NAMESPACE_ATOM_2005.equals(reader.getNamespaceURI()) && FormatXml.ATOM_ENTRY.equals(reader.getLocalName())) {
-        if (cResult != null) {
+        ReadCallbackResult callbackResult = doCallback(consumerProperties, linkAttributes);
+        
+        if (callbackResult != null) {
           XmlEntryConsumer xec = new XmlEntryConsumer();
 
-          EntityInfoAggregator eia = EntityInfoAggregator.create(cResult.getEntitySet(), consumerProperties);
-          ConsumerProperties inlineConsumerProperties = cResult.getConsumerProperties();
+          EntityInfoAggregator eia = EntityInfoAggregator.create(callbackResult.getEntitySet());
+          EntityProviderReadProperties inlineConsumerProperties = callbackResult.getConsumerProperties();
 
           ODataEntry inlineEntry = xec.readEntry(reader, eia, inlineConsumerProperties);
           inlineEntries.add(inlineEntry);
         }
       }
-      reader.next();
     }
 
     properties.put(linkAttributes.get(FormatXml.ATOM_TITLE), inlineEntries);
@@ -249,11 +248,22 @@ public class XmlEntryConsumer {
     reader.require(XMLStreamConstants.END_ELEMENT, Edm.NAMESPACE_M_2007_08, FormatXml.M_INLINE);
   }
 
-  private CallbackInfo createCallbackInfo(final Map<String, String> linkAttributes) {
-    CallbackInfo info = new CallbackInfo();
-    info.addInfos(linkAttributes);
-    return info;
+  private ReadCallbackResult doCallback(EntityProviderReadProperties properties, final Map<String, String> linkAttributes) {
+    OnReadEntryContent callback = properties.getCallback();
+    if(callback == null) {
+      return null;
+    } else {
+      EntityProviderReadProperties callbackProperties = EntityProviderReadProperties.initFrom(properties).addValidatedPrefixes(foundPrefix2NamespaceUri).build();
+      
+      String title = linkAttributes.get(FormatXml.ATOM_TITLE);
+      String type = linkAttributes.get(FormatXml.ATOM_TYPE);
+      ReadEntryCallbackContext callbackContext = new ReadEntryCallbackContext(callbackProperties, type, title);
+      callbackContext.addInfos(linkAttributes);
+
+      return callback.retrieveReadResult(callbackContext);
+    }
   }
+
 
   private void readContent(final XMLStreamReader reader, final EntityInfoAggregator eia) throws EntityProviderException, XMLStreamException, EdmException {
     reader.require(XMLStreamConstants.START_ELEMENT, Edm.NAMESPACE_ATOM_2005, FormatXml.ATOM_CONTENT);

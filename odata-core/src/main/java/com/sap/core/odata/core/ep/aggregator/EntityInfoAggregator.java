@@ -26,7 +26,6 @@ import com.sap.core.odata.api.edm.EdmType;
 import com.sap.core.odata.api.edm.EdmTypeKind;
 import com.sap.core.odata.api.ep.EntityProviderException;
 import com.sap.core.odata.api.uri.ExpandSelectTreeNode;
-import com.sap.core.odata.core.ep.consumer.ConsumerProperties;
 
 /**
  * Aggregator to get easy and fast access to all for serialization and de-serialization necessary {@link EdmEntitySet} informations.
@@ -108,7 +107,7 @@ public class EntityInfoAggregator {
    *           access
    *           of {@link EdmEntitySet}).
    */
-  public static EntityInfoAggregator create(final EdmEntitySet entitySet, final ConsumerProperties properties) throws EntityProviderException {
+  public static EntityInfoAggregator create(final EdmEntitySet entitySet) throws EntityProviderException {
     EntityInfoAggregator eia = new EntityInfoAggregator();
     eia.initialize(entitySet, null);
     return eia;
