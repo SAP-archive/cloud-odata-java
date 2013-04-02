@@ -2,16 +2,15 @@ package com.sap.core.odata.processor.core.jpa;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.sap.core.odata.api.edm.EdmException;
 import com.sap.core.odata.api.edm.EdmMapping;
 import com.sap.core.odata.api.edm.EdmProperty;
 import com.sap.core.odata.api.edm.EdmStructuralType;
 import com.sap.core.odata.api.edm.EdmTypeKind;
-import com.sap.core.odata.api.uri.SelectItem;
 import com.sap.core.odata.processor.api.jpa.exception.ODataJPARuntimeException;
 
 public final class JPAResultParser {
@@ -48,26 +47,20 @@ public final class JPAResultParser {
 	 * @throws ODataJPARuntimeException
 	 */
 	
-	public final HashMap<String, Object> parse2EdmPropertyValueMap(
-			Object jpaEntity, List<SelectItem> selectedItems) throws ODataJPARuntimeException
-			 {
+	public final Map<String, Object> parse2EdmPropertyValueMapFromList(Object jpaEntity, List<EdmProperty> selectPropertyList) throws ODataJPARuntimeException
+	{
 		HashMap<String, Object> edmEntity = new HashMap<String, Object>();
-		List<Object> propertyValues = null;
-		if(jpaEntity instanceof Object[]){
-			propertyValues = Arrays.asList((Object[]) jpaEntity); 
-		}
-		else{
-			propertyValues = Arrays.asList(jpaEntity);
-		}
-		for(int i = 0; i< selectedItems.size(); i++){
+		String methodName = null;
+		for(int i = 0; i< selectPropertyList.size(); i++){
 			String key = null;
 			Object propertyValue = null;
 			EdmProperty property = null;
-			SelectItem selectItem = selectedItems.get(i);
+			property = selectPropertyList.get(i);
 			try {
-				property = (EdmProperty) selectItem.getProperty();
+				methodName = getGetterName(property);
+				Method method = jpaEntity.getClass().getMethod(methodName, (Class<?>[]) null);
+				propertyValue = method.invoke(jpaEntity, null);
 				key = property.getName();
-				propertyValue = propertyValues.get(i);
 				if (property.getType().getKind().equals(EdmTypeKind.COMPLEX)) {
 					try {
 						propertyValue = parse2EdmPropertyValueMap(propertyValue,
@@ -81,12 +74,31 @@ public final class JPAResultParser {
 				throw ODataJPARuntimeException
 				.throwException(ODataJPARuntimeException.GENERAL
 						.addContent(e.getMessage()), e);
+			} catch (SecurityException e) {
+				throw ODataJPARuntimeException
+				.throwException(ODataJPARuntimeException.GENERAL
+						.addContent(e.getMessage()), e);
+			} catch (NoSuchMethodException e) {
+				throw ODataJPARuntimeException
+				.throwException(ODataJPARuntimeException.GENERAL
+						.addContent(e.getMessage()), e);
+			} catch (IllegalArgumentException e) {
+				throw ODataJPARuntimeException
+				.throwException(ODataJPARuntimeException.GENERAL
+						.addContent(e.getMessage()), e);
+			} catch (IllegalAccessException e) {
+				throw ODataJPARuntimeException
+				.throwException(ODataJPARuntimeException.GENERAL
+						.addContent(e.getMessage()), e);
+			} catch (InvocationTargetException e) {
+				throw ODataJPARuntimeException
+				.throwException(ODataJPARuntimeException.GENERAL
+						.addContent(e.getMessage()), e);
 			}
 		}
 		
 		return edmEntity;
 	}
-
 	/**
 	 * The method returns a Hash Map of Properties and values for an EdmEntity
 	 * Type The method uses reflection on object jpaEntity to get the list of

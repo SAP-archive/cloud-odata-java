@@ -20,7 +20,6 @@ import com.sap.core.odata.api.edm.EdmStructuralType;
 import com.sap.core.odata.api.edm.EdmType;
 import com.sap.core.odata.api.edm.EdmTypeKind;
 import com.sap.core.odata.api.exception.MessageReference;
-import com.sap.core.odata.api.uri.SelectItem;
 import com.sap.core.odata.processor.api.jpa.exception.ODataJPARuntimeException;
 import com.sap.core.odata.processor.core.jpa.common.ODataJPATestConstants;
 
@@ -428,9 +427,9 @@ public class JPAResultParserTest {
 	@Test
 	public void testParse2EdmPropertyValueMap() {
 		JPAResultParser resultParser = JPAResultParser.create();
-		Object jpaEntity = new demoItem("abc", 10);
+		Object jpaEntity = new DemoItem2("abc");
 		try {
-			resultParser.parse2EdmPropertyValueMap(jpaEntity, getSelectItemList()); 
+			resultParser.parse2EdmPropertyValueMapFromList(jpaEntity, getEdmPropertyList()); 
 		} catch (ODataJPARuntimeException e) {
 			fail(ODataJPATestConstants.EXCEPTION_MSG_PART_1+e.getMessage()
 					+ ODataJPATestConstants.EXCEPTION_MSG_PART_2);
@@ -517,18 +516,32 @@ public class JPAResultParserTest {
 
 	}
 	
-	private List<SelectItem> getSelectItemList() {
-		List<SelectItem> selectItems = new ArrayList<SelectItem>();
-		selectItems.add(getSelectItem());
-		return selectItems;
+	private List<EdmProperty> getEdmPropertyList() {
+		List<EdmProperty> properties = new ArrayList<EdmProperty>();
+		properties.add(getEdmProperty());
+		return properties;
+	}
+	
+	class DemoItem2
+	{
+		private String field1;
+
+		public String getField1() {
+			return field1;
+		}
+
+		public void setField1(String field) {
+			this.field1 = field;
+		}
+		
+		public DemoItem2(String field)
+		{
+			this.field1 = field;
+		}
+		
 	}
 
-	private SelectItem getSelectItem() {
-		SelectItem selectItem = EasyMock.createMock(SelectItem.class);
-		EasyMock.expect(selectItem.getProperty()).andStubReturn(getEdmProperty());
-		EasyMock.replay(selectItem);
-		return selectItem;
-	}
+	
 
 	private EdmProperty getEdmProperty() {
 		EdmProperty edmTyped = EasyMock.createMock(EdmProperty.class);

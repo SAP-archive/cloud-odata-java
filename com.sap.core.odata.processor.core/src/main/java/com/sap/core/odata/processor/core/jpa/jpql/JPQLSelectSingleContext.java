@@ -15,7 +15,6 @@ import com.sap.core.odata.processor.api.jpa.exception.ODataJPARuntimeException;
 import com.sap.core.odata.processor.api.jpa.jpql.JPQLContext;
 import com.sap.core.odata.processor.api.jpa.jpql.JPQLContextType;
 import com.sap.core.odata.processor.api.jpa.jpql.JPQLSelectSingleContextView;
-import com.sap.core.odata.processor.core.jpa.access.data.ODataExpressionParser;
 
 public class JPQLSelectSingleContext extends JPQLContext implements JPQLSelectSingleContextView {
 	
@@ -92,26 +91,7 @@ public class JPQLSelectSingleContext extends JPQLContext implements JPQLSelectSi
 		 * Generate Select Clause 
 		 */
 		protected String generateSelectExpression() throws EdmException {
-			return ODataExpressionParser.parseToJPASelectExpression(getJPAEntityAlias(), generateSelectFields());			
-		}
-		
-		/*
-		 * Generate Select Clause Fields
-		 */
-		private ArrayList<String> generateSelectFields() throws EdmException {
-
-			List<SelectItem> selectItemList = entityView.getSelect();
-
-			if (selectItemList != null) {
-				ArrayList<String> selectedFields = new ArrayList<String>(
-						selectItemList.size());
-				for (SelectItem item : selectItemList) {
-					selectedFields.add(((EdmProperty)item.getProperty()).getMapping().getInternalName());
-				}
-
-				return selectedFields;
-			}
-			return null;
+			return getJPAEntityAlias();		
 		}
 	}	
 }

@@ -76,7 +76,10 @@ public class JPAEdmKey extends JPAEdmBaseViewImpl implements JPAEdmKeyView {
 				PropertyRef propertyRef = new PropertyRef();
 				propertyRef.setName(propertyView.getEdmSimpleProperty().getName());
 				Facets facets = (Facets) propertyView.getEdmSimpleProperty().getFacets();
-				facets.setNullable(false);
+				if(facets == null)
+					propertyView.getEdmSimpleProperty().setFacets(new Facets().setNullable(false));
+				else
+					facets.setNullable(false);
 				propertyRefList.add(propertyRef);
 			}
 
@@ -88,7 +91,10 @@ public class JPAEdmKey extends JPAEdmBaseViewImpl implements JPAEdmKeyView {
 
 					SimpleProperty simpleProperty = (SimpleProperty) property;
 					Facets facets = (Facets) simpleProperty.getFacets();
-					facets.setNullable(false);
+					if(facets == null)
+						simpleProperty.setFacets(new Facets().setNullable(false));
+					else
+						facets.setNullable(false);
 					PropertyRef propertyRef = new PropertyRef();
 					propertyRef.setName(simpleProperty.getName());
 					propertyRefList.add(propertyRef);

@@ -11,6 +11,7 @@ import com.sap.core.odata.api.edm.EdmException;
 import com.sap.core.odata.api.edm.EdmFunctionImport;
 import com.sap.core.odata.api.edm.EdmLiteralKind;
 import com.sap.core.odata.api.edm.EdmMultiplicity;
+import com.sap.core.odata.api.edm.EdmProperty;
 import com.sap.core.odata.api.edm.EdmSimpleType;
 import com.sap.core.odata.api.edm.EdmStructuralType;
 import com.sap.core.odata.api.edm.EdmType;
@@ -18,10 +19,13 @@ import com.sap.core.odata.api.edm.EdmTypeKind;
 import com.sap.core.odata.api.ep.EntityProvider;
 import com.sap.core.odata.api.ep.EntityProviderException;
 import com.sap.core.odata.api.ep.EntityProviderProperties;
+import com.sap.core.odata.api.ep.EntityProviderProperties.ODataEntityProviderPropertiesBuilder;
 import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.api.exception.ODataNotFoundException;
 import com.sap.core.odata.api.processor.ODataResponse;
+import com.sap.core.odata.api.uri.ExpandSelectTreeNode;
 import com.sap.core.odata.api.uri.SelectItem;
+import com.sap.core.odata.api.uri.UriParser;
 import com.sap.core.odata.api.uri.info.DeleteUriInfo;
 import com.sap.core.odata.api.uri.info.GetEntitySetCountUriInfo;
 import com.sap.core.odata.api.uri.info.GetEntitySetUriInfo;
@@ -46,12 +50,12 @@ public final class ODataJPAResponseBuilder {
 			List<Map<String, Object>> edmEntityList = new ArrayList<Map<String, Object>>();
 			Map<String, Object> edmPropertyValueMap = null;
 			JPAResultParser jpaResultParser = JPAResultParser.create();
-
 			final List<SelectItem> selectedItems = resultsView.getSelect();
 			if (selectedItems != null && selectedItems.size() > 0) {
 				for (Object jpaEntity : jpaEntities) {
 					edmPropertyValueMap = jpaResultParser
-							.parse2EdmPropertyValueMap(jpaEntity, selectedItems);
+							.parse2EdmPropertyValueMapFromList(jpaEntity,
+									buildSelectItemList(selectedItems, resultsView.getTargetEntitySet().getEntityType()));
 					edmEntityList.add(edmPropertyValueMap);
 				}
 			} else {
@@ -63,21 +67,9 @@ public final class ODataJPAResponseBuilder {
 			}
 
 			EntityProviderProperties feedProperties = null;
-
-			try {
-				final Integer count = resultsView.getInlineCount() == InlineCount.ALLPAGES ? edmEntityList
-						.size() : null;
-				feedProperties = EntityProviderProperties
-						.serviceRoot(
-								odataJPAContext.getODataContext().getPathInfo()
-										.getServiceRoot()).inlineCount(count)
-						.inlineCountType(resultsView.getInlineCount()).build();
-			} catch (ODataException e) {
-				throw ODataJPARuntimeException.throwException(
-						ODataJPARuntimeException.GENERAL.addContent(e
-								.getMessage()), e);
-			}
-
+			// Getting the entity feed properties
+			feedProperties = getEntityProviderProperties(odataJPAContext,
+					resultsView, edmEntityList);
 			odataResponse = EntityProvider.writeFeed(contentType,
 					resultsView.getTargetEntitySet(), edmEntityList,
 					feedProperties);
@@ -120,19 +112,18 @@ public final class ODataJPAResponseBuilder {
 			Map<String, Object> edmPropertyValueMap = null;
 
 			JPAResultParser jpaResultParser = JPAResultParser.create();
-			edmPropertyValueMap = jpaResultParser.parse2EdmPropertyValueMap(
+			final List<SelectItem> selectedItems = resultsView.getSelect();
+			if (selectedItems != null && selectedItems.size() > 0) {
+				edmPropertyValueMap = jpaResultParser.parse2EdmPropertyValueMapFromList(jpaEntity, buildSelectItemList(selectedItems, 
+						resultsView.getTargetEntitySet().getEntityType()));
+			}
+			else
+				edmPropertyValueMap = jpaResultParser.parse2EdmPropertyValueMap(
 					jpaEntity, edmEntityType);
 
 			EntityProviderProperties feedProperties = null;
-			try {
-				feedProperties = EntityProviderProperties.serviceRoot(
-						oDataJPAContext.getODataContext().getPathInfo()
-								.getServiceRoot()).build();
-			} catch (ODataException e) {
-				throw ODataJPARuntimeException.throwException(
-						ODataJPARuntimeException.INNER_EXCEPTION, e);
-			}
-
+			feedProperties = getEntityProviderProperties(oDataJPAContext,
+					resultsView);
 			odataResponse = EntityProvider.writeEntry(contentType,
 					resultsView.getTargetEntitySet(), edmPropertyValueMap,
 					feedProperties);
@@ -331,7 +322,8 @@ public final class ODataJPAResponseBuilder {
 				functionImport = resultsView.getFunctionImport();
 				edmType = functionImport.getReturnType().getType();
 
-				if (edmType.getKind().equals(EdmTypeKind.ENTITY) || edmType.getKind().equals(EdmTypeKind.COMPLEX)) {
+				if (edmType.getKind().equals(EdmTypeKind.ENTITY)
+						|| edmType.getKind().equals(EdmTypeKind.COMPLEX)) {
 					if (functionImport.getReturnType().getMultiplicity()
 							.equals(EdmMultiplicity.MANY)) {
 						edmEntityList = new ArrayList<Map<String, Object>>();
@@ -381,4 +373,82 @@ public final class ODataJPAResponseBuilder {
 
 		return odataResponse;
 	}
+
+	/*
+	 * Method to build the entity provider Property.Callbacks for $expand would
+	 * be registered here
+	 */
+	private static EntityProviderProperties getEntityProviderProperties(
+			ODataJPAContext odataJPAContext, GetEntitySetUriInfo resultsView,
+			List<Map<String, Object>> edmEntityList)
+			throws ODataJPARuntimeException {
+		ODataEntityProviderPropertiesBuilder entityFeedPropertiesBuilder = null;
+		Integer count = resultsView.getInlineCount() == InlineCount.ALLPAGES ? edmEntityList
+				.size() : null;
+		try {
+			entityFeedPropertiesBuilder = EntityProviderProperties
+					.serviceRoot(odataJPAContext.getODataContext()
+							.getPathInfo().getServiceRoot());
+			entityFeedPropertiesBuilder.inlineCount(count);
+			entityFeedPropertiesBuilder.inlineCountType(resultsView
+					.getInlineCount());
+			ExpandSelectTreeNode expandSelectTree = UriParser
+					.createExpandSelectTree(resultsView.getSelect(),
+							resultsView.getExpand());
+			entityFeedPropertiesBuilder.expandSelectTree(expandSelectTree);
+
+		} catch (ODataException e) {
+			throw ODataJPARuntimeException.throwException(
+					ODataJPARuntimeException.INNER_EXCEPTION, e);
+		}
+
+		return entityFeedPropertiesBuilder.build();
+	}
+	private static EntityProviderProperties getEntityProviderProperties(
+			ODataJPAContext odataJPAContext, GetEntityUriInfo resultsView)
+			throws ODataJPARuntimeException {
+		ODataEntityProviderPropertiesBuilder entityFeedPropertiesBuilder = null;
+		ExpandSelectTreeNode expandSelectTree = null;
+		try {
+			entityFeedPropertiesBuilder = EntityProviderProperties
+					.serviceRoot(odataJPAContext.getODataContext()
+							.getPathInfo().getServiceRoot());
+			expandSelectTree = UriParser.createExpandSelectTree(
+					resultsView.getSelect(), resultsView.getExpand());
+		} catch (ODataException e) {
+			throw ODataJPARuntimeException.throwException(
+					ODataJPARuntimeException.INNER_EXCEPTION, e);
+		}
+		entityFeedPropertiesBuilder.expandSelectTree(expandSelectTree);
+		return entityFeedPropertiesBuilder.build();
+	}
+
+
+	private static List<EdmProperty> buildSelectItemList(
+			List<SelectItem> selectItems, EdmEntityType entity) throws ODataJPARuntimeException {
+		boolean flag = false;
+		List<EdmProperty> selectPropertyList = new ArrayList<EdmProperty>();
+		try {
+			for (SelectItem selectItem : selectItems)
+				selectPropertyList.add(selectItem.getProperty());
+			for (EdmProperty keyProperty : entity.getKeyProperties()) {
+				flag = true;
+				for (SelectItem selectedItem : selectItems) {
+					if (selectedItem.getProperty().equals(keyProperty)) {
+						flag = false;
+						break;
+					}
+				}
+				if (flag == true)
+					selectPropertyList.add(keyProperty);
+			}
+
+		} catch (EdmException e) {
+			throw ODataJPARuntimeException
+					.throwException(ODataJPARuntimeException.GENERAL
+							.addContent(e.getMessage()), e);
+		}
+		return selectPropertyList;
+	}
+
 }
