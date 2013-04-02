@@ -62,7 +62,7 @@ public class JPAUpdateRequest extends JPAWriteRequest{
 			Object jpaEntity, EdmStructuralType edmEntityType, Map<String, Object> propertyValueMap)
 			throws ODataJPARuntimeException {
 
-		if (jpaEntity == null || edmEntityType == null)
+		if (jpaEntity == null || edmEntityType == null || propertyValueMap == null)
 			return null;
 
 		String jpaEntityAccessKey = jpaEntity.getClass().getName();
@@ -108,6 +108,7 @@ public class JPAUpdateRequest extends JPAWriteRequest{
 				}
 				Method method = setters.get(key);
 				Object propertyValue = propertyValueMap.get(key);
+				if(propertyValue == null) continue;
 				if(propertyValue != null){
 					if(propertyValue instanceof java.util.GregorianCalendar){
 						propertyValue = ((java.util.GregorianCalendar)propertyValue).getTime();
