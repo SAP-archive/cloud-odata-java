@@ -1,6 +1,5 @@
 package com.sap.core.odata.core.ep.producer;
 
-import java.net.URI;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
@@ -151,7 +150,7 @@ public class AtomEntryEntityProducer {
     for (String name : eia.getSelectedNavigationPropertyNames()) {
       NavigationPropertyInfo info = eia.getNavigationPropertyInfo(name);
       boolean isFeed = (info.getMultiplicity() == EdmMultiplicity.MANY);
-      String self = createSelfLink(eia, data, info.getName());
+      String  self = createSelfLink(eia, data, info.getName());
       appendAtomNavigationLink(writer, self, info.getName(), isFeed, eia, data);
     }
   }
@@ -179,35 +178,30 @@ public class AtomEntryEntityProducer {
   private void appendInlineFeed(final XMLStreamWriter writer, final String navigationPropertyName, final EntityInfoAggregator eia, final Map<String, Object> data) throws EntityProviderException {
     try {
       if (eia.getExpandedNavigationPropertyNames().contains(navigationPropertyName)) {
-        writer.writeStartElement(Edm.NAMESPACE_M_2007_08, FormatXml.M_INLINE);
+        if (properties.getCallbacks() != null && properties.getCallbacks().containsKey(navigationPropertyName)) {
+          writer.writeStartElement(Edm.NAMESPACE_M_2007_08, FormatXml.M_INLINE);
 
-        if (!properties.getCallbacks().containsKey(navigationPropertyName)) {
-          throw new EntityProviderException(EntityProviderException.EXPANDNOTSUPPORTED.addContent(navigationPropertyName));
+          EdmNavigationProperty navProp = (EdmNavigationProperty) eia.getEntityType().getProperty(navigationPropertyName);
+          WriteFeedCallbackContext context = new WriteFeedCallbackContext();
+          context.setSourceEntitySet(eia.getEntitySet());
+          context.setNavigationProperty(navProp);
+          context.setEntryData(data);
+          ExpandSelectTreeNode subNode = properties.getExpandSelectTree().getLinks().get(navigationPropertyName);
+          context.setCurrentExpandSelectTreeNode(subNode);
+
+          ODataCallback callback = properties.getCallbacks().get(navigationPropertyName);
+          WriteFeedCallbackResult result = ((OnWriteFeedContent) callback).retrieveFeedResult(context);
+          List<Map<String, Object>> inlineData = result.getFeedData();
+          if (inlineData != null) {
+            EntityProviderProperties inlineProperties = result.getInlineProperties();
+            EdmEntitySet inlineEntitySet = eia.getEntitySet().getRelatedEntitySet(navProp);
+            AtomFeedProducer inlineFeedProducer = new AtomFeedProducer(inlineProperties);
+            EntityInfoAggregator inlineEia = EntityInfoAggregator.create(inlineEntitySet, inlineProperties.getExpandSelectTree());
+            inlineFeedProducer.append(writer, inlineEia, inlineData);
+          }
+
+          writer.writeEndElement();
         }
-
-        EdmNavigationProperty navProp = (EdmNavigationProperty) eia.getEntityType().getProperty(navigationPropertyName);
-        WriteFeedCallbackContext context = new WriteFeedCallbackContext();
-        context.setSourceEntitySet(eia.getEntitySet());
-        context.setNavigationProperty(navProp);
-        context.setEntryData(data);
-        ExpandSelectTreeNode subNode = properties.getExpandSelectTree().getLinks().get(navigationPropertyName);
-        context.setCurrentExpandSelectTreeNode(subNode);
-
-        ODataCallback callback = properties.getCallbacks().get(navigationPropertyName);
-        WriteFeedCallbackResult result = ((OnWriteFeedContent) callback).retrieveFeedResult(context);
-        List<Map<String, Object>> inlineData = result.getFeedData();
-        if (inlineData != null) {
-          URI inlineBaseUri = result.getBaseUri();
-          Map<String, ODataCallback> inlineCallbacks = result.getCallbacks();
-          EntityProviderProperties inlineProperties = EntityProviderProperties.fromProperties(properties).serviceRoot(inlineBaseUri).expandSelectTree(subNode).callbacks(inlineCallbacks).build();
-
-          EdmEntitySet inlineEntitySet = eia.getEntitySet().getRelatedEntitySet(navProp);
-          AtomFeedProducer inlineFeedProducer = new AtomFeedProducer(inlineProperties);
-          EntityInfoAggregator inlineEia = EntityInfoAggregator.create(inlineEntitySet, inlineProperties.getExpandSelectTree());
-          inlineFeedProducer.append(writer, inlineEia, inlineData);
-        }
-
-        writer.writeEndElement();
       }
     } catch (Exception e) {
       throw new EntityProviderException(EntityProviderException.COMMON, e);
@@ -217,36 +211,30 @@ public class AtomEntryEntityProducer {
   private void appendInlineEntry(final XMLStreamWriter writer, final String navigationPropertyName, final EntityInfoAggregator eia, final Map<String, Object> data) throws EntityProviderException {
     try {
       if (eia.getExpandedNavigationPropertyNames().contains(navigationPropertyName)) {
-        writer.writeStartElement(Edm.NAMESPACE_M_2007_08, FormatXml.M_INLINE);
+        if (properties.getCallbacks() != null && properties.getCallbacks().containsKey(navigationPropertyName)) {
+          writer.writeStartElement(Edm.NAMESPACE_M_2007_08, FormatXml.M_INLINE);
 
-        if (!properties.getCallbacks().containsKey(navigationPropertyName)) {
-          throw new EntityProviderException(EntityProviderException.EXPANDNOTSUPPORTED.addContent(navigationPropertyName));
+          EdmNavigationProperty navProp = (EdmNavigationProperty) eia.getEntityType().getProperty(navigationPropertyName);
+          WriteEntryCallbackContext context = new WriteEntryCallbackContext();
+          context.setSourceEntitySet(eia.getEntitySet());
+          context.setNavigationProperty(navProp);
+          context.setEntryData(data);
+          ExpandSelectTreeNode subNode = properties.getExpandSelectTree().getLinks().get(navigationPropertyName);
+          context.setCurrentExpandSelectTreeNode(subNode);
+
+          ODataCallback callback = properties.getCallbacks().get(navigationPropertyName);
+          WriteEntryCallbackResult result = ((OnWriteEntryContent) callback).retrieveEntryResult(context);
+          Map<String, Object> inlineData = result.getEntryData();
+          if (inlineData != null) {
+            EntityProviderProperties inlineProperties = result.getInlineProperties();
+            EdmEntitySet inlineEntitySet = eia.getEntitySet().getRelatedEntitySet(navProp);
+            AtomEntryEntityProducer inlineProducer = new AtomEntryEntityProducer(inlineProperties);
+            EntityInfoAggregator inlineEia = EntityInfoAggregator.create(inlineEntitySet, inlineProperties.getExpandSelectTree());
+            inlineProducer.append(writer, inlineEia, inlineData, false, false);
+          }
+
+          writer.writeEndElement();
         }
-
-        EdmNavigationProperty navProp = (EdmNavigationProperty) eia.getEntityType().getProperty(navigationPropertyName);
-        WriteEntryCallbackContext context = new WriteEntryCallbackContext();
-        context.setSourceEntitySet(eia.getEntitySet());
-        context.setNavigationProperty(navProp);
-        context.setEntryData(data);
-        ExpandSelectTreeNode subNode = properties.getExpandSelectTree().getLinks().get(navigationPropertyName);
-        context.setCurrentExpandSelectTreeNode(subNode);
-
-        ODataCallback callback = properties.getCallbacks().get(navigationPropertyName);
-        WriteEntryCallbackResult result = ((OnWriteEntryContent) callback).retrieveEntryResult(context);
-        Map<String, Object> inlineData = result.getEntryData();
-        if (inlineData != null) {
-          URI inlineBaseUri = result.getBaseUri();
-          Map<String, ODataCallback> inlineCallbacks = result.getCallbacks();
-
-          EntityProviderProperties inlineProperties = EntityProviderProperties.fromProperties(properties).serviceRoot(inlineBaseUri).expandSelectTree(subNode).callbacks(inlineCallbacks).build();
-
-          EdmEntitySet inlineEntitySet = eia.getEntitySet().getRelatedEntitySet(navProp);
-          AtomEntryEntityProducer inlineProducer = new AtomEntryEntityProducer(inlineProperties);
-          EntityInfoAggregator inlineEia = EntityInfoAggregator.create(inlineEntitySet, inlineProperties.getExpandSelectTree());
-          inlineProducer.append(writer, inlineEia, inlineData, false, false);
-        }
-
-        writer.writeEndElement();
       }
     } catch (Exception e) {
       throw new EntityProviderException(EntityProviderException.COMMON, e);

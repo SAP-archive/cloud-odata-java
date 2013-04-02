@@ -1,10 +1,12 @@
 package com.sap.core.odata.core.ep.producer;
 
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.HashMap;
 
 import com.sap.core.odata.api.ODataCallback;
 import com.sap.core.odata.api.edm.EdmException;
+import com.sap.core.odata.api.ep.EntityProviderProperties;
 import com.sap.core.odata.api.ep.callback.OnWriteEntryContent;
 import com.sap.core.odata.api.ep.callback.OnWriteFeedContent;
 import com.sap.core.odata.api.ep.callback.WriteEntryCallbackContext;
@@ -18,10 +20,16 @@ public class MyCallback implements ODataCallback, OnWriteEntryContent, OnWriteFe
 
   private AbstractProviderTest dataProvider;
   private URI baseUri;
+  private URI roomToEmployee;
 
   public MyCallback(final AbstractProviderTest dataProvider, final URI baseUri) {
     this.dataProvider = dataProvider;
     this.baseUri = baseUri;
+    try {
+      roomToEmployee = new URI("Rooms('1')/nr_Employees");
+    } catch (URISyntaxException e) {
+      throw new ODataRuntimeException(e);
+    }
   }
 
   @Override
@@ -30,13 +38,14 @@ public class MyCallback implements ODataCallback, OnWriteEntryContent, OnWriteFe
     try {
       if ("Rooms".equals(context.getSourceEntitySet().getName())) {
         if ("nr_Employees".equals(context.getNavigationProperty().getName())) {
-          result.setBaseUri(baseUri);
-          result.setFeedData(dataProvider.getEmployeesData());
           HashMap<String, ODataCallback> callbacks = new HashMap<String, ODataCallback>();
           for (String navPropName : context.getSourceEntitySet().getRelatedEntitySet(context.getNavigationProperty()).getEntityType().getNavigationPropertyNames()) {
             callbacks.put(navPropName, this);
           }
-          result.setCallbacks(callbacks);
+          EntityProviderProperties inlineProperties = EntityProviderProperties.serviceRoot(baseUri).callbacks(callbacks).expandSelectTree(context.getCurrentExpandSelectTreeNode()).selfLink(roomToEmployee).build();
+          
+          result.setFeedData(dataProvider.getEmployeesData());
+          result.setInlineProperties(inlineProperties);
         }
       }
     } catch (EdmException e) {
@@ -51,13 +60,13 @@ public class MyCallback implements ODataCallback, OnWriteEntryContent, OnWriteFe
     try {
       if ("Employees".equals(context.getSourceEntitySet().getName())) {
         if ("ne_Room".equals(context.getNavigationProperty().getName())) {
-          result.setBaseUri(baseUri);
-          result.setEntryData(dataProvider.getRoomData());
           HashMap<String, ODataCallback> callbacks = new HashMap<String, ODataCallback>();
           for (String navPropName : context.getSourceEntitySet().getRelatedEntitySet(context.getNavigationProperty()).getEntityType().getNavigationPropertyNames()) {
             callbacks.put(navPropName, this);
           }
-          result.setCallbacks(callbacks);
+          EntityProviderProperties inlineProperties = EntityProviderProperties.serviceRoot(baseUri).callbacks(callbacks).expandSelectTree(context.getCurrentExpandSelectTreeNode()).build();
+          result.setEntryData(dataProvider.getRoomData());
+          result.setInlineProperties(inlineProperties);
         } else if ("ne_Team".equals(context.getNavigationProperty().getName())) {
           result.setEntryData(null);
         }

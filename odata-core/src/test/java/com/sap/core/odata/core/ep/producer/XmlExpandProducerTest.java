@@ -21,7 +21,6 @@ import org.xml.sax.SAXException;
 import com.sap.core.odata.api.ODataCallback;
 import com.sap.core.odata.api.edm.Edm;
 import com.sap.core.odata.api.edm.EdmException;
-import com.sap.core.odata.api.ep.EntityProviderException;
 import com.sap.core.odata.api.ep.EntityProviderProperties;
 import com.sap.core.odata.api.exception.ODataException;
 import com.sap.core.odata.api.processor.ODataResponse;
@@ -75,6 +74,22 @@ public class XmlExpandProducerTest extends AbstractProviderTest {
     assertXpathExists("/a:entry/a:link", xmlString);
     verifyEmployees(employeeXPathString, xmlString);
   }
+  
+  @Test
+  public void expandSelectedEmployeesWithSelfLink() throws Exception {
+    ExpandSelectTreeNode selectTree = getSelectExpandTree("Rooms('1')", "nr_Employees", "nr_Employees");
+
+    HashMap<String, ODataCallback> callbacksRoom = createCallbacks("Rooms");
+    EntityProviderProperties properties = EntityProviderProperties.serviceRoot(BASE_URI).expandSelectTree(selectTree).callbacks(callbacksRoom).build();
+    AtomEntityProvider provider = createAtomEntityProvider();
+    ODataResponse response = provider.writeEntry(MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Rooms"), roomData, properties);
+
+    String xmlString = verifyResponse(response);
+    assertXpathNotExists("/a:entry/m:properties", xmlString);
+    assertXpathExists("/a:entry/a:link", xmlString);
+    verifyEmployees(employeeXPathString, xmlString);
+    assertXpathExists(employeeXPathString + "/m:inline/a:feed/a:link[@href=\"Rooms('1')/nr_Employees\"]", xmlString);
+  }
 
   @Test
   public void deepExpandSelectedEmployees() throws Exception {
@@ -87,6 +102,9 @@ public class XmlExpandProducerTest extends AbstractProviderTest {
 
     String xmlString = verifyResponse(response);
     assertXpathNotExists("/a:entry/m:properties", xmlString);
+    assertXpathExists(employeeXPathString, xmlString);
+    assertXpathExists(employeeXPathString +"/m:inline/a:feed" + roomXPathString, xmlString);
+    assertXpathExists(employeeXPathString +"/m:inline/a:feed" + roomXPathString +"/m:inline/a:entry/a:content/m:properties", xmlString);
   }
 
   @Test
@@ -100,6 +118,11 @@ public class XmlExpandProducerTest extends AbstractProviderTest {
 
     String xmlString = verifyResponse(response);
     assertXpathNotExists("/a:entry/m:properties", xmlString);
+    assertXpathExists(employeeXPathString, xmlString);
+    assertXpathExists(employeeXPathString +"/m:inline/a:feed" + roomXPathString, xmlString);
+    assertXpathExists(employeeXPathString +"/m:inline/a:feed" + roomXPathString + "/m:inline", xmlString);
+    assertXpathExists(employeeXPathString +"/m:inline/a:feed" + roomXPathString + "/m:inline/a:entry", xmlString);
+    assertXpathExists(employeeXPathString +"/m:inline/a:feed" + roomXPathString + "/m:inline/a:entry/a:content/m:properties/d:Id", xmlString);
   }
 
   @Test
@@ -157,13 +180,18 @@ public class XmlExpandProducerTest extends AbstractProviderTest {
     return callbacksEmployee;
   }
 
-  @Test(expected = EntityProviderException.class)
+  @Test
   public void expandSelectedRoomWithoutCallback() throws Exception {
     ExpandSelectTreeNode selectTree = getSelectExpandTree("Employees('1')", "ne_Room", "ne_Room");
 
     EntityProviderProperties properties = EntityProviderProperties.serviceRoot(BASE_URI).expandSelectTree(selectTree).build();
     AtomEntityProvider provider = createAtomEntityProvider();
-    provider.writeEntry(MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Employees"), employeeData, properties);
+    ODataResponse response = provider.writeEntry(MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Employees"), employeeData, properties);
+
+    String xmlString = verifyResponse(response);
+    verifyNavigationProperties(xmlString, F, T, F);
+    assertXpathNotExists("/a:entry/m:properties", xmlString);
+    assertXpathNotExists(roomXPathString + "/m:inline", xmlString);
   }
 
   private void verifyEmployees(final String path, final String xmlString) throws XpathException, IOException, SAXException {
