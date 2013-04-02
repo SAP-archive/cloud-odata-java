@@ -84,6 +84,7 @@ public class JPAUpdateRequest extends JPAWriteRequest{
 			}
 		}
 		boolean isKeyProperty = false;
+		String propertyName = null;
 		try {
 			for (String key : setters.keySet()) {
 				isKeyProperty = false;
@@ -99,8 +100,7 @@ public class JPAUpdateRequest extends JPAWriteRequest{
 					}
 				}
 				EdmProperty property = (EdmProperty) edmEntityType
-						.getProperty(key);
-				String propertyName = null;
+						.getProperty(key);				
 				if(property.getMapping() != null && property.getMapping().getInternalName() !=  null){
 					propertyName = property.getMapping().getInternalName();
 				}else { 
@@ -139,8 +139,8 @@ public class JPAUpdateRequest extends JPAWriteRequest{
 							.addContent(e.getMessage()), e);
 		} catch (IllegalArgumentException e) {
 			throw ODataJPARuntimeException
-					.throwException(ODataJPARuntimeException.GENERAL
-							.addContent(e.getMessage()), e);
+			.throwException(ODataJPARuntimeException.ERROR_JPQL_PARAM_VALUE
+					.addContent(propertyName), e);
 		} catch (InvocationTargetException e) {
 			throw ODataJPARuntimeException
 					.throwException(ODataJPARuntimeException.GENERAL

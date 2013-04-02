@@ -37,6 +37,12 @@ public class ODataJPARuntimeException extends ODataJPAException {
 			ODataJPARuntimeException.class, "ERROR_JPQL_UPDATE_CREATE");
 	public static final MessageReference ERROR_JPQL_DELETE_CREATE = createMessageReference(
 			ODataJPARuntimeException.class, "ERROR_JPQL_DELETE_CREATE");
+	public static final MessageReference ERROR_JPQL_KEY_VALUE = createMessageReference(
+			ODataJPARuntimeException.class, "ERROR_JPQL_KEY_VALUE");
+	public static final MessageReference ERROR_JPQL_PARAM_VALUE = createMessageReference(
+			ODataJPARuntimeException.class, "ERROR_JPQL_PARAM_VALUE");
+	public static final MessageReference ERROR_JPQL_UNIQUE_CONSTRAINT = createMessageReference(
+			ODataJPARuntimeException.class, "ERROR_JPQL_UNIQUE_CONSTRAINT");
 
 
 	private ODataJPARuntimeException(String localizedMessage, Throwable e,

@@ -58,7 +58,9 @@ public class JPACreateRequest extends JPAWriteRequest{
 	    	entityName = entityType.getName();
 	    }
 	    }catch(EdmException e1){
-	    	
+	    	throw ODataJPARuntimeException
+			.throwException(ODataJPARuntimeException.GENERAL
+					.addContent(e1.getMessage()), e1);
 	    }
 		Object jpaEntity = null;
 		Set<EntityType<?>> entityTypeSet = this.metamodel.getEntities();
@@ -118,14 +120,12 @@ public class JPACreateRequest extends JPAWriteRequest{
 				.get(jpaEntityAccessKey);
 		HashMap<String, String> embeddableKeys = jpaEmbeddableKeyMap
 				.get(jpaEntityAccessKey);
-		
-
+		String propertyName = null;
 		try {
 			for (String key : setters.keySet()) {
 
 				EdmProperty property = (EdmProperty) edmEntityType
-						.getProperty(key);
-				String propertyName = null;
+						.getProperty(key);				
 				if(property.getMapping() != null && property.getMapping().getInternalName() !=  null){
 					propertyName = property.getMapping().getInternalName();
 				}else { 
@@ -152,9 +152,9 @@ public class JPACreateRequest extends JPAWriteRequest{
 			if (embeddableKeys != null) {
 				Object embeddableKeyObj = null;
 				Method method = null;
-				for (String key : embeddableKeys.keySet()) {
-					String name = embeddableKeys.get(key);
-					String[] nameParts = name.split("\\.");
+				for (String embeddableKey : embeddableKeys.keySet()) {
+					String name = embeddableKeys.get(embeddableKey);
+					String[] nameParts = name.split("\\.");//$NON-NLS-1$
 					Object propertyValue = jpaEntity;
 					Class<?> propertyClass = null;
 					
@@ -180,13 +180,14 @@ public class JPACreateRequest extends JPAWriteRequest{
 
 							method = propertyValue.getClass().getMethod(
 									nameParts[0], propertyClass);
-							populateEmbeddableKey(embeddableKeyObj, key, nameParts[1], propertyValueMap);
+							populateEmbeddableKey(embeddableKeyObj, embeddableKey, nameParts[1], propertyValueMap);
 						} catch (NoSuchMethodException e) {
 							throw ODataJPARuntimeException
 							.throwException(ODataJPARuntimeException.GENERAL
 									.addContent(e.getMessage()), e);
 						}
 				}
+				propertyName = "Embeddable Key";//$NON-NLS-1$
 				method.invoke(jpaEntity,embeddableKeyObj);
 			}
 		} catch (SecurityException e) {
@@ -203,8 +204,8 @@ public class JPACreateRequest extends JPAWriteRequest{
 							.addContent(e.getMessage()), e);
 		} catch (IllegalArgumentException e) {
 			throw ODataJPARuntimeException
-					.throwException(ODataJPARuntimeException.GENERAL
-							.addContent(e.getMessage()), e);
+					.throwException(ODataJPARuntimeException.ERROR_JPQL_PARAM_VALUE
+							.addContent(propertyName), e);
 		} catch (InvocationTargetException e) {
 			throw ODataJPARuntimeException
 					.throwException(ODataJPARuntimeException.GENERAL
@@ -235,8 +236,8 @@ public class JPACreateRequest extends JPAWriteRequest{
 						.addContent(e.getMessage()), e);
 			} catch (IllegalArgumentException e) {
 				throw ODataJPARuntimeException
-				.throwException(ODataJPARuntimeException.GENERAL
-						.addContent(e.getMessage()), e);
+				.throwException(ODataJPARuntimeException.ERROR_JPQL_KEY_VALUE
+						.addContent(key), e);
 			} catch (InvocationTargetException e) {
 				throw ODataJPARuntimeException
 				.throwException(ODataJPARuntimeException.GENERAL
