@@ -252,13 +252,7 @@ public class JPQLSelectContextImplTest {
 		}
 	}
 
-	@Test
-	public void testGetSelectedFields() {
-		buildSelectContext(false, false, true, true, true);
-		assertTrue(selectContext.getSelectExpression().contains(fields[0]));
-		assertTrue(selectContext.getSelectExpression().contains(fields[1]));
-	}
-
+	
 	@Test
 	public void testGetOrderByCollection() {
 		buildSelectContext(false, false, true, true, true);

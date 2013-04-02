@@ -1,15 +1,10 @@
 package com.sap.core.odata.processor.core.jpa.jpql;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
-
 import com.sap.core.odata.api.edm.EdmEntityType;
 import com.sap.core.odata.api.edm.EdmException;
 import com.sap.core.odata.api.edm.EdmMapping;
-import com.sap.core.odata.api.edm.EdmProperty;
 import com.sap.core.odata.api.exception.ODataException;
-import com.sap.core.odata.api.uri.SelectItem;
 import com.sap.core.odata.api.uri.info.GetEntitySetUriInfo;
 import com.sap.core.odata.processor.api.jpa.exception.ODataJPAModelException;
 import com.sap.core.odata.processor.api.jpa.exception.ODataJPARuntimeException;
@@ -116,26 +111,7 @@ public class JPQLSelectContext extends JPQLContext implements
 		 * Generate Select Clause 
 		 */
 		protected String generateSelectExpression() throws EdmException {
-			return ODataExpressionParser.parseToJPASelectExpression(getJPAEntityAlias(), generateSelectFields());			
-		}
-
-		/*
-		 * Generate Select Array Fields
-		 */
-		private ArrayList<String> generateSelectFields() throws EdmException {
-
-			List<SelectItem> selectItemList = entitySetView.getSelect();
-
-			if (selectItemList != null) {
-				ArrayList<String> selectedFields = new ArrayList<String>(
-						selectItemList.size());
-				for (SelectItem item : selectItemList) {
-					selectedFields.add(((EdmProperty)item.getProperty()).getMapping().getInternalName());
-				}
-
-				return selectedFields;
-			}
-			return null;
+			return getJPAEntityAlias();			
 		}
 
 		/*

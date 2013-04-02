@@ -167,12 +167,7 @@ public class JPQLSelectSingleContextImplTest {
 		}
 	}
 
-	@Test
-	public void testGetSelectedFields() {
-		buildContextBuilder(false);
-		assertTrue(selectContext.getSelectExpression().contains(fields[0]));
-		assertTrue(selectContext.getSelectExpression().contains(fields[1]));
-	}
+	
 
 	@Test
 	public void getKeyPredicates() {
