@@ -2,18 +2,18 @@ package com.sap.core.odata.core.ep.consumer;
 
 import com.sap.core.odata.api.edm.EdmEntitySet;
 
-public class CallbackResult {
+public class ReadCallbackResult {
 
-  private ConsumerProperties properties;
+  private EntityProviderReadProperties properties;
   private EdmEntitySet entitySet;
 
-  public CallbackResult(final ConsumerProperties properties, final EdmEntitySet entitySet) {
+  public ReadCallbackResult(final EntityProviderReadProperties properties, final EdmEntitySet entitySet) {
     super();
     this.properties = properties;
     this.entitySet = entitySet;
   }
 
-  public ConsumerProperties getConsumerProperties() {
+  public EntityProviderReadProperties getConsumerProperties() {
     return properties;
   }
 
