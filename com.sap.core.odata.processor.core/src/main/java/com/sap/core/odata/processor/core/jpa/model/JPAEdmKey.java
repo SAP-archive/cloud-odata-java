@@ -3,8 +3,11 @@ package com.sap.core.odata.processor.core.jpa.model;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.sap.core.odata.api.edm.EdmConcurrencyMode;
+import com.sap.core.odata.api.edm.EdmFacets;
 import com.sap.core.odata.api.edm.provider.ComplexProperty;
 import com.sap.core.odata.api.edm.provider.ComplexType;
+import com.sap.core.odata.api.edm.provider.Facets;
 import com.sap.core.odata.api.edm.provider.Key;
 import com.sap.core.odata.api.edm.provider.Property;
 import com.sap.core.odata.api.edm.provider.PropertyRef;
@@ -72,6 +75,8 @@ public class JPAEdmKey extends JPAEdmBaseViewImpl implements JPAEdmKeyView {
 			} else {
 				PropertyRef propertyRef = new PropertyRef();
 				propertyRef.setName(propertyView.getEdmSimpleProperty().getName());
+				Facets facets = (Facets) propertyView.getEdmSimpleProperty().getFacets();
+				facets.setNullable(false);
 				propertyRefList.add(propertyRef);
 			}
 
@@ -82,7 +87,8 @@ public class JPAEdmKey extends JPAEdmBaseViewImpl implements JPAEdmKeyView {
 				try {
 
 					SimpleProperty simpleProperty = (SimpleProperty) property;
-
+					Facets facets = (Facets) simpleProperty.getFacets();
+					facets.setNullable(false);
 					PropertyRef propertyRef = new PropertyRef();
 					propertyRef.setName(simpleProperty.getName());
 					propertyRefList.add(propertyRef);
