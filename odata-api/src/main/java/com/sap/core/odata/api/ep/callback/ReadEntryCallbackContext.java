@@ -1,7 +1,9 @@
-package com.sap.core.odata.core.ep.consumer;
+package com.sap.core.odata.api.ep.callback;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import com.sap.core.odata.api.ep.EntityProviderReadProperties;
 
 public class ReadEntryCallbackContext {
 

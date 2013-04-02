@@ -15,6 +15,8 @@ import org.slf4j.LoggerFactory;
 import com.sap.core.odata.api.edm.EdmEntitySet;
 import com.sap.core.odata.api.edm.EdmProperty;
 import com.sap.core.odata.api.ep.EntityProviderException;
+import com.sap.core.odata.api.ep.EntityProviderReadProperties;
+import com.sap.core.odata.api.ep.EntityProviderReadProperties.EntityProviderReadPropertiesBuilder;
 import com.sap.core.odata.api.ep.entry.ODataEntry;
 import com.sap.core.odata.core.ep.aggregator.EntityInfoAggregator;
 
@@ -33,19 +35,19 @@ public class XmlEntityConsumer {
     super();
   }
 
-  public ODataEntry readEntry(final EdmEntitySet entitySet, final Object content, final boolean merge) throws EntityProviderException {
-    EntityProviderReadProperties properties = EntityProviderReadProperties.init().mergeSemantic(merge).build();
-    return readEntry(entitySet, content, properties);
-  }
+//  public ODataEntry readEntry(final EdmEntitySet entitySet, final Object content, final boolean merge) throws EntityProviderException {
+//    EntityProviderReadProperties properties = EntityProviderReadProperties.init().mergeSemantic(merge).build();
+//    return readEntry(entitySet, content, properties);
+//  }
+//
+//  public ODataEntry readEntry(final EdmEntitySet entitySet, final Object content, final boolean merge, final Map<String, Object> typeMappings) throws EntityProviderException {
+//    EntityProviderReadProperties properties = EntityProviderReadProperties.init()
+//        .mergeSemantic(merge).addTypeMappings(typeMappings)
+//        .build();
+//    return readEntry(entitySet, content, properties);
+//  }
 
-  public ODataEntry readEntry(final EdmEntitySet entitySet, final Object content, final boolean merge, final Map<String, Object> typeMappings) throws EntityProviderException {
-    EntityProviderReadProperties properties = EntityProviderReadProperties.init()
-        .mergeSemantic(merge).addTypeMappings(typeMappings)
-        .build();
-    return readEntry(entitySet, content, properties);
-  }
-
-  public ODataEntry readEntry(final EdmEntitySet entitySet, final Object content, final EntityProviderReadProperties properties) throws EntityProviderException {
+  public ODataEntry readEntry(final EdmEntitySet entitySet, final InputStream content, final EntityProviderReadProperties properties) throws EntityProviderException {
     XMLStreamReader reader = null;
 
     try {
@@ -71,17 +73,17 @@ public class XmlEntityConsumer {
     }
   }
 
-  public Map<String, Object> readProperty(final EdmProperty edmProperty, final Object content, final boolean merge) throws EntityProviderException {
-    return readProperty(edmProperty, content, merge, null);
-  }
+//  Map<String, Object> readProperty(final EdmProperty edmProperty, final InputStream content, final boolean merge) throws EntityProviderException {
+//    return readProperty(edmProperty, content, EntityProviderReadProperties.init().mergeSemantic(merge));
+//  }
 
-  public Map<String, Object> readProperty(final EdmProperty edmProperty, final Object content, final boolean merge, final Map<String, Object> typeMappings) throws EntityProviderException {
+  public Map<String, Object> readProperty(final EdmProperty edmProperty, final InputStream content, final EntityProviderReadProperties properties) throws EntityProviderException {
     XMLStreamReader reader = null;
 
     try {
       XmlPropertyConsumer xec = new XmlPropertyConsumer();
       reader = createStaxReader(content);
-      Map<String, Object> result = xec.readProperty(reader, edmProperty, merge, typeMappings);
+      Map<String, Object> result = xec.readProperty(reader, edmProperty, properties.getMergeSemantic(), properties.getTypeMappings());
       return result;
     } catch (Exception e) {
       throw new EntityProviderException(EntityProviderException.COMMON, e);
@@ -97,19 +99,20 @@ public class XmlEntityConsumer {
     }
   }
 
-  public Object readPropertyValue(final EdmProperty edmProperty, final Object content) throws EntityProviderException {
-    return readPropertyValue(edmProperty, content, null);
-  }
+//  public Object readPropertyValue(final EdmProperty edmProperty, final InputStream content) throws EntityProviderException {
+//    return readPropertyValue(edmProperty, content, null);
+//  }
 
-  public Object readPropertyValue(final EdmProperty edmProperty, final Object content, final Class<?> typeMapping) throws EntityProviderException {
+  public Object readPropertyValue(final EdmProperty edmProperty, final InputStream content, final Class<?> typeMapping) throws EntityProviderException {
     try {
       final Map<String, Object> result;
+      EntityProviderReadPropertiesBuilder propertiesBuilder = EntityProviderReadProperties.init().mergeSemantic(false);
       if (typeMapping == null) {
-        result = readProperty(edmProperty, content, false, null);
+        result = readProperty(edmProperty, content, propertiesBuilder.build());
       } else {
         Map<String, Object> typeMappings = new HashMap<String, Object>();
         typeMappings.put(edmProperty.getName(), typeMapping);
-        result = readProperty(edmProperty, content, false, typeMappings);
+        result = readProperty(edmProperty, content, propertiesBuilder.addTypeMappings(typeMappings).build());
       }
       return result.get(edmProperty.getName());
     } catch (Exception e) {

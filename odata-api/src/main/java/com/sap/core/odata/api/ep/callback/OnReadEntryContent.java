@@ -1,4 +1,4 @@
-package com.sap.core.odata.core.ep.consumer;
+package com.sap.core.odata.api.ep.callback;
 
 public interface OnReadEntryContent {
 

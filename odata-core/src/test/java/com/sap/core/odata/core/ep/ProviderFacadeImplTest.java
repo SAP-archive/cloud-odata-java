@@ -10,6 +10,7 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 import com.sap.core.odata.api.edm.EdmEntitySet;
+import com.sap.core.odata.api.ep.EntityProviderReadProperties;
 import com.sap.core.odata.api.ep.entry.ODataEntry;
 import com.sap.core.odata.core.commons.ContentType;
 import com.sap.core.odata.testutil.mock.MockFacade;
@@ -57,7 +58,7 @@ public class ProviderFacadeImplTest {
     String contentType = ContentType.APPLICATION_ATOM_XML_ENTRY.toContentTypeString();
     EdmEntitySet entitySet = MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Employees");
     InputStream content = new ByteArrayInputStream(EMPLOYEE_1_XML.getBytes("utf-8"));
-    Object result = provider.readEntry(contentType, entitySet, content, true, null);
+    Object result = provider.readEntry(contentType, entitySet, content, EntityProviderReadProperties.init().mergeSemantic(true).build());
 
     assertTrue(result instanceof ODataEntry);
   }

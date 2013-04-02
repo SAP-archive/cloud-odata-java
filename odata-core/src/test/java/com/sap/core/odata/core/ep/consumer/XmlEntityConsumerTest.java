@@ -10,7 +10,6 @@ import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TimeZone;
@@ -22,6 +21,10 @@ import com.sap.core.odata.api.edm.Edm;
 import com.sap.core.odata.api.edm.EdmEntitySet;
 import com.sap.core.odata.api.edm.EdmProperty;
 import com.sap.core.odata.api.ep.EntityProviderException;
+import com.sap.core.odata.api.ep.EntityProviderReadProperties;
+import com.sap.core.odata.api.ep.callback.OnReadEntryContent;
+import com.sap.core.odata.api.ep.callback.ReadCallbackResult;
+import com.sap.core.odata.api.ep.callback.ReadEntryCallbackContext;
 import com.sap.core.odata.api.ep.entry.EntryMetadata;
 import com.sap.core.odata.api.ep.entry.MediaMetadata;
 import com.sap.core.odata.api.ep.entry.ODataEntry;
@@ -260,7 +263,7 @@ public class XmlEntityConsumerTest extends AbstractConsumerTest {
 
     // execute
     XmlEntityConsumer xec = new XmlEntityConsumer();
-    ODataEntry entry = xec.readEntry(entitySet, reqContent, false);
+    ODataEntry entry = xec.readEntry(entitySet, reqContent, EntityProviderReadProperties.init().mergeSemantic(false).build());
 
     // validate
     assertNotNull(entry);
@@ -342,7 +345,7 @@ public class XmlEntityConsumerTest extends AbstractConsumerTest {
     EdmEntitySet entitySet = MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Rooms");
     InputStream reqContent = createContentAsStream(roomWithValidNamespaces);
     XmlEntityConsumer xec = new XmlEntityConsumer();
-    ODataEntry result = xec.readEntry(entitySet, reqContent, true);
+    ODataEntry result = xec.readEntry(entitySet, reqContent, EntityProviderReadProperties.init().mergeSemantic(true).build());
     assertNotNull(result);
   }
 
@@ -377,7 +380,7 @@ public class XmlEntityConsumerTest extends AbstractConsumerTest {
     EdmEntitySet entitySet = MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Rooms");
     InputStream reqContent = createContentAsStream(roomWithValidNamespaces);
     XmlEntityConsumer xec = new XmlEntityConsumer();
-    ODataEntry result = xec.readEntry(entitySet, reqContent, false);
+    ODataEntry result = xec.readEntry(entitySet, reqContent, EntityProviderReadProperties.init().mergeSemantic(false).build());
     assertNotNull(result);
   }
 
@@ -414,7 +417,7 @@ public class XmlEntityConsumerTest extends AbstractConsumerTest {
     EdmEntitySet entitySet = MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Rooms");
     InputStream reqContent = createContentAsStream(roomWithValidNamespaces);
     XmlEntityConsumer xec = new XmlEntityConsumer();
-    ODataEntry result = xec.readEntry(entitySet, reqContent, false);
+    ODataEntry result = xec.readEntry(entitySet, reqContent, EntityProviderReadProperties.init().mergeSemantic(false).build());
     assertNotNull(result);
   }
 
@@ -442,7 +445,7 @@ public class XmlEntityConsumerTest extends AbstractConsumerTest {
     InputStream reqContent = createContentAsStream(roomWithValidNamespaces);
 
     XmlEntityConsumer xec = new XmlEntityConsumer();
-    ODataEntry result = xec.readEntry(entitySet, reqContent, true);
+    ODataEntry result = xec.readEntry(entitySet, reqContent, EntityProviderReadProperties.init().mergeSemantic(true).build());
     assertNotNull(result);
   }
 
@@ -478,7 +481,7 @@ public class XmlEntityConsumerTest extends AbstractConsumerTest {
     EdmEntitySet entitySet = MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Rooms");
     InputStream reqContent = createContentAsStream(roomWithValidNamespaces);
     XmlEntityConsumer xec = new XmlEntityConsumer();
-    ODataEntry result = xec.readEntry(entitySet, reqContent, false);
+    ODataEntry result = xec.readEntry(entitySet, reqContent, EntityProviderReadProperties.init().mergeSemantic(false).build());
     assertNotNull(result);
   }
 
@@ -566,7 +569,7 @@ public class XmlEntityConsumerTest extends AbstractConsumerTest {
     EdmEntitySet entitySet = MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Rooms");
     InputStream reqContent = createContentAsStream(room);
     XmlEntityConsumer xec = new XmlEntityConsumer();
-    ODataEntry result = xec.readEntry(entitySet, reqContent, false);
+    ODataEntry result = xec.readEntry(entitySet, reqContent, EntityProviderReadProperties.init().mergeSemantic(false).build());
     assertNotNull(result);
   }
 
@@ -604,7 +607,7 @@ public class XmlEntityConsumerTest extends AbstractConsumerTest {
     EdmEntitySet entitySet = MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Rooms");
     InputStream reqContent = createContentAsStream(room);
     XmlEntityConsumer xec = new XmlEntityConsumer();
-    ODataEntry result = xec.readEntry(entitySet, reqContent, false);
+    ODataEntry result = xec.readEntry(entitySet, reqContent, EntityProviderReadProperties.init().mergeSemantic(false).build());
     assertNotNull(result);
   }
 
@@ -642,7 +645,7 @@ public class XmlEntityConsumerTest extends AbstractConsumerTest {
     EdmEntitySet entitySet = MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Rooms");
     InputStream reqContent = createContentAsStream(room);
     XmlEntityConsumer xec = new XmlEntityConsumer();
-    ODataEntry result = xec.readEntry(entitySet, reqContent, false);
+    ODataEntry result = xec.readEntry(entitySet, reqContent, EntityProviderReadProperties.init().mergeSemantic(false).build());
     assertNotNull(result);
   }
 
@@ -692,7 +695,7 @@ public class XmlEntityConsumerTest extends AbstractConsumerTest {
     EdmEntitySet entitySet = MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Rooms");
     InputStream reqContent = createContentAsStream(roomWithValidNamespaces);
     XmlEntityConsumer xec = new XmlEntityConsumer();
-    ODataEntry result = xec.readEntry(entitySet, reqContent, false);
+    ODataEntry result = xec.readEntry(entitySet, reqContent, EntityProviderReadProperties.init().mergeSemantic(false).build());
     assertNotNull(result);
   }
 
@@ -730,7 +733,7 @@ public class XmlEntityConsumerTest extends AbstractConsumerTest {
   private void readAndExpectException(final EdmEntitySet entitySet, final InputStream reqContent, final boolean merge, final MessageReference messageReference) throws ODataMessageException {
     try {
       XmlEntityConsumer xec = new XmlEntityConsumer();
-      ODataEntry result = xec.readEntry(entitySet, reqContent, merge);
+      ODataEntry result = xec.readEntry(entitySet, reqContent, EntityProviderReadProperties.init().mergeSemantic(merge).build());
       assertNotNull(result);
       Assert.fail("Expected exception with MessageReference '" + messageReference.getKey() + "' was not thrown.");
     } catch (ODataMessageException e) {
@@ -748,7 +751,7 @@ public class XmlEntityConsumerTest extends AbstractConsumerTest {
 
     // execute
     XmlEntityConsumer xec = new XmlEntityConsumer();
-    ODataEntry result = xec.readEntry(entitySet, contentBody, true);
+    ODataEntry result = xec.readEntry(entitySet, contentBody, EntityProviderReadProperties.init().mergeSemantic(true).build());
 
     // verify
     EntryMetadata metadata = result.getMetadata();
@@ -789,7 +792,7 @@ public class XmlEntityConsumerTest extends AbstractConsumerTest {
 
     // execute
     XmlEntityConsumer xec = new XmlEntityConsumer();
-    ODataEntry result = xec.readEntry(entitySet, contentBody, true);
+    ODataEntry result = xec.readEntry(entitySet, contentBody, EntityProviderReadProperties.init().mergeSemantic(true).build());
 
     // verify
     List<String> associationUris = result.getMetadata().getAssociationUris("ne_Room");
@@ -812,8 +815,7 @@ public class XmlEntityConsumerTest extends AbstractConsumerTest {
 
     // execute
     XmlEntityConsumer xec = new XmlEntityConsumer();
-    boolean merge = false;
-    ODataEntry result = xec.readEntry(entitySet, contentBody, merge);
+    ODataEntry result = xec.readEntry(entitySet, contentBody, EntityProviderReadProperties.init().mergeSemantic(false).build());
 
     // verify
     Map<String, Object> properties = result.getProperties();
@@ -858,8 +860,7 @@ public class XmlEntityConsumerTest extends AbstractConsumerTest {
 
     // execute
     XmlEntityConsumer xec = new XmlEntityConsumer();
-    boolean merge = false;
-    ODataEntry result = xec.readEntry(entitySet, contentBody, merge);
+    ODataEntry result = xec.readEntry(entitySet, contentBody, EntityProviderReadProperties.init().mergeSemantic(false).build());
 
     // verify
     Map<String, Object> properties = result.getProperties();
@@ -895,7 +896,7 @@ public class XmlEntityConsumerTest extends AbstractConsumerTest {
     // execute
     try {
       XmlEntityConsumer xec = new XmlEntityConsumer();
-      ODataEntry result = xec.readEntry(entitySet, contentBody, false);
+      ODataEntry result = xec.readEntry(entitySet, contentBody, EntityProviderReadProperties.init().mergeSemantic(false).build());
 
       // verify - not necessary because of thrown exception - but kept to prevent eclipse warning about unused variables
       Map<String, Object> properties = result.getProperties();
@@ -919,7 +920,7 @@ public class XmlEntityConsumerTest extends AbstractConsumerTest {
     // execute
     try {
       XmlEntityConsumer xec = new XmlEntityConsumer();
-      ODataEntry result = xec.readEntry(entitySet, contentBody, false);
+      ODataEntry result = xec.readEntry(entitySet, contentBody, EntityProviderReadProperties.init().mergeSemantic(false).build());
 
       // verify - not necessary because of thrown exception - but kept to prevent eclipse warning about unused variables
       Map<String, Object> properties = result.getProperties();
@@ -943,7 +944,7 @@ public class XmlEntityConsumerTest extends AbstractConsumerTest {
 
     // execute
     XmlEntityConsumer xec = new XmlEntityConsumer();
-    ODataEntry result = xec.readEntry(entitySet, contentBody, true);
+    ODataEntry result = xec.readEntry(entitySet, contentBody, EntityProviderReadProperties.init().mergeSemantic(true).build());
 
     // verify
     Map<String, Object> properties = result.getProperties();
@@ -981,9 +982,11 @@ public class XmlEntityConsumerTest extends AbstractConsumerTest {
 
     // execute
     XmlEntityConsumer xec = new XmlEntityConsumer();
-    ODataEntry result = xec.readEntry(entitySet, contentBody, true,
-        createTypeMappings("Age", Long.class, // test unused type mapping 
-            "EntryDate", Date.class));
+    ODataEntry result = xec.readEntry(entitySet, contentBody, 
+        EntityProviderReadProperties.init().mergeSemantic(true).addTypeMappings(
+          createTypeMappings("Age", Long.class, // test unused type mapping 
+              "EntryDate", Date.class))
+          .build());
 
     // verify
     Map<String, Object> properties = result.getProperties();
@@ -1016,7 +1019,7 @@ public class XmlEntityConsumerTest extends AbstractConsumerTest {
 
     EdmEntitySet entitySet = MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Employees");
     InputStream content = createContentAsStream(EMPLOYEE_1_XML);
-    ODataEntry result = xec.readEntry(entitySet, content, true);
+    ODataEntry result = xec.readEntry(entitySet, content, EntityProviderReadProperties.init().mergeSemantic(true).build());
 
     // verify
     Map<String, Object> properties = result.getProperties();
@@ -1055,7 +1058,7 @@ public class XmlEntityConsumerTest extends AbstractConsumerTest {
 
     EdmEntitySet entitySet = MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Employees");
     InputStream content = createContentAsStream(EMPLOYEE_1_XML);
-    ODataEntry result = xec.readEntry(entitySet, content, true, null);
+    ODataEntry result = xec.readEntry(entitySet, content, EntityProviderReadProperties.init().mergeSemantic(true).build());
 
     // verify
     Map<String, Object> properties = result.getProperties();
@@ -1087,7 +1090,7 @@ public class XmlEntityConsumerTest extends AbstractConsumerTest {
 
     EdmEntitySet entitySet = MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Employees");
     InputStream content = createContentAsStream(EMPLOYEE_1_XML);
-    ODataEntry result = xec.readEntry(entitySet, content, true, new HashMap<String, Object>());
+    ODataEntry result = xec.readEntry(entitySet, content, EntityProviderReadProperties.init().build());
 
     // verify
     Map<String, Object> properties = result.getProperties();
@@ -1118,7 +1121,8 @@ public class XmlEntityConsumerTest extends AbstractConsumerTest {
 
     EdmEntitySet entitySet = MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Employees");
     InputStream content = createContentAsStream(EMPLOYEE_1_XML);
-    ODataEntry result = xec.readEntry(entitySet, content, true, createTypeMappings("EmployeeName", Integer.class));
+    ODataEntry result = xec.readEntry(entitySet, content, 
+        EntityProviderReadProperties.init().mergeSemantic(true).addTypeMappings(createTypeMappings("EmployeeName", Integer.class)).build());
 
     // verify
     Map<String, Object> properties = result.getProperties();
@@ -1131,7 +1135,8 @@ public class XmlEntityConsumerTest extends AbstractConsumerTest {
 
     EdmEntitySet entitySet = MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Employees");
     InputStream content = createContentAsStream(EMPLOYEE_1_XML);
-    ODataEntry result = xec.readEntry(entitySet, content, true, createTypeMappings("EmployeeName", Object.class));
+    ODataEntry result = xec.readEntry(entitySet, content, 
+        EntityProviderReadProperties.init().mergeSemantic(true).addTypeMappings(createTypeMappings("EmployeeName", Object.class)).build());
 
     // verify
     Map<String, Object> properties = result.getProperties();
@@ -1153,10 +1158,10 @@ public class XmlEntityConsumerTest extends AbstractConsumerTest {
 
     EdmEntitySet entitySet = MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Employees");
     InputStream content = createContentAsStream(EMPLOYEE_1_XML);
-    ODataEntry result = xec.readEntry(entitySet, content, true,
+    ODataEntry result = xec.readEntry(entitySet, content, EntityProviderReadProperties.init().mergeSemantic(true).addTypeMappings(
         createTypeMappings("Age", Short.class,
             "Heidelberg", String.class,
-            "EntryDate", Long.class));
+            "EntryDate", Long.class)).build());
 
     // verify
     Map<String, Object> properties = result.getProperties();
@@ -1185,7 +1190,7 @@ public class XmlEntityConsumerTest extends AbstractConsumerTest {
 
     EdmEntitySet entitySet = MockFacade.getMockEdm().getEntityContainer("Container2").getEntitySet("Photos");
     InputStream reqContent = createContentAsStream(PHOTO_XML);
-    ODataEntry result = xec.readEntry(entitySet, reqContent, false);
+    ODataEntry result = xec.readEntry(entitySet, reqContent, EntityProviderReadProperties.init().mergeSemantic(false).build());
 
     // verify
     EntryMetadata entryMetadata = result.getMetadata();
@@ -1204,7 +1209,7 @@ public class XmlEntityConsumerTest extends AbstractConsumerTest {
 
     EdmEntitySet entitySet = MockFacade.getMockEdm().getEntityContainer("Container2").getEntitySet("Photos");
     InputStream reqContent = createContentAsStream(PHOTO_XML);
-    ODataEntry result = xec.readEntry(entitySet, reqContent, true);
+    ODataEntry result = xec.readEntry(entitySet, reqContent, EntityProviderReadProperties.init().mergeSemantic(true).build());
 
     // verify
     EntryMetadata entryMetadata = result.getMetadata();
@@ -1232,7 +1237,7 @@ public class XmlEntityConsumerTest extends AbstractConsumerTest {
 
     EdmEntitySet entitySet = MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Rooms");
     InputStream reqContent = createContentAsStream(ROOM_1_XML);
-    ODataEntry result = xec.readEntry(entitySet, reqContent, true);
+    ODataEntry result = xec.readEntry(entitySet, reqContent, EntityProviderReadProperties.init().mergeSemantic(true).build());
 
     // verify
     EntryMetadata entryMetadata = result.getMetadata();
@@ -1257,7 +1262,7 @@ public class XmlEntityConsumerTest extends AbstractConsumerTest {
 
     String xml = "<Age xmlns=\"" + Edm.NAMESPACE_D_2007_08 + "\">67</Age>";
     InputStream content = createContentAsStream(xml);
-    Map<String, Object> value = new XmlEntityConsumer().readProperty(property, content, true);
+    Map<String, Object> value = new XmlEntityConsumer().readProperty(property, content, EntityProviderReadProperties.init().mergeSemantic(true).build());
 
     assertEquals(Integer.valueOf(67), value.get("Age"));
   }
@@ -1268,7 +1273,7 @@ public class XmlEntityConsumerTest extends AbstractConsumerTest {
     InputStream content = createContentAsStream(xml);
     final EdmProperty property = (EdmProperty) MockFacade.getMockEdm().getEntityType("RefScenario", "Employee").getProperty("EmployeeName");
 
-    Object result = new XmlEntityConsumer().readPropertyValue(property, content);
+    Object result = new XmlEntityConsumer().readPropertyValue(property, content, String.class);
 
     assertEquals("Max Mustermann", result);
   }
@@ -1279,7 +1284,8 @@ public class XmlEntityConsumerTest extends AbstractConsumerTest {
 
     String xml = "<Age xmlns=\"" + Edm.NAMESPACE_D_2007_08 + "\">42</Age>";
     InputStream content = createContentAsStream(xml);
-    Map<String, Object> value = new XmlEntityConsumer().readProperty(property, content, true, createTypeMappings("Age", Long.class));
+    Map<String, Object> value = new XmlEntityConsumer().readProperty(property, content, 
+        EntityProviderReadProperties.init().mergeSemantic(true).addTypeMappings(createTypeMappings("Age", Long.class)).build());
 
     assertEquals(Long.valueOf(42), value.get("Age"));
   }
