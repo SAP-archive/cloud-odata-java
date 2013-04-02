@@ -15,7 +15,10 @@ import org.custommonkey.xmlunit.XMLUnit;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import com.sap.core.odata.api.commons.HttpStatusCodes;
 import com.sap.core.odata.api.edm.Edm;
+import com.sap.core.odata.api.ep.EntityProviderException;
+import com.sap.core.odata.api.processor.ODataResponse;
 import com.sap.core.odata.core.commons.ContentType;
 import com.sap.core.odata.testutil.fit.BaseTest;
 import com.sap.core.odata.testutil.helper.StringHelper;
@@ -78,27 +81,27 @@ public class ODataExceptionSerializerTest extends BaseTest {
     testSerializeXML("ErrorCode", "Message", ContentType.APPLICATION_ATOM_XML, Locale.CHINA);
   }
 
-  @Test
+  @Test(expected=EntityProviderException.class)
   public void testJsonSerializationWithoutInnerError() throws Exception {
     testSerializeJSON("ErrorCode", "Message", ContentType.APPLICATION_JSON, Locale.GERMAN);
   }
 
-  @Test
+  @Test(expected=EntityProviderException.class)
   public void testJsonSerializationWithInnerError() throws Exception {
     testSerializeJSON("ErrorCode", "Message", ContentType.APPLICATION_JSON, Locale.GERMAN);
   }
 
   //HelperMethod
   private void testSerializeJSON(final String errorCode, final String message, final ContentType contentType, final Locale locale) throws Exception {
-    InputStream inputStream = ODataExceptionSerializer.serialize(errorCode, message, contentType, locale);
-    String jsonErrorMessage = StringHelper.inputStreamToString(inputStream);
-    assertEquals("not supported error format JSON; " + errorCode + ", " + message, jsonErrorMessage);
+    ODataResponse response = new ProviderFacadeImpl().writeErrorDocument(contentType.toContentTypeString(), HttpStatusCodes.INTERNAL_SERVER_ERROR, errorCode, message, locale, null);
+    String jsonErrorMessage = (String) response.getEntity();
+    assertEquals("Fatal Error when serializing an Exception", jsonErrorMessage);
   }
 
   //HelperMethod
   private void testSerializeXML(final String errorCode, final String message, final ContentType contentType, final Locale locale) throws Exception {
-    InputStream inputStream = ODataExceptionSerializer.serialize(errorCode, message, contentType, locale);
-    String xmlErrorMessage = StringHelper.inputStreamToString(inputStream);
+    ODataResponse response = new ProviderFacadeImpl().writeErrorDocument(contentType.toContentTypeString(), HttpStatusCodes.INTERNAL_SERVER_ERROR, errorCode, message, locale, null);
+    String xmlErrorMessage = StringHelper.inputStreamToString((InputStream) response.getEntity());
     if (errorCode != null) {
       assertXpathEvaluatesTo(errorCode, "/a:error/a:code", xmlErrorMessage);
     } else {

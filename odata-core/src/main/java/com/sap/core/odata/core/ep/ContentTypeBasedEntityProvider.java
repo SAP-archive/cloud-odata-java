@@ -2,8 +2,10 @@ package com.sap.core.odata.core.ep;
 
 import java.io.InputStream;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
+import com.sap.core.odata.api.commons.HttpStatusCodes;
 import com.sap.core.odata.api.edm.Edm;
 import com.sap.core.odata.api.edm.EdmEntitySet;
 import com.sap.core.odata.api.edm.EdmFunctionImport;
@@ -42,4 +44,6 @@ public interface ContentTypeBasedEntityProvider {
   ODataResponse writeLinks(EdmEntitySet entitySet, List<Map<String, Object>> data, EntityProviderProperties properties) throws EntityProviderException;
 
   ODataResponse writeFunctionImport(EdmFunctionImport functionImport, Object data, EntityProviderProperties properties) throws EntityProviderException;
+
+  ODataResponse writeErrorDocument(HttpStatusCodes status, String errorCode, String message, Locale locale, String innerError) throws EntityProviderException;
 }

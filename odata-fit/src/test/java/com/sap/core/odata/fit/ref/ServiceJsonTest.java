@@ -80,6 +80,7 @@ public class ServiceJsonTest extends AbstractRefTest {
    */
   @Test
   public void serviceDocumentDollarFormatJsonUnsupported() throws Exception {
+    disableLogging();
     callUri("", HttpHeaders.ACCEPT, HttpContentType.APPLICATION_JSON, HttpStatusCodes.NOT_ACCEPTABLE);
   }
 

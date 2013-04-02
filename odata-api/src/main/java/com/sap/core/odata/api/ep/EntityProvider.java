@@ -2,8 +2,10 @@ package com.sap.core.odata.api.ep;
 
 import java.io.InputStream;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
+import com.sap.core.odata.api.commons.HttpStatusCodes;
 import com.sap.core.odata.api.edm.Edm;
 import com.sap.core.odata.api.edm.EdmEntitySet;
 import com.sap.core.odata.api.edm.EdmFunctionImport;
@@ -257,6 +259,18 @@ public final class EntityProvider {
      * @throws EntityProviderException if reading of data (de-serialization) fails
      */
     byte[] readBinary(InputStream content) throws EntityProviderException;
+
+    /**
+     * <p>Serializes an error message according to the OData standard.</p>
+     * @param contentType contentType format in which the error document should be written
+     * @param status      the {@link HttpStatusCodes} associated with this error  
+     * @param errorCode   a String that serves as a substatus to the HTTP response code
+     * @param message     a human-readable message describing the error
+     * @param locale      the {@link Locale} that should be used to format the error message
+     * @param innerError  the inner error for this message. If it is null or an empty String no inner error tag is shown inside the response xml
+     * @return            an {@link ODataResponse} containing the serialized error message
+     */
+    ODataResponse writeErrorDocument(String contentType, HttpStatusCodes status, String errorCode, String message, Locale locale, String innerError) throws EntityProviderException;
   }
 
   /**
@@ -267,6 +281,23 @@ public final class EntityProvider {
   private static EntityProviderInterface createEntityProvider() {
     return RuntimeDelegate.createEntityProvider();
   }
+  
+  /**
+   * <p>Serializes an error message according to the OData standard.</p>
+   * <p>In case an error occurs, it is logged.
+   * An exception is not thrown because this method is used in exception handling.</p>
+   * @param contentType contentType format in which the error document should be written
+   * @param status      the {@link HttpStatusCodes} associated with this error  
+   * @param errorCode   a String that serves as a substatus to the HTTP response code
+   * @param message     a human-readable message describing the error
+   * @param locale      the {@link Locale} that should be used to format the error message
+   * @param innerError  the inner error for this message. If it is null or an empty String no inner error tag is shown inside the response xml
+   * @return            an {@link ODataResponse} containing the serialized error message
+   */
+  public static ODataResponse writeErrorDocument(String contentType, HttpStatusCodes status, String errorCode, String message, Locale locale, String innerError) throws EntityProviderException{
+    return createEntityProvider().writeErrorDocument(contentType, status, errorCode, message, locale, innerError);
+  }
+
 
   /**
    * Write metadata document in XML format for the given schemas and the provided predefined 
