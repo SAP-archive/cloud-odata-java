@@ -14,15 +14,15 @@ public class SalesOrderItemKey implements Serializable {
 		//No arguement constructor	
 	}
 	
-//	public SalesOrderItemKey(long liId) {
-//		super();
-//		this.liId = liId;
-//	}
+	public SalesOrderItemKey(long liId) {
+		super();
+		this.liId = liId;
+	}
 
 	@Column(name = "Sales_Order_Id",nullable = false)
 	private long soId;
 	
-	@Column(name = "Sales_Order_Item_Id")
+	@Column(name = "Sales_Order_Item_Id",unique = true)
 	private long liId;
 		
 	@Override

@@ -21,6 +21,9 @@ public class SalesOrderItem {
 
 	@EmbeddedId
 	private SalesOrderItemKey salesOrderItemKey;
+	
+	@Column(name = "Material_Id")
+	private long matId;
 
 	@Column
 	private int quantity;
@@ -30,11 +33,11 @@ public class SalesOrderItem {
 	
 	@Column
 	private double discount;
-	
+		
 	@Transient
 	private double netAmount;	
 	
-	@JoinColumn(name = "Sales_Order_Item_Id", referencedColumnName = "MATERIAL_ID",insertable = false,updatable = false)
+	@JoinColumn(name = "Material_Id", referencedColumnName = "MATERIAL_ID",insertable = false,updatable = false)
 	@ManyToOne
 	private Material material;
 		
@@ -49,6 +52,14 @@ public class SalesOrderItem {
 	public void setSalesOrderItemKey(SalesOrderItemKey salesOrderItemKey) {
 		this.salesOrderItemKey = salesOrderItemKey;
 	}	
+	
+	public long getMatId() {
+		return matId;
+	}
+
+	public void setMatId(long matId) {
+		this.matId = matId;
+	}
 
 	public int getQuantity() {
 		return quantity;
