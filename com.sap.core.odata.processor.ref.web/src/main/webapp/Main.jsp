@@ -179,13 +179,13 @@ body {
 						FROM SalesOrderHeader E1</code></td>
 			</tr>
 			<tr>
-				<td width=20%>Query for Sales Order with So ID = 1</td>
+				<td width=20%>Query for Sales Order with So ID = 3</td>
 				<td width=40%><a
-					href="SalesOrderProcessing.svc/SalesOrders?$filter=ID eq 1"
+					href="SalesOrderProcessing.svc/SalesOrders?$filter=ID eq 3"
 					target="_blank">SalesOrderProcessing.svc/SalesOrders?$filter=ID
-						eq 1</a></td>
+						eq 3</a></td>
 				<td width=40%><code style="font-size: small">SELECT E1
-						FROM SalesOrderHeader E1 WHERE E1.soId = 1</code></td>
+						FROM SalesOrderHeader E1 WHERE E1.soId = 3</code></td>
 			</tr>
 			<tr>
 				<td>Query for Sales Order with Buyer Name = buyerName_3</td>
@@ -322,20 +322,20 @@ body {
 			<tr>
 				<td width=20%>Read operation on SalesOrderHeader</td>
 				<td width=40%><a
-					href="SalesOrderProcessing.svc/SalesOrders(1L)" target="_blank">SalesOrderProcessing.svc/SalesOrders(1L)
+					href="SalesOrderProcessing.svc/SalesOrders(3L)" target="_blank">SalesOrderProcessing.svc/SalesOrders(3L)
 				</a></td>
 				<td width=40%><code style="font-size: small">SELECT E1
-						FROM SalesOrderHeader E1 WHERE E1.soId = 1</code></td>
+						FROM SalesOrderHeader E1 WHERE E1.soId = 3</code></td>
 			</tr>
 			<tr>
 				<td width=20%>Read operation on SalesOrderItem</td>
 				<td width=40%><a
-					href="SalesOrderProcessing.svc/SalesOrderLineItems(SoId=1L,LiId=111L)"
-					target="_blank">SalesOrderProcessing.svc/SalesOrderLineItems(SoId=1L,LiId=111L)
+					href="SalesOrderProcessing.svc/SalesOrderLineItems(SoId=3L,LiId=11L)"
+					target="_blank">SalesOrderProcessing.svc/SalesOrderLineItems(SoId=3L,LiId=11L)
 				</a></td>
 				<td width=40%><code style="font-size: small">SELECT E1
-						FROM SalesOrderItem E1 WHERE E1.salesOrderItemKey.soId = 1 AND
-						E1.salesOrderItemKey.liId = 111</code></td>
+						FROM SalesOrderItem E1 WHERE E1.salesOrderItemKey.soId = 3 AND
+						E1.salesOrderItemKey.liId = 11</code></td>
 			</tr>
 			<tr>
 				<td width=20%>Read operation on Material</td>
@@ -380,34 +380,34 @@ body {
 			<tr>
 				<td width=20%>SalesOrderHeader-SalesOrderItem (OneToMany)</td>
 				<td width=40%><a
-					href="SalesOrderProcessing.svc/SalesOrders(1L)/SalesOrderLineItemDetails"
-					target="_blank">SalesOrderProcessing.svc/SalesOrders(1L)/SalesOrderLineItemDetails
+					href="SalesOrderProcessing.svc/SalesOrders(3L)/SalesOrderLineItemDetails"
+					target="_blank">SalesOrderProcessing.svc/SalesOrders(3L)/SalesOrderLineItemDetails
 				</a></td>
 				<td width=40%><code style="font-size: small">SELECT R1
 						FROM SalesOrderHeader E1 JOIN E1.salesOrderItem R1 WHERE E1.soId =
-						1</code></td>
+						3</code></td>
 			</tr>
 
 			<tr>
 				<td width=20%>SalesOrderItem-SalesOrderHeader (ManyToOne)</td>
 				<td width=40%><a
-					href="SalesOrderProcessing.svc/SalesOrderLineItems(SoId=1L,LiId=111L)/SalesOrderHeaderDetails"
-					target="_blank">SalesOrderProcessing.svc/SalesOrderLineItems(SoId=1L,LiId=111L)/SalesOrderHeaderDetails
+					href="SalesOrderProcessing.svc/SalesOrderLineItems(SoId=3L,LiId=11L)/SalesOrderHeaderDetails"
+					target="_blank">SalesOrderProcessing.svc/SalesOrderLineItems(SoId=3L,LiId=11L)/SalesOrderHeaderDetails
 				</a></td>
 				<td width=40%><code style="font-size: small">SELECT R1
 						FROM SalesOrderItem E1 JOIN E1.salesOrderHeader R1 WHERE
-						E1.salesOrderItemKey.soId = 1 AND E1.salesOrderItemKey.liId = 111</code></td>
+						E1.salesOrderItemKey.soId = 3 AND E1.salesOrderItemKey.liId = 11</code></td>
 			</tr>
 
 			<tr>
 				<td width=20%>SalesOrderItem-Material (ManyToOne)</td>
 				<td width=40%><a
-					href="SalesOrderProcessing.svc/SalesOrderLineItems(SoId=1L,LiId=111L)/MaterialDetails"
-					target="_blank">SalesOrderProcessing.svc/SalesOrderLineItems(SoId=1L,LiId=111L)/MaterialDetails
+					href="SalesOrderProcessing.svc/SalesOrderLineItems(SoId=3L,LiId=11L)/MaterialDetails"
+					target="_blank">SalesOrderProcessing.svc/SalesOrderLineItems(SoId=3L,LiId=11L)/MaterialDetails
 				</a></td>
 				<td width=40%><code style="font-size: small">SELECT R1
 						FROM SalesOrderItem E1 JOIN E1.material R1 WHERE
-						E1.salesOrderItemKey.soId = 1 AND E1.salesOrderItemKey.liId = 111</code></td>
+						E1.salesOrderItemKey.soId = 3 AND E1.salesOrderItemKey.liId = 11</code></td>
 			</tr>
 
 			<tr>
