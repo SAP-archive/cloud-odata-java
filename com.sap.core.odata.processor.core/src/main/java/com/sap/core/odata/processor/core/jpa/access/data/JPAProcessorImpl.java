@@ -199,6 +199,10 @@ public class JPAProcessorImpl implements JPAProcessor {
 			em.getTransaction().commit();
 		} catch (Exception e) {
 			em.getTransaction().rollback();
+			if(e.getMessage().contains("Violation of unique constraint")){//$NON-NLS-1$
+				throw ODataJPARuntimeException.throwException(
+						ODataJPARuntimeException.ERROR_JPQL_UNIQUE_CONSTRAINT, e);
+			}else 
 			throw ODataJPARuntimeException.throwException(
 					ODataJPARuntimeException.ERROR_JPQL_CREATE_CREATE, e);
 		}
@@ -222,6 +226,10 @@ public class JPAProcessorImpl implements JPAProcessor {
 			em.getTransaction().commit();
 		} catch (Exception e) {
 			em.getTransaction().rollback();
+			if(e.getMessage().contains("Violation of unique constraint")){//$NON-NLS-1$
+				throw ODataJPARuntimeException.throwException(
+						ODataJPARuntimeException.ERROR_JPQL_UNIQUE_CONSTRAINT, e);
+			}else 
 			throw ODataJPARuntimeException.throwException(
 					ODataJPARuntimeException.ERROR_JPQL_UPDATE_CREATE, e);
 		}
