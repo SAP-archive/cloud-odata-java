@@ -290,6 +290,8 @@ public class JPAEdmProperty extends JPAEdmBaseViewImpl implements
 					if (column.nullable()) {
 						facets.setNullable(true);
 					}
+					else
+						facets.setNullable(false);
 					if (column.length() != 0
 							&& attrEmdType.equals(EdmSimpleTypeKind.String)) {
 						facets.setMaxLength(column.length());
