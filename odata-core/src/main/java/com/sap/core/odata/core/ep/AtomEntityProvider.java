@@ -24,6 +24,7 @@ import com.sap.core.odata.api.edm.EdmType;
 import com.sap.core.odata.api.edm.EdmTypeKind;
 import com.sap.core.odata.api.ep.EntityProviderException;
 import com.sap.core.odata.api.ep.EntityProviderProperties;
+import com.sap.core.odata.api.ep.EntityProviderReadProperties;
 import com.sap.core.odata.api.ep.entry.ODataEntry;
 import com.sap.core.odata.api.processor.ODataResponse;
 import com.sap.core.odata.api.processor.ODataResponse.ODataResponseBuilder;
@@ -344,15 +345,15 @@ public class AtomEntityProvider implements ContentTypeBasedEntityProvider {
   }
 
   @Override
-  public ODataEntry readEntry(final EdmEntitySet entitySet, final InputStream content, final boolean validate, final Map<String, Object> typeMappings) throws EntityProviderException {
+  public ODataEntry readEntry(final EdmEntitySet entitySet, final InputStream content, final EntityProviderReadProperties properties) throws EntityProviderException {
     XmlEntityConsumer xec = new XmlEntityConsumer();
-    return xec.readEntry(entitySet, content, validate);
+    return xec.readEntry(entitySet, content, properties);
   }
 
   @Override
-  public Map<String, Object> readProperty(final EdmProperty edmProperty, final InputStream content, final boolean validate, final Map<String, Object> typeMappings) throws EntityProviderException {
+  public Map<String, Object> readProperty(final EdmProperty edmProperty, final InputStream content, final EntityProviderReadProperties properties) throws EntityProviderException {
     XmlEntityConsumer xec = new XmlEntityConsumer();
-    return xec.readProperty(edmProperty, content, validate, typeMappings);
+    return xec.readProperty(edmProperty, content, properties);
   }
 
   @Override

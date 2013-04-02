@@ -12,6 +12,7 @@ import com.sap.core.odata.api.edm.provider.Schema;
 import com.sap.core.odata.api.ep.EntityProvider.EntityProviderInterface;
 import com.sap.core.odata.api.ep.EntityProviderException;
 import com.sap.core.odata.api.ep.EntityProviderProperties;
+import com.sap.core.odata.api.ep.EntityProviderReadProperties;
 import com.sap.core.odata.api.ep.entry.ODataEntry;
 import com.sap.core.odata.api.exception.ODataNotAcceptableException;
 import com.sap.core.odata.api.processor.ODataResponse;
@@ -104,13 +105,13 @@ public class ProviderFacadeImpl implements EntityProviderInterface {
   }
 
   @Override
-  public ODataEntry readEntry(final String contentType, final EdmEntitySet entitySet, final InputStream content, final boolean validate, final Map<String, Object> typeMappings) throws EntityProviderException {
-    return create(contentType).readEntry(entitySet, content, validate, typeMappings);
+  public ODataEntry readEntry(final String contentType, final EdmEntitySet entitySet, final InputStream content, final EntityProviderReadProperties properties) throws EntityProviderException {
+    return create(contentType).readEntry(entitySet, content, properties);
   }
 
   @Override
-  public Map<String, Object> readProperty(final String contentType, final EdmProperty edmProperty, final InputStream content, final boolean validate, final Map<String, Object> typeMappings) throws EntityProviderException {
-    return create(contentType).readProperty(edmProperty, content, validate, typeMappings);
+  public Map<String, Object> readProperty(final String contentType, final EdmProperty edmProperty, final InputStream content, final EntityProviderReadProperties properties) throws EntityProviderException {
+    return create(contentType).readProperty(edmProperty, content, properties);
   }
 
   @Override

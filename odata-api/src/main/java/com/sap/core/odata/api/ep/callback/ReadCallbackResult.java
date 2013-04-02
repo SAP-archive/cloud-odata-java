@@ -1,6 +1,7 @@
-package com.sap.core.odata.core.ep.consumer;
+package com.sap.core.odata.api.ep.callback;
 
 import com.sap.core.odata.api.edm.EdmEntitySet;
+import com.sap.core.odata.api.ep.EntityProviderReadProperties;
 
 public class ReadCallbackResult {
 

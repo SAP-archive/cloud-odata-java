@@ -38,6 +38,7 @@ import com.sap.core.odata.api.ep.EntityProvider;
 import com.sap.core.odata.api.ep.EntityProviderException;
 import com.sap.core.odata.api.ep.EntityProviderProperties;
 import com.sap.core.odata.api.ep.EntityProviderProperties.ODataEntityProviderPropertiesBuilder;
+import com.sap.core.odata.api.ep.EntityProviderReadProperties;
 import com.sap.core.odata.api.ep.callback.OnWriteEntryContent;
 import com.sap.core.odata.api.ep.callback.OnWriteFeedContent;
 import com.sap.core.odata.api.ep.callback.WriteCallbackContext;
@@ -313,6 +314,7 @@ public class ListsProcessor extends ODataSingleProcessor {
     return ODataResponse.fromResponse(writeEntry((UriInfo) uriInfo, data, contentType)).eTag(constructETag(entitySet, data)).build();
   }
 
+
   @Override
   public ODataResponse updateEntity(final PutMergePatchUriInfo uriInfo, final InputStream content, final String requestContentType, final boolean merge, final String contentType) throws ODataException {
     Object data = retrieveData(
@@ -558,7 +560,7 @@ public class ListsProcessor extends ODataSingleProcessor {
 
     Map<String, Object> values;
     try {
-      values = EntityProvider.readProperty(requestContentType, property, content, merge);
+      values = EntityProvider.readProperty(requestContentType, property, content, EntityProviderReadProperties.init().mergeSemantic(merge).build());
     } catch (final EntityProviderException e) {
       throw new ODataBadRequestException(ODataBadRequestException.BODY, e);
     }
@@ -909,14 +911,21 @@ public class ListsProcessor extends ODataSingleProcessor {
 
     return response;
   }
+  
+  private ODataEntry parseEntry(EdmEntitySet entitySet, InputStream content, String requestContentType, boolean mergeSemantic, Map<String, Object> typeMappings) throws ODataBadRequestException {
+    EntityProviderReadProperties properties = EntityProviderReadProperties.init().mergeSemantic(mergeSemantic).build();
+    //.addTypeMappings(typeMappings).build();
+    return parseEntry(entitySet, content, requestContentType, properties);
+  }
 
-  private ODataEntry parseEntry(final EdmEntitySet entitySet, final InputStream content, final String requestContentType, final boolean merge, final Map<String, Object> typeMap) throws ODataBadRequestException {
+  
+  private ODataEntry parseEntry(final EdmEntitySet entitySet, final InputStream content, final String requestContentType, final EntityProviderReadProperties properties) throws ODataBadRequestException {
     ODataContext context = getContext();
     final int timingHandle = context.startRuntimeMeasurement("EntityConsumer", "readEntry");
 
     ODataEntry entryValues;
     try {
-      entryValues = EntityProvider.readEntry(requestContentType, entitySet, content, merge, typeMap);
+      entryValues = EntityProvider.readEntry(requestContentType, entitySet, content, properties);
     } catch (final EntityProviderException e) {
       throw new ODataBadRequestException(ODataBadRequestException.BODY, e);
     }
@@ -1428,9 +1437,19 @@ public class ListsProcessor extends ODataSingleProcessor {
     for (final String method : methodName.split("\\.", -1))
       try {
         type = type.getMethod(method).getReturnType();
+        if(type.isPrimitive()) {
+          String className = type.getName();
+          if(className.equals("int")) {
+            return Integer.class;
+          }
+          String name = "java.lang." + className.substring(0, 1).toUpperCase() + className.substring(1);
+          return Class.forName(name);
+        }
       } catch (final SecurityException e) {
         throw new ODataNotFoundException(ODataHttpException.COMMON, e);
       } catch (final NoSuchMethodException e) {
+        throw new ODataNotFoundException(ODataHttpException.COMMON, e);
+      } catch (ClassNotFoundException e) {
         throw new ODataNotFoundException(ODataHttpException.COMMON, e);
       }
     return type;
