@@ -3,11 +3,13 @@ package com.sap.core.odata.core.ep.aggregator;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
 import com.sap.core.odata.api.edm.EdmEntitySet;
+import com.sap.core.odata.api.edm.EdmTypeKind;
 import com.sap.core.odata.api.uri.ExpandSelectTreeNode;
 import com.sap.core.odata.core.ep.AbstractProviderTest;
 import com.sap.core.odata.testutil.mock.MockFacade;
@@ -35,8 +37,25 @@ public class EntityInfoAggregatorTest extends AbstractProviderTest {
     assertEquals("Int32", propertyInfoAge.getType().getName());
     EntityPropertyInfo propertyInfoLocation = eia.getPropertyInfo("Location");
     assertTrue(propertyInfoLocation.isComplex());
+    assertNull(eia.getPropertyInfo("City"));
     assertEquals("Location", propertyInfoLocation.getName());
-    EntityComplexPropertyInfo comPropInfoLocation = (EntityComplexPropertyInfo) propertyInfoLocation;
-    assertEquals(2, comPropInfoLocation.getPropertyInfos().size());
+    EntityComplexPropertyInfo locationInfo = (EntityComplexPropertyInfo) propertyInfoLocation;
+    assertEquals(2, locationInfo.getPropertyInfos().size());
+    
+    assertEquals("Country", locationInfo.getPropertyInfo("Country").getName());
+    assertEquals("String", locationInfo.getPropertyInfo("Country").getType().getName());
+    assertEquals(EdmTypeKind.SIMPLE, locationInfo.getPropertyInfo("Country").getType().getKind());
+
+    EntityComplexPropertyInfo cityInfo = (EntityComplexPropertyInfo) locationInfo.getPropertyInfo("City");
+    assertTrue(cityInfo.isComplex());
+    assertEquals("City", cityInfo.getName());
+    assertEquals("City", cityInfo.getType().getName());
+    assertEquals(EdmTypeKind.COMPLEX, cityInfo.getType().getKind());
+    assertEquals("CityName", cityInfo.getPropertyInfo("CityName").getName());
+    assertFalse(cityInfo.getPropertyInfo("CityName").isComplex());
+    assertEquals("String", cityInfo.getPropertyInfo("CityName").getType().getName());
+    assertEquals("PostalCode", cityInfo.getPropertyInfo("PostalCode").getName());
+    assertFalse(cityInfo.getPropertyInfo("PostalCode").isComplex());
+    assertEquals("String", cityInfo.getPropertyInfo("PostalCode").getType().getName());
   }
 }
