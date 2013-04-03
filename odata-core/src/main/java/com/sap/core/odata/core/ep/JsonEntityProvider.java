@@ -74,13 +74,14 @@ public class JsonEntityProvider implements ContentTypeBasedEntityProvider {
     } catch (final IOException e) {
       throw new EntityProviderException(EntityProviderException.COMMON, e);
     } finally {
-      if (outStream != null)
+      if (outStream != null) {
         try {
           outStream.close();
         } catch (final IOException e) {
           // don't throw in finally!
           LOG.error(e.getLocalizedMessage(), e);
         }
+      }
     }
   }
 
@@ -131,13 +132,14 @@ public class JsonEntityProvider implements ContentTypeBasedEntityProvider {
     } catch (final IOException e) {
       throw new EntityProviderException(EntityProviderException.COMMON, e);
     } finally {
-      if (outStream != null)
+      if (outStream != null) {
         try {
           outStream.close();
         } catch (final IOException e) {
           // don't throw in finally!
           LOG.error(e.getLocalizedMessage(), e);
         }
+      }
     }
 
     return ODataResponse.entity(buffer.getInputStream()).contentHeader(HttpContentType.APPLICATION_JSON).build();

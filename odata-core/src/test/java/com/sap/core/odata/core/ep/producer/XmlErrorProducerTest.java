@@ -38,7 +38,7 @@ public class XmlErrorProducerTest extends AbstractXmlProducerTestHelper {
   final String contentType = ContentType.APPLICATION_XML.toContentTypeString();
   final HttpStatusCodes expectedStatus = HttpStatusCodes.INTERNAL_SERVER_ERROR;
 
-  public XmlErrorProducerTest(StreamWriterImplType type) {
+  public XmlErrorProducerTest(final StreamWriterImplType type) {
     super(type);
   }
 
@@ -142,19 +142,18 @@ public class XmlErrorProducerTest extends AbstractXmlProducerTestHelper {
   public void withoutMessage() throws Exception {
     serializeError("ErrorCode", null, null, Locale.GERMAN);
   }
-  
+
   @Test
   public void normalWithErrorCodeVariation() throws Exception {
     serializeError("", "Message", null, Locale.GERMAN);
     serializeError("  ", "Message", null, Locale.GERMAN);
   }
-  
+
   @Test
   public void normalWithInnerErrorVariation() throws Exception {
     serializeError(null, "Message", "", Locale.GERMAN);
     serializeError(null, "Message", "  ", Locale.GERMAN);
   }
-  
 
   @Test
   public void all() throws Exception {
@@ -176,7 +175,7 @@ public class XmlErrorProducerTest extends AbstractXmlProducerTestHelper {
     }
   }
 
-  private void serializeError(String errorCode, String message, String innerError, Locale locale) throws Exception {
+  private void serializeError(final String errorCode, final String message, final String innerError, final Locale locale) throws Exception {
     ODataResponse response = new AtomEntityProvider().writeErrorDocument(expectedStatus, errorCode, message, locale, innerError);
     String errorXml = verifyResponse(response);
     verifyXml(errorCode, message, locale, innerError, errorXml);
@@ -194,7 +193,7 @@ public class XmlErrorProducerTest extends AbstractXmlProducerTestHelper {
     return xmlString;
   }
 
-  private void verifyXml(String errorCode, String message, Locale locale, String innerError, String errorXml) throws Exception {
+  private void verifyXml(final String errorCode, final String message, final Locale locale, final String innerError, final String errorXml) throws Exception {
 
     assertXpathExists("/a:error", errorXml);
 
@@ -207,9 +206,9 @@ public class XmlErrorProducerTest extends AbstractXmlProducerTestHelper {
       assertXpathEvaluatesTo(message, "/a:error/a:message", errorXml);
       assertXpathExists("/a:error/a:message[@xml:lang=\"" + getLang(locale) + "\"]", errorXml);
     } else {
-      if(locale == null){
-        assertXpathExists("/a:error/a:message[@xml:lang='']", errorXml);        
-      }else{
+      if (locale == null) {
+        assertXpathExists("/a:error/a:message[@xml:lang='']", errorXml);
+      } else {
         assertXpathExists("/a:error/a:message[@xml:lang=\"" + getLang(locale) + "\"]", errorXml);
       }
     }
