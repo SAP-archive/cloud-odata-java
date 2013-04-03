@@ -39,7 +39,7 @@ public class JPAUpdateRequest extends JPAWriteRequest{
 				
 		ODataEntry entryValues = null;
 		try {
-			entryValues = parseEntry(entitySet, content, requestContentType, false, new HashMap<String, Object>());
+			entryValues = parseEntry(entitySet, content, requestContentType, false);
 		} catch (ODataBadRequestException e1) {
 			throw ODataJPARuntimeException
 			.throwException(ODataJPARuntimeException.GENERAL

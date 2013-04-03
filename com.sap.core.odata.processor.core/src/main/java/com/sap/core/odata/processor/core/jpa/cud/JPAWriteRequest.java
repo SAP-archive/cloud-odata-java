@@ -3,7 +3,6 @@ package com.sap.core.odata.processor.core.jpa.cud;
 import java.io.InputStream;
 import java.lang.reflect.Method;
 import java.util.HashMap;
-import java.util.Map;
 
 import com.sap.core.odata.api.edm.EdmEntitySet;
 import com.sap.core.odata.api.edm.EdmException;
@@ -13,6 +12,7 @@ import com.sap.core.odata.api.edm.EdmStructuralType;
 import com.sap.core.odata.api.edm.EdmTypeKind;
 import com.sap.core.odata.api.ep.EntityProvider;
 import com.sap.core.odata.api.ep.EntityProviderException;
+import com.sap.core.odata.api.ep.EntityProviderReadProperties;
 import com.sap.core.odata.api.ep.entry.ODataEntry;
 import com.sap.core.odata.api.exception.ODataBadRequestException;
 import com.sap.core.odata.processor.api.jpa.exception.ODataJPAModelException;
@@ -149,10 +149,11 @@ public class JPAWriteRequest {
 
 	}
 	
-	protected ODataEntry parseEntry(final EdmEntitySet entitySet, final InputStream content, final String requestContentType, final boolean merge, final Map<String, Object> typeMap) throws ODataBadRequestException {
+	protected ODataEntry parseEntry(final EdmEntitySet entitySet, final InputStream content, final String requestContentType, final boolean merge) throws ODataBadRequestException {
 	    ODataEntry entryValues;
 	    try {
-	      entryValues = EntityProvider.readEntry(requestContentType, entitySet, content, merge, typeMap);
+	    	EntityProviderReadProperties entityProviderProperties = EntityProviderReadProperties.init().mergeSemantic(merge).build();
+	      entryValues = EntityProvider.readEntry(requestContentType, entitySet, content, entityProviderProperties);
 	    } catch (EntityProviderException e) {
 	      throw new ODataBadRequestException(ODataBadRequestException.BODY, e);
 	    }
