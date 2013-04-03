@@ -10,7 +10,7 @@ import com.sap.core.odata.core.ep.util.FormatXml;
 
 public class XmlErrorDocumentProducer {
 
-  public void writeErrorDocument(XMLStreamWriter writer, String errorCode, String message, Locale locale, String innerError) throws XMLStreamException {
+  public void writeErrorDocument(final XMLStreamWriter writer, final String errorCode, final String message, final Locale locale, final String innerError) throws XMLStreamException {
     writer.writeStartDocument();
     writer.writeStartElement(FormatXml.M_ERROR);
     writer.writeDefaultNamespace(Edm.NAMESPACE_M_2007_08);

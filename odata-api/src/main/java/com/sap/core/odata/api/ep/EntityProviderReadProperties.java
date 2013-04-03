@@ -31,7 +31,7 @@ public class EntityProviderReadProperties {
     return new EntityProviderReadPropertiesBuilder();
   }
 
-  public static EntityProviderReadPropertiesBuilder initFrom(EntityProviderReadProperties properties) {
+  public static EntityProviderReadPropertiesBuilder initFrom(final EntityProviderReadProperties properties) {
     return new EntityProviderReadPropertiesBuilder(properties);
   }
 
@@ -58,40 +58,40 @@ public class EntityProviderReadProperties {
    */
   public static class EntityProviderReadPropertiesBuilder {
     private final EntityProviderReadProperties properties = new EntityProviderReadProperties();
-    
+
     public EntityProviderReadPropertiesBuilder() {}
-    
-    public EntityProviderReadPropertiesBuilder(EntityProviderReadProperties propertiesFrom) {
+
+    public EntityProviderReadPropertiesBuilder(final EntityProviderReadProperties propertiesFrom) {
       properties.merge = propertiesFrom.merge;
       properties.callback = propertiesFrom.callback;
       addValidatedPrefixes(propertiesFrom.validatedPrefix2NamespaceUri);
       addTypeMappings(propertiesFrom.typeMappings);
     }
 
-    public EntityProviderReadPropertiesBuilder mergeSemantic(boolean mergeSemantic) {
+    public EntityProviderReadPropertiesBuilder mergeSemantic(final boolean mergeSemantic) {
       properties.merge = mergeSemantic;
       return this;
     }
 
-    public EntityProviderReadPropertiesBuilder callback(OnReadEntryContent callback) {
+    public EntityProviderReadPropertiesBuilder callback(final OnReadEntryContent callback) {
       properties.callback = callback;
       return this;
     }
-    
-    public EntityProviderReadPropertiesBuilder addValidatedPrefixes(Map<String, String> prefix2NamespaceUri) {
+
+    public EntityProviderReadPropertiesBuilder addValidatedPrefixes(final Map<String, String> prefix2NamespaceUri) {
       if (prefix2NamespaceUri != null) {
         properties.validatedPrefix2NamespaceUri.putAll(prefix2NamespaceUri);
       }
       return this;
     }
-    
+
     public EntityProviderReadPropertiesBuilder addTypeMappings(final Map<String, Object> typeMappings) {
       if (typeMappings != null) {
         properties.typeMappings.putAll(typeMappings);
       }
       return this;
     }
-    
+
     public EntityProviderReadProperties build() {
       return properties;
     }

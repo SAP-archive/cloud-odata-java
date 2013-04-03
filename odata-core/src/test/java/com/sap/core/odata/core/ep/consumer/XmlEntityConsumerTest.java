@@ -146,21 +146,21 @@ public class XmlEntityConsumerTest extends AbstractConsumerTest {
     EntityProviderReadProperties consumerProperties = EntityProviderReadProperties.init()
         .mergeSemantic(false)
         .callback(new OnReadEntryContent() {
-      @Override
-      public ReadCallbackResult retrieveReadResult(final ReadEntryCallbackContext context) {
-        try {
-          String title = context.getTitle();
-          if (title.contains("Employees")) {
-            EdmEntitySet employeeEntitySet = MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Employees");
-            return new ReadCallbackResult(context.getReadProperties(), employeeEntitySet);
-          } else {
-            throw new RuntimeException("Invalid title");
+          @Override
+          public ReadCallbackResult retrieveReadResult(final ReadEntryCallbackContext context) {
+            try {
+              String title = context.getTitle();
+              if (title.contains("Employees")) {
+                EdmEntitySet employeeEntitySet = MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Employees");
+                return new ReadCallbackResult(context.getReadProperties(), employeeEntitySet);
+              } else {
+                throw new RuntimeException("Invalid title");
+              }
+            } catch (ODataException e) {
+              throw new RuntimeException(e);
+            }
           }
-        } catch (ODataException e) {
-          throw new RuntimeException(e);
-        }
-      }
-    }).build();
+        }).build();
 
     ODataEntry entry = xec.readEntry(entitySet, reqContent, consumerProperties);
     // validate
@@ -204,24 +204,24 @@ public class XmlEntityConsumerTest extends AbstractConsumerTest {
     EntityProviderReadProperties consumerProperties = EntityProviderReadProperties.init()
         .mergeSemantic(false)
         .callback(new OnReadEntryContent() {
-      @Override
-      public ReadCallbackResult retrieveReadResult(final ReadEntryCallbackContext context) {
-        try {
-          String title = context.getTitle();
-          if (title.contains("Employees")) {
-            EdmEntitySet employeeEntitySet = MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Employees");
-            return new ReadCallbackResult(context.getReadProperties(), employeeEntitySet);
-          } else if (title.contains("Team")) {
-            EdmEntitySet teamsEntitySet = MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Teams");
-            return new ReadCallbackResult(context.getReadProperties(), teamsEntitySet);
-          } else {
-            throw new RuntimeException("Invalid title");
+          @Override
+          public ReadCallbackResult retrieveReadResult(final ReadEntryCallbackContext context) {
+            try {
+              String title = context.getTitle();
+              if (title.contains("Employees")) {
+                EdmEntitySet employeeEntitySet = MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Employees");
+                return new ReadCallbackResult(context.getReadProperties(), employeeEntitySet);
+              } else if (title.contains("Team")) {
+                EdmEntitySet teamsEntitySet = MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Teams");
+                return new ReadCallbackResult(context.getReadProperties(), teamsEntitySet);
+              } else {
+                throw new RuntimeException("Invalid title");
+              }
+            } catch (Exception e) {
+              throw new RuntimeException();
+            }
           }
-        } catch (Exception e) {
-          throw new RuntimeException();
-        }
-      }
-    }).build();
+        }).build();
 
     ODataEntry entry = xec.readEntry(entitySet, reqContent, consumerProperties);
     // validate
@@ -1046,11 +1046,11 @@ public class XmlEntityConsumerTest extends AbstractConsumerTest {
 
     // execute
     XmlEntityConsumer xec = new XmlEntityConsumer();
-    ODataEntry result = xec.readEntry(entitySet, contentBody, 
+    ODataEntry result = xec.readEntry(entitySet, contentBody,
         EntityProviderReadProperties.init().mergeSemantic(true).addTypeMappings(
-          createTypeMappings("Age", Long.class, // test unused type mapping 
-              "EntryDate", Date.class))
-          .build());
+            createTypeMappings("Age", Long.class, // test unused type mapping 
+                "EntryDate", Date.class))
+            .build());
 
     // verify
     Map<String, Object> properties = result.getProperties();
@@ -1185,7 +1185,7 @@ public class XmlEntityConsumerTest extends AbstractConsumerTest {
 
     EdmEntitySet entitySet = MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Employees");
     InputStream content = createContentAsStream(EMPLOYEE_1_XML);
-    ODataEntry result = xec.readEntry(entitySet, content, 
+    ODataEntry result = xec.readEntry(entitySet, content,
         EntityProviderReadProperties.init().mergeSemantic(true).addTypeMappings(createTypeMappings("EmployeeName", Integer.class)).build());
 
     // verify
@@ -1199,7 +1199,7 @@ public class XmlEntityConsumerTest extends AbstractConsumerTest {
 
     EdmEntitySet entitySet = MockFacade.getMockEdm().getDefaultEntityContainer().getEntitySet("Employees");
     InputStream content = createContentAsStream(EMPLOYEE_1_XML);
-    ODataEntry result = xec.readEntry(entitySet, content, 
+    ODataEntry result = xec.readEntry(entitySet, content,
         EntityProviderReadProperties.init().mergeSemantic(true).addTypeMappings(createTypeMappings("EmployeeName", Object.class)).build());
 
     // verify
@@ -1348,7 +1348,7 @@ public class XmlEntityConsumerTest extends AbstractConsumerTest {
 
     String xml = "<Age xmlns=\"" + Edm.NAMESPACE_D_2007_08 + "\">42</Age>";
     InputStream content = createContentAsStream(xml);
-    Map<String, Object> value = new XmlEntityConsumer().readProperty(property, content, 
+    Map<String, Object> value = new XmlEntityConsumer().readProperty(property, content,
         EntityProviderReadProperties.init().mergeSemantic(true).addTypeMappings(createTypeMappings("Age", Long.class)).build());
 
     assertEquals(Long.valueOf(42), value.get("Age"));

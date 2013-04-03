@@ -15,8 +15,6 @@ public class WriteFeedCallbackResult {
   EntityProviderProperties inlineProperties;
   List<Map<String, Object>> feedData;
 
- 
-
   /**
    * @return the inline provider properties
    */
@@ -28,7 +26,7 @@ public class WriteFeedCallbackResult {
    * Sets the properties for the inline data. MUST NOT BE NULL.
    * @param inlineProperties
    */
-  public void setInlineProperties(EntityProviderProperties inlineProperties) {
+  public void setInlineProperties(final EntityProviderProperties inlineProperties) {
     this.inlineProperties = inlineProperties;
   }
 

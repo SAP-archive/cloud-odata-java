@@ -159,7 +159,7 @@ public class XmlEntityConsumer {
     if (content instanceof InputStream) {
       XMLStreamReader streamReader = factory.createXMLStreamReader((InputStream) content, DEFAULT_CHARSET);
       String characterEncodingInContent = streamReader.getCharacterEncodingScheme();
-      if(characterEncodingInContent != null && !DEFAULT_CHARSET.equalsIgnoreCase(characterEncodingInContent)) {
+      if (characterEncodingInContent != null && !DEFAULT_CHARSET.equalsIgnoreCase(characterEncodingInContent)) {
         throw new EntityProviderException(EntityProviderException.UNSUPPORTED_CHARACTER_ENCODING.addContent(characterEncodingInContent));
       }
       return streamReader;
@@ -169,18 +169,6 @@ public class XmlEntityConsumer {
   }
 
   /**
-   * Verify that charset encoding set at {@link XMLStreamReader} is declared at <code>xml content</code>.
-   * 
-   * @param reader with assigned <code>content</code> and <code>charset encdoing</code> 
-   *          (@see {@link XMLInputFactory#createXMLStreamReader(InputStream, String)}
-   * @throws EntityProviderException if verification fails.
-   * @throws XMLStreamException if an error during xml processing occurs. 
-   */
-  private void verifyCharsetEncoding(XMLStreamReader reader) throws EntityProviderException, XMLStreamException {
-    verifyCharsetEncoding(reader, reader.getEncoding());
-  }
-  
-  /**
    * Verify that given <code>charsetEncoding</code> is declared at <code>xml content</code>.
    * 
    * @param reader with assigned <code>content</code> and <code>charset encdoing</code> 
@@ -189,11 +177,11 @@ public class XmlEntityConsumer {
    * @throws EntityProviderException if verification fails.
    * @throws XMLStreamException if an error during xml processing occurs. 
    */
-  private void verifyCharsetEncoding(XMLStreamReader reader, String charsetEncoding) throws XMLStreamException, EntityProviderException {
+  private void verifyCharsetEncoding(final XMLStreamReader reader, final String charsetEncoding) throws XMLStreamException, EntityProviderException {
     String characterEncodingInContent = reader.getCharacterEncodingScheme();
-    if(characterEncodingInContent == null) {
+    if (characterEncodingInContent == null) {
       throw new EntityProviderException(EntityProviderException.NOT_SET_CHARACTER_ENCODING);
-    } else if(!characterEncodingInContent.equalsIgnoreCase(charsetEncoding)) {
+    } else if (!characterEncodingInContent.equalsIgnoreCase(charsetEncoding)) {
       throw new EntityProviderException(EntityProviderException.UNSUPPORTED_CHARACTER_ENCODING.addContent(characterEncodingInContent));
     }
   }

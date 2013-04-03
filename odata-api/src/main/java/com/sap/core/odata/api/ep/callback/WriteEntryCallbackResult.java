@@ -9,7 +9,7 @@ import com.sap.core.odata.api.ep.EntityProviderProperties;
  * @author SAP AG
  */
 public class WriteEntryCallbackResult {
-  
+
   EntityProviderProperties inlineProperties;
   Map<String, Object> oneEntryData;
 
@@ -24,7 +24,7 @@ public class WriteEntryCallbackResult {
    * Sets the inline properties for this entry
    * @param inlineProperties
    */
-  public void setInlineProperties(EntityProviderProperties inlineProperties) {
+  public void setInlineProperties(final EntityProviderProperties inlineProperties) {
     this.inlineProperties = inlineProperties;
   }
 

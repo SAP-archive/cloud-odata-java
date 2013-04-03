@@ -81,12 +81,12 @@ public class ODataExceptionSerializerTest extends BaseTest {
     testSerializeXML("ErrorCode", "Message", ContentType.APPLICATION_ATOM_XML, Locale.CHINA);
   }
 
-  @Test(expected=EntityProviderException.class)
+  @Test(expected = EntityProviderException.class)
   public void testJsonSerializationWithoutInnerError() throws Exception {
     testSerializeJSON("ErrorCode", "Message", ContentType.APPLICATION_JSON, Locale.GERMAN);
   }
 
-  @Test(expected=EntityProviderException.class)
+  @Test(expected = EntityProviderException.class)
   public void testJsonSerializationWithInnerError() throws Exception {
     testSerializeJSON("ErrorCode", "Message", ContentType.APPLICATION_JSON, Locale.GERMAN);
   }

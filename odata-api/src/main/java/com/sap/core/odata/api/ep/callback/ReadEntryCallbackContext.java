@@ -11,13 +11,13 @@ public class ReadEntryCallbackContext {
   private EntityProviderReadProperties readProperties;
   private final String title;
   private final String type;
-  
-  public ReadEntryCallbackContext(EntityProviderReadProperties properties, String type, String title) {
+
+  public ReadEntryCallbackContext(final EntityProviderReadProperties properties, final String type, final String title) {
     readProperties = properties;
     this.type = type;
     this.title = title;
   }
-  
+
   public EntityProviderReadProperties getReadProperties() {
     return readProperties;
   }
@@ -39,7 +39,7 @@ public class ReadEntryCallbackContext {
   public String getTitle() {
     return title;
   }
-  
+
   public String getType() {
     return type;
   }

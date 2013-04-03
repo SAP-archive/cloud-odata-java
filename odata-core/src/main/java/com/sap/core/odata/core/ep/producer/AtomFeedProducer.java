@@ -92,12 +92,12 @@ public class AtomFeedProducer {
   }
 
   private void appendAtomSelfLink(final XMLStreamWriter writer, final EntityInfoAggregator eia) throws EntityProviderException {
-    
+
     URI self = properties.getSelfLink();
     String selfLink = "";
     if (self == null) {
       selfLink = createSelfLink(eia);
-    }else{
+    } else {
       selfLink = self.toASCIIString();
     }
     try {
