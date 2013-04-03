@@ -85,7 +85,7 @@ public class JPACreateRequest extends JPAWriteRequest{
 		
 		ODataEntry entryValues = null;
 		try {
-			entryValues = parseEntry(entitySet, content, requestContentType, true,new HashMap<String, Object>());
+			entryValues = parseEntry(entitySet, content, requestContentType, true);
 		} catch (ODataBadRequestException e1) {
 			throw ODataJPARuntimeException
 			.throwException(ODataJPARuntimeException.GENERAL
